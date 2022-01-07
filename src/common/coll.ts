@@ -12,7 +12,7 @@ const collSizeN =
       0,
     );
 
-const collSize = (coll: Coll<unknown>): number => coll.size;
+export const collSize = (coll: Coll<unknown>): number => coll.size;
 export const collSize2 = collSizeN(collSize);
 export const collSize3 = collSizeN(collSize2);
 export const collSize4 = collSizeN(collSize3);
@@ -29,7 +29,7 @@ export const collHas = (
 export const collIsEmpty = (coll: Coll<unknown> | undefined): boolean =>
   isUndefined(coll) || collSize(coll) == 0;
 
-const collValues = <Value>(coll: Coll<Value> | undefined): Value[] => [
+export const collValues = <Value>(coll: Coll<Value> | undefined): Value[] => [
   ...(coll?.values() ?? []),
 ];
 

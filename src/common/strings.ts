@@ -1,7 +1,7 @@
 export const getTypeOf = (thing: unknown): string => typeof thing;
 
 export const EMPTY_OBJECT = '{}';
-const EMPTY_STRING = '';
+export const EMPTY_STRING = '';
 
 export const STRING = getTypeOf(EMPTY_STRING);
 export const BOOLEAN = getTypeOf(true);
@@ -10,3 +10,8 @@ export const FUNCTION = getTypeOf(getTypeOf);
 
 export const TYPE = 'type';
 export const DEFAULT = 'default';
+
+export const SUM = 'sum';
+export const AVG = 'avg';
+export const MIN = 'min';
+export const MAX = 'max';

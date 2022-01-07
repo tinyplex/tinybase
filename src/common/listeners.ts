@@ -12,6 +12,7 @@ import {Id, IdOrNull, Ids} from '../common.d';
 import {IdMap, mapEnsure, mapGet, mapNew, mapSet} from './map';
 import {IdSet, setAdd, setNew} from './set';
 
+import {MetricListener, Metrics} from '../metrics.d';
 import {
   arrayForEach,
   arrayFromSecond,
@@ -31,7 +32,8 @@ type Listener =
   | RowIdsListener
   | RowListener
   | CellIdsListener
-  | CellListener;
+  | CellListener
+  | MetricListener;
 
 const addDeepSet = (deepSet: DeepIdSet, value: Id, ids: IdOrNull[]): IdSet =>
   (arrayLength(ids) < 2
@@ -68,7 +70,7 @@ const forDeepSet = (valueDo: (set: IdSet, arg: any) => void) => {
 };
 
 export const getListenerFunctions = (
-  getThing: () => Store,
+  getThing: () => Store | Metrics,
 ): [
   (listener: Listener, deepSet: DeepIdSet, ids?: IdOrNull[]) => Id,
   (deepSet: DeepIdSet, ids?: Ids, ...extra: any[]) => void,
@@ -79,7 +81,7 @@ export const getListenerFunctions = (
     extraArgsGetter: (ids: Ids) => any[],
   ) => void,
 ] => {
-  let thing: Store;
+  let thing: Store | Metrics;
   let nextId = 0;
   const listenerPool: Ids = [];
   const allListeners: IdMap<[Listener, DeepIdSet, Ids]> = mapNew();

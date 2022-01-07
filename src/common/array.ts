@@ -6,6 +6,9 @@ export const arrayForEach = <Value>(
   cb: (value: Value, index: number) => void,
 ): void => array.forEach(cb);
 
+export const arraySum = (array: number[]): number =>
+  arrayReduce(array, (i, j) => i + j, 0);
+
 export const arrayLength = (array: unknown[]): number => array.length;
 
 export const arrayIsEmpty = (array: unknown[]): boolean =>

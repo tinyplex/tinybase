@@ -19,6 +19,10 @@ export const jsonString = (obj: unknown): string =>
 
 export const jsonParse = JSON.parse;
 
+export const mathMax = Math.max;
+
+export const mathMin = Math.min;
+
 export const isFiniteNumber: (num: any) => boolean = isFinite;
 
 export const isInstanceOf = (
@@ -39,5 +43,10 @@ export const isTypeStringOrBoolean = (
   type: string,
 ): type is 'string' | 'boolean' => type == STRING || type == BOOLEAN;
 
+export const isString = (thing: unknown): thing is string =>
+  getTypeOf(thing) == STRING;
+
 export const isFunction = (thing: unknown): thing is (...args: any[]) => any =>
   getTypeOf(thing) == FUNCTION;
+
+export const getUndefined = (): undefined => undefined;
