@@ -1,14 +1,13 @@
 import {Cell, GetCell, Store} from '../store.d';
-import {Id, Ids} from '../common';
+import {Id, Ids, SortKey} from '../common.d';
 import {IdMap, mapForEach, mapGet, mapKeys, mapNew, mapSet} from './map';
 import {IdSet2, setNew} from './set';
 import {collClear, collForEach, collHas} from './coll';
 import {ifNotUndefined, isString, isUndefined} from './other';
 import {EMPTY_STRING} from './strings';
+import {Indexes} from '../indexes.d';
 import {Metrics} from '../metrics.d';
 import {arrayForEach} from './array';
-
-type SortKey = string | number | boolean;
 
 type DeepMap1<Value> = IdMap<IdMap<Value>>;
 
@@ -183,7 +182,7 @@ export const getRowCellFunction = <RowValue>(
     : getRowCell ??
       ((): RowValue => defaultCellValue ?? (EMPTY_STRING as any as RowValue));
 
-export const getCreateFunction = <Things extends Metrics>(
+export const getCreateFunction = <Things extends Metrics | Indexes>(
   getFunction: (store: Store) => Things,
 ): ((store: Store) => Things) => {
   const getFunctionsByStore: WeakMap<Store, Things> = new WeakMap();

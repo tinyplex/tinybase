@@ -1,6 +1,19 @@
 export const arrayHas = <Value>(array: Value[], value: Value): boolean =>
   array.includes(value);
 
+export const arrayIsSorted = <Value>(
+  array: Value[],
+  sorter: (value1: Value, value2: Value) => number,
+): boolean =>
+  array.every(
+    (value, index) => index == 0 || sorter(array[index - 1], value) <= 0,
+  );
+
+export const arraySort = <Value>(
+  array: Value[],
+  sorter: (value1: Value, value2: Value) => number,
+): Value[] => array.sort(sorter);
+
 export const arrayForEach = <Value>(
   array: Value[],
   cb: (value: Value, index: number) => void,

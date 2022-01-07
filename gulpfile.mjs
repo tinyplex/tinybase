@@ -2,7 +2,7 @@
 import gulp from 'gulp';
 import {promises} from 'fs';
 
-const ALL_MODULES = ['tinybase', 'store', 'metrics'];
+const ALL_MODULES = ['tinybase', 'store', 'indexes', 'metrics', 'common'];
 const LIB_DIR = 'lib';
 
 const getPrettierConfig = async () => ({

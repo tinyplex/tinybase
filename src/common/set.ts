@@ -1,4 +1,4 @@
-import {Id} from '../common';
+import {Id} from '../common.d';
 import {IdMap} from './map';
 
 export type IdSet = Set<Id>;
