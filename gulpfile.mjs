@@ -2,7 +2,7 @@
 import gulp from 'gulp';
 import {promises} from 'fs';
 
-const ALL_MODULES = ['tinybase'];
+const ALL_MODULES = ['tinybase', 'store'];
 const LIB_DIR = 'lib';
 
 const getPrettierConfig = async () => ({
@@ -34,6 +34,7 @@ const copyDefinition = async (module, dir = LIB_DIR) => {
 };
 
 const copyDefinitions = async (dir = LIB_DIR) => {
+  await copyDefinition('common', dir);
   await allModules((module) => copyDefinition(module, dir));
 };
 
