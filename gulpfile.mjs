@@ -9,6 +9,7 @@ const ALL_MODULES = [
   'indexes',
   'metrics',
   'relationships',
+  'persisters',
   'common',
 ];
 const LIB_DIR = 'lib';

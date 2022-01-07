@@ -11,6 +11,8 @@ export const FUNCTION = getTypeOf(getTypeOf);
 export const TYPE = 'type';
 export const DEFAULT = 'default';
 
+export const UTF8 = 'utf8';
+
 export const SUM = 'sum';
 export const AVG = 'avg';
 export const MIN = 'min';
