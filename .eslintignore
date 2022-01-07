@@ -1,0 +1,6 @@
+**/docs/**
+**/lib/debug/**
+**/lib/**
+**/tmp/**
+**/node_modules/**
+**/site/extras/**

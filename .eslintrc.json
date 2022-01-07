@@ -1,0 +1,115 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint", "react", "jest", "jsdoc"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/all",
+    "plugin:react-hooks/recommended",
+    "plugin:jest/recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+  ],
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true,
+    "jest/globals": true
+  },
+  "globals": {
+    "page": true,
+    "browser": true,
+    "context": true,
+    "jestPuppeteer": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 7,
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true,
+      "globalReturn": true,
+      "jsx": true
+    },
+    "sourceType": "module"
+  },
+  "settings": {"react": {"version": "16.12.0"}},
+  "rules": {
+    "@typescript-eslint/no-explicit-any": 0,
+    "@typescript-eslint/no-var-requires": 0,
+    "@typescript-eslint/no-unused-vars": [
+      2,
+      {"argsIgnorePattern": "^_.*", "varsIgnorePattern": "^_.*"}
+    ],
+    "max-len": [2, {"code": 80, "ignorePattern": "^(im|ex)ports?\\W.*"}],
+    "no-var": 2,
+    "object-curly-spacing": [2, "never"],
+    "comma-dangle": [
+      2,
+      {
+        "arrays": "always-multiline",
+        "objects": "always-multiline",
+        "imports": "always-multiline",
+        "exports": "always-multiline",
+        "functions": "always-multiline"
+      }
+    ],
+    "indent": 0,
+    "no-empty": [2, {"allowEmptyCatch": true}],
+    "linebreak-style": [2, "unix"],
+    "space-infix-ops": 2,
+    "quotes": [2, "single", {"allowTemplateLiterals": true}],
+    "semi": [2, "always"],
+    "sort-keys": 0,
+    "sort-imports": 2,
+    "jest/expect-expect": [2, {"assertFunctionNames": ["expect*"]}],
+    "no-multiple-empty-lines": [2, {"max": 1}],
+    "react/function-component-definition": [
+      2,
+      {
+        "namedComponents": "arrow-function",
+        "unnamedComponents": "arrow-function"
+      }
+    ],
+    "react/no-multi-comp": [2, {"ignoreStateless": true}],
+    "react/no-find-dom-node": 0,
+    "react/no-set-state": 0,
+    "react/no-unsafe": 2,
+    "jsx-quotes": [2, "prefer-double"],
+    "react-hooks/exhaustive-deps": 2,
+    "react-hooks/rules-of-hooks": 2,
+    "react/destructuring-assignment": 0,
+    "react/display-name": 0,
+    "react/jsx-boolean-value": 0,
+    "react/jsx-filename-extension": 0,
+    "react/jsx-first-prop-new-line": [2, "multiline"],
+    "react/jsx-handler-names": [
+      2,
+      {"eventHandlerPrefix": "_handle", "eventHandlerPropPrefix": "on"}
+    ],
+    "react/jsx-indent": 0,
+    "react/jsx-indent-props": [2, 2],
+    "react/jsx-max-depth": [2, {"max": 5}],
+    "react/jsx-max-props-per-line": [2, {"maximum": 1, "when": "multiline"}],
+    "react/jsx-newline": 0,
+    "react/jsx-no-literals": 0,
+    "react/jsx-one-expression-per-line": 0,
+    "react/jsx-props-no-spreading": 0,
+    "react/jsx-sort-props": 0,
+    "react/require-default-props": 0,
+    "react/sort-comp": 0
+  },
+  "overrides": [
+    {
+      "files": ["src/*.d.ts"],
+      "extends": ["plugin:jsdoc/recommended"],
+      "rules": {
+        "jsdoc/check-tag-names": [
+          2,
+          {"definedTags": ["category", "packageDocumentation", "jsx"]}
+        ],
+        "jsdoc/require-jsdoc": [2, {"contexts": ["any"]}],
+        "jsdoc/check-examples": [0, {"contexts": ["any"]}],
+        "jsdoc/require-description": [2, {"contexts": ["any"]}]
+      }
+    }
+  ]
+}

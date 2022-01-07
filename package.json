@@ -1,0 +1,100 @@
+{
+  "name": "tinybase",
+  "version": "1.0.0",
+  "author": "jamesgpearce",
+  "repository": "github:tinyplex/tinybase",
+  "license": "MIT",
+  "homepage": "https://tinybase.org",
+  "description": "A tiny, reactive JavaScript library for structured state and tabular data.",
+  "keywords": [
+    "tiny",
+    "reactive",
+    "state",
+    "data",
+    "react"
+  ],
+  "type": "module",
+  "files": [
+    "lib/**"
+  ],
+  "exports": {
+    ".": "./lib/tinybase.js",
+    "./*": "./lib/*.js"
+  },
+  "browser": {
+    "fs": false
+  },
+  "sideEffects": false,
+  "scripts": {
+    "lint": "gulp lint",
+    "spell": "gulp spell",
+    "ts": "gulp ts",
+    "compileAndTestUnit": "gulp compileAndTestUnit",
+    "preCommit": "gulp preCommit",
+    "prePublishPackage": "gulp prePublishPackage",
+    "publishPackage": "gulp publishPackage"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.16.8",
+    "@babel/core": "^7.16.7",
+    "@babel/preset-env": "^7.16.8",
+    "@babel/preset-react": "^7.16.7",
+    "@babel/preset-typescript": "^7.16.7",
+    "@rollup/plugin-replace": "^3.0.1",
+    "@types/asciichart": "^1.5.6",
+    "@types/expect-puppeteer": "^4.4.7",
+    "@types/http-server": "^0.12.1",
+    "@types/jest": "^27.4.0",
+    "@types/jest-environment-puppeteer": "^4.4.1",
+    "@types/less": "^3.0.3",
+    "@types/puppeteer": "^5.4.4",
+    "@types/react": "^17.0.38",
+    "@types/react-dom": "^17.0.11",
+    "@types/react-test-renderer": "^17.0.1",
+    "@types/tmp": "^0.2.3",
+    "@typescript-eslint/eslint-plugin": "^5.9.1",
+    "@typescript-eslint/parser": "^5.9.1",
+    "asciichart": "^1.5.25",
+    "babel-eslint": "^10.1.0",
+    "babel-jest": "^27.4.6",
+    "babel-preset-minify": "^0.5.1",
+    "country-flag-emoji-json": "^2.0.0",
+    "cspell": "^5.15.2",
+    "esbuild": "^0.14.11",
+    "eslint": "^8.6.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-jest": "^25.3.4",
+    "eslint-plugin-jsdoc": "^37.6.1",
+    "eslint-plugin-react": "^7.28.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "gulp": "^4.0.2",
+    "gulp-gzip": "^1.4.2",
+    "http-server": "^14.1.0",
+    "jest": "^27.4.7",
+    "jest-fetch-mock": "^3.0.3",
+    "jest-puppeteer": "^6.0.3",
+    "less": "^4.1.2",
+    "prettier": "^2.5.1",
+    "puppeteer": "^13.0.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-test-renderer": "^17.0.2",
+    "rollup": "^2.64.0",
+    "rollup-plugin-esbuild": "^4.8.2",
+    "rollup-plugin-gzip": "^3.0.0",
+    "rollup-plugin-prettier": "^2.2.2",
+    "rollup-plugin-terser": "^7.0.2",
+    "tinydocs": "^0.1.10",
+    "tmp": "^0.2.1",
+    "ts-unused-exports": "^7.0.3",
+    "typescript": "4.5.4"
+  },
+  "peerDependencies": {
+    "react": "^17.0.2"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  }
+}
