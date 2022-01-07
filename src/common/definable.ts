@@ -7,6 +7,7 @@ import {ifNotUndefined, isString, isUndefined} from './other';
 import {EMPTY_STRING} from './strings';
 import {Indexes} from '../indexes.d';
 import {Metrics} from '../metrics.d';
+import {Relationships} from '../relationships.d';
 import {arrayForEach} from './array';
 
 type DeepMap1<Value> = IdMap<IdMap<Value>>;
@@ -182,7 +183,9 @@ export const getRowCellFunction = <RowValue>(
     : getRowCell ??
       ((): RowValue => defaultCellValue ?? (EMPTY_STRING as any as RowValue));
 
-export const getCreateFunction = <Things extends Metrics | Indexes>(
+export const getCreateFunction = <
+  Things extends Metrics | Indexes | Relationships,
+>(
   getFunction: (store: Store) => Things,
 ): ((store: Store) => Things) => {
   const getFunctionsByStore: WeakMap<Store, Things> = new WeakMap();
