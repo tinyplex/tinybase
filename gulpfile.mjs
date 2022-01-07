@@ -1,10 +1,19 @@
+/*
+  eslint-disable
+    jest/no-identical-title,
+    jest/no-disabled-tests,
+    jest/expect-expect,
+    jest/no-export,
+    jest/no-jest-import,
+    @typescript-eslint/explicit-module-boundary-types
+*/
+
 // All other imports are lazy so that single tasks start up fast.
 import gulp from 'gulp';
 import {promises} from 'fs';
 
-const ALL_MODULES = [
-  'tinybase',
-  'ui-react',
+const TEST_MODULES = ['tinybase', 'ui-react'];
+const ALL_MODULES = TEST_MODULES.concat([
   'store',
   'checkpoints',
   'indexes',
@@ -12,8 +21,9 @@ const ALL_MODULES = [
   'relationships',
   'persisters',
   'common',
-];
+]);
 const LIB_DIR = 'lib';
+const TMP_DIR = './tmp';
 
 const getPrettierConfig = async () => ({
   ...JSON.parse(await promises.readFile('.prettierrc', 'utf-8')),
@@ -21,6 +31,7 @@ const getPrettierConfig = async () => ({
 });
 
 const allOf = async (array, cb) => await Promise.all(array.map(cb));
+const testModules = async (cb) => await allOf(TEST_MODULES, cb);
 const allModules = async (cb) => await allOf(ALL_MODULES, cb);
 
 const makeDir = async (dir) => {
@@ -197,6 +208,61 @@ const compileModule = async (module, debug, dir = LIB_DIR, format = 'es') => {
   await (await rollup(inputConfig)).write(outputConfig);
 };
 
+const test = async (dir, {coverage, countAsserts, puppeteer, serialTests}) => {
+  const {default: jest} = await import('jest');
+  await makeDir(TMP_DIR);
+  const {
+    results: {success},
+  } = await jest.runCLI(
+    {
+      roots: [dir],
+      ...(puppeteer
+        ? {
+            setupFilesAfterEnv: ['expect-puppeteer'],
+            preset: 'jest-puppeteer',
+            detectOpenHandles: true,
+          }
+        : {testEnvironment: 'jsdom'}),
+      ...(coverage
+        ? {
+            collectCoverage: true,
+            coverageProvider: 'babel',
+            collectCoverageFrom: [`${LIB_DIR}/debug/tinybase.js`],
+            coverageReporters: ['text-summary', 'json-summary'],
+            coverageDirectory: 'tmp',
+          }
+        : {}),
+      ...(countAsserts
+        ? {
+            setupFilesAfterEnv: ['./test/jest/setup'],
+            reporters: ['default', './test/jest/reporter'],
+            testEnvironment: './test/jest/environment',
+            runInBand: true,
+          }
+        : {}),
+      ...(serialTests ? {runInBand: true} : {}),
+    },
+    [''],
+  );
+  if (!success) {
+    throw 'Test failed';
+  }
+  if (coverage) {
+    await promises.writeFile(
+      'coverage.json',
+      JSON.stringify({
+        ...(countAsserts
+          ? JSON.parse(await promises.readFile('./tmp/assertion-summary.json'))
+          : {}),
+        ...JSON.parse(await promises.readFile('./tmp/coverage-summary.json'))
+          .total,
+      }),
+      'utf-8',
+    );
+  }
+  await removeDir(TMP_DIR);
+};
+
 const npmInstall = async () => {
   const {exec} = await import('child_process');
   const {promisify} = await import('util');
@@ -216,14 +282,23 @@ export const lint = async () => await lintCheck('.');
 export const spell = async () => {
   await spellCheck('.');
   await spellCheck('src', true);
+  await spellCheck('test', true);
 };
 
 export const ts = async () => {
   await copyDefinitions();
   await tsCheck('src');
   await copyDefinitions(`${LIB_DIR}/debug`);
+  await tsCheck('test');
 };
 
+export const compileForTest = async () => {
+  await clearDir(LIB_DIR);
+  await testModules(async (module) => {
+    await compileModule(module, true, `${LIB_DIR}/debug`);
+  });
+  await copyDefinitions(`${LIB_DIR}/debug`);
+};
 export const compileForProd = async () => {
   await clearDir(LIB_DIR);
   await allModules(async (module) => {
@@ -235,13 +310,36 @@ export const compileForProd = async () => {
   await copyDefinitions(`${LIB_DIR}/debug`);
 };
 
-export const preCommit = gulp.series(lint, spell, ts, compileForProd);
+export const testUnit = async () => {
+  await test('test/unit', {coverage: true});
+};
+export const testUnitCountAsserts = async () => {
+  await test('test/unit', {coverage: true, countAsserts: true});
+};
+export const compileAndTestUnit = gulp.series(compileForTest, testUnit);
+
+export const testPerf = async () => {
+  await test('test/perf', {serialTests: true});
+};
+export const compileAndTestPerf = gulp.series(compileForTest, testPerf);
+
+export const preCommit = gulp.series(
+  lint,
+  spell,
+  ts,
+  compileForTest,
+  testUnit,
+  compileForProd,
+);
 
 export const prePublishPackage = gulp.series(
   npmInstall,
   lint,
   spell,
   ts,
+  compileForTest,
+  testUnitCountAsserts,
+  testPerf,
   compileForProd,
 );
 

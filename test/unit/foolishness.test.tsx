@@ -1,0 +1,693 @@
+/*
+  eslint-disable
+    @typescript-eslint/ban-ts-comment,
+    react/jsx-no-useless-fragment,
+    jest/no-conditional-expect
+*/
+
+import {ReactTestRenderer, act, create} from 'react-test-renderer';
+import {
+  Relationships,
+  Store,
+  createCheckpoints,
+  createIndexes,
+  createLocalPersister,
+  createMetrics,
+  createRelationships,
+  createStore,
+} from '../../lib/debug/tinybase';
+import {
+  StoreListener,
+  createStoreListener,
+  expectChanges,
+  expectNoChanges,
+} from './common';
+import {
+  useCell,
+  useCellIds,
+  useCheckpointIds,
+  useLinkedRowIds,
+  useLocalRowIds,
+  useMetric,
+  useRemoteRowId,
+  useRow,
+  useRowIds,
+  useSliceIds,
+  useSliceRowIds,
+  useTable,
+  useTableIds,
+  useTables,
+} from '../../lib/debug/ui-react';
+import React from 'react';
+
+let renderer: ReactTestRenderer;
+
+const validCell = 1;
+const validRow = {c1: validCell};
+const validTable = {r1: validRow};
+const validTables = {t1: validTable};
+
+const validCellSchema: {
+  type: 'string';
+  default: string;
+} = {type: 'string', default: 't1'};
+const validTableSchema = {c1: validCellSchema};
+const validTablesSchema = {t1: validTableSchema};
+
+const INVALID_CELLS: [string, any][] = [
+  ['Date', new Date()],
+  ['Function', () => 42],
+  ['Regex', /1/],
+  ['empty array', []],
+  ['array', [1, 2, 3]],
+  ['Number', new Number(1)],
+  ['String', new String('1')],
+  ['Boolean', new Boolean(true)],
+  ['null', null],
+  ['undefined', undefined],
+  ['NaN', NaN],
+];
+
+const INVALID_OBJECTS: [string, any][] = INVALID_CELLS.concat([
+  ['number', 1],
+  ['string', '1'],
+  ['boolean', true],
+]);
+
+describe('Rejects initiation with invalid', () => {
+  test.each(INVALID_OBJECTS)('Tables; %s', (_name, tables: any) => {
+    const store = createStore().setTables(tables);
+    expect(store.getTables()).toEqual({});
+  });
+
+  test.each(INVALID_OBJECTS)('first Table; %s', (_name, table: any) => {
+    const store = createStore().setTables({t1: table});
+    expect(store.getTables()).toEqual({});
+  });
+
+  test.each(INVALID_OBJECTS)('second Table; %s', (_name, table: any) => {
+    const store = createStore().setTables({t1: validTable, t2: table});
+    expect(store.getTables()).toEqual(validTables);
+  });
+
+  test.each(INVALID_OBJECTS)('first Row; %s', (_name, row: any) => {
+    const store = createStore().setTables({t1: {r1: row}});
+    expect(store.getTables()).toEqual({});
+  });
+
+  test.each(INVALID_OBJECTS)('second Row; %s', (_name, row: any) => {
+    const store = createStore().setTables({t1: {r1: validRow, r2: row}});
+    expect(store.getTables()).toEqual(validTables);
+  });
+
+  test.each(INVALID_CELLS)('first Cell; %s', (_name, cell: any) => {
+    const store = createStore().setTables({t1: {r1: {c1: cell}}});
+    expect(store.getTables()).toEqual({});
+  });
+
+  test.each(INVALID_CELLS)('second Cell; %s', (_name, cell: any) => {
+    const store = createStore().setTables({
+      t1: {r1: {c1: validCell, c2: cell}},
+    });
+    expect(store.getTables()).toEqual(validTables);
+  });
+});
+
+describe('Rejects setting invalid', () => {
+  test.each(INVALID_OBJECTS)('Tables; %s', (_name, tables: any) => {
+    const store = createStore().setTables(validTables);
+    const listener = createStoreListener(store);
+    listener.listenToTables('/');
+    store.setTables(tables);
+    expect(store.getTables()).toEqual(validTables);
+    expectNoChanges(listener);
+  });
+
+  test.each(INVALID_OBJECTS)(
+    'Table, alongside valid; %s',
+    (_name, table: any) => {
+      const store = createStore().setTables(validTables);
+      const listener = createStoreListener(store);
+      listener.listenToTables('/');
+      listener.listenToTable('/t1', 't1');
+      listener.listenToTable('/t2', 't2');
+      store.setTables({t1: {r1: {c1: 2}}, t2: table});
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
+      expectChanges(listener, '/', {t1: {r1: {c1: 2}}});
+      expectChanges(listener, '/t1', {t1: {r1: {c1: 2}}});
+      expectNoChanges(listener);
+    },
+  );
+
+  test.each(INVALID_OBJECTS)(
+    'existing or new Table; %s',
+    (_name, table: any) => {
+      const store = createStore().setTables(validTables);
+      const listener = createStoreListener(store);
+      listener.listenToTables('/');
+      listener.listenToTable('/t1', 't1');
+      listener.listenToTable('/t2', 't2');
+      store.setTable('t1', table);
+      store.setTable('t2', table);
+      expect(store.getTables()).toEqual(validTables);
+      expectNoChanges(listener);
+    },
+  );
+
+  test.each(INVALID_OBJECTS)('Row, alongside valid; %s', (_name, row: any) => {
+    const store = createStore().setTables(validTables);
+    const listener = createStoreListener(store);
+    listener.listenToTables('/');
+    listener.listenToTable('/t1', 't1');
+    listener.listenToRow('/t1/r1', 't1', 'r1');
+    listener.listenToRow('/t1/r2', 't1', 'r2');
+    store.setTable('t1', {r1: {c1: 2}, r2: row});
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
+    expectChanges(listener, '/', {t1: {r1: {c1: 2}}});
+    expectChanges(listener, '/t1', {t1: {r1: {c1: 2}}});
+    expectChanges(listener, '/t1/r1', {t1: {r1: {c1: 2}}});
+    expectNoChanges(listener);
+  });
+
+  test.each(INVALID_OBJECTS)('existing or new Row; %s', (_name, row: any) => {
+    const store = createStore().setTables(validTables);
+    const listener = createStoreListener(store);
+    listener.listenToTables('/');
+    listener.listenToTable('/t1', 't1');
+    listener.listenToRow('/t1/r1', 't1', 'r1');
+    listener.listenToRow('/t1/r2', 't1', 'r2');
+    store.setRow('t1', 'r1', row);
+    store.setRow('t1', 'r2', row);
+    expect(store.getTables()).toEqual(validTables);
+    expectNoChanges(listener);
+  });
+
+  test.each(INVALID_OBJECTS)('add Row; %s', (_name, row: any) => {
+    const store = createStore().setTables(validTables);
+    const listener = createStoreListener(store);
+    listener.listenToTables('/');
+    listener.listenToTable('/t1', 't1');
+    listener.listenToRow('/t1/r1', 't1', 'r1');
+    listener.listenToRow('/t1/0', 't1', '0');
+    const rowId1 = store.addRow('t1', row);
+    const rowId2 = store.addRow('t1', {c1: 2});
+    expect(rowId1).toBeUndefined();
+    expect(rowId2).toEqual('0');
+    store.delRow('t1', '0');
+    expect(store.getTables()).toEqual(validTables);
+    expectChanges(
+      listener,
+      '/',
+      {t1: {r1: {c1: 1}, '0': {c1: 2}}},
+      {t1: {r1: {c1: 1}}},
+    );
+    expectChanges(
+      listener,
+      '/t1',
+      {t1: {r1: {c1: 1}, '0': {c1: 2}}},
+      {t1: {r1: {c1: 1}}},
+    );
+    expectChanges(listener, '/t1/0', {t1: {0: {c1: 2}}}, {t1: {0: {}}});
+    expectNoChanges(listener);
+  });
+
+  test.each(INVALID_CELLS)('Cell, alongside valid; %s', (_name, cell: any) => {
+    const store = createStore().setTables(validTables);
+    const listener = createStoreListener(store);
+    listener.listenToTables('/');
+    listener.listenToTable('/t1', 't1');
+    listener.listenToRow('/t1/r1', 't1', 'r1');
+    listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
+    listener.listenToCell('/t1/r1/c2', 't1', 'r1', 'c2');
+    store.setRow('t1', 'r1', {c1: 2, c2: cell});
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
+    expectChanges(listener, '/', {t1: {r1: {c1: 2}}});
+    expectChanges(listener, '/t1', {t1: {r1: {c1: 2}}});
+    expectChanges(listener, '/t1/r1', {t1: {r1: {c1: 2}}});
+    expectChanges(listener, '/t1/r1/c1', {t1: {r1: {c1: 2}}});
+    expectNoChanges(listener);
+  });
+
+  test.each(INVALID_CELLS)('existing or new Cell; %s', (_name, cell: any) => {
+    if (typeof cell == 'function') {
+      return;
+    }
+    const store = createStore().setTables(validTables);
+    const listener = createStoreListener(store);
+    listener.listenToTables('/');
+    listener.listenToTable('/t1', 't1');
+    listener.listenToRow('/t1/r1', 't1', 'r1');
+    listener.listenToRow('/t1/r2', 't1', 'r2');
+    listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
+    listener.listenToCell('/t1/r1/c2', 't1', 'r1', 'c2');
+    listener.listenToCell('/t1/r2/c1', 't1', 'r2', 'c1');
+    store
+      .setCell('t1', 'r1', 'c1', cell)
+      .setCell('t1', 'r1', 'c2', cell)
+      .setCell('t1', 'r2', 'c1', cell);
+    expect(store.getTables()).toEqual(validTables);
+    expectNoChanges(listener);
+  });
+});
+
+describe('Rejects invalid', () => {
+  test.each(INVALID_OBJECTS)(
+    'Tables schema; %s',
+    (_name, tablesSchema: any) => {
+      const store = createStore().setSchema(tablesSchema);
+      expect(JSON.parse(store.getSchemaJson())).toEqual({});
+    },
+  );
+
+  test.each(INVALID_OBJECTS)('Table schema; %s', (_name, tableSchema: any) => {
+    const store = createStore().setSchema({t1: tableSchema});
+    expect(JSON.parse(store.getSchemaJson())).toEqual({});
+  });
+
+  test.each(INVALID_OBJECTS)(
+    'Table schema, alongside valid; %s',
+    (_name, tableSchema: any) => {
+      const store = createStore().setSchema({
+        t1: validTableSchema,
+        t2: tableSchema,
+      });
+      expect(JSON.parse(store.getSchemaJson())).toEqual(validTablesSchema);
+    },
+  );
+
+  test.each(INVALID_OBJECTS)('Cell schema; %s', (_name, cellSchema: any) => {
+    const store = createStore().setSchema({t1: {c1: cellSchema}});
+    expect(JSON.parse(store.getSchemaJson())).toEqual({});
+  });
+
+  test.each(INVALID_OBJECTS)(
+    'Cell schema, alongside valid; %s',
+    (_name, cellSchema: any) => {
+      const store = createStore().setSchema({
+        t1: {c1: validCellSchema, c2: cellSchema},
+      });
+      expect(JSON.parse(store.getSchemaJson())).toEqual(validTablesSchema);
+    },
+  );
+
+  test.each(INVALID_OBJECTS)(
+    '(bad type) Cell schema; %s',
+    (_name, type: any) => {
+      const store = createStore().setSchema({t1: {c1: {type}}});
+      expect(JSON.parse(store.getSchemaJson())).toEqual({});
+    },
+  );
+
+  test('(useless) Cell schema', () => {
+    // @ts-ignore
+    const store = createStore().setTables({}, {t1: {c1: {default: 't1'}}});
+    expect(JSON.parse(store.getSchemaJson())).toEqual({});
+  });
+
+  test('(useless bounds) Cell schema', () => {
+    const store1 = createStore().setSchema({
+      // @ts-ignore
+      t1: {c1: {type: 'string', min: 1, max: 10}},
+    });
+    expect(JSON.parse(store1.getSchemaJson())).toEqual({
+      t1: {c1: {type: 'string'}},
+    });
+    const store2 = createStore().setSchema({
+      // @ts-ignore
+      t1: {c1: {type: 'boolean', min: 1, max: 10}},
+    });
+    expect(JSON.parse(store2.getSchemaJson())).toEqual({
+      t1: {c1: {type: 'boolean'}},
+    });
+  });
+
+  test('(extended) Cell schema', () => {
+    const store = createStore().setSchema({
+      // @ts-ignore
+      t1: {c1: {type: 'string', default: 't1', extraThing1: 1}},
+    });
+    expect(JSON.parse(store.getSchemaJson())).toEqual(validTablesSchema);
+  });
+
+  test('(inconsistent default) Cell schema', () => {
+    const store = createStore().setSchema({
+      t1: {
+        // @ts-ignore
+        r1: {type: 'boolean', default: 't1'},
+        // @ts-ignore
+        r2: {type: 'number', default: 't1'},
+        // @ts-ignore
+        r3: {type: 'string', default: 2},
+      },
+    });
+    expect(JSON.parse(store.getSchemaJson())).toEqual({
+      t1: {r1: {type: 'boolean'}, r2: {type: 'number'}, r3: {type: 'string'}},
+    });
+  });
+});
+
+describe('Get non-existent', () => {
+  test('Table', () => {
+    const store = createStore().setTables(validTables);
+    expect(store.getTable('z')).toEqual({});
+  });
+
+  test('Row', () => {
+    const store = createStore().setTables(validTables);
+    expect(store.getRow('t1', 'z')).toEqual({});
+    expect(store.getRow('y', 'z')).toEqual({});
+  });
+
+  test('Cell', () => {
+    const store = createStore().setTables(validTables);
+    expect(store.getCell('t1', 'r1', 'z')).toBeUndefined();
+    expect(store.getCell('t1', 'y', 'z')).toBeUndefined();
+    expect(store.getCell('x', 'y', 'z')).toBeUndefined();
+  });
+
+  test('Metric', () => {
+    const store = createStore().setTables(validTables);
+    const metrics = createMetrics(store);
+    metrics.setMetricDefinition('m', 't1');
+    expect(metrics.getMetric('z')).toBeUndefined();
+  });
+
+  test('Index', () => {
+    const store = createStore().setTables(validTables);
+    const indexes = createIndexes(store);
+    indexes.setIndexDefinition('i', 't1');
+    expect(indexes.getSliceIds('z')).toEqual([]);
+    expect(indexes.getSliceRowIds('z', 'y')).toEqual([]);
+  });
+});
+
+describe('Delete non-existent', () => {
+  let store: Store;
+  let listener: StoreListener;
+
+  beforeEach(() => {
+    store = createStore().setTables(validTables);
+    listener = createStoreListener(store);
+    listener.listenToTables('/');
+    listener.listenToTable('/t1', 't1');
+    listener.listenToRow('/t1/r1', 't1', 'r1');
+    listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
+  });
+
+  test('Table', () => {
+    store.delTable('t2');
+    expect(store.getTables()).toEqual(validTables);
+    expectNoChanges(listener);
+  });
+
+  test('Row', () => {
+    store.delRow('t1', 'r2');
+    store.delRow('t2', 'r1');
+    expect(store.getTables()).toEqual(validTables);
+    expectNoChanges(listener);
+  });
+
+  test('Cell', () => {
+    store.delCell('t1', 'r1', 'c2');
+    store.delCell('t1', 'r2', 'c1');
+    store.delCell('t2', 'r1', 'c1');
+    expectNoChanges(listener);
+  });
+});
+
+describe.each(INVALID_OBJECTS)(
+  'Invalid hook container; %s',
+  (_name, container: any) => {
+    test('useTables', () => {
+      const Test = () => <>{JSON.stringify(useTables(container))}</>;
+      act(() => {
+        renderer = create(<Test />);
+      });
+      expect(renderer.toJSON()).toEqual(JSON.stringify({}));
+    });
+
+    test('useTableIds', () => {
+      const Test = () => <>{JSON.stringify(useTableIds(container))}</>;
+      act(() => {
+        renderer = create(<Test />);
+      });
+      expect(renderer.toJSON()).toEqual(JSON.stringify([]));
+    });
+
+    test('useTable', () => {
+      const Test = () => <>{JSON.stringify(useTable('t1', container))}</>;
+      act(() => {
+        renderer = create(<Test />);
+      });
+      expect(renderer.toJSON()).toEqual(JSON.stringify({}));
+    });
+
+    test('useRowIds', () => {
+      const Test = () => <>{JSON.stringify(useRowIds('t1', container))}</>;
+      act(() => {
+        renderer = create(<Test />);
+      });
+      expect(renderer.toJSON()).toEqual(JSON.stringify([]));
+    });
+
+    test('useRow', () => {
+      const Test = () => <>{JSON.stringify(useRow('t1', 'r1', container))}</>;
+      act(() => {
+        renderer = create(<Test />);
+      });
+      expect(renderer.toJSON()).toEqual(JSON.stringify({}));
+    });
+
+    test('useCellIds', () => {
+      const Test = () => (
+        <>{JSON.stringify(useCellIds('t1', 'r1', container))}</>
+      );
+      act(() => {
+        renderer = create(<Test />);
+      });
+      expect(renderer.toJSON()).toEqual(JSON.stringify([]));
+    });
+
+    test('useCell', () => {
+      const Test = () => (
+        <>{JSON.stringify(useCell('t1', 'r1', 'c1', container))}</>
+      );
+      act(() => {
+        renderer = create(<Test />);
+      });
+      expect(renderer.toJSON()).toBeNull();
+    });
+
+    test('useMetric', () => {
+      const Test = () => <>{JSON.stringify(useMetric('m1', container))}</>;
+      act(() => {
+        renderer = create(<Test />);
+      });
+      expect(renderer.toJSON()).toBeNull();
+    });
+
+    test('useSliceIds', () => {
+      const Test = () => <>{JSON.stringify(useSliceIds('i1', container))}</>;
+      act(() => {
+        renderer = create(<Test />);
+      });
+      expect(renderer.toJSON()).toEqual(JSON.stringify([]));
+    });
+
+    test('useSliceRowIds', () => {
+      const Test = () => (
+        <>{JSON.stringify(useSliceRowIds('i1', 's1', container))}</>
+      );
+      act(() => {
+        renderer = create(<Test />);
+      });
+      expect(renderer.toJSON()).toEqual(JSON.stringify([]));
+    });
+
+    test('useRemoteRowId', () => {
+      const Test = () => (
+        <>{JSON.stringify(useRemoteRowId('r1', 'r1', container))}</>
+      );
+      act(() => {
+        renderer = create(<Test />);
+      });
+      expect(renderer.toJSON()).toBeNull();
+    });
+
+    test('useLocalRowIds', () => {
+      const Test = () => (
+        <>{JSON.stringify(useLocalRowIds('r1', 'r1', container))}</>
+      );
+      act(() => {
+        renderer = create(<Test />);
+      });
+      expect(renderer.toJSON()).toEqual(JSON.stringify([]));
+    });
+
+    test('useLinkedRowIds', () => {
+      const Test = () => (
+        <>{JSON.stringify(useLinkedRowIds('r1', 'r1', container))}</>
+      );
+      act(() => {
+        renderer = create(<Test />);
+      });
+      expect(renderer.toJSON()).toEqual(JSON.stringify([]));
+    });
+
+    test('useCheckpointIds', () => {
+      const Test = () => <>{JSON.stringify(useCheckpointIds(container))}</>;
+      act(() => {
+        renderer = create(<Test />);
+      });
+      expect(renderer.toJSON()).toEqual(JSON.stringify([[], undefined, []]));
+    });
+  },
+);
+
+describe('Linked lists', () => {
+  let relationships: Relationships;
+  beforeEach(
+    () =>
+      (relationships = createRelationships(
+        createStore().setTables({
+          t1: {
+            r1: {c1: 'r2'},
+            r2: {c1: 'r3'},
+            r3: {c1: 'r4'},
+            r4: {c1: 'r2'},
+            r5: {c1: 'r6'},
+          },
+        }),
+      )),
+  );
+
+  test('non-existent relationship', () => {
+    relationships.setRelationshipDefinition('r1', 't1', 't1', 'c1');
+    expect(relationships.getLinkedRowIds('r2', 'r1')).toEqual(['r1']);
+  });
+
+  test('remote table relationship', () => {
+    relationships.setRelationshipDefinition('r1', 't1', 'T1', 'c1');
+    expect(relationships.getLinkedRowIds('r1', 'r1')).toEqual(['r1']);
+  });
+
+  test('self relationship', () => {
+    relationships
+      .setRelationshipDefinition('r1', 't1', 't1', 'c1')
+      .getStore()
+      .setCell('t1', 'r1', 'c1', 'r1');
+    expect(relationships.getLinkedRowIds('r1', 'r1')).toEqual(['r1']);
+  });
+
+  test('circular relationship', () => {
+    relationships.setRelationshipDefinition('r1', 't1', 't1', 'c1');
+    expect(relationships.getLinkedRowIds('r1', 'r1')).toEqual([
+      'r1',
+      'r2',
+      'r3',
+      'r4',
+    ]);
+  });
+
+  test('broken relationship', () => {
+    relationships.setRelationshipDefinition('r1', 't1', 't1', 'c2');
+    expect(relationships.getLinkedRowIds('r1', 'r1')).toEqual(['r1']);
+  });
+});
+
+describe('Updating immutables', () => {
+  test('Overriding store methods', () => {
+    const store = createStore().setTables(validTables);
+    expect(() => {
+      store.addRowListener = () => '0';
+    }).toThrow();
+    expect(() => {
+      // @ts-ignore
+      store.foo = 'bar';
+    }).toThrow();
+    expect(() => {
+      // @ts-ignore
+      store['foo'] = 'bar';
+    }).toThrow();
+  });
+
+  test('Overriding metrics methods', () => {
+    const store = createStore().setTables(validTables);
+    const metrics = createMetrics(store);
+    expect(() => {
+      metrics.addMetricListener = () => '0';
+    }).toThrow();
+    expect(() => {
+      // @ts-ignore
+      metrics.foo = 'bar';
+    }).toThrow();
+    expect(() => {
+      // @ts-ignore
+      metrics['foo'] = 'bar';
+    }).toThrow();
+  });
+
+  test('Overriding indexes methods', () => {
+    const store = createStore().setTables(validTables);
+    const indexes = createIndexes(store);
+    expect(() => {
+      indexes.addSliceIdsListener = () => '0';
+    }).toThrow();
+    expect(() => {
+      // @ts-ignore
+      indexes.foo = 'bar';
+    }).toThrow();
+    expect(() => {
+      // @ts-ignore
+      indexes['foo'] = 'bar';
+    }).toThrow();
+  });
+
+  test('Overriding relationships methods', () => {
+    const store = createStore().setTables(validTables);
+    const relationships = createRelationships(store);
+    expect(() => {
+      relationships.addRemoteRowIdListener = () => '0';
+    }).toThrow();
+    expect(() => {
+      // @ts-ignore
+      relationships.foo = 'bar';
+    }).toThrow();
+    expect(() => {
+      // @ts-ignore
+      relationships['foo'] = 'bar';
+    }).toThrow();
+  });
+
+  test('Overriding persister methods', () => {
+    const store = createStore().setTables(validTables);
+    const persister = createLocalPersister(store, 'foo');
+    expect(() => {
+      persister.load = async () => persister;
+    }).toThrow();
+    expect(() => {
+      // @ts-ignore
+      persister.foo = 'bar';
+    }).toThrow();
+    expect(() => {
+      // @ts-ignore
+      persister['foo'] = 'bar';
+    }).toThrow();
+  });
+
+  test('Overriding checkpoints methods', () => {
+    const store = createStore().setTables(validTables);
+    const checkpoints = createCheckpoints(store);
+    expect(() => {
+      checkpoints.addCheckpointIdsListener = () => '0';
+    }).toThrow();
+    expect(() => {
+      // @ts-ignore
+      checkpoints.foo = 'bar';
+    }).toThrow();
+    expect(() => {
+      // @ts-ignore
+      checkpoints['foo'] = 'bar';
+    }).toThrow();
+  });
+});
