@@ -19,6 +19,11 @@ export const arrayForEach = <Value>(
   cb: (value: Value, index: number) => void,
 ): void => array.forEach(cb);
 
+export const arrayMap = <Value, Return>(
+  array: Value[],
+  cb: (value: Value, index: number, array: Value[]) => Return,
+): Return[] => array.map(cb);
+
 export const arraySum = (array: number[]): number =>
   arrayReduce(array, (i, j) => i + j, 0);
 

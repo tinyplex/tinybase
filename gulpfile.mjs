@@ -4,6 +4,7 @@ import {promises} from 'fs';
 
 const ALL_MODULES = [
   'tinybase',
+  'ui-react',
   'store',
   'checkpoints',
   'indexes',
@@ -131,7 +132,7 @@ const tsCheck = async (dir) => {
   const unusedResults = Object.entries(
     unusedExports(`${dir}/tsconfig.json`, [
       '--allowUnusedTypes',
-      '--excludePathsFromReport=tinybase.ts',
+      '--excludePathsFromReport=tinybase.ts;ui-react.ts',
     ]),
   )
     .map(
@@ -185,7 +186,11 @@ const compileModule = async (module, debug, dir = LIB_DIR, format = 'es') => {
       interop: 'default',
       name:
         'TinyBase' +
-        (module == 'tinybase' ? '' : module[0].toUpperCase() + module.slice(1)),
+        (module == 'tinybase'
+          ? ''
+          : module == 'ui-react'
+          ? 'UiReact'
+          : module[0].toUpperCase() + module.slice(1)),
     },
   };
 

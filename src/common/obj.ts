@@ -13,7 +13,7 @@ export const objFreeze = object.freeze;
 export const isObject = (obj: unknown): boolean =>
   isInstanceOf(obj, object) && (obj as any).constructor == object;
 
-const objGet = <Value>(
+export const objGet = <Value>(
   obj: IdObj<Value> | Value[] | undefined,
   id: Id,
 ): Value | undefined => ifNotUndefined(obj, (obj) => (obj as IdObj<Value>)[id]);
