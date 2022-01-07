@@ -8,6 +8,11 @@ import {
   TableListener,
   TablesListener,
 } from '../store.d';
+import {
+  CheckpointIdsListener,
+  CheckpointListener,
+  Checkpoints,
+} from '../checkpoints.d';
 import {Id, IdOrNull, Ids} from '../common.d';
 import {IdMap, mapEnsure, mapGet, mapNew, mapSet} from './map';
 import {IdSet, setAdd, setNew} from './set';
@@ -42,7 +47,9 @@ type Listener =
   | SliceIdsListener
   | SliceRowIdsListener
   | RemoteRowIdListener
-  | LocalRowIdsListener;
+  | LocalRowIdsListener
+  | CheckpointIdsListener
+  | CheckpointListener;
 
 const addDeepSet = (deepSet: DeepIdSet, value: Id, ids: IdOrNull[]): IdSet =>
   (arrayLength(ids) < 2
@@ -79,7 +86,7 @@ const forDeepSet = (valueDo: (set: IdSet, arg: any) => void) => {
 };
 
 export const getListenerFunctions = (
-  getThing: () => Store | Metrics | Indexes | Relationships,
+  getThing: () => Store | Metrics | Indexes | Relationships | Checkpoints,
 ): [
   (listener: Listener, deepSet: DeepIdSet, ids?: IdOrNull[]) => Id,
   (deepSet: DeepIdSet, ids?: Ids, ...extra: any[]) => void,
@@ -90,7 +97,7 @@ export const getListenerFunctions = (
     extraArgsGetter: (ids: Ids) => any[],
   ) => void,
 ] => {
-  let thing: Store | Metrics | Indexes | Relationships;
+  let thing: Store | Metrics | Indexes | Relationships | Checkpoints;
   let nextId = 0;
   const listenerPool: Ids = [];
   const allListeners: IdMap<[Listener, DeepIdSet, Ids]> = mapNew();

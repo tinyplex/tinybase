@@ -5,6 +5,7 @@ import {promises} from 'fs';
 const ALL_MODULES = [
   'tinybase',
   'store',
+  'checkpoints',
   'indexes',
   'metrics',
   'relationships',

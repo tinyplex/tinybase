@@ -4,6 +4,7 @@
  * @packageDocumentation
  */
 
+export * from './checkpoints';
 export * from './common';
 export * from './indexes';
 export * from './metrics';

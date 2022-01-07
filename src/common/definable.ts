@@ -4,6 +4,7 @@ import {IdMap, mapForEach, mapGet, mapKeys, mapNew, mapSet} from './map';
 import {IdSet2, setNew} from './set';
 import {collClear, collForEach, collHas} from './coll';
 import {ifNotUndefined, isString, isUndefined} from './other';
+import {Checkpoints} from '../checkpoints.d';
 import {EMPTY_STRING} from './strings';
 import {Indexes} from '../indexes.d';
 import {Metrics} from '../metrics.d';
@@ -184,7 +185,7 @@ export const getRowCellFunction = <RowValue>(
       ((): RowValue => defaultCellValue ?? (EMPTY_STRING as any as RowValue));
 
 export const getCreateFunction = <
-  Things extends Metrics | Indexes | Relationships,
+  Things extends Metrics | Indexes | Relationships | Checkpoints,
 >(
   getFunction: (store: Store) => Things,
 ): ((store: Store) => Things) => {

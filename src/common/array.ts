@@ -39,3 +39,6 @@ export const arrayFilter = <Value>(
 ): Value[] => array.filter(cb);
 
 export const arrayFromSecond = <Value>(ids: Value[]): Value[] => ids.slice(1);
+
+export const arrayClear = <Value>(array: Value[], to?: number): Value[] =>
+  array.splice(0, to);
