@@ -12,6 +12,8 @@
 import gulp from 'gulp';
 import {promises} from 'fs';
 
+const {parallel, series} = gulp;
+
 const TEST_MODULES = ['tinybase', 'ui-react'];
 const ALL_MODULES = TEST_MODULES.concat([
   'store',
@@ -23,6 +25,7 @@ const ALL_MODULES = TEST_MODULES.concat([
   'common',
 ]);
 const LIB_DIR = 'lib';
+const DOCS_DIR = 'docs';
 const TMP_DIR = './tmp';
 
 const getPrettierConfig = async () => ({
@@ -263,6 +266,24 @@ const test = async (dir, {coverage, countAsserts, puppeteer, serialTests}) => {
   await removeDir(TMP_DIR);
 };
 
+const compileDocsAndAssets = async (api = true, pages = true) => {
+  const {default: esbuild} = await import('esbuild');
+
+  const buildModule = './tmp/build.js';
+  await makeDir(TMP_DIR);
+  await esbuild.build({
+    entryPoints: ['site/build.ts'],
+    external: ['tinydocs', 'react', 'prettier'],
+    bundle: true,
+    outfile: buildModule,
+    format: 'esm',
+    platform: 'node',
+  });
+  const {build} = await import(buildModule);
+  await build(DOCS_DIR, api, pages);
+  await removeDir(TMP_DIR);
+};
+
 const npmInstall = async () => {
   const {exec} = await import('child_process');
   const {promisify} = await import('util');
@@ -283,6 +304,7 @@ export const spell = async () => {
   await spellCheck('.');
   await spellCheck('src', true);
   await spellCheck('test', true);
+  await spellCheck('site', true);
 };
 
 export const ts = async () => {
@@ -316,31 +338,56 @@ export const testUnit = async () => {
 export const testUnitCountAsserts = async () => {
   await test('test/unit', {coverage: true, countAsserts: true});
 };
-export const compileAndTestUnit = gulp.series(compileForTest, testUnit);
+export const compileAndTestUnit = series(compileForTest, testUnit);
 
 export const testPerf = async () => {
   await test('test/perf', {serialTests: true});
 };
-export const compileAndTestPerf = gulp.series(compileForTest, testPerf);
+export const compileAndTestPerf = series(compileForTest, testPerf);
 
-export const preCommit = gulp.series(
-  lint,
-  spell,
-  ts,
+export const testE2e = async () => {
+  await test('test/e2e', {puppeteer: true});
+};
+export const compileAndTestE2e = series(compileForTest, testE2e);
+
+export const compileDocsPagesOnly = async () =>
+  await compileDocsAndAssets(false);
+
+export const compileDocsAssetsOnly = async () =>
+  await compileDocsAndAssets(false, false);
+
+export const compileDocs = async () => await compileDocsAndAssets();
+
+export const compileForProdAndDocs = series(compileForProd, compileDocs);
+
+export const serveDocs = async () => {
+  const {default: http} = await import('http-server');
+  return http
+    .createServer({
+      root: DOCS_DIR,
+      cache: -1,
+      gzip: true,
+      logFn: (req) => console.log(req.url),
+    })
+    .listen('8080', '0.0.0.0');
+};
+
+export const preCommit = series(
+  parallel(lint, spell, ts),
   compileForTest,
   testUnit,
   compileForProd,
 );
 
-export const prePublishPackage = gulp.series(
+export const prePublishPackage = series(
   npmInstall,
-  lint,
-  spell,
-  ts,
+  parallel(lint, spell, ts),
   compileForTest,
   testUnitCountAsserts,
   testPerf,
   compileForProd,
+  compileDocs,
+  testE2e,
 );
 
-export const publishPackage = gulp.series(prePublishPackage, npmPublish);
+export const publishPackage = series(prePublishPackage, npmPublish);

@@ -35,7 +35,12 @@
     "testUnit": "gulp testUnit",
     "testUnitCountAsserts": "gulp testUnitCountAsserts",
     "testPerf": "gulp testPerf",
+    "testE2e": "gulp testE2e",
     "compileAndTestUnit": "gulp compileAndTestUnit",
+    "compileDocsPagesOnly": "gulp compileDocsPagesOnly",
+    "compileDocsAssetsOnly": "gulp compileDocsAssetsOnly",
+    "compileDocs": "gulp compileDocs",
+    "serveDocs": "gulp serveDocs",
     "preCommit": "gulp preCommit",
     "prePublishPackage": "gulp prePublishPackage",
     "publishPackage": "gulp publishPackage"

@@ -1,0 +1,131 @@
+@font-face {
+  font-family: Roboto;
+  src: url(/fonts/roboto-thin.woff2) format('woff2');
+  font-weight: 200;
+}
+
+@font-face {
+  font-family: Roboto;
+  src: url(/fonts/roboto-light.woff2) format('woff2');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: Lato;
+  src: url(/fonts/lato-light.woff2) format('woff2');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: Lato;
+  src: url(/fonts/lato-regular.woff2) format('woff2');
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: RobotoMono;
+  src: url(/fonts/roboto-mono-light.woff2) format('woff2');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: RobotoMono;
+  src: url(/fonts/roboto-mono-regular.woff2) format('woff2');
+  font-weight: 600;
+}
+
+html {
+  font-family: Lato, -apple-system, BlinkMacSystemFont, sans-serif;
+  text-rendering: optimizeLegibility;
+  font-weight: 400;
+}
+
+code {
+  font-family: RobotoMono, menlo, monospace;
+  font-size: 0.94em;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: Roboto;
+  margin: 3rem 0 1rem;
+  font-weight: 200 !important;
+  a {
+    color: inherit;
+    font-weight: inherit !important;
+    text-decoration-color: transparent !important;
+  }
+}
+h1 {
+  font-size: 2.4rem;
+  margin-top: 1rem;
+}
+h2 {
+  font-size: 2.2rem;
+}
+h3 {
+  font-size: 1.8rem;
+}
+h4 {
+  font-size: 1.6rem;
+}
+h5 {
+  font-size: 1.4rem;
+}
+h6 {
+  font-size: 1.2rem;
+}
+.s7 h6 {
+  font-size: 1.1rem;
+}
+.s8 h6 {
+  font-size: 1rem;
+}
+
+p {
+  margin: 1rem 0;
+  line-height: 1.6em;
+}
+
+.table {
+  margin: 1rem 0 2rem;
+  overflow: scroll;
+  table {
+    &.fixed {
+      table-layout: fixed;
+    }
+    width: 100%;
+    border-collapse: collapse;
+    th,
+    td {
+      line-height: 1.6rem;
+      padding: 0.25rem 0.5rem;
+      vertical-align: top;
+      &.right {
+        text-align: right;
+      }
+      & > code::after {
+        content: '\00a0';
+        font-family: Lato, -apple-system, BlinkMacSystemFont, sans-serif;
+        font-size: 1rem;
+      }
+    }
+    p {
+      margin: 0;
+    }
+    th {
+      font-weight: 600;
+      text-align: left;
+    }
+  }
+}
+
+iframe {
+  margin: 1rem 0 2rem;
+  width: 100%;
+  height: 24rem;
+}

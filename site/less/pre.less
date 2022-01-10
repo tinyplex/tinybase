@@ -1,0 +1,82 @@
+pre {
+  display: block;
+  margin: 2rem 0;
+  overflow-x: auto;
+  padding: 1rem;
+  font-weight: 600;
+
+  a {
+    color: inherit !important;
+  }
+
+  .doctype,
+  .punctuation,
+  .entity {
+    color: var(--mono-1);
+  }
+
+  .comment,
+  .prolog,
+  .cdata {
+    color: var(--mono-3);
+    font-style: italic;
+  }
+
+  .attr-name,
+  .boolean,
+  .constant,
+  .number,
+  .atrule {
+    color: var(--hue-6);
+  }
+
+  .operator,
+  .keyword {
+    color: var(--hue-3);
+  }
+
+  .literal-property,
+  .property,
+  .tag,
+  .symbol,
+  .deleted,
+  .important {
+    color: var(--hue-5);
+  }
+
+  .selector,
+  .string,
+  .char,
+  .builtin,
+  .inserted,
+  .regex,
+  .attr-value,
+  .attr-value > .punctuation {
+    color: var(--hue-4);
+  }
+
+  .variable {
+    color: var(--hue-2);
+  }
+
+  .url {
+    color: var(--hue-1);
+  }
+
+  .function,
+  .class-name {
+    color: @accentColor;
+  }
+
+  .deleted-sign {
+    display: block;
+    background: @plusColor;
+    text-decoration: line-through;
+    text-decoration-color: @text2Color;
+  }
+
+  .inserted-sign {
+    display: block;
+    background: @minusColor;
+  }
+}

@@ -1,0 +1,97 @@
+nav ul {
+  list-style: none;
+  padding: 0;
+  li {
+    white-space: nowrap;
+  }
+}
+
+nav {
+  font-size: 0.9rem;
+  code {
+    display: inherit;
+  }
+}
+
+body > main {
+  > nav {
+    > ul {
+      margin-top: 1rem;
+      > li {
+        margin-left: 0;
+        padding-left: 0;
+        border: 0;
+        > ul > li {
+          &:first-of-type {
+            margin-top: 1rem;
+            &::before {
+              content: '';
+              display: block;
+              border-top: 0.0625rem @borderColor solid;
+              position: relative;
+              top: -0.5rem;
+            }
+          }
+          &::after {
+            content: '';
+            display: block;
+            border-bottom: 0.0625rem @borderColor solid;
+            position: relative;
+            top: 0.5rem;
+          }
+          margin-bottom: 1rem;
+        }
+      }
+    }
+    li {
+      list-style-position: inside;
+      padding-left: 0.25rem;
+      margin-left: 0.4375rem;
+      border-width: 0 0 0 0.0625rem;
+      border-style: solid;
+      border-color: transparent;
+      line-height: 1.25rem;
+      > a {
+        height: 1.25rem;
+      }
+      > span {
+        vertical-align: text-bottom;
+        width: 1rem;
+        content: '';
+        display: inline-block;
+      }
+      &.parent {
+        > span {
+          content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" stroke-width="4" stroke="grey" fill="none"><path d="M34 35l26 15l-26 15z"/></svg>');
+        }
+        > ul {
+          display: none;
+        }
+      }
+      &.open {
+        > span {
+          content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" height="0.9rem" viewBox="0 0 100 100" stroke-width="4" stroke="grey"><path d="M32 37l15 26l15-26z"/></svg>');
+        }
+        > ul {
+          display: block;
+        }
+      }
+      &.current > a {
+        font-weight: 600;
+      }
+    }
+  }
+  > article > nav ul {
+    display: inline-block;
+    padding-inline-start: 0rem;
+    margin: 1rem 0;
+    li {
+      display: inline;
+      &:before {
+        content: ' / ';
+        width: 1rem;
+        margin-left: 0;
+      }
+    }
+  }
+}

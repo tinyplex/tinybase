@@ -1,0 +1,117 @@
+body > main > article#home {
+  display: grid;
+  grid-auto-rows: max-content;
+  grid-auto-flow: dense;
+  row-gap: 2rem;
+  padding: 2rem;
+  > img {
+    max-width: 10rem;
+    margin: 0 auto;
+  }
+  > section#hero {
+    max-width: 40rem;
+    margin: auto;
+    h2 {
+      font-size: 2.4rem;
+      text-align: center;
+    }
+    ul {
+      width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+  > p > a {
+    display: block;
+    font-family: Roboto;
+    font-size: 1.4rem;
+    color: @textColor;
+    font-weight: 400;
+    background: @back2Color;
+    border: 1px solid @borderColor;
+    padding: 1rem;
+    text-align: center;
+    border-radius: 2rem;
+    white-space: nowrap;
+    width: 16rem;
+    margin: -1rem auto;
+    text-decoration: none;
+    &:hover {
+      border-color: @accentColor;
+    }
+    &#start {
+      background: @accentColor;
+      color: @backColor;
+    }
+  }
+  h1,
+  h2,
+  pre,
+  .table {
+    margin-top: 0;
+    height: fit-content;
+  }
+  h2 {
+    font-size: 1.8rem;
+  }
+  em,
+  em a {
+    font-style: normal;
+    color: @accentColor;
+  }
+  pre {
+    font-size: 0.94rem;
+    box-shadow: @shadow;
+  }
+  .table {
+    box-shadow: @shadow;
+  }
+}
+
+@media (min-width: 56rem) {
+  body > main > article#home {
+    grid-template-columns: repeat(6, 1fr);
+    padding: 4rem 8rem;
+    column-gap: 4rem;
+    row-gap: 3rem;
+    > img {
+      grid-column-end: span 2;
+      max-width: 16rem;
+    }
+    > section,
+    > pre,
+    > .table {
+      grid-column-end: span 3;
+    }
+    > pre,
+    > .table {
+      margin-top: 0.5rem;
+    }
+    > section:nth-of-type(even) {
+      grid-column-start: 4;
+    }
+    > section:nth-of-type(2n + 3) {
+      text-align: right;
+    }
+    > section#hero {
+      max-width: unset;
+      margin: unset;
+      grid-column-end: span 4;
+      h2 {
+        text-align: left;
+      }
+      ul {
+        width: auto;
+      }
+    }
+    > hr {
+      grid-column-end: span 6;
+    }
+    > p {
+      grid-column-end: span 2;
+      > a {
+        width: unset;
+      }
+    }
+  }
+}

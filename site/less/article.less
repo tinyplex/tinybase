@@ -1,0 +1,36 @@
+body > main > article {
+  overflow: scroll;
+  padding-bottom: 4rem;
+  ul {
+    padding-inline-start: 2rem;
+    li {
+      margin-bottom: 0.5rem;
+      list-style: none;
+      &:before {
+        width: 2rem;
+        margin-left: -2rem;
+        content: '\2022';
+        display: inline-block;
+        text-align: center;
+      }
+    }
+  }
+  form {
+    display: none;
+  }
+  a#penEdit {
+    padding: 0 0.25rem;
+    margin: 25rem 0 -26rem 0px;
+    height: 1rem;
+    font-size: 0.7rem;
+    float: right;
+    line-height: 1rem;
+    display: none;
+  }
+}
+
+@media (min-width: 38rem) {
+  body > main > article a#penEdit {
+    display: inline;
+  }
+}
