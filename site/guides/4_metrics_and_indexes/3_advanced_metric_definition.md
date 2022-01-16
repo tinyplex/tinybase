@@ -41,7 +41,7 @@ metric without scanning every value again. For example, if your aggregation is a
 sum, and an additional Row is added, its value can simply be added to the
 previous total.
 
-There are three types of shortcut you can add if the aggregation can benefit
+There are three types of shortcuts you can add if the aggregation can benefit
 from them, and they can be provided as the final three parameters of the
 setMetricDefinition method. These describe how to change the overall Metric when
 a number is added, removed, or replaced.

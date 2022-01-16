@@ -31,7 +31,7 @@ As you can see, when a Row is added that doesn't quite match those constraints,
 the data is corrected. The `color` Cell is ignored, and the `sold` string is
 corrected to the default `false` value.
 
-In general, uf a default value is provided (and its type is correct), you can be
+In general, if a default value is provided (and its type is correct), you can be
 certain that that Cell will always be present in a Row. If the default value is
 _not_ provided (or its type is incorrect), the Cell may be missing from the Row.
 But when it is present you can be guaranteed it is of the correct type.
