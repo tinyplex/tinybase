@@ -9,7 +9,7 @@ through the hierarchy with props). It's very likely that your whole app (or
 parts of it) will use the same Store throughout, though.
 
 To help with this, the Provider component lets you specify a Store that all the
-hooks and components will bind too automatically. Simply provide the Store in
+hooks and components will bind to automatically. Simply provide the Store in
 the `store` prop, and it will be used by default. Notice how the `store`
 variable is not referenced in the child `Pane` component here, for example:
 
