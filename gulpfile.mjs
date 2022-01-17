@@ -48,7 +48,9 @@ const removeDir = async (dir) => {
 };
 
 const clearDir = async (dir = LIB_DIR) => {
-  await removeDir(dir);
+  try {
+    await removeDir(dir);
+  } catch {}
   await makeDir(dir);
 };
 

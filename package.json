@@ -40,6 +40,7 @@
     "compileDocsPagesOnly": "gulp compileDocsPagesOnly",
     "compileDocsAssetsOnly": "gulp compileDocsAssetsOnly",
     "compileDocs": "gulp compileDocs",
+    "compileForProdAndDocs": "gulp compileForProdAndDocs",
     "serveDocs": "gulp serveDocs",
     "preCommit": "gulp preCommit",
     "prePublishPackage": "gulp prePublishPackage",
