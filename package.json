@@ -1,6 +1,6 @@
 {
   "name": "tinybase",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "jamesgpearce",
   "repository": "github:tinyplex/tinybase",
   "license": "MIT",
@@ -21,6 +21,7 @@
     ".": "./lib/tinybase.js",
     "./*": "./lib/*.js"
   },
+  "types": "./lib/tinybase.d.ts",
   "browser": {
     "fs": false
   },
@@ -73,9 +74,9 @@
     "country-flag-emoji-json": "^2.0.0",
     "cspell": "^5.15.2",
     "esbuild": "^0.14.11",
-    "eslint": "^8.6.0",
+    "eslint": "^8.7.0",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-jest": "^25.3.4",
+    "eslint-plugin-jest": "^25.7.0",
     "eslint-plugin-jsdoc": "^37.6.1",
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.3.0",
