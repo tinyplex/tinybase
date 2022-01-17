@@ -110,7 +110,7 @@ const useDraggableObject = (
   const ref = useRef(null);
   useLayoutEffect(() => {
     const {current} = ref;
-    ref.current.addEventListener('mousedown', handleMouseDown);
+    current.addEventListener('mousedown', handleMouseDown);
     return () => current.removeEventListener('mousedown', handleMouseDown);
   }, [ref, handleMouseDown]);
   useEffect(() => {
