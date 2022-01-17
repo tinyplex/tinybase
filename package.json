@@ -1,6 +1,6 @@
 {
   "name": "tinybase",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "jamesgpearce",
   "repository": "github:tinyplex/tinybase",
   "license": "MIT",
@@ -21,7 +21,14 @@
     ".": "./lib/tinybase.js",
     "./*": "./lib/*.js"
   },
-  "types": "./lib/tinybase.d.ts",
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./lib/*.d.ts",
+        "./lib/tinybase.d.ts"
+      ]
+    }
+  },
   "browser": {
     "fs": false
   },
