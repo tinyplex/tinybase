@@ -612,6 +612,14 @@ describe('Miscellaneous', () => {
     expectNoChanges(listener);
   });
 
+  test('are things present', () => {
+    expect(metrics.hasMetric('m1')).toEqual(false);
+    metrics.setMetricDefinition('m1', 't1');
+    expect(metrics.hasMetric('m1')).toEqual(false);
+    setCells();
+    expect(metrics.hasMetric('m1')).toEqual(true);
+  });
+
   test('get the tables back out', () => {
     metrics.setMetricDefinition('m1', 't1', 'max', 'c1');
     expect(metrics.getTableId('m1')).toEqual('t1');

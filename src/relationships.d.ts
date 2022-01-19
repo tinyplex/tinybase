@@ -406,6 +406,29 @@ export interface Relationships {
   getRelationshipIds(): Ids;
 
   /**
+   * The hasRelationship method returns a boolean indicating whether a given
+   * Relationship exists in the Relationships object.
+   *
+   * @param relationshipId The Id of a possible Relationship in the
+   * Relationships object.
+   * @returns Whether a Relationship with that Id exists.
+   * @example
+   * This example shows two simple Relationship existence checks.
+   *
+   * ```js
+   * const relationships = createRelationships(
+   *   createStore(),
+   * ).setRelationshipDefinition('petSpecies', 'pets', 'species', 'species');
+   * console.log(relationships.hasRelationship('petSpecies'));
+   * // -> true
+   * console.log(relationships.hasRelationship('petColor'));
+   * // -> false
+   * ```
+   * @category Getter
+   */
+  hasRelationship(indexId: Id): boolean;
+
+  /**
    * The getLocalTableId method returns the Id of the underlying local Table
    * that is used in the Relationship.
    *

@@ -363,6 +363,54 @@ export interface Indexes {
   getIndexIds(): Ids;
 
   /**
+   * The hasIndex method returns a boolean indicating whether a given Index
+   * exists in the Indexes object.
+   *
+   * @param indexId The Id of a possible Index in the Indexes object.
+   * @returns Whether an Index with that Id exists.
+   * @example
+   * This example shows two simple Index existence checks.
+   *
+   * ```js
+   * const indexes = createIndexes(createStore());
+   * indexes.setIndexDefinition('bySpecies', 'pets', 'species');
+   * console.log(indexes.hasIndex('bySpecies'));
+   * // -> true
+   * console.log(indexes.hasIndex('byColor'));
+   * // -> false
+   * ```
+   * @category Getter
+   */
+  hasIndex(indexId: Id): boolean;
+
+  /**
+   * The hasSlice method returns a boolean indicating whether a given Slice
+   * exists in the Indexes object.
+   *
+   * @param indexId The Id of a possible Index in the Indexes object.
+   * @param sliceId The Id of a possible Slice in the Index.
+   * @returns Whether a Slice with that Id exists.
+   * @example
+   * This example shows two simple Index existence checks.
+   *
+   * ```js
+   * const store = createStore().setTable('pets', {
+   *   fido: {species: 'dog'},
+   *   felix: {species: 'cat'},
+   *   cujo: {species: 'dog'},
+   * });
+   * const indexes = createIndexes(store);
+   * indexes.setIndexDefinition('bySpecies', 'pets', 'species');
+   * console.log(indexes.hasSlice('bySpecies', 'dog'));
+   * // -> true
+   * console.log(indexes.hasSlice('bySpecies', 'worm'));
+   * // -> false
+   * ```
+   * @category Getter
+   */
+  hasSlice(indexId: Id, sliceId: Id): boolean;
+
+  /**
    * The getTableId method returns the Id of the underlying Table that is
    * backing an Index.
    *
@@ -473,7 +521,7 @@ export interface Indexes {
    * the Index change.
    * @returns A unique Id for the listener that can later be used to remove it.
    * @example
-   * This example creates a Store, a Indexes object, and then registers a
+   * This example creates a Store, an Indexes object, and then registers a
    * listener that responds to any changes to a specific Index.
    *
    * ```js
@@ -501,7 +549,7 @@ export interface Indexes {
    * indexes.delListener(listenerId);
    * ```
    * @example
-   * This example creates a Store, a Indexes object, and then registers a
+   * This example creates a Store, an Indexes object, and then registers a
    * listener that responds to any changes to any Index.
    *
    * ```js
@@ -558,7 +606,7 @@ export interface Indexes {
    * the Slice change.
    * @returns A unique Id for the listener that can later be used to remove it.
    * @example
-   * This example creates a Store, a Indexes object, and then registers a
+   * This example creates a Store, an Indexes object, and then registers a
    * listener that responds to any changes to a specific Slice.
    *
    * ```js
@@ -587,7 +635,7 @@ export interface Indexes {
    * indexes.delListener(listenerId);
    * ```
    * @example
-   * This example creates a Store, a Indexes object, and then registers a
+   * This example creates a Store, an Indexes object, and then registers a
    * listener that responds to any changes to any Slice.
    *
    * ```js
@@ -639,7 +687,7 @@ export interface Indexes {
    * @param listenerId The Id of the listener to remove.
    * @returns A reference to the Indexes object.
    * @example
-   * This example creates a Store, a Indexes object, registers a listener, and
+   * This example creates a Store, an Indexes object, registers a listener, and
    * then removes it.
    *
    * ```js

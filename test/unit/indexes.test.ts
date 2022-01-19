@@ -1555,6 +1555,15 @@ describe('Miscellaneous', () => {
     expectNoChanges(listener);
   });
 
+  test('are things present', () => {
+    expect(indexes.hasIndex('i1')).toEqual(false);
+    indexes.setIndexDefinition('i1', 't1', 'c2');
+    expect(indexes.hasIndex('i1')).toEqual(true);
+    setCells();
+    expect(indexes.hasSlice('i1', 'even')).toEqual(true);
+    expect(indexes.hasSlice('i1', 'none')).toEqual(false);
+  });
+
   test('get the tables back out', () => {
     indexes.setIndexDefinition('i1', 't1');
     expect(indexes.getTableId('i1')).toEqual('t1');

@@ -748,6 +748,12 @@ describe('Miscellaneous', () => {
     expectNoChanges(listener);
   });
 
+  test('are things present', () => {
+    expect(relationships.hasRelationship('r1')).toEqual(false);
+    relationships.setRelationshipDefinition('r1', 't1', 'T1', 'c1');
+    expect(relationships.hasRelationship('r1')).toEqual(true);
+  });
+
   test('get the tables back out', () => {
     relationships.setRelationshipDefinition('r1', 't1', 'T1', 'c1');
     expect(relationships.getLocalTableId('r1')).toEqual('t1');

@@ -116,10 +116,12 @@ describe('Miscellaneous', () => {
   });
 
   test('are things present', () => {
+    expect(store.hasTables()).toEqual(false);
     expect(store.hasTable('t1')).toEqual(false);
     expect(store.hasRow('t1', 'r1')).toEqual(false);
     expect(store.hasCell('t1', 'r1', 'c1')).toEqual(false);
     store.setTables({t1: {r1: {c1: 1}}});
+    expect(store.hasTables()).toEqual(true);
     expect(store.hasTable('t1')).toEqual(true);
     expect(store.hasTable('t2')).toEqual(false);
     expect(store.hasRow('t1', 'r1')).toEqual(true);

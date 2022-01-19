@@ -479,6 +479,32 @@ export interface Metrics {
   getMetricIds(): Ids;
 
   /**
+   * The hasMetric method returns a boolean indicating whether a given Metric
+   * exists in the Metrics object, and has a value.
+   *
+   * @param metricId The Id of a possible Metric in the Metrics object.
+   * @returns Whether a Metric with that Id exists.
+   * @example
+   * This example shows two simple Metric existence checks.
+   *
+   * ```js
+   * const store = createStore();
+   * const metrics = createMetrics(store);
+   * metrics.setMetricDefinition('highestPrice', 'species', 'max', 'price');
+   *
+   * console.log(metrics.hasMetric('lowestPrice'));
+   * // -> false
+   * console.log(metrics.hasMetric('highestPrice'));
+   * // -> false
+   * store.setTable('species', {dog: {price: 5}, cat: {price: 4}});
+   * console.log(metrics.hasMetric('highestPrice'));
+   * // -> true
+   * ```
+   * @category Getter
+   */
+  hasMetric(metricId: Id): boolean;
+
+  /**
    * The getTableId method returns the Id of the underlying Table that is
    * backing a Metric.
    *

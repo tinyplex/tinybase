@@ -29,6 +29,7 @@ export const getDefinableFunctions = <Thing, RowValue>(
 ): [
   () => Store,
   () => Ids,
+  (id: Id) => boolean,
   (id: Id) => Id,
   (id: Id) => Thing | undefined,
   (id: Id, thing?: Thing) => boolean | Map<string, Thing>,
@@ -52,6 +53,8 @@ export const getDefinableFunctions = <Thing, RowValue>(
   const getStore = (): Store => store;
 
   const getThingIds = (): Ids => mapKeys(tableIds);
+
+  const hasThing = (id: Id): boolean => collHas(things, id);
 
   const getTableId = (id: Id): Id => mapGet(tableIds, id) as Id;
 
@@ -166,6 +169,7 @@ export const getDefinableFunctions = <Thing, RowValue>(
   return [
     getStore,
     getThingIds,
+    hasThing,
     getTableId,
     getThing,
     setThing,

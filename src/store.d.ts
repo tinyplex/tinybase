@@ -868,6 +868,26 @@ export interface Store {
   getCell(tableId: Id, rowId: Id, cellId: Id): Cell | undefined;
 
   /**
+   * The hasTables method returns a boolean indicating whether any Table objects
+   * exist in the Store.
+   *
+   * @returns Whether any Tables exist.
+   * @example
+   * This example shows simple existence checks.
+   *
+   * ```js
+   * const store = createStore();
+   * console.log(store.hasTables());
+   * // -> false
+   * store.setTables({pets: {fido: {species: 'dog'}}});
+   * console.log(store.hasTables());
+   * // -> true
+   * ```
+   * @category Getter
+   */
+  hasTables(): boolean;
+
+  /**
    * The hasTable method returns a boolean indicating whether a given Table
    * exists in the Store.
    *

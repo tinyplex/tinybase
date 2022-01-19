@@ -37,6 +37,7 @@ export const createIndexes: typeof createIndexesDecl = getCreateFunction(
     const [
       getStore,
       getIndexIds,
+      hasIndex,
       getTableId,
       getIndex,
       setIndex,
@@ -51,6 +52,9 @@ export const createIndexes: typeof createIndexesDecl = getCreateFunction(
     const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
       () => indexes,
     );
+
+    const hasSlice = (indexId: Id, sliceId: Id): boolean =>
+      collHas(getIndex(indexId), sliceId);
 
     const setIndexDefinition = (
       indexId: Id,
@@ -213,6 +217,8 @@ export const createIndexes: typeof createIndexesDecl = getCreateFunction(
 
       getStore,
       getIndexIds,
+      hasIndex,
+      hasSlice,
       getTableId,
       getSliceIds,
       getSliceRowIds,

@@ -39,6 +39,7 @@ export const createRelationships: typeof createRelationshipsDecl =
     const [
       getStore,
       getRelationshipIds,
+      hasRelationship,
       getLocalTableId,
       getRelationship,
       _setRelationship,
@@ -248,6 +249,7 @@ export const createRelationships: typeof createRelationshipsDecl =
 
       getStore,
       getRelationshipIds,
+      hasRelationship,
       getLocalTableId,
       getRemoteTableId,
       getRemoteRowId,

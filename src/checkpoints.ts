@@ -176,7 +176,7 @@ export const createCheckpoints: typeof createCheckpointsDecl =
 
     const setCheckpoint = (checkpointId: Id, label: string) => {
       if (
-        collHas(deltas, checkpointId) &&
+        hasCheckpoint(checkpointId) &&
         mapGet(labels, checkpointId) !== label
       ) {
         mapSet(labels, checkpointId, label);
@@ -192,6 +192,8 @@ export const createCheckpoints: typeof createCheckpointsDecl =
       currentId,
       [...forwardIds],
     ];
+
+    const hasCheckpoint = (checkpointId: Id) => collHas(deltas, checkpointId);
 
     const getCheckpoint = (checkpointId: Id): string | undefined =>
       mapGet(labels, checkpointId);
@@ -265,6 +267,7 @@ export const createCheckpoints: typeof createCheckpointsDecl =
 
       getStore,
       getCheckpointIds,
+      hasCheckpoint,
       getCheckpoint,
 
       goBackward,

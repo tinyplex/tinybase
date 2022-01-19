@@ -510,6 +510,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const getCell = (tableId: Id, rowId: Id, cellId: Id): Cell | undefined =>
     mapGet(mapGet(mapGet(tablesMap, tableId), rowId), cellId);
 
+  const hasTables = (): boolean => !collIsEmpty(tablesMap);
+
   const hasTable = (tableId: Id): boolean => collHas(tablesMap, tableId);
 
   const hasRow = (tableId: Id, rowId: Id): boolean =>
@@ -786,6 +788,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     getCellIds,
     getCell,
 
+    hasTables,
     hasTable,
     hasRow,
     hasCell,

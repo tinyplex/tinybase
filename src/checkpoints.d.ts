@@ -354,6 +354,28 @@ export interface Checkpoints {
   getCheckpointIds(): CheckpointIds;
 
   /**
+   * The hasCheckpoint method returns a boolean indicating whether a given
+   * Checkpoint exists in the Checkpoints object.
+   *
+   * @param checkpointId The Id of a possible Checkpoint in the Checkpoints
+   * object.
+   * @returns Whether a Checkpoint with that Id exists.
+   * @example
+   * This example shows two simple Checkpoint existence checks.
+   *
+   * ```js
+   * const store = createStore().setTables({pets: {fido: {sold: false}}});
+   * const checkpoints = createCheckpoints(store);
+   * console.log(checkpoints.hasCheckpoint('0'));
+   * // -> true
+   * console.log(checkpoints.hasCheckpoint('1'));
+   * // -> false
+   * ```
+   * @category Getter
+   */
+  hasCheckpoint(checkpointId: Id): boolean;
+
+  /**
    * The getCheckpoint method fetches the label for a checkpoint, if it had been
    * provided at the time of the addCheckpoint method or set subsequently with
    * the setCheckpoint method.
