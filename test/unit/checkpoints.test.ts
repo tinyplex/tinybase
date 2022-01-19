@@ -409,6 +409,8 @@ describe('Miscellaneous', () => {
     expectChanges(listener, '/c1', {'1': undefined});
     expectChanges(listener, '/c*', {'1': undefined}, {'2': undefined});
     expectNoChanges(listener);
+    checkpoints.setCheckpoint('none', 'NONE');
+    expectNoChanges(listener);
   });
 
   test('set more checkpoints than default size', () => {
