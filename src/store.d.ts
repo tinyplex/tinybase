@@ -89,7 +89,7 @@ export type Row = {[cellId: Id]: Cell};
 export type Cell = string | number | boolean;
 
 /**
- * The TableCallback type describes a function that takes a Tables's Id and a
+ * The TableCallback type describes a function that takes a Table's Id and a
  * callback to loop over each Row within it.
  *
  * A TableCallback is provided when using the forEachTable method, so that you
