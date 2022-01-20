@@ -98,6 +98,7 @@ export const createMetrics: typeof createMetricsDecl = getCreateFunction(
     const [
       getStore,
       getMetricIds,
+      forEachMetric,
       hasMetric,
       getTableId,
       getMetric,
@@ -222,6 +223,7 @@ export const createMetrics: typeof createMetricsDecl = getCreateFunction(
 
       getStore,
       getMetricIds,
+      forEachMetric,
       hasMetric,
       getTableId,
       getMetric,

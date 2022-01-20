@@ -37,6 +37,7 @@ export const createIndexes: typeof createIndexesDecl = getCreateFunction(
     const [
       getStore,
       getIndexIds,
+      _forEachIndex,
       hasIndex,
       getTableId,
       getIndex,

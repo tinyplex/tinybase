@@ -612,6 +612,17 @@ describe('Miscellaneous', () => {
     expectNoChanges(listener);
   });
 
+  test('forEachMetric', () => {
+    metrics.setMetricDefinition('m1', 't1', 'max', 'c1');
+    metrics.setMetricDefinition('m2', 't1', 'min', 'c1');
+    setCells();
+    const eachMetric: any = {};
+    metrics.forEachMetric(
+      (metricId, metric) => (eachMetric[metricId] = metric),
+    );
+    expect(eachMetric).toEqual({m1: 5, m2: 1});
+  });
+
   test('are things present', () => {
     expect(metrics.hasMetric('m1')).toEqual(false);
     metrics.setMetricDefinition('m1', 't1');

@@ -285,9 +285,9 @@ export const getMetricsObject = (
   metrics: Metrics,
 ): IdMap<number | undefined> => {
   const metricsObject: IdMap<number | undefined> = {};
-  metrics.getMetricIds().forEach((metricId) => {
-    metricsObject[metricId] = metrics.getMetric(metricId);
-  });
+  metrics.forEachMetric(
+    (metricId) => (metricsObject[metricId] = metrics.getMetric(metricId)),
+  );
   return metricsObject;
 };
 

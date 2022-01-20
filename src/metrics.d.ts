@@ -23,6 +23,20 @@ import {Id, IdOrNull, Ids} from './common.d';
 export type Metric = number;
 
 /**
+ * The MetricCallback type describes a function that takes a Metric's Id and a
+ * callback to loop over each Row within it.
+ *
+ * A MetricCallback is provided when using the forEachMetric method, so that you
+ * can do something based on every Metric in the Metrics object. See that method
+ * for specific examples.
+ *
+ * @param metricId The Id of the Metric that the callback can operate on.
+ * @param metric The value of the Metric.
+ * @category Callback
+ */
+export type MetricCallback = (metricId: Id, metric?: Metric) => void;
+
+/**
  * The Aggregate type describes a custom function that takes an array or numbers
  * and returns an aggregate that is used as a Metric.
  *
@@ -477,6 +491,38 @@ export interface Metrics {
    * @category Getter
    */
   getMetricIds(): Ids;
+
+  /**
+   * The forEachMetric method takes a function that it will then call for each
+   * Metric in the Metrics object.
+   *
+   * This method is useful for iterating over all the Metrics in a functional
+   * style. The `metricCallback` parameter is a MetricCallback function that
+   * will called with the Id of each Metric and its value.
+   *
+   * @param metricCallback The function that should be called for every Metric.
+   * @example
+   * This example iterates over each Metric in a Metrics object.
+   *
+   * ```js
+   * const store = createStore().setTable('species', {
+   *   dog: {price: 5},
+   *   cat: {price: 4},
+   *   worm: {price: 1},
+   * });
+   * const metrics = createMetrics(store)
+   *   .setMetricDefinition('highestPrice', 'species', 'max', 'price')
+   *   .setMetricDefinition('lowestPrice', 'species', 'min', 'price');
+   *
+   * metrics.forEachMetric((metricId, metric) => {
+   *   console.log([metricId, metric]);
+   * });
+   * // -> ['highestPrice', 5]
+   * // -> ['lowestPrice', 1]
+   * ```
+   * @category Iterator
+   */
+  forEachMetric(metricCallback: MetricCallback): void;
 
   /**
    * The hasMetric method returns a boolean indicating whether a given Metric
