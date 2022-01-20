@@ -1667,6 +1667,7 @@ export interface Store {
    * that will called with the Id of each Row, and with a function that can then
    * be used to iterate over each Cell of the Row, should you wish.
    *
+   * @param tableId The Id of the Table to iterate over.
    * @param rowCallback The function that should be called for every Row.
    * @example
    * This example iterates over each Row in a Table, and lists each Cell Id
@@ -1700,6 +1701,8 @@ export interface Store {
    * functional style. The `cellCallback` parameter is a CellCallback function
    * that will called with the Id and value of each Cell.
    *
+   * @param tableId The Id of the Table containing the Row to iterate over.
+   * @param rowId The Id of the Row to iterate over.
    * @param cellCallback The function that should be called for every Cell.
    * @example
    * This example iterates over each Cell in a Row, and lists its value.
