@@ -293,14 +293,17 @@ export const getMetricsObject = (
 
 export const getIndexesObject = (indexes: Indexes): IdMap<IdMap<Ids>> => {
   const indexesObject: IdMap<IdMap<Ids>> = {};
-  indexes.getIndexIds().forEach((indexId) => {
+  indexes.forEachIndex((indexId) => {
     indexesObject[indexId] = {};
-    indexes.getSliceIds(indexId).forEach((sliceId) => {
-      indexesObject[indexId][sliceId] = indexes.getSliceRowIds(
-        indexId,
-        sliceId,
+    indexes
+      .getSliceIds(indexId)
+      .forEach(
+        (sliceId) =>
+          (indexesObject[indexId][sliceId] = indexes.getSliceRowIds(
+            indexId,
+            sliceId,
+          )),
       );
-    });
   });
   return indexesObject;
 };

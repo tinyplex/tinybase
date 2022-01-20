@@ -1555,6 +1555,62 @@ describe('Miscellaneous', () => {
     expectNoChanges(listener);
   });
 
+  describe('forEach', () => {
+    test('forEachIndex', () => {
+      indexes
+        .setIndexDefinition('i1', 't1')
+        .setIndexDefinition('i2', 't1', 'c2');
+      setCells();
+      const eachIndex: any = {};
+      indexes.forEachIndex((indexId, forEachSlice) => {
+        const eachSlice: any = {};
+        forEachSlice((sliceId, forEachRow) => {
+          const eachRow: any = {};
+          forEachRow((rowId, forEachCell) => {
+            const eachCell: any = {};
+            forEachCell((cellId, cell) => (eachCell[cellId] = cell));
+            eachRow[rowId] = eachCell;
+          });
+          eachSlice[sliceId] = eachRow;
+        });
+        eachIndex[indexId] = eachSlice;
+      });
+      expect(eachIndex).toEqual({
+        i1: {
+          '': {
+            r1: {c1: 'one', c2: 'odd'},
+            r2: {c1: 'two', c2: 'even'},
+            r3: {c1: 'three', c2: 'odd'},
+            r4: {c1: 'four', c2: 'even'},
+          },
+        },
+        i2: {
+          even: {r2: {c1: 'two', c2: 'even'}, r4: {c1: 'four', c2: 'even'}},
+          odd: {r1: {c1: 'one', c2: 'odd'}, r3: {c1: 'three', c2: 'odd'}},
+        },
+      });
+    });
+
+    test('forEachSlice', () => {
+      indexes.setIndexDefinition('i2', 't1', 'c2');
+      setCells();
+      const eachSlice: any = {};
+      indexes.forEachSlice('i2', (sliceId, forEachRow) => {
+        const eachRow: any = {};
+        forEachRow((rowId, forEachCell) => {
+          const eachCell: any = {};
+          forEachCell((cellId, cell) => (eachCell[cellId] = cell));
+          eachRow[rowId] = eachCell;
+        });
+        eachSlice[sliceId] = eachRow;
+      });
+      expect(eachSlice).toEqual({
+        even: {r2: {c1: 'two', c2: 'even'}, r4: {c1: 'four', c2: 'even'}},
+        odd: {r1: {c1: 'one', c2: 'odd'}, r3: {c1: 'three', c2: 'odd'}},
+      });
+    });
+  });
+
   test('are things present', () => {
     expect(indexes.hasIndex('i1')).toEqual(false);
     indexes.setIndexDefinition('i1', 't1', 'c2');

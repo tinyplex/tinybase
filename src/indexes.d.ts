@@ -11,7 +11,7 @@
  * @module indexes
  */
 
-import {GetCell, Store} from './store.d';
+import {GetCell, RowCallback, Store} from './store.d';
 import {Id, IdOrNull, Ids, SortKey} from './common.d';
 
 /**
@@ -42,6 +42,42 @@ export type Index = {[sliceId: Id]: Slice};
  * @category Concept
  */
 export type Slice = Ids;
+
+/**
+ * The IndexCallback type describes a function that takes an Index's Id and a
+ * callback to loop over each Slice within it.
+ *
+ * A IndexCallback is provided when using the forEachIndex method, so that you
+ * can do something based on every Index in the Indexes object. See that method
+ * for specific examples.
+ *
+ * @param indexId The Id of the Index that the callback can operate on.
+ * @param forEachRow A function that will let you iterate over the Slice objects
+ * in this Index.
+ * @category Callback
+ */
+export type IndexCallback = (
+  indexId: Id,
+  forEachSlice: (sliceCallback: SliceCallback) => void,
+) => void;
+
+/**
+ * The SliceCallback type describes a function that takes a Slice's Id and a
+ * callback to loop over each Row within it.
+ *
+ * A SliceCallback is provided when using the forEachSlice method, so that you
+ * can do something based on every Slice in an Index. See that method for
+ * specific examples.
+ *
+ * @param sliceId The Id of the Slice that the callback can operate on.
+ * @param forEachRow A function that will let you iterate over the Row objects
+ * in this Slice.
+ * @category Callback
+ */
+export type SliceCallback = (
+  sliceId: Id,
+  forEachRow: (rowCallback: RowCallback) => void,
+) => void;
 
 /**
  * The SliceIdsListener type describes a function that is used to listen to
@@ -361,6 +397,82 @@ export interface Indexes {
    * @category Getter
    */
   getIndexIds(): Ids;
+
+  /**
+   * The forEachIndex method takes a function that it will then call for each
+   * Index in a specified Indexes object.
+   *
+   * This method is useful for iterating over the structure of the Indexes
+   * object in a functional style. The `indexCallback` parameter is a
+   * IndexCallback function that will called with the Id of each Index, and with
+   * a function that can then be used to iterate over each Slice of the Index,
+   * should you wish.
+   *
+   * @param indexCallback The function that should be called for every Index.
+   * @example
+   * This example iterates over each Index in a Indexes object, and lists each
+   * Slice Id within them.
+   *
+   * ```js
+   * const store = createStore().setTable('pets', {
+   *   fido: {species: 'dog', color: 'brown'},
+   *   felix: {species: 'cat', color: 'black'},
+   *   cujo: {species: 'dog', color: 'black'},
+   * });
+   * const indexes = createIndexes(store)
+   *   .setIndexDefinition('bySpecies', 'pets', 'species')
+   *   .setIndexDefinition('byColor', 'pets', 'color');
+   *
+   * indexes.forEachIndex((indexId, forEachSlice) => {
+   *   console.log(indexId);
+   *   forEachSlice((sliceId) => console.log(`- ${sliceId}`));
+   * });
+   * // -> 'bySpecies'
+   * // -> '- dog'
+   * // -> '- cat'
+   * // -> 'byColor'
+   * // -> '- brown'
+   * // -> '- black'
+   * ```
+   * @category Iterator
+   */
+  forEachIndex(indexCallback: IndexCallback): void;
+
+  /**
+   * The forEachSlice method takes a function that it will then call for each
+   * Slice in a specified Index.
+   *
+   * This method is useful for iterating over the Slice structure of the Index
+   * in a functional style. The `rowCallback` parameter is a RowCallback
+   * function that will called with the Id and value of each Row in the Slice.
+   *
+   * @param indexId The Id of the Index to iterate over.
+   * @param sliceCallback The function that should be called for every Slice.
+   * @example
+   * This example iterates over each Row in a Slice, and lists its Id.
+   *
+   * ```js
+   * const store = createStore().setTable('pets', {
+   *   fido: {species: 'dog'},
+   *   felix: {species: 'cat'},
+   *   cujo: {species: 'dog'},
+   * });
+   * const indexes = createIndexes(store);
+   * indexes.setIndexDefinition('bySpecies', 'pets', 'species');
+   *
+   * indexes.forEachSlice('bySpecies', (sliceId, forEachRow) => {
+   *   console.log(sliceId);
+   *   forEachRow((rowId) => console.log(`- ${rowId}`));
+   * });
+   * // -> 'dog'
+   * // -> '- fido'
+   * // -> '- cujo'
+   * // -> 'cat'
+   * // -> '- felix'
+   * ```
+   * @category Iterator
+   */
+  forEachSlice(indexId: Id, sliceCallback: SliceCallback): void;
 
   /**
    * The hasIndex method returns a boolean indicating whether a given Index

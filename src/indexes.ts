@@ -4,8 +4,10 @@ import {Id, IdOrNull, Ids, SortKey} from './common.d';
 import {IdMap, mapForEach, mapGet, mapKeys, mapNew, mapSet} from './common/map';
 import {IdSet, IdSet2, IdSet3, setAdd, setNew} from './common/set';
 import {
+  IndexCallback,
   Indexes,
   IndexesListenerStats,
+  SliceCallback,
   SliceIdsListener,
   SliceRowIdsListener,
   createIndexes as createIndexesDecl,
@@ -37,7 +39,7 @@ export const createIndexes: typeof createIndexesDecl = getCreateFunction(
     const [
       getStore,
       getIndexIds,
-      _forEachIndex,
+      forEachIndexImpl,
       hasIndex,
       getTableId,
       getIndex,
@@ -178,6 +180,33 @@ export const createIndexes: typeof createIndexesDecl = getCreateFunction(
       return indexes;
     };
 
+    const forEachIndex = (indexCallback: IndexCallback) =>
+      forEachIndexImpl((indexId, slices) =>
+        indexCallback(indexId, (sliceCallback) =>
+          forEachSliceImpl(indexId, sliceCallback, slices),
+        ),
+      );
+
+    const forEachSlice = (indexId: Id, sliceCallback: SliceCallback) =>
+      forEachSliceImpl(indexId, sliceCallback, getIndex(indexId) as IdSet2);
+
+    const forEachSliceImpl = (
+      indexId: Id,
+      sliceCallback: SliceCallback,
+      slices: IdSet2,
+    ) => {
+      const tableId = getTableId(indexId);
+      collForEach(slices, (rowIds, sliceId) =>
+        sliceCallback(sliceId, (rowCallback) =>
+          collForEach(rowIds, (rowId) =>
+            rowCallback(rowId, (cellCallback) =>
+              store.forEachCell(tableId, rowId, cellCallback),
+            ),
+          ),
+        ),
+      );
+    };
+
     const delIndexDefinition = (indexId: Id): Indexes => {
       delDefinition(indexId);
       return indexes;
@@ -218,6 +247,8 @@ export const createIndexes: typeof createIndexesDecl = getCreateFunction(
 
       getStore,
       getIndexIds,
+      forEachIndex,
+      forEachSlice,
       hasIndex,
       hasSlice,
       getTableId,
