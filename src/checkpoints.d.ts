@@ -34,6 +34,20 @@ import {Store} from './store.d';
 export type CheckpointIds = [Ids, Id | undefined, Ids];
 
 /**
+ * The CheckpointCallback type describes a function that takes a Checkpoint's
+ * Id.
+ *
+ * A CheckpointCallback is provided when using the forEachCheckpoint method,
+ * so that you can do something based on every Checkpoint in the Checkpoints
+ * object. See that method for specific examples.
+ *
+ * @param checkpointId The Id of the Checkpoint that the callback can operate
+ * on.
+ * @category Callback
+ */
+export type CheckpointCallback = (checkpointId: Id, label?: string) => void;
+
+/**
  * The CheckpointIdsListener type describes a function that is used to listen to
  * changes to the checkpoint Ids in a Checkpoints object.
  *
@@ -352,6 +366,36 @@ export interface Checkpoints {
    * @category Getter
    */
   getCheckpointIds(): CheckpointIds;
+
+  /**
+   * The forEachCheckpoint method takes a function that it will then call for
+   * each Checkpoint in a specified Checkpoints object.
+   *
+   * This method is useful for iterating over the structure of the Checkpoints
+   * object in a functional style. The `checkpointCallback` parameter is a
+   * CheckpointCallback function that will be called with the Id of each
+   * Checkpoint.
+   *
+   * @param checkpointCallback The function that should be called for every
+   * Checkpoint.
+   * @example
+   * This example iterates over each Checkpoint in a Checkpoints object.
+   *
+   * ```js
+   * const store = createStore().setTables({pets: {fido: {sold: false}}});
+   * const checkpoints = createCheckpoints(store);
+   * store.setCell('pets', 'fido', 'sold', true);
+   * checkpoints.addCheckpoint('sale');
+   *
+   * checkpoints.forEachCheckpoint((checkpointId, label) => {
+   *   console.log(`${checkpointId}:${label}`);
+   * });
+   * // -> '0:'
+   * // -> '1:sale'
+   * ```
+   * @category Iterator
+   */
+  forEachCheckpoint(checkpointCallback: CheckpointCallback): void;
 
   /**
    * The hasCheckpoint method returns a boolean indicating whether a given

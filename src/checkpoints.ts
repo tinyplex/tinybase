@@ -1,5 +1,6 @@
 import {Cell, Store} from './store.d';
 import {
+  CheckpointCallback,
   CheckpointIds,
   CheckpointIdsListener,
   CheckpointListener,
@@ -9,7 +10,14 @@ import {
 } from './checkpoints.d';
 import {DEBUG, ifNotUndefined, isUndefined} from './common/other';
 import {Id, IdOrNull, Ids} from './common.d';
-import {IdMap, mapEnsure, mapGet, mapNew, mapSet} from './common/map';
+import {
+  IdMap,
+  mapEnsure,
+  mapForEach,
+  mapGet,
+  mapNew,
+  mapSet,
+} from './common/map';
 import {IdSet, IdSet2, setNew} from './common/set';
 import {
   arrayClear,
@@ -193,6 +201,9 @@ export const createCheckpoints: typeof createCheckpointsDecl =
       [...forwardIds],
     ];
 
+    const forEachCheckpoint = (checkpointCallback: CheckpointCallback) =>
+      mapForEach(labels, checkpointCallback);
+
     const hasCheckpoint = (checkpointId: Id) => collHas(deltas, checkpointId);
 
     const getCheckpoint = (checkpointId: Id): string | undefined =>
@@ -267,6 +278,7 @@ export const createCheckpoints: typeof createCheckpointsDecl =
 
       getStore,
       getCheckpointIds,
+      forEachCheckpoint,
       hasCheckpoint,
       getCheckpoint,
 

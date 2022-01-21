@@ -500,6 +500,23 @@ describe('Miscellaneous', () => {
     expectNoChanges(listener);
   });
 
+  test('forEachCheckpoint', () => {
+    setCells();
+    checkpoints.setCheckpoint('2', 'two');
+    checkpoints.setCheckpoint('3', 'three');
+    const eachCheckpoint: any = {};
+    checkpoints.forEachCheckpoint(
+      (checkpointId, label) => (eachCheckpoint[checkpointId] = label),
+    );
+    expect(eachCheckpoint).toEqual({
+      '0': '',
+      '1': '',
+      '2': 'two',
+      '3': 'three',
+      '4': '',
+    });
+  });
+
   test('getStore', () => {
     expect(checkpoints.getStore()).toEqual(store);
   });
