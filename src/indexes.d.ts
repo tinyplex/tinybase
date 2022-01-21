@@ -404,13 +404,13 @@ export interface Indexes {
    *
    * This method is useful for iterating over the structure of the Indexes
    * object in a functional style. The `indexCallback` parameter is a
-   * IndexCallback function that will called with the Id of each Index, and with
-   * a function that can then be used to iterate over each Slice of the Index,
-   * should you wish.
+   * IndexCallback function that will be called with the Id of each Index, and
+   * with a function that can then be used to iterate over each Slice of the
+   * Index, should you wish.
    *
    * @param indexCallback The function that should be called for every Index.
    * @example
-   * This example iterates over each Index in a Indexes object, and lists each
+   * This example iterates over each Index in an Indexes object, and lists each
    * Slice Id within them.
    *
    * ```js
@@ -444,7 +444,8 @@ export interface Indexes {
    *
    * This method is useful for iterating over the Slice structure of the Index
    * in a functional style. The `rowCallback` parameter is a RowCallback
-   * function that will called with the Id and value of each Row in the Slice.
+   * function that will be called with the Id and value of each Row in the
+   * Slice.
    *
    * @param indexId The Id of the Index to iterate over.
    * @param sliceCallback The function that should be called for every Slice.

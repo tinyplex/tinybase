@@ -1631,7 +1631,7 @@ export interface Store {
    *
    * This method is useful for iterating over the Table structure of the Store
    * in a functional style. The `tableCallback` parameter is a TableCallback
-   * function that will called with the Id of each Table, and with a function
+   * function that will be called with the Id of each Table, and with a function
    * that can then be used to iterate over each Row of the Table, should you
    * wish.
    *
@@ -1664,8 +1664,8 @@ export interface Store {
    *
    * This method is useful for iterating over the Row structure of the Table in
    * a functional style. The `rowCallback` parameter is a RowCallback function
-   * that will called with the Id of each Row, and with a function that can then
-   * be used to iterate over each Cell of the Row, should you wish.
+   * that will be called with the Id of each Row, and with a function that can
+   * then be used to iterate over each Cell of the Row, should you wish.
    *
    * @param tableId The Id of the Table to iterate over.
    * @param rowCallback The function that should be called for every Row.
@@ -1699,7 +1699,7 @@ export interface Store {
    *
    * This method is useful for iterating over the Cell structure of the Row in a
    * functional style. The `cellCallback` parameter is a CellCallback function
-   * that will called with the Id and value of each Cell.
+   * that will be called with the Id and value of each Cell.
    *
    * @param tableId The Id of the Table containing the Row to iterate over.
    * @param rowId The Id of the Row to iterate over.

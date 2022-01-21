@@ -498,7 +498,7 @@ export interface Metrics {
    *
    * This method is useful for iterating over all the Metrics in a functional
    * style. The `metricCallback` parameter is a MetricCallback function that
-   * will called with the Id of each Metric and its value.
+   * will be called with the Id of each Metric and its value.
    *
    * @param metricCallback The function that should be called for every Metric.
    * @example
