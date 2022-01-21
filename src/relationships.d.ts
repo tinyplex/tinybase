@@ -11,7 +11,7 @@
  * @module relationships
  */
 
-import {GetCell, Store} from './store.d';
+import {GetCell, RowCallback, Store} from './store.d';
 import {Id, IdOrNull, Ids} from './common.d';
 
 /**
@@ -38,6 +38,25 @@ export type Relationship = {
   localRowIds: {[remoteRowId: Id]: Ids};
   linkedRowIds: {[firstRowId: Id]: Ids};
 };
+
+/**
+ * The RelationshipCallback type describes a function that takes an
+ * Relationship's Id and a callback to loop over each local Row within it.
+ *
+ * A RelationshipCallback is provided when using the forEachRelationship method,
+ * so that you can do something based on every Relationship in the Relationships
+ * object. See that method for specific examples.
+ *
+ * @param relationshipId The Id of the Relationship that the callback can
+ * operate on.
+ * @param forEachRow A function that will let you iterate over the local Row
+ * objects in this Relationship.
+ * @category Callback
+ */
+export type RelationshipCallback = (
+  relationshipId: Id,
+  forEachRow: (rowCallback: RowCallback) => void,
+) => void;
 
 /**
  * The RemoteRowIdListener type describes a function that is used to listen to
@@ -404,6 +423,49 @@ export interface Relationships {
    * @category Getter
    */
   getRelationshipIds(): Ids;
+
+  /**
+   * The forEachRelationship method takes a function that it will then call for
+   * each Relationship in a specified Relationships object.
+   *
+   * This method is useful for iterating over the structure of the Relationships
+   * object in a functional style. The `relationshipCallback` parameter is a
+   * RelationshipCallback function that will be called with the Id of each
+   * Relationship, and with a function that can then be used to iterate over
+   * each local Row involved in the Relationship.
+   *
+   * @param relationshipCallback The function that should be called for every
+   * Relationship.
+   * @example
+   * This example iterates over each Relationship in a Relationships object, and
+   * lists each Row Id within them.
+   *
+   * ```js
+   * const store = createStore().setTable('pets', {
+   *   fido: {species: 'dog', next: 'felix'},
+   *   felix: {species: 'cat', next: 'cujo'},
+   *   cujo: {species: 'dog'},
+   * });
+   * const relationships = createRelationships(store)
+   *   .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
+   *   .setRelationshipDefinition('petSequence', 'pets', 'pets', 'next');
+   *
+   * relationships.forEachRelationship((relationshipId, forEachRow) => {
+   *   console.log(relationshipId);
+   *   forEachRow((rowId) => console.log(`- ${rowId}`));
+   * });
+   * // -> 'petSpecies'
+   * // -> '- fido'
+   * // -> '- felix'
+   * // -> '- cujo'
+   * // -> 'petSequence'
+   * // -> '- fido'
+   * // -> '- felix'
+   * // -> '- cujo'
+   * ```
+   * @category Iterator
+   */
+  forEachRelationship(relationshipCallback: RelationshipCallback): void;
 
   /**
    * The hasRelationship method returns a boolean indicating whether a given

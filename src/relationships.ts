@@ -6,6 +6,7 @@ import {IdSet, IdSet3, setAdd, setNew} from './common/set';
 import {
   LinkedRowIdsListener,
   LocalRowIdsListener,
+  RelationshipCallback,
   Relationships,
   RelationshipsListenerStats,
   RemoteRowIdListener,
@@ -39,7 +40,7 @@ export const createRelationships: typeof createRelationshipsDecl =
     const [
       getStore,
       getRelationshipIds,
-      _forEachRelationship,
+      forEachRelationshipImpl,
       hasRelationship,
       getLocalTableId,
       getRelationship,
@@ -173,6 +174,13 @@ export const createRelationships: typeof createRelationshipsDecl =
       return relationships;
     };
 
+    const forEachRelationship = (relationshipCallback: RelationshipCallback) =>
+      forEachRelationshipImpl((relationshipId) =>
+        relationshipCallback(relationshipId, (rowCallback) =>
+          store.forEachRow(getLocalTableId(relationshipId), rowCallback),
+        ),
+      );
+
     const delRelationshipDefinition = (relationshipId: Id): Relationships => {
       mapSet(remoteTableIds, relationshipId);
       delDefinition(relationshipId);
@@ -250,6 +258,7 @@ export const createRelationships: typeof createRelationshipsDecl =
 
       getStore,
       getRelationshipIds,
+      forEachRelationship,
       hasRelationship,
       getLocalTableId,
       getRemoteTableId,

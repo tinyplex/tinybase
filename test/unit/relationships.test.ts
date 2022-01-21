@@ -748,6 +748,27 @@ describe('Miscellaneous', () => {
     expectNoChanges(listener);
   });
 
+  test('forEachRelationship', () => {
+    relationships
+      .setRelationshipDefinition('r1', 't1', 'T1', 'c1')
+      .setRelationshipDefinition('r2', 't1', 'T1', 'c2');
+    setCells();
+    const eachRelationship: any = {};
+    relationships.forEachRelationship((relationshipsId, forEachRow) => {
+      const eachRow: any = {};
+      forEachRow((rowId, forEachCell) => {
+        const eachCell: any = {};
+        forEachCell((cellId, cell) => (eachCell[cellId] = cell));
+        eachRow[rowId] = eachCell;
+      });
+      eachRelationship[relationshipsId] = eachRow;
+    });
+    expect(eachRelationship).toEqual({
+      r1: {r1: {c1: 'R3', c2: 'R1'}, r2: {c1: 'R2', c2: 'R2'}},
+      r2: {r1: {c1: 'R3', c2: 'R1'}, r2: {c1: 'R2', c2: 'R2'}},
+    });
+  });
+
   test('are things present', () => {
     expect(relationships.hasRelationship('r1')).toEqual(false);
     relationships.setRelationshipDefinition('r1', 't1', 'T1', 'c1');

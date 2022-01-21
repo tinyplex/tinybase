@@ -313,7 +313,7 @@ export const getRelationshipsObject = (
 ): IdMap<[IdMap<Id>, IdMap<Ids>]> => {
   const store = relationships.getStore();
   const relationshipsObject: IdMap<[IdMap<Id>, IdMap<Ids>]> = {};
-  relationships.getRelationshipIds().forEach((relationshipId) => {
+  relationships.forEachRelationship((relationshipId) => {
     relationshipsObject[relationshipId] = [{}, {}];
     store
       .getRowIds(relationships.getLocalTableId(relationshipId))
