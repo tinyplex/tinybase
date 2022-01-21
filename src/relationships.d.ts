@@ -40,7 +40,7 @@ export type Relationship = {
 };
 
 /**
- * The RelationshipCallback type describes a function that takes an
+ * The RelationshipCallback type describes a function that takes a
  * Relationship's Id and a callback to loop over each local Row within it.
  *
  * A RelationshipCallback is provided when using the forEachRelationship method,
