@@ -1,6 +1,7 @@
 import {
   CellIdsListener,
   CellListener,
+  InvalidCellListener,
   RowIdsListener,
   RowListener,
   Store,
@@ -45,6 +46,7 @@ type Listener =
   | RowListener
   | CellIdsListener
   | CellListener
+  | InvalidCellListener
   | MetricListener
   | SliceIdsListener
   | SliceRowIdsListener

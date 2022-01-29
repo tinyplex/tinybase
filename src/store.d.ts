@@ -333,6 +333,35 @@ export type CellListener = (
 ) => void;
 
 /**
+ * The InvalidCellListener type describes a function that is used to listen to
+ * attempts to set invalid data to a Cell.
+ *
+ * A InvalidCellListener is provided when using the addInvalidCellListener
+ * method. See that method for specific examples.
+ *
+ * When called, a InvalidCellListener is given a reference to the Store, the Id
+ * of the Table, the Id of the Row, and the Id of Cell that were being attempted
+ * to be changed. It is also given the invalid value of the Cell, which could
+ * have been of absolutely any type. Since there could have been multiple failed
+ * attempts to set the Cell within a single transaction, this is an array
+ * containing each attempt, chronologically.
+ *
+ * @param store A reference to the Store that was being changed.
+ * @param tableId The Id of the Table that was being changed.
+ * @param rowId The Id of the Row that was being changed.
+ * @param cellId The Id of the Cell that was being changed.
+ * @param invalidCells An array of the values of the Cell that were invalid.
+ * @category Listener
+ */
+export type InvalidCellListener = (
+  store: Store,
+  tableId: Id,
+  rowId: Id,
+  cellId: Id,
+  invalidCells: any[],
+) => void;
+
+/**
  * The GetCellChange type describes a function that returns information about
  * any Cell's changes during a transaction.
  *

@@ -5,6 +5,7 @@ import {
   CellListener,
   CellSchema,
   GetCellChange,
+  InvalidCellListener,
   MapCell,
   Row,
   RowCallback,
@@ -57,7 +58,7 @@ import {
   objIsEmpty,
 } from './common/obj';
 import {IdSet, IdSet2, IdSet3, IdSet4, setNew} from './common/set';
-import {arrayFilter, arrayForEach, arrayHas} from './common/array';
+import {arrayFilter, arrayForEach, arrayHas, arrayPush} from './common/array';
 import {
   collClear,
   collForEach,
@@ -131,6 +132,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const changedRowIds: IdMap<IdMap<IdAdded>> = mapNew();
   const changedCellIds: IdMap<IdMap<IdMap<IdAdded>>> = mapNew();
   const changedCells: IdMap<IdMap<IdMap<Cell | undefined>>> = mapNew();
+  const invalidCells: IdMap<IdMap<IdMap<any[]>>> = mapNew();
   const schemaMap: SchemaMap = mapNew();
   const schemaDefaultRows: IdMap<Row> = mapNew();
   const tablesMap: TablesMap = mapNew();
@@ -141,6 +143,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const rowListeners: [IdSet3, IdSet3] = mapNewPair();
   const cellIdsListeners: [IdSet3, IdSet3] = mapNewPair();
   const cellListeners: [IdSet4, IdSet4] = mapNewPair();
+  const invalidCellListeners: [IdSet4, IdSet4] = mapNewPair();
 
   const [addListener, callListeners, delListenerImpl, callListenerImpl] =
     getListenerFunctions(() => store);
@@ -171,14 +174,21 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const validateTable = (table: Table, tableId: Id): boolean =>
     (!hasSchema || collHas(schemaMap, tableId)) &&
-    validate(table, (row: Row): boolean => validateRow(tableId, row));
+    validate(table, (row: Row, rowId: Id): boolean =>
+      validateRow(tableId, rowId, row),
+    );
 
-  const validateRow = (tableId: Id, row: Row, skipDefaults?: 1): boolean =>
+  const validateRow = (
+    tableId: Id,
+    rowId: Id | undefined,
+    row: Row,
+    skipDefaults?: 1,
+  ): boolean =>
     validate(
       skipDefaults ? row : addDefaultsToRow(row, tableId),
       (cell: Cell, cellId: Id): boolean =>
         ifNotUndefined(
-          getValidatedCell(tableId, cellId, cell),
+          getValidatedCell(tableId, rowId, cellId, cell),
           (validCell) => {
             row[cellId] = validCell;
             return true;
@@ -189,6 +199,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const getValidatedCell = (
     tableId: Id,
+    rowId: Id | undefined,
     cellId: Id,
     cell: Cell,
   ): Cell | undefined =>
@@ -196,10 +207,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
       ? ifNotUndefined(
           mapGet(mapGet(schemaMap, tableId), cellId),
           (cellSchema) =>
-            getCellType(cell) != cellSchema[TYPE] ? cellSchema[DEFAULT] : cell,
+            getCellType(cell) != cellSchema[TYPE]
+              ? cellInvalid(tableId, rowId, cellId, cell, cellSchema[DEFAULT])
+              : cell,
         )
       : isUndefined(getCellType(cell))
-      ? undefined
+      ? cellInvalid(tableId, rowId, cellId, cell)
       : cell;
 
   const addDefaultsToRow = (row: Row, tableId: Id): Row => {
@@ -394,12 +407,50 @@ export const createStore: typeof createStoreDecl = (): Store => {
       oldCell,
     );
 
+  const cellInvalid = (
+    tableId: Id,
+    rowId: Id | undefined,
+    cellId: Id,
+    invalidCell: any,
+    defaultedCell?: Cell,
+  ): Cell | undefined => {
+    arrayPush(
+      mapEnsure(
+        mapEnsure(mapEnsure(invalidCells, tableId, mapNew()), rowId, mapNew()),
+        cellId,
+        [],
+      ),
+      invalidCell,
+    );
+    return defaultedCell;
+  };
+
   const getCellChange: GetCellChange = (tableId: Id, rowId: Id, cellId: Id) => {
     const changedRow = mapGet(mapGet(changedCells, tableId), rowId);
     const newCell = getCell(tableId, rowId, cellId);
     return collHas(changedRow, cellId)
       ? [true, mapGet(changedRow, cellId), newCell]
       : [false, newCell, newCell];
+  };
+
+  const callInvalidCellListeners = (mutator: 0 | 1) => {
+    if (!collIsEmpty(invalidCellListeners[mutator])) {
+      collForEach(
+        mutator
+          ? mapClone(invalidCells, (table) => mapClone(table, mapClone))
+          : invalidCells,
+        (rows, tableId) =>
+          collForEach(rows, (cells, rowId) =>
+            collForEach(cells, (invalidCell, cellId) =>
+              callListeners(
+                invalidCellListeners[mutator],
+                [tableId, rowId, cellId],
+                invalidCell,
+              ),
+            ),
+          ),
+      );
+    }
   };
 
   const callListenersForChanges = (mutator: 0 | 1) => {
@@ -525,44 +576,47 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const getSchemaJson = (): Json => jsonString(schemaMap);
 
   const setTables = (tables: Tables): Store => {
-    if (validateTables(tables)) {
-      transaction(() => setValidTables(tables));
-    }
+    validateTables(tables)
+      ? transaction(() => setValidTables(tables))
+      : transaction();
     return store;
   };
 
   const setTable = (tableId: Id, table: Table): Store => {
-    if (validateTable(table, tableId)) {
-      transaction(() => setValidTable(tableId, table));
-    }
+    validateTable(table, tableId)
+      ? transaction(() => setValidTable(tableId, table))
+      : transaction();
     return store;
   };
 
   const setRow = (tableId: Id, rowId: Id, row: Row): Store => {
-    if (validateRow(tableId, row)) {
-      setValidRowTransaction(tableId, rowId, row);
-    }
+    validateRow(tableId, rowId, row)
+      ? setValidRowTransaction(tableId, rowId, row)
+      : transaction();
     return store;
   };
 
   const addRow = (tableId: Id, row: Row): Id | undefined => {
     let rowId: Id | undefined = undefined;
-    if (validateRow(tableId, row)) {
-      rowId = getNewRowId(mapGet(tablesMap, tableId));
-      setValidRowTransaction(tableId, rowId, row);
-    }
+    validateRow(tableId, rowId, row)
+      ? setValidRowTransaction(
+          tableId,
+          (rowId = getNewRowId(mapGet(tablesMap, tableId))),
+          row,
+        )
+      : transaction();
     return rowId;
   };
 
   const setPartialRow = (tableId: Id, rowId: Id, partialRow: Row): Store => {
-    if (validateRow(tableId, partialRow, 1)) {
-      transaction(() => {
-        const table = getOrCreateTable(tableId);
-        objForEach(partialRow, (cell, cellId) =>
-          setCellIntoDefaultRow(tableId, table, rowId, cellId, cell),
-        );
-      });
-    }
+    validateRow(tableId, rowId, partialRow, 1)
+      ? transaction(() => {
+          const table = getOrCreateTable(tableId);
+          objForEach(partialRow, (cell, cellId) =>
+            setCellIntoDefaultRow(tableId, table, rowId, cellId, cell),
+          );
+        })
+      : transaction();
     return store;
   };
 
@@ -575,6 +629,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     ifNotUndefined(
       getValidatedCell(
         tableId,
+        rowId,
         cellId,
         isFunction(cell) ? cell(getCell(tableId, rowId, cellId)) : cell,
       ),
@@ -588,6 +643,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
             validCell,
           ),
         ),
+      transaction,
     );
     return store;
   };
@@ -656,28 +712,36 @@ export const createStore: typeof createStoreDecl = (): Store => {
     return store;
   };
 
-  const transaction = <Return>(actions: () => Return): Return => {
+  const transaction = <Return>(actions?: () => Return): Return => {
     if (transactions == -1) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore only occurs internally
       return;
     }
     transactions++;
-    const result = actions();
+    const result = actions?.();
     transactions--;
 
     if (transactions == 0) {
       transactions = 1;
+      callInvalidCellListeners(1);
       callListenersForChanges(1);
       transactions = -1;
+      callInvalidCellListeners(0);
       callListenersForChanges(0);
       transactions = 0;
       arrayForEach(
-        [changedCells, changedTableIds, changedRowIds, changedCellIds],
+        [
+          changedCells,
+          invalidCells,
+          changedTableIds,
+          changedRowIds,
+          changedCellIds,
+        ],
         collClear,
       );
     }
-    return result;
+    return result as Return;
   };
 
   const forEachTable = (tableCallback: TableCallback): void =>
