@@ -74,7 +74,7 @@ const INVALID_OBJECTS: [string, any][] = INVALID_CELLS.concat([
   ['boolean', true],
 ]);
 
-describe('Rejects initiation with invalid', () => {
+describe('Setting invalid', () => {
   test.each(INVALID_OBJECTS)('Tables; %s', (_name, tables: any) => {
     const store = createStore().setTables(tables);
     expect(store.getTables()).toEqual({});
@@ -113,11 +113,12 @@ describe('Rejects initiation with invalid', () => {
   });
 });
 
-describe('Rejects setting invalid', () => {
+describe('Listening to invalid', () => {
   test.each(INVALID_OBJECTS)('Tables; %s', (_name, tables: any) => {
     const store = createStore().setTables(validTables);
     const listener = createStoreListener(store);
     listener.listenToTables('/');
+    listener.listenToInvalidCell('invalids', null, null, null);
     store.setTables(tables);
     expect(store.getTables()).toEqual(validTables);
     expectNoChanges(listener);
@@ -131,6 +132,7 @@ describe('Rejects setting invalid', () => {
       listener.listenToTables('/');
       listener.listenToTable('/t1', 't1');
       listener.listenToTable('/t2', 't2');
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.setTables({t1: {r1: {c1: 2}}, t2: table});
       expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
       expectChanges(listener, '/', {t1: {r1: {c1: 2}}});
@@ -147,6 +149,7 @@ describe('Rejects setting invalid', () => {
       listener.listenToTables('/');
       listener.listenToTable('/t1', 't1');
       listener.listenToTable('/t2', 't2');
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.setTable('t1', table);
       store.setTable('t2', table);
       expect(store.getTables()).toEqual(validTables);
@@ -161,6 +164,7 @@ describe('Rejects setting invalid', () => {
     listener.listenToTable('/t1', 't1');
     listener.listenToRow('/t1/r1', 't1', 'r1');
     listener.listenToRow('/t1/r2', 't1', 'r2');
+    listener.listenToInvalidCell('invalids', null, null, null);
     store.setTable('t1', {r1: {c1: 2}, r2: row});
     expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
     expectChanges(listener, '/', {t1: {r1: {c1: 2}}});
@@ -176,6 +180,7 @@ describe('Rejects setting invalid', () => {
     listener.listenToTable('/t1', 't1');
     listener.listenToRow('/t1/r1', 't1', 'r1');
     listener.listenToRow('/t1/r2', 't1', 'r2');
+    listener.listenToInvalidCell('invalids', null, null, null);
     store.setRow('t1', 'r1', row);
     store.setRow('t1', 'r2', row);
     expect(store.getTables()).toEqual(validTables);
@@ -189,6 +194,7 @@ describe('Rejects setting invalid', () => {
     listener.listenToTable('/t1', 't1');
     listener.listenToRow('/t1/r1', 't1', 'r1');
     listener.listenToRow('/t1/0', 't1', '0');
+    listener.listenToInvalidCell('invalids', null, null, null);
     const rowId1 = store.addRow('t1', row);
     const rowId2 = store.addRow('t1', {c1: 2});
     expect(rowId1).toBeUndefined();
@@ -219,35 +225,48 @@ describe('Rejects setting invalid', () => {
     listener.listenToRow('/t1/r1', 't1', 'r1');
     listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
     listener.listenToCell('/t1/r1/c2', 't1', 'r1', 'c2');
+    listener.listenToInvalidCell('invalids', null, null, null);
     store.setRow('t1', 'r1', {c1: 2, c2: cell});
     expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
     expectChanges(listener, '/', {t1: {r1: {c1: 2}}});
     expectChanges(listener, '/t1', {t1: {r1: {c1: 2}}});
     expectChanges(listener, '/t1/r1', {t1: {r1: {c1: 2}}});
     expectChanges(listener, '/t1/r1/c1', {t1: {r1: {c1: 2}}});
+    expectChanges(listener, 'invalids', {t1: {r1: {c2: [cell]}}});
     expectNoChanges(listener);
   });
 
-  test.each(INVALID_CELLS)('existing or new Cell; %s', (_name, cell: any) => {
-    if (typeof cell == 'function') {
-      return;
-    }
-    const store = createStore().setTables(validTables);
-    const listener = createStoreListener(store);
-    listener.listenToTables('/');
-    listener.listenToTable('/t1', 't1');
-    listener.listenToRow('/t1/r1', 't1', 'r1');
-    listener.listenToRow('/t1/r2', 't1', 'r2');
-    listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
-    listener.listenToCell('/t1/r1/c2', 't1', 'r1', 'c2');
-    listener.listenToCell('/t1/r2/c1', 't1', 'r2', 'c1');
-    store
-      .setCell('t1', 'r1', 'c1', cell)
-      .setCell('t1', 'r1', 'c2', cell)
-      .setCell('t1', 'r2', 'c1', cell);
-    expect(store.getTables()).toEqual(validTables);
-    expectNoChanges(listener);
-  });
+  test.each(INVALID_CELLS.slice(0, 1))(
+    'existing or new Cell; %s',
+    (_name, cell: any) => {
+      if (typeof cell == 'function') {
+        return;
+      }
+      const store = createStore().setTables(validTables);
+      const listener = createStoreListener(store);
+      listener.listenToTables('/');
+      listener.listenToTable('/t1', 't1');
+      listener.listenToRow('/t1/r1', 't1', 'r1');
+      listener.listenToRow('/t1/r2', 't1', 'r2');
+      listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
+      listener.listenToCell('/t1/r1/c2', 't1', 'r1', 'c2');
+      listener.listenToCell('/t1/r2/c1', 't1', 'r2', 'c1');
+      listener.listenToInvalidCell('invalids', null, null, null);
+      store
+        .setCell('t1', 'r1', 'c1', cell)
+        .setCell('t1', 'r1', 'c2', cell)
+        .setCell('t1', 'r2', 'c1', cell);
+      expect(store.getTables()).toEqual(validTables);
+      expectChanges(
+        listener,
+        'invalids',
+        {t1: {r1: {c1: [cell]}}},
+        {t1: {r1: {c2: [cell]}}},
+        {t1: {r2: {c1: [cell]}}},
+      );
+      expectNoChanges(listener);
+    },
+  );
 });
 
 describe('Rejects invalid', () => {

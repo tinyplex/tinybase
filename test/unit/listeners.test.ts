@@ -2362,6 +2362,114 @@ describe('Listeners', () => {
       expectChanges(listener, '/t*/r*/c*', {t4: {r1: {c1: undefined}}});
     });
   });
+
+  describe('invalid cell', () => {
+    beforeAll(() => {
+      store = createStore();
+      listener = createStoreListener(store);
+      listener.listenToInvalidCell('i:/t1/r1/c1', 't1', 'r1', 'c1');
+      listener.listenToInvalidCell('i:/t1/r1/c2', 't1', 'r1', 'c2');
+      listener.listenToInvalidCell('i:/t1/r1/c*', 't1', 'r1', null);
+      listener.listenToInvalidCell('i:/t1/r*/c1', 't1', null, 'c1');
+      listener.listenToInvalidCell('i:/t1/r*/c*', 't1', null, null);
+      listener.listenToInvalidCell('i:/t*/r1/c1', null, 'r1', 'c1');
+      listener.listenToInvalidCell('i:/t*/r1/c*', null, 'r1', null);
+      listener.listenToInvalidCell('i:/t*/r*/c1', null, null, 'c1');
+      listener.listenToInvalidCell('i:/t*/r*/c*', null, null, null);
+    });
+
+    test('reset', () => {
+      store.delTables();
+      expectNoChanges(listener);
+    });
+
+    test('setTables', () => {
+      // @ts-ignore
+      store.setTables({t1: {r1: {c1: []}}});
+      expectChanges(listener, 'i:/t1/r1/c1', {t1: {r1: {c1: [[]]}}});
+      expectChanges(listener, 'i:/t1/r1/c*', {t1: {r1: {c1: [[]]}}});
+      expectChanges(listener, 'i:/t1/r*/c1', {t1: {r1: {c1: [[]]}}});
+      expectChanges(listener, 'i:/t1/r*/c*', {t1: {r1: {c1: [[]]}}});
+      expectChanges(listener, 'i:/t*/r1/c1', {t1: {r1: {c1: [[]]}}});
+      expectChanges(listener, 'i:/t*/r1/c*', {t1: {r1: {c1: [[]]}}});
+      expectChanges(listener, 'i:/t*/r*/c1', {t1: {r1: {c1: [[]]}}});
+      expectChanges(listener, 'i:/t*/r*/c*', {t1: {r1: {c1: [[]]}}});
+      expectNoChanges(listener);
+    });
+
+    test('setTable', () => {
+      // @ts-ignore
+      store.setTable('t1', {r1: {c1: []}});
+      expectChanges(listener, 'i:/t1/r1/c1', {t1: {r1: {c1: [[]]}}});
+      expectChanges(listener, 'i:/t1/r1/c*', {t1: {r1: {c1: [[]]}}});
+      expectChanges(listener, 'i:/t1/r*/c1', {t1: {r1: {c1: [[]]}}});
+      expectChanges(listener, 'i:/t1/r*/c*', {t1: {r1: {c1: [[]]}}});
+      expectChanges(listener, 'i:/t*/r1/c1', {t1: {r1: {c1: [[]]}}});
+      expectChanges(listener, 'i:/t*/r1/c*', {t1: {r1: {c1: [[]]}}});
+      expectChanges(listener, 'i:/t*/r*/c1', {t1: {r1: {c1: [[]]}}});
+      expectChanges(listener, 'i:/t*/r*/c*', {t1: {r1: {c1: [[]]}}});
+      expectNoChanges(listener);
+    });
+
+    test('setRow', () => {
+      // @ts-ignore
+      store.setRow('t1', 'r1', {c1: []});
+      expectChanges(listener, 'i:/t1/r1/c1', {t1: {r1: {c1: [[]]}}});
+      expectChanges(listener, 'i:/t1/r1/c*', {t1: {r1: {c1: [[]]}}});
+      expectChanges(listener, 'i:/t1/r*/c1', {t1: {r1: {c1: [[]]}}});
+      expectChanges(listener, 'i:/t1/r*/c*', {t1: {r1: {c1: [[]]}}});
+      expectChanges(listener, 'i:/t*/r1/c1', {t1: {r1: {c1: [[]]}}});
+      expectChanges(listener, 'i:/t*/r1/c*', {t1: {r1: {c1: [[]]}}});
+      expectChanges(listener, 'i:/t*/r*/c1', {t1: {r1: {c1: [[]]}}});
+      expectChanges(listener, 'i:/t*/r*/c*', {t1: {r1: {c1: [[]]}}});
+      expectNoChanges(listener);
+    });
+
+    test('addRow', () => {
+      // @ts-ignore
+      store.addRow('t2', {c1: []});
+      expectChanges(listener, 'i:/t*/r*/c1', {t2: {undefined: {c1: [[]]}}});
+      expectChanges(listener, 'i:/t*/r*/c*', {t2: {undefined: {c1: [[]]}}});
+      expectNoChanges(listener);
+    });
+
+    test('setPartialRow', () => {
+      // @ts-ignore
+      store.setPartialRow('t1', 'r1', {c1: 1, c2: []});
+      expectChanges(listener, 'i:/t1/r1/c2', {t1: {r1: {c2: [[]]}}});
+      expectChanges(listener, 'i:/t1/r1/c*', {t1: {r1: {c2: [[]]}}});
+      expectChanges(listener, 'i:/t1/r*/c*', {t1: {r1: {c2: [[]]}}});
+      expectChanges(listener, 'i:/t*/r1/c*', {t1: {r1: {c2: [[]]}}});
+      expectChanges(listener, 'i:/t*/r*/c*', {t1: {r1: {c2: [[]]}}});
+      expectNoChanges(listener);
+      store.delTables();
+    });
+
+    test('setCell', () => {
+      // @ts-ignore
+      store.setCell('t1', 'r1', 'c1', []);
+      expectChanges(listener, 'i:/t1/r1/c1', {t1: {r1: {c1: [[]]}}});
+      expectChanges(listener, 'i:/t1/r1/c*', {t1: {r1: {c1: [[]]}}});
+      expectChanges(listener, 'i:/t1/r*/c1', {t1: {r1: {c1: [[]]}}});
+      expectChanges(listener, 'i:/t1/r*/c*', {t1: {r1: {c1: [[]]}}});
+      expectChanges(listener, 'i:/t*/r1/c1', {t1: {r1: {c1: [[]]}}});
+      expectChanges(listener, 'i:/t*/r1/c*', {t1: {r1: {c1: [[]]}}});
+      expectChanges(listener, 'i:/t*/r*/c1', {t1: {r1: {c1: [[]]}}});
+      expectChanges(listener, 'i:/t*/r*/c*', {t1: {r1: {c1: [[]]}}});
+      expectNoChanges(listener);
+    });
+
+    test('setCell, mapped', () => {
+      store.setCell('t2', 'r1', 'c1', 1);
+      // @ts-ignore
+      store.setCell('t2', 'r1', 'c1', (cell) => [cell]);
+      expectChanges(listener, 'i:/t*/r1/c1', {t2: {r1: {c1: [[1]]}}});
+      expectChanges(listener, 'i:/t*/r1/c*', {t2: {r1: {c1: [[1]]}}});
+      expectChanges(listener, 'i:/t*/r*/c1', {t2: {r1: {c1: [[1]]}}});
+      expectChanges(listener, 'i:/t*/r*/c*', {t2: {r1: {c1: [[1]]}}});
+      expectNoChanges(listener);
+    });
+  });
 });
 
 describe('Mutating listeners', () => {
@@ -3373,6 +3481,403 @@ describe('Mutating listeners', () => {
         {t_: {r1: {c_: 7}}},
         {t_: {r_: {c1: 8}}},
         {t_: {r_: {c_: 9}}},
+      );
+      expectNoChanges(listener);
+    });
+  });
+
+  describe('invalid cell', () => {
+    beforeEach(() => {
+      store = createStore();
+      listener = createStoreListener(store);
+      listener.listenToInvalidCell('i:/t1/r1/c1', 't1', 'r1', 'c1');
+      listener.listenToInvalidCell('i:/t1/r1/c*', 't1', 'r1', null);
+      listener.listenToInvalidCell('i:/t1/r*/c1', 't1', null, 'c1');
+      listener.listenToInvalidCell('i:/t1/r*/c*', 't1', null, null);
+      listener.listenToInvalidCell('i:/t*/r1/c1', null, 'r1', 'c1');
+      listener.listenToInvalidCell('i:/t*/r1/c*', null, 'r1', null);
+      listener.listenToInvalidCell('i:/t*/r*/c1', null, null, 'c1');
+      listener.listenToInvalidCell('i:/t*/r*/c*', null, null, null);
+    });
+
+    const setMutatorListeners = () => {
+      // @ts-ignore
+      store.addInvalidCellListener('t1', 'r1', 'c1', getCellMutator([2]), true);
+      store.addInvalidCellListener(
+        't1',
+        'r1',
+        null,
+        // @ts-ignore
+        getCellMutator([3], null, null, 'c_'),
+        true,
+      );
+      store.addInvalidCellListener(
+        't1',
+        null,
+        'c1',
+        // @ts-ignore
+        getCellMutator([4], null, 'r_'),
+        true,
+      );
+      store.addInvalidCellListener(
+        't1',
+        null,
+        null,
+        // @ts-ignore
+        getCellMutator([5], null, 'r_', 'c_'),
+        true,
+      );
+      store.addInvalidCellListener(
+        null,
+        'r1',
+        'c1',
+        // @ts-ignore
+        getCellMutator([6], 't_'),
+        true,
+      );
+      store.addInvalidCellListener(
+        null,
+        'r1',
+        null,
+        // @ts-ignore
+        getCellMutator([7], 't_', null, 'c_'),
+        true,
+      );
+      store.addInvalidCellListener(
+        null,
+        null,
+        'c1',
+        // @ts-ignore
+        getCellMutator([8], 't_', 'r_'),
+        true,
+      );
+      store.addInvalidCellListener(
+        null,
+        null,
+        null,
+        // @ts-ignore
+        getCellMutator([9], 't_', 'r_', 'c_'),
+        true,
+      );
+    };
+
+    test('setTables', () => {
+      setMutatorListeners();
+      // @ts-ignore
+      store.setTables({t1: {r1: {c1: [1]}}});
+      expectChanges(listener, 'i:/t1/r1/c1', {t1: {r1: {c1: [[1], [2]]}}});
+      expectChanges(
+        listener,
+        'i:/t1/r1/c*',
+        {t1: {r1: {c1: [[1], [2]]}}},
+        {t1: {r1: {c_: [[3]]}}},
+      );
+      expectChanges(
+        listener,
+        'i:/t1/r*/c1',
+        {t1: {r1: {c1: [[1], [2]]}}},
+        {t1: {r_: {c1: [[4]]}}},
+      );
+      expectChanges(
+        listener,
+        'i:/t1/r*/c*',
+        {t1: {r1: {c1: [[1], [2]]}}},
+        {t1: {r1: {c_: [[3]]}}},
+        {t1: {r_: {c1: [[4]]}}},
+        {t1: {r_: {c_: [[5]]}}},
+      );
+      expectChanges(
+        listener,
+        'i:/t*/r1/c1',
+        {t1: {r1: {c1: [[1], [2]]}}},
+        {t_: {r1: {c1: [[6]]}}},
+      );
+      expectChanges(
+        listener,
+        'i:/t*/r1/c*',
+        {t1: {r1: {c1: [[1], [2]]}}},
+        {t1: {r1: {c_: [[3]]}}},
+        {t_: {r1: {c1: [[6]]}}},
+        {t_: {r1: {c_: [[7]]}}},
+      );
+      expectChanges(
+        listener,
+        'i:/t*/r*/c1',
+        {t1: {r1: {c1: [[1], [2]]}}},
+        {t1: {r_: {c1: [[4]]}}},
+        {t_: {r1: {c1: [[6]]}}},
+        {t_: {r_: {c1: [[8]]}}},
+      );
+      expectChanges(
+        listener,
+        'i:/t*/r*/c*',
+        {t1: {r1: {c1: [[1], [2]]}}},
+        {t1: {r1: {c_: [[3]]}}},
+        {t1: {r_: {c1: [[4]]}}},
+        {t1: {r_: {c_: [[5]]}}},
+        {t_: {r1: {c1: [[6]]}}},
+        {t_: {r1: {c_: [[7]]}}},
+        {t_: {r_: {c1: [[8]]}}},
+        {t_: {r_: {c_: [[9]]}}},
+      );
+      expectNoChanges(listener);
+    });
+
+    test('setTable', () => {
+      setMutatorListeners();
+      // @ts-ignore
+      store.setTable('t1', {r1: {c1: [1]}});
+      expectChanges(listener, 'i:/t1/r1/c1', {t1: {r1: {c1: [[1], [2]]}}});
+      expectChanges(
+        listener,
+        'i:/t1/r1/c*',
+        {t1: {r1: {c1: [[1], [2]]}}},
+        {t1: {r1: {c_: [[3]]}}},
+      );
+      expectChanges(
+        listener,
+        'i:/t1/r*/c1',
+        {t1: {r1: {c1: [[1], [2]]}}},
+        {t1: {r_: {c1: [[4]]}}},
+      );
+      expectChanges(
+        listener,
+        'i:/t1/r*/c*',
+        {t1: {r1: {c1: [[1], [2]]}}},
+        {t1: {r1: {c_: [[3]]}}},
+        {t1: {r_: {c1: [[4]]}}},
+        {t1: {r_: {c_: [[5]]}}},
+      );
+      expectChanges(
+        listener,
+        'i:/t*/r1/c1',
+        {t1: {r1: {c1: [[1], [2]]}}},
+        {t_: {r1: {c1: [[6]]}}},
+      );
+      expectChanges(
+        listener,
+        'i:/t*/r1/c*',
+        {t1: {r1: {c1: [[1], [2]]}}},
+        {t1: {r1: {c_: [[3]]}}},
+        {t_: {r1: {c1: [[6]]}}},
+        {t_: {r1: {c_: [[7]]}}},
+      );
+      expectChanges(
+        listener,
+        'i:/t*/r*/c1',
+        {t1: {r1: {c1: [[1], [2]]}}},
+        {t1: {r_: {c1: [[4]]}}},
+        {t_: {r1: {c1: [[6]]}}},
+        {t_: {r_: {c1: [[8]]}}},
+      );
+      expectChanges(
+        listener,
+        'i:/t*/r*/c*',
+        {t1: {r1: {c1: [[1], [2]]}}},
+        {t1: {r1: {c_: [[3]]}}},
+        {t1: {r_: {c1: [[4]]}}},
+        {t1: {r_: {c_: [[5]]}}},
+        {t_: {r1: {c1: [[6]]}}},
+        {t_: {r1: {c_: [[7]]}}},
+        {t_: {r_: {c1: [[8]]}}},
+        {t_: {r_: {c_: [[9]]}}},
+      );
+      expectNoChanges(listener);
+    });
+
+    test('setRow', () => {
+      setMutatorListeners();
+      // @ts-ignore
+      store.setRow('t1', 'r1', {c1: [1]});
+      expectChanges(listener, 'i:/t1/r1/c1', {t1: {r1: {c1: [[1], [2]]}}});
+      expectChanges(
+        listener,
+        'i:/t1/r1/c*',
+        {t1: {r1: {c1: [[1], [2]]}}},
+        {t1: {r1: {c_: [[3]]}}},
+      );
+      expectChanges(
+        listener,
+        'i:/t1/r*/c1',
+        {t1: {r1: {c1: [[1], [2]]}}},
+        {t1: {r_: {c1: [[4]]}}},
+      );
+      expectChanges(
+        listener,
+        'i:/t1/r*/c*',
+        {t1: {r1: {c1: [[1], [2]]}}},
+        {t1: {r1: {c_: [[3]]}}},
+        {t1: {r_: {c1: [[4]]}}},
+        {t1: {r_: {c_: [[5]]}}},
+      );
+      expectChanges(
+        listener,
+        'i:/t*/r1/c1',
+        {t1: {r1: {c1: [[1], [2]]}}},
+        {t_: {r1: {c1: [[6]]}}},
+      );
+      expectChanges(
+        listener,
+        'i:/t*/r1/c*',
+        {t1: {r1: {c1: [[1], [2]]}}},
+        {t1: {r1: {c_: [[3]]}}},
+        {t_: {r1: {c1: [[6]]}}},
+        {t_: {r1: {c_: [[7]]}}},
+      );
+      expectChanges(
+        listener,
+        'i:/t*/r*/c1',
+        {t1: {r1: {c1: [[1], [2]]}}},
+        {t1: {r_: {c1: [[4]]}}},
+        {t_: {r1: {c1: [[6]]}}},
+        {t_: {r_: {c1: [[8]]}}},
+      );
+      expectChanges(
+        listener,
+        'i:/t*/r*/c*',
+        {t1: {r1: {c1: [[1], [2]]}}},
+        {t1: {r1: {c_: [[3]]}}},
+        {t1: {r_: {c1: [[4]]}}},
+        {t1: {r_: {c_: [[5]]}}},
+        {t_: {r1: {c1: [[6]]}}},
+        {t_: {r1: {c_: [[7]]}}},
+        {t_: {r_: {c1: [[8]]}}},
+        {t_: {r_: {c_: [[9]]}}},
+      );
+      expectNoChanges(listener);
+    });
+
+    test('addRow', () => {
+      setMutatorListeners();
+      // @ts-ignore
+      store.addRow('t1', {c1: [1]});
+      expectChanges(
+        listener,
+        'i:/t1/r*/c1',
+        {t1: {undefined: {c1: [[1]]}}},
+        {t1: {r_: {c1: [[4]]}}},
+      );
+      expectChanges(
+        listener,
+        'i:/t1/r*/c*',
+        {t1: {undefined: {c1: [[1]]}}},
+        {t1: {r_: {c1: [[4]]}}},
+        {t1: {r_: {c_: [[5]]}}},
+      );
+      expectChanges(
+        listener,
+        'i:/t*/r*/c1',
+        {t1: {undefined: {c1: [[1]]}}},
+        {t1: {r_: {c1: [[4]]}}},
+        {t_: {r_: {c1: [[8]]}}},
+      );
+      expectChanges(
+        listener,
+        'i:/t*/r*/c*',
+        {t1: {undefined: {c1: [[1]]}}},
+        {t1: {r_: {c1: [[4]]}}},
+        {t1: {r_: {c_: [[5]]}}},
+        {t_: {r_: {c1: [[8]]}}},
+        {t_: {r_: {c_: [[9]]}}},
+      );
+      expectNoChanges(listener);
+    });
+
+    test('setPartialRow', () => {
+      store.setTables({t1: {r1: {c1: 1}}});
+      setMutatorListeners();
+      // @ts-ignore
+      store.setPartialRow('t1', 'r1', {c1: 1, c2: [1]});
+      expectChanges(
+        listener,
+        'i:/t1/r1/c*',
+        {t1: {r1: {c2: [[1]]}}},
+        {t1: {r1: {c_: [[3]]}}},
+      );
+      expectChanges(
+        listener,
+        'i:/t1/r*/c*',
+        {t1: {r1: {c2: [[1]]}}},
+        {t1: {r1: {c_: [[3]]}}},
+        {t1: {r_: {c_: [[5]]}}},
+      );
+      expectChanges(
+        listener,
+        'i:/t*/r1/c*',
+        {t1: {r1: {c2: [[1]]}}},
+        {t1: {r1: {c_: [[3]]}}},
+        {t_: {r1: {c_: [[7]]}}},
+      );
+      expectChanges(
+        listener,
+        'i:/t*/r*/c*',
+        {t1: {r1: {c2: [[1]]}}},
+        {t1: {r1: {c_: [[3]]}}},
+        {t1: {r_: {c_: [[5]]}}},
+        {t_: {r1: {c_: [[7]]}}},
+        {t_: {r_: {c_: [[9]]}}},
+      );
+      expectNoChanges(listener);
+    });
+
+    test('setCell', () => {
+      setMutatorListeners();
+      // @ts-ignore
+      store.setCell('t1', 'r1', 'c1', [1]);
+      expectChanges(listener, 'i:/t1/r1/c1', {t1: {r1: {c1: [[1], [2]]}}});
+      expectChanges(
+        listener,
+        'i:/t1/r1/c*',
+        {t1: {r1: {c1: [[1], [2]]}}},
+        {t1: {r1: {c_: [[3]]}}},
+      );
+      expectChanges(
+        listener,
+        'i:/t1/r*/c1',
+        {t1: {r1: {c1: [[1], [2]]}}},
+        {t1: {r_: {c1: [[4]]}}},
+      );
+      expectChanges(
+        listener,
+        'i:/t1/r*/c*',
+        {t1: {r1: {c1: [[1], [2]]}}},
+        {t1: {r1: {c_: [[3]]}}},
+        {t1: {r_: {c1: [[4]]}}},
+        {t1: {r_: {c_: [[5]]}}},
+      );
+      expectChanges(
+        listener,
+        'i:/t*/r1/c1',
+        {t1: {r1: {c1: [[1], [2]]}}},
+        {t_: {r1: {c1: [[6]]}}},
+      );
+      expectChanges(
+        listener,
+        'i:/t*/r1/c*',
+        {t1: {r1: {c1: [[1], [2]]}}},
+        {t1: {r1: {c_: [[3]]}}},
+        {t_: {r1: {c1: [[6]]}}},
+        {t_: {r1: {c_: [[7]]}}},
+      );
+      expectChanges(
+        listener,
+        'i:/t*/r*/c1',
+        {t1: {r1: {c1: [[1], [2]]}}},
+        {t1: {r_: {c1: [[4]]}}},
+        {t_: {r1: {c1: [[6]]}}},
+        {t_: {r_: {c1: [[8]]}}},
+      );
+      expectChanges(
+        listener,
+        'i:/t*/r*/c*',
+        {t1: {r1: {c1: [[1], [2]]}}},
+        {t1: {r1: {c_: [[3]]}}},
+        {t1: {r_: {c1: [[4]]}}},
+        {t1: {r_: {c_: [[5]]}}},
+        {t_: {r1: {c1: [[6]]}}},
+        {t_: {r1: {c_: [[7]]}}},
+        {t_: {r_: {c1: [[8]]}}},
+        {t_: {r_: {c_: [[9]]}}},
       );
       expectNoChanges(listener);
     });

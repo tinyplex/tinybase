@@ -30,6 +30,12 @@ export type StoreListener = Listener &
       rowId: IdOrNull,
       cellId: IdOrNull,
     ) => Id;
+    listenToInvalidCell: (
+      id: Id,
+      tableId: IdOrNull,
+      rowId: IdOrNull,
+      cellId: IdOrNull,
+    ) => Id;
   }>;
 
 export type MetricsListener = Listener &
@@ -142,15 +148,21 @@ export const createStoreListener = (store: Store): StoreListener => {
         tableId,
         rowId,
         cellId,
-        (store, tableId, rowId, cellId): number =>
-          logs[id].push({
-            [tableId]: {
-              [rowId]: {[cellId]: store.getCell(tableId, rowId, cellId)},
-            },
-          }),
+        (_, tableId, rowId, cellId, newCell): number =>
+          logs[id].push({[tableId]: {[rowId]: {[cellId]: newCell}}}),
       );
     },
 
+    listenToInvalidCell: (id, tableId, rowId, cellId) => {
+      logs[id] = [];
+      return store.addInvalidCellListener(
+        tableId,
+        rowId,
+        cellId,
+        (_, tableId, rowId, cellId, invalidCells): number =>
+          logs[id].push({[tableId]: {[rowId]: {[cellId]: invalidCells}}}),
+      );
+    },
     logs,
   });
 };
