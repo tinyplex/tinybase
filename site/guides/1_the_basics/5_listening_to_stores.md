@@ -14,6 +14,9 @@ exception:
 - Listen to Cell Ids with the addCellIdsListener method.
 - Listen to a Cell with the addCellListener method.
 
+You can also listen to attempts to write invalid data to a Cell with the
+addInvalidCellListener method.
+
 Let's start with the simplest type of listener, addTablesListener, which listens
 to changes in the whole Store. Firstly, let's set up some simple data:
 

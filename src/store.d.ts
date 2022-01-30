@@ -574,6 +574,9 @@ export type StoreListenerStats = {
  * unique Id. And the setPartialRow method lets you update multiple Cell values
  * in a Row without affecting the others.
  *
+ * You can listen to attempts to write invalid data to a Cell with the
+ * addInvalidCellListener method.
+ *
  * The transaction method is used to wrap multiple changes to the Store so that
  * the relevant listeners only fire once.
  *
@@ -2397,6 +2400,133 @@ export interface Store {
     rowId: IdOrNull,
     cellId: IdOrNull,
     listener: CellListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * The addInvalidCellListener method registers a listener function with the
+   * Store that will be called whenever invalid data was attempted to be written
+   * to a Cell.
+   *
+   * You can either listen to a single Cell (by specifying the Table Id, Row Id,
+   * and Cell Id as the method's first three parameters) or invalid attempts to
+   * change any Cell (by providing `null` wildcards).
+   *
+   * All, some, or none of the `tableId`, `rowId`, and `cellId` parameters can
+   * be wildcarded with `null`. You can listen to a specific Cell in a specific
+   * Row in a specific Table, any Cell in any Row in any Table, for example - or
+   * every other combination of wildcards.
+   *
+   * The provided listener is an InvalidCellListener function, and will be
+   * called with a reference to the Store, the Id of the Table, the Id of the
+   * Row, and the Id of Cell that were being attempted to be changed. It is also
+   * given the invalid value of the Cell, which could have been of absolutely
+   * any type. Since there could have been multiple failed attempts to set the
+   * Cell within a single transaction, this is an array containing each attempt,
+   * chronologically.
+   *
+   * Use the optional mutator parameter to indicate that there is code in the
+   * listener that will mutate Store data. If set to `false` (or omitted), such
+   * mutations will be silently ignored. All relevant mutator listeners (with
+   * this flag set to `true`) are called _before_ any non-mutator listeners
+   * (since the latter may become relevant due to changes made in the former).
+   * The changes made by mutator listeners do not fire other mutating listeners,
+   * though they will fire non-mutator listeners.
+   *
+   * @param tableId The Id of the Table to listen to, or `null` as a wildcard.
+   * @param rowId The Id of the Row to listen to, or `null` as a wildcard.
+   * @param cellId The Id of the Cell to listen to, or `null` as a wildcard.
+   * @param listener The function that will be called whenever an attempt to
+   * write invalid data to the matching Cell was made.
+   * @param mutator An optional boolean that indicates that the listener mutates
+   * Store data.
+   * @returns A unique Id for the listener that can later be used to call it
+   * explicitly, or to remove it.
+   * @example
+   * This example registers a listener that responds to any invalid changes to a
+   * specific Cell.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {fido: {species: 'dog', color: 'brown'}},
+   * });
+   * const listenerId = store.addInvalidCellListener(
+   *   'pets',
+   *   'fido',
+   *   'color',
+   *   (store, tableId, rowId, cellId, invalidCells) => {
+   *     console.log('Invalid color cell in fido row in pets table');
+   *     console.log(invalidCells);
+   *   },
+   * );
+   *
+   * store.setCell('pets', 'fido', 'color', {r: '96', g: '4B', b: '00'});
+   * // -> 'Invalid color cell in fido row in pets table'
+   * // -> [{r: '96', g: '4B', b: '00'}]
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @example
+   * This example registers a listener that responds to any invalid changes to
+   * any Cell.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {fido: {species: 'dog', color: 'brown'}},
+   * });
+   * const listenerId = store.addInvalidCellListener(
+   *   null,
+   *   null,
+   *   null,
+   *   (store, tableId, rowId, cellId) => {
+   *     console.log(
+   *       `Invalid ${cellId} cell in ${rowId} row in ${tableId} table`,
+   *     );
+   *   },
+   * );
+   *
+   * store.setCell('pets', 'fido', 'color', {r: '96', g: '4B', b: '00'});
+   * // -> 'Invalid color cell in fido row in pets table'
+   * store.setTable('sales', {fido: {date: new Date()}});
+   * // -> 'Invalid date cell in fido row in sales table'
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @example
+   * This example registers a listener that responds to any changes to a
+   * specific Cell, and which also mutates the Store itself.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {fido: {species: 'dog', color: 'brown'}},
+   * });
+   * const listenerId = store.addInvalidCellListener(
+   *   'pets',
+   *   'fido',
+   *   'color',
+   *   (store, tableId, rowId, cellId, invalidCells) =>
+   *     store.setCell(
+   *       'meta',
+   *       'invalid_updates',
+   *       `${tableId}_${rowId}_${cellId}`,
+   *       JSON.stringify(invalidCells[0]),
+   *     ),
+   *   true,
+   * );
+   *
+   * store.setCell('pets', 'fido', 'color', {r: '96', g: '4B', b: '00'});
+   * console.log(store.getRow('meta', 'invalid_updates'));
+   * // -> {'pets_fido_color': '{"r":"96","g":"4B","b":"00"}'}
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @category Listener
+   */
+  addInvalidCellListener(
+    tableId: IdOrNull,
+    rowId: IdOrNull,
+    cellId: IdOrNull,
+    listener: InvalidCellListener,
     mutator?: boolean,
   ): Id;
 

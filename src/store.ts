@@ -816,6 +816,19 @@ export const createStore: typeof createStoreDecl = (): Store => {
       cellId,
     ]);
 
+  const addInvalidCellListener = (
+    tableId: IdOrNull,
+    rowId: IdOrNull,
+    cellId: IdOrNull,
+    listener: InvalidCellListener,
+    mutator?: boolean,
+  ): Id =>
+    addListener(listener, invalidCellListeners[mutator ? 1 : 0], [
+      tableId,
+      rowId,
+      cellId,
+    ]);
+
   const callListener = (listenerId: Id) => {
     callListenerImpl(listenerId, [getTableIds, getRowIds, getCellIds], (ids) =>
       isUndefined(ids[2])
@@ -889,6 +902,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     addRowListener,
     addCellIdsListener,
     addCellListener,
+    addInvalidCellListener,
 
     callListener,
     delListener,
