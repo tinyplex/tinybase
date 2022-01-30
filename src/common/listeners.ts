@@ -28,6 +28,8 @@ import {
   arrayFromSecond,
   arrayIsEmpty,
   arrayLength,
+  arrayPop,
+  arrayPush,
 } from './array';
 import {collDel, collForEach} from './coll';
 import {ifNotUndefined, isUndefined} from './other';
@@ -108,7 +110,7 @@ export const getListenerFunctions = (
     idOrNulls: IdOrNull[] = [],
   ): Id => {
     thing ??= getThing();
-    const id = listenerPool.pop() ?? '' + nextId++;
+    const id = arrayPop(listenerPool) ?? '' + nextId++;
     mapSet(allListeners, id, [listener, deepSet, idOrNulls]);
     addDeepSet(deepSet, id, idOrNulls);
     return id;
@@ -135,7 +137,7 @@ export const getListenerFunctions = (
         forDeepSet(collDel)(deepSet, id, ...idOrNulls);
         mapSet(allListeners, id);
         if (arrayLength(listenerPool) < 1e3) {
-          listenerPool.push(id);
+          arrayPush(listenerPool, id);
         }
         return idOrNulls;
       },

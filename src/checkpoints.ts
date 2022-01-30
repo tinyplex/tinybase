@@ -25,6 +25,8 @@ import {
   arrayHas,
   arrayIsEmpty,
   arrayLength,
+  arrayPop,
+  arrayPush,
 } from './common/array';
 import {
   collForEach,
@@ -104,7 +106,7 @@ export const createCheckpoints: typeof createCheckpointsDecl =
       (_store, tableId, rowId, cellId, newCell, oldCell) => {
         if (listening) {
           ifNotUndefined(currentId, () => {
-            backwardIds.push(currentId as Id);
+            arrayPush(backwardIds, currentId as Id);
             trimBackwardsIds();
             clearCheckpointIds(forwardIds);
             currentId = undefined;
@@ -123,7 +125,7 @@ export const createCheckpoints: typeof createCheckpointsDecl =
             if (collIsEmpty(mapSet(row, cellId))) {
               if (collIsEmpty(mapSet(table, rowId))) {
                 if (collIsEmpty(mapSet(delta, tableId))) {
-                  currentId = backwardIds.pop();
+                  currentId = arrayPop(backwardIds);
                   checkpointsChanged = 1;
                 }
               }
@@ -149,14 +151,14 @@ export const createCheckpoints: typeof createCheckpointsDecl =
       if (!arrayIsEmpty(backwardIds)) {
         forwardIds.unshift(addCheckpointImpl());
         updateStore(0, currentId as Id);
-        currentId = backwardIds.pop();
+        currentId = arrayPop(backwardIds);
         checkpointsChanged = 1;
       }
     };
 
     const goForwardImpl = () => {
       if (!arrayIsEmpty(forwardIds)) {
-        backwardIds.push(currentId as Id);
+        arrayPush(backwardIds, currentId as Id);
         currentId = forwardIds.shift();
         updateStore(1, currentId as Id);
         checkpointsChanged = 1;
