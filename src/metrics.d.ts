@@ -37,7 +37,7 @@ export type Metric = number;
 export type MetricCallback = (metricId: Id, metric?: Metric) => void;
 
 /**
- * The Aggregate type describes a custom function that takes an array or numbers
+ * The Aggregate type describes a custom function that takes an array of numbers
  * and returns an aggregate that is used as a Metric.
  *
  * There are a number of common predefined aggregators, such as for counting,
