@@ -105,8 +105,10 @@ const getCellType = (cell: Cell | undefined): string | undefined => {
 const validate = (
   obj: IdObj<any> | undefined,
   validateChild: (child: any, id: Id) => boolean,
+  onInvalidObj?: () => void,
 ): boolean => {
-  if (isUndefined(obj) || !isObject(obj) || objFrozen(obj)) {
+  if (isUndefined(obj) || !isObject(obj) || objIsEmpty(obj) || objFrozen(obj)) {
+    onInvalidObj?.();
     return false;
   }
   objForEach(obj, (child, id) => {
@@ -170,12 +172,14 @@ export const createStore: typeof createStoreDecl = (): Store => {
     );
 
   const validateTables = (tables: Tables): boolean =>
-    validate(tables, validateTable);
+    validate(tables, validateTable, cellInvalid);
 
   const validateTable = (table: Table, tableId: Id): boolean =>
     (!hasSchema || collHas(schemaMap, tableId)) &&
-    validate(table, (row: Row, rowId: Id): boolean =>
-      validateRow(tableId, rowId, row),
+    validate(
+      table,
+      (row: Row, rowId: Id): boolean => validateRow(tableId, rowId, row),
+      () => cellInvalid(tableId),
     );
 
   const validateRow = (
@@ -195,6 +199,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
           },
           () => false,
         ) as boolean,
+      () => cellInvalid(tableId, rowId),
     );
 
   const getValidatedCell = (
@@ -408,10 +413,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
     );
 
   const cellInvalid = (
-    tableId: Id,
-    rowId: Id | undefined,
-    cellId: Id,
-    invalidCell: any,
+    tableId?: Id,
+    rowId?: Id,
+    cellId?: Id,
+    invalidCell?: any,
     defaultedCell?: Cell,
   ): Cell | undefined => {
     arrayPush(

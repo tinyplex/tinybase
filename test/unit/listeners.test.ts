@@ -4,6 +4,7 @@ import {
   StoreListener,
   createStoreListener,
   expectChanges,
+  expectChangesNoJson,
   expectNoChanges,
 } from './common';
 
@@ -2397,6 +2398,15 @@ describe('Listeners', () => {
       expectNoChanges(listener);
     });
 
+    test('setTables, empty', () => {
+      // @ts-ignore
+      store.setTables({});
+      expectChangesNoJson(listener, 'i:/t*/r*/c*', {
+        undefined: {undefined: {undefined: [undefined]}},
+      });
+      expectNoChanges(listener);
+    });
+
     test('setTable', () => {
       // @ts-ignore
       store.setTable('t1', {r1: {c1: []}});
@@ -2408,6 +2418,18 @@ describe('Listeners', () => {
       expectChanges(listener, 'i:/t*/r1/c*', {t1: {r1: {c1: [[]]}}});
       expectChanges(listener, 'i:/t*/r*/c1', {t1: {r1: {c1: [[]]}}});
       expectChanges(listener, 'i:/t*/r*/c*', {t1: {r1: {c1: [[]]}}});
+      expectNoChanges(listener);
+    });
+
+    test('setTable, empty', () => {
+      // @ts-ignore
+      store.setTable('t1', {});
+      expectChangesNoJson(listener, 'i:/t1/r*/c*', {
+        t1: {undefined: {undefined: [undefined]}},
+      });
+      expectChangesNoJson(listener, 'i:/t*/r*/c*', {
+        t1: {undefined: {undefined: [undefined]}},
+      });
       expectNoChanges(listener);
     });
 
@@ -2425,11 +2447,38 @@ describe('Listeners', () => {
       expectNoChanges(listener);
     });
 
+    test('setRow, empty', () => {
+      // @ts-ignore
+      store.setRow('t1', 'r1', {});
+      expectChangesNoJson(listener, 'i:/t1/r1/c*', {
+        t1: {r1: {undefined: [undefined]}},
+      });
+      expectChangesNoJson(listener, 'i:/t1/r*/c*', {
+        t1: {r1: {undefined: [undefined]}},
+      });
+      expectChangesNoJson(listener, 'i:/t*/r1/c*', {
+        t1: {r1: {undefined: [undefined]}},
+      });
+      expectChangesNoJson(listener, 'i:/t*/r*/c*', {
+        t1: {r1: {undefined: [undefined]}},
+      });
+      expectNoChanges(listener);
+    });
+
     test('addRow', () => {
       // @ts-ignore
       store.addRow('t2', {c1: []});
       expectChanges(listener, 'i:/t*/r*/c1', {t2: {undefined: {c1: [[]]}}});
       expectChanges(listener, 'i:/t*/r*/c*', {t2: {undefined: {c1: [[]]}}});
+      expectNoChanges(listener);
+    });
+
+    test('addRow, empty', () => {
+      // @ts-ignore
+      store.addRow('t2', {});
+      expectChangesNoJson(listener, 'i:/t*/r*/c*', {
+        t2: {undefined: {undefined: [undefined]}},
+      });
       expectNoChanges(listener);
     });
 

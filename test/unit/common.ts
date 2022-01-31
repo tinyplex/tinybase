@@ -84,6 +84,17 @@ export const expectChanges = (
   );
 };
 
+export const expectChangesNoJson = (
+  listener: Listener,
+  id: Id,
+  ...expectedChanges: any[]
+): void => {
+  const log: any[] = listener.logs[id];
+  expectedChanges.forEach((expectedChange) =>
+    expect(log.shift()).toEqual(expectedChange),
+  );
+};
+
 export const expectNoChanges = (listener: Listener): void => {
   Object.values(listener.logs).forEach((log) => expect(log).toHaveLength(0));
 };

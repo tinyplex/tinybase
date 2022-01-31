@@ -20,6 +20,7 @@ import {
   StoreListener,
   createStoreListener,
   expectChanges,
+  expectChangesNoJson,
   expectNoChanges,
 } from './common';
 import {
@@ -121,6 +122,9 @@ describe('Listening to invalid', () => {
     listener.listenToInvalidCell('invalids', null, null, null);
     store.setTables(tables);
     expect(store.getTables()).toEqual(validTables);
+    expectChangesNoJson(listener, 'invalids', {
+      undefined: {undefined: {undefined: [undefined]}},
+    });
     expectNoChanges(listener);
   });
 
@@ -137,6 +141,9 @@ describe('Listening to invalid', () => {
       expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
       expectChanges(listener, '/', {t1: {r1: {c1: 2}}});
       expectChanges(listener, '/t1', {t1: {r1: {c1: 2}}});
+      expectChangesNoJson(listener, 'invalids', {
+        t2: {undefined: {undefined: [undefined]}},
+      });
       expectNoChanges(listener);
     },
   );
@@ -153,6 +160,12 @@ describe('Listening to invalid', () => {
       store.setTable('t1', table);
       store.setTable('t2', table);
       expect(store.getTables()).toEqual(validTables);
+      expectChangesNoJson(
+        listener,
+        'invalids',
+        {t1: {undefined: {undefined: [undefined]}}},
+        {t2: {undefined: {undefined: [undefined]}}},
+      );
       expectNoChanges(listener);
     },
   );
@@ -170,6 +183,9 @@ describe('Listening to invalid', () => {
     expectChanges(listener, '/', {t1: {r1: {c1: 2}}});
     expectChanges(listener, '/t1', {t1: {r1: {c1: 2}}});
     expectChanges(listener, '/t1/r1', {t1: {r1: {c1: 2}}});
+    expectChangesNoJson(listener, 'invalids', {
+      t1: {r2: {undefined: [undefined]}},
+    });
     expectNoChanges(listener);
   });
 
@@ -184,6 +200,12 @@ describe('Listening to invalid', () => {
     store.setRow('t1', 'r1', row);
     store.setRow('t1', 'r2', row);
     expect(store.getTables()).toEqual(validTables);
+    expectChangesNoJson(
+      listener,
+      'invalids',
+      {t1: {r1: {undefined: [undefined]}}},
+      {t1: {r2: {undefined: [undefined]}}},
+    );
     expectNoChanges(listener);
   });
 
@@ -214,6 +236,9 @@ describe('Listening to invalid', () => {
       {t1: {r1: {c1: 1}}},
     );
     expectChanges(listener, '/t1/0', {t1: {0: {c1: 2}}}, {t1: {0: {}}});
+    expectChangesNoJson(listener, 'invalids', {
+      t1: {undefined: {undefined: [undefined]}},
+    });
     expectNoChanges(listener);
   });
 
