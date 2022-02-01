@@ -42,6 +42,7 @@
     "compileForProd": "gulp compileForProd",
     "testUnit": "gulp testUnit",
     "testUnitCountAsserts": "gulp testUnitCountAsserts",
+    "compileAndTestUnitSaveCoverage": "gulp compileAndTestUnitSaveCoverage",
     "testPerf": "gulp testPerf",
     "testE2e": "gulp testE2e",
     "compileAndTestUnit": "gulp compileAndTestUnit",

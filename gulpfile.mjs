@@ -213,7 +213,11 @@ const compileModule = async (module, debug, dir = LIB_DIR, format = 'es') => {
   await (await rollup(inputConfig)).write(outputConfig);
 };
 
-const test = async (dir, {coverage, countAsserts, puppeteer, serialTests}) => {
+// coverageMode = 0: none; 1: screen; 2: json; 3: html
+const test = async (
+  dir,
+  {coverageMode, countAsserts, puppeteer, serialTests},
+) => {
   const {default: jest} = await import('jest');
   await makeDir(TMP_DIR);
   const {
@@ -228,12 +232,14 @@ const test = async (dir, {coverage, countAsserts, puppeteer, serialTests}) => {
             detectOpenHandles: true,
           }
         : {testEnvironment: 'jsdom'}),
-      ...(coverage
+      ...(coverageMode > 0
         ? {
             collectCoverage: true,
             coverageProvider: 'babel',
             collectCoverageFrom: [`${LIB_DIR}/debug/tinybase.js`],
-            coverageReporters: ['text-summary', 'json-summary'],
+            coverageReporters: ['text-summary']
+              .concat(coverageMode > 1 ? ['json-summary'] : [])
+              .concat(coverageMode > 2 ? ['lcov'] : []),
             coverageDirectory: 'tmp',
           }
         : {}),
@@ -250,9 +256,10 @@ const test = async (dir, {coverage, countAsserts, puppeteer, serialTests}) => {
     [''],
   );
   if (!success) {
+    await removeDir(TMP_DIR);
     throw 'Test failed';
   }
-  if (coverage) {
+  if (coverageMode == 2) {
     await promises.writeFile(
       'coverage.json',
       JSON.stringify({
@@ -265,7 +272,9 @@ const test = async (dir, {coverage, countAsserts, puppeteer, serialTests}) => {
       'utf-8',
     );
   }
-  await removeDir(TMP_DIR);
+  if (coverageMode < 3) {
+    await removeDir(TMP_DIR);
+  }
 };
 
 const compileDocsAndAssets = async (api = true, pages = true) => {
@@ -335,12 +344,19 @@ export const compileForProd = async () => {
 };
 
 export const testUnit = async () => {
-  await test('test/unit', {coverage: true});
+  await test('test/unit', {coverageMode: 1});
 };
 export const testUnitCountAsserts = async () => {
-  await test('test/unit', {coverage: true, countAsserts: true});
+  await test('test/unit', {coverageMode: 2, countAsserts: true});
+};
+export const testUnitSaveCoverage = async () => {
+  await test('test/unit', {coverageMode: 3});
 };
 export const compileAndTestUnit = series(compileForTest, testUnit);
+export const compileAndTestUnitSaveCoverage = series(
+  compileForTest,
+  testUnitSaveCoverage,
+);
 
 export const testPerf = async () => {
   await test('test/perf', {serialTests: true});
