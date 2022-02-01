@@ -175,7 +175,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
     validate(tables, validateTable, cellInvalid);
 
   const validateTable = (table: Table, tableId: Id): boolean =>
-    (!hasSchema || collHas(schemaMap, tableId)) &&
+    (!hasSchema ||
+      collHas(schemaMap, tableId) ||
+      (cellInvalid(tableId) as boolean)) &&
     validate(
       table,
       (row: Row, rowId: Id): boolean => validateRow(tableId, rowId, row),
@@ -215,6 +217,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
             getCellType(cell) != cellSchema[TYPE]
               ? cellInvalid(tableId, rowId, cellId, cell, cellSchema[DEFAULT])
               : cell,
+          () => cellInvalid(tableId, rowId, cellId, cell),
         )
       : isUndefined(getCellType(cell))
       ? cellInvalid(tableId, rowId, cellId, cell)

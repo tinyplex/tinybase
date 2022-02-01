@@ -242,6 +242,23 @@ describe('Listening to invalid', () => {
     expectNoChanges(listener);
   });
 
+  test.each(INVALID_CELLS)('add Row; %s', (_name, cell: any) => {
+    const store = createStore().setTables(validTables);
+    const listener = createStoreListener(store);
+    listener.listenToTables('/');
+    listener.listenToTable('/t1', 't1');
+    listener.listenToRow('/t1/r1', 't1', 'r1');
+    listener.listenToRow('/t1/0', 't1', '0');
+    listener.listenToInvalidCell('invalids', null, null, null);
+    const rowId = store.addRow('t1', {c1: cell});
+    expect(rowId).toBeUndefined();
+    expect(store.getTables()).toEqual(validTables);
+    expectChangesNoJson(listener, 'invalids', {
+      t1: {undefined: {c1: [cell]}},
+    });
+    expectNoChanges(listener);
+  });
+
   test.each(INVALID_CELLS)('Cell, alongside valid; %s', (_name, cell: any) => {
     const store = createStore().setTables(validTables);
     const listener = createStoreListener(store);

@@ -6,7 +6,12 @@ import {
   Tables,
   createStore,
 } from '../../lib/debug/tinybase';
-import {createStoreListener, expectChanges, expectNoChanges} from './common';
+import {
+  createStoreListener,
+  expectChanges,
+  expectChangesNoJson,
+  expectNoChanges,
+} from './common';
 
 type AddMutator = (store: Store) => void;
 
@@ -116,6 +121,8 @@ const boundsSchemaAndExpected: [
 describe('Get and set schemas', () => {
   test('Set schema on creation', () => {
     const store = createStore();
+    const listener = createStoreListener(store);
+    listener.listenToInvalidCell('invalids', null, null, null);
     addAllowMutator(store, 't1', 'c1', [2, 3]);
     store.setSchema({t1: {c1: {type: 'number', default: 1}}});
     expect(JSON.parse(store.getSchemaJson())).toEqual({
@@ -125,10 +132,14 @@ describe('Get and set schemas', () => {
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     store.setCell('t1', 'r1', 'c1', 2);
     expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
+    expectChanges(listener, 'invalids', {t1: {r1: {c1: ['2']}}});
+    expectNoChanges(listener);
   });
 
   test('Set schema after creation', () => {
     const store = createStore().setTables({});
+    const listener = createStoreListener(store);
+    listener.listenToInvalidCell('invalids', null, null, null);
     store.setCell('t1', 'r1', 'c1', '1');
     expect(store.getTables()).toEqual({t1: {r1: {c1: '1'}}});
     store.setSchema({
@@ -148,17 +159,32 @@ describe('Get and set schemas', () => {
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1, c2: '2'}}});
     store.setCell('t1', 'r1', 'c1', 2);
     expect(store.getTables()).toEqual({t1: {r1: {c1: 2, c2: '2'}}});
+    expectChanges(
+      listener,
+      'invalids',
+      {t1: {r1: {c1: ['1']}}},
+      {t1: {r1: {c1: ['2']}}},
+    );
+    expectNoChanges(listener);
   });
 
   test('Set schema after creation (complete failure)', () => {
     const store = createStore().setTables({});
+    const listener = createStoreListener(store);
+    listener.listenToInvalidCell('invalids', null, null, null);
     store.setCell('t1', 'r1', 'c1', '1');
     store.setSchema({t2: {c1: {type: 'number', default: 1}}});
     expect(store.getTables()).toEqual({});
+    expectChangesNoJson(listener, 'invalids', {
+      t1: {undefined: {undefined: [undefined]}},
+    });
+    expectNoChanges(listener);
   });
 
   test('Change schema after creation', () => {
     const store = createStore();
+    const listener = createStoreListener(store);
+    listener.listenToInvalidCell('invalids', null, null, null);
     let listenerId = addAllowMutator(store, 't1', 'c1', [2, 3]);
     store.setSchema({t1: {c1: {type: 'number', default: 1}}});
     store.setCell('t1', 'r1', 'c1', '1');
@@ -179,10 +205,20 @@ describe('Get and set schemas', () => {
     listenerId = addAllowMutator(store, 't1', 'c1', ['3', '4']);
     store.callListener(listenerId);
     expect(store.getTables()).toEqual({t1: {r1: {c1: '1'}, r2: {c1: '3'}}});
+    expectChanges(
+      listener,
+      'invalids',
+      {t1: {r1: {c1: ['1']}}},
+      {t1: {r1: {c1: [1]}}},
+      {t1: {r1: {c1: [2]}}},
+    );
+    expectNoChanges(listener);
   });
 
   test('Remove schema after creation', () => {
     const store = createStore();
+    const listener = createStoreListener(store);
+    listener.listenToInvalidCell('invalids', null, null, null);
     const listenerId = addAllowMutator(store, 't1', 'c1', [2, 3]);
     store.setSchema({t1: {c1: {type: 'number', default: 1}}});
     store.setCell('t1', 'r1', 'c1', '1');
@@ -192,10 +228,12 @@ describe('Get and set schemas', () => {
     expect(JSON.parse(store.getSchemaJson())).toEqual({});
     store.setCell('t1', 'r1', 'c1', '1');
     expect(store.getTables()).toEqual({t1: {r1: {c1: '1'}}});
+    expectChanges(listener, 'invalids', {t1: {r1: {c1: ['1']}}});
+    expectNoChanges(listener);
   });
 });
 
-describe('Schema applied on creation', () => {
+describe('Schema applied before data set', () => {
   test('matching', () => {
     const store = createStore();
     store.setTables({t1: {r1: {c1: 1}}});
@@ -284,13 +322,14 @@ describe('Schema applied on creation', () => {
   });
 });
 
-describe('Schema applied on set', () => {
+describe('Schema applied before data set, listening', () => {
   describe('Tables', () => {
     test('matching', () => {
       const store = createStore().setSchema({t1: {c1: {type: 'number'}}});
       const listener = createStoreListener(store);
       listener.listenToTables('/');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.setTables({t1: {r1: {c1: 1}}});
       expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
       expectChanges(listener, '/', {t1: {r1: {c1: 1}}});
@@ -305,6 +344,7 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToTables('/');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.setTables({t1: {r1: {c1: 1}}});
       expect(store.getTables()).toEqual({t1: {r1: {c1: 1, c2: 2}}});
       expectChanges(listener, '/', {t1: {r1: {c1: 1, c2: 2}}});
@@ -322,8 +362,12 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToTables('/');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.setTables({t2: {r1: {c1: 1}}});
       expect(store.getTables()).toEqual({});
+      expectChangesNoJson(listener, 'invalids', {
+        t2: {undefined: {undefined: [undefined]}},
+      });
       expectNoChanges(listener);
     });
 
@@ -332,8 +376,10 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToTables('/');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.setTables({t1: {r1: {c2: 1}}});
       expect(store.getTables()).toEqual({});
+      expectChanges(listener, 'invalids', {t1: {r1: {c2: [1]}}});
       expectNoChanges(listener);
     });
 
@@ -342,10 +388,17 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToTables('/');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.setTables({t1: {r1: {c1: 1}, r2: {c1: true}, r3: {c1: 'a'}}});
       expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
       expectChanges(listener, '/', {t1: {r1: {c1: 1}}});
       expectChanges(listener, '/t*/r*/c*', {t1: {r1: {c1: 1}}});
+      expectChanges(
+        listener,
+        'invalids',
+        {t1: {r2: {c1: [true]}}},
+        {t1: {r3: {c1: ['a']}}},
+      );
       expectNoChanges(listener);
     });
 
@@ -356,12 +409,19 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToTables('/');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.setTables({
         t1: {r1: {c1: 2}, r2: {c1: 4}, r3: {c1: true}, r4: {c1: 'a'}},
       });
       expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
       expectChanges(listener, '/', {t1: {r1: {c1: 2}}});
       expectChanges(listener, '/t*/r*/c*', {t1: {r1: {c1: 2}}});
+      expectChanges(
+        listener,
+        'invalids',
+        {t1: {r3: {c1: [true]}}},
+        {t1: {r4: {c1: ['a']}}},
+      );
       expectNoChanges(listener);
     });
 
@@ -414,6 +474,7 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToTables('/');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.setTables({
         t1: {r1: {c1: 1}, r2: {c1: true}, r3: {c1: 'a'}, r4: {}},
       });
@@ -431,6 +492,12 @@ describe('Schema applied on set', () => {
         {t1: {r3: {c1: 2}}},
         {t1: {r4: {c1: 2}}},
       );
+      expectChanges(
+        listener,
+        'invalids',
+        {t1: {r2: {c1: [true]}}},
+        {t1: {r3: {c1: ['a']}}},
+      );
       expectNoChanges(listener);
     });
 
@@ -441,6 +508,7 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToTables('/');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.setTables({
         t1: {
           r1: {c1: 2},
@@ -465,6 +533,12 @@ describe('Schema applied on set', () => {
         {t1: {r4: {c1: 2}}},
         {t1: {r5: {c1: 3}}},
       );
+      expectChanges(
+        listener,
+        'invalids',
+        {t1: {r3: {c1: [true]}}},
+        {t1: {r4: {c1: ['a']}}},
+      );
       expectNoChanges(listener);
     });
 
@@ -475,6 +549,7 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToTables('/');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.setTables({t1: {r1: {c1: 3}}});
       store.setTables({t1: {r1: {c1: true}}});
       store.setTables({t1: {r1: {c1: 'a'}}});
@@ -486,6 +561,12 @@ describe('Schema applied on set', () => {
         {t1: {r1: {c1: 3}}},
         {t1: {r1: {c1: 2}}},
       );
+      expectChanges(
+        listener,
+        'invalids',
+        {t1: {r1: {c1: [true]}}},
+        {t1: {r1: {c1: ['a']}}},
+      );
       expectNoChanges(listener);
     });
 
@@ -496,6 +577,7 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToTables('/');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.delTables();
       expect(store.getTables()).toEqual({});
       expectChanges(listener, '/', {});
@@ -509,6 +591,7 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToTable('/t1', 't1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.setTable('t1', {r1: {c1: 1}});
       expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
       expectChanges(listener, '/t1', {t1: {r1: {c1: 1}}});
@@ -523,6 +606,7 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToTable('/t1', 't1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.setTable('t1', {r1: {c1: 1}});
       expect(store.getTables()).toEqual({t1: {r1: {c1: 1, c2: 2}}});
       expectChanges(listener, '/t1', {t1: {r1: {c1: 1, c2: 2}}});
@@ -540,8 +624,12 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToTable('/t2', 't2');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.setTable('t2', {r1: {c1: 1}});
       expect(store.getTables()).toEqual({});
+      expectChangesNoJson(listener, 'invalids', {
+        t2: {undefined: {undefined: [undefined]}},
+      });
       expectNoChanges(listener);
     });
 
@@ -550,8 +638,10 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToTable('/t1', 't1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.setTable('t1', {r1: {c2: 1}});
       expect(store.getTables()).toEqual({});
+      expectChanges(listener, 'invalids', {t1: {r1: {c2: [1]}}});
       expectNoChanges(listener);
     });
 
@@ -560,10 +650,17 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToTable('/t1', 't1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.setTable('t1', {r1: {c1: 1}, r2: {c1: true}, r3: {c1: 'a'}});
       expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
       expectChanges(listener, '/t1', {t1: {r1: {c1: 1}}});
       expectChanges(listener, '/t*/r*/c*', {t1: {r1: {c1: 1}}});
+      expectChanges(
+        listener,
+        'invalids',
+        {t1: {r2: {c1: [true]}}},
+        {t1: {r3: {c1: ['a']}}},
+      );
       expectNoChanges(listener);
     });
 
@@ -574,6 +671,7 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToTable('/t1', 't1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.setTable('t1', {
         r1: {c1: 2},
         r2: {c1: 4},
@@ -583,6 +681,12 @@ describe('Schema applied on set', () => {
       expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
       expectChanges(listener, '/t1', {t1: {r1: {c1: 2}}});
       expectChanges(listener, '/t*/r*/c*', {t1: {r1: {c1: 2}}});
+      expectChanges(
+        listener,
+        'invalids',
+        {t1: {r3: {c1: [true]}}},
+        {t1: {r4: {c1: ['a']}}},
+      );
       expectNoChanges(listener);
     });
 
@@ -633,6 +737,7 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToTable('/t1', 't1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.setTable('t1', {
         r1: {c1: 1},
         r2: {c1: true},
@@ -653,6 +758,12 @@ describe('Schema applied on set', () => {
         {t1: {r3: {c1: 2}}},
         {t1: {r4: {c1: 2}}},
       );
+      expectChanges(
+        listener,
+        'invalids',
+        {t1: {r2: {c1: [true]}}},
+        {t1: {r3: {c1: ['a']}}},
+      );
       expectNoChanges(listener);
     });
 
@@ -663,6 +774,7 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToTable('/t1', 't1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.setTable('t1', {
         r1: {c1: 2},
         r2: {c1: 4},
@@ -685,6 +797,12 @@ describe('Schema applied on set', () => {
         {t1: {r4: {c1: 2}}},
         {t1: {r5: {c1: 3}}},
       );
+      expectChanges(
+        listener,
+        'invalids',
+        {t1: {r3: {c1: [true]}}},
+        {t1: {r4: {c1: ['a']}}},
+      );
       expectNoChanges(listener);
     });
 
@@ -695,6 +813,7 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToTable('/t1', 't1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.setTable('t1', {r1: {c1: 3}});
       store.setTable('t1', {r1: {c1: true}});
       store.setTable('t1', {r1: {c1: 'a'}});
@@ -709,6 +828,12 @@ describe('Schema applied on set', () => {
         {t1: {r1: {c1: 3}}},
         {t1: {r1: {c1: 2}}},
       );
+      expectChanges(
+        listener,
+        'invalids',
+        {t1: {r1: {c1: [true]}}},
+        {t1: {r1: {c1: ['a']}}},
+      );
       expectNoChanges(listener);
     });
 
@@ -718,6 +843,7 @@ describe('Schema applied on set', () => {
         .setSchema({t1: {c1: {type: 'number', default: 2}}});
       const listener = createStoreListener(store);
       listener.listenToTable('/t1', 't1');
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.delTable('t1');
       expect(store.getTables()).toEqual({});
       expectChanges(listener, '/t1', {t1: {}});
@@ -730,6 +856,7 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToRow('/t1/r1', 't1', 'r1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.setRow('t1', 'r1', {c1: 1});
       expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
       expectChanges(listener, '/t1/r1', {t1: {r1: {c1: 1}}});
@@ -744,6 +871,7 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToRow('/t1/r1', 't1', 'r1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.setRow('t1', 'r1', {c1: 1});
       expect(store.getTables()).toEqual({t1: {r1: {c1: 1, c2: 2}}});
       expectChanges(listener, '/t1/r1', {t1: {r1: {c1: 1, c2: 2}}});
@@ -761,8 +889,10 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToRow('/t2/r1', 't2', 'r1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.setRow('t2', 'r1', {c1: 1});
       expect(store.getTables()).toEqual({});
+      expectChanges(listener, 'invalids', {t2: {r1: {c1: [1]}}});
       expectNoChanges(listener);
     });
 
@@ -771,8 +901,10 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToRow('/t1/r1', 't1', 'r1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.setRow('t1', 'r1', {c2: 1});
       expect(store.getTables()).toEqual({});
+      expectChanges(listener, 'invalids', {t1: {r1: {c2: [1]}}});
       expectNoChanges(listener);
     });
 
@@ -783,6 +915,7 @@ describe('Schema applied on set', () => {
       listener.listenToRow('/t1/r1', 't1', 'r1');
       listener.listenToRow('/t1/r2', 't1', 'r2');
       listener.listenToRow('/t1/r3', 't1', 'r3');
+      listener.listenToInvalidCell('invalids', null, null, null);
       store
         .setRow('t1', 'r1', {c1: 1})
         .setRow('t1', 'r2', {c1: true})
@@ -790,6 +923,12 @@ describe('Schema applied on set', () => {
       expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
       expectChanges(listener, '/t1/r1', {t1: {r1: {c1: 1}}});
       expectChanges(listener, '/t*/r*/c*', {t1: {r1: {c1: 1}}});
+      expectChanges(
+        listener,
+        'invalids',
+        {t1: {r2: {c1: [true]}}},
+        {t1: {r3: {c1: ['a']}}},
+      );
       expectNoChanges(listener);
     });
 
@@ -803,6 +942,7 @@ describe('Schema applied on set', () => {
       listener.listenToRow('/t1/r3', 't1', 'r3');
       listener.listenToRow('/t1/r4', 't1', 'r4');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store
         .setRow('t1', 'r1', {c1: 2})
         .setRow('t1', 'r2', {c1: 4})
@@ -811,6 +951,12 @@ describe('Schema applied on set', () => {
       expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
       expectChanges(listener, '/t1/r1', {t1: {r1: {c1: 2}}});
       expectChanges(listener, '/t*/r*/c*', {t1: {r1: {c1: 2}}});
+      expectChanges(
+        listener,
+        'invalids',
+        {t1: {r3: {c1: [true]}}},
+        {t1: {r4: {c1: ['a']}}},
+      );
       expectNoChanges(listener);
     });
 
@@ -871,6 +1017,7 @@ describe('Schema applied on set', () => {
       listener.listenToRow('/t1/r3', 't1', 'r3');
       listener.listenToRow('/t1/r4', 't1', 'r4');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store
         .setRow('t1', 'r1', {c1: 1})
         .setRow('t1', 'r2', {c1: true})
@@ -891,6 +1038,12 @@ describe('Schema applied on set', () => {
         {t1: {r3: {c1: 2}}},
         {t1: {r4: {c1: 2}}},
       );
+      expectChanges(
+        listener,
+        'invalids',
+        {t1: {r2: {c1: [true]}}},
+        {t1: {r3: {c1: ['a']}}},
+      );
       expectNoChanges(listener);
     });
 
@@ -905,6 +1058,7 @@ describe('Schema applied on set', () => {
       listener.listenToRow('/t1/r4', 't1', 'r4');
       listener.listenToRow('/t1/r5', 't1', 'r5');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store
         .setRow('t1', 'r1', {c1: 2})
         .setRow('t1', 'r2', {c1: 4})
@@ -928,6 +1082,12 @@ describe('Schema applied on set', () => {
         {t1: {r4: {c1: 2}}},
         {t1: {r5: {c1: 3}}},
       );
+      expectChanges(
+        listener,
+        'invalids',
+        {t1: {r3: {c1: [true]}}},
+        {t1: {r4: {c1: ['a']}}},
+      );
       expectNoChanges(listener);
     });
 
@@ -938,6 +1098,7 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToRow('/t1/r1', 't1', 'r1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store
         .setRow('t1', 'r1', {c1: 3})
         .setRow('t1', 'r1', {c1: true})
@@ -957,6 +1118,12 @@ describe('Schema applied on set', () => {
         {t1: {r1: {c1: 3}}},
         {t1: {r1: {c1: 2}}},
       );
+      expectChanges(
+        listener,
+        'invalids',
+        {t1: {r1: {c1: [true]}}},
+        {t1: {r1: {c1: ['a']}}},
+      );
       expectNoChanges(listener);
     });
 
@@ -967,6 +1134,7 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToRow('/t1/r1', 't1', 'r1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.delRow('t1', 'r1');
       expect(store.getTables()).toEqual({});
       expectChanges(listener, '/t1/r1', {t1: {r1: {}}});
@@ -981,6 +1149,7 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToRow('/t1/r1', 't1', 'r1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.setPartialRow('t1', 'r1', {c1: 1});
       expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
       expectChanges(listener, '/t1/r1', {t1: {r1: {c1: 1}}});
@@ -995,6 +1164,7 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToRow('/t1/r1', 't1', 'r1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.setPartialRow('t1', 'r1', {c1: 1});
       expect(store.getTables()).toEqual({t1: {r1: {c1: 1, c2: 2}}});
       expectChanges(listener, '/t1/r1', {t1: {r1: {c1: 1, c2: 2}}});
@@ -1012,8 +1182,10 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToRow('/t2/r1', 't2', 'r1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.setPartialRow('t2', 'r1', {c1: 1});
       expect(store.getTables()).toEqual({});
+      expectChanges(listener, 'invalids', {t2: {r1: {c1: [1]}}});
       expectNoChanges(listener);
     });
 
@@ -1022,8 +1194,10 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToRow('/t1/r1', 't1', 'r1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.setPartialRow('t1', 'r1', {c2: 1});
       expect(store.getTables()).toEqual({});
+      expectChanges(listener, 'invalids', {t1: {r1: {c2: [1]}}});
       expectNoChanges(listener);
     });
 
@@ -1034,6 +1208,7 @@ describe('Schema applied on set', () => {
       listener.listenToRow('/t1/r1', 't1', 'r1');
       listener.listenToRow('/t1/r2', 't1', 'r2');
       listener.listenToRow('/t1/r3', 't1', 'r3');
+      listener.listenToInvalidCell('invalids', null, null, null);
       store
         .setPartialRow('t1', 'r1', {c1: 1})
         .setPartialRow('t1', 'r2', {c1: true})
@@ -1041,6 +1216,12 @@ describe('Schema applied on set', () => {
       expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
       expectChanges(listener, '/t1/r1', {t1: {r1: {c1: 1}}});
       expectChanges(listener, '/t*/r*/c*', {t1: {r1: {c1: 1}}});
+      expectChanges(
+        listener,
+        'invalids',
+        {t1: {r2: {c1: [true]}}},
+        {t1: {r3: {c1: ['a']}}},
+      );
       expectNoChanges(listener);
     });
 
@@ -1054,6 +1235,7 @@ describe('Schema applied on set', () => {
       listener.listenToRow('/t1/r3', 't1', 'r3');
       listener.listenToRow('/t1/r4', 't1', 'r4');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store
         .setPartialRow('t1', 'r1', {c1: 2})
         .setPartialRow('t1', 'r2', {c1: 4})
@@ -1062,6 +1244,12 @@ describe('Schema applied on set', () => {
       expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
       expectChanges(listener, '/t1/r1', {t1: {r1: {c1: 2}}});
       expectChanges(listener, '/t*/r*/c*', {t1: {r1: {c1: 2}}});
+      expectChanges(
+        listener,
+        'invalids',
+        {t1: {r3: {c1: [true]}}},
+        {t1: {r4: {c1: ['a']}}},
+      );
       expectNoChanges(listener);
     });
 
@@ -1121,6 +1309,7 @@ describe('Schema applied on set', () => {
       listener.listenToRow('/t1/r2', 't1', 'r2');
       listener.listenToRow('/t1/r3', 't1', 'r3');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store
         .setPartialRow('t1', 'r1', {c1: 1})
         .setPartialRow('t1', 'r2', {c1: true})
@@ -1137,6 +1326,12 @@ describe('Schema applied on set', () => {
         {t1: {r1: {c1: 1}}},
         {t1: {r2: {c1: 2}}},
         {t1: {r3: {c1: 2}}},
+      );
+      expectChanges(
+        listener,
+        'invalids',
+        {t1: {r2: {c1: [true]}}},
+        {t1: {r3: {c1: ['a']}}},
       );
       expectNoChanges(listener);
     });
@@ -1185,6 +1380,7 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToRow('/t1/r1', 't1', 'r1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store
         .setPartialRow('t1', 'r1', {c1: 3})
         .setPartialRow('t1', 'r1', {c1: true})
@@ -1204,6 +1400,12 @@ describe('Schema applied on set', () => {
         {t1: {r1: {c1: 3}}},
         {t1: {r1: {c1: 2}}},
       );
+      expectChanges(
+        listener,
+        'invalids',
+        {t1: {r1: {c1: [true]}}},
+        {t1: {r1: {c1: ['a']}}},
+      );
       expectNoChanges(listener);
     });
 
@@ -1214,6 +1416,7 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToRow('/t1/r1', 't1', 'r1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.delRow('t1', 'r1');
       expect(store.getTables()).toEqual({});
       expectChanges(listener, '/t1/r1', {t1: {r1: {}}});
@@ -1228,6 +1431,7 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.setCell('t1', 'r1', 'c1', 1);
       expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
       expectChanges(listener, '/t1/r1/c1', {t1: {r1: {c1: 1}}});
@@ -1243,6 +1447,7 @@ describe('Schema applied on set', () => {
       listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
       listener.listenToCell('/t1/r1/c2', 't1', 'r1', 'c2');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.setCell('t1', 'r1', 'c1', 1);
       expect(store.getTables()).toEqual({t1: {r1: {c1: 1, c2: 2}}});
       expectChanges(listener, '/t1/r1/c1', {t1: {r1: {c1: 1}}});
@@ -1261,8 +1466,10 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToCell('/t2/r1/c1', 't2', 'r1', 'c1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.setCell('t2', 'r1', 'c1', 1);
       expect(store.getTables()).toEqual({});
+      expectChanges(listener, 'invalids', {t2: {r1: {c1: [1]}}});
       expectNoChanges(listener);
     });
 
@@ -1271,8 +1478,10 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToCell('t1/r1/c2', 't1', 'r1', 'c2');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.setCell('t1', 'r1', 'c2', 1);
       expect(store.getTables()).toEqual({});
+      expectChanges(listener, 'invalids', {t1: {r1: {c2: [1]}}});
       expectNoChanges(listener);
     });
 
@@ -1284,6 +1493,7 @@ describe('Schema applied on set', () => {
         listener.listenToCell('/t1/r2/c1', 't1', 'r2', 'c1');
         listener.listenToCell('/t1/r3/c1', 't1', 'r3', 'c1');
         listener.listenToCell('/t*/r*/c*', null, null, null);
+        listener.listenToInvalidCell('invalids', null, null, null);
         store
           .setCell('t1', 'r1', 'c1', 1)
           .setCell('t1', 'r2', 'c1', true)
@@ -1291,6 +1501,12 @@ describe('Schema applied on set', () => {
         expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
         expectChanges(listener, '/t1/r1/c1', {t1: {r1: {c1: 1}}});
         expectChanges(listener, '/t*/r*/c*', {t1: {r1: {c1: 1}}});
+        expectChanges(
+          listener,
+          'invalids',
+          {t1: {r2: {c1: [true]}}},
+          {t1: {r3: {c1: ['1']}}},
+        );
         expectNoChanges(listener);
       });
 
@@ -1301,6 +1517,7 @@ describe('Schema applied on set', () => {
         listener.listenToCell('/t1/r2/c1', 't1', 'r2', 'c1');
         listener.listenToCell('/t1/r3/c1', 't1', 'r3', 'c1');
         listener.listenToCell('/t*/r*/c*', null, null, null);
+        listener.listenToInvalidCell('invalids', null, null, null);
         store
           .setCell('t1', 'r1', 'c1', 1)
           .setCell('t1', 'r2', 'c1', true)
@@ -1308,6 +1525,12 @@ describe('Schema applied on set', () => {
         expect(store.getTables()).toEqual({t1: {r2: {c1: true}}});
         expectChanges(listener, '/t1/r2/c1', {t1: {r2: {c1: true}}});
         expectChanges(listener, '/t*/r*/c*', {t1: {r2: {c1: true}}});
+        expectChanges(
+          listener,
+          'invalids',
+          {t1: {r1: {c1: [1]}}},
+          {t1: {r3: {c1: ['true']}}},
+        );
         expectNoChanges(listener);
       });
 
@@ -1318,6 +1541,7 @@ describe('Schema applied on set', () => {
         listener.listenToCell('/t1/r2/c1', 't1', 'r2', 'c1');
         listener.listenToCell('/t1/r3/c1', 't1', 'r3', 'c1');
         listener.listenToCell('/t*/r*/c*', null, null, null);
+        listener.listenToInvalidCell('invalids', null, null, null);
         store
           .setCell('t1', 'r1', 'c1', 1)
           .setCell('t1', 'r2', 'c1', true)
@@ -1325,6 +1549,12 @@ describe('Schema applied on set', () => {
         expect(store.getTables()).toEqual({t1: {r3: {c1: '1'}}});
         expectChanges(listener, '/t1/r3/c1', {t1: {r3: {c1: '1'}}});
         expectChanges(listener, '/t*/r*/c*', {t1: {r3: {c1: '1'}}});
+        expectChanges(
+          listener,
+          'invalids',
+          {t1: {r1: {c1: [1]}}},
+          {t1: {r2: {c1: [true]}}},
+        );
         expectNoChanges(listener);
       });
 
@@ -1337,6 +1567,7 @@ describe('Schema applied on set', () => {
         listener.listenToCell('/t1/r3/c1', 't1', 'r3', 'c1');
         listener.listenToCell('/t1/r4/c1', 't1', 'r4', 'c1');
         listener.listenToCell('/t*/r*/c*', null, null, null);
+        listener.listenToInvalidCell('invalids', null, null, null);
         store
           .setCell('t1', 'r1', 'c1', 1)
           .setCell('t1', 'r2', 'c1', true)
@@ -1345,6 +1576,12 @@ describe('Schema applied on set', () => {
         expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
         expectChanges(listener, '/t1/r1/c1', {t1: {r1: {c1: 1}}});
         expectChanges(listener, '/t*/r*/c*', {t1: {r1: {c1: 1}}});
+        expectChanges(
+          listener,
+          'invalids',
+          {t1: {r2: {c1: [true]}}},
+          {t1: {r3: {c1: ['1']}}},
+        );
         expectNoChanges(listener);
       });
 
@@ -1357,6 +1594,7 @@ describe('Schema applied on set', () => {
         listener.listenToCell('/t1/r3/c1', 't1', 'r3', 'c1');
         listener.listenToCell('/t1/r4/c1', 't1', 'r4', 'c1');
         listener.listenToCell('/t*/r*/c*', null, null, null);
+        listener.listenToInvalidCell('invalids', null, null, null);
         store
           .setCell('t1', 'r1', 'c1', 1)
           .setCell('t1', 'r2', 'c1', true)
@@ -1365,6 +1603,12 @@ describe('Schema applied on set', () => {
         expect(store.getTables()).toEqual({t1: {r2: {c1: true}}});
         expectChanges(listener, '/t1/r2/c1', {t1: {r2: {c1: true}}});
         expectChanges(listener, '/t*/r*/c*', {t1: {r2: {c1: true}}});
+        expectChanges(
+          listener,
+          'invalids',
+          {t1: {r1: {c1: [1]}}},
+          {t1: {r3: {c1: ['true']}}},
+        );
         expectNoChanges(listener);
       });
 
@@ -1377,6 +1621,7 @@ describe('Schema applied on set', () => {
         listener.listenToCell('/t1/r3/c1', 't1', 'r3', 'c1');
         listener.listenToCell('/t1/r4/c1', 't1', 'r4', 'c1');
         listener.listenToCell('/t*/r*/c*', null, null, null);
+        listener.listenToInvalidCell('invalids', null, null, null);
         store
           .setCell('t1', 'r1', 'c1', 1)
           .setCell('t1', 'r2', 'c1', true)
@@ -1385,6 +1630,12 @@ describe('Schema applied on set', () => {
         expect(store.getTables()).toEqual({t1: {r3: {c1: '1'}}});
         expectChanges(listener, '/t1/r3/c1', {t1: {r3: {c1: '1'}}});
         expectChanges(listener, '/t*/r*/c*', {t1: {r3: {c1: '1'}}});
+        expectChanges(
+          listener,
+          'invalids',
+          {t1: {r1: {c1: [1]}}},
+          {t1: {r2: {c1: [true]}}},
+        );
         expectNoChanges(listener);
       });
     });
@@ -1399,6 +1650,7 @@ describe('Schema applied on set', () => {
         listener.listenToCell('/t1/r2/c1', 't1', 'r2', 'c1');
         listener.listenToCell('/t1/r3/c1', 't1', 'r3', 'c1');
         listener.listenToCell('/t*/r*/c*', null, null, null);
+        listener.listenToInvalidCell('invalids', null, null, null);
         store
           .setCell('t1', 'r1', 'c1', 1)
           .setCell('t1', 'r2', 'c1', true)
@@ -1416,6 +1668,12 @@ describe('Schema applied on set', () => {
           {t1: {r2: {c1: 2}}},
           {t1: {r3: {c1: 2}}},
         );
+        expectChanges(
+          listener,
+          'invalids',
+          {t1: {r2: {c1: [true]}}},
+          {t1: {r3: {c1: ['1']}}},
+        );
         expectNoChanges(listener);
       });
 
@@ -1428,6 +1686,7 @@ describe('Schema applied on set', () => {
         listener.listenToCell('/t1/r2/c1', 't1', 'r2', 'c1');
         listener.listenToCell('/t1/r3/c1', 't1', 'r3', 'c1');
         listener.listenToCell('/t*/r*/c*', null, null, null);
+        listener.listenToInvalidCell('invalids', null, null, null);
         store
           .setCell('t1', 'r1', 'c1', 1)
           .setCell('t1', 'r2', 'c1', true)
@@ -1445,6 +1704,12 @@ describe('Schema applied on set', () => {
           {t1: {r2: {c1: true}}},
           {t1: {r3: {c1: false}}},
         );
+        expectChanges(
+          listener,
+          'invalids',
+          {t1: {r1: {c1: [1]}}},
+          {t1: {r3: {c1: ['true']}}},
+        );
         expectNoChanges(listener);
       });
 
@@ -1457,6 +1722,7 @@ describe('Schema applied on set', () => {
         listener.listenToCell('/t1/r2/c1', 't1', 'r2', 'c1');
         listener.listenToCell('/t1/r3/c1', 't1', 'r3', 'c1');
         listener.listenToCell('/t*/r*/c*', null, null, null);
+        listener.listenToInvalidCell('invalids', null, null, null);
         store
           .setCell('t1', 'r1', 'c1', 1)
           .setCell('t1', 'r2', 'c1', true)
@@ -1474,6 +1740,12 @@ describe('Schema applied on set', () => {
           {t1: {r2: {c1: '2'}}},
           {t1: {r3: {c1: '1'}}},
         );
+        expectChanges(
+          listener,
+          'invalids',
+          {t1: {r1: {c1: [1]}}},
+          {t1: {r2: {c1: [true]}}},
+        );
         expectNoChanges(listener);
       });
 
@@ -1488,6 +1760,7 @@ describe('Schema applied on set', () => {
         listener.listenToCell('/t1/r3/c1', 't1', 'r3', 'c1');
         listener.listenToCell('/t1/r4/c1', 't1', 'r4', 'c1');
         listener.listenToCell('/t*/r*/c*', null, null, null);
+        listener.listenToInvalidCell('invalids', null, null, null);
         store
           .setCell('t1', 'r1', 'c1', 1)
           .setCell('t1', 'r2', 'c1', true)
@@ -1508,6 +1781,12 @@ describe('Schema applied on set', () => {
           {t1: {r3: {c1: 2}}},
           {t1: {r4: {c1: 2}}},
         );
+        expectChanges(
+          listener,
+          'invalids',
+          {t1: {r2: {c1: [true]}}},
+          {t1: {r3: {c1: ['1']}}},
+        );
         expectNoChanges(listener);
       });
 
@@ -1527,6 +1806,7 @@ describe('Schema applied on set', () => {
         listener.listenToCell('/t1/r3/c1', 't1', 'r3', 'c1');
         listener.listenToCell('/t1/r4/c1', 't1', 'r4', 'c1');
         listener.listenToCell('/t*/r*/c*', null, null, null);
+        listener.listenToInvalidCell('invalids', null, null, null);
         store
           .setCell('t1', 'r1', 'c1', 1)
           .setCell('t1', 'r2', 'c1', true)
@@ -1552,6 +1832,12 @@ describe('Schema applied on set', () => {
           {t1: {r3: {c1: false}}},
           {t1: {r4: {c1: false}}},
         );
+        expectChanges(
+          listener,
+          'invalids',
+          {t1: {r1: {c1: [1]}}},
+          {t1: {r3: {c1: ['true']}}},
+        );
         expectNoChanges(listener);
       });
 
@@ -1571,6 +1857,7 @@ describe('Schema applied on set', () => {
         listener.listenToCell('/t1/r3/c1', 't1', 'r3', 'c1');
         listener.listenToCell('/t1/r4/c1', 't1', 'r4', 'c1');
         listener.listenToCell('/t*/r*/c*', null, null, null);
+        listener.listenToInvalidCell('invalids', null, null, null);
         store
           .setCell('t1', 'r1', 'c1', 1)
           .setCell('t1', 'r2', 'c1', true)
@@ -1590,6 +1877,12 @@ describe('Schema applied on set', () => {
           {t1: {r2: {c1: '2'}}},
           {t1: {r3: {c1: '1'}}},
           {t1: {r4: {c1: '2'}}},
+        );
+        expectChanges(
+          listener,
+          'invalids',
+          {t1: {r1: {c1: [1]}}},
+          {t1: {r2: {c1: [true]}}},
         );
         expectNoChanges(listener);
       });
@@ -1659,6 +1952,7 @@ describe('Schema applied on set', () => {
       const listener = createStoreListener(store);
       listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store
         .setCell('t1', 'r1', 'c1', 3)
         .setCell('t1', 'r1', 'c1', true)
@@ -1678,6 +1972,12 @@ describe('Schema applied on set', () => {
         {t1: {r1: {c1: 3}}},
         {t1: {r1: {c1: 2}}},
       );
+      expectChanges(
+        listener,
+        'invalids',
+        {t1: {r1: {c1: [true]}}},
+        {t1: {r1: {c1: ['t1']}}},
+      );
       expectNoChanges(listener);
     });
 
@@ -1691,6 +1991,7 @@ describe('Schema applied on set', () => {
       listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
       listener.listenToCell('/t1/r1/c2', 't1', 'r1', 'c2');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.delCell('t1', 'r1', 'c1');
       expect(store.getTables()).toEqual({
         t1: {r1: {c1: 2, c2: 3}},
@@ -1710,6 +2011,7 @@ describe('Schema applied on set', () => {
       listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
       listener.listenToCell('/t1/r1/c2', 't1', 'r1', 'c2');
       listener.listenToCell('/t*/r*/c*', null, null, null);
+      listener.listenToInvalidCell('invalids', null, null, null);
       store.delCell('t1', 'r1', 'c1', true);
       expect(store.getTables()).toEqual({});
       expectChanges(listener, '/t1/r1/c1', {t1: {r1: {c1: undefined}}});
@@ -1750,6 +2052,20 @@ describe('Miscellaneous', () => {
     store.setTables({t1: {r1: {c1: 2}}});
     expect(store.getTables()).toEqual({t1: {r1: {c1: 3}}});
     expectChanges(listener, '/', {t1: {r1: {c1: 1}}}, {t1: {r1: {c1: 3}}});
+    expectNoChanges(listener);
+  });
+
+  test('Empty row does not fire invalid event when some are defaulted', () => {
+    const store = createStore();
+    store.setSchema({
+      t1: {
+        c1: {type: 'string'},
+        c2: {type: 'boolean', default: false},
+      },
+    });
+    const listener = createStoreListener(store);
+    listener.listenToInvalidCell('invalids', null, null, null);
+    store.setRow('t1', 'r1', {});
     expectNoChanges(listener);
   });
 });
