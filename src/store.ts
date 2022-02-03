@@ -136,7 +136,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const changedCells: IdMap<IdMap<IdMap<Cell | undefined>>> = mapNew();
   const invalidCells: IdMap<IdMap<IdMap<any[]>>> = mapNew();
   const schemaMap: SchemaMap = mapNew();
-  const schemaDefaultRows: IdMap<Row> = mapNew();
+  const schemaRowCache: IdMap<[RowMap]> = mapNew();
   const tablesMap: TablesMap = mapNew();
   const tablesListeners: [IdSet, IdSet] = mapNewPair(setNew);
   const tableIdsListeners: [IdSet, IdSet] = mapNewPair(setNew);
@@ -224,8 +224,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
       : cell;
 
   const addDefaultsToRow = (row: Row, tableId: Id): Row => {
-    ifNotUndefined(mapGet(schemaDefaultRows, tableId), (defaultRow) =>
-      objForEach(defaultRow, (cell, cellId) => {
+    ifNotUndefined(mapGet(schemaRowCache, tableId), ([rowDefaults]) =>
+      collForEach(rowDefaults, (cell, cellId) => {
         if (!objHas(row, cellId)) {
           row[cellId] = cell;
         }
@@ -239,23 +239,22 @@ export const createStore: typeof createStoreDecl = (): Store => {
       schemaMap,
       schema,
       (_schema, tableId, tableSchema) => {
-        const defaultRow: Row = {};
+        const rowDefaults = mapNew();
         transformMap(
           mapEnsure(schemaMap, tableId, mapNew()),
           tableSchema,
           (tableSchemaMap, cellId, cellSchema) => {
             mapSet(tableSchemaMap, cellId, cellSchema);
-            ifNotUndefined(
-              cellSchema[DEFAULT],
-              (def) => (defaultRow[cellId] = def),
+            ifNotUndefined(cellSchema[DEFAULT], (def) =>
+              mapSet(rowDefaults, cellId, def),
             );
           },
         );
-        mapSet(schemaDefaultRows, tableId, defaultRow);
+        mapSet(schemaRowCache, tableId, [rowDefaults]);
       },
       (_schema, tableId) => {
         mapSet(schemaMap, tableId);
-        mapSet(schemaDefaultRows, tableId);
+        mapSet(schemaRowCache, tableId);
       },
     );
 
@@ -355,7 +354,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     cellId: Id,
     forceDel?: boolean,
   ): void => {
-    const defaultCell = mapGet(schemaDefaultRows, tableId)?.[cellId];
+    const defaultCell = mapGet(mapGet(schemaRowCache, tableId)?.[0], cellId);
     if (!isUndefined(defaultCell) && !forceDel) {
       return setValidCell(tableId, rowId, row, cellId, defaultCell);
     }
