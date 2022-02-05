@@ -379,7 +379,12 @@ describe('Schema applied before data set, listening', () => {
       listener.listenToInvalidCell('invalids', null, null, null);
       store.setTables({t1: {r1: {c2: 1}}});
       expect(store.getTables()).toEqual({});
-      expectChanges(listener, 'invalids', {t1: {r1: {c2: [1]}}});
+      expectChangesNoJson(
+        listener,
+        'invalids',
+        {t1: {r1: {c1: [undefined]}}},
+        {t1: {r1: {c2: [1]}}},
+      );
       expectNoChanges(listener);
     });
 
@@ -641,7 +646,12 @@ describe('Schema applied before data set, listening', () => {
       listener.listenToInvalidCell('invalids', null, null, null);
       store.setTable('t1', {r1: {c2: 1}});
       expect(store.getTables()).toEqual({});
-      expectChanges(listener, 'invalids', {t1: {r1: {c2: [1]}}});
+      expectChangesNoJson(
+        listener,
+        'invalids',
+        {t1: {r1: {c1: [undefined]}}},
+        {t1: {r1: {c2: [1]}}},
+      );
       expectNoChanges(listener);
     });
 
@@ -904,7 +914,12 @@ describe('Schema applied before data set, listening', () => {
       listener.listenToInvalidCell('invalids', null, null, null);
       store.setRow('t1', 'r1', {c2: 1});
       expect(store.getTables()).toEqual({});
-      expectChanges(listener, 'invalids', {t1: {r1: {c2: [1]}}});
+      expectChangesNoJson(
+        listener,
+        'invalids',
+        {t1: {r1: {c1: [undefined]}}},
+        {t1: {r1: {c2: [1]}}},
+      );
       expectNoChanges(listener);
     });
 
@@ -2055,17 +2070,55 @@ describe('Miscellaneous', () => {
     expectNoChanges(listener);
   });
 
-  test('Empty row does not fire invalid event when some are defaulted', () => {
-    const store = createStore();
-    store.setSchema({
-      t1: {
-        c1: {type: 'string'},
-        c2: {type: 'boolean', default: false},
-      },
+  describe('Empty row fires', () => {
+    test('no event when all are defaulted', () => {
+      const store = createStore();
+      store.setSchema({
+        t1: {
+          c1: {type: 'string', default: ''},
+          c2: {type: 'boolean', default: false},
+        },
+      });
+      const listener = createStoreListener(store);
+      listener.listenToInvalidCell('invalids', null, null, null);
+      store.setRow('t1', 'r1', {});
+      expectNoChanges(listener);
     });
-    const listener = createStoreListener(store);
-    listener.listenToInvalidCell('invalids', null, null, null);
-    store.setRow('t1', 'r1', {});
-    expectNoChanges(listener);
+
+    test('invalid event when some are defaulted', () => {
+      const store = createStore();
+      store.setSchema({
+        t1: {
+          c1: {type: 'string'},
+          c2: {type: 'boolean', default: false},
+        },
+      });
+      const listener = createStoreListener(store);
+      listener.listenToInvalidCell('invalids', null, null, null);
+      store.setRow('t1', 'r1', {});
+      expectChangesNoJson(listener, 'invalids', {t1: {r1: {c1: [undefined]}}});
+      expectNoChanges(listener);
+    });
+
+    test('invalid event when none are defaulted', () => {
+      const store = createStore();
+      store.setSchema({
+        t1: {
+          c1: {type: 'string'},
+          c2: {type: 'boolean'},
+        },
+      });
+      const listener = createStoreListener(store);
+      listener.listenToInvalidCell('invalids', null, null, null);
+      store.setRow('t1', 'r1', {});
+      expectChangesNoJson(
+        listener,
+        'invalids',
+        {t1: {r1: {c1: [undefined]}}},
+        {t1: {r1: {c2: [undefined]}}},
+        {t1: {r1: {undefined: [undefined]}}},
+      );
+      expectNoChanges(listener);
+    });
   });
 });

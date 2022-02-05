@@ -57,7 +57,7 @@ import {
   objIds,
   objIsEmpty,
 } from './common/obj';
-import {IdSet, IdSet2, IdSet3, IdSet4, setNew} from './common/set';
+import {IdSet, IdSet2, IdSet3, IdSet4, setAdd, setNew} from './common/set';
 import {arrayFilter, arrayForEach, arrayHas, arrayPush} from './common/array';
 import {
   collClear,
@@ -136,7 +136,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const changedCells: IdMap<IdMap<IdMap<Cell | undefined>>> = mapNew();
   const invalidCells: IdMap<IdMap<IdMap<any[]>>> = mapNew();
   const schemaMap: SchemaMap = mapNew();
-  const schemaRowCache: IdMap<[RowMap]> = mapNew();
+  const schemaRowCache: IdMap<[RowMap, IdSet]> = mapNew();
   const tablesMap: TablesMap = mapNew();
   const tablesListeners: [IdSet, IdSet] = mapNewPair(setNew);
   const tableIdsListeners: [IdSet, IdSet] = mapNewPair(setNew);
@@ -191,7 +191,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     skipDefaults?: 1,
   ): boolean =>
     validate(
-      skipDefaults ? row : addDefaultsToRow(row, tableId),
+      skipDefaults ? row : addDefaultsToRow(row, tableId, rowId),
       (cell: Cell, cellId: Id): boolean =>
         ifNotUndefined(
           getValidatedCell(tableId, rowId, cellId, cell),
@@ -223,13 +223,21 @@ export const createStore: typeof createStoreDecl = (): Store => {
       ? cellInvalid(tableId, rowId, cellId, cell)
       : cell;
 
-  const addDefaultsToRow = (row: Row, tableId: Id): Row => {
-    ifNotUndefined(mapGet(schemaRowCache, tableId), ([rowDefaults]) =>
-      collForEach(rowDefaults, (cell, cellId) => {
-        if (!objHas(row, cellId)) {
-          row[cellId] = cell;
-        }
-      }),
+  const addDefaultsToRow = (row: Row, tableId: Id, rowId?: Id): Row => {
+    ifNotUndefined(
+      mapGet(schemaRowCache, tableId),
+      ([rowDefaulted, rowNonDefaulted]) => {
+        collForEach(rowDefaulted, (cell, cellId) => {
+          if (!objHas(row, cellId)) {
+            row[cellId] = cell;
+          }
+        });
+        collForEach(rowNonDefaulted, (cellId) => {
+          if (!objHas(row, cellId)) {
+            cellInvalid(tableId, rowId, cellId);
+          }
+        });
+      },
     );
     return row;
   };
@@ -239,18 +247,21 @@ export const createStore: typeof createStoreDecl = (): Store => {
       schemaMap,
       schema,
       (_schema, tableId, tableSchema) => {
-        const rowDefaults = mapNew();
+        const rowDefaulted = mapNew();
+        const rowNonDefaulted = setNew();
         transformMap(
           mapEnsure(schemaMap, tableId, mapNew()),
           tableSchema,
           (tableSchemaMap, cellId, cellSchema) => {
             mapSet(tableSchemaMap, cellId, cellSchema);
-            ifNotUndefined(cellSchema[DEFAULT], (def) =>
-              mapSet(rowDefaults, cellId, def),
+            ifNotUndefined(
+              cellSchema[DEFAULT],
+              (def) => mapSet(rowDefaulted, cellId, def),
+              () => setAdd(rowNonDefaulted, cellId) as any,
             );
           },
         );
-        mapSet(schemaRowCache, tableId, [rowDefaults]);
+        mapSet(schemaRowCache, tableId, [rowDefaulted, rowNonDefaulted]);
       },
       (_schema, tableId) => {
         mapSet(schemaMap, tableId);
@@ -326,7 +337,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
           tableId,
           tableMap,
           rowId,
-          addDefaultsToRow({[cellId]: validCell}, tableId),
+          addDefaultsToRow({[cellId]: validCell}, tableId, rowId),
         ),
     );
 

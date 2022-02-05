@@ -2433,6 +2433,21 @@ export interface Store {
    * The changes made by mutator listeners do not fire other mutating listeners,
    * though they will fire non-mutator listeners.
    *
+   * Special note should be made for how the listener will be called when a
+   * Schema is present. The listener will be called:
+   *
+   * - if a Table is being updated that is not specified in the Schema
+   * - if a Cell is of the wrong type specified in the Schema
+   * - if a Cell is omitted and is not defaulted in the Schema
+   * - if an empty Row is provided and there are no Cell defaults in the Schema
+   *
+   * The listener will not be called if Cell that is defaulted in the Schema is
+   * not provided, as long as all of the Cells that are _not_ defaulted _are_
+   * provided.
+   *
+   * To help understand all of these schema-based conditions, please see the
+   * Schema example below.
+   *
    * @param tableId The Id of the Table to listen to, or `null` as a wildcard.
    * @param rowId The Id of the Row to listen to, or `null` as a wildcard.
    * @param cellId The Id of the Cell to listen to, or `null` as a wildcard.
@@ -2468,7 +2483,9 @@ export interface Store {
    * ```
    * @example
    * This example registers a listener that responds to any invalid changes to
-   * any Cell.
+   * any Cell - in a Store _without_ a Schema. Note also how it then responds to
+   * cases where an empty or invalid Row objects, or Table objects, or Tables
+   * objects are provided.
    *
    * ```js
    * const store = createStore().setTables({
@@ -2489,6 +2506,91 @@ export interface Store {
    * // -> 'Invalid color cell in fido row in pets table'
    * store.setTable('sales', {fido: {date: new Date()}});
    * // -> 'Invalid date cell in fido row in sales table'
+   *
+   * store.setRow('pets', 'felix', {});
+   * // -> 'Invalid undefined cell in felix row in pets table'
+   *
+   * store.setRow('filter', 'name', /[a-z]?/);
+   * // -> 'Invalid undefined cell in name row in filter table'
+   *
+   * store.setRow('sales', '2021', {forecast: undefined});
+   * // -> 'Invalid forecast cell in 2021 row in sales table'
+   *
+   * store.addRow('filter', /[0-9]?/);
+   * // -> 'Invalid undefined cell in undefined row in filter table'
+   *
+   * store.setTable('raw', {});
+   * // -> 'Invalid undefined cell in undefined row in raw table'
+   *
+   * store.setTable('raw', ['row1', 'row2']);
+   * // -> 'Invalid undefined cell in undefined row in raw table'
+   *
+   * store.setTables(['table1', 'table2']);
+   * // -> 'Invalid undefined cell in undefined row in undefined table'
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @example
+   * This example registers a listener that responds to any invalid changes to
+   * any Cell - in a Store _with_ a Schema. Note how it responds to cases where
+   * missing parameters are provided for optional, and defaulted Cell values in
+   * a Row.
+   *
+   * ```js
+   * const store = createStore().setSchema({
+   *   pets: {
+   *     species: {type: 'string'},
+   *     color: {type: 'string', default: 'unknown'},
+   *   },
+   * });
+   *
+   * const listenerId = store.addInvalidCellListener(
+   *   null,
+   *   null,
+   *   null,
+   *   (store, tableId, rowId, cellId) => {
+   *     console.log(
+   *       `Invalid ${cellId} cell in ${rowId} row in ${tableId} table`,
+   *     );
+   *   },
+   * );
+   *
+   * store.setRow('sales', 'fido', {price: 5});
+   * // -> 'Invalid price cell in fido row in sales table'
+   * // The listener is called, because the sales Table is not in the schema
+   *
+   * store.setRow('pets', 'felix', {species: true});
+   * // -> 'Invalid species cell in felix row in pets table'
+   * // The listener is called, because species is invalid...
+   * console.log(store.getRow('pets', 'felix'));
+   * // -> {color: 'unknown'}
+   * // ...even though a Row was set with the default value
+   *
+   * store.setRow('pets', 'fido', {color: 'brown'});
+   * // -> 'Invalid species cell in fido row in pets table'
+   * // The listener is called, because species is missing and not defaulted...
+   * console.log(store.getRow('pets', 'fido'));
+   * // -> {color: 'brown'}
+   * // ...even though a Row was set
+   *
+   * store.setRow('pets', 'rex', {species: 'dog'});
+   * console.log(store.getRow('pets', 'rex'));
+   * // -> {species: 'dog', color: 'unknown'}
+   * // The listener is not called, because color is defaulted
+   *
+   * store.delTables().setSchema({
+   *   pets: {
+   *     species: {type: 'string'},
+   *     color: {type: 'string'},
+   *   },
+   * });
+   *
+   * store.setRow('pets', 'cujo', {});
+   * // -> 'Invalid species cell in cujo row in pets table'
+   * // -> 'Invalid color cell in cujo row in pets table'
+   * // -> 'Invalid undefined cell in cujo row in pets table'
+   * // The listener is called multiple times, because neither Cell is defaulted
+   * // and the Row as a whole is empty
    *
    * store.delListener(listenerId);
    * ```
