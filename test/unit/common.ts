@@ -9,8 +9,8 @@ import {
   Store,
 } from '../../lib/debug/tinybase';
 
-type IdMap<T> = {[id: string]: T};
-type Logs = IdMap<any[]>;
+type IdObj<T> = {[id: string]: T};
+type Logs = IdObj<any[]>;
 
 type Listener = Readonly<{
   logs: Logs;
@@ -306,16 +306,16 @@ export const createCheckpointsListener = (
 
 export const getMetricsObject = (
   metrics: Metrics,
-): IdMap<number | undefined> => {
-  const metricsObject: IdMap<number | undefined> = {};
+): IdObj<number | undefined> => {
+  const metricsObject: IdObj<number | undefined> = {};
   metrics.forEachMetric(
     (metricId) => (metricsObject[metricId] = metrics.getMetric(metricId)),
   );
   return metricsObject;
 };
 
-export const getIndexesObject = (indexes: Indexes): IdMap<IdMap<Ids>> => {
-  const indexesObject: IdMap<IdMap<Ids>> = {};
+export const getIndexesObject = (indexes: Indexes): IdObj<IdObj<Ids>> => {
+  const indexesObject: IdObj<IdObj<Ids>> = {};
   indexes.forEachIndex((indexId) => {
     indexesObject[indexId] = {};
     indexes
@@ -333,9 +333,9 @@ export const getIndexesObject = (indexes: Indexes): IdMap<IdMap<Ids>> => {
 
 export const getRelationshipsObject = (
   relationships: Relationships,
-): IdMap<[IdMap<Id>, IdMap<Ids>]> => {
+): IdObj<[IdObj<Id>, IdObj<Ids>]> => {
   const store = relationships.getStore();
-  const relationshipsObject: IdMap<[IdMap<Id>, IdMap<Ids>]> = {};
+  const relationshipsObject: IdObj<[IdObj<Id>, IdObj<Ids>]> = {};
   relationships.forEachRelationship((relationshipId) => {
     relationshipsObject[relationshipId] = [{}, {}];
     store
