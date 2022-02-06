@@ -56,6 +56,18 @@ export const mapToObj = <MapValue, ObjectValue>(
   return obj;
 };
 
+export const mapToObj2 = <MapValue, ObjectValue>(
+  map: IdMap<IdMap<MapValue>> | undefined,
+) => mapToObj<IdMap<MapValue>, {[key: string]: ObjectValue}>(map, mapToObj);
+
+export const mapToObj3 = <MapValue, ObjectValue>(
+  map: IdMap<IdMap<IdMap<MapValue>>> | undefined,
+) =>
+  mapToObj<
+    IdMap<IdMap<MapValue>>,
+    {[key: string]: {[key: string]: ObjectValue}}
+  >(map, mapToObj2);
+
 export const mapClone = <MapValue>(
   map: IdMap<MapValue> | undefined,
   childMapper?: (mapValue: MapValue) => MapValue,
@@ -65,3 +77,10 @@ export const mapClone = <MapValue>(
   collForEach(map, (value, key) => map2.set(key, mapper(value)));
   return map2;
 };
+
+export const mapClone2 = <MapValue>(map: IdMap<IdMap<MapValue>> | undefined) =>
+  mapClone(map, mapClone);
+
+export const mapClone3 = <MapValue>(
+  map: IdMap<IdMap<IdMap<MapValue>>> | undefined,
+) => mapClone(map, mapClone2);

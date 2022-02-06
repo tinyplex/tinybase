@@ -37,6 +37,8 @@ import {Id, IdOrNull, Ids, Json} from './common.d';
 import {
   IdMap,
   mapClone,
+  mapClone2,
+  mapClone3,
   mapEnsure,
   mapForEach,
   mapGet,
@@ -45,6 +47,8 @@ import {
   mapNewPair,
   mapSet,
   mapToObj,
+  mapToObj2,
+  mapToObj3,
 } from './common/map';
 import {
   IdObj,
@@ -449,9 +453,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const callInvalidCellListeners = (mutator: 0 | 1) =>
     !collIsEmpty(invalidCells) && !collIsEmpty(invalidCellListeners[mutator])
       ? collForEach(
-          mutator
-            ? mapClone(invalidCells, (table) => mapClone(table, mapClone))
-            : invalidCells,
+          mutator ? mapClone3(invalidCells) : invalidCells,
           (rows, tableId) =>
             collForEach(rows, (cells, rowId) =>
               collForEach(cells, (invalidCell, cellId) =>
@@ -485,9 +487,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
         ] = mutator
           ? [
               mapClone(changedTableIds),
-              mapClone(changedRowIds, mapClone),
-              mapClone(changedCellIds, (table) => mapClone(table, mapClone)),
-              mapClone(changedCells, (table) => mapClone(table, mapClone)),
+              mapClone2(changedRowIds),
+              mapClone3(changedCellIds),
+              mapClone3(changedCells),
             ]
           : [changedTableIds, changedRowIds, changedCellIds, changedCells];
 
@@ -555,15 +557,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   // --
 
-  const getTables = (): Tables =>
-    mapToObj(tablesMap, (tableMap) =>
-      mapToObj<RowMap, Row>(tableMap, mapToObj),
-    );
+  const getTables = (): Tables => mapToObj3(tablesMap);
 
   const getTableIds = (): Ids => mapKeys(tablesMap);
 
   const getTable = (tableId: Id): Table =>
-    mapToObj<RowMap, Row>(mapGet(tablesMap, tableId), mapToObj);
+    mapToObj2(mapGet(tablesMap, tableId));
 
   const getRowIds = (tableId: Id): Ids => mapKeys(mapGet(tablesMap, tableId));
 
