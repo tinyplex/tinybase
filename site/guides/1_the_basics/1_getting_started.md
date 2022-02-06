@@ -6,6 +6,10 @@ It is not intended to be a detailed introduction to installing JavaScript build-
 and run-time environments! It assumes that you have (or know how to have) a
 browser or Node-based development environment.
 
+Note that TinyBase requires a reasonably modern environment, as it makes
+extensive use of contemporary JavaScript features. A regularly-updated browser
+and Node 16 (or above) are recommended.
+
 ## TinyBase in a browser
 
 One simple way to get started with TinyBase is to include it as a UMD script
