@@ -1,3 +1,8 @@
+export const arrayPair = <Value>(value: Value): [Value, Value] => [
+  value,
+  value,
+];
+
 export const arrayHas = <Value>(array: Value[], value: Value): boolean =>
   array.includes(value);
 

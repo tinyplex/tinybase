@@ -64,7 +64,13 @@ import {
   objIsEmpty,
 } from './common/obj';
 import {IdSet, IdSet2, IdSet3, IdSet4, setAdd, setNew} from './common/set';
-import {arrayFilter, arrayForEach, arrayHas, arrayPush} from './common/array';
+import {
+  arrayFilter,
+  arrayForEach,
+  arrayHas,
+  arrayPair,
+  arrayPush,
+} from './common/array';
 import {
   collClear,
   collForEach,
@@ -451,10 +457,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       mapGet(mapGet(mapGet(changedCells, tableId), rowId), cellId),
       ([oldCell, newCell]) => [true, oldCell, newCell],
       () =>
-        [
-          false,
-          ...Array(2).fill(getCell(tableId, rowId, cellId)),
-        ] as CellChange,
+        [false, ...arrayPair(getCell(tableId, rowId, cellId))] as CellChange,
     ) as CellChange;
 
   const callInvalidCellListeners = (mutator: 0 | 1) =>
@@ -835,9 +838,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const callListener = (listenerId: Id) => {
     callListenerImpl(listenerId, [getTableIds, getRowIds, getCellIds], (ids) =>
-      isUndefined(ids[2])
-        ? []
-        : Array(2).fill(getCell(...(ids as [Id, Id, Id]))),
+      isUndefined(ids[2]) ? [] : arrayPair(getCell(...(ids as [Id, Id, Id]))),
     );
     return store;
   };
