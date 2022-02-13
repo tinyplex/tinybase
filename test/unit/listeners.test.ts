@@ -4028,7 +4028,7 @@ describe('Mutating listeners', () => {
         secondListener = jest.fn(() => null);
       });
 
-      test('cell mutation', () => {
+      test('cell mutation, new cell', () => {
         store.addCellListener(
           't1',
           'r1',
@@ -4036,11 +4036,83 @@ describe('Mutating listeners', () => {
           () => store.setCell('t2', 'r2', 'c2', 2),
           true,
         );
-        store.addCellListener(null, null, null, secondMutator, true);
-        store.addCellListener(null, null, null, secondListener);
+        store.addCellListener('t2', 'r2', 'c2', secondMutator, true);
+        store.addCellListener('t2', 'r2', 'c2', secondListener);
         store.setCell('t1', 'r1', 'c1', 1);
+        expect(secondMutator).toBeCalledTimes(0);
+        expect(secondListener).toBeCalledTimes(1);
+      });
+
+      test('cell mutation, updated cell', () => {
+        store.addCellListener(
+          't1',
+          'r1',
+          'c1',
+          () => store.setCell('t2', 'r2', 'c2', 2),
+          true,
+        );
+        store.addCellListener('t2', 'r2', 'c2', secondMutator, true);
+        store.addCellListener('t2', 'r2', 'c2', secondListener);
+        store.transaction(() => {
+          store.setCell('t1', 'r1', 'c1', 1);
+          store.setCell('t2', 'r2', 'c2', 1);
+        });
         expect(secondMutator).toBeCalledTimes(1);
-        expect(secondListener).toBeCalledTimes(2);
+        expect(secondMutator).toBeCalledWith(
+          store,
+          't2',
+          'r2',
+          'c2',
+          2,
+          undefined,
+          expect.any(Function),
+        );
+        expect(secondListener).toBeCalledTimes(1);
+      });
+
+      test('cell mutation, reverted later cell', () => {
+        store.addCellListener(
+          't1',
+          'r1',
+          'c1',
+          () => store.delCell('t2', 'r2', 'c2'),
+          true,
+        );
+        store.addCellListener('t2', 'r2', 'c2', secondMutator, true);
+        store.addCellListener('t2', 'r2', 'c2', secondListener);
+        store.transaction(() => {
+          store.setCell('t1', 'r1', 'c1', 1);
+          store.setCell('t2', 'r2', 'c2', 2);
+        });
+        expect(secondMutator).toBeCalledTimes(0);
+        expect(secondListener).toBeCalledTimes(0);
+      });
+
+      test('cell mutation, reverted earlier cell', () => {
+        store.addCellListener(
+          't2',
+          'r2',
+          'c2',
+          () => store.delCell('t1', 'r1', 'c1'),
+          true,
+        );
+        store.addCellListener('t1', 'r1', 'c1', secondMutator, true);
+        store.addCellListener('t1', 'r1', 'c1', secondListener);
+        store.transaction(() => {
+          store.setCell('t1', 'r1', 'c1', 1);
+          store.setCell('t2', 'r2', 'c2', 2);
+        });
+        expect(secondMutator).toBeCalledTimes(1);
+        expect(secondMutator).toBeCalledWith(
+          store,
+          't1',
+          'r1',
+          'c1',
+          1,
+          undefined,
+          expect.any(Function),
+        );
+        expect(secondListener).toBeCalledTimes(0);
       });
 
       test('cell ids mutation', () => {
