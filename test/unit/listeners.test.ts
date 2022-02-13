@@ -4115,6 +4115,43 @@ describe('Mutating listeners', () => {
         expect(secondListener).toBeCalledTimes(0);
       });
 
+      test('cell mutation, reverted self', () => {
+        store.setCell('t1', 'r1', 'c1', 1);
+        store.addCellListener(
+          't1',
+          'r1',
+          'c1',
+          () => store.setCell('t1', 'r1', 'c1', 1),
+          true,
+        );
+        store.addCellListener('t1', 'r1', 'c1', secondListener);
+        store.setCell('t1', 'r1', 'c1', 2);
+        expect(secondListener).toBeCalledTimes(0);
+      });
+
+      test.only('cell mutation, reverted self alongside another', () => {
+        store.setCell('t1', 'r1', 'c1', 1);
+        store.addCellListener(
+          't1',
+          'r1',
+          'c1',
+          () => store.setCell('t1', 'r1', 'c1', 1),
+          true,
+        );
+        store.addCellListener('t1', 'r1', null, secondListener);
+        store.setRow('t1', 'r1', {c1: 2, c2: 2});
+        expect(secondListener).toBeCalledTimes(1);
+        expect(secondListener).toBeCalledWith(
+          store,
+          't1',
+          'r1',
+          'c2',
+          2,
+          undefined,
+          expect.any(Function),
+        );
+      });
+
       test('cell ids mutation', () => {
         store.addCellListener(
           't1',
