@@ -1,6 +1,7 @@
 import {
   Cell,
   CellCallback,
+  CellChange,
   CellIdsListener,
   CellListener,
   CellOrUndefined,
@@ -138,7 +139,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const changedTableIds: IdMap<IdAdded> = mapNew();
   const changedRowIds: IdMap<IdMap<IdAdded>> = mapNew();
   const changedCellIds: IdMap<IdMap<IdMap<IdAdded>>> = mapNew();
-  const changedCells: IdMap<IdMap<IdMap<CellOrUndefined>>> = mapNew();
+  const changedCells: IdMap<IdMap<IdMap<[CellOrUndefined, CellOrUndefined]>>> =
+    mapNew();
   const invalidCells: IdMap<IdMap<IdMap<any[]>>> = mapNew();
   const schemaMap: SchemaMap = mapNew();
   const schemaRowCache: IdMap<[RowMap, IdSet]> = mapNew();
@@ -322,7 +324,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     }
     const oldCell = mapGet(rowMap, cellId);
     if (newCell !== oldCell) {
-      cellChanged(tableId, rowId, cellId, oldCell);
+      cellChanged(tableId, rowId, cellId, oldCell, newCell);
       mapSet(rowMap, cellId, newCell);
     }
   };
@@ -418,12 +420,13 @@ export const createStore: typeof createStoreDecl = (): Store => {
     rowId: Id,
     cellId: Id,
     oldCell: CellOrUndefined,
+    newCell?: CellOrUndefined,
   ): CellOrUndefined =>
-    mapEnsure(
+    (mapEnsure(
       mapEnsure(mapEnsure(changedCells, tableId, mapNew()), rowId, mapNew()),
       cellId,
-      oldCell,
-    );
+      [oldCell],
+    )[1] = newCell);
 
   const cellInvalid = (
     tableId?: Id,
@@ -443,13 +446,16 @@ export const createStore: typeof createStoreDecl = (): Store => {
     return defaultedCell;
   };
 
-  const getCellChange: GetCellChange = (tableId: Id, rowId: Id, cellId: Id) => {
-    const changedRow = mapGet(mapGet(changedCells, tableId), rowId);
-    const newCell = getCell(tableId, rowId, cellId);
-    return collHas(changedRow, cellId)
-      ? [true, mapGet(changedRow, cellId), newCell]
-      : [false, newCell, newCell];
-  };
+  const getCellChange: GetCellChange = (tableId: Id, rowId: Id, cellId: Id) =>
+    ifNotUndefined(
+      mapGet(mapGet(mapGet(changedCells, tableId), rowId), cellId),
+      ([oldCell, newCell]) => [true, oldCell, newCell],
+      () =>
+        [
+          false,
+          ...Array(2).fill(getCell(tableId, rowId, cellId)),
+        ] as CellChange,
+    ) as CellChange;
 
   const callInvalidCellListeners = (mutator: 0 | 1) =>
     !collIsEmpty(invalidCells) && !collIsEmpty(invalidCellListeners[mutator])
@@ -484,7 +490,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
           IdMap<IdAdded>,
           IdMap<IdMap<IdAdded>>,
           IdMap<IdMap<IdMap<IdAdded>>>,
-          IdMap<IdMap<IdMap<CellOrUndefined>>>,
+          IdMap<IdMap<IdMap<[CellOrUndefined, CellOrUndefined]>>>,
         ] = mutator
           ? [
               mapClone(changedTableIds),
@@ -518,8 +524,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
             let tableChanged;
             collForEach(rows, (cells, rowId) => {
               let rowChanged;
-              collForEach(cells, (oldCell, cellId) => {
-                const newCell = getCell(tableId, rowId, cellId);
+              collForEach(cells, ([oldCell, newCell], cellId) => {
                 if (newCell !== oldCell) {
                   callListeners(
                     cellListeners[mutator],
