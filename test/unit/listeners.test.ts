@@ -4129,7 +4129,7 @@ describe('Mutating listeners', () => {
         expect(secondListener).toBeCalledTimes(0);
       });
 
-      test.only('cell mutation, reverted self alongside another', () => {
+      test('cell mutation, reverted self alongside another', () => {
         store.setCell('t1', 'r1', 'c1', 1);
         store.addCellListener(
           't1',
