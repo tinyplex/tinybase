@@ -3,6 +3,7 @@ import {
   CellCallback,
   CellIdsListener,
   CellListener,
+  CellOrUndefined,
   CellSchema,
   GetCellChange,
   InvalidCellListener,
@@ -98,7 +99,7 @@ const transformMap = <MapValue, ObjectValue>(
   return map;
 };
 
-const getCellType = (cell: Cell | undefined): string | undefined => {
+const getCellType = (cell: CellOrUndefined): string | undefined => {
   const type = getTypeOf(cell);
   return isTypeStringOrBoolean(type) ||
     (type == NUMBER && isFiniteNumber(cell as any))
@@ -137,7 +138,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const changedTableIds: IdMap<IdAdded> = mapNew();
   const changedRowIds: IdMap<IdMap<IdAdded>> = mapNew();
   const changedCellIds: IdMap<IdMap<IdMap<IdAdded>>> = mapNew();
-  const changedCells: IdMap<IdMap<IdMap<Cell | undefined>>> = mapNew();
+  const changedCells: IdMap<IdMap<IdMap<CellOrUndefined>>> = mapNew();
   const invalidCells: IdMap<IdMap<IdMap<any[]>>> = mapNew();
   const schemaMap: SchemaMap = mapNew();
   const schemaRowCache: IdMap<[RowMap, IdSet]> = mapNew();
@@ -213,7 +214,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     rowId: Id | undefined,
     cellId: Id,
     cell: Cell,
-  ): Cell | undefined =>
+  ): CellOrUndefined =>
     hasSchema
       ? ifNotUndefined(
           mapGet(mapGet(schemaMap, tableId), cellId),
@@ -416,8 +417,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
     tableId: Id,
     rowId: Id,
     cellId: Id,
-    oldCell: Cell | undefined,
-  ): Cell | undefined =>
+    oldCell: CellOrUndefined,
+  ): CellOrUndefined =>
     mapEnsure(
       mapEnsure(mapEnsure(changedCells, tableId, mapNew()), rowId, mapNew()),
       cellId,
@@ -430,7 +431,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     cellId?: Id,
     invalidCell?: any,
     defaultedCell?: Cell,
-  ): Cell | undefined => {
+  ): CellOrUndefined => {
     arrayPush(
       mapEnsure(
         mapEnsure(mapEnsure(invalidCells, tableId, mapNew()), rowId, mapNew()),
@@ -483,7 +484,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
           IdMap<IdAdded>,
           IdMap<IdMap<IdAdded>>,
           IdMap<IdMap<IdMap<IdAdded>>>,
-          IdMap<IdMap<IdMap<Cell | undefined>>>,
+          IdMap<IdMap<IdMap<CellOrUndefined>>>,
         ] = mutator
           ? [
               mapClone(changedTableIds),
@@ -572,7 +573,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const getCellIds = (tableId: Id, rowId: Id): Ids =>
     mapKeys(mapGet(mapGet(tablesMap, tableId), rowId));
 
-  const getCell = (tableId: Id, rowId: Id, cellId: Id): Cell | undefined =>
+  const getCell = (tableId: Id, rowId: Id, cellId: Id): CellOrUndefined =>
     mapGet(mapGet(mapGet(tablesMap, tableId), rowId), cellId);
 
   const hasTables = (): boolean => !collIsEmpty(tablesMap);

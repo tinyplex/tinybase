@@ -89,6 +89,18 @@ export type Row = {[cellId: Id]: Cell};
 export type Cell = string | number | boolean;
 
 /**
+ * The CellOrUndefined type is a data structure representing the data in a
+ * single cell or the value `undefined`.
+ *
+ * This is used when describing a Cell that is present _or_ that is not present
+ * - such as when it has been deleted, or when describing a previous state where
+ * the Cell value has since been added.
+ *
+ * @category Store
+ */
+export type CellOrUndefined = Cell | undefined;
+
+/**
  * The TableCallback type describes a function that takes a Table's Id and a
  * callback to loop over each Row within it.
  *
@@ -149,7 +161,7 @@ export type CellCallback = (cellId: Id, cell: Cell) => void;
  * @param cell The current value of the Cell to map to a new value.
  * @category Callback
  */
-export type MapCell = (cell: Cell | undefined) => Cell;
+export type MapCell = (cell: CellOrUndefined) => Cell;
 
 /**
  * The GetCell type describes a function that takes a Id and returns the Cell
@@ -162,7 +174,7 @@ export type MapCell = (cell: Cell | undefined) => Cell;
  * @param cellId The Id of the Cell to fetch the value for.
  * @category Callback
  */
-export type GetCell = (cellId: Id) => Cell | undefined;
+export type GetCell = (cellId: Id) => CellOrUndefined;
 
 /**
  * The TablesListener type describes a function that is used to listen to
@@ -390,8 +402,8 @@ export type GetCellChange = (tableId: Id, rowId: Id, cellId: Id) => CellChange;
  */
 export type CellChange = [
   changed: boolean,
-  oldCell: Cell | undefined,
-  newCell: Cell | undefined,
+  oldCell: CellOrUndefined,
+  newCell: CellOrUndefined,
 ];
 
 /**
@@ -897,7 +909,7 @@ export interface Store {
    * ```
    * @category Getter
    */
-  getCell(tableId: Id, rowId: Id, cellId: Id): Cell | undefined;
+  getCell(tableId: Id, rowId: Id, cellId: Id): CellOrUndefined;
 
   /**
    * The hasTables method returns a boolean indicating whether any Table objects
