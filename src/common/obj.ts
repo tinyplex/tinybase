@@ -28,5 +28,5 @@ export const objForEach = <Value>(
   cb: (value: Value, id: string) => void,
 ): void => arrayForEach(object.entries(obj), ([id, value]) => cb(value, id));
 
-export const objIsEmpty = (obj: IdObj<unknown>): boolean =>
+export const objIsEmpty = <Value>(obj: IdObj<Value>): boolean =>
   arrayIsEmpty(objIds(obj));

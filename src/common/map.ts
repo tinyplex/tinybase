@@ -1,7 +1,7 @@
 import {collDel, collForEach, collHas} from './coll';
+import {ifNotUndefined, isUndefined} from './other';
 import {Id} from '../common.d';
 import {IdObj} from './obj';
-import {isUndefined} from './other';
 
 export type IdMap<Value> = Map<Id, Value>;
 
@@ -49,11 +49,16 @@ export const mapEnsure = <Key, Value>(
 export const mapToObj = <MapValue, ObjectValue>(
   map: IdMap<MapValue> | undefined,
   childMapper?: (mapValue: MapValue) => ObjectValue,
+  childExclude?: (objectValue: ObjectValue) => boolean,
 ): IdObj<ObjectValue> => {
   const obj: IdObj<ObjectValue> = {};
   const mapper =
     childMapper ?? ((mapValue: MapValue) => mapValue as any as ObjectValue);
-  collForEach(map, (value, key) => (obj[key] = mapper(value)));
+  collForEach(map, (value, key) =>
+    ifNotUndefined(mapper(value), (mappedValue) =>
+      childExclude?.(mappedValue) ? 0 : (obj[key] = mappedValue),
+    ),
+  );
   return obj;
 };
 

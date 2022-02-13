@@ -474,6 +474,59 @@ export type CellSchema =
     };
 
 /**
+ * The ChangedCells type describes the Cell values that have been changed during
+ * a transaction, primarily used so that you can indicate whether the
+ * transaction should be rolled back.
+ *
+ * A ChangedCells object is provided to the `doRollback` callback when using the
+ * transaction method. See that method for specific examples.
+ *
+ * This type is a nested structure of Table, Row, and Cell objects, much like
+ * the Tables object, but one which provides both the old and new Cell values in
+ * a two-part array. These are describing the state of each changed Cell in
+ * Store at the _start_ of the transaction, and by the _end_ of the transaction.
+ *
+ * Hence, an `undefined` value for the first item in the array means that the
+ * Cell was added during the transaction. An `undefined` value for the second
+ * item in the array means that the Cell was removed during the transaction. An
+ * array with two different Cell values indicates that it was changed. The
+ * two-part array will never contain two items of the same value (including two
+ * `undefined` values), even if, during the transaction, a Cell was changed to a
+ * different value and then changed back.
+ *
+ * @category Transaction
+ */
+export type ChangedCells = {
+  [tableId: Id]: {
+    [rowId: Id]: {
+      [cellId: Id]: [CellOrUndefined, CellOrUndefined];
+    };
+  };
+};
+/**
+ * The InvalidCells type describes the invalid Cell values that have been
+ * attempted during a transaction, primarily used so that you can indicate
+ * whether the transaction should be rolled back.
+ *
+ * An InvalidCells object is provided to the `doRollback` callback when using
+ * the transaction method. See that method for specific examples.
+ *
+ * This type is a nested structure of Table, Row, and Cell objects, much like
+ * the Tables object, but one for which Cell values are listed in array
+ * (much like the InvalidCellListener type) so that multiple failed attempts to
+ * change a Cell during the transaction are described.
+ *
+ * @category Transaction
+ */
+export type InvalidCells = {
+  [tableId: Id]: {
+    [rowId: Id]: {
+      [cellId: Id]: any[];
+    };
+  };
+};
+
+/**
  * The StoreListenerStats type describes the number of listeners registered with
  * the Store, and can be used for debugging purposes.
  *
@@ -1665,9 +1718,15 @@ export interface Store {
    * // -> undefined
    * // No net change during the transaction, so the listener is not called.
    * ```
-   * @category Setter
+   * @category Transaction
    */
-  transaction<Return>(actions: () => Return): Return;
+  transaction<Return>(
+    actions: () => Return,
+    doRollback?: (
+      changedCells: ChangedCells,
+      invalidCells: InvalidCells,
+    ) => boolean,
+  ): Return;
 
   /**
    * The forEachTable method takes a function that it will then call for each

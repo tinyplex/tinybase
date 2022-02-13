@@ -6,8 +6,10 @@ import {
   CellListener,
   CellOrUndefined,
   CellSchema,
+  ChangedCells,
   GetCellChange,
   InvalidCellListener,
+  InvalidCells,
   MapCell,
   Row,
   RowCallback,
@@ -719,7 +721,13 @@ export const createStore: typeof createStoreDecl = (): Store => {
       hasSchema = false;
     });
 
-  const transaction = <Return>(actions?: () => Return): Return => {
+  const transaction = <Return>(
+    actions?: () => Return,
+    doRollback?: (
+      changedCells: ChangedCells,
+      invalidCells: InvalidCells,
+    ) => boolean,
+  ): Return => {
     if (transactions == -1) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore only occurs internally
@@ -734,6 +742,43 @@ export const createStore: typeof createStoreDecl = (): Store => {
       callInvalidCellListeners(1);
       callListenersForChanges(1);
       transactions = -1;
+
+      if (
+        doRollback?.(
+          mapToObj(
+            changedCells,
+            (table) =>
+              mapToObj(
+                table,
+                (row) =>
+                  mapToObj(
+                    row,
+                    undefined,
+                    ([oldCell, newCell]) => oldCell === newCell,
+                  ),
+                objIsEmpty,
+              ),
+            objIsEmpty,
+          ),
+          mapToObj<IdMap<IdMap<any[]>>, IdObj<IdObj<any[]>>>(
+            invalidCells,
+            (map) => mapToObj<IdMap<any[]>, IdObj<any[]>>(map, mapToObj),
+          ),
+        )
+      ) {
+        transactions = 1;
+        collForEach(changedCells, (table, tableId) =>
+          collForEach(table, (row, rowId) =>
+            collForEach(row, ([oldCell], cellId) =>
+              isUndefined(oldCell)
+                ? delCell(tableId, rowId, cellId, true)
+                : setCell(tableId, rowId, cellId, oldCell),
+            ),
+          ),
+        );
+        transactions = -1;
+      }
+
       callInvalidCellListeners(0);
       callListenersForChanges(0);
       transactions = 0;

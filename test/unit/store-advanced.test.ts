@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import {Row, Store, Table, Tables, createStore} from '../../lib/debug/tinybase';
 import {
   StoreListener,
@@ -258,8 +259,9 @@ describe('Miscellaneous', () => {
 });
 
 describe('Transactions', () => {
+  const originalTables = {t1: {r1: {c1: 1}}};
   beforeEach(() => {
-    store.setTables({t1: {r1: {c1: 1}}});
+    store.setTables(originalTables);
   });
 
   test('Empty', () => {
@@ -336,7 +338,7 @@ describe('Transactions', () => {
         .setTable('t2', {r2: {c2: 4}})
         .setTable('a3', {b3: {c3: 5}})
         .delTable('t2')
-        .setTables({t1: {r1: {c1: 1}}}),
+        .setTables(originalTables),
     );
     expectNoChanges(listener);
   });
@@ -430,6 +432,179 @@ describe('Transactions', () => {
     });
     store.setTables({t1: {r1: {c1: 2}}});
     expect(listener).not.toBeCalled();
+  });
+
+  describe('Rolling back', () => {
+    describe('doRollback gets changed and invalid cells, returns true', () => {
+      test('with setTables', () => {
+        expect.assertions(4);
+        store.transaction(
+          // @ts-ignore
+          () => store.setTables({t2: {r2: {c2: 2, c3: [3]}}}),
+          (changedCells, invalidCells) => {
+            expect(store.getTables()).toEqual({t2: {r2: {c2: 2}}});
+            expect(changedCells).toEqual({
+              t1: {r1: {c1: [1, undefined]}},
+              t2: {r2: {c2: [undefined, 2]}},
+            });
+            expect(invalidCells).toEqual({t2: {r2: {c3: [[3]]}}});
+            return true;
+          },
+        );
+        expect(store.getTables()).toEqual(originalTables);
+      });
+
+      test('with setTable', () => {
+        expect.assertions(4);
+        store.transaction(
+          // @ts-ignore
+          () => store.setTable('t2', {r2: {c2: 2, c3: [3]}}),
+          (changedCells, invalidCells) => {
+            expect(store.getTables()).toEqual({
+              t1: {r1: {c1: 1}},
+              t2: {r2: {c2: 2}},
+            });
+            expect(changedCells).toEqual({t2: {r2: {c2: [undefined, 2]}}});
+            expect(invalidCells).toEqual({t2: {r2: {c3: [[3]]}}});
+            return true;
+          },
+        );
+        expect(store.getTables()).toEqual(originalTables);
+      });
+
+      test('with setRow', () => {
+        expect.assertions(4);
+        store.transaction(
+          // @ts-ignore
+          () => store.setRow('t2', 'r2', {c2: 2, c3: [3]}),
+          (changedCells, invalidCells) => {
+            expect(store.getTables()).toEqual({
+              t1: {r1: {c1: 1}},
+              t2: {r2: {c2: 2}},
+            });
+            expect(changedCells).toEqual({t2: {r2: {c2: [undefined, 2]}}});
+            expect(invalidCells).toEqual({t2: {r2: {c3: [[3]]}}});
+            return true;
+          },
+        );
+        expect(store.getTables()).toEqual(originalTables);
+      });
+
+      test('with valid setCell', () => {
+        expect.assertions(4);
+        store.transaction(
+          () => store.setCell('t2', 'r2', 'c2', 2),
+          (changedCells, invalidCells) => {
+            expect(store.getTables()).toEqual({
+              t1: {r1: {c1: 1}},
+              t2: {r2: {c2: 2}},
+            });
+            expect(changedCells).toEqual({t2: {r2: {c2: [undefined, 2]}}});
+            expect(invalidCells).toEqual({});
+            return true;
+          },
+        );
+        expect(store.getTables()).toEqual(originalTables);
+      });
+
+      test('with invalid setCell', () => {
+        expect.assertions(4);
+        store.transaction(
+          // @ts-ignore
+          () => store.setCell('t2', 'r2', 'c3', [3]),
+          (changedCells, invalidCells) => {
+            expect(store.getTables()).toEqual(originalTables);
+            expect(changedCells).toEqual({});
+            expect(invalidCells).toEqual({t2: {r2: {c3: [[3]]}}});
+            return true;
+          },
+        );
+        expect(store.getTables()).toEqual(originalTables);
+      });
+
+      test('with interesting sequence', () => {
+        expect.assertions(4);
+        store.transaction(
+          () => {
+            store.setCell('t2', 'r2', 'c2', 2);
+            store.setRow('t2', 'r3', {c3: 3});
+            store.setTable('t3', {r3: {c3: 3}});
+            store.delRow('t1', 'r1');
+            store.delTable('t2');
+          },
+          (changedCells, invalidCells) => {
+            expect(store.getTables()).toEqual({t3: {r3: {c3: 3}}});
+            expect(changedCells).toEqual({
+              t1: {r1: {c1: [1, undefined]}},
+              t3: {r3: {c3: [undefined, 3]}},
+            });
+            expect(invalidCells).toEqual({});
+            return true;
+          },
+        );
+        expect(store.getTables()).toEqual(originalTables);
+      });
+    });
+  });
+
+  describe('doRollback returns false', () => {
+    test('with setTables', () => {
+      store.transaction(
+        // @ts-ignore
+        () => store.setTables({t2: {r2: {c2: 2, c3: [3]}}}),
+        () => false,
+      );
+      expect(store.getTables()).toEqual({t2: {r2: {c2: 2}}});
+    });
+
+    test('with setTable', () => {
+      store.transaction(
+        // @ts-ignore
+        () => store.setTable('t2', {r2: {c2: 2, c3: [3]}}),
+        () => false,
+      );
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}, t2: {r2: {c2: 2}}});
+    });
+
+    test('with setRow', () => {
+      store.transaction(
+        // @ts-ignore
+        () => store.setRow('t2', 'r2', {c2: 2, c3: [3]}),
+        () => false,
+      );
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}, t2: {r2: {c2: 2}}});
+    });
+
+    test('with valid setCell', () => {
+      store.transaction(
+        () => store.setCell('t2', 'r2', 'c2', 2),
+        () => false,
+      );
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}, t2: {r2: {c2: 2}}});
+    });
+
+    test('with invalid setCell', () => {
+      store.transaction(
+        // @ts-ignore
+        () => store.setCell('t2', 'r2', 'c3', [3]),
+        () => false,
+      );
+      expect(store.getTables()).toEqual(originalTables);
+    });
+
+    test('with interesting sequence', () => {
+      store.transaction(
+        () => {
+          store.setCell('t2', 'r2', 'c2', 2);
+          store.setRow('t2', 'r3', {c3: 3});
+          store.setTable('t3', {r3: {c3: 3}});
+          store.delRow('t1', 'r1');
+          store.delTable('t2');
+        },
+        () => false,
+      );
+      expect(store.getTables()).toEqual({t3: {r3: {c3: 3}}});
+    });
   });
 });
 
