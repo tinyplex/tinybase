@@ -13,6 +13,7 @@ exception:
 - Listen to a Row with the addRowListener method.
 - Listen to Cell Ids with the addCellIdsListener method.
 - Listen to a Cell with the addCellListener method.
+- Listen to invalid Cells with the addInvalidCellListener method.
 
 You can also listen to attempts to write invalid data to a Cell with the
 addInvalidCellListener method.
@@ -148,8 +149,5 @@ in a given Table, and so on.
 ## Summary
 
 We've now seen how to create a Store, set data in it, read it back out, and set
-up listeners to detect whenever it changes. Those are the essential basics of a
-TinyBase Store, but still just the start!
-
-Next we will show how you can quickly build user interfaces on top of a Store,
-and for that, it's time to proceed to the Building UIs guide.
+up listeners to detect whenever it changes. Finally we'll cover how to wrap
+multiple changes together, in the Transactions guide.
