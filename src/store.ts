@@ -51,8 +51,6 @@ import {
   mapNewPair,
   mapSet,
   mapToObj,
-  mapToObj2,
-  mapToObj3,
 } from './common/map';
 import {
   IdObj,
@@ -568,12 +566,15 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   // --
 
-  const getTables = (): Tables => mapToObj3(tablesMap);
+  const getTables = (): Tables =>
+    mapToObj<TableMap, Table>(tablesMap, (table) =>
+      mapToObj<RowMap, Row>(table, mapToObj),
+    );
 
   const getTableIds = (): Ids => mapKeys(tablesMap);
 
   const getTable = (tableId: Id): Table =>
-    mapToObj2(mapGet(tablesMap, tableId));
+    mapToObj<RowMap, Row>(mapGet(tablesMap, tableId), mapToObj);
 
   const getRowIds = (tableId: Id): Ids => mapKeys(mapGet(tablesMap, tableId));
 

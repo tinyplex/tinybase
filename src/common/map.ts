@@ -62,15 +62,6 @@ export const mapToObj = <MapValue, ObjectValue>(
   return obj;
 };
 
-export const mapToObj2 = <MapValue, ObjectValue>(
-  map: IdMap<IdMap<MapValue>> | undefined,
-) => mapToObj<IdMap<MapValue>, IdObj<ObjectValue>>(map, mapToObj);
-
-export const mapToObj3 = <MapValue, ObjectValue>(
-  map: IdMap<IdMap<IdMap<MapValue>>> | undefined,
-) =>
-  mapToObj<IdMap<IdMap<MapValue>>, IdObj<IdObj<ObjectValue>>>(map, mapToObj2);
-
 export const mapClone = <MapValue>(
   map: IdMap<MapValue> | undefined,
   childMapper?: (mapValue: MapValue) => MapValue,
