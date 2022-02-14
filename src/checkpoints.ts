@@ -12,6 +12,7 @@ import {DEBUG, ifNotUndefined, isUndefined} from './common/other';
 import {Id, IdOrNull, Ids} from './common.d';
 import {
   IdMap,
+  IdMap2,
   mapEnsure,
   mapForEach,
   mapGet,
@@ -40,7 +41,7 @@ import {getListenerFunctions} from './common/listeners';
 import {objFreeze} from './common/obj';
 
 type OldNew = [Cell | undefined, Cell | undefined];
-type Delta = IdMap<IdMap<IdMap<OldNew>>>;
+type Delta = IdMap2<IdMap<OldNew>>;
 
 export const createCheckpoints: typeof createCheckpointsDecl =
   getCreateFunction((store: Store): Checkpoints => {

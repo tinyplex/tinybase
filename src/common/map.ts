@@ -4,6 +4,8 @@ import {Id} from '../common.d';
 import {IdObj} from './obj';
 
 export type IdMap<Value> = Map<Id, Value>;
+export type IdMap2<Value> = IdMap<IdMap<Value>>;
+export type IdMap3<Value> = IdMap<IdMap2<Value>>;
 
 export const mapNew = <Key, Value>(entries?: [Key, Value][]): Map<Key, Value> =>
   new Map(entries);
@@ -72,9 +74,8 @@ export const mapClone = <MapValue>(
   return map2;
 };
 
-export const mapClone2 = <MapValue>(map: IdMap<IdMap<MapValue>> | undefined) =>
+export const mapClone2 = <MapValue>(map: IdMap2<MapValue> | undefined) =>
   mapClone(map, mapClone);
 
-export const mapClone3 = <MapValue>(
-  map: IdMap<IdMap<IdMap<MapValue>>> | undefined,
-) => mapClone(map, mapClone2);
+export const mapClone3 = <MapValue>(map: IdMap3<MapValue> | undefined) =>
+  mapClone(map, mapClone2);

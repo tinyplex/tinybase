@@ -1,6 +1,14 @@
 import {Cell, GetCell, Store} from '../store.d';
 import {Id, Ids, SortKey} from '../common.d';
-import {IdMap, mapForEach, mapGet, mapKeys, mapNew, mapSet} from './map';
+import {
+  IdMap,
+  IdMap2,
+  mapForEach,
+  mapGet,
+  mapKeys,
+  mapNew,
+  mapSet,
+} from './map';
 import {IdSet2, setNew} from './set';
 import {collClear, collForEach, collHas} from './coll';
 import {ifNotUndefined, isString, isUndefined} from './other';
@@ -10,8 +18,6 @@ import {Indexes} from '../indexes.d';
 import {Metrics} from '../metrics.d';
 import {Relationships} from '../relationships.d';
 import {arrayForEach} from './array';
-
-type DeepMap1<Value> = IdMap<IdMap<Value>>;
 
 type OnChangedDecl<RowValue> = (
   change: () => void,
@@ -47,8 +53,8 @@ export const getDefinableFunctions = <Thing, RowValue>(
   const hasRow = store.hasRow;
   const tableIds: IdMap<Id> = mapNew();
   const things: IdMap<Thing> = mapNew();
-  const allRowValues: DeepMap1<RowValue> = mapNew();
-  const allSortKeys: DeepMap1<SortKey> = mapNew();
+  const allRowValues: IdMap2<RowValue> = mapNew();
+  const allSortKeys: IdMap2<SortKey> = mapNew();
   const storeListenerIds: IdSet2 = mapNew();
 
   const getStore = (): Store => store;

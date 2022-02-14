@@ -9,7 +9,8 @@ import {
   Store,
 } from '../../lib/debug/tinybase';
 
-type IdObj<T> = {[id: string]: T};
+type IdObj<Value> = {[id: string]: Value};
+type IdObj2<Value> = IdObj<{[id: string]: Value}>;
 type Logs = IdObj<any[]>;
 
 type Listener = Readonly<{
@@ -314,8 +315,8 @@ export const getMetricsObject = (
   return metricsObject;
 };
 
-export const getIndexesObject = (indexes: Indexes): IdObj<IdObj<Ids>> => {
-  const indexesObject: IdObj<IdObj<Ids>> = {};
+export const getIndexesObject = (indexes: Indexes): IdObj2<Ids> => {
+  const indexesObject: IdObj2<Ids> = {};
   indexes.forEachIndex((indexId) => {
     indexesObject[indexId] = {};
     indexes

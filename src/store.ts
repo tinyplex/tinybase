@@ -40,6 +40,8 @@ import {DEFAULT, EMPTY_OBJECT, NUMBER, TYPE, getTypeOf} from './common/strings';
 import {Id, IdOrNull, Ids, Json} from './common.d';
 import {
   IdMap,
+  IdMap2,
+  IdMap3,
   mapClone,
   mapClone2,
   mapClone3,
@@ -54,6 +56,7 @@ import {
 } from './common/map';
 import {
   IdObj,
+  IdObj2,
   isObject,
   objDel,
   objForEach,
@@ -83,7 +86,7 @@ import {
 } from './common/coll';
 import {getListenerFunctions} from './common/listeners';
 
-type SchemaMap = IdMap<IdMap<CellSchema>>;
+type SchemaMap = IdMap2<CellSchema>;
 type RowMap = IdMap<Cell>;
 type TableMap = IdMap<RowMap>;
 type TablesMap = IdMap<TableMap>;
@@ -143,11 +146,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
   let nextRowId = 0;
   let transactions = 0;
   const changedTableIds: IdMap<IdAdded> = mapNew();
-  const changedRowIds: IdMap<IdMap<IdAdded>> = mapNew();
-  const changedCellIds: IdMap<IdMap<IdMap<IdAdded>>> = mapNew();
-  const changedCells: IdMap<IdMap<IdMap<[CellOrUndefined, CellOrUndefined]>>> =
-    mapNew();
-  const invalidCells: IdMap<IdMap<IdMap<any[]>>> = mapNew();
+  const changedRowIds: IdMap2<IdAdded> = mapNew();
+  const changedCellIds: IdMap3<IdAdded> = mapNew();
+  const changedCells: IdMap3<[CellOrUndefined, CellOrUndefined]> = mapNew();
+  const invalidCells: IdMap3<any[]> = mapNew();
   const schemaMap: SchemaMap = mapNew();
   const schemaRowCache: IdMap<[RowMap, IdSet]> = mapNew();
   const tablesMap: TablesMap = mapNew();
@@ -491,9 +493,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
       if (!(emptyIdListeners && emptyOtherListeners)) {
         const changes: [
           IdMap<IdAdded>,
-          IdMap<IdMap<IdAdded>>,
-          IdMap<IdMap<IdMap<IdAdded>>>,
-          IdMap<IdMap<IdMap<[CellOrUndefined, CellOrUndefined]>>>,
+          IdMap2<IdAdded>,
+          IdMap3<IdAdded>,
+          IdMap3<[CellOrUndefined, CellOrUndefined]>,
         ] = mutator
           ? [
               mapClone(changedTableIds),
@@ -761,9 +763,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
               ),
             objIsEmpty,
           ),
-          mapToObj<IdMap<IdMap<any[]>>, IdObj<IdObj<any[]>>>(
-            invalidCells,
-            (map) => mapToObj<IdMap<any[]>, IdObj<any[]>>(map, mapToObj),
+          mapToObj<IdMap2<any[]>, IdObj2<any[]>>(invalidCells, (map) =>
+            mapToObj<IdMap<any[]>, IdObj<any[]>>(map, mapToObj),
           ),
         )
       ) {
