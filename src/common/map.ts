@@ -76,6 +76,3 @@ export const mapClone = <MapValue>(
 
 export const mapClone2 = <MapValue>(map: IdMap2<MapValue> | undefined) =>
   mapClone(map, mapClone);
-
-export const mapClone3 = <MapValue>(map: IdMap3<MapValue> | undefined) =>
-  mapClone(map, mapClone2);

@@ -44,7 +44,6 @@ import {
   IdMap3,
   mapClone,
   mapClone2,
-  mapClone3,
   mapEnsure,
   mapForEach,
   mapGet,
@@ -465,7 +464,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const callInvalidCellListeners = (mutator: 0 | 1) =>
     !collIsEmpty(invalidCells) && !collIsEmpty(invalidCellListeners[mutator])
       ? collForEach(
-          mutator ? mapClone3(invalidCells) : invalidCells,
+          mutator ? mapClone(invalidCells, mapClone2) : invalidCells,
           (rows, tableId) =>
             collForEach(rows, (cells, rowId) =>
               collForEach(cells, (invalidCell, cellId) =>
@@ -500,8 +499,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
           ? [
               mapClone(changedTableIds),
               mapClone2(changedRowIds),
-              mapClone3(changedCellIds),
-              mapClone3(changedCells),
+              mapClone(changedCellIds, mapClone2),
+              mapClone(changedCells, mapClone2),
             ]
           : [changedTableIds, changedRowIds, changedCellIds, changedCells];
 
