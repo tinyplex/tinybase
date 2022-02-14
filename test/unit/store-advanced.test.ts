@@ -490,16 +490,22 @@ describe('Transactions', () => {
         expect(store.getTables()).toEqual(originalTables);
       });
 
-      test('with valid setCell', () => {
+      test('with valid setCells', () => {
         expect.assertions(4);
         store.transaction(
-          () => store.setCell('t2', 'r2', 'c2', 2),
+          () => {
+            store.setCell('t1', 'r1', 'c1', 2);
+            store.setCell('t2', 'r2', 'c2', 2);
+          },
           (changedCells, invalidCells) => {
             expect(store.getTables()).toEqual({
-              t1: {r1: {c1: 1}},
+              t1: {r1: {c1: 2}},
               t2: {r2: {c2: 2}},
             });
-            expect(changedCells).toEqual({t2: {r2: {c2: [undefined, 2]}}});
+            expect(changedCells).toEqual({
+              t1: {r1: {c1: [1, 2]}},
+              t2: {r2: {c2: [undefined, 2]}},
+            });
             expect(invalidCells).toEqual({});
             return true;
           },
@@ -575,12 +581,15 @@ describe('Transactions', () => {
       expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}, t2: {r2: {c2: 2}}});
     });
 
-    test('with valid setCell', () => {
+    test('with valid setCells', () => {
       store.transaction(
-        () => store.setCell('t2', 'r2', 'c2', 2),
+        () => {
+          store.setCell('t1', 'r1', 'c1', 2);
+          store.setCell('t2', 'r2', 'c2', 2);
+        },
         () => false,
       );
-      expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}, t2: {r2: {c2: 2}}});
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}, t2: {r2: {c2: 2}}});
     });
 
     test('with invalid setCell', () => {
