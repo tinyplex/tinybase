@@ -755,7 +755,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
                 (row) =>
                   mapToObj(
                     row,
-                    undefined,
+                    (cells) => [...cells],
                     ([oldCell, newCell]) => oldCell === newCell,
                   ),
                 objIsEmpty,
