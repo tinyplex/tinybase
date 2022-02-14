@@ -1668,7 +1668,15 @@ export interface Store {
    * Transactions can be nested. Relevant listeners will be called only when the
    * outermost one completes.
    *
+   * The second, optional parameter, `doRollback` is a callback that you can use
+   * to rollback the transaction if it did not complete to your satisfaction. It
+   * is called with `changedCells` and `invalidCells` parameters, which inform
+   * you of the net changes that have been made during the transaction, and any
+   * invalid attempts to do so, respectively.
+   *
    * @param actions The function to be executed as a transaction.
+   * @param doRollback An optional callback that should return `true` if you
+   * want to rollback the transaction at the end.
    * @returns Whatever value the provided transaction function returns.
    * @example
    * This example makes changes to two Cells, first outside, and secondly
@@ -1717,6 +1725,37 @@ export interface Store {
    * });
    * // -> undefined
    * // No net change during the transaction, so the listener is not called.
+   * ```
+   * @example
+   * This example makes multiple changes to the Store, including some attempts
+   * to update a Cell with invalid values. The `doRollback` callback receives
+   * information about the changes and invalid attempts, and then judges that
+   * the transaction should be rolled back to its original state.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {fido: {species: 'dog', color: 'brown'}},
+   * });
+   *
+   * store.transaction(
+   *   () => {
+   *     store.setCell('pets', 'fido', 'color', 'black');
+   *     store.setCell('pets', 'fido', 'eyes', ['left', 'right']);
+   *     store.setCell('pets', 'fido', 'info', {sold: null});
+   *   },
+   *   (changedCells, invalidCells) => {
+   *     console.log(store.getTables());
+   *     // -> {pets: {fido: {species: 'dog', color: 'black'}}}
+   *     console.log(changedCells);
+   *     // -> {pets: {fido: {color: ['brown', 'black']}}}
+   *     console.log(invalidCells);
+   *     // -> {pets: {fido: {eyes: [['left', 'right']], info: [{sold: null}]}}}
+   *     return invalidCells['pets'] != null;
+   *   },
+   * );
+   *
+   * console.log(store.getTables());
+   * // -> {pets: {fido: {species: 'dog', color: 'brown'}}}
    * ```
    * @category Transaction
    */
