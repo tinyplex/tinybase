@@ -48,6 +48,8 @@ export const repeat = (
 
     console.log(
       `${name} with multiple ${noun}, ${unit}\n` +
+        ` From: ${stepSize} ${noun}\n` +
+        `   To: ${maxN} ${noun}\n` +
         `First: ${results[0]} ${unit}\n` +
         ` Last: ${results[results.length - 1]} ${unit}\n` +
         `  Min: ${Math.min(...results)} ${unit}\n` +
