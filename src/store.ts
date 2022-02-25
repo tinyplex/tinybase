@@ -30,14 +30,13 @@ import {
 import {
   DEBUG,
   ifNotUndefined,
-  isFiniteNumber,
   isFunction,
   isTypeStringOrBoolean,
   isUndefined,
   jsonParse,
   jsonString,
 } from './common/other';
-import {DEFAULT, EMPTY_OBJECT, NUMBER, TYPE, getTypeOf} from './common/strings';
+import {DEFAULT, EMPTY_OBJECT, NUMBER, TYPE} from './common/strings';
 import {Id, IdOrNull, Ids, Json} from './common.d';
 import {
   IdMap,
@@ -84,6 +83,7 @@ import {
   collSize3,
   collSize4,
 } from './common/coll';
+import {getCellType} from './common/cell';
 import {getListenerFunctions} from './common/listeners';
 
 type SchemaMap = IdMap2<CellSchema>;
@@ -107,14 +107,6 @@ const transformMap = <MapValue, ObjectValue>(
   );
   arrayForEach(idsToDelete, (id) => delId(map, id));
   return map;
-};
-
-const getCellType = (cell: CellOrUndefined): string | undefined => {
-  const type = getTypeOf(cell);
-  return isTypeStringOrBoolean(type) ||
-    (type == NUMBER && isFiniteNumber(cell as any))
-    ? type
-    : undefined;
 };
 
 const validate = (
