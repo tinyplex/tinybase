@@ -25,6 +25,7 @@ import {Checkpoints} from '../checkpoints.d';
 import {EMPTY_STRING} from './strings';
 import {Indexes} from '../indexes.d';
 import {Metrics} from '../metrics.d';
+import {Queries} from '../queries.d';
 import {Relationships} from '../relationships.d';
 
 type OnChangedDecl<RowValue> = (
@@ -227,7 +228,7 @@ export const getRowCellFunction = <RowValue>(
       ((): RowValue => defaultCellValue ?? (EMPTY_STRING as any as RowValue));
 
 export const getCreateFunction = <
-  Things extends Metrics | Indexes | Relationships | Checkpoints,
+  Things extends Metrics | Indexes | Relationships | Checkpoints | Queries,
 >(
   getFunction: (store: Store) => Things,
 ): ((store: Store) => Things) => {
