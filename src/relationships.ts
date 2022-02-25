@@ -45,7 +45,8 @@ export const createRelationships: typeof createRelationshipsDecl =
       getLocalTableId,
       getRelationship,
       ,
-      setDefinition,
+      ,
+      setDefinitionAndListen,
       delDefinition,
       destroy,
     ] = getDefinableFunctions<Relationship, Id | undefined>(
@@ -102,7 +103,7 @@ export const createRelationships: typeof createRelationshipsDecl =
     ): Relationships => {
       mapSet(remoteTableIds, relationshipId, remoteTableId);
 
-      setDefinition(
+      setDefinitionAndListen(
         relationshipId,
         localTableId,
         (

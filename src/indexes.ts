@@ -44,7 +44,8 @@ export const createIndexes: typeof createIndexesDecl = getCreateFunction(
       getTableId,
       getIndex,
       setIndex,
-      setDefinition,
+      ,
+      setDefinitionAndListen,
       delDefinition,
       destroy,
     ] = getDefinableFunctions<IdSet2, Id>(
@@ -76,7 +77,7 @@ export const createIndexes: typeof createIndexesDecl = getCreateFunction(
         : ([id1]: [Id, IdSet], [id2]: [Id, IdSet]): number =>
             (sliceIdSorter as (sliceId1: Id, sliceId2: Id) => number)(id1, id2);
 
-      setDefinition(
+      setDefinitionAndListen(
         indexId,
         tableId,
         (
