@@ -7,8 +7,12 @@ import {
   Table,
   TableCallback,
 } from './store.d';
-import {Id, IdOrNull, Ids} from './common.d';
 import {
+  Group,
+  Having,
+  Join,
+  Limit,
+  Order,
   Queries,
   QueriesListenerStats,
   ResultCellIdsListener,
@@ -16,8 +20,11 @@ import {
   ResultRowIdsListener,
   ResultRowListener,
   ResultTableListener,
+  Select,
+  Where,
   createQueries as createQueriesDecl,
 } from './queries.d';
+import {Id, IdOrNull, Ids} from './common.d';
 import {getCreateFunction, getDefinableFunctions} from './common/definable';
 import {getUndefined} from './common/other';
 import {objFreeze} from './common/obj';
@@ -41,9 +48,22 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
     ] = getDefinableFunctions<true, undefined>(store, () => true, getUndefined);
     const resultStore = (store as StoreWithCreateMethod).createStore();
 
-    const setQueryDefinition = (queryId: Id, tableId: Id): Queries => {
+    const setQueryDefinition = (
+      queryId: Id,
+      tableId: Id,
+      build: (builders: {
+        select: Select;
+        join: Join;
+        where: Where;
+        group: Group;
+        having: Having;
+        order: Order;
+        limit: Limit;
+      }) => void,
+    ): Queries => {
       setDefinition(queryId, tableId);
       resultStore.delTable(queryId);
+      build;
       return queries;
     };
 
