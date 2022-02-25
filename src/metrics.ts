@@ -103,7 +103,8 @@ export const createMetrics: typeof createMetricsDecl = getCreateFunction(
       getTableId,
       getMetric,
       setMetric,
-      setDefinition,
+      ,
+      setDefinitionAndListen,
       delDefinition,
       destroy,
     ] = getDefinableFunctions<number | undefined, number | undefined>(
@@ -136,7 +137,7 @@ export const createMetrics: typeof createMetricsDecl = getCreateFunction(
         : mapGet(aggregators, aggregate as Id) ??
           (mapGet(aggregators, SUM) as Aggregators);
 
-      setDefinition(
+      setDefinitionAndListen(
         metricId,
         tableId,
         (

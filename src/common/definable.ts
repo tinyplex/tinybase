@@ -40,6 +40,7 @@ export const getDefinableFunctions = <Thing, RowValue>(
   (id: Id) => Id,
   (id: Id) => Thing | undefined,
   (id: Id, thing?: Thing) => boolean | Map<string, Thing>,
+  (id: Id, tableId: Id) => void,
   (
     id: Id,
     tableId: Id,
@@ -79,25 +80,27 @@ export const getDefinableFunctions = <Thing, RowValue>(
       mapSet(storeListenerIds, id);
     });
 
-  const setDefinition = (
+  const setDefinition = (id: Id, tableId: Id): void => {
+    mapSet(tableIds, id, tableId);
+    if (!collHas(things, id)) {
+      mapSet(things, id, getDefaultThing());
+      mapSet(allRowValues, id, mapNew());
+      mapSet(allSortKeys, id, mapNew());
+    }
+  };
+
+  const setDefinitionAndListen = (
     id: Id,
     tableId: Id,
     onChanged: OnChangedDecl<RowValue>,
     getRowValue: (getCell: GetCell, rowId: Id) => RowValue,
     getSortKey?: (getCell: GetCell, rowId: Id) => SortKey,
   ): void => {
+    setDefinition(id, tableId);
     const changedRowValues: IdMap<
       [RowValue | undefined, RowValue | undefined]
     > = mapNew();
     const changedSortKeys: IdMap<SortKey> = mapNew();
-
-    mapSet(tableIds, id, tableId);
-
-    if (!collHas(things, id)) {
-      mapSet(things, id, getDefaultThing());
-      mapSet(allRowValues, id, mapNew());
-      mapSet(allSortKeys, id, mapNew());
-    }
     const rowValues = mapGet(allRowValues, id);
     const sortKeys = mapGet(allSortKeys, id);
 
@@ -185,6 +188,7 @@ export const getDefinableFunctions = <Thing, RowValue>(
     getThing,
     setThing,
     setDefinition,
+    setDefinitionAndListen,
     delDefinition,
     destroy,
   ];
