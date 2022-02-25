@@ -5,6 +5,7 @@ import {
   Ids,
   Indexes,
   Metrics,
+  Queries,
   Relationships,
   Store,
 } from '../../lib/debug/tinybase';
@@ -65,6 +66,20 @@ export type RelationshipsListener = Listener &
       remoteRowId: IdOrNull,
     ) => Id;
     listenToLinkedRowIds: (id: Id, relationshipId: Id, firstRowId: Id) => Id;
+  }>;
+
+export type QueriesListener = Listener &
+  Readonly<{
+    listenToResultTable: (id: Id, queryId: IdOrNull) => Id;
+    listenToResultRowIds: (id: Id, queryId: IdOrNull) => Id;
+    listenToResultRow: (id: Id, queryId: IdOrNull, rowId: IdOrNull) => Id;
+    listenToResultCellIds: (id: Id, queryId: IdOrNull, rowId: IdOrNull) => Id;
+    listenToResultCell: (
+      id: Id,
+      queryId: IdOrNull,
+      rowId: IdOrNull,
+      cellId: IdOrNull,
+    ) => Id;
   }>;
 
 export type CheckpointsListener = Listener &
@@ -284,6 +299,66 @@ export const createRelationshipsListener = (
               ),
             },
           }),
+      );
+    },
+    logs,
+  });
+};
+
+export const createQueriesListener = (queries: Queries): QueriesListener => {
+  const logs: Logs = {};
+
+  return Object.freeze({
+    listenToResultTable: (id, queryId) => {
+      logs[id] = [];
+      return queries.addResultTableListener(
+        queryId,
+        (queries, queryId): number =>
+          logs[id].push({[queryId]: queries.getResultTable(queryId)}),
+      );
+    },
+
+    listenToResultRowIds: (id, tableId) => {
+      logs[id] = [];
+      return queries.addResultRowIdsListener(
+        tableId,
+        (queries, tableId): number =>
+          logs[id].push({[tableId]: queries.getResultRowIds(tableId)}),
+      );
+    },
+
+    listenToResultRow: (id, tableId, rowId) => {
+      logs[id] = [];
+      return queries.addResultRowListener(
+        tableId,
+        rowId,
+        (queries, tableId, rowId): number =>
+          logs[id].push({
+            [tableId]: {[rowId]: queries.getResultRow(tableId, rowId)},
+          }),
+      );
+    },
+
+    listenToResultCellIds: (id, tableId, rowId) => {
+      logs[id] = [];
+      return queries.addResultCellIdsListener(
+        tableId,
+        rowId,
+        (queries, tableId, rowId): number =>
+          logs[id].push({
+            [tableId]: {[rowId]: queries.getResultCellIds(tableId, rowId)},
+          }),
+      );
+    },
+
+    listenToResultCell: (id, tableId, rowId, cellId) => {
+      logs[id] = [];
+      return queries.addResultCellListener(
+        tableId,
+        rowId,
+        cellId,
+        (_, tableId, rowId, cellId, newCell): number =>
+          logs[id].push({[tableId]: {[rowId]: {[cellId]: newCell}}}),
       );
     },
     logs,
