@@ -1016,7 +1016,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
     delListener,
 
     getListenerStats,
-  };
+
+    createStore,
+  } as Store;
 
   return objFreeze(store);
 };
