@@ -59,7 +59,7 @@ export const getDefinableFunctions = <Thing, RowValue>(
   ) => void,
   (id: Id) => void,
   () => void,
-  (id: Id, ...listenerIds: Ids) => Ids,
+  (id: Id, call: 0 | 1, ...listenerIds: Ids) => Ids,
   (id: Id, ...listenerIds: Ids) => void,
 ] => {
   const hasRow = store.hasRow;
@@ -85,9 +85,17 @@ export const getDefinableFunctions = <Thing, RowValue>(
   const setThing = (id: Id, thing: Thing | undefined): IdMap<Thing> =>
     mapSet(things, id, thing) as IdMap<Thing>;
 
-  const addStoreListeners = (id: Id, ...listenerIds: Ids): Ids => {
+  const addStoreListeners = (
+    id: Id,
+    andCall: 0 | 1,
+    ...listenerIds: Ids
+  ): Ids => {
     const set = mapEnsure(storeListenerIds, id, setNew);
-    arrayForEach(listenerIds, (listenerId) => setAdd(set, listenerId));
+    arrayForEach(
+      listenerIds,
+      (listenerId) =>
+        setAdd(set, listenerId) && andCall && store.callListener(listenerId),
+    );
     return listenerIds;
   };
 
@@ -184,6 +192,7 @@ export const getDefinableFunctions = <Thing, RowValue>(
     delStoreListeners(id);
     addStoreListeners(
       id,
+      0,
       store.addRowListener(tableId, null, (_store, _tableId, rowId) =>
         processRow(rowId),
       ),
