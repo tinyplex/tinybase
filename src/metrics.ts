@@ -1,4 +1,3 @@
-import {AVG, EMPTY_STRING, MAX, MIN, SUM} from './common/strings';
 import {
   Aggregate,
   AggregateAdd,
@@ -15,26 +14,19 @@ import {
   isFiniteNumber,
   isFunction,
   isUndefined,
-  mathMax,
-  mathMin,
 } from './common/other';
+import {EMPTY_STRING, SUM} from './common/strings';
 import {GetCell, Store} from './store.d';
 import {Id, IdOrNull} from './common.d';
 import {IdMap, mapGet, mapNew} from './common/map';
-import {
-  collForEach,
-  collIsEmpty,
-  collSize,
-  collSize2,
-  collValues,
-} from './common/coll';
+import {collSize, collSize2} from './common/coll';
+import {getAggregateValue, numericAggregators} from './common/aggregators';
 import {
   getCreateFunction,
   getDefinableFunctions,
   getRowCellFunction,
 } from './common/definable';
 import {IdSet2} from './common/set';
-import {arraySum} from './common/array';
 import {getListenerFunctions} from './common/listeners';
 import {objFreeze} from './common/obj';
 
@@ -44,53 +36,6 @@ type Aggregators = [
   AggregateRemove?,
   AggregateReplace?,
 ];
-
-const aggregators: IdMap<Aggregators> = mapNew([
-  [
-    AVG,
-    [
-      (numbers: number[], length: number): number => arraySum(numbers) / length,
-      (metric: number, add: number, length: number): number =>
-        metric + (add - metric) / (length + 1),
-      (metric: number, remove: number, length: number): number =>
-        metric + (metric - remove) / (length - 1),
-      (metric: number, add: number, remove: number, length: number): number =>
-        metric + (add - remove) / length,
-    ],
-  ],
-  [
-    MAX,
-    [
-      (numbers: number[]): number => mathMax(...numbers),
-      (metric: number, add: number): number => mathMax(add, metric),
-      (metric: number, remove: number): number | undefined =>
-        remove == metric ? undefined : metric,
-      (metric: number, add: number, remove: number): number | undefined =>
-        remove == metric ? undefined : mathMax(add, metric),
-    ],
-  ],
-  [
-    MIN,
-    [
-      (numbers: number[]): number => mathMin(...numbers),
-      (metric: number, add: number): number => mathMin(add, metric),
-      (metric: number, remove: number): number | undefined =>
-        remove == metric ? undefined : metric,
-      (metric: number, add: number, remove: number): number | undefined =>
-        remove == metric ? undefined : mathMin(add, metric),
-    ],
-  ],
-  [
-    SUM,
-    [
-      (numbers: number[]): number => arraySum(numbers),
-      (metric: number, add: number): number => metric + add,
-      (metric: number, remove: number): number => metric - remove,
-      (metric: number, add: number, remove: number): number =>
-        metric - remove + add,
-    ],
-  ],
-]);
 
 export const createMetrics: typeof createMetricsDecl = getCreateFunction(
   (store: Store): Metrics => {
@@ -132,10 +77,10 @@ export const createMetrics: typeof createMetricsDecl = getCreateFunction(
       aggregateRemove?: AggregateRemove,
       aggregateReplace?: AggregateReplace,
     ): Metrics => {
-      const metricAggregators: Aggregators = isFunction(aggregate)
+      const aggregators: Aggregators = isFunction(aggregate)
         ? [aggregate, aggregateAdd, aggregateRemove, aggregateReplace]
-        : mapGet(aggregators, aggregate as Id) ??
-          (mapGet(aggregators, SUM) as Aggregators);
+        : mapGet(numericAggregators, aggregate as Id) ??
+          (mapGet(numericAggregators, SUM) as Aggregators);
 
       setDefinitionAndListen(
         metricId,
@@ -148,48 +93,25 @@ export const createMetrics: typeof createMetricsDecl = getCreateFunction(
           _sortKeys?: any,
           force?: boolean,
         ) => {
-          let newMetric = getMetric(metricId);
-          let length = collSize(numbers);
-          const [aggregate, aggregateAdd, aggregateRemove, aggregateReplace] =
-            metricAggregators;
-          force = force || isUndefined(newMetric);
-
-          collForEach(changedNumbers, ([oldNumber, newNumber]) => {
-            if (!force) {
-              newMetric = isUndefined(oldNumber)
-                ? aggregateAdd?.(
-                    newMetric as number,
-                    newNumber as number,
-                    length++,
-                  )
-                : isUndefined(newNumber)
-                ? aggregateRemove?.(newMetric as number, oldNumber, length--)
-                : aggregateReplace?.(
-                    newMetric as number,
-                    newNumber,
-                    oldNumber,
-                    length,
-                  );
-            }
-            force = force || isUndefined(newMetric);
-          });
+          const oldMetric = getMetric(metricId);
+          const oldLength = collSize(numbers);
+          force ||= isUndefined(oldMetric);
 
           change();
 
-          if (collIsEmpty(numbers)) {
-            newMetric = undefined;
-          } else if (force) {
-            newMetric = aggregate(
-              collValues(numbers) as number[],
-              collSize(numbers),
-            );
-          }
+          let newMetric = getAggregateValue(
+            oldMetric,
+            oldLength,
+            numbers,
+            changedNumbers,
+            aggregators,
+            force,
+          );
 
           if (!isFiniteNumber(newMetric)) {
             newMetric = undefined;
           }
 
-          const oldMetric = getMetric(metricId);
           if (newMetric != oldMetric) {
             setMetric(metricId, newMetric);
             callListeners(metricListeners, [metricId], newMetric, oldMetric);
