@@ -53,8 +53,8 @@ export const arrayFromSecond = <Value>(ids: Value[]): Value[] => ids.slice(1);
 export const arrayClear = <Value>(array: Value[], to?: number): Value[] =>
   array.splice(0, to);
 
-export const arrayPush = <Value>(array: Value[], value: Value): number =>
-  array.push(value);
+export const arrayPush = <Value>(array: Value[], ...values: Value[]): number =>
+  array.push(...values);
 
 export const arrayPop = <Value>(array: Value[]): Value | undefined =>
   array.pop();
