@@ -153,6 +153,7 @@ describe('Miscellaneous', () => {
     store.setRow('t1', 'r1', {c1: 1});
     expect(listener.listenToRow('/t1/r1b', 't1', 'r1')).toEqual('1');
     store.setRow('t1', 'r1', {c1: 2});
+    expect(store.getListenerStats().row).toEqual(2);
     expectChanges(
       listener,
       '/t1/r1a',
@@ -162,6 +163,7 @@ describe('Miscellaneous', () => {
     expectChanges(listener, '/t1/r1b', {t1: {r1: {c1: 2}}});
     expectNoChanges(listener);
     store.delListener('0').delListener('1');
+    expect(store.getListenerStats().row).toEqual(0);
     store.setRow('t1', 'r1', {c1: 3});
     expectNoChanges(listener);
   });
