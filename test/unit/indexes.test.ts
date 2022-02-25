@@ -1526,8 +1526,10 @@ describe('Miscellaneous', () => {
   test('remove listener', () => {
     listener = createIndexesListener(indexes);
     const id1 = listener.listenToSliceIds('/i1s', 'i1');
+    expect(indexes.getListenerStats().sliceIds).toEqual(1);
     expect(id1).toEqual('0');
     const id2 = listener.listenToSliceRowIds('/i1/', 'i1', '');
+    expect(indexes.getListenerStats().sliceRowIds).toEqual(1);
     expect(id2).toEqual('1');
     indexes.setIndexDefinition('i1', 't1');
     setCells();
@@ -1547,7 +1549,9 @@ describe('Miscellaneous', () => {
     );
     expectNoChanges(listener);
     indexes.delListener(id1);
+    expect(indexes.getListenerStats().sliceIds).toEqual(0);
     indexes.delListener(id2);
+    expect(indexes.getListenerStats().sliceRowIds).toEqual(0);
     setCells();
     delCells();
     expectNoChanges(listener);
