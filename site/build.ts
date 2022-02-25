@@ -24,6 +24,7 @@ const REFLECTIONS = [
   'metrics',
   'indexes',
   'relationships',
+  'queries',
   'checkpoints',
   'persisters',
   'ui-react',
@@ -101,6 +102,7 @@ const addApi = (docs: Docs): Docs =>
     .addApiFile('src/indexes.d.ts')
     .addApiFile('src/metrics.d.ts')
     .addApiFile('src/relationships.d.ts')
+    .addApiFile('src/queries.d.ts')
     .addApiFile('src/persisters.d.ts')
     .addApiFile('src/ui-react.d.ts');
 
