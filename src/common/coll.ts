@@ -1,7 +1,7 @@
 import {arrayReduce} from './array';
 import {isUndefined} from './other';
 
-type Coll<Value> = Map<unknown, Value> | Set<Value>;
+export type Coll<Value> = Map<unknown, Value> | Set<Value>;
 
 const collSizeN =
   <Child>(collSizer: (map: Coll<Child>) => number) =>
