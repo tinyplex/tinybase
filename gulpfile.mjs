@@ -17,10 +17,11 @@ const {parallel, series} = gulp;
 const TEST_MODULES = ['tinybase', 'ui-react'];
 const ALL_MODULES = TEST_MODULES.concat([
   'store',
-  'checkpoints',
   'indexes',
   'metrics',
   'relationships',
+  'queries',
+  'checkpoints',
   'persisters',
   'common',
 ]);
