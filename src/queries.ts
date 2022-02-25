@@ -32,11 +32,17 @@ import {
   TableCallback,
 } from './store.d';
 import {Id, IdOrNull, Ids, SortKey} from './common.d';
+import {IdMap, mapForEach, mapNew} from './common/map';
+import {arrayLength, arrayPush} from './common/array';
 import {getCreateFunction, getDefinableFunctions} from './common/definable';
-import {getUndefined} from './common/other';
+import {getUndefined, isFunction, isUndefined} from './common/other';
+import {EMPTY_STRING} from './common/strings';
+import {collIsEmpty} from './common/coll';
 import {objFreeze} from './common/obj';
+import {setOrDelCell} from './common/cell';
 
 type StoreWithCreateMethod = Store & {createStore: () => Store};
+type SelectClause = (getTableCell: GetTableCell, rowId: Id) => CellOrUndefined;
 
 export const createQueries: typeof createQueriesDecl = getCreateFunction(
   (store: Store): Queries => {
@@ -52,8 +58,23 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
       ,
       delDefinition,
       destroy,
+      addStoreListeners,
     ] = getDefinableFunctions<true, undefined>(store, () => true, getUndefined);
     const resultStore = (store as StoreWithCreateMethod).createStore();
+
+    const synchronizeTransactions = (
+      queryId: Id,
+      fromStore: Store,
+      toStore: Store,
+    ) =>
+      addStoreListeners(
+        queryId,
+        0,
+        fromStore.addWillFinishTransactionListener(toStore.startTransaction),
+        fromStore.addDidFinishTransactionListener(() =>
+          toStore.finishTransaction(),
+        ),
+      );
 
     const setQueryDefinition = (
       queryId: Id,
@@ -71,12 +92,21 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
       setDefinition(queryId, tableId);
       resultStore.delTable(queryId);
 
+      const selectEntries: [Id, SelectClause][] = [];
+
       const select = (
-        _arg1:
-          | Id
-          | ((getTableCell: GetTableCell, rowId: Id) => CellOrUndefined),
-        _arg2?: Id,
-      ) => ({as: (_selectedCellId: Id) => null});
+        arg1: Id | ((getTableCell: GetTableCell, rowId: Id) => CellOrUndefined),
+        arg2?: Id,
+      ) => {
+        const selectEntry: [Id, SelectClause] = isFunction(arg1)
+          ? [arrayLength(selectEntries) + EMPTY_STRING, arg1]
+          : [
+              isUndefined(arg2) ? arg1 : arg2,
+              (getTableCell) => getTableCell(arg1, arg2 as Id),
+            ];
+        arrayPush(selectEntries, selectEntry);
+        return {as: (selectedCellId: Id) => (selectEntry[0] = selectedCellId)};
+      };
 
       const join = (
         _joinedTableId: Id,
@@ -111,6 +141,58 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
       const limit = (_arg1: number, _arg2?: number) => null;
 
       build({select, join, where, group, having, order, limit});
+
+      const selects: IdMap<SelectClause> = mapNew(selectEntries);
+      if (collIsEmpty(selects)) {
+        return queries;
+      }
+
+      // SELECT
+
+      synchronizeTransactions(queryId, store, resultStore);
+
+      const writeSelectRow = (rootRowId: Id) => {
+        const getTableCell = (arg1: Id, arg2?: Id) =>
+          store.getCell(
+            ...((isUndefined(arg2)
+              ? [tableId, rootRowId, arg1]
+              : [arg1, rootRowId, arg2]) as [Id, Id, Id]),
+          );
+        resultStore.transaction(() =>
+          mapForEach(selects, (asCellId, tableCellGetter) =>
+            setOrDelCell(
+              resultStore,
+              queryId,
+              rootRowId,
+              asCellId,
+              tableCellGetter(getTableCell, rootRowId),
+            ),
+          ),
+        );
+      };
+
+      const listenToTable = (rootRowId: Id) => {
+        writeSelectRow(rootRowId);
+      };
+
+      resultStore.transaction(() =>
+        addStoreListeners(
+          queryId,
+          1,
+          store.addRowListener(
+            tableId,
+            null,
+            (_store: Store, _tableId: Id, rootRowId: Id) => {
+              if (store.hasRow(tableId, rootRowId)) {
+                listenToTable(rootRowId);
+              } else {
+                resultStore.delRow(queryId, rootRowId);
+              }
+            },
+          ),
+        ),
+      );
+
       return queries;
     };
 
