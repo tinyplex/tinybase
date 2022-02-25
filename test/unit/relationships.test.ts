@@ -726,8 +726,9 @@ describe('Linked lists', () => {
 describe('Miscellaneous', () => {
   test('remove listener', () => {
     listener = createRelationshipsListener(relationships);
-    const id1 = listener.listenToRemoteRowId('/r1/r1', 'r1', 'r1');
-    expect(id1).toEqual('0');
+    const listenerId = listener.listenToRemoteRowId('/r1/r1', 'r1', 'r1');
+    expect(relationships.getListenerStats().remoteRowId).toEqual(1);
+    expect(listenerId).toEqual('0');
     relationships.setRelationshipDefinition('r1', 't1', 'T1', 'c1');
     setCells();
     delCells();
@@ -740,7 +741,8 @@ describe('Miscellaneous', () => {
       {r1: {r1: undefined}},
     );
     expectNoChanges(listener);
-    relationships.delListener(id1);
+    relationships.delListener(listenerId);
+    expect(relationships.getListenerStats().remoteRowId).toEqual(0);
     setCells();
     delCells();
     expectNoChanges(listener);

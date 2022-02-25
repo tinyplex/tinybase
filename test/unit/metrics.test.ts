@@ -587,6 +587,7 @@ describe('Miscellaneous', () => {
   test('remove listener', () => {
     listener = createMetricsListener(metrics);
     const listenerId = listener.listenToMetric('/m1', 'm1');
+    expect(metrics.getListenerStats().metric).toEqual(1);
     expect(listenerId).toEqual('0');
     metrics.setMetricDefinition('m1', 't1');
     setCells();
@@ -605,6 +606,7 @@ describe('Miscellaneous', () => {
     );
     expectNoChanges(listener);
     metrics.delListener(listenerId);
+    expect(metrics.getListenerStats().metric).toEqual(0);
     setCells();
     delCells();
     expectNoChanges(listener);
