@@ -15,6 +15,7 @@ import {
   Cell,
   CellCallback,
   CellOrUndefined,
+  GetCell,
   GetCellChange,
   Row,
   RowCallback,
@@ -22,7 +23,7 @@ import {
   Table,
   TableCallback,
 } from './store.d';
-import {Id, IdOrNull, Ids} from './common.d';
+import {Id, IdOrNull, Ids, SortKey} from './common.d';
 
 /**
  * The Aggregate type describes a custom function that takes an array of Cell
@@ -173,8 +174,85 @@ export type QueriesListenerStats = {
   cell?: number;
 };
 
+export type GetTableCell = {
+  (cellId: Id): CellOrUndefined;
+  (joinedTableId: Id, joinedCellId: Id): CellOrUndefined;
+};
+
+export type Select = {
+  (cellId: Id): SelectedAs;
+  (joinedTableId: Id, joinedCellId: Id): SelectedAs;
+  (
+    getCell: (getTableCell: GetTableCell, rowId: Id) => CellOrUndefined,
+  ): SelectedAs;
+};
+export type SelectedAs = {as: (selectedCellId: Id) => void};
+
+export type Join = {
+  (joinedTableId: Id, on: Id): JoinedAs;
+  (
+    joinedTableId: Id,
+    on: (getCell: GetCell, rowId: Id) => Id | undefined,
+  ): JoinedAs;
+  (joinedTableId: Id, fromIntermediateJoinedTableId: Id, on: Id): JoinedAs;
+  (
+    joinedTableId: Id,
+    fromIntermediateJoinedTableId: Id,
+    on: (
+      getIntermediateJoinedCell: GetCell,
+      intermediateJoinedTableRowId: Id,
+    ) => Id | undefined,
+  ): JoinedAs;
+};
+export type JoinedAs = {as: (joinedTableId: Id) => void};
+
+export type Where = {
+  (cellId: Id, equals: Cell): void;
+  (joinedTableId: Id, joinedCellId: Id, equals: Cell): void;
+  (condition: (getTableCell: GetTableCell) => boolean): void;
+};
+
+export type Group = (
+  selectedCellId: Id,
+  aggregate: 'count' | 'sum' | 'avg' | 'min' | 'max' | Aggregate,
+  aggregateAdd?: AggregateAdd,
+  aggregateRemove?: AggregateRemove,
+  aggregateReplace?: AggregateReplace,
+) => GroupedAs;
+export type GroupedAs = {as: (groupedCellId: Id) => void};
+
+export type Having = {
+  (selectedOrGroupedCellId: Id, equals: Cell): void;
+  (condition: (getSelectedOrGroupedCell: GetCell) => boolean): void;
+};
+
+export type Order = {
+  (selectedOrGroupedCellId: Id, descending?: boolean): void;
+  (
+    getSortKey: (getSelectedOrGroupedCell: GetCell, rowId: Id) => SortKey,
+    descending?: boolean,
+  ): void;
+};
+
+export type Limit = {
+  (limit: number): void;
+  (offset: number, limit: number): void;
+};
+
 export interface Queries {
-  setQueryDefinition(queryId: Id, tableId: Id): Queries;
+  setQueryDefinition(
+    queryId: Id,
+    tableId: Id,
+    build: (builders: {
+      select: Select;
+      join: Join;
+      where: Where;
+      group: Group;
+      having: Having;
+      order: Order;
+      limit: Limit;
+    }) => void,
+  ): Queries;
 
   delQueryDefinition(queryId: Id): Queries;
 
