@@ -16,23 +16,21 @@ let store: Store;
 let metrics: Metrics;
 let listener: MetricsListener;
 
-const setCells = (): void => {
+const setCells = () =>
   store
     .setTables({t1: {r1: {c1: 1}}})
     .setTable('t1', {r1: {c1: 1}, r2: {c1: 2}})
     .setRow('t1', 'r3', {c1: 3})
     .setCell('t1', 'r4', 'c1', 4)
     .setCell('t1', 'r4', 'c1', 5);
-};
 
-const delCells = (): void => {
+const delCells = () =>
   store
     .delCell('t1', 'r4', 'c1')
     .delRow('t1', 'r2')
     .delRow('t1', 'r3')
     .delTable('t1')
     .delTables();
-};
 
 beforeEach(() => {
   store = createStore();

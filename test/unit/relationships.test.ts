@@ -18,21 +18,19 @@ let store: Store;
 let relationships: Relationships;
 let listener: RelationshipsListener;
 
-const setCells = (): void => {
-  store.setTables({
-    t1: {r1: {c1: 'R1', c2: 'R2'}, r2: {c1: 'R1', c2: 'R3'}},
-    T1: {R1: {C1: 1}, R2: {C1: 1}, R3: {C1: 1}},
-  });
-  store.setTable('t1', {r1: {c1: 'R1', c2: 'R2'}, r2: {c1: 'R2', c2: 'R2'}});
-  store.setRow('t1', 'r1', {c1: 'R2', c2: 'R1'});
-  store.setCell('t1', 'r1', 'c1', 'R3');
-};
+const setCells = () =>
+  store
+    .setTables({
+      t1: {r1: {c1: 'R1', c2: 'R2'}, r2: {c1: 'R1', c2: 'R3'}},
+      T1: {R1: {C1: 1}, R2: {C1: 1}, R3: {C1: 1}},
+    })
+    .setTable('t1', {r1: {c1: 'R1', c2: 'R2'}, r2: {c1: 'R2', c2: 'R2'}})
+    .setRow('t1', 'r1', {c1: 'R2', c2: 'R1'})
+    .setCell('t1', 'r1', 'c1', 'R3');
 
-const delCells = (): void => {
-  store.delCell('t1', 'r2', 'c2');
-  store.delRow('t1', 'r1');
-  store.delTables();
-};
+const delCells = () =>
+  store.delCell('t1', 'r2', 'c2').delRow('t1', 'r1').delTables();
+
 const customLink = (getCell: GetCell, localRowId: Id): Id =>
   'R' +
   Math.abs(

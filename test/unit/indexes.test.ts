@@ -47,7 +47,7 @@ expect.extend({
         },
 });
 
-const setCells = (): void => {
+const setCells = () =>
   store
     .setTables({t1: {r1: {c1: 'one', c2: 'odd'}}})
     .setTable('t1', {
@@ -57,9 +57,8 @@ const setCells = (): void => {
     .setRow('t1', 'r1', {c1: 'one', c2: 'odd'})
     .setCell('t1', 'r4', 'c1', 'four')
     .setCell('t1', 'r4', 'c2', 'even');
-};
 
-const delCells = (): void => {
+const delCells = () =>
   store
     .delCell('t1', 'r4', 'c2')
     .delCell('t1', 'r4', 'c1')
@@ -67,7 +66,6 @@ const delCells = (): void => {
     .delRow('t1', 'r2')
     .delTable('t1')
     .delTables();
-};
 
 const firstOrSecondLetter = (getCell: GetCell) =>
   (getCell('c1') as string)[getCell('c2') === 'odd' ? 0 : 1];
