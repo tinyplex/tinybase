@@ -125,6 +125,7 @@ const getTsOptions = async (dir) => {
 };
 
 const tsCheck = async (dir) => {
+  const path = await import('path');
   const {default: tsc} = await import('typescript');
   const {
     default: {default: unusedExports},
@@ -146,7 +147,7 @@ const tsCheck = async (dir) => {
     throw resultText;
   }
   const unusedResults = Object.entries(
-    unusedExports(`${dir}/tsconfig.json`, [
+    unusedExports(`${path.resolve(dir)}/tsconfig.json`, [
       '--allowUnusedTypes',
       '--excludePathsFromReport=tinybase.ts;ui-react.ts',
     ]),
