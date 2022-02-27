@@ -3,21 +3,29 @@ import {Id, Ids, SortKey} from '../common.d';
 import {
   IdMap,
   IdMap2,
+  mapEnsure,
   mapForEach,
   mapGet,
   mapKeys,
   mapNew,
   mapSet,
 } from './map';
-import {IdSet2, setNew} from './set';
-import {collClear, collForEach, collHas} from './coll';
+import {IdSet2, setAdd, setNew} from './set';
+import {arrayForEach, arrayIsEmpty} from './array';
+import {
+  collClear,
+  collDel,
+  collForEach,
+  collHas,
+  collIsEmpty,
+  collValues,
+} from './coll';
 import {ifNotUndefined, isString, isUndefined} from './other';
 import {Checkpoints} from '../checkpoints.d';
 import {EMPTY_STRING} from './strings';
 import {Indexes} from '../indexes.d';
 import {Metrics} from '../metrics.d';
 import {Relationships} from '../relationships.d';
-import {arrayForEach} from './array';
 
 type OnChangedDecl<RowValue> = (
   change: () => void,
@@ -50,6 +58,8 @@ export const getDefinableFunctions = <Thing, RowValue>(
   ) => void,
   (id: Id) => void,
   () => void,
+  (id: Id, ...listenerIds: Ids) => Ids,
+  (id: Id, ...listenerIds: Ids) => void,
 ] => {
   const hasRow = store.hasRow;
   const tableIds: IdMap<Id> = mapNew();
@@ -74,10 +84,24 @@ export const getDefinableFunctions = <Thing, RowValue>(
   const setThing = (id: Id, thing: Thing | undefined): IdMap<Thing> =>
     mapSet(things, id, thing) as IdMap<Thing>;
 
-  const removeStoreListeners = (id: Id) =>
-    ifNotUndefined(mapGet(storeListenerIds, id), (listenerIds) => {
-      collForEach(listenerIds, store.delListener);
-      mapSet(storeListenerIds, id);
+  const addStoreListeners = (id: Id, ...listenerIds: Ids): Ids => {
+    const set = mapEnsure(storeListenerIds, id, setNew);
+    arrayForEach(listenerIds, (listenerId) => setAdd(set, listenerId));
+    return listenerIds;
+  };
+
+  const delStoreListeners = (id: Id, ...listenerIds: Ids): void =>
+    ifNotUndefined(mapGet(storeListenerIds, id), (allListenerIds) => {
+      arrayForEach(
+        arrayIsEmpty(listenerIds) ? collValues(allListenerIds) : listenerIds,
+        (listenerId: Id) => {
+          store.delListener(listenerId);
+          collDel(allListenerIds, listenerId);
+        },
+      );
+      if (collIsEmpty(allListenerIds)) {
+        mapSet(storeListenerIds, id);
+      }
     });
 
   const setDefinition = (id: Id, tableId: Id): void => {
@@ -156,16 +180,13 @@ export const getDefinableFunctions = <Thing, RowValue>(
     }
     processTable(true);
 
-    removeStoreListeners(id);
-    mapSet(
-      storeListenerIds,
+    delStoreListeners(id);
+    addStoreListeners(
       id,
-      setNew([
-        store.addRowListener(tableId, null, (_store, _tableId, rowId) =>
-          processRow(rowId),
-        ),
-        store.addTableListener(tableId, () => processTable()),
-      ]),
+      store.addRowListener(tableId, null, (_store, _tableId, rowId) =>
+        processRow(rowId),
+      ),
+      store.addTableListener(tableId, () => processTable()),
     );
   };
 
@@ -174,7 +195,7 @@ export const getDefinableFunctions = <Thing, RowValue>(
     mapSet(things, id);
     mapSet(allRowValues, id);
     mapSet(allSortKeys, id);
-    removeStoreListeners(id);
+    delStoreListeners(id);
   };
 
   const destroy = (): void => mapForEach(storeListenerIds, delDefinition);
@@ -191,6 +212,8 @@ export const getDefinableFunctions = <Thing, RowValue>(
     setDefinitionAndListen,
     delDefinition,
     destroy,
+    addStoreListeners,
+    delStoreListeners,
   ];
 };
 
