@@ -39,6 +39,7 @@ import {
 import {getCreateFunction} from './common/definable';
 import {getListenerFunctions} from './common/listeners';
 import {objFreeze} from './common/obj';
+import {setOrDelCell} from './common/cell';
 
 type OldNew = [Cell | undefined, Cell | undefined];
 type Delta = IdMap2<IdMap<OldNew>>;
@@ -67,14 +68,13 @@ export const createCheckpoints: typeof createCheckpointsDecl =
         collForEach(mapGet(deltas, checkpointId), (table, tableId) =>
           collForEach(table, (row, rowId) =>
             collForEach(row, (oldNew, cellId) =>
-              isUndefined(oldNew[oldOrNew])
-                ? store.delCell(tableId, rowId, cellId, true)
-                : store.setCell(
-                    tableId,
-                    rowId,
-                    cellId,
-                    oldNew[oldOrNew] as Cell,
-                  ),
+              setOrDelCell(
+                store,
+                tableId,
+                rowId,
+                cellId,
+                oldNew[oldOrNew] as CellOrUndefined,
+              ),
             ),
           ),
         ),
