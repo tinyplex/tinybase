@@ -88,8 +88,8 @@ beforeEach(() => {
 
 describe('Sets', () => {
   test('default index', () => {
-    indexes.setIndexDefinition('i1', 't1');
     setCells();
+    indexes.setIndexDefinition('i1', 't1');
     expect(getIndexesObject(indexes)['i1']).toEqualWithOrder({
       '': ['r2', 'r3', 'r1', 'r4'],
     });
@@ -98,19 +98,19 @@ describe('Sets', () => {
   });
 
   test('string key index', () => {
-    indexes.setIndexDefinition('i1', 't1', 'c2');
     setCells();
+    indexes.setIndexDefinition('i1', 't1', 'c2');
     expect(getIndexesObject(indexes)['i1']).toEqualWithOrder({
-      odd: ['r3', 'r1'],
       even: ['r2', 'r4'],
+      odd: ['r3', 'r1'],
     });
     delCells();
     expect(getIndexesObject(indexes)['i1']).toEqualWithOrder({});
   });
 
   test('string key index, sort sliceIds', () => {
-    indexes.setIndexDefinition('i1', 't1', 'c2', undefined, ascend);
     setCells();
+    indexes.setIndexDefinition('i1', 't1', 'c2', undefined, ascend);
     expect(getIndexesObject(indexes)['i1']).toEqualWithOrder({
       even: ['r2', 'r4'],
       odd: ['r3', 'r1'],
@@ -120,30 +120,30 @@ describe('Sets', () => {
   });
 
   test('string key index, default sortKey sort', () => {
-    indexes.setIndexDefinition('i1', 't1', 'c2', 'c1');
     setCells();
+    indexes.setIndexDefinition('i1', 't1', 'c2', 'c1');
     expect(getIndexesObject(indexes)['i1']).toEqualWithOrder({
-      odd: ['r1', 'r3'],
       even: ['r4', 'r2'],
+      odd: ['r1', 'r3'],
     });
     delCells();
     expect(getIndexesObject(indexes)['i1']).toEqualWithOrder({});
   });
 
   test('string key index, custom sortKey sort', () => {
-    indexes.setIndexDefinition('i1', 't1', 'c2', 'c1', undefined, descend);
     setCells();
+    indexes.setIndexDefinition('i1', 't1', 'c2', 'c1', undefined, descend);
     expect(getIndexesObject(indexes)['i1']).toEqualWithOrder({
-      odd: ['r3', 'r1'],
       even: ['r2', 'r4'],
+      odd: ['r3', 'r1'],
     });
     delCells();
     expect(getIndexesObject(indexes)['i1']).toEqualWithOrder({});
   });
 
   test('string key index, sorting sliceIds and sortKey sort', () => {
-    indexes.setIndexDefinition('i1', 't1', 'c2', 'c1', ascend, oddAscend);
     setCells();
+    indexes.setIndexDefinition('i1', 't1', 'c2', 'c1', ascend, oddAscend);
     expect(getIndexesObject(indexes)['i1']).toEqualWithOrder({
       even: ['r2', 'r4'],
       odd: ['r1', 'r3'],
@@ -153,8 +153,8 @@ describe('Sets', () => {
   });
 
   test('custom Id index 1', () => {
-    indexes.setIndexDefinition('i1', 't1', firstOrSecondLetter);
     setCells();
+    indexes.setIndexDefinition('i1', 't1', firstOrSecondLetter);
     expect(getIndexesObject(indexes)['i1']).toEqualWithOrder({
       w: ['r2'],
       t: ['r3'],
@@ -165,8 +165,8 @@ describe('Sets', () => {
   });
 
   test('custom Id index 2', () => {
-    indexes.setIndexDefinition('i1', 't1', keyAndValue);
     setCells();
+    indexes.setIndexDefinition('i1', 't1', keyAndValue);
     expect(getIndexesObject(indexes)['i1']).toEqualWithOrder({
       evenr2: ['r2'],
       oddr3: ['r3'],
@@ -177,18 +177,18 @@ describe('Sets', () => {
     expect(getIndexesObject(indexes)['i1']).toEqualWithOrder({});
   });
 
-  test('definition after data', () => {
-    setCells();
+  test('definition before data', () => {
     indexes.setIndexDefinition('i1', 't1', 'c2');
+    setCells();
     expect(getIndexesObject(indexes)['i1']).toEqualWithOrder({
-      even: ['r2', 'r4'],
       odd: ['r3', 'r1'],
+      even: ['r2', 'r4'],
     });
   });
 
   test('change definitions', () => {
-    indexes.setIndexDefinition('i1', 't1');
     setCells();
+    indexes.setIndexDefinition('i1', 't1');
     expect(getIndexesObject(indexes)['i1']).toEqualWithOrder({
       '': ['r2', 'r3', 'r1', 'r4'],
     });
@@ -212,14 +212,14 @@ describe('Sets', () => {
   });
 
   test('two definitions', () => {
-    indexes.setIndexDefinition('i1', 't1').setIndexDefinition('i2', 't1', 'c2');
     setCells();
+    indexes.setIndexDefinition('i1', 't1').setIndexDefinition('i2', 't1', 'c2');
     expect(getIndexesObject(indexes)['i1']).toEqualWithOrder({
       '': ['r2', 'r3', 'r1', 'r4'],
     });
     expect(getIndexesObject(indexes)['i2']).toEqualWithOrder({
-      odd: ['r3', 'r1'],
       even: ['r2', 'r4'],
+      odd: ['r3', 'r1'],
     });
     delCells();
     expect(getIndexesObject(indexes)['i1']).toEqualWithOrder({});

@@ -44,8 +44,8 @@ beforeEach(() => {
 
 describe('Sets', () => {
   test('simple relationship', () => {
-    relationships.setRelationshipDefinition('r1', 't1', 'T1', 'c1');
     setCells();
+    relationships.setRelationshipDefinition('r1', 't1', 'T1', 'c1');
     expect(getRelationshipsObject(relationships)['r1']).toEqual([
       {r1: 'R3', r2: 'R2'},
       {R2: ['r2'], R3: ['r1']},
@@ -55,16 +55,16 @@ describe('Sets', () => {
   });
 
   test('simple relationship, non present', () => {
-    relationships.setRelationshipDefinition('r1', 't1', 'T1', 'c3');
     setCells();
+    relationships.setRelationshipDefinition('r1', 't1', 'T1', 'c3');
     expect(getRelationshipsObject(relationships)['r1']).toEqual([{}, {}]);
     delCells();
     expect(getRelationshipsObject(relationships)['r1']).toEqual([{}, {}]);
   });
 
   test('custom relationship', () => {
-    relationships.setRelationshipDefinition('r1', 't1', 'T1', customLink);
     setCells();
+    relationships.setRelationshipDefinition('r1', 't1', 'T1', customLink);
     expect(getRelationshipsObject(relationships)['r1']).toEqual([
       {r1: 'R2', r2: 'R0'},
       {R2: ['r1']},
@@ -73,9 +73,9 @@ describe('Sets', () => {
     expect(getRelationshipsObject(relationships)['r1']).toEqual([{}, {}]);
   });
 
-  test('definition after data', () => {
-    setCells();
+  test('definition before data', () => {
     relationships.setRelationshipDefinition('r1', 't1', 'T1', 'c1');
+    setCells();
     expect(getRelationshipsObject(relationships)['r1']).toEqual([
       {r1: 'R3', r2: 'R2'},
       {R2: ['r2'], R3: ['r1']},
@@ -83,8 +83,8 @@ describe('Sets', () => {
   });
 
   test('change definitions', () => {
-    relationships.setRelationshipDefinition('r1', 't1', 'T1', 'c1');
     setCells();
+    relationships.setRelationshipDefinition('r1', 't1', 'T1', 'c1');
     expect(getRelationshipsObject(relationships)['r1']).toEqual([
       {r1: 'R3', r2: 'R2'},
       {R2: ['r2'], R3: ['r1']},
@@ -99,10 +99,10 @@ describe('Sets', () => {
   });
 
   test('two definitions', () => {
+    setCells();
     relationships
       .setRelationshipDefinition('r1', 't1', 'T1', 'c1')
       .setRelationshipDefinition('r2', 't1', 'T1', 'c2');
-    setCells();
     expect(getRelationshipsObject(relationships)['r1']).toEqual([
       {r1: 'R3', r2: 'R2'},
       {R2: ['r2'], R3: ['r1']},

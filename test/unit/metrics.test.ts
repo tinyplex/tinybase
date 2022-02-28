@@ -39,8 +39,8 @@ beforeEach(() => {
 
 describe('Sets', () => {
   test('count', () => {
-    metrics.setMetricDefinition('m1', 't1');
     setCells();
+    metrics.setMetricDefinition('m1', 't1');
     expect(metrics.getMetric('m1')).toBe(4);
     store.setCell('t1', 'r4', 'c1', 'd1');
     expect(metrics.getMetric('m1')).toBe(4);
@@ -51,8 +51,8 @@ describe('Sets', () => {
   });
 
   test('sum', () => {
-    metrics.setMetricDefinition('m1', 't1', 'sum', 'c1');
     setCells();
+    metrics.setMetricDefinition('m1', 't1', 'sum', 'c1');
     expect(metrics.getMetric('m1')).toBe(11);
     store.setCell('t1', 'r4', 'c1', 'd1');
     expect(metrics.getMetric('m1')).toBe(6);
@@ -61,8 +61,8 @@ describe('Sets', () => {
   });
 
   test('avg', () => {
-    metrics.setMetricDefinition('m1', 't1', 'avg', 'c1');
     setCells();
+    metrics.setMetricDefinition('m1', 't1', 'avg', 'c1');
     expect(metrics.getMetric('m1')).toBe(2.75);
     store.setCell('t1', 'r4', 'c1', 'd1');
     expect(metrics.getMetric('m1')).toBe(2);
@@ -71,8 +71,8 @@ describe('Sets', () => {
   });
 
   test('min', () => {
-    metrics.setMetricDefinition('m1', 't1', 'min', 'c1');
     setCells();
+    metrics.setMetricDefinition('m1', 't1', 'min', 'c1');
     expect(metrics.getMetric('m1')).toBe(1);
     store.setCell('t1', 'r1', 'c1', 6);
     store.setCell('t1', 'r1', 'c1', 1);
@@ -83,8 +83,8 @@ describe('Sets', () => {
   });
 
   test('max', () => {
-    metrics.setMetricDefinition('m1', 't1', 'max', 'c1');
     setCells();
+    metrics.setMetricDefinition('m1', 't1', 'max', 'c1');
     expect(metrics.getMetric('m1')).toBe(5);
     store.setCell('t1', 'r1', 'c1', 6);
     store.setCell('t1', 'r1', 'c1', 1);
@@ -94,15 +94,15 @@ describe('Sets', () => {
     expect(metrics.getMetric('m1')).toBeUndefined();
   });
 
-  test('definition after data', () => {
-    setCells();
+  test('definition before data', () => {
     metrics.setMetricDefinition('m1', 't1', 'max', 'c1');
+    setCells();
     expect(metrics.getMetric('m1')).toBe(5);
   });
 
   test('change definition', () => {
-    metrics.setMetricDefinition('m1', 't1', 'max', 'c1');
     setCells();
+    metrics.setMetricDefinition('m1', 't1', 'max', 'c1');
     expect(metrics.getMetric('m1')).toBe(5);
     metrics.setMetricDefinition('m1', 't1', 'min', 'c1');
     expect(metrics.getMetric('m1')).toBe(1);
@@ -111,10 +111,10 @@ describe('Sets', () => {
   });
 
   test('two definitions', () => {
+    setCells();
     metrics
       .setMetricDefinition('m1', 't1', 'max', 'c1')
       .setMetricDefinition('m2', 't1', 'min', 'c1');
-    setCells();
     expect(metrics.getMetric('m1')).toBe(5);
     expect(metrics.getMetric('m2')).toBe(1);
     expect(getMetricsObject(metrics)).toEqual({m1: 5, m2: 1});
@@ -129,8 +129,8 @@ describe('Sets', () => {
   });
 
   test('custom aggregation', () => {
-    metrics.setMetricDefinition('m1', 't1', (values) => values.length ** 2);
     setCells();
+    metrics.setMetricDefinition('m1', 't1', (values) => values.length ** 2);
     expect(metrics.getMetric('m1')).toBe(16);
     store.setCell('t1', 'r4', 'c1', 'd1');
     expect(metrics.getMetric('m1')).toBe(16);
@@ -139,13 +139,13 @@ describe('Sets', () => {
   });
 
   test('custom cells', () => {
+    setCells();
     metrics.setMetricDefinition(
       'm1',
       't1',
       'sum',
       (getCell) => (getCell('c1') as number) % 2,
     );
-    setCells();
     expect(metrics.getMetric('m1')).toBe(3);
     store.setCell('t1', 'r4', 'c1', 'd1');
     expect(metrics.getMetric('m1')).toBe(2);
@@ -154,13 +154,13 @@ describe('Sets', () => {
   });
 
   test('custom aggregation and cells', () => {
+    setCells();
     metrics.setMetricDefinition(
       'm1',
       't1',
       (values) => values.reduce((previous, current) => previous * current, 1),
       (getCell) => -(getCell('c1') as number),
     );
-    setCells();
     expect(metrics.getMetric('m1')).toBe(30);
     store.setCell('t1', 'r4', 'c1', 'd1');
     expect(metrics.getMetric('m1')).toBe(-6);
@@ -169,6 +169,7 @@ describe('Sets', () => {
   });
 
   test('custom aggregation and optimizations', () => {
+    setCells();
     metrics.setMetricDefinition(
       'm1',
       't1',
@@ -178,7 +179,6 @@ describe('Sets', () => {
       (metric, remove) => metric / remove,
       (metric, add, remove) => (metric * add) / remove,
     );
-    setCells();
     expect(metrics.getMetric('m1')).toBe(30);
     store.setCell('t1', 'r4', 'c1', 'd1');
     expect(metrics.getMetric('m1')).toBe(6);
