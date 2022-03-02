@@ -1,13 +1,9 @@
 import {
-  CellCallback,
-  CellOrUndefined,
-  Row,
-  RowCallback,
-  Store,
-  Table,
-  TableCallback,
-} from './store.d';
-import {
+  Aggregate,
+  AggregateAdd,
+  AggregateRemove,
+  AggregateReplace,
+  GetTableCell,
   Group,
   Having,
   Join,
@@ -24,7 +20,18 @@ import {
   Where,
   createQueries as createQueriesDecl,
 } from './queries.d';
-import {Id, IdOrNull, Ids} from './common.d';
+import {
+  Cell,
+  CellCallback,
+  CellOrUndefined,
+  GetCell,
+  Row,
+  RowCallback,
+  Store,
+  Table,
+  TableCallback,
+} from './store.d';
+import {Id, IdOrNull, Ids, SortKey} from './common.d';
 import {getCreateFunction, getDefinableFunctions} from './common/definable';
 import {getUndefined} from './common/other';
 import {objFreeze} from './common/obj';
@@ -63,7 +70,47 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
     ): Queries => {
       setDefinition(queryId, tableId);
       resultStore.delTable(queryId);
-      build;
+
+      const select = (
+        _arg1:
+          | Id
+          | ((getTableCell: GetTableCell, rowId: Id) => CellOrUndefined),
+        _arg2?: Id,
+      ) => ({as: (_selectedCellId: Id) => null});
+
+      const join = (
+        _joinedTableId: Id,
+        _arg1: Id | ((getCell: GetCell, rowId: Id) => Id | undefined),
+        _arg2?: Id | ((getCell: GetCell, rowId: Id) => Id | undefined),
+      ) => ({as: (_joinedTableId: Id) => null});
+
+      const where = (
+        _arg1: Id | ((getTableCell: GetTableCell) => boolean),
+        _arg2?: Id | Cell,
+        _arg3?: Cell,
+      ) => null;
+
+      const group = (
+        _selectedCellId: Id,
+        _aggregate: 'count' | 'sum' | 'avg' | 'min' | 'max' | Aggregate,
+        _aggregateAdd?: AggregateAdd,
+        _aggregateRemove?: AggregateRemove,
+        _aggregateReplace?: AggregateReplace,
+      ) => ({as: (_groupedCellId: Id) => null});
+
+      const having = (
+        _arg1: Id | ((getSelectedOrGroupedCell: GetCell) => boolean),
+        _arg2?: Cell,
+      ) => null;
+
+      const order = (
+        _arg1: Id | ((getSelectedOrGroupedCell: GetCell, rowId: Id) => SortKey),
+        _descending?: boolean,
+      ) => null;
+
+      const limit = (_arg1: number, _arg2?: number) => null;
+
+      build({select, join, where, group, having, order, limit});
       return queries;
     };
 
