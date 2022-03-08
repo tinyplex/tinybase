@@ -32,17 +32,29 @@ import {
   TableCallback,
 } from './store.d';
 import {Id, IdOrNull, Ids, SortKey} from './common.d';
-import {IdMap, mapForEach, mapNew} from './common/map';
-import {arrayLength, arrayPush} from './common/array';
+import {IdMap, mapForEach, mapGet, mapNew, mapSet} from './common/map';
+import {arrayForEach, arrayLength, arrayPush} from './common/array';
+import {collForEach, collIsEmpty} from './common/coll';
 import {getCreateFunction, getDefinableFunctions} from './common/definable';
-import {getUndefined, isFunction, isUndefined} from './common/other';
+import {
+  getUndefined,
+  ifNotUndefined,
+  isFunction,
+  isUndefined,
+} from './common/other';
 import {EMPTY_STRING} from './common/strings';
-import {collIsEmpty} from './common/coll';
 import {objFreeze} from './common/obj';
 import {setOrDelCell} from './common/cell';
 
 type StoreWithCreateMethod = Store & {createStore: () => Store};
 type SelectClause = (getTableCell: GetTableCell, rowId: Id) => CellOrUndefined;
+type JoinClause = [
+  Id,
+  IdOrNull,
+  ((getCell: GetCell, rowId: Id) => Id) | null,
+  Ids,
+  IdMap<[Id, Id]>,
+];
 
 export const createQueries: typeof createQueriesDecl = getCreateFunction(
   (store: Store): Queries => {
@@ -59,6 +71,7 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
       delDefinition,
       destroy,
       addStoreListeners,
+      delStoreListeners,
     ] = getDefinableFunctions<true, undefined>(store, () => true, getUndefined);
     const resultStore = (store as StoreWithCreateMethod).createStore();
 
@@ -93,6 +106,9 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
       resultStore.delTable(queryId);
 
       const selectEntries: [Id, SelectClause][] = [];
+      const joinEntries: [IdOrNull, JoinClause][] = [
+        [null, [tableId, null, null, [], mapNew()]],
+      ];
 
       const select = (
         arg1: Id | ((getTableCell: GetTableCell, rowId: Id) => CellOrUndefined),
@@ -109,10 +125,26 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
       };
 
       const join = (
-        _joinedTableId: Id,
-        _arg1: Id | ((getCell: GetCell, rowId: Id) => Id | undefined),
-        _arg2?: Id | ((getCell: GetCell, rowId: Id) => Id | undefined),
-      ) => ({as: (_joinedTableId: Id) => null});
+        joinedTableId: Id,
+        arg1: Id | ((getCell: GetCell, rowId: Id) => Id | undefined),
+        arg2?: Id | ((getCell: GetCell, rowId: Id) => Id | undefined),
+      ) => {
+        const fromIntermediateJoinedTableId =
+          isUndefined(arg2) || isFunction(arg1) ? null : arg1;
+        const onArg = isUndefined(fromIntermediateJoinedTableId) ? arg1 : arg2;
+        const joinEntry: [Id, JoinClause] = [
+          joinedTableId,
+          [
+            joinedTableId,
+            fromIntermediateJoinedTableId,
+            isFunction(onArg) ? onArg : (getCell) => getCell(onArg as Id),
+            [],
+            mapNew(),
+          ] as JoinClause,
+        ];
+        arrayPush(joinEntries, joinEntry);
+        return {as: (joinedTableId: Id) => (joinEntry[0] = joinedTableId)};
+      };
 
       const where = (
         _arg1: Id | ((getTableCell: GetTableCell) => boolean),
@@ -146,8 +178,14 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
       if (collIsEmpty(selects)) {
         return queries;
       }
+      const joins: Map<IdOrNull, JoinClause> = mapNew(joinEntries);
+      mapForEach(joins, (asTableId, [, fromAsTableId]) =>
+        ifNotUndefined(mapGet(joins, fromAsTableId), ({3: toAsTableIds}) =>
+          isUndefined(asTableId) ? 0 : arrayPush(toAsTableIds, asTableId),
+        ),
+      );
 
-      // SELECT
+      // SELECT & JOIN
 
       synchronizeTransactions(queryId, store, resultStore);
 
@@ -156,7 +194,13 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
           store.getCell(
             ...((isUndefined(arg2)
               ? [tableId, rootRowId, arg1]
-              : [arg1, rootRowId, arg2]) as [Id, Id, Id]),
+              : arg1 === tableId
+              ? [tableId, rootRowId, arg2]
+              : [
+                  mapGet(joins, arg1)?.[0] as Id,
+                  mapGet(mapGet(joins, arg1)?.[4], rootRowId)?.[0],
+                  arg2,
+                ]) as [Id, Id, Id]),
           );
         resultStore.transaction(() =>
           mapForEach(selects, (asCellId, tableCellGetter) =>
@@ -171,10 +215,50 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
         );
       };
 
-      const listenToTable = (rootRowId: Id) => {
+      const listenToTable = (
+        rootRowId: Id,
+        tableId: Id,
+        rowId: Id,
+        joinedTableIds: Ids,
+      ) => {
+        const getCell = (cellId: Id) => store.getCell(tableId, rowId, cellId);
+        arrayForEach(joinedTableIds, (remoteAsTableId) => {
+          const [realJoinedTableId, , on, nextJoinedTableIds, remoteIdPair] =
+            mapGet(joins, remoteAsTableId) as JoinClause;
+          const remoteRowId = on?.(getCell, rootRowId);
+          const [previousRemoteRowId, previousRemoteListenerId] =
+            mapGet(remoteIdPair, rootRowId) ?? [];
+          if (remoteRowId != previousRemoteRowId) {
+            if (!isUndefined(previousRemoteListenerId)) {
+              delStoreListeners(queryId, previousRemoteListenerId);
+            }
+            mapSet(
+              remoteIdPair,
+              rootRowId,
+              isUndefined(remoteRowId)
+                ? null
+                : [
+                    remoteRowId,
+                    ...addStoreListeners(
+                      queryId,
+                      1,
+                      store.addRowListener(realJoinedTableId, remoteRowId, () =>
+                        listenToTable(
+                          rootRowId,
+                          realJoinedTableId,
+                          remoteRowId,
+                          nextJoinedTableIds,
+                        ),
+                      ),
+                    ),
+                  ],
+            );
+          }
+        });
         writeSelectRow(rootRowId);
       };
 
+      const {3: joinedTableIds} = mapGet(joins, null) as JoinClause;
       resultStore.transaction(() =>
         addStoreListeners(
           queryId,
@@ -184,9 +268,18 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
             null,
             (_store: Store, _tableId: Id, rootRowId: Id) => {
               if (store.hasRow(tableId, rootRowId)) {
-                listenToTable(rootRowId);
+                listenToTable(rootRowId, tableId, rootRowId, joinedTableIds);
               } else {
                 resultStore.delRow(queryId, rootRowId);
+                collForEach(joins, ({4: idsByRootRowId}) =>
+                  ifNotUndefined(
+                    mapGet(idsByRootRowId, rootRowId),
+                    ([, listenerId]) => {
+                      delStoreListeners(queryId, listenerId);
+                      mapSet(idsByRootRowId, rootRowId);
+                    },
+                  ),
+                );
               }
             },
           ),
