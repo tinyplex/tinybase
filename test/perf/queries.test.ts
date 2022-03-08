@@ -45,3 +45,15 @@ repeatRows(
       select((getTableCell) => (getTableCell('c1') as number) + 1).as('c1'),
     ),
 );
+
+repeatRows(
+  'Grow store, with two tables joined',
+  (n) => store.setRow('t1', 'r' + n, {c1: n, c2: 'r' + n}),
+  90,
+  () =>
+    createQueries(store).setQueryDefinition('q1', 't1', ({select, join}) => {
+      select('t1', 'c1');
+      select('t1', 'c1');
+      join('t1', 'c2').as('t2');
+    }),
+);
