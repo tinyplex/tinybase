@@ -264,7 +264,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
         const rowDefaulted = mapNew();
         const rowNonDefaulted = setNew();
         transformMap(
-          mapEnsure(schemaMap, tableId, mapNew()),
+          mapEnsure<Id, IdMap<CellSchema>>(schemaMap, tableId, mapNew),
           tableSchema,
           (tableSchemaMap, cellId, cellSchema) => {
             mapSet(tableSchemaMap, cellId, cellSchema);
@@ -293,9 +293,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const setValidTable = (tableId: Id, table: Table): TableMap =>
     transformMap(
-      mapEnsure(tablesMap, tableId, mapNew(), () =>
-        tableIdsChanged(tableId, 1),
-      ),
+      mapEnsure(tablesMap, tableId, () => {
+        tableIdsChanged(tableId, 1);
+        return mapNew();
+      }),
       table,
       (tableMap, rowId, row) => setValidRow(tableId, tableMap, rowId, row),
       (tableMap, rowId) => delValidRow(tableId, tableMap, rowId),
@@ -309,9 +310,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
     forceDel?: boolean,
   ): RowMap =>
     transformMap(
-      mapEnsure(tableMap, rowId, mapNew(), () =>
-        rowIdsChanged(tableId, rowId, 1),
-      ),
+      mapEnsure(tableMap, rowId, () => {
+        rowIdsChanged(tableId, rowId, 1);
+        return mapNew();
+      }),
       newRow,
       (rowMap, cellId, cell) =>
         setValidCell(tableId, rowId, rowMap, cellId, cell),
@@ -408,7 +410,11 @@ export const createStore: typeof createStoreDecl = (): Store => {
     rowId: Id,
     added: IdAdded,
   ): IdMap<IdAdded> | undefined =>
-    idsChanged(mapEnsure(changedRowIds, tableId, mapNew()), rowId, added);
+    idsChanged(
+      mapEnsure<Id, IdMap<IdAdded>>(changedRowIds, tableId, mapNew),
+      rowId,
+      added,
+    );
 
   const cellIdsChanged = (
     tableId: Id,
@@ -417,7 +423,11 @@ export const createStore: typeof createStoreDecl = (): Store => {
     added: IdAdded,
   ): IdMap<IdAdded> | undefined =>
     idsChanged(
-      mapEnsure(mapEnsure(changedCellIds, tableId, mapNew()), rowId, mapNew()),
+      mapEnsure<Id, IdMap<IdAdded>>(
+        mapEnsure<Id, IdMap2<IdAdded>>(changedCellIds, tableId, mapNew),
+        rowId,
+        mapNew,
+      ),
       cellId,
       added,
     );
@@ -429,10 +439,18 @@ export const createStore: typeof createStoreDecl = (): Store => {
     oldCell: CellOrUndefined,
     newCell?: CellOrUndefined,
   ): CellOrUndefined =>
-    (mapEnsure(
-      mapEnsure(mapEnsure(changedCells, tableId, mapNew()), rowId, mapNew()),
+    (mapEnsure<Id, [CellOrUndefined, CellOrUndefined]>(
+      mapEnsure<Id, IdMap<[CellOrUndefined, CellOrUndefined]>>(
+        mapEnsure<Id, IdMap2<[CellOrUndefined, CellOrUndefined]>>(
+          changedCells,
+          tableId,
+          mapNew,
+        ),
+        rowId,
+        mapNew,
+      ),
       cellId,
-      [oldCell],
+      () => [oldCell, 0],
     )[1] = newCell);
 
   const cellInvalid = (
@@ -443,10 +461,18 @@ export const createStore: typeof createStoreDecl = (): Store => {
     defaultedCell?: Cell,
   ): CellOrUndefined => {
     arrayPush(
-      mapEnsure(
-        mapEnsure(mapEnsure(invalidCells, tableId, mapNew()), rowId, mapNew()),
+      mapEnsure<Id | undefined, any[]>(
+        mapEnsure<Id | undefined, IdMap<any[]>>(
+          mapEnsure<Id | undefined, IdMap2<any[]>>(
+            invalidCells,
+            tableId,
+            mapNew,
+          ),
+          rowId,
+          mapNew,
+        ),
         cellId,
-        [],
+        () => [],
       ),
       invalidCell,
     );

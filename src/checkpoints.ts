@@ -1,4 +1,4 @@
-import {Cell, Store} from './store.d';
+import {Cell, CellOrUndefined, Store} from './store.d';
 import {
   CheckpointCallback,
   CheckpointIds,
@@ -113,16 +113,22 @@ export const createCheckpoints: typeof createCheckpointsDecl =
             currentId = undefined;
             checkpointsChanged = 1;
           });
-          const table = mapEnsure(delta, tableId, mapNew());
-          const row = mapEnsure(table, rowId, mapNew());
-          const oldNew = mapEnsure(
+          const table = mapEnsure<
+            Id,
+            IdMap2<[CellOrUndefined, CellOrUndefined]>
+          >(delta, tableId, mapNew);
+          const row = mapEnsure<Id, IdMap<[CellOrUndefined, CellOrUndefined]>>(
+            table,
+            rowId,
+            mapNew,
+          );
+          const oldNew = mapEnsure<Id, [CellOrUndefined, CellOrUndefined]>(
             row,
             cellId,
-            [undefined, undefined],
-            (addOldNew) => (addOldNew[0] = oldCell),
+            () => [oldCell, undefined],
           );
           oldNew[1] = newCell;
-          if (oldNew[0] === oldNew[1]) {
+          if (oldNew[0] === newCell) {
             if (collIsEmpty(mapSet(row, cellId))) {
               if (collIsEmpty(mapSet(table, rowId))) {
                 if (collIsEmpty(mapSet(delta, tableId))) {

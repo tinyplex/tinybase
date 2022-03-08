@@ -38,12 +38,10 @@ export const mapSet = <Key, Value>(
 export const mapEnsure = <Key, Value>(
   map: Map<Key, Value>,
   key: Key,
-  defaultValue: Value,
-  onWillAdd?: (defaultValue: Value) => void,
+  getDefaultValue: () => Value,
 ): Value => {
   if (!collHas(map, key)) {
-    onWillAdd?.(defaultValue);
-    map.set(key, defaultValue);
+    map.set(key, getDefaultValue());
   }
   return mapGet(map, key) as Value;
 };

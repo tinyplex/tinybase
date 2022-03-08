@@ -60,11 +60,11 @@ const addDeepSet = (deepSet: DeepIdSet, value: Id, ids: IdOrNull[]): IdSet =>
     ? setAdd(
         arrayIsEmpty(ids)
           ? (deepSet as IdSet)
-          : mapEnsure(deepSet as Map<IdOrNull, IdSet>, ids[0], setNew()),
+          : mapEnsure(deepSet as Map<IdOrNull, IdSet>, ids[0], setNew),
         value,
       )
     : addDeepSet(
-        mapEnsure(deepSet as Map<IdOrNull, DeepIdSet>, ids[0] as Id, mapNew()),
+        mapEnsure(deepSet as Map<IdOrNull, DeepIdSet>, ids[0] as Id, mapNew),
         value,
         arrayFromSecond(ids),
       )) as IdSet;
