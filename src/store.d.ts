@@ -1652,7 +1652,7 @@ export interface Store {
 
   /**
    * The transaction method takes a function that makes multiple mutations to
-   * the store, buffering all calls to the relevant listeners until it
+   * the Store, buffering all calls to the relevant listeners until it
    * completes.
    *
    * This method is useful for making bulk changes to the data in a Store, and
@@ -1770,6 +1770,135 @@ export interface Store {
       invalidCells: InvalidCells,
     ) => boolean,
   ): Return;
+
+  /**
+   * The startTransaction allows you to explicitly start a transaction that will
+   * make multiple mutations to the Store, buffering all calls to the relevant
+   * listeners until it completes when you call the finishTransaction method.
+   *
+   * Transactions are useful for making bulk changes to the data in a Store, and
+   * when you don't want listeners to be called as you make each change. Changes
+   * are made silently during the transaction, and listeners relevant to the
+   * changes you have made will instead only be called when the whole
+   * transaction is complete.
+   *
+   * Generally it is preferable to use the transaction method to wrap a block of
+   * code as a transaction. It simply calls both the startTransaction and
+   * finishTransaction methods for you. See that method for several transaction
+   * examples.
+   *
+   * Use this startTransaction method when you have a more 'open-ended'
+   * transaction, such as one containing mutations triggered from other events
+   * that are asynchronous or not occurring inline to your code. You must
+   * remember to also call the finishTransaction method explicitly when it is
+   * done, of course.
+   *
+   * @returns A reference to the Store.
+   * @example
+   * This example makes changes to two Cells, first outside, and secondly
+   * within, a transaction that is explicitly started and finished. In the
+   * second case, the Row listener is only called once.
+   *
+   * ```js
+   * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+   * store.addRowListener('pets', 'fido', () => console.log('Fido changed'));
+   *
+   * store.setCell('pets', 'fido', 'color', 'brown');
+   * store.setCell('pets', 'fido', 'sold', false);
+   * // -> 'Fido changed'
+   * // -> 'Fido changed'
+   *
+   * store.startTransaction();
+   * store.setCell('pets', 'fido', 'color', 'walnut');
+   * store.setCell('pets', 'fido', 'sold', true);
+   * store.finishTransaction();
+   * // -> 'Fido changed'
+   * ```
+   * @category Transaction
+   */
+  startTransaction(): Store;
+
+  /**
+   * The finishTransaction allows you to explicitly finish a transaction that
+   * has made multiple mutations to the Store, triggering all calls to the
+   * relevant listeners.
+   *
+   * Transactions are useful for making bulk changes to the data in a Store, and
+   * when you don't want listeners to be called as you make each change. Changes
+   * are made silently during the transaction, and listeners relevant to the
+   * changes you have made will instead only be called when the whole
+   * transaction is complete.
+   *
+   * Generally it is preferable to use the transaction method to wrap a block of
+   * code as a transaction. It simply calls both the startTransaction and
+   * finishTransaction methods for you. See that method for several transaction
+   * examples.
+   *
+   * Use this finishTransaction method when you have a more 'open-ended'
+   * transaction, such as one containing mutations triggered from other events
+   * that are asynchronous or not occurring inline to your code. There must have
+   * been a corresponding startTransaction method that this completes, of
+   * course, otherwise this function has no effect.
+   *
+   * @param doRollback An optional callback that should return `true` if you
+   * want to rollback the transaction at the end.
+   * @returns A reference to the Store.
+   * @example
+   * This example makes changes to two Cells, first outside, and secondly
+   * within, a transaction that is explicitly started and finished. In the
+   * second case, the Row listener is only called once.
+   *
+   * ```js
+   * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+   * store.addRowListener('pets', 'fido', () => console.log('Fido changed'));
+   *
+   * store.setCell('pets', 'fido', 'color', 'brown');
+   * store.setCell('pets', 'fido', 'sold', false);
+   * // -> 'Fido changed'
+   * // -> 'Fido changed'
+   *
+   * store.startTransaction();
+   * store.setCell('pets', 'fido', 'color', 'walnut');
+   * store.setCell('pets', 'fido', 'sold', true);
+   * store.finishTransaction();
+   * // -> 'Fido changed'
+   * ```
+   * @example
+   * This example makes multiple changes to the Store, including some attempts
+   * to update a Cell with invalid values. The `doRollback` callback receives
+   * information about the changes and invalid attempts, and then judges that
+   * the transaction should be rolled back to its original state.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {fido: {species: 'dog', color: 'brown'}},
+   * });
+   *
+   * store.startTransaction();
+   * store.setCell('pets', 'fido', 'color', 'black');
+   * store.setCell('pets', 'fido', 'eyes', ['left', 'right']);
+   * store.setCell('pets', 'fido', 'info', {sold: null});
+   * store.finishTransaction((changedCells, invalidCells) => {
+   *   console.log(store.getTables());
+   *   // -> {pets: {fido: {species: 'dog', color: 'black'}}}
+   *   console.log(changedCells);
+   *   // -> {pets: {fido: {color: ['brown', 'black']}}}
+   *   console.log(invalidCells);
+   *   // -> {pets: {fido: {eyes: [['left', 'right']], info: [{sold: null}]}}}
+   *   return invalidCells['pets'] != null;
+   * });
+   *
+   * console.log(store.getTables());
+   * // -> {pets: {fido: {species: 'dog', color: 'brown'}}}
+   * ```
+   * @category Transaction
+   */
+  finishTransaction(
+    doRollback?: (
+      changedCells: ChangedCells,
+      invalidCells: InvalidCells,
+    ) => boolean,
+  ): Store;
 
   /**
    * The forEachTable method takes a function that it will then call for each

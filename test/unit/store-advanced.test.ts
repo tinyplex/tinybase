@@ -553,6 +553,70 @@ describe('Transactions', () => {
     });
   });
 
+  describe('Transactions with explicit start & finish', () => {
+    test('Finishing without starting does nothing', () => {
+      const doRollback = jest.fn(() => true);
+      store.finishTransaction(doRollback);
+      expect(doRollback).toBeCalledTimes(0);
+    });
+
+    test('Debouncing to different', () => {
+      listener.listenToTables('/');
+      listener.listenToTableIds('/t');
+      listener.listenToTable('/t1', 't1');
+      listener.listenToTable('/t*', null);
+      listener.listenToRowIds('/t1r', 't1');
+      listener.listenToRow('/t1/r1', 't1', 'r1');
+      listener.listenToRow('/t1/r*', 't1', null);
+      listener.listenToCellIds('/t1/r1c', 't1', 'r1');
+      listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
+      listener.listenToCell('/t1/r1/c*', 't1', 'r1', null);
+      store.startTransaction();
+      store.setCell('t1', 'r1', 'c1', 2);
+      store.setCell('t1', 'r1', 'c1', 1);
+      store.setCell('t1', 'r1', 'c2', 3);
+      store.delCell('t1', 'r1', 'c2');
+      store.setRow('t1', 'r1', {c1: 3});
+      store.setRow('t1', 'r2', {c2: 3});
+      store.setRow('t1', 'b3', {c3: 4});
+      store.delRow('t1', 'r1');
+      store.setTable('t1', {r1: {c1: 4}});
+      store.setTable('t2', {r2: {c2: 4}});
+      store.setTable('a3', {b3: {c3: 5}});
+      store.delTable('t2');
+      store.setTables({t1: {r1: {c1: 5}}});
+      store.finishTransaction();
+      expectChanges(listener, '/', {t1: {r1: {c1: 5}}});
+      expectChanges(listener, '/t1', {t1: {r1: {c1: 5}}});
+      expectChanges(listener, '/t*', {t1: {r1: {c1: 5}}});
+      expectChanges(listener, '/t1/r1', {t1: {r1: {c1: 5}}});
+      expectChanges(listener, '/t1/r*', {t1: {r1: {c1: 5}}});
+      expectChanges(listener, '/t1/r1/c1', {t1: {r1: {c1: 5}}});
+      expectChanges(listener, '/t1/r1/c*', {t1: {r1: {c1: 5}}});
+      expectNoChanges(listener);
+    });
+
+    test('rolling back with interesting sequence', () => {
+      expect.assertions(4);
+      store.startTransaction();
+      store.setCell('t2', 'r2', 'c2', 2);
+      store.setRow('t2', 'r3', {c3: 3});
+      store.setTable('t3', {r3: {c3: 3}});
+      store.delRow('t1', 'r1');
+      store.delTable('t2');
+      store.finishTransaction((changedCells, invalidCells) => {
+        expect(store.getTables()).toEqual({t3: {r3: {c3: 3}}});
+        expect(changedCells).toEqual({
+          t1: {r1: {c1: [1, undefined]}},
+          t3: {r3: {c3: [undefined, 3]}},
+        });
+        expect(invalidCells).toEqual({});
+        return true;
+      });
+      expect(store.getTables()).toEqual(originalTables);
+    });
+  });
+
   describe('doRollback returns false', () => {
     test('with setTables', () => {
       store.transaction(
