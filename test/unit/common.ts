@@ -106,51 +106,45 @@ export const createStoreListener = (store: Store): StoreListener => {
   return Object.freeze({
     listenToTables: (id) => {
       logs[id] = [];
-      return store.addTablesListener((store): number =>
+      return store.addTablesListener((store) =>
         logs[id].push(store.getTables()),
       );
     },
 
     listenToTableIds: (id) => {
       logs[id] = [];
-      return store.addTableIdsListener((): number =>
+      return store.addTableIdsListener(() =>
         logs[id].push(store.getTableIds()),
       );
     },
 
     listenToTable: (id, tableId) => {
       logs[id] = [];
-      return store.addTableListener(tableId, (store, tableId): number =>
+      return store.addTableListener(tableId, (store, tableId) =>
         logs[id].push({[tableId]: store.getTable(tableId)}),
       );
     },
 
     listenToRowIds: (id, tableId) => {
       logs[id] = [];
-      return store.addRowIdsListener(tableId, (store, tableId): number =>
+      return store.addRowIdsListener(tableId, (store, tableId) =>
         logs[id].push({[tableId]: store.getRowIds(tableId)}),
       );
     },
 
     listenToRow: (id, tableId, rowId) => {
       logs[id] = [];
-      return store.addRowListener(
-        tableId,
-        rowId,
-        (store, tableId, rowId): number =>
-          logs[id].push({[tableId]: {[rowId]: store.getRow(tableId, rowId)}}),
+      return store.addRowListener(tableId, rowId, (store, tableId, rowId) =>
+        logs[id].push({[tableId]: {[rowId]: store.getRow(tableId, rowId)}}),
       );
     },
 
     listenToCellIds: (id, tableId, rowId) => {
       logs[id] = [];
-      return store.addCellIdsListener(
-        tableId,
-        rowId,
-        (store, tableId, rowId): number =>
-          logs[id].push({
-            [tableId]: {[rowId]: store.getCellIds(tableId, rowId)},
-          }),
+      return store.addCellIdsListener(tableId, rowId, (store, tableId, rowId) =>
+        logs[id].push({
+          [tableId]: {[rowId]: store.getCellIds(tableId, rowId)},
+        }),
       );
     },
 
@@ -160,7 +154,7 @@ export const createStoreListener = (store: Store): StoreListener => {
         tableId,
         rowId,
         cellId,
-        (_, tableId, rowId, cellId, newCell): number =>
+        (_, tableId, rowId, cellId, newCell) =>
           logs[id].push({[tableId]: {[rowId]: {[cellId]: newCell}}}),
       );
     },
@@ -171,10 +165,11 @@ export const createStoreListener = (store: Store): StoreListener => {
         tableId,
         rowId,
         cellId,
-        (_, tableId, rowId, cellId, invalidCells): number =>
+        (_, tableId, rowId, cellId, invalidCells) =>
           logs[id].push({[tableId]: {[rowId]: {[cellId]: invalidCells}}}),
       );
     },
+
     logs,
   });
 };
@@ -185,7 +180,7 @@ export const createMetricsListener = (metrics: Metrics): MetricsListener => {
   return Object.freeze({
     listenToMetric: (id, metricId) => {
       logs[id] = [];
-      return metrics.addMetricListener(metricId, (metrics, metricId): number =>
+      return metrics.addMetricListener(metricId, (metrics, metricId) =>
         logs[id].push({[metricId]: metrics.getMetric(metricId)}),
       );
     },
@@ -199,7 +194,7 @@ export const createIndexesListener = (indexes: Indexes): IndexesListener => {
   return Object.freeze({
     listenToSliceIds: (id, indexId) => {
       logs[id] = [];
-      return indexes.addSliceIdsListener(indexId, (indexes, indexId): number =>
+      return indexes.addSliceIdsListener(indexId, (indexes, indexId) =>
         logs[id].push({[indexId]: indexes.getSliceIds(indexId)}),
       );
     },
@@ -209,7 +204,7 @@ export const createIndexesListener = (indexes: Indexes): IndexesListener => {
       return indexes.addSliceRowIdsListener(
         indexId,
         sliceId,
-        (indexes, indexId, sliceId): number =>
+        (indexes, indexId, sliceId) =>
           logs[id].push({
             [indexId]: {[sliceId]: indexes.getSliceRowIds(indexId, sliceId)},
           }),
@@ -230,7 +225,7 @@ export const createRelationshipsListener = (
       return relationships.addRemoteRowIdListener(
         relationshipId,
         localRowId,
-        (relationships, relationshipId, localRowId): number =>
+        (relationships, relationshipId, localRowId) =>
           logs[id].push({
             [relationshipId]: {
               [localRowId]: relationships.getRemoteRowId(
@@ -247,7 +242,7 @@ export const createRelationshipsListener = (
       return relationships.addLocalRowIdsListener(
         relationshipId,
         remoteRowId,
-        (relationships, relationshipId, remoteRowId): number =>
+        (relationships, relationshipId, remoteRowId) =>
           logs[id].push({
             [relationshipId]: {
               [remoteRowId]: relationships.getLocalRowIds(
@@ -264,7 +259,7 @@ export const createRelationshipsListener = (
       return relationships.addLinkedRowIdsListener(
         relationshipId,
         firstRowId,
-        (relationships, relationshipId, firstRowId): number =>
+        (relationships, relationshipId, firstRowId) =>
           logs[id].push({
             [relationshipId]: {
               [firstRowId]: relationships.getLinkedRowIds(
@@ -287,7 +282,7 @@ export const createCheckpointsListener = (
   return Object.freeze({
     listenToCheckpoints: (id) => {
       logs[id] = [];
-      return checkpoints.addCheckpointIdsListener((): number =>
+      return checkpoints.addCheckpointIdsListener(() =>
         logs[id].push(checkpoints.getCheckpointIds()),
       );
     },
@@ -295,7 +290,7 @@ export const createCheckpointsListener = (
       logs[id] = [];
       return checkpoints.addCheckpointListener(
         checkpointId,
-        (checkpoints, checkpointId): number =>
+        (checkpoints, checkpointId) =>
           logs[id].push({
             [checkpointId]: checkpoints.getCheckpoint(checkpointId),
           }),
