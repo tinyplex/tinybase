@@ -761,66 +761,83 @@ export const createStore: typeof createStoreDecl = (): Store => {
       // @ts-ignore only occurs internally
       return;
     }
-    transactions++;
+    startTransaction();
     const result = actions?.();
-    transactions--;
-
-    if (transactions == 0) {
-      transactions = 1;
-      callInvalidCellListeners(1);
-      callListenersForChanges(1);
-      transactions = -1;
-
-      if (
-        doRollback?.(
-          mapToObj(
-            changedCells,
-            (table) =>
-              mapToObj(
-                table,
-                (row) =>
-                  mapToObj(
-                    row,
-                    (cells) => [...cells],
-                    ([oldCell, newCell]) => oldCell === newCell,
-                  ),
-                objIsEmpty,
-              ),
-            objIsEmpty,
-          ),
-          mapToObj<IdMap2<any[]>, IdObj2<any[]>>(invalidCells, (map) =>
-            mapToObj<IdMap<any[]>, IdObj<any[]>>(map, mapToObj),
-          ),
-        )
-      ) {
-        transactions = 1;
-        collForEach(changedCells, (table, tableId) =>
-          collForEach(table, (row, rowId) =>
-            collForEach(row, ([oldCell], cellId) =>
-              isUndefined(oldCell)
-                ? delCell(tableId, rowId, cellId, true)
-                : setCell(tableId, rowId, cellId, oldCell),
-            ),
-          ),
-        );
-        transactions = -1;
-      }
-
-      callInvalidCellListeners(0);
-      callListenersForChanges(0);
-      transactions = 0;
-      arrayForEach(
-        [
-          changedCells,
-          invalidCells,
-          changedTableIds,
-          changedRowIds,
-          changedCellIds,
-        ],
-        collClear,
-      );
-    }
+    finishTransaction(doRollback);
     return result as Return;
+  };
+
+  const startTransaction = (): Store => {
+    transactions++;
+    return store;
+  };
+
+  const finishTransaction = (
+    doRollback?: (
+      changedCells: ChangedCells,
+      invalidCells: InvalidCells,
+    ) => boolean,
+  ): Store => {
+    if (transactions > 0) {
+      transactions--;
+
+      if (transactions == 0) {
+        transactions = 1;
+        callInvalidCellListeners(1);
+        callListenersForChanges(1);
+        transactions = -1;
+
+        if (
+          doRollback?.(
+            mapToObj(
+              changedCells,
+              (table) =>
+                mapToObj(
+                  table,
+                  (row) =>
+                    mapToObj(
+                      row,
+                      (cells) => [...cells],
+                      ([oldCell, newCell]) => oldCell === newCell,
+                    ),
+                  objIsEmpty,
+                ),
+              objIsEmpty,
+            ),
+            mapToObj<IdMap2<any[]>, IdObj2<any[]>>(invalidCells, (map) =>
+              mapToObj<IdMap<any[]>, IdObj<any[]>>(map, mapToObj),
+            ),
+          )
+        ) {
+          transactions = 1;
+          collForEach(changedCells, (table, tableId) =>
+            collForEach(table, (row, rowId) =>
+              collForEach(row, ([oldCell], cellId) =>
+                isUndefined(oldCell)
+                  ? delCell(tableId, rowId, cellId, true)
+                  : setCell(tableId, rowId, cellId, oldCell),
+              ),
+            ),
+          );
+          transactions = -1;
+        }
+
+        callInvalidCellListeners(0);
+        callListenersForChanges(0);
+        transactions = 0;
+        arrayForEach(
+          [
+            changedCells,
+            invalidCells,
+            changedTableIds,
+            changedRowIds,
+            changedCellIds,
+          ],
+          collClear,
+        );
+      }
+    }
+    return store;
   };
 
   const forEachTable = (tableCallback: TableCallback): void =>
@@ -968,6 +985,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
     delSchema,
 
     transaction,
+    startTransaction,
+    finishTransaction,
 
     forEachTable,
     forEachRow,
