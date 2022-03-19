@@ -596,6 +596,10 @@ export type StoreListenerStats = {
    * The number of InvalidCellListeners registered with the Store.
    */
   invalidCell?: number;
+  /**
+   * The number of TransactionListeners registered with the Store.
+   */
+  transaction?: number;
 };
 
 /**

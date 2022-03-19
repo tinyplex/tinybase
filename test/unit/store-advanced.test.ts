@@ -694,6 +694,7 @@ describe('Stats', () => {
       cellIds: 0,
       cell: 0,
       invalidCell: 0,
+      transaction: 0,
     };
   });
 
@@ -723,5 +724,20 @@ describe('Stats', () => {
       expectedListenerStats[thing] = 0;
       expect(store.getListenerStats()).toEqual(expectedListenerStats);
     });
+    test.each([['willFinishTransaction'], ['didFinishTransaction']])(
+      '%s',
+      (thing) => {
+        const addListener =
+          'add' + thing[0].toUpperCase() + thing.substr(1) + 'Listener';
+        expect(((store as any)[addListener] as any)((): null => null)).toEqual(
+          '0',
+        );
+        expectedListenerStats.transaction = 1;
+        expect(store.getListenerStats()).toEqual(expectedListenerStats);
+        store.delListener('0');
+        expectedListenerStats.transaction = 0;
+        expect(store.getListenerStats()).toEqual(expectedListenerStats);
+      },
+    );
   });
 });
