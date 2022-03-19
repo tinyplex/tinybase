@@ -46,6 +46,7 @@ export const repeat = (
     const averages = new Array(steps).fill(average);
     const maxes = new Array(steps).fill(maxResult);
 
+    // eslint-disable-next-line no-console
     console.log(
       `${name} with multiple ${noun}, ${unit}\n` +
         ` From: ${stepSize} ${noun}\n` +

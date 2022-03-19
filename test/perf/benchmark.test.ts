@@ -24,6 +24,7 @@ test(`${Math.pow(SIZE, 3)} cells benchmark`, () => {
       }
     }
   });
+  // eslint-disable-next-line no-console
   console.log(`${cells2} cells changed in ${Math.round(time2 / 10000) / 100}s`);
 
   const store = createStore();
@@ -38,6 +39,7 @@ test(`${Math.pow(SIZE, 3)} cells benchmark`, () => {
       }
     }
   });
+  // eslint-disable-next-line no-console
   console.log(`${cells} cells changed in ${Math.round(time / 10000) / 100}s`);
 
   expect(1).toEqual(1);
