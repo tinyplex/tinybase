@@ -629,6 +629,7 @@ describe('Stats', () => {
       row: 0,
       cellIds: 0,
       cell: 0,
+      invalidCell: 0,
     };
   });
 
@@ -645,6 +646,7 @@ describe('Stats', () => {
       ['row', ['t1', 'r1']],
       ['cellIds', ['t1', 'r1']],
       ['cell', ['t1', 'r1', 'c1']],
+      ['invalidCell', []],
     ])('%s', (thing, args) => {
       const addListener =
         'add' + thing[0].toUpperCase() + thing.substr(1) + 'Listener';
