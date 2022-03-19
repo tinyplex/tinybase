@@ -24,6 +24,7 @@ import {
   TableListener,
   Tables,
   TablesListener,
+  TransactionListener,
   createStore as createStoreDecl,
 } from './store.d';
 import {
@@ -142,6 +143,7 @@ const idsChanged = (
 
 export const createStore: typeof createStoreDecl = (): Store => {
   let hasSchema: boolean;
+  let cellsTouched: boolean;
   let nextRowId = 0;
   let transactions = 0;
   const changedTableIds: IdMap<IdAdded> = mapNew();
@@ -160,6 +162,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const cellIdsListeners: [IdSet3, IdSet3] = mapNewPair();
   const cellListeners: [IdSet4, IdSet4] = mapNewPair();
   const invalidCellListeners: [IdSet4, IdSet4] = mapNewPair();
+  const finishTransactionListeners: [IdSet, IdSet] = mapNewPair(setNew);
 
   const [addListener, callListeners, delListenerImpl, callListenerImpl] =
     getListenerFunctions(() => store);
@@ -505,82 +508,80 @@ export const createStore: typeof createStoreDecl = (): Store => {
       : 0;
 
   const callListenersForChanges = (mutator: 0 | 1) => {
-    if (!collIsEmpty(changedCells)) {
-      const emptyIdListeners =
-        collIsEmpty(cellIdsListeners[mutator]) &&
-        collIsEmpty(rowIdsListeners[mutator]) &&
-        collIsEmpty(tableIdsListeners[mutator]);
-      const emptyOtherListeners =
-        collIsEmpty(cellListeners[mutator]) &&
-        collIsEmpty(rowListeners[mutator]) &&
-        collIsEmpty(tableListeners[mutator]) &&
-        collIsEmpty(tablesListeners[mutator]);
-      if (!(emptyIdListeners && emptyOtherListeners)) {
-        const changes: [
-          IdMap<IdAdded>,
-          IdMap2<IdAdded>,
-          IdMap3<IdAdded>,
-          IdMap3<[CellOrUndefined, CellOrUndefined]>,
-        ] = mutator
-          ? [
-              mapClone(changedTableIds),
-              mapClone2(changedRowIds),
-              mapClone(changedCellIds, mapClone2),
-              mapClone(changedCells, mapClone2),
-            ]
-          : [changedTableIds, changedRowIds, changedCellIds, changedCells];
+    const emptyIdListeners =
+      collIsEmpty(cellIdsListeners[mutator]) &&
+      collIsEmpty(rowIdsListeners[mutator]) &&
+      collIsEmpty(tableIdsListeners[mutator]);
+    const emptyOtherListeners =
+      collIsEmpty(cellListeners[mutator]) &&
+      collIsEmpty(rowListeners[mutator]) &&
+      collIsEmpty(tableListeners[mutator]) &&
+      collIsEmpty(tablesListeners[mutator]);
+    if (!(emptyIdListeners && emptyOtherListeners)) {
+      const changes: [
+        IdMap<IdAdded>,
+        IdMap2<IdAdded>,
+        IdMap3<IdAdded>,
+        IdMap3<[CellOrUndefined, CellOrUndefined]>,
+      ] = mutator
+        ? [
+            mapClone(changedTableIds),
+            mapClone2(changedRowIds),
+            mapClone(changedCellIds, mapClone2),
+            mapClone(changedCells, mapClone2),
+          ]
+        : [changedTableIds, changedRowIds, changedCellIds, changedCells];
 
-        if (!emptyIdListeners) {
-          collForEach(changes[2], (rowCellIds, tableId) =>
-            collForEach(rowCellIds, (changedIds, rowId) => {
-              if (!collIsEmpty(changedIds)) {
-                callListeners(cellIdsListeners[mutator], [tableId, rowId]);
-              }
-            }),
-          );
-          collForEach(changes[1], (changedIds, tableId) => {
+      if (!emptyIdListeners) {
+        collForEach(changes[2], (rowCellIds, tableId) =>
+          collForEach(rowCellIds, (changedIds, rowId) => {
             if (!collIsEmpty(changedIds)) {
-              callListeners(rowIdsListeners[mutator], [tableId]);
+              callListeners(cellIdsListeners[mutator], [tableId, rowId]);
             }
-          });
-          if (!collIsEmpty(changes[0])) {
-            callListeners(tableIdsListeners[mutator]);
+          }),
+        );
+        collForEach(changes[1], (changedIds, tableId) => {
+          if (!collIsEmpty(changedIds)) {
+            callListeners(rowIdsListeners[mutator], [tableId]);
           }
+        });
+        if (!collIsEmpty(changes[0])) {
+          callListeners(tableIdsListeners[mutator]);
         }
+      }
 
-        if (!emptyOtherListeners) {
-          let tablesChanged;
-          collForEach(changes[3], (rows, tableId) => {
-            let tableChanged;
-            collForEach(rows, (cells, rowId) => {
-              let rowChanged;
-              collForEach(cells, ([oldCell, newCell], cellId) => {
-                if (newCell !== oldCell) {
-                  callListeners(
-                    cellListeners[mutator],
-                    [tableId, rowId, cellId],
-                    newCell,
-                    oldCell,
-                    getCellChange,
-                  );
-                  tablesChanged = tableChanged = rowChanged = 1;
-                }
-              });
-              if (rowChanged) {
+      if (!emptyOtherListeners) {
+        let tablesChanged;
+        collForEach(changes[3], (rows, tableId) => {
+          let tableChanged;
+          collForEach(rows, (cells, rowId) => {
+            let rowChanged;
+            collForEach(cells, ([oldCell, newCell], cellId) => {
+              if (newCell !== oldCell) {
                 callListeners(
-                  rowListeners[mutator],
-                  [tableId, rowId],
+                  cellListeners[mutator],
+                  [tableId, rowId, cellId],
+                  newCell,
+                  oldCell,
                   getCellChange,
                 );
+                tablesChanged = tableChanged = rowChanged = 1;
               }
             });
-            if (tableChanged) {
-              callListeners(tableListeners[mutator], [tableId], getCellChange);
+            if (rowChanged) {
+              callListeners(
+                rowListeners[mutator],
+                [tableId, rowId],
+                getCellChange,
+              );
             }
           });
-          if (tablesChanged) {
-            callListeners(tablesListeners[mutator], [], getCellChange);
+          if (tableChanged) {
+            callListeners(tableListeners[mutator], [tableId], getCellChange);
           }
+        });
+        if (tablesChanged) {
+          callListeners(tablesListeners[mutator], [], getCellChange);
         }
       }
     }
@@ -782,9 +783,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
       transactions--;
 
       if (transactions == 0) {
+        cellsTouched = !collIsEmpty(changedCells);
         transactions = 1;
         callInvalidCellListeners(1);
-        callListenersForChanges(1);
+        if (cellsTouched) {
+          callListenersForChanges(1);
+        }
         transactions = -1;
 
         if (
@@ -820,10 +824,16 @@ export const createStore: typeof createStoreDecl = (): Store => {
             ),
           );
           transactions = -1;
+          cellsTouched = false;
         }
 
+        callListeners(finishTransactionListeners[0], [], cellsTouched);
         callInvalidCellListeners(0);
-        callListenersForChanges(0);
+        if (cellsTouched) {
+          callListenersForChanges(0);
+        }
+        callListeners(finishTransactionListeners[1], [], cellsTouched);
+
         transactions = 0;
         arrayForEach(
           [
@@ -925,6 +935,13 @@ export const createStore: typeof createStoreDecl = (): Store => {
       cellId,
     ]);
 
+  const addWillFinishTransactionListener = (
+    listener: TransactionListener,
+  ): Id => addListener(listener, finishTransactionListeners[0]);
+
+  const addDidFinishTransactionListener = (listener: TransactionListener): Id =>
+    addListener(listener, finishTransactionListeners[1]);
+
   const callListener = (listenerId: Id) => {
     callListenerImpl(listenerId, [getTableIds, getRowIds, getCellIds], (ids) =>
       isUndefined(ids[2]) ? [] : arrayPair(getCell(...(ids as [Id, Id, Id]))),
@@ -1000,6 +1017,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
     addCellIdsListener,
     addCellListener,
     addInvalidCellListener,
+    addWillFinishTransactionListener,
+    addDidFinishTransactionListener,
 
     callListener,
     delListener,

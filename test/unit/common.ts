@@ -37,6 +37,8 @@ export type StoreListener = Listener &
       rowId: IdOrNull,
       cellId: IdOrNull,
     ) => Id;
+    listenToWillFinishTransaction: (id: Id) => Id;
+    listenToDidFinishTransaction: (id: Id) => Id;
   }>;
 
 export type MetricsListener = Listener &
@@ -167,6 +169,20 @@ export const createStoreListener = (store: Store): StoreListener => {
         cellId,
         (_, tableId, rowId, cellId, invalidCells) =>
           logs[id].push({[tableId]: {[rowId]: {[cellId]: invalidCells}}}),
+      );
+    },
+
+    listenToWillFinishTransaction: (id) => {
+      logs[id] = [];
+      return store.addWillFinishTransactionListener((_, cellsChanged) =>
+        logs[id].push(cellsChanged),
+      );
+    },
+
+    listenToDidFinishTransaction: (id) => {
+      logs[id] = [];
+      return store.addDidFinishTransactionListener((_, cellsChanged) =>
+        logs[id].push(cellsChanged),
       );
     },
 
