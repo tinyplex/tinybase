@@ -177,6 +177,32 @@ export type MapCell = (cell: CellOrUndefined) => Cell;
 export type GetCell = (cellId: Id) => CellOrUndefined;
 
 /**
+ * The TransactionListener type describes a function that is used to listen to
+ * the completion of a transaction for the Store.
+ *
+ * A TransactionListener is provided when using the
+ * addWillFinishTransactionListener and addDidFinishTransactionListener methods.
+ * See those methods for specific examples.
+ *
+ * When called, a TransactionListener is simply given a reference to the Store
+ * and a boolean to indicate whether Cell values have been touched during the
+ * transaction. The latter flag is intended as a hint about whether non-mutating
+ * listeners might be being called at the end of the transaction.
+ *
+ * Here, 'touched' means that Cell values have either been changed, or changed
+ * and then changed back to its original value during the transaction. The
+ * exception is a transaction that has been rolled back, for which the value of
+ * `cellsTouched` in the listener will be `false` because all changes have been
+ * reverted.
+ *
+ * @param store A reference to the Store that is completing a transaction.
+ * @param cellsTouched Whether Cell values have been touched during the
+ * transaction.
+ * @category Listener
+ */
+export type TransactionListener = (store: Store, cellsTouched: boolean) => void;
+
+/**
  * The TablesListener type describes a function that is used to listen to
  * changes to the whole Store.
  *
@@ -2874,6 +2900,143 @@ export interface Store {
     listener: InvalidCellListener,
     mutator?: boolean,
   ): Id;
+
+  /**
+   * The addWillFinishTransactionListener method registers a listener function
+   * with the Store that will be called just before other non-mutating listeners
+   * are called at the end of the transaction.
+   *
+   * This is useful if you need to know that a set of listeners are about to be
+   * called at the end of a transaction, perhaps to batch _their_ consequences
+   * together.
+   *
+   * The provided TransactionListener will receive a reference to the Store and
+   * a boolean to indicate whether Cell values have been touched during the
+   * transaction. The latter flag is intended as a hint about whether
+   * non-mutating listeners might be being called at the end of the transaction.
+   *
+   * Here, 'touched' means that Cell values have either been changed, or changed
+   * and then changed back to its original value during the transaction. The
+   * exception is a transaction that has been rolled back, for which the value
+   * of `cellsTouched` in the listener will be `false` because all changes have
+   * been reverted.
+   *
+   * @returns A unique Id for the listener that can later be used to remove it.
+   * @example
+   * This example registers a listener that is called at the end of the
+   * transaction, just before its listeners will be called. The transactions
+   * shown here variously change, touch, and rollback cells, demonstrating how
+   * the `cellsTouched` parameter in the listener works.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {fido: {species: 'dog', color: 'brown'}},
+   * });
+   * const listenerId = store.addWillFinishTransactionListener(
+   *   (store, cellsTouched) => console.log(`Cells touched: ${cellsTouched}`),
+   * );
+   * const listenerId2 = store.addTablesListener(() =>
+   *   console.log('Tables changed'),
+   * );
+   *
+   * store.transaction(() => store.setCell('pets', 'fido', 'color', 'brown'));
+   * // -> 'Cells touched: false'
+   *
+   * store.transaction(() => store.setCell('pets', 'fido', 'color', 'walnut'));
+   * // -> 'Cells touched: true'
+   * // -> 'Tables changed'
+   *
+   * store.transaction(() => {
+   *   store.setRow('pets', 'felix', {species: 'cat'});
+   *   store.delRow('pets', 'felix');
+   * });
+   * // -> 'Cells touched: true'
+   *
+   * store.transaction(
+   *   () => store.setRow('pets', 'fido', {species: 'dog'}),
+   *   () => true,
+   * );
+   * // -> 'Cells touched: false'
+   * // Transaction was rolled back.
+   *
+   * store.callListener(listenerId);
+   * // -> 'Cells touched: undefined'
+   * // It is meaningless to call this listener directly.
+   *
+   * store.delListener(listenerId).delListener(listenerId2);
+   * ```
+   * @category Listener
+   */
+  addWillFinishTransactionListener(listener: TransactionListener): Id;
+
+  /**
+   * The addDidFinishTransactionListener method registers a listener function
+   * with the Store that will be called just after other non-mutating listeners
+   * are called at the end of the transaction.
+   *
+   * This is useful if you need to know that a set of listeners have just been
+   * called at the end of a transaction, perhaps to batch _their_ consequences
+   * together.
+   *
+   * The provided TransactionListener will receive a reference to the Store and
+   * a boolean to indicate whether Cell values have been touched during the
+   * transaction. The latter flag is intended as a hint about whether
+   * non-mutating listeners might have been called at the end of the
+   * transaction.
+   *
+   * Here, 'touched' means that Cell values have either been changed, or changed
+   * and then changed back to its original value during the transaction. The
+   * exception is a transaction that has been rolled back, for which the value
+   * of `cellsTouched` in the listener will be `false` because all changes have
+   * been reverted.
+   *
+   * @returns A unique Id for the listener that can later be used to remove it.
+   * @example
+   * This example registers a listener that is called at the end of the
+   * transaction, just after its listeners have been called. The transactions
+   * shown here variously change, touch, and rollback cells, demonstrating how
+   * the `cellsTouched` parameter in the listener works.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {fido: {species: 'dog', color: 'brown'}},
+   * });
+   * const listenerId = store.addDidFinishTransactionListener(
+   *   (store, cellsTouched) => console.log(`Cells touched: ${cellsTouched}`),
+   * );
+   * const listenerId2 = store.addTablesListener(() =>
+   *   console.log('Tables changed'),
+   * );
+   *
+   * store.transaction(() => store.setCell('pets', 'fido', 'color', 'brown'));
+   * // -> 'Cells touched: false'
+   *
+   * store.transaction(() => store.setCell('pets', 'fido', 'color', 'walnut'));
+   * // -> 'Tables changed'
+   * // -> 'Cells touched: true'
+   *
+   * store.transaction(() => {
+   *   store.setRow('pets', 'felix', {species: 'cat'});
+   *   store.delRow('pets', 'felix');
+   * });
+   * // -> 'Cells touched: true'
+   *
+   * store.transaction(
+   *   () => store.setRow('pets', 'fido', {species: 'dog'}),
+   *   () => true,
+   * );
+   * // -> 'Cells touched: false'
+   * // Transaction was rolled back.
+   *
+   * store.callListener(listenerId);
+   * // -> 'Cells touched: undefined'
+   * // It is meaningless to call this listener directly.
+   *
+   * store.delListener(listenerId).delListener(listenerId2);
+   * ```
+   * @category Listener
+   */
+  addDidFinishTransactionListener(listener: TransactionListener): Id;
 
   /**
    * The callListener method provides a way for you to manually provoke a

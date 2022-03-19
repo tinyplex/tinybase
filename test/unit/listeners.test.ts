@@ -2519,6 +2519,94 @@ describe('Listeners', () => {
       expectNoChanges(listener);
     });
   });
+
+  describe('Will and did finish transaction', () => {
+    beforeEach(() => {
+      store = createStore();
+      listener = createStoreListener(store);
+      listener.listenToWillFinishTransaction('/will');
+      listener.listenToDidFinishTransaction('/did');
+    });
+
+    test('in implicit transactions', () => {
+      store.setTables({t1: {r1: {c1: 1}}});
+      expectChanges(listener, '/will', true);
+      expectChanges(listener, '/did', true);
+      expectNoChanges(listener);
+      store.delTables();
+      expectChanges(listener, '/will', true);
+      expectChanges(listener, '/did', true);
+      expectNoChanges(listener);
+      store.delTables();
+      expectChanges(listener, '/will', false);
+      expectChanges(listener, '/did', false);
+      expectNoChanges(listener);
+    });
+
+    test('in explicit transaction', () => {
+      store.startTransaction();
+      store.setTables({t1: {r1: {c1: 1}}});
+      expectNoChanges(listener);
+      store.finishTransaction();
+      expectChanges(listener, '/will', true);
+      expectChanges(listener, '/did', true);
+      expectNoChanges(listener);
+    });
+
+    test('in wrapped transaction with changes', () => {
+      store.transaction(() => {
+        store.setTables({t1: {r1: {c1: 1}}});
+        expectNoChanges(listener);
+      });
+      expectChanges(listener, '/will', true);
+      expectChanges(listener, '/did', true);
+      expectNoChanges(listener);
+    });
+
+    test('in wrapped transaction with no actions', () => {
+      store.transaction(() => {
+        expectNoChanges(listener);
+      });
+      expectChanges(listener, '/will', false);
+      expectChanges(listener, '/did', false);
+      expectNoChanges(listener);
+    });
+
+    test('in wrapped transaction with no touches', () => {
+      store.transaction(() => {
+        store.delTables();
+        expectNoChanges(listener);
+      });
+      expectChanges(listener, '/will', false);
+      expectChanges(listener, '/did', false);
+      expectNoChanges(listener);
+    });
+
+    test('in wrapped transaction with touches', () => {
+      store.transaction(() => {
+        store.setTables({t1: {r1: {c1: 1}}});
+        expectNoChanges(listener);
+        store.delTables();
+        expectNoChanges(listener);
+      });
+      expectChanges(listener, '/will', true);
+      expectChanges(listener, '/did', true);
+      expectNoChanges(listener);
+    });
+
+    test('in wrapped transaction with rollback', () => {
+      store.transaction(
+        () => {
+          store.setTables({t1: {r1: {c1: 1}}});
+          expectNoChanges(listener);
+        },
+        () => true,
+      );
+      expectChanges(listener, '/will', false);
+      expectChanges(listener, '/did', false);
+      expectNoChanges(listener);
+    });
+  });
 });
 
 describe('Mutating listeners', () => {
