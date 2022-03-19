@@ -2365,7 +2365,7 @@ describe('Listeners', () => {
   });
 
   describe('invalid cell', () => {
-    beforeAll(() => {
+    beforeEach(() => {
       store = createStore();
       listener = createStoreListener(store);
       listener.listenToInvalidCell('i:/t1/r1/c1', 't1', 'r1', 'c1');
