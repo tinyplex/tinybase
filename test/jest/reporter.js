@@ -12,6 +12,7 @@ export default class {
       }),
       'utf-8',
     );
+    // eslint-disable-next-line no-console
     console.log('Assertions: ', env.assertionCalls, '\n');
   }
 }
