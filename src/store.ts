@@ -930,6 +930,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
           row: collPairSize(rowListeners, collSize3),
           cellIds: collPairSize(cellIdsListeners, collSize3),
           cell: collPairSize(cellListeners, collSize4),
+          invalidCell: collPairSize(invalidCellListeners, collSize4),
         }
       : {};
 
