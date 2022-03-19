@@ -965,6 +965,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
           cellIds: collPairSize(cellIdsListeners, collSize3),
           cell: collPairSize(cellListeners, collSize4),
           invalidCell: collPairSize(invalidCellListeners, collSize4),
+          transaction: collPairSize(finishTransactionListeners),
         }
       : {};
 
