@@ -8,6 +8,7 @@ import {
   TableIdsListener,
   TableListener,
   TablesListener,
+  TransactionListener,
 } from '../store.d';
 import {
   CheckpointIdsListener,
@@ -47,6 +48,7 @@ type Listener =
   | CellIdsListener
   | CellListener
   | InvalidCellListener
+  | TransactionListener
   | MetricListener
   | SliceIdsListener
   | SliceRowIdsListener
