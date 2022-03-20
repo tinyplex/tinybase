@@ -48,11 +48,11 @@
 
 ---
 
-<a id="start" href="/guides/the-basics/getting-started">Get started</a>
+<a id='start' href='/guides/the-basics/getting-started'>Get started</a>
 
-<a href="/demos">Try the demos</a>
+<a href='/demos'>Try the demos</a>
 
-<a href="/api/store/interfaces/store/store/">Read the docs</a>
+<a href='/api/store/interfaces/store/store/'>Read the docs</a>
 
 ---
 
@@ -379,11 +379,11 @@ console.log(store.getCell('pets', 'felix', 'sold'));
 
 ---
 
-<a id="start" href="/guides/the-basics/getting-started">Get started</a>
+<a id='start' href='/guides/the-basics/getting-started'>Get started</a>
 
-<a href="/demos">Try the demos</a>
+<a href='/demos'>Try the demos</a>
 
-<a href="/api/store/interfaces/store/store/">Read the docs</a>
+<a href='/api/store/interfaces/store/store/'>Read the docs</a>
 
 ---
 
@@ -395,12 +395,14 @@ console.log(store.getCell('pets', 'felix', 'sold'));
       and <a href='https://facebook.com/tinybasejs'>Facebook</a>.
     </li>
     <li>
-      <a href='@@EVAL("metadata.repository")/issues'>Issues</a> and 
-      <a href='@@EVAL("metadata.repository")/releases'>release notes</a> on 
-      <a href='@@EVAL("metadata.repository")'>GitHub</a>
+      <a href='/guides/releases/'>Release notes</a> for each minor version.
     </li>
     <li>
       Packages on <a href='@@EVAL("metadata.package")'>NPM</a>.
+    </li>
+    <li>
+      <a href='@@EVAL("metadata.repository")/issues'>Issues</a> on 
+      <a href='@@EVAL("metadata.repository")'>GitHub</a>.
     </li>
   </ul>
 </section>
