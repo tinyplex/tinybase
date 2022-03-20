@@ -1802,9 +1802,10 @@ export interface Store {
   ): Return;
 
   /**
-   * The startTransaction allows you to explicitly start a transaction that will
-   * make multiple mutations to the Store, buffering all calls to the relevant
-   * listeners until it completes when you call the finishTransaction method.
+   * The startTransaction method allows you to explicitly start a transaction
+   * that will make multiple mutations to the Store, buffering all calls to the
+   * relevant listeners until it completes when you call the finishTransaction
+   * method.
    *
    * Transactions are useful for making bulk changes to the data in a Store, and
    * when you don't want listeners to be called as you make each change. Changes
@@ -1849,8 +1850,8 @@ export interface Store {
   startTransaction(): Store;
 
   /**
-   * The finishTransaction allows you to explicitly finish a transaction that
-   * has made multiple mutations to the Store, triggering all calls to the
+   * The finishTransaction method allows you to explicitly finish a transaction
+   * that has made multiple mutations to the Store, triggering all calls to the
    * relevant listeners.
    *
    * Transactions are useful for making bulk changes to the data in a Store, and
