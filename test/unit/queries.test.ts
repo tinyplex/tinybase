@@ -405,6 +405,117 @@ describe('Sets', () => {
       expect(queries.getStore().getListenerStats().row).toEqual(0);
     });
   });
+
+  describe('Wheres', () => {
+    test('root table column by value', () => {
+      setCells();
+      queries.setQueryDefinition('q1', 't1', ({select, where}) => {
+        select('c1');
+        where('c1', 'two');
+      });
+      expect(queries.getResultTable('q1')).toEqual({r2: {c1: 'two'}});
+      delCells();
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(queries.getStore().getListenerStats().row).toEqual(1);
+      queries.delQueryDefinition('q1');
+      expect(queries.getStore().getListenerStats().row).toEqual(0);
+    });
+
+    test('root table column by derivation', () => {
+      setCells();
+      queries.setQueryDefinition('q1', 't1', ({select, where}) => {
+        select('c1');
+        where((getCell) => (getCell('c1') as string)[0] == 't');
+      });
+      expect(queries.getResultTable('q1')).toEqual({
+        r2: {c1: 'two'},
+        r3: {c1: 'three'},
+      });
+      delCells();
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(queries.getStore().getListenerStats().row).toEqual(1);
+      queries.delQueryDefinition('q1');
+      expect(queries.getStore().getListenerStats().row).toEqual(0);
+    });
+
+    test('root table two columns by derivation', () => {
+      setCells();
+      queries.setQueryDefinition('q1', 't1', ({select, where}) => {
+        select('c1');
+        where((getCell) => (getCell('c1') as string).includes('o'));
+        where('c2', 'odd');
+      });
+      expect(queries.getResultTable('q1')).toEqual({r1: {c1: 'one'}});
+      delCells();
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(queries.getStore().getListenerStats().row).toEqual(1);
+      queries.delQueryDefinition('q1');
+      expect(queries.getStore().getListenerStats().row).toEqual(0);
+    });
+
+    test('selected join table column by value', () => {
+      setCells('t1', '', '', 'r');
+      setCells('t2', '', '.j');
+      queries.setQueryDefinition('q1', 't1', ({select, join, where}) => {
+        select('c1').as('t1.c1');
+        select('t2', 'c1').as('t2.c1');
+        join('t2', 'c3');
+        where('t2', 'c1', 'three.j');
+      });
+      expect(queries.getResultTable('q1')).toEqual({
+        r3: {'t1.c1': 'three', 't2.c1': 'three.j'},
+      });
+      delCells();
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(queries.getStore().getListenerStats().row).toEqual(1);
+      queries.delQueryDefinition('q1');
+      expect(queries.getStore().getListenerStats().row).toEqual(0);
+    });
+
+    test('unselected join table column by value', () => {
+      setCells('t1', '', '', 'r');
+      setCells('t2', '', '.j');
+      queries.setQueryDefinition('q1', 't1', ({select, join, where}) => {
+        select('c1').as('t1.c1');
+        select('t2', 'c1').as('t2.c1');
+        join('t2', 'c3');
+        where('t2', 'c2', 'odd.j');
+      });
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {'t1.c1': 'one', 't2.c1': 'one.j'},
+        r3: {'t1.c1': 'three', 't2.c1': 'three.j'},
+      });
+      delCells();
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(queries.getStore().getListenerStats().row).toEqual(1);
+      queries.delQueryDefinition('q1');
+      expect(queries.getStore().getListenerStats().row).toEqual(0);
+    });
+
+    test('root and join table columns by derivation', () => {
+      setCells('t1', '', '', 'r');
+      setCells('t2', '', '.j');
+      queries.setQueryDefinition('q1', 't1', ({select, join, where}) => {
+        select('c1').as('t1.c1');
+        select('t2', 'c1').as('t2.c1');
+        join('t2', 'c3');
+        where(
+          (getTableCell) =>
+            getTableCell('c1') == 'four' || getTableCell('t2', 'c2') == 'odd.j',
+        );
+      });
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {'t1.c1': 'one', 't2.c1': 'one.j'},
+        r3: {'t1.c1': 'three', 't2.c1': 'three.j'},
+        r4: {'t1.c1': 'four', 't2.c1': 'four.j'},
+      });
+      delCells();
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(queries.getStore().getListenerStats().row).toEqual(1);
+      queries.delQueryDefinition('q1');
+      expect(queries.getStore().getListenerStats().row).toEqual(0);
+    });
+  });
 });
 
 describe('Listens to Queries when sets', () => {
@@ -2041,6 +2152,280 @@ describe('Listens to Queries when sets', () => {
               r1: {'t1.c1': 'one', 't3.c1': 'three.j2', 't2.c1': 'three.j1'},
             },
           },
+          {q1: {}},
+        ),
+      );
+      expectNoChanges(listener);
+    });
+  });
+
+  describe('Wheres', () => {
+    test('root table column by value', () => {
+      queries.setQueryDefinition('q1', 't1', ({select, where}) => {
+        select('c1');
+        where('c1', 'two');
+      });
+      setCells();
+      delCells();
+      ['/q1', '/q*'].forEach((listenerId) =>
+        expectChanges(listener, listenerId, {q1: {r2: {c1: 'two'}}}, {q1: {}}),
+      );
+      expectNoChanges(listener);
+    });
+
+    test('root table column by derivation', () => {
+      queries.setQueryDefinition('q1', 't1', ({select, where}) => {
+        select('c1');
+        where((getCell) => (getCell('c1') as string)[0] == 't');
+      });
+      setCells();
+      delCells();
+      ['/q1', '/q*'].forEach((listenerId) =>
+        expectChanges(
+          listener,
+          listenerId,
+          {q1: {r2: {c1: 'two'}, r3: {c1: 'three'}}},
+          {q1: {r2: {c1: 'two'}}},
+          {q1: {}},
+        ),
+      );
+      expectNoChanges(listener);
+    });
+
+    test('root table two columns by derivation', () => {
+      queries.setQueryDefinition('q1', 't1', ({select, where}) => {
+        select('c1');
+        where((getCell) => (getCell('c1') as string).includes('o'));
+        where('c2', 'odd');
+      });
+      setCells();
+      delCells();
+      ['/q1', '/q*'].forEach((listenerId) =>
+        expectChanges(
+          listener,
+          listenerId,
+          {q1: {r1: {c1: 'one'}}},
+          {q1: {}},
+          {q1: {r1: {c1: 'one'}}},
+          {q1: {}},
+        ),
+      );
+      expectNoChanges(listener);
+    });
+
+    test('selected join table column by value; t1, t2', () => {
+      queries.setQueryDefinition('q1', 't1', ({select, join, where}) => {
+        select('c1').as('t1.c1');
+        select('t2', 'c1').as('t2.c1');
+        join('t2', 'c3');
+        where('t2', 'c1', 'three.j');
+      });
+      setCells('t1', '', '', 'r');
+      setCells('t2', '', '.j');
+      delCells('t2');
+      delCells();
+      ['/q1', '/q*'].forEach((listenerId) =>
+        expectChanges(
+          listener,
+          listenerId,
+          {q1: {r3: {'t1.c1': 'three', 't2.c1': 'three.j'}}},
+          {q1: {}},
+        ),
+      );
+      expectNoChanges(listener);
+    });
+
+    test('selected join table column by value; t2, t1', () => {
+      queries.setQueryDefinition('q1', 't1', ({select, join, where}) => {
+        select('c1').as('t1.c1');
+        select('t2', 'c1').as('t2.c1');
+        join('t2', 'c3');
+        where('t2', 'c1', 'three.j');
+      });
+      setCells('t2', '', '.j');
+      setCells('t1', '', '', 'r');
+      delCells();
+      delCells('t2');
+      ['/q1', '/q*'].forEach((listenerId) =>
+        expectChanges(
+          listener,
+          listenerId,
+          {q1: {r3: {'t1.c1': 'three', 't2.c1': 'three.j'}}},
+          {q1: {}},
+        ),
+      );
+      expectNoChanges(listener);
+    });
+
+    test('unselected join table column by value; t1, t2', () => {
+      queries.setQueryDefinition('q1', 't1', ({select, join, where}) => {
+        select('c1').as('t1.c1');
+        select('t2', 'c1').as('t2.c1');
+        join('t2', 'c3');
+        where('t2', 'c2', 'odd.j');
+      });
+      setCells('t1', '', '', 'r');
+      setCells('t2', '', '.j');
+      delCells('t2');
+      delCells();
+      ['/q1', '/q*'].forEach((listenerId) =>
+        expectChanges(
+          listener,
+          listenerId,
+          {q1: {r1: {'t1.c1': 'one', 't2.c1': 'one.j'}}},
+          {q1: {r3: {'t1.c1': 'three', 't2.c1': 'three.j'}}},
+          {
+            q1: {
+              r3: {'t1.c1': 'three', 't2.c1': 'three.j'},
+              r1: {'t1.c1': 'one', 't2.c1': 'one.j'},
+            },
+          },
+          {q1: {r1: {'t1.c1': 'one', 't2.c1': 'one.j'}}},
+          {q1: {}},
+        ),
+      );
+      expectNoChanges(listener);
+    });
+
+    test('unselected join table column by value; t2, t1', () => {
+      queries.setQueryDefinition('q1', 't1', ({select, join, where}) => {
+        select('c1').as('t1.c1');
+        select('t2', 'c1').as('t2.c1');
+        join('t2', 'c3');
+        where('t2', 'c2', 'odd.j');
+      });
+      setCells('t2', '', '.j');
+      setCells('t1', '', '', 'r');
+      delCells();
+      delCells('t2');
+      ['/q1', '/q*'].forEach((listenerId) =>
+        expectChanges(
+          listener,
+          listenerId,
+          {q1: {r1: {'t1.c1': 'one', 't2.c1': 'one.j'}}},
+          {q1: {r3: {'t1.c1': 'three', 't2.c1': 'three.j'}}},
+          {
+            q1: {
+              r3: {'t1.c1': 'three', 't2.c1': 'three.j'},
+              r1: {'t1.c1': 'one', 't2.c1': 'one.j'},
+            },
+          },
+          {q1: {r1: {'t1.c1': 'one', 't2.c1': 'one.j'}}},
+          {q1: {}},
+        ),
+      );
+      expectNoChanges(listener);
+    });
+
+    test('root and join table columns by derivation; t1, t2', () => {
+      queries.setQueryDefinition('q1', 't1', ({select, join, where}) => {
+        select('c1').as('t1.c1');
+        select('t2', 'c1').as('t2.c1');
+        join('t2', 'c3');
+        where(
+          (getTableCell) =>
+            getTableCell('c1') == 'four' || getTableCell('t2', 'c2') == 'odd.j',
+        );
+      });
+      setCells('t1', '', '', 'r');
+      setCells('t2', '', '.j');
+      delCells('t2');
+      delCells();
+      ['/q1', '/q*'].forEach((listenerId) =>
+        expectChanges(
+          listener,
+          listenerId,
+          {q1: {r4: {'t1.c1': 'four'}}},
+          {q1: {r4: {'t1.c1': 'four'}, r1: {'t1.c1': 'one', 't2.c1': 'one.j'}}},
+          {
+            q1: {
+              r4: {'t1.c1': 'four'},
+              r3: {'t1.c1': 'three', 't2.c1': 'three.j'},
+            },
+          },
+          {
+            q1: {
+              r4: {'t1.c1': 'four'},
+              r3: {'t1.c1': 'three', 't2.c1': 'three.j'},
+              r1: {'t1.c1': 'one', 't2.c1': 'one.j'},
+            },
+          },
+          {
+            q1: {
+              r4: {'t1.c1': 'four', 't2.c1': 'four.j'},
+              r3: {'t1.c1': 'three', 't2.c1': 'three.j'},
+              r1: {'t1.c1': 'one', 't2.c1': 'one.j'},
+            },
+          },
+          {
+            q1: {
+              r4: {'t1.c1': 'four'},
+              r3: {'t1.c1': 'three', 't2.c1': 'three.j'},
+              r1: {'t1.c1': 'one', 't2.c1': 'one.j'},
+            },
+          },
+          {q1: {r4: {'t1.c1': 'four'}, r1: {'t1.c1': 'one', 't2.c1': 'one.j'}}},
+          {q1: {r4: {'t1.c1': 'four'}}},
+          {q1: {}},
+        ),
+      );
+      expectNoChanges(listener);
+    });
+
+    test('root and join table columns by derivation; t2, t1', () => {
+      queries.setQueryDefinition('q1', 't1', ({select, join, where}) => {
+        select('c1').as('t1.c1');
+        select('t2', 'c1').as('t2.c1');
+        join('t2', 'c3');
+        where(
+          (getTableCell) =>
+            getTableCell('c1') == 'four' || getTableCell('t2', 'c2') == 'odd.j',
+        );
+      });
+      setCells('t2', '', '.j');
+      setCells('t1', '', '', 'r');
+      delCells();
+      delCells('t2');
+      ['/q1', '/q*'].forEach((listenerId) =>
+        expectChanges(
+          listener,
+          listenerId,
+          {q1: {r1: {'t1.c1': 'one', 't2.c1': 'one.j'}}},
+          {q1: {r3: {'t1.c1': 'three', 't2.c1': 'three.j'}}},
+          {
+            q1: {
+              r3: {'t1.c1': 'three', 't2.c1': 'three.j'},
+              r1: {'t1.c1': 'one', 't2.c1': 'one.j'},
+            },
+          },
+          {
+            q1: {
+              r3: {'t1.c1': 'three', 't2.c1': 'three.j'},
+              r1: {'t1.c1': 'one', 't2.c1': 'one.j'},
+              r4: {'t1.c1': 'four'},
+            },
+          },
+          {
+            q1: {
+              r3: {'t1.c1': 'three', 't2.c1': 'three.j'},
+              r1: {'t1.c1': 'one', 't2.c1': 'one.j'},
+              r4: {'t1.c1': 'four', 't2.c1': 'four.j'},
+            },
+          },
+          {
+            q1: {
+              r3: {'t1.c1': 'three', 't2.c1': 'three.j'},
+              r1: {'t1.c1': 'one', 't2.c1': 'one.j'},
+              r4: {'t1.c1': 'four'},
+            },
+          },
+          {
+            q1: {
+              r3: {'t1.c1': 'three', 't2.c1': 'three.j'},
+              r1: {'t1.c1': 'one', 't2.c1': 'one.j'},
+            },
+          },
+          {q1: {r1: {'t1.c1': 'one', 't2.c1': 'one.j'}}},
           {q1: {}},
         ),
       );

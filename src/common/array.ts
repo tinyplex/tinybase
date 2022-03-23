@@ -6,11 +6,17 @@ export const arrayPair = <Value>(value: Value): [Value, Value] => [
 export const arrayHas = <Value>(array: Value[], value: Value): boolean =>
   array.includes(value);
 
+export const arrayEvery = <Value>(
+  array: Value[],
+  cb: (value: Value, index: number) => boolean,
+): boolean => array.every(cb);
+
 export const arrayIsSorted = <Value>(
   array: Value[],
   sorter: (value1: Value, value2: Value) => number,
 ): boolean =>
-  array.every(
+  arrayEvery(
+    array,
     (value, index) => index == 0 || sorter(array[index - 1], value) <= 0,
   );
 
