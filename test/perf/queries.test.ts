@@ -47,6 +47,17 @@ repeatRows(
 );
 
 repeatRows(
+  'Grow store, with where',
+  (n) => store.setRow('t1', 'r' + n, {c1: n}),
+  90,
+  () =>
+    createQueries(store).setQueryDefinition('q1', 't1', ({select, where}) => {
+      select('c1');
+      where((getTableCell) => (getTableCell('c1') as number) < 100);
+    }),
+);
+
+repeatRows(
   'Grow store, with two tables joined',
   (n) => store.setRow('t1', 'r' + n, {c1: n, c2: 'r' + n}),
   90,
