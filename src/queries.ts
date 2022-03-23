@@ -33,7 +33,7 @@ import {
 } from './store.d';
 import {Id, IdOrNull, Ids, SortKey} from './common.d';
 import {IdMap, mapForEach, mapGet, mapNew, mapSet} from './common/map';
-import {arrayForEach, arrayLength, arrayPush} from './common/array';
+import {arrayEvery, arrayForEach, arrayLength, arrayPush} from './common/array';
 import {collForEach, collIsEmpty} from './common/coll';
 import {getCreateFunction, getDefinableFunctions} from './common/definable';
 import {
@@ -55,6 +55,7 @@ type JoinClause = [
   Ids,
   IdMap<[Id, Id]>,
 ];
+type WhereClause = (getTableCell: GetTableCell) => boolean;
 
 export const createQueries: typeof createQueriesDecl = getCreateFunction(
   (store: Store): Queries => {
@@ -109,6 +110,7 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
       const joinEntries: [IdOrNull, JoinClause][] = [
         [null, [tableId, null, null, [], mapNew()]],
       ];
+      const wheres: WhereClause[] = [];
 
       const select = (
         arg1: Id | ((getTableCell: GetTableCell, rowId: Id) => CellOrUndefined),
@@ -147,10 +149,18 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
       };
 
       const where = (
-        _arg1: Id | ((getTableCell: GetTableCell) => boolean),
-        _arg2?: Id | Cell,
-        _arg3?: Cell,
-      ) => null;
+        arg1: Id | ((getTableCell: GetTableCell) => boolean),
+        arg2?: Id | Cell,
+        arg3?: Cell,
+      ) =>
+        arrayPush(
+          wheres,
+          isFunction(arg1)
+            ? arg1
+            : isUndefined(arg3)
+            ? (getTableCell) => getTableCell(arg1) === arg2
+            : (getTableCell) => getTableCell(arg1, arg2 as Id) === arg3,
+        );
 
       const group = (
         _selectedCellId: Id,
@@ -185,7 +195,7 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
         ),
       );
 
-      // SELECT & JOIN
+      // SELECT & JOIN & WHERE
 
       synchronizeTransactions(queryId, store, resultStore);
 
@@ -203,15 +213,17 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
                 ]) as [Id, Id, Id]),
           );
         resultStore.transaction(() =>
-          mapForEach(selects, (asCellId, tableCellGetter) =>
-            setOrDelCell(
-              resultStore,
-              queryId,
-              rootRowId,
-              asCellId,
-              tableCellGetter(getTableCell, rootRowId),
-            ),
-          ),
+          arrayEvery(wheres, (where) => where(getTableCell))
+            ? mapForEach(selects, (asCellId, tableCellGetter) =>
+                setOrDelCell(
+                  resultStore,
+                  queryId,
+                  rootRowId,
+                  asCellId,
+                  tableCellGetter(getTableCell, rootRowId),
+                ),
+              )
+            : resultStore.delRow(queryId, rootRowId),
         );
       };
 
