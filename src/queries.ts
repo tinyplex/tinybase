@@ -32,7 +32,15 @@ import {
   TableCallback,
 } from './store.d';
 import {Id, IdOrNull, Ids, SortKey} from './common.d';
-import {IdMap, mapForEach, mapGet, mapNew, mapSet} from './common/map';
+import {
+  IdMap,
+  mapEnsure,
+  mapForEach,
+  mapGet,
+  mapNew,
+  mapSet,
+} from './common/map';
+import {IdSet, setAdd, setNew} from './common/set';
 import {arrayEvery, arrayForEach, arrayLength, arrayPush} from './common/array';
 import {collForEach, collIsEmpty} from './common/coll';
 import {getCreateFunction, getDefinableFunctions} from './common/definable';
@@ -75,6 +83,27 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
       delStoreListeners,
     ] = getDefinableFunctions<true, undefined>(store, () => true, getUndefined);
     const resultStore = (store as StoreWithCreateMethod).createStore();
+    const preStoreListenerIds: Map<Id, Map<Store, IdSet>> = mapNew();
+
+    const _addPreStoreListener = (
+      preStore: Store,
+      queryId: Id,
+      ...listenerIds: Ids
+    ) =>
+      arrayForEach(listenerIds, (listenerId) =>
+        setAdd(
+          mapEnsure(
+            mapEnsure<Id, Map<Store, IdSet>>(
+              preStoreListenerIds,
+              queryId,
+              mapNew,
+            ),
+            preStore,
+            setNew,
+          ),
+          listenerId,
+        ),
+      );
 
     const synchronizeTransactions = (
       queryId: Id,
@@ -195,9 +224,11 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
         ),
       );
 
+      const selectJoinWhereStore = resultStore;
+
       // SELECT & JOIN & WHERE
 
-      synchronizeTransactions(queryId, store, resultStore);
+      synchronizeTransactions(queryId, store, selectJoinWhereStore);
 
       const writeSelectRow = (rootRowId: Id) => {
         const getTableCell = (arg1: Id, arg2?: Id) =>
@@ -212,18 +243,18 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
                   arg2,
                 ]) as [Id, Id, Id]),
           );
-        resultStore.transaction(() =>
+        selectJoinWhereStore.transaction(() =>
           arrayEvery(wheres, (where) => where(getTableCell))
             ? mapForEach(selects, (asCellId, tableCellGetter) =>
                 setOrDelCell(
-                  resultStore,
+                  selectJoinWhereStore,
                   queryId,
                   rootRowId,
                   asCellId,
                   tableCellGetter(getTableCell, rootRowId),
                 ),
               )
-            : resultStore.delRow(queryId, rootRowId),
+            : selectJoinWhereStore.delRow(queryId, rootRowId),
         );
       };
 
@@ -271,7 +302,7 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
       };
 
       const {3: joinedTableIds} = mapGet(joins, null) as JoinClause;
-      resultStore.transaction(() =>
+      selectJoinWhereStore.transaction(() =>
         addStoreListeners(
           queryId,
           1,
@@ -282,7 +313,7 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
               if (store.hasRow(tableId, rootRowId)) {
                 listenToTable(rootRowId, tableId, rootRowId, joinedTableIds);
               } else {
-                resultStore.delRow(queryId, rootRowId);
+                selectJoinWhereStore.delRow(queryId, rootRowId);
                 collForEach(joins, ({4: idsByRootRowId}) =>
                   ifNotUndefined(
                     mapGet(idsByRootRowId, rootRowId),
@@ -302,6 +333,13 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
     };
 
     const delQueryDefinition = (queryId: Id): Queries => {
+      mapForEach(
+        mapGet(preStoreListenerIds, queryId),
+        (preStore, listenerIds) =>
+          collForEach(listenerIds, (listenerId) =>
+            preStore.delListener(listenerId),
+          ),
+      );
       delDefinition(queryId);
       return queries;
     };
