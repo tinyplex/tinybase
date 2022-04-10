@@ -1,7 +1,8 @@
-import {collDel, collForEach, collHas} from './coll';
+import {collDel, collForEach, collHas, collIsEmpty} from './coll';
 import {ifNotUndefined, isUndefined} from './other';
 import {Id} from '../common.d';
 import {IdObj} from './obj';
+import {arrayLength} from './array';
 
 export type IdMap<Value> = Map<Id, Value>;
 export type IdMap2<Value> = IdMap<IdMap<Value>>;
@@ -74,3 +75,38 @@ export const mapClone = <MapValue>(
 
 export const mapClone2 = <MapValue>(map: IdMap2<MapValue> | undefined) =>
   mapClone(map, mapClone);
+
+type Node<Path, Leaf> = Map<Path, Node<Path, Leaf> | Leaf>;
+export const visitTree = <Path, Leaf>(
+  node: Node<Path, Leaf>,
+  path: Path[],
+  ensureLeaf?: () => Leaf,
+  pruneLeaf?: (leaf: Leaf) => 1 | void,
+  p = 0,
+): Leaf | undefined =>
+  ifNotUndefined(
+    (ensureLeaf ? mapEnsure : mapGet)(
+      node,
+      path[p],
+      p > arrayLength(path) - 2 ? (ensureLeaf as () => Leaf) : mapNew,
+    ),
+    (nodeOrLeaf) => {
+      if (p > arrayLength(path) - 2) {
+        if (pruneLeaf?.(nodeOrLeaf as Leaf)) {
+          mapSet(node, path[p]);
+        }
+        return nodeOrLeaf as Leaf;
+      }
+      const leaf = visitTree(
+        nodeOrLeaf as Node<Path, Leaf>,
+        path,
+        ensureLeaf,
+        pruneLeaf,
+        p + 1,
+      ) as Leaf;
+      if (collIsEmpty(nodeOrLeaf as Node<Path, Leaf>)) {
+        mapSet(node, path[p]);
+      }
+      return leaf;
+    },
+  );
