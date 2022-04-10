@@ -29,7 +29,8 @@ const setCells = (
 ) => {
   const cellId = (cellId: Id) => `${cellId}${cellIdSuffix}`;
   const string = (string: Id) => `${string}${stringSuffix}`;
-  const number = (number: number) => `${numberPrefix}${number}`;
+  const number = (number: number) =>
+    numberPrefix === '' ? number : `${numberPrefix}${number}`;
 
   const r1 = {
     [cellId('c1')]: string('one'),
@@ -510,6 +511,238 @@ describe('Sets', () => {
         r4: {'t1.c1': 'four', 't2.c1': 'four.j'},
       });
       delCells();
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(queries.getStore().getListenerStats().row).toEqual(1);
+      queries.delQueryDefinition('q1');
+      expect(queries.getStore().getListenerStats().row).toEqual(0);
+    });
+  });
+
+  describe('Groups', () => {
+    test('root table column by name', () => {
+      setCells();
+      queries.setQueryDefinition('q1', 't1', ({select, group}) => {
+        select('c2');
+        select('c3');
+        group('c3', 'sum');
+      });
+      expect(queries.getResultTable('q1')).toEqual({
+        0: {c2: 'even', c3: 6},
+        1: {c2: 'odd', c3: 4},
+      });
+      delCells();
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(queries.getStore().getListenerStats().row).toEqual(1);
+      queries.delQueryDefinition('q1');
+      expect(queries.getStore().getListenerStats().row).toEqual(0);
+    });
+
+    test('root table column, changing groupBy', () => {
+      store
+        .setRow('t1', 'f1', {c1: 'f1', c2: 'fraction', c3: 0.25})
+        .setRow('t1', 'f2', {c1: 'f2', c2: 'fraction', c3: 0.5})
+        .setRow('t1', 'f3', {c1: 'f3', c2: 'fraction', c3: 1})
+        .setRow('t1', 'f4', {c1: 'f4', c2: 'whole', c3: 2})
+        .setCell('t1', 'f3', 'c2', 'whole');
+      queries.setQueryDefinition('q1', 't1', ({select, group}) => {
+        select('c2');
+        select('c3');
+        group('c3', 'sum');
+      });
+      expect(queries.getResultTable('q1')).toEqual({
+        0: {c2: 'fraction', c3: 0.75},
+        1: {c2: 'whole', c3: 3},
+      });
+      store.delTables();
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(queries.getStore().getListenerStats().row).toEqual(1);
+      queries.delQueryDefinition('q1');
+      expect(queries.getStore().getListenerStats().row).toEqual(0);
+    });
+
+    test('root table column, changing grouped', () => {
+      store
+        .setRow('t1', 'f1', {c1: 'f1', c2: 'fraction', c3: 0.25})
+        .setRow('t1', 'f2', {c1: 'f2', c2: 'fraction', c3: 0.5})
+        .setRow('t1', 'f3', {c1: 'f3', c2: 'fraction', c3: 1})
+        .setRow('t1', 'f4', {c1: 'f4', c2: 'whole', c3: 2})
+        .setCell('t1', 'f3', 'c3', 0.75);
+      queries.setQueryDefinition('q1', 't1', ({select, group}) => {
+        select('c2');
+        select('c3');
+        group('c3', 'sum');
+      });
+      expect(queries.getResultTable('q1')).toEqual({
+        0: {c2: 'fraction', c3: 1.5},
+        1: {c2: 'whole', c3: 2},
+      });
+      store.delTables();
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(queries.getStore().getListenerStats().row).toEqual(1);
+      queries.delQueryDefinition('q1');
+      expect(queries.getStore().getListenerStats().row).toEqual(0);
+    });
+
+    test('root table column by custom', () => {
+      setCells();
+      queries.setQueryDefinition('q1', 't1', ({select, group}) => {
+        select('c2');
+        select('c3');
+        group('c3', (cells) => cells.join());
+      });
+      expect(queries.getResultTable('q1')).toEqual({
+        0: {c2: 'even', c3: '2,4'},
+        1: {c2: 'odd', c3: '3,1'},
+      });
+      delCells();
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(queries.getStore().getListenerStats().row).toEqual(1);
+      queries.delQueryDefinition('q1');
+      expect(queries.getStore().getListenerStats().row).toEqual(0);
+    });
+
+    test('one root table column twice', () => {
+      setCells();
+      queries.setQueryDefinition('q1', 't1', ({select, group}) => {
+        select('c2');
+        select('c3');
+        group('c3', 'sum').as('sum');
+        group('c3', 'avg').as('avg');
+      });
+      expect(queries.getResultTable('q1')).toEqual({
+        0: {c2: 'even', sum: 6, avg: 3},
+        1: {c2: 'odd', sum: 4, avg: 2},
+      });
+      delCells();
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(queries.getStore().getListenerStats().row).toEqual(1);
+      queries.delQueryDefinition('q1');
+      expect(queries.getStore().getListenerStats().row).toEqual(0);
+    });
+
+    test('join table column', () => {
+      setCells('t1', '', '', 'r');
+      setCells('t2', '', '.j');
+      queries.setQueryDefinition('q1', 't1', ({select, join, group}) => {
+        select('c2').as('t1.c2');
+        select('t2', 'c3').as('t2.c3');
+        join('t2', 'c3');
+        group('t2.c3', 'sum');
+      });
+      expect(queries.getResultTable('q1')).toEqual({
+        0: {'t1.c2': 'even', 't2.c3': 6},
+        1: {'t1.c2': 'odd', 't2.c3': 4},
+      });
+      delCells();
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(queries.getStore().getListenerStats().row).toEqual(1);
+      queries.delQueryDefinition('q1');
+      expect(queries.getStore().getListenerStats().row).toEqual(0);
+    });
+
+    test('all groupBys', () => {
+      store
+        .setRow('t1', 'r1', {c1: 'one', c2: 'odd'})
+        .setRow('t1', 'r2', {c1: 'two', c2: 'even'})
+        .setRow('t1', 'r3', {c1: 'three', c2: 'odd'});
+      queries.setQueryDefinition('q1', 't1', ({select, group}) => {
+        select('c1');
+        select('c2');
+        select('c3');
+        group('c3', 'sum');
+      });
+      expect(queries.getResultTable('q1')).toEqual({
+        0: {c1: 'one', c2: 'odd'},
+        1: {c1: 'two', c2: 'even'},
+        2: {c1: 'three', c2: 'odd'},
+      });
+      store.delRow('t1', 'r1').delRow('t1', 'r2').delRow('t1', 'r3');
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(queries.getStore().getListenerStats().row).toEqual(1);
+      queries.delQueryDefinition('q1');
+      expect(queries.getStore().getListenerStats().row).toEqual(0);
+    });
+
+    test('all grouped', () => {
+      store
+        .setRow('t1', 'r1', {c1: 1})
+        .setRow('t1', 'r2', {c1: 2})
+        .setRow('t1', 'r3', {c1: 3});
+      queries.setQueryDefinition('q1', 't1', ({select, group}) => {
+        select('c1');
+        group('c1', 'sum').as('sum');
+        group('c1', 'avg').as('avg');
+      });
+      expect(queries.getResultTable('q1')).toEqual({0: {sum: 6, avg: 2}});
+      store.delRow('t1', 'r1').delRow('t1', 'r2').delRow('t1', 'r3');
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(queries.getStore().getListenerStats().row).toEqual(1);
+      queries.delQueryDefinition('q1');
+      expect(queries.getStore().getListenerStats().row).toEqual(0);
+    });
+
+    test('multiple groupBys, multiple grouped, multiple changes', () => {
+      store
+        .setRow('t1', 'r1', {c1: 'A', c2: 'a', c3: 1, c4: 12})
+        .setRow('t1', 'r2', {c1: 'A', c2: 'a', c3: 2, c4: 11})
+        .setRow('t1', 'r3', {c1: 'A', c2: 'b', c3: 3, c4: 10})
+        .setRow('t1', 'r4', {c1: 'A', c2: 'b', c3: 4, c4: 9})
+        .setRow('t1', 'r5', {c1: 'B', c2: 'a', c3: 5, c4: 8})
+        .setRow('t1', 'r6', {c1: 'B', c2: 'a', c3: 6, c4: 7})
+        .setRow('t1', 'r7', {c1: 'B', c2: 'b', c3: 7, c4: 6})
+        .setRow('t1', 'r8', {c1: 'B', c2: 'b', c3: 8, c4: 5})
+        .setRow('t1', 'r9', {c1: 'C', c2: 'a', c3: 9, c4: 4})
+        .setRow('t1', 'r10', {c1: 'C', c2: 'a', c3: 10, c4: 3})
+        .setRow('t1', 'r11', {c1: 'C', c2: 'b', c3: 11, c4: 2})
+        .setRow('t1', 'r12', {c1: 'C', c2: 'b', c3: 12, c4: 1})
+        .delRow('t1', 'r1')
+        .delCell('t1', 'r3', 'c1')
+        .setRow('t1', 'r5', {c3: 5, c4: 4})
+        .delCell('t1', 'r7', 'c3')
+        .setRow('t1', 'r9', {c1: 'C', c2: 'a'})
+        .setCell('t1', 'r11', 'c2', 'c');
+      queries.setQueryDefinition('q1', 't1', ({select, group}) => {
+        select('c1');
+        select('c2');
+        select('c3');
+        select('c4');
+        group('c3', 'count').as('cnt3');
+        group('c3', 'avg').as('avg3');
+        group('c4', 'avg').as('avg4');
+        group('c3', 'sum').as('sum3');
+        group('c4', 'sum').as('sum4');
+      });
+      expect(queries.getResultTable('q1')).toEqual({
+        0: {c1: 'A', c2: 'a', cnt3: 1, avg3: 2, avg4: 11, sum3: 2, sum4: 11},
+        1: {c2: 'b', cnt3: 1, sum3: 3, avg3: 3, avg4: 10, sum4: 10},
+        2: {c1: 'A', c2: 'b', cnt3: 1, avg3: 4, avg4: 9, sum3: 4, sum4: 9},
+        3: {cnt3: 1, sum3: 5, sum4: 4, avg3: 5, avg4: 4},
+        4: {c1: 'B', c2: 'a', cnt3: 1, avg3: 6, avg4: 7, sum3: 6, sum4: 7},
+        5: {c1: 'B', c2: 'b', cnt3: 1, avg3: 8, avg4: 5.5, sum3: 8, sum4: 11},
+        6: {c1: 'C', c2: 'a', cnt3: 1, avg3: 10, avg4: 3, sum3: 10, sum4: 3},
+        7: {c1: 'C', c2: 'c', cnt3: 1, avg3: 11, avg4: 2, sum3: 11, sum4: 2},
+        8: {c1: 'C', c2: 'b', cnt3: 1, avg3: 12, avg4: 1, sum3: 12, sum4: 1},
+      });
+      store.delTable('t1');
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(queries.getStore().getListenerStats().row).toEqual(1);
+      queries.delQueryDefinition('q1');
+      expect(queries.getStore().getListenerStats().row).toEqual(0);
+    });
+
+    test('mixed type', () => {
+      store
+        .setRow('t1', 'r1', {c1: 'A', c2: 1})
+        .setRow('t1', 'r2', {c1: 'A', c2: 2})
+        .setRow('t1', 'r3', {c1: 'A', c2: 3})
+        .setRow('t1', 'r3', {c1: 'A', c2: ''});
+      queries.setQueryDefinition('q1', 't1', ({select, group}) => {
+        select('c1');
+        select('c2');
+        group('c2', 'max').as('max');
+      });
+      expect(queries.getResultTable('q1')).toEqual({0: {c1: 'A', max: 2}});
+      store.delRow('t1', 'r1').delRow('t1', 'r2').delRow('t1', 'r3');
       expect(queries.getResultTable('q1')).toEqual({});
       expect(queries.getStore().getListenerStats().row).toEqual(1);
       queries.delQueryDefinition('q1');
@@ -2426,6 +2659,1201 @@ describe('Listens to Queries when sets', () => {
             },
           },
           {q1: {r1: {'t1.c1': 'one', 't2.c1': 'one.j'}}},
+          {q1: {}},
+        ),
+      );
+      expectNoChanges(listener);
+    });
+  });
+
+  describe('Groups', () => {
+    test('root table column by name', () => {
+      queries.setQueryDefinition('q1', 't1', ({select, group}) => {
+        select('c2');
+        select('c3');
+        group('c3', 'sum');
+      });
+      setCells();
+      delCells();
+      ['/q1', '/q*'].forEach((listenerId) =>
+        expectChanges(
+          listener,
+          listenerId,
+          {q1: {0: {c2: 'odd', c3: 1}}},
+          {q1: {0: {c2: 'odd', c3: 3}, 1: {c2: 'even', c3: 2}}},
+          {q1: {0: {c2: 'odd', c3: 4}, 1: {c2: 'even', c3: 2}}},
+          {q1: {0: {c2: 'odd', c3: 4}, 1: {c2: 'even', c3: 6}}},
+          {q1: {0: {c2: 'odd', c3: 4}, 1: {c2: 'even', c3: 2}}},
+          {q1: {0: {c2: 'odd', c3: 1}, 1: {c2: 'even', c3: 2}}},
+          {q1: {0: {c2: 'odd', c3: 1}}},
+          {q1: {}},
+        ),
+      );
+      expectNoChanges(listener);
+    });
+
+    test('root table column, changing groupBy', () => {
+      queries.setQueryDefinition('q1', 't1', ({select, group}) => {
+        select('c2');
+        select('c3');
+        group('c3', 'sum');
+      });
+      store
+        .setRow('t1', 'r1', {c1: 'f1', c2: 'fraction', c3: 0.25})
+        .setRow('t1', 'r2', {c1: 'f2', c2: 'fraction', c3: 0.5})
+        .setRow('t1', 'r3', {c1: 'f3', c2: 'fraction', c3: 1})
+        .setRow('t1', 'r4', {c1: 'f4', c2: 'whole', c3: 2})
+        .setCell('t1', 'r3', 'c2', 'whole');
+      store.delTables();
+      ['/q1', '/q*'].forEach((listenerId) =>
+        expectChanges(
+          listener,
+          listenerId,
+          {q1: {0: {c2: 'fraction', c3: 0.25}}},
+          {q1: {0: {c2: 'fraction', c3: 0.75}}},
+          {q1: {0: {c2: 'fraction', c3: 1.75}}},
+          {q1: {0: {c2: 'fraction', c3: 1.75}, 1: {c2: 'whole', c3: 2}}},
+          {q1: {0: {c2: 'fraction', c3: 0.75}, 1: {c2: 'whole', c3: 3}}},
+          {q1: {}},
+        ),
+      );
+      expectNoChanges(listener);
+    });
+
+    test('root table column, changing grouped', () => {
+      queries.setQueryDefinition('q1', 't1', ({select, group}) => {
+        select('c2');
+        select('c3');
+        group('c3', 'sum');
+      });
+      store
+        .setRow('t1', 'r1', {c1: 'f1', c2: 'fraction', c3: 0.25})
+        .setRow('t1', 'r2', {c1: 'f2', c2: 'fraction', c3: 0.5})
+        .setRow('t1', 'r3', {c1: 'f3', c2: 'fraction', c3: 1})
+        .setRow('t1', 'r4', {c1: 'f4', c2: 'whole', c3: 2})
+        .setCell('t1', 'r3', 'c3', 0.75);
+      store.delTables();
+      ['/q1', '/q*'].forEach((listenerId) =>
+        expectChanges(
+          listener,
+          listenerId,
+          {q1: {0: {c2: 'fraction', c3: 0.25}}},
+          {q1: {0: {c2: 'fraction', c3: 0.75}}},
+          {q1: {0: {c2: 'fraction', c3: 1.75}}},
+          {q1: {0: {c2: 'fraction', c3: 1.75}, 1: {c2: 'whole', c3: 2}}},
+          {q1: {0: {c2: 'fraction', c3: 1.5}, 1: {c2: 'whole', c3: 2}}},
+          {q1: {}},
+        ),
+      );
+      expectNoChanges(listener);
+    });
+
+    test('root table column by custom', () => {
+      queries.setQueryDefinition('q1', 't1', ({select, group}) => {
+        select('c2');
+        select('c3');
+        group('c3', (cells) => cells.join());
+      });
+      setCells();
+      delCells();
+      ['/q1', '/q*'].forEach((listenerId) =>
+        expectChanges(
+          listener,
+          listenerId,
+          {q1: {0: {c2: 'odd', c3: '1'}}},
+          {q1: {0: {c2: 'odd', c3: '3'}, 1: {c2: 'even', c3: '2'}}},
+          {q1: {0: {c2: 'odd', c3: '3,1'}, 1: {c2: 'even', c3: '2'}}},
+          {q1: {0: {c2: 'odd', c3: '3,1'}, 1: {c2: 'even', c3: '2,4'}}},
+          {q1: {0: {c2: 'odd', c3: '3,1'}, 1: {c2: 'even', c3: '2'}}},
+          {q1: {0: {c2: 'odd', c3: '1'}, 1: {c2: 'even', c3: '2'}}},
+          {q1: {0: {c2: 'odd', c3: '1'}}},
+          {q1: {}},
+        ),
+      );
+      expectNoChanges(listener);
+    });
+
+    test('one root table column twice', () => {
+      queries.setQueryDefinition('q1', 't1', ({select, group}) => {
+        select('c2');
+        select('c3');
+        group('c3', 'sum').as('sum');
+        group('c3', 'avg').as('avg');
+      });
+      setCells();
+      delCells();
+      ['/q1', '/q*'].forEach((listenerId) =>
+        expectChanges(
+          listener,
+          listenerId,
+          {q1: {0: {c2: 'odd', sum: 1, avg: 1}}},
+          {
+            q1: {
+              0: {c2: 'odd', sum: 3, avg: 3},
+              1: {c2: 'even', sum: 2, avg: 2},
+            },
+          },
+          {
+            q1: {
+              0: {c2: 'odd', sum: 4, avg: 2},
+              1: {c2: 'even', sum: 2, avg: 2},
+            },
+          },
+          {
+            q1: {
+              0: {c2: 'odd', sum: 4, avg: 2},
+              1: {c2: 'even', sum: 6, avg: 3},
+            },
+          },
+          {
+            q1: {
+              0: {c2: 'odd', sum: 4, avg: 2},
+              1: {c2: 'even', sum: 2, avg: 2},
+            },
+          },
+          {
+            q1: {
+              0: {c2: 'odd', sum: 1, avg: 1},
+              1: {c2: 'even', sum: 2, avg: 2},
+            },
+          },
+          {q1: {0: {c2: 'odd', sum: 1, avg: 1}}},
+          {q1: {}},
+        ),
+      );
+      expectNoChanges(listener);
+    });
+
+    test('join table column; t1, t2', () => {
+      queries.setQueryDefinition('q1', 't1', ({select, join, group}) => {
+        select('c2').as('t1.c2');
+        select('t2', 'c3').as('t2.c3');
+        join('t2', 'c3');
+        group('t2.c3', 'sum');
+      });
+      setCells('t1', '', '', 'r');
+      setCells('t2', '', '.j');
+      delCells('t2');
+      delCells();
+      ['/q1', '/q*'].forEach((listenerId) =>
+        expectChanges(
+          listener,
+          listenerId,
+          {q1: {0: {'t1.c2': 'odd'}}},
+          {q1: {0: {'t1.c2': 'odd'}, 1: {'t1.c2': 'even'}}},
+          {q1: {0: {'t1.c2': 'odd', 't2.c3': 1}, 1: {'t1.c2': 'even'}}},
+          {
+            q1: {
+              0: {'t1.c2': 'odd', 't2.c3': 3},
+              1: {'t1.c2': 'even', 't2.c3': 2},
+            },
+          },
+          {
+            q1: {
+              0: {'t1.c2': 'odd', 't2.c3': 4},
+              1: {'t1.c2': 'even', 't2.c3': 2},
+            },
+          },
+          {
+            q1: {
+              0: {'t1.c2': 'odd', 't2.c3': 4},
+              1: {'t1.c2': 'even', 't2.c3': 6},
+            },
+          },
+          {
+            q1: {
+              0: {'t1.c2': 'odd', 't2.c3': 4},
+              1: {'t1.c2': 'even', 't2.c3': 2},
+            },
+          },
+          {
+            q1: {
+              0: {'t1.c2': 'odd', 't2.c3': 1},
+              1: {'t1.c2': 'even', 't2.c3': 2},
+            },
+          },
+          {q1: {0: {'t1.c2': 'odd', 't2.c3': 1}, 1: {'t1.c2': 'even'}}},
+          {q1: {0: {'t1.c2': 'odd'}, 1: {'t1.c2': 'even'}}},
+          {q1: {0: {'t1.c2': 'odd'}}},
+          {q1: {}},
+        ),
+      );
+      expectNoChanges(listener);
+    });
+
+    test('join table column; t2, t1', () => {
+      queries.setQueryDefinition('q1', 't1', ({select, join, group}) => {
+        select('c2').as('t1.c2');
+        select('t2', 'c3').as('t2.c3');
+        join('t2', 'c3');
+        group('t2.c3', 'sum');
+      });
+      setCells('t2', '', '.j');
+      setCells('t1', '', '', 'r');
+      delCells();
+      delCells('t2');
+      ['/q1', '/q*'].forEach((listenerId) =>
+        expectChanges(
+          listener,
+          listenerId,
+          {q1: {0: {'t1.c2': 'odd', 't2.c3': 1}}},
+          {
+            q1: {
+              0: {'t1.c2': 'odd', 't2.c3': 3},
+              1: {'t1.c2': 'even', 't2.c3': 2},
+            },
+          },
+          {
+            q1: {
+              0: {'t1.c2': 'odd', 't2.c3': 4},
+              1: {'t1.c2': 'even', 't2.c3': 2},
+            },
+          },
+          {
+            q1: {
+              0: {'t1.c2': 'odd', 't2.c3': 4},
+              1: {'t1.c2': 'even', 't2.c3': 6},
+            },
+          },
+          {
+            q1: {
+              0: {'t1.c2': 'odd', 't2.c3': 4},
+              1: {'t1.c2': 'even', 't2.c3': 2},
+            },
+          },
+          {
+            q1: {
+              0: {'t1.c2': 'odd', 't2.c3': 1},
+              1: {'t1.c2': 'even', 't2.c3': 2},
+            },
+          },
+          {q1: {0: {'t1.c2': 'odd', 't2.c3': 1}}},
+          {q1: {}},
+        ),
+      );
+      expectNoChanges(listener);
+    });
+
+    test('all groupBys', () => {
+      queries.setQueryDefinition('q1', 't1', ({select, group}) => {
+        select('c1');
+        select('c2');
+        select('c3');
+        group('c3', 'sum');
+      });
+      store
+        .setRow('t1', 'r1', {c1: 'one', c2: 'odd'})
+        .setRow('t1', 'r2', {c1: 'two', c2: 'even'})
+        .setRow('t1', 'r3', {c1: 'three', c2: 'odd'})
+        .delRow('t1', 'r1')
+        .delRow('t1', 'r2')
+        .delRow('t1', 'r3');
+      ['/q1', '/q*'].forEach((listenerId) =>
+        expectChanges(
+          listener,
+          listenerId,
+          {q1: {0: {c1: 'one', c2: 'odd'}}},
+          {q1: {0: {c1: 'one', c2: 'odd'}, 1: {c1: 'two', c2: 'even'}}},
+          {
+            q1: {
+              0: {c1: 'one', c2: 'odd'},
+              1: {c1: 'two', c2: 'even'},
+              2: {c1: 'three', c2: 'odd'},
+            },
+          },
+          {q1: {1: {c1: 'two', c2: 'even'}, 2: {c1: 'three', c2: 'odd'}}},
+          {q1: {2: {c1: 'three', c2: 'odd'}}},
+          {q1: {}},
+        ),
+      );
+      expectNoChanges(listener);
+    });
+
+    test('all grouped', () => {
+      queries.setQueryDefinition('q1', 't1', ({select, group}) => {
+        select('c3');
+        group('c3', 'sum').as('sum');
+        group('c3', 'avg').as('avg');
+      });
+      store
+        .setRow('t1', 'r1', {c3: 1})
+        .setRow('t1', 'r2', {c3: 2})
+        .setRow('t1', 'r3', {c3: 3})
+        .delRow('t1', 'r1')
+        .delRow('t1', 'r2')
+        .delRow('t1', 'r3');
+      ['/q1', '/q*'].forEach((listenerId) =>
+        expectChanges(
+          listener,
+          listenerId,
+          {q1: {0: {sum: 1, avg: 1}}},
+          {q1: {0: {sum: 3, avg: 1.5}}},
+          {q1: {0: {sum: 6, avg: 2}}},
+          {q1: {0: {sum: 5, avg: 2.5}}},
+          {q1: {0: {sum: 3, avg: 3}}},
+          {q1: {}},
+        ),
+      );
+      expectNoChanges(listener);
+    });
+
+    test('multiple groupBys, multiple grouped, multiple changes', () => {
+      queries.setQueryDefinition('q1', 't1', ({select, group}) => {
+        select('c1');
+        select('c2');
+        select('c3');
+        select('c4');
+        group('c3', 'count').as('cnt3');
+        group('c3', 'avg').as('avg3');
+        group('c4', 'avg').as('avg4');
+        group('c3', 'sum').as('sum3');
+        group('c4', 'sum').as('sum4');
+      });
+      store
+        .setRow('t1', 'r1', {c1: 'A', c2: 'a', c3: 1, c4: 12})
+        .setRow('t1', 'r2', {c1: 'A', c2: 'a', c3: 2, c4: 11})
+        .setRow('t1', 'r3', {c1: 'A', c2: 'b', c3: 3, c4: 10})
+        .setRow('t1', 'r4', {c1: 'A', c2: 'b', c3: 4, c4: 9})
+        .setRow('t1', 'r5', {c1: 'B', c2: 'a', c3: 5, c4: 8})
+        .setRow('t1', 'r6', {c1: 'B', c2: 'a', c3: 6, c4: 7})
+        .setRow('t1', 'r7', {c1: 'B', c2: 'b', c3: 7, c4: 6})
+        .setRow('t1', 'r8', {c1: 'B', c2: 'b', c3: 8, c4: 5})
+        .setRow('t1', 'r9', {c1: 'C', c2: 'a', c3: 9, c4: 4})
+        .setRow('t1', 'r10', {c1: 'C', c2: 'a', c3: 10, c4: 3})
+        .setRow('t1', 'r11', {c1: 'C', c2: 'b', c3: 11, c4: 2})
+        .setRow('t1', 'r12', {c1: 'C', c2: 'b', c3: 12, c4: 1})
+        .delRow('t1', 'r1')
+        .delCell('t1', 'r3', 'c1')
+        .setRow('t1', 'r5', {c3: 5, c4: 4})
+        .delCell('t1', 'r7', 'c3')
+        .setRow('t1', 'r9', {c1: 'C', c2: 'a'})
+        .setCell('t1', 'r11', 'c2', 'c')
+        .delTable('t1');
+      ['/q1', '/q*'].forEach((listenerId) =>
+        expectChanges(
+          listener,
+          listenerId,
+          {
+            q1: {
+              0: {
+                c1: 'A',
+                c2: 'a',
+                cnt3: 1,
+                avg3: 1,
+                sum3: 1,
+                avg4: 12,
+                sum4: 12,
+              },
+            },
+          },
+          {
+            q1: {
+              0: {
+                c1: 'A',
+                c2: 'a',
+                cnt3: 2,
+                avg3: 1.5,
+                sum3: 3,
+                avg4: 11.5,
+                sum4: 23,
+              },
+            },
+          },
+          {
+            q1: {
+              0: {
+                c1: 'A',
+                c2: 'a',
+                cnt3: 2,
+                avg3: 1.5,
+                sum3: 3,
+                avg4: 11.5,
+                sum4: 23,
+              },
+              1: {
+                c1: 'A',
+                c2: 'b',
+                cnt3: 1,
+                avg3: 3,
+                sum3: 3,
+                avg4: 10,
+                sum4: 10,
+              },
+            },
+          },
+          {
+            q1: {
+              0: {
+                c1: 'A',
+                c2: 'a',
+                cnt3: 2,
+                avg3: 1.5,
+                sum3: 3,
+                avg4: 11.5,
+                sum4: 23,
+              },
+              1: {
+                c1: 'A',
+                c2: 'b',
+                cnt3: 2,
+                avg3: 3.5,
+                sum3: 7,
+                avg4: 9.5,
+                sum4: 19,
+              },
+            },
+          },
+          {
+            q1: {
+              0: {
+                c1: 'A',
+                c2: 'a',
+                cnt3: 2,
+                avg3: 1.5,
+                sum3: 3,
+                avg4: 11.5,
+                sum4: 23,
+              },
+              1: {
+                c1: 'A',
+                c2: 'b',
+                cnt3: 2,
+                avg3: 3.5,
+                sum3: 7,
+                avg4: 9.5,
+                sum4: 19,
+              },
+              2: {
+                c1: 'B',
+                c2: 'a',
+                cnt3: 1,
+                avg3: 5,
+                sum3: 5,
+                avg4: 8,
+                sum4: 8,
+              },
+            },
+          },
+          {
+            q1: {
+              0: {
+                c1: 'A',
+                c2: 'a',
+                cnt3: 2,
+                avg3: 1.5,
+                sum3: 3,
+                avg4: 11.5,
+                sum4: 23,
+              },
+              1: {
+                c1: 'A',
+                c2: 'b',
+                cnt3: 2,
+                avg3: 3.5,
+                sum3: 7,
+                avg4: 9.5,
+                sum4: 19,
+              },
+              2: {
+                c1: 'B',
+                c2: 'a',
+                cnt3: 2,
+                avg3: 5.5,
+                sum3: 11,
+                avg4: 7.5,
+                sum4: 15,
+              },
+            },
+          },
+          {
+            q1: {
+              0: {
+                c1: 'A',
+                c2: 'a',
+                cnt3: 2,
+                avg3: 1.5,
+                sum3: 3,
+                avg4: 11.5,
+                sum4: 23,
+              },
+              1: {
+                c1: 'A',
+                c2: 'b',
+                cnt3: 2,
+                avg3: 3.5,
+                sum3: 7,
+                avg4: 9.5,
+                sum4: 19,
+              },
+              2: {
+                c1: 'B',
+                c2: 'a',
+                cnt3: 2,
+                avg3: 5.5,
+                sum3: 11,
+                avg4: 7.5,
+                sum4: 15,
+              },
+              3: {
+                c1: 'B',
+                c2: 'b',
+                cnt3: 1,
+                avg3: 7,
+                sum3: 7,
+                avg4: 6,
+                sum4: 6,
+              },
+            },
+          },
+          {
+            q1: {
+              0: {
+                c1: 'A',
+                c2: 'a',
+                cnt3: 2,
+                avg3: 1.5,
+                sum3: 3,
+                avg4: 11.5,
+                sum4: 23,
+              },
+              1: {
+                c1: 'A',
+                c2: 'b',
+                cnt3: 2,
+                avg3: 3.5,
+                sum3: 7,
+                avg4: 9.5,
+                sum4: 19,
+              },
+              2: {
+                c1: 'B',
+                c2: 'a',
+                cnt3: 2,
+                avg3: 5.5,
+                sum3: 11,
+                avg4: 7.5,
+                sum4: 15,
+              },
+              3: {
+                c1: 'B',
+                c2: 'b',
+                cnt3: 2,
+                avg3: 7.5,
+                sum3: 15,
+                avg4: 5.5,
+                sum4: 11,
+              },
+            },
+          },
+          {
+            q1: {
+              0: {
+                c1: 'A',
+                c2: 'a',
+                cnt3: 2,
+                avg3: 1.5,
+                sum3: 3,
+                avg4: 11.5,
+                sum4: 23,
+              },
+              1: {
+                c1: 'A',
+                c2: 'b',
+                cnt3: 2,
+                avg3: 3.5,
+                sum3: 7,
+                avg4: 9.5,
+                sum4: 19,
+              },
+              2: {
+                c1: 'B',
+                c2: 'a',
+                cnt3: 2,
+                avg3: 5.5,
+                sum3: 11,
+                avg4: 7.5,
+                sum4: 15,
+              },
+              3: {
+                c1: 'B',
+                c2: 'b',
+                cnt3: 2,
+                avg3: 7.5,
+                sum3: 15,
+                avg4: 5.5,
+                sum4: 11,
+              },
+              4: {
+                c1: 'C',
+                c2: 'a',
+                cnt3: 1,
+                avg3: 9,
+                sum3: 9,
+                avg4: 4,
+                sum4: 4,
+              },
+            },
+          },
+          {
+            q1: {
+              0: {
+                c1: 'A',
+                c2: 'a',
+                cnt3: 2,
+                avg3: 1.5,
+                sum3: 3,
+                avg4: 11.5,
+                sum4: 23,
+              },
+              1: {
+                c1: 'A',
+                c2: 'b',
+                cnt3: 2,
+                avg3: 3.5,
+                sum3: 7,
+                avg4: 9.5,
+                sum4: 19,
+              },
+              2: {
+                c1: 'B',
+                c2: 'a',
+                cnt3: 2,
+                avg3: 5.5,
+                sum3: 11,
+                avg4: 7.5,
+                sum4: 15,
+              },
+              3: {
+                c1: 'B',
+                c2: 'b',
+                cnt3: 2,
+                avg3: 7.5,
+                sum3: 15,
+                avg4: 5.5,
+                sum4: 11,
+              },
+              4: {
+                c1: 'C',
+                c2: 'a',
+                cnt3: 2,
+                avg3: 9.5,
+                sum3: 19,
+                avg4: 3.5,
+                sum4: 7,
+              },
+            },
+          },
+          {
+            q1: {
+              0: {
+                c1: 'A',
+                c2: 'a',
+                cnt3: 2,
+                avg3: 1.5,
+                sum3: 3,
+                avg4: 11.5,
+                sum4: 23,
+              },
+              1: {
+                c1: 'A',
+                c2: 'b',
+                cnt3: 2,
+                avg3: 3.5,
+                sum3: 7,
+                avg4: 9.5,
+                sum4: 19,
+              },
+              2: {
+                c1: 'B',
+                c2: 'a',
+                cnt3: 2,
+                avg3: 5.5,
+                sum3: 11,
+                avg4: 7.5,
+                sum4: 15,
+              },
+              3: {
+                c1: 'B',
+                c2: 'b',
+                cnt3: 2,
+                avg3: 7.5,
+                sum3: 15,
+                avg4: 5.5,
+                sum4: 11,
+              },
+              4: {
+                c1: 'C',
+                c2: 'a',
+                cnt3: 2,
+                avg3: 9.5,
+                sum3: 19,
+                avg4: 3.5,
+                sum4: 7,
+              },
+              5: {
+                c1: 'C',
+                c2: 'b',
+                cnt3: 1,
+                avg3: 11,
+                sum3: 11,
+                avg4: 2,
+                sum4: 2,
+              },
+            },
+          },
+          {
+            q1: {
+              0: {
+                c1: 'A',
+                c2: 'a',
+                cnt3: 2,
+                avg3: 1.5,
+                sum3: 3,
+                avg4: 11.5,
+                sum4: 23,
+              },
+              1: {
+                c1: 'A',
+                c2: 'b',
+                cnt3: 2,
+                avg3: 3.5,
+                sum3: 7,
+                avg4: 9.5,
+                sum4: 19,
+              },
+              2: {
+                c1: 'B',
+                c2: 'a',
+                cnt3: 2,
+                avg3: 5.5,
+                sum3: 11,
+                avg4: 7.5,
+                sum4: 15,
+              },
+              3: {
+                c1: 'B',
+                c2: 'b',
+                cnt3: 2,
+                avg3: 7.5,
+                sum3: 15,
+                avg4: 5.5,
+                sum4: 11,
+              },
+              4: {
+                c1: 'C',
+                c2: 'a',
+                cnt3: 2,
+                avg3: 9.5,
+                sum3: 19,
+                avg4: 3.5,
+                sum4: 7,
+              },
+              5: {
+                c1: 'C',
+                c2: 'b',
+                cnt3: 2,
+                avg3: 11.5,
+                sum3: 23,
+                avg4: 1.5,
+                sum4: 3,
+              },
+            },
+          },
+          {
+            q1: {
+              0: {
+                c1: 'A',
+                c2: 'a',
+                cnt3: 1,
+                avg3: 2,
+                sum3: 2,
+                avg4: 11,
+                sum4: 11,
+              },
+              1: {
+                c1: 'A',
+                c2: 'b',
+                cnt3: 2,
+                avg3: 3.5,
+                sum3: 7,
+                avg4: 9.5,
+                sum4: 19,
+              },
+              2: {
+                c1: 'B',
+                c2: 'a',
+                cnt3: 2,
+                avg3: 5.5,
+                sum3: 11,
+                avg4: 7.5,
+                sum4: 15,
+              },
+              3: {
+                c1: 'B',
+                c2: 'b',
+                cnt3: 2,
+                avg3: 7.5,
+                sum3: 15,
+                avg4: 5.5,
+                sum4: 11,
+              },
+              4: {
+                c1: 'C',
+                c2: 'a',
+                cnt3: 2,
+                avg3: 9.5,
+                sum3: 19,
+                avg4: 3.5,
+                sum4: 7,
+              },
+              5: {
+                c1: 'C',
+                c2: 'b',
+                cnt3: 2,
+                avg3: 11.5,
+                sum3: 23,
+                avg4: 1.5,
+                sum4: 3,
+              },
+            },
+          },
+          {
+            q1: {
+              0: {
+                c1: 'A',
+                c2: 'a',
+                cnt3: 1,
+                avg3: 2,
+                sum3: 2,
+                avg4: 11,
+                sum4: 11,
+              },
+              1: {
+                c1: 'A',
+                c2: 'b',
+                cnt3: 1,
+                avg3: 4,
+                sum3: 4,
+                avg4: 9,
+                sum4: 9,
+              },
+              2: {
+                c1: 'B',
+                c2: 'a',
+                cnt3: 2,
+                avg3: 5.5,
+                sum3: 11,
+                avg4: 7.5,
+                sum4: 15,
+              },
+              3: {
+                c1: 'B',
+                c2: 'b',
+                cnt3: 2,
+                avg3: 7.5,
+                sum3: 15,
+                avg4: 5.5,
+                sum4: 11,
+              },
+              4: {
+                c1: 'C',
+                c2: 'a',
+                cnt3: 2,
+                avg3: 9.5,
+                sum3: 19,
+                avg4: 3.5,
+                sum4: 7,
+              },
+              5: {
+                c1: 'C',
+                c2: 'b',
+                cnt3: 2,
+                avg3: 11.5,
+                sum3: 23,
+                avg4: 1.5,
+                sum4: 3,
+              },
+              6: {c2: 'b', cnt3: 1, avg3: 3, sum3: 3, avg4: 10, sum4: 10},
+            },
+          },
+          {
+            q1: {
+              0: {
+                c1: 'A',
+                c2: 'a',
+                cnt3: 1,
+                avg3: 2,
+                sum3: 2,
+                avg4: 11,
+                sum4: 11,
+              },
+              1: {
+                c1: 'A',
+                c2: 'b',
+                cnt3: 1,
+                avg3: 4,
+                sum3: 4,
+                avg4: 9,
+                sum4: 9,
+              },
+              2: {
+                c1: 'B',
+                c2: 'a',
+                cnt3: 1,
+                avg3: 6,
+                sum3: 6,
+                avg4: 7,
+                sum4: 7,
+              },
+              3: {
+                c1: 'B',
+                c2: 'b',
+                cnt3: 2,
+                avg3: 7.5,
+                sum3: 15,
+                avg4: 5.5,
+                sum4: 11,
+              },
+              4: {
+                c1: 'C',
+                c2: 'a',
+                cnt3: 2,
+                avg3: 9.5,
+                sum3: 19,
+                avg4: 3.5,
+                sum4: 7,
+              },
+              5: {
+                c1: 'C',
+                c2: 'b',
+                cnt3: 2,
+                avg3: 11.5,
+                sum3: 23,
+                avg4: 1.5,
+                sum4: 3,
+              },
+              6: {c2: 'b', cnt3: 1, avg3: 3, sum3: 3, avg4: 10, sum4: 10},
+              7: {cnt3: 1, avg3: 5, sum3: 5, avg4: 4, sum4: 4},
+            },
+          },
+          {
+            q1: {
+              0: {
+                c1: 'A',
+                c2: 'a',
+                cnt3: 1,
+                avg3: 2,
+                sum3: 2,
+                avg4: 11,
+                sum4: 11,
+              },
+              1: {
+                c1: 'A',
+                c2: 'b',
+                cnt3: 1,
+                avg3: 4,
+                sum3: 4,
+                avg4: 9,
+                sum4: 9,
+              },
+              2: {
+                c1: 'B',
+                c2: 'a',
+                cnt3: 1,
+                avg3: 6,
+                sum3: 6,
+                avg4: 7,
+                sum4: 7,
+              },
+              3: {
+                c1: 'B',
+                c2: 'b',
+                cnt3: 1,
+                avg3: 8,
+                sum3: 8,
+                avg4: 5.5,
+                sum4: 11,
+              },
+              4: {
+                c1: 'C',
+                c2: 'a',
+                cnt3: 2,
+                avg3: 9.5,
+                sum3: 19,
+                avg4: 3.5,
+                sum4: 7,
+              },
+              5: {
+                c1: 'C',
+                c2: 'b',
+                cnt3: 2,
+                avg3: 11.5,
+                sum3: 23,
+                avg4: 1.5,
+                sum4: 3,
+              },
+              6: {c2: 'b', cnt3: 1, avg3: 3, sum3: 3, avg4: 10, sum4: 10},
+              7: {cnt3: 1, avg3: 5, sum3: 5, avg4: 4, sum4: 4},
+            },
+          },
+          {
+            q1: {
+              0: {
+                c1: 'A',
+                c2: 'a',
+                cnt3: 1,
+                avg3: 2,
+                sum3: 2,
+                avg4: 11,
+                sum4: 11,
+              },
+              1: {
+                c1: 'A',
+                c2: 'b',
+                cnt3: 1,
+                avg3: 4,
+                sum3: 4,
+                avg4: 9,
+                sum4: 9,
+              },
+              2: {
+                c1: 'B',
+                c2: 'a',
+                cnt3: 1,
+                avg3: 6,
+                sum3: 6,
+                avg4: 7,
+                sum4: 7,
+              },
+              3: {
+                c1: 'B',
+                c2: 'b',
+                cnt3: 1,
+                avg3: 8,
+                sum3: 8,
+                avg4: 5.5,
+                sum4: 11,
+              },
+              4: {
+                c1: 'C',
+                c2: 'a',
+                cnt3: 1,
+                avg3: 10,
+                sum3: 10,
+                avg4: 3,
+                sum4: 3,
+              },
+              5: {
+                c1: 'C',
+                c2: 'b',
+                cnt3: 2,
+                avg3: 11.5,
+                sum3: 23,
+                avg4: 1.5,
+                sum4: 3,
+              },
+              6: {c2: 'b', cnt3: 1, avg3: 3, sum3: 3, avg4: 10, sum4: 10},
+              7: {cnt3: 1, avg3: 5, sum3: 5, avg4: 4, sum4: 4},
+            },
+          },
+          {
+            q1: {
+              0: {
+                c1: 'A',
+                c2: 'a',
+                cnt3: 1,
+                avg3: 2,
+                sum3: 2,
+                avg4: 11,
+                sum4: 11,
+              },
+              1: {
+                c1: 'A',
+                c2: 'b',
+                cnt3: 1,
+                avg3: 4,
+                sum3: 4,
+                avg4: 9,
+                sum4: 9,
+              },
+              2: {
+                c1: 'B',
+                c2: 'a',
+                cnt3: 1,
+                avg3: 6,
+                sum3: 6,
+                avg4: 7,
+                sum4: 7,
+              },
+              3: {
+                c1: 'B',
+                c2: 'b',
+                cnt3: 1,
+                avg3: 8,
+                sum3: 8,
+                avg4: 5.5,
+                sum4: 11,
+              },
+              4: {
+                c1: 'C',
+                c2: 'a',
+                cnt3: 1,
+                avg3: 10,
+                sum3: 10,
+                avg4: 3,
+                sum4: 3,
+              },
+              5: {
+                c1: 'C',
+                c2: 'b',
+                cnt3: 1,
+                avg3: 12,
+                sum3: 12,
+                avg4: 1,
+                sum4: 1,
+              },
+              6: {c2: 'b', cnt3: 1, avg3: 3, sum3: 3, avg4: 10, sum4: 10},
+              7: {cnt3: 1, avg3: 5, sum3: 5, avg4: 4, sum4: 4},
+              8: {
+                c1: 'C',
+                c2: 'c',
+                cnt3: 1,
+                avg3: 11,
+                sum3: 11,
+                avg4: 2,
+                sum4: 2,
+              },
+            },
+          },
+          {q1: {}},
+        ),
+      );
+      expectNoChanges(listener);
+    });
+
+    test('mixed type', () => {
+      queries.setQueryDefinition('q1', 't1', ({select, group}) => {
+        select('c1');
+        select('c2');
+        group('c2', 'max').as('max');
+      });
+      store
+        .setRow('t1', 'r1', {c1: 'A', c2: 1})
+        .setRow('t1', 'r2', {c1: 'A', c2: 2})
+        .setRow('t1', 'r3', {c1: 'A', c2: 3})
+        .setRow('t1', 'r3', {c1: 'A', c2: ''})
+        .delRow('t1', 'r1')
+        .delRow('t1', 'r2')
+        .delRow('t1', 'r3');
+      ['/q1', '/q*'].forEach((listenerId) =>
+        expectChanges(
+          listener,
+          listenerId,
+          {q1: {0: {c1: 'A', max: 1}}},
+          {q1: {0: {c1: 'A', max: 2}}},
+          {q1: {0: {c1: 'A', max: 3}}},
+          {q1: {0: {c1: 'A', max: 2}}},
+          {q1: {0: {c1: 'A', max: 0}}},
           {q1: {}},
         ),
       );
