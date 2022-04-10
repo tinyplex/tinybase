@@ -68,3 +68,21 @@ repeatRows(
       join('t1', 'c2').as('t2');
     }),
 );
+
+['sum', 'avg', 'min', 'max'].forEach((aggregate: string) =>
+  repeatRows(
+    `Grow store, with ${aggregate} group`,
+    (n) =>
+      store.setRow('t1', 'r' + n, {
+        c1: Math.random() < 0.5 ? 'a' : 'b',
+        c2: Math.random(),
+      }),
+    90,
+    () =>
+      createQueries(store).setQueryDefinition('q1', 't1', ({select, group}) => {
+        select('c1');
+        select('c2');
+        group('c2', aggregate as 'sum' | 'avg' | 'min' | 'max');
+      }),
+  ),
+);
