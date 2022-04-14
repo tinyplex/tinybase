@@ -1,4 +1,4 @@
-# Building UIs With Indexes
+# Building A UI With Indexes
 
 This guide covers how the ui-react module supports the Indexes object.
 

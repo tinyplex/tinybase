@@ -75,4 +75,4 @@ If that all worked, you are set up and ready to learn more about TinyBase! From
 here on, we will mostly show Node-based code snippets, but most should be easily
 translatable to run in a browser too.
 
-Let's move onto the Creating a Store guide.
+Let's move onto the Creating A Store guide.

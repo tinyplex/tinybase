@@ -94,4 +94,4 @@ to get it out too!
 
 In the examples above, we've used the getTables method to get a view of all the
 data in the Store. Unsurprisingly, you can also use more granular methods to get
-data out - for which we proceed to the Reading to Stores guide.
+data out - for which we proceed to the Reading From Stores guide.

@@ -1,4 +1,4 @@
-# Building UIs With Metrics
+# Building A UI With Metrics
 
 This guide covers how the ui-react module supports the Metrics object.
 

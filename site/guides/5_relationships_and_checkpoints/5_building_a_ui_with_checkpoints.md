@@ -1,4 +1,4 @@
-# Building UIs With Checkpoints
+# Building A UI With Checkpoints
 
 This guide covers how the ui-react module supports the Checkpoints object. After
 all, if you have undo functionality in your app, you probably want an undo

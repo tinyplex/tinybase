@@ -97,5 +97,5 @@ Store can only have one Indexes object associated with it. So, as with the
 Metrics object, if you call this function twice on the same Store, your second
 call will return a reference to the Indexes object created by the first.
 
-Let's next find out how to include Indexes in a user interface in the Building
-UIs With Indexes guide.
+Let's next find out how to include Indexes in a user interface in the Building A
+UI With Indexes guide.

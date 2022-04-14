@@ -75,4 +75,4 @@ call this function twice on the same Store, your second call will return a
 reference to the Checkpoints object created by the first.
 
 Finally, let's find out how to include checkpoints in a user interface in the
-Building UIs With Checkpoints guide.
+Building A UI With Checkpoints guide.

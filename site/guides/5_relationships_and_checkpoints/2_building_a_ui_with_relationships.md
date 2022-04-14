@@ -1,4 +1,4 @@
-# Building UIs With Relationships
+# Building A UI With Relationships
 
 This guide covers how the ui-react module supports the Relationships object.
 

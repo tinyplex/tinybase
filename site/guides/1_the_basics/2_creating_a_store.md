@@ -16,4 +16,4 @@ console.log(store.getTables());
 // -> {}
 ```
 
-To fix that, let's move onto the Writing to Stores guide.
+To fix that, let's move onto the Writing To Stores guide.

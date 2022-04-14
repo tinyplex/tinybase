@@ -128,4 +128,4 @@ of these methods, you'll find a lot more in the Store documentation.
 The reactive TinyBase magic starts to happen when we register listeners on the
 Store so that don't have to keep explicitly fetching data.
 
-For that, we proceed to the Listening to Stores guide.
+For that, we proceed to the Listening To Stores guide.
