@@ -8,37 +8,33 @@ beforeEach(() => {
 
 repeatRows(
   'Grow store with setRow (string rowIds)',
-  (n) => store.setRow('table', 'row' + n, {cell: n}),
+  (n) => store.setRow('t1', 'r' + n, {c1: n}),
   90,
 );
 
 repeatRows(
   'Grow store with setRow (number-like rowIds)',
-  (n) => store.setRow('table', n.toString(), {cell: n}),
+  (n) => store.setRow('t1', n.toString(), {c1: n}),
   90,
 );
 
 repeatRows(
   'Grow store with setPartialRow (string rowIds)',
-  (n) => store.setPartialRow('table', 'row' + n, {cell1: n}),
+  (n) => store.setPartialRow('t1', 'r' + n, {c1: n}),
   90,
 );
 
 repeatRows(
   'Grow store with setPartialRow (number-like rowIds)',
-  (n) => store.setPartialRow('table', n.toString(), {cell1: n}),
+  (n) => store.setPartialRow('t1', n.toString(), {c1: n}),
   90,
 );
 
-repeatRows(
-  'Grow store with addRow',
-  (n) => store.addRow('table', {cell: n}),
-  90,
-);
+repeatRows('Grow store with addRow', (n) => store.addRow('t1', {c1: n}), 90);
 
 repeatRows(
   'Grow store with addRow and listener',
-  (n) => store.addRow('table', {cell: n}),
+  (n) => store.addRow('t1', {c1: n}),
   90,
-  () => store.addRowIdsListener('table', () => null),
+  () => store.addRowIdsListener('t1', () => null),
 );
