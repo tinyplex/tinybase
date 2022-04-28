@@ -18,7 +18,7 @@ repeat(
   'Create store without schema',
   'rows',
   'µs per row',
-  (N) => [µs(() => createStore().setTables({table: getNRows(N)})), N],
+  (N) => [µs(() => createStore().setTables({t1: getNRows(N)})), N],
   20,
 );
 
@@ -26,7 +26,7 @@ repeat(
   'Create store without schema',
   'cells',
   'µs per cell',
-  (N) => [µs(() => createStore().setTables({table: {row: getNCells(N)}})), N],
+  (N) => [µs(() => createStore().setTables({t1: {r1: getNCells(N)}})), N],
   20,
 );
 
@@ -37,8 +37,8 @@ repeat(
   (N) => [
     µs(() =>
       createStore()
-        .setSchema({table: {cell: {type: 'number'}}})
-        .setTables({table: getNRows(N)}),
+        .setSchema({t1: {c1: {type: 'number'}}})
+        .setTables({t1: getNRows(N)}),
     ),
     N,
   ],
@@ -52,8 +52,8 @@ repeat(
   (N) => [
     µs(() =>
       createStore()
-        .setSchema({table: {cell: {type: 'number', default: 1}}})
-        .setTables({table: getNRows(N)}),
+        .setSchema({t1: {c1: {type: 'number', default: 1}}})
+        .setTables({t1: getNRows(N)}),
     ),
     N,
   ],
@@ -65,15 +65,15 @@ repeat(
   'rows',
   'µs per row',
   (N) => {
-    const table: Table = {};
+    const t1: Table = {};
     for (let n = 1; n <= N; n++) {
-      table['row' + n] = {cell: 1, cell2: 'two'};
+      t1['r' + n] = {c1: 1, c2: 'two'};
     }
     return [
       µs(() =>
         createStore()
-          .setSchema({table: {cell: {type: 'number'}, cell2: {type: 'number'}}})
-          .setTables({table}),
+          .setSchema({t1: {c1: {type: 'number'}, c2: {type: 'number'}}})
+          .setTables({t1}),
       ),
       N,
     ];
@@ -87,10 +87,10 @@ repeat(
   'µs per row',
   (N) => {
     const store = createStore();
-    createIndexes(store).setIndexDefinition('oddEven', 'table', (getCell) =>
-      (getCell('cell') as any as number) % 2 == 0 ? 'even' : 'odd',
+    createIndexes(store).setIndexDefinition('i1', 't1', (getCell) =>
+      (getCell('c1') as any as number) % 2 == 0 ? 'even' : 'odd',
     );
-    return [µs(() => store.setTable('table', getNRows(N))), N];
+    return [µs(() => store.setTable('t1', getNRows(N))), N];
   },
   30,
 );
@@ -101,8 +101,8 @@ repeat(
   'µs per row',
   (N) => {
     const store = createStore();
-    createMetrics(store).setMetricDefinition('max', 'table', 'max', 'cell');
-    return [µs(() => store.setTable('table', getNRows(N))), N];
+    createMetrics(store).setMetricDefinition('m1', 't1', 'max', 'c1');
+    return [µs(() => store.setTable('t1', getNRows(N))), N];
   },
   30,
 );

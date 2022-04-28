@@ -10,26 +10,26 @@ beforeEach(() => {
   store = createStore();
   createRelationships(store).setRelationshipDefinition(
     'previousRow',
-    'table',
-    'table',
-    (getCell) => 'row' + ((getCell('cell') as number) - 1),
+    't1',
+    't1',
+    (getCell) => 'r' + ((getCell('c1') as number) - 1),
   );
 });
 
 repeatRows(
   'Grow store, different table to relationship',
-  (n) => store.setRow('table2', 'row' + n, {cell: n}),
+  (n) => store.setRow('t2', 'r' + n, {c1: n}),
   90,
 );
 
 repeatRows(
   'Grow store, same table as relationship, unrelated cells',
-  (n) => store.setRow('table', 'row' + n, {cell2: n}),
+  (n) => store.setRow('t1', 'r' + n, {c2: n}),
   90,
 );
 
 repeatRows(
   'Grow store, with relationship',
-  (n) => store.setRow('table', 'row' + n, {cell: n}),
+  (n) => store.setRow('t1', 'r' + n, {c1: n}),
   90,
 );
