@@ -646,16 +646,15 @@ export const createStore: typeof createStoreDecl = (): Store => {
         : 0,
     );
 
-  const addRow = (tableId: Id, row: Row): Id | undefined =>
+  const addRow = (tableId: Id, row: Row, forceId?: 1): Id | undefined =>
     transaction(() => {
-      let rowId: Id | undefined = undefined;
-      if (validateRow(tableId, rowId, row)) {
-        setValidRow(
-          tableId,
-          getOrCreateTable(tableId),
-          (rowId = getNewRowId(mapGet(tablesMap, tableId))),
-          row,
-        );
+      const isValidRow = validateRow(tableId, undefined, row);
+      const rowId =
+        isValidRow || forceId
+          ? getNewRowId(mapGet(tablesMap, tableId))
+          : undefined;
+      if (isValidRow) {
+        setValidRow(tableId, getOrCreateTable(tableId), rowId as Id, row);
       }
       return rowId;
     });
