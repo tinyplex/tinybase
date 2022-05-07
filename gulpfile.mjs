@@ -386,6 +386,7 @@ export const serveDocs = async () => {
       root: DOCS_DIR,
       cache: -1,
       gzip: true,
+      // eslint-disable-next-line no-console
       logFn: (req) => console.log(req.url),
     })
     .listen('8080', '0.0.0.0');
