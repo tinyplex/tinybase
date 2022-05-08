@@ -749,6 +749,81 @@ describe('Sets', () => {
       expect(queries.getStore().getListenerStats().row).toEqual(0);
     });
   });
+
+  describe('Havings', () => {
+    test('grouped column by value', () => {
+      setCells();
+      queries.setQueryDefinition('q1', 't1', ({select, group, having}) => {
+        select('c2');
+        select('c3');
+        group('c3', 'sum');
+        having('c2', 'even');
+      });
+      expect(queries.getResultTable('q1')).toEqual({0: {c2: 'even', c3: 6}});
+      delCells();
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(queries.getStore().getListenerStats().row).toEqual(1);
+      queries.delQueryDefinition('q1');
+      expect(queries.getStore().getListenerStats().row).toEqual(0);
+    });
+
+    test('group-by column by value', () => {
+      setCells();
+      queries.setQueryDefinition('q1', 't1', ({select, group, having}) => {
+        select('c2');
+        select('c3');
+        group('c3', 'sum');
+        having('c3', 4);
+      });
+      expect(queries.getResultTable('q1')).toEqual({1: {c2: 'odd', c3: 4}});
+      delCells();
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(queries.getStore().getListenerStats().row).toEqual(1);
+      queries.delQueryDefinition('q1');
+      expect(queries.getStore().getListenerStats().row).toEqual(0);
+    });
+
+    test('aliased grouped and group-by column by derivation', () => {
+      setCells();
+      queries.setQueryDefinition('q1', 't1', ({select, group, having}) => {
+        select('c2');
+        select('c3');
+        group('c3', 'sum').as('C3');
+        having(
+          (getSelectedOrGroupedCell) =>
+            (getSelectedOrGroupedCell('c2') as string).length > 3,
+        );
+        having(
+          (getSelectedOrGroupedCell) =>
+            (getSelectedOrGroupedCell('C3') as number) > 4,
+        );
+      });
+      expect(queries.getResultTable('q1')).toEqual({0: {c2: 'even', C3: 6}});
+      delCells();
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(queries.getStore().getListenerStats().row).toEqual(1);
+      queries.delQueryDefinition('q1');
+      expect(queries.getStore().getListenerStats().row).toEqual(0);
+    });
+
+    test('without group', () => {
+      setCells();
+      queries.setQueryDefinition('q1', 't1', ({select, having}) => {
+        select('c2');
+        select('c3');
+        having('c2', 'even');
+      });
+      expect(queries.getResultTable('q1')).toEqual({
+        0: {c2: 'even', c3: 2},
+        3: {c2: 'even', c3: 4},
+      });
+      delCells();
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(queries.getStore().getListenerStats().row).toEqual(1);
+      queries.delQueryDefinition('q1');
+      expect(queries.getStore().getListenerStats().row).toEqual(0);
+    });
+  });
 });
 
 describe('Listens to Queries when sets', () => {
@@ -3854,6 +3929,100 @@ describe('Listens to Queries when sets', () => {
           {q1: {0: {c1: 'A', max: 3}}},
           {q1: {0: {c1: 'A', max: 2}}},
           {q1: {0: {c1: 'A', max: 0}}},
+          {q1: {}},
+        ),
+      );
+      expectNoChanges(listener);
+    });
+  });
+
+  describe('Havings', () => {
+    test('grouped column by value', () => {
+      queries.setQueryDefinition('q1', 't1', ({select, group, having}) => {
+        select('c2');
+        select('c3');
+        group('c3', 'sum');
+        having('c2', 'even');
+      });
+      setCells();
+      delCells();
+      ['/q1', '/q*'].forEach((listenerId) =>
+        expectChanges(
+          listener,
+          listenerId,
+          {q1: {1: {c2: 'even', c3: 2}}},
+          {q1: {1: {c2: 'even', c3: 6}}},
+          {q1: {1: {c2: 'even', c3: 2}}},
+          {q1: {}},
+        ),
+      );
+      expectNoChanges(listener);
+    });
+
+    test('group-by column by value', () => {
+      queries.setQueryDefinition('q1', 't1', ({select, group, having}) => {
+        select('c2');
+        select('c3');
+        group('c3', 'sum');
+        having('c3', 4);
+      });
+      setCells();
+      delCells();
+      ['/q1', '/q*'].forEach((listenerId) =>
+        expectChanges(
+          listener,
+          listenerId,
+          {q1: {0: {c2: 'odd', c3: 4}}},
+          {q1: {}},
+        ),
+      );
+      expectNoChanges(listener);
+    });
+
+    test('aliased grouped and group-by column by derivation', () => {
+      queries.setQueryDefinition('q1', 't1', ({select, group, having}) => {
+        select('c2');
+        select('c3');
+        group('c3', 'sum').as('C3');
+        having(
+          (getSelectedOrGroupedCell) =>
+            (getSelectedOrGroupedCell('c2') as string).length > 3,
+        );
+        having(
+          (getSelectedOrGroupedCell) =>
+            (getSelectedOrGroupedCell('C3') as number) > 4,
+        );
+      });
+      setCells();
+      delCells();
+      ['/q1', '/q*'].forEach((listenerId) =>
+        expectChanges(
+          listener,
+          listenerId,
+          {q1: {1: {c2: 'even', C3: 6}}},
+          {q1: {}},
+        ),
+      );
+      expectNoChanges(listener);
+    });
+
+    test('without group', () => {
+      queries.setQueryDefinition('q1', 't1', ({select, having}) => {
+        select('c2');
+        select('c3');
+        having('c2', 'even');
+      });
+      setCells();
+      delCells();
+      ['/q1', '/q*'].forEach((listenerId) =>
+        expectChanges(
+          listener,
+          listenerId,
+          {q1: {1: {c2: 'even', c3: 2}}},
+          {q1: {1: {c2: 'even', c3: 2}, 4: {c2: 'even'}}},
+          {q1: {1: {c2: 'even', c3: 2}, 5: {c2: 'even', c3: 4}}},
+          {q1: {1: {c2: 'even', c3: 2}, 6: {c2: 'even'}}},
+          {q1: {1: {c2: 'even', c3: 2}}},
           {q1: {}},
         ),
       );
