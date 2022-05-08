@@ -824,6 +824,132 @@ describe('Sets', () => {
       expect(queries.getStore().getListenerStats().row).toEqual(0);
     });
   });
+
+  describe('Orders', () => {
+    test('column by id', () => {
+      setCells();
+      queries.setQueryDefinition('q1', 't1', ({select, order}) => {
+        select('c1');
+        select('c2');
+        order('c1');
+      });
+      expect(queries.getResultTable('q1')).toEqualWithOrder({
+        r4: {c1: 'four', c2: 'even'},
+        r1: {c1: 'one', c2: 'odd'},
+        r3: {c1: 'three', c2: 'odd'},
+        r2: {c1: 'two', c2: 'even'},
+      });
+      delCells();
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(queries.getStore().getListenerStats().row).toEqual(1);
+      queries.delQueryDefinition('q1');
+      expect(queries.getStore().getListenerStats().row).toEqual(0);
+    });
+
+    test('column by id descending', () => {
+      setCells();
+      queries.setQueryDefinition('q1', 't1', ({select, order}) => {
+        select('c1');
+        select('c2');
+        order('c1', true);
+      });
+      expect(queries.getResultTable('q1')).toEqualWithOrder({
+        r2: {c1: 'two', c2: 'even'},
+        r3: {c1: 'three', c2: 'odd'},
+        r1: {c1: 'one', c2: 'odd'},
+        r4: {c1: 'four', c2: 'even'},
+      });
+      delCells();
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(queries.getStore().getListenerStats().row).toEqual(1);
+      queries.delQueryDefinition('q1');
+      expect(queries.getStore().getListenerStats().row).toEqual(0);
+    });
+
+    test('column by id with equal values', () => {
+      setCells();
+      queries.setQueryDefinition('q1', 't1', ({select, order}) => {
+        select('c1');
+        select('c2');
+        order('c2');
+      });
+      expect(queries.getResultTable('q1')).toEqualWithOrder({
+        r2: {c1: 'two', c2: 'even'},
+        r4: {c1: 'four', c2: 'even'},
+        r3: {c1: 'three', c2: 'odd'},
+        r1: {c1: 'one', c2: 'odd'},
+      });
+      delCells();
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(queries.getStore().getListenerStats().row).toEqual(1);
+      queries.delQueryDefinition('q1');
+      expect(queries.getStore().getListenerStats().row).toEqual(0);
+    });
+
+    test('two columns by id, one descending', () => {
+      setCells();
+      queries.setQueryDefinition('q1', 't1', ({select, order}) => {
+        select('c1');
+        select('c2');
+        order('c2', true);
+        order('c1');
+      });
+      expect(queries.getResultTable('q1')).toEqualWithOrder({
+        r1: {c1: 'one', c2: 'odd'},
+        r3: {c1: 'three', c2: 'odd'},
+        r4: {c1: 'four', c2: 'even'},
+        r2: {c1: 'two', c2: 'even'},
+      });
+      delCells();
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(queries.getStore().getListenerStats().row).toEqual(1);
+      queries.delQueryDefinition('q1');
+      expect(queries.getStore().getListenerStats().row).toEqual(0);
+    });
+
+    test('two columns by derivation, one descending', () => {
+      setCells();
+      queries.setQueryDefinition('q1', 't1', ({select, order}) => {
+        select('c1');
+        select('c2');
+        order(
+          (getSelectedOrGroupedCell) =>
+            ((getSelectedOrGroupedCell('c1') ?? '') as string).length,
+        );
+        order((_, rowId) => rowId, true);
+      });
+      expect(queries.getResultTable('q1')).toEqualWithOrder({
+        r2: {c1: 'two', c2: 'even'},
+        r1: {c1: 'one', c2: 'odd'},
+        r4: {c1: 'four', c2: 'even'},
+        r3: {c1: 'three', c2: 'odd'},
+      });
+      delCells();
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(queries.getStore().getListenerStats().row).toEqual(1);
+      queries.delQueryDefinition('q1');
+      expect(queries.getStore().getListenerStats().row).toEqual(0);
+    });
+
+    test('grouped table column by id', () => {
+      setCells();
+      queries.setQueryDefinition('q1', 't1', ({select, group, order}) => {
+        select('c2');
+        select('c3');
+        group('c3', 'sum');
+        order('c3');
+      });
+      expect(queries.getResultTable('q1')).toEqual({
+        1: {c2: 'odd', c3: 4},
+        0: {c2: 'even', c3: 6},
+      });
+      delCells();
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(queries.getStore().getListenerStats().row).toEqual(1);
+      queries.delQueryDefinition('q1');
+      expect(queries.getStore().getListenerStats().row).toEqual(0);
+    });
+  });
 });
 
 describe('Listens to Queries when sets', () => {
@@ -4023,6 +4149,339 @@ describe('Listens to Queries when sets', () => {
           {q1: {1: {c2: 'even', c3: 2}, 5: {c2: 'even', c3: 4}}},
           {q1: {1: {c2: 'even', c3: 2}, 6: {c2: 'even'}}},
           {q1: {1: {c2: 'even', c3: 2}}},
+          {q1: {}},
+        ),
+      );
+      expectNoChanges(listener);
+    });
+  });
+
+  describe('Orders', () => {
+    test('column by id', () => {
+      queries.setQueryDefinition('q1', 't1', ({select, order}) => {
+        select('c1');
+        select('c2');
+        order('c1');
+      });
+      setCells();
+      delCells();
+      ['/q1', '/q*'].forEach((listenerId) =>
+        expectChanges(
+          listener,
+          listenerId,
+          {q1: {r1: {c1: 'one', c2: 'odd'}}},
+          {q1: {r3: {c1: 'three', c2: 'odd'}, r2: {c1: 'two', c2: 'even'}}},
+          {
+            q1: {
+              r1: {c1: 'one', c2: 'odd'},
+              r3: {c1: 'three', c2: 'odd'},
+              r2: {c1: 'two', c2: 'even'},
+            },
+          },
+          {
+            q1: {
+              r4: {c1: 'four'},
+              r1: {c1: 'one', c2: 'odd'},
+              r3: {c1: 'three', c2: 'odd'},
+              r2: {c1: 'two', c2: 'even'},
+            },
+          },
+          {
+            q1: {
+              r4: {c1: 'four', c2: 'even'},
+              r1: {c1: 'one', c2: 'odd'},
+              r3: {c1: 'three', c2: 'odd'},
+              r2: {c1: 'two', c2: 'even'},
+            },
+          },
+          {
+            q1: {
+              r4: {c1: 'four'},
+              r1: {c1: 'one', c2: 'odd'},
+              r3: {c1: 'three', c2: 'odd'},
+              r2: {c1: 'two', c2: 'even'},
+            },
+          },
+          {
+            q1: {
+              r1: {c1: 'one', c2: 'odd'},
+              r3: {c1: 'three', c2: 'odd'},
+              r2: {c1: 'two', c2: 'even'},
+            },
+          },
+          {q1: {r1: {c1: 'one', c2: 'odd'}, r2: {c1: 'two', c2: 'even'}}},
+          {q1: {r1: {c1: 'one', c2: 'odd'}}},
+          {q1: {}},
+        ),
+      );
+      expectNoChanges(listener);
+    });
+
+    test('column by id descending', () => {
+      queries.setQueryDefinition('q1', 't1', ({select, order}) => {
+        select('c1');
+        select('c2');
+        order('c1', true);
+      });
+      setCells();
+      delCells();
+      ['/q1', '/q*'].forEach((listenerId) =>
+        expectChanges(
+          listener,
+          listenerId,
+          {q1: {r1: {c1: 'one', c2: 'odd'}}},
+          {q1: {r2: {c1: 'two', c2: 'even'}, r3: {c1: 'three', c2: 'odd'}}},
+          {
+            q1: {
+              r2: {c1: 'two', c2: 'even'},
+              r3: {c1: 'three', c2: 'odd'},
+              r1: {c1: 'one', c2: 'odd'},
+            },
+          },
+          {
+            q1: {
+              r2: {c1: 'two', c2: 'even'},
+              r3: {c1: 'three', c2: 'odd'},
+              r1: {c1: 'one', c2: 'odd'},
+              r4: {c1: 'four'},
+            },
+          },
+          {
+            q1: {
+              r2: {c1: 'two', c2: 'even'},
+              r3: {c1: 'three', c2: 'odd'},
+              r1: {c1: 'one', c2: 'odd'},
+              r4: {c1: 'four', c2: 'even'},
+            },
+          },
+          {
+            q1: {
+              r2: {c1: 'two', c2: 'even'},
+              r3: {c1: 'three', c2: 'odd'},
+              r1: {c1: 'one', c2: 'odd'},
+              r4: {c1: 'four'},
+            },
+          },
+          {
+            q1: {
+              r2: {c1: 'two', c2: 'even'},
+              r3: {c1: 'three', c2: 'odd'},
+              r1: {c1: 'one', c2: 'odd'},
+            },
+          },
+          {q1: {r2: {c1: 'two', c2: 'even'}, r1: {c1: 'one', c2: 'odd'}}},
+          {q1: {r1: {c1: 'one', c2: 'odd'}}},
+          {q1: {}},
+        ),
+      );
+      expectNoChanges(listener);
+    });
+
+    test('column by id with equal values', () => {
+      queries.setQueryDefinition('q1', 't1', ({select, order}) => {
+        select('c1');
+        select('c2');
+        order('c2');
+      });
+      setCells();
+      delCells();
+      ['/q1', '/q*'].forEach((listenerId) =>
+        expectChanges(
+          listener,
+          listenerId,
+          {q1: {r1: {c1: 'one', c2: 'odd'}}},
+          {q1: {r2: {c1: 'two', c2: 'even'}, r3: {c1: 'three', c2: 'odd'}}},
+          {
+            q1: {
+              r2: {c1: 'two', c2: 'even'},
+              r3: {c1: 'three', c2: 'odd'},
+              r1: {c1: 'one', c2: 'odd'},
+            },
+          },
+          {
+            q1: {
+              r2: {c1: 'two', c2: 'even'},
+              r3: {c1: 'three', c2: 'odd'},
+              r1: {c1: 'one', c2: 'odd'},
+              r4: {c1: 'four'},
+            },
+          },
+          {
+            q1: {
+              r2: {c1: 'two', c2: 'even'},
+              r4: {c1: 'four', c2: 'even'},
+              r3: {c1: 'three', c2: 'odd'},
+              r1: {c1: 'one', c2: 'odd'},
+            },
+          },
+          {
+            q1: {
+              r2: {c1: 'two', c2: 'even'},
+              r3: {c1: 'three', c2: 'odd'},
+              r1: {c1: 'one', c2: 'odd'},
+              r4: {c1: 'four'},
+            },
+          },
+          {
+            q1: {
+              r2: {c1: 'two', c2: 'even'},
+              r3: {c1: 'three', c2: 'odd'},
+              r1: {c1: 'one', c2: 'odd'},
+            },
+          },
+          {q1: {r2: {c1: 'two', c2: 'even'}, r1: {c1: 'one', c2: 'odd'}}},
+          {q1: {r1: {c1: 'one', c2: 'odd'}}},
+          {q1: {}},
+        ),
+      );
+      expectNoChanges(listener);
+    });
+
+    test('two columns by id, one descending', () => {
+      queries.setQueryDefinition('q1', 't1', ({select, order}) => {
+        select('c1');
+        select('c2');
+        order('c2', true);
+        order('c1');
+      });
+      setCells();
+      delCells();
+      ['/q1', '/q*'].forEach((listenerId) =>
+        expectChanges(
+          listener,
+          listenerId,
+          {q1: {r1: {c1: 'one', c2: 'odd'}}},
+          {q1: {r3: {c1: 'three', c2: 'odd'}, r2: {c1: 'two', c2: 'even'}}},
+          {
+            q1: {
+              r1: {c1: 'one', c2: 'odd'},
+              r3: {c1: 'three', c2: 'odd'},
+              r2: {c1: 'two', c2: 'even'},
+            },
+          },
+          {
+            q1: {
+              r4: {c1: 'four'},
+              r1: {c1: 'one', c2: 'odd'},
+              r3: {c1: 'three', c2: 'odd'},
+              r2: {c1: 'two', c2: 'even'},
+            },
+          },
+          {
+            q1: {
+              r1: {c1: 'one', c2: 'odd'},
+              r3: {c1: 'three', c2: 'odd'},
+              r4: {c1: 'four', c2: 'even'},
+              r2: {c1: 'two', c2: 'even'},
+            },
+          },
+          {
+            q1: {
+              r4: {c1: 'four'},
+              r1: {c1: 'one', c2: 'odd'},
+              r3: {c1: 'three', c2: 'odd'},
+              r2: {c1: 'two', c2: 'even'},
+            },
+          },
+          {
+            q1: {
+              r1: {c1: 'one', c2: 'odd'},
+              r3: {c1: 'three', c2: 'odd'},
+              r2: {c1: 'two', c2: 'even'},
+            },
+          },
+          {q1: {r1: {c1: 'one', c2: 'odd'}, r2: {c1: 'two', c2: 'even'}}},
+          {q1: {r1: {c1: 'one', c2: 'odd'}}},
+          {q1: {}},
+        ),
+      );
+      expectNoChanges(listener);
+    });
+
+    test('two columns by derivation, one descending', () => {
+      queries.setQueryDefinition('q1', 't1', ({select, order}) => {
+        select('c1');
+        select('c2');
+        order(
+          (getSelectedOrGroupedCell) =>
+            ((getSelectedOrGroupedCell('c1') ?? '') as string).length,
+        );
+        order((_, rowId) => rowId, true);
+      });
+      setCells();
+      delCells();
+      ['/q1', '/q*'].forEach((listenerId) =>
+        expectChanges(
+          listener,
+          listenerId,
+          {q1: {r1: {c1: 'one', c2: 'odd'}}},
+          {q1: {r2: {c1: 'two', c2: 'even'}, r3: {c1: 'three', c2: 'odd'}}},
+          {
+            q1: {
+              r2: {c1: 'two', c2: 'even'},
+              r1: {c1: 'one', c2: 'odd'},
+              r3: {c1: 'three', c2: 'odd'},
+            },
+          },
+          {
+            q1: {
+              r2: {c1: 'two', c2: 'even'},
+              r1: {c1: 'one', c2: 'odd'},
+              r4: {c1: 'four'},
+              r3: {c1: 'three', c2: 'odd'},
+            },
+          },
+          {
+            q1: {
+              r2: {c1: 'two', c2: 'even'},
+              r1: {c1: 'one', c2: 'odd'},
+              r4: {c1: 'four', c2: 'even'},
+              r3: {c1: 'three', c2: 'odd'},
+            },
+          },
+          {
+            q1: {
+              r2: {c1: 'two', c2: 'even'},
+              r1: {c1: 'one', c2: 'odd'},
+              r4: {c1: 'four'},
+              r3: {c1: 'three', c2: 'odd'},
+            },
+          },
+          {
+            q1: {
+              r2: {c1: 'two', c2: 'even'},
+              r1: {c1: 'one', c2: 'odd'},
+              r3: {c1: 'three', c2: 'odd'},
+            },
+          },
+          {q1: {r2: {c1: 'two', c2: 'even'}, r1: {c1: 'one', c2: 'odd'}}},
+          {q1: {r1: {c1: 'one', c2: 'odd'}}},
+          {q1: {}},
+        ),
+      );
+      expectNoChanges(listener);
+    });
+
+    test('grouped table column by id', () => {
+      queries.setQueryDefinition('q1', 't1', ({select, group, order}) => {
+        select('c2');
+        select('c3');
+        group('c3', 'sum');
+        order('c3');
+      });
+      setCells();
+      delCells();
+      ['/q1', '/q*'].forEach((listenerId) =>
+        expectChanges(
+          listener,
+          listenerId,
+          {q1: {0: {c2: 'odd', c3: 1}}},
+          {q1: {1: {c2: 'even', c3: 2}, 0: {c2: 'odd', c3: 3}}},
+          {q1: {1: {c2: 'even', c3: 2}, 0: {c2: 'odd', c3: 4}}},
+          {q1: {0: {c2: 'odd', c3: 4}, 1: {c2: 'even', c3: 6}}},
+          {q1: {1: {c2: 'even', c3: 2}, 0: {c2: 'odd', c3: 4}}},
+          {q1: {0: {c2: 'odd', c3: 1}, 1: {c2: 'even', c3: 2}}},
+          {q1: {0: {c2: 'odd', c3: 1}}},
           {q1: {}},
         ),
       );

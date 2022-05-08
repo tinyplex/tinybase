@@ -11,6 +11,10 @@ export const arrayEvery = <Value>(
   cb: (value: Value, index: number) => boolean,
 ): boolean => array.every(cb);
 
+export const arrayIsEqual = (array1: unknown[], array2: unknown[]): boolean =>
+  arrayLength(array1) === arrayLength(array2) &&
+  arrayEvery(array1, (value1, index) => array2[index] === value1);
+
 export const arrayIsSorted = <Value>(
   array: Value[],
   sorter: (value1: Value, value2: Value) => number,
