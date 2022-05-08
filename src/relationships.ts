@@ -44,7 +44,7 @@ export const createRelationships: typeof createRelationshipsDecl =
       hasRelationship,
       getLocalTableId,
       getRelationship,
-      _setRelationship,
+      ,
       setDefinition,
       delDefinition,
       destroy,
