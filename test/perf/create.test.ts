@@ -2,6 +2,7 @@ import {
   Table,
   createIndexes,
   createMetrics,
+  createQueries,
   createStore,
 } from '../../lib/debug/tinybase';
 import {getNCells, getNRows, getNTables, repeat, µs} from './common';
@@ -103,6 +104,43 @@ repeat(
     const store = createStore();
     createMetrics(store).setMetricDefinition('m1', 't1', 'max', 'c1');
     return [µs(() => store.setTable('t1', getNRows(N))), N];
+  },
+  30,
+);
+
+repeat(
+  'Create store with expensive query after creation',
+  'rows',
+  'µs per row',
+  (N) => {
+    const store = createStore();
+    for (let n = 0; n <= N; n++) {
+      store.setRow('t1', 'r' + n, {
+        c1: Math.round(Math.random() * 100),
+        c2: Math.random(),
+      });
+    }
+    return [
+      µs(() => {
+        createQueries(store).setQueryDefinition(
+          'q1',
+          't1',
+          ({select, where, group, having, order, limit}) => {
+            select('c1');
+            select('c2');
+            where((getTableCell) => (getTableCell('c1') as number) > 25);
+            group('c2', 'avg');
+            having(
+              (getSelectedOrGroupedCell) =>
+                (getSelectedOrGroupedCell('c2') as number) > 0.5,
+            );
+            order('c2');
+            limit(10, 20);
+          },
+        );
+      }),
+      N,
+    ];
   },
   30,
 );
