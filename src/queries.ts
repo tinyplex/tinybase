@@ -44,7 +44,13 @@ import {
   visitTree,
 } from './common/map';
 import {IdSet, setAdd, setNew} from './common/set';
-import {arrayEvery, arrayForEach, arrayLength, arrayPush} from './common/array';
+import {
+  arrayEvery,
+  arrayForEach,
+  arrayIsEmpty,
+  arrayLength,
+  arrayPush,
+} from './common/array';
 import {
   collDel,
   collForEach,
@@ -75,6 +81,7 @@ type JoinClause = [
 ];
 type WhereClause = (getTableCell: GetTableCell) => boolean;
 type GroupClause = [Id, Aggregators];
+type HavingClause = (getSelectedOrGroupedCell: GetCell) => boolean;
 
 type Aggregators = [
   Aggregate,
@@ -161,6 +168,7 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
       ];
       const wheres: WhereClause[] = [];
       const groupEntries: [Id, GroupClause][] = [];
+      const havings: HavingClause[] = [];
 
       const select = (
         arg1: Id | ((getTableCell: GetTableCell, rowId: Id) => CellOrUndefined),
@@ -236,9 +244,16 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
       };
 
       const having = (
-        _arg1: Id | ((getSelectedOrGroupedCell: GetCell) => boolean),
-        _arg2?: Cell,
-      ) => null;
+        arg1: Id | ((getSelectedOrGroupedCell: GetCell) => boolean),
+        arg2?: Cell,
+      ) =>
+        arrayPush(
+          havings,
+          isFunction(arg1)
+            ? arg1
+            : (getSelectedOrGroupedCell) =>
+                getSelectedOrGroupedCell(arg1) === arg2,
+        );
 
       const order = (
         _arg1: Id | ((getSelectedOrGroupedCell: GetCell, rowId: Id) => SortKey),
@@ -263,9 +278,9 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
 
       let selectJoinWhereStore = preStore1;
 
-      // GROUP
+      // GROUP & HAVING
 
-      if (collIsEmpty(groups)) {
+      if (collIsEmpty(groups) && arrayIsEmpty(havings)) {
         selectJoinWhereStore = resultStore;
       } else {
         synchronizeTransactions(queryId, selectJoinWhereStore, resultStore);
@@ -330,7 +345,10 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
                   }
                 },
               );
-              (collIsEmpty(selectedRowIds)
+              (collIsEmpty(selectedRowIds) ||
+                !arrayEvery(havings, (having) =>
+                  having((cellId: Id) => groupRow[cellId]),
+                )
                 ? resultStore.delRow
                 : resultStore.setRow)(queryId, groupRowId, groupRow);
             },
