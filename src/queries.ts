@@ -48,8 +48,11 @@ import {
   arrayEvery,
   arrayForEach,
   arrayIsEmpty,
+  arrayIsEqual,
   arrayLength,
+  arrayMap,
   arrayPush,
+  arraySort,
 } from './common/array';
 import {
   collDel,
@@ -67,8 +70,9 @@ import {
   isFunction,
   isUndefined,
 } from './common/other';
+import {objFreeze, objIds} from './common/obj';
 import {EMPTY_STRING} from './common/strings';
-import {objFreeze} from './common/obj';
+import {defaultSorter} from './common';
 
 type StoreWithCreateMethod = Store & {createStore: () => Store};
 type SelectClause = (getTableCell: GetTableCell, rowId: Id) => CellOrUndefined;
@@ -82,6 +86,10 @@ type JoinClause = [
 type WhereClause = (getTableCell: GetTableCell) => boolean;
 type GroupClause = [Id, Aggregators];
 type HavingClause = (getSelectedOrGroupedCell: GetCell) => boolean;
+type OrderClause = [
+  (getSelectedOrGroupedCell: GetCell, rowId: Id) => SortKey,
+  boolean?,
+];
 
 type Aggregators = [
   Aggregate,
@@ -108,6 +116,7 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
       delStoreListeners,
     ] = getDefinableFunctions<true, undefined>(store, () => true, getUndefined);
     const preStore1 = (store as StoreWithCreateMethod).createStore();
+    const preStore2 = (store as StoreWithCreateMethod).createStore();
     const resultStore = (store as StoreWithCreateMethod).createStore();
     const preStoreListenerIds: Map<Id, Map<Store, IdSet>> = mapNew();
 
@@ -160,6 +169,7 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
     ): Queries => {
       setDefinition(queryId, tableId);
       preStore1.delTable(queryId);
+      preStore2.delTable(queryId);
       resultStore.delTable(queryId);
 
       const selectEntries: [Id, SelectClause][] = [];
@@ -169,6 +179,7 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
       const wheres: WhereClause[] = [];
       const groupEntries: [Id, GroupClause][] = [];
       const havings: HavingClause[] = [];
+      const orders: OrderClause[] = [];
 
       const select = (
         arg1: Id | ((getTableCell: GetTableCell, rowId: Id) => CellOrUndefined),
@@ -256,9 +267,15 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
         );
 
       const order = (
-        _arg1: Id | ((getSelectedOrGroupedCell: GetCell, rowId: Id) => SortKey),
-        _descending?: boolean,
-      ) => null;
+        arg1: Id | ((getSelectedOrGroupedCell: GetCell, rowId: Id) => SortKey),
+        descending?: boolean,
+      ) =>
+        arrayPush(orders, [
+          isFunction(arg1)
+            ? arg1
+            : (getSelectedOrGroupedCell) => getSelectedOrGroupedCell(arg1) ?? 0,
+          descending,
+        ]);
 
       const limit = (_arg1: number, _arg2?: number) => null;
 
@@ -277,13 +294,89 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
       const groups: IdMap<GroupClause> = mapNew(groupEntries);
 
       let selectJoinWhereStore = preStore1;
+      let groupHavingStore = preStore2;
+
+      // ORDER
+
+      if (arrayIsEmpty(orders)) {
+        groupHavingStore = resultStore;
+      } else {
+        synchronizeTransactions(queryId, groupHavingStore, resultStore);
+
+        const groupRowIdSorter = (rowId1: Id, rowId2: Id) => {
+          const sortKeys1 = mapGet(sortKeysByGroupRowId, rowId1) ?? [];
+          const sortKeys2 = mapGet(sortKeysByGroupRowId, rowId2) ?? [];
+          const orderIndex = orders.findIndex(
+            (_order, index) => sortKeys1[index] !== sortKeys2[index],
+          );
+          return orderIndex < 0
+            ? 0
+            : defaultSorter(sortKeys1[orderIndex], sortKeys2[orderIndex]) *
+                (orders[orderIndex][1] ? -1 : 1);
+        };
+        const sortKeysByGroupRowId: IdMap<SortKey[]> = mapNew();
+        let sortedGroupRowIds: Ids | null = null;
+
+        addPreStoreListener(
+          groupHavingStore,
+          queryId,
+          groupHavingStore.addRowListener(
+            queryId,
+            null,
+            (_store, _tableId, groupRowId) => {
+              let newSortKeys = null;
+              if (groupHavingStore.hasRow(queryId, groupRowId)) {
+                const oldSortKeys =
+                  mapGet(sortKeysByGroupRowId, groupRowId) ?? [];
+                const groupRow = groupHavingStore.getRow(queryId, groupRowId);
+                const getCell = (getSelectedOrGroupedCell: Id) =>
+                  groupRow[getSelectedOrGroupedCell];
+                newSortKeys = arrayMap(orders, ([getSortKey]) =>
+                  getSortKey(getCell, groupRowId),
+                );
+                if (arrayIsEqual(oldSortKeys, newSortKeys)) {
+                  if (!isUndefined(sortedGroupRowIds)) {
+                    resultStore.setRow(queryId, groupRowId, groupRow);
+                  }
+                  return;
+                }
+              }
+              mapSet(sortKeysByGroupRowId, groupRowId, newSortKeys);
+              sortedGroupRowIds = null;
+            },
+          ),
+          groupHavingStore.addTableListener(queryId, () => {
+            if (isUndefined(sortedGroupRowIds)) {
+              resultStore.delTable(queryId);
+              if (groupHavingStore.hasTable(queryId)) {
+                const groupTable = groupHavingStore.getTable(queryId);
+                sortedGroupRowIds = arraySort(
+                  objIds(groupTable),
+                  groupRowIdSorter,
+                );
+                arrayForEach(sortedGroupRowIds, (groupRowId) =>
+                  resultStore.setRow(
+                    queryId,
+                    groupRowId,
+                    groupTable[groupRowId],
+                  ),
+                );
+              }
+            }
+          }),
+        );
+      }
 
       // GROUP & HAVING
 
       if (collIsEmpty(groups) && arrayIsEmpty(havings)) {
-        selectJoinWhereStore = resultStore;
+        selectJoinWhereStore = groupHavingStore;
       } else {
-        synchronizeTransactions(queryId, selectJoinWhereStore, resultStore);
+        synchronizeTransactions(
+          queryId,
+          selectJoinWhereStore,
+          groupHavingStore,
+        );
 
         const groupedSelectedCellIds: IdMap<Set<[Id, Aggregators]>> = mapNew();
         mapForEach(groups, (groupedCellId, [selectedCellId, aggregators]) =>
@@ -349,8 +442,8 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
                 !arrayEvery(havings, (having) =>
                   having((cellId: Id) => groupRow[cellId]),
                 )
-                ? resultStore.delRow
-                : resultStore.setRow)(queryId, groupRowId, groupRow);
+                ? groupHavingStore.delRow
+                : groupHavingStore.setRow)(queryId, groupRowId, groupRow);
             },
           );
 
@@ -400,7 +493,7 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
                     ([, selectedRowIds, groupRowId]) => {
                       collDel(selectedRowIds, selectedRowId);
                       if (collIsEmpty(selectedRowIds)) {
-                        resultStore.delRow(queryId, groupRowId);
+                        groupHavingStore.delRow(queryId, groupRowId);
                         return 1;
                       }
                     },
@@ -432,7 +525,7 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
                         mapNew(),
                         setNew(),
                         (
-                          resultStore.addRow as (
+                          groupHavingStore.addRow as (
                             tableId: Id,
                             row: Row,
                             forceId?: 1,

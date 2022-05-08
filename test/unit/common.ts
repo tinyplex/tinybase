@@ -1,3 +1,12 @@
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace jest {
+    interface Matchers<R> {
+      toEqualWithOrder(expected: any): R;
+    }
+  }
+}
+
 import {
   Checkpoints,
   Id,
@@ -447,3 +456,22 @@ export const getRelationshipsObject = (
   });
   return relationshipsObject;
 };
+
+expect.extend({
+  toEqualWithOrder: (received, expected) =>
+    JSON.stringify(received) === JSON.stringify(expected)
+      ? {
+          message: () =>
+            `expected ${JSON.stringify(
+              received,
+            )} not to order-equal ${JSON.stringify(expected)}`,
+          pass: true,
+        }
+      : {
+          message: () =>
+            `expected ${JSON.stringify(
+              received,
+            )} to order-equal ${JSON.stringify(expected)}`,
+          pass: false,
+        },
+});
