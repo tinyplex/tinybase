@@ -39,6 +39,7 @@ import {
   mapEnsure,
   mapForEach,
   mapGet,
+  mapKeys,
   mapNew,
   mapSet,
   visitTree,
@@ -52,9 +53,11 @@ import {
   arrayLength,
   arrayMap,
   arrayPush,
+  arraySlice,
   arraySort,
 } from './common/array';
 import {
+  collClear,
   collDel,
   collForEach,
   collHas,
@@ -172,6 +175,7 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
       preStore2.delTable(queryId);
       resultStore.delTable(queryId);
 
+      let offsetLimit: [offset: number, limit: number] | undefined;
       const selectEntries: [Id, SelectClause][] = [];
       const joinEntries: [IdOrNull, JoinClause][] = [
         [null, [tableId, null, null, [], mapNew()]],
@@ -277,7 +281,9 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
           descending,
         ]);
 
-      const limit = (_arg1: number, _arg2?: number) => null;
+      const limit = (arg1: number, arg2?: number) => {
+        offsetLimit = isUndefined(arg2) ? [0, arg1] : [arg1, arg2];
+      };
 
       build({select, join, where, group, having, order, limit});
 
@@ -296,9 +302,9 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
       let selectJoinWhereStore = preStore1;
       let groupHavingStore = preStore2;
 
-      // ORDER
+      // ORDER & LIMIT
 
-      if (arrayIsEmpty(orders)) {
+      if (arrayIsEmpty(orders) && isUndefined(offsetLimit)) {
         groupHavingStore = resultStore;
       } else {
         synchronizeTransactions(queryId, groupHavingStore, resultStore);
@@ -315,51 +321,71 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
                 (orders[orderIndex][1] ? -1 : 1);
         };
         const sortKeysByGroupRowId: IdMap<SortKey[]> = mapNew();
-        let sortedGroupRowIds: Ids | null = null;
+        const sortedGroupRowIds: IdMap<0 | 1> = mapNew();
 
         addPreStoreListener(
           groupHavingStore,
           queryId,
-          groupHavingStore.addRowListener(
-            queryId,
-            null,
-            (_store, _tableId, groupRowId) => {
-              let newSortKeys = null;
-              if (groupHavingStore.hasRow(queryId, groupRowId)) {
-                const oldSortKeys =
-                  mapGet(sortKeysByGroupRowId, groupRowId) ?? [];
-                const groupRow = groupHavingStore.getRow(queryId, groupRowId);
-                const getCell = (getSelectedOrGroupedCell: Id) =>
-                  groupRow[getSelectedOrGroupedCell];
-                newSortKeys = arrayMap(orders, ([getSortKey]) =>
-                  getSortKey(getCell, groupRowId),
-                );
-                if (arrayIsEqual(oldSortKeys, newSortKeys)) {
-                  if (!isUndefined(sortedGroupRowIds)) {
-                    resultStore.setRow(queryId, groupRowId, groupRow);
+          arrayIsEmpty(orders)
+            ? groupHavingStore.addRowIdsListener(queryId, () =>
+                collClear(sortedGroupRowIds),
+              )
+            : groupHavingStore.addRowListener(
+                queryId,
+                null,
+                (_store, _tableId, groupRowId) => {
+                  let newSortKeys = null;
+                  if (groupHavingStore.hasRow(queryId, groupRowId)) {
+                    const oldSortKeys =
+                      mapGet(sortKeysByGroupRowId, groupRowId) ?? [];
+                    const groupRow = groupHavingStore.getRow(
+                      queryId,
+                      groupRowId,
+                    );
+                    const getCell = (getSelectedOrGroupedCell: Id) =>
+                      groupRow[getSelectedOrGroupedCell];
+                    newSortKeys = arrayMap(orders, ([getSortKey]) =>
+                      getSortKey(getCell, groupRowId),
+                    );
+                    if (arrayIsEqual(oldSortKeys, newSortKeys)) {
+                      if (mapGet(sortedGroupRowIds, groupRowId)) {
+                        resultStore.setRow(queryId, groupRowId, groupRow);
+                      }
+                      return;
+                    }
                   }
-                  return;
-                }
-              }
-              mapSet(sortKeysByGroupRowId, groupRowId, newSortKeys);
-              sortedGroupRowIds = null;
-            },
-          ),
+                  mapSet(sortKeysByGroupRowId, groupRowId, newSortKeys);
+                  collClear(sortedGroupRowIds);
+                },
+              ),
           groupHavingStore.addTableListener(queryId, () => {
-            if (isUndefined(sortedGroupRowIds)) {
+            if (collIsEmpty(sortedGroupRowIds)) {
               resultStore.delTable(queryId);
               if (groupHavingStore.hasTable(queryId)) {
                 const groupTable = groupHavingStore.getTable(queryId);
-                sortedGroupRowIds = arraySort(
-                  objIds(groupTable),
-                  groupRowIdSorter,
+                arrayForEach(
+                  arraySort(objIds(groupTable), groupRowIdSorter),
+                  (id) => mapSet(sortedGroupRowIds, id, 0),
                 );
-                arrayForEach(sortedGroupRowIds, (groupRowId) =>
-                  resultStore.setRow(
-                    queryId,
-                    groupRowId,
-                    groupTable[groupRowId],
-                  ),
+                arrayForEach(
+                  ifNotUndefined(
+                    offsetLimit,
+                    ([offset, limit]) =>
+                      arraySlice(
+                        mapKeys(sortedGroupRowIds),
+                        offset,
+                        offset + limit,
+                      ),
+                    () => mapKeys(sortedGroupRowIds),
+                  ) as Ids,
+                  (groupRowId) => {
+                    resultStore.setRow(
+                      queryId,
+                      groupRowId,
+                      groupTable[groupRowId],
+                    );
+                    mapSet(sortedGroupRowIds, groupRowId, 1);
+                  },
                 );
               }
             }
