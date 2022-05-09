@@ -27,11 +27,11 @@ import {
 import {MetricListener, Metrics} from '../metrics.d';
 import {
   arrayForEach,
-  arrayFromSecond,
   arrayIsEmpty,
   arrayLength,
   arrayPop,
   arrayPush,
+  arraySlice,
 } from './array';
 import {collDel, collForEach} from './coll';
 import {ifNotUndefined, isUndefined} from './other';
@@ -68,7 +68,7 @@ const addDeepSet = (deepSet: DeepIdSet, value: Id, ids: IdOrNull[]): IdSet =>
     : addDeepSet(
         mapEnsure(deepSet as Map<IdOrNull, DeepIdSet>, ids[0] as Id, mapNew),
         value,
-        arrayFromSecond(ids),
+        arraySlice(ids, 1),
       )) as IdSet;
 
 const forDeepSet = (valueDo: (set: IdSet, arg: any) => void) => {
@@ -84,7 +84,7 @@ const forDeepSet = (valueDo: (set: IdSet, arg: any) => void) => {
             deep(
               mapGet(deepIdSet as Map<IdOrNull, DeepIdSet>, id) as DeepIdSet,
               arg,
-              ...arrayFromSecond(ids),
+              ...arraySlice(ids, 1),
             ),
           ),
     );
