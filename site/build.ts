@@ -12,6 +12,7 @@ const CATEGORIES = [
   /components$/,
   'Definition',
   'Getter',
+  'Result',
   'Setter',
   'Listener',
   '*',
