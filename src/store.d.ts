@@ -327,7 +327,6 @@ export type RowListener = (
  * @param store A reference to the Store that changed.
  * @param tableId The Id of the Table that changed.
  * @param rowId The Id of the Row that changed.
- * changes.
  * @category Listener
  */
 export type CellIdsListener = (store: Store, tableId: Id, rowId: Id) => void;
