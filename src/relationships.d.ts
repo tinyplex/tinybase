@@ -190,6 +190,7 @@ export type RelationshipsListenerStats = {
  *   });
  *
  * const relationships = createRelationships(store);
+ *
  * // A local/remote table relationship:
  * relationships.setRelationshipDefinition(
  *   'petSpecies', //  relationshipId
@@ -197,6 +198,11 @@ export type RelationshipsListenerStats = {
  *   'species', //     remoteTableId to link to
  *   'species', //     cellId containing remote key
  * );
+ * console.log(relationships.getRemoteRowId('petSpecies', 'fido'));
+ * // -> 'dog'
+ * console.log(relationships.getLocalRowIds('petSpecies', 'dog'));
+ * // -> ['fido', 'cujo']
+ *
  * // A linked list relationship:
  * relationships.setRelationshipDefinition(
  *   'petSequence', // relationshipId
@@ -204,11 +210,6 @@ export type RelationshipsListenerStats = {
  *   'pets', //        the same remoteTableId to link within
  *   'next', //        cellId containing link key
  * );
- *
- * console.log(relationships.getRemoteRowId('petSpecies', 'fido'));
- * // -> 'dog'
- * console.log(relationships.getLocalRowIds('petSpecies', 'dog'));
- * // -> ['fido', 'cujo']
  * console.log(relationships.getLinkedRowIds('petSequence', 'fido'));
  * // -> ['fido', 'felix', 'cujo']
  *
