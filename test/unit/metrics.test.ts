@@ -74,7 +74,7 @@ describe('Sets', () => {
     setCells();
     metrics.setMetricDefinition('m1', 't1', 'min', 'c1');
     expect(metrics.getMetric('m1')).toBe(1);
-    store.setCell('t1', 'r1', 'c1', 6);
+    store.delCell('t1', 'r1', 'c1');
     store.setCell('t1', 'r1', 'c1', 1);
     store.setCell('t1', 'r4', 'c1', 'd1');
     expect(metrics.getMetric('m1')).toBe(1);
