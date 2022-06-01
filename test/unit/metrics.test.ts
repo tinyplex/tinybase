@@ -611,14 +611,23 @@ describe('Miscellaneous', () => {
   });
 
   test('forEachMetric', () => {
-    metrics.setMetricDefinition('m1', 't1', 'max', 'c1');
-    metrics.setMetricDefinition('m2', 't1', 'min', 'c1');
+    metrics
+      .setMetricDefinition('m1', 't1', 'max', 'c1')
+      .setMetricDefinition('m2', 't1', 'min', 'c1');
     setCells();
     const eachMetric: any = {};
     metrics.forEachMetric(
       (metricId, metric) => (eachMetric[metricId] = metric),
     );
     expect(eachMetric).toEqual({m1: 5, m2: 1});
+  });
+
+  test('getMetricIds', () => {
+    metrics
+      .setMetricDefinition('m1', 't1', 'max', 'c1')
+      .setMetricDefinition('m2', 't1', 'min', 'c1');
+    setCells();
+    expect(metrics.getMetricIds()).toEqual(['m1', 'm2']);
   });
 
   test('are things present', () => {
