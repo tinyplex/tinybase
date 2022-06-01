@@ -767,6 +767,14 @@ describe('Miscellaneous', () => {
     });
   });
 
+  test('getRelationshipIds', () => {
+    relationships
+      .setRelationshipDefinition('r1', 't1', 'T1', 'c1')
+      .setRelationshipDefinition('r2', 't1', 'T1', 'c2');
+    setCells();
+    expect(relationships.getRelationshipIds()).toEqual(['r1', 'r2']);
+  });
+
   test('are things present', () => {
     expect(relationships.hasRelationship('r1')).toEqual(false);
     relationships.setRelationshipDefinition('r1', 't1', 'T1', 'c1');

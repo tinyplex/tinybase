@@ -1589,6 +1589,14 @@ describe('Miscellaneous', () => {
       });
     });
 
+    test('getIndexIds', () => {
+      indexes
+        .setIndexDefinition('i1', 't1')
+        .setIndexDefinition('i2', 't1', 'c2');
+      setCells();
+      expect(indexes.getIndexIds()).toEqual(['i1', 'i2']);
+    });
+
     test('forEachSlice', () => {
       indexes.setIndexDefinition('i2', 't1', 'c2');
       setCells();
@@ -1607,6 +1615,12 @@ describe('Miscellaneous', () => {
         odd: {r1: {c1: 'one', c2: 'odd'}, r3: {c1: 'three', c2: 'odd'}},
       });
     });
+  });
+
+  test('getSliceIds', () => {
+    indexes.setIndexDefinition('i2', 't1', 'c2');
+    setCells();
+    expect(indexes.getSliceIds('i2')).toEqual(['odd', 'even']);
   });
 
   test('are things present', () => {
