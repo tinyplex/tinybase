@@ -968,17 +968,13 @@ export interface Store {
   getCellIds(tableId: Id, rowId: Id): Ids;
 
   /**
-   * The getCell method returns an object containing the value of a single Cell
-   * in a given Row, in a given Table.
-   *
-   * Note that this returns a copy of, rather than a reference to the underlying
-   * data, so changes made to the returned object are not made to the Store
-   * itself.
+   * The getCell method returns the value of a single Cell in a given Row, in a
+   * given Table.
    *
    * @param tableId The Id of the Table in the Store.
    * @param rowId The Id of the Row in the Table.
    * @param cellId The Id of the Cell in the Row.
-   * @returns The value of the Cell.
+   * @returns The value of the Cell, or `undefined`.
    * @example
    * This example retrieves a single Cell.
    *
