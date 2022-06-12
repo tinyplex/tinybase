@@ -106,8 +106,9 @@ npm run testE2e
 
 ## Documentation
 
-The end-to-end tests will start up their own webserver to test the documentation
-site, but if you separately want to serve the TinyBase website, you can use:
+The end-to-end tests will start up their own web server to test the
+documentation site, but if you separately want to serve the TinyBase website,
+you can use:
 
 ```bash
 npm run compileDocs
