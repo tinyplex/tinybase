@@ -390,6 +390,7 @@ export type CellListener = (
  * @param cellId The Id of the Cell that was being changed.
  * @param invalidCells An array of the values of the Cell that were invalid.
  * @category Listener
+ * @since v1.1.0
  */
 export type InvalidCellListener = (
   store: Store,
@@ -521,6 +522,7 @@ export type CellSchema =
  * different value and then changed back.
  *
  * @category Transaction
+ * @since v1.2.0
  */
 export type ChangedCells = {
   [tableId: Id]: {
@@ -543,6 +545,7 @@ export type ChangedCells = {
  * change a Cell during the transaction are described.
  *
  * @category Transaction
+ * @since v1.2.0
  */
 export type InvalidCells = {
   [tableId: Id]: {
@@ -1710,7 +1713,7 @@ export interface Store {
    *
    * @param actions The function to be executed as a transaction.
    * @param doRollback An optional callback that should return `true` if you
-   * want to rollback the transaction at the end.
+   * want to rollback the transaction at the end. Since v1.2.0.
    * @returns Whatever value the provided transaction function returns.
    * @example
    * This example makes changes to two Cells, first outside, and secondly
@@ -1846,6 +1849,7 @@ export interface Store {
    * // -> 'Fido changed'
    * ```
    * @category Transaction
+   * @since v1.3.0
    */
   startTransaction(): Store;
 
@@ -1923,6 +1927,7 @@ export interface Store {
    * // -> {pets: {fido: {species: 'dog', color: 'brown'}}}
    * ```
    * @category Transaction
+   * @since v1.3.0
    */
   finishTransaction(
     doRollback?: (
@@ -2897,6 +2902,7 @@ export interface Store {
    * store.delListener(listenerId);
    * ```
    * @category Listener
+   * @since v1.1.0
    */
   addInvalidCellListener(
     tableId: IdOrNull,
@@ -2971,6 +2977,7 @@ export interface Store {
    * store.delListener(listenerId).delListener(listenerId2);
    * ```
    * @category Listener
+   * @since v1.3.0
    */
   addWillFinishTransactionListener(listener: TransactionListener): Id;
 
@@ -3040,6 +3047,7 @@ export interface Store {
    * store.delListener(listenerId).delListener(listenerId2);
    * ```
    * @category Listener
+   * @since v1.3.0
    */
   addDidFinishTransactionListener(listener: TransactionListener): Id;
 
