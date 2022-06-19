@@ -37,6 +37,7 @@ import {
   jsonString,
 } from './common/other';
 import {DEFAULT, EMPTY_OBJECT, NUMBER, TYPE} from './common/strings';
+import {DeepIdSet, getListenerFunctions} from './common/listeners';
 import {Id, IdOrNull, Ids, Json} from './common.d';
 import {
   IdMap,
@@ -70,6 +71,7 @@ import {
   arrayFilter,
   arrayForEach,
   arrayHas,
+  arrayIsEqual,
   arrayPair,
   arrayPush,
 } from './common/array';
@@ -79,18 +81,21 @@ import {
   collHas,
   collIsEmpty,
   collPairSize,
+  collSize,
   collSize2,
   collSize3,
   collSize4,
 } from './common/coll';
 import {getCellType} from './common/cell';
-import {getListenerFunctions} from './common/listeners';
 
 type SchemaMap = IdMap2<CellSchema>;
 type RowMap = IdMap<Cell>;
 type TableMap = IdMap<RowMap>;
 type TablesMap = IdMap<TableMap>;
-type IdAdded = 1 | -1;
+type IdAdded = 1 | 0 | -1 | Ids;
+type ChangedIdsMap = Map<IdOrNull, IdAdded>;
+type ChangedIdsMap2 = Map<IdOrNull, ChangedIdsMap>;
+type ChangedIdsMap3 = Map<IdOrNull, ChangedIdsMap2>;
 
 const transformMap = <MapValue, ObjectValue>(
   map: IdMap<MapValue>,
@@ -127,20 +132,20 @@ const validate = (
 };
 
 const idsChanged = (
-  ids: IdMap<IdAdded>,
+  changedIds: Map<IdOrNull, IdAdded>,
   id: Id,
   added: IdAdded,
-): IdMap<IdAdded> | undefined =>
-  mapSet(ids, id, mapGet(ids, id) == -added ? undefined : added);
+): ChangedIdsMap | undefined =>
+  mapSet(changedIds, id, mapGet(changedIds, id) == -added ? undefined : added);
 
 export const createStore: typeof createStoreDecl = (): Store => {
   let hasSchema: boolean;
   let cellsTouched: boolean;
   let nextRowId = 0;
   let transactions = 0;
-  const changedTableIds: IdMap<IdAdded> = mapNew();
-  const changedRowIds: IdMap2<IdAdded> = mapNew();
-  const changedCellIds: IdMap3<IdAdded> = mapNew();
+  const changedTableIds: ChangedIdsMap = mapNew();
+  const changedRowIds: ChangedIdsMap2 = mapNew();
+  const changedCellIds: ChangedIdsMap3 = mapNew();
   const changedCells: IdMap3<[CellOrUndefined, CellOrUndefined]> = mapNew();
   const invalidCells: IdMap3<any[]> = mapNew();
   const schemaMap: SchemaMap = mapNew();
@@ -398,15 +403,24 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const tableIdsChanged = (
     tableId: Id,
     added: IdAdded,
-  ): IdMap<IdAdded> | undefined => idsChanged(changedTableIds, tableId, added);
+  ): Map<IdOrNull, IdAdded> | undefined =>
+    idsChanged(
+      collIsEmpty(changedTableIds)
+        ? (mapSet(changedTableIds, null, getTableIds()) as ChangedIdsMap)
+        : changedTableIds,
+      tableId,
+      added,
+    );
 
   const rowIdsChanged = (
     tableId: Id,
     rowId: Id,
     added: IdAdded,
-  ): IdMap<IdAdded> | undefined =>
+  ): ChangedIdsMap | undefined =>
     idsChanged(
-      mapEnsure<Id, IdMap<IdAdded>>(changedRowIds, tableId, mapNew),
+      mapEnsure(changedRowIds, tableId, () =>
+        mapNew([[null, getRowIds(tableId)]]),
+      ),
       rowId,
       added,
     );
@@ -416,12 +430,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
     rowId: Id,
     cellId: Id,
     added: IdAdded,
-  ): IdMap<IdAdded> | undefined =>
+  ): ChangedIdsMap | undefined =>
     idsChanged(
-      mapEnsure<Id, IdMap<IdAdded>>(
-        mapEnsure<Id, IdMap2<IdAdded>>(changedCellIds, tableId, mapNew),
+      mapEnsure(
+        mapEnsure(changedCellIds, tableId, mapNew) as ChangedIdsMap2,
         rowId,
-        mapNew,
+        () => mapNew([[null, getCellIds(tableId, rowId)]]),
       ),
       cellId,
       added,
@@ -499,6 +513,21 @@ export const createStore: typeof createStoreDecl = (): Store => {
         )
       : 0;
 
+  const callIdsListenersIfChanged = (
+    listeners: DeepIdSet,
+    changedIds: ChangedIdsMap,
+    getIds: (...args: Ids) => Ids,
+    extras: Ids,
+  ): void => {
+    if (
+      collSize(changedIds) > 1 ||
+      (!collIsEmpty(changedIds) &&
+        !arrayIsEqual(mapGet(changedIds, null) as Ids, getIds(...extras)))
+    ) {
+      callListeners(listeners, extras);
+    }
+  };
+
   const callListenersForChanges = (mutator: 0 | 1) => {
     const emptyIdListeners =
       collIsEmpty(cellIdsListeners[mutator]) &&
@@ -511,9 +540,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
       collIsEmpty(tablesListeners[mutator]);
     if (!(emptyIdListeners && emptyOtherListeners)) {
       const changes: [
-        IdMap<IdAdded>,
-        IdMap2<IdAdded>,
-        IdMap3<IdAdded>,
+        ChangedIdsMap,
+        ChangedIdsMap2,
+        ChangedIdsMap3,
         IdMap3<[CellOrUndefined, CellOrUndefined]>,
       ] = mutator
         ? [
@@ -526,20 +555,29 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
       if (!emptyIdListeners) {
         collForEach(changes[2], (rowCellIds, tableId) =>
-          collForEach(rowCellIds, (changedIds, rowId) => {
-            if (!collIsEmpty(changedIds)) {
-              callListeners(cellIdsListeners[mutator], [tableId, rowId]);
-            }
-          }),
+          collForEach(rowCellIds, (changedIds, rowId) =>
+            callIdsListenersIfChanged(
+              cellIdsListeners[mutator],
+              changedIds,
+              getCellIds,
+              [tableId, rowId],
+            ),
+          ),
         );
-        collForEach(changes[1], (changedIds, tableId) => {
-          if (!collIsEmpty(changedIds)) {
-            callListeners(rowIdsListeners[mutator], [tableId]);
-          }
-        });
-        if (!collIsEmpty(changes[0])) {
-          callListeners(tableIdsListeners[mutator]);
-        }
+        collForEach(changes[1], (changedIds, tableId) =>
+          callIdsListenersIfChanged(
+            rowIdsListeners[mutator],
+            changedIds,
+            getRowIds,
+            [tableId],
+          ),
+        );
+        callIdsListenersIfChanged(
+          tableIdsListeners[mutator],
+          changes[0],
+          getTableIds,
+          [],
+        );
       }
 
       if (!emptyOtherListeners) {
