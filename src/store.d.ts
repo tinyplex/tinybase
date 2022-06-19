@@ -793,9 +793,9 @@ export interface Store {
    * The getTableIds method returns the Ids of every Table in the Store.
    *
    * Note that this returns a copy of, rather than a reference, to the list of
-   * Ids, so changes made to the list are not made to the Store itself. Although
-   * the order of Ids have no meaning, this method is expected to return them in
-   * the order in which each Table was added.
+   * Ids, so changes made to the list are not made to the Store itself. Since
+   * v2.0.0, the order is significant: this method will return the Ids in the
+   * order in which each Table was added.
    *
    * @returns An array of the Ids of every Table in the Store.
    * @example
@@ -860,9 +860,9 @@ export interface Store {
    * The getRowIds method returns the Ids of every Row in a given Table.
    *
    * Note that this returns a copy of, rather than a reference, to the list of
-   * Ids, so changes made to the list are not made to the Store itself. Although
-   * the order of Ids have no meaning, this method is expected to return them in
-   * the order in which each Row was added.
+   * Ids, so changes made to the list are not made to the Store itself. Since
+   * v2.0.0, the order is significant: this method will return the Ids in the
+   * order in which each Row was added.
    *
    * @param tableId The Id of the Table in the Store.
    * @returns An array of the Ids of every Row in the Table.
@@ -934,9 +934,9 @@ export interface Store {
    * given Table.
    *
    * Note that this returns a copy of, rather than a reference, to the list of
-   * Ids, so changes made to the list are not made to the Store itself. Although
-   * the order of Ids have no meaning, this method is expected to return them in
-   * the order in which each Row was added.
+   * Ids, so changes made to the list are not made to the Store itself. Since
+   * v2.0.0, the order is significant: this method will return the Ids in the
+   * order in which each Cell was added.
    *
    * @param tableId The Id of the Table in the Store.
    * @param rowId The Id of the Row in the Table.
@@ -2095,8 +2095,9 @@ export interface Store {
    * The addTableIdsListener method registers a listener function with the Store
    * that will be called whenever the Table Ids in the Store change.
    *
-   * Such a listener is only called when a Table is added or removed. To listen
-   * to all changes in the Store, use the addTablesListener method.
+   * Such a listener is only called when a Table is added or removed, or the
+   * order of the Table Ids has changed. To listen to all changes in the Store,
+   * use the addTablesListener method.
    *
    * The provided listener is a TableIdsListener function, and will be called
    * with a reference to the Store.
@@ -2254,8 +2255,9 @@ export interface Store {
    * The addRowIdsListener method registers a listener function with the Store
    * that will be called whenever the Row Ids in a Table change.
    *
-   * Such a listener is only called when a Row is added or removed. To listen to
-   * all changes in the Table, use the addTableListener method.
+   * Such a listener is only called when a Row is added or removed, or the order
+   * of the Row Ids has changed. To listen to all changes in the Table, use the
+   * addTableListener method.
    *
    * You can either listen to a single Table (by specifying its Id as the
    * method's first parameter) or changes to any Table (by providing `null`).
@@ -2455,8 +2457,9 @@ export interface Store {
    * The addCellIdsListener method registers a listener function with the Store
    * that will be called whenever the Cell Ids in a Row change.
    *
-   * Such a listener is only called when a Cell is added or removed. To listen
-   * to all changes in the Row, use the addRowListener method.
+   * Such a listener is only called when a Cell is added or removed, or the
+   * order of the Cell Ids has changed. To listen to all changes in the Row, use
+   * the addRowListener method.
    *
    * You can either listen to a single Row (by specifying the Table Id and Row
    * Id as the method's first two parameters) or changes to any Row (by
