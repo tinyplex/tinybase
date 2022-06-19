@@ -63,18 +63,19 @@ export const mapToObj = <MapValue, ObjectValue>(
   return obj;
 };
 
-export const mapClone = <MapValue>(
-  map: IdMap<MapValue> | undefined,
-  childMapper?: (mapValue: MapValue) => MapValue,
-): IdMap<MapValue> => {
-  const map2: IdMap<MapValue> = mapNew();
-  const mapper = childMapper ?? ((mapValue: MapValue) => mapValue);
+export const mapClone = <Key, Value>(
+  map: Map<Key, Value> | undefined,
+  childMapper?: (mapValue: Value) => Value,
+): Map<Key, Value> => {
+  const map2: Map<Key, Value> = mapNew();
+  const mapper = childMapper ?? ((mapValue: Value) => mapValue);
   collForEach(map, (value, key) => map2.set(key, mapper(value)));
   return map2;
 };
 
-export const mapClone2 = <MapValue>(map: IdMap2<MapValue> | undefined) =>
-  mapClone(map, mapClone);
+export const mapClone2 = <Key1, Key2, Value>(
+  map: Map<Key1, Map<Key2, Value>> | undefined,
+) => mapClone(map, mapClone);
 
 type Node<Path, Leaf> = Map<Path, Node<Path, Leaf> | Leaf>;
 export const visitTree = <Path, Leaf>(
