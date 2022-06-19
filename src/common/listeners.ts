@@ -36,9 +36,9 @@ import {
 import {collDel, collForEach} from './coll';
 import {ifNotUndefined, isUndefined} from './other';
 
-type IdOrBoolean = Id | boolean;
-type DeepIdSet = Map<IdOrNull, DeepIdSet> | IdSet;
+export type DeepIdSet = Map<IdOrNull, DeepIdSet> | IdSet;
 
+type IdOrBoolean = Id | boolean;
 type Listener =
   | TablesListener
   | TableIdsListener
