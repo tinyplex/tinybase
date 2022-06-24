@@ -6,20 +6,12 @@ jobs:
   betaSite:
     runs-on: ubuntu-latest
     steps:
-
-    - name: Token
-      id: token
-      uses: peter-murray/workflow-application-token-action@v1
-      with:
-        application_id: ${{ secrets.TINYPLEXBOT_APPLICATION_ID }}
-        application_private_key: ${{ secrets.TINYPLEXBOT_APPLICATION_PRIVATE_KEY }}
-        organization: tinyplex
         
     - name: Copy
       id: copy
       uses: andstor/copycat-action@v3
       with:
-        personal_token: ${{ steps.token.outputs.token }}
+        personal_token: ${{ secrets.TINYPLEXBOT_PERSONAL_ACCESS_TOKEN }}
         src_branch: beta
         src_path: docs
         exclude: CNAME
@@ -28,5 +20,5 @@ jobs:
         dst_branch: main
         dst_path: /
         commit_message: "[action] Mirrored from tinybase beta branch."
-        username: jamesgpearce
-        email: github@tripleodeon.com
+        username: tinyplexbot
+        email: tinyplexbot@tripleodeon.com
