@@ -1,22 +1,25 @@
 on: 
-  push
-  workflow_dispatch
+  - push
+  - workflow_dispatch
 
 jobs:
   betaSite:
     runs-on: ubuntu-latest
     steps:
-      name: Token
-          id: token
-          uses: peter-murray/workflow-application-token-action@v1
-          with:
-            application_id: ${{ secrets.TINYPLEXBOT_APPLICATION_ID }}
-            application_private_key: ${{ secrets.TINYPLEXBOT_APPLICATION_PRIVATE_KEY }}
-      name: Copy
-          id: copy
-          uses: actions/checkout@v2.3.4
-          uses: GuillaumeFalourd/copy-push-files@v1
-            with:
-              source_files: docs
-              remote_repository: https://github.com/tinybase/tinybase-site-beta
-              access_token: ${{ steps.token.outputs.token }}
+
+    - name: Token
+      id: token
+      uses: peter-murray/workflow-application-token-action@v1
+      with:
+        application_id: ${{ secrets.TINYPLEXBOT_APPLICATION_ID }}
+        application_private_key: ${{ secrets.TINYPLEXBOT_APPLICATION_PRIVATE_KEY }}
+        
+#     - name: Copy
+#       id: copy
+#       uses: 
+#       - actions/checkout@v2.3.4
+#       - GuillaumeFalourd/copy-push-files@v1
+#       with:
+#         source_files: docs
+#         remote_repository: https://github.com/tinybase/tinybase-site-beta
+#         access_token: ${{ steps.token.outputs.token }}
