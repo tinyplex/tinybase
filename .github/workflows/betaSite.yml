@@ -13,6 +13,7 @@ jobs:
       with:
         application_id: ${{ secrets.TINYPLEXBOT_APPLICATION_ID }}
         application_private_key: ${{ secrets.TINYPLEXBOT_APPLICATION_PRIVATE_KEY }}
+        organization: tinyplex
         
     - name: Copy
       id: copy
@@ -21,8 +22,9 @@ jobs:
         personal_token: ${{ steps.token.outputs.token }}
         src_branch: beta
         src_path: docs
+        exclude: CNAME
         dst_owner: tinyplex
         dst_repo_name: tinybase-site-beta
         dst_branch: main
-        dst_path: docs
+        dst_path: /
         commit_message: "[action] Mirrored from tinybase beta branch."
