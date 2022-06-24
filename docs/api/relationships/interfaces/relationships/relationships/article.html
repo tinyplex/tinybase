@@ -10,6 +10,7 @@
   <span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
 
 <span class="keyword">const</span> relationships <span class="operator">=</span> <span class="function"><a href="/api/relationships/functions/creation/createrelationships">createRelationships</a></span><span class="punctuation">(</span>store<span class="punctuation">)</span><span class="punctuation">;</span>
+
 <span class="comment">// A local/remote table relationship:</span>
 relationships<span class="punctuation">.</span><span class="function"><a href="/api/relationships/interfaces/relationships/relationships/methods/configuration/setrelationshipdefinition">setRelationshipDefinition</a></span><span class="punctuation">(</span>
   <span class="string">'petSpecies'</span><span class="punctuation">,</span> <span class="comment">//  relationshipId</span>
@@ -17,6 +18,11 @@ relationships<span class="punctuation">.</span><span class="function"><a href="/
   <span class="string">'species'</span><span class="punctuation">,</span> <span class="comment">//     remoteTableId to link to</span>
   <span class="string">'species'</span><span class="punctuation">,</span> <span class="comment">//     cellId containing remote key</span>
 <span class="punctuation">)</span><span class="punctuation">;</span>
+console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>relationships<span class="punctuation">.</span><span class="function"><a href="/api/relationships/interfaces/relationships/relationships/methods/getter/getremoterowid">getRemoteRowId</a></span><span class="punctuation">(</span><span class="string">'petSpecies'</span><span class="punctuation">,</span> <span class="string">'fido'</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="comment">// -> 'dog'</span>
+console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>relationships<span class="punctuation">.</span><span class="function"><a href="/api/relationships/interfaces/relationships/relationships/methods/getter/getlocalrowids">getLocalRowIds</a></span><span class="punctuation">(</span><span class="string">'petSpecies'</span><span class="punctuation">,</span> <span class="string">'dog'</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="comment">// -> ['fido', 'cujo']</span>
+
 <span class="comment">// A linked list relationship:</span>
 relationships<span class="punctuation">.</span><span class="function"><a href="/api/relationships/interfaces/relationships/relationships/methods/configuration/setrelationshipdefinition">setRelationshipDefinition</a></span><span class="punctuation">(</span>
   <span class="string">'petSequence'</span><span class="punctuation">,</span> <span class="comment">// relationshipId</span>
@@ -24,11 +30,6 @@ relationships<span class="punctuation">.</span><span class="function"><a href="/
   <span class="string">'pets'</span><span class="punctuation">,</span> <span class="comment">//        the same remoteTableId to link within</span>
   <span class="string">'next'</span><span class="punctuation">,</span> <span class="comment">//        cellId containing link key</span>
 <span class="punctuation">)</span><span class="punctuation">;</span>
-
-console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>relationships<span class="punctuation">.</span><span class="function"><a href="/api/relationships/interfaces/relationships/relationships/methods/getter/getremoterowid">getRemoteRowId</a></span><span class="punctuation">(</span><span class="string">'petSpecies'</span><span class="punctuation">,</span> <span class="string">'fido'</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
-<span class="comment">// -> 'dog'</span>
-console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>relationships<span class="punctuation">.</span><span class="function"><a href="/api/relationships/interfaces/relationships/relationships/methods/getter/getlocalrowids">getLocalRowIds</a></span><span class="punctuation">(</span><span class="string">'petSpecies'</span><span class="punctuation">,</span> <span class="string">'dog'</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
-<span class="comment">// -> ['fido', 'cujo']</span>
 console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>relationships<span class="punctuation">.</span><span class="function"><a href="/api/relationships/interfaces/relationships/relationships/methods/getter/getlinkedrowids">getLinkedRowIds</a></span><span class="punctuation">(</span><span class="string">'petSequence'</span><span class="punctuation">,</span> <span class="string">'fido'</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// -> ['fido', 'felix', 'cujo']</span>
 
