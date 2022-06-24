@@ -14,12 +14,15 @@ jobs:
         application_id: ${{ secrets.TINYPLEXBOT_APPLICATION_ID }}
         application_private_key: ${{ secrets.TINYPLEXBOT_APPLICATION_PRIVATE_KEY }}
         
-#     - name: Copy
-#       id: copy
-#       uses: 
-#       - actions/checkout@v2.3.4
-#       - GuillaumeFalourd/copy-push-files@v1
-#       with:
-#         source_files: docs
-#         remote_repository: https://github.com/tinybase/tinybase-site-beta
-#         access_token: ${{ steps.token.outputs.token }}
+    - name: Copy
+      id: copy
+      uses: andstor/copycat-action@v3
+      with:
+        personal_token: ${{ steps.token.outputs.token }}
+        src_branch: beta
+        src_path: docs
+        dst_owner: tinyplex
+        dst_repo_name: tinybase-site-beta
+        dst_branch: main
+        dst_path: docs
+        commit_message: "[action] Mirrored from tinybase beta branch."
