@@ -16,7 +16,7 @@ jobs:
         personal_token: ${{ secrets.TINYPLEXBOT_PERSONAL_ACCESS_TOKEN }}
         src_branch: beta
         src_path: docs
-        exclude: CNAME
+        exclude: "**/CNAME"
         dst_owner: tinyplex
         dst_repo_name: tinybase-site-beta
         dst_branch: main
