@@ -28,3 +28,5 @@ jobs:
         dst_branch: main
         dst_path: /
         commit_message: "[action] Mirrored from tinybase beta branch."
+        username: jamesgpearce
+        email: github@tripleodeon.com
