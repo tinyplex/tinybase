@@ -91,6 +91,10 @@ const forDeepSet = (valueDo: (set: IdSet, arg: any) => void) => {
   return deep;
 };
 
+const forDeepSetForEach = forDeepSet(collForEach);
+
+const forDeepSetDel = forDeepSet(collDel);
+
 export const getListenerFunctions = (
   getThing: () => Store | Metrics | Indexes | Relationships | Checkpoints,
 ): [
@@ -125,7 +129,7 @@ export const getListenerFunctions = (
     ids: Ids = [],
     ...extraArgs: any[]
   ): void =>
-    forDeepSet(collForEach)(
+    forDeepSetForEach(
       deepSet,
       (id: Id) =>
         ifNotUndefined(mapGet(allListeners, id), ([listener]) =>
@@ -138,7 +142,7 @@ export const getListenerFunctions = (
     ifNotUndefined(
       mapGet(allListeners, id),
       ([, deepSet, idOrNulls]) => {
-        forDeepSet(collDel)(deepSet, id, ...idOrNulls);
+        forDeepSetDel(deepSet, id, ...idOrNulls);
         mapSet(allListeners, id);
         if (arrayLength(listenerPool) < 1e3) {
           arrayPush(listenerPool, id);
