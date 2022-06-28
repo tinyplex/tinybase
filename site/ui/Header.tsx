@@ -1,14 +1,24 @@
 import {NoPropComponent, NodeChildren, useRootNode} from 'tinydocs';
 import React from 'react';
+import {useMetadata} from './BuildContext';
 
 export const Header: NoPropComponent = () => {
+  const {version} = useMetadata();
   const rootNode = useRootNode();
 
   return (
     <header>
       <a href="/">
         <img src="/favicon.svg" />
-        <span>TinyBase</span>
+        <span>
+          TinyBase
+          {version.includes('beta') && (
+            <>
+              {' '}
+              <em title={version}>beta</em>
+            </>
+          )}
+        </span>
       </a>
       <nav>
         <ul>
