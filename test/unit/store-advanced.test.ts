@@ -71,7 +71,7 @@ describe('setJson', () => {
   });
 });
 
-describe('Ids order', () => {
+describe('Ids and ordering', () => {
   beforeEach(() => {
     store.setTables({
       t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1, c2: 2}},
@@ -82,17 +82,20 @@ describe('Ids order', () => {
   describe('Table Ids', () => {
     beforeEach(() => {
       listener.listenToTableIds('/t');
+      listener.listenToTableIds('/t%', true);
     });
 
     test('Add', () => {
       store.setTable('t3', {r1: {c1: 1, c2: 2}, r2: {c1: 1, c2: 2}});
       expectChanges(listener, '/t', ['t1', 't2', 't3']);
+      expectChanges(listener, '/t%', ['t1', 't2', 't3']);
       expectNoChanges(listener);
     });
 
     test('Remove', () => {
       store.delTable('t2');
       expectChanges(listener, '/t', ['t1']);
+      expectChanges(listener, '/t%', ['t1']);
       expectNoChanges(listener);
     });
 
@@ -117,7 +120,7 @@ describe('Ids order', () => {
         store.delTable('t1');
         store.setTable('t1', {r1: {c1: 1, c2: 2}, r2: {c1: 1, c2: 2}});
       });
-      expectChanges(listener, '/t', ['t2', 't1']);
+      expectChanges(listener, '/t%', ['t2', 't1']);
       expectNoChanges(listener);
     });
 
@@ -135,17 +138,20 @@ describe('Ids order', () => {
   describe('Row Ids', () => {
     beforeEach(() => {
       listener.listenToRowIds('/t1/r', 't1');
+      listener.listenToRowIds('/t1/r%', 't1', true);
     });
 
     test('Add', () => {
       store.setRow('t1', 'r3', {c1: 1, c2: 2});
       expectChanges(listener, '/t1/r', {t1: ['r1', 'r2', 'r3']});
+      expectChanges(listener, '/t1/r%', {t1: ['r1', 'r2', 'r3']});
       expectNoChanges(listener);
     });
 
     test('Remove', () => {
       store.delRow('t1', 'r2');
       expectChanges(listener, '/t1/r', {t1: ['r1']});
+      expectChanges(listener, '/t1/r%', {t1: ['r1']});
       expectNoChanges(listener);
     });
 
@@ -170,7 +176,7 @@ describe('Ids order', () => {
         store.delRow('t1', 'r1');
         store.setRow('t1', 'r1', {c1: 1, c2: 2});
       });
-      expectChanges(listener, '/t1/r', {t1: ['r2', 'r1']});
+      expectChanges(listener, '/t1/r%', {t1: ['r2', 'r1']});
       expectNoChanges(listener);
     });
 
@@ -188,17 +194,20 @@ describe('Ids order', () => {
   describe('Cell Ids', () => {
     beforeEach(() => {
       listener.listenToCellIds('/t1/r1/c', 't1', 'r1');
+      listener.listenToCellIds('/t1/r1/c%', 't1', 'r1', true);
     });
 
     test('Add', () => {
       store.setCell('t1', 'r1', 'c3', 3);
       expectChanges(listener, '/t1/r1/c', {t1: {r1: ['c1', 'c2', 'c3']}});
+      expectChanges(listener, '/t1/r1/c%', {t1: {r1: ['c1', 'c2', 'c3']}});
       expectNoChanges(listener);
     });
 
     test('Remove', () => {
       store.delCell('t1', 'r1', 'c2');
       expectChanges(listener, '/t1/r1/c', {t1: {r1: ['c1']}});
+      expectChanges(listener, '/t1/r1/c%', {t1: {r1: ['c1']}});
       expectNoChanges(listener);
     });
 
@@ -223,7 +232,7 @@ describe('Ids order', () => {
         store.delCell('t1', 'r1', 'c1');
         store.setCell('t1', 'r1', 'c1', 1);
       });
-      expectChanges(listener, '/t1/r1/c', {t1: {r1: ['c2', 'c1']}});
+      expectChanges(listener, '/t1/r1/c%', {t1: {r1: ['c2', 'c1']}});
       expectNoChanges(listener);
     });
 
