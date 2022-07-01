@@ -30,11 +30,16 @@ type Listener = Readonly<{
 export type StoreListener = Listener &
   Readonly<{
     listenToTables: (id: Id) => Id;
-    listenToTableIds: (id: Id) => Id;
+    listenToTableIds: (id: Id, trackReorder?: boolean) => Id;
     listenToTable: (id: Id, tableId: IdOrNull) => Id;
-    listenToRowIds: (id: Id, tableId: IdOrNull) => Id;
+    listenToRowIds: (id: Id, tableId: IdOrNull, trackReorder?: boolean) => Id;
     listenToRow: (id: Id, tableId: IdOrNull, rowId: IdOrNull) => Id;
-    listenToCellIds: (id: Id, tableId: IdOrNull, rowId: IdOrNull) => Id;
+    listenToCellIds: (
+      id: Id,
+      tableId: IdOrNull,
+      rowId: IdOrNull,
+      trackReorder?: boolean,
+    ) => Id;
     listenToCell: (
       id: Id,
       tableId: IdOrNull,
@@ -137,10 +142,11 @@ export const createStoreListener = (store: Store): StoreListener => {
       );
     },
 
-    listenToTableIds: (id) => {
+    listenToTableIds: (id, trackReorder) => {
       logs[id] = [];
-      return store.addTableIdsListener(() =>
-        logs[id].push(store.getTableIds()),
+      return store.addTableIdsListener(
+        () => logs[id].push(store.getTableIds()),
+        trackReorder,
       );
     },
 
@@ -151,10 +157,13 @@ export const createStoreListener = (store: Store): StoreListener => {
       );
     },
 
-    listenToRowIds: (id, tableId) => {
+    listenToRowIds: (id, tableId, trackReorder) => {
       logs[id] = [];
-      return store.addRowIdsListener(tableId, (store, tableId) =>
-        logs[id].push({[tableId]: store.getRowIds(tableId)}),
+      return store.addRowIdsListener(
+        tableId,
+        (store, tableId) =>
+          logs[id].push({[tableId]: store.getRowIds(tableId)}),
+        trackReorder,
       );
     },
 
@@ -165,12 +174,16 @@ export const createStoreListener = (store: Store): StoreListener => {
       );
     },
 
-    listenToCellIds: (id, tableId, rowId) => {
+    listenToCellIds: (id, tableId, rowId, trackReorder) => {
       logs[id] = [];
-      return store.addCellIdsListener(tableId, rowId, (store, tableId, rowId) =>
-        logs[id].push({
-          [tableId]: {[rowId]: store.getCellIds(tableId, rowId)},
-        }),
+      return store.addCellIdsListener(
+        tableId,
+        rowId,
+        (store, tableId, rowId) =>
+          logs[id].push({
+            [tableId]: {[rowId]: store.getCellIds(tableId, rowId)},
+          }),
+        trackReorder,
       );
     },
 

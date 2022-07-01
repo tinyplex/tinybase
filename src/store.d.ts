@@ -2095,12 +2095,18 @@ export interface Store {
    * The addTableIdsListener method registers a listener function with the Store
    * that will be called whenever the Table Ids in the Store change.
    *
-   * Such a listener is only called when a Table is added or removed, or the
-   * order of the Table Ids has changed. To listen to all changes in the Store,
-   * use the addTablesListener method.
-   *
    * The provided listener is a TableIdsListener function, and will be called
    * with a reference to the Store.
+   *
+   * By default, such a listener is only called when a Table is added or
+   * removed. To listen to all changes in the Store, use the addTablesListener
+   * method.
+   *
+   * Use the optional `trackReorder` parameter to additionally track when the
+   * set of Ids has not changed, but the order has - for example when a Table
+   * from the middle of the Store is removed and then added back within the same
+   * transaction. This behavior is disabled by default due to the potential
+   * performance cost of detecting such changes.
    *
    * Use the optional mutator parameter to indicate that there is code in the
    * listener that will mutate Store data. If set to `false` (or omitted), such
@@ -2112,6 +2118,9 @@ export interface Store {
    *
    * @param listener The function that will be called whenever the Table Ids in
    * the Store change.
+   * @param trackReorder An optional boolean that indicates that the listener
+   * should be called if the set of Ids remains the same but their order
+   * changes.
    * @param mutator An optional boolean that indicates that the listener mutates
    * Store data.
    * @returns A unique Id for the listener that can later be used to call it
@@ -2141,7 +2150,8 @@ export interface Store {
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const listenerId = store.addTableIdsListener(
    *   (store) => store.setCell('meta', 'update', 'store', true),
-   *   true,
+   *   false, // track reorder
+   *   true, // mutator
    * );
    *
    * store.setTable('species', {dog: {price: 5}});
@@ -2152,20 +2162,24 @@ export interface Store {
    * ```
    * @category Listener
    */
-  addTableIdsListener(listener: TableIdsListener, mutator?: boolean): Id;
+  addTableIdsListener(
+    listener: TableIdsListener,
+    trackReorder?: boolean,
+    mutator?: boolean,
+  ): Id;
 
   /**
    * The addTableListener method registers a listener function with the Store
    * that will be called whenever data in a Table changes.
    *
-   * You can either listen to a single Table (by specifying its Id as the
-   * method's first parameter) or changes to any Table (by providing a `null`
-   * wildcard).
-   *
    * The provided listener is a TableListener function, and will be called with
    * a reference to the Store, the Id of the Table that changed, and a
    * GetCellChange function in case you need to inspect any changes that
    * occurred.
+   *
+   * You can either listen to a single Table (by specifying its Id as the
+   * method's first parameter) or changes to any Table (by providing a `null`
+   * wildcard).
    *
    * Use the optional mutator parameter to indicate that there is code in the
    * listener that will mutate Store data. If set to `false` (or omitted), such
@@ -2255,15 +2269,21 @@ export interface Store {
    * The addRowIdsListener method registers a listener function with the Store
    * that will be called whenever the Row Ids in a Table change.
    *
-   * Such a listener is only called when a Row is added or removed, or the order
-   * of the Row Ids has changed. To listen to all changes in the Table, use the
-   * addTableListener method.
-   *
-   * You can either listen to a single Table (by specifying its Id as the
-   * method's first parameter) or changes to any Table (by providing `null`).
-   *
    * The provided listener is a RowIdsListener function, and will be called with
    * a reference to the Store and the Id of the Table that changed.
+   *
+   * By default, such a listener is only called when a Row is added or removed.
+   * To listen to all changes in the Table, use the addTableListener method.
+   *
+   * You can either listen to a single Table (by specifying its Id as the
+   * method's first parameter) or changes to any Table (by providing a `null`
+   * wildcard).
+   *
+   * Use the optional `trackReorder` parameter to additionally track when the
+   * set of Ids has not changed, but the order has - for example when a Row from
+   * the middle of the Table is removed and then added back within the same
+   * transaction. This behavior is disabled by default due to the potential
+   * performance cost of detecting such changes.
    *
    * Use the optional mutator parameter to indicate that there is code in the
    * listener that will mutate Store data. If set to `false` (or omitted), such
@@ -2276,6 +2296,9 @@ export interface Store {
    * @param tableId The Id of the Table to listen to, or `null` as a wildcard.
    * @param listener The function that will be called whenever the Row Ids in
    * the Table change.
+   * @param trackReorder An optional boolean that indicates that the listener
+   * should be called if the set of Ids remains the same but their order
+   * changes.
    * @param mutator An optional boolean that indicates that the listener mutates
    * Store data.
    * @returns A unique Id for the listener that can later be used to call it
@@ -2294,6 +2317,36 @@ export interface Store {
    * store.setRow('pets', 'felix', {species: 'cat'});
    * // -> 'Row Ids for pets table changed'
    * // -> ['fido', 'felix']
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @example
+   * This example registers a listener that responds to a change of order in the
+   * rows of a specific Table, even though the set of Ids themselves has not
+   * changed.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {
+   *     fido: {species: 'dog'},
+   *     felix: {species: 'cat'},
+   *   },
+   * });
+   * const listenerId = store.addRowIdsListener(
+   *   'pets',
+   *   (store) => {
+   *     console.log('Row Ids or order for pets table changed');
+   *     console.log(store.getRowIds('pets'));
+   *   },
+   *   true, // track reorder
+   * );
+   *
+   * store.transaction(() => {
+   *   store.delRow('pets', 'fido');
+   *   store.setRow('pets', 'fido', {species: 'dog'});
+   * });
+   * // -> 'Row Ids or order for pets table changed'
+   * // -> ['felix', 'fido']
    *
    * store.delListener(listenerId);
    * ```
@@ -2326,7 +2379,8 @@ export interface Store {
    * const listenerId = store.addRowIdsListener(
    *   'pets',
    *   (store, tableId) => store.setCell('meta', 'update', tableId, true),
-   *   true,
+   *   false, // track reorder
+   *   true, // mutator
    * );
    *
    * store.setRow('pets', 'felix', {species: 'cat'});
@@ -2340,12 +2394,18 @@ export interface Store {
   addRowIdsListener(
     tableId: IdOrNull,
     listener: RowIdsListener,
+    trackReorder?: boolean,
     mutator?: boolean,
   ): Id;
 
   /**
    * The addRowListener method registers a listener function with the Store that
    * will be called whenever data in a Row changes.
+   *
+   * The provided listener is a RowListener function, and will be called with a
+   * reference to the Store, the Id of the Table that changed, the Id of the Row
+   * that changed, and a GetCellChange function in case you need to inspect any
+   * changes that occurred.
    *
    * You can either listen to a single Row (by specifying the Table Id and Row
    * Id as the method's first two parameters) or changes to any Row (by
@@ -2355,11 +2415,6 @@ export interface Store {
    * wildcarded with `null`. You can listen to a specific Row in a specific
    * Table, any Row in a specific Table, a specific Row in any Table, or any Row
    * in any Table.
-   *
-   * The provided listener is a RowListener function, and will be called with a
-   * reference to the Store, the Id of the Table that changed, the Id of the Row
-   * that changed, and a GetCellChange function in case you need to inspect any
-   * changes that occurred.
    *
    * Use the optional mutator parameter to indicate that there is code in the
    * listener that will mutate Store data. If set to `false` (or omitted), such
@@ -2457,22 +2512,27 @@ export interface Store {
    * The addCellIdsListener method registers a listener function with the Store
    * that will be called whenever the Cell Ids in a Row change.
    *
-   * Such a listener is only called when a Cell is added or removed, or the
-   * order of the Cell Ids has changed. To listen to all changes in the Row, use
-   * the addRowListener method.
+   * The provided listener is a CellIdsListener function, and will be called
+   * with a reference to the Store, the Id of the Table, and the Id of the Row
+   * that changed.
+   *
+   * By default, such a listener is only called when a Cell is added or removed.
+   * To listen to all changes in the Row, use the addRowListener method.
    *
    * You can either listen to a single Row (by specifying the Table Id and Row
    * Id as the method's first two parameters) or changes to any Row (by
-   * providing `null`).
+   * providing a `null` wildcard).
    *
    * Both, either, or neither of the `tableId` and `rowId` parameters can be
    * wildcarded with `null`. You can listen to a specific Row in a specific
    * Table, any Row in a specific Table, a specific Row in any Table, or any Row
    * in any Table.
    *
-   * The provided listener is a CellIdsListener function, and will be called
-   * with a reference to the Store, the Id of the Table, and the Id of the Row
-   * that changed.
+   * Use the optional `trackReorder` parameter to additionally track when the
+   * set of Ids has not changed, but the order has - for example when a Cell
+   * from the middle of the Row is removed and then added back within the same
+   * transaction. This behavior is disabled by default due to the potential
+   * performance cost of detecting such changes.
    *
    * Use the optional mutator parameter to indicate that there is code in the
    * listener that will mutate Store data. If set to `false` (or omitted), such
@@ -2486,6 +2546,9 @@ export interface Store {
    * @param rowId The Id of the Row to listen to, or `null` as a wildcard.
    * @param listener The function that will be called whenever the Cell Ids in
    * the Row change.
+   * @param trackReorder An optional boolean that indicates that the listener
+   * should be called if the set of Ids remains the same but their order
+   * changes.
    * @param mutator An optional boolean that indicates that the listener mutates
    * Store data.
    * @returns A unique Id for the listener that can later be used to call it
@@ -2542,7 +2605,8 @@ export interface Store {
    *   'fido',
    *   (store, tableId, rowId) =>
    *     store.setCell('meta', 'update', `${tableId}_${rowId}`, true),
-   *   true,
+   *   false, // track reorder
+   *   true, // mutator
    * );
    *
    * store.setCell('pets', 'fido', 'color', 'brown');
@@ -2557,12 +2621,19 @@ export interface Store {
     tableId: IdOrNull,
     rowId: IdOrNull,
     listener: CellIdsListener,
+    trackReorder?: boolean,
     mutator?: boolean,
   ): Id;
 
   /**
    * The addCellListener method registers a listener function with the Store
    * that will be called whenever data in a Cell changes.
+   *
+   * The provided listener is a CellListener function, and will be called with a
+   * reference to the Store, the Id of the Table that changed, the Id of the Row
+   * that changed, the Id of the Cell that changed, the new Cell value, the old
+   * Cell value, and a GetCellChange function in case you need to inspect any
+   * changes that occurred.
    *
    * You can either listen to a single Cell (by specifying the Table Id, Row Id,
    * and Cell Id as the method's first three parameters) or changes to any Cell
@@ -2572,12 +2643,6 @@ export interface Store {
    * be wildcarded with `null`. You can listen to a specific Cell in a specific
    * Row in a specific Table, any Cell in any Row in any Table, for example - or
    * every other combination of wildcards.
-   *
-   * The provided listener is a CellListener function, and will be called with a
-   * reference to the Store, the Id of the Table that changed, the Id of the Row
-   * that changed, the Id of the Cell that changed, the new Cell value, the old
-   * Cell value, and a GetCellChange function in case you need to inspect any
-   * changes that occurred.
    *
    * Use the optional mutator parameter to indicate that there is code in the
    * listener that will mutate Store data. If set to `false` (or omitted), such
@@ -2685,6 +2750,14 @@ export interface Store {
    * Store that will be called whenever invalid data was attempted to be written
    * to a Cell.
    *
+   * The provided listener is an InvalidCellListener function, and will be
+   * called with a reference to the Store, the Id of the Table, the Id of the
+   * Row, and the Id of Cell that were being attempted to be changed. It is also
+   * given the invalid value of the Cell, which could have been of absolutely
+   * any type. Since there could have been multiple failed attempts to set the
+   * Cell within a single transaction, this is an array containing each attempt,
+   * chronologically.
+   *
    * You can either listen to a single Cell (by specifying the Table Id, Row Id,
    * and Cell Id as the method's first three parameters) or invalid attempts to
    * change any Cell (by providing `null` wildcards).
@@ -2693,14 +2766,6 @@ export interface Store {
    * be wildcarded with `null`. You can listen to a specific Cell in a specific
    * Row in a specific Table, any Cell in any Row in any Table, for example - or
    * every other combination of wildcards.
-   *
-   * The provided listener is an InvalidCellListener function, and will be
-   * called with a reference to the Store, the Id of the Table, the Id of the
-   * Row, and the Id of Cell that were being attempted to be changed. It is also
-   * given the invalid value of the Cell, which could have been of absolutely
-   * any type. Since there could have been multiple failed attempts to set the
-   * Cell within a single transaction, this is an array containing each attempt,
-   * chronologically.
    *
    * Use the optional mutator parameter to indicate that there is code in the
    * listener that will mutate Store data. If set to `false` (or omitted), such

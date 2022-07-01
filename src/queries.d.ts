@@ -1314,8 +1314,16 @@ export type Having = {
  * Note that the Order clause does not work by changing the Row Ids of the
  * result Table, but by changing their insert order. Therefore the Ids array
  * returned from the getResultRowIds method will be correctly ordered, even if
- * the Ids themselves might seem out of order. If you _do_ want to sort Rows by
- * their Id, that is provided as a second parameter to the getSortKey callback.
+ * the Ids themselves might seem out of order based on their values. If you _do_
+ * want to sort Rows by their Id, that is provided as a second parameter to the
+ * getSortKey callback.
+ *
+ * Importantly, if you are using the addResultRowIdsListener method to listen to
+ * changes to the order of Rows due to this clause, you will need to set the
+ * optional `trackReorder` parameter to `true` to track when the set of Ids has
+ * not changed, but the order has.
+ *
+ * trackReorder
  *
  * @example
  * This example shows a query that orders a Table by a numeric Cell, in a
@@ -2326,14 +2334,14 @@ export interface Queries {
    * The addResultTableListener method registers a listener function with the
    * Queries object that will be called whenever data in a result Table changes.
    *
-   * You can either listen to a single result Table (by specifying a query Id as
-   * the method's first parameter) or changes to any result Table (by providing
-   * a `null` wildcard).
-   *
    * The provided listener is a ResultTableListener function, and will be called
    * with a reference to the Queries object, the Id of the Table that changed
    * (which is also the query Id), and a GetCellChange function in case you need
    * to inspect any changes that occurred.
+   *
+   * You can either listen to a single result Table (by specifying a query Id as
+   * the method's first parameter) or changes to any result Table (by providing
+   * a `null` wildcard).
    *
    * @param queryId The Id of the query to listen to, or `null` as a wildcard.
    * @param listener The function that will be called whenever data in the
@@ -2417,25 +2425,34 @@ export interface Queries {
    * Queries object that will be called whenever the Row Ids in a result Table
    * change.
    *
-   * Such a listener is only called when a Row is added to, or removed from, the
-   * result Table, or the order of the Row Ids has changed. To listen to all
-   * changes in the result Table, use the addResultTableListener method.
+   * The provided listener is a ResultRowIdsListener function, and will be
+   * called with a reference to the Queries object and the Id of the Table that
+   * changed (which is also the query Id).
+   *
+   * By default, such a listener is only called when a Row is added to, or
+   * removed from, the result Table. To listen to all changes in the result
+   * Table, use the addResultTableListener method.
    *
    * You can either listen to a single result Table (by specifying a query Id as
    * the method's first parameter) or changes to any result Table (by providing
    * a `null` wildcard).
    *
-   * The provided listener is a ResultRowIdsListener function, and will be
-   * called with a reference to the Queries object and the Id of the Table that
-   * changed (which is also the query Id).
+   * Use the optional `trackReorder` parameter to additionally track when the
+   * set of Ids has not changed, but the order has - for example when the Order
+   * clause of the query causes the Row Ids to be re-sorted. This behavior is
+   * disabled by default due to the potential performance cost of detecting such
+   * changes.
    *
    * @param queryId The Id of the query to listen to, or `null` as a wildcard.
    * @param listener The function that will be called whenever the Row Ids in
    * the result Table change.
+   * @param trackReorder An optional boolean that indicates that the listener
+   * should be called if the set of Ids remains the same but their order
+   * changes.
    * @returns A unique Id for the listener that can later be used to remove it.
    * @example
    * This example registers a listener that responds to any change to the Row
-   * Ids of a specific result Table or their order.
+   * Ids of a specific result Table, but not their order.
    *
    * ```js
    * const store = createStore().setTable('pets', {
@@ -2460,6 +2477,47 @@ export interface Queries {
    *     console.log(`Row Ids for dogColors result table changed`);
    *     console.log(queries.getResultRowIds('dogColors'));
    *   },
+   * );
+   *
+   * store.setRow('pets', 'rex', {species: 'dog', color: 'tan'});
+   * // -> 'Row Ids for dogColors result table changed'
+   * // -> ['cujo', 'fido', 'rex']
+   *
+   * store.setCell('pets', 'fido', 'color', 'walnut');
+   * // -> undefined
+   * // trackReorder not set for listener
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @example
+   * This example registers a listener that responds to a change of order in the
+   * rows of a specific result Table, even though the set of Ids themselves has
+   * not changed.
+   *
+   * ```js
+   * const store = createStore().setTable('pets', {
+   *   fido: {species: 'dog', color: 'brown'},
+   *   felix: {species: 'cat', color: 'black'},
+   *   cujo: {species: 'dog', color: 'black'},
+   * });
+   *
+   * const queries = createQueries(store).setQueryDefinition(
+   *   'dogColors',
+   *   'pets',
+   *   ({select, where, order}) => {
+   *     select('color');
+   *     where('species', 'dog');
+   *     order('color');
+   *   },
+   * );
+   *
+   * const listenerId = queries.addResultRowIdsListener(
+   *   'dogColors',
+   *   (store, tableId) => {
+   *     console.log(`Row Ids for dogColors result table changed`);
+   *     console.log(queries.getResultRowIds('dogColors'));
+   *   },
+   *   true, // track reorder
    * );
    *
    * store.setRow('pets', 'rex', {species: 'dog', color: 'tan'});
@@ -2512,11 +2570,17 @@ export interface Queries {
   addResultRowIdsListener(
     queryId: IdOrNull,
     listener: ResultRowIdsListener,
+    trackReorder?: boolean,
   ): Id;
 
   /**
    * The addResultRowListener method registers a listener function with the
    * Queries object that will be called whenever data in a result Row changes.
+   *
+   * The provided listener is a ResultRowListener function, and will be called
+   * with a reference to the Queries object, the Id of the Table that changed
+   * (which is also the query Id), and a GetCellChange function in case you need
+   * to inspect any changes that occurred.
    *
    * You can either listen to a single result Row (by specifying a query Id and
    * Row Id as the method's first two parameters) or changes to any result Row
@@ -2526,11 +2590,6 @@ export interface Queries {
    * wildcarded with `null`. You can listen to a specific result Row in a
    * specific query, any result Row in a specific query, a specific result Row
    * in any query, or any result Row in any query.
-   *
-   * The provided listener is a ResultRowListener function, and will be called
-   * with a reference to the Queries object, the Id of the Table that changed
-   * (which is also the query Id), and a GetCellChange function in case you need
-   * to inspect any changes that occurred.
    *
    * @param queryId The Id of the query to listen to, or `null` as a wildcard.
    * @param rowId The Id of the result Row to listen to, or `null` as a
@@ -2622,9 +2681,13 @@ export interface Queries {
    * Queries object that will be called whenever the Cell Ids in a result Row
    * change.
    *
-   * Such a listener is only called when a Cell is added to, or removed from,
-   * the result Row, or the order of the Cell Ids has changed. To listen to all
-   * changes in the result Row, use the addResultRowListener method.
+   * The provided listener is a ResultCellIdsListener function, and will be
+   * called with a reference to the Queries object, the Id of the Table (which
+   * is also the query Id), and the Id of the result Row that changed.
+   *
+   * By default, such a listener is only called when a Cell is added to, or
+   * removed from, the result Row. To listen to all changes in the result Row,
+   * use the addResultRowListener method.
    *
    * You can either listen to a single result Row (by specifying the query Id
    * and Row Id as the method's first two parameters) or changes to any Row (by
@@ -2635,15 +2698,20 @@ export interface Queries {
    * specific query, any result Row in a specific query, a specific result Row
    * in any query, or any result Row in any query.
    *
-   * The provided listener is a ResultCellIdsListener function, and will be
-   * called with a reference to the Queries object, the Id of the Table (which
-   * is also the query Id), and the Id of the result Row that changed.
+   * Use the optional `trackReorder` parameter to additionally track when the
+   * set of Ids has not changed, but the order has - for example when a Cell
+   * from the middle of the Row is removed and then added back within the same
+   * transaction. This behavior is disabled by default due to the potential
+   * performance cost of detecting such changes.
    *
    * @param queryId The Id of the query to listen to, or `null` as a wildcard.
    * @param rowId The Id of the result Row to listen to, or `null` as a
    * wildcard.
    * @param listener The function that will be called whenever the Cell Ids in
    * the result Row change.
+   * @param trackReorder An optional boolean that indicates that the listener
+   * should be called if the set of Ids remains the same but their order
+   * changes.
    * @returns A unique Id for the listener that can later be used to remove it.
    * @example
    * This example registers a listener that responds to any change to the Cell
@@ -2682,8 +2750,8 @@ export interface Queries {
    * store.delListener(listenerId);
    * ```
    * @example
-   * This example registers a listener that responds to any change to the Row
-   * Ids of any result Table.
+   * This example registers a listener that responds to any change to the Cell
+   * Ids of any result Row.
    *
    * ```js
    * const store = createStore().setTable('pets', {
@@ -2727,21 +2795,12 @@ export interface Queries {
     queryId: IdOrNull,
     rowId: IdOrNull,
     listener: ResultCellIdsListener,
+    trackReorder?: boolean,
   ): Id;
 
   /**
    * The addResultCellListener method registers a listener function with the
    * Queries object that will be called whenever data in a result Cell changes.
-   *
-   * You can either listen to a single result Row (by specifying a query Id, Row
-   * Id, and Cell Id as the method's first three parameters) or changes to any
-   * result Cell (by providing `null` wildcards).
-   *
-   *
-   * All, some, or none of the `queryId`, `rowId`, and `cellId` parameters can
-   * be wildcarded with `null`. You can listen to a specific Cell in a specific
-   * result Row in a specific query, any Cell in any result Row in any query,
-   * for example - or every other combination of wildcards.
    *
    * The provided listener is a ResultCellListener function, and will be called
    * with a reference to the Queries object, the Id of the Table that changed
@@ -2749,6 +2808,15 @@ export interface Queries {
    * Cell that changed, the new Cell value, the old Cell value, and a
    * GetCellChange function in case you need to inspect any changes that
    * occurred.
+   *
+   * You can either listen to a single result Row (by specifying a query Id, Row
+   * Id, and Cell Id as the method's first three parameters) or changes to any
+   * result Cell (by providing `null` wildcards).
+   *
+   * All, some, or none of the `queryId`, `rowId`, and `cellId` parameters can
+   * be wildcarded with `null`. You can listen to a specific Cell in a specific
+   * result Row in a specific query, any Cell in any result Row in any query,
+   * for example - or every other combination of wildcards.
    *
    * @param queryId The Id of the query to listen to, or `null` as a wildcard.
    * @param rowId The Id of the result Row to listen to, or `null` as a
