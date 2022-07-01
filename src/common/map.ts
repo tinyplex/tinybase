@@ -11,10 +11,6 @@ export type IdMap3<Value> = IdMap<IdMap2<Value>>;
 export const mapNew = <Key, Value>(entries?: [Key, Value][]): Map<Key, Value> =>
   new Map(entries);
 
-export const mapNewPair = <Paired>(
-  newFunction: any = mapNew,
-): [Paired, Paired] => [newFunction() as Paired, newFunction() as Paired];
-
 export const mapKeys = <Key>(map: Map<Key, unknown> | undefined): Key[] => [
   ...(map?.keys() ?? []),
 ];
