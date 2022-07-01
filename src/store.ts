@@ -66,7 +66,16 @@ import {
   objIsEmpty,
 } from './common/obj';
 import {IdSet, IdSet2, IdSet3, IdSet4, setAdd, setNew} from './common/set';
-import {Pair, pairCollSize, pairNew, pairNewMap} from './common/pairs';
+import {
+  Pair,
+  Pair2,
+  pair2CollSize,
+  pair2NewMap,
+  pairCollIsEmpty,
+  pairCollSize,
+  pairNew,
+  pairNewMap,
+} from './common/pairs';
 import {
   arrayFilter,
   arrayForEach,
@@ -150,11 +159,11 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const schemaRowCache: IdMap<[RowMap, IdSet]> = mapNew();
   const tablesMap: TablesMap = mapNew();
   const tablesListeners: Pair<IdSet> = pairNewMap(setNew);
-  const tableIdsListeners: Pair<IdSet> = pairNewMap(setNew);
+  const tableIdsListeners: Pair2<IdSet> = pair2NewMap(setNew);
   const tableListeners: Pair<IdSet> = pairNewMap();
-  const rowIdsListeners: Pair<IdSet2> = pairNewMap();
+  const rowIdsListeners: Pair2<IdSet2> = pair2NewMap();
   const rowListeners: Pair<IdSet3> = pairNewMap();
-  const cellIdsListeners: Pair<IdSet3> = pairNewMap();
+  const cellIdsListeners: Pair2<IdSet3> = pair2NewMap();
   const cellListeners: Pair<IdSet4> = pairNewMap();
   const invalidCellListeners: Pair<IdSet4> = pairNewMap();
   const finishTransactionListeners: Pair<IdSet> = pairNewMap(setNew);
@@ -511,25 +520,27 @@ export const createStore: typeof createStoreDecl = (): Store => {
       : 0;
 
   const callIdsListenersIfChanged = (
-    listeners: DeepIdSet,
+    listeners: Pair<DeepIdSet>,
     changedIds: ChangedIdsMap,
     getIds: (...args: Ids) => Ids,
     extras: Ids,
   ): void => {
-    if (
-      collSize(changedIds) > 1 ||
-      (!collIsEmpty(changedIds) &&
-        !arrayIsEqual(mapGet(changedIds, null) as Ids, getIds(...extras)))
+    if (collSize(changedIds) > 1) {
+      callListeners(listeners[0], extras);
+      callListeners(listeners[1], extras);
+    } else if (
+      !collIsEmpty(changedIds) &&
+      !arrayIsEqual(mapGet(changedIds, null) as Ids, getIds(...extras))
     ) {
-      callListeners(listeners, extras);
+      callListeners(listeners[1], extras);
     }
   };
 
   const callListenersForChanges = (mutator: 0 | 1) => {
     const emptyIdListeners =
-      collIsEmpty(cellIdsListeners[mutator]) &&
-      collIsEmpty(rowIdsListeners[mutator]) &&
-      collIsEmpty(tableIdsListeners[mutator]);
+      pairCollIsEmpty(cellIdsListeners[mutator]) &&
+      pairCollIsEmpty(rowIdsListeners[mutator]) &&
+      pairCollIsEmpty(tableIdsListeners[mutator]);
     const emptyOtherListeners =
       collIsEmpty(cellListeners[mutator]) &&
       collIsEmpty(rowListeners[mutator]) &&
@@ -904,8 +915,13 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const addTableIdsListener = (
     listener: TableIdsListener,
+    trackReorder?: boolean,
     mutator?: boolean,
-  ): Id => addListener(listener, tableIdsListeners[mutator ? 1 : 0]);
+  ): Id =>
+    addListener(
+      listener,
+      tableIdsListeners[mutator ? 1 : 0][trackReorder ? 1 : 0],
+    );
 
   const addTableListener = (
     tableId: IdOrNull,
@@ -916,8 +932,14 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const addRowIdsListener = (
     tableId: Id,
     listener: RowIdsListener,
+    trackReorder?: boolean,
     mutator?: boolean,
-  ): Id => addListener(listener, rowIdsListeners[mutator ? 1 : 0], [tableId]);
+  ): Id =>
+    addListener(
+      listener,
+      rowIdsListeners[mutator ? 1 : 0][trackReorder ? 1 : 0],
+      [tableId],
+    );
 
   const addRowListener = (
     tableId: IdOrNull,
@@ -931,9 +953,14 @@ export const createStore: typeof createStoreDecl = (): Store => {
     tableId: IdOrNull,
     rowId: IdOrNull,
     listener: CellIdsListener,
+    trackReorder?: boolean,
     mutator?: boolean,
   ): Id =>
-    addListener(listener, cellIdsListeners[mutator ? 1 : 0], [tableId, rowId]);
+    addListener(
+      listener,
+      cellIdsListeners[mutator ? 1 : 0][trackReorder ? 1 : 0],
+      [tableId, rowId],
+    );
 
   const addCellListener = (
     tableId: IdOrNull,
@@ -984,11 +1011,11 @@ export const createStore: typeof createStoreDecl = (): Store => {
     DEBUG
       ? {
           tables: pairCollSize(tablesListeners),
-          tableIds: pairCollSize(tableIdsListeners),
+          tableIds: pair2CollSize(tableIdsListeners),
           table: pairCollSize(tableListeners, collSize2),
-          rowIds: pairCollSize(rowIdsListeners, collSize2),
+          rowIds: pair2CollSize(rowIdsListeners, collSize2),
           row: pairCollSize(rowListeners, collSize3),
-          cellIds: pairCollSize(cellIdsListeners, collSize3),
+          cellIds: pair2CollSize(cellIdsListeners, collSize3),
           cell: pairCollSize(cellListeners, collSize4),
           invalidCell: pairCollSize(invalidCellListeners, collSize4),
           transaction: pairCollSize(finishTransactionListeners),
