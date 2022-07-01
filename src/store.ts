@@ -50,7 +50,6 @@ import {
   mapGet,
   mapKeys,
   mapNew,
-  mapNewPair,
   mapSet,
   mapToObj,
 } from './common/map';
@@ -67,12 +66,12 @@ import {
   objIsEmpty,
 } from './common/obj';
 import {IdSet, IdSet2, IdSet3, IdSet4, setAdd, setNew} from './common/set';
+import {Pair, pairCollSize, pairNew, pairNewMap} from './common/pairs';
 import {
   arrayFilter,
   arrayForEach,
   arrayHas,
   arrayIsEqual,
-  arrayPair,
   arrayPush,
 } from './common/array';
 import {
@@ -80,7 +79,6 @@ import {
   collForEach,
   collHas,
   collIsEmpty,
-  collPairSize,
   collSize,
   collSize2,
   collSize3,
@@ -151,15 +149,15 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const schemaMap: SchemaMap = mapNew();
   const schemaRowCache: IdMap<[RowMap, IdSet]> = mapNew();
   const tablesMap: TablesMap = mapNew();
-  const tablesListeners: [IdSet, IdSet] = mapNewPair(setNew);
-  const tableIdsListeners: [IdSet, IdSet] = mapNewPair(setNew);
-  const tableListeners: [IdSet2, IdSet2] = mapNewPair();
-  const rowIdsListeners: [IdSet2, IdSet2] = mapNewPair();
-  const rowListeners: [IdSet3, IdSet3] = mapNewPair();
-  const cellIdsListeners: [IdSet3, IdSet3] = mapNewPair();
-  const cellListeners: [IdSet4, IdSet4] = mapNewPair();
-  const invalidCellListeners: [IdSet4, IdSet4] = mapNewPair();
-  const finishTransactionListeners: [IdSet, IdSet] = mapNewPair(setNew);
+  const tablesListeners: Pair<IdSet> = pairNewMap(setNew);
+  const tableIdsListeners: Pair<IdSet> = pairNewMap(setNew);
+  const tableListeners: Pair<IdSet> = pairNewMap();
+  const rowIdsListeners: Pair<IdSet2> = pairNewMap();
+  const rowListeners: Pair<IdSet3> = pairNewMap();
+  const cellIdsListeners: Pair<IdSet3> = pairNewMap();
+  const cellListeners: Pair<IdSet4> = pairNewMap();
+  const invalidCellListeners: Pair<IdSet4> = pairNewMap();
+  const finishTransactionListeners: Pair<IdSet> = pairNewMap(setNew);
 
   const [addListener, callListeners, delListenerImpl, callListenerImpl] =
     getListenerFunctions(() => store);
@@ -492,8 +490,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     ifNotUndefined(
       mapGet(mapGet(mapGet(changedCells, tableId), rowId), cellId),
       ([oldCell, newCell]) => [true, oldCell, newCell],
-      () =>
-        [false, ...arrayPair(getCell(tableId, rowId, cellId))] as CellChange,
+      () => [false, ...pairNew(getCell(tableId, rowId, cellId))] as CellChange,
     ) as CellChange;
 
   const callInvalidCellListeners = (mutator: 0 | 1) =>
@@ -538,7 +535,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       collIsEmpty(rowListeners[mutator]) &&
       collIsEmpty(tableListeners[mutator]) &&
       collIsEmpty(tablesListeners[mutator]);
-    if (!(emptyIdListeners && emptyOtherListeners)) {
+    if (!emptyIdListeners || !emptyOtherListeners) {
       const changes: [
         ChangedIdsMap,
         ChangedIdsMap2,
@@ -973,7 +970,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const callListener = (listenerId: Id) => {
     callListenerImpl(listenerId, [getTableIds, getRowIds, getCellIds], (ids) =>
-      isUndefined(ids[2]) ? [] : arrayPair(getCell(...(ids as [Id, Id, Id]))),
+      isUndefined(ids[2]) ? [] : pairNew(getCell(...(ids as [Id, Id, Id]))),
     );
     return store;
   };
@@ -986,15 +983,15 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const getListenerStats = (): StoreListenerStats =>
     DEBUG
       ? {
-          tables: collPairSize(tablesListeners),
-          tableIds: collPairSize(tableIdsListeners),
-          table: collPairSize(tableListeners, collSize2),
-          rowIds: collPairSize(rowIdsListeners, collSize2),
-          row: collPairSize(rowListeners, collSize3),
-          cellIds: collPairSize(cellIdsListeners, collSize3),
-          cell: collPairSize(cellListeners, collSize4),
-          invalidCell: collPairSize(invalidCellListeners, collSize4),
-          transaction: collPairSize(finishTransactionListeners),
+          tables: pairCollSize(tablesListeners),
+          tableIds: pairCollSize(tableIdsListeners),
+          table: pairCollSize(tableListeners, collSize2),
+          rowIds: pairCollSize(rowIdsListeners, collSize2),
+          row: pairCollSize(rowListeners, collSize3),
+          cellIds: pairCollSize(cellIdsListeners, collSize3),
+          cell: pairCollSize(cellListeners, collSize4),
+          invalidCell: pairCollSize(invalidCellListeners, collSize4),
+          transaction: pairCollSize(finishTransactionListeners),
         }
       : {};
 
