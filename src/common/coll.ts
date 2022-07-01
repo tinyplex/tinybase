@@ -16,10 +16,6 @@ export const collSize = (coll: Coll<unknown>): number => coll.size;
 export const collSize2 = collSizeN(collSize);
 export const collSize3 = collSizeN(collSize2);
 export const collSize4 = collSizeN(collSize3);
-export const collPairSize = (
-  pair: [Coll<unknown>, Coll<unknown>],
-  func: any = collSize,
-): number => func(pair[0]) + func(pair[1]);
 
 export const collHas = (
   coll: Coll<unknown> | undefined,
