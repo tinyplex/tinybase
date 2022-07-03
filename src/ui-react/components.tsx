@@ -411,7 +411,7 @@ export const CheckpointView: typeof CheckpointViewDecl = ({
   debugIds,
 }: CheckpointProps): any =>
   wrap(
-    useCheckpoint(checkpointId, checkpoints) ?? '',
+    useCheckpoint(checkpointId, checkpoints) ?? EMPTY_STRING,
     undefined,
     debugIds,
     checkpointId,

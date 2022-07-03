@@ -19,7 +19,6 @@ import {
   mapNew,
   mapSet,
 } from './common/map';
-import {IdSet, IdSet2, setNew} from './common/set';
 import {
   arrayClear,
   arrayForEach,
@@ -29,13 +28,9 @@ import {
   arrayPop,
   arrayPush,
 } from './common/array';
-import {
-  collForEach,
-  collHas,
-  collIsEmpty,
-  collSize,
-  collSize2,
-} from './common/coll';
+import {collForEach, collHas, collIsEmpty, collSize2} from './common/coll';
+import {EMPTY_STRING} from './common/strings';
+import {IdSet2} from './common/set';
 import {getCreateFunction} from './common/definable';
 import {getListenerFunctions} from './common/listeners';
 import {objFreeze} from './common/obj';
@@ -52,7 +47,7 @@ export const createCheckpoints: typeof createCheckpointsDecl =
     let listening = 1;
     let nextCheckpointId: number;
     let checkpointsChanged: 0 | 1;
-    const checkpointIdsListeners: IdSet = setNew();
+    const checkpointIdsListeners: IdSet2 = mapNew();
     const checkpointListeners: IdSet2 = mapNew();
     const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
       () => checkpoints,
@@ -143,9 +138,9 @@ export const createCheckpoints: typeof createCheckpointsDecl =
       },
     );
 
-    const addCheckpointImpl = (label = ''): Id => {
+    const addCheckpointImpl = (label = EMPTY_STRING): Id => {
       if (isUndefined(currentId)) {
-        currentId = '' + nextCheckpointId++;
+        currentId = EMPTY_STRING + nextCheckpointId++;
         mapSet(deltas, currentId, delta);
         setCheckpoint(currentId, label);
         delta = mapNew();
@@ -275,7 +270,7 @@ export const createCheckpoints: typeof createCheckpointsDecl =
     const getListenerStats = (): CheckpointsListenerStats =>
       DEBUG
         ? {
-            checkpointIds: collSize(checkpointIdsListeners),
+            checkpointIds: collSize2(checkpointIdsListeners),
             checkpoint: collSize2(checkpointListeners),
           }
         : {};

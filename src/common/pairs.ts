@@ -1,28 +1,27 @@
-import {Coll, collSize} from './coll';
-import {mapNew} from './map';
+import {Coll, collSize2} from './coll';
+import {IdMap, mapNew} from './map';
 
 export type Pair<Value> = [Value, Value];
 export type Pair2<Value> = Pair<Pair<Value>>;
 
 export const pairNew = <Value>(value: Value): Pair<Value> => [value, value];
 
-export const pairCollSize = (
+export const pairCollSize2 = (
   pair: Pair<Coll<unknown>>,
-  func: any = collSize,
+  func: any = collSize2,
 ): number => func(pair[0]) + func(pair[1]);
 
 export const pairCollIsEmpty = (pair: Pair<Coll<unknown>>): boolean =>
-  pairCollSize(pair) == 0;
+  pairCollSize2(pair) == 0;
 
-export const pairNewMap = <Value>(newFunction: any = mapNew): Pair<Value> => [
-  newFunction() as Value,
-  newFunction() as Value,
-];
+export const pairNewMap = <Value>(): Pair<IdMap<Value>> => [mapNew(), mapNew()];
 
-export const pair2CollSize = (
+export const pair2CollSize2 = (
   pair2: Pair2<Coll<unknown>>,
-  func: any = collSize,
-): number => pairCollSize(pair2[0], func) + pairCollSize(pair2[1], func);
+  func: any = collSize2,
+): number => pairCollSize2(pair2[0], func) + pairCollSize2(pair2[1], func);
 
-export const pair2NewMap = <Value>(newFunction: any = mapNew): Pair2<Value> =>
-  pairNewMap(() => pairNewMap(newFunction));
+export const pair2NewMap = <Value>(): Pair2<IdMap<Value>> => [
+  pairNewMap(),
+  pairNewMap(),
+];
