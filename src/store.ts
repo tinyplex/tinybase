@@ -36,8 +36,13 @@ import {
   jsonParse,
   jsonString,
 } from './common/other';
-import {DEFAULT, EMPTY_OBJECT, NUMBER, TYPE} from './common/strings';
-import {DeepIdSet, getListenerFunctions} from './common/listeners';
+import {
+  DEFAULT,
+  EMPTY_OBJECT,
+  EMPTY_STRING,
+  NUMBER,
+  TYPE,
+} from './common/strings';
 import {Id, IdOrNull, Ids, Json} from './common.d';
 import {
   IdMap,
@@ -66,13 +71,14 @@ import {
   objIsEmpty,
 } from './common/obj';
 import {IdSet, IdSet2, IdSet3, IdSet4, setAdd, setNew} from './common/set';
+import {IdSetNode, getListenerFunctions} from './common/listeners';
 import {
   Pair,
   Pair2,
-  pair2CollSize,
+  pair2CollSize2,
   pair2NewMap,
   pairCollIsEmpty,
-  pairCollSize,
+  pairCollSize2,
   pairNew,
   pairNewMap,
 } from './common/pairs';
@@ -89,7 +95,6 @@ import {
   collHas,
   collIsEmpty,
   collSize,
-  collSize2,
   collSize3,
   collSize4,
 } from './common/coll';
@@ -158,15 +163,15 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const schemaMap: SchemaMap = mapNew();
   const schemaRowCache: IdMap<[RowMap, IdSet]> = mapNew();
   const tablesMap: TablesMap = mapNew();
-  const tablesListeners: Pair<IdSet> = pairNewMap(setNew);
-  const tableIdsListeners: Pair2<IdSet> = pair2NewMap(setNew);
-  const tableListeners: Pair<IdSet> = pairNewMap();
+  const tablesListeners: Pair<IdSet2> = pairNewMap();
+  const tableIdsListeners: Pair2<IdSet2> = pair2NewMap();
+  const tableListeners: Pair<IdSet2> = pairNewMap();
   const rowIdsListeners: Pair2<IdSet2> = pair2NewMap();
   const rowListeners: Pair<IdSet3> = pairNewMap();
   const cellIdsListeners: Pair2<IdSet3> = pair2NewMap();
   const cellListeners: Pair<IdSet4> = pairNewMap();
   const invalidCellListeners: Pair<IdSet4> = pairNewMap();
-  const finishTransactionListeners: Pair<IdSet> = pairNewMap(setNew);
+  const finishTransactionListeners: Pair<IdSet2> = pairNewMap();
 
   const [addListener, callListeners, delListenerImpl, callListenerImpl] =
     getListenerFunctions(() => store);
@@ -365,7 +370,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     );
 
   const getNewRowId = (tableMap: TableMap | undefined): Id => {
-    const rowId = '' + nextRowId++;
+    const rowId = EMPTY_STRING + nextRowId++;
     if (!collHas(tableMap, rowId)) {
       return rowId;
     }
@@ -520,19 +525,19 @@ export const createStore: typeof createStoreDecl = (): Store => {
       : 0;
 
   const callIdsListenersIfChanged = (
-    listeners: Pair<DeepIdSet>,
+    listeners: Pair<IdSetNode>,
     changedIds: ChangedIdsMap,
     getIds: (...args: Ids) => Ids,
-    extras: Ids,
+    ids?: Ids,
   ): void => {
     if (collSize(changedIds) > 1) {
-      callListeners(listeners[0], extras);
-      callListeners(listeners[1], extras);
+      callListeners(listeners[0], ids);
+      callListeners(listeners[1], ids);
     } else if (
       !collIsEmpty(changedIds) &&
-      !arrayIsEqual(mapGet(changedIds, null) as Ids, getIds(...extras))
+      !arrayIsEqual(mapGet(changedIds, null) as Ids, getIds(...(ids ?? [])))
     ) {
-      callListeners(listeners[1], extras);
+      callListeners(listeners[1], ids);
     }
   };
 
@@ -584,7 +589,6 @@ export const createStore: typeof createStoreDecl = (): Store => {
           tableIdsListeners[mutator],
           changes[0],
           getTableIds,
-          [],
         );
       }
 
@@ -619,7 +623,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
           }
         });
         if (tablesChanged) {
-          callListeners(tablesListeners[mutator], [], getCellChange);
+          callListeners(tablesListeners[mutator], undefined, getCellChange);
         }
       }
     }
@@ -864,12 +868,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
           cellsTouched = false;
         }
 
-        callListeners(finishTransactionListeners[0], [], cellsTouched);
+        callListeners(finishTransactionListeners[0], undefined, cellsTouched);
         callInvalidCellListeners(0);
         if (cellsTouched) {
           callListenersForChanges(0);
         }
-        callListeners(finishTransactionListeners[1], [], cellsTouched);
+        callListeners(finishTransactionListeners[1], undefined, cellsTouched);
 
         transactions = 0;
         arrayForEach(
@@ -1010,15 +1014,15 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const getListenerStats = (): StoreListenerStats =>
     DEBUG
       ? {
-          tables: pairCollSize(tablesListeners),
-          tableIds: pair2CollSize(tableIdsListeners),
-          table: pairCollSize(tableListeners, collSize2),
-          rowIds: pair2CollSize(rowIdsListeners, collSize2),
-          row: pairCollSize(rowListeners, collSize3),
-          cellIds: pair2CollSize(cellIdsListeners, collSize3),
-          cell: pairCollSize(cellListeners, collSize4),
-          invalidCell: pairCollSize(invalidCellListeners, collSize4),
-          transaction: pairCollSize(finishTransactionListeners),
+          tables: pairCollSize2(tablesListeners),
+          tableIds: pair2CollSize2(tableIdsListeners),
+          table: pairCollSize2(tableListeners),
+          rowIds: pair2CollSize2(rowIdsListeners),
+          row: pairCollSize2(rowListeners, collSize3),
+          cellIds: pair2CollSize2(cellIdsListeners, collSize3),
+          cell: pairCollSize2(cellListeners, collSize4),
+          invalidCell: pairCollSize2(invalidCellListeners, collSize4),
+          transaction: pairCollSize2(finishTransactionListeners),
         }
       : {};
 

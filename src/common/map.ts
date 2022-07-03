@@ -73,12 +73,12 @@ export const mapClone2 = <Key1, Key2, Value>(
   map: Map<Key1, Map<Key2, Value>> | undefined,
 ) => mapClone(map, mapClone);
 
-type Node<Path, Leaf> = Map<Path, Node<Path, Leaf> | Leaf>;
+export type Node<Path, Leaf> = Map<Path, Node<Path, Leaf> | Leaf>;
 export const visitTree = <Path, Leaf>(
   node: Node<Path, Leaf>,
   path: Path[],
   ensureLeaf?: () => Leaf,
-  pruneLeaf?: (leaf: Leaf) => 1 | void,
+  pruneLeaf?: (leaf: Leaf) => 1 | 0 | void,
   p = 0,
 ): Leaf | undefined =>
   ifNotUndefined(
