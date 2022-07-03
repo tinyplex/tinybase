@@ -96,6 +96,7 @@ import {
   useRelationshipsOrRelationshipsId,
   useStoreOrStoreId,
 } from './common';
+import {EMPTY_STRING} from '../common/strings';
 import {Persister} from '../persisters.d';
 import React from 'react';
 import {arrayIsEmpty} from '../common/array';
@@ -833,7 +834,8 @@ export const useUndoInformation: typeof useUndoInformationDecl = (
     !arrayIsEmpty(backwardIds),
     useGoBackwardCallback(checkpoints),
     currentId,
-    ifNotUndefined(currentId, (id) => checkpoints?.getCheckpoint(id)) ?? '',
+    ifNotUndefined(currentId, (id) => checkpoints?.getCheckpoint(id)) ??
+      EMPTY_STRING,
   ];
 };
 
@@ -846,7 +848,8 @@ export const useRedoInformation: typeof useRedoInformationDecl = (
     !isUndefined(forwardId),
     useGoForwardCallback(checkpoints),
     forwardId,
-    ifNotUndefined(forwardId, (id) => checkpoints?.getCheckpoint(id)) ?? '',
+    ifNotUndefined(forwardId, (id) => checkpoints?.getCheckpoint(id)) ??
+      EMPTY_STRING,
   ];
 };
 

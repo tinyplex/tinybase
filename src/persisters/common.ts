@@ -2,6 +2,7 @@ import {Callback, Id} from '../common.d';
 import {DEBUG, ifNotUndefined, isUndefined} from '../common/other';
 import {Persister, PersisterStats} from '../persisters.d';
 import {Store, Tables} from '../store.d';
+import {EMPTY_STRING} from '../common/strings';
 import {objFreeze} from '../common/obj';
 
 export const createCustomPersister = (
@@ -25,7 +26,7 @@ export const createCustomPersister = (
           loads++;
         }
         const body = await getPersisted();
-        if (!isUndefined(body) && body != '') {
+        if (!isUndefined(body) && body != EMPTY_STRING) {
           store.setJson(body);
         } else {
           store.setTables(initialTables as Tables);
