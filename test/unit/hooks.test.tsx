@@ -1536,7 +1536,7 @@ describe('Listener Hooks', () => {
       useTablesListener(
         (store) => expect(store?.getCell('t1', 'r1', 'c1')).toEqual(value),
         [value],
-        undefined,
+        false,
         store,
       );
       return <div />;
@@ -1568,6 +1568,7 @@ describe('Listener Hooks', () => {
       useTableIdsListener(
         (store) => expect(store?.getCell('t1', 'r1', 'c1')).toEqual(value),
         [value],
+        false,
         false,
         store,
       );
@@ -1603,7 +1604,7 @@ describe('Listener Hooks', () => {
         't1',
         (store) => expect(store?.getCell('t1', 'r1', 'c1')).toEqual(value),
         [value],
-        undefined,
+        false,
         store,
       );
       return <div />;
@@ -1636,6 +1637,7 @@ describe('Listener Hooks', () => {
         't1',
         (store) => expect(store?.getCell('t1', 'r1', 'c1')).toEqual(value),
         [value],
+        false,
         false,
         store,
       );
@@ -1672,7 +1674,7 @@ describe('Listener Hooks', () => {
         'r1',
         (store) => expect(store?.getCell('t1', 'r1', 'c1')).toEqual(value),
         [value],
-        undefined,
+        false,
         store,
       );
       return <div />;
@@ -1706,6 +1708,7 @@ describe('Listener Hooks', () => {
         'r1',
         (store) => expect(store?.getCell('t1', 'r1', 'c1')).toEqual(value),
         [value],
+        false,
         false,
         store,
       );
@@ -1743,7 +1746,7 @@ describe('Listener Hooks', () => {
         'c1',
         (store) => expect(store?.getCell('t1', 'r1', 'c1')).toEqual(value),
         [value],
-        undefined,
+        false,
         store,
       );
       return <div />;
