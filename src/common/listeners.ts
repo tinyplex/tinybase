@@ -25,7 +25,13 @@ import {
   RemoteRowIdListener,
 } from '../relationships.d';
 import {MetricListener, Metrics} from '../metrics.d';
-import {arrayForEach, arrayLength, arrayPop, arrayPush} from './array';
+import {
+  arrayEvery,
+  arrayForEach,
+  arrayLength,
+  arrayPop,
+  arrayPush,
+} from './array';
 import {collDel, collForEach, collIsEmpty} from './coll';
 import {ifNotUndefined, isUndefined} from './other';
 import {EMPTY_STRING} from './strings';
@@ -73,6 +79,7 @@ export const getListenerFunctions = (
   (listener: Listener, idSetNode: IdSetNode, ids?: IdOrNulls) => Id,
   (idSetNode: IdSetNode, ids?: Ids, ...extra: any[]) => void,
   (id: Id) => Ids,
+  (idSetNode: IdSetNode, ids?: Ids) => boolean,
   (
     id: Id,
     idNullGetters: ((...ids: Ids) => Ids)[],
@@ -134,6 +141,9 @@ export const getListenerFunctions = (
       return idOrNulls;
     }) as Ids;
 
+  const hasListeners = (idSetNode: IdSetNode, ids?: Ids): boolean =>
+    !arrayEvery(getWildcardedLeaves(idSetNode, ids), isUndefined);
+
   const callListener = (
     id: Id,
     idNullGetters: ((...ids: Ids) => Ids)[],
@@ -153,5 +163,5 @@ export const getListenerFunctions = (
       callWithIds();
     });
 
-  return [addListener, callListeners, delListener, callListener];
+  return [addListener, callListeners, delListener, hasListeners, callListener];
 };

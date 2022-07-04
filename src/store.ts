@@ -173,8 +173,13 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const invalidCellListeners: Pair<IdSet4> = pairNewMap();
   const finishTransactionListeners: Pair<IdSet2> = pairNewMap();
 
-  const [addListener, callListeners, delListenerImpl, callListenerImpl] =
-    getListenerFunctions(() => store);
+  const [
+    addListener,
+    callListeners,
+    delListenerImpl,
+    hasListeners,
+    callListenerImpl,
+  ] = getListenerFunctions(() => store);
 
   const validateSchema = (schema: Schema | undefined): boolean =>
     validate(schema, (tableSchema) =>
@@ -418,7 +423,14 @@ export const createStore: typeof createStoreDecl = (): Store => {
   ): Map<IdOrNull, IdAdded> | undefined =>
     idsChanged(
       collIsEmpty(changedTableIds)
-        ? (mapSet(changedTableIds, null, getTableIds()) as ChangedIdsMap)
+        ? (mapSet(
+            changedTableIds,
+            null,
+            hasListeners(tableIdsListeners[0][1]) ||
+              hasListeners(tableIdsListeners[1][1])
+              ? getTableIds()
+              : 0,
+          ) as ChangedIdsMap)
         : changedTableIds,
       tableId,
       added,
@@ -431,7 +443,15 @@ export const createStore: typeof createStoreDecl = (): Store => {
   ): ChangedIdsMap | undefined =>
     idsChanged(
       mapEnsure(changedRowIds, tableId, () =>
-        mapNew([[null, getRowIds(tableId)]]),
+        mapNew([
+          [
+            null,
+            hasListeners(rowIdsListeners[0][1], [tableId]) ||
+            hasListeners(rowIdsListeners[1][1], [tableId])
+              ? getRowIds(tableId)
+              : 0,
+          ],
+        ]),
       ),
       rowId,
       added,
@@ -447,7 +467,16 @@ export const createStore: typeof createStoreDecl = (): Store => {
       mapEnsure(
         mapEnsure(changedCellIds, tableId, mapNew) as ChangedIdsMap2,
         rowId,
-        () => mapNew([[null, getCellIds(tableId, rowId)]]),
+        () =>
+          mapNew([
+            [
+              null,
+              hasListeners(cellIdsListeners[0][1], [tableId, rowId]) ||
+              hasListeners(cellIdsListeners[1][1], [tableId, rowId])
+                ? getCellIds(tableId, rowId)
+                : 0,
+            ],
+          ]),
       ),
       cellId,
       added,
@@ -535,6 +564,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       callListeners(listeners[1], ids);
     } else if (
       !collIsEmpty(changedIds) &&
+      mapGet(changedIds, null) != 0 &&
       !arrayIsEqual(mapGet(changedIds, null) as Ids, getIds(...(ids ?? [])))
     ) {
       callListeners(listeners[1], ids);
