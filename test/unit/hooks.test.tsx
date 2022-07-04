@@ -350,7 +350,7 @@ describe('Context Hooks', () => {
         </Provider>,
       );
     });
-    expect(renderer.toJSON()).toEqual('["r1"]');
+    expect(renderer.toJSON()).toEqual(JSON.stringify(['r1']));
     expect(didRender).toBeCalledTimes(1);
   });
 
@@ -376,7 +376,7 @@ describe('Context Hooks', () => {
         </Provider>,
       );
     });
-    expect(renderer.toJSON()).toEqual('"R1"');
+    expect(renderer.toJSON()).toEqual(JSON.stringify('R1'));
     expect(didRender).toBeCalledTimes(1);
   });
 
@@ -425,7 +425,8 @@ describe('Read Hooks', () => {
   });
 
   test('useTableIds', () => {
-    const Test = () => didRender(<>{JSON.stringify(useTableIds(store))}</>);
+    const Test = () =>
+      didRender(<>{JSON.stringify(useTableIds(store, true))}</>);
     expect(store.getListenerStats().tableIds).toEqual(0);
     act(() => {
       renderer = create(<Test />);
@@ -438,7 +439,14 @@ describe('Read Hooks', () => {
         .setTables({t1: {r1: {c1: 2}}, t2: {r1: {c1: 3}}})
         .setTables({t1: {r1: {c1: 2}}, t2: {r1: {c1: 3}}});
     });
-    expect(renderer.toJSON()).toEqual('["t1","t2"]');
+    expect(renderer.toJSON()).toEqual(JSON.stringify(['t1', 't2']));
+
+    act(() => {
+      store.transaction(() =>
+        store.delTable('t1').setTable('t1', {r1: {c1: 3}}),
+      );
+    });
+    expect(renderer.toJSON()).toEqual(JSON.stringify(['t2', 't1']));
 
     act(() => {
       store.delTables();
@@ -448,7 +456,7 @@ describe('Read Hooks', () => {
       renderer.update(<div />);
     });
     expect(store.getListenerStats().tableIds).toEqual(0);
-    expect(didRender).toBeCalledTimes(3);
+    expect(didRender).toBeCalledTimes(4);
   });
 
   test('useTable', () => {
@@ -493,7 +501,7 @@ describe('Read Hooks', () => {
 
   test('useRowIds', () => {
     const Test = ({tableId}: {tableId: Id}) =>
-      didRender(<>{JSON.stringify(useRowIds(tableId, store))}</>);
+      didRender(<>{JSON.stringify(useRowIds(tableId, store, true))}</>);
     expect(store.getListenerStats().rowIds).toEqual(0);
     act(() => {
       renderer = create(<Test tableId="t0" />);
@@ -509,8 +517,8 @@ describe('Read Hooks', () => {
 
     act(() => {
       store
-        .setTables({t1: {r2: {c1: 2}}, t2: {r3: {c1: 3}}})
-        .setTables({t1: {r2: {c1: 2}}, t2: {r3: {c1: 3}}});
+        .setTables({t1: {r2: {c1: 2}}, t2: {r3: {c1: 3}, r4: {c1: 4}}})
+        .setTables({t1: {r2: {c1: 2}}, t2: {r3: {c1: 3}, r4: {c1: 4}}});
     });
     expect(renderer.toJSON()).toEqual(JSON.stringify(['r2']));
 
@@ -518,7 +526,14 @@ describe('Read Hooks', () => {
       renderer.update(<Test tableId="t2" />);
     });
     expect(store.getListenerStats().rowIds).toEqual(1);
-    expect(renderer.toJSON()).toEqual(JSON.stringify(['r3']));
+    expect(renderer.toJSON()).toEqual(JSON.stringify(['r3', 'r4']));
+
+    act(() => {
+      store.transaction(() =>
+        store.delRow('t2', 'r3').setRow('t2', 'r3', {c1: 3}),
+      );
+    });
+    expect(renderer.toJSON()).toEqual(JSON.stringify(['r4', 'r3']));
 
     act(() => {
       store.delTables();
@@ -528,7 +543,7 @@ describe('Read Hooks', () => {
       renderer.update(<div />);
     });
     expect(store.getListenerStats().rowIds).toEqual(0);
-    expect(didRender).toBeCalledTimes(5);
+    expect(didRender).toBeCalledTimes(6);
   });
 
   test('useRow', () => {
@@ -573,7 +588,7 @@ describe('Read Hooks', () => {
 
   test('useCellIds', () => {
     const Test = ({tableId, rowId}: {tableId: Id; rowId: Id}) =>
-      didRender(<>{JSON.stringify(useCellIds(tableId, rowId, store))}</>);
+      didRender(<>{JSON.stringify(useCellIds(tableId, rowId, store, true))}</>);
     expect(store.getListenerStats().cellIds).toEqual(0);
     act(() => {
       renderer = create(<Test tableId="t0" rowId="r0" />);
@@ -589,8 +604,8 @@ describe('Read Hooks', () => {
 
     act(() => {
       store
-        .setTable('t1', {r1: {c2: 2}, r2: {c3: 3}})
-        .setTable('t1', {r1: {c2: 2}, r2: {c3: 3}});
+        .setTable('t1', {r1: {c2: 2}, r2: {c3: 3, c4: 4}})
+        .setTable('t1', {r1: {c2: 2}, r2: {c3: 3, c4: 4}});
     });
     expect(renderer.toJSON()).toEqual(JSON.stringify(['c2']));
 
@@ -598,7 +613,14 @@ describe('Read Hooks', () => {
       renderer.update(<Test tableId="t1" rowId="r2" />);
     });
     expect(store.getListenerStats().cellIds).toEqual(1);
-    expect(renderer.toJSON()).toEqual(JSON.stringify(['c3']));
+    expect(renderer.toJSON()).toEqual(JSON.stringify(['c3', 'c4']));
+
+    act(() => {
+      store.transaction(() =>
+        store.delCell('t1', 'r2', 'c3').setCell('t1', 'r2', 'c3', 3),
+      );
+    });
+    expect(renderer.toJSON()).toEqual(JSON.stringify(['c4', 'c3']));
 
     act(() => {
       store.delTable('t1');
@@ -608,7 +630,7 @@ describe('Read Hooks', () => {
       renderer.update(<div />);
     });
     expect(store.getListenerStats().cellIds).toEqual(0);
-    expect(didRender).toBeCalledTimes(5);
+    expect(didRender).toBeCalledTimes(6);
   });
 
   test('useCell', () => {
