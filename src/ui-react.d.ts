@@ -4928,6 +4928,12 @@ export type TablesProps = {
    */
   readonly store?: StoreOrStoreId;
   /**
+   * An optional boolean that indicates that the component should re-render if
+   * the set of Table Ids in the Store remains the same but their order changes.
+   * See the addTableIdsListener method for more details.
+   */
+  readonly trackReorder?: boolean;
+  /**
    * A component for rendering each Table in the Store (to override the default
    * TableView component).
    */
@@ -4964,6 +4970,12 @@ export type TableProps = {
    * for a named context Store, or provide an explicit reference.
    */
   readonly store?: StoreOrStoreId;
+  /**
+   * An optional boolean that indicates that the component should re-render if
+   * the set of Row Ids in the Table remains the same but their order changes.
+   * See the addRowIdsListener method for more details.
+   */
+  readonly trackReorder?: boolean;
   /**
    * A custom component for rendering each Row in the Table (to override the
    * default RowView component).
@@ -5005,6 +5017,12 @@ export type RowProps = {
    * for a named context Store, or provide an explicit reference.
    */
   readonly store?: StoreOrStoreId;
+  /**
+   * An optional boolean that indicates that the component should re-render if
+   * the set of Cell Ids remains the same but their order changes. See the
+   * addCellIdsListener method for more details.
+   */
+  readonly trackReorder?: boolean;
   /**
    * A custom component for rendering each Cell in the Row (to override the
    * default CellView component).

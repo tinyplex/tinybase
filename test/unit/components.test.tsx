@@ -225,9 +225,16 @@ describe('Read Components', () => {
   describe('TablesView', () => {
     test('Basic', () => {
       act(() => {
-        renderer = create(<TablesView store={store} />);
+        renderer = create(<TablesView store={store} trackReorder={true} />);
       });
       expect(rendererToString(renderer)).toEqual('1234');
+
+      act(() => {
+        store.transaction(() => {
+          store.delTable('t1').setTable('t1', {r1: {c1: 1}});
+        });
+      });
+      expect(rendererToString(renderer)).toEqual('2341');
     });
 
     test('Separator', () => {
@@ -272,9 +279,18 @@ describe('Read Components', () => {
   describe('TableView', () => {
     test('Basic', () => {
       act(() => {
-        renderer = create(<TableView store={store} tableId="t2" />);
+        renderer = create(
+          <TableView store={store} tableId="t2" trackReorder={true} />,
+        );
       });
       expect(rendererToString(renderer)).toEqual('234');
+
+      act(() => {
+        store.transaction(() => {
+          store.delRow('t2', 'r1').setRow('t2', 'r1', {c1: 2});
+        });
+      });
+      expect(rendererToString(renderer)).toEqual('342');
     });
 
     test('Separator', () => {
@@ -333,9 +349,18 @@ describe('Read Components', () => {
   describe('RowView', () => {
     test('Basic', () => {
       act(() => {
-        renderer = create(<RowView store={store} tableId="t2" rowId="r2" />);
+        renderer = create(
+          <RowView store={store} tableId="t2" rowId="r2" trackReorder={true} />,
+        );
       });
       expect(rendererToString(renderer)).toEqual('34');
+
+      act(() => {
+        store.transaction(() => {
+          store.delCell('t2', 'r2', 'c1').setCell('t2', 'r2', 'c1', 3);
+        });
+      });
+      expect(rendererToString(renderer)).toEqual('43');
     });
 
     test('Separator', () => {
