@@ -66,8 +66,19 @@ import {ReactTestRenderer, act, create} from 'react-test-renderer';
 let store: Store;
 let renderer: ReactTestRenderer;
 
+const rendererToString = (renderer: ReactTestRenderer): string => {
+  const result = renderer.toJSON() as any;
+  if (Array.isArray(result)) {
+    return result.join('');
+  }
+  return result;
+};
+
 beforeEach(() => {
-  store = createStore().setTables({t1: {r1: {c1: 1}}});
+  store = createStore().setTables({
+    t1: {r1: {c1: 1}},
+    t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}},
+  });
 });
 
 describe('Read Components', () => {
@@ -216,33 +227,23 @@ describe('Read Components', () => {
       act(() => {
         renderer = create(<TablesView store={store} />);
       });
-      expect(renderer.toJSON()).toEqual('1');
+      expect(rendererToString(renderer)).toEqual('1234');
     });
 
     test('Separator', () => {
       act(() => {
-        store.setCell('t2', 'r1', 'c1', 2);
         renderer = create(<TablesView store={store} separator="/" />);
       });
-      expect(renderer.toJSON()).toEqual(['1', '/', '2']);
+      expect(rendererToString(renderer)).toEqual('1/234');
     });
 
     test('Debug Ids', () => {
       act(() => {
         renderer = create(<TablesView store={store} debugIds={true} />);
       });
-      expect(renderer.toJSON()).toEqual([
-        't1',
-        ':{',
-        'r1',
-        ':{',
-        'c1',
-        ':{',
-        '1',
-        '}',
-        '}',
-        '}',
-      ]);
+      expect(rendererToString(renderer)).toEqual(
+        't1:{r1:{c1:{1}}}t2:{r1:{c1:{2}}r2:{c1:{3}c2:{4}}}',
+      );
     });
 
     test('Custom', () => {
@@ -250,15 +251,19 @@ describe('Read Components', () => {
       act(() => {
         renderer = create(<Test />);
       });
-      expect(renderer.toJSON()).toEqual(['t1', ':', 'r1', ':', 'c1', ':', '1']);
+      expect(rendererToString(renderer)).toEqual(
+        't1:r1:c1:1t2:r1:c1:2r2:c1:3c2:4',
+      );
 
       act(() => {
         store.setCell('t1', 'r1', 'c1', 2);
       });
-      expect(renderer.toJSON()).toEqual(['t1', ':', 'r1', ':', 'c1', ':', '2']);
+      expect(rendererToString(renderer)).toEqual(
+        't1:r1:c1:2t2:r1:c1:2r2:c1:3c2:4',
+      );
 
       act(() => {
-        store.delCell('t1', 'r1', 'c1');
+        store.delTables();
       });
       expect(renderer.toJSON()).toBeNull();
     });
@@ -267,48 +272,36 @@ describe('Read Components', () => {
   describe('TableView', () => {
     test('Basic', () => {
       act(() => {
-        renderer = create(<TableView store={store} tableId="t1" />);
+        renderer = create(<TableView store={store} tableId="t2" />);
       });
-      expect(renderer.toJSON()).toEqual('1');
+      expect(rendererToString(renderer)).toEqual('234');
     });
 
     test('Separator', () => {
       act(() => {
-        store.setCell('t2', 'r1', 'c1', 2);
-        renderer = create(<TablesView store={store} separator="/" />);
+        renderer = create(
+          <TableView store={store} tableId="t2" separator="/" />,
+        );
       });
-      expect(renderer.toJSON()).toEqual(['1', '/', '2']);
+      expect(rendererToString(renderer)).toEqual('2/34');
     });
 
     test('Debug Ids', () => {
       act(() => {
-        store.setCell('t1', 'r2', 'c1', 2);
         renderer = create(
-          <TableView store={store} tableId="t1" separator="/" />,
+          <TableView store={store} tableId="t2" separator="/" />,
         );
       });
-      expect(renderer.toJSON()).toEqual(['1', '/', '2']);
-      act(() => {
-        store.delCell('t1', 'r2', 'c1');
-      });
+      expect(rendererToString(renderer)).toEqual('2/34');
 
       act(() => {
         renderer = create(
-          <TableView store={store} tableId="t1" debugIds={true} />,
+          <TableView store={store} tableId="t2" debugIds={true} />,
         );
       });
-      expect(renderer.toJSON()).toEqual([
-        't1',
-        ':{',
-        'r1',
-        ':{',
-        'c1',
-        ':{',
-        '1',
-        '}',
-        '}',
-        '}',
-      ]);
+      expect(rendererToString(renderer)).toEqual(
+        't2:{r1:{c1:{2}}r2:{c1:{3}c2:{4}}}',
+      );
     });
 
     test('Custom', () => {
@@ -318,58 +311,49 @@ describe('Read Components', () => {
       act(() => {
         renderer = create(<Test tableId="t0" />);
       });
-      expect(renderer.toJSON()).toEqual(['t0', ':']);
+      expect(rendererToString(renderer)).toEqual('t0:');
 
       act(() => {
-        renderer.update(<Test tableId="t1" />);
+        renderer.update(<Test tableId="t2" />);
       });
-      expect(renderer.toJSON()).toEqual(['t1', ':', 'r1', ':', 'c1', ':', '1']);
+      expect(rendererToString(renderer)).toEqual('t2:r1:c1:2r2:c1:3c2:4');
 
       act(() => {
-        store.setCell('t1', 'r1', 'c1', 2);
+        store.setCell('t2', 'r1', 'c1', 3);
       });
-      expect(renderer.toJSON()).toEqual(['t1', ':', 'r1', ':', 'c1', ':', '2']);
+      expect(rendererToString(renderer)).toEqual('t2:r1:c1:3r2:c1:3c2:4');
 
       act(() => {
-        store.delCell('t1', 'r1', 'c1');
+        store.delTables();
       });
-      expect(renderer.toJSON()).toEqual(['t1', ':']);
+      expect(rendererToString(renderer)).toEqual('t2:');
     });
   });
 
   describe('RowView', () => {
     test('Basic', () => {
       act(() => {
-        renderer = create(<RowView store={store} tableId="t1" rowId="r1" />);
+        renderer = create(<RowView store={store} tableId="t2" rowId="r2" />);
       });
-      expect(renderer.toJSON()).toEqual('1');
+      expect(rendererToString(renderer)).toEqual('34');
     });
 
     test('Separator', () => {
       act(() => {
-        store.setCell('t1', 'r1', 'c2', 2);
         renderer = create(
-          <RowView store={store} tableId="t1" rowId="r1" separator="/" />,
+          <RowView store={store} tableId="t2" rowId="r2" separator="/" />,
         );
       });
-      expect(renderer.toJSON()).toEqual(['1', '/', '2']);
+      expect(rendererToString(renderer)).toEqual('3/4');
     });
 
     test('Debug Ids', () => {
       act(() => {
         renderer = create(
-          <RowView store={store} tableId="t1" rowId="r1" debugIds={true} />,
+          <RowView store={store} tableId="t2" rowId="r2" debugIds={true} />,
         );
       });
-      expect(renderer.toJSON()).toEqual([
-        'r1',
-        ':{',
-        'c1',
-        ':{',
-        '1',
-        '}',
-        '}',
-      ]);
+      expect(rendererToString(renderer)).toEqual('r2:{c1:{3}c2:{4}}');
     });
 
     test('Custom', () => {
@@ -384,22 +368,22 @@ describe('Read Components', () => {
       act(() => {
         renderer = create(<Test tableId="t0" rowId="r0" />);
       });
-      expect(renderer.toJSON()).toEqual(['r0', ':']);
+      expect(rendererToString(renderer)).toEqual('r0:');
 
       act(() => {
-        renderer.update(<Test tableId="t1" rowId="r1" />);
+        renderer.update(<Test tableId="t2" rowId="r2" />);
       });
-      expect(renderer.toJSON()).toEqual(['r1', ':', 'c1', ':', '1']);
+      expect(rendererToString(renderer)).toEqual('r2:c1:3c2:4');
 
       act(() => {
-        store.setCell('t1', 'r1', 'c1', 2);
+        store.setCell('t2', 'r2', 'c1', 4);
       });
-      expect(renderer.toJSON()).toEqual(['r1', ':', 'c1', ':', '2']);
+      expect(rendererToString(renderer)).toEqual('r2:c1:4c2:4');
 
       act(() => {
-        store.delCell('t1', 'r1', 'c1');
+        store.delTables();
       });
-      expect(renderer.toJSON()).toEqual(['r1', ':']);
+      expect(rendererToString(renderer)).toEqual('r2:');
     });
   });
 
@@ -407,10 +391,10 @@ describe('Read Components', () => {
     test('Basic', () => {
       act(() => {
         renderer = create(
-          <CellView store={store} tableId="t1" rowId="r1" cellId="c1" />,
+          <CellView store={store} tableId="t2" rowId="r2" cellId="c2" />,
         );
       });
-      expect(renderer.toJSON()).toEqual('1');
+      expect(rendererToString(renderer)).toEqual('4');
     });
 
     test('Debug Ids', () => {
@@ -418,14 +402,14 @@ describe('Read Components', () => {
         renderer = create(
           <CellView
             store={store}
-            tableId="t1"
-            rowId="r1"
-            cellId="c1"
+            tableId="t2"
+            rowId="r2"
+            cellId="c2"
             debugIds={true}
           />,
         );
       });
-      expect(renderer.toJSON()).toEqual(['c1', ':{', '1', '}']);
+      expect(rendererToString(renderer)).toEqual('c2:{4}');
     });
 
     test('Custom', () => {
@@ -449,22 +433,22 @@ describe('Read Components', () => {
       act(() => {
         renderer = create(<Test tableId="t0" rowId="r0" cellId="c0" />);
       });
-      expect(renderer.toJSON()).toEqual(['c0', ':', '']);
+      expect(rendererToString(renderer)).toEqual('c0:');
 
       act(() => {
-        renderer.update(<Test tableId="t1" rowId="r1" cellId="c1" />);
+        renderer.update(<Test tableId="t2" rowId="r2" cellId="c2" />);
       });
-      expect(renderer.toJSON()).toEqual(['c1', ':', '1']);
+      expect(rendererToString(renderer)).toEqual('c2:4');
 
       act(() => {
-        store.setCell('t1', 'r1', 'c1', 2);
+        store.setCell('t2', 'r2', 'c2', 5);
       });
-      expect(renderer.toJSON()).toEqual(['c1', ':', '2']);
+      expect(rendererToString(renderer)).toEqual('c2:5');
 
       act(() => {
-        store.delCell('t1', 'r1', 'c1');
+        store.delTables();
       });
-      expect(renderer.toJSON()).toEqual(['c1', ':', '']);
+      expect(rendererToString(renderer)).toEqual('c2:');
     });
   });
 
@@ -481,7 +465,7 @@ describe('Read Components', () => {
       act(() => {
         renderer = create(<MetricView metrics={metrics} metricId="m1" />);
       });
-      expect(renderer.toJSON()).toEqual('1');
+      expect(rendererToString(renderer)).toEqual('1');
     });
 
     test('Debug Ids', () => {
@@ -490,7 +474,7 @@ describe('Read Components', () => {
           <MetricView metrics={metrics} metricId="m1" debugIds={true} />,
         );
       });
-      expect(renderer.toJSON()).toEqual(['m1', ':{', '1', '}']);
+      expect(rendererToString(renderer)).toEqual('m1:{1}');
     });
 
     test('Custom', () => {
@@ -500,27 +484,27 @@ describe('Read Components', () => {
       act(() => {
         renderer = create(<Test metricId="m0" />);
       });
-      expect(renderer.toJSON()).toEqual(['m0', ':', '']);
+      expect(rendererToString(renderer)).toEqual('m0:');
 
       act(() => {
         renderer.update(<Test metricId="m1" />);
       });
-      expect(renderer.toJSON()).toEqual(['m1', ':', '1']);
+      expect(rendererToString(renderer)).toEqual('m1:1');
 
       act(() => {
         store.setCell('t1', 'r2', 'c1', 2);
       });
-      expect(renderer.toJSON()).toEqual(['m1', ':', '2']);
-
-      act(() => {
-        store.delTable('t1');
-      });
-      expect(renderer.toJSON()).toEqual(['m1', ':', '']);
+      expect(rendererToString(renderer)).toEqual('m1:2');
 
       act(() => {
         renderer.update(<Test metricId="m2" />);
       });
-      expect(renderer.toJSON()).toEqual(['m2', ':', '']);
+      expect(rendererToString(renderer)).toEqual('m2:2');
+
+      act(() => {
+        store.delTables();
+      });
+      expect(rendererToString(renderer)).toEqual('m2:');
     });
   });
 
@@ -530,14 +514,14 @@ describe('Read Components', () => {
     beforeEach(() => {
       indexes = createIndexes(store)
         .setIndexDefinition('i1', 't1', 'c1')
-        .setIndexDefinition('i2', 't2', 'c2');
+        .setIndexDefinition('i2', 't2', 'c1');
     });
 
     test('Basic', () => {
       act(() => {
         renderer = create(<IndexView indexes={indexes} indexId="i1" />);
       });
-      expect(renderer.toJSON()).toEqual('1');
+      expect(rendererToString(renderer)).toEqual('1');
     });
 
     test('Separator', () => {
@@ -547,7 +531,7 @@ describe('Read Components', () => {
           <IndexView indexes={indexes} indexId="i1" separator="/" />,
         );
       });
-      expect(renderer.toJSON()).toEqual(['1', '/', '2']);
+      expect(rendererToString(renderer)).toEqual('1/2');
     });
 
     test('Debug Ids', () => {
@@ -556,21 +540,7 @@ describe('Read Components', () => {
           <IndexView indexes={indexes} indexId="i1" debugIds={true} />,
         );
       });
-      expect(renderer.toJSON()).toEqual([
-        'i1',
-        ':{',
-        '1',
-        ':{',
-        'r1',
-        ':{',
-        'c1',
-        ':{',
-        '1',
-        '}',
-        '}',
-        '}',
-        '}',
-      ]);
+      expect(rendererToString(renderer)).toEqual('i1:{1:{r1:{c1:{1}}}}');
     });
 
     test('Custom', () => {
@@ -580,52 +550,27 @@ describe('Read Components', () => {
       act(() => {
         renderer = create(<Test indexId="i0" />);
       });
-      expect(renderer.toJSON()).toEqual(['i0', ':']);
+      expect(rendererToString(renderer)).toEqual('i0:');
 
       act(() => {
         renderer.update(<Test indexId="i1" />);
       });
-      expect(renderer.toJSON()).toEqual([
-        'i1',
-        ':',
-        '1',
-        ':',
-        'r1',
-        ':',
-        'c1',
-        ':',
-        '1',
-      ]);
+      expect(rendererToString(renderer)).toEqual('i1:1:r1:c1:1');
 
       act(() => {
         store.setCell('t1', 'r2', 'c1', 1);
       });
-      expect(renderer.toJSON()).toEqual([
-        'i1',
-        ':',
-        '1',
-        ':',
-        'r1',
-        ':',
-        'c1',
-        ':',
-        '1',
-        'r2',
-        ':',
-        'c1',
-        ':',
-        '1',
-      ]);
-
-      act(() => {
-        store.delTable('t1');
-      });
-      expect(renderer.toJSON()).toEqual(['i1', ':']);
+      expect(rendererToString(renderer)).toEqual('i1:1:r1:c1:1r2:c1:1');
 
       act(() => {
         renderer = create(<Test indexId="i2" />);
       });
-      expect(renderer.toJSON()).toEqual(['i2', ':']);
+      expect(rendererToString(renderer)).toEqual('i2:2:r1:c1:23:r2:c1:3c2:4');
+
+      act(() => {
+        store.delTables();
+      });
+      expect(rendererToString(renderer)).toEqual('i2:');
     });
   });
 
@@ -635,7 +580,7 @@ describe('Read Components', () => {
     beforeEach(() => {
       indexes = createIndexes(store)
         .setIndexDefinition('i1', 't1', 'c1')
-        .setIndexDefinition('i2', 't2', 'c2');
+        .setIndexDefinition('i2', 't2', 'c1');
     });
 
     test('Basic', () => {
@@ -644,7 +589,7 @@ describe('Read Components', () => {
           <SliceView indexes={indexes} indexId="i1" sliceId="1" />,
         );
       });
-      expect(renderer.toJSON()).toEqual('1');
+      expect(rendererToString(renderer)).toEqual('1');
     });
 
     test('Separator', () => {
@@ -659,7 +604,7 @@ describe('Read Components', () => {
           />,
         );
       });
-      expect(renderer.toJSON()).toEqual(['1', '/', '1']);
+      expect(rendererToString(renderer)).toEqual('1/1');
     });
 
     test('Debug Ids', () => {
@@ -673,18 +618,7 @@ describe('Read Components', () => {
           />,
         );
       });
-      expect(renderer.toJSON()).toEqual([
-        '1',
-        ':{',
-        'r1',
-        ':{',
-        'c1',
-        ':{',
-        '1',
-        '}',
-        '}',
-        '}',
-      ]);
+      expect(rendererToString(renderer)).toEqual('1:{r1:{c1:{1}}}');
     });
 
     test('Custom', () => {
@@ -700,45 +634,32 @@ describe('Read Components', () => {
       act(() => {
         renderer = create(<Test indexId="i0" sliceId="0" />);
       });
-      expect(renderer.toJSON()).toEqual(['0', ':']);
+      expect(rendererToString(renderer)).toEqual('0:');
 
       act(() => {
         renderer.update(<Test indexId="i1" sliceId="0" />);
       });
-      expect(renderer.toJSON()).toEqual(['0', ':']);
+      expect(rendererToString(renderer)).toEqual('0:');
 
       act(() => {
         renderer.update(<Test indexId="i1" sliceId="1" />);
       });
-      expect(renderer.toJSON()).toEqual(['1', ':', 'r1', ':', 'c1', ':', '1']);
+      expect(rendererToString(renderer)).toEqual('1:r1:c1:1');
 
       act(() => {
         store.setCell('t1', 'r2', 'c1', 1);
       });
-      expect(renderer.toJSON()).toEqual([
-        '1',
-        ':',
-        'r1',
-        ':',
-        'c1',
-        ':',
-        '1',
-        'r2',
-        ':',
-        'c1',
-        ':',
-        '1',
-      ]);
-
-      act(() => {
-        store.delTable('t1');
-      });
-      expect(renderer.toJSON()).toEqual(['1', ':']);
+      expect(rendererToString(renderer)).toEqual('1:r1:c1:1r2:c1:1');
 
       act(() => {
         renderer.update(<Test indexId="i2" sliceId="2" />);
       });
-      expect(renderer.toJSON()).toEqual(['2', ':']);
+      expect(rendererToString(renderer)).toEqual('2:r1:c1:2');
+
+      act(() => {
+        store.delTables();
+      });
+      expect(rendererToString(renderer)).toEqual('2:');
     });
   });
 
@@ -765,7 +686,7 @@ describe('Read Components', () => {
           />,
         );
       });
-      expect(renderer.toJSON()).toEqual('1');
+      expect(rendererToString(renderer)).toEqual('1');
     });
 
     test('Debug Ids', () => {
@@ -779,18 +700,7 @@ describe('Read Components', () => {
           />,
         );
       });
-      expect(renderer.toJSON()).toEqual([
-        'r1',
-        ':{',
-        'R1',
-        ':{',
-        'C1',
-        ':{',
-        '1',
-        '}',
-        '}',
-        '}',
-      ]);
+      expect(rendererToString(renderer)).toEqual('r1:{R1:{C1:{1}}}');
     });
 
     test('Custom', () => {
@@ -811,28 +721,28 @@ describe('Read Components', () => {
       act(() => {
         renderer = create(<Test relationshipId="r0" localRowId="r0" />);
       });
-      expect(renderer.toJSON()).toEqual(['r0', ':']);
+      expect(rendererToString(renderer)).toEqual('r0:');
 
       act(() => {
         renderer.update(<Test relationshipId="r1" localRowId="r1" />);
       });
-      expect(renderer.toJSON()).toEqual(['r1', ':', 'R1', ':', 'C1', ':', '1']);
+      expect(rendererToString(renderer)).toEqual('r1:R1:C1:1');
 
       act(() => {
         renderer.update(<Test relationshipId="r1" localRowId="r2" />);
       });
-      expect(renderer.toJSON()).toEqual(['r2', ':', 'R1', ':', 'C1', ':', '1']);
+      expect(rendererToString(renderer)).toEqual('r2:R1:C1:1');
 
       act(() => {
         renderer.update(<Test relationshipId="r1" localRowId="r1" />);
         store.delTable('t1');
       });
-      expect(renderer.toJSON()).toEqual(['r1', ':']);
+      expect(rendererToString(renderer)).toEqual('r1:');
 
       act(() => {
         renderer.update(<Test relationshipId="r2" localRowId="r2" />);
       });
-      expect(renderer.toJSON()).toEqual(['r2', ':']);
+      expect(rendererToString(renderer)).toEqual('r2:');
     });
   });
 
@@ -859,7 +769,7 @@ describe('Read Components', () => {
           />,
         );
       });
-      expect(renderer.toJSON()).toEqual(['R1', 'R1']);
+      expect(rendererToString(renderer)).toEqual('R1R1');
     });
 
     test('Separator', () => {
@@ -873,7 +783,7 @@ describe('Read Components', () => {
           />,
         );
       });
-      expect(renderer.toJSON()).toEqual(['R1', '/', 'R1']);
+      expect(rendererToString(renderer)).toEqual('R1/R1');
     });
 
     test('Debug Ids', () => {
@@ -887,25 +797,9 @@ describe('Read Components', () => {
           />,
         );
       });
-      expect(renderer.toJSON()).toEqual([
-        'R1',
-        ':{',
-        'r1',
-        ':{',
-        'c1',
-        ':{',
-        'R1',
-        '}',
-        '}',
-        'r2',
-        ':{',
-        'c1',
-        ':{',
-        'R1',
-        '}',
-        '}',
-        '}',
-      ]);
+      expect(rendererToString(renderer)).toEqual(
+        'R1:{r1:{c1:{R1}}r2:{c1:{R1}}}',
+      );
     });
 
     test('Custom', () => {
@@ -927,40 +821,27 @@ describe('Read Components', () => {
       act(() => {
         renderer = create(<Test relationshipId="r0" remoteRowId="R0" />);
       });
-      expect(renderer.toJSON()).toEqual(['R0', ':']);
+      expect(rendererToString(renderer)).toEqual('R0:');
 
       act(() => {
         renderer.update(<Test relationshipId="r1" remoteRowId="R1" />);
       });
-      expect(renderer.toJSON()).toEqual([
-        'R1',
-        ':',
-        'r1',
-        ':',
-        'c1',
-        ':',
-        'R1',
-        'r2',
-        ':',
-        'c1',
-        ':',
-        'R1',
-      ]);
+      expect(rendererToString(renderer)).toEqual('R1:r1:c1:R1r2:c1:R1');
 
       act(() => {
         renderer.update(<Test relationshipId="r1" remoteRowId="R2" />);
       });
-      expect(renderer.toJSON()).toEqual(['R2', ':']);
+      expect(rendererToString(renderer)).toEqual('R2:');
 
       act(() => {
         store.delTable('t1');
       });
-      expect(renderer.toJSON()).toEqual(['R2', ':']);
+      expect(rendererToString(renderer)).toEqual('R2:');
 
       act(() => {
         renderer.update(<Test relationshipId="r2" remoteRowId="R2" />);
       });
-      expect(renderer.toJSON()).toEqual(['R2', ':']);
+      expect(rendererToString(renderer)).toEqual('R2:');
     });
   });
 
@@ -986,7 +867,7 @@ describe('Read Components', () => {
           />,
         );
       });
-      expect(renderer.toJSON()).toEqual(['r2', 'r3', 'r4']);
+      expect(rendererToString(renderer)).toEqual('r2r3r4');
     });
 
     test('Separator', () => {
@@ -1000,7 +881,7 @@ describe('Read Components', () => {
           />,
         );
       });
-      expect(renderer.toJSON()).toEqual(['r2', '/', 'r3', '/', 'r4', '/']);
+      expect(rendererToString(renderer)).toEqual('r2/r3/r4/');
     });
 
     test('Debug Ids', () => {
@@ -1014,35 +895,9 @@ describe('Read Components', () => {
           />,
         );
       });
-      expect(renderer.toJSON()).toEqual([
-        'r1',
-        ':{',
-        'r1',
-        ':{',
-        'c1',
-        ':{',
-        'r2',
-        '}',
-        '}',
-        'r2',
-        ':{',
-        'c1',
-        ':{',
-        'r3',
-        '}',
-        '}',
-        'r3',
-        ':{',
-        'c1',
-        ':{',
-        'r4',
-        '}',
-        '}',
-        'r4',
-        ':{',
-        '}',
-        '}',
-      ]);
+      expect(rendererToString(renderer)).toEqual(
+        'r1:{r1:{c1:{r2}}r2:{c1:{r3}}r3:{c1:{r4}}r4:{}}',
+      );
     });
 
     test('Custom', () => {
@@ -1064,62 +919,29 @@ describe('Read Components', () => {
       act(() => {
         renderer = create(<Test relationshipId="r0" firstRowId="r0" />);
       });
-      expect(renderer.toJSON()).toEqual(['r0', ':', 'r0', ':']);
+      expect(rendererToString(renderer)).toEqual('r0:r0:');
 
       act(() => {
         renderer.update(<Test relationshipId="r1" firstRowId="r1" />);
       });
-      expect(renderer.toJSON()).toEqual([
-        'r1',
-        ':',
-        'r1',
-        ':',
-        'c1',
-        ':',
-        'r2',
-        'r2',
-        ':',
-        'c1',
-        ':',
-        'r3',
-        'r3',
-        ':',
-        'c1',
-        ':',
-        'r4',
-        'r4',
-        ':',
-      ]);
+      expect(rendererToString(renderer)).toEqual(
+        'r1:r1:c1:r2r2:c1:r3r3:c1:r4r4:',
+      );
 
       act(() => {
         renderer.update(<Test relationshipId="r1" firstRowId="r2" />);
       });
-      expect(renderer.toJSON()).toEqual([
-        'r2',
-        ':',
-        'r2',
-        ':',
-        'c1',
-        ':',
-        'r3',
-        'r3',
-        ':',
-        'c1',
-        ':',
-        'r4',
-        'r4',
-        ':',
-      ]);
+      expect(rendererToString(renderer)).toEqual('r2:r2:c1:r3r3:c1:r4r4:');
 
       act(() => {
         store.delTable('t1');
       });
-      expect(renderer.toJSON()).toEqual(['r2', ':', 'r2', ':']);
+      expect(rendererToString(renderer)).toEqual('r2:r2:');
 
       act(() => {
         renderer.update(<Test relationshipId="r2" firstRowId="r2" />);
       });
-      expect(renderer.toJSON()).toEqual(['r2', ':', 'r2', ':']);
+      expect(rendererToString(renderer)).toEqual('r2:r2:');
     });
   });
 
@@ -1152,7 +974,7 @@ describe('Read Components', () => {
           </>,
         );
       });
-      expect(renderer.toJSON()).toEqual(['c1', '', '|', 'c2', '|', 'c3', '']);
+      expect(rendererToString(renderer)).toEqual('c1|c2|c3');
     });
 
     test('Separator', () => {
@@ -1165,7 +987,7 @@ describe('Read Components', () => {
           </>,
         );
       });
-      expect(renderer.toJSON()).toEqual(['c1', '/', '', '|', 'c3', '/', '']);
+      expect(rendererToString(renderer)).toEqual('c1/|c3/');
     });
 
     test('Debug Ids', () => {
@@ -1183,30 +1005,9 @@ describe('Read Components', () => {
           </>,
         );
       });
-      expect(renderer.toJSON()).toEqual([
-        '0',
-        ':{',
-        'c1',
-        '}',
-        '1',
-        ':{',
-        '',
-        '}',
-        '|',
-        '2',
-        ':{',
-        'c2',
-        '}',
-        '|',
-        '3',
-        ':{',
-        'c3',
-        '}',
-        '4',
-        ':{',
-        '',
-        '}',
-      ]);
+      expect(rendererToString(renderer)).toEqual(
+        '0:{c1}1:{}|2:{c2}|3:{c3}4:{}',
+      );
     });
 
     test('Custom', () => {
@@ -1216,57 +1017,37 @@ describe('Read Components', () => {
         renderer = create(<Test />);
         checkpoints.clear();
       });
-      expect(renderer.toJSON()).toEqual(['|', '', '|', '|', '', '|', '']);
+      expect(rendererToString(renderer)).toEqual('||||');
 
       act(() => {
         checkpoints.setCheckpoint('0', 'c1');
       });
-      expect(renderer.toJSON()).toEqual(['|', 'c1', '|', '|', '', '|', '']);
+      expect(rendererToString(renderer)).toEqual('|c1|||');
 
       act(() => {
         store.setTables({t1: {r1: {c1: 2}}});
       });
-      expect(renderer.toJSON()).toEqual(['c1', '|', '|', '|', '', '|', '']);
+      expect(rendererToString(renderer)).toEqual('c1||||');
 
       act(() => {
         checkpoints.addCheckpoint();
       });
-      expect(renderer.toJSON()).toEqual(['c1', '|', '', '|', '|', '', '|', '']);
+      expect(rendererToString(renderer)).toEqual('c1||||');
 
       act(() => {
         store.setTables({t1: {r1: {c1: 3}}});
       });
-      expect(renderer.toJSON()).toEqual(['c1', '', '|', '|', '|', '', '|', '']);
+      expect(rendererToString(renderer)).toEqual('c1||||');
 
       act(() => {
         checkpoints.addCheckpoint('c2');
       });
-      expect(renderer.toJSON()).toEqual([
-        'c1',
-        '',
-        '|',
-        'c2',
-        '|',
-        '|',
-        '',
-        '|',
-        '',
-      ]);
+      expect(rendererToString(renderer)).toEqual('c1|c2|||');
 
       act(() => {
         checkpoints.goTo('0');
       });
-      expect(renderer.toJSON()).toEqual([
-        '|',
-        'c1',
-        '|',
-        '',
-        'c2',
-        '|',
-        '',
-        '|',
-        '',
-      ]);
+      expect(rendererToString(renderer)).toEqual('|c1|c2||');
     });
   });
 });
@@ -1293,9 +1074,17 @@ describe('Context Provider', () => {
             </Provider>,
           );
         });
-        expect((renderer.toJSON() as any)[0].children).toEqual(['1']);
+        expect((renderer.toJSON() as any)[0].children).toEqual([
+          '1',
+          '2',
+          '3',
+          '4',
+        ]);
         expect((renderer.toJSON() as any)[1].children).toEqual([
-          JSON.stringify({t1: {r1: {c1: 1}}}),
+          JSON.stringify({
+            t1: {r1: {c1: 1}},
+            t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}},
+          }),
         ]);
 
         act(() => {
@@ -1476,7 +1265,7 @@ describe('Context Provider', () => {
           </Provider>,
         );
       });
-      expect(renderer.toJSON()).toEqual(['1', '1']);
+      expect(rendererToString(renderer)).toEqual('11');
     });
 
     test('indexes', () => {
@@ -1496,7 +1285,7 @@ describe('Context Provider', () => {
           </Provider>,
         );
       });
-      expect(renderer.toJSON()).toEqual(['1', '["1"]', '1', '["r1"]']);
+      expect(rendererToString(renderer)).toEqual('1["1"]1["r1"]');
     });
 
     test('relationships', () => {
@@ -1525,15 +1314,9 @@ describe('Context Provider', () => {
           </Provider>,
         );
       });
-      expect(renderer.toJSON()).toEqual([
-        '1',
-        '"R1"',
-        'R1',
-        'R1',
-        '["r1","r2"]',
-        'R1',
-        '["r1"]',
-      ]);
+      expect(rendererToString(renderer)).toEqual(
+        '1"R1"R1R1["r1","r2"]R1["r1"]',
+      );
     });
 
     test('checkpoints', () => {
@@ -1546,7 +1329,7 @@ describe('Context Provider', () => {
           </Provider>,
         );
       });
-      expect(renderer.toJSON()).toEqual(JSON.stringify([[], '0', []]));
+      expect(rendererToString(renderer)).toEqual(JSON.stringify([[], '0', []]));
     });
   });
 
@@ -1576,9 +1359,17 @@ describe('Context Provider', () => {
             </Provider>,
           );
         });
-        expect((renderer.toJSON() as any)[0].children).toEqual(['1']);
+        expect((renderer.toJSON() as any)[0].children).toEqual([
+          '1',
+          '2',
+          '3',
+          '4',
+        ]);
         expect((renderer.toJSON() as any)[1].children).toEqual([
-          JSON.stringify({t1: {r1: {c1: 1}}}),
+          JSON.stringify({
+            t1: {r1: {c1: 1}},
+            t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}},
+          }),
         ]);
 
         act(() => {
@@ -1770,7 +1561,7 @@ describe('Context Provider', () => {
           </Provider>,
         );
       });
-      expect(renderer.toJSON()).toEqual(['1', '1']);
+      expect(rendererToString(renderer)).toEqual('11');
     });
 
     test('indexes', () => {
@@ -1790,7 +1581,7 @@ describe('Context Provider', () => {
           </Provider>,
         );
       });
-      expect(renderer.toJSON()).toEqual(['1', '["1"]', '1', '["r1"]']);
+      expect(rendererToString(renderer)).toEqual('1["1"]1["r1"]');
     });
 
     test('relationships', () => {
@@ -1830,15 +1621,9 @@ describe('Context Provider', () => {
           </Provider>,
         );
       });
-      expect(renderer.toJSON()).toEqual([
-        '1',
-        '"R1"',
-        'R1',
-        'R1',
-        '["r1","r2"]',
-        'R1',
-        '["r1"]',
-      ]);
+      expect(rendererToString(renderer)).toEqual(
+        '1"R1"R1R1["r1","r2"]R1["r1"]',
+      );
     });
 
     test('checkpoints', () => {
@@ -1853,7 +1638,7 @@ describe('Context Provider', () => {
           </Provider>,
         );
       });
-      expect(renderer.toJSON()).toEqual(JSON.stringify([[], '0', []]));
+      expect(rendererToString(renderer)).toEqual('[[],"0",[]]');
     });
   });
 });
