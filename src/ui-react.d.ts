@@ -399,6 +399,9 @@ export function useTables(storeOrStoreId?: StoreOrStoreId): Tables;
  * @param storeOrStoreId The Store to be accessed: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
+ * @param trackReorder An optional boolean that indicates that the listener
+ * should be called if the set of Ids remains the same but their order
+ * changes. See the addTableIdsListener method for more details.
  * @returns An array of the Ids of every Table in the Store.
  * @example
  * This example creates a Store outside the application, which is used in the
@@ -456,7 +459,10 @@ export function useTables(storeOrStoreId?: StoreOrStoreId): Tables;
  * ```
  * @category Store hooks
  */
-export function useTableIds(storeOrStoreId?: StoreOrStoreId): Ids;
+export function useTableIds(
+  storeOrStoreId?: StoreOrStoreId,
+  trackReorder?: boolean,
+): Ids;
 
 /**
  * The useTable hook returns an object containing the entire data of a single
@@ -557,6 +563,9 @@ export function useTable(tableId: Id, storeOrStoreId?: StoreOrStoreId): Table;
  * @param storeOrStoreId The Store to be accessed: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
+ * @param trackReorder An optional boolean that indicates that the listener
+ * should be called if the set of Ids remains the same but their order
+ * changes. See the addRowIdsListener method for more details.
  * @returns An array of the Ids of every Row in the Table.
  * @example
  * This example creates a Store outside the application, which is used in the
@@ -616,7 +625,11 @@ export function useTable(tableId: Id, storeOrStoreId?: StoreOrStoreId): Table;
  * ```
  * @category Store hooks
  */
-export function useRowIds(tableId: Id, storeOrStoreId?: StoreOrStoreId): Ids;
+export function useRowIds(
+  tableId: Id,
+  storeOrStoreId?: StoreOrStoreId,
+  trackReorder?: boolean,
+): Ids;
 
 /**
  * The useRow hook returns an object containing the entire data of a single Row
@@ -725,6 +738,9 @@ export function useRow(
  * @param storeOrStoreId The Store to be accessed: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
+ * @param trackReorder An optional boolean that indicates that the listener
+ * should be called if the set of Ids remains the same but their order
+ * changes. See the addCellIdsListener method for more details.
  * @returns An array of the Ids of every Cell in the Row.
  * @example
  * This example creates a Store outside the application, which is used in the
@@ -792,6 +808,7 @@ export function useCellIds(
   tableId: Id,
   rowId: Id,
   storeOrStoreId?: StoreOrStoreId,
+  trackReorder?: boolean,
 ): Ids;
 
 /**
