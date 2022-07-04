@@ -94,7 +94,7 @@ export type Cell = string | number | boolean;
  *
  * This is used when describing a Cell that is present _or_ that is not present
  * - such as when it has been deleted, or when describing a previous state where
- * the Cell value has since been added.
+ *   the Cell value has since been added.
  *
  * @category Store
  */
@@ -420,9 +420,9 @@ export type GetCellChange = (tableId: Id, rowId: Id, cellId: Id) => CellChange;
  * The CellChange type describes a Cell's changes during a transaction.
  *
  * This is returned by the GetCellChange function that is provided to every
- * listener when called. This array contains the previous value of a Cell
- * before the current transaction, the new value after it, and a convenience
- * flag that indicates that the value has changed.
+ * listener when called. This array contains the previous value of a Cell before
+ * the current transaction, the new value after it, and a convenience flag that
+ * indicates that the value has changed.
  *
  * @category Listener
  */
@@ -539,9 +539,9 @@ export type ChangedCells = {
  * the transaction method. See that method for specific examples.
  *
  * This type is a nested structure of Table, Row, and Cell objects, much like
- * the Tables object, but one for which Cell values are listed in array
- * (much like the InvalidCellListener type) so that multiple failed attempts to
- * change a Cell during the transaction are described.
+ * the Tables object, but one for which Cell values are listed in array (much
+ * like the InvalidCellListener type) so that multiple failed attempts to change
+ * a Cell during the transaction are described.
  *
  * @category Transaction
  * @since v1.2.0
@@ -2102,11 +2102,11 @@ export interface Store {
    * removed. To listen to all changes in the Store, use the addTablesListener
    * method.
    *
-   * Use the optional `trackReorder` parameter to additionally track when the
-   * set of Ids has not changed, but the order has - for example when a Table
-   * from the middle of the Store is removed and then added back within the same
-   * transaction. This behavior is disabled by default due to the potential
-   * performance cost of detecting such changes.
+   * Since v2.0.0, you can use the optional `trackReorder` parameter to
+   * additionally track when the set of Ids has not changed, but the order has -
+   * for example when a Table from the middle of the Store is removed and then
+   * added back within the same transaction. This behavior is disabled by
+   * default due to the potential performance cost of detecting such changes.
    *
    * Use the optional mutator parameter to indicate that there is code in the
    * listener that will mutate Store data. If set to `false` (or omitted), such
@@ -2279,11 +2279,11 @@ export interface Store {
    * method's first parameter) or changes to any Table (by providing a `null`
    * wildcard).
    *
-   * Use the optional `trackReorder` parameter to additionally track when the
-   * set of Ids has not changed, but the order has - for example when a Row from
-   * the middle of the Table is removed and then added back within the same
-   * transaction. This behavior is disabled by default due to the potential
-   * performance cost of detecting such changes.
+   * Since v2.0.0, you can use the optional `trackReorder` parameter to
+   * additionally track when the set of Ids has not changed, but the order has -
+   * for example when a Row from the middle of the Table is removed and then
+   * added back within the same transaction. This behavior is disabled by
+   * default due to the potential performance cost of detecting such changes.
    *
    * Use the optional mutator parameter to indicate that there is code in the
    * listener that will mutate Store data. If set to `false` (or omitted), such
@@ -2528,11 +2528,11 @@ export interface Store {
    * Table, any Row in a specific Table, a specific Row in any Table, or any Row
    * in any Table.
    *
-   * Use the optional `trackReorder` parameter to additionally track when the
-   * set of Ids has not changed, but the order has - for example when a Cell
-   * from the middle of the Row is removed and then added back within the same
-   * transaction. This behavior is disabled by default due to the potential
-   * performance cost of detecting such changes.
+   * Since v2.0.0, you can use the optional `trackReorder` parameter to
+   * additionally track when the set of Ids has not changed, but the order has -
+   * for example when a Cell from the middle of the Row is removed and then
+   * added back within the same transaction. This behavior is disabled by
+   * default due to the potential performance cost of detecting such changes.
    *
    * Use the optional mutator parameter to indicate that there is code in the
    * listener that will mutate Store data. If set to `false` (or omitted), such
