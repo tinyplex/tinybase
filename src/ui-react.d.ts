@@ -1815,6 +1815,9 @@ export function useTablesListener(
  * @param listenerDeps An optional array of dependencies for the `listener`
  * function, which, if any change, result in the re-registration of the
  * listener. This parameter defaults to an empty array.
+ * @param trackReorder An optional boolean that indicates that the listener
+ * should be called if the set of Ids remains the same but their order
+ * changes. See the addTableIdsListener method for more details.
  * @param mutator An optional boolean that indicates that the listener mutates
  * Store data.
  * @param storeOrStoreId The Store to register the listener with: omit for the
@@ -1854,6 +1857,7 @@ export function useTablesListener(
 export function useTableIdsListener(
   listener: TableIdsListener,
   listenerDeps?: React.DependencyList,
+  trackReorder?: boolean,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void;
@@ -1946,6 +1950,9 @@ export function useTableListener(
  * @param listenerDeps An optional array of dependencies for the `listener`
  * function, which, if any change, result in the re-registration of the
  * listener. This parameter defaults to an empty array.
+ * @param trackReorder An optional boolean that indicates that the listener
+ * should be called if the set of Ids remains the same but their order
+ * changes. See the addRowIdsListener method for more details.
  * @param mutator An optional boolean that indicates that the listener mutates
  * Store data.
  * @param storeOrStoreId The Store to register the listener with: omit for the
@@ -1986,6 +1993,7 @@ export function useRowIdsListener(
   tableId: IdOrNull,
   listener: RowIdsListener,
   listenerDeps?: React.DependencyList,
+  trackReorder?: boolean,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void;
@@ -2094,6 +2102,9 @@ export function useRowListener(
  * @param listenerDeps An optional array of dependencies for the `listener`
  * function, which, if any change, result in the re-registration of the
  * listener. This parameter defaults to an empty array.
+ * @param trackReorder An optional boolean that indicates that the listener
+ * should be called if the set of Ids remains the same but their order
+ * changes. See the addCellIdsListener method for more details.
  * @param mutator An optional boolean that indicates that the listener mutates
  * Store data.
  * @param storeOrStoreId The Store to register the listener with: omit for the
@@ -2137,6 +2148,7 @@ export function useCellIdsListener(
   rowId: IdOrNull,
   listener: CellIdsListener,
   listenerDeps?: React.DependencyList,
+  trackReorder?: boolean,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void;
