@@ -399,8 +399,8 @@ export function useTables(storeOrStoreId?: StoreOrStoreId): Tables;
  * @param storeOrStoreId The Store to be accessed: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
- * @param trackReorder An optional boolean that indicates that the listener
- * should be called if the set of Ids remains the same but their order
+ * @param trackReorder Since v2.0.0, an optional boolean that indicates that the
+ * listener should be called if the set of Ids remains the same but their order
  * changes. See the addTableIdsListener method for more details.
  * @returns An array of the Ids of every Table in the Store.
  * @example
@@ -563,8 +563,8 @@ export function useTable(tableId: Id, storeOrStoreId?: StoreOrStoreId): Table;
  * @param storeOrStoreId The Store to be accessed: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
- * @param trackReorder An optional boolean that indicates that the listener
- * should be called if the set of Ids remains the same but their order
+ * @param trackReorder Since v2.0.0, an optional boolean that indicates that the
+ * listener should be called if the set of Ids remains the same but their order
  * changes. See the addRowIdsListener method for more details.
  * @returns An array of the Ids of every Row in the Table.
  * @example
@@ -738,8 +738,8 @@ export function useRow(
  * @param storeOrStoreId The Store to be accessed: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
- * @param trackReorder An optional boolean that indicates that the listener
- * should be called if the set of Ids remains the same but their order
+ * @param trackReorder Since v2.0.0, an optional boolean that indicates that the
+ * listener should be called if the set of Ids remains the same but their order
  * changes. See the addCellIdsListener method for more details.
  * @returns An array of the Ids of every Cell in the Row.
  * @example
@@ -1815,8 +1815,8 @@ export function useTablesListener(
  * @param listenerDeps An optional array of dependencies for the `listener`
  * function, which, if any change, result in the re-registration of the
  * listener. This parameter defaults to an empty array.
- * @param trackReorder An optional boolean that indicates that the listener
- * should be called if the set of Ids remains the same but their order
+ * @param trackReorder Since v2.0.0, an optional boolean that indicates that the
+ * listener should be called if the set of Ids remains the same but their order
  * changes. See the addTableIdsListener method for more details.
  * @param mutator An optional boolean that indicates that the listener mutates
  * Store data.
@@ -1950,8 +1950,8 @@ export function useTableListener(
  * @param listenerDeps An optional array of dependencies for the `listener`
  * function, which, if any change, result in the re-registration of the
  * listener. This parameter defaults to an empty array.
- * @param trackReorder An optional boolean that indicates that the listener
- * should be called if the set of Ids remains the same but their order
+ * @param trackReorder Since v2.0.0, an optional boolean that indicates that the
+ * listener should be called if the set of Ids remains the same but their order
  * changes. See the addRowIdsListener method for more details.
  * @param mutator An optional boolean that indicates that the listener mutates
  * Store data.
@@ -2102,8 +2102,8 @@ export function useRowListener(
  * @param listenerDeps An optional array of dependencies for the `listener`
  * function, which, if any change, result in the re-registration of the
  * listener. This parameter defaults to an empty array.
- * @param trackReorder An optional boolean that indicates that the listener
- * should be called if the set of Ids remains the same but their order
+ * @param trackReorder Since v2.0.0, an optional boolean that indicates that the
+ * listener should be called if the set of Ids remains the same but their order
  * changes. See the addCellIdsListener method for more details.
  * @param mutator An optional boolean that indicates that the listener mutates
  * Store data.
