@@ -3,6 +3,26 @@
 This is a reverse chronological list of the major TinyBase releases, with
 highlighted features.
 
+## v2.0.0-beta0
+
+This is the first beta for the next major version of TinyBase 2.0: "the one with
+the query engine".
+
+The new queries module allows you to build fully reactive queries with a
+SQL-adjacent JavaScript API. The documentation and test suite for the query
+system is complete, and an introductory example is
+[here](/api/queries/interfaces/queries/queries/).
+
+To support the query capabilities, a small change has been made to the Store
+API: the order of Table, Row, and Cell Ids is now significant. When adding
+listeners for changes to those, you can specify an optional `trackReorder`
+parameter to indicate that you want the listener to fire if the set of Ids does
+not change, but the order does. See the addTableIdsListener method, the
+addRowIdsListener method, and the addCellIdsListener method for more details.
+
+The React bindings for the queries module will shortly be available in
+v2.0.0-beta1. The guides and sample apps will be available in v2.0.0-beta2.
+
 ## v1.3.0
 
 Adds support for explicit transaction start and finish methods, as well as
