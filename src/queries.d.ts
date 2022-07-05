@@ -1323,8 +1323,6 @@ export type Having = {
  * optional `trackReorder` parameter to `true` to track when the set of Ids has
  * not changed, but the order has.
  *
- * trackReorder
- *
  * @example
  * This example shows a query that orders a Table by a numeric Cell, in a
  * descending fashion.
