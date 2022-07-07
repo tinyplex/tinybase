@@ -24,6 +24,7 @@ import {
   CheckpointsOrCheckpointsId,
   IndexesOrIndexesId,
   MetricsOrMetricsId,
+  QueriesOrQueriesId,
   RelationshipsOrRelationshipsId,
   StoreOrStoreId,
   UndoOrRedoInformation,
@@ -40,6 +41,7 @@ import {
   useCreateIndexes as useCreateIndexesDecl,
   useCreateMetrics as useCreateMetricsDecl,
   useCreatePersister as useCreatePersisterDecl,
+  useCreateQueries as useCreateQueriesDecl,
   useCreateRelationships as useCreateRelationshipsDecl,
   useCreateStore as useCreateStoreDecl,
   useDelCellCallback as useDelCellCallbackDecl,
@@ -58,6 +60,16 @@ import {
   useRedoInformation as useRedoInformationDecl,
   useRemoteRowId as useRemoteRowIdDecl,
   useRemoteRowIdListener as useRemoteRowIdListenerDecl,
+  useResultCell as useResultCellDecl,
+  useResultCellIds as useResultCellIdsDecl,
+  useResultCellIdsListener as useResultCellIdsListenerDecl,
+  useResultCellListener as useResultCellListenerDecl,
+  useResultRow as useResultRowDecl,
+  useResultRowIds as useResultRowIdsDecl,
+  useResultRowIdsListener as useResultRowIdsListenerDecl,
+  useResultRowListener as useResultRowListenerDecl,
+  useResultTable as useResultTableDecl,
+  useResultTableListener as useResultTableListenerDecl,
   useRow as useRowDecl,
   useRowIds as useRowIdsDecl,
   useRowIdsListener as useRowIdsListenerDecl,
@@ -88,11 +100,20 @@ import {
   RemoteRowIdListener,
 } from '../relationships.d';
 import {MetricListener, Metrics} from '../metrics.d';
+import {
+  Queries,
+  ResultCellIdsListener,
+  ResultCellListener,
+  ResultRowIdsListener,
+  ResultRowListener,
+  ResultTableListener,
+} from '../queries.d';
 import {getUndefined, ifNotUndefined, isUndefined} from '../common/other';
 import {
   useCheckpointsOrCheckpointsId,
   useIndexesOrIndexesId,
   useMetricsOrMetricsId,
+  useQueriesOrQueriesId,
   useRelationshipsOrRelationshipsId,
   useStoreOrStoreId,
 } from './common';
@@ -105,6 +126,7 @@ export {
   useCheckpoints,
   useIndexes,
   useMetrics,
+  useQueries,
   useRelationships,
   useStore,
 } from './common';
@@ -748,6 +770,144 @@ export const useLinkedRowIdsListener: typeof useLinkedRowIdsListenerDecl = (
     listener,
     listenerDeps,
     [relationshipId, firstRowId],
+  );
+
+export const useCreateQueries: typeof useCreateQueriesDecl = (
+  store: Store,
+  create: (store: Store) => Queries,
+  createDeps?: React.DependencyList,
+): Queries => useCreate(store, create, createDeps);
+
+export const useResultTable: typeof useResultTableDecl = (
+  queryId: Id,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): Table =>
+  useListenable('ResultTable', useQueriesOrQueriesId(queriesOrQueriesId), {}, [
+    queryId,
+  ]);
+
+export const useResultRowIds: typeof useResultRowIdsDecl = (
+  queryId: Id,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+  trackReorder?: boolean,
+): Ids =>
+  useListenable(
+    'ResultRowIds',
+    useQueriesOrQueriesId(queriesOrQueriesId),
+    [],
+    [queryId],
+    trackReorder,
+  );
+
+export const useResultRow: typeof useResultRowDecl = (
+  queryId: Id,
+  rowId: Id,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): Row =>
+  useListenable('ResultRow', useQueriesOrQueriesId(queriesOrQueriesId), {}, [
+    queryId,
+    rowId,
+  ]);
+
+export const useResultCellIds: typeof useResultCellIdsDecl = (
+  queryId: Id,
+  rowId: Id,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): Ids =>
+  useListenable(
+    'ResultCellIds',
+    useQueriesOrQueriesId(queriesOrQueriesId),
+    [],
+    [queryId, rowId],
+  );
+
+export const useResultCell: typeof useResultCellDecl = (
+  queryId: Id,
+  rowId: Id,
+  cellId: Id,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): Cell | undefined =>
+  useListenable(
+    'ResultCell',
+    useQueriesOrQueriesId(queriesOrQueriesId),
+    undefined,
+    [queryId, rowId, cellId],
+  );
+
+export const useResultTableListener: typeof useResultTableListenerDecl = (
+  queryId: IdOrNull,
+  listener: ResultTableListener,
+  listenerDeps?: React.DependencyList,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): void =>
+  useListener(
+    'ResultTable',
+    useQueriesOrQueriesId(queriesOrQueriesId),
+    listener,
+    listenerDeps,
+    [queryId],
+  );
+
+export const useResultRowIdsListener: typeof useResultRowIdsListenerDecl = (
+  queryId: IdOrNull,
+  listener: ResultRowIdsListener,
+  listenerDeps?: React.DependencyList,
+  trackReorder?: boolean,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): void =>
+  useListener(
+    'ResultRowIds',
+    useQueriesOrQueriesId(queriesOrQueriesId),
+    listener,
+    listenerDeps,
+    [queryId],
+    trackReorder,
+  );
+
+export const useResultRowListener: typeof useResultRowListenerDecl = (
+  queryId: IdOrNull,
+  rowId: IdOrNull,
+  listener: ResultRowListener,
+  listenerDeps?: React.DependencyList,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): void =>
+  useListener(
+    'ResultRow',
+    useQueriesOrQueriesId(queriesOrQueriesId),
+    listener,
+    listenerDeps,
+    [queryId, rowId],
+  );
+
+export const useResultCellIdsListener: typeof useResultCellIdsListenerDecl = (
+  queryId: IdOrNull,
+  rowId: IdOrNull,
+  listener: ResultCellIdsListener,
+  listenerDeps?: React.DependencyList,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): void =>
+  useListener(
+    'ResultCellIds',
+    useQueriesOrQueriesId(queriesOrQueriesId),
+    listener,
+    listenerDeps,
+    [queryId, rowId],
+  );
+
+export const useResultCellListener: typeof useResultCellListenerDecl = (
+  queryId: IdOrNull,
+  rowId: IdOrNull,
+  cellId: IdOrNull,
+  listener: ResultCellListener,
+  listenerDeps?: React.DependencyList,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): void =>
+  useListener(
+    'ResultCell',
+    useQueriesOrQueriesId(queriesOrQueriesId),
+    listener,
+    listenerDeps,
+    [queryId, rowId, cellId],
   );
 
 export const useCreateCheckpoints: typeof useCreateCheckpointsDecl = (
