@@ -762,13 +762,9 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
       queryId: IdOrNull,
       rowId: IdOrNull,
       listener: ResultCellIdsListener,
-      trackReorder?: boolean,
     ): Id =>
-      resultStore.addCellIdsListener(
-        queryId,
-        rowId,
-        (_store, ...args) => listener(queries, ...args),
-        trackReorder,
+      resultStore.addCellIdsListener(queryId, rowId, (_store, ...args) =>
+        listener(queries, ...args),
       );
 
     const addResultCellListener = (
