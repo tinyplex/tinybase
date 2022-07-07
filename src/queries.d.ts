@@ -2689,7 +2689,7 @@ export interface Queries {
    *
    * You can either listen to a single result Row (by specifying the query Id
    * and Row Id as the method's first two parameters) or changes to any Row (by
-   * providing `null`).
+   * providing `null` wildcards).
    *
    * Both, either, or neither of the `queryId` and `rowId` parameters can be
    * wildcarded with `null`. You can listen to a specific result Row in a
