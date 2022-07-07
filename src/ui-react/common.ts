@@ -2,11 +2,13 @@ import {
   CheckpointsOrCheckpointsId,
   IndexesOrIndexesId,
   MetricsOrMetricsId,
+  QueriesOrQueriesId,
   RelationshipsOrRelationshipsId,
   StoreOrStoreId,
   useCheckpoints as useCheckpointsDecl,
   useIndexes as useIndexesDecl,
   useMetrics as useMetricsDecl,
+  useQueries as useQueriesDecl,
   useRelationships as useRelationshipsDecl,
   useStore as useStoreDecl,
 } from '../ui-react.d';
@@ -16,6 +18,7 @@ import {Checkpoints} from '../checkpoints.d';
 import {Id} from '../common.d';
 import {Indexes} from '../indexes.d';
 import {Metrics} from '../metrics.d';
+import {Queries} from '../queries.d';
 import React from 'react';
 import {Relationships} from '../relationships.d';
 import {Store} from '../store.d';
@@ -31,6 +34,8 @@ export type ContextValue = [
   {[indexesId: Id]: Indexes}?,
   Relationships?,
   {[relationshipsId: Id]: Relationships}?,
+  Queries?,
+  {[queriesId: Id]: Queries}?,
   Checkpoints?,
   {[checkpointsId: Id]: Checkpoints}?,
 ];
@@ -38,7 +43,13 @@ export type ContextValue = [
 export const Context = createContext<ContextValue>([]);
 
 const useThing = <
-  Thing extends Store | Metrics | Indexes | Relationships | Checkpoints,
+  Thing extends
+    | Store
+    | Metrics
+    | Indexes
+    | Relationships
+    | Queries
+    | Checkpoints,
 >(
   id: Id | undefined,
   offset: number,
@@ -52,7 +63,13 @@ const useThing = <
 };
 
 const useThingOrThingId = <
-  Thing extends Store | Metrics | Indexes | Relationships | Checkpoints,
+  Thing extends
+    | Store
+    | Metrics
+    | Indexes
+    | Relationships
+    | Queries
+    | Checkpoints,
 >(
   thingOrThingId: Thing | Id | undefined,
   offset: number,
@@ -79,9 +96,13 @@ export const useRelationships: typeof useRelationshipsDecl = (
   id?: Id,
 ): Relationships | undefined => useThing(id, 6);
 
+export const useQueries: typeof useQueriesDecl = (
+  id?: Id,
+): Queries | undefined => useThing(id, 8);
+
 export const useCheckpoints: typeof useCheckpointsDecl = (
   id?: Id,
-): Checkpoints | undefined => useThing(id, 8);
+): Checkpoints | undefined => useThing(id, 10);
 
 export const useStoreOrStoreId = (
   storeOrStoreId?: StoreOrStoreId,
@@ -100,6 +121,10 @@ export const useRelationshipsOrRelationshipsId = (
 ): Relationships | undefined =>
   useThingOrThingId(relationshipsOrRelationshipsId, 6);
 
+export const useQueriesOrQueriesId = (
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): Queries | undefined => useThingOrThingId(queriesOrQueriesId, 8);
+
 export const useCheckpointsOrCheckpointsId = (
   checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
-): Checkpoints | undefined => useThingOrThingId(checkpointsOrCheckpointsId, 8);
+): Checkpoints | undefined => useThingOrThingId(checkpointsOrCheckpointsId, 10);
