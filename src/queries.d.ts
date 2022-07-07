@@ -2436,7 +2436,7 @@ export interface Queries {
    * a `null` wildcard).
    *
    * Use the optional `trackReorder` parameter to additionally track when the
-   * set of Ids has not changed, but the order has - for example when the Order
+   * set of Ids has not changed, but the order has - specifically when the Order
    * clause of the query causes the Row Ids to be re-sorted. This behavior is
    * disabled by default due to the potential performance cost of detecting such
    * changes.
@@ -2683,9 +2683,9 @@ export interface Queries {
    * called with a reference to the Queries object, the Id of the Table (which
    * is also the query Id), and the Id of the result Row that changed.
    *
-   * By default, such a listener is only called when a Cell is added to, or
-   * removed from, the result Row. To listen to all changes in the result Row,
-   * use the addResultRowListener method.
+   * Such a listener is only called when a Cell is added to, or removed from,
+   * the result Row. To listen to all changes in the result Row, use the
+   * addResultRowListener method.
    *
    * You can either listen to a single result Row (by specifying the query Id
    * and Row Id as the method's first two parameters) or changes to any Row (by
@@ -2696,20 +2696,11 @@ export interface Queries {
    * specific query, any result Row in a specific query, a specific result Row
    * in any query, or any result Row in any query.
    *
-   * Use the optional `trackReorder` parameter to additionally track when the
-   * set of Ids has not changed, but the order has - for example when a Cell
-   * from the middle of the Row is removed and then added back within the same
-   * transaction. This behavior is disabled by default due to the potential
-   * performance cost of detecting such changes.
-   *
    * @param queryId The Id of the query to listen to, or `null` as a wildcard.
    * @param rowId The Id of the result Row to listen to, or `null` as a
    * wildcard.
    * @param listener The function that will be called whenever the Cell Ids in
    * the result Row change.
-   * @param trackReorder An optional boolean that indicates that the listener
-   * should be called if the set of Ids remains the same but their order
-   * changes.
    * @returns A unique Id for the listener that can later be used to remove it.
    * @example
    * This example registers a listener that responds to any change to the Cell
@@ -2793,7 +2784,6 @@ export interface Queries {
     queryId: IdOrNull,
     rowId: IdOrNull,
     listener: ResultCellIdsListener,
-    trackReorder?: boolean,
   ): Id;
 
   /**
