@@ -6545,6 +6545,127 @@ export type LinkedRowsProps = {
 };
 
 /**
+ * ResultTableProps props are used for components that refer to a single query
+ * result Table, such as the ResultTableView component.
+ *
+ * @category Props
+ */
+export type ResultTableProps = {
+  /**
+   * The Id of the query in the Queries object for which the result Table will
+   * be rendered.
+   */
+  readonly queryId: Id;
+  /**
+   * The Queries object to be accessed: omit for the default context Queries
+   * object, provide an Id for a named context Queries object, or provide an
+   * explicit reference.
+   */
+  readonly queries?: QueriesOrQueriesId;
+  /**
+   * An optional boolean that indicates that the component should re-render if
+   * the set of Row Ids in the result Table remains the same but their order
+   * changes. See the addResultRowIdsListener method for more details.
+   */
+  readonly trackReorder?: boolean;
+  /**
+   * A custom component for rendering each Row in the Table (to override the
+   * default ResultRowView component).
+   */
+  readonly resultRowComponent?: ComponentType<ResultRowProps>;
+  /**
+   * A function for generating extra props for each custom Row component based
+   * on its Id.
+   */
+  readonly getResultRowComponentProps?: (rowId: Id) => ExtraProps;
+  /**
+   * A component or string to separate each Row component.
+   */
+  readonly separator?: ReactElement | string;
+  /**
+   * Whether the component should also render the Id of the query, and its
+   * descendent objects, to assist with debugging.
+   */
+  readonly debugIds?: boolean;
+};
+
+/**
+ * ResultRowProps props are used for components that refer to a single Row in a
+ * query result Table, such as the ResultRowView component.
+ *
+ * @category Props
+ */
+export type ResultRowProps = {
+  /**
+   * The Id of the query in the Queries object for which the result Table will
+   * be rendered.
+   */
+  readonly queryId: Id;
+  /**
+   * The Id of the Row in the result Table to be rendered.
+   */
+  readonly rowId: Id;
+  /**
+   * The Queries object to be accessed: omit for the default context Queries
+   * object, provide an Id for a named context Queries object, or provide an
+   * explicit reference.
+   */
+  readonly queries?: QueriesOrQueriesId;
+  /**
+   * A custom component for rendering each Cell in the Row (to override the
+   * default CellView component).
+   */
+  readonly resultCellComponent?: ComponentType<ResultCellProps>;
+  /**
+   * A function for generating extra props for each custom Cell component based
+   * on its Id.
+   */
+  readonly getResultCellComponentProps?: (cellId: Id) => ExtraProps;
+  /**
+   * A component or string to separate each Cell component.
+   */
+  readonly separator?: ReactElement | string;
+  /**
+   * Whether the component should also render the Id of the Row, and its
+   * descendent objects, to assist with debugging.
+   */
+  readonly debugIds?: boolean;
+};
+
+/**
+ * ResultRowProps props are used for components that refer to a single Cell in a
+ * Row of a result Table, such as the ResultCellView component.
+ *
+ * @category Props
+ */
+export type ResultCellProps = {
+  /**
+   * The Id of the query in the Queries object for which the result Table will
+   * be rendered.
+   */
+  readonly queryId: Id;
+  /**
+   * The Id of the Row in the Table.
+   */
+  readonly rowId: Id;
+  /**
+   * The Id of the Cell in the Row to be rendered.
+   */
+  readonly cellId: Id;
+  /**
+   * The Queries object to be accessed: omit for the default context Queries
+   * object, provide an Id for a named context Queries object, or provide an
+   * explicit reference.
+   */
+  readonly queries?: QueriesOrQueriesId;
+  /**
+   * Whether the component should also render the Id of the Cell to assist with
+   * debugging.
+   */
+  readonly debugIds?: boolean;
+};
+
+/**
  * CheckpointProps props are used for components that refer to a single
  * checkpoint in an Checkpoints object, such as the CheckpointView component.
  *
@@ -8024,6 +8145,396 @@ export function LocalRowsView(props: LocalRowsProps): ComponentReturnType;
  * @category Relationships components
  */
 export function LinkedRowsView(props: LinkedRowsProps): ComponentReturnType;
+
+/**
+ * The ResultCellView component renders the value of a single Cell in a given
+ * Row, in a given query's result Table, and registers a listener so that any
+ * changes to that result will cause a re-render.
+ *
+ * The component's props identify which Cell to render based on query Id, Row
+ * Id, Cell Id, and Queries object (which is either the default context Queries
+ * object, a named context Queries object, or an explicit reference).
+ *
+ * A Cell contains a string, number, or boolean, so the value is rendered
+ * directly without further decoration. You can create your own
+ * ResultCellView-like component to customize the way that a Cell is rendered:
+ * see the ResultRowView component for more details.
+ *
+ * This component uses the useResultCell hook under the covers, which means that
+ * any changes to the specified Cell will cause a re-render.
+ *
+ * @param props The props for this component.
+ * @returns A rendering of the result Cell, or nothing, if not present.
+ * @example
+ * This example creates a Queries object outside the application, which is used
+ * in the ResultCellView component by reference. A change to the data in the
+ * Store re-renders the component.
+ *
+ * ```jsx
+ * const store = createStore().setTable('pets', {
+ *   fido: {species: 'dog', color: 'brown'},
+ *   felix: {species: 'cat', color: 'black'},
+ *   cujo: {species: 'dog', color: 'black'},
+ * });
+ * const queries = createQueries(store).setQueryDefinition(
+ *   'petColors',
+ *   'pets',
+ *   ({select}) => select('color'),
+ * );
+ * const App = () => (
+ *   <span>
+ *     <ResultCellView
+ *       queryId="petColors"
+ *       rowId="fido"
+ *       cellId="color"
+ *       queries={queries}
+ *     />
+ *   </span>
+ * );
+ *
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>brown</span>'
+ *
+ * store.setCell('pets', 'fido', 'color', 'walnut'); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>walnut</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a default Queries object
+ * is provided. The ResultCellView component within it then renders the Cell
+ * (with its Id for readability).
+ *
+ * ```jsx
+ * const App = ({queries}) => (
+ *   <Provider queries={queries}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <span>
+ *     <ResultCellView
+ *       queryId="petColors"
+ *       rowId="fido"
+ *       cellId="color"
+ *       debugIds={true}
+ *     />
+ *   </span>
+ * );
+ *
+ * const queries = createQueries(
+ *   createStore().setTable('pets', {
+ *     fido: {species: 'dog', color: 'brown'},
+ *     felix: {species: 'cat', color: 'black'},
+ *     cujo: {species: 'dog', color: 'black'},
+ *   }),
+ * ).setQueryDefinition('petColors', 'pets', ({select}) => select('color'));
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App queries={queries} />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>color:{brown}</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a default Queries object
+ * is provided. The ResultCellView component within it then attempts to render a
+ * non-existent Cell.
+ *
+ * ```jsx
+ * const App = ({queries}) => (
+ *   <Provider queries={queries}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <span>
+ *     <ResultCellView queryId="petColors" rowId="fido" cellId="height" />
+ *   </span>
+ * );
+ *
+ * const queries = createQueries(
+ *   createStore().setTable('pets', {
+ *     fido: {species: 'dog', color: 'brown'},
+ *     felix: {species: 'cat', color: 'black'},
+ *     cujo: {species: 'dog', color: 'black'},
+ *   }),
+ * ).setQueryDefinition('petColors', 'pets', ({select}) => select('color'));
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App queries={queries} />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span></span>'
+ * ```
+ * @category Queries components
+ */
+export function ResultCellView(props: ResultCellProps): ComponentReturnType;
+
+/**
+ * The ResultRowView component renders the contents of a single Row in a given
+ * query's result Table, and registers a listener so that any changes to that
+ * result will cause a re-render.
+ *
+ * The component's props identify which Row to render based on query Id, Row Id,
+ * and Queries object (which is either the default context Queries object, a
+ * named context Queries object, or an explicit reference).
+ *
+ * This component renders a Row by iterating over its Cell values. By default
+ * these are in turn rendered with the ResultCellView component, but you can
+ * override this behavior by providing a `resultCellComponent` prop, a custom
+ * component of your own that will render a Cell based on ResultCellProps. You
+ * can also pass additional props to your custom component with the
+ * `getResultCellComponentProps` callback prop.
+ *
+ * You can create your own ResultRowView-like component to customize the way
+ * that a result Row is rendered: see the ResultTableView component for more
+ * details.
+ *
+ * This component uses the useResultCellIds hook under the covers, which means
+ * that any changes to the structure of the result Row will cause a re-render.
+ *
+ * @param props The props for this component.
+ * @returns A rendering of the result Row, or nothing, if not present.
+ * @example
+ * This example creates a Queries object outside the application, which is used
+ * in the ResultRowView component by reference. A change to the data in the
+ * Store re-renders the component.
+ *
+ * ```jsx
+ * const store = createStore().setTable('pets', {
+ *   fido: {species: 'dog', color: 'brown'},
+ *   felix: {species: 'cat', color: 'black'},
+ *   cujo: {species: 'dog', color: 'black'},
+ * });
+ * const queries = createQueries(store).setQueryDefinition(
+ *   'petColors',
+ *   'pets',
+ *   ({select}) => {
+ *     select('species');
+ *     select('color');
+ *   },
+ * );
+ * const App = () => (
+ *   <div>
+ *     <ResultRowView
+ *       queryId="petColors"
+ *       rowId="fido"
+ *       queries={queries}
+ *       separator="/"
+ *     />
+ *   </div>
+ * );
+ *
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<div>dog/brown</div>'
+ *
+ * store.setCell('pets', 'fido', 'color', 'walnut'); // !act
+ * console.log(app.innerHTML);
+ * // -> '<div>dog/walnut</div>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a default Queries object
+ * is provided. The ResultRowView component within it then renders the Row (with
+ * Ids for readability).
+ *
+ * ```jsx
+ * const App = ({queries}) => (
+ *   <Provider queries={queries}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <div>
+ *     <ResultRowView queryId="petColors" rowId="fido" debugIds={true} />
+ *   </div>
+ * );
+ *
+ * const queries = createQueries(
+ *   createStore().setTable('pets', {
+ *     fido: {species: 'dog', color: 'brown'},
+ *     felix: {species: 'cat', color: 'black'},
+ *     cujo: {species: 'dog', color: 'black'},
+ *   }),
+ * ).setQueryDefinition('petColors', 'pets', ({select}) => {
+ *   select('species');
+ *   select('color');
+ * });
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App queries={queries} />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<div>fido:{species:{dog}color:{brown}}</div>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a default Queries object
+ * is provided. The ResultRowView component within it then renders the Row with
+ * a custom Cell component and a custom props callback.
+ *
+ * ```jsx
+ * const App = ({queries}) => (
+ *   <Provider queries={queries}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <div>
+ *     <ResultRowView
+ *       queryId="petColors"
+ *       rowId="fido"
+ *       resultCellComponent={FormattedResultCellView}
+ *       getResultCellComponentProps={(cellId) => ({
+ *         bold: cellId == 'species',
+ *       })}
+ *     />
+ *   </div>
+ * );
+ * const FormattedResultCellView = ({queryId, rowId, cellId, bold}) => (
+ *   <span>
+ *     {bold ? <b>{cellId}</b> : cellId}
+ *     {': '}
+ *     <ResultCellView queryId={queryId} rowId={rowId} cellId={cellId} />
+ *   </span>
+ * );
+ *
+ * const queries = createQueries(
+ *   createStore().setTable('pets', {
+ *     fido: {species: 'dog', color: 'brown'},
+ *     felix: {species: 'cat', color: 'black'},
+ *     cujo: {species: 'dog', color: 'black'},
+ *   }),
+ * ).setQueryDefinition('petColors', 'pets', ({select}) => {
+ *   select('species');
+ *   select('color');
+ * });
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App queries={queries} />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<div><span><b>species</b>: dog</span><span>color: brown</span></div>'
+ * ```
+ * @category Queries components
+ */
+export function ResultRowView(props: ResultRowProps): ComponentReturnType;
+
+/**
+ * The ResultTableView component renders the contents of a single query's result
+ * Table in a Queries object, and registers a listener so that any changes to
+ * that result will cause a re-render.
+ *
+ * The component's props identify which Table to render based on query Id, and
+ * Queries object (which is either the default context Queries object, a named
+ * context Queries object, or by explicit reference).
+ *
+ * This component renders a result Table by iterating over its Row objects. By
+ * default these are in turn rendered with the ResultRowView component, but you
+ * can override this behavior by providing a `resultRowComponent` prop, a custom
+ * component of your own that will render a Row based on ResultRowProps. You can
+ * also pass additional props to your custom component with the
+ * `getResultRowComponentProps` callback prop.
+ *
+ * This component uses the useResultRowIds hook under the covers, which means
+ * that any changes to the structure of the result Table will cause a re-render.
+ *
+ * @param props The props for this component.
+ * @returns A rendering of the result Table, or nothing, if not present.
+ * @example
+ * This example creates a Queries object outside the application, which is used
+ * in the ResultTableView component by reference. A change to the data in the
+ * Store re-renders the component.
+ *
+ * ```jsx
+ * const store = createStore().setTable('pets', {
+ *   fido: {species: 'dog', color: 'brown'},
+ *   felix: {species: 'cat', color: 'black'},
+ * });
+ * const queries = createQueries(store).setQueryDefinition(
+ *   'petColors',
+ *   'pets',
+ *   ({select}) => select('color'),
+ * );
+ * const App = () => (
+ *   <div>
+ *     <ResultTableView queryId="petColors" queries={queries} separator="/" />
+ *   </div>
+ * );
+ *
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<div>brown/black</div>'
+ *
+ * store.setRow('pets', 'cujo', {species: 'dog', color: 'black'}); // !act
+ * console.log(app.innerHTML);
+ * // -> '<div>brown/black/black</div>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a default Queries object
+ * is provided. The ResultTableView component within it then renders the Table
+ * (with Ids for readability).
+ *
+ * ```jsx
+ * const App = ({queries}) => (
+ *   <Provider queries={queries}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <div>
+ *     <ResultTableView queryId="petColors" debugIds={true} />
+ *   </div>
+ * );
+ *
+ * const queries = createQueries(
+ *   createStore().setTable('pets', {
+ *     fido: {species: 'dog', color: 'brown'},
+ *     felix: {species: 'cat', color: 'black'},
+ *   }),
+ * ).setQueryDefinition('petColors', 'pets', ({select}) => select('color'));
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App queries={queries} />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<div>petColors:{fido:{color:{brown}}felix:{color:{black}}}</div>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a default Queries object
+ * is provided. The ResultTableView component within it then renders the Table
+ * with a custom Row component and a custom props callback.
+ *
+ * ```jsx
+ * const App = ({queries}) => (
+ *   <Provider queries={queries}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <div>
+ *     <ResultTableView
+ *       queryId="petColors"
+ *       resultRowComponent={FormattedRowView}
+ *       getResultRowComponentProps={(rowId) => ({bold: rowId == 'fido'})}
+ *     />
+ *   </div>
+ * );
+ * const FormattedRowView = ({queryId, rowId, bold}) => (
+ *   <span>
+ *     {bold ? <b>{rowId}</b> : rowId}
+ *     {': '}
+ *     <ResultRowView queryId={queryId} rowId={rowId} />
+ *   </span>
+ * );
+ *
+ * const queries = createQueries(
+ *   createStore().setTable('pets', {
+ *     fido: {species: 'dog', color: 'brown'},
+ *     felix: {species: 'cat', color: 'black'},
+ *   }),
+ * ).setQueryDefinition('petColors', 'pets', ({select}) => select('color'));
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App queries={queries} />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<div><span><b>fido</b>: brown</span><span>felix: black</span></div>'
+ * ```
+ * @category Queries components
+ */
+export function ResultTableView(props: ResultTableProps): ComponentReturnType;
 
 /**
  * The CheckpointView component simply renders the label of a checkpoint.
