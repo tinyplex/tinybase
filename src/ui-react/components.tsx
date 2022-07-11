@@ -24,6 +24,12 @@ import {
   RelationshipsOrRelationshipsId,
   RemoteRowProps,
   RemoteRowView as RemoteRowViewDecl,
+  ResultCellProps,
+  ResultCellView as ResultCellViewDecl,
+  ResultRowProps,
+  ResultRowView as ResultRowViewDecl,
+  ResultTableProps,
+  ResultTableView as ResultTableViewDecl,
   RowProps,
   RowView as RowViewDecl,
   SliceProps,
@@ -50,6 +56,9 @@ import {
   useLocalRowIds,
   useMetric,
   useRemoteRowId,
+  useResultCell,
+  useResultCellIds,
+  useResultRowIds,
   useRowIds,
   useSliceIds,
   useSliceRowIds,
@@ -413,6 +422,72 @@ export const LocalRowsView: typeof LocalRowsViewDecl = (
 export const LinkedRowsView: typeof LinkedRowsViewDecl = (
   props: LinkedRowsProps,
 ): any => useComponentPerRow(props, useLinkedRowIds, props.firstRowId);
+
+export const ResultCellView: typeof ResultCellViewDecl = ({
+  queryId,
+  rowId,
+  cellId,
+  queries,
+  debugIds,
+}: ResultCellProps): any =>
+  wrap(
+    EMPTY_STRING +
+      (useResultCell(queryId, rowId, cellId, queries) ?? EMPTY_STRING),
+    undefined,
+    debugIds,
+    cellId,
+  );
+
+export const ResultRowView: typeof ResultRowViewDecl = ({
+  queryId,
+  rowId,
+  queries,
+  resultCellComponent: ResultCell = ResultCellView,
+  getResultCellComponentProps,
+  separator,
+  debugIds,
+}: ResultRowProps): any =>
+  wrap(
+    arrayMap(useResultCellIds(queryId, rowId, queries), (cellId) => (
+      <ResultCell
+        {...getProps(getResultCellComponentProps, cellId)}
+        key={cellId}
+        queryId={queryId}
+        rowId={rowId}
+        cellId={cellId}
+        queries={queries}
+        debugIds={debugIds}
+      />
+    )),
+    separator,
+    debugIds,
+    rowId,
+  );
+
+export const ResultTableView: typeof ResultTableViewDecl = ({
+  queryId,
+  queries,
+  trackReorder,
+  resultRowComponent: ResultRow = ResultRowView,
+  getResultRowComponentProps,
+  separator,
+  debugIds,
+}: ResultTableProps): any =>
+  wrap(
+    arrayMap(useResultRowIds(queryId, queries, trackReorder), (rowId) => (
+      <ResultRow
+        {...getProps(getResultRowComponentProps, rowId)}
+        key={rowId}
+        queryId={queryId}
+        rowId={rowId}
+        queries={queries}
+        debugIds={debugIds}
+      />
+    )),
+    separator,
+    debugIds,
+    queryId,
+  );
 
 export const CheckpointView: typeof CheckpointViewDecl = ({
   checkpoints,

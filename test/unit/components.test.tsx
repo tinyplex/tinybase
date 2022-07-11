@@ -19,6 +19,12 @@ import {
   Provider,
   RemoteRowProps,
   RemoteRowView,
+  ResultCellProps,
+  ResultCellView,
+  ResultRowProps,
+  ResultRowView,
+  ResultTableProps,
+  ResultTableView,
   RowProps,
   RowView,
   SliceProps,
@@ -37,6 +43,11 @@ import {
   useLocalRowIds,
   useMetric,
   useRemoteRowId,
+  useResultCell,
+  useResultCellIds,
+  useResultRow,
+  useResultRowIds,
+  useResultTable,
   useRow,
   useSetCellCallback,
   useSetRowCallback,
@@ -52,11 +63,13 @@ import {
   Id,
   Indexes,
   Metrics,
+  Queries,
   Relationships,
   Store,
   createCheckpoints,
   createIndexes,
   createMetrics,
+  createQueries,
   createRelationships,
   createStore,
 } from '../../lib/debug/tinybase';
@@ -151,6 +164,46 @@ describe('Read Components', () => {
           [props.cellPrefix],
         )}
       />
+    </>
+  );
+
+  const TestResultTableView = (
+    props: ResultTableProps & {cellPrefix?: string},
+  ) => (
+    <>
+      {props.queryId}:
+      <ResultTableView
+        {...props}
+        resultRowComponent={TestResultRowView}
+        getResultRowComponentProps={useCallback(
+          () => ({cellPrefix: props.cellPrefix}),
+          [props.cellPrefix],
+        )}
+      />
+    </>
+  );
+
+  const TestResultRowView = (props: ResultRowProps & {cellPrefix?: string}) => (
+    <>
+      {props.rowId}:
+      <ResultRowView
+        {...props}
+        resultCellComponent={TestResultCellView}
+        getResultCellComponentProps={useCallback(
+          () => ({cellPrefix: props.cellPrefix}),
+          [props.cellPrefix],
+        )}
+      />
+    </>
+  );
+
+  const TestResultCellView = (
+    props: ResultCellProps & {cellPrefix?: string},
+  ) => (
+    <>
+      {props.cellId}
+      {props.cellPrefix}
+      <ResultCellView {...props} />
     </>
   );
 
@@ -970,6 +1023,258 @@ describe('Read Components', () => {
     });
   });
 
+  describe('ResultTableView', () => {
+    let queries: Queries;
+
+    beforeEach(() => {
+      queries = createQueries(store).setQueryDefinition(
+        'q1',
+        't2',
+        ({select, order}) => {
+          select('c1');
+          select('c2');
+          order('c2');
+        },
+      );
+    });
+
+    test('Basic', () => {
+      act(() => {
+        renderer = create(
+          <ResultTableView
+            queries={queries}
+            queryId="q1"
+            trackReorder={true}
+          />,
+        );
+      });
+      expect(rendererToString(renderer)).toEqual('234');
+
+      act(() => {
+        store.setCell('t2', 'r1', 'c2', 5);
+      });
+      expect(rendererToString(renderer)).toEqual('3425');
+    });
+
+    test('Separator', () => {
+      act(() => {
+        renderer = create(
+          <ResultTableView queries={queries} queryId="q1" separator="/" />,
+        );
+      });
+      expect(rendererToString(renderer)).toEqual('2/34');
+    });
+
+    test('Debug Ids', () => {
+      act(() => {
+        renderer = create(
+          <ResultTableView queries={queries} queryId="q1" separator="/" />,
+        );
+      });
+      expect(rendererToString(renderer)).toEqual('2/34');
+
+      act(() => {
+        renderer = create(
+          <ResultTableView queries={queries} queryId="q1" debugIds={true} />,
+        );
+      });
+      expect(rendererToString(renderer)).toEqual(
+        'q1:{r1:{c1:{2}}r2:{c1:{3}c2:{4}}}',
+      );
+    });
+
+    test('Custom', () => {
+      const Test = ({queryId}: {queryId: Id}) => (
+        <TestResultTableView
+          queries={queries}
+          queryId={queryId}
+          cellPrefix=":"
+        />
+      );
+      act(() => {
+        renderer = create(<Test queryId="q0" />);
+      });
+      expect(rendererToString(renderer)).toEqual('q0:');
+
+      act(() => {
+        renderer.update(<Test queryId="q1" />);
+      });
+      expect(rendererToString(renderer)).toEqual('q1:r1:c1:2r2:c1:3c2:4');
+
+      act(() => {
+        store.setCell('t2', 'r1', 'c1', 3);
+      });
+      expect(rendererToString(renderer)).toEqual('q1:r1:c1:3r2:c1:3c2:4');
+
+      act(() => {
+        store.delTables();
+      });
+      expect(rendererToString(renderer)).toEqual('q1:');
+    });
+  });
+
+  describe('ResultRowView', () => {
+    let queries: Queries;
+
+    beforeEach(() => {
+      queries = createQueries(store).setQueryDefinition(
+        'q1',
+        't2',
+        ({select}) => {
+          select('c1');
+          select('c2');
+        },
+      );
+    });
+
+    test('Basic', () => {
+      act(() => {
+        renderer = create(
+          <ResultRowView queries={queries} queryId="q1" rowId="r2" />,
+        );
+      });
+      expect(rendererToString(renderer)).toEqual('34');
+    });
+
+    test('Separator', () => {
+      act(() => {
+        renderer = create(
+          <ResultRowView
+            queries={queries}
+            queryId="q1"
+            rowId="r2"
+            separator="/"
+          />,
+        );
+      });
+      expect(rendererToString(renderer)).toEqual('3/4');
+    });
+
+    test('Debug Ids', () => {
+      act(() => {
+        renderer = create(
+          <ResultRowView
+            queries={queries}
+            queryId="q1"
+            rowId="r2"
+            debugIds={true}
+          />,
+        );
+      });
+      expect(rendererToString(renderer)).toEqual('r2:{c1:{3}c2:{4}}');
+    });
+
+    test('Custom', () => {
+      const Test = ({queryId, rowId}: {queryId: Id; rowId: Id}) => (
+        <TestResultRowView
+          queries={queries}
+          queryId={queryId}
+          rowId={rowId}
+          cellPrefix=":"
+        />
+      );
+      act(() => {
+        renderer = create(<Test queryId="q0" rowId="r0" />);
+      });
+      expect(rendererToString(renderer)).toEqual('r0:');
+
+      act(() => {
+        renderer.update(<Test queryId="q1" rowId="r2" />);
+      });
+      expect(rendererToString(renderer)).toEqual('r2:c1:3c2:4');
+
+      act(() => {
+        store.setCell('t2', 'r2', 'c1', 4);
+      });
+      expect(rendererToString(renderer)).toEqual('r2:c1:4c2:4');
+
+      act(() => {
+        store.delTables();
+      });
+      expect(rendererToString(renderer)).toEqual('r2:');
+    });
+  });
+
+  describe('ResultCellView', () => {
+    let queries: Queries;
+
+    beforeEach(() => {
+      queries = createQueries(store).setQueryDefinition(
+        'q1',
+        't2',
+        ({select}) => select('c1'),
+      );
+    });
+
+    test('Basic', () => {
+      act(() => {
+        renderer = create(
+          <ResultCellView
+            queries={queries}
+            queryId="q1"
+            rowId="r2"
+            cellId="c1"
+          />,
+        );
+      });
+      expect(rendererToString(renderer)).toEqual('3');
+    });
+
+    test('Debug Ids', () => {
+      act(() => {
+        renderer = create(
+          <ResultCellView
+            queries={queries}
+            queryId="q1"
+            rowId="r2"
+            cellId="c1"
+            debugIds={true}
+          />,
+        );
+      });
+      expect(rendererToString(renderer)).toEqual('c1:{3}');
+    });
+
+    test('Custom', () => {
+      const Test = ({
+        queryId,
+        rowId,
+        cellId,
+      }: {
+        queryId: Id;
+        rowId: Id;
+        cellId: Id;
+      }) => (
+        <TestResultCellView
+          queries={queries}
+          queryId={queryId}
+          rowId={rowId}
+          cellId={cellId}
+          cellPrefix=":"
+        />
+      );
+      act(() => {
+        renderer = create(<Test queryId="q0" rowId="r0" cellId="c0" />);
+      });
+      expect(rendererToString(renderer)).toEqual('c0:');
+
+      act(() => {
+        renderer.update(<Test queryId="q1" rowId="r2" cellId="c1" />);
+      });
+      expect(rendererToString(renderer)).toEqual('c1:3');
+
+      act(() => {
+        store.setCell('t2', 'r2', 'c1', 4);
+      });
+      expect(rendererToString(renderer)).toEqual('c1:4');
+
+      act(() => {
+        store.delTables();
+      });
+      expect(rendererToString(renderer)).toEqual('c1:');
+    });
+  });
+
   describe('CheckpointsViews', () => {
     let checkpoints: Checkpoints;
 
@@ -1344,6 +1649,36 @@ describe('Context Provider', () => {
       );
     });
 
+    test('queries', () => {
+      const queries = createQueries(store).setQueryDefinition(
+        'q1',
+        't1',
+        ({select}) => select('c1'),
+      );
+      const Test = () => (
+        <>
+          <ResultTableView queryId="q1" />
+          {JSON.stringify(useResultTable('q1'))}
+          {JSON.stringify(useResultRowIds('q1'))}
+          <ResultRowView queryId="q1" rowId="r1" />
+          {JSON.stringify(useResultRow('q1', 'r1'))}
+          {JSON.stringify(useResultCellIds('q1', 'r1'))}
+          <ResultCellView queryId="q1" rowId="r1" cellId="c1" />
+          {JSON.stringify(useResultCell('q1', 'r1', 'c1'))}
+        </>
+      );
+      act(() => {
+        renderer = create(
+          <Provider queries={queries}>
+            <Test />
+          </Provider>,
+        );
+      });
+      expect(rendererToString(renderer)).toEqual(
+        '1{"r1":{"c1":1}}["r1"]1{"c1":1}["c1"]11',
+      );
+    });
+
     test('checkpoints', () => {
       const checkpoints = createCheckpoints(store);
       const Test = () => <>{JSON.stringify(useCheckpointIds())}</>;
@@ -1648,6 +1983,41 @@ describe('Context Provider', () => {
       });
       expect(rendererToString(renderer)).toEqual(
         '1"R1"R1R1["r1","r2"]R1["r1"]',
+      );
+    });
+
+    test('queries', () => {
+      const queries = createQueries(store).setQueryDefinition(
+        'q1',
+        't1',
+        ({select}) => select('c1'),
+      );
+      const Test = () => (
+        <>
+          <ResultTableView queries="queries1" queryId="q1" />
+          {JSON.stringify(useResultTable('q1', 'queries1'))}
+          {JSON.stringify(useResultRowIds('q1', 'queries1'))}
+          <ResultRowView queries="queries1" queryId="q1" rowId="r1" />
+          {JSON.stringify(useResultRow('q1', 'r1', 'queries1'))}
+          {JSON.stringify(useResultCellIds('q1', 'r1', 'queries1'))}
+          <ResultCellView
+            queries="queries1"
+            queryId="q1"
+            rowId="r1"
+            cellId="c1"
+          />
+          {JSON.stringify(useResultCell('q1', 'r1', 'c1', 'queries1'))}
+        </>
+      );
+      act(() => {
+        renderer = create(
+          <Provider queriesById={{queries1: queries}}>
+            <Test />
+          </Provider>,
+        );
+      });
+      expect(rendererToString(renderer)).toEqual(
+        '1{"r1":{"c1":1}}["r1"]1{"c1":1}["c1"]11',
       );
     });
 
