@@ -154,9 +154,9 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
       fromStore: Store,
       toStore: Store,
     ) =>
-      addStoreListeners(
+      addPreStoreListener(
+        fromStore,
         queryId,
-        0,
         fromStore.addWillFinishTransactionListener(toStore.startTransaction),
         fromStore.addDidFinishTransactionListener(() =>
           toStore.finishTransaction(),
