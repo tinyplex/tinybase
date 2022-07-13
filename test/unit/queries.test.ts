@@ -4624,6 +4624,19 @@ describe('Listens to Queries when sets', () => {
 });
 
 describe('Miscellaneous', () => {
+  test('cleans pre-stores', () => {
+    setCells();
+    queries.setQueryDefinition('q1', 't1', ({select}) => select('c1'));
+    expect(queries.getResultTable('q1')).toEqual({
+      r1: {c1: 'one'},
+      r2: {c1: 'two'},
+      r3: {c1: 'three'},
+      r4: {c1: 'four'},
+    });
+    queries.delQueryDefinition('q1');
+    expect(queries.getResultTable('q1')).toEqual({});
+  });
+
   test('remove listener', () => {
     listener = createQueriesListener(queries);
     const listenerId = listener.listenToResultTable('/q1', 'q1');
