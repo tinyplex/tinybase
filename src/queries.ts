@@ -144,6 +144,11 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
         ),
       );
 
+    const cleanPreStores = (queryId: Id) =>
+      arrayForEach([resultStore, preStore2, preStore1], (store) =>
+        store.delTable(queryId),
+      );
+
     const synchronizeTransactions = (
       queryId: Id,
       fromStore: Store,
@@ -172,9 +177,7 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
       }) => void,
     ): Queries => {
       setDefinition(queryId, tableId);
-      arrayForEach([preStore1, preStore2, resultStore], (store) =>
-        store.delTable(queryId),
-      );
+      cleanPreStores(queryId);
 
       let offsetLimit: [offset: number, limit: number] | undefined;
       const selectEntries: [Id, SelectClause][] = [];
@@ -688,6 +691,7 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
             preStore.delListener(listenerId),
           ),
       );
+      cleanPreStores(queryId);
       delDefinition(queryId);
       return queries;
     };
