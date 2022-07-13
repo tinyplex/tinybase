@@ -103,6 +103,7 @@ type Aggregators = [
 
 export const createQueries: typeof createQueriesDecl = getCreateFunction(
   (store: Store): Queries => {
+    const createStore = (store as StoreWithCreateMethod).createStore;
     const [
       getStore,
       getQueryIds,
@@ -118,9 +119,9 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
       addStoreListeners,
       delStoreListeners,
     ] = getDefinableFunctions<true, undefined>(store, () => true, getUndefined);
-    const preStore1 = (store as StoreWithCreateMethod).createStore();
-    const preStore2 = (store as StoreWithCreateMethod).createStore();
-    const resultStore = (store as StoreWithCreateMethod).createStore();
+    const preStore1 = createStore();
+    const preStore2 = createStore();
+    const resultStore = createStore();
     const preStoreListenerIds: Map<Id, Map<Store, IdSet>> = mapNew();
 
     const addPreStoreListener = (
@@ -171,9 +172,9 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
       }) => void,
     ): Queries => {
       setDefinition(queryId, tableId);
-      preStore1.delTable(queryId);
-      preStore2.delTable(queryId);
-      resultStore.delTable(queryId);
+      arrayForEach([preStore1, preStore2, resultStore], (store) =>
+        store.delTable(queryId),
+      );
 
       let offsetLimit: [offset: number, limit: number] | undefined;
       const selectEntries: [Id, SelectClause][] = [];
