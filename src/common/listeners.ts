@@ -62,15 +62,17 @@ const getWildcardedLeaves = (
   deepIdSet: IdSetNode,
   path: IdOrBoolean[] = [EMPTY_STRING],
 ): IdSet[] => {
-  const sets: IdSet[] = [];
-  const deep = (set: IdSetNode, p: number): number | void =>
+  const leaves: IdSet[] = [];
+  const deep = (node: IdSetNode, p: number): number | void =>
     p == arrayLength(path)
-      ? arrayPush(sets, set)
+      ? arrayPush(leaves, node)
+      : path[p] === null
+      ? collForEach(node as Node<IdOrNull, IdSet>, (node) => deep(node, p + 1))
       : arrayForEach([path[p], null], (id) =>
-          deep(mapGet(set as Node<IdOrNull, IdSet>, id) as IdSetNode, p + 1),
+          deep(mapGet(node as Node<IdOrNull, IdSet>, id) as IdSetNode, p + 1),
         );
   deep(deepIdSet, 0);
-  return sets;
+  return leaves;
 };
 
 export const getListenerFunctions = (
@@ -117,8 +119,10 @@ export const getListenerFunctions = (
   ): void =>
     arrayForEach(getWildcardedLeaves(idSetNode, ids), (set) =>
       collForEach(set, (id: Id) =>
-        ifNotUndefined(mapGet(allListeners, id), ([listener]) =>
-          (listener as any)(thing, ...(ids ?? []), ...extraArgs),
+        (mapGet(allListeners, id) as any)[0](
+          thing,
+          ...(ids ?? []),
+          ...extraArgs,
         ),
       ),
     );
