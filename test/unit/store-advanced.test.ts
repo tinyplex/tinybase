@@ -248,6 +248,115 @@ describe('Ids and ordering', () => {
   });
 });
 
+describe('Sorted Row Ids', () => {
+  beforeEach(() => {
+    store = createStore().setTables({
+      t1: {
+        r1: {c1: 1, c2: 'one'},
+        r3: {c1: 3, c2: 'three'},
+        r5: {c1: 5, c2: 'five'},
+        r2: {c1: 2, c2: 'two'},
+        r4: {c1: 4, c2: 'four'},
+        r6: {c1: 6, c2: 'six'},
+      },
+    });
+  });
+
+  test('Cell sort', () => {
+    expect(store.getSortedRowIds('t1', 'c2')).toEqual([
+      'r5',
+      'r4',
+      'r1',
+      'r6',
+      'r3',
+      'r2',
+    ]);
+  });
+
+  test('Cell sort, reverse', () => {
+    expect(store.getSortedRowIds('t1', 'c2', true)).toEqual([
+      'r2',
+      'r3',
+      'r6',
+      'r1',
+      'r4',
+      'r5',
+    ]);
+  });
+
+  test('Cell sort, missing cell (hence id)', () => {
+    expect(store.getSortedRowIds('t1')).toEqual([
+      'r1',
+      'r2',
+      'r3',
+      'r4',
+      'r5',
+      'r6',
+    ]);
+  });
+
+  test('Cell sort listener, add row with relevant cell', () => {
+    expect.assertions(1);
+    store.addSortedRowIdsListener('t1', 'c2', false, () => {
+      expect(store.getSortedRowIds('t1', 'c2')).toEqual([
+        'r5',
+        'r4',
+        'r1',
+        'r7',
+        'r6',
+        'r3',
+        'r2',
+      ]);
+    });
+    store.setRow('t1', 'r7', {c1: 7, c2: 'seven'});
+  });
+
+  test('Cell sort listener, add row without relevant cell', () => {
+    expect.assertions(1);
+    store.addSortedRowIdsListener('t1', 'c2', false, () => {
+      expect(store.getSortedRowIds('t1', 'c2')).toEqual([
+        'r5',
+        'r4',
+        'r1',
+        'r6',
+        'r3',
+        'r2',
+        'r7',
+      ]);
+    });
+    store.setRow('t1', 'r7', {c1: 7});
+  });
+
+  test('Cell sort listener, alter relevant cell', () => {
+    expect.assertions(1);
+    store.addSortedRowIdsListener('t1', 'c2', false, () => {
+      expect(store.getSortedRowIds('t1', 'c2')).toEqual([
+        'r5',
+        'r4',
+        'r6',
+        'r3',
+        'r2',
+        'r1',
+      ]);
+    });
+    store.setCell('t1', 'r1', 'c2', 'uno');
+  });
+
+  test('Cell sort listener, alter relevant cell, no change', () => {
+    const listener = jest.fn();
+    store.addSortedRowIdsListener('t1', 'c2', false, listener);
+    store.setCell('t1', 'r5', 'c2', 'cinq');
+    expect(listener).toBeCalledTimes(0);
+  });
+
+  test('Cell sort listener, alter non-relevant cell', () => {
+    const listener = jest.fn();
+    store.addSortedRowIdsListener('t1', 'c2', false, listener);
+    store.setCell('t1', 'r1', 'c1', '1.0');
+    expect(listener).toBeCalledTimes(0);
+  });
+});
+
 describe('Miscellaneous', () => {
   test('Set in the constructor', () => {
     store = createStore().setTables({t1: {r1: {c1: 1, c2: 2}}});

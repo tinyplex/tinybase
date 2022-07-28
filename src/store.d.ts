@@ -285,6 +285,35 @@ export type TableListener = (
 export type RowIdsListener = (store: Store, tableId: Id) => void;
 
 /**
+ * The SortedRowIdsListener type describes a function that is used to listen to
+ * changes to sorted Row Ids in a Table.
+ *
+ * A SortedRowIdsListener is provided when using the addSortedRowIdsListener
+ * method. See that method for specific examples.
+ *
+ * When called, a SortedRowIdsListener is given a reference to the Store, the Id
+ * of the Table whose Row Ids sorting changed, and the Cell Id being used to
+ * sort them, whether descending or not. It also receives the sorted array of
+ * Ids itself, so that you can use them in the listener without the additional
+ * cost of an explicit call to getSortedRowIds.
+ *
+ * @param store A reference to the Store that changed.
+ * @param tableId The Id of the Table whose sorted Row Ids changed.
+ * @param cellId The Id of the Cell whose values were used for the sorting.
+ * @param descending Whether the sorting was in descending order.
+ * @param sortedRowIds The sorted Row Ids themselves.
+ * @category Listener
+ * @since v2.0.0
+ */
+export type SortedRowIdsListener = (
+  store: Store,
+  tableId: Id,
+  cellId: Id,
+  descending: boolean,
+  sortedRowIds: Ids,
+) => void;
+
+/**
  * The RowListener type describes a function that is used to listen to changes
  * to a Row.
  *
@@ -666,6 +695,7 @@ export type StoreListenerStats = {
  * |Table Ids|getTableIds|-|-|addTableIdsListener|
  * |Table|getTable|setTable|delTable|addTableListener|
  * |Row Ids|getRowIds|-|-|addRowIdsListener|
+ * |Row Ids (sorted)|getSortedRowIds|-|-|addSortedRowIdsListener|
  * |Row|getRow|setRow|delRow|addRowListener|
  * |Cell Ids|getCellIds|-|-|addCellIdsListener|
  * |Cell|getCell|setCell|delCell|addCellListener|
@@ -891,6 +921,84 @@ export interface Store {
    * @category Getter
    */
   getRowIds(tableId: Id): Ids;
+
+  /**
+   * The getSortedRowIds method returns the Ids of every Row in a given Table,
+   * sorted according to the values in a specified Cell.
+   *
+   * The sorting of the rows is alphanumeric, but you can indicate whether it
+   * should be in descending order.
+   *
+   * Note that every call to this method will perform the sorting afresh - there
+   * is no caching of the results - and so you are advised to memoize the
+   * results yourself, especially when the Table is large. For a performant
+   * approach to tracking the sorted Row Ids when they change, use the
+   * addSortedRowIdsListener method.
+   *
+   * If the Table does not exist, an empty array is returned. If the Cell used
+   * for sorting does not exist in the Table, the Ids will be returned in the
+   * same order as would be returned from the getRowIds method.
+   *
+   * @param tableId The Id of the Table in the Store.
+   * @param cellId The Id of the Cell whose values are used for the sorting, or
+   * `undefined` to by sort the Row Id itself.
+   * @param descending Whether the sorting should be in descending order.
+   * @returns An array of the sorted Ids of every Row in the Table.
+   * @example
+   * This example retrieves sorted Row Ids in a Table.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {
+   *     fido: {species: 'dog'},
+   *     felix: {species: 'cat'},
+   *   },
+   * });
+   * console.log(store.getSortedRowIds('pets', 'species'));
+   * // -> ['felix', 'fido']
+   * ```
+   * @example
+   * This example retrieves sorted Row Ids in a Table in reverse order.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {
+   *     fido: {species: 'dog'},
+   *     felix: {species: 'cat'},
+   *     cujo: {species: 'wolf'},
+   *   },
+   * });
+   * console.log(store.getSortedRowIds('pets', 'species', true));
+   * // -> ['cujo', 'fido', 'felix']
+   * ```
+   * @example
+   * This example retrieves Row Ids sorted by their own value, since the
+   * `cellId` parameter is undefined.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {
+   *     fido: {species: 'dog'},
+   *     felix: {species: 'cat'},
+   *     cujo: {species: 'wolf'},
+   *   },
+   * });
+   * console.log(store.getSortedRowIds('pets'));
+   * // -> ['cujo', 'felix', 'fido']
+   * ```
+   * @example
+   * This example retrieves the sorted Row Ids of a Table that does not exist,
+   * returning an empty array.
+   *
+   * ```js
+   * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+   * console.log(store.getSortedRowIds('employees'));
+   * // -> []
+   * ```
+   * @category Getter
+   * @since v2.0.0
+   */
+  getSortedRowIds(tableId: Id, cellId?: Id, descending?: boolean): Ids;
 
   /**
    * The getRow method returns an object containing the entire data of a single
@@ -2395,6 +2503,174 @@ export interface Store {
     tableId: IdOrNull,
     listener: RowIdsListener,
     trackReorder?: boolean,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * The addSortedRowIdsListener method registers a listener function with the
+   * Store that will be called whenever sorted Row Ids in a Table change.
+   *
+   * The provided listener is a SortedRowIdsListener function, and will be
+   * called with a reference to the Store, the Id of the Table whose Row Ids
+   * sorting changed, and the Cell Id being used to sort them, whether
+   * descending or not. It also receives the sorted array of Ids itself, so that
+   * you can use them in the listener without the additional cost of an explicit
+   * call to getSortedRowIds.
+   *
+   * Such a listener is called when a Row is added or removed, but also when a
+   * value in the specified Cell (somewhere in the Table) has changed enough to
+   * change the sorting of the Row Ids.
+   *
+   * Unlike most other listeners, you cannot provide wildcards (due to the cost
+   * of detecting changes to the sorting). You can only listen to a single
+   * specified Table, sorted by a single specified Cell.
+   *
+   * Use the optional mutator parameter to indicate that there is code in the
+   * listener that will mutate Store data. If set to `false` (or omitted), such
+   * mutations will be silently ignored. All relevant mutator listeners (with
+   * this flag set to `true`) are called _before_ any non-mutator listeners
+   * (since the latter may become relevant due to changes made in the former).
+   * The changes made by mutator listeners do not fire other mutating listeners,
+   * though they will fire non-mutator listeners.
+   *
+   * @param tableId The Id of the Table to listen to.
+   * @param cellId The Id of the Cell whose values are used for the sorting, or
+   * `undefined` to by sort the Row Id itself.
+   * @param descending Whether the sorting should be in descending order.
+   * @param listener The function that will be called whenever the sorted Row
+   * Ids in the Table change.
+   * @param mutator An optional boolean that indicates that the listener mutates
+   * Store data.
+   * @returns A unique Id for the listener that can later be used to call it
+   * explicitly, or to remove it.
+   * @example
+   * This example registers a listener that responds to any change to the sorted
+   * Row Ids of a specific Table.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {
+   *     cujo: {species: 'wolf'},
+   *     felix: {species: 'cat'},
+   *   },
+   * });
+   * console.log(store.getSortedRowIds('pets', 'species', false));
+   * // -> ['felix', 'cujo']
+   *
+   * const listenerId = store.addSortedRowIdsListener(
+   *   'pets',
+   *   'species',
+   *   false,
+   *   (store, tableId, cellId, descending, sortedRowIds) => {
+   *     console.log(`Sorted Row Ids for ${tableId} table changed`);
+   *     console.log(sortedRowIds);
+   *     // ^ cheaper than calling getSortedRowIds again
+   *   },
+   * );
+   *
+   * store.setRow('pets', 'fido', {species: 'dog'});
+   * // -> 'Sorted Row Ids for pets table changed'
+   * // -> ['felix', 'fido', 'cujo']
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @example
+   * This example registers a listener that responds to any change to the sorted
+   * Row Ids of a specific Table. The Row Ids are sorted by their own value,
+   * since the `cellId` parameter is explicitly undefined.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {
+   *     fido: {species: 'dog'},
+   *     felix: {species: 'cat'},
+   *   },
+   * });
+   * console.log(store.getSortedRowIds('pets', undefined, false));
+   * // -> ['felix', 'fido']
+   *
+   * const listenerId = store.addSortedRowIdsListener(
+   *   'pets',
+   *   undefined,
+   *   false,
+   *   (store, tableId, cellId, descending, sortedRowIds) => {
+   *     console.log(`Sorted Row Ids for ${tableId} table changed`);
+   *     console.log(sortedRowIds);
+   *     // ^ cheaper than calling getSortedRowIds again
+   *   },
+   * );
+   *
+   * store.setRow('pets', 'cujo', {species: 'wolf'});
+   * // -> 'Sorted Row Ids for pets table changed'
+   * // -> ['cujo', 'felix', 'fido']
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @example
+   * This example registers a listener that responds to a change in the sorting
+   * of the rows of a specific Table, even though the set of Ids themselves has
+   * not changed.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {
+   *     fido: {species: 'dog'},
+   *     felix: {species: 'cat'},
+   *   },
+   * });
+   * console.log(store.getSortedRowIds('pets', 'species', false));
+   * // -> ['felix', 'fido']
+   *
+   * const listenerId = store.addSortedRowIdsListener(
+   *   'pets',
+   *   'species',
+   *   false,
+   *   (store, tableId, cellId, descending, sortedRowIds) => {
+   *     console.log(`Sorted Row Ids for ${tableId} table changed`);
+   *     console.log(sortedRowIds);
+   *     // ^ cheaper than calling getSortedRowIds again
+   *   },
+   * );
+   *
+   * store.setCell('pets', 'felix', 'species', 'tiger');
+   * // -> 'Sorted Row Ids for pets table changed'
+   * // -> ['fido', 'felix']
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @example
+   * This example registers a listener that responds to any change to the sorted
+   * Row Ids of a specific Table, and which also mutates the Store itself.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {
+   *     cujo: {species: 'wolf'},
+   *     felix: {species: 'cat'},
+   *   },
+   * });
+   * const listenerId = store.addSortedRowIdsListener(
+   *   'pets',
+   *   'species',
+   *   false,
+   *   (store, tableId) => store.setCell('meta', 'sorted', tableId, true),
+   *   true, // mutator
+   * );
+   *
+   * store.setRow('pets', 'fido', {species: 'dog'});
+   * console.log(store.getTable('meta'));
+   * // -> {sorted: {pets: true}}
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @category Listener
+   * @since v2.0.0
+   */
+  addSortedRowIdsListener(
+    tableId: Id,
+    cellId: Id | undefined,
+    descending: boolean,
+    listener: SortedRowIdsListener,
     mutator?: boolean,
   ): Id;
 
