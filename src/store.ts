@@ -1132,6 +1132,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
           tableIds: pair2CollSize2(tableIdsListeners),
           table: pairCollSize2(tableListeners),
           rowIds: pair2CollSize2(rowIdsListeners),
+          sortedRowIds: pairCollSize2(sortedRowIdsListeners),
           row: pairCollSize2(rowListeners, collSize3),
           cellIds: pair2CollSize2(cellIdsListeners, collSize3),
           cell: pairCollSize2(cellListeners, collSize4),
