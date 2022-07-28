@@ -308,7 +308,7 @@ export type RowIdsListener = (store: Store, tableId: Id) => void;
 export type SortedRowIdsListener = (
   store: Store,
   tableId: Id,
-  cellId: Id,
+  cellId: Id | undefined,
   descending: boolean,
   sortedRowIds: Ids,
 ) => void;
