@@ -16,6 +16,7 @@ import {
   RowIdsListener,
   RowListener,
   Schema,
+  SortedRowIdsListener,
   Store,
   StoreListenerStats,
   Table,
@@ -87,10 +88,13 @@ import {
   arrayForEach,
   arrayHas,
   arrayIsEqual,
+  arrayMap,
   arrayPush,
+  arraySort,
 } from './common/array';
 import {
   collClear,
+  collDel,
   collForEach,
   collHas,
   collIsEmpty,
@@ -98,7 +102,8 @@ import {
   collSize3,
   collSize4,
 } from './common/coll';
-import {getCellType} from './common/cell';
+import {getCellType, setOrDelCell} from './common/cell';
+import {defaultSorter} from './common';
 
 type SchemaMap = IdMap2<CellSchema>;
 type RowMap = IdMap<Cell>;
@@ -167,6 +172,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const tableIdsListeners: Pair2<IdSet2> = pair2NewMap();
   const tableListeners: Pair<IdSet2> = pairNewMap();
   const rowIdsListeners: Pair2<IdSet2> = pair2NewMap();
+  const sortedRowIdsListeners: Pair<IdSet3> = pairNewMap();
   const rowListeners: Pair<IdSet3> = pairNewMap();
   const cellIdsListeners: Pair2<IdSet3> = pair2NewMap();
   const cellListeners: Pair<IdSet4> = pairNewMap();
@@ -558,23 +564,30 @@ export const createStore: typeof createStoreDecl = (): Store => {
     changedIds: ChangedIdsMap,
     getIds: (...args: Ids) => Ids,
     ids?: Ids,
-  ): void => {
+  ): 1 | void => {
     if (collSize(changedIds) > 1) {
       callListeners(listeners[0], ids);
       callListeners(listeners[1], ids);
-    } else if (
+      return 1;
+    }
+    if (
       !collIsEmpty(changedIds) &&
       mapGet(changedIds, null) != 0 &&
       !arrayIsEqual(mapGet(changedIds, null) as Ids, getIds(...(ids ?? [])))
     ) {
       callListeners(listeners[1], ids);
+      return 1;
     }
   };
 
   const callListenersForChanges = (mutator: 0 | 1) => {
+    const emptySortedRowIdListeners = collIsEmpty(
+      sortedRowIdsListeners[mutator],
+    );
     const emptyIdListeners =
       pairCollIsEmpty(cellIdsListeners[mutator]) &&
       pairCollIsEmpty(rowIdsListeners[mutator]) &&
+      emptySortedRowIdListeners &&
       pairCollIsEmpty(tableIdsListeners[mutator]);
     const emptyOtherListeners =
       collIsEmpty(cellListeners[mutator]) &&
@@ -607,14 +620,44 @@ export const createStore: typeof createStoreDecl = (): Store => {
             ),
           ),
         );
-        collForEach(changes[1], (changedIds, tableId) =>
-          callIdsListenersIfChanged(
-            rowIdsListeners[mutator],
-            changedIds,
-            getRowIds,
-            [tableId],
-          ),
-        );
+
+        const calledSortableTableIds: IdSet = setNew();
+        collForEach(changes[1], (changedIds, tableId) => {
+          if (
+            callIdsListenersIfChanged(
+              rowIdsListeners[mutator],
+              changedIds,
+              getRowIds,
+              [tableId],
+            ) &&
+            !emptySortedRowIdListeners
+          ) {
+            callListeners(sortedRowIdsListeners[mutator], [tableId, null]);
+            setAdd(calledSortableTableIds, tableId);
+          }
+        });
+
+        if (!emptySortedRowIdListeners) {
+          collForEach(changes[3], (rows, tableId) => {
+            if (!collHas(calledSortableTableIds, tableId)) {
+              const sortableCellIds: IdSet = setNew();
+              collForEach(rows, (cells) =>
+                collForEach(cells, ([oldCell, newCell], cellId) =>
+                  newCell !== oldCell
+                    ? setAdd(sortableCellIds, cellId)
+                    : collDel(cells, cellId),
+                ),
+              );
+              collForEach(sortableCellIds, (cellId) =>
+                callListeners(sortedRowIdsListeners[mutator], [
+                  tableId,
+                  cellId,
+                ]),
+              );
+            }
+          });
+        }
+
         callIdsListenersIfChanged(
           tableIdsListeners[mutator],
           changes[0],
@@ -677,6 +720,28 @@ export const createStore: typeof createStoreDecl = (): Store => {
     mapToObj<RowMap, Row>(mapGet(tablesMap, tableId), mapToObj);
 
   const getRowIds = (tableId: Id): Ids => mapKeys(mapGet(tablesMap, tableId));
+
+  const getSortedRowIds = (
+    tableId: Id,
+    cellId?: Id,
+    descending?: boolean,
+  ): Ids => {
+    const cells: [Cell, Id][] = [];
+    mapForEach(mapGet(tablesMap, tableId), (rowId, row) =>
+      arrayPush(cells, [
+        isUndefined(cellId) ? rowId : mapGet(row, cellId),
+        rowId,
+      ]),
+    );
+    return arrayMap(
+      arraySort(
+        cells,
+        ([cell1], [cell2]) =>
+          defaultSorter(cell1, cell2) * (descending ? -1 : 1),
+      ),
+      ([, rowId]) => rowId,
+    );
+  };
 
   const getRow = (tableId: Id, rowId: Id): Row =>
     mapToObj(mapGet(mapGet(tablesMap, tableId), rowId));
@@ -888,9 +953,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
           collForEach(changedCells, (table, tableId) =>
             collForEach(table, (row, rowId) =>
               collForEach(row, ([oldCell], cellId) =>
-                isUndefined(oldCell)
-                  ? delCell(tableId, rowId, cellId, true)
-                  : setCell(tableId, rowId, cellId, oldCell),
+                setOrDelCell(store, tableId, rowId, cellId, oldCell),
               ),
             ),
           );
@@ -964,7 +1027,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   ): Id => addListener(listener, tableListeners[mutator ? 1 : 0], [tableId]);
 
   const addRowIdsListener = (
-    tableId: Id,
+    tableId: IdOrNull,
     listener: RowIdsListener,
     trackReorder?: boolean,
     mutator?: boolean,
@@ -974,6 +1037,27 @@ export const createStore: typeof createStoreDecl = (): Store => {
       rowIdsListeners[mutator ? 1 : 0][trackReorder ? 1 : 0],
       [tableId],
     );
+
+  const addSortedRowIdsListener = (
+    tableId: Id,
+    cellId: Id,
+    descending: boolean,
+    listener: SortedRowIdsListener,
+    mutator?: boolean,
+  ): Id => {
+    let sortedRowIds = getSortedRowIds(tableId, cellId, descending);
+    return addListener(
+      () => {
+        const newSortedRowIds = getSortedRowIds(tableId, cellId, descending);
+        if (!arrayIsEqual(newSortedRowIds, sortedRowIds)) {
+          sortedRowIds = newSortedRowIds;
+          listener(store, tableId, cellId, descending, sortedRowIds);
+        }
+      },
+      sortedRowIdsListeners[mutator ? 1 : 0],
+      [tableId, cellId],
+    );
+  };
 
   const addRowListener = (
     tableId: IdOrNull,
@@ -1061,6 +1145,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     getTableIds,
     getTable,
     getRowIds,
+    getSortedRowIds,
     getRow,
     getCellIds,
     getCell,
@@ -1101,6 +1186,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     addTableIdsListener,
     addTableListener,
     addRowIdsListener,
+    addSortedRowIdsListener,
     addRowListener,
     addCellIdsListener,
     addCellListener,
