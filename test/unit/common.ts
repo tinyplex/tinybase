@@ -33,6 +33,12 @@ export type StoreListener = Listener &
     listenToTableIds: (id: Id, trackReorder?: boolean) => Id;
     listenToTable: (id: Id, tableId: IdOrNull) => Id;
     listenToRowIds: (id: Id, tableId: IdOrNull, trackReorder?: boolean) => Id;
+    listenToSortedRowIds: (
+      id: Id,
+      tableId: Id,
+      cellId: Id,
+      descending: boolean,
+    ) => Id;
     listenToRow: (id: Id, tableId: IdOrNull, rowId: IdOrNull) => Id;
     listenToCellIds: (
       id: Id,
@@ -164,6 +170,19 @@ export const createStoreListener = (store: Store): StoreListener => {
         (store, tableId) =>
           logs[id].push({[tableId]: store.getRowIds(tableId)}),
         trackReorder,
+      );
+    },
+
+    listenToSortedRowIds: (id, tableId, cellId, descending) => {
+      logs[id] = [];
+      return store.addSortedRowIdsListener(
+        tableId,
+        cellId,
+        descending,
+        (_, tableId, cellId, descending, sortedCellIds) =>
+          logs[id].push({
+            [tableId]: {[cellId]: {[descending + '']: sortedCellIds}},
+          }),
       );
     },
 
