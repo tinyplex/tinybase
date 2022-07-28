@@ -40,7 +40,13 @@ import {Callback} from './common.d';
  * @category Development
  */
 export type PersisterStats = {
+  /**
+   * The number of times data has been loaded.
+   */
   loads?: number;
+  /**
+   * The number of times data has been saved.
+   */
   saves?: number;
 };
 

@@ -128,11 +128,13 @@ export type SliceRowIdsListener = (
  */
 export type IndexesListenerStats = {
   /**
-   * The number of SlideIdsListeners registered with the Indexes object.
+   * The number of SlideIdsListener functions registered with the Indexes
+   * object.
    */
   sliceIds?: number;
   /**
-   * The number of SliceRowIdsListeners registered with the Indexes object.
+   * The number of SliceRowIdsListener functions registered with the Indexes
+   * object.
    */
   sliceRowIds?: number;
 };
