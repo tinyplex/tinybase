@@ -290,23 +290,23 @@ export type ResultCellListener = (
  */
 export type QueriesListenerStats = {
   /**
-   * The number of ResultTableListeners registered with the Store.
+   * The number of ResultTableListener functions registered with the Store.
    */
   table?: number;
   /**
-   * The number of ResultRowIdsListeners registered with the Store.
+   * The number of ResultRowIdsListener functions registered with the Store.
    */
   rowIds?: number;
   /**
-   * The number of ResultRowListeners registered with the Store.
+   * The number of ResultRowListener functions registered with the Store.
    */
   row?: number;
   /**
-   * The number of ResultCellIdsListeners registered with the Store.
+   * The number of ResultCellIdsListener functions registered with the Store.
    */
   cellIds?: number;
   /**
-   * The number of ResultCellListeners registered with the Store.
+   * The number of ResultCellListener functions registered with the Store.
    */
   cell?: number;
 };
