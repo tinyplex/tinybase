@@ -29,6 +29,8 @@ import {
   RowView,
   SliceProps,
   SliceView,
+  SortedTableProps,
+  SortedTableView,
   TableProps,
   TableView,
   TablesProps,
@@ -247,6 +249,22 @@ describe('Read Components', () => {
     </>
   );
 
+  const TestSortedTableView = (
+    props: SortedTableProps & {cellPrefix?: string},
+  ) => (
+    <>
+      {props.tableId},{props.cellId}:
+      <SortedTableView
+        {...props}
+        rowComponent={TestRowView}
+        getRowComponentProps={useCallback(
+          () => ({cellPrefix: props.cellPrefix}),
+          [props.cellPrefix],
+        )}
+      />
+    </>
+  );
+
   const TestRowView = (props: RowProps & {cellPrefix?: string}) => (
     <>
       {props.rowId}:
@@ -396,6 +414,98 @@ describe('Read Components', () => {
         store.delTables();
       });
       expect(rendererToString(renderer)).toEqual('t2:');
+    });
+  });
+
+  describe('SortedTableView', () => {
+    test('Basic', () => {
+      act(() => {
+        renderer = create(
+          <SortedTableView
+            store={store}
+            tableId="t2"
+            cellId="c1"
+            descending={true}
+          />,
+        );
+      });
+      expect(rendererToString(renderer)).toEqual('342');
+    });
+
+    test('Separator', () => {
+      act(() => {
+        renderer = create(
+          <SortedTableView
+            store={store}
+            tableId="t2"
+            cellId="c1"
+            descending={true}
+            separator="/"
+          />,
+        );
+      });
+      expect(rendererToString(renderer)).toEqual('34/2');
+    });
+
+    test('Debug Ids', () => {
+      act(() => {
+        renderer = create(
+          <SortedTableView
+            store={store}
+            tableId="t2"
+            cellId="c1"
+            descending={true}
+            separator="/"
+          />,
+        );
+      });
+      expect(rendererToString(renderer)).toEqual('34/2');
+
+      act(() => {
+        renderer = create(
+          <SortedTableView
+            store={store}
+            tableId="t2"
+            cellId="c1"
+            descending={true}
+            debugIds={true}
+          />,
+        );
+      });
+      expect(rendererToString(renderer)).toEqual(
+        't2:{r2:{c1:{3}c2:{4}}r1:{c1:{2}}}',
+      );
+    });
+
+    test('Custom', () => {
+      const Test = ({tableId, cellId}: {tableId: Id; cellId: Id}) => (
+        <TestSortedTableView
+          store={store}
+          tableId={tableId}
+          cellId={cellId}
+          descending={true}
+          cellPrefix=":"
+        />
+      );
+      act(() => {
+        renderer = create(<Test tableId="t0" cellId="c0" />);
+      });
+      expect(rendererToString(renderer)).toEqual('t0,c0:');
+
+      act(() => {
+        renderer.update(<Test tableId="t2" cellId="c1" />);
+      });
+      expect(rendererToString(renderer)).toEqual('t2,c1:r2:c1:3c2:4r1:c1:2');
+
+      act(() => {
+        store.setCell('t2', 'r1', 'c1', 3);
+      });
+      expect(rendererToString(renderer)).toEqual('t2,c1:r2:c1:3c2:4r1:c1:3');
+
+      act(() => {
+        store.delTables();
+      });
+      expect(rendererToString(renderer)).toEqual('t2,c1:');
     });
   });
 
