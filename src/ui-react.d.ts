@@ -6426,6 +6426,53 @@ export type TableProps = {
 };
 
 /**
+ * SortedTableProps props are used for components that refer to a single sorted
+ * Table in a Store, such as the SortedTableView component.
+ *
+ * @category Props
+ * @since v2.0.0
+ */
+export type SortedTableProps = {
+  /**
+   * The Id of the Table in the Store to be rendered.
+   */
+  readonly tableId: Id;
+  /**
+   * The Id of the Cell whose values are used for the sorting. If omitted, the
+   * view will sort the Row Id itself.
+   */
+  readonly cellId?: Id;
+  /**
+   * Whether the sorting should be in descending order.
+   */
+  readonly descending: boolean;
+  /**
+   * The Store to be accessed: omit for the default context Store, provide an Id
+   * for a named context Store, or provide an explicit reference.
+   */
+  readonly store?: StoreOrStoreId;
+  /**
+   * A custom component for rendering each Row in the Table (to override the
+   * default RowView component).
+   */
+  readonly rowComponent?: ComponentType<RowProps>;
+  /**
+   * A function for generating extra props for each custom Row component based
+   * on its Id.
+   */
+  readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
+  /**
+   * A component or string to separate each Row component.
+   */
+  readonly separator?: ReactElement | string;
+  /**
+   * Whether the component should also render the Id of the Table, and its
+   * descendent objects, to assist with debugging.
+   */
+  readonly debugIds?: boolean;
+};
+
+/**
  * RowProps props are used for components that refer to a single Row in a Table,
  * such as the RowView component.
  *
@@ -7361,6 +7408,133 @@ export function CellView(props: CellProps): ComponentReturnType;
  * @category Store components
  */
 export function RowView(props: RowProps): ComponentReturnType;
+
+/**
+ * The SortedTableView component renders the contents of a single sorted Table
+ * in a Store, and registers a listener so that any changes to that result will
+ * cause a re-render.
+ *
+ * The component's props identify which Table to render based on Table Id, and
+ * Store (which is either the default context Store, a named context Store, or
+ * by explicit reference). It also takes a Cell Id to sort by and a boolean to
+ * indicate that the sorting should be in descending order.
+ *
+ * This component renders a Table by iterating over its Row objects, in the
+ * order dictated by the sort parameters. By default these are in turn rendered
+ * with the RowView component, but you can override this behavior by providing a
+ * `rowComponent` prop, a custom component of your own that will render a Row
+ * based on RowProps. You can also pass additional props to your custom
+ * component with the `getRowComponentProps` callback prop.
+ *
+ * This component uses the useSortedRowIds hook under the covers, which means
+ * that any changes to the structure or sorting of the Table will cause a
+ * re-render.
+ *
+ * @param props The props for this component.
+ * @returns A rendering of the Table, or nothing, if not present.
+ * @example
+ * This example creates a Store outside the application, which is used in the
+ * SortedTableView component by reference. A change to the data in the Store
+ * re-renders the component.
+ *
+ * ```jsx
+ * const store = createStore().setTables({
+ *   pets: {
+ *     fido: {species: 'dog'},
+ *     felix: {species: 'cat'},
+ *   },
+ * });
+ * const App = () => (
+ *   <div>
+ *     <SortedTableView
+ *       tableId="pets"
+ *       cellId="species"
+ *       store={store}
+ *       separator="/"
+ *     />
+ *   </div>
+ * );
+ *
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<div>cat/dog</div>'
+ *
+ * store.setRow('pets', 'cujo', {species: 'wolf'}); // !act
+ * console.log(app.innerHTML);
+ * // -> '<div>cat/dog/wolf</div>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a default Store is
+ * provided. The SortedTableView component within it then renders the Table
+ * (with Ids for readability).
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <div>
+ *     <SortedTableView tableId="pets" cellId="species" debugIds={true} />
+ *   </div>
+ * );
+ *
+ * const store = createStore().setTables({
+ *   pets: {
+ *     fido: {species: 'dog'},
+ *     felix: {species: 'cat'},
+ *   },
+ * });
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App store={store} />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<div>pets:{felix:{species:{cat}}fido:{species:{dog}}}</div>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a default Store is
+ * provided. The SortedTableView component within it then renders the Table with
+ * a custom Row component and a custom props callback.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <div>
+ *     <SortedTableView
+ *       tableId="pets"
+ *       cellId="species"
+ *       rowComponent={FormattedRowView}
+ *       getRowComponentProps={(rowId) => ({bold: rowId == 'fido'})}
+ *     />
+ *   </div>
+ * );
+ * const FormattedRowView = ({tableId, rowId, bold}) => (
+ *   <span>
+ *     {bold ? <b>{rowId}</b> : rowId}
+ *     {': '}
+ *     <RowView tableId={tableId} rowId={rowId} />
+ *   </span>
+ * );
+ *
+ * const store = createStore().setTables({
+ *   pets: {
+ *     fido: {species: 'dog'},
+ *     felix: {species: 'cat'},
+ *   },
+ * });
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App store={store} />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<div><span>felix: cat</span><span><b>fido</b>: dog</span></div>'
+ * ```
+ * @category Store components
+ */
+export function SortedTableView(props: SortedTableProps): ComponentReturnType;
 
 /**
  * The TableView component renders the contents of a single Table in a Store,
