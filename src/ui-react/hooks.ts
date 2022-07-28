@@ -131,7 +131,9 @@ export {
   useStore,
 } from './common';
 
-const {useCallback, useEffect, useMemo, useState} = React;
+const {useCallback, useEffect, useMemo, useRef, useState} = React;
+
+type ListenerArgument = IdOrNull | boolean | undefined;
 
 const useCreate = (
   store: Store,
@@ -151,22 +153,33 @@ const useListenable = (
   listenable: string,
   thing: any,
   defaulted: any,
-  preArgs: IdOrNull[] = [],
-  ...postArgs: (boolean | undefined)[]
+  preArgs: ListenerArgument[] = [],
+  postArgs: ListenerArgument[] = [],
+  getFromListenerArg?: number,
 ): any => {
-  const getListenable = thing?.['get' + listenable] ?? (() => defaulted);
-  const immediateListenable = getListenable(...preArgs);
-  const [, setListenable] = useState(immediateListenable);
-  useEffect(() => {
-    const listenerId = thing?.[`add${listenable}Listener`]?.(
-      ...preArgs,
-      () => setListenable(getListenable(...preArgs)),
-      ...postArgs,
-    );
-    return () => thing?.delListener(listenerId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [thing, listenable, setListenable, getListenable, ...preArgs]);
-  return immediateListenable;
+  const [, rerender] = useState<[]>();
+  const getResult = useCallback(
+    () => thing?.['get' + listenable]?.(...preArgs) ?? defaulted,
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
+    [thing, listenable, ...preArgs, defaulted],
+  );
+  const [initialResult] = useState(getResult);
+  const result = useRef(initialResult);
+  useMemo(() => (result.current = getResult()), [getResult]);
+  useListener(
+    listenable,
+    thing,
+    (...listenerArgs: any[]) => {
+      result.current = isUndefined(getFromListenerArg)
+        ? getResult()
+        : listenerArgs[getFromListenerArg];
+      rerender([]);
+    },
+    [result, rerender],
+    preArgs,
+    ...postArgs,
+  );
+  return result.current;
 };
 
 const useListener = (
@@ -174,9 +187,9 @@ const useListener = (
   thing: any,
   listener: (...args: any[]) => void,
   listenerDeps: React.DependencyList = [],
-  preArgs: IdOrNull[] = [],
-  ...postArgs: (boolean | undefined)[]
-): void => {
+  preArgs: ListenerArgument[] = [],
+  ...postArgs: ListenerArgument[]
+): void =>
   useEffect(() => {
     const listenerId = thing?.[`add${listenable}Listener`]?.(
       ...preArgs,
@@ -185,8 +198,7 @@ const useListener = (
     );
     return () => thing?.delListener(listenerId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [thing, listenable, ...listenerDeps, ...preArgs, ...postArgs]);
-};
+  }, [thing, listenable, ...preArgs, ...listenerDeps, ...postArgs]);
 
 const useSetCallback = <Parameter, Value>(
   storeOrStoreId: StoreOrStoreId | undefined,
@@ -259,7 +271,7 @@ export const useTableIds: typeof useTableIdsDecl = (
     useStoreOrStoreId(storeOrStoreId),
     [],
     [],
-    trackReorder,
+    [trackReorder],
   );
 
 export const useTable: typeof useTableDecl = (
@@ -278,7 +290,7 @@ export const useRowIds: typeof useRowIdsDecl = (
     useStoreOrStoreId(storeOrStoreId),
     [],
     [tableId],
-    trackReorder,
+    [trackReorder],
   );
 
 export const useRow: typeof useRowDecl = (
@@ -299,7 +311,7 @@ export const useCellIds: typeof useCellIdsDecl = (
     useStoreOrStoreId(storeOrStoreId),
     [],
     [tableId, rowId],
-    trackReorder,
+    [trackReorder],
   );
 
 export const useCell: typeof useCellDecl = (
@@ -308,11 +320,14 @@ export const useCell: typeof useCellDecl = (
   cellId: Id,
   storeOrStoreId?: StoreOrStoreId,
 ): Cell | undefined =>
-  useListenable('Cell', useStoreOrStoreId(storeOrStoreId), undefined, [
-    tableId,
-    rowId,
-    cellId,
-  ]);
+  useListenable(
+    'Cell',
+    useStoreOrStoreId(storeOrStoreId),
+    undefined,
+    [tableId, rowId, cellId],
+    [],
+    4,
+  );
 
 export const useSetTablesCallback: typeof useSetTablesCallbackDecl = <
   Parameter,
@@ -796,7 +811,7 @@ export const useResultRowIds: typeof useResultRowIdsDecl = (
     useQueriesOrQueriesId(queriesOrQueriesId),
     [],
     [queryId],
-    trackReorder,
+    [trackReorder],
   );
 
 export const useResultRow: typeof useResultRowDecl = (
