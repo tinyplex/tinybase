@@ -34,6 +34,8 @@ import {
   RowView as RowViewDecl,
   SliceProps,
   SliceView as SliceViewDecl,
+  SortedTableProps,
+  SortedTableView as SortedTableViewDecl,
   TableProps,
   TableView as TableViewDecl,
   TablesProps,
@@ -62,6 +64,7 @@ import {
   useRowIds,
   useSliceIds,
   useSliceRowIds,
+  useSortedRowIds,
   useTableIds,
 } from './hooks';
 import {CheckpointIds} from '../checkpoints.d';
@@ -267,6 +270,32 @@ export const RowView: typeof RowViewDecl = ({
     separator,
     debugIds,
     rowId,
+  );
+
+export const SortedTableView: typeof SortedTableViewDecl = ({
+  tableId,
+  cellId,
+  descending,
+  store,
+  rowComponent: Row = RowView,
+  getRowComponentProps,
+  separator,
+  debugIds,
+}: SortedTableProps): any =>
+  wrap(
+    arrayMap(useSortedRowIds(tableId, cellId, descending, store), (rowId) => (
+      <Row
+        {...getProps(getRowComponentProps, rowId)}
+        key={rowId}
+        tableId={tableId}
+        rowId={rowId}
+        store={store}
+        debugIds={debugIds}
+      />
+    )),
+    separator,
+    debugIds,
+    tableId,
   );
 
 export const TableView: typeof TableViewDecl = ({
