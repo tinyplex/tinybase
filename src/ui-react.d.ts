@@ -31,6 +31,7 @@ import {
   Row,
   RowIdsListener,
   RowListener,
+  SortedRowIdsListener,
   Store,
   Table,
   TableIdsListener,
@@ -656,6 +657,116 @@ export function useRowIds(
   tableId: Id,
   storeOrStoreId?: StoreOrStoreId,
   trackReorder?: boolean,
+): Ids;
+
+/**
+ * The useSortedRowIds hook returns the sorted Ids of every Row in a given
+ * Table, and registers a listener so that any changes to that result will cause
+ * a re-render.
+ *
+ * A Provider component is used to wrap part of an application in a context, and
+ * it can contain a default Store or a set of Store objects named by Id. The
+ * useSortedRowIds hook lets you indicate which Store to get data for: omit the
+ * optional final parameter for the default context Store, provide an Id for a
+ * named context Store, or provide a Store explicitly by reference.
+ *
+ * When first rendered, this hook will create a listener so that changes to the
+ * sorted Row Ids will cause a re-render. When the component containing this
+ * hook is unmounted, the listener will be automatically removed.
+ *
+ * @param tableId The Id of the Table in the Store.
+ * @param cellId The Id of the Cell whose values are used for the sorting, or
+ * `undefined` to by sort the Row Id itself.
+ * @param descending Whether the sorting should be in descending order.
+ * @param storeOrStoreId The Store to be accessed: omit for the default context
+ * Store, provide an Id for a named context Store, or provide an explicit
+ * reference.
+ * @returns An array of the sorted Ids of every Row in the Table.
+ * @example
+ * This example creates a Store outside the application, which is used in the
+ * useSortedRowIds hook by reference. A change to the data in the Store
+ * re-renders the component.
+ *
+ * ```jsx
+ * const store = createStore().setTables({
+ *   pets: {
+ *     fido: {species: 'dog'},
+ *     felix: {species: 'cat'},
+ *   },
+ * });
+ * const App = () => (
+ *   <span>
+ *     {JSON.stringify(useSortedRowIds('pets', 'species', false, store))}
+ *   </span>
+ * );
+ *
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["felix","fido"]</span>'
+ *
+ * store.setRow('pets', 'cujo', {species: 'wolf'}); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["felix","fido","cujo"]</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a default Store is
+ * provided. A component within it then uses the useSortedRowIds hook.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => <span>{JSON.stringify(useSortedRowIds('pets'))}</span>;
+ *
+ * const store = createStore().setTables({
+ *   pets: {
+ *     fido: {species: 'dog'},
+ *     felix: {species: 'cat'},
+ *   },
+ * });
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App store={store} />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["felix","fido"]</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a Store is provided, named
+ * by Id. A component within it then uses the useSortedRowIds hook.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider storesById={{petStore: store}}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <span>
+ *     {JSON.stringify(useSortedRowIds('pets', 'species', false, 'petStore'))}
+ *   </span>
+ * );
+ *
+ * const store = createStore().setTables({
+ *   pets: {
+ *     fido: {species: 'dog'},
+ *     felix: {species: 'cat'},
+ *   },
+ * });
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App store={store} />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["felix","fido"]</span>'
+ * ```
+ * @category Store hooks
+ * @since v2.0.0
+ */
+export function useSortedRowIds(
+  tableId: Id,
+  cellId?: Id,
+  descending?: boolean,
+  storeOrStoreId?: StoreOrStoreId,
 ): Ids;
 
 /**
@@ -2021,6 +2132,82 @@ export function useRowIdsListener(
   listener: RowIdsListener,
   listenerDeps?: React.DependencyList,
   trackReorder?: boolean,
+  mutator?: boolean,
+  storeOrStoreId?: StoreOrStoreId,
+): void;
+
+/**
+ * The useSortedRowIdsListener hook registers a listener function with a Store
+ * that will be called whenever the sorted Row Ids in a Table change.
+ *
+ * This hook is useful for situations where a component needs to register its
+ * own specific listener to do more than simply tracking the value (which is
+ * more easily done with the useSortedRowIds hook).
+ *
+ * Unlike the addSortedRowIdsListener method, which returns a listener Id and
+ * requires you to remove it manually, the useSortedRowIdsListener hook manages
+ * this lifecycle for you: when the listener changes (per its `listenerDeps`
+ * dependencies) or the component unmounts, the listener on the underlying Store
+ * will be deleted.
+ *
+ * @param tableId The Id of the Table in the Store.
+ * @param cellId The Id of the Cell whose values are used for the sorting, or
+ * `undefined` to by sort the Row Id itself.
+ * @param descending Whether the sorting should be in descending order.
+ * @param listener The function that will be called whenever the sorted Row Ids
+ * in the Table change.
+ * @param listenerDeps An optional array of dependencies for the `listener`
+ * function, which, if any change, result in the re-registration of the
+ * listener. This parameter defaults to an empty array.
+ * @param mutator An optional boolean that indicates that the listener mutates
+ * Store data.
+ * @param storeOrStoreId The Store to register the listener with: omit for the
+ * default context Store, provide an Id for a named context Store, or provide an
+ * explicit reference.
+ * @example
+ * This example uses the useSortedRowIdsListener hook to create a listener that
+ * is scoped to a single component. When the component is unmounted, the
+ * listener is removed from the Store.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => {
+ *   useSortedRowIdsListener('pets', 'species', false, () =>
+ *     console.log('Sorted Row Ids changed'),
+ *   );
+ *   return <span>App</span>;
+ * };
+ *
+ * const store = createStore().setTables({
+ *   pets: {
+ *     fido: {species: 'dog'},
+ *     felix: {species: 'cat'},
+ *   },
+ * });
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App store={store} />, app); // !act
+ * console.log(store.getListenerStats().sortedRowIds);
+ * // -> 1
+ *
+ * store.setRow('pets', 'cujo', {species: 'wolf'}); // !act
+ * // -> 'Sorted Row Ids changed'
+ *
+ * ReactDOM.unmountComponentAtNode(app); // !act
+ * console.log(store.getListenerStats().sortedRowIds);
+ * // -> 0
+ * ```
+ * @category Store hooks
+ */
+export function useSortedRowIdsListener(
+  tableId: Id,
+  cellId: Id | undefined,
+  descending: boolean,
+  listener: SortedRowIdsListener,
+  listenerDeps?: React.DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void;
