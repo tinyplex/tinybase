@@ -6549,6 +6549,7 @@ export type LinkedRowsProps = {
  * result Table, such as the ResultTableView component.
  *
  * @category Props
+ * @since v2.0.0
  */
 export type ResultTableProps = {
   /**
@@ -6594,6 +6595,7 @@ export type ResultTableProps = {
  * query result Table, such as the ResultRowView component.
  *
  * @category Props
+ * @since v2.0.0
  */
 export type ResultRowProps = {
   /**
@@ -6637,6 +6639,7 @@ export type ResultRowProps = {
  * Row of a result Table, such as the ResultCellView component.
  *
  * @category Props
+ * @since v2.0.0
  */
 export type ResultCellProps = {
   /**
