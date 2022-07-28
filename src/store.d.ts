@@ -612,6 +612,10 @@ export type StoreListenerStats = {
    */
   rowIds?: number;
   /**
+   * The number of SortedRowIdsListener functions registered with the Store.
+   */
+  sortedRowIds?: number;
+  /**
    * The number of RowListener functions registered with the Store.
    */
   row?: number;
