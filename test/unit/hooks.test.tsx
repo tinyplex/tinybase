@@ -80,6 +80,8 @@ import {
   useSliceIdsListener,
   useSliceRowIds,
   useSliceRowIdsListener,
+  useSortedRowIds,
+  useSortedRowIdsListener,
   useStore,
   useTable,
   useTableIds,
@@ -607,6 +609,58 @@ describe('Read Hooks', () => {
     });
     expect(store.getListenerStats().rowIds).toEqual(0);
     expect(didRender).toBeCalledTimes(6);
+  });
+
+  test('useSortedRowIds', () => {
+    const Test = ({
+      tableId,
+      cellId,
+      descending,
+    }: {
+      tableId: Id;
+      cellId: Id;
+      descending: boolean;
+    }) =>
+      didRender(
+        <>
+          {JSON.stringify(useSortedRowIds(tableId, cellId, descending, store))}
+        </>,
+      );
+    expect(store.getListenerStats().sortedRowIds).toEqual(0);
+    act(() => {
+      renderer = create(<Test tableId="t0" cellId="c0" descending={false} />);
+    });
+    expect(store.getListenerStats().sortedRowIds).toEqual(1);
+    expect(renderer.toJSON()).toEqual(JSON.stringify([]));
+
+    act(() => {
+      renderer.update(<Test tableId="t1" cellId="c1" descending={false} />);
+    });
+    expect(store.getListenerStats().sortedRowIds).toEqual(1);
+    expect(renderer.toJSON()).toEqual(JSON.stringify(['r1']));
+
+    act(() => {
+      store
+        .setTables({t1: {r2: {c1: 2}}, t2: {r3: {c1: 3}, r4: {c1: 4}}})
+        .setTables({t1: {r2: {c1: 2}}, t2: {r3: {c1: 3}, r4: {c1: 4}}});
+    });
+    expect(renderer.toJSON()).toEqual(JSON.stringify(['r2']));
+
+    act(() => {
+      renderer.update(<Test tableId="t2" cellId="c1" descending={true} />);
+    });
+    expect(store.getListenerStats().sortedRowIds).toEqual(1);
+    expect(renderer.toJSON()).toEqual(JSON.stringify(['r4', 'r3']));
+
+    act(() => {
+      store.delTables();
+    });
+    expect(renderer.toJSON()).toEqual(JSON.stringify([]));
+    act(() => {
+      renderer.update(<div />);
+    });
+    expect(store.getListenerStats().sortedRowIds).toEqual(0);
+    expect(didRender).toBeCalledTimes(5);
   });
 
   test('useRow', () => {
@@ -1970,6 +2024,43 @@ describe('Listener Hooks', () => {
       renderer.update(<div />);
     });
     expect(store.getListenerStats().rowIds).toEqual(0);
+  });
+
+  test('useSortedRowIdsListener', () => {
+    expect.assertions(6);
+    const Test = ({value}: {value: number}) => {
+      useSortedRowIdsListener(
+        't1',
+        'c1',
+        false,
+        (store) => expect(store?.getCell('t1', 'r1', 'c1')).toEqual(value),
+        [value],
+        false,
+        store,
+      );
+      return <div />;
+    };
+    expect(store.getListenerStats().sortedRowIds).toEqual(0);
+    act(() => {
+      renderer = create(<Test value={2} />);
+    });
+    expect(store.getListenerStats().sortedRowIds).toEqual(1);
+    act(() => {
+      store.setCell('t1', 'r1', 'c1', 2);
+      store.setCell('t1', 'r2', 'c1', 0);
+    });
+    act(() => {
+      renderer.update(<Test value={3} />);
+    });
+    expect(store.getListenerStats().sortedRowIds).toEqual(1);
+    act(() => {
+      store.setCell('t1', 'r1', 'c1', 3);
+      store.setCell('t1', 'r3', 'c1', 0);
+    });
+    act(() => {
+      renderer.update(<div />);
+    });
+    expect(store.getListenerStats().sortedRowIds).toEqual(0);
   });
 
   test('useRowListener', () => {

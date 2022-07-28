@@ -7,6 +7,7 @@ import {
   Row,
   RowIdsListener,
   RowListener,
+  SortedRowIdsListener,
   Store,
   Table,
   TableIdsListener,
@@ -84,6 +85,8 @@ import {
   useSliceIdsListener as useSliceIdsListenerDecl,
   useSliceRowIds as useSliceRowIdsDecl,
   useSliceRowIdsListener as useSliceRowIdsListenerDecl,
+  useSortedRowIds as useSortedRowIdsDecl,
+  useSortedRowIdsListener as useSortedRowIdsListenerDecl,
   useTable as useTableDecl,
   useTableIds as useTableIdsDecl,
   useTableIdsListener as useTableIdsListenerDecl,
@@ -291,6 +294,22 @@ export const useRowIds: typeof useRowIdsDecl = (
     [],
     [tableId],
     [trackReorder],
+  );
+
+export const useSortedRowIds: typeof useSortedRowIdsDecl = (
+  tableId: Id,
+  cellId?: Id,
+  descending?: boolean,
+  storeOrStoreId?: StoreOrStoreId,
+  trackReorder?: boolean,
+): Ids =>
+  useListenable(
+    'SortedRowIds',
+    useStoreOrStoreId(storeOrStoreId),
+    [],
+    [tableId, cellId, descending],
+    [trackReorder],
+    4,
   );
 
 export const useRow: typeof useRowDecl = (
@@ -554,6 +573,24 @@ export const useRowIdsListener: typeof useRowIdsListenerDecl = (
     listenerDeps,
     [tableId],
     trackReorder,
+    mutator,
+  );
+
+export const useSortedRowIdsListener: typeof useSortedRowIdsListenerDecl = (
+  tableId: Id,
+  cellId: Id | undefined,
+  descending: boolean,
+  listener: SortedRowIdsListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  storeOrStoreId?: StoreOrStoreId,
+): void =>
+  useListener(
+    'SortedRowIds',
+    useStoreOrStoreId(storeOrStoreId),
+    listener,
+    listenerDeps,
+    [tableId, cellId, descending],
     mutator,
   );
 
