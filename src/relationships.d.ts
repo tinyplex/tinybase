@@ -137,17 +137,18 @@ export type LinkedRowIdsListener = (
  */
 export type RelationshipsListenerStats = {
   /**
-   * The number of RemoteRowIdListeners registered with the Relationships
-   * object.
+   * The number of RemoteRowIdListener functions registered with the
+   * Relationships object.
    */
   remoteRowId?: number;
   /**
-   * The number of LocalRowIdsListeners registered with the Relationships
-   * object.
+   * The number of LocalRowIdsListener functions registered with the
+   * Relationships object.
    */
   localRowIds?: number;
   /**
-   * The number of LinkedRowIds registered with the Relationships object.
+   * The number of LinkedRowId functions registered with the Relationships
+   * object.
    */
   linkedRowIds?: number;
 };

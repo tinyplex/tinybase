@@ -93,12 +93,13 @@ export type CheckpointListener = (
  */
 export type CheckpointsListenerStats = {
   /**
-   * The number of CheckpointIdsListeners registered with the Checkpoints
-   * object.
+   * The number of CheckpointIdsListener functions registered with the
+   * Checkpoints object.
    */
   checkpointIds?: number;
   /**
-   * The number of CheckpointListeners registered with the Checkpoints object.
+   * The number of CheckpointListener functions registered with the Checkpoints
+   * object.
    */
   checkpoint?: number;
 };

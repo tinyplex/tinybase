@@ -186,7 +186,7 @@ export type MetricListener = (
  */
 export type MetricsListenerStats = {
   /**
-   * The number of MetricListeners registered with the Metrics object.
+   * The number of MetricListener functions registered with the Metrics object.
    */
   metric?: number;
 };

@@ -596,39 +596,39 @@ export type InvalidCells = {
  */
 export type StoreListenerStats = {
   /**
-   * The number of TablesListeners registered with the Store.
+   * The number of TablesListener functions registered with the Store.
    */
   tables?: number;
   /**
-   * The number of TableIdsListeners registered with the Store.
+   * The number of TableIdsListener functions registered with the Store.
    */
   tableIds?: number;
   /**
-   * The number of TableListeners registered with the Store.
+   * The number of TableListener functions registered with the Store.
    */
   table?: number;
   /**
-   * The number of RowIdsListeners registered with the Store.
+   * The number of RowIdsListener functions registered with the Store.
    */
   rowIds?: number;
   /**
-   * The number of RowListeners registered with the Store.
+   * The number of RowListener functions registered with the Store.
    */
   row?: number;
   /**
-   * The number of CellIdsListeners registered with the Store.
+   * The number of CellIdsListener functions registered with the Store.
    */
   cellIds?: number;
   /**
-   * The number of CellListeners registered with the Store.
+   * The number of CellListener functions registered with the Store.
    */
   cell?: number;
   /**
-   * The number of InvalidCellListeners registered with the Store.
+   * The number of InvalidCellListener functions registered with the Store.
    */
   invalidCell?: number;
   /**
-   * The number of TransactionListeners registered with the Store.
+   * The number of TransactionListener functions registered with the Store.
    */
   transaction?: number;
 };
