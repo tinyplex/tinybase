@@ -121,6 +121,7 @@ import {
   useStoreOrStoreId,
 } from './common';
 import {EMPTY_STRING} from '../common/strings';
+import {ListenerArgument} from '../common/listeners';
 import {Persister} from '../persisters.d';
 import React from 'react';
 import {arrayIsEmpty} from '../common/array';
@@ -135,8 +136,6 @@ export {
 } from './common';
 
 const {useCallback, useEffect, useMemo, useRef, useState} = React;
-
-type ListenerArgument = IdOrNull | boolean | undefined;
 
 const useCreate = (
   store: Store,
