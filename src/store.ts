@@ -1040,7 +1040,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const addSortedRowIdsListener = (
     tableId: Id,
-    cellId: Id,
+    cellId: Id | undefined,
     descending: boolean,
     listener: SortedRowIdsListener,
     mutator?: boolean,
