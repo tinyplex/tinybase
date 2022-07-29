@@ -37,8 +37,8 @@ import {ifNotUndefined, isUndefined} from './other';
 import {EMPTY_STRING} from './strings';
 
 export type IdSetNode = Node<IdOrNull, IdSet> | IdSet;
+export type ListenerArgument = IdOrNull | boolean | undefined;
 
-type IdOrNulls = IdOrNull[];
 type IdOrBoolean = Id | boolean;
 type Listener =
   | TablesListener
@@ -78,7 +78,7 @@ const getWildcardedLeaves = (
 export const getListenerFunctions = (
   getThing: () => Store | Metrics | Indexes | Relationships | Checkpoints,
 ): [
-  (listener: Listener, idSetNode: IdSetNode, ids?: IdOrNulls) => Id,
+  (listener: Listener, idSetNode: IdSetNode, ids?: ListenerArgument[]) => Id,
   (idSetNode: IdSetNode, ids?: Ids, ...extra: any[]) => void,
   (id: Id) => Ids,
   (idSetNode: IdSetNode, ids?: Ids) => boolean,
@@ -96,15 +96,15 @@ export const getListenerFunctions = (
   const addListener = (
     listener: Listener,
     idSetNode: IdSetNode,
-    idOrNulls?: IdOrNulls,
+    path?: ListenerArgument[],
   ): Id => {
     thing ??= getThing();
     const id = arrayPop(listenerPool) ?? EMPTY_STRING + nextId++;
-    mapSet(allListeners, id, [listener, idSetNode, idOrNulls]);
+    mapSet(allListeners, id, [listener, idSetNode, path]);
     setAdd(
       visitTree(
         idSetNode as Node<IdOrNull, IdSet>,
-        idOrNulls ?? [EMPTY_STRING],
+        path ?? [EMPTY_STRING],
         setNew,
       ),
       id,
