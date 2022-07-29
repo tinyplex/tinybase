@@ -930,7 +930,7 @@ export interface Store {
    * The getSortedRowIds method returns the Ids of every Row in a given Table,
    * sorted according to the values in a specified Cell.
    *
-   * The sorting of the rows is alphanumeric, but you can indicate whether it
+   * The sorting of the rows is alphanumeric, and you can indicate whether it
    * should be in descending order.
    *
    * Note that every call to this method will perform the sorting afresh - there
@@ -939,9 +939,7 @@ export interface Store {
    * approach to tracking the sorted Row Ids when they change, use the
    * addSortedRowIdsListener method.
    *
-   * If the Table does not exist, an empty array is returned. If the Cell used
-   * for sorting does not exist in the Table, the Ids will be returned in the
-   * same order as would be returned from the getRowIds method.
+   * If the Table does not exist, an empty array is returned.
    *
    * @param tableId The Id of the Table in the Store.
    * @param cellId The Id of the Cell whose values are used for the sorting, or
