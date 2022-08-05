@@ -181,7 +181,7 @@ export const createStoreListener = (store: Store): StoreListener => {
         descending,
         (_, tableId, cellId, descending, sortedCellIds) =>
           logs[id].push({
-            [tableId]: {[cellId]: {[descending + '']: sortedCellIds}},
+            [tableId]: {['' + cellId]: {[descending + '']: sortedCellIds}},
           }),
       );
     },

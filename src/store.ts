@@ -104,6 +104,7 @@ import {
 } from './common/coll';
 import {getCellType, setOrDelCell} from './common/cell';
 import {defaultSorter} from './common';
+import {id} from './common';
 
 type SchemaMap = IdMap2<CellSchema>;
 type RowMap = IdMap<Cell>;
@@ -702,8 +703,11 @@ export const createStore: typeof createStoreDecl = (): Store => {
     }
   };
 
-  const fluentTransaction = (actions?: () => unknown): Store => {
-    transaction(actions);
+  const fluentTransaction = (
+    actions: (...idArgs: Id[]) => unknown,
+    ...args: unknown[]
+  ): Store => {
+    transaction(() => actions(...arrayMap(args, id)));
     return store;
   };
 
@@ -717,9 +721,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const getTableIds = (): Ids => mapKeys(tablesMap);
 
   const getTable = (tableId: Id): Table =>
-    mapToObj<RowMap, Row>(mapGet(tablesMap, tableId), mapToObj);
+    mapToObj<RowMap, Row>(mapGet(tablesMap, id(tableId)), mapToObj);
 
-  const getRowIds = (tableId: Id): Ids => mapKeys(mapGet(tablesMap, tableId));
+  const getRowIds = (tableId: Id): Ids =>
+    mapKeys(mapGet(tablesMap, id(tableId)));
 
   const getSortedRowIds = (
     tableId: Id,
@@ -727,9 +732,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
     descending?: boolean,
   ): Ids => {
     const cells: [Cell, Id][] = [];
-    mapForEach(mapGet(tablesMap, tableId), (rowId, row) =>
+    mapForEach(mapGet(tablesMap, id(tableId)), (rowId, row) =>
       arrayPush(cells, [
-        isUndefined(cellId) ? rowId : mapGet(row, cellId),
+        isUndefined(cellId) ? rowId : mapGet(row, id(cellId)),
         rowId,
       ]),
     );
@@ -744,23 +749,23 @@ export const createStore: typeof createStoreDecl = (): Store => {
   };
 
   const getRow = (tableId: Id, rowId: Id): Row =>
-    mapToObj(mapGet(mapGet(tablesMap, tableId), rowId));
+    mapToObj(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)));
 
   const getCellIds = (tableId: Id, rowId: Id): Ids =>
-    mapKeys(mapGet(mapGet(tablesMap, tableId), rowId));
+    mapKeys(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)));
 
   const getCell = (tableId: Id, rowId: Id, cellId: Id): CellOrUndefined =>
-    mapGet(mapGet(mapGet(tablesMap, tableId), rowId), cellId);
+    mapGet(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)), id(cellId));
 
   const hasTables = (): boolean => !collIsEmpty(tablesMap);
 
-  const hasTable = (tableId: Id): boolean => collHas(tablesMap, tableId);
+  const hasTable = (tableId: Id): boolean => collHas(tablesMap, id(tableId));
 
   const hasRow = (tableId: Id, rowId: Id): boolean =>
-    collHas(mapGet(tablesMap, tableId), rowId);
+    collHas(mapGet(tablesMap, id(tableId)), id(rowId));
 
   const hasCell = (tableId: Id, rowId: Id, cellId: Id): boolean =>
-    collHas(mapGet(mapGet(tablesMap, tableId), rowId), cellId);
+    collHas(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)), id(cellId));
 
   const getJson = (): Json => jsonString(tablesMap);
 
@@ -772,19 +777,30 @@ export const createStore: typeof createStoreDecl = (): Store => {
     );
 
   const setTable = (tableId: Id, table: Table): Store =>
-    fluentTransaction(() =>
-      validateTable(table, tableId) ? setValidTable(tableId, table) : 0,
+    fluentTransaction(
+      (tableId) =>
+        validateTable(table, tableId) ? setValidTable(tableId, table) : 0,
+      tableId,
     );
 
   const setRow = (tableId: Id, rowId: Id, row: Row): Store =>
-    fluentTransaction(() =>
-      validateRow(tableId, rowId, row)
-        ? setValidRow(tableId, getOrCreateTable(tableId), rowId, row)
-        : 0,
+    fluentTransaction(
+      (tableId, rowId) =>
+        validateRow(id(tableId), id(rowId), row)
+          ? setValidRow(
+              id(tableId),
+              getOrCreateTable(id(tableId)),
+              id(rowId),
+              row,
+            )
+          : 0,
+      tableId,
+      rowId,
     );
 
   const addRow = (tableId: Id, row: Row, forceId?: 1): Id | undefined =>
     transaction(() => {
+      tableId = id(tableId);
       const isValidRow = validateRow(tableId, undefined, row);
       const rowId =
         isValidRow || forceId
@@ -797,14 +813,18 @@ export const createStore: typeof createStoreDecl = (): Store => {
     });
 
   const setPartialRow = (tableId: Id, rowId: Id, partialRow: Row): Store =>
-    fluentTransaction(() => {
-      if (validateRow(tableId, rowId, partialRow, 1)) {
-        const table = getOrCreateTable(tableId);
-        objForEach(partialRow, (cell, cellId) =>
-          setCellIntoDefaultRow(tableId, table, rowId, cellId, cell),
-        );
-      }
-    });
+    fluentTransaction(
+      (tableId, rowId) => {
+        if (validateRow(tableId, rowId, partialRow, 1)) {
+          const table = getOrCreateTable(tableId);
+          objForEach(partialRow, (cell, cellId) =>
+            setCellIntoDefaultRow(tableId, table, rowId, cellId, cell),
+          );
+        }
+      },
+      tableId,
+      rowId,
+    );
 
   const setCell = (
     tableId: Id,
@@ -812,23 +832,27 @@ export const createStore: typeof createStoreDecl = (): Store => {
     cellId: Id,
     cell: Cell | MapCell,
   ): Store =>
-    fluentTransaction(() =>
-      ifNotUndefined(
-        getValidatedCell(
-          tableId,
-          rowId,
-          cellId,
-          isFunction(cell) ? cell(getCell(tableId, rowId, cellId)) : cell,
-        ),
-        (validCell) =>
-          setCellIntoDefaultRow(
+    fluentTransaction(
+      (tableId, rowId, cellId) =>
+        ifNotUndefined(
+          getValidatedCell(
             tableId,
-            getOrCreateTable(tableId),
             rowId,
             cellId,
-            validCell,
+            isFunction(cell) ? cell(getCell(tableId, rowId, cellId)) : cell,
           ),
-      ),
+          (validCell) =>
+            setCellIntoDefaultRow(
+              tableId,
+              getOrCreateTable(tableId),
+              rowId,
+              cellId,
+              validCell,
+            ),
+        ),
+      tableId,
+      rowId,
+      cellId,
     );
 
   const setJson = (json: Json): Store => {
@@ -853,15 +877,19 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const delTables = (): Store => fluentTransaction(() => setValidTables({}));
 
   const delTable = (tableId: Id): Store =>
-    fluentTransaction(() =>
-      collHas(tablesMap, tableId) ? delValidTable(tableId) : 0,
+    fluentTransaction(
+      (tableId) => (collHas(tablesMap, tableId) ? delValidTable(tableId) : 0),
+      tableId,
     );
 
   const delRow = (tableId: Id, rowId: Id): Store =>
-    fluentTransaction(() =>
-      ifNotUndefined(mapGet(tablesMap, tableId), (tableMap) =>
-        collHas(tableMap, rowId) ? delValidRow(tableId, tableMap, rowId) : 0,
-      ),
+    fluentTransaction(
+      (tableId, rowId) =>
+        ifNotUndefined(mapGet(tablesMap, tableId), (tableMap) =>
+          collHas(tableMap, rowId) ? delValidRow(tableId, tableMap, rowId) : 0,
+        ),
+      tableId,
+      rowId,
     );
 
   const delCell = (
@@ -870,14 +898,18 @@ export const createStore: typeof createStoreDecl = (): Store => {
     cellId: Id,
     forceDel?: boolean,
   ): Store =>
-    fluentTransaction(() =>
-      ifNotUndefined(mapGet(tablesMap, tableId), (tableMap) =>
-        ifNotUndefined(mapGet(tableMap, rowId), (rowMap) =>
-          collHas(rowMap, cellId)
-            ? delValidCell(tableId, tableMap, rowId, rowMap, cellId, forceDel)
-            : 0,
+    fluentTransaction(
+      (tableId, rowId, cellId) =>
+        ifNotUndefined(mapGet(tablesMap, tableId), (tableMap) =>
+          ifNotUndefined(mapGet(tableMap, rowId), (rowMap) =>
+            collHas(rowMap, cellId)
+              ? delValidCell(tableId, tableMap, rowId, rowMap, cellId, forceDel)
+              : 0,
+          ),
         ),
-      ),
+      tableId,
+      rowId,
+      cellId,
     );
 
   const delSchema = (): Store =>
@@ -996,7 +1028,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     );
 
   const forEachRow = (tableId: Id, rowCallback: RowCallback): void =>
-    collForEach(mapGet(tablesMap, tableId), (rowMap, rowId) =>
+    collForEach(mapGet(tablesMap, id(tableId)), (rowMap, rowId) =>
       rowCallback(rowId, (cellCallback) => mapForEach(rowMap, cellCallback)),
     );
 
@@ -1005,7 +1037,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     rowId: Id,
     cellCallback: CellCallback,
   ): void =>
-    mapForEach(mapGet(mapGet(tablesMap, tableId), rowId), cellCallback);
+    mapForEach(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)), cellCallback);
 
   const addTablesListener = (listener: TablesListener, mutator?: boolean): Id =>
     addListener(listener, tablesListeners[mutator ? 1 : 0]);

@@ -38,7 +38,7 @@ export const mapEnsure = <Key, Value>(
   getDefaultValue: () => Value,
 ): Value => {
   if (!collHas(map, key)) {
-    map.set(key, getDefaultValue());
+    mapSet(map, key, getDefaultValue());
   }
   return mapGet(map, key) as Value;
 };
