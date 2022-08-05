@@ -407,6 +407,125 @@ describe('Rejects invalid', () => {
   });
 });
 
+describe('Coerce Ids', () => {
+  let store: Store;
+
+  beforeEach(() => {
+    store = createStore();
+  });
+
+  describe('Table Id', () => {
+    test('setTables, setCell', () => {
+      store.setTables({1: {r1: {c1: 1}}});
+      expect(store.getTables()).toEqual({1: {r1: {c1: 1}}});
+      // @ts-ignore
+      store.setCell(1, 'r1', 'c2', 2);
+      expect(store.getTable('1')).toEqual({r1: {c1: 1, c2: 2}});
+    });
+
+    test('setTable, setCell', () => {
+      // @ts-ignore
+      store.setTable(1, {r1: {c1: 1}});
+      expect(store.getTable('1')).toEqual({r1: {c1: 1}});
+      // @ts-ignore
+      store.setCell(1, 'r1', 'c2', 2);
+      expect(store.getTable('1')).toEqual({r1: {c1: 1, c2: 2}});
+    });
+
+    test('setRow, setCell', () => {
+      // @ts-ignore
+      store.setRow(1, 'r1', {c1: 1});
+      expect(store.getRow('1', 'r1')).toEqual({c1: 1});
+      // @ts-ignore
+      store.setCell(1, 'r1', 'c2', 2);
+      expect(store.getTable('1')).toEqual({r1: {c1: 1, c2: 2}});
+    });
+
+    test('setCell, setCell', () => {
+      // @ts-ignore
+      store.setCell(1, 'r1', 'c1', 1);
+      expect(store.getCell('1', 'r1', 'c1')).toEqual(1);
+      // @ts-ignore
+      store.setCell(1, 'r1', 'c2', 2);
+      expect(store.getTable('1')).toEqual({r1: {c1: 1, c2: 2}});
+    });
+  });
+
+  describe('Row Id', () => {
+    test('setTables, setCell', () => {
+      store.setTables({t1: {1: {c1: 1}}});
+      expect(store.getTables()).toEqual({t1: {1: {c1: 1}}});
+      // @ts-ignore
+      store.setCell('t1', 1, 'c2', 2);
+      expect(store.getRow('t1', '1')).toEqual({c1: 1, c2: 2});
+    });
+
+    test('setTable, setCell', () => {
+      store.setTable('t1', {1: {c1: 1}});
+      expect(store.getTable('t1')).toEqual({1: {c1: 1}});
+      // @ts-ignore
+      store.setCell('t1', 1, 'c2', 2);
+      expect(store.getRow('t1', '1')).toEqual({c1: 1, c2: 2});
+    });
+
+    test('setRow, setCell', () => {
+      // @ts-ignore
+      store.setRow('t1', 1, {c1: 1});
+      expect(store.getRow('t1', '1')).toEqual({c1: 1});
+      // @ts-ignore
+      store.setCell('t1', 1, 'c2', 2);
+      expect(store.getRow('t1', '1')).toEqual({c1: 1, c2: 2});
+    });
+
+    test('setCell, setCell', () => {
+      // @ts-ignore
+      store.setCell('t1', 1, 'c1', 1);
+      expect(store.getCell('t1', '1', 'c1')).toEqual(1);
+      // @ts-ignore
+      store.setCell('t1', 1, 'c2', 2);
+      expect(store.getRow('t1', '1')).toEqual({c1: 1, c2: 2});
+    });
+  });
+
+  describe('Cell Id', () => {
+    test('setTables, setCell', () => {
+      store.setTables({t1: {r1: {1: 1}}});
+      expect(store.getTables()).toEqual({t1: {r1: {1: 1}}});
+      // @ts-ignore
+      store.setCell('t1', 'r1', 2, 2);
+      expect(store.getCell('t1', 'r1', '1')).toEqual(1);
+      expect(store.getCell('t1', 'r1', '2')).toEqual(2);
+    });
+
+    test('setTable, setCell', () => {
+      store.setTable('t1', {r1: {1: 1}});
+      expect(store.getTable('t1')).toEqual({r1: {1: 1}});
+      // @ts-ignore
+      store.setCell('t1', 'r1', 2, 2);
+      expect(store.getCell('t1', 'r1', '1')).toEqual(1);
+      expect(store.getCell('t1', 'r1', '2')).toEqual(2);
+    });
+
+    test('setRow, setCell', () => {
+      store.setRow('t1', 'r1', {1: 1});
+      expect(store.getRow('t1', 'r1')).toEqual({1: 1});
+      // @ts-ignore
+      store.setCell('t1', 'r1', 2, 2);
+      expect(store.getCell('t1', 'r1', '1')).toEqual(1);
+      expect(store.getCell('t1', 'r1', '2')).toEqual(2);
+    });
+
+    test('setCell, setCell', () => {
+      // @ts-ignore
+      store.setCell('t1', 'r1', 1, 1);
+      // @ts-ignore
+      store.setCell('t1', 'r1', 2, 2);
+      expect(store.getCell('t1', 'r1', '1')).toEqual(1);
+      expect(store.getCell('t1', 'r1', '2')).toEqual(2);
+    });
+  });
+});
+
 describe('Get non-existent', () => {
   test('Table', () => {
     const store = createStore().setTables(validTables);
