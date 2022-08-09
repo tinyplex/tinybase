@@ -20,7 +20,7 @@
 
 <span class="keyword">const</span> listenerId <span class="operator">=</span> queries<span class="punctuation">.</span><span class="function"><a href="/api/queries/interfaces/queries/queries/methods/listener/addresultrowidslistener">addResultRowIdsListener</a></span><span class="punctuation">(</span>
   <span class="string">'dogColors'</span><span class="punctuation">,</span>
-  <span class="punctuation">(</span><span class="parameter">store<span class="punctuation">,</span> tableId</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
+  <span class="punctuation">(</span><span class="parameter">queries<span class="punctuation">,</span> tableId</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
     console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span><span class="template-string"><span class="template-punctuation">`</span><span class="string">Row Ids for dogColors result table changed</span><span class="template-punctuation">`</span></span><span class="punctuation">)</span><span class="punctuation">;</span>
     console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>queries<span class="punctuation">.</span><span class="function"><a href="/api/queries/interfaces/queries/queries/methods/result/getresultrowids">getResultRowIds</a></span><span class="punctuation">(</span><span class="string">'dogColors'</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
   <span class="punctuation">}</span><span class="punctuation">,</span>
@@ -53,7 +53,7 @@ store<span class="punctuation">.</span><span class="function">delListener</span>
 
 <span class="keyword">const</span> listenerId <span class="operator">=</span> queries<span class="punctuation">.</span><span class="function"><a href="/api/queries/interfaces/queries/queries/methods/listener/addresultrowidslistener">addResultRowIdsListener</a></span><span class="punctuation">(</span>
   <span class="string">'dogColors'</span><span class="punctuation">,</span>
-  <span class="punctuation">(</span><span class="parameter">store<span class="punctuation">,</span> tableId</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
+  <span class="punctuation">(</span><span class="parameter">queries<span class="punctuation">,</span> tableId</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
     console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span><span class="template-string"><span class="template-punctuation">`</span><span class="string">Row Ids for dogColors result table changed</span><span class="template-punctuation">`</span></span><span class="punctuation">)</span><span class="punctuation">;</span>
     console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>queries<span class="punctuation">.</span><span class="function"><a href="/api/queries/interfaces/queries/queries/methods/result/getresultrowids">getResultRowIds</a></span><span class="punctuation">(</span><span class="string">'dogColors'</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
   <span class="punctuation">}</span><span class="punctuation">,</span>
