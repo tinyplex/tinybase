@@ -11,7 +11,7 @@
 <span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="keyword">const</span> <span class="function-variable">Pane</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
   <span class="function"><a href="/api/ui-react/functions/queries-hooks/useresultrowidslistener">useResultRowIdsListener</a></span><span class="punctuation">(</span><span class="string">'petColors'</span><span class="punctuation">,</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span>
-    console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span><span class="string">'Result row Ids changed'</span><span class="punctuation">)</span><span class="punctuation">,</span>
+    console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span><span class="string">'Result Row Ids changed'</span><span class="punctuation">)</span><span class="punctuation">,</span>
   <span class="punctuation">)</span><span class="punctuation">;</span>
   <span class="keyword">return</span> <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>span</span><span class="punctuation">></span></span><span class="plain-text">App</span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>span</span><span class="punctuation">></span></span><span class="punctuation">;</span>
 <span class="punctuation">}</span><span class="punctuation">;</span>
@@ -32,7 +32,7 @@ console<span class="punctuation">.</span><span class="function">log</span><span 
 <span class="comment">// -> 1</span>
 
 store<span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/setter/setrow">setRow</a></span><span class="punctuation">(</span><span class="string">'pets'</span><span class="punctuation">,</span> <span class="string">'rex'</span><span class="punctuation">,</span> <span class="punctuation">{</span><span class="literal-property">species</span><span class="operator">:</span> <span class="string">'dog'</span><span class="punctuation">,</span> <span class="literal-property">color</span><span class="operator">:</span> <span class="string">'tan'</span><span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
-<span class="comment">// -> 'Result row Ids changed'</span>
+<span class="comment">// -> 'Result Row Ids changed'</span>
 
 ReactDOM<span class="punctuation">.</span><span class="function">unmountComponentAtNode</span><span class="punctuation">(</span>app<span class="punctuation">)</span><span class="punctuation">;</span>
 console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>queries<span class="punctuation">.</span><span class="function">getListenerStats</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">.</span>rowIds<span class="punctuation">)</span><span class="punctuation">;</span>
