@@ -296,49 +296,69 @@ describe('Sorted Row Ids', () => {
   });
 
   test('Cell sort listener, add row with relevant cell', () => {
-    expect.assertions(1);
-    store.addSortedRowIdsListener('t1', 'c2', false, () => {
-      expect(store.getSortedRowIds('t1', 'c2')).toEqual([
-        'r5',
-        'r4',
-        'r1',
-        'r7',
-        'r6',
-        'r3',
-        'r2',
-      ]);
-    });
+    expect.assertions(5);
+    store.addSortedRowIdsListener(
+      't1',
+      'c2',
+      false,
+      (_store, tableId, cellId, descending, sortedRowIds) => {
+        expect(tableId).toEqual('t1');
+        expect(cellId).toEqual('c2');
+        expect(descending).toEqual(false);
+        expect(sortedRowIds).toEqual([
+          'r5',
+          'r4',
+          'r1',
+          'r7',
+          'r6',
+          'r3',
+          'r2',
+        ]);
+        expect(store.getSortedRowIds('t1', 'c2')).toEqual([
+          'r5',
+          'r4',
+          'r1',
+          'r7',
+          'r6',
+          'r3',
+          'r2',
+        ]);
+      },
+    );
     store.setRow('t1', 'r7', {c1: 7, c2: 'seven'});
   });
 
   test('Cell sort listener, add row without relevant cell', () => {
     expect.assertions(1);
-    store.addSortedRowIdsListener('t1', 'c2', false, () => {
-      expect(store.getSortedRowIds('t1', 'c2')).toEqual([
-        'r5',
-        'r4',
-        'r1',
-        'r6',
-        'r3',
-        'r2',
-        'r7',
-      ]);
-    });
+    store.addSortedRowIdsListener(
+      't1',
+      'c2',
+      false,
+      (_store, _tableId, _cellId, _descending, sortedRowIds) => {
+        expect(sortedRowIds).toEqual([
+          'r5',
+          'r4',
+          'r1',
+          'r6',
+          'r3',
+          'r2',
+          'r7',
+        ]);
+      },
+    );
     store.setRow('t1', 'r7', {c1: 7});
   });
 
   test('Cell sort listener, alter relevant cell', () => {
     expect.assertions(1);
-    store.addSortedRowIdsListener('t1', 'c2', false, () => {
-      expect(store.getSortedRowIds('t1', 'c2')).toEqual([
-        'r5',
-        'r4',
-        'r6',
-        'r3',
-        'r2',
-        'r1',
-      ]);
-    });
+    store.addSortedRowIdsListener(
+      't1',
+      'c2',
+      false,
+      (_store, _tableId, _cellId, _descending, sortedRowIds) => {
+        expect(sortedRowIds).toEqual(['r5', 'r4', 'r6', 'r3', 'r2', 'r1']);
+      },
+    );
     store.setCell('t1', 'r1', 'c2', 'uno');
   });
 
