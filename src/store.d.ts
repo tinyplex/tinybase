@@ -292,10 +292,10 @@ export type RowIdsListener = (store: Store, tableId: Id) => void;
  * method. See that method for specific examples.
  *
  * When called, a SortedRowIdsListener is given a reference to the Store, the Id
- * of the Table whose Row Ids sorting changed, and the Cell Id being used to
- * sort them, whether descending or not. It also receives the sorted array of
- * Ids itself, so that you can use them in the listener without the additional
- * cost of an explicit call to getSortedRowIds.
+ * of the Table whose Row Ids sorting changed, the Cell Id being used to sort
+ * them, and whether descending or not. It also receives the sorted array of Ids
+ * itself, so that you can use them in the listener without the additional cost
+ * of an explicit call to getSortedRowIds.
  *
  * @param store A reference to the Store that changed.
  * @param tableId The Id of the Table whose sorted Row Ids changed.
@@ -2514,7 +2514,7 @@ export interface Store {
    *
    * The provided listener is a SortedRowIdsListener function, and will be
    * called with a reference to the Store, the Id of the Table whose Row Ids
-   * sorting changed, and the Cell Id being used to sort them, whether
+   * sorting changed, the Cell Id being used to sort them, and whether
    * descending or not. It also receives the sorted array of Ids itself, so that
    * you can use them in the listener without the additional cost of an explicit
    * call to getSortedRowIds.
