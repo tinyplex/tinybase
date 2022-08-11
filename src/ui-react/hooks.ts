@@ -69,6 +69,8 @@ import {
   useResultRowIds as useResultRowIdsDecl,
   useResultRowIdsListener as useResultRowIdsListenerDecl,
   useResultRowListener as useResultRowListenerDecl,
+  useResultSortedRowIds as useResultSortedRowIdsDecl,
+  useResultSortedRowIdsListener as useResultSortedRowIdsListenerDecl,
   useResultTable as useResultTableDecl,
   useResultTableListener as useResultTableListenerDecl,
   useRow as useRowDecl,
@@ -109,6 +111,7 @@ import {
   ResultCellListener,
   ResultRowIdsListener,
   ResultRowListener,
+  ResultSortedRowIdsListener,
   ResultTableListener,
 } from '../queries.d';
 import {getUndefined, ifNotUndefined, isUndefined} from '../common/other';
@@ -850,6 +853,21 @@ export const useResultRowIds: typeof useResultRowIdsDecl = (
     [trackReorder],
   );
 
+export const useResultSortedRowIds: typeof useResultSortedRowIdsDecl = (
+  queryId: Id,
+  cellId?: Id,
+  descending?: boolean,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): Ids =>
+  useListenable(
+    'ResultSortedRowIds',
+    useQueriesOrQueriesId(queriesOrQueriesId),
+    [],
+    [queryId, cellId, descending],
+    [],
+    4,
+  );
+
 export const useResultRow: typeof useResultRowDecl = (
   queryId: Id,
   rowId: Id,
@@ -914,6 +932,23 @@ export const useResultRowIdsListener: typeof useResultRowIdsListenerDecl = (
     [queryId],
     trackReorder,
   );
+
+export const useResultSortedRowIdsListener: typeof useResultSortedRowIdsListenerDecl =
+  (
+    queryId: Id,
+    cellId: Id | undefined,
+    descending: boolean,
+    listener: ResultSortedRowIdsListener,
+    listenerDeps?: React.DependencyList,
+    queriesOrQueriesId?: QueriesOrQueriesId,
+  ): void =>
+    useListener(
+      'ResultSortedRowIds',
+      useQueriesOrQueriesId(queriesOrQueriesId),
+      listener,
+      listenerDeps,
+      [queryId, cellId, descending],
+    );
 
 export const useResultRowListener: typeof useResultRowListenerDecl = (
   queryId: IdOrNull,

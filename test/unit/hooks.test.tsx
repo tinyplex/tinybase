@@ -64,6 +64,8 @@ import {
   useResultRowIds,
   useResultRowIdsListener,
   useResultRowListener,
+  useResultSortedRowIds,
+  useResultSortedRowIdsListener,
   useResultTable,
   useResultTableListener,
   useRow,
@@ -1170,6 +1172,76 @@ describe('Read Hooks', () => {
       renderer.update(<div />);
     });
     expect(didRender).toBeCalledTimes(6);
+  });
+
+  test('useResultSortedRowIds', () => {
+    const queries = createQueries(store)
+      .setQueryDefinition('q1', 't1', ({select}) => select('c1'))
+      .setQueryDefinition('q2', 't1', ({select, where}) => {
+        select('c1');
+        select('c2');
+        where('c1', 3);
+      });
+    const Test = ({
+      queryId,
+      cellId,
+      descending,
+    }: {
+      queryId: Id;
+      cellId: Id;
+      descending: boolean;
+    }) =>
+      didRender(
+        <>
+          {JSON.stringify(
+            useResultSortedRowIds(queryId, cellId, descending, queries),
+          )}
+        </>,
+      );
+    act(() => {
+      renderer = create(<Test queryId="q0" cellId="c0" descending={false} />);
+    });
+    expect(renderer.toJSON()).toEqual(JSON.stringify([]));
+
+    act(() => {
+      renderer.update(<Test queryId="q1" cellId="c1" descending={false} />);
+    });
+    expect(renderer.toJSON()).toEqual(JSON.stringify(['r1']));
+
+    act(() => {
+      store
+        .setTables({
+          t1: {
+            r1: {c1: 2},
+            r2: {c1: 1},
+            r3: {c1: 3, c2: 1},
+            r4: {c1: 3, c2: 2},
+          },
+        })
+        .setTables({
+          t1: {
+            r1: {c1: 2},
+            r2: {c1: 1},
+            r3: {c1: 3, c2: 1},
+            r4: {c1: 3, c2: 2},
+          },
+        });
+    });
+    expect(renderer.toJSON()).toEqual(JSON.stringify(['r2', 'r1', 'r3', 'r4']));
+
+    act(() => {
+      renderer.update(<Test queryId="q2" cellId="c2" descending={true} />);
+    });
+    expect(renderer.toJSON()).toEqual(JSON.stringify(['r4', 'r3']));
+
+    act(() => {
+      store.delTables();
+    });
+    expect(renderer.toJSON()).toEqual(JSON.stringify([]));
+    act(() => {
+      renderer.update(<div />);
+    });
+    expect(didRender).toBeCalledTimes(5);
   });
 
   test('useResultRow', () => {
@@ -2428,6 +2500,50 @@ describe('Listener Hooks', () => {
           expect(queries?.getResultCell('q1', 'r1', 'c1')).toEqual(value),
         [value],
         true,
+        queries,
+      );
+      return <div />;
+    };
+    act(() => {
+      renderer = create(<Test value={2} />);
+    });
+    act(() => {
+      store.setCell('t1', 'r1', 'c1', 2);
+      store.setCell('t1', 'r2', 'c1', 0);
+    });
+    act(() => {
+      renderer.update(<Test value={3} />);
+    });
+    act(() => {
+      store.setCell('t1', 'r1', 'c1', 3);
+      store.setCell('t1', 'r3', 'c1', 0);
+    });
+    act(() => {
+      store.setCell('t1', 'r2', 'c2', 1);
+    });
+    act(() => {
+      renderer.update(<div />);
+    });
+  });
+
+  test('useResultSortedRowIdsListener', () => {
+    expect.assertions(2);
+    const queries = createQueries(store).setQueryDefinition(
+      'q1',
+      't1',
+      ({select}) => {
+        select('c1');
+        select('c2');
+      },
+    );
+    const Test = ({value}: {value: number}) => {
+      useResultSortedRowIdsListener(
+        'q1',
+        'c2',
+        false,
+        (queries) =>
+          expect(queries?.getResultCell('q1', 'r1', 'c1')).toEqual(value),
+        [value],
         queries,
       );
       return <div />;
