@@ -4623,6 +4623,112 @@ describe('Listens to Queries when sets', () => {
   });
 });
 
+describe('Sorted Row Ids', () => {
+  beforeEach(() => {
+    store = createStore().setTables({
+      t1: {
+        r1: {c1: 1, c2: 'one', c3: 3},
+        r3: {c1: 3, c2: 'three', c3: 3},
+        r5: {c1: 5, c2: 'five', c3: 3},
+        r2: {c1: 2, c2: 'two', c3: 3},
+        r4: {c1: 4, c2: 'four', c3: 3},
+        r6: {c1: 6, c2: 'six', c3: 3},
+      },
+    });
+    queries = createQueries(store).setQueryDefinition(
+      'q1',
+      't1',
+      ({select, where}) => {
+        select('c1');
+        select('c2');
+        where((getCell) => getCell('c1') != 4 && getCell('c1') != 6);
+      },
+    );
+  });
+
+  test('Cell sort', () => {
+    expect(queries.getResultSortedRowIds('q1', 'c2')).toEqual([
+      'r5',
+      'r1',
+      'r3',
+      'r2',
+    ]);
+  });
+
+  test('Cell sort, reverse', () => {
+    expect(queries.getResultSortedRowIds('q1', 'c2', true)).toEqual([
+      'r2',
+      'r3',
+      'r1',
+      'r5',
+    ]);
+  });
+
+  test('Cell sort, missing cell (hence id)', () => {
+    expect(queries.getResultSortedRowIds('q1')).toEqual([
+      'r1',
+      'r2',
+      'r3',
+      'r5',
+    ]);
+  });
+
+  test('Cell sort listener, add row with relevant cell', () => {
+    expect.assertions(1);
+    queries.addResultSortedRowIdsListener('q1', 'c2', false, () => {
+      expect(queries.getResultSortedRowIds('q1', 'c2')).toEqual([
+        'r5',
+        'r1',
+        'r7',
+        'r3',
+        'r2',
+      ]);
+    });
+    store.setRow('t1', 'r7', {c1: 7, c2: 'seven'});
+  });
+
+  test('Cell sort listener, add row without relevant cell', () => {
+    expect.assertions(1);
+    queries.addResultSortedRowIdsListener('q1', 'c2', false, () => {
+      expect(queries.getResultSortedRowIds('q1', 'c2')).toEqual([
+        'r5',
+        'r1',
+        'r3',
+        'r2',
+        'r7',
+      ]);
+    });
+    store.setRow('t1', 'r7', {c1: 7});
+  });
+
+  test('Cell sort listener, alter relevant cell', () => {
+    expect.assertions(1);
+    queries.addResultSortedRowIdsListener('q1', 'c2', false, () => {
+      expect(queries.getResultSortedRowIds('q1', 'c2')).toEqual([
+        'r5',
+        'r3',
+        'r2',
+        'r1',
+      ]);
+    });
+    store.setCell('t1', 'r1', 'c2', 'uno');
+  });
+
+  test('Cell sort listener, alter relevant cell, no change', () => {
+    const listener = jest.fn();
+    queries.addResultSortedRowIdsListener('q1', 'c2', false, listener);
+    store.setCell('t1', 'r5', 'c2', 'cinq');
+    expect(listener).toBeCalledTimes(0);
+  });
+
+  test('Cell sort listener, alter non-relevant cell', () => {
+    const listener = jest.fn();
+    queries.addResultSortedRowIdsListener('q1', 'c2', false, listener);
+    store.setCell('t1', 'r1', 'c1', '1.0');
+    expect(listener).toBeCalledTimes(0);
+  });
+});
+
 describe('Miscellaneous', () => {
   test('cleans pre-stores', () => {
     setCells();
