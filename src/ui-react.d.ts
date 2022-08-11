@@ -4566,6 +4566,140 @@ export function useResultRowIds(
 ): Ids;
 
 /**
+ * The useResultSortedRowIds hook returns the sorted Ids of every Row in the
+ * result Table of the given query, and registers a listener so that any changes
+ * to those Ids will cause a re-render.
+ *
+ * A Provider component is used to wrap part of an application in a context, and
+ * it can contain a default Queries object or a set of Queries objects named by
+ * Id. The useResultSortedRowIds hook lets you indicate which Queries object to
+ * get data for: omit the final optional final parameter for the default context
+ * Queries object, provide an Id for a named context Queries object, or provide
+ * a Queries object explicitly by reference.
+ *
+ * When first rendered, this hook will create a listener so that changes to the
+ * sorted result Row Ids will cause a re-render. When the component containing
+ * this hook is unmounted, the listener will be automatically removed.
+ *
+ * @param queryId The Id of the query.
+ * @param cellId The Id of the result Cell whose values are used for the
+ * sorting, or `undefined` to by sort the result Row Id itself.
+ * @param descending Whether the sorting should be in descending order.
+ * @param queriesOrQueriesId The Queries object to be accessed: omit for the
+ * default context Queries object, provide an Id for a named context Queries
+ * object, or provide an explicit reference.
+ * @returns An array of the Ids of every Row in the result of the query.
+ * @example
+ * This example creates a Queries object outside the application, which is used
+ * in the useResultSortedRowIds hook by reference. A change to the data in the
+ * query re-renders the component.
+ *
+ * ```jsx
+ * const store = createStore().setTable('pets', {
+ *   fido: {species: 'dog', color: 'brown'},
+ *   felix: {species: 'cat', color: 'black'},
+ *   cujo: {species: 'dog', color: 'black'},
+ * });
+ * const queries = createQueries(store).setQueryDefinition(
+ *   'dogColors',
+ *   'pets',
+ *   ({select, where}) => {
+ *     select('color');
+ *     where('species', 'dog');
+ *   },
+ * );
+ * const App = () => (
+ *   <span>
+ *     {JSON.stringify(
+ *       useResultSortedRowIds('dogColors', 'color', false, queries),
+ *     )}
+ *   </span>
+ * );
+ *
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["cujo","fido"]</span>'
+ *
+ * store.setCell('pets', 'cujo', 'species', 'wolf'); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["fido"]</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a default Queries object
+ * is provided. A component within it then uses the useResultSortedRowIds hook.
+ *
+ * ```jsx
+ * const App = ({queries}) => (
+ *   <Provider queries={queries}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <span>
+ *     {JSON.stringify(useResultSortedRowIds('dogColors', 'color', false))}
+ *   </span>
+ * );
+ *
+ * const queries = createQueries(
+ *   createStore().setTable('pets', {
+ *     fido: {species: 'dog', color: 'brown'},
+ *     felix: {species: 'cat', color: 'black'},
+ *     cujo: {species: 'dog', color: 'black'},
+ *   }),
+ * ).setQueryDefinition('dogColors', 'pets', ({select, where}) => {
+ *   select('color');
+ *   where('species', 'dog');
+ * });
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App queries={queries} />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["cujo","fido"]</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a Queries object is
+ * provided, named by Id. A component within it then uses the
+ * useResultSortedRowIds hook.
+ *
+ * ```jsx
+ * const App = ({queries}) => (
+ *   <Provider queriesById={{petQueries: queries}}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <span>
+ *     {JSON.stringify(
+ *       useResultSortedRowIds('dogColors', 'color', false, 'petQueries'),
+ *     )}
+ *   </span>
+ * );
+ *
+ * const queries = createQueries(
+ *   createStore().setTable('pets', {
+ *     fido: {species: 'dog', color: 'brown'},
+ *     felix: {species: 'cat', color: 'black'},
+ *     cujo: {species: 'dog', color: 'black'},
+ *   }),
+ * ).setQueryDefinition('dogColors', 'pets', ({select, where}) => {
+ *   select('color');
+ *   where('species', 'dog');
+ * });
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App queries={queries} />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["cujo","fido"]</span>'
+ * ```
+ * @category Queries hooks
+ */
+export function useResultSortedRowIds(
+  queryId: Id,
+  cellId?: Id,
+  descending?: boolean,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): Ids;
+
+/**
  * The useResultRow hook returns an object containing the entire data of a
  * single Row in the result Table of the given query, and registers a listener
  * so that any changes to that Row will cause a re-render.
@@ -5065,7 +5199,7 @@ export function useResultTableListener(
  * );
  * const Pane = () => {
  *   useResultRowIdsListener('petColors', () =>
- *     console.log('Result row Ids changed'),
+ *     console.log('Result Row Ids changed'),
  *   );
  *   return <span>App</span>;
  * };
@@ -5086,7 +5220,7 @@ export function useResultTableListener(
  * // -> 1
  *
  * store.setRow('pets', 'rex', {species: 'dog', color: 'tan'}); // !act
- * // -> 'Result row Ids changed'
+ * // -> 'Result Row Ids changed'
  *
  * ReactDOM.unmountComponentAtNode(app); // !act
  * console.log(queries.getListenerStats().rowIds);
@@ -5099,6 +5233,84 @@ export function useResultRowIdsListener(
   listener: ResultRowIdsListener,
   listenerDeps?: React.DependencyList,
   trackReorder?: boolean,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): void;
+
+/**
+ * The useResultSortedRowIdsListener hook registers a listener function with a
+ * Queries object that will be called whenever the sorted Row Ids in a result
+ * Table change.
+ *
+ * This hook is useful for situations where a component needs to register its
+ * own specific listener to do more than simply tracking the value (which is
+ * more easily done with the useResultSortedRowIds hook).
+ *
+ * Unlike the addResultSortedRowIdsListener method, which returns a listener Id
+ * and requires you to remove it manually, the useResultSortedRowIdsListener
+ * hook manages this lifecycle for you: when the listener changes (per its
+ * `listenerDeps` dependencies) or the component unmounts, the listener on the
+ * underlying Queries object will be deleted.
+ *
+ * @param queryId The Id of the query to listen to.
+ * @param cellId The Id of the Cell whose values are used for the sorting, or
+ * `undefined` to by sort the Row Id itself.
+ * @param descending Whether the sorting should be in descending order.
+ * @param listener The function that will be called whenever the Row Ids in the
+ * matching result Table change.
+ * @param listenerDeps An optional array of dependencies for the `listener`
+ * function, which, if any change, result in the re-registration of the
+ * listener. This parameter defaults to an empty array.
+ * @param queriesOrQueriesId The Queries object to register the listener with:
+ * omit for the default context Queries object, provide an Id for a named
+ * context Queries object, or provide an explicit reference.
+ * @example
+ * This example uses the useResultSortedRowIdsListener hook to create a listener
+ * that is scoped to a single component. When the component is unmounted, the
+ * listener is removed from the Queries object.
+ *
+ * ```jsx
+ * const App = ({queries}) => (
+ *   <Provider queries={queries}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => {
+ *   useResultSortedRowIdsListener('petColors', 'color', false, () =>
+ *     console.log('Sorted result Row Ids changed'),
+ *   );
+ *   return <span>App</span>;
+ * };
+ *
+ * const store = createStore().setTable('pets', {
+ *   fido: {species: 'dog', color: 'brown'},
+ *   felix: {species: 'cat', color: 'black'},
+ *   cujo: {species: 'dog', color: 'black'},
+ * });
+ * const queries = createQueries(store).setQueryDefinition(
+ *   'petColors',
+ *   'pets',
+ *   ({select}) => select('color'),
+ * );
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App queries={queries} />, app); // !act
+ * console.log(queries.getListenerStats().sortedRowIds);
+ * // -> 1
+ *
+ * store.setRow('pets', 'cujo', {color: 'tan'}); // !act
+ * // -> 'Sorted result Row Ids changed'
+ *
+ * ReactDOM.unmountComponentAtNode(app); // !act
+ * console.log(queries.getListenerStats().sortedRowIds);
+ * // -> 0
+ * ```
+ * @category Queries hooks
+ */
+export function useResultSortedRowIdsListener(
+  queryId: Id,
+  cellId: Id | undefined,
+  descending: boolean,
+  listener: ResultRowIdsListener,
+  listenerDeps?: React.DependencyList,
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): void;
 
