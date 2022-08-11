@@ -109,7 +109,10 @@
         ],
         "jsdoc/require-jsdoc": [2, {"contexts": ["any"]}],
         "jsdoc/check-examples": [0, {"contexts": ["any"]}],
-        "jsdoc/require-description": [2, {"contexts": ["any"]}]
+        "jsdoc/require-description": [2, {"contexts": ["any"]}],
+        "jsdoc/require-returns-check": [0],
+        "jsdoc/require-param-type": [0],
+        "jsdoc/require-returns-type": [0]
       }
     }
   ]

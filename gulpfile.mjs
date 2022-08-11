@@ -74,7 +74,10 @@ const lintCheck = async (dir) => {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
   });
   const results = await esLint.lintFiles([dir]);
-  if (results.filter((result) => result.errorCount > 0).length > 0) {
+  if (
+    results.filter((result) => result.errorCount > 0 || result.warningCount > 0)
+      .length > 0
+  ) {
     const formatter = await esLint.loadFormatter();
     throw formatter.format(results);
   }
