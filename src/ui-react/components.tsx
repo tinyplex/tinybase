@@ -28,6 +28,8 @@ import {
   ResultCellView as ResultCellViewDecl,
   ResultRowProps,
   ResultRowView as ResultRowViewDecl,
+  ResultSortedTableProps,
+  ResultSortedTableView as ResultSortedTableViewDecl,
   ResultTableProps,
   ResultTableView as ResultTableViewDecl,
   RowProps,
@@ -61,6 +63,7 @@ import {
   useResultCell,
   useResultCellIds,
   useResultRowIds,
+  useResultSortedRowIds,
   useRowIds,
   useSliceIds,
   useSliceRowIds,
@@ -513,6 +516,35 @@ export const ResultTableView: typeof ResultTableViewDecl = ({
         debugIds={debugIds}
       />
     )),
+    separator,
+    debugIds,
+    queryId,
+  );
+
+export const ResultSortedTableView: typeof ResultSortedTableViewDecl = ({
+  queryId,
+  cellId,
+  descending,
+  queries,
+  resultRowComponent: ResultRow = ResultRowView,
+  getResultRowComponentProps,
+  separator,
+  debugIds,
+}: ResultSortedTableProps): any =>
+  wrap(
+    arrayMap(
+      useResultSortedRowIds(queryId, cellId, descending, queries),
+      (rowId) => (
+        <ResultRow
+          {...getProps(getResultRowComponentProps, rowId)}
+          key={rowId}
+          queryId={queryId}
+          rowId={rowId}
+          queries={queries}
+          debugIds={debugIds}
+        />
+      ),
+    ),
     separator,
     debugIds,
     queryId,
