@@ -15,6 +15,7 @@ import {
   ResultCellListener,
   ResultRowIdsListener,
   ResultRowListener,
+  ResultSortedRowIdsListener,
   ResultTableListener,
   Select,
   Where,
@@ -702,6 +703,12 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
     const getResultRowIds = (queryId: Id): Ids =>
       resultStore.getRowIds(queryId);
 
+    const getResultSortedRowIds = (
+      queryId: Id,
+      cellId?: Id,
+      descending?: boolean,
+    ): Ids => resultStore.getSortedRowIds(queryId, cellId, descending);
+
     const getResultRow = (queryId: Id, rowId: Id): Row =>
       resultStore.getRow(queryId, rowId);
 
@@ -752,6 +759,19 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
         queryId,
         (_store, ...args) => listener(queries, ...args),
         trackReorder,
+      );
+
+    const addResultSortedRowIdsListener = (
+      queryId: Id,
+      cellId: string | undefined,
+      descending: boolean,
+      listener: ResultSortedRowIdsListener,
+    ): Id =>
+      resultStore.addSortedRowIdsListener(
+        queryId,
+        cellId,
+        descending,
+        (_store, ...args) => listener(queries, ...args),
       );
 
     const addResultRowListener = (
@@ -809,6 +829,7 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
 
       getResultTable,
       getResultRowIds,
+      getResultSortedRowIds,
       getResultRow,
       getResultCellIds,
       getResultCell,
@@ -822,6 +843,7 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
 
       addResultTableListener,
       addResultRowIdsListener,
+      addResultSortedRowIdsListener,
       addResultRowListener,
       addResultCellIdsListener,
       addResultCellListener,

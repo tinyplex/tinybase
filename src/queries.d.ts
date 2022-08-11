@@ -195,6 +195,36 @@ export type ResultTableListener = (
 export type ResultRowIdsListener = (queries: Queries, tableId: Id) => void;
 
 /**
+ * The ResultSortedRowIdsListener type describes a function that is used to
+ * listen to changes to the sorted Row Ids in a query's result Table.
+ *
+ * A ResultSortedRowIdsListener is provided when using the
+ * addResultSortedRowIdsListener method. See that method for specific examples.
+ *
+ * When called, a ResultSortedRowIdsListener is given a reference to the Queries
+ * object, the Id of the Table whose Row Ids changed (which is the same as the
+ * query Id), the Cell Id being used to sort them, and and whether descending or
+ * not. It also receives the sorted array of Ids itself, so that you can use
+ * them in the listener without the additional cost of an explicit call to
+ * getResultSortedRowIds.
+ *
+ * @param queries A reference to the Queries object that changed.
+ * @param tableId The Id of the Table that changed, which is also the query Id.
+ * @param cellId The Id of the Cell whose values were used for the sorting.
+ * @param descending Whether the sorting was in descending order.
+ * @param sortedRowIds The sorted Row Ids themselves.
+ * @category Listener
+ * @since v2.0.0-beta
+ */
+export type ResultSortedRowIdsListener = (
+  queries: Queries,
+  tableId: Id,
+  cellId: Id | undefined,
+  descending: boolean,
+  sortedRowIds: Ids,
+) => void;
+
+/**
  * The ResultRowListener type describes a function that is used to listen to
  * changes to a Row in a query's result Table.
  *
@@ -1950,6 +1980,60 @@ export interface Queries {
   getResultRowIds(queryId: Id): Ids;
 
   /**
+   * The getResultSortedRowIds method returns the Ids of every Row in the result
+   * Table of the given query, sorted according to the values in a specified
+   * Cell.
+   *
+   * This has the same behavior as a Store's getSortedRowIds method. For
+   * example, if the query Id is invalid, the method returns an empty array.
+   * Similarly, the sorting of the rows is alphanumeric, and you can indicate
+   * whether it should be in descending order.
+   *
+   * Note that every call to this method will perform the sorting afresh - there
+   * is no caching of the results - and so you are advised to memoize the
+   * results yourself, especially when the result Table is large. For a
+   * performant approach to tracking the sorted Row Ids when they change, use
+   * the addResultSortedRowIdsListener method.
+   *
+   * @param queryId The Id of a query.
+   * @param cellId The Id of the Cell whose values are used for the sorting, or
+   * `undefined` to by sort the Row Id itself.
+   * @param descending Whether the sorting should be in descending order.
+   * @returns An array of the sorted Ids of every Row in the result of the
+   * query.
+   * @example
+   * This example creates a Queries object, a single query definition, and then
+   * calls this method on it (as well as a non-existent definition) to get the
+   * result Row Ids.
+   *
+   * ```js
+   * const store = createStore().setTable('pets', {
+   *   fido: {species: 'dog', color: 'brown'},
+   *   felix: {species: 'cat', color: 'black'},
+   *   cujo: {species: 'dog', color: 'black'},
+   * });
+   *
+   * const queries = createQueries(store).setQueryDefinition(
+   *   'dogColors',
+   *   'pets',
+   *   ({select, where}) => {
+   *     select('color');
+   *     where('species', 'dog');
+   *   },
+   * );
+   *
+   * console.log(queries.getResultSortedRowIds('dogColors', 'color'));
+   * // -> ['cujo', 'fido']
+   *
+   * console.log(queries.getResultSortedRowIds('catColors', 'color'));
+   * // -> []
+   * ```
+   * @category Result
+   * @since v2.0.0-beta
+   */
+  getResultSortedRowIds(queryId: Id, cellId?: Id, descending?: boolean): Ids;
+
+  /**
    * The getResultRow method returns an object containing the entire data of a
    * single Row in the result Table of the given query.
    *
@@ -2569,6 +2653,119 @@ export interface Queries {
     queryId: IdOrNull,
     listener: ResultRowIdsListener,
     trackReorder?: boolean,
+  ): Id;
+
+  /**
+   * The addResultSortedRowIdsListener method registers a listener function with
+   * the Queries object that will be called whenever sorted Row Ids in a result
+   * Table change.
+   *
+   * The provided listener is a ResultSortedRowIdsListener function, and will be
+   * called with a reference to the Queries object, the Id of the result Table
+   * whose Row Ids sorting changed (which is also the query Id), the Cell Id
+   * being used to sort them, and whether descending or not. It also receives
+   * the sorted array of Ids itself, so that you can use them in the listener
+   * without the additional cost of an explicit call to getResultSortedRowIds
+   *
+   * Such a listener is called when a Row is added or removed, but also when a
+   * value in the specified Cell (somewhere in the result Table) has changed
+   * enough to change the sorting of the Row Ids.
+   *
+   * Unlike most other listeners, you cannot provide wildcards (due to the cost
+   * of detecting changes to the sorting). You can only listen to a single
+   * specified result Table, sorted by a single specified Cell.
+   *
+   * @param queryId The Id of the query to listen to.
+   * @param cellId The Id of the Cell whose values are used for the sorting, or
+   * `undefined` to by sort the result Row Id itself.
+   * @param descending Whether the sorting should be in descending order.
+   * @param listener The function that will be called whenever the sorted Row
+   * Ids in the result Table change.
+   * @returns A unique Id for the listener that can later be used to remove it.
+   * @example
+   * This example registers a listener that responds to any change to the sorted
+   * Row Ids of a specific result Table.
+   *
+   * ```js
+   * const store = createStore().setTable('pets', {
+   *   fido: {species: 'dog', color: 'brown'},
+   *   felix: {species: 'cat', color: 'black'},
+   *   cujo: {species: 'dog', color: 'black'},
+   * });
+   *
+   * const queries = createQueries(store).setQueryDefinition(
+   *   'dogColors',
+   *   'pets',
+   *   ({select, where}) => {
+   *     select('color');
+   *     where('species', 'dog');
+   *   },
+   * );
+   *
+   * const listenerId = queries.addResultSortedRowIdsListener(
+   *   'dogColors',
+   *   'color',
+   *   false,
+   *   (queries, tableId, cellId, descending, sortedRowIds) => {
+   *     console.log(`Sorted Row Ids for dogColors result table changed`);
+   *     console.log(sortedRowIds);
+   *     // ^ cheaper than calling getResultSortedRowIds again
+   *   },
+   * );
+   *
+   * store.setRow('pets', 'rex', {species: 'dog', color: 'tan'});
+   * // -> 'Sorted Row Ids for dogColors result table changed'
+   * // -> ['cujo', 'fido', 'rex']
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @example
+   * This example registers a listener that responds to any change to the sorted
+   * Row Ids of a specific Table. The Row Ids are sorted by their own value,
+   * since the `cellId` parameter is explicitly undefined.
+   *
+   * ```js
+   * const store = createStore().setTable('pets', {
+   *   fido: {species: 'dog', color: 'brown'},
+   *   felix: {species: 'cat', color: 'black'},
+   *   cujo: {species: 'dog', color: 'black'},
+   * });
+   *
+   * const queries = createQueries(store).setQueryDefinition(
+   *   'dogColors',
+   *   'pets',
+   *   ({select, where}) => {
+   *     select('color');
+   *     where('species', 'dog');
+   *   },
+   * );
+   * console.log(queries.getResultSortedRowIds('dogColors', undefined, false));
+   * // -> ['cujo', 'fido']
+   *
+   * const listenerId = queries.addResultSortedRowIdsListener(
+   *   'dogColors',
+   *   undefined,
+   *   false,
+   *   (queries, tableId, cellId, descending, sortedRowIds) => {
+   *     console.log(`Sorted Row Ids for dogColors result table changed`);
+   *     console.log(sortedRowIds);
+   *     // ^ cheaper than calling getSortedRowIds again
+   *   },
+   * );
+   *
+   * store.setRow('pets', 'rex', {species: 'dog', color: 'tan'});
+   * // -> 'Sorted Row Ids for dogColors result table changed'
+   * // -> ['cujo', 'fido', 'rex']
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @category Listener
+   */
+  addResultSortedRowIdsListener(
+    queryId: Id,
+    cellId: Id | undefined,
+    descending: boolean,
+    listener: ResultSortedRowIdsListener,
   ): Id;
 
   /**
