@@ -23,6 +23,8 @@ import {
   ResultCellView,
   ResultRowProps,
   ResultRowView,
+  ResultSortedTableProps,
+  ResultSortedTableView,
   ResultTableProps,
   ResultTableView,
   RowProps,
@@ -175,6 +177,22 @@ describe('Read Components', () => {
     <>
       {props.queryId}:
       <ResultTableView
+        {...props}
+        resultRowComponent={TestResultRowView}
+        getResultRowComponentProps={useCallback(
+          () => ({cellPrefix: props.cellPrefix}),
+          [props.cellPrefix],
+        )}
+      />
+    </>
+  );
+
+  const TestResultSortedTableView = (
+    props: ResultSortedTableProps & {cellPrefix?: string},
+  ) => (
+    <>
+      {props.queryId},{props.cellId}:
+      <ResultSortedTableView
         {...props}
         resultRowComponent={TestResultRowView}
         getResultRowComponentProps={useCallback(
@@ -1220,6 +1238,107 @@ describe('Read Components', () => {
         store.delTables();
       });
       expect(rendererToString(renderer)).toEqual('q1:');
+    });
+  });
+
+  describe('ResultSortedTableView', () => {
+    let queries: Queries;
+
+    beforeEach(() => {
+      queries = createQueries(store).setQueryDefinition(
+        'q1',
+        't2',
+        ({select}) => {
+          select('c1');
+          select('c2');
+        },
+      );
+    });
+
+    test('Basic', () => {
+      act(() => {
+        renderer = create(
+          <ResultSortedTableView queries={queries} queryId="q1" cellId="c2" />,
+        );
+      });
+      expect(rendererToString(renderer)).toEqual('234');
+
+      act(() => {
+        store.setCell('t2', 'r1', 'c2', 5);
+      });
+      expect(rendererToString(renderer)).toEqual('3425');
+    });
+
+    test('Separator', () => {
+      act(() => {
+        renderer = create(
+          <ResultSortedTableView
+            queries={queries}
+            queryId="q1"
+            cellId="c2"
+            separator="/"
+          />,
+        );
+      });
+      expect(rendererToString(renderer)).toEqual('2/34');
+    });
+
+    test('Debug Ids', () => {
+      act(() => {
+        renderer = create(
+          <ResultSortedTableView
+            queries={queries}
+            queryId="q1"
+            cellId="c2"
+            separator="/"
+          />,
+        );
+      });
+      expect(rendererToString(renderer)).toEqual('2/34');
+
+      act(() => {
+        renderer = create(
+          <ResultSortedTableView
+            queries={queries}
+            queryId="q1"
+            cellId="c2"
+            debugIds={true}
+          />,
+        );
+      });
+      expect(rendererToString(renderer)).toEqual(
+        'q1:{r1:{c1:{2}}r2:{c1:{3}c2:{4}}}',
+      );
+    });
+
+    test('Custom', () => {
+      const Test = ({queryId, cellId}: {queryId: Id; cellId: Id}) => (
+        <TestResultSortedTableView
+          queries={queries}
+          queryId={queryId}
+          cellId={cellId}
+          cellPrefix=":"
+        />
+      );
+      act(() => {
+        renderer = create(<Test queryId="q0" cellId="c0" />);
+      });
+      expect(rendererToString(renderer)).toEqual('q0,c0:');
+
+      act(() => {
+        renderer.update(<Test queryId="q1" cellId="c2" />);
+      });
+      expect(rendererToString(renderer)).toEqual('q1,c2:r1:c1:2r2:c1:3c2:4');
+
+      act(() => {
+        store.setCell('t2', 'r1', 'c1', 3);
+      });
+      expect(rendererToString(renderer)).toEqual('q1,c2:r1:c1:3r2:c1:3c2:4');
+
+      act(() => {
+        store.delTables();
+      });
+      expect(rendererToString(renderer)).toEqual('q1,c2:');
     });
   });
 
