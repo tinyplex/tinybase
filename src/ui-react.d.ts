@@ -6445,7 +6445,7 @@ export type SortedTableProps = {
   /**
    * Whether the sorting should be in descending order.
    */
-  readonly descending: boolean;
+  readonly descending?: boolean;
   /**
    * The Store to be accessed: omit for the default context Store, provide an Id
    * for a named context Store, or provide an explicit reference.
