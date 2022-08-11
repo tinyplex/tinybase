@@ -2120,8 +2120,8 @@ export interface Queries {
   hasResultTable(queryId: Id): boolean;
 
   /**
-   * The hasResultRow method returns a boolean indicating whether a given
-   * result Row exists.
+   * The hasResultRow method returns a boolean indicating whether a given result
+   * Row exists.
    *
    * @param queryId The Id of a possible query.
    * @param rowId The Id of a possible Row.
@@ -2471,7 +2471,7 @@ export interface Queries {
    *
    * const listenerId = queries.addResultRowIdsListener(
    *   'dogColors',
-   *   (store, tableId) => {
+   *   (queries, tableId) => {
    *     console.log(`Row Ids for dogColors result table changed`);
    *     console.log(queries.getResultRowIds('dogColors'));
    *   },
@@ -2511,7 +2511,7 @@ export interface Queries {
    *
    * const listenerId = queries.addResultRowIdsListener(
    *   'dogColors',
-   *   (store, tableId) => {
+   *   (queries, tableId) => {
    *     console.log(`Row Ids for dogColors result table changed`);
    *     console.log(queries.getResultRowIds('dogColors'));
    *   },
