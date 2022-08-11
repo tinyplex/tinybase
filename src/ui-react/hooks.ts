@@ -152,9 +152,9 @@ const useCreate = (
 };
 
 const useListenable = (
-  listenable: string,
+  listenable: string, // internal & stable
   thing: any,
-  defaulted: any,
+  defaulted: any, // internal & stable
   preArgs: ListenerArgument[] = [],
   postArgs: ListenerArgument[] = [],
   getFromListenerArg?: number,
@@ -163,7 +163,7 @@ const useListenable = (
   const getResult = useCallback(
     () => thing?.['get' + listenable]?.(...preArgs) ?? defaulted,
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
-    [thing, listenable, ...preArgs, defaulted],
+    [thing, ...preArgs],
   );
   const [initialResult] = useState(getResult);
   const result = useRef(initialResult);
@@ -177,7 +177,7 @@ const useListenable = (
         : listenerArgs[getFromListenerArg];
       rerender([]);
     },
-    [result, rerender],
+    [],
     preArgs,
     ...postArgs,
   );
@@ -185,7 +185,7 @@ const useListenable = (
 };
 
 const useListener = (
-  listenable: string,
+  listenable: string, // internal & stable
   thing: any,
   listener: (...args: any[]) => void,
   listenerDeps: React.DependencyList = [],
@@ -200,7 +200,7 @@ const useListener = (
     );
     return () => thing?.delListener(listenerId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [thing, listenable, ...preArgs, ...listenerDeps, ...postArgs]);
+  }, [thing, ...preArgs, ...listenerDeps, ...postArgs]);
 
 const useSetCallback = <Parameter, Value>(
   storeOrStoreId: StoreOrStoreId | undefined,
