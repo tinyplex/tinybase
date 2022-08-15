@@ -80,6 +80,60 @@ import {isUndefined} from '../common/other';
 
 const {createElement, useMemo} = React;
 
+export const tableView = (
+  {
+    tableId,
+    store,
+    rowComponent: Row = RowView,
+    getRowComponentProps,
+    separator,
+    debugIds,
+  }: TableProps,
+  rowIds: Ids,
+): any =>
+  wrap(
+    arrayMap(rowIds, (rowId) => (
+      <Row
+        {...getProps(getRowComponentProps, rowId)}
+        key={rowId}
+        tableId={tableId}
+        rowId={rowId}
+        store={store}
+        debugIds={debugIds}
+      />
+    )),
+    separator,
+    debugIds,
+    tableId,
+  );
+
+const resultTableView = (
+  {
+    queryId,
+    queries,
+    resultRowComponent: ResultRow = ResultRowView,
+    getResultRowComponentProps,
+    separator,
+    debugIds,
+  }: ResultTableProps,
+  rowIds: Ids,
+): any =>
+  wrap(
+    arrayMap(rowIds, (rowId) => (
+      <ResultRow
+        {...getProps(getResultRowComponentProps, rowId)}
+        key={rowId}
+        queryId={queryId}
+        rowId={rowId}
+        queries={queries}
+        debugIds={debugIds}
+      />
+    )),
+    separator,
+    debugIds,
+    queryId,
+  );
+
 const useRelationshipsStoreTableId = (
   relationships: RelationshipsOrRelationshipsId,
 ): [Relationships | undefined, Store | undefined] => {
@@ -274,59 +328,26 @@ export const RowView: typeof RowViewDecl = ({
     rowId,
   );
 
+export const TableView: typeof TableViewDecl = (props: TableProps): any =>
+  tableView(props, useRowIds(props.tableId, props.store));
+
 export const SortedTableView: typeof SortedTableViewDecl = ({
-  tableId,
   cellId,
   descending,
   offset,
   limit,
-  store,
-  rowComponent: Row = RowView,
-  getRowComponentProps,
-  separator,
-  debugIds,
+  ...props
 }: SortedTableProps): any =>
-  wrap(
-    arrayMap(
-      useSortedRowIds(tableId, cellId, descending, offset, limit, store),
-      (rowId) => (
-        <Row
-          {...getProps(getRowComponentProps, rowId)}
-          key={rowId}
-          tableId={tableId}
-          rowId={rowId}
-          store={store}
-          debugIds={debugIds}
-        />
-      ),
+  tableView(
+    props,
+    useSortedRowIds(
+      props.tableId,
+      cellId,
+      descending,
+      offset,
+      limit,
+      props.store,
     ),
-    separator,
-    debugIds,
-    tableId,
-  );
-
-export const TableView: typeof TableViewDecl = ({
-  tableId,
-  store,
-  rowComponent: Row = RowView,
-  getRowComponentProps,
-  separator,
-  debugIds,
-}: TableProps): any =>
-  wrap(
-    arrayMap(useRowIds(tableId, store), (rowId) => (
-      <Row
-        {...getProps(getRowComponentProps, rowId)}
-        key={rowId}
-        tableId={tableId}
-        rowId={rowId}
-        store={store}
-        debugIds={debugIds}
-      />
-    )),
-    separator,
-    debugIds,
-    tableId,
   );
 
 export const TablesView: typeof TablesViewDecl = ({
@@ -498,66 +519,27 @@ export const ResultRowView: typeof ResultRowViewDecl = ({
     rowId,
   );
 
-export const ResultTableView: typeof ResultTableViewDecl = ({
-  queryId,
-  queries,
-  resultRowComponent: ResultRow = ResultRowView,
-  getResultRowComponentProps,
-  separator,
-  debugIds,
-}: ResultTableProps): any =>
-  wrap(
-    arrayMap(useResultRowIds(queryId, queries), (rowId) => (
-      <ResultRow
-        {...getProps(getResultRowComponentProps, rowId)}
-        key={rowId}
-        queryId={queryId}
-        rowId={rowId}
-        queries={queries}
-        debugIds={debugIds}
-      />
-    )),
-    separator,
-    debugIds,
-    queryId,
-  );
+export const ResultTableView: typeof ResultTableViewDecl = (
+  props: ResultTableProps,
+): any => resultTableView(props, useResultRowIds(props.queryId, props.queries));
 
 export const ResultSortedTableView: typeof ResultSortedTableViewDecl = ({
-  queryId,
   cellId,
   descending,
   offset,
   limit,
-  queries,
-  resultRowComponent: ResultRow = ResultRowView,
-  getResultRowComponentProps,
-  separator,
-  debugIds,
+  ...props
 }: ResultSortedTableProps): any =>
-  wrap(
-    arrayMap(
-      useResultSortedRowIds(
-        queryId,
-        cellId,
-        descending,
-        offset,
-        limit,
-        queries,
-      ),
-      (rowId) => (
-        <ResultRow
-          {...getProps(getResultRowComponentProps, rowId)}
-          key={rowId}
-          queryId={queryId}
-          rowId={rowId}
-          queries={queries}
-          debugIds={debugIds}
-        />
-      ),
+  resultTableView(
+    props,
+    useResultSortedRowIds(
+      props.queryId,
+      cellId,
+      descending,
+      offset,
+      limit,
+      props.queries,
     ),
-    separator,
-    debugIds,
-    queryId,
   );
 
 export const CheckpointView: typeof CheckpointViewDecl = ({
