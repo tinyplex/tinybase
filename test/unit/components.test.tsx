@@ -314,16 +314,9 @@ describe('Read Components', () => {
   describe('TablesView', () => {
     test('Basic', () => {
       act(() => {
-        renderer = create(<TablesView store={store} trackReorder={true} />);
+        renderer = create(<TablesView store={store} />);
       });
       expect(rendererToString(renderer)).toEqual('1234');
-
-      act(() => {
-        store.transaction(() => {
-          store.delTable('t1').setTable('t1', {r1: {c1: 1}});
-        });
-      });
-      expect(rendererToString(renderer)).toEqual('2341');
     });
 
     test('Separator', () => {
@@ -368,18 +361,9 @@ describe('Read Components', () => {
   describe('TableView', () => {
     test('Basic', () => {
       act(() => {
-        renderer = create(
-          <TableView store={store} tableId="t2" trackReorder={true} />,
-        );
+        renderer = create(<TableView store={store} tableId="t2" />);
       });
       expect(rendererToString(renderer)).toEqual('234');
-
-      act(() => {
-        store.transaction(() => {
-          store.delRow('t2', 'r1').setRow('t2', 'r1', {c1: 2});
-        });
-      });
-      expect(rendererToString(renderer)).toEqual('342');
     });
 
     test('Separator', () => {
@@ -544,18 +528,9 @@ describe('Read Components', () => {
   describe('RowView', () => {
     test('Basic', () => {
       act(() => {
-        renderer = create(
-          <RowView store={store} tableId="t2" rowId="r2" trackReorder={true} />,
-        );
+        renderer = create(<RowView store={store} tableId="t2" rowId="r2" />);
       });
       expect(rendererToString(renderer)).toEqual('34');
-
-      act(() => {
-        store.transaction(() => {
-          store.delCell('t2', 'r2', 'c1').setCell('t2', 'r2', 'c1', 3);
-        });
-      });
-      expect(rendererToString(renderer)).toEqual('43');
     });
 
     test('Separator', () => {
@@ -1172,30 +1147,23 @@ describe('Read Components', () => {
       queries = createQueries(store).setQueryDefinition(
         'q1',
         't2',
-        ({select, order}) => {
+        ({select}) => {
           select('c1');
           select('c2');
-          order('c2');
         },
       );
     });
 
     test('Basic', () => {
       act(() => {
-        renderer = create(
-          <ResultTableView
-            queries={queries}
-            queryId="q1"
-            trackReorder={true}
-          />,
-        );
+        renderer = create(<ResultTableView queries={queries} queryId="q1" />);
       });
       expect(rendererToString(renderer)).toEqual('234');
 
       act(() => {
         store.setCell('t2', 'r1', 'c2', 5);
       });
-      expect(rendererToString(renderer)).toEqual('3425');
+      expect(rendererToString(renderer)).toEqual('2534');
     });
 
     test('Separator', () => {

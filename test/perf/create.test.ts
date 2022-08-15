@@ -125,7 +125,7 @@ repeat(
         createQueries(store).setQueryDefinition(
           'q1',
           't1',
-          ({select, where, group, having, order, limit}) => {
+          ({select, where, group, having}) => {
             select('c1');
             select('c2');
             where((getTableCell) => (getTableCell('c1') as number) > 25);
@@ -134,8 +134,6 @@ repeat(
               (getSelectedOrGroupedCell) =>
                 (getSelectedOrGroupedCell('c2') as number) > 0.5,
             );
-            order('c2');
-            limit(10, 20);
           },
         );
       }),

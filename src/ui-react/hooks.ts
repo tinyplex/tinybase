@@ -158,15 +158,14 @@ const useListenable = (
   listenable: string, // internal & stable
   thing: any,
   defaulted: any, // internal & stable
-  preArgs: ListenerArgument[] = [],
-  postArgs: ListenerArgument[] = [],
+  args: ListenerArgument[] = [],
   getFromListenerArg?: number,
 ): any => {
   const [, rerender] = useState<[]>();
   const getResult = useCallback(
-    () => thing?.['get' + listenable]?.(...preArgs) ?? defaulted,
+    () => thing?.['get' + listenable]?.(...args) ?? defaulted,
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
-    [thing, ...preArgs],
+    [thing, ...args],
   );
   const [initialResult] = useState(getResult);
   const result = useRef(initialResult);
@@ -181,8 +180,7 @@ const useListenable = (
       rerender([]);
     },
     [],
-    preArgs,
-    ...postArgs,
+    args,
   );
   return result.current;
 };
@@ -269,15 +267,7 @@ export const useTables: typeof useTablesDecl = (
 
 export const useTableIds: typeof useTableIdsDecl = (
   storeOrStoreId?: StoreOrStoreId,
-  trackReorder?: boolean,
-): Ids =>
-  useListenable(
-    'TableIds',
-    useStoreOrStoreId(storeOrStoreId),
-    [],
-    [],
-    [trackReorder],
-  );
+): Ids => useListenable('TableIds', useStoreOrStoreId(storeOrStoreId), [], []);
 
 export const useTable: typeof useTableDecl = (
   tableId: Id,
@@ -288,15 +278,8 @@ export const useTable: typeof useTableDecl = (
 export const useRowIds: typeof useRowIdsDecl = (
   tableId: Id,
   storeOrStoreId?: StoreOrStoreId,
-  trackReorder?: boolean,
 ): Ids =>
-  useListenable(
-    'RowIds',
-    useStoreOrStoreId(storeOrStoreId),
-    [],
-    [tableId],
-    [trackReorder],
-  );
+  useListenable('RowIds', useStoreOrStoreId(storeOrStoreId), [], [tableId]);
 
 export const useSortedRowIds: typeof useSortedRowIdsDecl = (
   tableId: Id,
@@ -311,7 +294,6 @@ export const useSortedRowIds: typeof useSortedRowIdsDecl = (
     useStoreOrStoreId(storeOrStoreId),
     [],
     [tableId, cellId, descending, offset, limit],
-    [],
     6,
   );
 
@@ -326,14 +308,12 @@ export const useCellIds: typeof useCellIdsDecl = (
   tableId: Id,
   rowId: Id,
   storeOrStoreId?: StoreOrStoreId,
-  trackReorder?: boolean,
 ): Ids =>
   useListenable(
     'CellIds',
     useStoreOrStoreId(storeOrStoreId),
     [],
     [tableId, rowId],
-    [trackReorder],
   );
 
 export const useCell: typeof useCellDecl = (
@@ -347,7 +327,6 @@ export const useCell: typeof useCellDecl = (
     useStoreOrStoreId(storeOrStoreId),
     undefined,
     [tableId, rowId, cellId],
-    [],
     4,
   );
 
@@ -531,7 +510,6 @@ export const useTablesListener: typeof useTablesListenerDecl = (
 export const useTableIdsListener: typeof useTableIdsListenerDecl = (
   listener: TableIdsListener,
   listenerDeps?: React.DependencyList,
-  trackReorder?: boolean,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void =>
@@ -541,7 +519,6 @@ export const useTableIdsListener: typeof useTableIdsListenerDecl = (
     listener,
     listenerDeps,
     [],
-    trackReorder,
     mutator,
   );
 
@@ -565,7 +542,6 @@ export const useRowIdsListener: typeof useRowIdsListenerDecl = (
   tableId: IdOrNull,
   listener: RowIdsListener,
   listenerDeps?: React.DependencyList,
-  trackReorder?: boolean,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void =>
@@ -575,7 +551,6 @@ export const useRowIdsListener: typeof useRowIdsListenerDecl = (
     listener,
     listenerDeps,
     [tableId],
-    trackReorder,
     mutator,
   );
 
@@ -621,7 +596,6 @@ export const useCellIdsListener: typeof useCellIdsListenerDecl = (
   rowId: IdOrNull,
   listener: CellIdsListener,
   listenerDeps?: React.DependencyList,
-  trackReorder?: boolean,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void =>
@@ -631,7 +605,6 @@ export const useCellIdsListener: typeof useCellIdsListenerDecl = (
     listener,
     listenerDeps,
     [tableId, rowId],
-    trackReorder,
     mutator,
   );
 
@@ -846,14 +819,12 @@ export const useResultTable: typeof useResultTableDecl = (
 export const useResultRowIds: typeof useResultRowIdsDecl = (
   queryId: Id,
   queriesOrQueriesId?: QueriesOrQueriesId,
-  trackReorder?: boolean,
 ): Ids =>
   useListenable(
     'ResultRowIds',
     useQueriesOrQueriesId(queriesOrQueriesId),
     [],
     [queryId],
-    [trackReorder],
   );
 
 export const useResultSortedRowIds: typeof useResultSortedRowIdsDecl = (
@@ -869,7 +840,6 @@ export const useResultSortedRowIds: typeof useResultSortedRowIdsDecl = (
     useQueriesOrQueriesId(queriesOrQueriesId),
     [],
     [queryId, cellId, descending, offset, limit],
-    [],
     6,
   );
 
@@ -926,7 +896,6 @@ export const useResultRowIdsListener: typeof useResultRowIdsListenerDecl = (
   queryId: IdOrNull,
   listener: ResultRowIdsListener,
   listenerDeps?: React.DependencyList,
-  trackReorder?: boolean,
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): void =>
   useListener(
@@ -935,7 +904,6 @@ export const useResultRowIdsListener: typeof useResultRowIdsListenerDecl = (
     listener,
     listenerDeps,
     [queryId],
-    trackReorder,
   );
 
 export const useResultSortedRowIdsListener: typeof useResultSortedRowIdsListenerDecl =

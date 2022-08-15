@@ -7,8 +7,6 @@ import {
   Group,
   Having,
   Join,
-  Limit,
-  Order,
   Queries,
   QueriesListenerStats,
   ResultCellIdsListener,
@@ -33,14 +31,13 @@ import {
   Table,
   TableCallback,
 } from './store.d';
-import {Id, IdOrNull, Ids, SortKey} from './common.d';
+import {Id, IdOrNull, Ids} from './common.d';
 import {
   IdMap,
   IdMap2,
   mapEnsure,
   mapForEach,
   mapGet,
-  mapKeys,
   mapNew,
   mapSet,
   visitTree,
@@ -50,15 +47,10 @@ import {
   arrayEvery,
   arrayForEach,
   arrayIsEmpty,
-  arrayIsEqual,
   arrayLength,
-  arrayMap,
   arrayPush,
-  arraySlice,
-  arraySort,
 } from './common/array';
 import {
-  collClear,
   collDel,
   collForEach,
   collHas,
@@ -74,9 +66,8 @@ import {
   isFunction,
   isUndefined,
 } from './common/other';
-import {objFreeze, objIds} from './common/obj';
 import {EMPTY_STRING} from './common/strings';
-import {defaultSorter} from './common';
+import {objFreeze} from './common/obj';
 
 type StoreWithCreateMethod = Store & {createStore: () => Store};
 type SelectClause = (getTableCell: GetTableCell, rowId: Id) => CellOrUndefined;
@@ -90,10 +81,6 @@ type JoinClause = [
 type WhereClause = (getTableCell: GetTableCell) => boolean;
 type GroupClause = [Id, Aggregators];
 type HavingClause = (getSelectedOrGroupedCell: GetCell) => boolean;
-type OrderClause = [
-  (getSelectedOrGroupedCell: GetCell, rowId: Id) => SortKey,
-  boolean?,
-];
 
 type Aggregators = [
   Aggregate,
@@ -120,8 +107,7 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
       addStoreListeners,
       delStoreListeners,
     ] = getDefinableFunctions<true, undefined>(store, () => true, getUndefined);
-    const preStore1 = createStore();
-    const preStore2 = createStore();
+    const preStore = createStore();
     const resultStore = createStore();
     const preStoreListenerIds: Map<Id, Map<Store, IdSet>> = mapNew();
 
@@ -146,9 +132,7 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
       );
 
     const cleanPreStores = (queryId: Id) =>
-      arrayForEach([resultStore, preStore2, preStore1], (store) =>
-        store.delTable(queryId),
-      );
+      arrayForEach([resultStore, preStore], (store) => store.delTable(queryId));
 
     const synchronizeTransactions = (
       queryId: Id,
@@ -173,14 +157,11 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
         where: Where;
         group: Group;
         having: Having;
-        order: Order;
-        limit: Limit;
       }) => void,
     ): Queries => {
       setDefinition(queryId, tableId);
       cleanPreStores(queryId);
 
-      let offsetLimit: [offset: number, limit: number] | undefined;
       const selectEntries: [Id, SelectClause][] = [];
       const joinEntries: [IdOrNull, JoinClause][] = [
         [null, [tableId, null, null, [], mapNew()]],
@@ -188,7 +169,6 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
       const wheres: WhereClause[] = [];
       const groupEntries: [Id, GroupClause][] = [];
       const havings: HavingClause[] = [];
-      const orders: OrderClause[] = [];
 
       const select = (
         arg1: Id | ((getTableCell: GetTableCell, rowId: Id) => CellOrUndefined),
@@ -275,22 +255,7 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
                 getSelectedOrGroupedCell(arg1) === arg2,
         );
 
-      const order = (
-        arg1: Id | ((getSelectedOrGroupedCell: GetCell, rowId: Id) => SortKey),
-        descending?: boolean,
-      ) =>
-        arrayPush(orders, [
-          isFunction(arg1)
-            ? arg1
-            : (getSelectedOrGroupedCell) => getSelectedOrGroupedCell(arg1) ?? 0,
-          descending,
-        ]);
-
-      const limit = (arg1: number, arg2?: number) => {
-        offsetLimit = isUndefined(arg2) ? [0, arg1] : [arg1, arg2];
-      };
-
-      build({select, join, where, group, having, order, limit});
+      build({select, join, where, group, having});
 
       const selects: IdMap<SelectClause> = mapNew(selectEntries);
       if (collIsEmpty(selects)) {
@@ -304,110 +269,14 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
       );
       const groups: IdMap<GroupClause> = mapNew(groupEntries);
 
-      let selectJoinWhereStore = preStore1;
-      let groupHavingStore = preStore2;
-
-      // ORDER & LIMIT
-
-      if (arrayIsEmpty(orders) && isUndefined(offsetLimit)) {
-        groupHavingStore = resultStore;
-      } else {
-        synchronizeTransactions(queryId, groupHavingStore, resultStore);
-
-        const groupRowIdSorter = (rowId1: Id, rowId2: Id) => {
-          const sortKeys1 = mapGet(sortKeysByGroupRowId, rowId1) ?? [];
-          const sortKeys2 = mapGet(sortKeysByGroupRowId, rowId2) ?? [];
-          const orderIndex = orders.findIndex(
-            (_order, index) => sortKeys1[index] !== sortKeys2[index],
-          );
-          return orderIndex < 0
-            ? 0
-            : defaultSorter(sortKeys1[orderIndex], sortKeys2[orderIndex]) *
-                (orders[orderIndex][1] ? -1 : 1);
-        };
-        const sortKeysByGroupRowId: IdMap<SortKey[]> = mapNew();
-        const sortedGroupRowIds: IdMap<0 | 1> = mapNew();
-
-        addPreStoreListener(
-          groupHavingStore,
-          queryId,
-          arrayIsEmpty(orders)
-            ? groupHavingStore.addRowIdsListener(queryId, () =>
-                collClear(sortedGroupRowIds),
-              )
-            : groupHavingStore.addRowListener(
-                queryId,
-                null,
-                (_store, _tableId, groupRowId) => {
-                  let newSortKeys = null;
-                  if (groupHavingStore.hasRow(queryId, groupRowId)) {
-                    const oldSortKeys =
-                      mapGet(sortKeysByGroupRowId, groupRowId) ?? [];
-                    const groupRow = groupHavingStore.getRow(
-                      queryId,
-                      groupRowId,
-                    );
-                    const getCell = (getSelectedOrGroupedCell: Id) =>
-                      groupRow[getSelectedOrGroupedCell];
-                    newSortKeys = arrayMap(orders, ([getSortKey]) =>
-                      getSortKey(getCell, groupRowId),
-                    );
-                    if (arrayIsEqual(oldSortKeys, newSortKeys)) {
-                      if (mapGet(sortedGroupRowIds, groupRowId)) {
-                        resultStore.setRow(queryId, groupRowId, groupRow);
-                      }
-                      return;
-                    }
-                  }
-                  mapSet(sortKeysByGroupRowId, groupRowId, newSortKeys);
-                  collClear(sortedGroupRowIds);
-                },
-              ),
-          groupHavingStore.addTableListener(queryId, () => {
-            if (collIsEmpty(sortedGroupRowIds)) {
-              resultStore.delTable(queryId);
-              if (groupHavingStore.hasTable(queryId)) {
-                const groupTable = groupHavingStore.getTable(queryId);
-                arrayForEach(
-                  arraySort(objIds(groupTable), groupRowIdSorter),
-                  (id) => mapSet(sortedGroupRowIds, id, 0),
-                );
-                arrayForEach(
-                  ifNotUndefined(
-                    offsetLimit,
-                    ([offset, limit]) =>
-                      arraySlice(
-                        mapKeys(sortedGroupRowIds),
-                        offset,
-                        offset + limit,
-                      ),
-                    () => mapKeys(sortedGroupRowIds),
-                  ) as Ids,
-                  (groupRowId) => {
-                    resultStore.setRow(
-                      queryId,
-                      groupRowId,
-                      groupTable[groupRowId],
-                    );
-                    mapSet(sortedGroupRowIds, groupRowId, 1);
-                  },
-                );
-              }
-            }
-          }),
-        );
-      }
+      let selectJoinWhereStore = preStore;
 
       // GROUP & HAVING
 
       if (collIsEmpty(groups) && arrayIsEmpty(havings)) {
-        selectJoinWhereStore = groupHavingStore;
+        selectJoinWhereStore = resultStore;
       } else {
-        synchronizeTransactions(
-          queryId,
-          selectJoinWhereStore,
-          groupHavingStore,
-        );
+        synchronizeTransactions(queryId, selectJoinWhereStore, resultStore);
 
         const groupedSelectedCellIds: IdMap<Set<[Id, Aggregators]>> = mapNew();
         mapForEach(groups, (groupedCellId, [selectedCellId, aggregators]) =>
@@ -473,8 +342,8 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
                 !arrayEvery(havings, (having) =>
                   having((cellId: Id) => groupRow[cellId]),
                 )
-                ? groupHavingStore.delRow
-                : groupHavingStore.setRow)(queryId, groupRowId, groupRow);
+                ? resultStore.delRow
+                : resultStore.setRow)(queryId, groupRowId, groupRow);
             },
           );
 
@@ -524,7 +393,7 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
                     ([, selectedRowIds, groupRowId]) => {
                       collDel(selectedRowIds, selectedRowId);
                       if (collIsEmpty(selectedRowIds)) {
-                        groupHavingStore.delRow(queryId, groupRowId);
+                        resultStore.delRow(queryId, groupRowId);
                         return 1;
                       }
                     },
@@ -556,7 +425,7 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
                         mapNew(),
                         setNew(),
                         (
-                          groupHavingStore.addRow as (
+                          resultStore.addRow as (
                             tableId: Id,
                             row: Row,
                             forceId?: 1,
@@ -756,12 +625,9 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
     const addResultRowIdsListener = (
       queryId: IdOrNull,
       listener: ResultRowIdsListener,
-      trackReorder?: boolean,
     ): Id =>
-      resultStore.addRowIdsListener(
-        queryId,
-        (_store, ...args) => listener(queries, ...args),
-        trackReorder,
+      resultStore.addRowIdsListener(queryId, (_store, ...args) =>
+        listener(queries, ...args),
       );
 
     const addResultSortedRowIdsListener = (

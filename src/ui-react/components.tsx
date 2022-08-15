@@ -252,14 +252,13 @@ export const RowView: typeof RowViewDecl = ({
   tableId,
   rowId,
   store,
-  trackReorder,
   cellComponent: Cell = CellView,
   getCellComponentProps,
   separator,
   debugIds,
 }: RowProps): any =>
   wrap(
-    arrayMap(useCellIds(tableId, rowId, store, trackReorder), (cellId) => (
+    arrayMap(useCellIds(tableId, rowId, store), (cellId) => (
       <Cell
         {...getProps(getCellComponentProps, cellId)}
         key={cellId}
@@ -309,14 +308,13 @@ export const SortedTableView: typeof SortedTableViewDecl = ({
 export const TableView: typeof TableViewDecl = ({
   tableId,
   store,
-  trackReorder,
   rowComponent: Row = RowView,
   getRowComponentProps,
   separator,
   debugIds,
 }: TableProps): any =>
   wrap(
-    arrayMap(useRowIds(tableId, store, trackReorder), (rowId) => (
+    arrayMap(useRowIds(tableId, store), (rowId) => (
       <Row
         {...getProps(getRowComponentProps, rowId)}
         key={rowId}
@@ -333,14 +331,14 @@ export const TableView: typeof TableViewDecl = ({
 
 export const TablesView: typeof TablesViewDecl = ({
   store,
-  trackReorder,
+
   tableComponent: Table = TableView,
   getTableComponentProps,
   separator,
   debugIds,
 }: TablesProps): any =>
   wrap(
-    arrayMap(useTableIds(store, trackReorder), (tableId) => (
+    arrayMap(useTableIds(store), (tableId) => (
       <Table
         {...getProps(getTableComponentProps, tableId)}
         key={tableId}
@@ -504,14 +502,14 @@ export const ResultRowView: typeof ResultRowViewDecl = ({
 export const ResultTableView: typeof ResultTableViewDecl = ({
   queryId,
   queries,
-  trackReorder,
+
   resultRowComponent: ResultRow = ResultRowView,
   getResultRowComponentProps,
   separator,
   debugIds,
 }: ResultTableProps): any =>
   wrap(
-    arrayMap(useResultRowIds(queryId, queries, trackReorder), (rowId) => (
+    arrayMap(useResultRowIds(queryId, queries), (rowId) => (
       <ResultRow
         {...getProps(getResultRowComponentProps, rowId)}
         key={rowId}
