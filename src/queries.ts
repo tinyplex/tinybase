@@ -707,7 +707,10 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
       queryId: Id,
       cellId?: Id,
       descending?: boolean,
-    ): Ids => resultStore.getSortedRowIds(queryId, cellId, descending);
+      offset = 0,
+      limit?: number,
+    ): Ids =>
+      resultStore.getSortedRowIds(queryId, cellId, descending, offset, limit);
 
     const getResultRow = (queryId: Id, rowId: Id): Row =>
       resultStore.getRow(queryId, rowId);
@@ -765,12 +768,16 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
       queryId: Id,
       cellId: string | undefined,
       descending: boolean,
+      offset: number,
+      limit: number | undefined,
       listener: ResultSortedRowIdsListener,
     ): Id =>
       resultStore.addSortedRowIdsListener(
         queryId,
         cellId,
         descending,
+        offset,
+        limit,
         (_store, ...args) => listener(queries, ...args),
       );
 

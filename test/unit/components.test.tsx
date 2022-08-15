@@ -493,6 +493,20 @@ describe('Read Components', () => {
       expect(rendererToString(renderer)).toEqual(
         't2:{r2:{c1:{3}c2:{4}}r1:{c1:{2}}}',
       );
+
+      act(() => {
+        renderer = create(
+          <SortedTableView
+            store={store}
+            tableId="t2"
+            cellId="c1"
+            offset={1}
+            limit={1}
+            debugIds={true}
+          />,
+        );
+      });
+      expect(rendererToString(renderer)).toEqual('t2:{r2:{c1:{3}c2:{4}}}');
     });
 
     test('Custom', () => {
@@ -1309,6 +1323,20 @@ describe('Read Components', () => {
       expect(rendererToString(renderer)).toEqual(
         'q1:{r1:{c1:{2}}r2:{c1:{3}c2:{4}}}',
       );
+
+      act(() => {
+        renderer = create(
+          <ResultSortedTableView
+            queries={queries}
+            queryId="q1"
+            cellId="c2"
+            offset={1}
+            limit={1}
+            debugIds={true}
+          />,
+        );
+      });
+      expect(rendererToString(renderer)).toEqual('q1:{r2:{c1:{3}c2:{4}}}');
     });
 
     test('Custom', () => {

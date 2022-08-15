@@ -90,6 +90,7 @@ import {
   arrayIsEqual,
   arrayMap,
   arrayPush,
+  arraySlice,
   arraySort,
 } from './common/array';
 import {
@@ -730,6 +731,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
     tableId: Id,
     cellId?: Id,
     descending?: boolean,
+    offset = 0,
+    limit?: number,
   ): Ids => {
     const cells: [Cell, Id][] = [];
     mapForEach(mapGet(tablesMap, id(tableId)), (rowId, row) =>
@@ -739,10 +742,14 @@ export const createStore: typeof createStoreDecl = (): Store => {
       ]),
     );
     return arrayMap(
-      arraySort(
-        cells,
-        ([cell1], [cell2]) =>
-          defaultSorter(cell1, cell2) * (descending ? -1 : 1),
+      arraySlice(
+        arraySort(
+          cells,
+          ([cell1], [cell2]) =>
+            defaultSorter(cell1, cell2) * (descending ? -1 : 1),
+        ),
+        offset,
+        isUndefined(limit) ? limit : offset + limit,
       ),
       ([, rowId]) => rowId,
     );
@@ -1074,16 +1081,38 @@ export const createStore: typeof createStoreDecl = (): Store => {
     tableId: Id,
     cellId: Id | undefined,
     descending: boolean,
+    offset: number,
+    limit: number | undefined,
     listener: SortedRowIdsListener,
     mutator?: boolean,
   ): Id => {
-    let sortedRowIds = getSortedRowIds(tableId, cellId, descending);
+    let sortedRowIds = getSortedRowIds(
+      tableId,
+      cellId,
+      descending,
+      offset,
+      limit,
+    );
     return addListener(
       () => {
-        const newSortedRowIds = getSortedRowIds(tableId, cellId, descending);
+        const newSortedRowIds = getSortedRowIds(
+          tableId,
+          cellId,
+          descending,
+          offset,
+          limit,
+        );
         if (!arrayIsEqual(newSortedRowIds, sortedRowIds)) {
           sortedRowIds = newSortedRowIds;
-          listener(store, tableId, cellId, descending, sortedRowIds);
+          listener(
+            store,
+            tableId,
+            cellId,
+            descending,
+            offset,
+            limit,
+            sortedRowIds,
+          );
         }
       },
       sortedRowIdsListeners[mutator ? 1 : 0],

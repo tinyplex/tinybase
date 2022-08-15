@@ -273,6 +273,29 @@ describe('Sorted Row Ids', () => {
     ]);
   });
 
+  test('Cell sort, limit', () => {
+    expect(store.getSortedRowIds('t1', 'c2', false, 0, 3)).toEqual([
+      'r5',
+      'r4',
+      'r1',
+    ]);
+  });
+
+  test('Cell sort, offset', () => {
+    expect(store.getSortedRowIds('t1', 'c2', false, 3)).toEqual([
+      'r6',
+      'r3',
+      'r2',
+    ]);
+  });
+
+  test('Cell sort, offset & limit', () => {
+    expect(store.getSortedRowIds('t1', 'c2', false, 3, 2)).toEqual([
+      'r6',
+      'r3',
+    ]);
+  });
+
   test('Cell sort, reverse', () => {
     expect(store.getSortedRowIds('t1', 'c2', true)).toEqual([
       'r2',
@@ -296,15 +319,19 @@ describe('Sorted Row Ids', () => {
   });
 
   test('Cell sort listener, add row with relevant cell', () => {
-    expect.assertions(5);
+    expect.assertions(7);
     store.addSortedRowIdsListener(
       't1',
       'c2',
       false,
-      (_store, tableId, cellId, descending, sortedRowIds) => {
+      0,
+      8,
+      (_store, tableId, cellId, descending, offset, limit, sortedRowIds) => {
         expect(tableId).toEqual('t1');
         expect(cellId).toEqual('c2');
         expect(descending).toEqual(false);
+        expect(offset).toEqual(0);
+        expect(limit).toEqual(8);
         expect(sortedRowIds).toEqual([
           'r5',
           'r4',
@@ -334,7 +361,17 @@ describe('Sorted Row Ids', () => {
       't1',
       'c2',
       false,
-      (_store, _tableId, _cellId, _descending, sortedRowIds) => {
+      0,
+      undefined,
+      (
+        _store,
+        _tableId,
+        _cellId,
+        _descending,
+        _offset,
+        _limit,
+        sortedRowIds,
+      ) => {
         expect(sortedRowIds).toEqual([
           'r5',
           'r4',
@@ -355,7 +392,17 @@ describe('Sorted Row Ids', () => {
       't1',
       'c2',
       false,
-      (_store, _tableId, _cellId, _descending, sortedRowIds) => {
+      0,
+      undefined,
+      (
+        _store,
+        _tableId,
+        _cellId,
+        _descending,
+        _offset,
+        _limit,
+        sortedRowIds,
+      ) => {
         expect(sortedRowIds).toEqual(['r5', 'r4', 'r6', 'r3', 'r2', 'r1']);
       },
     );
@@ -364,14 +411,21 @@ describe('Sorted Row Ids', () => {
 
   test('Cell sort listener, alter relevant cell, no change', () => {
     const listener = jest.fn();
-    store.addSortedRowIdsListener('t1', 'c2', false, listener);
+    store.addSortedRowIdsListener('t1', 'c2', false, 0, undefined, listener);
     store.setCell('t1', 'r5', 'c2', 'cinq');
+    expect(listener).toBeCalledTimes(0);
+  });
+
+  test('Cell sort listener, alter relevant cell, after page', () => {
+    const listener = jest.fn();
+    store.addSortedRowIdsListener('t1', 'c2', false, 0, 3, listener);
+    store.setRow('t1', 'r7', {c1: 7, c2: 'seven'});
     expect(listener).toBeCalledTimes(0);
   });
 
   test('Cell sort listener, alter non-relevant cell', () => {
     const listener = jest.fn();
-    store.addSortedRowIdsListener('t1', 'c2', false, listener);
+    store.addSortedRowIdsListener('t1', 'c2', false, 0, undefined, listener);
     store.setCell('t1', 'r1', 'c1', '1.0');
     expect(listener).toBeCalledTimes(0);
   });
