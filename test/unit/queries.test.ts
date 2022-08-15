@@ -1033,6 +1033,7 @@ describe('Listens to Queries when sets', () => {
     test('root table column by id (all listeners)', () => {
       listener.listenToResultRowIds('/q1r', 'q1');
       listener.listenToResultRowIds('/q*r', null);
+      listener.listenToResultSortedRowIds('/q1s', 'q1', 'c1', false, 0, 3);
       listener.listenToResultRow('/q1/r1', 'q1', 'r1');
       listener.listenToResultRow('/q1/r*', 'q1', null);
       listener.listenToResultCellIds('/q1/r1c', 'q1', 'r1');
@@ -1076,6 +1077,18 @@ describe('Listens to Queries when sets', () => {
           {q1: ['r1']},
           {q1: []},
         ),
+      );
+      expectChanges(
+        listener,
+        '/q1s',
+        ['r1'],
+        ['r3', 'r2'],
+        ['r1', 'r3', 'r2'],
+        ['r4', 'r1', 'r3'],
+        ['r1', 'r3', 'r2'],
+        ['r1', 'r2'],
+        ['r1'],
+        [],
       );
       expectChanges(
         listener,

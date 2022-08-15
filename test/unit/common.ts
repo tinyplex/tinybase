@@ -94,6 +94,14 @@ export type QueriesListener = Listener &
   Readonly<{
     listenToResultTable: (id: Id, queryId: IdOrNull) => Id;
     listenToResultRowIds: (id: Id, queryId: IdOrNull) => Id;
+    listenToResultSortedRowIds: (
+      id: Id,
+      queryId: Id,
+      cellId: Id | undefined,
+      descending: boolean,
+      offset: number,
+      limit: number | undefined,
+    ) => Id;
     listenToResultRow: (id: Id, queryId: IdOrNull, rowId: IdOrNull) => Id;
     listenToResultCellIds: (id: Id, queryId: IdOrNull, rowId: IdOrNull) => Id;
     listenToResultCell: (
@@ -368,19 +376,46 @@ export const createQueriesListener = (queries: Queries): QueriesListener => {
       );
     },
 
-    listenToResultRowIds: (id, tableId) => {
+    listenToResultRowIds: (id, queryId) => {
       logs[id] = [];
       return queries.addResultRowIdsListener(
-        tableId,
+        queryId,
         (queries, tableId): number =>
           logs[id].push({[tableId]: queries.getResultRowIds(tableId)}),
       );
     },
 
-    listenToResultRow: (id, tableId, rowId) => {
+    listenToResultSortedRowIds: (
+      id,
+      queryId,
+      cellId,
+      descending,
+      offset,
+      limit,
+    ) => {
+      logs[id] = [];
+      return queries.addResultSortedRowIdsListener(
+        queryId,
+        cellId,
+        descending,
+        offset,
+        limit,
+        (
+          _queries,
+          _tableId,
+          _cellId,
+          _descending,
+          _offset,
+          _limit,
+          sortedCellIds,
+        ) => logs[id].push(sortedCellIds),
+      );
+    },
+
+    listenToResultRow: (id, queryId, rowId) => {
       logs[id] = [];
       return queries.addResultRowListener(
-        tableId,
+        queryId,
         rowId,
         (queries, tableId, rowId): number =>
           logs[id].push({
@@ -389,10 +424,10 @@ export const createQueriesListener = (queries: Queries): QueriesListener => {
       );
     },
 
-    listenToResultCellIds: (id, tableId, rowId) => {
+    listenToResultCellIds: (id, queryId, rowId) => {
       logs[id] = [];
       return queries.addResultCellIdsListener(
-        tableId,
+        queryId,
         rowId,
         (queries, tableId, rowId): number =>
           logs[id].push({
@@ -401,10 +436,10 @@ export const createQueriesListener = (queries: Queries): QueriesListener => {
       );
     },
 
-    listenToResultCell: (id, tableId, rowId, cellId) => {
+    listenToResultCell: (id, queryId, rowId, cellId) => {
       logs[id] = [];
       return queries.addResultCellListener(
-        tableId,
+        queryId,
         rowId,
         cellId,
         (_, tableId, rowId, cellId, newCell): number =>
