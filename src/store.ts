@@ -73,16 +73,7 @@ import {
 } from './common/obj';
 import {IdSet, IdSet2, IdSet3, IdSet4, setAdd, setNew} from './common/set';
 import {IdSetNode, getListenerFunctions} from './common/listeners';
-import {
-  Pair,
-  Pair2,
-  pair2CollSize2,
-  pair2NewMap,
-  pairCollIsEmpty,
-  pairCollSize2,
-  pairNew,
-  pairNewMap,
-} from './common/pairs';
+import {Pair, pairCollSize2, pairNew, pairNewMap} from './common/pairs';
 import {
   arrayFilter,
   arrayForEach,
@@ -99,7 +90,6 @@ import {
   collForEach,
   collHas,
   collIsEmpty,
-  collSize,
   collSize3,
   collSize4,
 } from './common/coll';
@@ -111,10 +101,10 @@ type SchemaMap = IdMap2<CellSchema>;
 type RowMap = IdMap<Cell>;
 type TableMap = IdMap<RowMap>;
 type TablesMap = IdMap<TableMap>;
-type IdAdded = 1 | 0 | -1 | Ids;
-type ChangedIdsMap = Map<IdOrNull, IdAdded>;
-type ChangedIdsMap2 = Map<IdOrNull, ChangedIdsMap>;
-type ChangedIdsMap3 = Map<IdOrNull, ChangedIdsMap2>;
+type IdAdded = 1 | -1;
+type ChangedIdsMap = IdMap<IdAdded>;
+type ChangedIdsMap2 = IdMap2<IdAdded>;
+type ChangedIdsMap3 = IdMap3<IdAdded>;
 
 const transformMap = <MapValue, ObjectValue>(
   map: IdMap<MapValue>,
@@ -151,11 +141,15 @@ const validate = (
 };
 
 const idsChanged = (
-  changedIds: Map<IdOrNull, IdAdded>,
+  changedIds: ChangedIdsMap,
   id: Id,
   added: IdAdded,
-): ChangedIdsMap | undefined =>
-  mapSet(changedIds, id, mapGet(changedIds, id) == -added ? undefined : added);
+): ChangedIdsMap =>
+  mapSet(
+    changedIds,
+    id,
+    mapGet(changedIds, id) == -added ? undefined : added,
+  ) as ChangedIdsMap;
 
 export const createStore: typeof createStoreDecl = (): Store => {
   let hasSchema: boolean;
@@ -171,23 +165,18 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const schemaRowCache: IdMap<[RowMap, IdSet]> = mapNew();
   const tablesMap: TablesMap = mapNew();
   const tablesListeners: Pair<IdSet2> = pairNewMap();
-  const tableIdsListeners: Pair2<IdSet2> = pair2NewMap();
+  const tableIdsListeners: Pair<IdSet2> = pairNewMap();
   const tableListeners: Pair<IdSet2> = pairNewMap();
-  const rowIdsListeners: Pair2<IdSet2> = pair2NewMap();
+  const rowIdsListeners: Pair<IdSet2> = pairNewMap();
   const sortedRowIdsListeners: Pair<IdSet3> = pairNewMap();
   const rowListeners: Pair<IdSet3> = pairNewMap();
-  const cellIdsListeners: Pair2<IdSet3> = pair2NewMap();
+  const cellIdsListeners: Pair<IdSet3> = pairNewMap();
   const cellListeners: Pair<IdSet4> = pairNewMap();
   const invalidCellListeners: Pair<IdSet4> = pairNewMap();
   const finishTransactionListeners: Pair<IdSet2> = pairNewMap();
 
-  const [
-    addListener,
-    callListeners,
-    delListenerImpl,
-    hasListeners,
-    callListenerImpl,
-  ] = getListenerFunctions(() => store);
+  const [addListener, callListeners, delListenerImpl, callListenerImpl] =
+    getListenerFunctions(() => store);
 
   const validateSchema = (schema: Schema | undefined): boolean =>
     validate(schema, (tableSchema) =>
@@ -425,42 +414,16 @@ export const createStore: typeof createStoreDecl = (): Store => {
     }
   };
 
-  const tableIdsChanged = (
-    tableId: Id,
-    added: IdAdded,
-  ): Map<IdOrNull, IdAdded> | undefined =>
-    idsChanged(
-      collIsEmpty(changedTableIds)
-        ? (mapSet(
-            changedTableIds,
-            null,
-            hasListeners(tableIdsListeners[0][1]) ||
-              hasListeners(tableIdsListeners[1][1])
-              ? getTableIds()
-              : 0,
-          ) as ChangedIdsMap)
-        : changedTableIds,
-      tableId,
-      added,
-    );
+  const tableIdsChanged = (tableId: Id, added: IdAdded): ChangedIdsMap =>
+    idsChanged(changedTableIds, tableId, added);
 
   const rowIdsChanged = (
     tableId: Id,
     rowId: Id,
     added: IdAdded,
-  ): ChangedIdsMap | undefined =>
+  ): ChangedIdsMap =>
     idsChanged(
-      mapEnsure(changedRowIds, tableId, () =>
-        mapNew([
-          [
-            null,
-            hasListeners(rowIdsListeners[0][1], [tableId]) ||
-            hasListeners(rowIdsListeners[1][1], [tableId])
-              ? getRowIds(tableId)
-              : 0,
-          ],
-        ]),
-      ),
+      mapEnsure(changedRowIds, tableId, mapNew) as ChangedIdsMap,
       rowId,
       added,
     );
@@ -470,22 +433,13 @@ export const createStore: typeof createStoreDecl = (): Store => {
     rowId: Id,
     cellId: Id,
     added: IdAdded,
-  ): ChangedIdsMap | undefined =>
+  ): ChangedIdsMap =>
     idsChanged(
       mapEnsure(
         mapEnsure(changedCellIds, tableId, mapNew) as ChangedIdsMap2,
         rowId,
-        () =>
-          mapNew([
-            [
-              null,
-              hasListeners(cellIdsListeners[0][1], [tableId, rowId]) ||
-              hasListeners(cellIdsListeners[1][1], [tableId, rowId])
-                ? getCellIds(tableId, rowId)
-                : 0,
-            ],
-          ]),
-      ),
+        mapNew,
+      ) as ChangedIdsMap,
       cellId,
       added,
     );
@@ -562,22 +516,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
       : 0;
 
   const callIdsListenersIfChanged = (
-    listeners: Pair<IdSetNode>,
+    listeners: IdSetNode,
     changedIds: ChangedIdsMap,
-    getIds: (...args: Ids) => Ids,
     ids?: Ids,
   ): 1 | void => {
-    if (collSize(changedIds) > 1) {
-      callListeners(listeners[0], ids);
-      callListeners(listeners[1], ids);
-      return 1;
-    }
-    if (
-      !collIsEmpty(changedIds) &&
-      mapGet(changedIds, null) != 0 &&
-      !arrayIsEqual(mapGet(changedIds, null) as Ids, getIds(...(ids ?? [])))
-    ) {
-      callListeners(listeners[1], ids);
+    if (!collIsEmpty(changedIds)) {
+      callListeners(listeners, ids);
       return 1;
     }
   };
@@ -587,10 +531,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
       sortedRowIdsListeners[mutator],
     );
     const emptyIdListeners =
-      pairCollIsEmpty(cellIdsListeners[mutator]) &&
-      pairCollIsEmpty(rowIdsListeners[mutator]) &&
+      collIsEmpty(cellIdsListeners[mutator]) &&
+      collIsEmpty(rowIdsListeners[mutator]) &&
       emptySortedRowIdListeners &&
-      pairCollIsEmpty(tableIdsListeners[mutator]);
+      collIsEmpty(tableIdsListeners[mutator]);
     const emptyOtherListeners =
       collIsEmpty(cellListeners[mutator]) &&
       collIsEmpty(rowListeners[mutator]) &&
@@ -614,24 +558,19 @@ export const createStore: typeof createStoreDecl = (): Store => {
       if (!emptyIdListeners) {
         collForEach(changes[2], (rowCellIds, tableId) =>
           collForEach(rowCellIds, (changedIds, rowId) =>
-            callIdsListenersIfChanged(
-              cellIdsListeners[mutator],
-              changedIds,
-              getCellIds,
-              [tableId, rowId],
-            ),
+            callIdsListenersIfChanged(cellIdsListeners[mutator], changedIds, [
+              tableId,
+              rowId,
+            ]),
           ),
         );
 
         const calledSortableTableIds: IdSet = setNew();
         collForEach(changes[1], (changedIds, tableId) => {
           if (
-            callIdsListenersIfChanged(
-              rowIdsListeners[mutator],
-              changedIds,
-              getRowIds,
-              [tableId],
-            ) &&
+            callIdsListenersIfChanged(rowIdsListeners[mutator], changedIds, [
+              tableId,
+            ]) &&
             !emptySortedRowIdListeners
           ) {
             callListeners(sortedRowIdsListeners[mutator], [tableId, null]);
@@ -660,11 +599,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
           });
         }
 
-        callIdsListenersIfChanged(
-          tableIdsListeners[mutator],
-          changes[0],
-          getTableIds,
-        );
+        callIdsListenersIfChanged(tableIdsListeners[mutator], changes[0]);
       }
 
       if (!emptyOtherListeners) {
@@ -1051,13 +986,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const addTableIdsListener = (
     listener: TableIdsListener,
-    trackReorder?: boolean,
     mutator?: boolean,
-  ): Id =>
-    addListener(
-      listener,
-      tableIdsListeners[mutator ? 1 : 0][trackReorder ? 1 : 0],
-    );
+  ): Id => addListener(listener, tableIdsListeners[mutator ? 1 : 0]);
 
   const addTableListener = (
     tableId: IdOrNull,
@@ -1068,14 +998,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const addRowIdsListener = (
     tableId: IdOrNull,
     listener: RowIdsListener,
-    trackReorder?: boolean,
     mutator?: boolean,
-  ): Id =>
-    addListener(
-      listener,
-      rowIdsListeners[mutator ? 1 : 0][trackReorder ? 1 : 0],
-      [tableId],
-    );
+  ): Id => addListener(listener, rowIdsListeners[mutator ? 1 : 0], [tableId]);
 
   const addSortedRowIdsListener = (
     tableId: Id,
@@ -1132,14 +1056,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
     tableId: IdOrNull,
     rowId: IdOrNull,
     listener: CellIdsListener,
-    trackReorder?: boolean,
     mutator?: boolean,
   ): Id =>
-    addListener(
-      listener,
-      cellIdsListeners[mutator ? 1 : 0][trackReorder ? 1 : 0],
-      [tableId, rowId],
-    );
+    addListener(listener, cellIdsListeners[mutator ? 1 : 0], [tableId, rowId]);
 
   const addCellListener = (
     tableId: IdOrNull,
@@ -1190,12 +1109,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
     DEBUG
       ? {
           tables: pairCollSize2(tablesListeners),
-          tableIds: pair2CollSize2(tableIdsListeners),
+          tableIds: pairCollSize2(tableIdsListeners),
           table: pairCollSize2(tableListeners),
-          rowIds: pair2CollSize2(rowIdsListeners),
+          rowIds: pairCollSize2(rowIdsListeners),
           sortedRowIds: pairCollSize2(sortedRowIdsListeners),
           row: pairCollSize2(rowListeners, collSize3),
-          cellIds: pair2CollSize2(cellIdsListeners, collSize3),
+          cellIds: pairCollSize2(cellIdsListeners, collSize3),
           cell: pairCollSize2(cellListeners, collSize4),
           invalidCell: pairCollSize2(invalidCellListeners, collSize4),
           transaction: pairCollSize2(finishTransactionListeners),

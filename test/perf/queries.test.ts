@@ -112,19 +112,3 @@ repeatRows(
       ),
   ),
 );
-
-repeatRows(
-  'Updated existing store with order on another column',
-  (n) => store.setCell('t1', 'r' + n, 'c2', Math.random()),
-  90,
-  () => {
-    for (let n = 0; n <= 10000; n++) {
-      store.setCell('t1', 'r' + n, 'c1', Math.random());
-    }
-    createQueries(store).setQueryDefinition('q1', 't1', ({select, order}) => {
-      select('c1');
-      select('c2');
-      order('c1');
-    });
-  },
-);
