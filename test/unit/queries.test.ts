@@ -1247,7 +1247,6 @@ describe('Listens to Queries when sets', () => {
               r4: {'t1.c1': 'four'},
             },
           },
-
           {
             q1: {
               r2: {'t1.c1': 'two', 't2.c1': 'two.j'},
