@@ -1,4 +1,17 @@
-import {ADD, EMPTY_STRING, GET, LISTENER} from '../common/strings';
+import {
+  ADD,
+  CELL,
+  CELL_IDS,
+  EMPTY_STRING,
+  GET,
+  LISTENER,
+  ROW,
+  ROW_IDS,
+  SORTED_ROW_IDS,
+  TABLE,
+  TABLES,
+  TABLE_IDS,
+} from '../common/strings';
 import {Callback, Id, IdOrNull, Ids, ParameterizedCallback} from '../common.d';
 import {
   Cell,
@@ -263,23 +276,23 @@ export const useCreateStore: typeof useCreateStoreDecl = (
 
 export const useTables: typeof useTablesDecl = (
   storeOrStoreId?: StoreOrStoreId,
-): Tables => useListenable('Tables', useStoreOrStoreId(storeOrStoreId), {});
+): Tables => useListenable(TABLES, useStoreOrStoreId(storeOrStoreId), {});
 
 export const useTableIds: typeof useTableIdsDecl = (
   storeOrStoreId?: StoreOrStoreId,
-): Ids => useListenable('TableIds', useStoreOrStoreId(storeOrStoreId), [], []);
+): Ids => useListenable(TABLE_IDS, useStoreOrStoreId(storeOrStoreId), [], []);
 
 export const useTable: typeof useTableDecl = (
   tableId: Id,
   storeOrStoreId?: StoreOrStoreId,
 ): Table =>
-  useListenable('Table', useStoreOrStoreId(storeOrStoreId), {}, [tableId]);
+  useListenable(TABLE, useStoreOrStoreId(storeOrStoreId), {}, [tableId]);
 
 export const useRowIds: typeof useRowIdsDecl = (
   tableId: Id,
   storeOrStoreId?: StoreOrStoreId,
 ): Ids =>
-  useListenable('RowIds', useStoreOrStoreId(storeOrStoreId), [], [tableId]);
+  useListenable(ROW_IDS, useStoreOrStoreId(storeOrStoreId), [], [tableId]);
 
 export const useSortedRowIds: typeof useSortedRowIdsDecl = (
   tableId: Id,
@@ -290,7 +303,7 @@ export const useSortedRowIds: typeof useSortedRowIdsDecl = (
   storeOrStoreId?: StoreOrStoreId,
 ): Ids =>
   useListenable(
-    'SortedRowIds',
+    SORTED_ROW_IDS,
     useStoreOrStoreId(storeOrStoreId),
     [],
     [tableId, cellId, descending, offset, limit],
@@ -302,7 +315,7 @@ export const useRow: typeof useRowDecl = (
   rowId: Id,
   storeOrStoreId?: StoreOrStoreId,
 ): Row =>
-  useListenable('Row', useStoreOrStoreId(storeOrStoreId), {}, [tableId, rowId]);
+  useListenable(ROW, useStoreOrStoreId(storeOrStoreId), {}, [tableId, rowId]);
 
 export const useCellIds: typeof useCellIdsDecl = (
   tableId: Id,
@@ -310,7 +323,7 @@ export const useCellIds: typeof useCellIdsDecl = (
   storeOrStoreId?: StoreOrStoreId,
 ): Ids =>
   useListenable(
-    'CellIds',
+    CELL_IDS,
     useStoreOrStoreId(storeOrStoreId),
     [],
     [tableId, rowId],
@@ -323,7 +336,7 @@ export const useCell: typeof useCellDecl = (
   storeOrStoreId?: StoreOrStoreId,
 ): Cell | undefined =>
   useListenable(
-    'Cell',
+    CELL,
     useStoreOrStoreId(storeOrStoreId),
     undefined,
     [tableId, rowId, cellId],
@@ -341,7 +354,7 @@ export const useSetTablesCallback: typeof useSetTablesCallbackDecl = <
 ): ParameterizedCallback<Parameter> =>
   useSetCallback(
     storeOrStoreId,
-    'Tables',
+    TABLES,
     getTables,
     getTablesDeps,
     then,
@@ -358,7 +371,7 @@ export const useSetTableCallback: typeof useSetTableCallbackDecl = <Parameter>(
 ): ParameterizedCallback<Parameter> =>
   useSetCallback(
     storeOrStoreId,
-    'Table',
+    TABLE,
     getTable,
     getTableDeps,
     then,
@@ -377,7 +390,7 @@ export const useSetRowCallback: typeof useSetRowCallbackDecl = <Parameter>(
 ): ParameterizedCallback<Parameter> =>
   useSetCallback(
     storeOrStoreId,
-    'Row',
+    ROW,
     getRow,
     getRowDeps,
     then,
@@ -441,7 +454,7 @@ export const useSetCellCallback: typeof useSetCellCallbackDecl = <Parameter>(
 ): ParameterizedCallback<Parameter> =>
   useSetCallback(
     storeOrStoreId,
-    'Cell',
+    CELL,
     getCell,
     getCellDeps,
     then,
@@ -455,14 +468,14 @@ export const useDelTablesCallback: typeof useDelTablesCallbackDecl = (
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store) => void,
   thenDeps?: React.DependencyList,
-): Callback => useDel(storeOrStoreId, 'Tables', then, thenDeps);
+): Callback => useDel(storeOrStoreId, TABLES, then, thenDeps);
 
 export const useDelTableCallback: typeof useDelTableCallbackDecl = (
   tableId: Id,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store) => void,
   thenDeps?: React.DependencyList,
-): Callback => useDel(storeOrStoreId, 'Table', then, thenDeps, tableId);
+): Callback => useDel(storeOrStoreId, TABLE, then, thenDeps, tableId);
 
 export const useDelRowCallback: typeof useDelRowCallbackDecl = (
   tableId: Id,
@@ -470,7 +483,7 @@ export const useDelRowCallback: typeof useDelRowCallbackDecl = (
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store) => void,
   thenDeps?: React.DependencyList,
-): Callback => useDel(storeOrStoreId, 'Row', then, thenDeps, tableId, rowId);
+): Callback => useDel(storeOrStoreId, ROW, then, thenDeps, tableId, rowId);
 
 export const useDelCellCallback: typeof useDelCellCallbackDecl = (
   tableId: Id,
@@ -483,7 +496,7 @@ export const useDelCellCallback: typeof useDelCellCallbackDecl = (
 ): Callback =>
   useDel(
     storeOrStoreId,
-    'Cell',
+    CELL,
     then,
     thenDeps,
     tableId,
@@ -499,7 +512,7 @@ export const useTablesListener: typeof useTablesListenerDecl = (
   storeOrStoreId?: StoreOrStoreId,
 ): void =>
   useListener(
-    'Tables',
+    TABLES,
     useStoreOrStoreId(storeOrStoreId),
     listener,
     listenerDeps,
@@ -514,7 +527,7 @@ export const useTableIdsListener: typeof useTableIdsListenerDecl = (
   storeOrStoreId?: StoreOrStoreId,
 ): void =>
   useListener(
-    'TableIds',
+    TABLE_IDS,
     useStoreOrStoreId(storeOrStoreId),
     listener,
     listenerDeps,
@@ -530,7 +543,7 @@ export const useTableListener: typeof useTableListenerDecl = (
   storeOrStoreId?: StoreOrStoreId,
 ): void =>
   useListener(
-    'Table',
+    TABLE,
     useStoreOrStoreId(storeOrStoreId),
     listener,
     listenerDeps,
@@ -546,7 +559,7 @@ export const useRowIdsListener: typeof useRowIdsListenerDecl = (
   storeOrStoreId?: StoreOrStoreId,
 ): void =>
   useListener(
-    'RowIds',
+    ROW_IDS,
     useStoreOrStoreId(storeOrStoreId),
     listener,
     listenerDeps,
@@ -566,7 +579,7 @@ export const useSortedRowIdsListener: typeof useSortedRowIdsListenerDecl = (
   storeOrStoreId?: StoreOrStoreId,
 ): void =>
   useListener(
-    'SortedRowIds',
+    SORTED_ROW_IDS,
     useStoreOrStoreId(storeOrStoreId),
     listener,
     listenerDeps,
@@ -583,7 +596,7 @@ export const useRowListener: typeof useRowListenerDecl = (
   storeOrStoreId?: StoreOrStoreId,
 ): void =>
   useListener(
-    'Row',
+    ROW,
     useStoreOrStoreId(storeOrStoreId),
     listener,
     listenerDeps,
@@ -600,7 +613,7 @@ export const useCellIdsListener: typeof useCellIdsListenerDecl = (
   storeOrStoreId?: StoreOrStoreId,
 ): void =>
   useListener(
-    'CellIds',
+    CELL_IDS,
     useStoreOrStoreId(storeOrStoreId),
     listener,
     listenerDeps,
@@ -618,7 +631,7 @@ export const useCellListener: typeof useCellListenerDecl = (
   storeOrStoreId?: StoreOrStoreId,
 ): void =>
   useListener(
-    'Cell',
+    CELL,
     useStoreOrStoreId(storeOrStoreId),
     listener,
     listenerDeps,

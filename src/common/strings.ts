@@ -22,3 +22,12 @@ export const LISTENER = 'Listener';
 export const RESULT = 'Result';
 export const GET = 'get';
 export const ADD = 'add';
+
+export const TABLES = 'Tables';
+export const TABLE_IDS = 'TableIds';
+export const TABLE = 'Table';
+export const ROW_IDS = 'RowIds';
+export const SORTED_ROW_IDS = 'SortedRowIds';
+export const ROW = 'Row';
+export const CELL_IDS = 'CellIds';
+export const CELL = 'Cell';

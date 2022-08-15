@@ -898,7 +898,7 @@ describe('Stats', () => {
       ['row', ['t1', 'r1']],
       ['cellIds', ['t1', 'r1']],
       ['cell', ['t1', 'r1', 'c1']],
-      ['invalidCell', []],
+      ['invalidCell', ['t1', 'r1', 'c1']],
     ])('%s', (thing, args) => {
       const addListener =
         'add' + thing[0].toUpperCase() + thing.substr(1) + 'Listener';
