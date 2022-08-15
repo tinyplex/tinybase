@@ -293,14 +293,17 @@ export type RowIdsListener = (store: Store, tableId: Id) => void;
  *
  * When called, a SortedRowIdsListener is given a reference to the Store, the Id
  * of the Table whose Row Ids sorting changed, the Cell Id being used to sort
- * them, and whether descending or not. It also receives the sorted array of Ids
- * itself, so that you can use them in the listener without the additional cost
- * of an explicit call to getSortedRowIds.
+ * them, whether descending or not, and the offset and limit of the number of
+ * Ids returned, for pagination purposes. It also receives the sorted array of
+ * Ids itself, so that you can use them in the listener without the additional
+ * cost of an explicit call to getSortedRowIds.
  *
  * @param store A reference to the Store that changed.
  * @param tableId The Id of the Table whose sorted Row Ids changed.
  * @param cellId The Id of the Cell whose values were used for the sorting.
  * @param descending Whether the sorting was in descending order.
+ * @param offset The number of Row Ids skipped.
+ * @param limit The maximum number of Row Ids returned.
  * @param sortedRowIds The sorted Row Ids themselves.
  * @category Listener
  * @since v2.0.0
@@ -310,6 +313,8 @@ export type SortedRowIdsListener = (
   tableId: Id,
   cellId: Id | undefined,
   descending: boolean,
+  offset: number,
+  limit: number | undefined,
   sortedRowIds: Ids,
 ) => void;
 
@@ -931,7 +936,9 @@ export interface Store {
    * sorted according to the values in a specified Cell.
    *
    * The sorting of the rows is alphanumeric, and you can indicate whether it
-   * should be in descending order.
+   * should be in descending order. The `offset` and `limit` parameters are used
+   * to paginate results, but default to `0` and `undefined` to return all
+   * available Row Ids if not specified.
    *
    * Note that every call to this method will perform the sorting afresh - there
    * is no caching of the results - and so you are advised to memoize the
@@ -945,6 +952,10 @@ export interface Store {
    * @param cellId The Id of the Cell whose values are used for the sorting, or
    * `undefined` to by sort the Row Id itself.
    * @param descending Whether the sorting should be in descending order.
+   * @param offset The number of Row Ids to skip for pagination purposes, if
+   * any.
+   * @param limit The maximum number of Row Ids to return, or `undefined` for
+   * all.
    * @returns An array of the sorted Ids of every Row in the Table.
    * @example
    * This example retrieves sorted Row Ids in a Table.
@@ -974,6 +985,25 @@ export interface Store {
    * // -> ['cujo', 'fido', 'felix']
    * ```
    * @example
+   * This example retrieves two pages of Row Ids in a Table.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {
+   *     fido: {price: 6},
+   *     felix: {price: 5},
+   *     mickey: {price: 2},
+   *     tom: {price: 4},
+   *     carnaby: {price: 3},
+   *     lowly: {price: 1},
+   *   },
+   * });
+   * console.log(store.getSortedRowIds('pets', 'price', false, 0, 2));
+   * // -> ['lowly', 'mickey']
+   * console.log(store.getSortedRowIds('pets', 'price', false, 2, 2));
+   * // -> ['carnaby', 'tom']
+   * ```
+   * @example
    * This example retrieves Row Ids sorted by their own value, since the
    * `cellId` parameter is undefined.
    *
@@ -1000,7 +1030,13 @@ export interface Store {
    * @category Getter
    * @since v2.0.0
    */
-  getSortedRowIds(tableId: Id, cellId?: Id, descending?: boolean): Ids;
+  getSortedRowIds(
+    tableId: Id,
+    cellId?: Id,
+    descending?: boolean,
+    offset?: number,
+    limit?: number,
+  ): Ids;
 
   /**
    * The getRow method returns an object containing the entire data of a single
@@ -2510,14 +2546,16 @@ export interface Store {
 
   /**
    * The addSortedRowIdsListener method registers a listener function with the
-   * Store that will be called whenever sorted Row Ids in a Table change.
+   * Store that will be called whenever sorted (and optionally, paginated) Row
+   * Ids in a Table change.
    *
    * The provided listener is a SortedRowIdsListener function, and will be
    * called with a reference to the Store, the Id of the Table whose Row Ids
-   * sorting changed, the Cell Id being used to sort them, and whether
-   * descending or not. It also receives the sorted array of Ids itself, so that
-   * you can use them in the listener without the additional cost of an explicit
-   * call to getSortedRowIds.
+   * sorting changed, the Cell Id being used to sort them, whether descending or
+   * not, and the offset and limit of the number of Ids returned, for pagination
+   * purposes. It also receives the sorted array of Ids itself, so that you can
+   * use them in the listener without the additional cost of an explicit call to
+   * getSortedRowIds.
    *
    * Such a listener is called when a Row is added or removed, but also when a
    * value in the specified Cell (somewhere in the Table) has changed enough to
@@ -2526,6 +2564,11 @@ export interface Store {
    * Unlike most other listeners, you cannot provide wildcards (due to the cost
    * of detecting changes to the sorting). You can only listen to a single
    * specified Table, sorted by a single specified Cell.
+   *
+   * The sorting of the rows is alphanumeric, and you can indicate whether it
+   * should be in descending order. The `offset` and `limit` parameters are used
+   * to paginate results, but default to `0` and `undefined` to return all
+   * available Row Ids if not specified.
    *
    * Use the optional mutator parameter to indicate that there is code in the
    * listener that will mutate Store data. If set to `false` (or omitted), such
@@ -2539,6 +2582,10 @@ export interface Store {
    * @param cellId The Id of the Cell whose values are used for the sorting, or
    * `undefined` to by sort the Row Id itself.
    * @param descending Whether the sorting should be in descending order.
+   * @param offset The number of Row Ids to skip for pagination purposes, if
+   * any.
+   * @param limit The maximum number of Row Ids to return, or `undefined` for
+   * all.
    * @param listener The function that will be called whenever the sorted Row
    * Ids in the Table change.
    * @param mutator An optional boolean that indicates that the listener mutates
@@ -2563,7 +2610,9 @@ export interface Store {
    *   'pets',
    *   'species',
    *   false,
-   *   (store, tableId, cellId, descending, sortedRowIds) => {
+   *   0,
+   *   undefined,
+   *   (store, tableId, cellId, descending, offset, limit, sortedRowIds) => {
    *     console.log(`Sorted Row Ids for ${tableId} table changed`);
    *     console.log(sortedRowIds);
    *     // ^ cheaper than calling getSortedRowIds again
@@ -2573,6 +2622,43 @@ export interface Store {
    * store.setRow('pets', 'fido', {species: 'dog'});
    * // -> 'Sorted Row Ids for pets table changed'
    * // -> ['felix', 'fido', 'cujo']
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @example
+   * This 111example registers a listener that responds to any change to a
+   * paginated section of the sorted Row Ids of a specific Table.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {
+   *     fido: {price: 6},
+   *     felix: {price: 5},
+   *     mickey: {price: 2},
+   *     tom: {price: 4},
+   *     carnaby: {price: 3},
+   *     lowly: {price: 1},
+   *   },
+   * });
+   *
+   * const listenerId = store.addSortedRowIdsListener(
+   *   'pets',
+   *   'price',
+   *   false,
+   *   0,
+   *   3,
+   *   (store, tableId, cellId, descending, offset, limit, sortedRowIds) => {
+   *     console.log(`First three sorted Row Ids for ${tableId} table changed`);
+   *     console.log(sortedRowIds);
+   *     // ^ cheaper than calling getSortedRowIds again
+   *   },
+   * );
+   * console.log(store.getSortedRowIds('pets', 'price', false, 0, 3));
+   * // -> ['lowly', 'mickey', 'carnaby']
+   *
+   * store.setCell('pets', 'carnaby', 'price', 4.5);
+   * // -> 'First three sorted Row Ids for pets table changed'
+   * // -> ['lowly', 'mickey', 'tom']
    *
    * store.delListener(listenerId);
    * ```
@@ -2595,7 +2681,9 @@ export interface Store {
    *   'pets',
    *   undefined,
    *   false,
-   *   (store, tableId, cellId, descending, sortedRowIds) => {
+   *   0,
+   *   undefined,
+   *   (store, tableId, cellId, descending, offset, limit, sortedRowIds) => {
    *     console.log(`Sorted Row Ids for ${tableId} table changed`);
    *     console.log(sortedRowIds);
    *     // ^ cheaper than calling getSortedRowIds again
@@ -2627,7 +2715,9 @@ export interface Store {
    *   'pets',
    *   'species',
    *   false,
-   *   (store, tableId, cellId, descending, sortedRowIds) => {
+   *   0,
+   *   undefined,
+   *   (store, tableId, cellId, descending, offset, limit, sortedRowIds) => {
    *     console.log(`Sorted Row Ids for ${tableId} table changed`);
    *     console.log(sortedRowIds);
    *     // ^ cheaper than calling getSortedRowIds again
@@ -2655,6 +2745,8 @@ export interface Store {
    *   'pets',
    *   'species',
    *   false,
+   *   0,
+   *   undefined,
    *   (store, tableId) => store.setCell('meta', 'sorted', tableId, true),
    *   true, // mutator
    * );
@@ -2672,6 +2764,8 @@ export interface Store {
     tableId: Id,
     cellId: Id | undefined,
     descending: boolean,
+    offset: number,
+    limit: number | undefined,
     listener: SortedRowIdsListener,
     mutator?: boolean,
   ): Id;

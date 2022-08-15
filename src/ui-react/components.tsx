@@ -279,6 +279,8 @@ export const SortedTableView: typeof SortedTableViewDecl = ({
   tableId,
   cellId,
   descending,
+  offset,
+  limit,
   store,
   rowComponent: Row = RowView,
   getRowComponentProps,
@@ -286,16 +288,19 @@ export const SortedTableView: typeof SortedTableViewDecl = ({
   debugIds,
 }: SortedTableProps): any =>
   wrap(
-    arrayMap(useSortedRowIds(tableId, cellId, descending, store), (rowId) => (
-      <Row
-        {...getProps(getRowComponentProps, rowId)}
-        key={rowId}
-        tableId={tableId}
-        rowId={rowId}
-        store={store}
-        debugIds={debugIds}
-      />
-    )),
+    arrayMap(
+      useSortedRowIds(tableId, cellId, descending, offset, limit, store),
+      (rowId) => (
+        <Row
+          {...getProps(getRowComponentProps, rowId)}
+          key={rowId}
+          tableId={tableId}
+          rowId={rowId}
+          store={store}
+          debugIds={debugIds}
+        />
+      ),
+    ),
     separator,
     debugIds,
     tableId,
@@ -525,6 +530,8 @@ export const ResultSortedTableView: typeof ResultSortedTableViewDecl = ({
   queryId,
   cellId,
   descending,
+  offset,
+  limit,
   queries,
   resultRowComponent: ResultRow = ResultRowView,
   getResultRowComponentProps,
@@ -533,7 +540,14 @@ export const ResultSortedTableView: typeof ResultSortedTableViewDecl = ({
 }: ResultSortedTableProps): any =>
   wrap(
     arrayMap(
-      useResultSortedRowIds(queryId, cellId, descending, queries),
+      useResultSortedRowIds(
+        queryId,
+        cellId,
+        descending,
+        offset,
+        limit,
+        queries,
+      ),
       (rowId) => (
         <ResultRow
           {...getProps(getResultRowComponentProps, rowId)}

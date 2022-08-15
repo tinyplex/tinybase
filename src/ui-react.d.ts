@@ -660,9 +660,9 @@ export function useRowIds(
 ): Ids;
 
 /**
- * The useSortedRowIds hook returns the sorted Ids of every Row in a given
- * Table, and registers a listener so that any changes to that result will cause
- * a re-render.
+ * The useSortedRowIds hook returns the sorted (and optionally, paginated) Ids
+ * of every Row in a given Table, and registers a listener so that any changes
+ * to that result will cause a re-render.
  *
  * A Provider component is used to wrap part of an application in a context, and
  * it can contain a default Store or a set of Store objects named by Id. The
@@ -678,6 +678,8 @@ export function useRowIds(
  * @param cellId The Id of the Cell whose values are used for the sorting, or
  * `undefined` to by sort the Row Id itself.
  * @param descending Whether the sorting should be in descending order.
+ * @param offset The number of Row Ids to skip for pagination purposes, if any.
+ * @param limit The maximum number of Row Ids to return, or `undefined` for all.
  * @param storeOrStoreId The Store to be accessed: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
@@ -696,7 +698,9 @@ export function useRowIds(
  * });
  * const App = () => (
  *   <span>
- *     {JSON.stringify(useSortedRowIds('pets', 'species', false, store))}
+ *     {JSON.stringify(
+ *       useSortedRowIds('pets', 'species', false, 0, undefined, store),
+ *     )}
  *   </span>
  * );
  *
@@ -744,7 +748,9 @@ export function useRowIds(
  * );
  * const Pane = () => (
  *   <span>
- *     {JSON.stringify(useSortedRowIds('pets', 'species', false, 'petStore'))}
+ *     {JSON.stringify(
+ *       useSortedRowIds('pets', 'species', false, 0, undefined, 'petStore'),
+ *     )}
  *   </span>
  * );
  *
@@ -766,6 +772,8 @@ export function useSortedRowIds(
   tableId: Id,
   cellId?: Id,
   descending?: boolean,
+  offset?: number,
+  limit?: number,
   storeOrStoreId?: StoreOrStoreId,
 ): Ids;
 
@@ -2138,7 +2146,8 @@ export function useRowIdsListener(
 
 /**
  * The useSortedRowIdsListener hook registers a listener function with a Store
- * that will be called whenever the sorted Row Ids in a Table change.
+ * that will be called whenever sorted (and optionally, paginated) Row Ids in a
+ * Table change.
  *
  * This hook is useful for situations where a component needs to register its
  * own specific listener to do more than simply tracking the value (which is
@@ -2154,6 +2163,8 @@ export function useRowIdsListener(
  * @param cellId The Id of the Cell whose values are used for the sorting, or
  * `undefined` to by sort the Row Id itself.
  * @param descending Whether the sorting should be in descending order.
+ * @param offset The number of Row Ids to skip for pagination purposes, if any.
+ * @param limit The maximum number of Row Ids to return, or `undefined` for all.
  * @param listener The function that will be called whenever the sorted Row Ids
  * in the Table change.
  * @param listenerDeps An optional array of dependencies for the `listener`
@@ -2176,7 +2187,7 @@ export function useRowIdsListener(
  *   </Provider>
  * );
  * const Pane = () => {
- *   useSortedRowIdsListener('pets', 'species', false, () =>
+ *   useSortedRowIdsListener('pets', 'species', false, 0, undefined, () =>
  *     console.log('Sorted Row Ids changed'),
  *   );
  *   return <span>App</span>;
@@ -2206,6 +2217,8 @@ export function useSortedRowIdsListener(
   tableId: Id,
   cellId: Id | undefined,
   descending: boolean,
+  offset: number,
+  limit: number | undefined,
   listener: SortedRowIdsListener,
   listenerDeps?: React.DependencyList,
   mutator?: boolean,
@@ -4566,9 +4579,9 @@ export function useResultRowIds(
 ): Ids;
 
 /**
- * The useResultSortedRowIds hook returns the sorted Ids of every Row in the
- * result Table of the given query, and registers a listener so that any changes
- * to those Ids will cause a re-render.
+ * The useResultSortedRowIds hook returns the sorted (and optionally, paginated)
+ * Ids of every Row in the result Table of the given query, and registers a
+ * listener so that any changes to those Ids will cause a re-render.
  *
  * A Provider component is used to wrap part of an application in a context, and
  * it can contain a default Queries object or a set of Queries objects named by
@@ -4585,6 +4598,8 @@ export function useResultRowIds(
  * @param cellId The Id of the result Cell whose values are used for the
  * sorting, or `undefined` to by sort the result Row Id itself.
  * @param descending Whether the sorting should be in descending order.
+ * @param offset The number of Row Ids to skip for pagination purposes, if any.
+ * @param limit The maximum number of Row Ids to return, or `undefined` for all.
  * @param queriesOrQueriesId The Queries object to be accessed: omit for the
  * default context Queries object, provide an Id for a named context Queries
  * object, or provide an explicit reference.
@@ -4611,7 +4626,14 @@ export function useResultRowIds(
  * const App = () => (
  *   <span>
  *     {JSON.stringify(
- *       useResultSortedRowIds('dogColors', 'color', false, queries),
+ *       useResultSortedRowIds(
+ *         'dogColors',
+ *         'color',
+ *         false,
+ *         0,
+ *         undefined,
+ *         queries,
+ *       ),
  *     )}
  *   </span>
  * );
@@ -4637,7 +4659,7 @@ export function useResultRowIds(
  * );
  * const Pane = () => (
  *   <span>
- *     {JSON.stringify(useResultSortedRowIds('dogColors', 'color', false))}
+ *     {JSON.stringify(useResultSortedRowIds('dogColors', 'color'))}
  *   </span>
  * );
  *
@@ -4670,7 +4692,14 @@ export function useResultRowIds(
  * const Pane = () => (
  *   <span>
  *     {JSON.stringify(
- *       useResultSortedRowIds('dogColors', 'color', false, 'petQueries'),
+ *       useResultSortedRowIds(
+ *         'dogColors',
+ *         'color',
+ *         false,
+ *         0,
+ *         undefined,
+ *         'petQueries',
+ *       ),
  *     )}
  *   </span>
  * );
@@ -4696,6 +4725,8 @@ export function useResultSortedRowIds(
   queryId: Id,
   cellId?: Id,
   descending?: boolean,
+  offset?: number,
+  limit?: number,
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): Ids;
 
@@ -5238,8 +5269,8 @@ export function useResultRowIdsListener(
 
 /**
  * The useResultSortedRowIdsListener hook registers a listener function with a
- * Queries object that will be called whenever the sorted Row Ids in a result
- * Table change.
+ * Queries object that will be called whenever the sorted (and optionally,
+ * paginated) Row Ids in a result Table change.
  *
  * This hook is useful for situations where a component needs to register its
  * own specific listener to do more than simply tracking the value (which is
@@ -5255,6 +5286,8 @@ export function useResultRowIdsListener(
  * @param cellId The Id of the Cell whose values are used for the sorting, or
  * `undefined` to by sort the Row Id itself.
  * @param descending Whether the sorting should be in descending order.
+ * @param offset The number of Row Ids to skip for pagination purposes, if any.
+ * @param limit The maximum number of Row Ids to return, or `undefined` for all.
  * @param listener The function that will be called whenever the Row Ids in the
  * matching result Table change.
  * @param listenerDeps An optional array of dependencies for the `listener`
@@ -5275,8 +5308,13 @@ export function useResultRowIdsListener(
  *   </Provider>
  * );
  * const Pane = () => {
- *   useResultSortedRowIdsListener('petColors', 'color', false, () =>
- *     console.log('Sorted result Row Ids changed'),
+ *   useResultSortedRowIdsListener(
+ *     'petColors',
+ *     'color',
+ *     false,
+ *     0,
+ *     undefined,
+ *     () => console.log('Sorted result Row Ids changed'),
  *   );
  *   return <span>App</span>;
  * };
@@ -5309,6 +5347,8 @@ export function useResultSortedRowIdsListener(
   queryId: Id,
   cellId: Id | undefined,
   descending: boolean,
+  offset: number,
+  limit: number | undefined,
   listener: ResultRowIdsListener,
   listenerDeps?: React.DependencyList,
   queriesOrQueriesId?: QueriesOrQueriesId,
@@ -6659,6 +6699,14 @@ export type SortedTableProps = {
    */
   readonly descending?: boolean;
   /**
+   * The number of Row Ids to skip for pagination purposes.
+   */
+  readonly offset?: number;
+  /**
+   * The maximum number of Row Ids to return.
+   */
+  readonly limit?: number;
+  /**
    * The Store to be accessed: omit for the default context Store, provide an Id
    * for a named context Store, or provide an explicit reference.
    */
@@ -7058,6 +7106,14 @@ export type ResultSortedTableProps = {
    * Whether the sorting should be in descending order.
    */
   readonly descending?: boolean;
+  /**
+   * The number of Row Ids to skip for pagination purposes.
+   */
+  readonly offset?: number;
+  /**
+   * The maximum number of Row Ids to return.
+   */
+  readonly limit?: number;
   /**
    * The Queries object to be accessed: omit for the default context Queries
    * object, provide an Id for a named context Queries object, or provide an
@@ -7678,7 +7734,9 @@ export function RowView(props: RowProps): ComponentReturnType;
  * The component's props identify which Table to render based on Table Id, and
  * Store (which is either the default context Store, a named context Store, or
  * by explicit reference). It also takes a Cell Id to sort by and a boolean to
- * indicate that the sorting should be in descending order.
+ * indicate that the sorting should be in descending order. The `offset` and
+ * `limit` props are used to paginate results, but default to `0` and
+ * `undefined` to return all available Row Ids if not specified.
  *
  * This component renders a Table by iterating over its Row objects, in the
  * order dictated by the sort parameters. By default these are in turn rendered
@@ -9048,7 +9106,9 @@ export function ResultRowView(props: ResultRowProps): ComponentReturnType;
  * Queries object (which is either the default context Queries object, a named
  * context Queries object, or by explicit reference). It also takes a Cell Id to
  * sort by and a boolean to indicate that the sorting should be in descending
- * order.
+ * order. The `offset` and `limit` props are used to paginate results, but
+ * default to `0` and `undefined` to return all available Row Ids if not
+ * specified.
  *
  * This component renders a result Table by iterating over its Row objects, in
  * the order dictated by the sort parameters. By default these are in turn

@@ -203,15 +203,18 @@ export type ResultRowIdsListener = (queries: Queries, tableId: Id) => void;
  *
  * When called, a ResultSortedRowIdsListener is given a reference to the Queries
  * object, the Id of the Table whose Row Ids changed (which is the same as the
- * query Id), the Cell Id being used to sort them, and and whether descending or
- * not. It also receives the sorted array of Ids itself, so that you can use
- * them in the listener without the additional cost of an explicit call to
+ * query Id), the Cell Id being used to sort them, whether descending or not,
+ * and the offset and limit of the number of Ids returned, for pagination
+ * purposes. It also receives the sorted array of Ids itself, so that you can
+ * use them in the listener without the additional cost of an explicit call to
  * getResultSortedRowIds.
  *
  * @param queries A reference to the Queries object that changed.
  * @param tableId The Id of the Table that changed, which is also the query Id.
  * @param cellId The Id of the Cell whose values were used for the sorting.
  * @param descending Whether the sorting was in descending order.
+ * @param offset The number of Row Ids skipped.
+ * @param limit The maximum number of Row Ids returned.
  * @param sortedRowIds The sorted Row Ids themselves.
  * @category Listener
  * @since v2.0.0-beta
@@ -221,6 +224,8 @@ export type ResultSortedRowIdsListener = (
   tableId: Id,
   cellId: Id | undefined,
   descending: boolean,
+  offset: number,
+  limit: number | undefined,
   sortedRowIds: Ids,
 ) => void;
 
@@ -1987,7 +1992,9 @@ export interface Queries {
    * This has the same behavior as a Store's getSortedRowIds method. For
    * example, if the query Id is invalid, the method returns an empty array.
    * Similarly, the sorting of the rows is alphanumeric, and you can indicate
-   * whether it should be in descending order.
+   * whether it should be in descending order. The `offset` and `limit`
+   * parameters are used to paginate results, but default to `0` and `undefined`
+   * to return all available Row Ids if not specified.
    *
    * Note that every call to this method will perform the sorting afresh - there
    * is no caching of the results - and so you are advised to memoize the
@@ -1999,6 +2006,10 @@ export interface Queries {
    * @param cellId The Id of the Cell whose values are used for the sorting, or
    * `undefined` to by sort the Row Id itself.
    * @param descending Whether the sorting should be in descending order.
+   * @param offset The number of Row Ids to skip for pagination purposes, if
+   * any.
+   * @param limit The maximum number of Row Ids to return, or `undefined` for
+   * all.
    * @returns An array of the sorted Ids of every Row in the result of the
    * query.
    * @example
@@ -2031,7 +2042,13 @@ export interface Queries {
    * @category Result
    * @since v2.0.0-beta
    */
-  getResultSortedRowIds(queryId: Id, cellId?: Id, descending?: boolean): Ids;
+  getResultSortedRowIds(
+    queryId: Id,
+    cellId?: Id,
+    descending?: boolean,
+    offset?: number,
+    limit?: number,
+  ): Ids;
 
   /**
    * The getResultRow method returns an object containing the entire data of a
@@ -2657,15 +2674,17 @@ export interface Queries {
 
   /**
    * The addResultSortedRowIdsListener method registers a listener function with
-   * the Queries object that will be called whenever sorted Row Ids in a result
-   * Table change.
+   * the Queries object that will be called whenever sorted (and optionally,
+   * paginated) Row Ids in a result Table change.
    *
    * The provided listener is a ResultSortedRowIdsListener function, and will be
    * called with a reference to the Queries object, the Id of the result Table
    * whose Row Ids sorting changed (which is also the query Id), the Cell Id
-   * being used to sort them, and whether descending or not. It also receives
-   * the sorted array of Ids itself, so that you can use them in the listener
-   * without the additional cost of an explicit call to getResultSortedRowIds
+   * being used to sort them, whether descending or not, and the offset and
+   * limit of the number of Ids returned, for pagination purposes. It also
+   * receives the sorted array of Ids itself, so that you can use them in the
+   * listener without the additional cost of an explicit call to
+   * getResultSortedRowIds
    *
    * Such a listener is called when a Row is added or removed, but also when a
    * value in the specified Cell (somewhere in the result Table) has changed
@@ -2675,10 +2694,19 @@ export interface Queries {
    * of detecting changes to the sorting). You can only listen to a single
    * specified result Table, sorted by a single specified Cell.
    *
+   * The sorting of the rows is alphanumeric, and you can indicate whether it
+   * should be in descending order. The `offset` and `limit` parameters are used
+   * to paginate results, but default to `0` and `undefined` to return all
+   * available Row Ids if not specified.
+   *
    * @param queryId The Id of the query to listen to.
    * @param cellId The Id of the Cell whose values are used for the sorting, or
    * `undefined` to by sort the result Row Id itself.
    * @param descending Whether the sorting should be in descending order.
+   * @param offset The number of Row Ids to skip for pagination purposes, if
+   * any.
+   * @param limit The maximum number of Row Ids to return, or `undefined` for
+   * all.
    * @param listener The function that will be called whenever the sorted Row
    * Ids in the result Table change.
    * @returns A unique Id for the listener that can later be used to remove it.
@@ -2706,7 +2734,9 @@ export interface Queries {
    *   'dogColors',
    *   'color',
    *   false,
-   *   (queries, tableId, cellId, descending, sortedRowIds) => {
+   *   0,
+   *   undefined,
+   *   (queries, tableId, cellId, descending, offset, limit, sortedRowIds) => {
    *     console.log(`Sorted Row Ids for dogColors result table changed`);
    *     console.log(sortedRowIds);
    *     // ^ cheaper than calling getResultSortedRowIds again
@@ -2739,14 +2769,16 @@ export interface Queries {
    *     where('species', 'dog');
    *   },
    * );
-   * console.log(queries.getResultSortedRowIds('dogColors', undefined, false));
+   * console.log(queries.getResultSortedRowIds('dogColors', undefined));
    * // -> ['cujo', 'fido']
    *
    * const listenerId = queries.addResultSortedRowIdsListener(
    *   'dogColors',
    *   undefined,
    *   false,
-   *   (queries, tableId, cellId, descending, sortedRowIds) => {
+   *   0,
+   *   undefined,
+   *   (queries, tableId, cellId, descending, offset, limit, sortedRowIds) => {
    *     console.log(`Sorted Row Ids for dogColors result table changed`);
    *     console.log(sortedRowIds);
    *     // ^ cheaper than calling getSortedRowIds again
@@ -2765,6 +2797,8 @@ export interface Queries {
     queryId: Id,
     cellId: Id | undefined,
     descending: boolean,
+    offset: number,
+    limit: number | undefined,
     listener: ResultSortedRowIdsListener,
   ): Id;
 
