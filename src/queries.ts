@@ -1,4 +1,16 @@
-import {ADD, EMPTY_STRING, GET, LISTENER, RESULT} from './common/strings';
+import {
+  ADD,
+  CELL,
+  CELL_IDS,
+  EMPTY_STRING,
+  GET,
+  LISTENER,
+  RESULT,
+  ROW,
+  ROW_IDS,
+  SORTED_ROW_IDS,
+  TABLE,
+} from './common/strings';
 import {
   Aggregate,
   AggregateAdd,
@@ -590,12 +602,12 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
 
     objForEach(
       {
-        Table: [1, 1],
-        RowIds: [0, 1],
-        SortedRowIds: [0, 5],
-        Row: [1, 2],
-        CellIds: [0, 2],
-        Cell: [1, 3],
+        [TABLE]: [1, 1],
+        [ROW_IDS]: [0, 1],
+        [SORTED_ROW_IDS]: [0, 5],
+        [ROW]: [1, 2],
+        [CELL_IDS]: [0, 2],
+        [CELL]: [1, 3],
       },
       ([hasAndForEach, argumentCount], gettable) => {
         arrayForEach(

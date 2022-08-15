@@ -1,30 +1,38 @@
 import {
+  ADD,
+  CELL,
+  CELL_IDS,
+  DEFAULT,
+  EMPTY_OBJECT,
+  EMPTY_STRING,
+  LISTENER,
+  NUMBER,
+  ROW,
+  ROW_IDS,
+  TABLE,
+  TABLES,
+  TABLE_IDS,
+  TYPE,
+} from './common/strings';
+import {
   Cell,
   CellCallback,
   CellChange,
-  CellIdsListener,
-  CellListener,
   CellOrUndefined,
   CellSchema,
   ChangedCells,
   GetCellChange,
-  InvalidCellListener,
   InvalidCells,
   MapCell,
   Row,
   RowCallback,
-  RowIdsListener,
-  RowListener,
   Schema,
   SortedRowIdsListener,
   Store,
   StoreListenerStats,
   Table,
   TableCallback,
-  TableIdsListener,
-  TableListener,
   Tables,
-  TablesListener,
   TransactionListener,
   createStore as createStoreDecl,
 } from './store.d';
@@ -37,14 +45,7 @@ import {
   jsonParse,
   jsonString,
 } from './common/other';
-import {
-  DEFAULT,
-  EMPTY_OBJECT,
-  EMPTY_STRING,
-  NUMBER,
-  TYPE,
-} from './common/strings';
-import {Id, IdOrNull, Ids, Json} from './common.d';
+import {Id, Ids, Json} from './common.d';
 import {
   IdMap,
   IdMap2,
@@ -981,26 +982,6 @@ export const createStore: typeof createStoreDecl = (): Store => {
   ): void =>
     mapForEach(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)), cellCallback);
 
-  const addTablesListener = (listener: TablesListener, mutator?: boolean): Id =>
-    addListener(listener, tablesListeners[mutator ? 1 : 0]);
-
-  const addTableIdsListener = (
-    listener: TableIdsListener,
-    mutator?: boolean,
-  ): Id => addListener(listener, tableIdsListeners[mutator ? 1 : 0]);
-
-  const addTableListener = (
-    tableId: IdOrNull,
-    listener: TableListener,
-    mutator?: boolean,
-  ): Id => addListener(listener, tableListeners[mutator ? 1 : 0], [tableId]);
-
-  const addRowIdsListener = (
-    tableId: IdOrNull,
-    listener: RowIdsListener,
-    mutator?: boolean,
-  ): Id => addListener(listener, rowIdsListeners[mutator ? 1 : 0], [tableId]);
-
   const addSortedRowIdsListener = (
     tableId: Id,
     cellId: Id | undefined,
@@ -1044,48 +1025,6 @@ export const createStore: typeof createStoreDecl = (): Store => {
     );
   };
 
-  const addRowListener = (
-    tableId: IdOrNull,
-    rowId: IdOrNull,
-    listener: RowListener,
-    mutator?: boolean,
-  ): Id =>
-    addListener(listener, rowListeners[mutator ? 1 : 0], [tableId, rowId]);
-
-  const addCellIdsListener = (
-    tableId: IdOrNull,
-    rowId: IdOrNull,
-    listener: CellIdsListener,
-    mutator?: boolean,
-  ): Id =>
-    addListener(listener, cellIdsListeners[mutator ? 1 : 0], [tableId, rowId]);
-
-  const addCellListener = (
-    tableId: IdOrNull,
-    rowId: IdOrNull,
-    cellId: IdOrNull,
-    listener: CellListener,
-    mutator?: boolean,
-  ): Id =>
-    addListener(listener, cellListeners[mutator ? 1 : 0], [
-      tableId,
-      rowId,
-      cellId,
-    ]);
-
-  const addInvalidCellListener = (
-    tableId: IdOrNull,
-    rowId: IdOrNull,
-    cellId: IdOrNull,
-    listener: InvalidCellListener,
-    mutator?: boolean,
-  ): Id =>
-    addListener(listener, invalidCellListeners[mutator ? 1 : 0], [
-      tableId,
-      rowId,
-      cellId,
-    ]);
-
   const addWillFinishTransactionListener = (
     listener: TransactionListener,
   ): Id => addListener(listener, finishTransactionListeners[0]);
@@ -1121,7 +1060,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
         }
       : {};
 
-  const store: Store = {
+  const store: any = {
     getTables,
     getTableIds,
     getTable,
@@ -1163,15 +1102,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     forEachRow,
     forEachCell,
 
-    addTablesListener,
-    addTableIdsListener,
-    addTableListener,
-    addRowIdsListener,
     addSortedRowIdsListener,
-    addRowListener,
-    addCellIdsListener,
-    addCellListener,
-    addInvalidCellListener,
     addWillFinishTransactionListener,
     addDidFinishTransactionListener,
 
@@ -1181,7 +1112,28 @@ export const createStore: typeof createStoreDecl = (): Store => {
     getListenerStats,
 
     createStore,
-  } as Store;
+  };
 
-  return objFreeze(store);
+  objForEach(
+    {
+      [TABLES]: [0, tablesListeners],
+      [TABLE_IDS]: [0, tableIdsListeners],
+      [TABLE]: [1, tableListeners],
+      [ROW_IDS]: [1, rowIdsListeners],
+      [ROW]: [2, rowListeners],
+      [CELL_IDS]: [2, cellIdsListeners],
+      [CELL]: [3, cellListeners],
+      InvalidCell: [3, invalidCellListeners],
+    },
+    ([argumentCount, idSetNode]: [number, Pair<IdSetNode>], listenable) => {
+      store[ADD + listenable + LISTENER] = (...args: any[]): Id =>
+        addListener(
+          args[argumentCount] as any,
+          idSetNode[args[argumentCount + 1] ? 1 : 0],
+          argumentCount > 0 ? arraySlice(args, 0, argumentCount) : undefined,
+        );
+    },
+  );
+
+  return objFreeze(store as Store);
 };
