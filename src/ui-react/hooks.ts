@@ -1,3 +1,4 @@
+import {ADD, EMPTY_STRING, GET, LISTENER} from '../common/strings';
 import {Callback, Id, IdOrNull, Ids, ParameterizedCallback} from '../common.d';
 import {
   Cell,
@@ -123,7 +124,6 @@ import {
   useRelationshipsOrRelationshipsId,
   useStoreOrStoreId,
 } from './common';
-import {EMPTY_STRING} from '../common/strings';
 import {ListenerArgument} from '../common/listeners';
 import {Persister} from '../persisters.d';
 import React from 'react';
@@ -163,7 +163,7 @@ const useListenable = (
 ): any => {
   const [, rerender] = useState<[]>();
   const getResult = useCallback(
-    () => thing?.['get' + listenable]?.(...args) ?? defaulted,
+    () => thing?.[GET + listenable]?.(...args) ?? defaulted,
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
     [thing, ...args],
   );
@@ -194,7 +194,7 @@ const useListener = (
   ...postArgs: ListenerArgument[]
 ): void =>
   useEffect(() => {
-    const listenerId = thing?.[`add${listenable}Listener`]?.(
+    const listenerId = thing?.[ADD + listenable + LISTENER]?.(
       ...preArgs,
       listener,
       ...postArgs,

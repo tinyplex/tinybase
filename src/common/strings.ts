@@ -17,3 +17,8 @@ export const SUM = 'sum';
 export const AVG = 'avg';
 export const MIN = 'min';
 export const MAX = 'max';
+
+export const LISTENER = 'Listener';
+export const RESULT = 'Result';
+export const GET = 'get';
+export const ADD = 'add';
