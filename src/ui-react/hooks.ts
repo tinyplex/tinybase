@@ -302,16 +302,17 @@ export const useSortedRowIds: typeof useSortedRowIdsDecl = (
   tableId: Id,
   cellId?: Id,
   descending?: boolean,
+  offset = 0,
+  limit?: number,
   storeOrStoreId?: StoreOrStoreId,
-  trackReorder?: boolean,
 ): Ids =>
   useListenable(
     'SortedRowIds',
     useStoreOrStoreId(storeOrStoreId),
     [],
-    [tableId, cellId, descending],
-    [trackReorder],
-    4,
+    [tableId, cellId, descending, offset, limit],
+    [],
+    6,
   );
 
 export const useRow: typeof useRowDecl = (
@@ -582,6 +583,8 @@ export const useSortedRowIdsListener: typeof useSortedRowIdsListenerDecl = (
   tableId: Id,
   cellId: Id | undefined,
   descending: boolean,
+  offset: number,
+  limit: number | undefined,
   listener: SortedRowIdsListener,
   listenerDeps?: React.DependencyList,
   mutator?: boolean,
@@ -592,7 +595,7 @@ export const useSortedRowIdsListener: typeof useSortedRowIdsListenerDecl = (
     useStoreOrStoreId(storeOrStoreId),
     listener,
     listenerDeps,
-    [tableId, cellId, descending],
+    [tableId, cellId, descending, offset, limit],
     mutator,
   );
 
@@ -857,15 +860,17 @@ export const useResultSortedRowIds: typeof useResultSortedRowIdsDecl = (
   queryId: Id,
   cellId?: Id,
   descending?: boolean,
+  offset = 0,
+  limit?: number,
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): Ids =>
   useListenable(
     'ResultSortedRowIds',
     useQueriesOrQueriesId(queriesOrQueriesId),
     [],
-    [queryId, cellId, descending],
+    [queryId, cellId, descending, offset, limit],
     [],
-    4,
+    6,
   );
 
 export const useResultRow: typeof useResultRowDecl = (
@@ -938,6 +943,8 @@ export const useResultSortedRowIdsListener: typeof useResultSortedRowIdsListener
     queryId: Id,
     cellId: Id | undefined,
     descending: boolean,
+    offset: number,
+    limit: number | undefined,
     listener: ResultSortedRowIdsListener,
     listenerDeps?: React.DependencyList,
     queriesOrQueriesId?: QueriesOrQueriesId,
@@ -947,7 +954,7 @@ export const useResultSortedRowIdsListener: typeof useResultSortedRowIdsListener
       useQueriesOrQueriesId(queriesOrQueriesId),
       listener,
       listenerDeps,
-      [queryId, cellId, descending],
+      [queryId, cellId, descending, offset, limit],
     );
 
 export const useResultRowListener: typeof useResultRowListenerDecl = (

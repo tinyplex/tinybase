@@ -37,7 +37,7 @@ import {ifNotUndefined, isUndefined} from './other';
 import {EMPTY_STRING} from './strings';
 
 export type IdSetNode = Node<IdOrNull, IdSet> | IdSet;
-export type ListenerArgument = IdOrNull | boolean | undefined;
+export type ListenerArgument = IdOrNull | boolean | number | undefined;
 
 type IdOrBoolean = Id | boolean;
 type Listener =

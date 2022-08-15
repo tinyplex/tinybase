@@ -4655,6 +4655,29 @@ describe('Sorted Row Ids', () => {
     ]);
   });
 
+  test('Cell sort, limit', () => {
+    expect(queries.getResultSortedRowIds('q1', 'c2', false, 0, 3)).toEqual([
+      'r5',
+      'r1',
+      'r3',
+    ]);
+  });
+
+  test('Cell sort, offset', () => {
+    expect(queries.getResultSortedRowIds('q1', 'c2', false, 1)).toEqual([
+      'r1',
+      'r3',
+      'r2',
+    ]);
+  });
+
+  test('Cell sort, offset & limit', () => {
+    expect(queries.getResultSortedRowIds('q1', 'c2', false, 1, 2)).toEqual([
+      'r1',
+      'r3',
+    ]);
+  });
+
   test('Cell sort, reverse', () => {
     expect(queries.getResultSortedRowIds('q1', 'c2', true)).toEqual([
       'r2',
@@ -4674,56 +4697,109 @@ describe('Sorted Row Ids', () => {
   });
 
   test('Cell sort listener, add row with relevant cell', () => {
-    expect.assertions(1);
-    queries.addResultSortedRowIdsListener('q1', 'c2', false, () => {
-      expect(queries.getResultSortedRowIds('q1', 'c2')).toEqual([
-        'r5',
-        'r1',
-        'r7',
-        'r3',
-        'r2',
-      ]);
-    });
+    expect.assertions(7);
+    queries.addResultSortedRowIdsListener(
+      'q1',
+      'c2',
+      false,
+      0,
+      8,
+      (_queries, queryId, cellId, descending, offset, limit, sortedRowIds) => {
+        expect(queryId).toEqual('q1');
+        expect(cellId).toEqual('c2');
+        expect(descending).toEqual(false);
+        expect(offset).toEqual(0);
+        expect(limit).toEqual(8);
+        expect(sortedRowIds).toEqual(['r5', 'r1', 'r7', 'r3', 'r2']);
+        expect(queries.getResultSortedRowIds('q1', 'c2')).toEqual([
+          'r5',
+          'r1',
+          'r7',
+          'r3',
+          'r2',
+        ]);
+      },
+    );
     store.setRow('t1', 'r7', {c1: 7, c2: 'seven'});
   });
 
   test('Cell sort listener, add row without relevant cell', () => {
     expect.assertions(1);
-    queries.addResultSortedRowIdsListener('q1', 'c2', false, () => {
-      expect(queries.getResultSortedRowIds('q1', 'c2')).toEqual([
-        'r5',
-        'r1',
-        'r3',
-        'r2',
-        'r7',
-      ]);
-    });
+    queries.addResultSortedRowIdsListener(
+      'q1',
+      'c2',
+      false,
+      0,
+      undefined,
+      (
+        _store,
+        _tableId,
+        _cellId,
+        _descending,
+        _offset,
+        _limit,
+        sortedRowIds,
+      ) => {
+        expect(sortedRowIds).toEqual(['r5', 'r1', 'r3', 'r2', 'r7']);
+      },
+    );
     store.setRow('t1', 'r7', {c1: 7});
   });
 
   test('Cell sort listener, alter relevant cell', () => {
     expect.assertions(1);
-    queries.addResultSortedRowIdsListener('q1', 'c2', false, () => {
-      expect(queries.getResultSortedRowIds('q1', 'c2')).toEqual([
-        'r5',
-        'r3',
-        'r2',
-        'r1',
-      ]);
-    });
+    queries.addResultSortedRowIdsListener(
+      'q1',
+      'c2',
+      false,
+      0,
+      undefined,
+      (
+        _store,
+        _tableId,
+        _cellId,
+        _descending,
+        _offset,
+        _limit,
+        sortedRowIds,
+      ) => {
+        expect(sortedRowIds).toEqual(['r5', 'r3', 'r2', 'r1']);
+      },
+    );
     store.setCell('t1', 'r1', 'c2', 'uno');
   });
 
   test('Cell sort listener, alter relevant cell, no change', () => {
     const listener = jest.fn();
-    queries.addResultSortedRowIdsListener('q1', 'c2', false, listener);
+    queries.addResultSortedRowIdsListener(
+      'q1',
+      'c2',
+      false,
+      0,
+      undefined,
+      listener,
+    );
     store.setCell('t1', 'r5', 'c2', 'cinq');
+    expect(listener).toBeCalledTimes(0);
+  });
+
+  test('Cell sort listener, alter relevant cell, after page', () => {
+    const listener = jest.fn();
+    queries.addResultSortedRowIdsListener('q1', 'c2', false, 0, 2, listener);
+    store.setRow('t1', 'r7', {c1: 7, c2: 'seven'});
     expect(listener).toBeCalledTimes(0);
   });
 
   test('Cell sort listener, alter non-relevant cell', () => {
     const listener = jest.fn();
-    queries.addResultSortedRowIdsListener('q1', 'c2', false, listener);
+    queries.addResultSortedRowIdsListener(
+      'q1',
+      'c2',
+      false,
+      0,
+      undefined,
+      listener,
+    );
     store.setCell('t1', 'r1', 'c1', '1.0');
     expect(listener).toBeCalledTimes(0);
   });
