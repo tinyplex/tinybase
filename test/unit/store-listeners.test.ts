@@ -2924,7 +2924,7 @@ describe('Mutating listeners', () => {
     });
 
     const setMutatorListener = () => {
-      store.addTableIdsListener(getTablesMutator(2), false, true);
+      store.addTableIdsListener(getTablesMutator(2), true);
     };
 
     test('setTables', () => {
@@ -3077,8 +3077,8 @@ describe('Mutating listeners', () => {
     });
 
     const setMutatorListeners = () => {
-      store.addRowIdsListener('t1', getTableMutator(2), false, true);
-      store.addRowIdsListener(null, getTableMutator(3, 't_'), false, true);
+      store.addRowIdsListener('t1', getTableMutator(2), true);
+      store.addRowIdsListener(null, getTableMutator(3, 't_'), true);
     };
 
     test('setTables', () => {
@@ -3385,22 +3385,10 @@ describe('Mutating listeners', () => {
     });
 
     const setMutatorListeners = () => {
-      store.addCellIdsListener('t1', 'r1', getRowMutator(2), false, true);
-      store.addCellIdsListener(
-        't1',
-        null,
-        getRowMutator(3, null, 'r_'),
-        false,
-        true,
-      );
-      store.addCellIdsListener(null, 'r1', getRowMutator(4, 't_'), false, true);
-      store.addCellIdsListener(
-        null,
-        null,
-        getRowMutator(5, 't_', 'r_'),
-        false,
-        true,
-      );
+      store.addCellIdsListener('t1', 'r1', getRowMutator(2), true);
+      store.addCellIdsListener('t1', null, getRowMutator(3, null, 'r_'), true);
+      store.addCellIdsListener(null, 'r1', getRowMutator(4, 't_'), true);
+      store.addCellIdsListener(null, null, getRowMutator(5, 't_', 'r_'), true);
     };
 
     test('setTables', () => {
@@ -4570,7 +4558,7 @@ describe('Mutating listeners', () => {
           () => store.setCell('t2', 'r2', 'c2', 2),
           true,
         );
-        store.addCellIdsListener(null, null, secondMutator, false, true);
+        store.addCellIdsListener(null, null, secondMutator, true);
         store.addCellIdsListener(null, null, secondListener);
         store.setCell('t1', 'r1', 'c1', 1);
         expect(secondMutator).toBeCalledTimes(1);
@@ -4600,7 +4588,7 @@ describe('Mutating listeners', () => {
           () => store.setCell('t2', 'r2', 'c2', 2),
           true,
         );
-        store.addRowIdsListener(null, secondMutator, false, true);
+        store.addRowIdsListener(null, secondMutator, true);
         store.addRowIdsListener(null, secondListener);
         store.setCell('t1', 'r1', 'c1', 1);
         expect(secondMutator).toBeCalledTimes(1);
@@ -4630,7 +4618,7 @@ describe('Mutating listeners', () => {
           () => store.setCell('t2', 'r2', 'c2', 2),
           true,
         );
-        store.addTableIdsListener(secondMutator, false, true);
+        store.addTableIdsListener(secondMutator, true);
         store.addTableIdsListener(secondListener);
         store.setCell('t1', 'r1', 'c1', 1);
         expect(secondMutator).toBeCalledTimes(1);

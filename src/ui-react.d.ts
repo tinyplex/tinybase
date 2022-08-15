@@ -427,9 +427,6 @@ export function useTables(storeOrStoreId?: StoreOrStoreId): Tables;
  * @param storeOrStoreId The Store to be accessed: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
- * @param trackReorder Since v2.0.0, an optional boolean that indicates that the
- * listener should be called if the set of Ids remains the same but their order
- * changes. See the addTableIdsListener method for more details.
  * @returns An array of the Ids of every Table in the Store.
  * @example
  * This example creates a Store outside the application, which is used in the
@@ -487,10 +484,7 @@ export function useTables(storeOrStoreId?: StoreOrStoreId): Tables;
  * ```
  * @category Store hooks
  */
-export function useTableIds(
-  storeOrStoreId?: StoreOrStoreId,
-  trackReorder?: boolean,
-): Ids;
+export function useTableIds(storeOrStoreId?: StoreOrStoreId): Ids;
 
 /**
  * The useTable hook returns an object containing the entire data of a single
@@ -591,9 +585,6 @@ export function useTable(tableId: Id, storeOrStoreId?: StoreOrStoreId): Table;
  * @param storeOrStoreId The Store to be accessed: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
- * @param trackReorder Since v2.0.0, an optional boolean that indicates that the
- * listener should be called if the set of Ids remains the same but their order
- * changes. See the addRowIdsListener method for more details.
  * @returns An array of the Ids of every Row in the Table.
  * @example
  * This example creates a Store outside the application, which is used in the
@@ -653,11 +644,7 @@ export function useTable(tableId: Id, storeOrStoreId?: StoreOrStoreId): Table;
  * ```
  * @category Store hooks
  */
-export function useRowIds(
-  tableId: Id,
-  storeOrStoreId?: StoreOrStoreId,
-  trackReorder?: boolean,
-): Ids;
+export function useRowIds(tableId: Id, storeOrStoreId?: StoreOrStoreId): Ids;
 
 /**
  * The useSortedRowIds hook returns the sorted (and optionally, paginated) Ids
@@ -884,9 +871,6 @@ export function useRow(
  * @param storeOrStoreId The Store to be accessed: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
- * @param trackReorder Since v2.0.0, an optional boolean that indicates that the
- * listener should be called if the set of Ids remains the same but their order
- * changes. See the addCellIdsListener method for more details.
  * @returns An array of the Ids of every Cell in the Row.
  * @example
  * This example creates a Store outside the application, which is used in the
@@ -954,7 +938,6 @@ export function useCellIds(
   tableId: Id,
   rowId: Id,
   storeOrStoreId?: StoreOrStoreId,
-  trackReorder?: boolean,
 ): Ids;
 
 /**
@@ -1961,9 +1944,6 @@ export function useTablesListener(
  * @param listenerDeps An optional array of dependencies for the `listener`
  * function, which, if any change, result in the re-registration of the
  * listener. This parameter defaults to an empty array.
- * @param trackReorder Since v2.0.0, an optional boolean that indicates that the
- * listener should be called if the set of Ids remains the same but their order
- * changes. See the addTableIdsListener method for more details.
  * @param mutator An optional boolean that indicates that the listener mutates
  * Store data.
  * @param storeOrStoreId The Store to register the listener with: omit for the
@@ -2003,7 +1983,6 @@ export function useTablesListener(
 export function useTableIdsListener(
   listener: TableIdsListener,
   listenerDeps?: React.DependencyList,
-  trackReorder?: boolean,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void;
@@ -2096,9 +2075,6 @@ export function useTableListener(
  * @param listenerDeps An optional array of dependencies for the `listener`
  * function, which, if any change, result in the re-registration of the
  * listener. This parameter defaults to an empty array.
- * @param trackReorder Since v2.0.0, an optional boolean that indicates that the
- * listener should be called if the set of Ids remains the same but their order
- * changes. See the addRowIdsListener method for more details.
  * @param mutator An optional boolean that indicates that the listener mutates
  * Store data.
  * @param storeOrStoreId The Store to register the listener with: omit for the
@@ -2139,7 +2115,6 @@ export function useRowIdsListener(
   tableId: IdOrNull,
   listener: RowIdsListener,
   listenerDeps?: React.DependencyList,
-  trackReorder?: boolean,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void;
@@ -2329,9 +2304,6 @@ export function useRowListener(
  * @param listenerDeps An optional array of dependencies for the `listener`
  * function, which, if any change, result in the re-registration of the
  * listener. This parameter defaults to an empty array.
- * @param trackReorder Since v2.0.0, an optional boolean that indicates that the
- * listener should be called if the set of Ids remains the same but their order
- * changes. See the addCellIdsListener method for more details.
  * @param mutator An optional boolean that indicates that the listener mutates
  * Store data.
  * @param storeOrStoreId The Store to register the listener with: omit for the
@@ -2375,7 +2347,6 @@ export function useCellIdsListener(
   rowId: IdOrNull,
   listener: CellIdsListener,
   listenerDeps?: React.DependencyList,
-  trackReorder?: boolean,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void;
@@ -4475,8 +4446,6 @@ export function useResultTable(
  * @param queriesOrQueriesId The Queries object to be accessed: omit for the
  * default context Queries object, provide an Id for a named context Queries
  * object, or provide an explicit reference.
- * @param trackReorder An optional boolean that indicates that the listener
- * should be called if the set of Ids remains the same but their order changes.
  * See the addResultRowIdsListener method for more details.
  * @returns An array of the Ids of every Row in the result of the query.
  * @example
@@ -4575,7 +4544,6 @@ export function useResultTable(
 export function useResultRowIds(
   queryId: Id,
   queriesOrQueriesId?: QueriesOrQueriesId,
-  trackReorder?: boolean,
 ): Ids;
 
 /**
@@ -5211,9 +5179,6 @@ export function useResultTableListener(
  * @param listenerDeps An optional array of dependencies for the `listener`
  * function, which, if any change, result in the re-registration of the
  * listener. This parameter defaults to an empty array.
- * @param trackReorder An optional boolean that indicates that the listener
- * should be called if the set of Ids remains the same but their order changes.
- * See the addResultRowIdsListener method for more details.
  * @param queriesOrQueriesId The Queries object to register the listener with:
  * omit for the default context Queries object, provide an Id for a named
  * context Queries object, or provide an explicit reference.
@@ -5263,7 +5228,6 @@ export function useResultRowIdsListener(
   queryId: IdOrNull,
   listener: ResultRowIdsListener,
   listenerDeps?: React.DependencyList,
-  trackReorder?: boolean,
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): void;
 
@@ -6608,12 +6572,6 @@ export type TablesProps = {
    */
   readonly store?: StoreOrStoreId;
   /**
-   * An optional boolean that indicates that the component should re-render if
-   * the set of Table Ids in the Store remains the same but their order changes.
-   * See the addTableIdsListener method for more details.
-   */
-  readonly trackReorder?: boolean;
-  /**
    * A component for rendering each Table in the Store (to override the default
    * TableView component).
    */
@@ -6650,12 +6608,6 @@ export type TableProps = {
    * for a named context Store, or provide an explicit reference.
    */
   readonly store?: StoreOrStoreId;
-  /**
-   * An optional boolean that indicates that the component should re-render if
-   * the set of Row Ids in the Table remains the same but their order changes.
-   * See the addRowIdsListener method for more details.
-   */
-  readonly trackReorder?: boolean;
   /**
    * A custom component for rendering each Row in the Table (to override the
    * default RowView component).
@@ -6752,12 +6704,6 @@ export type RowProps = {
    * for a named context Store, or provide an explicit reference.
    */
   readonly store?: StoreOrStoreId;
-  /**
-   * An optional boolean that indicates that the component should re-render if
-   * the set of Cell Ids remains the same but their order changes. See the
-   * addCellIdsListener method for more details.
-   */
-  readonly trackReorder?: boolean;
   /**
    * A custom component for rendering each Cell in the Row (to override the
    * default CellView component).
@@ -7057,12 +7003,6 @@ export type ResultTableProps = {
    * explicit reference.
    */
   readonly queries?: QueriesOrQueriesId;
-  /**
-   * An optional boolean that indicates that the component should re-render if
-   * the set of Row Ids in the result Table remains the same but their order
-   * changes. See the addResultRowIdsListener method for more details.
-   */
-  readonly trackReorder?: boolean;
   /**
    * A custom component for rendering each Row in the Table (to override the
    * default ResultRowView component).

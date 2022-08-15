@@ -24,7 +24,7 @@ import {
   Table,
   TableCallback,
 } from './store.d';
-import {Id, IdOrNull, Ids, SortKey} from './common.d';
+import {Id, IdOrNull, Ids} from './common.d';
 
 /**
  * The Aggregate type describes a custom function that takes an array of Cell
@@ -1329,212 +1329,6 @@ export type Having = {
 };
 
 /**
- * The Order type describes a function that lets you specify how you want the
- * Rows in the result Table to be ordered, based on values within.
- *
- * The Order function is provided as an parameter in the `build` parameter of
- * the setQueryDefinition method.
- *
- * An Order clause can either order alphanumerically by the value of a single
- * Cell or by a 'sort key' calculated from Cell values. The alphanumeric sorting
- * will be ascending by default, or descending if the second parameter is set to
- * `true`.
- *
- * This is applied after any grouping.
- *
- * It is possible to provide multiple Order clauses, and a later clause will be
- * used to establish the order of pairs of Rows if the earlier clauses have not
- * been able to.
- *
- * Note that the Order clause does not work by changing the Row Ids of the
- * result Table, but by changing their insert order. Therefore the Ids array
- * returned from the getResultRowIds method will be correctly ordered, even if
- * the Ids themselves might seem out of order based on their values. If you _do_
- * want to sort Rows by their Id, that is provided as a second parameter to the
- * getSortKey callback.
- *
- * Importantly, if you are using the addResultRowIdsListener method to listen to
- * changes to the order of Rows due to this clause, you will need to set the
- * optional `trackReorder` parameter to `true` to track when the set of Ids has
- * not changed, but the order has.
- *
- * @example
- * This example shows a query that orders a Table by a numeric Cell, in a
- * descending fashion.
- *
- * ```js
- * const store = createStore().setTable('pets', {
- *   cujo: {price: 4},
- *   fido: {price: 5},
- *   tom: {price: 3},
- *   carnaby: {price: 3},
- *   felix: {price: 4},
- *   polly: {price: 3},
- * });
- *
- * const queries = createQueries(store);
- * queries.setQueryDefinition('query', 'pets', ({select, order}) => {
- *   select('pets', 'price');
- *   order('price', true);
- * });
- *
- * queries.forEachResultRow('query', (rowId) => {
- *   console.log({[rowId]: queries.getResultRow('query', rowId)});
- * });
- * // -> {fido: {price: 5}}
- * // -> {cujo: {price: 4}}
- * // -> {felix: {price: 4}}
- * // -> {tom: {price: 3}}
- * // -> {carnaby: {price: 3}}
- * // -> {polly: {price: 3}}
- * ```
- * @example
- * This example shows a query that orders a Table by a string Cell, and then a
- * calculated sort key based on the Row Id.
- *
- * ```js
- * const store = createStore().setTable('pets', {
- *   cujo: {species: 'dog'},
- *   fido: {species: 'dog'},
- *   tom: {species: 'cat'},
- *   carnaby: {species: 'parrot'},
- *   felix: {species: 'cat'},
- *   polly: {species: 'parrot'},
- * });
- *
- * const queries = createQueries(store);
- * queries.setQueryDefinition('query', 'pets', ({select, order}) => {
- *   select('pets', 'species');
- *   order('species');
- *   order((getSelectedOrGroupedCell, rowId) => rowId);
- * });
- *
- * queries.forEachResultRow('query', (rowId) => {
- *   console.log({[rowId]: queries.getResultRow('query', rowId)});
- * });
- * // -> {felix: {species: 'cat'}}
- * // -> {tom: {species: 'cat'}}
- * // -> {cujo: {species: 'dog'}}
- * // -> {fido: {species: 'dog'}}
- * // -> {carnaby: {species: 'parrot'}}
- * // -> {polly: {species: 'parrot'}}
- * ```
- * @category Definition
- * @since v2.0.0-beta
- */
-export type Order = {
-  /**
-   * Calling this function with the first parameter as an Id is used to sort the
-   * Rows by the value in that Cell.
-   *
-   * @param selectedOrGroupedCellId The Id of the Cell in the query to sort by.
-   * @param descending Set to `true` to have the Rows sorted in descending
-   * order.
-   */
-  (selectedOrGroupedCellId: Id, descending?: boolean): void;
-  /**
-   * Calling this function with the first parameter as a function is used to
-   * sort the Rows by a value calculate from their Cells or Id.
-   *
-   * @param getSortKey A callback that takes a GetCell function and that should
-   * return a 'sort key' to be used for ordering the Rows.
-   * @param descending Set to `true` to have the Rows sorted in descending
-   * order.
-   */
-  (
-    getSortKey: (getSelectedOrGroupedCell: GetCell, rowId: Id) => SortKey,
-    descending?: boolean,
-  ): void;
-};
-
-/**
- * The Limit type describes a function that lets you specify how many Rows you
- * want in the result Table, and how they should be offset.
- *
- * The Limit function is provided as an parameter in the `build` parameter of
- * the setQueryDefinition method.
- *
- * A Limit clause can either provide an 'page' offset and size limit, or just
- * the limit. The offset is zero-based, so if you specify `2`, say, the results
- * will skip the first two Rows and start with the third.
- *
- * This is applied after any grouping and sorting.
- *
- * @example
- * This example shows a query that limits a Table to four Rows from its first.
- *
- * ```js
- * const store = createStore().setTable('pets', {
- *   cujo: {price: 4},
- *   fido: {price: 5},
- *   tom: {price: 3},
- *   carnaby: {price: 3},
- *   felix: {price: 4},
- *   polly: {price: 3},
- * });
- *
- * const queries = createQueries(store);
- * queries.setQueryDefinition('query', 'pets', ({select, limit}) => {
- *   select('pets', 'price');
- *   limit(4);
- * });
- *
- * queries.forEachResultRow('query', (rowId) => {
- *   console.log({[rowId]: queries.getResultRow('query', rowId)});
- * });
- * // -> {cujo: {price: 4}}
- * // -> {fido: {price: 5}}
- * // -> {tom: {price: 3}}
- * // -> {carnaby: {price: 3}}
- * ```
- * @example
- * This example shows a query that limits a Table to three Rows, offset by two.
- *
- * ```js
- * const store = createStore().setTable('pets', {
- *   cujo: {price: 4},
- *   fido: {price: 5},
- *   tom: {price: 3},
- *   carnaby: {price: 3},
- *   felix: {price: 4},
- *   polly: {price: 3},
- * });
- *
- * const queries = createQueries(store);
- * queries.setQueryDefinition('query', 'pets', ({select, limit}) => {
- *   select('pets', 'price');
- *   limit(2, 3);
- * });
- *
- * queries.forEachResultRow('query', (rowId) => {
- *   console.log({[rowId]: queries.getResultRow('query', rowId)});
- * });
- * // -> {tom: {price: 3}}
- * // -> {carnaby: {price: 3}}
- * // -> {felix: {price: 4}}
- * ```
- * @category Definition
- * @since v2.0.0-beta
- */
-export type Limit = {
-  /**
-   * Calling this function with one numeric parameter is used to limit the Rows
-   * returned, starting from the first.
-   *
-   * @param limit The number of Rows to return.
-   */
-  (limit: number): void;
-  /**
-   * Calling this function with two numeric parameters is used to offset the
-   * start of the results, and then limit the Rows returned.
-   *
-   * @param offset The number of Rows to skip.
-   * @param limit The number of Rows to return.
-   */
-  (offset: number, limit: number): void;
-};
-
-/**
  * A Queries object lets you create and track queries of the data in Store
  * objects.
  *
@@ -1595,33 +1389,32 @@ export type Limit = {
  * console.log(queries.getResultTable('petOwners'));
  * // -> {fido: {owner: 'Alice'}, felix: {owner: 'Bob'}, cujo: {owner: 'Carol'}}
  *
- * // A grouped and ordered query:
+ * // A grouped query:
  * queries.setQueryDefinition(
  *   'colorPrice',
  *   'pets',
- *   ({select, join, group, order}) => {
+ *   ({select, join, group}) => {
  *     select('color');
  *     select('species', 'price');
  *     join('species', 'species');
  *     group('price', 'avg');
- *     order('price');
  *   },
  * );
  * console.log(queries.getResultTable('colorPrice'));
  * // -> {"1": {color: 'black', price: 4.5}, "0": {color: 'brown', price: 5}}
- * console.log(queries.getResultRowIds('colorPrice'));
- * // -> ["1", "0"]
+ * console.log(queries.getResultSortedRowIds('colorPrice', 'price', true));
+ * // -> ["0", "1"]
  *
  * const listenerId = queries.addResultTableListener('colorPrice', () => {
  *   console.log('Average prices per color changed');
  *   console.log(queries.getResultTable('colorPrice'));
- *   console.log(queries.getResultRowIds('colorPrice'));
+ *   console.log(queries.getResultSortedRowIds('colorPrice', 'price', true));
  * });
  *
  * store.setRow('pets', 'lowly', {species: 'worm', color: 'brown'});
  * // -> 'Average prices per color changed'
  * // -> {"0": {color: 'brown', price: 3}, "1": {color: 'black', price: 4.5}}
- * // -> ["0", "1"]
+ * // -> ["1", "0"]
  *
  * queries.delListener(listenerId);
  * queries.destroy();
@@ -1644,7 +1437,7 @@ export interface Queries {
    * The third `build` parameter is a callback that you provide to define the
    * query. That callback is provided with a `builders` object that contains the
    * named 'keywords' for the query, like `select`, `join`, and so on. You can
-   * see how that is used in the simple example below. The following seven
+   * see how that is used in the simple example below. The following five
    * clause types are supported:
    *
    * - The Select type describes a function that lets you specify a Cell or
@@ -1658,13 +1451,12 @@ export interface Queries {
    *   of a Cell in multiple result Rows should be aggregated together.
    * - The Having type describes a function that lets you specify conditions to
    *   filter results, based on the grouped Cells resulting from a Group clause.
-   * - The Order type describes a function that lets you specify how you want
-   *   the Rows in the result Table to be ordered, based on values within.
-   * - The Limit type describes a function that lets you specify how many Rows
-   *   you want in the result Table, and how they should be offset.
    *
    * Full documentation and examples are provided in the sections for each of
    * those clause types.
+   * 
+   * Additionally, you can use the getResultSortedRowIds method and
+   * addResultSortedRowIdsListener method to sort and paginate the results.
    *
    * @param queryId The Id of the query to define.
    * @param tableId The Id of the main Table the query will be based on.
@@ -1704,8 +1496,6 @@ export interface Queries {
       where: Where;
       group: Group;
       having: Having;
-      order: Order;
-      limit: Limit;
     }) => void,
   ): Queries;
 
@@ -1946,9 +1736,6 @@ export interface Queries {
    * the query Id is invalid, the method returns an empty array. Similarly, it
    * returns a copy of, rather than a reference to the list of Ids, so changes
    * made to the list object are not made to the query results themselves.
-   *
-   * An Order clause in the query explicitly affects the order of entries in
-   * this array.
    *
    * @param queryId The Id of a query.
    * @returns An array of the Ids of every Row in the result of the query.
@@ -2536,22 +2323,13 @@ export interface Queries {
    * the method's first parameter) or changes to any result Table (by providing
    * a `null` wildcard).
    *
-   * Use the optional `trackReorder` parameter to additionally track when the
-   * set of Ids has not changed, but the order has - specifically when the Order
-   * clause of the query causes the Row Ids to be re-sorted. This behavior is
-   * disabled by default due to the potential performance cost of detecting such
-   * changes.
-   *
    * @param queryId The Id of the query to listen to, or `null` as a wildcard.
    * @param listener The function that will be called whenever the Row Ids in
    * the result Table change.
-   * @param trackReorder An optional boolean that indicates that the listener
-   * should be called if the set of Ids remains the same but their order
-   * changes.
    * @returns A unique Id for the listener that can later be used to remove it.
    * @example
    * This example registers a listener that responds to any change to the Row
-   * Ids of a specific result Table, but not their order.
+   * Ids of a specific result Table.
    *
    * ```js
    * const store = createStore().setTable('pets', {
@@ -2563,10 +2341,9 @@ export interface Queries {
    * const queries = createQueries(store).setQueryDefinition(
    *   'dogColors',
    *   'pets',
-   *   ({select, where, order}) => {
+   *   ({select, where}) => {
    *     select('color');
    *     where('species', 'dog');
-   *     order('color');
    *   },
    * );
    *
@@ -2580,52 +2357,7 @@ export interface Queries {
    *
    * store.setRow('pets', 'rex', {species: 'dog', color: 'tan'});
    * // -> 'Row Ids for dogColors result table changed'
-   * // -> ['cujo', 'fido', 'rex']
-   *
-   * store.setCell('pets', 'fido', 'color', 'walnut');
-   * // -> undefined
-   * // trackReorder not set for listener
-   *
-   * store.delListener(listenerId);
-   * ```
-   * @example
-   * This example registers a listener that responds to a change of order in the
-   * rows of a specific result Table, even though the set of Ids themselves has
-   * not changed.
-   *
-   * ```js
-   * const store = createStore().setTable('pets', {
-   *   fido: {species: 'dog', color: 'brown'},
-   *   felix: {species: 'cat', color: 'black'},
-   *   cujo: {species: 'dog', color: 'black'},
-   * });
-   *
-   * const queries = createQueries(store).setQueryDefinition(
-   *   'dogColors',
-   *   'pets',
-   *   ({select, where, order}) => {
-   *     select('color');
-   *     where('species', 'dog');
-   *     order('color');
-   *   },
-   * );
-   *
-   * const listenerId = queries.addResultRowIdsListener(
-   *   'dogColors',
-   *   (queries, tableId) => {
-   *     console.log(`Row Ids for dogColors result table changed`);
-   *     console.log(queries.getResultRowIds('dogColors'));
-   *   },
-   *   true, // track reorder
-   * );
-   *
-   * store.setRow('pets', 'rex', {species: 'dog', color: 'tan'});
-   * // -> 'Row Ids for dogColors result table changed'
-   * // -> ['cujo', 'fido', 'rex']
-   *
-   * store.setCell('pets', 'fido', 'color', 'walnut');
-   * // -> 'Row Ids for dogColors result table changed'
-   * // -> ['cujo', 'rex', 'fido']
+   * // -> ['fido', 'cujo', 'rex']
    *
    * store.delListener(listenerId);
    * ```
@@ -2669,7 +2401,6 @@ export interface Queries {
   addResultRowIdsListener(
     queryId: IdOrNull,
     listener: ResultRowIdsListener,
-    trackReorder?: boolean,
   ): Id;
 
   /**
