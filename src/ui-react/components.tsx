@@ -331,7 +331,6 @@ export const TableView: typeof TableViewDecl = ({
 
 export const TablesView: typeof TablesViewDecl = ({
   store,
-
   tableComponent: Table = TableView,
   getTableComponentProps,
   separator,
@@ -502,7 +501,6 @@ export const ResultRowView: typeof ResultRowViewDecl = ({
 export const ResultTableView: typeof ResultTableViewDecl = ({
   queryId,
   queries,
-
   resultRowComponent: ResultRow = ResultRowView,
   getResultRowComponentProps,
   separator,
