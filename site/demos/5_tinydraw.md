@@ -661,6 +661,11 @@ const Canvas = () => {
     SHAPES,
     null,
     (store, _tableId, rowId, getCellChange) => {
+      const [maxX, maxY] = canvasDimensions;
+      if (maxX == 0 || maxY != 0) {
+        return;
+      }
+
       const [x1Changed] = getCellChange(SHAPES, rowId, 'x1');
       const [x2Changed] = getCellChange(SHAPES, rowId, 'x2');
       const [y1Changed] = getCellChange(SHAPES, rowId, 'y1');
@@ -669,7 +674,6 @@ const Canvas = () => {
         (x1Changed || x2Changed || y1Changed || y2Changed) &&
         rowId != CANVAS_ID
       ) {
-        const [maxX, maxY] = canvasDimensions;
         const {x1, x2, y1, y2, w, h} = getShapeDimensions(rowId, maxX, maxY);
         if (x1Changed && x1 != null) {
           store.setCell(
