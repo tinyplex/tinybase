@@ -352,7 +352,12 @@ const ShapeAdd = () => {
     </div>
   );
 };
+```
 
+We'll have these two hooks for getting the front and back shapes of the ordered stack.
+
+```jsx
+const useBackId = () => useLinkedRowIds('order', CANVAS_ID)[1];
 const useFrontId = () => useLinkedRowIds('order', CANVAS_ID).slice(-1)[0];
 ```
 
@@ -367,7 +372,7 @@ const ShapeOrder = () => {
   const forwardId = useRemoteRowId('order', selectedId);
   const [previousId] = useLocalRowIds('order', selectedId);
   const [backwardId] = useLocalRowIds('order', previousId);
-  const backId = useRemoteRowId('order', CANVAS_ID);
+  const backId = useBackId();
   return [
     ['front', 'To front', frontId, useOrderShape(frontId, 'to front')],
     ['forward', 'Forward', frontId, useOrderShape(forwardId, 'forward')],
@@ -749,13 +754,13 @@ const Canvas = () => {
   const [, setSelectedId] = useSelectedIdState();
   const getRowComponentProps = useCallback((id) => ({id}), []);
   const handleMouseDown = useCallback(() => setSelectedId(), [setSelectedId]);
-  const firstRowId = useRow(SHAPES, CANVAS_ID).nextId;
+  const backId = useBackId();
   return (
     <div id="canvas" onMouseDown={handleMouseDown} ref={ref}>
-      {firstRowId == null ? null : (
+      {backId == null ? null : (
         <LinkedRowsView
           relationshipId="order"
-          firstRowId={firstRowId}
+          firstRowId={backId}
           rowComponent={Shape}
           getRowComponentProps={getRowComponentProps}
         />
