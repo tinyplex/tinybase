@@ -54,7 +54,12 @@ const REFLECTIONS = [
 ];
 
 export const build = (outDir: string, api = true, pages = true): void => {
-  const docs = createDocs('https://tinybase.org', outDir, !api && !pages)
+  const {version} = JSON.parse(readFileSync('./package.json', 'utf-8'));
+  const baseUrl = version.includes('beta')
+    ? 'https://beta.tinybase.org'
+    : 'https://tinybase.org';
+
+  const docs = createDocs(baseUrl, outDir, !api && !pages)
     .addJsFile('site/js/home.ts')
     .addJsFile('site/js/app.ts')
     .addJsFile('site/js/single.ts')

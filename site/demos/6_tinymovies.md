@@ -131,9 +131,7 @@ const useSetRouteCallback = (currentSection, currentDetailId) =>
 
 const loadTable = async (store, tableId) => {
   const rows = (
-    await (
-      await fetch(`https://beta.tinybase.org/assets/${tableId}.tsv`)
-    ).text()
+    await (await fetch(`https://tinybase.org/assets/${tableId}.tsv`)).text()
   ).split('\n');
   const cellIds = rows.shift().split('\t');
   store.transaction(() =>
