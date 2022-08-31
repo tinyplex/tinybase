@@ -4,12 +4,84 @@ In this demo, we build an app that showcases the relational query capabilities
 of TinyBase v2.0, joining together information about movies, directors, and
 actors.
 
-![TMDB](https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg 'Inline logo for TMDB') The Movie Database is the source of this data - thank
-you for a great data set to demonstrate TinyBase!
+![TMDB](https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg 'Inline logo for TMDB') - we use The Movie Database as the source of the movie
+information in this app. Thank you for a great data set to demonstrate TinyBase!
+
+This demo includes a powerful general component called
+[`SortedTable`](#the-sortedtable-component) that you should feel free to use in
+your own apps.
+
+## An Overview Of The Data
+
+Before looking at code, let's familiarize ourselves with the data used in this
+application.
+
+### Tables
+
+The raw data is loaded into four normalized Table objects: `movies` (the top 250
+movies on TMDB), `genres` (the styles of those movies), `people` (actors and
+directors), and `cast` (how the actors are associated with the movies).
+
+Naturally, there are relationships between these. For example, the `directorId`
+Cell of the `movies` Table references a person in the `people` table, and the
+`genreId` Cell references the `genre` Table. The `cast` Table is a many-to-many
+join that contains all the `movieId`/`castId` pairs for the top three billed
+actors
+of each movie.
+
+| Table    | Cell Ids                                                                     |
+| -------- | ---------------------------------------------------------------------------- |
+| `movies` | `id`, `name`, `genreId`, `directorId`, `year`, `rating`, `overview`, `image` |
+| `genres` | `id`, `name`                                                                 |
+| `people` | `id`, `name`, `gender`, `born`, `died`, `popularity`, `biography`, `image`   |
+| `cast`   | `id`, `movieId`, `castId`                                                    |
+
+Because the data is normalized (and fetched as TSV over the wire), it loads
+quickly. But generally this data isn't suited to render directly into the
+application: the user doesn't want to see the movie's `directorId`. They want to
+see the director's `name`!
+
+### Queries
+
+The app therefore uses a set of queries against these underlying Table objects.
+These act as de-normalized 'views' of the underlying normalized data and make it
+easy for the application to render 'virtual' rows comprised of Cell values from
+multiple joined Table objects in the Store.
+
+Some of these, like the main `movies` query, are set up for the lifetime of the
+application:
+
+| Query       | From&nbsp;Tables             | Cell Ids                                                                                                                                                                                                                                                    |
+| ----------- | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `movies`    | `movies`, `genres`, `people` | `movieId`, `movieName`, `movieImage`, `year`, `rating`, `genreId`, `genreName`, `overview`, `directorId`, `directorName`, `directorImage`, `castId1`, `castName1`, `castImage1`, `castId2`, `castName2`, `castImage2`, `castId3`, `castName3`, `castImage3` |
+| `years`     | `movies`                     | `year`, `movieCount`                                                                                                                                                                                                                                        |
+| `genres`    | `movies`                     | `genreId`, `genreName`, `movieCount`                                                                                                                                                                                                                        |
+| `directors` | `movies`, `people`           | `directorId`, `directorName`, `directorImage`, `gender`, `popularity`, `movieCount`                                                                                                                                                                         |
+| `cast`      | `cast`, `people`             | `castId`, `castName`, `castImage`, `gender`, `popularity`, `movieCount`                                                                                                                                                                                     |
+
+Others, like the `moviesForYear` query, are set up when a specific page is being
+viewed (in that case, the detail page for a particular year):
+
+| Query               | From&nbsp;Tables           | Cell Ids                                                                       |
+| ------------------- | -------------------------- | ------------------------------------------------------------------------------ |
+| `moviesForYear`     | `movies`, `genres`         | `movieId`, `movieName`, `movieImage`, `year`, `rating`, `genreId`, `genreName` |
+| `moviesForGenre`    | `movies`, `genres`         | `movieId`, `movieName`, `movieImage`, `year`, `rating`, `genreId`, `genreName` |
+| `moviesForDirector` | `movies`, `genres`         | `movieId`, `movieName`, `movieImage`, `year`, `rating`, `genreId`, `genreName` |
+| `moviesForCast`     | `cast`, `movies`, `genres` | `movieId`, `movieName`, `movieImage`, `year`, `rating`, `genreId`, `genreName` |
+
+You might notice that many of these queries share the same Cell Ids. You'll
+discover that TinyBase lets you compose queries programmatically, so we'll be
+able to build these queries without much repetition: the common
+`queryMovieBasics` function is used to select the same Cell Ids into most of
+these query views.
+
+Refer back to this section when we start [loading the data](#loading-the-data),
+[querying the data](#querying-the-data), and rendering them into the user
+interface. Otherwise, that's enough preamble... let's get to some code!
 
 ## Boilerplate
 
-First, we pull in React, ReactDOM, and TinyBase:
+As per usual, we first pull in React, ReactDOM, and TinyBase:
 
 ```html
 <script src="/umd/react.production.min.js"></script>
@@ -18,7 +90,8 @@ First, we pull in React, ReactDOM, and TinyBase:
 <script src="/umd/ui-react.js"></script>
 ```
 
-We need the following parts of the TinyBase API, the ui-react module, and React itself:
+We need the following parts of the TinyBase API, the ui-react module, and React
+itself:
 
 ```js
 const {createQueries, createStore} = TinyBase;
@@ -40,66 +113,107 @@ const {createElement, useCallback, useMemo, useState} = React;
 const {render} = ReactDOM;
 ```
 
-# Everything Else
+## Initializing The Application
 
-Documentation to come shortly. In the meantime, here is the source code.
+In the main part of the application, we want to initialize a default Store
+(called `store`) and a named Store called `sessionStore`. The latter serves the
+sole purpose of remembering the 'route' in the application, which describes
+which part of the user interface the user is looking at.
+
+We also initialize a Queries object, and use the `createAndInitQueries` function
+(which we'll describe later) to set up the queries for the application.
+
+The two Store objects and the Queries object are memoized by the useCreateStore
+method and useCreateQueries method so they are only created the first time the
+app is rendered.
 
 ```jsx
 const App = () => {
-  const movieStore = useCreateStore(createStore);
+  const store = useCreateStore(createStore);
 
   const sessionStore = useCreateStore(() =>
     createStore().setCell('ui', 'route', 'currentSection', 'movies'),
   );
 
-  const queries = useCreateQueries(movieStore, createAndInitQueries, []);
+  const queries = useCreateQueries(store, createAndInitQueries, []);
+  // ...
+```
 
+This application depends on loading data into the main Store the first time it
+is rendered. We do this by having an `isLoading` flag in the application's
+state, and setting it to `false` only once the asynchronous loading sequence in
+the (soon-to-be described) `loadStore` function has completed. Until then, a
+loading spinner is shown.
+
+```jsx
+  // ...
   const [isLoading, setIsLoading] = useState(true);
   useMemo(async () => {
-    await loadStore(movieStore);
+    await loadStore(store);
     setIsLoading(false);
   }, []);
 
   return (
-    <Provider store={movieStore} storesById={{sessionStore}} queries={queries}>
+    <Provider store={store} storesById={{sessionStore}} queries={queries}>
       <Header />
       {isLoading ? <Loading /> : <Body />}
     </Provider>
   );
-};
+}
+```
 
+With simple boilerplate code to load the component, off we go:
+
+```jsx
 addEventListener('load', () => {
   render(<App />, document.body);
 });
+```
 
+## Basic Components
+
+Before we get to the really interesting parts, let's dispense with the
+basic building blocks for the application's user interface.
+
+### Loading Spinner
+
+First the loading spinner, a plain element with some CSS.
+
+```jsx
 const Loading = () => <div id="loading" />;
+```
 
-const Header = () => {
-  const {currentSection} = useRoute();
-  return (
-    <nav id="menu">
-      {Object.entries(SECTIONS).map(([section, [title]]) => (
-        <a
-          class={currentSection == section ? 'current' : ''}
-          onClick={useSetRouteCallback(section, null)}
-        >
-          {title}
-        </a>
-      ))}
-    </nav>
-  );
-};
+This is styled as a 270° arc with a spinning animation:
 
-const Body = () => {
-  const {currentSection, currentDetailId} = useRoute();
-  const [, Section] = SECTIONS[currentSection];
-  return (
-    <main id="body">
-      <Section detailId={currentDetailId} />
-    </main>
-  );
-};
+```less
+#loading {
+  animation: spin 1s infinite linear;
+  height: 2rem;
+  margin: 40vh auto;
+  width: 2rem;
+  &::before {
+    content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" height="2rem" viewBox="0 0 100 100"><path d="M50 10A40 40 0 1 1 10 50" stroke="black" fill="none" stroke-width="4" /></svg>');
+  }
+}
 
+@keyframes spin {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+```
+
+### Application Sections
+
+Next the structure of the application. It has four sections: 'Movies', 'Years',
+'Genres', and 'People'. We define their outer components and create a keyed
+collection of them. Each either shows an overview (for example, all movies) or
+the detail of one particular record (for example, a single movie):
+
+```jsx
 const MoviesSection = ({detailId}) =>
   detailId == null ? <MoviesOverview /> : <MovieDetail movieId={detailId} />;
 
@@ -118,7 +232,14 @@ const SECTIONS = {
   genres: ['Genres', GenresSection],
   people: ['People', PeopleSection],
 };
+```
 
+The `sessionStore` contains a single record in the `ui` Table that is called
+`route`. This is the section name and optionally a detail ID (such as the
+movie's ID). The `useRoute` hook gets this pair, and the `useSetRouteCallback`
+hook will be used to set it in response to the user clicking links in the app.
+
+```js
 const useRoute = () => useRow('ui', 'route', 'sessionStore');
 const useSetRouteCallback = (currentSection, currentDetailId) =>
   useSetRowCallback(
@@ -128,30 +249,126 @@ const useSetRouteCallback = (currentSection, currentDetailId) =>
     [currentSection, currentDetailId],
     'sessionStore',
   );
+```
+
+Note that we're not doing anything fancy here like updating the browser's URL
+address or history state as the user navigates around, but we would add that in
+this method if we did.
+
+(Another easy, but interesting, exercise for the reader would be to use the
+Checkpoints API on the `sessionsStore` to create an in-app history stack for the
+pages viewed!)
+
+### Application Header
+
+The header component simply renders all the links for the `SECTIONS` object and
+highlights the one that matches the current route.
+
+```jsx
+const Header = () => {
+  const {currentSection} = useRoute();
+  return (
+    <nav>
+      {Object.entries(SECTIONS).map(([section, [title]]) => (
+        <a
+          class={currentSection == section ? 'current' : ''}
+          onClick={useSetRouteCallback(section, null)}
+        >
+          {title}
+        </a>
+      ))}
+    </nav>
+  );
+};
+```
+
+The header also has very simple styling:
+
+```less
+nav {
+  background: #eee;
+  display: flex;
+  a {
+    flex: 1;
+    padding: 0.25rem;
+    text-align: center;
+    &.current {
+      background: #ddd;
+      font-weight: 600;
+    }
+  }
+}
+```
+
+### Application Body
+
+Finally, we use the current route to load the appropriate section and render it
+into the main part of the application:
+
+```jsx
+const Body = () => {
+  const {currentSection, currentDetailId} = useRoute();
+  const [, Section] = SECTIONS[currentSection];
+  return (
+    <main>
+      <Section detailId={currentDetailId} />
+    </main>
+  );
+};
+```
+
+Again, this component has minimal styling:
+
+```less
+main {
+  padding: 0.5rem;
+}
+```
+
+## Loading The Data
+
+We now move onto the more interesting data manipulation and rendering logic in
+the application.
+
+The movie data for the application is sourced from TMDB and has been converted
+into a tab-separated variable format. TSV files are smaller and faster than JSON
+to load over the wire, but nonetheless, we load them asynchronously.
+
+The logic here should be reasonably self-evident. We extract the column names
+from the top of the TSV, check each row has a matching cardinality, use the
+first column as the Row Id, coerce numeric Cell values, and load everything into
+a standard Table.
+
+```js
+const NUMERIC = /^[\d\.]+$/;
 
 const loadTable = async (store, tableId) => {
   const rows = (
     await (await fetch(`https://tinybase.org/assets/${tableId}.tsv`)).text()
   ).split('\n');
   const cellIds = rows.shift().split('\t');
-  store.transaction(() =>
-    rows.forEach((row) => {
-      const cells = row.split('\t');
-      if (cells.length == cellIds.length) {
-        const rowId = cells.shift();
-        cells.forEach((cell, c) => {
-          if (cell != '') {
-            if (/^[\d\.]+$/.test(cell)) {
-              cell = parseFloat(cell);
-            }
-            store.setCell(tableId, rowId, cellIds[c + 1], cell);
+  rows.forEach((row) => {
+    const cells = row.split('\t');
+    if (cells.length == cellIds.length) {
+      const rowId = cells.shift();
+      cells.forEach((cell, c) => {
+        if (cell != '') {
+          if (NUMERIC.test(cell)) {
+            cell = parseFloat(cell);
           }
-        });
-      }
-    }),
-  );
+          store.setCell(tableId, rowId, cellIds[c + 1], cell);
+        }
+      });
+    }
+  });
 };
+```
 
+There are four raw tables used in this application, as described in our opening
+section. We wait for all four to load (again, asynchronously) wrapped in a
+single Store transaction.
+
+```js
 const loadStore = async (store) => {
   store.startTransaction();
   await Promise.all(
@@ -161,7 +378,27 @@ const loadStore = async (store) => {
   );
   store.finishTransaction();
 };
+```
 
+`loadStore` was the function referenced in the [main `App`
+component](#initializing-the-application), so once this completes, the data is
+loaded and we're ready to go.
+
+## Querying The Data
+
+As described [at the start of this article](#queries), there are a number of
+queries that are set up at the beginning of the app and which are used
+throughout its lifetime. These include the list of all movies with de-normalized
+genre, director, and cast names (a query called `movies`); and queries that
+group counts of movies by genre, year, and so on.
+
+Since many queries throughout the app re-use the same set of fields - such as
+movie name, image, year, and genre - we can first create a re-usable function
+that specifies those Cell Ids. This can be used whenever the `movies` Table is
+the root of the query. When provided a `select` and `join` function, it selects
+those common columns:
+
+```js
 const queryMovieBasics = ({select, join}) => {
   select((_, movieId) => movieId).as('movieId');
   select('name').as('movieName');
@@ -172,28 +409,108 @@ const queryMovieBasics = ({select, join}) => {
   select('genres', 'name').as('genreName');
   join('genres', 'genreId');
 };
+```
 
+Notice that we use a convention in this app of suffixing `Id`, `Name` and
+`Image` to resulting Cell Ids.
+
+In the `App` component we described at the start of the article, we call a
+function called `createAndInitQueries` to initialize the queries. Here's its
+implementation:
+
+```js
 const createAndInitQueries = (store) => {
   const queries = createQueries(store);
+  // ...
+```
 
-  queries.setQueryDefinition('movies', 'movies', ({select, join}) => {
-    queryMovieBasics({select, join});
-    select('overview');
-    select('directorId');
-    select('directors', 'name').as('directorName');
-    select('directors', 'image').as('directorImage');
-    join('people', 'directorId').as('directors');
-    [1, 2, 3].forEach((billing) => {
-      const castJoin = `cast${billing}`;
-      join('cast', (_, movieId) => `${movieId}/${billing}`).as(castJoin);
-      select(castJoin, 'castId').as(`castId${billing}`);
-      const peopleJoin = `people${billing}`;
-      join('people', castJoin, 'castId').as(peopleJoin);
-      select(peopleJoin, 'name').as(`castName${billing}`);
-      select(peopleJoin, 'image').as(`castImage${billing}`);
-    });
+First we define the `movies` query that populates the main overview of the movies
+section of the app, and provides the detail about the movie's overview,
+directors and cast.
+
+The join to the `people` Table for the director name and image should be
+self-explanatory. What is slightly more interesting is the way we join to get
+the cast names and images. Each movie has up to three cast members captured in
+the `cast` many-to-many join Table - and so we join through _that_ table three
+times according to their billing.
+
+```js
+// ...
+queries.setQueryDefinition('movies', 'movies', ({select, join}) => {
+  queryMovieBasics({select, join});
+  select('overview');
+  select('directorId');
+  select('directors', 'name').as('directorName');
+  select('directors', 'image').as('directorImage');
+  join('people', 'directorId').as('directors');
+  [1, 2, 3].forEach((billing) => {
+    const castJoin = `cast${billing}`;
+    join('cast', (_, movieId) => `${movieId}/${billing}`).as(castJoin);
+    select(castJoin, 'castId').as(`castId${billing}`);
+    const actorJoin = `actors${billing}`;
+    join('people', castJoin, 'castId').as(actorJoin);
+    select(actorJoin, 'name').as(`castName${billing}`);
+    select(actorJoin, 'image').as(`castImage${billing}`);
   });
+});
+// ...
+```
 
+For the SQL-inclined amongst you, we've created something more or less
+equivalent to the following query:
+
+```sql
+-- movies query
+SELECT
+  movies._rowId AS movieId,
+  movies.name AS movieName,
+  movies.image AS movieImage,
+  movies.year AS year,
+  movies.rating AS rating,
+  movies.genreId AS genreId,
+  genres.name AS genreName,
+  movies.overview AS overview,
+  movies.directorId AS directorId,
+  directors.name AS directorName,
+  directors.image AS directorImage,
+  cast1.castId AS castId1,
+  actors1.name AS castName1,
+  actors1.image AS castImage1,
+  cast2.castId AS castId2,
+  actors2.name AS castName2,
+  actors2.image AS castImage2,
+  cast3.castId AS castId3,
+  actors3.name AS castName3,
+  actors3.image AS castImage3
+FROM
+  movies
+    LEFT JOIN genres
+      ON genres._rowId = movies.genreId
+    LEFT JOIN people AS directors
+      ON directors._rowId = movies.directorId
+    LEFT JOIN cast AS cast1
+      ON cast1._rowId = CONCAT(movies.movieId, '/1')
+      LEFT JOIN people AS actors1
+        ON actors1._rowId = cast1.castId
+    LEFT JOIN cast AS cast2
+      ON cast2._rowId = CONCAT(movies.movieId, '/2')
+      LEFT JOIN people AS actors2
+        ON actors2._rowId = cast2.castId
+    LEFT JOIN cast AS cast3
+      ON cast3._rowId = CONCAT(movies.movieId, '/3')
+      LEFT JOIN people AS actors3
+        ON actors3._rowId = cast3.castId
+```
+
+(Except the results in our case are reactive - not something you usually get
+to benefit from with a SQL-based database!)
+
+We also create query definitions for the other persistent queries. These use the
+`group` function to count the number of movies per year, genre, and so on, used
+in the overview components of each of the main sections of the app.
+
+```js
+  // ...
   queries.setQueryDefinition('years', 'movies', ({select, group}) => {
     select('year');
     select((_, rowId) => rowId).as('movieId');
@@ -231,8 +548,37 @@ const createAndInitQueries = (store) => {
   });
 
   return queries;
-};
+}
+```
 
+That's it for the main persistent queries that power most of the major views of
+the app. We'll refer to these by their query Id when we actually bind them to
+components.
+
+## The `SortedTable` Component
+
+Most of the movies app is built from tabular data views, and it's nice to have a
+re-usable `<table>` rendering, complete with sorting, pagination, and
+formatting.
+
+Here we introduce a common component that takes a query Id, a configuration
+array for the columns to render, and options for sorting and pagination. It's
+fully self-contained in terms of managing its own state, and wraps the
+underlying `ResultSortedTableView` provided by the TinyBase ui-react module.
+
+The `columns` prop is an array of `[cellId, label, component?]` entries, that
+describe the Cell of the query to get the value from, the label to put in the
+top header, and optionally, a custom way to render the values. We'll use this
+to render movie posters next to their links, for example.
+
+Note that we have `defaultDescending` default to `true`, since in this movies
+app, nearly every useful initial sorting (rating, popularity, year) is downward.
+
+Otherwise, there is nothing movie-specific about this component! So you may find
+it useful to take this verbatim for yourself, whenever you need to render
+tabular query data.
+
+```jsx
 const SortedTable = ({
   queryId,
   columns,
@@ -326,103 +672,79 @@ const SortedTable = ({
     </>
   );
 };
+```
 
-const MovieLink = ({queryId, rowId}) => {
-  const movieId = useResultCell(queryId, rowId, 'movieId');
-  return (
-    <a onClick={useSetRouteCallback('movies', movieId)}>
-      <ImageFromQuery queryId={queryId} rowId={rowId} cellId="movieImage" />
-      <ResultCellView queryId={queryId} rowId={rowId} cellId="movieName" />
-    </a>
-  );
-};
+This component also benefits from some light styling for the pagination buttons
+and the table itself:
 
-const YearLink = ({queryId, rowId}) => {
-  const year = useResultCell(queryId, rowId, 'year');
-  return (
-    <a onClick={useSetRouteCallback('years', year)}>
-      <ResultCellView queryId={queryId} rowId={rowId} cellId="year" />
-    </a>
-  );
-};
-
-const GenreLink = ({queryId, rowId}) => {
-  const genreId = useResultCell(queryId, rowId, 'genreId');
-  return (
-    <a onClick={useSetRouteCallback('genres', genreId)}>
-      <ResultCellView queryId={queryId} rowId={rowId} cellId="genreName" />
-    </a>
-  );
-};
-const DirectorLink = ({queryId, rowId}) => {
-  const personId = useResultCell(queryId, rowId, 'directorId');
-  return (
-    <a onClick={useSetRouteCallback('people', personId)}>
-      <ImageFromQuery queryId={queryId} rowId={rowId} cellId="directorImage" />
-      <ResultCellView queryId={queryId} rowId={rowId} cellId="directorName" />
-    </a>
-  );
-};
-
-const CastLink = ({queryId, rowId, billing = ''}) => {
-  const personId = useResultCell(queryId, rowId, `castId${billing}`);
-  return personId == null ? null : (
-    <a onClick={useSetRouteCallback('people', personId)}>
-      <ImageFromQuery
-        queryId={queryId}
-        rowId={rowId}
-        cellId={`castImage${billing}`}
-      />
-      <ResultCellView
-        queryId={queryId}
-        rowId={rowId}
-        cellId={`castName${billing}`}
-      />
-    </a>
-  );
-};
-
-const GenderFromQuery = ({queryId, rowId}) =>
-  genderString(useResultCell(queryId, rowId, 'gender'));
-
-const GenderFromTable = ({tableId, rowId}) =>
-  genderString(useCell(tableId, rowId, 'gender'));
-
-const genderString = (genderId) => {
-  switch (genderId) {
-    case 1:
-      return 'Female';
-    case 2:
-      return 'Male';
-    case 3:
-      return 'Non-binary';
-    default:
-      return 'Unknown';
+```less
+button {
+  border: 0;
+  cursor: pointer;
+  height: 1rem;
+  padding: 0;
+  vertical-align: text-top;
+  width: 1rem;
+  &.prev {
+    margin-left: 0.5rem;
+    &::before {
+      content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" height="1rem" viewBox="0 0 100 100" fill="black"><path d="M65 20v60l-30-30z" /></svg>');
+    }
   }
-};
+  &.next {
+    margin-right: 0.5rem;
+    &::before {
+      content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" height="1rem" viewBox="0 0 100 100" fill="black"><path d="M35 20v60l30-30z" /></svg>');
+    }
+  }
+  &.disabled {
+    cursor: default;
+    opacity: 0.3;
+  }
+}
 
-const ImageFromQuery = ({queryId, rowId, cellId, isLarge}) => (
-  <Image imageFile={useResultCell(queryId, rowId, cellId)} isLarge={isLarge} />
-);
+table {
+  border-collapse: collapse;
+  font-size: inherit;
+  line-height: inherit;
+  margin-top: 0.5rem;
+  table-layout: fixed;
+  width: 100%;
+  th,
+  td {
+    overflow: hidden;
+    padding: 0.25rem 0.5rem 0.25rem 0;
+    white-space: nowrap;
+  }
+  th {
+    border: solid #ddd;
+    border-width: 1px 0;
+    cursor: pointer;
+    text-align: left;
+    &.col0 {
+      width: 40%;
+    }
+    &.col1,
+    &.col2,
+    &.col3 {
+      width: 20%;
+    }
+  }
+  td {
+    border-bottom: 1px solid #eee;
+  }
+}
+```
 
-const ImageFromTable = ({tableId, rowId, cellId, isLarge}) => (
-  <Image imageFile={useCell(tableId, rowId, cellId)} isLarge={isLarge} />
-);
+## Overview Components
 
-const Image = ({imageFile, isLarge}) => (
-  <img
-    src={`https://image.tmdb.org/t/p/w${isLarge ? 92 : 45}${imageFile}`}
-    className={isLarge ? 'large' : ''}
-  />
-);
+We now use that component to create the major views of the application.
 
-const Page = ({title, children}) => (
-  <>
-    <h1>{title}</h1>
-    {children}
-  </>
-);
+First, the overview of all the rated movies in the database (which displays on
+the 'Movies' tab when the app first loads), comprising a `SortedTable` that
+renders the `movies` query with four columns, sorted by rating.
 
+```jsx
 const MoviesOverview = () => (
   <Page title="Rated movies">
     <SortedTable
@@ -438,7 +760,94 @@ const MoviesOverview = () => (
     />
   </Page>
 );
+```
 
+Note how three of the columns are given a custom component to render the value
+not as raw text but as a link. We'll describe [those simple
+components](#linking-between-views) later.
+
+The 'Years' tab renders the `years` query with two columns: the year and the
+number of movies in that year:
+
+```jsx
+const YearsOverview = () => (
+  <Page title="Years">
+    <SortedTable
+      queryId="years"
+      columns={[
+        ['year', 'Year', YearLink],
+        ['movieCount', 'Rated movies'],
+      ]}
+      defaultSortCellId="year"
+      noun="year"
+    />
+  </Page>
+);
+```
+
+Similarly, the 'Genres' tab renders the `genres` query with two columns: the
+genre and the number of movies in that genre:
+
+```jsx
+const GenresOverview = () => (
+  <Page title="Genres">
+    <SortedTable
+      queryId="genres"
+      columns={[
+        ['genreName', 'Genre', GenreLink],
+        ['movieCount', 'Rated movies'],
+      ]}
+      defaultSortCellId="movieCount"
+      noun="genre"
+    />
+  </Page>
+);
+```
+
+Finally, the 'People' tab renders two tables: the `directors` query and the
+`cast` query with four columns each, both sorted by popularity:
+
+```jsx
+const PeopleOverview = () => (
+  <Page title="People">
+    <h2>Directors</h2>
+    <SortedTable
+      queryId="directors"
+      columns={[
+        ['directorName', 'Director', DirectorLink],
+        ['gender', 'Gender', GenderFromQuery],
+        ['popularity', 'Popularity'],
+        ['movieCount', 'Rated movies'],
+      ]}
+      defaultSortCellId="popularity"
+      noun="director"
+    />
+    <h2>Cast</h2>
+    <SortedTable
+      queryId="cast"
+      columns={[
+        ['castName', 'Cast', CastLink],
+        ['gender', 'Gender', GenderFromQuery],
+        ['popularity', 'Popularity'],
+        ['movieCount', 'Rated movies'],
+      ]}
+      defaultSortCellId="popularity"
+      noun="actor"
+    />
+  </Page>
+);
+```
+
+Click through each of the section headings in the app so you can see how each of
+these is working.
+
+## Detail Components
+
+We also have a detail view for each section, which drills into a specific movie,
+year, genre, or person. Firstly, for a single movie, we isolate a row in the
+de-normalized `movies` query and render its Cell values in a page format:
+
+```jsx
 const MovieDetail = ({movieId}) => {
   const props = {queryId: 'movies', rowId: movieId};
   return (
@@ -476,26 +885,28 @@ const MovieDetail = ({movieId}) => {
     </Page>
   );
 };
+```
 
-const YearsOverview = () => (
-  <Page title="Years">
-    <SortedTable
-      queryId="years"
-      columns={[
-        ['year', 'Year', YearLink],
-        ['movieCount', 'Rated movies'],
-      ]}
-      defaultSortCellId="year"
-      noun="year"
-    />
-  </Page>
-);
+Again, note how we are often using custom components that take the Cell values
+from this result Row to make links to other parts of the app. We'll describe
+those shortly.
 
+Moving on, the detail for a specific year is just a sorted table of the movies
+from that year.
+
+But here is a case where we need to run the query within the component
+(rather than globally across the app). The `moviesForYear` query is constructed
+whenever the `year` prop changes, and uses the `where` function to show the
+basic movie data for just those movies matching that year. We get to benefit
+from the `queryMovieBasics` function again since we just need movie Id, name,
+rating and genre.
+
+```jsx
 const YearDetail = ({year}) => {
   useMemo(
     () =>
       useQueries().setQueryDefinition(
-        'moviesByYear',
+        'moviesForYear',
         'movies',
         ({select, join, where}) => {
           queryMovieBasics({select, join});
@@ -507,7 +918,7 @@ const YearDetail = ({year}) => {
   return (
     <Page title={`Movies from ${year}`}>
       <SortedTable
-        queryId="moviesByYear"
+        queryId="moviesForYear"
         columns={[
           ['movieName', 'Movie', MovieLink],
           ['rating', 'Rating'],
@@ -519,26 +930,17 @@ const YearDetail = ({year}) => {
     </Page>
   );
 };
+```
 
-const GenresOverview = () => (
-  <Page title="Genres">
-    <SortedTable
-      queryId="genres"
-      columns={[
-        ['genreName', 'Genre', GenreLink],
-        ['movieCount', 'Rated movies'],
-      ]}
-      defaultSortCellId="movieCount"
-      noun="genre"
-    />
-  </Page>
-);
+The genre detail page is very similar, with a `where` clause to match the
+genre's Id:
 
+```jsx
 const GenreDetail = ({genreId}) => {
   useMemo(
     () =>
       useQueries().setQueryDefinition(
-        'moviesByGenre',
+        'moviesForGenre',
         'movies',
         ({select, join, where}) => {
           queryMovieBasics({select, join});
@@ -550,7 +952,7 @@ const GenreDetail = ({genreId}) => {
   return (
     <Page title={`${useCell('genres', genreId, 'name')} movies`}>
       <SortedTable
-        queryId="moviesByGenre"
+        queryId="moviesForGenre"
         columns={[
           ['movieName', 'Movie', MovieLink],
           ['year', 'Year', YearLink],
@@ -562,62 +964,55 @@ const GenreDetail = ({genreId}) => {
     </Page>
   );
 };
+```
 
-const PeopleOverview = () => (
-  <Page title="People">
-    <h2>Directors</h2>
-    <SortedTable
-      queryId="directors"
-      columns={[
-        ['directorName', 'Director', DirectorLink],
-        ['gender', 'Gender', GenderFromQuery],
-        ['popularity', 'Popularity'],
-        ['movieCount', 'Rated movies'],
-      ]}
-      defaultSortCellId="popularity"
-      noun="director"
-    />
-    <h2>Cast</h2>
-    <SortedTable
-      queryId="cast"
-      columns={[
-        ['castName', 'Cast', CastLink],
-        ['gender', 'Gender', GenderFromQuery],
-        ['popularity', 'Popularity'],
-        ['movieCount', 'Rated movies'],
-      ]}
-      defaultSortCellId="popularity"
-      noun="actor"
-    />
-  </Page>
-);
+Finally, we build the detail page for a person. We create two queries on the fly
+here, one for those movies for which the person is the director, and one for
+those in which they are cast.
 
+The latter is slightly more complex since it needs to use the many-to-many
+`cast` Table as its root, from where it joins to the `movies` Table and `genres`
+Table in turn. Nevertheless, the result Cell Ids are named to be consistent with
+the other queries, so that we can use the same custom components to render each
+part of the HTML table.
+
+This component is also slightly more complex that the others because it is also
+rendering some parts of its content directly from the `people` Table (rather
+than via a query) - hence the use of the basic `useCell` hook and `CellView`
+component, for example.
+
+```jsx
 const PersonDetail = ({personId}) => {
   useMemo(
     () =>
       useQueries()
         .setQueryDefinition(
-          'moviesByDirector',
+          'moviesForDirector',
           'movies',
           ({select, join, where}) => {
             queryMovieBasics({select, join});
             where('directorId', personId);
           },
         )
-        .setQueryDefinition('moviesByCast', 'cast', ({select, join, where}) => {
-          select('movieId');
-          select('movies', 'name').as('movieName');
-          select('movies', 'image').as('movieImage');
-          select('movies', 'year');
-          select('movies', 'rating');
-          select('movies', 'genreId');
-          select('genres', 'name').as('genreName');
-          join('movies', 'movieId');
-          join('genres', 'movies', 'genreId');
-          where('castId', personId);
-        }),
+        .setQueryDefinition(
+          'moviesForCast',
+          'cast',
+          ({select, join, where}) => {
+            select('movieId');
+            select('movies', 'name').as('movieName');
+            select('movies', 'image').as('movieImage');
+            select('movies', 'year');
+            select('movies', 'rating');
+            select('movies', 'genreId');
+            select('genres', 'name').as('genreName');
+            join('movies', 'movieId');
+            join('genres', 'movies', 'genreId');
+            where('castId', personId);
+          },
+        ),
     [personId],
   );
+
   const props = {tableId: 'people', rowId: personId};
   return (
     <Page title={useCell('people', personId, 'name')}>
@@ -641,11 +1036,12 @@ const PersonDetail = ({personId}) => {
       <p>
         <CellView {...props} cellId="biography" />
       </p>
-      {useResultRowIds('moviesByDirector').length == 0 ? null : (
+
+      {useResultRowIds('moviesForDirector').length == 0 ? null : (
         <>
           <h2>As director:</h2>
           <SortedTable
-            queryId="moviesByDirector"
+            queryId="moviesForDirector"
             columns={[
               ['movieName', 'Movie', MovieLink],
               ['year', 'Year', YearLink],
@@ -656,11 +1052,12 @@ const PersonDetail = ({personId}) => {
           />
         </>
       )}
-      {useResultRowIds('moviesByCast').length == 0 ? null : (
+
+      {useResultRowIds('moviesForCast').length == 0 ? null : (
         <>
           <h2>As cast:</h2>
           <SortedTable
-            queryId="moviesByCast"
+            queryId="moviesForCast"
             columns={[
               ['movieName', 'Movie', MovieLink],
               ['year', 'Year', YearLink],
@@ -675,6 +1072,184 @@ const PersonDetail = ({personId}) => {
   );
 };
 ```
+
+## Linking Between Views
+
+When you click on a movie name (wherever you see it), we'll want to take you to
+the movie detail. Clicking a year should take you to the list of movies for the
+year, a genre to the list of movies in a genre - and so on.
+
+Here we create a collection of tiny custom components which, when passed a
+`queryId` and `rowId` can render a decorated link which, when clicked, update
+the application's route. We've been using these in the `SortedTable` instances
+above.
+
+For example, the `MovieLink` component creates a link that sets the route to be the
+`movies` section, with the value of the `movieId` Cell from the result Row being
+rendered. The `ImageFromQuery` component we'll discuss later.
+
+This component obviously assumes that the `movieId`, `movieImage`, and
+`movieName` Cell Ids are present in the query, so we only use this for queries
+that meaningfully populate those.
+
+```jsx
+const MovieLink = ({queryId, rowId}) => {
+  const movieId = useResultCell(queryId, rowId, 'movieId');
+  return (
+    <a onClick={useSetRouteCallback('movies', movieId)}>
+      <ImageFromQuery queryId={queryId} rowId={rowId} cellId="movieImage" />
+      <ResultCellView queryId={queryId} rowId={rowId} cellId="movieName" />
+    </a>
+  );
+};
+```
+
+We do the same for queries that contain a `year` Cell Id, for those that contain
+`genreId` and `genreName` Cell Ids, and for those that contain
+`directorId` and `directorName` Cell Ids:
+
+```jsx
+const YearLink = ({queryId, rowId}) => {
+  const year = useResultCell(queryId, rowId, 'year');
+  return (
+    <a onClick={useSetRouteCallback('years', year)}>
+      <ResultCellView queryId={queryId} rowId={rowId} cellId="year" />
+    </a>
+  );
+};
+
+const GenreLink = ({queryId, rowId}) => {
+  const genreId = useResultCell(queryId, rowId, 'genreId');
+  return (
+    <a onClick={useSetRouteCallback('genres', genreId)}>
+      <ResultCellView queryId={queryId} rowId={rowId} cellId="genreName" />
+    </a>
+  );
+};
+
+const DirectorLink = ({queryId, rowId}) => {
+  const personId = useResultCell(queryId, rowId, 'directorId');
+  return (
+    <a onClick={useSetRouteCallback('people', personId)}>
+      <ImageFromQuery queryId={queryId} rowId={rowId} cellId="directorImage" />
+      <ResultCellView queryId={queryId} rowId={rowId} cellId="directorName" />
+    </a>
+  );
+};
+```
+
+We do the same for actors, but for the billed cast members we need to check tor
+existence, in case a movie does not have three actors:
+
+```jsx
+const CastLink = ({queryId, rowId, billing = 1}) => {
+  const personId = useResultCell(queryId, rowId, `castId${billing}`);
+  return personId == null ? null : (
+    <a onClick={useSetRouteCallback('people', personId)}>
+      <ImageFromQuery
+        queryId={queryId}
+        rowId={rowId}
+        cellId={`castImage${billing}`}
+      />
+      <ResultCellView
+        queryId={queryId}
+        rowId={rowId}
+        cellId={`castName${billing}`}
+      />
+    </a>
+  );
+};
+```
+
+## Final Helper Components
+
+We conclude with a few simple components that we've been using across the
+application.
+
+These take the numeric TMDB gender Id (from the Row of a Table or the result Row
+of query) and render it as a string:
+
+```jsx
+const GenderFromQuery = ({queryId, rowId}) =>
+  genderString(useResultCell(queryId, rowId, 'gender'));
+
+const GenderFromTable = ({tableId, rowId}) =>
+  genderString(useCell(tableId, rowId, 'gender'));
+
+const genderString = (genderId) => {
+  switch (genderId) {
+    case 1:
+      return 'Female';
+    case 2:
+      return 'Male';
+    case 3:
+      return 'Non-binary';
+    default:
+      return 'Unknown';
+  }
+};
+```
+
+These take a TMDB image path (again from the Row of a Table or the result Row
+of query) and render it in large or small format:
+
+```jsx
+const ImageFromQuery = ({queryId, rowId, cellId, isLarge}) => (
+  <Image imageFile={useResultCell(queryId, rowId, cellId)} isLarge={isLarge} />
+);
+
+const ImageFromTable = ({tableId, rowId, cellId, isLarge}) => (
+  <Image imageFile={useCell(tableId, rowId, cellId)} isLarge={isLarge} />
+);
+
+const Image = ({imageFile, isLarge}) => (
+  <img
+    src={`https://image.tmdb.org/t/p/w${isLarge ? 92 : 45}${imageFile}`}
+    className={isLarge ? 'large' : ''}
+  />
+);
+```
+
+These images have some light styling:
+
+```less
+img {
+  width: 1rem;
+  height: 1.5rem;
+  object-fit: cover;
+  vertical-align: top;
+  margin: 0 0.25rem 0 0;
+  &.large {
+    width: 4rem;
+    height: 6rem;
+    margin: 0 0.5rem 1rem 0;
+    object-fit: contain;
+    float: left;
+    + ul + * {
+      clear: both;
+    }
+  }
+}
+```
+
+And finally, this trivial component just wraps the main view of the application
+to apply a consistent title to the top of each page:
+
+```jsx
+const Page = ({title, children}) => (
+  <>
+    <h1>{title}</h1>
+    {children}
+  </>
+);
+```
+
+That's it for the JavaScript!
+
+## Default Styling
+
+Just for completeness, here is the default CSS styling and typography that the
+app uses:
 
 ```less
 @font-face {
@@ -700,24 +1275,6 @@ body {
   line-height: 1.5rem;
   margin: 0;
   color: #333;
-}
-
-nav#menu {
-  background: #eee;
-  display: flex;
-  a {
-    flex: 1;
-    padding: 0.25rem;
-    text-align: center;
-    &.current {
-      background: #ddd;
-      font-weight: 600;
-    }
-  }
-}
-
-main#body {
-  padding: 0.5rem;
 }
 
 h1 {
@@ -754,98 +1311,19 @@ a {
 p {
   line-height: 1.2rem;
 }
-
-button {
-  width: 1rem;
-  height: 1rem;
-  border: 0;
-  padding: 0;
-  vertical-align: text-top;
-  cursor: pointer;
-  &.prev {
-    margin-left: 0.5rem;
-    &::before {
-      content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" height="1rem" viewBox="0 0 100 100" fill="black"><path d="M65 20v60l-30-30z" /></svg>');
-    }
-  }
-  &.next {
-    margin-right: 0.5rem;
-    &::before {
-      content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" height="1rem" viewBox="0 0 100 100" fill="black"><path d="M35 20v60l30-30z" /></svg>');
-    }
-  }
-  &.disabled {
-    cursor: default;
-    opacity: 0.3;
-  }
-}
-
-table {
-  width: 100%;
-  table-layout: fixed;
-  font-size: inherit;
-  line-height: inherit;
-  margin-top: 0.5rem;
-  border-collapse: collapse;
-  th,
-  td {
-    padding: 0.25rem 0.5rem 0.25rem 0;
-    overflow: hidden;
-    white-space: nowrap;
-  }
-  th {
-    cursor: pointer;
-    border: solid #ddd;
-    border-width: 1px 0;
-    text-align: left;
-    &.col0 {
-      width: 40%;
-    }
-    &.col1,
-    &.col2,
-    &.col3 {
-      width: 20%;
-    }
-  }
-  td {
-    border-bottom: 1px solid #eee;
-  }
-}
-
-img {
-  width: 1rem;
-  height: 1.5rem;
-  object-fit: cover;
-  vertical-align: top;
-  margin: 0 0.25rem 0 0;
-  &.large {
-    width: 4rem;
-    height: 6rem;
-    margin: 0 0.5rem 1rem 0;
-    object-fit: contain;
-    float: left;
-    + ul + * {
-      clear: both;
-    }
-  }
-}
-
-#loading {
-  animation: spin 1s infinite linear;
-  margin: 40vh auto;
-  width: 2rem;
-  height: 2rem;
-  &::before {
-    content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" height="2rem" viewBox="0 0 100 100"><path d="M50 10A40 40 0 1 1 10 50" stroke="black" fill="none" stroke-width="4" /></svg>');
-  }
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
 ```
+
+## Conclusion
+
+And that's it! There is quite a lot going on here, but this is arguably a
+complete and legitimate application that pulls in a decent amount of normalized
+relational data and renders it in a useful and navigable fashion.
+
+One thing that might be easy to forget (because the movie data does not change)
+is that every single view rendered in this application is reactive! Were any
+aspect of the data dynamic, it would be automatically updated in the user
+interface. It's left as an exercise to the reader to explore how this might
+work, perhaps with movie favorite lists, or pulling dynamic data directly from
+TMDB.
+
+In the meantime, as they say in the movies, that's a wrap!
