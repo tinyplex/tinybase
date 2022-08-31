@@ -16,7 +16,7 @@
 <span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>html</span><span class="punctuation">></span></span>
 </code></pre><p>Open this file in your browser and you should see the words &#x27;<a href="/demos/hello-world">Hello World</a>&#x27; on the screen, having been written to, and read from, a <a href="/api/store/interfaces/store/store"><code>Store</code></a>.</p><p>Note that the UMD script is pulled from NPM by the <a href="https://unpkg.com">unpkg</a> service. The script provides a global object from which you can destructure the top-level functions of the API.</p><h3 id="tinybase-in-a-node-application"><a href="/">TinyBase</a> in a Node application</h3><p><a href="/">TinyBase</a> is packaged on NPM, so you can easily install it as a dependency for your application.</p><pre><code><span class="function">mkdir</span> MyFirstTinyBaseApp
 <span class="builtin">cd</span> MyFirstTinyBaseApp
-<span class="function">npm</span> init -y
+<span class="function">npm</span> init <span class="parameter">-y</span>
 <span class="function">npm</span> <span class="function">install</span> tinybase
 </code></pre><p>Create a file in this directory called <code>index.mjs</code>:</p><pre><code><span class="keyword">import</span> <span class="punctuation">{</span>createStore<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase'</span><span class="punctuation">;</span>
 <span class="keyword">const</span> store <span class="operator">=</span> <span class="function"><a href="/api/store/functions/creation/createstore">createStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
