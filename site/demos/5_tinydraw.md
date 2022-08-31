@@ -773,7 +773,7 @@ const between = (value, min, max) =>
   value < min ? min : value > max ? max : value;
 ```
 
-# The Shape Component
+## The Shape Component
 
 Relatively speaking, each shape is quite a simple component. It uses the
 `useSelectedIdState` hook to identify if it is selected (and show the
@@ -1115,7 +1115,7 @@ body {
 }
 ```
 
-## That's it!
+## That's It!
 
 That's the drawing app.
 
