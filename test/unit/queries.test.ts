@@ -4226,7 +4226,7 @@ describe('Sorted Row Ids', () => {
 });
 
 describe('Miscellaneous', () => {
-  test('cleans pre-stores', () => {
+  test('cleans results when deleted', () => {
     setCells();
     queries.setQueryDefinition('q1', 't1', ({select}) => select('c1'));
     expect(queries.getResultTable('q1')).toEqual({
@@ -4237,6 +4237,67 @@ describe('Miscellaneous', () => {
     });
     queries.delQueryDefinition('q1');
     expect(queries.getResultTable('q1')).toEqual({});
+  });
+
+  test('resets results when select changes', () => {
+    setCells();
+    queries.setQueryDefinition('q1', 't1', ({select}) => select('c1'));
+    expect(queries.getResultTable('q1')).toEqual({
+      r1: {c1: 'one'},
+      r2: {c1: 'two'},
+      r3: {c1: 'three'},
+      r4: {c1: 'four'},
+    });
+    queries.setQueryDefinition('q1', 't1', ({select}) => select('c2'));
+    expect(queries.getResultTable('q1')).toEqual({
+      r1: {c2: 'odd'},
+      r2: {c2: 'even'},
+      r3: {c2: 'odd'},
+      r4: {c2: 'even'},
+    });
+  });
+
+  test('resets results when where changes', () => {
+    setCells();
+    queries.setQueryDefinition('q1', 't1', ({select, where}) => {
+      select('c1');
+      where((getCell) => (getCell('c1') as string)[0] == 't');
+    });
+    expect(queries.getResultTable('q1')).toEqual({
+      r2: {c1: 'two'},
+      r3: {c1: 'three'},
+    });
+    queries.setQueryDefinition('q1', 't1', ({select, where}) => {
+      select('c1');
+      where((getCell) => (getCell('c1') as string)[0] != 't');
+    });
+    expect(queries.getResultTable('q1')).toEqual({
+      r1: {c1: 'one'},
+      r4: {c1: 'four'},
+    });
+  });
+
+  test('resets results when group changes', () => {
+    setCells();
+    queries.setQueryDefinition('q1', 't1', ({select, group}) => {
+      select((getCell) => (getCell('c1') as string)[0]).as('c1');
+      select('c3');
+      group('c3', 'avg');
+    });
+    expect(queries.getResultTable('q1')).toEqual({
+      0: {c1: 't', c3: 2.5},
+      1: {c1: 'o', c3: 1},
+      2: {c1: 'f', c3: 4},
+    });
+    queries.setQueryDefinition('q1', 't1', ({select, group}) => {
+      select('c2');
+      select('c3');
+      group('c3', 'avg');
+    });
+    expect(queries.getResultTable('q1')).toEqual({
+      3: {c2: 'even', c3: 3},
+      4: {c2: 'odd', c3: 2},
+    });
   });
 
   test('remove listener', () => {
