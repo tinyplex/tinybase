@@ -134,8 +134,16 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
         ),
       );
 
-    const cleanPreStores = (queryId: Id) =>
+    const resetPreStores = (queryId: Id) => {
+      mapForEach(
+        mapGet(preStoreListenerIds, queryId),
+        (preStore, listenerIds) =>
+          collForEach(listenerIds, (listenerId) =>
+            preStore.delListener(listenerId),
+          ),
+      );
       arrayForEach([resultStore, preStore], (store) => store.delTable(queryId));
+    };
 
     const synchronizeTransactions = (
       queryId: Id,
@@ -163,7 +171,7 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
       }) => void,
     ): Queries => {
       setDefinition(queryId, tableId);
-      cleanPreStores(queryId);
+      resetPreStores(queryId);
 
       const selectEntries: [Id, SelectClause][] = [];
       const joinEntries: [IdOrNull, JoinClause][] = [
@@ -557,14 +565,7 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
     };
 
     const delQueryDefinition = (queryId: Id): Queries => {
-      mapForEach(
-        mapGet(preStoreListenerIds, queryId),
-        (preStore, listenerIds) =>
-          collForEach(listenerIds, (listenerId) =>
-            preStore.delListener(listenerId),
-          ),
-      );
-      cleanPreStores(queryId);
+      resetPreStores(queryId);
       delDefinition(queryId);
       return queries;
     };
