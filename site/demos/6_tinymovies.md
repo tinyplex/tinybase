@@ -641,8 +641,8 @@ const SortedTable = ({
   const RowComponent = useCallback(
     (props) => (
       <tr>
-        {columns.map(([cellId, , CellComponent], c) => (
-          <td class={`c${c}`}>
+        {columns.map(([cellId, , CellComponent]) => (
+          <td>
             {CellComponent == null ? (
               <ResultCellView {...props} cellId={cellId} />
             ) : (
@@ -903,9 +903,10 @@ rating and genre.
 
 ```jsx
 const YearDetail = ({year}) => {
+  const queries = useQueries();
   useMemo(
     () =>
-      useQueries().setQueryDefinition(
+      queries.setQueryDefinition(
         'moviesForYear',
         'movies',
         ({select, join, where}) => {
@@ -937,9 +938,10 @@ genre's Id:
 
 ```jsx
 const GenreDetail = ({genreId}) => {
+  const queries = useQueries();
   useMemo(
     () =>
-      useQueries().setQueryDefinition(
+      queries.setQueryDefinition(
         'moviesForGenre',
         'movies',
         ({select, join, where}) => {
@@ -983,9 +985,10 @@ component, for example.
 
 ```jsx
 const PersonDetail = ({personId}) => {
+  const queries = useQueries();
   useMemo(
     () =>
-      useQueries()
+      queries
         .setQueryDefinition(
           'moviesForDirector',
           'movies',
