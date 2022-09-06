@@ -8,8 +8,8 @@ actors.
 information in this app. Thank you for a great data set to demonstrate TinyBase!
 
 This demo includes a powerful general component called
-[`SortedTable`](#the-sortedtable-component) that you should feel free to use in
-your own apps.
+[`ResultSortableGrid`](#the-resultsortablegrid-component) that you should feel
+free to use in your own apps.
 
 ## An Overview Of The Data
 
@@ -26,8 +26,7 @@ Naturally, there are relationships between these. For example, the `directorId`
 Cell of the `movies` Table references a person in the `people` table, and the
 `genreId` Cell references the `genre` Table. The `cast` Table is a many-to-many
 join that contains all the `movieId`/`castId` pairs for the top three billed
-actors
-of each movie.
+actors of each movie.
 
 | Table    | Cell Ids                                                                     |
 | -------- | ---------------------------------------------------------------------------- |
@@ -172,8 +171,8 @@ addEventListener('load', () => {
 
 ## Basic Components
 
-Before we get to the really interesting parts, let's dispense with the
-basic building blocks for the application's user interface.
+Before we get to the really interesting parts, let's dispense with the basic
+building blocks for the application's user interface.
 
 ### Loading Spinner
 
@@ -271,7 +270,7 @@ const Header = () => {
     <nav>
       {Object.entries(SECTIONS).map(([section, [title]]) => (
         <a
-          class={currentSection == section ? 'current' : ''}
+          className={currentSection == section ? 'current' : ''}
           onClick={useSetRouteCallback(section, null)}
         >
           {title}
@@ -424,8 +423,8 @@ const createAndInitQueries = (store) => {
   // ...
 ```
 
-First we define the `movies` query that populates the main overview of the movies
-section of the app, and provides the detail about the movie's overview,
+First we define the `movies` query that populates the main overview of the
+movies section of the app, and provides the detail about the movie's overview,
 directors and cast.
 
 The join to the `people` Table for the director name and image should be
@@ -502,8 +501,8 @@ FROM
         ON actors3._rowId = cast3.castId
 ```
 
-(Except the results in our case are reactive - not something you usually get
-to benefit from with a SQL-based database!)
+(Except the results in our case are reactive - not something you usually get to
+benefit from with a SQL-based database!)
 
 We also create query definitions for the other persistent queries. These use the
 `group` function to count the number of movies per year, genre, and so on, used
@@ -555,7 +554,7 @@ That's it for the main persistent queries that power most of the major views of
 the app. We'll refer to these by their query Id when we actually bind them to
 components.
 
-## The `SortedTable` Component
+## The `ResultSortableGrid` Component
 
 Most of the movies app is built from tabular data views, and it's nice to have a
 re-usable `<table>` rendering, complete with sorting, pagination, and
@@ -568,8 +567,8 @@ underlying `ResultSortedTableView` provided by the TinyBase ui-react module.
 
 The `columns` prop is an array of `[cellId, label, component?]` entries, that
 describe the Cell of the query to get the value from, the label to put in the
-top header, and optionally, a custom way to render the values. We'll use this
-to render movie posters next to their links, for example.
+top header, and optionally, a custom way to render the values. We'll use this to
+render movie posters next to their links, for example.
 
 Note that we have `defaultDescending` default to `true`, since in this movies
 app, nearly every useful initial sorting (rating, popularity, year) is downward.
@@ -579,7 +578,7 @@ it useful to take this verbatim for yourself, whenever you need to render
 tabular query data.
 
 ```jsx
-const SortedTable = ({
+const ResultSortableGrid = ({
   queryId,
   columns,
   defaultSortCellId,
@@ -594,6 +593,10 @@ const SortedTable = ({
   const [offset, setOffset] = useState(0);
   const count = useResultRowIds(queryId).length;
 
+  if (offset > count) {
+    setOffset(0);
+  }
+
   const Pagination = useCallback(
     () => (
       <>
@@ -602,14 +605,20 @@ const SortedTable = ({
         {count > limit && (
           <>
             {offset > 0 ? (
-              <button class="prev" onClick={() => setOffset(offset - limit)} />
+              <button
+                className="prev"
+                onClick={() => setOffset(offset - limit)}
+              />
             ) : (
-              <button class="prev disabled" />
+              <button className="prev disabled" />
             )}
             {offset + limit < count ? (
-              <button class="next" onClick={() => setOffset(offset + limit)} />
+              <button
+                className="next"
+                onClick={() => setOffset(offset + limit)}
+              />
             ) : (
-              <button class="next disabled" />
+              <button className="next disabled" />
             )}
             {offset + 1} to {Math.min(count, offset + limit)}
           </>
@@ -624,11 +633,14 @@ const SortedTable = ({
       <tr>
         {columns.map(([cellId, label], c) =>
           cellId == sortCellId ? (
-            <th onClick={() => setDescending(!descending)} class={`col${c}`}>
+            <th
+              onClick={() => setDescending(!descending)}
+              className={`col${c}`}
+            >
               {descending ? '\u2193' : '\u2191'} {label}
             </th>
           ) : (
-            <th onClick={() => setSortCellId(cellId)} class={`col${c}`}>
+            <th onClick={() => setSortCellId(cellId)} className={`col${c}`}>
               {label}
             </th>
           ),
@@ -741,13 +753,13 @@ table {
 We now use that component to create the major views of the application.
 
 First, the overview of all the rated movies in the database (which displays on
-the 'Movies' tab when the app first loads), comprising a `SortedTable` that
-renders the `movies` query with four columns, sorted by rating.
+the 'Movies' tab when the app first loads), comprising a `ResultSortableGrid`
+that renders the `movies` query with four columns, sorted by rating.
 
 ```jsx
 const MoviesOverview = () => (
   <Page title="Rated movies">
-    <SortedTable
+    <ResultSortableGrid
       queryId="movies"
       columns={[
         ['movieName', 'Movie', MovieLink],
@@ -772,7 +784,7 @@ number of movies in that year:
 ```jsx
 const YearsOverview = () => (
   <Page title="Years">
-    <SortedTable
+    <ResultSortableGrid
       queryId="years"
       columns={[
         ['year', 'Year', YearLink],
@@ -791,7 +803,7 @@ genre and the number of movies in that genre:
 ```jsx
 const GenresOverview = () => (
   <Page title="Genres">
-    <SortedTable
+    <ResultSortableGrid
       queryId="genres"
       columns={[
         ['genreName', 'Genre', GenreLink],
@@ -811,7 +823,7 @@ Finally, the 'People' tab renders two tables: the `directors` query and the
 const PeopleOverview = () => (
   <Page title="People">
     <h2>Directors</h2>
-    <SortedTable
+    <ResultSortableGrid
       queryId="directors"
       columns={[
         ['directorName', 'Director', DirectorLink],
@@ -823,7 +835,7 @@ const PeopleOverview = () => (
       noun="director"
     />
     <h2>Cast</h2>
-    <SortedTable
+    <ResultSortableGrid
       queryId="cast"
       columns={[
         ['castName', 'Cast', CastLink],
@@ -894,12 +906,12 @@ those shortly.
 Moving on, the detail for a specific year is just a sorted table of the movies
 from that year.
 
-But here is a case where we need to run the query within the component
-(rather than globally across the app). The `moviesForYear` query is constructed
-whenever the `year` prop changes, and uses the `where` function to show the
-basic movie data for just those movies matching that year. We get to benefit
-from the `queryMovieBasics` function again since we just need movie Id, name,
-rating and genre.
+But here is a case where we need to run the query within the component (rather
+than globally across the app). The `moviesForYear` query is constructed whenever
+the `year` prop changes, and uses the `where` function to show the basic movie
+data for just those movies matching that year. We get to benefit from the
+`queryMovieBasics` function again since we just need movie Id, name, rating and
+genre.
 
 ```jsx
 const YearDetail = ({year}) => {
@@ -918,7 +930,7 @@ const YearDetail = ({year}) => {
   );
   return (
     <Page title={`Movies from ${year}`}>
-      <SortedTable
+      <ResultSortableGrid
         queryId="moviesForYear"
         columns={[
           ['movieName', 'Movie', MovieLink],
@@ -953,7 +965,7 @@ const GenreDetail = ({genreId}) => {
   );
   return (
     <Page title={`${useCell('genres', genreId, 'name')} movies`}>
-      <SortedTable
+      <ResultSortableGrid
         queryId="moviesForGenre"
         columns={[
           ['movieName', 'Movie', MovieLink],
@@ -1043,7 +1055,7 @@ const PersonDetail = ({personId}) => {
       {useResultRowIds('moviesForDirector').length == 0 ? null : (
         <>
           <h2>As director:</h2>
-          <SortedTable
+          <ResultSortableGrid
             queryId="moviesForDirector"
             columns={[
               ['movieName', 'Movie', MovieLink],
@@ -1059,7 +1071,7 @@ const PersonDetail = ({personId}) => {
       {useResultRowIds('moviesForCast').length == 0 ? null : (
         <>
           <h2>As cast:</h2>
-          <SortedTable
+          <ResultSortableGrid
             queryId="moviesForCast"
             columns={[
               ['movieName', 'Movie', MovieLink],
@@ -1084,12 +1096,12 @@ year, a genre to the list of movies in a genre - and so on.
 
 Here we create a collection of tiny custom components which, when passed a
 `queryId` and `rowId` can render a decorated link which, when clicked, update
-the application's route. We've been using these in the `SortedTable` instances
-above.
+the application's route. We've been using these in the `ResultSortableGrid`
+instances above.
 
-For example, the `MovieLink` component creates a link that sets the route to be the
-`movies` section, with the value of the `movieId` Cell from the result Row being
-rendered. The `ImageFromQuery` component we'll discuss later.
+For example, the `MovieLink` component creates a link that sets the route to be
+the `movies` section, with the value of the `movieId` Cell from the result Row
+being rendered. The `ImageFromQuery` component we'll discuss later.
 
 This component obviously assumes that the `movieId`, `movieImage`, and
 `movieName` Cell Ids are present in the query, so we only use this for queries
@@ -1108,8 +1120,8 @@ const MovieLink = ({queryId, rowId}) => {
 ```
 
 We do the same for queries that contain a `year` Cell Id, for those that contain
-`genreId` and `genreName` Cell Ids, and for those that contain
-`directorId` and `directorName` Cell Ids:
+`genreId` and `genreName` Cell Ids, and for those that contain `directorId` and
+`directorName` Cell Ids:
 
 ```jsx
 const YearLink = ({queryId, rowId}) => {
@@ -1193,8 +1205,8 @@ const genderString = (genderId) => {
 };
 ```
 
-These take a TMDB image path (again from the Row of a Table or the result Row
-of query) and render it in large or small format:
+These take a TMDB image path (again from the Row of a Table or the result Row of
+query) and render it in large or small format:
 
 ```jsx
 const ImageFromQuery = ({queryId, rowId, cellId, isLarge}) => (
