@@ -69,7 +69,7 @@ export const build = (outDir: string, api = true, pages = true): void => {
     .addLessFile('site/less/index.less')
     .addDir('site/fonts', 'fonts')
     .addDir('site/extras')
-    .addDir('site/tmdb', 'assets')
+    .addDir('site/data', 'assets')
     .addStringFile(
       `{"countries":${readFileSync(
         'node_modules/country-flag-emoji-json/dist/by-code.json',
