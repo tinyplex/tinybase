@@ -169,8 +169,8 @@ describe('todo-app', () => {
   });
 });
 
-test('tinydraw', async () => {
-  await expectPage(`/demos/tinydraw`);
+test('drawing', async () => {
+  await expectPage(`/demos/drawing`);
   await expectedElement('h1', 'Drawing');
   await expectedFramedElement('#toolbar');
   await expectedFramedElement('#canvas');

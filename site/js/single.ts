@@ -9,7 +9,7 @@ addEventListener('load', () => {
     return;
   }
 
-  const visibleElementsByLevel = new Map();
+  const visibleElementsByLevel = new Map<number, Set<HTMLElement>>();
 
   const titleObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
@@ -26,7 +26,7 @@ addEventListener('load', () => {
         visibleElements.add(target);
       } else {
         visibleElements.delete(target);
-        delClass(queryById(target.dataset.id), 'current');
+        delClass(queryById(target.dataset.id as string), 'current');
       }
     });
 
@@ -39,7 +39,7 @@ addEventListener('load', () => {
 
     visibleElementsByLevel.forEach((visibleElements, level) =>
       visibleElements.forEach((element) => {
-        const target = queryById(element.dataset.id);
+        const target = queryById(element.dataset.id as string);
         if (level == maxLevel) {
           addClass(target, 'current');
         } else {

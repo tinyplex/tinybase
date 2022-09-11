@@ -22,10 +22,11 @@ addEventListener('load', () => {
 
   const addPen = () => {
     const iframe = queryElement(article, ':scope iframe');
-    if (iframe == null) {
+    const iframeParent = iframe?.parentElement;
+    if (iframe == null || iframeParent == null) {
       return;
     }
-    const form = iframe.parentElement.insertBefore(
+    const form = iframeParent.insertBefore(
       createElement('form', null, {
         action: 'https://codepen.io/pen/define',
         method: 'post',
@@ -33,7 +34,7 @@ addEventListener('load', () => {
       }),
       iframe,
     ) as HTMLFormElement;
-    iframe.parentElement.insertBefore(
+    iframeParent.insertBefore(
       createElement('a', null, {id: 'penEdit'}, 'CodePen'),
       iframe,
     ).onclick = () => {
@@ -63,7 +64,7 @@ addEventListener('load', () => {
     if (
       target.tagName == 'SPAN' &&
       target.innerHTML == '' &&
-      target.parentElement.tagName == 'LI'
+      target.parentElement?.tagName == 'LI'
     ) {
       return openClose(target.parentElement);
     }
