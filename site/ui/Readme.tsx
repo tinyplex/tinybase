@@ -2,6 +2,7 @@ import {Markdown, NoPropComponent, usePageNode} from 'tinydocs';
 import {useCoverage, useMetadata, useSizes} from './BuildContext';
 import {Node} from 'tinydocs';
 import React from 'react';
+import type {Sizes} from './BuildContext';
 
 export const Readme: NoPropComponent = (): any => {
   const [summary, body] = useReadme(usePageNode());
@@ -21,7 +22,8 @@ const MODULES = [
   'tinybase',
 ];
 
-const toKb = (bytes: number) => `${(bytes / 1000).toFixed(1)}kB`;
+const toKb = (bytes: number | undefined) =>
+  bytes != null ? `${(bytes / 1000).toFixed(1)}kB` : '';
 
 export const useReadme = (node: Node): [string, string] => {
   const metadata = useMetadata();
@@ -36,16 +38,16 @@ export const useReadme = (node: Node): [string, string] => {
     getSizeTable: () => getSizeTable(sizes),
     getCoverageTable: () => getCoverageTable(coverage),
   }).forEach(([key, value]) => {
-    globalThis[key] = value;
+    (globalThis as any)[key] = value;
   });
 
   const substituteEval = (markdown: string): string =>
     markdown.replace(/@@EVAL\("(.*?)"\)/gms, (_, script) => (0, eval)(script));
 
-  return [substituteEval(node.summary), substituteEval(node.body)];
+  return [substituteEval(node.summary ?? ''), substituteEval(node.body ?? '')];
 };
 
-const getSizeTable = (sizes) =>
+const getSizeTable = (sizes: Sizes) =>
   `<table class='fixed'>
     <tr>
       <th width='30%'>&nbsp;</th>
@@ -66,7 +68,7 @@ const getSizeTable = (sizes) =>
     ).join('')}
   </table>`;
 
-const getCoverageTable = (coverage) =>
+const getCoverageTable = (coverage: any) =>
   `<table class='fixed'>
     <tr>
       <th width='30%'>&nbsp;</th>

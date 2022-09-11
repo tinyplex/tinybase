@@ -153,7 +153,7 @@ const tsCheck = async (dir) => {
   const unusedResults = Object.entries(
     unusedExports(`${path.resolve(dir)}/tsconfig.json`, [
       '--allowUnusedTypes',
-      '--excludePathsFromReport=tinybase.ts;ui-react.ts',
+      '--excludePathsFromReport=tinybase.ts;ui-react.ts;build.ts',
     ]),
   )
     .map(
@@ -328,6 +328,7 @@ export const ts = async () => {
   await tsCheck('src');
   await copyDefinitions(`${LIB_DIR}/debug`);
   await tsCheck('test');
+  await tsCheck('site');
 };
 
 export const compileForTest = async () => {

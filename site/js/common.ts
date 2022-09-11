@@ -1,15 +1,17 @@
 export const doc = document;
 
-export const query = (query: string): HTMLElement => doc.querySelector(query);
+export const query = (query: string): HTMLElement =>
+  doc.querySelector(query) as HTMLElement;
 export const queryElement = (
   element: HTMLElement,
   query: string,
-): HTMLElement => element.querySelector(query);
-export const queryById = (id: string): HTMLElement => doc.getElementById(id);
+): HTMLElement => element.querySelector(query) as HTMLElement;
+export const queryById = (id: string): HTMLElement =>
+  doc.getElementById(id) as HTMLElement;
 
 export const createElement = (
   tagName: string,
-  parent: HTMLElement,
+  parent: HTMLElement | null,
   attributes: Record<string, string> = {},
   text?: string,
 ): HTMLElement => {
@@ -26,7 +28,7 @@ export const createElement = (
 const editClass = (
   element: HTMLElement,
   edit: string,
-  callback: (classes: string[], position) => void,
+  callback: (classes: string[], position: number) => void,
 ): void => {
   const classes = (element.className ?? '').split(' ');
   callback(classes, classes.indexOf(edit));
