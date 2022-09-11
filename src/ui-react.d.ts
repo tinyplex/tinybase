@@ -154,6 +154,7 @@ export type RelationshipsOrRelationshipsId = Relationships | Id;
  * parameter or a prop, allowing you to pass in either the Store or its Id.
  *
  * @category Identity
+ * @since v2.0.0
  */
 export type QueriesOrQueriesId = Queries | Id;
 
@@ -2187,6 +2188,7 @@ export function useRowIdsListener(
  * // -> 0
  * ```
  * @category Store hooks
+ * @since v2.0.0
  */
 export function useSortedRowIdsListener(
   tableId: Id,
@@ -4236,7 +4238,7 @@ export function useLinkedRowIdsListener(
  * // -> '<span>brown</span>'
  * ```
  * @category Queries hooks
- * @since v2.0.0-beta
+ * @since v2.0.0
  */
 export function useCreateQueries(
   store: Store,
@@ -4304,6 +4306,7 @@ export function useCreateQueries(
  * // -> '<span>0</span>'
  * ```
  * @category Queries hooks
+ * @since v2.0.0
  */
 export function useQueries(id?: Id): Queries | undefined;
 
@@ -4420,6 +4423,7 @@ export function useQueries(id?: Id): Queries | undefined;
  * // -> '<span>{"fido":{"color":"brown"},"cujo":{"color":"black"}}</span>'
  * ```
  * @category Queries hooks
+ * @since v2.0.0
  */
 export function useResultTable(
   queryId: Id,
@@ -4540,6 +4544,7 @@ export function useResultTable(
  * // -> '<span>["fido","cujo"]</span>'
  * ```
  * @category Queries hooks
+ * @since v2.0.0
  */
 export function useResultRowIds(
   queryId: Id,
@@ -4688,6 +4693,7 @@ export function useResultRowIds(
  * // -> '<span>["cujo","fido"]</span>'
  * ```
  * @category Queries hooks
+ * @since v2.0.0
  */
 export function useResultSortedRowIds(
   queryId: Id,
@@ -4815,6 +4821,7 @@ export function useResultSortedRowIds(
  * // -> '<span>{"color":"brown"}</span>'
  * ```
  * @category Queries hooks
+ * @since v2.0.0
  */
 export function useResultRow(
   queryId: Id,
@@ -4945,6 +4952,7 @@ export function useResultRow(
  * // -> '<span>["species","color"]</span>'
  * ```
  * @category Queries hooks
+ * @since v2.0.0
  */
 export function useResultCellIds(
   queryId: Id,
@@ -5071,6 +5079,7 @@ export function useResultCellIds(
  * // -> '<span>brown</span>'
  * ```
  * @category Queries hooks
+ * @since v2.0.0
  */
 export function useResultCell(
   queryId: Id,
@@ -5147,6 +5156,7 @@ export function useResultCell(
  * // -> 0
  * ```
  * @category Queries hooks
+ * @since v2.0.0
  */
 export function useResultTableListener(
   queryId: IdOrNull,
@@ -5223,6 +5233,7 @@ export function useResultTableListener(
  * // -> 0
  * ```
  * @category Queries hooks
+ * @since v2.0.0
  */
 export function useResultRowIdsListener(
   queryId: IdOrNull,
@@ -5306,6 +5317,7 @@ export function useResultRowIdsListener(
  * // -> 0
  * ```
  * @category Queries hooks
+ * @since v2.0.0
  */
 export function useResultSortedRowIdsListener(
   queryId: Id,
@@ -5392,6 +5404,7 @@ export function useResultSortedRowIdsListener(
  * // -> 0
  * ```
  * @category Queries hooks
+ * @since v2.0.0
  */
 export function useResultRowListener(
   queryId: IdOrNull,
@@ -5475,6 +5488,7 @@ export function useResultRowListener(
  * // -> 0
  * ```
  * @category Queries hooks
+ * @since v2.0.0
  */
 export function useResultCellIdsListener(
   queryId: IdOrNull,
@@ -5560,6 +5574,7 @@ export function useResultCellIdsListener(
  * // -> 0
  * ```
  * @category Queries hooks
+ * @since v2.0.0
  */
 export function useResultCellListener(
   queryId: IdOrNull,
@@ -7283,8 +7298,8 @@ export type ForwardCheckpointsProps = {
 
 /**
  * ProviderProps props are used with the Provider component, so that Store
- * Metrics, Indexes, Relationships, and Checkpoints objects can be passed into
- * the context of an application and used throughout.
+ * Metrics, Indexes, Relationships, Queries, and Checkpoints objects can be
+ * passed into the context of an application and used throughout.
  *
  * One of each type of object can be provided as a default within the context.
  * Additionally, multiple of each type of object can be provided in an Id-keyed
@@ -7335,12 +7350,12 @@ export type ProviderProps = {
   readonly relationshipsById?: {[relationshipsId: Id]: Relationships};
   /**
    * A default single Queries object that will be available within the Provider
-   * context.
+   * context, since v2.0.0.
    */
   readonly queries?: Queries;
   /**
    * An object containing multiple Queries objects that will be available within
-   * the Provider context by their Id.
+   * the Provider context by their Id, since v2.0.0.
    */
   readonly queriesById?: {[queriesId: Id]: Queries};
   /**
@@ -7367,9 +7382,9 @@ export type ComponentReturnType = ReactElement<any, any> | null;
  * The Provider component is used to wrap part of an application in a context
  * that provides default objects to be used by hooks and components within.
  *
- * Store, Metrics, Indexes, Relationships, and Checkpoints objects can be passed
- * into the context of an application and used throughout. One of each type of
- * object can be provided as a default within the context. Additionally,
+ * Store, Metrics, Indexes, Relationships, Queries, and Checkpoints objects can
+ * be passed into the context of an application and used throughout. One of each
+ * type of object can be provided as a default within the context. Additionally,
  * multiple of each type of object can be provided in an Id-keyed map to the
  * `___ById` props.
  *
@@ -7792,6 +7807,7 @@ export function RowView(props: RowProps): ComponentReturnType;
  * // -> '<div><span>felix: cat</span><span><b>fido</b>: dog</span></div>'
  * ```
  * @category Store components
+ * @since v2.0.0
  */
 export function SortedTableView(props: SortedTableProps): ComponentReturnType;
 
@@ -8888,6 +8904,7 @@ export function LinkedRowsView(props: LinkedRowsProps): ComponentReturnType;
  * // -> '<span></span>'
  * ```
  * @category Queries components
+ * @since v2.0.0
  */
 export function ResultCellView(props: ResultCellProps): ComponentReturnType;
 
@@ -9034,6 +9051,7 @@ export function ResultCellView(props: ResultCellProps): ComponentReturnType;
  * // -> '<div><span><b>species</b>: dog</span><span>color: brown</span></div>'
  * ```
  * @category Queries components
+ * @since v2.0.0
  */
 export function ResultRowView(props: ResultRowProps): ComponentReturnType;
 
@@ -9171,6 +9189,7 @@ export function ResultRowView(props: ResultRowProps): ComponentReturnType;
  * // -> '<div><span>felix: black</span><span><b>fido</b>: brown</span></div>'
  * ```
  * @category Queries components
+ * @since v2.0.0
  */
 export function ResultSortedTableView(
   props: ResultSortedTableProps,
@@ -9295,6 +9314,7 @@ export function ResultSortedTableView(
  * // -> '<div><span><b>fido</b>: brown</span><span>felix: black</span></div>'
  * ```
  * @category Queries components
+ * @since v2.0.0
  */
 export function ResultTableView(props: ResultTableProps): ComponentReturnType;
 
