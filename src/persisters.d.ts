@@ -22,7 +22,7 @@
  * @see Persisting Data guide
  * @see Countries demo
  * @see Todo App demos
- * @see TinyDraw demo
+ * @see Drawing demo
  * @packageDocumentation
  * @module persisters
  */

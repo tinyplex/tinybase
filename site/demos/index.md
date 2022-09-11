@@ -8,6 +8,6 @@ Some demos have multiple versions which start simple and then gain additional
 functionality with subsequent iterations.
 
 For a 'kitchen-sink' demo that shows TinyBase really being put through its
-paces, take a look at the TinyDraw demo.
+paces, take a look at the Drawing demo.
 
 This set of demos should grow over time, so keep checking back!

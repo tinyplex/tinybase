@@ -244,7 +244,7 @@ export type RelationshipsListenerStats = {
  * relationships.destroy();
  * ```
  * @see Relationships And Checkpoints guides
- * @see TinyDraw demo
+ * @see Drawing demo
  * @category Relationships
  */
 export interface Relationships {
