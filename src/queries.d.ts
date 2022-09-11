@@ -9,7 +9,7 @@
  *
  * @packageDocumentation
  * @module queries
- * @since v2.0.0-beta
+ * @since v2.0.0
  */
 
 import {
@@ -38,7 +38,7 @@ import {Id, IdOrNull, Ids} from './common.d';
  * @param length The length of the array of Cell values to be aggregated.
  * @returns The value of the aggregation.
  * @category Aggregators
- * @since v2.0.0-beta
+ * @since v2.0.0
  */
 export type Aggregate = (cells: Cell[], length: number) => Cell;
 
@@ -64,7 +64,7 @@ export type Aggregate = (cells: Cell[], length: number) => Cell;
  * @param length The length of the array of Cell values in the aggregation.
  * @returns The new value of the aggregation.
  * @category Aggregators
- * @since v2.0.0-beta
+ * @since v2.0.0
  */
 export type AggregateAdd = (
   current: Cell,
@@ -97,7 +97,7 @@ export type AggregateAdd = (
  * @param length The length of the array of Cell values in the aggregation.
  * @returns The new value of the aggregation.
  * @category Aggregators
- * @since v2.0.0-beta
+ * @since v2.0.0
  */
 export type AggregateRemove = (
   current: Cell,
@@ -129,7 +129,7 @@ export type AggregateRemove = (
  * @param length The length of the array of Cell values in the aggregation.
  * @returns The new value of the aggregation.
  * @category Aggregators
- * @since v2.0.0-beta
+ * @since v2.0.0
  */
 export type AggregateReplace = (
   current: Cell,
@@ -147,7 +147,7 @@ export type AggregateReplace = (
  *
  * @param queryId The Id of the query that the callback can operate on.
  * @category Callback
- * @since v2.0.0-beta
+ * @since v2.0.0
  */
 export type QueryCallback = (queryId: Id) => void;
 
@@ -168,7 +168,7 @@ export type QueryCallback = (queryId: Id) => void;
  * @param getCellChange A function that returns information about any Cell's
  * changes.
  * @category Listener
- * @since v2.0.0-beta
+ * @since v2.0.0
  */
 export type ResultTableListener = (
   queries: Queries,
@@ -190,7 +190,7 @@ export type ResultTableListener = (
  * @param queries A reference to the Queries object that changed.
  * @param tableId The Id of the Table that changed, which is also the query Id.
  * @category Listener
- * @since v2.0.0-beta
+ * @since v2.0.0
  */
 export type ResultRowIdsListener = (queries: Queries, tableId: Id) => void;
 
@@ -217,7 +217,7 @@ export type ResultRowIdsListener = (queries: Queries, tableId: Id) => void;
  * @param limit The maximum number of Row Ids returned.
  * @param sortedRowIds The sorted Row Ids themselves.
  * @category Listener
- * @since v2.0.0-beta
+ * @since v2.0.0
  */
 export type ResultSortedRowIdsListener = (
   queries: Queries,
@@ -247,7 +247,7 @@ export type ResultSortedRowIdsListener = (
  * @param getCellChange A function that returns information about any Cell's
  * changes.
  * @category Listener
- * @since v2.0.0-beta
+ * @since v2.0.0
  */
 export type ResultRowListener = (
   queries: Queries,
@@ -271,7 +271,7 @@ export type ResultRowListener = (
  * @param tableId The Id of the Table that changed, which is also the query Id.
  * @param rowId The Id of the Row that changed.
  * @category Listener
- * @since v2.0.0-beta
+ * @since v2.0.0
  */
 export type ResultCellIdsListener = (
   queries: Queries,
@@ -301,7 +301,7 @@ export type ResultCellIdsListener = (
  * @param getCellChange A function that returns information about any Cell's
  * changes.
  * @category Listener
- * @since v2.0.0-beta
+ * @since v2.0.0
  */
 export type ResultCellListener = (
   queries: Queries,
@@ -321,7 +321,7 @@ export type ResultCellListener = (
  * and is only populated in a debug build.
  *
  * @category Development
- * @since v2.0.0-beta
+ * @since v2.0.0
  */
 export type QueriesListenerStats = {
   /**
@@ -355,7 +355,7 @@ export type QueriesListenerStats = {
  * calculated values. See those methods for specific examples.
  *
  * @category Callback
- * @since v2.0.0-beta
+ * @since v2.0.0
  */
 export type GetTableCell = {
   /**
@@ -476,7 +476,7 @@ export type GetTableCell = {
  * // -> {cujo: {description: 'dog for Carol'}}
  * ```
  * @category Definition
- * @since v2.0.0-beta
+ * @since v2.0.0
  */
 export type Select = {
   /**
@@ -561,7 +561,7 @@ export type Select = {
  * // -> {cujo: {petSpecies: 'dog', ownerName: 'Carol'}}
  * ```
  * @category Definition
- * @since v2.0.0-beta
+ * @since v2.0.0
  */
 export type SelectedAs = {
   /**
@@ -734,7 +734,7 @@ export type SelectedAs = {
  * // -> {cujo: {description: 'dog in Washington'}}
  * ```
  * @category Definition
- * @since v2.0.0-beta
+ * @since v2.0.0
  */
 export type Join = {
   /**
@@ -848,7 +848,7 @@ export type Join = {
  * // -> {cujo: {buyer: 'Carol', seller: 'Alice'}}
  * ```
  * @category Definition
- * @since v2.0.0-beta
+ * @since v2.0.0
  */
 export type JoinedAs = {as: (joinedTableId: Id) => void};
 
@@ -966,7 +966,7 @@ export type JoinedAs = {as: (joinedTableId: Id) => void};
  * // -> {cujo: {species: 'dog', state: 'WA'}}
  * ```
  * @category Definition
- * @since v2.0.0-beta
+ * @since v2.0.0
  */
 export type Where = {
   /**
@@ -1171,6 +1171,8 @@ export type Where = {
  * // -> {1: {owner: 'bob', lowestPriceOver2: 3}}
  * // Both have a parrot at 3. Alice's worm at 1 is excluded from aggregation.
  * ```
+ * @category Definition
+ * @since v2.0.0
  */
 export type Group = (
   selectedCellId: Id,
@@ -1215,7 +1217,7 @@ export type Group = (
  * // -> {1: {species: 'cat', minPrice: 3, maxPrice: 4}}
  * ```
  * @category Definition
- * @since v2.0.0-beta
+ * @since v2.0.0
  */
 export type GroupedAs = {as: (groupedCellId: Id) => void};
 
@@ -1305,7 +1307,7 @@ export type GroupedAs = {as: (groupedCellId: Id) => void};
  * // Parrots are filtered out because they have zero range in price.
  * ```
  * @category Definition
- * @since v2.0.0-beta
+ * @since v2.0.0
  */
 export type Having = {
   /**
@@ -1421,7 +1423,7 @@ export type Having = {
  * ```
  * @see Queries guides
  * @category Queries
- * @since v2.0.0-beta
+ * @since v2.0.0
  */
 export interface Queries {
   /**
@@ -1485,7 +1487,7 @@ export interface Queries {
    * // -> {fido: {color: 'brown'}, cujo: {color: 'black'}}
    * ```
    * @category Configuration
-   * @since v2.0.0-beta
+   * @since v2.0.0
    */
   setQueryDefinition(
     queryId: Id,
@@ -1528,7 +1530,7 @@ export interface Queries {
    * // -> []
    * ```
    * @category Configuration
-   * @since v2.0.0-beta
+   * @since v2.0.0
    */
   delQueryDefinition(queryId: Id): Queries;
 
@@ -1554,7 +1556,7 @@ export interface Queries {
    * // -> {fido: {color: 'brown'}}
    * ```
    * @category Getter
-   * @since v2.0.0-beta
+   * @since v2.0.0
    */
   getStore(): Store;
 
@@ -1582,7 +1584,7 @@ export interface Queries {
    * // -> ['dogColors', 'catColors']
    * ```
    * @category Getter
-   * @since v2.0.0-beta
+   * @since v2.0.0
    */
   getQueryIds(): Ids;
 
@@ -1616,7 +1618,7 @@ export interface Queries {
    * // -> 'catColors'
    * ```
    * @category Iterator
-   * @since v2.0.0-beta
+   * @since v2.0.0
    */
   forEachQuery(queryCallback: QueryCallback): void;
 
@@ -1645,7 +1647,7 @@ export interface Queries {
    * // -> false
    * ```
    * @category Getter
-   * @since v2.0.0-beta
+   * @since v2.0.0
    */
   hasQuery(queryId: Id): boolean;
 
@@ -1678,7 +1680,7 @@ export interface Queries {
    * // -> undefined
    * ```
    * @category Getter
-   * @since v2.0.0-beta
+   * @since v2.0.0
    */
   getTableId(queryId: Id): Id | undefined;
 
@@ -1724,7 +1726,7 @@ export interface Queries {
    * // -> {}
    * ```
    * @category Result
-   * @since v2.0.0-beta
+   * @since v2.0.0
    */
   getResultTable(queryId: Id): Table;
 
@@ -1767,7 +1769,7 @@ export interface Queries {
    * // -> []
    * ```
    * @category Result
-   * @since v2.0.0-beta
+   * @since v2.0.0
    */
   getResultRowIds(queryId: Id): Ids;
 
@@ -1827,7 +1829,7 @@ export interface Queries {
    * // -> []
    * ```
    * @category Result
-   * @since v2.0.0-beta
+   * @since v2.0.0
    */
   getResultSortedRowIds(
     queryId: Id,
@@ -1879,7 +1881,7 @@ export interface Queries {
    * // -> {}
    * ```
    * @category Result
-   * @since v2.0.0-beta
+   * @since v2.0.0
    */
   getResultRow(queryId: Id, rowId: Id): Row;
 
@@ -1925,7 +1927,7 @@ export interface Queries {
    * // -> []
    * ```
    * @category Result
-   * @since v2.0.0-beta
+   * @since v2.0.0
    */
   getResultCellIds(queryId: Id, rowId: Id): Ids;
 
@@ -1968,7 +1970,7 @@ export interface Queries {
    * // -> undefined
    * ```
    * @category Result
-   * @since v2.0.0-beta
+   * @since v2.0.0
    */
   getResultCell(queryId: Id, rowId: Id, cellId: Id): CellOrUndefined;
 
@@ -2003,7 +2005,7 @@ export interface Queries {
    * // -> false
    * ```
    * @category Result
-   * @since v2.0.0-beta
+   * @since v2.0.0
    */
   hasResultTable(queryId: Id): boolean;
 
@@ -2039,7 +2041,7 @@ export interface Queries {
    * // -> false
    * ```
    * @category Result
-   * @since v2.0.0-beta
+   * @since v2.0.0
    */
   hasResultRow(queryId: Id, rowId: Id): boolean;
 
@@ -2076,7 +2078,7 @@ export interface Queries {
    * // -> false
    * ```
    * @category Result
-   * @since v2.0.0-beta
+   * @since v2.0.0
    */
   hasResultCell(queryId: Id, rowId: Id, cellId: Id): boolean;
 
@@ -2123,7 +2125,7 @@ export interface Queries {
    * // -> '- felix'
    * ```
    * @category Iterator
-   * @since v2.0.0-beta
+   * @since v2.0.0
    */
   forEachResultTable(tableCallback: TableCallback): void;
 
@@ -2169,7 +2171,7 @@ export interface Queries {
    * // -> '- color'
    * ```
    * @category Iterator
-   * @since v2.0.0-beta
+   * @since v2.0.0
    */
   forEachResultRow(queryId: Id, rowCallback: RowCallback): void;
 
@@ -2212,7 +2214,7 @@ export interface Queries {
    * // -> 'color: brown'
    * ```
    * @category Iterator
-   * @since v2.0.0-beta
+   * @since v2.0.0
    */
   forEachResultCell(queryId: Id, rowId: Id, cellCallback: CellCallback): void;
 
@@ -2303,6 +2305,7 @@ export interface Queries {
    * store.delListener(listenerId);
    * ```
    * @category Listener
+   * @since v2.0.0
    */
   addResultTableListener(queryId: IdOrNull, listener: ResultTableListener): Id;
 
@@ -2397,6 +2400,7 @@ export interface Queries {
    * store.delListener(listenerId);
    * ```
    * @category Listener
+   * @since v2.0.0
    */
   addResultRowIdsListener(
     queryId: IdOrNull,
@@ -2523,6 +2527,7 @@ export interface Queries {
    * store.delListener(listenerId);
    * ```
    * @category Listener
+   * @since v2.0.0
    */
   addResultSortedRowIdsListener(
     queryId: Id,
@@ -2629,6 +2634,7 @@ export interface Queries {
    * store.delListener(listenerId);
    * ```
    * @category Listener
+   * @since v2.0.0
    */
   addResultRowListener(
     queryId: IdOrNull,
@@ -2741,6 +2747,7 @@ export interface Queries {
    * store.delListener(listenerId);
    * ```
    * @category Listener
+   * @since v2.0.0
    */
   addResultCellIdsListener(
     queryId: IdOrNull,
@@ -2857,6 +2864,7 @@ export interface Queries {
    * store.delListener(listenerId);
    * ```
    * @category Listener
+   * @since v2.0.0
    */
   addResultCellListener(
     queryId: IdOrNull,
@@ -2907,7 +2915,7 @@ export interface Queries {
    * // The listener is not called.
    * ```
    * @category Listener
-   * @since v2.0.0-beta
+   * @since v2.0.0
    */
   delListener(listenerId: Id): Queries;
 
@@ -2943,7 +2951,7 @@ export interface Queries {
    * // -> 0
    * ```
    * @category Lifecycle
-   * @since v2.0.0-beta
+   * @since v2.0.0
    */
   destroy(): void;
 
@@ -2973,7 +2981,7 @@ export interface Queries {
    * // -> 0
    * ```
    * @category Development
-   * @since v2.0.0-beta
+   * @since v2.0.0
    */
   getListenerStats(): QueriesListenerStats;
 }
@@ -3011,6 +3019,6 @@ export interface Queries {
  * // -> true
  * ```
  * @category Creation
- * @since v2.0.0-beta
+ * @since v2.0.0
  */
 export function createQueries(store: Store): Queries;
