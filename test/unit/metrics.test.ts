@@ -206,7 +206,7 @@ describe('Listens to Metrics when sets', () => {
     });
     metrics.addMetricListener('m1', listener);
     store.setTables({t1: {r1: {c1: 1}, r2: {c2: 2}}});
-    expect(listener).toBeCalled();
+    expect(listener).toHaveBeenCalled();
   });
 
   test('count', () => {

@@ -215,7 +215,7 @@ describe('Listens to SliceIds when sets', () => {
     });
     indexes.addSliceIdsListener('i1', listener);
     store.setTables({t1: {r1: {c1: 'one', c2: 'odd'}}});
-    expect(listener).toBeCalled();
+    expect(listener).toHaveBeenCalled();
   });
 
   test('default index', () => {
@@ -539,7 +539,7 @@ describe('Listens to SliceRowIds when sets', () => {
     });
     indexes.addSliceRowIdsListener('i1', '', listener);
     store.setTables({t1: {r1: {c1: 'one', c2: 'odd'}}});
-    expect(listener).toBeCalled();
+    expect(listener).toHaveBeenCalled();
   });
 
   test('default index', () => {

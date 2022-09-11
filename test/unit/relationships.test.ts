@@ -136,7 +136,7 @@ describe('Listens to RemoteRowIds when sets', () => {
     });
     relationships.addRemoteRowIdListener('r1', 'r1', listener);
     store.setTables({t1: {r1: {c1: 'r1'}}});
-    expect(listener).toBeCalled();
+    expect(listener).toHaveBeenCalled();
   });
 
   test('simple relationship', () => {
@@ -396,7 +396,7 @@ describe('Listens to LocalRowIds when sets', () => {
     });
     relationships.addLocalRowIdsListener('r1', 'R1', listener);
     store.setTables({t1: {r1: {c1: 'R1'}}});
-    expect(listener).toBeCalled();
+    expect(listener).toHaveBeenCalled();
   });
 
   test('simple relationship', () => {

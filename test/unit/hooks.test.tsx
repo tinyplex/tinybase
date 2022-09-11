@@ -124,8 +124,8 @@ describe('Create Hooks', () => {
       renderer.update(<Test count={2} />);
     });
     expect(renderer.toJSON()).toEqual(JSON.stringify([2, {t1: {r1: {c1: 1}}}]));
-    expect(didRender).toBeCalledTimes(2);
-    expect(initStore).toBeCalledTimes(1);
+    expect(didRender).toHaveBeenCalledTimes(2);
+    expect(initStore).toHaveBeenCalledTimes(1);
   });
 
   test('useCreateMetrics', () => {
@@ -150,9 +150,9 @@ describe('Create Hooks', () => {
       renderer.update(<Test count={2} />);
     });
     expect(renderer.toJSON()).toEqual(JSON.stringify([2, 1]));
-    expect(didRender).toBeCalledTimes(2);
-    expect(initStore).toBeCalledTimes(1);
-    expect(initMetrics).toBeCalledTimes(1);
+    expect(didRender).toHaveBeenCalledTimes(2);
+    expect(initStore).toHaveBeenCalledTimes(1);
+    expect(initMetrics).toHaveBeenCalledTimes(1);
   });
 
   test('useCreateIndexes', () => {
@@ -179,9 +179,9 @@ describe('Create Hooks', () => {
       renderer.update(<Test count={2} />);
     });
     expect(renderer.toJSON()).toEqual(JSON.stringify([2, ['r1']]));
-    expect(didRender).toBeCalledTimes(2);
-    expect(initStore).toBeCalledTimes(1);
-    expect(initIndexes).toBeCalledTimes(1);
+    expect(didRender).toHaveBeenCalledTimes(2);
+    expect(initStore).toHaveBeenCalledTimes(1);
+    expect(initIndexes).toHaveBeenCalledTimes(1);
   });
 
   test('useCreateRelationships', () => {
@@ -218,9 +218,9 @@ describe('Create Hooks', () => {
       renderer.update(<Test count={2} />);
     });
     expect(renderer.toJSON()).toEqual(JSON.stringify([2, 'R1']));
-    expect(didRender).toBeCalledTimes(2);
-    expect(initStore).toBeCalledTimes(1);
-    expect(initRelationships).toBeCalledTimes(1);
+    expect(didRender).toHaveBeenCalledTimes(2);
+    expect(initStore).toHaveBeenCalledTimes(1);
+    expect(initRelationships).toHaveBeenCalledTimes(1);
   });
 
   test('useCreateQueries', () => {
@@ -249,9 +249,9 @@ describe('Create Hooks', () => {
       renderer.update(<Test count={2} />);
     });
     expect(renderer.toJSON()).toEqual(JSON.stringify([2, {r1: {c1: 1}}]));
-    expect(didRender).toBeCalledTimes(2);
-    expect(initStore).toBeCalledTimes(1);
-    expect(initQueries).toBeCalledTimes(1);
+    expect(didRender).toHaveBeenCalledTimes(2);
+    expect(initStore).toHaveBeenCalledTimes(1);
+    expect(initQueries).toHaveBeenCalledTimes(1);
   });
 
   test('useCreateCheckpoints', () => {
@@ -292,9 +292,9 @@ describe('Create Hooks', () => {
     expect(renderer.toJSON()).toEqual(
       JSON.stringify([2, [['0'], '1', []], 'checkpoint1', null]),
     );
-    expect(didRender).toBeCalledTimes(2);
-    expect(initStore).toBeCalledTimes(1);
-    expect(initCheckpoints).toBeCalledTimes(1);
+    expect(didRender).toHaveBeenCalledTimes(2);
+    expect(initStore).toHaveBeenCalledTimes(1);
+    expect(initCheckpoints).toHaveBeenCalledTimes(1);
   });
 
   test('useCreatePersister', async () => {
@@ -349,10 +349,10 @@ describe('Create Hooks', () => {
     expect(renderer.toJSON()).toEqual(
       JSON.stringify([2, {loads: 1, saves: 0}, 1]),
     );
-    expect(didRender).toBeCalledTimes(3);
-    expect(initStore).toBeCalledTimes(1);
-    expect(createPersister).toBeCalledTimes(1);
-    expect(initPersister).toBeCalledTimes(1);
+    expect(didRender).toHaveBeenCalledTimes(3);
+    expect(initStore).toHaveBeenCalledTimes(1);
+    expect(createPersister).toHaveBeenCalledTimes(1);
+    expect(initPersister).toHaveBeenCalledTimes(1);
     _persister?.stopAutoLoad()?.stopAutoSave();
   });
 });
@@ -369,7 +369,7 @@ describe('Context Hooks', () => {
       );
     });
     expect(renderer.toJSON()).toEqual(JSON.stringify({t1: {r1: {c1: 1}}}));
-    expect(didRender).toBeCalledTimes(1);
+    expect(didRender).toHaveBeenCalledTimes(1);
   });
 
   test('useMetrics', () => {
@@ -384,7 +384,7 @@ describe('Context Hooks', () => {
       );
     });
     expect(renderer.toJSON()).toEqual('1');
-    expect(didRender).toBeCalledTimes(1);
+    expect(didRender).toHaveBeenCalledTimes(1);
   });
 
   test('useIndexes', () => {
@@ -399,7 +399,7 @@ describe('Context Hooks', () => {
       );
     });
     expect(renderer.toJSON()).toEqual(JSON.stringify(['r1']));
-    expect(didRender).toBeCalledTimes(1);
+    expect(didRender).toHaveBeenCalledTimes(1);
   });
 
   test('useRelationships', () => {
@@ -425,7 +425,7 @@ describe('Context Hooks', () => {
       );
     });
     expect(renderer.toJSON()).toEqual(JSON.stringify('R1'));
-    expect(didRender).toBeCalledTimes(1);
+    expect(didRender).toHaveBeenCalledTimes(1);
   });
 
   test('useQueries', () => {
@@ -444,7 +444,7 @@ describe('Context Hooks', () => {
       );
     });
     expect(renderer.toJSON()).toEqual(JSON.stringify({r1: {c1: 1}}));
-    expect(didRender).toBeCalledTimes(1);
+    expect(didRender).toHaveBeenCalledTimes(1);
   });
 
   test('useCheckpoints', () => {
@@ -461,7 +461,7 @@ describe('Context Hooks', () => {
       );
     });
     expect(renderer.toJSON()).toEqual(JSON.stringify([['0'], '1', []]));
-    expect(didRender).toBeCalledTimes(1);
+    expect(didRender).toHaveBeenCalledTimes(1);
   });
 });
 
@@ -488,7 +488,7 @@ describe('Read Hooks', () => {
       renderer.update(<div />);
     });
     expect(store.getListenerStats().tables).toEqual(0);
-    expect(didRender).toBeCalledTimes(3);
+    expect(didRender).toHaveBeenCalledTimes(3);
   });
 
   test('useTableIds', () => {
@@ -515,7 +515,7 @@ describe('Read Hooks', () => {
       renderer.update(<div />);
     });
     expect(store.getListenerStats().tableIds).toEqual(0);
-    expect(didRender).toBeCalledTimes(3);
+    expect(didRender).toHaveBeenCalledTimes(3);
   });
 
   test('useTable', () => {
@@ -555,7 +555,7 @@ describe('Read Hooks', () => {
       renderer.update(<div />);
     });
     expect(store.getListenerStats().table).toEqual(0);
-    expect(didRender).toBeCalledTimes(5);
+    expect(didRender).toHaveBeenCalledTimes(5);
   });
 
   test('useRowIds', () => {
@@ -595,7 +595,7 @@ describe('Read Hooks', () => {
       renderer.update(<div />);
     });
     expect(store.getListenerStats().rowIds).toEqual(0);
-    expect(didRender).toBeCalledTimes(5);
+    expect(didRender).toHaveBeenCalledTimes(5);
   });
 
   test('useSortedRowIds', () => {
@@ -682,7 +682,7 @@ describe('Read Hooks', () => {
       renderer.update(<div />);
     });
     expect(store.getListenerStats().sortedRowIds).toEqual(0);
-    expect(didRender).toBeCalledTimes(6);
+    expect(didRender).toHaveBeenCalledTimes(6);
   });
 
   test('useRow', () => {
@@ -722,7 +722,7 @@ describe('Read Hooks', () => {
       renderer.update(<div />);
     });
     expect(store.getListenerStats().row).toEqual(0);
-    expect(didRender).toBeCalledTimes(5);
+    expect(didRender).toHaveBeenCalledTimes(5);
   });
 
   test('useCellIds', () => {
@@ -762,7 +762,7 @@ describe('Read Hooks', () => {
       renderer.update(<div />);
     });
     expect(store.getListenerStats().cellIds).toEqual(0);
-    expect(didRender).toBeCalledTimes(5);
+    expect(didRender).toHaveBeenCalledTimes(5);
   });
 
   test('useCell', () => {
@@ -809,7 +809,7 @@ describe('Read Hooks', () => {
       renderer.update(<div />);
     });
     expect(store.getListenerStats().cell).toEqual(0);
-    expect(didRender).toBeCalledTimes(5);
+    expect(didRender).toHaveBeenCalledTimes(5);
   });
 
   test('useMetric', () => {
@@ -849,7 +849,7 @@ describe('Read Hooks', () => {
       renderer.update(<Test metricId="m3" />);
     });
     expect(renderer.toJSON()).toBeNull();
-    expect(didRender).toBeCalledTimes(6);
+    expect(didRender).toHaveBeenCalledTimes(6);
   });
 
   test('useSliceIds', () => {
@@ -891,7 +891,7 @@ describe('Read Hooks', () => {
       renderer.update(<Test indexId="i3" />);
     });
     expect(renderer.toJSON()).toEqual(JSON.stringify([]));
-    expect(didRender).toBeCalledTimes(6);
+    expect(didRender).toHaveBeenCalledTimes(6);
   });
 
   test('useSliceRowIds', () => {
@@ -934,7 +934,7 @@ describe('Read Hooks', () => {
       renderer.update(<Test indexId="i2" sliceId="2" />);
     });
     expect(renderer.toJSON()).toEqual(JSON.stringify([]));
-    expect(didRender).toBeCalledTimes(6);
+    expect(didRender).toHaveBeenCalledTimes(6);
   });
 
   test('useRemoteRowId', () => {
@@ -988,7 +988,7 @@ describe('Read Hooks', () => {
       renderer.update(<Test relationshipId="r2" localRowId="r2" />);
     });
     expect(renderer.toJSON()).toBeNull();
-    expect(didRender).toBeCalledTimes(6);
+    expect(didRender).toHaveBeenCalledTimes(6);
   });
 
   test('useLocalRowIds', () => {
@@ -1041,7 +1041,7 @@ describe('Read Hooks', () => {
       renderer.update(<Test relationshipId="r2" remoteRowId="R2" />);
     });
     expect(renderer.toJSON()).toEqual(JSON.stringify([]));
-    expect(didRender).toBeCalledTimes(6);
+    expect(didRender).toHaveBeenCalledTimes(6);
   });
 
   test('useLinkedRowIds', () => {
@@ -1093,7 +1093,7 @@ describe('Read Hooks', () => {
       renderer.update(<Test relationshipId="r2" firstRowId="r2" />);
     });
     expect(renderer.toJSON()).toEqual(JSON.stringify(['r2']));
-    expect(didRender).toBeCalledTimes(6);
+    expect(didRender).toHaveBeenCalledTimes(6);
   });
 
   test('useResultTable', () => {
@@ -1136,7 +1136,7 @@ describe('Read Hooks', () => {
     act(() => {
       renderer.update(<div />);
     });
-    expect(didRender).toBeCalledTimes(5);
+    expect(didRender).toHaveBeenCalledTimes(5);
   });
 
   test('useResultRowIds', () => {
@@ -1178,7 +1178,7 @@ describe('Read Hooks', () => {
     act(() => {
       renderer.update(<div />);
     });
-    expect(didRender).toBeCalledTimes(5);
+    expect(didRender).toHaveBeenCalledTimes(5);
   });
 
   test('useResultSortedRowIds', () => {
@@ -1288,7 +1288,7 @@ describe('Read Hooks', () => {
     act(() => {
       renderer.update(<div />);
     });
-    expect(didRender).toBeCalledTimes(6);
+    expect(didRender).toHaveBeenCalledTimes(6);
   });
 
   test('useResultRow', () => {
@@ -1329,7 +1329,7 @@ describe('Read Hooks', () => {
     act(() => {
       renderer.update(<div />);
     });
-    expect(didRender).toBeCalledTimes(5);
+    expect(didRender).toHaveBeenCalledTimes(5);
   });
 
   test('useResultCellIds', () => {
@@ -1391,7 +1391,7 @@ describe('Read Hooks', () => {
     act(() => {
       renderer.update(<div />);
     });
-    expect(didRender).toBeCalledTimes(6);
+    expect(didRender).toHaveBeenCalledTimes(6);
   });
 
   test('useResultCell', () => {
@@ -1440,7 +1440,7 @@ describe('Read Hooks', () => {
     act(() => {
       renderer.update(<div />);
     });
-    expect(didRender).toBeCalledTimes(5);
+    expect(didRender).toHaveBeenCalledTimes(5);
   });
 
   test('useCheckpointIds', () => {
@@ -1461,7 +1461,7 @@ describe('Read Hooks', () => {
       checkpoints.addCheckpoint();
     });
     expect(renderer.toJSON()).toEqual(JSON.stringify([['0'], '1', []]));
-    expect(didRender).toBeCalledTimes(3);
+    expect(didRender).toHaveBeenCalledTimes(3);
   });
 
   test('useUndoInformation', () => {
@@ -1503,7 +1503,7 @@ describe('Read Hooks', () => {
     expect(renderer.root.findByType('div').children[0]).toEqual(
       JSON.stringify([false, '0', '']),
     );
-    expect(didRender).toBeCalledTimes(3);
+    expect(didRender).toHaveBeenCalledTimes(3);
   });
 
   test('useRedoInformation', () => {
@@ -1546,7 +1546,7 @@ describe('Read Hooks', () => {
     expect(renderer.root.findByType('div').children[0]).toEqual(
       JSON.stringify([false, null, '']),
     );
-    expect(didRender).toBeCalledTimes(3);
+    expect(didRender).toHaveBeenCalledTimes(3);
   });
 });
 
@@ -1578,7 +1578,7 @@ describe('Write Hooks', () => {
       clickHandler1({screenX: 2});
     });
     expect(store.getTables()).toEqual({t1: {r1: {c1: 4}}});
-    expect(then).toBeCalledWith(store, {t1: {r1: {c1: 4}}});
+    expect(then).toHaveBeenCalledWith(store, {t1: {r1: {c1: 4}}});
 
     act(() => {
       renderer.update(<Test value={3} then={then} />);
@@ -1617,7 +1617,7 @@ describe('Write Hooks', () => {
       clickHandler1({screenX: 2});
     });
     expect(store.getTables()).toEqual({t1: {r1: {c1: 4}}});
-    expect(then).toBeCalledWith(store, {r1: {c1: 4}});
+    expect(then).toHaveBeenCalledWith(store, {r1: {c1: 4}});
 
     act(() => {
       renderer.update(<Test value={3} then={then} />);
@@ -1655,7 +1655,7 @@ describe('Write Hooks', () => {
       clickHandler1({screenX: 2});
     });
     expect(store.getTables()).toEqual({t1: {r1: {c1: 4}}});
-    expect(then).toBeCalledWith(store, {c1: 4});
+    expect(then).toHaveBeenCalledWith(store, {c1: 4});
 
     act(() => {
       renderer.update(<Test value={3} then={then} />);
@@ -1712,7 +1712,7 @@ describe('Write Hooks', () => {
     expect(store.getTables()).toEqual({
       t1: {'0': {c1: 4}, '1': {c1: 6}, '2': {c1: 5}, r1: {c1: 1}},
     });
-    expect(then).toBeCalledWith('0', store, {c1: 4});
+    expect(then).toHaveBeenCalledWith('0', store, {c1: 4});
 
     act(() => {
       renderer.update(<Test value={3} then={then} />);
@@ -1750,7 +1750,7 @@ describe('Write Hooks', () => {
       clickHandler1({screenX: 2});
     });
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1, c2: 4, c3: 4}}});
-    expect(then).toBeCalledWith(store, {c2: 4, c3: 4});
+    expect(then).toHaveBeenCalledWith(store, {c2: 4, c3: 4});
 
     act(() => {
       renderer.update(<Test value={3} then={then} />);
@@ -1789,7 +1789,7 @@ describe('Write Hooks', () => {
       clickHandler1({screenX: 2});
     });
     expect(store.getTables()).toEqual({t1: {r1: {c1: 4}}});
-    expect(then).toBeCalledWith(store, 4);
+    expect(then).toHaveBeenCalledWith(store, 4);
 
     act(() => {
       renderer.update(<Test value={3} then={then} />);
@@ -1896,7 +1896,7 @@ describe('Write Hooks', () => {
         [],
       ]);
       expect(checkpoints.getCheckpoint('3')).toEqual('');
-      expect(then).toBeCalledWith('3', checkpoints, undefined);
+      expect(then).toHaveBeenCalledWith('3', checkpoints, undefined);
     });
 
     test('useSetCheckpointCallback with label', () => {
@@ -1938,7 +1938,7 @@ describe('Write Hooks', () => {
         [],
       ]);
       expect(checkpoints.getCheckpoint('3')).toEqual('a.');
-      expect(then).toBeCalledWith('3', checkpoints, 'a.');
+      expect(then).toHaveBeenCalledWith('3', checkpoints, 'a.');
 
       act(() => {
         renderer = create(<Test suffix="!" />);
@@ -2003,7 +2003,7 @@ describe('Write Hooks', () => {
         clickHandler1({type: '1'});
       });
       expect(checkpoints.getCheckpointIds()).toEqual([['0'], '1', ['2']]);
-      expect(then).toBeCalledWith(checkpoints, '1');
+      expect(then).toHaveBeenCalledWith(checkpoints, '1');
     });
   });
 });
