@@ -1657,7 +1657,7 @@ describe('Context Provider', () => {
         expect((renderer.toJSON() as any)[1].children).toEqual([
           JSON.stringify({}),
         ]);
-        expect(then).toBeCalledTimes(1);
+        expect(then).toHaveBeenCalledTimes(1);
       });
 
       test('for table', () => {
@@ -1699,7 +1699,7 @@ describe('Context Provider', () => {
         expect((renderer.toJSON() as any)[1].children).toEqual([
           JSON.stringify({}),
         ]);
-        expect(then).toBeCalledTimes(1);
+        expect(then).toHaveBeenCalledTimes(1);
       });
 
       test('for row', () => {
@@ -1741,7 +1741,7 @@ describe('Context Provider', () => {
         expect((renderer.toJSON() as any)[1].children).toEqual([
           JSON.stringify({}),
         ]);
-        expect(then).toBeCalledTimes(1);
+        expect(then).toHaveBeenCalledTimes(1);
       });
 
       test('for cell', () => {
@@ -1801,7 +1801,7 @@ describe('Context Provider', () => {
         });
         expect((renderer.toJSON() as any)[0].children).toEqual(['']);
         expect((renderer.toJSON() as any)[1].children).toBeNull();
-        expect(then).toBeCalledTimes(1);
+        expect(then).toHaveBeenCalledTimes(1);
       });
     });
 
