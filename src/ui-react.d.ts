@@ -17,7 +17,7 @@
  * @see Building UIs With Checkpoints guide
  * @see Countries demo
  * @see Todo App demos
- * @see TinyDraw demo
+ * @see Drawing demo
  * @packageDocumentation
  * @module ui-react
  */

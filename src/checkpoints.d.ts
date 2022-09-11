@@ -159,7 +159,7 @@ export type CheckpointsListenerStats = {
  * ```
  * @see Relationships And Checkpoints guides
  * @see Todo App demos
- * @see TinyDraw demo
+ * @see Drawing demo
  * @category Checkpoints
  */
 export interface Checkpoints {
