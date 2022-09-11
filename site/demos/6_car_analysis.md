@@ -24,7 +24,7 @@ horsepower, weight, and acceleration. These Cell values are 'measures' which can
 be aggregated together - in this basic app, to find their average, maximum, or
 minimum.
 
-The app is oriented around one single query. As the use picks different
+The app is oriented around one single query. As the user picks different
 dimensions or measures in the app's sidebar, that query is re-run and the
 results (either in graphical or tabular form) reactively update immediately.
 

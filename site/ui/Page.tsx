@@ -27,6 +27,15 @@ export const Page: NoPropComponent = () => {
   const baseUrl = useBaseUrl();
   const isHome = pageNode == rootNode;
 
+  if (pageNode.summary?.startsWith('->')) {
+    return (
+      <meta
+        httpEquiv="refresh"
+        content={`0;url=${pageNode.summary.substring(2).trim()}`}
+      />
+    );
+  }
+
   const title =
     (pageNode.name != 'TinyBase' ? pageNode.name + ' | ' : '') + 'TinyBase';
   const description = isHome
