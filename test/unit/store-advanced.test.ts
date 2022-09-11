@@ -236,21 +236,21 @@ describe('Sorted Row Ids', () => {
     const listener = jest.fn();
     store.addSortedRowIdsListener('t1', 'c2', false, 0, undefined, listener);
     store.setCell('t1', 'r5', 'c2', 'cinq');
-    expect(listener).toBeCalledTimes(0);
+    expect(listener).toHaveBeenCalledTimes(0);
   });
 
   test('Cell sort listener, alter relevant cell, after page', () => {
     const listener = jest.fn();
     store.addSortedRowIdsListener('t1', 'c2', false, 0, 3, listener);
     store.setRow('t1', 'r7', {c1: 7, c2: 'seven'});
-    expect(listener).toBeCalledTimes(0);
+    expect(listener).toHaveBeenCalledTimes(0);
   });
 
   test('Cell sort listener, alter non-relevant cell', () => {
     const listener = jest.fn();
     store.addSortedRowIdsListener('t1', 'c2', false, 0, undefined, listener);
     store.setCell('t1', 'r1', 'c1', '1.0');
-    expect(listener).toBeCalledTimes(0);
+    expect(listener).toHaveBeenCalledTimes(0);
   });
 });
 
@@ -425,7 +425,7 @@ describe('Miscellaneous', () => {
     );
     store.addCellListener('t1', 'r1', null, listener);
     store.setTables({t1: {r1: {c1: 2, c2: 2}}});
-    expect(listener).toBeCalled();
+    expect(listener).toHaveBeenCalled();
   });
 
   test('row listener with cell changes function', () => {
@@ -439,7 +439,7 @@ describe('Miscellaneous', () => {
     });
     store.addRowListener('t1', 'r1', listener);
     store.setTables({t1: {r1: {c1: 1, c2: 3, c4: 4}}});
-    expect(listener).toBeCalled();
+    expect(listener).toHaveBeenCalled();
   });
 });
 
@@ -452,13 +452,13 @@ describe('Transactions', () => {
   test('Empty', () => {
     const actions = jest.fn(() => null);
     store.transaction(actions);
-    expect(actions).toBeCalledTimes(1);
+    expect(actions).toHaveBeenCalledTimes(1);
   });
 
   test('Empty, nested', () => {
     const actions = jest.fn(() => null);
     store.transaction(() => store.transaction(actions));
-    expect(actions).toBeCalledTimes(1);
+    expect(actions).toHaveBeenCalledTimes(1);
   });
 
   test('Debouncing to different', () => {
@@ -549,7 +549,7 @@ describe('Transactions', () => {
     store.setTables({t1: {r1: {c1: 2}}});
     expectChanges(listener, '/t1/r1/c1', {t1: {r1: {c1: 2}}});
     expectNoChanges(listener);
-    expect(listenerTransaction).not.toBeCalled();
+    expect(listenerTransaction).not.toHaveBeenCalled();
   });
 
   test('Adding a peer listener in a listener', () => {
@@ -558,7 +558,7 @@ describe('Transactions', () => {
       store.addCellListener('t1', 'r1', 'c1', listener);
     });
     store.setTables({t1: {r1: {c1: 2}}});
-    expect(listener).toBeCalledTimes(1);
+    expect(listener).toHaveBeenCalledTimes(1);
   });
 
   test('Adding a higher listener in a listener', () => {
@@ -567,7 +567,7 @@ describe('Transactions', () => {
       store.addRowListener('t1', 'r1', listener);
     });
     store.setTables({t1: {r1: {c1: 2}}});
-    expect(listener).toBeCalledTimes(1);
+    expect(listener).toHaveBeenCalledTimes(1);
   });
 
   test('Adding a lower listener in a listener', () => {
@@ -576,7 +576,7 @@ describe('Transactions', () => {
       store.addCellListener('t1', 'r1', 'c1', listener);
     });
     store.setTables({t1: {r1: {c1: 2}}});
-    expect(listener).not.toBeCalled();
+    expect(listener).not.toHaveBeenCalled();
   });
 
   test('Removing an earlier peer listener in a listener', () => {
@@ -586,7 +586,7 @@ describe('Transactions', () => {
       store.delListener(listenerId);
     });
     store.setTables({t1: {r1: {c1: 2}}});
-    expect(listener).toBeCalledTimes(1);
+    expect(listener).toHaveBeenCalledTimes(1);
   });
 
   test('Removing a later peer listener in a listener', () => {
@@ -596,7 +596,7 @@ describe('Transactions', () => {
     });
     const listenerId = store.addCellListener('t1', 'r1', 'c1', listener);
     store.setTables({t1: {r1: {c1: 2}}});
-    expect(listener).not.toBeCalled();
+    expect(listener).not.toHaveBeenCalled();
   });
 
   test('Removing a lower listener in a listener', () => {
@@ -606,7 +606,7 @@ describe('Transactions', () => {
       store.delListener(listenerId);
     });
     store.setTables({t1: {r1: {c1: 2}}});
-    expect(listener).toBeCalledTimes(1);
+    expect(listener).toHaveBeenCalledTimes(1);
   });
 
   test('Removing a higher listener in a listener', () => {
@@ -616,7 +616,7 @@ describe('Transactions', () => {
       store.delListener(listenerId);
     });
     store.setTables({t1: {r1: {c1: 2}}});
-    expect(listener).not.toBeCalled();
+    expect(listener).not.toHaveBeenCalled();
   });
 
   describe('Rolling back', () => {
@@ -742,7 +742,7 @@ describe('Transactions', () => {
     test('Finishing without starting does nothing', () => {
       const doRollback = jest.fn(() => true);
       store.finishTransaction(doRollback);
-      expect(doRollback).toBeCalledTimes(0);
+      expect(doRollback).toHaveBeenCalledTimes(0);
     });
 
     test('Debouncing to different', () => {

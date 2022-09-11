@@ -842,7 +842,7 @@ describe('Listens to Queries when sets', () => {
     });
     queries.addResultTableListener('q1', listener);
     store.setTables({t1: {r1: {c1: 'one'}}});
-    expect(listener).toBeCalled();
+    expect(listener).toHaveBeenCalled();
   });
 
   describe('Selects', () => {
@@ -4200,14 +4200,14 @@ describe('Sorted Row Ids', () => {
       listener,
     );
     store.setCell('t1', 'r5', 'c2', 'cinq');
-    expect(listener).toBeCalledTimes(0);
+    expect(listener).toHaveBeenCalledTimes(0);
   });
 
   test('Cell sort listener, alter relevant cell, after page', () => {
     const listener = jest.fn();
     queries.addResultSortedRowIdsListener('q1', 'c2', false, 0, 2, listener);
     store.setRow('t1', 'r7', {c1: 7, c2: 'seven'});
-    expect(listener).toBeCalledTimes(0);
+    expect(listener).toHaveBeenCalledTimes(0);
   });
 
   test('Cell sort listener, alter non-relevant cell', () => {
@@ -4221,7 +4221,7 @@ describe('Sorted Row Ids', () => {
       listener,
     );
     store.setCell('t1', 'r1', 'c1', '1.0');
-    expect(listener).toBeCalledTimes(0);
+    expect(listener).toHaveBeenCalledTimes(0);
   });
 });
 
