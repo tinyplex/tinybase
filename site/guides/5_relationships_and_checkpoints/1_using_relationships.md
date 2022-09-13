@@ -93,5 +93,5 @@ However, a given Store can only have one Relationships object associated with
 it. If you call this function twice on the same Store, your second call will
 return a reference to the Relationships object created by the first.
 
-Let's find out how to include relationships in a user interface in the Building A
-UI With Relationships guide.
+Let's find out how to include relationships in a user interface in the Building
+A UI With Relationships guide.

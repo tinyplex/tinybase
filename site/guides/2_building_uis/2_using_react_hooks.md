@@ -33,6 +33,7 @@ There are hooks that correspond to each of the Store getter methods:
 - The useTableIds hook is the reactive equivalent of the getTableIds method.
 - The useTable hook is the reactive equivalent of the getTable method.
 - The useRowIds hook is the reactive equivalent of the getRowIds method.
+- The useSortedRowIds hook is the reactive equivalent of the getSortedRowIds method.
 - The useRow hook is the reactive equivalent of the getRow method.
 - The useCellIds hook is the reactive equivalent of the getCellIds method.
 - The useCell hook is the reactive equivalent of the getCell method.
