@@ -2,10 +2,10 @@
  * The queries module of the TinyBase project provides the ability to create and
  * track queries of the data in Store objects.
  *
- * The main entry point to this module is the createQueries function, which
- * returns a new Queries object. From there, you can create new query
- * definitions, access the results of those directly, and register listeners for
- * when they change.
+ * The main entry point to using the queries module is the createQueries
+ * function, which returns a new Queries object. That object in turn has methods
+ * that let you create new query definitions, access their results directly, and
+ * register listeners for when those results change.
  *
  * @packageDocumentation
  * @module queries
@@ -394,9 +394,9 @@ export type GetTableCell = {
  *
  * ```js
  * const store = createStore().setTable('pets', {
- *   fido: {species: 'dog', color: 'brown'},
- *   felix: {species: 'cat', color: 'black'},
- *   cujo: {species: 'dog', color: 'black'},
+ *   fido: {species: 'dog', color: 'brown', legs: 4},
+ *   felix: {species: 'cat', color: 'black', legs: 4},
+ *   cujo: {species: 'dog', color: 'black', legs: 4},
  * });
  *
  * const queries = createQueries(store);
@@ -572,7 +572,7 @@ export type SelectedAs = {
 
 /**
  * The Join type describes a function that lets you specify a Cell or calculated
- * value to join the main query Table to others, by Row Id.
+ * value to join the main query Table to other Tables, by their Row Id.
  *
  * The Join function is provided as an parameter in the `build` parameter of the
  * setQueryDefinition method.
@@ -1421,7 +1421,9 @@ export type Having = {
  * queries.delListener(listenerId);
  * queries.destroy();
  * ```
- * @see Queries guides
+ * @see Making Queries guides
+ * @see Car Analysis demo
+ * @see Movie Database demo
  * @category Queries
  * @since v2.0.0
  */

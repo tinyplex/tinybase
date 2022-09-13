@@ -92,6 +92,9 @@ console.log(store.getCellIds('pets', 'fido'));
 // -> ['species']
 ```
 
+There is also the getSortedRowIds method that lets you get the Ids sorted by a
+specific Cell Id.
+
 Again, the return types of these methods are by value, not by reference. So if
 you manipulate the returned array, the Store is not updated:
 

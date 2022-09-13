@@ -10,6 +10,7 @@ exception:
 - Listen to Table Ids with the addTableIdsListener method.
 - Listen to a Table with the addTableListener method.
 - Listen to Row Ids with the addRowIdsListener method.
+- Listen to sorted Row Ids with the addSortedRowIdsListener method.
 - Listen to a Row with the addRowListener method.
 - Listen to Cell Ids with the addCellIdsListener method.
 - Listen to a Cell with the addCellListener method.
@@ -145,6 +146,9 @@ store.delListener(listenerId4);
 You can intermingle wildcards and actual Id values for any of the parameters.
 So, for example, you could listen to the Cell values with a given Id in any Row
 in a given Table, and so on.
+
+Note that you can't use the wildcard technique with the addSortedRowIdsListener
+method. You must explicitly specify just one Table, for performance reasons.
 
 ## Summary
 

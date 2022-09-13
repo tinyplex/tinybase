@@ -17,7 +17,7 @@ As you may have guessed by now, there are three hooks you'll commonly use here:
   list Relationship.
 
 Each hook registers a listener so that any relevant changes will cause a
-re-render.As an example:
+re-render. As an example:
 
 ```jsx
 const store = createStore()
@@ -82,7 +82,7 @@ component, each of which matches the three types of getters as expected.
 Also as expected (hopefully by now!), each registers a listener so that any
 changes to that result will cause a re-render.
 
-These component can be given a custom RowView-compatible component to render
+These components can be given a custom RowView-compatible component to render
 their Row children:
 
 ```jsx
