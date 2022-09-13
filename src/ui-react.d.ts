@@ -14,6 +14,7 @@
  * @see Building UIs With Metrics guide
  * @see Building UIs With Indexes guide
  * @see Building UIs With Relationships guide
+ * @see Building UIs With Queries guide
  * @see Building UIs With Checkpoints guide
  * @see Countries demo
  * @see Todo App demos

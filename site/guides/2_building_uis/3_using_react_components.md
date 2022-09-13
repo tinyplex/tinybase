@@ -34,7 +34,7 @@ These components have very plain default renderings, and don't even generate
 HTML or use ReactDOM. This means that the ui-react module works just as well
 with React Native or other React-based rendering systems.
 
-It does mean though, that if you use the default RowCell component, you will
+It does mean though, that if you use the default RowView component, you will
 simply render a concatenation of the values of its Cells:
 
 ```jsx
