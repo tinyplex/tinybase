@@ -1157,7 +1157,7 @@ We do the same for actors, but for the billed cast members we need to check tor
 existence, in case a movie does not have three actors:
 
 ```jsx
-const CastLink = ({queryId, rowId, billing = 1}) => {
+const CastLink = ({queryId, rowId, billing = ''}) => {
   const personId = useResultCell(queryId, rowId, `castId${billing}`);
   return personId == null ? null : (
     <a onClick={useSetRouteCallback('people', personId)}>
