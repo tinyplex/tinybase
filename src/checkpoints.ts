@@ -27,6 +27,7 @@ import {
   arrayLength,
   arrayPop,
   arrayPush,
+  arrayShift,
 } from './common/array';
 import {collForEach, collHas, collIsEmpty, collSize2} from './common/coll';
 import {EMPTY_STRING} from './common/strings';
@@ -161,7 +162,7 @@ export const createCheckpoints: typeof createCheckpointsDecl =
     const goForwardImpl = () => {
       if (!arrayIsEmpty(forwardIds)) {
         arrayPush(backwardIds, currentId as Id);
-        currentId = forwardIds.shift();
+        currentId = arrayShift(forwardIds);
         updateStore(1, currentId as Id);
         checkpointsChanged = 1;
       }

@@ -1,14 +1,16 @@
 import {Id, Ids} from '../common.d';
-import {arrayLength, arrayPop, arrayPush} from './array';
+import {arrayLength, arrayPush, arrayShift} from './array';
 import {EMPTY_STRING} from './strings';
+
+const INTEGER = /^\d+$/;
 
 export const getPoolFunctions = (): [() => Id, (id: Id) => void] => {
   const pool: Ids = [];
   let nextId = 0;
   return [
-    (): Id => arrayPop(pool) ?? EMPTY_STRING + nextId++,
+    (): Id => arrayShift(pool) ?? EMPTY_STRING + nextId++,
     (id: Id): void => {
-      if (arrayLength(pool) < 1e3) {
+      if (INTEGER.test(id) && arrayLength(pool) < 1e3) {
         arrayPush(pool, id);
       }
     },

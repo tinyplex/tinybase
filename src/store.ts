@@ -4,7 +4,6 @@ import {
   CELL_IDS,
   DEFAULT,
   EMPTY_OBJECT,
-  EMPTY_STRING,
   LISTENER,
   NUMBER,
   ROW,
@@ -96,6 +95,7 @@ import {
 } from './common/coll';
 import {getCellType, setOrDelCell} from './common/cell';
 import {defaultSorter} from './common';
+import {getPoolFunctions} from './common/pool';
 import {id} from './common';
 
 type SchemaMap = IdMap2<CellSchema>;
@@ -155,7 +155,6 @@ const idsChanged = (
 export const createStore: typeof createStoreDecl = (): Store => {
   let hasSchema: boolean;
   let cellsTouched: boolean;
-  let nextRowId = 0;
   let transactions = 0;
   const changedTableIds: ChangedIdsMap = mapNew();
   const changedRowIds: ChangedIdsMap2 = mapNew();
@@ -164,6 +163,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const invalidCells: IdMap3<any[]> = mapNew();
   const schemaMap: SchemaMap = mapNew();
   const schemaRowCache: IdMap<[RowMap, IdSet]> = mapNew();
+  const tablePoolFunctions: IdMap<[() => Id, (id: Id) => void]> = mapNew();
   const tablesMap: TablesMap = mapNew();
   const tablesListeners: Pair<IdSet2> = pairNewMap();
   const tableIdsListeners: Pair<IdSet2> = pairNewMap();
@@ -372,12 +372,13 @@ export const createStore: typeof createStoreDecl = (): Store => {
         ),
     );
 
-  const getNewRowId = (tableMap: TableMap | undefined): Id => {
-    const rowId = EMPTY_STRING + nextRowId++;
-    if (!collHas(tableMap, rowId)) {
+  const getNewRowId = (tableId: Id): Id => {
+    const [getId] = mapEnsure(tablePoolFunctions, tableId, getPoolFunctions);
+    const rowId = getId();
+    if (!collHas(mapGet(tablesMap, tableId), rowId)) {
       return rowId;
     }
-    return getNewRowId(tableMap);
+    return getNewRowId(tableId);
   };
 
   const getOrCreateTable = (tableId: Id) =>
@@ -385,8 +386,15 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const delValidTable = (tableId: Id): TableMap => setValidTable(tableId, {});
 
-  const delValidRow = (tableId: Id, tableMap: TableMap, rowId: Id): RowMap =>
+  const delValidRow = (tableId: Id, tableMap: TableMap, rowId: Id): void => {
+    const [, releaseId] = mapEnsure(
+      tablePoolFunctions,
+      tableId,
+      getPoolFunctions,
+    );
+    releaseId(rowId);
     setValidRow(tableId, tableMap, rowId, {}, true);
+  };
 
   const delValidCell = (
     tableId: Id,
@@ -741,16 +749,17 @@ export const createStore: typeof createStoreDecl = (): Store => {
       rowId,
     );
 
-  const addRow = (tableId: Id, row: Row, forceId?: 1): Id | undefined =>
+  const addRow = (tableId: Id, row: Row): Id | undefined =>
     transaction(() => {
-      tableId = id(tableId);
-      const isValidRow = validateRow(tableId, undefined, row);
-      const rowId =
-        isValidRow || forceId
-          ? getNewRowId(mapGet(tablesMap, tableId))
-          : undefined;
-      if (isValidRow) {
-        setValidRow(tableId, getOrCreateTable(tableId), rowId as Id, row);
+      let rowId: Id | undefined = undefined;
+      if (validateRow(tableId, rowId, row)) {
+        tableId = id(tableId);
+        setValidRow(
+          tableId,
+          getOrCreateTable(tableId),
+          (rowId = getNewRowId(tableId)),
+          row,
+        );
       }
       return rowId;
     });

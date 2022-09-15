@@ -1269,8 +1269,8 @@ export type GroupedAs = {as: (groupedCellId: Id) => void};
  * queries.forEachResultRow('query', (rowId) => {
  *   console.log({[rowId]: queries.getResultRow('query', rowId)});
  * });
- * // -> {1: {species: 'cat', minPrice: 3, maxPrice: 4}}
- * // -> {2: {species: 'parrot', minPrice: 3, maxPrice: 3}}
+ * // -> {0: {species: 'cat', minPrice: 3, maxPrice: 4}}
+ * // -> {1: {species: 'parrot', minPrice: 3, maxPrice: 3}}
  * ```
  * @example
  * This example shows a query that filters the results from a grouped Table with
