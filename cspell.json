@@ -1,5 +1,7 @@
 {
-  "ignorePaths": ["*.tsv"],
+  "ignorePaths": [
+    "*.tsv"
+  ],
   "words": [
     "Adrien",
     "affordances",
@@ -29,6 +31,7 @@
     "Lato",
     "lcov",
     "linebreak",
+    "Lumet",
     "minmax",
     "mkdir",
     "mousedown",
@@ -49,6 +52,7 @@
     "smaug",
     "socio",
     "srcdoc",
+    "Taika",
     "tinybase",
     "tinybasejs",
     "tinydocs",
