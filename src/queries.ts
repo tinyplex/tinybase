@@ -55,6 +55,7 @@ import {
   arraySlice,
 } from './common/array';
 import {
+  collClear,
   collDel,
   collForEach,
   collHas,
@@ -135,12 +136,16 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
       );
 
     const resetPreStores = (queryId: Id) => {
-      mapForEach(
+      ifNotUndefined(
         mapGet(preStoreListenerIds, queryId),
-        (preStore, listenerIds) =>
-          collForEach(listenerIds, (listenerId) =>
-            preStore.delListener(listenerId),
-          ),
+        (queryPreStoreListenerIds) => {
+          mapForEach(queryPreStoreListenerIds, (preStore, listenerIds) =>
+            collForEach(listenerIds, (listenerId) =>
+              preStore.delListener(listenerId),
+            ),
+          );
+          collClear(queryPreStoreListenerIds);
+        },
       );
       arrayForEach([resultStore, preStore], (store) => store.delTable(queryId));
     };
@@ -349,12 +354,18 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
                   }
                 },
               );
-              (collIsEmpty(selectedRowIds) ||
+              if (
+                collIsEmpty(selectedRowIds) ||
                 !arrayEvery(havings, (having) =>
                   having((cellId: Id) => groupRow[cellId]),
                 )
-                ? resultStore.delRow
-                : resultStore.setRow)(queryId, groupRowId, groupRow);
+              ) {
+                resultStore.delRow(queryId, groupRowId);
+              } else if (isUndefined(groupRowId)) {
+                leaf[2] = resultStore.addRow(queryId, groupRow) as Id;
+              } else {
+                resultStore.setRow(queryId, groupRowId, groupRow);
+              }
             },
           );
 
@@ -397,18 +408,10 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
 
               if (changedLeaf) {
                 writeGroupRow(
-                  visitTree(
-                    tree,
-                    oldPath,
-                    undefined,
-                    ([, selectedRowIds, groupRowId]) => {
-                      collDel(selectedRowIds, selectedRowId);
-                      if (collIsEmpty(selectedRowIds)) {
-                        resultStore.delRow(queryId, groupRowId);
-                        return 1;
-                      }
-                    },
-                  ),
+                  visitTree(tree, oldPath, undefined, ([, selectedRowIds]) => {
+                    collDel(selectedRowIds, selectedRowId);
+                    return collIsEmpty(selectedRowIds) as any;
+                  }),
                   changedGroupedSelectedCells,
                   selectedRowId,
                   1,
@@ -432,18 +435,7 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
                               selectedCellId,
                             ) as Cell),
                       );
-                      return [
-                        mapNew(),
-                        setNew(),
-                        (
-                          resultStore.addRow as (
-                            tableId: Id,
-                            row: Row,
-                            forceId?: 1,
-                          ) => Id | undefined
-                        )(queryId, groupRow, 1),
-                        groupRow,
-                      ];
+                      return [mapNew(), setNew(), undefined, groupRow];
                     },
                     ([, selectedRowIds]) => {
                       setAdd(selectedRowIds, selectedRowId);
