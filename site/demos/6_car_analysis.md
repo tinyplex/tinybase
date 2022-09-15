@@ -355,6 +355,7 @@ The styling for the main part of the application is simple:
 ```less
 body {
   display: flex;
+  height: 100vh;
 }
 
 aside {
