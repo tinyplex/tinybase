@@ -25,10 +25,11 @@ import {
   RemoteRowIdListener,
 } from '../relationships.d';
 import {MetricListener, Metrics} from '../metrics.d';
-import {arrayForEach, arrayLength, arrayPop, arrayPush} from './array';
+import {arrayForEach, arrayLength, arrayPush} from './array';
 import {collDel, collForEach, collIsEmpty} from './coll';
 import {ifNotUndefined, isUndefined} from './other';
 import {EMPTY_STRING} from './strings';
+import {getPoolFunctions} from './pool';
 
 export type IdSetNode = Node<IdOrNull, IdSet> | IdSet;
 export type ListenerArgument = IdOrNull | boolean | number | undefined;
@@ -82,8 +83,8 @@ export const getListenerFunctions = (
   ) => void,
 ] => {
   let thing: Store | Metrics | Indexes | Relationships | Checkpoints;
-  let nextId = 0;
-  const listenerPool: Ids = [];
+
+  const [getId, releaseId] = getPoolFunctions();
   const allListeners: IdMap<[Listener, IdSetNode, Ids]> = mapNew();
 
   const addListener = (
@@ -92,7 +93,7 @@ export const getListenerFunctions = (
     path?: ListenerArgument[],
   ): Id => {
     thing ??= getThing();
-    const id = arrayPop(listenerPool) ?? EMPTY_STRING + nextId++;
+    const id = getId();
     mapSet(allListeners, id, [listener, idSetNode, path]);
     setAdd(
       visitTree(
@@ -132,9 +133,7 @@ export const getListenerFunctions = (
         },
       );
       mapSet(allListeners, id);
-      if (arrayLength(listenerPool) < 1e3) {
-        arrayPush(listenerPool, id);
-      }
+      releaseId(id);
       return idOrNulls;
     }) as Ids;
 
