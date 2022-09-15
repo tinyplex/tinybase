@@ -288,8 +288,8 @@ queries.setQueryDefinition('query', 'pets', ({select, group, having}) => {
 queries.forEachResultRow('query', (rowId) => {
   console.log({[rowId]: queries.getResultRow('query', rowId)});
 });
-// -> {4: {species: 'cat', minPrice: 3, maxPrice: 4}}
-// -> {5: {species: 'parrot', minPrice: 3, maxPrice: 3}}
+// -> {0: {species: 'cat', minPrice: 3, maxPrice: 4}}
+// -> {1: {species: 'parrot', minPrice: 3, maxPrice: 3}}
 ```
 
 (Note that you shouldn't make any assumptions about the Row Ids on a result
@@ -310,7 +310,7 @@ queries.setQueryDefinition('query', 'pets', ({select, group, having}) => {
 });
 
 console.log(queries.getResultTable('query'));
-// -> {8: {species: 'parrot', minPrice: 3, maxPrice: 3}}
+// -> {1: {species: 'parrot', minPrice: 3, maxPrice: 3}}
 ```
 
 ## Putting It All Together
@@ -461,14 +461,13 @@ queries.addResultSortedRowIdsListener(
   0,
   3,
   (_queries, _queryId, _cellId, _descending, _offset, _limit, rowIds) =>
-    rowIds.forEach((rowId) =>
-      console.log(queries.getResultRow('query', rowId)),
-    ),
+    console.log(queries.getResultTable('query')),
 );
 
 // Bob is actually in British Columbia!
 store.setCell('owner', 2, 'regionId', '4');
-// -> {"stateName": "New York", "avgFullPrice": 5.5}
+
+// -> {0: {"stateName": "New York", "avgFullPrice": 5.5}}
 ```
 
 Now that Bob is in Canada, removing Felix (cost 6) from California lowers its

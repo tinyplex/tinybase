@@ -775,7 +775,7 @@ describe('Sets', () => {
         group('c3', 'sum');
         having('c3', 4);
       });
-      expect(queries.getResultTable('q1')).toEqual({1: {c2: 'odd', c3: 4}});
+      expect(queries.getResultTable('q1')).toEqual({0: {c2: 'odd', c3: 4}});
       delCells();
       expect(queries.getResultTable('q1')).toEqual({});
       expect(queries.getStore().getListenerStats().row).toEqual(1);
@@ -815,7 +815,7 @@ describe('Sets', () => {
       });
       expect(queries.getResultTable('q1')).toEqual({
         0: {c2: 'even', c3: 2},
-        3: {c2: 'even', c3: 4},
+        1: {c2: 'even', c3: 4},
       });
       delCells();
       expect(queries.getResultTable('q1')).toEqual({});
@@ -3962,9 +3962,9 @@ describe('Listens to Queries when sets', () => {
         expectChanges(
           listener,
           listenerId,
-          {q1: {1: {c2: 'even', c3: 2}}},
-          {q1: {1: {c2: 'even', c3: 6}}},
-          {q1: {1: {c2: 'even', c3: 2}}},
+          {q1: {0: {c2: 'even', c3: 2}}},
+          {q1: {0: {c2: 'even', c3: 6}}},
+          {q1: {0: {c2: 'even', c3: 2}}},
           {q1: {}},
         ),
       );
@@ -4011,7 +4011,7 @@ describe('Listens to Queries when sets', () => {
         expectChanges(
           listener,
           listenerId,
-          {q1: {1: {c2: 'even', C3: 6}}},
+          {q1: {0: {c2: 'even', C3: 6}}},
           {q1: {}},
         ),
       );
@@ -4030,11 +4030,11 @@ describe('Listens to Queries when sets', () => {
         expectChanges(
           listener,
           listenerId,
-          {q1: {1: {c2: 'even', c3: 2}}},
-          {q1: {1: {c2: 'even', c3: 2}, 4: {c2: 'even'}}},
-          {q1: {1: {c2: 'even', c3: 2}, 5: {c2: 'even', c3: 4}}},
-          {q1: {1: {c2: 'even', c3: 2}, 6: {c2: 'even'}}},
-          {q1: {1: {c2: 'even', c3: 2}}},
+          {q1: {0: {c2: 'even', c3: 2}}},
+          {q1: {0: {c2: 'even', c3: 2}, 1: {c2: 'even'}}},
+          {q1: {0: {c2: 'even', c3: 2}, 1: {c2: 'even', c3: 4}}},
+          {q1: {0: {c2: 'even', c3: 2}, 1: {c2: 'even'}}},
+          {q1: {0: {c2: 'even', c3: 2}}},
           {q1: {}},
         ),
       );
@@ -4295,8 +4295,8 @@ describe('Miscellaneous', () => {
       group('c3', 'avg');
     });
     expect(queries.getResultTable('q1')).toEqual({
-      3: {c2: 'even', c3: 3},
-      4: {c2: 'odd', c3: 2},
+      0: {c2: 'even', c3: 3},
+      1: {c2: 'odd', c3: 2},
     });
   });
 
