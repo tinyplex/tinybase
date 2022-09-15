@@ -385,9 +385,9 @@ export type GetTableCell = {
  * The Select type describes a function that lets you specify a Cell or
  * calculated value for including into the query's result.
  *
- * The Select function is provided as an parameter in the `build` parameter of
- * the setQueryDefinition method. A query definition must call the Select
- * function at least once, otherwise it will be meaningless and return no data.
+ * The Select function is provided to the third `query` parameter of the
+ * setQueryDefinition method. A query definition must call the Select function
+ * at least once, otherwise it will be meaningless and return no data.
  *
  * @example
  * This example shows a query that selects two Cells from the main query Table.
@@ -574,7 +574,7 @@ export type SelectedAs = {
  * The Join type describes a function that lets you specify a Cell or calculated
  * value to join the main query Table to other Tables, by their Row Id.
  *
- * The Join function is provided as an parameter in the `build` parameter of the
+ * The Join function is provided to the third `query` parameter of the
  * setQueryDefinition method.
  *
  * You can join zero, one, or many Tables. You can join the same underlying
@@ -856,8 +856,8 @@ export type JoinedAs = {as: (joinedTableId: Id) => void};
  * The Where type describes a function that lets you specify conditions to
  * filter results, based on the underlying Cells of the main or joined Tables.
  *
- * The Where function is provided as an parameter in the `build` parameter of
- * the setQueryDefinition method.
+ * The Where function is provided to the third `query` parameter of the
+ * setQueryDefinition method.
  *
  * If you do not specify a Where clause, you should expect every non-empty Row
  * of the main Table to appear in the query's results.
@@ -867,10 +867,10 @@ export type JoinedAs = {as: (joinedTableId: Id) => void};
  * wish to create an 'or' expression, use the single parameter version of the
  * type that allows arbitrary programmatic conditions.
  *
- * The Where clause differs from the Having clause in that the former describes
- * conditions that should be met by underlying Cell values (whether selected or
- * not), and the latter describes conditions based on calculated and aggregated
- * values - after Group clauses have been applied.
+ * The Where keyword differs from the Having keyword in that the former
+ * describes conditions that should be met by underlying Cell values (whether
+ * selected or not), and the latter describes conditions based on calculated and
+ * aggregated values - after Group clauses have been applied.
  *
  * @example
  * This example shows a query that filters the results from a single Table by
@@ -1006,8 +1006,8 @@ export type Where = {
  * The Group type describes a function that lets you specify that the values of
  * a Cell in multiple result Rows should be aggregated together.
  *
- * The Group function is provided as an parameter in the `build` parameter of
- * the setQueryDefinition method. When called, it should refer to a Cell Id (or
+ * The Group function is provided to the third `query` parameter of the
+ * setQueryDefinition method. When called, it should refer to a Cell Id (or
  * aliased Id) specified in one of the Select functions, and indicate how the
  * values should be aggregated.
  *
@@ -1225,18 +1225,18 @@ export type GroupedAs = {as: (groupedCellId: Id) => void};
  * The Having type describes a function that lets you specify conditions to
  * filter results, based on the grouped Cells resulting from a Group clause.
  *
- * The Having function is provided as an parameter in the `build` parameter of
- * the setQueryDefinition method.
+ * The Having function is provided to the third `query` parameter of the
+ * setQueryDefinition method.
  *
  * A Having condition has to be true for a Row to be included in the results.
  * Each Having class is additive, as though combined with a logical 'and'. If
  * you wish to create an 'or' expression, use the single parameter version of
  * the type that allows arbitrary programmatic conditions.
  *
- * The Where clause differs from the Having clause in that the former describes
- * conditions that should be met by underlying Cell values (whether selected or
- * not), and the latter describes conditions based on calculated and aggregated
- * values - after Group clauses have been applied.
+ * The Where keyword differs from the Having keyword in that the former
+ * describes conditions that should be met by underlying Cell values (whether
+ * selected or not), and the latter describes conditions based on calculated and
+ * aggregated values - after Group clauses have been applied.
  *
  * Whilst it is technically possible to use a Having clause even if the results
  * have not been grouped with a Group clause, you should expect it to be less
@@ -1438,11 +1438,11 @@ export interface Queries {
    * The definition must specify this 'main' Table (by its Id) to be aggregated.
    * Other Tables can be joined to that using Join clauses.
    *
-   * The third `build` parameter is a callback that you provide to define the
-   * query. That callback is provided with a `builders` object that contains the
-   * named 'keywords' for the query, like `select`, `join`, and so on. You can
-   * see how that is used in the simple example below. The following five
-   * clause types are supported:
+   * The third `query` parameter is a callback that you provide to define the
+   * query. That callback is provided with a `keywords` object that contains the
+   * functions you use to define the query, like `select`, `join`, and so on.
+   * You can see how that is used in the simple example below. The following
+   * five clause types are supported:
    *
    * - The Select type describes a function that lets you specify a Cell or
    *   calculated value for including into the query's result.
@@ -1458,14 +1458,14 @@ export interface Queries {
    *
    * Full documentation and examples are provided in the sections for each of
    * those clause types.
-   * 
+   *
    * Additionally, you can use the getResultSortedRowIds method and
    * addResultSortedRowIdsListener method to sort and paginate the results.
    *
    * @param queryId The Id of the query to define.
    * @param tableId The Id of the main Table the query will be based on.
-   * @param build A callback which can take a `builders` object and which uses
-     the clause functions it contains to define the query.
+   * @param query A callback which can take a `keywords` object and which uses
+     the functions it contains to define the query.
    * @returns A reference to the Queries object.
    * @example
    * This example creates a Store, creates a Queries object, and defines a
@@ -1494,7 +1494,7 @@ export interface Queries {
   setQueryDefinition(
     queryId: Id,
     tableId: Id,
-    build: (builders: {
+    query: (keywords: {
       select: Select;
       join: Join;
       where: Where;

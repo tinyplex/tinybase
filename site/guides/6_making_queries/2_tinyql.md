@@ -9,6 +9,19 @@ access a traditional relational database. Rather, the API is typed and
 programmatic, making it a performant, unambiguous, and composable way to
 transform data.
 
+```js
+const store = createStore().setTable('pets', {
+  fido: {species: 'dog', color: 'brown'},
+  felix: {species: 'cat', color: 'black'},
+  cujo: {species: 'dog', color: 'black'},
+});
+
+const queries = createQueries(store);
+queries.setQueryDefinition('query', 'pets', (keywords) => {
+  // TinyQL goes here
+});
+```
+
 One downside might seem that you can't directly use your experience of SQL
 syntax to work with TinyBase queries - but, as you'll see, many of the similar
 concepts will be very familiar.
@@ -37,13 +50,6 @@ five named 'keyword' functions for the query:
 All five can be destructured from the callback's single parameter:
 
 ```js
-const store = createStore().setTable('pets', {
-  fido: {species: 'dog', color: 'brown'},
-  felix: {species: 'cat', color: 'black'},
-  cujo: {species: 'dog', color: 'black'},
-});
-
-const queries = createQueries(store);
 queries.setQueryDefinition(
   'query',
   'pets',
@@ -54,7 +60,7 @@ queries.setQueryDefinition(
     where(/* ... */);
     group(/* ... */);
     having(/* ... */);
-    // and soon...
+    // and so on...
   },
 );
 ```
