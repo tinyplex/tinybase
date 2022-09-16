@@ -1,7 +1,5 @@
 {
-  "ignorePaths": [
-    "*.tsv"
-  ],
+  "ignorePaths": ["*.tsv"],
   "words": [
     "Adrien",
     "affordances",
@@ -57,6 +55,7 @@
     "tinybasejs",
     "tinydocs",
     "tinyplex",
+    "tinyql",
     "tmdb",
     "todos",
     "Todos",
