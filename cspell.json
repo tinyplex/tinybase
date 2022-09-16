@@ -1,5 +1,5 @@
 {
-  "ignorePaths": ["*.tsv"],
+  "ignorePaths": ["*.tsv", "*.webp"],
   "words": [
     "Adrien",
     "affordances",
@@ -64,6 +64,7 @@
     "Unstar",
     "UNSTAR",
     "visible",
+    "webp",
     "wildcarded",
     "yolo"
   ]

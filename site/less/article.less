@@ -31,10 +31,21 @@ body > main > article {
     height: 1rem;
     display: inline;
   }
+  img[title^='Thumbnail'] {
+    width: 14rem;
+    margin: 1rem auto;
+    display: block;
+  }
 }
 
 @media (min-width: 38rem) {
-  body > main > article a#penEdit {
-    display: inline;
+  body > main > article {
+    a#penEdit {
+      display: inline;
+    }
+    img[title^='Thumbnail'] {
+      margin: 0 1rem 2rem 0;
+      float: left;
+    }
   }
 }
