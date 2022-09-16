@@ -2,14 +2,15 @@
 
 <section id="hero">
   <h2>
-    A JavaScript library for <em>structured&nbsp;state</em>.
+    The <em>reactive</em> data store for local&#8209;first&nbsp;apps.
   </h2>
   <p>
-    Using plain old JavaScript objects to manage data gets old very quickly. 
-    It's error-prone, tricky to track changes efficiently, and easy to
-    mistakenly incur performance costs.
+    Modern apps deserve better. Why trade reactive user experiences to be able 
+    to use relational data? Why sacrifice store features for bundle size? And 
+    why should the cloud do all the work 
+    <a href='https://www.inkandswitch.com/local-first/' target='_blank'>anyway</a>?
   </p>
-  <p><em>TinyBase is a smarter way to structure your application state:</em></p>
+  <p><em>TinyBase is a smart new way to structure your local app data:</em></p>
   <ul>
     <li>
       Familiar concepts of <a href='#set-and-get-tables-rows-and-cells'>tables, 
@@ -19,7 +20,12 @@
     </li>
     <li>
       <a href='#register-listeners-at-any-granularity'>Flexibly reactive</a> to 
-      reconciled updates, so you only spend cycles on the data that changes.
+      reconciled updates, so your UI only spends cycles on the data that changes.
+    </li>
+    <li>
+      <em>NEW!</em>
+      <a href='#build-complex-queries-with-tinyql'>Powerful query engine</a> to 
+      select, join, filter, group, sort and paginate data - reactively.
     </li>
     <li>
       <a href='#create-indexes-for-fast-lookups'>Indexing</a>, 
@@ -31,8 +37,8 @@
     <li>
       Easily <a href='#persist-data-to-browser-file-or-server'>sync your 
       data</a> to local or remote storage, and use
-      <a href='#call-react-hooks-to-bind-to-data'>idiomatic bindings</a> to your
-      React UI</a>.
+      <a href='#call-hooks-to-bind-to-data'>idiomatic bindings</a> to your
+      UI</a>.
     </li>
   </ul>
   <p>
@@ -45,6 +51,8 @@
     Other <a href="/guides/faq/">FAQs</a>?
   </p>
 </section>
+
+<a id='new' href='/guides/releases/#v2-0'><em>NEW!</em> v2.0 released</a>
 
 ---
 
@@ -93,7 +101,7 @@ store.setCell('pets', 'fido', 'sold', false);
 store.delListener(listenerId);
 ```
 
-> ## Call React hooks to bind to data.
+> ## Call hooks to bind to data.
 >
 > If you're using React in your application, the optional ui-react module
 > provides hooks to bind to the data in a Store.
@@ -218,6 +226,66 @@ persister.destroy();
 sessionStorage.clear();
 ```
 
+> ## Build complex queries with TinyQL.
+>
+> The Queries object lets you query data across tables, with filtering and
+> aggregation - using a SQL-adjacent syntax called TinyQL.
+>
+> Accessors and listeners let you sort and paginate the results efficiently,
+> making building rich tabular interfaces easier than ever.
+>
+> In this example, we have two tables: of pets and their owners. They are joined
+> together by the pet's ownerId Cell. We select the pet's species, and the owner's
+> state, and then aggregate the prices for the combinations.
+>
+> We access the results by descending price, essentially answering the question:
+> "which is the highest-priced species, and in which state?"
+>
+> Needless to say, the results are reactive too! You can add listeners to
+> queries just as easily as you do to raw tables.
+>
+> Read more about Queries in the [v2.0 Release Notes](/guides/releases/#v2-0),
+> the Making Queries guide, and the Car Analysis demo and Movie Database demo.
+
+```js
+store
+  .setTable('pets', {
+    fido: {species: 'dog', ownerId: '1', price: 5},
+    rex: {species: 'dog', ownerId: '2', price: 4},
+    felix: {species: 'cat', ownerId: '2', price: 3},
+    cujo: {species: 'dog', ownerId: '3', price: 4},
+  })
+  .setTable('owners', {
+    1: {name: 'Alice', state: 'CA'},
+    2: {name: 'Bob', state: 'CA'},
+    3: {name: 'Carol', state: 'WA'},
+  });
+
+const queries = createQueries(store);
+queries.setQueryDefinition(
+  'prices',
+  'pets',
+  ({select, join, group}) => {
+    select('species');
+    select('owners', 'state');
+    select('price');
+    join('owners', 'ownerId');
+    group('price', 'avg').as('avgPrice');
+  },
+);
+
+queries
+  .getResultSortedRowIds('prices', 'avgPrice', true)
+  .forEach((rowId) => {
+    console.log(queries.getResultRow('prices', rowId));
+  });
+// -> {species: 'dog', state: 'CA', avgPrice: 4.5}
+// -> {species: 'dog', state: 'WA', avgPrice: 4}
+// -> {species: 'cat', state: 'CA', avgPrice: 3}
+
+queries.destroy();
+```
+
 > ## Define metrics and aggregations.
 >
 > A Metrics object makes it easy to keep a running aggregation of Cell values in
@@ -282,7 +350,7 @@ indexes.setIndexDefinition(
 console.log(indexes.getSliceIds('bySpecies'));
 // -> ['dog', 'cat']
 console.log(indexes.getSliceRowIds('bySpecies', 'dog'));
-// -> ['fido']
+// -> ['fido', 'rex', 'cujo']
 
 indexes.addSliceIdsListener('bySpecies', () =>
   console.log(indexes.getSliceIds('bySpecies')),
@@ -341,6 +409,8 @@ relationships.destroy();
 
 ```js
 const checkpoints = createCheckpoints(store);
+
+store.setCell('pets', 'felix', 'sold', false);
 checkpoints.addCheckpoint('pre-sale');
 
 store.setCell('pets', 'felix', 'sold', true);
@@ -357,10 +427,11 @@ console.log(store.getCell('pets', 'felix', 'sold'));
 > If you use the basic store module alone, you'll only add a gzipped
 > _@@EVAL("toKb(sizes.get('store.js.gz'))")_ to your app. You can incrementally
 > add the other modules as you need more functionality, or get it all for
-> _@@EVAL("toKb(sizes.get('tinybase.js.gz'))")_. The `ui-react` adaptor is just
-> another _@@EVAL("toKb(sizes.get('ui-react.js.gz'))")_, and everything is fast.
+> _@@EVAL("toKb(sizes.get('tinybase.js.gz'))")_.
 >
-> Life's easy when you have zero dependencies.
+> The `ui-react` adaptor is just another
+> _@@EVAL("toKb(sizes.get('ui-react.js.gz'))")_, and everything is fast. Life's
+> easy when you have zero dependencies!
 >
 > Read more about how TinyBase is structured in the Architecture guide.
 
@@ -395,7 +466,7 @@ console.log(store.getCell('pets', 'felix', 'sold'));
       and <a href='https://facebook.com/tinybasejs'>Facebook</a>.
     </li>
     <li>
-      <a href='/guides/releases/'>Release notes</a> for each minor version.
+      <a href='/guides/releases/'>Release notes</a> for each version.
     </li>
     <li>
       Packages on <a href='@@EVAL("metadata.package")'>NPM</a>.
@@ -410,9 +481,7 @@ console.log(store.getCell('pets', 'felix', 'sold'));
 > ## About
 >
 > Building TinyBase was an interesting exercise in API design, minification, and
-> documentation. It's not [my day job](https://www.linkedin.com/in/jamespearce),
-> but I do intend to maintain it, so please provide feedback. I could not have
-> done this without these great
+> documentation. It could not have been built without these great
 > [projects](/guides/how-tinybase-is-built/credits/#giants) and
-> [friends](/guides/how-tinybase-is-built/credits/#and-friends), and I hope you
+> [friends](/guides/how-tinybase-is-built/credits/#and-friends), and we hope you
 > enjoy using it!

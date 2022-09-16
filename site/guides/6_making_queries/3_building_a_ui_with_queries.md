@@ -1,7 +1,5 @@
 # Building A UI With Queries
 
-[WIP]
-
 This guide covers how the ui-react module supports the Queries object.
 
 As with the React-based bindings to a Store object, the ui-react module provides
