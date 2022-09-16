@@ -5,7 +5,7 @@
   "repository": "github:tinyplex/tinybase",
   "license": "MIT",
   "homepage": "https://tinybase.org",
-  "description": "A tiny, reactive JavaScript library for structured state and tabular data.",
+  "description": "The reactive data store for local-first apps.",
   "keywords": [
     "tiny",
     "reactive",
