@@ -101,20 +101,20 @@ const prepareTestResultsFromBlock = (block: string, prefix: string): void => {
 };
 
 describe('Documentation tests', () => {
-  // forEachDeepFile(
-  //   'src',
-  //   (file) =>
-  //     readFileSync(file, 'utf-8')
-  //       .match(/(?<=\* @example\n).*?(?=\s*(\*\/|\* @))/gms)
-  //       ?.map((examples) => examples.replace(/^\s*?\* ?/gms, ''))
-  //       ?.forEach((block) => prepareTestResultsFromBlock(block, file)),
-  //   '.d.ts',
-  // );
+  forEachDeepFile(
+    'src',
+    (file) =>
+      readFileSync(file, 'utf-8')
+        .match(/(?<=\* @example\n).*?(?=\s*(\*\/|\* @))/gms)
+        ?.map((examples) => examples.replace(/^\s*?\* ?/gms, ''))
+        ?.forEach((block) => prepareTestResultsFromBlock(block, file)),
+    '.d.ts',
+  );
   ['site/guides', 'site/home'].forEach((root) =>
     forEachDeepFile(
       root,
       (file) => prepareTestResultsFromBlock(readFileSync(file, 'utf-8'), file),
-      'tinyql.md',
+      '.md',
     ),
   );
 
