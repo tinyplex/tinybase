@@ -1091,7 +1091,7 @@ export interface Relationships {
    * the underlying Store are removed and it can be correctly garbage collected.
    *
    * @example
-   * This example creates a Store, adds an Relationships object with a
+   * This example creates a Store, adds a Relationships object with a
    * definition (that registers a RowListener with the underlying Store),
    * and then destroys it again, removing the listener.
    *
@@ -1167,7 +1167,7 @@ export interface Relationships {
 }
 
 /**
- * The createRelationships function creates an Relationships object, and is the
+ * The createRelationships function creates a Relationships object, and is the
  * main entry point into the relationships module.
  *
  * It is trivially simple.
@@ -1179,7 +1179,7 @@ export interface Relationships {
  * @param store The Store for which to register Relationships.
  * @returns A reference to the new Relationships object.
  * @example
- * This example creates an Relationships object.
+ * This example creates a Relationships object.
  *
  * ```js
  * const store = createStore();

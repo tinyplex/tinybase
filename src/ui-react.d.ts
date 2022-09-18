@@ -285,7 +285,7 @@ export function useCreateStore(
  * component.
  *
  * The useStore hook lets you either get a reference to the default Store (when
- * called without an parameter), or one of the Store objects that are named by
+ * called without a parameter), or one of the Store objects that are named by
  * Id (when called with an Id parameter).
  *
  * @param id An optional Id for accessing a Store that was named with an Id in
@@ -2551,7 +2551,7 @@ export function useCreateMetrics(
  * through every component.
  *
  * The useMetrics hook lets you either get a reference to the default Metrics
- * object (when called without an parameter), or one of the Metrics objects that
+ * object (when called without a parameter), or one of the Metrics objects that
  * are named by Id (when called with an Id parameter).
  *
  * @param id An optional Id for accessing a Metrics object that was named with
@@ -2903,7 +2903,7 @@ export function useCreateIndexes(
  * through every component.
  *
  * The useIndexes hook lets you either get a reference to the default Indexes
- * object (when called without an parameter), or one of the Indexes objects that
+ * object (when called without a parameter), or one of the Indexes objects that
  * are named by Id (when called with an Id parameter).
  *
  * @param id An optional Id for accessing an Indexes object that was named with
@@ -3463,7 +3463,7 @@ export function useCreateRelationships(
  * props through every component.
  *
  * The useRelationships hook lets you either get a reference to the default
- * Relationships object (when called without an parameter), or one of the
+ * Relationships object (when called without a parameter), or one of the
  * Relationships objects that are named by Id (when called with an Id
  * parameter).
  *
@@ -4257,7 +4257,7 @@ export function useCreateQueries(
  * through every component.
  *
  * The useQueries hook lets you either get a reference to the default Queries
- * object (when called without an parameter), or one of the Queries objects that
+ * object (when called without a parameter), or one of the Queries objects that
  * are named by Id (when called with an Id parameter).
  *
  * @param id An optional Id for accessing a Queries object that was named with
@@ -5695,7 +5695,7 @@ export function useCreateCheckpoints(
  * props through every component.
  *
  * The useCheckpoints hook lets you either get a reference to the default
- * Checkpoints object (when called without an parameter), or one of the
+ * Checkpoints object (when called without a parameter), or one of the
  * Checkpoints objects that are named by Id (when called with an Id parameter).
  *
  * @param id An optional Id for accessing a Checkpoints object that was named
@@ -6876,7 +6876,7 @@ export type SliceProps = {
 
 /**
  * RemoteRowProps props are used for components that refer to a single
- * Relationship in an Relationships object, and where you want to render a
+ * Relationship in a Relationships object, and where you want to render a
  * remote Row based on a local Row, such as in the RemoteRowView component.
  *
  * @category Props
@@ -6915,7 +6915,7 @@ export type RemoteRowProps = {
 
 /**
  * LocalRowsProps props are used for components that refer to a single
- * Relationship in an Relationships object, and where you want to render local
+ * Relationship in a Relationships object, and where you want to render local
  * Rows based on a remote Row, such as the LocalRowsView component.
  *
  * @category Props
@@ -6958,7 +6958,7 @@ export type LocalRowsProps = {
 
 /**
  * LinkedRowsProps props are used for components that refer to a single
- * Relationship in an Relationships object, and where you want to render a
+ * Relationship in a Relationships object, and where you want to render a
  * linked list of Rows starting from a first Row, such as the LinkedRowsView
  * component.
  *
@@ -7177,7 +7177,7 @@ export type ResultCellProps = {
 
 /**
  * CheckpointProps props are used for components that refer to a single
- * checkpoint in an Checkpoints object, such as the CheckpointView component.
+ * checkpoint in a Checkpoints object, such as the CheckpointView component.
  *
  * @category Props
  */
@@ -8406,7 +8406,7 @@ export function IndexView(props: IndexProps): ComponentReturnType;
  * @param props The props for this component.
  * @returns A rendering of the remote Row, or nothing, if not present.
  * @example
- * This example creates an Relationships object outside the application, which
+ * This example creates a Relationships object outside the application, which
  * is used in the RemoteRowView component by reference. A change to the Row Ids
  * re-renders the component.
  *
@@ -8538,7 +8538,7 @@ export function RemoteRowView(props: RemoteRowProps): ComponentReturnType;
  * @param props The props for this component.
  * @returns A rendering of the local Row objects, or nothing, if not present.
  * @example
- * This example creates an Relationships object outside the application, which
+ * This example creates a Relationships object outside the application, which
  * is used in the LocalRowsView component by reference. A change to the Row Ids
  * re-renders the component.
  *
@@ -8671,7 +8671,7 @@ export function LocalRowsView(props: LocalRowsProps): ComponentReturnType;
  * @param props The props for this component.
  * @returns A rendering of the local Row objects, or nothing, if not present.
  * @example
- * This example creates an Relationships object outside the application, which
+ * This example creates a Relationships object outside the application, which
  * is used in the LinkedRowsView component by reference. A change to the Row Ids
  * re-renders the component.
  *
@@ -9335,7 +9335,7 @@ export function ResultTableView(props: ResultTableProps): ComponentReturnType;
  * @param props The props for this component.
  * @returns A rendering of the checkpoint: its label if present, or Id.
  * @example
- * This example creates an Checkpoints object outside the application, which is
+ * This example creates a Checkpoints object outside the application, which is
  * used in the CheckpointView component by reference to render a checkpoint with
  * a label (with its Id for readability).
  *
@@ -9392,7 +9392,7 @@ export function CheckpointView(props: CheckpointProps): ComponentReturnType;
  * @param props The props for this component.
  * @returns A rendering of the previous checkpoints, if present.
  * @example
- * This example creates an Checkpoints object outside the application, which is
+ * This example creates a Checkpoints object outside the application, which is
  * used in the BackwardCheckpointsView component by reference to render a list
  * of previous checkpoints.
  *
@@ -9526,7 +9526,7 @@ export function BackwardCheckpointsView(
  * @param props The props for this component.
  * @returns A rendering of the current checkpoint, if present.
  * @example
- * This example creates an Checkpoints object outside the application, which is
+ * This example creates a Checkpoints object outside the application, which is
  * used in the CurrentCheckpointView component by reference to render the
  * current checkpoints.
  *
@@ -9662,7 +9662,7 @@ export function CurrentCheckpointView(
  * @param props The props for this component.
  * @returns A rendering of the future checkpoints, if present.
  * @example
- * This example creates an Checkpoints object outside the application, which is
+ * This example creates a Checkpoints object outside the application, which is
  * used in the ForwardCheckpointsView component by reference to render a list
  * of future checkpoints.
  *

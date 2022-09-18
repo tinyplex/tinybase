@@ -210,7 +210,7 @@ export type MetricsListenerStats = {
  *
  * @example
  * This example shows a very simple lifecycle of a Metrics object: from
- * creation, to adding a definition, getting an Metric, and then registering and
+ * creation, to adding a definition, getting a Metric, and then registering and
  * removing a listener for it.
  *
  * ```js

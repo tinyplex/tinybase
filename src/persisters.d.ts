@@ -509,7 +509,7 @@ export interface Persister {
 }
 
 /**
- * The createSessionPersister function creates an Persister object that can
+ * The createSessionPersister function creates a Persister object that can
  * persist the Store to the browser's session storage.
  *
  * As well as providing a reference to the Store to persist, you must provide a
@@ -542,7 +542,7 @@ export function createSessionPersister(
 ): Persister;
 
 /**
- * The createLocalPersister function creates an Persister object that can
+ * The createLocalPersister function creates a Persister object that can
  * persist the Store to the browser's local storage.
  *
  * As well as providing a reference to the Store to persist, you must provide a
@@ -575,7 +575,7 @@ export function createLocalPersister(
 ): Persister;
 
 /**
- * The createRemotePersister function creates an Persister object that can
+ * The createRemotePersister function creates a Persister object that can
  * persist the Store to a remote server.
  *
  * As well as providing a reference to the Store to persist, you must provide
@@ -624,7 +624,7 @@ export function createRemotePersister(
 ): Persister;
 
 /**
- * The createFilePersister function creates an Persister object that can persist
+ * The createFilePersister function creates a Persister object that can persist
  * the Store to a local file (in an appropriate environment).
  *
  * As well as providing a reference to the Store to persist, you must provide
@@ -654,7 +654,7 @@ export function createRemotePersister(
 export function createFilePersister(store: Store, filePath: string): Persister;
 
 /**
- * The createCustomPersister function creates an Persister object that you can
+ * The createCustomPersister function creates a Persister object that you can
  * configure to persist the Store in any way you wish.
  *
  * As well as providing a reference to the Store to persist, you must provide
