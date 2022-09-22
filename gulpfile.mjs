@@ -4,7 +4,6 @@
     jest/no-disabled-tests,
     jest/expect-expect,
     jest/no-export,
-    jest/no-jest-import,
     @typescript-eslint/explicit-module-boundary-types
 */
 
@@ -166,7 +165,13 @@ const tsCheck = async (dir) => {
   }
 };
 
-const compileModule = async (module, debug, dir = LIB_DIR, format = 'es') => {
+const compileModule = async (
+  module,
+  debug,
+  dir = LIB_DIR,
+  format = 'es',
+  target = 'esnext',
+) => {
   const {default: esbuild} = await import('rollup-plugin-esbuild');
   const {rollup} = await import('rollup');
   const {terser} = await import('rollup-plugin-terser');
@@ -179,7 +184,7 @@ const compileModule = async (module, debug, dir = LIB_DIR, format = 'es') => {
     input: `src/${module}.ts`,
     plugins: [
       esbuild({
-        target: 'esnext',
+        target,
         define: {'globalThis.DEBUG': '' + debug},
         legalComments: 'inline',
       }),
@@ -342,10 +347,15 @@ export const compileForProd = async () => {
   await clearDir(LIB_DIR);
   await allModules(async (module) => {
     await compileModule(module, false);
+    await compileModule(module, false, `${LIB_DIR}/es6`, 'es', 'es6');
     await compileModule(module, false, `${LIB_DIR}/umd`, 'umd');
+    await compileModule(module, false, `${LIB_DIR}/umd-es6`, 'umd', 'es6');
     await compileModule(module, true, `${LIB_DIR}/debug`);
   });
   await copyDefinitions();
+  await copyDefinitions(`${LIB_DIR}/es6`);
+  await copyDefinitions(`${LIB_DIR}/umd`);
+  await copyDefinitions(`${LIB_DIR}/umd-es6`);
   await copyDefinitions(`${LIB_DIR}/debug`);
 };
 
