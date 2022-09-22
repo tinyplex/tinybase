@@ -1,10 +1,7 @@
 # Credits
 
 I'm James. Building TinyBase was an interesting exercise in API design,
-minification, and documentation.
-
-It's not [my day job](https://www.linkedin.com/in/jamespearce), but I do intend
-to maintain it, so please provide feedback. I hope you enjoy using it!
+minification, and documentation. But now people seem to like using it!
 
 I had the privilege of building this project just as I wanted, with as much time
 as I needed, and for nothing other than my personal creativity. I wrote about

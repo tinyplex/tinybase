@@ -343,6 +343,7 @@ export const compileForTest = async () => {
   });
   await copyDefinitions(`${LIB_DIR}/debug`);
 };
+
 export const compileForProd = async () => {
   await clearDir(LIB_DIR);
   await allModules(async (module) => {

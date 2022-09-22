@@ -55,3 +55,33 @@ GitHub pages deployment.
 API documentation comes from the `.d.ts` files by way of the TinyDocs library
 (which is essentially a custom wrapper around TypeDoc). Other static assets like
 CSS and JS are built into the final site from other folders in this directory.
+
+## lib
+
+Not checked in, but distributed via NPM, is a `lib` directory, which contains
+the `.d.ts` type definitions, the compiled `.js` files, and their compressed
+`.js.gz` equivalents. These three files exists for each of the TinyBase
+submodules.
+
+The `tinybase.js` and `tinybase.js.gz` files represent the master package of
+everything together (except the ui-react module, which always remains a
+standalone option). Since many of the submodules share compiled-in dependencies,
+the master package is smaller to include than including all of the submodules
+separately. However, for a very minimal set of modules, you may save size by
+including them piecemeal.
+
+In the root of the `lib` directory, all of these files are built to the
+[`esnext`](https://esbuild.github.io/api/#target) target and the
+[`esm`](https://rollupjs.org/guide/en/#outputformat) format. In addition, there
+are subdirectories that contain builds of different types:
+
+| Directory | Target | Format | Minified |
+| --------- | ------ | ------ | -------- |
+| .         | esnext | esm    | true     |
+| ./debug   | esnext | esm    | false    |
+| ./umd     | esnext | umd    | true     |
+| ./es6     | es6    | esm    | true     |
+| ./umd-es6 | es6    | umd    | true     |
+
+These build configurations are all defined in the `compileForProd` task in
+`gulpfile.mjs`.
