@@ -1,3 +1,5 @@
+import {Id} from '../common.d';
+
 export const getTypeOf = (thing: unknown): string => typeof thing;
 
 export const EMPTY_OBJECT = '{}';
@@ -31,3 +33,5 @@ export const SORTED_ROW_IDS = 'SortedRowIds';
 export const ROW = 'Row';
 export const CELL_IDS = 'CellIds';
 export const CELL = 'Cell';
+
+export const id = (key: unknown): Id => EMPTY_STRING + key;

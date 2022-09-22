@@ -12,6 +12,7 @@ import {
   TABLES,
   TABLE_IDS,
   TYPE,
+  id,
 } from './common/strings';
 import {
   Cell,
@@ -96,7 +97,6 @@ import {
 import {getCellType, setOrDelCell} from './common/cell';
 import {defaultSorter} from './common';
 import {getPoolFunctions} from './common/pool';
-import {id} from './common';
 
 type SchemaMap = IdMap2<CellSchema>;
 type RowMap = IdMap<Cell>;
