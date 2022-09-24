@@ -11,7 +11,7 @@ import {
   mapSet,
 } from './map';
 import {IdSet2, setAdd, setNew} from './set';
-import {arrayForEach, arrayIsEmpty} from './array';
+import {arrayForEach, arrayIsEmpty, arrayIsEqual} from './array';
 import {
   collClear,
   collDel,
@@ -20,7 +20,7 @@ import {
   collIsEmpty,
   collValues,
 } from './coll';
-import {ifNotUndefined, isString, isUndefined} from './other';
+import {ifNotUndefined, isArray, isString, isUndefined} from './other';
 import {Checkpoints} from '../checkpoints.d';
 import {EMPTY_STRING} from './strings';
 import {Indexes} from '../indexes.d';
@@ -144,7 +144,14 @@ export const getDefinableFunctions = <Thing, RowValue>(
       const newRowValue = hasRow(tableId, rowId)
         ? validateRowValue(getRowValue(getCell, rowId))
         : undefined;
-      if (oldRowValue != newRowValue) {
+      if (
+        !(
+          oldRowValue === newRowValue ||
+          (isArray(oldRowValue) &&
+            isArray(newRowValue) &&
+            arrayIsEqual(oldRowValue, newRowValue))
+        )
+      ) {
         mapSet(changedRowValues, rowId, [oldRowValue, newRowValue]);
       }
 
