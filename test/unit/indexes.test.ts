@@ -124,7 +124,7 @@ describe('Sets', () => {
     expect(getIndexesObject(indexes)['i1']).toEqualWithOrder({});
   });
 
-  test('custom Id index 1', () => {
+  test('custom Id index', () => {
     setCells();
     indexes.setIndexDefinition('i1', 't1', firstOrSecondLetter);
     expect(getIndexesObject(indexes)['i1']).toEqualWithOrder({
@@ -136,7 +136,7 @@ describe('Sets', () => {
     expect(getIndexesObject(indexes)['i1']).toEqualWithOrder({});
   });
 
-  test('custom Id index 2', () => {
+  test('custom Id index with key', () => {
     setCells();
     indexes.setIndexDefinition('i1', 't1', keyAndValue);
     expect(getIndexesObject(indexes)['i1']).toEqualWithOrder({
@@ -382,7 +382,7 @@ describe('Listens to SliceIds when sets', () => {
     expectNoChanges(listener);
   });
 
-  test('custom Id index 1', () => {
+  test('custom Id index', () => {
     indexes.setIndexDefinition('i1', 't1', firstOrSecondLetter);
     setCells();
     delCells();
@@ -409,7 +409,7 @@ describe('Listens to SliceIds when sets', () => {
     expectNoChanges(listener);
   });
 
-  test('custom Id index 2', () => {
+  test('custom Id index with key', () => {
     indexes.setIndexDefinition('i1', 't1', keyAndValue);
     setCells();
     delCells();
@@ -1009,7 +1009,7 @@ describe('Listens to SliceRowIds when sets', () => {
     expectNoChanges(listener);
   });
 
-  test('custom Id index 1', () => {
+  test('custom Id index', () => {
     indexes.setIndexDefinition('i1', 't1', firstOrSecondLetter);
     listener.listenToSliceRowIds('/i1/o', 'i1', 'o');
     listener.listenToSliceRowIds('/i1/t', 'i1', 't');
@@ -1076,7 +1076,7 @@ describe('Listens to SliceRowIds when sets', () => {
     expectNoChanges(listener);
   });
 
-  test('custom Id index 2', () => {
+  test('custom Id index with key', () => {
     indexes.setIndexDefinition('i1', 't1', keyAndValue);
     listener.listenToSliceRowIds('/i1/oddr1', 'i1', 'oddr1');
     listener.listenToSliceRowIds('/i1/evenr2', 'i1', 'evenr2');
