@@ -3,6 +3,35 @@
 This is a reverse chronological list of the major TinyBase releases, with
 highlighted features.
 
+## v2.1
+
+Currently in beta, this release allows you to create indexes where a single Row
+Id can exist in multiple slices. You can utilize this to build simple keyword
+searches, for example.
+
+Simply provide a custom getSliceIdOrIds function in the setIndexDefinition
+method that returns an array of Slice Ids, rather than a single Id:
+
+```js
+const store = createStore().setTable('pets', {
+  fido: {species: 'dog'},
+  felix: {species: 'cat'},
+  rex: {species: 'dog'},
+});
+
+const indexes = createIndexes(store);
+indexes.setIndexDefinition('containsLetter', 'pets', (_, rowId) =>
+  rowId.split(''),
+);
+
+console.log(indexes.getSliceIds('containsLetter'));
+// -> ['f', 'i', 'd', 'o', 'e', 'l', 'x', 'r']
+console.log(indexes.getSliceRowIds('containsLetter', 'i'));
+// -> ['fido', 'felix']
+console.log(indexes.getSliceRowIds('containsLetter', 'x'));
+// -> ['felix', 'rex']
+```
+
 ## v2.0
 
 **Announcing the next major version of TinyBase 2.0!** This is an exciting
@@ -80,7 +109,7 @@ remember to also call the finishTransaction method explicitly when the
 transaction is started with the startTransaction method, of course.
 
 ```js
-const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+store.setTables({pets: {fido: {species: 'dog'}}});
 store.addRowListener('pets', 'fido', () => console.log('Fido changed'));
 
 store.startTransaction();
