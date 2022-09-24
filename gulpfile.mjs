@@ -396,16 +396,22 @@ export const compileDocs = async () => await compileDocsAndAssets();
 export const compileForProdAndDocs = series(compileForProd, compileDocs);
 
 export const serveDocs = async () => {
-  const {default: http} = await import('http-server');
-  return http
-    .createServer({
-      root: DOCS_DIR,
-      cache: -1,
-      gzip: true,
-      // eslint-disable-next-line no-console
-      logFn: (req) => console.log(req.url),
-    })
-    .listen('8080', '0.0.0.0');
+  const {createServer} = await import('http-server');
+  const {default: replace} = await import('buffer-replace');
+  const removeDomain = (_, res) => {
+    res._write = res.write;
+    res.write = (buffer) =>
+      res._write(replace(buffer, 'https://tinybase.org/', '/'.padStart(21)));
+    res.emit('next');
+  };
+  createServer({
+    root: DOCS_DIR,
+    cache: -1,
+    gzip: true,
+    // eslint-disable-next-line no-console
+    logFn: (req) => console.log(req.url),
+    before: [removeDomain],
+  }).listen('8080', '0.0.0.0');
 };
 
 export const preCommit = series(
