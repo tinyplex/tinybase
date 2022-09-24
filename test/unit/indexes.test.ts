@@ -44,6 +44,8 @@ const firstOrSecondLetter = (getCell: GetCell) =>
 
 const keyAndValue = (getCell: GetCell, rowId: Id) => getCell('c2') + rowId;
 
+const letters = (getCell: GetCell) => (getCell('c1') + '').split('');
+
 const ascend = (sortKey1: SortKey, sortKey2: SortKey): number =>
   (sortKey1 ?? 0) > (sortKey2 ?? 0) ? 1 : -1;
 const descend = (sortKey1: SortKey, sortKey2: SortKey): number =>
@@ -144,6 +146,25 @@ describe('Sets', () => {
       oddr3: ['r3'],
       oddr1: ['r1'],
       evenr4: ['r4'],
+    });
+    delCells();
+    expect(getIndexesObject(indexes)['i1']).toEqualWithOrder({});
+  });
+
+  test('custom Id index returning array', () => {
+    setCells();
+    store.setCell('t1', 'r2', 'c1', 'duo');
+    indexes.setIndexDefinition('i1', 't1', letters);
+    expect(getIndexesObject(indexes)['i1']).toEqualWithOrder({
+      d: ['r2'],
+      u: ['r2', 'r4'],
+      o: ['r2', 'r1', 'r4'],
+      t: ['r3'],
+      h: ['r3'],
+      r: ['r3', 'r4'],
+      e: ['r3', 'r1'],
+      n: ['r1'],
+      f: ['r4'],
     });
     delCells();
     expect(getIndexesObject(indexes)['i1']).toEqualWithOrder({});
@@ -439,6 +460,40 @@ describe('Listens to SliceIds when sets', () => {
       {i1: ['evenr2', 'oddr3', 'oddr1']},
       {i1: ['evenr2', 'oddr1']},
       {i1: ['oddr1']},
+      {i1: []},
+    );
+    expectNoChanges(listener);
+  });
+
+  test('custom Id index returning array', () => {
+    indexes.setIndexDefinition('i1', 't1', letters);
+    setCells();
+    store.setCell('t1', 'r2', 'c1', 'duo');
+    delCells();
+    expectChanges(
+      listener,
+      '/i1s',
+      {i1: ['o', 'n', 'e']},
+      {i1: ['o', 'e', 't', 'w', 'h', 'r']},
+      {i1: ['o', 'e', 't', 'w', 'h', 'r', 'n']},
+      {i1: ['o', 'e', 't', 'w', 'h', 'r', 'n', 'f', 'u']},
+      {i1: ['o', 'e', 't', 'h', 'r', 'n', 'f', 'u', 'd']},
+      {i1: ['o', 'e', 't', 'h', 'r', 'n', 'u', 'd']},
+      {i1: ['o', 'e', 'n', 'u', 'd']},
+      {i1: ['o', 'e', 'n']},
+      {i1: []},
+    );
+    expectChanges(
+      listener,
+      '/i*s',
+      {i1: ['o', 'n', 'e']},
+      {i1: ['o', 'e', 't', 'w', 'h', 'r']},
+      {i1: ['o', 'e', 't', 'w', 'h', 'r', 'n']},
+      {i1: ['o', 'e', 't', 'w', 'h', 'r', 'n', 'f', 'u']},
+      {i1: ['o', 'e', 't', 'h', 'r', 'n', 'f', 'u', 'd']},
+      {i1: ['o', 'e', 't', 'h', 'r', 'n', 'u', 'd']},
+      {i1: ['o', 'e', 'n', 'u', 'd']},
+      {i1: ['o', 'e', 'n']},
       {i1: []},
     );
     expectNoChanges(listener);
@@ -1195,6 +1250,224 @@ describe('Listens to SliceRowIds when sets', () => {
       {i1: {oddr3: []}},
       {i1: {evenr2: []}},
       {i1: {oddr1: []}},
+    );
+    expectNoChanges(listener);
+  });
+
+  test('custom Id index returning array', () => {
+    indexes.setIndexDefinition('i1', 't1', letters);
+    listener.listenToSliceRowIds('/i1/o', 'i1', 'o');
+    listener.listenToSliceRowIds('/i1/n', 'i1', 'n');
+    listener.listenToSliceRowIds('/i1/e', 'i1', 'e');
+    listener.listenToSliceRowIds('/i1/t', 'i1', 't');
+    listener.listenToSliceRowIds('/i1/w', 'i1', 'w');
+    listener.listenToSliceRowIds('/i1/h', 'i1', 'h');
+    listener.listenToSliceRowIds('/i1/r', 'i1', 'r');
+    listener.listenToSliceRowIds('/i1/f', 'i1', 'f');
+    listener.listenToSliceRowIds('/i1/u', 'i1', 'u');
+    listener.listenToSliceRowIds('/i1/d', 'i1', 'd');
+    listener.listenToSliceRowIds('/i1/*', 'i1', null);
+    listener.listenToSliceRowIds('/i*/o', null, 'o');
+    listener.listenToSliceRowIds('/i*/n', null, 'n');
+    listener.listenToSliceRowIds('/i*/e', null, 'e');
+    listener.listenToSliceRowIds('/i*/t', null, 't');
+    listener.listenToSliceRowIds('/i*/w', null, 'w');
+    listener.listenToSliceRowIds('/i*/h', null, 'h');
+    listener.listenToSliceRowIds('/i*/r', null, 'r');
+    listener.listenToSliceRowIds('/i*/f', null, 'f');
+    listener.listenToSliceRowIds('/i*/u', null, 'u');
+    listener.listenToSliceRowIds('/i*/d', null, 'd');
+    listener.listenToSliceRowIds('/i*/*', null, null);
+    setCells();
+    store.setCell('t1', 'r2', 'c1', 'duo');
+    delCells();
+    expectChanges(
+      listener,
+      '/i1/o',
+      {i1: {o: ['r1']}},
+      {i1: {o: ['r2']}},
+      {i1: {o: ['r2', 'r1']}},
+      {i1: {o: ['r2', 'r1', 'r4']}},
+      {i1: {o: ['r2', 'r1']}},
+      {i1: {o: ['r1']}},
+      {i1: {o: []}},
+    );
+    expectChanges(
+      listener,
+      '/i1/n',
+      {i1: {n: ['r1']}},
+      {i1: {n: []}},
+      {i1: {n: ['r1']}},
+      {i1: {n: []}},
+    );
+    expectChanges(
+      listener,
+      '/i1/e',
+      {i1: {e: ['r1']}},
+      {i1: {e: ['r3']}},
+      {i1: {e: ['r3', 'r1']}},
+      {i1: {e: ['r1']}},
+      {i1: {e: []}},
+    );
+    expectChanges(
+      listener,
+      '/i1/t',
+      {i1: {t: ['r2', 'r3']}},
+      {i1: {t: ['r3']}},
+      {i1: {t: []}},
+    );
+    expectChanges(listener, '/i1/w', {i1: {w: ['r2']}}, {i1: {w: []}});
+    expectChanges(listener, '/i1/h', {i1: {h: ['r3']}}, {i1: {h: []}});
+    expectChanges(
+      listener,
+      '/i1/r',
+      {i1: {r: ['r3']}},
+      {i1: {r: ['r3', 'r4']}},
+      {i1: {r: ['r3']}},
+      {i1: {r: []}},
+    );
+    expectChanges(listener, '/i1/f', {i1: {f: ['r4']}}, {i1: {f: []}});
+    expectChanges(listener, '/i1/d', {i1: {d: ['r2']}}, {i1: {d: []}});
+    expectChanges(
+      listener,
+      '/i1/u',
+      {i1: {u: ['r4']}},
+      {i1: {u: ['r4', 'r2']}},
+      {i1: {u: ['r2']}},
+      {i1: {u: []}},
+    );
+    expectChanges(
+      listener,
+      '/i1/*',
+      {i1: {o: ['r1']}},
+      {i1: {n: ['r1']}},
+      {i1: {e: ['r1']}},
+      {i1: {t: ['r2', 'r3']}},
+      {i1: {w: ['r2']}},
+      {i1: {o: ['r2']}},
+      {i1: {h: ['r3']}},
+      {i1: {r: ['r3']}},
+      {i1: {e: ['r3']}},
+      {i1: {n: []}},
+      {i1: {o: ['r2', 'r1']}},
+      {i1: {n: ['r1']}},
+      {i1: {e: ['r3', 'r1']}},
+      {i1: {f: ['r4']}},
+      {i1: {o: ['r2', 'r1', 'r4']}},
+      {i1: {u: ['r4']}},
+      {i1: {r: ['r3', 'r4']}},
+      {i1: {t: ['r3']}},
+      {i1: {w: []}},
+      {i1: {d: ['r2']}},
+      {i1: {u: ['r4', 'r2']}},
+      {i1: {f: []}},
+      {i1: {o: ['r2', 'r1']}},
+      {i1: {u: ['r2']}},
+      {i1: {r: ['r3']}},
+      {i1: {t: []}},
+      {i1: {h: []}},
+      {i1: {r: []}},
+      {i1: {e: ['r1']}},
+      {i1: {d: []}},
+      {i1: {u: []}},
+      {i1: {o: ['r1']}},
+      {i1: {o: []}},
+      {i1: {n: []}},
+      {i1: {e: []}},
+    );
+    expectChanges(
+      listener,
+      '/i*/o',
+      {i1: {o: ['r1']}},
+      {i1: {o: ['r2']}},
+      {i1: {o: ['r2', 'r1']}},
+      {i1: {o: ['r2', 'r1', 'r4']}},
+      {i1: {o: ['r2', 'r1']}},
+      {i1: {o: ['r1']}},
+      {i1: {o: []}},
+    );
+    expectChanges(
+      listener,
+      '/i*/n',
+      {i1: {n: ['r1']}},
+      {i1: {n: []}},
+      {i1: {n: ['r1']}},
+      {i1: {n: []}},
+    );
+    expectChanges(
+      listener,
+      '/i*/e',
+      {i1: {e: ['r1']}},
+      {i1: {e: ['r3']}},
+      {i1: {e: ['r3', 'r1']}},
+      {i1: {e: ['r1']}},
+      {i1: {e: []}},
+    );
+    expectChanges(
+      listener,
+      '/i*/t',
+      {i1: {t: ['r2', 'r3']}},
+      {i1: {t: ['r3']}},
+      {i1: {t: []}},
+    );
+    expectChanges(listener, '/i*/w', {i1: {w: ['r2']}}, {i1: {w: []}});
+    expectChanges(listener, '/i*/h', {i1: {h: ['r3']}}, {i1: {h: []}});
+    expectChanges(
+      listener,
+      '/i*/r',
+      {i1: {r: ['r3']}},
+      {i1: {r: ['r3', 'r4']}},
+      {i1: {r: ['r3']}},
+      {i1: {r: []}},
+    );
+    expectChanges(listener, '/i*/f', {i1: {f: ['r4']}}, {i1: {f: []}});
+    expectChanges(listener, '/i*/d', {i1: {d: ['r2']}}, {i1: {d: []}});
+    expectChanges(
+      listener,
+      '/i*/u',
+      {i1: {u: ['r4']}},
+      {i1: {u: ['r4', 'r2']}},
+      {i1: {u: ['r2']}},
+      {i1: {u: []}},
+    );
+    expectChanges(
+      listener,
+      '/i*/*',
+      {i1: {o: ['r1']}},
+      {i1: {n: ['r1']}},
+      {i1: {e: ['r1']}},
+      {i1: {t: ['r2', 'r3']}},
+      {i1: {w: ['r2']}},
+      {i1: {o: ['r2']}},
+      {i1: {h: ['r3']}},
+      {i1: {r: ['r3']}},
+      {i1: {e: ['r3']}},
+      {i1: {n: []}},
+      {i1: {o: ['r2', 'r1']}},
+      {i1: {n: ['r1']}},
+      {i1: {e: ['r3', 'r1']}},
+      {i1: {f: ['r4']}},
+      {i1: {o: ['r2', 'r1', 'r4']}},
+      {i1: {u: ['r4']}},
+      {i1: {r: ['r3', 'r4']}},
+      {i1: {t: ['r3']}},
+      {i1: {w: []}},
+      {i1: {d: ['r2']}},
+      {i1: {u: ['r4', 'r2']}},
+      {i1: {f: []}},
+      {i1: {o: ['r2', 'r1']}},
+      {i1: {u: ['r2']}},
+      {i1: {r: ['r3']}},
+      {i1: {t: []}},
+      {i1: {h: []}},
+      {i1: {r: []}},
+      {i1: {e: ['r1']}},
+      {i1: {d: []}},
+      {i1: {u: []}},
+      {i1: {o: ['r1']}},
+      {i1: {o: []}},
+      {i1: {n: []}},
+      {i1: {e: []}},
     );
     expectNoChanges(listener);
   });
