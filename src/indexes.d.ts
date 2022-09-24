@@ -1,6 +1,6 @@
 /**
- * The indexes module of the TinyBase project provides the ability to create
- * and track indexes of the data in Store objects.
+ * The indexes module of the TinyBase project provides the ability to create and
+ * track indexes of the data in Store objects.
  *
  * The main entry point to this module is the createIndexes function, which
  * returns a new Indexes object. From there, you can create new Index
@@ -209,11 +209,12 @@ export interface Indexes {
    * derived string value in common, as described by this method. Those values
    * are used as the key for each Slice in the overall Index object.
    *
-   * Without the third `getSliceId` parameter, the Index will simply have a
+   * Without the third `getSliceIdOrIds` parameter, the Index will simply have a
    * single Slice, keyed by an empty string. But more often you will specify a
    * Cell value containing the Slice Id that the Row should belong to.
    * Alternatively, a custom function can be provided that produces your own
-   * Slice Id from the local Row as a whole.
+   * Slice Id from the local Row as a whole. Since v2.1, the custom function can
+   * return an array of Slice Ids, each of which the Row will then belong to.
    *
    * The fourth `getSortKey` parameter specifies a Cell Id to get a value (or a
    * function that processes a whole Row to get a value) that is used to sort
@@ -241,11 +242,13 @@ export interface Indexes {
    *
    * @param indexId The Id of the Index to define.
    * @param tableId The Id of the Table the Index will be generated from.
-   * @param getSliceId Either the Id of the Cell containing, or a function that
-   * produces, the Id that is used to indicate which Slice in the Index the Row
-   * Id should be in. Defaults to a function that returns `''` (meaning that if
-   * this `getSliceId` parameter is omitted, the Index will simply contain a
-   * single Slice containing all the Row Ids in the Table).
+   * @param getSliceIdOrIds Either the Id of the Cell containing, or a function
+   * that produces, the Id that is used to indicate which Slice in the Index the
+   * Row Id should be in. Defaults to a function that returns `''` (meaning that
+   * if this `getSliceIdOrIds` parameter is omitted, the Index will simply
+   * contain a single Slice containing all the Row Ids in the Table). Since
+   * v2.1, this can return an array of Slice Ids, each of which the Row will
+   * then belong to.
    * @param getSortKey Either the Id of the Cell containing, or a function that
    * produces, the value that is used to sort the Row Ids in each Slice.
    * @param sliceIdSorter A function that takes two Slice Id values and returns
@@ -294,6 +297,29 @@ export interface Indexes {
    * ```
    * @example
    * This example creates a Store, creates an Indexes object, and defines an
+   * Index based on each of the letters present in the pets' names.
+   *
+   * ```js
+   * const store = createStore().setTable('pets', {
+   *   fido: {species: 'dog'},
+   *   felix: {species: 'cat'},
+   *   rex: {species: 'dog'},
+   * });
+   *
+   * const indexes = createIndexes(store);
+   * indexes.setIndexDefinition('containsLetter', 'pets', (_, rowId) =>
+   *   rowId.split(''),
+   * );
+   *
+   * console.log(indexes.getSliceIds('containsLetter'));
+   * // -> ['f', 'i', 'd', 'o', 'e', 'l', 'x', 'r']
+   * console.log(indexes.getSliceRowIds('containsLetter', 'i'));
+   * // -> ['fido', 'felix']
+   * console.log(indexes.getSliceRowIds('containsLetter', 'x'));
+   * // -> ['felix', 'rex']
+   * ```
+   * @example
+   * This example creates a Store, creates an Indexes object, and defines an
    * Index based on the first letter of the pets' names. The Slice Ids (and Row
    * Ids within them) are alphabetically sorted.
    *
@@ -324,7 +350,7 @@ export interface Indexes {
   setIndexDefinition(
     indexId: Id,
     tableId: Id,
-    getSliceId?: Id | ((getCell: GetCell, rowId: Id) => Id),
+    getSliceIdOrIds?: Id | ((getCell: GetCell, rowId: Id) => Id | Ids),
     getSortKey?: Id | ((getCell: GetCell, rowId: Id) => SortKey),
     sliceIdSorter?: (sliceId1: Id, sliceId2: Id) => number,
     rowIdSorter?: (sortKey1: SortKey, sortKey2: SortKey, sliceId: Id) => number,
