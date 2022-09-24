@@ -82,6 +82,7 @@
     "babel-eslint": "^10.1.0",
     "babel-jest": "^29.0.3",
     "babel-preset-minify": "^0.5.2",
+    "buffer-replace": "^1.0.0",
     "country-flag-emoji-json": "^2.0.0",
     "cspell": "^6.9.0",
     "esbuild": "^0.15.7",
