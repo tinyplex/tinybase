@@ -1,4 +1,5 @@
-import {DEBUG, ifNotUndefined, isUndefined} from './common/other';
+import {DEBUG, ifNotUndefined, isArray, isUndefined} from './common/other';
+import {EMPTY_STRING, id} from './common/strings';
 import {GetCell, Store} from './store.d';
 import {Id, IdOrNull, Ids, SortKey} from './common.d';
 import {IdMap, mapForEach, mapGet, mapKeys, mapNew, mapSet} from './common/map';
@@ -12,7 +13,7 @@ import {
   SliceRowIdsListener,
   createIndexes as createIndexesDecl,
 } from './indexes.d';
-import {arrayIsSorted, arraySort} from './common/array';
+import {arrayIsSorted, arrayMap, arraySort} from './common/array';
 import {
   collDel,
   collForEach,
@@ -27,7 +28,6 @@ import {
   getDefinableFunctions,
   getRowCellFunction,
 } from './common/definable';
-import {EMPTY_STRING} from './common/strings';
 import {defaultSorter} from './common';
 import {getListenerFunctions} from './common/listeners';
 import {objFreeze} from './common/obj';
@@ -48,10 +48,15 @@ export const createIndexes: typeof createIndexesDecl = getCreateFunction(
       setDefinitionAndListen,
       delDefinition,
       destroy,
-    ] = getDefinableFunctions<IdSet2, Id>(
+    ] = getDefinableFunctions<IdSet2, Id | Ids>(
       store,
       mapNew,
-      (value): Id => (isUndefined(value) ? EMPTY_STRING : value + EMPTY_STRING),
+      (value): Id | Ids =>
+        isUndefined(value)
+          ? EMPTY_STRING
+          : isArray(value)
+          ? arrayMap(value, id)
+          : id(value),
     );
     const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
       () => indexes,
@@ -63,7 +68,7 @@ export const createIndexes: typeof createIndexesDecl = getCreateFunction(
     const setIndexDefinition = (
       indexId: Id,
       tableId: Id,
-      getSliceId?: Id | ((getCell: GetCell, rowId: Id) => Id),
+      getSliceIdOrIds?: Id | ((getCell: GetCell, rowId: Id) => Id | Ids),
       getSortKey?: Id | ((getCell: GetCell, rowId: Id) => SortKey),
       sliceIdSorter?: (sliceId1: Id, sliceId2: Id) => number,
       rowIdSorter: (
@@ -82,9 +87,9 @@ export const createIndexes: typeof createIndexesDecl = getCreateFunction(
         tableId,
         (
           change: () => void,
-          changedSliceIds: IdMap<[Id | undefined, Id | undefined]>,
+          changedSliceIds: IdMap<[Id | Ids | undefined, Id | Ids | undefined]>,
           changedSortKeys: IdMap<SortKey>,
-          sliceIds?: IdMap<Id>,
+          sliceIds?: IdMap<Id | Ids>,
           sortKeys?: IdMap<SortKey>,
           force?: boolean,
         ) => {
@@ -92,9 +97,16 @@ export const createIndexes: typeof createIndexesDecl = getCreateFunction(
           const changedSlices: IdSet = setNew();
           const unsortedSlices: IdSet = setNew();
           const index = getIndex(indexId);
-
           collForEach(changedSliceIds, ([oldSliceId, newSliceId], rowId) => {
-            if (!isUndefined(oldSliceId)) {
+            const oldSliceIds = setNew(oldSliceId);
+            const newSliceIds = setNew(newSliceId);
+            collForEach(oldSliceIds, (oldSliceId) =>
+              collDel(newSliceIds, oldSliceId)
+                ? collDel(oldSliceIds, oldSliceId)
+                : 0,
+            );
+
+            collForEach(oldSliceIds, (oldSliceId) => {
               setAdd(changedSlices, oldSliceId);
               ifNotUndefined(mapGet(index, oldSliceId), (oldSlice) => {
                 collDel(oldSlice, rowId);
@@ -103,9 +115,9 @@ export const createIndexes: typeof createIndexesDecl = getCreateFunction(
                   sliceIdsChanged = 1;
                 }
               });
-            }
+            });
 
-            if (!isUndefined(newSliceId)) {
+            collForEach(newSliceIds, (newSliceId) => {
               setAdd(changedSlices, newSliceId);
               if (!collHas(index, newSliceId)) {
                 mapSet(index, newSliceId, setNew());
@@ -115,7 +127,7 @@ export const createIndexes: typeof createIndexesDecl = getCreateFunction(
               if (!isUndefined(getSortKey)) {
                 setAdd(unsortedSlices, newSliceId);
               }
-            }
+            });
           });
 
           change();
@@ -175,7 +187,7 @@ export const createIndexes: typeof createIndexesDecl = getCreateFunction(
             callListeners(sliceRowIdsListeners, [indexId, sliceId]),
           );
         },
-        getRowCellFunction(getSliceId),
+        getRowCellFunction(getSliceIdOrIds),
         ifNotUndefined(getSortKey, getRowCellFunction),
       );
       return indexes;
