@@ -51,6 +51,7 @@ import {
 } from './common';
 import {Id, Ids} from '../common.d';
 import React, {ReactElement, useContext} from 'react';
+import {isArray, isUndefined} from '../common/other';
 import {
   useCell,
   useCellIds,
@@ -76,7 +77,6 @@ import {IdObj} from '../common/obj';
 import {Relationships} from '../relationships.d';
 import {Store} from '../store.d';
 import {arrayMap} from '../common/array';
-import {isUndefined} from '../common/other';
 
 const {createElement, useMemo} = React;
 
@@ -282,7 +282,7 @@ const wrap = (
   id?: Id,
 ) => {
   const separatedChildren =
-    isUndefined(separator) || !Array.isArray(children)
+    isUndefined(separator) || !isArray(children)
       ? children
       : arrayMap(children, (child, c) => (c > 0 ? [separator, child] : child));
   return encloseWithId ? [id, ':{', separatedChildren, '}'] : separatedChildren;
