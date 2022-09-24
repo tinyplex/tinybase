@@ -49,4 +49,6 @@ export const isString = (thing: unknown): thing is string =>
 export const isFunction = (thing: unknown): thing is (...args: any[]) => any =>
   getTypeOf(thing) == FUNCTION;
 
+export const isArray = (thing: unknown): thing is any[] => Array.isArray(thing);
+
 export const getUndefined = (): undefined => undefined;
