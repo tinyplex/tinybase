@@ -2,6 +2,7 @@ import 'expect-puppeteer';
 import {ElementHandle} from 'puppeteer';
 import {Server} from 'http';
 import {createServer} from 'http-server';
+import replace from 'buffer-replace';
 
 export const getServerFunctions = (
   port: number,
@@ -11,11 +12,19 @@ export const getServerFunctions = (
 
   let server: Server;
 
+  const removeDomain = (_: any, res: any) => {
+    res._write = res.write;
+    res.write = (buffer: any) =>
+      res._write(replace(buffer, 'https://tinybase.org/', '/'.padStart(21)));
+    res.emit('next');
+  };
+
   const startServer = () => {
     server = createServer({
       root: 'docs',
       cache: -1,
       gzip: true,
+      before: [removeDomain],
     });
     server.listen(port, ADDRESS);
   };
