@@ -97,38 +97,41 @@ export const createIndexes: typeof createIndexesDecl = getCreateFunction(
           const changedSlices: IdSet = setNew();
           const unsortedSlices: IdSet = setNew();
           const index = getIndex(indexId);
-          collForEach(changedSliceIds, ([oldSliceId, newSliceId], rowId) => {
-            const oldSliceIds = setNew(oldSliceId);
-            const newSliceIds = setNew(newSliceId);
-            collForEach(oldSliceIds, (oldSliceId) =>
-              collDel(newSliceIds, oldSliceId)
-                ? collDel(oldSliceIds, oldSliceId)
-                : 0,
-            );
+          collForEach(
+            changedSliceIds,
+            ([oldSliceIdOrIds, newSliceIdOrIds], rowId) => {
+              const oldSliceIds = setNew(oldSliceIdOrIds);
+              const newSliceIds = setNew(newSliceIdOrIds);
+              collForEach(oldSliceIds, (oldSliceId) =>
+                collDel(newSliceIds, oldSliceId)
+                  ? collDel(oldSliceIds, oldSliceId)
+                  : 0,
+              );
 
-            collForEach(oldSliceIds, (oldSliceId) => {
-              setAdd(changedSlices, oldSliceId);
-              ifNotUndefined(mapGet(index, oldSliceId), (oldSlice) => {
-                collDel(oldSlice, rowId);
-                if (collIsEmpty(oldSlice)) {
-                  mapSet(index, oldSliceId);
+              collForEach(oldSliceIds, (oldSliceId) => {
+                setAdd(changedSlices, oldSliceId);
+                ifNotUndefined(mapGet(index, oldSliceId), (oldSlice) => {
+                  collDel(oldSlice, rowId);
+                  if (collIsEmpty(oldSlice)) {
+                    mapSet(index, oldSliceId);
+                    sliceIdsChanged = 1;
+                  }
+                });
+              });
+
+              collForEach(newSliceIds, (newSliceId) => {
+                setAdd(changedSlices, newSliceId);
+                if (!collHas(index, newSliceId)) {
+                  mapSet(index, newSliceId, setNew());
                   sliceIdsChanged = 1;
                 }
+                setAdd(mapGet(index, newSliceId), rowId);
+                if (!isUndefined(getSortKey)) {
+                  setAdd(unsortedSlices, newSliceId);
+                }
               });
-            });
-
-            collForEach(newSliceIds, (newSliceId) => {
-              setAdd(changedSlices, newSliceId);
-              if (!collHas(index, newSliceId)) {
-                mapSet(index, newSliceId, setNew());
-                sliceIdsChanged = 1;
-              }
-              setAdd(mapGet(index, newSliceId), rowId);
-              if (!isUndefined(getSortKey)) {
-                setAdd(unsortedSlices, newSliceId);
-              }
-            });
-          });
+            },
+          );
 
           change();
 
