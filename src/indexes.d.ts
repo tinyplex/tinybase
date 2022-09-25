@@ -192,6 +192,7 @@ export type IndexesListenerStats = {
  * @see Rolling Dice demos
  * @see Country demo
  * @see Todo App demos
+ * @see Word Frequencies demo
  * @category Indexes
  */
 export interface Indexes {
