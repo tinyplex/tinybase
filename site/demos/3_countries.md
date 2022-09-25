@@ -52,7 +52,7 @@ const UNSTAR = '\u2606';
 
 ## Starting The App
 
-We have a top-level `Demo` component, in which we initialize our data, and
+We have a top-level `App` component, in which we initialize our data, and
 render the parts of the app. Firstly, we create and memoize a set of three Store
 objects:
 
@@ -67,7 +67,7 @@ objects:
   showing the countries starting with the letter 'A'.
 
 ```js
-const Demo = () => {
+const App = () => {
   const countryStore = useCreateStore(() =>
     createStore().setSchema({
       countries: {emoji: {type: 'string'}, name: {type: 'string'}},
@@ -194,11 +194,11 @@ body {
 }
 ```
 
-Finally, when the window loads, we render the `Demo` component into the demo
+Finally, when the window loads, we render the `App` component into the demo
 `div` to start the app:
 
 ```js
-window.addEventListener('load', () => ReactDOM.render(<Demo />, document.body));
+window.addEventListener('load', () => ReactDOM.render(<App />, document.body));
 ```
 
 ## The 'Current Slice'
