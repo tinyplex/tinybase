@@ -13,9 +13,10 @@ export const Readme: NoPropComponent = (): any => {
 
 const MODULES = [
   'store',
-  'indexes',
   'metrics',
+  'indexes',
   'relationships',
+  'queries',
   'checkpoints',
   'persisters',
   'common',
@@ -59,7 +60,11 @@ const getSizeTable = (sizes: Sizes) =>
     ${MODULES.map(
       (module) =>
         `<tr>
-          <th class='right'><a href='/api/${module}'>${module}</a></th>
+          <th class='right'>${
+            module == 'tinybase'
+              ? 'tinybase&nbsp;(all)'
+              : `<a href='/api/${module}'>${module}</a>`
+          }</th>
           <td>${toKb(sizes.get(`${module}.js.gz`))}</td>
           <td>${toKb(sizes.get(`${module}.js`))}</td>
           <td>${toKb(sizes.get(`debug-${module}.js`))}</td>
