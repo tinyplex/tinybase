@@ -32,8 +32,8 @@ console.log(indexes.getSliceRowIds('containsLetter', 'x'));
 // -> ['felix', 'rex']
 ```
 
-This functionality is showcased in the Word Frequency app if you would like to
-see it in action.
+This functionality is showcased in the Word Frequencies demo if you would like
+to see it in action.
 
 ## v2.0
 
