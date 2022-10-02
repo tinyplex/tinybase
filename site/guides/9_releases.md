@@ -5,9 +5,9 @@ highlighted features.
 
 ## v2.1
 
-Currently in beta, this release allows you to create indexes where a single Row
-Id can exist in multiple slices. You can utilize this to build simple keyword
-searches, for example.
+This release allows you to create indexes where a single Row Id can exist in
+multiple slices. You can utilize this to build simple keyword searches, for
+example.
 
 Simply provide a custom getSliceIdOrIds function in the setIndexDefinition
 method that returns an array of Slice Ids, rather than a single Id:
@@ -31,6 +31,9 @@ console.log(indexes.getSliceRowIds('containsLetter', 'i'));
 console.log(indexes.getSliceRowIds('containsLetter', 'x'));
 // -> ['felix', 'rex']
 ```
+
+This functionality is showcased in the Word Frequency app if you would like to
+see it in action.
 
 ## v2.0
 
