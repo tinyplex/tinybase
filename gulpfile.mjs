@@ -13,7 +13,7 @@ import {promises} from 'fs';
 
 const {parallel, series} = gulp;
 
-const TEST_MODULES = ['tinybase', 'ui-react'];
+const TEST_MODULES = ['tinybase', 'ui-react', 'tools'];
 const ALL_MODULES = TEST_MODULES.concat([
   'store',
   'indexes',
@@ -152,7 +152,7 @@ const tsCheck = async (dir) => {
   const unusedResults = Object.entries(
     unusedExports(`${path.resolve(dir)}/tsconfig.json`, [
       '--allowUnusedTypes',
-      '--excludePathsFromReport=tinybase.ts;ui-react.ts;build.ts',
+      '--excludePathsFromReport=tinybase.ts;ui-react.ts;tools.ts;build.ts',
     ]),
   )
     .map(
