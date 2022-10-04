@@ -1652,7 +1652,7 @@ export interface Store {
    * ```
    * @category Setter
    */
-  setSchema(tablesSchema: Schema): Store;
+  setSchema(schema: Schema): Store;
 
   /**
    * The delTables method lets you remove all of the data in a Store.
