@@ -165,6 +165,14 @@ export interface Tools {
   /**
    * The getStoreSchema method returns the Schema of the Store as an object.
    *
+   * If the Store does not already have an explicit Schema associated with it,
+   * the data in the Store will be scanned to attempt to infer a new Schema.
+   *
+   * To be successful, this requires all the values of a given Cell across a
+   * Table object's  Row objects to have a consistent type. If a given Cell Id
+   * appears in every Row, then a `default` for that Cell is specified in the
+   * Schema, based on the most common value found.
+   *
    * @returns A Schema object for the Store.
    * @example
    * This example creates a Tools object and gets basic statistics about a Store
@@ -182,6 +190,32 @@ export interface Tools {
    * const schema = createTools(store).getStoreSchema();
    * console.log(schema.pets);
    * // -> {species: {type: 'string'}, color: {type: 'string'}}
+   * ```
+   * @example
+   * This example creates a Tools object and gets basic statistics about a Store
+   * that doesn't already have a Schema.
+   * ```js
+   * const store = createStore()
+   *   .setTable('pets', {
+   *     fido: {species: 'dog', color: 'brown'},
+   *     felix: {species: 'cat', color: 'black'},
+   *     cujo: {species: 'dog', color: 'black'},
+   *   })
+   *   .setTable('species', {
+   *     dog: {price: 5, barks: true},
+   *     cat: {price: 4, purrs: true},
+   *   });
+   * const schema = createTools(store).getStoreSchema();
+   * console.log(schema.pets.species);
+   * // -> {type: 'string', default: 'dog'}
+   * console.log(schema.pets.color);
+   * // -> {type: 'string', default: 'black'}
+   * console.log(schema.species.price);
+   * // -> {type: 'number', default: 5}
+   * console.log(schema.species.barks);
+   * // -> {type: 'boolean'}
+   * console.log(schema.species.purrs);
+   * // -> {type: 'boolean'}
    * ```
    * @category Modelling
    * @since v2.2.0
