@@ -1,6 +1,7 @@
+import {Schema, Store} from './store.d';
 import {StoreStats, Tools, createTools as createToolsDecl} from './tools.d';
-import {Store} from './store.d';
 import {getCreateFunction} from './common/definable';
+import {jsonParse} from './common/other';
 import {objFreeze} from './common/obj';
 
 export const createTools: typeof createToolsDecl = getCreateFunction(
@@ -45,8 +46,11 @@ export const createTools: typeof createToolsDecl = getCreateFunction(
       };
     };
 
+    const getStoreSchema = (): Schema => jsonParse(store.getSchemaJson());
+
     const tools: Tools = {
       getStoreStats,
+      getStoreSchema,
     };
 
     return objFreeze(tools);

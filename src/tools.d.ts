@@ -10,8 +10,8 @@
  * @since v2.2.0
  */
 
+import {Schema, Store} from './store.d';
 import {Id} from './common.d';
-import {Store} from './store.d';
 
 /**
  * The StoreStats type describes a set of statistics about the Store, and
@@ -161,6 +161,32 @@ export interface Tools {
    * @since v2.2.0
    */
   getStoreStats(detail?: boolean): StoreStats;
+
+  /**
+   * The getStoreSchema method returns the Schema of the Store as an object.
+   *
+   * @returns A Schema object for the Store.
+   * @example
+   * This example creates a Tools object and gets basic statistics about a Store
+   * that already has a Schema.
+   * ```js
+   * const store = createStore().setSchema({
+   *   pets: {
+   *     species: {type: 'string'},
+   *     color: {type: 'string'},
+   *   },
+   *   species: {
+   *     price: {type: 'number'},
+   *   },
+   * });
+   * const schema = createTools(store).getStoreSchema();
+   * console.log(schema.pets);
+   * // -> {species: {type: 'string'}, color: {type: 'string'}}
+   * ```
+   * @category Modelling
+   * @since v2.2.0
+   */
+  getStoreSchema(): Schema;
 }
 
 /**
