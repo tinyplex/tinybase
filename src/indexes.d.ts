@@ -935,8 +935,6 @@ export interface Indexes {
  * The createIndexes function creates an Indexes object, and is the main entry
  * point into the indexes module.
  *
- * It is trivially simple.
- *
  * A given Store can only have one Indexes object associated with it. If you
  * call this function twice on the same Store, your second call will return a
  * reference to the Indexes object created by the first.
