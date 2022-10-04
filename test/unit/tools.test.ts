@@ -49,3 +49,14 @@ describe('Stats', () => {
     });
   });
 });
+
+describe('Schema', () => {
+  test('Existing', () => {
+    store.setSchema({
+      t1: {c1: {type: 'number', default: 1}, c2: {type: 'string'}},
+    });
+    expect(tools.getStoreSchema()).toEqual({
+      t1: {c1: {type: 'number', default: 1}, c2: {type: 'string'}},
+    });
+  });
+});
