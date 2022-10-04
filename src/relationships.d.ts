@@ -1170,8 +1170,6 @@ export interface Relationships {
  * The createRelationships function creates a Relationships object, and is the
  * main entry point into the relationships module.
  *
- * It is trivially simple.
- *
  * A given Store can only have one Relationships object associated with it. If
  * you call this function twice on the same Store, your second call will return
  * a reference to the Relationships object created by the first.

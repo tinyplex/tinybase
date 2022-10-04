@@ -2992,8 +2992,6 @@ export interface Queries {
  * The createQueries function creates a Queries object, and is the main entry
  * point into the queries module.
  *
- * It is trivially simple.
- *
  * A given Store can only have one Queries object associated with it. If you
  * call this function twice on the same Store, your second call will return a
  * reference to the Queries object created by the first.
