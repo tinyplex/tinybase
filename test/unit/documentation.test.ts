@@ -3,15 +3,21 @@ import * as ReactDOM from 'react-dom';
 import * as ReactDOMTestUtils from 'react-dom/test-utils';
 import * as TinyBase from '../../lib/debug/tinybase';
 import * as TinyBaseReact from '../../lib/debug/ui-react';
+import * as TinyBaseTools from '../../lib/debug/tools';
 import {join, resolve} from 'path';
 import {readFileSync, readdirSync} from 'fs';
 import {transformSync} from 'esbuild';
 
-[TinyBase, TinyBaseReact, ReactDOMTestUtils, {React, ReactDOM}].forEach(
-  (module) =>
-    Object.entries(module).forEach(([key, value]) => {
-      (globalThis as any)[key] = value;
-    }),
+[
+  TinyBase,
+  TinyBaseReact,
+  TinyBaseTools,
+  ReactDOMTestUtils,
+  {React, ReactDOM},
+].forEach((module) =>
+  Object.entries(module).forEach(([key, value]) => {
+    (globalThis as any)[key] = value;
+  }),
 );
 
 type Results = [any, any][];

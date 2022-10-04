@@ -30,6 +30,7 @@ const REFLECTIONS = [
   'persisters',
   'ui-react',
   'common',
+  'tools',
   /^TablesProps/,
   /^TableProps/,
   /^SortedTableProps/,
@@ -118,6 +119,7 @@ const addApi = (docs: Docs): Docs =>
     .addApiFile('src/relationships.d.ts')
     .addApiFile('src/queries.d.ts')
     .addApiFile('src/persisters.d.ts')
+    .addApiFile('src/tools.d.ts')
     .addApiFile('src/ui-react.d.ts');
 
 const addPages = (docs: Docs): Docs =>
