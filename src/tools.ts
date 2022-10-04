@@ -5,17 +5,35 @@ import {objFreeze} from './common/obj';
 
 export const createTools: typeof createToolsDecl = getCreateFunction(
   (store: Store): Tools => {
-    const getStoreStats = (): StoreStats => {
+    const getStoreStats = (detail?: boolean): StoreStats => {
       let totalTables = 0;
       let totalRows = 0;
       let totalCells = 0;
+      const tables: any = {};
 
-      store.forEachTable((_tableId, forEachRow) => {
+      store.forEachTable((tableId, forEachRow) => {
         totalTables++;
-        forEachRow((_rowId, forEachCell) => {
-          totalRows++;
-          forEachCell(() => totalCells++);
+        let tableRows = 0;
+        let tableCells = 0;
+        const rows: any = {};
+
+        forEachRow((rowId, forEachCell) => {
+          tableRows++;
+          let rowCells = 0;
+
+          forEachCell(() => rowCells++);
+
+          tableCells += rowCells;
+          if (detail) {
+            rows[rowId] = {rowCells};
+          }
         });
+
+        totalRows += tableRows;
+        totalCells += tableCells;
+        if (detail) {
+          tables[tableId] = {tableRows, tableCells, rows};
+        }
       });
 
       return {
@@ -23,6 +41,7 @@ export const createTools: typeof createToolsDecl = getCreateFunction(
         totalRows,
         totalCells,
         jsonLength: store.getJson().length,
+        ...(detail ? {detail: {tables}} : {}),
       };
     };
 

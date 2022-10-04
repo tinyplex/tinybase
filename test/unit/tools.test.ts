@@ -27,4 +27,25 @@ describe('Stats', () => {
       jsonLength: 114,
     });
   });
+
+  test('Detailed', () => {
+    expect(tools.getStoreStats(true)).toEqual({
+      totalTables: 4,
+      totalRows: 5,
+      totalCells: 6,
+      jsonLength: 114,
+      detail: {
+        tables: {
+          t1: {
+            rows: {r1: {rowCells: 1}, r2: {rowCells: 2}},
+            tableCells: 3,
+            tableRows: 2,
+          },
+          t2: {rows: {r1: {rowCells: 1}}, tableCells: 1, tableRows: 1},
+          t3: {rows: {r1: {rowCells: 1}}, tableCells: 1, tableRows: 1},
+          t4: {rows: {r1: {rowCells: 1}}, tableCells: 1, tableRows: 1},
+        },
+      },
+    });
+  });
 });
