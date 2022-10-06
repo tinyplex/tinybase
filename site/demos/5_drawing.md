@@ -667,7 +667,7 @@ const Canvas = () => {
     null,
     (store, _tableId, rowId, getCellChange) => {
       const [maxX, maxY] = canvasDimensions;
-      if (maxX == 0 || maxY != 0) {
+      if (maxX == 0 || maxY == 0) {
         return;
       }
 
