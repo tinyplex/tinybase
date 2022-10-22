@@ -40,7 +40,7 @@ export const getStoreApi = (
       '',
       `export type ${table}Row = {`,
     );
-    arrayPush(tsImports, `${table}Table,`);
+    arrayPush(tsImports, `${table}Table,`, `${table}Row,`);
 
     objForEach(cellSchemas, (cellSchema, cellId) => {
       arrayPush(
@@ -56,14 +56,19 @@ export const getStoreApi = (
       dsTableMethodTypes,
       '',
       `get${table}Table(): ${table}Table;`,
+      `get${table}Row(id: Id): ${table}Row;`,
       `set${table}Table(table: ${table}Table): ${storeInterface};`,
+      `set${table}Row(id: Id, row: ${table}Row): ${storeInterface};`,
     );
     arrayPush(
       tsTableMethods,
       '',
-      `get${table}Table: (): ${table}Table => ` + `getTable('${tableId}'),`,
+      `get${table}Table: (): ${table}Table => getTable('${tableId}'),`,
       `set${table}Table: (table: ${table}Table): ${storeInterface} => ` +
         `setTable('${tableId}', table),`,
+      `get${table}Row: (id: Id): ${table}Row => getRow('${tableId}', id),`,
+      `set${table}Row: (id: Id, row: ${table}Row): ${storeInterface} => ` +
+        `setRow('${tableId}', id, row),`,
     );
   });
 
@@ -85,7 +90,7 @@ export const getStoreApi = (
   );
 
   tsAdd(
-    `import {Id, Store, Table, createStore} from 'tinybase';`,
+    `import {Id, Row, Store, Table, createStore} from 'tinybase';`,
     '',
     `import {`,
     ...tsImports.sort(),
@@ -97,6 +102,12 @@ export const getStoreApi = (
     `const getTable = (tableId: Id) => store.getTable(tableId) as any;`,
     `const setTable = (tableId: Id, table: Table) => {`,
     ` store.setTable(tableId, table);`,
+    ` return ${storeInstance};`,
+    `};`,
+    `const getRow = (tableId: Id, rowId: Id) => ` +
+      `store.getRow(tableId, rowId) as any;`,
+    `const setRow = (tableId: Id, rowId: Id, row: Row) => {`,
+    ` store.setRow(tableId, rowId, row);`,
     ` return ${storeInstance};`,
     `};`,
     '',
