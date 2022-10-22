@@ -25,6 +25,7 @@ export const getStoreApi = (
   const dsTableMethodTypes: string[] = [];
 
   const tsImports: string[] = [
+    `${storeInterface},`,
     `create${storeInterface} as create${storeInterface}Decl,`,
   ];
   const tsTableMethods: string[] = [];
@@ -52,13 +53,21 @@ export const getStoreApi = (
     });
     arrayPush(dsTableTypes, `};`, '');
 
-    arrayPush(dsTableMethodTypes, `get${table}Table(): ${table}Table;`);
+    arrayPush(
+      dsTableMethodTypes,
+      '',
+      `get${table}Table(): ${table}Table;`,
+      `set${table}Table(table: ${table}Table): ${storeInterface};`,
+    );
     arrayPush(
       tsTableMethods,
+      '',
       `const get${table}Table = (): ${table}Table => ` +
         `getTable('${tableId}');`,
+      `const set${table}Table = (table: ${table}Table): ${storeInterface} => ` +
+        `setTable('${tableId}', table);`,
     );
-    arrayPush(tsTableMethodKeys, `get${table}Table,`);
+    arrayPush(tsTableMethodKeys, `get${table}Table,`, `set${table}Table,`);
   });
 
   dsAdd(
@@ -79,7 +88,7 @@ export const getStoreApi = (
   );
 
   tsAdd(
-    `import {Id, Store, createStore} from 'tinybase';`,
+    `import {Id, Store, Table, createStore} from 'tinybase';`,
     '',
     `import {`,
     ...tsImports.sort(),
@@ -89,6 +98,10 @@ export const getStoreApi = (
       `typeof create${storeInterface}Decl = () => {`,
     `const store = createStore();`,
     `const getTable = (tableId: Id) => store.getTable(tableId) as any;`,
+    `const setTable = (tableId: Id, table: Table) => {`,
+    ` store.setTable(tableId, table);`,
+    ` return ${storeInstance};`,
+    `};`,
     '',
     `const getStore = (): Store => store;`,
     ...tsTableMethods,
