@@ -221,6 +221,8 @@ export interface Tools {
    * @since v2.2.0
    */
   getStoreSchema(): Schema;
+
+  getStoreApi(storeName: string): [string, string];
 }
 
 /**

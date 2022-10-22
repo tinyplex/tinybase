@@ -7,6 +7,7 @@ import {objFreeze, objIsEmpty} from './common/obj';
 import {collForEach} from './common/coll';
 import {getCellType} from './common/cell';
 import {getCreateFunction} from './common/definable';
+import {getStoreApi as getStoreApiImpl} from './tools/api';
 import {jsonParse} from './common/other';
 
 type CellMeta = [string, IdMap<number>, [number, Cell?], number];
@@ -97,9 +98,13 @@ export const createTools: typeof createToolsDecl = getCreateFunction(
       return {};
     };
 
+    const getStoreApi = (module: string): [string, string] =>
+      getStoreApiImpl(getStoreSchema(), module);
+
     const tools: Tools = {
       getStoreStats,
       getStoreSchema,
+      getStoreApi,
     };
 
     return objFreeze(tools);
