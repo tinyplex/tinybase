@@ -83,11 +83,10 @@ export const createTools: typeof createToolsDecl = getCreateFunction(
           ) {
             schema[tableId] = {};
             collForEach(cellsMeta, ([type, , [, maxValue], count], cellId) => {
-              const cellSchema: any = {[TYPE]: type};
-              if (count == arrayLength(rowIds)) {
-                cellSchema[DEFAULT] = maxValue;
-              }
-              schema[tableId][cellId] = cellSchema;
+              schema[tableId][cellId] = {
+                [TYPE]: type as any,
+                ...(count == arrayLength(rowIds) ? {[DEFAULT]: maxValue} : {}),
+              };
             });
             return 1;
           }
