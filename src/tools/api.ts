@@ -28,8 +28,7 @@ export const getStoreApi = (
     `${storeInterface},`,
     `create${storeInterface} as create${storeInterface}Decl,`,
   ];
-  const tsTableMethods: string[] = [];
-  const tsTableMethodKeys: string[] = [];
+  const tsTableMethods: string[] = [`getStore: (): Store => store,`];
 
   objForEach(schema, (cellSchemas, tableId) => {
     const table = camel(tableId, true);
@@ -62,12 +61,10 @@ export const getStoreApi = (
     arrayPush(
       tsTableMethods,
       '',
-      `const get${table}Table = (): ${table}Table => ` +
-        `getTable('${tableId}');`,
-      `const set${table}Table = (table: ${table}Table): ${storeInterface} => ` +
-        `setTable('${tableId}', table);`,
+      `get${table}Table: (): ${table}Table => ` + `getTable('${tableId}'),`,
+      `set${table}Table: (table: ${table}Table): ${storeInterface} => ` +
+        `setTable('${tableId}', table),`,
     );
-    arrayPush(tsTableMethodKeys, `get${table}Table,`, `set${table}Table,`);
   });
 
   dsAdd(
@@ -103,12 +100,8 @@ export const getStoreApi = (
     ` return ${storeInstance};`,
     `};`,
     '',
-    `const getStore = (): Store => store;`,
-    ...tsTableMethods,
-    '',
     ` const ${storeInstance} = {`,
-    `  getStore,`,
-    ...tsTableMethodKeys,
+    ...tsTableMethods,
     ` };`,
     '',
     ` return Object.freeze(${storeInstance});`,
