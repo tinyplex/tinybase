@@ -56,6 +56,7 @@ import {
   mapForEach,
   mapGet,
   mapKeys,
+  mapMap,
   mapNew,
   mapSet,
   mapToObj,
@@ -678,18 +679,17 @@ export const createStore: typeof createStoreDecl = (): Store => {
     descending?: boolean,
     offset = 0,
     limit?: number,
-  ): Ids => {
-    const cells: [Cell, Id][] = [];
-    mapForEach(mapGet(tablesMap, id(tableId)), (rowId, row) =>
-      arrayPush(cells, [
-        isUndefined(cellId) ? rowId : mapGet(row, id(cellId)),
-        rowId,
-      ]),
-    );
-    return arrayMap(
+  ): Ids =>
+    arrayMap(
       arraySlice(
         arraySort(
-          cells,
+          mapMap<Id, RowMap, [Cell, Id]>(
+            mapGet(tablesMap, id(tableId)),
+            (row, rowId) => [
+              isUndefined(cellId) ? rowId : (mapGet(row, id(cellId)) as Cell),
+              rowId,
+            ],
+          ),
           ([cell1], [cell2]) =>
             defaultSorter(cell1, cell2) * (descending ? -1 : 1),
         ),
@@ -698,7 +698,6 @@ export const createStore: typeof createStoreDecl = (): Store => {
       ),
       ([, rowId]) => rowId,
     );
-  };
 
   const getRow = (tableId: Id, rowId: Id): Row =>
     mapToObj(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)));
