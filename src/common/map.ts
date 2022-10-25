@@ -1,8 +1,8 @@
+import {arrayLength, arrayMap} from './array';
 import {collDel, collForEach, collHas, collIsEmpty} from './coll';
 import {ifNotUndefined, isUndefined} from './other';
 import {Id} from '../common.d';
 import {IdObj} from './obj';
-import {arrayLength} from './array';
 
 export type IdMap<Value> = Map<Id, Value>;
 export type IdMap2<Value> = IdMap<IdMap<Value>>;
@@ -24,6 +24,12 @@ export const mapForEach = <Key, Value>(
   map: Map<Key, Value> | undefined,
   cb: (key: Key, value: Value) => void,
 ): void => collForEach(map, (value, key) => cb(key, value));
+
+export const mapMap = <Key, Value, Return>(
+  coll: Map<Key, Value> | undefined,
+  cb: (value: Value, key: Key) => Return,
+): Return[] =>
+  arrayMap([...(coll?.entries() ?? [])], ([key, value]) => cb(value, key));
 
 export const mapSet = <Key, Value>(
   map: Map<Key, Value> | undefined,
