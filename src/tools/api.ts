@@ -1,8 +1,8 @@
 import {DEFAULT, TYPE} from '../common/strings';
-import {camel, getCodeFunctions} from './code';
-import {objForEach, objHas, objIsEmpty} from '../common/obj';
+import {arrayMap, arrayPush} from '../common/array';
+import {camel, getCodeFunctions, join} from './code';
+import {objForEach, objHas, objIds, objIsEmpty} from '../common/obj';
 import {Schema} from '../store.d';
-import {arrayPush} from '../common/array';
 import {pairNew} from '../common/pairs';
 
 export const getStoreApi = (
@@ -14,111 +14,119 @@ export const getStoreApi = (
   }
 
   const moduleName = camel(module);
-  const storeInterface = camel(module, true);
-  const storeInstance = camel(storeInterface);
+  const storeType = camel(module, true);
+  const storeInstance = camel(storeType);
 
-  const [dsAdd, dsBuild] = getCodeFunctions();
-  const [tsAdd, tsBuild] = getCodeFunctions();
+  const [
+    build,
+    addImport,
+    addType,
+    addMethod,
+    addFunction,
+    addConstant,
+    getImports,
+    getTypes,
+    getMethods,
+    getConstants,
+  ] = getCodeFunctions();
 
-  const dsTablesTypes: string[] = [];
-  const dsTableTypes: string[] = [];
-  const dsTableMethodTypes: string[] = [];
+  addImport(0, 'tinybase', 'Id', 'Store');
+  addImport(1, 'tinybase', 'Id', 'Row', 'Store', 'Table', 'createStore');
+  addImport(
+    1,
+    `./${moduleName}.d`,
+    storeType,
+    `create${storeType} as create${storeType}Decl`,
+  );
 
-  const tsImports: string[] = [
-    `${storeInterface},`,
-    `create${storeInterface} as create${storeInterface}Decl,`,
-  ];
-  const tsTableMethods: string[] = [`getStore: (): Store => store,`];
+  addMethod('getStore', ``, 'Store', 'store');
+  addConstant('store', 'createStore();');
 
+  addFunction('getTable', 'tableId: Id', 'store.getTable(tableId) as any');
+  addFunction('setTable', 'tableId: Id, table: Table', [
+    'store.setTable(tableId, table);',
+    `return ${storeInstance};`,
+  ]);
+  addFunction(
+    'getRow',
+    'tableId: Id, rowId: Id',
+    'store.getRow(tableId, rowId) as any',
+  );
+  addFunction('setRow', 'tableId: Id, rowId: Id, row: Row', [
+    'store.setRow(tableId, rowId, row);',
+    `return ${storeInstance};`,
+  ]);
+
+  const tablesTypes: string[] = [];
   objForEach(schema, (cellSchemas, tableId) => {
     const table = camel(tableId, true);
-    arrayPush(dsTablesTypes, `${tableId}: ${table}Table;`);
+    arrayPush(tablesTypes, `${tableId}: ${table}Table;`);
 
-    arrayPush(
-      dsTableTypes,
-      `export type ${table}Table = {[rowId: Id]: ${table}Row};`,
-      '',
-      `export type ${table}Row = {`,
+    addType(`${table}Table`, `{[rowId: Id]: ${table}Row}`);
+    addType(
+      `${table}Row`,
+      `{${join(
+        arrayMap(
+          objIds(cellSchemas),
+          (cellId) =>
+            `${cellId}${objHas(cellSchemas[cellId], DEFAULT) ? '' : '?'}: ${
+              cellSchemas[cellId][TYPE]
+            };`,
+        ),
+        ' ',
+      )}}`,
     );
-    arrayPush(tsImports, `${table}Table,`, `${table}Row,`);
 
-    objForEach(cellSchemas, (cellSchema, cellId) => {
-      arrayPush(
-        dsTableTypes,
-        `${cellId}${objHas(cellSchema, DEFAULT) ? '' : '?'}: ${
-          cellSchema[TYPE]
-        };`,
-      );
-    });
-    arrayPush(dsTableTypes, `};`, '');
+    addImport(1, `./${moduleName}.d`, `${table}Table`, `${table}Row`);
 
-    arrayPush(
-      dsTableMethodTypes,
-      '',
-      `get${table}Table(): ${table}Table;`,
-      `get${table}Row(id: Id): ${table}Row;`,
-      `set${table}Table(table: ${table}Table): ${storeInterface};`,
-      `set${table}Row(id: Id, row: ${table}Row): ${storeInterface};`,
+    addMethod(
+      `get${table}Table`,
+      ``,
+      `${table}Table`,
+      `getTable('${tableId}')`,
     );
-    arrayPush(
-      tsTableMethods,
-      '',
-      `get${table}Table: (): ${table}Table => getTable('${tableId}'),`,
-      `set${table}Table: (table: ${table}Table): ${storeInterface} => ` +
-        `setTable('${tableId}', table),`,
-      `get${table}Row: (id: Id): ${table}Row => getRow('${tableId}', id),`,
-      `set${table}Row: (id: Id, row: ${table}Row): ${storeInterface} => ` +
-        `setRow('${tableId}', id, row),`,
+    addMethod(
+      `set${table}Table`,
+      `table: ${table}Table`,
+      storeType,
+      `setTable('${tableId}', table)`,
+    );
+    addMethod(
+      `get${table}Row`,
+      `id: Id`,
+      `${table}Row`,
+      `getRow('${tableId}', id)`,
+    );
+    addMethod(
+      `set${table}Row`,
+      `id: Id, row: ${table}Row`,
+      storeType,
+      `setRow('${tableId}', id, row)`,
     );
   });
 
-  dsAdd(
-    `import {Id, Store} from 'tinybase';`,
-    '',
-    `export type ${storeInterface}Tables = {`,
-    ...dsTablesTypes,
-    `};`,
-    '',
-    ...dsTableTypes,
-    `export interface ${storeInterface} {`,
-    ` getStore(): Store;`,
-    ...dsTableMethodTypes,
-    `}`,
-    '',
-    `export function create${storeInterface}(): ${storeInterface};`,
-    '',
-  );
+  addType(`${storeType}Tables`, `{${join(tablesTypes, ' ')}}`);
 
-  tsAdd(
-    `import {Id, Row, Store, Table, createStore} from 'tinybase';`,
-    '',
-    `import {`,
-    ...tsImports.sort(),
-    `} from './${moduleName}.d';`,
-    '',
-    `export const create${storeInterface}: ` +
-      `typeof create${storeInterface}Decl = () => {`,
-    `const store = createStore();`,
-    `const getTable = (tableId: Id) => store.getTable(tableId) as any;`,
-    `const setTable = (tableId: Id, table: Table) => {`,
-    ` store.setTable(tableId, table);`,
-    ` return ${storeInstance};`,
-    `};`,
-    `const getRow = (tableId: Id, rowId: Id) => ` +
-      `store.getRow(tableId, rowId) as any;`,
-    `const setRow = (tableId: Id, rowId: Id, row: Row) => {`,
-    ` store.setRow(tableId, rowId, row);`,
-    ` return ${storeInstance};`,
-    `};`,
-    '',
-    ` const ${storeInstance} = {`,
-    ...tsTableMethods,
-    ` };`,
-    '',
-    ` return Object.freeze(${storeInstance});`,
-    `};`,
-    '',
-  );
+  addConstant(storeInstance, getMethods(1));
 
-  return [dsBuild(), tsBuild()];
+  return [
+    build(
+      ...getImports(0),
+      ...getTypes(),
+      `export interface ${storeType} {`,
+      ...getMethods(0),
+      `}`,
+      '',
+      `export function create${storeType}(): ${storeType};`,
+    ),
+    build(
+      ...getImports(1),
+      `export const create${storeType}: ` +
+        `typeof create${storeType}Decl = () => {`,
+      ...getConstants(),
+      '',
+      `return Object.freeze(${storeInstance});`,
+      `};`,
+    ),
+  ];
 };

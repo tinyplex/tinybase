@@ -21,7 +21,7 @@ export const arrayIsSorted = <Value>(
 
 export const arraySort = <Value>(
   array: Value[],
-  sorter: (value1: Value, value2: Value) => number,
+  sorter?: (value1: Value, value2: Value) => number,
 ): Value[] => array.sort(sorter);
 
 export const arrayForEach = <Value>(
