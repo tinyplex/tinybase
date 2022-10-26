@@ -16,13 +16,14 @@ import {
   arrayShift,
   arraySort,
 } from '../common/array';
+import {isArray, test} from '../common/other';
 import {EMPTY_STRING} from '../common/strings';
 import {collValues} from '../common/coll';
-import {isArray} from '../common/other';
 
 const NON_ALPHANUMERIC = /[^A-Za-z0-9]+/;
 const CLOSING = /^[\])}]/;
 const OPENING = /[[({]$/;
+const INLINE_ARROW = /=> /;
 const LINE = '\n';
 
 const substr = (str: string, start: number, end?: number) =>
@@ -76,7 +77,13 @@ export const getCodeFunctions = (): [
                 : OPENING.test(line)
                 ? indent++
                 : indent) * 2,
-            ) + line,
+            ) +
+            (length(line) > 80 - indent * 2 && test(INLINE_ARROW, line)
+              ? line.replace(
+                  INLINE_ARROW,
+                  `=>\n${EMPTY_STRING.padStart(indent * 2 + 2)}`,
+                )
+              : line),
         )
         .join(LINE) + LINE
     );
