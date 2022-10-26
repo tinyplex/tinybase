@@ -76,6 +76,8 @@ export const getCodeFunctions = (): [
                 ? --indent
                 : OPENING.test(line)
                 ? indent++
+                : line == EMPTY_STRING
+                ? 0
                 : indent) * 2,
             ) +
             (length(line) > 80 - indent * 2 && test(INLINE_ARROW, line)
