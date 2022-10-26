@@ -119,7 +119,7 @@ export const getCodeFunctions = (): [
     );
 
   const addConstant = (name: string, body: string | string[]) =>
-    mapSet(constants, name, isArray(body) ? ['{', ...body, '}'] : [body]);
+    mapSet(constants, name, isArray(body) ? body : [body]);
 
   const getImports = (location: 0 | 1): string[] => [
     ...arraySort(

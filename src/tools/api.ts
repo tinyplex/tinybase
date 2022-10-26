@@ -17,6 +17,8 @@ export const getStoreApi = (
   const storeType = camel(module, true);
   const storeInstance = camel(storeType);
 
+  const tablesTypes: string[] = [];
+
   const [
     build,
     addImport,
@@ -48,9 +50,7 @@ export const getStoreApi = (
     `create${storeType} as create${storeType}Decl`,
   );
 
-  addMethod('getStore', '', 'Store', 'store');
   addConstant('store', 'createStore()');
-
   addFunction('getTable', 'tableId: Id', 'store.getTable(tableId) as any');
   addFunction('setTable', 'tableId: Id, table: Table', [
     'store.setTable(tableId, table);',
@@ -75,7 +75,8 @@ export const getStoreApi = (
     `return ${storeInstance};`,
   ]);
 
-  const tablesTypes: string[] = [];
+  addMethod('getStore', '', 'Store', 'store');
+
   objForEach(schema, (cellSchemas, tableId) => {
     const table = camel(tableId, true);
     arrayPush(tablesTypes, `${tableId}: ${table}Table;`);
@@ -144,7 +145,8 @@ export const getStoreApi = (
 
   addType(`${storeType}Tables`, `{${join(tablesTypes, ' ')}}`);
 
-  addConstant(storeInstance, getMethods(1));
+
+  addConstant(storeInstance, ['{', ...getMethods(1), '}']);
 
   return [
     build(
