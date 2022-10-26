@@ -39,7 +39,7 @@ export const getStoreApi = (
     `create${storeType} as create${storeType}Decl`,
   );
 
-  addMethod('getStore', ``, 'Store', 'store');
+  addMethod('getStore', '', 'Store', 'store');
   addConstant('store', 'createStore();');
 
   addFunction('getTable', 'tableId: Id', 'store.getTable(tableId) as any');
@@ -81,7 +81,7 @@ export const getStoreApi = (
 
     addMethod(
       `get${table}Table`,
-      ``,
+      '',
       `${table}Table`,
       `getTable('${tableId}')`,
     );
@@ -93,7 +93,7 @@ export const getStoreApi = (
     );
     addMethod(
       `get${table}Row`,
-      `id: Id`,
+      'id: Id',
       `${table}Row`,
       `getRow('${tableId}', id)`,
     );
