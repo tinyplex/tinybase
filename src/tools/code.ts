@@ -136,19 +136,19 @@ export const getCodeFunctions = (): [
   ];
 
   const getTypes = (): string[] =>
-    mapMap(types, (body, name) => `export type ${name} = ${body};`);
+    mapMap(types, (body, name) => `export type ${name} = ${body};${LINE}`);
 
   const getMethods = (location: 0 | 1): string[] =>
     mapMap(methods, ([parameters, returnType, body], name) =>
       location
-        ? `${name}: (${parameters}): ${returnType} => ${body},`
-        : `${name}(${parameters}): ${returnType};`,
+        ? `${name}: (${parameters}): ${returnType} => ${body},${LINE}`
+        : `${name}(${parameters}): ${returnType};${LINE}`,
     );
 
   const getConstants = (): string[] => {
     const lines: string[] = [];
     mapForEach(constants, (name, body) => {
-      arrayPush(body, `${arrayPop(body)};`);
+      arrayPush(body, `${arrayPop(body)};${LINE}`);
       arrayPush(lines, `const ${name} = ${arrayShift(body)}`, ...body);
     });
     return lines;

@@ -49,7 +49,7 @@ export const getStoreApi = (
   );
 
   addMethod('getStore', '', 'Store', 'store');
-  addConstant('store', 'createStore();');
+  addConstant('store', 'createStore()');
 
   addFunction('getTable', 'tableId: Id', 'store.getTable(tableId) as any');
   addFunction('setTable', 'tableId: Id, table: Table', [
@@ -161,7 +161,6 @@ export const getStoreApi = (
       `export const create${storeType}: ` +
         `typeof create${storeType}Decl = () => {`,
       ...getConstants(),
-      '',
       `return Object.freeze(${storeInstance});`,
       `};`,
     ),
