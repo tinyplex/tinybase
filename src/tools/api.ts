@@ -18,6 +18,7 @@ export const getStoreApi = (
   const storeInstance = camel(storeType);
 
   const tablesTypes: string[] = [];
+  const schemaLines: string[] = [];
 
   const [
     build,
@@ -50,7 +51,6 @@ export const getStoreApi = (
     `create${storeType} as create${storeType}Decl`,
   );
 
-  addConstant('store', 'createStore()');
   addFunction('getTable', 'tableId: Id', 'store.getTable(tableId) as any');
   addFunction('setTable', 'tableId: Id, table: Table', [
     'store.setTable(tableId, table);',
@@ -80,6 +80,7 @@ export const getStoreApi = (
   objForEach(schema, (cellSchemas, tableId) => {
     const table = camel(tableId, true);
     arrayPush(tablesTypes, `${tableId}: ${table}Table;`);
+    arrayPush(schemaLines, `${tableId}: {`);
 
     addMethod(
       `get${table}Table`,
@@ -110,25 +111,37 @@ export const getStoreApi = (
     const setCellsTypes: string[] = [];
     objForEach(cellSchemas, (cellSchema, cellId) => {
       const cell = camel(cellId, true);
+      const type = cellSchema[TYPE];
       const defaulted = objHas(cellSchema, DEFAULT);
+      const defaultValue = cellSchema[DEFAULT];
       arrayPush(
-        getCellsTypes,
-        `${cellId}${defaulted ? '' : '?'}: ${cellSchema[TYPE]};`,
+        schemaLines,
+        `${cellId}: {type: '${type}'${
+          defaulted
+            ? `, default: ${
+                type == 'string' ? `'${defaultValue}'` : defaultValue
+              }`
+            : ''
+        }},`,
       );
-      arrayPush(setCellsTypes, `${cellId}?: ${cellSchema[TYPE]};`);
+
+      arrayPush(getCellsTypes, `${cellId}${defaulted ? '' : '?'}: ${type};`);
+      arrayPush(setCellsTypes, `${cellId}?: ${type};`);
       addMethod(
         `get${table}${cell}Cell`,
         'id: Id',
-        `${cellSchema[TYPE]}${defaulted ? '' : ' | undefined'}`,
+        `${type}${defaulted ? '' : ' | undefined'}`,
         `getCell('${tableId}', id, '${cellId}')`,
       );
       addMethod(
         `set${table}${cell}Cell`,
-        `id: Id, cell: ${cellSchema[TYPE]}`,
+        `id: Id, cell: ${type}`,
         storeType,
         `setCell('${tableId}', id, '${cellId}', cell)`,
       );
     });
+
+    arrayPush(schemaLines, `},`);
 
     addType(`${table}Row`, `{${join(getCellsTypes, ' ')}}`);
     addType(`${table}RowWhenSet`, `{${join(setCellsTypes, ' ')}}`);
@@ -145,6 +158,7 @@ export const getStoreApi = (
 
   addType(`${storeType}Tables`, `{${join(tablesTypes, ' ')}}`);
 
+  addConstant('store', ['createStore().setSchema({', ...schemaLines, '})']);
 
   addConstant(storeInstance, ['{', ...getMethods(1), '}']);
 
