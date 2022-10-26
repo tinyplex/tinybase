@@ -51,4 +51,7 @@ export const isFunction = (thing: unknown): thing is (...args: any[]) => any =>
 
 export const isArray = (thing: unknown): thing is any[] => Array.isArray(thing);
 
+export const test = (regex: RegExp, subject: string): boolean =>
+  regex.test(subject);
+
 export const getUndefined = (): undefined => undefined;
