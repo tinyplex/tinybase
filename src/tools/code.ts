@@ -32,6 +32,8 @@ const upper = (str: string) => str.toUpperCase();
 
 const lower = (str: string) => str.toLowerCase();
 
+export const length = (str: string) => str.length;
+
 export const join = (str: string[], sep = EMPTY_STRING) => str.join(sep);
 
 export const camel = (str: string, firstCap = false) =>

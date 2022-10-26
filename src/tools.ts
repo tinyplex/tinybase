@@ -9,6 +9,7 @@ import {getCellType} from './common/cell';
 import {getCreateFunction} from './common/definable';
 import {getStoreApi as getStoreApiImpl} from './tools/api';
 import {jsonParse} from './common/other';
+import {length} from './tools/code';
 
 type CellMeta = [string, IdMap<number>, [number, Cell?], number];
 
@@ -49,7 +50,7 @@ export const createTools: typeof createToolsDecl = getCreateFunction(
         totalTables,
         totalRows,
         totalCells,
-        jsonLength: store.getJson().length,
+        jsonLength: length(store.getJson()),
         ...(detail ? {detail: {tables}} : {}),
       };
     };
