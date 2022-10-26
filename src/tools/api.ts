@@ -1,8 +1,8 @@
 import {DEFAULT, TYPE} from '../common/strings';
-import {arrayMap, arrayPush} from '../common/array';
 import {camel, getCodeFunctions, join} from './code';
-import {objForEach, objHas, objIds, objIsEmpty} from '../common/obj';
+import {objForEach, objHas, objIsEmpty} from '../common/obj';
 import {Schema} from '../store.d';
+import {arrayPush} from '../common/array';
 import {pairNew} from '../common/pairs';
 
 export const getStoreApi = (
@@ -31,7 +31,16 @@ export const getStoreApi = (
   ] = getCodeFunctions();
 
   addImport(0, 'tinybase', 'Id', 'Store');
-  addImport(1, 'tinybase', 'Id', 'Row', 'Store', 'Table', 'createStore');
+  addImport(
+    1,
+    'tinybase',
+    'Cell',
+    'Id',
+    'Row',
+    'Store',
+    'Table',
+    'createStore',
+  );
   addImport(
     1,
     `./${moduleName}.d`,
@@ -56,28 +65,20 @@ export const getStoreApi = (
     'store.setRow(tableId, rowId, row);',
     `return ${storeInstance};`,
   ]);
+  addFunction(
+    'getCell',
+    'tableId: Id, rowId: Id, cellId: Id',
+    'store.getCell(tableId, rowId, cellId) as any',
+  );
+  addFunction('setCell', 'tableId: Id, rowId: Id, cellId: Id, cell: Cell', [
+    'store.setCell(tableId, rowId, cellId, cell);',
+    `return ${storeInstance};`,
+  ]);
 
   const tablesTypes: string[] = [];
   objForEach(schema, (cellSchemas, tableId) => {
     const table = camel(tableId, true);
     arrayPush(tablesTypes, `${tableId}: ${table}Table;`);
-
-    addType(`${table}Table`, `{[rowId: Id]: ${table}Row}`);
-    addType(
-      `${table}Row`,
-      `{${join(
-        arrayMap(
-          objIds(cellSchemas),
-          (cellId) =>
-            `${cellId}${objHas(cellSchemas[cellId], DEFAULT) ? '' : '?'}: ${
-              cellSchemas[cellId][TYPE]
-            };`,
-        ),
-        ' ',
-      )}}`,
-    );
-
-    addImport(1, `./${moduleName}.d`, `${table}Table`, `${table}Row`);
 
     addMethod(
       `get${table}Table`,
@@ -99,9 +100,45 @@ export const getStoreApi = (
     );
     addMethod(
       `set${table}Row`,
-      `id: Id, row: ${table}Row`,
+      `id: Id, row: ${table}RowWhenSet`,
       storeType,
       `setRow('${tableId}', id, row)`,
+    );
+
+    const getCellsTypes: string[] = [];
+    const setCellsTypes: string[] = [];
+    objForEach(cellSchemas, (cellSchema, cellId) => {
+      const cell = camel(cellId, true);
+      const defaulted = objHas(cellSchema, DEFAULT);
+      arrayPush(
+        getCellsTypes,
+        `${cellId}${defaulted ? '' : '?'}: ${cellSchema[TYPE]};`,
+      );
+      arrayPush(setCellsTypes, `${cellId}?: ${cellSchema[TYPE]};`);
+      addMethod(
+        `get${table}${cell}Cell`,
+        'id: Id',
+        `${cellSchema[TYPE]}${defaulted ? '' : ' | undefined'}`,
+        `getCell('${tableId}', id, '${cellId}')`,
+      );
+      addMethod(
+        `set${table}${cell}Cell`,
+        `id: Id, cell: ${cellSchema[TYPE]}`,
+        storeType,
+        `setCell('${tableId}', id, '${cellId}', cell)`,
+      );
+    });
+
+    addType(`${table}Row`, `{${join(getCellsTypes, ' ')}}`);
+    addType(`${table}RowWhenSet`, `{${join(setCellsTypes, ' ')}}`);
+    addType(`${table}Table`, `{[rowId: Id]: ${table}Row}`);
+
+    addImport(
+      1,
+      `./${moduleName}.d`,
+      `${table}Table`,
+      `${table}Row`,
+      `${table}RowWhenSet`,
     );
   });
 
