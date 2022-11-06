@@ -75,12 +75,22 @@ export const getStoreApi = (
     `return ${storeInstance};`,
   ]);
 
-  addMethod('getStore', '', 'Store', 'store');
+  addMethod(
+    'getStore',
+    '',
+    'Store',
+    'store',
+    'Get the underlying Store object',
+  );
 
   objForEach(schema, (cellSchemas, tableId) => {
     const table = camel(tableId, true);
     const getCellsTypes: string[] = [];
     const setCellsTypes: string[] = [];
+    const tableDoc = `the '${tableId}' Table`;
+    const rowDoc = `the specified Row in ${tableDoc}`;
+    const tableContentDoc = `the content of ${tableDoc}`;
+    const rowContentDoc = `the content of ${rowDoc}`;
 
     arrayPush(schemaLines, `'${tableId}': {`);
     objForEach(cellSchemas, (cellSchema, cellId) => {
@@ -88,6 +98,8 @@ export const getStoreApi = (
       const type = cellSchema[TYPE];
       const defaulted = objHas(cellSchema, DEFAULT);
       const defaultValue = cellSchema[DEFAULT];
+      const cellDoc = `the '${cellId}' Cell for ${rowDoc}`;
+
       arrayPush(
         schemaLines,
         `'${cellId}': {type: '${type}'${
@@ -106,12 +118,14 @@ export const getStoreApi = (
         'id: Id',
         `${type}${defaulted ? '' : ' | undefined'}`,
         `getCell('${tableId}', id, '${cellId}')`,
+        `Get ${cellDoc}`,
       );
       addMethod(
         `set${table}${cell}Cell`,
         `id: Id, cell: ${type}`,
         storeType,
         `setCell('${tableId}', id, '${cellId}', cell)`,
+        `Set ${cellDoc}`,
       );
     });
     arrayPush(schemaLines, `},`);
@@ -123,19 +137,33 @@ export const getStoreApi = (
       `{${join(setCellsTypes, ' ')}}`,
     );
 
-    addMethod(`get${table}Row`, 'id: Id', rowType, `getRow('${tableId}', id)`);
+    addMethod(
+      `get${table}Row`,
+      'id: Id',
+      rowType,
+      `getRow('${tableId}', id)`,
+      `Get ${rowContentDoc}`,
+    );
     addMethod(
       `set${table}Row`,
       `id: Id, row: ${rowWhenSetType}`,
       storeType,
       `setRow('${tableId}', id, row)`,
+      `Set ${rowContentDoc}`,
     );
-    addMethod(`get${table}Table`, '', tableType, `getTable('${tableId}')`);
+    addMethod(
+      `get${table}Table`,
+      '',
+      tableType,
+      `getTable('${tableId}')`,
+      `Get ${tableContentDoc}`,
+    );
     addMethod(
       `set${table}Table`,
       `table: ${tableType}`,
       storeType,
       `setTable('${tableId}', table)`,
+      `Set ${tableContentDoc}`,
     );
 
     arrayPush(tablesTypes, `'${tableId}': ${tableType};`);

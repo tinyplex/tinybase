@@ -21,11 +21,16 @@ import {isArray, test} from '../common/other';
 import {EMPTY_STRING} from '../common/strings';
 import {Id} from '../common.d';
 
+type LINE = string;
+type LINES = LINE[];
+type LINE_TREE = LINE_OR_LINE_TREE[];
+type LINE_OR_LINE_TREE = LINE | LINE_TREE;
+
 const NON_ALPHANUMERIC = /[^A-Za-z0-9]+/;
 const CLOSING = /^[\])}]/;
 const OPENING = /[[({]$/;
 const INLINE_ARROW = /=> /;
-const LINE = '\n';
+const BREAK = '\n';
 
 const substr = (str: string, start: number, end?: number) =>
   str.substring(start, end);
@@ -49,6 +54,8 @@ const mapUnique = <Value>(
   }
 };
 
+const comment = (doc: string) => `/** ${doc}. */`;
+
 export const length = (str: string) => str.length;
 
 export const join = (str: string[], sep = EMPTY_STRING) => str.join(sep);
@@ -64,29 +71,38 @@ export const camel = (str: string, firstCap = false) =>
   );
 
 export const getCodeFunctions = (): [
-  (...lines: string[]) => string,
+  (...lines: LINE_TREE) => string,
   (location: 0 | 1, source: string, ...items: string[]) => void,
-  (name: Id, body: string) => Id,
-  (name: Id, parameters: string, returnType: string, body: string) => Id,
-  (name: Id, parameters: string, body: string | string[]) => Id,
-  (name: Id, body: string | string[]) => Id,
-  (location: 0 | 1) => string[],
-  () => string[],
-  (location: 0 | 1) => string[],
-  () => string[],
+  (name: Id, body: LINE) => Id,
+  (
+    name: Id,
+    parameters: string,
+    returnType: string,
+    body: LINE,
+    doc: string,
+  ) => Id,
+  (name: Id, parameters: string, body: LINE_OR_LINE_TREE) => Id,
+  (name: Id, body: LINE_OR_LINE_TREE) => Id,
+  (location: 0 | 1) => LINES,
+  () => LINES,
+  (location: 0 | 1) => LINE_TREE,
+  () => LINES,
 ] => {
   const allImports: Pair<IdSet2> = pairNewMap();
-  const types: IdMap<string> = mapNew();
-  const methods: IdMap<[parameters: string, returnType: string, body: string]> =
-    mapNew();
-  const constants: IdMap<string[]> = mapNew();
+  const types: IdMap<LINE> = mapNew();
+  const methods: IdMap<
+    [parameters: string, returnType: string, body: LINE, doc: string]
+  > = mapNew();
+  const constants: IdMap<LINES> = mapNew();
 
-  const build = (...lines: string[]): string => {
+  const build = (...lines: LINE_TREE): string => {
     let indent = 0;
-    return (
-      lines
-        .map(
-          (line) =>
+    const allLines: string[] = [];
+    const handleLine = (line: LINE_OR_LINE_TREE): any =>
+      isArray(line)
+        ? arrayForEach(line, handleLine)
+        : arrayPush(
+            allLines,
             EMPTY_STRING.padStart(
               (CLOSING.test(line)
                 ? --indent
@@ -96,15 +112,15 @@ export const getCodeFunctions = (): [
                 ? 0
                 : indent) * 2,
             ) +
-            (length(line) > 80 - indent * 2 && test(INLINE_ARROW, line)
-              ? line.replace(
-                  INLINE_ARROW,
-                  `=>\n${EMPTY_STRING.padStart(indent * 2 + 2)}`,
-                )
-              : line),
-        )
-        .join(LINE) + LINE
-    );
+              (length(line) > 80 - indent * 2 && test(INLINE_ARROW, line)
+                ? line.replace(
+                    INLINE_ARROW,
+                    `=>\n${EMPTY_STRING.padStart(indent * 2 + 2)}`,
+                  )
+                : line),
+          );
+    arrayForEach(lines, handleLine);
+    return allLines.join(BREAK);
   };
 
   const addImport = (location: 0 | 1, source: string, ...items: string[]) =>
@@ -112,19 +128,20 @@ export const getCodeFunctions = (): [
       setAdd(mapEnsure(allImports[location], source, setNew), item),
     );
 
-  const addType = (name: Id, body: string): Id => mapUnique(types, name, body);
+  const addType = (name: Id, body: LINE): Id => mapUnique(types, name, body);
 
   const addMethod = (
     name: Id,
     parameters: string,
     returnType: string,
-    body: string,
-  ): Id => mapUnique(methods, name, [parameters, returnType, body]);
+    body: LINE,
+    doc: string,
+  ): Id => mapUnique(methods, name, [parameters, returnType, body, doc]);
 
   const addFunction = (
     name: Id,
     parameters: string,
-    body: string | string[],
+    body: LINE_OR_LINE_TREE,
   ): Id =>
     mapUnique(
       constants,
@@ -134,10 +151,10 @@ export const getCodeFunctions = (): [
         : [`(${parameters}) => ${body}`],
     );
 
-  const addConstant = (name: Id, body: string | string[]): Id =>
+  const addConstant = (name: Id, body: LINE_OR_LINE_TREE): Id =>
     mapUnique(constants, name, isArray(body) ? body : [body]);
 
-  const getImports = (location: 0 | 1): string[] => [
+  const getImports = (location: 0 | 1): LINES => [
     ...arraySort(
       mapMap(
         allImports[location],
@@ -151,20 +168,21 @@ export const getCodeFunctions = (): [
     EMPTY_STRING,
   ];
 
-  const getTypes = (): string[] =>
-    mapMap(types, (body, name) => `export type ${name} = ${body};${LINE}`);
+  const getTypes = (): LINES =>
+    mapMap(types, (body, name) => `export type ${name} = ${body};${BREAK}`);
 
-  const getMethods = (location: 0 | 1): string[] =>
-    mapMap(methods, ([parameters, returnType, body], name) =>
+  const getMethods = (location: 0 | 1): LINE_TREE =>
+    mapMap(methods, ([parameters, returnType, body, doc], name) => [
       location
-        ? `${name}: (${parameters}): ${returnType} => ${body},${LINE}`
-        : `${name}(${parameters}): ${returnType};${LINE}`,
-    );
+        ? `${name}: (${parameters}): ${returnType} => ${body},`
+        : [comment(doc), `${name}(${parameters}): ${returnType};`],
+      EMPTY_STRING,
+    ]);
 
-  const getConstants = (): string[] => {
+  const getConstants = (): LINES => {
     const lines: string[] = [];
     mapForEach(constants, (name, body) => {
-      arrayPush(body, `${arrayPop(body)};${LINE}`);
+      arrayPush(body, `${arrayPop(body)};${BREAK}`);
       arrayPush(lines, `const ${name} = ${arrayShift(body)}`, ...body);
     });
     return lines;
