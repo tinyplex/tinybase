@@ -1,5 +1,5 @@
 import {DEFAULT, TYPE} from '../common/strings';
-import {camel, getCodeFunctions, join} from './code';
+import {camel, comment, getCodeFunctions, join} from './code';
 import {objForEach, objHas, objIsEmpty} from '../common/obj';
 import {Schema} from '../store.d';
 import {arrayPush} from '../common/array';
@@ -83,7 +83,7 @@ export const getStoreApi = (
     '',
     'Store',
     'store',
-    'Get the underlying Store object',
+    'Gets the underlying Store object',
   );
 
   objForEach(schema, (cellSchemas, tableId) => {
@@ -95,7 +95,7 @@ export const getStoreApi = (
     const rowDoc = `the specified Row in ${tableDoc}`;
     const tableContentDoc = `${THE_CONTENT_OF} ${tableDoc}`;
     const getRowContentDoc = (set = 0) =>
-      `${set ? 'S' : 'G'}et ${THE_CONTENT_OF} ${rowDoc}`;
+      `${set ? 'S' : 'G'}ets ${THE_CONTENT_OF} ${rowDoc}`;
     const getRowTypeDoc = (set = 0) =>
       `${REPRESENTS} a Row when ${set ? 's' : 'g'}etting ${tableContentDoc}`;
 
@@ -125,14 +125,14 @@ export const getStoreApi = (
         'id: Id',
         `${type}${defaulted ? '' : ' | undefined'}`,
         `getCell('${tableId}', id, '${cellId}')`,
-        `Get ${cellDoc}`,
+        `Gets ${cellDoc}`,
       );
       addMethod(
         `set${table}${cell}Cell`,
         `id: Id, cell: ${type}`,
         storeType,
         `setCell('${tableId}', id, '${cellId}', cell)`,
-        `Set ${cellDoc}`,
+        `Sets ${cellDoc}`,
       );
     });
     arrayPush(schemaLines, `},`);
@@ -172,14 +172,14 @@ export const getStoreApi = (
       '',
       tableType,
       `getTable('${tableId}')`,
-      `Get ${tableContentDoc}`,
+      `Gets ${tableContentDoc}`,
     );
     addMethod(
       `set${table}Table`,
       `table: ${tableType}`,
       storeType,
       `setTable('${tableId}', table)`,
-      `Set ${tableContentDoc}`,
+      `Sets ${tableContentDoc}`,
     );
 
     arrayPush(tablesTypes, `'${tableId}': ${tableType};`);
@@ -205,6 +205,7 @@ export const getStoreApi = (
       ...getMethods(0),
       `}`,
       '',
+      comment(`Creates a ${storeType} object`),
       `export function create${storeType}(): ${storeType};`,
     ),
     build(
