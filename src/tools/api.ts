@@ -79,8 +79,8 @@ export const getStoreApi = (
 
   objForEach(schema, (cellSchemas, tableId) => {
     const table = camel(tableId, true);
-    arrayPush(tablesTypes, `${tableId}: ${table}Table;`);
-    arrayPush(schemaLines, `${tableId}: {`);
+    arrayPush(tablesTypes, `'${tableId}': ${table}Table;`);
+    arrayPush(schemaLines, `'${tableId}': {`);
 
     addMethod(
       `get${table}Table`,
@@ -116,7 +116,7 @@ export const getStoreApi = (
       const defaultValue = cellSchema[DEFAULT];
       arrayPush(
         schemaLines,
-        `${cellId}: {type: '${type}'${
+        `'${cellId}': {type: '${type}'${
           defaulted
             ? `, default: ${
                 type == 'string' ? `'${defaultValue}'` : defaultValue
@@ -125,8 +125,8 @@ export const getStoreApi = (
         }},`,
       );
 
-      arrayPush(getCellsTypes, `${cellId}${defaulted ? '' : '?'}: ${type};`);
-      arrayPush(setCellsTypes, `${cellId}?: ${type};`);
+      arrayPush(getCellsTypes, `'${cellId}'${defaulted ? '' : '?'}: ${type};`);
+      arrayPush(setCellsTypes, `'${cellId}'?: ${type};`);
       addMethod(
         `get${table}${cell}Cell`,
         'id: Id',
