@@ -69,7 +69,8 @@ export const comment = (doc: string) => `/** ${doc}. */`;
 export const getCodeFunctions = (): [
   (...lines: LINE_TREE) => string,
   (location: 0 | 1, source: string, ...items: string[]) => void,
-  (name: Id, body: LINE, doc: string) => Id,
+  (name: Id, body?: LINE, doc?: string) => Id,
+  (name: Id, body: LINE, doc: string) => void,
   (
     name: Id,
     parameters: string,
@@ -124,8 +125,11 @@ export const getCodeFunctions = (): [
       setAdd(mapEnsure(allImports[location], source, setNew), item),
     );
 
-  const addType = (name: Id, body: LINE, doc: string): Id =>
+  const addType = (name: Id, body = '', doc = ''): Id =>
     mapUnique(types, name, [body, doc]);
+
+  const updateType = (name: Id, body: LINE, doc: string): any =>
+    mapSet(types, name, [body, doc]);
 
   const addMethod = (
     name: Id,
@@ -191,6 +195,7 @@ export const getCodeFunctions = (): [
     build,
     addImport,
     addType,
+    updateType,
     addMethod,
     addFunction,
     addConstant,
