@@ -8,6 +8,7 @@ import {pairNew} from '../common/pairs';
 
 const REPRESENTS = 'Represents';
 const THE_CONTENT_OF = 'the content of';
+const THE_CONTENT_OF_THE_STORE = `${THE_CONTENT_OF} the whole Store`;
 
 export const getStoreApi = (
   schema: Schema,
@@ -46,6 +47,7 @@ export const getStoreApi = (
     'Row',
     'Store',
     'Table',
+    'Tables',
     'createStore',
   );
   addImport(
@@ -54,6 +56,12 @@ export const getStoreApi = (
     storeType,
     `create${storeType} as create${storeType}Decl`,
   );
+
+  addFunction('getTables', '', 'store.getTables() as any');
+  addFunction('setTables', 'tables: Tables', [
+    'store.setTables(tables);',
+    `return ${storeInstance};`,
+  ]);
 
   addFunction('getTable', 'tableId: Id', 'store.getTable(tableId) as any');
   addFunction('setTable', 'tableId: Id, table: Table', [
@@ -161,6 +169,7 @@ export const getStoreApi = (
       `{${join(setCellsTypes, ' ')}}`,
       getRowTypeDoc(1),
     );
+    addImport(1, `./${moduleName}.d`, tableType, rowType, rowWhenSetType);
 
     addMethod(
       `get${table}Row`,
@@ -191,15 +200,29 @@ export const getStoreApi = (
       `Sets ${tableContentDoc}`,
     );
 
-    arrayPush(tablesTypes, `'${tableId}': ${tableType};`);
-
-    addImport(1, `./${moduleName}.d`, tableType, rowType, rowWhenSetType);
+    arrayPush(tablesTypes, `'${tableId}'?: ${tableType};`);
   });
 
-  addType(
+  const tablesType = addType(
     `${storeType}Tables`,
     `{${join(tablesTypes, ' ')}}`,
-    `${REPRESENTS} every Table in the Store`,
+    `${REPRESENTS} ${THE_CONTENT_OF_THE_STORE}`,
+  );
+  addImport(1, `./${moduleName}.d`, tablesType);
+
+  addMethod(
+    `getTables`,
+    '',
+    tablesType,
+    'getTables()',
+    `Gets ${THE_CONTENT_OF_THE_STORE}`,
+  );
+  addMethod(
+    `setTables`,
+    `tables: ${tablesType}`,
+    storeType,
+    'setTables(tables)',
+    `Sets ${THE_CONTENT_OF_THE_STORE}`,
   );
 
   addConstant('store', ['createStore().setSchema({', ...schemaLines, '})']);
