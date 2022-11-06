@@ -68,13 +68,10 @@ export const getStoreApi = (
     `create${storeType} as create${storeType}Decl`,
   );
 
-  addFunction('hasTables', '', 'store.hasTables()');
-  addFunction('getTables', '', 'store.getTables() as any');
   addFunction('setTables', 'tables: Tables', [
     'store.setTables(tables);',
     `return ${storeInstance};`,
   ]);
-  addFunction('getTableIds', '', 'store.getTableIds()');
 
   addFunction('hasTable', 'tableId: Id', 'store.hasTable(tableId)');
   addFunction('getTable', 'tableId: Id', 'store.getTable(tableId) as any');
@@ -137,12 +134,18 @@ export const getStoreApi = (
 
   const tablesType = addType(`${storeType}Tables`);
 
-  addMethod(`hasTables`, '', BOOLEAN, 'hasTables()', getHasDoc('any Table'));
+  addMethod(
+    `hasTables`,
+    '',
+    BOOLEAN,
+    'store.hasTables()',
+    getHasDoc('any Table'),
+  );
   addMethod(
     `getTables`,
     '',
     tablesType,
-    'getTables()',
+    'store.getTables()',
     `Gets ${THE_CONTENT_OF_THE_STORE}`,
   );
   addMethod(
@@ -156,7 +159,7 @@ export const getStoreApi = (
     `getTableIds`,
     '',
     'Ids',
-    'getTableIds()',
+    'store.getTableIds()',
     getIdsDoc('Table', THE_STORE),
   );
 
