@@ -1,4 +1,4 @@
-import {DEFAULT, TYPE} from '../common/strings';
+import {BOOLEAN, DEFAULT, TYPE} from '../common/strings';
 import {camel, comment, getCodeFunctions, join, snake} from './code';
 import {objForEach, objHas, objIsEmpty} from '../common/obj';
 import {Schema} from '../store.d';
@@ -6,14 +6,18 @@ import {arrayPush} from '../common/array';
 import {isString} from '../common/other';
 import {pairNew} from '../common/pairs';
 
+const THE_STORE = 'the Store';
 const REPRESENTS = 'Represents';
 const THE_CONTENT_OF = 'the content of';
-const THE_CONTENT_OF_THE_STORE = `${THE_CONTENT_OF} the whole Store`;
+const THE_CONTENT_OF_THE_STORE = `${THE_CONTENT_OF} ${THE_STORE}`;
+const THE_SPECIFIED_ROW = 'the specified Row';
 
 const getIdsDoc = (idsNoun: string, parentNoun: string, sorted = 0) =>
   `Gets ${
     sorted ? 'sorted, paginated' : 'the'
   } Ids of the ${idsNoun}s in ${parentNoun}`;
+const getHasDoc = (childNoun: string, parentNoun = THE_STORE) =>
+  `Gets whether ${childNoun} exists in ${parentNoun}`;
 
 export const getStoreApi = (
   schema: Schema,
@@ -64,6 +68,7 @@ export const getStoreApi = (
     `create${storeType} as create${storeType}Decl`,
   );
 
+  addFunction('hasTables', '', 'store.hasTables()');
   addFunction('getTables', '', 'store.getTables() as any');
   addFunction('setTables', 'tables: Tables', [
     'store.setTables(tables);',
@@ -71,6 +76,7 @@ export const getStoreApi = (
   ]);
   addFunction('getTableIds', '', 'store.getTableIds()');
 
+  addFunction('hasTable', 'tableId: Id', 'store.hasTable(tableId)');
   addFunction('getTable', 'tableId: Id', 'store.getTable(tableId) as any');
   addFunction('setTable', 'tableId: Id, table: Table', [
     'store.setTable(tableId, table);',
@@ -83,6 +89,11 @@ export const getStoreApi = (
     'store.getSortedRowIds(tableId, ...args)',
   );
 
+  addFunction(
+    'hasRow',
+    'tableId: Id, rowId: Id',
+    'store.hasRow(tableId, rowId)',
+  );
   addFunction(
     'getRow',
     'tableId: Id, rowId: Id',
@@ -98,6 +109,11 @@ export const getStoreApi = (
     'store.getCellIds(tableId, rowId)',
   );
 
+  addFunction(
+    'hasCell',
+    'tableId: Id, rowId: Id, cellId: Id',
+    'store.hasCell(tableId, rowId, cellId)',
+  );
   addFunction(
     'getCell',
     'tableId: Id, rowId: Id, cellId: Id',
@@ -121,6 +137,7 @@ export const getStoreApi = (
 
   const tablesType = addType(`${storeType}Tables`);
 
+  addMethod(`hasTables`, '', BOOLEAN, 'hasTables()', getHasDoc('any Table'));
   addMethod(
     `getTables`,
     '',
@@ -140,7 +157,7 @@ export const getStoreApi = (
     '',
     'Ids',
     'getTableIds()',
-    getIdsDoc('Table', 'the Store'),
+    getIdsDoc('Table', THE_STORE),
   );
 
   objForEach(schema, (cellSchemas, tableId) => {
@@ -151,7 +168,7 @@ export const getStoreApi = (
     const setCellsTypes: string[] = [];
 
     const tableDoc = `the '${tableId}' Table`;
-    const rowDoc = `the specified Row in ${tableDoc}`;
+    const rowDoc = `${THE_SPECIFIED_ROW} in ${tableDoc}`;
     const tableContentDoc = `${THE_CONTENT_OF} ${tableDoc}`;
     const getRowContentDoc = (set = 0) =>
       `${set ? 'S' : 'G'}ets ${THE_CONTENT_OF} ${rowDoc}`;
@@ -168,6 +185,13 @@ export const getStoreApi = (
 
     addImport(1, `./${moduleName}.d`, tableType, rowType, rowWhenSetType);
 
+    addMethod(
+      `has${table}Table`,
+      '',
+      BOOLEAN,
+      `hasTable(${TABLE_ID})`,
+      getHasDoc(tableDoc),
+    );
     addMethod(
       `get${table}Table`,
       '',
@@ -198,6 +222,13 @@ export const getStoreApi = (
     );
 
     addMethod(
+      `has${table}Row`,
+      'id: Id',
+      BOOLEAN,
+      `hasRow(${TABLE_ID}, id)`,
+      getHasDoc(THE_SPECIFIED_ROW, tableDoc),
+    );
+    addMethod(
       `get${table}Row`,
       'id: Id',
       rowType,
@@ -226,7 +257,8 @@ export const getStoreApi = (
       const type = cellSchema[TYPE];
       const defaulted = objHas(cellSchema, DEFAULT);
       const defaultValue = cellSchema[DEFAULT];
-      const cellDoc = `the '${cellId}' Cell for ${rowDoc}`;
+      const cellDoc = `the '${cellId}' Cell`;
+      const cellInTableDoc = `${cellDoc} for ${rowDoc}`;
 
       arrayPush(
         schemaLines,
@@ -243,19 +275,27 @@ export const getStoreApi = (
 
       arrayPush(getCellsTypes, `'${cellId}'${defaulted ? '' : '?'}: ${type};`);
       arrayPush(setCellsTypes, `'${cellId}'?: ${type};`);
+
+      addMethod(
+        `has${table}${cell}Cell`,
+        'id: Id',
+        BOOLEAN,
+        `hasCell(${TABLE_ID}, id, ${CELL_ID})`,
+        getHasDoc(cellDoc, rowDoc),
+      );
       addMethod(
         `get${table}${cell}Cell`,
         'id: Id',
         `${type}${defaulted ? '' : ' | undefined'}`,
         `getCell(${TABLE_ID}, id, ${CELL_ID})`,
-        `Gets ${cellDoc}`,
+        `Gets ${cellInTableDoc}`,
       );
       addMethod(
         `set${table}${cell}Cell`,
         `id: Id, cell: ${type}`,
         storeType,
         `setCell(${TABLE_ID}, id, ${CELL_ID}, cell)`,
-        `Sets ${cellDoc}`,
+        `Sets ${cellInTableDoc}`,
       );
     });
     arrayPush(schemaLines, `},`);
