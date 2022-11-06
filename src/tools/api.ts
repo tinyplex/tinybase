@@ -10,8 +10,10 @@ const REPRESENTS = 'Represents';
 const THE_CONTENT_OF = 'the content of';
 const THE_CONTENT_OF_THE_STORE = `${THE_CONTENT_OF} the whole Store`;
 
-const getIdsDoc = (idsNoun: string, parentNoun: string) =>
-  `Gets the Ids of the ${idsNoun}s in ${parentNoun}`;
+const getIdsDoc = (idsNoun: string, parentNoun: string, sorted = 0) =>
+  `Gets ${
+    sorted ? 'sorted, paginated' : 'the'
+  } Ids of the ${idsNoun}s in ${parentNoun}`;
 
 export const getStoreApi = (
   schema: Schema,
@@ -75,6 +77,11 @@ export const getStoreApi = (
     `return ${storeInstance};`,
   ]);
   addFunction('getRowIds', 'tableId: Id', 'store.getRowIds(tableId)');
+  addFunction(
+    'getSortedRowIds',
+    'tableId: Id, ...args: any[]',
+    'store.getSortedRowIds(tableId, ...args)',
+  );
 
   addFunction(
     'getRow',
@@ -181,6 +188,13 @@ export const getStoreApi = (
       'Ids',
       `getRowIds(${TABLE_ID})`,
       getIdsDoc('Row', tableDoc),
+    );
+    addMethod(
+      `get${table}SortedRowIds`,
+      'cellId?: Id, descending?: boolean, offset?: number, limit?: number',
+      'Ids',
+      `getSortedRowIds(${TABLE_ID}, cellId, descending, offset, limit)`,
+      getIdsDoc('Row', tableDoc, 1),
     );
 
     addMethod(
