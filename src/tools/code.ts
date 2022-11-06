@@ -1,11 +1,4 @@
-import {
-  IdMap,
-  mapEnsure,
-  mapForEach,
-  mapMap,
-  mapNew,
-  mapSet,
-} from '../common/map';
+import {IdMap, mapEnsure, mapMap, mapNew, mapSet} from '../common/map';
 import {IdSet2, setAdd, setNew} from '../common/set';
 import {Pair, pairNewMap} from '../common/pairs';
 import {
@@ -86,7 +79,7 @@ export const getCodeFunctions = (): [
   (location: 0 | 1) => LINES,
   () => LINES,
   (location: 0 | 1) => LINE_TREE,
-  () => LINES,
+  () => LINE_TREE,
 ] => {
   const allImports: Pair<IdSet2> = pairNewMap();
   const types: IdMap<LINE> = mapNew();
@@ -179,14 +172,11 @@ export const getCodeFunctions = (): [
       EMPTY_STRING,
     ]);
 
-  const getConstants = (): LINES => {
-    const lines: string[] = [];
-    mapForEach(constants, (name, body) => {
-      arrayPush(body, `${arrayPop(body)};${BREAK}`);
-      arrayPush(lines, `const ${name} = ${arrayShift(body)}`, ...body);
+  const getConstants = (): LINE_TREE =>
+    mapMap(constants, (body, name) => {
+      arrayPush(body, `${arrayPop(body)};`);
+      return [`const ${name} = ${arrayShift(body)}`, ...body, EMPTY_STRING];
     });
-    return lines;
-  };
 
   return [
     build,
