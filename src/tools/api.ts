@@ -79,36 +79,10 @@ export const getStoreApi = (
 
   objForEach(schema, (cellSchemas, tableId) => {
     const table = camel(tableId, true);
-    arrayPush(tablesTypes, `'${tableId}': ${table}Table;`);
-    arrayPush(schemaLines, `'${tableId}': {`);
-
-    addMethod(
-      `get${table}Table`,
-      '',
-      `${table}Table`,
-      `getTable('${tableId}')`,
-    );
-    addMethod(
-      `set${table}Table`,
-      `table: ${table}Table`,
-      storeType,
-      `setTable('${tableId}', table)`,
-    );
-    addMethod(
-      `get${table}Row`,
-      'id: Id',
-      `${table}Row`,
-      `getRow('${tableId}', id)`,
-    );
-    addMethod(
-      `set${table}Row`,
-      `id: Id, row: ${table}RowWhenSet`,
-      storeType,
-      `setRow('${tableId}', id, row)`,
-    );
-
     const getCellsTypes: string[] = [];
     const setCellsTypes: string[] = [];
+
+    arrayPush(schemaLines, `'${tableId}': {`);
     objForEach(cellSchemas, (cellSchema, cellId) => {
       const cell = camel(cellId, true);
       const type = cellSchema[TYPE];
@@ -140,20 +114,33 @@ export const getStoreApi = (
         `setCell('${tableId}', id, '${cellId}', cell)`,
       );
     });
-
     arrayPush(schemaLines, `},`);
 
-    addType(`${table}Row`, `{${join(getCellsTypes, ' ')}}`);
-    addType(`${table}RowWhenSet`, `{${join(setCellsTypes, ' ')}}`);
-    addType(`${table}Table`, `{[rowId: Id]: ${table}Row}`);
-
-    addImport(
-      1,
-      `./${moduleName}.d`,
-      `${table}Table`,
-      `${table}Row`,
+    const tableType = addType(`${table}Table`, `{[rowId: Id]: ${table}Row}`);
+    const rowType = addType(`${table}Row`, `{${join(getCellsTypes, ' ')}}`);
+    const rowWhenSetType = addType(
       `${table}RowWhenSet`,
+      `{${join(setCellsTypes, ' ')}}`,
     );
+
+    addMethod(`get${table}Row`, 'id: Id', rowType, `getRow('${tableId}', id)`);
+    addMethod(
+      `set${table}Row`,
+      `id: Id, row: ${rowWhenSetType}`,
+      storeType,
+      `setRow('${tableId}', id, row)`,
+    );
+    addMethod(`get${table}Table`, '', tableType, `getTable('${tableId}')`);
+    addMethod(
+      `set${table}Table`,
+      `table: ${tableType}`,
+      storeType,
+      `setTable('${tableId}', table)`,
+    );
+
+    arrayPush(tablesTypes, `'${tableId}': ${tableType};`);
+
+    addImport(1, `./${moduleName}.d`, tableType, rowType, rowWhenSetType);
   });
 
   addType(`${storeType}Tables`, `{${join(tablesTypes, ' ')}}`);

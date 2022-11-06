@@ -16,9 +16,10 @@ import {
   arrayShift,
   arraySort,
 } from '../common/array';
+import {collHas, collValues} from '../common/coll';
 import {isArray, test} from '../common/other';
 import {EMPTY_STRING} from '../common/strings';
-import {collValues} from '../common/coll';
+import {Id} from '../common.d';
 
 const NON_ALPHANUMERIC = /[^A-Za-z0-9]+/;
 const CLOSING = /^[\])}]/;
@@ -32,6 +33,21 @@ const substr = (str: string, start: number, end?: number) =>
 const upper = (str: string) => str.toUpperCase();
 
 const lower = (str: string) => str.toLowerCase();
+
+const mapUnique = <Value>(
+  map: IdMap<Value>,
+  id: Id,
+  value: Value,
+  index = 1,
+): Id => {
+  const uniqueId = `${id}${index == 1 ? '' : index}`;
+  if (collHas(map, uniqueId)) {
+    return mapUnique(map, id, value, index + 1);
+  } else {
+    mapSet(map, uniqueId, value);
+    return uniqueId;
+  }
+};
 
 export const length = (str: string) => str.length;
 
@@ -50,10 +66,10 @@ export const camel = (str: string, firstCap = false) =>
 export const getCodeFunctions = (): [
   (...lines: string[]) => string,
   (location: 0 | 1, source: string, ...items: string[]) => void,
-  (name: string, body: string) => void,
-  (name: string, parameters: string, returnType: string, body: string) => void,
-  (name: string, parameters: string, body: string | string[]) => void,
-  (name: string, body: string | string[]) => void,
+  (name: Id, body: string) => Id,
+  (name: Id, parameters: string, returnType: string, body: string) => Id,
+  (name: Id, parameters: string, body: string | string[]) => Id,
+  (name: Id, body: string | string[]) => Id,
   (location: 0 | 1) => string[],
   () => string[],
   (location: 0 | 1) => string[],
@@ -96,21 +112,21 @@ export const getCodeFunctions = (): [
       setAdd(mapEnsure(allImports[location], source, setNew), item),
     );
 
-  const addType = (name: string, body: string) => mapSet(types, name, body);
+  const addType = (name: Id, body: string): Id => mapUnique(types, name, body);
 
   const addMethod = (
-    name: string,
+    name: Id,
     parameters: string,
     returnType: string,
     body: string,
-  ) => mapSet(methods, name, [parameters, returnType, body]);
+  ): Id => mapUnique(methods, name, [parameters, returnType, body]);
 
   const addFunction = (
-    name: string,
+    name: Id,
     parameters: string,
     body: string | string[],
-  ) =>
-    mapSet(
+  ): Id =>
+    mapUnique(
       constants,
       name,
       isArray(body)
@@ -118,8 +134,8 @@ export const getCodeFunctions = (): [
         : [`(${parameters}) => ${body}`],
     );
 
-  const addConstant = (name: string, body: string | string[]) =>
-    mapSet(constants, name, isArray(body) ? body : [body]);
+  const addConstant = (name: Id, body: string | string[]): Id =>
+    mapUnique(constants, name, isArray(body) ? body : [body]);
 
   const getImports = (location: 0 | 1): string[] => [
     ...arraySort(
