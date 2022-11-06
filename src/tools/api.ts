@@ -11,6 +11,7 @@ const REPRESENTS = 'Represents';
 const THE_CONTENT_OF = 'the content of';
 const THE_CONTENT_OF_THE_STORE = `${THE_CONTENT_OF} ${THE_STORE}`;
 const THE_SPECIFIED_ROW = 'the specified Row';
+const DELETES = 'Deletes';
 
 const getIdsDoc = (idsNoun: string, parentNoun: string, sorted = 0) =>
   `Gets ${
@@ -30,6 +31,7 @@ export const getStoreApi = (
   const moduleName = camel(module);
   const storeType = camel(module, true);
   const storeInstance = camel(storeType);
+  const returnStore = `return ${storeInstance};`;
 
   const tablesTypes: string[] = [];
   const schemaLines: string[] = [];
@@ -70,14 +72,19 @@ export const getStoreApi = (
 
   addFunction('setTables', 'tables: Tables', [
     'store.setTables(tables);',
-    `return ${storeInstance};`,
+    returnStore,
   ]);
+  addFunction('delTables', '', ['store.delTables();', returnStore]);
 
   addFunction('hasTable', 'tableId: Id', 'store.hasTable(tableId)');
   addFunction('getTable', 'tableId: Id', 'store.getTable(tableId) as any');
   addFunction('setTable', 'tableId: Id, table: Table', [
     'store.setTable(tableId, table);',
-    `return ${storeInstance};`,
+    returnStore,
+  ]);
+  addFunction('delTable', 'tableId: Id', [
+    'store.delTable(tableId);',
+    returnStore,
   ]);
   addFunction('getRowIds', 'tableId: Id', 'store.getRowIds(tableId)');
   addFunction(
@@ -98,7 +105,11 @@ export const getStoreApi = (
   );
   addFunction('setRow', 'tableId: Id, rowId: Id, row: Row', [
     'store.setRow(tableId, rowId, row);',
-    `return ${storeInstance};`,
+    returnStore,
+  ]);
+  addFunction('delRow', 'tableId: Id, rowId: Id', [
+    'store.delRow(tableId, rowId);',
+    returnStore,
   ]);
   addFunction(
     'getCellIds',
@@ -118,7 +129,11 @@ export const getStoreApi = (
   );
   addFunction('setCell', 'tableId: Id, rowId: Id, cellId: Id, cell: Cell', [
     'store.setCell(tableId, rowId, cellId, cell);',
-    `return ${storeInstance};`,
+    returnStore,
+  ]);
+  addFunction('delCell', 'tableId: Id, rowId: Id, cellId: Id', [
+    'store.delCell(tableId, rowId, cellId);',
+    returnStore,
   ]);
 
   addMethod(
@@ -154,6 +169,13 @@ export const getStoreApi = (
     storeType,
     'setTables(tables)',
     `Sets ${THE_CONTENT_OF_THE_STORE}`,
+  );
+  addMethod(
+    `delTables`,
+    '',
+    storeType,
+    'delTables()',
+    `${DELETES} ${THE_CONTENT_OF_THE_STORE}`,
   );
   addMethod(
     `getTableIds`,
@@ -210,6 +232,13 @@ export const getStoreApi = (
       `Sets ${tableContentDoc}`,
     );
     addMethod(
+      `del${table}Table`,
+      '',
+      storeType,
+      `delTable(${TABLE_ID})`,
+      `${DELETES} ${tableContentDoc}`,
+    );
+    addMethod(
       `get${table}RowIds`,
       '',
       'Ids',
@@ -244,6 +273,13 @@ export const getStoreApi = (
       storeType,
       `setRow(${TABLE_ID}, rowId, row)`,
       getRowContentDoc(1),
+    );
+    addMethod(
+      `del${table}Row`,
+      `rowId: Id`,
+      storeType,
+      `delRow(${TABLE_ID}, rowId)`,
+      `${DELETES} ${THE_CONTENT_OF} ${rowDoc}`,
     );
     addMethod(
       `get${table}CellIds`,
@@ -299,6 +335,13 @@ export const getStoreApi = (
         storeType,
         `setCell(${TABLE_ID}, rowId, ${CELL_ID}, cell)`,
         `Sets ${cellInTableDoc}`,
+      );
+      addMethod(
+        `del${table}${cell}Cell`,
+        `rowId: Id`,
+        storeType,
+        `delCell(${TABLE_ID}, rowId, ${CELL_ID})`,
+        `${DELETES} ${cellInTableDoc}`,
       );
     });
     arrayPush(schemaLines, `},`);
