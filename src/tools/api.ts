@@ -29,6 +29,7 @@ export const getStoreApi = (
     build,
     addImport,
     addType,
+    updateType,
     addMethod,
     addFunction,
     addConstant,
@@ -98,6 +99,23 @@ export const getStoreApi = (
   const TYPE2 = addConstant(snake(TYPE), `'${TYPE}'`);
   const DEFAULT2 = addConstant(snake(DEFAULT), `'${DEFAULT}'`);
 
+  const tablesType = addType(`${storeType}Tables`);
+
+  addMethod(
+    `getTables`,
+    '',
+    tablesType,
+    'getTables()',
+    `Gets ${THE_CONTENT_OF_THE_STORE}`,
+  );
+  addMethod(
+    `setTables`,
+    `tables: ${tablesType}`,
+    storeType,
+    'setTables(tables)',
+    `Sets ${THE_CONTENT_OF_THE_STORE}`,
+  );
+
   objForEach(schema, (cellSchemas, tableId) => {
     const table = camel(tableId, true);
     const TABLE_ID = addConstant(snake(tableId), `'${tableId}'`);
@@ -112,6 +130,45 @@ export const getStoreApi = (
       `${set ? 'S' : 'G'}ets ${THE_CONTENT_OF} ${rowDoc}`;
     const getRowTypeDoc = (set = 0) =>
       `${REPRESENTS} a Row when ${set ? 's' : 'g'}etting ${tableContentDoc}`;
+
+    const tableType = addType(
+      `${table}Table`,
+      `{[rowId: Id]: ${table}Row}`,
+      `${REPRESENTS} ${tableDoc}`,
+    );
+    const rowType = addType(`${table}Row`);
+    const rowWhenSetType = addType(`${table}RowWhenSet`);
+
+    addImport(1, `./${moduleName}.d`, tableType, rowType, rowWhenSetType);
+
+    addMethod(
+      `get${table}Table`,
+      '',
+      tableType,
+      `getTable(${TABLE_ID})`,
+      `Gets ${tableContentDoc}`,
+    );
+    addMethod(
+      `set${table}Table`,
+      `table: ${tableType}`,
+      storeType,
+      `setTable(${TABLE_ID}, table)`,
+      `Sets ${tableContentDoc}`,
+    );
+    addMethod(
+      `get${table}Row`,
+      'id: Id',
+      rowType,
+      `getRow(${TABLE_ID}, id)`,
+      getRowContentDoc(),
+    );
+    addMethod(
+      `set${table}Row`,
+      `id: Id, row: ${rowWhenSetType}`,
+      storeType,
+      `setRow(${TABLE_ID}, id, row)`,
+      getRowContentDoc(1),
+    );
 
     arrayPush(schemaLines, `[${TABLE_ID}]: {`);
     objForEach(cellSchemas, (cellSchema, cellId) => {
@@ -153,77 +210,22 @@ export const getStoreApi = (
       );
     });
     arrayPush(schemaLines, `},`);
+    arrayPush(tablesTypes, `'${tableId}'?: ${tableType};`);
 
-    const tableType = addType(
-      `${table}Table`,
-      `{[rowId: Id]: ${table}Row}`,
-      `${REPRESENTS} ${tableDoc}`,
-    );
-    const rowType = addType(
-      `${table}Row`,
-      `{${join(getCellsTypes, ' ')}}`,
-      getRowTypeDoc(),
-    );
-    const rowWhenSetType = addType(
+    updateType(`${table}Row`, `{${join(getCellsTypes, ' ')}}`, getRowTypeDoc());
+    updateType(
       `${table}RowWhenSet`,
       `{${join(setCellsTypes, ' ')}}`,
       getRowTypeDoc(1),
     );
-    addImport(1, `./${moduleName}.d`, tableType, rowType, rowWhenSetType);
-
-    addMethod(
-      `get${table}Row`,
-      'id: Id',
-      rowType,
-      `getRow(${TABLE_ID}, id)`,
-      getRowContentDoc(),
-    );
-    addMethod(
-      `set${table}Row`,
-      `id: Id, row: ${rowWhenSetType}`,
-      storeType,
-      `setRow(${TABLE_ID}, id, row)`,
-      getRowContentDoc(1),
-    );
-    addMethod(
-      `get${table}Table`,
-      '',
-      tableType,
-      `getTable(${TABLE_ID})`,
-      `Gets ${tableContentDoc}`,
-    );
-    addMethod(
-      `set${table}Table`,
-      `table: ${tableType}`,
-      storeType,
-      `setTable(${TABLE_ID}, table)`,
-      `Sets ${tableContentDoc}`,
-    );
-
-    arrayPush(tablesTypes, `'${tableId}'?: ${tableType};`);
   });
 
-  const tablesType = addType(
-    `${storeType}Tables`,
+  updateType(
+    tablesType,
     `{${join(tablesTypes, ' ')}}`,
     `${REPRESENTS} ${THE_CONTENT_OF_THE_STORE}`,
   );
   addImport(1, `./${moduleName}.d`, tablesType);
-
-  addMethod(
-    `getTables`,
-    '',
-    tablesType,
-    'getTables()',
-    `Gets ${THE_CONTENT_OF_THE_STORE}`,
-  );
-  addMethod(
-    `setTables`,
-    `tables: ${tablesType}`,
-    storeType,
-    'setTables(tables)',
-    `Sets ${THE_CONTENT_OF_THE_STORE}`,
-  );
 
   addConstant('store', ['createStore().setSchema({', ...schemaLines, '})']);
 
