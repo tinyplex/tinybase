@@ -223,30 +223,30 @@ export const getStoreApi = (
 
     addMethod(
       `has${table}Row`,
-      'id: Id',
+      'rowId: Id',
       BOOLEAN,
-      `hasRow(${TABLE_ID}, id)`,
+      `hasRow(${TABLE_ID}, rowId)`,
       getHasDoc(THE_SPECIFIED_ROW, tableDoc),
     );
     addMethod(
       `get${table}Row`,
-      'id: Id',
+      'rowId: Id',
       rowType,
-      `getRow(${TABLE_ID}, id)`,
+      `getRow(${TABLE_ID}, rowId)`,
       getRowContentDoc(),
     );
     addMethod(
       `set${table}Row`,
-      `id: Id, row: ${rowWhenSetType}`,
+      `rowId: Id, row: ${rowWhenSetType}`,
       storeType,
-      `setRow(${TABLE_ID}, id, row)`,
+      `setRow(${TABLE_ID}, rowId, row)`,
       getRowContentDoc(1),
     );
     addMethod(
       `get${table}CellIds`,
-      'id: Id',
+      'rowId: Id',
       'Ids',
-      `getCellIds(${TABLE_ID}, id)`,
+      `getCellIds(${TABLE_ID}, rowId)`,
       getIdsDoc('Cell', rowDoc),
     );
 
@@ -278,23 +278,23 @@ export const getStoreApi = (
 
       addMethod(
         `has${table}${cell}Cell`,
-        'id: Id',
+        'rowId: Id',
         BOOLEAN,
-        `hasCell(${TABLE_ID}, id, ${CELL_ID})`,
+        `hasCell(${TABLE_ID}, rowId, ${CELL_ID})`,
         getHasDoc(cellDoc, rowDoc),
       );
       addMethod(
         `get${table}${cell}Cell`,
-        'id: Id',
+        'rowId: Id',
         `${type}${defaulted ? '' : ' | undefined'}`,
-        `getCell(${TABLE_ID}, id, ${CELL_ID})`,
+        `getCell(${TABLE_ID}, rowId, ${CELL_ID})`,
         `Gets ${cellInTableDoc}`,
       );
       addMethod(
         `set${table}${cell}Cell`,
-        `id: Id, cell: ${type}`,
+        `rowId: Id, cell: ${type}`,
         storeType,
-        `setCell(${TABLE_ID}, id, ${CELL_ID}, cell)`,
+        `setCell(${TABLE_ID}, rowId, ${CELL_ID}, cell)`,
         `Sets ${cellInTableDoc}`,
       );
     });
