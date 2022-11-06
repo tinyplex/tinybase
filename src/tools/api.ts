@@ -10,6 +10,9 @@ const REPRESENTS = 'Represents';
 const THE_CONTENT_OF = 'the content of';
 const THE_CONTENT_OF_THE_STORE = `${THE_CONTENT_OF} the whole Store`;
 
+const getIdsDoc = (idsNoun: string, parentNoun: string) =>
+  `Gets the Ids of the ${idsNoun}s in ${parentNoun}`;
+
 export const getStoreApi = (
   schema: Schema,
   module: string,
@@ -39,12 +42,13 @@ export const getStoreApi = (
     getConstants,
   ] = getCodeFunctions();
 
-  addImport(0, 'tinybase', 'Id', 'Store');
+  addImport(0, 'tinybase', 'Id', 'Ids', 'Store');
   addImport(
     1,
     'tinybase',
     'Cell',
     'Id',
+    'Ids',
     'Row',
     'Store',
     'Table',
@@ -63,12 +67,15 @@ export const getStoreApi = (
     'store.setTables(tables);',
     `return ${storeInstance};`,
   ]);
+  addFunction('getTableIds', '', 'store.getTableIds()');
 
   addFunction('getTable', 'tableId: Id', 'store.getTable(tableId) as any');
   addFunction('setTable', 'tableId: Id, table: Table', [
     'store.setTable(tableId, table);',
     `return ${storeInstance};`,
   ]);
+  addFunction('getRowIds', 'tableId: Id', 'store.getRowIds(tableId)');
+
   addFunction(
     'getRow',
     'tableId: Id, rowId: Id',
@@ -78,6 +85,12 @@ export const getStoreApi = (
     'store.setRow(tableId, rowId, row);',
     `return ${storeInstance};`,
   ]);
+  addFunction(
+    'getCellIds',
+    'tableId: Id, rowId: Id',
+    'store.getCellIds(tableId, rowId)',
+  );
+
   addFunction(
     'getCell',
     'tableId: Id, rowId: Id, cellId: Id',
@@ -114,6 +127,13 @@ export const getStoreApi = (
     storeType,
     'setTables(tables)',
     `Sets ${THE_CONTENT_OF_THE_STORE}`,
+  );
+  addMethod(
+    `getTableIds`,
+    '',
+    'Ids',
+    'getTableIds()',
+    getIdsDoc('Table', 'the Store'),
   );
 
   objForEach(schema, (cellSchemas, tableId) => {
@@ -156,6 +176,14 @@ export const getStoreApi = (
       `Sets ${tableContentDoc}`,
     );
     addMethod(
+      `get${table}RowIds`,
+      '',
+      'Ids',
+      `getRowIds(${TABLE_ID})`,
+      getIdsDoc('Row', tableDoc),
+    );
+
+    addMethod(
       `get${table}Row`,
       'id: Id',
       rowType,
@@ -168,6 +196,13 @@ export const getStoreApi = (
       storeType,
       `setRow(${TABLE_ID}, id, row)`,
       getRowContentDoc(1),
+    );
+    addMethod(
+      `get${table}CellIds`,
+      'id: Id',
+      'Ids',
+      `getCellIds(${TABLE_ID}, id)`,
+      getIdsDoc('Cell', rowDoc),
     );
 
     arrayPush(schemaLines, `[${TABLE_ID}]: {`);
