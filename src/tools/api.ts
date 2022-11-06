@@ -1,8 +1,9 @@
 import {DEFAULT, TYPE} from '../common/strings';
-import {camel, comment, getCodeFunctions, join} from './code';
+import {camel, comment, getCodeFunctions, join, snake} from './code';
 import {objForEach, objHas, objIsEmpty} from '../common/obj';
 import {Schema} from '../store.d';
 import {arrayPush} from '../common/array';
+import {isString} from '../common/other';
 import {pairNew} from '../common/pairs';
 
 const REPRESENTS = 'Represents';
@@ -86,8 +87,13 @@ export const getStoreApi = (
     'Gets the underlying Store object',
   );
 
+  const TYPE2 = addConstant(snake(TYPE), `'${TYPE}'`);
+  const DEFAULT2 = addConstant(snake(DEFAULT), `'${DEFAULT}'`);
+
   objForEach(schema, (cellSchemas, tableId) => {
     const table = camel(tableId, true);
+    const TABLE_ID = addConstant(snake(tableId), `'${tableId}'`);
+
     const getCellsTypes: string[] = [];
     const setCellsTypes: string[] = [];
 
@@ -99,9 +105,10 @@ export const getStoreApi = (
     const getRowTypeDoc = (set = 0) =>
       `${REPRESENTS} a Row when ${set ? 's' : 'g'}etting ${tableContentDoc}`;
 
-    arrayPush(schemaLines, `'${tableId}': {`);
+    arrayPush(schemaLines, `[${TABLE_ID}]: {`);
     objForEach(cellSchemas, (cellSchema, cellId) => {
       const cell = camel(cellId, true);
+      const CELL_ID = addConstant(snake(cellId), `'${cellId}'`);
       const type = cellSchema[TYPE];
       const defaulted = objHas(cellSchema, DEFAULT);
       const defaultValue = cellSchema[DEFAULT];
@@ -109,10 +116,12 @@ export const getStoreApi = (
 
       arrayPush(
         schemaLines,
-        `'${cellId}': {type: '${type}'${
+        `[${CELL_ID}]: {[${TYPE2}]: ${addConstant(snake(type), `'${type}'`)}${
           defaulted
-            ? `, default: ${
-                type == 'string' ? `'${defaultValue}'` : defaultValue
+            ? `, [${DEFAULT2}]: ${
+                isString(defaultValue)
+                  ? addConstant(snake(defaultValue), `'${defaultValue}'`)
+                  : defaultValue
               }`
             : ''
         }},`,
@@ -124,14 +133,14 @@ export const getStoreApi = (
         `get${table}${cell}Cell`,
         'id: Id',
         `${type}${defaulted ? '' : ' | undefined'}`,
-        `getCell('${tableId}', id, '${cellId}')`,
+        `getCell(${TABLE_ID}, id, ${CELL_ID})`,
         `Gets ${cellDoc}`,
       );
       addMethod(
         `set${table}${cell}Cell`,
         `id: Id, cell: ${type}`,
         storeType,
-        `setCell('${tableId}', id, '${cellId}', cell)`,
+        `setCell(${TABLE_ID}, id, ${CELL_ID}, cell)`,
         `Sets ${cellDoc}`,
       );
     });
@@ -157,28 +166,28 @@ export const getStoreApi = (
       `get${table}Row`,
       'id: Id',
       rowType,
-      `getRow('${tableId}', id)`,
+      `getRow(${TABLE_ID}, id)`,
       getRowContentDoc(),
     );
     addMethod(
       `set${table}Row`,
       `id: Id, row: ${rowWhenSetType}`,
       storeType,
-      `setRow('${tableId}', id, row)`,
+      `setRow(${TABLE_ID}, id, row)`,
       getRowContentDoc(1),
     );
     addMethod(
       `get${table}Table`,
       '',
       tableType,
-      `getTable('${tableId}')`,
+      `getTable(${TABLE_ID})`,
       `Gets ${tableContentDoc}`,
     );
     addMethod(
       `set${table}Table`,
       `table: ${tableType}`,
       storeType,
-      `setTable('${tableId}', table)`,
+      `setTable(${TABLE_ID}, table)`,
       `Sets ${tableContentDoc}`,
     );
 

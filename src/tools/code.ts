@@ -1,4 +1,4 @@
-import {IdMap, mapEnsure, mapMap, mapNew, mapSet} from '../common/map';
+import {IdMap, mapEnsure, mapGet, mapMap, mapNew, mapSet} from '../common/map';
 import {IdSet2, setAdd, setNew} from '../common/set';
 import {Pair, pairNewMap} from '../common/pairs';
 import {
@@ -61,6 +61,9 @@ export const camel = (str: string, firstCap = false) =>
     ),
   );
 
+export const snake = (str: string) =>
+  upper(join(str.split(NON_ALPHANUMERIC), '_'));
+
 export const comment = (doc: string) => `/** ${doc}. */`;
 
 export const getCodeFunctions = (): [
@@ -86,7 +89,7 @@ export const getCodeFunctions = (): [
   const methods: IdMap<
     [parameters: string, returnType: string, body: LINE, doc: string]
   > = mapNew();
-  const constants: IdMap<LINES> = mapNew();
+  const constants: IdMap<LINE_OR_LINE_TREE> = mapNew();
 
   const build = (...lines: LINE_TREE): string => {
     let indent = 0;
@@ -146,7 +149,7 @@ export const getCodeFunctions = (): [
     );
 
   const addConstant = (name: Id, body: LINE_OR_LINE_TREE): Id =>
-    mapUnique(constants, name, isArray(body) ? body : [body]);
+    mapGet(constants, name) === body ? name : mapUnique(constants, name, body);
 
   const getImports = (location: 0 | 1): LINES => [
     ...arraySort(
@@ -179,6 +182,7 @@ export const getCodeFunctions = (): [
 
   const getConstants = (): LINE_TREE =>
     mapMap(constants, (body, name) => {
+      body = isArray(body) ? body : [body];
       arrayPush(body, `${arrayPop(body)};`);
       return [`const ${name} = ${arrayShift(body)}`, ...body, EMPTY_STRING];
     });
