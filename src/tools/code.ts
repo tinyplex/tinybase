@@ -66,7 +66,7 @@ export const camel = (str: string, firstCap = false) =>
 export const getCodeFunctions = (): [
   (...lines: LINE_TREE) => string,
   (location: 0 | 1, source: string, ...items: string[]) => void,
-  (name: Id, body: LINE) => Id,
+  (name: Id, body: LINE, doc: string) => Id,
   (
     name: Id,
     parameters: string,
@@ -77,12 +77,12 @@ export const getCodeFunctions = (): [
   (name: Id, parameters: string, body: LINE_OR_LINE_TREE) => Id,
   (name: Id, body: LINE_OR_LINE_TREE) => Id,
   (location: 0 | 1) => LINES,
-  () => LINES,
+  () => LINE_TREE,
   (location: 0 | 1) => LINE_TREE,
   () => LINE_TREE,
 ] => {
   const allImports: Pair<IdSet2> = pairNewMap();
-  const types: IdMap<LINE> = mapNew();
+  const types: IdMap<[LINE, string]> = mapNew();
   const methods: IdMap<
     [parameters: string, returnType: string, body: LINE, doc: string]
   > = mapNew();
@@ -121,7 +121,8 @@ export const getCodeFunctions = (): [
       setAdd(mapEnsure(allImports[location], source, setNew), item),
     );
 
-  const addType = (name: Id, body: LINE): Id => mapUnique(types, name, body);
+  const addType = (name: Id, body: LINE, doc: string): Id =>
+    mapUnique(types, name, [body, doc]);
 
   const addMethod = (
     name: Id,
@@ -161,8 +162,12 @@ export const getCodeFunctions = (): [
     EMPTY_STRING,
   ];
 
-  const getTypes = (): LINES =>
-    mapMap(types, (body, name) => `export type ${name} = ${body};${BREAK}`);
+  const getTypes = (): LINE_TREE =>
+    mapMap(types, ([body, doc], name) => [
+      comment(doc),
+      `export type ${name} = ${body};`,
+      EMPTY_STRING,
+    ]);
 
   const getMethods = (location: 0 | 1): LINE_TREE =>
     mapMap(methods, ([parameters, returnType, body, doc], name) => [

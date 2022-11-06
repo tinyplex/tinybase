@@ -5,6 +5,9 @@ import {Schema} from '../store.d';
 import {arrayPush} from '../common/array';
 import {pairNew} from '../common/pairs';
 
+const REPRESENTS = 'Represents';
+const THE_CONTENT_OF = 'the content of';
+
 export const getStoreApi = (
   schema: Schema,
   module: string,
@@ -87,10 +90,14 @@ export const getStoreApi = (
     const table = camel(tableId, true);
     const getCellsTypes: string[] = [];
     const setCellsTypes: string[] = [];
+
     const tableDoc = `the '${tableId}' Table`;
     const rowDoc = `the specified Row in ${tableDoc}`;
-    const tableContentDoc = `the content of ${tableDoc}`;
-    const rowContentDoc = `the content of ${rowDoc}`;
+    const tableContentDoc = `${THE_CONTENT_OF} ${tableDoc}`;
+    const getRowContentDoc = (set = 0) =>
+      `${set ? 'S' : 'G'}et ${THE_CONTENT_OF} ${rowDoc}`;
+    const getRowTypeDoc = (set = 0) =>
+      `${REPRESENTS} a Row when ${set ? 's' : 'g'}etting ${tableContentDoc}`;
 
     arrayPush(schemaLines, `'${tableId}': {`);
     objForEach(cellSchemas, (cellSchema, cellId) => {
@@ -130,11 +137,20 @@ export const getStoreApi = (
     });
     arrayPush(schemaLines, `},`);
 
-    const tableType = addType(`${table}Table`, `{[rowId: Id]: ${table}Row}`);
-    const rowType = addType(`${table}Row`, `{${join(getCellsTypes, ' ')}}`);
+    const tableType = addType(
+      `${table}Table`,
+      `{[rowId: Id]: ${table}Row}`,
+      `${REPRESENTS} ${tableDoc}`,
+    );
+    const rowType = addType(
+      `${table}Row`,
+      `{${join(getCellsTypes, ' ')}}`,
+      getRowTypeDoc(),
+    );
     const rowWhenSetType = addType(
       `${table}RowWhenSet`,
       `{${join(setCellsTypes, ' ')}}`,
+      getRowTypeDoc(1),
     );
 
     addMethod(
@@ -142,14 +158,14 @@ export const getStoreApi = (
       'id: Id',
       rowType,
       `getRow('${tableId}', id)`,
-      `Get ${rowContentDoc}`,
+      getRowContentDoc(),
     );
     addMethod(
       `set${table}Row`,
       `id: Id, row: ${rowWhenSetType}`,
       storeType,
       `setRow('${tableId}', id, row)`,
-      `Set ${rowContentDoc}`,
+      getRowContentDoc(1),
     );
     addMethod(
       `get${table}Table`,
@@ -171,7 +187,11 @@ export const getStoreApi = (
     addImport(1, `./${moduleName}.d`, tableType, rowType, rowWhenSetType);
   });
 
-  addType(`${storeType}Tables`, `{${join(tablesTypes, ' ')}}`);
+  addType(
+    `${storeType}Tables`,
+    `{${join(tablesTypes, ' ')}}`,
+    `${REPRESENTS} every Table in the Store`,
+  );
 
   addConstant('store', ['createStore().setSchema({', ...schemaLines, '})']);
 
