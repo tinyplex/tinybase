@@ -47,8 +47,6 @@ const mapUnique = <Value>(
   }
 };
 
-const comment = (doc: string) => `/** ${doc}. */`;
-
 export const length = (str: string) => str.length;
 
 export const join = (str: string[], sep = EMPTY_STRING) => str.join(sep);
@@ -62,6 +60,8 @@ export const camel = (str: string, firstCap = false) =>
         substr(word, 1),
     ),
   );
+
+export const comment = (doc: string) => `/** ${doc}. */`;
 
 export const getCodeFunctions = (): [
   (...lines: LINE_TREE) => string,
