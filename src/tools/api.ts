@@ -50,13 +50,23 @@ export const getStoreApi = (
     getConstants,
   ] = getCodeFunctions();
 
-  addImport(0, 'tinybase', 'Id', 'Ids', 'Store');
+  addImport(
+    0,
+    'tinybase',
+    'ChangedCells',
+    'Id',
+    'Ids',
+    'InvalidCells',
+    'Store',
+  );
   addImport(
     1,
     'tinybase',
     'Cell',
+    'ChangedCells',
     'Id',
     'Ids',
+    'InvalidCells',
     'Row',
     'Store',
     'Table',
@@ -239,7 +249,12 @@ export const getStoreApi = (
     );
     addMethod(
       `get${table}SortedRowIds`,
-      'cellId?: Id, descending?: boolean, offset?: number, limit?: number',
+      [
+        'cellId?: Id,',
+        'descending?: boolean,',
+        'offset?: number,',
+        'limit?: number,',
+      ],
       'Ids',
       `getSortedRowIds(${TABLE_ID}, cellId, descending, offset, limit)`,
       getIdsDoc('Row', tableDoc, 1),
@@ -346,6 +361,21 @@ export const getStoreApi = (
       getRowTypeDoc(1),
     );
   });
+
+  addMethod(
+    'transaction',
+    [
+      'actions: () => Return,',
+      'doRollback?: (',
+      'changedCells: ChangedCells,',
+      'invalidCells: InvalidCells,',
+      ') => boolean,',
+    ],
+    'Return',
+    'store.transaction(actions, doRollback)',
+    'Execute a transaction to make multiple mutations',
+    '<Return>',
+  );
 
   addMethod(
     'getStore',
