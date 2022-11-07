@@ -68,5 +68,10 @@ export const arrayPush = <Value>(array: Value[], ...values: Value[]): number =>
 export const arrayPop = <Value>(array: Value[]): Value | undefined =>
   array.pop();
 
+export const arrayUnshift = <Value>(
+  array: Value[],
+  ...values: Value[]
+): number => array.unshift(...values);
+
 export const arrayShift = <Value>(array: Value[]): Value | undefined =>
   array.shift();
