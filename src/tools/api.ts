@@ -19,7 +19,13 @@ const getIdsDoc = (idsNoun: string, parentNoun: string, sorted = 0) =>
 const getHasDoc = (childNoun: string, parentNoun = THE_STORE) =>
   `Gets whether ${childNoun} exists in ${parentNoun}`;
 const getVerb = (verb = 0) =>
-  verb == 1 ? 'Set' : verb == 2 ? 'Delete' : 'Get';
+  verb == 1
+    ? 'Sets'
+    : verb == 2
+    ? 'Sets part of'
+    : verb == 3
+    ? 'Deletes'
+    : 'Gets';
 
 export const getStoreApi = (
   schema: Schema,
@@ -119,6 +125,10 @@ export const getStoreApi = (
     returnStore,
   ]);
   addFunction('addRow', 'tableId: Id, row: Row', 'store.addRow(tableId, row)');
+  addFunction('setPartialRow', 'tableId: Id, rowId: Id, partialRow: Row', [
+    'store.setPartialRow(tableId, rowId, partialRow);',
+    returnStore,
+  ]);
   addFunction('delRow', 'tableId: Id, rowId: Id', [
     'store.delRow(tableId, rowId);',
     returnStore,
@@ -153,7 +163,7 @@ export const getStoreApi = (
 
   const tablesType = addType(`${storeType}Tables`);
   const getStoreContentDoc = (verb = 0) =>
-    `${getVerb(verb)}s ${THE_CONTENT_OF_THE_STORE}`;
+    `${getVerb(verb)} ${THE_CONTENT_OF_THE_STORE}`;
 
   addMethod(
     `hasTables`,
@@ -176,7 +186,7 @@ export const getStoreApi = (
     'setTables(tables)',
     getStoreContentDoc(1),
   );
-  addMethod(`delTables`, '', storeType, 'delTables()', getStoreContentDoc(2));
+  addMethod(`delTables`, '', storeType, 'delTables()', getStoreContentDoc(3));
   addMethod(
     `getTableIds`,
     '',
@@ -196,9 +206,9 @@ export const getStoreApi = (
     const rowDoc = `${THE_SPECIFIED_ROW} in ${tableDoc}`;
     const tableContentDoc = `${THE_CONTENT_OF} ${tableDoc}`;
     const getTableContentDoc = (verb = 0) =>
-      `${getVerb(verb)}s ${THE_CONTENT_OF} ${tableDoc}`;
+      `${getVerb(verb)} ${THE_CONTENT_OF} ${tableDoc}`;
     const getRowContentDoc = (verb = 0) =>
-      `${getVerb(verb)}s ${THE_CONTENT_OF} ${rowDoc}`;
+      `${getVerb(verb)} ${THE_CONTENT_OF} ${rowDoc}`;
     const getRowTypeDoc = (set = 0) =>
       `${REPRESENTS} a Row when ${set ? 's' : 'g'}etting ${tableContentDoc}`;
 
@@ -238,7 +248,7 @@ export const getStoreApi = (
       '',
       storeType,
       `delTable(${TABLE_ID})`,
-      getTableContentDoc(2),
+      getTableContentDoc(3),
     );
     addMethod(
       `get${table}RowIds`,
@@ -289,11 +299,18 @@ export const getStoreApi = (
       `Adds a new Row to ${tableDoc}`,
     );
     addMethod(
+      `set${table}PartialRow`,
+      `rowId: Id, partialRow: ${rowWhenSetType}`,
+      storeType,
+      `setPartialRow(${TABLE_ID}, rowId, partialRow)`,
+      getRowContentDoc(2),
+    );
+    addMethod(
       `del${table}Row`,
       `rowId: Id`,
       storeType,
       `delRow(${TABLE_ID}, rowId)`,
-      getRowContentDoc(2),
+      getRowContentDoc(3),
     );
     addMethod(
       `get${table}CellIds`,
@@ -312,7 +329,7 @@ export const getStoreApi = (
       const defaultValue = cellSchema[DEFAULT];
       const cellDoc = `the '${cellId}' Cell`;
       const getCellContentDoc = (verb = 0) =>
-        `${getVerb(verb)}s ${cellDoc} for ${rowDoc}`;
+        `${getVerb(verb)} ${cellDoc} for ${rowDoc}`;
 
       arrayPush(
         schemaLines,
@@ -356,7 +373,7 @@ export const getStoreApi = (
         `rowId: Id`,
         storeType,
         `delCell(${TABLE_ID}, rowId, ${CELL_ID})`,
-        getCellContentDoc(2),
+        getCellContentDoc(3),
       );
     });
     arrayPush(schemaLines, `},`);
