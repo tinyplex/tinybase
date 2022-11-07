@@ -136,14 +136,6 @@ export const getStoreApi = (
     returnStore,
   ]);
 
-  addMethod(
-    'getStore',
-    '',
-    'Store',
-    'store',
-    'Gets the underlying Store object',
-  );
-
   const TYPE2 = addConstant(snake(TYPE), `'${TYPE}'`);
   const DEFAULT2 = addConstant(snake(DEFAULT), `'${DEFAULT}'`);
 
@@ -354,6 +346,14 @@ export const getStoreApi = (
       getRowTypeDoc(1),
     );
   });
+
+  addMethod(
+    'getStore',
+    '',
+    'Store',
+    'store',
+    'Gets the underlying Store object',
+  );
 
   updateType(
     tablesType,
