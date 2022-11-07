@@ -204,20 +204,18 @@ const compileModule = async (
   };
 
   const outputConfig = {
-    output: {
-      dir,
-      entryFileNames: `[name].js`,
-      format,
-      globals: {react: 'React', fs: 'fs'},
-      interop: 'default',
-      name:
-        'TinyBase' +
-        (module == 'tinybase'
-          ? ''
-          : module == 'ui-react'
-          ? 'UiReact'
-          : module[0].toUpperCase() + module.slice(1)),
-    },
+    dir,
+    entryFileNames: `[name].js`,
+    format,
+    globals: {react: 'React', fs: 'fs'},
+    interop: 'default',
+    name:
+      'TinyBase' +
+      (module == 'tinybase'
+        ? ''
+        : module == 'ui-react'
+        ? 'UiReact'
+        : module[0].toUpperCase() + module.slice(1)),
   };
 
   await (await rollup(inputConfig)).write(outputConfig);
@@ -308,7 +306,7 @@ const compileDocsAndAssets = async (api = true, pages = true) => {
 const npmInstall = async () => {
   const {exec} = await import('child_process');
   const {promisify} = await import('util');
-  return await promisify(exec)('npm install');
+  return await promisify(exec)('npm install --legacy-peer-deps');
 };
 
 const npmPublish = async () => {
