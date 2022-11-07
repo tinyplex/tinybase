@@ -342,6 +342,14 @@ export const getStoreApi = (
     `Gets a a string serialization ${THE_CONTENT_OF_THE_STORE}`,
   );
   addMethod(
+    'setJson',
+    'json: Json',
+    storeType,
+    fluentStoreMethod('setJson', 'json'),
+    `Sets ${THE_CONTENT_OF_THE_STORE} from a serialized string`,
+  );
+
+  addMethod(
     'transaction',
     [
       'actions: () => Return,',
