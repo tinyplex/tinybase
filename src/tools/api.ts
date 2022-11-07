@@ -87,6 +87,8 @@ export const getStoreApi = (
     `create${storeType} as create${storeType}Decl`,
   );
 
+  addFunction('fluent', 'actions: () => Store', ['actions();', returnStore]);
+
   addFunction('setTables', 'tables: Tables', [
     'store.setTables(tables);',
     returnStore,
@@ -400,6 +402,25 @@ export const getStoreApi = (
     'store.transaction(actions, doRollback)',
     'Execute a transaction to make multiple mutations',
     '<Return>',
+  );
+  addMethod(
+    'startTransaction',
+    '',
+    storeType,
+    'fluent(() => store.startTransaction())',
+    'Explicitly starts a transaction',
+  );
+  addMethod(
+    'finishTransaction',
+    [
+      'doRollback?: (',
+      'changedCells: ChangedCells,',
+      'invalidCells: InvalidCells,',
+      ') => boolean,',
+    ],
+    storeType,
+    'fluent(() => store.finishTransaction(doRollback))',
+    'Explicitly finishes a transaction',
   );
 
   addMethod(
