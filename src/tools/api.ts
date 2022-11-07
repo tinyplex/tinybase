@@ -11,7 +11,6 @@ const REPRESENTS = 'Represents';
 const THE_CONTENT_OF = 'the content of';
 const THE_CONTENT_OF_THE_STORE = `${THE_CONTENT_OF} ${THE_STORE}`;
 const THE_SPECIFIED_ROW = 'the specified Row';
-const DELETES = 'Deletes';
 
 const getIdsDoc = (idsNoun: string, parentNoun: string, sorted = 0) =>
   `Gets ${
@@ -19,6 +18,8 @@ const getIdsDoc = (idsNoun: string, parentNoun: string, sorted = 0) =>
   } Ids of the ${idsNoun}s in ${parentNoun}`;
 const getHasDoc = (childNoun: string, parentNoun = THE_STORE) =>
   `Gets whether ${childNoun} exists in ${parentNoun}`;
+const getVerb = (verb = 0) =>
+  verb == 1 ? 'Set' : verb == 2 ? 'Delete' : 'Get';
 
 export const getStoreApi = (
   schema: Schema,
@@ -117,6 +118,7 @@ export const getStoreApi = (
     'store.setRow(tableId, rowId, row);',
     returnStore,
   ]);
+  addFunction('addRow', 'tableId: Id, row: Row', 'store.addRow(tableId, row)');
   addFunction('delRow', 'tableId: Id, rowId: Id', [
     'store.delRow(tableId, rowId);',
     returnStore,
@@ -150,6 +152,8 @@ export const getStoreApi = (
   const DEFAULT2 = addConstant(snake(DEFAULT), `'${DEFAULT}'`);
 
   const tablesType = addType(`${storeType}Tables`);
+  const getStoreContentDoc = (verb = 0) =>
+    `${getVerb(verb)}s ${THE_CONTENT_OF_THE_STORE}`;
 
   addMethod(
     `hasTables`,
@@ -163,22 +167,16 @@ export const getStoreApi = (
     '',
     tablesType,
     'store.getTables()',
-    `Gets ${THE_CONTENT_OF_THE_STORE}`,
+    getStoreContentDoc(),
   );
   addMethod(
     `setTables`,
     `tables: ${tablesType}`,
     storeType,
     'setTables(tables)',
-    `Sets ${THE_CONTENT_OF_THE_STORE}`,
+    getStoreContentDoc(1),
   );
-  addMethod(
-    `delTables`,
-    '',
-    storeType,
-    'delTables()',
-    `${DELETES} ${THE_CONTENT_OF_THE_STORE}`,
-  );
+  addMethod(`delTables`, '', storeType, 'delTables()', getStoreContentDoc(2));
   addMethod(
     `getTableIds`,
     '',
@@ -197,8 +195,10 @@ export const getStoreApi = (
     const tableDoc = `the '${tableId}' Table`;
     const rowDoc = `${THE_SPECIFIED_ROW} in ${tableDoc}`;
     const tableContentDoc = `${THE_CONTENT_OF} ${tableDoc}`;
-    const getRowContentDoc = (set = 0) =>
-      `${set ? 'S' : 'G'}ets ${THE_CONTENT_OF} ${rowDoc}`;
+    const getTableContentDoc = (verb = 0) =>
+      `${getVerb(verb)}s ${THE_CONTENT_OF} ${tableDoc}`;
+    const getRowContentDoc = (verb = 0) =>
+      `${getVerb(verb)}s ${THE_CONTENT_OF} ${rowDoc}`;
     const getRowTypeDoc = (set = 0) =>
       `${REPRESENTS} a Row when ${set ? 's' : 'g'}etting ${tableContentDoc}`;
 
@@ -224,21 +224,21 @@ export const getStoreApi = (
       '',
       tableType,
       `getTable(${TABLE_ID})`,
-      `Gets ${tableContentDoc}`,
+      getTableContentDoc(),
     );
     addMethod(
       `set${table}Table`,
       `table: ${tableType}`,
       storeType,
       `setTable(${TABLE_ID}, table)`,
-      `Sets ${tableContentDoc}`,
+      getTableContentDoc(1),
     );
     addMethod(
       `del${table}Table`,
       '',
       storeType,
       `delTable(${TABLE_ID})`,
-      `${DELETES} ${tableContentDoc}`,
+      getTableContentDoc(2),
     );
     addMethod(
       `get${table}RowIds`,
@@ -282,11 +282,18 @@ export const getStoreApi = (
       getRowContentDoc(1),
     );
     addMethod(
+      `add${table}Row`,
+      `row: ${rowWhenSetType}`,
+      'Id | undefined',
+      `addRow(${TABLE_ID}, row)`,
+      `Adds a new Row to ${tableDoc}`,
+    );
+    addMethod(
       `del${table}Row`,
       `rowId: Id`,
       storeType,
       `delRow(${TABLE_ID}, rowId)`,
-      `${DELETES} ${THE_CONTENT_OF} ${rowDoc}`,
+      getRowContentDoc(2),
     );
     addMethod(
       `get${table}CellIds`,
@@ -304,7 +311,8 @@ export const getStoreApi = (
       const defaulted = objHas(cellSchema, DEFAULT);
       const defaultValue = cellSchema[DEFAULT];
       const cellDoc = `the '${cellId}' Cell`;
-      const cellInTableDoc = `${cellDoc} for ${rowDoc}`;
+      const getCellContentDoc = (verb = 0) =>
+        `${getVerb(verb)}s ${cellDoc} for ${rowDoc}`;
 
       arrayPush(
         schemaLines,
@@ -334,21 +342,21 @@ export const getStoreApi = (
         'rowId: Id',
         `${type}${defaulted ? '' : ' | undefined'}`,
         `getCell(${TABLE_ID}, rowId, ${CELL_ID})`,
-        `Gets ${cellInTableDoc}`,
+        getCellContentDoc(),
       );
       addMethod(
         `set${table}${cell}Cell`,
         `rowId: Id, cell: ${type}`,
         storeType,
         `setCell(${TABLE_ID}, rowId, ${CELL_ID}, cell)`,
-        `Sets ${cellInTableDoc}`,
+        getCellContentDoc(1),
       );
       addMethod(
         `del${table}${cell}Cell`,
         `rowId: Id`,
         storeType,
         `delCell(${TABLE_ID}, rowId, ${CELL_ID})`,
-        `${DELETES} ${cellInTableDoc}`,
+        getCellContentDoc(2),
       );
     });
     arrayPush(schemaLines, `},`);
