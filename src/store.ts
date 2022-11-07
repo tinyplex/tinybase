@@ -871,7 +871,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     });
 
   const transaction = <Return>(
-    actions?: () => Return,
+    actions: () => Return,
     doRollback?: (
       changedCells: ChangedCells,
       invalidCells: InvalidCells,
@@ -883,7 +883,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       return;
     }
     startTransaction();
-    const result = actions?.();
+    const result = actions();
     finishTransaction(doRollback);
     return result as Return;
   };
