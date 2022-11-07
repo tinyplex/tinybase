@@ -68,6 +68,7 @@ export const getStoreApi = (
     'Id',
     'Ids',
     'InvalidCells',
+    'Json',
     'Store',
   );
   addImport(
@@ -77,6 +78,7 @@ export const getStoreApi = (
     'Id',
     'Ids',
     'InvalidCells',
+    'Json',
     'Store',
     'createStore',
   );
@@ -332,6 +334,13 @@ export const getStoreApi = (
     );
   });
 
+  addMethod(
+    'getJson',
+    '',
+    'Json',
+    storeMethod('getJson'),
+    `Gets a a string serialization ${THE_CONTENT_OF_THE_STORE}`,
+  );
   addMethod(
     'transaction',
     [
