@@ -20,6 +20,8 @@ const getIdsDoc = (idsNoun: string, parentNoun: string, sorted = 0) =>
   `Gets ${
     sorted ? 'sorted, paginated' : 'the'
   } Ids of the ${idsNoun}s in ${parentNoun}`;
+const getForEachDoc = (childNoun: string, parentNoun: string) =>
+  `Calls a function for each ${childNoun} in ${parentNoun}`;
 const getHasDoc = (childNoun: string, parentNoun = THE_STORE) =>
   `Gets whether ${childNoun} exists in ${parentNoun}`;
 const getVerb = (verb = 0) =>
@@ -45,6 +47,7 @@ export const getStoreApi = (
   const returnStore = `return ${storeInstance};`;
 
   const tablesTypes: string[] = [];
+  const tableCallbackArgTypes: string[] = [];
   const schemaLines: string[] = [];
 
   const [
@@ -74,19 +77,16 @@ export const getStoreApi = (
   addImport(
     1,
     'tinybase',
+    'CellCallback',
     'ChangedCells',
     'Id',
     'Ids',
     'InvalidCells',
     'Json',
+    'RowCallback',
     'Store',
+    'TableCallback',
     'createStore',
-  );
-  addImport(
-    1,
-    `./${moduleName}.d`,
-    storeType,
-    `create${storeType} as create${storeType}Decl`,
   );
 
   addFunction('fluent', 'actions: () => Store', ['actions();', returnStore]);
@@ -95,6 +95,17 @@ export const getStoreApi = (
   const DEFAULT2 = addConstant(snake(DEFAULT), `'${DEFAULT}'`);
 
   const tablesType = addType(`${storeType}Tables`);
+  const tableCallbackType = addType(`${storeType}TableCallback`);
+
+  addImport(
+    1,
+    `./${moduleName}.d`,
+    storeType,
+    `create${storeType} as create${storeType}Decl`,
+    tablesType,
+    tableCallbackType,
+  );
+
   const getStoreContentDoc = (verb = 0) =>
     `${getVerb(verb)} ${THE_CONTENT_OF_THE_STORE}`;
 
@@ -133,6 +144,13 @@ export const getStoreApi = (
     storeMethod('getTableIds'),
     getIdsDoc('Table', THE_STORE),
   );
+  addMethod(
+    'forEachTable',
+    `tableCallback: ${tableCallbackType}`,
+    'void',
+    storeMethod('forEachTable', 'tableCallback as TableCallback'),
+    getForEachDoc('Table', THE_STORE),
+  );
 
   objForEach(schema, (cellSchemas, tableId) => {
     const table = camel(tableId, true);
@@ -140,6 +158,7 @@ export const getStoreApi = (
 
     const getCellsTypes: string[] = [];
     const setCellsTypes: string[] = [];
+    const cellCallbackArgTypes: string[] = [];
 
     const tableDoc = `the '${tableId}' Table`;
     const rowDoc = `${THE_SPECIFIED_ROW} in ${tableDoc}`;
@@ -158,8 +177,18 @@ export const getStoreApi = (
     );
     const rowType = addType(`${table}Row`);
     const rowWhenSetType = addType(`${table}RowWhenSet`);
+    const cellCallbackType = addType(`${table}CellCallback`);
+    const rowCallbackType = addType(`${table}RowCallback`);
 
-    addImport(1, `./${moduleName}.d`, tableType, rowType, rowWhenSetType);
+    addImport(
+      1,
+      `./${moduleName}.d`,
+      tableType,
+      rowType,
+      rowWhenSetType,
+      cellCallbackType,
+      rowCallbackType,
+    );
 
     addMethod(
       `has${table}Table`,
@@ -211,6 +240,13 @@ export const getStoreApi = (
       ),
       getIdsDoc('Row', tableDoc, 1),
     );
+    addMethod(
+      `forEach${table}Row`,
+      `rowCallback: ${rowCallbackType}`,
+      'void',
+      storeMethod('forEachRow', `${TABLE_ID}, rowCallback as RowCallback`),
+      getForEachDoc('Row', tableDoc),
+    );
 
     addMethod(
       `has${table}Row`,
@@ -261,6 +297,16 @@ export const getStoreApi = (
       storeMethod('getCellIds', `${TABLE_ID}, rowId`),
       getIdsDoc('Cell', rowDoc),
     );
+    addMethod(
+      `forEach${table}Cell`,
+      `rowId: Id, cellCallback: ${cellCallbackType}`,
+      'void',
+      storeMethod(
+        'forEachCell',
+        `${TABLE_ID}, rowId, cellCallback as CellCallback`,
+      ),
+      getForEachDoc('Cell', rowDoc),
+    );
 
     arrayPush(schemaLines, `[${TABLE_ID}]: {`);
     objForEach(cellSchemas, (cellSchema, cellId) => {
@@ -288,6 +334,7 @@ export const getStoreApi = (
 
       arrayPush(getCellsTypes, `'${cellId}'${defaulted ? '' : '?'}: ${type};`);
       arrayPush(setCellsTypes, `'${cellId}'?: ${type};`);
+      arrayPush(cellCallbackArgTypes, `[cellId: '${cellId}', cell: ${type}]`);
 
       addMethod(
         `has${table}${cell}Cell`,
@@ -325,12 +372,28 @@ export const getStoreApi = (
     });
     arrayPush(schemaLines, `},`);
     arrayPush(tablesTypes, `'${tableId}'?: ${tableType};`);
+    arrayPush(
+      tableCallbackArgTypes,
+      `[tableId: '${tableId}', ` +
+        `forEachRow: (rowCallback: ${rowCallbackType}) => void]`,
+    );
 
-    updateType(`${table}Row`, `{${join(getCellsTypes, ' ')}}`, getRowTypeDoc());
+    updateType(rowType, `{${join(getCellsTypes, ' ')}}`, getRowTypeDoc());
     updateType(
-      `${table}RowWhenSet`,
+      rowWhenSetType,
       `{${join(setCellsTypes, ' ')}}`,
       getRowTypeDoc(1),
+    );
+    updateType(
+      cellCallbackType,
+      `(...[cellId, cell]: ${join(cellCallbackArgTypes, ' | ')}) => void`,
+      `A function that takes a Cell Id and value from a Row in ${tableDoc}`,
+    );
+    updateType(
+      rowCallbackType,
+      `(rowId: Id, ` +
+        `forEachCell: (cellCallback: ${cellCallbackType}) => void) => void`,
+      `A function that takes a Row Id from ${tableDoc}, and a Cell iterator`,
     );
   });
 
@@ -392,11 +455,19 @@ export const getStoreApi = (
   );
 
   updateType(
+    tableCallbackType,
+    `(...[tableId, rowCallback]: ${join(
+      tableCallbackArgTypes,
+      ' | ',
+    )}) => void`,
+    `A function that takes a Table Id, and a Row iterator`,
+  );
+
+  updateType(
     tablesType,
     `{${join(tablesTypes, ' ')}}`,
     `${REPRESENTS} ${THE_CONTENT_OF_THE_STORE}`,
   );
-  addImport(1, `./${moduleName}.d`, tablesType);
 
   addConstant('store', ['createStore().setSchema({', ...schemaLines, '})']);
 
