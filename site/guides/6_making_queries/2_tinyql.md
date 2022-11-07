@@ -310,7 +310,7 @@ queries.setQueryDefinition('query', 'pets', ({select, group, having}) => {
 });
 
 console.log(queries.getResultTable('query'));
-// -> {1: {species: 'parrot', minPrice: 3, maxPrice: 3}}
+// -> {0: {species: 'parrot', minPrice: 3, maxPrice: 3}}
 ```
 
 ## Putting It All Together
@@ -467,7 +467,7 @@ queries.addResultSortedRowIdsListener(
 // Bob is actually in British Columbia!
 store.setCell('owner', 2, 'regionId', '4');
 
-// -> {0: {"stateName": "New York", "avgFullPrice": 5.5}}
+// -> {1: {"stateName": "New York", "avgFullPrice": 5.5}}
 ```
 
 Now that Bob is in Canada, removing Felix (cost 6) from California lowers its

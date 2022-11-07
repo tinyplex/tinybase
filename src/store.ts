@@ -419,6 +419,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       if (collIsEmpty(mapSet(table, rowId))) {
         tableIdsChanged(tableId, -1);
         mapSet(tablesMap, tableId);
+        mapSet(tablePoolFunctions, tableId);
       }
     }
   };
