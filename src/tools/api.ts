@@ -50,6 +50,11 @@ export const getStoreApi = (
   const tableCallbackArgTypes: string[] = [];
   const schemaLines: string[] = [];
 
+  const storeListener = (method: string, extraParameters = '') =>
+    `store.${method}(proxy(listener)${
+      extraParameters ? `, ${extraParameters}` : ''
+    })`;
+
   const [
     build,
     addImport,
@@ -68,6 +73,7 @@ export const getStoreApi = (
     0,
     'tinybase',
     'ChangedCells',
+    'GetCellChange',
     'Id',
     'Ids',
     'InvalidCells',
@@ -90,12 +96,23 @@ export const getStoreApi = (
   );
 
   addFunction('fluent', 'actions: () => Store', ['actions();', returnStore]);
+  addFunction(
+    'proxy',
+    `listener: (${storeInstance}: ${storeType}, ...args: any[]) => void`,
+    `(_: Store, ...args: any[]) => listener(${storeInstance}, ...args)`,
+  );
 
   const TYPE2 = addConstant(snake(TYPE), `'${TYPE}'`);
   const DEFAULT2 = addConstant(snake(DEFAULT), `'${DEFAULT}'`);
 
   const tablesType = addType(`${storeType}Tables`);
   const tableCallbackType = addType(`${storeType}TableCallback`);
+  const tablesListenerType = addType(
+    `${storeType}TablesListener`,
+    `(${storeInstance}: ${storeType}, ` +
+      `getCellChange: GetCellChange | undefined) => void`,
+    `A function for listening to changes to ${THE_CONTENT_OF_THE_STORE}.`,
+  );
 
   addImport(
     1,
@@ -104,6 +121,7 @@ export const getStoreApi = (
     `create${storeType} as create${storeType}Decl`,
     tablesType,
     tableCallbackType,
+    tablesListenerType,
   );
 
   const getStoreContentDoc = (verb = 0) =>
@@ -371,6 +389,7 @@ export const getStoreApi = (
       );
     });
     arrayPush(schemaLines, `},`);
+
     arrayPush(tablesTypes, `'${tableId}'?: ${tableType};`);
     arrayPush(
       tableCallbackArgTypes,
@@ -444,6 +463,15 @@ export const getStoreApi = (
     storeType,
     fluentStoreMethod('finishTransaction', 'doRollback'),
     'Explicitly finishes a transaction',
+  );
+
+  addMethod(
+    'addTablesListener',
+    `listener: ${tablesListenerType}, mutator?: boolean`,
+    'Id',
+    storeListener('addTablesListener', 'mutator'),
+    `Registers a listener that will be called whenever ` +
+      `${THE_CONTENT_OF_THE_STORE} changes`,
   );
 
   addMethod(
