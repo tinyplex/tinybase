@@ -314,8 +314,8 @@ export const getStoreApi = (
     addMethod(
       `get${table}CellIds`,
       'rowId: Id',
-      'Ids',
-      storeMethod('getCellIds', `${TABLE_ID}, rowId`),
+      `${cellIdType}[]`,
+      storeMethod('getCellIds', `${TABLE_ID}, rowId`, `${cellIdType}[]`),
       getIdsDoc('Cell', rowDoc),
     );
     addMethod(
