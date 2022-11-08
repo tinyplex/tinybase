@@ -176,6 +176,7 @@ export const getStoreApi = (
 
     const getCellsTypes: string[] = [];
     const setCellsTypes: string[] = [];
+    const cellIdTypes: string[] = [];
     const cellCallbackArgTypes: string[] = [];
 
     const tableDoc = `the '${tableId}' Table`;
@@ -195,6 +196,7 @@ export const getStoreApi = (
     );
     const rowType = addType(`${table}Row`);
     const rowWhenSetType = addType(`${table}RowWhenSet`);
+    const cellIdType = addType(`${table}CellId`);
     const cellCallbackType = addType(`${table}CellCallback`);
     const rowCallbackType = addType(`${table}RowCallback`);
 
@@ -204,6 +206,7 @@ export const getStoreApi = (
       tableType,
       rowType,
       rowWhenSetType,
+      cellIdType,
       cellCallbackType,
       rowCallbackType,
     );
@@ -246,7 +249,7 @@ export const getStoreApi = (
     addMethod(
       `get${table}SortedRowIds`,
       [
-        'cellId?: Id,',
+        `cellId?: ${cellIdType},`,
         'descending?: boolean,',
         'offset?: number,',
         'limit?: number,',
@@ -352,6 +355,7 @@ export const getStoreApi = (
 
       arrayPush(getCellsTypes, `'${cellId}'${defaulted ? '' : '?'}: ${type};`);
       arrayPush(setCellsTypes, `'${cellId}'?: ${type};`);
+      arrayPush(cellIdTypes, `'${cellId}'`);
       arrayPush(cellCallbackArgTypes, `[cellId: '${cellId}', cell: ${type}]`);
 
       addMethod(
@@ -402,6 +406,11 @@ export const getStoreApi = (
       rowWhenSetType,
       `{${join(setCellsTypes, ' ')}}`,
       getRowTypeDoc(1),
+    );
+    updateType(
+      cellIdType,
+      join(cellIdTypes, ' | '),
+      `A Cell Id for ${tableDoc}`,
     );
     updateType(
       cellCallbackType,
