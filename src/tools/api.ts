@@ -258,12 +258,8 @@ export const getStoreApi = (
     );
     addMethod(
       `get${table}SortedRowIds`,
-      [
-        `cellId?: ${cellIdType},`,
-        'descending?: boolean,',
-        'offset?: number,',
-        'limit?: number,',
-      ],
+      `cellId?: ${cellIdType}, descending?: boolean, ` +
+        'offset?: number, limit?: number',
       'Ids',
       storeMethod(
         'getSortedRowIds',
@@ -453,13 +449,9 @@ export const getStoreApi = (
 
   addMethod(
     'transaction',
-    [
-      'actions: () => Return,',
-      'doRollback?: (',
-      'changedCells: ChangedCells,',
-      'invalidCells: InvalidCells,',
-      ') => boolean,',
-    ],
+    'actions: () => Return, ' +
+      'doRollback?: (changedCells: ChangedCells, invalidCells: InvalidCells) ' +
+      '=> boolean',
     'Return',
     storeMethod('transaction', 'actions, doRollback'),
     'Execute a transaction to make multiple mutations',
@@ -474,12 +466,8 @@ export const getStoreApi = (
   );
   addMethod(
     'finishTransaction',
-    [
-      'doRollback?: (',
-      'changedCells: ChangedCells,',
-      'invalidCells: InvalidCells,',
-      ') => boolean,',
-    ],
+    'doRollback?: (changedCells: ChangedCells, invalidCells: InvalidCells) ' +
+      '=> boolean,',
     storeType,
     fluentStoreMethod('finishTransaction', 'doRollback'),
     'Explicitly finishes a transaction',
