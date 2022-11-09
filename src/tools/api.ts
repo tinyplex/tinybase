@@ -109,11 +109,17 @@ export const getStoreApi = (
   const tablesType = addType(`${storeType}Tables`);
   const tableIdType = addType(`${storeType}TableId`);
   const tableCallbackType = addType(`${storeType}TableCallback`);
+
   const tablesListenerType = addType(
     `${storeType}TablesListener`,
     `(${storeInstance}: ${storeType}, ` +
       `getCellChange: GetCellChange | undefined) => void`,
     `A function for listening to changes to ${THE_CONTENT_OF_THE_STORE}.`,
+  );
+  const tableIdsListenerType = addType(
+    `${storeType}TableIdsListener`,
+    `(${storeInstance}: ${storeType}) => void`,
+    `A function for listening to changes to Table Ids in ${THE_STORE}.`,
   );
 
   addImport(
@@ -125,6 +131,7 @@ export const getStoreApi = (
     tableIdType,
     tableCallbackType,
     tablesListenerType,
+    tableIdsListenerType,
   );
 
   const getStoreContentDoc = (verb = 0) =>
@@ -485,6 +492,14 @@ export const getStoreApi = (
     storeListener('addTablesListener', 'mutator'),
     `Registers a listener that will be called whenever ` +
       `${THE_CONTENT_OF_THE_STORE} changes`,
+  );
+  addMethod(
+    'addTableIdsListener',
+    `listener: ${tableIdsListenerType}, mutator?: boolean`,
+    'Id',
+    storeListener('addTableIdsListener', 'mutator'),
+    `Registers a listener that will be called whenever Table Ids in ` +
+      `${THE_STORE} change`,
   );
 
   addMethod(
