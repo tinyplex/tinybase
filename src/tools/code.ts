@@ -11,9 +11,9 @@ import {
   arrayUnshift,
 } from '../common/array';
 import {collHas, collValues} from '../common/coll';
-import {isArray, test} from '../common/other';
 import {EMPTY_STRING} from '../common/strings';
 import {Id} from '../common.d';
+import {isArray} from '../common/other';
 
 type LINE = string;
 type LINES = LINE[];
@@ -21,10 +21,6 @@ type LINE_TREE = LINE_OR_LINE_TREE[];
 type LINE_OR_LINE_TREE = LINE | LINE_TREE;
 
 const NON_ALPHANUMERIC = /[^A-Za-z0-9]+/;
-const CLOSING = /^[\])}]/;
-const OPENING = /[[({]$/;
-const INLINE_ARROW = /=> /;
-const BREAK = '\n';
 
 const substr = (str: string, start: number, end?: number) =>
   str.substring(start, end);
@@ -74,7 +70,7 @@ export const getCodeFunctions = (): [
   (name: Id, body: LINE, doc: string) => void,
   (
     name: Id,
-    parameters: LINE_OR_LINE_TREE,
+    parameters: LINE,
     returnType: string,
     body: LINE,
     doc: string,
@@ -91,7 +87,7 @@ export const getCodeFunctions = (): [
   const types: IdMap<[LINE, string]> = mapNew();
   const methods: IdMap<
     [
-      parameters: LINE_OR_LINE_TREE,
+      parameters: LINE,
       returnType: string,
       body: LINE,
       doc: string,
@@ -101,31 +97,13 @@ export const getCodeFunctions = (): [
   const constants: IdMap<LINE_OR_LINE_TREE> = mapNew();
 
   const build = (...lines: LINE_TREE): string => {
-    let indent = 0;
     const allLines: string[] = [];
     const handleLine = (line: LINE_OR_LINE_TREE): any =>
       isArray(line)
         ? arrayForEach(line, handleLine)
-        : arrayPush(
-            allLines,
-            EMPTY_STRING.padStart(
-              (CLOSING.test(line)
-                ? --indent
-                : OPENING.test(line)
-                ? indent++
-                : line == EMPTY_STRING
-                ? 0
-                : indent) * 2,
-            ) +
-              (length(line) > 80 - indent * 2 && test(INLINE_ARROW, line)
-                ? line.replace(
-                    INLINE_ARROW,
-                    `=>\n${EMPTY_STRING.padStart(indent * 2 + 2)}`,
-                  )
-                : line),
-          );
+        : arrayPush(allLines, line);
     arrayForEach(lines, handleLine);
-    return allLines.join(BREAK);
+    return allLines.join('\n');
   };
 
   const addImport = (location: 0 | 1, source: string, ...items: string[]) =>
@@ -141,7 +119,7 @@ export const getCodeFunctions = (): [
 
   const addMethod = (
     name: Id,
-    parameters: LINE_OR_LINE_TREE,
+    parameters: LINE,
     returnType: string,
     body: LINE,
     doc: string,
@@ -188,12 +166,9 @@ export const getCodeFunctions = (): [
 
   const getMethods = (location: 0 | 1): LINE_TREE =>
     mapMap(methods, ([parameters, returnType, body, doc, generic], name) => {
-      let lines = location
-        ? [`${name}: ${generic}(`, parameters, `): ${returnType} => ${body},`]
-        : [`${name}${generic}(`, parameters, `): ${returnType};`];
-      if (!isArray(parameters)) {
-        lines = [join(lines as LINES)];
-      }
+      const lines = location
+        ? [`${name}: ${generic}(${parameters}): ${returnType} => ${body},`]
+        : [`${name}${generic}(${parameters}): ${returnType};`];
       if (!location) {
         arrayUnshift(lines, comment(doc));
       }
