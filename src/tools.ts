@@ -2,7 +2,7 @@ import {Cell, Schema, Store} from './store.d';
 import {DEFAULT, TYPE} from './common/strings';
 import {IdMap, mapEnsure, mapNew, mapSet} from './common/map';
 import {StoreStats, Tools, createTools as createToolsDecl} from './tools.d';
-import {arrayEvery, arrayLength} from './common/array';
+import {arrayEvery, arrayLength, arrayMap} from './common/array';
 import {objFreeze, objIsEmpty} from './common/obj';
 import {collForEach} from './common/coll';
 import {getCellType} from './common/cell';
@@ -102,10 +102,30 @@ export const createTools: typeof createToolsDecl = getCreateFunction(
     const getStoreApi = (module: string): [string, string] =>
       getStoreApiImpl(getStoreSchema(), module);
 
+    const getPrettyStoreApi = async (
+      module: string,
+    ): Promise<[string, string]> => {
+      const files = getStoreApi(module);
+      try {
+        const prettier = await import('prettier');
+        return arrayMap(files, (file) =>
+          prettier.format(file, {
+            parser: 'typescript',
+            singleQuote: true,
+            trailingComma: 'all',
+            bracketSpacing: false,
+            jsdocSingleLineComment: false,
+          } as any),
+        ) as [string, string];
+      } catch {}
+      return files;
+    };
+
     const tools: Tools = {
       getStoreStats,
       getStoreSchema,
       getStoreApi,
+      getPrettyStoreApi,
     };
 
     return objFreeze(tools);

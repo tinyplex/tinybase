@@ -223,6 +223,7 @@ export interface Tools {
   getStoreSchema(): Schema;
 
   getStoreApi(storeName: string): [string, string];
+  getPrettyStoreApi(storeName: string): Promise<[string, string]>;
 }
 
 /**

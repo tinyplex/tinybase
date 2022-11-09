@@ -180,7 +180,7 @@ const compileModule = async (
   const {default: prettierPlugin} = await import('rollup-plugin-prettier');
 
   const inputConfig = {
-    external: ['react', 'fs'],
+    external: ['react', 'fs', 'prettier'],
     input: `src/${module}.ts`,
     plugins: [
       esbuild({
