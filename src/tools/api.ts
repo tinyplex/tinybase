@@ -47,6 +47,7 @@ export const getStoreApi = (
   const returnStore = `return ${storeInstance};`;
 
   const tablesTypes: string[] = [];
+  const tableIdTypes: string[] = [];
   const tableCallbackArgTypes: string[] = [];
   const schemaLines: string[] = [];
 
@@ -106,6 +107,7 @@ export const getStoreApi = (
   const DEFAULT2 = addConstant(snake(DEFAULT), `'${DEFAULT}'`);
 
   const tablesType = addType(`${storeType}Tables`);
+  const tableIdType = addType(`${storeType}TableId`);
   const tableCallbackType = addType(`${storeType}TableCallback`);
   const tablesListenerType = addType(
     `${storeType}TablesListener`,
@@ -120,6 +122,7 @@ export const getStoreApi = (
     storeType,
     `create${storeType} as create${storeType}Decl`,
     tablesType,
+    tableIdType,
     tableCallbackType,
     tablesListenerType,
   );
@@ -158,8 +161,8 @@ export const getStoreApi = (
   addMethod(
     `getTableIds`,
     '',
-    'Ids',
-    storeMethod('getTableIds'),
+    `${tableIdType}[]`,
+    storeMethod('getTableIds', '', `${tableIdType}[]`),
     getIdsDoc('Table', THE_STORE),
   );
   addMethod(
@@ -395,6 +398,7 @@ export const getStoreApi = (
     arrayPush(schemaLines, `},`);
 
     arrayPush(tablesTypes, `'${tableId}'?: ${tableType};`);
+    arrayPush(tableIdTypes, `'${tableId}'`);
     arrayPush(
       tableCallbackArgTypes,
       `[tableId: '${tableId}', ` +
@@ -492,18 +496,22 @@ export const getStoreApi = (
   );
 
   updateType(
+    tablesType,
+    `{${join(tablesTypes, ' ')}}`,
+    `${REPRESENTS} ${THE_CONTENT_OF_THE_STORE}`,
+  );
+  updateType(
+    tableIdType,
+    join(tableIdTypes, ' | '),
+    `A Table Id in ${THE_STORE}`,
+  );
+  updateType(
     tableCallbackType,
     `(...[tableId, rowCallback]: ${join(
       tableCallbackArgTypes,
       ' | ',
     )}) => void`,
     `A function that takes a Table Id, and a Row iterator`,
-  );
-
-  updateType(
-    tablesType,
-    `{${join(tablesTypes, ' ')}}`,
-    `${REPRESENTS} ${THE_CONTENT_OF_THE_STORE}`,
   );
 
   addConstant('store', ['createStore().setSchema({', ...schemaLines, '})']);
