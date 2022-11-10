@@ -13,6 +13,14 @@ import {length} from './tools/code';
 
 type CellMeta = [string, IdMap<number>, [number, Cell?], number];
 
+const prettierConfig = {
+  parser: 'typescript',
+  singleQuote: true,
+  trailingComma: 'all',
+  bracketSpacing: false,
+  jsdocSingleLineComment: false,
+} as any;
+
 export const createTools: typeof createToolsDecl = getCreateFunction(
   (store: Store): Tools => {
     const getStoreStats = (detail?: boolean): StoreStats => {
@@ -107,15 +115,9 @@ export const createTools: typeof createToolsDecl = getCreateFunction(
     ): Promise<[string, string]> => {
       const files = getStoreApi(module);
       try {
-        const prettier = await import('prettier');
+        const {format} = await import('prettier');
         return arrayMap(files, (file) =>
-          prettier.format(file, {
-            parser: 'typescript',
-            singleQuote: true,
-            trailingComma: 'all',
-            bracketSpacing: false,
-            jsdocSingleLineComment: false,
-          } as any),
+          format(format(file, prettierConfig), prettierConfig),
         ) as [string, string];
       } catch {}
       return files;
