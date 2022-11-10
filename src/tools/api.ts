@@ -50,6 +50,8 @@ export const getStoreApi = (
   const tableIdTypes: string[] = [];
   const tableCallbackArgTypes: string[] = [];
   const getCellChangeArgTypes: string[] = [];
+  const cellListenerArgTypes: string[] = [];
+  const allCellIdType: string[] = [];
   const schemaLines: string[] = [];
 
   const storeListener = (
@@ -106,7 +108,7 @@ export const getStoreApi = (
   addFunction('fluent', 'actions: () => Store', ['actions();', returnStore]);
   addFunction(
     'proxy',
-    `listener: (${storeInstance}: ${storeType}, ...args: any[]) => void`,
+    `listener: any`,
     `(_: Store, ...args: any[]) => listener(${storeInstance}, ...args)`,
   );
 
@@ -152,6 +154,7 @@ export const getStoreApi = (
       '=> void',
     `A function for listening to changes to Cell Ids in ${THE_STORE}`,
   );
+  const cellListenerType = addType(`${storeType}CellListener`);
 
   addImport(
     1,
@@ -167,6 +170,7 @@ export const getStoreApi = (
     rowIdsListenerType,
     rowListenerType,
     cellIdsListenerType,
+    cellListenerType,
   );
 
   const getStoreContentDoc = (verb = 0) =>
@@ -398,6 +402,13 @@ export const getStoreApi = (
       arrayPush(setCellsTypes, `'${cellId}'?: ${type};`);
       arrayPush(cellIdTypes, `'${cellId}'`);
       arrayPush(cellCallbackArgTypes, `[cellId: '${cellId}', cell: ${type}]`);
+      arrayPush(
+        cellListenerArgTypes,
+        `[${storeInstance}: ${storeType}, tableId: '${tableId}', rowId: Id, ` +
+          `cellId: '${cellId}', newCell: ${type} | undefined, ` +
+          `oldCell: ${type} | undefined, getCellChange: ${getCellChangeType} ` +
+          '| undefined]',
+      );
 
       addMethod(
         `has${table}${cell}Cell`,
@@ -446,6 +457,7 @@ export const getStoreApi = (
       getCellChangeArgTypes,
       `[tableId: '${tableId}', rowId: Id, cellId: ${cellIdType}]`,
     );
+    arrayPush(allCellIdType, cellIdType);
 
     updateType(rowType, `{${join(getCellsTypes, ' ')}}`, getRowTypeDoc());
     updateType(
@@ -562,6 +574,17 @@ export const getStoreApi = (
     'Registers a listener that will be called whenever the Cell Ids in a ' +
       'Row change',
   );
+  addMethod(
+    'addCellListener',
+    `tableId: ${tableIdType} | null, rowId: IdOrNull, cellId: ${join(
+      allCellIdType,
+      ' | ',
+    )} | null, listener: ${cellListenerType}, mutator?: boolean`,
+    'Id',
+    storeListener('addCellListener', 'tableId, rowId, cellId', 'mutator'),
+    'Registers a listener that will be called whenever the Cell Ids in a ' +
+      'Row change',
+  );
 
   addMethod(
     'getStore',
@@ -597,6 +620,12 @@ export const getStoreApi = (
     )}) => CellChange`,
     'A function that returns information about any ' +
       `Cell's changes during a transaction`,
+  );
+  updateType(
+    cellListenerType,
+    `(...[${storeInstance}, tableId, rowId, cellId, newCell, oldCell, ` +
+      `getCellChange]: ${join(cellListenerArgTypes, ' | ')}) => void`,
+    `A function for listening to changes to a Cell in ${THE_STORE}`,
   );
 
   addConstant('store', ['createStore().setSchema({', ...schemaLines, '})']);
