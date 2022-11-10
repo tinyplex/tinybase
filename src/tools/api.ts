@@ -618,6 +618,21 @@ export const getStoreApi = (
   );
 
   addMethod(
+    'callListener',
+    'listenerId: Id',
+    storeType,
+    fluentStoreMethod('callListener', 'listenerId'),
+    'Manually provoke a listener to be called',
+  );
+  addMethod(
+    'delListener',
+    'listenerId: Id',
+    storeType,
+    fluentStoreMethod('delListener', 'listenerId'),
+    `Remove a listener that was previously added to ${THE_STORE}`,
+  );
+
+  addMethod(
     'getStore',
     '',
     'Store',
