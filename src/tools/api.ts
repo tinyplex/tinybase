@@ -155,6 +155,12 @@ export const getStoreApi = (
     `A function for listening to changes to Cell Ids in ${THE_STORE}`,
   );
   const cellListenerType = addType(`${storeType}CellListener`);
+  const invalidCellListenerType = addType(
+    'InvalidCellListener',
+    `(${storeInstance}: ${storeType}, tableId: Id, rowId: Id, cellId: Id, ` +
+      'invalidCells: any[]) => void;',
+    `A function for listening to invalid Cell changes`,
+  );
 
   addImport(
     1,
@@ -171,6 +177,7 @@ export const getStoreApi = (
     rowListenerType,
     cellIdsListenerType,
     cellListenerType,
+    invalidCellListenerType,
   );
 
   const getStoreContentDoc = (verb = 0) =>
@@ -582,8 +589,16 @@ export const getStoreApi = (
     )} | null, listener: ${cellListenerType}, mutator?: boolean`,
     'Id',
     storeListener('addCellListener', 'tableId, rowId, cellId', 'mutator'),
-    'Registers a listener that will be called whenever the Cell Ids in a ' +
-      'Row change',
+    'Registers a listener that will be called whenever a Cell changes',
+  );
+  addMethod(
+    'addInvalidCellListener',
+    'tableId: IdOrNull, rowId: IdOrNull, cellId: IdOrNull, listener: ' +
+      `${invalidCellListenerType}, mutator?: boolean`,
+    'Id',
+    storeListener('addCellListener', 'tableId, rowId, cellId', 'mutator'),
+    'Registers a listener that will be called whenever an invalid Cell ' +
+      'change was attempted',
   );
 
   addMethod(
