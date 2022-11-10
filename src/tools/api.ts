@@ -92,16 +92,13 @@ export const getStoreApi = (
   addImport(
     1,
     'tinybase',
-    'CellCallback',
     'ChangedCells',
     'Id',
     'IdOrNull',
     'Ids',
     'InvalidCells',
     'Json',
-    'RowCallback',
     'Store',
-    'TableCallback',
     'createStore',
   );
 
@@ -115,46 +112,46 @@ export const getStoreApi = (
   const TYPE2 = addConstant(snake(TYPE), `'${TYPE}'`);
   const DEFAULT2 = addConstant(snake(DEFAULT), `'${DEFAULT}'`);
 
-  const tablesType = addType(`${storeType}Tables`);
-  const tableIdType = addType(`${storeType}TableId`);
-  const tableCallbackType = addType(`${storeType}TableCallback`);
-  const getCellChangeType = addType(`${storeType}GetCellChange`);
+  const tablesType = addType('Tables');
+  const tableIdType = addType('TableId');
+  const tableCallbackType = addType('TableCallback');
+  const getCellChangeType = addType('GetCellChange');
 
   const tablesListenerType = addType(
-    `${storeType}TablesListener`,
+    'TablesListener',
     `(${storeInstance}: ${storeType}, ` +
       `getCellChange: ${getCellChangeType} | undefined) => void`,
     `A function for listening to changes to ${THE_CONTENT_OF_THE_STORE}`,
   );
   const tableIdsListenerType = addType(
-    `${storeType}TableIdsListener`,
+    'TableIdsListener',
     `(${storeInstance}: ${storeType}) => void`,
     `A function for listening to changes to Table Ids in ${THE_STORE}`,
   );
   const tableListenerType = addType(
-    `${storeType}TableListener`,
+    'TableListener',
     `(${storeInstance}: ${storeType}, tableId: ${tableIdType}, ` +
       `getCellChange: ${getCellChangeType} | undefined) => void`,
     `A function for listening to changes to a Table in ${THE_STORE}`,
   );
   const rowIdsListenerType = addType(
-    `${storeType}RowIdsListener`,
+    'RowIdsListener',
     `(${storeInstance}: ${storeType}, tableId: ${tableIdType}) => void`,
     `A function for listening to changes to Row Ids in ${THE_STORE}`,
   );
   const rowListenerType = addType(
-    `${storeType}RowListener`,
+    'RowListener',
     `(${storeInstance}: ${storeType}, tableId: ${tableIdType}, rowId: Id, ` +
       `getCellChange: ${getCellChangeType} | undefined) => void`,
     `A function for listening to changes to a Row in ${THE_STORE}`,
   );
   const cellIdsListenerType = addType(
-    `${storeType}CellIdsListener`,
+    'CellIdsListener',
     `(${storeInstance}: ${storeType}, tableId: ${tableIdType}, rowId: Id) ` +
       '=> void',
     `A function for listening to changes to Cell Ids in ${THE_STORE}`,
   );
-  const cellListenerType = addType(`${storeType}CellListener`);
+  const cellListenerType = addType('CellListener');
   const invalidCellListenerType = addType(
     'InvalidCellListener',
     `(${storeInstance}: ${storeType}, tableId: Id, rowId: Id, cellId: Id, ` +
@@ -222,7 +219,7 @@ export const getStoreApi = (
     'forEachTable',
     `tableCallback: ${tableCallbackType}`,
     'void',
-    storeMethod('forEachTable', 'tableCallback as TableCallback'),
+    storeMethod('forEachTable', 'tableCallback as any'),
     getForEachDoc('Table', THE_STORE),
   );
 
@@ -317,7 +314,7 @@ export const getStoreApi = (
       `forEach${table}Row`,
       `rowCallback: ${rowCallbackType}`,
       'void',
-      storeMethod('forEachRow', `${TABLE_ID}, rowCallback as RowCallback`),
+      storeMethod('forEachRow', `${TABLE_ID}, rowCallback as any`),
       getForEachDoc('Row', tableDoc),
     );
 
@@ -374,10 +371,7 @@ export const getStoreApi = (
       `forEach${table}Cell`,
       `rowId: Id, cellCallback: ${cellCallbackType}`,
       'void',
-      storeMethod(
-        'forEachCell',
-        `${TABLE_ID}, rowId, cellCallback as CellCallback`,
-      ),
+      storeMethod('forEachCell', `${TABLE_ID}, rowId, cellCallback as any`),
       getForEachDoc('Cell', rowDoc),
     );
 
