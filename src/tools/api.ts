@@ -158,6 +158,11 @@ export const getStoreApi = (
       'invalidCells: any[]) => void;',
     `A function for listening to invalid Cell changes`,
   );
+  const transactionListenerType = addType(
+    'TransactionListener',
+    `(${storeInstance}: ${storeType}, cellsTouched: boolean) => void;`,
+    `A function for listening to the completion of a transaction`,
+  );
 
   addImport(
     1,
@@ -175,6 +180,7 @@ export const getStoreApi = (
     cellIdsListenerType,
     cellListenerType,
     invalidCellListenerType,
+    transactionListenerType,
   );
 
   const getStoreContentDoc = (verb = 0) =>
@@ -593,6 +599,22 @@ export const getStoreApi = (
     storeListener('addCellListener', 'tableId, rowId, cellId', 'mutator'),
     'Registers a listener that will be called whenever an invalid Cell ' +
       'change was attempted',
+  );
+  addMethod(
+    'addWillFinishTransactionListener',
+    `listener: ${transactionListenerType}`,
+    'Id',
+    storeListener('addWillFinishTransactionListener'),
+    'Registers a listener that will be called just before the end of the ' +
+      'transaction',
+  );
+  addMethod(
+    'addDidFinishTransactionListener',
+    `listener: ${transactionListenerType}`,
+    'Id',
+    storeListener('addDidFinishTransactionListener'),
+    'Registers a listener that will be called just after the end of the ' +
+      'transaction',
   );
 
   addMethod(
