@@ -48,7 +48,7 @@ export const length = (str: string) => str.length;
 
 export const join = (str: string[], sep = EMPTY_STRING) => str.join(sep);
 
-export const camel = (str: string, firstCap = false) =>
+export const camel = (str: string, firstCap = 0) =>
   join(
     arrayMap(
       str.split(NON_ALPHANUMERIC),
