@@ -1,8 +1,10 @@
 import {BOOLEAN, DEFAULT, TYPE} from '../common/strings';
+import {IdMap, mapForEach, mapNew, mapSet} from '../common/map';
 import {camel, comment, getCodeFunctions, join, snake} from './code';
 import {objForEach, objHas, objIsEmpty} from '../common/obj';
 import {Schema} from '../store.d';
 import {arrayPush} from '../common/array';
+import {collValues} from '../common/coll';
 import {isString} from '../common/other';
 import {pairNew} from '../common/pairs';
 
@@ -42,7 +44,7 @@ export const getStoreApi = (
   }
 
   const moduleName = camel(module);
-  const storeType = camel(module, true);
+  const storeType = camel(module, 1);
   const storeInstance = camel(storeType);
   const returnStore = `return ${storeInstance};`;
 
@@ -229,8 +231,10 @@ export const getStoreApi = (
     getForEachDoc('Table', THE_STORE),
   );
 
+  const mapCellTypes: IdMap<string> = mapNew();
+
   objForEach(schema, (cellSchemas, tableId) => {
-    const table = camel(tableId, true);
+    const table = camel(tableId, 1);
     const TABLE_ID = addConstant(snake(tableId), `'${tableId}'`);
 
     const getCellsTypes: string[] = [];
@@ -383,7 +387,7 @@ export const getStoreApi = (
 
     arrayPush(schemaLines, `[${TABLE_ID}]: {`);
     objForEach(cellSchemas, (cellSchema, cellId) => {
-      const cell = camel(cellId, true);
+      const cell = camel(cellId, 1);
       const CELL_ID = addConstant(snake(cellId), `'${cellId}'`);
       const type = cellSchema[TYPE];
       const defaulted = objHas(cellSchema, DEFAULT);
@@ -417,6 +421,9 @@ export const getStoreApi = (
           '| undefined]',
       );
 
+      const mapCellType = `Map${camel(type, 1)}`;
+      mapSet(mapCellTypes, type, mapCellType);
+
       addMethod(
         `has${table}${cell}Cell`,
         'rowId: Id',
@@ -438,9 +445,12 @@ export const getStoreApi = (
       );
       addMethod(
         `set${table}${cell}Cell`,
-        `rowId: Id, cell: ${type}`,
+        `rowId: Id, cell: ${type} | ${mapCellType}`,
         storeType,
-        fluentStoreMethod('setCell', `${TABLE_ID}, rowId, ${CELL_ID}, cell`),
+        fluentStoreMethod(
+          'setCell',
+          `${TABLE_ID}, rowId, ${CELL_ID}, cell as any`,
+        ),
         getCellContentDoc(1),
       );
       addMethod(
@@ -673,6 +683,16 @@ export const getStoreApi = (
       `getCellChange]: ${join(cellListenerArgTypes, ' | ')}) => void`,
     `A function for listening to changes to a Cell in ${THE_STORE}`,
   );
+
+  mapForEach(mapCellTypes, (type, mapCellType) =>
+    addType(
+      mapCellType,
+      `(cell: ${type} | undefined) => ${type}`,
+      `Takes a ${type} Cell value and returns another`,
+    ),
+  );
+
+  addImport(1, `./${moduleName}.d`, ...collValues(mapCellTypes));
 
   addConstant('store', ['createStore().setSchema({', ...schemaLines, '})']);
 
