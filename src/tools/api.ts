@@ -52,10 +52,14 @@ export const getStoreApi = (
   const getCellChangeArgTypes: string[] = [];
   const schemaLines: string[] = [];
 
-  const storeListener = (method: string, extraParameters = '') =>
-    `store.${method}(proxy(listener)${
-      extraParameters ? `, ${extraParameters}` : ''
-    })`;
+  const storeListener = (
+    method: string,
+    beforeParameters = '',
+    afterParameters = '',
+  ) =>
+    `store.${method}(${
+      beforeParameters ? `${beforeParameters}, ` : ''
+    }proxy(listener)${afterParameters ? `, ${afterParameters}` : ''})`;
 
   const [
     build,
@@ -123,6 +127,17 @@ export const getStoreApi = (
     `(${storeInstance}: ${storeType}) => void`,
     `A function for listening to changes to Table Ids in ${THE_STORE}`,
   );
+  const tableListenerType = addType(
+    `${storeType}TableListener`,
+    `(${storeInstance}: ${storeType}, tableId: ${tableIdType}, ` +
+      `getCellChange: ${getCellChangeType} | undefined) => void`,
+    `A function for listening to changes to a Table in ${THE_STORE}`,
+  );
+  const rowIdsListenerType = addType(
+    `${storeType}RowIdsListener`,
+    `(${storeInstance}: ${storeType}, tableId: ${tableIdType}) => void`,
+    `A function for listening to changes to Row Ids in ${THE_STORE}`,
+  );
 
   addImport(
     1,
@@ -134,6 +149,8 @@ export const getStoreApi = (
     tableCallbackType,
     tablesListenerType,
     tableIdsListenerType,
+    tableListenerType,
+    rowIdsListenerType,
   );
 
   const getStoreContentDoc = (verb = 0) =>
@@ -483,17 +500,35 @@ export const getStoreApi = (
     'addTablesListener',
     `listener: ${tablesListenerType}, mutator?: boolean`,
     'Id',
-    storeListener('addTablesListener', 'mutator'),
-    `Registers a listener that will be called whenever ` +
+    storeListener('addTablesListener', '', 'mutator'),
+    'Registers a listener that will be called whenever ' +
       `${THE_CONTENT_OF_THE_STORE} changes`,
   );
   addMethod(
     'addTableIdsListener',
     `listener: ${tableIdsListenerType}, mutator?: boolean`,
     'Id',
-    storeListener('addTableIdsListener', 'mutator'),
-    `Registers a listener that will be called whenever Table Ids in ` +
+    storeListener('addTableIdsListener', '', 'mutator'),
+    'Registers a listener that will be called whenever the Table Ids in ' +
       `${THE_STORE} change`,
+  );
+  addMethod(
+    'addTableListener',
+    `tableId: ${tableIdType} | null, listener: ${tableListenerType}, ` +
+      'mutator?: boolean',
+    'Id',
+    storeListener('addTableListener', 'tableId', 'mutator'),
+    'Registers a listener that will be called whenever ' +
+      `${THE_CONTENT_OF_THE_STORE} changes`,
+  );
+  addMethod(
+    'addRowIdsListener',
+    `tableId: ${tableIdType} | null, listener: ${rowIdsListenerType}, ` +
+      'mutator?: boolean',
+    'Id',
+    storeListener('addRowIdsListener', 'tableId', 'mutator'),
+    'Registers a listener that will be called whenever the Row Ids in a ' +
+      'Table change',
   );
 
   addMethod(
