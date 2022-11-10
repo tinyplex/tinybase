@@ -49,6 +49,7 @@ export const getStoreApi = (
   const tablesTypes: string[] = [];
   const tableIdTypes: string[] = [];
   const tableCallbackArgTypes: string[] = [];
+  const getCellChangeArgTypes: string[] = [];
   const schemaLines: string[] = [];
 
   const storeListener = (method: string, extraParameters = '') =>
@@ -73,8 +74,8 @@ export const getStoreApi = (
   addImport(
     0,
     'tinybase',
+    'CellChange',
     'ChangedCells',
-    'GetCellChange',
     'Id',
     'Ids',
     'InvalidCells',
@@ -109,17 +110,18 @@ export const getStoreApi = (
   const tablesType = addType(`${storeType}Tables`);
   const tableIdType = addType(`${storeType}TableId`);
   const tableCallbackType = addType(`${storeType}TableCallback`);
+  const getCellChangeType = addType(`${storeType}GetCellChange`);
 
   const tablesListenerType = addType(
     `${storeType}TablesListener`,
     `(${storeInstance}: ${storeType}, ` +
-      `getCellChange: GetCellChange | undefined) => void`,
-    `A function for listening to changes to ${THE_CONTENT_OF_THE_STORE}.`,
+      `getCellChange: ${getCellChangeType} | undefined) => void`,
+    `A function for listening to changes to ${THE_CONTENT_OF_THE_STORE}`,
   );
   const tableIdsListenerType = addType(
     `${storeType}TableIdsListener`,
     `(${storeInstance}: ${storeType}) => void`,
-    `A function for listening to changes to Table Ids in ${THE_STORE}.`,
+    `A function for listening to changes to Table Ids in ${THE_STORE}`,
   );
 
   addImport(
@@ -407,6 +409,10 @@ export const getStoreApi = (
       `[tableId: '${tableId}', ` +
         `forEachRow: (rowCallback: ${rowCallbackType}) => void]`,
     );
+    arrayPush(
+      getCellChangeArgTypes,
+      `[tableId: '${tableId}', rowId: Id, cellId: ${cellIdType}]`,
+    );
 
     updateType(rowType, `{${join(getCellsTypes, ' ')}}`, getRowTypeDoc());
     updateType(
@@ -514,7 +520,16 @@ export const getStoreApi = (
       tableCallbackArgTypes,
       ' | ',
     )}) => void`,
-    `A function that takes a Table Id, and a Row iterator`,
+    'A function that takes a Table Id, and a Row iterator',
+  );
+  updateType(
+    getCellChangeType,
+    `(...[tableId, rowId, cellId]: ${join(
+      getCellChangeArgTypes,
+      ' | ',
+    )}) => CellChange`,
+    'A function that returns information about any ' +
+      `Cell's changes during a transaction`,
   );
 
   addConstant('store', ['createStore().setSchema({', ...schemaLines, '})']);
