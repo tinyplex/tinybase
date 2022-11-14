@@ -13,6 +13,7 @@ const REPRESENTS = 'Represents';
 const THE_CONTENT_OF = 'the content of';
 const THE_CONTENT_OF_THE_STORE = `${THE_CONTENT_OF} ${THE_STORE}`;
 const THE_SPECIFIED_ROW = 'the specified Row';
+const REGISTERS_A_LISTENER = 'Registers a listener that will be called';
 
 const storeMethod = (method: string, parameters = '', cast = '') =>
   `store.${method}(${parameters})${cast ? ` as ${cast}` : ''}`;
@@ -26,6 +27,14 @@ const getForEachDoc = (childNoun: string, parentNoun: string) =>
   `Calls a function for each ${childNoun} in ${parentNoun}`;
 const getHasDoc = (childNoun: string, parentNoun = THE_STORE) =>
   `Gets whether ${childNoun} exists in ${parentNoun}`;
+const getCallbackDoc = (takes: string) => `A function that takes ${takes}`;
+const getListenerDoc = (
+  childNoun: string,
+  parentNoun: string,
+  pluralChild = 0,
+) =>
+  `${REGISTERS_A_LISTENER} whenever ${childNoun} in ${parentNoun} change` +
+  (pluralChild ? '' : 's');
 const getVerb = (verb = 0) =>
   verb == 1
     ? 'Sets'
@@ -490,13 +499,13 @@ export const getStoreApi = (
     updateType(
       cellCallbackType,
       `(...[cellId, cell]: ${join(cellCallbackArgTypes, ' | ')}) => void`,
-      `A function that takes a Cell Id and value from a Row in ${tableDoc}`,
+      getCallbackDoc(`a Cell Id and value from a Row in ${tableDoc}`),
     );
     updateType(
       rowCallbackType,
       `(rowId: Id, ` +
         `forEachCell: (cellCallback: ${cellCallbackType}) => void) => void`,
-      `A function that takes a Row Id from ${tableDoc}, and a Cell iterator`,
+      getCallbackDoc(`a Row Id from ${tableDoc}, and a Cell iterator`),
     );
   });
 
@@ -546,16 +555,14 @@ export const getStoreApi = (
     `listener: ${tablesListenerType}, mutator?: boolean`,
     'Id',
     storeListener('addTablesListener', '', 'mutator'),
-    'Registers a listener that will be called whenever ' +
-      `${THE_CONTENT_OF_THE_STORE} changes`,
+    `${REGISTERS_A_LISTENER} whenever ${THE_CONTENT_OF_THE_STORE} changes`,
   );
   addMethod(
     'addTableIdsListener',
     `listener: ${tableIdsListenerType}, mutator?: boolean`,
     'Id',
     storeListener('addTableIdsListener', '', 'mutator'),
-    'Registers a listener that will be called whenever the Table Ids in ' +
-      `${THE_STORE} change`,
+    getListenerDoc('the Table Ids', THE_STORE, 1),
   );
   addMethod(
     'addTableListener',
@@ -563,7 +570,7 @@ export const getStoreApi = (
       'mutator?: boolean',
     'Id',
     storeListener('addTableListener', 'tableId', 'mutator'),
-    'Registers a listener that will be called whenever a Table changes',
+    getListenerDoc('a Table', THE_STORE),
   );
   addMethod(
     'addRowIdsListener',
@@ -571,8 +578,7 @@ export const getStoreApi = (
       'mutator?: boolean',
     'Id',
     storeListener('addRowIdsListener', 'tableId', 'mutator'),
-    'Registers a listener that will be called whenever the Row Ids in a ' +
-      'Table change',
+    getListenerDoc('the Row Ids', 'a Table', 1),
   );
   addMethod(
     'addRowListener',
@@ -580,7 +586,7 @@ export const getStoreApi = (
       `listener: ${rowListenerType}, mutator?: boolean`,
     'Id',
     storeListener('addRowListener', 'tableId, rowId', 'mutator'),
-    'Registers a listener that will be called whenever a Row changes',
+    getListenerDoc('a Row', 'a Table'),
   );
   addMethod(
     'addCellIdsListener',
@@ -588,8 +594,7 @@ export const getStoreApi = (
       `listener: ${cellIdsListenerType}, mutator?: boolean`,
     'Id',
     storeListener('addCellIdsListener', 'tableId, rowId', 'mutator'),
-    'Registers a listener that will be called whenever the Cell Ids in a ' +
-      'Row change',
+    getListenerDoc('the Cell Ids', 'a Row', 1),
   );
   addMethod(
     'addCellListener',
@@ -599,7 +604,7 @@ export const getStoreApi = (
     )} | null, listener: ${cellListenerType}, mutator?: boolean`,
     'Id',
     storeListener('addCellListener', 'tableId, rowId, cellId', 'mutator'),
-    'Registers a listener that will be called whenever a Cell changes',
+    getListenerDoc('a Cell', 'a Row'),
   );
   addMethod(
     'addInvalidCellListener',
@@ -607,24 +612,21 @@ export const getStoreApi = (
       `${invalidCellListenerType}, mutator?: boolean`,
     'Id',
     storeListener('addCellListener', 'tableId, rowId, cellId', 'mutator'),
-    'Registers a listener that will be called whenever an invalid Cell ' +
-      'change was attempted',
+    `${REGISTERS_A_LISTENER} whenever an invalid Cell change was attempted`,
   );
   addMethod(
     'addWillFinishTransactionListener',
     `listener: ${transactionListenerType}`,
     'Id',
     storeListener('addWillFinishTransactionListener'),
-    'Registers a listener that will be called just before the end of the ' +
-      'transaction',
+    `${REGISTERS_A_LISTENER} just before the end of the transaction`,
   );
   addMethod(
     'addDidFinishTransactionListener',
     `listener: ${transactionListenerType}`,
     'Id',
     storeListener('addDidFinishTransactionListener'),
-    'Registers a listener that will be called just after the end of the ' +
-      'transaction',
+    `${REGISTERS_A_LISTENER} just after the end of the transaction`,
   );
 
   addMethod(
@@ -666,7 +668,7 @@ export const getStoreApi = (
       tableCallbackArgTypes,
       ' | ',
     )}) => void`,
-    'A function that takes a Table Id, and a Row iterator',
+    getCallbackDoc('a Table Id, and a Row iterator'),
   );
   updateType(
     getCellChangeType,
