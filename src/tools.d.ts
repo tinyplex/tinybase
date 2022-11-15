@@ -222,7 +222,26 @@ export interface Tools {
    */
   getStoreSchema(): Schema;
 
+  /**
+   * The getStoreApi method returns a code-generated .d.ts file and a .ts file
+   * that wraps the schema of a Store.
+   *
+   * This is currently in development, and further documentation is to come.
+   *
+   * @category Modelling
+   * @since v2.2.0
+   */
   getStoreApi(storeName: string): [string, string];
+
+  /**
+   * The getStoreApi method attempts to return a prettified code-generated .d.ts
+   * file and a .ts file that wraps the schema of a Store.
+   *
+   * This is currently in development, and further documentation is to come.
+   *
+   * @category Modelling
+   * @since v2.2.0
+   */
   getPrettyStoreApi(storeName: string): Promise<[string, string]>;
 }
 
