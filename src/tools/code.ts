@@ -21,6 +21,7 @@ type LINE_TREE = LINE_OR_LINE_TREE[];
 type LINE_OR_LINE_TREE = LINE | LINE_TREE;
 
 const NON_ALPHANUMERIC = /[^A-Za-z0-9]+/;
+const JSDOC = /^( *)\/\*\* *(.*?) *\*\/$/gm;
 
 const substr = (str: string, start: number, end?: number) =>
   str.substring(start, end);
@@ -43,6 +44,15 @@ const mapUnique = <Value>(
     return uniqueId;
   }
 };
+
+export const formatJsDoc = (file: string): string =>
+  file.replace(JSDOC, (_, indent, text) => {
+    const lineLength = 77 - length(indent);
+    return `${indent}/**\n${text.replace(
+      new RegExp(`([^\\n]{1,${lineLength}})(\\s|$)`, 'g'),
+      `${indent} * $1\n`,
+    )}${indent} */`;
+  });
 
 export const length = (str: string) => str.length;
 
