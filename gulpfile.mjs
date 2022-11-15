@@ -24,9 +24,10 @@ const ALL_MODULES = TEST_MODULES.concat([
   'persisters',
   'common',
 ]);
+const BIN_DIR = 'bin';
 const LIB_DIR = 'lib';
 const DOCS_DIR = 'docs';
-const TMP_DIR = './tmp';
+const TMP_DIR = 'tmp';
 
 const getPrettierConfig = async () => ({
   ...JSON.parse(await promises.readFile('.prettierrc', 'utf-8')),
@@ -62,6 +63,18 @@ const copyDefinition = async (module, dir = LIB_DIR) => {
 const copyDefinitions = async (dir = LIB_DIR) => {
   await copyDefinition('common', dir);
   await allModules((module) => copyDefinition(module, dir));
+};
+
+const execute = async (cmd) => {
+  const {exec} = await import('child_process');
+  const {promisify} = await import('util');
+  try {
+    await promisify(exec)(cmd);
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error(e);
+    throw e.stdout;
+  }
 };
 
 const lintCheck = async (dir) => {
@@ -107,16 +120,8 @@ const lintCheck = async (dir) => {
   });
 };
 
-const spellCheck = async (dir, deep = false) => {
-  const {exec} = await import('child_process');
-  const {promisify} = await import('util');
-  const cmd = `cspell "${dir}/*${deep ? '*' : ''}"`;
-  try {
-    await promisify(exec)(cmd);
-  } catch (e) {
-    throw e.stdout;
-  }
-};
+const spellCheck = async (dir, deep = false) =>
+  await execute(`cspell "${dir}/*${deep ? '*' : ''}"`);
 
 const getTsOptions = async (dir) => {
   const {default: tsc} = await import('typescript');
@@ -171,6 +176,7 @@ const compileModule = async (
   dir = LIB_DIR,
   format = 'esm',
   target = 'esnext',
+  gzip = true,
 ) => {
   const {default: esbuild} = await import('rollup-plugin-esbuild');
   const {rollup} = await import('rollup');
@@ -178,6 +184,7 @@ const compileModule = async (
   const {default: replace} = await import('@rollup/plugin-replace');
   const {default: gzipPlugin} = await import('rollup-plugin-gzip');
   const {default: prettierPlugin} = await import('rollup-plugin-prettier');
+  const {default: shebang} = await import('rollup-plugin-preserve-shebang');
 
   const inputConfig = {
     external: ['react', 'fs', 'prettier'],
@@ -193,13 +200,13 @@ const compileModule = async (
         delimiters: ['', ''],
         preventAssignment: true,
       }),
+      shebang(),
     ].concat(
       debug
         ? [prettierPlugin(await getPrettierConfig())]
         : [
             terser({toplevel: true, compress: {unsafe: true, passes: 1}}),
-            gzipPlugin(),
-          ],
+          ].concat(gzip ? [gzipPlugin()] : []),
     ),
   };
 
@@ -356,6 +363,10 @@ export const compileForProd = async () => {
   await copyDefinitions(`${LIB_DIR}/umd`);
   await copyDefinitions(`${LIB_DIR}/umd-es6`);
   await copyDefinitions(`${LIB_DIR}/debug`);
+
+  await clearDir(BIN_DIR);
+  await compileModule('cli', false, BIN_DIR, undefined, undefined, false);
+  await execute(`chmod +x ${BIN_DIR}/cli.js`);
 };
 
 export const testUnit = async () => {
