@@ -3,13 +3,13 @@ import {DEFAULT, TYPE} from './common/strings';
 import {IdMap, mapEnsure, mapNew, mapSet} from './common/map';
 import {StoreStats, Tools, createTools as createToolsDecl} from './tools.d';
 import {arrayEvery, arrayLength, arrayMap} from './common/array';
+import {formatJsDoc, length} from './tools/code';
 import {objFreeze, objIsEmpty} from './common/obj';
 import {collForEach} from './common/coll';
 import {getCellType} from './common/cell';
 import {getCreateFunction} from './common/definable';
 import {getStoreApi as getStoreApiImpl} from './tools/api';
 import {jsonParse} from './common/other';
-import {length} from './tools/code';
 
 type CellMeta = [string, IdMap<number>, [number, Cell?], number];
 
@@ -117,7 +117,7 @@ export const createTools: typeof createToolsDecl = getCreateFunction(
       try {
         const {format} = await import('prettier');
         return arrayMap(files, (file) =>
-          format(format(file, prettierConfig), prettierConfig),
+          formatJsDoc(format(file, prettierConfig)),
         ) as [string, string];
       } catch {}
       return files;
