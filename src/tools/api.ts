@@ -244,13 +244,25 @@ export const getStoreApi = (
   const mapCellTypes: IdMap<string> = mapNew();
 
   objMap(schema, (cellSchemas, tableId) => {
+    const mapCellSchema = <Return>(
+      callback: (
+        cellId: Id,
+        type: 'string' | 'number' | 'boolean',
+        defaultValue: Cell | undefined,
+        CELL_ID: string,
+      ) => Return,
+    ) =>
+      objMap(cellSchemas, (cellSchema, cellId) =>
+        callback(
+          cellId,
+          cellSchema[TYPE],
+          cellSchema[DEFAULT],
+          addConstant(snake(cellId), `'${cellId}'`),
+        ),
+      );
+
     const table = camel(tableId, 1);
     const TABLE_ID = addConstant(snake(tableId), `'${tableId}'`);
-
-    const getCellsTypes: string[] = [];
-    const setCellsTypes: string[] = [];
-    const cellIdTypes: string[] = [];
-    const cellCallbackArgTypes: string[] = [];
 
     const tableDoc = `the '${tableId}' Table`;
     const rowDoc = `${THE_SPECIFIED_ROW} in ${tableDoc}`;
@@ -395,56 +407,40 @@ export const getStoreApi = (
       getForEachDoc('Cell', rowDoc),
     );
 
-    arrayPush(schemaLines, `[${TABLE_ID}]: {`);
+    arrayPush(
+      schemaLines,
+      `[${TABLE_ID}]: {`,
+      ...mapCellSchema(
+        (_, type, defaultValue, CELL_ID) =>
+          `[${CELL_ID}]: {[${TYPE2}]: ${addConstant(snake(type), `'${type}'`)}${
+            isUndefined(defaultValue)
+              ? ''
+              : `, [${DEFAULT2}]: ${
+                  isString(defaultValue)
+                    ? addConstant(snake(defaultValue), `'${defaultValue}'`)
+                    : defaultValue
+                }`
+          }},`,
+      ),
+      `},`,
+    );
 
-    const forEachCellSchema = (
-      callback: (
-        cellId: Id,
-        CELL_ID: string,
-        type: 'string' | 'number' | 'boolean',
-        defaultValue: Cell | undefined,
-      ) => any,
-    ) =>
-      objMap(cellSchemas, (cellSchema, cellId) =>
-        callback(
-          cellId,
-          addConstant(snake(cellId), `'${cellId}'`),
-          cellSchema[TYPE],
-          cellSchema[DEFAULT],
-        ),
-      );
+    arrayPush(
+      cellListenerArgTypes,
+      ...mapCellSchema(
+        (cellId, type) =>
+          `[${storeInstance}: ${storeType}, tableId: '${tableId}', ` +
+          `rowId: Id, cellId: '${cellId}', newCell: ${type} | undefined, ` +
+          `oldCell: ${type} | undefined, getCellChange: ${getCellChangeType} ` +
+          '| undefined]',
+      ),
+    );
 
-    forEachCellSchema((cellId, CELL_ID, type, defaultValue) => {
+    mapCellSchema((cellId, type, defaultValue, CELL_ID) => {
       const cell = camel(cellId, 1);
-      const defaulted = !isUndefined(defaultValue);
       const cellDoc = `the '${cellId}' Cell`;
       const getCellContentDoc = (verb = 0) =>
         `${getVerb(verb)} ${cellDoc} for ${rowDoc}`;
-
-      arrayPush(
-        schemaLines,
-        `[${CELL_ID}]: {[${TYPE2}]: ${addConstant(snake(type), `'${type}'`)}${
-          defaulted
-            ? `, [${DEFAULT2}]: ${
-                isString(defaultValue)
-                  ? addConstant(snake(defaultValue), `'${defaultValue}'`)
-                  : defaultValue
-              }`
-            : ''
-        }},`,
-      );
-
-      arrayPush(getCellsTypes, `'${cellId}'${defaulted ? '' : '?'}: ${type};`);
-      arrayPush(setCellsTypes, `'${cellId}'?: ${type};`);
-      arrayPush(cellIdTypes, `'${cellId}'`);
-      arrayPush(cellCallbackArgTypes, `[cellId: '${cellId}', cell: ${type}]`);
-      arrayPush(
-        cellListenerArgTypes,
-        `[${storeInstance}: ${storeType}, tableId: '${tableId}', rowId: Id, ` +
-          `cellId: '${cellId}', newCell: ${type} | undefined, ` +
-          `oldCell: ${type} | undefined, getCellChange: ${getCellChangeType} ` +
-          '| undefined]',
-      );
 
       const mapCellType = `Map${camel(type, 1)}`;
       mapSet(mapCellTypes, type, mapCellType);
@@ -456,7 +452,9 @@ export const getStoreApi = (
         storeMethod('hasCell', `${TABLE_ID}, rowId, ${CELL_ID}`),
         getHasDoc(cellDoc, rowDoc),
       );
-      const returnCellType = `${type}${defaulted ? '' : ' | undefined'}`;
+      const returnCellType = `${type}${
+        isUndefined(defaultValue) ? ' | undefined' : ''
+      }`;
       addMethod(
         `get${table}${cell}Cell`,
         'rowId: Id',
@@ -486,7 +484,6 @@ export const getStoreApi = (
         getCellContentDoc(3),
       );
     });
-    arrayPush(schemaLines, `},`);
 
     arrayPush(tablesTypes, `'${tableId}'?: ${tableType};`);
     arrayPush(tableIdTypes, `'${tableId}'`);
@@ -501,20 +498,39 @@ export const getStoreApi = (
     );
     arrayPush(allCellIdType, cellIdType);
 
-    updateType(rowType, `{${join(getCellsTypes, ' ')}}`, getRowTypeDoc());
+    updateType(
+      rowType,
+      `{${join(
+        mapCellSchema(
+          (cellId, type, defaultValue) =>
+            `'${cellId}'${isUndefined(defaultValue) ? '?' : ''}: ${type};`,
+        ),
+        ' ',
+      )}}`,
+      getRowTypeDoc(),
+    );
     updateType(
       rowWhenSetType,
-      `{${join(setCellsTypes, ' ')}}`,
+      `{${join(
+        mapCellSchema((cellId, type) => `'${cellId}'?: ${type};`),
+        ' ',
+      )}}`,
       getRowTypeDoc(1),
     );
     updateType(
       cellIdType,
-      join(cellIdTypes, ' | '),
+      join(
+        mapCellSchema((cellId) => `'${cellId}'`),
+        ' | ',
+      ),
       `A Cell Id for ${tableDoc}`,
     );
     updateType(
       cellCallbackType,
-      `(...[cellId, cell]: ${join(cellCallbackArgTypes, ' | ')}) => void`,
+      `(...[cellId, cell]: ${join(
+        mapCellSchema((cellId, type) => `[cellId: '${cellId}', cell: ${type}]`),
+        ' | ',
+      )}) => void`,
       getCallbackDoc(`a Cell Id and value from a Row in ${tableDoc}`),
     );
     updateType(
