@@ -1,6 +1,6 @@
 import {BOOLEAN, DEFAULT, TYPE} from '../common/strings';
 import {Cell, Schema} from '../store.d';
-import {IdMap, mapForEach, mapNew, mapSet} from '../common/map';
+import {IdMap, mapEnsure, mapForEach, mapNew, mapSet} from '../common/map';
 import {camel, comment, getCodeFunctions, join, snake} from './code';
 import {isString, isUndefined} from '../common/other';
 import {objIsEmpty, objMap} from '../common/obj';
@@ -58,12 +58,7 @@ export const getStoreApi = (
   const storeInstance = camel(storeType);
   const returnStore = `return ${storeInstance};`;
 
-  const tablesTypes: string[] = [];
-  const tableIdTypes: string[] = [];
-  const tableCallbackArgTypes: string[] = [];
-  const getCellChangeArgTypes: string[] = [];
   const cellListenerArgTypes: string[] = [];
-  const allCellIdType: string[] = [];
   const schemaLines: string[] = [];
 
   const storeListener = (
@@ -243,303 +238,335 @@ export const getStoreApi = (
 
   const mapCellTypes: IdMap<string> = mapNew();
 
-  objMap(schema, (cellSchemas, tableId) => {
-    const mapCellSchema = <Return>(
-      callback: (
-        cellId: Id,
-        type: 'string' | 'number' | 'boolean',
-        defaultValue: Cell | undefined,
-        CELL_ID: string,
-      ) => Return,
-    ) =>
-      objMap(cellSchemas, (cellSchema, cellId) =>
-        callback(
-          cellId,
-          cellSchema[TYPE],
-          cellSchema[DEFAULT],
-          addConstant(snake(cellId), `'${cellId}'`),
-        ),
-      );
-
-    const table = camel(tableId, 1);
-    const TABLE_ID = addConstant(snake(tableId), `'${tableId}'`);
-
-    const tableDoc = `the '${tableId}' Table`;
-    const rowDoc = `${THE_SPECIFIED_ROW} in ${tableDoc}`;
-    const tableContentDoc = `${THE_CONTENT_OF} ${tableDoc}`;
-    const getTableContentDoc = (verb = 0) =>
-      `${getVerb(verb)} ${THE_CONTENT_OF} ${tableDoc}`;
-    const getRowContentDoc = (verb = 0) =>
-      `${getVerb(verb)} ${THE_CONTENT_OF} ${rowDoc}`;
-    const getRowTypeDoc = (set = 0) =>
-      `${REPRESENTS} a Row when ${set ? 's' : 'g'}etting ${tableContentDoc}`;
-
-    const tableType = addType(
-      `${table}Table`,
-      `{[rowId: Id]: ${table}Row}`,
-      `${REPRESENTS} ${tableDoc}`,
-    );
-    const rowType = addType(`${table}Row`);
-    const rowWhenSetType = addType(`${table}RowWhenSet`);
-    const cellIdType = addType(`${table}CellId`);
-    const cellCallbackType = addType(`${table}CellCallback`);
-    const rowCallbackType = addType(`${table}RowCallback`);
-
-    addImport(
-      1,
-      `./${moduleName}.d`,
-      tableType,
-      rowType,
-      rowWhenSetType,
-      cellIdType,
-      cellCallbackType,
-      rowCallbackType,
-    );
-
-    addMethod(
-      `has${table}Table`,
-      '',
-      BOOLEAN,
-      storeMethod('hasTable', TABLE_ID),
-      getHasDoc(tableDoc),
-    );
-    addMethod(
-      `get${table}Table`,
-      '',
-      tableType,
-      storeMethod('getTable', TABLE_ID, tableType),
-      getTableContentDoc(),
-    );
-    addMethod(
-      `set${table}Table`,
-      `table: ${tableType}`,
-      storeType,
-      fluentStoreMethod('setTable', `${TABLE_ID}, table`),
-      getTableContentDoc(1),
-    );
-    addMethod(
-      `del${table}Table`,
-      '',
-      storeType,
-      fluentStoreMethod('delTable', TABLE_ID),
-      getTableContentDoc(3),
-    );
-    addMethod(
-      `get${table}RowIds`,
-      '',
-      'Ids',
-      storeMethod('getRowIds', TABLE_ID),
-      getIdsDoc('Row', tableDoc),
-    );
-    addMethod(
-      `get${table}SortedRowIds`,
-      `cellId?: ${cellIdType}, descending?: boolean, ` +
-        'offset?: number, limit?: number',
-      'Ids',
-      storeMethod(
-        'getSortedRowIds',
-        `${TABLE_ID}, cellId, descending, offset, limit`,
-      ),
-      getIdsDoc('Row', tableDoc, 1),
-    );
-    addMethod(
-      `forEach${table}Row`,
-      `rowCallback: ${rowCallbackType}`,
-      'void',
-      storeMethod('forEachRow', `${TABLE_ID}, rowCallback as any`),
-      getForEachDoc('Row', tableDoc),
-    );
-
-    addMethod(
-      `has${table}Row`,
-      'rowId: Id',
-      BOOLEAN,
-      storeMethod('hasRow', `${TABLE_ID}, rowId`),
-      getHasDoc(THE_SPECIFIED_ROW, tableDoc),
-    );
-    addMethod(
-      `get${table}Row`,
-      'rowId: Id',
-      rowType,
-      storeMethod('getRow', `${TABLE_ID}, rowId`, rowType),
-      getRowContentDoc(),
-    );
-    addMethod(
-      `set${table}Row`,
-      `rowId: Id, row: ${rowWhenSetType}`,
-      storeType,
-      fluentStoreMethod('setRow', `${TABLE_ID}, rowId, row`),
-      getRowContentDoc(1),
-    );
-    addMethod(
-      `add${table}Row`,
-      `row: ${rowWhenSetType}`,
-      'Id | undefined',
-      storeMethod('addRow', `${TABLE_ID}, row`),
-      `Adds a new Row to ${tableDoc}`,
-    );
-    addMethod(
-      `set${table}PartialRow`,
-      `rowId: Id, partialRow: ${rowWhenSetType}`,
-      storeType,
-      fluentStoreMethod('setPartialRow', `${TABLE_ID}, rowId, partialRow`),
-      getRowContentDoc(2),
-    );
-    addMethod(
-      `del${table}Row`,
-      `rowId: Id`,
-      storeType,
-      fluentStoreMethod('delRow', `${TABLE_ID}, rowId`),
-      getRowContentDoc(3),
-    );
-    addMethod(
-      `get${table}CellIds`,
-      'rowId: Id',
-      `${cellIdType}[]`,
-      storeMethod('getCellIds', `${TABLE_ID}, rowId`, `${cellIdType}[]`),
-      getIdsDoc('Cell', rowDoc),
-    );
-    addMethod(
-      `forEach${table}Cell`,
-      `rowId: Id, cellCallback: ${cellCallbackType}`,
-      'void',
-      storeMethod('forEachCell', `${TABLE_ID}, rowId, cellCallback as any`),
-      getForEachDoc('Cell', rowDoc),
-    );
-
-    arrayPush(
-      schemaLines,
-      `[${TABLE_ID}]: {`,
-      ...mapCellSchema(
-        (_, type, defaultValue, CELL_ID) =>
-          `[${CELL_ID}]: {[${TYPE2}]: ${addConstant(snake(type), `'${type}'`)}${
-            isUndefined(defaultValue)
-              ? ''
-              : `, [${DEFAULT2}]: ${
-                  isString(defaultValue)
-                    ? addConstant(snake(defaultValue), `'${defaultValue}'`)
-                    : defaultValue
-                }`
-          }},`,
-      ),
-      `},`,
-    );
-
-    arrayPush(
-      cellListenerArgTypes,
-      ...mapCellSchema(
-        (cellId, type) =>
-          `[${storeInstance}: ${storeType}, tableId: '${tableId}', ` +
-          `rowId: Id, cellId: '${cellId}', newCell: ${type} | undefined, ` +
-          `oldCell: ${type} | undefined, getCellChange: ${getCellChangeType} ` +
-          '| undefined]',
-      ),
-    );
-
-    mapCellSchema((cellId, type, defaultValue, CELL_ID) => {
-      const cell = camel(cellId, 1);
-      const cellDoc = `the '${cellId}' Cell`;
-      const getCellContentDoc = (verb = 0) =>
-        `${getVerb(verb)} ${cellDoc} for ${rowDoc}`;
-
-      const mapCellType = `Map${camel(type, 1)}`;
-      mapSet(mapCellTypes, type, mapCellType);
-
-      addMethod(
-        `has${table}${cell}Cell`,
-        'rowId: Id',
-        BOOLEAN,
-        storeMethod('hasCell', `${TABLE_ID}, rowId, ${CELL_ID}`),
-        getHasDoc(cellDoc, rowDoc),
-      );
-      const returnCellType = `${type}${
-        isUndefined(defaultValue) ? ' | undefined' : ''
-      }`;
-      addMethod(
-        `get${table}${cell}Cell`,
-        'rowId: Id',
-        returnCellType,
-        storeMethod(
-          'getCell',
-          `${TABLE_ID}, rowId, ${CELL_ID}`,
-          returnCellType,
-        ),
-        getCellContentDoc(),
-      );
-      addMethod(
-        `set${table}${cell}Cell`,
-        `rowId: Id, cell: ${type} | ${mapCellType}`,
-        storeType,
-        fluentStoreMethod(
-          'setCell',
-          `${TABLE_ID}, rowId, ${CELL_ID}, cell as any`,
-        ),
-        getCellContentDoc(1),
-      );
-      addMethod(
-        `del${table}${cell}Cell`,
-        `rowId: Id`,
-        storeType,
-        fluentStoreMethod('delCell', `${TABLE_ID}, rowId, ${CELL_ID}`),
-        getCellContentDoc(3),
+  type TableTypes = [string, string, string, string, string, string];
+  const tableTypes: IdMap<TableTypes> = mapNew();
+  const mapTableSchema = <Return>(
+    callback: (
+      tableId: Id,
+      tableTypes: TableTypes,
+      tableName: string,
+      TABLE_ID: string,
+    ) => Return,
+  ) =>
+    objMap(schema, (_, tableId) => {
+      const table = camel(tableId, 1);
+      return callback(
+        tableId,
+        mapEnsure(tableTypes, tableId, () => [
+          addType(
+            `${table}Table`,
+            `{[rowId: Id]: ${table}Row}`,
+            `${REPRESENTS} the '${tableId}' Table`,
+          ),
+          addType(`${table}Row`),
+          addType(`${table}RowWhenSet`),
+          addType(`${table}CellId`),
+          addType(`${table}CellCallback`),
+          addType(`${table}RowCallback`),
+        ]),
+        table,
+        addConstant(snake(tableId), `'${tableId}'`),
       );
     });
 
-    arrayPush(tablesTypes, `'${tableId}'?: ${tableType};`);
-    arrayPush(tableIdTypes, `'${tableId}'`);
-    arrayPush(
-      tableCallbackArgTypes,
-      `[tableId: '${tableId}', ` +
-        `forEachRow: (rowCallback: ${rowCallbackType}) => void]`,
-    );
-    arrayPush(
-      getCellChangeArgTypes,
-      `[tableId: '${tableId}', rowId: Id, cellId: ${cellIdType}]`,
-    );
-    arrayPush(allCellIdType, cellIdType);
-
-    updateType(
-      rowType,
-      `{${join(
-        mapCellSchema(
-          (cellId, type, defaultValue) =>
-            `'${cellId}'${isUndefined(defaultValue) ? '?' : ''}: ${type};`,
-        ),
-        ' ',
-      )}}`,
-      getRowTypeDoc(),
-    );
-    updateType(
-      rowWhenSetType,
-      `{${join(
-        mapCellSchema((cellId, type) => `'${cellId}'?: ${type};`),
-        ' ',
-      )}}`,
-      getRowTypeDoc(1),
-    );
-    updateType(
-      cellIdType,
-      join(
-        mapCellSchema((cellId) => `'${cellId}'`),
-        ' | ',
+  const mapCellSchema = <Return>(
+    tableId: Id,
+    callback: (
+      cellId: Id,
+      type: 'string' | 'number' | 'boolean',
+      defaultValue: Cell | undefined,
+      CELL_ID: string,
+    ) => Return,
+  ) =>
+    objMap(schema[tableId], (cellSchema, cellId) =>
+      callback(
+        cellId,
+        cellSchema[TYPE],
+        cellSchema[DEFAULT],
+        addConstant(snake(cellId), `'${cellId}'`),
       ),
-      `A Cell Id for ${tableDoc}`,
     );
-    updateType(
-      cellCallbackType,
-      `(...[cellId, cell]: ${join(
-        mapCellSchema((cellId, type) => `[cellId: '${cellId}', cell: ${type}]`),
-        ' | ',
-      )}) => void`,
-      getCallbackDoc(`a Cell Id and value from a Row in ${tableDoc}`),
+
+  mapTableSchema((tableId, _, __, TABLE_ID) => {
+    arrayPush(
+      schemaLines,
+      ...[
+        `[${TABLE_ID}]: {`,
+        ...mapCellSchema(
+          tableId,
+          (_, type, defaultValue, CELL_ID) =>
+            `[${CELL_ID}]: {[${TYPE2}]: ${addConstant(
+              snake(type),
+              `'${type}'`,
+            )}${
+              isUndefined(defaultValue)
+                ? ''
+                : `, [${DEFAULT2}]: ${
+                    isString(defaultValue)
+                      ? addConstant(snake(defaultValue), `'${defaultValue}'`)
+                      : defaultValue
+                  }`
+            }},`,
+        ),
+        `},`,
+      ],
     );
-    updateType(
-      rowCallbackType,
-      `(rowId: Id, ` +
-        `forEachCell: (cellCallback: ${cellCallbackType}) => void) => void`,
-      getCallbackDoc(`a Row Id from ${tableDoc}, and a Cell iterator`),
+    arrayPush(
+      cellListenerArgTypes,
+      ...mapCellSchema(
+        tableId,
+        (cellId, type) =>
+          `[${storeInstance}: ${storeType}, tableId: '${tableId}', ` +
+          `rowId: Id, cellId: '${cellId}', newCell: ${type} | undefined, ` +
+          `oldCell: ${type} | undefined, ` +
+          `getCellChange: ${getCellChangeType} ` +
+          '| undefined]',
+      ),
     );
   });
+
+  mapTableSchema(
+    (
+      tableId,
+      [
+        tableType,
+        rowType,
+        rowWhenSetType,
+        cellIdType,
+        cellCallbackType,
+        rowCallbackType,
+      ],
+      tableName,
+      TABLE_ID,
+    ) => {
+      const tableDoc = `the '${tableId}' Table`;
+      const rowDoc = `${THE_SPECIFIED_ROW} in ${tableDoc}`;
+      const tableContentDoc = `${THE_CONTENT_OF} ${tableDoc}`;
+      const getTableContentDoc = (verb = 0) =>
+        `${getVerb(verb)} ${THE_CONTENT_OF} ${tableDoc}`;
+      const getRowContentDoc = (verb = 0) =>
+        `${getVerb(verb)} ${THE_CONTENT_OF} ${rowDoc}`;
+      const getRowTypeDoc = (set = 0) =>
+        `${REPRESENTS} a Row when ${set ? 's' : 'g'}etting ${tableContentDoc}`;
+
+      addImport(
+        1,
+        `./${moduleName}.d`,
+        tableType,
+        rowType,
+        rowWhenSetType,
+        cellIdType,
+        cellCallbackType,
+        rowCallbackType,
+      );
+
+      addMethod(
+        `has${tableName}Table`,
+        '',
+        BOOLEAN,
+        storeMethod('hasTable', TABLE_ID),
+        getHasDoc(tableDoc),
+      );
+      addMethod(
+        `get${tableName}Table`,
+        '',
+        tableType,
+        storeMethod('getTable', TABLE_ID, tableType),
+        getTableContentDoc(),
+      );
+      addMethod(
+        `set${tableName}Table`,
+        `table: ${tableType}`,
+        storeType,
+        fluentStoreMethod('setTable', `${TABLE_ID}, table`),
+        getTableContentDoc(1),
+      );
+      addMethod(
+        `del${tableName}Table`,
+        '',
+        storeType,
+        fluentStoreMethod('delTable', TABLE_ID),
+        getTableContentDoc(3),
+      );
+      addMethod(
+        `get${tableName}RowIds`,
+        '',
+        'Ids',
+        storeMethod('getRowIds', TABLE_ID),
+        getIdsDoc('Row', tableDoc),
+      );
+      addMethod(
+        `get${tableName}SortedRowIds`,
+        `cellId?: ${cellIdType}, descending?: boolean, ` +
+          'offset?: number, limit?: number',
+        'Ids',
+        storeMethod(
+          'getSortedRowIds',
+          `${TABLE_ID}, cellId, descending, offset, limit`,
+        ),
+        getIdsDoc('Row', tableDoc, 1),
+      );
+      addMethod(
+        `forEach${tableName}Row`,
+        `rowCallback: ${rowCallbackType}`,
+        'void',
+        storeMethod('forEachRow', `${TABLE_ID}, rowCallback as any`),
+        getForEachDoc('Row', tableDoc),
+      );
+
+      addMethod(
+        `has${tableName}Row`,
+        'rowId: Id',
+        BOOLEAN,
+        storeMethod('hasRow', `${TABLE_ID}, rowId`),
+        getHasDoc(THE_SPECIFIED_ROW, tableDoc),
+      );
+      addMethod(
+        `get${tableName}Row`,
+        'rowId: Id',
+        rowType,
+        storeMethod('getRow', `${TABLE_ID}, rowId`, rowType),
+        getRowContentDoc(),
+      );
+      addMethod(
+        `set${tableName}Row`,
+        `rowId: Id, row: ${rowWhenSetType}`,
+        storeType,
+        fluentStoreMethod('setRow', `${TABLE_ID}, rowId, row`),
+        getRowContentDoc(1),
+      );
+      addMethod(
+        `add${tableName}Row`,
+        `row: ${rowWhenSetType}`,
+        'Id | undefined',
+        storeMethod('addRow', `${TABLE_ID}, row`),
+        `Adds a new Row to ${tableDoc}`,
+      );
+      addMethod(
+        `set${tableName}PartialRow`,
+        `rowId: Id, partialRow: ${rowWhenSetType}`,
+        storeType,
+        fluentStoreMethod('setPartialRow', `${TABLE_ID}, rowId, partialRow`),
+        getRowContentDoc(2),
+      );
+      addMethod(
+        `del${tableName}Row`,
+        `rowId: Id`,
+        storeType,
+        fluentStoreMethod('delRow', `${TABLE_ID}, rowId`),
+        getRowContentDoc(3),
+      );
+      addMethod(
+        `get${tableName}CellIds`,
+        'rowId: Id',
+        `${cellIdType}[]`,
+        storeMethod('getCellIds', `${TABLE_ID}, rowId`, `${cellIdType}[]`),
+        getIdsDoc('Cell', rowDoc),
+      );
+      addMethod(
+        `forEach${tableName}Cell`,
+        `rowId: Id, cellCallback: ${cellCallbackType}`,
+        'void',
+        storeMethod('forEachCell', `${TABLE_ID}, rowId, cellCallback as any`),
+        getForEachDoc('Cell', rowDoc),
+      );
+
+      mapCellSchema(tableId, (cellId, type, defaultValue, CELL_ID) => {
+        const cell = camel(cellId, 1);
+        const cellDoc = `the '${cellId}' Cell`;
+        const getCellContentDoc = (verb = 0) =>
+          `${getVerb(verb)} ${cellDoc} for ${rowDoc}`;
+
+        const mapCellType = `Map${camel(type, 1)}`;
+        mapSet(mapCellTypes, type, mapCellType);
+
+        addMethod(
+          `has${tableName}${cell}Cell`,
+          'rowId: Id',
+          BOOLEAN,
+          storeMethod('hasCell', `${TABLE_ID}, rowId, ${CELL_ID}`),
+          getHasDoc(cellDoc, rowDoc),
+        );
+        const returnCellType = `${type}${
+          isUndefined(defaultValue) ? ' | undefined' : ''
+        }`;
+        addMethod(
+          `get${tableName}${cell}Cell`,
+          'rowId: Id',
+          returnCellType,
+          storeMethod(
+            'getCell',
+            `${TABLE_ID}, rowId, ${CELL_ID}`,
+            returnCellType,
+          ),
+          getCellContentDoc(),
+        );
+        addMethod(
+          `set${tableName}${cell}Cell`,
+          `rowId: Id, cell: ${type} | ${mapCellType}`,
+          storeType,
+          fluentStoreMethod(
+            'setCell',
+            `${TABLE_ID}, rowId, ${CELL_ID}, cell as any`,
+          ),
+          getCellContentDoc(1),
+        );
+        addMethod(
+          `del${tableName}${cell}Cell`,
+          `rowId: Id`,
+          storeType,
+          fluentStoreMethod('delCell', `${TABLE_ID}, rowId, ${CELL_ID}`),
+          getCellContentDoc(3),
+        );
+      });
+
+      updateType(
+        rowType,
+        `{${join(
+          mapCellSchema(
+            tableId,
+            (cellId, type, defaultValue) =>
+              `'${cellId}'${isUndefined(defaultValue) ? '?' : ''}: ${type};`,
+          ),
+          ' ',
+        )}}`,
+        getRowTypeDoc(),
+      );
+      updateType(
+        rowWhenSetType,
+        `{${join(
+          mapCellSchema(tableId, (cellId, type) => `'${cellId}'?: ${type};`),
+          ' ',
+        )}}`,
+        getRowTypeDoc(1),
+      );
+      updateType(
+        cellIdType,
+        join(
+          mapCellSchema(tableId, (cellId) => `'${cellId}'`),
+          ' | ',
+        ),
+        `A Cell Id for ${tableDoc}`,
+      );
+      updateType(
+        cellCallbackType,
+        `(...[cellId, cell]: ${join(
+          mapCellSchema(
+            tableId,
+            (cellId, type) => `[cellId: '${cellId}', cell: ${type}]`,
+          ),
+          ' | ',
+        )}) => void`,
+        getCallbackDoc(`a Cell Id and value from a Row in ${tableDoc}`),
+      );
+      updateType(
+        rowCallbackType,
+        `(rowId: Id, ` +
+          `forEachCell: (cellCallback: ${cellCallbackType}) => void) => void`,
+        getCallbackDoc(`a Row Id from ${tableDoc}, and a Cell iterator`),
+      );
+    },
+  );
 
   addMethod(
     'getJson',
@@ -631,7 +658,7 @@ export const getStoreApi = (
   addMethod(
     'addCellListener',
     `tableId: ${tableIdType} | null, rowId: IdOrNull, cellId: ${join(
-      allCellIdType,
+      mapTableSchema((_, tableTypes) => tableTypes[3]),
       ' | ',
     )} | null, listener: ${cellListenerType}, mutator?: boolean`,
     'Id',
@@ -686,18 +713,30 @@ export const getStoreApi = (
 
   updateType(
     tablesType,
-    `{${join(tablesTypes, ' ')}}`,
+    `{${join(
+      mapTableSchema(
+        (tableId, tableTypes) => `'${tableId}'?: ${tableTypes[0]};`,
+      ),
+      ' ',
+    )}}`,
     `${REPRESENTS} ${THE_CONTENT_OF_THE_STORE}`,
   );
   updateType(
     tableIdType,
-    join(tableIdTypes, ' | '),
+    join(
+      mapTableSchema((tableId) => `'${tableId}'`),
+      ' | ',
+    ),
     `A Table Id in ${THE_STORE}`,
   );
   updateType(
     tableCallbackType,
     `(...[tableId, rowCallback]: ${join(
-      tableCallbackArgTypes,
+      mapTableSchema(
+        (tableId, tableTypes) =>
+          `[tableId: '${tableId}', ` +
+          `forEachRow: (rowCallback: ${tableTypes[5]}) => void]`,
+      ),
       ' | ',
     )}) => void`,
     getCallbackDoc('a Table Id, and a Row iterator'),
@@ -705,7 +744,10 @@ export const getStoreApi = (
   updateType(
     getCellChangeType,
     `(...[tableId, rowId, cellId]: ${join(
-      getCellChangeArgTypes,
+      mapTableSchema(
+        (tableId, tableTypes) =>
+          `[tableId: '${tableId}', rowId: Id, cellId: ${tableTypes[3]}]`,
+      ),
       ' | ',
     )}) => CellChange`,
     'A function that returns information about any ' +
