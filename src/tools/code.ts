@@ -56,7 +56,9 @@ export const formatJsDoc = (file: string): string =>
 
 export const length = (str: string) => str.length;
 
-export const join = (str: string[], sep = EMPTY_STRING) => str.join(sep);
+export const join = (array: string[], sep = EMPTY_STRING) => array.join(sep);
+
+export const flat = (array: any[]) => array.flat(1e3);
 
 export const camel = (str: string, firstCap = 0) =>
   join(
@@ -77,7 +79,6 @@ export const getCodeFunctions = (): [
   (...lines: LINE_TREE) => string,
   (location: 0 | 1, source: string, ...items: string[]) => void,
   (name: Id, body?: LINE, doc?: string) => Id,
-  (name: Id, body: LINE, doc: string) => void,
   (
     name: Id,
     parameters: LINE,
@@ -106,15 +107,7 @@ export const getCodeFunctions = (): [
   > = mapNew();
   const constants: IdMap<LINE_OR_LINE_TREE> = mapNew();
 
-  const build = (...lines: LINE_TREE): string => {
-    const allLines: string[] = [];
-    const handleLine = (line: LINE_OR_LINE_TREE): any =>
-      isArray(line)
-        ? arrayForEach(line, handleLine)
-        : arrayPush(allLines, line);
-    arrayForEach(lines, handleLine);
-    return allLines.join('\n');
-  };
+  const build = (...lines: LINE_TREE): string => join(flat(lines), '\n');
 
   const addImport = (location: 0 | 1, source: string, ...items: string[]) =>
     arrayForEach(items, (item) =>
@@ -123,9 +116,6 @@ export const getCodeFunctions = (): [
 
   const addType = (name: Id, body = '', doc = ''): Id =>
     mapUnique(types, name, [body, doc]);
-
-  const updateType = (name: Id, body: LINE, doc: string): any =>
-    mapSet(types, name, [body, doc]);
 
   const addMethod = (
     name: Id,
@@ -197,7 +187,6 @@ export const getCodeFunctions = (): [
     build,
     addImport,
     addType,
-    updateType,
     addMethod,
     addFunction,
     addConstant,
