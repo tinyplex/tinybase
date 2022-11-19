@@ -1,4 +1,4 @@
-import {arrayForEach, arrayIsEmpty} from './array';
+import {arrayIsEmpty, arrayMap} from './array';
 import {ifNotUndefined, isInstanceOf, isUndefined} from './other';
 import {Id} from '../common.d';
 
@@ -24,10 +24,10 @@ export const objHas = (obj: IdObj<unknown> | undefined, id: Id): boolean =>
 
 export const objDel = (obj: IdObj<unknown>, id: Id): boolean => delete obj[id];
 
-export const objForEach = <Value>(
+export const objMap = <Value, Return>(
   obj: IdObj<Value>,
-  cb: (value: Value, id: string) => void,
-): void => arrayForEach(object.entries(obj), ([id, value]) => cb(value, id));
+  cb: (value: Value, id: string) => Return,
+): Return[] => arrayMap(object.entries(obj), ([id, value]) => cb(value, id));
 
 export const objIsEmpty = <Value>(obj: IdObj<Value>): boolean =>
   arrayIsEmpty(objIds(obj));

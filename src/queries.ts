@@ -71,7 +71,7 @@ import {
   isFunction,
   isUndefined,
 } from './common/other';
-import {objForEach, objFreeze} from './common/obj';
+import {objFreeze, objMap} from './common/obj';
 
 type StoreWithCreateMethod = Store & {createStore: () => Store};
 type SelectClause = (getTableCell: GetTableCell, rowId: Id) => CellOrUndefined;
@@ -593,7 +593,7 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
       getListenerStats,
     };
 
-    objForEach(
+    objMap(
       {
         [TABLE]: [1, 1],
         [ROW_IDS]: [0, 1],
