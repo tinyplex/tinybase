@@ -66,12 +66,12 @@ import {
   IdObj2,
   isObject,
   objDel,
-  objForEach,
   objFreeze,
   objFrozen,
   objHas,
   objIds,
   objIsEmpty,
+  objMap,
 } from './common/obj';
 import {IdSet, IdSet2, IdSet3, IdSet4, setAdd, setNew} from './common/set';
 import {IdSetNode, getListenerFunctions} from './common/listeners';
@@ -134,7 +134,7 @@ const validate = (
     onInvalidObj?.();
     return false;
   }
-  objForEach(obj, (child, id) => {
+  objMap(obj, (child, id) => {
     if (!validateChild(child, id)) {
       objDel(obj, id);
     }
@@ -769,7 +769,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       (tableId, rowId) => {
         if (validateRow(tableId, rowId, partialRow, 1)) {
           const table = getOrCreateTable(tableId);
-          objForEach(partialRow, (cell, cellId) =>
+          objMap(partialRow, (cell, cellId) =>
             setCellIntoDefaultRow(tableId, table, rowId, cellId, cell),
           );
         }
@@ -1123,7 +1123,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     createStore,
   };
 
-  objForEach(
+  objMap(
     {
       [TABLES]: [0, tablesListeners],
       [TABLE_IDS]: [0, tableIdsListeners],

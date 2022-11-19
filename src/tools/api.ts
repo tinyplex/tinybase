@@ -1,11 +1,12 @@
 import {BOOLEAN, DEFAULT, TYPE} from '../common/strings';
+import {Cell, Schema} from '../store.d';
 import {IdMap, mapForEach, mapNew, mapSet} from '../common/map';
 import {camel, comment, getCodeFunctions, join, snake} from './code';
-import {objForEach, objHas, objIsEmpty} from '../common/obj';
-import {Schema} from '../store.d';
+import {isString, isUndefined} from '../common/other';
+import {objIsEmpty, objMap} from '../common/obj';
+import {Id} from '../common.d';
 import {arrayPush} from '../common/array';
 import {collValues} from '../common/coll';
-import {isString} from '../common/other';
 import {pairNew} from '../common/pairs';
 
 const THE_STORE = 'the Store';
@@ -242,7 +243,7 @@ export const getStoreApi = (
 
   const mapCellTypes: IdMap<string> = mapNew();
 
-  objForEach(schema, (cellSchemas, tableId) => {
+  objMap(schema, (cellSchemas, tableId) => {
     const table = camel(tableId, 1);
     const TABLE_ID = addConstant(snake(tableId), `'${tableId}'`);
 
@@ -395,12 +396,27 @@ export const getStoreApi = (
     );
 
     arrayPush(schemaLines, `[${TABLE_ID}]: {`);
-    objForEach(cellSchemas, (cellSchema, cellId) => {
+
+    const forEachCellSchema = (
+      callback: (
+        cellId: Id,
+        CELL_ID: string,
+        type: 'string' | 'number' | 'boolean',
+        defaultValue: Cell | undefined,
+      ) => any,
+    ) =>
+      objMap(cellSchemas, (cellSchema, cellId) =>
+        callback(
+          cellId,
+          addConstant(snake(cellId), `'${cellId}'`),
+          cellSchema[TYPE],
+          cellSchema[DEFAULT],
+        ),
+      );
+
+    forEachCellSchema((cellId, CELL_ID, type, defaultValue) => {
       const cell = camel(cellId, 1);
-      const CELL_ID = addConstant(snake(cellId), `'${cellId}'`);
-      const type = cellSchema[TYPE];
-      const defaulted = objHas(cellSchema, DEFAULT);
-      const defaultValue = cellSchema[DEFAULT];
+      const defaulted = !isUndefined(defaultValue);
       const cellDoc = `the '${cellId}' Cell`;
       const getCellContentDoc = (verb = 0) =>
         `${getVerb(verb)} ${cellDoc} for ${rowDoc}`;
