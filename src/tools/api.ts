@@ -1,3 +1,29 @@
+import {
+  A_FUNCTION_FOR,
+  EXPORT,
+  LISTENER,
+  REGISTERS_A_LISTENER,
+  REPRESENTS,
+  THE_CONTENT_OF_THE_STORE,
+  THE_END_OF_THE_TRANSACTION,
+  THE_SPECIFIED_ROW,
+  THE_STORE,
+  getCallbackDoc,
+  getCellContentDoc,
+  getCellDoc,
+  getForEachDoc,
+  getHasDoc,
+  getIdsDoc,
+  getListenerDoc,
+  getListenerTypeDoc,
+  getRowContentDoc,
+  getRowDoc,
+  getRowTypeDoc,
+  getStoreContentDoc,
+  getTableContentDoc,
+  getTableDoc,
+  verbs,
+} from './docs';
 import {BOOLEAN, DEFAULT, TYPE} from '../common/strings';
 import {Cell, Schema} from '../store.d';
 import {IdMap, mapEnsure, mapForEach, mapNew, mapSet} from '../common/map';
@@ -10,46 +36,29 @@ import {pairNew} from '../common/pairs';
 
 type TableTypes = [string, string, string, string, string, string];
 
-const THE_STORE = 'the Store';
-const REPRESENTS = 'Represents';
-const THE_CONTENT_OF = 'the content of';
-const THE_CONTENT_OF_THE_STORE = `${THE_CONTENT_OF} ${THE_STORE}`;
-const THE_SPECIFIED_ROW = 'the specified Row';
-const REGISTERS_A_LISTENER = 'Registers a listener that will be called';
+const COMMON_IMPORTS = [
+  'ChangedCells',
+  'Id',
+  'IdOrNull',
+  'Ids',
+  'InvalidCells',
+  'Json',
+  'Store',
+];
 
 const storeMethod = (method: string, parameters = '', cast = '') =>
   `store.${method}(${parameters})${cast ? ` as ${cast}` : ''}`;
 const fluentStoreMethod = (method: string, parameters = '') =>
   `fluent(() => ${storeMethod(method, parameters)})`;
 
-const getRowTypeDoc = (tableId: Id, set = 0) =>
-  `${REPRESENTS} a Row when ${
-    set ? 's' : 'g'
-  }etting ${THE_CONTENT_OF} the '${tableId}' Table`;
-const getIdsDoc = (idsNoun: string, parentNoun: string, sorted = 0) =>
-  `Gets ${
-    sorted ? 'sorted, paginated' : 'the'
-  } Ids of the ${idsNoun}s in ${parentNoun}`;
-const getForEachDoc = (childNoun: string, parentNoun: string) =>
-  `Calls a function for each ${childNoun} in ${parentNoun}`;
-const getHasDoc = (childNoun: string, parentNoun = THE_STORE) =>
-  `Gets whether ${childNoun} exists in ${parentNoun}`;
-const getCallbackDoc = (takes: string) => `A function that takes ${takes}`;
-const getListenerDoc = (
-  childNoun: string,
-  parentNoun: string,
-  pluralChild = 0,
+const storeListener = (
+  method: string,
+  beforeParameters = '',
+  afterParameters = '',
 ) =>
-  `${REGISTERS_A_LISTENER} whenever ${childNoun} in ${parentNoun} change` +
-  (pluralChild ? '' : 's');
-const getVerb = (verb = 0) =>
-  verb == 1
-    ? 'Sets'
-    : verb == 2
-    ? 'Sets part of'
-    : verb == 3
-    ? 'Deletes'
-    : 'Gets';
+  `store.${method}(${
+    beforeParameters ? `${beforeParameters}, ` : ''
+  }proxy(${LISTENER})${afterParameters ? `, ${afterParameters}` : ''})`;
 
 export const getStoreApi = (
   schema: Schema,
@@ -58,20 +67,6 @@ export const getStoreApi = (
   if (objIsEmpty(schema)) {
     return pairNew('// store has no inferable schema');
   }
-
-  const moduleName = camel(module);
-  const storeType = camel(module, 1);
-  const storeInstance = camel(storeType);
-  const returnStore = `return ${storeInstance};`;
-
-  const storeListener = (
-    method: string,
-    beforeParameters = '',
-    afterParameters = '',
-  ) =>
-    `store.${method}(${
-      beforeParameters ? `${beforeParameters}, ` : ''
-    }proxy(listener)${afterParameters ? `, ${afterParameters}` : ''})`;
 
   const [
     build,
@@ -86,37 +81,9 @@ export const getStoreApi = (
     getConstants,
   ] = getCodeFunctions();
 
-  addImport(
-    0,
-    'tinybase',
-    'CellChange',
-    'ChangedCells',
-    'Id',
-    'IdOrNull',
-    'Ids',
-    'InvalidCells',
-    'Json',
-    'Store',
-  );
-  addImport(
-    1,
-    'tinybase',
-    'ChangedCells',
-    'Id',
-    'IdOrNull',
-    'Ids',
-    'InvalidCells',
-    'Json',
-    'Store',
-    'createStore',
-  );
-
-  addFunction('fluent', 'actions: () => Store', ['actions();', returnStore]);
-  addFunction(
-    'proxy',
-    `listener: any`,
-    `(_: Store, ...args: any[]) => listener(${storeInstance}, ...args)`,
-  );
+  const moduleDefinition = `./${camel(module)}.d`;
+  const storeType = camel(module, 1);
+  const storeInstance = camel(storeType);
 
   const TYPE2 = addConstant(snake(TYPE), `'${TYPE}'`);
   const DEFAULT2 = addConstant(snake(DEFAULT), `'${DEFAULT}'`);
@@ -208,6 +175,7 @@ export const getStoreApi = (
       type: 'string' | 'number' | 'boolean',
       defaultValue: Cell | undefined,
       CELL_ID: string,
+      cellName: string,
     ) => Return,
   ) =>
     objMap(schema[tableId], (cellSchema, cellId) =>
@@ -216,8 +184,11 @@ export const getStoreApi = (
         cellSchema[TYPE],
         cellSchema[DEFAULT],
         addConstant(snake(cellId), `'${cellId}'`),
+        camel(cellId, 1),
       ),
     );
+
+  // --
 
   const tablesType = addType(
     'Tables',
@@ -258,42 +229,42 @@ export const getStoreApi = (
       ),
       ' | ',
     )}) => CellChange`,
-    'A function that returns information about any ' +
-      `Cell's changes during a transaction`,
+    `${A_FUNCTION_FOR} returning information about any Cell's changes during ` +
+      ' a transaction',
   );
   const tablesListenerType = addType(
     'TablesListener',
     `(${storeInstance}: ${storeType}, ` +
       `getCellChange: ${getCellChangeType} | undefined) => void`,
-    `A function for listening to changes to ${THE_CONTENT_OF_THE_STORE}`,
+    getListenerTypeDoc(1),
   );
   const tableIdsListenerType = addType(
     'TableIdsListener',
     `(${storeInstance}: ${storeType}) => void`,
-    `A function for listening to changes to Table Ids in ${THE_STORE}`,
+    getListenerTypeDoc(2),
   );
   const tableListenerType = addType(
     'TableListener',
     `(${storeInstance}: ${storeType}, tableId: ${tableIdType}, ` +
       `getCellChange: ${getCellChangeType} | undefined) => void`,
-    `A function for listening to changes to a Table in ${THE_STORE}`,
+    getListenerTypeDoc(3),
   );
   const rowIdsListenerType = addType(
     'RowIdsListener',
     `(${storeInstance}: ${storeType}, tableId: ${tableIdType}) => void`,
-    `A function for listening to changes to Row Ids in ${THE_STORE}`,
+    getListenerTypeDoc(4, 3),
   );
   const rowListenerType = addType(
     'RowListener',
     `(${storeInstance}: ${storeType}, tableId: ${tableIdType}, rowId: Id, ` +
       `getCellChange: ${getCellChangeType} | undefined) => void`,
-    `A function for listening to changes to a Row in ${THE_STORE}`,
+    getListenerTypeDoc(5, 3),
   );
   const cellIdsListenerType = addType(
     'CellIdsListener',
     `(${storeInstance}: ${storeType}, tableId: ${tableIdType}, rowId: Id) ` +
       '=> void',
-    `A function for listening to changes to Cell Ids in ${THE_STORE}`,
+    getListenerTypeDoc(6, 5),
   );
   const cellListenerType = addType(
     'CellListener',
@@ -315,41 +286,19 @@ export const getStoreApi = (
         ),
         ' | ',
       )}) => void`,
-    `A function for listening to changes to a Cell in ${THE_STORE}`,
+    getListenerTypeDoc(7, 5),
   );
   const invalidCellListenerType = addType(
     'InvalidCellListener',
     `(${storeInstance}: ${storeType}, tableId: Id, rowId: Id, cellId: Id, ` +
       'invalidCells: any[]) => void;',
-    `A function for listening to invalid Cell changes`,
+    getListenerTypeDoc(8),
   );
   const transactionListenerType = addType(
     'TransactionListener',
     `(${storeInstance}: ${storeType}, cellsTouched: boolean) => void;`,
-    `A function for listening to the completion of a transaction`,
+    `${A_FUNCTION_FOR} listening to the completion of a transaction`,
   );
-
-  addImport(
-    1,
-    `./${moduleName}.d`,
-    storeType,
-    `create${storeType} as create${storeType}Decl`,
-    tablesType,
-    tableIdType,
-    tableCallbackType,
-    tablesListenerType,
-    tableIdsListenerType,
-    tableListenerType,
-    rowIdsListenerType,
-    rowListenerType,
-    cellIdsListenerType,
-    cellListenerType,
-    invalidCellListenerType,
-    transactionListenerType,
-  );
-
-  const getStoreContentDoc = (verb = 0) =>
-    `${getVerb(verb)} ${THE_CONTENT_OF_THE_STORE}`;
 
   addMethod(
     `hasTables`,
@@ -410,16 +359,9 @@ export const getStoreApi = (
       tableName,
       TABLE_ID,
     ) => {
-      const tableDoc = `the '${tableId}' Table`;
-      const rowDoc = `${THE_SPECIFIED_ROW} in ${tableDoc}`;
-      const getTableContentDoc = (verb = 0) =>
-        `${getVerb(verb)} ${THE_CONTENT_OF} ${tableDoc}`;
-      const getRowContentDoc = (verb = 0) =>
-        `${getVerb(verb)} ${THE_CONTENT_OF} ${rowDoc}`;
-
       addImport(
         1,
-        `./${moduleName}.d`,
+        moduleDefinition,
         tableType,
         rowType,
         rowWhenSetType,
@@ -433,35 +375,35 @@ export const getStoreApi = (
         '',
         BOOLEAN,
         storeMethod('hasTable', TABLE_ID),
-        getHasDoc(tableDoc),
+        getHasDoc(getTableDoc(tableId)),
       );
       addMethod(
         `get${tableName}Table`,
         '',
         tableType,
         storeMethod('getTable', TABLE_ID, tableType),
-        getTableContentDoc(),
+        getTableContentDoc(tableId),
       );
       addMethod(
         `set${tableName}Table`,
         `table: ${tableType}`,
         storeType,
         fluentStoreMethod('setTable', `${TABLE_ID}, table`),
-        getTableContentDoc(1),
+        getTableContentDoc(tableId, 1),
       );
       addMethod(
         `del${tableName}Table`,
         '',
         storeType,
         fluentStoreMethod('delTable', TABLE_ID),
-        getTableContentDoc(3),
+        getTableContentDoc(tableId, 3),
       );
       addMethod(
         `get${tableName}RowIds`,
         '',
         'Ids',
         storeMethod('getRowIds', TABLE_ID),
-        getIdsDoc('Row', tableDoc),
+        getIdsDoc('Row', getTableDoc(tableId)),
       );
       addMethod(
         `get${tableName}SortedRowIds`,
@@ -472,14 +414,14 @@ export const getStoreApi = (
           'getSortedRowIds',
           `${TABLE_ID}, cellId, descending, offset, limit`,
         ),
-        getIdsDoc('Row', tableDoc, 1),
+        getIdsDoc('Row', getTableDoc(tableId), 1),
       );
       addMethod(
         `forEach${tableName}Row`,
         `rowCallback: ${rowCallbackType}`,
         'void',
         storeMethod('forEachRow', `${TABLE_ID}, rowCallback as any`),
-        getForEachDoc('Row', tableDoc),
+        getForEachDoc('Row', getTableDoc(tableId)),
       );
 
       addMethod(
@@ -487,106 +429,104 @@ export const getStoreApi = (
         'rowId: Id',
         BOOLEAN,
         storeMethod('hasRow', `${TABLE_ID}, rowId`),
-        getHasDoc(THE_SPECIFIED_ROW, tableDoc),
+        getHasDoc(THE_SPECIFIED_ROW, getTableDoc(tableId)),
       );
       addMethod(
         `get${tableName}Row`,
         'rowId: Id',
         rowType,
         storeMethod('getRow', `${TABLE_ID}, rowId`, rowType),
-        getRowContentDoc(),
+        getRowContentDoc(tableId),
       );
       addMethod(
         `set${tableName}Row`,
         `rowId: Id, row: ${rowWhenSetType}`,
         storeType,
         fluentStoreMethod('setRow', `${TABLE_ID}, rowId, row`),
-        getRowContentDoc(1),
+        getRowContentDoc(tableId, 1),
       );
       addMethod(
         `add${tableName}Row`,
         `row: ${rowWhenSetType}`,
         'Id | undefined',
         storeMethod('addRow', `${TABLE_ID}, row`),
-        `Adds a new Row to ${tableDoc}`,
+        `Adds a new Row to ${getTableDoc(tableId)}`,
       );
       addMethod(
         `set${tableName}PartialRow`,
         `rowId: Id, partialRow: ${rowWhenSetType}`,
         storeType,
         fluentStoreMethod('setPartialRow', `${TABLE_ID}, rowId, partialRow`),
-        getRowContentDoc(2),
+        getRowContentDoc(tableId, 2),
       );
       addMethod(
         `del${tableName}Row`,
         `rowId: Id`,
         storeType,
         fluentStoreMethod('delRow', `${TABLE_ID}, rowId`),
-        getRowContentDoc(3),
+        getRowContentDoc(tableId, 3),
       );
       addMethod(
         `get${tableName}CellIds`,
         'rowId: Id',
         `${cellIdType}[]`,
         storeMethod('getCellIds', `${TABLE_ID}, rowId`, `${cellIdType}[]`),
-        getIdsDoc('Cell', rowDoc),
+        getIdsDoc('Cell', getRowDoc(tableId)),
       );
       addMethod(
         `forEach${tableName}Cell`,
         `rowId: Id, cellCallback: ${cellCallbackType}`,
         'void',
         storeMethod('forEachCell', `${TABLE_ID}, rowId, cellCallback as any`),
-        getForEachDoc('Cell', rowDoc),
+        getForEachDoc('Cell', getRowDoc(tableId)),
       );
 
-      mapCellSchema(tableId, (cellId, type, defaultValue, CELL_ID) => {
-        const cell = camel(cellId, 1);
-        const cellDoc = `the '${cellId}' Cell`;
-        const getCellContentDoc = (verb = 0) =>
-          `${getVerb(verb)} ${cellDoc} for ${rowDoc}`;
+      mapCellSchema(
+        tableId,
+        (cellId, type, defaultValue, CELL_ID, cellName) => {
+          const mapCellType = `Map${camel(type, 1)}`;
+          mapSet(mapCellTypes, type, mapCellType);
 
-        const mapCellType = `Map${camel(type, 1)}`;
-        mapSet(mapCellTypes, type, mapCellType);
-
-        addMethod(
-          `has${tableName}${cell}Cell`,
-          'rowId: Id',
-          BOOLEAN,
-          storeMethod('hasCell', `${TABLE_ID}, rowId, ${CELL_ID}`),
-          getHasDoc(cellDoc, rowDoc),
-        );
-        const returnCellType = `${type}${
-          isUndefined(defaultValue) ? ' | undefined' : ''
-        }`;
-        addMethod(
-          `get${tableName}${cell}Cell`,
-          'rowId: Id',
-          returnCellType,
-          storeMethod(
-            'getCell',
-            `${TABLE_ID}, rowId, ${CELL_ID}`,
+          addMethod(
+            `has${tableName}${cellName}Cell`,
+            'rowId: Id',
+            BOOLEAN,
+            storeMethod('hasCell', `${TABLE_ID}, rowId, ${CELL_ID}`),
+            getHasDoc(getCellDoc(cellId), getRowDoc(tableId)),
+          );
+          const returnCellType = `${type}${
+            isUndefined(defaultValue) ? ' | undefined' : ''
+          }`;
+          addMethod(
+            `get${tableName}${cellName}Cell`,
+            'rowId: Id',
             returnCellType,
-          ),
-          getCellContentDoc(),
-        );
-        addMethod(
-          `set${tableName}${cell}Cell`,
-          `rowId: Id, cell: ${type} | ${mapCellType}`,
-          storeType,
-          fluentStoreMethod(
-            'setCell',
-            `${TABLE_ID}, rowId, ${CELL_ID}, cell as any`,
-          ),
-          getCellContentDoc(1),
-        );
-        addMethod(
-          `del${tableName}${cell}Cell`,
-          `rowId: Id`,
-          storeType,
-          fluentStoreMethod('delCell', `${TABLE_ID}, rowId, ${CELL_ID}`),
-          getCellContentDoc(3),
-        );
-      });
+            storeMethod(
+              'getCell',
+              `${TABLE_ID}, rowId, ${CELL_ID}`,
+              returnCellType,
+            ),
+            getCellContentDoc(tableId, cellId),
+          );
+          addMethod(
+            `set${tableName}${cellName}Cell`,
+            `rowId: Id, cell: ${type} | ${mapCellType}`,
+            storeType,
+            fluentStoreMethod(
+              'setCell',
+              `${TABLE_ID}, rowId, ${CELL_ID}, cell as any`,
+            ),
+            getCellContentDoc(tableId, cellId, 1),
+          );
+          addMethod(
+            `del${tableName}${cellName}Cell`,
+            `rowId: Id`,
+            storeType,
+            fluentStoreMethod('delCell', `${TABLE_ID}, rowId, ${CELL_ID}`),
+            getCellContentDoc(tableId, cellId, 3),
+          );
+        },
+      );
     },
   );
 
@@ -595,14 +535,14 @@ export const getStoreApi = (
     '',
     'Json',
     storeMethod('getJson'),
-    `Gets a a string serialization ${THE_CONTENT_OF_THE_STORE}`,
+    `${verbs[0]} a string serialization ${THE_CONTENT_OF_THE_STORE}`,
   );
   addMethod(
     'setJson',
     'json: Json',
     storeType,
     fluentStoreMethod('setJson', 'json'),
-    `Sets ${THE_CONTENT_OF_THE_STORE} from a serialized string`,
+    `${verbs[1]} ${THE_CONTENT_OF_THE_STORE} from a serialized string`,
   );
 
   addMethod(
@@ -633,21 +573,21 @@ export const getStoreApi = (
 
   addMethod(
     'addTablesListener',
-    `listener: ${tablesListenerType}, mutator?: boolean`,
+    `${LISTENER}: ${tablesListenerType}, mutator?: boolean`,
     'Id',
     storeListener('addTablesListener', '', 'mutator'),
     `${REGISTERS_A_LISTENER} whenever ${THE_CONTENT_OF_THE_STORE} changes`,
   );
   addMethod(
     'addTableIdsListener',
-    `listener: ${tableIdsListenerType}, mutator?: boolean`,
+    `${LISTENER}: ${tableIdsListenerType}, mutator?: boolean`,
     'Id',
     storeListener('addTableIdsListener', '', 'mutator'),
     getListenerDoc('the Table Ids', THE_STORE, 1),
   );
   addMethod(
     'addTableListener',
-    `tableId: ${tableIdType} | null, listener: ${tableListenerType}, ` +
+    `tableId: ${tableIdType} | null, ${LISTENER}: ${tableListenerType}, ` +
       'mutator?: boolean',
     'Id',
     storeListener('addTableListener', 'tableId', 'mutator'),
@@ -655,7 +595,7 @@ export const getStoreApi = (
   );
   addMethod(
     'addRowIdsListener',
-    `tableId: ${tableIdType} | null, listener: ${rowIdsListenerType}, ` +
+    `tableId: ${tableIdType} | null, ${LISTENER}: ${rowIdsListenerType}, ` +
       'mutator?: boolean',
     'Id',
     storeListener('addRowIdsListener', 'tableId', 'mutator'),
@@ -664,7 +604,7 @@ export const getStoreApi = (
   addMethod(
     'addRowListener',
     `tableId: ${tableIdType} | null, rowId: IdOrNull, ` +
-      `listener: ${rowListenerType}, mutator?: boolean`,
+      `${LISTENER}: ${rowListenerType}, mutator?: boolean`,
     'Id',
     storeListener('addRowListener', 'tableId, rowId', 'mutator'),
     getListenerDoc('a Row', 'a Table'),
@@ -672,7 +612,7 @@ export const getStoreApi = (
   addMethod(
     'addCellIdsListener',
     `tableId: ${tableIdType} | null, rowId: IdOrNull, ` +
-      `listener: ${cellIdsListenerType}, mutator?: boolean`,
+      `${LISTENER}: ${cellIdsListenerType}, mutator?: boolean`,
     'Id',
     storeListener('addCellIdsListener', 'tableId, rowId', 'mutator'),
     getListenerDoc('the Cell Ids', 'a Row', 1),
@@ -682,14 +622,14 @@ export const getStoreApi = (
     `tableId: ${tableIdType} | null, rowId: IdOrNull, cellId: ${join(
       mapTableSchema((_, tableTypes) => tableTypes[3]),
       ' | ',
-    )} | null, listener: ${cellListenerType}, mutator?: boolean`,
+    )} | null, ${LISTENER}: ${cellListenerType}, mutator?: boolean`,
     'Id',
     storeListener('addCellListener', 'tableId, rowId, cellId', 'mutator'),
     getListenerDoc('a Cell', 'a Row'),
   );
   addMethod(
     'addInvalidCellListener',
-    'tableId: IdOrNull, rowId: IdOrNull, cellId: IdOrNull, listener: ' +
+    `tableId: IdOrNull, rowId: IdOrNull, cellId: IdOrNull, ${LISTENER}: ` +
       `${invalidCellListenerType}, mutator?: boolean`,
     'Id',
     storeListener('addCellListener', 'tableId, rowId, cellId', 'mutator'),
@@ -697,32 +637,32 @@ export const getStoreApi = (
   );
   addMethod(
     'addWillFinishTransactionListener',
-    `listener: ${transactionListenerType}`,
+    `${LISTENER}: ${transactionListenerType}`,
     'Id',
     storeListener('addWillFinishTransactionListener'),
-    `${REGISTERS_A_LISTENER} just before the end of the transaction`,
+    `${REGISTERS_A_LISTENER} just before ${THE_END_OF_THE_TRANSACTION}`,
   );
   addMethod(
     'addDidFinishTransactionListener',
-    `listener: ${transactionListenerType}`,
+    `${LISTENER}: ${transactionListenerType}`,
     'Id',
     storeListener('addDidFinishTransactionListener'),
-    `${REGISTERS_A_LISTENER} just after the end of the transaction`,
+    `${REGISTERS_A_LISTENER} just after ${THE_END_OF_THE_TRANSACTION}`,
   );
 
   addMethod(
     'callListener',
-    'listenerId: Id',
+    `${LISTENER}Id: Id`,
     storeType,
-    fluentStoreMethod('callListener', 'listenerId'),
-    'Manually provoke a listener to be called',
+    fluentStoreMethod('callListener', `${LISTENER}Id`),
+    `Manually provoke a ${LISTENER} to be called`,
   );
   addMethod(
     'delListener',
-    'listenerId: Id',
+    `${LISTENER}Id: Id`,
     storeType,
-    fluentStoreMethod('delListener', 'listenerId'),
-    `Remove a listener that was previously added to ${THE_STORE}`,
+    fluentStoreMethod('delListener', `${LISTENER}Id`),
+    `Remove a ${LISTENER} that was previously added to ${THE_STORE}`,
   );
 
   addMethod(
@@ -730,7 +670,7 @@ export const getStoreApi = (
     '',
     'Store',
     'store',
-    'Gets the underlying Store object',
+    `${verbs[0]} the underlying Store object`,
   );
 
   mapForEach(mapCellTypes, (type, mapCellType) =>
@@ -741,7 +681,27 @@ export const getStoreApi = (
     ),
   );
 
-  addImport(1, `./${moduleName}.d`, ...collValues(mapCellTypes));
+  addImport(0, 'tinybase', 'CellChange', ...COMMON_IMPORTS);
+  addImport(1, 'tinybase', 'createStore', ...COMMON_IMPORTS);
+  addImport(
+    1,
+    moduleDefinition,
+    storeType,
+    `create${storeType} as create${storeType}Decl`,
+    tablesType,
+    tableIdType,
+    tableCallbackType,
+    tablesListenerType,
+    tableIdsListenerType,
+    tableListenerType,
+    rowIdsListenerType,
+    rowListenerType,
+    cellIdsListenerType,
+    cellListenerType,
+    invalidCellListenerType,
+    transactionListenerType,
+    ...collValues(mapCellTypes),
+  );
 
   addConstant('store', [
     'createStore().setSchema({',
@@ -770,22 +730,32 @@ export const getStoreApi = (
     '})',
   ]);
 
+  addFunction('fluent', 'actions: () => Store', [
+    'actions();',
+    `return ${storeInstance};`,
+  ]);
+  addFunction(
+    'proxy',
+    `${LISTENER}: any`,
+    `(_: Store, ...args: any[]) => ${LISTENER}(${storeInstance}, ...args)`,
+  );
+
   addConstant(storeInstance, ['{', ...getMethods(1), '}']);
 
   return [
     build(
       ...getImports(0),
       ...getTypes(),
-      `export interface ${storeType} {`,
+      `${EXPORT} interface ${storeType} {`,
       ...getMethods(0),
       `}`,
       '',
       comment(`Creates a ${storeType} object`),
-      `export function create${storeType}(): ${storeType};`,
+      `${EXPORT} function create${storeType}(): ${storeType};`,
     ),
     build(
       ...getImports(1),
-      `export const create${storeType}: ` +
+      `${EXPORT} const create${storeType}: ` +
         `typeof create${storeType}Decl = () => {`,
       ...getConstants(),
       `return Object.freeze(${storeInstance});`,
