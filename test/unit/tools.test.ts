@@ -113,3 +113,28 @@ describe('Schema', () => {
     });
   });
 });
+
+describe('API', () => {
+  test('No schema', () => {
+    store.setTables({
+      t1: {r1: {c2: true}, r2: {c1: 2, c2: 3}},
+      t2: {r1: {c1: 'one'}},
+    });
+    expect(tools.getStoreApi('s')).toEqual(['', '']);
+  });
+
+  test('Unpretty', () => {
+    store.setSchema({
+      t1: {c1: {type: 'number', default: 1}, c2: {type: 'string'}},
+    });
+    expect(tools.getStoreApi('s')).toMatchSnapshot();
+  });
+
+  test('Pretty', async () => {
+    store.setSchema({
+      t1: {c1: {type: 'number', default: 1}, c2: {type: 'string'}},
+    });
+    const files = await tools.getPrettyStoreApi('s');
+    expect(files).toMatchSnapshot();
+  });
+});

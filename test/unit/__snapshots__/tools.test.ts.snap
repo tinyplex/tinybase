@@ -1,0 +1,1045 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`API Pretty 1`] = `
+[
+  "import {
+  CellChange,
+  ChangedCells,
+  Id,
+  IdOrNull,
+  Ids,
+  InvalidCells,
+  Json,
+  Store,
+} from 'tinybase';
+
+/**
+ * Represents the 't1' Table.
+ */
+export type T1Table = {[rowId: Id]: T1Row};
+
+/**
+ * Represents a Row when getting the content of the 't1' Table.
+ */
+export type T1Row = {c1: number; c2?: string};
+
+/**
+ * Represents a Row when setting the content of the 't1' Table.
+ */
+export type T1RowWhenSet = {c1?: number; c2?: string};
+
+/**
+ * A Cell Id for the 't1' Table.
+ */
+export type T1CellId = 'c1' | 'c2';
+
+/**
+ * A function that takes a Cell Id and value from a Row in the 't1' Table.
+ */
+export type T1CellCallback = (
+  ...[cellId, cell]: [cellId: 'c1', cell: number] | [cellId: 'c2', cell: string]
+) => void;
+
+/**
+ * A function that takes a Row Id from the 't1' Table, and a Cell iterator.
+ */
+export type T1RowCallback = (
+  rowId: Id,
+  forEachCell: (cellCallback: T1CellCallback) => void,
+) => void;
+
+/**
+ * Represents the content of the Store.
+ */
+export type Tables = {t1?: T1Table};
+
+/**
+ * A Table Id in the Store.
+ */
+export type TableId = 't1';
+
+/**
+ * A function that takes a Table Id, and a Row iterator.
+ */
+export type TableCallback = (
+  ...[tableId, rowCallback]: [
+    tableId: 't1',
+    forEachRow: (rowCallback: T1RowCallback) => void,
+  ]
+) => void;
+
+/**
+ * A function for returning information about any Cell's changes during  a
+ * transaction.
+ */
+export type GetCellChange = (
+  ...[tableId, rowId, cellId]: [tableId: 't1', rowId: Id, cellId: T1CellId]
+) => CellChange;
+
+/**
+ * A function for listening to changes to anything in the Store.
+ */
+export type TablesListener = (
+  s: S,
+  getCellChange: GetCellChange | undefined,
+) => void;
+
+/**
+ * A function for listening to changes to Table Ids in the Store.
+ */
+export type TableIdsListener = (s: S) => void;
+
+/**
+ * A function for listening to changes to a Table in the Store.
+ */
+export type TableListener = (
+  s: S,
+  tableId: TableId,
+  getCellChange: GetCellChange | undefined,
+) => void;
+
+/**
+ * A function for listening to changes to Row Ids in a Table.
+ */
+export type RowIdsListener = (s: S, tableId: TableId) => void;
+
+/**
+ * A function for listening to changes to a Row in a Table.
+ */
+export type RowListener = (
+  s: S,
+  tableId: TableId,
+  rowId: Id,
+  getCellChange: GetCellChange | undefined,
+) => void;
+
+/**
+ * A function for listening to changes to Cell Ids in a Row.
+ */
+export type CellIdsListener = (s: S, tableId: TableId, rowId: Id) => void;
+
+/**
+ * A function for listening to changes to a Cell in a Row.
+ */
+export type CellListener = (
+  ...[s, tableId, rowId, cellId, newCell, oldCell, getCellChange]:
+    | [
+        s: S,
+        tableId: 't1',
+        rowId: Id,
+        cellId: 'c1',
+        newCell: number | undefined,
+        oldCell: number | undefined,
+        getCellChange: GetCellChange | undefined,
+      ]
+    | [
+        s: S,
+        tableId: 't1',
+        rowId: Id,
+        cellId: 'c2',
+        newCell: string | undefined,
+        oldCell: string | undefined,
+        getCellChange: GetCellChange | undefined,
+      ]
+) => void;
+
+/**
+ * A function for listening to changes to invalid Cell changes in the Store.
+ */
+export type InvalidCellListener = (
+  s: S,
+  tableId: Id,
+  rowId: Id,
+  cellId: Id,
+  invalidCells: any[],
+) => void;
+
+/**
+ * A function for listening to the completion of a transaction.
+ */
+export type TransactionListener = (s: S, cellsTouched: boolean) => void;
+
+/**
+ * Takes a number Cell value and returns another.
+ */
+export type MapNumber = (cell: number | undefined) => number;
+
+/**
+ * Takes a string Cell value and returns another.
+ */
+export type MapString = (cell: string | undefined) => string;
+
+export interface S {
+  /**
+   * Gets whether any Table exists in the Store.
+   */
+  hasTables(): boolean;
+
+  /**
+   * Gets the content of the Store.
+   */
+  getTables(): Tables;
+
+  /**
+   * Sets the content of the Store.
+   */
+  setTables(tables: Tables): S;
+
+  /**
+   * Deletes the content of the Store.
+   */
+  delTables(): S;
+
+  /**
+   * Gets the Ids of the Tables in the Store.
+   */
+  getTableIds(): TableId[];
+
+  /**
+   * Calls a function for each Table in the Store.
+   */
+  forEachTable(tableCallback: TableCallback): void;
+
+  /**
+   * Gets whether the 't1' Table exists in the Store.
+   */
+  hasT1Table(): boolean;
+
+  /**
+   * Gets the content of the 't1' Table.
+   */
+  getT1Table(): T1Table;
+
+  /**
+   * Sets the content of the 't1' Table.
+   */
+  setT1Table(table: T1Table): S;
+
+  /**
+   * Deletes the content of the 't1' Table.
+   */
+  delT1Table(): S;
+
+  /**
+   * Gets the Ids of the Rows in the 't1' Table.
+   */
+  getT1RowIds(): Ids;
+
+  /**
+   * Gets sorted, paginated Ids of the Rows in the 't1' Table.
+   */
+  getT1SortedRowIds(
+    cellId?: T1CellId,
+    descending?: boolean,
+    offset?: number,
+    limit?: number,
+  ): Ids;
+
+  /**
+   * Calls a function for each Row in the 't1' Table.
+   */
+  forEachT1Row(rowCallback: T1RowCallback): void;
+
+  /**
+   * Gets whether the specified Row exists in the 't1' Table.
+   */
+  hasT1Row(rowId: Id): boolean;
+
+  /**
+   * Gets the content of the specified Row in the 't1' Table.
+   */
+  getT1Row(rowId: Id): T1Row;
+
+  /**
+   * Sets the content of the specified Row in the 't1' Table.
+   */
+  setT1Row(rowId: Id, row: T1RowWhenSet): S;
+
+  /**
+   * Adds a new Row to the 't1' Table.
+   */
+  addT1Row(row: T1RowWhenSet): Id | undefined;
+
+  /**
+   * Sets part of the content of the specified Row in the 't1' Table.
+   */
+  setT1PartialRow(rowId: Id, partialRow: T1RowWhenSet): S;
+
+  /**
+   * Deletes the content of the specified Row in the 't1' Table.
+   */
+  delT1Row(rowId: Id): S;
+
+  /**
+   * Gets the Ids of the Cells in the specified Row in the 't1' Table.
+   */
+  getT1CellIds(rowId: Id): T1CellId[];
+
+  /**
+   * Calls a function for each Cell in the specified Row in the 't1' Table.
+   */
+  forEachT1Cell(rowId: Id, cellCallback: T1CellCallback): void;
+
+  /**
+   * Gets whether the 'c1' Cell exists in the specified Row in the 't1' Table.
+   */
+  hasT1C1Cell(rowId: Id): boolean;
+
+  /**
+   * Gets the 'c1' Cell for the specified Row in the 't1' Table.
+   */
+  getT1C1Cell(rowId: Id): number;
+
+  /**
+   * Sets the 'c1' Cell for the specified Row in the 't1' Table.
+   */
+  setT1C1Cell(rowId: Id, cell: number | MapNumber): S;
+
+  /**
+   * Deletes the 'c1' Cell for the specified Row in the 't1' Table.
+   */
+  delT1C1Cell(rowId: Id): S;
+
+  /**
+   * Gets whether the 'c2' Cell exists in the specified Row in the 't1' Table.
+   */
+  hasT1C2Cell(rowId: Id): boolean;
+
+  /**
+   * Gets the 'c2' Cell for the specified Row in the 't1' Table.
+   */
+  getT1C2Cell(rowId: Id): string | undefined;
+
+  /**
+   * Sets the 'c2' Cell for the specified Row in the 't1' Table.
+   */
+  setT1C2Cell(rowId: Id, cell: string | MapString): S;
+
+  /**
+   * Deletes the 'c2' Cell for the specified Row in the 't1' Table.
+   */
+  delT1C2Cell(rowId: Id): S;
+
+  /**
+   * Gets a string serialization the content of the Store.
+   */
+  getJson(): Json;
+
+  /**
+   * Sets the content of the Store from a serialized string.
+   */
+  setJson(json: Json): S;
+
+  /**
+   * Execute a transaction to make multiple mutations.
+   */
+  transaction<Return>(
+    actions: () => Return,
+    doRollback?: (
+      changedCells: ChangedCells,
+      invalidCells: InvalidCells,
+    ) => boolean,
+  ): Return;
+
+  /**
+   * Explicitly starts a transaction.
+   */
+  startTransaction(): S;
+
+  /**
+   * Explicitly finishes a transaction.
+   */
+  finishTransaction(
+    doRollback?: (
+      changedCells: ChangedCells,
+      invalidCells: InvalidCells,
+    ) => boolean,
+  ): S;
+
+  /**
+   * Registers a listener that will be called whenever the content of the Store
+   * changes.
+   */
+  addTablesListener(listener: TablesListener, mutator?: boolean): Id;
+
+  /**
+   * Registers a listener that will be called whenever the Table Ids in the
+   * Store change.
+   */
+  addTableIdsListener(listener: TableIdsListener, mutator?: boolean): Id;
+
+  /**
+   * Registers a listener that will be called whenever a Table in the Store
+   * changes.
+   */
+  addTableListener(
+    tableId: TableId | null,
+    listener: TableListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * Registers a listener that will be called whenever the Row Ids in a Table
+   * change.
+   */
+  addRowIdsListener(
+    tableId: TableId | null,
+    listener: RowIdsListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * Registers a listener that will be called whenever a Row in a Table changes.
+   */
+  addRowListener(
+    tableId: TableId | null,
+    rowId: IdOrNull,
+    listener: RowListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * Registers a listener that will be called whenever the Cell Ids in a Row
+   * change.
+   */
+  addCellIdsListener(
+    tableId: TableId | null,
+    rowId: IdOrNull,
+    listener: CellIdsListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * Registers a listener that will be called whenever a Cell in a Row changes.
+   */
+  addCellListener(
+    tableId: TableId | null,
+    rowId: IdOrNull,
+    cellId: T1CellId | null,
+    listener: CellListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * Registers a listener that will be called whenever an invalid Cell change
+   * was attempted.
+   */
+  addInvalidCellListener(
+    tableId: IdOrNull,
+    rowId: IdOrNull,
+    cellId: IdOrNull,
+    listener: InvalidCellListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * Registers a listener that will be called just before the end of the
+   * transaction.
+   */
+  addWillFinishTransactionListener(listener: TransactionListener): Id;
+
+  /**
+   * Registers a listener that will be called just after the end of the
+   * transaction.
+   */
+  addDidFinishTransactionListener(listener: TransactionListener): Id;
+
+  /**
+   * Manually provoke a listener to be called.
+   */
+  callListener(listenerId: Id): S;
+
+  /**
+   * Remove a listener that was previously added to the Store.
+   */
+  delListener(listenerId: Id): S;
+
+  /**
+   * Gets the underlying Store object.
+   */
+  getStore(): Store;
+}
+
+/**
+ * Creates a S object.
+ */
+export function createS(): S;
+",
+  "import {
+  CellIdsListener,
+  CellListener,
+  InvalidCellListener,
+  MapNumber,
+  MapString,
+  RowIdsListener,
+  RowListener,
+  S,
+  T1CellCallback,
+  T1CellId,
+  T1Row,
+  T1RowCallback,
+  T1RowWhenSet,
+  T1Table,
+  TableCallback,
+  TableId,
+  TableIdsListener,
+  TableListener,
+  Tables,
+  TablesListener,
+  TransactionListener,
+  createS as createSDecl,
+} from './s.d';
+import {
+  ChangedCells,
+  Id,
+  IdOrNull,
+  Ids,
+  InvalidCells,
+  Json,
+  Store,
+  createStore,
+} from 'tinybase';
+
+export const createS: typeof createSDecl = () => {
+  const TYPE = 'type';
+
+  const DEFAULT = 'default';
+
+  const C1 = 'c1';
+
+  const C2 = 'c2';
+
+  const T1 = 't1';
+
+  const NUMBER = 'number';
+
+  const STRING = 'string';
+
+  const store = createStore().setSchema({
+    [T1]: {
+      [C1]: {[TYPE]: NUMBER, [DEFAULT]: 1},
+      [C2]: {[TYPE]: STRING},
+    },
+  });
+
+  const fluent = (actions: () => Store) => {
+    actions();
+    return s;
+  };
+
+  const proxy =
+    (listener: any) =>
+    (_: Store, ...args: any[]) =>
+      listener(s, ...args);
+
+  const s = {
+    hasTables: (): boolean => store.hasTables(),
+
+    getTables: (): Tables => store.getTables(),
+
+    setTables: (tables: Tables): S => fluent(() => store.setTables(tables)),
+
+    delTables: (): S => fluent(() => store.delTables()),
+
+    getTableIds: (): TableId[] => store.getTableIds() as TableId[],
+
+    forEachTable: (tableCallback: TableCallback): void =>
+      store.forEachTable(tableCallback as any),
+
+    hasT1Table: (): boolean => store.hasTable(T1),
+
+    getT1Table: (): T1Table => store.getTable(T1) as T1Table,
+
+    setT1Table: (table: T1Table): S => fluent(() => store.setTable(T1, table)),
+
+    delT1Table: (): S => fluent(() => store.delTable(T1)),
+
+    getT1RowIds: (): Ids => store.getRowIds(T1),
+
+    getT1SortedRowIds: (
+      cellId?: T1CellId,
+      descending?: boolean,
+      offset?: number,
+      limit?: number,
+    ): Ids => store.getSortedRowIds(T1, cellId, descending, offset, limit),
+
+    forEachT1Row: (rowCallback: T1RowCallback): void =>
+      store.forEachRow(T1, rowCallback as any),
+
+    hasT1Row: (rowId: Id): boolean => store.hasRow(T1, rowId),
+
+    getT1Row: (rowId: Id): T1Row => store.getRow(T1, rowId) as T1Row,
+
+    setT1Row: (rowId: Id, row: T1RowWhenSet): S =>
+      fluent(() => store.setRow(T1, rowId, row)),
+
+    addT1Row: (row: T1RowWhenSet): Id | undefined => store.addRow(T1, row),
+
+    setT1PartialRow: (rowId: Id, partialRow: T1RowWhenSet): S =>
+      fluent(() => store.setPartialRow(T1, rowId, partialRow)),
+
+    delT1Row: (rowId: Id): S => fluent(() => store.delRow(T1, rowId)),
+
+    getT1CellIds: (rowId: Id): T1CellId[] =>
+      store.getCellIds(T1, rowId) as T1CellId[],
+
+    forEachT1Cell: (rowId: Id, cellCallback: T1CellCallback): void =>
+      store.forEachCell(T1, rowId, cellCallback as any),
+
+    hasT1C1Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C1),
+
+    getT1C1Cell: (rowId: Id): number => store.getCell(T1, rowId, C1) as number,
+
+    setT1C1Cell: (rowId: Id, cell: number | MapNumber): S =>
+      fluent(() => store.setCell(T1, rowId, C1, cell as any)),
+
+    delT1C1Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C1)),
+
+    hasT1C2Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C2),
+
+    getT1C2Cell: (rowId: Id): string | undefined =>
+      store.getCell(T1, rowId, C2) as string | undefined,
+
+    setT1C2Cell: (rowId: Id, cell: string | MapString): S =>
+      fluent(() => store.setCell(T1, rowId, C2, cell as any)),
+
+    delT1C2Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C2)),
+
+    getJson: (): Json => store.getJson(),
+
+    setJson: (json: Json): S => fluent(() => store.setJson(json)),
+
+    transaction: <Return>(
+      actions: () => Return,
+      doRollback?: (
+        changedCells: ChangedCells,
+        invalidCells: InvalidCells,
+      ) => boolean,
+    ): Return => store.transaction(actions, doRollback),
+
+    startTransaction: (): S => fluent(() => store.startTransaction()),
+
+    finishTransaction: (
+      doRollback?: (
+        changedCells: ChangedCells,
+        invalidCells: InvalidCells,
+      ) => boolean,
+    ): S => fluent(() => store.finishTransaction(doRollback)),
+
+    addTablesListener: (listener: TablesListener, mutator?: boolean): Id =>
+      store.addTablesListener(proxy(listener), mutator),
+
+    addTableIdsListener: (listener: TableIdsListener, mutator?: boolean): Id =>
+      store.addTableIdsListener(proxy(listener), mutator),
+
+    addTableListener: (
+      tableId: TableId | null,
+      listener: TableListener,
+      mutator?: boolean,
+    ): Id => store.addTableListener(tableId, proxy(listener), mutator),
+
+    addRowIdsListener: (
+      tableId: TableId | null,
+      listener: RowIdsListener,
+      mutator?: boolean,
+    ): Id => store.addRowIdsListener(tableId, proxy(listener), mutator),
+
+    addRowListener: (
+      tableId: TableId | null,
+      rowId: IdOrNull,
+      listener: RowListener,
+      mutator?: boolean,
+    ): Id => store.addRowListener(tableId, rowId, proxy(listener), mutator),
+
+    addCellIdsListener: (
+      tableId: TableId | null,
+      rowId: IdOrNull,
+      listener: CellIdsListener,
+      mutator?: boolean,
+    ): Id => store.addCellIdsListener(tableId, rowId, proxy(listener), mutator),
+
+    addCellListener: (
+      tableId: TableId | null,
+      rowId: IdOrNull,
+      cellId: T1CellId | null,
+      listener: CellListener,
+      mutator?: boolean,
+    ): Id =>
+      store.addCellListener(tableId, rowId, cellId, proxy(listener), mutator),
+
+    addInvalidCellListener: (
+      tableId: IdOrNull,
+      rowId: IdOrNull,
+      cellId: IdOrNull,
+      listener: InvalidCellListener,
+      mutator?: boolean,
+    ): Id =>
+      store.addCellListener(tableId, rowId, cellId, proxy(listener), mutator),
+
+    addWillFinishTransactionListener: (listener: TransactionListener): Id =>
+      store.addWillFinishTransactionListener(proxy(listener)),
+
+    addDidFinishTransactionListener: (listener: TransactionListener): Id =>
+      store.addDidFinishTransactionListener(proxy(listener)),
+
+    callListener: (listenerId: Id): S =>
+      fluent(() => store.callListener(listenerId)),
+
+    delListener: (listenerId: Id): S =>
+      fluent(() => store.delListener(listenerId)),
+
+    getStore: (): Store => store,
+  };
+
+  return Object.freeze(s);
+};
+",
+]
+`;
+
+exports[`API Unpretty 1`] = `
+[
+  "import {CellChange, ChangedCells, Id, IdOrNull, Ids, InvalidCells, Json, Store} from 'tinybase';
+
+/** Represents the 't1' Table. */
+export type T1Table = {[rowId: Id]: T1Row};
+
+/** Represents a Row when getting the content of the 't1' Table. */
+export type T1Row = {'c1': number; 'c2'?: string;};
+
+/** Represents a Row when setting the content of the 't1' Table. */
+export type T1RowWhenSet = {'c1'?: number; 'c2'?: string;};
+
+/** A Cell Id for the 't1' Table. */
+export type T1CellId = 'c1' | 'c2';
+
+/** A function that takes a Cell Id and value from a Row in the 't1' Table. */
+export type T1CellCallback = (...[cellId, cell]: [cellId: 'c1', cell: number] | [cellId: 'c2', cell: string]) => void;
+
+/** A function that takes a Row Id from the 't1' Table, and a Cell iterator. */
+export type T1RowCallback = (rowId: Id, forEachCell: (cellCallback: T1CellCallback) => void) => void;
+
+/** Represents the content of the Store. */
+export type Tables = {'t1'?: T1Table;};
+
+/** A Table Id in the Store. */
+export type TableId = 't1';
+
+/** A function that takes a Table Id, and a Row iterator. */
+export type TableCallback = (...[tableId, rowCallback]: [tableId: 't1', forEachRow: (rowCallback: T1RowCallback) => void]) => void;
+
+/** A function for returning information about any Cell's changes during  a transaction. */
+export type GetCellChange = (...[tableId, rowId, cellId]: [tableId: 't1', rowId: Id, cellId: T1CellId]) => CellChange;
+
+/** A function for listening to changes to anything in the Store. */
+export type TablesListener = (s: S, getCellChange: GetCellChange | undefined) => void;
+
+/** A function for listening to changes to Table Ids in the Store. */
+export type TableIdsListener = (s: S) => void;
+
+/** A function for listening to changes to a Table in the Store. */
+export type TableListener = (s: S, tableId: TableId, getCellChange: GetCellChange | undefined) => void;
+
+/** A function for listening to changes to Row Ids in a Table. */
+export type RowIdsListener = (s: S, tableId: TableId) => void;
+
+/** A function for listening to changes to a Row in a Table. */
+export type RowListener = (s: S, tableId: TableId, rowId: Id, getCellChange: GetCellChange | undefined) => void;
+
+/** A function for listening to changes to Cell Ids in a Row. */
+export type CellIdsListener = (s: S, tableId: TableId, rowId: Id) => void;
+
+/** A function for listening to changes to a Cell in a Row. */
+export type CellListener = (...[s, tableId, rowId, cellId, newCell, oldCell, getCellChange]: [s: S, tableId: 't1', rowId: Id, cellId: 'c1', newCell: number | undefined, oldCell: number | undefined, getCellChange: GetCellChange | undefined] | [s: S, tableId: 't1', rowId: Id, cellId: 'c2', newCell: string | undefined, oldCell: string | undefined, getCellChange: GetCellChange | undefined]) => void;
+
+/** A function for listening to changes to invalid Cell changes in the Store. */
+export type InvalidCellListener = (s: S, tableId: Id, rowId: Id, cellId: Id, invalidCells: any[]) => void;;
+
+/** A function for listening to the completion of a transaction. */
+export type TransactionListener = (s: S, cellsTouched: boolean) => void;;
+
+/** Takes a number Cell value and returns another. */
+export type MapNumber = (cell: number | undefined) => number;
+
+/** Takes a string Cell value and returns another. */
+export type MapString = (cell: string | undefined) => string;
+
+export interface S {
+/** Gets whether any Table exists in the Store. */
+hasTables(): boolean;
+
+/** Gets the content of the Store. */
+getTables(): Tables;
+
+/** Sets the content of the Store. */
+setTables(tables: Tables): S;
+
+/** Deletes the content of the Store. */
+delTables(): S;
+
+/** Gets the Ids of the Tables in the Store. */
+getTableIds(): TableId[];
+
+/** Calls a function for each Table in the Store. */
+forEachTable(tableCallback: TableCallback): void;
+
+/** Gets whether the 't1' Table exists in the Store. */
+hasT1Table(): boolean;
+
+/** Gets the content of the 't1' Table. */
+getT1Table(): T1Table;
+
+/** Sets the content of the 't1' Table. */
+setT1Table(table: T1Table): S;
+
+/** Deletes the content of the 't1' Table. */
+delT1Table(): S;
+
+/** Gets the Ids of the Rows in the 't1' Table. */
+getT1RowIds(): Ids;
+
+/** Gets sorted, paginated Ids of the Rows in the 't1' Table. */
+getT1SortedRowIds(cellId?: T1CellId, descending?: boolean, offset?: number, limit?: number): Ids;
+
+/** Calls a function for each Row in the 't1' Table. */
+forEachT1Row(rowCallback: T1RowCallback): void;
+
+/** Gets whether the specified Row exists in the 't1' Table. */
+hasT1Row(rowId: Id): boolean;
+
+/** Gets the content of the specified Row in the 't1' Table. */
+getT1Row(rowId: Id): T1Row;
+
+/** Sets the content of the specified Row in the 't1' Table. */
+setT1Row(rowId: Id, row: T1RowWhenSet): S;
+
+/** Adds a new Row to the 't1' Table. */
+addT1Row(row: T1RowWhenSet): Id | undefined;
+
+/** Sets part of the content of the specified Row in the 't1' Table. */
+setT1PartialRow(rowId: Id, partialRow: T1RowWhenSet): S;
+
+/** Deletes the content of the specified Row in the 't1' Table. */
+delT1Row(rowId: Id): S;
+
+/** Gets the Ids of the Cells in the specified Row in the 't1' Table. */
+getT1CellIds(rowId: Id): T1CellId[];
+
+/** Calls a function for each Cell in the specified Row in the 't1' Table. */
+forEachT1Cell(rowId: Id, cellCallback: T1CellCallback): void;
+
+/** Gets whether the 'c1' Cell exists in the specified Row in the 't1' Table. */
+hasT1C1Cell(rowId: Id): boolean;
+
+/** Gets the 'c1' Cell for the specified Row in the 't1' Table. */
+getT1C1Cell(rowId: Id): number;
+
+/** Sets the 'c1' Cell for the specified Row in the 't1' Table. */
+setT1C1Cell(rowId: Id, cell: number | MapNumber): S;
+
+/** Deletes the 'c1' Cell for the specified Row in the 't1' Table. */
+delT1C1Cell(rowId: Id): S;
+
+/** Gets whether the 'c2' Cell exists in the specified Row in the 't1' Table. */
+hasT1C2Cell(rowId: Id): boolean;
+
+/** Gets the 'c2' Cell for the specified Row in the 't1' Table. */
+getT1C2Cell(rowId: Id): string | undefined;
+
+/** Sets the 'c2' Cell for the specified Row in the 't1' Table. */
+setT1C2Cell(rowId: Id, cell: string | MapString): S;
+
+/** Deletes the 'c2' Cell for the specified Row in the 't1' Table. */
+delT1C2Cell(rowId: Id): S;
+
+/** Gets a string serialization the content of the Store. */
+getJson(): Json;
+
+/** Sets the content of the Store from a serialized string. */
+setJson(json: Json): S;
+
+/** Execute a transaction to make multiple mutations. */
+transaction<Return>(actions: () => Return, doRollback?: (changedCells: ChangedCells, invalidCells: InvalidCells) => boolean): Return;
+
+/** Explicitly starts a transaction. */
+startTransaction(): S;
+
+/** Explicitly finishes a transaction. */
+finishTransaction(doRollback?: (changedCells: ChangedCells, invalidCells: InvalidCells) => boolean,): S;
+
+/** Registers a listener that will be called whenever the content of the Store changes. */
+addTablesListener(listener: TablesListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever the Table Ids in the Store change. */
+addTableIdsListener(listener: TableIdsListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever a Table in the Store changes. */
+addTableListener(tableId: TableId | null, listener: TableListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever the Row Ids in a Table change. */
+addRowIdsListener(tableId: TableId | null, listener: RowIdsListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever a Row in a Table changes. */
+addRowListener(tableId: TableId | null, rowId: IdOrNull, listener: RowListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever the Cell Ids in a Row change. */
+addCellIdsListener(tableId: TableId | null, rowId: IdOrNull, listener: CellIdsListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever a Cell in a Row changes. */
+addCellListener(tableId: TableId | null, rowId: IdOrNull, cellId: T1CellId | null, listener: CellListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever an invalid Cell change was attempted. */
+addInvalidCellListener(tableId: IdOrNull, rowId: IdOrNull, cellId: IdOrNull, listener: InvalidCellListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called just before the end of the transaction. */
+addWillFinishTransactionListener(listener: TransactionListener): Id;
+
+/** Registers a listener that will be called just after the end of the transaction. */
+addDidFinishTransactionListener(listener: TransactionListener): Id;
+
+/** Manually provoke a listener to be called. */
+callListener(listenerId: Id): S;
+
+/** Remove a listener that was previously added to the Store. */
+delListener(listenerId: Id): S;
+
+/** Gets the underlying Store object. */
+getStore(): Store;
+
+}
+
+/** Creates a S object. */
+export function createS(): S;",
+  "import {CellIdsListener, CellListener, InvalidCellListener, MapNumber, MapString, RowIdsListener, RowListener, S, T1CellCallback, T1CellId, T1Row, T1RowCallback, T1RowWhenSet, T1Table, TableCallback, TableId, TableIdsListener, TableListener, Tables, TablesListener, TransactionListener, createS as createSDecl} from './s.d';
+import {ChangedCells, Id, IdOrNull, Ids, InvalidCells, Json, Store, createStore} from 'tinybase';
+
+export const createS: typeof createSDecl = () => {
+const TYPE = 'type';
+
+const DEFAULT = 'default';
+
+const C1 = 'c1';
+
+const C2 = 'c2';
+
+const T1 = 't1';
+
+const NUMBER = 'number';
+
+const STRING = 'string';
+
+const store = createStore().setSchema({
+[T1]: {
+[C1]: {[TYPE]: NUMBER, [DEFAULT]: 1},
+[C2]: {[TYPE]: STRING},
+},
+});
+
+const fluent = (actions: () => Store) => {
+actions();
+return s;
+};
+
+const proxy = (listener: any) => (_: Store, ...args: any[]) => listener(s, ...args);
+
+const s = {
+hasTables: (): boolean => store.hasTables(),
+
+getTables: (): Tables => store.getTables(),
+
+setTables: (tables: Tables): S => fluent(() => store.setTables(tables)),
+
+delTables: (): S => fluent(() => store.delTables()),
+
+getTableIds: (): TableId[] => store.getTableIds() as TableId[],
+
+forEachTable: (tableCallback: TableCallback): void => store.forEachTable(tableCallback as any),
+
+hasT1Table: (): boolean => store.hasTable(T1),
+
+getT1Table: (): T1Table => store.getTable(T1) as T1Table,
+
+setT1Table: (table: T1Table): S => fluent(() => store.setTable(T1, table)),
+
+delT1Table: (): S => fluent(() => store.delTable(T1)),
+
+getT1RowIds: (): Ids => store.getRowIds(T1),
+
+getT1SortedRowIds: (cellId?: T1CellId, descending?: boolean, offset?: number, limit?: number): Ids => store.getSortedRowIds(T1, cellId, descending, offset, limit),
+
+forEachT1Row: (rowCallback: T1RowCallback): void => store.forEachRow(T1, rowCallback as any),
+
+hasT1Row: (rowId: Id): boolean => store.hasRow(T1, rowId),
+
+getT1Row: (rowId: Id): T1Row => store.getRow(T1, rowId) as T1Row,
+
+setT1Row: (rowId: Id, row: T1RowWhenSet): S => fluent(() => store.setRow(T1, rowId, row)),
+
+addT1Row: (row: T1RowWhenSet): Id | undefined => store.addRow(T1, row),
+
+setT1PartialRow: (rowId: Id, partialRow: T1RowWhenSet): S => fluent(() => store.setPartialRow(T1, rowId, partialRow)),
+
+delT1Row: (rowId: Id): S => fluent(() => store.delRow(T1, rowId)),
+
+getT1CellIds: (rowId: Id): T1CellId[] => store.getCellIds(T1, rowId) as T1CellId[],
+
+forEachT1Cell: (rowId: Id, cellCallback: T1CellCallback): void => store.forEachCell(T1, rowId, cellCallback as any),
+
+hasT1C1Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C1),
+
+getT1C1Cell: (rowId: Id): number => store.getCell(T1, rowId, C1) as number,
+
+setT1C1Cell: (rowId: Id, cell: number | MapNumber): S => fluent(() => store.setCell(T1, rowId, C1, cell as any)),
+
+delT1C1Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C1)),
+
+hasT1C2Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C2),
+
+getT1C2Cell: (rowId: Id): string | undefined => store.getCell(T1, rowId, C2) as string | undefined,
+
+setT1C2Cell: (rowId: Id, cell: string | MapString): S => fluent(() => store.setCell(T1, rowId, C2, cell as any)),
+
+delT1C2Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C2)),
+
+getJson: (): Json => store.getJson(),
+
+setJson: (json: Json): S => fluent(() => store.setJson(json)),
+
+transaction: <Return>(actions: () => Return, doRollback?: (changedCells: ChangedCells, invalidCells: InvalidCells) => boolean): Return => store.transaction(actions, doRollback),
+
+startTransaction: (): S => fluent(() => store.startTransaction()),
+
+finishTransaction: (doRollback?: (changedCells: ChangedCells, invalidCells: InvalidCells) => boolean,): S => fluent(() => store.finishTransaction(doRollback)),
+
+addTablesListener: (listener: TablesListener, mutator?: boolean): Id => store.addTablesListener(proxy(listener), mutator),
+
+addTableIdsListener: (listener: TableIdsListener, mutator?: boolean): Id => store.addTableIdsListener(proxy(listener), mutator),
+
+addTableListener: (tableId: TableId | null, listener: TableListener, mutator?: boolean): Id => store.addTableListener(tableId, proxy(listener), mutator),
+
+addRowIdsListener: (tableId: TableId | null, listener: RowIdsListener, mutator?: boolean): Id => store.addRowIdsListener(tableId, proxy(listener), mutator),
+
+addRowListener: (tableId: TableId | null, rowId: IdOrNull, listener: RowListener, mutator?: boolean): Id => store.addRowListener(tableId, rowId, proxy(listener), mutator),
+
+addCellIdsListener: (tableId: TableId | null, rowId: IdOrNull, listener: CellIdsListener, mutator?: boolean): Id => store.addCellIdsListener(tableId, rowId, proxy(listener), mutator),
+
+addCellListener: (tableId: TableId | null, rowId: IdOrNull, cellId: T1CellId | null, listener: CellListener, mutator?: boolean): Id => store.addCellListener(tableId, rowId, cellId, proxy(listener), mutator),
+
+addInvalidCellListener: (tableId: IdOrNull, rowId: IdOrNull, cellId: IdOrNull, listener: InvalidCellListener, mutator?: boolean): Id => store.addCellListener(tableId, rowId, cellId, proxy(listener), mutator),
+
+addWillFinishTransactionListener: (listener: TransactionListener): Id => store.addWillFinishTransactionListener(proxy(listener)),
+
+addDidFinishTransactionListener: (listener: TransactionListener): Id => store.addDidFinishTransactionListener(proxy(listener)),
+
+callListener: (listenerId: Id): S => fluent(() => store.callListener(listenerId)),
+
+delListener: (listenerId: Id): S => fluent(() => store.delListener(listenerId)),
+
+getStore: (): Store => store,
+
+};
+
+return Object.freeze(s);
+};",
+]
+`;
