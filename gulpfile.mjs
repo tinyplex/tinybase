@@ -187,7 +187,14 @@ const compileModule = async (
   const {default: shebang} = await import('rollup-plugin-preserve-shebang');
 
   const inputConfig = {
-    external: ['react', 'fs', 'prettier'],
+    external: [
+      'react',
+      'fs',
+      'path',
+      'prettier',
+      '../lib/tinybase.js',
+      '../lib/tools.js',
+    ],
     input: `src/${module}.ts`,
     plugins: [
       esbuild({
@@ -356,6 +363,8 @@ export const compileForTest = async () => {
     await compileModule(module, true, `${LIB_DIR}/debug`);
   });
   await copyDefinitions(`${LIB_DIR}/debug`);
+
+  await compileForCli();
 };
 
 export const compileForProd = async () => {
@@ -373,6 +382,10 @@ export const compileForProd = async () => {
   await copyDefinitions(`${LIB_DIR}/umd-es6`);
   await copyDefinitions(`${LIB_DIR}/debug`);
 
+  await compileForCli();
+};
+
+export const compileForCli = async () => {
   await clearDir(BIN_DIR);
   await compileModule('cli', false, BIN_DIR, undefined, undefined, false);
   await execute(`chmod +x ${BIN_DIR}/cli.js`);
