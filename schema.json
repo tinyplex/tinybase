@@ -1,0 +1,7 @@
+{
+  "pets": {
+    "price": {
+      "type": "number"
+    }
+  }
+}

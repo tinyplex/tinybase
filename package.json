@@ -46,6 +46,7 @@
     "test": "gulp --series testUnit testPerf",
     "compileForTest": "gulp compileForTest",
     "compileForProd": "gulp compileForProd",
+    "compileForCli": "gulp compileForCli",
     "testUnit": "gulp testUnit",
     "testUnitCountAsserts": "gulp testUnitCountAsserts",
     "compileAndTestUnitSaveCoverage": "gulp compileAndTestUnitSaveCoverage",
