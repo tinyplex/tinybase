@@ -501,17 +501,17 @@ import {
 } from 'tinybase';
 
 export const createS: typeof createSDecl = () => {
-  const TYPE = 'type';
-
-  const DEFAULT = 'default';
-
   const C1 = 'c1';
 
   const C2 = 'c2';
 
   const T1 = 't1';
 
+  const TYPE = 'type';
+
   const NUMBER = 'number';
+
+  const DEFAULT = 'default';
 
   const STRING = 'string';
 
@@ -914,17 +914,17 @@ export function createS(): S;",
 import {ChangedCells, Id, IdOrNull, Ids, InvalidCells, Json, Store, createStore} from 'tinybase';
 
 export const createS: typeof createSDecl = () => {
-const TYPE = 'type';
-
-const DEFAULT = 'default';
-
 const C1 = 'c1';
 
 const C2 = 'c2';
 
 const T1 = 't1';
 
+const TYPE = 'type';
+
 const NUMBER = 'number';
+
+const DEFAULT = 'default';
 
 const STRING = 'string';
 

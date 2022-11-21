@@ -92,9 +92,6 @@ export const getStoreApi = (
   const storeType = camel(module, 1);
   const storeInstance = camel(storeType);
 
-  const TYPE2 = addConstant(snake(TYPE), `'${TYPE}'`);
-  const DEFAULT2 = addConstant(snake(DEFAULT), `'${DEFAULT}'`);
-
   const tableTypes: IdMap<TableTypes> = mapNew();
   const mapTableSchema = <Return>(
     callback: (
@@ -718,13 +715,13 @@ export const getStoreApi = (
         ...mapCellSchema(
           tableId,
           (_, type, defaultValue, CELL_ID) =>
-            `[${CELL_ID}]: {[${TYPE2}]: ${addConstant(
-              snake(type),
-              `'${type}'`,
-            )}${
+            `[${CELL_ID}]: {[${addConstant(
+              snake(TYPE),
+              `'${TYPE}'`,
+            )}]: ${addConstant(snake(type), `'${type}'`)}${
               isUndefined(defaultValue)
                 ? EMPTY_STRING
-                : `, [${DEFAULT2}]: ${
+                : `, [${addConstant(snake(DEFAULT), `'${DEFAULT}'`)}]: ${
                     isString(defaultValue)
                       ? addConstant(snake(defaultValue), `'${defaultValue}'`)
                       : defaultValue

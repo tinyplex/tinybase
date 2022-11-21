@@ -293,7 +293,7 @@ export interface Tools {
    * // -> 'export type PetsRow = {\'price\'?: number;};'
    *
    * const tsLines = ts.split('\n');
-   * console.log(tsLines[42]);
+   * console.log(tsLines[40]);
    * // -> 'getPetsTable: (): PetsTable => store.getTable(PETS) as PetsTable,'
    * ```
    * @example
@@ -366,7 +366,7 @@ export interface Tools {
    * // -> 'export type PetsRow = {price?: number};'
    *
    * const tsLines = ts.split('\n');
-   * console.log(tsLines[75]);
+   * console.log(tsLines[73]);
    * // -> '    hasPetsTable: (): boolean => store.hasTable(PETS),'
    * ```
    * @example
