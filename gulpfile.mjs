@@ -205,7 +205,16 @@ const compileModule = async (
       debug
         ? [prettierPlugin(await getPrettierConfig())]
         : [
-            terser({toplevel: true, compress: {unsafe: true, passes: 3}}),
+            terser({
+              toplevel: true,
+              compress: {
+                unsafe: true,
+                passes: 3,
+                ...(module == 'tools'
+                  ? {reduce_vars: false, reduce_funcs: false}
+                  : {}),
+              },
+            }),
           ].concat(gzip ? [gzipPlugin()] : []),
     ),
   };
