@@ -1,32 +1,31 @@
 #! /usr/bin/env node
 
-import {jsonParse, mathMax} from './common/other';
 import {readFileSync, writeFileSync} from 'fs';
 import {UTF8} from './common/strings';
 import {arrayForEach} from './common/array';
-import {createStore} from '../lib/tinybase.js';
-import {createTools} from '../lib/tools.js';
+import {createStore} from './tinybase';
+import {createTools} from './tools';
+import {jsonParse} from './common/other';
 import {objMap} from './common/obj';
 import {resolve} from 'path';
 
 const log = (...lines: string[]) =>
-  // eslint-disable-next-line no-console
-  arrayForEach(lines, (line) => console.log(line));
+  arrayForEach(lines, (line) => process.stdout.write(`${line}\n`));
 
-const pad = (str: string, length = 10) => str.padEnd(length);
+const err = (line: string) => process.stderr.write(`ERROR: ${line}\n`);
 
 const getJson = (file: string) => jsonParse(readFileSync(file, UTF8));
 
 const help = () => {
-  log('tinybase <command>', '', 'Usage:', '');
+  log('', 'tinybase <command>', '', 'Usage:', '');
   objMap(commands, ([, args, help], command) =>
-    log(` tinybase ${pad(`${command} ${args}`, largestTab)} ${help}`),
+    log(` tinybase ${command} ${args}`, ` - ${help}`, ''),
   );
 };
 
 const version = () => log(getJson('./package.json').version);
 
-const generateApi = async (
+const getStoreApi = async (
   schemaFile: string,
   storeName: string,
   outputDir: string,
@@ -38,9 +37,9 @@ const generateApi = async (
     const tsFile = resolve(outputDir, `${storeName}.ts`);
     writeFileSync(dTsFile, dTs, UTF8);
     writeFileSync(tsFile, ts, UTF8);
-    log('API written to:', `  ${dTsFile}`, `  ${tsFile}`);
+    log(`    Definition: ${dTsFile}`, `Implementation: ${tsFile}`);
   } catch {
-    log('Provide a valid schemaFile, storeName, and outputDir.');
+    err('provide a valid schemaFile, storeName, and outputDir');
   }
 };
 
@@ -51,17 +50,14 @@ const commands: {
     help: string,
   ];
 } = {
-  help: [help, '', 'Print this message.'],
-  version: [version, '', 'Get the current TinyBase version.'],
-  generateApi: [
-    generateApi,
+  help: [help, '', 'print this message'],
+  version: [version, '', 'get the current TinyBase version'],
+  getStoreApi: [
+    getStoreApi,
     '<schemaFile> <storeName> <outputDir>',
-    'Generate .d.ts and .ts files from a schema file.',
+    'generate .d.ts and .ts files from a schema file',
   ],
 };
-const largestTab = mathMax(
-  ...objMap(commands, ([, args], command) => (args + command).length + 3),
-);
 
 const main = () => {
   const [, , command, ...args] = process.argv;

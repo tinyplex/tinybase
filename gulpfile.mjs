@@ -176,7 +176,7 @@ const compileModule = async (
   dir = LIB_DIR,
   format = 'esm',
   target = 'esnext',
-  gzip = true,
+  cli,
 ) => {
   const {default: esbuild} = await import('rollup-plugin-esbuild');
   const {rollup} = await import('rollup');
@@ -187,14 +187,7 @@ const compileModule = async (
   const {default: shebang} = await import('rollup-plugin-preserve-shebang');
 
   const inputConfig = {
-    external: [
-      'react',
-      'fs',
-      'path',
-      'prettier',
-      '../lib/tinybase.js',
-      '../lib/tools.js',
-    ],
+    external: ['react', 'fs', 'path', 'prettier', './tinybase', './tools'],
     input: `src/${module}.ts`,
     plugins: [
       esbuild({
@@ -206,6 +199,12 @@ const compileModule = async (
         '/*!': '/*',
         delimiters: ['', ''],
         preventAssignment: true,
+        ...(cli
+          ? {
+              [`from './tinybase'`]: `from 'tinybase'`,
+              [`from './tools'`]: `from 'tinybase/tools'`,
+            }
+          : {}),
       }),
       shebang(),
     ].concat(
@@ -222,7 +221,7 @@ const compileModule = async (
                   : {}),
               },
             }),
-          ].concat(gzip ? [gzipPlugin()] : []),
+          ].concat(cli ? [] : [gzipPlugin()]),
     ),
   };
 
@@ -230,7 +229,10 @@ const compileModule = async (
     dir,
     entryFileNames: `[name].js`,
     format,
-    globals: {react: 'React', fs: 'fs'},
+    globals: {
+      react: 'React',
+      fs: 'fs',
+    },
     interop: 'default',
     name:
       'TinyBase' +
@@ -387,7 +389,7 @@ export const compileForProd = async () => {
 
 export const compileForCli = async () => {
   await clearDir(BIN_DIR);
-  await compileModule('cli', false, BIN_DIR, undefined, undefined, false);
+  await compileModule('cli', false, BIN_DIR, undefined, undefined, true);
   await execute(`chmod +x ${BIN_DIR}/cli.js`);
 };
 
