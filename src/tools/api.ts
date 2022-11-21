@@ -72,7 +72,7 @@ export const getStoreApi = (
   module: string,
 ): [string, string] => {
   if (objIsEmpty(schema)) {
-    return pairNew('// store has no inferable schema');
+    return pairNew(EMPTY_STRING);
   }
 
   const [
