@@ -2,8 +2,10 @@ import {
   A_FUNCTION_FOR,
   EXPORT,
   LISTENER,
+  OR_UNDEFINED,
   REGISTERS_A_LISTENER,
   REPRESENTS,
+  RETURNS_VOID,
   THE_CONTENT_OF_THE_STORE,
   THE_END_OF_THE_TRANSACTION,
   THE_SPECIFIED_ROW,
@@ -23,8 +25,8 @@ import {
   getTableContentDoc,
   getTableDoc,
   verbs,
-} from './docs';
-import {BOOLEAN, DEFAULT, TYPE} from '../common/strings';
+} from './strings';
+import {BOOLEAN, DEFAULT, EMPTY_STRING, TYPE} from '../common/strings';
 import {Cell, Schema} from '../store.d';
 import {IdMap, mapEnsure, mapForEach, mapNew, mapSet} from '../common/map';
 import {camel, comment, flat, getCodeFunctions, join, snake} from './code';
@@ -46,19 +48,24 @@ const COMMON_IMPORTS = [
   'Store',
 ];
 
-const storeMethod = (method: string, parameters = '', cast = '') =>
-  `store.${method}(${parameters})${cast ? ` as ${cast}` : ''}`;
-const fluentStoreMethod = (method: string, parameters = '') =>
+const storeMethod = (
+  method: string,
+  parameters = EMPTY_STRING,
+  cast = EMPTY_STRING,
+) => `store.${method}(${parameters})${cast ? ` as ${cast}` : EMPTY_STRING}`;
+const fluentStoreMethod = (method: string, parameters = EMPTY_STRING) =>
   `fluent(() => ${storeMethod(method, parameters)})`;
 
 const storeListener = (
   method: string,
-  beforeParameters = '',
-  afterParameters = '',
+  beforeParameters = EMPTY_STRING,
+  afterParameters = EMPTY_STRING,
 ) =>
   `store.${method}(${
-    beforeParameters ? `${beforeParameters}, ` : ''
-  }proxy(${LISTENER})${afterParameters ? `, ${afterParameters}` : ''})`;
+    beforeParameters ? `${beforeParameters}, ` : EMPTY_STRING
+  }proxy(${LISTENER})${
+    afterParameters ? `, ${afterParameters}` : EMPTY_STRING
+  })`;
 
 export const getStoreApi = (
   schema: Schema,
@@ -115,7 +122,7 @@ export const getStoreApi = (
                   tableId,
                   (cellId, type, defaultValue) =>
                     `'${cellId}'${
-                      isUndefined(defaultValue) ? '?' : ''
+                      isUndefined(defaultValue) ? '?' : EMPTY_STRING
                     }: ${type};`,
                 ),
                 ' ',
@@ -149,15 +156,15 @@ export const getStoreApi = (
                   (cellId, type) => `[cellId: '${cellId}', cell: ${type}]`,
                 ),
                 ' | ',
-              )}) => void`,
+              )})${RETURNS_VOID}`,
               getCallbackDoc(
                 `a Cell Id and value from a Row in the '${tableId}' Table`,
               ),
             ),
             addType(
               `${table}RowCallback`,
-              `(rowId: Id, forEachCell: (cellCallback: ${table}CellCallback) ` +
-                `=> void) => void`,
+              `(rowId: Id, forEachCell: (cellCallback: ${table}CellCallback)` +
+                `${RETURNS_VOID})${RETURNS_VOID}`,
               getCallbackDoc(
                 `a Row Id from the '${tableId}' Table, and a Cell iterator`,
               ),
@@ -214,10 +221,10 @@ export const getStoreApi = (
       mapTableSchema(
         (tableId, tableTypes) =>
           `[tableId: '${tableId}', ` +
-          `forEachRow: (rowCallback: ${tableTypes[5]}) => void]`,
+          `forEachRow: (rowCallback: ${tableTypes[5]})${RETURNS_VOID}]`,
       ),
       ' | ',
-    )}) => void`,
+    )})${RETURNS_VOID}`,
     getCallbackDoc('a Table Id, and a Row iterator'),
   );
   const getCellChangeType = addType(
@@ -235,35 +242,35 @@ export const getStoreApi = (
   const tablesListenerType = addType(
     'TablesListener',
     `(${storeInstance}: ${storeType}, ` +
-      `getCellChange: ${getCellChangeType} | undefined) => void`,
+      `getCellChange: ${getCellChangeType}${OR_UNDEFINED})${RETURNS_VOID}`,
     getListenerTypeDoc(1),
   );
   const tableIdsListenerType = addType(
     'TableIdsListener',
-    `(${storeInstance}: ${storeType}) => void`,
+    `(${storeInstance}: ${storeType})${RETURNS_VOID}`,
     getListenerTypeDoc(2),
   );
   const tableListenerType = addType(
     'TableListener',
     `(${storeInstance}: ${storeType}, tableId: ${tableIdType}, ` +
-      `getCellChange: ${getCellChangeType} | undefined) => void`,
+      `getCellChange: ${getCellChangeType}${OR_UNDEFINED})${RETURNS_VOID}`,
     getListenerTypeDoc(3),
   );
   const rowIdsListenerType = addType(
     'RowIdsListener',
-    `(${storeInstance}: ${storeType}, tableId: ${tableIdType}) => void`,
+    `(${storeInstance}: ${storeType}, tableId: ${tableIdType})${RETURNS_VOID}`,
     getListenerTypeDoc(4, 3),
   );
   const rowListenerType = addType(
     'RowListener',
     `(${storeInstance}: ${storeType}, tableId: ${tableIdType}, rowId: Id, ` +
-      `getCellChange: ${getCellChangeType} | undefined) => void`,
+      `getCellChange: ${getCellChangeType}${OR_UNDEFINED})${RETURNS_VOID}`,
     getListenerTypeDoc(5, 3),
   );
   const cellIdsListenerType = addType(
     'CellIdsListener',
-    `(${storeInstance}: ${storeType}, tableId: ${tableIdType}, rowId: Id) ` +
-      '=> void',
+    `(${storeInstance}: ${storeType}, tableId: ${tableIdType}, rowId: Id)` +
+      RETURNS_VOID,
     getListenerTypeDoc(6, 5),
   );
   const cellListenerType = addType(
@@ -277,39 +284,39 @@ export const getStoreApi = (
               (cellId, type) =>
                 `[${storeInstance}: ${storeType}, tableId: '${tableId}', ` +
                 `rowId: Id, cellId: '${cellId}', ` +
-                `newCell: ${type} | undefined, ` +
-                `oldCell: ${type} | undefined, ` +
+                `newCell: ${type}${OR_UNDEFINED}, ` +
+                `oldCell: ${type}${OR_UNDEFINED}, ` +
                 `getCellChange: ${getCellChangeType} ` +
                 '| undefined]',
             ),
           ),
         ),
         ' | ',
-      )}) => void`,
+      )})${RETURNS_VOID}`,
     getListenerTypeDoc(7, 5),
   );
   const invalidCellListenerType = addType(
     'InvalidCellListener',
     `(${storeInstance}: ${storeType}, tableId: Id, rowId: Id, cellId: Id, ` +
-      'invalidCells: any[]) => void;',
+      `invalidCells: any[])${RETURNS_VOID};`,
     getListenerTypeDoc(8),
   );
   const transactionListenerType = addType(
     'TransactionListener',
-    `(${storeInstance}: ${storeType}, cellsTouched: boolean) => void;`,
+    `(${storeInstance}: ${storeType}, cellsTouched: boolean)${RETURNS_VOID};`,
     `${A_FUNCTION_FOR} listening to the completion of a transaction`,
   );
 
   addMethod(
     `hasTables`,
-    '',
+    EMPTY_STRING,
     BOOLEAN,
     storeMethod('hasTables'),
     getHasDoc('any Table'),
   );
   addMethod(
     `getTables`,
-    '',
+    EMPTY_STRING,
     tablesType,
     storeMethod('getTables'),
     getStoreContentDoc(),
@@ -323,16 +330,16 @@ export const getStoreApi = (
   );
   addMethod(
     `delTables`,
-    '',
+    EMPTY_STRING,
     storeType,
     fluentStoreMethod('delTables'),
     getStoreContentDoc(3),
   );
   addMethod(
     `getTableIds`,
-    '',
+    EMPTY_STRING,
     `${tableIdType}[]`,
-    storeMethod('getTableIds', '', `${tableIdType}[]`),
+    storeMethod('getTableIds', EMPTY_STRING, `${tableIdType}[]`),
     getIdsDoc('Table', THE_STORE),
   );
   addMethod(
@@ -372,14 +379,14 @@ export const getStoreApi = (
 
       addMethod(
         `has${tableName}Table`,
-        '',
+        EMPTY_STRING,
         BOOLEAN,
         storeMethod('hasTable', TABLE_ID),
         getHasDoc(getTableDoc(tableId)),
       );
       addMethod(
         `get${tableName}Table`,
-        '',
+        EMPTY_STRING,
         tableType,
         storeMethod('getTable', TABLE_ID, tableType),
         getTableContentDoc(tableId),
@@ -393,14 +400,14 @@ export const getStoreApi = (
       );
       addMethod(
         `del${tableName}Table`,
-        '',
+        EMPTY_STRING,
         storeType,
         fluentStoreMethod('delTable', TABLE_ID),
         getTableContentDoc(tableId, 3),
       );
       addMethod(
         `get${tableName}RowIds`,
-        '',
+        EMPTY_STRING,
         'Ids',
         storeMethod('getRowIds', TABLE_ID),
         getIdsDoc('Row', getTableDoc(tableId)),
@@ -448,7 +455,7 @@ export const getStoreApi = (
       addMethod(
         `add${tableName}Row`,
         `row: ${rowWhenSetType}`,
-        'Id | undefined',
+        `Id${OR_UNDEFINED}`,
         storeMethod('addRow', `${TABLE_ID}, row`),
         `Adds a new Row to ${getTableDoc(tableId)}`,
       );
@@ -495,7 +502,7 @@ export const getStoreApi = (
             getHasDoc(getCellDoc(cellId), getRowDoc(tableId)),
           );
           const returnCellType = `${type}${
-            isUndefined(defaultValue) ? ' | undefined' : ''
+            isUndefined(defaultValue) ? OR_UNDEFINED : EMPTY_STRING
           }`;
           addMethod(
             `get${tableName}${cellName}Cell`,
@@ -532,7 +539,7 @@ export const getStoreApi = (
 
   addMethod(
     'getJson',
-    '',
+    EMPTY_STRING,
     'Json',
     storeMethod('getJson'),
     `${verbs[0]} a string serialization ${THE_CONTENT_OF_THE_STORE}`,
@@ -557,7 +564,7 @@ export const getStoreApi = (
   );
   addMethod(
     'startTransaction',
-    '',
+    EMPTY_STRING,
     storeType,
     fluentStoreMethod('startTransaction'),
     'Explicitly starts a transaction',
@@ -575,14 +582,14 @@ export const getStoreApi = (
     'addTablesListener',
     `${LISTENER}: ${tablesListenerType}, mutator?: boolean`,
     'Id',
-    storeListener('addTablesListener', '', 'mutator'),
+    storeListener('addTablesListener', EMPTY_STRING, 'mutator'),
     `${REGISTERS_A_LISTENER} whenever ${THE_CONTENT_OF_THE_STORE} changes`,
   );
   addMethod(
     'addTableIdsListener',
     `${LISTENER}: ${tableIdsListenerType}, mutator?: boolean`,
     'Id',
-    storeListener('addTableIdsListener', '', 'mutator'),
+    storeListener('addTableIdsListener', EMPTY_STRING, 'mutator'),
     getListenerDoc('the Table Ids', THE_STORE, 1),
   );
   addMethod(
@@ -667,7 +674,7 @@ export const getStoreApi = (
 
   addMethod(
     'getStore',
-    '',
+    EMPTY_STRING,
     'Store',
     'store',
     `${verbs[0]} the underlying Store object`,
@@ -676,7 +683,7 @@ export const getStoreApi = (
   mapForEach(mapCellTypes, (type, mapCellType) =>
     addType(
       mapCellType,
-      `(cell: ${type} | undefined) => ${type}`,
+      `(cell: ${type}${OR_UNDEFINED}) => ${type}`,
       `Takes a ${type} Cell value and returns another`,
     ),
   );
@@ -716,7 +723,7 @@ export const getStoreApi = (
               `'${type}'`,
             )}${
               isUndefined(defaultValue)
-                ? ''
+                ? EMPTY_STRING
                 : `, [${DEFAULT2}]: ${
                     isString(defaultValue)
                       ? addConstant(snake(defaultValue), `'${defaultValue}'`)
@@ -749,7 +756,7 @@ export const getStoreApi = (
       `${EXPORT} interface ${storeType} {`,
       ...getMethods(0),
       `}`,
-      '',
+      EMPTY_STRING,
       comment(`Creates a ${storeType} object`),
       `${EXPORT} function create${storeType}(): ${storeType};`,
     ),
