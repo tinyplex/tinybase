@@ -113,14 +113,15 @@ export const createTools: typeof createToolsDecl = getCreateFunction(
     const getPrettyStoreApi = async (
       module: string,
     ): Promise<[string, string]> => {
-      const files = getStoreApi(module);
+      let format: (str: string, _config: any) => string;
       try {
-        const {format} = await import('prettier');
-        return arrayMap(files, (file) =>
-          formatJsDoc(format(file, prettierConfig)),
-        ) as [string, string];
-      } catch {}
-      return files;
+        format = (await import('prettier')).format;
+      } catch {
+        format = (str) => str;
+      }
+      return arrayMap(getStoreApi(module), (file) =>
+        formatJsDoc(format(file, prettierConfig)),
+      ) as [string, string];
     };
 
     const tools: Tools = {
