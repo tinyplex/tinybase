@@ -14,7 +14,7 @@ npx tinybase
 
 This will emit a list of the commands that are available:
 
-```
+```bash
 tinybase <command>
 
 Usage:
@@ -61,7 +61,7 @@ npx tinybase getStoreApi schema.json shop api
 
 This will list out the two files that have been generated:
 
-```
+```bash
     Definition: [...]/api/shop.d.ts
 Implementation: [...]/api/shop.ts
 ```

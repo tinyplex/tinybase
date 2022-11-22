@@ -1,4 +1,38 @@
-<p>This is a reverse chronological list of the major <a href="https://beta.tinybase.org/">TinyBase</a> releases, with highlighted features.</p><h2 id="v2-1">v2.1</h2><p>This release allows you to create indexes where a single <a href="https://beta.tinybase.org/api/store/type-aliases/store/row"><code>Row</code></a> <a href="https://beta.tinybase.org/api/common/type-aliases/identity/id"><code>Id</code></a> can exist in multiple slices. You can utilize this to build simple keyword searches, for example.</p><p>Simply provide a custom getSliceIdOrIds function in the <a href="https://beta.tinybase.org/api/indexes/interfaces/indexes/indexes/methods/configuration/setindexdefinition"><code>setIndexDefinition</code></a> method that returns an array of <a href="https://beta.tinybase.org/api/indexes/type-aliases/concept/slice"><code>Slice</code></a> <a href="https://beta.tinybase.org/api/common/type-aliases/identity/ids"><code>Ids</code></a>, rather than a single <a href="https://beta.tinybase.org/api/common/type-aliases/identity/id"><code>Id</code></a>:</p>
+<p>This is a reverse chronological list of the major <a href="https://beta.tinybase.org/">TinyBase</a> releases, with highlighted features.</p><h2 id="v2-2">v2.2</h2><p>This release includes a new <a href="https://beta.tinybase.org/api/tools"><code>tools</code></a> module. These tools are not intended for production use, but are instead to be used as part of your engineering workflow to perform tasks like generating APIs from schemas, or schemas from data. For example:</p>
+
+```js
+const store = createStore().setTable('pets', {
+  fido: {species: 'dog'},
+  felix: {species: 'cat'},
+  cujo: {species: 'dog'},
+});
+
+const tools = createTools(store);
+const [dTs, ts] = tools.getStoreApi('shop');
+
+// -- shop.d.ts --
+/* Represents the 'pets' Table. */
+export type PetsTable = {[rowId: Id]: PetsRow};
+/* Represents a Row when getting the content of the 'pets' Table. */
+export type PetsRow = {species: string};
+//...
+
+// -- shop.ts --
+export const createShop: typeof createShopDecl = () => {
+  //...
+};
+```
+
+<p>This release includes a new <code>tinybase</code> CLI tool which allows you to generate Typescript definition and implementation files direct from a schema file:</p>
+
+```bash
+npx tinybase getStoreApi schema.json shop api
+
+    Definition: [...]/api/shop.d.ts
+Implementation: [...]/api/shop.ts
+```
+
+<p>Finally, the <a href="https://beta.tinybase.org/api/tools"><code>tools</code></a> module also provides ways to track the overall size and structure of a <a href="https://beta.tinybase.org/api/store/interfaces/store/store"><code>Store</code></a> for use while debugging.</p><h2 id="v2-1">v2.1</h2><p>This release allows you to create indexes where a single <a href="https://beta.tinybase.org/api/store/type-aliases/store/row"><code>Row</code></a> <a href="https://beta.tinybase.org/api/common/type-aliases/identity/id"><code>Id</code></a> can exist in multiple slices. You can utilize this to build simple keyword searches, for example.</p><p>Simply provide a custom getSliceIdOrIds function in the <a href="https://beta.tinybase.org/api/indexes/interfaces/indexes/indexes/methods/configuration/setindexdefinition"><code>setIndexDefinition</code></a> method that returns an array of <a href="https://beta.tinybase.org/api/indexes/type-aliases/concept/slice"><code>Slice</code></a> <a href="https://beta.tinybase.org/api/common/type-aliases/identity/ids"><code>Ids</code></a>, rather than a single <a href="https://beta.tinybase.org/api/common/type-aliases/identity/id"><code>Id</code></a>:</p>
 
 ```js
 const store = createStore().setTable('pets', {

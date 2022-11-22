@@ -23,7 +23,6 @@
       reconciled updates, so your UI only spends cycles on the data that changes.
     </li>
     <li>
-      <em>NEW!</em>
       <a href='#build-complex-queries-with-tinyql'>Powerful query engine</a> to 
       select, join, filter, group, sort and paginate data - reactively.
     </li>
@@ -40,6 +39,11 @@
       <a href='#call-hooks-to-bind-to-data'>idiomatic bindings</a> to your
       UI</a>.
     </li>
+    <li>
+      <em>NEW!</em>
+      <a href='#generate-orm-like-apis'>Generate ORM-like APIs</a> in 
+      TypeScript, based on your schema or inferred from actual data.
+    </li>
   </ul>
   <p>
     <em>Tiny by name, tiny by nature</em>, TinyBase only costs
@@ -52,7 +56,7 @@
   </p>
 </section>
 
-<a id='new' href='/guides/releases/#v2-1'><em>NEW!</em> v2.1 release</a>
+<a id='new' href='/guides/releases/#v2-2'><em>NEW!</em> v2.2 release</a>
 
 ---
 
@@ -422,6 +426,31 @@ console.log(store.getCell('pets', 'felix', 'sold'));
 // -> false
 ```
 
+> ## Generate ORM-like APIs
+>
+> You can easily create TypeScript `.d.ts` definitions that model your data and
+> encourage type-safety when reading and writing data - as well as `.ts`
+> implementations that provide ORM-like methods for your named tables.
+>
+> Read more about TinyBase's tools and CLI in the Developer Tools guide.
+
+```js
+const tools = createTools(store);
+const [dTs, ts] = tools.getStoreApi('shop');
+
+// -- shop.d.ts --
+/* Represents the 'pets' Table. */
+export type PetsTable = {[rowId: Id]: PetsRow};
+/* Represents a Row when getting the content of the 'pets' Table. */
+export type PetsRow = {species: string /* ... */};
+//...
+
+// -- shop.ts --
+export const createShop: typeof createShopDecl = () => {
+  //...
+};
+```
+
 > ## Did we say tiny?
 >
 > If you use the basic store module alone, you'll only add a gzipped
@@ -430,7 +459,8 @@ console.log(store.getCell('pets', 'felix', 'sold'));
 > _@@EVAL("toKb(sizes.get('tinybase.js.gz'))")_.
 >
 > The `ui-react` adaptor is just another
-> _@@EVAL("toKb(sizes.get('ui-react.js.gz'))")_, and everything is fast. Life's
+> _@@EVAL("toKb(sizes.get('ui-react.js.gz'))")_, the developer tools module is
+> _@@EVAL("toKb(sizes.get('tools.js.gz'))")_, and everything is fast. Life's
 > easy when you have zero dependencies!
 >
 > Read more about how TinyBase is structured in the Architecture guide.
