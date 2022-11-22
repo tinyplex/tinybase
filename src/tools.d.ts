@@ -101,6 +101,7 @@ export type StoreStatsRowDetail = {
  * A Tools object lets you run various utilities on, and get certain information
  * about, Store objects in development.
  *
+ * @see Developer Tools guides
  * @category Tools
  * @since v2.2.0
  */
@@ -341,7 +342,6 @@ export interface Tools {
    *
    * See the documentation for the getStoreApi method for details of the content
    * of the generated files.
-   *
    *
    * @param storeName The name you want to provide to the generated Store, which
    * should also be used to save the `.d.ts` and `.ts` files.
