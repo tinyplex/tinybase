@@ -180,3 +180,6 @@ prop is, to let you reference multiple Queries objects by Id.
 
 The support for Queries objects in the ui-react module is very similar to that
 for the Store object, making it easy to attach queries to your user interface.
+
+We now move on to learning about the tools that TinyBase provides.
+Read more about these in the Developer Tools guide.

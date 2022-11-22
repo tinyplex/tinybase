@@ -86,6 +86,7 @@ const prepareTestResultsFromBlock = (block: string, prefix: string): void => {
         )
         ?.replace(/\/\/ \.\.\.$/gm, 'await 0;\n')
         ?.replace(/^(.*?) \/\/ !act$/gm, 'act(() => {$1});')
+        ?.replace(/^(.*?) \/\/ !yolo$/gm, '')
         ?.replace(/\n+/g, '\n') ?? '';
     // lol what could go wrong
     try {
