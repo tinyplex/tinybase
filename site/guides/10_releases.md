@@ -3,6 +3,49 @@
 This is a reverse chronological list of the major TinyBase releases, with
 highlighted features.
 
+## v2.2
+
+This release includes a new tools module. These tools are not intended for
+production use, but are instead to be used as part of your engineering workflow
+to perform tasks like generating APIs from schemas, or schemas from data. For
+example:
+
+```js
+const store = createStore().setTable('pets', {
+  fido: {species: 'dog'},
+  felix: {species: 'cat'},
+  cujo: {species: 'dog'},
+});
+
+const tools = createTools(store);
+const [dTs, ts] = tools.getStoreApi('shop');
+
+// -- shop.d.ts --
+/* Represents the 'pets' Table. */
+export type PetsTable = {[rowId: Id]: PetsRow};
+/* Represents a Row when getting the content of the 'pets' Table. */
+export type PetsRow = {species: string};
+//...
+
+// -- shop.ts --
+export const createShop: typeof createShopDecl = () => {
+  //...
+};
+```
+
+This release includes a new `tinybase` CLI tool which allows you to generate
+Typescript definition and implementation files direct from a schema file:
+
+```bash
+npx tinybase getStoreApi schema.json shop api
+
+    Definition: [...]/api/shop.d.ts
+Implementation: [...]/api/shop.ts
+```
+
+Finally, the tools module also provides ways to track the overall size and
+structure of a Store for use while debugging.
+
 ## v2.1
 
 This release allows you to create indexes where a single Row Id can exist in
