@@ -19,7 +19,11 @@ const store = createStore().setTable('pets', {
 
 const tools = createTools(store);
 const [dTs, ts] = tools.getStoreApi('shop');
+```
 
+This will generate two files:
+
+```js yolo
 // -- shop.d.ts --
 /* Represents the 'pets' Table. */
 export type PetsTable = {[rowId: Id]: PetsRow};
@@ -56,7 +60,7 @@ Simply provide a custom getSliceIdOrIds function in the setIndexDefinition
 method that returns an array of Slice Ids, rather than a single Id:
 
 ```js
-const store = createStore().setTable('pets', {
+store.setTable('pets', {
   fido: {species: 'dog'},
   felix: {species: 'cat'},
   rex: {species: 'dog'},

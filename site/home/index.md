@@ -434,7 +434,7 @@ console.log(store.getCell('pets', 'felix', 'sold'));
 >
 > Read more about TinyBase's tools and CLI in the Developer Tools guide.
 
-```js
+```js yolo
 const tools = createTools(store);
 const [dTs, ts] = tools.getStoreApi('shop');
 
