@@ -1,13 +1,14 @@
 #! /usr/bin/env node
 
+import {dirname, resolve} from 'path';
 import {readFileSync, writeFileSync} from 'fs';
 import {UTF8} from './common/strings';
 import {arrayForEach} from './common/array';
 import {createStore} from './tinybase';
 import {createTools} from './tools';
+import {fileURLToPath} from 'url';
 import {jsonParse} from './common/other';
 import {objMap} from './common/obj';
-import {resolve} from 'path';
 
 const log = (...lines: string[]) =>
   arrayForEach(lines, (line) => process.stdout.write(`${line}\n`));
@@ -23,7 +24,11 @@ const help = () => {
   );
 };
 
-const version = () => log(getJson('./package.json').version);
+const version = () =>
+  log(
+    getJson(resolve(dirname(fileURLToPath(import.meta.url)), '../package.json'))
+      .version,
+  );
 
 const getStoreApi = async (
   schemaFile: string,

@@ -295,12 +295,12 @@ export const getStoreApi = (
   const invalidCellListenerType = addType(
     'InvalidCellListener',
     `(${storeInstance}: ${storeType}, tableId: Id, rowId: Id, cellId: Id, ` +
-      `invalidCells: any[])${RETURNS_VOID};`,
+      `invalidCells: any[])${RETURNS_VOID}`,
     getListenerTypeDoc(8),
   );
   const transactionListenerType = addType(
     'TransactionListener',
-    `(${storeInstance}: ${storeType}, cellsTouched: boolean)${RETURNS_VOID};`,
+    `(${storeInstance}: ${storeType}, cellsTouched: boolean)${RETURNS_VOID}`,
     `${A_FUNCTION_FOR} listening to the completion of a transaction`,
   );
 

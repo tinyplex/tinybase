@@ -753,10 +753,10 @@ export type CellIdsListener = (s: S, tableId: TableId, rowId: Id) => void;
 export type CellListener = (...[s, tableId, rowId, cellId, newCell, oldCell, getCellChange]: [s: S, tableId: 't1', rowId: Id, cellId: 'c1', newCell: number | undefined, oldCell: number | undefined, getCellChange: GetCellChange | undefined] | [s: S, tableId: 't1', rowId: Id, cellId: 'c2', newCell: string | undefined, oldCell: string | undefined, getCellChange: GetCellChange | undefined]) => void;
 
 /** A function for listening to changes to invalid Cell changes in the Store. */
-export type InvalidCellListener = (s: S, tableId: Id, rowId: Id, cellId: Id, invalidCells: any[]) => void;;
+export type InvalidCellListener = (s: S, tableId: Id, rowId: Id, cellId: Id, invalidCells: any[]) => void;
 
 /** A function for listening to the completion of a transaction. */
-export type TransactionListener = (s: S, cellsTouched: boolean) => void;;
+export type TransactionListener = (s: S, cellsTouched: boolean) => void;
 
 /** Takes a number Cell value and returns another. */
 export type MapNumber = (cell: number | undefined) => number;

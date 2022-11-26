@@ -187,7 +187,15 @@ const compileModule = async (
   const {default: shebang} = await import('rollup-plugin-preserve-shebang');
 
   const inputConfig = {
-    external: ['react', 'fs', 'path', 'prettier', './tinybase', './tools'],
+    external: [
+      'fs',
+      'path',
+      'prettier',
+      'react',
+      'url',
+      './tinybase',
+      './tools',
+    ],
     input: `src/${module}.ts`,
     plugins: [
       esbuild({
