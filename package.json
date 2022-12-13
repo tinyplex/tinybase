@@ -1,6 +1,6 @@
 {
   "name": "tinybase",
-  "version": "2.2.5",
+  "version": "2.2.6",
   "author": "jamesgpearce",
   "repository": "github:tinyplex/tinybase",
   "license": "MIT",
@@ -91,7 +91,7 @@
     "buffer-replace": "^1.0.0",
     "country-flag-emoji-json": "^2.0.0",
     "cspell": "^6.17.0",
-    "esbuild": "^0.15.15",
+    "esbuild": "^0.16.5",
     "eslint": "^8.29.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-jest": "^27.1.6",
