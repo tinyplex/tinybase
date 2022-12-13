@@ -1,3 +1,4 @@
+import {EMPTY_STRING} from '../common/strings';
 import {Id} from '../common.d';
 
 const THE_CONTENT_OF = 'the content of';
@@ -43,7 +44,7 @@ export const getListenerDoc = (
   pluralChild = 0,
 ) =>
   `${REGISTERS_A_LISTENER} whenever ${childNoun} in ${parentNoun} change` +
-  (pluralChild ? '' : 's');
+  (pluralChild ? EMPTY_STRING : 's');
 
 export const getStoreContentDoc = (verb = 0) =>
   `${verbs[verb]} ${THE_CONTENT_OF_THE_STORE}`;

@@ -71,7 +71,7 @@ export const camel = (str: string, firstCap = 0) =>
   );
 
 export const snake = (str: string) =>
-  upper(join(str.split(NON_ALPHANUMERIC), '_'));
+  upper(join((str ? str : ' ').split(NON_ALPHANUMERIC), '_'));
 
 export const comment = (doc: string) => `/** ${doc}. */`;
 
