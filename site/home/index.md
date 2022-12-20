@@ -510,8 +510,9 @@ export const createShop: typeof createShopDecl = () => {
 
 > ## About
 >
-> Building TinyBase was an interesting exercise in API design, minification, and
-> documentation. It could not have been built without these great
+> Building TinyBase was originally an interesting exercise for <a rel="me"
+> href="https://hachyderm.io/@jamesgpearce">me</a> in API design, minification,
+> and documentation. It could not have been built without these great
 > [projects](/guides/how-tinybase-is-built/credits/#giants) and
-> [friends](/guides/how-tinybase-is-built/credits/#and-friends), and we hope you
+> [friends](/guides/how-tinybase-is-built/credits/#and-friends), and I hope you
 > enjoy using it!
