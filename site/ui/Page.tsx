@@ -11,6 +11,8 @@ import {Header} from './Header';
 import {Main} from './Main';
 import React from 'react';
 
+const GTM_ID = 'G-D1MGR8VRWJ';
+
 const FONTS = [
   'lato-light',
   'lato-regular',
@@ -39,14 +41,19 @@ export const Page: NoPropComponent = () => {
   const title =
     (pageNode.name != 'TinyBase' ? pageNode.name + ' | ' : '') + 'TinyBase';
   const description = isHome
-    ? 'A tiny, reactive JavaScript library ' +
-      'for structured state and tabular data.'
+    ? 'The reactive data store for local-first apps.'
     : pageNode.summary;
 
   return (
     <BuildContext>
       <html>
         <head>
+          <link rel="dns-prefetch" href="https://www.googletagmanager.com/" />
+          <link
+            href={`https://www.googletagmanager.com/gtag/js?id=${GTM_ID}`}
+            rel="preload"
+            as="script"
+          />
           {FONTS.map((font) => (
             <link
               rel="preload"
@@ -57,7 +64,10 @@ export const Page: NoPropComponent = () => {
               key={font}
             />
           ))}
+
           <title>{title}</title>
+          <meta name="description" content={description} />
+
           <meta property="og:type" content="website" />
           <meta property="og:title" content={title} />
           <meta property="og:description" content={description} />
@@ -76,22 +86,9 @@ export const Page: NoPropComponent = () => {
           />
           <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
           <link rel="stylesheet" href="/css/index.css" />
+
           <script
             src={`/js/${isHome ? 'home' : isSingle ? 'single' : 'app'}.js`}
-          />
-          <script
-            async
-            src="https://www.googletagmanager.com/gtag/js?id=G-D1MGR8VRWJ"
-          />
-          <script
-            // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={{
-              __html:
-                `window.dataLayer=window.dataLayer||[];` +
-                `function g(){dataLayer.push(arguments);}` +
-                `g('js',new Date());` +
-                `g('config','G-D1MGR8VRWJ');`,
-            }}
           />
         </head>
         <body>
@@ -99,6 +96,20 @@ export const Page: NoPropComponent = () => {
           <Main />
           <Footer />
         </body>
+        <script
+          async
+          src={`https://www.googletagmanager.com/gtag/js?id=${GTM_ID}`}
+        />
+        <script
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{
+            __html:
+              `window.dataLayer=window.dataLayer||[];` +
+              `function g(){dataLayer.push(arguments);}` +
+              `g('js',new Date());` +
+              `g('config','${GTM_ID}');`,
+          }}
+        />
       </html>
     </BuildContext>
   );

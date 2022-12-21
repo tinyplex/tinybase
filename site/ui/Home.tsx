@@ -7,7 +7,7 @@ export const Home: NoPropComponent = (): any => {
 
   return (
     <article id="home">
-      <img src="/favicon.svg" />
+      <img src="/favicon.svg" alt="Large TinyBase logo" />
       <Markdown markdown={summary} html={true} />
       <Markdown markdown={body} html={true} />
     </article>

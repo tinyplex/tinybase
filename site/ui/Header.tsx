@@ -9,7 +9,7 @@ export const Header: NoPropComponent = () => {
   return (
     <header>
       <a href="/">
-        <img src="/favicon.svg" />
+        <img src="/favicon.svg" alt="TinyBase logo" />
         <span>
           TinyBase
           {version.includes('beta') && (

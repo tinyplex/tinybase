@@ -60,7 +60,7 @@
 
 ---
 
-<a id='start' href='/guides/the-basics/getting-started'>Get started</a>
+<a class='start' href='/guides/the-basics/getting-started'>Get started</a>
 
 <a href='/demos'>Try the demos</a>
 
@@ -480,7 +480,7 @@ export const createShop: typeof createShopDecl = () => {
 
 ---
 
-<a id='start' href='/guides/the-basics/getting-started'>Get started</a>
+<a class='start' href='/guides/the-basics/getting-started'>Get started</a>
 
 <a href='/demos'>Try the demos</a>
 
