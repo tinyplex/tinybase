@@ -63,7 +63,7 @@ const getSizeTable = (sizes: Sizes) =>
           <th class='right'>${
             module == 'tinybase'
               ? 'tinybase&nbsp;(all)'
-              : `<a href='/api/${module}'>${module}</a>`
+              : `<a href='/api/${module}/'>${module}</a>`
           }</th>
           <td>${toKb(sizes.get(`${module}.js.gz`))}</td>
           <td>${toKb(sizes.get(`${module}.js`))}</td>
