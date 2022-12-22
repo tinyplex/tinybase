@@ -1,3 +1,0 @@
-# TinyMovies
-
--> /demos/movie-database
