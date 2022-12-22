@@ -46,7 +46,7 @@ export const Page: NoPropComponent = () => {
 
   return (
     <BuildContext>
-      <html>
+      <html lang="en">
         <head>
           <link rel="dns-prefetch" href="https://www.googletagmanager.com/" />
           <link
