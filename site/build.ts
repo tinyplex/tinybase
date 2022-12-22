@@ -101,10 +101,10 @@ export const build = (outDir: string, api = true, pages = true): void => {
       .addPageForEachNode('/', Page)
       .addPageForEachNode('/', ArticleInner, 'article.html')
       .addTextForEachNode('/', NavJson, 'nav.json')
-      .addTextForEachNode('/demos', ExecutablePen, 'pen.json')
-      .addPageForNode('/api', Page, 'all.html', true)
+      .addTextForEachNode('/demos/', ExecutablePen, 'pen.json')
+      .addPageForNode('/api/', Page, 'all.html', true)
       .addMarkdownForNode('/', Readme, '../readme.md')
-      .addMarkdownForNode('/guides/releases', Readme, '../releases.md');
+      .addMarkdownForNode('/guides/releases/', Readme, '../releases.md');
   }
   docs.publish();
 };

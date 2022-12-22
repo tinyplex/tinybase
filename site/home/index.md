@@ -50,7 +50,7 @@
     <a href='#did-we-say-tiny'>@@EVAL("toKb(sizes.get('store.js.gz'))") -
     @@EVAL("toKb(sizes.get('tinybase.js.gz'))")</a> when compressed, and has 
     zero dependencies. And of course it's <a href='#well-tested-and-documented'>
-    well tested</a>, <a href='/guides/the-basics/getting-started'>fully 
+    well tested</a>, <a href='/guides/the-basics/getting-started/'>fully 
     documented</a>, and <a href='@@EVAL("metadata.repository")'>open source</a>.
     Other <a href="/guides/faq/">FAQs</a>?
   </p>
@@ -60,9 +60,9 @@
 
 ---
 
-<a class='start' href='/guides/the-basics/getting-started'>Get started</a>
+<a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 
-<a href='/demos'>Try the demos</a>
+<a href='/demos/'>Try the demos</a>
 
 <a href='/api/store/interfaces/store/store/'>Read the docs</a>
 
@@ -480,9 +480,9 @@ export const createShop: typeof createShopDecl = () => {
 
 ---
 
-<a class='start' href='/guides/the-basics/getting-started'>Get started</a>
+<a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 
-<a href='/demos'>Try the demos</a>
+<a href='/demos/'>Try the demos</a>
 
 <a href='/api/store/interfaces/store/store/'>Read the docs</a>
 

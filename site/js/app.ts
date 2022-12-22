@@ -84,7 +84,7 @@ addEventListener('load', () => {
     ) {
       go(href);
       event.preventDefault();
-      history.pushState(null, '', href + '/');
+      history.pushState(null, '', href);
     }
   });
 
@@ -98,19 +98,19 @@ addEventListener('load', () => {
   const openClose = (li: HTMLElement) =>
     toggleClass(li, 'open', () => {
       const a = queryElement(li, 'a') as HTMLAnchorElement;
-      if (a.href != location.origin + '/') {
+      if (a.href != location.origin) {
         a.click();
       }
     });
 
   const go = (href: string): void => {
-    fetch(`${href}/nav.json`)
+    fetch(`${href}nav.json`)
       .then((response) => response.json())
       .then((navJson) => {
         delClass(queryElement(nav, 'li.current'), 'current');
         updateNav(navJson, queryElement(nav, 'ul'));
       });
-    fetch(`${href}/article.html`)
+    fetch(`${href}article.html`)
       .then((response) => response.text())
       .then((html) => updateArticle(html));
   };
