@@ -1,4 +1,5 @@
 import {
+  NodeSection,
   NoPropComponent,
   useBaseUrl,
   useIsSingle,
@@ -43,6 +44,7 @@ export const Page: NoPropComponent = () => {
   const description = isHome
     ? 'The reactive data store for local-first apps.'
     : pageNode.summary;
+  const url = `${baseUrl}${pageNode.url}`;
 
   return (
     <BuildContext>
@@ -71,7 +73,7 @@ export const Page: NoPropComponent = () => {
           <meta property="og:type" content="website" />
           <meta property="og:title" content={title} />
           <meta property="og:description" content={description} />
-          <meta property="og:url" content={`${baseUrl}${pageNode.url}`} />
+          <meta property="og:url" content={url} />
           <meta property="og:image" content={`${baseUrl}/favicon_pad.png`} />
 
           <meta name="twitter:card" content="summary" />
@@ -86,6 +88,7 @@ export const Page: NoPropComponent = () => {
           />
           <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
           <link rel="stylesheet" href="/css/index.css" />
+          <link rel="canonical" href={url} />
 
           <script
             src={`/js/${isHome ? 'home' : isSingle ? 'single' : 'app'}.js`}
