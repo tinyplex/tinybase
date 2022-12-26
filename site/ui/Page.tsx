@@ -1,6 +1,6 @@
 import {
-  NodeSection,
   NoPropComponent,
+  NodeSummary,
   useBaseUrl,
   useIsSingle,
   usePageNode,
@@ -43,7 +43,7 @@ export const Page: NoPropComponent = () => {
     (pageNode.name != 'TinyBase' ? pageNode.name + ' | ' : '') + 'TinyBase';
   const description = isHome
     ? 'The reactive data store for local-first apps.'
-    : pageNode.summary;
+    : (NodeSummary({node: pageNode, asText: true}) as any);
   const url = `${baseUrl}${pageNode.url}`;
 
   return (
