@@ -142,9 +142,9 @@ in a transaction for performance.
 const NUMERIC = /^[\d\.-]+$/;
 
 const loadCities = async (store) => {
-  const rows =
-    //    await (await fetch(`https://tinybase.org/assets/cities.tsv`)).text()
-    (await (await fetch(`/assets/cities.tsv`)).text()).split('\n');
+  const rows = (
+    await (await fetch(`https://tinybase.org/assets/cities.tsv`)).text()
+  ).split('\n');
   const cellIds = rows.shift().split('\t');
   store.transaction(() =>
     rows.forEach((row, rowId) =>
