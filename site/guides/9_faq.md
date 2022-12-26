@@ -47,7 +47,7 @@ ensure that test coverage remains at 100%!
 
 ## Are There Good Examples Of TinyBase In Use?
 
-Please see the [demos](/demos) for ideas!
+Please see the [demos](/demos/) for ideas!
 
 ## What If I Have Other Questions?
 
