@@ -1799,7 +1799,7 @@ describe('Context Provider', () => {
         act(() => {
           renderer.root.findByType('h3').props.onClick();
         });
-        expect((renderer.toJSON() as any)[0].children).toEqual(['']);
+        expect((renderer.toJSON() as any)[0].children).toBeNull();
         expect((renderer.toJSON() as any)[1].children).toBeNull();
         expect(then).toHaveBeenCalledTimes(1);
       });
@@ -2126,7 +2126,7 @@ describe('Context Provider', () => {
         act(() => {
           renderer.root.findByType('h3').props.onClick();
         });
-        expect((renderer.toJSON() as any)[0].children).toEqual(['']);
+        expect((renderer.toJSON() as any)[0].children).toBeNull();
         expect((renderer.toJSON() as any)[1].children).toBeNull();
       });
     });
