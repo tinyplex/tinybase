@@ -11,7 +11,7 @@ export const Home: NoPropComponent = (): any => {
         src="/favicon.svg"
         alt="Large TinyBase logo"
         width="100%"
-        height="100%"
+        height="auto"
       />
       <Markdown markdown={summary} html={true} />
       <Markdown markdown={body} html={true} />
