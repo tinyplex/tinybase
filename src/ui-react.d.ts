@@ -285,8 +285,8 @@ export function useCreateStore(
  * component.
  *
  * The useStore hook lets you either get a reference to the default Store (when
- * called without a parameter), or one of the Store objects that are named by
- * Id (when called with an Id parameter).
+ * called without a parameter), or one of the Store objects that are named by Id
+ * (when called with an Id parameter).
  *
  * @param id An optional Id for accessing a Store that was named with an Id in
  * the Provider.
@@ -4450,8 +4450,8 @@ export function useResultTable(
  * @param queryId The Id of the query.
  * @param queriesOrQueriesId The Queries object to be accessed: omit for the
  * default context Queries object, provide an Id for a named context Queries
- * object, or provide an explicit reference.
- * See the addResultRowIdsListener method for more details.
+ * object, or provide an explicit reference. See the addResultRowIdsListener
+ * method for more details.
  * @returns An array of the Ids of every Row in the result of the query.
  * @example
  * This example creates a Queries object outside the application, which is used
@@ -6876,8 +6876,8 @@ export type SliceProps = {
 
 /**
  * RemoteRowProps props are used for components that refer to a single
- * Relationship in a Relationships object, and where you want to render a
- * remote Row based on a local Row, such as in the RemoteRowView component.
+ * Relationship in a Relationships object, and where you want to render a remote
+ * Row based on a local Row, such as in the RemoteRowView component.
  *
  * @category Props
  */
@@ -6958,9 +6958,8 @@ export type LocalRowsProps = {
 
 /**
  * LinkedRowsProps props are used for components that refer to a single
- * Relationship in a Relationships object, and where you want to render a
- * linked list of Rows starting from a first Row, such as the LinkedRowsView
- * component.
+ * Relationship in a Relationships object, and where you want to render a linked
+ * list of Rows starting from a first Row, such as the LinkedRowsView component.
  *
  * @category Props
  */
