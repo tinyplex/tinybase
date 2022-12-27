@@ -18,7 +18,8 @@ const store = createStore().setCell('pets', 'fido', 'color', 'brown');
 const App = () => <span>{useCell('pets', 'fido', 'color', store)}</span>;
 
 const app = document.createElement('div');
-ReactDOM.render(<App />, app); // !act
+const root = ReactDOMClient.createRoot(app);
+root.render(<App />); // !act
 console.log(app.innerHTML);
 // -> '<span>brown</span>'
 
@@ -43,7 +44,7 @@ object:
 
 ```jsx
 const App2 = () => <span>{JSON.stringify(useTable('pets', store))}</span>;
-ReactDOM.render(<App2 />, app); // !act
+root.render(<App2 />); // !act
 console.log(app.innerHTML);
 // -> '<span>{"fido":{"color":"walnut"}}</span>'
 
@@ -88,7 +89,7 @@ const App3 = () => {
     </span>
   );
 };
-ReactDOM.render(<App3 />, app); // !act
+root.render(<App3 />); // !act
 console.log(app.innerHTML);
 // -> '<span>Sold: no<br><button>Sell</button></span>'
 
@@ -128,10 +129,10 @@ const App4 = () => {
   return <span>{store.getCell('pets', 'fido', 'species')}</span>;
 };
 
-ReactDOM.render(<App4 />, app);
+root.render(<App4 />); // !act
 // -> 'Store created'
 
-ReactDOM.render(<App4 />, app);
+root.render(<App4 />); // !act
 // No second Store creation
 ```
 

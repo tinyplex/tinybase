@@ -21,7 +21,8 @@ metrics.setMetricDefinition('highestPrice', 'species', 'max', 'price');
 const App = () => <span>{useMetric('highestPrice', metrics)}</span>;
 
 const app = document.createElement('div');
-ReactDOM.render(<App />, app); // !act
+const root = ReactDOMClient.createRoot(app);
+root.render(<App />); // !act
 console.log(app.innerHTML);
 // -> '<span>5</span>'
 
@@ -53,7 +54,7 @@ const App2 = () => {
   return <span>{metrics.getMetric('highestPrice')}</span>;
 };
 
-ReactDOM.render(<App2 />, app); // !act
+root.render(<App2 />); // !act
 console.log(app.innerHTML);
 // -> '<span>5</span>'
 ```
@@ -70,7 +71,7 @@ const App3 = () => (
   </div>
 );
 
-ReactDOM.render(<App3 />, app); // !act
+root.render(<App3 />); // !act
 console.log(app.innerHTML);
 // -> '<div>20</div>'
 ```
@@ -112,7 +113,7 @@ const Pane = () => (
   </span>
 );
 
-ReactDOM.render(<App4 />, app); // !act
+root.render(<App4 />); // !act
 console.log(app.innerHTML);
 // -> '<span>5,5</span>'
 ```

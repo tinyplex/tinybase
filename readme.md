@@ -31,7 +31,8 @@ const App1 = () => {
 };
 
 const app = document.createElement('div');
-ReactDOM.render(<App1 />, app);
+const root = ReactDOMClient.createRoot(app);
+root.render(<App1 />);
 console.log(app.innerHTML);
 // -> 'Color: brown'
 
@@ -59,7 +60,7 @@ const App2 = () => (
   />
 );
 
-ReactDOM.render(<App2 />, app);
+root.render(<App2 />);
 console.log(app.innerHTML);
 // -> 'species: dog<hr>color: walnut<hr>sold: false<hr>'
 
@@ -67,7 +68,7 @@ store.setCell('pets', 'fido', 'sold', true);
 console.log(app.innerHTML);
 // -> 'species: dog<hr>color: walnut<hr>sold: true<hr>'
 
-ReactDOM.unmountComponentAtNode(app);
+root.unmount();
 ```
 
 <section><h2 id="apply-schemas-to-tables">Apply schemas to tables.</h2><p>By default, a <a href="https://tinybase.org/api/store/type-aliases/store/row/"><code>Row</code></a> can contain any arbitrary <a href="https://tinybase.org/api/store/type-aliases/store/cell/"><code>Cell</code></a>. But you can add a schema to a <a href="https://tinybase.org/api/store/interfaces/store/store/"><code>Store</code></a> to ensure that the values are always what you expect. For example, you can limit their types, and provide defaults. You can also create mutating listeners that can programmatically enforce a schema.</p><p>In this example, we set a second <a href="https://tinybase.org/api/store/type-aliases/store/row/"><code>Row</code></a> without the <code>sold</code> <a href="https://tinybase.org/api/store/type-aliases/store/cell/"><code>Cell</code></a> in it. The schema ensures it&#x27;s present with default of <code>false</code>.</p><p>Read more about schemas in the <a href="https://tinybase.org/guides/schemas-and-persistence/using-schemas/">Using Schemas</a> guide.</p></section>

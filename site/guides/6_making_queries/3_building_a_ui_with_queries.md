@@ -47,7 +47,8 @@ const App = () => (
 );
 
 const app = document.createElement('div');
-ReactDOM.render(<App />, app); // !act
+const root = ReactDOMClient.createRoot(app);
+root.render(<App />); // !act
 console.log(app.innerHTML);
 // -> '<span>["fido","cujo"]</span>'
 
@@ -81,7 +82,7 @@ const App2 = () => {
   return <span>{JSON.stringify(useResultRowIds('dogColors', queries))}</span>;
 };
 
-ReactDOM.render(<App2 />, app); // !act
+root.render(<App2 />); // !act
 console.log(app.innerHTML);
 // -> '<span>["fido","cujo"]</span>'
 ```
@@ -123,7 +124,7 @@ store.setTable('pets', {
   cujo: {species: 'dog', color: 'black'},
 });
 
-ReactDOM.render(<App3 />, app); // !act
+root.render(<App3 />); // !act
 console.log(app.innerHTML);
 // -> '<div><span>fido: brown</span><span>cujo: black</span></div>'
 ```
@@ -168,7 +169,7 @@ const Pane = () => (
   </span>
 );
 
-ReactDOM.render(<App4 />, app); // !act
+root.render(<App4 />); // !act
 console.log(app.innerHTML);
 // -> '<span>cujo:{color:{black}}/</span>'
 ```

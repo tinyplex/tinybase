@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import * as ReactDOMClient from 'react-dom/client';
 import * as ReactDOMTestUtils from 'react-dom/test-utils';
 import * as TinyBase from '../../lib/debug/tinybase';
 import * as TinyBaseReact from '../../lib/debug/ui-react';
@@ -13,12 +13,14 @@ import {transformSync} from 'esbuild';
   TinyBaseReact,
   TinyBaseTools,
   ReactDOMTestUtils,
-  {React, ReactDOM},
+  {React, ReactDOMClient},
 ].forEach((module) =>
   Object.entries(module).forEach(([key, value]) => {
     (globalThis as any)[key] = value;
   }),
 );
+
+(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
 
 type Results = [any, any][];
 
@@ -76,9 +78,12 @@ const prepareTestResultsFromBlock = (block: string, prefix: string): void => {
         ?.replace(/console\.log/gm, '_actual.push')
         ?.replace(
           /\/\/ -> (.+?)\s(.*?Event\(.*?)$/gm,
-          '$1.dispatchEvent(new $2);\n',
+          'act(() => $1.dispatchEvent(new $2));\n',
         )
-        ?.replace(/\/\/ -> (.*?Event\(.*?)$/gm, 'dispatchEvent(new $1);\n')
+        ?.replace(
+          /\/\/ -> (.*?Event\(.*?)$/gm,
+          'act(() => dispatchEvent(new $1));\n',
+        )
         ?.replace(/\/\/ -> (.*?)$/gm, '_expected.push($1);\n')
         ?.replace(
           /\/\/ \.\.\. \/\/ !act$/gm,

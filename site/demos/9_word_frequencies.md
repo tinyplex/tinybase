@@ -28,7 +28,6 @@ const {createIndexes, createStore} = TinyBase;
 const {Provider, useCreateIndexes, useCreateStore, useRow, useSliceRowIds} =
   TinyBaseUiReact;
 const {useCallback, useMemo, useState} = React;
-const {render} = ReactDOM;
 ```
 
 ## Loading The Data
@@ -151,9 +150,9 @@ which contains the text that the user has entered into the search box.
 Let's go!
 
 ```jsx
-addEventListener('load', () => {
-  render(<App />, document.body);
-});
+addEventListener('load', () =>
+  ReactDOM.createRoot(document.body).render(<App />),
+);
 ```
 
 ## The `Input` Component

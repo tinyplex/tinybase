@@ -126,7 +126,8 @@ const App1 = () => {
 };
 
 const app = document.createElement('div');
-ReactDOM.render(<App1 />, app); // !act
+const root = ReactDOMClient.createRoot(app);
+root.render(<App1 />); // !act
 console.log(app.innerHTML);
 // -> 'Color: brown'
 
@@ -172,7 +173,7 @@ const App2 = () => (
   />
 );
 
-ReactDOM.render(<App2 />, app); // !act
+root.render(<App2 />); // !act
 console.log(app.innerHTML);
 // -> 'species: dog<hr>color: walnut<hr>sold: false<hr>'
 
@@ -180,7 +181,7 @@ store.setCell('pets', 'fido', 'sold', true); // !act
 console.log(app.innerHTML);
 // -> 'species: dog<hr>color: walnut<hr>sold: true<hr>'
 
-ReactDOM.unmountComponentAtNode(app); // !act
+root.unmount(); // !act
 ```
 
 > ## Apply schemas to tables.

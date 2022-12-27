@@ -34,7 +34,8 @@ const App = () => (
 );
 
 const app = document.createElement('div');
-ReactDOM.render(<App />, app); // !act
+const root = ReactDOMClient.createRoot(app);
+root.render(<App />); // !act
 console.log(app.innerHTML);
 // -> '<span>dog</span>'
 
@@ -68,7 +69,7 @@ const App2 = () => {
   return <span>{relationships.getRemoteRowId('petSpecies', 'fido')}</span>;
 };
 
-ReactDOM.render(<App2 />, app); // !act
+root.render(<App2 />); // !act
 console.log(app.innerHTML);
 // -> '<span>dog</span>'
 ```
@@ -103,7 +104,7 @@ const App3 = () => (
   </div>
 );
 
-ReactDOM.render(<App3 />, app); // !act
+root.render(<App3 />); // !act
 console.log(app.innerHTML);
 // -> '<div>wolf: 10</div>'
 ```
@@ -148,7 +149,7 @@ const Pane = () => (
   </span>
 );
 
-ReactDOM.render(<App4 />, app); // !act
+root.render(<App4 />); // !act
 console.log(app.innerHTML);
 // -> '<span>cujo:{dog:{price:{5}}}/dog</span>'
 ```

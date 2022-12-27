@@ -198,7 +198,9 @@ Finally, when the window loads, we render the `App` component into the demo
 `div` to start the app:
 
 ```js
-window.addEventListener('load', () => ReactDOM.render(<App />, document.body));
+window.addEventListener('load', () =>
+  ReactDOM.createRoot(document.body).render(<App />),
+);
 ```
 
 ## The 'Current Slice'
