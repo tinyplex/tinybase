@@ -86,16 +86,15 @@ the `Rolls` component for each slice in the index (in turn rendering the `Roll`
 component for each roll Row):
 
 ```jsx
-ReactDOM.render(
+ReactDOM.createRoot(document.body).render(
   <Provider store={store} indexes={indexes}>
     <IndexView indexId="rolls" sliceComponent={Rolls} />
   </Provider>,
-  document.body,
 );
 ```
 
 ```diff-jsx
--ReactDOM.render(
+-ReactDOM.createRoot(document.body).render(
 -  <Provider store={store} metrics={metrics}>
 -    <p>
 -      Count: <MetricView metricId="count" />
@@ -104,7 +103,6 @@ ReactDOM.render(
 -    </p>
 -    <TableView tableId="rolls" rowComponent={Roll} />
 -  </Provider>,
--  document.body,
 -);
 ```
 

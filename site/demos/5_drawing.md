@@ -56,7 +56,6 @@ const {
   useRef,
   useState,
 } = React;
-const {render} = ReactDOM;
 ```
 
 The drawing app relies heavily on being able to drag and drop shapes and their
@@ -263,9 +262,9 @@ passes a `useState` value and setter pair into the app:
 Mount it into the DOM...
 
 ```jsx
-addEventListener('load', () => {
-  render(<App />, document.body);
-});
+addEventListener('load', () =>
+  ReactDOM.createRoot(document.body).render(<App />),
+);
 ```
 
 ...and off we go.

@@ -109,7 +109,6 @@ const {
   useSetRowCallback,
 } = TinyBaseUiReact;
 const {createElement, useCallback, useMemo, useState} = React;
-const {render} = ReactDOM;
 ```
 
 ## Initializing The Application
@@ -164,9 +163,9 @@ loading spinner is shown.
 With simple boilerplate code to load the component, off we go:
 
 ```jsx
-addEventListener('load', () => {
-  render(<App />, document.body);
-});
+addEventListener('load', () =>
+  ReactDOM.createRoot(document.body).render(<App />),
+);
 ```
 
 ## Basic Components

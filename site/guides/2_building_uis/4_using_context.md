@@ -34,7 +34,8 @@ const Pane = () => (
 );
 
 const app = document.createElement('div');
-ReactDOM.render(<App />, app); // !act
+const root = ReactDOMClient.createRoot(app);
+root.render(<App />); // !act
 console.log(app.innerHTML);
 // -> '<span>dog,brown</span>'
 ```
@@ -72,7 +73,7 @@ const Pane2 = () => (
   </span>
 );
 
-ReactDOM.render(<App2 />, app); // !act
+root.render(<App2 />); // !act
 console.log(app.innerHTML);
 // -> '<span>dog,2</span>'
 ```
@@ -115,7 +116,7 @@ const InnerPane = () => (
   </span>
 );
 
-ReactDOM.render(<App3 />, app); // !act
+root.render(<App3 />); // !act
 console.log(app.innerHTML);
 // -> '<span>dog,2</span>'
 ```

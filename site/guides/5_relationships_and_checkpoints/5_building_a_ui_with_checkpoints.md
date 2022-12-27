@@ -19,7 +19,8 @@ const checkpoints = createCheckpoints(store);
 const App = () => <span>{JSON.stringify(useCheckpointIds(checkpoints))}</span>;
 
 const app = document.createElement('div');
-ReactDOM.render(<App />, app); // !act
+const root = ReactDOMClient.createRoot(app);
+root.render(<App />); // !act
 console.log(app.innerHTML);
 // -> '<span>[[],"0",[]]</span>'
 
@@ -39,7 +40,7 @@ they are undoing, for example:
 ```jsx
 const App2 = () => <span>{useCheckpoint('2', checkpoints)}</span>;
 
-ReactDOM.render(<App2 />, app); // !act
+root.render(<App2 />); // !act
 console.log(app.innerHTML);
 // -> '<span></span>'
 
@@ -73,7 +74,7 @@ const App3 = () => {
   );
 };
 
-ReactDOM.render(<App3 />, app); // !act
+root.render(<App3 />); // !act
 console.log(app.innerHTML);
 // -> '<span>Nothing to undo</span>'
 
@@ -99,7 +100,7 @@ const App4 = () => (
   </div>
 );
 
-ReactDOM.render(<App4 />, app); // !act
+root.render(<App4 />); // !act
 console.log(app.innerHTML);
 // -> '<div>0:{}/1:{color}/</div>'
 
@@ -135,7 +136,7 @@ const App5 = () => {
 
 const Pane = () => <span>{JSON.stringify(useCheckpointIds())}</span>;
 
-ReactDOM.render(<App5 />, app); // !act
+root.render(<App5 />); // !act
 console.log(app.innerHTML);
 // -> '<span>[[],"0",[]]</span>'
 ```

@@ -231,10 +231,11 @@ export type UndoOrRedoInformation = [boolean, Callback, Id | undefined, string];
  * };
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App />); // !act
  * // -> 'Store created'
  *
- * ReactDOM.render(<App />, app); // !act
+ * root.render(<App />); // !act
  * // No second Store creation
  *
  * console.log(app.innerHTML);
@@ -256,13 +257,14 @@ export type UndoOrRedoInformation = [boolean, Callback, Id | undefined, string];
  * };
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App fidoSpecies="dog" />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App fidoSpecies="dog" />); // !act
  * // -> 'Store created for fido as dog'
  *
  * console.log(app.innerHTML);
  * // -> '<span>dog</span>'
  *
- * ReactDOM.render(<App fidoSpecies="cat" />, app); // !act
+ * root.render(<App fidoSpecies="cat" />); // !act
  * // -> 'Store created for fido as cat'
  *
  * console.log(app.innerHTML);
@@ -307,7 +309,7 @@ export function useCreateStore(
  *
  * const store = createStore();
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>0</span>'
  * ```
@@ -328,7 +330,7 @@ export function useCreateStore(
  *
  * const store = createStore();
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>0</span>'
  * ```
@@ -365,7 +367,8 @@ export function useStore(id?: Id): Store | undefined;
  * const App = () => <span>{JSON.stringify(useTables(store))}</span>;
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"pets":{"fido":{"color":"brown"}}}</span>'
  *
@@ -387,7 +390,7 @@ export function useStore(id?: Id): Store | undefined;
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"pets":{"fido":{"color":"brown"}}}</span>'
  * ```
@@ -405,7 +408,7 @@ export function useStore(id?: Id): Store | undefined;
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"pets":{"fido":{"color":"brown"}}}</span>'
  * ```
@@ -440,7 +443,7 @@ export function useTables(storeOrStoreId?: StoreOrStoreId): Tables;
  * const App = () => <span>{JSON.stringify(useTableIds(store))}</span>;
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["pets"]</span>'
  *
@@ -462,7 +465,7 @@ export function useTables(storeOrStoreId?: StoreOrStoreId): Tables;
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["pets"]</span>'
  * ```
@@ -480,7 +483,7 @@ export function useTables(storeOrStoreId?: StoreOrStoreId): Tables;
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["pets"]</span>'
  * ```
@@ -518,7 +521,7 @@ export function useTableIds(storeOrStoreId?: StoreOrStoreId): Ids;
  * const App = () => <span>{JSON.stringify(useTable('pets', store))}</span>;
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"fido":{"color":"brown"}}</span>'
  *
@@ -540,7 +543,7 @@ export function useTableIds(storeOrStoreId?: StoreOrStoreId): Ids;
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"fido":{"color":"brown"}}</span>'
  * ```
@@ -560,7 +563,7 @@ export function useTableIds(storeOrStoreId?: StoreOrStoreId): Ids;
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"fido":{"color":"brown"}}</span>'
  * ```
@@ -598,7 +601,7 @@ export function useTable(tableId: Id, storeOrStoreId?: StoreOrStoreId): Table;
  * const App = () => <span>{JSON.stringify(useRowIds('pets', store))}</span>;
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["fido"]</span>'
  *
@@ -620,7 +623,7 @@ export function useTable(tableId: Id, storeOrStoreId?: StoreOrStoreId): Table;
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["fido"]</span>'
  * ```
@@ -640,7 +643,7 @@ export function useTable(tableId: Id, storeOrStoreId?: StoreOrStoreId): Table;
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["fido"]</span>'
  * ```
@@ -694,7 +697,7 @@ export function useRowIds(tableId: Id, storeOrStoreId?: StoreOrStoreId): Ids;
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["felix","fido"]</span>'
  *
@@ -721,7 +724,7 @@ export function useRowIds(tableId: Id, storeOrStoreId?: StoreOrStoreId): Ids;
  *   },
  * });
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["felix","fido"]</span>'
  * ```
@@ -750,7 +753,7 @@ export function useRowIds(tableId: Id, storeOrStoreId?: StoreOrStoreId): Ids;
  *   },
  * });
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["felix","fido"]</span>'
  * ```
@@ -799,7 +802,7 @@ export function useSortedRowIds(
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"color":"brown"}</span>'
  *
@@ -821,7 +824,7 @@ export function useSortedRowIds(
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"color":"brown"}</span>'
  * ```
@@ -841,7 +844,7 @@ export function useSortedRowIds(
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"color":"brown"}</span>'
  * ```
@@ -886,7 +889,7 @@ export function useRow(
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["color"]</span>'
  *
@@ -910,7 +913,7 @@ export function useRow(
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["color"]</span>'
  * ```
@@ -930,7 +933,7 @@ export function useRow(
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["color"]</span>'
  * ```
@@ -974,7 +977,7 @@ export function useCellIds(
  * const App = () => <span>{useCell('pets', 'fido', 'color', store)}</span>;
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>brown</span>'
  *
@@ -996,7 +999,7 @@ export function useCellIds(
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>brown</span>'
  * ```
@@ -1016,7 +1019,7 @@ export function useCellIds(
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>brown</span>'
  * ```
@@ -1090,7 +1093,7 @@ export function useCell(
  * };
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  * console.log(span.innerHTML);
  * // -> '{"pets":{"nemo":{"species":"fish"}}}'
@@ -1175,7 +1178,7 @@ export function useSetTablesCallback<Parameter>(
  * };
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  * console.log(span.innerHTML);
  * // -> '{"nemo":{"species":"fish"}}'
@@ -1263,7 +1266,7 @@ export function useSetTableCallback<Parameter>(
  * };
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  * console.log(span.innerHTML);
  * // -> '{"species":"fish"}'
@@ -1350,7 +1353,7 @@ export function useSetRowCallback<Parameter>(
  * };
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  * console.log(span.innerHTML);
  * // -> '{"nemo":{"species":"fish"}}'
@@ -1440,7 +1443,7 @@ export function useAddRowCallback<Parameter>(
  * };
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  * console.log(span.innerHTML);
  * // -> '{"species":"fish"}'
@@ -1531,7 +1534,7 @@ export function useSetPartialRowCallback<Parameter>(
  * };
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  * console.log(span.innerHTML);
  * // -> '{"species":"fish"}'
@@ -1568,7 +1571,7 @@ export function useSetPartialRowCallback<Parameter>(
  * };
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  * console.log(span.innerHTML);
  * // -> '{"visits":1}'
@@ -1636,7 +1639,7 @@ export function useSetCellCallback<Parameter>(
  * };
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  * console.log(span.innerHTML);
  * // -> '{"pets":{"nemo":{"species":"fish"}}}'
@@ -1700,7 +1703,7 @@ export function useDelTablesCallback(
  * };
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  * console.log(span.innerHTML);
  * // -> '{"pets":{"nemo":{"species":"fish"}}}'
@@ -1766,7 +1769,7 @@ export function useDelTableCallback(
  * };
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  * console.log(span.innerHTML);
  * // -> '{"pets":{"nemo":{"species":"fish"}}}'
@@ -1842,7 +1845,7 @@ export function useDelRowCallback(
  * };
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  * console.log(span.innerHTML);
  * // -> '{"pets":{"nemo":{"species":"fish"}}}'
@@ -1907,14 +1910,15 @@ export function useDelCellCallback(
  *
  * const store = createStore().setTables({pets: {fido: {color: 'brown'}}});
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().tables);
  * // -> 1
  *
  * store.setCell('pets', 'fido', 'color', 'walnut'); // !act
  * // -> 'Tables changed'
  *
- * ReactDOM.unmountComponentAtNode(app); // !act
+ * root.unmount(); // !act
  * console.log(store.getListenerStats().tables);
  * // -> 0
  * ```
@@ -1969,14 +1973,15 @@ export function useTablesListener(
  *
  * const store = createStore().setTables({pets: {fido: {color: 'brown'}}});
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().tableIds);
  * // -> 1
  *
  * store.setTable('species', {dog: {price: 5}}); // !act
  * // -> 'Table Ids changed'
  *
- * ReactDOM.unmountComponentAtNode(app); // !act
+ * root.unmount(); // !act
  * console.log(store.getListenerStats().tableIds);
  * // -> 0
  * ```
@@ -2034,14 +2039,15 @@ export function useTableIdsListener(
  *
  * const store = createStore().setTables({pets: {fido: {color: 'brown'}}});
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().table);
  * // -> 1
  *
  * store.setCell('pets', 'fido', 'color', 'walnut'); // !act
  * // -> 'Table changed'
  *
- * ReactDOM.unmountComponentAtNode(app); // !act
+ * root.unmount(); // !act
  * console.log(store.getListenerStats().table);
  * // -> 0
  * ```
@@ -2100,14 +2106,15 @@ export function useTableListener(
  *
  * const store = createStore().setTables({pets: {fido: {color: 'brown'}}});
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().rowIds);
  * // -> 1
  *
  * store.setRow('pets', 'felix', {color: 'black'}); // !act
  * // -> 'Row Ids changed'
  *
- * ReactDOM.unmountComponentAtNode(app); // !act
+ * root.unmount(); // !act
  * console.log(store.getListenerStats().rowIds);
  * // -> 0
  * ```
@@ -2177,14 +2184,15 @@ export function useRowIdsListener(
  *   },
  * });
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().sortedRowIds);
  * // -> 1
  *
  * store.setRow('pets', 'cujo', {species: 'wolf'}); // !act
  * // -> 'Sorted Row Ids changed'
  *
- * ReactDOM.unmountComponentAtNode(app); // !act
+ * root.unmount(); // !act
  * console.log(store.getListenerStats().sortedRowIds);
  * // -> 0
  * ```
@@ -2255,14 +2263,15 @@ export function useSortedRowIdsListener(
  *
  * const store = createStore().setTables({pets: {fido: {color: 'brown'}}});
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().row);
  * // -> 1
  *
  * store.setCell('pets', 'fido', 'color', 'walnut'); // !act
  * // -> 'Row changed'
  *
- * ReactDOM.unmountComponentAtNode(app); // !act
+ * root.unmount(); // !act
  * console.log(store.getListenerStats().row);
  * // -> 0
  * ```
@@ -2332,14 +2341,15 @@ export function useRowListener(
  *
  * const store = createStore().setTables({pets: {fido: {color: 'brown'}}});
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().cellIds);
  * // -> 1
  *
  * store.setCell('pets', 'fido', 'species', 'dog'); // !act
  * // -> 'Cell Ids changed'
  *
- * ReactDOM.unmountComponentAtNode(app); // !act
+ * root.unmount(); // !act
  * console.log(store.getListenerStats().cellIds);
  * // -> 0
  * ```
@@ -2409,14 +2419,15 @@ export function useCellIdsListener(
  *
  * const store = createStore().setTables({pets: {fido: {color: 'brown'}}});
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().cell);
  * // -> 1
  *
  * store.setCell('pets', 'fido', 'color', 'walnut'); // !act
  * // -> 'Cell changed'
  *
- * ReactDOM.unmountComponentAtNode(app); // !act
+ * root.unmount(); // !act
  * console.log(store.getListenerStats().cell);
  * // -> 0
  * ```
@@ -2484,10 +2495,11 @@ export function useCellListener(
  * };
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App />); // !act
  * // -> 'Metrics created'
  *
- * ReactDOM.render(<App />, app); // !act
+ * root.render(<App />); // !act
  * // No second Metrics creation
  *
  * console.log(app.innerHTML);
@@ -2521,13 +2533,14 @@ export function useCellListener(
  * };
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App tableToCount="pets" />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App tableToCount="pets" />); // !act
  * // -> 'Count created for pets table'
  *
  * console.log(app.innerHTML);
  * // -> '<span>1</span>'
  *
- * ReactDOM.render(<App tableToCount="species" />, app); // !act
+ * root.render(<App tableToCount="species" />); // !act
  * // -> 'Count created for species table'
  *
  * console.log(app.innerHTML);
@@ -2574,7 +2587,7 @@ export function useCreateMetrics(
  *
  * const metrics = createMetrics(createStore());
  * const app = document.createElement('div');
- * ReactDOM.render(<App metrics={metrics} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App metrics={metrics} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>0</span>'
  * ```
@@ -2596,7 +2609,7 @@ export function useCreateMetrics(
  *
  * const metrics = createMetrics(createStore());
  * const app = document.createElement('div');
- * ReactDOM.render(<App metrics={metrics} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App metrics={metrics} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>0</span>'
  * ```
@@ -2640,7 +2653,7 @@ export function useMetrics(id?: Id): Metrics | undefined;
  * const App = () => <span>{useMetric('highestPrice', metrics)}</span>;
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>5</span>'
  *
@@ -2669,7 +2682,7 @@ export function useMetrics(id?: Id): Metrics | undefined;
  * ).setMetricDefinition('highestPrice', 'species', 'max', 'price');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App metrics={metrics} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App metrics={metrics} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>5</span>'
  * ```
@@ -2694,7 +2707,7 @@ export function useMetrics(id?: Id): Metrics | undefined;
  * ).setMetricDefinition('highestPrice', 'species', 'max', 'price');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App metrics={metrics} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App metrics={metrics} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>5</span>'
  * ```
@@ -2756,14 +2769,15 @@ export function useMetric(
  * metrics.setMetricDefinition('highestPrice', 'species', 'max', 'price');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App metrics={metrics} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App metrics={metrics} />); // !act
  * console.log(metrics.getListenerStats().metric);
  * // -> 1
  *
  * store.setCell('species', 'horse', 'price', 20); // !act
  * // -> 'Metric changed'
  *
- * ReactDOM.unmountComponentAtNode(app); // !act
+ * root.unmount(); // !act
  * console.log(metrics.getListenerStats().metric);
  * // -> 0
  * ```
@@ -2833,10 +2847,11 @@ export function useMetricListener(
  * };
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App />); // !act
  * // -> 'Indexes created'
  *
- * ReactDOM.render(<App />, app); // !act
+ * root.render(<App />); // !act
  * // No second Indexes creation
  *
  * console.log(app.innerHTML);
@@ -2873,13 +2888,14 @@ export function useMetricListener(
  * };
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App cellToIndex="species" />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App cellToIndex="species" />); // !act
  * // -> 'Index created for species cell'
  *
  * console.log(app.innerHTML);
  * // -> '<span>["dog","cat"]</span>'
  *
- * ReactDOM.render(<App cellToIndex="color" />, app); // !act
+ * root.render(<App cellToIndex="color" />); // !act
  * // -> 'Index created for color cell'
  *
  * console.log(app.innerHTML);
@@ -2926,7 +2942,7 @@ export function useCreateIndexes(
  *
  * const indexes = createIndexes(createStore());
  * const app = document.createElement('div');
- * ReactDOM.render(<App indexes={indexes} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App indexes={indexes} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>0</span>'
  * ```
@@ -2948,7 +2964,7 @@ export function useCreateIndexes(
  *
  * const indexes = createIndexes(createStore());
  * const app = document.createElement('div');
- * ReactDOM.render(<App indexes={indexes} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App indexes={indexes} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>0</span>'
  * ```
@@ -2994,7 +3010,7 @@ export function useIndexes(id?: Id): Indexes | undefined;
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["dog","cat"]</span>'
  *
@@ -3023,7 +3039,7 @@ export function useIndexes(id?: Id): Indexes | undefined;
  * ).setIndexDefinition('bySpecies', 'pets', 'species');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App indexes={indexes} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App indexes={indexes} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["dog","cat"]</span>'
  * ```
@@ -3050,7 +3066,7 @@ export function useIndexes(id?: Id): Indexes | undefined;
  * ).setIndexDefinition('bySpecies', 'pets', 'species');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App indexes={indexes} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App indexes={indexes} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["dog","cat"]</span>'
  * ```
@@ -3103,7 +3119,7 @@ export function useSliceIds(
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["fido","cujo"]</span>'
  *
@@ -3134,7 +3150,7 @@ export function useSliceIds(
  * ).setIndexDefinition('bySpecies', 'pets', 'species');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App indexes={indexes} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App indexes={indexes} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["fido","cujo"]</span>'
  * ```
@@ -3163,7 +3179,7 @@ export function useSliceIds(
  * ).setIndexDefinition('bySpecies', 'pets', 'species');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App indexes={indexes} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App indexes={indexes} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["fido","cujo"]</span>'
  * ```
@@ -3227,14 +3243,15 @@ export function useSliceRowIds(
  * indexes.setIndexDefinition('bySpecies', 'pets', 'species');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App indexes={indexes} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App indexes={indexes} />); // !act
  * console.log(indexes.getListenerStats().sliceIds);
  * // -> 1
  *
  * store.setRow('pets', 'lowly', {species: 'worm'}); // !act
  * // -> 'Slice Ids changed'
  *
- * ReactDOM.unmountComponentAtNode(app); // !act
+ * root.unmount(); // !act
  * console.log(indexes.getListenerStats().sliceIds);
  * // -> 0
  * ```
@@ -3307,14 +3324,15 @@ export function useSliceIdsListener(
  * indexes.setIndexDefinition('bySpecies', 'pets', 'species');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App indexes={indexes} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App indexes={indexes} />); // !act
  * console.log(indexes.getListenerStats().sliceRowIds);
  * // -> 1
  *
  * store.setRow('pets', 'toto', {species: 'dog'}); // !act
  * // -> 'Slice Row Ids changed'
  *
- * ReactDOM.unmountComponentAtNode(app); // !act
+ * root.unmount(); // !act
  * console.log(indexes.getListenerStats().sliceRowIds);
  * // -> 0
  * ```
@@ -3388,10 +3406,11 @@ export function useSliceRowIdsListener(
  * };
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App />); // !act
  * // -> 'Relationships created'
  *
- * ReactDOM.render(<App />, app); // !act
+ * root.render(<App />); // !act
  * // No second Relationships creation
  *
  * console.log(app.innerHTML);
@@ -3433,13 +3452,14 @@ export function useSliceRowIdsListener(
  * };
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App remoteTableAndCellToLink="species" />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App remoteTableAndCellToLink="species" />); // !act
  * // -> 'Relationship created to species'
  *
  * console.log(app.innerHTML);
  * // -> '<span>dog</span>'
  *
- * ReactDOM.render(<App remoteTableAndCellToLink="color" />, app); // !act
+ * root.render(<App remoteTableAndCellToLink="color" />); // !act
  * // -> 'Relationship created to color'
  *
  * console.log(app.innerHTML);
@@ -3490,7 +3510,8 @@ export function useCreateRelationships(
  *
  * const relationships = createRelationships(createStore());
  * const app = document.createElement('div');
- * ReactDOM.render(<App relationships={relationships} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App relationships={relationships} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>0</span>'
  * ```
@@ -3514,7 +3535,8 @@ export function useCreateRelationships(
  *
  * const relationships = createRelationships(createStore());
  * const app = document.createElement('div');
- * ReactDOM.render(<App relationships={relationships} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App relationships={relationships} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>0</span>'
  * ```
@@ -3565,7 +3587,7 @@ export function useRelationships(id?: Id): Relationships | undefined;
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>dog</span>'
  *
@@ -3592,7 +3614,8 @@ export function useRelationships(id?: Id): Relationships | undefined;
  * ).setRelationshipDefinition('petSpecies', 'pets', 'species', 'species');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App relationships={relationships} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App relationships={relationships} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>dog</span>'
  * ```
@@ -3617,7 +3640,8 @@ export function useRelationships(id?: Id): Relationships | undefined;
  * ).setRelationshipDefinition('petSpecies', 'pets', 'species', 'species');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App relationships={relationships} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App relationships={relationships} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>dog</span>'
  * ```
@@ -3674,7 +3698,7 @@ export function useRemoteRowId(
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["fido","cujo"]</span>'
  *
@@ -3703,7 +3727,8 @@ export function useRemoteRowId(
  * ).setRelationshipDefinition('petSpecies', 'pets', 'species', 'species');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App relationships={relationships} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App relationships={relationships} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["fido","cujo"]</span>'
  * ```
@@ -3732,7 +3757,8 @@ export function useRemoteRowId(
  * ).setRelationshipDefinition('petSpecies', 'pets', 'species', 'species');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App relationships={relationships} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App relationships={relationships} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["fido","cujo"]</span>'
  * ```
@@ -3791,7 +3817,7 @@ export function useLocalRowIds(
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["fido","felix","cujo"]</span>'
  *
@@ -3823,7 +3849,8 @@ export function useLocalRowIds(
  * ).setRelationshipDefinition('petSequence', 'pets', 'pets', 'next');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App relationships={relationships} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App relationships={relationships} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["fido","felix","cujo"]</span>'
  * ```
@@ -3854,7 +3881,8 @@ export function useLocalRowIds(
  * ).setRelationshipDefinition('petSequence', 'pets', 'pets', 'next');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App relationships={relationships} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App relationships={relationships} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["fido","felix","cujo"]</span>'
  * ```
@@ -3933,14 +3961,15 @@ export function useLinkedRowIds(
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App relationships={relationships} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App relationships={relationships} />); // !act
  * console.log(relationships.getListenerStats().remoteRowId);
  * // -> 1
  *
  * store.setCell('pets', 'cujo', 'species', 'wolf'); // !act
  * // -> 'Remote Row Id changed'
  *
- * ReactDOM.unmountComponentAtNode(app); // !act
+ * root.unmount(); // !act
  * console.log(relationships.getListenerStats().remoteRowId);
  * // -> 0
  * ```
@@ -4021,14 +4050,15 @@ export function useRemoteRowIdListener(
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App relationships={relationships} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App relationships={relationships} />); // !act
  * console.log(relationships.getListenerStats().localRowIds);
  * // -> 1
  *
  * store.setRow('pets', 'toto', {species: 'dog'}); // !act
  * // -> 'Local Row Ids changed'
  *
- * ReactDOM.unmountComponentAtNode(app); // !act
+ * root.unmount(); // !act
  * console.log(relationships.getListenerStats().localRowIds);
  * // -> 0
  * ```
@@ -4105,7 +4135,8 @@ export function useLocalRowIdsListener(
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App relationships={relationships} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App relationships={relationships} />); // !act
  * console.log(relationships.getListenerStats().linkedRowIds);
  * // -> 1
  *
@@ -4113,7 +4144,7 @@ export function useLocalRowIdsListener(
  * store.setCell('pets', 'cujo', 'next', 'toto'); // !act
  * // -> 'Linked Row Ids changed'
  *
- * ReactDOM.unmountComponentAtNode(app); // !act
+ * root.unmount(); // !act
  * console.log(relationships.getListenerStats().linkedRowIds);
  * // -> 0
  * ```
@@ -4188,10 +4219,11 @@ export function useLinkedRowIdsListener(
  * };
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App />); // !act
  * // -> 'Queries created'
  *
- * ReactDOM.render(<App />, app); // !act
+ * root.render(<App />); // !act
  * // No second Queries creation
  *
  * console.log(app.innerHTML);
@@ -4229,10 +4261,11 @@ export function useLinkedRowIdsListener(
  * };
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App />); // !act
  * // -> 'Queries created'
  *
- * ReactDOM.render(<App />, app); // !act
+ * root.render(<App />); // !act
  * // No second Queries creation
  *
  * console.log(app.innerHTML);
@@ -4280,7 +4313,7 @@ export function useCreateQueries(
  *
  * const queries = createQueries(createStore());
  * const app = document.createElement('div');
- * ReactDOM.render(<App queries={queries} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>0</span>'
  * ```
@@ -4302,7 +4335,7 @@ export function useCreateQueries(
  *
  * const queries = createQueries(createStore());
  * const app = document.createElement('div');
- * ReactDOM.render(<App queries={queries} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>0</span>'
  * ```
@@ -4356,7 +4389,7 @@ export function useQueries(id?: Id): Queries | undefined;
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"fido":{"color":"brown"},"cujo":{"color":"black"}}</span>'
  *
@@ -4389,7 +4422,7 @@ export function useQueries(id?: Id): Queries | undefined;
  *   where('species', 'dog');
  * });
  * const app = document.createElement('div');
- * ReactDOM.render(<App queries={queries} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"fido":{"color":"brown"},"cujo":{"color":"black"}}</span>'
  * ```
@@ -4419,7 +4452,7 @@ export function useQueries(id?: Id): Queries | undefined;
  *   where('species', 'dog');
  * });
  * const app = document.createElement('div');
- * ReactDOM.render(<App queries={queries} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"fido":{"color":"brown"},"cujo":{"color":"black"}}</span>'
  * ```
@@ -4477,7 +4510,7 @@ export function useResultTable(
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["fido","cujo"]</span>'
  *
@@ -4510,7 +4543,7 @@ export function useResultTable(
  *   where('species', 'dog');
  * });
  * const app = document.createElement('div');
- * ReactDOM.render(<App queries={queries} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["fido","cujo"]</span>'
  * ```
@@ -4540,7 +4573,7 @@ export function useResultTable(
  *   where('species', 'dog');
  * });
  * const app = document.createElement('div');
- * ReactDOM.render(<App queries={queries} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["fido","cujo"]</span>'
  * ```
@@ -4613,7 +4646,7 @@ export function useResultRowIds(
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["cujo","fido"]</span>'
  *
@@ -4648,7 +4681,7 @@ export function useResultRowIds(
  *   where('species', 'dog');
  * });
  * const app = document.createElement('div');
- * ReactDOM.render(<App queries={queries} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["cujo","fido"]</span>'
  * ```
@@ -4689,7 +4722,7 @@ export function useResultRowIds(
  *   where('species', 'dog');
  * });
  * const app = document.createElement('div');
- * ReactDOM.render(<App queries={queries} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["cujo","fido"]</span>'
  * ```
@@ -4752,7 +4785,7 @@ export function useResultSortedRowIds(
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"color":"brown"}</span>'
  *
@@ -4785,7 +4818,7 @@ export function useResultSortedRowIds(
  *   where('species', 'dog');
  * });
  * const app = document.createElement('div');
- * ReactDOM.render(<App queries={queries} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"color":"brown"}</span>'
  * ```
@@ -4817,7 +4850,7 @@ export function useResultSortedRowIds(
  *   where('species', 'dog');
  * });
  * const app = document.createElement('div');
- * ReactDOM.render(<App queries={queries} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"color":"brown"}</span>'
  * ```
@@ -4881,7 +4914,7 @@ export function useResultRow(
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["species","color"]</span>'
  *
@@ -4915,7 +4948,7 @@ export function useResultRow(
  *   where('species', 'dog');
  * });
  * const app = document.createElement('div');
- * ReactDOM.render(<App queries={queries} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["species","color"]</span>'
  * ```
@@ -4948,7 +4981,7 @@ export function useResultRow(
  *   where('species', 'dog');
  * });
  * const app = document.createElement('div');
- * ReactDOM.render(<App queries={queries} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["species","color"]</span>'
  * ```
@@ -5010,7 +5043,7 @@ export function useResultCellIds(
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>brown</span>'
  *
@@ -5044,7 +5077,7 @@ export function useResultCellIds(
  *   where('species', 'dog');
  * });
  * const app = document.createElement('div');
- * ReactDOM.render(<App queries={queries} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>brown</span>'
  * ```
@@ -5075,7 +5108,7 @@ export function useResultCellIds(
  *   where('species', 'dog');
  * });
  * const app = document.createElement('div');
- * ReactDOM.render(<App queries={queries} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>brown</span>'
  * ```
@@ -5145,14 +5178,15 @@ export function useResultCell(
  *   ({select}) => select('color'),
  * );
  * const app = document.createElement('div');
- * ReactDOM.render(<App queries={queries} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App queries={queries} />); // !act
  * console.log(queries.getListenerStats().table);
  * // -> 1
  *
  * store.setCell('pets', 'fido', 'color', 'walnut'); // !act
  * // -> 'Result table changed'
  *
- * ReactDOM.unmountComponentAtNode(app); // !act
+ * root.unmount(); // !act
  * console.log(queries.getListenerStats().table);
  * // -> 0
  * ```
@@ -5222,14 +5256,15 @@ export function useResultTableListener(
  *   ({select}) => select('color'),
  * );
  * const app = document.createElement('div');
- * ReactDOM.render(<App queries={queries} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App queries={queries} />); // !act
  * console.log(queries.getListenerStats().rowIds);
  * // -> 1
  *
  * store.setRow('pets', 'rex', {species: 'dog', color: 'tan'}); // !act
  * // -> 'Result Row Ids changed'
  *
- * ReactDOM.unmountComponentAtNode(app); // !act
+ * root.unmount(); // !act
  * console.log(queries.getListenerStats().rowIds);
  * // -> 0
  * ```
@@ -5306,14 +5341,15 @@ export function useResultRowIdsListener(
  *   ({select}) => select('color'),
  * );
  * const app = document.createElement('div');
- * ReactDOM.render(<App queries={queries} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App queries={queries} />); // !act
  * console.log(queries.getListenerStats().sortedRowIds);
  * // -> 1
  *
  * store.setRow('pets', 'cujo', {color: 'tan'}); // !act
  * // -> 'Sorted result Row Ids changed'
  *
- * ReactDOM.unmountComponentAtNode(app); // !act
+ * root.unmount(); // !act
  * console.log(queries.getListenerStats().sortedRowIds);
  * // -> 0
  * ```
@@ -5393,14 +5429,15 @@ export function useResultSortedRowIdsListener(
  *   ({select}) => select('color'),
  * );
  * const app = document.createElement('div');
- * ReactDOM.render(<App queries={queries} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App queries={queries} />); // !act
  * console.log(queries.getListenerStats().row);
  * // -> 1
  *
  * store.setCell('pets', 'fido', 'color', 'walnut'); // !act
  * // -> 'Result row changed'
  *
- * ReactDOM.unmountComponentAtNode(app); // !act
+ * root.unmount(); // !act
  * console.log(queries.getListenerStats().row);
  * // -> 0
  * ```
@@ -5477,14 +5514,15 @@ export function useResultRowListener(
  *   },
  * );
  * const app = document.createElement('div');
- * ReactDOM.render(<App queries={queries} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App queries={queries} />); // !act
  * console.log(queries.getListenerStats().cellIds);
  * // -> 1
  *
  * store.setCell('pets', 'fido', 'legs', 4); // !act
  * // -> 'Result cell Ids changed'
  *
- * ReactDOM.unmountComponentAtNode(app); // !act
+ * root.unmount(); // !act
  * console.log(queries.getListenerStats().cellIds);
  * // -> 0
  * ```
@@ -5563,14 +5601,15 @@ export function useResultCellIdsListener(
  *   ({select}) => select('color'),
  * );
  * const app = document.createElement('div');
- * ReactDOM.render(<App queries={queries} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App queries={queries} />); // !act
  * console.log(queries.getListenerStats().cell);
  * // -> 1
  *
  * store.setCell('pets', 'fido', 'color', 'walnut'); // !act
  * // -> 'Result cell changed'
  *
- * ReactDOM.unmountComponentAtNode(app); // !act
+ * root.unmount(); // !act
  * console.log(queries.getListenerStats().cell);
  * // -> 0
  * ```
@@ -5634,10 +5673,11 @@ export function useResultCellListener(
  * };
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App />); // !act
  * // -> 'Checkpoints created'
  *
- * ReactDOM.render(<App />, app); // !act
+ * root.render(<App />); // !act
  * // No second Checkpoints creation
  *
  * console.log(app.innerHTML);
@@ -5665,13 +5705,14 @@ export function useResultCellListener(
  * };
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App size={20} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App size={20} />); // !act
  * // -> 'Checkpoints created, size 20'
  *
  * console.log(app.innerHTML);
  * // -> '<span>[[],"0",[]]</span>'
  *
- * ReactDOM.render(<App size={50} />, app); // !act
+ * root.render(<App size={50} />); // !act
  * // -> 'Checkpoints created, size 50'
  *
  * console.log(app.innerHTML);
@@ -5720,7 +5761,8 @@ export function useCreateCheckpoints(
  *
  * const checkpoints = createCheckpoints(createStore());
  * const app = document.createElement('div');
- * ReactDOM.render(<App checkpoints={checkpoints} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App checkpoints={checkpoints} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>0</span>'
  * ```
@@ -5744,7 +5786,8 @@ export function useCreateCheckpoints(
  *
  * const checkpoints = createCheckpoints(createStore());
  * const app = document.createElement('div');
- * ReactDOM.render(<App checkpoints={checkpoints} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App checkpoints={checkpoints} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>0</span>'
  * ```
@@ -5787,7 +5830,7 @@ export function useCheckpoints(id?: Id): Checkpoints | undefined;
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>[[],"0",[]]</span>'
  *
@@ -5817,7 +5860,8 @@ export function useCheckpoints(id?: Id): Checkpoints | undefined;
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App checkpoints={checkpoints} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App checkpoints={checkpoints} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>[[],"0",[]]</span>'
  * ```
@@ -5841,7 +5885,8 @@ export function useCheckpoints(id?: Id): Checkpoints | undefined;
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App checkpoints={checkpoints} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App checkpoints={checkpoints} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>[[],"0",[]]</span>'
  * ```
@@ -5883,7 +5928,7 @@ export function useCheckpointIds(
  * const App = () => <span>{useCheckpoint('1', checkpoints)}</span>;
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span></span>'
  *
@@ -5910,7 +5955,8 @@ export function useCheckpointIds(
  * ).setCheckpoint('0', 'initial');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App checkpoints={checkpoints} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App checkpoints={checkpoints} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>initial</span>'
  * ```
@@ -5932,7 +5978,8 @@ export function useCheckpointIds(
  * ).setCheckpoint('0', 'initial');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App checkpoints={checkpoints} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App checkpoints={checkpoints} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>initial</span>'
  * ```
@@ -6007,7 +6054,7 @@ export function useCheckpoint(
  * };
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  *
  * store.setCell('pets', 'nemo', 'color', 'orange');
@@ -6055,7 +6102,7 @@ export function useSetCheckpointCallback<Parameter>(
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  *
  * store.setCell('pets', 'nemo', 'color', 'orange');
@@ -6103,7 +6150,7 @@ export function useGoBackwardCallback(
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  *
  * store.setCell('pets', 'nemo', 'color', 'orange');
@@ -6183,7 +6230,7 @@ export function useGoForwardCallback(
  * };
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  *
  * store.setCell('pets', 'nemo', 'color', 'orange');
@@ -6237,7 +6284,7 @@ export function useGoToCallback<Parameter>(
  * };
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>Nothing to undo</span>'
  *
@@ -6283,7 +6330,7 @@ export function useUndoInformation(
  * };
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>Nothing to redo</span>'
  *
@@ -6342,7 +6389,8 @@ export function useRedoInformation(
  * const checkpoints = createCheckpoints(store);
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App checkpoints={checkpoints} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App checkpoints={checkpoints} />); // !act
  * console.log(checkpoints.getListenerStats().checkpointIds);
  * // -> 1
  *
@@ -6351,7 +6399,7 @@ export function useRedoInformation(
  * checkpoints.addCheckpoint(); // !act
  * // -> 'Checkpoint Ids changed'
  *
- * ReactDOM.unmountComponentAtNode(app); // !act
+ * root.unmount(); // !act
  * console.log(checkpoints.getListenerStats().checkpointIds);
  * // -> 0
  * ```
@@ -6414,14 +6462,15 @@ export function useCheckpointIdsListener(
  * const checkpoints = createCheckpoints(store);
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App checkpoints={checkpoints} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App checkpoints={checkpoints} />); // !act
  * console.log(checkpoints.getListenerStats().checkpoint);
  * // -> 1
  *
  * checkpoints.setCheckpoint('0', 'initial'); // !act
  * // -> 'Checkpoint label changed'
  *
- * ReactDOM.unmountComponentAtNode(app); // !act
+ * root.unmount(); // !act
  * console.log(checkpoints.getListenerStats().checkpoint);
  * // -> 0
  * ```
@@ -6502,17 +6551,18 @@ export function useCheckpointListener(
  * sessionStorage.setItem('pets', '{"pets":{"fido":{"species":"dog"}}}');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App />); // !act
  * // -> 'Persister created'
  *
  * // ... // !act
- * ReactDOM.render(<App />, app); // !act
+ * root.render(<App />); // !act
  * // No second Persister creation
  *
  * console.log(app.innerHTML);
  * // -> '<span>{\"pets\":{\"fido\":{\"species\":\"dog\"}}}</span>'
  *
- * ReactDOM.unmountComponentAtNode(app); // !act
+ * root.unmount(); // !act
  * ```
  * @example
  * This example creates a Persister at the top level of a React application. The
@@ -6542,21 +6592,22 @@ export function useCheckpointListener(
  * sessionStorage.setItem('cujoStore', '{"pets":{"cujo":{"species":"dog"}}}');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App sessionKey="fidoStore" />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App sessionKey="fidoStore" />); // !act
  * // -> 'Persister created for session key fidoStore'
  *
  * // ... // !act
  * console.log(app.innerHTML);
  * // -> '<span>{\"pets\":{\"fido\":{\"species\":\"dog\"}}}</span>'
  *
- * ReactDOM.render(<App sessionKey="cujoStore" />, app); // !act
+ * root.render(<App sessionKey="cujoStore" />); // !act
  * // -> 'Persister created for session key cujoStore'
  *
  * // ... // !act
  * console.log(app.innerHTML);
  * // -> '<span>{\"pets\":{\"cujo\":{\"species\":\"dog\"}}}</span>'
  *
- * ReactDOM.unmountComponentAtNode(app); // !act
+ * root.unmount(); // !act
  * ```
  *  @category Persister hooks
  */
@@ -7423,7 +7474,8 @@ export type ComponentReturnType = ReactElement<any, any> | null;
  * metrics.setMetricDefinition('highestPrice', 'species', 'max', 'price');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} metrics={metrics} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App store={store} metrics={metrics} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>5,4,5</span>'
  * ```
@@ -7466,7 +7518,8 @@ export type ComponentReturnType = ReactElement<any, any> | null;
  * metrics.setMetricDefinition('highestPrice', 'species', 'max', 'price');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App petStore={petStore} metrics={metrics} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App petStore={petStore} metrics={metrics} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>5,5,2</span>'
  * ```
@@ -7509,7 +7562,7 @@ export function Provider(
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>brown</span>'
  *
@@ -7536,7 +7589,7 @@ export function Provider(
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>color:{brown}</span>'
  * ```
@@ -7559,7 +7612,7 @@ export function Provider(
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span></span>'
  * ```
@@ -7605,7 +7658,7 @@ export function CellView(props: CellProps): ComponentReturnType;
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>dog</div>'
  *
@@ -7635,7 +7688,7 @@ export function CellView(props: CellProps): ComponentReturnType;
  *   color: 'walnut',
  * });
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>fido:{species:{dog}color:{walnut}}</div>'
  * ```
@@ -7673,7 +7726,7 @@ export function CellView(props: CellProps): ComponentReturnType;
  *   color: 'walnut',
  * });
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div><span><b>species</b>: dog</span><span>color: walnut</span></div>'
  * ```
@@ -7730,7 +7783,7 @@ export function RowView(props: RowProps): ComponentReturnType;
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>cat/dog</div>'
  *
@@ -7762,7 +7815,7 @@ export function RowView(props: RowProps): ComponentReturnType;
  *   },
  * });
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>pets:{felix:{species:{cat}}fido:{species:{dog}}}</div>'
  * ```
@@ -7802,7 +7855,7 @@ export function RowView(props: RowProps): ComponentReturnType;
  *   },
  * });
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div><span>felix: cat</span><span><b>fido</b>: dog</span></div>'
  * ```
@@ -7848,7 +7901,7 @@ export function SortedTableView(props: SortedTableProps): ComponentReturnType;
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>dog</div>'
  *
@@ -7878,7 +7931,7 @@ export function SortedTableView(props: SortedTableProps): ComponentReturnType;
  *   felix: {species: 'cat'},
  * });
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>pets:{fido:{species:{dog}}felix:{species:{cat}}}</div>'
  * ```
@@ -7915,7 +7968,7 @@ export function SortedTableView(props: SortedTableProps): ComponentReturnType;
  *   felix: {species: 'cat'},
  * });
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div><span><b>fido</b>: dog</span><span>felix: cat</span></div>'
  * ```
@@ -7956,7 +8009,7 @@ export function TableView(props: TableProps): ComponentReturnType;
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>dog</div>'
  *
@@ -7986,7 +8039,7 @@ export function TableView(props: TableProps): ComponentReturnType;
  *   species: {dog: {price: 5}},
  * });
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>pets:{fido:{species:{dog}}}species:{dog:{price:{5}}}</div>'
  * ```
@@ -8022,7 +8075,7 @@ export function TableView(props: TableProps): ComponentReturnType;
  *   species: {dog: {price: 5}},
  * });
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div><span><b>pets</b>: dog</span><span>species: 5</span></div>'
  * ```
@@ -8063,7 +8116,7 @@ export function TablesView(props: TablesProps): ComponentReturnType;
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>5</div>'
  *
@@ -8097,7 +8150,7 @@ export function TablesView(props: TablesProps): ComponentReturnType;
  * metrics.setMetricDefinition('highestPrice', 'species', 'max', 'price');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App metrics={metrics} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App metrics={metrics} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>highestPrice:{5}</div>'
  * ```
@@ -8127,7 +8180,7 @@ export function TablesView(props: TablesProps): ComponentReturnType;
  * metrics.setMetricDefinition('highestPrice', 'species', 'max', 'price');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App metrics={metrics} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App metrics={metrics} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div></div>'
  * ```
@@ -8178,7 +8231,7 @@ export function MetricView(props: MetricProps): ComponentReturnType;
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>dog</div>'
  *
@@ -8211,7 +8264,7 @@ export function MetricView(props: MetricProps): ComponentReturnType;
  * indexes.setIndexDefinition('bySpecies', 'pets', 'species');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App indexes={indexes} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App indexes={indexes} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>dog:{fido:{species:{dog}}cujo:{species:{dog}}}</div>'
  * ```
@@ -8253,7 +8306,7 @@ export function MetricView(props: MetricProps): ComponentReturnType;
  * indexes.setIndexDefinition('bySpecies', 'pets', 'species');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App indexes={indexes} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App indexes={indexes} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div><span><b>fido</b>: dog/brown</span><span>cujo: dog</span></div>'
  * ```
@@ -8300,7 +8353,7 @@ export function SliceView(props: SliceProps): ComponentReturnType;
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>dog/cat</div>'
  *
@@ -8333,7 +8386,7 @@ export function SliceView(props: SliceProps): ComponentReturnType;
  * indexes.setIndexDefinition('bySpecies', 'pets', 'species');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App indexes={indexes} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App indexes={indexes} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>bySpecies:{dog:{fido:{species:{dog}}cujo:{species:{dog}}}}</div>'
  * ```
@@ -8374,7 +8427,7 @@ export function SliceView(props: SliceProps): ComponentReturnType;
  * indexes.setIndexDefinition('bySpecies', 'pets', 'species');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App indexes={indexes} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App indexes={indexes} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div><span><b>dog</b>: dog/dog</span><span>cat: cat</span></div>'
  * ```
@@ -8430,7 +8483,7 @@ export function IndexView(props: IndexProps): ComponentReturnType;
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>5</div>'
  *
@@ -8466,7 +8519,8 @@ export function IndexView(props: IndexProps): ComponentReturnType;
  * ).setRelationshipDefinition('petSpecies', 'pets', 'species', 'species');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App relationships={relationships} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App relationships={relationships} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>cujo:{dog:{price:{5}}}</div>'
  * ```
@@ -8506,7 +8560,8 @@ export function IndexView(props: IndexProps): ComponentReturnType;
  * ).setRelationshipDefinition('petSpecies', 'pets', 'species', 'species');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App relationships={relationships} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App relationships={relationships} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div><span><b>dog</b>: 5</span></div>'
  * ```
@@ -8563,7 +8618,7 @@ export function RemoteRowView(props: RemoteRowProps): ComponentReturnType;
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>dog/dog</div>'
  *
@@ -8599,7 +8654,8 @@ export function RemoteRowView(props: RemoteRowProps): ComponentReturnType;
  * ).setRelationshipDefinition('petSpecies', 'pets', 'species', 'species');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App relationships={relationships} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App relationships={relationships} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>dog:{fido:{species:{dog}}cujo:{species:{dog}}}</div>'
  * ```
@@ -8639,7 +8695,8 @@ export function RemoteRowView(props: RemoteRowProps): ComponentReturnType;
  * ).setRelationshipDefinition('petSpecies', 'pets', 'species', 'species');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App relationships={relationships} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App relationships={relationships} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div><span><b>fido</b>: dog</span><span>cujo: dog</span></div>'
  * ```
@@ -8698,7 +8755,7 @@ export function LocalRowsView(props: LocalRowsProps): ComponentReturnType;
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>felix/cujo/dog</div>'
  *
@@ -8736,7 +8793,8 @@ export function LocalRowsView(props: LocalRowsProps): ComponentReturnType;
  * ).setRelationshipDefinition('petSequence', 'pets', 'pets', 'next');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App relationships={relationships} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App relationships={relationships} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>fido:{fido:{next:{felix}}felix:{species:{cat}}}</div>'
  * ```
@@ -8777,7 +8835,8 @@ export function LocalRowsView(props: LocalRowsProps): ComponentReturnType;
  * ).setRelationshipDefinition('petSequence', 'pets', 'pets', 'next');
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App relationships={relationships} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App relationships={relationships} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div><span><b>fido</b>: felix</span><span>felix: cat</span></div>'
  * ```
@@ -8832,7 +8891,7 @@ export function LinkedRowsView(props: LinkedRowsProps): ComponentReturnType;
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>brown</span>'
  *
@@ -8870,7 +8929,7 @@ export function LinkedRowsView(props: LinkedRowsProps): ComponentReturnType;
  *   }),
  * ).setQueryDefinition('petColors', 'pets', ({select}) => select('color'));
  * const app = document.createElement('div');
- * ReactDOM.render(<App queries={queries} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>color:{brown}</span>'
  * ```
@@ -8899,7 +8958,7 @@ export function LinkedRowsView(props: LinkedRowsProps): ComponentReturnType;
  *   }),
  * ).setQueryDefinition('petColors', 'pets', ({select}) => select('color'));
  * const app = document.createElement('div');
- * ReactDOM.render(<App queries={queries} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span></span>'
  * ```
@@ -8964,7 +9023,7 @@ export function ResultCellView(props: ResultCellProps): ComponentReturnType;
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>dog/brown</div>'
  *
@@ -9000,7 +9059,7 @@ export function ResultCellView(props: ResultCellProps): ComponentReturnType;
  *   select('color');
  * });
  * const app = document.createElement('div');
- * ReactDOM.render(<App queries={queries} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>fido:{species:{dog}color:{brown}}</div>'
  * ```
@@ -9046,7 +9105,7 @@ export function ResultCellView(props: ResultCellProps): ComponentReturnType;
  *   select('color');
  * });
  * const app = document.createElement('div');
- * ReactDOM.render(<App queries={queries} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div><span><b>species</b>: dog</span><span>color: brown</span></div>'
  * ```
@@ -9108,7 +9167,7 @@ export function ResultRowView(props: ResultRowProps): ComponentReturnType;
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>black/brown</div>'
  *
@@ -9144,7 +9203,7 @@ export function ResultRowView(props: ResultRowProps): ComponentReturnType;
  *   }),
  * ).setQueryDefinition('petColors', 'pets', ({select}) => select('color'));
  * const app = document.createElement('div');
- * ReactDOM.render(<App queries={queries} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>petColors:{felix:{color:{black}}fido:{color:{brown}}}</div>'
  * ```
@@ -9184,7 +9243,7 @@ export function ResultRowView(props: ResultRowProps): ComponentReturnType;
  *   }),
  * ).setQueryDefinition('petColors', 'pets', ({select}) => select('color'));
  * const app = document.createElement('div');
- * ReactDOM.render(<App queries={queries} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div><span>felix: black</span><span><b>fido</b>: brown</span></div>'
  * ```
@@ -9238,7 +9297,7 @@ export function ResultSortedTableView(
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>brown/black</div>'
  *
@@ -9270,7 +9329,7 @@ export function ResultSortedTableView(
  *   }),
  * ).setQueryDefinition('petColors', 'pets', ({select}) => select('color'));
  * const app = document.createElement('div');
- * ReactDOM.render(<App queries={queries} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>petColors:{fido:{color:{brown}}felix:{color:{black}}}</div>'
  * ```
@@ -9309,7 +9368,7 @@ export function ResultSortedTableView(
  *   }),
  * ).setQueryDefinition('petColors', 'pets', ({select}) => select('color'));
  * const app = document.createElement('div');
- * ReactDOM.render(<App queries={queries} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div><span><b>fido</b>: brown</span><span>felix: black</span></div>'
  * ```
@@ -9352,7 +9411,7 @@ export function ResultTableView(props: ResultTableProps): ComponentReturnType;
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>1:{}</div>'
  *
@@ -9405,7 +9464,7 @@ export function CheckpointView(props: CheckpointProps): ComponentReturnType;
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div></div>'
  *
@@ -9447,7 +9506,8 @@ export function CheckpointView(props: CheckpointProps): ComponentReturnType;
  * checkpoints.addCheckpoint('sale'); // !act
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App checkpoints={checkpoints} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App checkpoints={checkpoints} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>0:{initial}1:{identified}</div>'
  * ```
@@ -9494,7 +9554,8 @@ export function CheckpointView(props: CheckpointProps): ComponentReturnType;
  * checkpoints.addCheckpoint('sale'); // !act
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App checkpoints={checkpoints} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App checkpoints={checkpoints} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div><span><b>0</b>: initial</span><span>1: identified</span></div>'
  * ```
@@ -9539,7 +9600,7 @@ export function BackwardCheckpointsView(
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div></div>'
  *
@@ -9580,7 +9641,8 @@ export function BackwardCheckpointsView(
  * checkpoints.addCheckpoint('identified'); // !act
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App checkpoints={checkpoints} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App checkpoints={checkpoints} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>1:{identified}</div>'
  * ```
@@ -9624,7 +9686,8 @@ export function BackwardCheckpointsView(
  * checkpoints.addCheckpoint('identified'); // !act
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App checkpoints={checkpoints} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App checkpoints={checkpoints} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div><span><b>1</b>: identified</span></div>'
  *
@@ -9675,7 +9738,7 @@ export function CurrentCheckpointView(
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div></div>'
  *
@@ -9718,7 +9781,8 @@ export function CurrentCheckpointView(
  * checkpoints.goTo('0'); // !act
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App checkpoints={checkpoints} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App checkpoints={checkpoints} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>1:{identified}2:{sale}</div>'
  * ```
@@ -9765,7 +9829,8 @@ export function CurrentCheckpointView(
  * checkpoints.goTo('0'); // !act
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App checkpoints={checkpoints} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App checkpoints={checkpoints} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div><span><b>1</b>: identified</span><span>2: sale</span></div>'
  * ```

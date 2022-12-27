@@ -55,7 +55,7 @@ We then create a React app comprising two MetricView components and a TableView
 component which will render the `Roll` components:
 
 ```jsx
-ReactDOM.render(
+ReactDOM.createRoot(document.body).render(
   <Provider store={store} metrics={metrics}>
     <p>
       Count: <MetricView metricId="count" />
@@ -64,7 +64,6 @@ ReactDOM.render(
     </p>
     <TableView tableId="rolls" rowComponent={Roll} />
   </Provider>,
-  document.body,
 );
 ```
 

@@ -21,7 +21,8 @@ const App = () => (
 );
 
 const app = document.createElement('div');
-ReactDOM.render(<App />, app); // !act
+const root = ReactDOMClient.createRoot(app);
+root.render(<App />); // !act
 console.log(app.innerHTML);
 // -> '<span>brown</span>'
 
@@ -45,7 +46,7 @@ const App2 = () => (
   </span>
 );
 
-ReactDOM.render(<App2 />, app); // !act
+root.render(<App2 />); // !act
 console.log(app.innerHTML);
 // -> '<span>walnut42</span>'
 ```
@@ -61,7 +62,7 @@ const App3 = () => (
   </span>
 );
 
-ReactDOM.render(<App3 />, app); // !act
+root.render(<App3 />); // !act
 console.log(app.innerHTML);
 // -> '<span>walnut,42</span>'
 ```
@@ -76,7 +77,7 @@ const App4 = () => (
   </span>
 );
 
-ReactDOM.render(<App4 />, app); // !act
+root.render(<App4 />); // !act
 console.log(app.innerHTML);
 // -> '<span>fido:{color:{walnut}weight:{42}}</span>'
 ```
@@ -124,7 +125,7 @@ const MyCellView = (props) => (
 );
 
 const App5 = () => <MyTableView store={store} tableId="pets" />;
-ReactDOM.render(<App5 />, app); // !act
+root.render(<App5 />); // !act
 console.log(app.innerHTML);
 // -> '<table><tbody><tr><th>fido</th><td>walnut</td><td>42</td></tr></tbody></table>'
 ```

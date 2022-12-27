@@ -57,7 +57,6 @@ const {
 } = TinyBaseUiReact;
 const {createElement, useCallback, useEffect, useMemo, useRef, useState} =
   React;
-const {render} = ReactDOM;
 ```
 
 For simplicity, we set up a few convenience arrays that distinguish the columns
@@ -177,9 +176,9 @@ And finally this simple boilerplate code loads the main `App` component to start
 things off:
 
 ```jsx
-addEventListener('load', () => {
-  render(<App />, document.body);
-});
+addEventListener('load', () =>
+  ReactDOM.createRoot(document.body).render(<App />),
+);
 ```
 
 ## Loading The Data

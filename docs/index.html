@@ -18,7 +18,8 @@ store<span class="punctuation">.</span><span class="function">delListener</span>
 <span class="punctuation">}</span><span class="punctuation">;</span>
 
 <span class="keyword">const</span> app <span class="operator">=</span> document<span class="punctuation">.</span><span class="function">createElement</span><span class="punctuation">(</span><span class="string">'div'</span><span class="punctuation">)</span><span class="punctuation">;</span>
-ReactDOM<span class="punctuation">.</span><span class="function">render</span><span class="punctuation">(</span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name">App1</span></span> <span class="punctuation">/></span></span><span class="punctuation">,</span> app<span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="keyword">const</span> root <span class="operator">=</span> ReactDOMClient<span class="punctuation">.</span><span class="function">createRoot</span><span class="punctuation">(</span>app<span class="punctuation">)</span><span class="punctuation">;</span>
+root<span class="punctuation">.</span><span class="function">render</span><span class="punctuation">(</span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name">App1</span></span> <span class="punctuation">/></span></span><span class="punctuation">)</span><span class="punctuation">;</span>
 console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>app<span class="punctuation">.</span>innerHTML<span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// -> 'Color: brown'</span>
 
@@ -41,7 +42,7 @@ console<span class="punctuation">.</span><span class="function">log</span><span 
   <span class="punctuation">/></span></span>
 <span class="punctuation">)</span><span class="punctuation">;</span>
 
-ReactDOM<span class="punctuation">.</span><span class="function">render</span><span class="punctuation">(</span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name">App2</span></span> <span class="punctuation">/></span></span><span class="punctuation">,</span> app<span class="punctuation">)</span><span class="punctuation">;</span>
+root<span class="punctuation">.</span><span class="function">render</span><span class="punctuation">(</span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name">App2</span></span> <span class="punctuation">/></span></span><span class="punctuation">)</span><span class="punctuation">;</span>
 console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>app<span class="punctuation">.</span>innerHTML<span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// -> 'species: dog&lt;hr>color: walnut&lt;hr>sold: false&lt;hr>'</span>
 
@@ -49,7 +50,7 @@ store<span class="punctuation">.</span><span class="function"><a href="/api/stor
 console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>app<span class="punctuation">.</span>innerHTML<span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// -> 'species: dog&lt;hr>color: walnut&lt;hr>sold: true&lt;hr>'</span>
 
-ReactDOM<span class="punctuation">.</span><span class="function">unmountComponentAtNode</span><span class="punctuation">(</span>app<span class="punctuation">)</span><span class="punctuation">;</span>
+root<span class="punctuation">.</span><span class="function">unmount</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 </code></pre><section><h2 id="apply-schemas-to-tables">Apply schemas to tables.</h2><p>By default, a <a href="/api/store/type-aliases/store/row/"><code>Row</code></a> can contain any arbitrary <a href="/api/store/type-aliases/store/cell/"><code>Cell</code></a>. But you can add a schema to a <a href="/api/store/interfaces/store/store/"><code>Store</code></a> to ensure that the values are always what you expect. For example, you can limit their types, and provide defaults. You can also create mutating listeners that can programmatically enforce a schema.</p><p>In this example, we set a second <a href="/api/store/type-aliases/store/row/"><code>Row</code></a> without the <code>sold</code> <a href="/api/store/type-aliases/store/cell/"><code>Cell</code></a> in it. The schema ensures it&#x27;s present with default of <code>false</code>.</p><p>Read more about schemas in the <a href="/guides/schemas-and-persistence/using-schemas/">Using Schemas</a> guide.</p></section><pre><code>store<span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/setter/setschema/">setSchema</a></span><span class="punctuation">(</span><span class="punctuation">{</span>
   <span class="literal-property">pets</span><span class="operator">:</span> <span class="punctuation">{</span>
     <span class="literal-property">species</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">type</span><span class="operator">:</span> <span class="string">'string'</span><span class="punctuation">}</span><span class="punctuation">,</span>

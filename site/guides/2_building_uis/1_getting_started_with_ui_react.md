@@ -22,9 +22,8 @@ look like this:
 
         const store = createStore();
         store.setCell('t1', 'r1', 'c1', 'Hello World');
-        ReactDOM.render(
+        ReactDOM.createRoot(document.body).render(
           <CellView store={store} tableId="t1" rowId="r1" cellId="c1" />,
-          document.body,
         );
       });
     </script>
