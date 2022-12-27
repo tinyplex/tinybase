@@ -272,7 +272,7 @@ const test = async (
             preset: 'jest-puppeteer',
             detectOpenHandles: true,
           }
-        : {testEnvironment: 'jsdom'}),
+        : {testEnvironment: './test/jest/environment'}),
       ...(coverageMode > 0
         ? {
             collectCoverage: true,
@@ -286,9 +286,9 @@ const test = async (
         : {}),
       ...(countAsserts
         ? {
+            testEnvironment: './test/jest/environment',
             setupFilesAfterEnv: ['./test/jest/setup'],
             reporters: ['default', './test/jest/reporter'],
-            testEnvironment: './test/jest/environment',
             runInBand: true,
           }
         : {}),
