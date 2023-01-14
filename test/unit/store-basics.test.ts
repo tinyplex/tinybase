@@ -5,7 +5,7 @@ let store: Store;
 
 // Note that these tests run in order to mutate the store in a sequence.
 
-describe('Change state', () => {
+describe('Change tabular state', () => {
   beforeAll(() => {
     store = createStore();
   });
@@ -252,5 +252,87 @@ describe('Change state', () => {
   test('delTables', () => {
     store.delTables();
     expect(store.getTables()).toEqual({});
+  });
+});
+
+describe('Change keyed value state', () => {
+  beforeAll(() => {
+    store = createStore();
+  });
+
+  test('reset 1', () => {
+    store.delValues();
+    expect(store.getValues()).toEqual({});
+  });
+
+  test('setValues', () => {
+    store.setValues({v1: 1});
+    expect(store.getValues()).toEqual({v1: 1});
+  });
+
+  test('setValues, same value', () => {
+    store.setValues({v1: 1});
+    expect(store.getValues()).toEqual({v1: 1});
+  });
+
+  test('setValues, change value', () => {
+    store.setValues({v1: 2});
+    expect(store.getValues()).toEqual({v1: 2});
+  });
+
+  test('setValues, different value', () => {
+    store.setValues({v2: 2});
+    expect(store.getValues()).toEqual({v2: 2});
+  });
+
+  test('setPartialValues', () => {
+    // @ts-ignore
+    store.setPartialValues({v1: 1, v3: undefined});
+    expect(store.getValues()).toEqual({v1: 1, v2: 2});
+  });
+
+  test('reset 2', () => {
+    store.delValues();
+    expect(store.getValues()).toEqual({});
+  });
+
+  test('setValue', () => {
+    store.setValue('v1', 1);
+    expect(store.getValues()).toEqual({v1: 1});
+  });
+
+  test('setValue, same table, same row, same cell', () => {
+    store.setValue('v1', 1);
+    expect(store.getValues()).toEqual({v1: 1});
+  });
+
+  test('setValue, same table, same row, change cell', () => {
+    store.setValue('v1', 2);
+    expect(store.getValues()).toEqual({v1: 2});
+  });
+
+  test('setValue, same table, same row, different cell', () => {
+    store.setValue('v2', 2);
+    expect(store.getValues()).toEqual({v1: 2, v2: 2});
+  });
+
+  test('setValue, mapped', () => {
+    store.setValue('v2', (value) => (value as number) + 1);
+    expect(store.getValues()).toEqual({v1: 2, v2: 3});
+  });
+
+  test('Add things to delete', () => {
+    store.setValues({v1: 1, v2: 2, v3: 3});
+    expect(store.getValues()).toEqual({v1: 1, v2: 2, v3: 3});
+  });
+
+  test('delValue', () => {
+    store.delValue('v1');
+    expect(store.getValues()).toEqual({v2: 2, v3: 3});
+  });
+
+  test('delValues', () => {
+    store.delValues();
+    expect(store.getValues()).toEqual({});
   });
 });

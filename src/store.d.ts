@@ -90,7 +90,7 @@ export type Cell = string | number | boolean;
 
 /**
  * The CellOrUndefined type is a data structure representing the data in a
- * single cell or the value `undefined`.
+ * single cell, or the value `undefined`.
  *
  * This is used when describing a Cell that is present _or_ that is not present,
  * such as when it has been deleted, or when describing a previous state where
@@ -99,6 +99,23 @@ export type Cell = string | number | boolean;
  * @category Store
  */
 export type CellOrUndefined = Cell | undefined;
+
+/**
+ * The Values type is the data structure representing all the keyed values in a
+ * Store.
+ *
+ * A Values object is used when setting values with the setValues method, and
+ * when getting them back out again with the getValues method. A Values object
+ * is a regular JavaScript object containing individual Value objects, keyed by
+ * their Id.
+ *
+ * @example
+ * ```js
+ * const values: Values = {open: true, employees: 4};
+ * ```
+ * @category Store
+ */
+export type Values = {[valueId: Id]: Value};
 
 /**
  * The Value type is the data structure representing the data in a single keyed
@@ -115,6 +132,18 @@ export type CellOrUndefined = Cell | undefined;
  * @category Store
  */
 export type Value = string | number | boolean;
+
+/**
+ * The ValueOrUndefined type is a data structure representing the data in a
+ * single value, or the value `undefined`.
+ *
+ * This is used when describing a Value that is present _or_ that is not
+ * present, such as when it has been deleted, or when describing a previous
+ * state where the Value value has since been added.
+ *
+ * @category Store
+ */
+export type ValueOrUndefined = Value | undefined;
 
 /**
  * The TableCallback type describes a function that takes a Table's Id and a
@@ -178,6 +207,19 @@ export type CellCallback = (cellId: Id, cell: Cell) => void;
  * @category Callback
  */
 export type MapCell = (cell: CellOrUndefined) => Cell;
+
+/**
+ * The MapValue type describes a function that takes an existing Value and
+ * returns another.
+ *
+ * A MapValue can be provided in the setValue method to map an existing Value to
+ * a new one, such as when incrementing a number. See that method for specific
+ * examples.
+ *
+ * @param value The current Value to map to a new Value.
+ * @category Callback
+ */
+export type MapValue = (value: ValueOrUndefined) => Value;
 
 /**
  * The GetCell type describes a function that takes a Id and returns the Cell
@@ -1205,6 +1247,61 @@ export interface Store {
   getCell(tableId: Id, rowId: Id, cellId: Id): CellOrUndefined;
 
   /**
+   * The getValues method returns an object containing the entire set of keyed
+   * Values in the Store.
+   *
+   * Note that this returns a copy of, rather than a reference to the underlying
+   * data, so changes made to the returned object are not made to the Store
+   * itself.
+   *
+   * @returns An object containing the entire data of the Values.
+   * @example
+   * This example retrieves the keyed Values data in a Store.
+   *
+   * ```js
+   * const store = createStore().setValues({open: true, employees: 3});
+   * console.log(store.getValues());
+   * // -> {open: true, employees: 3}
+   * ```
+   * @example
+   * This example retrieves a Values from a Store that has none, returning an
+   * empty object.
+   *
+   * ```js
+   * const store = createStore();
+   * console.log(store.getValues());
+   * // -> {}
+   * ```
+   * @category Getter
+   */
+  getValues(): Values;
+
+  /**
+   * The getValue method returns a single keyed Value in the Store.
+   *
+   * @param valueId The Id of the Value in the Store.
+   * @returns The Value, or `undefined`.
+   * @example
+   * This example retrieves a single Value.
+   *
+   * ```js
+   * const store = createStore().setValues({open: true, employees: 3});
+   * console.log(store.getValue('employees'));
+   * // -> 3
+   * ```
+   * @example
+   * This example retrieves a Value that does not exist, returning `undefined`.
+   *
+   * ```js
+   * const store = createStore().setValues({open: true, employees: 3});
+   * console.log(store.getValue('website'));
+   * // -> undefined
+   * ```
+   * @category Getter
+   */
+  getValue(valueId: Id): ValueOrUndefined;
+
+  /**
    * The hasTables method returns a boolean indicating whether any Table objects
    * exist in the Store.
    *
@@ -1417,7 +1514,7 @@ export interface Store {
    * data that was already present in the Store will be completely overwritten.
    * If the object is completely invalid, no change will be made to the Store.
    *
-   * The method returns a reference to the Store to that subsequent operations
+   * The method returns a reference to the Store so that subsequent operations
    * can be chained in a fluent style.
    *
    * @param tables The data of the Store to be set.
@@ -1467,7 +1564,7 @@ export interface Store {
    * overwritten. If the object is completely invalid, no change will be made to
    * the Store.
    *
-   * The method returns a reference to the Store to that subsequent operations
+   * The method returns a reference to the Store so that subsequent operations
    * can be chained in a fluent style.
    *
    * @param tableId The Id of the Table in the Store.
@@ -1518,7 +1615,7 @@ export interface Store {
    * overwritten. If the object is completely invalid, no change will be made to
    * the Store.
    *
-   * The method returns a reference to the Store to that subsequent operations
+   * The method returns a reference to the Store so that subsequent operations
    * can be chained in a fluent style.
    *
    * @param tableId The Id of the Table in the Store.
@@ -1620,7 +1717,7 @@ export interface Store {
    * merged with the data that was already present in the Store. If the object
    * is completely invalid, no change will be made to the Store.
    *
-   * The method returns a reference to the Store to that subsequent operations
+   * The method returns a reference to the Store so that subsequent operations
    * can be chained in a fluent style.
    *
    * @param tableId The Id of the Table in the Store.
@@ -1672,7 +1769,7 @@ export interface Store {
    * maps it. This is useful if you want to efficiently increment a value
    * without fetching it first, for example.
    *
-   * The method returns a reference to the Store to that subsequent operations
+   * The method returns a reference to the Store so that subsequent operations
    * can be chained in a fluent style.
    *
    * @param tableId The Id of the Table in the Store.
@@ -1714,6 +1811,155 @@ export interface Store {
    * @category Setter
    */
   setCell(tableId: Id, rowId: Id, cellId: Id, cell: Cell | MapCell): Store;
+
+  /**
+   * The setValues method takes an object and sets all the Values in the Store.
+   *
+   * This method will cause listeners to be called for any Value or Id changes
+   * resulting from it.
+   *
+   * Any part of the provided object that is invalid (either according to the
+   * Values type, or because it does not match a ValuesSchema associated with
+   * the Store), will be ignored silently.
+   *
+   * Assuming that at least some of the provided Values object is valid, any
+   * data that was already present in the Store for that Values will be
+   * completely overwritten. If the object is completely invalid, no change will
+   * be made to the Store.
+   *
+   * The method returns a reference to the Store so that subsequent operations
+   * can be chained in a fluent style.
+   *
+   * @param values The Values object to be set.
+   * @returns A reference to the Store.
+   * @example
+   * This example sets the Values of a Store.
+   *
+   * ```js
+   * const store = createStore().setValues({open: true, employees: 3});
+   * console.log(store.getValues());
+   * // -> {open: true, employees: 3}
+   * ```
+   * @example
+   * This example attempts to set the data of an existing Store with partly
+   * invalid, and then completely invalid, Values objects.
+   *
+   * ```js
+   * const store = createStore().setValues({open: true});
+   *
+   * store.setValues({employees: 3, bug: []});
+   * console.log(store.getValues());
+   * // -> {employees: 3}
+   *
+   * store.setValues(42);
+   * console.log(store.getValues());
+   * // -> {employees: 3}
+   * ```
+   * @category Setter
+   */
+  setValues(values: Values): Store;
+
+  /**
+   * The setPartialValues method takes an object and sets its Values in the
+   * Store, but leaving existing Values unaffected.
+   *
+   * This method will cause listeners to be called for any Values or Id changes
+   * resulting from it.
+   *
+   * Any part of the provided object that is invalid (either according to the
+   * Values type, or because, when combined with the current Values data, it
+   * does not match a ValuesSchema associated with the Store), will be ignored
+   * silently.
+   *
+   * Assuming that at least some of the provided Values object is valid, it will
+   * be merged with the data that was already present in the Store. If the
+   * object is completely invalid, no change will be made to the Store.
+   *
+   * The method returns a reference to the Store so that subsequent operations
+   * can be chained in a fluent style.
+   *
+   * @param partialValues The Values to be set.
+   * @returns A reference to the Store.
+   * @example
+   * This example sets some of the keyed value data in a Store.
+   *
+   * ```js
+   * const store = createStore().setValues({open: true});
+   * store.setPartialValues({employees: 3});
+   * console.log(store.getValues());
+   * // -> {open: true, employees: 3}
+   * ```
+   * @example
+   * This example attempts to set some of the data of an existing Store with
+   * partly invalid, and then completely invalid, Values objects.
+   *
+   * ```js
+   * const store = createStore().setValues({open: true});
+   *
+   * store.setPartialValues({employees: 3, bug: []});
+   * console.log(store.getValues());
+   * // -> {open: true, employees: 3}
+   *
+   * store.setPartialValues(42);
+   * console.log(store.getValues());
+   * // -> {open: true, employees: 3}
+   * ```
+   * @category Setter
+   */
+  setPartialValues(partialValues: Values): Store;
+
+  /**
+   * The setValue method sets a single keyed Value in the Store.
+   *
+   * This method will cause listeners to be called for any Value, or Id changes
+   * resulting from it.
+   *
+   * If the Value is invalid (either because of its type, or because it does not
+   * match a ValuesSchema associated with the Store), will be ignored silently.
+   *
+   * As well as string, number, or boolean Value types, this method can also
+   * take a MapValue function that takes the current Value value as a parameter
+   * and maps it. This is useful if you want to efficiently increment a value
+   * without fetching it first, for example.
+   *
+   * The method returns a reference to the Store so that subsequent operations
+   * can be chained in a fluent style.
+   *
+   * @param valueId The Id of the Value in the Store.
+   * @param value The Value to be set, or a MapValue function to update it.
+   * @returns A reference to the Store.
+   * @example
+   * This example sets a single Value.
+   *
+   * ```js
+   * const store = createStore().setValue('open', true);
+   * console.log(store.getValues());
+   * // -> {open: true}
+   * ```
+   * @example
+   * This example sets the data of a single Value by mapping the existing Value.
+   *
+   * ```js
+   * const increment = (value) => value + 1;
+   * const store = createStore().setValues({employees: 3});
+   *
+   * store.setValue('employees', increment);
+   * console.log(store.getValue('employees'));
+   * // -> 4
+   * ```
+   * @example
+   * This example attempts to set an invalid Value.
+   *
+   * ```js
+   * const store = createStore().setValues({employees: 3});
+   *
+   * store.setValue('bug', []);
+   * console.log(store.getValues());
+   * // -> {employees: 3}
+   * ```
+   * @category Setter
+   */
+  setValue(valueId: Id, value: Value | MapValue): Store;
 
   /**
    * The setTablesJson method takes a string serialization of all of the Tables
@@ -1992,6 +2238,83 @@ export interface Store {
    * @category Deleter
    */
   delCell(tableId: Id, rowId: Id, cellId: Id, forceDel?: boolean): Store;
+
+  /**
+   * The delValues method lets you remove all the Values from a Store.
+   *
+   * If there is a ValuesSchema applied to the Store and it specifies a default
+   * value for any Value Id, then deletion will result in it being set back to
+   * its default value.
+   *
+   * @returns A reference to the Store.
+   * @example
+   * This example removes all Values from a Store without a ValuesSchema.
+   *
+   * ```js
+   * const store = createStore().setValues({open: true, employees: 3});
+   * store.delValues();
+   *
+   * console.log(store.getValues());
+   * // -> {}
+   * ```
+   * @example
+   * This example removes all Values from a Store with a ValuesSchema that
+   * defaults one of its values.
+   *
+   * ```js
+   * const store = createStore()
+   *   .setValues({open: true, employees: 3})
+   *   .setValuesSchema({
+   *     open: {type: 'boolean', default: false},
+   *     employees: {type: 'number'},
+   *   });
+   * store.delValues();
+   *
+   * console.log(store.getValues());
+   * // -> {open: false}
+   * ```
+   * @category Deleter
+   */
+  delValues(): Store;
+
+  /**
+   * The delValue method lets you remove a single Value from a Store.
+   *
+   * If there is a ValuesSchema applied to the Store and it specifies a default
+   * value for this Value Id, then deletion will result in it being set back to
+   * its default value.
+   *
+   * @param valueId The Id of the Value in the Row.
+   * @returns A reference to the Store.
+   * @example
+   * This example removes a Value from a Store without a ValuesSchema.
+   *
+   * ```js
+   * const store = createStore().setValues({open: true, employees: 3});
+   * store.delValue('employees');
+   *
+   * console.log(store.getValues());
+   * // -> {open: true}
+   * ```
+   * @example
+   * This example removes a Value from a Store with a ValuesSchema that defaults
+   * its value.
+   *
+   * ```js
+   * const store = createStore()
+   *   .setValues({open: true, employees: 3})
+   *   .setValuesSchema({
+   *     open: {type: 'boolean', default: false},
+   *     employees: {type: 'number'},
+   *   });
+   * store.delValue('open');
+   *
+   * console.log(store.getValues());
+   * // -> {open: false, employees: 3}
+   * ```
+   * @category Deleter
+   */
+  delValue(valueId: Id): Store;
 
   /**
    * The delTablesSchema method lets you remove the TablesSchema of the Store.
