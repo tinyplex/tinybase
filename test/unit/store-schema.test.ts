@@ -1,9 +1,9 @@
 import {
   Cell,
   Id,
-  Schema,
   Store,
   Tables,
+  TablesSchema,
   createStore,
 } from '../../lib/debug/tinybase';
 import {
@@ -53,7 +53,7 @@ const getAddMinMaxMutator =
 
 const boundsSchemaAndExpected: [
   name: string,
-  schema: Schema,
+  tablesSchema: TablesSchema,
   addMutator: AddMutator,
   expected: Tables,
 ][] = [
@@ -118,14 +118,14 @@ const boundsSchemaAndExpected: [
   ],
 ];
 
-describe('Get and set schemas', () => {
-  test('Set schema on creation', () => {
+describe('Get and set tablesSchemas', () => {
+  test('Set tablesSchema on creation', () => {
     const store = createStore();
     const listener = createStoreListener(store);
     listener.listenToInvalidCell('invalids', null, null, null);
     addAllowMutator(store, 't1', 'c1', [2, 3]);
-    store.setSchema({t1: {c1: {type: 'number', default: 1}}});
-    expect(JSON.parse(store.getSchemaJson())).toEqual({
+    store.setTablesSchema({t1: {c1: {type: 'number', default: 1}}});
+    expect(JSON.parse(store.getTablesSchemaJson())).toEqual({
       t1: {c1: {type: 'number', default: 1}},
     });
     store.setCell('t1', 'r1', 'c1', '2');
@@ -136,19 +136,19 @@ describe('Get and set schemas', () => {
     expectNoChanges(listener);
   });
 
-  test('Set schema after creation', () => {
+  test('Set tablesSchema after creation', () => {
     const store = createStore().setTables({});
     const listener = createStoreListener(store);
     listener.listenToInvalidCell('invalids', null, null, null);
     store.setCell('t1', 'r1', 'c1', '1');
     expect(store.getTables()).toEqual({t1: {r1: {c1: '1'}}});
-    store.setSchema({
+    store.setTablesSchema({
       t1: {
         c1: {type: 'number', default: 1},
         c2: {type: 'string', default: '2'},
       },
     });
-    expect(JSON.parse(store.getSchemaJson())).toEqual({
+    expect(JSON.parse(store.getTablesSchemaJson())).toEqual({
       t1: {
         c1: {type: 'number', default: 1},
         c2: {type: 'string', default: '2'},
@@ -168,12 +168,12 @@ describe('Get and set schemas', () => {
     expectNoChanges(listener);
   });
 
-  test('Set schema after creation (complete failure)', () => {
+  test('Set tablesSchema after creation (complete failure)', () => {
     const store = createStore().setTables({});
     const listener = createStoreListener(store);
     listener.listenToInvalidCell('invalids', null, null, null);
     store.setCell('t1', 'r1', 'c1', '1');
-    store.setSchema({t2: {c1: {type: 'number', default: 1}}});
+    store.setTablesSchema({t2: {c1: {type: 'number', default: 1}}});
     expect(store.getTables()).toEqual({});
     expectChangesNoJson(listener, 'invalids', {
       t1: {undefined: {undefined: [undefined]}},
@@ -181,19 +181,19 @@ describe('Get and set schemas', () => {
     expectNoChanges(listener);
   });
 
-  test('Change schema after creation', () => {
+  test('Change tablesSchema after creation', () => {
     const store = createStore();
     const listener = createStoreListener(store);
     listener.listenToInvalidCell('invalids', null, null, null);
     let listenerId = addAllowMutator(store, 't1', 'c1', [2, 3]);
-    store.setSchema({t1: {c1: {type: 'number', default: 1}}});
+    store.setTablesSchema({t1: {c1: {type: 'number', default: 1}}});
     store.setCell('t1', 'r1', 'c1', '1');
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
-    store.setSchema({
+    store.setTablesSchema({
       t1: {c1: {type: 'string', default: '1'}},
     });
     store.delListener(listenerId as any);
-    expect(JSON.parse(store.getSchemaJson())).toEqual({
+    expect(JSON.parse(store.getTablesSchemaJson())).toEqual({
       t1: {c1: {type: 'string', default: '1'}},
     });
     expect(store.getTables()).toEqual({t1: {r1: {c1: '1'}}});
@@ -215,17 +215,17 @@ describe('Get and set schemas', () => {
     expectNoChanges(listener);
   });
 
-  test('Remove schema after creation', () => {
+  test('Remove tablesSchema after creation', () => {
     const store = createStore();
     const listener = createStoreListener(store);
     listener.listenToInvalidCell('invalids', null, null, null);
     const listenerId = addAllowMutator(store, 't1', 'c1', [2, 3]);
-    store.setSchema({t1: {c1: {type: 'number', default: 1}}});
+    store.setTablesSchema({t1: {c1: {type: 'number', default: 1}}});
     store.setCell('t1', 'r1', 'c1', '1');
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
-    store.delSchema();
+    store.delTablesSchema();
     store.delListener(listenerId as any);
-    expect(JSON.parse(store.getSchemaJson())).toEqual({});
+    expect(JSON.parse(store.getTablesSchemaJson())).toEqual({});
     store.setCell('t1', 'r1', 'c1', '1');
     expect(store.getTables()).toEqual({t1: {r1: {c1: '1'}}});
     expectChanges(listener, 'invalids', {t1: {r1: {c1: ['1']}}});
@@ -237,20 +237,20 @@ describe('Schema applied before data set', () => {
   test('matching', () => {
     const store = createStore();
     store.setTables({t1: {r1: {c1: 1}}});
-    store.setSchema({t1: {c1: {type: 'number'}}});
+    store.setTablesSchema({t1: {c1: {type: 'number'}}});
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
   });
 
   test('non-matching table', () => {
     const store = createStore();
-    store.setSchema({t1: {c1: {type: 'number'}}});
+    store.setTablesSchema({t1: {c1: {type: 'number'}}});
     store.setTables({t2: {r1: {c1: 1}}});
     expect(store.getTables()).toEqual({});
   });
 
   test('non-matching cell', () => {
     const store = createStore();
-    store.setSchema({t1: {c1: {type: 'number'}}});
+    store.setTablesSchema({t1: {c1: {type: 'number'}}});
     store.setTables({t1: {r1: {c2: 1}}});
     expect(store.getTables()).toEqual({});
   });
@@ -258,7 +258,7 @@ describe('Schema applied before data set', () => {
   test('non-matching some cell types', () => {
     const store = createStore();
     store.setTables({t1: {r1: {c1: 1}, r2: {c1: true}, r3: {c1: 'a'}}});
-    store.setSchema({t1: {c1: {type: 'number'}}});
+    store.setTablesSchema({t1: {c1: {type: 'number'}}});
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
   });
 
@@ -268,16 +268,21 @@ describe('Schema applied before data set', () => {
     store.setTables({
       t1: {r1: {c1: 2}, r2: {c1: 4}, r3: {c1: true}, r4: {c1: 'a'}},
     });
-    store.setSchema({t1: {c1: {type: 'number'}}});
+    store.setTablesSchema({t1: {c1: {type: 'number'}}});
     expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
   });
 
   describe('non-matching some bounds', () => {
     test.each(boundsSchemaAndExpected)(
       '%s',
-      (_name, schema: Schema, addMutator: AddMutator, expected: Tables) => {
+      (
+        _name,
+        tablesSchema: TablesSchema,
+        addMutator: AddMutator,
+        expected: Tables,
+      ) => {
         const store = createStore();
-        store.setSchema(schema);
+        store.setTablesSchema(tablesSchema);
         addMutator(store);
         store.setTables({
           t1: {
@@ -297,7 +302,7 @@ describe('Schema applied before data set', () => {
     const store = createStore().setTables({
       t1: {r1: {c1: 1}, r2: {c1: true}, r3: {c1: 'a'}},
     });
-    store.setSchema({t1: {c1: {type: 'number', default: 2}}});
+    store.setTablesSchema({t1: {c1: {type: 'number', default: 2}}});
     expect(store.getTables()).toEqual({
       t1: {r1: {c1: 1}, r2: {c1: 2}, r3: {c1: 2}},
     });
@@ -306,7 +311,7 @@ describe('Schema applied before data set', () => {
   test('non-matching some cell types, default and allows', () => {
     const store = createStore();
     addAllowMutator(store, 't1', 'c1', [1, 3]);
-    store.setSchema({t1: {c1: {type: 'number', default: 2}}});
+    store.setTablesSchema({t1: {c1: {type: 'number', default: 2}}});
     store.setTables({
       t1: {
         r1: {c1: 2},
@@ -325,7 +330,7 @@ describe('Schema applied before data set', () => {
 describe('Schema applied before data set, listening', () => {
   describe('Tables', () => {
     test('matching', () => {
-      const store = createStore().setSchema({t1: {c1: {type: 'number'}}});
+      const store = createStore().setTablesSchema({t1: {c1: {type: 'number'}}});
       const listener = createStoreListener(store);
       listener.listenToTables('/');
       listener.listenToCell('/t*/r*/c*', null, null, null);
@@ -338,7 +343,7 @@ describe('Schema applied before data set, listening', () => {
     });
 
     test('default missing cell', () => {
-      const store = createStore().setSchema({
+      const store = createStore().setTablesSchema({
         t1: {c1: {type: 'number'}, c2: {type: 'number', default: 2}},
       });
       const listener = createStoreListener(store);
@@ -358,7 +363,7 @@ describe('Schema applied before data set, listening', () => {
     });
 
     test('non-matching table', () => {
-      const store = createStore().setSchema({t1: {c1: {type: 'number'}}});
+      const store = createStore().setTablesSchema({t1: {c1: {type: 'number'}}});
       const listener = createStoreListener(store);
       listener.listenToTables('/');
       listener.listenToCell('/t*/r*/c*', null, null, null);
@@ -372,7 +377,7 @@ describe('Schema applied before data set, listening', () => {
     });
 
     test('non-matching cell', () => {
-      const store = createStore().setSchema({t1: {c1: {type: 'number'}}});
+      const store = createStore().setTablesSchema({t1: {c1: {type: 'number'}}});
       const listener = createStoreListener(store);
       listener.listenToTables('/');
       listener.listenToCell('/t*/r*/c*', null, null, null);
@@ -389,7 +394,7 @@ describe('Schema applied before data set, listening', () => {
     });
 
     test('non-matching some cell types', () => {
-      const store = createStore().setSchema({t1: {c1: {type: 'number'}}});
+      const store = createStore().setTablesSchema({t1: {c1: {type: 'number'}}});
       const listener = createStoreListener(store);
       listener.listenToTables('/');
       listener.listenToCell('/t*/r*/c*', null, null, null);
@@ -410,7 +415,7 @@ describe('Schema applied before data set, listening', () => {
     test('non-matching some cell allows', () => {
       const store = createStore();
       addAllowMutator(store, 't1', 'c1', [1, 2, 3]);
-      store.setSchema({t1: {c1: {type: 'number'}}});
+      store.setTablesSchema({t1: {c1: {type: 'number'}}});
       const listener = createStoreListener(store);
       listener.listenToTables('/');
       listener.listenToCell('/t*/r*/c*', null, null, null);
@@ -433,8 +438,13 @@ describe('Schema applied before data set, listening', () => {
     describe('non-matching some bounds', () => {
       test.each(boundsSchemaAndExpected)(
         '%s',
-        (_name, schema: Schema, addMutator: AddMutator, expected: Tables) => {
-          const store = createStore().setSchema(schema);
+        (
+          _name,
+          tablesSchema: TablesSchema,
+          addMutator: AddMutator,
+          expected: Tables,
+        ) => {
+          const store = createStore().setTablesSchema(tablesSchema);
           addMutator(store);
           const listener = createStoreListener(store);
           listener.listenToTables('/');
@@ -473,7 +483,7 @@ describe('Schema applied before data set, listening', () => {
     });
 
     test('non-matching some cell types, defaulting', () => {
-      const store = createStore().setSchema({
+      const store = createStore().setTablesSchema({
         t1: {c1: {type: 'number', default: 2}},
       });
       const listener = createStoreListener(store);
@@ -509,7 +519,7 @@ describe('Schema applied before data set, listening', () => {
     test('non-matching some cell types, default and allows', () => {
       const store = createStore();
       addAllowMutator(store, 't1', 'c1', [1, 3]);
-      store.setSchema({t1: {c1: {type: 'number', default: 2}}});
+      store.setTablesSchema({t1: {c1: {type: 'number', default: 2}}});
       const listener = createStoreListener(store);
       listener.listenToTables('/');
       listener.listenToCell('/t*/r*/c*', null, null, null);
@@ -550,7 +560,7 @@ describe('Schema applied before data set, listening', () => {
     test('Setting, changing', () => {
       const store = createStore()
         .setTables({t1: {r1: {c1: 1}}})
-        .setSchema({t1: {c1: {type: 'number', default: 2}}});
+        .setTablesSchema({t1: {c1: {type: 'number', default: 2}}});
       const listener = createStoreListener(store);
       listener.listenToTables('/');
       listener.listenToCell('/t*/r*/c*', null, null, null);
@@ -578,7 +588,7 @@ describe('Schema applied before data set, listening', () => {
     test('Deleting', () => {
       const store = createStore()
         .setTables({t1: {r1: {c1: 1}}})
-        .setSchema({t1: {c1: {type: 'number', default: 2}}});
+        .setTablesSchema({t1: {c1: {type: 'number', default: 2}}});
       const listener = createStoreListener(store);
       listener.listenToTables('/');
       listener.listenToCell('/t*/r*/c*', null, null, null);
@@ -592,7 +602,7 @@ describe('Schema applied before data set, listening', () => {
 
   describe('Table', () => {
     test('matching', () => {
-      const store = createStore().setSchema({t1: {c1: {type: 'number'}}});
+      const store = createStore().setTablesSchema({t1: {c1: {type: 'number'}}});
       const listener = createStoreListener(store);
       listener.listenToTable('/t1', 't1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
@@ -605,7 +615,7 @@ describe('Schema applied before data set, listening', () => {
     });
 
     test('default missing cell', () => {
-      const store = createStore().setSchema({
+      const store = createStore().setTablesSchema({
         t1: {c1: {type: 'number'}, c2: {type: 'number', default: 2}},
       });
       const listener = createStoreListener(store);
@@ -625,7 +635,7 @@ describe('Schema applied before data set, listening', () => {
     });
 
     test('non-matching table', () => {
-      const store = createStore().setSchema({t1: {c1: {type: 'number'}}});
+      const store = createStore().setTablesSchema({t1: {c1: {type: 'number'}}});
       const listener = createStoreListener(store);
       listener.listenToTable('/t2', 't2');
       listener.listenToCell('/t*/r*/c*', null, null, null);
@@ -639,7 +649,7 @@ describe('Schema applied before data set, listening', () => {
     });
 
     test('non-matching cell', () => {
-      const store = createStore().setSchema({t1: {c1: {type: 'number'}}});
+      const store = createStore().setTablesSchema({t1: {c1: {type: 'number'}}});
       const listener = createStoreListener(store);
       listener.listenToTable('/t1', 't1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
@@ -656,7 +666,7 @@ describe('Schema applied before data set, listening', () => {
     });
 
     test('non-matching some cell types', () => {
-      const store = createStore().setSchema({t1: {c1: {type: 'number'}}});
+      const store = createStore().setTablesSchema({t1: {c1: {type: 'number'}}});
       const listener = createStoreListener(store);
       listener.listenToTable('/t1', 't1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
@@ -677,7 +687,7 @@ describe('Schema applied before data set, listening', () => {
     test('non-matching some cell allows', () => {
       const store = createStore();
       addAllowMutator(store, 't1', 'c1', [1, 2, 3]);
-      store.setSchema({t1: {c1: {type: 'number'}}});
+      store.setTablesSchema({t1: {c1: {type: 'number'}}});
       const listener = createStoreListener(store);
       listener.listenToTable('/t1', 't1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
@@ -703,8 +713,13 @@ describe('Schema applied before data set, listening', () => {
     describe('non-matching some bounds', () => {
       test.each(boundsSchemaAndExpected)(
         '%s',
-        (_name, schema: Schema, addMutator: AddMutator, expected: Tables) => {
-          const store = createStore().setSchema(schema);
+        (
+          _name,
+          tablesSchema: TablesSchema,
+          addMutator: AddMutator,
+          expected: Tables,
+        ) => {
+          const store = createStore().setTablesSchema(tablesSchema);
           addMutator(store);
           const listener = createStoreListener(store);
           listener.listenToTable('/t1', 't1');
@@ -741,7 +756,7 @@ describe('Schema applied before data set, listening', () => {
     });
 
     test('non-matching some cell types, defaulting', () => {
-      const store = createStore().setSchema({
+      const store = createStore().setTablesSchema({
         t1: {c1: {type: 'number', default: 2}},
       });
       const listener = createStoreListener(store);
@@ -780,7 +795,7 @@ describe('Schema applied before data set, listening', () => {
     test('non-matching some cell types, default and allows', () => {
       const store = createStore();
       addAllowMutator(store, 't1', 'c1', [1, 3]);
-      store.setSchema({t1: {c1: {type: 'number', default: 2}}});
+      store.setTablesSchema({t1: {c1: {type: 'number', default: 2}}});
       const listener = createStoreListener(store);
       listener.listenToTable('/t1', 't1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
@@ -819,7 +834,7 @@ describe('Schema applied before data set, listening', () => {
     test('Setting, changing', () => {
       const store = createStore()
         .setTables({t1: {r1: {c1: 1}}})
-        .setSchema({t1: {c1: {type: 'number', default: 2}}});
+        .setTablesSchema({t1: {c1: {type: 'number', default: 2}}});
       const listener = createStoreListener(store);
       listener.listenToTable('/t1', 't1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
@@ -850,7 +865,7 @@ describe('Schema applied before data set, listening', () => {
     test('Deleting', () => {
       const store = createStore()
         .setTables({t1: {r1: {c1: 1}}})
-        .setSchema({t1: {c1: {type: 'number', default: 2}}});
+        .setTablesSchema({t1: {c1: {type: 'number', default: 2}}});
       const listener = createStoreListener(store);
       listener.listenToTable('/t1', 't1');
       listener.listenToInvalidCell('invalids', null, null, null);
@@ -862,7 +877,7 @@ describe('Schema applied before data set, listening', () => {
 
   describe('Row', () => {
     test('matching', () => {
-      const store = createStore().setSchema({t1: {c1: {type: 'number'}}});
+      const store = createStore().setTablesSchema({t1: {c1: {type: 'number'}}});
       const listener = createStoreListener(store);
       listener.listenToRow('/t1/r1', 't1', 'r1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
@@ -875,7 +890,7 @@ describe('Schema applied before data set, listening', () => {
     });
 
     test('default missing cell', () => {
-      const store = createStore().setSchema({
+      const store = createStore().setTablesSchema({
         t1: {c1: {type: 'number'}, c2: {type: 'number', default: 2}},
       });
       const listener = createStoreListener(store);
@@ -895,7 +910,7 @@ describe('Schema applied before data set, listening', () => {
     });
 
     test('non-matching table', () => {
-      const store = createStore().setSchema({t1: {c1: {type: 'number'}}});
+      const store = createStore().setTablesSchema({t1: {c1: {type: 'number'}}});
       const listener = createStoreListener(store);
       listener.listenToRow('/t2/r1', 't2', 'r1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
@@ -907,7 +922,7 @@ describe('Schema applied before data set, listening', () => {
     });
 
     test('non-matching cell', () => {
-      const store = createStore().setSchema({t1: {c1: {type: 'number'}}});
+      const store = createStore().setTablesSchema({t1: {c1: {type: 'number'}}});
       const listener = createStoreListener(store);
       listener.listenToRow('/t1/r1', 't1', 'r1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
@@ -924,7 +939,7 @@ describe('Schema applied before data set, listening', () => {
     });
 
     test('non-matching some cell types', () => {
-      const store = createStore().setSchema({t1: {c1: {type: 'number'}}});
+      const store = createStore().setTablesSchema({t1: {c1: {type: 'number'}}});
       const listener = createStoreListener(store);
       listener.listenToCell('/t*/r*/c*', null, null, null);
       listener.listenToRow('/t1/r1', 't1', 'r1');
@@ -950,7 +965,7 @@ describe('Schema applied before data set, listening', () => {
     test('non-matching some cell allows', () => {
       const store = createStore();
       addAllowMutator(store, 't1', 'c1', [1, 2, 3]);
-      store.setSchema({t1: {c1: {type: 'number'}}});
+      store.setTablesSchema({t1: {c1: {type: 'number'}}});
       const listener = createStoreListener(store);
       listener.listenToRow('/t1/r1', 't1', 'r1');
       listener.listenToRow('/t1/r2', 't1', 'r2');
@@ -978,8 +993,13 @@ describe('Schema applied before data set, listening', () => {
     describe('non-matching some bounds', () => {
       test.each(boundsSchemaAndExpected)(
         '%s',
-        (_name, schema: Schema, addMutator: AddMutator, expected: Tables) => {
-          const store = createStore().setSchema(schema);
+        (
+          _name,
+          tablesSchema: TablesSchema,
+          addMutator: AddMutator,
+          expected: Tables,
+        ) => {
+          const store = createStore().setTablesSchema(tablesSchema);
           addMutator(store);
           const listener = createStoreListener(store);
           listener.listenToRow('/t1/r1', 't1', 'r1');
@@ -1023,7 +1043,7 @@ describe('Schema applied before data set, listening', () => {
     });
 
     test('non-matching some cell types, defaulting', () => {
-      const store = createStore().setSchema({
+      const store = createStore().setTablesSchema({
         t1: {c1: {type: 'number', default: 2}},
       });
       const listener = createStoreListener(store);
@@ -1065,7 +1085,7 @@ describe('Schema applied before data set, listening', () => {
     test('non-matching some cell types, default and allows', () => {
       const store = createStore();
       addAllowMutator(store, 't1', 'c1', [1, 3]);
-      store.setSchema({t1: {c1: {type: 'number', default: 2}}});
+      store.setTablesSchema({t1: {c1: {type: 'number', default: 2}}});
       const listener = createStoreListener(store);
       listener.listenToRow('/t1/r1', 't1', 'r1');
       listener.listenToRow('/t1/r2', 't1', 'r2');
@@ -1109,7 +1129,7 @@ describe('Schema applied before data set, listening', () => {
     test('Setting, changing', () => {
       const store = createStore()
         .setTables({t1: {r1: {c1: 1}}})
-        .setSchema({t1: {c1: {type: 'number', default: 2}}});
+        .setTablesSchema({t1: {c1: {type: 'number', default: 2}}});
       const listener = createStoreListener(store);
       listener.listenToRow('/t1/r1', 't1', 'r1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
@@ -1145,7 +1165,7 @@ describe('Schema applied before data set, listening', () => {
     test('Deleting', () => {
       const store = createStore()
         .setTables({t1: {r1: {c1: 1}}})
-        .setSchema({t1: {c1: {type: 'number', default: 2}}});
+        .setTablesSchema({t1: {c1: {type: 'number', default: 2}}});
       const listener = createStoreListener(store);
       listener.listenToRow('/t1/r1', 't1', 'r1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
@@ -1160,7 +1180,7 @@ describe('Schema applied before data set, listening', () => {
 
   describe('PartialRow', () => {
     test('matching', () => {
-      const store = createStore().setSchema({t1: {c1: {type: 'number'}}});
+      const store = createStore().setTablesSchema({t1: {c1: {type: 'number'}}});
       const listener = createStoreListener(store);
       listener.listenToRow('/t1/r1', 't1', 'r1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
@@ -1173,7 +1193,7 @@ describe('Schema applied before data set, listening', () => {
     });
 
     test('default missing cell', () => {
-      const store = createStore().setSchema({
+      const store = createStore().setTablesSchema({
         t1: {c1: {type: 'number'}, c2: {type: 'number', default: 2}},
       });
       const listener = createStoreListener(store);
@@ -1193,7 +1213,7 @@ describe('Schema applied before data set, listening', () => {
     });
 
     test('non-matching table', () => {
-      const store = createStore().setSchema({t1: {c1: {type: 'number'}}});
+      const store = createStore().setTablesSchema({t1: {c1: {type: 'number'}}});
       const listener = createStoreListener(store);
       listener.listenToRow('/t2/r1', 't2', 'r1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
@@ -1205,7 +1225,7 @@ describe('Schema applied before data set, listening', () => {
     });
 
     test('non-matching cell', () => {
-      const store = createStore().setSchema({t1: {c1: {type: 'number'}}});
+      const store = createStore().setTablesSchema({t1: {c1: {type: 'number'}}});
       const listener = createStoreListener(store);
       listener.listenToRow('/t1/r1', 't1', 'r1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
@@ -1217,7 +1237,7 @@ describe('Schema applied before data set, listening', () => {
     });
 
     test('non-matching some cell types', () => {
-      const store = createStore().setSchema({t1: {c1: {type: 'number'}}});
+      const store = createStore().setTablesSchema({t1: {c1: {type: 'number'}}});
       const listener = createStoreListener(store);
       listener.listenToCell('/t*/r*/c*', null, null, null);
       listener.listenToRow('/t1/r1', 't1', 'r1');
@@ -1243,7 +1263,7 @@ describe('Schema applied before data set, listening', () => {
     test('non-matching some cell allows', () => {
       const store = createStore();
       addAllowMutator(store, 't1', 'c1', [1, 2, 3]);
-      store.setSchema({t1: {c1: {type: 'number'}}});
+      store.setTablesSchema({t1: {c1: {type: 'number'}}});
       const listener = createStoreListener(store);
       listener.listenToRow('/t1/r1', 't1', 'r1');
       listener.listenToRow('/t1/r2', 't1', 'r2');
@@ -1271,8 +1291,13 @@ describe('Schema applied before data set, listening', () => {
     describe('non-matching some bounds', () => {
       test.each(boundsSchemaAndExpected)(
         '%s',
-        (_name, schema: Schema, addMutator: AddMutator, expected: Tables) => {
-          const store = createStore().setSchema(schema);
+        (
+          _name,
+          tablesSchema: TablesSchema,
+          addMutator: AddMutator,
+          expected: Tables,
+        ) => {
+          const store = createStore().setTablesSchema(tablesSchema);
           addMutator(store);
           const listener = createStoreListener(store);
           listener.listenToRow('/t1/r1', 't1', 'r1');
@@ -1316,7 +1341,7 @@ describe('Schema applied before data set, listening', () => {
     });
 
     test('non-matching some cell types, defaulting', () => {
-      const store = createStore().setSchema({
+      const store = createStore().setTablesSchema({
         t1: {c1: {type: 'number', default: 2}},
       });
       const listener = createStoreListener(store);
@@ -1354,7 +1379,7 @@ describe('Schema applied before data set, listening', () => {
     test('non-matching some cell types, default and allows', () => {
       const store = createStore();
       addAllowMutator(store, 't1', 'c1', [1, 3]);
-      store.setSchema({t1: {c1: {type: 'number', default: 2}}});
+      store.setTablesSchema({t1: {c1: {type: 'number', default: 2}}});
       const listener = createStoreListener(store);
       listener.listenToRow('/t1/r1', 't1', 'r1');
       listener.listenToRow('/t1/r2', 't1', 'r2');
@@ -1391,7 +1416,7 @@ describe('Schema applied before data set, listening', () => {
     test('Setting, changing', () => {
       const store = createStore()
         .setTables({t1: {r1: {c1: 1}}})
-        .setSchema({t1: {c1: {type: 'number', default: 2}}});
+        .setTablesSchema({t1: {c1: {type: 'number', default: 2}}});
       const listener = createStoreListener(store);
       listener.listenToRow('/t1/r1', 't1', 'r1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
@@ -1427,7 +1452,7 @@ describe('Schema applied before data set, listening', () => {
     test('Deleting', () => {
       const store = createStore()
         .setTables({t1: {r1: {c1: 1}}})
-        .setSchema({t1: {c1: {type: 'number', default: 2}}});
+        .setTablesSchema({t1: {c1: {type: 'number', default: 2}}});
       const listener = createStoreListener(store);
       listener.listenToRow('/t1/r1', 't1', 'r1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
@@ -1442,7 +1467,7 @@ describe('Schema applied before data set, listening', () => {
 
   describe('Cell', () => {
     test('matching', () => {
-      const store = createStore().setSchema({t1: {c1: {type: 'number'}}});
+      const store = createStore().setTablesSchema({t1: {c1: {type: 'number'}}});
       const listener = createStoreListener(store);
       listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
@@ -1455,7 +1480,7 @@ describe('Schema applied before data set, listening', () => {
     });
 
     test('default missing cell', () => {
-      const store = createStore().setSchema({
+      const store = createStore().setTablesSchema({
         t1: {c1: {type: 'number'}, c2: {type: 'number', default: 2}},
       });
       const listener = createStoreListener(store);
@@ -1477,7 +1502,7 @@ describe('Schema applied before data set, listening', () => {
     });
 
     test('non-matching table', () => {
-      const store = createStore().setSchema({t1: {c1: {type: 'number'}}});
+      const store = createStore().setTablesSchema({t1: {c1: {type: 'number'}}});
       const listener = createStoreListener(store);
       listener.listenToCell('/t2/r1/c1', 't2', 'r1', 'c1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
@@ -1489,7 +1514,7 @@ describe('Schema applied before data set, listening', () => {
     });
 
     test('non-matching cell', () => {
-      const store = createStore().setSchema({t1: {c1: {type: 'number'}}});
+      const store = createStore().setTablesSchema({t1: {c1: {type: 'number'}}});
       const listener = createStoreListener(store);
       listener.listenToCell('t1/r1/c2', 't1', 'r1', 'c2');
       listener.listenToCell('/t*/r*/c*', null, null, null);
@@ -1502,7 +1527,9 @@ describe('Schema applied before data set, listening', () => {
 
     describe('non-matching some cell types', () => {
       test('to number', () => {
-        const store = createStore().setSchema({t1: {c1: {type: 'number'}}});
+        const store = createStore().setTablesSchema({
+          t1: {c1: {type: 'number'}},
+        });
         const listener = createStoreListener(store);
         listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
         listener.listenToCell('/t1/r2/c1', 't1', 'r2', 'c1');
@@ -1526,7 +1553,9 @@ describe('Schema applied before data set, listening', () => {
       });
 
       test('to boolean', () => {
-        const store = createStore().setSchema({t1: {c1: {type: 'boolean'}}});
+        const store = createStore().setTablesSchema({
+          t1: {c1: {type: 'boolean'}},
+        });
         const listener = createStoreListener(store);
         listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
         listener.listenToCell('/t1/r2/c1', 't1', 'r2', 'c1');
@@ -1550,7 +1579,9 @@ describe('Schema applied before data set, listening', () => {
       });
 
       test('to string', () => {
-        const store = createStore().setSchema({t1: {c1: {type: 'string'}}});
+        const store = createStore().setTablesSchema({
+          t1: {c1: {type: 'string'}},
+        });
         const listener = createStoreListener(store);
         listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
         listener.listenToCell('/t1/r2/c1', 't1', 'r2', 'c1');
@@ -1574,7 +1605,9 @@ describe('Schema applied before data set, listening', () => {
       });
 
       test('to number allow', () => {
-        const store = createStore().setSchema({t1: {c1: {type: 'number'}}});
+        const store = createStore().setTablesSchema({
+          t1: {c1: {type: 'number'}},
+        });
         addAllowMutator(store, 't1', 'c1', [1, 2, 3]);
         const listener = createStoreListener(store);
         listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
@@ -1601,7 +1634,9 @@ describe('Schema applied before data set, listening', () => {
       });
 
       test('to boolean allow', () => {
-        const store = createStore().setSchema({t1: {c1: {type: 'boolean'}}});
+        const store = createStore().setTablesSchema({
+          t1: {c1: {type: 'boolean'}},
+        });
         addAllowMutator<boolean>(store, 't1', 'c1', [true]);
         const listener = createStoreListener(store);
         listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
@@ -1628,7 +1663,9 @@ describe('Schema applied before data set, listening', () => {
       });
 
       test('to string allow', () => {
-        const store = createStore().setSchema({t1: {c1: {type: 'string'}}});
+        const store = createStore().setTablesSchema({
+          t1: {c1: {type: 'string'}},
+        });
         addAllowMutator(store, 't1', 'c1', ['true', '1']);
         const listener = createStoreListener(store);
         listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
@@ -1657,7 +1694,7 @@ describe('Schema applied before data set, listening', () => {
 
     describe('non-matching some cell types, defaulting', () => {
       test('to number', () => {
-        const store = createStore().setSchema({
+        const store = createStore().setTablesSchema({
           t1: {c1: {type: 'number', default: 2}},
         });
         const listener = createStoreListener(store);
@@ -1693,7 +1730,7 @@ describe('Schema applied before data set, listening', () => {
       });
 
       test('to boolean', () => {
-        const store = createStore().setSchema({
+        const store = createStore().setTablesSchema({
           t1: {c1: {type: 'boolean', default: false}},
         });
         const listener = createStoreListener(store);
@@ -1729,7 +1766,7 @@ describe('Schema applied before data set, listening', () => {
       });
 
       test('to string', () => {
-        const store = createStore().setSchema({
+        const store = createStore().setTablesSchema({
           t1: {c1: {type: 'string', default: '2'}},
         });
         const listener = createStoreListener(store);
@@ -1765,7 +1802,7 @@ describe('Schema applied before data set, listening', () => {
       });
 
       test('to number allow', () => {
-        const store = createStore().setSchema({
+        const store = createStore().setTablesSchema({
           t1: {c1: {type: 'number', default: 2}},
         });
         addAllowMutator(store, 't1', 'c1', [1, 3]);
@@ -1806,7 +1843,7 @@ describe('Schema applied before data set, listening', () => {
       });
 
       test('to boolean allow', () => {
-        const store = createStore().setSchema({
+        const store = createStore().setTablesSchema({
           t1: {
             c1: {
               type: 'boolean',
@@ -1857,7 +1894,7 @@ describe('Schema applied before data set, listening', () => {
       });
 
       test('to string allow', () => {
-        const store = createStore().setSchema({
+        const store = createStore().setTablesSchema({
           t1: {
             c1: {
               type: 'string',
@@ -1906,8 +1943,13 @@ describe('Schema applied before data set, listening', () => {
     describe('non-matching bounds', () => {
       test.each(boundsSchemaAndExpected)(
         '%s',
-        (_name, schema: Schema, addMutator: AddMutator, expected: Tables) => {
-          const store = createStore().setSchema(schema);
+        (
+          _name,
+          tablesSchema: TablesSchema,
+          addMutator: AddMutator,
+          expected: Tables,
+        ) => {
+          const store = createStore().setTablesSchema(tablesSchema);
           addMutator(store);
           const listener = createStoreListener(store);
           listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
@@ -1963,7 +2005,7 @@ describe('Schema applied before data set, listening', () => {
     test('Setting, changing', () => {
       const store = createStore()
         .setTables({t1: {r1: {c1: 1}}})
-        .setSchema({t1: {c1: {type: 'number', default: 2}}});
+        .setTablesSchema({t1: {c1: {type: 'number', default: 2}}});
       const listener = createStoreListener(store);
       listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
@@ -1999,7 +2041,7 @@ describe('Schema applied before data set, listening', () => {
     test('Deleting', () => {
       const store = createStore()
         .setTables({t1: {r1: {c1: 1, c2: 3}}})
-        .setSchema({
+        .setTablesSchema({
           t1: {c1: {type: 'number', default: 2}, c2: {type: 'number'}},
         });
       const listener = createStoreListener(store);
@@ -2019,7 +2061,7 @@ describe('Schema applied before data set, listening', () => {
     test('Deleting, forced', () => {
       const store = createStore()
         .setTables({t1: {r1: {c1: 1, c2: 3}}})
-        .setSchema({
+        .setTablesSchema({
           t1: {c1: {type: 'number', default: 2}, c2: {type: 'number'}},
         });
       const listener = createStoreListener(store);
@@ -2044,7 +2086,7 @@ describe('Schema applied before data set, listening', () => {
 
 describe('Miscellaneous', () => {
   test('Using existing value', () => {
-    const store = createStore().setSchema({t1: {c1: {type: 'number'}}});
+    const store = createStore().setTablesSchema({t1: {c1: {type: 'number'}}});
     store.addCellListener(
       't1',
       null,
@@ -2073,7 +2115,7 @@ describe('Miscellaneous', () => {
   describe('Empty row fires', () => {
     test('no event when all are defaulted', () => {
       const store = createStore();
-      store.setSchema({
+      store.setTablesSchema({
         t1: {
           c1: {type: 'string', default: ''},
           c2: {type: 'boolean', default: false},
@@ -2087,7 +2129,7 @@ describe('Miscellaneous', () => {
 
     test('invalid event when some are defaulted', () => {
       const store = createStore();
-      store.setSchema({
+      store.setTablesSchema({
         t1: {
           c1: {type: 'string'},
           c2: {type: 'boolean', default: false},
@@ -2102,7 +2144,7 @@ describe('Miscellaneous', () => {
 
     test('invalid event when none are defaulted', () => {
       const store = createStore();
-      store.setSchema({
+      store.setTablesSchema({
         t1: {
           c1: {type: 'string'},
           c2: {type: 'boolean'},

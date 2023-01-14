@@ -38,7 +38,7 @@ repeat(
   (N) => [
     µs(() =>
       createStore()
-        .setSchema({t1: {c1: {type: 'number'}}})
+        .setTablesSchema({t1: {c1: {type: 'number'}}})
         .setTables({t1: getNRows(N)}),
     ),
     N,
@@ -53,7 +53,7 @@ repeat(
   (N) => [
     µs(() =>
       createStore()
-        .setSchema({t1: {c1: {type: 'number', default: 1}}})
+        .setTablesSchema({t1: {c1: {type: 'number', default: 1}}})
         .setTables({t1: getNRows(N)}),
     ),
     N,
@@ -73,7 +73,7 @@ repeat(
     return [
       µs(() =>
         createStore()
-          .setSchema({t1: {c1: {type: 'number'}, c2: {type: 'number'}}})
+          .setTablesSchema({t1: {c1: {type: 'number'}, c2: {type: 'number'}}})
           .setTables({t1}),
       ),
       N,

@@ -467,20 +467,20 @@ export type CellChange = [
 ];
 
 /**
- * The Schema type describes the structure of a Store in terms of valid Table
- * Ids and the types of Cell that can exist within them.
+ * The TablesSchema type describes the tabular structure of a Store in terms of
+ * valid Table Ids and the types of Cell that can exist within them.
  *
- * A Schema comprises a JavaScript object describing each Table, in turn a
+ * A TablesSchema comprises a JavaScript object describing each Table, in turn a
  * nested JavaScript object containing information about each Cell and its
- * CellSchema. It is provided to the setSchema method.
+ * CellSchema. It is provided to the setTablesSchema method.
  *
  * @example
- * When applied to a Store, this Schema only allows one Table called `pets`, in
- * which each Row may contain a string `species` Cell, and is guaranteed to
- * contain a boolean `sold` Cell that defaults to `false`.
+ * When applied to a Store, this TablesSchema only allows one Table called
+ * `pets`, in which each Row may contain a string `species` Cell, and is
+ * guaranteed to contain a boolean `sold` Cell that defaults to `false`.
  *
  *```js
- * const schema: Schema = {
+ * const tableSchema: TablesSchema = {
  *   pets: {
  *     species: {type: 'string'},
  *     sold: {type: 'boolean', default: false},
@@ -489,7 +489,7 @@ export type CellChange = [
  * ```
  * @category Schema
  */
-export type Schema = {
+export type TablesSchema = {
   [tableId: Id]: {
     [cellId: Id]: CellSchema;
   };
@@ -520,18 +520,9 @@ export type Schema = {
  * @category Schema
  */
 export type CellSchema =
-  | {
-      type: 'string';
-      default?: string;
-    }
-  | {
-      type: 'number';
-      default?: number;
-    }
-  | {
-      type: 'boolean';
-      default?: boolean;
-    };
+  | {type: 'string'; default?: string}
+  | {type: 'number'; default?: number}
+  | {type: 'boolean'; default?: boolean};
 
 /**
  * The ChangedCells type describes the Cell values that have been changed during
@@ -646,7 +637,7 @@ export type StoreListenerStats = {
  * A Store is the main location for keeping structured state and tabular data.
  *
  * Create a Store easily with the createStore function. From there, you can set
- * and get data, add listeners for when the data changes, set a Schema, and so
+ * and get data, add listeners for when the data changes, set schemas, and so
  * on.
  *
  * A Store has a simple hierarchical structure:
@@ -678,9 +669,9 @@ export type StoreListenerStats = {
  *
  * In its default form, a Store has no sense of a structured schema, so, as long
  * as they are unique within their own parent, the Id keys can each be any
- * string you want. However, you _can_ optionally specify a Schema for a Store,
- * which then usefully constrains the Table and Cell Ids (and Cell values) you
- * can use.
+ * string you want. However, you _can_ optionally specify a TablesSchema for a
+ * Store, which then usefully constrains the Table and Cell Ids (and Cell
+ * values) you can use.
  *
  * # Setting and getting data
  *
@@ -733,17 +724,16 @@ export type StoreListenerStats = {
  * Read more about setting and changing data in The Basics guides, and about
  * listeners in the Listening to Stores guide.
  *
- * # Creating a Schema
+ * # Creating a schema
  *
- * You can set a Schema on a Store when you create it with createStore function,
- * or at a later stage with the setSchema method. A Schema constrains the Table
- * Ids the Store can have, and the types of Cell data in each Table. Each Cell
- * requires its type to be specified, and can also take a default value for when
- * it's not specified.
+ * You can set a TablesSchema with the setTablesSchema method. A TablesSchema
+ * constrains the Table Ids the Store can have, and the types of Cell data in
+ * each Table. Each Cell requires its type to be specified, and can also take a
+ * default value for when it's not specified.
  *
- * You can also get a serialization of the Schema out of the Store with the
- * getSchemaJson method, and remove the Schema altogether with the delSchema
- * method.
+ * You can also get a serialization of the TablesSchema out of the Store with
+ * the getTablesSchemaJson method, and remove the TablesSchema altogether with
+ * the delTablesSchema method.
  *
  * Read more about schemas in the Using Schemas guide.
  *
@@ -1245,38 +1235,38 @@ export interface Store {
   getJson(): Json;
 
   /**
-   * The getSchemaJson method returns a string serialization of the Schema of
-   * the Store.
+   * The getTablesSchemaJson method returns a string serialization of the
+   * TablesSchema of the Store.
    *
-   * If no Schema has been set on the Store (or if it has been removed with the
-   * delSchema method), then it will return the serialization of an empty
-   * object, `{}`.
+   * If no TablesSchema has been set on the Store (or if it has been removed
+   * with the delTablesSchema method), then it will return the serialization of
+   * an empty object, `{}`.
    *
-   * @returns A string serialization of the Schema of the Store.
+   * @returns A string serialization of the TablesSchema of the Store.
    * @example
-   * This example serializes the Schema of a Store.
+   * This example serializes the TablesSchema of a Store.
    *
    * ```js
-   * const store = createStore().setSchema({
+   * const store = createStore().setTablesSchema({
    *   pets: {
    *     species: {type: 'string'},
    *     sold: {type: 'boolean'},
    *   },
    * });
-   * console.log(store.getSchemaJson());
+   * console.log(store.getTablesSchemaJson());
    * // -> '{"pets":{"species":{"type":"string"},"sold":{"type":"boolean"}}}'
    * ```
    * @example
-   * This example serializes the Schema of an empty Store.
+   * This example serializes the TablesSchema of an empty Store.
    *
    * ```js
    * const store = createStore();
-   * console.log(store.getSchemaJson());
+   * console.log(store.getTablesSchemaJson());
    * // -> '{}'
    * ```
    * @category Getter
    */
-  getSchemaJson(): Json;
+  getTablesSchemaJson(): Json;
 
   /**
    * The setTables method takes an object and sets the entire data of the Store.
@@ -1285,8 +1275,8 @@ export interface Store {
    * Id changes resulting from it.
    *
    * Any part of the provided object that is invalid (either according to the
-   * Tables type, or because it does not match a Schema associated with the
-   * Store), will be ignored silently.
+   * Tables type, or because it does not match a TablesSchema associated with
+   * the Store), will be ignored silently.
    *
    * Assuming that at least some of the provided Tables object is valid, any
    * data that was already present in the Store will be completely overwritten.
@@ -1334,7 +1324,7 @@ export interface Store {
    * Id changes resulting from it.
    *
    * Any part of the provided object that is invalid (either according to the
-   * Table type, or because it does not match a Schema associated with the
+   * Table type, or because it does not match a TablesSchema associated with the
    * Store), will be ignored silently.
    *
    * Assuming that at least some of the provided Table object is valid, any data
@@ -1385,8 +1375,8 @@ export interface Store {
    * Id changes resulting from it.
    *
    * Any part of the provided object that is invalid (either according to the
-   * Row type, or because it does not match a Schema associated with the Store),
-   * will be ignored silently.
+   * Row type, or because it does not match a TablesSchema associated with the
+   * Store), will be ignored silently.
    *
    * Assuming that at least some of the provided Row object is valid, any data
    * that was already present in the Store for that Row will be completely
@@ -1435,8 +1425,8 @@ export interface Store {
    * Id changes resulting from it.
    *
    * Any part of the provided object that is invalid (either according to the
-   * Row type, or because it does not match a Schema associated with the Store),
-   * will be ignored silently.
+   * Row type, or because it does not match a TablesSchema associated with the
+   * Store), will be ignored silently.
    *
    * Assuming that at least some of the provided Row object is valid, a new Row
    * will be created. If the object is completely invalid, no change will be
@@ -1489,7 +1479,7 @@ export interface Store {
    *
    * Any part of the provided object that is invalid (either according to the
    * Row type, or because, when combined with the current Row data, it does not
-   * match a Schema associated with the Store), will be ignored silently.
+   * match a TablesSchema associated with the Store), will be ignored silently.
    *
    * Assuming that at least some of the provided Row object is valid, it will be
    * merged with the data that was already present in the Store. If the object
@@ -1539,7 +1529,7 @@ export interface Store {
    * Id changes resulting from it.
    *
    * If the Cell value is invalid (either because of its type, or because it
-   * does not match a Schema associated with the Store), will be ignored
+   * does not match a TablesSchema associated with the Store), will be ignored
    * silently.
    *
    * As well as string, number, or boolean Cell types, this method can also take
@@ -1596,8 +1586,8 @@ export interface Store {
    *
    * If the JSON cannot be parsed, this will fail silently. If it can be parsed,
    * it will then be subject to the same validation rules as the setTables
-   * method (according to the Tables type, and matching any Schema associated
-   * with the Store).
+   * method (according to the Tables type, and matching any TablesSchema
+   * associated with the Store).
    *
    * @param json A string serialization of all of the Tables in the Store.
    * @returns A reference to the Store.
@@ -1625,22 +1615,23 @@ export interface Store {
   setJson(json: Json): Store;
 
   /**
-   * The setSchema method lets you specify the Schema of the Store.
+   * The setTablesSchema method lets you specify the TablesSchema of the tabular
+   * part of the Store.
    *
    * Note that this may result in a change to data in the Store, as defaults are
    * applied or as invalid Table, Row, or Cell objects are removed. These
    * changes will fire any listeners to that data, as expected.
    *
-   * When no longer needed, you can also completely remove an existing Schema
-   * with the delSchema method.
+   * When no longer needed, you can also completely remove an existing
+   * TablesSchema with the delTablesSchema method.
    *
-   * @param schema The Schema to be set for the Store.
+   * @param tablesSchema The TablesSchema to be set for the Store.
    * @returns A reference to the Store.
    * @example
-   * This example sets the Schema of a Store after it has been created.
+   * This example sets the TablesSchema of a Store after it has been created.
    *
    * ```js
-   * const store = createStore().setSchema({
+   * const store = createStore().setTablesSchema({
    *   pets: {
    *     species: {type: 'string'},
    *     sold: {type: 'boolean', default: false},
@@ -1652,7 +1643,7 @@ export interface Store {
    * ```
    * @category Setter
    */
-  setSchema(schema: Schema): Store;
+  setTablesSchema(tablesSchema: TablesSchema): Store;
 
   /**
    * The delTables method lets you remove all of the data in a Store.
@@ -1721,32 +1712,33 @@ export interface Store {
   /**
    * The delCell method lets you remove a single Cell from a Row.
    *
-   * When there is no Schema applied to the Store, then if this is the last Cell
-   * in its Row, then that Row will be removed. If, in turn, that is the last
-   * Row in its Table, then that Table will be removed.
+   * When there is no TablesSchema applied to the Store, then if this is the
+   * last Cell in its Row, then that Row will be removed. If, in turn, that is
+   * the last Row in its Table, then that Table will be removed.
    *
-   * If there is a Schema applied to the Store and it specifies a default value
-   * for this Cell, then deletion will result in it being set back to its
+   * If there is a TablesSchema applied to the Store and it specifies a default
+   * value for this Cell, then deletion will result in it being set back to its
    * default value. To override this, use the `forceDel` parameter, as described
    * below.
    *
    * The `forceDel` parameter is an optional flag that is only relevant if a
-   * Schema provides a default value for this Cell. Under such circumstances,
-   * deleting a Cell value will normally restore it to the default value. If
-   * this flag is set to `true`, the complete removal of the Cell is instead
-   * guaranteed. But since doing do so would result in an invalid Row (according
-   * to the Schema), in fact the whole Row is deleted to retain the integrity of
-   * the Table. Therefore, this flag should be used with caution.
+   * TablesSchema provides a default value for this Cell. Under such
+   * circumstances, deleting a Cell value will normally restore it to the
+   * default value. If this flag is set to `true`, the complete removal of the
+   * Cell is instead guaranteed. But since doing do so would result in an
+   * invalid Row (according to the TablesSchema), in fact the whole Row is
+   * deleted to retain the integrity of the Table. Therefore, this flag should
+   * be used with caution.
    *
    * @param tableId The Id of the Table in the Store.
    * @param rowId The Id of the Row in the Table.
    * @param cellId The Id of the Cell in the Row.
    * @param forceDel An optional flag to indicate that the whole Row should be
-   * deleted, even if a Schema provides a default value for this Cell. Defaults
-   * to `false`.
+   * deleted, even if a TablesSchema provides a default value for this Cell.
+   * Defaults to `false`.
    * @returns A reference to the Store.
    * @example
-   * This example removes a Cell from a Row without a Schema.
+   * This example removes a Cell from a Row without a TablesSchema.
    *
    * ```js
    * const store = createStore().setTables({
@@ -1758,15 +1750,15 @@ export interface Store {
    * // -> {pets: {fido: {species: 'dog'}}}
    * ```
    * @example
-   * This example removes a Cell from a Row with a Schema that defaults its
-   * value.
+   * This example removes a Cell from a Row with a TablesSchema that defaults
+   * its value.
    *
    * ```js
    * const store = createStore()
    *   .setTables({
    *     pets: {fido: {species: 'dog', sold: true}},
    *   })
-   *   .setSchema({
+   *   .setTablesSchema({
    *     pets: {
    *       species: {type: 'string'},
    *       sold: {type: 'boolean', default: false},
@@ -1778,15 +1770,15 @@ export interface Store {
    * // -> {pets: {fido: {species: 'dog', sold: false}}}
    * ```
    * @example
-   * This example removes a Cell from a Row with a Schema that defaults its
-   * value, but uses the `forceDel` parameter to override it.
+   * This example removes a Cell from a Row with a TablesSchema that defaults
+   * its value, but uses the `forceDel` parameter to override it.
    *
    * ```js
    * const store = createStore()
    *   .setTables({
    *     pets: {fido: {species: 'dog', sold: true}, felix: {species: 'cat'}},
    *   })
-   *   .setSchema({
+   *   .setTablesSchema({
    *     pets: {
    *       species: {type: 'string'},
    *       sold: {type: 'boolean', default: false},
@@ -1802,21 +1794,23 @@ export interface Store {
   delCell(tableId: Id, rowId: Id, cellId: Id, forceDel?: boolean): Store;
 
   /**
-   * The delSchema method lets you remove the Schema of the Store.
+   * The delTablesSchema method lets you remove the TablesSchema of the Store.
    *
    * @returns A reference to the Store.
    * @example
-   * This example removes the Schema of a Store.
+   * This example removes the TablesSchema of a Store.
    *
    * ```js
-   * const store = createStore().setSchema({pets: {species: {type: 'string'}}});
-   * store.delSchema();
-   * console.log(store.getSchemaJson());
+   * const store = createStore().setTablesSchema({
+   *   pets: {species: {type: 'string'}},
+   * });
+   * store.delTablesSchema();
+   * console.log(store.getTablesSchemaJson());
    * // -> '{}'
    * ```
    * @category Deleter
    */
-  delSchema(): Store;
+  delTablesSchema(): Store;
 
   /**
    * The transaction method takes a function that makes multiple mutations to
@@ -3076,19 +3070,20 @@ export interface Store {
    * though they will fire non-mutator listeners.
    *
    * Special note should be made for how the listener will be called when a
-   * Schema is present. The listener will be called:
+   * TablesSchema is present. The listener will be called:
    *
-   * - if a Table is being updated that is not specified in the Schema
-   * - if a Cell is of the wrong type specified in the Schema
-   * - if a Cell is omitted and is not defaulted in the Schema
-   * - if an empty Row is provided and there are no Cell defaults in the Schema
+   * - if a Table is being updated that is not specified in the TablesSchema
+   * - if a Cell is of the wrong type specified in the TablesSchema
+   * - if a Cell is omitted and is not defaulted in the TablesSchema
+   * - if an empty Row is provided and there are no Cell defaults in the
+   *   TablesSchema
    *
-   * The listener will not be called if Cell that is defaulted in the Schema is
-   * not provided, as long as all of the Cells that are _not_ defaulted _are_
-   * provided.
+   * The listener will not be called if Cell that is defaulted in the
+   * TablesSchema is not provided, as long as all of the Cells that are _not_
+   * defaulted _are_ provided.
    *
    * To help understand all of these schema-based conditions, please see the
-   * Schema example below.
+   * TablesSchema example below.
    *
    * @param tableId The Id of the Table to listen to, or `null` as a wildcard.
    * @param rowId The Id of the Row to listen to, or `null` as a wildcard.
@@ -3125,9 +3120,9 @@ export interface Store {
    * ```
    * @example
    * This example registers a listener that responds to any invalid changes to
-   * any Cell - in a Store _without_ a Schema. Note also how it then responds to
-   * cases where an empty or invalid Row objects, or Table objects, or Tables
-   * objects are provided.
+   * any Cell - in a Store _without_ a TablesSchema. Note also how it then
+   * responds to cases where an empty or invalid Row objects, or Table objects,
+   * or Tables objects are provided.
    *
    * ```js
    * const store = createStore().setTables({
@@ -3174,12 +3169,12 @@ export interface Store {
    * ```
    * @example
    * This example registers a listener that responds to any invalid changes to
-   * any Cell - in a Store _with_ a Schema. Note how it responds to cases where
-   * missing parameters are provided for optional, and defaulted Cell values in
-   * a Row.
+   * any Cell - in a Store _with_ a TablesSchema. Note how it responds to cases
+   * where missing parameters are provided for optional, and defaulted Cell
+   * values in a Row.
    *
    * ```js
-   * const store = createStore().setSchema({
+   * const store = createStore().setTablesSchema({
    *   pets: {
    *     species: {type: 'string'},
    *     color: {type: 'string', default: 'unknown'},
@@ -3220,7 +3215,7 @@ export interface Store {
    * // -> {species: 'dog', color: 'unknown'}
    * // The listener is not called, because color is defaulted
    *
-   * store.delTables().setSchema({
+   * store.delTables().setTablesSchema({
    *   pets: {
    *     species: {type: 'string'},
    *     color: {type: 'string'},
@@ -3552,12 +3547,12 @@ export interface Store {
  * // -> {pets: {fido: {species: 'dog'}}}
  * ```
  * @example
- * This example creates a Store with some initial data and a Schema:
+ * This example creates a Store with some initial data and a TablesSchema:
  *
  * ```js
  * const store = createStore()
  *   .setTables({pets: {fido: {species: 'dog'}}})
- *   .setSchema({
+ *   .setTablesSchema({
  *     pets: {
  *       species: {type: 'string'},
  *       sold: {type: 'boolean', default: false},

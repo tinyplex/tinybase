@@ -315,83 +315,87 @@ describe('Rejects invalid', () => {
   test.each(INVALID_OBJECTS)(
     'Tables schema; %s',
     (_name, tablesSchema: any) => {
-      const store = createStore().setSchema(tablesSchema);
-      expect(JSON.parse(store.getSchemaJson())).toEqual({});
+      const store = createStore().setTablesSchema(tablesSchema);
+      expect(JSON.parse(store.getTablesSchemaJson())).toEqual({});
     },
   );
 
   test.each(INVALID_OBJECTS)('Table schema; %s', (_name, tableSchema: any) => {
-    const store = createStore().setSchema({t1: tableSchema});
-    expect(JSON.parse(store.getSchemaJson())).toEqual({});
+    const store = createStore().setTablesSchema({t1: tableSchema});
+    expect(JSON.parse(store.getTablesSchemaJson())).toEqual({});
   });
 
   test.each(INVALID_OBJECTS)(
     'Table schema, alongside valid; %s',
     (_name, tableSchema: any) => {
-      const store = createStore().setSchema({
+      const store = createStore().setTablesSchema({
         t1: validTableSchema,
         t2: tableSchema,
       });
-      expect(JSON.parse(store.getSchemaJson())).toEqual(validTablesSchema);
+      expect(JSON.parse(store.getTablesSchemaJson())).toEqual(
+        validTablesSchema,
+      );
     },
   );
 
   test.each(INVALID_OBJECTS)('Cell schema; %s', (_name, cellSchema: any) => {
-    const store = createStore().setSchema({t1: {c1: cellSchema}});
-    expect(JSON.parse(store.getSchemaJson())).toEqual({});
+    const store = createStore().setTablesSchema({t1: {c1: cellSchema}});
+    expect(JSON.parse(store.getTablesSchemaJson())).toEqual({});
   });
 
   test.each(INVALID_OBJECTS)(
     'Cell schema, alongside valid; %s',
     (_name, cellSchema: any) => {
-      const store = createStore().setSchema({
+      const store = createStore().setTablesSchema({
         t1: {c1: validCellSchema, c2: cellSchema},
       });
-      expect(JSON.parse(store.getSchemaJson())).toEqual(validTablesSchema);
+      expect(JSON.parse(store.getTablesSchemaJson())).toEqual(
+        validTablesSchema,
+      );
     },
   );
 
   test.each(INVALID_OBJECTS)(
     '(bad type) Cell schema; %s',
     (_name, type: any) => {
-      const store = createStore().setSchema({t1: {c1: {type}}});
-      expect(JSON.parse(store.getSchemaJson())).toEqual({});
+      const store = createStore().setTablesSchema({t1: {c1: {type}}});
+      expect(JSON.parse(store.getTablesSchemaJson())).toEqual({});
     },
   );
 
   test('(useless) Cell schema', () => {
     // @ts-ignore
     const store = createStore().setTables({}, {t1: {c1: {default: 't1'}}});
-    expect(JSON.parse(store.getSchemaJson())).toEqual({});
+    expect(JSON.parse(store.getTablesSchemaJson())).toEqual({});
   });
 
   test('(useless bounds) Cell schema', () => {
-    const store1 = createStore().setSchema({
+    const store1 = createStore().setTablesSchema({
       // @ts-ignore
       t1: {c1: {type: 'string', min: 1, max: 10}},
     });
-    expect(JSON.parse(store1.getSchemaJson())).toEqual({
+    expect(JSON.parse(store1.getTablesSchemaJson())).toEqual({
       t1: {c1: {type: 'string'}},
     });
-    const store2 = createStore().setSchema({
+    const store2 = createStore().setTablesSchema({
       // @ts-ignore
       t1: {c1: {type: 'boolean', min: 1, max: 10}},
     });
-    expect(JSON.parse(store2.getSchemaJson())).toEqual({
+    expect(JSON.parse(store2.getTablesSchemaJson())).toEqual({
       t1: {c1: {type: 'boolean'}},
     });
   });
 
   test('(extended) Cell schema', () => {
-    const store = createStore().setSchema({
+    const store = createStore().setTablesSchema({
       // @ts-ignore
       t1: {c1: {type: 'string', default: 't1', extraThing1: 1}},
     });
-    expect(JSON.parse(store.getSchemaJson())).toEqual(validTablesSchema);
+    expect(JSON.parse(store.getTablesSchemaJson())).toEqual(validTablesSchema);
   });
 
   test('(inconsistent default) Cell schema', () => {
-    const store = createStore().setSchema({
+    const store = createStore().setTablesSchema({
       t1: {
         // @ts-ignore
         r1: {type: 'boolean', default: 't1'},
@@ -401,7 +405,7 @@ describe('Rejects invalid', () => {
         r3: {type: 'string', default: 2},
       },
     });
-    expect(JSON.parse(store.getSchemaJson())).toEqual({
+    expect(JSON.parse(store.getTablesSchemaJson())).toEqual({
       t1: {r1: {type: 'boolean'}, r2: {type: 'number'}, r3: {type: 'string'}},
     });
   });

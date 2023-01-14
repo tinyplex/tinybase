@@ -197,7 +197,7 @@ root.unmount(); // !act
 > Read more about schemas in the Using Schemas guide.
 
 ```js
-store.setSchema({
+store.setTablesSchema({
   pets: {
     species: {type: 'string'},
     color: {type: 'string'},
@@ -209,7 +209,7 @@ store.setRow('pets', 'felix', {species: 'cat'});
 console.log(store.getRow('pets', 'felix'));
 // -> {species: 'cat', sold: false}
 
-store.delSchema();
+store.delTablesSchema();
 ```
 
 > ## Persist data to browser, file, or server.

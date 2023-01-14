@@ -515,7 +515,7 @@ export const createS: typeof createSDecl = () => {
 
   const STRING = 'string';
 
-  const store = createStore().setSchema({
+  const store = createStore().setTablesSchema({
     [T1]: {
       [C1]: {[TYPE]: NUMBER, [DEFAULT]: 1},
       [C2]: {[TYPE]: STRING},
@@ -928,7 +928,7 @@ const DEFAULT = 'default';
 
 const STRING = 'string';
 
-const store = createStore().setSchema({
+const store = createStore().setTablesSchema({
 [T1]: {
 [C1]: {[TYPE]: NUMBER, [DEFAULT]: 1},
 [C2]: {[TYPE]: STRING},

@@ -177,7 +177,7 @@ that types and colors are valid:
 ```js
 const App = () => {
   const store = useCreateStore(() => {
-    const store = createStore().setSchema({
+    const store = createStore().setTablesSchema({
       [SHAPES]: {
         x1: {type: 'number', default: 100},
         y1: {type: 'number', default: 100},

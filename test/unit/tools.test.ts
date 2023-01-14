@@ -52,10 +52,10 @@ describe('Stats', () => {
 
 describe('Schema', () => {
   test('Existing', () => {
-    store.setSchema({
+    store.setTablesSchema({
       t1: {c1: {type: 'number', default: 1}, c2: {type: 'string'}},
     });
-    expect(tools.getStoreSchema()).toEqual({
+    expect(tools.getStoreTablesSchema()).toEqual({
       t1: {c1: {type: 'number', default: 1}, c2: {type: 'string'}},
     });
   });
@@ -66,7 +66,7 @@ describe('Schema', () => {
         t1: {r1: {c1: 1, c2: true}, r2: {c1: 2, c2: false}},
         t2: {r1: {c1: 'one'}},
       });
-      expect(tools.getStoreSchema()).toEqual({
+      expect(tools.getStoreTablesSchema()).toEqual({
         t1: {
           c1: {type: 'number', default: 1},
           c2: {type: 'boolean', default: true},
@@ -84,7 +84,7 @@ describe('Schema', () => {
         },
         t2: {r1: {c1: 'one'}, r2: {c1: 'one'}, r3: {c1: 'two'}},
       });
-      expect(tools.getStoreSchema()).toEqual({
+      expect(tools.getStoreTablesSchema()).toEqual({
         t1: {
           c1: {type: 'number', default: 2},
           c2: {type: 'boolean', default: true},
@@ -98,7 +98,7 @@ describe('Schema', () => {
         t1: {r1: {c2: true}, r2: {c1: 2, c2: false}},
         t2: {r1: {c1: 'one'}},
       });
-      expect(tools.getStoreSchema()).toEqual({
+      expect(tools.getStoreTablesSchema()).toEqual({
         t1: {c1: {type: 'number'}, c2: {type: 'boolean', default: true}},
         t2: {c1: {type: 'string', default: 'one'}},
       });
@@ -109,7 +109,7 @@ describe('Schema', () => {
         t1: {r1: {c2: true}, r2: {c1: 2, c2: 3}},
         t2: {r1: {c1: 'one'}},
       });
-      expect(tools.getStoreSchema()).toEqual({});
+      expect(tools.getStoreTablesSchema()).toEqual({});
     });
   });
 });
@@ -124,14 +124,14 @@ describe('API', () => {
   });
 
   test('Unpretty', () => {
-    store.setSchema({
+    store.setTablesSchema({
       t1: {c1: {type: 'number', default: 1}, c2: {type: 'string'}},
     });
     expect(tools.getStoreApi('s')).toMatchSnapshot();
   });
 
   test('Pretty', async () => {
-    store.setSchema({
+    store.setTablesSchema({
       t1: {c1: {type: 'number', default: 1}, c2: {type: 'string'}},
     });
     const files = await tools.getPrettyStoreApi('s');

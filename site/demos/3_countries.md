@@ -69,7 +69,7 @@ objects:
 ```js
 const App = () => {
   const countryStore = useCreateStore(() =>
-    createStore().setSchema({
+    createStore().setTablesSchema({
       countries: {emoji: {type: 'string'}, name: {type: 'string'}},
     }),
   );
@@ -85,7 +85,7 @@ const App = () => {
   );
 
   const starStore = useCreateStore(() =>
-    createStore().setSchema({countries: {star: {type: 'boolean'}}}),
+    createStore().setTablesSchema({countries: {star: {type: 'boolean'}}}),
   );
   useCreatePersister(
     starStore,

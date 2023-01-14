@@ -216,4 +216,4 @@ any failed writes programmatically.
 
 For more information, please see the addInvalidCellListener method
 documentation. In particular, this explains how this listener behaves for a
-Store with a Schema.
+Store with a TablesSchema.
