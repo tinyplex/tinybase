@@ -39,6 +39,7 @@ import {
   TablesSchema,
   TransactionListener,
   Value,
+  ValueCallback,
   ValueChange,
   ValueOrUndefined,
   ValueSchema,
@@ -1278,6 +1279,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
   ): void =>
     mapForEach(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)), cellCallback);
 
+  const forEachValue = (valueCallback: ValueCallback): void =>
+    mapForEach(valuesMap, valueCallback);
+
   const addSortedRowIdsListener = (
     tableId: Id,
     cellId: Id | undefined,
@@ -1413,6 +1417,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     forEachTable,
     forEachRow,
     forEachCell,
+    forEachValue,
 
     addSortedRowIdsListener,
     addWillFinishTransactionListener,
