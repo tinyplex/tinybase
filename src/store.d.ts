@@ -249,6 +249,31 @@ export type MapValue = (value: ValueOrUndefined) => Value;
 export type GetCell = (cellId: Id) => CellOrUndefined;
 
 /**
+ * The DoRollback type describes a function that you can use to rollback the
+ * transaction if it did not complete to your satisfaction.
+ *
+ * A DoRollback can be provided when calling the transaction method or the
+ * finishTransaction method. See those methods for specific examples.
+ *
+ * It is called with `changedCells`, `invalidCells`, `changedValues`, and
+ * `invalidValues` parameters, which inform you of the net changes that have
+ * been made during the transaction, and any invalid attempts to do so,
+ * respectively.
+ *
+ * @param changedCells Any Cells that were changed during the transaction.
+ * @param invalidCells Any invalid attempts to change Cells.
+ * @param changedValues Any Values that were changed during the transaction
+ * @param invalidValues Any invalid attempts to change Values.
+ * @category Callback
+ */
+export type DoRollback = (
+  changedCells: ChangedCells,
+  invalidCells: InvalidCells,
+  changedValues: ChangedValues,
+  invalidValues: InvalidValues,
+) => boolean;
+
+/**
  * The TransactionListener type describes a function that is used to listen to
  * the completion of a transaction for the Store.
  *
@@ -763,7 +788,8 @@ export type ValueSchema =
  * transaction should be rolled back.
  *
  * A ChangedCells object is provided to the `doRollback` callback when using the
- * transaction method. See that method for specific examples.
+ * transaction method and the finishTransaction method. See those methods for
+ * specific examples.
  *
  * This type is a nested structure of Table, Row, and Cell objects, much like
  * the Tables object, but one which provides both the old and new Cell values in
@@ -788,13 +814,15 @@ export type ChangedCells = {
     };
   };
 };
+
 /**
  * The InvalidCells type describes the invalid Cell values that have been
  * attempted during a transaction, primarily used so that you can indicate
  * whether the transaction should be rolled back.
  *
  * An InvalidCells object is provided to the `doRollback` callback when using
- * the transaction method. See that method for specific examples.
+ * the transaction method and the finishTransaction method. See those methods
+ * for specific examples.
  *
  * This type is a nested structure of Table, Row, and Cell objects, much like
  * the Tables object, but one for which Cell values are listed in array (much
@@ -810,6 +838,53 @@ export type InvalidCells = {
       [cellId: Id]: any[];
     };
   };
+};
+
+/**
+ * The ChangedValues type describes the Values that have been changed during a
+ * transaction, primarily used so that you can indicate whether the transaction
+ * should be rolled back.
+ *
+ * A ChangedValues object is provided to the `doRollback` callback when using
+ * the transaction method and the finishTransaction method. See those methods
+ * for specific examples.
+ *
+ * This type is an object containing the old and new Values in two-part arrays.
+ * These are describing the state of each changed Value in Store at the _start_
+ * of the transaction, and by the _end_ of the transaction.
+ *
+ * Hence, an `undefined` value for the first item in the array means that the
+ * Value was added during the transaction. An `undefined` value for the second
+ * item in the array means that the Value was removed during the transaction. An
+ * array with two different Value values indicates that it was changed. The
+ * two-part array will never contain two items of the same value (including two
+ * `undefined` values), even if, during the transaction, a Value was changed to
+ * a different value and then changed back.
+ *
+ * @category Transaction
+ * @since v3.0.0
+ */
+export type ChangedValues = {
+  [valueId: Id]: [ValueOrUndefined, ValueOrUndefined];
+};
+/**
+ * The InvalidValues type describes the invalid Values that have been attempted
+ * during a transaction, primarily used so that you can indicate whether the
+ * transaction should be rolled back.
+ *
+ * An InvalidValues object is provided to the `doRollback` callback when using
+ * the transaction method and the finishTransaction method. See those methods
+ * for specific examples.
+ *
+ * This type is an object containing each invalid Value's attempt listed in
+ * array (much like the InvalidValueListener type) so that multiple failed
+ * attempts to change a Value during the transaction are described.
+ *
+ * @category Transaction
+ * @since v3.0.0
+ */
+export type InvalidValues = {
+  [valueId: Id]: any[];
 };
 
 /**
@@ -2568,11 +2643,12 @@ export interface Store {
    * Transactions can be nested. Relevant listeners will be called only when the
    * outermost one completes.
    *
-   * The second, optional parameter, `doRollback` is a callback that you can use
-   * to rollback the transaction if it did not complete to your satisfaction. It
-   * is called with `changedCells` and `invalidCells` parameters, which inform
-   * you of the net changes that have been made during the transaction, and any
-   * invalid attempts to do so, respectively.
+   * The second, optional parameter, `doRollback` is a DoRollback callback that
+   * you can use to rollback the transaction if it did not complete to your
+   * satisfaction. It is called with `changedCells`, `invalidCells`,
+   * `changedValues`, and `invalidValues` parameters, which inform you of the
+   * net changes that have been made during the transaction, and any invalid
+   * attempts to do so, respectively.
    *
    * @param actions The function to be executed as a transaction.
    * @param doRollback An optional callback that should return `true` if you
@@ -2587,15 +2663,17 @@ export interface Store {
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * store.addRowListener('pets', 'fido', () => console.log('Fido changed'));
    *
-   * store.setCell('pets', 'fido', 'color', 'brown');
-   * store.setCell('pets', 'fido', 'sold', false);
+   * store
+   *   .setCell('pets', 'fido', 'color', 'brown')
+   *   .setCell('pets', 'fido', 'sold', false);
    * // -> 'Fido changed'
    * // -> 'Fido changed'
    *
-   * store.transaction(() => {
-   *   store.setCell('pets', 'fido', 'color', 'walnut');
-   *   store.setCell('pets', 'fido', 'sold', true);
-   * });
+   * store.transaction(() =>
+   *   store
+   *     .setCell('pets', 'fido', 'color', 'walnut')
+   *     .setCell('pets', 'fido', 'sold', true),
+   * );
    * // -> 'Fido changed'
    * ```
    * @example
@@ -2612,60 +2690,64 @@ export interface Store {
    *   (store, tableId, rowId, cellId, newCell) => console.log(newCell),
    * );
    *
-   * store.transaction(() => {
-   *   store.setCell('pets', 'fido', 'color', 'black');
-   *   store.setCell('pets', 'fido', 'color', 'brown');
-   *   store.setCell('pets', 'fido', 'color', 'walnut');
-   * });
+   * store.transaction(() =>
+   *   store
+   *     .setCell('pets', 'fido', 'color', 'black')
+   *     .setCell('pets', 'fido', 'color', 'brown')
+   *     .setCell('pets', 'fido', 'color', 'walnut'),
+   * );
    * // -> 'walnut'
    *
-   * store.transaction(() => {
-   *   store.setCell('pets', 'fido', 'color', 'black');
-   *   store.setCell('pets', 'fido', 'color', 'walnut');
-   * });
+   * store.transaction(() =>
+   *   store
+   *     .setCell('pets', 'fido', 'color', 'black')
+   *     .setCell('pets', 'fido', 'color', 'walnut'),
+   * );
    * // -> undefined
    * // No net change during the transaction, so the listener is not called.
    * ```
    * @example
    * This example makes multiple changes to the Store, including some attempts
-   * to update a Cell with invalid values. The `doRollback` callback receives
-   * information about the changes and invalid attempts, and then judges that
-   * the transaction should be rolled back to its original state.
+   * to update a Cell and Value with invalid values. The `doRollback` callback
+   * receives information about the changes and invalid attempts, and then
+   * judges that the transaction should be rolled back to its original state.
    *
    * ```js
-   * const store = createStore().setTables({
-   *   pets: {fido: {species: 'dog', color: 'brown'}},
-   * });
+   * const store = createStore()
+   *   .setTables({pets: {fido: {species: 'dog', color: 'brown'}}})
+   *   .setValues({open: true});
    *
    * store.transaction(
-   *   () => {
-   *     store.setCell('pets', 'fido', 'color', 'black');
-   *     store.setCell('pets', 'fido', 'eyes', ['left', 'right']);
-   *     store.setCell('pets', 'fido', 'info', {sold: null});
-   *   },
-   *   (changedCells, invalidCells) => {
+   *   () =>
+   *     store
+   *       .setCell('pets', 'fido', 'color', 'black')
+   *       .setCell('pets', 'fido', 'eyes', ['left', 'right'])
+   *       .setCell('pets', 'fido', 'info', {sold: null})
+   *       .setValue('open', false)
+   *       .setValue('employees', ['alice', 'bob']),
+   *   (changedCells, invalidCells, changedValues, invalidValues) => {
    *     console.log(store.getTables());
-   *     // -> {pets: {fido: {species: 'dog', color: 'black'}}}
    *     console.log(changedCells);
-   *     // -> {pets: {fido: {color: ['brown', 'black']}}}
    *     console.log(invalidCells);
-   *     // -> {pets: {fido: {eyes: [['left', 'right']], info: [{sold: null}]}}}
+   *     console.log(changedValues);
+   *     console.log(invalidValues);
    *     return invalidCells['pets'] != null;
    *   },
    * );
+   * // -> {pets: {fido: {species: 'dog', color: 'black'}}}
+   * // -> {pets: {fido: {color: ['brown', 'black']}}}
+   * // -> {pets: {fido: {eyes: [['left', 'right']], info: [{sold: null}]}}}
+   * // -> {open: [true, false]}
+   * // -> {employees: [['alice', 'bob']]}
    *
    * console.log(store.getTables());
    * // -> {pets: {fido: {species: 'dog', color: 'brown'}}}
+   * console.log(store.getValues());
+   * // -> {open: true}
    * ```
    * @category Transaction
    */
-  transaction<Return>(
-    actions: () => Return,
-    doRollback?: (
-      changedCells: ChangedCells,
-      invalidCells: InvalidCells,
-    ) => boolean,
-  ): Return;
+  transaction<Return>(actions: () => Return, doRollback?: DoRollback): Return;
 
   /**
    * The startTransaction method allows you to explicitly start a transaction
@@ -2700,15 +2782,17 @@ export interface Store {
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * store.addRowListener('pets', 'fido', () => console.log('Fido changed'));
    *
-   * store.setCell('pets', 'fido', 'color', 'brown');
-   * store.setCell('pets', 'fido', 'sold', false);
+   * store
+   *   .setCell('pets', 'fido', 'color', 'brown')
+   *   .setCell('pets', 'fido', 'sold', false);
    * // -> 'Fido changed'
    * // -> 'Fido changed'
    *
-   * store.startTransaction();
-   * store.setCell('pets', 'fido', 'color', 'walnut');
-   * store.setCell('pets', 'fido', 'sold', true);
-   * store.finishTransaction();
+   * store
+   *   .startTransaction()
+   *   .setCell('pets', 'fido', 'color', 'walnut')
+   *   .setCell('pets', 'fido', 'sold', true)
+   *   .finishTransaction();
    * // -> 'Fido changed'
    * ```
    * @category Transaction
@@ -2738,6 +2822,13 @@ export interface Store {
    * been a corresponding startTransaction method that this completes, of
    * course, otherwise this function has no effect.
    *
+   * The optional parameter, `doRollback` is a DoRollback callback that
+   * you can use to rollback the transaction if it did not complete to your
+   * satisfaction. It is called with `changedCells`, `invalidCells`,
+   * `changedValues`, and `invalidValues` parameters, which inform you of the
+   * net changes that have been made during the transaction, and any invalid
+   * attempts to do so, respectively.
+   *
    * @param doRollback An optional callback that should return `true` if you
    * want to rollback the transaction at the end.
    * @returns A reference to the Store.
@@ -2750,15 +2841,17 @@ export interface Store {
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * store.addRowListener('pets', 'fido', () => console.log('Fido changed'));
    *
-   * store.setCell('pets', 'fido', 'color', 'brown');
-   * store.setCell('pets', 'fido', 'sold', false);
+   * store
+   *   .setCell('pets', 'fido', 'color', 'brown')
+   *   .setCell('pets', 'fido', 'sold', false);
    * // -> 'Fido changed'
    * // -> 'Fido changed'
    *
-   * store.startTransaction();
-   * store.setCell('pets', 'fido', 'color', 'walnut');
-   * store.setCell('pets', 'fido', 'sold', true);
-   * store.finishTransaction();
+   * store
+   *   .startTransaction()
+   *   .setCell('pets', 'fido', 'color', 'walnut')
+   *   .setCell('pets', 'fido', 'sold', true)
+   *   .finishTransaction();
    * // -> 'Fido changed'
    * ```
    * @example
@@ -2768,36 +2861,42 @@ export interface Store {
    * the transaction should be rolled back to its original state.
    *
    * ```js
-   * const store = createStore().setTables({
-   *   pets: {fido: {species: 'dog', color: 'brown'}},
-   * });
+   * const store = createStore()
+   *   .setTables({pets: {fido: {species: 'dog', color: 'brown'}}})
+   *   .setValues({open: true});
    *
-   * store.startTransaction();
-   * store.setCell('pets', 'fido', 'color', 'black');
-   * store.setCell('pets', 'fido', 'eyes', ['left', 'right']);
-   * store.setCell('pets', 'fido', 'info', {sold: null});
-   * store.finishTransaction((changedCells, invalidCells) => {
-   *   console.log(store.getTables());
-   *   // -> {pets: {fido: {species: 'dog', color: 'black'}}}
-   *   console.log(changedCells);
-   *   // -> {pets: {fido: {color: ['brown', 'black']}}}
-   *   console.log(invalidCells);
-   *   // -> {pets: {fido: {eyes: [['left', 'right']], info: [{sold: null}]}}}
-   *   return invalidCells['pets'] != null;
-   * });
+   * store
+   *   .startTransaction()
+   *   .setCell('pets', 'fido', 'color', 'black')
+   *   .setCell('pets', 'fido', 'eyes', ['left', 'right'])
+   *   .setCell('pets', 'fido', 'info', {sold: null})
+   *   .setValue('open', false)
+   *   .setValue('employees', ['alice', 'bob'])
+   *   .finishTransaction(
+   *     (changedCells, invalidCells, changedValues, invalidValues) => {
+   *       console.log(store.getTables());
+   *       console.log(changedCells);
+   *       console.log(invalidCells);
+   *       console.log(changedValues);
+   *       console.log(invalidValues);
+   *       return invalidCells['pets'] != null;
+   *     },
+   *   );
+   * // -> {pets: {fido: {species: 'dog', color: 'black'}}}
+   * // -> {pets: {fido: {color: ['brown', 'black']}}}
+   * // -> {pets: {fido: {eyes: [['left', 'right']], info: [{sold: null}]}}}
+   * // -> {open: [true, false]}
+   * // -> {employees: [['alice', 'bob']]}
    *
    * console.log(store.getTables());
    * // -> {pets: {fido: {species: 'dog', color: 'brown'}}}
+   * console.log(store.getValues());
+   * // -> {open: true}
    * ```
    * @category Transaction
    * @since v1.3.0
    */
-  finishTransaction(
-    doRollback?: (
-      changedCells: ChangedCells,
-      invalidCells: InvalidCells,
-    ) => boolean,
-  ): Store;
+  finishTransaction(doRollback?: DoRollback): Store;
 
   /**
    * The forEachTable method takes a function that it will then call for each
