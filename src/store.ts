@@ -34,6 +34,7 @@ import {
   Tables,
   TablesSchema,
   TransactionListener,
+  Value,
   ValueSchema,
   ValuesSchema,
   createStore as createStoreDecl,
@@ -106,6 +107,7 @@ type ValuesSchemaMap = IdMap<ValueSchema>;
 type RowMap = IdMap<Cell>;
 type TableMap = IdMap<RowMap>;
 type TablesMap = IdMap<TableMap>;
+type ValuesMap = IdMap<Value>;
 type IdAdded = 1 | -1;
 type ChangedIdsMap = IdMap<IdAdded>;
 type ChangedIdsMap2 = IdMap2<IdAdded>;
@@ -173,6 +175,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const valuesNonDefaulted = setNew();
   const tablePoolFunctions: IdMap<[() => Id, (id: Id) => void]> = mapNew();
   const tablesMap: TablesMap = mapNew();
+  const valuesMap: ValuesMap = mapNew();
   const tablesListeners: Pair<IdSet2> = pairNewMap();
   const tableIdsListeners: Pair<IdSet2> = pairNewMap();
   const tableListeners: Pair<IdSet2> = pairNewMap();
@@ -753,6 +756,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const getTablesJson = (): Json => jsonString(tablesMap);
 
+  const getValuesJson = (): Json => jsonString(valuesMap);
+
   const getTablesSchemaJson = (): Json => jsonString(tablesSchemaMap);
 
   const getValuesSchemaJson = (): Json => jsonString(valuesSchemaMap);
@@ -842,9 +847,21 @@ export const createStore: typeof createStoreDecl = (): Store => {
       cellId,
     );
 
-  const setTablesJson = (json: Json): Store => {
+  const setTablesJson = (tablesJson: Json): Store => {
     try {
-      json === EMPTY_OBJECT ? delTables() : setTables(jsonParse(json));
+      tablesJson === EMPTY_OBJECT
+        ? delTables()
+        : setTables(jsonParse(tablesJson));
+    } catch {}
+    return store;
+  };
+
+  const setValuesJson = (_valuesJson: Json): Store => {
+    try {
+      // TODO
+      // valuesJson === EMPTY_OBJECT
+      //   ? delValues()
+      //   : setValues(jsonParse(valuesJson));
     } catch {}
     return store;
   };
@@ -1139,6 +1156,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     hasCell,
 
     getTablesJson,
+    getValuesJson,
     getTablesSchemaJson,
     getValuesSchemaJson,
 
@@ -1150,6 +1168,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     setCell,
 
     setTablesJson,
+    setValuesJson,
     setTablesSchema,
     setValuesSchema,
 
