@@ -106,7 +106,7 @@ import {
   collSize3,
   collSize4,
 } from './common/coll';
-import {getCellType, setOrDelCell} from './common/cell';
+import {getCellType, setOrDelCell, setOrDelValue} from './common/cell';
 import {defaultSorter} from './common';
 import {getPoolFunctions} from './common/pool';
 
@@ -1219,13 +1219,19 @@ export const createStore: typeof createStoreDecl = (): Store => {
               ),
             ),
           );
+          collForEach(changedValues, ([oldValue], valueId) =>
+            setOrDelValue(store, valueId, oldValue),
+          );
           transactions = -1;
-          cellsTouched = false;
-          // TODO valuesTouched = false;
+          cellsTouched = valuesTouched = false;
         }
 
-        callListeners(finishTransactionListeners[0], undefined, cellsTouched);
-        // TODO valuesTouched? ^
+        callListeners(
+          finishTransactionListeners[0],
+          undefined,
+          cellsTouched,
+          valuesTouched,
+        );
         callInvalidCellListeners(0);
         if (cellsTouched) {
           callTabularListenersForChanges(0);
@@ -1234,8 +1240,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
         if (valuesTouched) {
           callKeyedValuesListenersForChanges(0);
         }
-        callListeners(finishTransactionListeners[1], undefined, cellsTouched);
-        // TODO valuesTouched? ^
+        callListeners(
+          finishTransactionListeners[1],
+          undefined,
+          cellsTouched,
+          valuesTouched,
+        );
 
         transactions = 0;
         arrayForEach(
