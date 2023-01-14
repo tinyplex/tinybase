@@ -9,6 +9,9 @@ import {
   TableListener,
   TablesListener,
   TransactionListener,
+  ValueIdsListener,
+  ValueListener,
+  ValuesListener,
 } from '../store.d';
 import {
   CheckpointIdsListener,
@@ -44,6 +47,9 @@ type Listener =
   | CellIdsListener
   | CellListener
   | InvalidCellListener
+  | ValuesListener
+  | ValueIdsListener
+  | ValueListener
   | TransactionListener
   | MetricListener
   | SliceIdsListener

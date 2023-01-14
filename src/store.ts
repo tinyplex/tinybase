@@ -12,6 +12,9 @@ import {
   TABLES,
   TABLE_IDS,
   TYPE,
+  VALUE,
+  VALUES,
+  VALUE_IDS,
   id,
 } from './common/strings';
 import {
@@ -22,6 +25,7 @@ import {
   CellSchema,
   ChangedCells,
   GetCellChange,
+  GetValueChange,
   InvalidCells,
   MapCell,
   Row,
@@ -35,6 +39,7 @@ import {
   TablesSchema,
   TransactionListener,
   Value,
+  ValueChange,
   ValueOrUndefined,
   ValueSchema,
   Values,
@@ -164,6 +169,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   let hasTablesSchema: boolean;
   let hasValuesSchema: boolean; // TODO
   let cellsTouched: boolean;
+  let valuesTouched: boolean;
   let transactions = 0;
   const changedTableIds: ChangedIdsMap = mapNew();
   const changedRowIds: ChangedIdsMap2 = mapNew();
@@ -190,6 +196,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const cellIdsListeners: Pair<IdSet3> = pairNewMap();
   const cellListeners: Pair<IdSet4> = pairNewMap();
   const invalidCellListeners: Pair<IdSet4> = pairNewMap();
+  const valuesListeners: Pair<IdSet2> = pairNewMap();
+  const valueIdsListeners: Pair<IdSet2> = pairNewMap();
+  const valueListeners: Pair<IdSet2> = pairNewMap();
   const finishTransactionListeners: Pair<IdSet2> = pairNewMap();
 
   const [addListener, callListeners, delListenerImpl, callListenerImpl] =
@@ -650,6 +659,13 @@ export const createStore: typeof createStoreDecl = (): Store => {
       () => [false, ...pairNew(getCell(tableId, rowId, cellId))] as CellChange,
     ) as CellChange;
 
+  const getValueChange: GetValueChange = (valueId: Id) =>
+    ifNotUndefined(
+      mapGet(changedValues, valueId),
+      ([oldValue, newValue]) => [true, oldValue, newValue],
+      () => [false, ...pairNew(getValue(valueId))] as ValueChange,
+    ) as ValueChange;
+
   const callInvalidCellListeners = (mutator: 0 | 1) =>
     !collIsEmpty(invalidCells) && !collIsEmpty(invalidCellListeners[mutator])
       ? collForEach(
@@ -678,7 +694,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     }
   };
 
-  const callListenersForChanges = (mutator: 0 | 1) => {
+  const callTabularListenersForChanges = (mutator: 0 | 1) => {
     const emptySortedRowIdListeners = collIsEmpty(
       sortedRowIdsListeners[mutator],
     );
@@ -791,6 +807,44 @@ export const createStore: typeof createStoreDecl = (): Store => {
     }
   };
 
+  const callKeyedValuesListenersForChanges = (mutator: 0 | 1) => {
+    const emptyIdListeners = collIsEmpty(valueIdsListeners[mutator]);
+    const emptyOtherListeners =
+      collIsEmpty(valueListeners[mutator]) &&
+      collIsEmpty(valuesListeners[mutator]);
+    if (!emptyIdListeners || !emptyOtherListeners) {
+      const changes: [
+        ChangedIdsMap,
+        IdMap<[CellOrUndefined, CellOrUndefined]>,
+      ] = mutator
+        ? [mapClone(changedValueIds), mapClone(changedValues)]
+        : [changedValueIds, changedValues];
+
+      if (!emptyIdListeners) {
+        callIdsListenersIfChanged(valueIdsListeners[mutator], changes[0]);
+      }
+
+      if (!emptyOtherListeners) {
+        let valuesChanged;
+        collForEach(changedValues, ([oldValue, newValue], valueId) => {
+          if (newValue !== oldValue) {
+            callListeners(
+              valueListeners[mutator],
+              [valueId],
+              newValue,
+              oldValue,
+              getValueChange,
+            );
+            valuesChanged = 1;
+          }
+        });
+        if (valuesChanged) {
+          callListeners(valuesListeners[mutator], undefined, getValueChange);
+        }
+      }
+    }
+  };
+
   const fluentTransaction = (
     actions: (...idArgs: Id[]) => unknown,
     ...args: unknown[]
@@ -850,6 +904,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
     mapGet(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)), id(cellId));
 
   const getValues = (): Values => mapToObj(valuesMap);
+
+  const getValueIds = (): Ids => mapKeys(valuesMap);
 
   const getValue = (valueId: Id): ValueOrUndefined =>
     mapGet(valuesMap, id(valueId));
@@ -1115,14 +1171,20 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
       if (transactions == 0) {
         cellsTouched = !collIsEmpty(changedCells);
+        valuesTouched = !collIsEmpty(changedValues);
         transactions = 1;
         callInvalidCellListeners(1);
         if (cellsTouched) {
-          callListenersForChanges(1);
+          callTabularListenersForChanges(1);
+        }
+        // TODO callInvalidValueListeners(1);
+        if (valuesTouched) {
+          callKeyedValuesListenersForChanges(1);
         }
         transactions = -1;
 
         if (
+          // TODO add invalid values & rollback
           doRollback?.(
             mapToObj(
               changedCells,
@@ -1154,23 +1216,33 @@ export const createStore: typeof createStoreDecl = (): Store => {
           );
           transactions = -1;
           cellsTouched = false;
+          // TODO valuesTouched = false;
         }
 
         callListeners(finishTransactionListeners[0], undefined, cellsTouched);
+        // TODO valuesTouched? ^
         callInvalidCellListeners(0);
         if (cellsTouched) {
-          callListenersForChanges(0);
+          callTabularListenersForChanges(0);
+        }
+        // TODO callInvalidValueListeners(1);
+        if (valuesTouched) {
+          callKeyedValuesListenersForChanges(0);
         }
         callListeners(finishTransactionListeners[1], undefined, cellsTouched);
+        // TODO valuesTouched? ^
 
         transactions = 0;
         arrayForEach(
           [
-            changedCells,
-            invalidCells,
             changedTableIds,
             changedRowIds,
             changedCellIds,
+            changedCells,
+            invalidCells,
+            changedValueIds,
+            changedValues,
+            invalidValues,
           ],
           collClear,
         );
@@ -1253,6 +1325,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     addListener(listener, finishTransactionListeners[1]);
 
   const callListener = (listenerId: Id) => {
+    // TODO
     callListenerImpl(listenerId, [getTableIds, getRowIds, getCellIds], (ids) =>
       isUndefined(ids[2]) ? [] : pairNew(getCell(...(ids as [Id, Id, Id]))),
     );
@@ -1290,6 +1363,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     getCellIds,
     getCell,
     getValues,
+    getValueIds,
     getValue,
 
     hasTables,
@@ -1356,6 +1430,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
       [CELL_IDS]: [2, cellIdsListeners],
       [CELL]: [3, cellListeners],
       InvalidCell: [3, invalidCellListeners],
+      [VALUES]: [0, valuesListeners],
+      [VALUE_IDS]: [0, valueIdsListeners],
+      [VALUE]: [1, valueListeners],
+      // TODO InvalidValue: [3, invalidCellListeners],
     },
     ([argumentCount, idSetNode]: [number, Pair<IdSetNode>], listenable) => {
       store[ADD + listenable + LISTENER] = (...args: any[]): Id =>

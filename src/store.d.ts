@@ -139,7 +139,7 @@ export type Value = string | number | boolean;
  *
  * This is used when describing a Value that is present _or_ that is not
  * present, such as when it has been deleted, or when describing a previous
- * state where the Value value has since been added.
+ * state where the Value has since been added.
  *
  * @category Store
  */
@@ -462,6 +462,78 @@ export type CellListener = (
 ) => void;
 
 /**
+ * The ValuesListener type describes a function that is used to listen to
+ * changes to all the Values in a Store.
+ *
+ * A ValuesListener is provided when using the addValuesListener method. See
+ * that method for specific examples.
+ *
+ * When called, a ValuesListener is given a reference to the Store and a
+ * GetValueChange function that can be used to query Values before and after the
+ * current transaction.
+ *
+ * Note that if the listener was manually forced to be called (with the
+ * callListener method rather than due to a real change in the Store), the
+ * GetValueChange function will not be present.
+ *
+ * @param store A reference to the Store that changed.
+ * @param getValueChange A function that returns information about any Value's
+ * changes.
+ * @category Listener
+ */
+export type ValuesListener = (
+  store: Store,
+  getValueChange: GetValueChange | undefined,
+) => void;
+
+/**
+ * The ValueIdsListener type describes a function that is used to listen to
+ * changes to the Value Ids in a Store.
+ *
+ * A ValueIdsListener is provided when using the addValueIdsListener method. See
+ * that method for specific examples.
+ *
+ * When called, a ValueIdsListener is given a reference to the Store.
+ *
+ * @param store A reference to the Store that changed.
+ * @category Listener
+ */
+export type ValueIdsListener = () => void;
+
+/**
+ * The ValueListener type describes a function that is used to listen to changes
+ * to a Value.
+ *
+ * A ValueListener is provided when using the addValueListener method. See that
+ * method for specific examples.
+ *
+ * When called, a ValueListener is given a reference to the Store and the Id of
+ * Value that changed. It is also given the new value of the Value, the old
+ * value of the Value, and a GetValueChange function that can be used to query
+ * Values before and after the current transaction.
+ *
+ * Note that if the listener was manually forced to be called (with the
+ * callListener method rather than due to a real change in the Store), the
+ * GetValueChange function will not be present and the new and old values of the
+ * Value will be the same.
+ *
+ * @param store A reference to the Store that changed.
+ * @param valueId The Id of the Value that changed.
+ * @param newValue The new value of the Value that changed.
+ * @param oldValue The old value of the Value that changed.
+ * @param getValueChange A function that returns information about any Value's
+ * changes.
+ * @category Listener
+ */
+export type ValueListener = (
+  store: Store,
+  valueId: Id,
+  newValue: Value,
+  oldValue: Value,
+  getValueChange: GetValueChange | undefined,
+) => void;
+
+/**
  * The InvalidCellListener type describes a function that is used to listen to
  * attempts to set invalid data to a Cell.
  *
@@ -522,6 +594,38 @@ export type CellChange = [
   changed: boolean,
   oldCell: CellOrUndefined,
   newCell: CellOrUndefined,
+];
+
+/**
+ * The GetValueChange type describes a function that returns information about
+ * any Value's changes during a transaction.
+ *
+ * A GetValueChange function is provided to every listener when called due the
+ * Store changing. The listener can then fetch the previous value of a Value
+ * before the current transaction, the new value after it, and a convenience
+ * flag that indicates that the value has changed.
+ *
+ * @param valueId The Id of the Value to inspect.
+ * @returns A ValueChange array containing information about the Value's
+ * changes.
+ * @category Listener
+ */
+export type GetValueChange = (valueId: Id) => ValueChange;
+
+/**
+ * The ValueChange type describes a Value's changes during a transaction.
+ *
+ * This is returned by the GetValueChange function that is provided to every
+ * listener when called. This array contains the previous value of a Value
+ * before the current transaction, the new value after it, and a convenience
+ * flag that indicates that the value has changed.
+ *
+ * @category Listener
+ */
+export type ValueChange = [
+  changed: boolean,
+  oldValue: ValueOrUndefined,
+  newValue: ValueOrUndefined,
 ];
 
 /**
@@ -1277,6 +1381,34 @@ export interface Store {
   getValues(): Values;
 
   /**
+   * The getValueIds method returns the Ids of every Value in a Store.
+   *
+   * Note that this returns a copy of, rather than a reference, to the list of
+   * Ids, so changes made to the list are not made to the Store itself.
+   *
+   * @returns An array of the Ids of every Value in the Store.
+   * @example
+   * This example retrieves the Value Ids in a Store.
+   *
+   * ```js
+   * const store = createStore().setValues({open: true, employees: 3});
+   * console.log(store.getValueIds());
+   * // -> ['open', 'employees']
+   * ```
+   * @example
+   * This example retrieves the Value Ids of a Store that has had none set,
+   * returning an empty array.
+   *
+   * ```js
+   * const store = createStore();
+   * console.log(store.getValueIds());
+   * // -> []
+   * ```
+   * @category Getter
+   */
+  getValueIds(tableId: Id, rowId: Id): Ids;
+
+  /**
    * The getValue method returns a single keyed Value in the Store.
    *
    * @param valueId The Id of the Value in the Store.
@@ -1918,8 +2050,8 @@ export interface Store {
    * match a ValuesSchema associated with the Store), will be ignored silently.
    *
    * As well as string, number, or boolean Value types, this method can also
-   * take a MapValue function that takes the current Value value as a parameter
-   * and maps it. This is useful if you want to efficiently increment a value
+   * take a MapValue function that takes the current Value as a parameter and
+   * maps it. This is useful if you want to efficiently increment a value
    * without fetching it first, for example.
    *
    * The method returns a reference to the Store so that subsequent operations
@@ -3574,6 +3706,228 @@ export interface Store {
    * @category Listener
    */
   addCellListener(
+    tableId: IdOrNull,
+    rowId: IdOrNull,
+    cellId: IdOrNull,
+    listener: CellListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * The addValuesListener method registers a listener function with the Store
+   * that will be called whenever the Values change.
+   *
+   * The provided listener is a ValuesListener function, and will be called with
+   * a reference to the Store and a GetValueChange function in case you need to
+   * inspect any changes that occurred.
+   *
+   * Use the optional mutator parameter to indicate that there is code in the
+   * listener that will mutate Store data. If set to `false` (or omitted), such
+   * mutations will be silently ignored. All relevant mutator listeners (with
+   * this flag set to `true`) are called _before_ any non-mutator listeners
+   * (since the latter may become relevant due to changes made in the former).
+   * The changes made by mutator listeners do not fire other mutating listeners,
+   * though they will fire non-mutator listeners.
+   *
+   * @param listener The function that will be called whenever data in the
+   * Values changes.
+   * @param mutator An optional boolean that indicates that the listener mutates
+   * Store data.
+   * @returns A unique Id for the listener that can later be used to call it
+   * explicitly, or to remove it.
+   * @example
+   * This example registers a listener that responds to any changes to the
+   * Store's Values.
+   *
+   * ```js
+   * const store = createStore().setValues({open: true, employees: 3});
+   * const listenerId = store.addValuesListener((store, getValueChange) => {
+   *   console.log('values changed');
+   *   console.log(getValueChange('employees'));
+   * });
+   *
+   * store.setValue('employees', 4);
+   * // -> 'values changed'
+   * // -> [true, 3, 4]
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @example
+   * This example registers a listener that responds to any changes to the
+   * Store's Values, and which also mutates the Store itself.
+   *
+   * ```js
+   * const store = createStore().setValues({open: true, employees: 3});
+   * const listenerId = store.addValuesListener(
+   *   (store, getValueChange) => store.setValue('updated', true),
+   *   true,
+   * );
+   *
+   * store.setValue('employees', 4);
+   * console.log(store.getValues());
+   * // -> {open: true, employees: 4, updated: true}
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @category Listener
+   */
+  addValuesListener(
+    tableId: IdOrNull,
+    rowId: IdOrNull,
+    listener: ValuesListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * The addValueIdsListener method registers a listener function with the Store
+   * that will be called whenever the Value Ids in a Store change.
+   *
+   * The provided listener is a ValueIdsListener function, and will be called
+   * with a reference to the Store.
+   *
+   * By default, such a listener is only called when a Value is added or
+   * removed. To listen to all changes in the Values, use the addValuesListener
+   * method.
+   *
+   * Use the optional mutator parameter to indicate that there is code in the
+   * listener that will mutate Store data. If set to `false` (or omitted), such
+   * mutations will be silently ignored. All relevant mutator listeners (with
+   * this flag set to `true`) are called _before_ any non-mutator listeners
+   * (since the latter may become relevant due to changes made in the former).
+   * The changes made by mutator listeners do not fire other mutating listeners,
+   * though they will fire non-mutator listeners.
+   *
+   * @param listener The function that will be called whenever the Value Ids in
+   * the Store change.
+   * @param mutator An optional boolean that indicates that the listener mutates
+   * Store data.
+   * @returns A unique Id for the listener that can later be used to call it
+   * explicitly, or to remove it.
+   * @example
+   * This example registers a listener that responds to any change to the Value
+   * Ids.
+   *
+   * ```js
+   * const store = createStore().setValues({open: true});
+   * const listenerId = store.addValueIdsListener((store) => {
+   *   console.log('Value Ids changed');
+   *   console.log(store.getValueIds());
+   * });
+   *
+   * store.setValue('employees', 3);
+   * // -> 'Value Ids changed'
+   * // -> ['open', 'employees']
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @example
+   * This example registers a listener that responds to any change to the Value
+   * Ids, and which also mutates the Store itself.
+   *
+   * ```js
+   * const store = createStore().setValues({open: true});
+   * const listenerId = store.addValueIdsListener(
+   *   (store) => store.setValue('updated', true),
+   *   true, // mutator
+   * );
+   *
+   * store.setValue('employees', 3);
+   * console.log(store.getValues());
+   * // -> {open: true, employees: 3, updated: true}
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @category Listener
+   */
+  addValueIdsListener(listener: ValueIdsListener, mutator?: boolean): Id;
+
+  /**
+   * The addValueListener method registers a listener function with the Store
+   * that will be called whenever data in a Value changes.
+   *
+   * The provided listener is a ValueListener function, and will be called with
+   * a reference to the Store, the Id of the Value that changed, the new Value
+   * value, the old Value, and a GetValueChange function in case you need to
+   * inspect any changes that occurred.
+   *
+   * You can either listen to a single Value (by specifying the Value Id) or
+   * changes to any Value (by providing a `null` wildcard).
+   *
+   * Use the optional mutator parameter to indicate that there is code in the
+   * listener that will mutate Store data. If set to `false` (or omitted), such
+   * mutations will be silently ignored. All relevant mutator listeners (with
+   * this flag set to `true`) are called _before_ any non-mutator listeners
+   * (since the latter may become relevant due to changes made in the former).
+   * The changes made by mutator listeners do not fire other mutating listeners,
+   * though they will fire non-mutator listeners.
+   *
+   * @param valueId The Id of the Value to listen to, or `null` as a wildcard.
+   * @param listener The function that will be called whenever data in the
+   * matching Value changes.
+   * @param mutator An optional boolean that indicates that the listener mutates
+   * Store data.
+   * @returns A unique Id for the listener that can later be used to call it
+   * explicitly, or to remove it.
+   * @example
+   * This example registers a listener that responds to any changes to a
+   * specific Value.
+   *
+   * ```js
+   * const store = createStore().setValues({open: true, employees: 3});
+   * const listenerId = store.addValueListener(
+   *   'employees',
+   *   (store, valueId, newValue, oldValue, getValueChange) => {
+   *     console.log('employee value changed');
+   *     console.log([oldValue, newValue]);
+   *     console.log(getValueChange('employees'));
+   *   },
+   * );
+   *
+   * store.setValue('employees', 4);
+   * // -> 'employee value changed'
+   * // -> [3, 4]
+   * // -> [true, 3, 4]
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @example
+   * This example registers a listener that responds to any changes to any
+   * Value.
+   *
+   * ```js
+   * const store = createStore().setValues({open: true, employees: 3});
+   * const listenerId = store.addValueListener(null, (store, valueId) => {
+   *   console.log(`${valueId} value changed`);
+   * });
+   *
+   * store.setValue('employees', 4);
+   * // -> 'employees value changed'
+   * store.setValue('open', false);
+   * // -> 'open value changed'
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @example
+   * This example registers a listener that responds to any changes to a
+   * specific Value, and which also mutates the Store itself.
+   *
+   * ```js
+   * const store = createStore().setValues({open: true, employees: 3});
+   * const listenerId = store.addValueListener(
+   *   'employees',
+   *   (store, valueId) => store.setValue('updated', true),
+   *   true,
+   * );
+   *
+   * store.delValue('employees');
+   * console.log(store.getValues());
+   * // -> {open: true, updated: true}
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @category Listener
+   */
+  addValueListener(
     tableId: IdOrNull,
     rowId: IdOrNull,
     cellId: IdOrNull,
