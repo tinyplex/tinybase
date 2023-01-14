@@ -55,6 +55,12 @@ const validCellSchema: {
 const validTableSchema = {c1: validCellSchema};
 const validTablesSchema = {t1: validTableSchema};
 
+const validValueSchema: {
+  type: 'boolean';
+  default: boolean;
+} = {type: 'boolean', default: true};
+const validValuesSchema = {v1: validValueSchema};
+
 const INVALID_CELLS: [string, any][] = [
   ['Date', new Date()],
   ['Function', () => 42],
@@ -398,15 +404,96 @@ describe('Rejects invalid', () => {
     const store = createStore().setTablesSchema({
       t1: {
         // @ts-ignore
-        r1: {type: 'boolean', default: 't1'},
+        c1: {type: 'boolean', default: 't1'},
         // @ts-ignore
-        r2: {type: 'number', default: 't1'},
+        c2: {type: 'number', default: 't1'},
         // @ts-ignore
-        r3: {type: 'string', default: 2},
+        c3: {type: 'string', default: 2},
       },
     });
     expect(JSON.parse(store.getTablesSchemaJson())).toEqual({
-      t1: {r1: {type: 'boolean'}, r2: {type: 'number'}, r3: {type: 'string'}},
+      t1: {c1: {type: 'boolean'}, c2: {type: 'number'}, c3: {type: 'string'}},
+    });
+  });
+
+  test.each(INVALID_OBJECTS)(
+    'Values schema; %s',
+    (_name, valuesSchema: any) => {
+      const store = createStore().setValuesSchema(valuesSchema);
+      expect(JSON.parse(store.getValuesSchemaJson())).toEqual({});
+    },
+  );
+
+  test.each(INVALID_OBJECTS)('Value schema; %s', (_name, valueSchema: any) => {
+    const store = createStore().setValuesSchema({v1: valueSchema});
+    expect(JSON.parse(store.getTablesSchemaJson())).toEqual({});
+  });
+
+  test.each(INVALID_OBJECTS)(
+    'Value schema, alongside valid; %s',
+    (_name, valueSchema: any) => {
+      const store = createStore().setValuesSchema({
+        v1: validValueSchema,
+        v2: valueSchema,
+      });
+      expect(JSON.parse(store.getValuesSchemaJson())).toEqual(
+        validValuesSchema,
+      );
+    },
+  );
+
+  test.each(INVALID_OBJECTS)(
+    '(bad type) Value schema; %s',
+    (_name, type: any) => {
+      const store = createStore().setValuesSchema({v1: {type}});
+      expect(JSON.parse(store.getValuesSchemaJson())).toEqual({});
+    },
+  );
+
+  test('(useless) Value schema', () => {
+    // @ts-ignore
+    const store = createStore().setTables({}, {v1: {default: 't1'}});
+    expect(JSON.parse(store.getValuesSchemaJson())).toEqual({});
+  });
+
+  test('(useless bounds) Value schema', () => {
+    const store1 = createStore().setValuesSchema({
+      // @ts-ignore
+      v1: {type: 'string', min: 1, max: 10},
+    });
+    expect(JSON.parse(store1.getValuesSchemaJson())).toEqual({
+      v1: {type: 'string'},
+    });
+    const store2 = createStore().setValuesSchema({
+      // @ts-ignore
+      v1: {type: 'boolean', min: 1, max: 10},
+    });
+    expect(JSON.parse(store2.getValuesSchemaJson())).toEqual({
+      v1: {type: 'boolean'},
+    });
+  });
+
+  test('(extended) Value schema', () => {
+    const store = createStore().setValuesSchema({
+      // @ts-ignore
+      v1: {type: 'boolean', default: true, extraThing1: 1},
+    });
+    expect(JSON.parse(store.getValuesSchemaJson())).toEqual(validValuesSchema);
+  });
+
+  test('(inconsistent default) Value schema', () => {
+    const store = createStore().setValuesSchema({
+      // @ts-ignore
+      v1: {type: 'boolean', default: 't1'},
+      // @ts-ignore
+      v2: {type: 'number', default: 't1'},
+      // @ts-ignore
+      v3: {type: 'string', default: 2},
+    });
+    expect(JSON.parse(store.getValuesSchemaJson())).toEqual({
+      v1: {type: 'boolean'},
+      v2: {type: 'number'},
+      v3: {type: 'string'},
     });
   });
 });
