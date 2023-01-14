@@ -233,6 +233,32 @@ describe('Get and set tablesSchemas', () => {
   });
 });
 
+describe('Get and set valuesSchemas', () => {
+  test('Set valuesSchemas on creation', () => {
+    const store = createStore();
+    // TODO
+    // const listener = createStoreListener(store);
+    // listener.listenToInvalidCell('invalids', null, null, null);
+    // addAllowMutator(store, 't1', 'c1', [2, 3]);
+    store.setValuesSchema({
+      v1: {type: 'number', default: 1},
+      v2: {type: 'string'},
+    });
+    expect(JSON.parse(store.getValuesSchemaJson())).toEqual({
+      v1: {type: 'number', default: 1},
+      v2: {type: 'string'},
+    });
+    // store.setCell('t1', 'r1', 'c1', '2');
+    // expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+    // store.setCell('t1', 'r1', 'c1', 2);
+    // expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
+    // expectChanges(listener, 'invalids', {t1: {r1: {c1: ['2']}}});
+    // expectNoChanges(listener);
+  });
+
+  // TODO other cases to match tablesSchema
+});
+
 describe('Schema applied before data set', () => {
   test('matching', () => {
     const store = createStore();

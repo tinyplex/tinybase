@@ -34,6 +34,8 @@ import {
   Tables,
   TablesSchema,
   TransactionListener,
+  ValueSchema,
+  ValuesSchema,
   createStore as createStoreDecl,
 } from './store.d';
 import {
@@ -100,6 +102,7 @@ import {defaultSorter} from './common';
 import {getPoolFunctions} from './common/pool';
 
 type TablesSchemaMap = IdMap2<CellSchema>;
+type ValuesSchemaMap = IdMap<ValueSchema>;
 type RowMap = IdMap<Cell>;
 type TableMap = IdMap<RowMap>;
 type TablesMap = IdMap<TableMap>;
@@ -154,7 +157,8 @@ const idsChanged = (
   ) as ChangedIdsMap;
 
 export const createStore: typeof createStoreDecl = (): Store => {
-  let hasSchema: boolean;
+  let hasTablesSchema: boolean;
+  let _hasValuesSchema: boolean; // TODO
   let cellsTouched: boolean;
   let transactions = 0;
   const changedTableIds: ChangedIdsMap = mapNew();
@@ -162,8 +166,11 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const changedCellIds: ChangedIdsMap3 = mapNew();
   const changedCells: IdMap3<[CellOrUndefined, CellOrUndefined]> = mapNew();
   const invalidCells: IdMap3<any[]> = mapNew();
-  const schemaMap: TablesSchemaMap = mapNew();
-  const schemaRowCache: IdMap<[RowMap, IdSet]> = mapNew();
+  const tablesSchemaMap: TablesSchemaMap = mapNew();
+  const tablesSchemaRowCache: IdMap<[RowMap, IdSet]> = mapNew();
+  const valuesSchemaMap: ValuesSchemaMap = mapNew();
+  const valuesDefaulted = mapNew();
+  const valuesNonDefaulted = setNew();
   const tablePoolFunctions: IdMap<[() => Id, (id: Id) => void]> = mapNew();
   const tablesMap: TablesMap = mapNew();
   const tablesListeners: Pair<IdSet2> = pairNewMap();
@@ -180,33 +187,37 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const [addListener, callListeners, delListenerImpl, callListenerImpl] =
     getListenerFunctions(() => store);
 
-  const validateSchema = (schema: TablesSchema | undefined): boolean =>
-    validate(schema, (tableSchema) =>
-      validate(tableSchema, (cellSchema) => {
-        if (
-          !validate(cellSchema, (_child, id: Id) =>
-            arrayHas([TYPE, DEFAULT], id),
-          )
-        ) {
-          return false;
-        }
-        const type = cellSchema[TYPE];
-        if (!isTypeStringOrBoolean(type) && type != NUMBER) {
-          return false;
-        }
-        if (getCellType(cellSchema[DEFAULT]) != type) {
-          objDel(cellSchema, DEFAULT);
-        }
-        return true;
-      }),
+  const validateTablesSchema = (
+    tableSchema: TablesSchema | undefined,
+  ): boolean =>
+    validate(tableSchema, (tableSchema) =>
+      validate(tableSchema, validateCellOrValueSchema),
     );
+
+  const validateValuesSchema = (
+    valuesSchema: ValuesSchema | undefined,
+  ): boolean => validate(valuesSchema, validateCellOrValueSchema);
+
+  const validateCellOrValueSchema = (schema: CellSchema | ValueSchema) => {
+    if (!validate(schema, (_child, id: Id) => arrayHas([TYPE, DEFAULT], id))) {
+      return false;
+    }
+    const type = schema[TYPE];
+    if (!isTypeStringOrBoolean(type) && type != NUMBER) {
+      return false;
+    }
+    if (getCellType(schema[DEFAULT]) != type) {
+      objDel(schema, DEFAULT);
+    }
+    return true;
+  };
 
   const validateTables = (tables: Tables): boolean =>
     validate(tables, validateTable, cellInvalid);
 
   const validateTable = (table: Table, tableId: Id): boolean =>
-    (!hasSchema ||
-      collHas(schemaMap, tableId) ||
+    (!hasTablesSchema ||
+      collHas(tablesSchemaMap, tableId) ||
       (cellInvalid(tableId) as boolean)) &&
     validate(
       table,
@@ -240,9 +251,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
     cellId: Id,
     cell: Cell,
   ): CellOrUndefined =>
-    hasSchema
+    hasTablesSchema
       ? ifNotUndefined(
-          mapGet(mapGet(schemaMap, tableId), cellId),
+          mapGet(mapGet(tablesSchemaMap, tableId), cellId),
           (cellSchema) =>
             getCellType(cell) != cellSchema[TYPE]
               ? cellInvalid(tableId, rowId, cellId, cell, cellSchema[DEFAULT])
@@ -255,7 +266,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const addDefaultsToRow = (row: Row, tableId: Id, rowId?: Id): Row => {
     ifNotUndefined(
-      mapGet(schemaRowCache, tableId),
+      mapGet(tablesSchemaRowCache, tableId),
       ([rowDefaulted, rowNonDefaulted]) => {
         collForEach(rowDefaulted, (cell, cellId) => {
           if (!objHas(row, cellId)) {
@@ -272,15 +283,15 @@ export const createStore: typeof createStoreDecl = (): Store => {
     return row;
   };
 
-  const setValidSchema = (schema: TablesSchema): TablesSchemaMap =>
+  const setValidTablesSchema = (tablesSchema: TablesSchema): TablesSchemaMap =>
     transformMap(
-      schemaMap,
-      schema,
-      (_schema, tableId, tableSchema) => {
+      tablesSchemaMap,
+      tablesSchema,
+      (_tablesSchema, tableId, tableSchema) => {
         const rowDefaulted = mapNew();
         const rowNonDefaulted = setNew();
         transformMap(
-          mapEnsure<Id, IdMap<CellSchema>>(schemaMap, tableId, mapNew),
+          mapEnsure<Id, IdMap<CellSchema>>(tablesSchemaMap, tableId, mapNew),
           tableSchema,
           (tableSchemaMap, cellId, cellSchema) => {
             mapSet(tableSchemaMap, cellId, cellSchema);
@@ -291,11 +302,30 @@ export const createStore: typeof createStoreDecl = (): Store => {
             );
           },
         );
-        mapSet(schemaRowCache, tableId, [rowDefaulted, rowNonDefaulted]);
+        mapSet(tablesSchemaRowCache, tableId, [rowDefaulted, rowNonDefaulted]);
       },
-      (_schema, tableId) => {
-        mapSet(schemaMap, tableId);
-        mapSet(schemaRowCache, tableId);
+      (_tablesSchema, tableId) => {
+        mapSet(tablesSchemaMap, tableId);
+        mapSet(tablesSchemaRowCache, tableId);
+      },
+    );
+
+  const setValidValuesSchema = (valuesSchema: ValuesSchema): ValuesSchemaMap =>
+    transformMap(
+      valuesSchemaMap,
+      valuesSchema,
+      (_valuesSchema, valueId, valueSchema) => {
+        mapSet(valuesSchemaMap, valueId, valueSchema);
+        ifNotUndefined(
+          valueSchema[DEFAULT],
+          (def) => mapSet(valuesDefaulted, valueId, def),
+          () => setAdd(valuesNonDefaulted, valueId) as any,
+        );
+      },
+      (_valuesSchema, valueId) => {
+        mapSet(valuesSchemaMap, valueId);
+        mapSet(valuesDefaulted, valueId);
+        collDel(valuesNonDefaulted, valueId);
       },
     );
 
@@ -405,7 +435,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
     cellId: Id,
     forceDel?: boolean,
   ): void => {
-    const defaultCell = mapGet(mapGet(schemaRowCache, tableId)?.[0], cellId);
+    const defaultCell = mapGet(
+      mapGet(tablesSchemaRowCache, tableId)?.[0],
+      cellId,
+    );
     if (!isUndefined(defaultCell) && !forceDel) {
       return setValidCell(tableId, rowId, row, cellId, defaultCell);
     }
@@ -720,7 +753,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const getJson = (): Json => jsonString(tablesMap);
 
-  const getTablesSchemaJson = (): Json => jsonString(schemaMap);
+  const getTablesSchemaJson = (): Json => jsonString(tablesSchemaMap);
+
+  const getValuesSchemaJson = (): Json => jsonString(valuesSchemaMap);
 
   const setTables = (tables: Tables): Store =>
     fluentTransaction(() =>
@@ -814,15 +849,28 @@ export const createStore: typeof createStoreDecl = (): Store => {
     return store;
   };
 
-  const setTablesSchema = (schema: TablesSchema): Store =>
+  const setTablesSchema = (tablesSchema: TablesSchema): Store =>
     fluentTransaction(() => {
-      if ((hasSchema = validateSchema(schema))) {
-        setValidSchema(schema);
+      if ((hasTablesSchema = validateTablesSchema(tablesSchema))) {
+        setValidTablesSchema(tablesSchema);
         if (!collIsEmpty(tablesMap)) {
           const tables = getTables();
           delTables();
           setTables(tables);
         }
+      }
+    });
+
+  const setValuesSchema = (valuesSchema: ValuesSchema): Store =>
+    fluentTransaction(() => {
+      if ((_hasValuesSchema = validateValuesSchema(valuesSchema))) {
+        setValidValuesSchema(valuesSchema);
+        // TODO
+        // if (!collIsEmpty(valuesMap)) {
+        //   const values = getValues();
+        //   delValues();
+        //   setValues(values);
+        // }
       }
     });
 
@@ -866,8 +914,14 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const delTablesSchema = (): Store =>
     fluentTransaction(() => {
-      setValidSchema({});
-      hasSchema = false;
+      setValidTablesSchema({});
+      hasTablesSchema = false;
+    });
+
+  const delValuesSchema = (): Store =>
+    fluentTransaction(() => {
+      setValidValuesSchema({});
+      _hasValuesSchema = false;
     });
 
   const transaction = <Return>(
@@ -1086,6 +1140,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
     getJson,
     getTablesSchemaJson,
+    getValuesSchemaJson,
 
     setTables,
     setTable,
@@ -1096,12 +1151,14 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
     setJson,
     setTablesSchema,
+    setValuesSchema,
 
     delTables,
     delTable,
     delRow,
     delCell,
     delTablesSchema,
+    delValuesSchema,
 
     transaction,
     startTransaction,

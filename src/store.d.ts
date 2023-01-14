@@ -525,6 +525,57 @@ export type CellSchema =
   | {type: 'boolean'; default?: boolean};
 
 /**
+ * The ValuesSchema type describes the keyed Values that can be set in a Store
+ * and their types.
+ *
+ * A ValuesSchema comprises a JavaScript object describing each Value and its
+ * ValueSchema. It is provided to the setValuesSchema method.
+ *
+ * @example
+ * When applied to a Store, this ValuesSchema only allows one boolean Value
+ * called `open`, that defaults to `false`.
+ *
+ *```js
+ * const valuesSchema: ValuesSchema = {
+ *   open: {type: 'boolean', default: false},
+ * };
+ * ```
+ * @category Schema
+ */
+export type ValuesSchema = {
+  [valueId: Id]: ValueSchema;
+};
+
+/**
+ * The ValueSchema type describes what values are allowed for keyed Values in a
+ * Store.
+ *
+ * A ValueSchema specifies the type of the Value (`string`, `boolean`, or
+ * `number`), and what the default value can be when an explicit value is not
+ * specified.
+ *
+ * If a default value is provided (and its type is correct), you can be certain
+ * that the Value will always be present in a Store.
+ *
+ * If the default value is _not_ provided (or its type is incorrect), the Value
+ * may not be present in the Store, but when present you can be guaranteed it is
+ * of the correct type.
+ *
+ * @example
+ * When applied to a Store, this ValueSchema ensures a boolean Value is always
+ * present, and defaults it to `false`.
+ *
+ *```js
+ * const requiredBoolean: ValueSchema = {type: 'boolean', default: false};
+ * ```
+ * @category Schema
+ */
+export type ValueSchema =
+  | {type: 'string'; default?: string}
+  | {type: 'number'; default?: number}
+  | {type: 'boolean'; default?: boolean};
+
+/**
  * The ChangedCells type describes the Cell values that have been changed during
  * a transaction, primarily used so that you can indicate whether the
  * transaction should be rolled back.
@@ -634,13 +685,20 @@ export type StoreListenerStats = {
 };
 
 /**
- * A Store is the main location for keeping structured state and tabular data.
+ * A Store is the main location for keeping both tabular data and keyed values.
  *
  * Create a Store easily with the createStore function. From there, you can set
  * and get data, add listeners for when the data changes, set schemas, and so
  * on.
  *
- * A Store has a simple hierarchical structure:
+ * A Store has two facets. It can contain tabular Tables data, and
+ * independently, it can contain keyed Values. These two facets have similar
+ * APIs but can be used entirely independently: you can use only tables, only
+ * keyed Values, or both tables _and_ keyed Values.
+ *
+ * # Tabular data
+ *
+ * The tabular data exists in a simple hierarchical structure:
  *
  * - The Store contains a number of Table objects.
  * - Each Table contains a number of Row objects.
@@ -672,6 +730,10 @@ export type StoreListenerStats = {
  * string you want. However, you _can_ optionally specify a TablesSchema for a
  * Store, which then usefully constrains the Table and Cell Ids (and Cell
  * values) you can use.
+ *
+ * # Keyed values
+ *
+ * This API is under development.
  *
  * # Setting and getting data
  *
@@ -1269,6 +1331,37 @@ export interface Store {
   getTablesSchemaJson(): Json;
 
   /**
+   * The getValuesSchemaJson method returns a string serialization of the
+   * ValuesSchema of the Store.
+   *
+   * If no ValuesSchema has been set on the Store (or if it has been removed
+   * with the delValuesSchema method), then it will return the serialization of
+   * an empty object, `{}`.
+   *
+   * @returns A string serialization of the ValuesSchema of the Store.
+   * @example
+   * This example serializes the ValuesSchema of a Store.
+   *
+   * ```js
+   * const store = createStore().setValuesSchema({
+   *   open: {type: 'boolean', default: false},
+   * });
+   * console.log(store.getValuesSchemaJson());
+   * // -> '{"open":{"type":"boolean","default":false}}'
+   * ```
+   * @example
+   * This example serializes the ValuesSchema of an empty Store.
+   *
+   * ```js
+   * const store = createStore();
+   * console.log(store.getValuesSchemaJson());
+   * // -> '{}'
+   * ```
+   * @category Getter
+   */
+  getValuesSchemaJson(): Json;
+
+  /**
    * The setTables method takes an object and sets the entire data of the Store.
    *
    * This method will cause listeners to be called for any Table, Row, Cell, or
@@ -1646,6 +1739,34 @@ export interface Store {
   setTablesSchema(tablesSchema: TablesSchema): Store;
 
   /**
+   * The setValuesSchema method lets you specify the ValuesSchema of the keyed
+   * Values part of the Store.
+   *
+   * Note that this may result in a change to data in the Store, as defaults are
+   * applied or as invalid Values are removed. These changes will fire any
+   * listeners to that data, as expected.
+   *
+   * When no longer needed, you can also completely remove an existing
+   * ValuesSchema with the delValuesSchema method.
+   *
+   * @param valuesSchema The ValuesSchema to be set for the Store.
+   * @returns A reference to the Store.
+   * @example
+   * This example sets the ValuesSchema of a Store after it has been created.
+   *
+   * ```js
+   * const store = createStore().setValuesSchema({
+   *   sold: {type: 'boolean', default: false},
+   * });
+   * // store.setValue(open: 'maybe');
+   * // console.log(store.getValues());
+   * // // -> {open: false}
+   * ```
+   * @category Setter
+   */
+  setValuesSchema(valuesSchema: ValuesSchema): Store;
+
+  /**
    * The delTables method lets you remove all of the data in a Store.
    *
    * @returns A reference to the Store.
@@ -1811,6 +1932,25 @@ export interface Store {
    * @category Deleter
    */
   delTablesSchema(): Store;
+
+  /**
+   * The delValuesSchema method lets you remove the ValuesSchema of the Store.
+   *
+   * @returns A reference to the Store.
+   * @example
+   * This example removes the ValuesSchema of a Store.
+   *
+   * ```js
+   * const store = createStore().setValuesSchema({
+   *   sold: {type: 'boolean', default: false},
+   * });
+   * store.delValuesSchema();
+   * console.log(store.getValuesSchemaJson());
+   * // -> '{}'
+   * ```
+   * @category Deleter
+   */
+  delValuesSchema(): Store;
 
   /**
    * The transaction method takes a function that makes multiple mutations to
