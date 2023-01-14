@@ -23,10 +23,9 @@ import {
   CellChange,
   CellOrUndefined,
   CellSchema,
-  ChangedCells,
+  DoRollback,
   GetCellChange,
   GetValueChange,
-  InvalidCells,
   MapCell,
   Row,
   RowCallback,
@@ -1144,10 +1143,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const transaction = <Return>(
     actions: () => Return,
-    doRollback?: (
-      changedCells: ChangedCells,
-      invalidCells: InvalidCells,
-    ) => boolean,
+    doRollback?: DoRollback,
   ): Return => {
     if (transactions == -1) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -1165,12 +1161,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     return store;
   };
 
-  const finishTransaction = (
-    doRollback?: (
-      changedCells: ChangedCells,
-      invalidCells: InvalidCells,
-    ) => boolean,
-  ): Store => {
+  const finishTransaction = (doRollback?: DoRollback): Store => {
     if (transactions > 0) {
       transactions--;
 
@@ -1209,6 +1200,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
             mapToObj<IdMap2<any[]>, IdObj2<any[]>>(invalidCells, (map) =>
               mapToObj<IdMap<any[]>, IdObj<any[]>>(map, mapToObj),
             ),
+            mapToObj(
+              changedValues,
+              (values) => [...values],
+              ([oldValue, newValue]) => oldValue === newValue,
+            ),
+            mapToObj(invalidValues),
           )
         ) {
           transactions = 1;
