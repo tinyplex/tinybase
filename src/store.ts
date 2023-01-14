@@ -751,7 +751,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const hasCell = (tableId: Id, rowId: Id, cellId: Id): boolean =>
     collHas(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)), id(cellId));
 
-  const getJson = (): Json => jsonString(tablesMap);
+  const getTablesJson = (): Json => jsonString(tablesMap);
 
   const getTablesSchemaJson = (): Json => jsonString(tablesSchemaMap);
 
@@ -842,7 +842,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       cellId,
     );
 
-  const setJson = (json: Json): Store => {
+  const setTablesJson = (json: Json): Store => {
     try {
       json === EMPTY_OBJECT ? delTables() : setTables(jsonParse(json));
     } catch {}
@@ -1138,7 +1138,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     hasRow,
     hasCell,
 
-    getJson,
+    getTablesJson,
     getTablesSchemaJson,
     getValuesSchemaJson,
 
@@ -1149,7 +1149,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     setPartialRow,
     setCell,
 
-    setJson,
+    setTablesJson,
     setTablesSchema,
     setValuesSchema,
 
