@@ -26,13 +26,13 @@ import {
   MapCell,
   Row,
   RowCallback,
-  Schema,
   SortedRowIdsListener,
   Store,
   StoreListenerStats,
   Table,
   TableCallback,
   Tables,
+  TablesSchema,
   TransactionListener,
   createStore as createStoreDecl,
 } from './store.d';
@@ -99,7 +99,7 @@ import {getCellType, setOrDelCell} from './common/cell';
 import {defaultSorter} from './common';
 import {getPoolFunctions} from './common/pool';
 
-type SchemaMap = IdMap2<CellSchema>;
+type TablesSchemaMap = IdMap2<CellSchema>;
 type RowMap = IdMap<Cell>;
 type TableMap = IdMap<RowMap>;
 type TablesMap = IdMap<TableMap>;
@@ -162,7 +162,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const changedCellIds: ChangedIdsMap3 = mapNew();
   const changedCells: IdMap3<[CellOrUndefined, CellOrUndefined]> = mapNew();
   const invalidCells: IdMap3<any[]> = mapNew();
-  const schemaMap: SchemaMap = mapNew();
+  const schemaMap: TablesSchemaMap = mapNew();
   const schemaRowCache: IdMap<[RowMap, IdSet]> = mapNew();
   const tablePoolFunctions: IdMap<[() => Id, (id: Id) => void]> = mapNew();
   const tablesMap: TablesMap = mapNew();
@@ -180,7 +180,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const [addListener, callListeners, delListenerImpl, callListenerImpl] =
     getListenerFunctions(() => store);
 
-  const validateSchema = (schema: Schema | undefined): boolean =>
+  const validateSchema = (schema: TablesSchema | undefined): boolean =>
     validate(schema, (tableSchema) =>
       validate(tableSchema, (cellSchema) => {
         if (
@@ -272,7 +272,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     return row;
   };
 
-  const setValidSchema = (schema: Schema): SchemaMap =>
+  const setValidSchema = (schema: TablesSchema): TablesSchemaMap =>
     transformMap(
       schemaMap,
       schema,
@@ -720,7 +720,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const getJson = (): Json => jsonString(tablesMap);
 
-  const getSchemaJson = (): Json => jsonString(schemaMap);
+  const getTablesSchemaJson = (): Json => jsonString(schemaMap);
 
   const setTables = (tables: Tables): Store =>
     fluentTransaction(() =>
@@ -814,7 +814,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     return store;
   };
 
-  const setSchema = (schema: Schema): Store =>
+  const setTablesSchema = (schema: TablesSchema): Store =>
     fluentTransaction(() => {
       if ((hasSchema = validateSchema(schema))) {
         setValidSchema(schema);
@@ -864,7 +864,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       cellId,
     );
 
-  const delSchema = (): Store =>
+  const delTablesSchema = (): Store =>
     fluentTransaction(() => {
       setValidSchema({});
       hasSchema = false;
@@ -1085,7 +1085,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     hasCell,
 
     getJson,
-    getSchemaJson,
+    getTablesSchemaJson,
 
     setTables,
     setTable,
@@ -1095,13 +1095,13 @@ export const createStore: typeof createStoreDecl = (): Store => {
     setCell,
 
     setJson,
-    setSchema,
+    setTablesSchema,
 
     delTables,
     delTable,
     delRow,
     delCell,
-    delSchema,
+    delTablesSchema,
 
     transaction,
     startTransaction,

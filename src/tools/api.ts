@@ -27,7 +27,7 @@ import {
   verbs,
 } from './strings';
 import {BOOLEAN, DEFAULT, EMPTY_STRING, TYPE} from '../common/strings';
-import {Cell, Schema} from '../store.d';
+import {Cell, TablesSchema} from '../store.d';
 import {IdMap, mapEnsure, mapForEach, mapNew, mapSet} from '../common/map';
 import {camel, comment, flat, getCodeFunctions, join, snake} from './code';
 import {isString, isUndefined} from '../common/other';
@@ -68,10 +68,10 @@ const storeListener = (
   })`;
 
 export const getStoreApi = (
-  schema: Schema,
+  tablesSchema: TablesSchema,
   module: string,
 ): [string, string] => {
-  if (objIsEmpty(schema)) {
+  if (objIsEmpty(tablesSchema)) {
     return pairNew(EMPTY_STRING);
   }
 
@@ -101,7 +101,7 @@ export const getStoreApi = (
       TABLE_ID: string,
     ) => Return,
   ) =>
-    objMap(schema, (_, tableId) => {
+    objMap(tablesSchema, (_, tableId) => {
       return callback(
         tableId,
         mapEnsure(tableTypes, tableId, () => {
@@ -182,7 +182,7 @@ export const getStoreApi = (
       cellName: string,
     ) => Return,
   ) =>
-    objMap(schema[tableId], (cellSchema, cellId) =>
+    objMap(tablesSchema[tableId], (cellSchema, cellId) =>
       callback(
         cellId,
         cellSchema[TYPE],
@@ -708,7 +708,7 @@ export const getStoreApi = (
   );
 
   addConstant('store', [
-    'createStore().setSchema({',
+    'createStore().setTablesSchema({',
     flat(
       mapTableSchema((tableId, _, __, TABLE_ID) => [
         `[${TABLE_ID}]: {`,

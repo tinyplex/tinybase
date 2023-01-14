@@ -10,7 +10,7 @@
  * @since v2.2.0
  */
 
-import {Schema, Store} from './store.d';
+import {Store, TablesSchema} from './store.d';
 import {Id} from './common.d';
 
 /**
@@ -164,22 +164,24 @@ export interface Tools {
   getStoreStats(detail?: boolean): StoreStats;
 
   /**
-   * The getStoreSchema method returns the Schema of the Store as an object.
+   * The getStoreTablesSchema method returns the TablesSchema of the Store as an
+   * object.
    *
-   * If the Store does not already have an explicit Schema associated with it,
-   * the data in the Store will be scanned to attempt to infer a new Schema.
+   * If the Store does not already have an explicit TablesSchema associated with
+   * it, the data in the Store will be scanned to attempt to infer a new
+   * TablesSchema.
    *
    * To be successful, this requires all the values of a given Cell across a
    * Table object's  Row objects to have a consistent type. If a given Cell Id
    * appears in every Row, then a `default` for that Cell is specified in the
-   * Schema, based on the most common value found.
+   * TablesSchema∑, based on the most common value found.
    *
-   * @returns A Schema object for the Store.
+   * @returns A TablesSchema object for the Store.
    * @example
    * This example creates a Tools object and gets basic statistics about a Store
-   * that already has a Schema.
+   * that already has a TablesSchema.
    * ```js
-   * const store = createStore().setSchema({
+   * const store = createStore().setTablesSchema({
    *   pets: {
    *     species: {type: 'string'},
    *     color: {type: 'string'},
@@ -188,13 +190,13 @@ export interface Tools {
    *     price: {type: 'number'},
    *   },
    * });
-   * const schema = createTools(store).getStoreSchema();
+   * const schema = createTools(store).getStoreTablesSchema();
    * console.log(schema.pets);
    * // -> {species: {type: 'string'}, color: {type: 'string'}}
    * ```
    * @example
    * This example creates a Tools object and gets basic statistics about a Store
-   * that doesn't already have a Schema.
+   * that doesn't already have a TablesSchema.
    * ```js
    * const store = createStore()
    *   .setTable('pets', {
@@ -206,7 +208,7 @@ export interface Tools {
    *     dog: {price: 5, barks: true},
    *     cat: {price: 4, purrs: true},
    *   });
-   * const schema = createTools(store).getStoreSchema();
+   * const schema = createTools(store).getStoreTablesSchema();
    * console.log(schema.pets.species);
    * // -> {type: 'string', default: 'dog'}
    * console.log(schema.pets.color);
@@ -221,16 +223,16 @@ export interface Tools {
    * @category Modelling
    * @since v2.2.0
    */
-  getStoreSchema(): Schema;
+  getStoreTablesSchema(): TablesSchema;
 
   /**
    * The getStoreApi method returns a code-generated .d.ts file and a .ts file
    * that describe the schema of a Store in an ORM style.
    *
-   * If the Store does not already have an explicit Schema associated with it,
-   * the data in the Store will be scanned to attempt to infer a new Schema. The
-   * method returns two strings (which should be saved as files) though if no
-   * schema can be inferred, the strings will be empty.
+   * If the Store does not already have an explicit TablesSchema associated with
+   * it, the data in the Store will be scanned to attempt to infer a new
+   * TablesSchema. The method returns two strings (which should be saved as
+   * files) though if no schema can be inferred, the strings will be empty.
    *
    * The method takes a single argument which represents the name you want the
    * generated store object to have in code. You are expected to save the files
@@ -278,9 +280,9 @@ export interface Tools {
    * `.ts` files.
    * @example
    * This example creates a Tools object and generates code for a Store that
-   * already has a Schema.
+   * already has a TablesSchema.
    * ```js
-   * const store = createStore().setSchema({
+   * const store = createStore().setTablesSchema({
    *   pets: {
    *     price: {type: 'number'},
    *   },
@@ -299,7 +301,7 @@ export interface Tools {
    * ```
    * @example
    * This example creates a Tools object and generates code for a Store that
-   * doesn't already have a Schema.
+   * doesn't already have a TablesSchema.
    * ```js
    * const store = createStore().setTable('pets', {
    *   fido: {price: 5},
@@ -349,9 +351,9 @@ export interface Tools {
    * `.ts` files.
    * @example
    * This example creates a Tools object and generates code for a Store that
-   * already has a Schema.
+   * already has a TablesSchema.
    * ```js
-   * const store = createStore().setSchema({
+   * const store = createStore().setTablesSchema({
    *   pets: {
    *     price: {type: 'number'},
    *   },
@@ -371,7 +373,7 @@ export interface Tools {
    * ```
    * @example
    * This example creates a Tools object and generates code for a Store that
-   * doesn't already have a Schema.
+   * doesn't already have a TablesSchema.
    * ```js
    * const store = createStore().setTable('pets', {
    *   fido: {price: 5},

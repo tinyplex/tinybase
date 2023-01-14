@@ -1,11 +1,11 @@
-# Inferring Schemas
+# Inferring TablesSchemas
 
 The TinyBase tools module includes a way to analyze existing data in a Store and
-attempt to generate a Schema from it.
+attempt to generate a TablesSchema from it.
 
 This is useful, for example, if you have imported external data into a Store and
 want to understand the shape and structure of the data - and then to constrain
-that shape through the use of the derived Schema from then on.
+that shape through the use of the derived TablesSchema from then on.
 
 ## The Tools Object
 
@@ -30,16 +30,16 @@ const store = createStore().setTable('pets', {
 const tools = createTools(store);
 ```
 
-(In reality it is more likely you would be inferring a schema from dynamically
-imported data, but for simplicity here, we are setting the data
+(In reality it is more likely you would be inferring a TablesSchema from
+dynamically imported data, but for simplicity here, we are setting the data
 deterministically inline.)
 
 The resulting Tools object is now associated with the Store, and, if one is not
-already present, the getStoreSchema method is used to infer the Schema. The
-method returns an object:
+already present, the getStoreTablesSchema method is used to infer the
+TablesSchema. The method returns an object:
 
 ```js
-console.log(tools.getStoreSchema());
+console.log(tools.getStoreTablesSchema());
 // -> {pets: {species: {type: 'string', default: 'dog'}}}
 ```
 
@@ -54,17 +54,17 @@ store.setTable('pets', {
   cujo: {friendly: false},
 });
 
-console.log(tools.getStoreSchema());
+console.log(tools.getStoreTablesSchema());
 // -> {pets: {price: {type: 'number'}, friendly: {type: 'boolean'}}}
 ```
 
 In this case, not every Row has the same set of Cell Ids, and so no default is
-inferred in the Schema.
+inferred in the TablesSchema.
 
-## Applying An Inferred Schema
+## Applying An Inferred TablesSchema
 
-Of course, you can programmatically apply the resulting Schema back to the Store
-so that future data insertions adhere to the shape of the existing data:
+Of course, you can programmatically apply the resulting TablesSchema back to the
+Store so that future data insertions adhere to the shape of the existing data:
 
 ```js
 store.setTable('pets', {
@@ -73,20 +73,20 @@ store.setTable('pets', {
   cujo: {price: 4},
 });
 
-store.setSchema(tools.getStoreSchema());
+store.setTablesSchema(tools.getStoreTablesSchema());
 
 store.setRow('pets', 'rex', {barks: true});
 console.log(store.getTable('pets'));
 // -> {fido: {price: 4}, felix: {price: 5}, cujo: {price: 4}, rex: {price: 4}}
 
-store.delSchema();
+store.delTablesSchema();
 ```
 
 ## Failure Conditions
 
-There are cases in which a Schema cannot be inferred. Most commonly, this will
-happen if data types are not consistent across each Row, or if there is no data
-at all:
+There are cases in which a TablesSchema cannot be inferred. Most commonly, this
+will happen if data types are not consistent across each Row, or if there is no
+data at all:
 
 ```js
 store.setTable('pets', {
@@ -95,20 +95,21 @@ store.setTable('pets', {
   cujo: {price: 'not for sale'},
 });
 
-console.log(tools.getStoreSchema());
+console.log(tools.getStoreTablesSchema());
 // -> {}
 
 store.delTable('pets');
 
-console.log(tools.getStoreSchema());
+console.log(tools.getStoreTablesSchema());
 // -> {}
 ```
 
 Note that inferring a schema is an all-or-nothing operation. Even if only one
-Table amongst many has inconsistent data, the Schema as a whole will be empty.
-One of the things this ensures is that the workflow is idempotent: if you take
-an inferred schema and reapply it to the Store, there will be no loss of data.
+Table amongst many has inconsistent data, the TablesSchema as a whole will be
+empty. One of the things this ensures is that the workflow is idempotent: if you
+take an inferred schema and reapply it to the Store, there will be no loss of
+data.
 
 We can take this technique one step further and actually derive type definitions
-and ORM-like implementations from our data or Schema. Move on to the Generating
-APIs guide for more details.
+and ORM-like implementations from our data or TablesSchema. Move on to the
+Generating APIs guide for more details.

@@ -1,14 +1,14 @@
-import {Schema, createStore} from '../../lib/debug/tinybase';
+import {TablesSchema, createStore} from '../../lib/debug/tinybase';
 import {µs} from './common';
 
 const SIZE = 50;
 
 test(`${Math.pow(SIZE, 3)} cells benchmark`, () => {
-  const schema: Schema = {};
+  const tablesSchema: TablesSchema = {};
   for (let tableId = 0; tableId <= SIZE; tableId++) {
-    schema[tableId] = {};
+    tablesSchema[tableId] = {};
     for (let cellId = 0; cellId <= SIZE; cellId++) {
-      schema[tableId][cellId] = {type: 'number', default: -1};
+      tablesSchema[tableId][cellId] = {type: 'number', default: -1};
     }
   }
 

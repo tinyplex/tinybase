@@ -1,18 +1,19 @@
 # Using Schemas
 
-Schemas are a simple declarative way to say what data you would like to store in
-specific Cells in specific Tables.
+TablesSchemas are a simple declarative way to say what data you would like to
+store in specific Cells in specific Tables.
 
-A Schema comprises a JavaScript object describing each Table, in turn a nested
-JavaScript object containing information about each Cell and its CellSchema. It
-is provided to the setSchema method.
+A TablesSchema comprises a JavaScript object describing each Table, in turn a
+nested JavaScript object containing information about each Cell and its
+CellSchema. It is provided to the setTablesSchema method.
 
-## Adding A Schema
+## Adding A TablesSchema
 
-Typically you will want to set a Schema prior to loading data into your Store:
+Typically you will want to set a TablesSchema prior to loading data into your
+Store:
 
 ```js
-const store = createStore().setSchema({
+const store = createStore().setTablesSchema({
   pets: {
     species: {type: 'string'},
     sold: {type: 'boolean', default: false},
@@ -36,18 +37,18 @@ certain that that Cell will always be present in a Row. If the default value is
 _not_ provided (or its type is incorrect), the Cell may be missing from the Row.
 But when it is present you can be guaranteed it is of the correct type.
 
-## Altering A Schema
+## Altering A TablesSchema
 
-You can also set or change the Schema after data has been added to the Store.
-Note that this may result in a change to data in the Store, as defaults are
-applied or as invalid Table, Row, or Cell objects are removed. These changes
+You can also set or change the TablesSchema after data has been added to the
+Store. Note that this may result in a change to data in the Store, as defaults
+are applied or as invalid Table, Row, or Cell objects are removed. These changes
 will fire any listeners to that data, as expected.
 
-In this example, the Schema gains a new required field that is added to the
-current Row to make it compliant:
+In this example, the TablesSchema gains a new required field that is added to
+the current Row to make it compliant:
 
 ```js
-store.setSchema({
+store.setTablesSchema({
   pets: {
     species: {type: 'string'},
     legs: {type: 'number', default: 4},
@@ -58,8 +59,8 @@ console.log(store.getTables());
 // -> {pets: {fido: {species: 'dog', sold: false, legs: 4}}}
 ```
 
-The Schema does not attempt to cast data. If a field needs to be of a particular
-type, it really needs to be of that type:
+The TablesSchema does not attempt to cast data. If a field needs to be of a
+particular type, it really needs to be of that type:
 
 ```js
 store.setCell('pets', 'fido', 'legs', '3');
@@ -73,14 +74,14 @@ console.log(store.getTables());
 
 ## Be Aware Of Potential Data Loss
 
-In order to guarantee that a Schema is met, Cell values may be removed,
+In order to guarantee that a TablesSchema is met, Cell values may be removed,
 potentially resulting in the removal of a whole Row.
 
-In this case, for example, the Schema changes quite dramatically and none of the
-Cells of the existing data match it, so the Row is deleted:
+In this case, for example, the TablesSchema changes quite dramatically and none
+of the Cells of the existing data match it, so the Row is deleted:
 
 ```js
-store.setSchema({
+store.setTablesSchema({
   pets: {
     color: {type: 'string'},
     weight: {type: 'number'},
@@ -90,12 +91,12 @@ console.log(store.getTables());
 // -> {}
 ```
 
-When no longer needed, you can also completely remove an existing Schema with
-the delSchema method.
+When no longer needed, you can also completely remove an existing TablesSchema
+with the delTablesSchema method.
 
 ## Summary
 
-Adding a Schema gives you a simple declarative way to describe your data
+Adding a TablesSchema gives you a simple declarative way to describe your data
 structure.
 
 Sometimes, however, you may require more complex programmatic enforcement of

@@ -54,8 +54,8 @@ store.setCell('pets', 'fido', 'species', 'dog');
 
 It is important to note that by default, you can't mutate the Store with code
 inside a listener, and attempting to do so will fail silently. We cover how to
-mutate the Store from with in a listener (in order to adhere to a Schema, for
-example) in the Mutating Data With Listeners guide.
+mutate the Store from with in a listener (in order to adhere to a TablesSchema,
+for example) in the Mutating Data With Listeners guide.
 
 ## Cleaning Up Listeners
 

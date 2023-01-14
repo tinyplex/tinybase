@@ -4,7 +4,8 @@ TinyBase v2.2 includes a command line tool to assist with common actions in a
 non-programmatic tool chain.
 
 While this tool may add more functionality in the future, for now it is
-essentially limited to code generation, creating APIs from a file-based Schema.
+essentially limited to code generation, creating APIs from a file-based
+TablesSchema.
 
 You can run the `tinybase` CLI using node's `npx` command:
 
@@ -32,11 +33,11 @@ Usage:
 Currently there are three commands. `help` generates this message and `version`
 prints out the version of the installed tinybase module.
 
-More interestingly, `getStoreApi` takes a Schema from a file and emits `.d.ts`
-and `.ts` files for it (much as described in the Generating APIs guide).
+More interestingly, `getStoreApi` takes a TablesSchema from a file and emits
+`.d.ts` and `.ts` files for it (much as described in the Generating APIs guide).
 
-For example, imagine if you have defined a TinyBase Schema in a file called
-`schema.json`:
+For example, imagine if you have defined a TinyBase TablesSchema in a file
+called `schema.json`:
 
 ```json
 {
@@ -88,7 +89,7 @@ And the implementation:
 //...
 export const createShop: typeof createShopDecl = () => {
   // ...
-  const store = createStore().setSchema({
+  const store = createStore().setTablesSchema({
     pets: {
       species: {type: 'string', default: 'dog'},
       price: {type: 'number'},
