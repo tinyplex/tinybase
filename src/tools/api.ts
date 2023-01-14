@@ -6,10 +6,10 @@ import {
   REGISTERS_A_LISTENER,
   REPRESENTS,
   RETURNS_VOID,
-  THE_CONTENT_OF_THE_STORE,
   THE_END_OF_THE_TRANSACTION,
   THE_SPECIFIED_ROW,
   THE_STORE,
+  THE_TABULAR_CONTENT_OF_THE_STORE,
   getCallbackDoc,
   getCellContentDoc,
   getCellDoc,
@@ -202,7 +202,7 @@ export const getStoreApi = (
       ),
       ' ',
     )}}`,
-    `${REPRESENTS} ${THE_CONTENT_OF_THE_STORE}`,
+    `${REPRESENTS} ${THE_TABULAR_CONTENT_OF_THE_STORE}`,
   );
   const tableIdType = addType(
     'TableId',
@@ -535,18 +535,18 @@ export const getStoreApi = (
   );
 
   addMethod(
-    'getJson',
+    'getTablesJson',
     EMPTY_STRING,
     'Json',
-    storeMethod('getJson'),
-    `${verbs[0]} a string serialization ${THE_CONTENT_OF_THE_STORE}`,
+    storeMethod('getTablesJson'),
+    `${verbs[0]} a string serialization of ${THE_TABULAR_CONTENT_OF_THE_STORE}`,
   );
   addMethod(
-    'setJson',
+    'setTablesJson',
     'json: Json',
     storeType,
-    fluentStoreMethod('setJson', 'json'),
-    `${verbs[1]} ${THE_CONTENT_OF_THE_STORE} from a serialized string`,
+    fluentStoreMethod('setTablesJson', 'json'),
+    `${verbs[1]} ${THE_TABULAR_CONTENT_OF_THE_STORE} from a serialized string`,
   );
 
   addMethod(
@@ -580,7 +580,8 @@ export const getStoreApi = (
     `${LISTENER}: ${tablesListenerType}, mutator?: boolean`,
     'Id',
     storeListener('addTablesListener', EMPTY_STRING, 'mutator'),
-    `${REGISTERS_A_LISTENER} whenever ${THE_CONTENT_OF_THE_STORE} changes`,
+    `${REGISTERS_A_LISTENER} whenever ${THE_TABULAR_CONTENT_OF_THE_STORE}` +
+      ' changes',
   );
   addMethod(
     'addTableIdsListener',

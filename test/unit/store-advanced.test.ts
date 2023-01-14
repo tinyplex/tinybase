@@ -15,58 +15,58 @@ beforeEach(() => {
   listener = createStoreListener(store);
 });
 
-describe('setJson', () => {
+describe('setTablesJson', () => {
   test('valid', () => {
     store = createStore().setTables({t1: {r1: {c1: 1, c2: 1}}});
-    store.setJson('{"t2": {"r2": {"c2": 1, "d2": 2}}}');
+    store.setTablesJson('{"t2": {"r2": {"c2": 1, "d2": 2}}}');
     expect(store.getTables()).toEqual({t2: {r2: {c2: 1, d2: 2}}});
   });
 
   test('invalid', () => {
     store = createStore().setTables({t1: {r1: {c1: 1, c2: 1}}});
-    store.setJson('{');
+    store.setTablesJson('{');
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1, c2: 1}}});
   });
 
   test('part empty object', () => {
     store = createStore().setTables({t1: {r1: {c1: 1, c2: 1}}});
-    store.setJson('{"t2": {"r2": {}}}');
+    store.setTablesJson('{"t2": {"r2": {}}}');
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1, c2: 1}}});
   });
 
   test('part invalid object', () => {
     store = createStore().setTables({t1: {r1: {c1: 1, c2: 1}}});
-    store.setJson('{"t2": {"r2": [1, 2, 3]}}');
+    store.setTablesJson('{"t2": {"r2": [1, 2, 3]}}');
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1, c2: 1}}});
   });
 
   test('empty object', () => {
     store = createStore().setTables({t1: {r1: {c1: 1, c2: 1}}});
-    store.setJson('{}');
+    store.setTablesJson('{}');
     expect(store.getTables()).toEqual({});
   });
 
   test('invalid object 1', () => {
     store = createStore().setTables({t1: {r1: {c1: 1, c2: 1}}});
-    store.setJson('[1, 2, 3]');
+    store.setTablesJson('[1, 2, 3]');
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1, c2: 1}}});
   });
 
   test('invalid object 2', () => {
     store = createStore().setTables({t1: {r1: {c1: 1, c2: 1}}});
-    store.setJson('123');
+    store.setTablesJson('123');
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1, c2: 1}}});
   });
 
   test('empty', () => {
     store = createStore().setTables({t1: {r1: {c1: 1, c2: 1}}});
-    store.setJson('');
+    store.setTablesJson('');
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1, c2: 1}}});
   });
 
   test('null', () => {
     store = createStore().setTables({t1: {r1: {c1: 1, c2: 1}}});
-    store.setJson('null');
+    store.setTablesJson('null');
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1, c2: 1}}});
   });
 });

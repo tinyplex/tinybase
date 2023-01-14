@@ -1,7 +1,7 @@
 import {EMPTY_STRING} from '../common/strings';
 import {Id} from '../common.d';
 
-const THE_CONTENT_OF = 'the content of';
+const THE_TABULAR_CONTENT_OF = 'the tabular content of';
 
 export const THE_STORE = 'the Store';
 export const A_FUNCTION_FOR = 'A function for';
@@ -11,14 +11,14 @@ export const OR_UNDEFINED = ' | undefined';
 export const REGISTERS_A_LISTENER = `Registers a ${LISTENER} that will be called`;
 export const REPRESENTS = 'Represents';
 export const RETURNS_VOID = ' => void';
-export const THE_CONTENT_OF_THE_STORE = `${THE_CONTENT_OF} ${THE_STORE}`;
+export const THE_TABULAR_CONTENT_OF_THE_STORE = `${THE_TABULAR_CONTENT_OF} ${THE_STORE}`;
 export const THE_END_OF_THE_TRANSACTION = 'the end of the transaction';
 export const THE_SPECIFIED_ROW = 'the specified Row';
 
 export const getRowTypeDoc = (tableId: Id, set = 0) =>
   `${REPRESENTS} a Row when ${
     set ? 's' : 'g'
-  }etting ${THE_CONTENT_OF} the '${tableId}' Table`;
+  }etting ${THE_TABULAR_CONTENT_OF} the '${tableId}' Table`;
 
 export const getIdsDoc = (idsNoun: string, parentNoun: string, sorted = 0) =>
   `Gets ${
@@ -47,7 +47,7 @@ export const getListenerDoc = (
   (pluralChild ? EMPTY_STRING : 's');
 
 export const getStoreContentDoc = (verb = 0) =>
-  `${verbs[verb]} ${THE_CONTENT_OF_THE_STORE}`;
+  `${verbs[verb]} ${THE_TABULAR_CONTENT_OF_THE_STORE}`;
 
 export const getTableDoc = (tableId: Id) => `the '${tableId}' Table`;
 
@@ -57,10 +57,10 @@ export const getRowDoc = (tableId: Id) =>
 export const getCellDoc = (cellId: Id) => `the '${cellId}' Cell`;
 
 export const getTableContentDoc = (tableId: Id, verb = 0) =>
-  `${verbs[verb]} ${THE_CONTENT_OF} ${getTableDoc(tableId)}`;
+  `${verbs[verb]} ${THE_TABULAR_CONTENT_OF} ${getTableDoc(tableId)}`;
 
 export const getRowContentDoc = (tableId: Id, verb = 0) =>
-  `${verbs[verb]} ${THE_CONTENT_OF} ${getRowDoc(tableId)}`;
+  `${verbs[verb]} ${THE_TABULAR_CONTENT_OF} ${getRowDoc(tableId)}`;
 
 export const getCellContentDoc = (tableId: Id, cellId: Id, verb = 0) =>
   `${verbs[verb]} ${getCellDoc(cellId)} for ${getRowDoc(tableId)}`;

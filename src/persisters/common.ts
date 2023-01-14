@@ -27,7 +27,7 @@ export const createCustomPersister = (
         }
         const body = await getPersisted();
         if (!isUndefined(body) && body != EMPTY_STRING) {
-          store.setJson(body);
+          store.setTablesJson(body);
         } else {
           store.setTables(initialTables as Tables);
         }
@@ -55,7 +55,7 @@ export const createCustomPersister = (
         if (DEBUG) {
           saves++;
         }
-        await setPersisted(store.getJson());
+        await setPersisted(store.getTablesJson());
         loadSave = 0;
       }
       return persister;

@@ -92,8 +92,8 @@ export type Cell = string | number | boolean;
  * The CellOrUndefined type is a data structure representing the data in a
  * single cell or the value `undefined`.
  *
- * This is used when describing a Cell that is present _or_ that is not present
- * - such as when it has been deleted, or when describing a previous state where
+ * This is used when describing a Cell that is present _or_ that is not present,
+ * such as when it has been deleted, or when describing a previous state where
  * the Cell value has since been added.
  *
  * @category Store
@@ -773,8 +773,8 @@ export type StoreListenerStats = {
  * The transaction method is used to wrap multiple changes to the Store so that
  * the relevant listeners only fire once.
  *
- * The setJson method and the getJson method allow you to work with a
- * JSON-encoded representation of the entire Store, which is useful for
+ * The setTablesJson method and the getTablesJson method allow you to work with
+ * a JSON-encoded representation of the entire Store, which is useful for
  * persisting it.
  *
  * Finally, the callListener method provides a way for you to manually provoke a
@@ -1272,8 +1272,8 @@ export interface Store {
   hasCell(tableId: Id, rowId: Id, cellId: Id): boolean;
 
   /**
-   * The getJson method returns a string serialization of all of the Tables in
-   * the Store.
+   * The getTablesJson method returns a string serialization of all of the
+   * Tables in the Store.
    *
    * @returns A string serialization of all of the Tables in the Store.
    * @example
@@ -1281,7 +1281,7 @@ export interface Store {
    *
    * ```js
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
-   * console.log(store.getJson());
+   * console.log(store.getTablesJson());
    * // -> '{"pets":{"fido":{"species":"dog"}}}'
    * ```
    * @example
@@ -1289,12 +1289,12 @@ export interface Store {
    *
    * ```js
    * const store = createStore();
-   * console.log(store.getJson());
+   * console.log(store.getTablesJson());
    * // -> '{}'
    * ```
    * @category Getter
    */
-  getJson(): Json;
+  getTablesJson(): Json;
 
   /**
    * The getTablesSchemaJson method returns a string serialization of the
@@ -1674,8 +1674,8 @@ export interface Store {
   setCell(tableId: Id, rowId: Id, cellId: Id, cell: Cell | MapCell): Store;
 
   /**
-   * The setJson method takes a string serialization of all of the Tables in the
-   * Store and attempts to update it to that value
+   * The setTablesJson method takes a string serialization of all of the Tables
+   * in the Store and attempts to update it to that value.
    *
    * If the JSON cannot be parsed, this will fail silently. If it can be parsed,
    * it will then be subject to the same validation rules as the setTables
@@ -1689,7 +1689,7 @@ export interface Store {
    *
    * ```js
    * const store = createStore();
-   * store.setJson('{"pets":{"fido":{"species":"dog"}}}');
+   * store.setTablesJson('{"pets":{"fido":{"species":"dog"}}}');
    * console.log(store.getTables());
    * // -> {pets: {fido: {species: 'dog'}}}
    * ```
@@ -1699,13 +1699,13 @@ export interface Store {
    *
    * ```js
    * const store = createStore();
-   * store.setJson('{"pets":{"fido":{');
+   * store.setTablesJson('{"pets":{"fido":{');
    * console.log(store.getTables());
    * // -> {}
    * ```
    * @category Setter
    */
-  setJson(json: Json): Store;
+  setTablesJson(json: Json): Store;
 
   /**
    * The setTablesSchema method lets you specify the TablesSchema of the tabular
