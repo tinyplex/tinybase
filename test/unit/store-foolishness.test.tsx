@@ -48,6 +48,9 @@ const validRow = {c1: validCell};
 const validTable = {r1: validRow};
 const validTables = {t1: validTable};
 
+const validValue = 1;
+const validValues = {v1: validValue};
+
 const validCellSchema: {
   type: 'string';
   default: string;
@@ -61,7 +64,7 @@ const validValueSchema: {
 } = {type: 'boolean', default: true};
 const validValuesSchema = {v1: validValueSchema};
 
-const INVALID_CELLS: [string, any][] = [
+const INVALID_CELLS_OR_VALUES: [string, any][] = [
   ['Date', new Date()],
   ['Function', () => 42],
   ['Regex', /1/],
@@ -75,7 +78,7 @@ const INVALID_CELLS: [string, any][] = [
   ['NaN', NaN],
 ];
 
-const INVALID_OBJECTS: [string, any][] = INVALID_CELLS.concat([
+const INVALID_OBJECTS: [string, any][] = INVALID_CELLS_OR_VALUES.concat([
   ['number', 1],
   ['string', '1'],
   ['boolean', true],
@@ -107,17 +110,33 @@ describe('Setting invalid', () => {
     expect(store.getTables()).toEqual(validTables);
   });
 
-  test.each(INVALID_CELLS)('first Cell; %s', (_name, cell: any) => {
+  test.each(INVALID_CELLS_OR_VALUES)('first Cell; %s', (_name, cell: any) => {
     const store = createStore().setTables({t1: {r1: {c1: cell}}});
     expect(store.getTables()).toEqual({});
   });
 
-  test.each(INVALID_CELLS)('second Cell; %s', (_name, cell: any) => {
+  test.each(INVALID_CELLS_OR_VALUES)('second Cell; %s', (_name, cell: any) => {
     const store = createStore().setTables({
       t1: {r1: {c1: validCell, c2: cell}},
     });
     expect(store.getTables()).toEqual(validTables);
   });
+
+  test.each(INVALID_CELLS_OR_VALUES)('first Value; %s', (_name, value: any) => {
+    const store = createStore().setValues({v1: value});
+    expect(store.getValues()).toEqual({});
+  });
+
+  test.each(INVALID_CELLS_OR_VALUES)(
+    'second Value; %s',
+    (_name, value: any) => {
+      const store = createStore().setValues({
+        v1: validValue,
+        v2: value,
+      });
+      expect(store.getValues()).toEqual(validValues);
+    },
+  );
 });
 
 describe('Listening to invalid', () => {
@@ -248,7 +267,7 @@ describe('Listening to invalid', () => {
     expectNoChanges(listener);
   });
 
-  test.each(INVALID_CELLS)('add Row; %s', (_name, cell: any) => {
+  test.each(INVALID_CELLS_OR_VALUES)('add Row; %s', (_name, cell: any) => {
     const store = createStore().setTables(validTables);
     const listener = createStoreListener(store);
     listener.listenToTables('/');
@@ -265,26 +284,29 @@ describe('Listening to invalid', () => {
     expectNoChanges(listener);
   });
 
-  test.each(INVALID_CELLS)('Cell, alongside valid; %s', (_name, cell: any) => {
-    const store = createStore().setTables(validTables);
-    const listener = createStoreListener(store);
-    listener.listenToTables('/');
-    listener.listenToTable('/t1', 't1');
-    listener.listenToRow('/t1/r1', 't1', 'r1');
-    listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
-    listener.listenToCell('/t1/r1/c2', 't1', 'r1', 'c2');
-    listener.listenToInvalidCell('invalids', null, null, null);
-    store.setRow('t1', 'r1', {c1: 2, c2: cell});
-    expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
-    expectChanges(listener, '/', {t1: {r1: {c1: 2}}});
-    expectChanges(listener, '/t1', {t1: {r1: {c1: 2}}});
-    expectChanges(listener, '/t1/r1', {t1: {r1: {c1: 2}}});
-    expectChanges(listener, '/t1/r1/c1', {t1: {r1: {c1: 2}}});
-    expectChanges(listener, 'invalids', {t1: {r1: {c2: [cell]}}});
-    expectNoChanges(listener);
-  });
+  test.each(INVALID_CELLS_OR_VALUES)(
+    'Cell, alongside valid; %s',
+    (_name, cell: any) => {
+      const store = createStore().setTables(validTables);
+      const listener = createStoreListener(store);
+      listener.listenToTables('/');
+      listener.listenToTable('/t1', 't1');
+      listener.listenToRow('/t1/r1', 't1', 'r1');
+      listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
+      listener.listenToCell('/t1/r1/c2', 't1', 'r1', 'c2');
+      listener.listenToInvalidCell('invalids', null, null, null);
+      store.setRow('t1', 'r1', {c1: 2, c2: cell});
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
+      expectChanges(listener, '/', {t1: {r1: {c1: 2}}});
+      expectChanges(listener, '/t1', {t1: {r1: {c1: 2}}});
+      expectChanges(listener, '/t1/r1', {t1: {r1: {c1: 2}}});
+      expectChanges(listener, '/t1/r1/c1', {t1: {r1: {c1: 2}}});
+      expectChanges(listener, 'invalids', {t1: {r1: {c2: [cell]}}});
+      expectNoChanges(listener);
+    },
+  );
 
-  test.each(INVALID_CELLS.slice(0, 1))(
+  test.each(INVALID_CELLS_OR_VALUES.slice(0, 1))(
     'existing or new Cell; %s',
     (_name, cell: any) => {
       if (typeof cell == 'function') {
@@ -615,6 +637,15 @@ describe('Coerce Ids', () => {
       expect(store.getCell('t1', 'r1', '2')).toEqual(2);
     });
   });
+
+  test('Value Id', () => {
+    store.setValues({1: 1});
+    expect(store.getValues()).toEqual({1: 1});
+    // @ts-ignore
+    store.setValue(2, 2);
+    expect(store.getValue('1')).toEqual(1);
+    expect(store.getValue('2')).toEqual(2);
+  });
 });
 
 describe('Get non-existent', () => {
@@ -634,6 +665,11 @@ describe('Get non-existent', () => {
     expect(store.getCell('t1', 'r1', 'z')).toBeUndefined();
     expect(store.getCell('t1', 'y', 'z')).toBeUndefined();
     expect(store.getCell('x', 'y', 'z')).toBeUndefined();
+  });
+
+  test('Value', () => {
+    const store = createStore().setValues(validValues);
+    expect(store.getValue('v0')).toBeUndefined();
   });
 
   test('Metric', () => {
@@ -682,6 +718,15 @@ describe('Delete non-existent', () => {
     store.delCell('t1', 'r1', 'c2');
     store.delCell('t1', 'r2', 'c1');
     store.delCell('t2', 'r1', 'c1');
+    expectNoChanges(listener);
+  });
+
+  test('Value', () => {
+    const store = createStore().setValues(validValues);
+    store.delValue('v2');
+    expect(store.getValues()).toEqual(validValues);
+
+    // TODO
     expectNoChanges(listener);
   });
 });
