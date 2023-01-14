@@ -257,22 +257,28 @@ export type GetCell = (cellId: Id) => CellOrUndefined;
  * See those methods for specific examples.
  *
  * When called, a TransactionListener is simply given a reference to the Store
- * and a boolean to indicate whether Cell values have been touched during the
- * transaction. The latter flag is intended as a hint about whether non-mutating
- * listeners might be being called at the end of the transaction.
+ * and booleans to indicate whether Cell or Value data has been touched during
+ * the transaction. The two flags are intended as a hint about whether
+ * non-mutating listeners might be being called at the end of the transaction.
  *
- * Here, 'touched' means that Cell values have either been changed, or changed
- * and then changed back to its original value during the transaction. The
- * exception is a transaction that has been rolled back, for which the value of
- * `cellsTouched` in the listener will be `false` because all changes have been
- * reverted.
+ * Here, 'touched' means that Cell or Value data has either been changed, or
+ * changed and then changed back to its original value during the transaction.
+ * The exception is a transaction that has been rolled back, for which the value
+ * of `cellsTouched` and `valuesTouched` in the listener will be `false` because
+ * all changes have been reverted.
  *
  * @param store A reference to the Store that is completing a transaction.
  * @param cellsTouched Whether Cell values have been touched during the
  * transaction.
+ * @param valuesTouched Whether Values have been touched during the
+ * transaction.
  * @category Listener
  */
-export type TransactionListener = (store: Store, cellsTouched: boolean) => void;
+export type TransactionListener = (
+  store: Store,
+  cellsTouched: boolean,
+  valuesTouched: boolean,
+) => void;
 
 /**
  * The TablesListener type describes a function that is used to listen to
@@ -4254,59 +4260,82 @@ export interface Store {
    * together.
    *
    * The provided TransactionListener will receive a reference to the Store and
-   * a boolean to indicate whether Cell values have been touched during the
-   * transaction. The latter flag is intended as a hint about whether
+   * two booleans to indicate whether Cell or Value data has been touched during
+   * the transaction. The two flags are intended as a hint about whether
    * non-mutating listeners might be being called at the end of the transaction.
    *
-   * Here, 'touched' means that Cell values have either been changed, or changed
-   * and then changed back to its original value during the transaction. The
-   * exception is a transaction that has been rolled back, for which the value
-   * of `cellsTouched` in the listener will be `false` because all changes have
-   * been reverted.
+   * Here, 'touched' means that Cell or Value data has either been changed, or
+   * changed and then changed back to its original value during the transaction.
+   * The exception is a transaction that has been rolled back, for which the
+   * value of `cellsTouched` and `valuesTouched` in the listener will be `false`
+   * because all changes have been reverted.
    *
    * @returns A unique Id for the listener that can later be used to remove it.
    * @example
    * This example registers a listener that is called at the end of the
    * transaction, just before its listeners will be called. The transactions
    * shown here variously change, touch, and rollback cells, demonstrating how
-   * the `cellsTouched` parameter in the listener works.
+   * the `cellsTouched` and `valuesTouched` parameters in the listener work.
    *
    * ```js
-   * const store = createStore().setTables({
-   *   pets: {fido: {species: 'dog', color: 'brown'}},
-   * });
+   * const store = createStore()
+   *   .setTables({
+   *     pets: {fido: {species: 'dog', color: 'brown'}},
+   *   })
+   *   .setValues({open: true, employees: 3});
    * const listenerId = store.addWillFinishTransactionListener(
-   *   (store, cellsTouched) => console.log(`Cells touched: ${cellsTouched}`),
+   *   (store, cellsTouched, valuesTouched) => {
+   *     console.log(`Cells/Values touched: ${cellsTouched}/${valuesTouched}`);
+   *   },
    * );
    * const listenerId2 = store.addTablesListener(() =>
    *   console.log('Tables changed'),
    * );
+   * const listenerId3 = store.addValuesListener(() =>
+   *   console.log('Values changed'),
+   * );
    *
-   * store.transaction(() => store.setCell('pets', 'fido', 'color', 'brown'));
-   * // -> 'Cells touched: false'
+   * store.transaction(() =>
+   *   store.setCell('pets', 'fido', 'color', 'brown').setValue('employees', 3),
+   * );
+   * // -> 'Cells/Values touched: false/false'
    *
    * store.transaction(() => store.setCell('pets', 'fido', 'color', 'walnut'));
-   * // -> 'Cells touched: true'
+   * // -> 'Cells/Values touched: true/false'
    * // -> 'Tables changed'
    *
+   * store.transaction(() => store.setValue('employees', 4));
+   * // -> 'Cells/Values touched: false/true'
+   * // -> 'Values changed'
+   *
    * store.transaction(() => {
-   *   store.setRow('pets', 'felix', {species: 'cat'});
-   *   store.delRow('pets', 'felix');
+   *   store
+   *     .setRow('pets', 'felix', {species: 'cat'})
+   *     .delRow('pets', 'felix')
+   *     .setValue('city', 'London')
+   *     .delValue('city');
    * });
-   * // -> 'Cells touched: true'
+   * // -> 'Cells/Values touched: true/true'
+   * // But no Tables or Values listeners fired since there are no net changes.
    *
    * store.transaction(
-   *   () => store.setRow('pets', 'fido', {species: 'dog'}),
+   *   () =>
+   *     store
+   *       .setRow('pets', 'felix', {species: 'cat'})
+   *       .setValue('city', 'London'),
    *   () => true,
    * );
-   * // -> 'Cells touched: false'
+   * // -> 'Cells/Values touched: false/false'
    * // Transaction was rolled back.
    *
    * store.callListener(listenerId);
-   * // -> 'Cells touched: undefined'
+   * // -> 'Cells/Values touched: undefined/undefined'
    * // It is meaningless to call this listener directly.
    *
-   * store.delListener(listenerId).delListener(listenerId2);
+   * store
+   *   .delListener(listenerId)
+   *   .delListener(listenerId2)
+   *   .delListener(listenerId3);
    * ```
    * @category Listener
    * @since v1.3.0
@@ -4323,60 +4352,83 @@ export interface Store {
    * together.
    *
    * The provided TransactionListener will receive a reference to the Store and
-   * a boolean to indicate whether Cell values have been touched during the
-   * transaction. The latter flag is intended as a hint about whether
+   * two booleans to indicate whether Cell or Value data has been touched during
+   * the transaction. The two flags is intended as a hint about whether
    * non-mutating listeners might have been called at the end of the
    * transaction.
    *
-   * Here, 'touched' means that Cell values have either been changed, or changed
-   * and then changed back to its original value during the transaction. The
-   * exception is a transaction that has been rolled back, for which the value
-   * of `cellsTouched` in the listener will be `false` because all changes have
-   * been reverted.
+   * Here, 'touched' means that Cell or Value data has either been changed, or
+   * changed and then changed back to its original value during the transaction.
+   * The exception is a transaction that has been rolled back, for which the
+   * value of `cellsTouched` and `valuesTouched` in the listener will be `false`
+   * because all changes have been reverted.
    *
    * @returns A unique Id for the listener that can later be used to remove it.
    * @example
    * This example registers a listener that is called at the end of the
    * transaction, just after its listeners have been called. The transactions
    * shown here variously change, touch, and rollback cells, demonstrating how
-   * the `cellsTouched` parameter in the listener works.
+   * the `cellsTouched` and `valuesTouched` parameters in the listener work.
    *
    * ```js
-   * const store = createStore().setTables({
-   *   pets: {fido: {species: 'dog', color: 'brown'}},
-   * });
+   * const store = createStore()
+   *   .setTables({
+   *     pets: {fido: {species: 'dog', color: 'brown'}},
+   *   })
+   *   .setValues({open: true, employees: 3});
    * const listenerId = store.addDidFinishTransactionListener(
-   *   (store, cellsTouched) => console.log(`Cells touched: ${cellsTouched}`),
+   *   (store, cellsTouched, valuesTouched) => {
+   *     console.log(`Cells/Values touched: ${cellsTouched}/${valuesTouched}`);
+   *   },
    * );
    * const listenerId2 = store.addTablesListener(() =>
    *   console.log('Tables changed'),
    * );
+   * const listenerId3 = store.addValuesListener(() =>
+   *   console.log('Values changed'),
+   * );
    *
-   * store.transaction(() => store.setCell('pets', 'fido', 'color', 'brown'));
-   * // -> 'Cells touched: false'
+   * store.transaction(() =>
+   *   store.setCell('pets', 'fido', 'color', 'brown').setValue('employees', 3),
+   * );
+   * // -> 'Cells/Values touched: false/false'
    *
    * store.transaction(() => store.setCell('pets', 'fido', 'color', 'walnut'));
    * // -> 'Tables changed'
-   * // -> 'Cells touched: true'
+   * // -> 'Cells/Values touched: true/false'
+   *
+   * store.transaction(() => store.setValue('employees', 4));
+   * // -> 'Values changed'
+   * // -> 'Cells/Values touched: false/true'
    *
    * store.transaction(() => {
-   *   store.setRow('pets', 'felix', {species: 'cat'});
-   *   store.delRow('pets', 'felix');
+   *   store
+   *     .setRow('pets', 'felix', {species: 'cat'})
+   *     .delRow('pets', 'felix')
+   *     .setValue('city', 'London')
+   *     .delValue('city');
    * });
-   * // -> 'Cells touched: true'
+   * // -> 'Cells/Values touched: true/true'
+   * // But no Tables or Values listeners fired since there are no net changes.
    *
    * store.transaction(
-   *   () => store.setRow('pets', 'fido', {species: 'dog'}),
+   *   () =>
+   *     store
+   *       .setRow('pets', 'felix', {species: 'cat'})
+   *       .setValue('city', 'London'),
    *   () => true,
    * );
-   * // -> 'Cells touched: false'
+   * // -> 'Cells/Values touched: false/false'
    * // Transaction was rolled back.
    *
    * store.callListener(listenerId);
-   * // -> 'Cells touched: undefined'
+   * // -> 'Cells/Values touched: undefined/undefined'
    * // It is meaningless to call this listener directly.
    *
-   * store.delListener(listenerId).delListener(listenerId2);
+   * store
+   *   .delListener(listenerId)
+   *   .delListener(listenerId2)
+   *   .delListener(listenerId3);
    * ```
    * @category Listener
    * @since v1.3.0

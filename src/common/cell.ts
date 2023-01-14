@@ -1,4 +1,4 @@
-import {Cell, CellOrUndefined, Store} from '../store.d';
+import {Cell, CellOrUndefined, Store, ValueOrUndefined} from '../store.d';
 import {NUMBER, getTypeOf} from '../common/strings';
 import {
   isFiniteNumber,
@@ -25,3 +25,10 @@ export const setOrDelCell = (
   isUndefined(cell)
     ? store.delCell(tableId, rowId, cellId, true)
     : store.setCell(tableId, rowId, cellId, cell);
+
+export const setOrDelValue = (
+  store: Store,
+  valueId: Id,
+  value: ValueOrUndefined,
+) =>
+  isUndefined(value) ? store.delValue(valueId) : store.setValue(valueId, value);
