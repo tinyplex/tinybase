@@ -1517,6 +1517,46 @@ export interface Store {
   hasCell(tableId: Id, rowId: Id, cellId: Id): boolean;
 
   /**
+   * The hasTables method returns a boolean indicating whether any Values exist
+   * in the Store.
+   *
+   * @returns Whether any Values exist.
+   * @example
+   * This example shows simple existence checks.
+   *
+   * ```js
+   * const store = createStore();
+   * console.log(store.hasValues());
+   * // -> false
+   * store.setValues({open: true});
+   * console.log(store.hasValues());
+   * // -> true
+   * ```
+   * @category Getter
+   */
+  hasValues(): boolean;
+
+  /**
+   * The hasValue method returns a boolean indicating whether a given Value
+   * exists in the Store.
+   *
+   * @param valueId The Id of a possible Value in the Store.
+   * @returns Whether a Value with that Id exists in the Store.
+   * @example
+   * This example shows two simple Value existence checks.
+   *
+   * ```js
+   * const store = createStore().setValues({open: true});
+   * console.log(store.hasValue('open'));
+   * // -> true
+   * console.log(store.hasValue('employees'));
+   * // -> false
+   * ```
+   * @category Getter
+   */
+  hasValue(valueId: Id): boolean;
+
+  /**
    * The getTablesJson method returns a string serialization of all of the
    * Tables in the Store.
    *
