@@ -19,12 +19,12 @@ exports[`API Pretty 1`] = `
 export type T1Table = {[rowId: Id]: T1Row};
 
 /**
- * Represents a Row when getting the content of the 't1' Table.
+ * Represents a Row when getting the tabular content of the 't1' Table.
  */
 export type T1Row = {c1: number; c2?: string};
 
 /**
- * Represents a Row when setting the content of the 't1' Table.
+ * Represents a Row when setting the tabular content of the 't1' Table.
  */
 export type T1RowWhenSet = {c1?: number; c2?: string};
 
@@ -49,7 +49,7 @@ export type T1RowCallback = (
 ) => void;
 
 /**
- * Represents the content of the Store.
+ * Represents the tabular content of the Store.
  */
 export type Tables = {t1?: T1Table};
 
@@ -176,17 +176,17 @@ export interface S {
   hasTables(): boolean;
 
   /**
-   * Gets the content of the Store.
+   * Gets the tabular content of the Store.
    */
   getTables(): Tables;
 
   /**
-   * Sets the content of the Store.
+   * Sets the tabular content of the Store.
    */
   setTables(tables: Tables): S;
 
   /**
-   * Deletes the content of the Store.
+   * Deletes the tabular content of the Store.
    */
   delTables(): S;
 
@@ -206,17 +206,17 @@ export interface S {
   hasT1Table(): boolean;
 
   /**
-   * Gets the content of the 't1' Table.
+   * Gets the tabular content of the 't1' Table.
    */
   getT1Table(): T1Table;
 
   /**
-   * Sets the content of the 't1' Table.
+   * Sets the tabular content of the 't1' Table.
    */
   setT1Table(table: T1Table): S;
 
   /**
-   * Deletes the content of the 't1' Table.
+   * Deletes the tabular content of the 't1' Table.
    */
   delT1Table(): S;
 
@@ -246,12 +246,12 @@ export interface S {
   hasT1Row(rowId: Id): boolean;
 
   /**
-   * Gets the content of the specified Row in the 't1' Table.
+   * Gets the tabular content of the specified Row in the 't1' Table.
    */
   getT1Row(rowId: Id): T1Row;
 
   /**
-   * Sets the content of the specified Row in the 't1' Table.
+   * Sets the tabular content of the specified Row in the 't1' Table.
    */
   setT1Row(rowId: Id, row: T1RowWhenSet): S;
 
@@ -261,12 +261,12 @@ export interface S {
   addT1Row(row: T1RowWhenSet): Id | undefined;
 
   /**
-   * Sets part of the content of the specified Row in the 't1' Table.
+   * Sets part of the tabular content of the specified Row in the 't1' Table.
    */
   setT1PartialRow(rowId: Id, partialRow: T1RowWhenSet): S;
 
   /**
-   * Deletes the content of the specified Row in the 't1' Table.
+   * Deletes the tabular content of the specified Row in the 't1' Table.
    */
   delT1Row(rowId: Id): S;
 
@@ -321,14 +321,14 @@ export interface S {
   delT1C2Cell(rowId: Id): S;
 
   /**
-   * Gets a string serialization the content of the Store.
+   * Gets a string serialization of the tabular content of the Store.
    */
-  getJson(): Json;
+  getTablesJson(): Json;
 
   /**
-   * Sets the content of the Store from a serialized string.
+   * Sets the tabular content of the Store from a serialized string.
    */
-  setJson(json: Json): S;
+  setTablesJson(json: Json): S;
 
   /**
    * Execute a transaction to make multiple mutations.
@@ -357,8 +357,8 @@ export interface S {
   ): S;
 
   /**
-   * Registers a listener that will be called whenever the content of the Store
-   * changes.
+   * Registers a listener that will be called whenever the tabular content of
+   * the Store changes.
    */
   addTablesListener(listener: TablesListener, mutator?: boolean): Id;
 
@@ -605,9 +605,9 @@ export const createS: typeof createSDecl = () => {
 
     delT1C2Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C2)),
 
-    getJson: (): Json => store.getJson(),
+    getTablesJson: (): Json => store.getTablesJson(),
 
-    setJson: (json: Json): S => fluent(() => store.setJson(json)),
+    setTablesJson: (json: Json): S => fluent(() => store.setTablesJson(json)),
 
     transaction: <Return>(
       actions: () => Return,
@@ -704,10 +704,10 @@ exports[`API Unpretty 1`] = `
 /** Represents the 't1' Table. */
 export type T1Table = {[rowId: Id]: T1Row};
 
-/** Represents a Row when getting the content of the 't1' Table. */
+/** Represents a Row when getting the tabular content of the 't1' Table. */
 export type T1Row = {'c1': number; 'c2'?: string;};
 
-/** Represents a Row when setting the content of the 't1' Table. */
+/** Represents a Row when setting the tabular content of the 't1' Table. */
 export type T1RowWhenSet = {'c1'?: number; 'c2'?: string;};
 
 /** A Cell Id for the 't1' Table. */
@@ -719,7 +719,7 @@ export type T1CellCallback = (...[cellId, cell]: [cellId: 'c1', cell: number] | 
 /** A function that takes a Row Id from the 't1' Table, and a Cell iterator. */
 export type T1RowCallback = (rowId: Id, forEachCell: (cellCallback: T1CellCallback) => void) => void;
 
-/** Represents the content of the Store. */
+/** Represents the tabular content of the Store. */
 export type Tables = {'t1'?: T1Table;};
 
 /** A Table Id in the Store. */
@@ -768,13 +768,13 @@ export interface S {
 /** Gets whether any Table exists in the Store. */
 hasTables(): boolean;
 
-/** Gets the content of the Store. */
+/** Gets the tabular content of the Store. */
 getTables(): Tables;
 
-/** Sets the content of the Store. */
+/** Sets the tabular content of the Store. */
 setTables(tables: Tables): S;
 
-/** Deletes the content of the Store. */
+/** Deletes the tabular content of the Store. */
 delTables(): S;
 
 /** Gets the Ids of the Tables in the Store. */
@@ -786,13 +786,13 @@ forEachTable(tableCallback: TableCallback): void;
 /** Gets whether the 't1' Table exists in the Store. */
 hasT1Table(): boolean;
 
-/** Gets the content of the 't1' Table. */
+/** Gets the tabular content of the 't1' Table. */
 getT1Table(): T1Table;
 
-/** Sets the content of the 't1' Table. */
+/** Sets the tabular content of the 't1' Table. */
 setT1Table(table: T1Table): S;
 
-/** Deletes the content of the 't1' Table. */
+/** Deletes the tabular content of the 't1' Table. */
 delT1Table(): S;
 
 /** Gets the Ids of the Rows in the 't1' Table. */
@@ -807,19 +807,19 @@ forEachT1Row(rowCallback: T1RowCallback): void;
 /** Gets whether the specified Row exists in the 't1' Table. */
 hasT1Row(rowId: Id): boolean;
 
-/** Gets the content of the specified Row in the 't1' Table. */
+/** Gets the tabular content of the specified Row in the 't1' Table. */
 getT1Row(rowId: Id): T1Row;
 
-/** Sets the content of the specified Row in the 't1' Table. */
+/** Sets the tabular content of the specified Row in the 't1' Table. */
 setT1Row(rowId: Id, row: T1RowWhenSet): S;
 
 /** Adds a new Row to the 't1' Table. */
 addT1Row(row: T1RowWhenSet): Id | undefined;
 
-/** Sets part of the content of the specified Row in the 't1' Table. */
+/** Sets part of the tabular content of the specified Row in the 't1' Table. */
 setT1PartialRow(rowId: Id, partialRow: T1RowWhenSet): S;
 
-/** Deletes the content of the specified Row in the 't1' Table. */
+/** Deletes the tabular content of the specified Row in the 't1' Table. */
 delT1Row(rowId: Id): S;
 
 /** Gets the Ids of the Cells in the specified Row in the 't1' Table. */
@@ -852,11 +852,11 @@ setT1C2Cell(rowId: Id, cell: string | MapString): S;
 /** Deletes the 'c2' Cell for the specified Row in the 't1' Table. */
 delT1C2Cell(rowId: Id): S;
 
-/** Gets a string serialization the content of the Store. */
-getJson(): Json;
+/** Gets a string serialization of the tabular content of the Store. */
+getTablesJson(): Json;
 
-/** Sets the content of the Store from a serialized string. */
-setJson(json: Json): S;
+/** Sets the tabular content of the Store from a serialized string. */
+setTablesJson(json: Json): S;
 
 /** Execute a transaction to make multiple mutations. */
 transaction<Return>(actions: () => Return, doRollback?: (changedCells: ChangedCells, invalidCells: InvalidCells) => boolean): Return;
@@ -867,7 +867,7 @@ startTransaction(): S;
 /** Explicitly finishes a transaction. */
 finishTransaction(doRollback?: (changedCells: ChangedCells, invalidCells: InvalidCells) => boolean,): S;
 
-/** Registers a listener that will be called whenever the content of the Store changes. */
+/** Registers a listener that will be called whenever the tabular content of the Store changes. */
 addTablesListener(listener: TablesListener, mutator?: boolean): Id;
 
 /** Registers a listener that will be called whenever the Table Ids in the Store change. */
@@ -1001,9 +1001,9 @@ setT1C2Cell: (rowId: Id, cell: string | MapString): S => fluent(() => store.setC
 
 delT1C2Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C2)),
 
-getJson: (): Json => store.getJson(),
+getTablesJson: (): Json => store.getTablesJson(),
 
-setJson: (json: Json): S => fluent(() => store.setJson(json)),
+setTablesJson: (json: Json): S => fluent(() => store.setTablesJson(json)),
 
 transaction: <Return>(actions: () => Return, doRollback?: (changedCells: ChangedCells, invalidCells: InvalidCells) => boolean): Return => store.transaction(actions, doRollback),
 

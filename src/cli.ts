@@ -15,7 +15,7 @@ const log = (...lines: string[]) =>
 
 const err = (line: string) => process.stderr.write(`ERROR: ${line}\n`);
 
-const getJson = (file: string) => jsonParse(readFileSync(file, UTF8));
+const getTablesJson = (file: string) => jsonParse(readFileSync(file, UTF8));
 
 const help = () => {
   log('', 'tinybase <command>', '', 'Usage:', '');
@@ -26,8 +26,9 @@ const help = () => {
 
 const version = () =>
   log(
-    getJson(resolve(dirname(fileURLToPath(import.meta.url)), '../package.json'))
-      .version,
+    getTablesJson(
+      resolve(dirname(fileURLToPath(import.meta.url)), '../package.json'),
+    ).version,
   );
 
 const getStoreApi = async (
@@ -37,7 +38,7 @@ const getStoreApi = async (
 ) => {
   try {
     const tools = createTools(
-      createStore().setTablesSchema(getJson(schemaFile)),
+      createStore().setTablesSchema(getTablesJson(schemaFile)),
     );
     const [dTs, ts] = await tools.getPrettyStoreApi(storeName);
     const dTsFile = resolve(outputDir, `${storeName}.d.ts`);
