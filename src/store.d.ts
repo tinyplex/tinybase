@@ -196,6 +196,20 @@ export type RowCallback = (
 export type CellCallback = (cellId: Id, cell: Cell) => void;
 
 /**
+ * The ValueCallback type describes a function that takes a Value's Id and its
+ * actual value.
+ *
+ * A ValueCallback is provided when using the forEachValue method, so that you
+ * can do something based on every Value in a Store. See that method for
+ * specific examples.
+ *
+ * @param valueId The Id of the Value that the callback can operate on.
+ * @param value The Value itself.
+ * @category Callback
+ */
+export type ValueCallback = (valueId: Id, value: Value) => void;
+
+/**
  * The MapCell type describes a function that takes an existing Cell value and
  * returns another.
  *
@@ -2874,6 +2888,30 @@ export interface Store {
    * @category Iterator
    */
   forEachCell(tableId: Id, rowId: Id, cellCallback: CellCallback): void;
+
+  /**
+   * The forEachValue method takes a function that it will then call for each
+   * Value in a Store.
+   *
+   * This method is useful for iterating over the Value structure of the Store
+   * in a functional style. The `valueCallback` parameter is a ValueCallback
+   * function that will be called with the Id and value of each Value.
+   *
+   * @param valueCallback The function that should be called for every Value.
+   * @example
+   * This example iterates over each Value in a Store, and lists its value.
+   *
+   * ```js
+   * const store = createStore().setValues({open: true, employees: 3});
+   * store.forEachValue((valueId, value) => {
+   *   console.log(`${valueId}: ${value}`);
+   * });
+   * // -> 'open: true'
+   * // -> 'employees: 3'
+   * ```
+   * @category Iterator
+   */
+  forEachValue(valueCallback: ValueCallback): void;
 
   /**
    * The addTablesListener method registers a listener function with the Store
