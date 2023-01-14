@@ -79,7 +79,7 @@ example - and even potentially have Cell values which are constrained by other
 Cell values (though note that this needs to be done carefully to avoid expensive
 or impossible constraint solutions).
 
-One common circumstance for creating a Schema for a Store is when you are
+One common circumstance for creating a TablesSchema for a Store is when you are
 loading data from a source and you want to ensure the data is sculpted as your
 application require. But how do you save and load Store data? For that we
 proceed to the Persisting Data guide.

@@ -1,4 +1,4 @@
-import {Cell, Schema, Store} from './store.d';
+import {Cell, Store, TablesSchema} from './store.d';
 import {DEFAULT, TYPE} from './common/strings';
 import {IdMap, mapEnsure, mapNew, mapSet} from './common/map';
 import {StoreStats, Tools, createTools as createToolsDecl} from './tools.d';
@@ -63,10 +63,10 @@ export const createTools: typeof createToolsDecl = getCreateFunction(
       };
     };
 
-    const getStoreSchema = (): Schema => {
-      const schema: Schema = jsonParse(store.getSchemaJson());
+    const getStoreTablesSchema = (): TablesSchema => {
+      const tablesSchema: TablesSchema = jsonParse(store.getTablesSchemaJson());
       if (
-        !objIsEmpty(schema) ||
+        !objIsEmpty(tablesSchema) ||
         arrayEvery(store.getTableIds(), (tableId): any => {
           const rowIds = store.getRowIds(tableId);
           const cellsMeta: IdMap<CellMeta> = mapNew();
@@ -91,9 +91,9 @@ export const createTools: typeof createToolsDecl = getCreateFunction(
               }),
             )
           ) {
-            schema[tableId] = {};
+            tablesSchema[tableId] = {};
             collForEach(cellsMeta, ([type, , [, maxValue], count], cellId) => {
-              schema[tableId][cellId] = {
+              tablesSchema[tableId][cellId] = {
                 [TYPE]: type as any,
                 ...(count == arrayLength(rowIds) ? {[DEFAULT]: maxValue} : {}),
               };
@@ -102,13 +102,13 @@ export const createTools: typeof createToolsDecl = getCreateFunction(
           }
         })
       ) {
-        return schema;
+        return tablesSchema;
       }
       return {};
     };
 
     const getStoreApi = (module: string): [string, string] =>
-      getStoreApiImpl(getStoreSchema(), module);
+      getStoreApiImpl(getStoreTablesSchema(), module);
 
     const getPrettyStoreApi = async (
       module: string,
@@ -126,7 +126,7 @@ export const createTools: typeof createToolsDecl = getCreateFunction(
 
     const tools: Tools = {
       getStoreStats,
-      getStoreSchema,
+      getStoreTablesSchema,
       getStoreApi,
       getPrettyStoreApi,
     };

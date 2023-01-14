@@ -1811,8 +1811,8 @@ export function useDelRowCallback(
  * @param rowId The Id of the Row in the Table.
  * @param cellId The Id of the Cell in the Row.
  * @param forceDel An optional flag to indicate that the whole Row should be
- * deleted, even if a Schema provides a default value for this Cell. Defaults to
- * `false`.
+ * deleted, even if a TablesSchema provides a default value for this Cell.
+ * Defaults to `false`.
  * @param storeOrStoreId The Store to be updated: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.

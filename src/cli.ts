@@ -36,7 +36,9 @@ const getStoreApi = async (
   outputDir: string,
 ) => {
   try {
-    const tools = createTools(createStore().setSchema(getJson(schemaFile)));
+    const tools = createTools(
+      createStore().setTablesSchema(getJson(schemaFile)),
+    );
     const [dTs, ts] = await tools.getPrettyStoreApi(storeName);
     const dTsFile = resolve(outputDir, `${storeName}.d.ts`);
     const tsFile = resolve(outputDir, `${storeName}.ts`);

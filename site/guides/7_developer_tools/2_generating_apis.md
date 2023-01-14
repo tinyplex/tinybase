@@ -1,13 +1,13 @@
 # Generating APIs
 
-TinyBase can take a Schema (which has either been explicitly set, or inferred)
-and generate the code for type definitions and ORM-like implementations to wrap
-the Store.
+TinyBase can take a TablesSchema (which has either been explicitly set, or
+inferred) and generate the code for type definitions and ORM-like
+implementations to wrap the Store.
 
-This is most likely to be used as part of a build script which takes a Schema
-input (or imported data) to generate a TypeScript definition (`.d.ts`) file and
-a `.ts` implementation. These can then be linked into the development and
-compilation of an application as a whole.
+This is most likely to be used as part of a build script which takes a
+TablesSchema input (or imported data) to generate a TypeScript definition
+(`.d.ts`) file and a `.ts` implementation. These can then be linked into the
+development and compilation of an application as a whole.
 
 ## Using The getStoreApi Method
 
@@ -71,7 +71,7 @@ look something like this:
 //...
 export const createShop: typeof createShopDecl = () => {
   // ...
-  const store = createStore().setSchema({
+  const store = createStore().setTablesSchema({
     pets: {
       species: {type: 'string', default: 'dog'},
     },
@@ -92,12 +92,12 @@ application. Note that the implementation (`shop.ts`) imports types from the
 definition (`shop.d.ts`) and requires the two files to be next to each other in
 the file system.
 
-If the Store has neither an explicit Schema, nor can one be inferred, the two
-strings will be empty, since no type information can be usefully generated for
-the Store.
+If the Store has neither an explicit TablesSchema, nor can one be inferred, the
+two strings will be empty, since no type information can be usefully generated
+for the Store.
 
 If you do not wish to handle the programmatic steps described above, and simply
-want to take a Schema stored in a file and generate these definitions directly,
-see the Command Line guide in this section.
+want to take a TablesSchema stored in a file and generate these definitions
+directly, see the Command Line guide in this section.
 
 You can also read the brief Gathering Statistics guide.
