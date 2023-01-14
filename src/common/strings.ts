@@ -33,5 +33,8 @@ export const SORTED_ROW_IDS = 'SortedRowIds';
 export const ROW = 'Row';
 export const CELL_IDS = 'CellIds';
 export const CELL = 'Cell';
+export const VALUES = 'Values';
+export const VALUE_IDS = 'ValueIds';
+export const VALUE = 'Value';
 
 export const id = (key: unknown): Id => EMPTY_STRING + key;
