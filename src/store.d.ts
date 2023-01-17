@@ -1727,10 +1727,9 @@ export interface Store {
    * This example serializes the keyed value contents of a Store.
    *
    * ```js
-   * // TODO
-   * // const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
-   * // console.log(store.getValuesJson());
-   * // // -> '{"pets":{"fido":{"species":"dog"}}}'
+   * const store = createStore().setValues({open: true});
+   * console.log(store.getValuesJson());
+   * // -> '{"open":true}'
    * ```
    * @example
    * This example serializes the contents of an empty Store.
@@ -2286,7 +2285,7 @@ export interface Store {
    *
    * ```js
    * const store = createStore();
-   * store.setTablesJson('{"pets":{"fido":{"species":"dog"}}}');
+   * store.setTablesJson('{"pets": {"fido": {"species": "dog"}}}');
    * console.log(store.getTables());
    * // -> {pets: {fido: {species: 'dog'}}}
    * ```
@@ -2296,7 +2295,7 @@ export interface Store {
    *
    * ```js
    * const store = createStore();
-   * store.setTablesJson('{"pets":{"fido":{');
+   * store.setTablesJson('{"pets": {"fido": {');
    * console.log(store.getTables());
    * // -> {}
    * ```
@@ -2320,10 +2319,9 @@ export interface Store {
    *
    * ```js
    * const store = createStore();
-   * // TODO
-   * // store.setValuesJson('{"pets":{"fido":{"species":"dog"}}}');
-   * // console.log(store.getTables());
-   * // // -> {pets: {fido: {species: 'dog'}}}
+   * store.setValuesJson('{"open": true}');
+   * console.log(store.getValues());
+   * // -> {open: true}
    * ```
    * @example
    * This example attempts to set the keyed value contents of a Store from an
@@ -2331,10 +2329,9 @@ export interface Store {
    *
    * ```js
    * const store = createStore();
-   * store.setValuesJson('{"open":false');
-   * // TODO
-   * // console.log(store.getValues());
-   * // // -> {}
+   * store.setValuesJson('{"open": false');
+   * console.log(store.getValues());
+   * // -> {}
    * ```
    * @category Setter
    */
