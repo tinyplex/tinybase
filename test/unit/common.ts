@@ -55,6 +55,10 @@ export type StoreListener = Listener &
       rowId: IdOrNull,
       cellId: IdOrNull,
     ) => Id;
+    listenToValues: (id: Id) => Id;
+    listenToValueIds: (id: Id) => Id;
+    listenToValue: (id: Id, valueId: IdOrNull) => Id;
+    listenToInvalidValue: (id: Id, valueId: IdOrNull) => Id;
     listenToWillFinishTransaction: (id: Id) => Id;
     listenToDidFinishTransaction: (id: Id) => Id;
   }>;
@@ -229,6 +233,36 @@ export const createStoreListener = (store: Store): StoreListener => {
         cellId,
         (_, tableId, rowId, cellId, invalidCells) =>
           logs[id].push({[tableId]: {[rowId]: {[cellId]: invalidCells}}}),
+      );
+    },
+
+    listenToValues: (id) => {
+      logs[id] = [];
+      return store.addValuesListener((store) =>
+        logs[id].push(store.getValues()),
+      );
+    },
+
+    listenToValueIds: (id) => {
+      logs[id] = [];
+      return store.addValueIdsListener((store) =>
+        logs[id].push(store.getValueIds()),
+      );
+    },
+
+    listenToValue: (id, valueId) => {
+      logs[id] = [];
+      return store.addValueListener(valueId, (_, valueId, newValue) =>
+        logs[id].push({[valueId]: newValue}),
+      );
+    },
+
+    listenToInvalidValue: (id, cellId) => {
+      logs[id] = [];
+      return store.addInvalidValueListener(
+        cellId,
+        (_, valueId, invalidValues) =>
+          logs[id].push({[valueId]: invalidValues}),
       );
     },
 

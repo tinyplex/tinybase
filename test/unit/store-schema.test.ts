@@ -4,9 +4,11 @@ import {
   Store,
   Tables,
   TablesSchema,
+  Value,
   createStore,
 } from '../../lib/debug/tinybase';
 import {
+  StoreListener,
   createStoreListener,
   expectChanges,
   expectChangesNoJson,
@@ -15,7 +17,7 @@ import {
 
 type AddMutator = (store: Store) => void;
 
-const addAllowMutator = <C extends Cell>(
+const addAllowCellMutator = <C extends Cell>(
   store: Store,
   tableId: Id,
   cellId: Id,
@@ -27,6 +29,21 @@ const addAllowMutator = <C extends Cell>(
     (store, tableId, rowId) => {
       if (!cells.includes(store.getCell(tableId, rowId, cellId) as C)) {
         store.delCell(tableId, rowId, cellId);
+      }
+    },
+    true,
+  );
+
+const addAllowValueMutator = <V extends Value>(
+  store: Store,
+  valueId: Id,
+  values: V[],
+): Id =>
+  store.addValueListener(
+    valueId,
+    (store) => {
+      if (!values.includes(store.getValue(valueId) as V)) {
+        store.delValue(valueId);
       }
     },
     true,
@@ -119,11 +136,17 @@ const boundsSchemaAndExpected: [
 ];
 
 describe('Get and set tablesSchemas', () => {
-  test('Set tablesSchema on creation', () => {
-    const store = createStore();
-    const listener = createStoreListener(store);
+  let store: Store;
+  let listener: StoreListener;
+
+  beforeEach(() => {
+    store = createStore();
+    listener = createStoreListener(store);
     listener.listenToInvalidCell('invalids', null, null, null);
-    addAllowMutator(store, 't1', 'c1', [2, 3]);
+  });
+
+  test('Set tablesSchema on creation', () => {
+    addAllowCellMutator(store, 't1', 'c1', [2, 3]);
     store.setTablesSchema({t1: {c1: {type: 'number', default: 1}}});
     expect(JSON.parse(store.getTablesSchemaJson())).toEqual({
       t1: {c1: {type: 'number', default: 1}},
@@ -137,9 +160,6 @@ describe('Get and set tablesSchemas', () => {
   });
 
   test('Set tablesSchema after creation', () => {
-    const store = createStore().setTables({});
-    const listener = createStoreListener(store);
-    listener.listenToInvalidCell('invalids', null, null, null);
     store.setCell('t1', 'r1', 'c1', '1');
     expect(store.getTables()).toEqual({t1: {r1: {c1: '1'}}});
     store.setTablesSchema({
@@ -169,9 +189,6 @@ describe('Get and set tablesSchemas', () => {
   });
 
   test('Set tablesSchema after creation (complete failure)', () => {
-    const store = createStore().setTables({});
-    const listener = createStoreListener(store);
-    listener.listenToInvalidCell('invalids', null, null, null);
     store.setCell('t1', 'r1', 'c1', '1');
     store.setTablesSchema({t2: {c1: {type: 'number', default: 1}}});
     expect(store.getTables()).toEqual({});
@@ -182,10 +199,7 @@ describe('Get and set tablesSchemas', () => {
   });
 
   test('Change tablesSchema after creation', () => {
-    const store = createStore();
-    const listener = createStoreListener(store);
-    listener.listenToInvalidCell('invalids', null, null, null);
-    let listenerId = addAllowMutator(store, 't1', 'c1', [2, 3]);
+    let listenerId = addAllowCellMutator(store, 't1', 'c1', [2, 3]);
     store.setTablesSchema({t1: {c1: {type: 'number', default: 1}}});
     store.setCell('t1', 'r1', 'c1', '1');
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
@@ -202,7 +216,7 @@ describe('Get and set tablesSchemas', () => {
     store.setCell('t1', 'r1', 'c1', '2');
     store.setCell('t1', 'r2', 'c1', '3');
     expect(store.getTables()).toEqual({t1: {r1: {c1: '2'}, r2: {c1: '3'}}});
-    listenerId = addAllowMutator(store, 't1', 'c1', ['3', '4']);
+    listenerId = addAllowCellMutator(store, 't1', 'c1', ['3', '4']);
     store.callListener(listenerId);
     expect(store.getTables()).toEqual({t1: {r1: {c1: '1'}, r2: {c1: '3'}}});
     expectChanges(
@@ -216,10 +230,7 @@ describe('Get and set tablesSchemas', () => {
   });
 
   test('Remove tablesSchema after creation', () => {
-    const store = createStore();
-    const listener = createStoreListener(store);
-    listener.listenToInvalidCell('invalids', null, null, null);
-    const listenerId = addAllowMutator(store, 't1', 'c1', [2, 3]);
+    const listenerId = addAllowCellMutator(store, 't1', 'c1', [2, 3]);
     store.setTablesSchema({t1: {c1: {type: 'number', default: 1}}});
     store.setCell('t1', 'r1', 'c1', '1');
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
@@ -234,29 +245,84 @@ describe('Get and set tablesSchemas', () => {
 });
 
 describe('Get and set valuesSchemas', () => {
+  let store: Store;
+  let listener: StoreListener;
+
+  beforeEach(() => {
+    store = createStore();
+    listener = createStoreListener(store);
+    listener.listenToInvalidValue('invalids', null);
+  });
+
   test('Set valuesSchemas on creation', () => {
-    const store = createStore();
-    // TODO
-    // const listener = createStoreListener(store);
-    // listener.listenToInvalidCell('invalids', null, null, null);
-    // addAllowMutator(store, 't1', 'c1', [2, 3]);
+    addAllowValueMutator(store, 'v1', [2, 3]);
+    store.setValuesSchema({v1: {type: 'number', default: 1}});
+    expect(JSON.parse(store.getValuesSchemaJson())).toEqual({
+      v1: {type: 'number', default: 1},
+    });
+    store.setValue('v1', '2');
+    expect(store.getValues()).toEqual({v1: 1});
+    store.setValue('v1', 2);
+    expect(store.getValues()).toEqual({v1: 2});
+    expectChanges(listener, 'invalids', {v1: ['2']});
+    expectNoChanges(listener);
+  });
+
+  test('Set valuesSchema after creation', () => {
+    store.setValue('v1', '1');
+    expect(store.getValues()).toEqual({v1: '1'});
     store.setValuesSchema({
       v1: {type: 'number', default: 1},
-      v2: {type: 'string'},
+      v2: {type: 'string', default: '2'},
     });
     expect(JSON.parse(store.getValuesSchemaJson())).toEqual({
       v1: {type: 'number', default: 1},
-      v2: {type: 'string'},
+      v2: {type: 'string', default: '2'},
     });
-    // store.setCell('t1', 'r1', 'c1', '2');
-    // expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
-    // store.setCell('t1', 'r1', 'c1', 2);
-    // expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
-    // expectChanges(listener, 'invalids', {t1: {r1: {c1: ['2']}}});
-    // expectNoChanges(listener);
+    expect(store.getValues()).toEqual({v1: 1, v2: '2'});
+    store.setValue('v1', '2');
+    expect(store.getValues()).toEqual({v1: 1, v2: '2'});
+    store.setValue('v1', 2);
+    expect(store.getValues()).toEqual({v1: 2, v2: '2'});
+    expectChanges(listener, 'invalids', {v1: ['1']}, {v1: ['2']});
+    expectNoChanges(listener);
   });
 
-  // TODO other cases to match tablesSchema
+  test('Change valuesSchema after creation', () => {
+    let listenerId = addAllowCellMutator(store, 't1', 'v1', [2, 3]);
+    store.setValuesSchema({v1: {type: 'number', default: 1}});
+    store.setValue('v1', '1');
+    expect(store.getValues()).toEqual({v1: 1});
+    store.setValuesSchema({v1: {type: 'string', default: '1'}});
+    store.delListener(listenerId as any);
+    expect(JSON.parse(store.getValuesSchemaJson())).toEqual({
+      v1: {type: 'string', default: '1'},
+    });
+    expect(store.getValues()).toEqual({v1: '1'});
+    store.setValue('v1', 2);
+    expect(store.getValues()).toEqual({v1: '1'});
+    store.setValue('v1', '2');
+    expect(store.getValues()).toEqual({v1: '2'});
+    listenerId = addAllowValueMutator(store, 'v1', ['3', '4']);
+    store.callListener(listenerId);
+    expect(store.getValues()).toEqual({v1: '1'});
+    expectChanges(listener, 'invalids', {v1: ['1']}, {v1: [1]}, {v1: [2]});
+    expectNoChanges(listener);
+  });
+
+  test('Remove valuesSchema after creation', () => {
+    const listenerId = addAllowValueMutator(store, 'v1', [2, 3]);
+    store.setValuesSchema({v1: {type: 'number', default: 1}});
+    store.setValue('v1', '1');
+    expect(store.getValues()).toEqual({v1: 1});
+    store.delValuesSchema();
+    store.delListener(listenerId as any);
+    expect(JSON.parse(store.getValuesSchemaJson())).toEqual({});
+    store.setValue('v1', '1');
+    expect(store.getValues()).toEqual({v1: '1'});
+    expectChanges(listener, 'invalids', {v1: ['1']});
+    expectNoChanges(listener);
+  });
 });
 
 describe('Schema applied before data set', () => {
@@ -290,7 +356,7 @@ describe('Schema applied before data set', () => {
 
   test('non-matching some cell allows', () => {
     const store = createStore();
-    addAllowMutator(store, 't1', 'c1', [1, 2, 3]);
+    addAllowCellMutator(store, 't1', 'c1', [1, 2, 3]);
     store.setTables({
       t1: {r1: {c1: 2}, r2: {c1: 4}, r3: {c1: true}, r4: {c1: 'a'}},
     });
@@ -336,7 +402,7 @@ describe('Schema applied before data set', () => {
 
   test('non-matching some cell types, default and allows', () => {
     const store = createStore();
-    addAllowMutator(store, 't1', 'c1', [1, 3]);
+    addAllowCellMutator(store, 't1', 'c1', [1, 3]);
     store.setTablesSchema({t1: {c1: {type: 'number', default: 2}}});
     store.setTables({
       t1: {
@@ -440,7 +506,7 @@ describe('Schema applied before data set, listening', () => {
 
     test('non-matching some cell allows', () => {
       const store = createStore();
-      addAllowMutator(store, 't1', 'c1', [1, 2, 3]);
+      addAllowCellMutator(store, 't1', 'c1', [1, 2, 3]);
       store.setTablesSchema({t1: {c1: {type: 'number'}}});
       const listener = createStoreListener(store);
       listener.listenToTables('/');
@@ -544,7 +610,7 @@ describe('Schema applied before data set, listening', () => {
 
     test('non-matching some cell types, default and allows', () => {
       const store = createStore();
-      addAllowMutator(store, 't1', 'c1', [1, 3]);
+      addAllowCellMutator(store, 't1', 'c1', [1, 3]);
       store.setTablesSchema({t1: {c1: {type: 'number', default: 2}}});
       const listener = createStoreListener(store);
       listener.listenToTables('/');
@@ -712,7 +778,7 @@ describe('Schema applied before data set, listening', () => {
 
     test('non-matching some cell allows', () => {
       const store = createStore();
-      addAllowMutator(store, 't1', 'c1', [1, 2, 3]);
+      addAllowCellMutator(store, 't1', 'c1', [1, 2, 3]);
       store.setTablesSchema({t1: {c1: {type: 'number'}}});
       const listener = createStoreListener(store);
       listener.listenToTable('/t1', 't1');
@@ -820,7 +886,7 @@ describe('Schema applied before data set, listening', () => {
 
     test('non-matching some cell types, default and allows', () => {
       const store = createStore();
-      addAllowMutator(store, 't1', 'c1', [1, 3]);
+      addAllowCellMutator(store, 't1', 'c1', [1, 3]);
       store.setTablesSchema({t1: {c1: {type: 'number', default: 2}}});
       const listener = createStoreListener(store);
       listener.listenToTable('/t1', 't1');
@@ -990,7 +1056,7 @@ describe('Schema applied before data set, listening', () => {
 
     test('non-matching some cell allows', () => {
       const store = createStore();
-      addAllowMutator(store, 't1', 'c1', [1, 2, 3]);
+      addAllowCellMutator(store, 't1', 'c1', [1, 2, 3]);
       store.setTablesSchema({t1: {c1: {type: 'number'}}});
       const listener = createStoreListener(store);
       listener.listenToRow('/t1/r1', 't1', 'r1');
@@ -1110,7 +1176,7 @@ describe('Schema applied before data set, listening', () => {
 
     test('non-matching some cell types, default and allows', () => {
       const store = createStore();
-      addAllowMutator(store, 't1', 'c1', [1, 3]);
+      addAllowCellMutator(store, 't1', 'c1', [1, 3]);
       store.setTablesSchema({t1: {c1: {type: 'number', default: 2}}});
       const listener = createStoreListener(store);
       listener.listenToRow('/t1/r1', 't1', 'r1');
@@ -1288,7 +1354,7 @@ describe('Schema applied before data set, listening', () => {
 
     test('non-matching some cell allows', () => {
       const store = createStore();
-      addAllowMutator(store, 't1', 'c1', [1, 2, 3]);
+      addAllowCellMutator(store, 't1', 'c1', [1, 2, 3]);
       store.setTablesSchema({t1: {c1: {type: 'number'}}});
       const listener = createStoreListener(store);
       listener.listenToRow('/t1/r1', 't1', 'r1');
@@ -1404,7 +1470,7 @@ describe('Schema applied before data set, listening', () => {
 
     test('non-matching some cell types, default and allows', () => {
       const store = createStore();
-      addAllowMutator(store, 't1', 'c1', [1, 3]);
+      addAllowCellMutator(store, 't1', 'c1', [1, 3]);
       store.setTablesSchema({t1: {c1: {type: 'number', default: 2}}});
       const listener = createStoreListener(store);
       listener.listenToRow('/t1/r1', 't1', 'r1');
@@ -1634,7 +1700,7 @@ describe('Schema applied before data set, listening', () => {
         const store = createStore().setTablesSchema({
           t1: {c1: {type: 'number'}},
         });
-        addAllowMutator(store, 't1', 'c1', [1, 2, 3]);
+        addAllowCellMutator(store, 't1', 'c1', [1, 2, 3]);
         const listener = createStoreListener(store);
         listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
         listener.listenToCell('/t1/r2/c1', 't1', 'r2', 'c1');
@@ -1663,7 +1729,7 @@ describe('Schema applied before data set, listening', () => {
         const store = createStore().setTablesSchema({
           t1: {c1: {type: 'boolean'}},
         });
-        addAllowMutator<boolean>(store, 't1', 'c1', [true]);
+        addAllowCellMutator<boolean>(store, 't1', 'c1', [true]);
         const listener = createStoreListener(store);
         listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
         listener.listenToCell('/t1/r2/c1', 't1', 'r2', 'c1');
@@ -1692,7 +1758,7 @@ describe('Schema applied before data set, listening', () => {
         const store = createStore().setTablesSchema({
           t1: {c1: {type: 'string'}},
         });
-        addAllowMutator(store, 't1', 'c1', ['true', '1']);
+        addAllowCellMutator(store, 't1', 'c1', ['true', '1']);
         const listener = createStoreListener(store);
         listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
         listener.listenToCell('/t1/r2/c1', 't1', 'r2', 'c1');
@@ -1831,7 +1897,7 @@ describe('Schema applied before data set, listening', () => {
         const store = createStore().setTablesSchema({
           t1: {c1: {type: 'number', default: 2}},
         });
-        addAllowMutator(store, 't1', 'c1', [1, 3]);
+        addAllowCellMutator(store, 't1', 'c1', [1, 3]);
         const listener = createStoreListener(store);
         listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
         listener.listenToCell('/t1/r2/c1', 't1', 'r2', 'c1');
@@ -1877,7 +1943,7 @@ describe('Schema applied before data set, listening', () => {
             },
           },
         });
-        addAllowMutator<boolean>(store, 't1', 'c1', [false]);
+        addAllowCellMutator<boolean>(store, 't1', 'c1', [false]);
         const listener = createStoreListener(store);
         listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
         listener.listenToCell('/t1/r2/c1', 't1', 'r2', 'c1');
@@ -1928,7 +1994,7 @@ describe('Schema applied before data set, listening', () => {
             },
           },
         });
-        addAllowMutator(store, 't1', 'c1', ['true', '1']);
+        addAllowCellMutator(store, 't1', 'c1', ['true', '1']);
         const listener = createStoreListener(store);
         listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
         listener.listenToCell('/t1/r2/c1', 't1', 'r2', 'c1');
