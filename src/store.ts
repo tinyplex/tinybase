@@ -1062,12 +1062,11 @@ export const createStore: typeof createStoreDecl = (): Store => {
     return store;
   };
 
-  const setValuesJson = (_valuesJson: Json): Store => {
+  const setValuesJson = (valuesJson: Json): Store => {
     try {
-      // TODO
-      // valuesJson === EMPTY_OBJECT
-      //   ? delValues()
-      //   : setValues(jsonParse(valuesJson));
+      valuesJson === EMPTY_OBJECT
+        ? delValues()
+        : setValues(jsonParse(valuesJson));
     } catch {}
     return store;
   };
