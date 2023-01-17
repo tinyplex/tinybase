@@ -1376,7 +1376,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
           cellIds: pairCollSize2(cellIdsListeners, collSize3),
           cell: pairCollSize2(cellListeners, collSize4),
           invalidCell: pairCollSize2(invalidCellListeners, collSize4),
-          // TODO invalidCell: pairCollSize2(invalidCellListeners),
+          values: pairCollSize2(valuesListeners),
+          valueIds: pairCollSize2(valueIdsListeners),
+          value: pairCollSize2(valueListeners),
+          invalidValue: pairCollSize2(invalidValueListeners),
           transaction: pairCollSize2(finishTransactionListeners),
         }
       : {};
@@ -1464,7 +1467,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       [VALUES]: [0, valuesListeners],
       [VALUE_IDS]: [0, valueIdsListeners],
       [VALUE]: [1, valueListeners],
-      // TODO InvalidValue: [3, invalidCellListeners],
+      InvalidValue: [1, invalidValueListeners],
     },
     ([argumentCount, idSetNode]: [number, Pair<IdSetNode>], listenable) => {
       store[ADD + listenable + LISTENER] = (...args: any[]): Id =>

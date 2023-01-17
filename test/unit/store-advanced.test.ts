@@ -888,6 +888,10 @@ describe('Stats', () => {
       cellIds: 0,
       cell: 0,
       invalidCell: 0,
+      values: 0,
+      valueIds: 0,
+      value: 0,
+      invalidValue: 0,
       transaction: 0,
     };
   });
@@ -907,6 +911,10 @@ describe('Stats', () => {
       ['cellIds', ['t1', 'r1']],
       ['cell', ['t1', 'r1', 'c1']],
       ['invalidCell', ['t1', 'r1', 'c1']],
+      ['values', []],
+      ['valueIds', []],
+      ['value', ['v1']],
+      ['invalidValue', ['v1']],
     ])('%s', (thing, args) => {
       const addListener =
         'add' + thing[0].toUpperCase() + thing.substr(1) + 'Listener';
@@ -919,6 +927,7 @@ describe('Stats', () => {
       expectedListenerStats[thing] = 0;
       expect(store.getListenerStats()).toEqual(expectedListenerStats);
     });
+
     test.each([['willFinishTransaction'], ['didFinishTransaction']])(
       '%s',
       (thing) => {
