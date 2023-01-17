@@ -543,7 +543,7 @@ export type ValuesListener = (
  * @param store A reference to the Store that changed.
  * @category Listener
  */
-export type ValueIdsListener = () => void;
+export type ValueIdsListener = (store: Store) => void;
 
 /**
  * The ValueListener type describes a function that is used to listen to changes
@@ -1543,7 +1543,7 @@ export interface Store {
    * ```
    * @category Getter
    */
-  getValueIds(tableId: Id, rowId: Id): Ids;
+  getValueIds(): Ids;
 
   /**
    * The getValue method returns a single keyed Value in the Store.
@@ -3993,12 +3993,7 @@ export interface Store {
    * ```
    * @category Listener
    */
-  addValuesListener(
-    tableId: IdOrNull,
-    rowId: IdOrNull,
-    listener: ValuesListener,
-    mutator?: boolean,
-  ): Id;
+  addValuesListener(listener: ValuesListener, mutator?: boolean): Id;
 
   /**
    * The addValueIdsListener method registers a listener function with the Store
@@ -4150,9 +4145,7 @@ export interface Store {
    * @category Listener
    */
   addValueListener(
-    tableId: IdOrNull,
-    rowId: IdOrNull,
-    cellId: IdOrNull,
+    valueId: IdOrNull,
     listener: CellListener,
     mutator?: boolean,
   ): Id;
