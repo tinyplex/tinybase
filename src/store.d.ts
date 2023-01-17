@@ -586,7 +586,7 @@ export type ValueListener = (
  * method. See that method for specific examples.
  *
  * When called, a InvalidCellListener is given a reference to the Store, the Id
- * of the Table, the Id of the Row, and the Id of Cell that were being attempted
+ * of the Table, the Id of the Row, and the Id of Cell that was being attempted
  * to be changed. It is also given the invalid value of the Cell, which could
  * have been of absolutely any type. Since there could have been multiple failed
  * attempts to set the Cell within a single transaction, this is an array
@@ -606,6 +606,32 @@ export type InvalidCellListener = (
   rowId: Id,
   cellId: Id,
   invalidCells: any[],
+) => void;
+
+/**
+ * The InvalidValueListener type describes a function that is used to listen to
+ * attempts to set invalid data to a Value.
+ *
+ * A InvalidValueListener is provided when using the addInvalidValueListener
+ * method. See that method for specific examples.
+ *
+ * When called, a InvalidValueListener is given a reference to the Store and the
+ * Id of Value that was being attempted to be changed. It is also given the
+ * invalid value of the Value, which could have been of absolutely any type.
+ * Since there could have been multiple failed attempts to set the Value within
+ * a single transaction, this is an array containing each attempt,
+ * chronologically.
+ *
+ * @param store A reference to the Store that was being changed.
+ * @param valueId The Id of the Value that was being changed.
+ * @param invalidValues An array of the Values that were invalid.
+ * @category Listener
+ * @since v3.0.0
+ */
+export type InvalidValueListener = (
+  store: Store,
+  valueId: Id,
+  invalidValues: any[],
 ) => void;
 
 /**
@@ -940,6 +966,7 @@ export type StoreListenerStats = {
    */
   transaction?: number;
 };
+// ^ TODO
 
 /**
  * A Store is the main location for keeping both tabular data and keyed values.
@@ -4125,7 +4152,7 @@ export interface Store {
    *
    * The provided listener is an InvalidCellListener function, and will be
    * called with a reference to the Store, the Id of the Table, the Id of the
-   * Row, and the Id of Cell that were being attempted to be changed. It is also
+   * Row, and the Id of Cell that was being attempted to be changed. It is also
    * given the invalid value of the Cell, which could have been of absolutely
    * any type. Since there could have been multiple failed attempts to set the
    * Cell within a single transaction, this is an array containing each attempt,
@@ -4157,7 +4184,7 @@ export interface Store {
    * - if an empty Row is provided and there are no Cell defaults in the
    *   TablesSchema
    *
-   * The listener will not be called if Cell that is defaulted in the
+   * The listener will not be called if a Cell that is defaulted in the
    * TablesSchema is not provided, as long as all of the Cells that are _not_
    * defaulted _are_ provided.
    *
@@ -4200,7 +4227,7 @@ export interface Store {
    * @example
    * This example registers a listener that responds to any invalid changes to
    * any Cell - in a Store _without_ a TablesSchema. Note also how it then
-   * responds to cases where an empty or invalid Row objects, or Table objects,
+   * responds to cases where empty or invalid Row objects, or Table objects,
    * or Tables objects are provided.
    *
    * ```js
@@ -4346,6 +4373,185 @@ export interface Store {
     rowId: IdOrNull,
     cellId: IdOrNull,
     listener: InvalidCellListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * The addInvalidValueListener method registers a listener function with the
+   * Store that will be called whenever invalid data was attempted to be written
+   * to a Value.
+   *
+   * The provided listener is an InvalidValueListener function, and will be
+   * called with a reference to the Store and the Id of Value that was being
+   * attempted to be changed. It is also given the invalid value of the Value,
+   * which could have been of absolutely any type. Since there could have been
+   * multiple failed attempts to set the Value within a single transaction, this
+   * is an array containing each attempt, chronologically.
+   *
+   * You can either listen to a single Value (by specifying the Value Id as the
+   * method's first parameter) or invalid attempts to change any Value (by
+   * providing a `null` wildcard).
+   *
+   * Use the optional mutator parameter to indicate that there is code in the
+   * listener that will mutate Store data. If set to `false` (or omitted), such
+   * mutations will be silently ignored. All relevant mutator listeners (with
+   * this flag set to `true`) are called _before_ any non-mutator listeners
+   * (since the latter may become relevant due to changes made in the former).
+   * The changes made by mutator listeners do not fire other mutating listeners,
+   * though they will fire non-mutator listeners.
+   *
+   * Special note should be made for how the listener will be called when a
+   * ValuesSchema is present. The listener will be called:
+   *
+   * - if a Value is being updated that is not specified in the ValuesSchema
+   * - if a Value is of the wrong type specified in the ValuesSchema
+   * - if a Value is omitted when using setValues that is not defaulted in the
+   *   ValuesSchema
+   *
+   * The listener will not be called if a Value that is defaulted in the
+   * ValuesSchema is not provided, as long as all of the Values that are _not_
+   * defaulted _are_ provided.
+   *
+   * To help understand all of these schema-based conditions, please see the
+   * ValuesSchema example below.
+   *
+   * @param valueId The Id of the Value to listen to, or `null` as a wildcard.
+   * @param listener The function that will be called whenever an attempt to
+   * write invalid data to the matching Value was made.
+   * @param mutator An optional boolean that indicates that the listener mutates
+   * Store data.
+   * @returns A unique Id for the listener that can later be used to call it
+   * explicitly, or to remove it.
+   * @example
+   * This example registers a listener that responds to any invalid changes to a
+   * specific Value.
+   *
+   * ```js
+   * const store = createStore().setValues({open: true});
+   * const listenerId = store.addInvalidValueListener(
+   *   'open',
+   *   (store, valueId, invalidValues) => {
+   *     console.log('Invalid open value');
+   *     console.log(invalidValues);
+   *   },
+   * );
+   *
+   * store.setValue('open', {yes: true});
+   * // -> 'Invalid open value'
+   * // -> [{yes: true}]
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @example
+   * This example registers a listener that responds to any invalid changes to
+   * any Value - in a Store _without_ a ValuesSchema. Note also how it then
+   * responds to cases where an empty Values object is provided.
+   *
+   * ```js
+   * const store = createStore().setValues({open: true});
+   * const listenerId = store.addInvalidValueListener(
+   *   null,
+   *   (store, valueId) => {
+   *     console.log(`Invalid ${valueId} value`);
+   *   },
+   * );
+   *
+   * store.setValue('open', {yes: true});
+   * // -> 'Invalid open value'
+   * store.setValue('employees', ['alice', 'bob']);
+   * // -> 'Invalid employees value'
+   *
+   * store.setValues('pets', 'felix', {});
+   * // -> 'Invalid undefined value'
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @example
+   * This example registers a listener that responds to any invalid changes to
+   * any Value - in a Store _with_ a ValuesSchema. Note how it responds to cases
+   * where missing parameters are provided for optional, and defaulted Values.
+   *
+   * ```js
+   * const store = createStore().setValuesSchema({
+   *   open: {type: 'boolean', default: false},
+   *   employees: {type: 'number'},
+   * });
+   *
+   * console.log(store.getValues());
+   * // -> {open: false}
+   *
+   * const listenerId = store.addInvalidValueListener(
+   *   null,
+   *   (store, valueId) => {
+   *     console.log(`Invalid ${valueId} value`);
+   *   },
+   * );
+   *
+   * store.setValue('website', true);
+   * // -> 'Invalid website value'
+   * // The listener is called, because the website Value is not in the schema
+   *
+   * store.setValue('open', 'yes');
+   * // -> 'Invalid open value'
+   * // The listener is called, because 'open' is invalid...
+   * console.log(store.getValues());
+   * // -> {open: false}
+   * // ...even though it is still present with the default value
+   *
+   * store.setValues({open: true});
+   * // -> 'Invalid employees value'
+   * // The listener is called because employees is missing and not defaulted...
+   * console.log(store.getValues());
+   * // -> {open: true}
+   * // ...even though the Values were set
+   *
+   * store.setValues({employees: 3});
+   * console.log(store.getValues());
+   * // -> {open: false, employees: 3}
+   * // The listener is not called, because 'open' is defaulted
+   *
+   * store.setValuesSchema({
+   *   open: {type: 'boolean'},
+   *   employees: {type: 'number'},
+   * });
+   *
+   * store.setValues({});
+   * // -> 'Invalid open value'
+   * // -> 'Invalid employees value'
+   * // -> 'Invalid undefined value'
+   * // The listener is called multiple times, because neither Value is
+   * // defaulted and the Values as a whole were empty
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @example
+   * This example registers a listener that responds to any changes to a
+   * specific Value, and which also mutates the Store itself.
+   *
+   * ```js
+   * const store = createStore().setValues({open: true});
+   * const listenerId = store.addInvalidValueListener(
+   *   'open',
+   *   (store, valueId, invalidValues) =>
+   *     store.setValue(
+   *       'invalid_updates',
+   *       JSON.stringify(invalidValues[0]),
+   *     ),
+   *   true,
+   * );
+   *
+   * store.setValue('open', {yes: true});
+   * console.log(store.getValue('invalid_updates'));
+   * // -> '{"yes":true}'
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @category Listener
+   * @since v3.0.0
+   */
+  addInvalidValueListener(
+    valueId: IdOrNull,
+    listener: InvalidValueListener,
     mutator?: boolean,
   ): Id;
 
