@@ -196,6 +196,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const cellIdsListeners: Pair<IdSet3> = pairNewMap();
   const cellListeners: Pair<IdSet4> = pairNewMap();
   const invalidCellListeners: Pair<IdSet4> = pairNewMap();
+  const invalidValueListeners: Pair<IdSet2> = pairNewMap();
   const valuesListeners: Pair<IdSet2> = pairNewMap();
   const valueIdsListeners: Pair<IdSet2> = pairNewMap();
   const valueListeners: Pair<IdSet2> = pairNewMap();
@@ -338,7 +339,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       });
       collForEach(valuesNonDefaulted, (valueId) => {
         if (!objHas(values, valueId)) {
-          cellInvalid(valueId);
+          valueInvalid(valueId);
         }
       });
     }
@@ -679,6 +680,19 @@ export const createStore: typeof createStoreDecl = (): Store => {
                   invalidCell,
                 ),
               ),
+            ),
+        )
+      : 0;
+
+  const callInvalidValueListeners = (mutator: 0 | 1) =>
+    !collIsEmpty(invalidValues) && !collIsEmpty(invalidValueListeners[mutator])
+      ? collForEach(
+          mutator ? mapClone(invalidValues) : invalidValues,
+          (invalidValue, valueId) =>
+            callListeners(
+              invalidValueListeners[mutator],
+              [valueId],
+              invalidValue,
             ),
         )
       : 0;
@@ -1073,13 +1087,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const setValuesSchema = (valuesSchema: ValuesSchema): Store =>
     fluentTransaction(() => {
       if ((hasValuesSchema = validateValuesSchema(valuesSchema))) {
+        const values = getValues();
+        delValuesSchema();
+        delValues();
+        hasValuesSchema = true;
         setValidValuesSchema(valuesSchema);
-        // TODO
-        // if (!collIsEmpty(valuesMap)) {
-        //   const values = getValues();
-        //   delValues();
-        //   setValues(values);
-        // }
+        setValues(values);
       }
     });
 
@@ -1173,14 +1186,13 @@ export const createStore: typeof createStoreDecl = (): Store => {
         if (cellsTouched) {
           callTabularListenersForChanges(1);
         }
-        // TODO callInvalidValueListeners(1);
+        callInvalidValueListeners(1);
         if (valuesTouched) {
           callKeyedValuesListenersForChanges(1);
         }
         transactions = -1;
 
         if (
-          // TODO add invalid values & rollback
           doRollback?.(
             mapToObj(
               changedCells,
@@ -1233,7 +1245,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
         if (cellsTouched) {
           callTabularListenersForChanges(0);
         }
-        // TODO callInvalidValueListeners(1);
+        callInvalidValueListeners(0);
         if (valuesTouched) {
           callKeyedValuesListenersForChanges(0);
         }
@@ -1364,6 +1376,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
           cellIds: pairCollSize2(cellIdsListeners, collSize3),
           cell: pairCollSize2(cellListeners, collSize4),
           invalidCell: pairCollSize2(invalidCellListeners, collSize4),
+          // TODO invalidCell: pairCollSize2(invalidCellListeners),
           transaction: pairCollSize2(finishTransactionListeners),
         }
       : {};
