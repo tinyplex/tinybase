@@ -962,11 +962,26 @@ export type StoreListenerStats = {
    */
   invalidCell?: number;
   /**
+   * The number of ValuesListener functions registered with the Store.
+   */
+  values?: number;
+  /**
+   * The number of ValueIdsListener functions registered with the Store.
+   */
+  valueIds?: number;
+  /**
+   * The number of ValueListener functions registered with the Store.
+   */
+  value?: number;
+  /**
+   * The number of InvalidValueListener functions registered with the Store.
+   */
+  invalidValue?: number;
+  /**
    * The number of TransactionListener functions registered with the Store.
    */
   transaction?: number;
 };
-// ^ TODO
 
 /**
  * A Store is the main location for keeping both tabular data and keyed values.
