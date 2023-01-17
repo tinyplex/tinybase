@@ -2386,12 +2386,11 @@ export interface Store {
    *
    * ```js
    * const store = createStore().setValuesSchema({
-   *   sold: {type: 'boolean', default: false},
+   *   open: {type: 'boolean', default: false},
    * });
-   * // TODO
-   * // store.setValue(open: 'maybe');
-   * // console.log(store.getValues());
-   * // // -> {open: false}
+   * store.setValue('open', 'maybe');
+   * console.log(store.getValues());
+   * // -> {open: false}
    * ```
    * @category Setter
    */
