@@ -16,63 +16,97 @@ beforeEach(() => {
 });
 
 describe('setTablesJson', () => {
+  beforeEach(() => store.setTables({t1: {r1: {c1: 1, c2: 1}}}));
+
   test('valid', () => {
-    store = createStore().setTables({t1: {r1: {c1: 1, c2: 1}}});
     store.setTablesJson('{"t2": {"r2": {"c2": 1, "d2": 2}}}');
     expect(store.getTables()).toEqual({t2: {r2: {c2: 1, d2: 2}}});
   });
 
   test('invalid', () => {
-    store = createStore().setTables({t1: {r1: {c1: 1, c2: 1}}});
     store.setTablesJson('{');
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1, c2: 1}}});
   });
 
   test('part empty object', () => {
-    store = createStore().setTables({t1: {r1: {c1: 1, c2: 1}}});
     store.setTablesJson('{"t2": {"r2": {}}}');
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1, c2: 1}}});
   });
 
   test('part invalid object', () => {
-    store = createStore().setTables({t1: {r1: {c1: 1, c2: 1}}});
     store.setTablesJson('{"t2": {"r2": [1, 2, 3]}}');
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1, c2: 1}}});
   });
 
   test('empty object', () => {
-    store = createStore().setTables({t1: {r1: {c1: 1, c2: 1}}});
     store.setTablesJson('{}');
     expect(store.getTables()).toEqual({});
   });
 
   test('invalid object 1', () => {
-    store = createStore().setTables({t1: {r1: {c1: 1, c2: 1}}});
     store.setTablesJson('[1, 2, 3]');
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1, c2: 1}}});
   });
 
   test('invalid object 2', () => {
-    store = createStore().setTables({t1: {r1: {c1: 1, c2: 1}}});
     store.setTablesJson('123');
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1, c2: 1}}});
   });
 
   test('empty', () => {
-    store = createStore().setTables({t1: {r1: {c1: 1, c2: 1}}});
     store.setTablesJson('');
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1, c2: 1}}});
   });
 
   test('null', () => {
-    store = createStore().setTables({t1: {r1: {c1: 1, c2: 1}}});
     store.setTablesJson('null');
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1, c2: 1}}});
   });
 });
 
-// TODO
-// The setValuesJson versions of the above
+describe('setValuesJson', () => {
+  beforeEach(() => store.setValues({v1: 1}));
+
+  test('valid', () => {
+    store.setValuesJson('{"v2": 2}');
+    expect(store.getValues()).toEqual({v2: 2});
+  });
+
+  test('invalid', () => {
+    store.setValuesJson('{');
+    expect(store.getValues()).toEqual({v1: 1});
+  });
+
+  test('part invalid object', () => {
+    store.setValuesJson('{"v1": [1, 2, 3]}');
+    expect(store.getValues()).toEqual({v1: 1});
+  });
+
+  test('empty object', () => {
+    store.setValuesJson('{}');
+    expect(store.getValues()).toEqual({});
+  });
+
+  test('invalid object 1', () => {
+    store.setValuesJson('[1, 2, 3]');
+    expect(store.getValues()).toEqual({v1: 1});
+  });
+
+  test('invalid object 2', () => {
+    store.setValuesJson('123');
+    expect(store.getValues()).toEqual({v1: 1});
+  });
+
+  test('empty', () => {
+    store.setValuesJson('');
+    expect(store.getValues()).toEqual({v1: 1});
+  });
+
+  test('null', () => {
+    store.setValuesJson('null');
+    expect(store.getValues()).toEqual({v1: 1});
+  });
+});
 
 describe('Sorted Row Ids', () => {
   beforeEach(() => {
