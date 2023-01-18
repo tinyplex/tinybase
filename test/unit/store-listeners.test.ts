@@ -2773,6 +2773,308 @@ describe('Listeners', () => {
     });
   });
 
+  describe('values', () => {
+    beforeAll(() => {
+      store = createStore();
+      listener = createStoreListener(store);
+      listener.listenToValues('/');
+    });
+
+    test('reset 1', () => {
+      store.delValues();
+      expectNoChanges(listener);
+    });
+
+    test('setValues', () => {
+      store.setValues({v1: 1});
+      expectChanges(listener, '/', {v1: 1});
+      expectNoChanges(listener);
+    });
+
+    test('setValues, same value', () => {
+      store.setValues({v1: 1});
+      expectNoChanges(listener);
+    });
+
+    test('setValues, change value', () => {
+      store.setValues({v1: 2});
+      expectChanges(listener, '/', {v1: 2});
+      expectNoChanges(listener);
+    });
+
+    test('setValues, different value', () => {
+      store.setValues({v2: 2});
+      expectChanges(listener, '/', {v2: 2});
+      expectNoChanges(listener);
+    });
+
+    test('setPartialValues', () => {
+      // @ts-ignore
+      store.setPartialValues({v1: 1, v3: undefined});
+      expectChanges(listener, '/', {v2: 2, v1: 1});
+      expectNoChanges(listener);
+    });
+
+    test('reset 2', () => {
+      store.delValues();
+      expectChanges(listener, '/', {});
+      expectNoChanges(listener);
+    });
+
+    test('setValue', () => {
+      store.setValue('v1', 1);
+      expectChanges(listener, '/', {v1: 1});
+      expectNoChanges(listener);
+    });
+
+    test('setValue, same value', () => {
+      store.setValue('v1', 1);
+      expectNoChanges(listener);
+    });
+
+    test('setValue, change value', () => {
+      store.setValue('v1', 2);
+      expectChanges(listener, '/', {v1: 2});
+      expectNoChanges(listener);
+    });
+
+    test('setValue, different value', () => {
+      store.setValue('v2', 2);
+      expectChanges(listener, '/', {v1: 2, v2: 2});
+      expectNoChanges(listener);
+    });
+
+    test('setValue, mapped', () => {
+      store.setValue('v2', (value) => (value as number) + 1);
+      expectChanges(listener, '/', {v1: 2, v2: 3});
+      expectNoChanges(listener);
+    });
+
+    test('Add things to delete', () => {
+      store.setValues({v1: 1, v2: 2, v3: 3});
+      expectChanges(listener, '/', {v1: 1, v2: 2, v3: 3});
+      expectNoChanges(listener);
+    });
+
+    test('delValue', () => {
+      store.delValue('v1');
+      expectChanges(listener, '/', {v2: 2, v3: 3});
+      expectNoChanges(listener);
+    });
+
+    test('delValues', () => {
+      store.delValues();
+      expectChanges(listener, '/', {});
+      expectNoChanges(listener);
+    });
+  });
+
+  describe('valueIds', () => {
+    beforeAll(() => {
+      store = createStore();
+      listener = createStoreListener(store);
+      listener.listenToValueIds('/');
+    });
+
+    test('reset 1', () => {
+      store.delValues();
+      expectNoChanges(listener);
+    });
+
+    test('setValues', () => {
+      store.setValues({v1: 1});
+      expectChanges(listener, '/', ['v1']);
+      expectNoChanges(listener);
+    });
+
+    test('setValues, same value', () => {
+      store.setValues({v1: 1});
+      expectNoChanges(listener);
+    });
+
+    test('setValues, change value', () => {
+      store.setValues({v1: 2});
+      expectNoChanges(listener);
+    });
+
+    test('setValues, different value', () => {
+      store.setValues({v2: 2});
+      expectChanges(listener, '/', ['v2']);
+      expectNoChanges(listener);
+    });
+
+    test('setPartialValues', () => {
+      // @ts-ignore
+      store.setPartialValues({v1: 1, v3: undefined});
+      expectChanges(listener, '/', ['v2', 'v1']);
+      expectNoChanges(listener);
+    });
+
+    test('reset 2', () => {
+      store.delValues();
+      expectChanges(listener, '/', []);
+      expectNoChanges(listener);
+    });
+
+    test('setValue', () => {
+      store.setValue('v1', 1);
+      expectChanges(listener, '/', ['v1']);
+      expectNoChanges(listener);
+    });
+
+    test('setValue, same value', () => {
+      store.setValue('v1', 1);
+      expectNoChanges(listener);
+    });
+
+    test('setValue, change value', () => {
+      store.setValue('v1', 2);
+      expectNoChanges(listener);
+    });
+
+    test('setValue, different value', () => {
+      store.setValue('v2', 2);
+      expectChanges(listener, '/', ['v1', 'v2']);
+      expectNoChanges(listener);
+    });
+
+    test('setValue, mapped', () => {
+      store.setValue('v2', (value) => (value as number) + 1);
+      expectNoChanges(listener);
+    });
+
+    test('Add things to delete', () => {
+      store.setValues({v1: 1, v2: 2, v3: 3});
+      expectChanges(listener, '/', ['v1', 'v2', 'v3']);
+      expectNoChanges(listener);
+    });
+
+    test('delValue', () => {
+      store.delValue('v1');
+      expectChanges(listener, '/', ['v2', 'v3']);
+      expectNoChanges(listener);
+    });
+
+    test('delValues', () => {
+      store.delValues();
+      expectChanges(listener, '/', []);
+      expectNoChanges(listener);
+    });
+  });
+
+  describe('value', () => {
+    beforeAll(() => {
+      store = createStore();
+      listener = createStoreListener(store);
+      listener.listenToValue('/v1', 'v1');
+      listener.listenToValue('/v2', 'v2');
+      listener.listenToValue('/v*', null);
+    });
+
+    test('reset 1', () => {
+      store.delValues();
+      expectNoChanges(listener);
+    });
+
+    test('setValues', () => {
+      store.setValues({v1: 1});
+      expectChanges(listener, '/v1', {v1: 1});
+      expectChanges(listener, '/v*', {v1: 1});
+      expectNoChanges(listener);
+    });
+
+    test('setValues, same value', () => {
+      store.setValues({v1: 1});
+      expectNoChanges(listener);
+    });
+
+    test('setValues, change value', () => {
+      store.setValues({v1: 2});
+      expectChanges(listener, '/v1', {v1: 2});
+      expectChanges(listener, '/v*', {v1: 2});
+      expectNoChanges(listener);
+    });
+
+    test('setValues, different value', () => {
+      store.setValues({v2: 2});
+      expectChanges(listener, '/v1', {v1: undefined});
+      expectChanges(listener, '/v2', {v2: 2});
+      expectChanges(listener, '/v*', {v2: 2}, {v1: undefined});
+      expectNoChanges(listener);
+    });
+
+    test('setPartialValues', () => {
+      // @ts-ignore
+      store.setPartialValues({v1: 1, v3: undefined});
+      expectChanges(listener, '/v1', {v1: 1});
+      expectChanges(listener, '/v*', {v1: 1});
+      expectNoChanges(listener);
+    });
+
+    test('reset 2', () => {
+      store.delValues();
+      expectChanges(listener, '/v1', {v1: undefined});
+      expectChanges(listener, '/v2', {v2: undefined});
+      expectChanges(listener, '/v*', {v1: undefined}, {v2: undefined});
+      expectNoChanges(listener);
+    });
+
+    test('setValue', () => {
+      store.setValue('v1', 1);
+      expectChanges(listener, '/v1', {v1: 1});
+      expectChanges(listener, '/v*', {v1: 1});
+      expectNoChanges(listener);
+    });
+
+    test('setValue, same value', () => {
+      store.setValue('v1', 1);
+      expectNoChanges(listener);
+    });
+
+    test('setValue, change value', () => {
+      store.setValue('v1', 2);
+      expectChanges(listener, '/v1', {v1: 2});
+      expectChanges(listener, '/v*', {v1: 2});
+      expectNoChanges(listener);
+    });
+
+    test('setValue, different value', () => {
+      store.setValue('v2', 2);
+      expectChanges(listener, '/v2', {v2: 2});
+      expectChanges(listener, '/v*', {v2: 2});
+      expectNoChanges(listener);
+    });
+
+    test('setValue, mapped', () => {
+      store.setValue('v2', (value) => (value as number) + 1);
+      expectChanges(listener, '/v2', {v2: 3});
+      expectChanges(listener, '/v*', {v2: 3});
+      expectNoChanges(listener);
+    });
+
+    test('Add things to delete', () => {
+      store.setValues({v1: 1, v2: 2, v3: 3});
+      expectChanges(listener, '/v1', {v1: 1});
+      expectChanges(listener, '/v2', {v2: 2});
+      expectChanges(listener, '/v*', {v1: 1}, {v2: 2}, {v3: 3});
+      expectNoChanges(listener);
+    });
+
+    test('delValue', () => {
+      store.delValue('v1');
+      expectChanges(listener, '/v1', {v1: undefined});
+      expectChanges(listener, '/v*', {v1: undefined});
+      expectNoChanges(listener);
+    });
+
+    test('delValues', () => {
+      store.delValues();
+      expectChanges(listener, '/v2', {v2: undefined});
+      expectChanges(listener, '/v*', {v2: undefined}, {v3: undefined});
+      expectNoChanges(listener);
+    });
+  });
+
   describe('Will and did finish transaction', () => {
     beforeEach(() => {
       store = createStore();
@@ -5020,8 +5322,45 @@ describe('callListener', () => {
 
   test('values (mutator)', () => {
     store.callListener(store.addValuesListener(listener, true));
-    expect(listener).toHaveBeenCalledTimes(4);
     expect(listener).toHaveBeenCalledTimes(1);
     expect(listener).toHaveBeenNthCalledWith(1, store);
+  });
+
+  test('value ids (non mutator)', () => {
+    store.callListener(store.addValueIdsListener(listener));
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(listener).toHaveBeenNthCalledWith(1, store);
+  });
+
+  test('value ids (mutator)', () => {
+    store.callListener(store.addValueIdsListener(listener, true));
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(listener).toHaveBeenNthCalledWith(1, store);
+  });
+
+  test('value id (non mutator)', () => {
+    store.callListener(store.addValueListener('v1', listener));
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(listener).toHaveBeenNthCalledWith(1, store, 'v1', 1, 1);
+  });
+
+  test('value id (mutator)', () => {
+    store.callListener(store.addValueListener('v1', listener, true));
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(listener).toHaveBeenNthCalledWith(1, store, 'v1', 1, 1);
+  });
+
+  test('value * (non mutator)', () => {
+    store.callListener(store.addValueListener(null, listener));
+    expect(listener).toHaveBeenCalledTimes(2);
+    expect(listener).toHaveBeenNthCalledWith(1, store, 'v1', 1, 1);
+    expect(listener).toHaveBeenNthCalledWith(2, store, 'v2', 2, 2);
+  });
+
+  test('value * (mutator)', () => {
+    store.callListener(store.addValueListener(null, listener, true));
+    expect(listener).toHaveBeenCalledTimes(2);
+    expect(listener).toHaveBeenNthCalledWith(1, store, 'v1', 1, 1);
+    expect(listener).toHaveBeenNthCalledWith(2, store, 'v2', 2, 2);
   });
 });
