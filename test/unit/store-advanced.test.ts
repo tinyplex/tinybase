@@ -1,5 +1,12 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import {Row, Store, Table, Tables, createStore} from '../../lib/debug/tinybase';
+import {
+  Row,
+  Store,
+  Table,
+  Tables,
+  Values,
+  createStore,
+} from '../../lib/debug/tinybase';
 import {
   StoreListener,
   createStoreListener,
@@ -292,13 +299,6 @@ describe('Sorted Row Ids', () => {
 });
 
 describe('Miscellaneous', () => {
-  test('Set in the constructor', () => {
-    store = createStore().setTables({t1: {r1: {c1: 1, c2: 2}}});
-    expect(store.getTables()).toEqual({
-      t1: {r1: {c1: 1, c2: 2}},
-    });
-  });
-
   describe('forEach', () => {
     test('forEachTable', () => {
       store.setTables({t1: {r1: {c1: 1, c2: 2}}});
@@ -334,6 +334,13 @@ describe('Miscellaneous', () => {
       store.forEachCell('t1', 'r1', (cellId, cell) => (row[cellId] = cell));
       expect(row).toEqual({c1: 1, c2: 2});
     });
+
+    test('forEachValue', () => {
+      store.setValues({v1: 1, v2: 2});
+      const values: Values = {};
+      store.forEachValue((valueId, value) => (values[valueId] = value));
+      expect(values).toEqual({v1: 1, v2: 2});
+    });
   });
 
   test('are things present', () => {
@@ -341,6 +348,8 @@ describe('Miscellaneous', () => {
     expect(store.hasTable('t1')).toEqual(false);
     expect(store.hasRow('t1', 'r1')).toEqual(false);
     expect(store.hasCell('t1', 'r1', 'c1')).toEqual(false);
+    expect(store.hasValues()).toEqual(false);
+    expect(store.hasValue('v1')).toEqual(false);
     store.setTables({t1: {r1: {c1: 1}}});
     expect(store.hasTables()).toEqual(true);
     expect(store.hasTable('t1')).toEqual(true);
@@ -349,6 +358,10 @@ describe('Miscellaneous', () => {
     expect(store.hasRow('t1', 'r2')).toEqual(false);
     expect(store.hasCell('t1', 'r1', 'c1')).toEqual(true);
     expect(store.hasCell('t1', 'r1', 'c2')).toEqual(false);
+    store.setValues({v1: 1});
+    expect(store.hasValues()).toEqual(true);
+    expect(store.hasValue('v1')).toEqual(true);
+    expect(store.hasValue('v2')).toEqual(false);
   });
 
   test('tracks multiple changes, with multiple listeners', () => {
@@ -481,6 +494,33 @@ describe('Miscellaneous', () => {
     });
     store.addRowListener('t1', 'r1', listener);
     store.setTables({t1: {r1: {c1: 1, c2: 3, c4: 4}}});
+    expect(listener).toHaveBeenCalled();
+  });
+
+  test('value listener with new and old value', () => {
+    expect.assertions(7);
+    store = createStore().setValues({v1: 1});
+    const listener = jest.fn((store2, valueId, newValue, oldValue) => {
+      expect(store2).toEqual(store);
+      expect(newValue).toEqual(2);
+      expect(oldValue).toEqual(valueId == 'v1' ? 1 : undefined);
+    });
+    store.addValueListener(null, listener);
+    store.setValues({v1: 2, v2: 2});
+    expect(listener).toHaveBeenCalled();
+  });
+
+  test('values listener with value changes function', () => {
+    expect.assertions(5);
+    store = createStore().setValues({v1: 1, v2: 2, v3: 3});
+    const listener = jest.fn((_store, getValueChange) => {
+      expect(getValueChange('v1')).toEqual([false, 1, 1]);
+      expect(getValueChange('v2')).toEqual([true, 2, 3]);
+      expect(getValueChange('v3')).toEqual([true, 3, undefined]);
+      expect(getValueChange('v4')).toEqual([true, undefined, 4]);
+    });
+    store.addValuesListener(listener);
+    store.setValues({v1: 1, v2: 3, v4: 4});
     expect(listener).toHaveBeenCalled();
   });
 });
