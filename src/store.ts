@@ -172,7 +172,7 @@ const idsChanged = (
 
 export const createStore: typeof createStoreDecl = (): Store => {
   let hasTablesSchema: boolean;
-  let hasValuesSchema: boolean; // TODO
+  let hasValuesSchema: boolean;
   let cellsTouched: boolean;
   let valuesTouched: boolean;
   let transactions = 0;

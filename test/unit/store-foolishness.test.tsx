@@ -725,8 +725,6 @@ describe('Delete non-existent', () => {
     const store = createStore().setValues(validValues);
     store.delValue('v2');
     expect(store.getValues()).toEqual(validValues);
-
-    // TODO
     expectNoChanges(listener);
   });
 });
