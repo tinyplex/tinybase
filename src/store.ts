@@ -55,6 +55,12 @@ import {
   jsonParse,
   jsonString,
 } from './common/other';
+import {
+  ExtraArgsGetter,
+  IdSetNode,
+  PathGetters,
+  getListenerFunctions,
+} from './common/listeners';
 import {Id, Ids, Json} from './common.d';
 import {
   IdMap,
@@ -84,7 +90,6 @@ import {
   objMap,
 } from './common/obj';
 import {IdSet, IdSet2, IdSet3, IdSet4, setAdd, setNew} from './common/set';
-import {IdSetNode, getListenerFunctions} from './common/listeners';
 import {Pair, pairCollSize2, pairNew, pairNewMap} from './common/pairs';
 import {
   arrayFilter,
@@ -1340,6 +1345,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       },
       sortedRowIdsListeners[mutator ? 1 : 0],
       [tableId, cellId],
+      [getTableIds],
     );
   };
 
@@ -1351,10 +1357,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     addListener(listener, finishTransactionListeners[1]);
 
   const callListener = (listenerId: Id) => {
-    // TODO
-    callListenerImpl(listenerId, [getTableIds, getRowIds, getCellIds], (ids) =>
-      isUndefined(ids[2]) ? [] : pairNew(getCell(...(ids as [Id, Id, Id]))),
-    );
+    callListenerImpl(listenerId);
     return store;
   };
 
@@ -1457,23 +1460,43 @@ export const createStore: typeof createStoreDecl = (): Store => {
     {
       [TABLES]: [0, tablesListeners],
       [TABLE_IDS]: [0, tableIdsListeners],
-      [TABLE]: [1, tableListeners],
-      [ROW_IDS]: [1, rowIdsListeners],
-      [ROW]: [2, rowListeners],
-      [CELL_IDS]: [2, cellIdsListeners],
-      [CELL]: [3, cellListeners],
+      [TABLE]: [1, tableListeners, [getTableIds]],
+      [ROW_IDS]: [1, rowIdsListeners, [getTableIds]],
+      [ROW]: [2, rowListeners, [getTableIds, getRowIds]],
+      [CELL_IDS]: [2, cellIdsListeners, [getTableIds, getRowIds]],
+      [CELL]: [
+        3,
+        cellListeners,
+        [getTableIds, getRowIds, getCellIds],
+        (ids: Ids) => pairNew(getCell(...(ids as [Id, Id, Id]))),
+      ],
       InvalidCell: [3, invalidCellListeners],
       [VALUES]: [0, valuesListeners],
       [VALUE_IDS]: [0, valueIdsListeners],
-      [VALUE]: [1, valueListeners],
+      [VALUE]: [
+        1,
+        valueListeners,
+        [getValueIds],
+        (ids: Ids) => pairNew(getValue(ids[0])),
+      ],
       InvalidValue: [1, invalidValueListeners],
     },
-    ([argumentCount, idSetNode]: [number, Pair<IdSetNode>], listenable) => {
+    (
+      [argumentCount, idSetNode, pathGetters, extraArgsGetter]: [
+        number,
+        Pair<IdSetNode>,
+        PathGetters?,
+        ExtraArgsGetter?,
+      ],
+      listenable,
+    ) => {
       store[ADD + listenable + LISTENER] = (...args: any[]): Id =>
         addListener(
           args[argumentCount] as any,
           idSetNode[args[argumentCount + 1] ? 1 : 0],
           argumentCount > 0 ? arraySlice(args, 0, argumentCount) : undefined,
+          pathGetters,
+          extraArgsGetter,
         );
     },
   );
