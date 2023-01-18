@@ -306,7 +306,7 @@ describe('Listening to invalid', () => {
     },
   );
 
-  test.each(INVALID_CELLS_OR_VALUES.slice(0, 1))(
+  test.each(INVALID_CELLS_OR_VALUES)(
     'existing or new Cell; %s',
     (_name, cell: any) => {
       if (typeof cell == 'function') {
@@ -334,6 +334,54 @@ describe('Listening to invalid', () => {
         {t1: {r1: {c2: [cell]}}},
         {t1: {r2: {c1: [cell]}}},
       );
+      expectNoChanges(listener);
+    },
+  );
+
+  test.each(INVALID_OBJECTS)('existing Values; %s', (_name, values: any) => {
+    const store = createStore().setValues(validValues);
+    const listener = createStoreListener(store);
+    listener.listenToValues('/');
+    listener.listenToInvalidValue('invalids', null);
+    store.setValues(values);
+    expect(store.getValues()).toEqual(validValues);
+    expectChangesNoJson(listener, 'invalids', {undefined: [undefined]});
+    expectNoChanges(listener);
+  });
+
+  test.each(INVALID_CELLS_OR_VALUES)(
+    'Value, alongside valid; %s',
+    (_name, value: any) => {
+      const store = createStore().setValues(validValues);
+      const listener = createStoreListener(store);
+      listener.listenToValues('/');
+      listener.listenToValue('/v1', 'v1');
+      listener.listenToValue('/v2', 'v2');
+      listener.listenToInvalidValue('invalids', null);
+      store.setValues({v1: 2, v2: value});
+      expect(store.getValues()).toEqual({v1: 2});
+      expectChanges(listener, '/', {v1: 2});
+      expectChanges(listener, '/v1', {v1: 2});
+      expectChanges(listener, 'invalids', {v2: [value]});
+      expectNoChanges(listener);
+    },
+  );
+
+  test.each(INVALID_CELLS_OR_VALUES)(
+    'existing or new Value; %s',
+    (_name, value: any) => {
+      if (typeof value == 'function') {
+        return;
+      }
+      const store = createStore().setValues(validValues);
+      const listener = createStoreListener(store);
+      listener.listenToValues('/');
+      listener.listenToValue('/v1', 'v1');
+      listener.listenToValue('/v2', 'v2');
+      listener.listenToInvalidValue('invalids', null);
+      store.setValue('v1', value).setValue('v2', value);
+      expect(store.getValues()).toEqual(validValues);
+      expectChanges(listener, 'invalids', {v1: [value]}, {v2: [value]});
       expectNoChanges(listener);
     },
   );
