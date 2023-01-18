@@ -4788,6 +4788,78 @@ export interface Store {
    *
    * store.delListener(listenerId);
    * ```
+   * @example
+   * This example registers a listener to Row Id changes. It is explicitly
+   * called and fires for two Tables in the Store.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {fido: {species: 'dog'}},
+   *   species: {dog: {price: 5}},
+   * });
+   *
+   * const listenerId = store.addRowIdsListener(
+   *   null,
+   *   (store, tableId) => {
+   *     console.log(`Row Ids listener called for ${tableId} table`);
+   *   },
+   * );
+   *
+   * store.callListener(listenerId);
+   * // -> 'Row Ids listener called for pets table'
+   * // -> 'Row Ids listener called for species table'
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @example
+   * This example registers a listener Value changes. It is explicitly called
+   * and fires for two Values in the Store.
+   *
+   * ```js
+   * const store = createStore().setValues({open: true, employees: 3});
+   *
+   * const listenerId = store.addValueListener(
+   *   null,
+   *   (store, valueId, value) => {
+   *     console.log(`Value listener called for ${valueId} value, ${value}`);
+   *   },
+   * );
+   *
+   * store.callListener(listenerId);
+   * // -> 'Value listener called for open value, true'
+   * // -> 'Value listener called for employees value, 3'
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @example
+   * This example registers listeners for the end of transactions, and for
+   * invalid Cells. The are explicitly called, meaninglessly. The former
+   * receives empty arguments. The latter is not called at all.
+   *
+   * ```js
+   * const store = createStore();
+   *
+   * const listenerId = store.addWillFinishTransactionListener(
+   *   (store, cellsTouched, valuesTouched) => {
+   *     console.log(`Transaction finish: ${cellsTouched}/${valuesTouched}`);
+   *   },
+   * );
+   * store.callListener(listenerId);
+   * // -> 'Transaction finish: undefined/undefined'
+   * store.delListener(listenerId);
+   *
+   * const listenerId2 = store.addInvalidCellListener(
+   *   null,
+   *   null,
+   *   null,
+   *   (store, tableId, rowId, cellId) => {
+   *     console.log('Invalid cell', tableId, rowId, cellId);
+   *   },
+   * );
+   * store.callListener(listenerId2);
+   * // -> undefined
+   * store.delListener(listenerId2);
+   * ```
    * @category Listener
    */
   callListener(listenerId: Id): Store;

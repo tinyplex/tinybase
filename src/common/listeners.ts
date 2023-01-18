@@ -2,6 +2,7 @@ import {
   CellIdsListener,
   CellListener,
   InvalidCellListener,
+  InvalidValueListener,
   RowIdsListener,
   RowListener,
   Store,
@@ -36,6 +37,8 @@ import {getPoolFunctions} from './pool';
 
 export type IdSetNode = Node<IdOrNull, IdSet> | IdSet;
 export type ListenerArgument = IdOrNull | boolean | number | undefined;
+export type PathGetters = ((...ids: Ids) => Ids)[];
+export type ExtraArgsGetter = (ids: Ids) => any[];
 
 type IdOrBoolean = Id | boolean;
 type Listener =
@@ -50,6 +53,7 @@ type Listener =
   | ValuesListener
   | ValueIdsListener
   | ValueListener
+  | InvalidValueListener
   | TransactionListener
   | MetricListener
   | SliceIdsListener
@@ -79,28 +83,40 @@ const getWildcardedLeaves = (
 export const getListenerFunctions = (
   getThing: () => Store | Metrics | Indexes | Relationships | Checkpoints,
 ): [
-  (listener: Listener, idSetNode: IdSetNode, ids?: ListenerArgument[]) => Id,
+  (
+    listener: Listener,
+    idSetNode: IdSetNode,
+    path?: ListenerArgument[],
+    pathGetters?: PathGetters,
+    extraArgsGetter?: ExtraArgsGetter,
+  ) => Id,
   (idSetNode: IdSetNode, ids?: Ids, ...extra: any[]) => void,
   (id: Id) => Ids,
-  (
-    id: Id,
-    idNullGetters: ((...ids: Ids) => Ids)[],
-    extraArgsGetter: (ids: Ids) => any[],
-  ) => void,
+  (id: Id) => void,
 ] => {
   let thing: Store | Metrics | Indexes | Relationships | Checkpoints;
 
   const [getId, releaseId] = getPoolFunctions();
-  const allListeners: IdMap<[Listener, IdSetNode, Ids]> = mapNew();
+  const allListeners: IdMap<
+    [Listener, IdSetNode, ListenerArgument[], PathGetters, ExtraArgsGetter]
+  > = mapNew();
 
   const addListener = (
     listener: Listener,
     idSetNode: IdSetNode,
     path?: ListenerArgument[],
+    pathGetters: PathGetters = [],
+    extraArgsGetter: ExtraArgsGetter = () => [],
   ): Id => {
     thing ??= getThing();
     const id = getId();
-    mapSet(allListeners, id, [listener, idSetNode, path]);
+    mapSet(allListeners, id, [
+      listener,
+      idSetNode,
+      path,
+      pathGetters,
+      extraArgsGetter,
+    ]);
     setAdd(
       visitTree(
         idSetNode as Node<IdOrNull, IdSet>,
@@ -143,24 +159,23 @@ export const getListenerFunctions = (
       return idOrNulls;
     }) as Ids;
 
-  const callListener = (
-    id: Id,
-    idNullGetters: ((...ids: Ids) => Ids)[],
-    extraArgsGetter: (ids: Ids) => any[],
-  ): void =>
-    ifNotUndefined(mapGet(allListeners, id), ([listener, , idOrNulls = []]) => {
-      const callWithIds = (...ids: Ids): any => {
-        const index = arrayLength(ids);
-        index == arrayLength(idOrNulls)
-          ? (listener as any)(thing, ...ids, ...extraArgsGetter(ids))
-          : isUndefined(idOrNulls[index])
-          ? arrayForEach(idNullGetters[index](...ids), (id) =>
-              callWithIds(...ids, id),
-            )
-          : callWithIds(...ids, idOrNulls[index] as Id);
-      };
-      callWithIds();
-    });
+  const callListener = (id: Id): void =>
+    ifNotUndefined(
+      mapGet(allListeners, id),
+      ([listener, , path = [], pathGetters, extraArgsGetter]) => {
+        const callWithIds = (...ids: Ids): any => {
+          const index = arrayLength(ids);
+          index == arrayLength(path)
+            ? (listener as any)(thing, ...ids, ...extraArgsGetter(ids))
+            : isUndefined(path[index])
+            ? arrayForEach(pathGetters[index]?.(...ids) ?? [], (id) =>
+                callWithIds(...ids, id),
+              )
+            : callWithIds(...ids, path[index] as Id);
+        };
+        callWithIds();
+      },
+    );
 
   return [addListener, callListeners, delListener, callListener];
 };
