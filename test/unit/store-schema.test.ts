@@ -68,7 +68,7 @@ const getAddMinMaxMutator =
       true,
     );
 
-const boundsSchemaAndExpected: [
+const cellBoundsSchemaAndExpected: [
   name: string,
   tablesSchema: TablesSchema,
   addMutator: AddMutator,
@@ -90,7 +90,6 @@ const boundsSchemaAndExpected: [
     'non-defaulted min/max',
     {t1: {c1: {type: 'number'}}},
     getAddMinMaxMutator('t1', 'c1', {min: 0.5, max: 1.5}),
-
     {t1: {r1: {c1: 0.5}, r2: {c1: 1}, r3: {c1: 1.5}}},
   ],
   [
@@ -325,7 +324,7 @@ describe('Get and set valuesSchemas', () => {
   });
 });
 
-describe('Schema applied before data set', () => {
+describe('tablesSchemas applied before data set', () => {
   test('matching', () => {
     const store = createStore();
     store.setTables({t1: {r1: {c1: 1}}});
@@ -365,7 +364,7 @@ describe('Schema applied before data set', () => {
   });
 
   describe('non-matching some bounds', () => {
-    test.each(boundsSchemaAndExpected)(
+    test.each(cellBoundsSchemaAndExpected)(
       '%s',
       (
         _name,
@@ -419,7 +418,58 @@ describe('Schema applied before data set', () => {
   });
 });
 
-describe('Schema applied before data set, listening', () => {
+describe('valuesSchema applied before data set', () => {
+  test('matching', () => {
+    const store = createStore();
+    store.setValues({v1: 1});
+    store.setValuesSchema({v1: {type: 'number'}});
+    expect(store.getValues()).toEqual({v1: 1});
+  });
+
+  test('non-matching value', () => {
+    const store = createStore();
+    store.setValuesSchema({v1: {type: 'number'}});
+    store.setValues({v2: 1});
+    expect(store.getValues()).toEqual({});
+  });
+
+  test('non-matching some value allows', () => {
+    const store = createStore();
+    addAllowValueMutator(store, 'v1', [1, 2, 3]);
+    store.setValues({v1: 2});
+    store.setValuesSchema({v1: {type: 'number'}});
+    expect(store.getValues()).toEqual({v1: 2});
+  });
+
+  test('non-matching some value types, defaulting', () => {
+    const store = createStore();
+    store.setValuesSchema({v1: {type: 'number', default: 2}});
+    store.setValues({v1: 1});
+    expect(store.getValues()).toEqual({v1: 1});
+    store.setValues({v1: true});
+    expect(store.getValues()).toEqual({v1: 2});
+    store.setValues({v1: 'a'});
+    expect(store.getValues()).toEqual({v1: 2});
+  });
+
+  test('non-matching some value types, default and allows', () => {
+    const store = createStore();
+    addAllowValueMutator(store, 'v1', [1, 3]);
+    store.setValuesSchema({v1: {type: 'number', default: 2}});
+    store.setValues({v1: 2});
+    expect(store.getValues()).toEqual({v1: 2});
+    store.setValues({v1: 4});
+    expect(store.getValues()).toEqual({v1: 2});
+    store.setValues({v1: true});
+    expect(store.getValues()).toEqual({v1: 2});
+    store.setValues({v1: 'a'});
+    expect(store.getValues()).toEqual({v1: 2});
+    store.setValues({v1: 3});
+    expect(store.getValues()).toEqual({v1: 3});
+  });
+});
+
+describe('tablesSchemas applied before data set, listening', () => {
   describe('Tables', () => {
     test('matching', () => {
       const store = createStore().setTablesSchema({t1: {c1: {type: 'number'}}});
@@ -528,7 +578,7 @@ describe('Schema applied before data set, listening', () => {
     });
 
     describe('non-matching some bounds', () => {
-      test.each(boundsSchemaAndExpected)(
+      test.each(cellBoundsSchemaAndExpected)(
         '%s',
         (
           _name,
@@ -803,7 +853,7 @@ describe('Schema applied before data set, listening', () => {
     });
 
     describe('non-matching some bounds', () => {
-      test.each(boundsSchemaAndExpected)(
+      test.each(cellBoundsSchemaAndExpected)(
         '%s',
         (
           _name,
@@ -1083,7 +1133,7 @@ describe('Schema applied before data set, listening', () => {
     });
 
     describe('non-matching some bounds', () => {
-      test.each(boundsSchemaAndExpected)(
+      test.each(cellBoundsSchemaAndExpected)(
         '%s',
         (
           _name,
@@ -1381,7 +1431,7 @@ describe('Schema applied before data set, listening', () => {
     });
 
     describe('non-matching some bounds', () => {
-      test.each(boundsSchemaAndExpected)(
+      test.each(cellBoundsSchemaAndExpected)(
         '%s',
         (
           _name,
@@ -2033,7 +2083,7 @@ describe('Schema applied before data set, listening', () => {
     });
 
     describe('non-matching bounds', () => {
-      test.each(boundsSchemaAndExpected)(
+      test.each(cellBoundsSchemaAndExpected)(
         '%s',
         (
           _name,
