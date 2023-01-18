@@ -1,5 +1,12 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import {Cell, Id, IdOrNull, Store, createStore} from '../../lib/debug/tinybase';
+import {
+  Cell,
+  Id,
+  IdOrNull,
+  Store,
+  Value,
+  createStore,
+} from '../../lib/debug/tinybase';
 import {
   StoreListener,
   createStoreListener,
@@ -2776,36 +2783,48 @@ describe('Listeners', () => {
 
     test('in implicit transactions', () => {
       store.setTables({t1: {r1: {c1: 1}}});
-      expectChanges(listener, '/will', true);
-      expectChanges(listener, '/did', true);
+      expectChanges(listener, '/will', [true, false]);
+      expectChanges(listener, '/did', [true, false]);
       expectNoChanges(listener);
       store.delTables();
-      expectChanges(listener, '/will', true);
-      expectChanges(listener, '/did', true);
+      expectChanges(listener, '/will', [true, false]);
+      expectChanges(listener, '/did', [true, false]);
       expectNoChanges(listener);
       store.delTables();
-      expectChanges(listener, '/will', false);
-      expectChanges(listener, '/did', false);
+      expectChanges(listener, '/will', [false, false]);
+      expectChanges(listener, '/did', [false, false]);
+      expectNoChanges(listener);
+      store.setValues({v1: 1});
+      expectChanges(listener, '/will', [false, true]);
+      expectChanges(listener, '/did', [false, true]);
+      expectNoChanges(listener);
+      store.delValues();
+      expectChanges(listener, '/will', [false, true]);
+      expectChanges(listener, '/did', [false, true]);
+      expectNoChanges(listener);
+      store.delValues();
+      expectChanges(listener, '/will', [false, false]);
+      expectChanges(listener, '/did', [false, false]);
       expectNoChanges(listener);
     });
 
     test('in explicit transaction', () => {
       store.startTransaction();
-      store.setTables({t1: {r1: {c1: 1}}});
+      store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
       expectNoChanges(listener);
       store.finishTransaction();
-      expectChanges(listener, '/will', true);
-      expectChanges(listener, '/did', true);
+      expectChanges(listener, '/will', [true, true]);
+      expectChanges(listener, '/did', [true, true]);
       expectNoChanges(listener);
     });
 
     test('in wrapped transaction with changes', () => {
       store.transaction(() => {
-        store.setTables({t1: {r1: {c1: 1}}});
+        store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
         expectNoChanges(listener);
       });
-      expectChanges(listener, '/will', true);
-      expectChanges(listener, '/did', true);
+      expectChanges(listener, '/will', [true, true]);
+      expectChanges(listener, '/did', [true, true]);
       expectNoChanges(listener);
     });
 
@@ -2813,8 +2832,8 @@ describe('Listeners', () => {
       store.transaction(() => {
         expectNoChanges(listener);
       });
-      expectChanges(listener, '/will', false);
-      expectChanges(listener, '/did', false);
+      expectChanges(listener, '/will', [false, false]);
+      expectChanges(listener, '/did', [false, false]);
       expectNoChanges(listener);
     });
 
@@ -2823,33 +2842,33 @@ describe('Listeners', () => {
         store.delTables();
         expectNoChanges(listener);
       });
-      expectChanges(listener, '/will', false);
-      expectChanges(listener, '/did', false);
+      expectChanges(listener, '/will', [false, false]);
+      expectChanges(listener, '/did', [false, false]);
       expectNoChanges(listener);
     });
 
     test('in wrapped transaction with touches', () => {
       store.transaction(() => {
-        store.setTables({t1: {r1: {c1: 1}}});
+        store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
         expectNoChanges(listener);
-        store.delTables();
+        store.delTables().delValues();
         expectNoChanges(listener);
       });
-      expectChanges(listener, '/will', true);
-      expectChanges(listener, '/did', true);
+      expectChanges(listener, '/will', [true, true]);
+      expectChanges(listener, '/did', [true, true]);
       expectNoChanges(listener);
     });
 
     test('in wrapped transaction with rollback', () => {
       store.transaction(
         () => {
-          store.setTables({t1: {r1: {c1: 1}}});
+          store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
           expectNoChanges(listener);
         },
         () => true,
       );
-      expectChanges(listener, '/will', false);
-      expectChanges(listener, '/did', false);
+      expectChanges(listener, '/will', [false, false]);
+      expectChanges(listener, '/did', [false, false]);
       expectNoChanges(listener);
     });
   });
@@ -4666,6 +4685,32 @@ describe('Mutating listeners', () => {
       store.addTableIdsListener(second);
       store.addTablesListener(second);
       store.setCell('t1', 'r1', 'c1', 2);
+      expect(second).toHaveBeenCalledTimes(0);
+    });
+
+    test('value mutation cancels listeners', () => {
+      const store = createStore().setValues({v1: 1});
+      const second = jest.fn(() => null);
+      store.addValueListener('v1', () => store.setValue('v1', 1), true);
+      store.addValueListener(null, second);
+      store.addValueIdsListener(second);
+      store.addValuesListener(second);
+      store.setValue('v1', 2);
+      expect(second).toHaveBeenCalledTimes(0);
+    });
+
+    test('value self-mutation does not stack overflow', () => {
+      const store = createStore().setValues({v1: 1});
+      const second = jest.fn(() => null);
+      store.addValueListener(
+        'v1',
+        () => store.setValue('v1', (value): Value => (value as number) - 1),
+        true,
+      );
+      store.addValueListener(null, second);
+      store.addValueIdsListener(second);
+      store.addValuesListener(second);
+      store.setValue('v1', 2);
       expect(second).toHaveBeenCalledTimes(0);
     });
   });

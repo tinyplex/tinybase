@@ -24,6 +24,7 @@ describe('Change tabular state', () => {
     expect(store.getRow('t1', 'r1')).toEqual({c1: 1});
     expect(store.getCellIds('t1', 'r1')).toEqual(['c1']);
     expect(store.getCell('t1', 'r1', 'c1')).toEqual(1);
+    expect(store.getTablesJson()).toEqual(JSON.stringify({t1: {r1: {c1: 1}}}));
   });
 
   test('setTables, same table, same row, same cell', () => {
@@ -268,6 +269,9 @@ describe('Change keyed value state', () => {
   test('setValues', () => {
     store.setValues({v1: 1});
     expect(store.getValues()).toEqual({v1: 1});
+    expect(store.getValueIds()).toEqual(['v1']);
+    expect(store.getValue('v1')).toEqual(1);
+    expect(store.getValuesJson()).toEqual(JSON.stringify({v1: 1}));
   });
 
   test('setValues, same value', () => {
