@@ -4720,10 +4720,12 @@ describe('callListener', () => {
   let store: Store;
   let listener: () => null;
   beforeEach(() => {
-    store = createStore().setTables({
-      t1: {r1: {c1: 1, c2: 2}, r2: {c1: 3, c2: 4}},
-      t2: {r1: {c1: 5, c2: 6}, r2: {c1: 7, c2: 8}},
-    });
+    store = createStore()
+      .setTables({
+        t1: {r1: {c1: 1, c2: 2}, r2: {c1: 3, c2: 4}},
+        t2: {r1: {c1: 5, c2: 6}, r2: {c1: 7, c2: 8}},
+      })
+      .setValues({v1: 1, v2: 2});
     listener = jest.fn(() => null);
   });
 
@@ -5008,5 +5010,18 @@ describe('callListener', () => {
     expect(listener).toHaveBeenNthCalledWith(6, store, 't2', 'r1', 'c2', 6, 6);
     expect(listener).toHaveBeenNthCalledWith(7, store, 't2', 'r2', 'c1', 7, 7);
     expect(listener).toHaveBeenNthCalledWith(8, store, 't2', 'r2', 'c2', 8, 8);
+  });
+
+  test('values (non mutator)', () => {
+    store.callListener(store.addValuesListener(listener));
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(listener).toHaveBeenNthCalledWith(1, store);
+  });
+
+  test('values (mutator)', () => {
+    store.callListener(store.addValuesListener(listener, true));
+    expect(listener).toHaveBeenCalledTimes(4);
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(listener).toHaveBeenNthCalledWith(1, store);
   });
 });
