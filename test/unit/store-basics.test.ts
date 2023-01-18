@@ -305,17 +305,17 @@ describe('Change keyed value state', () => {
     expect(store.getValues()).toEqual({v1: 1});
   });
 
-  test('setValue, same table, same row, same cell', () => {
+  test('setValue, same value', () => {
     store.setValue('v1', 1);
     expect(store.getValues()).toEqual({v1: 1});
   });
 
-  test('setValue, same table, same row, change cell', () => {
+  test('setValue, change value', () => {
     store.setValue('v1', 2);
     expect(store.getValues()).toEqual({v1: 2});
   });
 
-  test('setValue, same table, same row, different cell', () => {
+  test('setValue, different value', () => {
     store.setValue('v2', 2);
     expect(store.getValues()).toEqual({v1: 2, v2: 2});
   });
