@@ -41,6 +41,17 @@ const getCellMutator =
       cell,
     );
 
+const getValuesMutator = () => (store: Store) => store.setValue('v0', 0);
+
+const getValueMutator =
+  (suffix: string) => (store: Store, valueId: Id, value: Value) =>
+    store.setValue(valueId + suffix, value);
+
+const getInvalidValueMutator =
+  (suffix: string) => (store: Store, valueId: Id, invalidValues: any[]) =>
+    // @ts-ignore
+    store.setValue(valueId + suffix, invalidValues);
+
 // Note that these tests run in order to mutate the store in a sequence.
 describe('Listeners', () => {
   describe('tables', () => {
@@ -3075,6 +3086,59 @@ describe('Listeners', () => {
     });
   });
 
+  describe('invalid value', () => {
+    beforeEach(() => {
+      store = createStore();
+      listener = createStoreListener(store);
+      listener.listenToInvalidValue('i:/v1', 'v1');
+      listener.listenToInvalidValue('i:/v*', null);
+    });
+
+    test('reset', () => {
+      store.delValues();
+      expectNoChanges(listener);
+    });
+
+    test('setValues', () => {
+      // @ts-ignore
+      store.setValues({v1: []});
+      expectChanges(listener, 'i:/v1', {v1: [[]]});
+      expectChanges(listener, 'i:/v*', {v1: [[]]});
+      expectNoChanges(listener);
+    });
+
+    test('setValues, empty', () => {
+      // @ts-ignore
+      store.setValues({});
+      expectChangesNoJson(listener, 'i:/v*', {undefined: [undefined]});
+      expectNoChanges(listener);
+    });
+
+    test('setPartialValues', () => {
+      // @ts-ignore
+      store.setValues({v1: 1, v2: []});
+      expectChanges(listener, 'i:/v*', {v2: [[]]});
+      expectNoChanges(listener);
+    });
+
+    test('setValue', () => {
+      // @ts-ignore
+      store.setValue('v1', []);
+      expectChanges(listener, 'i:/v1', {v1: [[]]});
+      expectChanges(listener, 'i:/v*', {v1: [[]]});
+      expectNoChanges(listener);
+    });
+
+    test('setValue, mapped', () => {
+      store.setValue('v1', 1);
+      // @ts-ignore
+      store.setValue('v1', (value) => [value]);
+      expectChanges(listener, 'i:/v1', {v1: [[1]]});
+      expectChanges(listener, 'i:/v*', {v1: [[1]]});
+      expectNoChanges(listener);
+    });
+  });
+
   describe('Will and did finish transaction', () => {
     beforeEach(() => {
       store = createStore();
@@ -4646,6 +4710,186 @@ describe('Mutating listeners', () => {
         {t_: {r1: {c_: [[7]]}}},
         {t_: {r_: {c1: [[8]]}}},
         {t_: {r_: {c_: [[9]]}}},
+      );
+      expectNoChanges(listener);
+    });
+  });
+
+  describe('values', () => {
+    beforeEach(() => {
+      store = createStore();
+      listener = createStoreListener(store);
+      listener.listenToValues('/');
+    });
+
+    const setMutatorListeners = () => {
+      store.addValuesListener(getValuesMutator(), true);
+    };
+
+    test('setValues', () => {
+      setMutatorListeners();
+      store.setValues({v1: 1});
+      expectChanges(listener, '/', {v1: 1, v0: 0});
+      expectNoChanges(listener);
+    });
+
+    test('setPartialValues', () => {
+      store.setValues({v1: 1});
+      expectChanges(listener, '/', {v1: 1});
+      setMutatorListeners();
+      // @ts-ignore
+      store.setPartialValues({v2: 1, v3: undefined});
+      expectChanges(listener, '/', {v1: 1, v2: 1, v0: 0});
+      expectNoChanges(listener);
+    });
+
+    test('setValue', () => {
+      setMutatorListeners();
+      store.setValue('v1', 1);
+      expectChanges(listener, '/', {v1: 1, v0: 0});
+      expectNoChanges(listener);
+    });
+  });
+
+  describe('valueIds', () => {
+    beforeEach(() => {
+      store = createStore();
+      listener = createStoreListener(store);
+      listener.listenToValueIds('/');
+    });
+
+    const setMutatorListeners = () => {
+      store.addValueIdsListener(getValuesMutator(), true);
+    };
+
+    test('setValues', () => {
+      setMutatorListeners();
+      store.setValues({v1: 1});
+      expectChanges(listener, '/', ['v1', 'v0']);
+      expectNoChanges(listener);
+    });
+
+    test('setPartialValues', () => {
+      store.setValues({v1: 1});
+      expectChanges(listener, '/', ['v1']);
+      setMutatorListeners();
+      // @ts-ignore
+      store.setPartialValues({v2: 1, v3: undefined});
+      expectChanges(listener, '/', ['v1', 'v2', 'v0']);
+      expectNoChanges(listener);
+    });
+
+    test('setValue', () => {
+      setMutatorListeners();
+      store.setValue('v1', 1);
+      expectChanges(listener, '/', ['v1', 'v0']);
+      expectNoChanges(listener);
+    });
+  });
+
+  describe('value', () => {
+    beforeEach(() => {
+      store = createStore();
+      listener = createStoreListener(store);
+      listener.listenToValue('/v1', 'v1');
+      listener.listenToValue('/v2', 'v2');
+      listener.listenToValue('/v*', null);
+    });
+
+    const setMutatorListeners = () => {
+      store.addValueListener('v1', getValueMutator('_1'), true);
+      store.addValueListener('v2', getValueMutator('_2'), true);
+      store.addValueListener(null, getValueMutator('__'), true);
+    };
+
+    test('setValues', () => {
+      setMutatorListeners();
+      store.setValues({v1: 1});
+      expectChanges(listener, '/v1', {v1: 1});
+      expectChanges(listener, '/v*', {v1: 1}, {v1_1: 1}, {v1__: 1});
+      expectNoChanges(listener);
+    });
+
+    test('setPartialValues', () => {
+      store.setValues({v1: 1});
+      expectChanges(listener, '/v1', {v1: 1});
+      expectChanges(listener, '/v*', {v1: 1});
+      setMutatorListeners();
+      // @ts-ignore
+      store.setPartialValues({v2: 1, v3: undefined});
+      expectChanges(listener, '/v2', {v2: 1});
+      expectChanges(listener, '/v*', {v2: 1}, {v2_2: 1}, {v2__: 1});
+      expectNoChanges(listener);
+    });
+
+    test('setValue', () => {
+      setMutatorListeners();
+      store.setValue('v1', 1);
+      expectChanges(listener, '/v1', {v1: 1});
+      expectChanges(listener, '/v*', {v1: 1}, {v1_1: 1}, {v1__: 1});
+      expectNoChanges(listener);
+    });
+  });
+
+  describe('invalid value', () => {
+    beforeEach(() => {
+      store = createStore();
+      listener = createStoreListener(store);
+      listener.listenToInvalidValue('/v1', 'v1');
+      listener.listenToInvalidValue('/v2', 'v2');
+      listener.listenToInvalidValue('/v*', null);
+    });
+
+    const setMutatorListeners = () => {
+      store.addInvalidValueListener('v1', getInvalidValueMutator('_1'), true);
+      store.addInvalidValueListener('v2', getInvalidValueMutator('_2'), true);
+      store.addInvalidValueListener(null, getInvalidValueMutator('__'), true);
+    };
+
+    test('setValues', () => {
+      setMutatorListeners();
+      // @ts-ignore
+      store.setValues({v1: [1]});
+      expectChanges(listener, '/v1', {v1: [[1]]});
+      expectChanges(
+        listener,
+        '/v*',
+        {v1: [[1]]},
+        {v1_1: [[[1]]]},
+        {v1__: [[[1]]]},
+      );
+      expectNoChanges(listener);
+    });
+
+    test('setPartialValues', () => {
+      store.setValues({v1: 1});
+      setMutatorListeners();
+      // @ts-ignore
+      store.setPartialValues({v2: [2], v3: undefined});
+      expectChanges(listener, '/v2', {v2: [[2]]});
+      expectChanges(
+        listener,
+        '/v*',
+        {v2: [[2]]},
+        {v3: [undefined]},
+        {v2_2: [[[2]]]},
+        {v2__: [[[2]]]},
+        {v3__: [[undefined]]},
+      );
+      expectNoChanges(listener);
+    });
+
+    test('setValue', () => {
+      setMutatorListeners();
+      // @ts-ignore
+      store.setValue('v1', [1]);
+      expectChanges(listener, '/v1', {v1: [[1]]});
+      expectChanges(
+        listener,
+        '/v*',
+        {v1: [[1]]},
+        {v1_1: [[[1]]]},
+        {v1__: [[[1]]]},
       );
       expectNoChanges(listener);
     });

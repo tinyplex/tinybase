@@ -845,7 +845,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
       if (!emptyOtherListeners) {
         let valuesChanged;
-        collForEach(changedValues, ([oldValue, newValue], valueId) => {
+        collForEach(changes[1], ([oldValue, newValue], valueId) => {
           if (newValue !== oldValue) {
             callListeners(
               valueListeners[mutator],
