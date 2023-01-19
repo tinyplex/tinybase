@@ -2226,6 +2226,244 @@ describe('tablesSchemas applied before data set, listening', () => {
   });
 });
 
+describe('valuesSchemas applied before data set, listening', () => {
+  describe('Values', () => {
+    test('matching', () => {
+      const store = createStore().setValuesSchema({v1: {type: 'number'}});
+      const listener = createStoreListener(store);
+      listener.listenToValues('/');
+      listener.listenToValue('/v*', null);
+      listener.listenToInvalidValue('invalids', null);
+      store.setValues({v1: 1});
+      expect(store.getValues()).toEqual({v1: 1});
+      expectChanges(listener, '/', {v1: 1});
+      expectChanges(listener, '/v*', {v1: 1});
+      expectNoChanges(listener);
+    });
+
+    test('non-matching value', () => {
+      const store = createStore().setValuesSchema({v1: {type: 'number'}});
+      const listener = createStoreListener(store);
+      listener.listenToValues('/');
+      listener.listenToValue('/v*', null);
+      listener.listenToInvalidValue('invalids', null);
+      store.setValues({v1: 1, v2: 2});
+      expect(store.getValues()).toEqual({v1: 1});
+      expectChanges(listener, '/', {v1: 1});
+      expectChanges(listener, '/v*', {v1: 1});
+      expectChanges(listener, 'invalids', {v2: [2]});
+      expectNoChanges(listener);
+    });
+
+    test('non-matching some value types, defaulting', () => {
+      const store = createStore().setValuesSchema({
+        v1: {type: 'number', default: 2},
+      });
+      const listener = createStoreListener(store);
+      listener.listenToValues('/');
+      listener.listenToValue('/v*', null);
+      listener.listenToInvalidValue('invalids', null);
+      store.setValues({v1: 1});
+      expect(store.getValues()).toEqual({v1: 1});
+      store.setValues({v1: true});
+      expect(store.getValues()).toEqual({v1: 2});
+      store.setValues({v1: 'a'});
+      expect(store.getValues()).toEqual({v1: 2});
+      expectChanges(listener, '/', {v1: 1}, {v1: 2});
+      expectChanges(listener, '/v*', {v1: 1}, {v1: 2});
+      expectChanges(listener, 'invalids', {v1: [true]}, {v1: ['a']});
+      expectNoChanges(listener);
+    });
+
+    test('Setting, changing', () => {
+      const store = createStore()
+        .setValues({v1: 1})
+        .setValuesSchema({v1: {type: 'number', default: 2}});
+      const listener = createStoreListener(store);
+      listener.listenToValues('/');
+      listener.listenToValue('/v*', null);
+      listener.listenToInvalidValue('invalids', null);
+      store.setValues({v1: 3}).setValues({v1: true}).setValues({v1: 'a'});
+      expect(store.getValues()).toEqual({v1: 2});
+      expectChanges(listener, '/', {v1: 3}, {v1: 2});
+      expectChanges(listener, '/v*', {v1: 3}, {v1: 2});
+      expectChanges(listener, 'invalids', {v1: [true]}, {v1: ['a']});
+      expectNoChanges(listener);
+    });
+
+    test('Deleting', () => {
+      const store = createStore()
+        .setValues({v1: 1})
+        .setValuesSchema({v1: {type: 'number'}});
+      const listener = createStoreListener(store);
+      listener.listenToValues('/');
+      listener.listenToValue('/v*', null);
+      listener.listenToInvalidValue('invalids', null);
+      store.delValues();
+      expect(store.getValues()).toEqual({});
+      expectChanges(listener, '/', {});
+      expectChanges(listener, '/v*', {v1: undefined});
+      expectNoChanges(listener);
+    });
+
+    test('Deleting, defaulted', () => {
+      const store = createStore()
+        .setValues({v1: 1})
+        .setValuesSchema({v1: {type: 'number', default: 2}});
+      const listener = createStoreListener(store);
+      listener.listenToValues('/');
+      listener.listenToValue('/v*', null);
+      listener.listenToInvalidValue('invalids', null);
+      store.delValues();
+      expect(store.getValues()).toEqual({v1: 2});
+      expectChanges(listener, '/', {v1: 2});
+      expectChanges(listener, '/v*', {v1: 2});
+      expectNoChanges(listener);
+    });
+  });
+
+  describe('PartialValues', () => {
+    test('matching', () => {
+      const store = createStore().setValuesSchema({
+        v1: {type: 'number'},
+        v2: {type: 'number'},
+      });
+      const listener = createStoreListener(store);
+      listener.listenToValues('/');
+      listener.listenToValue('/v*', null);
+      listener.listenToInvalidValue('invalids', null);
+      store.setPartialValues({v1: 1});
+      expect(store.getValues()).toEqual({v1: 1});
+      expectChanges(listener, '/', {v1: 1});
+      expectChanges(listener, '/v*', {v1: 1});
+      expectNoChanges(listener);
+      store.setPartialValues({v2: 2});
+      expect(store.getValues()).toEqual({v1: 1, v2: 2});
+      expectChanges(listener, '/', {v1: 1, v2: 2});
+      expectChanges(listener, '/v*', {v2: 2});
+      expectNoChanges(listener);
+    });
+
+    test('default missing cell', () => {
+      const store = createStore().setValuesSchema({
+        v1: {type: 'number'},
+        v2: {type: 'number'},
+        v3: {type: 'number', default: 3},
+      });
+      const listener = createStoreListener(store);
+      listener.listenToValues('/');
+      listener.listenToValue('/v*', null);
+      listener.listenToInvalidValue('invalids', null);
+      store.setPartialValues({v1: 1});
+      expect(store.getValues()).toEqual({v1: 1, v3: 3});
+      expectChanges(listener, '/', {v3: 3, v1: 1}); // v3 already defaulted
+      expectChanges(listener, '/v*', {v1: 1});
+      expectNoChanges(listener);
+      store.setPartialValues({v2: 2});
+      expect(store.getValues()).toEqual({v1: 1, v2: 2, v3: 3});
+      expectChangesNoJson(listener, '/', {v3: 3, v1: 1, v2: 2});
+      expectChanges(listener, '/v*', {v2: 2});
+      expectNoChanges(listener);
+    });
+
+    test('non-matching some cell types', () => {
+      const store = createStore().setValuesSchema({
+        v1: {type: 'number'},
+        v2: {type: 'number'},
+        v3: {type: 'number'},
+      });
+      const listener = createStoreListener(store);
+      listener.listenToValues('/');
+      listener.listenToValue('/v*', null);
+      listener.listenToInvalidValue('invalids', null);
+      store
+        .setPartialValues({v1: 1, v2: 2, v3: 3})
+        .setPartialValues({v1: 2, v2: 'a'})
+        .setPartialValues({v1: 3, v2: true});
+      expect(store.getValues()).toEqual({v1: 3, v2: 2, v3: 3});
+      expectChanges(
+        listener,
+        '/',
+        {v1: 1, v2: 2, v3: 3},
+        {v1: 2, v2: 2, v3: 3},
+        {v1: 3, v2: 2, v3: 3},
+      );
+      expectChanges(
+        listener,
+        '/v*',
+        {v1: 1},
+        {v2: 2},
+        {v3: 3},
+        {v1: 2},
+        {v1: 3},
+      );
+      expectChanges(listener, 'invalids', {v2: ['a']}, {v2: [true]});
+      expectNoChanges(listener);
+    });
+  });
+
+  describe('Value', () => {
+    test('matching', () => {
+      const store = createStore().setValuesSchema({
+        v1: {type: 'number'},
+        v2: {type: 'number'},
+      });
+      const listener = createStoreListener(store);
+      listener.listenToValues('/');
+      listener.listenToValue('/v*', null);
+      listener.listenToInvalidValue('invalids', null);
+      store.setValue('v1', 1);
+      expect(store.getValues()).toEqual({v1: 1});
+      expectChanges(listener, '/', {v1: 1});
+      expectChanges(listener, '/v*', {v1: 1});
+      expectNoChanges(listener);
+      store.setValue('v2', 2);
+      expect(store.getValues()).toEqual({v1: 1, v2: 2});
+      expectChanges(listener, '/', {v1: 1, v2: 2});
+      expectChanges(listener, '/v*', {v2: 2});
+      expectNoChanges(listener);
+    });
+
+    test('default missing cell', () => {
+      const store = createStore().setValuesSchema({
+        v1: {type: 'number'},
+        v2: {type: 'number'},
+        v3: {type: 'number', default: 3},
+      });
+      const listener = createStoreListener(store);
+      listener.listenToValues('/');
+      listener.listenToValue('/v*', null);
+      listener.listenToInvalidValue('invalids', null);
+      store.setValue('v1', 1);
+      expect(store.getValues()).toEqual({v1: 1, v3: 3});
+      expectChanges(listener, '/', {v3: 3, v1: 1}); // v3 already defaulted
+      expectChanges(listener, '/v*', {v1: 1});
+      expectNoChanges(listener);
+      store.setValue('v2', 2);
+      expect(store.getValues()).toEqual({v1: 1, v2: 2, v3: 3});
+      expectChangesNoJson(listener, '/', {v3: 3, v1: 1, v2: 2});
+      expectChanges(listener, '/v*', {v2: 2});
+      expectNoChanges(listener);
+    });
+
+    test('non-matching some cell types', () => {
+      const store = createStore().setValuesSchema({
+        v1: {type: 'number'},
+      });
+      const listener = createStoreListener(store);
+      listener.listenToValues('/');
+      listener.listenToValue('/v*', null);
+      listener.listenToInvalidValue('invalids', null);
+      store.setValue('v1', 1).setValue('v1', 'a').setValue('v1', true);
+      expect(store.getValues()).toEqual({v1: 1});
+      expectChanges(listener, '/', {v1: 1});
+      expectChanges(listener, '/v*', {v1: 1});
+      expectChanges(listener, 'invalids', {v1: ['a']}, {v1: [true]});
+      expectNoChanges(listener);
+    });
+  });
+});
+
 describe('Miscellaneous', () => {
   test('Using existing value', () => {
     const store = createStore().setTablesSchema({t1: {c1: {type: 'number'}}});

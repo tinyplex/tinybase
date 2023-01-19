@@ -122,6 +122,16 @@ describe('Setting invalid', () => {
     expect(store.getTables()).toEqual(validTables);
   });
 
+  test.each(INVALID_OBJECTS)('Values; %s', (_name, values: any) => {
+    const store = createStore().setValues(values);
+    expect(store.getValues()).toEqual({});
+  });
+
+  test.each(INVALID_OBJECTS)('Partial Values; %s', (_name, values: any) => {
+    const store = createStore().setPartialValues(values);
+    expect(store.getValues()).toEqual({});
+  });
+
   test.each(INVALID_CELLS_OR_VALUES)('first Value; %s', (_name, value: any) => {
     const store = createStore().setValues({v1: value});
     expect(store.getValues()).toEqual({});
