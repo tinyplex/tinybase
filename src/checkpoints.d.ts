@@ -115,6 +115,8 @@ export type CheckpointsListenerStats = {
  * method), and add listeners for when the list checkpoints changes (with the
  * addCheckpointIdsListener method).
  *
+ * Checkpoints work for both changes to tabular data and to keyed value data.
+ *
  * Every checkpoint can be given a label which can be used to describe the
  * actions that changed the Store before this checkpoint. This can be useful for
  * interfaces that let users 'Undo [last action]'.
@@ -127,7 +129,9 @@ export type CheckpointsListenerStats = {
  * registering and removing a listener for them.
  *
  * ```js
- * const store = createStore().setTables({pets: {fido: {sold: false}}});
+ * const store = createStore()
+ *   .setTables({pets: {fido: {sold: false}}})
+ *   .setValue('open', true);
  *
  * const checkpoints = createCheckpoints(store);
  * checkpoints.setSize(200);
@@ -145,14 +149,25 @@ export type CheckpointsListenerStats = {
  * console.log(checkpoints.getCheckpointIds());
  * // -> [[], '0', ['1']]
  *
+ * store.setValue('open', false);
+ * checkpoints.addCheckpoint('closed');
+ * console.log(checkpoints.getCheckpointIds());
+ * // -> [['0'], '2', []]
+ *
+ * checkpoints.goBackward();
+ * console.log(store.getValue('open'));
+ * // -> true
+ * console.log(checkpoints.getCheckpointIds());
+ * // -> [[], '0', ['2']]
+ *
  * const listenerId = checkpoints.addCheckpointIdsListener(() => {
  *   console.log(checkpoints.getCheckpointIds());
  * });
  * store.setCell('pets', 'fido', 'species', 'dog');
  * // -> [['0'], undefined, []]
  * checkpoints.addCheckpoint();
- * // -> [['0'], '2', []]
- * // Previous redo of checkpoint '1' is now not possible.
+ * // -> [['0'], '3', []]
+ * // Previous redo of checkpoints '1' and '2' are now not possible.
  *
  * checkpoints.delListener(listenerId);
  * checkpoints.destroy();

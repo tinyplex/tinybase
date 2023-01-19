@@ -1,4 +1,4 @@
-import {Cell, CellOrUndefined, Store} from './store.d';
+import {CellOrUndefined, Store, ValueOrUndefined} from './store.d';
 import {
   CheckpointCallback,
   CheckpointIds,
@@ -31,21 +31,22 @@ import {
   arrayUnshift,
 } from './common/array';
 import {collForEach, collHas, collIsEmpty, collSize2} from './common/coll';
+import {setOrDelCell, setOrDelValue} from './common/cell';
 import {EMPTY_STRING} from './common/strings';
 import {IdSet2} from './common/set';
 import {getCreateFunction} from './common/definable';
 import {getListenerFunctions} from './common/listeners';
 import {objFreeze} from './common/obj';
-import {setOrDelCell} from './common/cell';
 
-type OldNew = [Cell | undefined, Cell | undefined];
-type Delta = IdMap2<IdMap<OldNew>>;
+type CellsDelta = IdMap2<IdMap<[CellOrUndefined, CellOrUndefined]>>;
+type ValuesDelta = IdMap<[ValueOrUndefined, ValueOrUndefined]>;
 
 export const createCheckpoints: typeof createCheckpointsDecl =
   getCreateFunction((store: Store): Checkpoints => {
     let backwardIdsSize = 100;
     let currentId: Id | undefined;
-    let delta: Delta = mapNew();
+    let cellsDelta: CellsDelta = mapNew();
+    let valuesDelta: ValuesDelta = mapNew();
     let listening = 1;
     let nextCheckpointId: number;
     let checkpointsChanged: 0 | 1;
@@ -54,15 +55,19 @@ export const createCheckpoints: typeof createCheckpointsDecl =
     const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
       () => checkpoints,
     );
-    const deltas: IdMap<Delta> = mapNew();
+    const deltas: IdMap<[CellsDelta, ValuesDelta]> = mapNew();
     const labels: IdMap<string> = mapNew();
     const backwardIds: Ids = [];
     const forwardIds: Ids = [];
 
     const updateStore = (oldOrNew: 0 | 1, checkpointId: Id) => {
       listening = 0;
-      store.transaction(() =>
-        collForEach(mapGet(deltas, checkpointId), (table, tableId) =>
+      store.transaction(() => {
+        const [cellsDelta, valuesDelta] = mapGet(deltas, checkpointId) as [
+          CellsDelta,
+          ValuesDelta,
+        ];
+        collForEach(cellsDelta, (table, tableId) =>
           collForEach(table, (row, rowId) =>
             collForEach(row, (oldNew, cellId) =>
               setOrDelCell(
@@ -74,8 +79,11 @@ export const createCheckpoints: typeof createCheckpointsDecl =
               ),
             ),
           ),
-        ),
-      );
+        );
+        collForEach(valuesDelta, (oldNew, valueId) =>
+          setOrDelValue(store, valueId, oldNew[oldOrNew] as CellOrUndefined),
+        );
+      });
       listening = 1;
     };
 
@@ -97,23 +105,31 @@ export const createCheckpoints: typeof createCheckpointsDecl =
         arrayLength(backwardIds) - backwardIdsSize,
       );
 
-    const listenerId = store.addCellListener(
+    const storeChanged = () =>
+      ifNotUndefined(currentId, () => {
+        arrayPush(backwardIds, currentId as Id);
+        trimBackwardsIds();
+        clearCheckpointIds(forwardIds);
+        currentId = undefined;
+        checkpointsChanged = 1;
+      });
+
+    const storeUnchanged = () => {
+      currentId = arrayPop(backwardIds);
+      checkpointsChanged = 1;
+    };
+
+    const cellListenerId = store.addCellListener(
       null,
       null,
       null,
       (_store, tableId, rowId, cellId, newCell, oldCell) => {
         if (listening) {
-          ifNotUndefined(currentId, () => {
-            arrayPush(backwardIds, currentId as Id);
-            trimBackwardsIds();
-            clearCheckpointIds(forwardIds);
-            currentId = undefined;
-            checkpointsChanged = 1;
-          });
+          storeChanged();
           const table = mapEnsure<
             Id,
             IdMap2<[CellOrUndefined, CellOrUndefined]>
-          >(delta, tableId, mapNew);
+          >(cellsDelta, tableId, mapNew);
           const row = mapEnsure<Id, IdMap<[CellOrUndefined, CellOrUndefined]>>(
             table,
             rowId,
@@ -125,15 +141,35 @@ export const createCheckpoints: typeof createCheckpointsDecl =
             () => [oldCell, undefined],
           );
           oldNew[1] = newCell;
-          if (oldNew[0] === newCell) {
-            if (collIsEmpty(mapSet(row, cellId))) {
-              if (collIsEmpty(mapSet(table, rowId))) {
-                if (collIsEmpty(mapSet(delta, tableId))) {
-                  currentId = arrayPop(backwardIds);
-                  checkpointsChanged = 1;
-                }
-              }
-            }
+          if (
+            oldNew[0] === newCell &&
+            collIsEmpty(mapSet(row, cellId)) &&
+            collIsEmpty(mapSet(table, rowId)) &&
+            collIsEmpty(mapSet(cellsDelta, tableId))
+          ) {
+            storeUnchanged();
+          }
+          callListenersIfChanged();
+        }
+      },
+    );
+
+    const valueListenerId = store.addValueListener(
+      null,
+      (_store, valueId, newValue, oldValue) => {
+        if (listening) {
+          storeChanged();
+          const oldNew = mapEnsure<Id, [ValueOrUndefined, ValueOrUndefined]>(
+            valuesDelta,
+            valueId,
+            () => [oldValue, undefined],
+          );
+          oldNew[1] = newValue;
+          if (
+            oldNew[0] === newValue &&
+            collIsEmpty(mapSet(valuesDelta, valueId))
+          ) {
+            storeUnchanged();
           }
           callListenersIfChanged();
         }
@@ -143,9 +179,10 @@ export const createCheckpoints: typeof createCheckpointsDecl =
     const addCheckpointImpl = (label = EMPTY_STRING): Id => {
       if (isUndefined(currentId)) {
         currentId = EMPTY_STRING + nextCheckpointId++;
-        mapSet(deltas, currentId, delta);
+        mapSet(deltas, currentId, [cellsDelta, valuesDelta]);
         setCheckpoint(currentId, label);
-        delta = mapNew();
+        cellsDelta = mapNew();
+        valuesDelta = mapNew();
         checkpointsChanged = 1;
       }
       return currentId as Id;
@@ -266,7 +303,8 @@ export const createCheckpoints: typeof createCheckpointsDecl =
     };
 
     const destroy = (): void => {
-      store.delListener(listenerId);
+      store.delListener(cellListenerId);
+      store.delListener(valueListenerId);
     };
 
     const getListenerStats = (): CheckpointsListenerStats =>
