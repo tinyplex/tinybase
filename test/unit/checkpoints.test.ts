@@ -3,6 +3,7 @@ import {
   Id,
   Store,
   Tables,
+  Values,
   createCheckpoints,
   createStore,
 } from '../../lib/debug/tinybase';
@@ -16,40 +17,54 @@ import {
 let store: Store;
 let checkpoints: Checkpoints;
 
-const setCells = () => {
-  const listener = createCheckpointsListener(checkpoints);
-  const listenerId = listener.listenToCheckpoints('setCells');
-  const c0: [Id, Tables] = [
-    checkpoints.getCheckpointIds()[1] as Id,
+const setContent = () => {
+  const getState = (first?: boolean): [Id, Tables, Values] => [
+    first
+      ? (checkpoints.getCheckpointIds()[1] as Id)
+      : checkpoints.addCheckpoint(),
     store.getTables(),
+    store.getValues(),
   ];
-  store.setTables({t1: {r1: {c1: 1}}});
+  const listener = createCheckpointsListener(checkpoints);
+  const listenerId = listener.listenToCheckpoints('setContent');
+  const c0 = getState(true);
+
+  store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
   expect(checkpoints.getCheckpointIds()).toEqual([[c0[0]], undefined, []]);
-  expectChanges(listener, 'setCells', [[c0[0]], undefined, []]);
+  expectChanges(listener, 'setContent', [[c0[0]], undefined, []]);
   store.setCell('t1', 'r1', 'c2', 2);
   store.delCell('t1', 'r1', 'c1');
   store.setCell('t1', 'r1', 'c2', '2');
-  const c1: [Id, Tables] = [checkpoints.addCheckpoint(), store.getTables()];
-  expectChanges(listener, 'setCells', [[c0[0]], c1[0], []]);
+  store.setValue('v2', 2);
+  store.delValue('v1');
+  store.setValue('v2', '2');
+  const c1 = getState();
+
+  expectChanges(listener, 'setContent', [[c0[0]], c1[0], []]);
   store.setRow('t1', 'r1', {c1: '1'});
-  expectChanges(listener, 'setCells', [[c0[0], c1[0]], undefined, []]);
+  expectChanges(listener, 'setContent', [[c0[0], c1[0]], undefined, []]);
   store.delRow('t1', 'r1');
   store.setRow('t1', 'r1', {c2: 2});
   store.setRow('t1', 'r1', {c1: 1});
   store.setPartialRow('t1', 'r1', {c2: 2});
   store.addRow('t2', {c2: 2});
-  const c2: [Id, Tables] = [checkpoints.addCheckpoint(), store.getTables()];
-  expectChanges(listener, 'setCells', [[c0[0], c1[0]], c2[0], []]);
+  store.delValues();
+  store.setValues({v3: 3});
+  store.setPartialValues({v4: 4});
+  const c2 = getState();
+
+  expectChanges(listener, 'setContent', [[c0[0], c1[0]], c2[0], []]);
   store.setTable('t1', {r1: {c1: 1}});
-  expectChanges(listener, 'setCells', [[c0[0], c1[0], c2[0]], undefined, []]);
+  expectChanges(listener, 'setContent', [[c0[0], c1[0], c2[0]], undefined, []]);
   store.delTable('t1');
   store.setTable('t1', {r1: {c1: 1}});
   store.setTable('t1', {r2: {c2: 1}});
   store.setTable('t2', {r2: {c2: 2}});
-  const c3: [Id, Tables] = [checkpoints.addCheckpoint(), store.getTables()];
-  expectChanges(listener, 'setCells', [[c0[0], c1[0], c2[0]], c3[0], []]);
+  const c3 = getState();
+
+  expectChanges(listener, 'setContent', [[c0[0], c1[0], c2[0]], c3[0], []]);
   store.setTables({t1: {r1: {c1: 1}}});
-  expectChanges(listener, 'setCells', [
+  expectChanges(listener, 'setContent', [
     [c0[0], c1[0], c2[0], c3[0]],
     undefined,
     [],
@@ -57,8 +72,9 @@ const setCells = () => {
   store.delTables();
   store.setTables({t1: {r1: {c1: 1}}});
   store.setTables({t2: {r2: {c2: 2}}});
-  const c4: [Id, Tables] = [checkpoints.addCheckpoint(), store.getTables()];
-  expectChanges(listener, 'setCells', [
+  const c4 = getState();
+
+  expectChanges(listener, 'setContent', [
     [c0[0], c1[0], c2[0], c3[0]],
     c4[0],
     [],
@@ -94,9 +110,20 @@ describe('Basics', () => {
     expectNoChanges(listener);
   });
 
-  test('set checkpoint', () => {
+  test('set checkpoint, tabular', () => {
     const id0 = checkpoints.getCheckpointIds()[1];
     store.setCell('t1', 'r1', 'c1', 1);
+    expectChanges(listener, '/', [[id0], undefined, []]);
+    const id1 = checkpoints.addCheckpoint('checkpoint 1');
+    expectChanges(listener, '/', [[id0], id1, []]);
+    expect(checkpoints.getCheckpointIds()).toEqual([[id0], id1, []]);
+    expect(checkpoints.getCheckpoint(id1)).toEqual('checkpoint 1');
+    expectNoChanges(listener);
+  });
+
+  test('set checkpoint, keyed values', () => {
+    const id0 = checkpoints.getCheckpointIds()[1];
+    store.setValue('v1', 1);
     expectChanges(listener, '/', [[id0], undefined, []]);
     const id1 = checkpoints.addCheckpoint('checkpoint 1');
     expectChanges(listener, '/', [[id0], id1, []]);
@@ -113,7 +140,7 @@ describe('Basics', () => {
     expectNoChanges(listener);
   });
 
-  test('set two labelled checkpoints without changes', () => {
+  test('set two labelled checkpoints without changes, tabular', () => {
     const id0 = checkpoints.getCheckpointIds()[1];
     store.setCell('t1', 'r1', 'c1', 1);
     expectChanges(listener, '/', [[id0], undefined, []]);
@@ -127,7 +154,21 @@ describe('Basics', () => {
     expectNoChanges(listener);
   });
 
-  test('set second checkpoint without changes', () => {
+  test('set two labelled checkpoints without changes, keyed value', () => {
+    const id0 = checkpoints.getCheckpointIds()[1];
+    store.setValue('v1', 1);
+    expectChanges(listener, '/', [[id0], undefined, []]);
+    const id1 = checkpoints.addCheckpoint('label1');
+    const id2 = checkpoints.addCheckpoint('label2');
+    expect(id1).toEqual(id2);
+    expect(checkpoints.getCheckpoint(id1)).toEqual('label1');
+    expect(checkpoints.getCheckpoint(id2)).toEqual('label1');
+    expect(checkpoints.getCheckpointIds()).toEqual([[id0], id1, []]);
+    expectChanges(listener, '/', [[id0], id1, []]);
+    expectNoChanges(listener);
+  });
+
+  test('set second checkpoint without changes, tabular', () => {
     const id0 = checkpoints.getCheckpointIds()[1];
     store.setCell('t1', 'r1', 'c1', 1);
     expectChanges(listener, '/', [[id0], undefined, []]);
@@ -140,7 +181,20 @@ describe('Basics', () => {
     expectNoChanges(listener);
   });
 
-  test('make changes after a checkpoint', () => {
+  test('set second checkpoint without changes, keyed value', () => {
+    const id0 = checkpoints.getCheckpointIds()[1];
+    store.setValue('v1', 1);
+    expectChanges(listener, '/', [[id0], undefined, []]);
+    const id1 = checkpoints.addCheckpoint();
+    expectChanges(listener, '/', [[id0], id1, []]);
+    const id2 = checkpoints.addCheckpoint();
+    expect(id0).not.toEqual(id1);
+    expect(id1).toEqual(id2);
+    expect(checkpoints.getCheckpointIds()).toEqual([[id0], id1, []]);
+    expectNoChanges(listener);
+  });
+
+  test('make changes after a checkpoint, tabular', () => {
     const id0 = checkpoints.getCheckpointIds()[1];
     store.setCell('t1', 'r1', 'c1', 1);
     expectChanges(listener, '/', [[id0], undefined, []]);
@@ -152,7 +206,19 @@ describe('Basics', () => {
     expectNoChanges(listener);
   });
 
-  test('make net-no changes after a checkpoint', () => {
+  test('make changes after a checkpoint, keyed value', () => {
+    const id0 = checkpoints.getCheckpointIds()[1];
+    store.setValue('v1', 1);
+    expectChanges(listener, '/', [[id0], undefined, []]);
+    const id1 = checkpoints.addCheckpoint();
+    expectChanges(listener, '/', [[id0], id1, []]);
+    store.setValue('v1', 2);
+    expectChanges(listener, '/', [[id0, id1], undefined, []]);
+    expect(checkpoints.getCheckpointIds()).toEqual([[id0, id1], undefined, []]);
+    expectNoChanges(listener);
+  });
+
+  test('make net-no changes after a checkpoint, tabular', () => {
     const id0 = checkpoints.getCheckpointIds()[1];
     store.setCell('t1', 'r1', 'c1', 1);
     expectChanges(listener, '/', [[id0], undefined, []]);
@@ -165,6 +231,22 @@ describe('Basics', () => {
     store.delTable('t2');
     store.delRow('t3', 'r3');
     store.delCell('t1', 'r2', 'c2');
+    expectChanges(listener, '/', [[id0], id1, []]);
+    expect(checkpoints.getCheckpointIds()).toEqual([[id0], id1, []]);
+    expectNoChanges(listener);
+  });
+
+  test('make net-no changes after a checkpoint, keyed values', () => {
+    const id0 = checkpoints.getCheckpointIds()[1];
+    store.setValue('v1', 1);
+    expectChanges(listener, '/', [[id0], undefined, []]);
+    const id1 = checkpoints.addCheckpoint();
+    expectChanges(listener, '/', [[id0], id1, []]);
+    store.setValues({v1: 1, v2: 2});
+    expectChanges(listener, '/', [[id0, id1], undefined, []]);
+    store.setValue('v3', 3);
+    store.delValue('v3');
+    store.delValue('v2');
     expectChanges(listener, '/', [[id0], id1, []]);
     expect(checkpoints.getCheckpointIds()).toEqual([[id0], id1, []]);
     expectNoChanges(listener);
@@ -192,7 +274,13 @@ describe('Moving around', () => {
   });
 
   test('goBackward', () => {
-    const [[id0, s0], [id1, s1], [id2, s2], [id3, s3], [id4, s4]] = setCells();
+    const [
+      [id0, t0, v0],
+      [id1, t1, v1],
+      [id2, t2, v2],
+      [id3, t3, v3],
+      [id4, t4, v4],
+    ] = setContent();
     const listener = createCheckpointsListener(checkpoints);
     listener.listenToCheckpoints('/');
     store.setCell('t1', 'r1', 'c1', 2);
@@ -200,7 +288,9 @@ describe('Moving around', () => {
     checkpoints.goBackward();
     const [, , [id5]] = checkpoints.getCheckpointIds();
     expectChanges(listener, '/', [[id0, id1, id2, id3], id4, [id5]]);
-    expect(store.getTables()).toEqual(s4);
+    expect(store.getTables()).toEqual(t4);
+    expect(store.getValues()).toEqual(v4);
+
     expect(checkpoints.getCheckpointIds()).toEqual([
       [id0, id1, id2, id3],
       id4,
@@ -208,7 +298,9 @@ describe('Moving around', () => {
     ]);
     checkpoints.goBackward();
     expectChanges(listener, '/', [[id0, id1, id2], id3, [id4, id5]]);
-    expect(store.getTables()).toEqual(s3);
+    expect(store.getTables()).toEqual(t3);
+    expect(store.getValues()).toEqual(v3);
+
     expect(checkpoints.getCheckpointIds()).toEqual([
       [id0, id1, id2],
       id3,
@@ -216,7 +308,9 @@ describe('Moving around', () => {
     ]);
     checkpoints.goBackward();
     expectChanges(listener, '/', [[id0, id1], id2, [id3, id4, id5]]);
-    expect(store.getTables()).toEqual(s2);
+    expect(store.getTables()).toEqual(t2);
+    expect(store.getValues()).toEqual(v2);
+
     expect(checkpoints.getCheckpointIds()).toEqual([
       [id0, id1],
       id2,
@@ -224,7 +318,9 @@ describe('Moving around', () => {
     ]);
     checkpoints.goBackward();
     expectChanges(listener, '/', [[id0], id1, [id2, id3, id4, id5]]);
-    expect(store.getTables()).toEqual(s1);
+    expect(store.getTables()).toEqual(t1);
+    expect(store.getValues()).toEqual(v1);
+
     expect(checkpoints.getCheckpointIds()).toEqual([
       [id0],
       id1,
@@ -232,14 +328,18 @@ describe('Moving around', () => {
     ]);
     checkpoints.goBackward();
     expectChanges(listener, '/', [[], id0, [id1, id2, id3, id4, id5]]);
-    expect(store.getTables()).toEqual(s0);
+    expect(store.getTables()).toEqual(t0);
+    expect(store.getValues()).toEqual(v0);
+
     expect(checkpoints.getCheckpointIds()).toEqual([
       [],
       id0,
       [id1, id2, id3, id4, id5],
     ]);
     checkpoints.goBackward();
-    expect(store.getTables()).toEqual(s0);
+    expect(store.getTables()).toEqual(t0);
+    expect(store.getValues()).toEqual(v0);
+
     expect(checkpoints.getCheckpointIds()).toEqual([
       [],
       id0,
@@ -249,12 +349,14 @@ describe('Moving around', () => {
   });
 
   test('goTo', () => {
-    const [[id0], [id1], [id2, s2], [id3], [id4, s4]] = setCells();
+    const [[id0], [id1], [id2, t2, v2], [id3], [id4, t4, v4]] = setContent();
     const listener = createCheckpointsListener(checkpoints);
     listener.listenToCheckpoints('/');
     checkpoints.goTo(id2);
     expectChanges(listener, '/', [[id0, id1], id2, [id3, id4]]);
-    expect(store.getTables()).toEqual(s2);
+    expect(store.getTables()).toEqual(t2);
+    expect(store.getValues()).toEqual(v2);
+
     expect(checkpoints.getCheckpointIds()).toEqual([
       [id0, id1],
       id2,
@@ -262,7 +364,9 @@ describe('Moving around', () => {
     ]);
     checkpoints.goTo(id4);
     expectChanges(listener, '/', [[id0, id1, id2, id3], id4, []]);
-    expect(store.getTables()).toEqual(s4);
+    expect(store.getTables()).toEqual(t4);
+    expect(store.getValues()).toEqual(v4);
+
     expect(checkpoints.getCheckpointIds()).toEqual([
       [id0, id1, id2, id3],
       id4,
@@ -272,12 +376,20 @@ describe('Moving around', () => {
   });
 
   test('goForward', () => {
-    const [[id0, s0], [id1, s1], [id2, s2], [id3, s3], [id4, s4]] = setCells();
+    const [
+      [id0, t0, v0],
+      [id1, t1, v1],
+      [id2, t2, v2],
+      [id3, t3, v3],
+      [id4, t4, v4],
+    ] = setContent();
     const listener = createCheckpointsListener(checkpoints);
     listener.listenToCheckpoints('/');
     checkpoints.goTo(id0);
     expectChanges(listener, '/', [[], id0, [id1, id2, id3, id4]]);
-    expect(store.getTables()).toEqual(s0);
+    expect(store.getTables()).toEqual(t0);
+    expect(store.getValues()).toEqual(v0);
+
     expect(checkpoints.getCheckpointIds()).toEqual([
       [],
       id0,
@@ -285,7 +397,9 @@ describe('Moving around', () => {
     ]);
     checkpoints.goForward();
     expectChanges(listener, '/', [[id0], id1, [id2, id3, id4]]);
-    expect(store.getTables()).toEqual(s1);
+    expect(store.getTables()).toEqual(t1);
+    expect(store.getValues()).toEqual(v1);
+
     expect(checkpoints.getCheckpointIds()).toEqual([
       [id0],
       id1,
@@ -293,7 +407,9 @@ describe('Moving around', () => {
     ]);
     checkpoints.goForward();
     expectChanges(listener, '/', [[id0, id1], id2, [id3, id4]]);
-    expect(store.getTables()).toEqual(s2);
+    expect(store.getTables()).toEqual(t2);
+    expect(store.getValues()).toEqual(v2);
+
     expect(checkpoints.getCheckpointIds()).toEqual([
       [id0, id1],
       id2,
@@ -301,7 +417,9 @@ describe('Moving around', () => {
     ]);
     checkpoints.goForward();
     expectChanges(listener, '/', [[id0, id1, id2], id3, [id4]]);
-    expect(store.getTables()).toEqual(s3);
+    expect(store.getTables()).toEqual(t3);
+    expect(store.getValues()).toEqual(v3);
+
     expect(checkpoints.getCheckpointIds()).toEqual([
       [id0, id1, id2],
       id3,
@@ -309,14 +427,18 @@ describe('Moving around', () => {
     ]);
     checkpoints.goForward();
     expectChanges(listener, '/', [[id0, id1, id2, id3], id4, []]);
-    expect(store.getTables()).toEqual(s4);
+    expect(store.getTables()).toEqual(t4);
+    expect(store.getValues()).toEqual(v4);
+
     expect(checkpoints.getCheckpointIds()).toEqual([
       [id0, id1, id2, id3],
       id4,
       [],
     ]);
     checkpoints.goForward();
-    expect(store.getTables()).toEqual(s4);
+    expect(store.getTables()).toEqual(t4);
+    expect(store.getValues()).toEqual(v4);
+
     expect(checkpoints.getCheckpointIds()).toEqual([
       [id0, id1, id2, id3],
       id4,
@@ -326,7 +448,7 @@ describe('Moving around', () => {
   });
 
   test('changes prevent going forward again', () => {
-    const [[id0], [id1], [id2], [id3], [id4]] = setCells();
+    const [[id0], [id1], [id2], [id3], [id4]] = setContent();
     const listener = createCheckpointsListener(checkpoints);
     listener.listenToCheckpoints('/');
     checkpoints.goTo(id2);
@@ -343,13 +465,13 @@ describe('Moving around', () => {
   });
 
   test('cannot go to non-existent checkpoints', () => {
-    const [[id0], [id1], [id2, s2], [id3], [id4]] = setCells();
+    const [[id0], [id1], [id2, t2], [id3], [id4]] = setContent();
     const listener = createCheckpointsListener(checkpoints);
     listener.listenToCheckpoints('/');
     checkpoints.goTo(id2);
     expectChanges(listener, '/', [[id0, id1], id2, [id3, id4]]);
     checkpoints.goTo('');
-    expect(store.getTables()).toEqual(s2);
+    expect(store.getTables()).toEqual(t2);
     expect(checkpoints.getCheckpointIds()).toEqual([
       [id0, id1],
       id2,
@@ -362,7 +484,7 @@ describe('Moving around', () => {
 describe('Miscellaneous', () => {
   test('clear', () => {
     expect(checkpoints.getCheckpointIds()).toEqual([[], '0', []]);
-    const [[id0], [id1], [id2], [id3], [id4]] = setCells();
+    const [[id0], [id1], [id2], [id3], [id4]] = setContent();
     const listener = createCheckpointsListener(checkpoints);
     const listenerId = listener.listenToCheckpoints('/');
     checkpoints.goBackward().goBackward();
@@ -382,7 +504,7 @@ describe('Miscellaneous', () => {
     expectChanges(listener, '/', [[], '0', []]);
     expectNoChanges(listener);
     checkpoints.delListener(listenerId);
-    setCells();
+    setContent();
     expect(checkpoints.getCheckpointIds()).toEqual([
       [id0, id1, id2, id3],
       id4,
@@ -501,7 +623,7 @@ describe('Miscellaneous', () => {
   });
 
   test('forEachCheckpoint', () => {
-    setCells();
+    setContent();
     checkpoints.setCheckpoint('2', 'two');
     checkpoints.setCheckpoint('3', 'three');
     const eachCheckpoint: any = {};
