@@ -4537,10 +4537,7 @@ export interface Store {
    * const listenerId = store.addInvalidValueListener(
    *   'open',
    *   (store, valueId, invalidValues) =>
-   *     store.setValue(
-   *       'invalid_updates',
-   *       JSON.stringify(invalidValues[0]),
-   *     ),
+   *     store.setValue('invalid_updates', JSON.stringify(invalidValues[0])),
    *   true,
    * );
    *
@@ -4798,12 +4795,9 @@ export interface Store {
    *   species: {dog: {price: 5}},
    * });
    *
-   * const listenerId = store.addRowIdsListener(
-   *   null,
-   *   (store, tableId) => {
-   *     console.log(`Row Ids listener called for ${tableId} table`);
-   *   },
-   * );
+   * const listenerId = store.addRowIdsListener(null, (store, tableId) => {
+   *   console.log(`Row Ids listener called for ${tableId} table`);
+   * });
    *
    * store.callListener(listenerId);
    * // -> 'Row Ids listener called for pets table'
