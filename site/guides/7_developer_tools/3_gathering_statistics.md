@@ -14,17 +14,19 @@ The getStoreStats method returns a StoreStats object, containing statistics
 about the Store. To get a basic summary, call the method with no arguments:
 
 ```js
-const store = createStore().setTable('pets', {
-  fido: {species: 'dog'},
-  felix: {species: 'cat'},
-  cujo: {species: 'dog', friendly: false},
-});
+const store = createStore()
+  .setTable('pets', {
+    fido: {species: 'dog'},
+    felix: {species: 'cat'},
+    cujo: {species: 'dog', friendly: false},
+  })
+  .setValues({open: true, employees: 3});
 
 const tools = createTools(store);
 const basicStats = tools.getStoreStats();
 
 console.log(basicStats);
-// -> {jsonLength: 103, totalTables: 1, totalRows: 3, totalCells: 4}
+// -> {jsonLength: 133, totalTables: 1, totalRows: 3, totalCells: 4, totalValues: 2}
 ```
 
 ## Detailed Statistics
