@@ -2491,6 +2491,7 @@ export interface Store {
    *   },
    * });
    * store.addRow('pets', {species: 'dog', color: 'brown', sold: 'maybe'});
+   *
    * console.log(store.getTables());
    * // -> {pets: {0: {species: 'dog', sold: false}}}
    * ```
@@ -2519,12 +2520,71 @@ export interface Store {
    *   open: {type: 'boolean', default: false},
    * });
    * store.setValue('open', 'maybe');
+   *
    * console.log(store.getValues());
    * // -> {open: false}
    * ```
    * @category Setter
    */
   setValuesSchema(valuesSchema: ValuesSchema): Store;
+
+  /**
+   * The setSchema method lets you specify the TablesSchema and ValuesSchema of
+   * the Store.
+   *
+   * Note that this may result in a change to data in the Store, as defaults are
+   * applied or as invalid Table, Row, Cell, or Value objects are removed. These
+   * changes will fire any listeners to that data, as expected.
+   *
+   * From v3.0.0 onwards, this method takes two arguments. The first is the
+   * TablesSchema object, the second the ValuesSchema. In previous versions
+   * (before the existence of the ValuesSchema data structure), only the first
+   * was present. For backwards compatibility the new second parameter is
+   * optional.
+   *
+   * @param tablesSchema The TablesSchema to be set for the Store.
+   * @param valuesSchema The ValuesSchema to be set for the Store.
+   * @returns A reference to the Store.
+   * @example
+   * This example sets the TablesSchema and ValuesSchema of a Store after it has
+   * been created.
+   *
+   * ```js
+   * const store = createStore().setSchema({
+   *   pets: {
+   *     species: {type: 'string'},
+   *     sold: {type: 'boolean', default: false},
+   *   },
+   * }, {
+   *   open: {type: 'boolean', default: false},
+   * });
+   * store.addRow('pets', {species: 'dog', color: 'brown', sold: 'maybe'});
+   * store.setValue('open', 'maybe');
+   *
+   * console.log(store.getTables());
+   * // -> {pets: {0: {species: 'dog', sold: false}}}
+   * console.log(store.getValues());
+   * // -> {open: false}
+   * ```
+   * @example
+   * This example sets just the TablesSchema of a Store after it has been
+   * created.
+   *
+   * ```js
+   * const store = createStore().setSchema({
+   *   pets: {
+   *     species: {type: 'string'},
+   *     sold: {type: 'boolean', default: false},
+   *   },
+   * });
+   * store.addRow('pets', {species: 'dog', color: 'brown', sold: 'maybe'});
+   *
+   * console.log(store.getTables());
+   * // -> {pets: {0: {species: 'dog', sold: false}}}
+   * ```
+   * @category Setter
+   */
+  setSchema(tablesSchema: TablesSchema, valuesSchema?: ValuesSchema): Store;
 
   /**
    * The delTables method lets you remove all of the data in a Store.
