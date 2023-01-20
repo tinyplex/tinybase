@@ -1841,6 +1841,45 @@ export interface Store {
   getValuesSchemaJson(): Json;
 
   /**
+   * The getSchemaJson method returns a string serialization of both the
+   * TablesSchema and ValuesSchema of the Store.
+   *
+   * From v3.0.0 onwards, the serialization is of an array with two entries. The
+   * first is the TablesSchema object, the second the ValuesSchema. In previous
+   * versions (before the existence of the ValuesSchema data structure), it was
+   * a sole object of TablesSchema.
+   *
+   * @returns A string serialization of the TablesSchema and ValuesSchema of the
+   * Store.
+   * @example
+   * This example serializes the TablesSchema and ValuesSchema of a Store.
+   *
+   * ```js
+   * const store = createStore()
+   *   .setTablesSchema({
+   *     pets: {
+   *       price: {type: 'number'},
+   *     },
+   *   }).setValuesSchema({
+   *     open: {type: 'boolean'},
+   *   });
+   * console.log(store.getSchemaJson());
+   * // -> '[{"pets":{"price":{"type":"number"}}},{"open":{"type":"boolean"}}]'
+   * ```
+   * @example
+   * This example serializes the TablesSchema and ValuesSchema of an empty
+   * Store.
+   *
+   * ```js
+   * const store = createStore();
+   * console.log(store.getSchemaJson());
+   * // -> '[{},{}]'
+   * ```
+   * @category Getter
+   */
+  getSchemaJson(): Json;
+
+  /**
    * The setTables method takes an object and sets the entire data of the Store.
    *
    * This method will cause listeners to be called for any Table, Row, Cell, or
