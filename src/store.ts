@@ -109,7 +109,7 @@ import {
   collSize3,
   collSize4,
 } from './common/coll';
-import {getCellType, setOrDelCell, setOrDelValue} from './common/cell';
+import {getCellOrValueType, setOrDelCell, setOrDelValue} from './common/cell';
 import {defaultSorter} from './common';
 import {getPoolFunctions} from './common/pool';
 
@@ -228,7 +228,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     if (!isTypeStringOrBoolean(type) && type != NUMBER) {
       return false;
     }
-    if (getCellType(schema[DEFAULT]) != type) {
+    if (getCellOrValueType(schema[DEFAULT]) != type) {
       objDel(schema, DEFAULT);
     }
     return true;
@@ -277,12 +277,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
       ? ifNotUndefined(
           mapGet(mapGet(tablesSchemaMap, tableId), cellId),
           (cellSchema) =>
-            getCellType(cell) != cellSchema[TYPE]
+            getCellOrValueType(cell) != cellSchema[TYPE]
               ? cellInvalid(tableId, rowId, cellId, cell, cellSchema[DEFAULT])
               : cell,
           () => cellInvalid(tableId, rowId, cellId, cell),
         )
-      : isUndefined(getCellType(cell))
+      : isUndefined(getCellOrValueType(cell))
       ? cellInvalid(tableId, rowId, cellId, cell)
       : cell;
 
@@ -306,12 +306,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
       ? ifNotUndefined(
           mapGet(valuesSchemaMap, valueId),
           (valueSchema) =>
-            getCellType(value) != valueSchema[TYPE]
+            getCellOrValueType(value) != valueSchema[TYPE]
               ? valueInvalid(valueId, value, valueSchema[DEFAULT])
               : value,
           () => valueInvalid(valueId, value),
         )
-      : isUndefined(getCellType(value))
+      : isUndefined(getCellOrValueType(value))
       ? valueInvalid(valueId, value)
       : value;
 

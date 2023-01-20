@@ -1,4 +1,5 @@
-import {Cell, Store, TablesSchema} from './store.d';
+import {Cell, Store, TablesSchema, ValuesSchema} from './store.d';
+import {CellOrValueType, getCellOrValueType} from './common/cell';
 import {DEFAULT, TYPE} from './common/strings';
 import {IdMap, mapEnsure, mapNew, mapSet} from './common/map';
 import {StoreStats, Tools, createTools as createToolsDecl} from './tools.d';
@@ -6,7 +7,6 @@ import {arrayEvery, arrayLength, arrayMap} from './common/array';
 import {formatJsDoc, length} from './tools/code';
 import {objFreeze, objIsEmpty} from './common/obj';
 import {collForEach} from './common/coll';
-import {getCellType} from './common/cell';
 import {getCreateFunction} from './common/definable';
 import {getStoreApi as getStoreApiImpl} from './tools/api';
 import {jsonParse} from './common/other';
@@ -76,7 +76,7 @@ export const createTools: typeof createToolsDecl = getCreateFunction(
               arrayEvery(store.getCellIds(tableId, rowId), (cellId) => {
                 const value = store.getCell(tableId, rowId, cellId) as Cell;
                 const cellMeta: CellMeta = mapEnsure(cellsMeta, cellId, () => [
-                  getCellType(value) as string,
+                  getCellOrValueType(value) as string,
                   mapNew(),
                   [0],
                   0,
@@ -88,7 +88,7 @@ export const createTools: typeof createToolsDecl = getCreateFunction(
                 }
                 mapSet(values, value, count);
                 cellMeta[3]++;
-                return type == getCellType(value);
+                return type == getCellOrValueType(value);
               }),
             )
           ) {
@@ -106,6 +106,18 @@ export const createTools: typeof createToolsDecl = getCreateFunction(
         return tablesSchema;
       }
       return {};
+    };
+
+    const getStoreValuesSchema = (): ValuesSchema => {
+      const valuesSchema: ValuesSchema = jsonParse(store.getValuesSchemaJson());
+      if (objIsEmpty(valuesSchema)) {
+        store.forEachValue((valueId, value) => {
+          valuesSchema[valueId] = {
+            [TYPE]: getCellOrValueType(value) as CellOrValueType,
+          };
+        });
+      }
+      return valuesSchema;
     };
 
     const getStoreApi = (module: string): [string, string] =>
@@ -128,6 +140,7 @@ export const createTools: typeof createToolsDecl = getCreateFunction(
     const tools: Tools = {
       getStoreStats,
       getStoreTablesSchema,
+      getStoreValuesSchema,
       getStoreApi,
       getPrettyStoreApi,
     };

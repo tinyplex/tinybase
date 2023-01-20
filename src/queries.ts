@@ -63,7 +63,7 @@ import {
   collSize,
 } from './common/coll';
 import {getAggregateValue, numericAggregators} from './common/aggregators';
-import {getCellType, setOrDelCell} from './common/cell';
+import {getCellOrValueType, setOrDelCell} from './common/cell';
 import {getCreateFunction, getDefinableFunctions} from './common/definable';
 import {
   getUndefined,
@@ -345,7 +345,7 @@ export const createQueries: typeof createQueriesDecl = getCreateFunction(
                           aggregators,
                         );
                         groupRow[groupedCellId] = (
-                          isUndefined(getCellType(aggregateValue))
+                          isUndefined(getCellOrValueType(aggregateValue))
                             ? null
                             : aggregateValue
                         ) as Cell;
