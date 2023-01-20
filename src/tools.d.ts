@@ -10,7 +10,7 @@
  * @since v2.2.0
  */
 
-import {Store, TablesSchema} from './store.d';
+import {Store, TablesSchema, ValuesSchema} from './store.d';
 import {Id} from './common.d';
 
 /**
@@ -179,14 +179,14 @@ export interface Tools {
    * TablesSchema.
    *
    * To be successful, this requires all the values of a given Cell across a
-   * Table object's  Row objects to have a consistent type. If a given Cell Id
+   * Table object's Row objects to have a consistent type. If a given Cell Id
    * appears in every Row, then a `default` for that Cell is specified in the
-   * TablesSchema∑, based on the most common value found.
+   * TablesSchema, based on the most common value found.
    *
    * @returns A TablesSchema object for the Store.
    * @example
-   * This example creates a Tools object and gets basic statistics about a Store
-   * that already has a TablesSchema.
+   * This example creates a Tools object and gets the schema of a Store that
+   * already has a TablesSchema.
    * ```js
    * const store = createStore().setTablesSchema({
    *   pets: {
@@ -202,8 +202,8 @@ export interface Tools {
    * // -> {species: {type: 'string'}, color: {type: 'string'}}
    * ```
    * @example
-   * This example creates a Tools object and gets basic statistics about a Store
-   * that doesn't already have a TablesSchema.
+   * This example creates a Tools object and infers the schema of a Store that
+   * doesn't already have a TablesSchema.
    * ```js
    * const store = createStore()
    *   .setTable('pets', {
@@ -231,6 +231,45 @@ export interface Tools {
    * @since v2.2.0
    */
   getStoreTablesSchema(): TablesSchema;
+
+  /**
+   * The getStoreValuesSchema method returns the ValuesSchema of the Store as an
+   * object.
+   *
+   * If the Store does not already have an explicit ValuesSchema associated with
+   * it, the data in the Store will be scanned to infer a new ValuesSchema,
+   * based on the types of the Values present. Note that, unlike the inference
+   * of Cell values in the TablesSchema, it is not able to determine whether a
+   * Value should have a default or not.
+   *
+   * @returns A ValuesSchema object for the Store.
+   * @example
+   * This example creates a Tools object and gets the schema of a Store that
+   * already has a ValuesSchema.
+   * ```js
+   * const store = createStore().setValuesSchema({
+   *   open: {type: 'boolean', default: true},
+   *   employees: {type: 'number'},
+   * });
+   *
+   * const schema = createTools(store).getStoreValuesSchema();
+   * console.log(schema);
+   * // -> {open: {type: 'boolean', default: true}, employees: {type: 'number'}}
+   * ```
+   * @example
+   * This example creates a Tools object and infers the schema of a Store that
+   * doesn't already have a ValuesSchema.
+   * ```js
+   * const store = createStore().setValues({open: true, employees: 3});
+   * const schema = createTools(store).getStoreValuesSchema();
+   *
+   * console.log(schema);
+   * // -> {open: {type: 'boolean'}, employees: {type: 'number'}}
+   * ```
+   * @category Modelling
+   * @since v3.0.0
+   */
+  getStoreValuesSchema(): ValuesSchema;
 
   /**
    * The getStoreApi method returns a code-generated .d.ts file and a .ts file

@@ -3,11 +3,15 @@ import {NUMBER, getTypeOf} from './strings';
 import {isFiniteNumber, isTypeStringOrBoolean, isUndefined} from './other';
 import {Id} from '../common.d';
 
-export const getCellType = (cell: Cell | undefined): string | undefined => {
+export type CellOrValueType = 'string' | 'number' | 'boolean';
+
+export const getCellOrValueType = (
+  cell: Cell | undefined,
+): CellOrValueType | undefined => {
   const type = getTypeOf(cell);
   return isTypeStringOrBoolean(type) ||
     (type == NUMBER && isFiniteNumber(cell as any))
-    ? type
+    ? (type as CellOrValueType)
     : undefined;
 };
 
