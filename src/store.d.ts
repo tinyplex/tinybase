@@ -1744,6 +1744,38 @@ export interface Store {
   getValuesJson(): Json;
 
   /**
+   * The getJson method returns a string serialization of all the Store content:
+   * both the Tables and the keyed Values.
+   *
+   * From v3.0.0 onwards, the serialization is of an array with two entries. The
+   * first is the Tables object, the second the Values. In previous versions
+   * (before the existence of the Values data structure), it was a sole object
+   * of Tables.
+   *
+   * @returns A string serialization of the Tables and Values in the Store.
+   * @example
+   * This example serializes the tabular and keyed value contents of a Store.
+   *
+   * ```js
+   * const store = createStore()
+   *   .setTables({pets: {fido: {species: 'dog'}}})
+   *   .setValues({open: true});
+   * console.log(store.getJson());
+   * // -> '[{"pets":{"fido":{"species":"dog"}}},{"open":true}]'
+   * ```
+   * @example
+   * This example serializes the contents of an empty Store.
+   *
+   * ```js
+   * const store = createStore();
+   * console.log(store.getJson());
+   * // -> '[{},{}]'
+   * ```
+   * @category Getter
+   */
+  getJson(): Json;
+
+  /**
    * The getTablesSchemaJson method returns a string serialization of the
    * TablesSchema of the Store.
    *
