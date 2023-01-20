@@ -54,7 +54,7 @@ describe('Stats', () => {
   });
 });
 
-describe('Schema', () => {
+describe('TablesSchema', () => {
   test('Existing', () => {
     store.setTablesSchema({
       t1: {c1: {type: 'number', default: 1}, c2: {type: 'string'}},
@@ -114,6 +114,35 @@ describe('Schema', () => {
         t2: {r1: {c1: 'one'}},
       });
       expect(tools.getStoreTablesSchema()).toEqual({});
+    });
+  });
+});
+
+describe('ValuesSchema', () => {
+  test('Existing', () => {
+    store.setValuesSchema({
+      v1: {type: 'number', default: 1},
+      v2: {type: 'string'},
+    });
+    expect(tools.getStoreValuesSchema()).toEqual({
+      v1: {type: 'number', default: 1},
+      v2: {type: 'string'},
+    });
+  });
+
+  describe('Inferred', () => {
+    test('All present', () => {
+      store.setValues({v1: true, v2: 3, v3: 'yes'});
+      expect(tools.getStoreValuesSchema()).toEqual({
+        v1: {type: 'boolean'},
+        v2: {type: 'number'},
+        v3: {type: 'string'},
+      });
+    });
+
+    test('Empty', () => {
+      store.setValues({});
+      expect(tools.getStoreValuesSchema()).toEqual({});
     });
   });
 });
