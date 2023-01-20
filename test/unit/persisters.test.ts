@@ -173,38 +173,49 @@ describe.each([
   });
 
   test('saves', async () => {
-    store.setTables({t1: {r1: {c1: 1}}});
+    store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
     await persister.save();
-    expect(persistable.get(location)).toEqual({t1: {r1: {c1: 1}}});
+    expect(persistable.get(location)).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
     expect(persister.getStats()).toEqual({loads: 0, saves: 1});
   });
 
   test('autoSaves', async () => {
-    store.setTables({t1: {r1: {c1: 1}}});
+    store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
     await persister.startAutoSave();
-    expect(persistable.get(location)).toEqual({t1: {r1: {c1: 1}}});
+    expect(persistable.get(location)).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
     expect(persister.getStats()).toEqual({loads: 0, saves: 1});
     store.setTables({t1: {r1: {c1: 2}}});
     await pause();
-    expect(persistable.get(location)).toEqual({t1: {r1: {c1: 2}}});
-    expect(persister.getStats()).toEqual({loads: 0, saves: 2});
+    expect(persistable.get(location)).toEqual([{t1: {r1: {c1: 2}}}, {v1: 1}]);
+    store.setValues({v1: 2});
+    await pause();
+    expect(persistable.get(location)).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
+    expect(persister.getStats()).toEqual({loads: 0, saves: 3});
   });
 
   test('autoSaves without race', async () => {
     if (name == 'file') {
       store.setTables({t1: {r1: {c1: 1}}});
       await persister.startAutoSave();
-      expect(persistable.get(location)).toEqual({t1: {r1: {c1: 1}}});
+      expect(persistable.get(location)).toEqual([{t1: {r1: {c1: 1}}}, {}]);
       expect(persister.getStats()).toEqual({loads: 0, saves: 1});
       store.setTables({t1: {r1: {c1: 2}}});
       store.setTables({t1: {r1: {c1: 3}}});
       await pause();
-      expect(persistable.get(location)).toEqual({t1: {r1: {c1: 3}}});
+      expect(persistable.get(location)).toEqual([{t1: {r1: {c1: 3}}}, {}]);
       expect(persister.getStats()).toEqual({loads: 0, saves: 3});
     }
   });
 
   test('loads', async () => {
+    persistable.set(location, [{t1: {r1: {c1: 1}}}, {v1: 1}]);
+    await persister.load({});
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+    expect(store.getValues()).toEqual({v1: 1});
+    expect(persister.getStats()).toEqual({loads: 1, saves: 0});
+  });
+
+  test('loads backwards compatible', async () => {
     persistable.set(location, {t1: {r1: {c1: 1}}});
     await persister.load({});
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
@@ -220,8 +231,9 @@ describe.each([
 
   test('loads default when empty', async () => {
     store.setTables({t1: {r1: {c1: 1}}});
-    await persister.load({t1: {r1: {c1: 2}}});
+    await persister.load({t1: {r1: {c1: 2}}}, {v1: 1});
     expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
+    expect(store.getValues()).toEqual({v1: 1});
     expect(persister.getStats()).toEqual({loads: 1, saves: 0});
   });
 
