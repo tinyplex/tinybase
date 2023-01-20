@@ -947,6 +947,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const getValuesJson = (): Json => jsonString(valuesMap);
 
+  const getJson = (): Json => jsonString([tablesMap, valuesMap]);
+
   const getTablesSchemaJson = (): Json => jsonString(tablesSchemaMap);
 
   const getValuesSchemaJson = (): Json => jsonString(valuesSchemaMap);
@@ -1408,6 +1410,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
     getTablesJson,
     getValuesJson,
+    getJson,
     getTablesSchemaJson,
     getValuesSchemaJson,
 
