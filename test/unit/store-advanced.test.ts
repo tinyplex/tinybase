@@ -115,6 +115,54 @@ describe('setValuesJson', () => {
   });
 });
 
+describe('setJson', () => {
+  beforeEach(() =>
+    store.setTables({t1: {r1: {c1: 1, c2: 1}}}).setValues({v1: 1}),
+  );
+
+  test('valid', () => {
+    store.setJson('[{"t2": {"r2": {"c2": 1, "d2": 2}}},{"v2": 2}]');
+    expect(store.getTables()).toEqual({t2: {r2: {c2: 1, d2: 2}}});
+    expect(store.getValues()).toEqual({v2: 2});
+  });
+
+  test('invalid', () => {
+    store.setJson('{');
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 1, c2: 1}}});
+    expect(store.getValues()).toEqual({v1: 1});
+  });
+
+  test('invalid tables', () => {
+    store.setJson('[0,{"v2": 2}]');
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 1, c2: 1}}});
+    expect(store.getValues()).toEqual({v2: 2});
+  });
+
+  test('invalid values', () => {
+    store.setJson('[{"t2": {"r2": {"c2": 1, "d2": 2}}},0]');
+    expect(store.getTables()).toEqual({t2: {r2: {c2: 1, d2: 2}}});
+    expect(store.getValues()).toEqual({v1: 1});
+  });
+
+  test('empty', () => {
+    store.setValuesJson('');
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 1, c2: 1}}});
+    expect(store.getValues()).toEqual({v1: 1});
+  });
+
+  test('null', () => {
+    store.setValuesJson('null');
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 1, c2: 1}}});
+    expect(store.getValues()).toEqual({v1: 1});
+  });
+
+  test('backward compatible', () => {
+    store.setJson('{"t2": {"r2": {"c2": 1, "d2": 2}}}');
+    expect(store.getTables()).toEqual({t2: {r2: {c2: 1, d2: 2}}});
+    expect(store.getValues()).toEqual({v1: 1});
+  });
+});
+
 describe('Sorted Row Ids', () => {
   beforeEach(() => {
     store = createStore().setTables({

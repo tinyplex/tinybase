@@ -30,4 +30,4 @@ export const objMap = <Value, Return>(
 ): Return[] => arrayMap(object.entries(obj), ([id, value]) => cb(value, id));
 
 export const objIsEmpty = <Value>(obj: IdObj<Value>): boolean =>
-  arrayIsEmpty(objIds(obj));
+  isObject(obj) && arrayIsEmpty(objIds(obj));
