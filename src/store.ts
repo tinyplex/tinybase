@@ -1117,6 +1117,15 @@ export const createStore: typeof createStoreDecl = (): Store => {
       }
     });
 
+  const setSchema = (
+    tablesSchema: TablesSchema,
+    valuesSchema?: ValuesSchema,
+  ): Store =>
+    fluentTransaction(() => {
+      setTablesSchema(tablesSchema);
+      setValuesSchema(valuesSchema as ValuesSchema);
+    });
+
   const delTables = (): Store => fluentTransaction(() => setValidTables({}));
 
   const delTable = (tableId: Id): Store =>
@@ -1445,6 +1454,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     setJson,
     setTablesSchema,
     setValuesSchema,
+    setSchema,
 
     delTables,
     delTable,

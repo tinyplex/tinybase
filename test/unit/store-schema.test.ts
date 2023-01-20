@@ -2483,6 +2483,37 @@ describe('Miscellaneous', () => {
     ]);
   });
 
+  test('Both TablesSchema and ValuesSchema set together', () => {
+    const store = createStore().setSchema(
+      {t1: {c1: {type: 'number', default: 1}}},
+      {v1: {type: 'number', default: 1}},
+    );
+    expect(JSON.parse(store.getTablesSchemaJson())).toEqual({
+      t1: {c1: {type: 'number', default: 1}},
+    });
+    expect(JSON.parse(store.getValuesSchemaJson())).toEqual({
+      v1: {type: 'number', default: 1},
+    });
+    expect(JSON.parse(store.getSchemaJson())).toEqual([
+      {t1: {c1: {type: 'number', default: 1}}},
+      {v1: {type: 'number', default: 1}},
+    ]);
+  });
+
+  test('setSchema backwards compatibility', () => {
+    const store = createStore().setSchema({
+      t1: {c1: {type: 'number', default: 1}},
+    });
+    expect(JSON.parse(store.getTablesSchemaJson())).toEqual({
+      t1: {c1: {type: 'number', default: 1}},
+    });
+    expect(JSON.parse(store.getValuesSchemaJson())).toEqual({});
+    expect(JSON.parse(store.getSchemaJson())).toEqual([
+      {t1: {c1: {type: 'number', default: 1}}},
+      {},
+    ]);
+  });
+
   test('Using existing value', () => {
     const store = createStore().setTablesSchema({t1: {c1: {type: 'number'}}});
     store.addCellListener(
