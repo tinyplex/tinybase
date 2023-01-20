@@ -1860,7 +1860,8 @@ export interface Store {
    *     pets: {
    *       price: {type: 'number'},
    *     },
-   *   }).setValuesSchema({
+   *   })
+   *   .setValuesSchema({
    *     open: {type: 'boolean'},
    *   });
    * console.log(store.getSchemaJson());
@@ -2550,14 +2551,15 @@ export interface Store {
    * been created.
    *
    * ```js
-   * const store = createStore().setSchema({
-   *   pets: {
-   *     species: {type: 'string'},
-   *     sold: {type: 'boolean', default: false},
+   * const store = createStore().setSchema(
+   *   {
+   *     pets: {
+   *       species: {type: 'string'},
+   *       sold: {type: 'boolean', default: false},
+   *     },
    *   },
-   * }, {
-   *   open: {type: 'boolean', default: false},
-   * });
+   *   {open: {type: 'boolean', default: false}},
+   * );
    * store.addRow('pets', {species: 'dog', color: 'brown', sold: 'maybe'});
    * store.setValue('open', 'maybe');
    *
