@@ -1,10 +1,6 @@
 import {Cell, CellOrUndefined, Store, ValueOrUndefined} from '../store.d';
-import {NUMBER, getTypeOf} from '../common/strings';
-import {
-  isFiniteNumber,
-  isTypeStringOrBoolean,
-  isUndefined,
-} from '../common/other';
+import {NUMBER, getTypeOf} from './strings';
+import {isFiniteNumber, isTypeStringOrBoolean, isUndefined} from './other';
 import {Id} from '../common.d';
 
 export const getCellType = (cell: Cell | undefined): string | undefined => {
