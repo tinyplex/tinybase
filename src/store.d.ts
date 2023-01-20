@@ -2409,6 +2409,65 @@ export interface Store {
   setValuesJson(valuesJson: Json): Store;
 
   /**
+   * The setJson method takes a string serialization of all of the Tables and
+   * Values in the Store and attempts to update them to those values.
+   *
+   * From v3.0.0 onwards, the serialization should be of an array with two
+   * entries. The first is the Tables object, the second the Values. In previous
+   * versions (before the existence of the Values data structure), it was a sole
+   * object of Tables. For backwards compatibility, if a serialization of a
+   * single object is provided, it will be treated as the Tables type.
+   *
+   * If the JSON cannot be parsed, this will fail silently. If it can be parsed,
+   * it will then be subject to the same validation rules as the setTables
+   * method (according to the Tables type, and matching any TablesSchema
+   * associated with the Store), and the setValues method (according to the
+   * Values type, and matching any ValuesSchema associated with the Store).
+   *
+   * @param tablesAndValuesJson A string serialization of all of the Tables and
+   * Values in the Store.
+   * @returns A reference to the Store.
+   * @example
+   * This example sets the tabular and keyed value contents of a Store from a
+   * serialization.
+   *
+   * ```js
+   * const store = createStore();
+   * store.setJson('[{"pets": {"fido": {"species": "dog"}}}, {"open": true}]');
+   * console.log(store.getTables());
+   * // -> {pets: {fido: {species: 'dog'}}}
+   * console.log(store.getValues());
+   * // -> {open: true}
+   * ```
+   * @example
+   * This example sets the tabular contents of a Store from a
+   * legacy single-object serialization (compatible with v2.x and earlier).
+   *
+   * ```js
+   * const store = createStore();
+   * store.setJson('{"pets": {"fido": {"species": "dog"}}}');
+   * console.log(store.getTables());
+   * // -> {pets: {fido: {species: 'dog'}}}
+   * console.log(store.getValues());
+   * // -> {}
+   * ```
+   * @example
+   * This example attempts to set the the tabular and keyed value contents of a
+   * Store from an invalid serialization.
+   *
+   * ```js
+   * const store = createStore();
+   * store.setValuesJson('[{"pets": {"fido": {"species": "do');
+   * console.log(store.getTables());
+   * // -> {}
+   * console.log(store.getValues());
+   * // -> {}
+   * ```
+   * @category Setter
+   */
+  setJson(tablesAndValuesJson: Json): Store;
+
+  /**
    * The setTablesSchema method lets you specify the TablesSchema of the tabular
    * part of the Store.
    *

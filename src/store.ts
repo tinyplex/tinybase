@@ -3,7 +3,6 @@ import {
   CELL,
   CELL_IDS,
   DEFAULT,
-  EMPTY_OBJECT,
   LISTENER,
   NUMBER,
   ROW,
@@ -397,6 +396,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
       },
     );
 
+  const setOrDelTables = (tables: Tables) =>
+    objIsEmpty(tables) ? delTables() : setTables(tables);
+
   const setValidTables = (tables: Tables): TablesMap =>
     transformMap(
       tablesMap,
@@ -470,6 +472,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
           addDefaultsToRow({[cellId]: validCell}, tableId, rowId),
         ),
     );
+
+  const setOrDelValues = (values: Values) =>
+    objIsEmpty(values) ? delValues() : setValues(values);
 
   const setValidValues = (values: Values): RowMap =>
     transformMap(
@@ -1065,19 +1070,26 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const setTablesJson = (tablesJson: Json): Store => {
     try {
-      tablesJson === EMPTY_OBJECT
-        ? delTables()
-        : setTables(jsonParse(tablesJson));
+      setOrDelTables(jsonParse(tablesJson));
     } catch {}
     return store;
   };
 
   const setValuesJson = (valuesJson: Json): Store => {
     try {
-      valuesJson === EMPTY_OBJECT
-        ? delValues()
-        : setValues(jsonParse(valuesJson));
+      setOrDelValues(jsonParse(valuesJson));
     } catch {}
+    return store;
+  };
+
+  const setJson = (tablesAndValuesJson: Json): Store => {
+    try {
+      const [tables, values] = jsonParse(tablesAndValuesJson);
+      setOrDelTables(tables);
+      setOrDelValues(values);
+    } catch {
+      setTablesJson(tablesAndValuesJson);
+    }
     return store;
   };
 
@@ -1430,6 +1442,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
     setTablesJson,
     setValuesJson,
+    setJson,
     setTablesSchema,
     setValuesSchema,
 
