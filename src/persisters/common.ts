@@ -1,7 +1,7 @@
 import {Callback, Id} from '../common.d';
 import {DEBUG, ifNotUndefined, isUndefined} from '../common/other';
 import {Persister, PersisterStats} from '../persisters.d';
-import {Store, Tables} from '../store.d';
+import {Store, Tables, Values} from '../store.d';
 import {EMPTY_STRING} from '../common/strings';
 import {objFreeze} from '../common/obj';
 
@@ -13,12 +13,16 @@ export const createCustomPersister = (
   stopListeningToPersisted: Callback,
 ): Persister => {
   let tablesListenerId: Id | undefined;
+  let valuesListenerId: Id | undefined;
   let loadSave = 0;
   let loads = 0;
   let saves = 0;
 
   const persister: Persister = {
-    load: async (initialTables?: Tables): Promise<Persister> => {
+    load: async (
+      initialTables?: Tables,
+      initialValues?: Values,
+    ): Promise<Persister> => {
       /*! istanbul ignore else */
       if (loadSave != 2) {
         loadSave = 1;
@@ -27,18 +31,25 @@ export const createCustomPersister = (
         }
         const body = await getPersisted();
         if (!isUndefined(body) && body != EMPTY_STRING) {
-          store.setTablesJson(body);
+          store.setJson(body);
         } else {
-          store.setTables(initialTables as Tables);
+          store.transaction(() =>
+            store
+              .setTables(initialTables as Tables)
+              .setValues(initialValues as Values),
+          );
         }
         loadSave = 0;
       }
       return persister;
     },
 
-    startAutoLoad: async (initialTables?: Tables): Promise<Persister> => {
+    startAutoLoad: async (
+      initialTables?: Tables,
+      initialValues?: Values,
+    ): Promise<Persister> => {
       persister.stopAutoLoad();
-      await persister.load(initialTables);
+      await persister.load(initialTables, initialValues);
       startListeningToPersisted(persister.load);
       return persister;
     },
@@ -55,7 +66,7 @@ export const createCustomPersister = (
         if (DEBUG) {
           saves++;
         }
-        await setPersisted(store.getTablesJson());
+        await setPersisted(store.getJson());
         loadSave = 0;
       }
       return persister;
@@ -63,12 +74,14 @@ export const createCustomPersister = (
 
     startAutoSave: async (): Promise<Persister> => {
       await persister.stopAutoSave().save();
-      tablesListenerId = store.addTablesListener(() => persister.save());
+      tablesListenerId = store.addTablesListener(persister.save);
+      valuesListenerId = store.addValuesListener(persister.save);
       return persister;
     },
 
     stopAutoSave: (): Persister => {
       ifNotUndefined(tablesListenerId, store.delListener);
+      ifNotUndefined(valuesListenerId, store.delListener);
       return persister;
     },
 

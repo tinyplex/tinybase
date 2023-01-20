@@ -41,7 +41,7 @@ const persister = createSessionPersister(store, 'pets');
 
 await persister.save();
 console.log(sessionStorage.getItem('pets'));
-// -> '{"pets":{"fido":{"species":"dog"}}}'
+// -> '[{"pets":{"fido":{"species":"dog"}}},{}]'
 
 sessionStorage.setItem('pets', '{"pets":{"toto":{"species":"dog"}}}');
 await persister.load();
@@ -74,9 +74,9 @@ await persister.startAutoSave();
 store.setTables({pets: {felix: {species: 'cat'}}});
 // ...
 console.log(sessionStorage.getItem('pets'));
-// -> '{"pets":{"felix":{"species":"cat"}}}'
+// -> '[{"pets":{"felix":{"species":"cat"}}},{}]'
 
-sessionStorage.setItem('pets', '{"pets":{"toto":{"species":"dog"}}}');
+sessionStorage.setItem('pets', '[{"pets":{"toto":{"species":"dog"}}},{}]');
 // -> StorageEvent('storage', {storageArea: sessionStorage, key: 'pets'})
 // ...
 console.log(store.getTables());
