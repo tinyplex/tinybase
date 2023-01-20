@@ -11,12 +11,14 @@ beforeEach(() => {
 
 describe('Stats', () => {
   beforeEach(() => {
-    store.setTables({
-      t1: {r1: {c1: 2}, r2: {c1: 1, c2: 2}},
-      t2: {r1: {c1: 'two'}},
-      t3: {r1: {c1: false}},
-      t4: {r1: {c1: 1}},
-    });
+    store
+      .setTables({
+        t1: {r1: {c1: 2}, r2: {c1: 1, c2: 2}},
+        t2: {r1: {c1: 'two'}},
+        t3: {r1: {c1: false}},
+        t4: {r1: {c1: 1}},
+      })
+      .setValues({v1: 1, v2: 2});
   });
 
   test('Basic', () => {
@@ -24,7 +26,8 @@ describe('Stats', () => {
       totalTables: 4,
       totalRows: 5,
       totalCells: 6,
-      jsonLength: 114,
+      totalValues: 2,
+      jsonLength: 132,
     });
   });
 
@@ -33,7 +36,8 @@ describe('Stats', () => {
       totalTables: 4,
       totalRows: 5,
       totalCells: 6,
-      jsonLength: 114,
+      totalValues: 2,
+      jsonLength: 132,
       detail: {
         tables: {
           t1: {

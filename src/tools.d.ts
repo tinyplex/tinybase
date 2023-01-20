@@ -37,6 +37,10 @@ export type StoreStats = {
    */
   totalCells: number;
   /**
+   * The number of Value objects in the Store.
+   */
+  totalValues: number;
+  /**
    * The string length of the Store when serialized to JSON.
    */
   jsonLength: number;
@@ -106,6 +110,7 @@ export type StoreStatsRowDetail = {
  * @since v2.2.0
  */
 export interface Tools {
+  /* eslint-disable max-len */
   /**
    * The getStoreStats method provides a set of statistics about the Store, and
    * is used for debugging purposes.
@@ -125,10 +130,11 @@ export interface Tools {
    *   .setTable('species', {
    *     dog: {price: 5},
    *     cat: {price: 4},
-   *   });
+   *   })
+   *   .setValues({open: true, employees: 3});
    * const tools = createTools(store);
    * console.log(tools.getStoreStats());
-   * // -> {totalTables: 2, totalRows: 5, totalCells: 8, jsonLength: 182}
+   * // -> {totalTables: 2, totalRows: 5, totalCells: 8, totalValues: 2, jsonLength: 212}
    * ```
    * @example
    * This example creates a Tools object and gets detailed statistics about it.
@@ -162,6 +168,7 @@ export interface Tools {
    * @since v2.2.0
    */
   getStoreStats(detail?: boolean): StoreStats;
+  /* eslint-enable max-len */
 
   /**
    * The getStoreTablesSchema method returns the TablesSchema of the Store as an
@@ -398,6 +405,7 @@ export interface Tools {
   getPrettyStoreApi(storeName: string): Promise<[string, string]>;
 }
 
+/* eslint-disable max-len */
 /**
  * The createTools function creates a Tools object, and is the main entry point
  * into the tools module.
@@ -421,10 +429,11 @@ export interface Tools {
  *   .setTable('species', {
  *     dog: {price: 5},
  *     cat: {price: 4},
- *   });
+ *   })
+ *   .setValues({open: true, employees: 3});
  * const tools = createTools(store);
  * console.log(tools.getStoreStats());
- * // -> {totalTables: 2, totalRows: 5, totalCells: 8, jsonLength: 182}
+ * // -> {totalTables: 2, totalRows: 5, totalCells: 8, totalValues: 2, jsonLength: 212}
  * ```
  * @example
  * This example creates a Tools object, and calls the method a second time
@@ -441,3 +450,4 @@ export interface Tools {
  * @since v2.2.0
  */
 export function createTools(store: Store): Tools;
+/* eslint-enable max-len */

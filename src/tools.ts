@@ -58,7 +58,8 @@ export const createTools: typeof createToolsDecl = getCreateFunction(
         totalTables,
         totalRows,
         totalCells,
-        jsonLength: length(store.getTablesJson()),
+        totalValues: arrayLength(store.getValueIds()),
+        jsonLength: length(store.getJson()),
         ...(detail ? {detail: {tables}} : {}),
       };
     };
