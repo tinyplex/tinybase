@@ -27,7 +27,7 @@
  * @module persisters
  */
 
-import {Store, Tables} from './store.d';
+import {Store, Tables, Values} from './store.d';
 import {Callback} from './common.d';
 
 /**
@@ -105,9 +105,9 @@ export type PersisterStats = {
  *
  * await persister.save();
  * console.log(sessionStorage.getItem('pets'));
- * // -> '{"pets":{"fido":{"species":"dog"}}}'
+ * // -> '[{"pets":{"fido":{"species":"dog"}}},{}]'
  *
- * sessionStorage.setItem('pets', '{"pets":{"toto":{"species":"dog"}}}');
+ * sessionStorage.setItem('pets', '[{"pets":{"toto":{"species":"dog"}}},{}]');
  * await persister.load();
  * console.log(store.getTables());
  * // -> {pets: {toto: {species: 'dog'}}}
@@ -130,10 +130,10 @@ export type PersisterStats = {
  * store.setTables({pets: {felix: {species: 'cat'}}});
  * // ...
  * console.log(sessionStorage.getItem('pets'));
- * // -> '{"pets":{"felix":{"species":"cat"}}}'
+ * // -> '[{"pets":{"felix":{"species":"cat"}}},{}]'
  *
  * // In another browser tab:
- * sessionStorage.setItem('pets', '{"pets":{"toto":{"species":"dog"}}}');
+ * sessionStorage.setItem('pets', '[{"pets":{"toto":{"species":"dog"}}},{}]');
  * // -> StorageEvent('storage', {storageArea: sessionStorage, key: 'pets'})
  *
  * // ...
@@ -163,6 +163,8 @@ export interface Persister {
    *
    * @param initialTables An optional Tables object used when the underlying
    * storage has not previously been populated.
+   * @param initialValues An optional Values object used when the underlying
+   * storage has not previously been populated.
    * @returns A Promise containing a reference to the Persister object.
    * @example
    * This example creates an empty Store, and loads data into it from the
@@ -170,7 +172,7 @@ export interface Persister {
    * previously populated.
    *
    * ```js
-   * sessionStorage.setItem('pets', '{"pets":{"fido":{"species":"dog"}}}');
+   * sessionStorage.setItem('pets', '[{"pets":{"fido":{"species":"dog"}}},{}]');
    *
    * const store = createStore();
    * const persister = createSessionPersister(store, 'pets');
@@ -195,7 +197,7 @@ export interface Persister {
    * console.log(store.getTables());
    * // -> {pets: {fido: {species: 'dog'}}}
    *
-   * sessionStorage.setItem('pets', '{"pets":{"toto":{"species":"dog"}}}');
+   * sessionStorage.setItem('pets', '[{"pets":{"toto":{"species":"dog"}}},{}]');
    * await persister.load({pets: {fido: {species: 'dog'}}});
    * console.log(store.getTables());
    * // -> {pets: {toto: {species: 'dog'}}}
@@ -204,7 +206,7 @@ export interface Persister {
    * ```
    * @category Load
    */
-  load(initialTables?: Tables): Promise<Persister>;
+  load(initialTables?: Tables, initialValues?: Values): Promise<Persister>;
 
   /**
    * The startAutoLoad method gets persisted data from storage, and loads it
@@ -229,6 +231,8 @@ export interface Persister {
    *
    * @param initialTables An optional Tables object used when the underlying
    * storage has not previously been populated.
+   * @param initialValues An optional Values object used when the underlying
+   * storage has not previously been populated.
    * @returns A Promise containing a reference to the Persister object.
    * @example
    * This example creates an empty Store, and loads data into it from the
@@ -246,7 +250,7 @@ export interface Persister {
    * // -> {pets: {fido: {species: 'dog'}}}
    *
    * // In another browser tab:
-   * sessionStorage.setItem('pets', '{"pets":{"toto":{"species":"dog"}}}');
+   * sessionStorage.setItem('pets', '[{"pets":{"toto":{"species":"dog"}}},{}]');
    * // -> StorageEvent('storage', {storageArea: sessionStorage, key: 'pets'})
    *
    * // ...
@@ -258,7 +262,10 @@ export interface Persister {
    * ```
    * @category Load
    */
-  startAutoLoad(initialTables?: Tables): Promise<Persister>;
+  startAutoLoad(
+    initialTables?: Tables,
+    initialValues?: Values,
+  ): Promise<Persister>;
 
   /**
    * The stopAutoLoad method stops the automatic loading of data from storage
@@ -279,7 +286,7 @@ export interface Persister {
    * await persister.startAutoLoad();
    *
    * // In another browser tab:
-   * sessionStorage.setItem('pets', '{"pets":{"toto":{"species":"dog"}}}');
+   * sessionStorage.setItem('pets', '[{"pets":{"toto":{"species":"dog"}}},{}]');
    * // -> StorageEvent('storage', {storageArea: sessionStorage, key: 'pets'})
    * // ...
    * console.log(store.getTables());
@@ -288,7 +295,10 @@ export interface Persister {
    * persister.stopAutoLoad();
    *
    * // In another browser tab:
-   * sessionStorage.setItem('pets', '{"pets":{"felix":{"species":"cat"}}}');
+   * sessionStorage.setItem(
+   *   'pets',
+   *   '[{"pets":{"felix":{"species":"cat"}}},{}]',
+   * );
    * // -> StorageEvent('storage', {storageArea: sessionStorage, key: 'pets'})
    * // ...
    * console.log(store.getTables());
@@ -322,7 +332,7 @@ export interface Persister {
    *
    * await persister.save();
    * console.log(sessionStorage.getItem('pets'));
-   * // -> '{"pets":{"fido":{"species":"dog"}}}'
+   * // -> '[{"pets":{"fido":{"species":"dog"}}},{}]'
    *
    * persister.destroy();
    * sessionStorage.clear();
@@ -356,12 +366,12 @@ export interface Persister {
    *
    * await persister.startAutoSave();
    * console.log(sessionStorage.getItem('pets'));
-   * // -> '{"pets":{"fido":{"species":"dog"}}}'
+   * // -> '[{"pets":{"fido":{"species":"dog"}}},{}]'
    *
    * store.setTables({pets: {toto: {species: 'dog'}}});
    * // ...
    * console.log(sessionStorage.getItem('pets'));
-   * // -> '{"pets":{"toto":{"species":"dog"}}}'
+   * // -> '[{"pets":{"toto":{"species":"dog"}}},{}]'
    *
    * sessionStorage.clear();
    * ```
@@ -391,14 +401,14 @@ export interface Persister {
    * store.setTables({pets: {toto: {species: 'dog'}}});
    * // ...
    * console.log(sessionStorage.getItem('pets'));
-   * // -> '{"pets":{"toto":{"species":"dog"}}}'
+   * // -> '[{"pets":{"toto":{"species":"dog"}}},{}]'
    *
    * persister.stopAutoSave();
    *
    * store.setTables({pets: {felix: {species: 'cat'}}});
    * // ...
    * console.log(sessionStorage.getItem('pets'));
-   * // -> '{"pets":{"toto":{"species":"dog"}}}'
+   * // -> '[{"pets":{"toto":{"species":"dog"}}},{}]'
    * // Store change has not been automatically saved.
    *
    * sessionStorage.clear();
@@ -423,7 +433,7 @@ export interface Persister {
    * persister.getStore().setTables({pets: {fido: {species: 'dog'}}});
    * // ...
    * console.log(sessionStorage.getItem('pets'));
-   * // -> '{"pets":{"fido":{"species":"dog"}}}'
+   * // -> '[{"pets":{"fido":{"species":"dog"}}},{}]'
    *
    * sessionStorage.clear();
    * ```
@@ -493,7 +503,7 @@ export interface Persister {
    * store.setTables({pets: {felix: {species: 'cat'}}});
    * // ...
    *
-   * sessionStorage.setItem('pets', '{"pets":{"toto":{"species":"dog"}}}');
+   * sessionStorage.setItem('pets', '[{"pets":{"toto":{"species":"dog"}}},{}]');
    * // -> StorageEvent('storage', {storageArea: sessionStorage, key: 'pets'})
    * // ...
    *
@@ -529,7 +539,7 @@ export interface Persister {
  *
  * await persister.save();
  * console.log(sessionStorage.getItem('pets'));
- * // -> '{"pets":{"fido":{"species":"dog"}}}'
+ * // -> '[{"pets":{"fido":{"species":"dog"}}},{}]'
  *
  * persister.destroy();
  * sessionStorage.clear();
@@ -562,7 +572,7 @@ export function createSessionPersister(
  *
  * await persister.save();
  * console.log(localStorage.getItem('pets'));
- * // -> '{"pets":{"fido":{"species":"dog"}}}'
+ * // -> '[{"pets":{"fido":{"species":"dog"}}},{}]'
  *
  * persister.destroy();
  * localStorage.clear();
@@ -696,9 +706,9 @@ export function createFilePersister(store: Store, filePath: string): Persister;
  *
  * await persister.save();
  * console.log(storeJson);
- * // -> '{"pets":{"fido":{"species":"dog"}}}'
+ * // -> '[{"pets":{"fido":{"species":"dog"}}},{}]'
  *
- * storeJson = '{"pets":{"fido":{"species":"dog","color":"brown"}}}';
+ * storeJson = '[{"pets":{"fido":{"species":"dog","color":"brown"}}},{}]';
  * await persister.load();
  *
  * console.log(store.getTables());

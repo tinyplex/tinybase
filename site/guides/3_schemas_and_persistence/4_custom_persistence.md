@@ -41,9 +41,9 @@ const persister = createCustomPersister(
 
 await persister.save();
 console.log(storeJson);
-// -> '{"pets":{"fido":{"species":"dog"}}}'
+// -> '[{"pets":{"fido":{"species":"dog"}}},{}]'
 
-storeJson = '{"pets":{"fido":{"species":"dog","color":"brown"}}}';
+storeJson = '[{"pets":{"fido":{"species":"dog","color":"brown"}}},{}]';
 await persister.load();
 
 console.log(store.getTables());

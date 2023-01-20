@@ -225,7 +225,7 @@ const persister = createSessionPersister(store, 'demo');
 await persister.save();
 
 console.log(sessionStorage.getItem('demo'));
-// -> '{"pets":{"fido":{"species":"dog","color":"walnut","sold":true},"felix":{"species":"cat","sold":false}}}'
+// -> '[{"pets":{"fido":{"species":"dog","color":"walnut","sold":true},"felix":{"species":"cat","sold":false}}},{}]'
 
 persister.destroy();
 sessionStorage.clear();
