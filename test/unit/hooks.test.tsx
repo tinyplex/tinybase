@@ -144,16 +144,18 @@ describe('Create Hooks', () => {
   });
 
   test('useCreateMetrics', () => {
-    const initStore = jest.fn((count) =>
-      createStore().setTables({t1: {r1: {c1: count}}}),
+    const initStore = jest.fn(() =>
+      createStore().setTables({t1: {r1: {c1: 1}}, t2: {r1: {c2: 2}}}),
     );
     const initMetrics = jest.fn((store: Store, count) =>
       createMetrics(store).setMetricDefinition('m1', `t${count}`),
     );
     const Test = ({count}: {count: number}) => {
-      const store = useCreateStore(() => initStore(count));
-      const metrics = useCreateMetrics(store, (store) =>
-        initMetrics(store, count),
+      const store = useCreateStore(() => initStore());
+      const metrics = useCreateMetrics(
+        store,
+        (store) => initMetrics(store, count),
+        [count],
       );
       return didRender(<>{JSON.stringify([count, metrics.getMetric('m1')])}</>);
     };
@@ -167,20 +169,50 @@ describe('Create Hooks', () => {
     expect(renderer.toJSON()).toEqual(JSON.stringify([2, 1]));
     expect(didRender).toHaveBeenCalledTimes(2);
     expect(initStore).toHaveBeenCalledTimes(1);
+    expect(initMetrics).toHaveBeenCalledTimes(2);
+  });
+
+  test('useCreateMetrics (no deps, and destroy)', () => {
+    const initStore = jest.fn(() =>
+      createStore().setTables({t1: {r1: {c1: 1}}, t2: {r1: {c2: 2}}}),
+    );
+    const initMetrics = jest.fn((store: Store) =>
+      createMetrics(store).setMetricDefinition('m1', `t1`),
+    );
+    const Test = ({count}: {count: number}) => {
+      const store = useCreateStore(() => initStore());
+      const metrics = useCreateMetrics(store, (store) => initMetrics(store));
+      return didRender(<>{JSON.stringify([count, metrics.getMetric('m1')])}</>);
+    };
+    act(() => {
+      renderer = create(<Test count={1} />);
+    });
+    expect(renderer.toJSON()).toEqual(JSON.stringify([1, 1]));
+    act(() => {
+      renderer.update(<Test count={2} />);
+    });
+    act(() => {
+      renderer.unmount();
+    });
+    expect(renderer.toJSON()).toBeNull();
+    expect(didRender).toHaveBeenCalledTimes(2);
+    expect(initStore).toHaveBeenCalledTimes(1);
     expect(initMetrics).toHaveBeenCalledTimes(1);
   });
 
   test('useCreateIndexes', () => {
-    const initStore = jest.fn((count) =>
-      createStore().setTables({t1: {r1: {c1: count}}}),
+    const initStore = jest.fn(() =>
+      createStore().setTables({t1: {r1: {c1: 1}, r2: {c2: 1}}}),
     );
     const initIndexes = jest.fn((store: Store, count) =>
       createIndexes(store).setIndexDefinition('i1', 't1', `c${count}`),
     );
     const Test = ({count}: {count: number}) => {
-      const store = useCreateStore(() => initStore(count));
-      const indexes = useCreateIndexes(store, (store) =>
-        initIndexes(store, count),
+      const store = useCreateStore(() => initStore());
+      const indexes = useCreateIndexes(
+        store,
+        (store) => initIndexes(store, count),
+        [count],
       );
       return didRender(
         <>{JSON.stringify([count, indexes.getSliceRowIds('i1', '1')])}</>,
@@ -193,16 +225,17 @@ describe('Create Hooks', () => {
     act(() => {
       renderer.update(<Test count={2} />);
     });
-    expect(renderer.toJSON()).toEqual(JSON.stringify([2, ['r1']]));
+    expect(renderer.toJSON()).toEqual(JSON.stringify([2, ['r2']]));
     expect(didRender).toHaveBeenCalledTimes(2);
     expect(initStore).toHaveBeenCalledTimes(1);
-    expect(initIndexes).toHaveBeenCalledTimes(1);
+    expect(initIndexes).toHaveBeenCalledTimes(2);
   });
 
   test('useCreateRelationships', () => {
-    const initStore = jest.fn((count) =>
+    const initStore = jest.fn(() =>
       createStore().setTables({
-        t1: {r1: {c1: `R${count}`}, r2: {c1: 'R2'}},
+        t1: {r1: {c1: `R1`}},
+        t2: {r1: {c1: 'R2'}},
         T1: {R1: {C1: 1}, R2: {C1: 2}},
       }),
     );
@@ -215,9 +248,11 @@ describe('Create Hooks', () => {
       ),
     );
     const Test = ({count}: {count: number}) => {
-      const store = useCreateStore(() => initStore(count));
-      const relationships = useCreateRelationships(store, (store) =>
-        initRelationships(store, count),
+      const store = useCreateStore(() => initStore());
+      const relationships = useCreateRelationships(
+        store,
+        (store) => initRelationships(store, count),
+        [count],
       );
       return didRender(
         <>
@@ -232,15 +267,15 @@ describe('Create Hooks', () => {
     act(() => {
       renderer.update(<Test count={2} />);
     });
-    expect(renderer.toJSON()).toEqual(JSON.stringify([2, 'R1']));
+    expect(renderer.toJSON()).toEqual(JSON.stringify([2, 'R2']));
     expect(didRender).toHaveBeenCalledTimes(2);
     expect(initStore).toHaveBeenCalledTimes(1);
-    expect(initRelationships).toHaveBeenCalledTimes(1);
+    expect(initRelationships).toHaveBeenCalledTimes(2);
   });
 
   test('useCreateQueries', () => {
-    const initStore = jest.fn((count) =>
-      createStore().setTables({t1: {r1: {c1: count}}}),
+    const initStore = jest.fn(() =>
+      createStore().setTables({t1: {r1: {c1: 1}, r2: {c2: 2}}}),
     );
     const initQueries = jest.fn((store: Store, count) =>
       createQueries(store).setQueryDefinition('q1', 't1', ({select}) =>
@@ -248,9 +283,11 @@ describe('Create Hooks', () => {
       ),
     );
     const Test = ({count}: {count: number}) => {
-      const store = useCreateStore(() => initStore(count));
-      const queries = useCreateQueries(store, (store) =>
-        initQueries(store, count),
+      const store = useCreateStore(() => initStore());
+      const queries = useCreateQueries(
+        store,
+        (store) => initQueries(store, count),
+        [count],
       );
       return didRender(
         <>{JSON.stringify([count, queries.getResultTable('q1')])}</>,
@@ -263,15 +300,15 @@ describe('Create Hooks', () => {
     act(() => {
       renderer.update(<Test count={2} />);
     });
-    expect(renderer.toJSON()).toEqual(JSON.stringify([2, {r1: {c1: 1}}]));
+    expect(renderer.toJSON()).toEqual(JSON.stringify([2, {r2: {c2: 2}}]));
     expect(didRender).toHaveBeenCalledTimes(2);
     expect(initStore).toHaveBeenCalledTimes(1);
-    expect(initQueries).toHaveBeenCalledTimes(1);
+    expect(initQueries).toHaveBeenCalledTimes(2);
   });
 
   test('useCreateCheckpoints', () => {
-    const initStore = jest.fn((count) =>
-      createStore().setTables({t1: {r1: {c1: count}}}),
+    const initStore = jest.fn(() =>
+      createStore().setTables({t1: {r1: {c1: 1}}}),
     );
     const initCheckpoints = jest.fn((store: Store, count) => {
       const checkpoints = createCheckpoints(store);
@@ -280,9 +317,11 @@ describe('Create Hooks', () => {
       return checkpoints;
     });
     const Test = ({count}: {count: number}) => {
-      const store = useCreateStore(() => initStore(count));
-      const checkpoints = useCreateCheckpoints(store, (store) =>
-        initCheckpoints(store, count),
+      const store = useCreateStore(() => initStore());
+      const checkpoints = useCreateCheckpoints(
+        store,
+        (store) => initCheckpoints(store, count),
+        [count],
       );
       return didRender(
         <>
@@ -305,11 +344,11 @@ describe('Create Hooks', () => {
       renderer.update(<Test count={2} />);
     });
     expect(renderer.toJSON()).toEqual(
-      JSON.stringify([2, [['0'], '1', []], 'checkpoint1', null]),
+      JSON.stringify([2, [['0', '1'], '2', []], 'checkpoint1', 'checkpoint2']),
     );
     expect(didRender).toHaveBeenCalledTimes(2);
     expect(initStore).toHaveBeenCalledTimes(1);
-    expect(initCheckpoints).toHaveBeenCalledTimes(1);
+    expect(initCheckpoints).toHaveBeenCalledTimes(2);
   });
 
   test('useCreatePersister', async () => {
@@ -332,6 +371,7 @@ describe('Create Hooks', () => {
         (store) => createPersister(store),
         undefined,
         async (persister) => await initPersister(persister, count),
+        [count],
       );
       return didRender(
         <>
@@ -367,7 +407,50 @@ describe('Create Hooks', () => {
     expect(didRender).toHaveBeenCalledTimes(3);
     expect(initStore).toHaveBeenCalledTimes(1);
     expect(createPersister).toHaveBeenCalledTimes(1);
-    expect(initPersister).toHaveBeenCalledTimes(1);
+    expect(initPersister).toHaveBeenCalledTimes(2);
+    _persister?.stopAutoLoad()?.stopAutoSave();
+  });
+
+  test('useCreatePersister (no then)', async () => {
+    let _persister: Persister | undefined;
+    tmp.setGracefulCleanup();
+    const fileName = tmp.fileSync().name;
+    const initStore = jest.fn(createStore);
+    const createPersister = jest.fn((store: Store) => {
+      tmp.setGracefulCleanup();
+      _persister = createFilePersister(store, `${fileName}`);
+      return _persister;
+    });
+    const Test = ({count}: {count: number}) => {
+      const store = useCreateStore(initStore);
+      const persister = useCreatePersister(store, (store) =>
+        createPersister(store),
+      );
+      return didRender(
+        <>
+          {JSON.stringify([
+            count,
+            persister.getStats(),
+            store.getCell('t1', 'r1', 'c1'),
+          ])}
+        </>,
+      );
+    };
+    act(() => {
+      renderer = create(<Test count={1} />);
+    });
+    expect(renderer.toJSON()).toEqual(
+      JSON.stringify([1, {loads: 0, saves: 0}, null]),
+    );
+    await act(async () => {
+      await pause();
+    });
+    expect(renderer.toJSON()).toEqual(
+      JSON.stringify([1, {loads: 0, saves: 0}, null]),
+    );
+    expect(didRender).toHaveBeenCalledTimes(2);
+    expect(initStore).toHaveBeenCalledTimes(1);
+    expect(createPersister).toHaveBeenCalledTimes(1);
     _persister?.stopAutoLoad()?.stopAutoSave();
   });
 });
@@ -1586,6 +1669,13 @@ describe('Read Hooks', () => {
     );
 
     act(() => {
+      store.setTables({t1: {r1: {c1: 2}}});
+    });
+    expect(renderer.root.findByType('div').children[0]).toEqual(
+      JSON.stringify([true, null, '']),
+    );
+
+    act(() => {
       renderer.root.findByType('div').props.onClick();
     });
     expect(renderer.root.findByType('div').children[0]).toEqual(
@@ -1593,11 +1683,11 @@ describe('Read Hooks', () => {
     );
 
     act(() => {
-      store.setTables({t1: {r1: {c1: 2}}});
+      store.setTables({t1: {r1: {c1: 3}}});
       checkpoints.addCheckpoint('one');
     });
     expect(renderer.root.findByType('div').children[0]).toEqual(
-      JSON.stringify([true, '1', 'one']),
+      JSON.stringify([true, '2', 'one']),
     );
 
     act(() => {
@@ -1606,7 +1696,7 @@ describe('Read Hooks', () => {
     expect(renderer.root.findByType('div').children[0]).toEqual(
       JSON.stringify([false, '0', '']),
     );
-    expect(didRender).toHaveBeenCalledTimes(3);
+    expect(didRender).toHaveBeenCalledTimes(5);
   });
 
   test('useRedoInformation', () => {
@@ -2243,6 +2333,22 @@ describe('Write Hooks', () => {
       expect(checkpoints.getCheckpointIds()).toEqual([['0'], '1', ['2']]);
       expect(then).toHaveBeenCalledWith(checkpoints, '1');
     });
+
+    test('useGoToCallback (no then)', () => {
+      const Test = () => (
+        <div onClick={useGoToCallback((e) => e.type, undefined, checkpoints)} />
+      );
+      act(() => {
+        renderer = create(<Test />);
+      });
+      expect(checkpoints.getCheckpointIds()).toEqual([['0', '1'], '2', []]);
+
+      const clickHandler1 = renderer.root.findByType('div').props.onClick;
+      act(() => {
+        clickHandler1({type: '1'});
+      });
+      expect(checkpoints.getCheckpointIds()).toEqual([['0'], '1', ['2']]);
+    });
   });
 });
 
@@ -2653,6 +2759,35 @@ describe('Listener Hooks', () => {
     act(() => {
       store.setCell('t1', 'r1', 'c1', 3);
     });
+    act(() => {
+      renderer.update(<div />);
+    });
+  });
+
+  test('useMetricListener (no deps)', () => {
+    expect.assertions(1);
+    const metrics = createMetrics(store).setMetricDefinition(
+      'm1',
+      't1',
+      'max',
+      'c1',
+    );
+    const Test = () => {
+      useMetricListener(
+        'm1',
+        (metrics) => expect(metrics?.getMetric('m1')).toEqual(1),
+        undefined,
+        metrics,
+      );
+      return <div />;
+    };
+    act(() => {
+      renderer = create(<Test />);
+    });
+    act(() => {
+      store.setCell('t1', 'r1', 'c1', 1);
+    });
+    expect(metrics?.getMetric('m1')).toEqual(1);
     act(() => {
       renderer.update(<div />);
     });
