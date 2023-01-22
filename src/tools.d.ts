@@ -342,7 +342,7 @@ export interface Tools {
    * // -> 'export type PetsRow = {\'price\'?: number;};'
    *
    * const tsLines = ts.split('\n');
-   * console.log(tsLines[40]);
+   * console.log(tsLines[41]);
    * // -> 'getPetsTable: (): PetsTable => store.getTable(PETS) as PetsTable,'
    * ```
    * @example
@@ -362,7 +362,7 @@ export interface Tools {
    * // -> 'export type PetsRow = {\'price\': number;};'
    *
    * const tsLines = ts.split('\n');
-   * console.log(tsLines[42]);
+   * console.log(tsLines[43]);
    * // -> 'getPetsTable: (): PetsTable => store.getTable(PETS) as PetsTable,'
    * ```
    * @category Modelling
@@ -408,13 +408,13 @@ export interface Tools {
    * const [dTs, ts] = await tools.getPrettyStoreApi('shop');
    *
    * const dTsLines = dTs.split('\n');
-   * console.log(dTsLines[14]);
+   * console.log(dTsLines[5]);
    * // -> 'export type PetsTable = {[rowId: Id]: PetsRow};'
-   * console.log(dTsLines[19]);
+   * console.log(dTsLines[10]);
    * // -> 'export type PetsRow = {price?: number};'
    *
    * const tsLines = ts.split('\n');
-   * console.log(tsLines[73]);
+   * console.log(tsLines[72]);
    * // -> '    hasPetsTable: (): boolean => store.hasTable(PETS),'
    * ```
    * @example
@@ -429,13 +429,13 @@ export interface Tools {
    * const [dTs, ts] = await tools.getPrettyStoreApi('shop');
    *
    * const dTsLines = dTs.split('\n');
-   * console.log(dTsLines[14]);
+   * console.log(dTsLines[5]);
    * // -> 'export type PetsTable = {[rowId: Id]: PetsRow};'
-   * console.log(dTsLines[19]);
+   * console.log(dTsLines[10]);
    * // -> 'export type PetsRow = {price: number};'
    *
    * const tsLines = ts.split('\n');
-   * console.log(tsLines[75]);
+   * console.log(tsLines[74]);
    * // -> '    hasPetsTable: (): boolean => store.hasTable(PETS),'
    * ```
    * @category Modelling
