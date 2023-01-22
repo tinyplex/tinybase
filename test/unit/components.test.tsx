@@ -37,6 +37,10 @@ import {
   TableView,
   TablesProps,
   TablesView,
+  ValueProps,
+  ValueView,
+  ValuesProps,
+  ValuesView,
   useCell,
   useCheckpointIds,
   useDelCellCallback,
@@ -92,10 +96,12 @@ const rendererToString = (renderer: ReactTestRenderer): string => {
 };
 
 beforeEach(() => {
-  store = createStore().setTables({
-    t1: {r1: {c1: 1}},
-    t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}},
-  });
+  store = createStore()
+    .setTables({
+      t1: {r1: {c1: 1}},
+      t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}},
+    })
+    .setValues({v1: 3, v2: 4});
 });
 
 describe('Read Components', () => {
@@ -302,6 +308,25 @@ describe('Read Components', () => {
       {props.cellId}
       {props.cellPrefix}
       <CellView {...props} />
+    </>
+  );
+
+  const TestValuesView = (props: ValuesProps & {valuePrefix?: string}) => (
+    <ValuesView
+      {...props}
+      valueComponent={TestValueView}
+      getValueComponentProps={useCallback(
+        () => ({valuePrefix: props.valuePrefix}),
+        [props.valuePrefix],
+      )}
+    />
+  );
+
+  const TestValueView = (props: ValueProps & {valuePrefix?: string}) => (
+    <>
+      {props.valueId}
+      {props.valuePrefix}
+      <ValueView {...props} />
     </>
   );
 
@@ -644,6 +669,90 @@ describe('Read Components', () => {
         store.delTables();
       });
       expect(rendererToString(renderer)).toEqual('c2:');
+    });
+  });
+
+  describe('ValuesView', () => {
+    test('Basic', () => {
+      act(() => {
+        renderer = create(<ValuesView store={store} />);
+      });
+      expect(rendererToString(renderer)).toEqual('34');
+    });
+
+    test('Separator', () => {
+      act(() => {
+        renderer = create(<ValuesView store={store} separator="/" />);
+      });
+      expect(rendererToString(renderer)).toEqual('3/4');
+    });
+
+    test('Debug Ids', () => {
+      act(() => {
+        renderer = create(<ValuesView store={store} debugIds={true} />);
+      });
+      expect(rendererToString(renderer)).toEqual('v1:{3}v2:{4}');
+    });
+
+    test('Custom', () => {
+      const Test = () => <TestValuesView store={store} valuePrefix=":" />;
+      act(() => {
+        renderer.update(<Test />);
+      });
+      expect(rendererToString(renderer)).toEqual('v1:3v2:4');
+
+      act(() => {
+        store.setValue('v1', 4);
+      });
+      expect(rendererToString(renderer)).toEqual('v1:4v2:4');
+
+      act(() => {
+        store.delValues();
+      });
+      expect(renderer.toJSON()).toBeNull();
+    });
+  });
+
+  describe('ValueView', () => {
+    test('Basic', () => {
+      act(() => {
+        renderer = create(<ValueView store={store} valueId="v2" />);
+      });
+      expect(rendererToString(renderer)).toEqual('4');
+    });
+
+    test('Debug Ids', () => {
+      act(() => {
+        renderer = create(
+          <ValueView store={store} valueId="v2" debugIds={true} />,
+        );
+      });
+      expect(rendererToString(renderer)).toEqual('v2:{4}');
+    });
+
+    test('Custom', () => {
+      const Test = ({valueId}: {valueId: Id}) => (
+        <TestValueView store={store} valueId={valueId} valuePrefix=":" />
+      );
+      act(() => {
+        renderer = create(<Test valueId="v0" />);
+      });
+      expect(rendererToString(renderer)).toEqual('v0:');
+
+      act(() => {
+        renderer.update(<Test valueId="v2" />);
+      });
+      expect(rendererToString(renderer)).toEqual('v2:4');
+
+      act(() => {
+        store.setValue('v2', 5);
+      });
+      expect(rendererToString(renderer)).toEqual('v2:5');
+
+      act(() => {
+        store.delValues();
+      });
+      expect(rendererToString(renderer)).toEqual('v2:');
     });
   });
 

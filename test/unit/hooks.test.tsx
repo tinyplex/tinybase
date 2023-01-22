@@ -10,6 +10,8 @@ import {
   Store,
   Table,
   Tables,
+  Value,
+  Values,
   createCheckpoints,
   createFilePersister,
   createIndexes,
@@ -40,6 +42,8 @@ import {
   useDelRowCallback,
   useDelTableCallback,
   useDelTablesCallback,
+  useDelValueCallback,
+  useDelValuesCallback,
   useGoBackwardCallback,
   useGoForwardCallback,
   useGoToCallback,
@@ -75,9 +79,12 @@ import {
   useSetCellCallback,
   useSetCheckpointCallback,
   useSetPartialRowCallback,
+  useSetPartialValuesCallback,
   useSetRowCallback,
   useSetTableCallback,
   useSetTablesCallback,
+  useSetValueCallback,
+  useSetValuesCallback,
   useSliceIds,
   useSliceIdsListener,
   useSliceRowIds,
@@ -92,6 +99,12 @@ import {
   useTables,
   useTablesListener,
   useUndoInformation,
+  useValue,
+  useValueIds,
+  useValueIdsListener,
+  useValueListener,
+  useValues,
+  useValuesListener,
 } from '../../lib/debug/ui-react';
 import {ReactTestRenderer, act, create} from 'react-test-renderer';
 import React from 'react';
@@ -103,7 +116,9 @@ let renderer: ReactTestRenderer;
 let didRender: jest.Mock;
 
 beforeEach(() => {
-  store = createStore().setTables({t1: {r1: {c1: 1}}});
+  store = createStore()
+    .setTables({t1: {r1: {c1: 1}}})
+    .setValues({v1: 1});
   didRender = jest.fn((rendered) => rendered);
 });
 
@@ -809,6 +824,94 @@ describe('Read Hooks', () => {
       renderer.update(<div />);
     });
     expect(store.getListenerStats().cell).toEqual(0);
+    expect(didRender).toHaveBeenCalledTimes(5);
+  });
+
+  test('useValues', () => {
+    const Test = () => didRender(<>{JSON.stringify(useValues(store))}</>);
+    expect(store.getListenerStats().values).toEqual(0);
+    act(() => {
+      renderer = create(<Test />);
+    });
+    expect(store.getListenerStats().values).toEqual(1);
+    expect(renderer.toJSON()).toEqual(JSON.stringify({v1: 1}));
+
+    act(() => {
+      store.setValues({v1: 2}).setValues({v1: 2});
+    });
+    expect(renderer.toJSON()).toEqual(JSON.stringify({v1: 2}));
+
+    act(() => {
+      store.delValues();
+    });
+    expect(renderer.toJSON()).toEqual(JSON.stringify({}));
+    act(() => {
+      renderer.update(<div />);
+    });
+    expect(store.getListenerStats().values).toEqual(0);
+    expect(didRender).toHaveBeenCalledTimes(3);
+  });
+
+  test('useValueIds', () => {
+    const Test = () => didRender(<>{JSON.stringify(useValueIds(store))}</>);
+    expect(store.getListenerStats().valueIds).toEqual(0);
+    act(() => {
+      renderer = create(<Test />);
+    });
+    expect(store.getListenerStats().valueIds).toEqual(1);
+    expect(renderer.toJSON()).toEqual(JSON.stringify(['v1']));
+
+    act(() => {
+      store.setValues({v1: 1, v2: 2}).setValues({v1: 1, v2: 2});
+    });
+    expect(renderer.toJSON()).toEqual(JSON.stringify(['v1', 'v2']));
+
+    act(() => {
+      store.delValues();
+    });
+    expect(renderer.toJSON()).toEqual('[]');
+    act(() => {
+      renderer.update(<div />);
+    });
+    expect(store.getListenerStats().valueIds).toEqual(0);
+    expect(didRender).toHaveBeenCalledTimes(3);
+  });
+
+  test('useValue', () => {
+    const Test = ({valueId}: {valueId: Id}) =>
+      didRender(<>{JSON.stringify(useValue(valueId, store))}</>);
+    expect(store.getListenerStats().value).toEqual(0);
+    act(() => {
+      renderer = create(<Test valueId="v0" />);
+    });
+    expect(store.getListenerStats().value).toEqual(1);
+    expect(renderer.toJSON()).toBeNull();
+
+    act(() => {
+      renderer.update(<Test valueId="v1" />);
+    });
+    expect(store.getListenerStats().value).toEqual(1);
+    expect(renderer.toJSON()).toEqual('1');
+
+    act(() => {
+      store.setValues({v1: 2, v2: 3}).setValues({v1: 2, v2: 3});
+    });
+    expect(renderer.toJSON()).toEqual('2');
+
+    act(() => {
+      renderer.update(<Test valueId="v2" />);
+    });
+    expect(store.getListenerStats().value).toEqual(1);
+    expect(renderer.toJSON()).toEqual('3');
+
+    act(() => {
+      store.delValues();
+    });
+    expect(renderer.toJSON()).toBeNull();
+    act(() => {
+      renderer.update(<div />);
+    });
+    expect(store.getListenerStats().value).toEqual(0);
     expect(didRender).toHaveBeenCalledTimes(5);
   });
 
@@ -1798,6 +1901,117 @@ describe('Write Hooks', () => {
     expect(clickHandler1).not.toEqual(clickHandler2);
   });
 
+  test('useSetValuesCallback', () => {
+    const then = jest.fn((_store?: Store, _values?: Values) => null);
+    const Test = ({
+      value,
+      then,
+    }: {
+      value: number;
+      then: (store?: Store, values?: Values) => void;
+    }) => (
+      <div
+        onClick={useSetValuesCallback(
+          (e) => ({v1: e.screenX * value}),
+          [value],
+          store,
+          then,
+        )}
+      />
+    );
+    act(() => {
+      renderer = create(<Test value={2} then={then} />);
+    });
+
+    const clickHandler1 = renderer.root.findByType('div').props.onClick;
+    act(() => {
+      clickHandler1({screenX: 2});
+    });
+    expect(store.getValues()).toEqual({v1: 4});
+    expect(then).toHaveBeenCalledWith(store, {v1: 4});
+
+    act(() => {
+      renderer.update(<Test value={3} then={then} />);
+    });
+    const clickHandler2 = renderer.root.findByType('div').props.onClick;
+    expect(clickHandler1).not.toEqual(clickHandler2);
+  });
+
+  test('useSetPartialValuesCallback', () => {
+    const then = jest.fn((_store: Store, _values: Values) => null);
+    const Test = ({
+      value,
+      then,
+    }: {
+      value: number;
+      then: (store: Store, values: Values) => void;
+    }) => (
+      <div
+        onClick={useSetPartialValuesCallback(
+          (e) => ({v2: e.screenX * value, v3: e.screenX * value}),
+          [value],
+          store,
+          then,
+        )}
+      />
+    );
+    act(() => {
+      renderer = create(<Test value={2} then={then} />);
+    });
+
+    const clickHandler1 = renderer.root.findByType('div').props.onClick;
+    act(() => {
+      clickHandler1({screenX: 2});
+    });
+    expect(store.getValues()).toEqual({v1: 1, v2: 4, v3: 4});
+    expect(then).toHaveBeenCalledWith(store, {v2: 4, v3: 4});
+
+    act(() => {
+      renderer.update(<Test value={3} then={then} />);
+    });
+    const clickHandler2 = renderer.root.findByType('div').props.onClick;
+    expect(clickHandler1).not.toEqual(clickHandler2);
+  });
+
+  test('useSetValueCallback', () => {
+    const then = jest.fn((_store?: Store, _value?: Value) => null);
+    const Test = ({
+      value,
+      then,
+    }: {
+      value: number;
+      then: (store?: Store, value?: Value) => void;
+    }) => {
+      return (
+        <div
+          onClick={useSetValueCallback<React.MouseEvent<HTMLDivElement>>(
+            'v1',
+            (e) => e.screenX * value,
+            [value],
+            store,
+            then,
+          )}
+        />
+      );
+    };
+    act(() => {
+      renderer = create(<Test value={2} then={then} />);
+    });
+
+    const clickHandler1 = renderer.root.findByType('div').props.onClick;
+    act(() => {
+      clickHandler1({screenX: 2});
+    });
+    expect(store.getValues()).toEqual({v1: 4});
+    expect(then).toHaveBeenCalledWith(store, 4);
+
+    act(() => {
+      renderer.update(<Test value={3} then={then} />);
+    });
+    const clickHandler2 = renderer.root.findByType('div').props.onClick;
+    expect(clickHandler1).not.toEqual(clickHandler2);
+  });
+
   test('useDelTablesCallback', () => {
     const Test = () => <div onClick={useDelTablesCallback(store)} />;
     act(() => {
@@ -1846,6 +2060,30 @@ describe('Write Hooks', () => {
       renderer.root.findByType('div').props.onClick();
     });
     expect(store.getTables()).toEqual({});
+  });
+
+  test('useDelValuesCallback', () => {
+    const Test = () => <div onClick={useDelValuesCallback(store)} />;
+    act(() => {
+      renderer = create(<Test />);
+    });
+
+    act(() => {
+      renderer.root.findByType('div').props.onClick();
+    });
+    expect(store.getValues()).toEqual({});
+  });
+
+  test('useDelValueCallback', () => {
+    const Test = () => <div onClick={useDelValueCallback('v1', store)} />;
+    act(() => {
+      renderer = create(<Test />);
+    });
+
+    act(() => {
+      renderer.root.findByType('div').props.onClick();
+    });
+    expect(store.getValues()).toEqual({});
   });
 
   describe('Checkpoints', () => {
@@ -2285,6 +2523,105 @@ describe('Listener Hooks', () => {
       renderer.update(<div />);
     });
     expect(store.getListenerStats().cell).toEqual(0);
+  });
+
+  test('useValuesListener', () => {
+    expect.assertions(6);
+    const Test = ({value}: {value: number}) => {
+      useValuesListener(
+        (store) => expect(store?.getValue('v1')).toEqual(value),
+        [value],
+        false,
+        store,
+      );
+      return <div />;
+    };
+    expect(store.getListenerStats().values).toEqual(0);
+    act(() => {
+      renderer = create(<Test value={2} />);
+    });
+    expect(store.getListenerStats().values).toEqual(1);
+    act(() => {
+      store.setValue('v1', 2);
+    });
+    act(() => {
+      renderer.update(<Test value={3} />);
+    });
+    expect(store.getListenerStats().values).toEqual(1);
+    act(() => {
+      store.setValue('v1', 3);
+    });
+    act(() => {
+      renderer.update(<div />);
+    });
+    expect(store.getListenerStats().values).toEqual(0);
+  });
+
+  test('useValueIdsListener', () => {
+    expect.assertions(6);
+    const Test = ({value}: {value: number}) => {
+      useValueIdsListener(
+        (store) => expect(store?.getValue('v1')).toEqual(value),
+        [value],
+        false,
+        store,
+      );
+      return <div />;
+    };
+    expect(store.getListenerStats().valueIds).toEqual(0);
+    act(() => {
+      renderer = create(<Test value={2} />);
+    });
+    expect(store.getListenerStats().valueIds).toEqual(1);
+    act(() => {
+      store.setValue('v1', 2);
+      store.setValue('v2', 0);
+    });
+    act(() => {
+      renderer.update(<Test value={3} />);
+    });
+    expect(store.getListenerStats().valueIds).toEqual(1);
+    act(() => {
+      store.setValue('v1', 3);
+      store.setValue('v3', 0);
+    });
+    act(() => {
+      renderer.update(<div />);
+    });
+    expect(store.getListenerStats().valueIds).toEqual(0);
+  });
+
+  test('useValueListener', () => {
+    expect.assertions(6);
+    const Test = ({value}: {value: number}) => {
+      useValueListener(
+        'v1',
+        (store) => expect(store?.getValue('v1')).toEqual(value),
+        [value],
+        false,
+        store,
+      );
+      return <div />;
+    };
+    expect(store.getListenerStats().value).toEqual(0);
+    act(() => {
+      renderer = create(<Test value={2} />);
+    });
+    expect(store.getListenerStats().value).toEqual(1);
+    act(() => {
+      store.setValue('v1', 2);
+    });
+    act(() => {
+      renderer.update(<Test value={3} />);
+    });
+    expect(store.getListenerStats().value).toEqual(1);
+    act(() => {
+      store.setValue('v1', 3);
+    });
+    act(() => {
+      renderer.update(<div />);
+    });
+    expect(store.getListenerStats().value).toEqual(0);
   });
 
   test('useMetricListener', () => {
