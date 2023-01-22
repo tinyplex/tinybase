@@ -885,8 +885,8 @@ export type InvalidCells = {
  * Hence, an `undefined` value for the first item in the array means that the
  * Value was added during the transaction. An `undefined` value for the second
  * item in the array means that the Value was removed during the transaction. An
- * array with two different Value values indicates that it was changed. The
- * two-part array will never contain two items of the same value (including two
+ * array with two different Values indicates that it was changed. The two-part
+ * array will never contain two items of the same value (including two
  * `undefined` values), even if, during the transaction, a Value was changed to
  * a different value and then changed back.
  *
