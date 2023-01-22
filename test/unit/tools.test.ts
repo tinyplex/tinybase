@@ -108,6 +108,13 @@ describe('TablesSchema', () => {
       });
     });
 
+    test('Interesting', () => {
+      store.setTables({'': {'': {'': true}}});
+      expect(tools.getStoreTablesSchema()).toEqual({
+        '': {'': {default: true, type: 'boolean'}},
+      });
+    });
+
     test('Inconsistent', () => {
       store.setTables({
         t1: {r1: {c2: true}, r2: {c1: 2, c2: 3}},
@@ -140,6 +147,11 @@ describe('ValuesSchema', () => {
       });
     });
 
+    test('Interesting', () => {
+      store.setValues({'': true});
+      expect(tools.getStoreValuesSchema()).toEqual({'': {type: 'boolean'}});
+    });
+
     test('Empty', () => {
       store.setValues({});
       expect(tools.getStoreValuesSchema()).toEqual({});
@@ -158,14 +170,24 @@ describe('API', () => {
 
   test('Unpretty tabular', () => {
     store.setTablesSchema({
-      t1: {c1: {type: 'number', default: 1}, c2: {type: 'string'}},
+      t1: {
+        c1: {type: 'number', default: 1},
+        c2: {type: 'string', default: 'two'},
+        c3: {type: 'string', default: '3'},
+        '': {type: 'string'},
+      },
     });
     expect(tools.getStoreApi('s')).toMatchSnapshot();
   });
 
   test('Pretty tabular', async () => {
     store.setTablesSchema({
-      t1: {c1: {type: 'number', default: 1}, c2: {type: 'string'}},
+      t1: {
+        c1: {type: 'number', default: 1},
+        c2: {type: 'string', default: 'two'},
+        c3: {type: 'string', default: '3'},
+        '': {type: 'string'},
+      },
     });
     const files = await tools.getPrettyStoreApi('s');
     expect(files).toMatchSnapshot();
@@ -174,7 +196,9 @@ describe('API', () => {
   test('Unpretty keyed value', () => {
     store.setValuesSchema({
       v1: {type: 'number', default: 1},
-      v2: {type: 'string'},
+      v2: {type: 'string', default: 'two'},
+      v3: {type: 'string', default: '3'},
+      '': {type: 'string'},
     });
     expect(tools.getStoreApi('s')).toMatchSnapshot();
   });
@@ -182,7 +206,9 @@ describe('API', () => {
   test('Pretty keyed value', async () => {
     store.setValuesSchema({
       v1: {type: 'number', default: 1},
-      v2: {type: 'string'},
+      v2: {type: 'string', default: 'two'},
+      v3: {type: 'string', default: '3'},
+      '': {type: 'string'},
     });
     const files = await tools.getPrettyStoreApi('s');
     expect(files).toMatchSnapshot();
@@ -191,11 +217,18 @@ describe('API', () => {
   test('Unpretty both', () => {
     store
       .setTablesSchema({
-        t1: {c1: {type: 'number', default: 1}, c2: {type: 'string'}},
+        t1: {
+          c1: {type: 'number', default: 1},
+          c2: {type: 'string', default: 'two'},
+          c3: {type: 'string', default: '3'},
+          '': {type: 'string'},
+        },
       })
       .setValuesSchema({
         v1: {type: 'number', default: 1},
-        v2: {type: 'string'},
+        v2: {type: 'string', default: 'two'},
+        v3: {type: 'string', default: '3'},
+        '': {type: 'string'},
       });
 
     expect(tools.getStoreApi('s')).toMatchSnapshot();
@@ -204,11 +237,18 @@ describe('API', () => {
   test('Pretty both', async () => {
     store
       .setTablesSchema({
-        t1: {c1: {type: 'number', default: 1}, c2: {type: 'string'}},
+        t1: {
+          c1: {type: 'number', default: 1},
+          c2: {type: 'string', default: 'two'},
+          c3: {type: 'string', default: '3'},
+          '': {type: 'string'},
+        },
       })
       .setValuesSchema({
         v1: {type: 'number', default: 1},
-        v2: {type: 'string'},
+        v2: {type: 'string', default: 'two'},
+        v3: {type: 'string', default: '3'},
+        '': {type: 'string'},
       });
 
     const files = await tools.getPrettyStoreApi('s');

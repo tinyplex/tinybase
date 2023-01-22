@@ -96,9 +96,6 @@ const lintCheck = async (dir) => {
   const prettierConfig = await getPrettierConfig();
   const docConfig = {...prettierConfig, printWidth: 75};
   await allOf(results, async ({filePath}) => {
-    if (filePath.includes('/test/coverage/')) {
-      return;
-    }
     const code = await promises.readFile(filePath, 'utf-8');
     if (!prettier.check(code, prettierConfig)) {
       throw `${filePath} not pretty`;
@@ -277,7 +274,11 @@ const test = async (
         ? {
             collectCoverage: true,
             coverageProvider: 'babel',
-            collectCoverageFrom: [`${LIB_DIR}/debug/tinybase.js`],
+            collectCoverageFrom: [
+              `${LIB_DIR}/debug/tinybase.js`,
+              `${LIB_DIR}/debug/ui-react.js`,
+              `${LIB_DIR}/debug/tools.js`,
+            ],
             coverageReporters: ['text-summary']
               .concat(coverageMode > 1 ? ['json-summary'] : [])
               .concat(coverageMode > 2 ? ['lcov'] : []),
