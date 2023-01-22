@@ -40,7 +40,10 @@ import {
   Tables,
   TablesListener,
   Value,
+  ValueIdsListener,
+  ValueListener,
   Values,
+  ValuesListener,
 } from './store.d';
 import {
   CheckpointIds,
@@ -2489,7 +2492,7 @@ export function useDelValueCallback(
 
 /**
  * The useTablesListener hook registers a listener function with a Store that
- * will be called whenever data in it changes.
+ * will be called whenever tabular data in it changes.
  *
  * This hook is useful for situations where a component needs to register its
  * own specific listener to do more than simply tracking the value (which is
@@ -2500,8 +2503,8 @@ export function useDelValueCallback(
  * for you: when the listener changes (per its `listenerDeps` dependencies) or
  * the component unmounts, the listener on the underlying Store will be deleted.
  *
- * @param listener The function that will be called whenever data in the Store
- * changes.
+ * @param listener The function that will be called whenever tabular data in the
+ * Store changes.
  * @param listenerDeps An optional array of dependencies for the `listener`
  * function, which, if any change, result in the re-registration of the
  * listener. This parameter defaults to an empty array.
@@ -3056,6 +3059,195 @@ export function useCellListener(
   rowId: IdOrNull,
   cellId: IdOrNull,
   listener: CellListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  storeOrStoreId?: StoreOrStoreId,
+): void;
+
+/**
+ * The useValuesListener hook registers a listener function with a Store that
+ * will be called whenever keyed value data in it changes.
+ *
+ * This hook is useful for situations where a component needs to register its
+ * own specific listener to do more than simply tracking the value (which is
+ * more easily done with the useValues hook).
+ *
+ * Unlike the addValuesListener method, which returns a listener Id and requires
+ * you to remove it manually, the useValuesListener hook manages this lifecycle
+ * for you: when the listener changes (per its `listenerDeps` dependencies) or
+ * the component unmounts, the listener on the underlying Store will be deleted.
+ *
+ * @param listener The function that will be called whenever keyed value data in
+ * the Store changes.
+ * @param listenerDeps An optional array of dependencies for the `listener`
+ * function, which, if any change, result in the re-registration of the
+ * listener. This parameter defaults to an empty array.
+ * @param mutator An optional boolean that indicates that the listener mutates
+ * Store data.
+ * @param storeOrStoreId The Store to register the listener with: omit for the
+ * default context Store, provide an Id for a named context Store, or provide an
+ * explicit reference.
+ * @example
+ * This example uses the useValuesListener hook to create a listener that is
+ * scoped to a single component. When the component is unmounted, the listener
+ * is removed from the Store.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => {
+ *   useValuesListener(() => console.log('Values changed'));
+ *   return <span>App</span>;
+ * };
+ *
+ * const store = createStore().setValues({open: true});
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App store={store} />, app); // !act
+ * console.log(store.getListenerStats().values);
+ * // -> 1
+ *
+ * store.setValue('open', false); // !act
+ * // -> 'Values changed'
+ *
+ * ReactDOM.unmountComponentAtNode(app); // !act
+ * console.log(store.getListenerStats().values);
+ * // -> 0
+ * ```
+ * @category Store hooks
+ */
+export function useValuesListener(
+  listener: ValuesListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  storeOrStoreId?: StoreOrStoreId,
+): void;
+
+/**
+ * The useValueIdsListener hook registers a listener function with a Store that
+ * will be called whenever the Value Ids in it change.
+ *
+ * This hook is useful for situations where a component needs to register its
+ * own specific listener to do more than simply tracking the value (which is
+ * more easily done with the useValueIds hook).
+ *
+ * Unlike the addValueIdsListener method, which returns a listener Id and
+ * requires you to remove it manually, the useValueIdsListener hook manages this
+ * lifecycle for you: when the listener changes (per its `listenerDeps`
+ * dependencies) or the component unmounts, the listener on the underlying Store
+ * will be deleted.
+ *
+ * @param listener The function that will be called whenever the Value Ids in
+ * the Store change.
+ * @param listenerDeps An optional array of dependencies for the `listener`
+ * function, which, if any change, result in the re-registration of the
+ * listener. This parameter defaults to an empty array.
+ * @param mutator An optional boolean that indicates that the listener mutates
+ * Store data.
+ * @param storeOrStoreId The Store to register the listener with: omit for the
+ * default context Store, provide an Id for a named context Store, or provide an
+ * explicit reference.
+ * @example
+ * This example uses the useValueIdsListener hook to create a listener that is
+ * scoped to a single component. When the component is unmounted, the listener
+ * is removed from the Store.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => {
+ *   useValueIdsListener(() => console.log('Value Ids changed'));
+ *   return <span>App</span>;
+ * };
+ *
+ * const store = createStore().setValues({open: true});
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App store={store} />, app); // !act
+ * console.log(store.getListenerStats().valueIds);
+ * // -> 1
+ *
+ * store.setValue('employees', 3); // !act
+ * // -> 'Value Ids changed'
+ *
+ * ReactDOM.unmountComponentAtNode(app); // !act
+ * console.log(store.getListenerStats().valueIds);
+ * // -> 0
+ * ```
+ * @category Store hooks
+ */
+export function useValueIdsListener(
+  listener: ValueIdsListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  storeOrStoreId?: StoreOrStoreId,
+): void;
+
+/**
+ * The useValueListener hook registers a listener function with a Store that
+ * will be called whenever data in a Value changes.
+ *
+ * This hook is useful for situations where a component needs to register its
+ * own specific listener to do more than simply tracking the value (which is
+ * more easily done with the useValue hook).
+ *
+ * You can either listen to a single Value (by specifying its Id as the method's
+ * first parameter) or changes to any Value (by providing a `null` wildcard).
+ *
+ * Unlike the addValueListener method, which returns a listener Id and requires
+ * you to remove it manually, the useValueListener hook manages this lifecycle
+ * for you: when the listener changes (per its `listenerDeps` dependencies) or
+ * the component unmounts, the listener on the underlying Store will be deleted.
+ *
+ * @param valueId The Id of the Value to listen to, or `null` as a wildcard.
+ * @param listener The function that will be called whenever data in the Value
+ * changes.
+ * @param listenerDeps An optional array of dependencies for the `listener`
+ * function, which, if any change, result in the re-registration of the
+ * listener. This parameter defaults to an empty array.
+ * @param mutator An optional boolean that indicates that the listener mutates
+ * Store data.
+ * @param storeOrStoreId The Store to register the listener with: omit for the
+ * default context Store, provide an Id for a named context Store, or provide an
+ * explicit reference.
+ * @example
+ * This example uses the useValueListener hook to create a listener that is
+ * scoped to a single component. When the component is unmounted, the listener
+ * is removed from the Store.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => {
+ *   useValueListener('open', () => console.log('Value changed'));
+ *   return <span>App</span>;
+ * };
+ *
+ * const store = createStore().setValues({open: true});
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App store={store} />, app); // !act
+ * console.log(store.getListenerStats().value);
+ * // -> 1
+ *
+ * store.setValue('open', false); // !act
+ * // -> 'Value changed'
+ *
+ * ReactDOM.unmountComponentAtNode(app); // !act
+ * console.log(store.getListenerStats().value);
+ * // -> 0
+ * ```
+ * @category Store hooks
+ */
+export function useValueListener(
+  valueId: IdOrNull,
+  listener: ValueListener,
   listenerDeps?: React.DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
