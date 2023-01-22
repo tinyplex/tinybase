@@ -3,12 +3,12 @@
 
 <span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persisters/interfaces/persister/persister/methods/save/startautosave/">startAutoSave</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>sessionStorage<span class="punctuation">.</span><span class="function">getItem</span><span class="punctuation">(</span><span class="string">'pets'</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
-<span class="comment">// -> '{"pets":{"fido":{"species":"dog"}}}'</span>
+<span class="comment">// -> '[{"pets":{"fido":{"species":"dog"}}},{}]'</span>
 
 store<span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/setter/settables/">setTables</a></span><span class="punctuation">(</span><span class="punctuation">{</span><span class="literal-property">pets</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">toto</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">species</span><span class="operator">:</span> <span class="string">'dog'</span><span class="punctuation">}</span><span class="punctuation">}</span><span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// ...</span>
 console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>sessionStorage<span class="punctuation">.</span><span class="function">getItem</span><span class="punctuation">(</span><span class="string">'pets'</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
-<span class="comment">// -> '{"pets":{"toto":{"species":"dog"}}}'</span>
+<span class="comment">// -> '[{"pets":{"toto":{"species":"dog"}}},{}]'</span>
 
 sessionStorage<span class="punctuation">.</span><span class="function"><a href="/api/checkpoints/interfaces/checkpoints/checkpoints/methods/lifecycle/clear/">clear</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 </code></pre></section></section>
