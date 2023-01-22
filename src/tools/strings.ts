@@ -16,8 +16,12 @@ export const A_STRING_SERIALIZATION_OF = 'a string serialization of';
 const getTheContentOfDoc = (content: 0 | 1 | 2 = 0, theStore = 0): string =>
   `the ${CONTENT[content]}content of${theStore ? ` ${THE_STORE}` : ''}`;
 
-export const getTheContentOfTheStoreDoc = (verb = 0, content: 0 | 1 | 2 = 0) =>
-  `${VERBS[verb]} ${getTheContentOfDoc(content, 1)}`;
+export const getTheContentOfTheStoreDoc = (
+  verb = 0,
+  content: 0 | 1 | 2 = 0,
+  set = 0,
+) =>
+  `${VERBS[verb]} ${getTheContentOfDoc(content, 1)}${set ? ' when set' : ''}`;
 
 export const getRowTypeDoc = (tableId: Id, set = 0) =>
   `${REPRESENTS} a Row when ${
