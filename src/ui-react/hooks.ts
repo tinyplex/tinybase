@@ -32,7 +32,10 @@ import {
   Tables,
   TablesListener,
   Value,
+  ValueIdsListener,
+  ValueListener,
   Values,
+  ValuesListener,
 } from '../store.d';
 import {
   CheckpointIds,
@@ -122,7 +125,10 @@ import {
   useUndoInformation as useUndoInformationDecl,
   useValue as useValueDecl,
   useValueIds as useValueIdsDecl,
+  useValueIdsListener as useValueIdsListenerDecl,
+  useValueListener as useValueListenerDecl,
   useValues as useValuesDecl,
+  useValuesListener as useValuesListenerDecl,
 } from '../ui-react.d';
 import {Indexes, SliceIdsListener, SliceRowIdsListener} from '../indexes.d';
 import {
@@ -729,6 +735,52 @@ export const useCellListener: typeof useCellListenerDecl = (
     listener,
     listenerDeps,
     [tableId, rowId, cellId],
+    mutator,
+  );
+
+export const useValuesListener: typeof useValuesListenerDecl = (
+  listener: ValuesListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  storeOrStoreId?: StoreOrStoreId,
+): void =>
+  useListener(
+    VALUES,
+    useStoreOrStoreId(storeOrStoreId),
+    listener,
+    listenerDeps,
+    [],
+    mutator,
+  );
+
+export const useValueIdsListener: typeof useValueIdsListenerDecl = (
+  listener: ValueIdsListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  storeOrStoreId?: StoreOrStoreId,
+): void =>
+  useListener(
+    VALUE_IDS,
+    useStoreOrStoreId(storeOrStoreId),
+    listener,
+    listenerDeps,
+    [],
+    mutator,
+  );
+
+export const useValueListener: typeof useValueListenerDecl = (
+  valueId: IdOrNull,
+  listener: ValueListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  storeOrStoreId?: StoreOrStoreId,
+): void =>
+  useListener(
+    VALUE,
+    useStoreOrStoreId(storeOrStoreId),
+    listener,
+    listenerDeps,
+    [valueId],
     mutator,
   );
 
