@@ -37,7 +37,7 @@ export type StoreStats = {
    */
   totalCells: number;
   /**
-   * The number of Value objects in the Store.
+   * The number of Value objects in the Store, since v3.0.0.
    */
   totalValues: number;
   /**
@@ -228,7 +228,7 @@ export interface Tools {
    * // -> {type: 'boolean'}
    * ```
    * @category Modelling
-   * @since v2.2.0
+   * @since v3.0.0
    */
   getStoreTablesSchema(): TablesSchema;
 
