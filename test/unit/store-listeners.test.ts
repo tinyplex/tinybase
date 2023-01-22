@@ -5558,6 +5558,20 @@ describe('callListener', () => {
     expect(listener).toHaveBeenNthCalledWith(8, store, 't2', 'r2', 'c2', 8, 8);
   });
 
+  test('invalid cell */*/* (non mutator)', () => {
+    store.callListener(
+      store.addInvalidCellListener(null, null, null, listener),
+    );
+    expect(listener).toHaveBeenCalledTimes(0);
+  });
+
+  test('invalid cell */*/* (mutator)', () => {
+    store.callListener(
+      store.addInvalidCellListener(null, null, null, listener, true),
+    );
+    expect(listener).toHaveBeenCalledTimes(0);
+  });
+
   test('values (non mutator)', () => {
     store.callListener(store.addValuesListener(listener));
     expect(listener).toHaveBeenCalledTimes(1);
@@ -5606,5 +5620,27 @@ describe('callListener', () => {
     expect(listener).toHaveBeenCalledTimes(2);
     expect(listener).toHaveBeenNthCalledWith(1, store, 'v1', 1, 1);
     expect(listener).toHaveBeenNthCalledWith(2, store, 'v2', 2, 2);
+  });
+
+  test('invalid value * (non mutator)', () => {
+    store.callListener(store.addInvalidValueListener(null, listener));
+    expect(listener).toHaveBeenCalledTimes(0);
+  });
+
+  test('invalid value * (mutator)', () => {
+    store.callListener(store.addInvalidValueListener(null, listener, true));
+    expect(listener).toHaveBeenCalledTimes(0);
+  });
+
+  test('will finish transaction', () => {
+    store.callListener(store.addWillFinishTransactionListener(listener));
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(listener).toHaveBeenNthCalledWith(1, store);
+  });
+
+  test('did finish transaction (mutator)', () => {
+    store.callListener(store.addDidFinishTransactionListener(listener));
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(listener).toHaveBeenNthCalledWith(1, store);
   });
 });
