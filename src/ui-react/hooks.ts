@@ -11,6 +11,9 @@ import {
   TABLE,
   TABLES,
   TABLE_IDS,
+  VALUE,
+  VALUES,
+  VALUE_IDS,
 } from '../common/strings';
 import {Callback, Id, IdOrNull, Ids, ParameterizedCallback} from '../common.d';
 import {
@@ -28,6 +31,8 @@ import {
   TableListener,
   Tables,
   TablesListener,
+  Value,
+  Values,
 } from '../store.d';
 import {
   CheckpointIds,
@@ -63,6 +68,8 @@ import {
   useDelRowCallback as useDelRowCallbackDecl,
   useDelTableCallback as useDelTableCallbackDecl,
   useDelTablesCallback as useDelTablesCallbackDecl,
+  useDelValueCallback as useDelValueCallbackDecl,
+  useDelValuesCallback as useDelValuesCallbackDecl,
   useGoBackwardCallback as useGoBackwardCallbackDecl,
   useGoForwardCallback as useGoForwardCallbackDecl,
   useGoToCallback as useGoToCallbackDecl,
@@ -94,9 +101,12 @@ import {
   useSetCellCallback as useSetCellCallbackDecl,
   useSetCheckpointCallback as useSetCheckpointCallbackDecl,
   useSetPartialRowCallback as useSetPartialRowCallbackDecl,
+  useSetPartialValuesCallback as useSetPartialValuesCallbackDecl,
   useSetRowCallback as useSetRowCallbackDecl,
   useSetTableCallback as useSetTableCallbackDecl,
   useSetTablesCallback as useSetTablesCallbackDecl,
+  useSetValueCallback as useSetValueCallbackDecl,
+  useSetValuesCallback as useSetValuesCallbackDecl,
   useSliceIds as useSliceIdsDecl,
   useSliceIdsListener as useSliceIdsListenerDecl,
   useSliceRowIds as useSliceRowIdsDecl,
@@ -110,6 +120,9 @@ import {
   useTables as useTablesDecl,
   useTablesListener as useTablesListenerDecl,
   useUndoInformation as useUndoInformationDecl,
+  useValue as useValueDecl,
+  useValueIds as useValueIdsDecl,
+  useValues as useValuesDecl,
 } from '../ui-react.d';
 import {Indexes, SliceIdsListener, SliceRowIdsListener} from '../indexes.d';
 import {
@@ -343,6 +356,20 @@ export const useCell: typeof useCellDecl = (
     4,
   );
 
+export const useValues: typeof useValuesDecl = (
+  storeOrStoreId?: StoreOrStoreId,
+): Values => useListenable(VALUES, useStoreOrStoreId(storeOrStoreId), {});
+
+export const useValueIds: typeof useValueIdsDecl = (
+  storeOrStoreId?: StoreOrStoreId,
+): Ids => useListenable(VALUE_IDS, useStoreOrStoreId(storeOrStoreId), [], []);
+
+export const useValue: typeof useValueDecl = (
+  valueId: Id,
+  storeOrStoreId?: StoreOrStoreId,
+): Value =>
+  useListenable(VALUE, useStoreOrStoreId(storeOrStoreId), {}, [valueId]);
+
 export const useSetTablesCallback: typeof useSetTablesCallbackDecl = <
   Parameter,
 >(
@@ -464,6 +491,59 @@ export const useSetCellCallback: typeof useSetCellCallbackDecl = <Parameter>(
     cellId,
   );
 
+export const useSetValuesCallback: typeof useSetValuesCallbackDecl = <
+  Parameter,
+>(
+  getValues: (parameter: Parameter, store: Store) => Values,
+  getValuesDeps?: React.DependencyList,
+  storeOrStoreId?: StoreOrStoreId,
+  then?: (store: Store, values: Values) => void,
+  thenDeps?: React.DependencyList,
+): ParameterizedCallback<Parameter> =>
+  useSetCallback(
+    storeOrStoreId,
+    VALUES,
+    getValues,
+    getValuesDeps,
+    then,
+    thenDeps,
+  );
+
+export const useSetPartialValuesCallback: typeof useSetPartialValuesCallbackDecl =
+  <Parameter>(
+    getPartialValues: (parameter: Parameter, store: Store) => Values,
+    getPartialValuesDeps?: React.DependencyList,
+    storeOrStoreId?: StoreOrStoreId,
+    then?: (store: Store, partialValues: Values) => void,
+    thenDeps?: React.DependencyList,
+  ): ParameterizedCallback<Parameter> =>
+    useSetCallback(
+      storeOrStoreId,
+      'PartialValues',
+      getPartialValues,
+      getPartialValuesDeps,
+      then,
+      thenDeps,
+    );
+
+export const useSetValueCallback: typeof useSetValueCallbackDecl = <Parameter>(
+  valueId: Id,
+  getValue: (parameter: Parameter, store: Store) => Value,
+  getValueDeps?: React.DependencyList,
+  storeOrStoreId?: StoreOrStoreId,
+  then?: (store: Store, value: Value) => void,
+  thenDeps?: React.DependencyList,
+): ParameterizedCallback<Parameter> =>
+  useSetCallback(
+    storeOrStoreId,
+    VALUE,
+    getValue,
+    getValueDeps,
+    then,
+    thenDeps,
+    valueId,
+  );
+
 export const useDelTablesCallback: typeof useDelTablesCallbackDecl = (
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store) => void,
@@ -504,6 +584,19 @@ export const useDelCellCallback: typeof useDelCellCallbackDecl = (
     cellId,
     forceDel,
   );
+
+export const useDelValuesCallback: typeof useDelValuesCallbackDecl = (
+  storeOrStoreId?: StoreOrStoreId,
+  then?: (store: Store) => void,
+  thenDeps?: React.DependencyList,
+): Callback => useDel(storeOrStoreId, VALUES, then, thenDeps);
+
+export const useDelValueCallback: typeof useDelValueCallbackDecl = (
+  valueId: Id,
+  storeOrStoreId?: StoreOrStoreId,
+  then?: (store: Store) => void,
+  thenDeps?: React.DependencyList,
+): Callback => useDel(storeOrStoreId, VALUE, then, thenDeps, valueId);
 
 export const useTablesListener: typeof useTablesListenerDecl = (
   listener: TablesListener,
