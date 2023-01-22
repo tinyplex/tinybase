@@ -39,6 +39,8 @@ import {
   TableListener,
   Tables,
   TablesListener,
+  Value,
+  Values,
 } from './store.d';
 import {
   CheckpointIds,
@@ -339,7 +341,7 @@ export function useCreateStore(
 export function useStore(id?: Id): Store | undefined;
 
 /**
- * The useTables hook returns a Tables object containing the entire data of a
+ * The useTables hook returns a Tables object containing the tabular data of a
  * Store, and registers a listener so that any changes to that result will cause
  * a re-render.
  *
@@ -356,7 +358,7 @@ export function useStore(id?: Id): Store | undefined;
  * @param storeOrStoreId The Store to be accessed: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
- * @returns A Tables object containing the entire data of the Store.
+ * @returns A Tables object containing the tabular data of the Store.
  * @example
  * This example creates a Store outside the application, which is used in the
  * useTables hook by reference. A change to the data in the Store re-renders the
@@ -418,7 +420,8 @@ export function useTables(storeOrStoreId?: StoreOrStoreId): Tables;
 
 /**
  * The useTableIds hook returns the Ids of every Table in a Store, and registers
- * a listener so that any changes to that result will cause a re-render. forward
+ * a listener so that any changes to that result will cause a re-render.
+ *
  * A Provider component is used to wrap part of an application in a context, and
  * it can contain a default Store or a set of Store objects named by Id. The
  * useTableIds hook lets you indicate which Store to get data for: omit the
@@ -492,9 +495,9 @@ export function useTables(storeOrStoreId?: StoreOrStoreId): Tables;
 export function useTableIds(storeOrStoreId?: StoreOrStoreId): Ids;
 
 /**
- * The useTable hook returns an object containing the entire data of a single
- * Table in a Store, and registers a listener so that any changes to that result
- * will cause a re-render.
+ * The useTable hook returns an object containing the data of a single Table in
+ * a Store, and registers a listener so that any changes to that result will
+ * cause a re-render.
  *
  * A Provider component is used to wrap part of an application in a context, and
  * it can contain a default Store or a set of Store objects named by Id. The
@@ -770,9 +773,9 @@ export function useSortedRowIds(
 ): Ids;
 
 /**
- * The useRow hook returns an object containing the entire data of a single Row
- * in a given Table, and registers a listener so that any changes to that result
- * will cause a re-render.
+ * The useRow hook returns an object containing the data of a single Row in a
+ * given Table, and registers a listener so that any changes to that result will
+ * cause a re-render.
  *
  * A Provider component is used to wrap part of an application in a context, and
  * it can contain a default Store or a set of Store objects named by Id. The
@@ -1033,11 +1036,244 @@ export function useCell(
 ): Cell | undefined;
 
 /**
+ * The useValues hook returns a Values object containing the keyed value data of
+ * a Store, and registers a listener so that any changes to that result will
+ * cause a re-render.
+ *
+ * A Provider component is used to wrap part of an application in a context, and
+ * it can contain a default Store or a set of Store objects named by Id. The
+ * useValues hook lets you indicate which Store to get data for: omit the
+ * optional parameter for the default context Store, provide an Id for a named
+ * context Store, or provide a Store explicitly by reference.
+ *
+ * When first rendered, this hook will create a listener so that changes to the
+ * Values will cause a re-render. When the component containing this hook is
+ * unmounted, the listener will be automatically removed.
+ *
+ * @param storeOrStoreId The Store to be accessed: omit for the default context
+ * Store, provide an Id for a named context Store, or provide an explicit
+ * reference.
+ * @returns A Values object containing the keyed value data of the Store.
+ * @example
+ * This example creates a Store outside the application, which is used in the
+ * useValues hook by reference. A change to the data in the Store re-renders the
+ * component.
+ *
+ * ```jsx
+ * const store = createStore().setValue('open', true);
+ * const App = () => <span>{JSON.stringify(useValues(store))}</span>;
+ *
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>{"open":true}</span>'
+ *
+ * store.setValue('open', false); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>{"open":false}</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a default Store is
+ * provided. A component within it then uses the useValues hook.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => <span>{JSON.stringify(useValues())}</span>;
+ *
+ * const store = createStore().setValue('open', true);
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App store={store} />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>{"open":true}</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a Store is provided, named
+ * by Id. A component within it then uses the useValues hook.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider storesById={{petStore: store}}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => <span>{JSON.stringify(useValues('petStore'))}</span>;
+ *
+ * const store = createStore().setValue('open', true);
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App store={store} />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>{"open":true}</span>'
+ * ```
+ * @category Store hooks
+ */
+export function useValues(storeOrStoreId?: StoreOrStoreId): Values;
+
+/**
+ * The useValueIds hook returns the Ids of every Value in a Store, and registers
+ * a listener so that any changes to that result will cause a re-render.
+ *
+ * A Provider component is used to wrap part of an application in a context, and
+ * it can contain a default Store or a set of Store objects named by Id. The
+ * useValueIds hook lets you indicate which Store to get data for: omit the
+ * optional parameter for the default context Store, provide an Id for a named
+ * context Store, or provide a Store explicitly by reference.
+ *
+ * When first rendered, this hook will create a listener so that changes to the
+ * Value Ids will cause a re-render. When the component containing this hook is
+ * unmounted, the listener will be automatically removed.
+ *
+ * @param storeOrStoreId The Store to be accessed: omit for the default context
+ * Store, provide an Id for a named context Store, or provide an explicit
+ * reference.
+ * @returns An array of the Ids of every Value in the Store.
+ * @example
+ * This example creates a Store outside the application, which is used in the
+ * useValueIds hook by reference. A change to the data in the Store re-renders
+ * the component.
+ *
+ * ```jsx
+ * const store = createStore().setValue('open', true);
+ * const App = () => <span>{JSON.stringify(useValueIds(store))}</span>;
+ *
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["open"]</span>'
+ *
+ * store.setValue('employees', 3); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["open","employees"]</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a default Store is
+ * provided. A component within it then uses the useValueIds hook.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => <span>{JSON.stringify(useValueIds())}</span>;
+ *
+ * const store = createStore().setValue('open', true);
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App store={store} />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["open"]</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a Store is provided, named
+ * by Id. A component within it then uses the useValueIds hook.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider storesById={{petStore: store}}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => <span>{JSON.stringify(useValueIds('petStore'))}</span>;
+ *
+ * const store = createStore().setValue('open', true);
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App store={store} />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["open"]</span>'
+ * ```
+ * @category Store hooks
+ */
+export function useValueIds(storeOrStoreId?: StoreOrStoreId): Ids;
+
+/**
+ * The useValue hook returns an object containing the data of a single Value in
+ * a Store, and registers a listener so that any changes to that result will
+ * cause a re-render.
+ *
+ * A Provider component is used to wrap part of an application in a context, and
+ * it can contain a default Store or a set of Store objects named by Id. The
+ * useValue hook lets you indicate which Store to get data for: omit the final
+ * optional final parameter for the default context Store, provide an Id for a
+ * named context Store, or provide a Store explicitly by reference.
+ *
+ * When first rendered, this hook will create a listener so that changes to the
+ * Value will cause a re-render. When the component containing this hook is
+ * unmounted, the listener will be automatically removed.
+ *
+ * @param valueId The Id of the Value in the Store.
+ * @param storeOrStoreId The Store to be accessed: omit for the default context
+ * Store, provide an Id for a named context Store, or provide an explicit
+ * reference.
+ * @returns An object containing the entire data of the Value.
+ * @example
+ * This example creates a Store outside the application, which is used in the
+ * useValue hook by reference. A change to the data in the Store re-renders the
+ * component.
+ *
+ * ```jsx
+ * const store = createStore().setValue('open', true);
+ * const App = () => <span>{JSON.stringify(useValue('open', store))}</span>;
+ *
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>true</span>'
+ *
+ * store.setValue('open', false); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>false</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a default Store is
+ * provided. A component within it then uses the useValue hook.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => <span>{JSON.stringify(useValue('open'))}</span>;
+ *
+ * const store = createStore().setValue('open', true);
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App store={store} />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>true</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a Store is provided, named
+ * by Id. A component within it then uses the useValue hook.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider storesById={{petStore: store}}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <span>{JSON.stringify(useValue('open', 'petStore'))}</span>
+ * );
+ *
+ * const store = createStore().setValue('open', true);
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App store={store} />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>true</span>'
+ * ```
+ * @category Store hooks
+ */
+export function useValue(valueId: Id, storeOrStoreId?: StoreOrStoreId): Value;
+
+/**
  * The useSetTablesCallback hook returns a parameterized callback that can be
- * used to set the entire data of a Store.
+ * used to set the tabular data of a Store.
  *
  * This hook is useful, for example, when creating an event handler that will
- * mutate the data in Store. In this case, the parameter will likely be the
+ * mutate the data in the Store. In this case, the parameter will likely be the
  * event, so that you can use data from it as part of the mutation.
  *
  * The first parameter is a function which will produce the Tables object that
@@ -1117,10 +1353,10 @@ export function useSetTablesCallback<Parameter>(
 
 /**
  * The useSetTableCallback hook returns a parameterized callback that can be
- * used to set the entire data of a single Table in a Store.
+ * used to set the data of a single Table in a Store.
  *
  * This hook is useful, for example, when creating an event handler that will
- * mutate the data in Store. In this case, the parameter will likely be the
+ * mutate the data in the Store. In this case, the parameter will likely be the
  * event, so that you can use data from it as part of the mutation.
  *
  * The second parameter is a function which will produce the Table object that
@@ -1203,10 +1439,10 @@ export function useSetTableCallback<Parameter>(
 
 /**
  * The useSetRowCallback hook returns a parameterized callback that can be used
- * to set the entire data of a single Row in a Store.
+ * to set the data of a single Row in a Store.
  *
  * This hook is useful, for example, when creating an event handler that will
- * mutate the data in Store. In this case, the parameter will likely be the
+ * mutate the data in the Store. In this case, the parameter will likely be the
  * event, so that you can use data from it as part of the mutation.
  *
  * The third parameter is a function which will produce the Row object that will
@@ -1295,7 +1531,7 @@ export function useSetRowCallback<Parameter>(
  * to create a new Row in a Store.
  *
  * This hook is useful, for example, when creating an event handler that will
- * mutate the data in Store. In this case, the parameter will likely be the
+ * mutate the data in the Store. In this case, the parameter will likely be the
  * event, so that you can use data from it as part of the mutation.
  *
  * The second parameter is a function which will produce the Row object that
@@ -1378,7 +1614,7 @@ export function useAddRowCallback<Parameter>(
 
 /**
  * The useSetPartialRowCallback hook returns a parameterized callback that can
- * be used to sets partial data of a single Row in the Store, leaving other Cell
+ * be used to set partial data of a single Row in the Store, leaving other Cell
  * values unaffected.
  *
  * This hook is useful, for example, when creating an event handler that will
@@ -1472,7 +1708,7 @@ export function useSetPartialRowCallback<Parameter>(
  * to set the value of a single Cell in a Store.
  *
  * This hook is useful, for example, when creating an event handler that will
- * mutate the data in Store. In this case, the parameter will likely be the
+ * mutate the data in the Store. In this case, the parameter will likely be the
  * event, so that you can use data from it as part of the mutation.
  *
  * The fourth parameter is a function which will produce the Cell object that
@@ -1597,8 +1833,262 @@ export function useSetCellCallback<Parameter>(
 ): ParameterizedCallback<Parameter>;
 
 /**
+ * The useSetValuesCallback hook returns a parameterized callback that can be
+ * used to set the keyed value data of a Store.
+ *
+ * This hook is useful, for example, when creating an event handler that will
+ * mutate the data in the Store. In this case, the parameter will likely be the
+ * event, so that you can use data from it as part of the mutation.
+ *
+ * The first parameter is a function which will produce the Values object that
+ * will then be used to update the Store in the callback.
+ *
+ * If that function has any other dependencies, the changing of which should
+ * also cause the callback to be recreated, you can provide them in an array in
+ * the optional second parameter, just as you would for any React hook with
+ * dependencies.
+ *
+ * For convenience, you can optionally provide a `then` function (with its own
+ * set of dependencies) which will be called just after the Store has been
+ * updated. This is a useful place to call the addCheckpoint method, for
+ * example, if you wish to add the mutation to your application's undo stack.
+ *
+ * The Store to which the callback will make the mutation (indicated by the
+ * hook's `storeOrStoreId` parameter) is always automatically used as a hook
+ * dependency for the callback.
+ *
+ * @param getValues A function which returns the Values object that will be used
+ * to update the Store, based on the parameter the callback will receive (and
+ * which is most likely a DOM event).
+ * @param getValuesDeps An optional array of dependencies for the `getValues`
+ * function, which, if any change, result in the regeneration of the callback.
+ * This parameter defaults to an empty array.
+ * @param storeOrStoreId The Store to be updated: omit for the default context
+ * Store, provide an Id for a named context Store, or provide an explicit
+ * reference.
+ * @param then A function which is called after the mutation, with a reference
+ * to the Store and the Values used in the update.
+ * @param thenDeps An optional array of dependencies for the `then` function,
+ * which, if any change, result in the regeneration of the callback. This
+ * parameter defaults to an empty array.
+ * @returns A parameterized callback for subsequent use.
+ * @example
+ * This example uses the useSetValuesCallback hook to create an event handler
+ * which updates the Store when the `span` element is clicked.
+ *
+ * ```jsx
+ * const store = createStore().setValues({open: true});
+ * const App = () => {
+ *   const handleClick = useSetValuesCallback(
+ *     (e) => ({bubbles: e.bubbles}),
+ *     [],
+ *     store,
+ *     (store, values) => console.log(`Updated: ${JSON.stringify(values)}`),
+ *   );
+ *   return (
+ *     <span id="span" onClick={handleClick}>
+ *       {JSON.stringify(useValues(store))}
+ *     </span>
+ *   );
+ * };
+ *
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App />, app); // !act
+ * const span = app.querySelector('span');
+ * console.log(span.innerHTML);
+ * // -> '{"open":true}'
+ *
+ * // User clicks the <span> element:
+ * // -> span MouseEvent('click', {bubbles: true})
+ * // -> 'Updated: {"bubbles":true}'
+ *
+ * console.log(span.innerHTML);
+ * // -> '{"bubbles":true}'
+ * ```
+ * @category Store hooks
+ */
+export function useSetValuesCallback<Parameter>(
+  getValues: (parameter: Parameter, store: Store) => Values,
+  getValuesDeps?: React.DependencyList,
+  storeOrStoreId?: StoreOrStoreId,
+  then?: (store: Store, values: Values) => void,
+  thenDeps?: React.DependencyList,
+): ParameterizedCallback<Parameter>;
+
+/**
+ * The useSetPartialValuesCallback hook returns a parameterized callback that
+ * can be used to set partial Values data in the Store, leaving other Values
+ * unaffected.
+ *
+ * This hook is useful, for example, when creating an event handler that will
+ * mutate the data in the Store. In this case, the parameter will likely be the
+ * event, so that you can use data from it as part of the mutation.
+ *
+ * The third parameter is a function which will produce the partial Values
+ * object that will then be used to update the Store in the callback.
+ *
+ * If that function has any other dependencies, the changing of which should
+ * also cause the callback to be recreated, you can provide them in an array in
+ * the optional fourth parameter, just as you would for any React hook with
+ * dependencies.
+ *
+ * For convenience, you can optionally provide a `then` function (with its own
+ * set of dependencies) which will be called just after the Store has been
+ * updated. This is a useful place to call the addCheckpoint method, for
+ * example, if you wish to add the mutation to your application's undo stack.
+ *
+ * The Store to which the callback will make the mutation (indicated by the
+ * hook's `storeOrStoreId` parameter) is always automatically used as a hook
+ * dependency for the callback.
+ *
+ * @param getPartialValues A function which returns the partial Values object
+ * that will be used to update the Store, based on the parameter the callback
+ * will receive (and which is most likely a DOM event).
+ * @param getPartialValuesDeps An optional array of dependencies for the
+ * `getValues` function, which, if any change, result in the regeneration of the
+ * callback. This parameter defaults to an empty array.
+ * @param storeOrStoreId The Store to be updated: omit for the default context
+ * Store, provide an Id for a named context Store, or provide an explicit
+ * reference.
+ * @param then A function which is called after the mutation, with a reference
+ * to the Store and the Values used in the update.
+ * @param thenDeps An optional array of dependencies for the `then` function,
+ * which, if any change, result in the regeneration of the callback. This
+ * parameter defaults to an empty array.
+ * @returns A parameterized callback for subsequent use.
+ * @example
+ * This example uses the useSetPartialValuesCallback hook to create an event
+ * handler which updates the Store when the `span` element is clicked.
+ *
+ * ```jsx
+ * const store = createStore().setValues({open: true});
+ * const App = () => {
+ *   const handleClick = useSetPartialValuesCallback(
+ *     (e) => ({bubbles: e.bubbles}),
+ *     [],
+ *     store,
+ *     (store, partialValues) =>
+ *       console.log(`Updated: ${JSON.stringify(partialValues)}`),
+ *   );
+ *   return (
+ *     <span id="span" onClick={handleClick}>
+ *       {JSON.stringify(useValues(store))}
+ *     </span>
+ *   );
+ * };
+ *
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App />, app); // !act
+ * const span = app.querySelector('span');
+ * console.log(span.innerHTML);
+ * // -> '{"open":true}'
+ *
+ * // User clicks the <span> element:
+ * // -> span MouseEvent('click', {bubbles: true})
+ * // -> 'Updated: {"bubbles":true}'
+ *
+ * console.log(span.innerHTML);
+ * // -> '{"open":true,"bubbles":true}'
+ * ```
+ * @category Store hooks
+ */
+export function useSetPartialValuesCallback<Parameter>(
+  getPartialValues: (parameter: Parameter, store: Store) => Values,
+  getPartialValuesDeps?: React.DependencyList,
+  storeOrStoreId?: StoreOrStoreId,
+  then?: (store: Store, partialValues: Values) => void,
+  thenDeps?: React.DependencyList,
+): ParameterizedCallback<Parameter>;
+
+/**
+ * The useSetValueCallback hook returns a parameterized callback that can be
+ * used to set the data of a single Value in a Store.
+ *
+ * This hook is useful, for example, when creating an event handler that will
+ * mutate the data in the Store. In this case, the parameter will likely be the
+ * event, so that you can use data from it as part of the mutation.
+ *
+ * The second parameter is a function which will produce the Value object that
+ * will then be used to update the Store in the callback.
+ *
+ * If that function has any other dependencies, the changing of which should
+ * also cause the callback to be recreated, you can provide them in an array in
+ * the optional third parameter, just as you would for any React hook with
+ * dependencies.
+ *
+ * For convenience, you can optionally provide a `then` function (with its own
+ * set of dependencies) which will be called just after the Store has been
+ * updated. This is a useful place to call the addCheckpoint method, for
+ * example, if you wish to add the mutation to your application's undo stack.
+ *
+ * The Store to which the callback will make the mutation (indicated by the
+ * hook's `storeOrStoreId` parameter) is always automatically used as a hook
+ * dependency for the callback.
+ *
+ * @param valueId The Id of the Value in the Store to set.
+ * @param getValue A function which returns the Value object that will be used
+ * to update the Store, based on the parameter the callback will receive (and
+ * which is most likely a DOM event).
+ * @param getValueDeps An optional array of dependencies for the `getValue`
+ * function, which, if any change, result in the regeneration of the callback.
+ * This parameter defaults to an empty array.
+ * @param storeOrStoreId The Store to be updated: omit for the default context
+ * Store, provide an Id for a named context Store, or provide an explicit
+ * reference.
+ * @param then A function which is called after the mutation, with a reference
+ * to the Store and the Value used in the update.
+ * @param thenDeps An optional array of dependencies for the `then` function,
+ * which, if any change, result in the regeneration of the callback. This
+ * parameter defaults to an empty array.
+ * @returns A parameterized callback for subsequent use.
+ * @example
+ * This example uses the useSetValueCallback hook to create an event handler
+ * which updates the Store when the `span` element is clicked.
+ *
+ * ```jsx
+ * const store = createStore().setValue('open', true);
+ * const App = () => {
+ *   const handleClick = useSetValueCallback(
+ *     'bubbles',
+ *     (e) => e.bubbles,
+ *     [],
+ *     store,
+ *     (store, value) => console.log(`Updated: ${JSON.stringify(value)}`),
+ *   );
+ *   return (
+ *     <span id="span" onClick={handleClick}>
+ *       {JSON.stringify(useValues(store))}
+ *     </span>
+ *   );
+ * };
+ *
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App />, app); // !act
+ * const span = app.querySelector('span');
+ * console.log(span.innerHTML);
+ * // -> '{"open":true}'
+ *
+ * // User clicks the <span> element:
+ * // -> span MouseEvent('click', {bubbles: true})
+ * // -> 'Updated: true'
+ *
+ * console.log(span.innerHTML);
+ * // -> '{"open":true,"bubbles":true}'
+ * ```
+ * @category Store hooks
+ */
+export function useSetValueCallback<Parameter>(
+  valueId: Id,
+  getValue: (parameter: Parameter, store: Store) => Value,
+  getValueDeps?: React.DependencyList,
+  storeOrStoreId?: StoreOrStoreId,
+  then?: (store: Store, value: Value) => void,
+  thenDeps?: React.DependencyList,
+): ParameterizedCallback<Parameter>;
+
+/**
  * The useDelTablesCallback hook returns a callback that can be used to remove
- * all of the data in a Store.
+ * all of the tabular data in a Store.
  *
  * This hook is useful, for example, when creating an event handler that will
  * delete data in a Store.
@@ -1864,6 +2354,134 @@ export function useDelCellCallback(
   rowId: Id,
   cellId: Id,
   forceDel?: boolean,
+  storeOrStoreId?: StoreOrStoreId,
+  then?: (store: Store) => void,
+  thenDeps?: React.DependencyList,
+): Callback;
+
+/**
+ * The useDelValuesCallback hook returns a callback that can be used to remove
+ * all of the keyed value data in a Store.
+ *
+ * This hook is useful, for example, when creating an event handler that will
+ * delete data in a Store.
+ *
+ * For convenience, you can optionally provide a `then` function (with its own
+ * set of dependencies) which will be called just after the Store has been
+ * updated. This is a useful place to call the addCheckpoint method, for
+ * example, if you wish to add the deletion to your application's undo stack.
+ *
+ * The Store to which the callback will make the deletion (indicated by the
+ * hook's `storeOrStoreId` parameter) is always automatically used as a hook
+ * dependency for the callback.
+ *
+ * @param storeOrStoreId The Store to be updated: omit for the default context
+ * Store, provide an Id for a named context Store, or provide an explicit
+ * reference.
+ * @param then A function which is called after the deletion, with a reference
+ * to the Store.
+ * @param thenDeps An optional array of dependencies for the `then` function,
+ * which, if any change, result in the regeneration of the callback. This
+ * parameter defaults to an empty array.
+ * @returns A callback for subsequent use.
+ * @example
+ * This example uses the useDelValuesCallback hook to create an event handler
+ * which deletes from the Store when the `span` element is clicked.
+ *
+ * ```jsx
+ * const store = createStore().setValues({open: true});
+ * const App = () => {
+ *   const handleClick = useDelValuesCallback(store, () =>
+ *     console.log('Deleted'),
+ *   );
+ *   return (
+ *     <span id="span" onClick={handleClick}>
+ *       {JSON.stringify(useValues(store))}
+ *     </span>
+ *   );
+ * };
+ *
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App />, app); // !act
+ * const span = app.querySelector('span');
+ * console.log(span.innerHTML);
+ * // -> '{"open":true}'
+ *
+ * // User clicks the <span> element:
+ * // -> span MouseEvent('click', {bubbles: true})
+ * // -> 'Deleted'
+ *
+ * console.log(span.innerHTML);
+ * // -> '{}'
+ * ```
+ * @category Store hooks
+ */
+export function useDelValuesCallback(
+  storeOrStoreId?: StoreOrStoreId,
+  then?: (store: Store) => void,
+  thenDeps?: React.DependencyList,
+): Callback;
+
+/**
+ * The useDelValueCallback hook returns a callback that can be used to remove a
+ * single Value from a Store.
+ *
+ * This hook is useful, for example, when creating an event handler that will
+ * delete data in a Store.
+ *
+ * For convenience, you can optionally provide a `then` function (with its own
+ * set of dependencies) which will be called just after the Store has been
+ * updated. This is a useful place to call the addCheckpoint method, for
+ * example, if you wish to add the deletion to your application's undo stack.
+ *
+ * The Store to which the callback will make the deletion (indicated by the
+ * hook's `storeOrStoreId` parameter) is always automatically used as a hook
+ * dependency for the callback.
+ *
+ * @param valueId The Id of the Value in the Store.
+ * @param storeOrStoreId The Store to be updated: omit for the default context
+ * Store, provide an Id for a named context Store, or provide an explicit
+ * reference.
+ * @param then A function which is called after the deletion, with a reference
+ * to the Store.
+ * @param thenDeps An optional array of dependencies for the `then` function,
+ * which, if any change, result in the regeneration of the callback. This
+ * parameter defaults to an empty array.
+ * @returns A callback for subsequent use.
+ * @example
+ * This example uses the useDelValueCallback hook to create an event handler
+ * which deletes from the Store when the `span` element is clicked.
+ *
+ * ```jsx
+ * const store = createStore().setValues({open: true, employees: 3});
+ * const App = () => {
+ *   const handleClick = useDelValueCallback('open', store, () =>
+ *     console.log('Deleted'),
+ *   );
+ *   return (
+ *     <span id="span" onClick={handleClick}>
+ *       {JSON.stringify(useValues(store))}
+ *     </span>
+ *   );
+ * };
+ *
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App />, app); // !act
+ * const span = app.querySelector('span');
+ * console.log(span.innerHTML);
+ * // -> '{"open":true,"employees":3}'
+ *
+ * // User clicks the <span> element:
+ * // -> span MouseEvent('click', {bubbles: true})
+ * // -> 'Deleted'
+ *
+ * console.log(span.innerHTML);
+ * // -> '{"employees":3}'
+ * ```
+ * @category Store hooks
+ */
+export function useDelValueCallback(
+  valueId: Id,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store) => void,
   thenDeps?: React.DependencyList,
@@ -4739,7 +5357,7 @@ export function useResultSortedRowIds(
 ): Ids;
 
 /**
- * The useResultRow hook returns an object containing the entire data of a
+ * The useResultRow hook returns an object containing the data of a
  * single Row in the result Table of the given query, and registers a listener
  * so that any changes to that Row will cause a re-render.
  *
