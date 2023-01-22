@@ -7463,7 +7463,7 @@ export type TablesProps = {
    */
   readonly separator?: ReactElement | string;
   /**
-   * Whether the component should also render the Ids of the Table, and its
+   * Whether the component should also render the Ids of each Table, and its
    * descendent objects, to assist with debugging.
    */
   readonly debugIds?: boolean;
@@ -7603,7 +7603,7 @@ export type RowProps = {
 };
 
 /**
- * RowProps props are used for components that refer to a single Cell in a Row,
+ * CellProps props are used for components that refer to a single Cell in a Row,
  * such as the CellView component.
  *
  * @category Props
@@ -7628,6 +7628,62 @@ export type CellProps = {
   readonly store?: StoreOrStoreId;
   /**
    * Whether the component should also render the Id of the Cell to assist with
+   * debugging.
+   */
+  readonly debugIds?: boolean;
+};
+
+/**
+ * ValuesProps props are used for components that refer to all the Values in a
+ * Store, such as the ValuesView component.
+ *
+ * @category Props
+ */
+export type ValuesProps = {
+  /**
+   * The Store to be accessed: omit for the default context Store, provide an Id
+   * for a named context Store, or provide an explicit reference.
+   */
+  readonly store?: StoreOrStoreId;
+  /**
+   * A custom component for rendering each Value in the Store (to override the
+   * default ValueView component).
+   */
+  readonly valueComponent?: ComponentType<ValueProps>;
+  /**
+   * A function for generating extra props for each custom Value component based
+   * on its Id.
+   */
+  readonly getValueComponentProps?: (valueId: Id) => ExtraProps;
+  /**
+   * A component or string to separate each Value component.
+   */
+  readonly separator?: ReactElement | string;
+  /**
+   * Whether the component should also render the Ids of each Value to assist
+   * with debugging.
+   */
+  readonly debugIds?: boolean;
+};
+
+/**
+ * ValueProps props are used for components that refer to a single Value in a
+ * Row, such as the ValueView component.
+ *
+ * @category Props
+ */
+export type ValueProps = {
+  /**
+   * The Id of the Value in the Row to be rendered.
+   */
+  readonly valueId: Id;
+  /**
+   * The Store to be accessed: omit for the default context Store, provide an Id
+   * for a named context Store, or provide an explicit reference.
+   */
+  readonly store?: StoreOrStoreId;
+  /**
+   * Whether the component should also render the Id of the Value to assist with
    * debugging.
    */
   readonly debugIds?: boolean;
@@ -8787,8 +8843,9 @@ export function SortedTableView(props: SortedTableProps): ComponentReturnType;
 export function TableView(props: TableProps): ComponentReturnType;
 
 /**
- * The TablesView component renders the contents of a Store, and registers a
- * listener so that any changes to that result will cause a re-render.
+ * The TablesView component renders the tabular contents of a Store, and
+ * registers a listener so that any changes to that result will cause a
+ * re-render.
  *
  * The component's props can identify which Store to render - either the default
  * context Store, a named context Store, or an explicit reference.
@@ -8814,7 +8871,7 @@ export function TableView(props: TableProps): ComponentReturnType;
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const App = () => (
  *   <div>
- *     <TablesView store={store} />
+ *     <TablesView store={store} separator="/" />
  *   </div>
  * );
  *
@@ -8825,7 +8882,7 @@ export function TableView(props: TableProps): ComponentReturnType;
  *
  * store.setTable('species', {dog: {price: 5}}); // !act
  * console.log(app.innerHTML);
- * // -> '<div>dog5</div>'
+ * // -> '<div>dog/5</div>'
  * ```
  * @example
  * This example creates a Provider context into which a default Store is
@@ -8840,7 +8897,7 @@ export function TableView(props: TableProps): ComponentReturnType;
  * );
  * const Pane = () => (
  *   <div>
- *     <TablesView tableId="pets" debugIds={true} />
+ *     <TablesView debugIds={true} />
  *   </div>
  * );
  *
@@ -8892,6 +8949,201 @@ export function TableView(props: TableProps): ComponentReturnType;
  * @category Store components
  */
 export function TablesView(props: TablesProps): ComponentReturnType;
+
+/**
+ * The ValueView component renders the value of a single Value, and registers a
+ * listener so that any changes to that result will cause a re-render.
+ *
+ * The component's props identify which Value to render based on Value Id and
+ * Store (which is either the default context Store, a named context Store, or
+ * an explicit reference).
+ *
+ * A Value contains a string, number, or boolean, so the value is rendered
+ * directly without further decoration. You can create your own ValueView-like
+ * component to customize the way that a Value is rendered: see the ValuesView
+ * component for more details.
+ *
+ * This component uses the useValue hook under the covers, which means that any
+ * changes to the specified Value will cause a re-render.
+ *
+ * @param props The props for this component.
+ * @returns A rendering of the Value, or nothing, if not present.
+ * @example
+ * This example creates a Store outside the application, which is used in the
+ * ValueView component by reference. A change to the data in the Store
+ * re-renders the component.
+ *
+ * ```jsx
+ * const store = createStore().setValue('open', true);
+ * const App = () => (
+ *   <span>
+ *     <ValueView valueId="open" store={store} />
+ *   </span>
+ * );
+ *
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>true</span>'
+ *
+ * store.setValue('open', false); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>false</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a default Store is
+ * provided. The ValueView component within it then renders the Value (with its
+ * Id for readability).
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <span>
+ *     <ValueView valueId="open" debugIds={true} />
+ *   </span>
+ * );
+ *
+ * const store = createStore().setValue('open', true);
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App store={store} />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>open:{true}</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a default Store is
+ * provided. The ValueView component within it then attempts to render a
+ * non-existent Value.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <span>
+ *     <ValueView valueId="website" />
+ *   </span>
+ * );
+ *
+ * const store = createStore().setValue('open', true);
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App store={store} />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span></span>'
+ * ```
+ * @category Store components
+ */
+export function ValueView(props: ValueProps): ComponentReturnType;
+
+/**
+ * The ValuesView component renders the keyed value contents of a Store, and
+ * registers a listener so that any changes to that result will cause a
+ * re-render.
+ *
+ * The component's props can identify which Store to render - either the default
+ * context Store, a named context Store, or an explicit reference.
+ *
+ * This component renders a Store by iterating over its Value objects. By
+ * default these are in turn rendered with the ValueView component, but you can
+ * override this behavior by providing a `valueComponent` prop, a custom
+ * component of your own that will render a Value based on ValueProps. You can
+ * also pass additional props to your custom component with the
+ * `getValueComponentProps` callback prop.
+ *
+ * This component uses the useTableIds hook under the covers, which means that
+ * any changes to the structure of the Store will cause a re-render.
+ *
+ * This component uses the useValueIds hook under the covers, which means that
+ * any changes to the Store's Values will cause a re-render.
+ *
+ * @param props The props for this component.
+ * @returns A rendering of the Values, or nothing, if not present.
+ * @example
+ * This example creates a Store outside the application, which is used in the
+ * ValuesView component by reference. A change to the data in the Store
+ * re-renders the component.
+ *
+ * ```jsx
+ * const store = createStore().setValue('open', true);
+ * const App = () => (
+ *   <div>
+ *     <ValuesView store={store} separator="/" />
+ *   </div>
+ * );
+ *
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<div>true</div>'
+ *
+ * store.setValue('employees', 3); // !act
+ * console.log(app.innerHTML);
+ * // -> '<div>true/3</div>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a default Store is
+ * provided. The ValuesView component within it then renders the Values (with
+ * Ids for readability).
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <div>
+ *     <ValuesView debugIds={true} />
+ *   </div>
+ * );
+ *
+ * const store = createStore().setValues({open: true, employees: 3});
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App store={store} />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<div>open:{true}employees:{3}</div>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a default Store is
+ * provided. The ValuesView component within it then renders the Values with a
+ * custom Value component and a custom props callback.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <div>
+ *     <ValuesView
+ *       valueComponent={FormattedValueView}
+ *       getValueComponentProps={(valueId) => ({bold: valueId == 'open'})}
+ *     />
+ *   </div>
+ * );
+ * const FormattedValueView = ({valueId, bold}) => (
+ *   <span>
+ *     {bold ? <b>{valueId}</b> : valueId}
+ *     {': '}
+ *     <ValueView valueId={valueId} />
+ *   </span>
+ * );
+ *
+ * const store = createStore().setValues({open: true, employees: 3});
+ * const app = document.createElement('div');
+ * ReactDOM.render(<App store={store} />, app); // !act
+ * console.log(app.innerHTML);
+ * // -> '<div><span><b>open</b>: true</span><span>employees: 3</span></div>'
+ * ```
+ * @category Store components
+ */
+export function ValuesView(props: RowProps): ComponentReturnType;
 
 /**
  * The MetricView component renders the current value of a Metric, and registers
