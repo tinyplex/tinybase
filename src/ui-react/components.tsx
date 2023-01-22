@@ -42,6 +42,10 @@ import {
   TableView as TableViewDecl,
   TablesProps,
   TablesView as TablesViewDecl,
+  ValueProps,
+  ValueView as ValueViewDecl,
+  ValuesProps,
+  ValuesView as ValuesViewDecl,
 } from '../ui-react.d';
 import {
   Context,
@@ -70,6 +74,8 @@ import {
   useSliceRowIds,
   useSortedRowIds,
   useTableIds,
+  useValue,
+  useValueIds,
 } from './hooks';
 import {CheckpointIds} from '../checkpoints.d';
 import {EMPTY_STRING} from '../common/strings';
@@ -363,6 +369,38 @@ export const TablesView: typeof TablesViewDecl = ({
         {...getProps(getTableComponentProps, tableId)}
         key={tableId}
         tableId={tableId}
+        store={store}
+        debugIds={debugIds}
+      />
+    )),
+    separator,
+  );
+
+export const ValueView: typeof ValueViewDecl = ({
+  valueId,
+  store,
+  debugIds,
+}: ValueProps): any =>
+  wrap(
+    EMPTY_STRING + (useValue(valueId, store) ?? EMPTY_STRING),
+    undefined,
+    debugIds,
+    valueId,
+  );
+
+export const ValuesView: typeof ValuesViewDecl = ({
+  store,
+  valueComponent: Value = ValueView,
+  getValueComponentProps,
+  separator,
+  debugIds,
+}: ValuesProps): any =>
+  wrap(
+    arrayMap(useValueIds(store), (valueId) => (
+      <Value
+        {...getProps(getValueComponentProps, valueId)}
+        key={valueId}
+        valueId={valueId}
         store={store}
         debugIds={debugIds}
       />
