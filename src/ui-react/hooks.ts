@@ -374,7 +374,7 @@ export const useValue: typeof useValueDecl = (
   valueId: Id,
   storeOrStoreId?: StoreOrStoreId,
 ): Value =>
-  useListenable(VALUE, useStoreOrStoreId(storeOrStoreId), {}, [valueId]);
+  useListenable(VALUE, useStoreOrStoreId(storeOrStoreId), undefined, [valueId]);
 
 export const useSetTablesCallback: typeof useSetTablesCallbackDecl = <
   Parameter,
