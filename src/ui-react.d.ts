@@ -1112,6 +1112,7 @@ export function useCell(
  * // -> '<span>{"open":true}</span>'
  * ```
  * @category Store hooks
+ * @since v3.0.0
  */
 export function useValues(storeOrStoreId?: StoreOrStoreId): Values;
 
@@ -1188,6 +1189,7 @@ export function useValues(storeOrStoreId?: StoreOrStoreId): Values;
  * // -> '<span>["open"]</span>'
  * ```
  * @category Store hooks
+ * @since v3.0.0
  */
 export function useValueIds(storeOrStoreId?: StoreOrStoreId): Ids;
 
@@ -1268,6 +1270,7 @@ export function useValueIds(storeOrStoreId?: StoreOrStoreId): Ids;
  * // -> '<span>true</span>'
  * ```
  * @category Store hooks
+ * @since v3.0.0
  */
 export function useValue(valueId: Id, storeOrStoreId?: StoreOrStoreId): Value;
 
@@ -1909,6 +1912,7 @@ export function useSetCellCallback<Parameter>(
  * // -> '{"bubbles":true}'
  * ```
  * @category Store hooks
+ * @since v3.0.0
  */
 export function useSetValuesCallback<Parameter>(
   getValues: (parameter: Parameter, store: Store) => Values,
@@ -1994,6 +1998,7 @@ export function useSetValuesCallback<Parameter>(
  * // -> '{"open":true,"bubbles":true}'
  * ```
  * @category Store hooks
+ * @since v3.0.0
  */
 export function useSetPartialValuesCallback<Parameter>(
   getPartialValues: (parameter: Parameter, store: Store) => Values,
@@ -2079,6 +2084,7 @@ export function useSetPartialValuesCallback<Parameter>(
  * // -> '{"open":true,"bubbles":true}'
  * ```
  * @category Store hooks
+ * @since v3.0.0
  */
 export function useSetValueCallback<Parameter>(
   valueId: Id,
@@ -2418,6 +2424,7 @@ export function useDelCellCallback(
  * // -> '{}'
  * ```
  * @category Store hooks
+ * @since v3.0.0
  */
 export function useDelValuesCallback(
   storeOrStoreId?: StoreOrStoreId,
@@ -2482,6 +2489,7 @@ export function useDelValuesCallback(
  * // -> '{"employees":3}'
  * ```
  * @category Store hooks
+ * @since v3.0.0
  */
 export function useDelValueCallback(
   valueId: Id,
@@ -3117,6 +3125,7 @@ export function useCellListener(
  * // -> 0
  * ```
  * @category Store hooks
+ * @since v3.0.0
  */
 export function useValuesListener(
   listener: ValuesListener,
@@ -3179,6 +3188,7 @@ export function useValuesListener(
  * // -> 0
  * ```
  * @category Store hooks
+ * @since v3.0.0
  */
 export function useValueIdsListener(
   listener: ValueIdsListener,
@@ -3244,6 +3254,7 @@ export function useValueIdsListener(
  * // -> 0
  * ```
  * @category Store hooks
+ * @since v3.0.0
  */
 export function useValueListener(
   valueId: IdOrNull,
@@ -7638,6 +7649,7 @@ export type CellProps = {
  * Store, such as the ValuesView component.
  *
  * @category Props
+ * @since v3.0.0
  */
 export type ValuesProps = {
   /**
@@ -7671,6 +7683,7 @@ export type ValuesProps = {
  * Row, such as the ValueView component.
  *
  * @category Props
+ * @since v3.0.0
  */
 export type ValueProps = {
   /**
@@ -9037,6 +9050,7 @@ export function TablesView(props: TablesProps): ComponentReturnType;
  * // -> '<span></span>'
  * ```
  * @category Store components
+ * @since v3.0.0
  */
 export function ValueView(props: ValueProps): ComponentReturnType;
 
@@ -9142,6 +9156,7 @@ export function ValueView(props: ValueProps): ComponentReturnType;
  * // -> '<div><span><b>open</b>: true</span><span>employees: 3</span></div>'
  * ```
  * @category Store components
+ * @since v3.0.0
  */
 export function ValuesView(props: ValuesProps): ComponentReturnType;
 

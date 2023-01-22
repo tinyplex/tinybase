@@ -164,7 +164,7 @@ export interface Persister {
    * @param initialTables An optional Tables object used when the underlying
    * storage has not previously been populated.
    * @param initialValues An optional Values object used when the underlying
-   * storage has not previously been populated.
+   * storage has not previously been populated, since v3.0.0.
    * @returns A Promise containing a reference to the Persister object.
    * @example
    * This example creates an empty Store, and loads data into it from the
@@ -232,7 +232,7 @@ export interface Persister {
    * @param initialTables An optional Tables object used when the underlying
    * storage has not previously been populated.
    * @param initialValues An optional Values object used when the underlying
-   * storage has not previously been populated.
+   * storage has not previously been populated, since v3.0.0.
    * @returns A Promise containing a reference to the Persister object.
    * @example
    * This example creates an empty Store, and loads data into it from the

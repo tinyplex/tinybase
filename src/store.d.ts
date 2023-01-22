@@ -262,8 +262,9 @@ export type GetCell = (cellId: Id) => CellOrUndefined;
  *
  * @param changedCells Any Cells that were changed during the transaction.
  * @param invalidCells Any invalid attempts to change Cells.
- * @param changedValues Any Values that were changed during the transaction
- * @param invalidValues Any invalid attempts to change Values.
+ * @param changedValues Any Values that were changed during the transaction,
+ * since v3.0.0.
+ * @param invalidValues Any invalid attempts to change Values, since v3.0.0.
  * @category Callback
  */
 export type DoRollback = (
@@ -296,7 +297,7 @@ export type DoRollback = (
  * @param cellsTouched Whether Cell values have been touched during the
  * transaction.
  * @param valuesTouched Whether Values have been touched during the
- * transaction.
+ * transaction, since v3.0.0.
  * @category Listener
  */
 export type TransactionListener = (
@@ -774,6 +775,7 @@ export type CellSchema =
  * };
  * ```
  * @category Schema
+ * @since v3.0.0
  */
 export type ValuesSchema = {
   [valueId: Id]: ValueSchema;
@@ -802,6 +804,7 @@ export type ValuesSchema = {
  * const requiredBoolean: ValueSchema = {type: 'boolean', default: false};
  * ```
  * @category Schema
+ * @since v3.0.0
  */
 export type ValueSchema =
   | {type: 'string'; default?: string}
@@ -962,19 +965,23 @@ export type StoreListenerStats = {
    */
   invalidCell?: number;
   /**
-   * The number of ValuesListener functions registered with the Store.
+   * The number of ValuesListener functions registered with the Store, since
+   * v3.0.0.
    */
   values?: number;
   /**
-   * The number of ValueIdsListener functions registered with the Store.
+   * The number of ValueIdsListener functions registered with the Store, since
+   * v3.0.0.
    */
   valueIds?: number;
   /**
-   * The number of ValueListener functions registered with the Store.
+   * The number of ValueListener functions registered with the Store, since
+   * v3.0.0.
    */
   value?: number;
   /**
-   * The number of InvalidValueListener functions registered with the Store.
+   * The number of InvalidValueListener functions registered with the Store,
+   * since v3.0.0.
    */
   invalidValue?: number;
   /**
@@ -1514,6 +1521,7 @@ export interface Store {
    * // -> {}
    * ```
    * @category Getter
+   * @since v3.0.0
    */
   getValues(): Values;
 
@@ -1542,6 +1550,7 @@ export interface Store {
    * // -> []
    * ```
    * @category Getter
+   * @since v3.0.0
    */
   getValueIds(): Ids;
 
@@ -1567,6 +1576,7 @@ export interface Store {
    * // -> undefined
    * ```
    * @category Getter
+   * @since v3.0.0
    */
   getValue(valueId: Id): ValueOrUndefined;
 
@@ -1670,6 +1680,7 @@ export interface Store {
    * // -> true
    * ```
    * @category Getter
+   * @since v3.0.0
    */
   hasValues(): boolean;
 
@@ -1690,6 +1701,7 @@ export interface Store {
    * // -> false
    * ```
    * @category Getter
+   * @since v3.0.0
    */
   hasValue(valueId: Id): boolean;
 
@@ -1715,6 +1727,7 @@ export interface Store {
    * // -> '{}'
    * ```
    * @category Getter
+   * @since v3.0.0
    */
   getTablesJson(): Json;
 
@@ -1740,6 +1753,7 @@ export interface Store {
    * // -> '{}'
    * ```
    * @category Getter
+   * @since v3.0.0
    */
   getValuesJson(): Json;
 
@@ -1806,6 +1820,7 @@ export interface Store {
    * // -> '{}'
    * ```
    * @category Getter
+   * @since v3.0.0
    */
   getTablesSchemaJson(): Json;
 
@@ -1837,6 +1852,7 @@ export interface Store {
    * // -> '{}'
    * ```
    * @category Getter
+   * @since v3.0.0
    */
   getValuesSchemaJson(): Json;
 
@@ -2236,6 +2252,7 @@ export interface Store {
    * // -> {employees: 3}
    * ```
    * @category Setter
+   * @since v3.0.0
    */
   setValues(values: Values): Store;
 
@@ -2285,6 +2302,7 @@ export interface Store {
    * // -> {open: true, employees: 3}
    * ```
    * @category Setter
+   * @since v3.0.0
    */
   setPartialValues(partialValues: Values): Store;
 
@@ -2338,6 +2356,7 @@ export interface Store {
    * // -> {employees: 3}
    * ```
    * @category Setter
+   * @since v3.0.0
    */
   setValue(valueId: Id, value: Value | MapValue): Store;
 
@@ -2372,6 +2391,7 @@ export interface Store {
    * // -> {}
    * ```
    * @category Setter
+   * @since v3.0.0
    */
   setTablesJson(tablesJson: Json): Store;
 
@@ -2406,6 +2426,7 @@ export interface Store {
    * // -> {}
    * ```
    * @category Setter
+   * @since v3.0.0
    */
   setValuesJson(valuesJson: Json): Store;
 
@@ -2497,6 +2518,7 @@ export interface Store {
    * // -> {pets: {0: {species: 'dog', sold: false}}}
    * ```
    * @category Setter
+   * @since v3.0.0
    */
   setTablesSchema(tablesSchema: TablesSchema): Store;
 
@@ -2526,6 +2548,7 @@ export interface Store {
    * // -> {open: false}
    * ```
    * @category Setter
+   * @since v3.0.0
    */
   setValuesSchema(valuesSchema: ValuesSchema): Store;
 
@@ -2771,6 +2794,7 @@ export interface Store {
    * // -> {open: false}
    * ```
    * @category Deleter
+   * @since v3.0.0
    */
   delValues(): Store;
 
@@ -2810,6 +2834,7 @@ export interface Store {
    * // -> {open: false, employees: 3}
    * ```
    * @category Deleter
+   * @since v3.0.0
    */
   delValue(valueId: Id): Store;
 
@@ -2848,6 +2873,7 @@ export interface Store {
    * // -> '{}'
    * ```
    * @category Deleter
+   * @since v3.0.0
    */
   delValuesSchema(): Store;
 
@@ -3245,6 +3271,7 @@ export interface Store {
    * // -> 'employees: 3'
    * ```
    * @category Iterator
+   * @since v3.0.0
    */
   forEachValue(valueCallback: ValueCallback): void;
 
@@ -4183,6 +4210,7 @@ export interface Store {
    * store.delListener(listenerId);
    * ```
    * @category Listener
+   * @since v3.0.0
    */
   addValuesListener(listener: ValuesListener, mutator?: boolean): Id;
 
@@ -4246,6 +4274,7 @@ export interface Store {
    * store.delListener(listenerId);
    * ```
    * @category Listener
+   * @since v3.0.0
    */
   addValueIdsListener(listener: ValueIdsListener, mutator?: boolean): Id;
 
@@ -4334,6 +4363,7 @@ export interface Store {
    * store.delListener(listenerId);
    * ```
    * @category Listener
+   * @since v3.0.0
    */
   addValueListener(
     valueId: IdOrNull,
