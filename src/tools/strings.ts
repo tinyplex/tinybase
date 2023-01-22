@@ -1,8 +1,6 @@
 import {EMPTY_STRING} from '../common/strings';
 import {Id} from '../common.d';
 
-const THE_TABULAR_CONTENT_OF = 'the tabular content of';
-
 export const THE_STORE = 'the Store';
 export const A_FUNCTION_FOR = 'A function for';
 export const EXPORT = 'export';
@@ -11,14 +9,20 @@ export const OR_UNDEFINED = ' | undefined';
 export const REGISTERS_A_LISTENER = `Registers a ${LISTENER} that will be called`;
 export const REPRESENTS = 'Represents';
 export const RETURNS_VOID = ' => void';
-export const THE_TABULAR_CONTENT_OF_THE_STORE = `${THE_TABULAR_CONTENT_OF} ${THE_STORE}`;
 export const THE_END_OF_THE_TRANSACTION = 'the end of the transaction';
 export const THE_SPECIFIED_ROW = 'the specified Row';
+export const A_STRING_SERIALIZATION_OF = 'a string serialization of';
+
+const getTheContentOfDoc = (content: 0 | 1 | 2 = 0, theStore = 0): string =>
+  `the ${CONTENT[content]}content of${theStore ? ` ${THE_STORE}` : ''}`;
+
+export const getTheContentOfTheStoreDoc = (verb = 0, content: 0 | 1 | 2 = 0) =>
+  `${VERBS[verb]} ${getTheContentOfDoc(content, 1)}`;
 
 export const getRowTypeDoc = (tableId: Id, set = 0) =>
   `${REPRESENTS} a Row when ${
     set ? 's' : 'g'
-  }etting ${THE_TABULAR_CONTENT_OF} the '${tableId}' Table`;
+  }etting ${getTheContentOfDoc()} the '${tableId}' Table`;
 
 export const getIdsDoc = (idsNoun: string, parentNoun: string, sorted = 0) =>
   `Gets ${
@@ -36,7 +40,7 @@ export const getCallbackDoc = (takes: string) =>
 
 export const getListenerTypeDoc = (childNoun = 0, parentNoun = 0) =>
   `${A_FUNCTION_FOR} listening to changes to ` +
-  `${nouns[childNoun]} in ${nouns[parentNoun]}`;
+  `${NOUNS[childNoun]} in ${NOUNS[parentNoun]}`;
 
 export const getListenerDoc = (
   childNoun: string,
@@ -46,9 +50,6 @@ export const getListenerDoc = (
   `${REGISTERS_A_LISTENER} whenever ${childNoun} in ${parentNoun} change` +
   (pluralChild ? EMPTY_STRING : 's');
 
-export const getStoreContentDoc = (verb = 0) =>
-  `${verbs[verb]} ${THE_TABULAR_CONTENT_OF_THE_STORE}`;
-
 export const getTableDoc = (tableId: Id) => `the '${tableId}' Table`;
 
 export const getRowDoc = (tableId: Id) =>
@@ -56,20 +57,34 @@ export const getRowDoc = (tableId: Id) =>
 
 export const getCellDoc = (cellId: Id) => `the '${cellId}' Cell`;
 
+export const getValueDoc = (valueId: Id) => `the '${valueId}' Value`;
+
 export const getTableContentDoc = (tableId: Id, verb = 0) =>
-  `${verbs[verb]} ${THE_TABULAR_CONTENT_OF} ${getTableDoc(tableId)}`;
+  `${VERBS[verb]} ${getTheContentOfDoc()} ${getTableDoc(tableId)}`;
 
 export const getRowContentDoc = (tableId: Id, verb = 0) =>
-  `${verbs[verb]} ${THE_TABULAR_CONTENT_OF} ${getRowDoc(tableId)}`;
+  `${VERBS[verb]} ${getTheContentOfDoc()} ${getRowDoc(tableId)}`;
 
 export const getCellContentDoc = (tableId: Id, cellId: Id, verb = 0) =>
-  `${verbs[verb]} ${getCellDoc(cellId)} for ${getRowDoc(tableId)}`;
+  `${VERBS[verb]} ${getCellDoc(cellId)} for ${getRowDoc(tableId)}`;
 
-export const verbs = ['Gets', 'Sets', 'Sets part of', 'Deletes'];
+export const getValueContentDoc = (valueId: Id, verb = 0) =>
+  `${VERBS[verb]} ${getValueDoc(valueId)}`;
 
-const nouns = [
+export const VERBS = [
+  'Gets',
+  'Sets',
+  'Sets part of',
+  'Deletes',
+  REPRESENTS,
+  `Gets ${A_STRING_SERIALIZATION_OF}`,
+  `Sets ${A_STRING_SERIALIZATION_OF}`,
+  `${REGISTERS_A_LISTENER} whenever`,
+];
+
+const NOUNS = [
   THE_STORE,
-  'anything',
+  'Tables',
   'Table Ids',
   'a Table',
   'Row Ids',
@@ -77,4 +92,10 @@ const nouns = [
   'Cell Ids',
   'a Cell',
   'invalid Cell changes',
+  'Values',
+  'Value Ids',
+  'a Value',
+  'invalid Value changes',
 ];
+
+const CONTENT = ['', 'tabular ', 'keyed value '];

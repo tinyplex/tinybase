@@ -121,7 +121,7 @@ export const createTools: typeof createToolsDecl = getCreateFunction(
     };
 
     const getStoreApi = (module: string): [string, string] =>
-      getStoreApiImpl(getStoreTablesSchema(), module);
+      getStoreApiImpl(getStoreTablesSchema(), getStoreValuesSchema(), module);
 
     const getPrettyStoreApi = async (
       module: string,
