@@ -17,7 +17,7 @@ const getTheContentOfDoc = (content: 0 | 1 | 2 = 0, theStore = 0): string =>
   `the ${CONTENT[content]}content of${theStore ? ` ${THE_STORE}` : ''}`;
 
 export const getTheContentOfTheStoreDoc = (
-  verb = 0,
+  verb: number,
   content: 0 | 1 | 2 = 0,
   set = 0,
 ) =>
@@ -42,7 +42,7 @@ export const getHasDoc = (childNoun: string, parentNoun = THE_STORE) =>
 export const getCallbackDoc = (takes: string) =>
   `A function that takes ${takes}`;
 
-export const getListenerTypeDoc = (childNoun = 0, parentNoun = 0) =>
+export const getListenerTypeDoc = (childNoun: number, parentNoun = 0) =>
   `${A_FUNCTION_FOR} listening to changes to ` +
   `${NOUNS[childNoun]} in ${NOUNS[parentNoun]}`;
 
