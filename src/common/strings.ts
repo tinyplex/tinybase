@@ -2,7 +2,6 @@ import {Id} from '../common.d';
 
 export const getTypeOf = (thing: unknown): string => typeof thing;
 
-export const EMPTY_OBJECT = '{}';
 export const EMPTY_STRING = '';
 
 export const STRING = getTypeOf(EMPTY_STRING);
