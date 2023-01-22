@@ -997,10 +997,29 @@ export type StoreListenerStats = {
  * and get data, add listeners for when the data changes, set schemas, and so
  * on.
  *
- * A Store has two facets. It can contain tabular Tables data, and
- * independently, it can contain keyed Values. These two facets have similar
- * APIs but can be used entirely independently: you can use only tables, only
- * keyed Values, or both tables _and_ keyed Values.
+ * A Store has two facets. It can contain keyed Values, and independently, it
+ * can contain tabular Tables data. These two facets have similar APIs but can
+ * be used entirely independently: you can use only tables, only keyed Values,
+ * or both tables _and_ keyed Values - all in a single Store.
+ *
+ * # Keyed values
+ *
+ * The keyed value support is best thought of as a flat JavaScript object. The
+ * Store contains a number of Value objects, each with a unique ID, and which is
+ * a string, boolean, or number:
+ *
+ * ```json
+ * {                  // Store
+ *   "value1": "one",   // Value (string)
+ *   "value2": true,    // Value (boolean)
+ *   "value3": 3,       // Value (number)
+ *   ...
+ * }
+ * ```
+ *
+ * In its default form, a Store has no sense of a structured schema for the
+ * Values. However, you _can_ optionally specify a ValuesSchema for a Store,
+ * which then usefully constrains and defaults the Values you can use.
  *
  * # Tabular data
  *
@@ -1031,15 +1050,11 @@ export type StoreListenerStats = {
  * }
  * ```
  *
- * In its default form, a Store has no sense of a structured schema, so, as long
- * as they are unique within their own parent, the Id keys can each be any
- * string you want. However, you _can_ optionally specify a TablesSchema for a
- * Store, which then usefully constrains the Table and Cell Ids (and Cell
- * values) you can use.
- *
- * # Keyed values
- *
- * This API is under development.
+ * Again, by default Store has no sense of a structured schema. As long as they
+ * are unique within their own parent, the Id keys can each be any string you
+ * want. However, as you _can_ optionally specify a TablesSchema for the tabular
+ * data in a Store, which then usefully constrains the Table and Cell Ids (and
+ * Cell values) you can use.
  *
  * # Setting and getting data
  *
@@ -1059,6 +1074,9 @@ export type StoreListenerStats = {
  *
  * |Type|Get data|Set data|Delete data|Add a listener|
  * |-|-|-|-|-|
+ * |Values|getValues|setValues|delValues|addValuesListener|
+ * |Value Ids|getValueIds|-|-|addValueIdsListener|
+ * |Value|getValue|setValue|delValue|addValueListener|
  * |Tables|getTables|setTables|delTables|addTablesListener|
  * |Table Ids|getTableIds|-|-|addTableIdsListener|
  * |Table|getTable|setTable|delTable|addTableListener|
@@ -1068,19 +1086,20 @@ export type StoreListenerStats = {
  * |Cell Ids|getCellIds|-|-|addCellIdsListener|
  * |Cell|getCell|setCell|delCell|addCellListener|
  *
- * Additionally, there are two extra methods to manipulate Row objects. The
- * addRow method is like the setRow method but automatically assigns it a new
- * unique Id. And the setPartialRow method lets you update multiple Cell values
- * in a Row without affecting the others.
+ * There are two extra methods to manipulate Row objects. The addRow method is
+ * like the setRow method but automatically assigns it a new unique Id. And the
+ * setPartialRow method lets you update multiple Cell values in a Row without
+ * affecting the others. (There is a similar setPartialValues method to do the
+ * same for the Values in a Store.)
  *
- * You can listen to attempts to write invalid data to a Cell with the
- * addInvalidCellListener method.
+ * You can listen to attempts to write invalid data to a Value or Cell with the
+ * addInvalidValueListener method or addInvalidCellListener method.
  *
  * The transaction method is used to wrap multiple changes to the Store so that
  * the relevant listeners only fire once.
  *
- * The setTablesJson method and the getTablesJson method allow you to work with
- * a JSON-encoded representation of the entire Store, which is useful for
+ * The setJson method and the getJson method allow you to work with a
+ * JSON-encoded representation of the entire Store, which is useful for
  * persisting it.
  *
  * Finally, the callListener method provides a way for you to manually provoke a
@@ -1094,14 +1113,15 @@ export type StoreListenerStats = {
  *
  * # Creating a schema
  *
- * You can set a TablesSchema with the setTablesSchema method. A TablesSchema
- * constrains the Table Ids the Store can have, and the types of Cell data in
- * each Table. Each Cell requires its type to be specified, and can also take a
- * default value for when it's not specified.
+ * You can set a ValuesSchema and a TablesSchema with the setValuesSchema method
+ * and setTablesSchema method respectively. A TablesSchema constrains the Table
+ * Ids the Store can have, and the types of Cell data in each Table. Each Cell
+ * requires its type to be specified, and can also take a default value for when
+ * it's not specified.
  *
- * You can also get a serialization of the TablesSchema out of the Store with
- * the getTablesSchemaJson method, and remove the TablesSchema altogether with
- * the delTablesSchema method.
+ * You can also get a serialization of the schemas out of the Store with
+ * the getSchemaJson method, and remove the schemas altogether with
+ * the delValuesSchema method and delTablesSchema method.
  *
  * Read more about schemas in the Using Schemas guide.
  *
@@ -1113,6 +1133,7 @@ export type StoreListenerStats = {
  *
  * ||Checking existence|Iterator|
  * |-|-|-|
+ * |Value|hasValue|forEachValue|
  * |Table|hasTable|forEachTable|
  * |Row|hasRow|forEachRow|
  * |Cell|hasCell|forEachCell|
