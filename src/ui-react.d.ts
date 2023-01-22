@@ -1067,7 +1067,7 @@ export function useCell(
  * const App = () => <span>{JSON.stringify(useValues(store))}</span>;
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"open":true}</span>'
  *
@@ -1089,7 +1089,7 @@ export function useCell(
  *
  * const store = createStore().setValue('open', true);
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"open":true}</span>'
  * ```
@@ -1107,7 +1107,7 @@ export function useCell(
  *
  * const store = createStore().setValue('open', true);
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"open":true}</span>'
  * ```
@@ -1144,7 +1144,7 @@ export function useValues(storeOrStoreId?: StoreOrStoreId): Values;
  * const App = () => <span>{JSON.stringify(useValueIds(store))}</span>;
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["open"]</span>'
  *
@@ -1166,7 +1166,7 @@ export function useValues(storeOrStoreId?: StoreOrStoreId): Values;
  *
  * const store = createStore().setValue('open', true);
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["open"]</span>'
  * ```
@@ -1184,7 +1184,7 @@ export function useValues(storeOrStoreId?: StoreOrStoreId): Values;
  *
  * const store = createStore().setValue('open', true);
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["open"]</span>'
  * ```
@@ -1223,7 +1223,7 @@ export function useValueIds(storeOrStoreId?: StoreOrStoreId): Ids;
  * const App = () => <span>{JSON.stringify(useValue('open', store))}</span>;
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>true</span>'
  *
@@ -1245,7 +1245,7 @@ export function useValueIds(storeOrStoreId?: StoreOrStoreId): Ids;
  *
  * const store = createStore().setValue('open', true);
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>true</span>'
  * ```
@@ -1265,7 +1265,7 @@ export function useValueIds(storeOrStoreId?: StoreOrStoreId): Ids;
  *
  * const store = createStore().setValue('open', true);
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>true</span>'
  * ```
@@ -1899,7 +1899,7 @@ export function useSetCellCallback<Parameter>(
  * };
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  * console.log(span.innerHTML);
  * // -> '{"open":true}'
@@ -1985,7 +1985,7 @@ export function useSetValuesCallback<Parameter>(
  * };
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  * console.log(span.innerHTML);
  * // -> '{"open":true}'
@@ -2071,7 +2071,7 @@ export function useSetPartialValuesCallback<Parameter>(
  * };
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  * console.log(span.innerHTML);
  * // -> '{"open":true}'
@@ -2411,7 +2411,7 @@ export function useDelCellCallback(
  * };
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  * console.log(span.innerHTML);
  * // -> '{"open":true}'
@@ -2476,7 +2476,7 @@ export function useDelValuesCallback(
  * };
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  * console.log(span.innerHTML);
  * // -> '{"open":true,"employees":3}'
@@ -3113,14 +3113,15 @@ export function useCellListener(
  *
  * const store = createStore().setValues({open: true});
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().values);
  * // -> 1
  *
  * store.setValue('open', false); // !act
  * // -> 'Values changed'
  *
- * ReactDOM.unmountComponentAtNode(app); // !act
+ * root.unmount(); // !act
  * console.log(store.getListenerStats().values);
  * // -> 0
  * ```
@@ -3176,14 +3177,15 @@ export function useValuesListener(
  *
  * const store = createStore().setValues({open: true});
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().valueIds);
  * // -> 1
  *
  * store.setValue('employees', 3); // !act
  * // -> 'Value Ids changed'
  *
- * ReactDOM.unmountComponentAtNode(app); // !act
+ * root.unmount(); // !act
  * console.log(store.getListenerStats().valueIds);
  * // -> 0
  * ```
@@ -3242,14 +3244,15 @@ export function useValueIdsListener(
  *
  * const store = createStore().setValues({open: true});
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().value);
  * // -> 1
  *
  * store.setValue('open', false); // !act
  * // -> 'Value changed'
  *
- * ReactDOM.unmountComponentAtNode(app); // !act
+ * root.unmount(); // !act
  * console.log(store.getListenerStats().value);
  * // -> 0
  * ```
@@ -8995,7 +8998,7 @@ export function TablesView(props: TablesProps): ComponentReturnType;
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>true</span>'
  *
@@ -9022,7 +9025,7 @@ export function TablesView(props: TablesProps): ComponentReturnType;
  *
  * const store = createStore().setValue('open', true);
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>open:{true}</span>'
  * ```
@@ -9045,7 +9048,7 @@ export function TablesView(props: TablesProps): ComponentReturnType;
  *
  * const store = createStore().setValue('open', true);
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span></span>'
  * ```
@@ -9091,7 +9094,7 @@ export function ValueView(props: ValueProps): ComponentReturnType;
  * );
  *
  * const app = document.createElement('div');
- * ReactDOM.render(<App />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>true</div>'
  *
@@ -9118,7 +9121,7 @@ export function ValueView(props: ValueProps): ComponentReturnType;
  *
  * const store = createStore().setValues({open: true, employees: 3});
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>open:{true}employees:{3}</div>'
  * ```
@@ -9151,7 +9154,7 @@ export function ValueView(props: ValueProps): ComponentReturnType;
  *
  * const store = createStore().setValues({open: true, employees: 3});
  * const app = document.createElement('div');
- * ReactDOM.render(<App store={store} />, app); // !act
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div><span><b>open</b>: true</span><span>employees: 3</span></div>'
  * ```
