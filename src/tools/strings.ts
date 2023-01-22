@@ -11,7 +11,8 @@ export const REPRESENTS = 'Represents';
 export const RETURNS_VOID = ' => void';
 export const THE_END_OF_THE_TRANSACTION = 'the end of the transaction';
 export const THE_SPECIFIED_ROW = 'the specified Row';
-export const A_STRING_SERIALIZATION_OF = 'a string serialization of';
+
+const A_STRING_SERIALIZATION_OF = 'a string serialization of';
 
 const getTheContentOfDoc = (content: 0 | 1 | 2 = 0, theStore = 0): string =>
   `the ${CONTENT[content]}content of${theStore ? ` ${THE_STORE}` : ''}`;
