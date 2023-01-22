@@ -20,6 +20,7 @@ type LINES = LINE[];
 type LINE_TREE = LINE_OR_LINE_TREE[];
 type LINE_OR_LINE_TREE = LINE | LINE_TREE;
 
+const NON_ALPHA = /[^A-Za-z]+/;
 const NON_ALPHANUMERIC = /[^A-Za-z0-9]+/;
 const JSDOC = /^( *)\/\*\* *(.*?) *\*\/$/gm;
 
@@ -71,14 +72,21 @@ export const camel = (str: string, firstCap = 0) =>
   );
 
 export const snake = (str: string) =>
-  upper(join((str ? str : ' ').split(NON_ALPHANUMERIC), '_'));
+  upper(
+    join(
+      (str && !NON_ALPHA.test(str[0]) ? str : ' ' + str).split(
+        NON_ALPHANUMERIC,
+      ),
+      '_',
+    ),
+  );
 
 export const comment = (doc: string) => `/** ${doc}. */`;
 
 export const getCodeFunctions = (): [
   (...lines: LINE_TREE) => string,
   (location: 0 | 1, source: string, ...items: string[]) => void,
-  (name: Id, body?: LINE, doc?: string) => Id,
+  (name: Id, body: LINE, doc: string) => Id,
   (
     name: Id,
     parameters: LINE,
@@ -114,7 +122,7 @@ export const getCodeFunctions = (): [
       setAdd(mapEnsure(allImports[location], source, setNew), item),
     );
 
-  const addType = (name: Id, body = '', doc = ''): Id =>
+  const addType = (name: Id, body: LINE, doc: string): Id =>
     mapUnique(types, name, [body, doc]);
 
   const addMethod = (

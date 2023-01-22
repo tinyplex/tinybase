@@ -21,23 +21,27 @@ export type T1Table = {[rowId: Id]: T1Row};
 /**
  * Represents a Row when getting the content of the 't1' Table.
  */
-export type T1Row = {c1: number; c2?: string};
+export type T1Row = {c1: number; c2: string; c3: string; ''?: string};
 
 /**
  * Represents a Row when setting the content of the 't1' Table.
  */
-export type T1RowWhenSet = {c1?: number; c2?: string};
+export type T1RowWhenSet = {c1?: number; c2?: string; c3?: string; ''?: string};
 
 /**
  * A Cell Id for the 't1' Table.
  */
-export type T1CellId = 'c1' | 'c2';
+export type T1CellId = 'c1' | 'c2' | 'c3' | '';
 
 /**
  * A function that takes a Cell Id and value from a Row in the 't1' Table.
  */
 export type T1CellCallback = (
-  ...[cellId, cell]: [cellId: 'c1', cell: number] | [cellId: 'c2', cell: string]
+  ...[cellId, cell]:
+    | [cellId: 'c1', cell: number]
+    | [cellId: 'c2', cell: string]
+    | [cellId: 'c3', cell: string]
+    | [cellId: '', cell: string]
 ) => void;
 
 /**
@@ -141,6 +145,24 @@ export type CellListener = (
         oldCell: string | undefined,
         getCellChange: GetCellChange | undefined,
       ]
+    | [
+        s: S,
+        tableId: 't1',
+        rowId: Id,
+        cellId: 'c3',
+        newCell: string | undefined,
+        oldCell: string | undefined,
+        getCellChange: GetCellChange | undefined,
+      ]
+    | [
+        s: S,
+        tableId: 't1',
+        rowId: Id,
+        cellId: '',
+        newCell: string | undefined,
+        oldCell: string | undefined,
+        getCellChange: GetCellChange | undefined,
+      ]
 ) => void;
 
 /**
@@ -167,17 +189,22 @@ export type MapString = (cell: string | undefined) => string;
 /**
  * Represents the keyed value content of the Store.
  */
-export type Values = {v1: number; v2?: string};
+export type Values = {v1: number; v2: string; v3: string; ''?: string};
 
 /**
  * Represents the keyed value content of the Store when set.
  */
-export type ValuesWhenSet = {v1?: number; v2?: string};
+export type ValuesWhenSet = {
+  v1?: number;
+  v2?: string;
+  v3?: string;
+  ''?: string;
+};
 
 /**
  * A Value Id in the Store.
  */
-export type ValueId = 'v1' | 'v2';
+export type ValueId = 'v1' | 'v2' | 'v3' | '';
 
 /**
  * A function that takes a Value Id, and value.
@@ -186,6 +213,8 @@ export type ValueCallback = (
   ...[valueId, rowCallback]:
     | [valueId: 'v1', value: number]
     | [valueId: 'v2', value: string]
+    | [valueId: 'v3', value: string]
+    | [valueId: '', value: string]
 ) => void;
 
 /**
@@ -222,6 +251,20 @@ export type ValueListener = (
     | [
         s: S,
         valueId: 'v2',
+        newValue: string | undefined,
+        oldValue: string | undefined,
+        getValueChange: GetValueChange | undefined,
+      ]
+    | [
+        s: S,
+        valueId: 'v3',
+        newValue: string | undefined,
+        oldValue: string | undefined,
+        getValueChange: GetValueChange | undefined,
+      ]
+    | [
+        s: S,
+        valueId: '',
         newValue: string | undefined,
         oldValue: string | undefined,
         getValueChange: GetValueChange | undefined,
@@ -385,7 +428,7 @@ export interface S {
   /**
    * Gets the 'c2' Cell for the specified Row in the 't1' Table.
    */
-  getT1C2Cell(rowId: Id): string | undefined;
+  getT1C2Cell(rowId: Id): string;
 
   /**
    * Sets the 'c2' Cell for the specified Row in the 't1' Table.
@@ -396,6 +439,46 @@ export interface S {
    * Deletes the 'c2' Cell for the specified Row in the 't1' Table.
    */
   delT1C2Cell(rowId: Id): S;
+
+  /**
+   * Gets whether the 'c3' Cell exists in the specified Row in the 't1' Table.
+   */
+  hasT1C3Cell(rowId: Id): boolean;
+
+  /**
+   * Gets the 'c3' Cell for the specified Row in the 't1' Table.
+   */
+  getT1C3Cell(rowId: Id): string;
+
+  /**
+   * Sets the 'c3' Cell for the specified Row in the 't1' Table.
+   */
+  setT1C3Cell(rowId: Id, cell: string | MapString): S;
+
+  /**
+   * Deletes the 'c3' Cell for the specified Row in the 't1' Table.
+   */
+  delT1C3Cell(rowId: Id): S;
+
+  /**
+   * Gets whether the '' Cell exists in the specified Row in the 't1' Table.
+   */
+  hasT1Cell(rowId: Id): boolean;
+
+  /**
+   * Gets the '' Cell for the specified Row in the 't1' Table.
+   */
+  getT1Cell(rowId: Id): string | undefined;
+
+  /**
+   * Sets the '' Cell for the specified Row in the 't1' Table.
+   */
+  setT1Cell(rowId: Id, cell: string | MapString): S;
+
+  /**
+   * Deletes the '' Cell for the specified Row in the 't1' Table.
+   */
+  delT1Cell(rowId: Id): S;
 
   /**
    * Gets a string serialization of the tabular content of the Store.
@@ -559,6 +642,46 @@ export interface S {
   delV2Value(): S;
 
   /**
+   * Gets whether the 'v3' Value exists in the Store.
+   */
+  hasV3Value(): boolean;
+
+  /**
+   * Gets the 'v3' Value.
+   */
+  getV3Value(): string;
+
+  /**
+   * Sets the 'v3' Value.
+   */
+  setV3Value(value: string): S;
+
+  /**
+   * Deletes the 'v3' Value.
+   */
+  delV3Value(): S;
+
+  /**
+   * Gets whether the '' Value exists in the Store.
+   */
+  hasValue(): boolean;
+
+  /**
+   * Gets the '' Value.
+   */
+  getValue(): string;
+
+  /**
+   * Sets the '' Value.
+   */
+  setValue(value: string): S;
+
+  /**
+   * Deletes the '' Value.
+   */
+  delValue(): S;
+
+  /**
    * Gets a string serialization of the keyed value content of the Store.
    */
   getValuesJson(): Json;
@@ -704,6 +827,10 @@ export const createS: typeof createSDecl = () => {
 
   const C2 = 'c2';
 
+  const C3 = 'c3';
+
+  const _ = '';
+
   const T1 = 't1';
 
   const TYPE = 'type';
@@ -714,20 +841,30 @@ export const createS: typeof createSDecl = () => {
 
   const STRING = 'string';
 
+  const TWO = 'two';
+
+  const _3 = '3';
+
   const V1 = 'v1';
 
   const V2 = 'v2';
+
+  const V3 = 'v3';
 
   const store = createStore()
     .setTablesSchema({
       [T1]: {
         [C1]: {[TYPE]: NUMBER, [DEFAULT]: 1},
-        [C2]: {[TYPE]: STRING},
+        [C2]: {[TYPE]: STRING, [DEFAULT]: TWO},
+        [C3]: {[TYPE]: STRING, [DEFAULT]: _3},
+        [_]: {[TYPE]: STRING},
       },
     })
     .setValuesSchema({
       [V1]: {[TYPE]: NUMBER, [DEFAULT]: 1},
-      [V2]: {[TYPE]: STRING},
+      [V2]: {[TYPE]: STRING, [DEFAULT]: TWO},
+      [V3]: {[TYPE]: STRING, [DEFAULT]: _3},
+      [_]: {[TYPE]: STRING},
     });
 
   const fluent = (actions: () => Store) => {
@@ -805,13 +942,31 @@ export const createS: typeof createSDecl = () => {
 
     hasT1C2Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C2),
 
-    getT1C2Cell: (rowId: Id): string | undefined =>
-      store.getCell(T1, rowId, C2) as string | undefined,
+    getT1C2Cell: (rowId: Id): string => store.getCell(T1, rowId, C2) as string,
 
     setT1C2Cell: (rowId: Id, cell: string | MapString): S =>
       fluent(() => store.setCell(T1, rowId, C2, cell as any)),
 
     delT1C2Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C2)),
+
+    hasT1C3Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C3),
+
+    getT1C3Cell: (rowId: Id): string => store.getCell(T1, rowId, C3) as string,
+
+    setT1C3Cell: (rowId: Id, cell: string | MapString): S =>
+      fluent(() => store.setCell(T1, rowId, C3, cell as any)),
+
+    delT1C3Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C3)),
+
+    hasT1Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, _),
+
+    getT1Cell: (rowId: Id): string | undefined =>
+      store.getCell(T1, rowId, _) as string | undefined,
+
+    setT1Cell: (rowId: Id, cell: string | MapString): S =>
+      fluent(() => store.setCell(T1, rowId, _, cell as any)),
+
+    delT1Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, _)),
 
     getTablesJson: (): Json => store.getTablesJson(),
 
@@ -907,6 +1062,22 @@ export const createS: typeof createSDecl = () => {
 
     delV2Value: (): S => fluent(() => store.delValue(V2)),
 
+    hasV3Value: (): boolean => store.hasValue(V3),
+
+    getV3Value: (): string => store.getValue(V3) as string,
+
+    setV3Value: (value: string): S => fluent(() => store.setValue(V3, value)),
+
+    delV3Value: (): S => fluent(() => store.delValue(V3)),
+
+    hasValue: (): boolean => store.hasValue(_),
+
+    getValue: (): string => store.getValue(_) as string,
+
+    setValue: (value: string): S => fluent(() => store.setValue(_, value)),
+
+    delValue: (): S => fluent(() => store.delValue(_)),
+
     getValuesJson: (): Json => store.getValuesJson(),
 
     setValuesJson: (valuesJson: Json): S =>
@@ -980,17 +1151,22 @@ exports[`API Pretty keyed value 1`] = `
 /**
  * Represents the keyed value content of the Store.
  */
-export type Values = {v1: number; v2?: string};
+export type Values = {v1: number; v2: string; v3: string; ''?: string};
 
 /**
  * Represents the keyed value content of the Store when set.
  */
-export type ValuesWhenSet = {v1?: number; v2?: string};
+export type ValuesWhenSet = {
+  v1?: number;
+  v2?: string;
+  v3?: string;
+  ''?: string;
+};
 
 /**
  * A Value Id in the Store.
  */
-export type ValueId = 'v1' | 'v2';
+export type ValueId = 'v1' | 'v2' | 'v3' | '';
 
 /**
  * A function that takes a Value Id, and value.
@@ -999,6 +1175,8 @@ export type ValueCallback = (
   ...[valueId, rowCallback]:
     | [valueId: 'v1', value: number]
     | [valueId: 'v2', value: string]
+    | [valueId: 'v3', value: string]
+    | [valueId: '', value: string]
 ) => void;
 
 /**
@@ -1035,6 +1213,20 @@ export type ValueListener = (
     | [
         s: S,
         valueId: 'v2',
+        newValue: string | undefined,
+        oldValue: string | undefined,
+        getValueChange: GetValueChange | undefined,
+      ]
+    | [
+        s: S,
+        valueId: 'v3',
+        newValue: string | undefined,
+        oldValue: string | undefined,
+        getValueChange: GetValueChange | undefined,
+      ]
+    | [
+        s: S,
+        valueId: '',
         newValue: string | undefined,
         oldValue: string | undefined,
         getValueChange: GetValueChange | undefined,
@@ -1134,6 +1326,46 @@ export interface S {
    * Deletes the 'v2' Value.
    */
   delV2Value(): S;
+
+  /**
+   * Gets whether the 'v3' Value exists in the Store.
+   */
+  hasV3Value(): boolean;
+
+  /**
+   * Gets the 'v3' Value.
+   */
+  getV3Value(): string;
+
+  /**
+   * Sets the 'v3' Value.
+   */
+  setV3Value(value: string): S;
+
+  /**
+   * Deletes the 'v3' Value.
+   */
+  delV3Value(): S;
+
+  /**
+   * Gets whether the '' Value exists in the Store.
+   */
+  hasValue(): boolean;
+
+  /**
+   * Gets the '' Value.
+   */
+  getValue(): string;
+
+  /**
+   * Sets the '' Value.
+   */
+  setValue(value: string): S;
+
+  /**
+   * Deletes the '' Value.
+   */
+  delValue(): S;
 
   /**
    * Gets a string serialization of the keyed value content of the Store.
@@ -1262,6 +1494,10 @@ export const createS: typeof createSDecl = () => {
 
   const V2 = 'v2';
 
+  const V3 = 'v3';
+
+  const _ = '';
+
   const TYPE = 'type';
 
   const NUMBER = 'number';
@@ -1270,9 +1506,15 @@ export const createS: typeof createSDecl = () => {
 
   const STRING = 'string';
 
+  const TWO = 'two';
+
+  const _3 = '3';
+
   const store = createStore().setValuesSchema({
     [V1]: {[TYPE]: NUMBER, [DEFAULT]: 1},
-    [V2]: {[TYPE]: STRING},
+    [V2]: {[TYPE]: STRING, [DEFAULT]: TWO},
+    [V3]: {[TYPE]: STRING, [DEFAULT]: _3},
+    [_]: {[TYPE]: STRING},
   });
 
   const fluent = (actions: () => Store) => {
@@ -1318,6 +1560,22 @@ export const createS: typeof createSDecl = () => {
     setV2Value: (value: string): S => fluent(() => store.setValue(V2, value)),
 
     delV2Value: (): S => fluent(() => store.delValue(V2)),
+
+    hasV3Value: (): boolean => store.hasValue(V3),
+
+    getV3Value: (): string => store.getValue(V3) as string,
+
+    setV3Value: (value: string): S => fluent(() => store.setValue(V3, value)),
+
+    delV3Value: (): S => fluent(() => store.delValue(V3)),
+
+    hasValue: (): boolean => store.hasValue(_),
+
+    getValue: (): string => store.getValue(_) as string,
+
+    setValue: (value: string): S => fluent(() => store.setValue(_, value)),
+
+    delValue: (): S => fluent(() => store.delValue(_)),
 
     getValuesJson: (): Json => store.getValuesJson(),
 
@@ -1389,23 +1647,27 @@ export type T1Table = {[rowId: Id]: T1Row};
 /**
  * Represents a Row when getting the content of the 't1' Table.
  */
-export type T1Row = {c1: number; c2?: string};
+export type T1Row = {c1: number; c2: string; c3: string; ''?: string};
 
 /**
  * Represents a Row when setting the content of the 't1' Table.
  */
-export type T1RowWhenSet = {c1?: number; c2?: string};
+export type T1RowWhenSet = {c1?: number; c2?: string; c3?: string; ''?: string};
 
 /**
  * A Cell Id for the 't1' Table.
  */
-export type T1CellId = 'c1' | 'c2';
+export type T1CellId = 'c1' | 'c2' | 'c3' | '';
 
 /**
  * A function that takes a Cell Id and value from a Row in the 't1' Table.
  */
 export type T1CellCallback = (
-  ...[cellId, cell]: [cellId: 'c1', cell: number] | [cellId: 'c2', cell: string]
+  ...[cellId, cell]:
+    | [cellId: 'c1', cell: number]
+    | [cellId: 'c2', cell: string]
+    | [cellId: 'c3', cell: string]
+    | [cellId: '', cell: string]
 ) => void;
 
 /**
@@ -1505,6 +1767,24 @@ export type CellListener = (
         tableId: 't1',
         rowId: Id,
         cellId: 'c2',
+        newCell: string | undefined,
+        oldCell: string | undefined,
+        getCellChange: GetCellChange | undefined,
+      ]
+    | [
+        s: S,
+        tableId: 't1',
+        rowId: Id,
+        cellId: 'c3',
+        newCell: string | undefined,
+        oldCell: string | undefined,
+        getCellChange: GetCellChange | undefined,
+      ]
+    | [
+        s: S,
+        tableId: 't1',
+        rowId: Id,
+        cellId: '',
         newCell: string | undefined,
         oldCell: string | undefined,
         getCellChange: GetCellChange | undefined,
@@ -1680,7 +1960,7 @@ export interface S {
   /**
    * Gets the 'c2' Cell for the specified Row in the 't1' Table.
    */
-  getT1C2Cell(rowId: Id): string | undefined;
+  getT1C2Cell(rowId: Id): string;
 
   /**
    * Sets the 'c2' Cell for the specified Row in the 't1' Table.
@@ -1691,6 +1971,46 @@ export interface S {
    * Deletes the 'c2' Cell for the specified Row in the 't1' Table.
    */
   delT1C2Cell(rowId: Id): S;
+
+  /**
+   * Gets whether the 'c3' Cell exists in the specified Row in the 't1' Table.
+   */
+  hasT1C3Cell(rowId: Id): boolean;
+
+  /**
+   * Gets the 'c3' Cell for the specified Row in the 't1' Table.
+   */
+  getT1C3Cell(rowId: Id): string;
+
+  /**
+   * Sets the 'c3' Cell for the specified Row in the 't1' Table.
+   */
+  setT1C3Cell(rowId: Id, cell: string | MapString): S;
+
+  /**
+   * Deletes the 'c3' Cell for the specified Row in the 't1' Table.
+   */
+  delT1C3Cell(rowId: Id): S;
+
+  /**
+   * Gets whether the '' Cell exists in the specified Row in the 't1' Table.
+   */
+  hasT1Cell(rowId: Id): boolean;
+
+  /**
+   * Gets the '' Cell for the specified Row in the 't1' Table.
+   */
+  getT1Cell(rowId: Id): string | undefined;
+
+  /**
+   * Sets the '' Cell for the specified Row in the 't1' Table.
+   */
+  setT1Cell(rowId: Id, cell: string | MapString): S;
+
+  /**
+   * Deletes the '' Cell for the specified Row in the 't1' Table.
+   */
+  delT1Cell(rowId: Id): S;
 
   /**
    * Gets a string serialization of the tabular content of the Store.
@@ -1875,6 +2195,10 @@ export const createS: typeof createSDecl = () => {
 
   const C2 = 'c2';
 
+  const C3 = 'c3';
+
+  const _ = '';
+
   const T1 = 't1';
 
   const TYPE = 'type';
@@ -1885,10 +2209,16 @@ export const createS: typeof createSDecl = () => {
 
   const STRING = 'string';
 
+  const TWO = 'two';
+
+  const _3 = '3';
+
   const store = createStore().setTablesSchema({
     [T1]: {
       [C1]: {[TYPE]: NUMBER, [DEFAULT]: 1},
-      [C2]: {[TYPE]: STRING},
+      [C2]: {[TYPE]: STRING, [DEFAULT]: TWO},
+      [C3]: {[TYPE]: STRING, [DEFAULT]: _3},
+      [_]: {[TYPE]: STRING},
     },
   });
 
@@ -1967,13 +2297,31 @@ export const createS: typeof createSDecl = () => {
 
     hasT1C2Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C2),
 
-    getT1C2Cell: (rowId: Id): string | undefined =>
-      store.getCell(T1, rowId, C2) as string | undefined,
+    getT1C2Cell: (rowId: Id): string => store.getCell(T1, rowId, C2) as string,
 
     setT1C2Cell: (rowId: Id, cell: string | MapString): S =>
       fluent(() => store.setCell(T1, rowId, C2, cell as any)),
 
     delT1C2Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C2)),
+
+    hasT1C3Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C3),
+
+    getT1C3Cell: (rowId: Id): string => store.getCell(T1, rowId, C3) as string,
+
+    setT1C3Cell: (rowId: Id, cell: string | MapString): S =>
+      fluent(() => store.setCell(T1, rowId, C3, cell as any)),
+
+    delT1C3Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C3)),
+
+    hasT1Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, _),
+
+    getT1Cell: (rowId: Id): string | undefined =>
+      store.getCell(T1, rowId, _) as string | undefined,
+
+    setT1Cell: (rowId: Id, cell: string | MapString): S =>
+      fluent(() => store.setCell(T1, rowId, _, cell as any)),
+
+    delT1Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, _)),
 
     getTablesJson: (): Json => store.getTablesJson(),
 
@@ -2079,16 +2427,16 @@ exports[`API Unpretty both 1`] = `
 export type T1Table = {[rowId: Id]: T1Row};
 
 /** Represents a Row when getting the content of the 't1' Table. */
-export type T1Row = {'c1': number; 'c2'?: string;};
+export type T1Row = {'c1': number; 'c2': string; 'c3': string; ''?: string;};
 
 /** Represents a Row when setting the content of the 't1' Table. */
-export type T1RowWhenSet = {'c1'?: number; 'c2'?: string;};
+export type T1RowWhenSet = {'c1'?: number; 'c2'?: string; 'c3'?: string; ''?: string;};
 
 /** A Cell Id for the 't1' Table. */
-export type T1CellId = 'c1' | 'c2';
+export type T1CellId = 'c1' | 'c2' | 'c3' | '';
 
 /** A function that takes a Cell Id and value from a Row in the 't1' Table. */
-export type T1CellCallback = (...[cellId, cell]: [cellId: 'c1', cell: number] | [cellId: 'c2', cell: string]) => void;
+export type T1CellCallback = (...[cellId, cell]: [cellId: 'c1', cell: number] | [cellId: 'c2', cell: string] | [cellId: 'c3', cell: string] | [cellId: '', cell: string]) => void;
 
 /** A function that takes a Row Id from the 't1' Table, and a Cell iterator. */
 export type T1RowCallback = (rowId: Id, forEachCell: (cellCallback: T1CellCallback) => void) => void;
@@ -2124,7 +2472,7 @@ export type RowListener = (s: S, tableId: TableId, rowId: Id, getCellChange: Get
 export type CellIdsListener = (s: S, tableId: TableId, rowId: Id) => void;
 
 /** A function for listening to changes to a Cell in a Row. */
-export type CellListener = (...[s, tableId, rowId, cellId, newCell, oldCell, getCellChange]: [s: S, tableId: 't1', rowId: Id, cellId: 'c1', newCell: number | undefined, oldCell: number | undefined, getCellChange: GetCellChange | undefined] | [s: S, tableId: 't1', rowId: Id, cellId: 'c2', newCell: string | undefined, oldCell: string | undefined, getCellChange: GetCellChange | undefined]) => void;
+export type CellListener = (...[s, tableId, rowId, cellId, newCell, oldCell, getCellChange]: [s: S, tableId: 't1', rowId: Id, cellId: 'c1', newCell: number | undefined, oldCell: number | undefined, getCellChange: GetCellChange | undefined] | [s: S, tableId: 't1', rowId: Id, cellId: 'c2', newCell: string | undefined, oldCell: string | undefined, getCellChange: GetCellChange | undefined] | [s: S, tableId: 't1', rowId: Id, cellId: 'c3', newCell: string | undefined, oldCell: string | undefined, getCellChange: GetCellChange | undefined] | [s: S, tableId: 't1', rowId: Id, cellId: '', newCell: string | undefined, oldCell: string | undefined, getCellChange: GetCellChange | undefined]) => void;
 
 /** A function for listening to changes to invalid Cell changes in the Store. */
 export type InvalidCellListener = (s: S, tableId: Id, rowId: Id, cellId: Id, invalidCells: any[]) => void;
@@ -2136,16 +2484,16 @@ export type MapNumber = (cell: number | undefined) => number;
 export type MapString = (cell: string | undefined) => string;
 
 /** Represents the keyed value content of the Store. */
-export type Values = {'v1': number; 'v2'?: string;};
+export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string;};
 
 /** Represents the keyed value content of the Store when set. */
-export type ValuesWhenSet = {'v1'?: number; 'v2'?: string;};
+export type ValuesWhenSet = {'v1'?: number; 'v2'?: string; 'v3'?: string; ''?: string;};
 
 /** A Value Id in the Store. */
-export type ValueId = 'v1' | 'v2';
+export type ValueId = 'v1' | 'v2' | 'v3' | '';
 
 /** A function that takes a Value Id, and value. */
-export type ValueCallback = (...[valueId, rowCallback]: [valueId: 'v1', value: number] | [valueId: 'v2', value: string]) => void;
+export type ValueCallback = (...[valueId, rowCallback]: [valueId: 'v1', value: number] | [valueId: 'v2', value: string] | [valueId: 'v3', value: string] | [valueId: '', value: string]) => void;
 
 /** A function for returning information about any Value's changes during a transaction. */
 export type GetValueChange = (valueId: ValueId) => ValueChange;
@@ -2157,7 +2505,7 @@ export type ValuesListener = (s: S, getValueChange: GetValueChange | undefined) 
 export type ValueIdsListener = (s: S) => void;
 
 /** A function for listening to changes to a Value in the Store. */
-export type ValueListener = (...[s, valueId, newValue, oldValue, getValueChange]: [s: S, valueId: 'v1', newValue: number | undefined, oldValue: number | undefined, getValueChange: GetValueChange | undefined] | [s: S, valueId: 'v2', newValue: string | undefined, oldValue: string | undefined, getValueChange: GetValueChange | undefined]) => void;
+export type ValueListener = (...[s, valueId, newValue, oldValue, getValueChange]: [s: S, valueId: 'v1', newValue: number | undefined, oldValue: number | undefined, getValueChange: GetValueChange | undefined] | [s: S, valueId: 'v2', newValue: string | undefined, oldValue: string | undefined, getValueChange: GetValueChange | undefined] | [s: S, valueId: 'v3', newValue: string | undefined, oldValue: string | undefined, getValueChange: GetValueChange | undefined] | [s: S, valueId: '', newValue: string | undefined, oldValue: string | undefined, getValueChange: GetValueChange | undefined]) => void;
 
 /** A function for listening to changes to invalid Value changes in the Store. */
 export type InvalidValueListener = (s: S, valueId: Id, invalidValues: any[]) => void;
@@ -2245,13 +2593,37 @@ delT1C1Cell(rowId: Id): S;
 hasT1C2Cell(rowId: Id): boolean;
 
 /** Gets the 'c2' Cell for the specified Row in the 't1' Table. */
-getT1C2Cell(rowId: Id): string | undefined;
+getT1C2Cell(rowId: Id): string;
 
 /** Sets the 'c2' Cell for the specified Row in the 't1' Table. */
 setT1C2Cell(rowId: Id, cell: string | MapString): S;
 
 /** Deletes the 'c2' Cell for the specified Row in the 't1' Table. */
 delT1C2Cell(rowId: Id): S;
+
+/** Gets whether the 'c3' Cell exists in the specified Row in the 't1' Table. */
+hasT1C3Cell(rowId: Id): boolean;
+
+/** Gets the 'c3' Cell for the specified Row in the 't1' Table. */
+getT1C3Cell(rowId: Id): string;
+
+/** Sets the 'c3' Cell for the specified Row in the 't1' Table. */
+setT1C3Cell(rowId: Id, cell: string | MapString): S;
+
+/** Deletes the 'c3' Cell for the specified Row in the 't1' Table. */
+delT1C3Cell(rowId: Id): S;
+
+/** Gets whether the '' Cell exists in the specified Row in the 't1' Table. */
+hasT1Cell(rowId: Id): boolean;
+
+/** Gets the '' Cell for the specified Row in the 't1' Table. */
+getT1Cell(rowId: Id): string | undefined;
+
+/** Sets the '' Cell for the specified Row in the 't1' Table. */
+setT1Cell(rowId: Id, cell: string | MapString): S;
+
+/** Deletes the '' Cell for the specified Row in the 't1' Table. */
+delT1Cell(rowId: Id): S;
 
 /** Gets a string serialization of the tabular content of the Store. */
 getTablesJson(): Json;
@@ -2328,6 +2700,30 @@ setV2Value(value: string): S;
 /** Deletes the 'v2' Value. */
 delV2Value(): S;
 
+/** Gets whether the 'v3' Value exists in the Store. */
+hasV3Value(): boolean;
+
+/** Gets the 'v3' Value. */
+getV3Value(): string;
+
+/** Sets the 'v3' Value. */
+setV3Value(value: string): S;
+
+/** Deletes the 'v3' Value. */
+delV3Value(): S;
+
+/** Gets whether the '' Value exists in the Store. */
+hasValue(): boolean;
+
+/** Gets the '' Value. */
+getValue(): string;
+
+/** Sets the '' Value. */
+setValue(value: string): S;
+
+/** Deletes the '' Value. */
+delValue(): S;
+
 /** Gets a string serialization of the keyed value content of the Store. */
 getValuesJson(): Json;
 
@@ -2388,6 +2784,10 @@ const C1 = 'c1';
 
 const C2 = 'c2';
 
+const C3 = 'c3';
+
+const _ = '';
+
 const T1 = 't1';
 
 const TYPE = 'type';
@@ -2398,20 +2798,30 @@ const DEFAULT = 'default';
 
 const STRING = 'string';
 
+const TWO = 'two';
+
+const _3 = '3';
+
 const V1 = 'v1';
 
 const V2 = 'v2';
+
+const V3 = 'v3';
 
 const store = createStore()
 .setTablesSchema({
 [T1]: {
 [C1]: {[TYPE]: NUMBER, [DEFAULT]: 1},
-[C2]: {[TYPE]: STRING},
+[C2]: {[TYPE]: STRING, [DEFAULT]: TWO},
+[C3]: {[TYPE]: STRING, [DEFAULT]: _3},
+[_]: {[TYPE]: STRING},
 },
 })
 .setValuesSchema({
 [V1]: {[TYPE]: NUMBER, [DEFAULT]: 1},
-[V2]: {[TYPE]: STRING},
+[V2]: {[TYPE]: STRING, [DEFAULT]: TWO},
+[V3]: {[TYPE]: STRING, [DEFAULT]: _3},
+[_]: {[TYPE]: STRING},
 });
 
 const fluent = (actions: () => Store) => {
@@ -2474,11 +2884,27 @@ delT1C1Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C1)),
 
 hasT1C2Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C2),
 
-getT1C2Cell: (rowId: Id): string | undefined => store.getCell(T1, rowId, C2) as string | undefined,
+getT1C2Cell: (rowId: Id): string => store.getCell(T1, rowId, C2) as string,
 
 setT1C2Cell: (rowId: Id, cell: string | MapString): S => fluent(() => store.setCell(T1, rowId, C2, cell as any)),
 
 delT1C2Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C2)),
+
+hasT1C3Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C3),
+
+getT1C3Cell: (rowId: Id): string => store.getCell(T1, rowId, C3) as string,
+
+setT1C3Cell: (rowId: Id, cell: string | MapString): S => fluent(() => store.setCell(T1, rowId, C3, cell as any)),
+
+delT1C3Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C3)),
+
+hasT1Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, _),
+
+getT1Cell: (rowId: Id): string | undefined => store.getCell(T1, rowId, _) as string | undefined,
+
+setT1Cell: (rowId: Id, cell: string | MapString): S => fluent(() => store.setCell(T1, rowId, _, cell as any)),
+
+delT1Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, _)),
 
 getTablesJson: (): Json => store.getTablesJson(),
 
@@ -2530,6 +2956,22 @@ setV2Value: (value: string): S => fluent(() => store.setValue(V2, value)),
 
 delV2Value: (): S => fluent(() => store.delValue(V2)),
 
+hasV3Value: (): boolean => store.hasValue(V3),
+
+getV3Value: (): string => store.getValue(V3) as string,
+
+setV3Value: (value: string): S => fluent(() => store.setValue(V3, value)),
+
+delV3Value: (): S => fluent(() => store.delValue(V3)),
+
+hasValue: (): boolean => store.hasValue(_),
+
+getValue: (): string => store.getValue(_) as string,
+
+setValue: (value: string): S => fluent(() => store.setValue(_, value)),
+
+delValue: (): S => fluent(() => store.delValue(_)),
+
 getValuesJson: (): Json => store.getValuesJson(),
 
 setValuesJson: (valuesJson: Json): S => fluent(() => store.setValuesJson(valuesJson)),
@@ -2574,16 +3016,16 @@ exports[`API Unpretty keyed value 1`] = `
   "import {DoRollback, Id, IdOrNull, Ids, Json, Store, ValueChange} from 'tinybase';
 
 /** Represents the keyed value content of the Store. */
-export type Values = {'v1': number; 'v2'?: string;};
+export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string;};
 
 /** Represents the keyed value content of the Store when set. */
-export type ValuesWhenSet = {'v1'?: number; 'v2'?: string;};
+export type ValuesWhenSet = {'v1'?: number; 'v2'?: string; 'v3'?: string; ''?: string;};
 
 /** A Value Id in the Store. */
-export type ValueId = 'v1' | 'v2';
+export type ValueId = 'v1' | 'v2' | 'v3' | '';
 
 /** A function that takes a Value Id, and value. */
-export type ValueCallback = (...[valueId, rowCallback]: [valueId: 'v1', value: number] | [valueId: 'v2', value: string]) => void;
+export type ValueCallback = (...[valueId, rowCallback]: [valueId: 'v1', value: number] | [valueId: 'v2', value: string] | [valueId: 'v3', value: string] | [valueId: '', value: string]) => void;
 
 /** A function for returning information about any Value's changes during a transaction. */
 export type GetValueChange = (valueId: ValueId) => ValueChange;
@@ -2595,7 +3037,7 @@ export type ValuesListener = (s: S, getValueChange: GetValueChange | undefined) 
 export type ValueIdsListener = (s: S) => void;
 
 /** A function for listening to changes to a Value in the Store. */
-export type ValueListener = (...[s, valueId, newValue, oldValue, getValueChange]: [s: S, valueId: 'v1', newValue: number | undefined, oldValue: number | undefined, getValueChange: GetValueChange | undefined] | [s: S, valueId: 'v2', newValue: string | undefined, oldValue: string | undefined, getValueChange: GetValueChange | undefined]) => void;
+export type ValueListener = (...[s, valueId, newValue, oldValue, getValueChange]: [s: S, valueId: 'v1', newValue: number | undefined, oldValue: number | undefined, getValueChange: GetValueChange | undefined] | [s: S, valueId: 'v2', newValue: string | undefined, oldValue: string | undefined, getValueChange: GetValueChange | undefined] | [s: S, valueId: 'v3', newValue: string | undefined, oldValue: string | undefined, getValueChange: GetValueChange | undefined] | [s: S, valueId: '', newValue: string | undefined, oldValue: string | undefined, getValueChange: GetValueChange | undefined]) => void;
 
 /** A function for listening to changes to invalid Value changes in the Store. */
 export type InvalidValueListener = (s: S, valueId: Id, invalidValues: any[]) => void;
@@ -2648,6 +3090,30 @@ setV2Value(value: string): S;
 
 /** Deletes the 'v2' Value. */
 delV2Value(): S;
+
+/** Gets whether the 'v3' Value exists in the Store. */
+hasV3Value(): boolean;
+
+/** Gets the 'v3' Value. */
+getV3Value(): string;
+
+/** Sets the 'v3' Value. */
+setV3Value(value: string): S;
+
+/** Deletes the 'v3' Value. */
+delV3Value(): S;
+
+/** Gets whether the '' Value exists in the Store. */
+hasValue(): boolean;
+
+/** Gets the '' Value. */
+getValue(): string;
+
+/** Sets the '' Value. */
+setValue(value: string): S;
+
+/** Deletes the '' Value. */
+delValue(): S;
 
 /** Gets a string serialization of the keyed value content of the Store. */
 getValuesJson(): Json;
@@ -2709,6 +3175,10 @@ const V1 = 'v1';
 
 const V2 = 'v2';
 
+const V3 = 'v3';
+
+const _ = '';
+
 const TYPE = 'type';
 
 const NUMBER = 'number';
@@ -2717,10 +3187,16 @@ const DEFAULT = 'default';
 
 const STRING = 'string';
 
+const TWO = 'two';
+
+const _3 = '3';
+
 const store = createStore()
 .setValuesSchema({
 [V1]: {[TYPE]: NUMBER, [DEFAULT]: 1},
-[V2]: {[TYPE]: STRING},
+[V2]: {[TYPE]: STRING, [DEFAULT]: TWO},
+[V3]: {[TYPE]: STRING, [DEFAULT]: _3},
+[_]: {[TYPE]: STRING},
 });
 
 const fluent = (actions: () => Store) => {
@@ -2760,6 +3236,22 @@ getV2Value: (): string => store.getValue(V2) as string,
 setV2Value: (value: string): S => fluent(() => store.setValue(V2, value)),
 
 delV2Value: (): S => fluent(() => store.delValue(V2)),
+
+hasV3Value: (): boolean => store.hasValue(V3),
+
+getV3Value: (): string => store.getValue(V3) as string,
+
+setV3Value: (value: string): S => fluent(() => store.setValue(V3, value)),
+
+delV3Value: (): S => fluent(() => store.delValue(V3)),
+
+hasValue: (): boolean => store.hasValue(_),
+
+getValue: (): string => store.getValue(_) as string,
+
+setValue: (value: string): S => fluent(() => store.setValue(_, value)),
+
+delValue: (): S => fluent(() => store.delValue(_)),
 
 getValuesJson: (): Json => store.getValuesJson(),
 
@@ -2808,16 +3300,16 @@ exports[`API Unpretty tabular 1`] = `
 export type T1Table = {[rowId: Id]: T1Row};
 
 /** Represents a Row when getting the content of the 't1' Table. */
-export type T1Row = {'c1': number; 'c2'?: string;};
+export type T1Row = {'c1': number; 'c2': string; 'c3': string; ''?: string;};
 
 /** Represents a Row when setting the content of the 't1' Table. */
-export type T1RowWhenSet = {'c1'?: number; 'c2'?: string;};
+export type T1RowWhenSet = {'c1'?: number; 'c2'?: string; 'c3'?: string; ''?: string;};
 
 /** A Cell Id for the 't1' Table. */
-export type T1CellId = 'c1' | 'c2';
+export type T1CellId = 'c1' | 'c2' | 'c3' | '';
 
 /** A function that takes a Cell Id and value from a Row in the 't1' Table. */
-export type T1CellCallback = (...[cellId, cell]: [cellId: 'c1', cell: number] | [cellId: 'c2', cell: string]) => void;
+export type T1CellCallback = (...[cellId, cell]: [cellId: 'c1', cell: number] | [cellId: 'c2', cell: string] | [cellId: 'c3', cell: string] | [cellId: '', cell: string]) => void;
 
 /** A function that takes a Row Id from the 't1' Table, and a Cell iterator. */
 export type T1RowCallback = (rowId: Id, forEachCell: (cellCallback: T1CellCallback) => void) => void;
@@ -2853,7 +3345,7 @@ export type RowListener = (s: S, tableId: TableId, rowId: Id, getCellChange: Get
 export type CellIdsListener = (s: S, tableId: TableId, rowId: Id) => void;
 
 /** A function for listening to changes to a Cell in a Row. */
-export type CellListener = (...[s, tableId, rowId, cellId, newCell, oldCell, getCellChange]: [s: S, tableId: 't1', rowId: Id, cellId: 'c1', newCell: number | undefined, oldCell: number | undefined, getCellChange: GetCellChange | undefined] | [s: S, tableId: 't1', rowId: Id, cellId: 'c2', newCell: string | undefined, oldCell: string | undefined, getCellChange: GetCellChange | undefined]) => void;
+export type CellListener = (...[s, tableId, rowId, cellId, newCell, oldCell, getCellChange]: [s: S, tableId: 't1', rowId: Id, cellId: 'c1', newCell: number | undefined, oldCell: number | undefined, getCellChange: GetCellChange | undefined] | [s: S, tableId: 't1', rowId: Id, cellId: 'c2', newCell: string | undefined, oldCell: string | undefined, getCellChange: GetCellChange | undefined] | [s: S, tableId: 't1', rowId: Id, cellId: 'c3', newCell: string | undefined, oldCell: string | undefined, getCellChange: GetCellChange | undefined] | [s: S, tableId: 't1', rowId: Id, cellId: '', newCell: string | undefined, oldCell: string | undefined, getCellChange: GetCellChange | undefined]) => void;
 
 /** A function for listening to changes to invalid Cell changes in the Store. */
 export type InvalidCellListener = (s: S, tableId: Id, rowId: Id, cellId: Id, invalidCells: any[]) => void;
@@ -2947,13 +3439,37 @@ delT1C1Cell(rowId: Id): S;
 hasT1C2Cell(rowId: Id): boolean;
 
 /** Gets the 'c2' Cell for the specified Row in the 't1' Table. */
-getT1C2Cell(rowId: Id): string | undefined;
+getT1C2Cell(rowId: Id): string;
 
 /** Sets the 'c2' Cell for the specified Row in the 't1' Table. */
 setT1C2Cell(rowId: Id, cell: string | MapString): S;
 
 /** Deletes the 'c2' Cell for the specified Row in the 't1' Table. */
 delT1C2Cell(rowId: Id): S;
+
+/** Gets whether the 'c3' Cell exists in the specified Row in the 't1' Table. */
+hasT1C3Cell(rowId: Id): boolean;
+
+/** Gets the 'c3' Cell for the specified Row in the 't1' Table. */
+getT1C3Cell(rowId: Id): string;
+
+/** Sets the 'c3' Cell for the specified Row in the 't1' Table. */
+setT1C3Cell(rowId: Id, cell: string | MapString): S;
+
+/** Deletes the 'c3' Cell for the specified Row in the 't1' Table. */
+delT1C3Cell(rowId: Id): S;
+
+/** Gets whether the '' Cell exists in the specified Row in the 't1' Table. */
+hasT1Cell(rowId: Id): boolean;
+
+/** Gets the '' Cell for the specified Row in the 't1' Table. */
+getT1Cell(rowId: Id): string | undefined;
+
+/** Sets the '' Cell for the specified Row in the 't1' Table. */
+setT1Cell(rowId: Id, cell: string | MapString): S;
+
+/** Deletes the '' Cell for the specified Row in the 't1' Table. */
+delT1Cell(rowId: Id): S;
 
 /** Gets a string serialization of the tabular content of the Store. */
 getTablesJson(): Json;
@@ -3027,6 +3543,10 @@ const C1 = 'c1';
 
 const C2 = 'c2';
 
+const C3 = 'c3';
+
+const _ = '';
+
 const T1 = 't1';
 
 const TYPE = 'type';
@@ -3037,11 +3557,17 @@ const DEFAULT = 'default';
 
 const STRING = 'string';
 
+const TWO = 'two';
+
+const _3 = '3';
+
 const store = createStore()
 .setTablesSchema({
 [T1]: {
 [C1]: {[TYPE]: NUMBER, [DEFAULT]: 1},
-[C2]: {[TYPE]: STRING},
+[C2]: {[TYPE]: STRING, [DEFAULT]: TWO},
+[C3]: {[TYPE]: STRING, [DEFAULT]: _3},
+[_]: {[TYPE]: STRING},
 },
 });
 
@@ -3105,11 +3631,27 @@ delT1C1Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C1)),
 
 hasT1C2Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C2),
 
-getT1C2Cell: (rowId: Id): string | undefined => store.getCell(T1, rowId, C2) as string | undefined,
+getT1C2Cell: (rowId: Id): string => store.getCell(T1, rowId, C2) as string,
 
 setT1C2Cell: (rowId: Id, cell: string | MapString): S => fluent(() => store.setCell(T1, rowId, C2, cell as any)),
 
 delT1C2Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C2)),
+
+hasT1C3Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C3),
+
+getT1C3Cell: (rowId: Id): string => store.getCell(T1, rowId, C3) as string,
+
+setT1C3Cell: (rowId: Id, cell: string | MapString): S => fluent(() => store.setCell(T1, rowId, C3, cell as any)),
+
+delT1C3Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C3)),
+
+hasT1Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, _),
+
+getT1Cell: (rowId: Id): string | undefined => store.getCell(T1, rowId, _) as string | undefined,
+
+setT1Cell: (rowId: Id, cell: string | MapString): S => fluent(() => store.setCell(T1, rowId, _, cell as any)),
+
+delT1Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, _)),
 
 getTablesJson: (): Json => store.getTablesJson(),
 
