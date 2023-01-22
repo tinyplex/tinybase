@@ -167,7 +167,12 @@ export type MapString = (cell: string | undefined) => string;
 /**
  * Represents the keyed value content of the Store.
  */
-export type Values = {v1?: number; v2?: string};
+export type Values = {v1: number; v2?: string};
+
+/**
+ * Represents the keyed value content of the Store when set.
+ */
+export type ValuesWhenSet = {v1?: number; v2?: string};
 
 /**
  * A Value Id in the Store.
@@ -491,7 +496,12 @@ export interface S {
   /**
    * Sets the keyed value content of the Store.
    */
-  setValues(values: Values): S;
+  setValues(values: ValuesWhenSet): S;
+
+  /**
+   * Sets part of the keyed value content of the Store.
+   */
+  setPartialValues(partialValues: ValuesWhenSet): S;
 
   /**
    * Deletes the keyed value content of the Store.
@@ -868,7 +878,11 @@ export const createS: typeof createSDecl = () => {
 
     getValues: (): Values => store.getValues(),
 
-    setValues: (values: Values): S => fluent(() => store.setValues(values)),
+    setValues: (values: ValuesWhenSet): S =>
+      fluent(() => store.setValues(values)),
+
+    setPartialValues: (partialValues: ValuesWhenSet): S =>
+      fluent(() => store.setPartialValues(partialValues)),
 
     delValues: (): S => fluent(() => store.delValues()),
 
@@ -966,7 +980,12 @@ exports[`API Pretty keyed value 1`] = `
 /**
  * Represents the keyed value content of the Store.
  */
-export type Values = {v1?: number; v2?: string};
+export type Values = {v1: number; v2?: string};
+
+/**
+ * Represents the keyed value content of the Store when set.
+ */
+export type ValuesWhenSet = {v1?: number; v2?: string};
 
 /**
  * A Value Id in the Store.
@@ -1054,7 +1073,12 @@ export interface S {
   /**
    * Sets the keyed value content of the Store.
    */
-  setValues(values: Values): S;
+  setValues(values: ValuesWhenSet): S;
+
+  /**
+   * Sets part of the keyed value content of the Store.
+   */
+  setPartialValues(partialValues: ValuesWhenSet): S;
 
   /**
    * Deletes the keyed value content of the Store.
@@ -1266,7 +1290,11 @@ export const createS: typeof createSDecl = () => {
 
     getValues: (): Values => store.getValues(),
 
-    setValues: (values: Values): S => fluent(() => store.setValues(values)),
+    setValues: (values: ValuesWhenSet): S =>
+      fluent(() => store.setValues(values)),
+
+    setPartialValues: (partialValues: ValuesWhenSet): S =>
+      fluent(() => store.setPartialValues(partialValues)),
 
     delValues: (): S => fluent(() => store.delValues()),
 
@@ -2108,7 +2136,10 @@ export type MapNumber = (cell: number | undefined) => number;
 export type MapString = (cell: string | undefined) => string;
 
 /** Represents the keyed value content of the Store. */
-export type Values = {'v1'?: number; 'v2'?: string;};
+export type Values = {'v1': number; 'v2'?: string;};
+
+/** Represents the keyed value content of the Store when set. */
+export type ValuesWhenSet = {'v1'?: number; 'v2'?: string;};
 
 /** A Value Id in the Store. */
 export type ValueId = 'v1' | 'v2';
@@ -2259,7 +2290,10 @@ hasValues(): boolean;
 getValues(): Values;
 
 /** Sets the keyed value content of the Store. */
-setValues(values: Values): S;
+setValues(values: ValuesWhenSet): S;
+
+/** Sets part of the keyed value content of the Store. */
+setPartialValues(partialValues: ValuesWhenSet): S;
 
 /** Deletes the keyed value content of the Store. */
 delValues(): S;
@@ -2470,7 +2504,9 @@ hasValues: (): boolean => store.hasValues(),
 
 getValues: (): Values => store.getValues(),
 
-setValues: (values: Values): S => fluent(() => store.setValues(values)),
+setValues: (values: ValuesWhenSet): S => fluent(() => store.setValues(values)),
+
+setPartialValues: (partialValues: ValuesWhenSet): S => fluent(() => store.setPartialValues(partialValues)),
 
 delValues: (): S => fluent(() => store.delValues()),
 
@@ -2538,7 +2574,10 @@ exports[`API Unpretty keyed value 1`] = `
   "import {DoRollback, Id, IdOrNull, Ids, Json, Store, ValueChange} from 'tinybase';
 
 /** Represents the keyed value content of the Store. */
-export type Values = {'v1'?: number; 'v2'?: string;};
+export type Values = {'v1': number; 'v2'?: string;};
+
+/** Represents the keyed value content of the Store when set. */
+export type ValuesWhenSet = {'v1'?: number; 'v2'?: string;};
 
 /** A Value Id in the Store. */
 export type ValueId = 'v1' | 'v2';
@@ -2572,7 +2611,10 @@ hasValues(): boolean;
 getValues(): Values;
 
 /** Sets the keyed value content of the Store. */
-setValues(values: Values): S;
+setValues(values: ValuesWhenSet): S;
+
+/** Sets part of the keyed value content of the Store. */
+setPartialValues(partialValues: ValuesWhenSet): S;
 
 /** Deletes the keyed value content of the Store. */
 delValues(): S;
@@ -2693,7 +2735,9 @@ hasValues: (): boolean => store.hasValues(),
 
 getValues: (): Values => store.getValues(),
 
-setValues: (values: Values): S => fluent(() => store.setValues(values)),
+setValues: (values: ValuesWhenSet): S => fluent(() => store.setValues(values)),
+
+setPartialValues: (partialValues: ValuesWhenSet): S => fluent(() => store.setPartialValues(partialValues)),
 
 delValues: (): S => fluent(() => store.delValues()),
 
