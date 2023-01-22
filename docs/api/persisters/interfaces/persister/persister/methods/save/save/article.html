@@ -3,7 +3,7 @@
 
 <span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persisters/interfaces/persister/persister/methods/save/save/">save</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>sessionStorage<span class="punctuation">.</span><span class="function">getItem</span><span class="punctuation">(</span><span class="string">'pets'</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
-<span class="comment">// -> '{"pets":{"fido":{"species":"dog"}}}'</span>
+<span class="comment">// -> '[{"pets":{"fido":{"species":"dog"}}},{}]'</span>
 
 persister<span class="punctuation">.</span><span class="function">destroy</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 sessionStorage<span class="punctuation">.</span><span class="function"><a href="/api/checkpoints/interfaces/checkpoints/checkpoints/methods/lifecycle/clear/">clear</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
