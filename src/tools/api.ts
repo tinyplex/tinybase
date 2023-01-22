@@ -697,10 +697,23 @@ export const getStoreApi = (
     const valuesType = addType(
       'Values',
       `{${join(
-        mapValuesSchema((valueId, valueType) => `'${valueId}'?: ${valueType};`),
+        mapValuesSchema(
+          (valueId, type, defaultValue) =>
+            `'${valueId}'${
+              isUndefined(defaultValue) ? '?' : EMPTY_STRING
+            }: ${type};`,
+        ),
         ' ',
       )}}`,
       getTheContentOfTheStoreDoc(4, 2),
+    );
+    const valuesWhenSetType = addType(
+      'ValuesWhenSet',
+      `{${join(
+        mapValuesSchema((valueId, type) => `'${valueId}'?: ${type};`),
+        ' ',
+      )}}`,
+      getTheContentOfTheStoreDoc(4, 2, 1),
     );
     const valueIdType = addType(
       'ValueId',
@@ -777,10 +790,17 @@ export const getStoreApi = (
     );
     addMethod(
       `setValues`,
-      `values: ${valuesType}`,
+      `values: ${valuesWhenSetType}`,
       storeType,
       fluentStoreMethod('setValues', 'values'),
       getTheContentOfTheStoreDoc(1, 2),
+    );
+    addMethod(
+      `setPartialValues`,
+      `partialValues: ${valuesWhenSetType}`,
+      storeType,
+      fluentStoreMethod('setPartialValues', 'partialValues'),
+      getTheContentOfTheStoreDoc(2, 2),
     );
     addMethod(
       `delValues`,
