@@ -9143,7 +9143,7 @@ export function ValueView(props: ValueProps): ComponentReturnType;
  * ```
  * @category Store components
  */
-export function ValuesView(props: RowProps): ComponentReturnType;
+export function ValuesView(props: ValuesProps): ComponentReturnType;
 
 /**
  * The MetricView component renders the current value of a Metric, and registers
