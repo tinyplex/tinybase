@@ -105,8 +105,8 @@ const {
   useQueries,
   useResultCell,
   useResultRowIds,
-  useRow,
-  useSetRowCallback,
+  useSetValuesCallback,
+  useValues,
 } = TinyBaseUiReact;
 const {createElement, useCallback, useMemo, useState} = React;
 ```
@@ -114,7 +114,7 @@ const {createElement, useCallback, useMemo, useState} = React;
 ## Initializing The Application
 
 In the main part of the application, we want to initialize a default Store
-(called `store`) and a named Store called `sessionStore`. The latter serves the
+(called `store`) and a named Store called `viewStore`. The latter serves the
 sole purpose of remembering the 'route' in the application, which describes
 which part of the user interface the user is looking at.
 
@@ -129,8 +129,8 @@ app is rendered.
 const App = () => {
   const store = useCreateStore(createStore);
 
-  const sessionStore = useCreateStore(() =>
-    createStore().setCell('ui', 'route', 'currentSection', 'movies'),
+  const viewStore = useCreateStore(() =>
+    createStore().setValue('currentSection', 'movies'),
   );
 
   const queries = useCreateQueries(store, createAndInitQueries, []);
@@ -152,7 +152,7 @@ loading spinner is shown.
   }, []);
 
   return (
-    <Provider store={store} storesById={{sessionStore}} queries={queries}>
+    <Provider store={store} storesById={{viewStore}} queries={queries}>
       <Header />
       {isLoading ? <Loading /> : <Body />}
     </Provider>
@@ -232,20 +232,18 @@ const SECTIONS = {
 };
 ```
 
-The `sessionStore` contains a single record in the `ui` Table that is called
-`route`. This is the section name and optionally a detail ID (such as the
-movie's ID). The `useRoute` hook gets this pair, and the `useSetRouteCallback`
-hook will be used to set it in response to the user clicking links in the app.
+The `viewStore` contains the section name and optionally a detail ID (such as
+the movie's Id), both as Values. The `useRoute` hook gets this pair, and the
+`useSetRouteCallback` hook will be used to set it in response to the user
+clicking links in the app.
 
 ```js
-const useRoute = () => useRow('ui', 'route', 'sessionStore');
+const useRoute = () => useValues('viewStore');
 const useSetRouteCallback = (currentSection, currentDetailId) =>
-  useSetRowCallback(
-    'ui',
-    'route',
+  useSetValuesCallback(
     () => ({currentSection, currentDetailId}),
     [currentSection, currentDetailId],
-    'sessionStore',
+    'viewStore',
   );
 ```
 
@@ -254,7 +252,7 @@ address or history state as the user navigates around, but we would add that in
 this method if we did.
 
 (Another easy, but interesting, exercise for the reader would be to use the
-Checkpoints API on the `sessionsStore` to create an in-app history stack for the
+Checkpoints API on the `viewStore` to create an in-app history stack for the
 pages viewed!)
 
 ### Application Header
