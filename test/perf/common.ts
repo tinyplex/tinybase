@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment, jest/no-export */
-import {Row, Table, Tables} from '../../lib/debug/tinybase';
+import {Row, Table, Tables, Values} from '../../lib/debug/tinybase';
 import {blue, plot, red, yellow} from 'asciichart';
 import {performance} from 'perf_hooks';
 
@@ -120,4 +120,12 @@ export const getNCells = (N: number): Row => {
     row['cell' + n] = n;
   }
   return row;
+};
+
+export const getNValues = (N: number): Values => {
+  const values: Values = {};
+  for (let n = 1; n <= N; n++) {
+    values['value' + n] = n;
+  }
+  return values;
 };
