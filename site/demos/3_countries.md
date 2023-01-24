@@ -35,10 +35,11 @@ const {
   useCreatePersister,
   useCreateStore,
   useDelCellCallback,
-  useRow,
   useSetCellCallback,
   useSetRowCallback,
+  useSetValuesCallback,
   useSliceRowIds,
+  useValues,
 } = TinyBaseUiReact;
 const {useCallback} = React;
 ```
@@ -60,11 +61,11 @@ objects:
   JSON file using a remote Persister object.
 - `starStore` contains a list of the countries that the user has starred. This
   is persisted to the browser's local storage and starts with eight default
-  starred countries, persisted to local storage.
-- `sessionStore` contains the Id of an Indexes object, the Id of an index, and
-  the Id of a slice, persisted to session storage. These three ids represent the
-  'current slice' view the user is looking at and we default the app to start
-  showing the countries starting with the letter 'A'.
+  starred countries.
+- `viewStore` contains the Id of an Indexes object, the Id of an index, and
+  the Id of a slice, persisted as keyed values to session storage. These three
+  ids represent the 'current slice' view the user is looking at and we default
+  the app to start showing the countries starting with the letter 'A'.
 
 ```js
 const App = () => {
@@ -108,20 +109,16 @@ const App = () => {
     },
   );
 
-  const sessionStore = useCreateStore(createStore);
+  const viewStore = useCreateStore(createStore);
   useCreatePersister(
-    sessionStore,
-    (store) => createSessionPersister(store, 'countries/sessionStore'),
+    viewStore,
+    (store) => createSessionPersister(store, 'countries/viewStore'),
     [],
     async (persister) => {
-      await persister.startAutoLoad({
-        ui: {
-          currentSlice: {
-            indexes: 'countryIndexes',
-            indexId: 'firstLetter',
-            sliceId: 'A',
-          },
-        },
+      await persister.startAutoLoad({}, {
+        indexes: 'countryIndexes',
+        indexId: 'firstLetter',
+        sliceId: 'A',
       });
       await persister.startAutoSave();
     },
@@ -163,7 +160,7 @@ objects, and the Indexes objects:
   // ...
   return (
     <Provider
-      storesById={{countryStore, starStore, sessionStore}}
+      storesById={{countryStore, starStore, viewStore}}
       indexesById={{countryIndexes, starIndexes}}
     >
       <Filters />
@@ -208,14 +205,14 @@ window.addEventListener('load', () =>
 At the heart of this app is the concept of the 'current slice': at any one time,
 the app is displaying the countries present in a specific sliceId of a specific
 indexId of a specific Indexes object. We store these three ids in the
-`sessionStore` object so they persist between reloads.
+`viewStore` as keyed values so they persist between reloads.
 
 Since both the left-hand and right-hand panels of the app need to read these
 parameters, we provide a custom `useCurrentSlice` hook to get those three Cell
-values out of the `currentSlice` Row of the `ui` Table of the `sessionStore`:
+values out of the `viewStore`:
 
 ```js
-const useCurrentSlice = () => useRow('ui', 'currentSlice', 'sessionStore');
+const useCurrentSlice = () => useValues('viewStore');
 ```
 
 When a user clicks on the letters on the left-hand side of the app, we need to
@@ -224,12 +221,10 @@ that provides a callback to set the three Cell values:
 
 ```js
 const useSetCurrentSlice = (indexes, indexId, sliceId) =>
-  useSetRowCallback(
-    'ui',
-    'currentSlice',
+  useSetValuesCallback(
     () => ({indexes, indexId, sliceId}),
     [indexes, indexId, sliceId],
-    'sessionStore',
+    'viewStore',
   );
 ```
 
