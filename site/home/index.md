@@ -13,35 +13,36 @@
   <p><em>TinyBase is a smart new way to structure your local app data:</em></p>
   <ul>
     <li>
-      Familiar concepts of <a href='#set-and-get-tables-rows-and-cells'>tables, 
-      rows, and cells</a>, and 
-      <a href='#apply-schemas-to-tables'>schematization</a> to model your data 
-      domain.
+      Manage <a href='#start-off-with-a-simple-key-value-store'>key-value 
+      data</a> (<em>new!</em>), <a href='#level-up-to-use-tabular-data'>tabular 
+      data</a> - or both - with optional 
+      <a href='#apply-schemas-to-tables-and-values'>schematization</a> to model 
+      it.
     </li>
     <li>
-      <a href='#register-listeners-at-any-granularity'>Flexibly reactive</a> to 
+      <a href='#register-listeners-at-any-granularity'>Flexibly reactive</a> to
       reconciled updates, so your UI only spends cycles on the data that changes.
     </li>
     <li>
-      <a href='#build-complex-queries-with-tinyql'>Powerful query engine</a> to 
+      <a href='#build-complex-queries-with-tinyql'>Powerful query engine</a> to
       select, join, filter, group, sort and paginate data - reactively.
     </li>
     <li>
-      <a href='#create-indexes-for-fast-lookups'>Indexing</a>, 
+      <a href='#create-indexes-for-fast-lookups'>Indexing</a>,
       <a href='#define-metrics-and-aggregations'>metrics</a>,
-      <a href='#configure-relationships-between-tables'>relationships</a> - and 
-      even an <a href='#use-checkpoints-for-an-easy-undo-stack'>undo stack</a> 
+      <a href='#configure-relationships-between-tables'>relationships</a> - and
+      even an <a href='#use-checkpoints-for-an-easy-undo-stack'>undo stack</a>
       for your app state! - out of the box.
     </li>
     <li>
-      Easily <a href='#persist-data-to-browser-file-or-server'>sync your 
+      Easily <a href='#persist-data-to-browser-file-or-server'>sync your
       data</a> to local or remote storage, and use
       <a href='#call-hooks-to-bind-to-data'>idiomatic bindings</a> to your
       UI</a>.
     </li>
     <li>
       <em>NEW!</em>
-      <a href='#generate-orm-like-apis'>Generate ORM-like APIs</a> in 
+      <a href='#generate-orm-like-apis'>Generate ORM-like APIs</a> in
       TypeScript, based on your schema or inferred from actual data.
     </li>
   </ul>
@@ -68,16 +69,33 @@
 
 ---
 
-> ## Set and get tables, rows, and cells.
+> ## Start off with a simple key-value store.
 >
 > Creating a Store requires just a simple call to the createStore function. Once
-> you have one, you can easily set Table, Row, or Cell values by their Id. And
-> of course you can easily get the values back out again.
+> you have one, you can easily set Values in it by unique Id. And of course you
+> can easily get them back out again.
+>
+> Read more about using keyed value data in The Basics guide.
+
+```js
+const store = createStore()
+  .setValues({employees: 3})
+  .setValue('open': true);
+
+console.log(store.getValues();
+// -> {employees: 3, open: true}
+```
+
+> ## Level up to use tabular data.
+>
+> For other types of data applications, a tabular data structure is more
+> useful. TinyBase lets you set and get nested Table, Row, or Cell data, by
+> unique Id and in the same Store as the keyed values.
 >
 > Read more about setting and changing data in The Basics guide.
 
 ```js
-const store = createStore()
+store
   .setTable('pets', {fido: {species: 'dog'}})
   .setCell('pets', 'fido', 'color', 'brown');
 
@@ -184,12 +202,12 @@ console.log(app.innerHTML);
 root.unmount(); // !act
 ```
 
-> ## Apply schemas to tables.
+> ## Apply schemas to tables and values.
 >
-> By default, a Row can contain any arbitrary Cell. But you can add a schema to
-> a Store to ensure that the values are always what you expect. For example, you
-> can limit their types, and provide defaults. You can also create mutating
-> listeners that can programmatically enforce a schema.
+> By default, a Store can contain any arbitrary Value, and a Row can contain any
+> arbitrary Cell. But you can add a ValuesSchema or a TablesSchema to a Store to
+> ensure that the values are always what you expect: constraining their types,
+> and providing defaults.
 >
 > In this example, we set a second Row without the `sold` Cell in it. The schema
 > ensures it's present with default of `false`.
@@ -459,8 +477,8 @@ export const createShop: typeof createShopDecl = () => {
 > add the other modules as you need more functionality, or get it all for
 > _@@EVAL("toKb(sizes.get('tinybase.js.gz'))")_.
 >
-> The `ui-react` adaptor is just another
-> _@@EVAL("toKb(sizes.get('ui-react.js.gz'))")_, the developer tools module is
+> The ui-react module is just another
+> _@@EVAL("toKb(sizes.get('ui-react.js.gz'))")_, the tools module is
 > _@@EVAL("toKb(sizes.get('tools.js.gz'))")_, and everything is fast. Life's
 > easy when you have zero dependencies!
 >
