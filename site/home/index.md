@@ -2,7 +2,7 @@
 
 <section id="hero">
   <h2>
-    The <em>reactive</em> data store for local&#8209;first&nbsp;apps.
+    The <em>reactive</em> data store for <span>local-first apps</span>.
   </h2>
   <p>
     Modern apps deserve better. Why trade reactive user experiences to be able 
@@ -13,7 +13,7 @@
   <p><em>TinyBase is a smart new way to structure your local app data:</em></p>
   <ul>
     <li>
-      Manage <a href='#start-off-with-a-simple-key-value-store'>key-value 
+      Manage <a href='#start-with-a-simple-key-value-store'>key-value 
       data</a> (<em>new!</em>), <a href='#level-up-to-use-tabular-data'>tabular 
       data</a> - or both - with optional 
       <a href='#apply-schemas-to-tables-and-values'>schematization</a> to model 
@@ -41,9 +41,9 @@
       UI</a>.
     </li>
     <li>
-      <em>NEW!</em>
-      <a href='#generate-orm-like-apis'>Generate ORM-like APIs</a> in
-      TypeScript, based on your schema or inferred from actual data.
+      <a href='#generate-orm-like-apis'>Generate ORM-like APIs</a> 
+      (<em>new!</em>) in TypeScript, based on a schema or inferred from actual 
+      data.
     </li>
   </ul>
   <p>
@@ -69,7 +69,7 @@
 
 ---
 
-> ## Start off with a simple key-value store.
+> ## Start with a simple key-value store.
 >
 > Creating a Store requires just a simple call to the createStore function. Once
 > you have one, you can easily set Values in it by unique Id. And of course you
@@ -154,7 +154,7 @@ console.log(app.innerHTML);
 // -> 'Color: walnut'
 ```
 
-> ## Use components to make reactive apps.
+> ## Use components for reactive apps.
 >
 > The react module provides simple React components with bindings that make it
 > easy to create a fully reactive user interface based on a Store.
@@ -511,18 +511,20 @@ export const createShop: typeof createShopDecl = () => {
   <h2>Follow</h2>
   <ul>
     <li>
-      News and updates on <a href='https://twitter.com/tinybasejs'>Twitter</a>
-      and <a href='https://facebook.com/tinybasejs'>Facebook</a>.
+      News and updates on <a href='https://twitter.com/tinybasejs'>Twitter</a>, 
+      <a href='https://discord.com/invite/mGz3mevwP8'>Discord</a>, and 
+      <a href='https://facebook.com/tinybasejs'>Facebook</a>.
+    </li>
+    <li>
+      <a href='@@EVAL("metadata.repository")/discussion'>Discussions</a> and 
+      <a href='@@EVAL("metadata.repository")/issues'>issues</a> on 
+      <a href='@@EVAL("metadata.repository")'>GitHub</a>.
     </li>
     <li>
       <a href='/guides/releases/'>Release notes</a> for each version.
     </li>
     <li>
       Packages on <a href='@@EVAL("metadata.package")'>NPM</a>.
-    </li>
-    <li>
-      <a href='@@EVAL("metadata.repository")/issues'>Issues</a> on 
-      <a href='@@EVAL("metadata.repository")'>GitHub</a>.
     </li>
   </ul>
 </section>

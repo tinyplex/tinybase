@@ -367,15 +367,8 @@ We finish off with the default CSS styling and typography that the app uses:
 
 ```less
 @font-face {
-  font-family: Lato;
-  src: url(https://tinybase.org/fonts/lato-light.woff2) format('woff2');
-  font-weight: 400;
-}
-
-@font-face {
-  font-family: Lato;
-  src: url(https://tinybase.org/fonts/lato-regular.woff2) format('woff2');
-  font-weight: 600;
+  font-family: Inter;
+  src: url(https://tinybase.org/fonts/inter.woff2) format('woff2');
 }
 
 * {
@@ -384,7 +377,8 @@ We finish off with the default CSS styling and typography that the app uses:
 
 body {
   user-select: none;
-  font-family: Lato, sans-serif;
+  font-family: Inter, sans-serif;
+  letter-spacing: -0.04rem;
   font-size: 0.8rem;
   line-height: 1.5rem;
   margin: 0;

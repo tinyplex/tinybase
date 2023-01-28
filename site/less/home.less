@@ -14,6 +14,9 @@ body > main > article#home {
     h2 {
       font-size: 2.4rem;
       text-align: center;
+      span {
+        white-space: nowrap;
+      }
     }
     ul {
       width: fit-content;
@@ -23,10 +26,9 @@ body > main > article#home {
   }
   > p > a {
     display: block;
-    font-family: Roboto;
     font-size: 1.4rem;
     color: @textColor;
-    font-weight: 400;
+    font-weight: 800;
     background: @back2Color;
     border: 1px solid @borderColor;
     padding: 1rem;
@@ -58,8 +60,9 @@ body > main > article#home {
   }
   em,
   em a {
-    font-style: normal;
     color: @accentColor;
+    font-style: normal;
+    font-weight: 800;
   }
   pre {
     font-size: 0.94rem;

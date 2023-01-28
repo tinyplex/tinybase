@@ -375,6 +375,10 @@ input {
   margin: 0 0.25rem 0 0;
   vertical-align: bottom;
 }
+
+hr {
+  margin: 0.5rem 0 0.1rem;
+}
 ```
 
 ## The `ResultSortableGrid` Component
@@ -927,6 +931,7 @@ select {
   border: 1px solid #ccc;
   display: block;
   font: inherit;
+  letter-spacing: inherit;
   width: 10rem;
   option {
     border-left: 2px solid transparent;
@@ -940,15 +945,8 @@ We finish off with a few final pieces of CSS that are applied across the applica
 
 ```less
 @font-face {
-  font-family: Lato;
-  src: url(https://tinybase.org/fonts/lato-light.woff2) format('woff2');
-  font-weight: 400;
-}
-
-@font-face {
-  font-family: Lato;
-  src: url(https://tinybase.org/fonts/lato-regular.woff2) format('woff2');
-  font-weight: 600;
+  font-family: Inter;
+  src: url(https://tinybase.org/fonts/inter.woff2) format('woff2');
 }
 
 * {
@@ -957,7 +955,8 @@ We finish off with a few final pieces of CSS that are applied across the applica
 
 body {
   color: #333;
-  font-family: Lato, sans-serif;
+  font-family: Inter, sans-serif;
+  letter-spacing: -0.04rem;
   font-size: 0.8rem;
   line-height: 1.4rem;
   margin: 0;

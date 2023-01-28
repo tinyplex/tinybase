@@ -180,6 +180,7 @@ input {
   border-bottom: 1px solid #999;
   display: block;
   font: inherit;
+  letter-spacing: inherit;
   font-weight: 600;
   margin: 1rem auto;
   outline: 0;
@@ -326,15 +327,8 @@ as whole:
 
 ```less
 @font-face {
-  font-family: Lato;
-  src: url(https://tinybase.org/fonts/lato-light.woff2) format('woff2');
-  font-weight: 400;
-}
-
-@font-face {
-  font-family: Lato;
-  src: url(https://tinybase.org/fonts/lato-regular.woff2) format('woff2');
-  font-weight: 600;
+  font-family: Inter;
+  src: url(https://tinybase.org/fonts/inter.woff2) format('woff2');
 }
 
 * {
@@ -343,7 +337,8 @@ as whole:
 
 body {
   color: #333;
-  font-family: Lato, sans-serif;
+  font-family: Inter, sans-serif;
+  letter-spacing: -0.04rem;
   font-size: 1rem;
   line-height: 1.2rem;
   margin: 0;
