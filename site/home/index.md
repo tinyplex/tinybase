@@ -80,9 +80,9 @@
 ```js
 const store = createStore()
   .setValues({employees: 3})
-  .setValue('open': true);
+  .setValue('open', true);
 
-console.log(store.getValues();
+console.log(store.getValues());
 // -> {employees: 3, open: true}
 ```
 
@@ -243,7 +243,7 @@ const persister = createSessionPersister(store, 'demo');
 await persister.save();
 
 console.log(sessionStorage.getItem('demo'));
-// -> '[{"pets":{"fido":{"species":"dog","color":"walnut","sold":true},"felix":{"species":"cat","sold":false}}},{}]'
+// -> '[{"pets":{"fido":{"species":"dog","color":"walnut","sold":true},"felix":{"species":"cat","sold":false}}},{"employees":3,"open":true}]'
 
 persister.destroy();
 sessionStorage.clear();
