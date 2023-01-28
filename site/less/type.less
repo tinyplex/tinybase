@@ -1,54 +1,24 @@
 @font-face {
-  font-family: Roboto;
-  src: url(/fonts/roboto-thin.woff2) format('woff2');
-  font-weight: 200;
+  font-family: Inter;
+  src: url(/fonts/inter.woff2) format('woff2');
   font-display: swap;
 }
-
 @font-face {
-  font-family: Roboto;
-  src: url(/fonts/roboto-light.woff2) format('woff2');
-  font-weight: 400;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: Lato;
-  src: url(/fonts/lato-light.woff2) format('woff2');
-  font-weight: 400;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: Lato;
-  src: url(/fonts/lato-regular.woff2) format('woff2');
-  font-weight: 600;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: RobotoMono;
-  src: url(/fonts/roboto-mono-light.woff2) format('woff2');
-  font-weight: 400;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: RobotoMono;
-  src: url(/fonts/roboto-mono-regular.woff2) format('woff2');
-  font-weight: 600;
+  font-family: Inconsolata;
+  src: url(/fonts/inconsolata.woff2) format('woff2');
   font-display: swap;
 }
 
 html {
-  font-family: Lato, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
   text-rendering: optimizeLegibility;
   font-weight: 400;
+  letter-spacing: -0.04rem;
 }
 
 code {
-  font-family: RobotoMono, menlo, monospace;
-  font-size: 0.94em;
+  font-family: Inconsolata, menlo, monospace;
+  font-size: 1.15em;
 }
 
 h1,
@@ -57,9 +27,9 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: Roboto;
+  font-family: Inter;
   margin: 3rem 0 1rem;
-  font-weight: 200 !important;
+  font-weight: 800 !important;
   clear: both;
   a {
     color: inherit;
@@ -117,7 +87,7 @@ p {
       }
       & > code::after {
         content: '\00a0';
-        font-family: Lato, -apple-system, BlinkMacSystemFont, sans-serif;
+        font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
         font-size: 1rem;
       }
     }
@@ -125,7 +95,7 @@ p {
       margin: 0;
     }
     th {
-      font-weight: 600;
+      font-weight: 800;
       text-align: left;
     }
   }

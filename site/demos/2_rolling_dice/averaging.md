@@ -87,11 +87,13 @@ Add a little styling, and we're done!
 
 ```less
 @font-face {
-  font-family: Lato;
-  src: url(https://tinybase.org/fonts/lato-light.woff2) format('woff2');
+  font-family: Inter;
+  src: url(https://tinybase.org/fonts/inter.woff2) format('woff2');
 }
+
 body {
-  font-family: Lato, sans-serif;
+  font-family: Inter, sans-serif;
+  letter-spacing: -0.04rem;
   margin: 0;
 }
 p {

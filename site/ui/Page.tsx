@@ -14,14 +14,7 @@ import React from 'react';
 
 const GTM_ID = 'G-D1MGR8VRWJ';
 
-const FONTS = [
-  'lato-light',
-  'lato-regular',
-  'roboto-thin',
-  'roboto-light',
-  'roboto-mono-light',
-  'roboto-mono-regular',
-];
+const FONTS = ['inter', 'inconsolata'];
 
 export const Page: NoPropComponent = () => {
   const pageNode = usePageNode();

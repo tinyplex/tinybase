@@ -962,8 +962,8 @@ including the SVG for the button icons.
 ```less
 @accentColor: #d81b60;
 @font-face {
-  font-family: Lato;
-  src: url(https://tinybase.org/fonts/lato-light.woff2) format('woff2');
+  font-family: Inter;
+  src: url(https://tinybase.org/fonts/inter.woff2) format('woff2');
 }
 * {
   box-sizing: border-box;
@@ -975,7 +975,8 @@ body {
   display: grid;
   grid-template-rows: auto 1fr;
   grid-template-columns: 1fr 10rem;
-  font-family: Lato, sans-serif;
+  font-family: Inter, sans-serif;
+  letter-spacing: -0.04rem;
   font-size: 0.8rem;
   margin: 0;
   height: 100vh;
@@ -1048,6 +1049,7 @@ body {
       input,
       .spin {
         font: inherit;
+        letter-spacing: -0.05rem;
         margin-left: 5px;
         width: 4.5rem;
         height: 1.4rem;
