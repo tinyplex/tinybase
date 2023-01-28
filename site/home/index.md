@@ -105,7 +105,7 @@ console.log(store.getRow('pets', 'fido'));
 
 > ## Register listeners at any granularity.
 >
-> The magic starts to happen when you register listeners on a Store, Table, Row,
+> The magic starts to happen when you register listeners on a Value, Table, Row,
 > or Cell. They get called when any part of that object changes. You can also
 > use wildcards - useful when you don't know the Id of the objects that might
 > change.
