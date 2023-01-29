@@ -114,6 +114,7 @@ export type CellOrUndefined = Cell | undefined;
  * const values: Values = {open: true, employees: 4};
  * ```
  * @category Store
+ * @since v3.0.0
  */
 export type Values = {[valueId: Id]: Value};
 
@@ -130,6 +131,7 @@ export type Values = {[valueId: Id]: Value};
  * const value: Value = 'dog';
  * ```
  * @category Store
+ * @since v3.0.0
  */
 export type Value = string | number | boolean;
 
@@ -142,6 +144,7 @@ export type Value = string | number | boolean;
  * state where the Value has since been added.
  *
  * @category Store
+ * @since v3.0.0
  */
 export type ValueOrUndefined = Value | undefined;
 
@@ -206,6 +209,7 @@ export type CellCallback = (cellId: Id, cell: Cell) => void;
  * @param valueId The Id of the Value that the callback can operate on.
  * @param value The Value itself.
  * @category Callback
+ * @since v3.0.0
  */
 export type ValueCallback = (valueId: Id, value: Value) => void;
 
@@ -232,6 +236,7 @@ export type MapCell = (cell: CellOrUndefined) => Cell;
  *
  * @param value The current Value to map to a new Value.
  * @category Callback
+ * @since v3.0.0
  */
 export type MapValue = (value: ValueOrUndefined) => Value;
 
@@ -570,6 +575,7 @@ export type ValueIdsListener = (store: Store) => void;
  * @param getValueChange A function that returns information about any Value's
  * changes.
  * @category Listener
+ * @since v3.0.0
  */
 export type ValueListener = (
   store: Store,
@@ -2899,6 +2905,33 @@ export interface Store {
   delValuesSchema(): Store;
 
   /**
+   * The delSchema method lets you remove both the TablesSchema and ValuesSchema
+   * of the Store.
+   *
+   * Prior to v3.0.0, this method removed the TablesSchema only.
+   *
+   * @returns A reference to the Store.
+   * @example
+   * This example removes the TablesSchema and ValuesSchema of a Store.
+   *
+   * ```js
+   * const store = createStore()
+   *   .setTablesSchema({
+   *     pets: {species: {type: 'string'}},
+   *   })
+   *   .setValuesSchema({
+   *     sold: {type: 'boolean', default: false},
+   *   });
+   * store.delSchema();
+   * console.log(store.getSchemaJson());
+   * // -> '[{},{}]'
+   * ```
+   * @category Deleter
+   * @since v3.0.0
+   */
+  delSchema(): Store;
+
+  /**
    * The transaction method takes a function that makes multiple mutations to
    * the Store, buffering all calls to the relevant listeners until it
    * completes.
@@ -4388,7 +4421,7 @@ export interface Store {
    */
   addValueListener(
     valueId: IdOrNull,
-    listener: CellListener,
+    listener: ValueListener,
     mutator?: boolean,
   ): Id;
 

@@ -1184,6 +1184,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
       hasValuesSchema = false;
     });
 
+  const delSchema = (): Store =>
+    fluentTransaction(() => {
+      delTablesSchema();
+      delValuesSchema();
+    });
+
   const transaction = <Return>(
     actions: () => Return,
     doRollback?: DoRollback,
@@ -1464,6 +1470,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     delValue,
     delTablesSchema,
     delValuesSchema,
+    delSchema,
 
     transaction,
     startTransaction,
