@@ -4,9 +4,25 @@ body > main > article#home {
   grid-auto-flow: dense;
   row-gap: 2rem;
   padding: 2rem;
-  > img {
+  > em {
+    display: block;
     max-width: 10rem;
     margin: 0 auto;
+    position: relative;
+    &::before {
+      background: #d81b60;
+      border-radius: 50%;
+      content: '';
+      filter: blur(4rem);
+      height: 120%;
+      left: -10%;
+      position: absolute;
+      top: -10%;
+      width: 120%;
+    }
+    img {
+      position: relative;
+    }
   }
   > section#hero {
     max-width: 40rem;
@@ -80,7 +96,7 @@ body > main > article#home {
     padding: 4rem 8rem;
     column-gap: 4rem;
     row-gap: 3rem;
-    > img {
+    > em {
       grid-column-end: span 2;
       max-width: 16rem;
     }
@@ -118,6 +134,7 @@ body > main > article#home {
       grid-column-end: span 2;
       > a {
         width: unset;
+        position: relative;
       }
     }
   }
