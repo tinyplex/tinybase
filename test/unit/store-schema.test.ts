@@ -2481,6 +2481,10 @@ describe('Miscellaneous', () => {
       {t1: {c1: {type: 'number', default: 1}}},
       {v1: {type: 'number', default: 1}},
     ]);
+    store.delSchema();
+    expect(JSON.parse(store.getTablesSchemaJson())).toEqual({});
+    expect(JSON.parse(store.getValuesSchemaJson())).toEqual({});
+    expect(JSON.parse(store.getSchemaJson())).toEqual([{}, {}]);
   });
 
   test('Both TablesSchema and ValuesSchema set together', () => {
