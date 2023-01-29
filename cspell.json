@@ -1,5 +1,8 @@
 {
-  "ignorePaths": ["*.tsv", "*.webp"],
+  "ignorePaths": [
+    "*.tsv",
+    "*.webp"
+  ],
   "words": [
     "Abad",
     "Adrien",
@@ -64,6 +67,7 @@
     "todos",
     "Todos",
     "TODOS",
+    "transpilations",
     "typeof",
     "undefinedr",
     "Unstar",

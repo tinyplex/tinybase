@@ -3,7 +3,7 @@
 This guide shows you how to wrap multiple changes to the data in a Store.
 
 A transaction is a sequence of changes made to a Store. No listeners will be
-fired until the full transaction complete. This is a useful way to debounce
+fired until the full transaction is complete. This is a useful way to debounce
 listener side-effects and ensure that you are only responding to net changes.
 Changes are made silently during the transaction, and listeners relevant to the
 changes you have made will instead only be called when the whole transaction is

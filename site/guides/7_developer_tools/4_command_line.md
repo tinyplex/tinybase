@@ -5,7 +5,7 @@ non-programmatic tool chain.
 
 While this tool may add more functionality in the future, for now it is
 essentially limited to code generation, creating APIs from a file-based
-TablesSchema.
+schema.
 
 You can run the `tinybase` CLI using node's `npx` command:
 
@@ -33,24 +33,25 @@ Usage:
 Currently there are three commands. `help` generates this message and `version`
 prints out the version of the installed tinybase module.
 
-More interestingly, `getStoreApi` takes a TablesSchema from a file and emits
-`.d.ts` and `.ts` files for it (much as described in the Generating APIs guide).
+More interestingly, `getStoreApi` takes schemas (a TablesSchema and
+ValuesSchema, JSON-encoded in an array pair) from a file and emits `.d.ts` and
+`.ts` files for it (much as described in the Generating APIs guide).
 
-For example, imagine if you have defined a TinyBase TablesSchema in a file
-called `schema.json`:
+For example, imagine if you have defined TinyBase TablesSchema and ValuesSchema
+objects in a file called `schema.json`:
 
 ```json
-{
-  "pets": {
-    "species": {
-      "type": "string",
-      "default": "dog"
-    },
-    "price": {
-      "type": "number"
+[
+  {
+    "pets": {
+      "species": {"type": "string", "default": "dog"},
+      "price": {"type": "number"}
     }
+  },
+  {
+    "open": {"type": "boolean", "default": false}
   }
-}
+]
 ```
 
 The `getStoreApi` command takes a reference to that file, a name for the wrapped

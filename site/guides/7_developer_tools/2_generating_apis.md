@@ -92,12 +92,12 @@ application. Note that the implementation (`shop.ts`) imports types from the
 definition (`shop.d.ts`) and requires the two files to be next to each other in
 the file system.
 
-If the Store has neither an explicit TablesSchema, nor can one be inferred, the
-two strings will be empty, since no type information can be usefully generated
-for the Store.
+If the Store has neither an explicit schema, nor can one be inferred, the two
+strings will be empty, since no type information can be usefully generated for
+the Store.
 
 If you do not wish to handle the programmatic steps described above, and simply
-want to take a TablesSchema stored in a file and generate these definitions
-directly, see the Command Line guide in this section.
+want to take schemas stored in a file and generate these definitions directly,
+see the Command Line guide in this section.
 
 You can also read the brief Gathering Statistics guide.

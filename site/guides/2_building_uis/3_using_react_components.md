@@ -5,9 +5,11 @@ parts of a Store.
 
 These are all essentially convenience wrappers around the hooks we described in
 the Using React Hooks guide, but make it easy to build hierarchical component
-trees from the Store data. For example, the TablesView component wraps around
-the useTableIds hook to render child TableView components, which in turn can
-render child RowView components and CellView components.
+trees from the Store data. For example, the ValuesView component wraps around
+the useValueIds hook to render child ValueView components. Similarly, the
+TablesView component wraps around the useTableIds hook to render child TableView
+components, which in turn can render child RowView components and CellView
+components.
 
 In this simple example, the CellView component is used to render the color Cell
 in a `<span>`:
