@@ -12,6 +12,9 @@ const store = createStore();
 Easy enough! The returned Store starts off empty of course:
 
 ```js
+console.log(store.getValues());
+// -> {}
+
 console.log(store.getTables());
 // -> {}
 ```

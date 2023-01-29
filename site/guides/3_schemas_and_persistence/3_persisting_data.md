@@ -36,17 +36,24 @@ In this example, a Persister saves data to, and loads it from, the browser's
 session storage:
 
 ```js
-const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
-const persister = createSessionPersister(store, 'pets');
+const store = createStore()
+  .setValues({employees: 3})
+  .setTables({pets: {fido: {species: 'dog'}}});
+const persister = createSessionPersister(store, 'petStore');
 
 await persister.save();
-console.log(sessionStorage.getItem('pets'));
-// -> '[{"pets":{"fido":{"species":"dog"}}},{}]'
+console.log(sessionStorage.getItem('petStore'));
+// -> '[{"pets":{"fido":{"species":"dog"}}},{"employees":3}]'
 
-sessionStorage.setItem('pets', '{"pets":{"toto":{"species":"dog"}}}');
+sessionStorage.setItem(
+  'petStore',
+  '[{"pets":{"toto":{"species":"dog"}}},{"employees":4}]',
+);
 await persister.load();
 console.log(store.getTables());
 // -> {pets: {toto: {species: 'dog'}}}
+console.log(store.getValues());
+// -> {employees: 4}
 
 sessionStorage.clear();
 ```
@@ -71,13 +78,13 @@ In this example, both automatic loading and saving are configured:
 await persister.startAutoLoad({pets: {fido: {species: 'dog'}}});
 await persister.startAutoSave();
 
-store.setTables({pets: {felix: {species: 'cat'}}});
+store.delValues().setTables({pets: {felix: {species: 'cat'}}});
 // ...
-console.log(sessionStorage.getItem('pets'));
+console.log(sessionStorage.getItem('petStore'));
 // -> '[{"pets":{"felix":{"species":"cat"}}},{}]'
 
-sessionStorage.setItem('pets', '[{"pets":{"toto":{"species":"dog"}}},{}]');
-// -> StorageEvent('storage', {storageArea: sessionStorage, key: 'pets'})
+sessionStorage.setItem('petStore', '[{"pets":{"toto":{"species":"dog"}}},{}]');
+// -> StorageEvent('storage', {storageArea: sessionStorage, key: 'petStore'})
 // ...
 console.log(store.getTables());
 // -> {pets: {toto: {species: "dog"}}}

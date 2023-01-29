@@ -9,6 +9,8 @@ function, which returns a new Checkpoints object. That object in turn has
 methods that let you set checkpoints, move between them (altering the underlying
 Store accordingly), and register listeners for when they change.
 
+Checkpoints let you undo and redo both keyed value and tabular data changes.
+
 ## The Basics
 
 Here's a simple example to show a Checkpoints object in action. The `fido` Row

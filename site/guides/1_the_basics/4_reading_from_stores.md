@@ -7,19 +7,28 @@ return the Store again, so we can easily instantiate it by chaining methods
 together:
 
 ```js
-const store = createStore().setTables({
-  pets: {fido: {species: 'dog'}},
-  species: {dog: {price: 5}},
-});
+const store = createStore()
+  .setValues({employees: 3, open: true})
+  .setTables({
+    pets: {fido: {species: 'dog'}},
+    species: {dog: {price: 5}},
+  });
 ```
 
 To get the data out again, according to the level of the hierarchy that you want
-to get data for, you can use the getTables method, the getTable method, the
-getRow method, or the getCell method.
+to get data for, you can use the getValues method, the getValue method, the
+getTables method, the getTable method, the getRow method, or the getCell method.
 
-By now, this should be starting to look intuitive!
+By now, this should be starting to look intuitive. (I hope so! If not, let me
+know!)
 
 ```js
+console.log(store.getValues());
+// -> {employees: 3, open: true}
+
+console.log(store.getValue('employees'));
+// -> 3
+
 console.log(store.getTables());
 // -> {pets: {fido: {species: 'dog'}}, species: {dog: {price: 5}}}
 
@@ -48,10 +57,14 @@ console.log(store.getRow('pets', 'fido'));
 
 ## Handling Non-Existent Data
 
-The hasTable method, the hasRow method, and the hasCell method can be used to
-see whether a given object exists, without having to read it:
+The hasValue method, the hasTable method, the hasRow method, and the hasCell
+method can be used to see whether a given object exists, without having to read
+it:
 
 ```js
+console.log(store.hasValue('website'));
+// -> false
+
 console.log(store.hasTable('customers'));
 // -> false
 
@@ -59,10 +72,13 @@ console.log(store.hasRow('pets', 'fido'));
 // -> true
 ```
 
-When you try to access something that doesn't exist, you'll receive an empty
-object (or an `undefined` value for a Cell):
+When you try to access something that doesn't exist, you'll receive an
+`undefined` value for a Value or Cell, or an empty object:
 
 ```js
+console.log(store.getValue('website'));
+// -> undefined
+
 console.log(store.getTable('customers'));
 // -> {}
 
@@ -75,13 +91,17 @@ console.log(store.getCell('pets', 'fido', 'color'));
 
 ## Enumerating Ids
 
-A Store contains Table objects, keyed by Id. A Table contains Row objects, keyed
-by Id. And a Row contains Cell objects, keyed by Id.
+A Store contains Value and Table objects, keyed by Id. A Table contains Row
+objects, keyed by Id. And a Row contains Cell objects, keyed by Id.
 
-You can enumerate the Id keys for each with the getTableIds method, the
-getRowIds method, or the getCellIds method - each of which return arrays:
+You can enumerate the Id keys for each with the getValueIds method, the
+getTableIds method, the getRowIds method, or the getCellIds method - each of
+which return arrays:
 
 ```js
+console.log(store.getValueIds());
+// -> ['employees', 'open']
+
 console.log(store.getTableIds());
 // -> ['pets', 'species']
 
@@ -108,9 +128,9 @@ console.log(store.getTableIds());
 // -> ['pets', 'species']
 ```
 
-Finally, the forEachTable method, forEachRow method, and forEachCell method each
-provide a convenient way to iterate over these objects and their children in
-turn:
+Finally, the forEachValue method, the forEachTable method, the forEachRow
+method, and the forEachCell method each provide a convenient way to iterate over
+these objects and their children in turn:
 
 ```js
 store.forEachTable((tableId, forEachRow) => {

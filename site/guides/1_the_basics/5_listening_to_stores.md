@@ -6,6 +6,12 @@ By now, you'll have noticed that there are always consistent methods for each
 level of the Store hierarchy, and the way you register listeners is no
 exception:
 
+- Listen to Values with the addValuesListener method.
+- Listen to Value Ids with the addValueIdsListener method.
+- Listen to a Value with the addValueListener method.
+
+And for tabular data:
+
 - Listen to Tables with the addTablesListener method.
 - Listen to Table Ids with the addTableIdsListener method.
 - Listen to a Table with the addTableListener method.
@@ -14,13 +20,14 @@ exception:
 - Listen to a Row with the addRowListener method.
 - Listen to Cell Ids with the addCellIdsListener method.
 - Listen to a Cell with the addCellListener method.
-- Listen to invalid Cells with the addInvalidCellListener method.
 
-You can also listen to attempts to write invalid data to a Cell with the
-addInvalidCellListener method.
+You can also listen to attempts to write invalid data to a Value with the
+addInvalidValueListener method, and to a Cell with the addInvalidCellListener
+method.
 
 Let's start with the simplest type of listener, addTablesListener, which listens
-to changes in the whole Store. Firstly, let's set up some simple data:
+to changes to any tabular data in the Store. Firstly, let's set up some simple
+data:
 
 ```js
 const store = createStore().setTables({
@@ -33,14 +40,16 @@ We can then use the addTablesListener method to register a function on the Store
 that will be called whenever the data in the Store changes:
 
 ```js
-const listenerId = store.addTablesListener(() => console.log('Store changed!'));
+const listenerId = store.addTablesListener(() =>
+  console.log('Tables changed!'),
+);
 ```
 
 Let's test it out by updating a Cell in the Store:
 
 ```js
 store.setCell('species', 'dog', 'price', 6);
-// -> 'Store changed!'
+// -> 'Tables changed!'
 ```
 
 The listener will be called, regardless of which type of setter method was used

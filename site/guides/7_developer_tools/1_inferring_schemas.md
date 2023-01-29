@@ -21,24 +21,30 @@ Usage of the createTools method should be familiar by now, taking a reference to
 a Store:
 
 ```js
-const store = createStore().setTable('pets', {
-  fido: {species: 'dog'},
-  felix: {species: 'cat'},
-  cujo: {species: 'dog'},
-});
+const store = createStore()
+  .setValues({employees: 3, open: true})
+  .setTable('pets', {
+    fido: {species: 'dog'},
+    felix: {species: 'cat'},
+    cujo: {species: 'dog'},
+  });
 
 const tools = createTools(store);
 ```
 
-(In reality it is more likely you would be inferring a TablesSchema from
-dynamically imported data, but for simplicity here, we are setting the data
+(In reality it is more likely you would be inferring schemas from dynamically
+imported data, but for simplicity here, we are setting the data
 deterministically inline.)
 
-The resulting Tools object is now associated with the Store, and, if one is not
-already present, the getStoreTablesSchema method is used to infer the
-TablesSchema. The method returns an object:
+The resulting Tools object is now associated with the Store, and, if they are
+not already explicitly set, the schemas can be inferred. The
+getStoreValuesSchema method is used to infer the ValuesSchema, and the
+getStoreTablesSchema method the TablesSchema. Each method returns an object:
 
 ```js
+console.log(tools.getStoreValuesSchema());
+// -> {employees: {type: 'number'}, open: {type: 'boolean'}}
+
 console.log(tools.getStoreTablesSchema());
 // -> {pets: {species: {type: 'string', default: 'dog'}}}
 ```
@@ -61,9 +67,9 @@ console.log(tools.getStoreTablesSchema());
 In this case, not every Row has the same set of Cell Ids, and so no default is
 inferred in the TablesSchema.
 
-## Applying An Inferred TablesSchema
+## Applying An Inferred Schema
 
-Of course, you can programmatically apply the resulting TablesSchema back to the
+Of course, you can programmatically apply the resulting schemas back to the
 Store so that future data insertions adhere to the shape of the existing data:
 
 ```js
@@ -111,5 +117,5 @@ take an inferred schema and reapply it to the Store, there will be no loss of
 data.
 
 We can take this technique one step further and actually derive type definitions
-and ORM-like implementations from our data or TablesSchema. Move on to the
+and ORM-like implementations from our data or schemas. Move on to the
 Generating APIs guide for more details.

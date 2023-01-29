@@ -10,6 +10,9 @@ Note that TinyBase requires a reasonably modern environment, as it makes
 extensive use of contemporary JavaScript features. A regularly-updated browser
 and Node 16 (or above) are recommended.
 
+(If you find you need older compatibility, there are additional transpilations
+in the `lib/es6` folder of the distribution.)
+
 ## TinyBase in a browser
 
 One simple way to get started with TinyBase is to include it as a UMD script
@@ -25,8 +28,11 @@ from a CDN in a web page. Create a file called `index.html`, for example:
         const {createStore} = TinyBase;
 
         const store = createStore();
-        store.setCell('t1', 'r1', 'c1', 'Hello World');
-        document.body.innerHTML = store.getCell('t1', 'r1', 'c1');
+        store.setValue('v1', 'Hello');
+        store.setCell('t1', 'r1', 'c1', 'World');
+
+        document.body.innerHTML =
+          store.getValue('v1') + ' ' + store.getCell('t1', 'r1', 'c1');
       });
     </script>
   </head>
@@ -35,7 +41,7 @@ from a CDN in a web page. Create a file called `index.html`, for example:
 ```
 
 Open this file in your browser and you should see the words 'Hello World' on the
-screen, having been written to, and read from, a Store.
+screen, each having been written to, and read from, a Store.
 
 Note that the UMD script is pulled from NPM by the [unpkg](https://unpkg.com)
 service. The script provides a global object from which you can destructure the
@@ -58,8 +64,9 @@ Create a file in this directory called `index.mjs`:
 ```js yolo
 import {createStore} from 'tinybase';
 const store = createStore();
-store.setCell('t1', 'r1', 'c1', 'Hello World');
-console.log(store.getCell('t1', 'r1', 'c1'));
+store.setValue('v1', 'Hello');
+store.setCell('t1', 'r1', 'c1', 'World');
+console.log(store.getValue('v1') + ' ' + store.getCell('t1', 'r1', 'c1'));
 ```
 
 Run this module script with:
@@ -68,8 +75,8 @@ Run this module script with:
 node index.mjs
 ```
 
-Again, you will see the words 'Hello World' on the screen, having been written
-to, and read from, a Store.
+Again, you will see the words 'Hello World' on the screen, having each been
+written to, and read from, a Store.
 
 If that all worked, you are set up and ready to learn more about TinyBase! From
 here on, we will mostly show Node-based code snippets, but most should be easily

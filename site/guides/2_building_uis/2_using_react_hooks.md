@@ -30,6 +30,12 @@ console.log(app.innerHTML);
 
 There are hooks that correspond to each of the Store getter methods:
 
+- The useValues hook is the reactive equivalent of the getValues method.
+- The useValueIds hook is the reactive equivalent of the getValueIds method.
+- The useValue hook is the reactive equivalent of the getValue method.
+
+And for tabular data:
+
 - The useTables hook is the reactive equivalent of the getTables method.
 - The useTableIds hook is the reactive equivalent of the getTableIds method.
 - The useTable hook is the reactive equivalent of the getTable method.
