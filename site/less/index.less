@@ -1,4 +1,7 @@
+@accentColor: #d81b60;
+
 html {
+  --glow: #ccc;
   --text: #555;
   --text2: #111;
   --back: #fff;
@@ -21,6 +24,7 @@ html {
 }
 
 html.dark {
+  --glow: @accentColor;
   --text: #bbb;
   --text2: #eee;
   --back: #111;
@@ -42,7 +46,7 @@ html.dark {
   --hue-6: hsl(29, 54%, 61%);
 }
 
-@accentColor: #d81b60;
+@glowColor: var(--glow);
 @textColor: var(--text);
 @text2Color: var(--text2);
 @backColor: var(--back);
