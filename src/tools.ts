@@ -137,12 +137,15 @@ export const createTools: typeof createToolsDecl = getCreateFunction(
       ) as [string, string];
     };
 
+    const getStore = (): Store => store;
+
     const tools: Tools = {
       getStoreStats,
       getStoreTablesSchema,
       getStoreValuesSchema,
       getStoreApi,
       getPrettyStoreApi,
+      getStore,
     };
 
     return objFreeze(tools);

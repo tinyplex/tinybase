@@ -1,34 +1,37 @@
 #! /usr/bin/env node
 
+import {TablesSchema, ValuesSchema} from './store.d';
 import {dirname, resolve} from 'path';
+import {isArray, jsonParse} from './common/other';
 import {readFileSync, writeFileSync} from 'fs';
 import {UTF8} from './common/strings';
 import {arrayForEach} from './common/array';
 import {createStore} from './tinybase';
 import {createTools} from './tools';
 import {fileURLToPath} from 'url';
-import {jsonParse} from './common/other';
 import {objMap} from './common/obj';
+
+type Schemas = [TablesSchema, ValuesSchema | undefined];
 
 const log = (...lines: string[]) =>
   arrayForEach(lines, (line) => process.stdout.write(`${line}\n`));
 
 const err = (line: string) => process.stderr.write(`ERROR: ${line}\n`);
 
-const getTablesJson = (file: string) => jsonParse(readFileSync(file, UTF8));
+const getJson = (file: string) => jsonParse(readFileSync(file, UTF8));
 
 const help = () => {
   log('', 'tinybase <command>', '', 'Usage:', '');
   objMap(commands, ([, args, help], command) =>
     log(` tinybase ${command} ${args}`, ` - ${help}`, ''),
   );
+  log('See also http://tinybase.org/guides/developer-tools/command-line/', '');
 };
 
 const version = () =>
   log(
-    getTablesJson(
-      resolve(dirname(fileURLToPath(import.meta.url)), '../package.json'),
-    ).version,
+    getJson(resolve(dirname(fileURLToPath(import.meta.url)), '../package.json'))
+      .version,
   );
 
 const getStoreApi = async (
@@ -37,8 +40,11 @@ const getStoreApi = async (
   outputDir: string,
 ) => {
   try {
+    const schema = getJson(schemaFile);
     const tools = createTools(
-      createStore().setTablesSchema(getTablesJson(schemaFile)),
+      createStore().setSchema(
+        ...((isArray(schema) ? schema : [schema]) as Schemas),
+      ),
     );
     const [dTs, ts] = await tools.getPrettyStoreApi(storeName);
     const dTsFile = resolve(outputDir, `${storeName}.d.ts`);

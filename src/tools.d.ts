@@ -442,6 +442,26 @@ export interface Tools {
    * @since v2.2.0
    */
   getPrettyStoreApi(storeName: string): Promise<[string, string]>;
+
+  /**
+   * The getStore method returns a reference to the underlying Store that is
+   * backing this Tools object.
+   *
+   * @returns A reference to the Store.
+   * @example
+   * This example creates a Tools object against a newly-created Store and
+   * then gets its reference in order to update its data.
+   *
+   * ```js
+   * const tools = createTools(createStore());
+   * tools.getStore().setCell('species', 'dog', 'price', 5);
+   * console.log(tools.getStoreStats().totalCells);
+   * // -> 1
+   * ```
+   * @category Getter
+   * @since v3.0.0
+   */
+  getStore(): Store;
 }
 
 /* eslint-disable max-len */
