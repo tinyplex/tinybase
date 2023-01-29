@@ -3,6 +3,103 @@
 This is a reverse chronological list of the major TinyBase releases, with
 highlighted features.
 
+## v3.0
+
+This major new release adds key/value store functionality to TinyBase. Alongside
+existing tabular data, it allows you to get, set, and listen to, individual
+Value items, each with a unique Id.
+
+```js
+const store = createStore().setValues({employees: 3, open: true});
+console.log(store.getValues());
+// -> {employees: 3, open: true}
+
+const listenerId = store.addValueListener(
+  null,
+  (store, valueId, newValue, oldValue) => {
+    console.log(`Value '${valueId}' changed from ${oldValue} to ${newValue}`);
+  },
+);
+
+store.setValue('employees', 4);
+// -> "Value 'employees' changed from 3 to 4"
+
+store.delListener(listenerId).delValues();
+```
+
+Guides and documentation have been fully updated, and certain demos - such as the
+Todo App v2 (indexes) demo, and the Countries demo - have been updated to use
+this new functionality.
+
+If you use the optional ui-react module with TinyBase, v3.0 now uses and expects React v18.
+
+In terms of core API changes in v3.0, there are some minor breaking changes (see below),
+but the majority of the alterations are additions.
+
+The Store object gains the following:
+
+- The setValues method, setPartialValues method, and setValue method, to set
+  keyed value data into the Store.
+- The getValues method, getValueIds method, and getValue method, to get keyed
+  value data out of the Store.
+- The delValues method and delValue method for removing keyed value data.
+- The addValuesListener method, addValueIdsListener method, addValueListener
+  method, and addInvalidValueListener method, for listening to changes to keyed
+  value data.
+- The hasValues method, hasValue method, and forEachValue method, for existence
+  and enumeration purposes.
+- The getTablesJson method, getValuesJson method, setTablesJson method, and
+  setValuesJson method, for reading and writing tabular and keyed value data to
+  and from a JSON string. Also see below.
+- The getTablesSchemaJson method, getValuesSchemaJson method, setTablesSchema
+  method, setValuesSchema method, delTablesSchema method, and delValuesSchema
+  method, for reading and writing tabular and keyed value schemas for the Store.
+  Also see below.
+
+The following types have been added to the store module:
+
+- Values, Value, and ValueOrUndefined, representing keyed value data in a Store.
+- ValueListener and InvalidValueListener, to describe functions used to listen
+  to (valid or invalid) changes to a Value.
+- ValuesSchema and ValueSchema, to describe the keyed Values that can be set in
+  a Store and their types.
+- ValueCallback, MapValue, ChangedValues, and InvalidValues, which also
+  correspond to their 'Cell' equivalents.
+
+Additionally:
+
+- The persisters' load method and startAutoLoad method take an optional `initialValues` parameter for
+  setting Values when a persisted Store is bootstrapped.
+- The Checkpoints module will undo and redo changes to keyed values in the same
+  way they do for tabular data.
+- The tools module provides a getStoreValuesSchema method for inferring
+  value-based schemas. The getStoreApi method and getPrettyStoreApi method now
+  also provides an ORM-like code-generated API for schematized key values.
+
+All attempts have been made to provide backwards compatibility and/or easy
+upgrade paths.
+
+In previous versions, getJson method would get a JSON serialization of the
+Store's tabular data. That functionality is now provided by the getTablesJson
+method, and the getJson method instead now returns a two-part array containing
+the tabular data and the keyed value data.
+
+Similarly, the getSchemaJson method used to return the tabular schema, now
+provided by the getTablesSchemaJson method. The getSchemaJson method instead now
+returns a two-part array of tabular schema and the keyed value schema.
+
+The setJson method used to take a serialization of just the tabular data object.
+That's now provided by the setTablesJson method, and the setJson method instead
+expects a two-part array containing the tabular data and the keyed value data
+(as emitted by the getJson method). However, for backwards compatibility, if the
+setJson method is passed an object, it _will_ set the tabular data, as it did
+prior to v3.0.0.
+
+Along similar lines, the setSchema method's previous behavior is now provided by
+the setTablesSchema method. The setSchema method now takes two arguments, the
+second of which is optional, also aiding backward compatibility. The delSchema
+method removes both types of schema.
+
 ## v2.2
 
 This release includes a new tools module. These tools are not intended for
@@ -11,7 +108,7 @@ to perform tasks like generating APIs from schemas, or schemas from data. For
 example:
 
 ```js
-const store = createStore().setTable('pets', {
+store.setTable('pets', {
   fido: {species: 'dog'},
   felix: {species: 'cat'},
   cujo: {species: 'dog'},
