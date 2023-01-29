@@ -228,6 +228,11 @@ const compileModule = async (
             }),
           ].concat(cli ? [] : [gzipPlugin()]),
     ),
+    onwarn: (warning, warn) => {
+      if (warning.code !== 'MISSING_NODE_BUILTINS') {
+        warn(warning);
+      }
+    },
   };
 
   const outputConfig = {
