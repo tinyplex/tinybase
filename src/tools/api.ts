@@ -36,7 +36,6 @@ import {objIsEmpty, objMap} from '../common/obj';
 import {Id} from '../common.d';
 import {arrayPush} from '../common/array';
 import {collValues} from '../common/coll';
-import {pairNew} from '../common/pairs';
 
 type TableTypes = [string, string, string, string, string, string];
 
@@ -65,9 +64,9 @@ export const getStoreApi = (
   tablesSchema: TablesSchema,
   valuesSchema: ValuesSchema,
   module: string,
-): [string, string] => {
+): [string, string, string, string] => {
   if (objIsEmpty(tablesSchema) && objIsEmpty(valuesSchema)) {
-    return pairNew(EMPTY_STRING);
+    return [EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, EMPTY_STRING];
   }
 
   const [
@@ -1063,5 +1062,7 @@ export const getStoreApi = (
       `return Object.freeze(${storeInstance});`,
       `};`,
     ),
+    '',
+    '',
   ];
 };
