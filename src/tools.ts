@@ -120,21 +120,21 @@ export const createTools: typeof createToolsDecl = getCreateFunction(
       return valuesSchema;
     };
 
-    const getStoreApi = (module: string): [string, string] =>
+    const getStoreApi = (module: string): [string, string, string, string] =>
       getStoreApiImpl(getStoreTablesSchema(), getStoreValuesSchema(), module);
 
     const getPrettyStoreApi = async (
       module: string,
-    ): Promise<[string, string]> => {
+    ): Promise<[string, string, string, string]> => {
       let format: (str: string, _config: any) => string;
       try {
         format = (await import('prettier')).format;
-      } catch {
+      } catch (e) {
         format = (str) => str;
       }
       return arrayMap(getStoreApi(module), (file) =>
         formatJsDoc(format(file, prettierConfig)),
-      ) as [string, string];
+      ) as [string, string, string, string];
     };
 
     const getStore = (): Store => store;

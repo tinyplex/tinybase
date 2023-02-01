@@ -272,26 +272,34 @@ export interface Tools {
   getStoreValuesSchema(): ValuesSchema;
 
   /**
-   * The getStoreApi method returns a code-generated .d.ts file and a .ts file
-   * that describe the schema of a Store in an ORM style.
+   * The getStoreApi method returns code-generated .d.ts .ts files that describe
+   * the schema of a Store and React bindings (since v3.1.0) in an ORM style.
    *
-   * If the Store does not already have an explicit TablesSchema associated with
-   * it, the data in the Store will be scanned to attempt to infer a new
-   * TablesSchema. The method returns two strings (which should be saved as
-   * files) though if no schema can be inferred, the strings will be empty.
+   * If the Store does not already have an explicit TablesSchema or ValuesSchema
+   * associated with it, the data in the Store will be scanned to attempt to
+   * infer new schemas. The method returns four strings (which should be saved
+   * as files) though if no schema can be inferred, the strings will be empty.
    *
    * The method takes a single argument which represents the name you want the
-   * generated store object to have in code. You are expected to save the files
-   * as `[storeName].d.ts` and `[storeName].ts`, and alongside each other so
-   * that the latter can import types from the former.
+   * generated store object to have in code. You are expected to save the four
+   * files yourself, as, respectively:
+   *
+   * - `[storeName].d.ts`
+   * - `[storeName].ts`,
+   * - `[storeName]-ui-react.d.ts`
+   * - `[storeName]-ui-react.ts`,
+   *
+   * Also you should save these alongside each other so that the .ts files can
+   * import types from the .d.ts files.
    *
    * The .d.ts and .ts files that are generated are designed to resemble the
-   * main TinyBase `store.d.ts` and `store.ts` files, but provide named types
-   * and methods that describe the domain of the schema in the store.
+   * main TinyBase Store and React binding files, but provide named types and
+   * methods that describe the domain of the schema in the store.
    *
    * For example, from a Store that has a `pets` Table, you will get methods
-   * like `getPetsTable`, and types like `PetsRow`, that are more specific
-   * versions of the underlying getTable method or the Row type. For example:
+   * like `getPetsTable`, types like `PetsRow`, and hooks and components that
+   * are more specific versions of the underlying getTable method or the Row
+   * type, and so on. For example:
    *
    * |Store type|Equivalent generated type|
    * |-|-|
@@ -322,8 +330,8 @@ export interface Tools {
    *
    * @param storeName The name you want to provide to the generated Store, which
    * should also be used to save the `.d.ts` and `.ts` files.
-   * @returns A pair of strings representing the contents of the `.d.ts` and
-   * `.ts` files.
+   * @returns A set of four strings representing the contents of the `.d.ts` and
+   * `.ts` files for the generated Store and React modules.
    * @example
    * This example creates a Tools object and generates code for a Store that
    * already has a TablesSchema.
@@ -333,7 +341,8 @@ export interface Tools {
    *     price: {type: 'number'},
    *   },
    * });
-   * const [dTs, ts] = createTools(store).getStoreApi('shop');
+   * const [dTs, ts, dTsUiReact, tsUiReact] =
+   *   createTools(store).getStoreApi('shop');
    *
    * const dTsLines = dTs.split('\n');
    * console.log(dTsLines[3]);
@@ -353,7 +362,8 @@ export interface Tools {
    *   fido: {price: 5},
    *   felix: {price: 4},
    * });
-   * const [dTs, ts] = createTools(store).getStoreApi('shop');
+   * const [dTs, ts, dTsUiReact, tsUiReact] =
+   *   createTools(store).getStoreApi('shop');
    *
    * const dTsLines = dTs.split('\n');
    * console.log(dTsLines[3]);
@@ -368,12 +378,12 @@ export interface Tools {
    * @category Modelling
    * @since v2.2.0
    */
-  getStoreApi(storeName: string): [string, string];
+  getStoreApi(storeName: string): [string, string, string, string];
 
   /**
    * The getPrettyStoreApi method attempts to returns a prettified
-   * code-generated .d.ts file and a .ts file that describe the schema of a
-   * Store in an ORM style.
+   * code-generated .d.ts and .ts files that describe the schema of a Store and
+   * React bindings (since v3.1.0) in an ORM style.
    *
    * This is simply a wrapper around the getStoreApi method that attempts to
    * invoke the `prettier` module (which it hopes you have installed) to format
@@ -384,17 +394,24 @@ export interface Tools {
    * the results as a promise.
    *
    * The method takes a single argument which represents the name you want the
-   * generated store object to have in code. You are expected to save the files
-   * as `[storeName].d.ts` and `[storeName].ts`, and alongside each other so
-   * that the latter can import types from the former.
+   * generated store object to have in code. You are expected to save the four
+   * files yourself, as, respectively:
+   *
+   * - `[storeName].d.ts`
+   * - `[storeName].ts`,
+   * - `[storeName]-ui-react.d.ts`
+   * - `[storeName]-ui-react.ts`,
+   *
+   * Also you should save these alongside each other so that the .ts files can
+   * import types from the .d.ts files.
    *
    * See the documentation for the getStoreApi method for details of the content
    * of the generated files.
    *
    * @param storeName The name you want to provide to the generated Store, which
    * should also be used to save the `.d.ts` and `.ts` files.
-   * @returns A pair of strings representing the contents of the `.d.ts` and
-   * `.ts` files.
+   * @returns A set of four strings representing the contents of the `.d.ts` and
+   * `.ts` files for the generated Store and React modules.
    * @example
    * This example creates a Tools object and generates code for a Store that
    * already has a TablesSchema.
@@ -405,7 +422,8 @@ export interface Tools {
    *   },
    * });
    * const tools = createTools(store);
-   * const [dTs, ts] = await tools.getPrettyStoreApi('shop');
+   * const [dTs, ts, dTsUiReact, tsUiReact] =
+   *   await createTools(store).getPrettyStoreApi('shop');
    *
    * const dTsLines = dTs.split('\n');
    * console.log(dTsLines[5]);
@@ -426,7 +444,8 @@ export interface Tools {
    *   felix: {price: 4},
    * });
    * const tools = createTools(store);
-   * const [dTs, ts] = await tools.getPrettyStoreApi('shop');
+   * const [dTs, ts, dTsUiReact, tsUiReact] =
+   *   await createTools(store).getPrettyStoreApi('shop');
    *
    * const dTsLines = dTs.split('\n');
    * console.log(dTsLines[5]);
@@ -441,7 +460,9 @@ export interface Tools {
    * @category Modelling
    * @since v2.2.0
    */
-  getPrettyStoreApi(storeName: string): Promise<[string, string]>;
+  getPrettyStoreApi(
+    storeName: string,
+  ): Promise<[string, string, string, string]>;
 
   /**
    * The getStore method returns a reference to the underlying Store that is
