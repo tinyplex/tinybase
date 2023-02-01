@@ -785,7 +785,7 @@ export const getStoreApi = (
       `getValues`,
       EMPTY_STRING,
       valuesType,
-      storeMethod('getValues'),
+      storeMethod('getValues', EMPTY_STRING, valuesType),
       getTheContentOfTheStoreDoc(0, 2),
     );
     addMethod(
@@ -905,6 +905,7 @@ export const getStoreApi = (
       1,
       moduleDefinition,
       valuesType,
+      valuesWhenSetType,
       valueIdType,
       valueCallbackType,
       valuesListenerType,

@@ -810,6 +810,7 @@ export function createS(): S;
   ValueListener,
   Values,
   ValuesListener,
+  ValuesWhenSet,
   createS as createSDecl,
 } from './s.d';
 import {
@@ -1031,7 +1032,7 @@ export const createS: typeof createSDecl = () => {
 
     hasValues: (): boolean => store.hasValues(),
 
-    getValues: (): Values => store.getValues(),
+    getValues: (): Values => store.getValues() as Values,
 
     setValues: (values: ValuesWhenSet): S =>
       fluent(() => store.setValues(values)),
@@ -1486,6 +1487,7 @@ import {
   ValueListener,
   Values,
   ValuesListener,
+  ValuesWhenSet,
   createS as createSDecl,
 } from './s.d';
 
@@ -1530,7 +1532,7 @@ export const createS: typeof createSDecl = () => {
   const s = {
     hasValues: (): boolean => store.hasValues(),
 
-    getValues: (): Values => store.getValues(),
+    getValues: (): Values => store.getValues() as Values,
 
     setValues: (values: ValuesWhenSet): S =>
       fluent(() => store.setValues(values)),
@@ -2776,7 +2778,7 @@ getStore(): Store;
 
 /** Creates a S object. */
 export function createS(): S;",
-  "import {CellIdsListener, CellListener, InvalidCellListener, InvalidValueListener, MapNumber, MapString, RowIdsListener, RowListener, S, T1CellCallback, T1CellId, T1Row, T1RowCallback, T1RowWhenSet, T1Table, TableCallback, TableId, TableIdsListener, TableListener, Tables, TablesListener, TransactionListener, ValueCallback, ValueId, ValueIdsListener, ValueListener, Values, ValuesListener, createS as createSDecl} from './s.d';
+  "import {CellIdsListener, CellListener, InvalidCellListener, InvalidValueListener, MapNumber, MapString, RowIdsListener, RowListener, S, T1CellCallback, T1CellId, T1Row, T1RowCallback, T1RowWhenSet, T1Table, TableCallback, TableId, TableIdsListener, TableListener, Tables, TablesListener, TransactionListener, ValueCallback, ValueId, ValueIdsListener, ValueListener, Values, ValuesListener, ValuesWhenSet, createS as createSDecl} from './s.d';
 import {DoRollback, Id, IdOrNull, Ids, Json, Store, createStore} from 'tinybase';
 
 export const createS: typeof createSDecl = () => {
@@ -2928,7 +2930,7 @@ addInvalidCellListener: (tableId: IdOrNull, rowId: IdOrNull, cellId: IdOrNull, l
 
 hasValues: (): boolean => store.hasValues(),
 
-getValues: (): Values => store.getValues(),
+getValues: (): Values => store.getValues() as Values,
 
 setValues: (values: ValuesWhenSet): S => fluent(() => store.setValues(values)),
 
@@ -3168,7 +3170,7 @@ getStore(): Store;
 /** Creates a S object. */
 export function createS(): S;",
   "import {DoRollback, Id, IdOrNull, Ids, Json, Store, createStore} from 'tinybase';
-import {InvalidValueListener, S, TransactionListener, ValueCallback, ValueId, ValueIdsListener, ValueListener, Values, ValuesListener, createS as createSDecl} from './s.d';
+import {InvalidValueListener, S, TransactionListener, ValueCallback, ValueId, ValueIdsListener, ValueListener, Values, ValuesListener, ValuesWhenSet, createS as createSDecl} from './s.d';
 
 export const createS: typeof createSDecl = () => {
 const V1 = 'v1';
@@ -3209,7 +3211,7 @@ const proxy = (listener: any) => (_: Store, ...args: any[]) => listener(s, ...ar
 const s = {
 hasValues: (): boolean => store.hasValues(),
 
-getValues: (): Values => store.getValues(),
+getValues: (): Values => store.getValues() as Values,
 
 setValues: (values: ValuesWhenSet): S => fluent(() => store.setValues(values)),
 
