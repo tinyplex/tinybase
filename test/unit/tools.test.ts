@@ -165,7 +165,7 @@ describe('API', () => {
       t1: {r1: {c2: true}, r2: {c1: 2, c2: 3}},
       t2: {r1: {c1: 'one'}},
     });
-    expect(tools.getStoreApi('s')).toEqual(['', '']);
+    expect(tools.getStoreApi('s')).toEqual(['', '', '', '']);
   });
 
   test('Unpretty tabular', () => {

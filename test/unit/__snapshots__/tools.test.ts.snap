@@ -1134,6 +1134,8 @@ export const createS: typeof createSDecl = () => {
   return Object.freeze(s);
 };
 ",
+  "",
+  "",
 ]
 `;
 
@@ -1634,6 +1636,8 @@ export const createS: typeof createSDecl = () => {
   return Object.freeze(s);
 };
 ",
+  "",
+  "",
 ]
 `;
 
@@ -2418,6 +2422,8 @@ export const createS: typeof createSDecl = () => {
   return Object.freeze(s);
 };
 ",
+  "",
+  "",
 ]
 `;
 
@@ -3010,6 +3016,8 @@ getStore: (): Store => store,
 
 return Object.freeze(s);
 };",
+  "",
+  "",
 ]
 `;
 
@@ -3291,6 +3299,8 @@ getStore: (): Store => store,
 
 return Object.freeze(s);
 };",
+  "",
+  "",
 ]
 `;
 
@@ -3699,5 +3709,7 @@ getStore: (): Store => store,
 
 return Object.freeze(s);
 };",
+  "",
+  "",
 ]
 `;
