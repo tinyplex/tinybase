@@ -74,15 +74,18 @@ export const getStoreApi = (
     addImport,
     addType,
     addMethod,
+    addHook,
     addFunction,
     addConstant,
     getImports,
     getTypes,
     getMethods,
+    getHooks,
     getConstants,
   ] = getCodeFunctions();
 
   const moduleDefinition = `./${camel(module)}.d`;
+  const uiReactModuleDefinition = `./${camel(module)}-ui-react.d`;
   const storeType = camel(module, 1);
   const storeInstance = camel(storeType);
   const createSteps: any[] = [];
@@ -211,6 +214,7 @@ export const getStoreApi = (
 
   addImport(
     1,
+    0,
     moduleDefinition,
     storeType,
     `create${storeType} as create${storeType}Decl`,
@@ -384,6 +388,7 @@ export const getStoreApi = (
       ) => {
         addImport(
           1,
+          0,
           moduleDefinition,
           tableType,
           rowType,
@@ -647,6 +652,7 @@ export const getStoreApi = (
 
     addImport(
       1,
+      0,
       moduleDefinition,
       tablesType,
       tableIdType,
@@ -661,7 +667,7 @@ export const getStoreApi = (
       invalidCellListenerType,
       ...collValues(mapCellTypes),
     );
-    addImport(0, 'tinybase', 'CellChange');
+    addImport(0, 0, 'tinybase', 'CellChange');
 
     arrayPush(
       createSteps,
@@ -902,6 +908,7 @@ export const getStoreApi = (
 
     addImport(
       1,
+      0,
       moduleDefinition,
       valuesType,
       valuesWhenSetType,
@@ -912,7 +919,7 @@ export const getStoreApi = (
       valueListenerType,
       invalidValueListenerType,
     );
-    addImport(0, 'tinybase', 'ValueChange');
+    addImport(0, 0, 'tinybase', 'ValueChange');
 
     arrayPush(
       createSteps,
@@ -935,7 +942,7 @@ export const getStoreApi = (
     );
   }
 
-  addImport(0, 'tinybase', ...COMMON_IMPORTS);
+  addImport(0, 0, 'tinybase', ...COMMON_IMPORTS);
 
   const transactionListenerType = addType(
     'TransactionListener',
@@ -1020,9 +1027,10 @@ export const getStoreApi = (
     `${VERBS[0]} the underlying Store object`,
   );
 
-  addImport(1, 'tinybase', 'createStore', ...COMMON_IMPORTS);
+  addImport(1, 0, 'tinybase', 'createStore', ...COMMON_IMPORTS);
   addImport(
     1,
+    0,
     moduleDefinition,
     storeType,
     `create${storeType} as create${storeType}Decl`,
@@ -1043,6 +1051,30 @@ export const getStoreApi = (
 
   addConstant(storeInstance, ['{', ...getMethods(1), '}']);
 
+  // --
+
+  addImport(0, 1, 'tinybase/ui-react');
+  addImport(0, 1, moduleDefinition, storeType);
+
+  addImport(1, 1, 'react', 'React');
+  addImport(1, 1, moduleDefinition, storeType);
+  addImport(1, 1, uiReactModuleDefinition);
+
+  addConstant('{useMemo}', 'React', 1);
+
+  addHook(
+    `useCreate${storeType}`,
+    `create: () => ${storeType}, createDeps?: React.DependencyList`,
+    storeType,
+    '\n// eslint-disable-next-line react-hooks/exhaustive-deps\n' +
+      'useMemo(create, createDeps);',
+    `Create a ${storeType} within a React application with convenient ` +
+      'memoization',
+    uiReactModuleDefinition,
+  );
+
+  // --
+
   return [
     build(
       ...getImports(0),
@@ -1062,7 +1094,7 @@ export const getStoreApi = (
       `return Object.freeze(${storeInstance});`,
       `};`,
     ),
-    '',
-    '',
+    build(...getImports(0, 1), ...getTypes(1), ...getHooks(0)),
+    build(...getImports(1, 1), ...getConstants(1), ...getHooks(1)),
   ];
 };
