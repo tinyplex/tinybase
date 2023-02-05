@@ -4,7 +4,6 @@ import {
   LISTENER,
   OR_UNDEFINED,
   REGISTERS_A_LISTENER,
-  REPRESENTS,
   RETURNS_VOID,
   THE_END_OF_THE_TRANSACTION,
   THE_SPECIFIED_ROW,
@@ -20,24 +19,28 @@ import {
   getListenerTypeDoc,
   getRowContentDoc,
   getRowDoc,
-  getRowTypeDoc,
   getTableContentDoc,
   getTableDoc,
   getTheContentOfTheStoreDoc,
   getValueContentDoc,
   getValueDoc,
-} from './strings';
-import {BOOLEAN, DEFAULT, EMPTY_STRING, TYPE} from '../common/strings';
-import {Cell, TablesSchema, Value, ValuesSchema} from '../store.d';
-import {IdMap, mapEnsure, mapForEach, mapNew, mapSet} from '../common/map';
-import {camel, comment, flat, getCodeFunctions, join, snake} from './code';
-import {isString, isUndefined} from '../common/other';
-import {objIsEmpty, objMap} from '../common/obj';
-import {Id} from '../common.d';
-import {arrayPush} from '../common/array';
-import {collValues} from '../common/coll';
-
-type TableTypes = [string, string, string, string, string, string];
+} from '../common/strings';
+import {BOOLEAN, DEFAULT, EMPTY_STRING, TYPE} from '../../common/strings';
+import {IdMap, mapForEach, mapNew, mapSet} from '../../common/map';
+import {TablesSchema, ValuesSchema} from '../../store.d';
+import {
+  camel,
+  comment,
+  flat,
+  getCodeFunctions,
+  join,
+  snake,
+} from '../common/code';
+import {isString, isUndefined} from '../../common/other';
+import {arrayPush} from '../../common/array';
+import {collValues} from '../../common/coll';
+import {getSchemaFunctions} from '../common/schema';
+import {objIsEmpty} from '../../common/obj';
 
 const COMMON_IMPORTS = ['DoRollback', 'Id', 'IdOrNull', 'Ids', 'Json', 'Store'];
 
@@ -60,161 +63,42 @@ const storeListener = (
     afterParameters ? `, ${afterParameters}` : EMPTY_STRING
   })`;
 
-export const getStoreApi = (
+export const getStoreCoreApi = (
   tablesSchema: TablesSchema,
   valuesSchema: ValuesSchema,
   module: string,
-): [string, string, string, string] => {
-  if (objIsEmpty(tablesSchema) && objIsEmpty(valuesSchema)) {
-    return [EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, EMPTY_STRING];
-  }
-
+): [string, string] => {
   const [
     build,
     addImport,
     addType,
     addMethod,
-    addHook,
+    _addHook,
     addFunction,
     addConstant,
     getImports,
     getTypes,
     getMethods,
-    getHooks,
+    _getHooks,
     getConstants,
   ] = getCodeFunctions();
 
+  const [mapTablesSchema, mapCellSchema, mapValuesSchema] = getSchemaFunctions(
+    tablesSchema,
+    valuesSchema,
+    addType,
+    addConstant,
+  );
+
   const moduleDefinition = `./${camel(module)}.d`;
-  const uiReactModuleDefinition = `./${camel(module)}-ui-react.d`;
   const storeType = camel(module, 1);
   const storeInstance = camel(storeType);
   const createSteps: any[] = [];
-
-  const tableTypes: IdMap<TableTypes> = mapNew();
-  const mapTablesSchema = <Return>(
-    callback: (
-      tableId: Id,
-      tableTypes: TableTypes,
-      tableName: string,
-      TABLE_ID: string,
-    ) => Return,
-  ) =>
-    objMap(tablesSchema, (_, tableId) => {
-      return callback(
-        tableId,
-        mapEnsure(tableTypes, tableId, () => {
-          const table = camel(tableId, 1);
-          return [
-            addType(
-              `${table}Table`,
-              `{[rowId: Id]: ${table}Row}`,
-              `${REPRESENTS} the '${tableId}' Table`,
-            ),
-            addType(
-              `${table}Row`,
-              `{${join(
-                mapCellSchema(
-                  tableId,
-                  (cellId, type, defaultValue) =>
-                    `'${cellId}'${
-                      isUndefined(defaultValue) ? '?' : EMPTY_STRING
-                    }: ${type};`,
-                ),
-                ' ',
-              )}}`,
-              getRowTypeDoc(tableId),
-            ),
-            addType(
-              `${table}RowWhenSet`,
-              `{${join(
-                mapCellSchema(
-                  tableId,
-                  (cellId, type) => `'${cellId}'?: ${type};`,
-                ),
-                ' ',
-              )}}`,
-              getRowTypeDoc(tableId, 1),
-            ),
-            addType(
-              `${table}CellId`,
-              join(
-                mapCellSchema(tableId, (cellId) => `'${cellId}'`),
-                ' | ',
-              ),
-              `A Cell Id for the '${tableId}' Table`,
-            ),
-            addType(
-              `${table}CellCallback`,
-              `(...[cellId, cell]: ${join(
-                mapCellSchema(
-                  tableId,
-                  (cellId, type) => `[cellId: '${cellId}', cell: ${type}]`,
-                ),
-                ' | ',
-              )})${RETURNS_VOID}`,
-              getCallbackDoc(
-                `a Cell Id and value from a Row in the '${tableId}' Table`,
-              ),
-            ),
-            addType(
-              `${table}RowCallback`,
-              `(rowId: Id, forEachCell: (cellCallback: ${table}CellCallback)` +
-                `${RETURNS_VOID})${RETURNS_VOID}`,
-              getCallbackDoc(
-                `a Row Id from the '${tableId}' Table, and a Cell iterator`,
-              ),
-            ),
-          ];
-        }),
-        camel(tableId, 1),
-        addConstant(snake(tableId), `'${tableId}'`),
-      );
-    });
-
-  const mapCellSchema = <Return>(
-    tableId: Id,
-    callback: (
-      cellId: Id,
-      type: 'string' | 'number' | 'boolean',
-      defaultValue: Cell | undefined,
-      CELL_ID: string,
-      cellName: string,
-    ) => Return,
-  ) =>
-    objMap(tablesSchema[tableId], (cellSchema, cellId) =>
-      callback(
-        cellId,
-        cellSchema[TYPE],
-        cellSchema[DEFAULT],
-        addConstant(snake(cellId), `'${cellId}'`),
-        camel(cellId, 1),
-      ),
-    );
-
-  const mapValuesSchema = <Return>(
-    callback: (
-      valueId: Id,
-      type: 'string' | 'number' | 'boolean',
-      defaultValue: Value | undefined,
-      VALUE_ID: string,
-      valueName: string,
-    ) => Return,
-  ) =>
-    objMap(valuesSchema, (valueSchema, valueId) =>
-      callback(
-        valueId,
-        valueSchema[TYPE],
-        valueSchema[DEFAULT],
-        addConstant(snake(valueId), `'${valueId}'`),
-        camel(valueId, 1),
-      ),
-    );
 
   // --
 
   addImport(
     1,
-    0,
     moduleDefinition,
     storeType,
     `create${storeType} as create${storeType}Decl`,
@@ -388,7 +272,6 @@ export const getStoreApi = (
       ) => {
         addImport(
           1,
-          0,
           moduleDefinition,
           tableType,
           rowType,
@@ -652,7 +535,6 @@ export const getStoreApi = (
 
     addImport(
       1,
-      0,
       moduleDefinition,
       tablesType,
       tableIdType,
@@ -667,7 +549,7 @@ export const getStoreApi = (
       invalidCellListenerType,
       ...collValues(mapCellTypes),
     );
-    addImport(0, 0, 'tinybase', 'CellChange');
+    addImport(0, 'tinybase', 'CellChange');
 
     arrayPush(
       createSteps,
@@ -908,7 +790,6 @@ export const getStoreApi = (
 
     addImport(
       1,
-      0,
       moduleDefinition,
       valuesType,
       valuesWhenSetType,
@@ -919,7 +800,7 @@ export const getStoreApi = (
       valueListenerType,
       invalidValueListenerType,
     );
-    addImport(0, 0, 'tinybase', 'ValueChange');
+    addImport(0, 'tinybase', 'ValueChange');
 
     arrayPush(
       createSteps,
@@ -942,7 +823,7 @@ export const getStoreApi = (
     );
   }
 
-  addImport(0, 0, 'tinybase', ...COMMON_IMPORTS);
+  addImport(0, 'tinybase', ...COMMON_IMPORTS);
 
   const transactionListenerType = addType(
     'TransactionListener',
@@ -1027,10 +908,9 @@ export const getStoreApi = (
     `${VERBS[0]} the underlying Store object`,
   );
 
-  addImport(1, 0, 'tinybase', 'createStore', ...COMMON_IMPORTS);
+  addImport(1, 'tinybase', 'createStore', ...COMMON_IMPORTS);
   addImport(
     1,
-    0,
     moduleDefinition,
     storeType,
     `create${storeType} as create${storeType}Decl`,
@@ -1053,28 +933,6 @@ export const getStoreApi = (
 
   // --
 
-  addImport(0, 1, 'tinybase/ui-react');
-  addImport(0, 1, moduleDefinition, storeType);
-
-  addImport(1, 1, 'react', 'React');
-  addImport(1, 1, moduleDefinition, storeType);
-  addImport(1, 1, uiReactModuleDefinition);
-
-  addConstant('{useMemo}', 'React', 1);
-
-  addHook(
-    `useCreate${storeType}`,
-    `create: () => ${storeType}, createDeps?: React.DependencyList`,
-    storeType,
-    '\n// eslint-disable-next-line react-hooks/exhaustive-deps\n' +
-      'useMemo(create, createDeps);',
-    `Create a ${storeType} within a React application with convenient ` +
-      'memoization',
-    uiReactModuleDefinition,
-  );
-
-  // --
-
   return [
     build(
       ...getImports(0),
@@ -1094,7 +952,5 @@ export const getStoreApi = (
       `return Object.freeze(${storeInstance});`,
       `};`,
     ),
-    build(...getImports(0, 1), ...getTypes(1), ...getHooks(0)),
-    build(...getImports(1, 1), ...getConstants(1), ...getHooks(1)),
   ];
 };

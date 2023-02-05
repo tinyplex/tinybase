@@ -1,5 +1,12 @@
-import {IdMap, mapEnsure, mapGet, mapMap, mapNew, mapSet} from '../common/map';
-import {IdSet2, setAdd, setNew} from '../common/set';
+import {
+  IdMap,
+  mapEnsure,
+  mapGet,
+  mapMap,
+  mapNew,
+  mapSet,
+} from '../../common/map';
+import {IdSet2, setAdd, setNew} from '../../common/set';
 import {
   arrayForEach,
   arrayMap,
@@ -8,17 +15,16 @@ import {
   arrayShift,
   arraySort,
   arrayUnshift,
-} from '../common/array';
-import {collHas, collValues} from '../common/coll';
-import {EMPTY_STRING} from '../common/strings';
-import {Id} from '../common.d';
-import {isArray} from '../common/other';
-import {pairNewMap} from '../common/pairs';
+} from '../../common/array';
+import {collHas, collValues} from '../../common/coll';
+import {EMPTY_STRING} from '../../common/strings';
+import {Id} from '../../common.d';
+import {isArray} from '../../common/other';
 
-type LINE = string;
-type LINES = LINE[];
-type LINE_TREE = LINE_OR_LINE_TREE[];
-type LINE_OR_LINE_TREE = LINE | LINE_TREE;
+export type LINE = string;
+export type LINES = LINE[];
+export type LINE_TREE = LINE_OR_LINE_TREE[];
+export type LINE_OR_LINE_TREE = LINE | LINE_TREE;
 
 const NON_ALPHA = /[^A-Za-z]+/;
 const NON_ALPHANUMERIC = /[^A-Za-z0-9]+/;
@@ -85,8 +91,8 @@ export const comment = (doc: string) => `/** ${doc}. */`;
 
 export const getCodeFunctions = (): [
   (...lines: LINE_TREE) => string,
-  (location: 0 | 1, react: 0 | 1, source: string, ...items: string[]) => void,
-  (name: Id, body: LINE, doc: string, react?: 0 | 1) => Id,
+  (location: 0 | 1, source: string, ...items: string[]) => void,
+  (name: Id, body: LINE, doc: string) => Id,
   (
     name: Id,
     parameters: LINE,
@@ -105,12 +111,12 @@ export const getCodeFunctions = (): [
     generic?: string,
   ) => Id,
   (name: Id, parameters: string, body: LINE_OR_LINE_TREE) => Id,
-  (name: Id, body: LINE_OR_LINE_TREE, react?: 0 | 1) => Id,
-  (location?: 0 | 1, react?: 0 | 1) => LINES,
-  (react?: 0 | 1) => LINE_TREE,
+  (name: Id, body: LINE_OR_LINE_TREE) => Id,
+  (location?: 0 | 1) => LINES,
+  () => LINE_TREE,
   (location?: 0 | 1) => LINE_TREE,
   (location?: 0 | 1) => LINE_TREE,
-  (react?: 0 | 1) => LINE_TREE,
+  () => LINE_TREE,
 ] => {
   const allImports: [IdSet2, IdSet2, IdSet2, IdSet2] = [
     mapNew(),
@@ -118,7 +124,7 @@ export const getCodeFunctions = (): [
     mapNew(),
     mapNew(),
   ];
-  const types: [IdMap<[LINE, string]>, IdMap<[LINE, string]>] = pairNewMap();
+  const types: IdMap<[LINE, string]> = mapNew();
   const methods: IdMap<
     [
       parameters: LINE,
@@ -137,23 +143,17 @@ export const getCodeFunctions = (): [
       generic: string,
     ]
   > = mapNew();
-  const constants: [IdMap<LINE_OR_LINE_TREE>, IdMap<LINE_OR_LINE_TREE>] =
-    pairNewMap();
+  const constants: IdMap<LINE_OR_LINE_TREE> = mapNew();
 
   const build = (...lines: LINE_TREE): string => join(flat(lines), '\n');
 
-  const addImport = (
-    location: 0 | 1,
-    react: 0 | 1,
-    source: string,
-    ...items: string[]
-  ) =>
+  const addImport = (location: 0 | 1, source: string, ...items: string[]) =>
     arrayForEach(items, (item) =>
-      setAdd(mapEnsure(allImports[location + react * 2], source, setNew), item),
+      setAdd(mapEnsure(allImports[location], source, setNew), item),
     );
 
-  const addType = (name: Id, body: LINE, doc: string, react: 0 | 1 = 0): Id =>
-    mapUnique(types[react], name, [body, doc]);
+  const addType = (name: Id, body: LINE, doc: string): Id =>
+    mapUnique(types, name, [body, doc]);
 
   const addMethod = (
     name: Id,
@@ -174,7 +174,7 @@ export const getCodeFunctions = (): [
     uiReactModuleDefinition: string,
     generic = '',
   ): Id => {
-    addImport(1, 1, uiReactModuleDefinition, `${name} as ${name}Decl`);
+    addImport(1, uiReactModuleDefinition, `${name} as ${name}Decl`);
     return mapUnique(hooks, name, [parameters, returnType, body, doc, generic]);
   };
 
@@ -184,28 +184,22 @@ export const getCodeFunctions = (): [
     body: LINE_OR_LINE_TREE,
   ): Id =>
     mapUnique(
-      constants[0],
+      constants,
       name,
       isArray(body)
         ? [`(${parameters}) => {`, body, '}']
         : [`(${parameters}) => ${body}`],
     );
 
-  const addConstant = (
-    name: Id,
-    body: LINE_OR_LINE_TREE,
-    react: 0 | 1 = 0,
-  ): Id =>
-    mapGet(constants[react], name) === body
-      ? name
-      : mapUnique(constants[react], name, body);
+  const addConstant = (name: Id, body: LINE_OR_LINE_TREE): Id =>
+    mapGet(constants, name) === body ? name : mapUnique(constants, name, body);
 
-  const getImports = (location: 0 | 1 = 0, react: 0 | 1 = 0): LINES =>
+  const getImports = (location: 0 | 1 = 0): LINES =>
     arrayMap(
       [
         ...arraySort(
           mapMap(
-            allImports[location + react * 2],
+            allImports[location],
             (items, source) =>
               `import {${join(
                 arraySort(collValues(items)),
@@ -218,8 +212,8 @@ export const getCodeFunctions = (): [
       (line) => line.replace('{React}', 'React'), // sigh
     );
 
-  const getTypes = (react: 0 | 1 = 0): LINE_TREE =>
-    mapMap(types[react], ([body, doc], name) => [
+  const getTypes = (): LINE_TREE =>
+    mapMap(types, ([body, doc], name) => [
       comment(doc),
       `export type ${name} = ${body};`,
       EMPTY_STRING,
@@ -252,8 +246,8 @@ export const getCodeFunctions = (): [
       return lines;
     });
 
-  const getConstants = (react: 0 | 1 = 0): LINE_TREE =>
-    mapMap(constants[react], (body, name) => {
+  const getConstants = (): LINE_TREE =>
+    mapMap(constants, (body, name) => {
       body = isArray(body) ? body : [body];
       arrayPush(body, `${arrayPop(body)};`);
       return [`const ${name} = ${arrayShift(body)}`, body, EMPTY_STRING];
