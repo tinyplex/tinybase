@@ -1,5 +1,5 @@
-import {EMPTY_STRING} from '../common/strings';
-import {Id} from '../common.d';
+import {EMPTY_STRING} from '../../common/strings';
+import {Id} from '../../common.d';
 
 export const THE_STORE = 'the Store';
 export const A_FUNCTION_FOR = 'A function for';
