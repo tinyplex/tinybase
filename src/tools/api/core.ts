@@ -26,18 +26,22 @@ import {
   getValueDoc,
 } from '../common/strings';
 import {BOOLEAN, DEFAULT, EMPTY_STRING, TYPE} from '../../common/strings';
-import {IdMap, mapForEach, mapNew, mapSet} from '../../common/map';
-import {TablesSchema, ValuesSchema} from '../../store.d';
+import {IdMap, mapForEach, mapMap, mapNew, mapSet} from '../../common/map';
 import {
+  LINE,
+  LINE_TREE,
   camel,
   comment,
   flat,
   getCodeFunctions,
   join,
+  mapUnique,
   snake,
 } from '../common/code';
+import {TablesSchema, ValuesSchema} from '../../store.d';
+import {arrayPush, arrayUnshift} from '../../common/array';
 import {isString, isUndefined} from '../../common/other';
-import {arrayPush} from '../../common/array';
+import {Id} from '../../common.d';
 import {collValues} from '../../common/coll';
 import {getSchemaFunctions} from '../common/schema';
 import {objIsEmpty} from '../../common/obj';
@@ -72,14 +76,10 @@ export const getStoreCoreApi = (
     build,
     addImport,
     addType,
-    addMethod,
-    _addHook,
     addFunction,
     addConstant,
     getImports,
     getTypes,
-    getMethods,
-    _getHooks,
     getConstants,
   ] = getCodeFunctions();
 
@@ -89,6 +89,38 @@ export const getStoreCoreApi = (
     addType,
     addConstant,
   );
+
+  const methods: IdMap<
+    [
+      parameters: LINE,
+      returnType: string,
+      body: LINE,
+      doc: string,
+      generic: string,
+    ]
+  > = mapNew();
+
+  const getMethods = (location: 0 | 1 = 0): LINE_TREE =>
+    mapMap(methods, ([parameters, returnType, body, doc, generic], name) => {
+      const lines = location
+        ? [`${name}: ${generic}(${parameters}): ${returnType} => ${body},`]
+        : [`${name}${generic}(${parameters}): ${returnType};`];
+      if (!location) {
+        arrayUnshift(lines, comment(doc));
+      }
+      arrayPush(lines, EMPTY_STRING);
+      return lines;
+    });
+
+  const addMethod = (
+    name: Id,
+    parameters: LINE,
+    returnType: string,
+    body: LINE,
+    doc: string,
+    generic = '',
+  ): Id =>
+    mapUnique(methods, name, [parameters, returnType, body, doc, generic]);
 
   const moduleDefinition = `./${camel(module)}.d`;
   const storeType = camel(module, 1);
