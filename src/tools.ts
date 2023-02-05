@@ -4,11 +4,11 @@ import {DEFAULT, TYPE} from './common/strings';
 import {IdMap, mapEnsure, mapNew, mapSet} from './common/map';
 import {StoreStats, Tools, createTools as createToolsDecl} from './tools.d';
 import {arrayEvery, arrayLength, arrayMap} from './common/array';
-import {formatJsDoc, length} from './tools/code';
+import {formatJsDoc, length} from './tools/common/code';
 import {objFreeze, objIsEmpty} from './common/obj';
 import {collForEach} from './common/coll';
 import {getCreateFunction} from './common/definable';
-import {getStoreApi as getStoreApiImpl} from './tools/api';
+import {getStoreApi as getStoreApiImpl} from './tools/api/api';
 import {jsonParse} from './common/other';
 
 type CellMeta = [string, IdMap<number>, [number, Cell?], number];
