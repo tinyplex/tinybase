@@ -118,7 +118,7 @@ export const getCodeFunctions = (): [
   const addType = (name: Id, body: LINE, doc: string): Id =>
     mapUnique(types, name, [body, doc]);
 
-  const addFunction = (
+  const addInternalFunction = (
     name: Id,
     parameters: string,
     body: LINE_OR_LINE_TREE,
@@ -170,7 +170,7 @@ export const getCodeFunctions = (): [
     build,
     addImport,
     addType,
-    addFunction,
+    addInternalFunction,
     addConstant,
     getImports,
     getTypes,
