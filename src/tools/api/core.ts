@@ -25,7 +25,13 @@ import {
   getValueContentDoc,
   getValueDoc,
 } from '../common/strings';
-import {BOOLEAN, DEFAULT, EMPTY_STRING, TYPE} from '../../common/strings';
+import {
+  BOOLEAN,
+  DEFAULT,
+  EMPTY_STRING,
+  TABLES,
+  TYPE,
+} from '../../common/strings';
 import {IdMap, mapForEach, mapMap, mapNew, mapSet} from '../../common/map';
 import {
   LINE,
@@ -138,7 +144,7 @@ export const getStoreCoreApi = (
 
   if (!objIsEmpty(tablesSchema)) {
     const tablesType = addType(
-      'Tables',
+      TABLES,
       `{${join(
         mapTablesSchema(
           (tableId, tableTypes) => `'${tableId}'?: ${tableTypes[0]};`,

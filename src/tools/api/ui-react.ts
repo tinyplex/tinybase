@@ -1,3 +1,4 @@
+import {EMPTY_STRING, TABLES} from '../../common/strings';
 import {IdMap, mapMap, mapNew} from '../../common/map';
 import {
   LINE,
@@ -10,13 +11,15 @@ import {
 } from '../common/code';
 import {TablesSchema, ValuesSchema} from '../../store.d';
 import {arrayPush, arrayUnshift} from '../../common/array';
-import {EMPTY_STRING} from '../../common/strings';
 import {EXPORT} from '../common/strings';
 import {Id} from '../../common.d';
 import {OR_UNDEFINED} from '../common/strings';
 import {isArray} from '../../common/other';
 
 const USE_CONTEXT = 'const contextValue = useContext(Context);';
+const AND_REGISTERS =
+  ', and registers a listener so that any changes to ' +
+  'that result will cause a re-render';
 
 export const getStoreUiReactApi = (
   tablesSchema: TablesSchema,
@@ -27,7 +30,7 @@ export const getStoreUiReactApi = (
     build,
     addImport,
     addType,
-    _addInternalFunction,
+    addInternalFunction,
     addConstant,
     getImports,
     getTypes,
@@ -38,6 +41,8 @@ export const getStoreUiReactApi = (
   const uiReactModuleDefinition = `./${camel(module)}-ui-react.d`;
   const storeType = camel(module, 1);
   const storeInstance = camel(storeType);
+  const StoreOrStoreId = `${storeType}Or${storeType}Id`;
+  const storeOrStoreId = `${storeInstance}Or${storeType}Id`;
 
   const functions: IdMap<
     [
@@ -104,7 +109,14 @@ export const getStoreUiReactApi = (
 
   addImport(0, 'tinybase', 'Id');
   addImport(0, 'tinybase/ui-react', 'ComponentReturnType');
-  addImport(0, moduleDefinition, storeType);
+  addImport(0, moduleDefinition, storeType, TABLES);
+
+  const storeOrStoreIdType = addType(
+    StoreOrStoreId,
+    `${storeType} | Id`,
+    `Used when you need to refer to a ${storeType} ` +
+      'in a React hook or component',
+  );
 
   const providerPropsType = addType(
     'ProviderProps',
@@ -115,10 +127,13 @@ export const getStoreUiReactApi = (
       `a ${storeType} can be passed into the context of an application`,
   );
 
-  addImport(1, 'tinybase', 'Id');
   addImport(1, 'react', 'React');
-  addImport(1, moduleDefinition, storeType);
-  addImport(1, uiReactModuleDefinition, providerPropsType);
+  addImport(1, 'tinybase', 'Id');
+  addImport(1, 'tinybase/ui-react', 'useTables as useTablesCore');
+  addImport(1, moduleDefinition, storeType, TABLES);
+  addImport(1, uiReactModuleDefinition, storeOrStoreIdType, providerPropsType);
+
+  const storeOrStoreIdParameter = `${storeOrStoreId}?: ` + storeOrStoreIdType;
 
   addConstant('{createContext, useContext, useMemo}', 'React');
 
@@ -138,7 +153,7 @@ export const getStoreUiReactApi = (
       'memoization',
   );
 
-  addHook(
+  const getStoreHook = addHook(
     storeType,
     `id?: Id`,
     storeType + OR_UNDEFINED,
@@ -148,6 +163,26 @@ export const getStoreUiReactApi = (
     ],
     `Get a reference to a ${storeType} from within a Provider component ` +
       'context',
+  );
+
+  const useHook = addInternalFunction(
+    `useHook`,
+    `${storeOrStoreId}: ${storeOrStoreIdType} | undefined, ` +
+      `hook: (...args: any[]) => any, ...args: any[]`,
+    [
+      `const ${storeInstance} = ${getStoreHook}(${storeOrStoreId} as Id);`,
+      `return hook((${storeOrStoreId} == null || ` +
+        `typeof ${storeOrStoreId} == 'string')`,
+      `? ${storeInstance} : ${storeOrStoreId}, ...args)`,
+    ],
+  );
+
+  addHook(
+    TABLES,
+    storeOrStoreIdParameter,
+    TABLES,
+    `${useHook}(${storeOrStoreId}, useTablesCore)`,
+    `Returns a Tables object${AND_REGISTERS}`,
   );
 
   addComponent(
