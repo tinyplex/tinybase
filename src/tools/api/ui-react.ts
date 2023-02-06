@@ -13,7 +13,10 @@ import {arrayPush, arrayUnshift} from '../../common/array';
 import {EMPTY_STRING} from '../../common/strings';
 import {EXPORT} from '../common/strings';
 import {Id} from '../../common.d';
+import {OR_UNDEFINED} from '../common/strings';
 import {isArray} from '../../common/other';
+
+const USE_CONTEXT = 'const contextValue = useContext(Context);';
 
 export const getStoreUiReactApi = (
   tablesSchema: TablesSchema,
@@ -135,12 +138,24 @@ export const getStoreUiReactApi = (
       'memoization',
   );
 
+  addHook(
+    storeType,
+    `id?: Id`,
+    storeType + OR_UNDEFINED,
+    [
+      USE_CONTEXT,
+      'return id == null ? contextValue[0] : contextValue[1]?.[id];',
+    ],
+    `Get a reference to a ${storeType} from within a Provider component ` +
+      'context',
+  );
+
   addComponent(
     'Provider',
     `{${storeInstance}, ${storeInstance}ById, children}: ` +
       `${providerPropsType} & {children: React.ReactNode}`,
     [
-      'const contextValue = useContext(Context);',
+      USE_CONTEXT,
       'return (',
       '<Context.Provider',
       'value={useMemo(',
