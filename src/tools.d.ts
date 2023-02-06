@@ -272,8 +272,9 @@ export interface Tools {
   getStoreValuesSchema(): ValuesSchema;
 
   /**
-   * The getStoreApi method returns code-generated .d.ts .ts files that describe
-   * the schema of a Store and React bindings (since v3.1.0) in an ORM style.
+   * The getStoreApi method returns code-generated .d.ts and .ts(x) files that
+   * describe the schema of a Store and React bindings (since v3.1.0) in an ORM
+   * style.
    *
    * If the Store does not already have an explicit TablesSchema or ValuesSchema
    * associated with it, the data in the Store will be scanned to attempt to
@@ -285,14 +286,14 @@ export interface Tools {
    * files yourself, as, respectively:
    *
    * - `[storeName].d.ts`
-   * - `[storeName].ts`,
+   * - `[storeName].ts`
    * - `[storeName]-ui-react.d.ts`
-   * - `[storeName]-ui-react.ts`,
+   * - `[storeName]-ui-react.tsx`
    *
-   * Also you should save these alongside each other so that the .ts files can
-   * import types from the .d.ts files.
+   * Also you should save these alongside each other so that the .ts(x) files
+   * can import types from the .d.ts files.
    *
-   * The .d.ts and .ts files that are generated are designed to resemble the
+   * The .d.ts and .ts(x) files that are generated are designed to resemble the
    * main TinyBase Store and React binding files, but provide named types and
    * methods that describe the domain of the schema in the store.
    *
@@ -329,9 +330,9 @@ export interface Tools {
    * directly.
    *
    * @param storeName The name you want to provide to the generated Store, which
-   * should also be used to save the `.d.ts` and `.ts` files.
-   * @returns A set of four strings representing the contents of the `.d.ts` and
-   * `.ts` files for the generated Store and React modules.
+   * should also be used to save the `.d.ts`, `.ts`, and `.tsx` files.
+   * @returns A set of four strings representing the contents of the `.d.ts`,
+   * `.ts`, and `.tsx` files for the generated Store and React modules.
    * @example
    * This example creates a Tools object and generates code for a Store that
    * already has a TablesSchema.
@@ -382,8 +383,8 @@ export interface Tools {
 
   /**
    * The getPrettyStoreApi method attempts to returns a prettified
-   * code-generated .d.ts and .ts files that describe the schema of a Store and
-   * React bindings (since v3.1.0) in an ORM style.
+   * code-generated .d.ts and .ts(x) files that describe the schema of a Store
+   * and React bindings (since v3.1.0) in an ORM style.
    *
    * This is simply a wrapper around the getStoreApi method that attempts to
    * invoke the `prettier` module (which it hopes you have installed) to format
@@ -398,20 +399,20 @@ export interface Tools {
    * files yourself, as, respectively:
    *
    * - `[storeName].d.ts`
-   * - `[storeName].ts`,
+   * - `[storeName].ts`
    * - `[storeName]-ui-react.d.ts`
-   * - `[storeName]-ui-react.ts`,
+   * - `[storeName]-ui-react.tsx`
    *
-   * Also you should save these alongside each other so that the .ts files can
-   * import types from the .d.ts files.
+   * Also you should save these alongside each other so that the .ts(x) files
+   * can import types from the .d.ts files.
    *
    * See the documentation for the getStoreApi method for details of the content
    * of the generated files.
    *
    * @param storeName The name you want to provide to the generated Store, which
-   * should also be used to save the `.d.ts` and `.ts` files.
-   * @returns A set of four strings representing the contents of the `.d.ts` and
-   * `.ts` files for the generated Store and React modules.
+   * should also be used to save the `.d.ts`, `.ts`, and `.tsx` files.
+   * @returns A set of four strings representing the contents of the `.d.ts`,
+   * `.ts`, and `.tsx` files for the generated Store and React modules.
    * @example
    * This example creates a Tools object and generates code for a Store that
    * already has a TablesSchema.

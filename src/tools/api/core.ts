@@ -76,7 +76,7 @@ export const getStoreCoreApi = (
     build,
     addImport,
     addType,
-    addFunction,
+    addInternalFunction,
     addConstant,
     getImports,
     getTypes,
@@ -951,11 +951,11 @@ export const getStoreCoreApi = (
 
   addConstant('store', ['createStore()', ...createSteps]);
 
-  addFunction('fluent', 'actions: () => Store', [
+  addInternalFunction('fluent', 'actions: () => Store', [
     'actions();',
     `return ${storeInstance};`,
   ]);
-  addFunction(
+  addInternalFunction(
     'proxy',
     `${LISTENER}: any`,
     `(_: Store, ...args: any[]) => ${LISTENER}(${storeInstance}, ...args)`,
