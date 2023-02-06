@@ -37,6 +37,8 @@ const upper = (str: string) => str.toUpperCase();
 
 const lower = (str: string) => str.toLowerCase();
 
+const stringHasComma = (str: string) => str.includes(',');
+
 export const mapUnique = <Value>(
   map: IdMap<Value>,
   id: Id,
@@ -146,6 +148,12 @@ export const getCodeFunctions = (): [
                 ', ',
               )}} from '${source}';`,
           ),
+          (import1, import2) =>
+            stringHasComma(import1) > stringHasComma(import2)
+              ? -1
+              : import1 > import2
+              ? 1
+              : -1,
         ),
         EMPTY_STRING,
       ],
