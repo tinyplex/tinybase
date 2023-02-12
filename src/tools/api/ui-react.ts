@@ -1,9 +1,16 @@
-import {EMPTY_STRING, TABLE, TABLES, TABLE_IDS} from '../../common/strings';
+import {
+  EMPTY_STRING,
+  ROW_IDS,
+  TABLE,
+  TABLES,
+  TABLE_IDS,
+} from '../../common/strings';
 import {
   EXPORT,
   THE_STORE,
   getIdsDoc,
   getTableContentDoc,
+  getTableDoc,
   getTheContentOfTheStoreDoc,
 } from '../common/strings';
 import {IdMap, mapGet, mapMap, mapNew} from '../../common/map';
@@ -24,6 +31,8 @@ import {OR_UNDEFINED} from '../common/strings';
 import {getSchemaFunctions} from '../common/schema';
 import {isArray} from '../../common/other';
 import {objIsEmpty} from '../../common/obj';
+
+const COMMON_IMPORTS = ['Id', 'Ids'];
 
 const USE_CONTEXT = 'const contextValue = useContext(Context);';
 const AND_REGISTERS =
@@ -146,7 +155,7 @@ export const getStoreUiReactApi = (
       return lines;
     });
 
-  addImport(0, 'tinybase', 'Id');
+  addImport(0, 'tinybase', ...COMMON_IMPORTS);
   addImport(0, 'tinybase/ui-react', 'ComponentReturnType');
   addImport(0, moduleDefinition, storeType);
 
@@ -167,7 +176,7 @@ export const getStoreUiReactApi = (
   );
 
   addImport(1, 'react', 'React');
-  addImport(1, 'tinybase', 'Id');
+  addImport(1, 'tinybase', ...COMMON_IMPORTS);
   addImport(1, uiReactModuleDefinition, storeOrStoreIdType, providerPropsType);
 
   const storeOrStoreIdParameter = `${storeOrStoreId}?: ` + storeOrStoreIdType;
@@ -250,6 +259,14 @@ export const getStoreUiReactApi = (
         tableType,
         TABLE_ID,
         `${getTableContentDoc(tableId)}${AND_REGISTERS}`,
+      );
+
+      addProxyHook(
+        `${tableName}${ROW_IDS}`,
+        ROW_IDS,
+        'Ids',
+        TABLE_ID,
+        `${getIdsDoc('Row', getTableDoc(tableId))}${AND_REGISTERS}`,
       );
     });
   }
