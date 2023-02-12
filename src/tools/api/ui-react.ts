@@ -14,6 +14,7 @@ import {arrayPush, arrayUnshift} from '../../common/array';
 import {EXPORT} from '../common/strings';
 import {Id} from '../../common.d';
 import {OR_UNDEFINED} from '../common/strings';
+import {SharedTableTypes} from './core';
 import {isArray} from '../../common/other';
 import {objIsEmpty} from '../../common/obj';
 
@@ -26,7 +27,7 @@ export const getStoreUiReactApi = (
   tablesSchema: TablesSchema,
   valuesSchema: ValuesSchema,
   module: string,
-  sharedTypes: string[],
+  sharedTableTypes: SharedTableTypes | [],
 ): [string, string] => {
   const [
     build,
@@ -38,8 +39,6 @@ export const getStoreUiReactApi = (
     getTypes,
     getConstants,
   ] = getCodeFunctions();
-
-  const [tablesType, tableIdType] = sharedTypes;
 
   const moduleDefinition = `./${camel(module)}.d`;
   const uiReactModuleDefinition = `./${camel(module)}-ui-react.d`;
@@ -113,7 +112,7 @@ export const getStoreUiReactApi = (
 
   addImport(0, 'tinybase', 'Id');
   addImport(0, 'tinybase/ui-react', 'ComponentReturnType');
-  addImport(0, moduleDefinition, storeType, tablesType, tableIdType);
+  addImport(0, moduleDefinition, storeType);
 
   const storeOrStoreIdType = addType(
     StoreOrStoreId,
@@ -133,13 +132,6 @@ export const getStoreUiReactApi = (
 
   addImport(1, 'react', 'React');
   addImport(1, 'tinybase', 'Id');
-  addImport(
-    1,
-    'tinybase/ui-react',
-    'useTables as useTablesCore',
-    'useTableIds as useTableIdsCore',
-  );
-  addImport(1, moduleDefinition, storeType, tablesType, tableIdType);
   addImport(1, uiReactModuleDefinition, storeOrStoreIdType, providerPropsType);
 
   const storeOrStoreIdParameter = `${storeOrStoreId}?: ` + storeOrStoreIdType;
@@ -187,6 +179,17 @@ export const getStoreUiReactApi = (
   );
 
   if (!objIsEmpty(tablesSchema)) {
+    const [tablesType, tableIdType] = sharedTableTypes as SharedTableTypes;
+    addImport(0, moduleDefinition, tablesType, tableIdType);
+
+    addImport(
+      1,
+      'tinybase/ui-react',
+      'useTables as useTablesCore',
+      'useTableIds as useTableIdsCore',
+    );
+    addImport(1, moduleDefinition, storeType, tablesType, tableIdType);
+
     addHook(
       TABLES,
       storeOrStoreIdParameter,

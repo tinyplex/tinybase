@@ -61,6 +61,8 @@ import {collValues} from '../../common/coll';
 import {getSchemaFunctions} from '../common/schema';
 import {objIsEmpty} from '../../common/obj';
 
+export type SharedTableTypes = [string, string, IdMap<TableTypes>];
+
 type TableTypes = [string, string, string, string, string, string];
 
 const COMMON_IMPORTS = ['DoRollback', 'Id', 'IdOrNull', 'Ids', 'Json', 'Store'];
@@ -88,7 +90,7 @@ export const getStoreCoreApi = (
   tablesSchema: TablesSchema,
   valuesSchema: ValuesSchema,
   module: string,
-): [string, string, string[]] => {
+): [string, string, SharedTableTypes | []] => {
   const [
     build,
     addImport,
@@ -143,7 +145,7 @@ export const getStoreCoreApi = (
   const storeInstance = camel(storeType);
   const createSteps: any[] = [];
 
-  const sharedTypes: string[] = [];
+  let sharedTableTypes: SharedTableTypes | [] = [];
 
   // --
 
@@ -373,7 +375,7 @@ export const getStoreCoreApi = (
     );
 
     const mapCellTypes: IdMap<string> = mapNew();
-    arrayPush(sharedTypes, tablesType, tableIdType);
+    sharedTableTypes = [tablesType, tableIdType, tablesTypes];
 
     mapTablesSchema(
       (
@@ -1062,6 +1064,6 @@ export const getStoreCoreApi = (
       `return Object.freeze(${storeInstance});`,
       `};`,
     ),
-    sharedTypes,
+    sharedTableTypes,
   ];
 };
