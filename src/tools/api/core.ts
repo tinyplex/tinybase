@@ -61,9 +61,8 @@ import {collValues} from '../../common/coll';
 import {getSchemaFunctions} from '../common/schema';
 import {objIsEmpty} from '../../common/obj';
 
+export type TableTypes = [string, string, string, string, string, string];
 export type SharedTableTypes = [string, string, IdMap<TableTypes>];
-
-type TableTypes = [string, string, string, string, string, string];
 
 const COMMON_IMPORTS = ['DoRollback', 'Id', 'IdOrNull', 'Ids', 'Json', 'Store'];
 

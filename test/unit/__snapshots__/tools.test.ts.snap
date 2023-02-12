@@ -824,6 +824,8 @@ import {
 } from 'tinybase';
 
 export const createS: typeof createSDecl = () => {
+  const T1 = 't1';
+
   const C1 = 'c1';
 
   const C2 = 'c2';
@@ -831,8 +833,6 @@ export const createS: typeof createSDecl = () => {
   const C3 = 'c3';
 
   const _ = '';
-
-  const T1 = 't1';
 
   const TYPE = 'type';
 
@@ -1134,8 +1134,138 @@ export const createS: typeof createSDecl = () => {
   return Object.freeze(s);
 };
 ",
-  "",
-  "",
+  "import {S, T1Table, TableId, Tables} from './s.d';
+import {ComponentReturnType} from 'tinybase/ui-react';
+import {Id} from 'tinybase';
+
+/**
+ * Used when you need to refer to a S in a React hook or component.
+ */
+export type SOrSId = S | Id;
+
+/**
+ * Used with the Provider component, so that a S can be passed into the context
+ * of an application.
+ */
+export type ProviderProps = {readonly s?: S; readonly sById?: {[sId: Id]: S}};
+
+/**
+ * Create a S within a React application with convenient memoization.
+ */
+export function useCreateS(
+  create: () => S,
+  createDeps?: React.DependencyList,
+): S;
+
+/**
+ * Get a reference to a S from within a Provider component context.
+ */
+export function useS(id?: Id): S | undefined;
+
+/**
+ * Gets the tabular content of the Store, and registers a listener so that any
+ * changes to that result will cause a re-render.
+ */
+export function useTables(sOrSId?: SOrSId): Tables;
+
+/**
+ * Gets the Ids of the Tables in the Store, and registers a listener so that any
+ * changes to that result will cause a re-render.
+ */
+export function useTableIds(sOrSId?: SOrSId): TableId;
+
+/**
+ * Gets the content of the 't1' Table, and registers a listener so that any
+ * changes to that result will cause a re-render.
+ */
+export function useT1Table(sOrSId?: SOrSId): T1Table;
+
+/**
+ * Wraps part of an application in a context that provides default objects to be
+ * used by hooks and components within.
+ */
+export function Provider({
+  s,
+  sById,
+  children,
+}: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
+",
+  "import {
+  Provider as ProviderDecl,
+  ProviderProps,
+  SOrSId,
+  useCreateS as useCreateSDecl,
+  useS as useSDecl,
+  useT1Table as useT1TableDecl,
+  useTableIds as useTableIdsDecl,
+  useTables as useTablesDecl,
+} from './s-ui-react.d';
+import {S, T1Table, TableId, Tables} from './s.d';
+import {
+  useTable as useTableCore,
+  useTableIds as useTableIdsCore,
+  useTables as useTablesCore,
+} from 'tinybase/ui-react';
+import {Id} from 'tinybase';
+import React from 'react';
+
+const {createContext, useContext, useMemo} = React;
+
+const Context = createContext<[S?, {[sId: Id]: S}?]>([]);
+
+const useHook = (
+  sOrSId: SOrSId | undefined,
+  hook: (...args: any[]) => any,
+  ...args: any[]
+) => {
+  const s = useS(sOrSId as Id);
+  return hook(
+    ...args,
+    (sOrSId == null || typeof sOrSId == 'string' ? s : sOrSId)?.getStore(),
+  );
+};
+
+const T1 = 't1';
+
+export const useCreateS: typeof useCreateSDecl = (
+  create: () => S,
+  createDeps?: React.DependencyList,
+): S =>
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useMemo(create, createDeps);
+
+export const useS: typeof useSDecl = (id?: Id): S | undefined => {
+  const contextValue = useContext(Context);
+  return id == null ? contextValue[0] : contextValue[1]?.[id];
+};
+
+export const useTables: typeof useTablesDecl = (sOrSId?: SOrSId): Tables =>
+  useHook(sOrSId, useTablesCore);
+
+export const useTableIds: typeof useTableIdsDecl = (sOrSId?: SOrSId): TableId =>
+  useHook(sOrSId, useTableIdsCore);
+
+export const useT1Table: typeof useT1TableDecl = (sOrSId?: SOrSId): T1Table =>
+  useHook(sOrSId, useTableCore, T1);
+
+export const Provider: typeof ProviderDecl = ({
+  s,
+  sById,
+  children,
+}: ProviderProps & {children: React.ReactNode}): any => {
+  const contextValue = useContext(Context);
+  return (
+    <Context.Provider
+      value={useMemo(
+        () => [s ?? contextValue[0], {...contextValue[1], ...sById}],
+        [s, sById, contextValue],
+      )}
+    >
+      {children}
+    </Context.Provider>
+  );
+};
+",
 ]
 `;
 
@@ -1636,8 +1766,100 @@ export const createS: typeof createSDecl = () => {
   return Object.freeze(s);
 };
 ",
-  "",
-  "",
+  "import {ComponentReturnType} from 'tinybase/ui-react';
+import {Id} from 'tinybase';
+import {S} from './s.d';
+
+/**
+ * Used when you need to refer to a S in a React hook or component.
+ */
+export type SOrSId = S | Id;
+
+/**
+ * Used with the Provider component, so that a S can be passed into the context
+ * of an application.
+ */
+export type ProviderProps = {readonly s?: S; readonly sById?: {[sId: Id]: S}};
+
+/**
+ * Create a S within a React application with convenient memoization.
+ */
+export function useCreateS(
+  create: () => S,
+  createDeps?: React.DependencyList,
+): S;
+
+/**
+ * Get a reference to a S from within a Provider component context.
+ */
+export function useS(id?: Id): S | undefined;
+
+/**
+ * Wraps part of an application in a context that provides default objects to be
+ * used by hooks and components within.
+ */
+export function Provider({
+  s,
+  sById,
+  children,
+}: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
+",
+  "import {
+  Provider as ProviderDecl,
+  ProviderProps,
+  SOrSId,
+  useCreateS as useCreateSDecl,
+  useS as useSDecl,
+} from './s-ui-react.d';
+import {Id} from 'tinybase';
+import React from 'react';
+
+const {createContext, useContext, useMemo} = React;
+
+const Context = createContext<[S?, {[sId: Id]: S}?]>([]);
+
+const useHook = (
+  sOrSId: SOrSId | undefined,
+  hook: (...args: any[]) => any,
+  ...args: any[]
+) => {
+  const s = useS(sOrSId as Id);
+  return hook(
+    ...args,
+    (sOrSId == null || typeof sOrSId == 'string' ? s : sOrSId)?.getStore(),
+  );
+};
+
+export const useCreateS: typeof useCreateSDecl = (
+  create: () => S,
+  createDeps?: React.DependencyList,
+): S =>
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useMemo(create, createDeps);
+
+export const useS: typeof useSDecl = (id?: Id): S | undefined => {
+  const contextValue = useContext(Context);
+  return id == null ? contextValue[0] : contextValue[1]?.[id];
+};
+
+export const Provider: typeof ProviderDecl = ({
+  s,
+  sById,
+  children,
+}: ProviderProps & {children: React.ReactNode}): any => {
+  const contextValue = useContext(Context);
+  return (
+    <Context.Provider
+      value={useMemo(
+        () => [s ?? contextValue[0], {...contextValue[1], ...sById}],
+        [s, sById, contextValue],
+      )}
+    >
+      {children}
+    </Context.Provider>
+  );
+};
+",
 ]
 `;
 
@@ -2197,6 +2419,8 @@ import {
 } from 'tinybase';
 
 export const createS: typeof createSDecl = () => {
+  const T1 = 't1';
+
   const C1 = 'c1';
 
   const C2 = 'c2';
@@ -2204,8 +2428,6 @@ export const createS: typeof createSDecl = () => {
   const C3 = 'c3';
 
   const _ = '';
-
-  const T1 = 't1';
 
   const TYPE = 'type';
 
@@ -2422,8 +2644,138 @@ export const createS: typeof createSDecl = () => {
   return Object.freeze(s);
 };
 ",
-  "",
-  "",
+  "import {S, T1Table, TableId, Tables} from './s.d';
+import {ComponentReturnType} from 'tinybase/ui-react';
+import {Id} from 'tinybase';
+
+/**
+ * Used when you need to refer to a S in a React hook or component.
+ */
+export type SOrSId = S | Id;
+
+/**
+ * Used with the Provider component, so that a S can be passed into the context
+ * of an application.
+ */
+export type ProviderProps = {readonly s?: S; readonly sById?: {[sId: Id]: S}};
+
+/**
+ * Create a S within a React application with convenient memoization.
+ */
+export function useCreateS(
+  create: () => S,
+  createDeps?: React.DependencyList,
+): S;
+
+/**
+ * Get a reference to a S from within a Provider component context.
+ */
+export function useS(id?: Id): S | undefined;
+
+/**
+ * Gets the tabular content of the Store, and registers a listener so that any
+ * changes to that result will cause a re-render.
+ */
+export function useTables(sOrSId?: SOrSId): Tables;
+
+/**
+ * Gets the Ids of the Tables in the Store, and registers a listener so that any
+ * changes to that result will cause a re-render.
+ */
+export function useTableIds(sOrSId?: SOrSId): TableId;
+
+/**
+ * Gets the content of the 't1' Table, and registers a listener so that any
+ * changes to that result will cause a re-render.
+ */
+export function useT1Table(sOrSId?: SOrSId): T1Table;
+
+/**
+ * Wraps part of an application in a context that provides default objects to be
+ * used by hooks and components within.
+ */
+export function Provider({
+  s,
+  sById,
+  children,
+}: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
+",
+  "import {
+  Provider as ProviderDecl,
+  ProviderProps,
+  SOrSId,
+  useCreateS as useCreateSDecl,
+  useS as useSDecl,
+  useT1Table as useT1TableDecl,
+  useTableIds as useTableIdsDecl,
+  useTables as useTablesDecl,
+} from './s-ui-react.d';
+import {S, T1Table, TableId, Tables} from './s.d';
+import {
+  useTable as useTableCore,
+  useTableIds as useTableIdsCore,
+  useTables as useTablesCore,
+} from 'tinybase/ui-react';
+import {Id} from 'tinybase';
+import React from 'react';
+
+const {createContext, useContext, useMemo} = React;
+
+const Context = createContext<[S?, {[sId: Id]: S}?]>([]);
+
+const useHook = (
+  sOrSId: SOrSId | undefined,
+  hook: (...args: any[]) => any,
+  ...args: any[]
+) => {
+  const s = useS(sOrSId as Id);
+  return hook(
+    ...args,
+    (sOrSId == null || typeof sOrSId == 'string' ? s : sOrSId)?.getStore(),
+  );
+};
+
+const T1 = 't1';
+
+export const useCreateS: typeof useCreateSDecl = (
+  create: () => S,
+  createDeps?: React.DependencyList,
+): S =>
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useMemo(create, createDeps);
+
+export const useS: typeof useSDecl = (id?: Id): S | undefined => {
+  const contextValue = useContext(Context);
+  return id == null ? contextValue[0] : contextValue[1]?.[id];
+};
+
+export const useTables: typeof useTablesDecl = (sOrSId?: SOrSId): Tables =>
+  useHook(sOrSId, useTablesCore);
+
+export const useTableIds: typeof useTableIdsDecl = (sOrSId?: SOrSId): TableId =>
+  useHook(sOrSId, useTableIdsCore);
+
+export const useT1Table: typeof useT1TableDecl = (sOrSId?: SOrSId): T1Table =>
+  useHook(sOrSId, useTableCore, T1);
+
+export const Provider: typeof ProviderDecl = ({
+  s,
+  sById,
+  children,
+}: ProviderProps & {children: React.ReactNode}): any => {
+  const contextValue = useContext(Context);
+  return (
+    <Context.Provider
+      value={useMemo(
+        () => [s ?? contextValue[0], {...contextValue[1], ...sById}],
+        [s, sById, contextValue],
+      )}
+    >
+      {children}
+    </Context.Provider>
+  );
+};
+",
 ]
 `;
 
@@ -2788,6 +3140,8 @@ export function createS(): S;",
 import {DoRollback, Id, IdOrNull, Ids, Json, Store, createStore} from 'tinybase';
 
 export const createS: typeof createSDecl = () => {
+const T1 = 't1';
+
 const C1 = 'c1';
 
 const C2 = 'c2';
@@ -2795,8 +3149,6 @@ const C2 = 'c2';
 const C3 = 'c3';
 
 const _ = '';
-
-const T1 = 't1';
 
 const TYPE = 'type';
 
@@ -3016,8 +3368,86 @@ getStore: (): Store => store,
 
 return Object.freeze(s);
 };",
-  "",
-  "",
+  "import {S, T1Table, TableId, Tables} from './s.d';
+import {ComponentReturnType} from 'tinybase/ui-react';
+import {Id} from 'tinybase';
+
+/** Used when you need to refer to a S in a React hook or component. */
+export type SOrSId = S | Id;
+
+/** Used with the Provider component, so that a S can be passed into the context of an application. */
+export type ProviderProps = {readonly s?: S; readonly sById?: {[sId: Id]: S}};
+
+/** Create a S within a React application with convenient memoization. */
+export function useCreateS(create: () => S, createDeps?: React.DependencyList): S;
+
+/** Get a reference to a S from within a Provider component context. */
+export function useS(id?: Id): S | undefined;
+
+/** Gets the tabular content of the Store, and registers a listener so that any changes to that result will cause a re-render. */
+export function useTables(sOrSId?: SOrSId): Tables;
+
+/** Gets the Ids of the Tables in the Store, and registers a listener so that any changes to that result will cause a re-render. */
+export function useTableIds(sOrSId?: SOrSId): TableId;
+
+/** Gets the content of the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
+export function useT1Table(sOrSId?: SOrSId): T1Table;
+
+/** Wraps part of an application in a context that provides default objects to be used by hooks and components within. */
+export function Provider({s, sById, children}: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
+",
+  "import {Provider as ProviderDecl, ProviderProps, SOrSId, useCreateS as useCreateSDecl, useS as useSDecl, useT1Table as useT1TableDecl, useTableIds as useTableIdsDecl, useTables as useTablesDecl} from './s-ui-react.d';
+import {S, T1Table, TableId, Tables} from './s.d';
+import {useTable as useTableCore, useTableIds as useTableIdsCore, useTables as useTablesCore} from 'tinybase/ui-react';
+import {Id} from 'tinybase';
+import React from 'react';
+
+const {createContext, useContext, useMemo} = React;
+
+const Context = createContext<[S?, {[sId: Id]: S}?]>([]);
+
+const useHook = (sOrSId: SOrSId | undefined, hook: (...args: any[]) => any, ...args: any[]) => {
+const s = useS(sOrSId as Id);
+return hook(...args, ((sOrSId == null || typeof sOrSId == 'string')
+? s : sOrSId)?.getStore())
+};
+
+const T1 = 't1';
+
+export const useCreateS: typeof useCreateSDecl = (create: () => S, createDeps?: React.DependencyList): S =>
+
+// eslint-disable-next-line react-hooks/exhaustive-deps
+useMemo(create, createDeps)
+
+export const useS: typeof useSDecl = (id?: Id): S | undefined =>
+{
+const contextValue = useContext(Context);
+return id == null ? contextValue[0] : contextValue[1]?.[id];
+}
+
+export const useTables: typeof useTablesDecl = (sOrSId?: SOrSId): Tables =>
+useHook(sOrSId, useTablesCore)
+
+export const useTableIds: typeof useTableIdsDecl = (sOrSId?: SOrSId): TableId =>
+useHook(sOrSId, useTableIdsCore)
+
+export const useT1Table: typeof useT1TableDecl = (sOrSId?: SOrSId): T1Table =>
+useHook(sOrSId, useTableCore, T1)
+
+export const Provider: typeof ProviderDecl = ({s, sById, children}: ProviderProps & {children: React.ReactNode}): any =>
+{
+const contextValue = useContext(Context);
+return (
+<Context.Provider
+value={useMemo(
+() => [s ?? contextValue[0], {...contextValue[1], ...sById}],
+[s, sById, contextValue],
+)}>
+{children}
+</Context.Provider>
+);
+}
+",
 ]
 `;
 
@@ -3299,8 +3729,64 @@ getStore: (): Store => store,
 
 return Object.freeze(s);
 };",
-  "",
-  "",
+  "import {ComponentReturnType} from 'tinybase/ui-react';
+import {Id} from 'tinybase';
+import {S} from './s.d';
+
+/** Used when you need to refer to a S in a React hook or component. */
+export type SOrSId = S | Id;
+
+/** Used with the Provider component, so that a S can be passed into the context of an application. */
+export type ProviderProps = {readonly s?: S; readonly sById?: {[sId: Id]: S}};
+
+/** Create a S within a React application with convenient memoization. */
+export function useCreateS(create: () => S, createDeps?: React.DependencyList): S;
+
+/** Get a reference to a S from within a Provider component context. */
+export function useS(id?: Id): S | undefined;
+
+/** Wraps part of an application in a context that provides default objects to be used by hooks and components within. */
+export function Provider({s, sById, children}: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
+",
+  "import {Provider as ProviderDecl, ProviderProps, SOrSId, useCreateS as useCreateSDecl, useS as useSDecl} from './s-ui-react.d';
+import {Id} from 'tinybase';
+import React from 'react';
+
+const {createContext, useContext, useMemo} = React;
+
+const Context = createContext<[S?, {[sId: Id]: S}?]>([]);
+
+const useHook = (sOrSId: SOrSId | undefined, hook: (...args: any[]) => any, ...args: any[]) => {
+const s = useS(sOrSId as Id);
+return hook(...args, ((sOrSId == null || typeof sOrSId == 'string')
+? s : sOrSId)?.getStore())
+};
+
+export const useCreateS: typeof useCreateSDecl = (create: () => S, createDeps?: React.DependencyList): S =>
+
+// eslint-disable-next-line react-hooks/exhaustive-deps
+useMemo(create, createDeps)
+
+export const useS: typeof useSDecl = (id?: Id): S | undefined =>
+{
+const contextValue = useContext(Context);
+return id == null ? contextValue[0] : contextValue[1]?.[id];
+}
+
+export const Provider: typeof ProviderDecl = ({s, sById, children}: ProviderProps & {children: React.ReactNode}): any =>
+{
+const contextValue = useContext(Context);
+return (
+<Context.Provider
+value={useMemo(
+() => [s ?? contextValue[0], {...contextValue[1], ...sById}],
+[s, sById, contextValue],
+)}>
+{children}
+</Context.Provider>
+);
+}
+",
 ]
 `;
 
@@ -3551,6 +4037,8 @@ export function createS(): S;",
 import {DoRollback, Id, IdOrNull, Ids, Json, Store, createStore} from 'tinybase';
 
 export const createS: typeof createSDecl = () => {
+const T1 = 't1';
+
 const C1 = 'c1';
 
 const C2 = 'c2';
@@ -3558,8 +4046,6 @@ const C2 = 'c2';
 const C3 = 'c3';
 
 const _ = '';
-
-const T1 = 't1';
 
 const TYPE = 'type';
 
@@ -3709,7 +4195,85 @@ getStore: (): Store => store,
 
 return Object.freeze(s);
 };",
-  "",
-  "",
+  "import {S, T1Table, TableId, Tables} from './s.d';
+import {ComponentReturnType} from 'tinybase/ui-react';
+import {Id} from 'tinybase';
+
+/** Used when you need to refer to a S in a React hook or component. */
+export type SOrSId = S | Id;
+
+/** Used with the Provider component, so that a S can be passed into the context of an application. */
+export type ProviderProps = {readonly s?: S; readonly sById?: {[sId: Id]: S}};
+
+/** Create a S within a React application with convenient memoization. */
+export function useCreateS(create: () => S, createDeps?: React.DependencyList): S;
+
+/** Get a reference to a S from within a Provider component context. */
+export function useS(id?: Id): S | undefined;
+
+/** Gets the tabular content of the Store, and registers a listener so that any changes to that result will cause a re-render. */
+export function useTables(sOrSId?: SOrSId): Tables;
+
+/** Gets the Ids of the Tables in the Store, and registers a listener so that any changes to that result will cause a re-render. */
+export function useTableIds(sOrSId?: SOrSId): TableId;
+
+/** Gets the content of the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
+export function useT1Table(sOrSId?: SOrSId): T1Table;
+
+/** Wraps part of an application in a context that provides default objects to be used by hooks and components within. */
+export function Provider({s, sById, children}: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
+",
+  "import {Provider as ProviderDecl, ProviderProps, SOrSId, useCreateS as useCreateSDecl, useS as useSDecl, useT1Table as useT1TableDecl, useTableIds as useTableIdsDecl, useTables as useTablesDecl} from './s-ui-react.d';
+import {S, T1Table, TableId, Tables} from './s.d';
+import {useTable as useTableCore, useTableIds as useTableIdsCore, useTables as useTablesCore} from 'tinybase/ui-react';
+import {Id} from 'tinybase';
+import React from 'react';
+
+const {createContext, useContext, useMemo} = React;
+
+const Context = createContext<[S?, {[sId: Id]: S}?]>([]);
+
+const useHook = (sOrSId: SOrSId | undefined, hook: (...args: any[]) => any, ...args: any[]) => {
+const s = useS(sOrSId as Id);
+return hook(...args, ((sOrSId == null || typeof sOrSId == 'string')
+? s : sOrSId)?.getStore())
+};
+
+const T1 = 't1';
+
+export const useCreateS: typeof useCreateSDecl = (create: () => S, createDeps?: React.DependencyList): S =>
+
+// eslint-disable-next-line react-hooks/exhaustive-deps
+useMemo(create, createDeps)
+
+export const useS: typeof useSDecl = (id?: Id): S | undefined =>
+{
+const contextValue = useContext(Context);
+return id == null ? contextValue[0] : contextValue[1]?.[id];
+}
+
+export const useTables: typeof useTablesDecl = (sOrSId?: SOrSId): Tables =>
+useHook(sOrSId, useTablesCore)
+
+export const useTableIds: typeof useTableIdsDecl = (sOrSId?: SOrSId): TableId =>
+useHook(sOrSId, useTableIdsCore)
+
+export const useT1Table: typeof useT1TableDecl = (sOrSId?: SOrSId): T1Table =>
+useHook(sOrSId, useTableCore, T1)
+
+export const Provider: typeof ProviderDecl = ({s, sById, children}: ProviderProps & {children: React.ReactNode}): any =>
+{
+const contextValue = useContext(Context);
+return (
+<Context.Provider
+value={useMemo(
+() => [s ?? contextValue[0], {...contextValue[1], ...sById}],
+[s, sById, contextValue],
+)}>
+{children}
+</Context.Provider>
+);
+}
+",
 ]
 `;
