@@ -1,5 +1,12 @@
-import {EMPTY_STRING, TABLES, TABLE_IDS} from '../../common/strings';
-import {IdMap, mapMap, mapNew} from '../../common/map';
+import {EMPTY_STRING, TABLE, TABLES, TABLE_IDS} from '../../common/strings';
+import {
+  EXPORT,
+  THE_STORE,
+  getIdsDoc,
+  getTableContentDoc,
+  getTheContentOfTheStoreDoc,
+} from '../common/strings';
+import {IdMap, mapGet, mapMap, mapNew} from '../../common/map';
 import {
   LINE,
   LINE_OR_LINE_TREE,
@@ -9,12 +16,12 @@ import {
   getCodeFunctions,
   mapUnique,
 } from '../common/code';
+import {SharedTableTypes, TableTypes} from './core';
 import {TablesSchema, ValuesSchema} from '../../store.d';
 import {arrayPush, arrayUnshift} from '../../common/array';
-import {EXPORT} from '../common/strings';
 import {Id} from '../../common.d';
 import {OR_UNDEFINED} from '../common/strings';
-import {SharedTableTypes} from './core';
+import {getSchemaFunctions} from '../common/schema';
 import {isArray} from '../../common/other';
 import {objIsEmpty} from '../../common/obj';
 
@@ -39,6 +46,12 @@ export const getStoreUiReactApi = (
     getTypes,
     getConstants,
   ] = getCodeFunctions();
+
+  const [mapTablesSchema] = getSchemaFunctions(
+    tablesSchema,
+    valuesSchema,
+    addConstant,
+  );
 
   const moduleDefinition = `./${camel(module)}.d`;
   const uiReactModuleDefinition = `./${camel(module)}-ui-react.d`;
@@ -76,13 +89,36 @@ export const getStoreUiReactApi = (
   };
 
   const addHook = (
-    name: Id,
+    name: string,
     parameters: LINE,
     returnType: string,
     body: LINE_OR_LINE_TREE,
     doc: string,
     generic = '',
   ) => addFunction(`use${name}`, parameters, returnType, body, doc, generic);
+
+  const addProxyHook = (
+    name: string,
+    underlyingName: string,
+    returnType: string,
+    extraParameters: string,
+    doc: string,
+  ) => {
+    addImport(
+      1,
+      'tinybase/ui-react',
+      `use${underlyingName} as use${underlyingName}Core`,
+    );
+    addHook(
+      name,
+      storeOrStoreIdParameter,
+      returnType,
+      `${useHook}(${storeOrStoreId}, use${underlyingName}Core${
+        extraParameters ? `, ${extraParameters}` : ''
+      })`,
+      doc,
+    );
+  };
 
   const addComponent = (
     name: Id,
@@ -172,39 +208,50 @@ export const getStoreUiReactApi = (
       `hook: (...args: any[]) => any, ...args: any[]`,
     [
       `const ${storeInstance} = ${getStoreHook}(${storeOrStoreId} as Id);`,
-      `return hook((${storeOrStoreId} == null || ` +
+      `return hook(...args, ((${storeOrStoreId} == null || ` +
         `typeof ${storeOrStoreId} == 'string')`,
-      `? ${storeInstance} : ${storeOrStoreId}, ...args)`,
+      `? ${storeInstance} : ${storeOrStoreId})?.getStore())`,
     ],
   );
 
   if (!objIsEmpty(tablesSchema)) {
-    const [tablesType, tableIdType] = sharedTableTypes as SharedTableTypes;
+    const [tablesType, tableIdType, tablesTypes] =
+      sharedTableTypes as SharedTableTypes;
     addImport(0, moduleDefinition, tablesType, tableIdType);
 
-    addImport(
-      1,
-      'tinybase/ui-react',
-      'useTables as useTablesCore',
-      'useTableIds as useTableIdsCore',
-    );
+    addImport(1, 'tinybase/ui-react');
     addImport(1, moduleDefinition, storeType, tablesType, tableIdType);
 
-    addHook(
+    addProxyHook(
       TABLES,
-      storeOrStoreIdParameter,
+      TABLES,
       tablesType,
-      `${useHook}(${storeOrStoreId}, useTablesCore)`,
-      `Returns a Tables object${AND_REGISTERS}`,
+      EMPTY_STRING,
+      `${getTheContentOfTheStoreDoc(0, 1)}${AND_REGISTERS}`,
     );
 
-    addHook(
+    addProxyHook(
       TABLE_IDS,
-      storeOrStoreIdParameter,
+      TABLE_IDS,
       tableIdType,
-      `${useHook}(${storeOrStoreId}, useTableIdsCore)`,
-      `Returns the Table Ids${AND_REGISTERS}`,
+      EMPTY_STRING,
+      `${getIdsDoc('Table', THE_STORE)}${AND_REGISTERS}`,
     );
+
+    mapTablesSchema((tableId: Id, tableName: string, TABLE_ID: string) => {
+      const [tableType] = mapGet(tablesTypes, tableId) as TableTypes;
+
+      addImport(0, moduleDefinition, tableType as string);
+      addImport(1, moduleDefinition, tableType as string);
+
+      addProxyHook(
+        `${tableName}${TABLE}`,
+        TABLE,
+        tableType,
+        TABLE_ID,
+        `${getTableContentDoc(tableId)}${AND_REGISTERS}`,
+      );
+    });
   }
 
   addComponent(
