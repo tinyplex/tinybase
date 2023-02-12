@@ -1,4 +1,4 @@
-import {EMPTY_STRING, TABLES} from '../../common/strings';
+import {EMPTY_STRING, TABLES, TABLE_IDS} from '../../common/strings';
 import {IdMap, mapMap, mapNew} from '../../common/map';
 import {
   LINE,
@@ -15,6 +15,7 @@ import {EXPORT} from '../common/strings';
 import {Id} from '../../common.d';
 import {OR_UNDEFINED} from '../common/strings';
 import {isArray} from '../../common/other';
+import {objIsEmpty} from '../../common/obj';
 
 const USE_CONTEXT = 'const contextValue = useContext(Context);';
 const AND_REGISTERS =
@@ -25,6 +26,7 @@ export const getStoreUiReactApi = (
   tablesSchema: TablesSchema,
   valuesSchema: ValuesSchema,
   module: string,
+  sharedTypes: string[],
 ): [string, string] => {
   const [
     build,
@@ -36,6 +38,8 @@ export const getStoreUiReactApi = (
     getTypes,
     getConstants,
   ] = getCodeFunctions();
+
+  const [tablesType, tableIdType] = sharedTypes;
 
   const moduleDefinition = `./${camel(module)}.d`;
   const uiReactModuleDefinition = `./${camel(module)}-ui-react.d`;
@@ -109,7 +113,7 @@ export const getStoreUiReactApi = (
 
   addImport(0, 'tinybase', 'Id');
   addImport(0, 'tinybase/ui-react', 'ComponentReturnType');
-  addImport(0, moduleDefinition, storeType, TABLES);
+  addImport(0, moduleDefinition, storeType, tablesType, tableIdType);
 
   const storeOrStoreIdType = addType(
     StoreOrStoreId,
@@ -129,8 +133,13 @@ export const getStoreUiReactApi = (
 
   addImport(1, 'react', 'React');
   addImport(1, 'tinybase', 'Id');
-  addImport(1, 'tinybase/ui-react', 'useTables as useTablesCore');
-  addImport(1, moduleDefinition, storeType, TABLES);
+  addImport(
+    1,
+    'tinybase/ui-react',
+    'useTables as useTablesCore',
+    'useTableIds as useTableIdsCore',
+  );
+  addImport(1, moduleDefinition, storeType, tablesType, tableIdType);
   addImport(1, uiReactModuleDefinition, storeOrStoreIdType, providerPropsType);
 
   const storeOrStoreIdParameter = `${storeOrStoreId}?: ` + storeOrStoreIdType;
@@ -177,13 +186,23 @@ export const getStoreUiReactApi = (
     ],
   );
 
-  addHook(
-    TABLES,
-    storeOrStoreIdParameter,
-    TABLES,
-    `${useHook}(${storeOrStoreId}, useTablesCore)`,
-    `Returns a Tables object${AND_REGISTERS}`,
-  );
+  if (!objIsEmpty(tablesSchema)) {
+    addHook(
+      TABLES,
+      storeOrStoreIdParameter,
+      tablesType,
+      `${useHook}(${storeOrStoreId}, useTablesCore)`,
+      `Returns a Tables object${AND_REGISTERS}`,
+    );
+
+    addHook(
+      TABLE_IDS,
+      storeOrStoreIdParameter,
+      tableIdType,
+      `${useHook}(${storeOrStoreId}, useTableIdsCore)`,
+      `Returns the Table Ids${AND_REGISTERS}`,
+    );
+  }
 
   addComponent(
     'Provider',

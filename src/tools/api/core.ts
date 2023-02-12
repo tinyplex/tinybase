@@ -77,7 +77,7 @@ export const getStoreCoreApi = (
   tablesSchema: TablesSchema,
   valuesSchema: ValuesSchema,
   module: string,
-): [string, string] => {
+): [string, string, string[]] => {
   const [
     build,
     addImport,
@@ -132,6 +132,8 @@ export const getStoreCoreApi = (
   const storeType = camel(module, 1);
   const storeInstance = camel(storeType);
   const createSteps: any[] = [];
+
+  const sharedTypes: string[] = [];
 
   // --
 
@@ -293,6 +295,7 @@ export const getStoreCoreApi = (
     );
 
     const mapCellTypes: IdMap<string> = mapNew();
+    arrayPush(sharedTypes, tablesType, tableIdType);
 
     mapTablesSchema(
       (
@@ -990,5 +993,6 @@ export const getStoreCoreApi = (
       `return Object.freeze(${storeInstance});`,
       `};`,
     ),
+    sharedTypes,
   ];
 };
