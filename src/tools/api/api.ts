@@ -13,8 +13,15 @@ export const getStoreApi = (
     return [EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, EMPTY_STRING];
   }
 
+  const [dTsCore, tsCore, sharedTypes] = getStoreCoreApi(
+    tablesSchema,
+    valuesSchema,
+    module,
+  );
+
   return [
-    ...getStoreCoreApi(tablesSchema, valuesSchema, module),
-    ...getStoreUiReactApi(tablesSchema, valuesSchema, module),
+    dTsCore,
+    tsCore,
+    ...getStoreUiReactApi(tablesSchema, valuesSchema, module, sharedTypes),
   ];
 };
