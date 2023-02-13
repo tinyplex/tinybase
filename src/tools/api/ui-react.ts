@@ -114,13 +114,12 @@ export const getStoreUiReactApi = (
   ) => addFunction(`use${name}`, parameters, returnType, body, doc, generic);
 
   const addProxyHook = (
-    name: string,
+    prefix: string,
     underlyingName: string,
     returnType: string,
-    insertParameters: string,
     doc: string,
-    extraParameters?: string,
-    extraParametersInCall?: string,
+    extraParameters = EMPTY_STRING,
+    extraParametersInCall = EMPTY_STRING,
   ) => {
     addImport(
       1,
@@ -128,14 +127,14 @@ export const getStoreUiReactApi = (
       `use${underlyingName} as use${underlyingName}Core`,
     );
     addHook(
-      name,
+      `${prefix}${underlyingName}`,
       `${
         extraParameters ? `${extraParameters}, ` : ''
       }${storeOrStoreIdParameter}`,
       returnType,
       `${useHook}(${storeOrStoreId}, use${underlyingName}Core${
-        insertParameters ? `, ${insertParameters}` : ''
-      }${extraParametersInCall ? `, ${extraParametersInCall}` : ''})`,
+        extraParametersInCall ? `, ${extraParametersInCall}` : ''
+      })`,
       doc,
     );
   };
@@ -243,19 +242,17 @@ export const getStoreUiReactApi = (
     addImport(1, moduleDefinition, storeType, tablesType, tableIdType);
 
     addProxyHook(
-      TABLES,
+      EMPTY_STRING,
       TABLES,
       tablesType,
-      EMPTY_STRING,
-      `${getTheContentOfTheStoreDoc(0, 1)}${AND_REGISTERS}`,
+      `${getTheContentOfTheStoreDoc(1, 0)}${AND_REGISTERS}`,
     );
 
     addProxyHook(
-      TABLE_IDS,
+      EMPTY_STRING,
       TABLE_IDS,
       tableIdType,
-      EMPTY_STRING,
-      `${getIdsDoc('Table', THE_STORE)}${AND_REGISTERS}`,
+      `${getIdsDoc(TABLE, THE_STORE)}${AND_REGISTERS}`,
     );
 
     mapTablesSchema((tableId: Id, tableName: string, TABLE_ID: string) => {
@@ -265,62 +262,60 @@ export const getStoreUiReactApi = (
       addImport(1, moduleDefinition, tableType, rowType);
 
       addProxyHook(
-        `${tableName}${TABLE}`,
+        tableName,
         TABLE,
         tableType,
-        TABLE_ID,
         `${getTableContentDoc(tableId)}${AND_REGISTERS}`,
+        EMPTY_STRING,
+        TABLE_ID,
       );
 
       addProxyHook(
-        `${tableName}${ROW_IDS}`,
+        tableName,
         ROW_IDS,
         'Ids',
+        `${getIdsDoc(ROW, getTableDoc(tableId))}${AND_REGISTERS}`,
+        EMPTY_STRING,
         TABLE_ID,
-        `${getIdsDoc('Row', getTableDoc(tableId))}${AND_REGISTERS}`,
       );
 
       addProxyHook(
-        `${tableName}${SORTED_ROW_IDS}`,
+        tableName,
         SORTED_ROW_IDS,
         'Ids',
-        TABLE_ID,
-        `${getIdsDoc('Row', getTableDoc(tableId), 1)}${AND_REGISTERS}`,
+        `${getIdsDoc(ROW, getTableDoc(tableId), 1)}${AND_REGISTERS}`,
         'cellId?: Id, descending?: boolean, offset?: number, limit?: number',
-        'cellId, descending, offset, limit',
+        `${TABLE_ID}, cellId, descending, offset, limit`,
       );
 
       addProxyHook(
-        `${tableName}${ROW}`,
+        tableName,
         ROW,
         rowType,
-        TABLE_ID,
         `${getRowContentDoc(tableId)}${AND_REGISTERS}`,
         'rowId: Id',
-        'rowId',
+        `${TABLE_ID}, rowId`,
       );
 
       addProxyHook(
-        `${tableName}${CELL_IDS}`,
+        tableName,
         CELL_IDS,
         'Ids',
-        TABLE_ID,
-        `${getIdsDoc('Cell', getRowDoc(tableId))}${AND_REGISTERS}`,
+        `${getIdsDoc(CELL, getRowDoc(tableId))}${AND_REGISTERS}`,
         'rowId: Id',
-        'rowId',
+        `${TABLE_ID}, rowId`,
       );
 
       mapCellSchema(
         tableId,
         (cellId, type, defaultValue, CELL_ID, cellName) => {
           addProxyHook(
-            `${tableName}${cellName}${CELL}`,
+            `${tableName}${cellName}`,
             CELL,
             `${type}${isUndefined(defaultValue) ? OR_UNDEFINED : EMPTY_STRING}`,
-            TABLE_ID,
             `${getCellContentDoc(tableId, cellId)}${AND_REGISTERS}`,
             'rowId: Id',
-            `rowId, ${CELL_ID}`,
+            `${TABLE_ID}, rowId, ${CELL_ID}`,
           );
         },
       );
