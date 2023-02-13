@@ -1,5 +1,6 @@
 import {
   EMPTY_STRING,
+  ROW,
   ROW_IDS,
   SORTED_ROW_IDS,
   TABLE,
@@ -10,6 +11,7 @@ import {
   EXPORT,
   THE_STORE,
   getIdsDoc,
+  getRowContentDoc,
   getTableContentDoc,
   getTableDoc,
   getTheContentOfTheStoreDoc,
@@ -253,10 +255,10 @@ export const getStoreUiReactApi = (
     );
 
     mapTablesSchema((tableId: Id, tableName: string, TABLE_ID: string) => {
-      const [tableType] = mapGet(tablesTypes, tableId) as TableTypes;
+      const [tableType, rowType] = mapGet(tablesTypes, tableId) as TableTypes;
 
-      addImport(0, moduleDefinition, tableType as string);
-      addImport(1, moduleDefinition, tableType as string);
+      addImport(0, moduleDefinition, tableType, rowType);
+      addImport(1, moduleDefinition, tableType, rowType);
 
       addProxyHook(
         `${tableName}${TABLE}`,
@@ -282,6 +284,16 @@ export const getStoreUiReactApi = (
         `${getIdsDoc('Row', getTableDoc(tableId), 1)}${AND_REGISTERS}`,
         'cellId?: Id, descending?: boolean, offset?: number, limit?: number',
         'cellId, descending, offset, limit',
+      );
+
+      addProxyHook(
+        `${tableName}${ROW}`,
+        ROW,
+        rowType,
+        TABLE_ID,
+        `${getRowContentDoc(tableId)}${AND_REGISTERS}`,
+        'rowId: Id',
+        'rowId',
       );
     });
   }
