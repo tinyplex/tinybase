@@ -1,6 +1,18 @@
-import {EMPTY_STRING} from '../../common/strings';
+import {
+  CELL,
+  EMPTY_STRING,
+  IDS,
+  ROW,
+  TABLE,
+  TABLES,
+  VALUE,
+  VALUES,
+} from '../../common/strings';
 import {Id} from '../../common.d';
 
+const A = 'a ';
+const SPACE = ' ';
+export const JSON = 'Json';
 export const THE_STORE = 'the Store';
 export const A_FUNCTION_FOR = 'A function for';
 export const EXPORT = 'export';
@@ -11,7 +23,7 @@ export const REPRESENTS = 'Represents';
 export const RETURNS_VOID = ' => void';
 export const THE_END_OF_THE_TRANSACTION = 'the end of the transaction';
 
-const A_STRING_SERIALIZATION_OF = 'a string serialization of';
+const A_STRING_SERIALIZATION_OF = A + 'string serialization of';
 
 const getTheContentOfDoc = (content: 0 | 1 | 2 = 0, theStore = 0): string =>
   `the ${CONTENT[content]}content of${theStore ? ` ${THE_STORE}` : ''}`;
@@ -82,18 +94,18 @@ export const VERBS = [
 
 const NOUNS = [
   THE_STORE,
-  'Tables',
-  'Table Ids',
-  'a Table',
-  'Row Ids',
-  'a Row',
-  'Cell Ids',
-  'a Cell',
+  TABLES,
+  TABLE + SPACE + IDS,
+  A + TABLE,
+  ROW + SPACE + IDS,
+  A + ROW,
+  CELL + SPACE + IDS,
+  A + CELL,
   'invalid Cell changes',
-  'Values',
-  'Value Ids',
-  'a Value',
+  VALUES,
+  VALUE + SPACE + IDS,
+  A + VALUE,
   'invalid Value changes',
 ];
 
-const CONTENT = ['', 'tabular ', 'keyed value '];
+const CONTENT = [EMPTY_STRING, 'tabular ', 'keyed value '];

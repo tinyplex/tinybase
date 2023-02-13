@@ -24,16 +24,17 @@ export const RESULT = 'Result';
 export const GET = 'get';
 export const ADD = 'add';
 
-export const TABLES = 'Tables';
-export const TABLE_IDS = 'TableIds';
+export const IDS = 'Ids';
 export const TABLE = 'Table';
-export const ROW_IDS = 'RowIds';
-export const SORTED_ROW_IDS = 'SortedRowIds';
+export const TABLES = TABLE + 's';
+export const TABLE_IDS = TABLE + IDS;
 export const ROW = 'Row';
-export const CELL_IDS = 'CellIds';
+export const ROW_IDS = ROW + IDS;
+export const SORTED_ROW_IDS = 'Sorted' + ROW + IDS;
 export const CELL = 'Cell';
-export const VALUES = 'Values';
-export const VALUE_IDS = 'ValueIds';
+export const CELL_IDS = CELL + IDS;
 export const VALUE = 'Value';
+export const VALUES = VALUE + 's';
+export const VALUE_IDS = VALUE + IDS;
 
 export const id = (key: unknown): Id => EMPTY_STRING + key;

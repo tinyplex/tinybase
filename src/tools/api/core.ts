@@ -1,6 +1,7 @@
 import {
   A_FUNCTION_FOR,
   EXPORT,
+  JSON,
   LISTENER,
   OR_UNDEFINED,
   REGISTERS_A_LISTENER,
@@ -24,15 +25,20 @@ import {
   getValueContentDoc,
 } from '../common/strings';
 import {
+  ADD,
   BOOLEAN,
   CELL,
+  CELL_IDS,
   DEFAULT,
   EMPTY_STRING,
+  GET,
+  IDS,
   ROW,
   ROW_IDS,
   SORTED_ROW_IDS,
   TABLE,
   TABLES,
+  TABLE_IDS,
   TYPE,
 } from '../../common/strings';
 import {
@@ -65,8 +71,8 @@ import {objIsEmpty} from '../../common/obj';
 export type TableTypes = [string, string, string, string, string, string];
 export type SharedTableTypes = [string, string, IdMap<TableTypes>];
 
-const METHOD_PREFIX_VERBS = ['get', 'has', 'set', 'del', 'set'];
-const COMMON_IMPORTS = ['DoRollback', 'Id', 'IdOrNull', 'Ids', 'Json', 'Store'];
+const METHOD_PREFIX_VERBS = [GET, 'has', 'set', 'del', 'set', 'forEach', ADD];
+const COMMON_IMPORTS = ['DoRollback', 'Id', 'IdOrNull', IDS, JSON, 'Store'];
 
 const storeMethod = (
   method: string,
@@ -166,6 +172,23 @@ export const getStoreCoreApi = (
       ),
       doc,
       generic,
+    );
+
+  const addProxyListener = (
+    underlyingName: string,
+    listenerType: string,
+    doc: string,
+    params = EMPTY_STRING,
+    paramsInCall = EMPTY_STRING,
+  ): Id =>
+    addMethod(
+      `${ADD}${underlyingName}Listener` as string,
+      `${
+        params ? params + ', ' : ''
+      }${LISTENER}: ${listenerType}, mutator?: boolean`,
+      'Id',
+      storeListener(`${ADD}${underlyingName}Listener`, paramsInCall, 'mutator'),
+      doc,
     );
 
   const moduleDefinition = `./${camel(module)}.d`;
@@ -377,19 +400,21 @@ export const getStoreCoreApi = (
           paramsInCall,
         ),
     );
-    addMethod(
-      `getTableIds`,
+    addProxyMethod(
+      0,
       EMPTY_STRING,
+      TABLE_IDS,
       `${tableIdType}[]`,
-      storeMethod('getTableIds', EMPTY_STRING, `${tableIdType}[]`),
       getIdsDoc('Table', THE_STORE),
     );
-    addMethod(
-      'forEachTable',
-      `tableCallback: ${tableCallbackType}`,
+    addProxyMethod(
+      5,
+      EMPTY_STRING,
+      TABLE,
       'void',
-      storeMethod('forEachTable', 'tableCallback as any'),
       getForEachDoc('Table', THE_STORE),
+      `tableCallback: ${tableCallbackType}`,
+      'tableCallback as any',
     );
 
     const mapCellTypes: IdMap<string> = mapNew();
@@ -423,30 +448,33 @@ export const getStoreCoreApi = (
             `${TABLE_ID}${paramsInCall}`,
           ),
       );
-      addMethod(
-        `get${tableName}${ROW_IDS}`,
-        EMPTY_STRING,
+      addProxyMethod(
+        0,
+        tableName,
+        ROW_IDS,
         'Ids',
-        storeMethod(`get${ROW_IDS}`, TABLE_ID),
         getIdsDoc('Row', getTableDoc(tableId)),
+        EMPTY_STRING,
+        TABLE_ID,
       );
-      addMethod(
-        `get${tableName}${SORTED_ROW_IDS}`,
+      addProxyMethod(
+        0,
+        tableName,
+        SORTED_ROW_IDS,
+        'Ids',
+        getIdsDoc('Row', getTableDoc(tableId), 1),
         `cellId?: ${cellIdType}, descending?: boolean, ` +
           'offset?: number, limit?: number',
-        'Ids',
-        storeMethod(
-          `get${SORTED_ROW_IDS}`,
-          `${TABLE_ID}, cellId, descending, offset, limit`,
-        ),
-        getIdsDoc('Row', getTableDoc(tableId), 1),
+        `${TABLE_ID}, cellId, descending, offset, limit`,
       );
-      addMethod(
-        `forEach${tableName}Row`,
-        `rowCallback: ${rowCallbackType}`,
+      addProxyMethod(
+        5,
+        tableName,
+        ROW,
         'void',
-        storeMethod('forEachRow', `${TABLE_ID}, rowCallback as any`),
         getForEachDoc('Row', getTableDoc(tableId)),
+        `rowCallback: ${rowCallbackType}`,
+        `${TABLE_ID}, rowCallback as any`,
       );
 
       arrayForEach(
@@ -471,26 +499,32 @@ export const getStoreCoreApi = (
             `${TABLE_ID}, rowId${paramsInCall}`,
           ),
       );
-      addMethod(
-        `add${tableName}Row`,
-        `row: ${rowWhenSetType}`,
+      addProxyMethod(
+        6,
+        tableName,
+        ROW,
         `Id${OR_UNDEFINED}`,
-        storeMethod('addRow', `${TABLE_ID}, row`),
         `Adds a new Row to ${getTableDoc(tableId)}`,
+        `row: ${rowWhenSetType}`,
+        `${TABLE_ID}, row`,
       );
-      addMethod(
-        `get${tableName}CellIds`,
-        'rowId: Id',
+      addProxyMethod(
+        0,
+        tableName,
+        CELL_IDS,
         `${cellIdType}[]`,
-        storeMethod('getCellIds', `${TABLE_ID}, rowId`, `${cellIdType}[]`),
         getIdsDoc('Cell', getRowDoc(tableId)),
+        'rowId: Id',
+        `${TABLE_ID}, rowId`,
       );
-      addMethod(
-        `forEach${tableName}Cell`,
-        `rowId: Id, cellCallback: ${cellCallbackType}`,
+      addProxyMethod(
+        5,
+        tableName,
+        CELL,
         'void',
-        storeMethod('forEachCell', `${TABLE_ID}, rowId, cellCallback as any`),
         getForEachDoc('Cell', getRowDoc(tableId)),
+        `rowId: Id, cellCallback: ${cellCallbackType}`,
+        `${TABLE_ID}, rowId, cellCallback as any`,
       );
 
       mapCellSchema(
@@ -528,88 +562,77 @@ export const getStoreCoreApi = (
       );
     });
 
-    addMethod(
-      'getTablesJson',
+    addProxyMethod(
+      0,
       EMPTY_STRING,
-      'Json',
-      storeMethod('getTablesJson'),
+      TABLES + JSON,
+      JSON,
       getTheContentOfTheStoreDoc(1, 6),
     );
-    addMethod(
-      'setTablesJson',
-      'tablesJson: Json',
+    addProxyMethod(
+      2,
+      EMPTY_STRING,
+      TABLES + JSON,
       storeType,
-      fluentStoreMethod('setTablesJson', 'tablesJson'),
       getTheContentOfTheStoreDoc(1, 7),
+      'tablesJson: Json',
+      'tablesJson',
     );
 
-    addMethod(
-      'addTablesListener',
-      `${LISTENER}: ${tablesListenerType}, mutator?: boolean`,
-      'Id',
-      storeListener('addTablesListener', EMPTY_STRING, 'mutator'),
+    addProxyListener(
+      TABLES,
+      tablesListenerType,
       getTheContentOfTheStoreDoc(1, 8) + ' changes',
     );
-    addMethod(
-      'addTableIdsListener',
-      `${LISTENER}: ${tableIdsListenerType}, mutator?: boolean`,
-      'Id',
-      storeListener('addTableIdsListener', EMPTY_STRING, 'mutator'),
+    addProxyListener(
+      TABLE_IDS,
+      tableIdsListenerType,
       getListenerDoc('the Table Ids', THE_STORE, 1),
     );
-    addMethod(
-      'addTableListener',
-      `tableId: ${tableIdType} | null, ${LISTENER}: ${tableListenerType}, ` +
-        'mutator?: boolean',
-      'Id',
-      storeListener('addTableListener', 'tableId', 'mutator'),
+    addProxyListener(
+      TABLE,
+      tableListenerType,
       getListenerDoc('a Table', THE_STORE),
+      `tableId: ${tableIdType} | null`,
+      'tableId',
     );
-    addMethod(
-      'addRowIdsListener',
-      `tableId: ${tableIdType} | null, ${LISTENER}: ${rowIdsListenerType}, ` +
-        'mutator?: boolean',
-      'Id',
-      storeListener('addRowIdsListener', 'tableId', 'mutator'),
+    addProxyListener(
+      ROW_IDS,
+      rowIdsListenerType,
       getListenerDoc('the Row Ids', 'a Table', 1),
+      `tableId: ${tableIdType} | null`,
+      'tableId',
     );
-    addMethod(
-      'addRowListener',
-      `tableId: ${tableIdType} | null, rowId: IdOrNull, ` +
-        `${LISTENER}: ${rowListenerType}, mutator?: boolean`,
-      'Id',
-      storeListener('addRowListener', 'tableId, rowId', 'mutator'),
+    addProxyListener(
+      ROW,
+      rowListenerType,
       getListenerDoc('a Row', 'a Table'),
+      `tableId: ${tableIdType} | null, rowId: IdOrNull`,
+      'tableId, rowId',
     );
-    addMethod(
-      'addCellIdsListener',
-      `tableId: ${tableIdType} | null, rowId: IdOrNull, ` +
-        `${LISTENER}: ${cellIdsListenerType}, mutator?: boolean`,
-      'Id',
-      storeListener('addCellIdsListener', 'tableId, rowId', 'mutator'),
+    addProxyListener(
+      CELL_IDS,
+      cellIdsListenerType,
       getListenerDoc('the Cell Ids', 'a Row', 1),
+      `tableId: ${tableIdType} | null, rowId: IdOrNull`,
+      'tableId, rowId',
     );
-    addMethod(
-      'addCellListener',
+    addProxyListener(
+      CELL,
+      cellListenerType,
+      getListenerDoc('a Cell', 'a Row'),
       `tableId: ${tableIdType} | null, rowId: IdOrNull, cellId: ${join(
         mapTablesSchema((tableId) => mapGet(tablesTypes, tableId)?.[3] ?? ''),
         ' | ',
-      )} | null, ${LISTENER}: ${cellListenerType}, mutator?: boolean`,
-      'Id',
-      storeListener('addCellListener', 'tableId, rowId, cellId', 'mutator'),
-      getListenerDoc('a Cell', 'a Row'),
+      )} | null`,
+      'tableId, rowId, cellId',
     );
-    addMethod(
-      'addInvalidCellListener',
-      `tableId: IdOrNull, rowId: IdOrNull, cellId: IdOrNull, ${LISTENER}: ` +
-        `${invalidCellListenerType}, mutator?: boolean`,
-      'Id',
-      storeListener(
-        'addInvalidCellListener',
-        'tableId, rowId, cellId',
-        'mutator',
-      ),
+    addProxyListener(
+      'Invalid' + CELL,
+      invalidCellListenerType,
       `${REGISTERS_A_LISTENER} whenever an invalid Cell change was attempted`,
+      `tableId: IdOrNull, rowId: IdOrNull, cellId: IdOrNull`,
+      'tableId, rowId, cellId',
     );
 
     mapForEach(mapCellTypes, (type, mapCellType) =>
