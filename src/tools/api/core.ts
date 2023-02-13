@@ -7,14 +7,11 @@ import {
   REPRESENTS,
   RETURNS_VOID,
   THE_END_OF_THE_TRANSACTION,
-  THE_SPECIFIED_ROW,
   THE_STORE,
   VERBS,
   getCallbackDoc,
   getCellContentDoc,
-  getCellDoc,
   getForEachDoc,
-  getHasDoc,
   getIdsDoc,
   getListenerDoc,
   getListenerTypeDoc,
@@ -25,12 +22,13 @@ import {
   getTableDoc,
   getTheContentOfTheStoreDoc,
   getValueContentDoc,
-  getValueDoc,
 } from '../common/strings';
 import {
   BOOLEAN,
+  CELL,
   DEFAULT,
   EMPTY_STRING,
+  ROW,
   ROW_IDS,
   SORTED_ROW_IDS,
   TABLE,
@@ -57,7 +55,7 @@ import {
   snake,
 } from '../common/code';
 import {TablesSchema, ValuesSchema} from '../../store.d';
-import {arrayPush, arrayUnshift} from '../../common/array';
+import {arrayForEach, arrayPush, arrayUnshift} from '../../common/array';
 import {isString, isUndefined} from '../../common/other';
 import {Id} from '../../common.d';
 import {collValues} from '../../common/coll';
@@ -67,6 +65,7 @@ import {objIsEmpty} from '../../common/obj';
 export type TableTypes = [string, string, string, string, string, string];
 export type SharedTableTypes = [string, string, IdMap<TableTypes>];
 
+const METHOD_PREFIX_VERBS = ['get', 'has', 'set', 'del', 'set'];
 const COMMON_IMPORTS = ['DoRollback', 'Id', 'IdOrNull', 'Ids', 'Json', 'Store'];
 
 const storeMethod = (
@@ -141,6 +140,33 @@ export const getStoreCoreApi = (
     generic = '',
   ): Id =>
     mapUnique(methods, name, [parameters, returnType, body, doc, generic]);
+
+  const addProxyMethod = (
+    prefixVerb: number,
+    prefix: string,
+    underlyingName: string,
+    returnType: string,
+    doc: string,
+    params = EMPTY_STRING,
+    paramsInCall = EMPTY_STRING,
+    generic = EMPTY_STRING,
+  ): Id =>
+    addMethod(
+      `${METHOD_PREFIX_VERBS[prefixVerb]}${prefix}${
+        prefixVerb == 4 ? 'Partial' : ''
+      }${underlyingName}` as string,
+      params,
+      returnType,
+      (returnType == storeType ? fluentStoreMethod : storeMethod)(
+        `${METHOD_PREFIX_VERBS[prefixVerb]}${
+          prefixVerb == 4 ? 'Partial' : ''
+        }${underlyingName}`,
+        paramsInCall,
+        prefixVerb ? undefined : returnType,
+      ),
+      doc,
+      generic,
+    );
 
   const moduleDefinition = `./${camel(module)}.d`;
   const storeType = camel(module, 1);
@@ -231,7 +257,7 @@ export const getStoreCoreApi = (
         ),
         ' ',
       )}}`,
-      getTheContentOfTheStoreDoc(4, 1),
+      getTheContentOfTheStoreDoc(1, 5),
     );
     const tableIdType = addType(
       'TableId',
@@ -333,33 +359,23 @@ export const getStoreCoreApi = (
       getListenerTypeDoc(8),
     );
 
-    addMethod(
-      `hasTables`,
-      EMPTY_STRING,
-      BOOLEAN,
-      storeMethod('hasTables'),
-      getHasDoc('any Table'),
-    );
-    addMethod(
-      `getTables`,
-      EMPTY_STRING,
-      tablesType,
-      storeMethod('getTables'),
-      getTheContentOfTheStoreDoc(0, 1),
-    );
-    addMethod(
-      `setTables`,
-      `tables: ${tablesType}`,
-      storeType,
-      fluentStoreMethod('setTables', 'tables'),
-      getTheContentOfTheStoreDoc(1, 1),
-    );
-    addMethod(
-      `delTables`,
-      EMPTY_STRING,
-      storeType,
-      fluentStoreMethod('delTables'),
-      getTheContentOfTheStoreDoc(3, 1),
+    arrayForEach(
+      [
+        [TABLES],
+        [BOOLEAN],
+        [storeType, `tables: ${tablesType}`, 'tables'],
+        [storeType],
+      ],
+      ([returnType, params, paramsInCall], verb) =>
+        addProxyMethod(
+          verb,
+          EMPTY_STRING,
+          TABLES,
+          returnType,
+          getTheContentOfTheStoreDoc(1, verb),
+          params,
+          paramsInCall,
+        ),
     );
     addMethod(
       `getTableIds`,
@@ -379,195 +395,152 @@ export const getStoreCoreApi = (
     const mapCellTypes: IdMap<string> = mapNew();
     sharedTableTypes = [tablesType, tableIdType, tablesTypes];
 
-    mapTablesSchema(
-      (
-        tableId,
+    mapTablesSchema((tableId, tableName, TABLE_ID) => {
+      const [
+        tableType,
+        rowType,
+        rowWhenSetType,
+        cellIdType,
+        cellCallbackType,
+        rowCallbackType,
+      ] = mapGet(tablesTypes, tableId) as TableTypes;
 
-        tableName,
-        TABLE_ID,
-      ) => {
-        const [
-          tableType,
-          rowType,
-          rowWhenSetType,
-          cellIdType,
-          cellCallbackType,
-          rowCallbackType,
-        ] = mapGet(tablesTypes, tableId) as TableTypes;
-
-        addMethod(
-          `has${tableName}${TABLE}`,
-          EMPTY_STRING,
-          BOOLEAN,
-          storeMethod(`has${TABLE}`, TABLE_ID),
-          getHasDoc(getTableDoc(tableId)),
-        );
-        addMethod(
-          `get${tableName}${TABLE}`,
-          EMPTY_STRING,
-          tableType,
-          storeMethod(`get${TABLE}`, TABLE_ID, tableType),
-          getTableContentDoc(tableId),
-        );
-        addMethod(
-          `set${tableName}${TABLE}`,
-          `table: ${tableType}`,
-          storeType,
-          fluentStoreMethod(`set${TABLE}`, `${TABLE_ID}, table`),
-          getTableContentDoc(tableId, 1),
-        );
-        addMethod(
-          `del${tableName}${TABLE}`,
-          EMPTY_STRING,
-          storeType,
-          fluentStoreMethod(`del${TABLE}`, TABLE_ID),
-          getTableContentDoc(tableId, 3),
-        );
-        addMethod(
-          `get${tableName}${ROW_IDS}`,
-          EMPTY_STRING,
-          'Ids',
-          storeMethod(`get${ROW_IDS}`, TABLE_ID),
-          getIdsDoc('Row', getTableDoc(tableId)),
-        );
-        addMethod(
-          `get${tableName}${SORTED_ROW_IDS}`,
-          `cellId?: ${cellIdType}, descending?: boolean, ` +
-            'offset?: number, limit?: number',
-          'Ids',
-          storeMethod(
-            `get${SORTED_ROW_IDS}`,
-            `${TABLE_ID}, cellId, descending, offset, limit`,
+      arrayForEach(
+        [
+          [tableType],
+          [BOOLEAN],
+          [storeType, `table: ${tableType}`, ', table'],
+          [storeType],
+        ],
+        ([returnType, params, paramsInCall = EMPTY_STRING], verb) =>
+          addProxyMethod(
+            verb,
+            tableName,
+            TABLE,
+            returnType,
+            getTableContentDoc(tableId, verb),
+            params,
+            `${TABLE_ID}${paramsInCall}`,
           ),
-          getIdsDoc('Row', getTableDoc(tableId), 1),
-        );
-        addMethod(
-          `forEach${tableName}Row`,
-          `rowCallback: ${rowCallbackType}`,
-          'void',
-          storeMethod('forEachRow', `${TABLE_ID}, rowCallback as any`),
-          getForEachDoc('Row', getTableDoc(tableId)),
-        );
+      );
+      addMethod(
+        `get${tableName}${ROW_IDS}`,
+        EMPTY_STRING,
+        'Ids',
+        storeMethod(`get${ROW_IDS}`, TABLE_ID),
+        getIdsDoc('Row', getTableDoc(tableId)),
+      );
+      addMethod(
+        `get${tableName}${SORTED_ROW_IDS}`,
+        `cellId?: ${cellIdType}, descending?: boolean, ` +
+          'offset?: number, limit?: number',
+        'Ids',
+        storeMethod(
+          `get${SORTED_ROW_IDS}`,
+          `${TABLE_ID}, cellId, descending, offset, limit`,
+        ),
+        getIdsDoc('Row', getTableDoc(tableId), 1),
+      );
+      addMethod(
+        `forEach${tableName}Row`,
+        `rowCallback: ${rowCallbackType}`,
+        'void',
+        storeMethod('forEachRow', `${TABLE_ID}, rowCallback as any`),
+        getForEachDoc('Row', getTableDoc(tableId)),
+      );
 
-        addMethod(
-          `has${tableName}Row`,
-          'rowId: Id',
-          BOOLEAN,
-          storeMethod('hasRow', `${TABLE_ID}, rowId`),
-          getHasDoc(THE_SPECIFIED_ROW, getTableDoc(tableId)),
-        );
-        addMethod(
-          `get${tableName}Row`,
-          'rowId: Id',
-          rowType,
-          storeMethod('getRow', `${TABLE_ID}, rowId`, rowType),
-          getRowContentDoc(tableId),
-        );
-        addMethod(
-          `set${tableName}Row`,
-          `rowId: Id, row: ${rowWhenSetType}`,
-          storeType,
-          fluentStoreMethod('setRow', `${TABLE_ID}, rowId, row`),
-          getRowContentDoc(tableId, 1),
-        );
-        addMethod(
-          `add${tableName}Row`,
-          `row: ${rowWhenSetType}`,
-          `Id${OR_UNDEFINED}`,
-          storeMethod('addRow', `${TABLE_ID}, row`),
-          `Adds a new Row to ${getTableDoc(tableId)}`,
-        );
-        addMethod(
-          `set${tableName}PartialRow`,
-          `rowId: Id, partialRow: ${rowWhenSetType}`,
-          storeType,
-          fluentStoreMethod('setPartialRow', `${TABLE_ID}, rowId, partialRow`),
-          getRowContentDoc(tableId, 2),
-        );
-        addMethod(
-          `del${tableName}Row`,
-          `rowId: Id`,
-          storeType,
-          fluentStoreMethod('delRow', `${TABLE_ID}, rowId`),
-          getRowContentDoc(tableId, 3),
-        );
-        addMethod(
-          `get${tableName}CellIds`,
-          'rowId: Id',
-          `${cellIdType}[]`,
-          storeMethod('getCellIds', `${TABLE_ID}, rowId`, `${cellIdType}[]`),
-          getIdsDoc('Cell', getRowDoc(tableId)),
-        );
-        addMethod(
-          `forEach${tableName}Cell`,
-          `rowId: Id, cellCallback: ${cellCallbackType}`,
-          'void',
-          storeMethod('forEachCell', `${TABLE_ID}, rowId, cellCallback as any`),
-          getForEachDoc('Cell', getRowDoc(tableId)),
-        );
+      arrayForEach(
+        [
+          [rowType],
+          [BOOLEAN],
+          [storeType, `, row: ${rowWhenSetType}`, ', row'],
+          [storeType],
+          [storeType, `, partialRow: ${rowWhenSetType}`, ', partialRow'],
+        ],
+        (
+          [returnType, params = EMPTY_STRING, paramsInCall = EMPTY_STRING],
+          verb,
+        ) =>
+          addProxyMethod(
+            verb,
+            tableName,
+            ROW,
+            returnType,
+            getRowContentDoc(tableId, verb),
+            `rowId: Id${params}`,
+            `${TABLE_ID}, rowId${paramsInCall}`,
+          ),
+      );
+      addMethod(
+        `add${tableName}Row`,
+        `row: ${rowWhenSetType}`,
+        `Id${OR_UNDEFINED}`,
+        storeMethod('addRow', `${TABLE_ID}, row`),
+        `Adds a new Row to ${getTableDoc(tableId)}`,
+      );
+      addMethod(
+        `get${tableName}CellIds`,
+        'rowId: Id',
+        `${cellIdType}[]`,
+        storeMethod('getCellIds', `${TABLE_ID}, rowId`, `${cellIdType}[]`),
+        getIdsDoc('Cell', getRowDoc(tableId)),
+      );
+      addMethod(
+        `forEach${tableName}Cell`,
+        `rowId: Id, cellCallback: ${cellCallbackType}`,
+        'void',
+        storeMethod('forEachCell', `${TABLE_ID}, rowId, cellCallback as any`),
+        getForEachDoc('Cell', getRowDoc(tableId)),
+      );
 
-        mapCellSchema(
-          tableId,
-          (cellId, type, defaultValue, CELL_ID, cellName) => {
-            const mapCellType = `Map${camel(type, 1)}`;
-            mapSet(mapCellTypes, type, mapCellType);
+      mapCellSchema(
+        tableId,
+        (cellId, type, defaultValue, CELL_ID, cellName) => {
+          const mapCellType = `Map${camel(type, 1)}`;
+          mapSet(mapCellTypes, type, mapCellType);
 
-            addMethod(
-              `has${tableName}${cellName}Cell`,
-              'rowId: Id',
-              BOOLEAN,
-              storeMethod('hasCell', `${TABLE_ID}, rowId, ${CELL_ID}`),
-              getHasDoc(getCellDoc(cellId), getRowDoc(tableId)),
-            );
-            const returnCellType = `${type}${
-              isUndefined(defaultValue) ? OR_UNDEFINED : EMPTY_STRING
-            }`;
-            addMethod(
-              `get${tableName}${cellName}Cell`,
-              'rowId: Id',
-              returnCellType,
-              storeMethod(
-                'getCell',
-                `${TABLE_ID}, rowId, ${CELL_ID}`,
-                returnCellType,
+          const returnCellType = `${type}${
+            isUndefined(defaultValue) ? OR_UNDEFINED : EMPTY_STRING
+          }`;
+
+          arrayForEach(
+            [
+              [returnCellType],
+              [BOOLEAN],
+              [storeType, `, cell: ${type} | ${mapCellType}`, ', cell as any'],
+              [storeType],
+            ],
+            (
+              [returnType, params = EMPTY_STRING, paramsInCall = EMPTY_STRING],
+              verb,
+            ) =>
+              addProxyMethod(
+                verb,
+                `${tableName}${cellName}`,
+                CELL,
+                returnType,
+                getCellContentDoc(tableId, cellId, verb),
+                `rowId: Id${params}`,
+                `${TABLE_ID}, rowId, ${CELL_ID}${paramsInCall}`,
               ),
-              getCellContentDoc(tableId, cellId),
-            );
-            addMethod(
-              `set${tableName}${cellName}Cell`,
-              `rowId: Id, cell: ${type} | ${mapCellType}`,
-              storeType,
-              fluentStoreMethod(
-                'setCell',
-                `${TABLE_ID}, rowId, ${CELL_ID}, cell as any`,
-              ),
-              getCellContentDoc(tableId, cellId, 1),
-            );
-            addMethod(
-              `del${tableName}${cellName}Cell`,
-              `rowId: Id`,
-              storeType,
-              fluentStoreMethod('delCell', `${TABLE_ID}, rowId, ${CELL_ID}`),
-              getCellContentDoc(tableId, cellId, 3),
-            );
-          },
-        );
-      },
-    );
+          );
+        },
+      );
+    });
 
     addMethod(
       'getTablesJson',
       EMPTY_STRING,
       'Json',
       storeMethod('getTablesJson'),
-      getTheContentOfTheStoreDoc(5, 1),
+      getTheContentOfTheStoreDoc(1, 6),
     );
     addMethod(
       'setTablesJson',
       'tablesJson: Json',
       storeType,
       fluentStoreMethod('setTablesJson', 'tablesJson'),
-      getTheContentOfTheStoreDoc(6, 1),
+      getTheContentOfTheStoreDoc(1, 7),
     );
 
     addMethod(
@@ -575,7 +548,7 @@ export const getStoreCoreApi = (
       `${LISTENER}: ${tablesListenerType}, mutator?: boolean`,
       'Id',
       storeListener('addTablesListener', EMPTY_STRING, 'mutator'),
-      getTheContentOfTheStoreDoc(7, 1) + ' changes',
+      getTheContentOfTheStoreDoc(1, 8) + ' changes',
     );
     addMethod(
       'addTableIdsListener',
@@ -706,7 +679,7 @@ export const getStoreCoreApi = (
         ),
         ' ',
       )}}`,
-      getTheContentOfTheStoreDoc(4, 2),
+      getTheContentOfTheStoreDoc(2, 5),
     );
     const valuesWhenSetType = addType(
       'ValuesWhenSet',
@@ -714,7 +687,7 @@ export const getStoreCoreApi = (
         mapValuesSchema((valueId, type) => `'${valueId}'?: ${type};`),
         ' ',
       )}}`,
-      getTheContentOfTheStoreDoc(4, 2, 1),
+      getTheContentOfTheStoreDoc(2, 5, 1),
     );
     const valueIdType = addType(
       'ValueId',
@@ -780,35 +753,35 @@ export const getStoreCoreApi = (
       EMPTY_STRING,
       BOOLEAN,
       storeMethod('hasValues'),
-      getHasDoc('any Value'),
+      getTheContentOfTheStoreDoc(2, 1),
     );
     addMethod(
       `getValues`,
       EMPTY_STRING,
       valuesType,
       storeMethod('getValues', EMPTY_STRING, valuesType),
-      getTheContentOfTheStoreDoc(0, 2),
+      getTheContentOfTheStoreDoc(2, 0),
     );
     addMethod(
       `setValues`,
       `values: ${valuesWhenSetType}`,
       storeType,
       fluentStoreMethod('setValues', 'values'),
-      getTheContentOfTheStoreDoc(1, 2),
+      getTheContentOfTheStoreDoc(2, 2),
     );
     addMethod(
       `setPartialValues`,
       `partialValues: ${valuesWhenSetType}`,
       storeType,
       fluentStoreMethod('setPartialValues', 'partialValues'),
-      getTheContentOfTheStoreDoc(2, 2),
+      getTheContentOfTheStoreDoc(2, 4),
     );
     addMethod(
       `delValues`,
       EMPTY_STRING,
       storeType,
       fluentStoreMethod('delValues'),
-      getTheContentOfTheStoreDoc(3, 2),
+      getTheContentOfTheStoreDoc(2, 3),
     );
     addMethod(
       `getValueIds`,
@@ -831,7 +804,7 @@ export const getStoreCoreApi = (
         EMPTY_STRING,
         BOOLEAN,
         storeMethod('hasValue', VALUE_ID),
-        getHasDoc(getValueDoc(valueId)),
+        getValueContentDoc(valueId, 1),
       );
       addMethod(
         `get${valueName}Value`,
@@ -845,7 +818,7 @@ export const getStoreCoreApi = (
         `value: ${type}`,
         storeType,
         fluentStoreMethod('setValue', `${VALUE_ID}, value`),
-        getValueContentDoc(valueId, 1),
+        getValueContentDoc(valueId, 2),
       );
       addMethod(
         `del${valueName}Value`,
@@ -861,14 +834,14 @@ export const getStoreCoreApi = (
       EMPTY_STRING,
       'Json',
       storeMethod('getValuesJson'),
-      getTheContentOfTheStoreDoc(5, 2),
+      getTheContentOfTheStoreDoc(2, 6),
     );
     addMethod(
       'setValuesJson',
       'valuesJson: Json',
       storeType,
       fluentStoreMethod('setValuesJson', 'valuesJson'),
-      getTheContentOfTheStoreDoc(6, 2),
+      getTheContentOfTheStoreDoc(2, 7),
     );
 
     addMethod(
@@ -876,7 +849,7 @@ export const getStoreCoreApi = (
       `${LISTENER}: ${valuesListenerType}, mutator?: boolean`,
       'Id',
       storeListener('addValuesListener', EMPTY_STRING, 'mutator'),
-      getTheContentOfTheStoreDoc(7, 2) + ' changes',
+      getTheContentOfTheStoreDoc(2, 8) + ' changes',
     );
     addMethod(
       'addValueIdsListener',
@@ -951,14 +924,14 @@ export const getStoreCoreApi = (
     EMPTY_STRING,
     'Json',
     storeMethod('getJson'),
-    getTheContentOfTheStoreDoc(5),
+    getTheContentOfTheStoreDoc(0, 6),
   );
   addMethod(
     'setJson',
     'json: Json',
     storeType,
     fluentStoreMethod('setJson', 'json'),
-    getTheContentOfTheStoreDoc(6),
+    getTheContentOfTheStoreDoc(0, 7),
   );
 
   addMethod(
