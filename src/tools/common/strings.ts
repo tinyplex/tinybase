@@ -10,7 +10,6 @@ export const REGISTERS_A_LISTENER = `Registers a ${LISTENER} that will be called
 export const REPRESENTS = 'Represents';
 export const RETURNS_VOID = ' => void';
 export const THE_END_OF_THE_TRANSACTION = 'the end of the transaction';
-export const THE_SPECIFIED_ROW = 'the specified Row';
 
 const A_STRING_SERIALIZATION_OF = 'a string serialization of';
 
@@ -18,8 +17,8 @@ const getTheContentOfDoc = (content: 0 | 1 | 2 = 0, theStore = 0): string =>
   `the ${CONTENT[content]}content of${theStore ? ` ${THE_STORE}` : ''}`;
 
 export const getTheContentOfTheStoreDoc = (
-  verb: number,
   content: 0 | 1 | 2 = 0,
+  verb: number,
   set = 0,
 ) =>
   `${VERBS[verb]} ${getTheContentOfDoc(content, 1)}${set ? ' when set' : ''}`;
@@ -36,9 +35,6 @@ export const getIdsDoc = (idsNoun: string, parentNoun: string, sorted = 0) =>
 
 export const getForEachDoc = (childNoun: string, parentNoun: string) =>
   `Calls a function for each ${childNoun} in ${parentNoun}`;
-
-export const getHasDoc = (childNoun: string, parentNoun = THE_STORE) =>
-  `Gets whether ${childNoun} exists in ${parentNoun}`;
 
 export const getCallbackDoc = (takes: string) =>
   `A function that takes ${takes}`;
@@ -58,11 +54,7 @@ export const getListenerDoc = (
 export const getTableDoc = (tableId: Id) => `the '${tableId}' Table`;
 
 export const getRowDoc = (tableId: Id) =>
-  `${THE_SPECIFIED_ROW} in ${getTableDoc(tableId)}`;
-
-export const getCellDoc = (cellId: Id) => `the '${cellId}' Cell`;
-
-export const getValueDoc = (valueId: Id) => `the '${valueId}' Value`;
+  `the specified Row in ${getTableDoc(tableId)}`;
 
 export const getTableContentDoc = (tableId: Id, verb = 0) =>
   `${VERBS[verb]} ${getTheContentOfDoc()} ${getTableDoc(tableId)}`;
@@ -71,16 +63,17 @@ export const getRowContentDoc = (tableId: Id, verb = 0) =>
   `${VERBS[verb]} ${getTheContentOfDoc()} ${getRowDoc(tableId)}`;
 
 export const getCellContentDoc = (tableId: Id, cellId: Id, verb = 0) =>
-  `${VERBS[verb]} ${getCellDoc(cellId)} for ${getRowDoc(tableId)}`;
+  `${VERBS[verb]} the '${cellId}' Cell for ${getRowDoc(tableId)}`;
 
 export const getValueContentDoc = (valueId: Id, verb = 0) =>
-  `${VERBS[verb]} ${getValueDoc(valueId)}`;
+  `${VERBS[verb]} the '${valueId}' Value`;
 
 export const VERBS = [
   'Gets',
+  'Checks existence of',
   'Sets',
-  'Sets part of',
   'Deletes',
+  'Sets part of',
   REPRESENTS,
   `Gets ${A_STRING_SERIALIZATION_OF}`,
   `Sets ${A_STRING_SERIALIZATION_OF}`,
