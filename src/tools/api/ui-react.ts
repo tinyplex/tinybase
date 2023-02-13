@@ -1,6 +1,7 @@
 import {
   EMPTY_STRING,
   ROW_IDS,
+  SORTED_ROW_IDS,
   TABLE,
   TABLES,
   TABLE_IDS,
@@ -110,8 +111,10 @@ export const getStoreUiReactApi = (
     name: string,
     underlyingName: string,
     returnType: string,
-    extraParameters: string,
+    insertParameters: string,
     doc: string,
+    extraParameters?: string,
+    extraParametersInCall?: string,
   ) => {
     addImport(
       1,
@@ -120,11 +123,13 @@ export const getStoreUiReactApi = (
     );
     addHook(
       name,
-      storeOrStoreIdParameter,
+      `${
+        extraParameters ? `${extraParameters}, ` : ''
+      }${storeOrStoreIdParameter}`,
       returnType,
       `${useHook}(${storeOrStoreId}, use${underlyingName}Core${
-        extraParameters ? `, ${extraParameters}` : ''
-      })`,
+        insertParameters ? `, ${insertParameters}` : ''
+      }${extraParametersInCall ? `, ${extraParametersInCall}` : ''})`,
       doc,
     );
   };
@@ -267,6 +272,16 @@ export const getStoreUiReactApi = (
         'Ids',
         TABLE_ID,
         `${getIdsDoc('Row', getTableDoc(tableId))}${AND_REGISTERS}`,
+      );
+
+      addProxyHook(
+        `${tableName}${SORTED_ROW_IDS}`,
+        SORTED_ROW_IDS,
+        'Ids',
+        TABLE_ID,
+        `${getIdsDoc('Row', getTableDoc(tableId), 1)}${AND_REGISTERS}`,
+        'cellId?: Id, descending?: boolean, offset?: number, limit?: number',
+        'cellId, descending, offset, limit',
       );
     });
   }
