@@ -1,4 +1,5 @@
 import {
+  CELL,
   CELL_IDS,
   EMPTY_STRING,
   ROW,
@@ -11,6 +12,7 @@ import {
 import {
   EXPORT,
   THE_STORE,
+  getCellContentDoc,
   getIdsDoc,
   getRowContentDoc,
   getRowDoc,
@@ -31,10 +33,10 @@ import {
 import {SharedTableTypes, TableTypes} from './core';
 import {TablesSchema, ValuesSchema} from '../../store.d';
 import {arrayPush, arrayUnshift} from '../../common/array';
+import {isArray, isUndefined} from '../../common/other';
 import {Id} from '../../common.d';
 import {OR_UNDEFINED} from '../common/strings';
 import {getSchemaFunctions} from '../common/schema';
-import {isArray} from '../../common/other';
 import {objIsEmpty} from '../../common/obj';
 
 const COMMON_IMPORTS = ['Id', 'Ids'];
@@ -61,7 +63,7 @@ export const getStoreUiReactApi = (
     getConstants,
   ] = getCodeFunctions();
 
-  const [mapTablesSchema] = getSchemaFunctions(
+  const [mapTablesSchema, mapCellSchema] = getSchemaFunctions(
     tablesSchema,
     valuesSchema,
     addConstant,
@@ -306,6 +308,21 @@ export const getStoreUiReactApi = (
         `${getIdsDoc('Cell', getRowDoc(tableId))}${AND_REGISTERS}`,
         'rowId: Id',
         'rowId',
+      );
+
+      mapCellSchema(
+        tableId,
+        (cellId, type, defaultValue, CELL_ID, cellName) => {
+          addProxyHook(
+            `${tableName}${cellName}${CELL}`,
+            CELL,
+            `${type}${isUndefined(defaultValue) ? OR_UNDEFINED : EMPTY_STRING}`,
+            TABLE_ID,
+            `${getCellContentDoc(tableId, cellId)}${AND_REGISTERS}`,
+            'rowId: Id',
+            `rowId, ${CELL_ID}`,
+          );
+        },
       );
     });
   }
