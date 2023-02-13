@@ -149,8 +149,10 @@ export const getCodeFunctions = (): [
               )}} from '${source}';`,
           ),
           (import1, import2) =>
-            stringHasComma(import1) > stringHasComma(import2)
-              ? -1
+            stringHasComma(import1) != stringHasComma(import2)
+              ? stringHasComma(import1)
+                ? -1
+                : 1
               : import1 > import2
               ? 1
               : -1,
