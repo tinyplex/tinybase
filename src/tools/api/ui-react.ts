@@ -1,4 +1,5 @@
 import {
+  CELL_IDS,
   EMPTY_STRING,
   ROW,
   ROW_IDS,
@@ -12,6 +13,7 @@ import {
   THE_STORE,
   getIdsDoc,
   getRowContentDoc,
+  getRowDoc,
   getTableContentDoc,
   getTableDoc,
   getTheContentOfTheStoreDoc,
@@ -292,6 +294,16 @@ export const getStoreUiReactApi = (
         rowType,
         TABLE_ID,
         `${getRowContentDoc(tableId)}${AND_REGISTERS}`,
+        'rowId: Id',
+        'rowId',
+      );
+
+      addProxyHook(
+        `${tableName}${CELL_IDS}`,
+        CELL_IDS,
+        'Ids',
+        TABLE_ID,
+        `${getIdsDoc('Cell', getRowDoc(tableId))}${AND_REGISTERS}`,
         'rowId: Id',
         'rowId',
       );
