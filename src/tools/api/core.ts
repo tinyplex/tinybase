@@ -31,6 +31,9 @@ import {
   BOOLEAN,
   DEFAULT,
   EMPTY_STRING,
+  ROW_IDS,
+  SORTED_ROW_IDS,
+  TABLE,
   TABLES,
   TYPE,
 } from '../../common/strings';
@@ -393,47 +396,47 @@ export const getStoreCoreApi = (
         ] = mapGet(tablesTypes, tableId) as TableTypes;
 
         addMethod(
-          `has${tableName}Table`,
+          `has${tableName}${TABLE}`,
           EMPTY_STRING,
           BOOLEAN,
-          storeMethod('hasTable', TABLE_ID),
+          storeMethod(`has${TABLE}`, TABLE_ID),
           getHasDoc(getTableDoc(tableId)),
         );
         addMethod(
-          `get${tableName}Table`,
+          `get${tableName}${TABLE}`,
           EMPTY_STRING,
           tableType,
-          storeMethod('getTable', TABLE_ID, tableType),
+          storeMethod(`get${TABLE}`, TABLE_ID, tableType),
           getTableContentDoc(tableId),
         );
         addMethod(
-          `set${tableName}Table`,
+          `set${tableName}${TABLE}`,
           `table: ${tableType}`,
           storeType,
-          fluentStoreMethod('setTable', `${TABLE_ID}, table`),
+          fluentStoreMethod(`set${TABLE}`, `${TABLE_ID}, table`),
           getTableContentDoc(tableId, 1),
         );
         addMethod(
-          `del${tableName}Table`,
+          `del${tableName}${TABLE}`,
           EMPTY_STRING,
           storeType,
-          fluentStoreMethod('delTable', TABLE_ID),
+          fluentStoreMethod(`del${TABLE}`, TABLE_ID),
           getTableContentDoc(tableId, 3),
         );
         addMethod(
-          `get${tableName}RowIds`,
+          `get${tableName}${ROW_IDS}`,
           EMPTY_STRING,
           'Ids',
-          storeMethod('getRowIds', TABLE_ID),
+          storeMethod(`get${ROW_IDS}`, TABLE_ID),
           getIdsDoc('Row', getTableDoc(tableId)),
         );
         addMethod(
-          `get${tableName}SortedRowIds`,
+          `get${tableName}${SORTED_ROW_IDS}`,
           `cellId?: ${cellIdType}, descending?: boolean, ` +
             'offset?: number, limit?: number',
           'Ids',
           storeMethod(
-            'getSortedRowIds',
+            `get${SORTED_ROW_IDS}`,
             `${TABLE_ID}, cellId, descending, offset, limit`,
           ),
           getIdsDoc('Row', getTableDoc(tableId), 1),
