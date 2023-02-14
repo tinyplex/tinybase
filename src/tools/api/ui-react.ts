@@ -261,10 +261,13 @@ export const getStoreUiReactApi = (
     );
 
     mapTablesSchema((tableId: Id, tableName: string, TABLE_ID: string) => {
-      const [tableType, rowType] = mapGet(tablesTypes, tableId) as TableTypes;
+      const [tableType, rowType, _rowWhenSetType, cellIdType] = mapGet(
+        tablesTypes,
+        tableId,
+      ) as TableTypes;
 
-      addImport(0, moduleDefinition, tableType, rowType);
-      addImport(1, moduleDefinition, tableType, rowType);
+      addImport(0, moduleDefinition, tableType, rowType, cellIdType);
+      addImport(1, moduleDefinition, tableType, rowType, cellIdType);
 
       addProxyHook(
         tableName,
@@ -289,7 +292,9 @@ export const getStoreUiReactApi = (
         SORTED_ROW_IDS,
         IDS,
         getIdsDoc(ROW, getTableDoc(tableId), 1) + AND_REGISTERS,
-        'cellId?: Id, descending?: boolean, offset?: number, limit?: number',
+        'cellId?: ' +
+          cellIdType +
+          ', descending?: boolean, offset?: number, limit?: number',
         TABLE_ID + ', cellId, descending, offset, limit',
       );
 

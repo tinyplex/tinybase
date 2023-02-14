@@ -499,8 +499,9 @@ export const getStoreCoreApi = (
         SORTED_ROW_IDS,
         IDS,
         getIdsDoc(ROW, getTableDoc(tableId), 1),
-        `cellId?: ${cellIdType}, descending?: boolean, ` +
-          'offset?: number, limit?: number',
+        'cellId?: ' +
+          cellIdType +
+          ', descending?: boolean, offset?: number, limit?: number',
         TABLE_ID + ', cellId, descending, offset, limit',
       );
       addProxyMethod(
