@@ -13,7 +13,7 @@ export const getStoreApi = (
     return [EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, EMPTY_STRING];
   }
 
-  const [dTsCore, tsCore, sharedTypes] = getStoreCoreApi(
+  const [dTsCore, tsCore, sharedTableTypes, sharedValueTypes] = getStoreCoreApi(
     tablesSchema,
     valuesSchema,
     module,
@@ -22,6 +22,12 @@ export const getStoreApi = (
   return [
     dTsCore,
     tsCore,
-    ...getStoreUiReactApi(tablesSchema, valuesSchema, module, sharedTypes),
+    ...getStoreUiReactApi(
+      tablesSchema,
+      valuesSchema,
+      module,
+      sharedTableTypes,
+      sharedValueTypes,
+    ),
   ];
 };
