@@ -1,4 +1,24 @@
 import {
+  ADD,
+  BOOLEAN,
+  CELL,
+  CELL_IDS,
+  DEFAULT,
+  EMPTY_STRING,
+  GET,
+  IDS,
+  ROW,
+  ROW_IDS,
+  SORTED_ROW_IDS,
+  TABLE,
+  TABLES,
+  TABLE_IDS,
+  TYPE,
+  VALUE,
+  VALUES,
+  VALUE_IDS,
+} from '../../common/strings';
+import {
   A_FUNCTION_FOR,
   EXPORT,
   JSON,
@@ -24,23 +44,6 @@ import {
   getTheContentOfTheStoreDoc,
   getValueContentDoc,
 } from '../common/strings';
-import {
-  ADD,
-  BOOLEAN,
-  CELL,
-  CELL_IDS,
-  DEFAULT,
-  EMPTY_STRING,
-  GET,
-  IDS,
-  ROW,
-  ROW_IDS,
-  SORTED_ROW_IDS,
-  TABLE,
-  TABLES,
-  TABLE_IDS,
-  TYPE,
-} from '../../common/strings';
 import {
   IdMap,
   mapForEach,
@@ -384,7 +387,7 @@ export const getStoreCoreApi = (
 
     arrayForEach(
       [
-        [TABLES],
+        [tablesType],
         [BOOLEAN],
         [storeType, `tables: ${tablesType}`, 'tables'],
         [storeType],
@@ -575,8 +578,8 @@ export const getStoreCoreApi = (
       TABLES + JSON,
       storeType,
       getTheContentOfTheStoreDoc(1, 7),
-      'tablesJson: Json',
-      'tablesJson',
+      'tablesJson: ' + JSON,
+      'tables' + JSON,
     );
 
     addProxyListener(
@@ -771,100 +774,78 @@ export const getStoreCoreApi = (
       getListenerTypeDoc(12),
     );
 
-    addMethod(
-      `hasValues`,
+    arrayForEach(
+      [
+        [valuesType],
+        [BOOLEAN],
+        [storeType, `values: ${valuesWhenSetType}`, 'values'],
+        [storeType],
+        [storeType, `partialValues: ${valuesWhenSetType}`, 'partialValues'],
+      ],
+      ([returnType, params, paramsInCall], verb) =>
+        addProxyMethod(
+          verb,
+          EMPTY_STRING,
+          VALUES,
+          returnType,
+          getTheContentOfTheStoreDoc(2, verb),
+          params,
+          paramsInCall,
+        ),
+    );
+    addProxyMethod(
+      0,
       EMPTY_STRING,
-      BOOLEAN,
-      storeMethod('hasValues'),
-      getTheContentOfTheStoreDoc(2, 1),
-    );
-    addMethod(
-      `getValues`,
-      EMPTY_STRING,
-      valuesType,
-      storeMethod('getValues', EMPTY_STRING, valuesType),
-      getTheContentOfTheStoreDoc(2, 0),
-    );
-    addMethod(
-      `setValues`,
-      `values: ${valuesWhenSetType}`,
-      storeType,
-      fluentStoreMethod('setValues', 'values'),
-      getTheContentOfTheStoreDoc(2, 2),
-    );
-    addMethod(
-      `setPartialValues`,
-      `partialValues: ${valuesWhenSetType}`,
-      storeType,
-      fluentStoreMethod('setPartialValues', 'partialValues'),
-      getTheContentOfTheStoreDoc(2, 4),
-    );
-    addMethod(
-      `delValues`,
-      EMPTY_STRING,
-      storeType,
-      fluentStoreMethod('delValues'),
-      getTheContentOfTheStoreDoc(2, 3),
-    );
-    addMethod(
-      `getValueIds`,
-      EMPTY_STRING,
+      VALUE_IDS,
       `${valueIdType}[]`,
-      storeMethod('getValueIds', EMPTY_STRING, `${valueIdType}[]`),
       getIdsDoc('Value', THE_STORE),
     );
-    addMethod(
-      'forEachValue',
-      `valueCallback: ${valueCallbackType}`,
-      'void',
-      storeMethod('forEachValue', 'valueCallback as any'),
+    addProxyMethod(
+      5,
+      EMPTY_STRING,
+      VALUE,
+      `void`,
       getForEachDoc('Value', THE_STORE),
+      `valueCallback: ${valueCallbackType}`,
+      'valueCallback as any',
     );
 
     mapValuesSchema((valueId, type, _, VALUE_ID, valueName) => {
-      addMethod(
-        `has${valueName}Value`,
-        EMPTY_STRING,
-        BOOLEAN,
-        storeMethod('hasValue', VALUE_ID),
-        getValueContentDoc(valueId, 1),
-      );
-      addMethod(
-        `get${valueName}Value`,
-        EMPTY_STRING,
-        type,
-        storeMethod('getValue', VALUE_ID, type),
-        getValueContentDoc(valueId),
-      );
-      addMethod(
-        `set${valueName}Value`,
-        `value: ${type}`,
-        storeType,
-        fluentStoreMethod('setValue', `${VALUE_ID}, value`),
-        getValueContentDoc(valueId, 2),
-      );
-      addMethod(
-        `del${valueName}Value`,
-        EMPTY_STRING,
-        storeType,
-        fluentStoreMethod('delValue', VALUE_ID),
-        getValueContentDoc(valueId, 3),
+      arrayForEach(
+        [
+          [type],
+          [BOOLEAN],
+          [storeType, `value: ${type}`, ', value'],
+          [storeType],
+        ],
+        ([returnType, params, paramsInCall = EMPTY_STRING], verb) =>
+          addProxyMethod(
+            verb,
+            valueName,
+            VALUE,
+            returnType,
+            getValueContentDoc(valueId, verb),
+            params,
+            `${VALUE_ID}${paramsInCall}`,
+          ),
       );
     });
 
-    addMethod(
-      'getValuesJson',
+    addProxyMethod(
+      0,
       EMPTY_STRING,
-      'Json',
-      storeMethod('getValuesJson'),
+      VALUES + JSON,
+      JSON,
       getTheContentOfTheStoreDoc(2, 6),
     );
-    addMethod(
-      'setValuesJson',
-      'valuesJson: Json',
+    addProxyMethod(
+      2,
+      EMPTY_STRING,
+      VALUES + JSON,
       storeType,
-      fluentStoreMethod('setValuesJson', 'valuesJson'),
       getTheContentOfTheStoreDoc(2, 7),
+      'valuesJson: ' + JSON,
+      'values' + JSON,
     );
 
     addMethod(
