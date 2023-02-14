@@ -2,6 +2,7 @@ import {
   CELL,
   CELL_IDS,
   EMPTY_STRING,
+  IDS,
   ROW,
   ROW_IDS,
   SORTED_ROW_IDS,
@@ -11,6 +12,7 @@ import {
 } from '../../common/strings';
 import {
   EXPORT,
+  ID,
   THE_STORE,
   getCellContentDoc,
   getIdsDoc,
@@ -39,7 +41,7 @@ import {OR_UNDEFINED} from '../common/strings';
 import {getSchemaFunctions} from '../common/schema';
 import {objIsEmpty} from '../../common/obj';
 
-const COMMON_IMPORTS = ['Id', 'Ids'];
+const COMMON_IMPORTS = [ID, IDS];
 
 const USE_CONTEXT = 'const contextValue = useContext(Context);';
 const AND_REGISTERS =
@@ -73,8 +75,8 @@ export const getStoreUiReactApi = (
   const uiReactModuleDefinition = `./${camel(module)}-ui-react.d`;
   const storeType = camel(module, 1);
   const storeInstance = camel(storeType);
-  const StoreOrStoreId = `${storeType}Or${storeType}Id`;
-  const storeOrStoreId = `${storeInstance}Or${storeType}Id`;
+  const StoreOrStoreId = storeType + 'Or' + storeType + ID;
+  const storeOrStoreId = storeInstance + 'Or' + storeType + ID;
 
   const functions: IdMap<
     [
@@ -92,9 +94,9 @@ export const getStoreUiReactApi = (
     returnType: string | 1,
     body: LINE_OR_LINE_TREE,
     doc: string,
-    generic = '',
+    generic = EMPTY_STRING,
   ): Id => {
-    addImport(1, uiReactModuleDefinition, `${name} as ${name}Decl`);
+    addImport(1, uiReactModuleDefinition, name + ' as ' + name + 'Decl');
     return mapUnique(functions, name, [
       parameters,
       returnType,
@@ -110,7 +112,7 @@ export const getStoreUiReactApi = (
     returnType: string,
     body: LINE_OR_LINE_TREE,
     doc: string,
-    generic = '',
+    generic = EMPTY_STRING,
   ) => addFunction(`use${name}`, parameters, returnType, body, doc, generic);
 
   const addProxyHook = (
@@ -127,14 +129,14 @@ export const getStoreUiReactApi = (
       `use${underlyingName} as use${underlyingName}Core`,
     );
     addHook(
-      `${prefix}${underlyingName}`,
-      `${
-        extraParameters ? `${extraParameters}, ` : ''
-      }${storeOrStoreIdParameter}`,
+      prefix + underlyingName,
+      (extraParameters ? `${extraParameters}, ` : EMPTY_STRING) +
+        storeOrStoreIdParameter,
       returnType,
-      `${useHook}(${storeOrStoreId}, use${underlyingName}Core${
-        extraParametersInCall ? `, ${extraParametersInCall}` : ''
-      })`,
+      useHook +
+        `(${storeOrStoreId}, use${underlyingName}Core${
+          extraParametersInCall ? `, ${extraParametersInCall}` : EMPTY_STRING
+        })`,
       doc,
     );
   };
@@ -150,12 +152,14 @@ export const getStoreUiReactApi = (
     mapMap(functions, ([parameters, returnType, body, doc, generic], name) => {
       const lines = location
         ? [
-            `${EXPORT} const ${name}: typeof ${name}Decl = ${generic}` +
+            EXPORT +
+              ` const ${name}: typeof ${name}Decl = ${generic}` +
               `(${parameters}): ${returnType == 1 ? 'any' : returnType} =>`,
             body,
           ]
         : [
-            `${EXPORT} function ${name}${generic}(${parameters}` +
+            EXPORT +
+              ` function ${name}${generic}(${parameters}` +
               `): ${returnType == 1 ? 'ComponentReturnType' : returnType};`,
           ];
       if (!location) {
@@ -171,9 +175,9 @@ export const getStoreUiReactApi = (
 
   const storeOrStoreIdType = addType(
     StoreOrStoreId,
-    `${storeType} | Id`,
-    `Used when you need to refer to a ${storeType} ` +
-      'in a React hook or component',
+    storeType + ' | Id',
+    `Used when you need to refer to a ${storeType} in a React hook or ` +
+      'component',
   );
 
   const providerPropsType = addType(
@@ -189,7 +193,7 @@ export const getStoreUiReactApi = (
   addImport(1, 'tinybase', ...COMMON_IMPORTS);
   addImport(1, uiReactModuleDefinition, storeOrStoreIdType, providerPropsType);
 
-  const storeOrStoreIdParameter = `${storeOrStoreId}?: ` + storeOrStoreIdType;
+  const storeOrStoreIdParameter = storeOrStoreId + '?: ' + storeOrStoreIdType;
 
   addConstant('{createContext, useContext, useMemo}', 'React');
 
@@ -223,7 +227,8 @@ export const getStoreUiReactApi = (
 
   const useHook = addInternalFunction(
     `useHook`,
-    `${storeOrStoreId}: ${storeOrStoreIdType} | undefined, ` +
+    storeOrStoreId +
+      `: ${storeOrStoreIdType} | undefined, ` +
       `hook: (...args: any[]) => any, ...args: any[]`,
     [
       `const ${storeInstance} = ${getStoreHook}(${storeOrStoreId} as Id);`,
@@ -245,14 +250,14 @@ export const getStoreUiReactApi = (
       EMPTY_STRING,
       TABLES,
       tablesType,
-      `${getTheContentOfTheStoreDoc(1, 0)}${AND_REGISTERS}`,
+      getTheContentOfTheStoreDoc(1, 0) + AND_REGISTERS,
     );
 
     addProxyHook(
       EMPTY_STRING,
       TABLE_IDS,
       tableIdType,
-      `${getIdsDoc(TABLE, THE_STORE)}${AND_REGISTERS}`,
+      getIdsDoc(TABLE, THE_STORE) + AND_REGISTERS,
     );
 
     mapTablesSchema((tableId: Id, tableName: string, TABLE_ID: string) => {
@@ -265,7 +270,7 @@ export const getStoreUiReactApi = (
         tableName,
         TABLE,
         tableType,
-        `${getTableContentDoc(tableId)}${AND_REGISTERS}`,
+        getTableContentDoc(tableId) + AND_REGISTERS,
         EMPTY_STRING,
         TABLE_ID,
       );
@@ -273,8 +278,8 @@ export const getStoreUiReactApi = (
       addProxyHook(
         tableName,
         ROW_IDS,
-        'Ids',
-        `${getIdsDoc(ROW, getTableDoc(tableId))}${AND_REGISTERS}`,
+        IDS,
+        getIdsDoc(ROW, getTableDoc(tableId)) + AND_REGISTERS,
         EMPTY_STRING,
         TABLE_ID,
       );
@@ -282,40 +287,40 @@ export const getStoreUiReactApi = (
       addProxyHook(
         tableName,
         SORTED_ROW_IDS,
-        'Ids',
-        `${getIdsDoc(ROW, getTableDoc(tableId), 1)}${AND_REGISTERS}`,
+        IDS,
+        getIdsDoc(ROW, getTableDoc(tableId), 1) + AND_REGISTERS,
         'cellId?: Id, descending?: boolean, offset?: number, limit?: number',
-        `${TABLE_ID}, cellId, descending, offset, limit`,
+        TABLE_ID + ', cellId, descending, offset, limit',
       );
 
       addProxyHook(
         tableName,
         ROW,
         rowType,
-        `${getRowContentDoc(tableId)}${AND_REGISTERS}`,
-        'rowId: Id',
-        `${TABLE_ID}, rowId`,
+        getRowContentDoc(tableId) + AND_REGISTERS,
+        'rowId: ' + ID,
+        TABLE_ID + ', rowId',
       );
 
       addProxyHook(
         tableName,
         CELL_IDS,
-        'Ids',
-        `${getIdsDoc(CELL, getRowDoc(tableId))}${AND_REGISTERS}`,
-        'rowId: Id',
-        `${TABLE_ID}, rowId`,
+        IDS,
+        getIdsDoc(CELL, getRowDoc(tableId)) + AND_REGISTERS,
+        'rowId: ' + ID,
+        TABLE_ID + ', rowId',
       );
 
       mapCellSchema(
         tableId,
         (cellId, type, defaultValue, CELL_ID, cellName) => {
           addProxyHook(
-            `${tableName}${cellName}`,
+            tableName + cellName,
             CELL,
-            `${type}${isUndefined(defaultValue) ? OR_UNDEFINED : EMPTY_STRING}`,
-            `${getCellContentDoc(tableId, cellId)}${AND_REGISTERS}`,
-            'rowId: Id',
-            `${TABLE_ID}, rowId, ${CELL_ID}`,
+            type + (isUndefined(defaultValue) ? OR_UNDEFINED : EMPTY_STRING),
+            getCellContentDoc(tableId, cellId) + AND_REGISTERS,
+            'rowId: ' + ID,
+            TABLE_ID + ', rowId, ' + CELL_ID,
           );
         },
       );
@@ -325,7 +330,8 @@ export const getStoreUiReactApi = (
   addComponent(
     'Provider',
     `{${storeInstance}, ${storeInstance}ById, children}: ` +
-      `${providerPropsType} & {children: React.ReactNode}`,
+      providerPropsType +
+      ' & {children: React.ReactNode}',
     [
       USE_CONTEXT,
       'return (',
