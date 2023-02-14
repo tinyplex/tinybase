@@ -1136,7 +1136,7 @@ export const createS: typeof createSDecl = () => {
 };
 ",
   "import {Id, Ids} from 'tinybase';
-import {S, T1Row, T1Table, TableId, Tables} from './s.d';
+import {S, T1CellId, T1Row, T1Table, TableId, Tables} from './s.d';
 import {ComponentReturnType} from 'tinybase/ui-react';
 
 /**
@@ -1192,7 +1192,7 @@ export function useT1RowIds(sOrSId?: SOrSId): Ids;
  * listener so that any changes to that result will cause a re-render.
  */
 export function useT1SortedRowIds(
-  cellId?: Id,
+  cellId?: T1CellId,
   descending?: boolean,
   offset?: number,
   limit?: number,
@@ -1265,7 +1265,7 @@ import {
   useTableIds as useTableIdsDecl,
   useTables as useTablesDecl,
 } from './s-ui-react.d';
-import {S, T1Row, T1Table, TableId, Tables} from './s.d';
+import {S, T1CellId, T1Row, T1Table, TableId, Tables} from './s.d';
 import {
   useCell as useCellCore,
   useCellIds as useCellIdsCore,
@@ -1329,7 +1329,7 @@ export const useT1RowIds: typeof useT1RowIdsDecl = (sOrSId?: SOrSId): Ids =>
   useHook(sOrSId, useRowIdsCore, T1);
 
 export const useT1SortedRowIds: typeof useT1SortedRowIdsDecl = (
-  cellId?: Id,
+  cellId?: T1CellId,
   descending?: boolean,
   offset?: number,
   limit?: number,
@@ -2765,7 +2765,7 @@ export const createS: typeof createSDecl = () => {
 };
 ",
   "import {Id, Ids} from 'tinybase';
-import {S, T1Row, T1Table, TableId, Tables} from './s.d';
+import {S, T1CellId, T1Row, T1Table, TableId, Tables} from './s.d';
 import {ComponentReturnType} from 'tinybase/ui-react';
 
 /**
@@ -2821,7 +2821,7 @@ export function useT1RowIds(sOrSId?: SOrSId): Ids;
  * listener so that any changes to that result will cause a re-render.
  */
 export function useT1SortedRowIds(
-  cellId?: Id,
+  cellId?: T1CellId,
   descending?: boolean,
   offset?: number,
   limit?: number,
@@ -2894,7 +2894,7 @@ import {
   useTableIds as useTableIdsDecl,
   useTables as useTablesDecl,
 } from './s-ui-react.d';
-import {S, T1Row, T1Table, TableId, Tables} from './s.d';
+import {S, T1CellId, T1Row, T1Table, TableId, Tables} from './s.d';
 import {
   useCell as useCellCore,
   useCellIds as useCellIdsCore,
@@ -2958,7 +2958,7 @@ export const useT1RowIds: typeof useT1RowIdsDecl = (sOrSId?: SOrSId): Ids =>
   useHook(sOrSId, useRowIdsCore, T1);
 
 export const useT1SortedRowIds: typeof useT1SortedRowIdsDecl = (
-  cellId?: Id,
+  cellId?: T1CellId,
   descending?: boolean,
   offset?: number,
   limit?: number,
@@ -3607,7 +3607,7 @@ getStore: (): Store => store,
 return Object.freeze(s);
 };",
   "import {Id, Ids} from 'tinybase';
-import {S, T1Row, T1Table, TableId, Tables} from './s.d';
+import {S, T1CellId, T1Row, T1Table, TableId, Tables} from './s.d';
 import {ComponentReturnType} from 'tinybase/ui-react';
 
 /** Used when you need to refer to a S in a React hook or component. */
@@ -3635,7 +3635,7 @@ export function useT1Table(sOrSId?: SOrSId): T1Table;
 export function useT1RowIds(sOrSId?: SOrSId): Ids;
 
 /** Gets sorted, paginated Ids of the Rows in the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
-export function useT1SortedRowIds(cellId?: Id, descending?: boolean, offset?: number, limit?: number, sOrSId?: SOrSId): Ids;
+export function useT1SortedRowIds(cellId?: T1CellId, descending?: boolean, offset?: number, limit?: number, sOrSId?: SOrSId): Ids;
 
 /** Gets the content of the specified Row in the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
 export function useT1Row(rowId: Id, sOrSId?: SOrSId): T1Row;
@@ -3660,7 +3660,7 @@ export function Provider({s, sById, children}: ProviderProps & {children: React.
 ",
   "import {Id, Ids} from 'tinybase';
 import {Provider as ProviderDecl, ProviderProps, SOrSId, useCreateS as useCreateSDecl, useS as useSDecl, useT1C1Cell as useT1C1CellDecl, useT1C2Cell as useT1C2CellDecl, useT1C3Cell as useT1C3CellDecl, useT1Cell as useT1CellDecl, useT1CellIds as useT1CellIdsDecl, useT1Row as useT1RowDecl, useT1RowIds as useT1RowIdsDecl, useT1SortedRowIds as useT1SortedRowIdsDecl, useT1Table as useT1TableDecl, useTableIds as useTableIdsDecl, useTables as useTablesDecl} from './s-ui-react.d';
-import {S, T1Row, T1Table, TableId, Tables} from './s.d';
+import {S, T1CellId, T1Row, T1Table, TableId, Tables} from './s.d';
 import {useCell as useCellCore, useCellIds as useCellIdsCore, useRow as useRowCore, useRowIds as useRowIdsCore, useSortedRowIds as useSortedRowIdsCore, useTable as useTableCore, useTableIds as useTableIdsCore, useTables as useTablesCore} from 'tinybase/ui-react';
 import React from 'react';
 
@@ -3707,7 +3707,7 @@ useHook(sOrSId, useTableCore, T1)
 export const useT1RowIds: typeof useT1RowIdsDecl = (sOrSId?: SOrSId): Ids =>
 useHook(sOrSId, useRowIdsCore, T1)
 
-export const useT1SortedRowIds: typeof useT1SortedRowIdsDecl = (cellId?: Id, descending?: boolean, offset?: number, limit?: number, sOrSId?: SOrSId): Ids =>
+export const useT1SortedRowIds: typeof useT1SortedRowIdsDecl = (cellId?: T1CellId, descending?: boolean, offset?: number, limit?: number, sOrSId?: SOrSId): Ids =>
 useHook(sOrSId, useSortedRowIdsCore, T1, cellId, descending, offset, limit)
 
 export const useT1Row: typeof useT1RowDecl = (rowId: Id, sOrSId?: SOrSId): T1Row =>
@@ -4490,7 +4490,7 @@ getStore: (): Store => store,
 return Object.freeze(s);
 };",
   "import {Id, Ids} from 'tinybase';
-import {S, T1Row, T1Table, TableId, Tables} from './s.d';
+import {S, T1CellId, T1Row, T1Table, TableId, Tables} from './s.d';
 import {ComponentReturnType} from 'tinybase/ui-react';
 
 /** Used when you need to refer to a S in a React hook or component. */
@@ -4518,7 +4518,7 @@ export function useT1Table(sOrSId?: SOrSId): T1Table;
 export function useT1RowIds(sOrSId?: SOrSId): Ids;
 
 /** Gets sorted, paginated Ids of the Rows in the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
-export function useT1SortedRowIds(cellId?: Id, descending?: boolean, offset?: number, limit?: number, sOrSId?: SOrSId): Ids;
+export function useT1SortedRowIds(cellId?: T1CellId, descending?: boolean, offset?: number, limit?: number, sOrSId?: SOrSId): Ids;
 
 /** Gets the content of the specified Row in the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
 export function useT1Row(rowId: Id, sOrSId?: SOrSId): T1Row;
@@ -4543,7 +4543,7 @@ export function Provider({s, sById, children}: ProviderProps & {children: React.
 ",
   "import {Id, Ids} from 'tinybase';
 import {Provider as ProviderDecl, ProviderProps, SOrSId, useCreateS as useCreateSDecl, useS as useSDecl, useT1C1Cell as useT1C1CellDecl, useT1C2Cell as useT1C2CellDecl, useT1C3Cell as useT1C3CellDecl, useT1Cell as useT1CellDecl, useT1CellIds as useT1CellIdsDecl, useT1Row as useT1RowDecl, useT1RowIds as useT1RowIdsDecl, useT1SortedRowIds as useT1SortedRowIdsDecl, useT1Table as useT1TableDecl, useTableIds as useTableIdsDecl, useTables as useTablesDecl} from './s-ui-react.d';
-import {S, T1Row, T1Table, TableId, Tables} from './s.d';
+import {S, T1CellId, T1Row, T1Table, TableId, Tables} from './s.d';
 import {useCell as useCellCore, useCellIds as useCellIdsCore, useRow as useRowCore, useRowIds as useRowIdsCore, useSortedRowIds as useSortedRowIdsCore, useTable as useTableCore, useTableIds as useTableIdsCore, useTables as useTablesCore} from 'tinybase/ui-react';
 import React from 'react';
 
@@ -4590,7 +4590,7 @@ useHook(sOrSId, useTableCore, T1)
 export const useT1RowIds: typeof useT1RowIdsDecl = (sOrSId?: SOrSId): Ids =>
 useHook(sOrSId, useRowIdsCore, T1)
 
-export const useT1SortedRowIds: typeof useT1SortedRowIdsDecl = (cellId?: Id, descending?: boolean, offset?: number, limit?: number, sOrSId?: SOrSId): Ids =>
+export const useT1SortedRowIds: typeof useT1SortedRowIdsDecl = (cellId?: T1CellId, descending?: boolean, offset?: number, limit?: number, sOrSId?: SOrSId): Ids =>
 useHook(sOrSId, useSortedRowIdsCore, T1, cellId, descending, offset, limit)
 
 export const useT1Row: typeof useT1RowDecl = (rowId: Id, sOrSId?: SOrSId): T1Row =>
