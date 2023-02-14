@@ -83,6 +83,7 @@ import {objIsEmpty} from '../../common/obj';
 
 export type TableTypes = [string, string, string, string, string, string];
 export type SharedTableTypes = [string, string, IdMap<TableTypes>];
+export type SharedValueTypes = [string, string];
 
 const METHOD_PREFIX_VERBS = [
   GET,
@@ -117,7 +118,7 @@ export const getStoreCoreApi = (
   tablesSchema: TablesSchema,
   valuesSchema: ValuesSchema,
   module: string,
-): [string, string, SharedTableTypes | []] => {
+): [string, string, SharedTableTypes | [], SharedValueTypes | []] => {
   const [
     build,
     addImport,
@@ -225,6 +226,7 @@ export const getStoreCoreApi = (
   const createSteps: any[] = [];
 
   let sharedTableTypes: SharedTableTypes | [] = [];
+  let sharedValueTypes: SharedValueTypes | [] = [];
 
   // --
 
@@ -418,6 +420,8 @@ export const getStoreCoreApi = (
       getListenerTypeDoc(8),
     );
 
+    sharedTableTypes = [tablesType, tableIdType, tablesTypes];
+
     arrayForEach(
       [
         [tablesType],
@@ -454,7 +458,6 @@ export const getStoreCoreApi = (
     );
 
     const mapCellTypes: IdMap<string> = mapNew();
-    sharedTableTypes = [tablesType, tableIdType, tablesTypes];
 
     mapTablesSchema((tableId, tableName, TABLE_ID) => {
       const [
@@ -809,6 +812,7 @@ export const getStoreCoreApi = (
         RETURNS_VOID,
       getListenerTypeDoc(12),
     );
+    sharedValueTypes = [valuesType, valueIdType];
 
     arrayForEach(
       [
@@ -846,7 +850,7 @@ export const getStoreCoreApi = (
       'valueCallback as any',
     );
 
-    mapValuesSchema((valueId, type, _, VALUE_ID, valueName) => {
+    mapValuesSchema((valueId, type, _, VALUE_ID, valueName) =>
       arrayForEach(
         [
           [type],
@@ -864,8 +868,8 @@ export const getStoreCoreApi = (
             params,
             VALUE_ID + paramsInCall,
           ),
-      );
-    });
+      ),
+    );
 
     addProxyMethod(
       0,
@@ -1080,5 +1084,6 @@ export const getStoreCoreApi = (
       '};',
     ),
     sharedTableTypes,
+    sharedValueTypes,
   ];
 };
