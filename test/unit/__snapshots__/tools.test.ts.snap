@@ -89,7 +89,7 @@ export type TablesListener = (
 ) => void;
 
 /**
- * A function for listening to changes to Table Ids in the Store.
+ * A function for listening to changes to the Table Ids in the Store.
  */
 export type TableIdsListener = (s: S) => void;
 
@@ -103,7 +103,7 @@ export type TableListener = (
 ) => void;
 
 /**
- * A function for listening to changes to Row Ids in a Table.
+ * A function for listening to changes to the Row Ids in a Table.
  */
 export type RowIdsListener = (s: S, tableId: TableId) => void;
 
@@ -118,7 +118,7 @@ export type RowListener = (
 ) => void;
 
 /**
- * A function for listening to changes to Cell Ids in a Row.
+ * A function for listening to changes to the Cell Ids in a Row.
  */
 export type CellIdsListener = (s: S, tableId: TableId, rowId: Id) => void;
 
@@ -232,7 +232,7 @@ export type ValuesListener = (
 ) => void;
 
 /**
- * A function for listening to changes to Value Ids in the Store.
+ * A function for listening to changes to the Value Ids in the Store.
  */
 export type ValueIdsListener = (s: S) => void;
 
@@ -291,14 +291,14 @@ export type TransactionListener = (
 
 export interface S {
   /**
-   * Gets whether any Table exists in the Store.
-   */
-  hasTables(): boolean;
-
-  /**
    * Gets the tabular content of the Store.
    */
   getTables(): Tables;
+
+  /**
+   * Checks existence of the tabular content of the Store.
+   */
+  hasTables(): boolean;
 
   /**
    * Sets the tabular content of the Store.
@@ -321,14 +321,14 @@ export interface S {
   forEachTable(tableCallback: TableCallback): void;
 
   /**
-   * Gets whether the 't1' Table exists in the Store.
-   */
-  hasT1Table(): boolean;
-
-  /**
    * Gets the content of the 't1' Table.
    */
   getT1Table(): T1Table;
+
+  /**
+   * Checks existence of the content of the 't1' Table.
+   */
+  hasT1Table(): boolean;
 
   /**
    * Sets the content of the 't1' Table.
@@ -361,14 +361,14 @@ export interface S {
   forEachT1Row(rowCallback: T1RowCallback): void;
 
   /**
-   * Gets whether the specified Row exists in the 't1' Table.
-   */
-  hasT1Row(rowId: Id): boolean;
-
-  /**
    * Gets the content of the specified Row in the 't1' Table.
    */
   getT1Row(rowId: Id): T1Row;
+
+  /**
+   * Checks existence of the content of the specified Row in the 't1' Table.
+   */
+  hasT1Row(rowId: Id): boolean;
 
   /**
    * Sets the content of the specified Row in the 't1' Table.
@@ -376,9 +376,9 @@ export interface S {
   setT1Row(rowId: Id, row: T1RowWhenSet): S;
 
   /**
-   * Adds a new Row to the 't1' Table.
+   * Deletes the content of the specified Row in the 't1' Table.
    */
-  addT1Row(row: T1RowWhenSet): Id | undefined;
+  delT1Row(rowId: Id): S;
 
   /**
    * Sets part of the content of the specified Row in the 't1' Table.
@@ -386,9 +386,9 @@ export interface S {
   setT1PartialRow(rowId: Id, partialRow: T1RowWhenSet): S;
 
   /**
-   * Deletes the content of the specified Row in the 't1' Table.
+   * Adds a new Row to the 't1' Table.
    */
-  delT1Row(rowId: Id): S;
+  addT1Row(row: T1RowWhenSet): Id | undefined;
 
   /**
    * Gets the Ids of the Cells in the specified Row in the 't1' Table.
@@ -401,14 +401,14 @@ export interface S {
   forEachT1Cell(rowId: Id, cellCallback: T1CellCallback): void;
 
   /**
-   * Gets whether the 'c1' Cell exists in the specified Row in the 't1' Table.
-   */
-  hasT1C1Cell(rowId: Id): boolean;
-
-  /**
    * Gets the 'c1' Cell for the specified Row in the 't1' Table.
    */
   getT1C1Cell(rowId: Id): number;
+
+  /**
+   * Checks existence of the 'c1' Cell for the specified Row in the 't1' Table.
+   */
+  hasT1C1Cell(rowId: Id): boolean;
 
   /**
    * Sets the 'c1' Cell for the specified Row in the 't1' Table.
@@ -421,14 +421,14 @@ export interface S {
   delT1C1Cell(rowId: Id): S;
 
   /**
-   * Gets whether the 'c2' Cell exists in the specified Row in the 't1' Table.
-   */
-  hasT1C2Cell(rowId: Id): boolean;
-
-  /**
    * Gets the 'c2' Cell for the specified Row in the 't1' Table.
    */
   getT1C2Cell(rowId: Id): string;
+
+  /**
+   * Checks existence of the 'c2' Cell for the specified Row in the 't1' Table.
+   */
+  hasT1C2Cell(rowId: Id): boolean;
 
   /**
    * Sets the 'c2' Cell for the specified Row in the 't1' Table.
@@ -441,14 +441,14 @@ export interface S {
   delT1C2Cell(rowId: Id): S;
 
   /**
-   * Gets whether the 'c3' Cell exists in the specified Row in the 't1' Table.
-   */
-  hasT1C3Cell(rowId: Id): boolean;
-
-  /**
    * Gets the 'c3' Cell for the specified Row in the 't1' Table.
    */
   getT1C3Cell(rowId: Id): string;
+
+  /**
+   * Checks existence of the 'c3' Cell for the specified Row in the 't1' Table.
+   */
+  hasT1C3Cell(rowId: Id): boolean;
 
   /**
    * Sets the 'c3' Cell for the specified Row in the 't1' Table.
@@ -461,14 +461,14 @@ export interface S {
   delT1C3Cell(rowId: Id): S;
 
   /**
-   * Gets whether the '' Cell exists in the specified Row in the 't1' Table.
-   */
-  hasT1Cell(rowId: Id): boolean;
-
-  /**
    * Gets the '' Cell for the specified Row in the 't1' Table.
    */
   getT1Cell(rowId: Id): string | undefined;
+
+  /**
+   * Checks existence of the '' Cell for the specified Row in the 't1' Table.
+   */
+  hasT1Cell(rowId: Id): boolean;
 
   /**
    * Sets the '' Cell for the specified Row in the 't1' Table.
@@ -567,14 +567,14 @@ export interface S {
   ): Id;
 
   /**
-   * Gets whether any Value exists in the Store.
-   */
-  hasValues(): boolean;
-
-  /**
    * Gets the keyed value content of the Store.
    */
   getValues(): Values;
+
+  /**
+   * Checks existence of the keyed value content of the Store.
+   */
+  hasValues(): boolean;
 
   /**
    * Sets the keyed value content of the Store.
@@ -582,14 +582,14 @@ export interface S {
   setValues(values: ValuesWhenSet): S;
 
   /**
-   * Sets part of the keyed value content of the Store.
-   */
-  setPartialValues(partialValues: ValuesWhenSet): S;
-
-  /**
    * Deletes the keyed value content of the Store.
    */
   delValues(): S;
+
+  /**
+   * Sets part of the keyed value content of the Store.
+   */
+  setPartialValues(partialValues: ValuesWhenSet): S;
 
   /**
    * Gets the Ids of the Values in the Store.
@@ -602,14 +602,14 @@ export interface S {
   forEachValue(valueCallback: ValueCallback): void;
 
   /**
-   * Gets whether the 'v1' Value exists in the Store.
-   */
-  hasV1Value(): boolean;
-
-  /**
    * Gets the 'v1' Value.
    */
   getV1Value(): number;
+
+  /**
+   * Checks existence of the 'v1' Value.
+   */
+  hasV1Value(): boolean;
 
   /**
    * Sets the 'v1' Value.
@@ -622,14 +622,14 @@ export interface S {
   delV1Value(): S;
 
   /**
-   * Gets whether the 'v2' Value exists in the Store.
-   */
-  hasV2Value(): boolean;
-
-  /**
    * Gets the 'v2' Value.
    */
   getV2Value(): string;
+
+  /**
+   * Checks existence of the 'v2' Value.
+   */
+  hasV2Value(): boolean;
 
   /**
    * Sets the 'v2' Value.
@@ -642,14 +642,14 @@ export interface S {
   delV2Value(): S;
 
   /**
-   * Gets whether the 'v3' Value exists in the Store.
-   */
-  hasV3Value(): boolean;
-
-  /**
    * Gets the 'v3' Value.
    */
   getV3Value(): string;
+
+  /**
+   * Checks existence of the 'v3' Value.
+   */
+  hasV3Value(): boolean;
 
   /**
    * Sets the 'v3' Value.
@@ -662,14 +662,14 @@ export interface S {
   delV3Value(): S;
 
   /**
-   * Gets whether the '' Value exists in the Store.
-   */
-  hasValue(): boolean;
-
-  /**
    * Gets the '' Value.
    */
   getValue(): string;
+
+  /**
+   * Checks existence of the '' Value.
+   */
+  hasValue(): boolean;
 
   /**
    * Sets the '' Value.
@@ -714,7 +714,7 @@ export interface S {
   ): Id;
 
   /**
-   * Registers a listener that will be called whenever an invalid Cell change
+   * Registers a listener that will be called whenever an invalid Value change
    * was attempted.
    */
   addInvalidValueListener(
@@ -879,9 +879,9 @@ export const createS: typeof createSDecl = () => {
       listener(s, ...args);
 
   const s = {
-    hasTables: (): boolean => store.hasTables(),
+    getTables: (): Tables => store.getTables() as Tables,
 
-    getTables: (): Tables => store.getTables(),
+    hasTables: (): boolean => store.hasTables(),
 
     setTables: (tables: Tables): S => fluent(() => store.setTables(tables)),
 
@@ -892,39 +892,40 @@ export const createS: typeof createSDecl = () => {
     forEachTable: (tableCallback: TableCallback): void =>
       store.forEachTable(tableCallback as any),
 
-    hasT1Table: (): boolean => store.hasTable(T1),
-
     getT1Table: (): T1Table => store.getTable(T1) as T1Table,
+
+    hasT1Table: (): boolean => store.hasTable(T1),
 
     setT1Table: (table: T1Table): S => fluent(() => store.setTable(T1, table)),
 
     delT1Table: (): S => fluent(() => store.delTable(T1)),
 
-    getT1RowIds: (): Ids => store.getRowIds(T1),
+    getT1RowIds: (): Ids => store.getRowIds(T1) as Ids,
 
     getT1SortedRowIds: (
       cellId?: T1CellId,
       descending?: boolean,
       offset?: number,
       limit?: number,
-    ): Ids => store.getSortedRowIds(T1, cellId, descending, offset, limit),
+    ): Ids =>
+      store.getSortedRowIds(T1, cellId, descending, offset, limit) as Ids,
 
     forEachT1Row: (rowCallback: T1RowCallback): void =>
       store.forEachRow(T1, rowCallback as any),
 
-    hasT1Row: (rowId: Id): boolean => store.hasRow(T1, rowId),
-
     getT1Row: (rowId: Id): T1Row => store.getRow(T1, rowId) as T1Row,
+
+    hasT1Row: (rowId: Id): boolean => store.hasRow(T1, rowId),
 
     setT1Row: (rowId: Id, row: T1RowWhenSet): S =>
       fluent(() => store.setRow(T1, rowId, row)),
 
-    addT1Row: (row: T1RowWhenSet): Id | undefined => store.addRow(T1, row),
+    delT1Row: (rowId: Id): S => fluent(() => store.delRow(T1, rowId)),
 
     setT1PartialRow: (rowId: Id, partialRow: T1RowWhenSet): S =>
       fluent(() => store.setPartialRow(T1, rowId, partialRow)),
 
-    delT1Row: (rowId: Id): S => fluent(() => store.delRow(T1, rowId)),
+    addT1Row: (row: T1RowWhenSet): Id | undefined => store.addRow(T1, row),
 
     getT1CellIds: (rowId: Id): T1CellId[] =>
       store.getCellIds(T1, rowId) as T1CellId[],
@@ -932,44 +933,44 @@ export const createS: typeof createSDecl = () => {
     forEachT1Cell: (rowId: Id, cellCallback: T1CellCallback): void =>
       store.forEachCell(T1, rowId, cellCallback as any),
 
-    hasT1C1Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C1),
-
     getT1C1Cell: (rowId: Id): number => store.getCell(T1, rowId, C1) as number,
+
+    hasT1C1Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C1),
 
     setT1C1Cell: (rowId: Id, cell: number | MapNumber): S =>
       fluent(() => store.setCell(T1, rowId, C1, cell as any)),
 
     delT1C1Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C1)),
 
-    hasT1C2Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C2),
-
     getT1C2Cell: (rowId: Id): string => store.getCell(T1, rowId, C2) as string,
+
+    hasT1C2Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C2),
 
     setT1C2Cell: (rowId: Id, cell: string | MapString): S =>
       fluent(() => store.setCell(T1, rowId, C2, cell as any)),
 
     delT1C2Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C2)),
 
-    hasT1C3Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C3),
-
     getT1C3Cell: (rowId: Id): string => store.getCell(T1, rowId, C3) as string,
+
+    hasT1C3Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C3),
 
     setT1C3Cell: (rowId: Id, cell: string | MapString): S =>
       fluent(() => store.setCell(T1, rowId, C3, cell as any)),
 
     delT1C3Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C3)),
 
-    hasT1Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, _),
-
     getT1Cell: (rowId: Id): string | undefined =>
       store.getCell(T1, rowId, _) as string | undefined,
+
+    hasT1Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, _),
 
     setT1Cell: (rowId: Id, cell: string | MapString): S =>
       fluent(() => store.setCell(T1, rowId, _, cell as any)),
 
     delT1Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, _)),
 
-    getTablesJson: (): Json => store.getTablesJson(),
+    getTablesJson: (): Json => store.getTablesJson() as Json,
 
     setTablesJson: (tablesJson: Json): S =>
       fluent(() => store.setTablesJson(tablesJson)),
@@ -1030,56 +1031,56 @@ export const createS: typeof createSDecl = () => {
         mutator,
       ),
 
-    hasValues: (): boolean => store.hasValues(),
-
     getValues: (): Values => store.getValues() as Values,
+
+    hasValues: (): boolean => store.hasValues(),
 
     setValues: (values: ValuesWhenSet): S =>
       fluent(() => store.setValues(values)),
 
+    delValues: (): S => fluent(() => store.delValues()),
+
     setPartialValues: (partialValues: ValuesWhenSet): S =>
       fluent(() => store.setPartialValues(partialValues)),
-
-    delValues: (): S => fluent(() => store.delValues()),
 
     getValueIds: (): ValueId[] => store.getValueIds() as ValueId[],
 
     forEachValue: (valueCallback: ValueCallback): void =>
       store.forEachValue(valueCallback as any),
 
-    hasV1Value: (): boolean => store.hasValue(V1),
-
     getV1Value: (): number => store.getValue(V1) as number,
+
+    hasV1Value: (): boolean => store.hasValue(V1),
 
     setV1Value: (value: number): S => fluent(() => store.setValue(V1, value)),
 
     delV1Value: (): S => fluent(() => store.delValue(V1)),
 
-    hasV2Value: (): boolean => store.hasValue(V2),
-
     getV2Value: (): string => store.getValue(V2) as string,
+
+    hasV2Value: (): boolean => store.hasValue(V2),
 
     setV2Value: (value: string): S => fluent(() => store.setValue(V2, value)),
 
     delV2Value: (): S => fluent(() => store.delValue(V2)),
 
-    hasV3Value: (): boolean => store.hasValue(V3),
-
     getV3Value: (): string => store.getValue(V3) as string,
+
+    hasV3Value: (): boolean => store.hasValue(V3),
 
     setV3Value: (value: string): S => fluent(() => store.setValue(V3, value)),
 
     delV3Value: (): S => fluent(() => store.delValue(V3)),
 
-    hasValue: (): boolean => store.hasValue(_),
-
     getValue: (): string => store.getValue(_) as string,
+
+    hasValue: (): boolean => store.hasValue(_),
 
     setValue: (value: string): S => fluent(() => store.setValue(_, value)),
 
     delValue: (): S => fluent(() => store.delValue(_)),
 
-    getValuesJson: (): Json => store.getValuesJson(),
+    getValuesJson: (): Json => store.getValuesJson() as Json,
 
     setValuesJson: (valuesJson: Json): S =>
       fluent(() => store.setValuesJson(valuesJson)),
@@ -1102,7 +1103,7 @@ export const createS: typeof createSDecl = () => {
       mutator?: boolean,
     ): Id => store.addInvalidValueListener(valueId, proxy(listener), mutator),
 
-    getJson: (): Json => store.getJson(),
+    getJson: (): Json => store.getJson() as Json,
 
     setJson: (json: Json): S => fluent(() => store.setJson(json)),
 
@@ -1445,7 +1446,7 @@ export type ValuesListener = (
 ) => void;
 
 /**
- * A function for listening to changes to Value Ids in the Store.
+ * A function for listening to changes to the Value Ids in the Store.
  */
 export type ValueIdsListener = (s: S) => void;
 
@@ -1504,14 +1505,14 @@ export type TransactionListener = (
 
 export interface S {
   /**
-   * Gets whether any Value exists in the Store.
-   */
-  hasValues(): boolean;
-
-  /**
    * Gets the keyed value content of the Store.
    */
   getValues(): Values;
+
+  /**
+   * Checks existence of the keyed value content of the Store.
+   */
+  hasValues(): boolean;
 
   /**
    * Sets the keyed value content of the Store.
@@ -1519,14 +1520,14 @@ export interface S {
   setValues(values: ValuesWhenSet): S;
 
   /**
-   * Sets part of the keyed value content of the Store.
-   */
-  setPartialValues(partialValues: ValuesWhenSet): S;
-
-  /**
    * Deletes the keyed value content of the Store.
    */
   delValues(): S;
+
+  /**
+   * Sets part of the keyed value content of the Store.
+   */
+  setPartialValues(partialValues: ValuesWhenSet): S;
 
   /**
    * Gets the Ids of the Values in the Store.
@@ -1539,14 +1540,14 @@ export interface S {
   forEachValue(valueCallback: ValueCallback): void;
 
   /**
-   * Gets whether the 'v1' Value exists in the Store.
-   */
-  hasV1Value(): boolean;
-
-  /**
    * Gets the 'v1' Value.
    */
   getV1Value(): number;
+
+  /**
+   * Checks existence of the 'v1' Value.
+   */
+  hasV1Value(): boolean;
 
   /**
    * Sets the 'v1' Value.
@@ -1559,14 +1560,14 @@ export interface S {
   delV1Value(): S;
 
   /**
-   * Gets whether the 'v2' Value exists in the Store.
-   */
-  hasV2Value(): boolean;
-
-  /**
    * Gets the 'v2' Value.
    */
   getV2Value(): string;
+
+  /**
+   * Checks existence of the 'v2' Value.
+   */
+  hasV2Value(): boolean;
 
   /**
    * Sets the 'v2' Value.
@@ -1579,14 +1580,14 @@ export interface S {
   delV2Value(): S;
 
   /**
-   * Gets whether the 'v3' Value exists in the Store.
-   */
-  hasV3Value(): boolean;
-
-  /**
    * Gets the 'v3' Value.
    */
   getV3Value(): string;
+
+  /**
+   * Checks existence of the 'v3' Value.
+   */
+  hasV3Value(): boolean;
 
   /**
    * Sets the 'v3' Value.
@@ -1599,14 +1600,14 @@ export interface S {
   delV3Value(): S;
 
   /**
-   * Gets whether the '' Value exists in the Store.
-   */
-  hasValue(): boolean;
-
-  /**
    * Gets the '' Value.
    */
   getValue(): string;
+
+  /**
+   * Checks existence of the '' Value.
+   */
+  hasValue(): boolean;
 
   /**
    * Sets the '' Value.
@@ -1651,7 +1652,7 @@ export interface S {
   ): Id;
 
   /**
-   * Registers a listener that will be called whenever an invalid Cell change
+   * Registers a listener that will be called whenever an invalid Value change
    * was attempted.
    */
   addInvalidValueListener(
@@ -1780,56 +1781,56 @@ export const createS: typeof createSDecl = () => {
       listener(s, ...args);
 
   const s = {
-    hasValues: (): boolean => store.hasValues(),
-
     getValues: (): Values => store.getValues() as Values,
+
+    hasValues: (): boolean => store.hasValues(),
 
     setValues: (values: ValuesWhenSet): S =>
       fluent(() => store.setValues(values)),
 
+    delValues: (): S => fluent(() => store.delValues()),
+
     setPartialValues: (partialValues: ValuesWhenSet): S =>
       fluent(() => store.setPartialValues(partialValues)),
-
-    delValues: (): S => fluent(() => store.delValues()),
 
     getValueIds: (): ValueId[] => store.getValueIds() as ValueId[],
 
     forEachValue: (valueCallback: ValueCallback): void =>
       store.forEachValue(valueCallback as any),
 
-    hasV1Value: (): boolean => store.hasValue(V1),
-
     getV1Value: (): number => store.getValue(V1) as number,
+
+    hasV1Value: (): boolean => store.hasValue(V1),
 
     setV1Value: (value: number): S => fluent(() => store.setValue(V1, value)),
 
     delV1Value: (): S => fluent(() => store.delValue(V1)),
 
-    hasV2Value: (): boolean => store.hasValue(V2),
-
     getV2Value: (): string => store.getValue(V2) as string,
+
+    hasV2Value: (): boolean => store.hasValue(V2),
 
     setV2Value: (value: string): S => fluent(() => store.setValue(V2, value)),
 
     delV2Value: (): S => fluent(() => store.delValue(V2)),
 
-    hasV3Value: (): boolean => store.hasValue(V3),
-
     getV3Value: (): string => store.getValue(V3) as string,
+
+    hasV3Value: (): boolean => store.hasValue(V3),
 
     setV3Value: (value: string): S => fluent(() => store.setValue(V3, value)),
 
     delV3Value: (): S => fluent(() => store.delValue(V3)),
 
-    hasValue: (): boolean => store.hasValue(_),
-
     getValue: (): string => store.getValue(_) as string,
+
+    hasValue: (): boolean => store.hasValue(_),
 
     setValue: (value: string): S => fluent(() => store.setValue(_, value)),
 
     delValue: (): S => fluent(() => store.delValue(_)),
 
-    getValuesJson: (): Json => store.getValuesJson(),
+    getValuesJson: (): Json => store.getValuesJson() as Json,
 
     setValuesJson: (valuesJson: Json): S =>
       fluent(() => store.setValuesJson(valuesJson)),
@@ -1852,7 +1853,7 @@ export const createS: typeof createSDecl = () => {
       mutator?: boolean,
     ): Id => store.addInvalidValueListener(valueId, proxy(listener), mutator),
 
-    getJson: (): Json => store.getJson(),
+    getJson: (): Json => store.getJson() as Json,
 
     setJson: (json: Json): S => fluent(() => store.setJson(json)),
 
@@ -2061,7 +2062,7 @@ export type TablesListener = (
 ) => void;
 
 /**
- * A function for listening to changes to Table Ids in the Store.
+ * A function for listening to changes to the Table Ids in the Store.
  */
 export type TableIdsListener = (s: S) => void;
 
@@ -2075,7 +2076,7 @@ export type TableListener = (
 ) => void;
 
 /**
- * A function for listening to changes to Row Ids in a Table.
+ * A function for listening to changes to the Row Ids in a Table.
  */
 export type RowIdsListener = (s: S, tableId: TableId) => void;
 
@@ -2090,7 +2091,7 @@ export type RowListener = (
 ) => void;
 
 /**
- * A function for listening to changes to Cell Ids in a Row.
+ * A function for listening to changes to the Cell Ids in a Row.
  */
 export type CellIdsListener = (s: S, tableId: TableId, rowId: Id) => void;
 
@@ -2169,14 +2170,14 @@ export type TransactionListener = (
 
 export interface S {
   /**
-   * Gets whether any Table exists in the Store.
-   */
-  hasTables(): boolean;
-
-  /**
    * Gets the tabular content of the Store.
    */
   getTables(): Tables;
+
+  /**
+   * Checks existence of the tabular content of the Store.
+   */
+  hasTables(): boolean;
 
   /**
    * Sets the tabular content of the Store.
@@ -2199,14 +2200,14 @@ export interface S {
   forEachTable(tableCallback: TableCallback): void;
 
   /**
-   * Gets whether the 't1' Table exists in the Store.
-   */
-  hasT1Table(): boolean;
-
-  /**
    * Gets the content of the 't1' Table.
    */
   getT1Table(): T1Table;
+
+  /**
+   * Checks existence of the content of the 't1' Table.
+   */
+  hasT1Table(): boolean;
 
   /**
    * Sets the content of the 't1' Table.
@@ -2239,14 +2240,14 @@ export interface S {
   forEachT1Row(rowCallback: T1RowCallback): void;
 
   /**
-   * Gets whether the specified Row exists in the 't1' Table.
-   */
-  hasT1Row(rowId: Id): boolean;
-
-  /**
    * Gets the content of the specified Row in the 't1' Table.
    */
   getT1Row(rowId: Id): T1Row;
+
+  /**
+   * Checks existence of the content of the specified Row in the 't1' Table.
+   */
+  hasT1Row(rowId: Id): boolean;
 
   /**
    * Sets the content of the specified Row in the 't1' Table.
@@ -2254,9 +2255,9 @@ export interface S {
   setT1Row(rowId: Id, row: T1RowWhenSet): S;
 
   /**
-   * Adds a new Row to the 't1' Table.
+   * Deletes the content of the specified Row in the 't1' Table.
    */
-  addT1Row(row: T1RowWhenSet): Id | undefined;
+  delT1Row(rowId: Id): S;
 
   /**
    * Sets part of the content of the specified Row in the 't1' Table.
@@ -2264,9 +2265,9 @@ export interface S {
   setT1PartialRow(rowId: Id, partialRow: T1RowWhenSet): S;
 
   /**
-   * Deletes the content of the specified Row in the 't1' Table.
+   * Adds a new Row to the 't1' Table.
    */
-  delT1Row(rowId: Id): S;
+  addT1Row(row: T1RowWhenSet): Id | undefined;
 
   /**
    * Gets the Ids of the Cells in the specified Row in the 't1' Table.
@@ -2279,14 +2280,14 @@ export interface S {
   forEachT1Cell(rowId: Id, cellCallback: T1CellCallback): void;
 
   /**
-   * Gets whether the 'c1' Cell exists in the specified Row in the 't1' Table.
-   */
-  hasT1C1Cell(rowId: Id): boolean;
-
-  /**
    * Gets the 'c1' Cell for the specified Row in the 't1' Table.
    */
   getT1C1Cell(rowId: Id): number;
+
+  /**
+   * Checks existence of the 'c1' Cell for the specified Row in the 't1' Table.
+   */
+  hasT1C1Cell(rowId: Id): boolean;
 
   /**
    * Sets the 'c1' Cell for the specified Row in the 't1' Table.
@@ -2299,14 +2300,14 @@ export interface S {
   delT1C1Cell(rowId: Id): S;
 
   /**
-   * Gets whether the 'c2' Cell exists in the specified Row in the 't1' Table.
-   */
-  hasT1C2Cell(rowId: Id): boolean;
-
-  /**
    * Gets the 'c2' Cell for the specified Row in the 't1' Table.
    */
   getT1C2Cell(rowId: Id): string;
+
+  /**
+   * Checks existence of the 'c2' Cell for the specified Row in the 't1' Table.
+   */
+  hasT1C2Cell(rowId: Id): boolean;
 
   /**
    * Sets the 'c2' Cell for the specified Row in the 't1' Table.
@@ -2319,14 +2320,14 @@ export interface S {
   delT1C2Cell(rowId: Id): S;
 
   /**
-   * Gets whether the 'c3' Cell exists in the specified Row in the 't1' Table.
-   */
-  hasT1C3Cell(rowId: Id): boolean;
-
-  /**
    * Gets the 'c3' Cell for the specified Row in the 't1' Table.
    */
   getT1C3Cell(rowId: Id): string;
+
+  /**
+   * Checks existence of the 'c3' Cell for the specified Row in the 't1' Table.
+   */
+  hasT1C3Cell(rowId: Id): boolean;
 
   /**
    * Sets the 'c3' Cell for the specified Row in the 't1' Table.
@@ -2339,14 +2340,14 @@ export interface S {
   delT1C3Cell(rowId: Id): S;
 
   /**
-   * Gets whether the '' Cell exists in the specified Row in the 't1' Table.
-   */
-  hasT1Cell(rowId: Id): boolean;
-
-  /**
    * Gets the '' Cell for the specified Row in the 't1' Table.
    */
   getT1Cell(rowId: Id): string | undefined;
+
+  /**
+   * Checks existence of the '' Cell for the specified Row in the 't1' Table.
+   */
+  hasT1Cell(rowId: Id): boolean;
 
   /**
    * Sets the '' Cell for the specified Row in the 't1' Table.
@@ -2579,9 +2580,9 @@ export const createS: typeof createSDecl = () => {
       listener(s, ...args);
 
   const s = {
-    hasTables: (): boolean => store.hasTables(),
+    getTables: (): Tables => store.getTables() as Tables,
 
-    getTables: (): Tables => store.getTables(),
+    hasTables: (): boolean => store.hasTables(),
 
     setTables: (tables: Tables): S => fluent(() => store.setTables(tables)),
 
@@ -2592,39 +2593,40 @@ export const createS: typeof createSDecl = () => {
     forEachTable: (tableCallback: TableCallback): void =>
       store.forEachTable(tableCallback as any),
 
-    hasT1Table: (): boolean => store.hasTable(T1),
-
     getT1Table: (): T1Table => store.getTable(T1) as T1Table,
+
+    hasT1Table: (): boolean => store.hasTable(T1),
 
     setT1Table: (table: T1Table): S => fluent(() => store.setTable(T1, table)),
 
     delT1Table: (): S => fluent(() => store.delTable(T1)),
 
-    getT1RowIds: (): Ids => store.getRowIds(T1),
+    getT1RowIds: (): Ids => store.getRowIds(T1) as Ids,
 
     getT1SortedRowIds: (
       cellId?: T1CellId,
       descending?: boolean,
       offset?: number,
       limit?: number,
-    ): Ids => store.getSortedRowIds(T1, cellId, descending, offset, limit),
+    ): Ids =>
+      store.getSortedRowIds(T1, cellId, descending, offset, limit) as Ids,
 
     forEachT1Row: (rowCallback: T1RowCallback): void =>
       store.forEachRow(T1, rowCallback as any),
 
-    hasT1Row: (rowId: Id): boolean => store.hasRow(T1, rowId),
-
     getT1Row: (rowId: Id): T1Row => store.getRow(T1, rowId) as T1Row,
+
+    hasT1Row: (rowId: Id): boolean => store.hasRow(T1, rowId),
 
     setT1Row: (rowId: Id, row: T1RowWhenSet): S =>
       fluent(() => store.setRow(T1, rowId, row)),
 
-    addT1Row: (row: T1RowWhenSet): Id | undefined => store.addRow(T1, row),
+    delT1Row: (rowId: Id): S => fluent(() => store.delRow(T1, rowId)),
 
     setT1PartialRow: (rowId: Id, partialRow: T1RowWhenSet): S =>
       fluent(() => store.setPartialRow(T1, rowId, partialRow)),
 
-    delT1Row: (rowId: Id): S => fluent(() => store.delRow(T1, rowId)),
+    addT1Row: (row: T1RowWhenSet): Id | undefined => store.addRow(T1, row),
 
     getT1CellIds: (rowId: Id): T1CellId[] =>
       store.getCellIds(T1, rowId) as T1CellId[],
@@ -2632,44 +2634,44 @@ export const createS: typeof createSDecl = () => {
     forEachT1Cell: (rowId: Id, cellCallback: T1CellCallback): void =>
       store.forEachCell(T1, rowId, cellCallback as any),
 
-    hasT1C1Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C1),
-
     getT1C1Cell: (rowId: Id): number => store.getCell(T1, rowId, C1) as number,
+
+    hasT1C1Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C1),
 
     setT1C1Cell: (rowId: Id, cell: number | MapNumber): S =>
       fluent(() => store.setCell(T1, rowId, C1, cell as any)),
 
     delT1C1Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C1)),
 
-    hasT1C2Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C2),
-
     getT1C2Cell: (rowId: Id): string => store.getCell(T1, rowId, C2) as string,
+
+    hasT1C2Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C2),
 
     setT1C2Cell: (rowId: Id, cell: string | MapString): S =>
       fluent(() => store.setCell(T1, rowId, C2, cell as any)),
 
     delT1C2Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C2)),
 
-    hasT1C3Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C3),
-
     getT1C3Cell: (rowId: Id): string => store.getCell(T1, rowId, C3) as string,
+
+    hasT1C3Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C3),
 
     setT1C3Cell: (rowId: Id, cell: string | MapString): S =>
       fluent(() => store.setCell(T1, rowId, C3, cell as any)),
 
     delT1C3Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C3)),
 
-    hasT1Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, _),
-
     getT1Cell: (rowId: Id): string | undefined =>
       store.getCell(T1, rowId, _) as string | undefined,
+
+    hasT1Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, _),
 
     setT1Cell: (rowId: Id, cell: string | MapString): S =>
       fluent(() => store.setCell(T1, rowId, _, cell as any)),
 
     delT1Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, _)),
 
-    getTablesJson: (): Json => store.getTablesJson(),
+    getTablesJson: (): Json => store.getTablesJson() as Json,
 
     setTablesJson: (tablesJson: Json): S =>
       fluent(() => store.setTablesJson(tablesJson)),
@@ -2730,7 +2732,7 @@ export const createS: typeof createSDecl = () => {
         mutator,
       ),
 
-    getJson: (): Json => store.getJson(),
+    getJson: (): Json => store.getJson() as Json,
 
     setJson: (json: Json): S => fluent(() => store.setJson(json)),
 
@@ -3052,19 +3054,19 @@ export type GetCellChange = (...[tableId, rowId, cellId]: [tableId: 't1', rowId:
 /** A function for listening to changes to Tables in the Store. */
 export type TablesListener = (s: S, getCellChange: GetCellChange | undefined) => void;
 
-/** A function for listening to changes to Table Ids in the Store. */
+/** A function for listening to changes to the Table Ids in the Store. */
 export type TableIdsListener = (s: S) => void;
 
 /** A function for listening to changes to a Table in the Store. */
 export type TableListener = (s: S, tableId: TableId, getCellChange: GetCellChange | undefined) => void;
 
-/** A function for listening to changes to Row Ids in a Table. */
+/** A function for listening to changes to the Row Ids in a Table. */
 export type RowIdsListener = (s: S, tableId: TableId) => void;
 
 /** A function for listening to changes to a Row in a Table. */
 export type RowListener = (s: S, tableId: TableId, rowId: Id, getCellChange: GetCellChange | undefined) => void;
 
-/** A function for listening to changes to Cell Ids in a Row. */
+/** A function for listening to changes to the Cell Ids in a Row. */
 export type CellIdsListener = (s: S, tableId: TableId, rowId: Id) => void;
 
 /** A function for listening to changes to a Cell in a Row. */
@@ -3097,7 +3099,7 @@ export type GetValueChange = (valueId: ValueId) => ValueChange;
 /** A function for listening to changes to Values in the Store. */
 export type ValuesListener = (s: S, getValueChange: GetValueChange | undefined) => void;
 
-/** A function for listening to changes to Value Ids in the Store. */
+/** A function for listening to changes to the Value Ids in the Store. */
 export type ValueIdsListener = (s: S) => void;
 
 /** A function for listening to changes to a Value in the Store. */
@@ -3110,11 +3112,11 @@ export type InvalidValueListener = (s: S, valueId: Id, invalidValues: any[]) => 
 export type TransactionListener = (s: S, cellsTouched: boolean, valuesTouched: boolean) => void;
 
 export interface S {
-/** Gets whether any Table exists in the Store. */
-hasTables(): boolean;
-
 /** Gets the tabular content of the Store. */
 getTables(): Tables;
+
+/** Checks existence of the tabular content of the Store. */
+hasTables(): boolean;
 
 /** Sets the tabular content of the Store. */
 setTables(tables: Tables): S;
@@ -3128,11 +3130,11 @@ getTableIds(): TableId[];
 /** Calls a function for each Table in the Store. */
 forEachTable(tableCallback: TableCallback): void;
 
-/** Gets whether the 't1' Table exists in the Store. */
-hasT1Table(): boolean;
-
 /** Gets the content of the 't1' Table. */
 getT1Table(): T1Table;
+
+/** Checks existence of the content of the 't1' Table. */
+hasT1Table(): boolean;
 
 /** Sets the content of the 't1' Table. */
 setT1Table(table: T1Table): S;
@@ -3149,23 +3151,23 @@ getT1SortedRowIds(cellId?: T1CellId, descending?: boolean, offset?: number, limi
 /** Calls a function for each Row in the 't1' Table. */
 forEachT1Row(rowCallback: T1RowCallback): void;
 
-/** Gets whether the specified Row exists in the 't1' Table. */
-hasT1Row(rowId: Id): boolean;
-
 /** Gets the content of the specified Row in the 't1' Table. */
 getT1Row(rowId: Id): T1Row;
+
+/** Checks existence of the content of the specified Row in the 't1' Table. */
+hasT1Row(rowId: Id): boolean;
 
 /** Sets the content of the specified Row in the 't1' Table. */
 setT1Row(rowId: Id, row: T1RowWhenSet): S;
 
-/** Adds a new Row to the 't1' Table. */
-addT1Row(row: T1RowWhenSet): Id | undefined;
+/** Deletes the content of the specified Row in the 't1' Table. */
+delT1Row(rowId: Id): S;
 
 /** Sets part of the content of the specified Row in the 't1' Table. */
 setT1PartialRow(rowId: Id, partialRow: T1RowWhenSet): S;
 
-/** Deletes the content of the specified Row in the 't1' Table. */
-delT1Row(rowId: Id): S;
+/** Adds a new Row to the 't1' Table. */
+addT1Row(row: T1RowWhenSet): Id | undefined;
 
 /** Gets the Ids of the Cells in the specified Row in the 't1' Table. */
 getT1CellIds(rowId: Id): T1CellId[];
@@ -3173,11 +3175,11 @@ getT1CellIds(rowId: Id): T1CellId[];
 /** Calls a function for each Cell in the specified Row in the 't1' Table. */
 forEachT1Cell(rowId: Id, cellCallback: T1CellCallback): void;
 
-/** Gets whether the 'c1' Cell exists in the specified Row in the 't1' Table. */
-hasT1C1Cell(rowId: Id): boolean;
-
 /** Gets the 'c1' Cell for the specified Row in the 't1' Table. */
 getT1C1Cell(rowId: Id): number;
+
+/** Checks existence of the 'c1' Cell for the specified Row in the 't1' Table. */
+hasT1C1Cell(rowId: Id): boolean;
 
 /** Sets the 'c1' Cell for the specified Row in the 't1' Table. */
 setT1C1Cell(rowId: Id, cell: number | MapNumber): S;
@@ -3185,11 +3187,11 @@ setT1C1Cell(rowId: Id, cell: number | MapNumber): S;
 /** Deletes the 'c1' Cell for the specified Row in the 't1' Table. */
 delT1C1Cell(rowId: Id): S;
 
-/** Gets whether the 'c2' Cell exists in the specified Row in the 't1' Table. */
-hasT1C2Cell(rowId: Id): boolean;
-
 /** Gets the 'c2' Cell for the specified Row in the 't1' Table. */
 getT1C2Cell(rowId: Id): string;
+
+/** Checks existence of the 'c2' Cell for the specified Row in the 't1' Table. */
+hasT1C2Cell(rowId: Id): boolean;
 
 /** Sets the 'c2' Cell for the specified Row in the 't1' Table. */
 setT1C2Cell(rowId: Id, cell: string | MapString): S;
@@ -3197,11 +3199,11 @@ setT1C2Cell(rowId: Id, cell: string | MapString): S;
 /** Deletes the 'c2' Cell for the specified Row in the 't1' Table. */
 delT1C2Cell(rowId: Id): S;
 
-/** Gets whether the 'c3' Cell exists in the specified Row in the 't1' Table. */
-hasT1C3Cell(rowId: Id): boolean;
-
 /** Gets the 'c3' Cell for the specified Row in the 't1' Table. */
 getT1C3Cell(rowId: Id): string;
+
+/** Checks existence of the 'c3' Cell for the specified Row in the 't1' Table. */
+hasT1C3Cell(rowId: Id): boolean;
 
 /** Sets the 'c3' Cell for the specified Row in the 't1' Table. */
 setT1C3Cell(rowId: Id, cell: string | MapString): S;
@@ -3209,11 +3211,11 @@ setT1C3Cell(rowId: Id, cell: string | MapString): S;
 /** Deletes the 'c3' Cell for the specified Row in the 't1' Table. */
 delT1C3Cell(rowId: Id): S;
 
-/** Gets whether the '' Cell exists in the specified Row in the 't1' Table. */
-hasT1Cell(rowId: Id): boolean;
-
 /** Gets the '' Cell for the specified Row in the 't1' Table. */
 getT1Cell(rowId: Id): string | undefined;
+
+/** Checks existence of the '' Cell for the specified Row in the 't1' Table. */
+hasT1Cell(rowId: Id): boolean;
 
 /** Sets the '' Cell for the specified Row in the 't1' Table. */
 setT1Cell(rowId: Id, cell: string | MapString): S;
@@ -3251,20 +3253,20 @@ addCellListener(tableId: TableId | null, rowId: IdOrNull, cellId: T1CellId | nul
 /** Registers a listener that will be called whenever an invalid Cell change was attempted. */
 addInvalidCellListener(tableId: IdOrNull, rowId: IdOrNull, cellId: IdOrNull, listener: InvalidCellListener, mutator?: boolean): Id;
 
-/** Gets whether any Value exists in the Store. */
-hasValues(): boolean;
-
 /** Gets the keyed value content of the Store. */
 getValues(): Values;
+
+/** Checks existence of the keyed value content of the Store. */
+hasValues(): boolean;
 
 /** Sets the keyed value content of the Store. */
 setValues(values: ValuesWhenSet): S;
 
-/** Sets part of the keyed value content of the Store. */
-setPartialValues(partialValues: ValuesWhenSet): S;
-
 /** Deletes the keyed value content of the Store. */
 delValues(): S;
+
+/** Sets part of the keyed value content of the Store. */
+setPartialValues(partialValues: ValuesWhenSet): S;
 
 /** Gets the Ids of the Values in the Store. */
 getValueIds(): ValueId[];
@@ -3272,11 +3274,11 @@ getValueIds(): ValueId[];
 /** Calls a function for each Value in the Store. */
 forEachValue(valueCallback: ValueCallback): void;
 
-/** Gets whether the 'v1' Value exists in the Store. */
-hasV1Value(): boolean;
-
 /** Gets the 'v1' Value. */
 getV1Value(): number;
+
+/** Checks existence of the 'v1' Value. */
+hasV1Value(): boolean;
 
 /** Sets the 'v1' Value. */
 setV1Value(value: number): S;
@@ -3284,11 +3286,11 @@ setV1Value(value: number): S;
 /** Deletes the 'v1' Value. */
 delV1Value(): S;
 
-/** Gets whether the 'v2' Value exists in the Store. */
-hasV2Value(): boolean;
-
 /** Gets the 'v2' Value. */
 getV2Value(): string;
+
+/** Checks existence of the 'v2' Value. */
+hasV2Value(): boolean;
 
 /** Sets the 'v2' Value. */
 setV2Value(value: string): S;
@@ -3296,11 +3298,11 @@ setV2Value(value: string): S;
 /** Deletes the 'v2' Value. */
 delV2Value(): S;
 
-/** Gets whether the 'v3' Value exists in the Store. */
-hasV3Value(): boolean;
-
 /** Gets the 'v3' Value. */
 getV3Value(): string;
+
+/** Checks existence of the 'v3' Value. */
+hasV3Value(): boolean;
 
 /** Sets the 'v3' Value. */
 setV3Value(value: string): S;
@@ -3308,11 +3310,11 @@ setV3Value(value: string): S;
 /** Deletes the 'v3' Value. */
 delV3Value(): S;
 
-/** Gets whether the '' Value exists in the Store. */
-hasValue(): boolean;
-
 /** Gets the '' Value. */
 getValue(): string;
+
+/** Checks existence of the '' Value. */
+hasValue(): boolean;
 
 /** Sets the '' Value. */
 setValue(value: string): S;
@@ -3335,7 +3337,7 @@ addValueIdsListener(listener: ValueIdsListener, mutator?: boolean): Id;
 /** Registers a listener that will be called whenever a Value in the Store changes. */
 addValueListener(valueId: ValueId | null, listener: ValueListener, mutator?: boolean): Id;
 
-/** Registers a listener that will be called whenever an invalid Cell change was attempted. */
+/** Registers a listener that will be called whenever an invalid Value change was attempted. */
 addInvalidValueListener(valueId: IdOrNull, listener: InvalidValueListener, mutator?: boolean): Id;
 
 /** Gets a string serialization of the content of the Store. */
@@ -3428,9 +3430,9 @@ return s;
 const proxy = (listener: any) => (_: Store, ...args: any[]) => listener(s, ...args);
 
 const s = {
-hasTables: (): boolean => store.hasTables(),
+getTables: (): Tables => store.getTables() as Tables,
 
-getTables: (): Tables => store.getTables(),
+hasTables: (): boolean => store.hasTables(),
 
 setTables: (tables: Tables): S => fluent(() => store.setTables(tables)),
 
@@ -3440,69 +3442,69 @@ getTableIds: (): TableId[] => store.getTableIds() as TableId[],
 
 forEachTable: (tableCallback: TableCallback): void => store.forEachTable(tableCallback as any),
 
-hasT1Table: (): boolean => store.hasTable(T1),
-
 getT1Table: (): T1Table => store.getTable(T1) as T1Table,
+
+hasT1Table: (): boolean => store.hasTable(T1),
 
 setT1Table: (table: T1Table): S => fluent(() => store.setTable(T1, table)),
 
 delT1Table: (): S => fluent(() => store.delTable(T1)),
 
-getT1RowIds: (): Ids => store.getRowIds(T1),
+getT1RowIds: (): Ids => store.getRowIds(T1) as Ids,
 
-getT1SortedRowIds: (cellId?: T1CellId, descending?: boolean, offset?: number, limit?: number): Ids => store.getSortedRowIds(T1, cellId, descending, offset, limit),
+getT1SortedRowIds: (cellId?: T1CellId, descending?: boolean, offset?: number, limit?: number): Ids => store.getSortedRowIds(T1, cellId, descending, offset, limit) as Ids,
 
 forEachT1Row: (rowCallback: T1RowCallback): void => store.forEachRow(T1, rowCallback as any),
 
-hasT1Row: (rowId: Id): boolean => store.hasRow(T1, rowId),
-
 getT1Row: (rowId: Id): T1Row => store.getRow(T1, rowId) as T1Row,
+
+hasT1Row: (rowId: Id): boolean => store.hasRow(T1, rowId),
 
 setT1Row: (rowId: Id, row: T1RowWhenSet): S => fluent(() => store.setRow(T1, rowId, row)),
 
-addT1Row: (row: T1RowWhenSet): Id | undefined => store.addRow(T1, row),
+delT1Row: (rowId: Id): S => fluent(() => store.delRow(T1, rowId)),
 
 setT1PartialRow: (rowId: Id, partialRow: T1RowWhenSet): S => fluent(() => store.setPartialRow(T1, rowId, partialRow)),
 
-delT1Row: (rowId: Id): S => fluent(() => store.delRow(T1, rowId)),
+addT1Row: (row: T1RowWhenSet): Id | undefined => store.addRow(T1, row),
 
 getT1CellIds: (rowId: Id): T1CellId[] => store.getCellIds(T1, rowId) as T1CellId[],
 
 forEachT1Cell: (rowId: Id, cellCallback: T1CellCallback): void => store.forEachCell(T1, rowId, cellCallback as any),
 
-hasT1C1Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C1),
-
 getT1C1Cell: (rowId: Id): number => store.getCell(T1, rowId, C1) as number,
+
+hasT1C1Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C1),
 
 setT1C1Cell: (rowId: Id, cell: number | MapNumber): S => fluent(() => store.setCell(T1, rowId, C1, cell as any)),
 
 delT1C1Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C1)),
 
-hasT1C2Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C2),
-
 getT1C2Cell: (rowId: Id): string => store.getCell(T1, rowId, C2) as string,
+
+hasT1C2Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C2),
 
 setT1C2Cell: (rowId: Id, cell: string | MapString): S => fluent(() => store.setCell(T1, rowId, C2, cell as any)),
 
 delT1C2Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C2)),
 
-hasT1C3Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C3),
-
 getT1C3Cell: (rowId: Id): string => store.getCell(T1, rowId, C3) as string,
+
+hasT1C3Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C3),
 
 setT1C3Cell: (rowId: Id, cell: string | MapString): S => fluent(() => store.setCell(T1, rowId, C3, cell as any)),
 
 delT1C3Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C3)),
 
-hasT1Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, _),
-
 getT1Cell: (rowId: Id): string | undefined => store.getCell(T1, rowId, _) as string | undefined,
+
+hasT1Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, _),
 
 setT1Cell: (rowId: Id, cell: string | MapString): S => fluent(() => store.setCell(T1, rowId, _, cell as any)),
 
 delT1Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, _)),
 
-getTablesJson: (): Json => store.getTablesJson(),
+getTablesJson: (): Json => store.getTablesJson() as Json,
 
 setTablesJson: (tablesJson: Json): S => fluent(() => store.setTablesJson(tablesJson)),
 
@@ -3522,53 +3524,53 @@ addCellListener: (tableId: TableId | null, rowId: IdOrNull, cellId: T1CellId | n
 
 addInvalidCellListener: (tableId: IdOrNull, rowId: IdOrNull, cellId: IdOrNull, listener: InvalidCellListener, mutator?: boolean): Id => store.addInvalidCellListener(tableId, rowId, cellId, proxy(listener), mutator),
 
-hasValues: (): boolean => store.hasValues(),
-
 getValues: (): Values => store.getValues() as Values,
+
+hasValues: (): boolean => store.hasValues(),
 
 setValues: (values: ValuesWhenSet): S => fluent(() => store.setValues(values)),
 
-setPartialValues: (partialValues: ValuesWhenSet): S => fluent(() => store.setPartialValues(partialValues)),
-
 delValues: (): S => fluent(() => store.delValues()),
+
+setPartialValues: (partialValues: ValuesWhenSet): S => fluent(() => store.setPartialValues(partialValues)),
 
 getValueIds: (): ValueId[] => store.getValueIds() as ValueId[],
 
 forEachValue: (valueCallback: ValueCallback): void => store.forEachValue(valueCallback as any),
 
-hasV1Value: (): boolean => store.hasValue(V1),
-
 getV1Value: (): number => store.getValue(V1) as number,
+
+hasV1Value: (): boolean => store.hasValue(V1),
 
 setV1Value: (value: number): S => fluent(() => store.setValue(V1, value)),
 
 delV1Value: (): S => fluent(() => store.delValue(V1)),
 
-hasV2Value: (): boolean => store.hasValue(V2),
-
 getV2Value: (): string => store.getValue(V2) as string,
+
+hasV2Value: (): boolean => store.hasValue(V2),
 
 setV2Value: (value: string): S => fluent(() => store.setValue(V2, value)),
 
 delV2Value: (): S => fluent(() => store.delValue(V2)),
 
-hasV3Value: (): boolean => store.hasValue(V3),
-
 getV3Value: (): string => store.getValue(V3) as string,
+
+hasV3Value: (): boolean => store.hasValue(V3),
 
 setV3Value: (value: string): S => fluent(() => store.setValue(V3, value)),
 
 delV3Value: (): S => fluent(() => store.delValue(V3)),
 
-hasValue: (): boolean => store.hasValue(_),
-
 getValue: (): string => store.getValue(_) as string,
+
+hasValue: (): boolean => store.hasValue(_),
 
 setValue: (value: string): S => fluent(() => store.setValue(_, value)),
 
 delValue: (): S => fluent(() => store.delValue(_)),
 
-getValuesJson: (): Json => store.getValuesJson(),
+getValuesJson: (): Json => store.getValuesJson() as Json,
 
 setValuesJson: (valuesJson: Json): S => fluent(() => store.setValuesJson(valuesJson)),
 
@@ -3580,7 +3582,7 @@ addValueListener: (valueId: ValueId | null, listener: ValueListener, mutator?: b
 
 addInvalidValueListener: (valueId: IdOrNull, listener: InvalidValueListener, mutator?: boolean): Id => store.addInvalidValueListener(valueId, proxy(listener), mutator),
 
-getJson: (): Json => store.getJson(),
+getJson: (): Json => store.getJson() as Json,
 
 setJson: (json: Json): S => fluent(() => store.setJson(json)),
 
@@ -3765,7 +3767,7 @@ export type GetValueChange = (valueId: ValueId) => ValueChange;
 /** A function for listening to changes to Values in the Store. */
 export type ValuesListener = (s: S, getValueChange: GetValueChange | undefined) => void;
 
-/** A function for listening to changes to Value Ids in the Store. */
+/** A function for listening to changes to the Value Ids in the Store. */
 export type ValueIdsListener = (s: S) => void;
 
 /** A function for listening to changes to a Value in the Store. */
@@ -3778,20 +3780,20 @@ export type InvalidValueListener = (s: S, valueId: Id, invalidValues: any[]) => 
 export type TransactionListener = (s: S, cellsTouched: boolean, valuesTouched: boolean) => void;
 
 export interface S {
-/** Gets whether any Value exists in the Store. */
-hasValues(): boolean;
-
 /** Gets the keyed value content of the Store. */
 getValues(): Values;
+
+/** Checks existence of the keyed value content of the Store. */
+hasValues(): boolean;
 
 /** Sets the keyed value content of the Store. */
 setValues(values: ValuesWhenSet): S;
 
-/** Sets part of the keyed value content of the Store. */
-setPartialValues(partialValues: ValuesWhenSet): S;
-
 /** Deletes the keyed value content of the Store. */
 delValues(): S;
+
+/** Sets part of the keyed value content of the Store. */
+setPartialValues(partialValues: ValuesWhenSet): S;
 
 /** Gets the Ids of the Values in the Store. */
 getValueIds(): ValueId[];
@@ -3799,11 +3801,11 @@ getValueIds(): ValueId[];
 /** Calls a function for each Value in the Store. */
 forEachValue(valueCallback: ValueCallback): void;
 
-/** Gets whether the 'v1' Value exists in the Store. */
-hasV1Value(): boolean;
-
 /** Gets the 'v1' Value. */
 getV1Value(): number;
+
+/** Checks existence of the 'v1' Value. */
+hasV1Value(): boolean;
 
 /** Sets the 'v1' Value. */
 setV1Value(value: number): S;
@@ -3811,11 +3813,11 @@ setV1Value(value: number): S;
 /** Deletes the 'v1' Value. */
 delV1Value(): S;
 
-/** Gets whether the 'v2' Value exists in the Store. */
-hasV2Value(): boolean;
-
 /** Gets the 'v2' Value. */
 getV2Value(): string;
+
+/** Checks existence of the 'v2' Value. */
+hasV2Value(): boolean;
 
 /** Sets the 'v2' Value. */
 setV2Value(value: string): S;
@@ -3823,11 +3825,11 @@ setV2Value(value: string): S;
 /** Deletes the 'v2' Value. */
 delV2Value(): S;
 
-/** Gets whether the 'v3' Value exists in the Store. */
-hasV3Value(): boolean;
-
 /** Gets the 'v3' Value. */
 getV3Value(): string;
+
+/** Checks existence of the 'v3' Value. */
+hasV3Value(): boolean;
 
 /** Sets the 'v3' Value. */
 setV3Value(value: string): S;
@@ -3835,11 +3837,11 @@ setV3Value(value: string): S;
 /** Deletes the 'v3' Value. */
 delV3Value(): S;
 
-/** Gets whether the '' Value exists in the Store. */
-hasValue(): boolean;
-
 /** Gets the '' Value. */
 getValue(): string;
+
+/** Checks existence of the '' Value. */
+hasValue(): boolean;
 
 /** Sets the '' Value. */
 setValue(value: string): S;
@@ -3862,7 +3864,7 @@ addValueIdsListener(listener: ValueIdsListener, mutator?: boolean): Id;
 /** Registers a listener that will be called whenever a Value in the Store changes. */
 addValueListener(valueId: ValueId | null, listener: ValueListener, mutator?: boolean): Id;
 
-/** Registers a listener that will be called whenever an invalid Cell change was attempted. */
+/** Registers a listener that will be called whenever an invalid Value change was attempted. */
 addInvalidValueListener(valueId: IdOrNull, listener: InvalidValueListener, mutator?: boolean): Id;
 
 /** Gets a string serialization of the content of the Store. */
@@ -3939,53 +3941,53 @@ return s;
 const proxy = (listener: any) => (_: Store, ...args: any[]) => listener(s, ...args);
 
 const s = {
-hasValues: (): boolean => store.hasValues(),
-
 getValues: (): Values => store.getValues() as Values,
+
+hasValues: (): boolean => store.hasValues(),
 
 setValues: (values: ValuesWhenSet): S => fluent(() => store.setValues(values)),
 
-setPartialValues: (partialValues: ValuesWhenSet): S => fluent(() => store.setPartialValues(partialValues)),
-
 delValues: (): S => fluent(() => store.delValues()),
+
+setPartialValues: (partialValues: ValuesWhenSet): S => fluent(() => store.setPartialValues(partialValues)),
 
 getValueIds: (): ValueId[] => store.getValueIds() as ValueId[],
 
 forEachValue: (valueCallback: ValueCallback): void => store.forEachValue(valueCallback as any),
 
-hasV1Value: (): boolean => store.hasValue(V1),
-
 getV1Value: (): number => store.getValue(V1) as number,
+
+hasV1Value: (): boolean => store.hasValue(V1),
 
 setV1Value: (value: number): S => fluent(() => store.setValue(V1, value)),
 
 delV1Value: (): S => fluent(() => store.delValue(V1)),
 
-hasV2Value: (): boolean => store.hasValue(V2),
-
 getV2Value: (): string => store.getValue(V2) as string,
+
+hasV2Value: (): boolean => store.hasValue(V2),
 
 setV2Value: (value: string): S => fluent(() => store.setValue(V2, value)),
 
 delV2Value: (): S => fluent(() => store.delValue(V2)),
 
-hasV3Value: (): boolean => store.hasValue(V3),
-
 getV3Value: (): string => store.getValue(V3) as string,
+
+hasV3Value: (): boolean => store.hasValue(V3),
 
 setV3Value: (value: string): S => fluent(() => store.setValue(V3, value)),
 
 delV3Value: (): S => fluent(() => store.delValue(V3)),
 
-hasValue: (): boolean => store.hasValue(_),
-
 getValue: (): string => store.getValue(_) as string,
+
+hasValue: (): boolean => store.hasValue(_),
 
 setValue: (value: string): S => fluent(() => store.setValue(_, value)),
 
 delValue: (): S => fluent(() => store.delValue(_)),
 
-getValuesJson: (): Json => store.getValuesJson(),
+getValuesJson: (): Json => store.getValuesJson() as Json,
 
 setValuesJson: (valuesJson: Json): S => fluent(() => store.setValuesJson(valuesJson)),
 
@@ -3997,7 +3999,7 @@ addValueListener: (valueId: ValueId | null, listener: ValueListener, mutator?: b
 
 addInvalidValueListener: (valueId: IdOrNull, listener: InvalidValueListener, mutator?: boolean): Id => store.addInvalidValueListener(valueId, proxy(listener), mutator),
 
-getJson: (): Json => store.getJson(),
+getJson: (): Json => store.getJson() as Json,
 
 setJson: (json: Json): S => fluent(() => store.setJson(json)),
 
@@ -4119,19 +4121,19 @@ export type GetCellChange = (...[tableId, rowId, cellId]: [tableId: 't1', rowId:
 /** A function for listening to changes to Tables in the Store. */
 export type TablesListener = (s: S, getCellChange: GetCellChange | undefined) => void;
 
-/** A function for listening to changes to Table Ids in the Store. */
+/** A function for listening to changes to the Table Ids in the Store. */
 export type TableIdsListener = (s: S) => void;
 
 /** A function for listening to changes to a Table in the Store. */
 export type TableListener = (s: S, tableId: TableId, getCellChange: GetCellChange | undefined) => void;
 
-/** A function for listening to changes to Row Ids in a Table. */
+/** A function for listening to changes to the Row Ids in a Table. */
 export type RowIdsListener = (s: S, tableId: TableId) => void;
 
 /** A function for listening to changes to a Row in a Table. */
 export type RowListener = (s: S, tableId: TableId, rowId: Id, getCellChange: GetCellChange | undefined) => void;
 
-/** A function for listening to changes to Cell Ids in a Row. */
+/** A function for listening to changes to the Cell Ids in a Row. */
 export type CellIdsListener = (s: S, tableId: TableId, rowId: Id) => void;
 
 /** A function for listening to changes to a Cell in a Row. */
@@ -4150,11 +4152,11 @@ export type MapString = (cell: string | undefined) => string;
 export type TransactionListener = (s: S, cellsTouched: boolean, valuesTouched: boolean) => void;
 
 export interface S {
-/** Gets whether any Table exists in the Store. */
-hasTables(): boolean;
-
 /** Gets the tabular content of the Store. */
 getTables(): Tables;
+
+/** Checks existence of the tabular content of the Store. */
+hasTables(): boolean;
 
 /** Sets the tabular content of the Store. */
 setTables(tables: Tables): S;
@@ -4168,11 +4170,11 @@ getTableIds(): TableId[];
 /** Calls a function for each Table in the Store. */
 forEachTable(tableCallback: TableCallback): void;
 
-/** Gets whether the 't1' Table exists in the Store. */
-hasT1Table(): boolean;
-
 /** Gets the content of the 't1' Table. */
 getT1Table(): T1Table;
+
+/** Checks existence of the content of the 't1' Table. */
+hasT1Table(): boolean;
 
 /** Sets the content of the 't1' Table. */
 setT1Table(table: T1Table): S;
@@ -4189,23 +4191,23 @@ getT1SortedRowIds(cellId?: T1CellId, descending?: boolean, offset?: number, limi
 /** Calls a function for each Row in the 't1' Table. */
 forEachT1Row(rowCallback: T1RowCallback): void;
 
-/** Gets whether the specified Row exists in the 't1' Table. */
-hasT1Row(rowId: Id): boolean;
-
 /** Gets the content of the specified Row in the 't1' Table. */
 getT1Row(rowId: Id): T1Row;
+
+/** Checks existence of the content of the specified Row in the 't1' Table. */
+hasT1Row(rowId: Id): boolean;
 
 /** Sets the content of the specified Row in the 't1' Table. */
 setT1Row(rowId: Id, row: T1RowWhenSet): S;
 
-/** Adds a new Row to the 't1' Table. */
-addT1Row(row: T1RowWhenSet): Id | undefined;
+/** Deletes the content of the specified Row in the 't1' Table. */
+delT1Row(rowId: Id): S;
 
 /** Sets part of the content of the specified Row in the 't1' Table. */
 setT1PartialRow(rowId: Id, partialRow: T1RowWhenSet): S;
 
-/** Deletes the content of the specified Row in the 't1' Table. */
-delT1Row(rowId: Id): S;
+/** Adds a new Row to the 't1' Table. */
+addT1Row(row: T1RowWhenSet): Id | undefined;
 
 /** Gets the Ids of the Cells in the specified Row in the 't1' Table. */
 getT1CellIds(rowId: Id): T1CellId[];
@@ -4213,11 +4215,11 @@ getT1CellIds(rowId: Id): T1CellId[];
 /** Calls a function for each Cell in the specified Row in the 't1' Table. */
 forEachT1Cell(rowId: Id, cellCallback: T1CellCallback): void;
 
-/** Gets whether the 'c1' Cell exists in the specified Row in the 't1' Table. */
-hasT1C1Cell(rowId: Id): boolean;
-
 /** Gets the 'c1' Cell for the specified Row in the 't1' Table. */
 getT1C1Cell(rowId: Id): number;
+
+/** Checks existence of the 'c1' Cell for the specified Row in the 't1' Table. */
+hasT1C1Cell(rowId: Id): boolean;
 
 /** Sets the 'c1' Cell for the specified Row in the 't1' Table. */
 setT1C1Cell(rowId: Id, cell: number | MapNumber): S;
@@ -4225,11 +4227,11 @@ setT1C1Cell(rowId: Id, cell: number | MapNumber): S;
 /** Deletes the 'c1' Cell for the specified Row in the 't1' Table. */
 delT1C1Cell(rowId: Id): S;
 
-/** Gets whether the 'c2' Cell exists in the specified Row in the 't1' Table. */
-hasT1C2Cell(rowId: Id): boolean;
-
 /** Gets the 'c2' Cell for the specified Row in the 't1' Table. */
 getT1C2Cell(rowId: Id): string;
+
+/** Checks existence of the 'c2' Cell for the specified Row in the 't1' Table. */
+hasT1C2Cell(rowId: Id): boolean;
 
 /** Sets the 'c2' Cell for the specified Row in the 't1' Table. */
 setT1C2Cell(rowId: Id, cell: string | MapString): S;
@@ -4237,11 +4239,11 @@ setT1C2Cell(rowId: Id, cell: string | MapString): S;
 /** Deletes the 'c2' Cell for the specified Row in the 't1' Table. */
 delT1C2Cell(rowId: Id): S;
 
-/** Gets whether the 'c3' Cell exists in the specified Row in the 't1' Table. */
-hasT1C3Cell(rowId: Id): boolean;
-
 /** Gets the 'c3' Cell for the specified Row in the 't1' Table. */
 getT1C3Cell(rowId: Id): string;
+
+/** Checks existence of the 'c3' Cell for the specified Row in the 't1' Table. */
+hasT1C3Cell(rowId: Id): boolean;
 
 /** Sets the 'c3' Cell for the specified Row in the 't1' Table. */
 setT1C3Cell(rowId: Id, cell: string | MapString): S;
@@ -4249,11 +4251,11 @@ setT1C3Cell(rowId: Id, cell: string | MapString): S;
 /** Deletes the 'c3' Cell for the specified Row in the 't1' Table. */
 delT1C3Cell(rowId: Id): S;
 
-/** Gets whether the '' Cell exists in the specified Row in the 't1' Table. */
-hasT1Cell(rowId: Id): boolean;
-
 /** Gets the '' Cell for the specified Row in the 't1' Table. */
 getT1Cell(rowId: Id): string | undefined;
+
+/** Checks existence of the '' Cell for the specified Row in the 't1' Table. */
+hasT1Cell(rowId: Id): boolean;
 
 /** Sets the '' Cell for the specified Row in the 't1' Table. */
 setT1Cell(rowId: Id, cell: string | MapString): S;
@@ -4369,9 +4371,9 @@ return s;
 const proxy = (listener: any) => (_: Store, ...args: any[]) => listener(s, ...args);
 
 const s = {
-hasTables: (): boolean => store.hasTables(),
+getTables: (): Tables => store.getTables() as Tables,
 
-getTables: (): Tables => store.getTables(),
+hasTables: (): boolean => store.hasTables(),
 
 setTables: (tables: Tables): S => fluent(() => store.setTables(tables)),
 
@@ -4381,69 +4383,69 @@ getTableIds: (): TableId[] => store.getTableIds() as TableId[],
 
 forEachTable: (tableCallback: TableCallback): void => store.forEachTable(tableCallback as any),
 
-hasT1Table: (): boolean => store.hasTable(T1),
-
 getT1Table: (): T1Table => store.getTable(T1) as T1Table,
+
+hasT1Table: (): boolean => store.hasTable(T1),
 
 setT1Table: (table: T1Table): S => fluent(() => store.setTable(T1, table)),
 
 delT1Table: (): S => fluent(() => store.delTable(T1)),
 
-getT1RowIds: (): Ids => store.getRowIds(T1),
+getT1RowIds: (): Ids => store.getRowIds(T1) as Ids,
 
-getT1SortedRowIds: (cellId?: T1CellId, descending?: boolean, offset?: number, limit?: number): Ids => store.getSortedRowIds(T1, cellId, descending, offset, limit),
+getT1SortedRowIds: (cellId?: T1CellId, descending?: boolean, offset?: number, limit?: number): Ids => store.getSortedRowIds(T1, cellId, descending, offset, limit) as Ids,
 
 forEachT1Row: (rowCallback: T1RowCallback): void => store.forEachRow(T1, rowCallback as any),
 
-hasT1Row: (rowId: Id): boolean => store.hasRow(T1, rowId),
-
 getT1Row: (rowId: Id): T1Row => store.getRow(T1, rowId) as T1Row,
+
+hasT1Row: (rowId: Id): boolean => store.hasRow(T1, rowId),
 
 setT1Row: (rowId: Id, row: T1RowWhenSet): S => fluent(() => store.setRow(T1, rowId, row)),
 
-addT1Row: (row: T1RowWhenSet): Id | undefined => store.addRow(T1, row),
+delT1Row: (rowId: Id): S => fluent(() => store.delRow(T1, rowId)),
 
 setT1PartialRow: (rowId: Id, partialRow: T1RowWhenSet): S => fluent(() => store.setPartialRow(T1, rowId, partialRow)),
 
-delT1Row: (rowId: Id): S => fluent(() => store.delRow(T1, rowId)),
+addT1Row: (row: T1RowWhenSet): Id | undefined => store.addRow(T1, row),
 
 getT1CellIds: (rowId: Id): T1CellId[] => store.getCellIds(T1, rowId) as T1CellId[],
 
 forEachT1Cell: (rowId: Id, cellCallback: T1CellCallback): void => store.forEachCell(T1, rowId, cellCallback as any),
 
-hasT1C1Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C1),
-
 getT1C1Cell: (rowId: Id): number => store.getCell(T1, rowId, C1) as number,
+
+hasT1C1Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C1),
 
 setT1C1Cell: (rowId: Id, cell: number | MapNumber): S => fluent(() => store.setCell(T1, rowId, C1, cell as any)),
 
 delT1C1Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C1)),
 
-hasT1C2Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C2),
-
 getT1C2Cell: (rowId: Id): string => store.getCell(T1, rowId, C2) as string,
+
+hasT1C2Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C2),
 
 setT1C2Cell: (rowId: Id, cell: string | MapString): S => fluent(() => store.setCell(T1, rowId, C2, cell as any)),
 
 delT1C2Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C2)),
 
-hasT1C3Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C3),
-
 getT1C3Cell: (rowId: Id): string => store.getCell(T1, rowId, C3) as string,
+
+hasT1C3Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C3),
 
 setT1C3Cell: (rowId: Id, cell: string | MapString): S => fluent(() => store.setCell(T1, rowId, C3, cell as any)),
 
 delT1C3Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C3)),
 
-hasT1Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, _),
-
 getT1Cell: (rowId: Id): string | undefined => store.getCell(T1, rowId, _) as string | undefined,
+
+hasT1Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, _),
 
 setT1Cell: (rowId: Id, cell: string | MapString): S => fluent(() => store.setCell(T1, rowId, _, cell as any)),
 
 delT1Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, _)),
 
-getTablesJson: (): Json => store.getTablesJson(),
+getTablesJson: (): Json => store.getTablesJson() as Json,
 
 setTablesJson: (tablesJson: Json): S => fluent(() => store.setTablesJson(tablesJson)),
 
@@ -4463,7 +4465,7 @@ addCellListener: (tableId: TableId | null, rowId: IdOrNull, cellId: T1CellId | n
 
 addInvalidCellListener: (tableId: IdOrNull, rowId: IdOrNull, cellId: IdOrNull, listener: InvalidCellListener, mutator?: boolean): Id => store.addInvalidCellListener(tableId, rowId, cellId, proxy(listener), mutator),
 
-getJson: (): Json => store.getJson(),
+getJson: (): Json => store.getJson() as Json,
 
 setJson: (json: Json): S => fluent(() => store.setJson(json)),
 

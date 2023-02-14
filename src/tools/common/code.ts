@@ -1,3 +1,4 @@
+import {EXPORT, lower, upper} from './strings';
 import {
   IdMap,
   mapEnsure,
@@ -17,7 +18,6 @@ import {
 } from '../../common/array';
 import {collHas, collValues} from '../../common/coll';
 import {EMPTY_STRING} from '../../common/strings';
-import {EXPORT} from './strings';
 import {Id} from '../../common.d';
 import {isArray} from '../../common/other';
 
@@ -32,10 +32,6 @@ const JSDOC = /^( *)\/\*\* *(.*?) *\*\/$/gm;
 
 const substr = (str: string, start: number, end?: number) =>
   str.substring(start, end);
-
-const upper = (str: string) => str.toUpperCase();
-
-const lower = (str: string) => str.toLowerCase();
 
 const stringHasComma = (str: string) => str.includes(',');
 
