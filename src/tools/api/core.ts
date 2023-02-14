@@ -1,4 +1,34 @@
 import {
+  A,
+  A_FUNCTION_FOR,
+  EXPORT,
+  ID,
+  JSON,
+  LISTENER,
+  OR_UNDEFINED,
+  REGISTERS_A_LISTENER,
+  REPRESENTS,
+  RETURNS_VOID,
+  THE_END_OF_THE_TRANSACTION,
+  THE_STORE,
+  TRANSACTION,
+  TRANSACTION_,
+  VERBS,
+  getCallbackDoc,
+  getCellContentDoc,
+  getForEachDoc,
+  getIdsDoc,
+  getListenerDoc,
+  getListenerTypeDoc,
+  getRowContentDoc,
+  getRowDoc,
+  getRowTypeDoc,
+  getTableContentDoc,
+  getTableDoc,
+  getTheContentOfTheStoreDoc,
+  getValueContentDoc,
+} from '../common/strings';
+import {
   ADD,
   BOOLEAN,
   CELL,
@@ -18,32 +48,6 @@ import {
   VALUES,
   VALUE_IDS,
 } from '../../common/strings';
-import {
-  A_FUNCTION_FOR,
-  EXPORT,
-  JSON,
-  LISTENER,
-  OR_UNDEFINED,
-  REGISTERS_A_LISTENER,
-  REPRESENTS,
-  RETURNS_VOID,
-  THE_END_OF_THE_TRANSACTION,
-  THE_STORE,
-  VERBS,
-  getCallbackDoc,
-  getCellContentDoc,
-  getForEachDoc,
-  getIdsDoc,
-  getListenerDoc,
-  getListenerTypeDoc,
-  getRowContentDoc,
-  getRowDoc,
-  getRowTypeDoc,
-  getTableContentDoc,
-  getTableDoc,
-  getTheContentOfTheStoreDoc,
-  getValueContentDoc,
-} from '../common/strings';
 import {
   IdMap,
   mapForEach,
@@ -74,8 +78,17 @@ import {objIsEmpty} from '../../common/obj';
 export type TableTypes = [string, string, string, string, string, string];
 export type SharedTableTypes = [string, string, IdMap<TableTypes>];
 
-const METHOD_PREFIX_VERBS = [GET, 'has', 'set', 'del', 'set', 'forEach', ADD];
-const COMMON_IMPORTS = ['DoRollback', 'Id', 'IdOrNull', IDS, JSON, 'Store'];
+const METHOD_PREFIX_VERBS = [
+  GET,
+  'has',
+  'set',
+  'del',
+  'set',
+  'forEach',
+  ADD,
+  EMPTY_STRING,
+];
+const COMMON_IMPORTS = ['DoRollback', ID, 'IdOrNull', IDS, JSON, 'Store'];
 
 const storeMethod = (
   method: string,
@@ -92,9 +105,7 @@ const storeListener = (
 ) =>
   `store.${method}(${
     beforeParameters ? `${beforeParameters}, ` : EMPTY_STRING
-  }proxy(${LISTENER})${
-    afterParameters ? `, ${afterParameters}` : EMPTY_STRING
-  })`;
+  }proxy(listener)${afterParameters ? `, ${afterParameters}` : EMPTY_STRING})`;
 
 export const getStoreCoreApi = (
   tablesSchema: TablesSchema,
@@ -183,14 +194,19 @@ export const getStoreCoreApi = (
     doc: string,
     params = EMPTY_STRING,
     paramsInCall = EMPTY_STRING,
+    mutator = 1,
   ): Id =>
     addMethod(
-      `${ADD}${underlyingName}Listener` as string,
-      `${
-        params ? params + ', ' : ''
-      }${LISTENER}: ${listenerType}, mutator?: boolean`,
-      'Id',
-      storeListener(`${ADD}${underlyingName}Listener`, paramsInCall, 'mutator'),
+      `${ADD}${underlyingName}${LISTENER}` as string,
+      `${params ? params + ', ' : ''}listener: ${listenerType}${
+        mutator ? ', mutator?: boolean' : EMPTY_STRING
+      }`,
+      ID,
+      storeListener(
+        `${ADD}${underlyingName}${LISTENER}`,
+        paramsInCall,
+        mutator ? 'mutator' : EMPTY_STRING,
+      ),
       doc,
     );
 
@@ -215,12 +231,12 @@ export const getStoreCoreApi = (
     mapTablesSchema((tableId: Id, tableName: string) => {
       const tableTypes = [
         addType(
-          `${tableName}Table`,
+          tableName + TABLE,
           `{[rowId: Id]: ${tableName}Row}`,
-          `${REPRESENTS} the '${tableId}' Table`,
+          `${REPRESENTS} the '${tableId}' ` + TABLE,
         ),
         addType(
-          `${tableName}Row`,
+          tableName + ROW,
           `{${join(
             mapCellSchema(
               tableId,
@@ -234,7 +250,7 @@ export const getStoreCoreApi = (
           getRowTypeDoc(tableId),
         ),
         addType(
-          `${tableName}RowWhenSet`,
+          tableName + ROW + 'WhenSet',
           `{${join(
             mapCellSchema(tableId, (cellId, type) => `'${cellId}'?: ${type};`),
             ' ',
@@ -242,12 +258,12 @@ export const getStoreCoreApi = (
           getRowTypeDoc(tableId, 1),
         ),
         addType(
-          `${tableName}CellId`,
+          tableName + CELL + ID,
           join(
             mapCellSchema(tableId, (cellId) => `'${cellId}'`),
             ' | ',
           ),
-          `A Cell Id for the '${tableId}' Table`,
+          `A Cell Id for the '${tableId}' ` + TABLE,
         ),
         addType(
           `${tableName}CellCallback`,
@@ -259,7 +275,7 @@ export const getStoreCoreApi = (
             ' | ',
           )})${RETURNS_VOID}`,
           getCallbackDoc(
-            `a Cell Id and value from a Row in the '${tableId}' Table`,
+            `a Cell Id and value from a Row in the '${tableId}' ` + TABLE,
           ),
         ),
         addType(
@@ -286,15 +302,15 @@ export const getStoreCoreApi = (
       getTheContentOfTheStoreDoc(1, 5),
     );
     const tableIdType = addType(
-      'TableId',
+      TABLE + ID,
       join(
         mapTablesSchema((tableId) => `'${tableId}'`),
         ' | ',
       ),
-      `A Table Id in ${THE_STORE}`,
+      'A ' + TABLE + ' Id in ' + THE_STORE,
     );
     const tableCallbackType = addType(
-      'TableCallback',
+      TABLE + 'Callback',
       `(...[tableId, rowCallback]: ${join(
         mapTablesSchema(
           (tableId) =>
@@ -305,7 +321,7 @@ export const getStoreCoreApi = (
         ),
         ' | ',
       )})${RETURNS_VOID}`,
-      getCallbackDoc('a Table Id, and a Row iterator'),
+      getCallbackDoc(A + TABLE + ' Id, and a Row iterator'),
     );
     const getCellChangeType = addType(
       'GetCellChange',
@@ -319,45 +335,46 @@ export const getStoreCoreApi = (
         ' | ',
       )}) => CellChange`,
       `${A_FUNCTION_FOR} returning information about any Cell's changes ` +
-        'during a transaction',
+        'during a ' +
+        TRANSACTION_,
     );
     const tablesListenerType = addType(
-      'TablesListener',
+      TABLES + LISTENER,
       `(${storeInstance}: ${storeType}, ` +
         `getCellChange: ${getCellChangeType}${OR_UNDEFINED})${RETURNS_VOID}`,
       getListenerTypeDoc(1),
     );
     const tableIdsListenerType = addType(
-      'TableIdsListener',
+      TABLE_IDS + LISTENER,
       `(${storeInstance}: ${storeType})${RETURNS_VOID}`,
       getListenerTypeDoc(2),
     );
     const tableListenerType = addType(
-      'TableListener',
+      TABLE + LISTENER,
       `(${storeInstance}: ${storeType}, tableId: ${tableIdType}, ` +
         `getCellChange: ${getCellChangeType}${OR_UNDEFINED})${RETURNS_VOID}`,
       getListenerTypeDoc(3),
     );
     const rowIdsListenerType = addType(
-      'RowIdsListener',
+      ROW_IDS + LISTENER,
       `(${storeInstance}: ${storeType}, tableId: ${tableIdType})` +
         RETURNS_VOID,
       getListenerTypeDoc(4, 3),
     );
     const rowListenerType = addType(
-      'RowListener',
+      ROW + LISTENER,
       `(${storeInstance}: ${storeType}, tableId: ${tableIdType}, rowId: Id, ` +
         `getCellChange: ${getCellChangeType}${OR_UNDEFINED})${RETURNS_VOID}`,
       getListenerTypeDoc(5, 3),
     );
     const cellIdsListenerType = addType(
-      'CellIdsListener',
+      CELL_IDS + LISTENER,
       `(${storeInstance}: ${storeType}, tableId: ${tableIdType}, rowId: Id)` +
         RETURNS_VOID,
       getListenerTypeDoc(6, 5),
     );
     const cellListenerType = addType(
-      'CellListener',
+      CELL + LISTENER,
       `(...[${storeInstance}, tableId, rowId, cellId, newCell, oldCell, ` +
         `getCellChange]: ${join(
           flat(
@@ -379,7 +396,7 @@ export const getStoreCoreApi = (
       getListenerTypeDoc(7, 5),
     );
     const invalidCellListenerType = addType(
-      'InvalidCellListener',
+      'Invalid' + CELL + LISTENER,
       `(${storeInstance}: ${storeType}, tableId: Id, rowId: Id, cellId: Id, ` +
         `invalidCells: any[])${RETURNS_VOID}`,
       getListenerTypeDoc(8),
@@ -408,14 +425,14 @@ export const getStoreCoreApi = (
       EMPTY_STRING,
       TABLE_IDS,
       `${tableIdType}[]`,
-      getIdsDoc('Table', THE_STORE),
+      getIdsDoc(TABLE, THE_STORE),
     );
     addProxyMethod(
       5,
       EMPTY_STRING,
       TABLE,
       'void',
-      getForEachDoc('Table', THE_STORE),
+      getForEachDoc(TABLE, THE_STORE),
       `tableCallback: ${tableCallbackType}`,
       'tableCallback as any',
     );
@@ -455,8 +472,8 @@ export const getStoreCoreApi = (
         0,
         tableName,
         ROW_IDS,
-        'Ids',
-        getIdsDoc('Row', getTableDoc(tableId)),
+        IDS,
+        getIdsDoc(ROW, getTableDoc(tableId)),
         EMPTY_STRING,
         TABLE_ID,
       );
@@ -464,8 +481,8 @@ export const getStoreCoreApi = (
         0,
         tableName,
         SORTED_ROW_IDS,
-        'Ids',
-        getIdsDoc('Row', getTableDoc(tableId), 1),
+        IDS,
+        getIdsDoc(ROW, getTableDoc(tableId), 1),
         `cellId?: ${cellIdType}, descending?: boolean, ` +
           'offset?: number, limit?: number',
         `${TABLE_ID}, cellId, descending, offset, limit`,
@@ -475,7 +492,7 @@ export const getStoreCoreApi = (
         tableName,
         ROW,
         'void',
-        getForEachDoc('Row', getTableDoc(tableId)),
+        getForEachDoc(ROW, getTableDoc(tableId)),
         `rowCallback: ${rowCallbackType}`,
         `${TABLE_ID}, rowCallback as any`,
       );
@@ -506,7 +523,7 @@ export const getStoreCoreApi = (
         6,
         tableName,
         ROW,
-        `Id${OR_UNDEFINED}`,
+        ID + OR_UNDEFINED,
         `Adds a new Row to ${getTableDoc(tableId)}`,
         `row: ${rowWhenSetType}`,
         `${TABLE_ID}, row`,
@@ -516,8 +533,8 @@ export const getStoreCoreApi = (
         tableName,
         CELL_IDS,
         `${cellIdType}[]`,
-        getIdsDoc('Cell', getRowDoc(tableId)),
-        'rowId: Id',
+        getIdsDoc(CELL, getRowDoc(tableId)),
+        'rowId: ' + ID,
         `${TABLE_ID}, rowId`,
       );
       addProxyMethod(
@@ -525,7 +542,7 @@ export const getStoreCoreApi = (
         tableName,
         CELL,
         'void',
-        getForEachDoc('Cell', getRowDoc(tableId)),
+        getForEachDoc(CELL, getRowDoc(tableId)),
         `rowId: Id, cellCallback: ${cellCallbackType}`,
         `${TABLE_ID}, rowId, cellCallback as any`,
       );
@@ -587,43 +604,39 @@ export const getStoreCoreApi = (
       tablesListenerType,
       getTheContentOfTheStoreDoc(1, 8) + ' changes',
     );
-    addProxyListener(
-      TABLE_IDS,
-      tableIdsListenerType,
-      getListenerDoc('the Table Ids', THE_STORE, 1),
-    );
+    addProxyListener(TABLE_IDS, tableIdsListenerType, getListenerDoc(2, 0, 1));
     addProxyListener(
       TABLE,
       tableListenerType,
-      getListenerDoc('a Table', THE_STORE),
+      getListenerDoc(3, 0),
       `tableId: ${tableIdType} | null`,
       'tableId',
     );
     addProxyListener(
       ROW_IDS,
       rowIdsListenerType,
-      getListenerDoc('the Row Ids', 'a Table', 1),
+      getListenerDoc(4, 3, 1),
       `tableId: ${tableIdType} | null`,
       'tableId',
     );
     addProxyListener(
       ROW,
       rowListenerType,
-      getListenerDoc('a Row', 'a Table'),
+      getListenerDoc(5, 3),
       `tableId: ${tableIdType} | null, rowId: IdOrNull`,
       'tableId, rowId',
     );
     addProxyListener(
       CELL_IDS,
       cellIdsListenerType,
-      getListenerDoc('the Cell Ids', 'a Row', 1),
+      getListenerDoc(6, 5, 1),
       `tableId: ${tableIdType} | null, rowId: IdOrNull`,
       'tableId, rowId',
     );
     addProxyListener(
       CELL,
       cellListenerType,
-      getListenerDoc('a Cell', 'a Row'),
+      getListenerDoc(7, 5),
       `tableId: ${tableIdType} | null, rowId: IdOrNull, cellId: ${join(
         mapTablesSchema((tableId) => mapGet(tablesTypes, tableId)?.[3] ?? ''),
         ' | ',
@@ -737,22 +750,23 @@ export const getStoreCoreApi = (
       'GetValueChange',
       `(valueId: ${valueIdType}) => ValueChange`,
       `${A_FUNCTION_FOR} returning information about any Value's changes ` +
-        'during a transaction',
+        'during a ' +
+        TRANSACTION_,
     );
     const valuesListenerType = addType(
-      'ValuesListener',
+      VALUES + LISTENER,
       `(${storeInstance}: ${storeType}, ` +
         `getValueChange: ${getValueChangeType}${OR_UNDEFINED})` +
         RETURNS_VOID,
       getListenerTypeDoc(9),
     );
     const valueIdsListenerType = addType(
-      'ValueIdsListener',
+      VALUE_IDS + LISTENER,
       `(${storeInstance}: ${storeType})${RETURNS_VOID}`,
       getListenerTypeDoc(10),
     );
     const valueListenerType = addType(
-      'ValueListener',
+      VALUE + LISTENER,
       `(...[${storeInstance}, valueId, newValue, oldValue, ` +
         `getValueChange]: ${join(
           mapValuesSchema(
@@ -768,7 +782,7 @@ export const getStoreCoreApi = (
       getListenerTypeDoc(11),
     );
     const invalidValueListenerType = addType(
-      'InvalidValueListener',
+      'Invalid' + VALUE + LISTENER,
       `(${storeInstance}: ${storeType}, valueId: Id, ` +
         `invalidValues: any[])${RETURNS_VOID}`,
       getListenerTypeDoc(12),
@@ -798,14 +812,14 @@ export const getStoreCoreApi = (
       EMPTY_STRING,
       VALUE_IDS,
       `${valueIdType}[]`,
-      getIdsDoc('Value', THE_STORE),
+      getIdsDoc(VALUE, THE_STORE),
     );
     addProxyMethod(
       5,
       EMPTY_STRING,
       VALUE,
       `void`,
-      getForEachDoc('Value', THE_STORE),
+      getForEachDoc(VALUE, THE_STORE),
       `valueCallback: ${valueCallbackType}`,
       'valueCallback as any',
     );
@@ -848,35 +862,25 @@ export const getStoreCoreApi = (
       'values' + JSON,
     );
 
-    addMethod(
-      'addValuesListener',
-      `${LISTENER}: ${valuesListenerType}, mutator?: boolean`,
-      'Id',
-      storeListener('addValuesListener', EMPTY_STRING, 'mutator'),
+    addProxyListener(
+      VALUES,
+      valuesListenerType,
       getTheContentOfTheStoreDoc(2, 8) + ' changes',
     );
-    addMethod(
-      'addValueIdsListener',
-      `${LISTENER}: ${valueIdsListenerType}, mutator?: boolean`,
-      'Id',
-      storeListener('addValueIdsListener', EMPTY_STRING, 'mutator'),
-      getListenerDoc('the Value Ids', THE_STORE, 1),
+    addProxyListener(VALUE_IDS, valueIdsListenerType, getListenerDoc(10, 0, 1));
+    addProxyListener(
+      VALUE,
+      valueListenerType,
+      getListenerDoc(11, 0),
+      `valueId: ${valueIdType} | null`,
+      'valueId',
     );
-    addMethod(
-      'addValueListener',
-      `valueId: ${valueIdType} | null, ${LISTENER}: ${valueListenerType}, ` +
-        'mutator?: boolean',
-      'Id',
-      storeListener('addValueListener', 'valueId', 'mutator'),
-      getListenerDoc('a Value', THE_STORE),
-    );
-    addMethod(
-      'addInvalidValueListener',
-      `valueId: IdOrNull, ${LISTENER}: ` +
-        `${invalidValueListenerType}, mutator?: boolean`,
-      'Id',
-      storeListener('addInvalidValueListener', 'valueId', 'mutator'),
-      `${REGISTERS_A_LISTENER} whenever an invalid Cell change was attempted`,
+    addProxyListener(
+      'Invalid' + VALUE,
+      invalidValueListenerType,
+      `${REGISTERS_A_LISTENER} whenever an invalid Value change was attempted`,
+      `valueId: IdOrNull`,
+      'valueId',
     );
 
     addImport(
@@ -917,78 +921,84 @@ export const getStoreCoreApi = (
   addImport(0, 'tinybase', ...COMMON_IMPORTS);
 
   const transactionListenerType = addType(
-    'TransactionListener',
+    TRANSACTION + LISTENER,
     `(${storeInstance}: ${storeType}, cellsTouched: boolean, ` +
       `valuesTouched: boolean)${RETURNS_VOID}`,
-    `${A_FUNCTION_FOR} listening to the completion of a transaction`,
+    `${A_FUNCTION_FOR} listening to the completion of a ` + TRANSACTION_,
   );
 
-  addMethod(
-    'getJson',
+  addProxyMethod(0, EMPTY_STRING, JSON, JSON, getTheContentOfTheStoreDoc(0, 6));
+  addProxyMethod(
+    2,
     EMPTY_STRING,
-    'Json',
-    storeMethod('getJson'),
-    getTheContentOfTheStoreDoc(0, 6),
-  );
-  addMethod(
-    'setJson',
-    'json: Json',
+    JSON,
     storeType,
-    fluentStoreMethod('setJson', 'json'),
     getTheContentOfTheStoreDoc(0, 7),
+    'json: ' + JSON,
+    'json',
   );
 
-  addMethod(
-    'transaction',
-    'actions: () => Return, doRollback?: DoRollback',
+  addProxyMethod(
+    7,
+    EMPTY_STRING,
+    TRANSACTION_,
     'Return',
-    storeMethod('transaction', 'actions, doRollback'),
-    'Execute a transaction to make multiple mutations',
+    'Execute a ' + TRANSACTION_ + ' to make multiple mutations',
+    'actions: () => Return, doRollback?: DoRollback',
+    'actions, doRollback',
     '<Return>',
   );
-  addMethod(
-    'startTransaction',
+  addProxyMethod(
+    7,
     EMPTY_STRING,
+    'start' + TRANSACTION,
     storeType,
-    fluentStoreMethod('startTransaction'),
-    'Explicitly starts a transaction',
+    'Explicitly starts a ' + TRANSACTION_,
   );
-  addMethod(
-    'finishTransaction',
+  addProxyMethod(
+    7,
+    EMPTY_STRING,
+    'finish' + TRANSACTION,
+    storeType,
+    'Explicitly finishes a ' + TRANSACTION_,
     'doRollback?: DoRollback,',
-    storeType,
-    fluentStoreMethod('finishTransaction', 'doRollback'),
-    'Explicitly finishes a transaction',
+    'doRollback',
   );
 
-  addMethod(
-    'addWillFinishTransactionListener',
-    `${LISTENER}: ${transactionListenerType}`,
-    'Id',
-    storeListener('addWillFinishTransactionListener'),
+  addProxyListener(
+    'WillFinish' + TRANSACTION,
+    transactionListenerType,
     `${REGISTERS_A_LISTENER} just before ${THE_END_OF_THE_TRANSACTION}`,
+    EMPTY_STRING,
+    EMPTY_STRING,
+    0,
   );
-  addMethod(
-    'addDidFinishTransactionListener',
-    `${LISTENER}: ${transactionListenerType}`,
-    'Id',
-    storeListener('addDidFinishTransactionListener'),
+  addProxyListener(
+    'DidFinish' + TRANSACTION,
+    transactionListenerType,
     `${REGISTERS_A_LISTENER} just after ${THE_END_OF_THE_TRANSACTION}`,
+    EMPTY_STRING,
+    EMPTY_STRING,
+    0,
   );
 
-  addMethod(
-    'callListener',
-    `${LISTENER}Id: Id`,
+  addProxyMethod(
+    7,
+    EMPTY_STRING,
+    'call' + LISTENER,
     storeType,
-    fluentStoreMethod('callListener', `${LISTENER}Id`),
-    `Manually provoke a ${LISTENER} to be called`,
+    `Manually provoke a listener to be called`,
+    `listenerId: Id`,
+    `listenerId`,
   );
-  addMethod(
-    'delListener',
-    `${LISTENER}Id: Id`,
+  addProxyMethod(
+    3,
+    EMPTY_STRING,
+    LISTENER,
     storeType,
-    fluentStoreMethod('delListener', `${LISTENER}Id`),
-    `Remove a ${LISTENER} that was previously added to ${THE_STORE}`,
+    `Remove a listener that was previously added to ${THE_STORE}`,
+    `listenerId: Id`,
+    `listenerId`,
   );
 
   addMethod(
@@ -1016,8 +1026,8 @@ export const getStoreCoreApi = (
   ]);
   addInternalFunction(
     'proxy',
-    `${LISTENER}: any`,
-    `(_: Store, ...args: any[]) => ${LISTENER}(${storeInstance}, ...args)`,
+    `listener: any`,
+    `(_: Store, ...args: any[]) => listener(${storeInstance}, ...args)`,
   );
 
   addConstant(storeInstance, ['{', ...getMethods(1), '}']);

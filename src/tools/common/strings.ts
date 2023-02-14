@@ -10,18 +10,27 @@ import {
 } from '../../common/strings';
 import {Id} from '../../common.d';
 
-const A = 'a ';
+export const upper = (str: string) => str.toUpperCase();
+
+export const lower = (str: string) => str.toLowerCase();
+
 const SPACE = ' ';
+export const A = 'a ';
+export const THE = 'the ';
+export const ID = 'Id';
 export const JSON = 'Json';
 export const THE_STORE = 'the Store';
 export const A_FUNCTION_FOR = 'A function for';
 export const EXPORT = 'export';
-export const LISTENER = 'listener';
+export const LISTENER = 'Listener';
+export const LISTENER_ = lower(LISTENER);
+export const TRANSACTION = 'Transaction';
+export const TRANSACTION_ = lower(TRANSACTION);
 export const OR_UNDEFINED = ' | undefined';
-export const REGISTERS_A_LISTENER = `Registers a ${LISTENER} that will be called`;
+export const REGISTERS_A_LISTENER = `Registers a ${LISTENER_} that will be called`;
 export const REPRESENTS = 'Represents';
 export const RETURNS_VOID = ' => void';
-export const THE_END_OF_THE_TRANSACTION = 'the end of the transaction';
+export const THE_END_OF_THE_TRANSACTION = 'the end of the ' + TRANSACTION_;
 
 const A_STRING_SERIALIZATION_OF = A + 'string serialization of';
 
@@ -56,11 +65,12 @@ export const getListenerTypeDoc = (childNoun: number, parentNoun = 0) =>
   `${NOUNS[childNoun]} in ${NOUNS[parentNoun]}`;
 
 export const getListenerDoc = (
-  childNoun: string,
-  parentNoun: string,
+  childNoun: number,
+  parentNoun: number,
   pluralChild = 0,
 ) =>
-  `${REGISTERS_A_LISTENER} whenever ${childNoun} in ${parentNoun} change` +
+  `${REGISTERS_A_LISTENER} whenever ${NOUNS[childNoun]} in ` +
+  `${NOUNS[parentNoun]} change` +
   (pluralChild ? EMPTY_STRING : 's');
 
 export const getTableDoc = (tableId: Id) => `the '${tableId}' Table`;
@@ -92,18 +102,18 @@ export const VERBS = [
   `${REGISTERS_A_LISTENER} whenever`,
 ];
 
-const NOUNS = [
+export const NOUNS = [
   THE_STORE,
   TABLES,
-  TABLE + SPACE + IDS,
+  THE + TABLE + SPACE + IDS,
   A + TABLE,
-  ROW + SPACE + IDS,
+  THE + ROW + SPACE + IDS,
   A + ROW,
-  CELL + SPACE + IDS,
+  THE + CELL + SPACE + IDS,
   A + CELL,
   'invalid Cell changes',
   VALUES,
-  VALUE + SPACE + IDS,
+  THE + VALUE + SPACE + IDS,
   A + VALUE,
   'invalid Value changes',
 ];
