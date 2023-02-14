@@ -9,10 +9,14 @@ import {
   TABLE,
   TABLES,
   TABLE_IDS,
+  VALUE,
+  VALUES,
+  VALUE_IDS,
 } from '../../common/strings';
 import {
   EXPORT,
   ID,
+  SQUARE_BRACKETS,
   THE_STORE,
   getCellContentDoc,
   getIdsDoc,
@@ -21,6 +25,7 @@ import {
   getTableContentDoc,
   getTableDoc,
   getTheContentOfTheStoreDoc,
+  getValueContentDoc,
 } from '../common/strings';
 import {IdMap, mapGet, mapMap, mapNew} from '../../common/map';
 import {
@@ -32,7 +37,7 @@ import {
   getCodeFunctions,
   mapUnique,
 } from '../common/code';
-import {SharedTableTypes, TableTypes} from './core';
+import {SharedTableTypes, SharedValueTypes, TableTypes} from './core';
 import {TablesSchema, ValuesSchema} from '../../store.d';
 import {arrayPush, arrayUnshift} from '../../common/array';
 import {isArray, isUndefined} from '../../common/other';
@@ -53,6 +58,7 @@ export const getStoreUiReactApi = (
   valuesSchema: ValuesSchema,
   module: string,
   sharedTableTypes: SharedTableTypes | [],
+  sharedValueTypes: SharedValueTypes | [],
 ): [string, string] => {
   const [
     build,
@@ -65,7 +71,7 @@ export const getStoreUiReactApi = (
     getConstants,
   ] = getCodeFunctions();
 
-  const [mapTablesSchema, mapCellSchema] = getSchemaFunctions(
+  const [mapTablesSchema, mapCellSchema, mapValuesSchema] = getSchemaFunctions(
     tablesSchema,
     valuesSchema,
     addConstant,
@@ -256,7 +262,7 @@ export const getStoreUiReactApi = (
     addProxyHook(
       EMPTY_STRING,
       TABLE_IDS,
-      tableIdType,
+      tableIdType + SQUARE_BRACKETS,
       getIdsDoc(TABLE, THE_STORE) + AND_REGISTERS,
     );
 
@@ -310,7 +316,7 @@ export const getStoreUiReactApi = (
       addProxyHook(
         tableName,
         CELL_IDS,
-        IDS,
+        cellIdType + SQUARE_BRACKETS,
         getIdsDoc(CELL, getRowDoc(tableId)) + AND_REGISTERS,
         'rowId: ' + ID,
         TABLE_ID + ', rowId',
@@ -330,6 +336,34 @@ export const getStoreUiReactApi = (
         },
       );
     });
+  }
+
+  if (!objIsEmpty(valuesSchema)) {
+    const [valuesType, valueIdType] = sharedValueTypes as SharedValueTypes;
+    addProxyHook(
+      EMPTY_STRING,
+      VALUES,
+      valuesType,
+      getTheContentOfTheStoreDoc(2, 0) + AND_REGISTERS,
+    );
+
+    addProxyHook(
+      EMPTY_STRING,
+      VALUE_IDS,
+      valueIdType + SQUARE_BRACKETS,
+      getIdsDoc(VALUE, THE_STORE) + AND_REGISTERS,
+    );
+
+    mapValuesSchema((valueId, type, _, VALUE_ID, valueName) =>
+      addProxyHook(
+        valueName,
+        VALUE,
+        type,
+        getValueContentDoc(valueId) + AND_REGISTERS,
+        EMPTY_STRING,
+        VALUE_ID,
+      ),
+    );
   }
 
   addComponent(

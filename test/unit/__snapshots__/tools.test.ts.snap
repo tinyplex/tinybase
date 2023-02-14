@@ -1173,7 +1173,7 @@ export function useTables(sOrSId?: SOrSId): Tables;
  * Gets the Ids of the Tables in the Store, and registers a listener so that any
  * changes to that result will cause a re-render.
  */
-export function useTableIds(sOrSId?: SOrSId): TableId;
+export function useTableIds(sOrSId?: SOrSId): TableId[];
 
 /**
  * Gets the content of the 't1' Table, and registers a listener so that any
@@ -1210,7 +1210,7 @@ export function useT1Row(rowId: Id, sOrSId?: SOrSId): T1Row;
  * registers a listener so that any changes to that result will cause a
  * re-render.
  */
-export function useT1CellIds(rowId: Id, sOrSId?: SOrSId): Ids;
+export function useT1CellIds(rowId: Id, sOrSId?: SOrSId): T1CellId[];
 
 /**
  * Gets the 'c1' Cell for the specified Row in the 't1' Table, and registers a
@@ -1235,6 +1235,42 @@ export function useT1C3Cell(rowId: Id, sOrSId?: SOrSId): string;
  * listener so that any changes to that result will cause a re-render.
  */
 export function useT1Cell(rowId: Id, sOrSId?: SOrSId): string | undefined;
+
+/**
+ * Gets the keyed value content of the Store, and registers a listener so that
+ * any changes to that result will cause a re-render.
+ */
+export function useValues(sOrSId?: SOrSId): Values;
+
+/**
+ * Gets the Ids of the Values in the Store, and registers a listener so that any
+ * changes to that result will cause a re-render.
+ */
+export function useValueIds(sOrSId?: SOrSId): ValueId[];
+
+/**
+ * Gets the 'v1' Value, and registers a listener so that any changes to that
+ * result will cause a re-render.
+ */
+export function useV1Value(sOrSId?: SOrSId): number;
+
+/**
+ * Gets the 'v2' Value, and registers a listener so that any changes to that
+ * result will cause a re-render.
+ */
+export function useV2Value(sOrSId?: SOrSId): string;
+
+/**
+ * Gets the 'v3' Value, and registers a listener so that any changes to that
+ * result will cause a re-render.
+ */
+export function useV3Value(sOrSId?: SOrSId): string;
+
+/**
+ * Gets the '' Value, and registers a listener so that any changes to that
+ * result will cause a re-render.
+ */
+export function useValue(sOrSId?: SOrSId): string;
 
 /**
  * Wraps part of an application in a context that provides default objects to be
@@ -1264,6 +1300,12 @@ import {
   useT1Table as useT1TableDecl,
   useTableIds as useTableIdsDecl,
   useTables as useTablesDecl,
+  useV1Value as useV1ValueDecl,
+  useV2Value as useV2ValueDecl,
+  useV3Value as useV3ValueDecl,
+  useValue as useValueDecl,
+  useValueIds as useValueIdsDecl,
+  useValues as useValuesDecl,
 } from './s-ui-react.d';
 import {S, T1CellId, T1Row, T1Table, TableId, Tables} from './s.d';
 import {
@@ -1275,6 +1317,9 @@ import {
   useTable as useTableCore,
   useTableIds as useTableIdsCore,
   useTables as useTablesCore,
+  useValue as useValueCore,
+  useValueIds as useValueIdsCore,
+  useValues as useValuesCore,
 } from 'tinybase/ui-react';
 import React from 'react';
 
@@ -1304,6 +1349,12 @@ const C3 = 'c3';
 
 const _ = '';
 
+const V1 = 'v1';
+
+const V2 = 'v2';
+
+const V3 = 'v3';
+
 export const useCreateS: typeof useCreateSDecl = (
   create: () => S,
   createDeps?: React.DependencyList,
@@ -1319,8 +1370,9 @@ export const useS: typeof useSDecl = (id?: Id): S | undefined => {
 export const useTables: typeof useTablesDecl = (sOrSId?: SOrSId): Tables =>
   useHook(sOrSId, useTablesCore);
 
-export const useTableIds: typeof useTableIdsDecl = (sOrSId?: SOrSId): TableId =>
-  useHook(sOrSId, useTableIdsCore);
+export const useTableIds: typeof useTableIdsDecl = (
+  sOrSId?: SOrSId,
+): TableId[] => useHook(sOrSId, useTableIdsCore);
 
 export const useT1Table: typeof useT1TableDecl = (sOrSId?: SOrSId): T1Table =>
   useHook(sOrSId, useTableCore, T1);
@@ -1345,7 +1397,7 @@ export const useT1Row: typeof useT1RowDecl = (
 export const useT1CellIds: typeof useT1CellIdsDecl = (
   rowId: Id,
   sOrSId?: SOrSId,
-): Ids => useHook(sOrSId, useCellIdsCore, T1, rowId);
+): T1CellId[] => useHook(sOrSId, useCellIdsCore, T1, rowId);
 
 export const useT1C1Cell: typeof useT1C1CellDecl = (
   rowId: Id,
@@ -1366,6 +1418,25 @@ export const useT1Cell: typeof useT1CellDecl = (
   rowId: Id,
   sOrSId?: SOrSId,
 ): string | undefined => useHook(sOrSId, useCellCore, T1, rowId, _);
+
+export const useValues: typeof useValuesDecl = (sOrSId?: SOrSId): Values =>
+  useHook(sOrSId, useValuesCore);
+
+export const useValueIds: typeof useValueIdsDecl = (
+  sOrSId?: SOrSId,
+): ValueId[] => useHook(sOrSId, useValueIdsCore);
+
+export const useV1Value: typeof useV1ValueDecl = (sOrSId?: SOrSId): number =>
+  useHook(sOrSId, useValueCore, V1);
+
+export const useV2Value: typeof useV2ValueDecl = (sOrSId?: SOrSId): string =>
+  useHook(sOrSId, useValueCore, V2);
+
+export const useV3Value: typeof useV3ValueDecl = (sOrSId?: SOrSId): string =>
+  useHook(sOrSId, useValueCore, V3);
+
+export const useValue: typeof useValueDecl = (sOrSId?: SOrSId): string =>
+  useHook(sOrSId, useValueCore, _);
 
 export const Provider: typeof ProviderDecl = ({
   s,
@@ -1914,6 +1985,42 @@ export function useCreateS(
 export function useS(id?: Id): S | undefined;
 
 /**
+ * Gets the keyed value content of the Store, and registers a listener so that
+ * any changes to that result will cause a re-render.
+ */
+export function useValues(sOrSId?: SOrSId): Values;
+
+/**
+ * Gets the Ids of the Values in the Store, and registers a listener so that any
+ * changes to that result will cause a re-render.
+ */
+export function useValueIds(sOrSId?: SOrSId): ValueId[];
+
+/**
+ * Gets the 'v1' Value, and registers a listener so that any changes to that
+ * result will cause a re-render.
+ */
+export function useV1Value(sOrSId?: SOrSId): number;
+
+/**
+ * Gets the 'v2' Value, and registers a listener so that any changes to that
+ * result will cause a re-render.
+ */
+export function useV2Value(sOrSId?: SOrSId): string;
+
+/**
+ * Gets the 'v3' Value, and registers a listener so that any changes to that
+ * result will cause a re-render.
+ */
+export function useV3Value(sOrSId?: SOrSId): string;
+
+/**
+ * Gets the '' Value, and registers a listener so that any changes to that
+ * result will cause a re-render.
+ */
+export function useValue(sOrSId?: SOrSId): string;
+
+/**
  * Wraps part of an application in a context that provides default objects to be
  * used by hooks and components within.
  */
@@ -1930,7 +2037,18 @@ import {
   SOrSId,
   useCreateS as useCreateSDecl,
   useS as useSDecl,
+  useV1Value as useV1ValueDecl,
+  useV2Value as useV2ValueDecl,
+  useV3Value as useV3ValueDecl,
+  useValue as useValueDecl,
+  useValueIds as useValueIdsDecl,
+  useValues as useValuesDecl,
 } from './s-ui-react.d';
+import {
+  useValue as useValueCore,
+  useValueIds as useValueIdsCore,
+  useValues as useValuesCore,
+} from 'tinybase/ui-react';
 import React from 'react';
 
 const {createContext, useContext, useMemo} = React;
@@ -1949,6 +2067,14 @@ const useHook = (
   );
 };
 
+const V1 = 'v1';
+
+const V2 = 'v2';
+
+const V3 = 'v3';
+
+const _ = '';
+
 export const useCreateS: typeof useCreateSDecl = (
   create: () => S,
   createDeps?: React.DependencyList,
@@ -1960,6 +2086,25 @@ export const useS: typeof useSDecl = (id?: Id): S | undefined => {
   const contextValue = useContext(Context);
   return id == null ? contextValue[0] : contextValue[1]?.[id];
 };
+
+export const useValues: typeof useValuesDecl = (sOrSId?: SOrSId): Values =>
+  useHook(sOrSId, useValuesCore);
+
+export const useValueIds: typeof useValueIdsDecl = (
+  sOrSId?: SOrSId,
+): ValueId[] => useHook(sOrSId, useValueIdsCore);
+
+export const useV1Value: typeof useV1ValueDecl = (sOrSId?: SOrSId): number =>
+  useHook(sOrSId, useValueCore, V1);
+
+export const useV2Value: typeof useV2ValueDecl = (sOrSId?: SOrSId): string =>
+  useHook(sOrSId, useValueCore, V2);
+
+export const useV3Value: typeof useV3ValueDecl = (sOrSId?: SOrSId): string =>
+  useHook(sOrSId, useValueCore, V3);
+
+export const useValue: typeof useValueDecl = (sOrSId?: SOrSId): string =>
+  useHook(sOrSId, useValueCore, _);
 
 export const Provider: typeof ProviderDecl = ({
   s,
@@ -2802,7 +2947,7 @@ export function useTables(sOrSId?: SOrSId): Tables;
  * Gets the Ids of the Tables in the Store, and registers a listener so that any
  * changes to that result will cause a re-render.
  */
-export function useTableIds(sOrSId?: SOrSId): TableId;
+export function useTableIds(sOrSId?: SOrSId): TableId[];
 
 /**
  * Gets the content of the 't1' Table, and registers a listener so that any
@@ -2839,7 +2984,7 @@ export function useT1Row(rowId: Id, sOrSId?: SOrSId): T1Row;
  * registers a listener so that any changes to that result will cause a
  * re-render.
  */
-export function useT1CellIds(rowId: Id, sOrSId?: SOrSId): Ids;
+export function useT1CellIds(rowId: Id, sOrSId?: SOrSId): T1CellId[];
 
 /**
  * Gets the 'c1' Cell for the specified Row in the 't1' Table, and registers a
@@ -2948,8 +3093,9 @@ export const useS: typeof useSDecl = (id?: Id): S | undefined => {
 export const useTables: typeof useTablesDecl = (sOrSId?: SOrSId): Tables =>
   useHook(sOrSId, useTablesCore);
 
-export const useTableIds: typeof useTableIdsDecl = (sOrSId?: SOrSId): TableId =>
-  useHook(sOrSId, useTableIdsCore);
+export const useTableIds: typeof useTableIdsDecl = (
+  sOrSId?: SOrSId,
+): TableId[] => useHook(sOrSId, useTableIdsCore);
 
 export const useT1Table: typeof useT1TableDecl = (sOrSId?: SOrSId): T1Table =>
   useHook(sOrSId, useTableCore, T1);
@@ -2974,7 +3120,7 @@ export const useT1Row: typeof useT1RowDecl = (
 export const useT1CellIds: typeof useT1CellIdsDecl = (
   rowId: Id,
   sOrSId?: SOrSId,
-): Ids => useHook(sOrSId, useCellIdsCore, T1, rowId);
+): T1CellId[] => useHook(sOrSId, useCellIdsCore, T1, rowId);
 
 export const useT1C1Cell: typeof useT1C1CellDecl = (
   rowId: Id,
@@ -3626,7 +3772,7 @@ export function useS(id?: Id): S | undefined;
 export function useTables(sOrSId?: SOrSId): Tables;
 
 /** Gets the Ids of the Tables in the Store, and registers a listener so that any changes to that result will cause a re-render. */
-export function useTableIds(sOrSId?: SOrSId): TableId;
+export function useTableIds(sOrSId?: SOrSId): TableId[];
 
 /** Gets the content of the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
 export function useT1Table(sOrSId?: SOrSId): T1Table;
@@ -3641,7 +3787,7 @@ export function useT1SortedRowIds(cellId?: T1CellId, descending?: boolean, offse
 export function useT1Row(rowId: Id, sOrSId?: SOrSId): T1Row;
 
 /** Gets the Ids of the Cells in the specified Row in the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
-export function useT1CellIds(rowId: Id, sOrSId?: SOrSId): Ids;
+export function useT1CellIds(rowId: Id, sOrSId?: SOrSId): T1CellId[];
 
 /** Gets the 'c1' Cell for the specified Row in the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
 export function useT1C1Cell(rowId: Id, sOrSId?: SOrSId): number;
@@ -3655,13 +3801,31 @@ export function useT1C3Cell(rowId: Id, sOrSId?: SOrSId): string;
 /** Gets the '' Cell for the specified Row in the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
 export function useT1Cell(rowId: Id, sOrSId?: SOrSId): string | undefined;
 
+/** Gets the keyed value content of the Store, and registers a listener so that any changes to that result will cause a re-render. */
+export function useValues(sOrSId?: SOrSId): Values;
+
+/** Gets the Ids of the Values in the Store, and registers a listener so that any changes to that result will cause a re-render. */
+export function useValueIds(sOrSId?: SOrSId): ValueId[];
+
+/** Gets the 'v1' Value, and registers a listener so that any changes to that result will cause a re-render. */
+export function useV1Value(sOrSId?: SOrSId): number;
+
+/** Gets the 'v2' Value, and registers a listener so that any changes to that result will cause a re-render. */
+export function useV2Value(sOrSId?: SOrSId): string;
+
+/** Gets the 'v3' Value, and registers a listener so that any changes to that result will cause a re-render. */
+export function useV3Value(sOrSId?: SOrSId): string;
+
+/** Gets the '' Value, and registers a listener so that any changes to that result will cause a re-render. */
+export function useValue(sOrSId?: SOrSId): string;
+
 /** Wraps part of an application in a context that provides default objects to be used by hooks and components within. */
 export function Provider({s, sById, children}: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
 ",
   "import {Id, Ids} from 'tinybase';
-import {Provider as ProviderDecl, ProviderProps, SOrSId, useCreateS as useCreateSDecl, useS as useSDecl, useT1C1Cell as useT1C1CellDecl, useT1C2Cell as useT1C2CellDecl, useT1C3Cell as useT1C3CellDecl, useT1Cell as useT1CellDecl, useT1CellIds as useT1CellIdsDecl, useT1Row as useT1RowDecl, useT1RowIds as useT1RowIdsDecl, useT1SortedRowIds as useT1SortedRowIdsDecl, useT1Table as useT1TableDecl, useTableIds as useTableIdsDecl, useTables as useTablesDecl} from './s-ui-react.d';
+import {Provider as ProviderDecl, ProviderProps, SOrSId, useCreateS as useCreateSDecl, useS as useSDecl, useT1C1Cell as useT1C1CellDecl, useT1C2Cell as useT1C2CellDecl, useT1C3Cell as useT1C3CellDecl, useT1Cell as useT1CellDecl, useT1CellIds as useT1CellIdsDecl, useT1Row as useT1RowDecl, useT1RowIds as useT1RowIdsDecl, useT1SortedRowIds as useT1SortedRowIdsDecl, useT1Table as useT1TableDecl, useTableIds as useTableIdsDecl, useTables as useTablesDecl, useV1Value as useV1ValueDecl, useV2Value as useV2ValueDecl, useV3Value as useV3ValueDecl, useValue as useValueDecl, useValueIds as useValueIdsDecl, useValues as useValuesDecl} from './s-ui-react.d';
 import {S, T1CellId, T1Row, T1Table, TableId, Tables} from './s.d';
-import {useCell as useCellCore, useCellIds as useCellIdsCore, useRow as useRowCore, useRowIds as useRowIdsCore, useSortedRowIds as useSortedRowIdsCore, useTable as useTableCore, useTableIds as useTableIdsCore, useTables as useTablesCore} from 'tinybase/ui-react';
+import {useCell as useCellCore, useCellIds as useCellIdsCore, useRow as useRowCore, useRowIds as useRowIdsCore, useSortedRowIds as useSortedRowIdsCore, useTable as useTableCore, useTableIds as useTableIdsCore, useTables as useTablesCore, useValue as useValueCore, useValueIds as useValueIdsCore, useValues as useValuesCore} from 'tinybase/ui-react';
 import React from 'react';
 
 const {createContext, useContext, useMemo} = React;
@@ -3684,6 +3848,12 @@ const C3 = 'c3';
 
 const _ = '';
 
+const V1 = 'v1';
+
+const V2 = 'v2';
+
+const V3 = 'v3';
+
 export const useCreateS: typeof useCreateSDecl = (create: () => S, createDeps?: React.DependencyList): S =>
 
 // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -3698,7 +3868,7 @@ return id == null ? contextValue[0] : contextValue[1]?.[id];
 export const useTables: typeof useTablesDecl = (sOrSId?: SOrSId): Tables =>
 useHook(sOrSId, useTablesCore)
 
-export const useTableIds: typeof useTableIdsDecl = (sOrSId?: SOrSId): TableId =>
+export const useTableIds: typeof useTableIdsDecl = (sOrSId?: SOrSId): TableId[] =>
 useHook(sOrSId, useTableIdsCore)
 
 export const useT1Table: typeof useT1TableDecl = (sOrSId?: SOrSId): T1Table =>
@@ -3713,7 +3883,7 @@ useHook(sOrSId, useSortedRowIdsCore, T1, cellId, descending, offset, limit)
 export const useT1Row: typeof useT1RowDecl = (rowId: Id, sOrSId?: SOrSId): T1Row =>
 useHook(sOrSId, useRowCore, T1, rowId)
 
-export const useT1CellIds: typeof useT1CellIdsDecl = (rowId: Id, sOrSId?: SOrSId): Ids =>
+export const useT1CellIds: typeof useT1CellIdsDecl = (rowId: Id, sOrSId?: SOrSId): T1CellId[] =>
 useHook(sOrSId, useCellIdsCore, T1, rowId)
 
 export const useT1C1Cell: typeof useT1C1CellDecl = (rowId: Id, sOrSId?: SOrSId): number =>
@@ -3727,6 +3897,24 @@ useHook(sOrSId, useCellCore, T1, rowId, C3)
 
 export const useT1Cell: typeof useT1CellDecl = (rowId: Id, sOrSId?: SOrSId): string | undefined =>
 useHook(sOrSId, useCellCore, T1, rowId, _)
+
+export const useValues: typeof useValuesDecl = (sOrSId?: SOrSId): Values =>
+useHook(sOrSId, useValuesCore)
+
+export const useValueIds: typeof useValueIdsDecl = (sOrSId?: SOrSId): ValueId[] =>
+useHook(sOrSId, useValueIdsCore)
+
+export const useV1Value: typeof useV1ValueDecl = (sOrSId?: SOrSId): number =>
+useHook(sOrSId, useValueCore, V1)
+
+export const useV2Value: typeof useV2ValueDecl = (sOrSId?: SOrSId): string =>
+useHook(sOrSId, useValueCore, V2)
+
+export const useV3Value: typeof useV3ValueDecl = (sOrSId?: SOrSId): string =>
+useHook(sOrSId, useValueCore, V3)
+
+export const useValue: typeof useValueDecl = (sOrSId?: SOrSId): string =>
+useHook(sOrSId, useValueCore, _)
 
 export const Provider: typeof ProviderDecl = ({s, sById, children}: ProviderProps & {children: React.ReactNode}): any =>
 {
@@ -4039,11 +4227,30 @@ export function useCreateS(create: () => S, createDeps?: React.DependencyList): 
 /** Get a reference to a S from within a Provider component context. */
 export function useS(id?: Id): S | undefined;
 
+/** Gets the keyed value content of the Store, and registers a listener so that any changes to that result will cause a re-render. */
+export function useValues(sOrSId?: SOrSId): Values;
+
+/** Gets the Ids of the Values in the Store, and registers a listener so that any changes to that result will cause a re-render. */
+export function useValueIds(sOrSId?: SOrSId): ValueId[];
+
+/** Gets the 'v1' Value, and registers a listener so that any changes to that result will cause a re-render. */
+export function useV1Value(sOrSId?: SOrSId): number;
+
+/** Gets the 'v2' Value, and registers a listener so that any changes to that result will cause a re-render. */
+export function useV2Value(sOrSId?: SOrSId): string;
+
+/** Gets the 'v3' Value, and registers a listener so that any changes to that result will cause a re-render. */
+export function useV3Value(sOrSId?: SOrSId): string;
+
+/** Gets the '' Value, and registers a listener so that any changes to that result will cause a re-render. */
+export function useValue(sOrSId?: SOrSId): string;
+
 /** Wraps part of an application in a context that provides default objects to be used by hooks and components within. */
 export function Provider({s, sById, children}: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
 ",
   "import {Id, Ids} from 'tinybase';
-import {Provider as ProviderDecl, ProviderProps, SOrSId, useCreateS as useCreateSDecl, useS as useSDecl} from './s-ui-react.d';
+import {Provider as ProviderDecl, ProviderProps, SOrSId, useCreateS as useCreateSDecl, useS as useSDecl, useV1Value as useV1ValueDecl, useV2Value as useV2ValueDecl, useV3Value as useV3ValueDecl, useValue as useValueDecl, useValueIds as useValueIdsDecl, useValues as useValuesDecl} from './s-ui-react.d';
+import {useValue as useValueCore, useValueIds as useValueIdsCore, useValues as useValuesCore} from 'tinybase/ui-react';
 import React from 'react';
 
 const {createContext, useContext, useMemo} = React;
@@ -4056,6 +4263,14 @@ return hook(...args, ((sOrSId == null || typeof sOrSId == 'string')
 ? s : sOrSId)?.getStore())
 };
 
+const V1 = 'v1';
+
+const V2 = 'v2';
+
+const V3 = 'v3';
+
+const _ = '';
+
 export const useCreateS: typeof useCreateSDecl = (create: () => S, createDeps?: React.DependencyList): S =>
 
 // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -4066,6 +4281,24 @@ export const useS: typeof useSDecl = (id?: Id): S | undefined =>
 const contextValue = useContext(Context);
 return id == null ? contextValue[0] : contextValue[1]?.[id];
 }
+
+export const useValues: typeof useValuesDecl = (sOrSId?: SOrSId): Values =>
+useHook(sOrSId, useValuesCore)
+
+export const useValueIds: typeof useValueIdsDecl = (sOrSId?: SOrSId): ValueId[] =>
+useHook(sOrSId, useValueIdsCore)
+
+export const useV1Value: typeof useV1ValueDecl = (sOrSId?: SOrSId): number =>
+useHook(sOrSId, useValueCore, V1)
+
+export const useV2Value: typeof useV2ValueDecl = (sOrSId?: SOrSId): string =>
+useHook(sOrSId, useValueCore, V2)
+
+export const useV3Value: typeof useV3ValueDecl = (sOrSId?: SOrSId): string =>
+useHook(sOrSId, useValueCore, V3)
+
+export const useValue: typeof useValueDecl = (sOrSId?: SOrSId): string =>
+useHook(sOrSId, useValueCore, _)
 
 export const Provider: typeof ProviderDecl = ({s, sById, children}: ProviderProps & {children: React.ReactNode}): any =>
 {
@@ -4509,7 +4742,7 @@ export function useS(id?: Id): S | undefined;
 export function useTables(sOrSId?: SOrSId): Tables;
 
 /** Gets the Ids of the Tables in the Store, and registers a listener so that any changes to that result will cause a re-render. */
-export function useTableIds(sOrSId?: SOrSId): TableId;
+export function useTableIds(sOrSId?: SOrSId): TableId[];
 
 /** Gets the content of the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
 export function useT1Table(sOrSId?: SOrSId): T1Table;
@@ -4524,7 +4757,7 @@ export function useT1SortedRowIds(cellId?: T1CellId, descending?: boolean, offse
 export function useT1Row(rowId: Id, sOrSId?: SOrSId): T1Row;
 
 /** Gets the Ids of the Cells in the specified Row in the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
-export function useT1CellIds(rowId: Id, sOrSId?: SOrSId): Ids;
+export function useT1CellIds(rowId: Id, sOrSId?: SOrSId): T1CellId[];
 
 /** Gets the 'c1' Cell for the specified Row in the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
 export function useT1C1Cell(rowId: Id, sOrSId?: SOrSId): number;
@@ -4581,7 +4814,7 @@ return id == null ? contextValue[0] : contextValue[1]?.[id];
 export const useTables: typeof useTablesDecl = (sOrSId?: SOrSId): Tables =>
 useHook(sOrSId, useTablesCore)
 
-export const useTableIds: typeof useTableIdsDecl = (sOrSId?: SOrSId): TableId =>
+export const useTableIds: typeof useTableIdsDecl = (sOrSId?: SOrSId): TableId[] =>
 useHook(sOrSId, useTableIdsCore)
 
 export const useT1Table: typeof useT1TableDecl = (sOrSId?: SOrSId): T1Table =>
@@ -4596,7 +4829,7 @@ useHook(sOrSId, useSortedRowIdsCore, T1, cellId, descending, offset, limit)
 export const useT1Row: typeof useT1RowDecl = (rowId: Id, sOrSId?: SOrSId): T1Row =>
 useHook(sOrSId, useRowCore, T1, rowId)
 
-export const useT1CellIds: typeof useT1CellIdsDecl = (rowId: Id, sOrSId?: SOrSId): Ids =>
+export const useT1CellIds: typeof useT1CellIdsDecl = (rowId: Id, sOrSId?: SOrSId): T1CellId[] =>
 useHook(sOrSId, useCellIdsCore, T1, rowId)
 
 export const useT1C1Cell: typeof useT1C1CellDecl = (rowId: Id, sOrSId?: SOrSId): number =>
