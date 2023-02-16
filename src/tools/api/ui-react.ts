@@ -1,4 +1,19 @@
 import {
+  CALLBACK,
+  EXPORT,
+  ID,
+  SQUARE_BRACKETS,
+  THE_STORE,
+  getCellContentDoc,
+  getIdsDoc,
+  getRowContentDoc,
+  getRowDoc,
+  getTableContentDoc,
+  getTableDoc,
+  getTheContentOfTheStoreDoc,
+  getValueContentDoc,
+} from '../common/strings';
+import {
   CELL,
   CELL_IDS,
   EMPTY_STRING,
@@ -13,20 +28,6 @@ import {
   VALUES,
   VALUE_IDS,
 } from '../../common/strings';
-import {
-  EXPORT,
-  ID,
-  SQUARE_BRACKETS,
-  THE_STORE,
-  getCellContentDoc,
-  getIdsDoc,
-  getRowContentDoc,
-  getRowDoc,
-  getTableContentDoc,
-  getTableDoc,
-  getTheContentOfTheStoreDoc,
-  getValueContentDoc,
-} from '../common/strings';
 import {IdMap, mapGet, mapMap, mapNew} from '../../common/map';
 import {
   LINE,
@@ -52,6 +53,8 @@ const USE_CONTEXT = 'const contextValue = useContext(Context);';
 const AND_REGISTERS =
   ', and registers a listener so that any changes to ' +
   'that result will cause a re-render';
+const BASED_ON_A_PARAMETER = ', based on a parameter';
+const PARAMETERIZED_CALLBACK = 'ParameterizedCallback<Parameter>';
 
 export const getStoreUiReactApi = (
   tablesSchema: TablesSchema,
@@ -126,8 +129,11 @@ export const getStoreUiReactApi = (
     underlyingName: string,
     returnType: string,
     doc: string,
-    extraParameters = EMPTY_STRING,
-    extraParametersInCall = EMPTY_STRING,
+    preParameters = EMPTY_STRING,
+    preParametersInCall = EMPTY_STRING,
+    generic = EMPTY_STRING,
+    postParameters = EMPTY_STRING,
+    postParametersInCall = EMPTY_STRING,
   ) => {
     addImport(
       1,
@@ -136,14 +142,17 @@ export const getStoreUiReactApi = (
     );
     addHook(
       prefix + underlyingName,
-      (extraParameters ? `${extraParameters}, ` : EMPTY_STRING) +
-        storeOrStoreIdParameter,
+      (preParameters ? preParameters + ', ' : EMPTY_STRING) +
+        storeOrStoreIdParameter +
+        (postParameters ? ', ' + postParameters : EMPTY_STRING),
       returnType,
       useHook +
-        `(${storeOrStoreId}, use${underlyingName}Core${
-          extraParametersInCall ? `, ${extraParametersInCall}` : EMPTY_STRING
-        })`,
+        `(${storeOrStoreId}, use${underlyingName}Core, [` +
+        (preParametersInCall ? preParametersInCall : EMPTY_STRING) +
+        (postParametersInCall ? '], [' + postParametersInCall : EMPTY_STRING) +
+        '])',
       doc,
+      generic,
     );
   };
 
@@ -235,12 +244,12 @@ export const getStoreUiReactApi = (
     `useHook`,
     storeOrStoreId +
       `: ${storeOrStoreIdType} | undefined, ` +
-      `hook: (...args: any[]) => any, ...args: any[]`,
+      `hook: (...args: any[]) => any, preArgs: any[], postArgs: any[] = []`,
     [
       `const ${storeInstance} = ${getStoreHook}(${storeOrStoreId} as Id);`,
-      `return hook(...args, ((${storeOrStoreId} == null || ` +
+      `return hook(...preArgs, ((${storeOrStoreId} == null || ` +
         `typeof ${storeOrStoreId} == 'string')`,
-      `? ${storeInstance} : ${storeOrStoreId})?.getStore())`,
+      `? ${storeInstance} : ${storeOrStoreId})?.getStore(), ...postArgs)`,
     ],
   );
 
@@ -264,6 +273,20 @@ export const getStoreUiReactApi = (
       TABLE_IDS,
       tableIdType + SQUARE_BRACKETS,
       getIdsDoc(TABLE, THE_STORE) + AND_REGISTERS,
+    );
+
+    addProxyHook(
+      EMPTY_STRING,
+      'Set' + TABLES + CALLBACK,
+      PARAMETERIZED_CALLBACK,
+      getTheContentOfTheStoreDoc(1, 9) + BASED_ON_A_PARAMETER,
+      'getTables: (parameter: Parameter, store: Store) => Tables, ' +
+        'getTablesDeps?: React.DependencyList',
+      'getTables, getTablesDeps',
+      '<Parameter,>',
+      'then?: (store: Store, tables: Tables) => void, ' +
+        'thenDeps?: React.DependencyList',
+      'then, thenDeps',
     );
 
     mapTablesSchema((tableId: Id, tableName: string, TABLE_ID: string) => {
