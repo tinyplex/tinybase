@@ -237,7 +237,7 @@ const compileModule = async (
 
   const outputConfig = {
     dir,
-    entryFileNames: `[name].js`,
+    entryFileNames: `[name].${format == 'cjs' ? 'cjs' : 'js'}`,
     format,
     globals: {
       react: 'React',
@@ -386,18 +386,31 @@ export const compileForTest = async () => {
 
 export const compileForProd = async () => {
   await clearDir(LIB_DIR);
+
   await allModules(async (module) => {
-    await compileModule(module, false);
-    await compileModule(module, false, `${LIB_DIR}/es6`, 'esm', 'es6');
-    await compileModule(module, false, `${LIB_DIR}/umd`, 'umd');
-    await compileModule(module, false, `${LIB_DIR}/umd-es6`, 'umd', 'es6');
-    await compileModule(module, true, `${LIB_DIR}/debug`);
+    await allOf(
+      [undefined, 'umd', 'cjs'],
+      async (format) =>
+        await allOf(
+          [undefined, 'es6'],
+          async (target) =>
+            await allOf(
+              [false, ...(target || format ? [] : [true])],
+              async (debug) => {
+                const folder = `${LIB_DIR}/${[
+                  debug ? 'debug' : '',
+                  format,
+                  target,
+                ]
+                  .filter((token) => token)
+                  .join('-')}`;
+                await compileModule(module, debug, folder, format, target);
+                await copyDefinitions(folder);
+              },
+            ),
+        ),
+    );
   });
-  await copyDefinitions();
-  await copyDefinitions(`${LIB_DIR}/es6`);
-  await copyDefinitions(`${LIB_DIR}/umd`);
-  await copyDefinitions(`${LIB_DIR}/umd-es6`);
-  await copyDefinitions(`${LIB_DIR}/debug`);
 
   await compileForCli();
 };

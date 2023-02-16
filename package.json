@@ -21,6 +21,14 @@
   "exports": {
     ".": "./lib/tinybase.js",
     "./package.json": "./package.json",
+    "./es6": "./lib/es6/tinybase.js",
+    "./debug": "./lib/debug/tinybase.js",
+    "./cjs": "./lib/cjs/tinybase.cjs",
+    "./cjs-es6": "./lib/cjs-es6/tinybase.cjs",
+    "./umd": "./lib/umd/tinybase.js",
+    "./umd-es6": "./lib/umd-es6/tinybase.js",
+    "./cjs/*": "./lib/cjs/*.cjs",
+    "./cjs-es6/*": "./lib/cjs-es6/*.cjs",
     "./*": "./lib/*.js"
   },
   "bin": {

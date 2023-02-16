@@ -80,8 +80,10 @@ are subdirectories that contain builds of different types:
 | .         | esnext | esm    | true     |
 | ./debug   | esnext | esm    | false    |
 | ./umd     | esnext | umd    | true     |
+| ./cjs     | esnext | cjs    | true     |
 | ./es6     | es6    | esm    | true     |
 | ./umd-es6 | es6    | umd    | true     |
+| ./cjs-es6 | es6    | cjs    | true     |
 
 These build configurations are all defined in the `compileForProd` task in
 `gulpfile.mjs`.
