@@ -352,7 +352,7 @@ export interface Tools {
    * // -> 'export type PetsRow = {\'price\'?: number;};'
    *
    * const tsLines = ts.split('\n');
-   * console.log(tsLines[41]);
+   * console.log(tsLines[39]);
    * // -> 'getPetsTable: (): PetsTable => store.getTable(PETS) as PetsTable,'
    * ```
    * @example
@@ -373,7 +373,7 @@ export interface Tools {
    * // -> 'export type PetsRow = {\'price\': number;};'
    *
    * const tsLines = ts.split('\n');
-   * console.log(tsLines[43]);
+   * console.log(tsLines[41]);
    * // -> 'getPetsTable: (): PetsTable => store.getTable(PETS) as PetsTable,'
    * ```
    * @category Modelling
@@ -433,7 +433,7 @@ export interface Tools {
    * // -> 'export type PetsRow = {price?: number};'
    *
    * const tsLines = ts.split('\n');
-   * console.log(tsLines[72]);
+   * console.log(tsLines[74]);
    * // -> '    hasPetsTable: (): boolean => store.hasTable(PETS),'
    * ```
    * @example
@@ -455,7 +455,7 @@ export interface Tools {
    * // -> 'export type PetsRow = {price: number};'
    *
    * const tsLines = ts.split('\n');
-   * console.log(tsLines[74]);
+   * console.log(tsLines[76]);
    * // -> '    hasPetsTable: (): boolean => store.hasTable(PETS),'
    * ```
    * @category Modelling
