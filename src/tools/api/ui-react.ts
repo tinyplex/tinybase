@@ -125,7 +125,7 @@ export const getStoreUiReactApi = (
   ) => addFunction(`use${name}`, parameters, returnType, body, doc, generic);
 
   const addProxyHook = (
-    prefix: string,
+    name: string,
     underlyingName: string,
     returnType: string,
     doc: string,
@@ -141,7 +141,7 @@ export const getStoreUiReactApi = (
       `use${underlyingName} as use${underlyingName}Core`,
     );
     addHook(
-      prefix + underlyingName,
+      name,
       (preParameters ? preParameters + ', ' : EMPTY_STRING) +
         storeOrStoreIdParameter +
         (postParameters ? ', ' + postParameters : EMPTY_STRING),
@@ -262,21 +262,21 @@ export const getStoreUiReactApi = (
     addImport(1, moduleDefinition, storeType, tablesType, tableIdType);
 
     addProxyHook(
-      EMPTY_STRING,
+      TABLES,
       TABLES,
       tablesType,
       getTheContentOfTheStoreDoc(1, 0) + AND_REGISTERS,
     );
 
     addProxyHook(
-      EMPTY_STRING,
+      TABLE_IDS,
       TABLE_IDS,
       tableIdType + SQUARE_BRACKETS,
       getIdsDoc(TABLE, THE_STORE) + AND_REGISTERS,
     );
 
     addProxyHook(
-      EMPTY_STRING,
+      'Set' + TABLES + CALLBACK,
       'Set' + TABLES + CALLBACK,
       PARAMETERIZED_CALLBACK,
       getTheContentOfTheStoreDoc(1, 9) + BASED_ON_A_PARAMETER,
@@ -299,7 +299,7 @@ export const getStoreUiReactApi = (
       addImport(1, moduleDefinition, tableType, rowType, cellIdType);
 
       addProxyHook(
-        tableName,
+        tableName + TABLE,
         TABLE,
         tableType,
         getTableContentDoc(tableId) + AND_REGISTERS,
@@ -308,7 +308,7 @@ export const getStoreUiReactApi = (
       );
 
       addProxyHook(
-        tableName,
+        tableName + ROW_IDS,
         ROW_IDS,
         IDS,
         getIdsDoc(ROW, getTableDoc(tableId)) + AND_REGISTERS,
@@ -317,7 +317,7 @@ export const getStoreUiReactApi = (
       );
 
       addProxyHook(
-        tableName,
+        tableName + SORTED_ROW_IDS,
         SORTED_ROW_IDS,
         IDS,
         getIdsDoc(ROW, getTableDoc(tableId), 1) + AND_REGISTERS,
@@ -328,7 +328,7 @@ export const getStoreUiReactApi = (
       );
 
       addProxyHook(
-        tableName,
+        tableName + ROW,
         ROW,
         rowType,
         getRowContentDoc(tableId) + AND_REGISTERS,
@@ -337,7 +337,7 @@ export const getStoreUiReactApi = (
       );
 
       addProxyHook(
-        tableName,
+        tableName + CELL_IDS,
         CELL_IDS,
         cellIdType + SQUARE_BRACKETS,
         getIdsDoc(CELL, getRowDoc(tableId)) + AND_REGISTERS,
@@ -349,7 +349,7 @@ export const getStoreUiReactApi = (
         tableId,
         (cellId, type, defaultValue, CELL_ID, cellName) => {
           addProxyHook(
-            tableName + cellName,
+            tableName + cellName + CELL,
             CELL,
             type + (isUndefined(defaultValue) ? OR_UNDEFINED : EMPTY_STRING),
             getCellContentDoc(tableId, cellId) + AND_REGISTERS,
@@ -364,14 +364,14 @@ export const getStoreUiReactApi = (
   if (!objIsEmpty(valuesSchema)) {
     const [valuesType, valueIdType] = sharedValueTypes as SharedValueTypes;
     addProxyHook(
-      EMPTY_STRING,
+      VALUES,
       VALUES,
       valuesType,
       getTheContentOfTheStoreDoc(2, 0) + AND_REGISTERS,
     );
 
     addProxyHook(
-      EMPTY_STRING,
+      VALUE_IDS,
       VALUE_IDS,
       valueIdType + SQUARE_BRACKETS,
       getIdsDoc(VALUE, THE_STORE) + AND_REGISTERS,
@@ -379,7 +379,7 @@ export const getStoreUiReactApi = (
 
     mapValuesSchema((valueId, type, _, VALUE_ID, valueName) =>
       addProxyHook(
-        valueName,
+        valueName + VALUE,
         VALUE,
         type,
         getValueContentDoc(valueId) + AND_REGISTERS,
