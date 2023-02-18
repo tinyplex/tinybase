@@ -126,14 +126,17 @@ export const createTools: typeof createToolsDecl = getCreateFunction(
     const getPrettyStoreApi = async (
       module: string,
     ): Promise<[string, string, string, string]> => {
+      const extensions = ['d.ts', 'ts', 'd.ts', 'tsx'];
       let format: (str: string, _config: any) => string;
       try {
         format = (await import('prettier')).format;
       } catch (e) {
         format = (str) => str;
       }
-      return arrayMap(getStoreApi(module), (file) =>
-        formatJsDoc(format(file, prettierConfig)),
+      return arrayMap(getStoreApi(module), (file, f) =>
+        formatJsDoc(
+          format(file, {...prettierConfig, filepath: `_.${extensions[f]}`}),
+        ),
       ) as [string, string, string, string];
     };
 
