@@ -359,6 +359,21 @@ export const getStoreUiReactApi = (
         'then, thenDeps',
       );
 
+      addProxyHook(
+        'Set' + tableName + ROW + CALLBACK,
+        'Set' + ROW + CALLBACK,
+        PARAMETERIZED_CALLBACK,
+        getRowContentDoc(tableId, 9) + BASED_ON_A_PARAMETER,
+        'rowId: Id, getRow: (parameter: Parameter, store: Store) => ' +
+          rowType +
+          ', getRowDeps?: React.DependencyList',
+        TABLE_ID + ', rowId, getRow, getRowDeps',
+        '<Parameter,>',
+        `then?: (store: Store, row: ${rowType}) => void, ` +
+          'thenDeps?: React.DependencyList',
+        'then, thenDeps',
+      );
+
       mapCellSchema(
         tableId,
         (cellId, type, defaultValue, CELL_ID, cellName) => {
