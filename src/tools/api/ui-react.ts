@@ -2,6 +2,7 @@ import {
   CALLBACK,
   EXPORT,
   ID,
+  PARTIAL,
   SQUARE_BRACKETS,
   THE_STORE,
   getCellContentDoc,
@@ -386,6 +387,21 @@ export const getStoreUiReactApi = (
         'then?: (rowId: Id | undefined, store: Store, row: ' +
           rowType +
           ') => void, thenDeps?: React.DependencyList',
+        'then, thenDeps',
+      );
+
+      addProxyHook(
+        'Set' + tableName + PARTIAL + ROW + CALLBACK,
+        'Set' + PARTIAL + ROW + CALLBACK,
+        PARAMETERIZED_CALLBACK,
+        getRowContentDoc(tableId, 11) + BASED_ON_A_PARAMETER,
+        'getPartialRow: (parameter: Parameter, store: Store) => ' +
+          rowWhenSetType +
+          ', getPartialRowDeps?: React.DependencyList',
+        TABLE_ID + ', getPartialRow, getPartialRowDeps',
+        '<Parameter,>',
+        `then?: (store: Store, partialRow: ${rowType}) => void, ` +
+          'thenDeps?: React.DependencyList',
         'then, thenDeps',
       );
 
