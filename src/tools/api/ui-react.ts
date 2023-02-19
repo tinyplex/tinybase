@@ -290,7 +290,7 @@ export const getStoreUiReactApi = (
     );
 
     mapTablesSchema((tableId: Id, tableName: string, TABLE_ID: string) => {
-      const [tableType, rowType, _rowWhenSetType, cellIdType] = mapGet(
+      const [tableType, rowType, rowWhenSetType, cellIdType] = mapGet(
         tablesTypes,
         tableId,
       ) as TableTypes;
@@ -365,12 +365,27 @@ export const getStoreUiReactApi = (
         PARAMETERIZED_CALLBACK,
         getRowContentDoc(tableId, 9) + BASED_ON_A_PARAMETER,
         'rowId: Id, getRow: (parameter: Parameter, store: Store) => ' +
-          rowType +
+          rowWhenSetType +
           ', getRowDeps?: React.DependencyList',
         TABLE_ID + ', rowId, getRow, getRowDeps',
         '<Parameter,>',
         `then?: (store: Store, row: ${rowType}) => void, ` +
           'thenDeps?: React.DependencyList',
+        'then, thenDeps',
+      );
+
+      addProxyHook(
+        'Add' + tableName + ROW + CALLBACK,
+        'Add' + ROW + CALLBACK,
+        PARAMETERIZED_CALLBACK,
+        getRowContentDoc(tableId, 10) + BASED_ON_A_PARAMETER,
+        `getRow: (parameter: Parameter, store: Store) => ${rowWhenSetType}, ` +
+          'getRowDeps?: React.DependencyList',
+        TABLE_ID + ', getRow, getRowDeps',
+        '<Parameter,>',
+        'then?: (rowId: Id | undefined, store: Store, row: ' +
+          rowType +
+          ') => void, thenDeps?: React.DependencyList',
         'then, thenDeps',
       );
 
