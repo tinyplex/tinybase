@@ -118,6 +118,8 @@ export const VERBS = [
   'Sets ' + A_STRING_SERIALIZATION_OF,
   REGISTERS_A_LISTENER + ' whenever',
   'Gets a callback that can set',
+  'Gets a callback that can add',
+  'Gets a callback that can set part of',
 ];
 
 export const NOUNS = [
