@@ -294,7 +294,7 @@ export const getStoreUiReactApi = (
       'Del' + TABLES + CALLBACK,
       'Del' + TABLES + CALLBACK,
       CALLBACK,
-      getTheContentOfTheStoreDoc(1, 12) + BASED_ON_A_PARAMETER,
+      getTheContentOfTheStoreDoc(1, 12),
       EMPTY_STRING,
       EMPTY_STRING,
       EMPTY_STRING,
@@ -390,7 +390,7 @@ export const getStoreUiReactApi = (
         'Del' + tableName + TABLE + CALLBACK,
         'Del' + TABLE + CALLBACK,
         CALLBACK,
-        getTableContentDoc(tableId, 12) + BASED_ON_A_PARAMETER,
+        getTableContentDoc(tableId, 12),
         EMPTY_STRING,
         TABLE_ID,
         EMPTY_STRING,
@@ -447,7 +447,7 @@ export const getStoreUiReactApi = (
         'Del' + tableName + ROW + CALLBACK,
         'Del' + ROW + CALLBACK,
         CALLBACK,
-        getRowContentDoc(tableId, 12) + BASED_ON_A_PARAMETER,
+        getRowContentDoc(tableId, 12),
         'rowId: Id',
         TABLE_ID + ', rowId',
         EMPTY_STRING,
@@ -492,7 +492,7 @@ export const getStoreUiReactApi = (
             'Del' + tableName + cellName + CELL + CALLBACK,
             'Del' + CELL + CALLBACK,
             CALLBACK,
-            getCellContentDoc(tableId, cellId, 12) + BASED_ON_A_PARAMETER,
+            getCellContentDoc(tableId, cellId, 12),
             'rowId: Id, forceDel?: boolean',
             TABLE_ID + ', rowId, ' + CELL_ID + ', forceDel',
             EMPTY_STRING,
@@ -550,6 +550,18 @@ export const getStoreUiReactApi = (
       '<Parameter,>',
       `then?: (store: Store, partialValues: ${valuesWhenSetType}) => void, ` +
         'thenDeps?: React.DependencyList',
+      'then, thenDeps',
+    );
+
+    addProxyHook(
+      'Del' + VALUES + CALLBACK,
+      'Del' + VALUES + CALLBACK,
+      CALLBACK,
+      getTheContentOfTheStoreDoc(2, 12),
+      EMPTY_STRING,
+      EMPTY_STRING,
+      EMPTY_STRING,
+      'then?: (store: Store) => void, thenDeps?: React.DependencyList',
       'then, thenDeps',
     );
 
