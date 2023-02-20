@@ -1,8 +1,11 @@
 import {
   CALLBACK,
+  DEL,
   EXPORT,
   ID,
   PARTIAL,
+  RETURNS_VOID,
+  SET,
   SQUARE_BRACKETS,
   THE_STORE,
   getCellContentDoc,
@@ -18,6 +21,7 @@ import {
   CELL,
   CELL_IDS,
   EMPTY_STRING,
+  GET,
   IDS,
   ROW,
   ROW_IDS,
@@ -37,25 +41,56 @@ import {
   camel,
   comment,
   getCodeFunctions,
+  join,
   mapUnique,
 } from '../common/code';
 import {SharedTableTypes, SharedValueTypes, TableTypes} from './core';
 import {TablesSchema, ValuesSchema} from '../../store.d';
-import {arrayPush, arrayUnshift} from '../../common/array';
+import {arrayFilter, arrayPush, arrayUnshift} from '../../common/array';
 import {isArray, isUndefined} from '../../common/other';
 import {Id} from '../../common.d';
 import {OR_UNDEFINED} from '../common/strings';
 import {getSchemaFunctions} from '../common/schema';
 import {objIsEmpty} from '../../common/obj';
 
-const COMMON_IMPORTS = [ID, IDS, 'Store', CALLBACK, 'ParameterizedCallback'];
+const getGet = (noun: string) => GET + noun;
+const getGetAndGetDeps = (noun: string) =>
+  getArgList(getGet(noun), getGet(noun) + 'Deps');
+const getArgList = (...args: string[]) =>
+  join(
+    arrayFilter(args, (arg) => arg as any),
+    ', ',
+  );
 
+const PARAMETER = 'Parameter';
+const GETTER_ARGS = ': (parameter: ' + PARAMETER + ', store: Store) => ';
 const USE_CONTEXT = 'const contextValue = useContext(Context);';
 const AND_REGISTERS =
   ', and registers a listener so that any changes to ' +
   'that result will cause a re-render';
 const BASED_ON_A_PARAMETER = ', based on a parameter';
-const PARAMETERIZED_CALLBACK = 'ParameterizedCallback<Parameter>';
+const COLON_SPACE = ': ';
+const PARAMETERIZED_CALLBACK =
+  PARAMETER + 'ized' + CALLBACK + '<' + PARAMETER + '>';
+const GENERIC_PARAMETER = '<' + PARAMETER + ',>';
+const DEPS_SUFFIX = 'Deps?: React.DependencyList';
+const THEN_DEPS = 'then' + DEPS_SUFFIX;
+const THEN_PREFIX = 'then?: (store: Store';
+const THEN_AND_THEN_DEPS = getArgList(
+  THEN_PREFIX + ')' + RETURNS_VOID,
+  THEN_DEPS,
+);
+const THEN_AND_THEN_DEPS_IN_CALL = 'then, thenDeps';
+const ROW_ID = 'rowId';
+const TYPED_ROW_ID = ROW_ID + COLON_SPACE + ID;
+
+const COMMON_IMPORTS = [
+  ID,
+  IDS,
+  'Store',
+  CALLBACK,
+  PARAMETER + 'ized' + CALLBACK,
+];
 
 export const getStoreUiReactApi = (
   tablesSchema: TablesSchema,
@@ -83,6 +118,7 @@ export const getStoreUiReactApi = (
 
   const moduleDefinition = `./${camel(module)}.d`;
   const uiReactModuleDefinition = `./${camel(module)}-ui-react.d`;
+  const tinyBaseUiReact = 'tinybase/ui-react';
   const storeType = camel(module, 1);
   const storeInstance = camel(storeType);
   const StoreOrStoreId = storeType + 'Or' + storeType + ID;
@@ -138,14 +174,12 @@ export const getStoreUiReactApi = (
   ) => {
     addImport(
       1,
-      'tinybase/ui-react',
+      tinyBaseUiReact,
       `use${underlyingName} as use${underlyingName}Core`,
     );
     addHook(
       name,
-      (preParameters ? preParameters + ', ' : EMPTY_STRING) +
-        storeOrStoreIdParameter +
-        (postParameters ? ', ' + postParameters : EMPTY_STRING),
+      getArgList(preParameters, storeOrStoreIdParameter, postParameters),
       returnType,
       useHook +
         `(${storeOrStoreId}, use${underlyingName}Core, [` +
@@ -186,12 +220,12 @@ export const getStoreUiReactApi = (
     });
 
   addImport(0, 'tinybase', ...COMMON_IMPORTS);
-  addImport(0, 'tinybase/ui-react', 'ComponentReturnType');
+  addImport(0, tinyBaseUiReact, 'ComponentReturnType');
   addImport(0, moduleDefinition, storeType);
 
   const storeOrStoreIdType = addType(
     StoreOrStoreId,
-    storeType + ' | Id',
+    storeType + ' | ' + ID,
     `Used when you need to refer to a ${storeType} in a React hook or ` +
       'component',
   );
@@ -221,7 +255,7 @@ export const getStoreUiReactApi = (
 
   addHook(
     `Create${storeType}`,
-    `create: () => ${storeType}, createDeps?: React.DependencyList`,
+    `create: () => ${storeType}, create` + DEPS_SUFFIX,
     storeType,
     '\n// eslint-disable-next-line react-hooks/exhaustive-deps\n' +
       'useMemo(create, createDeps)',
@@ -259,7 +293,7 @@ export const getStoreUiReactApi = (
       sharedTableTypes as SharedTableTypes;
     addImport(0, moduleDefinition, tablesType, tableIdType);
 
-    addImport(1, 'tinybase/ui-react');
+    addImport(1, tinyBaseUiReact);
     addImport(1, moduleDefinition, storeType, tablesType, tableIdType);
 
     addProxyHook(
@@ -277,29 +311,34 @@ export const getStoreUiReactApi = (
     );
 
     addProxyHook(
-      'Set' + TABLES + CALLBACK,
-      'Set' + TABLES + CALLBACK,
+      SET + TABLES + CALLBACK,
+      SET + TABLES + CALLBACK,
       PARAMETERIZED_CALLBACK,
       getTheContentOfTheStoreDoc(1, 9) + BASED_ON_A_PARAMETER,
-      `getTables: (parameter: Parameter, store: Store) => ${tablesType}, ` +
-        'getTablesDeps?: React.DependencyList',
-      'getTables, getTablesDeps',
-      '<Parameter,>',
-      `then?: (store: Store, tables: ${tablesType}) => void, ` +
-        'thenDeps?: React.DependencyList',
-      'then, thenDeps',
+      getArgList(
+        getGet(TABLES) + GETTER_ARGS + tablesType,
+        getGet(TABLES) + DEPS_SUFFIX,
+      ),
+      getGetAndGetDeps(TABLES),
+      GENERIC_PARAMETER,
+      getArgList(
+        THEN_PREFIX,
+        `tables: ${tablesType})` + RETURNS_VOID,
+        THEN_DEPS,
+      ),
+      THEN_AND_THEN_DEPS_IN_CALL,
     );
 
     addProxyHook(
-      'Del' + TABLES + CALLBACK,
-      'Del' + TABLES + CALLBACK,
+      DEL + TABLES + CALLBACK,
+      DEL + TABLES + CALLBACK,
       CALLBACK,
       getTheContentOfTheStoreDoc(1, 12),
       EMPTY_STRING,
       EMPTY_STRING,
       EMPTY_STRING,
-      'then?: (store: Store) => void, thenDeps?: React.DependencyList',
-      'then, thenDeps',
+      THEN_AND_THEN_DEPS,
+      THEN_AND_THEN_DEPS_IN_CALL,
     );
 
     mapTablesSchema((tableId: Id, tableName: string, TABLE_ID: string) => {
@@ -359,8 +398,8 @@ export const getStoreUiReactApi = (
         ROW,
         rowType,
         getRowContentDoc(tableId) + AND_REGISTERS,
-        'rowId: ' + ID,
-        TABLE_ID + ', rowId',
+        TYPED_ROW_ID,
+        getArgList(TABLE_ID, ROW_ID),
       );
 
       addProxyHook(
@@ -368,49 +407,59 @@ export const getStoreUiReactApi = (
         CELL_IDS,
         cellIdType + SQUARE_BRACKETS,
         getIdsDoc(CELL, getRowDoc(tableId)) + AND_REGISTERS,
-        'rowId: ' + ID,
-        TABLE_ID + ', rowId',
+        TYPED_ROW_ID,
+        getArgList(TABLE_ID, ROW_ID),
       );
 
       addProxyHook(
-        'Set' + tableName + TABLE + CALLBACK,
-        'Set' + TABLE + CALLBACK,
+        SET + tableName + TABLE + CALLBACK,
+        SET + TABLE + CALLBACK,
         PARAMETERIZED_CALLBACK,
         getTableContentDoc(tableId, 9) + BASED_ON_A_PARAMETER,
-        `getTable: (parameter: Parameter, store: Store) => ${tableType}, ` +
-          'getTableDeps?: React.DependencyList',
-        TABLE_ID + ', getTable, getTableDeps',
-        '<Parameter,>',
-        `then?: (store: Store, table: ${tableType}) => void, ` +
-          'thenDeps?: React.DependencyList',
-        'then, thenDeps',
+        getArgList(
+          getGet(TABLE) + GETTER_ARGS + tableType,
+          getGet(TABLE) + DEPS_SUFFIX,
+        ),
+        getArgList(TABLE_ID, getGetAndGetDeps(TABLE)),
+        GENERIC_PARAMETER,
+        getArgList(
+          THEN_PREFIX,
+          `table: ${tableType})` + RETURNS_VOID,
+          THEN_DEPS,
+        ),
+        THEN_AND_THEN_DEPS_IN_CALL,
       );
 
       addProxyHook(
-        'Del' + tableName + TABLE + CALLBACK,
-        'Del' + TABLE + CALLBACK,
+        DEL + tableName + TABLE + CALLBACK,
+        DEL + TABLE + CALLBACK,
         CALLBACK,
         getTableContentDoc(tableId, 12),
         EMPTY_STRING,
         TABLE_ID,
         EMPTY_STRING,
-        'then?: (store: Store) => void, thenDeps?: React.DependencyList',
-        'then, thenDeps',
+        THEN_AND_THEN_DEPS,
+        THEN_AND_THEN_DEPS_IN_CALL,
       );
 
       addProxyHook(
-        'Set' + tableName + ROW + CALLBACK,
-        'Set' + ROW + CALLBACK,
+        SET + tableName + ROW + CALLBACK,
+        SET + ROW + CALLBACK,
         PARAMETERIZED_CALLBACK,
         getRowContentDoc(tableId, 9) + BASED_ON_A_PARAMETER,
-        'rowId: Id, getRow: (parameter: Parameter, store: Store) => ' +
-          rowWhenSetType +
-          ', getRowDeps?: React.DependencyList',
-        TABLE_ID + ', rowId, getRow, getRowDeps',
-        '<Parameter,>',
-        `then?: (store: Store, row: ${rowWhenSetType}) => void, ` +
-          'thenDeps?: React.DependencyList',
-        'then, thenDeps',
+        getArgList(
+          TYPED_ROW_ID,
+          getGet(ROW) + GETTER_ARGS + rowWhenSetType,
+          getGet(ROW) + DEPS_SUFFIX,
+        ),
+        getArgList(TABLE_ID, ROW_ID, getGetAndGetDeps(ROW)),
+        GENERIC_PARAMETER,
+        getArgList(
+          THEN_PREFIX,
+          `row: ${rowWhenSetType})` + RETURNS_VOID,
+          THEN_DEPS,
+        ),
+        THEN_AND_THEN_DEPS_IN_CALL,
       );
 
       addProxyHook(
@@ -418,41 +467,52 @@ export const getStoreUiReactApi = (
         'Add' + ROW + CALLBACK,
         PARAMETERIZED_CALLBACK,
         getRowContentDoc(tableId, 10) + BASED_ON_A_PARAMETER,
-        `getRow: (parameter: Parameter, store: Store) => ${rowWhenSetType}, ` +
-          'getRowDeps?: React.DependencyList',
-        TABLE_ID + ', getRow, getRowDeps',
-        '<Parameter,>',
-        'then?: (rowId: Id | undefined, store: Store, row: ' +
-          rowWhenSetType +
-          ') => void, thenDeps?: React.DependencyList',
-        'then, thenDeps',
+        getArgList(
+          getGet(ROW) + GETTER_ARGS + rowWhenSetType,
+          getGet(ROW) + DEPS_SUFFIX,
+        ),
+        getArgList(TABLE_ID, getGetAndGetDeps(ROW)),
+        GENERIC_PARAMETER,
+        'then?: (' +
+          getArgList(
+            TYPED_ROW_ID + OR_UNDEFINED,
+            'store: Store',
+            'row: ' + rowWhenSetType + ')' + RETURNS_VOID,
+            'then' + DEPS_SUFFIX,
+          ),
+        THEN_AND_THEN_DEPS_IN_CALL,
       );
 
       addProxyHook(
-        'Set' + tableName + PARTIAL + ROW + CALLBACK,
-        'Set' + PARTIAL + ROW + CALLBACK,
+        SET + tableName + PARTIAL + ROW + CALLBACK,
+        SET + PARTIAL + ROW + CALLBACK,
         PARAMETERIZED_CALLBACK,
         getRowContentDoc(tableId, 11) + BASED_ON_A_PARAMETER,
-        'rowId: Id, getPartialRow: (parameter: Parameter, store: Store) => ' +
-          rowWhenSetType +
-          ', getPartialRowDeps?: React.DependencyList',
-        TABLE_ID + ', rowId, getPartialRow, getPartialRowDeps',
-        '<Parameter,>',
-        `then?: (store: Store, partialRow: ${rowWhenSetType}) => void, ` +
-          'thenDeps?: React.DependencyList',
-        'then, thenDeps',
+        getArgList(
+          TYPED_ROW_ID,
+          getGet(PARTIAL + ROW) + GETTER_ARGS + rowWhenSetType,
+          getGet(PARTIAL + ROW) + DEPS_SUFFIX,
+        ),
+        getArgList(TABLE_ID, ROW_ID, getGetAndGetDeps(PARTIAL + ROW)),
+        GENERIC_PARAMETER,
+        getArgList(
+          THEN_PREFIX,
+          `partialRow: ${rowWhenSetType})` + RETURNS_VOID,
+          THEN_DEPS,
+        ),
+        THEN_AND_THEN_DEPS_IN_CALL,
       );
 
       addProxyHook(
-        'Del' + tableName + ROW + CALLBACK,
-        'Del' + ROW + CALLBACK,
+        DEL + tableName + ROW + CALLBACK,
+        DEL + ROW + CALLBACK,
         CALLBACK,
         getRowContentDoc(tableId, 12),
-        'rowId: Id',
-        TABLE_ID + ', rowId',
+        TYPED_ROW_ID,
+        getArgList(TABLE_ID, ROW_ID),
         EMPTY_STRING,
-        'then?: (store: Store) => void, thenDeps?: React.DependencyList',
-        'then, thenDeps',
+        THEN_AND_THEN_DEPS,
+        THEN_AND_THEN_DEPS_IN_CALL,
       );
 
       mapCellSchema(
@@ -467,37 +527,40 @@ export const getStoreUiReactApi = (
             CELL,
             type + (isUndefined(defaultValue) ? OR_UNDEFINED : EMPTY_STRING),
             getCellContentDoc(tableId, cellId) + AND_REGISTERS,
-            'rowId: ' + ID,
-            TABLE_ID + ', rowId, ' + CELL_ID,
+            TYPED_ROW_ID,
+            getArgList(TABLE_ID, ROW_ID, CELL_ID),
           );
 
           addProxyHook(
-            'Set' + tableName + cellName + CELL + CALLBACK,
-            'Set' + CELL + CALLBACK,
+            SET + tableName + cellName + CELL + CALLBACK,
+            SET + CELL + CALLBACK,
             PARAMETERIZED_CALLBACK,
             getCellContentDoc(tableId, cellId, 9) + BASED_ON_A_PARAMETER,
-            'rowId: Id, getCell: (parameter: Parameter, store: Store) => ' +
-              type +
-              ' | ' +
-              mapCellType +
-              ', getCellDeps?: React.DependencyList',
-            TABLE_ID + ', rowId, ' + CELL_ID + ', getCell, getCellDeps',
-            '<Parameter,>',
-            `then?: (store: Store, cell: ${type} | ${mapCellType}) => void, ` +
-              'thenDeps?: React.DependencyList',
-            'then, thenDeps',
+            getArgList(
+              TYPED_ROW_ID,
+              getGet(CELL) + GETTER_ARGS + type + ' | ' + mapCellType,
+              getGet(CELL) + DEPS_SUFFIX,
+            ),
+            getArgList(TABLE_ID, ROW_ID, CELL_ID, getGetAndGetDeps(CELL)),
+            GENERIC_PARAMETER,
+            getArgList(
+              THEN_PREFIX,
+              `cell: ${type} | ${mapCellType})` + RETURNS_VOID,
+              THEN_DEPS,
+            ),
+            THEN_AND_THEN_DEPS_IN_CALL,
           );
 
           addProxyHook(
-            'Del' + tableName + cellName + CELL + CALLBACK,
-            'Del' + CELL + CALLBACK,
+            DEL + tableName + cellName + CELL + CALLBACK,
+            DEL + CELL + CALLBACK,
             CALLBACK,
             getCellContentDoc(tableId, cellId, 12),
-            'rowId: Id, forceDel?: boolean',
-            TABLE_ID + ', rowId, ' + CELL_ID + ', forceDel',
+            getArgList(TYPED_ROW_ID, 'forceDel?: boolean'),
+            getArgList(TABLE_ID, ROW_ID, CELL_ID, 'forceDel'),
             EMPTY_STRING,
-            'then?: (store: Store) => void, thenDeps?: React.DependencyList',
-            'then, thenDeps',
+            THEN_AND_THEN_DEPS,
+            THEN_AND_THEN_DEPS_IN_CALL,
           );
         },
       );
@@ -526,43 +589,53 @@ export const getStoreUiReactApi = (
     );
 
     addProxyHook(
-      'Set' + VALUES + CALLBACK,
-      'Set' + VALUES + CALLBACK,
+      SET + VALUES + CALLBACK,
+      SET + VALUES + CALLBACK,
       PARAMETERIZED_CALLBACK,
       getTheContentOfTheStoreDoc(2, 9) + BASED_ON_A_PARAMETER,
-      'getValues: (parameter: Parameter, store: Store) => ' +
-        `${valuesWhenSetType}, getValuesDeps?: React.DependencyList`,
-      'getValues, getValuesDeps',
-      '<Parameter,>',
-      `then?: (store: Store, values: ${valuesWhenSetType}) => void, ` +
-        'thenDeps?: React.DependencyList',
-      'then, thenDeps',
+      getArgList(
+        getGet(VALUES) + GETTER_ARGS + valuesWhenSetType,
+        getGet(VALUES) + DEPS_SUFFIX,
+      ),
+      getGetAndGetDeps(VALUES),
+      GENERIC_PARAMETER,
+      getArgList(
+        THEN_PREFIX,
+        `values: ${valuesWhenSetType})` + RETURNS_VOID,
+        THEN_DEPS,
+      ),
+      THEN_AND_THEN_DEPS_IN_CALL,
     );
 
     addProxyHook(
-      'Set' + PARTIAL + VALUES + CALLBACK,
-      'Set' + PARTIAL + VALUES + CALLBACK,
+      SET + PARTIAL + VALUES + CALLBACK,
+      SET + PARTIAL + VALUES + CALLBACK,
       PARAMETERIZED_CALLBACK,
       getTheContentOfTheStoreDoc(2, 11) + BASED_ON_A_PARAMETER,
-      'getPartialValues: (parameter: Parameter, store: Store) => ' +
-        `${valuesWhenSetType}, getPartialValuesDeps?: React.DependencyList`,
-      'getPartialValues, getPartialValuesDeps',
-      '<Parameter,>',
-      `then?: (store: Store, partialValues: ${valuesWhenSetType}) => void, ` +
-        'thenDeps?: React.DependencyList',
-      'then, thenDeps',
+      getArgList(
+        getGet(PARTIAL + VALUES) + GETTER_ARGS + valuesWhenSetType,
+        getGet(PARTIAL + VALUES) + DEPS_SUFFIX,
+      ),
+      getGetAndGetDeps(PARTIAL + VALUES),
+      GENERIC_PARAMETER,
+      getArgList(
+        THEN_PREFIX,
+        `partialValues: ${valuesWhenSetType})` + RETURNS_VOID,
+        THEN_DEPS,
+      ),
+      THEN_AND_THEN_DEPS_IN_CALL,
     );
 
     addProxyHook(
-      'Del' + VALUES + CALLBACK,
-      'Del' + VALUES + CALLBACK,
+      DEL + VALUES + CALLBACK,
+      DEL + VALUES + CALLBACK,
       CALLBACK,
       getTheContentOfTheStoreDoc(2, 12),
       EMPTY_STRING,
       EMPTY_STRING,
       EMPTY_STRING,
-      'then?: (store: Store) => void, thenDeps?: React.DependencyList',
-      'then, thenDeps',
+      THEN_AND_THEN_DEPS,
+      THEN_AND_THEN_DEPS_IN_CALL,
     );
 
     mapValuesSchema((valueId, type, _, VALUE_ID, valueName) => {
@@ -580,32 +653,34 @@ export const getStoreUiReactApi = (
       );
 
       addProxyHook(
-        'Set' + valueName + VALUE + CALLBACK,
-        'Set' + VALUE + CALLBACK,
+        SET + valueName + VALUE + CALLBACK,
+        SET + VALUE + CALLBACK,
         PARAMETERIZED_CALLBACK,
         getValueContentDoc(valueId, 9) + BASED_ON_A_PARAMETER,
-        'getValue: (parameter: Parameter, store: Store) => ' +
-          type +
-          ' | ' +
-          mapValueType +
-          ', getValueDeps?: React.DependencyList',
-        VALUE_ID + ', getValue, getValueDeps',
-        '<Parameter,>',
-        `then?: (store: Store, value: ${type} | ${mapValueType}) => void, ` +
-          'thenDeps?: React.DependencyList',
-        'then, thenDeps',
+        getArgList(
+          getGet(VALUE) + GETTER_ARGS + type + ' | ' + mapValueType,
+          getGet(VALUE) + DEPS_SUFFIX,
+        ),
+        getArgList(VALUE_ID, getGetAndGetDeps(VALUE)),
+        GENERIC_PARAMETER,
+        getArgList(
+          THEN_PREFIX,
+          `value: ${type} | ${mapValueType})` + RETURNS_VOID,
+          THEN_DEPS,
+        ),
+        THEN_AND_THEN_DEPS_IN_CALL,
       );
 
       addProxyHook(
-        'Del' + valueName + VALUE + CALLBACK,
-        'Del' + VALUE + CALLBACK,
+        DEL + valueName + VALUE + CALLBACK,
+        DEL + VALUE + CALLBACK,
         CALLBACK,
         getValueContentDoc(valueId, 12),
         EMPTY_STRING,
         VALUE_ID,
         EMPTY_STRING,
-        'then?: (store: Store) => void, thenDeps?: React.DependencyList',
-        'then, thenDeps',
+        THEN_AND_THEN_DEPS,
+        THEN_AND_THEN_DEPS_IN_CALL,
       );
     });
   }
