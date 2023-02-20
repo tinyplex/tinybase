@@ -487,6 +487,18 @@ export const getStoreUiReactApi = (
               'thenDeps?: React.DependencyList',
             'then, thenDeps',
           );
+
+          addProxyHook(
+            'Del' + tableName + cellName + CELL + CALLBACK,
+            'Del' + CELL + CALLBACK,
+            CALLBACK,
+            getCellContentDoc(tableId, cellId, 12) + BASED_ON_A_PARAMETER,
+            'rowId: Id, forceDel?: boolean',
+            TABLE_ID + ', rowId, ' + CELL_ID + ', forceDel',
+            EMPTY_STRING,
+            'then?: (store: Store) => void, thenDeps?: React.DependencyList',
+            'then, thenDeps',
+          );
         },
       );
     });
