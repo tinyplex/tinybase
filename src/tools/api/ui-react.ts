@@ -422,6 +422,10 @@ export const getStoreUiReactApi = (
       mapCellSchema(
         tableId,
         (cellId, type, defaultValue, CELL_ID, cellName) => {
+          const mapCellType = 'Map' + camel(type, 1);
+          addImport(0, moduleDefinition, mapCellType);
+          addImport(1, moduleDefinition, mapCellType);
+
           addProxyHook(
             tableName + cellName + CELL,
             CELL,
@@ -429,6 +433,23 @@ export const getStoreUiReactApi = (
             getCellContentDoc(tableId, cellId) + AND_REGISTERS,
             'rowId: ' + ID,
             TABLE_ID + ', rowId, ' + CELL_ID,
+          );
+
+          addProxyHook(
+            'Set' + tableName + cellName + CELL + CALLBACK,
+            'Set' + CELL + CALLBACK,
+            PARAMETERIZED_CALLBACK,
+            getCellContentDoc(tableId, cellId, 9) + BASED_ON_A_PARAMETER,
+            'rowId: Id, getCell: (parameter: Parameter, store: Store) => ' +
+              type +
+              ' | ' +
+              mapCellType +
+              ', getCellDeps?: React.DependencyList',
+            TABLE_ID + ', rowId, ' + CELL_ID + ', getCell, getCellDeps',
+            '<Parameter,>',
+            `then?: (store: Store, cell: ${type} | ${mapCellType}) => void, ` +
+              'thenDeps?: React.DependencyList',
+            'then, thenDeps',
           );
         },
       );
