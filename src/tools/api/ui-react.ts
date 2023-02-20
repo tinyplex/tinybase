@@ -409,10 +409,10 @@ export const getStoreUiReactApi = (
         'Set' + PARTIAL + ROW + CALLBACK,
         PARAMETERIZED_CALLBACK,
         getRowContentDoc(tableId, 11) + BASED_ON_A_PARAMETER,
-        'getPartialRow: (parameter: Parameter, store: Store) => ' +
+        'rowId: Id, getPartialRow: (parameter: Parameter, store: Store) => ' +
           rowWhenSetType +
           ', getPartialRowDeps?: React.DependencyList',
-        TABLE_ID + ', getPartialRow, getPartialRowDeps',
+        TABLE_ID + ', rowId, getPartialRow, getPartialRowDeps',
         '<Parameter,>',
         `then?: (store: Store, partialRow: ${rowType}) => void, ` +
           'thenDeps?: React.DependencyList',
