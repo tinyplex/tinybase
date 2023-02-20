@@ -281,11 +281,11 @@ export const getStoreUiReactApi = (
       'Set' + TABLES + CALLBACK,
       PARAMETERIZED_CALLBACK,
       getTheContentOfTheStoreDoc(1, 9) + BASED_ON_A_PARAMETER,
-      'getTables: (parameter: Parameter, store: Store) => Tables, ' +
+      `getTables: (parameter: Parameter, store: Store) => ${tablesType}, ` +
         'getTablesDeps?: React.DependencyList',
       'getTables, getTablesDeps',
       '<Parameter,>',
-      'then?: (store: Store, tables: Tables) => void, ' +
+      `then?: (store: Store, tables: ${tablesType}) => void, ` +
         'thenDeps?: React.DependencyList',
       'then, thenDeps',
     );
@@ -384,7 +384,7 @@ export const getStoreUiReactApi = (
           ', getRowDeps?: React.DependencyList',
         TABLE_ID + ', rowId, getRow, getRowDeps',
         '<Parameter,>',
-        `then?: (store: Store, row: ${rowType}) => void, ` +
+        `then?: (store: Store, row: ${rowWhenSetType}) => void, ` +
           'thenDeps?: React.DependencyList',
         'then, thenDeps',
       );
@@ -399,7 +399,7 @@ export const getStoreUiReactApi = (
         TABLE_ID + ', getRow, getRowDeps',
         '<Parameter,>',
         'then?: (rowId: Id | undefined, store: Store, row: ' +
-          rowType +
+          rowWhenSetType +
           ') => void, thenDeps?: React.DependencyList',
         'then, thenDeps',
       );
@@ -414,7 +414,7 @@ export const getStoreUiReactApi = (
           ', getPartialRowDeps?: React.DependencyList',
         TABLE_ID + ', rowId, getPartialRow, getPartialRowDeps',
         '<Parameter,>',
-        `then?: (store: Store, partialRow: ${rowType}) => void, ` +
+        `then?: (store: Store, partialRow: ${rowWhenSetType}) => void, ` +
           'thenDeps?: React.DependencyList',
         'then, thenDeps',
       );
@@ -457,10 +457,11 @@ export const getStoreUiReactApi = (
   }
 
   if (!objIsEmpty(valuesSchema)) {
-    const [valuesType, valueIdType] = sharedValueTypes as SharedValueTypes;
+    const [valuesType, valuesWhenSetType, valueIdType] =
+      sharedValueTypes as SharedValueTypes;
 
-    addImport(0, moduleDefinition, valuesType, valueIdType);
-    addImport(1, moduleDefinition, valuesType, valueIdType);
+    addImport(0, moduleDefinition, valuesType, valuesWhenSetType, valueIdType);
+    addImport(1, moduleDefinition, valuesType, valuesWhenSetType, valueIdType);
 
     addProxyHook(
       VALUES,
@@ -474,6 +475,34 @@ export const getStoreUiReactApi = (
       VALUE_IDS,
       valueIdType + SQUARE_BRACKETS,
       getIdsDoc(VALUE, THE_STORE) + AND_REGISTERS,
+    );
+
+    addProxyHook(
+      'Set' + VALUES + CALLBACK,
+      'Set' + VALUES + CALLBACK,
+      PARAMETERIZED_CALLBACK,
+      getTheContentOfTheStoreDoc(2, 9) + BASED_ON_A_PARAMETER,
+      'getValues: (parameter: Parameter, store: Store) => ' +
+        `${valuesWhenSetType}, getValuesDeps?: React.DependencyList`,
+      'getValues, getValuesDeps',
+      '<Parameter,>',
+      `then?: (store: Store, values: ${valuesWhenSetType}) => void, ` +
+        'thenDeps?: React.DependencyList',
+      'then, thenDeps',
+    );
+
+    addProxyHook(
+      'Set' + PARTIAL + VALUES + CALLBACK,
+      'Set' + PARTIAL + VALUES + CALLBACK,
+      PARAMETERIZED_CALLBACK,
+      getTheContentOfTheStoreDoc(2, 11) + BASED_ON_A_PARAMETER,
+      'getPartialValues: (parameter: Parameter, store: Store) => ' +
+        `${valuesWhenSetType}, getPartialValuesDeps?: React.DependencyList`,
+      'getPartialValues, getPartialValuesDeps',
+      '<Parameter,>',
+      `then?: (store: Store, partialValues: ${valuesWhenSetType}) => void, ` +
+        'thenDeps?: React.DependencyList',
+      'then, thenDeps',
     );
 
     mapValuesSchema((valueId, type, _, VALUE_ID, valueName) =>
