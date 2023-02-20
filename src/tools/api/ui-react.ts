@@ -595,6 +595,18 @@ export const getStoreUiReactApi = (
           'thenDeps?: React.DependencyList',
         'then, thenDeps',
       );
+
+      addProxyHook(
+        'Del' + valueName + VALUE + CALLBACK,
+        'Del' + VALUE + CALLBACK,
+        CALLBACK,
+        getValueContentDoc(valueId, 12),
+        EMPTY_STRING,
+        VALUE_ID,
+        EMPTY_STRING,
+        'then?: (store: Store) => void, thenDeps?: React.DependencyList',
+        'then, thenDeps',
+      );
     });
   }
 
