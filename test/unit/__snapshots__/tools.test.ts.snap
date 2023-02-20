@@ -177,16 +177,6 @@ export type InvalidCellListener = (
 ) => void;
 
 /**
- * Takes a number Cell value and returns another.
- */
-export type MapNumber = (cell: number | undefined) => number;
-
-/**
- * Takes a string Cell value and returns another.
- */
-export type MapString = (cell: string | undefined) => string;
-
-/**
  * Represents the keyed value content of the Store.
  */
 export type Values = {v1: number; v2: string; v3: string; ''?: string};
@@ -279,6 +269,16 @@ export type InvalidValueListener = (
   valueId: Id,
   invalidValues: any[],
 ) => void;
+
+/**
+ * Takes a number Cell value and returns another.
+ */
+export type MapNumber = (cell: number | undefined) => number;
+
+/**
+ * Takes a string Cell value and returns another.
+ */
+export type MapString = (cell: string | undefined) => string;
 
 /**
  * A function for listening to the completion of a transaction.
@@ -614,7 +614,7 @@ export interface S {
   /**
    * Sets the 'v1' Value.
    */
-  setV1Value(value: number): S;
+  setV1Value(value: number | MapNumber): S;
 
   /**
    * Deletes the 'v1' Value.
@@ -634,7 +634,7 @@ export interface S {
   /**
    * Sets the 'v2' Value.
    */
-  setV2Value(value: string): S;
+  setV2Value(value: string | MapString): S;
 
   /**
    * Deletes the 'v2' Value.
@@ -654,7 +654,7 @@ export interface S {
   /**
    * Sets the 'v3' Value.
    */
-  setV3Value(value: string): S;
+  setV3Value(value: string | MapString): S;
 
   /**
    * Deletes the 'v3' Value.
@@ -674,7 +674,7 @@ export interface S {
   /**
    * Sets the '' Value.
    */
-  setValue(value: string): S;
+  setValue(value: string | MapString): S;
 
   /**
    * Deletes the '' Value.
@@ -1052,7 +1052,8 @@ export const createS: typeof createSDecl = () => {
 
     hasV1Value: (): boolean => store.hasValue(V1),
 
-    setV1Value: (value: number): S => fluent(() => store.setValue(V1, value)),
+    setV1Value: (value: number | MapNumber): S =>
+      fluent(() => store.setValue(V1, value as any)),
 
     delV1Value: (): S => fluent(() => store.delValue(V1)),
 
@@ -1060,7 +1061,8 @@ export const createS: typeof createSDecl = () => {
 
     hasV2Value: (): boolean => store.hasValue(V2),
 
-    setV2Value: (value: string): S => fluent(() => store.setValue(V2, value)),
+    setV2Value: (value: string | MapString): S =>
+      fluent(() => store.setValue(V2, value as any)),
 
     delV2Value: (): S => fluent(() => store.delValue(V2)),
 
@@ -1068,7 +1070,8 @@ export const createS: typeof createSDecl = () => {
 
     hasV3Value: (): boolean => store.hasValue(V3),
 
-    setV3Value: (value: string): S => fluent(() => store.setValue(V3, value)),
+    setV3Value: (value: string | MapString): S =>
+      fluent(() => store.setValue(V3, value as any)),
 
     delV3Value: (): S => fluent(() => store.delValue(V3)),
 
@@ -1076,7 +1079,8 @@ export const createS: typeof createSDecl = () => {
 
     hasValue: (): boolean => store.hasValue(_),
 
-    setValue: (value: string): S => fluent(() => store.setValue(_, value)),
+    setValue: (value: string | MapString): S =>
+      fluent(() => store.setValue(_, value as any)),
 
     delValue: (): S => fluent(() => store.delValue(_)),
 
@@ -1135,8 +1139,18 @@ export const createS: typeof createSDecl = () => {
   return Object.freeze(s);
 };
 ",
-  "import {Id, Ids} from 'tinybase';
-import {S, T1CellId, T1Row, T1Table, TableId, Tables} from './s.d';
+  "import {Id, Ids, ParameterizedCallback, Store} from 'tinybase';
+import {
+  S,
+  T1CellId,
+  T1Row,
+  T1RowWhenSet,
+  T1Table,
+  TableId,
+  Tables,
+  ValueId,
+  Values,
+} from './s.d';
 import {ComponentReturnType} from 'tinybase/ui-react';
 
 /**
@@ -1266,6 +1280,7 @@ export function useAddT1RowCallback<Parameter>(
  * 't1' Table, based on a parameter.
  */
 export function useSetT1PartialRowCallback<Parameter>(
+  rowId: Id,
   getPartialRow: (parameter: Parameter, store: Store) => T1RowWhenSet,
   getPartialRowDeps?: React.DependencyList,
   sOrSId?: SOrSId,
@@ -1343,7 +1358,7 @@ export function Provider({
   children,
 }: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
 ",
-  "import {Id, Ids} from 'tinybase';
+  "import {Id, Ids, ParameterizedCallback, Store} from 'tinybase';
 import {
   Provider as ProviderDecl,
   ProviderProps,
@@ -1373,7 +1388,17 @@ import {
   useValueIds as useValueIdsDecl,
   useValues as useValuesDecl,
 } from './s-ui-react.d';
-import {S, T1CellId, T1Row, T1Table, TableId, Tables} from './s.d';
+import {
+  S,
+  T1CellId,
+  T1Row,
+  T1RowWhenSet,
+  T1Table,
+  TableId,
+  Tables,
+  ValueId,
+  Values,
+} from './s.d';
 import {
   useAddRowCallback as useAddRowCallbackCore,
   useCell as useCellCore,
@@ -1535,6 +1560,7 @@ export const useAddT1RowCallback: typeof useAddT1RowCallbackDecl = <Parameter,>(
 
 export const useSetT1PartialRowCallback: typeof useSetT1PartialRowCallbackDecl =
   <Parameter,>(
+    rowId: Id,
     getPartialRow: (parameter: Parameter, store: Store) => T1RowWhenSet,
     getPartialRowDeps?: React.DependencyList,
     sOrSId?: SOrSId,
@@ -1544,7 +1570,7 @@ export const useSetT1PartialRowCallback: typeof useSetT1PartialRowCallbackDecl =
     useHook(
       sOrSId,
       useSetPartialRowCallbackCore,
-      [T1, getPartialRow, getPartialRowDeps],
+      [T1, rowId, getPartialRow, getPartialRowDeps],
       [then, thenDeps],
     );
 
@@ -1715,6 +1741,16 @@ export type InvalidValueListener = (
 ) => void;
 
 /**
+ * Takes a number Cell value and returns another.
+ */
+export type MapNumber = (cell: number | undefined) => number;
+
+/**
+ * Takes a string Cell value and returns another.
+ */
+export type MapString = (cell: string | undefined) => string;
+
+/**
  * A function for listening to the completion of a transaction.
  */
 export type TransactionListener = (
@@ -1772,7 +1808,7 @@ export interface S {
   /**
    * Sets the 'v1' Value.
    */
-  setV1Value(value: number): S;
+  setV1Value(value: number | MapNumber): S;
 
   /**
    * Deletes the 'v1' Value.
@@ -1792,7 +1828,7 @@ export interface S {
   /**
    * Sets the 'v2' Value.
    */
-  setV2Value(value: string): S;
+  setV2Value(value: string | MapString): S;
 
   /**
    * Deletes the 'v2' Value.
@@ -1812,7 +1848,7 @@ export interface S {
   /**
    * Sets the 'v3' Value.
    */
-  setV3Value(value: string): S;
+  setV3Value(value: string | MapString): S;
 
   /**
    * Deletes the 'v3' Value.
@@ -1832,7 +1868,7 @@ export interface S {
   /**
    * Sets the '' Value.
    */
-  setValue(value: string): S;
+  setValue(value: string | MapString): S;
 
   /**
    * Deletes the '' Value.
@@ -2022,7 +2058,8 @@ export const createS: typeof createSDecl = () => {
 
     hasV1Value: (): boolean => store.hasValue(V1),
 
-    setV1Value: (value: number): S => fluent(() => store.setValue(V1, value)),
+    setV1Value: (value: number | MapNumber): S =>
+      fluent(() => store.setValue(V1, value as any)),
 
     delV1Value: (): S => fluent(() => store.delValue(V1)),
 
@@ -2030,7 +2067,8 @@ export const createS: typeof createSDecl = () => {
 
     hasV2Value: (): boolean => store.hasValue(V2),
 
-    setV2Value: (value: string): S => fluent(() => store.setValue(V2, value)),
+    setV2Value: (value: string | MapString): S =>
+      fluent(() => store.setValue(V2, value as any)),
 
     delV2Value: (): S => fluent(() => store.delValue(V2)),
 
@@ -2038,7 +2076,8 @@ export const createS: typeof createSDecl = () => {
 
     hasV3Value: (): boolean => store.hasValue(V3),
 
-    setV3Value: (value: string): S => fluent(() => store.setValue(V3, value)),
+    setV3Value: (value: string | MapString): S =>
+      fluent(() => store.setValue(V3, value as any)),
 
     delV3Value: (): S => fluent(() => store.delValue(V3)),
 
@@ -2046,7 +2085,8 @@ export const createS: typeof createSDecl = () => {
 
     hasValue: (): boolean => store.hasValue(_),
 
-    setValue: (value: string): S => fluent(() => store.setValue(_, value)),
+    setValue: (value: string | MapString): S =>
+      fluent(() => store.setValue(_, value as any)),
 
     delValue: (): S => fluent(() => store.delValue(_)),
 
@@ -2105,9 +2145,9 @@ export const createS: typeof createSDecl = () => {
   return Object.freeze(s);
 };
 ",
-  "import {Id, Ids} from 'tinybase';
+  "import {Id, Ids, ParameterizedCallback, Store} from 'tinybase';
+import {S, ValueId, Values} from './s.d';
 import {ComponentReturnType} from 'tinybase/ui-react';
-import {S} from './s.d';
 
 /**
  * Used when you need to refer to a S in a React hook or component.
@@ -2179,7 +2219,7 @@ export function Provider({
   children,
 }: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
 ",
-  "import {Id, Ids} from 'tinybase';
+  "import {Id, Ids, ParameterizedCallback, Store} from 'tinybase';
 import {
   Provider as ProviderDecl,
   ProviderProps,
@@ -2193,6 +2233,7 @@ import {
   useValueIds as useValueIdsDecl,
   useValues as useValuesDecl,
 } from './s-ui-react.d';
+import {ValueId, Values} from './s.d';
 import {
   useValue as useValueCore,
   useValueIds as useValueIdsCore,
@@ -3060,8 +3101,16 @@ export const createS: typeof createSDecl = () => {
   return Object.freeze(s);
 };
 ",
-  "import {Id, Ids} from 'tinybase';
-import {S, T1CellId, T1Row, T1Table, TableId, Tables} from './s.d';
+  "import {Id, Ids, ParameterizedCallback, Store} from 'tinybase';
+import {
+  S,
+  T1CellId,
+  T1Row,
+  T1RowWhenSet,
+  T1Table,
+  TableId,
+  Tables,
+} from './s.d';
 import {ComponentReturnType} from 'tinybase/ui-react';
 
 /**
@@ -3191,6 +3240,7 @@ export function useAddT1RowCallback<Parameter>(
  * 't1' Table, based on a parameter.
  */
 export function useSetT1PartialRowCallback<Parameter>(
+  rowId: Id,
   getPartialRow: (parameter: Parameter, store: Store) => T1RowWhenSet,
   getPartialRowDeps?: React.DependencyList,
   sOrSId?: SOrSId,
@@ -3232,7 +3282,7 @@ export function Provider({
   children,
 }: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
 ",
-  "import {Id, Ids} from 'tinybase';
+  "import {Id, Ids, ParameterizedCallback, Store} from 'tinybase';
 import {
   Provider as ProviderDecl,
   ProviderProps,
@@ -3256,7 +3306,15 @@ import {
   useTableIds as useTableIdsDecl,
   useTables as useTablesDecl,
 } from './s-ui-react.d';
-import {S, T1CellId, T1Row, T1Table, TableId, Tables} from './s.d';
+import {
+  S,
+  T1CellId,
+  T1Row,
+  T1RowWhenSet,
+  T1Table,
+  TableId,
+  Tables,
+} from './s.d';
 import {
   useAddRowCallback as useAddRowCallbackCore,
   useCell as useCellCore,
@@ -3409,6 +3467,7 @@ export const useAddT1RowCallback: typeof useAddT1RowCallbackDecl = <Parameter,>(
 
 export const useSetT1PartialRowCallback: typeof useSetT1PartialRowCallbackDecl =
   <Parameter,>(
+    rowId: Id,
     getPartialRow: (parameter: Parameter, store: Store) => T1RowWhenSet,
     getPartialRowDeps?: React.DependencyList,
     sOrSId?: SOrSId,
@@ -3418,7 +3477,7 @@ export const useSetT1PartialRowCallback: typeof useSetT1PartialRowCallbackDecl =
     useHook(
       sOrSId,
       useSetPartialRowCallbackCore,
-      [T1, getPartialRow, getPartialRowDeps],
+      [T1, rowId, getPartialRow, getPartialRowDeps],
       [then, thenDeps],
     );
 
@@ -3521,12 +3580,6 @@ export type CellListener = (...[s, tableId, rowId, cellId, newCell, oldCell, get
 /** A function for listening to changes to invalid Cell changes in the Store. */
 export type InvalidCellListener = (s: S, tableId: Id, rowId: Id, cellId: Id, invalidCells: any[]) => void;
 
-/** Takes a number Cell value and returns another. */
-export type MapNumber = (cell: number | undefined) => number;
-
-/** Takes a string Cell value and returns another. */
-export type MapString = (cell: string | undefined) => string;
-
 /** Represents the keyed value content of the Store. */
 export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string;};
 
@@ -3553,6 +3606,12 @@ export type ValueListener = (...[s, valueId, newValue, oldValue, getValueChange]
 
 /** A function for listening to changes to invalid Value changes in the Store. */
 export type InvalidValueListener = (s: S, valueId: Id, invalidValues: any[]) => void;
+
+/** Takes a number Cell value and returns another. */
+export type MapNumber = (cell: number | undefined) => number;
+
+/** Takes a string Cell value and returns another. */
+export type MapString = (cell: string | undefined) => string;
 
 /** A function for listening to the completion of a transaction. */
 export type TransactionListener = (s: S, cellsTouched: boolean, valuesTouched: boolean) => void;
@@ -3727,7 +3786,7 @@ getV1Value(): number;
 hasV1Value(): boolean;
 
 /** Sets the 'v1' Value. */
-setV1Value(value: number): S;
+setV1Value(value: number | MapNumber): S;
 
 /** Deletes the 'v1' Value. */
 delV1Value(): S;
@@ -3739,7 +3798,7 @@ getV2Value(): string;
 hasV2Value(): boolean;
 
 /** Sets the 'v2' Value. */
-setV2Value(value: string): S;
+setV2Value(value: string | MapString): S;
 
 /** Deletes the 'v2' Value. */
 delV2Value(): S;
@@ -3751,7 +3810,7 @@ getV3Value(): string;
 hasV3Value(): boolean;
 
 /** Sets the 'v3' Value. */
-setV3Value(value: string): S;
+setV3Value(value: string | MapString): S;
 
 /** Deletes the 'v3' Value. */
 delV3Value(): S;
@@ -3763,7 +3822,7 @@ getValue(): string;
 hasValue(): boolean;
 
 /** Sets the '' Value. */
-setValue(value: string): S;
+setValue(value: string | MapString): S;
 
 /** Deletes the '' Value. */
 delValue(): S;
@@ -3988,7 +4047,7 @@ getV1Value: (): number => store.getValue(V1) as number,
 
 hasV1Value: (): boolean => store.hasValue(V1),
 
-setV1Value: (value: number): S => fluent(() => store.setValue(V1, value)),
+setV1Value: (value: number | MapNumber): S => fluent(() => store.setValue(V1, value as any)),
 
 delV1Value: (): S => fluent(() => store.delValue(V1)),
 
@@ -3996,7 +4055,7 @@ getV2Value: (): string => store.getValue(V2) as string,
 
 hasV2Value: (): boolean => store.hasValue(V2),
 
-setV2Value: (value: string): S => fluent(() => store.setValue(V2, value)),
+setV2Value: (value: string | MapString): S => fluent(() => store.setValue(V2, value as any)),
 
 delV2Value: (): S => fluent(() => store.delValue(V2)),
 
@@ -4004,7 +4063,7 @@ getV3Value: (): string => store.getValue(V3) as string,
 
 hasV3Value: (): boolean => store.hasValue(V3),
 
-setV3Value: (value: string): S => fluent(() => store.setValue(V3, value)),
+setV3Value: (value: string | MapString): S => fluent(() => store.setValue(V3, value as any)),
 
 delV3Value: (): S => fluent(() => store.delValue(V3)),
 
@@ -4012,7 +4071,7 @@ getValue: (): string => store.getValue(_) as string,
 
 hasValue: (): boolean => store.hasValue(_),
 
-setValue: (value: string): S => fluent(() => store.setValue(_, value)),
+setValue: (value: string | MapString): S => fluent(() => store.setValue(_, value as any)),
 
 delValue: (): S => fluent(() => store.delValue(_)),
 
@@ -4052,8 +4111,8 @@ getStore: (): Store => store,
 
 return Object.freeze(s);
 };",
-  "import {Id, Ids} from 'tinybase';
-import {S, T1CellId, T1Row, T1Table, TableId, Tables} from './s.d';
+  "import {Id, Ids, ParameterizedCallback, Store} from 'tinybase';
+import {S, T1CellId, T1Row, T1RowWhenSet, T1Table, TableId, Tables, ValueId, Values} from './s.d';
 import {ComponentReturnType} from 'tinybase/ui-react';
 
 /** Used when you need to refer to a S in a React hook or component. */
@@ -4102,7 +4161,7 @@ export function useSetT1RowCallback<Parameter,>(rowId: Id, getRow: (parameter: P
 export function useAddT1RowCallback<Parameter,>(getRow: (parameter: Parameter, store: Store) => T1RowWhenSet, getRowDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (rowId: Id | undefined, store: Store, row: T1Row) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter>;
 
 /** Gets a callback that can set part of the content of the specified Row in the 't1' Table, based on a parameter. */
-export function useSetT1PartialRowCallback<Parameter,>(getPartialRow: (parameter: Parameter, store: Store) => T1RowWhenSet, getPartialRowDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, partialRow: T1Row) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter>;
+export function useSetT1PartialRowCallback<Parameter,>(rowId: Id, getPartialRow: (parameter: Parameter, store: Store) => T1RowWhenSet, getPartialRowDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, partialRow: T1Row) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter>;
 
 /** Gets the 'c1' Cell for the specified Row in the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
 export function useT1C1Cell(rowId: Id, sOrSId?: SOrSId): number;
@@ -4137,9 +4196,9 @@ export function useValue(sOrSId?: SOrSId): string;
 /** Wraps part of an application in a context that provides default objects to be used by hooks and components within. */
 export function Provider({s, sById, children}: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
 ",
-  "import {Id, Ids} from 'tinybase';
+  "import {Id, Ids, ParameterizedCallback, Store} from 'tinybase';
 import {Provider as ProviderDecl, ProviderProps, SOrSId, useAddT1RowCallback as useAddT1RowCallbackDecl, useCreateS as useCreateSDecl, useS as useSDecl, useSetT1PartialRowCallback as useSetT1PartialRowCallbackDecl, useSetT1RowCallback as useSetT1RowCallbackDecl, useSetT1TableCallback as useSetT1TableCallbackDecl, useSetTablesCallback as useSetTablesCallbackDecl, useT1C1Cell as useT1C1CellDecl, useT1C2Cell as useT1C2CellDecl, useT1C3Cell as useT1C3CellDecl, useT1Cell as useT1CellDecl, useT1CellIds as useT1CellIdsDecl, useT1Row as useT1RowDecl, useT1RowIds as useT1RowIdsDecl, useT1SortedRowIds as useT1SortedRowIdsDecl, useT1Table as useT1TableDecl, useTableIds as useTableIdsDecl, useTables as useTablesDecl, useV1Value as useV1ValueDecl, useV2Value as useV2ValueDecl, useV3Value as useV3ValueDecl, useValue as useValueDecl, useValueIds as useValueIdsDecl, useValues as useValuesDecl} from './s-ui-react.d';
-import {S, T1CellId, T1Row, T1Table, TableId, Tables} from './s.d';
+import {S, T1CellId, T1Row, T1RowWhenSet, T1Table, TableId, Tables, ValueId, Values} from './s.d';
 import {useAddRowCallback as useAddRowCallbackCore, useCell as useCellCore, useCellIds as useCellIdsCore, useRow as useRowCore, useRowIds as useRowIdsCore, useSetPartialRowCallback as useSetPartialRowCallbackCore, useSetRowCallback as useSetRowCallbackCore, useSetTableCallback as useSetTableCallbackCore, useSetTablesCallback as useSetTablesCallbackCore, useSortedRowIds as useSortedRowIdsCore, useTable as useTableCore, useTableIds as useTableIdsCore, useTables as useTablesCore, useValue as useValueCore, useValueIds as useValueIdsCore, useValues as useValuesCore} from 'tinybase/ui-react';
 import React from 'react';
 
@@ -4213,8 +4272,8 @@ useHook(sOrSId, useSetRowCallbackCore, [T1, rowId, getRow, getRowDeps], [then, t
 export const useAddT1RowCallback: typeof useAddT1RowCallbackDecl = <Parameter,>(getRow: (parameter: Parameter, store: Store) => T1RowWhenSet, getRowDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (rowId: Id | undefined, store: Store, row: T1Row) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter> =>
 useHook(sOrSId, useAddRowCallbackCore, [T1, getRow, getRowDeps], [then, thenDeps])
 
-export const useSetT1PartialRowCallback: typeof useSetT1PartialRowCallbackDecl = <Parameter,>(getPartialRow: (parameter: Parameter, store: Store) => T1RowWhenSet, getPartialRowDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, partialRow: T1Row) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter> =>
-useHook(sOrSId, useSetPartialRowCallbackCore, [T1, getPartialRow, getPartialRowDeps], [then, thenDeps])
+export const useSetT1PartialRowCallback: typeof useSetT1PartialRowCallbackDecl = <Parameter,>(rowId: Id, getPartialRow: (parameter: Parameter, store: Store) => T1RowWhenSet, getPartialRowDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, partialRow: T1Row) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter> =>
+useHook(sOrSId, useSetPartialRowCallbackCore, [T1, rowId, getPartialRow, getPartialRowDeps], [then, thenDeps])
 
 export const useT1C1Cell: typeof useT1C1CellDecl = (rowId: Id, sOrSId?: SOrSId): number =>
 useHook(sOrSId, useCellCore, [T1, rowId, C1])
@@ -4294,6 +4353,12 @@ export type ValueListener = (...[s, valueId, newValue, oldValue, getValueChange]
 /** A function for listening to changes to invalid Value changes in the Store. */
 export type InvalidValueListener = (s: S, valueId: Id, invalidValues: any[]) => void;
 
+/** Takes a number Cell value and returns another. */
+export type MapNumber = (cell: number | undefined) => number;
+
+/** Takes a string Cell value and returns another. */
+export type MapString = (cell: string | undefined) => string;
+
 /** A function for listening to the completion of a transaction. */
 export type TransactionListener = (s: S, cellsTouched: boolean, valuesTouched: boolean) => void;
 
@@ -4326,7 +4391,7 @@ getV1Value(): number;
 hasV1Value(): boolean;
 
 /** Sets the 'v1' Value. */
-setV1Value(value: number): S;
+setV1Value(value: number | MapNumber): S;
 
 /** Deletes the 'v1' Value. */
 delV1Value(): S;
@@ -4338,7 +4403,7 @@ getV2Value(): string;
 hasV2Value(): boolean;
 
 /** Sets the 'v2' Value. */
-setV2Value(value: string): S;
+setV2Value(value: string | MapString): S;
 
 /** Deletes the 'v2' Value. */
 delV2Value(): S;
@@ -4350,7 +4415,7 @@ getV3Value(): string;
 hasV3Value(): boolean;
 
 /** Sets the 'v3' Value. */
-setV3Value(value: string): S;
+setV3Value(value: string | MapString): S;
 
 /** Deletes the 'v3' Value. */
 delV3Value(): S;
@@ -4362,7 +4427,7 @@ getValue(): string;
 hasValue(): boolean;
 
 /** Sets the '' Value. */
-setValue(value: string): S;
+setValue(value: string | MapString): S;
 
 /** Deletes the '' Value. */
 delValue(): S;
@@ -4477,7 +4542,7 @@ getV1Value: (): number => store.getValue(V1) as number,
 
 hasV1Value: (): boolean => store.hasValue(V1),
 
-setV1Value: (value: number): S => fluent(() => store.setValue(V1, value)),
+setV1Value: (value: number | MapNumber): S => fluent(() => store.setValue(V1, value as any)),
 
 delV1Value: (): S => fluent(() => store.delValue(V1)),
 
@@ -4485,7 +4550,7 @@ getV2Value: (): string => store.getValue(V2) as string,
 
 hasV2Value: (): boolean => store.hasValue(V2),
 
-setV2Value: (value: string): S => fluent(() => store.setValue(V2, value)),
+setV2Value: (value: string | MapString): S => fluent(() => store.setValue(V2, value as any)),
 
 delV2Value: (): S => fluent(() => store.delValue(V2)),
 
@@ -4493,7 +4558,7 @@ getV3Value: (): string => store.getValue(V3) as string,
 
 hasV3Value: (): boolean => store.hasValue(V3),
 
-setV3Value: (value: string): S => fluent(() => store.setValue(V3, value)),
+setV3Value: (value: string | MapString): S => fluent(() => store.setValue(V3, value as any)),
 
 delV3Value: (): S => fluent(() => store.delValue(V3)),
 
@@ -4501,7 +4566,7 @@ getValue: (): string => store.getValue(_) as string,
 
 hasValue: (): boolean => store.hasValue(_),
 
-setValue: (value: string): S => fluent(() => store.setValue(_, value)),
+setValue: (value: string | MapString): S => fluent(() => store.setValue(_, value as any)),
 
 delValue: (): S => fluent(() => store.delValue(_)),
 
@@ -4541,9 +4606,9 @@ getStore: (): Store => store,
 
 return Object.freeze(s);
 };",
-  "import {Id, Ids} from 'tinybase';
+  "import {Id, Ids, ParameterizedCallback, Store} from 'tinybase';
+import {S, ValueId, Values} from './s.d';
 import {ComponentReturnType} from 'tinybase/ui-react';
-import {S} from './s.d';
 
 /** Used when you need to refer to a S in a React hook or component. */
 export type SOrSId = S | Id;
@@ -4578,8 +4643,9 @@ export function useValue(sOrSId?: SOrSId): string;
 /** Wraps part of an application in a context that provides default objects to be used by hooks and components within. */
 export function Provider({s, sById, children}: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
 ",
-  "import {Id, Ids} from 'tinybase';
+  "import {Id, Ids, ParameterizedCallback, Store} from 'tinybase';
 import {Provider as ProviderDecl, ProviderProps, SOrSId, useCreateS as useCreateSDecl, useS as useSDecl, useV1Value as useV1ValueDecl, useV2Value as useV2ValueDecl, useV3Value as useV3ValueDecl, useValue as useValueDecl, useValueIds as useValueIdsDecl, useValues as useValuesDecl} from './s-ui-react.d';
+import {ValueId, Values} from './s.d';
 import {useValue as useValueCore, useValueIds as useValueIdsCore, useValues as useValuesCore} from 'tinybase/ui-react';
 import React from 'react';
 
@@ -5052,8 +5118,8 @@ getStore: (): Store => store,
 
 return Object.freeze(s);
 };",
-  "import {Id, Ids} from 'tinybase';
-import {S, T1CellId, T1Row, T1Table, TableId, Tables} from './s.d';
+  "import {Id, Ids, ParameterizedCallback, Store} from 'tinybase';
+import {S, T1CellId, T1Row, T1RowWhenSet, T1Table, TableId, Tables} from './s.d';
 import {ComponentReturnType} from 'tinybase/ui-react';
 
 /** Used when you need to refer to a S in a React hook or component. */
@@ -5102,7 +5168,7 @@ export function useSetT1RowCallback<Parameter,>(rowId: Id, getRow: (parameter: P
 export function useAddT1RowCallback<Parameter,>(getRow: (parameter: Parameter, store: Store) => T1RowWhenSet, getRowDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (rowId: Id | undefined, store: Store, row: T1Row) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter>;
 
 /** Gets a callback that can set part of the content of the specified Row in the 't1' Table, based on a parameter. */
-export function useSetT1PartialRowCallback<Parameter,>(getPartialRow: (parameter: Parameter, store: Store) => T1RowWhenSet, getPartialRowDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, partialRow: T1Row) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter>;
+export function useSetT1PartialRowCallback<Parameter,>(rowId: Id, getPartialRow: (parameter: Parameter, store: Store) => T1RowWhenSet, getPartialRowDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, partialRow: T1Row) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter>;
 
 /** Gets the 'c1' Cell for the specified Row in the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
 export function useT1C1Cell(rowId: Id, sOrSId?: SOrSId): number;
@@ -5119,9 +5185,9 @@ export function useT1Cell(rowId: Id, sOrSId?: SOrSId): string | undefined;
 /** Wraps part of an application in a context that provides default objects to be used by hooks and components within. */
 export function Provider({s, sById, children}: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
 ",
-  "import {Id, Ids} from 'tinybase';
+  "import {Id, Ids, ParameterizedCallback, Store} from 'tinybase';
 import {Provider as ProviderDecl, ProviderProps, SOrSId, useAddT1RowCallback as useAddT1RowCallbackDecl, useCreateS as useCreateSDecl, useS as useSDecl, useSetT1PartialRowCallback as useSetT1PartialRowCallbackDecl, useSetT1RowCallback as useSetT1RowCallbackDecl, useSetT1TableCallback as useSetT1TableCallbackDecl, useSetTablesCallback as useSetTablesCallbackDecl, useT1C1Cell as useT1C1CellDecl, useT1C2Cell as useT1C2CellDecl, useT1C3Cell as useT1C3CellDecl, useT1Cell as useT1CellDecl, useT1CellIds as useT1CellIdsDecl, useT1Row as useT1RowDecl, useT1RowIds as useT1RowIdsDecl, useT1SortedRowIds as useT1SortedRowIdsDecl, useT1Table as useT1TableDecl, useTableIds as useTableIdsDecl, useTables as useTablesDecl} from './s-ui-react.d';
-import {S, T1CellId, T1Row, T1Table, TableId, Tables} from './s.d';
+import {S, T1CellId, T1Row, T1RowWhenSet, T1Table, TableId, Tables} from './s.d';
 import {useAddRowCallback as useAddRowCallbackCore, useCell as useCellCore, useCellIds as useCellIdsCore, useRow as useRowCore, useRowIds as useRowIdsCore, useSetPartialRowCallback as useSetPartialRowCallbackCore, useSetRowCallback as useSetRowCallbackCore, useSetTableCallback as useSetTableCallbackCore, useSetTablesCallback as useSetTablesCallbackCore, useSortedRowIds as useSortedRowIdsCore, useTable as useTableCore, useTableIds as useTableIdsCore, useTables as useTablesCore} from 'tinybase/ui-react';
 import React from 'react';
 
@@ -5189,8 +5255,8 @@ useHook(sOrSId, useSetRowCallbackCore, [T1, rowId, getRow, getRowDeps], [then, t
 export const useAddT1RowCallback: typeof useAddT1RowCallbackDecl = <Parameter,>(getRow: (parameter: Parameter, store: Store) => T1RowWhenSet, getRowDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (rowId: Id | undefined, store: Store, row: T1Row) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter> =>
 useHook(sOrSId, useAddRowCallbackCore, [T1, getRow, getRowDeps], [then, thenDeps])
 
-export const useSetT1PartialRowCallback: typeof useSetT1PartialRowCallbackDecl = <Parameter,>(getPartialRow: (parameter: Parameter, store: Store) => T1RowWhenSet, getPartialRowDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, partialRow: T1Row) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter> =>
-useHook(sOrSId, useSetPartialRowCallbackCore, [T1, getPartialRow, getPartialRowDeps], [then, thenDeps])
+export const useSetT1PartialRowCallback: typeof useSetT1PartialRowCallbackDecl = <Parameter,>(rowId: Id, getPartialRow: (parameter: Parameter, store: Store) => T1RowWhenSet, getPartialRowDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, partialRow: T1Row) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter> =>
+useHook(sOrSId, useSetPartialRowCallbackCore, [T1, rowId, getPartialRow, getPartialRowDeps], [then, thenDeps])
 
 export const useT1C1Cell: typeof useT1C1CellDecl = (rowId: Id, sOrSId?: SOrSId): number =>
 useHook(sOrSId, useCellCore, [T1, rowId, C1])
