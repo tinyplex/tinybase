@@ -120,6 +120,7 @@ export const VERBS = [
   'Gets a callback that can set',
   'Gets a callback that can add',
   'Gets a callback that can set part of',
+  'Gets a callback that can delete',
 ];
 
 export const NOUNS = [

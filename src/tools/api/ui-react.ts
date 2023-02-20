@@ -48,7 +48,7 @@ import {OR_UNDEFINED} from '../common/strings';
 import {getSchemaFunctions} from '../common/schema';
 import {objIsEmpty} from '../../common/obj';
 
-const COMMON_IMPORTS = [ID, IDS, 'Store', 'ParameterizedCallback'];
+const COMMON_IMPORTS = [ID, IDS, 'Store', CALLBACK, 'ParameterizedCallback'];
 
 const USE_CONTEXT = 'const contextValue = useContext(Context);';
 const AND_REGISTERS =
@@ -287,6 +287,18 @@ export const getStoreUiReactApi = (
       '<Parameter,>',
       `then?: (store: Store, tables: ${tablesType}) => void, ` +
         'thenDeps?: React.DependencyList',
+      'then, thenDeps',
+    );
+
+    addProxyHook(
+      'Del' + TABLES + CALLBACK,
+      'Del' + TABLES + CALLBACK,
+      CALLBACK,
+      getTheContentOfTheStoreDoc(1, 12) + BASED_ON_A_PARAMETER,
+      EMPTY_STRING,
+      EMPTY_STRING,
+      EMPTY_STRING,
+      'then?: (store: Store) => void, thenDeps?: React.DependencyList',
       'then, thenDeps',
     );
 
