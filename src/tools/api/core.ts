@@ -224,6 +224,7 @@ export const getStoreCoreApi = (
   const storeType = camel(module, 1);
   const storeInstance = camel(storeType);
   const createSteps: any[] = [];
+  const mapCellOrValueTypes: IdMap<string> = mapNew();
 
   let sharedTableTypes: SharedTableTypes | [] = [];
   let sharedValueTypes: SharedValueTypes | [] = [];
@@ -457,8 +458,6 @@ export const getStoreCoreApi = (
       'tableCallback as any',
     );
 
-    const mapCellTypes: IdMap<string> = mapNew();
-
     mapTablesSchema((tableId, tableName, TABLE_ID) => {
       const [
         tableType,
@@ -571,7 +570,7 @@ export const getStoreCoreApi = (
         tableId,
         (cellId, type, defaultValue, CELL_ID, cellName) => {
           const mapCellType = 'Map' + camel(type, 1);
-          mapSet(mapCellTypes, type, mapCellType);
+          mapSet(mapCellOrValueTypes, type, mapCellType);
 
           const returnCellType =
             type + (isUndefined(defaultValue) ? OR_UNDEFINED : EMPTY_STRING);
@@ -671,14 +670,6 @@ export const getStoreCoreApi = (
       'tableId, rowId, cellId',
     );
 
-    mapForEach(mapCellTypes, (type, mapCellType) =>
-      addType(
-        mapCellType,
-        `(cell: ${type}${OR_UNDEFINED}) => ` + type,
-        `Takes a ${type} Cell value and returns another`,
-      ),
-    );
-
     addImport(
       1,
       moduleDefinition,
@@ -693,7 +684,7 @@ export const getStoreCoreApi = (
       cellIdsListenerType,
       cellListenerType,
       invalidCellListenerType,
-      ...collValues(mapCellTypes),
+      ...collValues(mapCellOrValueTypes),
     );
     addImport(0, 'tinybase', 'CellChange');
 
@@ -850,12 +841,15 @@ export const getStoreCoreApi = (
       'valueCallback as any',
     );
 
-    mapValuesSchema((valueId, type, _, VALUE_ID, valueName) =>
+    mapValuesSchema((valueId, type, _, VALUE_ID, valueName) => {
+      const mapValueType = 'Map' + camel(type, 1);
+      mapSet(mapCellOrValueTypes, type, mapValueType);
+
       arrayForEach(
         [
           [type],
           [BOOLEAN],
-          [storeType, 'value: ' + type, ', value'],
+          [storeType, `value: ${type} | ` + mapValueType, ', value as any'],
           [storeType],
         ],
         ([returnType, params, paramsInCall = EMPTY_STRING], verb) =>
@@ -868,8 +862,8 @@ export const getStoreCoreApi = (
             params,
             VALUE_ID + paramsInCall,
           ),
-      ),
-    );
+      );
+    });
 
     addProxyMethod(
       0,
@@ -942,6 +936,14 @@ export const getStoreCoreApi = (
       '})',
     );
   }
+
+  mapForEach(mapCellOrValueTypes, (type, mapCellType) =>
+    addType(
+      mapCellType,
+      `(cell: ${type}${OR_UNDEFINED}) => ` + type,
+      `Takes a ${type} Cell value and returns another`,
+    ),
+  );
 
   addImport(0, 'tinybase', ...COMMON_IMPORTS);
 
