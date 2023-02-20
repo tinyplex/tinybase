@@ -83,7 +83,7 @@ import {objIsEmpty} from '../../common/obj';
 
 export type TableTypes = [string, string, string, string, string, string];
 export type SharedTableTypes = [string, string, IdMap<TableTypes>];
-export type SharedValueTypes = [string, string];
+export type SharedValueTypes = [string, string, string];
 
 const METHOD_PREFIX_VERBS = [
   GET,
@@ -803,7 +803,7 @@ export const getStoreCoreApi = (
         RETURNS_VOID,
       getListenerTypeDoc(12),
     );
-    sharedValueTypes = [valuesType, valueIdType];
+    sharedValueTypes = [valuesType, valuesWhenSetType, valueIdType];
 
     arrayForEach(
       [
