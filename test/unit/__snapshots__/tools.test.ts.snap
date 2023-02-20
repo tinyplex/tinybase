@@ -1507,6 +1507,15 @@ export function useSetV1ValueCallback<Parameter>(
 ): ParameterizedCallback<Parameter>;
 
 /**
+ * Gets a callback that can delete the 'v1' Value.
+ */
+export function useDelV1ValueCallback(
+  sOrSId?: SOrSId,
+  then?: (store: Store) => void,
+  thenDeps?: React.DependencyList,
+): Callback;
+
+/**
  * Gets the 'v2' Value, and registers a listener so that any changes to that
  * result will cause a re-render.
  */
@@ -1522,6 +1531,15 @@ export function useSetV2ValueCallback<Parameter>(
   then?: (store: Store, value: string | MapString) => void,
   thenDeps?: React.DependencyList,
 ): ParameterizedCallback<Parameter>;
+
+/**
+ * Gets a callback that can delete the 'v2' Value.
+ */
+export function useDelV2ValueCallback(
+  sOrSId?: SOrSId,
+  then?: (store: Store) => void,
+  thenDeps?: React.DependencyList,
+): Callback;
 
 /**
  * Gets the 'v3' Value, and registers a listener so that any changes to that
@@ -1541,6 +1559,15 @@ export function useSetV3ValueCallback<Parameter>(
 ): ParameterizedCallback<Parameter>;
 
 /**
+ * Gets a callback that can delete the 'v3' Value.
+ */
+export function useDelV3ValueCallback(
+  sOrSId?: SOrSId,
+  then?: (store: Store) => void,
+  thenDeps?: React.DependencyList,
+): Callback;
+
+/**
  * Gets the '' Value, and registers a listener so that any changes to that
  * result will cause a re-render.
  */
@@ -1556,6 +1583,15 @@ export function useSetValueCallback<Parameter>(
   then?: (store: Store, value: string | MapString) => void,
   thenDeps?: React.DependencyList,
 ): ParameterizedCallback<Parameter>;
+
+/**
+ * Gets a callback that can delete the '' Value.
+ */
+export function useDelValueCallback(
+  sOrSId?: SOrSId,
+  then?: (store: Store) => void,
+  thenDeps?: React.DependencyList,
+): Callback;
 
 /**
  * Wraps part of an application in a context that provides default objects to be
@@ -1595,6 +1631,10 @@ import {
   useDelT1RowCallback as useDelT1RowCallbackDecl,
   useDelT1TableCallback as useDelT1TableCallbackDecl,
   useDelTablesCallback as useDelTablesCallbackDecl,
+  useDelV1ValueCallback as useDelV1ValueCallbackDecl,
+  useDelV2ValueCallback as useDelV2ValueCallbackDecl,
+  useDelV3ValueCallback as useDelV3ValueCallbackDecl,
+  useDelValueCallback as useDelValueCallbackDecl,
   useDelValuesCallback as useDelValuesCallbackDecl,
   useS as useSDecl,
   useSetPartialValuesCallback as useSetPartialValuesCallbackDecl,
@@ -1637,6 +1677,7 @@ import {
   useDelRowCallback as useDelRowCallbackCore,
   useDelTableCallback as useDelTableCallbackCore,
   useDelTablesCallback as useDelTablesCallbackCore,
+  useDelValueCallback as useDelValueCallbackCore,
   useDelValuesCallback as useDelValuesCallbackCore,
   useRow as useRowCore,
   useRowIds as useRowIdsCore,
@@ -2040,6 +2081,12 @@ export const useSetV1ValueCallback: typeof useSetV1ValueCallbackDecl = <
     [then, thenDeps],
   );
 
+export const useDelV1ValueCallback: typeof useDelV1ValueCallbackDecl = (
+  sOrSId?: SOrSId,
+  then?: (store: Store) => void,
+  thenDeps?: React.DependencyList,
+): Callback => useHook(sOrSId, useDelValueCallbackCore, [V1], [then, thenDeps]);
+
 export const useV2Value: typeof useV2ValueDecl = (sOrSId?: SOrSId): string =>
   useHook(sOrSId, useValueCore, [V2]);
 
@@ -2058,6 +2105,12 @@ export const useSetV2ValueCallback: typeof useSetV2ValueCallbackDecl = <
     [V2, getValue, getValueDeps],
     [then, thenDeps],
   );
+
+export const useDelV2ValueCallback: typeof useDelV2ValueCallbackDecl = (
+  sOrSId?: SOrSId,
+  then?: (store: Store) => void,
+  thenDeps?: React.DependencyList,
+): Callback => useHook(sOrSId, useDelValueCallbackCore, [V2], [then, thenDeps]);
 
 export const useV3Value: typeof useV3ValueDecl = (sOrSId?: SOrSId): string =>
   useHook(sOrSId, useValueCore, [V3]);
@@ -2078,6 +2131,12 @@ export const useSetV3ValueCallback: typeof useSetV3ValueCallbackDecl = <
     [then, thenDeps],
   );
 
+export const useDelV3ValueCallback: typeof useDelV3ValueCallbackDecl = (
+  sOrSId?: SOrSId,
+  then?: (store: Store) => void,
+  thenDeps?: React.DependencyList,
+): Callback => useHook(sOrSId, useDelValueCallbackCore, [V3], [then, thenDeps]);
+
 export const useValue: typeof useValueDecl = (sOrSId?: SOrSId): string =>
   useHook(sOrSId, useValueCore, [_]);
 
@@ -2094,6 +2153,12 @@ export const useSetValueCallback: typeof useSetValueCallbackDecl = <Parameter,>(
     [_, getValue, getValueDeps],
     [then, thenDeps],
   );
+
+export const useDelValueCallback: typeof useDelValueCallbackDecl = (
+  sOrSId?: SOrSId,
+  then?: (store: Store) => void,
+  thenDeps?: React.DependencyList,
+): Callback => useHook(sOrSId, useDelValueCallbackCore, [_], [then, thenDeps]);
 
 export const Provider: typeof ProviderDecl = ({
   s,
@@ -2718,6 +2783,15 @@ export function useSetV1ValueCallback<Parameter>(
 ): ParameterizedCallback<Parameter>;
 
 /**
+ * Gets a callback that can delete the 'v1' Value.
+ */
+export function useDelV1ValueCallback(
+  sOrSId?: SOrSId,
+  then?: (store: Store) => void,
+  thenDeps?: React.DependencyList,
+): Callback;
+
+/**
  * Gets the 'v2' Value, and registers a listener so that any changes to that
  * result will cause a re-render.
  */
@@ -2733,6 +2807,15 @@ export function useSetV2ValueCallback<Parameter>(
   then?: (store: Store, value: string | MapString) => void,
   thenDeps?: React.DependencyList,
 ): ParameterizedCallback<Parameter>;
+
+/**
+ * Gets a callback that can delete the 'v2' Value.
+ */
+export function useDelV2ValueCallback(
+  sOrSId?: SOrSId,
+  then?: (store: Store) => void,
+  thenDeps?: React.DependencyList,
+): Callback;
 
 /**
  * Gets the 'v3' Value, and registers a listener so that any changes to that
@@ -2752,6 +2835,15 @@ export function useSetV3ValueCallback<Parameter>(
 ): ParameterizedCallback<Parameter>;
 
 /**
+ * Gets a callback that can delete the 'v3' Value.
+ */
+export function useDelV3ValueCallback(
+  sOrSId?: SOrSId,
+  then?: (store: Store) => void,
+  thenDeps?: React.DependencyList,
+): Callback;
+
+/**
  * Gets the '' Value, and registers a listener so that any changes to that
  * result will cause a re-render.
  */
@@ -2767,6 +2859,15 @@ export function useSetValueCallback<Parameter>(
   then?: (store: Store, value: string | MapString) => void,
   thenDeps?: React.DependencyList,
 ): ParameterizedCallback<Parameter>;
+
+/**
+ * Gets a callback that can delete the '' Value.
+ */
+export function useDelValueCallback(
+  sOrSId?: SOrSId,
+  then?: (store: Store) => void,
+  thenDeps?: React.DependencyList,
+): Callback;
 
 /**
  * Wraps part of an application in a context that provides default objects to be
@@ -2785,6 +2886,10 @@ import {
   ProviderProps,
   SOrSId,
   useCreateS as useCreateSDecl,
+  useDelV1ValueCallback as useDelV1ValueCallbackDecl,
+  useDelV2ValueCallback as useDelV2ValueCallbackDecl,
+  useDelV3ValueCallback as useDelV3ValueCallbackDecl,
+  useDelValueCallback as useDelValueCallbackDecl,
   useDelValuesCallback as useDelValuesCallbackDecl,
   useS as useSDecl,
   useSetPartialValuesCallback as useSetPartialValuesCallbackDecl,
@@ -2801,6 +2906,7 @@ import {
   useValues as useValuesDecl,
 } from './s-ui-react.d';
 import {
+  useDelValueCallback as useDelValueCallbackCore,
   useDelValuesCallback as useDelValuesCallbackCore,
   useSetPartialValuesCallback as useSetPartialValuesCallbackCore,
   useSetValueCallback as useSetValueCallbackCore,
@@ -2912,6 +3018,12 @@ export const useSetV1ValueCallback: typeof useSetV1ValueCallbackDecl = <
     [then, thenDeps],
   );
 
+export const useDelV1ValueCallback: typeof useDelV1ValueCallbackDecl = (
+  sOrSId?: SOrSId,
+  then?: (store: Store) => void,
+  thenDeps?: React.DependencyList,
+): Callback => useHook(sOrSId, useDelValueCallbackCore, [V1], [then, thenDeps]);
+
 export const useV2Value: typeof useV2ValueDecl = (sOrSId?: SOrSId): string =>
   useHook(sOrSId, useValueCore, [V2]);
 
@@ -2930,6 +3042,12 @@ export const useSetV2ValueCallback: typeof useSetV2ValueCallbackDecl = <
     [V2, getValue, getValueDeps],
     [then, thenDeps],
   );
+
+export const useDelV2ValueCallback: typeof useDelV2ValueCallbackDecl = (
+  sOrSId?: SOrSId,
+  then?: (store: Store) => void,
+  thenDeps?: React.DependencyList,
+): Callback => useHook(sOrSId, useDelValueCallbackCore, [V2], [then, thenDeps]);
 
 export const useV3Value: typeof useV3ValueDecl = (sOrSId?: SOrSId): string =>
   useHook(sOrSId, useValueCore, [V3]);
@@ -2950,6 +3068,12 @@ export const useSetV3ValueCallback: typeof useSetV3ValueCallbackDecl = <
     [then, thenDeps],
   );
 
+export const useDelV3ValueCallback: typeof useDelV3ValueCallbackDecl = (
+  sOrSId?: SOrSId,
+  then?: (store: Store) => void,
+  thenDeps?: React.DependencyList,
+): Callback => useHook(sOrSId, useDelValueCallbackCore, [V3], [then, thenDeps]);
+
 export const useValue: typeof useValueDecl = (sOrSId?: SOrSId): string =>
   useHook(sOrSId, useValueCore, [_]);
 
@@ -2966,6 +3090,12 @@ export const useSetValueCallback: typeof useSetValueCallbackDecl = <Parameter,>(
     [_, getValue, getValueDeps],
     [then, thenDeps],
   );
+
+export const useDelValueCallback: typeof useDelValueCallbackDecl = (
+  sOrSId?: SOrSId,
+  then?: (store: Store) => void,
+  thenDeps?: React.DependencyList,
+): Callback => useHook(sOrSId, useDelValueCallbackCore, [_], [then, thenDeps]);
 
 export const Provider: typeof ProviderDecl = ({
   s,
@@ -5191,11 +5321,17 @@ export function useV1Value(sOrSId?: SOrSId): number;
 /** Gets a callback that can set the 'v1' Value, based on a parameter. */
 export function useSetV1ValueCallback<Parameter,>(getValue: (parameter: Parameter, store: Store) => number | MapNumber, getValueDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, value: number | MapNumber) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter>;
 
+/** Gets a callback that can delete the 'v1' Value. */
+export function useDelV1ValueCallback(sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback;
+
 /** Gets the 'v2' Value, and registers a listener so that any changes to that result will cause a re-render. */
 export function useV2Value(sOrSId?: SOrSId): string;
 
 /** Gets a callback that can set the 'v2' Value, based on a parameter. */
 export function useSetV2ValueCallback<Parameter,>(getValue: (parameter: Parameter, store: Store) => string | MapString, getValueDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, value: string | MapString) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter>;
+
+/** Gets a callback that can delete the 'v2' Value. */
+export function useDelV2ValueCallback(sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback;
 
 /** Gets the 'v3' Value, and registers a listener so that any changes to that result will cause a re-render. */
 export function useV3Value(sOrSId?: SOrSId): string;
@@ -5203,19 +5339,25 @@ export function useV3Value(sOrSId?: SOrSId): string;
 /** Gets a callback that can set the 'v3' Value, based on a parameter. */
 export function useSetV3ValueCallback<Parameter,>(getValue: (parameter: Parameter, store: Store) => string | MapString, getValueDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, value: string | MapString) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter>;
 
+/** Gets a callback that can delete the 'v3' Value. */
+export function useDelV3ValueCallback(sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback;
+
 /** Gets the '' Value, and registers a listener so that any changes to that result will cause a re-render. */
 export function useValue(sOrSId?: SOrSId): string;
 
 /** Gets a callback that can set the '' Value, based on a parameter. */
 export function useSetValueCallback<Parameter,>(getValue: (parameter: Parameter, store: Store) => string | MapString, getValueDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, value: string | MapString) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter>;
 
+/** Gets a callback that can delete the '' Value. */
+export function useDelValueCallback(sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback;
+
 /** Wraps part of an application in a context that provides default objects to be used by hooks and components within. */
 export function Provider({s, sById, children}: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
 ",
   "import {Callback, Id, Ids, ParameterizedCallback, Store} from 'tinybase';
 import {MapNumber, MapString, S, T1CellId, T1Row, T1RowWhenSet, T1Table, TableId, Tables, ValueId, Values, ValuesWhenSet} from './s.d';
-import {Provider as ProviderDecl, ProviderProps, SOrSId, useAddT1RowCallback as useAddT1RowCallbackDecl, useCreateS as useCreateSDecl, useDelT1C1CellCallback as useDelT1C1CellCallbackDecl, useDelT1C2CellCallback as useDelT1C2CellCallbackDecl, useDelT1C3CellCallback as useDelT1C3CellCallbackDecl, useDelT1CellCallback as useDelT1CellCallbackDecl, useDelT1RowCallback as useDelT1RowCallbackDecl, useDelT1TableCallback as useDelT1TableCallbackDecl, useDelTablesCallback as useDelTablesCallbackDecl, useDelValuesCallback as useDelValuesCallbackDecl, useS as useSDecl, useSetPartialValuesCallback as useSetPartialValuesCallbackDecl, useSetT1C1CellCallback as useSetT1C1CellCallbackDecl, useSetT1C2CellCallback as useSetT1C2CellCallbackDecl, useSetT1C3CellCallback as useSetT1C3CellCallbackDecl, useSetT1CellCallback as useSetT1CellCallbackDecl, useSetT1PartialRowCallback as useSetT1PartialRowCallbackDecl, useSetT1RowCallback as useSetT1RowCallbackDecl, useSetT1TableCallback as useSetT1TableCallbackDecl, useSetTablesCallback as useSetTablesCallbackDecl, useSetV1ValueCallback as useSetV1ValueCallbackDecl, useSetV2ValueCallback as useSetV2ValueCallbackDecl, useSetV3ValueCallback as useSetV3ValueCallbackDecl, useSetValueCallback as useSetValueCallbackDecl, useSetValuesCallback as useSetValuesCallbackDecl, useT1C1Cell as useT1C1CellDecl, useT1C2Cell as useT1C2CellDecl, useT1C3Cell as useT1C3CellDecl, useT1Cell as useT1CellDecl, useT1CellIds as useT1CellIdsDecl, useT1Row as useT1RowDecl, useT1RowIds as useT1RowIdsDecl, useT1SortedRowIds as useT1SortedRowIdsDecl, useT1Table as useT1TableDecl, useTableIds as useTableIdsDecl, useTables as useTablesDecl, useV1Value as useV1ValueDecl, useV2Value as useV2ValueDecl, useV3Value as useV3ValueDecl, useValue as useValueDecl, useValueIds as useValueIdsDecl, useValues as useValuesDecl} from './s-ui-react.d';
-import {useAddRowCallback as useAddRowCallbackCore, useCell as useCellCore, useCellIds as useCellIdsCore, useDelCellCallback as useDelCellCallbackCore, useDelRowCallback as useDelRowCallbackCore, useDelTableCallback as useDelTableCallbackCore, useDelTablesCallback as useDelTablesCallbackCore, useDelValuesCallback as useDelValuesCallbackCore, useRow as useRowCore, useRowIds as useRowIdsCore, useSetCellCallback as useSetCellCallbackCore, useSetPartialRowCallback as useSetPartialRowCallbackCore, useSetPartialValuesCallback as useSetPartialValuesCallbackCore, useSetRowCallback as useSetRowCallbackCore, useSetTableCallback as useSetTableCallbackCore, useSetTablesCallback as useSetTablesCallbackCore, useSetValueCallback as useSetValueCallbackCore, useSetValuesCallback as useSetValuesCallbackCore, useSortedRowIds as useSortedRowIdsCore, useTable as useTableCore, useTableIds as useTableIdsCore, useTables as useTablesCore, useValue as useValueCore, useValueIds as useValueIdsCore, useValues as useValuesCore} from 'tinybase/ui-react';
+import {Provider as ProviderDecl, ProviderProps, SOrSId, useAddT1RowCallback as useAddT1RowCallbackDecl, useCreateS as useCreateSDecl, useDelT1C1CellCallback as useDelT1C1CellCallbackDecl, useDelT1C2CellCallback as useDelT1C2CellCallbackDecl, useDelT1C3CellCallback as useDelT1C3CellCallbackDecl, useDelT1CellCallback as useDelT1CellCallbackDecl, useDelT1RowCallback as useDelT1RowCallbackDecl, useDelT1TableCallback as useDelT1TableCallbackDecl, useDelTablesCallback as useDelTablesCallbackDecl, useDelV1ValueCallback as useDelV1ValueCallbackDecl, useDelV2ValueCallback as useDelV2ValueCallbackDecl, useDelV3ValueCallback as useDelV3ValueCallbackDecl, useDelValueCallback as useDelValueCallbackDecl, useDelValuesCallback as useDelValuesCallbackDecl, useS as useSDecl, useSetPartialValuesCallback as useSetPartialValuesCallbackDecl, useSetT1C1CellCallback as useSetT1C1CellCallbackDecl, useSetT1C2CellCallback as useSetT1C2CellCallbackDecl, useSetT1C3CellCallback as useSetT1C3CellCallbackDecl, useSetT1CellCallback as useSetT1CellCallbackDecl, useSetT1PartialRowCallback as useSetT1PartialRowCallbackDecl, useSetT1RowCallback as useSetT1RowCallbackDecl, useSetT1TableCallback as useSetT1TableCallbackDecl, useSetTablesCallback as useSetTablesCallbackDecl, useSetV1ValueCallback as useSetV1ValueCallbackDecl, useSetV2ValueCallback as useSetV2ValueCallbackDecl, useSetV3ValueCallback as useSetV3ValueCallbackDecl, useSetValueCallback as useSetValueCallbackDecl, useSetValuesCallback as useSetValuesCallbackDecl, useT1C1Cell as useT1C1CellDecl, useT1C2Cell as useT1C2CellDecl, useT1C3Cell as useT1C3CellDecl, useT1Cell as useT1CellDecl, useT1CellIds as useT1CellIdsDecl, useT1Row as useT1RowDecl, useT1RowIds as useT1RowIdsDecl, useT1SortedRowIds as useT1SortedRowIdsDecl, useT1Table as useT1TableDecl, useTableIds as useTableIdsDecl, useTables as useTablesDecl, useV1Value as useV1ValueDecl, useV2Value as useV2ValueDecl, useV3Value as useV3ValueDecl, useValue as useValueDecl, useValueIds as useValueIdsDecl, useValues as useValuesDecl} from './s-ui-react.d';
+import {useAddRowCallback as useAddRowCallbackCore, useCell as useCellCore, useCellIds as useCellIdsCore, useDelCellCallback as useDelCellCallbackCore, useDelRowCallback as useDelRowCallbackCore, useDelTableCallback as useDelTableCallbackCore, useDelTablesCallback as useDelTablesCallbackCore, useDelValueCallback as useDelValueCallbackCore, useDelValuesCallback as useDelValuesCallbackCore, useRow as useRowCore, useRowIds as useRowIdsCore, useSetCellCallback as useSetCellCallbackCore, useSetPartialRowCallback as useSetPartialRowCallbackCore, useSetPartialValuesCallback as useSetPartialValuesCallbackCore, useSetRowCallback as useSetRowCallbackCore, useSetTableCallback as useSetTableCallbackCore, useSetTablesCallback as useSetTablesCallbackCore, useSetValueCallback as useSetValueCallbackCore, useSetValuesCallback as useSetValuesCallbackCore, useSortedRowIds as useSortedRowIdsCore, useTable as useTableCore, useTableIds as useTableIdsCore, useTables as useTablesCore, useValue as useValueCore, useValueIds as useValueIdsCore, useValues as useValuesCore} from 'tinybase/ui-react';
 import React from 'react';
 
 const {createContext, useContext, useMemo} = React;
@@ -5357,11 +5499,17 @@ useHook(sOrSId, useValueCore, [V1])
 export const useSetV1ValueCallback: typeof useSetV1ValueCallbackDecl = <Parameter,>(getValue: (parameter: Parameter, store: Store) => number | MapNumber, getValueDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, value: number | MapNumber) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter> =>
 useHook(sOrSId, useSetValueCallbackCore, [V1, getValue, getValueDeps], [then, thenDeps])
 
+export const useDelV1ValueCallback: typeof useDelV1ValueCallbackDecl = (sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback =>
+useHook(sOrSId, useDelValueCallbackCore, [V1], [then, thenDeps])
+
 export const useV2Value: typeof useV2ValueDecl = (sOrSId?: SOrSId): string =>
 useHook(sOrSId, useValueCore, [V2])
 
 export const useSetV2ValueCallback: typeof useSetV2ValueCallbackDecl = <Parameter,>(getValue: (parameter: Parameter, store: Store) => string | MapString, getValueDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, value: string | MapString) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter> =>
 useHook(sOrSId, useSetValueCallbackCore, [V2, getValue, getValueDeps], [then, thenDeps])
+
+export const useDelV2ValueCallback: typeof useDelV2ValueCallbackDecl = (sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback =>
+useHook(sOrSId, useDelValueCallbackCore, [V2], [then, thenDeps])
 
 export const useV3Value: typeof useV3ValueDecl = (sOrSId?: SOrSId): string =>
 useHook(sOrSId, useValueCore, [V3])
@@ -5369,11 +5517,17 @@ useHook(sOrSId, useValueCore, [V3])
 export const useSetV3ValueCallback: typeof useSetV3ValueCallbackDecl = <Parameter,>(getValue: (parameter: Parameter, store: Store) => string | MapString, getValueDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, value: string | MapString) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter> =>
 useHook(sOrSId, useSetValueCallbackCore, [V3, getValue, getValueDeps], [then, thenDeps])
 
+export const useDelV3ValueCallback: typeof useDelV3ValueCallbackDecl = (sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback =>
+useHook(sOrSId, useDelValueCallbackCore, [V3], [then, thenDeps])
+
 export const useValue: typeof useValueDecl = (sOrSId?: SOrSId): string =>
 useHook(sOrSId, useValueCore, [_])
 
 export const useSetValueCallback: typeof useSetValueCallbackDecl = <Parameter,>(getValue: (parameter: Parameter, store: Store) => string | MapString, getValueDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, value: string | MapString) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter> =>
 useHook(sOrSId, useSetValueCallbackCore, [_, getValue, getValueDeps], [then, thenDeps])
+
+export const useDelValueCallback: typeof useDelValueCallbackDecl = (sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback =>
+useHook(sOrSId, useDelValueCallbackCore, [_], [then, thenDeps])
 
 export const Provider: typeof ProviderDecl = ({s, sById, children}: ProviderProps & {children: React.ReactNode}): any =>
 {
@@ -5713,11 +5867,17 @@ export function useV1Value(sOrSId?: SOrSId): number;
 /** Gets a callback that can set the 'v1' Value, based on a parameter. */
 export function useSetV1ValueCallback<Parameter,>(getValue: (parameter: Parameter, store: Store) => number | MapNumber, getValueDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, value: number | MapNumber) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter>;
 
+/** Gets a callback that can delete the 'v1' Value. */
+export function useDelV1ValueCallback(sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback;
+
 /** Gets the 'v2' Value, and registers a listener so that any changes to that result will cause a re-render. */
 export function useV2Value(sOrSId?: SOrSId): string;
 
 /** Gets a callback that can set the 'v2' Value, based on a parameter. */
 export function useSetV2ValueCallback<Parameter,>(getValue: (parameter: Parameter, store: Store) => string | MapString, getValueDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, value: string | MapString) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter>;
+
+/** Gets a callback that can delete the 'v2' Value. */
+export function useDelV2ValueCallback(sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback;
 
 /** Gets the 'v3' Value, and registers a listener so that any changes to that result will cause a re-render. */
 export function useV3Value(sOrSId?: SOrSId): string;
@@ -5725,19 +5885,25 @@ export function useV3Value(sOrSId?: SOrSId): string;
 /** Gets a callback that can set the 'v3' Value, based on a parameter. */
 export function useSetV3ValueCallback<Parameter,>(getValue: (parameter: Parameter, store: Store) => string | MapString, getValueDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, value: string | MapString) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter>;
 
+/** Gets a callback that can delete the 'v3' Value. */
+export function useDelV3ValueCallback(sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback;
+
 /** Gets the '' Value, and registers a listener so that any changes to that result will cause a re-render. */
 export function useValue(sOrSId?: SOrSId): string;
 
 /** Gets a callback that can set the '' Value, based on a parameter. */
 export function useSetValueCallback<Parameter,>(getValue: (parameter: Parameter, store: Store) => string | MapString, getValueDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, value: string | MapString) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter>;
 
+/** Gets a callback that can delete the '' Value. */
+export function useDelValueCallback(sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback;
+
 /** Wraps part of an application in a context that provides default objects to be used by hooks and components within. */
 export function Provider({s, sById, children}: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
 ",
   "import {Callback, Id, Ids, ParameterizedCallback, Store} from 'tinybase';
 import {MapNumber, MapString, ValueId, Values, ValuesWhenSet} from './s.d';
-import {Provider as ProviderDecl, ProviderProps, SOrSId, useCreateS as useCreateSDecl, useDelValuesCallback as useDelValuesCallbackDecl, useS as useSDecl, useSetPartialValuesCallback as useSetPartialValuesCallbackDecl, useSetV1ValueCallback as useSetV1ValueCallbackDecl, useSetV2ValueCallback as useSetV2ValueCallbackDecl, useSetV3ValueCallback as useSetV3ValueCallbackDecl, useSetValueCallback as useSetValueCallbackDecl, useSetValuesCallback as useSetValuesCallbackDecl, useV1Value as useV1ValueDecl, useV2Value as useV2ValueDecl, useV3Value as useV3ValueDecl, useValue as useValueDecl, useValueIds as useValueIdsDecl, useValues as useValuesDecl} from './s-ui-react.d';
-import {useDelValuesCallback as useDelValuesCallbackCore, useSetPartialValuesCallback as useSetPartialValuesCallbackCore, useSetValueCallback as useSetValueCallbackCore, useSetValuesCallback as useSetValuesCallbackCore, useValue as useValueCore, useValueIds as useValueIdsCore, useValues as useValuesCore} from 'tinybase/ui-react';
+import {Provider as ProviderDecl, ProviderProps, SOrSId, useCreateS as useCreateSDecl, useDelV1ValueCallback as useDelV1ValueCallbackDecl, useDelV2ValueCallback as useDelV2ValueCallbackDecl, useDelV3ValueCallback as useDelV3ValueCallbackDecl, useDelValueCallback as useDelValueCallbackDecl, useDelValuesCallback as useDelValuesCallbackDecl, useS as useSDecl, useSetPartialValuesCallback as useSetPartialValuesCallbackDecl, useSetV1ValueCallback as useSetV1ValueCallbackDecl, useSetV2ValueCallback as useSetV2ValueCallbackDecl, useSetV3ValueCallback as useSetV3ValueCallbackDecl, useSetValueCallback as useSetValueCallbackDecl, useSetValuesCallback as useSetValuesCallbackDecl, useV1Value as useV1ValueDecl, useV2Value as useV2ValueDecl, useV3Value as useV3ValueDecl, useValue as useValueDecl, useValueIds as useValueIdsDecl, useValues as useValuesDecl} from './s-ui-react.d';
+import {useDelValueCallback as useDelValueCallbackCore, useDelValuesCallback as useDelValuesCallbackCore, useSetPartialValuesCallback as useSetPartialValuesCallbackCore, useSetValueCallback as useSetValueCallbackCore, useSetValuesCallback as useSetValuesCallbackCore, useValue as useValueCore, useValueIds as useValueIdsCore, useValues as useValuesCore} from 'tinybase/ui-react';
 import React from 'react';
 
 const {createContext, useContext, useMemo} = React;
@@ -5790,11 +5956,17 @@ useHook(sOrSId, useValueCore, [V1])
 export const useSetV1ValueCallback: typeof useSetV1ValueCallbackDecl = <Parameter,>(getValue: (parameter: Parameter, store: Store) => number | MapNumber, getValueDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, value: number | MapNumber) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter> =>
 useHook(sOrSId, useSetValueCallbackCore, [V1, getValue, getValueDeps], [then, thenDeps])
 
+export const useDelV1ValueCallback: typeof useDelV1ValueCallbackDecl = (sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback =>
+useHook(sOrSId, useDelValueCallbackCore, [V1], [then, thenDeps])
+
 export const useV2Value: typeof useV2ValueDecl = (sOrSId?: SOrSId): string =>
 useHook(sOrSId, useValueCore, [V2])
 
 export const useSetV2ValueCallback: typeof useSetV2ValueCallbackDecl = <Parameter,>(getValue: (parameter: Parameter, store: Store) => string | MapString, getValueDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, value: string | MapString) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter> =>
 useHook(sOrSId, useSetValueCallbackCore, [V2, getValue, getValueDeps], [then, thenDeps])
+
+export const useDelV2ValueCallback: typeof useDelV2ValueCallbackDecl = (sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback =>
+useHook(sOrSId, useDelValueCallbackCore, [V2], [then, thenDeps])
 
 export const useV3Value: typeof useV3ValueDecl = (sOrSId?: SOrSId): string =>
 useHook(sOrSId, useValueCore, [V3])
@@ -5802,11 +5974,17 @@ useHook(sOrSId, useValueCore, [V3])
 export const useSetV3ValueCallback: typeof useSetV3ValueCallbackDecl = <Parameter,>(getValue: (parameter: Parameter, store: Store) => string | MapString, getValueDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, value: string | MapString) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter> =>
 useHook(sOrSId, useSetValueCallbackCore, [V3, getValue, getValueDeps], [then, thenDeps])
 
+export const useDelV3ValueCallback: typeof useDelV3ValueCallbackDecl = (sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback =>
+useHook(sOrSId, useDelValueCallbackCore, [V3], [then, thenDeps])
+
 export const useValue: typeof useValueDecl = (sOrSId?: SOrSId): string =>
 useHook(sOrSId, useValueCore, [_])
 
 export const useSetValueCallback: typeof useSetValueCallbackDecl = <Parameter,>(getValue: (parameter: Parameter, store: Store) => string | MapString, getValueDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, value: string | MapString) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter> =>
 useHook(sOrSId, useSetValueCallbackCore, [_, getValue, getValueDeps], [then, thenDeps])
+
+export const useDelValueCallback: typeof useDelValueCallbackDecl = (sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback =>
+useHook(sOrSId, useDelValueCallbackCore, [_], [then, thenDeps])
 
 export const Provider: typeof ProviderDecl = ({s, sById, children}: ProviderProps & {children: React.ReactNode}): any =>
 {
