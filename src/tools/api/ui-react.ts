@@ -505,7 +505,11 @@ export const getStoreUiReactApi = (
       'then, thenDeps',
     );
 
-    mapValuesSchema((valueId, type, _, VALUE_ID, valueName) =>
+    mapValuesSchema((valueId, type, _, VALUE_ID, valueName) => {
+      const mapValueType = 'Map' + camel(type, 1);
+      addImport(0, moduleDefinition, mapValueType);
+      addImport(1, moduleDefinition, mapValueType);
+
       addProxyHook(
         valueName + VALUE,
         VALUE,
@@ -513,8 +517,25 @@ export const getStoreUiReactApi = (
         getValueContentDoc(valueId) + AND_REGISTERS,
         EMPTY_STRING,
         VALUE_ID,
-      ),
-    );
+      );
+
+      addProxyHook(
+        'Set' + valueName + VALUE + CALLBACK,
+        'Set' + VALUE + CALLBACK,
+        PARAMETERIZED_CALLBACK,
+        getValueContentDoc(valueId, 9) + BASED_ON_A_PARAMETER,
+        'getValue: (parameter: Parameter, store: Store) => ' +
+          type +
+          ' | ' +
+          mapValueType +
+          ', getValueDeps?: React.DependencyList',
+        VALUE_ID + ', getValue, getValueDeps',
+        '<Parameter,>',
+        `then?: (store: Store, value: ${type} | ${mapValueType}) => void, ` +
+          'thenDeps?: React.DependencyList',
+        'then, thenDeps',
+      );
+    });
   }
 
   addComponent(
