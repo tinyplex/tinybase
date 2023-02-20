@@ -387,6 +387,18 @@ export const getStoreUiReactApi = (
       );
 
       addProxyHook(
+        'Del' + tableName + TABLE + CALLBACK,
+        'Del' + TABLE + CALLBACK,
+        CALLBACK,
+        getTableContentDoc(tableId, 12) + BASED_ON_A_PARAMETER,
+        EMPTY_STRING,
+        TABLE_ID,
+        EMPTY_STRING,
+        'then?: (store: Store) => void, thenDeps?: React.DependencyList',
+        'then, thenDeps',
+      );
+
+      addProxyHook(
         'Set' + tableName + ROW + CALLBACK,
         'Set' + ROW + CALLBACK,
         PARAMETERIZED_CALLBACK,
