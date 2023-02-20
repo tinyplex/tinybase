@@ -48,7 +48,7 @@ import {OR_UNDEFINED} from '../common/strings';
 import {getSchemaFunctions} from '../common/schema';
 import {objIsEmpty} from '../../common/obj';
 
-const COMMON_IMPORTS = [ID, IDS];
+const COMMON_IMPORTS = [ID, IDS, 'Store', 'ParameterizedCallback'];
 
 const USE_CONTEXT = 'const contextValue = useContext(Context);';
 const AND_REGISTERS =
@@ -296,8 +296,22 @@ export const getStoreUiReactApi = (
         tableId,
       ) as TableTypes;
 
-      addImport(0, moduleDefinition, tableType, rowType, cellIdType);
-      addImport(1, moduleDefinition, tableType, rowType, cellIdType);
+      addImport(
+        0,
+        moduleDefinition,
+        tableType,
+        rowType,
+        rowWhenSetType,
+        cellIdType,
+      );
+      addImport(
+        1,
+        moduleDefinition,
+        tableType,
+        rowType,
+        rowWhenSetType,
+        cellIdType,
+      );
 
       addProxyHook(
         tableName + TABLE,
@@ -423,6 +437,10 @@ export const getStoreUiReactApi = (
 
   if (!objIsEmpty(valuesSchema)) {
     const [valuesType, valueIdType] = sharedValueTypes as SharedValueTypes;
+
+    addImport(0, moduleDefinition, valuesType, valueIdType);
+    addImport(1, moduleDefinition, valuesType, valueIdType);
+
     addProxyHook(
       VALUES,
       VALUES,
