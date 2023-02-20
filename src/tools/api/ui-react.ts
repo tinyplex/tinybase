@@ -443,6 +443,18 @@ export const getStoreUiReactApi = (
         'then, thenDeps',
       );
 
+      addProxyHook(
+        'Del' + tableName + ROW + CALLBACK,
+        'Del' + ROW + CALLBACK,
+        CALLBACK,
+        getRowContentDoc(tableId, 12) + BASED_ON_A_PARAMETER,
+        'rowId: Id',
+        TABLE_ID + ', rowId',
+        EMPTY_STRING,
+        'then?: (store: Store) => void, thenDeps?: React.DependencyList',
+        'then, thenDeps',
+      );
+
       mapCellSchema(
         tableId,
         (cellId, type, defaultValue, CELL_ID, cellName) => {
