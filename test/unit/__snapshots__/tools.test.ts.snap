@@ -1141,6 +1141,8 @@ export const createS: typeof createSDecl = () => {
 ",
   "import {Id, Ids, ParameterizedCallback, Store} from 'tinybase';
 import {
+  MapNumber,
+  MapString,
   S,
   T1CellId,
   T1Row,
@@ -1295,10 +1297,36 @@ export function useSetT1PartialRowCallback<Parameter>(
 export function useT1C1Cell(rowId: Id, sOrSId?: SOrSId): number;
 
 /**
+ * Gets a callback that can set the 'c1' Cell for the specified Row in the 't1'
+ * Table, based on a parameter.
+ */
+export function useSetT1C1CellCallback<Parameter>(
+  rowId: Id,
+  getCell: (parameter: Parameter, store: Store) => number | MapNumber,
+  getCellDeps?: React.DependencyList,
+  sOrSId?: SOrSId,
+  then?: (store: Store, cell: number | MapNumber) => void,
+  thenDeps?: React.DependencyList,
+): ParameterizedCallback<Parameter>;
+
+/**
  * Gets the 'c2' Cell for the specified Row in the 't1' Table, and registers a
  * listener so that any changes to that result will cause a re-render.
  */
 export function useT1C2Cell(rowId: Id, sOrSId?: SOrSId): string;
+
+/**
+ * Gets a callback that can set the 'c2' Cell for the specified Row in the 't1'
+ * Table, based on a parameter.
+ */
+export function useSetT1C2CellCallback<Parameter>(
+  rowId: Id,
+  getCell: (parameter: Parameter, store: Store) => string | MapString,
+  getCellDeps?: React.DependencyList,
+  sOrSId?: SOrSId,
+  then?: (store: Store, cell: string | MapString) => void,
+  thenDeps?: React.DependencyList,
+): ParameterizedCallback<Parameter>;
 
 /**
  * Gets the 'c3' Cell for the specified Row in the 't1' Table, and registers a
@@ -1307,10 +1335,36 @@ export function useT1C2Cell(rowId: Id, sOrSId?: SOrSId): string;
 export function useT1C3Cell(rowId: Id, sOrSId?: SOrSId): string;
 
 /**
+ * Gets a callback that can set the 'c3' Cell for the specified Row in the 't1'
+ * Table, based on a parameter.
+ */
+export function useSetT1C3CellCallback<Parameter>(
+  rowId: Id,
+  getCell: (parameter: Parameter, store: Store) => string | MapString,
+  getCellDeps?: React.DependencyList,
+  sOrSId?: SOrSId,
+  then?: (store: Store, cell: string | MapString) => void,
+  thenDeps?: React.DependencyList,
+): ParameterizedCallback<Parameter>;
+
+/**
  * Gets the '' Cell for the specified Row in the 't1' Table, and registers a
  * listener so that any changes to that result will cause a re-render.
  */
 export function useT1Cell(rowId: Id, sOrSId?: SOrSId): string | undefined;
+
+/**
+ * Gets a callback that can set the '' Cell for the specified Row in the 't1'
+ * Table, based on a parameter.
+ */
+export function useSetT1CellCallback<Parameter>(
+  rowId: Id,
+  getCell: (parameter: Parameter, store: Store) => string | MapString,
+  getCellDeps?: React.DependencyList,
+  sOrSId?: SOrSId,
+  then?: (store: Store, cell: string | MapString) => void,
+  thenDeps?: React.DependencyList,
+): ParameterizedCallback<Parameter>;
 
 /**
  * Gets the keyed value content of the Store, and registers a listener so that
@@ -1360,12 +1414,29 @@ export function Provider({
 ",
   "import {Id, Ids, ParameterizedCallback, Store} from 'tinybase';
 import {
+  MapNumber,
+  MapString,
+  S,
+  T1CellId,
+  T1Row,
+  T1RowWhenSet,
+  T1Table,
+  TableId,
+  Tables,
+  ValueId,
+  Values,
+} from './s.d';
+import {
   Provider as ProviderDecl,
   ProviderProps,
   SOrSId,
   useAddT1RowCallback as useAddT1RowCallbackDecl,
   useCreateS as useCreateSDecl,
   useS as useSDecl,
+  useSetT1C1CellCallback as useSetT1C1CellCallbackDecl,
+  useSetT1C2CellCallback as useSetT1C2CellCallbackDecl,
+  useSetT1C3CellCallback as useSetT1C3CellCallbackDecl,
+  useSetT1CellCallback as useSetT1CellCallbackDecl,
   useSetT1PartialRowCallback as useSetT1PartialRowCallbackDecl,
   useSetT1RowCallback as useSetT1RowCallbackDecl,
   useSetT1TableCallback as useSetT1TableCallbackDecl,
@@ -1389,22 +1460,12 @@ import {
   useValues as useValuesDecl,
 } from './s-ui-react.d';
 import {
-  S,
-  T1CellId,
-  T1Row,
-  T1RowWhenSet,
-  T1Table,
-  TableId,
-  Tables,
-  ValueId,
-  Values,
-} from './s.d';
-import {
   useAddRowCallback as useAddRowCallbackCore,
   useCell as useCellCore,
   useCellIds as useCellIdsCore,
   useRow as useRowCore,
   useRowIds as useRowIdsCore,
+  useSetCellCallback as useSetCellCallbackCore,
   useSetPartialRowCallback as useSetPartialRowCallbackCore,
   useSetRowCallback as useSetRowCallbackCore,
   useSetTableCallback as useSetTableCallbackCore,
@@ -1579,20 +1640,88 @@ export const useT1C1Cell: typeof useT1C1CellDecl = (
   sOrSId?: SOrSId,
 ): number => useHook(sOrSId, useCellCore, [T1, rowId, C1]);
 
+export const useSetT1C1CellCallback: typeof useSetT1C1CellCallbackDecl = <
+  Parameter,
+>(
+  rowId: Id,
+  getCell: (parameter: Parameter, store: Store) => number | MapNumber,
+  getCellDeps?: React.DependencyList,
+  sOrSId?: SOrSId,
+  then?: (store: Store, cell: number | MapNumber) => void,
+  thenDeps?: React.DependencyList,
+): ParameterizedCallback<Parameter> =>
+  useHook(
+    sOrSId,
+    useSetCellCallbackCore,
+    [T1, rowId, C1, getCell, getCellDeps],
+    [then, thenDeps],
+  );
+
 export const useT1C2Cell: typeof useT1C2CellDecl = (
   rowId: Id,
   sOrSId?: SOrSId,
 ): string => useHook(sOrSId, useCellCore, [T1, rowId, C2]);
+
+export const useSetT1C2CellCallback: typeof useSetT1C2CellCallbackDecl = <
+  Parameter,
+>(
+  rowId: Id,
+  getCell: (parameter: Parameter, store: Store) => string | MapString,
+  getCellDeps?: React.DependencyList,
+  sOrSId?: SOrSId,
+  then?: (store: Store, cell: string | MapString) => void,
+  thenDeps?: React.DependencyList,
+): ParameterizedCallback<Parameter> =>
+  useHook(
+    sOrSId,
+    useSetCellCallbackCore,
+    [T1, rowId, C2, getCell, getCellDeps],
+    [then, thenDeps],
+  );
 
 export const useT1C3Cell: typeof useT1C3CellDecl = (
   rowId: Id,
   sOrSId?: SOrSId,
 ): string => useHook(sOrSId, useCellCore, [T1, rowId, C3]);
 
+export const useSetT1C3CellCallback: typeof useSetT1C3CellCallbackDecl = <
+  Parameter,
+>(
+  rowId: Id,
+  getCell: (parameter: Parameter, store: Store) => string | MapString,
+  getCellDeps?: React.DependencyList,
+  sOrSId?: SOrSId,
+  then?: (store: Store, cell: string | MapString) => void,
+  thenDeps?: React.DependencyList,
+): ParameterizedCallback<Parameter> =>
+  useHook(
+    sOrSId,
+    useSetCellCallbackCore,
+    [T1, rowId, C3, getCell, getCellDeps],
+    [then, thenDeps],
+  );
+
 export const useT1Cell: typeof useT1CellDecl = (
   rowId: Id,
   sOrSId?: SOrSId,
 ): string | undefined => useHook(sOrSId, useCellCore, [T1, rowId, _]);
+
+export const useSetT1CellCallback: typeof useSetT1CellCallbackDecl = <
+  Parameter,
+>(
+  rowId: Id,
+  getCell: (parameter: Parameter, store: Store) => string | MapString,
+  getCellDeps?: React.DependencyList,
+  sOrSId?: SOrSId,
+  then?: (store: Store, cell: string | MapString) => void,
+  thenDeps?: React.DependencyList,
+): ParameterizedCallback<Parameter> =>
+  useHook(
+    sOrSId,
+    useSetCellCallbackCore,
+    [T1, rowId, _, getCell, getCellDeps],
+    [then, thenDeps],
+  );
 
 export const useValues: typeof useValuesDecl = (sOrSId?: SOrSId): Values =>
   useHook(sOrSId, useValuesCore, []);
@@ -3103,6 +3232,8 @@ export const createS: typeof createSDecl = () => {
 ",
   "import {Id, Ids, ParameterizedCallback, Store} from 'tinybase';
 import {
+  MapNumber,
+  MapString,
   S,
   T1CellId,
   T1Row,
@@ -3255,10 +3386,36 @@ export function useSetT1PartialRowCallback<Parameter>(
 export function useT1C1Cell(rowId: Id, sOrSId?: SOrSId): number;
 
 /**
+ * Gets a callback that can set the 'c1' Cell for the specified Row in the 't1'
+ * Table, based on a parameter.
+ */
+export function useSetT1C1CellCallback<Parameter>(
+  rowId: Id,
+  getCell: (parameter: Parameter, store: Store) => number | MapNumber,
+  getCellDeps?: React.DependencyList,
+  sOrSId?: SOrSId,
+  then?: (store: Store, cell: number | MapNumber) => void,
+  thenDeps?: React.DependencyList,
+): ParameterizedCallback<Parameter>;
+
+/**
  * Gets the 'c2' Cell for the specified Row in the 't1' Table, and registers a
  * listener so that any changes to that result will cause a re-render.
  */
 export function useT1C2Cell(rowId: Id, sOrSId?: SOrSId): string;
+
+/**
+ * Gets a callback that can set the 'c2' Cell for the specified Row in the 't1'
+ * Table, based on a parameter.
+ */
+export function useSetT1C2CellCallback<Parameter>(
+  rowId: Id,
+  getCell: (parameter: Parameter, store: Store) => string | MapString,
+  getCellDeps?: React.DependencyList,
+  sOrSId?: SOrSId,
+  then?: (store: Store, cell: string | MapString) => void,
+  thenDeps?: React.DependencyList,
+): ParameterizedCallback<Parameter>;
 
 /**
  * Gets the 'c3' Cell for the specified Row in the 't1' Table, and registers a
@@ -3267,10 +3424,36 @@ export function useT1C2Cell(rowId: Id, sOrSId?: SOrSId): string;
 export function useT1C3Cell(rowId: Id, sOrSId?: SOrSId): string;
 
 /**
+ * Gets a callback that can set the 'c3' Cell for the specified Row in the 't1'
+ * Table, based on a parameter.
+ */
+export function useSetT1C3CellCallback<Parameter>(
+  rowId: Id,
+  getCell: (parameter: Parameter, store: Store) => string | MapString,
+  getCellDeps?: React.DependencyList,
+  sOrSId?: SOrSId,
+  then?: (store: Store, cell: string | MapString) => void,
+  thenDeps?: React.DependencyList,
+): ParameterizedCallback<Parameter>;
+
+/**
  * Gets the '' Cell for the specified Row in the 't1' Table, and registers a
  * listener so that any changes to that result will cause a re-render.
  */
 export function useT1Cell(rowId: Id, sOrSId?: SOrSId): string | undefined;
+
+/**
+ * Gets a callback that can set the '' Cell for the specified Row in the 't1'
+ * Table, based on a parameter.
+ */
+export function useSetT1CellCallback<Parameter>(
+  rowId: Id,
+  getCell: (parameter: Parameter, store: Store) => string | MapString,
+  getCellDeps?: React.DependencyList,
+  sOrSId?: SOrSId,
+  then?: (store: Store, cell: string | MapString) => void,
+  thenDeps?: React.DependencyList,
+): ParameterizedCallback<Parameter>;
 
 /**
  * Wraps part of an application in a context that provides default objects to be
@@ -3284,12 +3467,27 @@ export function Provider({
 ",
   "import {Id, Ids, ParameterizedCallback, Store} from 'tinybase';
 import {
+  MapNumber,
+  MapString,
+  S,
+  T1CellId,
+  T1Row,
+  T1RowWhenSet,
+  T1Table,
+  TableId,
+  Tables,
+} from './s.d';
+import {
   Provider as ProviderDecl,
   ProviderProps,
   SOrSId,
   useAddT1RowCallback as useAddT1RowCallbackDecl,
   useCreateS as useCreateSDecl,
   useS as useSDecl,
+  useSetT1C1CellCallback as useSetT1C1CellCallbackDecl,
+  useSetT1C2CellCallback as useSetT1C2CellCallbackDecl,
+  useSetT1C3CellCallback as useSetT1C3CellCallbackDecl,
+  useSetT1CellCallback as useSetT1CellCallbackDecl,
   useSetT1PartialRowCallback as useSetT1PartialRowCallbackDecl,
   useSetT1RowCallback as useSetT1RowCallbackDecl,
   useSetT1TableCallback as useSetT1TableCallbackDecl,
@@ -3307,20 +3505,12 @@ import {
   useTables as useTablesDecl,
 } from './s-ui-react.d';
 import {
-  S,
-  T1CellId,
-  T1Row,
-  T1RowWhenSet,
-  T1Table,
-  TableId,
-  Tables,
-} from './s.d';
-import {
   useAddRowCallback as useAddRowCallbackCore,
   useCell as useCellCore,
   useCellIds as useCellIdsCore,
   useRow as useRowCore,
   useRowIds as useRowIdsCore,
+  useSetCellCallback as useSetCellCallbackCore,
   useSetPartialRowCallback as useSetPartialRowCallbackCore,
   useSetRowCallback as useSetRowCallbackCore,
   useSetTableCallback as useSetTableCallbackCore,
@@ -3486,20 +3676,88 @@ export const useT1C1Cell: typeof useT1C1CellDecl = (
   sOrSId?: SOrSId,
 ): number => useHook(sOrSId, useCellCore, [T1, rowId, C1]);
 
+export const useSetT1C1CellCallback: typeof useSetT1C1CellCallbackDecl = <
+  Parameter,
+>(
+  rowId: Id,
+  getCell: (parameter: Parameter, store: Store) => number | MapNumber,
+  getCellDeps?: React.DependencyList,
+  sOrSId?: SOrSId,
+  then?: (store: Store, cell: number | MapNumber) => void,
+  thenDeps?: React.DependencyList,
+): ParameterizedCallback<Parameter> =>
+  useHook(
+    sOrSId,
+    useSetCellCallbackCore,
+    [T1, rowId, C1, getCell, getCellDeps],
+    [then, thenDeps],
+  );
+
 export const useT1C2Cell: typeof useT1C2CellDecl = (
   rowId: Id,
   sOrSId?: SOrSId,
 ): string => useHook(sOrSId, useCellCore, [T1, rowId, C2]);
+
+export const useSetT1C2CellCallback: typeof useSetT1C2CellCallbackDecl = <
+  Parameter,
+>(
+  rowId: Id,
+  getCell: (parameter: Parameter, store: Store) => string | MapString,
+  getCellDeps?: React.DependencyList,
+  sOrSId?: SOrSId,
+  then?: (store: Store, cell: string | MapString) => void,
+  thenDeps?: React.DependencyList,
+): ParameterizedCallback<Parameter> =>
+  useHook(
+    sOrSId,
+    useSetCellCallbackCore,
+    [T1, rowId, C2, getCell, getCellDeps],
+    [then, thenDeps],
+  );
 
 export const useT1C3Cell: typeof useT1C3CellDecl = (
   rowId: Id,
   sOrSId?: SOrSId,
 ): string => useHook(sOrSId, useCellCore, [T1, rowId, C3]);
 
+export const useSetT1C3CellCallback: typeof useSetT1C3CellCallbackDecl = <
+  Parameter,
+>(
+  rowId: Id,
+  getCell: (parameter: Parameter, store: Store) => string | MapString,
+  getCellDeps?: React.DependencyList,
+  sOrSId?: SOrSId,
+  then?: (store: Store, cell: string | MapString) => void,
+  thenDeps?: React.DependencyList,
+): ParameterizedCallback<Parameter> =>
+  useHook(
+    sOrSId,
+    useSetCellCallbackCore,
+    [T1, rowId, C3, getCell, getCellDeps],
+    [then, thenDeps],
+  );
+
 export const useT1Cell: typeof useT1CellDecl = (
   rowId: Id,
   sOrSId?: SOrSId,
 ): string | undefined => useHook(sOrSId, useCellCore, [T1, rowId, _]);
+
+export const useSetT1CellCallback: typeof useSetT1CellCallbackDecl = <
+  Parameter,
+>(
+  rowId: Id,
+  getCell: (parameter: Parameter, store: Store) => string | MapString,
+  getCellDeps?: React.DependencyList,
+  sOrSId?: SOrSId,
+  then?: (store: Store, cell: string | MapString) => void,
+  thenDeps?: React.DependencyList,
+): ParameterizedCallback<Parameter> =>
+  useHook(
+    sOrSId,
+    useSetCellCallbackCore,
+    [T1, rowId, _, getCell, getCellDeps],
+    [then, thenDeps],
+  );
 
 export const Provider: typeof ProviderDecl = ({
   s,
@@ -4112,7 +4370,7 @@ getStore: (): Store => store,
 return Object.freeze(s);
 };",
   "import {Id, Ids, ParameterizedCallback, Store} from 'tinybase';
-import {S, T1CellId, T1Row, T1RowWhenSet, T1Table, TableId, Tables, ValueId, Values} from './s.d';
+import {MapNumber, MapString, S, T1CellId, T1Row, T1RowWhenSet, T1Table, TableId, Tables, ValueId, Values} from './s.d';
 import {ComponentReturnType} from 'tinybase/ui-react';
 
 /** Used when you need to refer to a S in a React hook or component. */
@@ -4166,14 +4424,26 @@ export function useSetT1PartialRowCallback<Parameter,>(rowId: Id, getPartialRow:
 /** Gets the 'c1' Cell for the specified Row in the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
 export function useT1C1Cell(rowId: Id, sOrSId?: SOrSId): number;
 
+/** Gets a callback that can set the 'c1' Cell for the specified Row in the 't1' Table, based on a parameter. */
+export function useSetT1C1CellCallback<Parameter,>(rowId: Id, getCell: (parameter: Parameter, store: Store) => number | MapNumber, getCellDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, cell: number | MapNumber) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter>;
+
 /** Gets the 'c2' Cell for the specified Row in the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
 export function useT1C2Cell(rowId: Id, sOrSId?: SOrSId): string;
+
+/** Gets a callback that can set the 'c2' Cell for the specified Row in the 't1' Table, based on a parameter. */
+export function useSetT1C2CellCallback<Parameter,>(rowId: Id, getCell: (parameter: Parameter, store: Store) => string | MapString, getCellDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, cell: string | MapString) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter>;
 
 /** Gets the 'c3' Cell for the specified Row in the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
 export function useT1C3Cell(rowId: Id, sOrSId?: SOrSId): string;
 
+/** Gets a callback that can set the 'c3' Cell for the specified Row in the 't1' Table, based on a parameter. */
+export function useSetT1C3CellCallback<Parameter,>(rowId: Id, getCell: (parameter: Parameter, store: Store) => string | MapString, getCellDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, cell: string | MapString) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter>;
+
 /** Gets the '' Cell for the specified Row in the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
 export function useT1Cell(rowId: Id, sOrSId?: SOrSId): string | undefined;
+
+/** Gets a callback that can set the '' Cell for the specified Row in the 't1' Table, based on a parameter. */
+export function useSetT1CellCallback<Parameter,>(rowId: Id, getCell: (parameter: Parameter, store: Store) => string | MapString, getCellDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, cell: string | MapString) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter>;
 
 /** Gets the keyed value content of the Store, and registers a listener so that any changes to that result will cause a re-render. */
 export function useValues(sOrSId?: SOrSId): Values;
@@ -4197,9 +4467,9 @@ export function useValue(sOrSId?: SOrSId): string;
 export function Provider({s, sById, children}: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
 ",
   "import {Id, Ids, ParameterizedCallback, Store} from 'tinybase';
-import {Provider as ProviderDecl, ProviderProps, SOrSId, useAddT1RowCallback as useAddT1RowCallbackDecl, useCreateS as useCreateSDecl, useS as useSDecl, useSetT1PartialRowCallback as useSetT1PartialRowCallbackDecl, useSetT1RowCallback as useSetT1RowCallbackDecl, useSetT1TableCallback as useSetT1TableCallbackDecl, useSetTablesCallback as useSetTablesCallbackDecl, useT1C1Cell as useT1C1CellDecl, useT1C2Cell as useT1C2CellDecl, useT1C3Cell as useT1C3CellDecl, useT1Cell as useT1CellDecl, useT1CellIds as useT1CellIdsDecl, useT1Row as useT1RowDecl, useT1RowIds as useT1RowIdsDecl, useT1SortedRowIds as useT1SortedRowIdsDecl, useT1Table as useT1TableDecl, useTableIds as useTableIdsDecl, useTables as useTablesDecl, useV1Value as useV1ValueDecl, useV2Value as useV2ValueDecl, useV3Value as useV3ValueDecl, useValue as useValueDecl, useValueIds as useValueIdsDecl, useValues as useValuesDecl} from './s-ui-react.d';
-import {S, T1CellId, T1Row, T1RowWhenSet, T1Table, TableId, Tables, ValueId, Values} from './s.d';
-import {useAddRowCallback as useAddRowCallbackCore, useCell as useCellCore, useCellIds as useCellIdsCore, useRow as useRowCore, useRowIds as useRowIdsCore, useSetPartialRowCallback as useSetPartialRowCallbackCore, useSetRowCallback as useSetRowCallbackCore, useSetTableCallback as useSetTableCallbackCore, useSetTablesCallback as useSetTablesCallbackCore, useSortedRowIds as useSortedRowIdsCore, useTable as useTableCore, useTableIds as useTableIdsCore, useTables as useTablesCore, useValue as useValueCore, useValueIds as useValueIdsCore, useValues as useValuesCore} from 'tinybase/ui-react';
+import {MapNumber, MapString, S, T1CellId, T1Row, T1RowWhenSet, T1Table, TableId, Tables, ValueId, Values} from './s.d';
+import {Provider as ProviderDecl, ProviderProps, SOrSId, useAddT1RowCallback as useAddT1RowCallbackDecl, useCreateS as useCreateSDecl, useS as useSDecl, useSetT1C1CellCallback as useSetT1C1CellCallbackDecl, useSetT1C2CellCallback as useSetT1C2CellCallbackDecl, useSetT1C3CellCallback as useSetT1C3CellCallbackDecl, useSetT1CellCallback as useSetT1CellCallbackDecl, useSetT1PartialRowCallback as useSetT1PartialRowCallbackDecl, useSetT1RowCallback as useSetT1RowCallbackDecl, useSetT1TableCallback as useSetT1TableCallbackDecl, useSetTablesCallback as useSetTablesCallbackDecl, useT1C1Cell as useT1C1CellDecl, useT1C2Cell as useT1C2CellDecl, useT1C3Cell as useT1C3CellDecl, useT1Cell as useT1CellDecl, useT1CellIds as useT1CellIdsDecl, useT1Row as useT1RowDecl, useT1RowIds as useT1RowIdsDecl, useT1SortedRowIds as useT1SortedRowIdsDecl, useT1Table as useT1TableDecl, useTableIds as useTableIdsDecl, useTables as useTablesDecl, useV1Value as useV1ValueDecl, useV2Value as useV2ValueDecl, useV3Value as useV3ValueDecl, useValue as useValueDecl, useValueIds as useValueIdsDecl, useValues as useValuesDecl} from './s-ui-react.d';
+import {useAddRowCallback as useAddRowCallbackCore, useCell as useCellCore, useCellIds as useCellIdsCore, useRow as useRowCore, useRowIds as useRowIdsCore, useSetCellCallback as useSetCellCallbackCore, useSetPartialRowCallback as useSetPartialRowCallbackCore, useSetRowCallback as useSetRowCallbackCore, useSetTableCallback as useSetTableCallbackCore, useSetTablesCallback as useSetTablesCallbackCore, useSortedRowIds as useSortedRowIdsCore, useTable as useTableCore, useTableIds as useTableIdsCore, useTables as useTablesCore, useValue as useValueCore, useValueIds as useValueIdsCore, useValues as useValuesCore} from 'tinybase/ui-react';
 import React from 'react';
 
 const {createContext, useContext, useMemo} = React;
@@ -4278,14 +4548,26 @@ useHook(sOrSId, useSetPartialRowCallbackCore, [T1, rowId, getPartialRow, getPart
 export const useT1C1Cell: typeof useT1C1CellDecl = (rowId: Id, sOrSId?: SOrSId): number =>
 useHook(sOrSId, useCellCore, [T1, rowId, C1])
 
+export const useSetT1C1CellCallback: typeof useSetT1C1CellCallbackDecl = <Parameter,>(rowId: Id, getCell: (parameter: Parameter, store: Store) => number | MapNumber, getCellDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, cell: number | MapNumber) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter> =>
+useHook(sOrSId, useSetCellCallbackCore, [T1, rowId, C1, getCell, getCellDeps], [then, thenDeps])
+
 export const useT1C2Cell: typeof useT1C2CellDecl = (rowId: Id, sOrSId?: SOrSId): string =>
 useHook(sOrSId, useCellCore, [T1, rowId, C2])
+
+export const useSetT1C2CellCallback: typeof useSetT1C2CellCallbackDecl = <Parameter,>(rowId: Id, getCell: (parameter: Parameter, store: Store) => string | MapString, getCellDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, cell: string | MapString) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter> =>
+useHook(sOrSId, useSetCellCallbackCore, [T1, rowId, C2, getCell, getCellDeps], [then, thenDeps])
 
 export const useT1C3Cell: typeof useT1C3CellDecl = (rowId: Id, sOrSId?: SOrSId): string =>
 useHook(sOrSId, useCellCore, [T1, rowId, C3])
 
+export const useSetT1C3CellCallback: typeof useSetT1C3CellCallbackDecl = <Parameter,>(rowId: Id, getCell: (parameter: Parameter, store: Store) => string | MapString, getCellDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, cell: string | MapString) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter> =>
+useHook(sOrSId, useSetCellCallbackCore, [T1, rowId, C3, getCell, getCellDeps], [then, thenDeps])
+
 export const useT1Cell: typeof useT1CellDecl = (rowId: Id, sOrSId?: SOrSId): string | undefined =>
 useHook(sOrSId, useCellCore, [T1, rowId, _])
+
+export const useSetT1CellCallback: typeof useSetT1CellCallbackDecl = <Parameter,>(rowId: Id, getCell: (parameter: Parameter, store: Store) => string | MapString, getCellDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, cell: string | MapString) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter> =>
+useHook(sOrSId, useSetCellCallbackCore, [T1, rowId, _, getCell, getCellDeps], [then, thenDeps])
 
 export const useValues: typeof useValuesDecl = (sOrSId?: SOrSId): Values =>
 useHook(sOrSId, useValuesCore, [])
@@ -5119,7 +5401,7 @@ getStore: (): Store => store,
 return Object.freeze(s);
 };",
   "import {Id, Ids, ParameterizedCallback, Store} from 'tinybase';
-import {S, T1CellId, T1Row, T1RowWhenSet, T1Table, TableId, Tables} from './s.d';
+import {MapNumber, MapString, S, T1CellId, T1Row, T1RowWhenSet, T1Table, TableId, Tables} from './s.d';
 import {ComponentReturnType} from 'tinybase/ui-react';
 
 /** Used when you need to refer to a S in a React hook or component. */
@@ -5173,22 +5455,34 @@ export function useSetT1PartialRowCallback<Parameter,>(rowId: Id, getPartialRow:
 /** Gets the 'c1' Cell for the specified Row in the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
 export function useT1C1Cell(rowId: Id, sOrSId?: SOrSId): number;
 
+/** Gets a callback that can set the 'c1' Cell for the specified Row in the 't1' Table, based on a parameter. */
+export function useSetT1C1CellCallback<Parameter,>(rowId: Id, getCell: (parameter: Parameter, store: Store) => number | MapNumber, getCellDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, cell: number | MapNumber) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter>;
+
 /** Gets the 'c2' Cell for the specified Row in the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
 export function useT1C2Cell(rowId: Id, sOrSId?: SOrSId): string;
+
+/** Gets a callback that can set the 'c2' Cell for the specified Row in the 't1' Table, based on a parameter. */
+export function useSetT1C2CellCallback<Parameter,>(rowId: Id, getCell: (parameter: Parameter, store: Store) => string | MapString, getCellDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, cell: string | MapString) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter>;
 
 /** Gets the 'c3' Cell for the specified Row in the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
 export function useT1C3Cell(rowId: Id, sOrSId?: SOrSId): string;
 
+/** Gets a callback that can set the 'c3' Cell for the specified Row in the 't1' Table, based on a parameter. */
+export function useSetT1C3CellCallback<Parameter,>(rowId: Id, getCell: (parameter: Parameter, store: Store) => string | MapString, getCellDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, cell: string | MapString) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter>;
+
 /** Gets the '' Cell for the specified Row in the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
 export function useT1Cell(rowId: Id, sOrSId?: SOrSId): string | undefined;
+
+/** Gets a callback that can set the '' Cell for the specified Row in the 't1' Table, based on a parameter. */
+export function useSetT1CellCallback<Parameter,>(rowId: Id, getCell: (parameter: Parameter, store: Store) => string | MapString, getCellDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, cell: string | MapString) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter>;
 
 /** Wraps part of an application in a context that provides default objects to be used by hooks and components within. */
 export function Provider({s, sById, children}: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
 ",
   "import {Id, Ids, ParameterizedCallback, Store} from 'tinybase';
-import {Provider as ProviderDecl, ProviderProps, SOrSId, useAddT1RowCallback as useAddT1RowCallbackDecl, useCreateS as useCreateSDecl, useS as useSDecl, useSetT1PartialRowCallback as useSetT1PartialRowCallbackDecl, useSetT1RowCallback as useSetT1RowCallbackDecl, useSetT1TableCallback as useSetT1TableCallbackDecl, useSetTablesCallback as useSetTablesCallbackDecl, useT1C1Cell as useT1C1CellDecl, useT1C2Cell as useT1C2CellDecl, useT1C3Cell as useT1C3CellDecl, useT1Cell as useT1CellDecl, useT1CellIds as useT1CellIdsDecl, useT1Row as useT1RowDecl, useT1RowIds as useT1RowIdsDecl, useT1SortedRowIds as useT1SortedRowIdsDecl, useT1Table as useT1TableDecl, useTableIds as useTableIdsDecl, useTables as useTablesDecl} from './s-ui-react.d';
-import {S, T1CellId, T1Row, T1RowWhenSet, T1Table, TableId, Tables} from './s.d';
-import {useAddRowCallback as useAddRowCallbackCore, useCell as useCellCore, useCellIds as useCellIdsCore, useRow as useRowCore, useRowIds as useRowIdsCore, useSetPartialRowCallback as useSetPartialRowCallbackCore, useSetRowCallback as useSetRowCallbackCore, useSetTableCallback as useSetTableCallbackCore, useSetTablesCallback as useSetTablesCallbackCore, useSortedRowIds as useSortedRowIdsCore, useTable as useTableCore, useTableIds as useTableIdsCore, useTables as useTablesCore} from 'tinybase/ui-react';
+import {MapNumber, MapString, S, T1CellId, T1Row, T1RowWhenSet, T1Table, TableId, Tables} from './s.d';
+import {Provider as ProviderDecl, ProviderProps, SOrSId, useAddT1RowCallback as useAddT1RowCallbackDecl, useCreateS as useCreateSDecl, useS as useSDecl, useSetT1C1CellCallback as useSetT1C1CellCallbackDecl, useSetT1C2CellCallback as useSetT1C2CellCallbackDecl, useSetT1C3CellCallback as useSetT1C3CellCallbackDecl, useSetT1CellCallback as useSetT1CellCallbackDecl, useSetT1PartialRowCallback as useSetT1PartialRowCallbackDecl, useSetT1RowCallback as useSetT1RowCallbackDecl, useSetT1TableCallback as useSetT1TableCallbackDecl, useSetTablesCallback as useSetTablesCallbackDecl, useT1C1Cell as useT1C1CellDecl, useT1C2Cell as useT1C2CellDecl, useT1C3Cell as useT1C3CellDecl, useT1Cell as useT1CellDecl, useT1CellIds as useT1CellIdsDecl, useT1Row as useT1RowDecl, useT1RowIds as useT1RowIdsDecl, useT1SortedRowIds as useT1SortedRowIdsDecl, useT1Table as useT1TableDecl, useTableIds as useTableIdsDecl, useTables as useTablesDecl} from './s-ui-react.d';
+import {useAddRowCallback as useAddRowCallbackCore, useCell as useCellCore, useCellIds as useCellIdsCore, useRow as useRowCore, useRowIds as useRowIdsCore, useSetCellCallback as useSetCellCallbackCore, useSetPartialRowCallback as useSetPartialRowCallbackCore, useSetRowCallback as useSetRowCallbackCore, useSetTableCallback as useSetTableCallbackCore, useSetTablesCallback as useSetTablesCallbackCore, useSortedRowIds as useSortedRowIdsCore, useTable as useTableCore, useTableIds as useTableIdsCore, useTables as useTablesCore} from 'tinybase/ui-react';
 import React from 'react';
 
 const {createContext, useContext, useMemo} = React;
@@ -5261,14 +5555,26 @@ useHook(sOrSId, useSetPartialRowCallbackCore, [T1, rowId, getPartialRow, getPart
 export const useT1C1Cell: typeof useT1C1CellDecl = (rowId: Id, sOrSId?: SOrSId): number =>
 useHook(sOrSId, useCellCore, [T1, rowId, C1])
 
+export const useSetT1C1CellCallback: typeof useSetT1C1CellCallbackDecl = <Parameter,>(rowId: Id, getCell: (parameter: Parameter, store: Store) => number | MapNumber, getCellDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, cell: number | MapNumber) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter> =>
+useHook(sOrSId, useSetCellCallbackCore, [T1, rowId, C1, getCell, getCellDeps], [then, thenDeps])
+
 export const useT1C2Cell: typeof useT1C2CellDecl = (rowId: Id, sOrSId?: SOrSId): string =>
 useHook(sOrSId, useCellCore, [T1, rowId, C2])
+
+export const useSetT1C2CellCallback: typeof useSetT1C2CellCallbackDecl = <Parameter,>(rowId: Id, getCell: (parameter: Parameter, store: Store) => string | MapString, getCellDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, cell: string | MapString) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter> =>
+useHook(sOrSId, useSetCellCallbackCore, [T1, rowId, C2, getCell, getCellDeps], [then, thenDeps])
 
 export const useT1C3Cell: typeof useT1C3CellDecl = (rowId: Id, sOrSId?: SOrSId): string =>
 useHook(sOrSId, useCellCore, [T1, rowId, C3])
 
+export const useSetT1C3CellCallback: typeof useSetT1C3CellCallbackDecl = <Parameter,>(rowId: Id, getCell: (parameter: Parameter, store: Store) => string | MapString, getCellDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, cell: string | MapString) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter> =>
+useHook(sOrSId, useSetCellCallbackCore, [T1, rowId, C3, getCell, getCellDeps], [then, thenDeps])
+
 export const useT1Cell: typeof useT1CellDecl = (rowId: Id, sOrSId?: SOrSId): string | undefined =>
 useHook(sOrSId, useCellCore, [T1, rowId, _])
+
+export const useSetT1CellCallback: typeof useSetT1CellCallbackDecl = <Parameter,>(rowId: Id, getCell: (parameter: Parameter, store: Store) => string | MapString, getCellDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, cell: string | MapString) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter> =>
+useHook(sOrSId, useSetCellCallbackCore, [T1, rowId, _, getCell, getCellDeps], [then, thenDeps])
 
 export const Provider: typeof ProviderDecl = ({s, sById, children}: ProviderProps & {children: React.ReactNode}): any =>
 {
