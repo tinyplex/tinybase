@@ -12,6 +12,7 @@ import {
   VOID,
   getCellContentDoc,
   getIdsDoc,
+  getListenerDoc,
   getRowContentDoc,
   getRowDoc,
   getTableContentDoc,
@@ -314,11 +315,18 @@ export const getStoreUiReactApi = (
       tablesType,
       tableIdType,
       tablesListenerType,
-      _tableIdsListenerType,
+      tableIdsListenerType,
       tablesTypes,
     ] = sharedTableTypes as SharedTableTypes;
 
-    addImport(0, moduleDefinition, tablesType, tableIdType, tablesListenerType);
+    addImport(
+      0,
+      moduleDefinition,
+      tablesType,
+      tableIdType,
+      tablesListenerType,
+      tableIdsListenerType,
+    );
 
     addImport(1, tinyBaseUiReact);
     addImport(
@@ -328,6 +336,7 @@ export const getStoreUiReactApi = (
       tablesType,
       tableIdType,
       tablesListenerType,
+      tableIdsListenerType,
     );
 
     addProxyHook(
@@ -379,8 +388,17 @@ export const getStoreUiReactApi = (
       TABLES + LISTENER,
       TABLES + LISTENER,
       VOID,
-      getTheContentOfTheStoreDoc(1, 13),
+      getTheContentOfTheStoreDoc(1, 8) + ' changes',
       getListenerHookParams(tablesListenerType),
+      LISTENER_HOOK_PARAMS_IN_CALL,
+    );
+
+    addProxyHook(
+      TABLE_IDS + LISTENER,
+      TABLE_IDS + LISTENER,
+      VOID,
+      getListenerDoc(2, 0, 1),
+      getListenerHookParams(tableIdsListenerType),
       LISTENER_HOOK_PARAMS_IN_CALL,
     );
 

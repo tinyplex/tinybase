@@ -124,7 +124,6 @@ export const VERBS = [
   GETS_A_CALLBACK_THAT_CAN + 'add',
   GETS_A_CALLBACK_THAT_CAN + 'set part of',
   GETS_A_CALLBACK_THAT_CAN + 'delete',
-  REGISTERS_A_LISTENER + ' for every change to',
 ];
 
 export const NOUNS = [
