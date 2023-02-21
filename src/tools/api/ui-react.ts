@@ -314,6 +314,11 @@ export const getStoreUiReactApi = (
       tableIdType,
       tablesListenerType,
       tableIdsListenerType,
+      _tableListenerType,
+      _rowIdsListenerType,
+      _rowListenerType,
+      _cellIdsListenerType,
+      _cellListenerType,
       tablesTypes,
     ] = sharedTableTypes as SharedTableTypes;
 
@@ -380,24 +385,6 @@ export const getStoreUiReactApi = (
       EMPTY_STRING,
       THEN_AND_THEN_DEPS,
       THEN_AND_THEN_DEPS_IN_CALL,
-    );
-
-    addProxyHook(
-      TABLES + LISTENER,
-      TABLES + LISTENER,
-      VOID,
-      getTheContentOfTheStoreDoc(1, 8) + ' changes',
-      getListenerHookParams(tablesListenerType),
-      getListenerHookParamsInCall(),
-    );
-
-    addProxyHook(
-      TABLE_IDS + LISTENER,
-      TABLE_IDS + LISTENER,
-      VOID,
-      getListenerDoc(2, 0, 1),
-      getListenerHookParams(tableIdsListenerType),
-      getListenerHookParamsInCall(),
     );
 
     mapTablesSchema((tableId: Id, tableName: string, TABLE_ID: string) => {
@@ -624,6 +611,24 @@ export const getStoreUiReactApi = (
         },
       );
     });
+
+    addProxyHook(
+      TABLES + LISTENER,
+      TABLES + LISTENER,
+      VOID,
+      getTheContentOfTheStoreDoc(1, 8) + ' changes',
+      getListenerHookParams(tablesListenerType),
+      getListenerHookParamsInCall(),
+    );
+
+    addProxyHook(
+      TABLE_IDS + LISTENER,
+      TABLE_IDS + LISTENER,
+      VOID,
+      getListenerDoc(2, 0, 1),
+      getListenerHookParams(tableIdsListenerType),
+      getListenerHookParamsInCall(),
+    );
   }
 
   if (!objIsEmpty(valuesSchema)) {

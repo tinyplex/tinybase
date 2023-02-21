@@ -87,6 +87,11 @@ export type SharedTableTypes = [
   string,
   string,
   string,
+  string,
+  string,
+  string,
+  string,
+  string,
   IdMap<TableTypes>,
 ];
 export type SharedValueTypes = [string, string, string];
@@ -432,6 +437,11 @@ export const getStoreCoreApi = (
       tableIdType,
       tablesListenerType,
       tableIdsListenerType,
+      tableListenerType,
+      rowIdsListenerType,
+      rowListenerType,
+      cellIdsListenerType,
+      cellListenerType,
       tablesTypes,
     ];
 
