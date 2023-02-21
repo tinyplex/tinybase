@@ -140,6 +140,7 @@ export const NOUNS = [
   THE + VALUE + SPACE + IDS,
   A + VALUE,
   'invalid Value changes',
+  THE + 'sorted ' + ROW + SPACE + IDS,
 ];
 
 const CONTENT = [EMPTY_STRING, 'tabular ', 'keyed value '];

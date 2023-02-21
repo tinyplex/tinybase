@@ -433,7 +433,7 @@ export interface Tools {
    * // -> 'export type PetsRow = {price?: number};'
    *
    * const tsLines = ts.split('\n');
-   * console.log(tsLines[74]);
+   * console.log(tsLines[75]);
    * // -> '    hasPetsTable: (): boolean => store.hasTable(PETS),'
    * ```
    * @example
@@ -455,7 +455,7 @@ export interface Tools {
    * // -> 'export type PetsRow = {price: number};'
    *
    * const tsLines = ts.split('\n');
-   * console.log(tsLines[76]);
+   * console.log(tsLines[77]);
    * // -> '    hasPetsTable: (): boolean => store.hasTable(PETS),'
    * ```
    * @category Modelling
