@@ -89,11 +89,6 @@ const THEN_AND_THEN_DEPS = getParameterList(
 const THEN_AND_THEN_DEPS_IN_CALL = 'then, then' + DEPS;
 const ROW_ID = 'rowId';
 const TYPED_ROW_ID = ROW_ID + COLON_SPACE + ID;
-const LISTENER_HOOK_PARAMS_IN_CALL = getParameterList(
-  LISTENER_,
-  LISTENER_ + DEPS,
-  'mutator',
-);
 
 const getListenerHookParams = (
   listenerType: string,
@@ -105,6 +100,9 @@ const getListenerHookParams = (
     'mutator?: boolean',
     ...extraParams,
   );
+
+const getListenerHookParamsInCall = (extraParams: string[] = []) =>
+  getParameterList(LISTENER_, LISTENER_ + DEPS, 'mutator', ...extraParams);
 
 const COMMON_IMPORTS = [
   ID,
@@ -390,7 +388,7 @@ export const getStoreUiReactApi = (
       VOID,
       getTheContentOfTheStoreDoc(1, 8) + ' changes',
       getListenerHookParams(tablesListenerType),
-      LISTENER_HOOK_PARAMS_IN_CALL,
+      getListenerHookParamsInCall(),
     );
 
     addProxyHook(
@@ -399,7 +397,7 @@ export const getStoreUiReactApi = (
       VOID,
       getListenerDoc(2, 0, 1),
       getListenerHookParams(tableIdsListenerType),
-      LISTENER_HOOK_PARAMS_IN_CALL,
+      getListenerHookParamsInCall(),
     );
 
     mapTablesSchema((tableId: Id, tableName: string, TABLE_ID: string) => {
