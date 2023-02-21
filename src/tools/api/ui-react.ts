@@ -3,11 +3,13 @@ import {
   DEL,
   EXPORT,
   ID,
+  LISTENER_,
   PARTIAL,
   RETURNS_VOID,
   SET,
   SQUARE_BRACKETS,
   THE_STORE,
+  VOID,
   getCellContentDoc,
   getIdsDoc,
   getRowContentDoc,
@@ -23,6 +25,7 @@ import {
   EMPTY_STRING,
   GET,
   IDS,
+  LISTENER,
   ROW,
   ROW_IDS,
   SORTED_ROW_IDS,
@@ -53,12 +56,14 @@ import {OR_UNDEFINED} from '../common/strings';
 import {getSchemaFunctions} from '../common/schema';
 import {objIsEmpty} from '../../common/obj';
 
+const DEPS = 'Deps';
+
 const getGet = (noun: string) => GET + noun;
 const getGetAndGetDeps = (noun: string) =>
-  getArgList(getGet(noun), getGet(noun) + 'Deps');
-const getArgList = (...args: string[]) =>
+  getParameterList(getGet(noun), getGet(noun) + DEPS);
+const getParameterList = (...params: string[]) =>
   join(
-    arrayFilter(args, (arg) => arg as any),
+    arrayFilter(params, (param) => param as any),
     ', ',
   );
 
@@ -73,16 +78,32 @@ const COLON_SPACE = ': ';
 const PARAMETERIZED_CALLBACK =
   PARAMETER + 'ized' + CALLBACK + '<' + PARAMETER + '>';
 const GENERIC_PARAMETER = '<' + PARAMETER + ',>';
-const DEPS_SUFFIX = 'Deps?: React.DependencyList';
+const DEPS_SUFFIX = DEPS + '?: React.DependencyList';
 const THEN_DEPS = 'then' + DEPS_SUFFIX;
 const THEN_PREFIX = 'then?: (store: Store';
-const THEN_AND_THEN_DEPS = getArgList(
+const THEN_AND_THEN_DEPS = getParameterList(
   THEN_PREFIX + ')' + RETURNS_VOID,
   THEN_DEPS,
 );
-const THEN_AND_THEN_DEPS_IN_CALL = 'then, thenDeps';
+const THEN_AND_THEN_DEPS_IN_CALL = 'then, then' + DEPS;
 const ROW_ID = 'rowId';
 const TYPED_ROW_ID = ROW_ID + COLON_SPACE + ID;
+const LISTENER_HOOK_PARAMS_IN_CALL = getParameterList(
+  LISTENER_,
+  LISTENER_ + DEPS,
+  'mutator',
+);
+
+const getListenerHookParams = (
+  listenerType: string,
+  extraParams: string[] = [],
+) =>
+  getParameterList(
+    LISTENER_ + ': ' + listenerType,
+    LISTENER_ + DEPS_SUFFIX,
+    'mutator?: boolean',
+    ...extraParams,
+  );
 
 const COMMON_IMPORTS = [
   ID,
@@ -179,7 +200,7 @@ export const getStoreUiReactApi = (
     );
     addHook(
       name,
-      getArgList(preParameters, storeOrStoreIdParameter, postParameters),
+      getParameterList(preParameters, storeOrStoreIdParameter, postParameters),
       returnType,
       useHook +
         `(${storeOrStoreId}, use${underlyingName}Core, [` +
@@ -278,23 +299,36 @@ export const getStoreUiReactApi = (
   const useHook = addInternalFunction(
     `useHook`,
     storeOrStoreId +
-      `: ${storeOrStoreIdType} | undefined, ` +
-      `hook: (...args: any[]) => any, preArgs: any[], postArgs: any[] = []`,
+      `: ${storeOrStoreIdType} | undefined, hook: (...params: any[]) => any, ` +
+      `preParams: any[], postParams: any[] = []`,
     [
       `const ${storeInstance} = ${getStoreHook}(${storeOrStoreId} as Id);`,
-      `return hook(...preArgs, ((${storeOrStoreId} == null || ` +
+      `return hook(...preParams, ((${storeOrStoreId} == null || ` +
         `typeof ${storeOrStoreId} == 'string')`,
-      `? ${storeInstance} : ${storeOrStoreId})?.getStore(), ...postArgs)`,
+      `? ${storeInstance} : ${storeOrStoreId})?.getStore(), ...postParams)`,
     ],
   );
 
   if (!objIsEmpty(tablesSchema)) {
-    const [tablesType, tableIdType, tablesTypes] =
-      sharedTableTypes as SharedTableTypes;
-    addImport(0, moduleDefinition, tablesType, tableIdType);
+    const [
+      tablesType,
+      tableIdType,
+      tablesListenerType,
+      _tableIdsListenerType,
+      tablesTypes,
+    ] = sharedTableTypes as SharedTableTypes;
+
+    addImport(0, moduleDefinition, tablesType, tableIdType, tablesListenerType);
 
     addImport(1, tinyBaseUiReact);
-    addImport(1, moduleDefinition, storeType, tablesType, tableIdType);
+    addImport(
+      1,
+      moduleDefinition,
+      storeType,
+      tablesType,
+      tableIdType,
+      tablesListenerType,
+    );
 
     addProxyHook(
       TABLES,
@@ -315,13 +349,13 @@ export const getStoreUiReactApi = (
       SET + TABLES + CALLBACK,
       PARAMETERIZED_CALLBACK,
       getTheContentOfTheStoreDoc(1, 9) + BASED_ON_A_PARAMETER,
-      getArgList(
+      getParameterList(
         getGet(TABLES) + GETTER_ARGS + tablesType,
         getGet(TABLES) + DEPS_SUFFIX,
       ),
       getGetAndGetDeps(TABLES),
       GENERIC_PARAMETER,
-      getArgList(
+      getParameterList(
         THEN_PREFIX,
         `tables: ${tablesType})` + RETURNS_VOID,
         THEN_DEPS,
@@ -339,6 +373,15 @@ export const getStoreUiReactApi = (
       EMPTY_STRING,
       THEN_AND_THEN_DEPS,
       THEN_AND_THEN_DEPS_IN_CALL,
+    );
+
+    addProxyHook(
+      TABLES + LISTENER,
+      TABLES + LISTENER,
+      VOID,
+      getTheContentOfTheStoreDoc(1, 13),
+      getListenerHookParams(tablesListenerType),
+      LISTENER_HOOK_PARAMS_IN_CALL,
     );
 
     mapTablesSchema((tableId: Id, tableName: string, TABLE_ID: string) => {
@@ -399,7 +442,7 @@ export const getStoreUiReactApi = (
         rowType,
         getRowContentDoc(tableId) + AND_REGISTERS,
         TYPED_ROW_ID,
-        getArgList(TABLE_ID, ROW_ID),
+        getParameterList(TABLE_ID, ROW_ID),
       );
 
       addProxyHook(
@@ -408,7 +451,7 @@ export const getStoreUiReactApi = (
         cellIdType + SQUARE_BRACKETS,
         getIdsDoc(CELL, getRowDoc(tableId)) + AND_REGISTERS,
         TYPED_ROW_ID,
-        getArgList(TABLE_ID, ROW_ID),
+        getParameterList(TABLE_ID, ROW_ID),
       );
 
       addProxyHook(
@@ -416,13 +459,13 @@ export const getStoreUiReactApi = (
         SET + TABLE + CALLBACK,
         PARAMETERIZED_CALLBACK,
         getTableContentDoc(tableId, 9) + BASED_ON_A_PARAMETER,
-        getArgList(
+        getParameterList(
           getGet(TABLE) + GETTER_ARGS + tableType,
           getGet(TABLE) + DEPS_SUFFIX,
         ),
-        getArgList(TABLE_ID, getGetAndGetDeps(TABLE)),
+        getParameterList(TABLE_ID, getGetAndGetDeps(TABLE)),
         GENERIC_PARAMETER,
-        getArgList(
+        getParameterList(
           THEN_PREFIX,
           `table: ${tableType})` + RETURNS_VOID,
           THEN_DEPS,
@@ -447,14 +490,14 @@ export const getStoreUiReactApi = (
         SET + ROW + CALLBACK,
         PARAMETERIZED_CALLBACK,
         getRowContentDoc(tableId, 9) + BASED_ON_A_PARAMETER,
-        getArgList(
+        getParameterList(
           TYPED_ROW_ID,
           getGet(ROW) + GETTER_ARGS + rowWhenSetType,
           getGet(ROW) + DEPS_SUFFIX,
         ),
-        getArgList(TABLE_ID, ROW_ID, getGetAndGetDeps(ROW)),
+        getParameterList(TABLE_ID, ROW_ID, getGetAndGetDeps(ROW)),
         GENERIC_PARAMETER,
-        getArgList(
+        getParameterList(
           THEN_PREFIX,
           `row: ${rowWhenSetType})` + RETURNS_VOID,
           THEN_DEPS,
@@ -467,14 +510,14 @@ export const getStoreUiReactApi = (
         'Add' + ROW + CALLBACK,
         PARAMETERIZED_CALLBACK,
         getRowContentDoc(tableId, 10) + BASED_ON_A_PARAMETER,
-        getArgList(
+        getParameterList(
           getGet(ROW) + GETTER_ARGS + rowWhenSetType,
           getGet(ROW) + DEPS_SUFFIX,
         ),
-        getArgList(TABLE_ID, getGetAndGetDeps(ROW)),
+        getParameterList(TABLE_ID, getGetAndGetDeps(ROW)),
         GENERIC_PARAMETER,
         'then?: (' +
-          getArgList(
+          getParameterList(
             TYPED_ROW_ID + OR_UNDEFINED,
             'store: Store',
             'row: ' + rowWhenSetType + ')' + RETURNS_VOID,
@@ -488,14 +531,14 @@ export const getStoreUiReactApi = (
         SET + PARTIAL + ROW + CALLBACK,
         PARAMETERIZED_CALLBACK,
         getRowContentDoc(tableId, 11) + BASED_ON_A_PARAMETER,
-        getArgList(
+        getParameterList(
           TYPED_ROW_ID,
           getGet(PARTIAL + ROW) + GETTER_ARGS + rowWhenSetType,
           getGet(PARTIAL + ROW) + DEPS_SUFFIX,
         ),
-        getArgList(TABLE_ID, ROW_ID, getGetAndGetDeps(PARTIAL + ROW)),
+        getParameterList(TABLE_ID, ROW_ID, getGetAndGetDeps(PARTIAL + ROW)),
         GENERIC_PARAMETER,
-        getArgList(
+        getParameterList(
           THEN_PREFIX,
           `partialRow: ${rowWhenSetType})` + RETURNS_VOID,
           THEN_DEPS,
@@ -509,7 +552,7 @@ export const getStoreUiReactApi = (
         CALLBACK,
         getRowContentDoc(tableId, 12),
         TYPED_ROW_ID,
-        getArgList(TABLE_ID, ROW_ID),
+        getParameterList(TABLE_ID, ROW_ID),
         EMPTY_STRING,
         THEN_AND_THEN_DEPS,
         THEN_AND_THEN_DEPS_IN_CALL,
@@ -528,7 +571,7 @@ export const getStoreUiReactApi = (
             type + (isUndefined(defaultValue) ? OR_UNDEFINED : EMPTY_STRING),
             getCellContentDoc(tableId, cellId) + AND_REGISTERS,
             TYPED_ROW_ID,
-            getArgList(TABLE_ID, ROW_ID, CELL_ID),
+            getParameterList(TABLE_ID, ROW_ID, CELL_ID),
           );
 
           addProxyHook(
@@ -536,14 +579,14 @@ export const getStoreUiReactApi = (
             SET + CELL + CALLBACK,
             PARAMETERIZED_CALLBACK,
             getCellContentDoc(tableId, cellId, 9) + BASED_ON_A_PARAMETER,
-            getArgList(
+            getParameterList(
               TYPED_ROW_ID,
               getGet(CELL) + GETTER_ARGS + type + ' | ' + mapCellType,
               getGet(CELL) + DEPS_SUFFIX,
             ),
-            getArgList(TABLE_ID, ROW_ID, CELL_ID, getGetAndGetDeps(CELL)),
+            getParameterList(TABLE_ID, ROW_ID, CELL_ID, getGetAndGetDeps(CELL)),
             GENERIC_PARAMETER,
-            getArgList(
+            getParameterList(
               THEN_PREFIX,
               `cell: ${type} | ${mapCellType})` + RETURNS_VOID,
               THEN_DEPS,
@@ -556,8 +599,8 @@ export const getStoreUiReactApi = (
             DEL + CELL + CALLBACK,
             CALLBACK,
             getCellContentDoc(tableId, cellId, 12),
-            getArgList(TYPED_ROW_ID, 'forceDel?: boolean'),
-            getArgList(TABLE_ID, ROW_ID, CELL_ID, 'forceDel'),
+            getParameterList(TYPED_ROW_ID, 'forceDel?: boolean'),
+            getParameterList(TABLE_ID, ROW_ID, CELL_ID, 'forceDel'),
             EMPTY_STRING,
             THEN_AND_THEN_DEPS,
             THEN_AND_THEN_DEPS_IN_CALL,
@@ -593,13 +636,13 @@ export const getStoreUiReactApi = (
       SET + VALUES + CALLBACK,
       PARAMETERIZED_CALLBACK,
       getTheContentOfTheStoreDoc(2, 9) + BASED_ON_A_PARAMETER,
-      getArgList(
+      getParameterList(
         getGet(VALUES) + GETTER_ARGS + valuesWhenSetType,
         getGet(VALUES) + DEPS_SUFFIX,
       ),
       getGetAndGetDeps(VALUES),
       GENERIC_PARAMETER,
-      getArgList(
+      getParameterList(
         THEN_PREFIX,
         `values: ${valuesWhenSetType})` + RETURNS_VOID,
         THEN_DEPS,
@@ -612,13 +655,13 @@ export const getStoreUiReactApi = (
       SET + PARTIAL + VALUES + CALLBACK,
       PARAMETERIZED_CALLBACK,
       getTheContentOfTheStoreDoc(2, 11) + BASED_ON_A_PARAMETER,
-      getArgList(
+      getParameterList(
         getGet(PARTIAL + VALUES) + GETTER_ARGS + valuesWhenSetType,
         getGet(PARTIAL + VALUES) + DEPS_SUFFIX,
       ),
       getGetAndGetDeps(PARTIAL + VALUES),
       GENERIC_PARAMETER,
-      getArgList(
+      getParameterList(
         THEN_PREFIX,
         `partialValues: ${valuesWhenSetType})` + RETURNS_VOID,
         THEN_DEPS,
@@ -657,13 +700,13 @@ export const getStoreUiReactApi = (
         SET + VALUE + CALLBACK,
         PARAMETERIZED_CALLBACK,
         getValueContentDoc(valueId, 9) + BASED_ON_A_PARAMETER,
-        getArgList(
+        getParameterList(
           getGet(VALUE) + GETTER_ARGS + type + ' | ' + mapValueType,
           getGet(VALUE) + DEPS_SUFFIX,
         ),
-        getArgList(VALUE_ID, getGetAndGetDeps(VALUE)),
+        getParameterList(VALUE_ID, getGetAndGetDeps(VALUE)),
         GENERIC_PARAMETER,
-        getArgList(
+        getParameterList(
           THEN_PREFIX,
           `value: ${type} | ${mapValueType})` + RETURNS_VOID,
           THEN_DEPS,
