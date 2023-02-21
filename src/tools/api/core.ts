@@ -96,7 +96,7 @@ export type SharedTableTypes = [
   string,
   IdMap<TableTypes>,
 ];
-export type SharedValueTypes = [string, string, string];
+export type SharedValueTypes = [string, string, string, string, string, string];
 
 const METHOD_PREFIX_VERBS = [
   GET,
@@ -858,7 +858,14 @@ export const getStoreCoreApi = (
         RETURNS_VOID,
       getListenerTypeDoc(12),
     );
-    sharedValueTypes = [valuesType, valuesWhenSetType, valueIdType];
+    sharedValueTypes = [
+      valuesType,
+      valuesWhenSetType,
+      valueIdType,
+      valuesListenerType,
+      valueIdsListenerType,
+      valueListenerType,
+    ];
 
     arrayForEach(
       [
