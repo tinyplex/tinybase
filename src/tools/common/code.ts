@@ -96,7 +96,7 @@ export const getParameterList = (...params: string[]) =>
 
 export const getCodeFunctions = (): [
   (...lines: LINE_TREE) => string,
-  (location: 0 | 1, source: string, ...items: string[]) => void,
+  (location: null | 0 | 1, source: string, ...items: string[]) => void,
   (name: Id, body: LINE, doc: string) => Id,
   (name: Id, parameters: string, body: LINE_OR_LINE_TREE) => Id,
   (name: Id, body: LINE_OR_LINE_TREE) => Id,
@@ -115,9 +115,17 @@ export const getCodeFunctions = (): [
 
   const build = (...lines: LINE_TREE): string => join(flat(lines), '\n');
 
-  const addImport = (location: 0 | 1, source: string, ...items: string[]) =>
+  const addImport = (
+    location: null | 0 | 1,
+    source: string,
+    ...items: string[]
+  ) =>
     arrayForEach(items, (item) =>
-      setAdd(mapEnsure(allImports[location], source, setNew), item),
+      arrayForEach([0, 1], (eachLocation) =>
+        (location ?? eachLocation) == eachLocation
+          ? setAdd(mapEnsure(allImports[eachLocation], source, setNew), item)
+          : 0,
+      ),
     );
 
   const addType = (name: Id, body: LINE, doc: string): Id =>
