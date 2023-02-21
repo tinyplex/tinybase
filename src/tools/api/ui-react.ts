@@ -735,11 +735,35 @@ export const getStoreUiReactApi = (
   }
 
   if (!objIsEmpty(valuesSchema)) {
-    const [valuesType, valuesWhenSetType, valueIdType] =
-      sharedValueTypes as SharedValueTypes;
+    const [
+      valuesType,
+      valuesWhenSetType,
+      valueIdType,
+      valuesListenerType,
+      valueIdsListenerType,
+      valueListenerType,
+    ] = sharedValueTypes as SharedValueTypes;
 
-    addImport(0, moduleDefinition, valuesType, valuesWhenSetType, valueIdType);
-    addImport(1, moduleDefinition, valuesType, valuesWhenSetType, valueIdType);
+    addImport(
+      0,
+      moduleDefinition,
+      valuesType,
+      valuesWhenSetType,
+      valueIdType,
+      valuesListenerType,
+      valueIdsListenerType,
+      valueListenerType,
+    );
+    addImport(
+      1,
+      moduleDefinition,
+      valuesType,
+      valuesWhenSetType,
+      valueIdType,
+      valuesListenerType,
+      valueIdsListenerType,
+      valueListenerType,
+    );
 
     addProxyHook(
       VALUES,
@@ -850,6 +874,36 @@ export const getStoreUiReactApi = (
         THEN_AND_THEN_DEPS_IN_CALL,
       );
     });
+
+    addProxyHook(
+      VALUES + LISTENER,
+      VALUES + LISTENER,
+      VOID,
+      getTheContentOfTheStoreDoc(2, 8) + ' changes',
+      getListenerHookParams(valuesListenerType),
+      getListenerHookParamsInCall(),
+    );
+
+    addProxyHook(
+      VALUE_IDS + LISTENER,
+      VALUE_IDS + LISTENER,
+      VOID,
+      getListenerDoc(10, 0, 1),
+      getListenerHookParams(valueIdsListenerType),
+      getListenerHookParamsInCall(),
+    );
+
+    addProxyHook(
+      VALUE + LISTENER,
+      VALUE + LISTENER,
+      VOID,
+      getListenerDoc(11, 0),
+      getListenerHookParams(
+        valueListenerType,
+        `valueId: ${valueIdType} | null`,
+      ),
+      getListenerHookParamsInCall('valueId'),
+    );
   }
 
   addComponent(

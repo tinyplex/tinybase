@@ -1213,7 +1213,10 @@ import {
   Tables,
   TablesListener,
   ValueId,
+  ValueIdsListener,
+  ValueListener,
   Values,
+  ValuesListener,
   ValuesWhenSet,
 } from './s.d';
 import {ComponentReturnType} from 'tinybase/ui-react';
@@ -1756,6 +1759,40 @@ export function useDelValueCallback(
 ): Callback;
 
 /**
+ * Registers a listener that will be called whenever the keyed value content of
+ * the Store changes.
+ */
+export function useValuesListener(
+  listener: ValuesListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  sOrSId?: SOrSId,
+): void;
+
+/**
+ * Registers a listener that will be called whenever the Value Ids in the Store
+ * change.
+ */
+export function useValueIdsListener(
+  listener: ValueIdsListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  sOrSId?: SOrSId,
+): void;
+
+/**
+ * Registers a listener that will be called whenever a Value in the Store
+ * changes.
+ */
+export function useValueListener(
+  valueId: ValueId | null,
+  listener: ValueListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  sOrSId?: SOrSId,
+): void;
+
+/**
  * Wraps part of an application in a context that provides default objects to be
  * used by hooks and components within.
  */
@@ -1792,7 +1829,10 @@ import {
   Tables,
   TablesListener,
   ValueId,
+  ValueIdsListener,
+  ValueListener,
   Values,
+  ValuesListener,
   ValuesWhenSet,
 } from './s.d';
 import {
@@ -1852,7 +1892,10 @@ import {
   useV3Value as useV3ValueDecl,
   useValue as useValueDecl,
   useValueIds as useValueIdsDecl,
+  useValueIdsListener as useValueIdsListenerDecl,
+  useValueListener as useValueListenerDecl,
   useValues as useValuesDecl,
+  useValuesListener as useValuesListenerDecl,
 } from './s-ui-react.d';
 import {
   useAddRowCallback as useAddRowCallbackCore,
@@ -1888,7 +1931,10 @@ import {
   useTablesListener as useTablesListenerCore,
   useValue as useValueCore,
   useValueIds as useValueIdsCore,
+  useValueIdsListener as useValueIdsListenerCore,
+  useValueListener as useValueListenerCore,
   useValues as useValuesCore,
+  useValuesListener as useValuesListenerCore,
 } from 'tinybase/ui-react';
 import React from 'react';
 
@@ -2469,6 +2515,36 @@ export const useDelValueCallback: typeof useDelValueCallbackDecl = (
   thenDeps?: React.DependencyList,
 ): Callback => useHook(sOrSId, useDelValueCallbackCore, [_], [then, thenDeps]);
 
+export const useValuesListener: typeof useValuesListenerDecl = (
+  listener: ValuesListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  sOrSId?: SOrSId,
+): void =>
+  useHook(sOrSId, useValuesListenerCore, [listener, listenerDeps, mutator]);
+
+export const useValueIdsListener: typeof useValueIdsListenerDecl = (
+  listener: ValueIdsListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  sOrSId?: SOrSId,
+): void =>
+  useHook(sOrSId, useValueIdsListenerCore, [listener, listenerDeps, mutator]);
+
+export const useValueListener: typeof useValueListenerDecl = (
+  valueId: ValueId | null,
+  listener: ValueListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  sOrSId?: SOrSId,
+): void =>
+  useHook(sOrSId, useValueListenerCore, [
+    valueId,
+    listener,
+    listenerDeps,
+    mutator,
+  ]);
+
 export const Provider: typeof ProviderDecl = ({
   s,
   sById,
@@ -3009,7 +3085,17 @@ export const createS: typeof createSDecl = () => {
   ParameterizedCallback,
   Store,
 } from 'tinybase';
-import {MapNumber, MapString, S, ValueId, Values, ValuesWhenSet} from './s.d';
+import {
+  MapNumber,
+  MapString,
+  S,
+  ValueId,
+  ValueIdsListener,
+  ValueListener,
+  Values,
+  ValuesListener,
+  ValuesWhenSet,
+} from './s.d';
 import {ComponentReturnType} from 'tinybase/ui-react';
 
 /**
@@ -3186,6 +3272,40 @@ export function useDelValueCallback(
 ): Callback;
 
 /**
+ * Registers a listener that will be called whenever the keyed value content of
+ * the Store changes.
+ */
+export function useValuesListener(
+  listener: ValuesListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  sOrSId?: SOrSId,
+): void;
+
+/**
+ * Registers a listener that will be called whenever the Value Ids in the Store
+ * change.
+ */
+export function useValueIdsListener(
+  listener: ValueIdsListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  sOrSId?: SOrSId,
+): void;
+
+/**
+ * Registers a listener that will be called whenever a Value in the Store
+ * changes.
+ */
+export function useValueListener(
+  valueId: ValueId | null,
+  listener: ValueListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  sOrSId?: SOrSId,
+): void;
+
+/**
  * Wraps part of an application in a context that provides default objects to be
  * used by hooks and components within.
  */
@@ -3203,7 +3323,16 @@ export function Provider({
   ParameterizedCallback,
   Store,
 } from 'tinybase';
-import {MapNumber, MapString, ValueId, Values, ValuesWhenSet} from './s.d';
+import {
+  MapNumber,
+  MapString,
+  ValueId,
+  ValueIdsListener,
+  ValueListener,
+  Values,
+  ValuesListener,
+  ValuesWhenSet,
+} from './s.d';
 import {
   Provider as ProviderDecl,
   ProviderProps,
@@ -3226,7 +3355,10 @@ import {
   useV3Value as useV3ValueDecl,
   useValue as useValueDecl,
   useValueIds as useValueIdsDecl,
+  useValueIdsListener as useValueIdsListenerDecl,
+  useValueListener as useValueListenerDecl,
   useValues as useValuesDecl,
+  useValuesListener as useValuesListenerDecl,
 } from './s-ui-react.d';
 import {
   useDelValueCallback as useDelValueCallbackCore,
@@ -3236,7 +3368,10 @@ import {
   useSetValuesCallback as useSetValuesCallbackCore,
   useValue as useValueCore,
   useValueIds as useValueIdsCore,
+  useValueIdsListener as useValueIdsListenerCore,
+  useValueListener as useValueListenerCore,
   useValues as useValuesCore,
+  useValuesListener as useValuesListenerCore,
 } from 'tinybase/ui-react';
 import React from 'react';
 
@@ -3419,6 +3554,36 @@ export const useDelValueCallback: typeof useDelValueCallbackDecl = (
   then?: (store: Store) => void,
   thenDeps?: React.DependencyList,
 ): Callback => useHook(sOrSId, useDelValueCallbackCore, [_], [then, thenDeps]);
+
+export const useValuesListener: typeof useValuesListenerDecl = (
+  listener: ValuesListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  sOrSId?: SOrSId,
+): void =>
+  useHook(sOrSId, useValuesListenerCore, [listener, listenerDeps, mutator]);
+
+export const useValueIdsListener: typeof useValueIdsListenerDecl = (
+  listener: ValueIdsListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  sOrSId?: SOrSId,
+): void =>
+  useHook(sOrSId, useValueIdsListenerCore, [listener, listenerDeps, mutator]);
+
+export const useValueListener: typeof useValueListenerDecl = (
+  valueId: ValueId | null,
+  listener: ValueListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  sOrSId?: SOrSId,
+): void =>
+  useHook(sOrSId, useValueListenerCore, [
+    valueId,
+    listener,
+    listenerDeps,
+    mutator,
+  ]);
 
 export const Provider: typeof ProviderDecl = ({
   s,
@@ -5844,7 +6009,7 @@ getStore: (): Store => store,
 return Object.freeze(s);
 };",
   "import {Callback, Id, IdOrNull, Ids, ParameterizedCallback, Store} from 'tinybase';
-import {CellIdsListener, CellListener, MapNumber, MapString, RowIdsListener, RowListener, S, SortedRowIdsListener, T1CellId, T1Row, T1RowWhenSet, T1Table, TableId, TableIdsListener, TableListener, Tables, TablesListener, ValueId, Values, ValuesWhenSet} from './s.d';
+import {CellIdsListener, CellListener, MapNumber, MapString, RowIdsListener, RowListener, S, SortedRowIdsListener, T1CellId, T1Row, T1RowWhenSet, T1Table, TableId, TableIdsListener, TableListener, Tables, TablesListener, ValueId, ValueIdsListener, ValueListener, Values, ValuesListener, ValuesWhenSet} from './s.d';
 import {ComponentReturnType} from 'tinybase/ui-react';
 
 /** Used when you need to refer to a S in a React hook or component. */
@@ -6015,13 +6180,22 @@ export function useSetValueCallback<Parameter,>(getValue: (parameter: Parameter,
 /** Gets a callback that can delete the '' Value. */
 export function useDelValueCallback(sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback;
 
+/** Registers a listener that will be called whenever the keyed value content of the Store changes. */
+export function useValuesListener(listener: ValuesListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void;
+
+/** Registers a listener that will be called whenever the Value Ids in the Store change. */
+export function useValueIdsListener(listener: ValueIdsListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void;
+
+/** Registers a listener that will be called whenever a Value in the Store changes. */
+export function useValueListener(valueId: ValueId | null, listener: ValueListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void;
+
 /** Wraps part of an application in a context that provides default objects to be used by hooks and components within. */
 export function Provider({s, sById, children}: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
 ",
   "import {Callback, Id, IdOrNull, Ids, ParameterizedCallback, Store} from 'tinybase';
-import {CellIdsListener, CellListener, MapNumber, MapString, RowIdsListener, RowListener, S, SortedRowIdsListener, T1CellId, T1Row, T1RowWhenSet, T1Table, TableId, TableIdsListener, TableListener, Tables, TablesListener, ValueId, Values, ValuesWhenSet} from './s.d';
-import {Provider as ProviderDecl, ProviderProps, SOrSId, useAddT1RowCallback as useAddT1RowCallbackDecl, useCellIdsListener as useCellIdsListenerDecl, useCellListener as useCellListenerDecl, useCreateS as useCreateSDecl, useDelT1C1CellCallback as useDelT1C1CellCallbackDecl, useDelT1C2CellCallback as useDelT1C2CellCallbackDecl, useDelT1C3CellCallback as useDelT1C3CellCallbackDecl, useDelT1CellCallback as useDelT1CellCallbackDecl, useDelT1RowCallback as useDelT1RowCallbackDecl, useDelT1TableCallback as useDelT1TableCallbackDecl, useDelTablesCallback as useDelTablesCallbackDecl, useDelV1ValueCallback as useDelV1ValueCallbackDecl, useDelV2ValueCallback as useDelV2ValueCallbackDecl, useDelV3ValueCallback as useDelV3ValueCallbackDecl, useDelValueCallback as useDelValueCallbackDecl, useDelValuesCallback as useDelValuesCallbackDecl, useRowIdsListener as useRowIdsListenerDecl, useRowListener as useRowListenerDecl, useS as useSDecl, useSetPartialValuesCallback as useSetPartialValuesCallbackDecl, useSetT1C1CellCallback as useSetT1C1CellCallbackDecl, useSetT1C2CellCallback as useSetT1C2CellCallbackDecl, useSetT1C3CellCallback as useSetT1C3CellCallbackDecl, useSetT1CellCallback as useSetT1CellCallbackDecl, useSetT1PartialRowCallback as useSetT1PartialRowCallbackDecl, useSetT1RowCallback as useSetT1RowCallbackDecl, useSetT1TableCallback as useSetT1TableCallbackDecl, useSetTablesCallback as useSetTablesCallbackDecl, useSetV1ValueCallback as useSetV1ValueCallbackDecl, useSetV2ValueCallback as useSetV2ValueCallbackDecl, useSetV3ValueCallback as useSetV3ValueCallbackDecl, useSetValueCallback as useSetValueCallbackDecl, useSetValuesCallback as useSetValuesCallbackDecl, useSortedRowIdsListener as useSortedRowIdsListenerDecl, useT1C1Cell as useT1C1CellDecl, useT1C2Cell as useT1C2CellDecl, useT1C3Cell as useT1C3CellDecl, useT1Cell as useT1CellDecl, useT1CellIds as useT1CellIdsDecl, useT1Row as useT1RowDecl, useT1RowIds as useT1RowIdsDecl, useT1SortedRowIds as useT1SortedRowIdsDecl, useT1Table as useT1TableDecl, useTableIds as useTableIdsDecl, useTableIdsListener as useTableIdsListenerDecl, useTableListener as useTableListenerDecl, useTables as useTablesDecl, useTablesListener as useTablesListenerDecl, useV1Value as useV1ValueDecl, useV2Value as useV2ValueDecl, useV3Value as useV3ValueDecl, useValue as useValueDecl, useValueIds as useValueIdsDecl, useValues as useValuesDecl} from './s-ui-react.d';
-import {useAddRowCallback as useAddRowCallbackCore, useCell as useCellCore, useCellIds as useCellIdsCore, useCellIdsListener as useCellIdsListenerCore, useCellListener as useCellListenerCore, useDelCellCallback as useDelCellCallbackCore, useDelRowCallback as useDelRowCallbackCore, useDelTableCallback as useDelTableCallbackCore, useDelTablesCallback as useDelTablesCallbackCore, useDelValueCallback as useDelValueCallbackCore, useDelValuesCallback as useDelValuesCallbackCore, useRow as useRowCore, useRowIds as useRowIdsCore, useRowIdsListener as useRowIdsListenerCore, useRowListener as useRowListenerCore, useSetCellCallback as useSetCellCallbackCore, useSetPartialRowCallback as useSetPartialRowCallbackCore, useSetPartialValuesCallback as useSetPartialValuesCallbackCore, useSetRowCallback as useSetRowCallbackCore, useSetTableCallback as useSetTableCallbackCore, useSetTablesCallback as useSetTablesCallbackCore, useSetValueCallback as useSetValueCallbackCore, useSetValuesCallback as useSetValuesCallbackCore, useSortedRowIds as useSortedRowIdsCore, useSortedRowIdsListener as useSortedRowIdsListenerCore, useTable as useTableCore, useTableIds as useTableIdsCore, useTableIdsListener as useTableIdsListenerCore, useTableListener as useTableListenerCore, useTables as useTablesCore, useTablesListener as useTablesListenerCore, useValue as useValueCore, useValueIds as useValueIdsCore, useValues as useValuesCore} from 'tinybase/ui-react';
+import {CellIdsListener, CellListener, MapNumber, MapString, RowIdsListener, RowListener, S, SortedRowIdsListener, T1CellId, T1Row, T1RowWhenSet, T1Table, TableId, TableIdsListener, TableListener, Tables, TablesListener, ValueId, ValueIdsListener, ValueListener, Values, ValuesListener, ValuesWhenSet} from './s.d';
+import {Provider as ProviderDecl, ProviderProps, SOrSId, useAddT1RowCallback as useAddT1RowCallbackDecl, useCellIdsListener as useCellIdsListenerDecl, useCellListener as useCellListenerDecl, useCreateS as useCreateSDecl, useDelT1C1CellCallback as useDelT1C1CellCallbackDecl, useDelT1C2CellCallback as useDelT1C2CellCallbackDecl, useDelT1C3CellCallback as useDelT1C3CellCallbackDecl, useDelT1CellCallback as useDelT1CellCallbackDecl, useDelT1RowCallback as useDelT1RowCallbackDecl, useDelT1TableCallback as useDelT1TableCallbackDecl, useDelTablesCallback as useDelTablesCallbackDecl, useDelV1ValueCallback as useDelV1ValueCallbackDecl, useDelV2ValueCallback as useDelV2ValueCallbackDecl, useDelV3ValueCallback as useDelV3ValueCallbackDecl, useDelValueCallback as useDelValueCallbackDecl, useDelValuesCallback as useDelValuesCallbackDecl, useRowIdsListener as useRowIdsListenerDecl, useRowListener as useRowListenerDecl, useS as useSDecl, useSetPartialValuesCallback as useSetPartialValuesCallbackDecl, useSetT1C1CellCallback as useSetT1C1CellCallbackDecl, useSetT1C2CellCallback as useSetT1C2CellCallbackDecl, useSetT1C3CellCallback as useSetT1C3CellCallbackDecl, useSetT1CellCallback as useSetT1CellCallbackDecl, useSetT1PartialRowCallback as useSetT1PartialRowCallbackDecl, useSetT1RowCallback as useSetT1RowCallbackDecl, useSetT1TableCallback as useSetT1TableCallbackDecl, useSetTablesCallback as useSetTablesCallbackDecl, useSetV1ValueCallback as useSetV1ValueCallbackDecl, useSetV2ValueCallback as useSetV2ValueCallbackDecl, useSetV3ValueCallback as useSetV3ValueCallbackDecl, useSetValueCallback as useSetValueCallbackDecl, useSetValuesCallback as useSetValuesCallbackDecl, useSortedRowIdsListener as useSortedRowIdsListenerDecl, useT1C1Cell as useT1C1CellDecl, useT1C2Cell as useT1C2CellDecl, useT1C3Cell as useT1C3CellDecl, useT1Cell as useT1CellDecl, useT1CellIds as useT1CellIdsDecl, useT1Row as useT1RowDecl, useT1RowIds as useT1RowIdsDecl, useT1SortedRowIds as useT1SortedRowIdsDecl, useT1Table as useT1TableDecl, useTableIds as useTableIdsDecl, useTableIdsListener as useTableIdsListenerDecl, useTableListener as useTableListenerDecl, useTables as useTablesDecl, useTablesListener as useTablesListenerDecl, useV1Value as useV1ValueDecl, useV2Value as useV2ValueDecl, useV3Value as useV3ValueDecl, useValue as useValueDecl, useValueIds as useValueIdsDecl, useValueIdsListener as useValueIdsListenerDecl, useValueListener as useValueListenerDecl, useValues as useValuesDecl, useValuesListener as useValuesListenerDecl} from './s-ui-react.d';
+import {useAddRowCallback as useAddRowCallbackCore, useCell as useCellCore, useCellIds as useCellIdsCore, useCellIdsListener as useCellIdsListenerCore, useCellListener as useCellListenerCore, useDelCellCallback as useDelCellCallbackCore, useDelRowCallback as useDelRowCallbackCore, useDelTableCallback as useDelTableCallbackCore, useDelTablesCallback as useDelTablesCallbackCore, useDelValueCallback as useDelValueCallbackCore, useDelValuesCallback as useDelValuesCallbackCore, useRow as useRowCore, useRowIds as useRowIdsCore, useRowIdsListener as useRowIdsListenerCore, useRowListener as useRowListenerCore, useSetCellCallback as useSetCellCallbackCore, useSetPartialRowCallback as useSetPartialRowCallbackCore, useSetPartialValuesCallback as useSetPartialValuesCallbackCore, useSetRowCallback as useSetRowCallbackCore, useSetTableCallback as useSetTableCallbackCore, useSetTablesCallback as useSetTablesCallbackCore, useSetValueCallback as useSetValueCallbackCore, useSetValuesCallback as useSetValuesCallbackCore, useSortedRowIds as useSortedRowIdsCore, useSortedRowIdsListener as useSortedRowIdsListenerCore, useTable as useTableCore, useTableIds as useTableIdsCore, useTableIdsListener as useTableIdsListenerCore, useTableListener as useTableListenerCore, useTables as useTablesCore, useTablesListener as useTablesListenerCore, useValue as useValueCore, useValueIds as useValueIdsCore, useValueIdsListener as useValueIdsListenerCore, useValueListener as useValueListenerCore, useValues as useValuesCore, useValuesListener as useValuesListenerCore} from 'tinybase/ui-react';
 import React from 'react';
 
 const {createContext, useContext, useMemo} = React;
@@ -6216,6 +6390,15 @@ useHook(sOrSId, useSetValueCallbackCore, [_, getValue, getValueDeps], [then, the
 
 export const useDelValueCallback: typeof useDelValueCallbackDecl = (sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback =>
 useHook(sOrSId, useDelValueCallbackCore, [_], [then, thenDeps])
+
+export const useValuesListener: typeof useValuesListenerDecl = (listener: ValuesListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void =>
+useHook(sOrSId, useValuesListenerCore, [listener, listenerDeps, mutator])
+
+export const useValueIdsListener: typeof useValueIdsListenerDecl = (listener: ValueIdsListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void =>
+useHook(sOrSId, useValueIdsListenerCore, [listener, listenerDeps, mutator])
+
+export const useValueListener: typeof useValueListenerDecl = (valueId: ValueId | null, listener: ValueListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void =>
+useHook(sOrSId, useValueListenerCore, [valueId, listener, listenerDeps, mutator])
 
 export const Provider: typeof ProviderDecl = ({s, sById, children}: ProviderProps & {children: React.ReactNode}): any =>
 {
@@ -6519,7 +6702,7 @@ getStore: (): Store => store,
 return Object.freeze(s);
 };",
   "import {Callback, Id, IdOrNull, Ids, ParameterizedCallback, Store} from 'tinybase';
-import {MapNumber, MapString, S, ValueId, Values, ValuesWhenSet} from './s.d';
+import {MapNumber, MapString, S, ValueId, ValueIdsListener, ValueListener, Values, ValuesListener, ValuesWhenSet} from './s.d';
 import {ComponentReturnType} from 'tinybase/ui-react';
 
 /** Used when you need to refer to a S in a React hook or component. */
@@ -6585,13 +6768,22 @@ export function useSetValueCallback<Parameter,>(getValue: (parameter: Parameter,
 /** Gets a callback that can delete the '' Value. */
 export function useDelValueCallback(sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback;
 
+/** Registers a listener that will be called whenever the keyed value content of the Store changes. */
+export function useValuesListener(listener: ValuesListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void;
+
+/** Registers a listener that will be called whenever the Value Ids in the Store change. */
+export function useValueIdsListener(listener: ValueIdsListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void;
+
+/** Registers a listener that will be called whenever a Value in the Store changes. */
+export function useValueListener(valueId: ValueId | null, listener: ValueListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void;
+
 /** Wraps part of an application in a context that provides default objects to be used by hooks and components within. */
 export function Provider({s, sById, children}: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
 ",
   "import {Callback, Id, IdOrNull, Ids, ParameterizedCallback, Store} from 'tinybase';
-import {MapNumber, MapString, ValueId, Values, ValuesWhenSet} from './s.d';
-import {Provider as ProviderDecl, ProviderProps, SOrSId, useCreateS as useCreateSDecl, useDelV1ValueCallback as useDelV1ValueCallbackDecl, useDelV2ValueCallback as useDelV2ValueCallbackDecl, useDelV3ValueCallback as useDelV3ValueCallbackDecl, useDelValueCallback as useDelValueCallbackDecl, useDelValuesCallback as useDelValuesCallbackDecl, useS as useSDecl, useSetPartialValuesCallback as useSetPartialValuesCallbackDecl, useSetV1ValueCallback as useSetV1ValueCallbackDecl, useSetV2ValueCallback as useSetV2ValueCallbackDecl, useSetV3ValueCallback as useSetV3ValueCallbackDecl, useSetValueCallback as useSetValueCallbackDecl, useSetValuesCallback as useSetValuesCallbackDecl, useV1Value as useV1ValueDecl, useV2Value as useV2ValueDecl, useV3Value as useV3ValueDecl, useValue as useValueDecl, useValueIds as useValueIdsDecl, useValues as useValuesDecl} from './s-ui-react.d';
-import {useDelValueCallback as useDelValueCallbackCore, useDelValuesCallback as useDelValuesCallbackCore, useSetPartialValuesCallback as useSetPartialValuesCallbackCore, useSetValueCallback as useSetValueCallbackCore, useSetValuesCallback as useSetValuesCallbackCore, useValue as useValueCore, useValueIds as useValueIdsCore, useValues as useValuesCore} from 'tinybase/ui-react';
+import {MapNumber, MapString, ValueId, ValueIdsListener, ValueListener, Values, ValuesListener, ValuesWhenSet} from './s.d';
+import {Provider as ProviderDecl, ProviderProps, SOrSId, useCreateS as useCreateSDecl, useDelV1ValueCallback as useDelV1ValueCallbackDecl, useDelV2ValueCallback as useDelV2ValueCallbackDecl, useDelV3ValueCallback as useDelV3ValueCallbackDecl, useDelValueCallback as useDelValueCallbackDecl, useDelValuesCallback as useDelValuesCallbackDecl, useS as useSDecl, useSetPartialValuesCallback as useSetPartialValuesCallbackDecl, useSetV1ValueCallback as useSetV1ValueCallbackDecl, useSetV2ValueCallback as useSetV2ValueCallbackDecl, useSetV3ValueCallback as useSetV3ValueCallbackDecl, useSetValueCallback as useSetValueCallbackDecl, useSetValuesCallback as useSetValuesCallbackDecl, useV1Value as useV1ValueDecl, useV2Value as useV2ValueDecl, useV3Value as useV3ValueDecl, useValue as useValueDecl, useValueIds as useValueIdsDecl, useValueIdsListener as useValueIdsListenerDecl, useValueListener as useValueListenerDecl, useValues as useValuesDecl, useValuesListener as useValuesListenerDecl} from './s-ui-react.d';
+import {useDelValueCallback as useDelValueCallbackCore, useDelValuesCallback as useDelValuesCallbackCore, useSetPartialValuesCallback as useSetPartialValuesCallbackCore, useSetValueCallback as useSetValueCallbackCore, useSetValuesCallback as useSetValuesCallbackCore, useValue as useValueCore, useValueIds as useValueIdsCore, useValueIdsListener as useValueIdsListenerCore, useValueListener as useValueListenerCore, useValues as useValuesCore, useValuesListener as useValuesListenerCore} from 'tinybase/ui-react';
 import React from 'react';
 
 const {createContext, useContext, useMemo} = React;
@@ -6673,6 +6865,15 @@ useHook(sOrSId, useSetValueCallbackCore, [_, getValue, getValueDeps], [then, the
 
 export const useDelValueCallback: typeof useDelValueCallbackDecl = (sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback =>
 useHook(sOrSId, useDelValueCallbackCore, [_], [then, thenDeps])
+
+export const useValuesListener: typeof useValuesListenerDecl = (listener: ValuesListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void =>
+useHook(sOrSId, useValuesListenerCore, [listener, listenerDeps, mutator])
+
+export const useValueIdsListener: typeof useValueIdsListenerDecl = (listener: ValueIdsListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void =>
+useHook(sOrSId, useValueIdsListenerCore, [listener, listenerDeps, mutator])
+
+export const useValueListener: typeof useValueListenerDecl = (valueId: ValueId | null, listener: ValueListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void =>
+useHook(sOrSId, useValueListenerCore, [valueId, listener, listenerDeps, mutator])
 
 export const Provider: typeof ProviderDecl = ({s, sById, children}: ProviderProps & {children: React.ReactNode}): any =>
 {
