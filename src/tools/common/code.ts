@@ -9,6 +9,7 @@ import {
 } from '../../common/map';
 import {IdSet2, setAdd, setNew} from '../../common/set';
 import {
+  arrayFilter,
   arrayForEach,
   arrayMap,
   arrayPop,
@@ -86,6 +87,12 @@ export const snake = (str: string) =>
   );
 
 export const comment = (doc: string) => `/** ${doc}. */`;
+
+export const getParameterList = (...params: string[]) =>
+  join(
+    arrayFilter(params, (param) => param as any),
+    ', ',
+  );
 
 export const getCodeFunctions = (): [
   (...lines: LINE_TREE) => string,

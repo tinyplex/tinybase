@@ -45,12 +45,13 @@ import {
   camel,
   comment,
   getCodeFunctions,
+  getParameterList,
   join,
   mapUnique,
 } from '../common/code';
 import {SharedTableTypes, SharedValueTypes, TableTypes} from './core';
 import {TablesSchema, ValuesSchema} from '../../store.d';
-import {arrayFilter, arrayPush, arrayUnshift} from '../../common/array';
+import {arrayPush, arrayUnshift} from '../../common/array';
 import {isArray, isUndefined} from '../../common/other';
 import {Id} from '../../common.d';
 import {OR_UNDEFINED} from '../common/strings';
@@ -62,11 +63,6 @@ const DEPS = 'Deps';
 const getGet = (noun: string) => GET + noun;
 const getGetAndGetDeps = (noun: string) =>
   getParameterList(getGet(noun), getGet(noun) + DEPS);
-const getParameterList = (...params: string[]) =>
-  join(
-    arrayFilter(params, (param) => param as any),
-    ', ',
-  );
 
 const PARAMETER = 'Parameter';
 const GETTER_ARGS = ': (parameter: ' + PARAMETER + ', store: Store) => ';
@@ -107,6 +103,7 @@ const getListenerHookParamsInCall = (...extraParams: string[]) =>
 const COMMON_IMPORTS = [
   ID,
   IDS,
+  'IdOrNull',
   'Store',
   CALLBACK,
   PARAMETER + 'ized' + CALLBACK,
@@ -315,10 +312,11 @@ export const getStoreUiReactApi = (
       tablesListenerType,
       tableIdsListenerType,
       tableListenerType,
-      _rowIdsListenerType,
-      _rowListenerType,
-      _cellIdsListenerType,
-      _cellListenerType,
+      rowIdsListenerType,
+      sortedRowIdsListenerType,
+      rowListenerType,
+      cellIdsListenerType,
+      cellListenerType,
       tablesTypes,
     ] = sharedTableTypes as SharedTableTypes;
 
@@ -330,6 +328,11 @@ export const getStoreUiReactApi = (
       tablesListenerType,
       tableIdsListenerType,
       tableListenerType,
+      rowIdsListenerType,
+      sortedRowIdsListenerType,
+      rowListenerType,
+      cellIdsListenerType,
+      cellListenerType,
     );
 
     addImport(1, tinyBaseUiReact);
@@ -342,6 +345,11 @@ export const getStoreUiReactApi = (
       tablesListenerType,
       tableIdsListenerType,
       tableListenerType,
+      rowIdsListenerType,
+      sortedRowIdsListenerType,
+      rowListenerType,
+      cellIdsListenerType,
+      cellListenerType,
     );
 
     addProxyHook(
@@ -614,6 +622,13 @@ export const getStoreUiReactApi = (
       );
     });
 
+    const cellIdsType = join(
+      mapTablesSchema(
+        (tableId) => mapGet(tablesTypes, tableId)?.[3] ?? EMPTY_STRING,
+      ),
+      ' | ',
+    );
+
     addProxyHook(
       TABLES + LISTENER,
       TABLES + LISTENER,
@@ -642,6 +657,80 @@ export const getStoreUiReactApi = (
         `tableId: ${tableIdType} | null`,
       ),
       getListenerHookParamsInCall('tableId'),
+    );
+
+    addProxyHook(
+      ROW_IDS + LISTENER,
+      ROW_IDS + LISTENER,
+      VOID,
+      getListenerDoc(4, 3, 1),
+      getListenerHookParams(
+        rowIdsListenerType,
+        `tableId: ${tableIdType} | null`,
+      ),
+      getListenerHookParamsInCall('tableId'),
+    );
+
+    addProxyHook(
+      SORTED_ROW_IDS + LISTENER,
+      SORTED_ROW_IDS + LISTENER,
+      VOID,
+      getListenerDoc(13, 3, 1),
+      getListenerHookParams(
+        sortedRowIdsListenerType,
+        `tableId: ${tableIdType} | null`,
+        'cellId: ' + cellIdsType + OR_UNDEFINED,
+        'descending: boolean',
+        'offset: number',
+        'limit: number' + OR_UNDEFINED,
+      ),
+      getListenerHookParamsInCall(
+        'tableId',
+        'cellId',
+        'descending',
+        'offset',
+        'limit',
+      ),
+    );
+
+    addProxyHook(
+      ROW + LISTENER,
+      ROW + LISTENER,
+      VOID,
+      getListenerDoc(5, 3),
+      getListenerHookParams(
+        rowListenerType,
+        `tableId: ${tableIdType} | null`,
+        ROW_ID + `: IdOrNull`,
+      ),
+      getListenerHookParamsInCall('tableId', ROW_ID),
+    );
+
+    addProxyHook(
+      CELL_IDS + LISTENER,
+      CELL_IDS + LISTENER,
+      VOID,
+      getListenerDoc(6, 5, 1),
+      getListenerHookParams(
+        cellIdsListenerType,
+        `tableId: ${tableIdType} | null`,
+        ROW_ID + `: IdOrNull`,
+      ),
+      getListenerHookParamsInCall('tableId', ROW_ID),
+    );
+
+    addProxyHook(
+      CELL + LISTENER,
+      CELL + LISTENER,
+      VOID,
+      getListenerDoc(7, 5),
+      getListenerHookParams(
+        cellListenerType,
+        `tableId: ${tableIdType} | null`,
+        ROW_ID + `: IdOrNull`,
+        `cellId: ${cellIdsType} | null`,
+      ),
+      getListenerHookParamsInCall('tableId', ROW_ID, 'cellId'),
     );
   }
 
