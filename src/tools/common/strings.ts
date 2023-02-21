@@ -15,13 +15,11 @@ export const upper = (str: string) => str.toUpperCase();
 
 export const lower = (str: string) => str.toLowerCase();
 
-const SPACE = ' ';
 export const A = 'a ';
 export const A_FUNCTION_FOR = 'A function for';
 export const CALLBACK = 'Callback';
 export const DEL = 'Del';
 export const EXPORT = 'export';
-export const GETS_A_CALLBACK_THAT_CAN = 'Gets a callback that can ';
 export const ID = 'Id';
 export const INVALID = 'Invalid';
 export const JSON = 'Json';
@@ -32,7 +30,6 @@ export const REGISTERS_A_LISTENER = `Registers a ${LISTENER_} that will be calle
 export const REPRESENTS = 'Represents';
 export const SET = 'Set';
 export const SQUARE_BRACKETS = '[]';
-export const THE = 'the ';
 export const THE_STORE = 'the Store';
 export const TRANSACTION = 'Transaction';
 export const TRANSACTION_ = lower(TRANSACTION);
@@ -41,6 +38,9 @@ export const VOID = 'void';
 export const RETURNS_VOID = ' => ' + VOID;
 
 const A_STRING_SERIALIZATION_OF = A + 'string serialization of';
+const SPACE = ' ';
+const GETS_A_CALLBACK_THAT_CAN = 'Gets a callback that can ';
+const THE = 'the ';
 
 const getTheContentOfDoc = (content: 0 | 1 | 2 = 0, theStore = 0): string =>
   `the ${CONTENT[content]}content of` +
@@ -126,7 +126,7 @@ export const VERBS = [
   GETS_A_CALLBACK_THAT_CAN + 'delete',
 ];
 
-export const NOUNS = [
+const NOUNS = [
   THE_STORE,
   TABLES,
   THE + TABLE + SPACE + IDS,

@@ -423,8 +423,9 @@ export interface Tools {
    *   },
    * });
    * const tools = createTools(store);
-   * const [dTs, ts, dTsUiReact, tsUiReact] =
-   *   await createTools(store).getPrettyStoreApi('shop');
+   * const [dTs, ts, dTsUiReact, tsUiReact] = await createTools(
+   *   store,
+   * ).getPrettyStoreApi('shop');
    *
    * const dTsLines = dTs.split('\n');
    * console.log(dTsLines[5]);
@@ -445,8 +446,9 @@ export interface Tools {
    *   felix: {price: 4},
    * });
    * const tools = createTools(store);
-   * const [dTs, ts, dTsUiReact, tsUiReact] =
-   *   await createTools(store).getPrettyStoreApi('shop');
+   * const [dTs, ts, dTsUiReact, tsUiReact] = await createTools(
+   *   store,
+   * ).getPrettyStoreApi('shop');
    *
    * const dTsLines = dTs.split('\n');
    * console.log(dTsLines[5]);
