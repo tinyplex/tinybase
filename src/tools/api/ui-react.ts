@@ -92,17 +92,17 @@ const TYPED_ROW_ID = ROW_ID + COLON_SPACE + ID;
 
 const getListenerHookParams = (
   listenerType: string,
-  extraParams: string[] = [],
+  ...extraParams: string[]
 ) =>
   getParameterList(
+    ...extraParams,
     LISTENER_ + ': ' + listenerType,
     LISTENER_ + DEPS_SUFFIX,
     'mutator?: boolean',
-    ...extraParams,
   );
 
-const getListenerHookParamsInCall = (extraParams: string[] = []) =>
-  getParameterList(LISTENER_, LISTENER_ + DEPS, 'mutator', ...extraParams);
+const getListenerHookParamsInCall = (...extraParams: string[]) =>
+  getParameterList(...extraParams, LISTENER_, LISTENER_ + DEPS, 'mutator');
 
 const COMMON_IMPORTS = [
   ID,
@@ -314,7 +314,7 @@ export const getStoreUiReactApi = (
       tableIdType,
       tablesListenerType,
       tableIdsListenerType,
-      _tableListenerType,
+      tableListenerType,
       _rowIdsListenerType,
       _rowListenerType,
       _cellIdsListenerType,
@@ -329,6 +329,7 @@ export const getStoreUiReactApi = (
       tableIdType,
       tablesListenerType,
       tableIdsListenerType,
+      tableListenerType,
     );
 
     addImport(1, tinyBaseUiReact);
@@ -340,6 +341,7 @@ export const getStoreUiReactApi = (
       tableIdType,
       tablesListenerType,
       tableIdsListenerType,
+      tableListenerType,
     );
 
     addProxyHook(
@@ -628,6 +630,18 @@ export const getStoreUiReactApi = (
       getListenerDoc(2, 0, 1),
       getListenerHookParams(tableIdsListenerType),
       getListenerHookParamsInCall(),
+    );
+
+    addProxyHook(
+      TABLE + LISTENER,
+      TABLE + LISTENER,
+      VOID,
+      getListenerDoc(3, 0),
+      getListenerHookParams(
+        tableListenerType,
+        `tableId: ${tableIdType} | null`,
+      ),
+      getListenerHookParamsInCall('tableId'),
     );
   }
 
