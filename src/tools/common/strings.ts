@@ -2,6 +2,7 @@ import {
   CELL,
   EMPTY_STRING,
   IDS,
+  LISTENER,
   ROW,
   TABLE,
   TABLES,
@@ -24,7 +25,6 @@ export const GETS_A_CALLBACK_THAT_CAN = 'Gets a callback that can ';
 export const ID = 'Id';
 export const INVALID = 'Invalid';
 export const JSON = 'Json';
-export const LISTENER = 'Listener';
 export const LISTENER_ = lower(LISTENER);
 export const OR_UNDEFINED = ' | undefined';
 export const PARTIAL = 'Partial';
@@ -124,6 +124,7 @@ export const VERBS = [
   GETS_A_CALLBACK_THAT_CAN + 'add',
   GETS_A_CALLBACK_THAT_CAN + 'set part of',
   GETS_A_CALLBACK_THAT_CAN + 'delete',
+  REGISTERS_A_LISTENER + ' for every change to',
 ];
 
 export const NOUNS = [

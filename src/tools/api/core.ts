@@ -6,7 +6,6 @@ import {
   ID,
   INVALID,
   JSON,
-  LISTENER,
   LISTENER_,
   OR_UNDEFINED,
   PARTIAL,
@@ -43,6 +42,7 @@ import {
   EMPTY_STRING,
   GET,
   IDS,
+  LISTENER,
   ROW,
   ROW_IDS,
   SORTED_ROW_IDS,
@@ -82,7 +82,13 @@ import {getSchemaFunctions} from '../common/schema';
 import {objIsEmpty} from '../../common/obj';
 
 export type TableTypes = [string, string, string, string, string, string];
-export type SharedTableTypes = [string, string, IdMap<TableTypes>];
+export type SharedTableTypes = [
+  string,
+  string,
+  string,
+  string,
+  IdMap<TableTypes>,
+];
 export type SharedValueTypes = [string, string, string];
 
 const METHOD_PREFIX_VERBS = [
@@ -421,7 +427,13 @@ export const getStoreCoreApi = (
       getListenerTypeDoc(8),
     );
 
-    sharedTableTypes = [tablesType, tableIdType, tablesTypes];
+    sharedTableTypes = [
+      tablesType,
+      tableIdType,
+      tablesListenerType,
+      tableIdsListenerType,
+      tablesTypes,
+    ];
 
     arrayForEach(
       [
@@ -1055,7 +1067,7 @@ export const getStoreCoreApi = (
   addInternalFunction(
     'proxy',
     `listener: any`,
-    `(_: Store, ...args: any[]) => listener(${storeInstance}, ...args)`,
+    `(_: Store, ...params: any[]) => listener(${storeInstance}, ...params)`,
   );
 
   addConstant(storeInstance, ['{', ...getMethods(1), '}']);
