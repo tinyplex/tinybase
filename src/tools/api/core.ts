@@ -108,7 +108,6 @@ const METHOD_PREFIX_VERBS = [
   ADD,
   EMPTY_STRING,
 ];
-const COMMON_IMPORTS = ['DoRollback', ID, 'IdOrNull', IDS, JSON, 'Store'];
 
 const storeMethod = (
   method: string,
@@ -1007,7 +1006,7 @@ export const getStoreCoreApi = (
     ),
   );
 
-  addImport(0, 'tinybase', ...COMMON_IMPORTS);
+  addImport(null, 'tinybase', 'DoRollback', ID, 'IdOrNull', IDS, JSON, 'Store');
 
   const transactionListenerType = addType(
     TRANSACTION + LISTENER,
@@ -1099,7 +1098,7 @@ export const getStoreCoreApi = (
     VERBS[0] + ' the underlying Store object',
   );
 
-  addImport(1, 'tinybase', 'createStore', ...COMMON_IMPORTS);
+  addImport(1, 'tinybase', 'createStore');
   addImport(
     1,
     moduleDefinition,
