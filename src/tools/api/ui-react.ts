@@ -100,15 +100,6 @@ const getListenerHookParams = (
 const getListenerHookParamsInCall = (...extraParams: string[]) =>
   getParameterList(...extraParams, LISTENER_, LISTENER_ + DEPS, 'mutator');
 
-const COMMON_IMPORTS = [
-  ID,
-  IDS,
-  'IdOrNull',
-  'Store',
-  CALLBACK,
-  PARAMETER + 'ized' + CALLBACK,
-];
-
 export const getStoreUiReactApi = (
   tablesSchema: TablesSchema,
   valuesSchema: ValuesSchema,
@@ -236,7 +227,16 @@ export const getStoreUiReactApi = (
       return lines;
     });
 
-  addImport(0, 'tinybase', ...COMMON_IMPORTS);
+  addImport(
+    null,
+    'tinybase',
+    ID,
+    IDS,
+    'IdOrNull',
+    'Store',
+    CALLBACK,
+    PARAMETER + 'ized' + CALLBACK,
+  );
   addImport(0, tinyBaseUiReact, 'ComponentReturnType');
   addImport(0, moduleDefinition, storeType);
 
@@ -257,7 +257,6 @@ export const getStoreUiReactApi = (
   );
 
   addImport(1, 'react', 'React');
-  addImport(1, 'tinybase', ...COMMON_IMPORTS);
   addImport(1, uiReactModuleDefinition, storeOrStoreIdType, providerPropsType);
 
   const storeOrStoreIdParameter = storeOrStoreId + '?: ' + storeOrStoreIdType;
@@ -321,7 +320,7 @@ export const getStoreUiReactApi = (
     ] = sharedTableTypes as SharedTableTypes;
 
     addImport(
-      0,
+      null,
       moduleDefinition,
       tablesType,
       tableIdType,
@@ -336,21 +335,7 @@ export const getStoreUiReactApi = (
     );
 
     addImport(1, tinyBaseUiReact);
-    addImport(
-      1,
-      moduleDefinition,
-      storeType,
-      tablesType,
-      tableIdType,
-      tablesListenerType,
-      tableIdsListenerType,
-      tableListenerType,
-      rowIdsListenerType,
-      sortedRowIdsListenerType,
-      rowListenerType,
-      cellIdsListenerType,
-      cellListenerType,
-    );
+    addImport(1, moduleDefinition, storeType);
 
     addProxyHook(
       TABLES,
@@ -745,24 +730,9 @@ export const getStoreUiReactApi = (
     ] = sharedValueTypes as SharedValueTypes;
 
     addImport(
-      0,
+      null,
       moduleDefinition,
-      valuesType,
-      valuesWhenSetType,
-      valueIdType,
-      valuesListenerType,
-      valueIdsListenerType,
-      valueListenerType,
-    );
-    addImport(
-      1,
-      moduleDefinition,
-      valuesType,
-      valuesWhenSetType,
-      valueIdType,
-      valuesListenerType,
-      valueIdsListenerType,
-      valueListenerType,
+      ...(sharedValueTypes as SharedValueTypes),
     );
 
     addProxyHook(
