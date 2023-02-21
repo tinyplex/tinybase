@@ -69,6 +69,7 @@ import {
   comment,
   flat,
   getCodeFunctions,
+  getParameterList,
   join,
   mapUnique,
   snake,
@@ -83,6 +84,7 @@ import {objIsEmpty} from '../../common/obj';
 
 export type TableTypes = [string, string, string, string, string, string];
 export type SharedTableTypes = [
+  string,
   string,
   string,
   string,
@@ -388,6 +390,22 @@ export const getStoreCoreApi = (
         RETURNS_VOID,
       getListenerTypeDoc(4, 3),
     );
+    const sortedRowIdsListenerType = addType(
+      SORTED_ROW_IDS + LISTENER,
+      '(' +
+        getParameterList(
+          storeInstance + ': ' + storeType,
+          'tableId: ' + tableIdType,
+          'cellId: Id' + OR_UNDEFINED,
+          'descending: boolean',
+          'offset: number',
+          'limit: number' + OR_UNDEFINED,
+          'sortedRowIds: Ids',
+        ) +
+        ')' +
+        RETURNS_VOID,
+      getListenerTypeDoc(13, 3),
+    );
     const rowListenerType = addType(
       ROW + LISTENER,
       `(${storeInstance}: ${storeType}, tableId: ${tableIdType}, rowId: Id, ` +
@@ -439,6 +457,7 @@ export const getStoreCoreApi = (
       tableIdsListenerType,
       tableListenerType,
       rowIdsListenerType,
+      sortedRowIdsListenerType,
       rowListenerType,
       cellIdsListenerType,
       cellListenerType,
@@ -659,6 +678,19 @@ export const getStoreCoreApi = (
       'tableId',
     );
     addProxyListener(
+      SORTED_ROW_IDS,
+      sortedRowIdsListenerType,
+      getListenerDoc(13, 3, 1),
+      getParameterList(
+        'tableId: ' + tableIdType,
+        'cellId: Id' + OR_UNDEFINED,
+        'descending: boolean',
+        'offset: number',
+        'limit: number' + OR_UNDEFINED,
+      ),
+      getParameterList('tableId', 'cellId', 'descending', 'offset', 'limit'),
+    );
+    addProxyListener(
       ROW,
       rowListenerType,
       getListenerDoc(5, 3),
@@ -702,6 +734,7 @@ export const getStoreCoreApi = (
       tableIdsListenerType,
       tableListenerType,
       rowIdsListenerType,
+      sortedRowIdsListenerType,
       rowListenerType,
       cellIdsListenerType,
       cellListenerType,
