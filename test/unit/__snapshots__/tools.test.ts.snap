@@ -1149,6 +1149,7 @@ import {
   T1RowWhenSet,
   T1Table,
   TableId,
+  TableIdsListener,
   Tables,
   TablesListener,
   ValueId,
@@ -1215,11 +1216,22 @@ export function useDelTablesCallback(
 ): Callback;
 
 /**
- * Registers a listener that will be called for every change to the tabular
- * content of the Store.
+ * Registers a listener that will be called whenever the tabular content of the
+ * Store changes.
  */
 export function useTablesListener(
   listener: TablesListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  sOrSId?: SOrSId,
+): void;
+
+/**
+ * Registers a listener that will be called whenever the Table Ids in the Store
+ * change.
+ */
+export function useTableIdsListener(
+  listener: TableIdsListener,
   listenerDeps?: React.DependencyList,
   mutator?: boolean,
   sOrSId?: SOrSId,
@@ -1625,6 +1637,7 @@ import {
   T1RowWhenSet,
   T1Table,
   TableId,
+  TableIdsListener,
   Tables,
   TablesListener,
   ValueId,
@@ -1674,6 +1687,7 @@ import {
   useT1SortedRowIds as useT1SortedRowIdsDecl,
   useT1Table as useT1TableDecl,
   useTableIds as useTableIdsDecl,
+  useTableIdsListener as useTableIdsListenerDecl,
   useTables as useTablesDecl,
   useTablesListener as useTablesListenerDecl,
   useV1Value as useV1ValueDecl,
@@ -1706,6 +1720,7 @@ import {
   useSortedRowIds as useSortedRowIdsCore,
   useTable as useTableCore,
   useTableIds as useTableIdsCore,
+  useTableIdsListener as useTableIdsListenerCore,
   useTables as useTablesCore,
   useTablesListener as useTablesListenerCore,
   useValue as useValueCore,
@@ -1796,6 +1811,14 @@ export const useTablesListener: typeof useTablesListenerDecl = (
   sOrSId?: SOrSId,
 ): void =>
   useHook(sOrSId, useTablesListenerCore, [listener, listenerDeps, mutator]);
+
+export const useTableIdsListener: typeof useTableIdsListenerDecl = (
+  listener: TableIdsListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  sOrSId?: SOrSId,
+): void =>
+  useHook(sOrSId, useTableIdsListenerCore, [listener, listenerDeps, mutator]);
 
 export const useT1Table: typeof useT1TableDecl = (sOrSId?: SOrSId): T1Table =>
   useHook(sOrSId, useTableCore, [T1]);
@@ -3933,6 +3956,7 @@ import {
   T1RowWhenSet,
   T1Table,
   TableId,
+  TableIdsListener,
   Tables,
   TablesListener,
 } from './s.d';
@@ -3996,11 +4020,22 @@ export function useDelTablesCallback(
 ): Callback;
 
 /**
- * Registers a listener that will be called for every change to the tabular
- * content of the Store.
+ * Registers a listener that will be called whenever the tabular content of the
+ * Store changes.
  */
 export function useTablesListener(
   listener: TablesListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  sOrSId?: SOrSId,
+): void;
+
+/**
+ * Registers a listener that will be called whenever the Table Ids in the Store
+ * change.
+ */
+export function useTableIdsListener(
+  listener: TableIdsListener,
   listenerDeps?: React.DependencyList,
   mutator?: boolean,
   sOrSId?: SOrSId,
@@ -4257,6 +4292,7 @@ import {
   T1RowWhenSet,
   T1Table,
   TableId,
+  TableIdsListener,
   Tables,
   TablesListener,
 } from './s.d';
@@ -4292,6 +4328,7 @@ import {
   useT1SortedRowIds as useT1SortedRowIdsDecl,
   useT1Table as useT1TableDecl,
   useTableIds as useTableIdsDecl,
+  useTableIdsListener as useTableIdsListenerDecl,
   useTables as useTablesDecl,
   useTablesListener as useTablesListenerDecl,
 } from './s-ui-react.d';
@@ -4313,6 +4350,7 @@ import {
   useSortedRowIds as useSortedRowIdsCore,
   useTable as useTableCore,
   useTableIds as useTableIdsCore,
+  useTableIdsListener as useTableIdsListenerCore,
   useTables as useTablesCore,
   useTablesListener as useTablesListenerCore,
 } from 'tinybase/ui-react';
@@ -4394,6 +4432,14 @@ export const useTablesListener: typeof useTablesListenerDecl = (
   sOrSId?: SOrSId,
 ): void =>
   useHook(sOrSId, useTablesListenerCore, [listener, listenerDeps, mutator]);
+
+export const useTableIdsListener: typeof useTableIdsListenerDecl = (
+  listener: TableIdsListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  sOrSId?: SOrSId,
+): void =>
+  useHook(sOrSId, useTableIdsListenerCore, [listener, listenerDeps, mutator]);
 
 export const useT1Table: typeof useT1TableDecl = (sOrSId?: SOrSId): T1Table =>
   useHook(sOrSId, useTableCore, [T1]);
@@ -5250,7 +5296,7 @@ getStore: (): Store => store,
 return Object.freeze(s);
 };",
   "import {Callback, Id, Ids, ParameterizedCallback, Store} from 'tinybase';
-import {MapNumber, MapString, S, T1CellId, T1Row, T1RowWhenSet, T1Table, TableId, Tables, TablesListener, ValueId, Values, ValuesWhenSet} from './s.d';
+import {MapNumber, MapString, S, T1CellId, T1Row, T1RowWhenSet, T1Table, TableId, TableIdsListener, Tables, TablesListener, ValueId, Values, ValuesWhenSet} from './s.d';
 import {ComponentReturnType} from 'tinybase/ui-react';
 
 /** Used when you need to refer to a S in a React hook or component. */
@@ -5277,8 +5323,11 @@ export function useSetTablesCallback<Parameter,>(getTables: (parameter: Paramete
 /** Gets a callback that can delete the tabular content of the Store. */
 export function useDelTablesCallback(sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback;
 
-/** Registers a listener that will be called for every change to the tabular content of the Store. */
+/** Registers a listener that will be called whenever the tabular content of the Store changes. */
 export function useTablesListener(listener: TablesListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void;
+
+/** Registers a listener that will be called whenever the Table Ids in the Store change. */
+export function useTableIdsListener(listener: TableIdsListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void;
 
 /** Gets the content of the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
 export function useT1Table(sOrSId?: SOrSId): T1Table;
@@ -5404,9 +5453,9 @@ export function useDelValueCallback(sOrSId?: SOrSId, then?: (store: Store) => vo
 export function Provider({s, sById, children}: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
 ",
   "import {Callback, Id, Ids, ParameterizedCallback, Store} from 'tinybase';
-import {MapNumber, MapString, S, T1CellId, T1Row, T1RowWhenSet, T1Table, TableId, Tables, TablesListener, ValueId, Values, ValuesWhenSet} from './s.d';
-import {Provider as ProviderDecl, ProviderProps, SOrSId, useAddT1RowCallback as useAddT1RowCallbackDecl, useCreateS as useCreateSDecl, useDelT1C1CellCallback as useDelT1C1CellCallbackDecl, useDelT1C2CellCallback as useDelT1C2CellCallbackDecl, useDelT1C3CellCallback as useDelT1C3CellCallbackDecl, useDelT1CellCallback as useDelT1CellCallbackDecl, useDelT1RowCallback as useDelT1RowCallbackDecl, useDelT1TableCallback as useDelT1TableCallbackDecl, useDelTablesCallback as useDelTablesCallbackDecl, useDelV1ValueCallback as useDelV1ValueCallbackDecl, useDelV2ValueCallback as useDelV2ValueCallbackDecl, useDelV3ValueCallback as useDelV3ValueCallbackDecl, useDelValueCallback as useDelValueCallbackDecl, useDelValuesCallback as useDelValuesCallbackDecl, useS as useSDecl, useSetPartialValuesCallback as useSetPartialValuesCallbackDecl, useSetT1C1CellCallback as useSetT1C1CellCallbackDecl, useSetT1C2CellCallback as useSetT1C2CellCallbackDecl, useSetT1C3CellCallback as useSetT1C3CellCallbackDecl, useSetT1CellCallback as useSetT1CellCallbackDecl, useSetT1PartialRowCallback as useSetT1PartialRowCallbackDecl, useSetT1RowCallback as useSetT1RowCallbackDecl, useSetT1TableCallback as useSetT1TableCallbackDecl, useSetTablesCallback as useSetTablesCallbackDecl, useSetV1ValueCallback as useSetV1ValueCallbackDecl, useSetV2ValueCallback as useSetV2ValueCallbackDecl, useSetV3ValueCallback as useSetV3ValueCallbackDecl, useSetValueCallback as useSetValueCallbackDecl, useSetValuesCallback as useSetValuesCallbackDecl, useT1C1Cell as useT1C1CellDecl, useT1C2Cell as useT1C2CellDecl, useT1C3Cell as useT1C3CellDecl, useT1Cell as useT1CellDecl, useT1CellIds as useT1CellIdsDecl, useT1Row as useT1RowDecl, useT1RowIds as useT1RowIdsDecl, useT1SortedRowIds as useT1SortedRowIdsDecl, useT1Table as useT1TableDecl, useTableIds as useTableIdsDecl, useTables as useTablesDecl, useTablesListener as useTablesListenerDecl, useV1Value as useV1ValueDecl, useV2Value as useV2ValueDecl, useV3Value as useV3ValueDecl, useValue as useValueDecl, useValueIds as useValueIdsDecl, useValues as useValuesDecl} from './s-ui-react.d';
-import {useAddRowCallback as useAddRowCallbackCore, useCell as useCellCore, useCellIds as useCellIdsCore, useDelCellCallback as useDelCellCallbackCore, useDelRowCallback as useDelRowCallbackCore, useDelTableCallback as useDelTableCallbackCore, useDelTablesCallback as useDelTablesCallbackCore, useDelValueCallback as useDelValueCallbackCore, useDelValuesCallback as useDelValuesCallbackCore, useRow as useRowCore, useRowIds as useRowIdsCore, useSetCellCallback as useSetCellCallbackCore, useSetPartialRowCallback as useSetPartialRowCallbackCore, useSetPartialValuesCallback as useSetPartialValuesCallbackCore, useSetRowCallback as useSetRowCallbackCore, useSetTableCallback as useSetTableCallbackCore, useSetTablesCallback as useSetTablesCallbackCore, useSetValueCallback as useSetValueCallbackCore, useSetValuesCallback as useSetValuesCallbackCore, useSortedRowIds as useSortedRowIdsCore, useTable as useTableCore, useTableIds as useTableIdsCore, useTables as useTablesCore, useTablesListener as useTablesListenerCore, useValue as useValueCore, useValueIds as useValueIdsCore, useValues as useValuesCore} from 'tinybase/ui-react';
+import {MapNumber, MapString, S, T1CellId, T1Row, T1RowWhenSet, T1Table, TableId, TableIdsListener, Tables, TablesListener, ValueId, Values, ValuesWhenSet} from './s.d';
+import {Provider as ProviderDecl, ProviderProps, SOrSId, useAddT1RowCallback as useAddT1RowCallbackDecl, useCreateS as useCreateSDecl, useDelT1C1CellCallback as useDelT1C1CellCallbackDecl, useDelT1C2CellCallback as useDelT1C2CellCallbackDecl, useDelT1C3CellCallback as useDelT1C3CellCallbackDecl, useDelT1CellCallback as useDelT1CellCallbackDecl, useDelT1RowCallback as useDelT1RowCallbackDecl, useDelT1TableCallback as useDelT1TableCallbackDecl, useDelTablesCallback as useDelTablesCallbackDecl, useDelV1ValueCallback as useDelV1ValueCallbackDecl, useDelV2ValueCallback as useDelV2ValueCallbackDecl, useDelV3ValueCallback as useDelV3ValueCallbackDecl, useDelValueCallback as useDelValueCallbackDecl, useDelValuesCallback as useDelValuesCallbackDecl, useS as useSDecl, useSetPartialValuesCallback as useSetPartialValuesCallbackDecl, useSetT1C1CellCallback as useSetT1C1CellCallbackDecl, useSetT1C2CellCallback as useSetT1C2CellCallbackDecl, useSetT1C3CellCallback as useSetT1C3CellCallbackDecl, useSetT1CellCallback as useSetT1CellCallbackDecl, useSetT1PartialRowCallback as useSetT1PartialRowCallbackDecl, useSetT1RowCallback as useSetT1RowCallbackDecl, useSetT1TableCallback as useSetT1TableCallbackDecl, useSetTablesCallback as useSetTablesCallbackDecl, useSetV1ValueCallback as useSetV1ValueCallbackDecl, useSetV2ValueCallback as useSetV2ValueCallbackDecl, useSetV3ValueCallback as useSetV3ValueCallbackDecl, useSetValueCallback as useSetValueCallbackDecl, useSetValuesCallback as useSetValuesCallbackDecl, useT1C1Cell as useT1C1CellDecl, useT1C2Cell as useT1C2CellDecl, useT1C3Cell as useT1C3CellDecl, useT1Cell as useT1CellDecl, useT1CellIds as useT1CellIdsDecl, useT1Row as useT1RowDecl, useT1RowIds as useT1RowIdsDecl, useT1SortedRowIds as useT1SortedRowIdsDecl, useT1Table as useT1TableDecl, useTableIds as useTableIdsDecl, useTableIdsListener as useTableIdsListenerDecl, useTables as useTablesDecl, useTablesListener as useTablesListenerDecl, useV1Value as useV1ValueDecl, useV2Value as useV2ValueDecl, useV3Value as useV3ValueDecl, useValue as useValueDecl, useValueIds as useValueIdsDecl, useValues as useValuesDecl} from './s-ui-react.d';
+import {useAddRowCallback as useAddRowCallbackCore, useCell as useCellCore, useCellIds as useCellIdsCore, useDelCellCallback as useDelCellCallbackCore, useDelRowCallback as useDelRowCallbackCore, useDelTableCallback as useDelTableCallbackCore, useDelTablesCallback as useDelTablesCallbackCore, useDelValueCallback as useDelValueCallbackCore, useDelValuesCallback as useDelValuesCallbackCore, useRow as useRowCore, useRowIds as useRowIdsCore, useSetCellCallback as useSetCellCallbackCore, useSetPartialRowCallback as useSetPartialRowCallbackCore, useSetPartialValuesCallback as useSetPartialValuesCallbackCore, useSetRowCallback as useSetRowCallbackCore, useSetTableCallback as useSetTableCallbackCore, useSetTablesCallback as useSetTablesCallbackCore, useSetValueCallback as useSetValueCallbackCore, useSetValuesCallback as useSetValuesCallbackCore, useSortedRowIds as useSortedRowIdsCore, useTable as useTableCore, useTableIds as useTableIdsCore, useTableIdsListener as useTableIdsListenerCore, useTables as useTablesCore, useTablesListener as useTablesListenerCore, useValue as useValueCore, useValueIds as useValueIdsCore, useValues as useValuesCore} from 'tinybase/ui-react';
 import React from 'react';
 
 const {createContext, useContext, useMemo} = React;
@@ -5460,6 +5509,9 @@ useHook(sOrSId, useDelTablesCallbackCore, [], [then, thenDeps])
 
 export const useTablesListener: typeof useTablesListenerDecl = (listener: TablesListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void =>
 useHook(sOrSId, useTablesListenerCore, [listener, listenerDeps, mutator])
+
+export const useTableIdsListener: typeof useTableIdsListenerDecl = (listener: TableIdsListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void =>
+useHook(sOrSId, useTableIdsListenerCore, [listener, listenerDeps, mutator])
 
 export const useT1Table: typeof useT1TableDecl = (sOrSId?: SOrSId): T1Table =>
 useHook(sOrSId, useTableCore, [T1])
@@ -6461,7 +6513,7 @@ getStore: (): Store => store,
 return Object.freeze(s);
 };",
   "import {Callback, Id, Ids, ParameterizedCallback, Store} from 'tinybase';
-import {MapNumber, MapString, S, T1CellId, T1Row, T1RowWhenSet, T1Table, TableId, Tables, TablesListener} from './s.d';
+import {MapNumber, MapString, S, T1CellId, T1Row, T1RowWhenSet, T1Table, TableId, TableIdsListener, Tables, TablesListener} from './s.d';
 import {ComponentReturnType} from 'tinybase/ui-react';
 
 /** Used when you need to refer to a S in a React hook or component. */
@@ -6488,8 +6540,11 @@ export function useSetTablesCallback<Parameter,>(getTables: (parameter: Paramete
 /** Gets a callback that can delete the tabular content of the Store. */
 export function useDelTablesCallback(sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback;
 
-/** Registers a listener that will be called for every change to the tabular content of the Store. */
+/** Registers a listener that will be called whenever the tabular content of the Store changes. */
 export function useTablesListener(listener: TablesListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void;
+
+/** Registers a listener that will be called whenever the Table Ids in the Store change. */
+export function useTableIdsListener(listener: TableIdsListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void;
 
 /** Gets the content of the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
 export function useT1Table(sOrSId?: SOrSId): T1Table;
@@ -6564,9 +6619,9 @@ export function useDelT1CellCallback(rowId: Id, forceDel?: boolean, sOrSId?: SOr
 export function Provider({s, sById, children}: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
 ",
   "import {Callback, Id, Ids, ParameterizedCallback, Store} from 'tinybase';
-import {MapNumber, MapString, S, T1CellId, T1Row, T1RowWhenSet, T1Table, TableId, Tables, TablesListener} from './s.d';
-import {Provider as ProviderDecl, ProviderProps, SOrSId, useAddT1RowCallback as useAddT1RowCallbackDecl, useCreateS as useCreateSDecl, useDelT1C1CellCallback as useDelT1C1CellCallbackDecl, useDelT1C2CellCallback as useDelT1C2CellCallbackDecl, useDelT1C3CellCallback as useDelT1C3CellCallbackDecl, useDelT1CellCallback as useDelT1CellCallbackDecl, useDelT1RowCallback as useDelT1RowCallbackDecl, useDelT1TableCallback as useDelT1TableCallbackDecl, useDelTablesCallback as useDelTablesCallbackDecl, useS as useSDecl, useSetT1C1CellCallback as useSetT1C1CellCallbackDecl, useSetT1C2CellCallback as useSetT1C2CellCallbackDecl, useSetT1C3CellCallback as useSetT1C3CellCallbackDecl, useSetT1CellCallback as useSetT1CellCallbackDecl, useSetT1PartialRowCallback as useSetT1PartialRowCallbackDecl, useSetT1RowCallback as useSetT1RowCallbackDecl, useSetT1TableCallback as useSetT1TableCallbackDecl, useSetTablesCallback as useSetTablesCallbackDecl, useT1C1Cell as useT1C1CellDecl, useT1C2Cell as useT1C2CellDecl, useT1C3Cell as useT1C3CellDecl, useT1Cell as useT1CellDecl, useT1CellIds as useT1CellIdsDecl, useT1Row as useT1RowDecl, useT1RowIds as useT1RowIdsDecl, useT1SortedRowIds as useT1SortedRowIdsDecl, useT1Table as useT1TableDecl, useTableIds as useTableIdsDecl, useTables as useTablesDecl, useTablesListener as useTablesListenerDecl} from './s-ui-react.d';
-import {useAddRowCallback as useAddRowCallbackCore, useCell as useCellCore, useCellIds as useCellIdsCore, useDelCellCallback as useDelCellCallbackCore, useDelRowCallback as useDelRowCallbackCore, useDelTableCallback as useDelTableCallbackCore, useDelTablesCallback as useDelTablesCallbackCore, useRow as useRowCore, useRowIds as useRowIdsCore, useSetCellCallback as useSetCellCallbackCore, useSetPartialRowCallback as useSetPartialRowCallbackCore, useSetRowCallback as useSetRowCallbackCore, useSetTableCallback as useSetTableCallbackCore, useSetTablesCallback as useSetTablesCallbackCore, useSortedRowIds as useSortedRowIdsCore, useTable as useTableCore, useTableIds as useTableIdsCore, useTables as useTablesCore, useTablesListener as useTablesListenerCore} from 'tinybase/ui-react';
+import {MapNumber, MapString, S, T1CellId, T1Row, T1RowWhenSet, T1Table, TableId, TableIdsListener, Tables, TablesListener} from './s.d';
+import {Provider as ProviderDecl, ProviderProps, SOrSId, useAddT1RowCallback as useAddT1RowCallbackDecl, useCreateS as useCreateSDecl, useDelT1C1CellCallback as useDelT1C1CellCallbackDecl, useDelT1C2CellCallback as useDelT1C2CellCallbackDecl, useDelT1C3CellCallback as useDelT1C3CellCallbackDecl, useDelT1CellCallback as useDelT1CellCallbackDecl, useDelT1RowCallback as useDelT1RowCallbackDecl, useDelT1TableCallback as useDelT1TableCallbackDecl, useDelTablesCallback as useDelTablesCallbackDecl, useS as useSDecl, useSetT1C1CellCallback as useSetT1C1CellCallbackDecl, useSetT1C2CellCallback as useSetT1C2CellCallbackDecl, useSetT1C3CellCallback as useSetT1C3CellCallbackDecl, useSetT1CellCallback as useSetT1CellCallbackDecl, useSetT1PartialRowCallback as useSetT1PartialRowCallbackDecl, useSetT1RowCallback as useSetT1RowCallbackDecl, useSetT1TableCallback as useSetT1TableCallbackDecl, useSetTablesCallback as useSetTablesCallbackDecl, useT1C1Cell as useT1C1CellDecl, useT1C2Cell as useT1C2CellDecl, useT1C3Cell as useT1C3CellDecl, useT1Cell as useT1CellDecl, useT1CellIds as useT1CellIdsDecl, useT1Row as useT1RowDecl, useT1RowIds as useT1RowIdsDecl, useT1SortedRowIds as useT1SortedRowIdsDecl, useT1Table as useT1TableDecl, useTableIds as useTableIdsDecl, useTableIdsListener as useTableIdsListenerDecl, useTables as useTablesDecl, useTablesListener as useTablesListenerDecl} from './s-ui-react.d';
+import {useAddRowCallback as useAddRowCallbackCore, useCell as useCellCore, useCellIds as useCellIdsCore, useDelCellCallback as useDelCellCallbackCore, useDelRowCallback as useDelRowCallbackCore, useDelTableCallback as useDelTableCallbackCore, useDelTablesCallback as useDelTablesCallbackCore, useRow as useRowCore, useRowIds as useRowIdsCore, useSetCellCallback as useSetCellCallbackCore, useSetPartialRowCallback as useSetPartialRowCallbackCore, useSetRowCallback as useSetRowCallbackCore, useSetTableCallback as useSetTableCallbackCore, useSetTablesCallback as useSetTablesCallbackCore, useSortedRowIds as useSortedRowIdsCore, useTable as useTableCore, useTableIds as useTableIdsCore, useTableIdsListener as useTableIdsListenerCore, useTables as useTablesCore, useTablesListener as useTablesListenerCore} from 'tinybase/ui-react';
 import React from 'react';
 
 const {createContext, useContext, useMemo} = React;
@@ -6614,6 +6669,9 @@ useHook(sOrSId, useDelTablesCallbackCore, [], [then, thenDeps])
 
 export const useTablesListener: typeof useTablesListenerDecl = (listener: TablesListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void =>
 useHook(sOrSId, useTablesListenerCore, [listener, listenerDeps, mutator])
+
+export const useTableIdsListener: typeof useTableIdsListenerDecl = (listener: TableIdsListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void =>
+useHook(sOrSId, useTableIdsListenerCore, [listener, listenerDeps, mutator])
 
 export const useT1Table: typeof useT1TableDecl = (sOrSId?: SOrSId): T1Table =>
 useHook(sOrSId, useTableCore, [T1])
