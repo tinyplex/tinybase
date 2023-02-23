@@ -54,11 +54,13 @@ const useThing = <
   id: Id | undefined,
   offset: number,
 ): Thing | undefined => {
-  const thingsAndThingsById = useContext(Context);
+  const contextValue = useContext(Context);
   return (
     isUndefined(id)
-      ? thingsAndThingsById[offset]
-      : objGet(thingsAndThingsById[offset + 1] as IdObj<Thing>, id)
+      ? contextValue[offset]
+      : isString(id)
+      ? objGet(contextValue[offset + 1] as IdObj<Thing>, id)
+      : id
   ) as Thing;
 };
 
@@ -75,10 +77,9 @@ const useThingOrThingId = <
   offset: number,
 ): Thing | undefined => {
   const thing = useThing(thingOrThingId as Id, offset);
-  if (isUndefined(thingOrThingId) || isString(thingOrThingId)) {
-    return thing as Thing | undefined;
-  }
-  return thingOrThingId as Thing;
+  return isUndefined(thingOrThingId) || isString(thingOrThingId)
+    ? (thing as Thing | undefined)
+    : (thingOrThingId as Thing);
 };
 
 export const useStore: typeof useStoreDecl = (id?: Id): Store | undefined =>

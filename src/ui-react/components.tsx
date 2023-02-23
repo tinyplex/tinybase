@@ -241,23 +241,23 @@ export const Provider: typeof ProviderDecl = ({
   checkpointsById,
   children,
 }: ProviderProps & {children: React.ReactNode}): any => {
-  const thingsOrThingsId = useContext(Context);
+  const parentValue = useContext(Context);
   return (
     <Context.Provider
       value={useMemo(
         () => [
-          store ?? thingsOrThingsId[0],
-          {...thingsOrThingsId[1], ...storesById},
-          metrics ?? thingsOrThingsId[2],
-          {...thingsOrThingsId[3], ...metricsById},
-          indexes ?? thingsOrThingsId[4],
-          {...thingsOrThingsId[5], ...indexesById},
-          relationships ?? thingsOrThingsId[6],
-          {...thingsOrThingsId[7], ...relationshipsById},
-          queries ?? thingsOrThingsId[8],
-          {...thingsOrThingsId[9], ...queriesById},
-          checkpoints ?? thingsOrThingsId[10],
-          {...thingsOrThingsId[11], ...checkpointsById},
+          store ?? parentValue[0],
+          {...parentValue[1], ...storesById},
+          metrics ?? parentValue[2],
+          {...parentValue[3], ...metricsById},
+          indexes ?? parentValue[4],
+          {...parentValue[5], ...indexesById},
+          relationships ?? parentValue[6],
+          {...parentValue[7], ...relationshipsById},
+          queries ?? parentValue[8],
+          {...parentValue[9], ...queriesById},
+          checkpoints ?? parentValue[10],
+          {...parentValue[11], ...checkpointsById},
         ],
         [
           store,
@@ -272,7 +272,7 @@ export const Provider: typeof ProviderDecl = ({
           queriesById,
           checkpoints,
           checkpointsById,
-          thingsOrThingsId,
+          parentValue,
         ],
       )}
     >
