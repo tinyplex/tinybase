@@ -52,10 +52,10 @@ import {
 import {SharedTableTypes, SharedValueTypes, TableTypes} from './core';
 import {TablesSchema, ValuesSchema} from '../../store.d';
 import {arrayPush, arrayUnshift} from '../../common/array';
-import {isArray, isUndefined} from '../../common/other';
 import {Id} from '../../common.d';
 import {OR_UNDEFINED} from '../common/strings';
 import {getSchemaFunctions} from '../common/schema';
+import {isUndefined} from '../../common/other';
 import {objIsEmpty} from '../../common/obj';
 
 const DEPS = 'Deps';
@@ -154,7 +154,7 @@ export const getStoreUiReactApi = (
     return mapUnique(functions, name, [
       parameters,
       returnType,
-      isArray(body) ? ['{', body, '}'] : body,
+      body,
       doc,
       generic,
     ]);
@@ -284,8 +284,10 @@ export const getStoreUiReactApi = (
     `id?: Id`,
     storeType + OR_UNDEFINED,
     [
+      '{',
       USE_CONTEXT,
       'return id == null ? contextValue[0] : contextValue[1]?.[id];',
+      '}',
     ],
     `Get a reference to a ${storeType} from within a Provider component ` +
       'context',
@@ -882,6 +884,7 @@ export const getStoreUiReactApi = (
       providerPropsType +
       ' & {children: React.ReactNode}',
     [
+      '{',
       USE_CONTEXT,
       'return (',
       '<Context.Provider',
@@ -893,6 +896,7 @@ export const getStoreUiReactApi = (
       '{children}',
       '</Context.Provider>',
       ');',
+      '}',
     ],
     'Wraps part of an application in a context that provides default objects ' +
       'to be used by hooks and components within',
