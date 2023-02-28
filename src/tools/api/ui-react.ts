@@ -65,6 +65,7 @@ const getGetAndGetDeps = (noun: string) =>
   getParameterList(getGet(noun), getGet(noun) + DEPS);
 
 const PARAMETER = 'Parameter';
+const PROVIDER = 'Provider';
 const GETTER_ARGS = ': (parameter: ' + PARAMETER + ', store: Store) => ';
 const USE_CONTEXT = 'const contextValue = useContext(Context);';
 const AND_REGISTERS =
@@ -248,11 +249,13 @@ export const getStoreUiReactApi = (
   );
 
   const providerPropsType = addType(
-    'ProviderProps',
+    PROVIDER + 'Props',
     `{readonly ${storeInstance}?: ${storeType}; ` +
       `readonly ${storeInstance}ById?: ` +
       `{[${storeInstance}Id: Id]: ${storeType}}}`,
-    'Used with the Provider component, so that ' +
+    'Used with the ' +
+      PROVIDER +
+      ' component, so that ' +
       `a ${storeType} can be passed into the context of an application`,
   );
 
@@ -289,7 +292,7 @@ export const getStoreUiReactApi = (
       'return id == null ? contextValue[0] : contextValue[1]?.[id];',
       '}',
     ],
-    `Get a reference to a ${storeType} from within a Provider component ` +
+    `Get a reference to a ${storeType} from within a ${PROVIDER} component ` +
       'context',
   );
 
@@ -879,7 +882,7 @@ export const getStoreUiReactApi = (
   }
 
   addComponent(
-    'Provider',
+    PROVIDER,
     `{${storeInstance}, ${storeInstance}ById, children}: ` +
       providerPropsType +
       ' & {children: React.ReactNode}',
@@ -887,14 +890,14 @@ export const getStoreUiReactApi = (
       '{',
       USE_CONTEXT,
       'return (',
-      '<Context.Provider',
+      '<Context.' + PROVIDER,
       'value={useMemo(',
       `() => [${storeInstance} ?? contextValue[0], ` +
         `{...contextValue[1], ...${storeInstance}ById}],`,
       `[${storeInstance}, ${storeInstance}ById, contextValue],`,
       ')}>',
       '{children}',
-      '</Context.Provider>',
+      `</Context.${PROVIDER}>`,
       ');',
       '}',
     ],
