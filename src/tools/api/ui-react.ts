@@ -192,7 +192,7 @@ export const getStoreUiReactApi = (
       tinyBaseUiReact,
       `use${underlyingName} as use${underlyingName}Core`,
     );
-    addHook(
+    return addHook(
       name,
       getParameterList(preParameters, storeOrStoreIdParameter, postParameters),
       returnType,
@@ -371,28 +371,30 @@ export const getStoreUiReactApi = (
     addImport(null, tinyBaseUiReact, 'ExtraProps');
     addImport(1, moduleDefinition, storeType);
 
-    const tablesPropsType = addType(
-      'TablesProp',
-      '{' +
-        getPropsList(
-          storeInstance + '?: ' + storeType,
-          'tableComponents?: {' +
-            join(
-              mapTablesSchema(
-                (tableId: Id, _tableName: string) =>
-                  `'${tableId}'?: ComponentType<any>`, // ${tableName}TableProps
-              ),
-              ', ',
-            ) +
-            '}',
-          `getTableComponentProps?: (tableId: ${tableIdType}) => ExtraProps`,
-          'separator?: ReactElement | string',
-          'debugIds?: boolean',
-        ) +
-        '}',
-      'The props passed to a component that renders Tables',
+    const tableView = addInternalFunction(
+      'tableView',
+      '{store, rowComponent, getRowComponentProps, separator, ' +
+        'debugIds}: any, rowIds: Ids, ' +
+        'tableId: Id, ' +
+        'defaultRowComponent: React.ComponentType<any>',
+      [
+        'const Row = rowComponent ?? defaultRowComponent;',
+        `return ${wrap}(rowIds.map((rowId) => (`,
+        '<Row',
+        '{...' + getProps + '(getRowComponentProps, rowId)}',
+        'key={rowId}',
+        'tableId={tableId}',
+        'rowId={rowId}',
+        'store={store}',
+        'debugIds={debugIds}',
+        '/>',
+        ')),',
+        'separator,',
+        'debugIds,',
+        'tableId,',
+        ');',
+      ],
     );
-    addImport(1, uiReactModuleDefinition, tablesPropsType);
 
     addProxyHook(
       TABLES,
@@ -450,6 +452,29 @@ export const getStoreUiReactApi = (
       ) + `() => null`,
     );
 
+    const tablesPropsType = addType(
+      'TablesProps',
+      '{' +
+        getPropsList(
+          storeInstance + '?: ' + storeType,
+          'tableComponents?: {' +
+            join(
+              mapTablesSchema(
+                (tableId: Id, tableName: string) =>
+                  `'${tableId}'?: ComponentType<${tableName}TableProps>`,
+              ),
+              ', ',
+            ) +
+            '}',
+          `getTableComponentProps?: (tableId: ${tableIdType}) => ExtraProps`,
+          'separator?: ReactElement | string',
+          'debugIds?: boolean',
+        ) +
+        '}',
+      'The props passed to a component that renders Tables',
+    );
+    addImport(1, uiReactModuleDefinition, tablesPropsType);
+
     addComponent(
       TABLES + VIEW,
       '{' +
@@ -504,7 +529,7 @@ export const getStoreUiReactApi = (
         TABLE_ID,
       );
 
-      addProxyHook(
+      const useRowIds = addProxyHook(
         tableName + ROW_IDS,
         ROW_IDS,
         IDS,
@@ -646,10 +671,42 @@ export const getStoreUiReactApi = (
         THEN_AND_THEN_DEPS_IN_CALL,
       );
 
+      const rowPropsType = addType(
+        tableName + 'RowProps',
+        'any',
+        'The props passed to a component that renders a Row in the ' +
+          `'${tableId}' Table`,
+      );
+
+      const tablePropsType = addType(
+        tableName + 'TableProps',
+        '{' +
+          getPropsList(
+            storeInstance + '?: ' + storeType,
+            `rowComponent?: ComponentType<${rowPropsType}>`,
+            `getRowComponentProps?: (rowId: Id) => ExtraProps`,
+            'separator?: ReactElement | string',
+            'debugIds?: boolean',
+          ) +
+          '}',
+        `The props passed to a component that renders the '${tableId}' Table`,
+      );
+      addImport(1, uiReactModuleDefinition, tablePropsType, rowPropsType);
+
+      const rowView = addComponent(
+        tableName + ROW + VIEW,
+        '_props: ' + rowPropsType,
+        `<b>${tableName} row</b>`,
+        getRowContentDoc(tableId, 13) + AND_REGISTERS,
+      );
+
       addComponent(
         tableName + TABLE + VIEW,
-        EMPTY_STRING,
-        '<b>table: ' + TABLE_ID + '</b>',
+        'props: ' + tablePropsType,
+        tableView +
+          '(props, ' +
+          useRowIds +
+          `(props.${storeInstance}), ${TABLE_ID}, ${rowView});`,
         getTableContentDoc(tableId, 13) + AND_REGISTERS,
       );
 
