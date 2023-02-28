@@ -287,11 +287,11 @@ const wrap = (
   encloseWithId?: boolean,
   id?: Id,
 ) => {
-  const separatedChildren =
+  const separated =
     isUndefined(separator) || !isArray(children)
       ? children
       : arrayMap(children, (child, c) => (c > 0 ? [separator, child] : child));
-  return encloseWithId ? [id, ':{', separatedChildren, '}'] : separatedChildren;
+  return encloseWithId ? [id, ':{', separated, '}'] : separated;
 };
 
 export const CellView: typeof CellViewDecl = ({

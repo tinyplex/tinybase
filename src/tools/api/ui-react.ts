@@ -51,7 +51,7 @@ import {
 } from '../common/code';
 import {SharedTableTypes, SharedValueTypes, TableTypes} from './core';
 import {TablesSchema, ValuesSchema} from '../../store.d';
-import {arrayPush, arrayUnshift} from '../../common/array';
+import {arrayMap, arrayPush, arrayUnshift} from '../../common/array';
 import {Id} from '../../common.d';
 import {OR_UNDEFINED} from '../common/strings';
 import {getSchemaFunctions} from '../common/schema';
@@ -63,6 +63,11 @@ const DEPS = 'Deps';
 const getGet = (noun: string) => GET + noun;
 const getGetAndGetDeps = (noun: string) =>
   getParameterList(getGet(noun), getGet(noun) + DEPS);
+const getPropsList = (...props: string[]) =>
+  join(
+    arrayMap(props, (prop) => 'readonly ' + prop),
+    ';',
+  );
 
 const PARAMETER = 'Parameter';
 const PROVIDER = 'Provider';
@@ -86,6 +91,7 @@ const THEN_AND_THEN_DEPS = getParameterList(
 const THEN_AND_THEN_DEPS_IN_CALL = 'then, then' + DEPS;
 const ROW_ID = 'rowId';
 const TYPED_ROW_ID = ROW_ID + COLON_SPACE + ID;
+const VIEW = 'View';
 
 const getListenerHookParams = (
   listenerType: string,
@@ -194,7 +200,7 @@ export const getStoreUiReactApi = (
         `(${storeOrStoreId}, use${underlyingName}Core, [` +
         (preParametersInCall ? preParametersInCall : EMPTY_STRING) +
         (postParametersInCall ? '], [' + postParametersInCall : EMPTY_STRING) +
-        '])',
+        ']);',
       doc,
       generic,
     );
@@ -259,6 +265,7 @@ export const getStoreUiReactApi = (
       `a ${storeType} can be passed into the context of an application`,
   );
 
+  addImport(0, 'react', 'ReactElement', 'ComponentType');
   addImport(1, 'react', 'React');
   addImport(1, uiReactModuleDefinition, storeOrStoreIdType, providerPropsType);
 
@@ -309,6 +316,28 @@ export const getStoreUiReactApi = (
     ],
   );
 
+  const getProps = addInternalFunction(
+    'getProps',
+    'getProps: ((id: any) => ExtraProps) | undefined, id: Id',
+    '(getProps == null) ? ({} as ExtraProps) : getProps(id)',
+  );
+
+  const wrap = addInternalFunction(
+    'wrap',
+    getParameterList(
+      'children: any',
+      'separator?: any',
+      'encloseWithId?: boolean',
+      'id?: Id',
+    ),
+    [
+      'const separated = separator==null || !Array.isArray(children)',
+      ' ? children',
+      ' : children.map((child, c) => (c > 0 ? [separator, child] : child));',
+      `return encloseWithId ? [id, ':{', separated, '}'] : separated;`,
+    ],
+  );
+
   if (!objIsEmpty(tablesSchema)) {
     const [
       tablesType,
@@ -339,8 +368,31 @@ export const getStoreUiReactApi = (
       cellListenerType,
     );
 
-    addImport(1, tinyBaseUiReact);
+    addImport(null, tinyBaseUiReact, 'ExtraProps');
     addImport(1, moduleDefinition, storeType);
+
+    const tablesPropsType = addType(
+      'TablesProp',
+      '{' +
+        getPropsList(
+          storeInstance + '?: ' + storeType,
+          'tableComponents?: {' +
+            join(
+              mapTablesSchema(
+                (tableId: Id, _tableName: string) =>
+                  `'${tableId}'?: ComponentType<any>`, // ${tableName}TableProps
+              ),
+              ', ',
+            ) +
+            '}',
+          `getTableComponentProps?: (tableId: ${tableIdType}) => ExtraProps`,
+          'separator?: ReactElement | string',
+          'debugIds?: boolean',
+        ) +
+        '}',
+      'The props passed to a component that renders Tables',
+    );
+    addImport(1, uiReactModuleDefinition, tablesPropsType);
 
     addProxyHook(
       TABLES,
@@ -385,6 +437,39 @@ export const getStoreUiReactApi = (
       EMPTY_STRING,
       THEN_AND_THEN_DEPS,
       THEN_AND_THEN_DEPS_IN_CALL,
+    );
+
+    const getDefaultTableComponent = addInternalFunction(
+      'getDefaultTableComponent',
+      'tableId: TableId',
+      join(
+        mapTablesSchema(
+          (_, tableName, TABLE_ID) =>
+            `(tableId == ${TABLE_ID}) ? ${tableName}TableView : `,
+        ),
+      ) + `() => null`,
+    );
+
+    addComponent(
+      TABLES + VIEW,
+      '{' +
+        storeInstance +
+        ', tableComponents, getTableComponentProps, separator, debugIds}: ' +
+        tablesPropsType,
+      [
+        wrap + `(useTableIds(${storeInstance}).map((tableId) => {`,
+        'const Table = tableComponents?.[tableId] ?? ' +
+          getDefaultTableComponent +
+          '(tableId);',
+        'return <Table ',
+        `{...${getProps}(getTableComponentProps, tableId)} `,
+        'key={tableId} ',
+        `${storeInstance}={${storeInstance}} `,
+        'debugIds={debugIds} ',
+        '/>;',
+        '}), separator)',
+      ],
+      getTheContentOfTheStoreDoc(1, 13) + AND_REGISTERS,
     );
 
     mapTablesSchema((tableId: Id, tableName: string, TABLE_ID: string) => {
@@ -559,6 +644,13 @@ export const getStoreUiReactApi = (
         EMPTY_STRING,
         THEN_AND_THEN_DEPS,
         THEN_AND_THEN_DEPS_IN_CALL,
+      );
+
+      addComponent(
+        tableName + TABLE + VIEW,
+        EMPTY_STRING,
+        '<b>table: ' + TABLE_ID + '</b>',
+        getTableContentDoc(tableId, 13) + AND_REGISTERS,
       );
 
       mapCellSchema(
