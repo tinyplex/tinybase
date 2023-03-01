@@ -6671,19 +6671,19 @@ export type SOrSId = S | Id;
 export type ProviderProps = {readonly s?: S; readonly sById?: {[sId: Id]: S}};
 
 /** The props passed to a component that renders the tabular content of the Store. */
-export type TablesProps = {readonly s?: S;readonly tableComponents?: {'t1'?: ComponentType<T1TableProps>};readonly getTableComponentProps?: (tableId: TableId) => ExtraProps;readonly separator?: ReactElement | string;readonly debugIds?: boolean};
+export type TablesProps = {readonly s?: S; readonly tableComponents?: {'t1'?: ComponentType<T1TableProps>}; readonly getTableComponentProps?: (tableId: TableId) => ExtraProps; readonly separator?: ReactElement | string; readonly debugIds?: boolean};
 
 /** The props passed to a component that renders a Cell. */
-export type CellProps = {readonly rowId: Id;readonly s?: S;readonly getTableComponentProps?: (tableId: TableId) => ExtraProps;readonly debugIds?: boolean};
+export type CellProps = {readonly rowId: Id; readonly s?: S; readonly getTableComponentProps?: (tableId: TableId) => ExtraProps; readonly debugIds?: boolean};
 
 /** The props passed to a component that renders the specified Row in the 't1' Table. */
-export type T1RowProps = {readonly rowId: Id;readonly s?: S;readonly cellComponents?: {'c1'?: ComponentType<CellProps>, 'c2'?: ComponentType<CellProps>, 'c3'?: ComponentType<CellProps>, ''?: ComponentType<CellProps>};readonly getCellComponentProps?: (cellId: T1CellId) => ExtraProps;readonly separator?: ReactElement | string;readonly debugIds?: boolean};
+export type T1RowProps = {readonly rowId: Id; readonly s?: S; readonly cellComponents?: {'c1'?: ComponentType<CellProps>, 'c2'?: ComponentType<CellProps>, 'c3'?: ComponentType<CellProps>, ''?: ComponentType<CellProps>}; readonly getCellComponentProps?: (cellId: T1CellId) => ExtraProps; readonly separator?: ReactElement | string; readonly debugIds?: boolean};
 
 /** The props passed to a component that renders the 't1' Table. */
-export type T1TableProps = {readonly s?: S;readonly rowComponent?: ComponentType<T1RowProps>;readonly getRowComponentProps?: (rowId: Id) => ExtraProps;readonly separator?: ReactElement | string;readonly debugIds?: boolean};
+export type T1TableProps = {readonly s?: S; readonly rowComponent?: ComponentType<T1RowProps>; readonly getRowComponentProps?: (rowId: Id) => ExtraProps; readonly separator?: ReactElement | string; readonly debugIds?: boolean};
 
 /** The props passed to a component that renders the 't1' Table, sorted. */
-export type T1SortedTableProps = {readonly cellId?: T1CellId;readonly descending?: boolean;readonly offset?: number;readonly limit?: number;readonly s?: S;readonly rowComponent?: ComponentType<T1RowProps>;readonly getRowComponentProps?: (rowId: Id) => ExtraProps;readonly separator?: ReactElement | string;readonly debugIds?: boolean};
+export type T1SortedTableProps = {readonly cellId?: T1CellId; readonly descending?: boolean; readonly offset?: number; readonly limit?: number; readonly s?: S; readonly rowComponent?: ComponentType<T1RowProps>; readonly getRowComponentProps?: (rowId: Id) => ExtraProps; readonly separator?: ReactElement | string; readonly debugIds?: boolean};
 
 /** Create a S within a React application with convenient memoization. */
 export function useCreateS(create: () => S, createDeps?: React.DependencyList): S;
@@ -8091,19 +8091,19 @@ export type SOrSId = S | Id;
 export type ProviderProps = {readonly s?: S; readonly sById?: {[sId: Id]: S}};
 
 /** The props passed to a component that renders the tabular content of the Store. */
-export type TablesProps = {readonly s?: S;readonly tableComponents?: {'t1'?: ComponentType<T1TableProps>};readonly getTableComponentProps?: (tableId: TableId) => ExtraProps;readonly separator?: ReactElement | string;readonly debugIds?: boolean};
+export type TablesProps = {readonly s?: S; readonly tableComponents?: {'t1'?: ComponentType<T1TableProps>}; readonly getTableComponentProps?: (tableId: TableId) => ExtraProps; readonly separator?: ReactElement | string; readonly debugIds?: boolean};
 
 /** The props passed to a component that renders a Cell. */
-export type CellProps = {readonly rowId: Id;readonly s?: S;readonly getTableComponentProps?: (tableId: TableId) => ExtraProps;readonly debugIds?: boolean};
+export type CellProps = {readonly rowId: Id; readonly s?: S; readonly getTableComponentProps?: (tableId: TableId) => ExtraProps; readonly debugIds?: boolean};
 
 /** The props passed to a component that renders the specified Row in the 't1' Table. */
-export type T1RowProps = {readonly rowId: Id;readonly s?: S;readonly cellComponents?: {'c1'?: ComponentType<CellProps>, 'c2'?: ComponentType<CellProps>, 'c3'?: ComponentType<CellProps>, ''?: ComponentType<CellProps>};readonly getCellComponentProps?: (cellId: T1CellId) => ExtraProps;readonly separator?: ReactElement | string;readonly debugIds?: boolean};
+export type T1RowProps = {readonly rowId: Id; readonly s?: S; readonly cellComponents?: {'c1'?: ComponentType<CellProps>, 'c2'?: ComponentType<CellProps>, 'c3'?: ComponentType<CellProps>, ''?: ComponentType<CellProps>}; readonly getCellComponentProps?: (cellId: T1CellId) => ExtraProps; readonly separator?: ReactElement | string; readonly debugIds?: boolean};
 
 /** The props passed to a component that renders the 't1' Table. */
-export type T1TableProps = {readonly s?: S;readonly rowComponent?: ComponentType<T1RowProps>;readonly getRowComponentProps?: (rowId: Id) => ExtraProps;readonly separator?: ReactElement | string;readonly debugIds?: boolean};
+export type T1TableProps = {readonly s?: S; readonly rowComponent?: ComponentType<T1RowProps>; readonly getRowComponentProps?: (rowId: Id) => ExtraProps; readonly separator?: ReactElement | string; readonly debugIds?: boolean};
 
 /** The props passed to a component that renders the 't1' Table, sorted. */
-export type T1SortedTableProps = {readonly cellId?: T1CellId;readonly descending?: boolean;readonly offset?: number;readonly limit?: number;readonly s?: S;readonly rowComponent?: ComponentType<T1RowProps>;readonly getRowComponentProps?: (rowId: Id) => ExtraProps;readonly separator?: ReactElement | string;readonly debugIds?: boolean};
+export type T1SortedTableProps = {readonly cellId?: T1CellId; readonly descending?: boolean; readonly offset?: number; readonly limit?: number; readonly s?: S; readonly rowComponent?: ComponentType<T1RowProps>; readonly getRowComponentProps?: (rowId: Id) => ExtraProps; readonly separator?: ReactElement | string; readonly debugIds?: boolean};
 
 /** Create a S within a React application with convenient memoization. */
 export function useCreateS(create: () => S, createDeps?: React.DependencyList): S;
