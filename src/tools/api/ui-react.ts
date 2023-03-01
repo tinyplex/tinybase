@@ -65,11 +65,13 @@ const DEPS = 'Deps';
 const getGet = (noun: string) => GET + noun;
 const getGetAndGetDeps = (noun: string) =>
   getParameterList(getGet(noun), getGet(noun) + DEPS);
-const getPropsList = (...props: string[]) =>
+const getPropsTypeList = (...props: string[]) =>
+  '{' +
   join(
     arrayMap(props, (prop) => 'readonly ' + prop),
-    ';',
-  );
+    '; ',
+  ) +
+  '}';
 
 const DEBUG_IDS_PROP_TYPE = 'debugIds?: boolean';
 const DEBUG_IDS_PROP = 'debugIds={debugIds}';
@@ -84,19 +86,21 @@ const AND_REGISTERS =
   'that result will cause a re-render';
 const BASED_ON_A_PARAMETER = ', based on a parameter';
 const COLON_SPACE = ': ';
+const OPTIONAL_COLON = '?: ';
+const GENERIC_PARAMETER = '<' + PARAMETER + ',>';
 const PARAMETERIZED_CALLBACK =
   PARAMETER + 'ized' + CALLBACK + '<' + PARAMETER + '>';
-const GENERIC_PARAMETER = '<' + PARAMETER + ',>';
+const PROPS = 'Props';
+const ROW_ID = 'rowId';
+const ROW_ID_PROP = 'rowId={rowId}';
+const SEPARATOR_AND_DEBUG_IDS = ', separator, debugIds';
+const SEPARATOR_PROP_TYPE = 'separator?: ReactElement | string';
 const THEN_PREFIX = 'then?: (store: Store';
 const THEN_AND_THEN_DEPS = getParameterList(
   THEN_PREFIX + ')' + RETURNS_VOID,
   THEN_DEPS,
 );
 const THEN_AND_THEN_DEPS_IN_CALL = 'then, then' + DEPS;
-const ROW_ID = 'rowId';
-const ROW_ID_PROP = 'rowId={rowId}';
-const SEPARATOR_AND_DEBUG_IDS = ', separator, debugIds';
-const SEPARATOR_PROP_TYPE = 'separator?: ReactElement | string';
 const TYPED_ROW_ID = ROW_ID + COLON_SPACE + ID;
 const VIEW = 'View';
 
@@ -255,6 +259,7 @@ export const getStoreUiReactApi = (
   addImport(0, tinyBaseUiReact, 'ComponentReturnType');
   addImport(0, moduleDefinition, storeType);
 
+  // StoreOrStoreId
   const storeOrStoreIdType = addType(
     StoreOrStoreId,
     storeType + ' | ' + ID,
@@ -262,22 +267,24 @@ export const getStoreUiReactApi = (
       'component',
   );
 
+  // ProviderProps
   const providerPropsType = addType(
-    PROVIDER + 'Props',
-    `{readonly ${storeInstance}?: ${storeType}; ` +
-      `readonly ${storeInstance}ById?: ` +
-      `{[${storeInstance}Id: Id]: ${storeType}}}`,
-    'Used with the ' +
-      PROVIDER +
-      ' component, so that ' +
-      `a ${storeType} can be passed into the context of an application`,
+    PROVIDER + PROPS,
+    getPropsTypeList(
+      storeInstance + OPTIONAL_COLON + storeType,
+      storeInstance + `ById?: {[${storeInstance}Id: Id]: ${storeType}}`,
+    ),
+    `Used with the ${PROVIDER} component, so that a ` +
+      storeType +
+      ' can be passed into the context of an application',
   );
 
   addImport(0, 'react', 'ReactElement', 'ComponentType');
   addImport(1, 'react', 'React');
   addImport(1, uiReactModuleDefinition, storeOrStoreIdType, providerPropsType);
 
-  const storeOrStoreIdParameter = storeOrStoreId + '?: ' + storeOrStoreIdType;
+  const storeOrStoreIdParameter =
+    storeOrStoreId + OPTIONAL_COLON + storeOrStoreIdType;
 
   addConstant('{createContext, useContext, useMemo}', 'React');
 
@@ -438,6 +445,7 @@ export const getStoreUiReactApi = (
       ) + NullComponent,
     );
 
+    // useTables
     addProxyHook(
       TABLES,
       TABLES,
@@ -445,6 +453,7 @@ export const getStoreUiReactApi = (
       getTheContentOfTheStoreDoc(1, 0) + AND_REGISTERS,
     );
 
+    // useTableIds
     const useTableIds = addProxyHook(
       TABLE_IDS,
       TABLE_IDS,
@@ -452,6 +461,7 @@ export const getStoreUiReactApi = (
       getIdsDoc(TABLE, THE_STORE) + AND_REGISTERS,
     );
 
+    // useSetTablesCallback
     addProxyHook(
       SET + TABLES + CALLBACK,
       SET + TABLES + CALLBACK,
@@ -471,6 +481,7 @@ export const getStoreUiReactApi = (
       THEN_AND_THEN_DEPS_IN_CALL,
     );
 
+    // useDelTablesCallback
     addProxyHook(
       DEL + TABLES + CALLBACK,
       DEL + TABLES + CALLBACK,
@@ -483,43 +494,42 @@ export const getStoreUiReactApi = (
       THEN_AND_THEN_DEPS_IN_CALL,
     );
 
+    // TablesProps
     const tablesPropsType = addType(
-      'TablesProps',
-      '{' +
-        getPropsList(
-          storeInstance + '?: ' + storeType,
-          'tableComponents?: {' +
-            join(
-              mapTablesSchema(
-                (tableId: Id, tableName: string) =>
-                  `'${tableId}'?: ComponentType<${tableName}TableProps>`,
-              ),
-              ', ',
-            ) +
-            '}',
-          `getTableComponentProps?: (tableId: ${tableIdType}) => ExtraProps`,
-          SEPARATOR_PROP_TYPE,
-          DEBUG_IDS_PROP_TYPE,
-        ) +
-        '}',
+      TABLES + PROPS,
+      getPropsTypeList(
+        storeInstance + OPTIONAL_COLON + storeType,
+        'tableComponents?: {' +
+          join(
+            mapTablesSchema(
+              (tableId: Id, tableName: string) =>
+                `'${tableId}'?: ComponentType<${tableName}TableProps>`,
+            ),
+            ', ',
+          ) +
+          '}',
+        `getTableComponentProps?: (tableId: ${tableIdType}) => ExtraProps`,
+        SEPARATOR_PROP_TYPE,
+        DEBUG_IDS_PROP_TYPE,
+      ),
       getPropsDoc(getTheContentOfDoc(1, 1)),
     );
 
+    // CellProps
     const cellPropsType = addType(
-      'CellProps',
-      '{' +
-        getPropsList(
-          'rowId: Id',
-          storeInstance + '?: ' + storeType,
-          `getTableComponentProps?: (tableId: ${tableIdType}) => ExtraProps`,
-          DEBUG_IDS_PROP_TYPE,
-        ) +
-        '}',
+      CELL + PROPS,
+      getPropsTypeList(
+        'rowId: Id',
+        storeInstance + OPTIONAL_COLON + storeType,
+        `getTableComponentProps?: (tableId: ${tableIdType}) => ExtraProps`,
+        DEBUG_IDS_PROP_TYPE,
+      ),
       getPropsDoc('a Cell'),
     );
 
     addImport(1, uiReactModuleDefinition, tablesPropsType, cellPropsType);
 
+    // TablesView
     addComponent(
       TABLES + VIEW,
       '{' +
@@ -567,6 +577,7 @@ export const getStoreUiReactApi = (
         cellIdType,
       );
 
+      // useTable
       addProxyHook(
         tableName + TABLE,
         TABLE,
@@ -576,6 +587,7 @@ export const getStoreUiReactApi = (
         TABLE_ID,
       );
 
+      // useRowIds
       const useRowIds = addProxyHook(
         tableName + ROW_IDS,
         ROW_IDS,
@@ -585,6 +597,7 @@ export const getStoreUiReactApi = (
         TABLE_ID,
       );
 
+      // useSortedRowIds
       const useSortedRowIds = addProxyHook(
         tableName + SORTED_ROW_IDS,
         SORTED_ROW_IDS,
@@ -596,6 +609,7 @@ export const getStoreUiReactApi = (
         TABLE_ID + ', cellId, descending, offset, limit',
       );
 
+      // useRow
       addProxyHook(
         tableName + ROW,
         ROW,
@@ -605,6 +619,7 @@ export const getStoreUiReactApi = (
         getParameterList(TABLE_ID, ROW_ID),
       );
 
+      // useCellIds
       const useCellIds = addProxyHook(
         tableName + CELL_IDS,
         CELL_IDS,
@@ -614,6 +629,7 @@ export const getStoreUiReactApi = (
         getParameterList(TABLE_ID, ROW_ID),
       );
 
+      // useSetTableCallback
       addProxyHook(
         SET + tableName + TABLE + CALLBACK,
         SET + TABLE + CALLBACK,
@@ -633,6 +649,7 @@ export const getStoreUiReactApi = (
         THEN_AND_THEN_DEPS_IN_CALL,
       );
 
+      // useDelTableCallback
       addProxyHook(
         DEL + tableName + TABLE + CALLBACK,
         DEL + TABLE + CALLBACK,
@@ -645,6 +662,7 @@ export const getStoreUiReactApi = (
         THEN_AND_THEN_DEPS_IN_CALL,
       );
 
+      // useSetRowCallback
       addProxyHook(
         SET + tableName + ROW + CALLBACK,
         SET + ROW + CALLBACK,
@@ -665,6 +683,7 @@ export const getStoreUiReactApi = (
         THEN_AND_THEN_DEPS_IN_CALL,
       );
 
+      // useAddRowCallback
       addProxyHook(
         'Add' + tableName + ROW + CALLBACK,
         'Add' + ROW + CALLBACK,
@@ -686,6 +705,7 @@ export const getStoreUiReactApi = (
         THEN_AND_THEN_DEPS_IN_CALL,
       );
 
+      // useSetPartialRowCallback
       addProxyHook(
         SET + tableName + PARTIAL + ROW + CALLBACK,
         SET + PARTIAL + ROW + CALLBACK,
@@ -706,6 +726,7 @@ export const getStoreUiReactApi = (
         THEN_AND_THEN_DEPS_IN_CALL,
       );
 
+      // useDelRowCallback
       addProxyHook(
         DEL + tableName + ROW + CALLBACK,
         DEL + ROW + CALLBACK,
@@ -718,59 +739,55 @@ export const getStoreUiReactApi = (
         THEN_AND_THEN_DEPS_IN_CALL,
       );
 
+      // RowProps
       const rowPropsType = addType(
         tableName + 'RowProps',
-        '{' +
-          getPropsList(
-            'rowId: Id',
-            storeInstance + '?: ' + storeType,
-            'cellComponents?: {' +
-              join(
-                mapCellSchema(
-                  tableId,
-                  (cellId: Id) =>
-                    `'${cellId}'?: ComponentType<${cellPropsType}>`,
-                ),
-                ', ',
-              ) +
-              '}',
-            `getCellComponentProps?: (cellId: ${cellIdType}) => ExtraProps`,
-            SEPARATOR_PROP_TYPE,
-            DEBUG_IDS_PROP_TYPE,
-          ) +
-          '}',
+        getPropsTypeList(
+          'rowId: Id',
+          storeInstance + OPTIONAL_COLON + storeType,
+          'cellComponents?: {' +
+            join(
+              mapCellSchema(
+                tableId,
+                (cellId: Id) => `'${cellId}'?: ComponentType<${cellPropsType}>`,
+              ),
+              ', ',
+            ) +
+            '}',
+          `getCellComponentProps?: (cellId: ${cellIdType}) => ExtraProps`,
+          SEPARATOR_PROP_TYPE,
+          DEBUG_IDS_PROP_TYPE,
+        ),
         getPropsDoc(getRowDoc(tableId)),
       );
 
+      // TableProps
       const tablePropsType = addType(
         tableName + 'TableProps',
-        '{' +
-          getPropsList(
-            storeInstance + '?: ' + storeType,
-            `rowComponent?: ComponentType<${rowPropsType}>`,
-            `getRowComponentProps?: (rowId: Id) => ExtraProps`,
-            SEPARATOR_PROP_TYPE,
-            DEBUG_IDS_PROP_TYPE,
-          ) +
-          '}',
+        getPropsTypeList(
+          storeInstance + OPTIONAL_COLON + storeType,
+          `rowComponent?: ComponentType<${rowPropsType}>`,
+          `getRowComponentProps?: (rowId: Id) => ExtraProps`,
+          SEPARATOR_PROP_TYPE,
+          DEBUG_IDS_PROP_TYPE,
+        ),
         getPropsDoc(getTableDoc(tableId)),
       );
 
+      // SortedTableProps
       const sortedTablePropsType = addType(
         tableName + 'SortedTableProps',
-        '{' +
-          getPropsList(
-            'cellId?: ' + cellIdType,
-            'descending?: boolean',
-            'offset?: number',
-            'limit?: number',
-            storeInstance + '?: ' + storeType,
-            `rowComponent?: ComponentType<${rowPropsType}>`,
-            `getRowComponentProps?: (rowId: Id) => ExtraProps`,
-            SEPARATOR_PROP_TYPE,
-            DEBUG_IDS_PROP_TYPE,
-          ) +
-          '}',
+        getPropsTypeList(
+          'cellId?: ' + cellIdType,
+          'descending?: boolean',
+          'offset?: number',
+          'limit?: number',
+          storeInstance + OPTIONAL_COLON + storeType,
+          `rowComponent?: ComponentType<${rowPropsType}>`,
+          `getRowComponentProps?: (rowId: Id) => ExtraProps`,
+          SEPARATOR_PROP_TYPE,
+          DEBUG_IDS_PROP_TYPE,
+        ),
         getPropsDoc(getTableDoc(tableId)) + ', sorted',
       );
 
@@ -782,6 +799,7 @@ export const getStoreUiReactApi = (
         sortedTablePropsType,
       );
 
+      // RowView
       const rowView = addComponent(
         tableName + ROW + VIEW,
         '{rowId, ' +
@@ -807,6 +825,7 @@ export const getStoreUiReactApi = (
         getRowContentDoc(tableId, 13) + AND_REGISTERS,
       );
 
+      // SortedRowView
       addComponent(
         tableName + 'Sorted' + TABLE + VIEW,
         '{cellId, descending, offset, limit, ...props}: ' +
@@ -819,6 +838,7 @@ export const getStoreUiReactApi = (
         getTableContentDoc(tableId, 13) + ', sorted' + AND_REGISTERS,
       );
 
+      // TableView
       addComponent(
         tableName + TABLE + VIEW,
         'props: ' + tablePropsType,
@@ -836,6 +856,7 @@ export const getStoreUiReactApi = (
           addImport(0, moduleDefinition, mapCellType);
           addImport(1, moduleDefinition, mapCellType);
 
+          // useCell
           const useCell = addProxyHook(
             tableName + cellName + CELL,
             CELL,
@@ -845,6 +866,7 @@ export const getStoreUiReactApi = (
             getParameterList(TABLE_ID, ROW_ID, CELL_ID),
           );
 
+          // useSetCellCallback
           addProxyHook(
             SET + tableName + cellName + CELL + CALLBACK,
             SET + CELL + CALLBACK,
@@ -865,6 +887,7 @@ export const getStoreUiReactApi = (
             THEN_AND_THEN_DEPS_IN_CALL,
           );
 
+          // useDelCellCallback
           addProxyHook(
             DEL + tableName + cellName + CELL + CALLBACK,
             DEL + CELL + CALLBACK,
@@ -877,6 +900,7 @@ export const getStoreUiReactApi = (
             THEN_AND_THEN_DEPS_IN_CALL,
           );
 
+          // CellView
           addComponent(
             tableName + cellName + CELL + VIEW,
             `{rowId, ${storeInstance}, debugIds}: ` + cellPropsType,
@@ -899,6 +923,7 @@ export const getStoreUiReactApi = (
       ' | ',
     );
 
+    // useTablesListener
     addProxyHook(
       TABLES + LISTENER,
       TABLES + LISTENER,
@@ -908,6 +933,7 @@ export const getStoreUiReactApi = (
       getListenerHookParamsInCall(),
     );
 
+    // useTableIdsListener
     addProxyHook(
       TABLE_IDS + LISTENER,
       TABLE_IDS + LISTENER,
@@ -917,6 +943,7 @@ export const getStoreUiReactApi = (
       getListenerHookParamsInCall(),
     );
 
+    // useTableListener
     addProxyHook(
       TABLE + LISTENER,
       TABLE + LISTENER,
@@ -929,6 +956,7 @@ export const getStoreUiReactApi = (
       getListenerHookParamsInCall('tableId'),
     );
 
+    // useRowIdsListener
     addProxyHook(
       ROW_IDS + LISTENER,
       ROW_IDS + LISTENER,
@@ -941,6 +969,7 @@ export const getStoreUiReactApi = (
       getListenerHookParamsInCall('tableId'),
     );
 
+    // useSortedRowIdsListener
     addProxyHook(
       SORTED_ROW_IDS + LISTENER,
       SORTED_ROW_IDS + LISTENER,
@@ -963,6 +992,7 @@ export const getStoreUiReactApi = (
       ),
     );
 
+    // useRowListener
     addProxyHook(
       ROW + LISTENER,
       ROW + LISTENER,
@@ -976,6 +1006,7 @@ export const getStoreUiReactApi = (
       getListenerHookParamsInCall('tableId', ROW_ID),
     );
 
+    // useCellIdsListener
     addProxyHook(
       CELL_IDS + LISTENER,
       CELL_IDS + LISTENER,
@@ -989,6 +1020,7 @@ export const getStoreUiReactApi = (
       getListenerHookParamsInCall('tableId', ROW_ID),
     );
 
+    // useCellListener
     addProxyHook(
       CELL + LISTENER,
       CELL + LISTENER,
