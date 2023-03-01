@@ -42,7 +42,10 @@ const SPACE = ' ';
 const GETS_A_CALLBACK_THAT_CAN = 'Gets a callback that can ';
 const THE = 'the ';
 
-const getTheContentOfDoc = (content: 0 | 1 | 2 = 0, theStore = 0): string =>
+export const getTheContentOfDoc = (
+  content: 0 | 1 | 2 = 0,
+  theStore = 0,
+): string =>
   `the ${CONTENT[content]}content of` +
   (theStore ? SPACE + THE_STORE : EMPTY_STRING);
 
@@ -69,6 +72,9 @@ export const getIdsDoc = (idsNoun: string, parentNoun: string, sorted = 0) =>
 
 export const getForEachDoc = (childNoun: string, parentNoun: string) =>
   `Calls a function for each ${childNoun} in ` + parentNoun;
+
+export const getPropsDoc = (childNoun: string) =>
+  'The props passed to a component that renders ' + childNoun;
 
 export const getCallbackDoc = (takes: string) =>
   'A function that takes ' + takes;

@@ -13,10 +13,12 @@ import {
   getCellContentDoc,
   getIdsDoc,
   getListenerDoc,
+  getPropsDoc,
   getRowContentDoc,
   getRowDoc,
   getTableContentDoc,
   getTableDoc,
+  getTheContentOfDoc,
   getTheContentOfTheStoreDoc,
   getValueContentDoc,
 } from '../common/strings';
@@ -69,9 +71,13 @@ const getPropsList = (...props: string[]) =>
     ';',
   );
 
+const DEBUG_IDS_PROP_TYPE = 'debugIds?: boolean';
+const DEBUG_IDS_PROP = 'debugIds={debugIds}';
+const DEPS_SUFFIX = DEPS + '?: React.DependencyList';
+const THEN_DEPS = 'then' + DEPS_SUFFIX;
 const PARAMETER = 'Parameter';
-const PROVIDER = 'Provider';
 const GETTER_ARGS = ': (parameter: ' + PARAMETER + ', store: Store) => ';
+const PROVIDER = 'Provider';
 const USE_CONTEXT = 'const contextValue = useContext(Context);';
 const AND_REGISTERS =
   ', and registers a listener so that any changes to ' +
@@ -81,8 +87,6 @@ const COLON_SPACE = ': ';
 const PARAMETERIZED_CALLBACK =
   PARAMETER + 'ized' + CALLBACK + '<' + PARAMETER + '>';
 const GENERIC_PARAMETER = '<' + PARAMETER + ',>';
-const DEPS_SUFFIX = DEPS + '?: React.DependencyList';
-const THEN_DEPS = 'then' + DEPS_SUFFIX;
 const THEN_PREFIX = 'then?: (store: Store';
 const THEN_AND_THEN_DEPS = getParameterList(
   THEN_PREFIX + ')' + RETURNS_VOID,
@@ -90,6 +94,9 @@ const THEN_AND_THEN_DEPS = getParameterList(
 );
 const THEN_AND_THEN_DEPS_IN_CALL = 'then, then' + DEPS;
 const ROW_ID = 'rowId';
+const ROW_ID_PROP = 'rowId={rowId}';
+const SEPARATOR_AND_DEBUG_IDS = ', separator, debugIds';
+const SEPARATOR_PROP_TYPE = 'separator?: ReactElement | string';
 const TYPED_ROW_ID = ROW_ID + COLON_SPACE + ID;
 const VIEW = 'View';
 
@@ -138,6 +145,7 @@ export const getStoreUiReactApi = (
   const storeInstance = camel(storeType);
   const StoreOrStoreId = storeType + 'Or' + storeType + ID;
   const storeOrStoreId = storeInstance + 'Or' + storeType + ID;
+  const storeProp = storeInstance + `={${storeInstance}}`;
 
   const functions: IdMap<
     [
@@ -373,9 +381,9 @@ export const getStoreUiReactApi = (
 
     const tableView = addInternalFunction(
       'tableView',
-      '{store, rowComponent, getRowComponentProps, separator, ' +
-        'debugIds}: any, rowIds: Ids, ' +
-        'tableId: Id, ' +
+      `{${storeInstance}, rowComponent, getRowComponentProps` +
+        SEPARATOR_AND_DEBUG_IDS +
+        '}: any, rowIds: Ids, tableId: Id, ' +
         'defaultRowComponent: React.ComponentType<any>',
       [
         'const Row = rowComponent ?? defaultRowComponent;',
@@ -384,14 +392,13 @@ export const getStoreUiReactApi = (
         '{...' + getProps + '(getRowComponentProps, rowId)}',
         'key={rowId}',
         'tableId={tableId}',
-        'rowId={rowId}',
-        'store={store}',
-        'debugIds={debugIds}',
+        ROW_ID_PROP,
+        storeProp,
+        DEBUG_IDS_PROP,
         '/>',
-        ')),',
-        'separator,',
-        'debugIds,',
-        'tableId,',
+        '))',
+        SEPARATOR_AND_DEBUG_IDS,
+        ', tableId,',
         ');',
       ],
     );
@@ -491,11 +498,11 @@ export const getStoreUiReactApi = (
             ) +
             '}',
           `getTableComponentProps?: (tableId: ${tableIdType}) => ExtraProps`,
-          'separator?: ReactElement | string',
-          'debugIds?: boolean',
+          SEPARATOR_PROP_TYPE,
+          DEBUG_IDS_PROP_TYPE,
         ) +
         '}',
-      'The props passed to a component that renders Tables',
+      getPropsDoc(getTheContentOfDoc(1, 1)),
     );
 
     const cellPropsType = addType(
@@ -505,10 +512,10 @@ export const getStoreUiReactApi = (
           'rowId: Id',
           storeInstance + '?: ' + storeType,
           `getTableComponentProps?: (tableId: ${tableIdType}) => ExtraProps`,
-          'debugIds?: boolean',
+          DEBUG_IDS_PROP_TYPE,
         ) +
         '}',
-      'The props passed to a component that renders a Cell',
+      getPropsDoc('a Cell'),
     );
 
     addImport(1, uiReactModuleDefinition, tablesPropsType, cellPropsType);
@@ -517,7 +524,9 @@ export const getStoreUiReactApi = (
       TABLES + VIEW,
       '{' +
         storeInstance +
-        ', tableComponents, getTableComponentProps, separator, debugIds}: ' +
+        ', tableComponents, getTableComponentProps' +
+        SEPARATOR_AND_DEBUG_IDS +
+        '}: ' +
         tablesPropsType,
       [
         wrap + `(${useTableIds}(${storeInstance}).map((tableId) => {`,
@@ -527,8 +536,8 @@ export const getStoreUiReactApi = (
         'return <Table',
         `{...${getProps}(getTableComponentProps, tableId)}`,
         'key={tableId}',
-        `${storeInstance}={${storeInstance}}`,
-        'debugIds={debugIds}',
+        storeProp,
+        DEBUG_IDS_PROP,
         '/>;',
         '}), separator)',
       ],
@@ -726,12 +735,11 @@ export const getStoreUiReactApi = (
               ) +
               '}',
             `getCellComponentProps?: (cellId: ${cellIdType}) => ExtraProps`,
-            'separator?: ReactElement | string',
-            'debugIds?: boolean',
+            SEPARATOR_PROP_TYPE,
+            DEBUG_IDS_PROP_TYPE,
           ) +
           '}',
-        'The props passed to a component that renders a Row in the ' +
-          `'${tableId}' Table`,
+        getPropsDoc(getRowDoc(tableId)),
       );
 
       const tablePropsType = addType(
@@ -741,11 +749,11 @@ export const getStoreUiReactApi = (
             storeInstance + '?: ' + storeType,
             `rowComponent?: ComponentType<${rowPropsType}>`,
             `getRowComponentProps?: (rowId: Id) => ExtraProps`,
-            'separator?: ReactElement | string',
-            'debugIds?: boolean',
+            SEPARATOR_PROP_TYPE,
+            DEBUG_IDS_PROP_TYPE,
           ) +
           '}',
-        `The props passed to a component that renders the '${tableId}' Table`,
+        getPropsDoc(getTableDoc(tableId)),
       );
 
       const sortedTablePropsType = addType(
@@ -759,12 +767,11 @@ export const getStoreUiReactApi = (
             storeInstance + '?: ' + storeType,
             `rowComponent?: ComponentType<${rowPropsType}>`,
             `getRowComponentProps?: (rowId: Id) => ExtraProps`,
-            'separator?: ReactElement | string',
-            'debugIds?: boolean',
+            SEPARATOR_PROP_TYPE,
+            DEBUG_IDS_PROP_TYPE,
           ) +
           '}',
-        'The props passed to a component that renders the ' +
-          `'${tableId}' Table, sorted`,
+        getPropsDoc(getTableDoc(tableId)) + ', sorted',
       );
 
       addImport(
@@ -779,7 +786,9 @@ export const getStoreUiReactApi = (
         tableName + ROW + VIEW,
         '{rowId, ' +
           storeInstance +
-          ', cellComponents, getCellComponentProps, separator, debugIds}: ' +
+          ', cellComponents, getCellComponentProps' +
+          SEPARATOR_AND_DEBUG_IDS +
+          '}: ' +
           rowPropsType,
         [
           wrap + `(${useCellIds}(rowId, ${storeInstance}).map((cellId) => {`,
@@ -789,11 +798,11 @@ export const getStoreUiReactApi = (
           'return <Cell',
           `{...${getProps}(getCellComponentProps, cellId)} `,
           'key={cellId}',
-          'rowId={rowId}',
-          `${storeInstance}={${storeInstance}}`,
-          'debugIds={debugIds}',
+          ROW_ID_PROP,
+          storeProp,
+          DEBUG_IDS_PROP,
           '/>;',
-          '}), separator, debugIds, rowId)',
+          '})' + SEPARATOR_AND_DEBUG_IDS + ', rowId)',
         ],
         getRowContentDoc(tableId, 13) + AND_REGISTERS,
       );
