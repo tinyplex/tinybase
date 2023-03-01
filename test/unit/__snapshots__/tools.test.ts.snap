@@ -1251,7 +1251,6 @@ export type TablesProps = {
 export type CellProps = {
   readonly rowId: Id;
   readonly s?: S;
-  readonly getTableComponentProps?: (tableId: TableId) => ExtraProps;
   readonly debugIds?: boolean;
 };
 
@@ -2136,6 +2135,8 @@ const wrap = (
   return encloseWithId ? [id, ':{', separated, '}'] : separated;
 };
 
+const NullComponent = () => null;
+
 const tableView = (
   {s, rowComponent, getRowComponentProps, separator, debugIds}: any,
   rowIds: Ids,
@@ -2159,8 +2160,6 @@ const tableView = (
     tableId,
   );
 };
-
-const NullComponent = () => null;
 
 const T1 = 't1';
 
@@ -3402,6 +3401,7 @@ export const createS: typeof createSDecl = () => {
   ParameterizedCallback,
   Store,
 } from 'tinybase';
+import {ComponentReturnType, ExtraProps} from 'tinybase/ui-react';
 import {ComponentType, ReactElement} from 'react';
 import {
   MapNumber,
@@ -3414,7 +3414,6 @@ import {
   ValuesListener,
   ValuesWhenSet,
 } from './s.d';
-import {ComponentReturnType} from 'tinybase/ui-react';
 
 /**
  * Used when you need to refer to a S in a React hook or component.
@@ -3642,8 +3641,23 @@ export function Provider({
   Store,
 } from 'tinybase';
 import {
+  ExtraProps,
+  useDelValueCallback as useDelValueCallbackCore,
+  useDelValuesCallback as useDelValuesCallbackCore,
+  useSetPartialValuesCallback as useSetPartialValuesCallbackCore,
+  useSetValueCallback as useSetValueCallbackCore,
+  useSetValuesCallback as useSetValuesCallbackCore,
+  useValue as useValueCore,
+  useValueIds as useValueIdsCore,
+  useValueIdsListener as useValueIdsListenerCore,
+  useValueListener as useValueListenerCore,
+  useValues as useValuesCore,
+  useValuesListener as useValuesListenerCore,
+} from 'tinybase/ui-react';
+import {
   MapNumber,
   MapString,
+  S,
   ValueId,
   ValueIdsListener,
   ValueListener,
@@ -3678,19 +3692,6 @@ import {
   useValues as useValuesDecl,
   useValuesListener as useValuesListenerDecl,
 } from './s-ui-react.d';
-import {
-  useDelValueCallback as useDelValueCallbackCore,
-  useDelValuesCallback as useDelValuesCallbackCore,
-  useSetPartialValuesCallback as useSetPartialValuesCallbackCore,
-  useSetValueCallback as useSetValueCallbackCore,
-  useSetValuesCallback as useSetValuesCallbackCore,
-  useValue as useValueCore,
-  useValueIds as useValueIdsCore,
-  useValueIdsListener as useValueIdsListenerCore,
-  useValueListener as useValueListenerCore,
-  useValues as useValuesCore,
-  useValuesListener as useValuesListenerCore,
-} from 'tinybase/ui-react';
 import React from 'react';
 
 const {createContext, useContext, useMemo} = React;
@@ -3726,6 +3727,8 @@ const wrap = (
       : children.map((child, c) => (c > 0 ? [separator, child] : child));
   return encloseWithId ? [id, ':{', separated, '}'] : separated;
 };
+
+const NullComponent = () => null;
 
 const V1 = 'v1';
 
@@ -4828,7 +4831,6 @@ export type TablesProps = {
 export type CellProps = {
   readonly rowId: Id;
   readonly s?: S;
-  readonly getTableComponentProps?: (tableId: TableId) => ExtraProps;
   readonly debugIds?: boolean;
 };
 
@@ -5493,6 +5495,8 @@ const wrap = (
   return encloseWithId ? [id, ':{', separated, '}'] : separated;
 };
 
+const NullComponent = () => null;
+
 const tableView = (
   {s, rowComponent, getRowComponentProps, separator, debugIds}: any,
   rowIds: Ids,
@@ -5516,8 +5520,6 @@ const tableView = (
     tableId,
   );
 };
-
-const NullComponent = () => null;
 
 const T1 = 't1';
 
@@ -6674,7 +6676,7 @@ export type ProviderProps = {readonly s?: S; readonly sById?: {[sId: Id]: S}};
 export type TablesProps = {readonly s?: S; readonly tableComponents?: {'t1'?: ComponentType<T1TableProps>}; readonly getTableComponentProps?: (tableId: TableId) => ExtraProps; readonly separator?: ReactElement | string; readonly debugIds?: boolean};
 
 /** The props passed to a component that renders a Cell. */
-export type CellProps = {readonly rowId: Id; readonly s?: S; readonly getTableComponentProps?: (tableId: TableId) => ExtraProps; readonly debugIds?: boolean};
+export type CellProps = {readonly rowId: Id; readonly s?: S; readonly debugIds?: boolean};
 
 /** The props passed to a component that renders the specified Row in the 't1' Table. */
 export type T1RowProps = {readonly rowId: Id; readonly s?: S; readonly cellComponents?: {'c1'?: ComponentType<CellProps>, 'c2'?: ComponentType<CellProps>, 'c3'?: ComponentType<CellProps>, ''?: ComponentType<CellProps>}; readonly getCellComponentProps?: (cellId: T1CellId) => ExtraProps; readonly separator?: ReactElement | string; readonly debugIds?: boolean};
@@ -6908,6 +6910,8 @@ const separated = separator==null || !Array.isArray(children)
 return encloseWithId ? [id, ':{', separated, '}'] : separated;
 };
 
+const NullComponent = () => null;
+
 const tableView = ({s, rowComponent, getRowComponentProps, separator, debugIds}: any, rowIds: Ids, tableId: Id, defaultRowComponent: React.ComponentType<any>) => {
 const Row = rowComponent ?? defaultRowComponent;
 return wrap(rowIds.map((rowId) => (
@@ -6924,8 +6928,6 @@ debugIds={debugIds}
 , tableId,
 );
 };
-
-const NullComponent = () => null;
 
 const T1 = 't1';
 
@@ -7466,9 +7468,9 @@ getStore: (): Store => store,
 return Object.freeze(s);
 };",
   "import {Callback, Id, IdOrNull, Ids, ParameterizedCallback, Store} from 'tinybase';
+import {ComponentReturnType, ExtraProps} from 'tinybase/ui-react';
 import {ComponentType, ReactElement} from 'react';
 import {MapNumber, MapString, S, ValueId, ValueIdsListener, ValueListener, Values, ValuesListener, ValuesWhenSet} from './s.d';
-import {ComponentReturnType} from 'tinybase/ui-react';
 
 /** Used when you need to refer to a S in a React hook or component. */
 export type SOrSId = S | Id;
@@ -7546,9 +7548,9 @@ export function useValueListener(valueId: ValueId | null, listener: ValueListene
 export function Provider({s, sById, children}: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
 ",
   "import {Callback, Id, IdOrNull, Ids, ParameterizedCallback, Store} from 'tinybase';
-import {MapNumber, MapString, ValueId, ValueIdsListener, ValueListener, Values, ValuesListener, ValuesWhenSet} from './s.d';
+import {ExtraProps, useDelValueCallback as useDelValueCallbackCore, useDelValuesCallback as useDelValuesCallbackCore, useSetPartialValuesCallback as useSetPartialValuesCallbackCore, useSetValueCallback as useSetValueCallbackCore, useSetValuesCallback as useSetValuesCallbackCore, useValue as useValueCore, useValueIds as useValueIdsCore, useValueIdsListener as useValueIdsListenerCore, useValueListener as useValueListenerCore, useValues as useValuesCore, useValuesListener as useValuesListenerCore} from 'tinybase/ui-react';
+import {MapNumber, MapString, S, ValueId, ValueIdsListener, ValueListener, Values, ValuesListener, ValuesWhenSet} from './s.d';
 import {Provider as ProviderDecl, ProviderProps, SOrSId, useCreateS as useCreateSDecl, useDelV1ValueCallback as useDelV1ValueCallbackDecl, useDelV2ValueCallback as useDelV2ValueCallbackDecl, useDelV3ValueCallback as useDelV3ValueCallbackDecl, useDelValueCallback as useDelValueCallbackDecl, useDelValuesCallback as useDelValuesCallbackDecl, useS as useSDecl, useSetPartialValuesCallback as useSetPartialValuesCallbackDecl, useSetV1ValueCallback as useSetV1ValueCallbackDecl, useSetV2ValueCallback as useSetV2ValueCallbackDecl, useSetV3ValueCallback as useSetV3ValueCallbackDecl, useSetValueCallback as useSetValueCallbackDecl, useSetValuesCallback as useSetValuesCallbackDecl, useV1Value as useV1ValueDecl, useV2Value as useV2ValueDecl, useV3Value as useV3ValueDecl, useValue as useValueDecl, useValueIds as useValueIdsDecl, useValueIdsListener as useValueIdsListenerDecl, useValueListener as useValueListenerDecl, useValues as useValuesDecl, useValuesListener as useValuesListenerDecl} from './s-ui-react.d';
-import {useDelValueCallback as useDelValueCallbackCore, useDelValuesCallback as useDelValuesCallbackCore, useSetPartialValuesCallback as useSetPartialValuesCallbackCore, useSetValueCallback as useSetValueCallbackCore, useSetValuesCallback as useSetValuesCallbackCore, useValue as useValueCore, useValueIds as useValueIdsCore, useValueIdsListener as useValueIdsListenerCore, useValueListener as useValueListenerCore, useValues as useValuesCore, useValuesListener as useValuesListenerCore} from 'tinybase/ui-react';
 import React from 'react';
 
 const {createContext, useContext, useMemo} = React;
@@ -7569,6 +7571,8 @@ const separated = separator==null || !Array.isArray(children)
  : children.map((child, c) => (c > 0 ? [separator, child] : child));
 return encloseWithId ? [id, ':{', separated, '}'] : separated;
 };
+
+const NullComponent = () => null;
 
 const V1 = 'v1';
 
@@ -8094,7 +8098,7 @@ export type ProviderProps = {readonly s?: S; readonly sById?: {[sId: Id]: S}};
 export type TablesProps = {readonly s?: S; readonly tableComponents?: {'t1'?: ComponentType<T1TableProps>}; readonly getTableComponentProps?: (tableId: TableId) => ExtraProps; readonly separator?: ReactElement | string; readonly debugIds?: boolean};
 
 /** The props passed to a component that renders a Cell. */
-export type CellProps = {readonly rowId: Id; readonly s?: S; readonly getTableComponentProps?: (tableId: TableId) => ExtraProps; readonly debugIds?: boolean};
+export type CellProps = {readonly rowId: Id; readonly s?: S; readonly debugIds?: boolean};
 
 /** The props passed to a component that renders the specified Row in the 't1' Table. */
 export type T1RowProps = {readonly rowId: Id; readonly s?: S; readonly cellComponents?: {'c1'?: ComponentType<CellProps>, 'c2'?: ComponentType<CellProps>, 'c3'?: ComponentType<CellProps>, ''?: ComponentType<CellProps>}; readonly getCellComponentProps?: (cellId: T1CellId) => ExtraProps; readonly separator?: ReactElement | string; readonly debugIds?: boolean};
@@ -8268,6 +8272,8 @@ const separated = separator==null || !Array.isArray(children)
 return encloseWithId ? [id, ':{', separated, '}'] : separated;
 };
 
+const NullComponent = () => null;
+
 const tableView = ({s, rowComponent, getRowComponentProps, separator, debugIds}: any, rowIds: Ids, tableId: Id, defaultRowComponent: React.ComponentType<any>) => {
 const Row = rowComponent ?? defaultRowComponent;
 return wrap(rowIds.map((rowId) => (
@@ -8284,8 +8290,6 @@ debugIds={debugIds}
 , tableId,
 );
 };
-
-const NullComponent = () => null;
 
 const T1 = 't1';
 
