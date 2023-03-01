@@ -396,6 +396,41 @@ export const getStoreUiReactApi = (
       ],
     );
 
+    const NullComponent = addConstant('NullComponent', `() => null`);
+
+    const getDefaultTableComponent = addInternalFunction(
+      'getDefaultTableComponent',
+      'tableId: Id',
+      join(
+        mapTablesSchema(
+          (_, tableName, TABLE_ID) =>
+            `tableId == ${TABLE_ID} ? ${tableName}TableView : `,
+        ),
+      ) + NullComponent,
+    );
+
+    const getDefaultCellComponent = addInternalFunction(
+      'getDefaultCellComponent',
+      'tableId: Id, cellId: Id',
+      join(
+        mapTablesSchema(
+          (tableId, tableName, TABLE_ID) =>
+            `tableId == ${TABLE_ID} ? ${
+              join(
+                mapCellSchema(
+                  tableId,
+                  (_, _2, _3, CELL_ID, cellName) =>
+                    `cellId == ${CELL_ID} ? ` +
+                    tableName +
+                    cellName +
+                    'CellView : ',
+                ),
+              ) + NullComponent
+            } : `,
+        ),
+      ) + NullComponent,
+    );
+
     addProxyHook(
       TABLES,
       TABLES,
@@ -403,7 +438,7 @@ export const getStoreUiReactApi = (
       getTheContentOfTheStoreDoc(1, 0) + AND_REGISTERS,
     );
 
-    addProxyHook(
+    const useTableIds = addProxyHook(
       TABLE_IDS,
       TABLE_IDS,
       tableIdType + SQUARE_BRACKETS,
@@ -441,17 +476,6 @@ export const getStoreUiReactApi = (
       THEN_AND_THEN_DEPS_IN_CALL,
     );
 
-    const getDefaultTableComponent = addInternalFunction(
-      'getDefaultTableComponent',
-      'tableId: TableId',
-      join(
-        mapTablesSchema(
-          (_, tableName, TABLE_ID) =>
-            `(tableId == ${TABLE_ID}) ? ${tableName}TableView : `,
-        ),
-      ) + `() => null`,
-    );
-
     const tablesPropsType = addType(
       'TablesProps',
       '{' +
@@ -473,7 +497,21 @@ export const getStoreUiReactApi = (
         '}',
       'The props passed to a component that renders Tables',
     );
-    addImport(1, uiReactModuleDefinition, tablesPropsType);
+
+    const cellPropsType = addType(
+      'CellProps',
+      '{' +
+        getPropsList(
+          'rowId: Id',
+          storeInstance + '?: ' + storeType,
+          `getTableComponentProps?: (tableId: ${tableIdType}) => ExtraProps`,
+          'debugIds?: boolean',
+        ) +
+        '}',
+      'The props passed to a component that renders a Cell',
+    );
+
+    addImport(1, uiReactModuleDefinition, tablesPropsType, cellPropsType);
 
     addComponent(
       TABLES + VIEW,
@@ -482,15 +520,15 @@ export const getStoreUiReactApi = (
         ', tableComponents, getTableComponentProps, separator, debugIds}: ' +
         tablesPropsType,
       [
-        wrap + `(useTableIds(${storeInstance}).map((tableId) => {`,
+        wrap + `(${useTableIds}(${storeInstance}).map((tableId) => {`,
         'const Table = tableComponents?.[tableId] ?? ' +
           getDefaultTableComponent +
           '(tableId);',
-        'return <Table ',
-        `{...${getProps}(getTableComponentProps, tableId)} `,
-        'key={tableId} ',
-        `${storeInstance}={${storeInstance}} `,
-        'debugIds={debugIds} ',
+        'return <Table',
+        `{...${getProps}(getTableComponentProps, tableId)}`,
+        'key={tableId}',
+        `${storeInstance}={${storeInstance}}`,
+        'debugIds={debugIds}',
         '/>;',
         '}), separator)',
       ],
@@ -558,7 +596,7 @@ export const getStoreUiReactApi = (
         getParameterList(TABLE_ID, ROW_ID),
       );
 
-      addProxyHook(
+      const useCellIds = addProxyHook(
         tableName + CELL_IDS,
         CELL_IDS,
         cellIdType + SQUARE_BRACKETS,
@@ -673,7 +711,25 @@ export const getStoreUiReactApi = (
 
       const rowPropsType = addType(
         tableName + 'RowProps',
-        'any',
+        '{' +
+          getPropsList(
+            'rowId: Id',
+            storeInstance + '?: ' + storeType,
+            'cellComponents?: {' +
+              join(
+                mapCellSchema(
+                  tableId,
+                  (cellId: Id) =>
+                    `'${cellId}'?: ComponentType<${cellPropsType}>`,
+                ),
+                ', ',
+              ) +
+              '}',
+            `getCellComponentProps?: (cellId: ${cellIdType}) => ExtraProps`,
+            'separator?: ReactElement | string',
+            'debugIds?: boolean',
+          ) +
+          '}',
         'The props passed to a component that renders a Row in the ' +
           `'${tableId}' Table`,
       );
@@ -721,8 +777,24 @@ export const getStoreUiReactApi = (
 
       const rowView = addComponent(
         tableName + ROW + VIEW,
-        '_props: ' + rowPropsType,
-        `<b>${tableName} row</b>`,
+        '{rowId, ' +
+          storeInstance +
+          ', cellComponents, getCellComponentProps, separator, debugIds}: ' +
+          rowPropsType,
+        [
+          wrap + `(${useCellIds}(rowId, ${storeInstance}).map((cellId) => {`,
+          'const Cell = cellComponents?.[cellId] ?? ' +
+            getDefaultCellComponent +
+            `(${TABLE_ID}, cellId);`,
+          'return <Cell',
+          `{...${getProps}(getCellComponentProps, cellId)} `,
+          'key={cellId}',
+          'rowId={rowId}',
+          `${storeInstance}={${storeInstance}}`,
+          'debugIds={debugIds}',
+          '/>;',
+          '}), separator, debugIds, rowId)',
+        ],
         getRowContentDoc(tableId, 13) + AND_REGISTERS,
       );
 
@@ -755,7 +827,7 @@ export const getStoreUiReactApi = (
           addImport(0, moduleDefinition, mapCellType);
           addImport(1, moduleDefinition, mapCellType);
 
-          addProxyHook(
+          const useCell = addProxyHook(
             tableName + cellName + CELL,
             CELL,
             type + (isUndefined(defaultValue) ? OR_UNDEFINED : EMPTY_STRING),
@@ -794,6 +866,18 @@ export const getStoreUiReactApi = (
             EMPTY_STRING,
             THEN_AND_THEN_DEPS,
             THEN_AND_THEN_DEPS_IN_CALL,
+          );
+
+          addComponent(
+            tableName + cellName + CELL + VIEW,
+            `{rowId, ${storeInstance}, debugIds}: ` + cellPropsType,
+            [
+              wrap +
+                `('' + ${useCell}(rowId, ` +
+                storeInstance +
+                `) ?? '', undefined, debugIds, ${CELL_ID})`,
+            ],
+            getCellContentDoc(tableId, cellId, 13) + AND_REGISTERS,
           );
         },
       );
