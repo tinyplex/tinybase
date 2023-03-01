@@ -257,6 +257,7 @@ export const getStoreUiReactApi = (
     PARAMETER + 'ized' + CALLBACK,
   );
   addImport(0, tinyBaseUiReact, 'ComponentReturnType');
+  addImport(null, tinyBaseUiReact, 'ExtraProps');
   addImport(0, moduleDefinition, storeType);
 
   // StoreOrStoreId
@@ -353,6 +354,8 @@ export const getStoreUiReactApi = (
     ],
   );
 
+  const NullComponent = addConstant('NullComponent', `() => null`);
+
   if (!objIsEmpty(tablesSchema)) {
     const [
       tablesType,
@@ -382,8 +385,6 @@ export const getStoreUiReactApi = (
       cellIdsListenerType,
       cellListenerType,
     );
-
-    addImport(null, tinyBaseUiReact, 'ExtraProps');
     addImport(1, moduleDefinition, storeType);
 
     const tableView = addInternalFunction(
@@ -409,8 +410,6 @@ export const getStoreUiReactApi = (
         ');',
       ],
     );
-
-    const NullComponent = addConstant('NullComponent', `() => null`);
 
     const getDefaultTableComponent = addInternalFunction(
       'getDefaultTableComponent',
@@ -521,7 +520,6 @@ export const getStoreUiReactApi = (
       getPropsTypeList(
         'rowId: Id',
         storeInstance + OPTIONAL_COLON + storeType,
-        `getTableComponentProps?: (tableId: ${tableIdType}) => ExtraProps`,
         DEBUG_IDS_PROP_TYPE,
       ),
       getPropsDoc('a Cell'),
@@ -1051,7 +1049,9 @@ export const getStoreUiReactApi = (
       moduleDefinition,
       ...(sharedValueTypes as SharedValueTypes),
     );
+    addImport(1, moduleDefinition, storeType);
 
+    // useValues
     addProxyHook(
       VALUES,
       VALUES,
@@ -1059,6 +1059,7 @@ export const getStoreUiReactApi = (
       getTheContentOfTheStoreDoc(2, 0) + AND_REGISTERS,
     );
 
+    // useValueIds
     addProxyHook(
       VALUE_IDS,
       VALUE_IDS,
@@ -1066,6 +1067,7 @@ export const getStoreUiReactApi = (
       getIdsDoc(VALUE, THE_STORE) + AND_REGISTERS,
     );
 
+    // useSetValuesCallback
     addProxyHook(
       SET + VALUES + CALLBACK,
       SET + VALUES + CALLBACK,
@@ -1085,6 +1087,7 @@ export const getStoreUiReactApi = (
       THEN_AND_THEN_DEPS_IN_CALL,
     );
 
+    // useSetPartialValuesCallback
     addProxyHook(
       SET + PARTIAL + VALUES + CALLBACK,
       SET + PARTIAL + VALUES + CALLBACK,
@@ -1104,6 +1107,7 @@ export const getStoreUiReactApi = (
       THEN_AND_THEN_DEPS_IN_CALL,
     );
 
+    // useDelValuesCallback
     addProxyHook(
       DEL + VALUES + CALLBACK,
       DEL + VALUES + CALLBACK,
@@ -1121,6 +1125,7 @@ export const getStoreUiReactApi = (
       addImport(0, moduleDefinition, mapValueType);
       addImport(1, moduleDefinition, mapValueType);
 
+      // useValue
       addProxyHook(
         valueName + VALUE,
         VALUE,
@@ -1130,6 +1135,7 @@ export const getStoreUiReactApi = (
         VALUE_ID,
       );
 
+      // useSetValueCallback
       addProxyHook(
         SET + valueName + VALUE + CALLBACK,
         SET + VALUE + CALLBACK,
@@ -1149,6 +1155,7 @@ export const getStoreUiReactApi = (
         THEN_AND_THEN_DEPS_IN_CALL,
       );
 
+      // useDelValueCallback
       addProxyHook(
         DEL + valueName + VALUE + CALLBACK,
         DEL + VALUE + CALLBACK,
@@ -1162,6 +1169,7 @@ export const getStoreUiReactApi = (
       );
     });
 
+    // useValuesListener
     addProxyHook(
       VALUES + LISTENER,
       VALUES + LISTENER,
@@ -1171,6 +1179,7 @@ export const getStoreUiReactApi = (
       getListenerHookParamsInCall(),
     );
 
+    // useValueIdsListener
     addProxyHook(
       VALUE_IDS + LISTENER,
       VALUE_IDS + LISTENER,
@@ -1180,6 +1189,7 @@ export const getStoreUiReactApi = (
       getListenerHookParamsInCall(),
     );
 
+    // useValueListener
     addProxyHook(
       VALUE + LISTENER,
       VALUE + LISTENER,
@@ -1193,6 +1203,7 @@ export const getStoreUiReactApi = (
     );
   }
 
+  // Provider
   addComponent(
     PROVIDER,
     `{${storeInstance}, ${storeInstance}ById, children}: ` +
