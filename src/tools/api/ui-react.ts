@@ -538,7 +538,7 @@ export const getStoreUiReactApi = (
         TABLE_ID,
       );
 
-      addProxyHook(
+      const useSortedRowIds = addProxyHook(
         tableName + SORTED_ROW_IDS,
         SORTED_ROW_IDS,
         IDS,
@@ -691,13 +691,51 @@ export const getStoreUiReactApi = (
           '}',
         `The props passed to a component that renders the '${tableId}' Table`,
       );
-      addImport(1, uiReactModuleDefinition, tablePropsType, rowPropsType);
+
+      const sortedTablePropsType = addType(
+        tableName + 'SortedTableProps',
+        '{' +
+          getPropsList(
+            'cellId?: ' + cellIdType,
+            'descending?: boolean',
+            'offset?: number',
+            'limit?: number',
+            storeInstance + '?: ' + storeType,
+            `rowComponent?: ComponentType<${rowPropsType}>`,
+            `getRowComponentProps?: (rowId: Id) => ExtraProps`,
+            'separator?: ReactElement | string',
+            'debugIds?: boolean',
+          ) +
+          '}',
+        'The props passed to a component that renders the ' +
+          `'${tableId}' Table, sorted`,
+      );
+
+      addImport(
+        1,
+        uiReactModuleDefinition,
+        rowPropsType,
+        tablePropsType,
+        sortedTablePropsType,
+      );
 
       const rowView = addComponent(
         tableName + ROW + VIEW,
         '_props: ' + rowPropsType,
         `<b>${tableName} row</b>`,
         getRowContentDoc(tableId, 13) + AND_REGISTERS,
+      );
+
+      addComponent(
+        tableName + 'Sorted' + TABLE + VIEW,
+        '{cellId, descending, offset, limit, ...props}: ' +
+          sortedTablePropsType,
+        tableView +
+          '(props, ' +
+          useSortedRowIds +
+          `(cellId, descending, offset, limit, props.${storeInstance}), ` +
+          `${TABLE_ID}, ${rowView});`,
+        getTableContentDoc(tableId, 13) + ', sorted' + AND_REGISTERS,
       );
 
       addComponent(
