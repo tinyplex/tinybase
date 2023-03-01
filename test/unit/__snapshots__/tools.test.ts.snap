@@ -1261,6 +1261,21 @@ export type T1TableProps = {
 };
 
 /**
+ * The props passed to a component that renders the 't1' Table, sorted.
+ */
+export type T1SortedTableProps = {
+  readonly cellId?: T1CellId;
+  readonly descending?: boolean;
+  readonly offset?: number;
+  readonly limit?: number;
+  readonly s?: S;
+  readonly rowComponent?: ComponentType<T1RowProps>;
+  readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
+  readonly separator?: ReactElement | string;
+  readonly debugIds?: boolean;
+};
+
+/**
  * Create a S within a React application with convenient memoization.
  */
 export function useCreateS(
@@ -1430,6 +1445,18 @@ export function useDelT1RowCallback(
  * listener so that any changes to that result will cause a re-render.
  */
 export function T1RowView(_props: T1RowProps): ComponentReturnType;
+
+/**
+ * Renders the content of the 't1' Table, sorted, and registers a listener so
+ * that any changes to that result will cause a re-render.
+ */
+export function T1SortedTableView({
+  cellId,
+  descending,
+  offset,
+  limit,
+  ...props
+}: T1SortedTableProps): ComponentReturnType;
 
 /**
  * Renders the content of the 't1' Table, and registers a listener so that any
@@ -1933,6 +1960,8 @@ import {
   SOrSId,
   T1RowProps,
   T1RowView as T1RowViewDecl,
+  T1SortedTableProps,
+  T1SortedTableView as T1SortedTableViewDecl,
   T1TableProps,
   T1TableView as T1TableViewDecl,
   TablesProps,
@@ -2241,6 +2270,20 @@ export const useDelT1RowCallback: typeof useDelT1RowCallbackDecl = (
 export const T1RowView: typeof T1RowViewDecl = (_props: T1RowProps): any => (
   <b>T1 row</b>
 );
+
+export const T1SortedTableView: typeof T1SortedTableViewDecl = ({
+  cellId,
+  descending,
+  offset,
+  limit,
+  ...props
+}: T1SortedTableProps): any =>
+  tableView(
+    props,
+    useT1SortedRowIds(cellId, descending, offset, limit, props.s),
+    T1,
+    T1RowView,
+  );
 
 export const T1TableView: typeof T1TableViewDecl = (props: T1TableProps): any =>
   tableView(props, useT1RowIds(props.s), T1, T1RowView);
@@ -4653,6 +4696,21 @@ export type T1TableProps = {
 };
 
 /**
+ * The props passed to a component that renders the 't1' Table, sorted.
+ */
+export type T1SortedTableProps = {
+  readonly cellId?: T1CellId;
+  readonly descending?: boolean;
+  readonly offset?: number;
+  readonly limit?: number;
+  readonly s?: S;
+  readonly rowComponent?: ComponentType<T1RowProps>;
+  readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
+  readonly separator?: ReactElement | string;
+  readonly debugIds?: boolean;
+};
+
+/**
  * Create a S within a React application with convenient memoization.
  */
 export function useCreateS(
@@ -4822,6 +4880,18 @@ export function useDelT1RowCallback(
  * listener so that any changes to that result will cause a re-render.
  */
 export function T1RowView(_props: T1RowProps): ComponentReturnType;
+
+/**
+ * Renders the content of the 't1' Table, sorted, and registers a listener so
+ * that any changes to that result will cause a re-render.
+ */
+export function T1SortedTableView({
+  cellId,
+  descending,
+  offset,
+  limit,
+  ...props
+}: T1SortedTableProps): ComponentReturnType;
 
 /**
  * Renders the content of the 't1' Table, and registers a listener so that any
@@ -5125,6 +5195,8 @@ import {
   SOrSId,
   T1RowProps,
   T1RowView as T1RowViewDecl,
+  T1SortedTableProps,
+  T1SortedTableView as T1SortedTableViewDecl,
   T1TableProps,
   T1TableView as T1TableViewDecl,
   TablesProps,
@@ -5407,6 +5479,20 @@ export const useDelT1RowCallback: typeof useDelT1RowCallbackDecl = (
 export const T1RowView: typeof T1RowViewDecl = (_props: T1RowProps): any => (
   <b>T1 row</b>
 );
+
+export const T1SortedTableView: typeof T1SortedTableViewDecl = ({
+  cellId,
+  descending,
+  offset,
+  limit,
+  ...props
+}: T1SortedTableProps): any =>
+  tableView(
+    props,
+    useT1SortedRowIds(cellId, descending, offset, limit, props.s),
+    T1,
+    T1RowView,
+  );
 
 export const T1TableView: typeof T1TableViewDecl = (props: T1TableProps): any =>
   tableView(props, useT1RowIds(props.s), T1, T1RowView);
@@ -6309,6 +6395,9 @@ export type T1RowProps = any;
 /** The props passed to a component that renders the 't1' Table. */
 export type T1TableProps = {readonly s?: S;readonly rowComponent?: ComponentType<T1RowProps>;readonly getRowComponentProps?: (rowId: Id) => ExtraProps;readonly separator?: ReactElement | string;readonly debugIds?: boolean};
 
+/** The props passed to a component that renders the 't1' Table, sorted. */
+export type T1SortedTableProps = {readonly cellId?: T1CellId;readonly descending?: boolean;readonly offset?: number;readonly limit?: number;readonly s?: S;readonly rowComponent?: ComponentType<T1RowProps>;readonly getRowComponentProps?: (rowId: Id) => ExtraProps;readonly separator?: ReactElement | string;readonly debugIds?: boolean};
+
 /** Create a S within a React application with convenient memoization. */
 export function useCreateS(create: () => S, createDeps?: React.DependencyList): S;
 
@@ -6365,6 +6454,9 @@ export function useDelT1RowCallback(rowId: Id, sOrSId?: SOrSId, then?: (store: S
 
 /** Renders the content of the specified Row in the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
 export function T1RowView(_props: T1RowProps): ComponentReturnType;
+
+/** Renders the content of the 't1' Table, sorted, and registers a listener so that any changes to that result will cause a re-render. */
+export function T1SortedTableView({cellId, descending, offset, limit, ...props}: T1SortedTableProps): ComponentReturnType;
 
 /** Renders the content of the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
 export function T1TableView(props: T1TableProps): ComponentReturnType;
@@ -6495,7 +6587,7 @@ export function Provider({s, sById, children}: ProviderProps & {children: React.
   "import {Callback, Id, IdOrNull, Ids, ParameterizedCallback, Store} from 'tinybase';
 import {CellIdsListener, CellListener, MapNumber, MapString, RowIdsListener, RowListener, S, SortedRowIdsListener, T1CellId, T1Row, T1RowWhenSet, T1Table, TableId, TableIdsListener, TableListener, Tables, TablesListener, ValueId, ValueIdsListener, ValueListener, Values, ValuesListener, ValuesWhenSet} from './s.d';
 import {ExtraProps, useAddRowCallback as useAddRowCallbackCore, useCell as useCellCore, useCellIds as useCellIdsCore, useCellIdsListener as useCellIdsListenerCore, useCellListener as useCellListenerCore, useDelCellCallback as useDelCellCallbackCore, useDelRowCallback as useDelRowCallbackCore, useDelTableCallback as useDelTableCallbackCore, useDelTablesCallback as useDelTablesCallbackCore, useDelValueCallback as useDelValueCallbackCore, useDelValuesCallback as useDelValuesCallbackCore, useRow as useRowCore, useRowIds as useRowIdsCore, useRowIdsListener as useRowIdsListenerCore, useRowListener as useRowListenerCore, useSetCellCallback as useSetCellCallbackCore, useSetPartialRowCallback as useSetPartialRowCallbackCore, useSetPartialValuesCallback as useSetPartialValuesCallbackCore, useSetRowCallback as useSetRowCallbackCore, useSetTableCallback as useSetTableCallbackCore, useSetTablesCallback as useSetTablesCallbackCore, useSetValueCallback as useSetValueCallbackCore, useSetValuesCallback as useSetValuesCallbackCore, useSortedRowIds as useSortedRowIdsCore, useSortedRowIdsListener as useSortedRowIdsListenerCore, useTable as useTableCore, useTableIds as useTableIdsCore, useTableIdsListener as useTableIdsListenerCore, useTableListener as useTableListenerCore, useTables as useTablesCore, useTablesListener as useTablesListenerCore, useValue as useValueCore, useValueIds as useValueIdsCore, useValueIdsListener as useValueIdsListenerCore, useValueListener as useValueListenerCore, useValues as useValuesCore, useValuesListener as useValuesListenerCore} from 'tinybase/ui-react';
-import {Provider as ProviderDecl, ProviderProps, SOrSId, T1RowProps, T1RowView as T1RowViewDecl, T1TableProps, T1TableView as T1TableViewDecl, TablesProps, TablesView as TablesViewDecl, useAddT1RowCallback as useAddT1RowCallbackDecl, useCellIdsListener as useCellIdsListenerDecl, useCellListener as useCellListenerDecl, useCreateS as useCreateSDecl, useDelT1C1CellCallback as useDelT1C1CellCallbackDecl, useDelT1C2CellCallback as useDelT1C2CellCallbackDecl, useDelT1C3CellCallback as useDelT1C3CellCallbackDecl, useDelT1CellCallback as useDelT1CellCallbackDecl, useDelT1RowCallback as useDelT1RowCallbackDecl, useDelT1TableCallback as useDelT1TableCallbackDecl, useDelTablesCallback as useDelTablesCallbackDecl, useDelV1ValueCallback as useDelV1ValueCallbackDecl, useDelV2ValueCallback as useDelV2ValueCallbackDecl, useDelV3ValueCallback as useDelV3ValueCallbackDecl, useDelValueCallback as useDelValueCallbackDecl, useDelValuesCallback as useDelValuesCallbackDecl, useRowIdsListener as useRowIdsListenerDecl, useRowListener as useRowListenerDecl, useS as useSDecl, useSetPartialValuesCallback as useSetPartialValuesCallbackDecl, useSetT1C1CellCallback as useSetT1C1CellCallbackDecl, useSetT1C2CellCallback as useSetT1C2CellCallbackDecl, useSetT1C3CellCallback as useSetT1C3CellCallbackDecl, useSetT1CellCallback as useSetT1CellCallbackDecl, useSetT1PartialRowCallback as useSetT1PartialRowCallbackDecl, useSetT1RowCallback as useSetT1RowCallbackDecl, useSetT1TableCallback as useSetT1TableCallbackDecl, useSetTablesCallback as useSetTablesCallbackDecl, useSetV1ValueCallback as useSetV1ValueCallbackDecl, useSetV2ValueCallback as useSetV2ValueCallbackDecl, useSetV3ValueCallback as useSetV3ValueCallbackDecl, useSetValueCallback as useSetValueCallbackDecl, useSetValuesCallback as useSetValuesCallbackDecl, useSortedRowIdsListener as useSortedRowIdsListenerDecl, useT1C1Cell as useT1C1CellDecl, useT1C2Cell as useT1C2CellDecl, useT1C3Cell as useT1C3CellDecl, useT1Cell as useT1CellDecl, useT1CellIds as useT1CellIdsDecl, useT1Row as useT1RowDecl, useT1RowIds as useT1RowIdsDecl, useT1SortedRowIds as useT1SortedRowIdsDecl, useT1Table as useT1TableDecl, useTableIds as useTableIdsDecl, useTableIdsListener as useTableIdsListenerDecl, useTableListener as useTableListenerDecl, useTables as useTablesDecl, useTablesListener as useTablesListenerDecl, useV1Value as useV1ValueDecl, useV2Value as useV2ValueDecl, useV3Value as useV3ValueDecl, useValue as useValueDecl, useValueIds as useValueIdsDecl, useValueIdsListener as useValueIdsListenerDecl, useValueListener as useValueListenerDecl, useValues as useValuesDecl, useValuesListener as useValuesListenerDecl} from './s-ui-react.d';
+import {Provider as ProviderDecl, ProviderProps, SOrSId, T1RowProps, T1RowView as T1RowViewDecl, T1SortedTableProps, T1SortedTableView as T1SortedTableViewDecl, T1TableProps, T1TableView as T1TableViewDecl, TablesProps, TablesView as TablesViewDecl, useAddT1RowCallback as useAddT1RowCallbackDecl, useCellIdsListener as useCellIdsListenerDecl, useCellListener as useCellListenerDecl, useCreateS as useCreateSDecl, useDelT1C1CellCallback as useDelT1C1CellCallbackDecl, useDelT1C2CellCallback as useDelT1C2CellCallbackDecl, useDelT1C3CellCallback as useDelT1C3CellCallbackDecl, useDelT1CellCallback as useDelT1CellCallbackDecl, useDelT1RowCallback as useDelT1RowCallbackDecl, useDelT1TableCallback as useDelT1TableCallbackDecl, useDelTablesCallback as useDelTablesCallbackDecl, useDelV1ValueCallback as useDelV1ValueCallbackDecl, useDelV2ValueCallback as useDelV2ValueCallbackDecl, useDelV3ValueCallback as useDelV3ValueCallbackDecl, useDelValueCallback as useDelValueCallbackDecl, useDelValuesCallback as useDelValuesCallbackDecl, useRowIdsListener as useRowIdsListenerDecl, useRowListener as useRowListenerDecl, useS as useSDecl, useSetPartialValuesCallback as useSetPartialValuesCallbackDecl, useSetT1C1CellCallback as useSetT1C1CellCallbackDecl, useSetT1C2CellCallback as useSetT1C2CellCallbackDecl, useSetT1C3CellCallback as useSetT1C3CellCallbackDecl, useSetT1CellCallback as useSetT1CellCallbackDecl, useSetT1PartialRowCallback as useSetT1PartialRowCallbackDecl, useSetT1RowCallback as useSetT1RowCallbackDecl, useSetT1TableCallback as useSetT1TableCallbackDecl, useSetTablesCallback as useSetTablesCallbackDecl, useSetV1ValueCallback as useSetV1ValueCallbackDecl, useSetV2ValueCallback as useSetV2ValueCallbackDecl, useSetV3ValueCallback as useSetV3ValueCallbackDecl, useSetValueCallback as useSetValueCallbackDecl, useSetValuesCallback as useSetValuesCallbackDecl, useSortedRowIdsListener as useSortedRowIdsListenerDecl, useT1C1Cell as useT1C1CellDecl, useT1C2Cell as useT1C2CellDecl, useT1C3Cell as useT1C3CellDecl, useT1Cell as useT1CellDecl, useT1CellIds as useT1CellIdsDecl, useT1Row as useT1RowDecl, useT1RowIds as useT1RowIdsDecl, useT1SortedRowIds as useT1SortedRowIdsDecl, useT1Table as useT1TableDecl, useTableIds as useTableIdsDecl, useTableIdsListener as useTableIdsListenerDecl, useTableListener as useTableListenerDecl, useTables as useTablesDecl, useTablesListener as useTablesListenerDecl, useV1Value as useV1ValueDecl, useV2Value as useV2ValueDecl, useV3Value as useV3ValueDecl, useValue as useValueDecl, useValueIds as useValueIdsDecl, useValueIdsListener as useValueIdsListenerDecl, useValueListener as useValueListenerDecl, useValues as useValuesDecl, useValuesListener as useValuesListenerDecl} from './s-ui-react.d';
 import React from 'react';
 
 const {createContext, useContext, useMemo} = React;
@@ -6622,6 +6714,9 @@ useHook(sOrSId, useDelRowCallbackCore, [T1, rowId], [then, thenDeps]);
 
 export const T1RowView: typeof T1RowViewDecl = (_props: T1RowProps): any =>
 <b>T1 row</b>
+
+export const T1SortedTableView: typeof T1SortedTableViewDecl = ({cellId, descending, offset, limit, ...props}: T1SortedTableProps): any =>
+tableView(props, useT1SortedRowIds(cellId, descending, offset, limit, props.s), T1, T1RowView);
 
 export const T1TableView: typeof T1TableViewDecl = (props: T1TableProps): any =>
 tableView(props, useT1RowIds(props.s), T1, T1RowView);
@@ -7681,6 +7776,9 @@ export type T1RowProps = any;
 /** The props passed to a component that renders the 't1' Table. */
 export type T1TableProps = {readonly s?: S;readonly rowComponent?: ComponentType<T1RowProps>;readonly getRowComponentProps?: (rowId: Id) => ExtraProps;readonly separator?: ReactElement | string;readonly debugIds?: boolean};
 
+/** The props passed to a component that renders the 't1' Table, sorted. */
+export type T1SortedTableProps = {readonly cellId?: T1CellId;readonly descending?: boolean;readonly offset?: number;readonly limit?: number;readonly s?: S;readonly rowComponent?: ComponentType<T1RowProps>;readonly getRowComponentProps?: (rowId: Id) => ExtraProps;readonly separator?: ReactElement | string;readonly debugIds?: boolean};
+
 /** Create a S within a React application with convenient memoization. */
 export function useCreateS(create: () => S, createDeps?: React.DependencyList): S;
 
@@ -7737,6 +7835,9 @@ export function useDelT1RowCallback(rowId: Id, sOrSId?: SOrSId, then?: (store: S
 
 /** Renders the content of the specified Row in the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
 export function T1RowView(_props: T1RowProps): ComponentReturnType;
+
+/** Renders the content of the 't1' Table, sorted, and registers a listener so that any changes to that result will cause a re-render. */
+export function T1SortedTableView({cellId, descending, offset, limit, ...props}: T1SortedTableProps): ComponentReturnType;
 
 /** Renders the content of the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
 export function T1TableView(props: T1TableProps): ComponentReturnType;
@@ -7807,7 +7908,7 @@ export function Provider({s, sById, children}: ProviderProps & {children: React.
   "import {Callback, Id, IdOrNull, Ids, ParameterizedCallback, Store} from 'tinybase';
 import {CellIdsListener, CellListener, MapNumber, MapString, RowIdsListener, RowListener, S, SortedRowIdsListener, T1CellId, T1Row, T1RowWhenSet, T1Table, TableId, TableIdsListener, TableListener, Tables, TablesListener} from './s.d';
 import {ExtraProps, useAddRowCallback as useAddRowCallbackCore, useCell as useCellCore, useCellIds as useCellIdsCore, useCellIdsListener as useCellIdsListenerCore, useCellListener as useCellListenerCore, useDelCellCallback as useDelCellCallbackCore, useDelRowCallback as useDelRowCallbackCore, useDelTableCallback as useDelTableCallbackCore, useDelTablesCallback as useDelTablesCallbackCore, useRow as useRowCore, useRowIds as useRowIdsCore, useRowIdsListener as useRowIdsListenerCore, useRowListener as useRowListenerCore, useSetCellCallback as useSetCellCallbackCore, useSetPartialRowCallback as useSetPartialRowCallbackCore, useSetRowCallback as useSetRowCallbackCore, useSetTableCallback as useSetTableCallbackCore, useSetTablesCallback as useSetTablesCallbackCore, useSortedRowIds as useSortedRowIdsCore, useSortedRowIdsListener as useSortedRowIdsListenerCore, useTable as useTableCore, useTableIds as useTableIdsCore, useTableIdsListener as useTableIdsListenerCore, useTableListener as useTableListenerCore, useTables as useTablesCore, useTablesListener as useTablesListenerCore} from 'tinybase/ui-react';
-import {Provider as ProviderDecl, ProviderProps, SOrSId, T1RowProps, T1RowView as T1RowViewDecl, T1TableProps, T1TableView as T1TableViewDecl, TablesProps, TablesView as TablesViewDecl, useAddT1RowCallback as useAddT1RowCallbackDecl, useCellIdsListener as useCellIdsListenerDecl, useCellListener as useCellListenerDecl, useCreateS as useCreateSDecl, useDelT1C1CellCallback as useDelT1C1CellCallbackDecl, useDelT1C2CellCallback as useDelT1C2CellCallbackDecl, useDelT1C3CellCallback as useDelT1C3CellCallbackDecl, useDelT1CellCallback as useDelT1CellCallbackDecl, useDelT1RowCallback as useDelT1RowCallbackDecl, useDelT1TableCallback as useDelT1TableCallbackDecl, useDelTablesCallback as useDelTablesCallbackDecl, useRowIdsListener as useRowIdsListenerDecl, useRowListener as useRowListenerDecl, useS as useSDecl, useSetT1C1CellCallback as useSetT1C1CellCallbackDecl, useSetT1C2CellCallback as useSetT1C2CellCallbackDecl, useSetT1C3CellCallback as useSetT1C3CellCallbackDecl, useSetT1CellCallback as useSetT1CellCallbackDecl, useSetT1PartialRowCallback as useSetT1PartialRowCallbackDecl, useSetT1RowCallback as useSetT1RowCallbackDecl, useSetT1TableCallback as useSetT1TableCallbackDecl, useSetTablesCallback as useSetTablesCallbackDecl, useSortedRowIdsListener as useSortedRowIdsListenerDecl, useT1C1Cell as useT1C1CellDecl, useT1C2Cell as useT1C2CellDecl, useT1C3Cell as useT1C3CellDecl, useT1Cell as useT1CellDecl, useT1CellIds as useT1CellIdsDecl, useT1Row as useT1RowDecl, useT1RowIds as useT1RowIdsDecl, useT1SortedRowIds as useT1SortedRowIdsDecl, useT1Table as useT1TableDecl, useTableIds as useTableIdsDecl, useTableIdsListener as useTableIdsListenerDecl, useTableListener as useTableListenerDecl, useTables as useTablesDecl, useTablesListener as useTablesListenerDecl} from './s-ui-react.d';
+import {Provider as ProviderDecl, ProviderProps, SOrSId, T1RowProps, T1RowView as T1RowViewDecl, T1SortedTableProps, T1SortedTableView as T1SortedTableViewDecl, T1TableProps, T1TableView as T1TableViewDecl, TablesProps, TablesView as TablesViewDecl, useAddT1RowCallback as useAddT1RowCallbackDecl, useCellIdsListener as useCellIdsListenerDecl, useCellListener as useCellListenerDecl, useCreateS as useCreateSDecl, useDelT1C1CellCallback as useDelT1C1CellCallbackDecl, useDelT1C2CellCallback as useDelT1C2CellCallbackDecl, useDelT1C3CellCallback as useDelT1C3CellCallbackDecl, useDelT1CellCallback as useDelT1CellCallbackDecl, useDelT1RowCallback as useDelT1RowCallbackDecl, useDelT1TableCallback as useDelT1TableCallbackDecl, useDelTablesCallback as useDelTablesCallbackDecl, useRowIdsListener as useRowIdsListenerDecl, useRowListener as useRowListenerDecl, useS as useSDecl, useSetT1C1CellCallback as useSetT1C1CellCallbackDecl, useSetT1C2CellCallback as useSetT1C2CellCallbackDecl, useSetT1C3CellCallback as useSetT1C3CellCallbackDecl, useSetT1CellCallback as useSetT1CellCallbackDecl, useSetT1PartialRowCallback as useSetT1PartialRowCallbackDecl, useSetT1RowCallback as useSetT1RowCallbackDecl, useSetT1TableCallback as useSetT1TableCallbackDecl, useSetTablesCallback as useSetTablesCallbackDecl, useSortedRowIdsListener as useSortedRowIdsListenerDecl, useT1C1Cell as useT1C1CellDecl, useT1C2Cell as useT1C2CellDecl, useT1C3Cell as useT1C3CellDecl, useT1Cell as useT1CellDecl, useT1CellIds as useT1CellIdsDecl, useT1Row as useT1RowDecl, useT1RowIds as useT1RowIdsDecl, useT1SortedRowIds as useT1SortedRowIdsDecl, useT1Table as useT1TableDecl, useTableIds as useTableIdsDecl, useTableIdsListener as useTableIdsListenerDecl, useTableListener as useTableListenerDecl, useTables as useTablesDecl, useTablesListener as useTablesListenerDecl} from './s-ui-react.d';
 import React from 'react';
 
 const {createContext, useContext, useMemo} = React;
@@ -7928,6 +8029,9 @@ useHook(sOrSId, useDelRowCallbackCore, [T1, rowId], [then, thenDeps]);
 
 export const T1RowView: typeof T1RowViewDecl = (_props: T1RowProps): any =>
 <b>T1 row</b>
+
+export const T1SortedTableView: typeof T1SortedTableViewDecl = ({cellId, descending, offset, limit, ...props}: T1SortedTableProps): any =>
+tableView(props, useT1SortedRowIds(cellId, descending, offset, limit, props.s), T1, T1RowView);
 
 export const T1TableView: typeof T1TableViewDecl = (props: T1TableProps): any =>
 tableView(props, useT1RowIds(props.s), T1, T1RowView);
