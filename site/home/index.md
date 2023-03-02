@@ -498,16 +498,17 @@ export const createShop: typeof createShopDecl = () => {
 > ## Did we say tiny?
 >
 > If you use the basic store module alone, you'll only add a gzipped
-> _@@EVAL("toKb(sizes.get('store.js.gz'))")_ to your app. You can incrementally
-> add the other modules as you need more functionality, or get it all for
+> _@@EVAL("toKb(sizes.get('store.js.gz'))")_ to your app. Incrementally add the
+> other modules as you need more functionality, or get it all for
 > _@@EVAL("toKb(sizes.get('tinybase.js.gz'))")_.
 >
-> The ui-react module is just another
-> _@@EVAL("toKb(sizes.get('ui-react.js.gz'))")_, the tools module is
-> _@@EVAL("toKb(sizes.get('tools.js.gz'))")_, and everything is fast. Life's
-> easy when you have zero dependencies!
+> The optional ui-react module is just another
+> _@@EVAL("toKb(sizes.get('ui-react.js.gz'))")_, the auxiliary tools module is
+> _@@EVAL("toKb(sizes.get('tools.js.gz'))")_, and everything is super fast.
+> Life's easy when you have zero dependencies!
 >
-> Read more about how TinyBase is structured in the Architecture guide.
+> Read more about how TinyBase is structured and packaged in the Architecture
+> guide.
 
 @@EVAL("getSizeTable()")
 
