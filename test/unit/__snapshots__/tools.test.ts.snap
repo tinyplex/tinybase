@@ -8780,3 +8780,51 @@ value={useMemo(
 ",
 ]
 `;
+
+exports[`Refinements Pretty both 1`] = `
+[
+  "export * from 'tinybase';
+",
+  "export * from 'tinybase/ui-react';
+",
+]
+`;
+
+exports[`Refinements Pretty keyed value 1`] = `
+[
+  "export * from 'tinybase';
+",
+  "export * from 'tinybase/ui-react';
+",
+]
+`;
+
+exports[`Refinements Pretty tabular 1`] = `
+[
+  "export * from 'tinybase';
+",
+  "export * from 'tinybase/ui-react';
+",
+]
+`;
+
+exports[`Refinements Unpretty both 1`] = `
+[
+  "export * from 'tinybase';",
+  "export * from 'tinybase/ui-react';",
+]
+`;
+
+exports[`Refinements Unpretty keyed value 1`] = `
+[
+  "export * from 'tinybase';",
+  "export * from 'tinybase/ui-react';",
+]
+`;
+
+exports[`Refinements Unpretty tabular 1`] = `
+[
+  "export * from 'tinybase';",
+  "export * from 'tinybase/ui-react';",
+]
+`;
