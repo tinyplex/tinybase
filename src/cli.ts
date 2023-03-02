@@ -46,12 +46,23 @@ const getStoreApi = async (
         ...((isArray(schema) ? schema : [schema]) as Schemas),
       ),
     );
-    const [dTs, ts] = await tools.getPrettyStoreApi(storeName);
+    const [dTs, ts, dTsUiReact, tsxUiReact] = await tools.getPrettyStoreApi(
+      storeName,
+    );
     const dTsFile = resolve(outputDir, `${storeName}.d.ts`);
-    const tsFile = resolve(outputDir, `${storeName}.ts`);
     writeFileSync(dTsFile, dTs, UTF8);
+    const tsFile = resolve(outputDir, `${storeName}.ts`);
     writeFileSync(tsFile, ts, UTF8);
-    log(`    Definition: ${dTsFile}`, `Implementation: ${tsFile}`);
+    const dTsUiReactFile = resolve(outputDir, `${storeName}-ui-react.d.ts`);
+    writeFileSync(dTsUiReactFile, dTsUiReact, UTF8);
+    const tsxUiReactFile = resolve(outputDir, `${storeName}-ui-react.tsx`);
+    writeFileSync(tsxUiReactFile, tsxUiReact, UTF8);
+    log(
+      `             Definition: ${dTsFile}`,
+      `         Implementation: ${tsFile}`,
+      `    UI React definition: ${dTsUiReactFile}`,
+      `UI React implementation: ${tsxUiReactFile}`,
+    );
   } catch {
     err('provide a valid schemaFile, storeName, and outputDir');
   }
@@ -69,7 +80,7 @@ const commands: {
   getStoreApi: [
     getStoreApi,
     '<schemaFile> <storeName> <outputDir>',
-    'generate .d.ts and .ts files from a schema file',
+    'generate .d.ts, .ts, and .tsx files from a schema file',
   ],
 };
 
