@@ -255,3 +255,100 @@ describe('API', () => {
     expect(files).toMatchSnapshot();
   });
 });
+
+describe('Refinements', () => {
+  test('No schema', () => {
+    store.setTables({
+      t1: {r1: {c2: true}, r2: {c1: 2, c2: 3}},
+      t2: {r1: {c1: 'one'}},
+    });
+    expect(tools.getStoreRefinement('s')).toEqual(['', '']);
+  });
+
+  test('Unpretty tabular', () => {
+    store.setTablesSchema({
+      t1: {
+        c1: {type: 'number', default: 1},
+        c2: {type: 'string', default: 'two'},
+        c3: {type: 'string', default: '3'},
+        '': {type: 'string'},
+      },
+    });
+    expect(tools.getStoreRefinement('s')).toMatchSnapshot();
+  });
+
+  test('Pretty tabular', async () => {
+    store.setTablesSchema({
+      t1: {
+        c1: {type: 'number', default: 1},
+        c2: {type: 'string', default: 'two'},
+        c3: {type: 'string', default: '3'},
+        '': {type: 'string'},
+      },
+    });
+    const files = await tools.getPrettyStoreRefinement('s');
+    expect(files).toMatchSnapshot();
+  });
+
+  test('Unpretty keyed value', () => {
+    store.setValuesSchema({
+      v1: {type: 'number', default: 1},
+      v2: {type: 'string', default: 'two'},
+      v3: {type: 'string', default: '3'},
+      '': {type: 'string'},
+    });
+    expect(tools.getStoreRefinement('s')).toMatchSnapshot();
+  });
+
+  test('Pretty keyed value', async () => {
+    store.setValuesSchema({
+      v1: {type: 'number', default: 1},
+      v2: {type: 'string', default: 'two'},
+      v3: {type: 'string', default: '3'},
+      '': {type: 'string'},
+    });
+    const files = await tools.getPrettyStoreRefinement('s');
+    expect(files).toMatchSnapshot();
+  });
+
+  test('Unpretty both', () => {
+    store
+      .setTablesSchema({
+        t1: {
+          c1: {type: 'number', default: 1},
+          c2: {type: 'string', default: 'two'},
+          c3: {type: 'string', default: '3'},
+          '': {type: 'string'},
+        },
+      })
+      .setValuesSchema({
+        v1: {type: 'number', default: 1},
+        v2: {type: 'string', default: 'two'},
+        v3: {type: 'string', default: '3'},
+        '': {type: 'string'},
+      });
+
+    expect(tools.getStoreRefinement('s')).toMatchSnapshot();
+  });
+
+  test('Pretty both', async () => {
+    store
+      .setTablesSchema({
+        t1: {
+          c1: {type: 'number', default: 1},
+          c2: {type: 'string', default: 'two'},
+          c3: {type: 'string', default: '3'},
+          '': {type: 'string'},
+        },
+      })
+      .setValuesSchema({
+        v1: {type: 'number', default: 1},
+        v2: {type: 'string', default: 'two'},
+        v3: {type: 'string', default: '3'},
+        '': {type: 'string'},
+      });
+
+    const files = await tools.getPrettyStoreRefinement('s');
+    expect(files).toMatchSnapshot();
+  });
+});
