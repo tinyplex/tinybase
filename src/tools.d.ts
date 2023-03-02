@@ -342,7 +342,7 @@ export interface Tools {
    *     price: {type: 'number'},
    *   },
    * });
-   * const [dTs, ts, dTsUiReact, tsxUiReact] =
+   * const [dTs, ts, uiReactDTs, uiReactTsx] =
    *   createTools(store).getStoreApi('shop');
    *
    * const dTsLines = dTs.split('\n');
@@ -363,7 +363,7 @@ export interface Tools {
    *   fido: {price: 5},
    *   felix: {price: 4},
    * });
-   * const [dTs, ts, dTsUiReact, tsxUiReact] =
+   * const [dTs, ts, uiReactDTs, uiReactTsx] =
    *   createTools(store).getStoreApi('shop');
    *
    * const dTsLines = dTs.split('\n');
@@ -423,7 +423,7 @@ export interface Tools {
    *   },
    * });
    * const tools = createTools(store);
-   * const [dTs, ts, dTsUiReact, tsxUiReact] = await createTools(
+   * const [dTs, ts, uiReactDTs, uiReactTsx] = await createTools(
    *   store,
    * ).getPrettyStoreApi('shop');
    *
@@ -446,7 +446,7 @@ export interface Tools {
    *   felix: {price: 4},
    * });
    * const tools = createTools(store);
-   * const [dTs, ts, dTsUiReact, tsxUiReact] = await createTools(
+   * const [dTs, ts, uiReactDTs, uiReactTsx] = await createTools(
    *   store,
    * ).getPrettyStoreApi('shop');
    *

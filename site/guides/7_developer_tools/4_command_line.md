@@ -27,15 +27,15 @@ Usage:
  - get the current TinyBase version
 
  tinybase getStoreApi <schemaFile> <storeName> <outputDir>
- - generate .d.ts and .ts files from a schema file
+ - generate .d.ts, .ts, and .tsx files from a schema file
 ```
 
 Currently there are three commands. `help` generates this message and `version`
 prints out the version of the installed tinybase module.
 
 More interestingly, `getStoreApi` takes schemas (a TablesSchema and
-ValuesSchema, JSON-encoded in an array pair) from a file and emits `.d.ts` and
-`.ts` files for it (much as described in the Generating APIs guide).
+ValuesSchema, JSON-encoded in an array pair) from a file and emits `.d.ts`,
+`.ts`, and `.tsx` files for it (much as described in the Generating APIs guide).
 
 For example, imagine if you have defined TinyBase TablesSchema and ValuesSchema
 objects in a file called `schema.json`:
@@ -64,8 +64,10 @@ npx tinybase getStoreApi schema.json shop api
 This will list out the two files that have been generated:
 
 ```bash
-    Definition: [...]/api/shop.d.ts
-Implementation: [...]/api/shop.ts
+             Definition: [...]/api/shop.d.ts
+         Implementation: [...]/api/shop.ts
+    UI React definition: [...]/api/shop-ui-react.d.ts
+UI React implementation: [...]/api/shop-ui-react.tsx
 ```
 
 These will contain the definition of the API:
@@ -104,5 +106,7 @@ export const createShop: typeof createShopDecl = () => {
 };
 ```
 
-Both of these files, of course, you can now use to build and implement your own
+...and so on.
+
+These four files, of course, can now be used to build and implement your own
 app.

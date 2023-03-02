@@ -46,22 +46,22 @@ const getStoreApi = async (
         ...((isArray(schema) ? schema : [schema]) as Schemas),
       ),
     );
-    const [dTs, ts, dTsUiReact, tsxUiReact] = await tools.getPrettyStoreApi(
+    const [dTs, ts, uiReactDTs, uiReactTsx] = await tools.getPrettyStoreApi(
       storeName,
     );
     const dTsFile = resolve(outputDir, `${storeName}.d.ts`);
     writeFileSync(dTsFile, dTs, UTF8);
     const tsFile = resolve(outputDir, `${storeName}.ts`);
     writeFileSync(tsFile, ts, UTF8);
-    const dTsUiReactFile = resolve(outputDir, `${storeName}-ui-react.d.ts`);
-    writeFileSync(dTsUiReactFile, dTsUiReact, UTF8);
-    const tsxUiReactFile = resolve(outputDir, `${storeName}-ui-react.tsx`);
-    writeFileSync(tsxUiReactFile, tsxUiReact, UTF8);
+    const uiReactDTsFile = resolve(outputDir, `${storeName}-ui-react.d.ts`);
+    writeFileSync(uiReactDTsFile, uiReactDTs, UTF8);
+    const uiReactTsxFile = resolve(outputDir, `${storeName}-ui-react.tsx`);
+    writeFileSync(uiReactTsxFile, uiReactTsx, UTF8);
     log(
       `             Definition: ${dTsFile}`,
       `         Implementation: ${tsFile}`,
-      `    UI React definition: ${dTsUiReactFile}`,
-      `UI React implementation: ${tsxUiReactFile}`,
+      `    UI React definition: ${uiReactDTsFile}`,
+      `UI React implementation: ${uiReactTsxFile}`,
     );
   } catch {
     err('provide a valid schemaFile, storeName, and outputDir');
