@@ -250,8 +250,6 @@ export const getStoreUiReactApi = (
     null,
     'tinybase',
     ID,
-    IDS,
-    'IdOrNull',
     'Store',
     CALLBACK,
     PARAMETER + 'ized' + CALLBACK,
@@ -386,6 +384,7 @@ export const getStoreUiReactApi = (
       cellListenerType,
     );
     addImport(1, moduleDefinition, storeType);
+    addImport(null, 'tinybase', IDS, 'IdOrNull');
 
     const tableView = addInternalFunction(
       'tableView',
