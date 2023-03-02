@@ -1299,6 +1299,28 @@ export type T1SortedTableProps = {
 };
 
 /**
+ * The props passed to a component that renders a Value.
+ */
+export type ValueProps = {readonly s?: S; readonly debugIds?: boolean};
+
+/**
+ * The props passed to a component that renders the keyed value content of the
+ * Store.
+ */
+export type ValuesProps = {
+  readonly s?: S;
+  readonly valueComponents?: {
+    v1?: ComponentType<ValueProps>;
+    v2?: ComponentType<ValueProps>;
+    v3?: ComponentType<ValueProps>;
+    ''?: ComponentType<ValueProps>;
+  };
+  readonly getValueComponentProps?: (valueId: ValueId) => ExtraProps;
+  readonly separator?: ReactElement | string;
+  readonly debugIds?: boolean;
+};
+
+/**
  * Create a S within a React application with convenient memoization.
  */
 export function useCreateS(
@@ -1804,6 +1826,18 @@ export function useDelValuesCallback(
 ): Callback;
 
 /**
+ * Renders the keyed value content of the Store, and registers a listener so
+ * that any changes to that result will cause a re-render.
+ */
+export function ValuesView({
+  s,
+  valueComponents,
+  getValueComponentProps,
+  separator,
+  debugIds,
+}: ValuesProps): ComponentReturnType;
+
+/**
  * Gets the 'v1' Value, and registers a listener so that any changes to that
  * result will cause a re-render.
  */
@@ -1828,6 +1862,12 @@ export function useDelV1ValueCallback(
   then?: (store: Store) => void,
   thenDeps?: React.DependencyList,
 ): Callback;
+
+/**
+ * Renders the 'v1' Value, and registers a listener so that any changes to that
+ * result will cause a re-render.
+ */
+export function V1ValueView({s, debugIds}: ValueProps): ComponentReturnType;
 
 /**
  * Gets the 'v2' Value, and registers a listener so that any changes to that
@@ -1856,6 +1896,12 @@ export function useDelV2ValueCallback(
 ): Callback;
 
 /**
+ * Renders the 'v2' Value, and registers a listener so that any changes to that
+ * result will cause a re-render.
+ */
+export function V2ValueView({s, debugIds}: ValueProps): ComponentReturnType;
+
+/**
  * Gets the 'v3' Value, and registers a listener so that any changes to that
  * result will cause a re-render.
  */
@@ -1882,6 +1928,12 @@ export function useDelV3ValueCallback(
 ): Callback;
 
 /**
+ * Renders the 'v3' Value, and registers a listener so that any changes to that
+ * result will cause a re-render.
+ */
+export function V3ValueView({s, debugIds}: ValueProps): ComponentReturnType;
+
+/**
  * Gets the '' Value, and registers a listener so that any changes to that
  * result will cause a re-render.
  */
@@ -1906,6 +1958,12 @@ export function useDelValueCallback(
   then?: (store: Store) => void,
   thenDeps?: React.DependencyList,
 ): Callback;
+
+/**
+ * Renders the '' Value, and registers a listener so that any changes to that
+ * result will cause a re-render.
+ */
+export function ValueView({s, debugIds}: ValueProps): ComponentReturnType;
 
 /**
  * Registers a listener that will be called whenever the keyed value content of
@@ -2001,6 +2059,13 @@ import {
   T1TableView as T1TableViewDecl,
   TablesProps,
   TablesView as TablesViewDecl,
+  V1ValueView as V1ValueViewDecl,
+  V2ValueView as V2ValueViewDecl,
+  V3ValueView as V3ValueViewDecl,
+  ValueProps,
+  ValueView as ValueViewDecl,
+  ValuesProps,
+  ValuesView as ValuesViewDecl,
   useAddT1RowCallback as useAddT1RowCallbackDecl,
   useCellIdsListener as useCellIdsListenerDecl,
   useCellListener as useCellListenerDecl,
@@ -2192,6 +2257,17 @@ const V1 = 'v1';
 const V2 = 'v2';
 
 const V3 = 'v3';
+
+const getDefaultValueComponent = (valueId: Id) =>
+  valueId == V1
+    ? V1ValueView
+    : valueId == V2
+    ? V2ValueView
+    : valueId == V3
+    ? V3ValueView
+    : valueId == _
+    ? ValueView
+    : NullComponent;
 
 export const useCreateS: typeof useCreateSDecl = (
   create: () => S,
@@ -2733,6 +2809,29 @@ export const useDelValuesCallback: typeof useDelValuesCallbackDecl = (
   thenDeps?: React.DependencyList,
 ): Callback => useHook(sOrSId, useDelValuesCallbackCore, [], [then, thenDeps]);
 
+export const ValuesView: typeof ValuesViewDecl = ({
+  s,
+  valueComponents,
+  getValueComponentProps,
+  separator,
+  debugIds,
+}: ValuesProps): any =>
+  wrap(
+    useValueIds(s).map((valueId) => {
+      const Value =
+        valueComponents?.[valueId] ?? getDefaultValueComponent(valueId);
+      return (
+        <Value
+          {...getProps(getValueComponentProps, valueId)}
+          key={valueId}
+          s={s}
+          debugIds={debugIds}
+        />
+      );
+    }),
+    separator,
+  );
+
 export const useV1Value: typeof useV1ValueDecl = (sOrSId?: SOrSId): number =>
   useHook(sOrSId, useValueCore, [V1]);
 
@@ -2757,6 +2856,11 @@ export const useDelV1ValueCallback: typeof useDelV1ValueCallbackDecl = (
   then?: (store: Store) => void,
   thenDeps?: React.DependencyList,
 ): Callback => useHook(sOrSId, useDelValueCallbackCore, [V1], [then, thenDeps]);
+
+export const V1ValueView: typeof V1ValueViewDecl = ({
+  s,
+  debugIds,
+}: ValueProps): any => wrap('' + useV1Value(s) ?? '', undefined, debugIds, V1);
 
 export const useV2Value: typeof useV2ValueDecl = (sOrSId?: SOrSId): string =>
   useHook(sOrSId, useValueCore, [V2]);
@@ -2783,6 +2887,11 @@ export const useDelV2ValueCallback: typeof useDelV2ValueCallbackDecl = (
   thenDeps?: React.DependencyList,
 ): Callback => useHook(sOrSId, useDelValueCallbackCore, [V2], [then, thenDeps]);
 
+export const V2ValueView: typeof V2ValueViewDecl = ({
+  s,
+  debugIds,
+}: ValueProps): any => wrap('' + useV2Value(s) ?? '', undefined, debugIds, V2);
+
 export const useV3Value: typeof useV3ValueDecl = (sOrSId?: SOrSId): string =>
   useHook(sOrSId, useValueCore, [V3]);
 
@@ -2808,6 +2917,11 @@ export const useDelV3ValueCallback: typeof useDelV3ValueCallbackDecl = (
   thenDeps?: React.DependencyList,
 ): Callback => useHook(sOrSId, useDelValueCallbackCore, [V3], [then, thenDeps]);
 
+export const V3ValueView: typeof V3ValueViewDecl = ({
+  s,
+  debugIds,
+}: ValueProps): any => wrap('' + useV3Value(s) ?? '', undefined, debugIds, V3);
+
 export const useValue: typeof useValueDecl = (sOrSId?: SOrSId): string =>
   useHook(sOrSId, useValueCore, [_]);
 
@@ -2830,6 +2944,11 @@ export const useDelValueCallback: typeof useDelValueCallbackDecl = (
   then?: (store: Store) => void,
   thenDeps?: React.DependencyList,
 ): Callback => useHook(sOrSId, useDelValueCallbackCore, [_], [then, thenDeps]);
+
+export const ValueView: typeof ValueViewDecl = ({
+  s,
+  debugIds,
+}: ValueProps): any => wrap('' + useValue(s) ?? '', undefined, debugIds, _);
 
 export const useValuesListener: typeof useValuesListenerDecl = (
   listener: ValuesListener,
@@ -3427,6 +3546,28 @@ export type SOrSId = S | Id;
 export type ProviderProps = {readonly s?: S; readonly sById?: {[sId: Id]: S}};
 
 /**
+ * The props passed to a component that renders a Value.
+ */
+export type ValueProps = {readonly s?: S; readonly debugIds?: boolean};
+
+/**
+ * The props passed to a component that renders the keyed value content of the
+ * Store.
+ */
+export type ValuesProps = {
+  readonly s?: S;
+  readonly valueComponents?: {
+    v1?: ComponentType<ValueProps>;
+    v2?: ComponentType<ValueProps>;
+    v3?: ComponentType<ValueProps>;
+    ''?: ComponentType<ValueProps>;
+  };
+  readonly getValueComponentProps?: (valueId: ValueId) => ExtraProps;
+  readonly separator?: ReactElement | string;
+  readonly debugIds?: boolean;
+};
+
+/**
  * Create a S within a React application with convenient memoization.
  */
 export function useCreateS(
@@ -3485,6 +3626,18 @@ export function useDelValuesCallback(
 ): Callback;
 
 /**
+ * Renders the keyed value content of the Store, and registers a listener so
+ * that any changes to that result will cause a re-render.
+ */
+export function ValuesView({
+  s,
+  valueComponents,
+  getValueComponentProps,
+  separator,
+  debugIds,
+}: ValuesProps): ComponentReturnType;
+
+/**
  * Gets the 'v1' Value, and registers a listener so that any changes to that
  * result will cause a re-render.
  */
@@ -3509,6 +3662,12 @@ export function useDelV1ValueCallback(
   then?: (store: Store) => void,
   thenDeps?: React.DependencyList,
 ): Callback;
+
+/**
+ * Renders the 'v1' Value, and registers a listener so that any changes to that
+ * result will cause a re-render.
+ */
+export function V1ValueView({s, debugIds}: ValueProps): ComponentReturnType;
 
 /**
  * Gets the 'v2' Value, and registers a listener so that any changes to that
@@ -3537,6 +3696,12 @@ export function useDelV2ValueCallback(
 ): Callback;
 
 /**
+ * Renders the 'v2' Value, and registers a listener so that any changes to that
+ * result will cause a re-render.
+ */
+export function V2ValueView({s, debugIds}: ValueProps): ComponentReturnType;
+
+/**
  * Gets the 'v3' Value, and registers a listener so that any changes to that
  * result will cause a re-render.
  */
@@ -3563,6 +3728,12 @@ export function useDelV3ValueCallback(
 ): Callback;
 
 /**
+ * Renders the 'v3' Value, and registers a listener so that any changes to that
+ * result will cause a re-render.
+ */
+export function V3ValueView({s, debugIds}: ValueProps): ComponentReturnType;
+
+/**
  * Gets the '' Value, and registers a listener so that any changes to that
  * result will cause a re-render.
  */
@@ -3587,6 +3758,12 @@ export function useDelValueCallback(
   then?: (store: Store) => void,
   thenDeps?: React.DependencyList,
 ): Callback;
+
+/**
+ * Renders the '' Value, and registers a listener so that any changes to that
+ * result will cause a re-render.
+ */
+export function ValueView({s, debugIds}: ValueProps): ComponentReturnType;
 
 /**
  * Registers a listener that will be called whenever the keyed value content of
@@ -3669,6 +3846,13 @@ import {
   Provider as ProviderDecl,
   ProviderProps,
   SOrSId,
+  V1ValueView as V1ValueViewDecl,
+  V2ValueView as V2ValueViewDecl,
+  V3ValueView as V3ValueViewDecl,
+  ValueProps,
+  ValueView as ValueViewDecl,
+  ValuesProps,
+  ValuesView as ValuesViewDecl,
   useCreateS as useCreateSDecl,
   useDelV1ValueCallback as useDelV1ValueCallbackDecl,
   useDelV2ValueCallback as useDelV2ValueCallbackDecl,
@@ -3738,6 +3922,17 @@ const V3 = 'v3';
 
 const _ = '';
 
+const getDefaultValueComponent = (valueId: Id) =>
+  valueId == V1
+    ? V1ValueView
+    : valueId == V2
+    ? V2ValueView
+    : valueId == V3
+    ? V3ValueView
+    : valueId == _
+    ? ValueView
+    : NullComponent;
+
 export const useCreateS: typeof useCreateSDecl = (
   create: () => S,
   createDeps?: React.DependencyList,
@@ -3794,6 +3989,29 @@ export const useDelValuesCallback: typeof useDelValuesCallbackDecl = (
   thenDeps?: React.DependencyList,
 ): Callback => useHook(sOrSId, useDelValuesCallbackCore, [], [then, thenDeps]);
 
+export const ValuesView: typeof ValuesViewDecl = ({
+  s,
+  valueComponents,
+  getValueComponentProps,
+  separator,
+  debugIds,
+}: ValuesProps): any =>
+  wrap(
+    useValueIds(s).map((valueId) => {
+      const Value =
+        valueComponents?.[valueId] ?? getDefaultValueComponent(valueId);
+      return (
+        <Value
+          {...getProps(getValueComponentProps, valueId)}
+          key={valueId}
+          s={s}
+          debugIds={debugIds}
+        />
+      );
+    }),
+    separator,
+  );
+
 export const useV1Value: typeof useV1ValueDecl = (sOrSId?: SOrSId): number =>
   useHook(sOrSId, useValueCore, [V1]);
 
@@ -3818,6 +4036,11 @@ export const useDelV1ValueCallback: typeof useDelV1ValueCallbackDecl = (
   then?: (store: Store) => void,
   thenDeps?: React.DependencyList,
 ): Callback => useHook(sOrSId, useDelValueCallbackCore, [V1], [then, thenDeps]);
+
+export const V1ValueView: typeof V1ValueViewDecl = ({
+  s,
+  debugIds,
+}: ValueProps): any => wrap('' + useV1Value(s) ?? '', undefined, debugIds, V1);
 
 export const useV2Value: typeof useV2ValueDecl = (sOrSId?: SOrSId): string =>
   useHook(sOrSId, useValueCore, [V2]);
@@ -3844,6 +4067,11 @@ export const useDelV2ValueCallback: typeof useDelV2ValueCallbackDecl = (
   thenDeps?: React.DependencyList,
 ): Callback => useHook(sOrSId, useDelValueCallbackCore, [V2], [then, thenDeps]);
 
+export const V2ValueView: typeof V2ValueViewDecl = ({
+  s,
+  debugIds,
+}: ValueProps): any => wrap('' + useV2Value(s) ?? '', undefined, debugIds, V2);
+
 export const useV3Value: typeof useV3ValueDecl = (sOrSId?: SOrSId): string =>
   useHook(sOrSId, useValueCore, [V3]);
 
@@ -3869,6 +4097,11 @@ export const useDelV3ValueCallback: typeof useDelV3ValueCallbackDecl = (
   thenDeps?: React.DependencyList,
 ): Callback => useHook(sOrSId, useDelValueCallbackCore, [V3], [then, thenDeps]);
 
+export const V3ValueView: typeof V3ValueViewDecl = ({
+  s,
+  debugIds,
+}: ValueProps): any => wrap('' + useV3Value(s) ?? '', undefined, debugIds, V3);
+
 export const useValue: typeof useValueDecl = (sOrSId?: SOrSId): string =>
   useHook(sOrSId, useValueCore, [_]);
 
@@ -3891,6 +4124,11 @@ export const useDelValueCallback: typeof useDelValueCallbackDecl = (
   then?: (store: Store) => void,
   thenDeps?: React.DependencyList,
 ): Callback => useHook(sOrSId, useDelValueCallbackCore, [_], [then, thenDeps]);
+
+export const ValueView: typeof ValueViewDecl = ({
+  s,
+  debugIds,
+}: ValueProps): any => wrap('' + useValue(s) ?? '', undefined, debugIds, _);
 
 export const useValuesListener: typeof useValuesListenerDecl = (
   listener: ValuesListener,
@@ -6687,6 +6925,12 @@ export type T1TableProps = {readonly s?: S; readonly rowComponent?: ComponentTyp
 /** The props passed to a component that renders the 't1' Table, sorted. */
 export type T1SortedTableProps = {readonly cellId?: T1CellId; readonly descending?: boolean; readonly offset?: number; readonly limit?: number; readonly s?: S; readonly rowComponent?: ComponentType<T1RowProps>; readonly getRowComponentProps?: (rowId: Id) => ExtraProps; readonly separator?: ReactElement | string; readonly debugIds?: boolean};
 
+/** The props passed to a component that renders a Value. */
+export type ValueProps = {readonly s?: S; readonly debugIds?: boolean};
+
+/** The props passed to a component that renders the keyed value content of the Store. */
+export type ValuesProps = {readonly s?: S; readonly valueComponents?: {'v1'?: ComponentType<ValueProps>, 'v2'?: ComponentType<ValueProps>, 'v3'?: ComponentType<ValueProps>, ''?: ComponentType<ValueProps>}; readonly getValueComponentProps?: (valueId: ValueId) => ExtraProps; readonly separator?: ReactElement | string; readonly debugIds?: boolean};
+
 /** Create a S within a React application with convenient memoization. */
 export function useCreateS(create: () => S, createDeps?: React.DependencyList): S;
 
@@ -6837,6 +7081,9 @@ export function useSetPartialValuesCallback<Parameter,>(getPartialValues: (param
 /** Gets a callback that can delete the keyed value content of the Store. */
 export function useDelValuesCallback(sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback;
 
+/** Renders the keyed value content of the Store, and registers a listener so that any changes to that result will cause a re-render. */
+export function ValuesView({s, valueComponents, getValueComponentProps, separator, debugIds}: ValuesProps): ComponentReturnType;
+
 /** Gets the 'v1' Value, and registers a listener so that any changes to that result will cause a re-render. */
 export function useV1Value(sOrSId?: SOrSId): number;
 
@@ -6845,6 +7092,9 @@ export function useSetV1ValueCallback<Parameter,>(getValue: (parameter: Paramete
 
 /** Gets a callback that can delete the 'v1' Value. */
 export function useDelV1ValueCallback(sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback;
+
+/** Renders the 'v1' Value, and registers a listener so that any changes to that result will cause a re-render. */
+export function V1ValueView({s, debugIds}: ValueProps): ComponentReturnType;
 
 /** Gets the 'v2' Value, and registers a listener so that any changes to that result will cause a re-render. */
 export function useV2Value(sOrSId?: SOrSId): string;
@@ -6855,6 +7105,9 @@ export function useSetV2ValueCallback<Parameter,>(getValue: (parameter: Paramete
 /** Gets a callback that can delete the 'v2' Value. */
 export function useDelV2ValueCallback(sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback;
 
+/** Renders the 'v2' Value, and registers a listener so that any changes to that result will cause a re-render. */
+export function V2ValueView({s, debugIds}: ValueProps): ComponentReturnType;
+
 /** Gets the 'v3' Value, and registers a listener so that any changes to that result will cause a re-render. */
 export function useV3Value(sOrSId?: SOrSId): string;
 
@@ -6864,6 +7117,9 @@ export function useSetV3ValueCallback<Parameter,>(getValue: (parameter: Paramete
 /** Gets a callback that can delete the 'v3' Value. */
 export function useDelV3ValueCallback(sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback;
 
+/** Renders the 'v3' Value, and registers a listener so that any changes to that result will cause a re-render. */
+export function V3ValueView({s, debugIds}: ValueProps): ComponentReturnType;
+
 /** Gets the '' Value, and registers a listener so that any changes to that result will cause a re-render. */
 export function useValue(sOrSId?: SOrSId): string;
 
@@ -6872,6 +7128,9 @@ export function useSetValueCallback<Parameter,>(getValue: (parameter: Parameter,
 
 /** Gets a callback that can delete the '' Value. */
 export function useDelValueCallback(sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback;
+
+/** Renders the '' Value, and registers a listener so that any changes to that result will cause a re-render. */
+export function ValueView({s, debugIds}: ValueProps): ComponentReturnType;
 
 /** Registers a listener that will be called whenever the keyed value content of the Store changes. */
 export function useValuesListener(listener: ValuesListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void;
@@ -6887,7 +7146,7 @@ export function Provider({s, sById, children}: ProviderProps & {children: React.
 ",
   "import {Callback, Id, IdOrNull, Ids, ParameterizedCallback, Store} from 'tinybase';
 import {CellIdsListener, CellListener, MapNumber, MapString, RowIdsListener, RowListener, S, SortedRowIdsListener, T1CellId, T1Row, T1RowWhenSet, T1Table, TableId, TableIdsListener, TableListener, Tables, TablesListener, ValueId, ValueIdsListener, ValueListener, Values, ValuesListener, ValuesWhenSet} from './s.d';
-import {CellProps, Provider as ProviderDecl, ProviderProps, SOrSId, T1C1CellView as T1C1CellViewDecl, T1C2CellView as T1C2CellViewDecl, T1C3CellView as T1C3CellViewDecl, T1CellView as T1CellViewDecl, T1RowProps, T1RowView as T1RowViewDecl, T1SortedTableProps, T1SortedTableView as T1SortedTableViewDecl, T1TableProps, T1TableView as T1TableViewDecl, TablesProps, TablesView as TablesViewDecl, useAddT1RowCallback as useAddT1RowCallbackDecl, useCellIdsListener as useCellIdsListenerDecl, useCellListener as useCellListenerDecl, useCreateS as useCreateSDecl, useDelT1C1CellCallback as useDelT1C1CellCallbackDecl, useDelT1C2CellCallback as useDelT1C2CellCallbackDecl, useDelT1C3CellCallback as useDelT1C3CellCallbackDecl, useDelT1CellCallback as useDelT1CellCallbackDecl, useDelT1RowCallback as useDelT1RowCallbackDecl, useDelT1TableCallback as useDelT1TableCallbackDecl, useDelTablesCallback as useDelTablesCallbackDecl, useDelV1ValueCallback as useDelV1ValueCallbackDecl, useDelV2ValueCallback as useDelV2ValueCallbackDecl, useDelV3ValueCallback as useDelV3ValueCallbackDecl, useDelValueCallback as useDelValueCallbackDecl, useDelValuesCallback as useDelValuesCallbackDecl, useRowIdsListener as useRowIdsListenerDecl, useRowListener as useRowListenerDecl, useS as useSDecl, useSetPartialValuesCallback as useSetPartialValuesCallbackDecl, useSetT1C1CellCallback as useSetT1C1CellCallbackDecl, useSetT1C2CellCallback as useSetT1C2CellCallbackDecl, useSetT1C3CellCallback as useSetT1C3CellCallbackDecl, useSetT1CellCallback as useSetT1CellCallbackDecl, useSetT1PartialRowCallback as useSetT1PartialRowCallbackDecl, useSetT1RowCallback as useSetT1RowCallbackDecl, useSetT1TableCallback as useSetT1TableCallbackDecl, useSetTablesCallback as useSetTablesCallbackDecl, useSetV1ValueCallback as useSetV1ValueCallbackDecl, useSetV2ValueCallback as useSetV2ValueCallbackDecl, useSetV3ValueCallback as useSetV3ValueCallbackDecl, useSetValueCallback as useSetValueCallbackDecl, useSetValuesCallback as useSetValuesCallbackDecl, useSortedRowIdsListener as useSortedRowIdsListenerDecl, useT1C1Cell as useT1C1CellDecl, useT1C2Cell as useT1C2CellDecl, useT1C3Cell as useT1C3CellDecl, useT1Cell as useT1CellDecl, useT1CellIds as useT1CellIdsDecl, useT1Row as useT1RowDecl, useT1RowIds as useT1RowIdsDecl, useT1SortedRowIds as useT1SortedRowIdsDecl, useT1Table as useT1TableDecl, useTableIds as useTableIdsDecl, useTableIdsListener as useTableIdsListenerDecl, useTableListener as useTableListenerDecl, useTables as useTablesDecl, useTablesListener as useTablesListenerDecl, useV1Value as useV1ValueDecl, useV2Value as useV2ValueDecl, useV3Value as useV3ValueDecl, useValue as useValueDecl, useValueIds as useValueIdsDecl, useValueIdsListener as useValueIdsListenerDecl, useValueListener as useValueListenerDecl, useValues as useValuesDecl, useValuesListener as useValuesListenerDecl} from './s-ui-react.d';
+import {CellProps, Provider as ProviderDecl, ProviderProps, SOrSId, T1C1CellView as T1C1CellViewDecl, T1C2CellView as T1C2CellViewDecl, T1C3CellView as T1C3CellViewDecl, T1CellView as T1CellViewDecl, T1RowProps, T1RowView as T1RowViewDecl, T1SortedTableProps, T1SortedTableView as T1SortedTableViewDecl, T1TableProps, T1TableView as T1TableViewDecl, TablesProps, TablesView as TablesViewDecl, V1ValueView as V1ValueViewDecl, V2ValueView as V2ValueViewDecl, V3ValueView as V3ValueViewDecl, ValueProps, ValueView as ValueViewDecl, ValuesProps, ValuesView as ValuesViewDecl, useAddT1RowCallback as useAddT1RowCallbackDecl, useCellIdsListener as useCellIdsListenerDecl, useCellListener as useCellListenerDecl, useCreateS as useCreateSDecl, useDelT1C1CellCallback as useDelT1C1CellCallbackDecl, useDelT1C2CellCallback as useDelT1C2CellCallbackDecl, useDelT1C3CellCallback as useDelT1C3CellCallbackDecl, useDelT1CellCallback as useDelT1CellCallbackDecl, useDelT1RowCallback as useDelT1RowCallbackDecl, useDelT1TableCallback as useDelT1TableCallbackDecl, useDelTablesCallback as useDelTablesCallbackDecl, useDelV1ValueCallback as useDelV1ValueCallbackDecl, useDelV2ValueCallback as useDelV2ValueCallbackDecl, useDelV3ValueCallback as useDelV3ValueCallbackDecl, useDelValueCallback as useDelValueCallbackDecl, useDelValuesCallback as useDelValuesCallbackDecl, useRowIdsListener as useRowIdsListenerDecl, useRowListener as useRowListenerDecl, useS as useSDecl, useSetPartialValuesCallback as useSetPartialValuesCallbackDecl, useSetT1C1CellCallback as useSetT1C1CellCallbackDecl, useSetT1C2CellCallback as useSetT1C2CellCallbackDecl, useSetT1C3CellCallback as useSetT1C3CellCallbackDecl, useSetT1CellCallback as useSetT1CellCallbackDecl, useSetT1PartialRowCallback as useSetT1PartialRowCallbackDecl, useSetT1RowCallback as useSetT1RowCallbackDecl, useSetT1TableCallback as useSetT1TableCallbackDecl, useSetTablesCallback as useSetTablesCallbackDecl, useSetV1ValueCallback as useSetV1ValueCallbackDecl, useSetV2ValueCallback as useSetV2ValueCallbackDecl, useSetV3ValueCallback as useSetV3ValueCallbackDecl, useSetValueCallback as useSetValueCallbackDecl, useSetValuesCallback as useSetValuesCallbackDecl, useSortedRowIdsListener as useSortedRowIdsListenerDecl, useT1C1Cell as useT1C1CellDecl, useT1C2Cell as useT1C2CellDecl, useT1C3Cell as useT1C3CellDecl, useT1Cell as useT1CellDecl, useT1CellIds as useT1CellIdsDecl, useT1Row as useT1RowDecl, useT1RowIds as useT1RowIdsDecl, useT1SortedRowIds as useT1SortedRowIdsDecl, useT1Table as useT1TableDecl, useTableIds as useTableIdsDecl, useTableIdsListener as useTableIdsListenerDecl, useTableListener as useTableListenerDecl, useTables as useTablesDecl, useTablesListener as useTablesListenerDecl, useV1Value as useV1ValueDecl, useV2Value as useV2ValueDecl, useV3Value as useV3ValueDecl, useValue as useValueDecl, useValueIds as useValueIdsDecl, useValueIdsListener as useValueIdsListenerDecl, useValueListener as useValueListenerDecl, useValues as useValuesDecl, useValuesListener as useValuesListenerDecl} from './s-ui-react.d';
 import {ExtraProps, useAddRowCallback as useAddRowCallbackCore, useCell as useCellCore, useCellIds as useCellIdsCore, useCellIdsListener as useCellIdsListenerCore, useCellListener as useCellListenerCore, useDelCellCallback as useDelCellCallbackCore, useDelRowCallback as useDelRowCallbackCore, useDelTableCallback as useDelTableCallbackCore, useDelTablesCallback as useDelTablesCallbackCore, useDelValueCallback as useDelValueCallbackCore, useDelValuesCallback as useDelValuesCallbackCore, useRow as useRowCore, useRowIds as useRowIdsCore, useRowIdsListener as useRowIdsListenerCore, useRowListener as useRowListenerCore, useSetCellCallback as useSetCellCallbackCore, useSetPartialRowCallback as useSetPartialRowCallbackCore, useSetPartialValuesCallback as useSetPartialValuesCallbackCore, useSetRowCallback as useSetRowCallbackCore, useSetTableCallback as useSetTableCallbackCore, useSetTablesCallback as useSetTablesCallbackCore, useSetValueCallback as useSetValueCallbackCore, useSetValuesCallback as useSetValuesCallbackCore, useSortedRowIds as useSortedRowIdsCore, useSortedRowIdsListener as useSortedRowIdsListenerCore, useTable as useTableCore, useTableIds as useTableIdsCore, useTableIdsListener as useTableIdsListenerCore, useTableListener as useTableListenerCore, useTables as useTablesCore, useTablesListener as useTablesListenerCore, useValue as useValueCore, useValueIds as useValueIdsCore, useValueIdsListener as useValueIdsListenerCore, useValueListener as useValueListenerCore, useValues as useValuesCore, useValuesListener as useValuesListenerCore} from 'tinybase/ui-react';
 import React from 'react';
 
@@ -6948,6 +7207,8 @@ const V1 = 'v1';
 const V2 = 'v2';
 
 const V3 = 'v3';
+
+const getDefaultValueComponent = (valueId: Id) => valueId == V1 ? V1ValueView : valueId == V2 ? V2ValueView : valueId == V3 ? V3ValueView : valueId == _ ? ValueView : NullComponent;
 
 export const useCreateS: typeof useCreateSDecl = (create: () => S, createDeps?: React.DependencyList): S =>
 
@@ -7121,6 +7382,17 @@ useHook(sOrSId, useSetPartialValuesCallbackCore, [getPartialValues, getPartialVa
 export const useDelValuesCallback: typeof useDelValuesCallbackDecl = (sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback =>
 useHook(sOrSId, useDelValuesCallbackCore, [], [then, thenDeps]);
 
+export const ValuesView: typeof ValuesViewDecl = ({s, valueComponents, getValueComponentProps, separator, debugIds}: ValuesProps): any =>
+wrap(useValueIds(s).map((valueId) => {
+const Value = valueComponents?.[valueId] ?? getDefaultValueComponent(valueId);
+return <Value
+{...getProps(getValueComponentProps, valueId)}
+key={valueId}
+s={s}
+debugIds={debugIds}
+/>;
+}), separator)
+
 export const useV1Value: typeof useV1ValueDecl = (sOrSId?: SOrSId): number =>
 useHook(sOrSId, useValueCore, [V1]);
 
@@ -7129,6 +7401,9 @@ useHook(sOrSId, useSetValueCallbackCore, [V1, getValue, getValueDeps], [then, th
 
 export const useDelV1ValueCallback: typeof useDelV1ValueCallbackDecl = (sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback =>
 useHook(sOrSId, useDelValueCallbackCore, [V1], [then, thenDeps]);
+
+export const V1ValueView: typeof V1ValueViewDecl = ({s, debugIds}: ValueProps): any =>
+wrap('' + useV1Value(s) ?? '', undefined, debugIds, V1)
 
 export const useV2Value: typeof useV2ValueDecl = (sOrSId?: SOrSId): string =>
 useHook(sOrSId, useValueCore, [V2]);
@@ -7139,6 +7414,9 @@ useHook(sOrSId, useSetValueCallbackCore, [V2, getValue, getValueDeps], [then, th
 export const useDelV2ValueCallback: typeof useDelV2ValueCallbackDecl = (sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback =>
 useHook(sOrSId, useDelValueCallbackCore, [V2], [then, thenDeps]);
 
+export const V2ValueView: typeof V2ValueViewDecl = ({s, debugIds}: ValueProps): any =>
+wrap('' + useV2Value(s) ?? '', undefined, debugIds, V2)
+
 export const useV3Value: typeof useV3ValueDecl = (sOrSId?: SOrSId): string =>
 useHook(sOrSId, useValueCore, [V3]);
 
@@ -7148,6 +7426,9 @@ useHook(sOrSId, useSetValueCallbackCore, [V3, getValue, getValueDeps], [then, th
 export const useDelV3ValueCallback: typeof useDelV3ValueCallbackDecl = (sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback =>
 useHook(sOrSId, useDelValueCallbackCore, [V3], [then, thenDeps]);
 
+export const V3ValueView: typeof V3ValueViewDecl = ({s, debugIds}: ValueProps): any =>
+wrap('' + useV3Value(s) ?? '', undefined, debugIds, V3)
+
 export const useValue: typeof useValueDecl = (sOrSId?: SOrSId): string =>
 useHook(sOrSId, useValueCore, [_]);
 
@@ -7156,6 +7437,9 @@ useHook(sOrSId, useSetValueCallbackCore, [_, getValue, getValueDeps], [then, the
 
 export const useDelValueCallback: typeof useDelValueCallbackDecl = (sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback =>
 useHook(sOrSId, useDelValueCallbackCore, [_], [then, thenDeps]);
+
+export const ValueView: typeof ValueViewDecl = ({s, debugIds}: ValueProps): any =>
+wrap('' + useValue(s) ?? '', undefined, debugIds, _)
 
 export const useValuesListener: typeof useValuesListenerDecl = (listener: ValuesListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void =>
 useHook(sOrSId, useValuesListenerCore, [listener, listenerDeps, mutator]);
@@ -7478,6 +7762,12 @@ export type SOrSId = S | Id;
 /** Used with the Provider component, so that a S can be passed into the context of an application. */
 export type ProviderProps = {readonly s?: S; readonly sById?: {[sId: Id]: S}};
 
+/** The props passed to a component that renders a Value. */
+export type ValueProps = {readonly s?: S; readonly debugIds?: boolean};
+
+/** The props passed to a component that renders the keyed value content of the Store. */
+export type ValuesProps = {readonly s?: S; readonly valueComponents?: {'v1'?: ComponentType<ValueProps>, 'v2'?: ComponentType<ValueProps>, 'v3'?: ComponentType<ValueProps>, ''?: ComponentType<ValueProps>}; readonly getValueComponentProps?: (valueId: ValueId) => ExtraProps; readonly separator?: ReactElement | string; readonly debugIds?: boolean};
+
 /** Create a S within a React application with convenient memoization. */
 export function useCreateS(create: () => S, createDeps?: React.DependencyList): S;
 
@@ -7499,6 +7789,9 @@ export function useSetPartialValuesCallback<Parameter,>(getPartialValues: (param
 /** Gets a callback that can delete the keyed value content of the Store. */
 export function useDelValuesCallback(sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback;
 
+/** Renders the keyed value content of the Store, and registers a listener so that any changes to that result will cause a re-render. */
+export function ValuesView({s, valueComponents, getValueComponentProps, separator, debugIds}: ValuesProps): ComponentReturnType;
+
 /** Gets the 'v1' Value, and registers a listener so that any changes to that result will cause a re-render. */
 export function useV1Value(sOrSId?: SOrSId): number;
 
@@ -7507,6 +7800,9 @@ export function useSetV1ValueCallback<Parameter,>(getValue: (parameter: Paramete
 
 /** Gets a callback that can delete the 'v1' Value. */
 export function useDelV1ValueCallback(sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback;
+
+/** Renders the 'v1' Value, and registers a listener so that any changes to that result will cause a re-render. */
+export function V1ValueView({s, debugIds}: ValueProps): ComponentReturnType;
 
 /** Gets the 'v2' Value, and registers a listener so that any changes to that result will cause a re-render. */
 export function useV2Value(sOrSId?: SOrSId): string;
@@ -7517,6 +7813,9 @@ export function useSetV2ValueCallback<Parameter,>(getValue: (parameter: Paramete
 /** Gets a callback that can delete the 'v2' Value. */
 export function useDelV2ValueCallback(sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback;
 
+/** Renders the 'v2' Value, and registers a listener so that any changes to that result will cause a re-render. */
+export function V2ValueView({s, debugIds}: ValueProps): ComponentReturnType;
+
 /** Gets the 'v3' Value, and registers a listener so that any changes to that result will cause a re-render. */
 export function useV3Value(sOrSId?: SOrSId): string;
 
@@ -7526,6 +7825,9 @@ export function useSetV3ValueCallback<Parameter,>(getValue: (parameter: Paramete
 /** Gets a callback that can delete the 'v3' Value. */
 export function useDelV3ValueCallback(sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback;
 
+/** Renders the 'v3' Value, and registers a listener so that any changes to that result will cause a re-render. */
+export function V3ValueView({s, debugIds}: ValueProps): ComponentReturnType;
+
 /** Gets the '' Value, and registers a listener so that any changes to that result will cause a re-render. */
 export function useValue(sOrSId?: SOrSId): string;
 
@@ -7534,6 +7836,9 @@ export function useSetValueCallback<Parameter,>(getValue: (parameter: Parameter,
 
 /** Gets a callback that can delete the '' Value. */
 export function useDelValueCallback(sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback;
+
+/** Renders the '' Value, and registers a listener so that any changes to that result will cause a re-render. */
+export function ValueView({s, debugIds}: ValueProps): ComponentReturnType;
 
 /** Registers a listener that will be called whenever the keyed value content of the Store changes. */
 export function useValuesListener(listener: ValuesListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void;
@@ -7550,7 +7855,7 @@ export function Provider({s, sById, children}: ProviderProps & {children: React.
   "import {Callback, Id, IdOrNull, Ids, ParameterizedCallback, Store} from 'tinybase';
 import {ExtraProps, useDelValueCallback as useDelValueCallbackCore, useDelValuesCallback as useDelValuesCallbackCore, useSetPartialValuesCallback as useSetPartialValuesCallbackCore, useSetValueCallback as useSetValueCallbackCore, useSetValuesCallback as useSetValuesCallbackCore, useValue as useValueCore, useValueIds as useValueIdsCore, useValueIdsListener as useValueIdsListenerCore, useValueListener as useValueListenerCore, useValues as useValuesCore, useValuesListener as useValuesListenerCore} from 'tinybase/ui-react';
 import {MapNumber, MapString, S, ValueId, ValueIdsListener, ValueListener, Values, ValuesListener, ValuesWhenSet} from './s.d';
-import {Provider as ProviderDecl, ProviderProps, SOrSId, useCreateS as useCreateSDecl, useDelV1ValueCallback as useDelV1ValueCallbackDecl, useDelV2ValueCallback as useDelV2ValueCallbackDecl, useDelV3ValueCallback as useDelV3ValueCallbackDecl, useDelValueCallback as useDelValueCallbackDecl, useDelValuesCallback as useDelValuesCallbackDecl, useS as useSDecl, useSetPartialValuesCallback as useSetPartialValuesCallbackDecl, useSetV1ValueCallback as useSetV1ValueCallbackDecl, useSetV2ValueCallback as useSetV2ValueCallbackDecl, useSetV3ValueCallback as useSetV3ValueCallbackDecl, useSetValueCallback as useSetValueCallbackDecl, useSetValuesCallback as useSetValuesCallbackDecl, useV1Value as useV1ValueDecl, useV2Value as useV2ValueDecl, useV3Value as useV3ValueDecl, useValue as useValueDecl, useValueIds as useValueIdsDecl, useValueIdsListener as useValueIdsListenerDecl, useValueListener as useValueListenerDecl, useValues as useValuesDecl, useValuesListener as useValuesListenerDecl} from './s-ui-react.d';
+import {Provider as ProviderDecl, ProviderProps, SOrSId, V1ValueView as V1ValueViewDecl, V2ValueView as V2ValueViewDecl, V3ValueView as V3ValueViewDecl, ValueProps, ValueView as ValueViewDecl, ValuesProps, ValuesView as ValuesViewDecl, useCreateS as useCreateSDecl, useDelV1ValueCallback as useDelV1ValueCallbackDecl, useDelV2ValueCallback as useDelV2ValueCallbackDecl, useDelV3ValueCallback as useDelV3ValueCallbackDecl, useDelValueCallback as useDelValueCallbackDecl, useDelValuesCallback as useDelValuesCallbackDecl, useS as useSDecl, useSetPartialValuesCallback as useSetPartialValuesCallbackDecl, useSetV1ValueCallback as useSetV1ValueCallbackDecl, useSetV2ValueCallback as useSetV2ValueCallbackDecl, useSetV3ValueCallback as useSetV3ValueCallbackDecl, useSetValueCallback as useSetValueCallbackDecl, useSetValuesCallback as useSetValuesCallbackDecl, useV1Value as useV1ValueDecl, useV2Value as useV2ValueDecl, useV3Value as useV3ValueDecl, useValue as useValueDecl, useValueIds as useValueIdsDecl, useValueIdsListener as useValueIdsListenerDecl, useValueListener as useValueListenerDecl, useValues as useValuesDecl, useValuesListener as useValuesListenerDecl} from './s-ui-react.d';
 import React from 'react';
 
 const {createContext, useContext, useMemo} = React;
@@ -7582,6 +7887,8 @@ const V3 = 'v3';
 
 const _ = '';
 
+const getDefaultValueComponent = (valueId: Id) => valueId == V1 ? V1ValueView : valueId == V2 ? V2ValueView : valueId == V3 ? V3ValueView : valueId == _ ? ValueView : NullComponent;
+
 export const useCreateS: typeof useCreateSDecl = (create: () => S, createDeps?: React.DependencyList): S =>
 
 // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -7608,6 +7915,17 @@ useHook(sOrSId, useSetPartialValuesCallbackCore, [getPartialValues, getPartialVa
 export const useDelValuesCallback: typeof useDelValuesCallbackDecl = (sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback =>
 useHook(sOrSId, useDelValuesCallbackCore, [], [then, thenDeps]);
 
+export const ValuesView: typeof ValuesViewDecl = ({s, valueComponents, getValueComponentProps, separator, debugIds}: ValuesProps): any =>
+wrap(useValueIds(s).map((valueId) => {
+const Value = valueComponents?.[valueId] ?? getDefaultValueComponent(valueId);
+return <Value
+{...getProps(getValueComponentProps, valueId)}
+key={valueId}
+s={s}
+debugIds={debugIds}
+/>;
+}), separator)
+
 export const useV1Value: typeof useV1ValueDecl = (sOrSId?: SOrSId): number =>
 useHook(sOrSId, useValueCore, [V1]);
 
@@ -7616,6 +7934,9 @@ useHook(sOrSId, useSetValueCallbackCore, [V1, getValue, getValueDeps], [then, th
 
 export const useDelV1ValueCallback: typeof useDelV1ValueCallbackDecl = (sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback =>
 useHook(sOrSId, useDelValueCallbackCore, [V1], [then, thenDeps]);
+
+export const V1ValueView: typeof V1ValueViewDecl = ({s, debugIds}: ValueProps): any =>
+wrap('' + useV1Value(s) ?? '', undefined, debugIds, V1)
 
 export const useV2Value: typeof useV2ValueDecl = (sOrSId?: SOrSId): string =>
 useHook(sOrSId, useValueCore, [V2]);
@@ -7626,6 +7947,9 @@ useHook(sOrSId, useSetValueCallbackCore, [V2, getValue, getValueDeps], [then, th
 export const useDelV2ValueCallback: typeof useDelV2ValueCallbackDecl = (sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback =>
 useHook(sOrSId, useDelValueCallbackCore, [V2], [then, thenDeps]);
 
+export const V2ValueView: typeof V2ValueViewDecl = ({s, debugIds}: ValueProps): any =>
+wrap('' + useV2Value(s) ?? '', undefined, debugIds, V2)
+
 export const useV3Value: typeof useV3ValueDecl = (sOrSId?: SOrSId): string =>
 useHook(sOrSId, useValueCore, [V3]);
 
@@ -7635,6 +7959,9 @@ useHook(sOrSId, useSetValueCallbackCore, [V3, getValue, getValueDeps], [then, th
 export const useDelV3ValueCallback: typeof useDelV3ValueCallbackDecl = (sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback =>
 useHook(sOrSId, useDelValueCallbackCore, [V3], [then, thenDeps]);
 
+export const V3ValueView: typeof V3ValueViewDecl = ({s, debugIds}: ValueProps): any =>
+wrap('' + useV3Value(s) ?? '', undefined, debugIds, V3)
+
 export const useValue: typeof useValueDecl = (sOrSId?: SOrSId): string =>
 useHook(sOrSId, useValueCore, [_]);
 
@@ -7643,6 +7970,9 @@ useHook(sOrSId, useSetValueCallbackCore, [_, getValue, getValueDeps], [then, the
 
 export const useDelValueCallback: typeof useDelValueCallbackDecl = (sOrSId?: SOrSId, then?: (store: Store) => void, thenDeps?: React.DependencyList): Callback =>
 useHook(sOrSId, useDelValueCallbackCore, [_], [then, thenDeps]);
+
+export const ValueView: typeof ValueViewDecl = ({s, debugIds}: ValueProps): any =>
+wrap('' + useValue(s) ?? '', undefined, debugIds, _)
 
 export const useValuesListener: typeof useValuesListenerDecl = (listener: ValuesListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void =>
 useHook(sOrSId, useValuesListenerCore, [listener, listenerDeps, mutator]);
