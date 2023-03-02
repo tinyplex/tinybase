@@ -489,7 +489,7 @@ export interface Tools {
    * The `.d.ts` files that are generated are designed to resemble the main
    * TinyBase Store and React binding files. In your application you will need
    * to coerce the Store to the refined interface to benefit from the type
-   * safety. One easy way to do this is to cast the TinyBase store module to the
+   * safety. One easy way to do this is to cast the TinyBase module to the
    * refined module in bulk, and then destructure to get the refined imports:
    *
    * ```js yolo
