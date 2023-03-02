@@ -1051,6 +1051,17 @@ export const getStoreUiReactApi = (
     );
     addImport(1, moduleDefinition, storeType);
 
+    const getDefaultValueComponent = addInternalFunction(
+      'getDefaultValueComponent',
+      'valueId: Id',
+      join(
+        mapValuesSchema(
+          (_, _2, _3, VALUE_ID, valueName) =>
+            `valueId == ${VALUE_ID} ? ` + valueName + 'ValueView : ',
+        ),
+      ) + NullComponent,
+    );
+
     // useValues
     addProxyHook(
       VALUES,
@@ -1060,7 +1071,7 @@ export const getStoreUiReactApi = (
     );
 
     // useValueIds
-    addProxyHook(
+    const useValueIds = addProxyHook(
       VALUE_IDS,
       VALUE_IDS,
       valueIdType + SQUARE_BRACKETS,
@@ -1120,13 +1131,71 @@ export const getStoreUiReactApi = (
       THEN_AND_THEN_DEPS_IN_CALL,
     );
 
+    // ValueProps
+    const valuePropsType = addType(
+      VALUE + PROPS,
+      getPropsTypeList(
+        storeInstance + OPTIONAL_COLON + storeType,
+        DEBUG_IDS_PROP_TYPE,
+      ),
+      getPropsDoc('a Value'),
+    );
+
+    // ValuesProps
+    const valuesPropsType = addType(
+      VALUES + PROPS,
+      getPropsTypeList(
+        storeInstance + OPTIONAL_COLON + storeType,
+        'valueComponents?: {' +
+          join(
+            mapValuesSchema(
+              (valueId: Id) =>
+                `'${valueId}'?: ComponentType<${valuePropsType}>`,
+            ),
+            ', ',
+          ) +
+          '}',
+        `getValueComponentProps?: (valueId: ${valueIdType}) => ExtraProps`,
+        SEPARATOR_PROP_TYPE,
+        DEBUG_IDS_PROP_TYPE,
+      ),
+      getPropsDoc(getTheContentOfDoc(2, 1)),
+    );
+
+    addImport(1, uiReactModuleDefinition, valuesPropsType, valuePropsType);
+
+    // ValuesView
+    addComponent(
+      VALUES + VIEW,
+      '{' +
+        storeInstance +
+        ', valueComponents, getValueComponentProps' +
+        SEPARATOR_AND_DEBUG_IDS +
+        '}: ' +
+        valuesPropsType,
+      [
+        wrap + `(${useValueIds}(${storeInstance}).map((valueId) => {`,
+        'const Value = valueComponents?.[valueId] ?? ' +
+          getDefaultValueComponent +
+          '(valueId);',
+        'return <Value',
+        `{...${getProps}(getValueComponentProps, valueId)}`,
+        'key={valueId}',
+        storeProp,
+        DEBUG_IDS_PROP,
+        '/>;',
+        '}), separator)',
+      ],
+      getTheContentOfTheStoreDoc(2, 13) + AND_REGISTERS,
+    );
+
     mapValuesSchema((valueId, type, _, VALUE_ID, valueName) => {
       const mapValueType = 'Map' + camel(type, 1);
       addImport(0, moduleDefinition, mapValueType);
       addImport(1, moduleDefinition, mapValueType);
 
       // useValue
-      addProxyHook(
+      const useValue = addProxyHook(
         valueName + VALUE,
         VALUE,
         type,
@@ -1166,6 +1235,19 @@ export const getStoreUiReactApi = (
         EMPTY_STRING,
         THEN_AND_THEN_DEPS,
         THEN_AND_THEN_DEPS_IN_CALL,
+      );
+
+      // ValueView
+      addComponent(
+        valueName + VALUE + VIEW,
+        `{${storeInstance}, debugIds}: ` + valuePropsType,
+        [
+          wrap +
+            `('' + ${useValue}(` +
+            storeInstance +
+            `) ?? '', undefined, debugIds, ${VALUE_ID})`,
+        ],
+        getValueContentDoc(valueId, 13) + AND_REGISTERS,
       );
     });
 
