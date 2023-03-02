@@ -3003,15 +3003,7 @@ export const Provider: typeof ProviderDecl = ({
 
 exports[`API Pretty keyed value 1`] = `
 [
-  "import {
-  DoRollback,
-  Id,
-  IdOrNull,
-  Ids,
-  Json,
-  Store,
-  ValueChange,
-} from 'tinybase';
+  "import {DoRollback, Id, IdOrNull, Json, Store, ValueChange} from 'tinybase';
 
 /**
  * Represents the keyed value content of the Store.
@@ -3342,17 +3334,11 @@ export interface S {
  */
 export function createS(): S;
 ",
-  "import {
-  DoRollback,
-  Id,
-  IdOrNull,
-  Ids,
-  Json,
-  Store,
-  createStore,
-} from 'tinybase';
+  "import {DoRollback, Id, IdOrNull, Json, Store, createStore} from 'tinybase';
 import {
   InvalidValueListener,
+  MapNumber,
+  MapString,
   S,
   TransactionListener,
   ValueCallback,
@@ -3512,14 +3498,7 @@ export const createS: typeof createSDecl = () => {
   return Object.freeze(s);
 };
 ",
-  "import {
-  Callback,
-  Id,
-  IdOrNull,
-  Ids,
-  ParameterizedCallback,
-  Store,
-} from 'tinybase';
+  "import {Callback, Id, ParameterizedCallback, Store} from 'tinybase';
 import {ComponentReturnType, ExtraProps} from 'tinybase/ui-react';
 import {ComponentType, ReactElement} from 'react';
 import {
@@ -3809,14 +3788,7 @@ export function Provider({
   children,
 }: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
 ",
-  "import {
-  Callback,
-  Id,
-  IdOrNull,
-  Ids,
-  ParameterizedCallback,
-  Store,
-} from 'tinybase';
+  "import {Callback, Id, ParameterizedCallback, Store} from 'tinybase';
 import {
   ExtraProps,
   useDelValueCallback as useDelValueCallbackCore,
@@ -7469,7 +7441,7 @@ value={useMemo(
 
 exports[`API Unpretty keyed value 1`] = `
 [
-  "import {DoRollback, Id, IdOrNull, Ids, Json, Store, ValueChange} from 'tinybase';
+  "import {DoRollback, Id, IdOrNull, Json, Store, ValueChange} from 'tinybase';
 
 /** Represents the keyed value content of the Store. */
 export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string;};
@@ -7629,8 +7601,8 @@ getStore(): Store;
 
 /** Creates a S object. */
 export function createS(): S;",
-  "import {DoRollback, Id, IdOrNull, Ids, Json, Store, createStore} from 'tinybase';
-import {InvalidValueListener, S, TransactionListener, ValueCallback, ValueId, ValueIdsListener, ValueListener, Values, ValuesListener, ValuesWhenSet, createS as createSDecl} from './s.d';
+  "import {DoRollback, Id, IdOrNull, Json, Store, createStore} from 'tinybase';
+import {InvalidValueListener, MapNumber, MapString, S, TransactionListener, ValueCallback, ValueId, ValueIdsListener, ValueListener, Values, ValuesListener, ValuesWhenSet, createS as createSDecl} from './s.d';
 
 export const createS: typeof createSDecl = () => {
 const V1 = 'v1';
@@ -7751,7 +7723,7 @@ getStore: (): Store => store,
 
 return Object.freeze(s);
 };",
-  "import {Callback, Id, IdOrNull, Ids, ParameterizedCallback, Store} from 'tinybase';
+  "import {Callback, Id, ParameterizedCallback, Store} from 'tinybase';
 import {ComponentReturnType, ExtraProps} from 'tinybase/ui-react';
 import {ComponentType, ReactElement} from 'react';
 import {MapNumber, MapString, S, ValueId, ValueIdsListener, ValueListener, Values, ValuesListener, ValuesWhenSet} from './s.d';
@@ -7852,7 +7824,7 @@ export function useValueListener(valueId: ValueId | null, listener: ValueListene
 /** Wraps part of an application in a context that provides default objects to be used by hooks and components within. */
 export function Provider({s, sById, children}: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
 ",
-  "import {Callback, Id, IdOrNull, Ids, ParameterizedCallback, Store} from 'tinybase';
+  "import {Callback, Id, ParameterizedCallback, Store} from 'tinybase';
 import {ExtraProps, useDelValueCallback as useDelValueCallbackCore, useDelValuesCallback as useDelValuesCallbackCore, useSetPartialValuesCallback as useSetPartialValuesCallbackCore, useSetValueCallback as useSetValueCallbackCore, useSetValuesCallback as useSetValuesCallbackCore, useValue as useValueCore, useValueIds as useValueIdsCore, useValueIdsListener as useValueIdsListenerCore, useValueListener as useValueListenerCore, useValues as useValuesCore, useValuesListener as useValuesListenerCore} from 'tinybase/ui-react';
 import {MapNumber, MapString, S, ValueId, ValueIdsListener, ValueListener, Values, ValuesListener, ValuesWhenSet} from './s.d';
 import {Provider as ProviderDecl, ProviderProps, SOrSId, V1ValueView as V1ValueViewDecl, V2ValueView as V2ValueViewDecl, V3ValueView as V3ValueViewDecl, ValueProps, ValueView as ValueViewDecl, ValuesProps, ValuesView as ValuesViewDecl, useCreateS as useCreateSDecl, useDelV1ValueCallback as useDelV1ValueCallbackDecl, useDelV2ValueCallback as useDelV2ValueCallbackDecl, useDelV3ValueCallback as useDelV3ValueCallbackDecl, useDelValueCallback as useDelValueCallbackDecl, useDelValuesCallback as useDelValuesCallbackDecl, useS as useSDecl, useSetPartialValuesCallback as useSetPartialValuesCallbackDecl, useSetV1ValueCallback as useSetV1ValueCallbackDecl, useSetV2ValueCallback as useSetV2ValueCallbackDecl, useSetV3ValueCallback as useSetV3ValueCallbackDecl, useSetValueCallback as useSetValueCallbackDecl, useSetValuesCallback as useSetValuesCallbackDecl, useV1Value as useV1ValueDecl, useV2Value as useV2ValueDecl, useV3Value as useV3ValueDecl, useValue as useValueDecl, useValueIds as useValueIdsDecl, useValueIdsListener as useValueIdsListenerDecl, useValueListener as useValueListenerDecl, useValues as useValuesDecl, useValuesListener as useValuesListenerDecl} from './s-ui-react.d';

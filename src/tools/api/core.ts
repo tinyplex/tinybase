@@ -317,6 +317,8 @@ export const getStoreCoreApi = (
       addImport(1, moduleDefinition, ...tableTypes);
     });
 
+    addImport(null, 'tinybase', IDS);
+
     const tablesType = addType(
       TABLES,
       `{${join(
@@ -975,6 +977,7 @@ export const getStoreCoreApi = (
       valueIdsListenerType,
       valueListenerType,
       invalidValueListenerType,
+      ...collValues(mapCellOrValueTypes),
     );
     addImport(0, 'tinybase', 'ValueChange');
 
@@ -1006,7 +1009,7 @@ export const getStoreCoreApi = (
     ),
   );
 
-  addImport(null, 'tinybase', 'DoRollback', ID, 'IdOrNull', IDS, JSON, 'Store');
+  addImport(null, 'tinybase', 'DoRollback', ID, 'IdOrNull', JSON, 'Store');
 
   const transactionListenerType = addType(
     TRANSACTION + LISTENER,
