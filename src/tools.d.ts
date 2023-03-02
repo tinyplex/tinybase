@@ -272,9 +272,9 @@ export interface Tools {
   getStoreValuesSchema(): ValuesSchema;
 
   /**
-   * The getStoreApi method returns code-generated .d.ts and .ts(x) files that
-   * describe the schema of a Store and React bindings (since v3.1.0) in an ORM
-   * style.
+   * The getStoreApi method returns code-generated `.d.ts` and `.ts(x)` files
+   * that describe the schema of a Store and React bindings (since v3.1.0) in an
+   * ORM style.
    *
    * If the Store does not already have an explicit TablesSchema or ValuesSchema
    * associated with it, the data in the Store will be scanned to attempt to
@@ -290,12 +290,12 @@ export interface Tools {
    * - `[storeName]-ui-react.d.ts`
    * - `[storeName]-ui-react.tsx`
    *
-   * Also you should save these alongside each other so that the .ts(x) files
-   * can import types from the .d.ts files.
+   * Also you should save these alongside each other so that the `.ts(x)` files
+   * can import types from the `.d.ts` files.
    *
-   * The .d.ts and .ts(x) files that are generated are designed to resemble the
-   * main TinyBase Store and React binding files, but provide named types and
-   * methods that describe the domain of the schema in the store.
+   * The `.d.ts` and `.ts(x)` files that are generated are designed to resemble
+   * the main TinyBase Store and React binding files, but provide named types
+   * and methods that describe the domain of the schema in the Store.
    *
    * For example, from a Store that has a `pets` Table, you will get methods
    * like `getPetsTable`, types like `PetsRow`, and hooks and components that
@@ -382,9 +382,9 @@ export interface Tools {
   getStoreApi(storeName: string): [string, string, string, string];
 
   /**
-   * The getPrettyStoreApi method attempts to returns a prettified
-   * code-generated .d.ts and .ts(x) files that describe the schema of a Store
-   * and React bindings (since v3.1.0) in an ORM style.
+   * The getPrettyStoreApi method attempts to return prettified code-generated
+   * `.d.ts` and `.ts(x)` files that describe the schema of a Store and React
+   * bindings (since v3.1.0) in an ORM style.
    *
    * This is simply a wrapper around the getStoreApi method that attempts to
    * invoke the `prettier` module (which it hopes you have installed) to format
@@ -403,8 +403,8 @@ export interface Tools {
    * - `[storeName]-ui-react.d.ts`
    * - `[storeName]-ui-react.tsx`
    *
-   * Also you should save these alongside each other so that the .ts(x) files
-   * can import types from the .d.ts files.
+   * Also you should save these alongside each other so that the `.ts(x)` files
+   * can import types from the `.d.ts` files.
    *
    * See the documentation for the getStoreApi method for details of the content
    * of the generated files.
@@ -466,6 +466,173 @@ export interface Tools {
   getPrettyStoreApi(
     storeName: string,
   ): Promise<[string, string, string, string]>;
+
+  /**
+   * The getStoreRefinement method returns code-generated `.d.ts` files that
+   * refine the Store and React bindings to have schema-specific methods and
+   * types.
+   *
+   * If the Store does not already have an explicit TablesSchema or ValuesSchema
+   * associated with it, the data in the Store will be scanned to attempt to
+   * infer new schemas. The method returns two strings (which should be saved as
+   * files) though if no schema can be inferred, the strings will be empty.
+   *
+   * The method takes a single argument which represents the name you want the
+   * generated store object to have in code. You are expected to save the two
+   * files yourself, as, respectively:
+   *
+   * - `[storeName]-refinement.d.ts`
+   * - `[storeName]-ui-react-refinement.d.ts`
+   *
+   * You should save these alongside each other.
+   *
+   * The `.d.ts` files that are generated are designed to resemble the main
+   * TinyBase Store and React binding files. In your application you will need
+   * to coerce the Store to the refined interface to benefit from the type
+   * safety. One easy way to do this is to cast the TinyBase store module to the
+   * refined module in bulk, and then destructure to get the refined imports:
+   *
+   * ```js yolo
+   * import * as tinybase from 'tinybase';
+   * import shopRefinement from './shop-refinement.d';
+   *
+   * const {createStore} = tinybase as typeof shopRefinement;
+   *
+   * const shop = createStore(); // shop is a refined Store
+   * // ...
+   * ```
+   *
+   * This is a particularly good approach for the React module which has many
+   * top-level hook and component functions. You don't need to refine them one
+   * by one:
+   *
+   * ```js yolo
+   * import * as tinybaseUiReact from 'tinybase/ui-react';
+   * import shopUiReactRefinement from './shop-ui-react-refinement.d';
+   *
+   * const {
+   *   useTables, // a refined hook
+   *   RowView, //   a refined component
+   *   // ...
+   * } = tinybaseUiReact as typeof shopUiReactRefinement;
+   *
+   * // ...
+   * ```
+   *
+   * @param storeName The name you want to provide to the generated Store, which
+   * should also be used to save the `.d.ts` files.
+   * @returns A pair of strings representing the contents of the `.d.ts` files
+   * for the generated Store and React modules.
+   * @example
+   * This example creates a Tools object and generates type refinements for a
+   * Store that already has a TablesSchema.
+   * ```js
+   * const store = createStore().setTablesSchema({
+   *   pets: {
+   *     price: {type: 'number'},
+   *   },
+   * });
+   * const [refinementDTs, uiReactRefinementDTs] =
+   *   createTools(store).getStoreRefinement('shop');
+   *
+   * const dTsLines = refinementDTs.split('\n');
+   * // console.log(dTsLines[3]);
+   * // // -> ''
+   * // console.log(dTsLines[6]);
+   * // // -> ''
+   * ```
+   * @example
+   * This example creates a Tools object and generates code for a Store that
+   * doesn't already have a TablesSchema.
+   * ```js
+   * const store = createStore().setTable('pets', {
+   *   fido: {price: 5},
+   *   felix: {price: 4},
+   * });
+   * const [refinementDTs, uiReactRefinementDTs] =
+   *   createTools(store).getStoreRefinement('shop');
+   *
+   * const dTsLines = refinementDTs.split('\n');
+   * // console.log(dTsLines[3]);
+   * // // -> ''
+   * // console.log(dTsLines[6]);
+   * // // -> ''
+   * ```
+   * @category Modelling
+   * @since v3.1.0
+   */
+  getStoreRefinement(storeName: string): [string, string];
+
+  /**
+   * The getPrettyStoreRefinement method attempts to return prettified
+   * code-generated `.d.ts` files that refine the Store and React bindings to
+   * have schema-specific methods and types.
+   *
+   * This is simply a wrapper around the getStoreRefinement method that attempts
+   * to invoke the `prettier` module (which it hopes you have installed) to
+   * format the generated code. If `prettier` is not present, the output will
+   * resemble that of the underlying getStoreRefinement method.
+   *
+   * The method is asynchronous, so you should use the `await` keyword or handle
+   * the results as a promise.
+   *
+   * The method takes a single argument which represents the name you want the
+   * generated store object to have in code. You are expected to save the two
+   * files yourself, as, respectively:
+   *
+   * - `[storeName]-refinement.d.ts`
+   * - `[storeName]-ui-react-refinement.d.ts`
+   *
+   * You should save these alongside each other.
+   *
+   * See the documentation for the getStoreRefinement method for details of the
+   * content of the generated files.
+   *
+   * @param storeName The name you want to provide to the generated Store, which
+   * should also be used to save the `.d.ts` files.
+   * @returns A pair of strings representing the contents of the `.d.ts` files
+   * for the generated Store and React modules.
+   * @example
+   * This example creates a Tools object and generates type refinements for a
+   * Store that already has a TablesSchema.
+   * ```js
+   * const store = createStore().setTablesSchema({
+   *   pets: {
+   *     price: {type: 'number'},
+   *   },
+   * });
+   * const [refinementDTs, uiReactRefinementDTs] = await createTools(
+   *   store,
+   * ).getPrettyStoreRefinement('shop');
+   *
+   * const dTsLines = refinementDTs.split('\n');
+   * // console.log(dTsLines[3]);
+   * // // -> ''
+   * // console.log(dTsLines[6]);
+   * // // -> ''
+   * ```
+   * @example
+   * This example creates a Tools object and generates code for a Store that
+   * doesn't already have a TablesSchema.
+   * ```js
+   * const store = createStore().setTable('pets', {
+   *   fido: {price: 5},
+   *   felix: {price: 4},
+   * });
+   * const [refinementDTs, uiReactRefinementDTs] = await createTools(
+   *   store,
+   * ).getPrettyStoreRefinement('shop');
+   *
+   * const dTsLines = refinementDTs.split('\n');
+   * // console.log(dTsLines[3]);
+   * // // -> ''
+   * // console.log(dTsLines[6]);
+   * // // -> ''
+   * ```
+   * @category Modelling
+   * @since v3.1.0
+   */
+  getPrettyStoreRefinement(storeName: string): Promise<[string, string]>;
 
   /**
    * The getStore method returns a reference to the underlying Store that is

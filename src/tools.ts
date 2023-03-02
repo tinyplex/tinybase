@@ -9,6 +9,7 @@ import {objFreeze, objIsEmpty} from './common/obj';
 import {collForEach} from './common/coll';
 import {getCreateFunction} from './common/definable';
 import {getStoreApi as getStoreApiImpl} from './tools/api/api';
+import {getStoreRefinement as getStoreRefinementImpl} from './tools/refinement/refinement';
 import {jsonParse} from './common/other';
 
 type CellMeta = [string, IdMap<number>, [number, Cell?], number];
@@ -20,6 +21,14 @@ const prettierConfig = {
   bracketSpacing: false,
   jsdocSingleLineComment: false,
 } as any;
+
+const getFormat = async (): Promise<(str: string, _config: any) => string> => {
+  try {
+    return (await import('prettier')).format;
+  } catch (e) {
+    return (str) => str;
+  }
+};
 
 export const createTools: typeof createToolsDecl = getCreateFunction(
   (store: Store): Tools => {
@@ -127,17 +136,28 @@ export const createTools: typeof createToolsDecl = getCreateFunction(
       module: string,
     ): Promise<[string, string, string, string]> => {
       const extensions = ['d.ts', 'ts', 'd.ts', 'tsx'];
-      let format: (str: string, _config: any) => string;
-      try {
-        format = (await import('prettier')).format;
-      } catch (e) {
-        format = (str) => str;
-      }
+      const format = await getFormat();
       return arrayMap(getStoreApi(module), (file, f) =>
         formatJsDoc(
           format(file, {...prettierConfig, filepath: `_.${extensions[f]}`}),
         ),
       ) as [string, string, string, string];
+    };
+
+    const getStoreRefinement = (module: string): [string, string] =>
+      getStoreRefinementImpl(
+        getStoreTablesSchema(),
+        getStoreValuesSchema(),
+        module,
+      );
+
+    const getPrettyStoreRefinement = async (
+      module: string,
+    ): Promise<[string, string]> => {
+      const format = await getFormat();
+      return arrayMap(getStoreRefinement(module), (file) =>
+        formatJsDoc(format(file, {...prettierConfig, filepath: `_.d.ts`})),
+      ) as [string, string];
     };
 
     const getStore = (): Store => store;
@@ -148,6 +168,8 @@ export const createTools: typeof createToolsDecl = getCreateFunction(
       getStoreValuesSchema,
       getStoreApi,
       getPrettyStoreApi,
+      getStoreRefinement,
+      getPrettyStoreRefinement,
       getStore,
     };
 
