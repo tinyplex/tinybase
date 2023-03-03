@@ -552,23 +552,14 @@ export const getStoreUiReactApi = (
     );
 
     mapTablesSchema((tableId: Id, tableName: string, TABLE_ID: string) => {
-      const [tableType, rowType, rowWhenSetType, cellIdType] = mapGet(
-        tablesTypes,
-        tableId,
-      ) as TableTypes;
+      const [tableType, tableWhenSetType, rowType, rowWhenSetType, cellIdType] =
+        mapGet(tablesTypes, tableId) as TableTypes;
 
       addImport(
-        0,
+        null,
         moduleDefinition,
         tableType,
-        rowType,
-        rowWhenSetType,
-        cellIdType,
-      );
-      addImport(
-        1,
-        moduleDefinition,
-        tableType,
+        tableWhenSetType,
         rowType,
         rowWhenSetType,
         cellIdType,
@@ -633,14 +624,14 @@ export const getStoreUiReactApi = (
         PARAMETERIZED_CALLBACK,
         getTableContentDoc(tableId, 9) + BASED_ON_A_PARAMETER,
         getParameterList(
-          getGet(TABLE) + GETTER_ARGS + tableType,
+          getGet(TABLE) + GETTER_ARGS + tableWhenSetType,
           getGet(TABLE) + DEPS_SUFFIX,
         ),
         getParameterList(TABLE_ID, getGetAndGetDeps(TABLE)),
         GENERIC_PARAMETER,
         getParameterList(
           THEN_PREFIX,
-          `table: ${tableType})` + RETURNS_VOID,
+          `table: ${tableWhenSetType})` + RETURNS_VOID,
           THEN_DEPS,
         ),
         THEN_AND_THEN_DEPS_IN_CALL,
@@ -915,7 +906,7 @@ export const getStoreUiReactApi = (
 
     const cellIdsType = join(
       mapTablesSchema(
-        (tableId) => mapGet(tablesTypes, tableId)?.[3] ?? EMPTY_STRING,
+        (tableId) => mapGet(tablesTypes, tableId)?.[4] ?? EMPTY_STRING,
       ),
       ' | ',
     );
