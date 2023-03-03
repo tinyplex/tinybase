@@ -82,7 +82,15 @@ import {collValues} from '../../common/coll';
 import {getSchemaFunctions} from '../common/schema';
 import {objIsEmpty} from '../../common/obj';
 
-export type TableTypes = [string, string, string, string, string, string];
+export type TableTypes = [
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+];
 export type SharedTableTypes = [
   string,
   string,
@@ -257,8 +265,15 @@ export const getStoreCoreApi = (
         // Table
         addType(
           tableName + TABLE,
-          `{[rowId: Id]: ${tableName}Row}`,
+          `{[rowId: Id]: ${tableName + ROW}}`,
           REPRESENTS + ` the '${tableId}' ` + TABLE,
+        ),
+
+        // TableWhenSet
+        addType(
+          tableName + TABLE + 'WhenSet',
+          `{[rowId: Id]: ${tableName + ROW}WhenSet}`,
+          REPRESENTS + ` the '${tableId}' ${TABLE} when setting it`,
         ),
 
         // Row
@@ -362,7 +377,7 @@ export const getStoreCoreApi = (
           (tableId) =>
             `[tableId: '${tableId}', ` +
             `forEachRow: (rowCallback: ${
-              mapGet(tablesTypes, tableId)?.[5]
+              mapGet(tablesTypes, tableId)?.[6]
             })${RETURNS_VOID}]`,
         ),
         ' | ',
@@ -377,7 +392,7 @@ export const getStoreCoreApi = (
         mapTablesSchema(
           (tableId) =>
             `[tableId: '${tableId}', rowId: Id, cellId: ${
-              mapGet(tablesTypes, tableId)?.[3]
+              mapGet(tablesTypes, tableId)?.[4]
             }]`,
         ),
         ' | ',
@@ -546,6 +561,7 @@ export const getStoreCoreApi = (
     mapTablesSchema((tableId, tableName, TABLE_ID) => {
       const [
         tableType,
+        tableWhenSetType,
         rowType,
         rowWhenSetType,
         cellIdType,
@@ -558,7 +574,7 @@ export const getStoreCoreApi = (
         [
           [tableType],
           [BOOLEAN],
-          [storeType, 'table: ' + tableType, ', table'],
+          [storeType, 'table: ' + tableWhenSetType, ', table'],
           [storeType],
         ],
         ([returnType, params, paramsInCall = EMPTY_STRING], verb) =>
@@ -788,7 +804,7 @@ export const getStoreCoreApi = (
       getListenerDoc(7, 5),
       `tableId: ${tableIdType} | null, rowId: IdOrNull, cellId: ${join(
         mapTablesSchema(
-          (tableId) => mapGet(tablesTypes, tableId)?.[3] ?? EMPTY_STRING,
+          (tableId) => mapGet(tablesTypes, tableId)?.[4] ?? EMPTY_STRING,
         ),
         ' | ',
       )} | null`,

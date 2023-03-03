@@ -348,7 +348,7 @@ export interface Tools {
    * const dTsLines = dTs.split('\n');
    * console.log(dTsLines[3]);
    * // -> 'export type PetsTable = {[rowId: Id]: PetsRow};'
-   * console.log(dTsLines[6]);
+   * console.log(dTsLines[9]);
    * // -> 'export type PetsRow = {\'price\'?: number;};'
    *
    * const tsLines = ts.split('\n');
@@ -369,7 +369,7 @@ export interface Tools {
    * const dTsLines = dTs.split('\n');
    * console.log(dTsLines[3]);
    * // -> 'export type PetsTable = {[rowId: Id]: PetsRow};'
-   * console.log(dTsLines[6]);
+   * console.log(dTsLines[9]);
    * // -> 'export type PetsRow = {\'price\': number;};'
    *
    * const tsLines = ts.split('\n');
@@ -430,11 +430,11 @@ export interface Tools {
    * const dTsLines = dTs.split('\n');
    * console.log(dTsLines[5]);
    * // -> 'export type PetsTable = {[rowId: Id]: PetsRow};'
-   * console.log(dTsLines[10]);
+   * console.log(dTsLines[15]);
    * // -> 'export type PetsRow = {price?: number};'
    *
    * const tsLines = ts.split('\n');
-   * console.log(tsLines[75]);
+   * console.log(tsLines[76]);
    * // -> '    hasPetsTable: (): boolean => store.hasTable(PETS),'
    * ```
    * @example
@@ -453,11 +453,11 @@ export interface Tools {
    * const dTsLines = dTs.split('\n');
    * console.log(dTsLines[5]);
    * // -> 'export type PetsTable = {[rowId: Id]: PetsRow};'
-   * console.log(dTsLines[10]);
+   * console.log(dTsLines[15]);
    * // -> 'export type PetsRow = {price: number};'
    *
    * const tsLines = ts.split('\n');
-   * console.log(tsLines[77]);
+   * console.log(tsLines[78]);
    * // -> '    hasPetsTable: (): boolean => store.hasTable(PETS),'
    * ```
    * @category Modelling
