@@ -102,6 +102,7 @@ export type SharedTableTypes = [
   string,
   string,
   string,
+  string,
   IdMap<TableTypes>,
 ];
 export type SharedValueTypes = [string, string, string, string, string, string];
@@ -116,6 +117,7 @@ const METHOD_PREFIX_VERBS = [
   ADD,
   EMPTY_STRING,
 ];
+const WHEN_SET = 'WhenSet';
 
 const storeMethod = (
   method: string,
@@ -271,7 +273,7 @@ export const getStoreCoreApi = (
 
         // TableWhenSet
         addType(
-          tableName + TABLE + 'WhenSet',
+          tableName + TABLE + WHEN_SET,
           `{[rowId: Id]: ${tableName + ROW}WhenSet}`,
           REPRESENTS + ` the '${tableId}' ${TABLE} when setting it`,
         ),
@@ -294,7 +296,7 @@ export const getStoreCoreApi = (
 
         // RowWhenSet
         addType(
-          tableName + ROW + 'WhenSet',
+          tableName + ROW + WHEN_SET,
           `{${join(
             mapCellSchema(tableId, (cellId, type) => `'${cellId}'?: ${type};`),
             ' ',
@@ -357,6 +359,20 @@ export const getStoreCoreApi = (
         ) +
         '}',
       getTheContentOfTheStoreDoc(1, 5),
+    );
+
+    // TablesWhenSet
+    const tablesWhenSetType = addType(
+      TABLES + WHEN_SET,
+      '{' +
+        join(
+          mapTablesSchema(
+            (tableId) => `'${tableId}'?: ${mapGet(tablesTypes, tableId)?.[1]};`,
+          ),
+          ' ',
+        ) +
+        '}',
+      getTheContentOfTheStoreDoc(1, 5) + ' when setting them',
     );
 
     // TableId
@@ -506,6 +522,7 @@ export const getStoreCoreApi = (
 
     sharedTableTypes = [
       tablesType,
+      tablesWhenSetType,
       tableIdType,
       tablesListenerType,
       tableIdsListenerType,
@@ -523,7 +540,7 @@ export const getStoreCoreApi = (
       [
         [tablesType],
         [BOOLEAN],
-        [storeType, 'tables: ' + tablesType, 'tables'],
+        [storeType, 'tables: ' + tablesWhenSetType, 'tables'],
         [storeType],
       ],
       ([returnType, params, paramsInCall], verb) =>
@@ -824,6 +841,7 @@ export const getStoreCoreApi = (
       1,
       moduleDefinition,
       tablesType,
+      tablesWhenSetType,
       tableIdType,
       tableCallbackType,
       tablesListenerType,
@@ -887,7 +905,7 @@ export const getStoreCoreApi = (
 
     // ValuesWhenSet
     const valuesWhenSetType = addType(
-      VALUES + 'WhenSet',
+      VALUES + WHEN_SET,
       '{' +
         join(
           mapValuesSchema((valueId, type) => `'${valueId}'?: ${type};`),

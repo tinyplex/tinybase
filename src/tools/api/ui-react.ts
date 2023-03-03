@@ -357,6 +357,7 @@ export const getStoreUiReactApi = (
   if (!objIsEmpty(tablesSchema)) {
     const [
       tablesType,
+      tablesWhenSetType,
       tableIdType,
       tablesListenerType,
       tableIdsListenerType,
@@ -373,6 +374,7 @@ export const getStoreUiReactApi = (
       null,
       moduleDefinition,
       tablesType,
+      tablesWhenSetType,
       tableIdType,
       tablesListenerType,
       tableIdsListenerType,
@@ -466,14 +468,14 @@ export const getStoreUiReactApi = (
       PARAMETERIZED_CALLBACK,
       getTheContentOfTheStoreDoc(1, 9) + BASED_ON_A_PARAMETER,
       getParameterList(
-        getGet(TABLES) + GETTER_ARGS + tablesType,
+        getGet(TABLES) + GETTER_ARGS + tablesWhenSetType,
         getGet(TABLES) + DEPS_SUFFIX,
       ),
       getGetAndGetDeps(TABLES),
       GENERIC_PARAMETER,
       getParameterList(
         THEN_PREFIX,
-        `tables: ${tablesType})` + RETURNS_VOID,
+        `tables: ${tablesWhenSetType})` + RETURNS_VOID,
         THEN_DEPS,
       ),
       THEN_AND_THEN_DEPS_IN_CALL,
