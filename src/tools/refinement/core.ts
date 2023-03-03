@@ -1,3 +1,4 @@
+import {EMPTY_STRING, TABLES} from '../../common/strings';
 import {IdMap, mapMap, mapNew} from '../../common/map';
 import {
   LINE,
@@ -8,7 +9,11 @@ import {
   mapUnique,
 } from '../common/code';
 import {TablesSchema, ValuesSchema} from '../../store.d';
-import {EMPTY_STRING} from '../../common/strings';
+import {
+  WHEN_SET,
+  WHEN_SETTING_IT,
+  getTheContentOfTheStoreDoc,
+} from '../common/strings';
 import {Id} from '../../common.d';
 import {getSchemaFunctions} from '../common/schema';
 import {isUndefined} from '../../common/other';
@@ -56,8 +61,9 @@ export const getStoreCoreRefinement = (
 
   addImport(0, 'tinybase', 'Id', 'Store as StoreCore');
 
+  // Tables
   addType(
-    'Tables',
+    TABLES,
     '{' +
       join(
         mapTablesSchema(
@@ -78,10 +84,35 @@ export const getStoreCoreRefinement = (
         '; ',
       ) +
       '}',
-    'Tables type',
+    getTheContentOfTheStoreDoc(1, 5),
   );
 
-  addMethod('setTables', 'tables: Tables', 'Store', 'Set the tables');
+  // TablesWhenSet
+  addType(
+    TABLES + WHEN_SET,
+    '{' +
+      join(
+        mapTablesSchema(
+          (tableId) =>
+            `'${tableId}': {[rowId: Id]: {` +
+            join(
+              mapCellSchema(tableId, (cellId, type) => `'${cellId}'?: ${type}`),
+              '; ',
+            ) +
+            '}}',
+        ),
+        '; ',
+      ) +
+      '}',
+    getTheContentOfTheStoreDoc(1, 5) + WHEN_SETTING_IT,
+  );
+
+  addMethod(
+    'setTables',
+    'tables: ' + TABLES + WHEN_SET,
+    'Store',
+    'Set the tables',
+  );
 
   return [
     build(

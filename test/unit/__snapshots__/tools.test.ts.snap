@@ -63,7 +63,7 @@ export type T1RowCallback = (
 export type Tables = {t1?: T1Table};
 
 /**
- * Represents the tabular content of the Store when setting them.
+ * Represents the tabular content of the Store when setting it.
  */
 export type TablesWhenSet = {t1?: T1TableWhenSet};
 
@@ -4225,7 +4225,7 @@ export type T1RowCallback = (
 export type Tables = {t1?: T1Table};
 
 /**
- * Represents the tabular content of the Store when setting them.
+ * Represents the tabular content of the Store when setting it.
  */
 export type TablesWhenSet = {t1?: T1TableWhenSet};
 
@@ -6338,7 +6338,7 @@ export type T1RowCallback = (rowId: Id, forEachCell: (cellCallback: T1CellCallba
 /** Represents the tabular content of the Store. */
 export type Tables = {'t1'?: T1Table;};
 
-/** Represents the tabular content of the Store when setting them. */
+/** Represents the tabular content of the Store when setting it. */
 export type TablesWhenSet = {'t1'?: T1TableWhenSet;};
 
 /** A Table Id in the Store. */
@@ -8042,7 +8042,7 @@ export type T1RowCallback = (rowId: Id, forEachCell: (cellCallback: T1CellCallba
 /** Represents the tabular content of the Store. */
 export type Tables = {'t1'?: T1Table;};
 
-/** Represents the tabular content of the Store when setting them. */
+/** Represents the tabular content of the Store when setting it. */
 export type TablesWhenSet = {'t1'?: T1TableWhenSet;};
 
 /** A Table Id in the Store. */
@@ -8835,17 +8835,24 @@ exports[`Refinements Pretty both 1`] = `
 import {Id, Store as StoreCore} from 'tinybase';
 
 /**
- * Tables type.
+ * Represents the tabular content of the Store.
  */
 export type Tables = {
   t1: {[rowId: Id]: {c1: number; c2: string; c3: string; ''?: string}};
+};
+
+/**
+ * Represents the tabular content of the Store when setting it.
+ */
+export type TablesWhenSet = {
+  t1: {[rowId: Id]: {c1?: number; c2?: string; c3?: string; ''?: string}};
 };
 
 interface Refined {
   /**
    * Set the tables.
    */
-  setTables(tables: Tables): Store;
+  setTables(tables: TablesWhenSet): Store;
 }
 
 export type Store = Omit<StoreCore, keyof Refined> & Refined;
@@ -8866,15 +8873,20 @@ exports[`Refinements Pretty keyed value 1`] = `
 import {Id, Store as StoreCore} from 'tinybase';
 
 /**
- * Tables type.
+ * Represents the tabular content of the Store.
  */
 export type Tables = {};
+
+/**
+ * Represents the tabular content of the Store when setting it.
+ */
+export type TablesWhenSet = {};
 
 interface Refined {
   /**
    * Set the tables.
    */
-  setTables(tables: Tables): Store;
+  setTables(tables: TablesWhenSet): Store;
 }
 
 export type Store = Omit<StoreCore, keyof Refined> & Refined;
@@ -8895,17 +8907,24 @@ exports[`Refinements Pretty tabular 1`] = `
 import {Id, Store as StoreCore} from 'tinybase';
 
 /**
- * Tables type.
+ * Represents the tabular content of the Store.
  */
 export type Tables = {
   t1: {[rowId: Id]: {c1: number; c2: string; c3: string; ''?: string}};
+};
+
+/**
+ * Represents the tabular content of the Store when setting it.
+ */
+export type TablesWhenSet = {
+  t1: {[rowId: Id]: {c1?: number; c2?: string; c3?: string; ''?: string}};
 };
 
 interface Refined {
   /**
    * Set the tables.
    */
-  setTables(tables: Tables): Store;
+  setTables(tables: TablesWhenSet): Store;
 }
 
 export type Store = Omit<StoreCore, keyof Refined> & Refined;
@@ -8925,12 +8944,15 @@ exports[`Refinements Unpretty both 1`] = `
   "export * from 'tinybase';
 import {Id, Store as StoreCore} from 'tinybase';
 
-/** Tables type. */
+/** Represents the tabular content of the Store. */
 export type Tables = {'t1': {[rowId: Id]: {'c1': number; 'c2': string; 'c3': string; ''?: string}}};
+
+/** Represents the tabular content of the Store when setting it. */
+export type TablesWhenSet = {'t1': {[rowId: Id]: {'c1'?: number; 'c2'?: string; 'c3'?: string; ''?: string}}};
 
 interface Refined {
 /** Set the tables. */
-setTables(tables: Tables): Store;
+setTables(tables: TablesWhenSet): Store;
 
 }
 
@@ -8947,12 +8969,15 @@ exports[`Refinements Unpretty keyed value 1`] = `
   "export * from 'tinybase';
 import {Id, Store as StoreCore} from 'tinybase';
 
-/** Tables type. */
+/** Represents the tabular content of the Store. */
 export type Tables = {};
+
+/** Represents the tabular content of the Store when setting it. */
+export type TablesWhenSet = {};
 
 interface Refined {
 /** Set the tables. */
-setTables(tables: Tables): Store;
+setTables(tables: TablesWhenSet): Store;
 
 }
 
@@ -8969,12 +8994,15 @@ exports[`Refinements Unpretty tabular 1`] = `
   "export * from 'tinybase';
 import {Id, Store as StoreCore} from 'tinybase';
 
-/** Tables type. */
+/** Represents the tabular content of the Store. */
 export type Tables = {'t1': {[rowId: Id]: {'c1': number; 'c2': string; 'c3': string; ''?: string}}};
+
+/** Represents the tabular content of the Store when setting it. */
+export type TablesWhenSet = {'t1': {[rowId: Id]: {'c1'?: number; 'c2'?: string; 'c3'?: string; ''?: string}}};
 
 interface Refined {
 /** Set the tables. */
-setTables(tables: Tables): Store;
+setTables(tables: TablesWhenSet): Store;
 
 }
 
