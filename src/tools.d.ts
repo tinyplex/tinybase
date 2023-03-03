@@ -519,6 +519,13 @@ export interface Tools {
    * // ...
    * ```
    *
+   * If you need access to refined types from the generated module definition,
+   * you can access them as normal, in a separate import:
+   *
+   * ```js yolo
+   * import {Tables} from './shop-refinement.d';
+   * ```
+   *
    * @param storeName The name you want to provide to the generated Store, which
    * should also be used to save the `.d.ts` files.
    * @returns A pair of strings representing the contents of the `.d.ts` files
