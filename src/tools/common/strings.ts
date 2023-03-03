@@ -36,6 +36,8 @@ export const TRANSACTION_ = lower(TRANSACTION);
 export const THE_END_OF_THE_TRANSACTION = 'the end of the ' + TRANSACTION_;
 export const VOID = 'void';
 export const RETURNS_VOID = ' => ' + VOID;
+export const WHEN_SET = 'WhenSet';
+export const WHEN_SETTING_IT = ' when setting it';
 
 const A_STRING_SERIALIZATION_OF = A + 'string serialization of';
 const SPACE = ' ';
