@@ -19,6 +19,8 @@ import {
   TRANSACTION_,
   VERBS,
   VOID,
+  WHEN_SET,
+  WHEN_SETTING_IT,
   getCallbackDoc,
   getCellContentDoc,
   getForEachDoc,
@@ -117,7 +119,6 @@ const METHOD_PREFIX_VERBS = [
   ADD,
   EMPTY_STRING,
 ];
-const WHEN_SET = 'WhenSet';
 
 const storeMethod = (
   method: string,
@@ -275,7 +276,7 @@ export const getStoreCoreApi = (
         addType(
           tableName + TABLE + WHEN_SET,
           `{[rowId: Id]: ${tableName + ROW}WhenSet}`,
-          REPRESENTS + ` the '${tableId}' ${TABLE} when setting it`,
+          REPRESENTS + ` the '${tableId}' ` + TABLE + WHEN_SETTING_IT,
         ),
 
         // Row
@@ -372,7 +373,7 @@ export const getStoreCoreApi = (
           ' ',
         ) +
         '}',
-      getTheContentOfTheStoreDoc(1, 5) + ' when setting them',
+      getTheContentOfTheStoreDoc(1, 5) + WHEN_SETTING_IT,
     );
 
     // TableId
