@@ -8784,6 +8784,28 @@ value={useMemo(
 exports[`Refinements Pretty both 1`] = `
 [
   "export * from 'tinybase';
+import {Id, Store as StoreCore} from 'tinybase';
+
+/**
+ * Tables type.
+ */
+export type Tables = {
+  t1: {[rowId: Id]: {c1: number; c2: string; c3: string; ''?: string}};
+};
+
+interface Refined {
+  /**
+   * Set the tables.
+   */
+  setTables(tables: Tables): Store;
+}
+
+export type Store = Omit<StoreCore, keyof Refined> & Refined;
+
+/**
+ * Creates a Store object.
+ */
+export function createStore(): Store;
 ",
   "export * from 'tinybase/ui-react';
 ",
@@ -8793,6 +8815,26 @@ exports[`Refinements Pretty both 1`] = `
 exports[`Refinements Pretty keyed value 1`] = `
 [
   "export * from 'tinybase';
+import {Id, Store as StoreCore} from 'tinybase';
+
+/**
+ * Tables type.
+ */
+export type Tables = {};
+
+interface Refined {
+  /**
+   * Set the tables.
+   */
+  setTables(tables: Tables): Store;
+}
+
+export type Store = Omit<StoreCore, keyof Refined> & Refined;
+
+/**
+ * Creates a Store object.
+ */
+export function createStore(): Store;
 ",
   "export * from 'tinybase/ui-react';
 ",
@@ -8802,6 +8844,28 @@ exports[`Refinements Pretty keyed value 1`] = `
 exports[`Refinements Pretty tabular 1`] = `
 [
   "export * from 'tinybase';
+import {Id, Store as StoreCore} from 'tinybase';
+
+/**
+ * Tables type.
+ */
+export type Tables = {
+  t1: {[rowId: Id]: {c1: number; c2: string; c3: string; ''?: string}};
+};
+
+interface Refined {
+  /**
+   * Set the tables.
+   */
+  setTables(tables: Tables): Store;
+}
+
+export type Store = Omit<StoreCore, keyof Refined> & Refined;
+
+/**
+ * Creates a Store object.
+ */
+export function createStore(): Store;
 ",
   "export * from 'tinybase/ui-react';
 ",
@@ -8810,21 +8874,66 @@ exports[`Refinements Pretty tabular 1`] = `
 
 exports[`Refinements Unpretty both 1`] = `
 [
-  "export * from 'tinybase';",
+  "export * from 'tinybase';
+import {Id, Store as StoreCore} from 'tinybase';
+
+/** Tables type. */
+export type Tables = {'t1': {[rowId: Id]: {'c1': number; 'c2': string; 'c3': string; ''?: string}}};
+
+interface Refined {
+/** Set the tables. */
+setTables(tables: Tables): Store;
+
+}
+
+export type Store = Omit<StoreCore, keyof Refined> & Refined;
+
+/** Creates a Store object. */
+export function createStore(): Store",
   "export * from 'tinybase/ui-react';",
 ]
 `;
 
 exports[`Refinements Unpretty keyed value 1`] = `
 [
-  "export * from 'tinybase';",
+  "export * from 'tinybase';
+import {Id, Store as StoreCore} from 'tinybase';
+
+/** Tables type. */
+export type Tables = {};
+
+interface Refined {
+/** Set the tables. */
+setTables(tables: Tables): Store;
+
+}
+
+export type Store = Omit<StoreCore, keyof Refined> & Refined;
+
+/** Creates a Store object. */
+export function createStore(): Store",
   "export * from 'tinybase/ui-react';",
 ]
 `;
 
 exports[`Refinements Unpretty tabular 1`] = `
 [
-  "export * from 'tinybase';",
+  "export * from 'tinybase';
+import {Id, Store as StoreCore} from 'tinybase';
+
+/** Tables type. */
+export type Tables = {'t1': {[rowId: Id]: {'c1': number; 'c2': string; 'c3': string; ''?: string}}};
+
+interface Refined {
+/** Set the tables. */
+setTables(tables: Tables): Store;
+
+}
+
+export type Store = Omit<StoreCore, keyof Refined> & Refined;
+
+/** Creates a Store object. */
+export function createStore(): Store",
   "export * from 'tinybase/ui-react';",
 ]
 `;
