@@ -85,29 +85,36 @@ import {getSchemaFunctions} from '../common/schema';
 import {objIsEmpty} from '../../common/obj';
 
 export type TableTypes = [
-  string,
-  string,
-  string,
-  string,
-  string,
-  string,
-  string,
+  tableType: string,
+  tableWhenSetType: string,
+  rowType: string,
+  rowWhenSetType: string,
+  cellIdType: string,
+  cellCallbackType: string,
+  rowCallbackType: string,
 ];
 export type SharedTableTypes = [
-  string,
-  string,
-  string,
-  string,
-  string,
-  string,
-  string,
-  string,
-  string,
-  string,
-  string,
-  IdMap<TableTypes>,
+  tablesType: string,
+  tablesWhenSetType: string,
+  tableIdType: string,
+  tablesListenerType: string,
+  tableIdsListenerType: string,
+  tableListenerType: string,
+  rowIdsListenerType: string,
+  sortedRowIdsListenerType: string,
+  rowListenerType: string,
+  cellIdsListenerType: string,
+  cellListenerType: string,
+  tablesTypes: IdMap<TableTypes>,
 ];
-export type SharedValueTypes = [string, string, string, string, string, string];
+export type SharedValueTypes = [
+  valuesType: string,
+  valuesWhenSetType: string,
+  valueIdType: string,
+  valuesListenerType: string,
+  valueIdsListenerType: string,
+  valueListenerType: string,
+];
 
 const METHOD_PREFIX_VERBS = [
   GET,
