@@ -9004,10 +9004,10 @@ export type Tables = {'t1'?: {[rowId: Id]: {'c1': number; 'c2': string; 'c3': st
 export type TablesWhenSet = {'t1'?: {[rowId: Id]: {'c1'?: number; 'c2'?: string; 'c3'?: string; ''?: string}}};
 
 /** Represents the keyed value content of the Store. */
-export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string;};
+export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string};
 
 /** Represents the keyed value content of the Store when setting it. */
-export type ValuesWhenSet = {'v1'?: number; 'v2'?: string; 'v3'?: string; ''?: string;};
+export type ValuesWhenSet = {'v1'?: number; 'v2'?: string; 'v3'?: string; ''?: string};
 
 interface Refined {
 /** Gets the tabular content of the Store. */
@@ -9038,10 +9038,10 @@ exports[`Refinements Unpretty keyed value 1`] = `
 import {Id, Store as StoreCore} from 'tinybase';
 
 /** Represents the keyed value content of the Store. */
-export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string;};
+export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string};
 
 /** Represents the keyed value content of the Store when setting it. */
-export type ValuesWhenSet = {'v1'?: number; 'v2'?: string; 'v3'?: string; ''?: string;};
+export type ValuesWhenSet = {'v1'?: number; 'v2'?: string; 'v3'?: string; ''?: string};
 
 interface Refined {
 /** Gets the keyed value content of the Store. */
