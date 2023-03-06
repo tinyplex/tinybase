@@ -7,6 +7,8 @@ import {
   INVALID,
   JSON,
   LISTENER_,
+  METHOD_PREFIX_VERBS,
+  NON_NULLABLE,
   OR_UNDEFINED,
   PARTIAL,
   REGISTERS_A_LISTENER,
@@ -42,7 +44,6 @@ import {
   CELL_IDS,
   DEFAULT,
   EMPTY_STRING,
-  GET,
   IDS,
   LISTENER,
   ROW,
@@ -116,18 +117,6 @@ export type SharedValueTypes = [
   valueIdsListenerType: string,
   valueListenerType: string,
 ];
-
-const METHOD_PREFIX_VERBS = [
-  GET,
-  'has',
-  'set',
-  'del',
-  'set', // partial
-  'forEach',
-  ADD,
-  EMPTY_STRING,
-];
-const NON_NULLABLE = 'NonNullable';
 
 const storeMethod = (
   method: string,

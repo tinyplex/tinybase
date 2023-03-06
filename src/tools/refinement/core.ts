@@ -1,3 +1,4 @@
+import {BOOLEAN, EMPTY_STRING, TABLES} from '../../common/strings';
 import {IdMap, mapMap, mapNew} from '../../common/map';
 import {
   LINE,
@@ -6,12 +7,16 @@ import {
   getCodeFunctions,
   mapUnique,
 } from '../common/code';
+import {
+  METHOD_PREFIX_VERBS,
+  STORE,
+  getTheContentOfTheStoreDoc,
+} from '../common/strings';
 import {TablesSchema, ValuesSchema} from '../../store.d';
 import {getTablesTypes, getValuesType as getValuesTypes} from '../api/types';
-import {EMPTY_STRING} from '../../common/strings';
 import {Id} from '../../common.d';
+import {arrayForEach} from '../../common/array';
 import {getSchemaFunctions} from '../common/schema';
-import {getTheContentOfTheStoreDoc} from '../common/strings';
 import {objIsEmpty} from '../../common/obj';
 
 export const getStoreCoreRefinement = (
@@ -65,13 +70,20 @@ export const getStoreCoreRefinement = (
       mapCellSchema,
     );
 
-    addMethod('getTables', '', tablesType, getTheContentOfTheStoreDoc(1, 0));
-
-    addMethod(
-      'setTables',
-      'tables: ' + tablesWhenSetType,
-      'Store',
-      getTheContentOfTheStoreDoc(1, 2),
+    arrayForEach(
+      [
+        [tablesType],
+        [BOOLEAN],
+        [STORE, 'tables: ' + tablesWhenSetType],
+        [STORE],
+      ],
+      ([returnType, params], verb) =>
+        addMethod(
+          METHOD_PREFIX_VERBS[verb] + TABLES,
+          params ?? EMPTY_STRING,
+          returnType,
+          getTheContentOfTheStoreDoc(1, verb),
+        ),
     );
   }
 
