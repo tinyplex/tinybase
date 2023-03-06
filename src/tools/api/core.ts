@@ -82,6 +82,7 @@ import {isString, isUndefined} from '../../common/other';
 import {Id} from '../../common.d';
 import {collValues} from '../../common/coll';
 import {getSchemaFunctions} from '../common/schema';
+import {getTablesTypes} from './types';
 import {objIsEmpty} from '../../common/obj';
 
 export type TableTypes = [
@@ -126,6 +127,7 @@ const METHOD_PREFIX_VERBS = [
   ADD,
   EMPTY_STRING,
 ];
+const NON_NULLABLE = 'NonNullable';
 
 const storeMethod = (
   method: string,
@@ -269,46 +271,42 @@ export const getStoreCoreApi = (
   );
 
   if (!objIsEmpty(tablesSchema)) {
+    addImport(null, 'tinybase', IDS);
+
+    // Tables, TablesWhenSet
+    const [tablesType, tablesWhenSetType] = getTablesTypes(
+      addType,
+      mapTablesSchema,
+      mapCellSchema,
+    );
+
     const tablesTypes: IdMap<TableTypes> = mapNew();
     mapTablesSchema((tableId: Id, tableName: string) => {
-      const tableTypes = [
-        // Table
-        addType(
-          tableName + TABLE,
-          `{[rowId: Id]: ${tableName + ROW}}`,
-          REPRESENTS + ` the '${tableId}' ` + TABLE,
-        ),
+      // Table
+      const tableType = addType(
+        tableName + TABLE,
+        NON_NULLABLE + `<${tablesType}['${tableId}']>`,
+        REPRESENTS + ` the '${tableId}' ` + TABLE,
+      );
 
-        // TableWhenSet
-        addType(
-          tableName + TABLE + WHEN_SET,
-          `{[rowId: Id]: ${tableName + ROW}WhenSet}`,
-          REPRESENTS + ` the '${tableId}' ` + TABLE + WHEN_SETTING_IT,
-        ),
+      // TableWhenSet
+      const tableWhenSetType = addType(
+        tableName + TABLE + WHEN_SET,
+        NON_NULLABLE + `<${tablesWhenSetType}['${tableId}']>`,
+        REPRESENTS + ` the '${tableId}' ` + TABLE + WHEN_SETTING_IT,
+      );
+
+      const tableTypes = [
+        tableType,
+        tableWhenSetType,
 
         // Row
-        addType(
-          tableName + ROW,
-          `{${join(
-            mapCellSchema(
-              tableId,
-              (cellId, type, defaultValue) =>
-                `'${cellId}'${
-                  isUndefined(defaultValue) ? '?' : EMPTY_STRING
-                }: ${type};`,
-            ),
-            ' ',
-          )}}`,
-          getRowTypeDoc(tableId),
-        ),
+        addType(tableName + ROW, tableType + '[Id]', getRowTypeDoc(tableId)),
 
         // RowWhenSet
         addType(
           tableName + ROW + WHEN_SET,
-          `{${join(
-            mapCellSchema(tableId, (cellId, type) => `'${cellId}'?: ${type};`),
-            ' ',
-          )}}`,
+          tableWhenSetType + '[Id]',
           getRowTypeDoc(tableId, 1),
         ),
 
@@ -352,36 +350,6 @@ export const getStoreCoreApi = (
       mapSet(tablesTypes, tableId, tableTypes);
       addImport(1, moduleDefinition, ...tableTypes);
     });
-
-    addImport(null, 'tinybase', IDS);
-
-    // Tables
-    const tablesType = addType(
-      TABLES,
-      '{' +
-        join(
-          mapTablesSchema(
-            (tableId) => `'${tableId}'?: ${mapGet(tablesTypes, tableId)?.[0]};`,
-          ),
-          ' ',
-        ) +
-        '}',
-      getTheContentOfTheStoreDoc(1, 5),
-    );
-
-    // TablesWhenSet
-    const tablesWhenSetType = addType(
-      TABLES + WHEN_SET,
-      '{' +
-        join(
-          mapTablesSchema(
-            (tableId) => `'${tableId}'?: ${mapGet(tablesTypes, tableId)?.[1]};`,
-          ),
-          ' ',
-        ) +
-        '}',
-      getTheContentOfTheStoreDoc(1, 5, 1),
-    );
 
     // TableId
     const tableIdType = addType(
