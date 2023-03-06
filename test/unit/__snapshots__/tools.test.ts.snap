@@ -28,6 +28,11 @@ export type TablesWhenSet = {
 };
 
 /**
+ * A Table Id in the Store.
+ */
+export type TableId = keyof Tables;
+
+/**
  * Represents the 't1' Table.
  */
 export type T1Table = NonNullable<Tables['t1']>;
@@ -70,11 +75,6 @@ export type T1RowCallback = (
   rowId: Id,
   forEachCell: (cellCallback: T1CellCallback) => void,
 ) => void;
-
-/**
- * A Table Id in the Store.
- */
-export type TableId = 't1';
 
 /**
  * A function that takes a Table Id, and a Row iterator.
@@ -4194,6 +4194,11 @@ export type TablesWhenSet = {
 };
 
 /**
+ * A Table Id in the Store.
+ */
+export type TableId = keyof Tables;
+
+/**
  * Represents the 't1' Table.
  */
 export type T1Table = NonNullable<Tables['t1']>;
@@ -4236,11 +4241,6 @@ export type T1RowCallback = (
   rowId: Id,
   forEachCell: (cellCallback: T1CellCallback) => void,
 ) => void;
-
-/**
- * A Table Id in the Store.
- */
-export type TableId = 't1';
 
 /**
  * A function that takes a Table Id, and a Row iterator.
@@ -6328,6 +6328,9 @@ export type Tables = {'t1'?: {[rowId: Id]: {'c1': number; 'c2': string; 'c3': st
 /** Represents the tabular content of the Store when setting it. */
 export type TablesWhenSet = {'t1'?: {[rowId: Id]: {'c1'?: number; 'c2'?: string; 'c3'?: string; ''?: string}}};
 
+/** A Table Id in the Store. */
+export type TableId = keyof Tables;
+
 /** Represents the 't1' Table. */
 export type T1Table = NonNullable<Tables['t1']>;
 
@@ -6348,9 +6351,6 @@ export type T1CellCallback = (...[cellId, cell]: [cellId: 'c1', cell: number] | 
 
 /** A function that takes a Row Id from the 't1' Table, and a Cell iterator. */
 export type T1RowCallback = (rowId: Id, forEachCell: (cellCallback: T1CellCallback) => void) => void;
-
-/** A Table Id in the Store. */
-export type TableId = 't1';
 
 /** A function that takes a Table Id, and a Row iterator. */
 export type TableCallback = (...[tableId, rowCallback]: [tableId: 't1', forEachRow: (rowCallback: T1RowCallback) => void]) => void;
@@ -8032,6 +8032,9 @@ export type Tables = {'t1'?: {[rowId: Id]: {'c1': number; 'c2': string; 'c3': st
 /** Represents the tabular content of the Store when setting it. */
 export type TablesWhenSet = {'t1'?: {[rowId: Id]: {'c1'?: number; 'c2'?: string; 'c3'?: string; ''?: string}}};
 
+/** A Table Id in the Store. */
+export type TableId = keyof Tables;
+
 /** Represents the 't1' Table. */
 export type T1Table = NonNullable<Tables['t1']>;
 
@@ -8052,9 +8055,6 @@ export type T1CellCallback = (...[cellId, cell]: [cellId: 'c1', cell: number] | 
 
 /** A function that takes a Row Id from the 't1' Table, and a Cell iterator. */
 export type T1RowCallback = (rowId: Id, forEachCell: (cellCallback: T1CellCallback) => void) => void;
-
-/** A Table Id in the Store. */
-export type TableId = 't1';
 
 /** A function that takes a Table Id, and a Row iterator. */
 export type TableCallback = (...[tableId, rowCallback]: [tableId: 't1', forEachRow: (rowCallback: T1RowCallback) => void]) => void;
@@ -8857,6 +8857,11 @@ export type TablesWhenSet = {
 };
 
 /**
+ * A Table Id in the Store.
+ */
+export type TableId = keyof Tables;
+
+/**
  * Represents the keyed value content of the Store.
  */
 export type Values = {v1: number; v2: string; v3: string; ''?: string};
@@ -8891,6 +8896,11 @@ interface Refined {
    * Deletes the tabular content of the Store.
    */
   delTables(): Store;
+
+  /**
+   * Gets the Ids of the Tables in the Store.
+   */
+  getTableIds(): TableId[];
 
   /**
    * Gets the keyed value content of the Store.
@@ -8978,6 +8988,11 @@ export type TablesWhenSet = {
   t1?: {[rowId: Id]: {c1?: number; c2?: string; c3?: string; ''?: string}};
 };
 
+/**
+ * A Table Id in the Store.
+ */
+export type TableId = keyof Tables;
+
 interface Refined {
   /**
    * Gets the tabular content of the Store.
@@ -8998,6 +9013,11 @@ interface Refined {
    * Deletes the tabular content of the Store.
    */
   delTables(): Store;
+
+  /**
+   * Gets the Ids of the Tables in the Store.
+   */
+  getTableIds(): TableId[];
 }
 
 export type Store = Omit<StoreCore, keyof Refined> & Refined;
@@ -9023,6 +9043,9 @@ export type Tables = {'t1'?: {[rowId: Id]: {'c1': number; 'c2': string; 'c3': st
 /** Represents the tabular content of the Store when setting it. */
 export type TablesWhenSet = {'t1'?: {[rowId: Id]: {'c1'?: number; 'c2'?: string; 'c3'?: string; ''?: string}}};
 
+/** A Table Id in the Store. */
+export type TableId = keyof Tables;
+
 /** Represents the keyed value content of the Store. */
 export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string};
 
@@ -9041,6 +9064,9 @@ setTables(tables: TablesWhenSet): Store;
 
 /** Deletes the tabular content of the Store. */
 delTables(): Store;
+
+/** Gets the Ids of the Tables in the Store. */
+getTableIds(): TableId[];
 
 /** Gets the keyed value content of the Store. */
 getValues(): Values;
@@ -9097,6 +9123,9 @@ export type Tables = {'t1'?: {[rowId: Id]: {'c1': number; 'c2': string; 'c3': st
 /** Represents the tabular content of the Store when setting it. */
 export type TablesWhenSet = {'t1'?: {[rowId: Id]: {'c1'?: number; 'c2'?: string; 'c3'?: string; ''?: string}}};
 
+/** A Table Id in the Store. */
+export type TableId = keyof Tables;
+
 interface Refined {
 /** Gets the tabular content of the Store. */
 getTables(): Tables;
@@ -9109,6 +9138,9 @@ setTables(tables: TablesWhenSet): Store;
 
 /** Deletes the tabular content of the Store. */
 delTables(): Store;
+
+/** Gets the Ids of the Tables in the Store. */
+getTableIds(): TableId[];
 
 }
 

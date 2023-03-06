@@ -269,8 +269,8 @@ export const getStoreCoreApi = (
   if (!objIsEmpty(tablesSchema)) {
     addImport(null, 'tinybase', IDS);
 
-    // Tables, TablesWhenSet
-    const [tablesType, tablesWhenSetType] = getTablesTypes();
+    // Tables, TablesWhenSet, TableId
+    const [tablesType, tablesWhenSetType, tableIdType] = getTablesTypes();
 
     const tablesTypes: IdMap<TableTypes> = mapNew();
     mapTablesSchema((tableId: Id, tableName: string) => {
@@ -342,16 +342,6 @@ export const getStoreCoreApi = (
       mapSet(tablesTypes, tableId, tableTypes);
       addImport(1, moduleDefinition, ...tableTypes);
     });
-
-    // TableId
-    const tableIdType = addType(
-      TABLE + ID,
-      join(
-        mapTablesSchema((tableId) => `'${tableId}'`),
-        ' | ',
-      ),
-      'A ' + TABLE + ' Id in ' + THE_STORE,
-    );
 
     // TableCallback
     const tableCallbackType = addType(
