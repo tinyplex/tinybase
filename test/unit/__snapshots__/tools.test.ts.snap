@@ -6386,10 +6386,10 @@ export type CellListener = (...[s, tableId, rowId, cellId, newCell, oldCell, get
 export type InvalidCellListener = (s: S, tableId: Id, rowId: Id, cellId: Id, invalidCells: any[]) => void;
 
 /** Represents the keyed value content of the Store. */
-export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string;};
+export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string};
 
 /** Represents the keyed value content of the Store when setting it. */
-export type ValuesWhenSet = {'v1'?: number; 'v2'?: string; 'v3'?: string; ''?: string;};
+export type ValuesWhenSet = {'v1'?: number; 'v2'?: string; 'v3'?: string; ''?: string};
 
 /** A Value Id in the Store. */
 export type ValueId = 'v1' | 'v2' | 'v3' | '';
@@ -7494,10 +7494,10 @@ exports[`API Unpretty keyed value 1`] = `
   "import {DoRollback, Id, IdOrNull, Json, Store, ValueChange} from 'tinybase';
 
 /** Represents the keyed value content of the Store. */
-export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string;};
+export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string};
 
 /** Represents the keyed value content of the Store when setting it. */
-export type ValuesWhenSet = {'v1'?: number; 'v2'?: string; 'v3'?: string; ''?: string;};
+export type ValuesWhenSet = {'v1'?: number; 'v2'?: string; 'v3'?: string; ''?: string};
 
 /** A Value Id in the Store. */
 export type ValueId = 'v1' | 'v2' | 'v3' | '';

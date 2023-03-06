@@ -4,34 +4,34 @@ import {LINE_OR_LINE_TREE, camel, snake} from './code';
 import {Id} from '../../common.d';
 import {objMap} from '../../common/obj';
 
+export type MapTablesSchema = <Return>(
+  callback: (tableId: Id, tableName: string, TABLE_ID: string) => Return,
+) => Return[];
+export type MapCellSchema = <Return>(
+  tableId: Id,
+  callback: (
+    cellId: Id,
+    type: 'string' | 'number' | 'boolean',
+    defaultValue: Cell | undefined,
+    CELL_ID: string,
+    cellName: string,
+  ) => Return,
+) => Return[];
+export type MapValuesSchema = <Return>(
+  callback: (
+    valueId: Id,
+    type: 'string' | 'number' | 'boolean',
+    defaultValue: Value | undefined,
+    VALUE_ID: string,
+    valueName: string,
+  ) => Return,
+) => Return[];
+
 export const getSchemaFunctions = (
   tablesSchema: TablesSchema,
   valuesSchema: ValuesSchema,
   addConstant: (name: Id, body: LINE_OR_LINE_TREE, react?: 0 | 1) => Id,
-): [
-  <Return>(
-    callback: (tableId: Id, tableName: string, TABLE_ID: string) => Return,
-  ) => Return[],
-  <Return>(
-    tableId: Id,
-    callback: (
-      cellId: Id,
-      type: 'string' | 'number' | 'boolean',
-      defaultValue: Cell | undefined,
-      CELL_ID: string,
-      cellName: string,
-    ) => Return,
-  ) => Return[],
-  <Return>(
-    callback: (
-      valueId: Id,
-      type: 'string' | 'number' | 'boolean',
-      defaultValue: Value | undefined,
-      VALUE_ID: string,
-      valueName: string,
-    ) => Return,
-  ) => Return[],
-] => {
+): [MapTablesSchema, MapCellSchema, MapValuesSchema] => {
   const mapTablesSchema = <Return>(
     callback: (tableId: Id, tableName: string, TABLE_ID: string) => Return,
   ) =>
