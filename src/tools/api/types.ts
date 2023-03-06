@@ -1,8 +1,8 @@
 import {Cell, Value} from '../../store.d';
 import {EMPTY_STRING, TABLES, VALUES} from '../../common/strings';
 import {WHEN_SET, getTheContentOfTheStoreDoc} from '../common/strings';
+import {getFieldTypeList} from '../common/code';
 import {isUndefined} from '../../common/other';
-import {join} from '../common/code';
 
 export const getTablesTypes = (
   addType: (name: string, body: string, doc: string) => string,
@@ -22,45 +22,40 @@ export const getTablesTypes = (
 ) => {
   const tablesType = addType(
     TABLES,
-    '{' +
-      join(
-        mapTablesSchema(
-          (tableId) =>
-            `'${tableId}'?: {[rowId: Id]: {` +
-            join(
-              mapCellSchema(
-                tableId,
-                (cellId, type, defaultValue) =>
-                  `'${cellId}'${
-                    isUndefined(defaultValue) ? '?' : EMPTY_STRING
-                  }: ${type}`,
-              ),
-              '; ',
-            ) +
-            '}}',
-        ),
-        '; ',
-      ) +
-      '}',
+    getFieldTypeList(
+      ...mapTablesSchema(
+        (tableId) =>
+          `'${tableId}'?: {[rowId: Id]: ` +
+          getFieldTypeList(
+            ...mapCellSchema(
+              tableId,
+              (cellId, type, defaultValue) =>
+                `'${cellId}'${
+                  isUndefined(defaultValue) ? '?' : EMPTY_STRING
+                }: ${type}`,
+            ),
+          ) +
+          '}',
+      ),
+    ),
     getTheContentOfTheStoreDoc(1, 5),
   );
 
   const tablesWhenSetType = addType(
     TABLES + WHEN_SET,
-    '{' +
-      join(
-        mapTablesSchema(
-          (tableId) =>
-            `'${tableId}'?: {[rowId: Id]: {` +
-            join(
-              mapCellSchema(tableId, (cellId, type) => `'${cellId}'?: ${type}`),
-              '; ',
-            ) +
-            '}}',
-        ),
-        '; ',
-      ) +
-      '}',
+    getFieldTypeList(
+      ...mapTablesSchema(
+        (tableId) =>
+          `'${tableId}'?: {[rowId: Id]: ` +
+          getFieldTypeList(
+            ...mapCellSchema(
+              tableId,
+              (cellId, type) => `'${cellId}'?: ${type}`,
+            ),
+          ) +
+          '}',
+      ),
+    ),
     getTheContentOfTheStoreDoc(1, 5, 1),
   );
 
@@ -81,29 +76,23 @@ export const getValuesType = (
 ) => {
   const valuesType = addType(
     VALUES,
-    '{' +
-      join(
-        mapValuesSchema(
-          (valueId, type, defaultValue) =>
-            `'${valueId}'${
-              isUndefined(defaultValue) ? '?' : EMPTY_STRING
-            }: ${type};`,
-        ),
-        ' ',
-      ) +
-      '}',
+    getFieldTypeList(
+      ...mapValuesSchema(
+        (valueId, type, defaultValue) =>
+          `'${valueId}'${
+            isUndefined(defaultValue) ? '?' : EMPTY_STRING
+          }: ${type}`,
+      ),
+    ),
     getTheContentOfTheStoreDoc(2, 5),
   );
 
   // ValuesWhenSet
   const valuesWhenSetType = addType(
     VALUES + WHEN_SET,
-    '{' +
-      join(
-        mapValuesSchema((valueId, type) => `'${valueId}'?: ${type};`),
-        ' ',
-      ) +
-      '}',
+    getFieldTypeList(
+      ...mapValuesSchema((valueId, type) => `'${valueId}'?: ${type}`),
+    ),
     getTheContentOfTheStoreDoc(2, 5, 1),
   );
 
