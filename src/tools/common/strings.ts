@@ -1,6 +1,8 @@
 import {
+  ADD,
   CELL,
   EMPTY_STRING,
+  GET,
   IDS,
   LISTENER,
   ROW,
@@ -25,12 +27,14 @@ export const INVALID = 'Invalid';
 export const JSON = 'Json';
 export const LISTENER_ = lower(LISTENER);
 export const OR_UNDEFINED = ' | undefined';
+export const NON_NULLABLE = 'NonNullable';
 export const PARTIAL = 'Partial';
 export const REGISTERS_A_LISTENER = `Registers a ${LISTENER_} that will be called`;
 export const REPRESENTS = 'Represents';
 export const SET = 'Set';
 export const SQUARE_BRACKETS = '[]';
-export const THE_STORE = 'the Store';
+export const STORE = 'Store';
+export const THE_STORE = 'the ' + STORE;
 export const TRANSACTION = 'Transaction';
 export const TRANSACTION_ = lower(TRANSACTION);
 export const THE_END_OF_THE_TRANSACTION = 'the end of the ' + TRANSACTION_;
@@ -133,6 +137,17 @@ export const VERBS = [
   GETS_A_CALLBACK_THAT_CAN + 'set part of',
   GETS_A_CALLBACK_THAT_CAN + 'delete',
   'Renders',
+];
+
+export const METHOD_PREFIX_VERBS = [
+  GET,
+  'has',
+  'set',
+  'del',
+  'set', // partial
+  'forEach',
+  ADD,
+  EMPTY_STRING,
 ];
 
 const NOUNS = [
