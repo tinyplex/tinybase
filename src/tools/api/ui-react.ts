@@ -48,12 +48,13 @@ import {
   comment,
   getCodeFunctions,
   getParameterList,
+  getPropTypeList,
   join,
   mapUnique,
 } from '../common/code';
 import {SharedTableTypes, SharedValueTypes, TableTypes} from './core';
 import {TablesSchema, ValuesSchema} from '../../store.d';
-import {arrayMap, arrayPush, arrayUnshift} from '../../common/array';
+import {arrayPush, arrayUnshift} from '../../common/array';
 import {Id} from '../../common.d';
 import {OR_UNDEFINED} from '../common/strings';
 import {getSchemaFunctions} from '../common/schema';
@@ -65,13 +66,6 @@ const DEPS = 'Deps';
 const getGet = (noun: string) => GET + noun;
 const getGetAndGetDeps = (noun: string) =>
   getParameterList(getGet(noun), getGet(noun) + DEPS);
-const getPropsTypeList = (...props: string[]) =>
-  '{' +
-  join(
-    arrayMap(props, (prop) => 'readonly ' + prop),
-    '; ',
-  ) +
-  '}';
 
 const DEBUG_IDS_PROP_TYPE = 'debugIds?: boolean';
 const DEBUG_IDS_PROP = 'debugIds={debugIds}';
@@ -269,7 +263,7 @@ export const getStoreUiReactApi = (
   // ProviderProps
   const providerPropsType = addType(
     PROVIDER + PROPS,
-    getPropsTypeList(
+    getPropTypeList(
       storeInstance + OPTIONAL_COLON + storeType,
       storeInstance + `ById?: {[${storeInstance}Id: Id]: ${storeType}}`,
     ),
@@ -497,7 +491,7 @@ export const getStoreUiReactApi = (
     // TablesProps
     const tablesPropsType = addType(
       TABLES + PROPS,
-      getPropsTypeList(
+      getPropTypeList(
         storeInstance + OPTIONAL_COLON + storeType,
         'tableComponents?: {' +
           join(
@@ -518,7 +512,7 @@ export const getStoreUiReactApi = (
     // CellProps
     const cellPropsType = addType(
       CELL + PROPS,
-      getPropsTypeList(
+      getPropTypeList(
         'rowId: Id',
         storeInstance + OPTIONAL_COLON + storeType,
         DEBUG_IDS_PROP_TYPE,
@@ -732,7 +726,7 @@ export const getStoreUiReactApi = (
       // RowProps
       const rowPropsType = addType(
         tableName + 'RowProps',
-        getPropsTypeList(
+        getPropTypeList(
           'rowId: Id',
           storeInstance + OPTIONAL_COLON + storeType,
           'cellComponents?: {' +
@@ -754,7 +748,7 @@ export const getStoreUiReactApi = (
       // TableProps
       const tablePropsType = addType(
         tableName + 'TableProps',
-        getPropsTypeList(
+        getPropTypeList(
           storeInstance + OPTIONAL_COLON + storeType,
           `rowComponent?: ComponentType<${rowPropsType}>`,
           `getRowComponentProps?: (rowId: Id) => ExtraProps`,
@@ -767,7 +761,7 @@ export const getStoreUiReactApi = (
       // SortedTableProps
       const sortedTablePropsType = addType(
         tableName + 'SortedTableProps',
-        getPropsTypeList(
+        getPropTypeList(
           'cellId?: ' + cellIdType,
           'descending?: boolean',
           'offset?: number',
@@ -1126,7 +1120,7 @@ export const getStoreUiReactApi = (
     // ValueProps
     const valuePropsType = addType(
       VALUE + PROPS,
-      getPropsTypeList(
+      getPropTypeList(
         storeInstance + OPTIONAL_COLON + storeType,
         DEBUG_IDS_PROP_TYPE,
       ),
@@ -1136,7 +1130,7 @@ export const getStoreUiReactApi = (
     // ValuesProps
     const valuesPropsType = addType(
       VALUES + PROPS,
-      getPropsTypeList(
+      getPropTypeList(
         storeInstance + OPTIONAL_COLON + storeType,
         'valueComponents?: {' +
           join(

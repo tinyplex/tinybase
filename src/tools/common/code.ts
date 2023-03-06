@@ -94,6 +94,12 @@ export const getParameterList = (...params: string[]) =>
     ', ',
   );
 
+export const getFieldTypeList = (...props: string[]) =>
+  '{' + join(props, '; ') + '}';
+
+export const getPropTypeList = (...props: string[]) =>
+  getFieldTypeList(...arrayMap(props, (prop) => 'readonly ' + prop));
+
 export const getCodeFunctions = (): [
   (...lines: LINE_TREE) => string,
   (location: null | 0 | 1, source: string, ...items: string[]) => void,
