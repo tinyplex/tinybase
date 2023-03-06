@@ -1,11 +1,16 @@
-import {EMPTY_STRING, TABLES, VALUES} from '../../common/strings';
+import {EMPTY_STRING, TABLE, TABLES, VALUES} from '../../common/strings';
+import {
+  ID,
+  THE_STORE,
+  WHEN_SET,
+  getTheContentOfTheStoreDoc,
+} from '../common/strings';
 import {
   MapCellSchema,
   MapTablesSchema,
   MapValuesSchema,
 } from '../common/schema';
-import {WHEN_SET, getTheContentOfTheStoreDoc} from '../common/strings';
-import {getFieldTypeList} from '../common/code';
+import {getFieldTypeList, join} from '../common/code';
 import {isUndefined} from '../../common/other';
 
 export const getTypeFunctions = (
@@ -54,7 +59,13 @@ export const getTypeFunctions = (
       getTheContentOfTheStoreDoc(1, 5, 1),
     );
 
-    return [tablesType, tablesWhenSetType];
+    const tableIdType = addType(
+      TABLE + ID,
+      'keyof ' + tablesType,
+      'A ' + TABLE + ' Id in ' + THE_STORE,
+    );
+
+    return [tablesType, tablesWhenSetType, tableIdType];
   };
 
   const getValuesTypes = () => {
