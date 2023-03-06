@@ -380,7 +380,7 @@ export const getStoreCoreApi = (
           ' ',
         ) +
         '}',
-      getTheContentOfTheStoreDoc(1, 5) + WHEN_SETTING_IT,
+      getTheContentOfTheStoreDoc(1, 5, 1),
     );
 
     // TableId
