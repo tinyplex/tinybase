@@ -1,18 +1,17 @@
-import {EMPTY_STRING, TABLES, VALUES} from '../../common/strings';
 import {IdMap, mapMap, mapNew} from '../../common/map';
 import {
   LINE,
   LINE_TREE,
   comment,
   getCodeFunctions,
-  join,
   mapUnique,
 } from '../common/code';
 import {TablesSchema, ValuesSchema} from '../../store.d';
-import {WHEN_SET, getTheContentOfTheStoreDoc} from '../common/strings';
+import {getTablesTypes, getValuesType as getValuesTypes} from '../api/types';
+import {EMPTY_STRING} from '../../common/strings';
 import {Id} from '../../common.d';
 import {getSchemaFunctions} from '../common/schema';
-import {isUndefined} from '../../common/other';
+import {getTheContentOfTheStoreDoc} from '../common/strings';
 import {objIsEmpty} from '../../common/obj';
 
 export const getStoreCoreRefinement = (
@@ -59,53 +58,11 @@ export const getStoreCoreRefinement = (
   addImport(0, 'tinybase', 'Id', 'Store as StoreCore');
 
   if (!objIsEmpty(tablesSchema)) {
-    // Tables
-    const tablesType = addType(
-      TABLES,
-      '{' +
-        join(
-          mapTablesSchema(
-            (tableId) =>
-              `'${tableId}': {[rowId: Id]: {` +
-              join(
-                mapCellSchema(
-                  tableId,
-                  (cellId, type, defaultValue) =>
-                    `'${cellId}'${
-                      isUndefined(defaultValue) ? '?' : EMPTY_STRING
-                    }: ${type}`,
-                ),
-                '; ',
-              ) +
-              '}}',
-          ),
-          '; ',
-        ) +
-        '}',
-      getTheContentOfTheStoreDoc(1, 5),
-    );
-
-    // TablesWhenSet
-    const tablesWhenSetType = addType(
-      TABLES + WHEN_SET,
-      '{' +
-        join(
-          mapTablesSchema(
-            (tableId) =>
-              `'${tableId}': {[rowId: Id]: {` +
-              join(
-                mapCellSchema(
-                  tableId,
-                  (cellId, type) => `'${cellId}'?: ${type}`,
-                ),
-                '; ',
-              ) +
-              '}}',
-          ),
-          '; ',
-        ) +
-        '}',
-      getTheContentOfTheStoreDoc(1, 5, 1),
+    // Tables, TablesWhenSet
+    const [tablesType, tablesWhenSetType] = getTablesTypes(
+      addType,
+      mapTablesSchema,
+      mapCellSchema,
     );
 
     addMethod('getTables', '', tablesType, getTheContentOfTheStoreDoc(1, 0));
@@ -119,33 +76,10 @@ export const getStoreCoreRefinement = (
   }
 
   if (!objIsEmpty(valuesSchema)) {
-    // Values
-    const valuesType = addType(
-      VALUES,
-      '{' +
-        join(
-          mapValuesSchema(
-            (valueId, type, defaultValue) =>
-              `'${valueId}'${
-                isUndefined(defaultValue) ? '?' : EMPTY_STRING
-              }: ${type};`,
-          ),
-          ' ',
-        ) +
-        '}',
-      getTheContentOfTheStoreDoc(2, 5),
-    );
-
-    // ValuesWhenSet
-    const valuesWhenSetType = addType(
-      VALUES + WHEN_SET,
-      '{' +
-        join(
-          mapValuesSchema((valueId, type) => `'${valueId}'?: ${type};`),
-          ' ',
-        ) +
-        '}',
-      getTheContentOfTheStoreDoc(2, 5, 1),
+    // Values, ValuesWhenSet
+    const [valuesType, valuesWhenSetType] = getValuesTypes(
+      addType,
+      mapValuesSchema,
     );
 
     addMethod('getValues', '', valuesType, getTheContentOfTheStoreDoc(2, 0));

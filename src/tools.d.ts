@@ -347,9 +347,9 @@ export interface Tools {
    *
    * const dTsLines = dTs.split('\n');
    * console.log(dTsLines[3]);
-   * // -> 'export type PetsTable = {[rowId: Id]: PetsRow};'
-   * console.log(dTsLines[9]);
-   * // -> 'export type PetsRow = {\'price\'?: number;};'
+   * // -> `export type Tables = {'pets'?: {[rowId: Id]: {'price'?: number}}};`
+   * console.log(dTsLines[15]);
+   * // -> 'export type PetsRow = PetsTable[Id];'
    *
    * const tsLines = ts.split('\n');
    * console.log(tsLines[39]);
@@ -368,9 +368,9 @@ export interface Tools {
    *
    * const dTsLines = dTs.split('\n');
    * console.log(dTsLines[3]);
-   * // -> 'export type PetsTable = {[rowId: Id]: PetsRow};'
-   * console.log(dTsLines[9]);
-   * // -> 'export type PetsRow = {\'price\': number;};'
+   * // -> `export type Tables = {'pets'?: {[rowId: Id]: {'price': number}}};`
+   * console.log(dTsLines[15]);
+   * // -> 'export type PetsRow = PetsTable[Id];'
    *
    * const tsLines = ts.split('\n');
    * console.log(tsLines[41]);
@@ -429,9 +429,9 @@ export interface Tools {
    *
    * const dTsLines = dTs.split('\n');
    * console.log(dTsLines[5]);
-   * // -> 'export type PetsTable = {[rowId: Id]: PetsRow};'
-   * console.log(dTsLines[15]);
-   * // -> 'export type PetsRow = {price?: number};'
+   * // -> `export type Tables = {pets?: {[rowId: Id]: {price?: number}}};`
+   * console.log(dTsLines[25]);
+   * // -> 'export type PetsRow = PetsTable[Id];'
    *
    * const tsLines = ts.split('\n');
    * console.log(tsLines[78]);
@@ -452,9 +452,9 @@ export interface Tools {
    *
    * const dTsLines = dTs.split('\n');
    * console.log(dTsLines[5]);
-   * // -> 'export type PetsTable = {[rowId: Id]: PetsRow};'
-   * console.log(dTsLines[15]);
-   * // -> 'export type PetsRow = {price: number};'
+   * // -> 'export type Tables = {pets?: {[rowId: Id]: {price: number}}};'
+   * console.log(dTsLines[25]);
+   * // -> 'export type PetsRow = PetsTable[Id];'
    *
    * const tsLines = ts.split('\n');
    * console.log(tsLines[80]);

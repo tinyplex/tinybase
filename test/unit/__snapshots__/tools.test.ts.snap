@@ -14,24 +14,38 @@ exports[`API Pretty both 1`] = `
 } from 'tinybase';
 
 /**
+ * Represents the tabular content of the Store.
+ */
+export type Tables = {
+  t1?: {[rowId: Id]: {c1: number; c2: string; c3: string; ''?: string}};
+};
+
+/**
+ * Represents the tabular content of the Store when setting it.
+ */
+export type TablesWhenSet = {
+  t1?: {[rowId: Id]: {c1?: number; c2?: string; c3?: string; ''?: string}};
+};
+
+/**
  * Represents the 't1' Table.
  */
-export type T1Table = {[rowId: Id]: T1Row};
+export type T1Table = NonNullable<Tables['t1']>;
 
 /**
  * Represents the 't1' Table when setting it.
  */
-export type T1TableWhenSet = {[rowId: Id]: T1RowWhenSet};
+export type T1TableWhenSet = NonNullable<TablesWhenSet['t1']>;
 
 /**
  * Represents a Row when getting the content of the 't1' Table.
  */
-export type T1Row = {c1: number; c2: string; c3: string; ''?: string};
+export type T1Row = T1Table[Id];
 
 /**
  * Represents a Row when setting the content of the 't1' Table.
  */
-export type T1RowWhenSet = {c1?: number; c2?: string; c3?: string; ''?: string};
+export type T1RowWhenSet = T1TableWhenSet[Id];
 
 /**
  * A Cell Id for the 't1' Table.
@@ -56,16 +70,6 @@ export type T1RowCallback = (
   rowId: Id,
   forEachCell: (cellCallback: T1CellCallback) => void,
 ) => void;
-
-/**
- * Represents the tabular content of the Store.
- */
-export type Tables = {t1?: T1Table};
-
-/**
- * Represents the tabular content of the Store when setting it.
- */
-export type TablesWhenSet = {t1?: T1TableWhenSet};
 
 /**
  * A Table Id in the Store.
@@ -4176,24 +4180,38 @@ exports[`API Pretty tabular 1`] = `
   "import {CellChange, DoRollback, Id, IdOrNull, Ids, Json, Store} from 'tinybase';
 
 /**
+ * Represents the tabular content of the Store.
+ */
+export type Tables = {
+  t1?: {[rowId: Id]: {c1: number; c2: string; c3: string; ''?: string}};
+};
+
+/**
+ * Represents the tabular content of the Store when setting it.
+ */
+export type TablesWhenSet = {
+  t1?: {[rowId: Id]: {c1?: number; c2?: string; c3?: string; ''?: string}};
+};
+
+/**
  * Represents the 't1' Table.
  */
-export type T1Table = {[rowId: Id]: T1Row};
+export type T1Table = NonNullable<Tables['t1']>;
 
 /**
  * Represents the 't1' Table when setting it.
  */
-export type T1TableWhenSet = {[rowId: Id]: T1RowWhenSet};
+export type T1TableWhenSet = NonNullable<TablesWhenSet['t1']>;
 
 /**
  * Represents a Row when getting the content of the 't1' Table.
  */
-export type T1Row = {c1: number; c2: string; c3: string; ''?: string};
+export type T1Row = T1Table[Id];
 
 /**
  * Represents a Row when setting the content of the 't1' Table.
  */
-export type T1RowWhenSet = {c1?: number; c2?: string; c3?: string; ''?: string};
+export type T1RowWhenSet = T1TableWhenSet[Id];
 
 /**
  * A Cell Id for the 't1' Table.
@@ -4218,16 +4236,6 @@ export type T1RowCallback = (
   rowId: Id,
   forEachCell: (cellCallback: T1CellCallback) => void,
 ) => void;
-
-/**
- * Represents the tabular content of the Store.
- */
-export type Tables = {t1?: T1Table};
-
-/**
- * Represents the tabular content of the Store when setting it.
- */
-export type TablesWhenSet = {t1?: T1TableWhenSet};
 
 /**
  * A Table Id in the Store.
@@ -6314,17 +6322,23 @@ exports[`API Unpretty both 1`] = `
 [
   "import {CellChange, DoRollback, Id, IdOrNull, Ids, Json, Store, ValueChange} from 'tinybase';
 
+/** Represents the tabular content of the Store. */
+export type Tables = {'t1'?: {[rowId: Id]: {'c1': number; 'c2': string; 'c3': string; ''?: string}}};
+
+/** Represents the tabular content of the Store when setting it. */
+export type TablesWhenSet = {'t1'?: {[rowId: Id]: {'c1'?: number; 'c2'?: string; 'c3'?: string; ''?: string}}};
+
 /** Represents the 't1' Table. */
-export type T1Table = {[rowId: Id]: T1Row};
+export type T1Table = NonNullable<Tables['t1']>;
 
 /** Represents the 't1' Table when setting it. */
-export type T1TableWhenSet = {[rowId: Id]: T1RowWhenSet};
+export type T1TableWhenSet = NonNullable<TablesWhenSet['t1']>;
 
 /** Represents a Row when getting the content of the 't1' Table. */
-export type T1Row = {'c1': number; 'c2': string; 'c3': string; ''?: string;};
+export type T1Row = T1Table[Id];
 
 /** Represents a Row when setting the content of the 't1' Table. */
-export type T1RowWhenSet = {'c1'?: number; 'c2'?: string; 'c3'?: string; ''?: string;};
+export type T1RowWhenSet = T1TableWhenSet[Id];
 
 /** A Cell Id for the 't1' Table. */
 export type T1CellId = 'c1' | 'c2' | 'c3' | '';
@@ -6334,12 +6348,6 @@ export type T1CellCallback = (...[cellId, cell]: [cellId: 'c1', cell: number] | 
 
 /** A function that takes a Row Id from the 't1' Table, and a Cell iterator. */
 export type T1RowCallback = (rowId: Id, forEachCell: (cellCallback: T1CellCallback) => void) => void;
-
-/** Represents the tabular content of the Store. */
-export type Tables = {'t1'?: T1Table;};
-
-/** Represents the tabular content of the Store when setting it. */
-export type TablesWhenSet = {'t1'?: T1TableWhenSet;};
 
 /** A Table Id in the Store. */
 export type TableId = 't1';
@@ -8018,17 +8026,23 @@ exports[`API Unpretty tabular 1`] = `
 [
   "import {CellChange, DoRollback, Id, IdOrNull, Ids, Json, Store} from 'tinybase';
 
+/** Represents the tabular content of the Store. */
+export type Tables = {'t1'?: {[rowId: Id]: {'c1': number; 'c2': string; 'c3': string; ''?: string}}};
+
+/** Represents the tabular content of the Store when setting it. */
+export type TablesWhenSet = {'t1'?: {[rowId: Id]: {'c1'?: number; 'c2'?: string; 'c3'?: string; ''?: string}}};
+
 /** Represents the 't1' Table. */
-export type T1Table = {[rowId: Id]: T1Row};
+export type T1Table = NonNullable<Tables['t1']>;
 
 /** Represents the 't1' Table when setting it. */
-export type T1TableWhenSet = {[rowId: Id]: T1RowWhenSet};
+export type T1TableWhenSet = NonNullable<TablesWhenSet['t1']>;
 
 /** Represents a Row when getting the content of the 't1' Table. */
-export type T1Row = {'c1': number; 'c2': string; 'c3': string; ''?: string;};
+export type T1Row = T1Table[Id];
 
 /** Represents a Row when setting the content of the 't1' Table. */
-export type T1RowWhenSet = {'c1'?: number; 'c2'?: string; 'c3'?: string; ''?: string;};
+export type T1RowWhenSet = T1TableWhenSet[Id];
 
 /** A Cell Id for the 't1' Table. */
 export type T1CellId = 'c1' | 'c2' | 'c3' | '';
@@ -8038,12 +8052,6 @@ export type T1CellCallback = (...[cellId, cell]: [cellId: 'c1', cell: number] | 
 
 /** A function that takes a Row Id from the 't1' Table, and a Cell iterator. */
 export type T1RowCallback = (rowId: Id, forEachCell: (cellCallback: T1CellCallback) => void) => void;
-
-/** Represents the tabular content of the Store. */
-export type Tables = {'t1'?: T1Table;};
-
-/** Represents the tabular content of the Store when setting it. */
-export type TablesWhenSet = {'t1'?: T1TableWhenSet;};
 
 /** A Table Id in the Store. */
 export type TableId = 't1';
@@ -8838,14 +8846,14 @@ import {Id, Store as StoreCore} from 'tinybase';
  * Represents the tabular content of the Store.
  */
 export type Tables = {
-  t1: {[rowId: Id]: {c1: number; c2: string; c3: string; ''?: string}};
+  t1?: {[rowId: Id]: {c1: number; c2: string; c3: string; ''?: string}};
 };
 
 /**
  * Represents the tabular content of the Store when setting it.
  */
 export type TablesWhenSet = {
-  t1: {[rowId: Id]: {c1?: number; c2?: string; c3?: string; ''?: string}};
+  t1?: {[rowId: Id]: {c1?: number; c2?: string; c3?: string; ''?: string}};
 };
 
 /**
@@ -8950,14 +8958,14 @@ import {Id, Store as StoreCore} from 'tinybase';
  * Represents the tabular content of the Store.
  */
 export type Tables = {
-  t1: {[rowId: Id]: {c1: number; c2: string; c3: string; ''?: string}};
+  t1?: {[rowId: Id]: {c1: number; c2: string; c3: string; ''?: string}};
 };
 
 /**
  * Represents the tabular content of the Store when setting it.
  */
 export type TablesWhenSet = {
-  t1: {[rowId: Id]: {c1?: number; c2?: string; c3?: string; ''?: string}};
+  t1?: {[rowId: Id]: {c1?: number; c2?: string; c3?: string; ''?: string}};
 };
 
 interface Refined {
@@ -8990,10 +8998,10 @@ exports[`Refinements Unpretty both 1`] = `
 import {Id, Store as StoreCore} from 'tinybase';
 
 /** Represents the tabular content of the Store. */
-export type Tables = {'t1': {[rowId: Id]: {'c1': number; 'c2': string; 'c3': string; ''?: string}}};
+export type Tables = {'t1'?: {[rowId: Id]: {'c1': number; 'c2': string; 'c3': string; ''?: string}}};
 
 /** Represents the tabular content of the Store when setting it. */
-export type TablesWhenSet = {'t1': {[rowId: Id]: {'c1'?: number; 'c2'?: string; 'c3'?: string; ''?: string}}};
+export type TablesWhenSet = {'t1'?: {[rowId: Id]: {'c1'?: number; 'c2'?: string; 'c3'?: string; ''?: string}}};
 
 /** Represents the keyed value content of the Store. */
 export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string;};
@@ -9058,10 +9066,10 @@ exports[`Refinements Unpretty tabular 1`] = `
 import {Id, Store as StoreCore} from 'tinybase';
 
 /** Represents the tabular content of the Store. */
-export type Tables = {'t1': {[rowId: Id]: {'c1': number; 'c2': string; 'c3': string; ''?: string}}};
+export type Tables = {'t1'?: {[rowId: Id]: {'c1': number; 'c2': string; 'c3': string; ''?: string}}};
 
 /** Represents the tabular content of the Store when setting it. */
-export type TablesWhenSet = {'t1': {[rowId: Id]: {'c1'?: number; 'c2'?: string; 'c3'?: string; ''?: string}}};
+export type TablesWhenSet = {'t1'?: {[rowId: Id]: {'c1'?: number; 'c2'?: string; 'c3'?: string; ''?: string}}};
 
 interface Refined {
 /** Gets the tabular content of the Store. */
