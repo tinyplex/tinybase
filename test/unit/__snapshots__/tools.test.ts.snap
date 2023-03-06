@@ -8878,9 +8878,19 @@ interface Refined {
   getTables(): Tables;
 
   /**
+   * Checks existence of the tabular content of the Store.
+   */
+  hasTables(): boolean;
+
+  /**
    * Sets the tabular content of the Store.
    */
   setTables(tables: TablesWhenSet): Store;
+
+  /**
+   * Deletes the tabular content of the Store.
+   */
+  delTables(): Store;
 
   /**
    * Gets the keyed value content of the Store.
@@ -8975,9 +8985,19 @@ interface Refined {
   getTables(): Tables;
 
   /**
+   * Checks existence of the tabular content of the Store.
+   */
+  hasTables(): boolean;
+
+  /**
    * Sets the tabular content of the Store.
    */
   setTables(tables: TablesWhenSet): Store;
+
+  /**
+   * Deletes the tabular content of the Store.
+   */
+  delTables(): Store;
 }
 
 export type Store = Omit<StoreCore, keyof Refined> & Refined;
@@ -9013,8 +9033,14 @@ interface Refined {
 /** Gets the tabular content of the Store. */
 getTables(): Tables;
 
+/** Checks existence of the tabular content of the Store. */
+hasTables(): boolean;
+
 /** Sets the tabular content of the Store. */
 setTables(tables: TablesWhenSet): Store;
+
+/** Deletes the tabular content of the Store. */
+delTables(): Store;
 
 /** Gets the keyed value content of the Store. */
 getValues(): Values;
@@ -9075,8 +9101,14 @@ interface Refined {
 /** Gets the tabular content of the Store. */
 getTables(): Tables;
 
+/** Checks existence of the tabular content of the Store. */
+hasTables(): boolean;
+
 /** Sets the tabular content of the Store. */
 setTables(tables: TablesWhenSet): Store;
+
+/** Deletes the tabular content of the Store. */
+delTables(): Store;
 
 }
 
