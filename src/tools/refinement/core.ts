@@ -1,4 +1,10 @@
-import {BOOLEAN, EMPTY_STRING, TABLES} from '../../common/strings';
+import {
+  BOOLEAN,
+  EMPTY_STRING,
+  TABLE,
+  TABLES,
+  TABLE_IDS,
+} from '../../common/strings';
 import {IdMap, mapMap, mapNew} from '../../common/map';
 import {
   LINE,
@@ -9,7 +15,10 @@ import {
 } from '../common/code';
 import {
   METHOD_PREFIX_VERBS,
+  SQUARE_BRACKETS,
   STORE,
+  THE_STORE,
+  getIdsDoc,
   getTheContentOfTheStoreDoc,
 } from '../common/strings';
 import {TablesSchema, ValuesSchema} from '../../store.d';
@@ -71,7 +80,7 @@ export const getStoreCoreRefinement = (
 
   if (!objIsEmpty(tablesSchema)) {
     // Tables, TablesWhenSet
-    const [tablesType, tablesWhenSetType] = getTablesTypes();
+    const [tablesType, tablesWhenSetType, tableIdType] = getTablesTypes();
 
     // getTables, hasTables, setTables, delTables
     arrayForEach(
@@ -88,6 +97,14 @@ export const getStoreCoreRefinement = (
           returnType,
           getTheContentOfTheStoreDoc(1, verb),
         ),
+    );
+
+    // getTableIds
+    addMethod(
+      METHOD_PREFIX_VERBS[0] + TABLE_IDS,
+      EMPTY_STRING,
+      tableIdType + SQUARE_BRACKETS,
+      getIdsDoc(TABLE, THE_STORE),
     );
   }
 
