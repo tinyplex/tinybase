@@ -59,7 +59,7 @@ export const getTheContentOfTheStoreDoc = (
   VERBS[verb] +
   SPACE +
   getTheContentOfDoc(content, 1) +
-  (set ? ' when set' : EMPTY_STRING);
+  (set ? ' when setting it' : EMPTY_STRING);
 
 export const getRowTypeDoc = (tableId: Id, set = 0) =>
   REPRESENTS +
