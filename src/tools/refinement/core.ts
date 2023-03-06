@@ -1,4 +1,4 @@
-import {EMPTY_STRING, TABLES} from '../../common/strings';
+import {EMPTY_STRING, TABLES, VALUES} from '../../common/strings';
 import {IdMap, mapMap, mapNew} from '../../common/map';
 import {
   LINE,
@@ -9,14 +9,11 @@ import {
   mapUnique,
 } from '../common/code';
 import {TablesSchema, ValuesSchema} from '../../store.d';
-import {
-  WHEN_SET,
-  WHEN_SETTING_IT,
-  getTheContentOfTheStoreDoc,
-} from '../common/strings';
+import {WHEN_SET, getTheContentOfTheStoreDoc} from '../common/strings';
 import {Id} from '../../common.d';
 import {getSchemaFunctions} from '../common/schema';
 import {isUndefined} from '../../common/other';
+import {objIsEmpty} from '../../common/obj';
 
 export const getStoreCoreRefinement = (
   tablesSchema: TablesSchema,
@@ -34,7 +31,7 @@ export const getStoreCoreRefinement = (
     _getConstants,
   ] = getCodeFunctions();
 
-  const [mapTablesSchema, mapCellSchema] = getSchemaFunctions(
+  const [mapTablesSchema, mapCellSchema, mapValuesSchema] = getSchemaFunctions(
     tablesSchema,
     valuesSchema,
     () => '',
@@ -61,58 +58,105 @@ export const getStoreCoreRefinement = (
 
   addImport(0, 'tinybase', 'Id', 'Store as StoreCore');
 
-  // Tables
-  addType(
-    TABLES,
-    '{' +
-      join(
-        mapTablesSchema(
-          (tableId) =>
-            `'${tableId}': {[rowId: Id]: {` +
-            join(
-              mapCellSchema(
-                tableId,
-                (cellId, type, defaultValue) =>
-                  `'${cellId}'${
-                    isUndefined(defaultValue) ? '?' : EMPTY_STRING
-                  }: ${type}`,
-              ),
-              '; ',
-            ) +
-            '}}',
-        ),
-        '; ',
-      ) +
-      '}',
-    getTheContentOfTheStoreDoc(1, 5),
-  );
+  if (!objIsEmpty(tablesSchema)) {
+    // Tables
+    const tablesType = addType(
+      TABLES,
+      '{' +
+        join(
+          mapTablesSchema(
+            (tableId) =>
+              `'${tableId}': {[rowId: Id]: {` +
+              join(
+                mapCellSchema(
+                  tableId,
+                  (cellId, type, defaultValue) =>
+                    `'${cellId}'${
+                      isUndefined(defaultValue) ? '?' : EMPTY_STRING
+                    }: ${type}`,
+                ),
+                '; ',
+              ) +
+              '}}',
+          ),
+          '; ',
+        ) +
+        '}',
+      getTheContentOfTheStoreDoc(1, 5),
+    );
 
-  // TablesWhenSet
-  addType(
-    TABLES + WHEN_SET,
-    '{' +
-      join(
-        mapTablesSchema(
-          (tableId) =>
-            `'${tableId}': {[rowId: Id]: {` +
-            join(
-              mapCellSchema(tableId, (cellId, type) => `'${cellId}'?: ${type}`),
-              '; ',
-            ) +
-            '}}',
-        ),
-        '; ',
-      ) +
-      '}',
-    getTheContentOfTheStoreDoc(1, 5) + WHEN_SETTING_IT,
-  );
+    // TablesWhenSet
+    const tablesWhenSetType = addType(
+      TABLES + WHEN_SET,
+      '{' +
+        join(
+          mapTablesSchema(
+            (tableId) =>
+              `'${tableId}': {[rowId: Id]: {` +
+              join(
+                mapCellSchema(
+                  tableId,
+                  (cellId, type) => `'${cellId}'?: ${type}`,
+                ),
+                '; ',
+              ) +
+              '}}',
+          ),
+          '; ',
+        ) +
+        '}',
+      getTheContentOfTheStoreDoc(1, 5, 1),
+    );
 
-  addMethod(
-    'setTables',
-    'tables: ' + TABLES + WHEN_SET,
-    'Store',
-    'Set the tables',
-  );
+    addMethod('getTables', '', tablesType, getTheContentOfTheStoreDoc(1, 0));
+
+    addMethod(
+      'setTables',
+      'tables: ' + tablesWhenSetType,
+      'Store',
+      getTheContentOfTheStoreDoc(1, 2),
+    );
+  }
+
+  if (!objIsEmpty(valuesSchema)) {
+    // Values
+    const valuesType = addType(
+      VALUES,
+      '{' +
+        join(
+          mapValuesSchema(
+            (valueId, type, defaultValue) =>
+              `'${valueId}'${
+                isUndefined(defaultValue) ? '?' : EMPTY_STRING
+              }: ${type};`,
+          ),
+          ' ',
+        ) +
+        '}',
+      getTheContentOfTheStoreDoc(2, 5),
+    );
+
+    // ValuesWhenSet
+    const valuesWhenSetType = addType(
+      VALUES + WHEN_SET,
+      '{' +
+        join(
+          mapValuesSchema((valueId, type) => `'${valueId}'?: ${type};`),
+          ' ',
+        ) +
+        '}',
+      getTheContentOfTheStoreDoc(2, 5, 1),
+    );
+
+    addMethod('getValues', '', valuesType, getTheContentOfTheStoreDoc(2, 0));
+
+    addMethod(
+      'setValues',
+      'values: ' + valuesWhenSetType,
+      'Store',
+      getTheContentOfTheStoreDoc(2, 2),
+    );
+  }
 
   return [
     build(
