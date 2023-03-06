@@ -83,7 +83,7 @@ import {isString, isUndefined} from '../../common/other';
 import {Id} from '../../common.d';
 import {collValues} from '../../common/coll';
 import {getSchemaFunctions} from '../common/schema';
-import {getTablesTypes} from './types';
+import {getTypeFunctions} from './types';
 import {objIsEmpty} from '../../common/obj';
 
 export type TableTypes = [
@@ -155,6 +155,13 @@ export const getStoreCoreApi = (
     tablesSchema,
     valuesSchema,
     addConstant,
+  );
+
+  const [getTablesTypes, getValuesTypes] = getTypeFunctions(
+    addType,
+    mapTablesSchema,
+    mapCellSchema,
+    mapValuesSchema,
   );
 
   const methods: IdMap<
@@ -263,11 +270,7 @@ export const getStoreCoreApi = (
     addImport(null, 'tinybase', IDS);
 
     // Tables, TablesWhenSet
-    const [tablesType, tablesWhenSetType] = getTablesTypes(
-      addType,
-      mapTablesSchema,
-      mapCellSchema,
-    );
+    const [tablesType, tablesWhenSetType] = getTablesTypes();
 
     const tablesTypes: IdMap<TableTypes> = mapNew();
     mapTablesSchema((tableId: Id, tableName: string) => {
@@ -851,34 +854,8 @@ export const getStoreCoreApi = (
   }
 
   if (!objIsEmpty(valuesSchema)) {
-    // Values
-    const valuesType = addType(
-      VALUES,
-      '{' +
-        join(
-          mapValuesSchema(
-            (valueId, type, defaultValue) =>
-              `'${valueId}'${
-                isUndefined(defaultValue) ? '?' : EMPTY_STRING
-              }: ${type};`,
-          ),
-          ' ',
-        ) +
-        '}',
-      getTheContentOfTheStoreDoc(2, 5),
-    );
-
-    // ValuesWhenSet
-    const valuesWhenSetType = addType(
-      VALUES + WHEN_SET,
-      '{' +
-        join(
-          mapValuesSchema((valueId, type) => `'${valueId}'?: ${type};`),
-          ' ',
-        ) +
-        '}',
-      getTheContentOfTheStoreDoc(2, 5, 1),
-    );
+    // Values, ValuesWhenSet
+    const [valuesType, valuesWhenSetType] = getValuesTypes();
 
     // ValueId
     const valueIdType = addType(

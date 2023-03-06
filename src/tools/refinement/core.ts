@@ -13,10 +13,10 @@ import {
   getTheContentOfTheStoreDoc,
 } from '../common/strings';
 import {TablesSchema, ValuesSchema} from '../../store.d';
-import {getTablesTypes, getValuesType as getValuesTypes} from '../api/types';
 import {Id} from '../../common.d';
 import {arrayForEach} from '../../common/array';
 import {getSchemaFunctions} from '../common/schema';
+import {getTypeFunctions} from '../api/types';
 import {objIsEmpty} from '../../common/obj';
 
 export const getStoreCoreRefinement = (
@@ -39,6 +39,13 @@ export const getStoreCoreRefinement = (
     tablesSchema,
     valuesSchema,
     () => '',
+  );
+
+  const [getTablesTypes, getValuesTypes] = getTypeFunctions(
+    addType,
+    mapTablesSchema,
+    mapCellSchema,
+    mapValuesSchema,
   );
 
   const methods: IdMap<
@@ -64,12 +71,9 @@ export const getStoreCoreRefinement = (
 
   if (!objIsEmpty(tablesSchema)) {
     // Tables, TablesWhenSet
-    const [tablesType, tablesWhenSetType] = getTablesTypes(
-      addType,
-      mapTablesSchema,
-      mapCellSchema,
-    );
+    const [tablesType, tablesWhenSetType] = getTablesTypes();
 
+    // getTables, hasTables, setTables, delTables
     arrayForEach(
       [
         [tablesType],
@@ -89,10 +93,7 @@ export const getStoreCoreRefinement = (
 
   if (!objIsEmpty(valuesSchema)) {
     // Values, ValuesWhenSet
-    const [valuesType, valuesWhenSetType] = getValuesTypes(
-      addType,
-      mapValuesSchema,
-    );
+    const [valuesType, valuesWhenSetType] = getValuesTypes();
 
     addMethod('getValues', '', valuesType, getTheContentOfTheStoreDoc(2, 0));
 
