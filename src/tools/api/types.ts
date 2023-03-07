@@ -10,7 +10,7 @@ import {
   MapTablesSchema,
   MapValuesSchema,
 } from '../common/schema';
-import {getFieldTypeList, join} from '../common/code';
+import {getFieldTypeList} from '../common/code';
 import {isUndefined} from '../../common/other';
 
 export const getTypeFunctions = (
