@@ -1,6 +1,14 @@
-import {EMPTY_STRING, TABLE, TABLES, VALUES} from '../../common/strings';
+import {
+  CELL,
+  EMPTY_STRING,
+  ROW,
+  TABLE,
+  TABLES,
+  VALUES,
+} from '../../common/strings';
 import {
   ID,
+  NON_NULLABLE,
   THE_STORE,
   WHEN_SET,
   getTheContentOfTheStoreDoc,
@@ -14,7 +22,12 @@ import {getFieldTypeList} from '../common/code';
 import {isUndefined} from '../../common/other';
 
 export const getTypeFunctions = (
-  addType: (name: string, body: string, doc: string) => string,
+  addType: (
+    name: string,
+    body: string,
+    doc: string,
+    generic?: string,
+  ) => string,
   mapTablesSchema: MapTablesSchema,
   mapCellSchema: MapCellSchema,
   mapValuesSchema: MapValuesSchema,
@@ -65,7 +78,14 @@ export const getTypeFunctions = (
       'A ' + TABLE + ' Id in ' + THE_STORE,
     );
 
-    return [tablesType, tablesWhenSetType, tableIdType];
+    const cellIdType = addType(
+      CELL + ID,
+      `keyof ${NON_NULLABLE}<${tablesType}[TId]>[Id]`,
+      'A ' + CELL + ' Id in a ' + ROW,
+      `<TId extends ${tableIdType}>`,
+    );
+
+    return [tablesType, tablesWhenSetType, tableIdType, cellIdType];
   };
 
   const getValuesTypes = () => {

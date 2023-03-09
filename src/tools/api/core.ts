@@ -269,8 +269,9 @@ export const getStoreCoreApi = (
   if (!objIsEmpty(tablesSchema)) {
     addImport(null, 'tinybase', IDS);
 
-    // Tables, TablesWhenSet, TableId
-    const [tablesType, tablesWhenSetType, tableIdType] = getTablesTypes();
+    // Tables, TablesWhenSet, TableId, RowId, CellId
+    const [tablesType, tablesWhenSetType, tableIdType, cellIdType] =
+      getTablesTypes();
 
     const tablesTypes: IdMap<TableTypes> = mapNew();
     mapTablesSchema((tableId: Id, tableName: string) => {
@@ -305,10 +306,7 @@ export const getStoreCoreApi = (
         // CellId
         addType(
           tableName + CELL + ID,
-          join(
-            mapCellSchema(tableId, (cellId) => `'${cellId}'`),
-            ' | ',
-          ),
+          cellIdType + `<'${tableId}'>`,
           `A Cell Id for the '${tableId}' ` + TABLE,
         ),
 
@@ -476,6 +474,24 @@ export const getStoreCoreApi = (
         `invalidCells: any[])` +
         RETURNS_VOID,
       getListenerTypeDoc(8),
+    );
+
+    addImport(
+      1,
+      moduleDefinition,
+      tablesType,
+      tablesWhenSetType,
+      tableIdType,
+      tableCallbackType,
+      tablesListenerType,
+      tableIdsListenerType,
+      tableListenerType,
+      rowIdsListenerType,
+      sortedRowIdsListenerType,
+      rowListenerType,
+      cellIdsListenerType,
+      cellListenerType,
+      invalidCellListenerType,
     );
 
     sharedTableTypes = [
@@ -795,24 +811,7 @@ export const getStoreCoreApi = (
       'tableId, rowId, cellId',
     );
 
-    addImport(
-      1,
-      moduleDefinition,
-      tablesType,
-      tablesWhenSetType,
-      tableIdType,
-      tableCallbackType,
-      tablesListenerType,
-      tableIdsListenerType,
-      tableListenerType,
-      rowIdsListenerType,
-      sortedRowIdsListenerType,
-      rowListenerType,
-      cellIdsListenerType,
-      cellListenerType,
-      invalidCellListenerType,
-      ...collValues(mapCellOrValueTypes),
-    );
+    addImport(1, moduleDefinition, ...collValues(mapCellOrValueTypes));
     addImport(0, 'tinybase', 'CellChange');
 
     arrayPush(
@@ -920,6 +919,19 @@ export const getStoreCoreApi = (
         `invalidValues: any[])` +
         RETURNS_VOID,
       getListenerTypeDoc(12),
+    );
+
+    addImport(
+      1,
+      moduleDefinition,
+      valuesType,
+      valuesWhenSetType,
+      valueIdType,
+      valueCallbackType,
+      valuesListenerType,
+      valueIdsListenerType,
+      valueListenerType,
+      invalidValueListenerType,
     );
 
     sharedValueTypes = [
@@ -1045,19 +1057,7 @@ export const getStoreCoreApi = (
       'valueId',
     );
 
-    addImport(
-      1,
-      moduleDefinition,
-      valuesType,
-      valuesWhenSetType,
-      valueIdType,
-      valueCallbackType,
-      valuesListenerType,
-      valueIdsListenerType,
-      valueListenerType,
-      invalidValueListenerType,
-      ...collValues(mapCellOrValueTypes),
-    );
+    addImport(1, moduleDefinition, ...collValues(mapCellOrValueTypes));
     addImport(0, 'tinybase', 'ValueChange');
 
     arrayPush(
