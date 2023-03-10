@@ -27,6 +27,7 @@ export const getTypeFunctions = (
     body: string,
     doc: string,
     generic?: string,
+    exported?: 0 | 1,
   ) => string,
   mapTablesSchema: MapTablesSchema,
   mapCellSchema: MapCellSchema,
@@ -83,6 +84,7 @@ export const getTypeFunctions = (
       `keyof ${NON_NULLABLE}<${tablesType}[TId]>[Id]`,
       'A ' + CELL + ' Id in a ' + ROW,
       `<TId extends ${tableIdType}>`,
+      0,
     );
 
     return [tablesType, tablesWhenSetType, tableIdType, cellIdType];

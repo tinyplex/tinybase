@@ -116,7 +116,7 @@ export const getCodeFunctions = (): [
     mapNew(),
     mapNew(),
   ];
-  const types: IdMap<[LINE, string, string]> = mapNew();
+  const types: IdMap<[LINE, string, string, 0 | 1]> = mapNew();
   const constants: IdMap<LINE_OR_LINE_TREE> = mapNew();
 
   const build = (...lines: LINE_TREE): string => join(flat(lines), '\n');
@@ -139,7 +139,8 @@ export const getCodeFunctions = (): [
     body: LINE,
     doc: string,
     generic = EMPTY_STRING,
-  ): Id => mapUnique(types, name, [body, doc, generic]);
+    exported = 1,
+  ): Id => mapUnique(types, name, [body, doc, generic, exported]);
 
   const addInternalFunction = (
     name: Id,
@@ -184,9 +185,11 @@ export const getCodeFunctions = (): [
     );
 
   const getTypes = (): LINE_TREE =>
-    mapMap(types, ([body, doc, generic], name) => [
+    mapMap(types, ([body, doc, generic, exported], name) => [
       comment(doc),
-      `${EXPORT} type ${name}${generic} = ${body};`,
+      `${
+        exported ? EXPORT + ' ' : EMPTY_STRING
+      }type ${name}${generic} = ${body};`,
       EMPTY_STRING,
     ]);
 
