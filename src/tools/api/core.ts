@@ -280,7 +280,7 @@ export const getStoreCoreApi = (
       rowType,
       rowWhenSetType,
       cellIdType,
-      _cellType,
+      cellType,
       cellCallbackType,
       rowCallbackType,
       tableCallbackType,
@@ -417,27 +417,34 @@ export const getStoreCoreApi = (
       getListenerTypeDoc(6, 5),
     );
 
+    const cellListenerArgsArrayInnerType = addType(
+      'CellListenerArgsArrayInner',
+      `CId extends ${cellIdType}<TId> ? ` +
+        `[${storeInstance}: ${storeType}, tableId: TId, rowId: Id, ` +
+        `cellId: CId, ` +
+        `newCell: ${cellType}<TId, CId> ${OR_UNDEFINED}, ` +
+        `oldCell: ${cellType}<TId, CId> ${OR_UNDEFINED}, ` +
+        `getCellChange: ${getCellChangeType} ${OR_UNDEFINED}] : never`,
+      'Cell args for CellListener',
+      `<TId extends ${tableIdType}, CId = ${cellIdType}<TId>>`,
+      0,
+    );
+
+    const cellListenerArgsArrayOuterType = addType(
+      'CellListenerArgsArrayOuter',
+      `TId extends ${tableIdType} ? ` +
+        cellListenerArgsArrayInnerType +
+        '<TId> : never',
+      'Table args for CellListener',
+      `<TId = ${tableIdType}>`,
+      0,
+    );
+
     // CellListener
     const cellListenerType = addType(
       CELL + LISTENER,
       `(...[${storeInstance}, tableId, rowId, cellId, newCell, oldCell, ` +
-        `getCellChange]: ${join(
-          flat(
-            mapTablesSchema((tableId) =>
-              mapCellSchema(
-                tableId,
-                (cellId, type) =>
-                  `[${storeInstance}: ${storeType}, tableId: '${tableId}', ` +
-                  `rowId: Id, cellId: '${cellId}', ` +
-                  `newCell: ${type}${OR_UNDEFINED}, ` +
-                  `oldCell: ${type}${OR_UNDEFINED}, ` +
-                  `getCellChange: ${getCellChangeType} ` +
-                  '| undefined]',
-              ),
-            ),
-          ),
-          ' | ',
-        )})` +
+        `getCellChange]: ${cellListenerArgsArrayOuterType})` +
         RETURNS_VOID,
       getListenerTypeDoc(7, 5),
     );

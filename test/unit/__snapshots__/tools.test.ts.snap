@@ -207,46 +207,43 @@ export type RowListener = (
 export type CellIdsListener = (s: S, tableId: TableId, rowId: Id) => void;
 
 /**
+ * Cell args for CellListener.
+ */
+type CellListenerArgsArrayInner<
+  TId extends TableId,
+  CId = CellId<TId>,
+> = CId extends CellId<TId>
+  ? [
+      s: S,
+      tableId: TId,
+      rowId: Id,
+      cellId: CId,
+      newCell: Cell<TId, CId> | undefined,
+      oldCell: Cell<TId, CId> | undefined,
+      getCellChange: GetCellChange | undefined,
+    ]
+  : never;
+
+/**
+ * Table args for CellListener.
+ */
+type CellListenerArgsArrayOuter<TId = TableId> = TId extends TableId
+  ? CellListenerArgsArrayInner<TId>
+  : never;
+
+/**
  * A function for listening to changes to a Cell in a Row.
  */
 export type CellListener = (
-  ...[s, tableId, rowId, cellId, newCell, oldCell, getCellChange]:
-    | [
-        s: S,
-        tableId: 't1',
-        rowId: Id,
-        cellId: 'c1',
-        newCell: number | undefined,
-        oldCell: number | undefined,
-        getCellChange: GetCellChange | undefined,
-      ]
-    | [
-        s: S,
-        tableId: 't1',
-        rowId: Id,
-        cellId: 'c2',
-        newCell: string | undefined,
-        oldCell: string | undefined,
-        getCellChange: GetCellChange | undefined,
-      ]
-    | [
-        s: S,
-        tableId: 't1',
-        rowId: Id,
-        cellId: 'c3',
-        newCell: string | undefined,
-        oldCell: string | undefined,
-        getCellChange: GetCellChange | undefined,
-      ]
-    | [
-        s: S,
-        tableId: 't1',
-        rowId: Id,
-        cellId: '',
-        newCell: string | undefined,
-        oldCell: string | undefined,
-        getCellChange: GetCellChange | undefined,
-      ]
+  ...[
+    s,
+    tableId,
+    rowId,
+    cellId,
+    newCell,
+    oldCell,
+    getCellChange,
+  ]: CellListenerArgsArrayOuter
 ) => void;
 
 /**
@@ -4430,46 +4427,43 @@ export type RowListener = (
 export type CellIdsListener = (s: S, tableId: TableId, rowId: Id) => void;
 
 /**
+ * Cell args for CellListener.
+ */
+type CellListenerArgsArrayInner<
+  TId extends TableId,
+  CId = CellId<TId>,
+> = CId extends CellId<TId>
+  ? [
+      s: S,
+      tableId: TId,
+      rowId: Id,
+      cellId: CId,
+      newCell: Cell<TId, CId> | undefined,
+      oldCell: Cell<TId, CId> | undefined,
+      getCellChange: GetCellChange | undefined,
+    ]
+  : never;
+
+/**
+ * Table args for CellListener.
+ */
+type CellListenerArgsArrayOuter<TId = TableId> = TId extends TableId
+  ? CellListenerArgsArrayInner<TId>
+  : never;
+
+/**
  * A function for listening to changes to a Cell in a Row.
  */
 export type CellListener = (
-  ...[s, tableId, rowId, cellId, newCell, oldCell, getCellChange]:
-    | [
-        s: S,
-        tableId: 't1',
-        rowId: Id,
-        cellId: 'c1',
-        newCell: number | undefined,
-        oldCell: number | undefined,
-        getCellChange: GetCellChange | undefined,
-      ]
-    | [
-        s: S,
-        tableId: 't1',
-        rowId: Id,
-        cellId: 'c2',
-        newCell: string | undefined,
-        oldCell: string | undefined,
-        getCellChange: GetCellChange | undefined,
-      ]
-    | [
-        s: S,
-        tableId: 't1',
-        rowId: Id,
-        cellId: 'c3',
-        newCell: string | undefined,
-        oldCell: string | undefined,
-        getCellChange: GetCellChange | undefined,
-      ]
-    | [
-        s: S,
-        tableId: 't1',
-        rowId: Id,
-        cellId: '',
-        newCell: string | undefined,
-        oldCell: string | undefined,
-        getCellChange: GetCellChange | undefined,
-      ]
+  ...[
+    s,
+    tableId,
+    rowId,
+    cellId,
+    newCell,
+    oldCell,
+    getCellChange,
+  ]: CellListenerArgsArrayOuter
 ) => void;
 
 /**
@@ -6526,8 +6520,14 @@ export type RowListener = (s: S, tableId: TableId, rowId: Id, getCellChange: Get
 /** A function for listening to changes to the Cell Ids in a Row. */
 export type CellIdsListener = (s: S, tableId: TableId, rowId: Id) => void;
 
+/** Cell args for CellListener. */
+type CellListenerArgsArrayInner<TId extends TableId, CId = CellId<TId>> = CId extends CellId<TId> ? [s: S, tableId: TId, rowId: Id, cellId: CId, newCell: Cell<TId, CId>  | undefined, oldCell: Cell<TId, CId>  | undefined, getCellChange: GetCellChange  | undefined] : never;
+
+/** Table args for CellListener. */
+type CellListenerArgsArrayOuter<TId = TableId> = TId extends TableId ? CellListenerArgsArrayInner<TId> : never;
+
 /** A function for listening to changes to a Cell in a Row. */
-export type CellListener = (...[s, tableId, rowId, cellId, newCell, oldCell, getCellChange]: [s: S, tableId: 't1', rowId: Id, cellId: 'c1', newCell: number | undefined, oldCell: number | undefined, getCellChange: GetCellChange | undefined] | [s: S, tableId: 't1', rowId: Id, cellId: 'c2', newCell: string | undefined, oldCell: string | undefined, getCellChange: GetCellChange | undefined] | [s: S, tableId: 't1', rowId: Id, cellId: 'c3', newCell: string | undefined, oldCell: string | undefined, getCellChange: GetCellChange | undefined] | [s: S, tableId: 't1', rowId: Id, cellId: '', newCell: string | undefined, oldCell: string | undefined, getCellChange: GetCellChange | undefined]) => void;
+export type CellListener = (...[s, tableId, rowId, cellId, newCell, oldCell, getCellChange]: CellListenerArgsArrayOuter) => void;
 
 /** A function for listening to changes to invalid Cell changes in the Store. */
 export type InvalidCellListener = (s: S, tableId: Id, rowId: Id, cellId: Id, invalidCells: any[]) => void;
@@ -8263,8 +8263,14 @@ export type RowListener = (s: S, tableId: TableId, rowId: Id, getCellChange: Get
 /** A function for listening to changes to the Cell Ids in a Row. */
 export type CellIdsListener = (s: S, tableId: TableId, rowId: Id) => void;
 
+/** Cell args for CellListener. */
+type CellListenerArgsArrayInner<TId extends TableId, CId = CellId<TId>> = CId extends CellId<TId> ? [s: S, tableId: TId, rowId: Id, cellId: CId, newCell: Cell<TId, CId>  | undefined, oldCell: Cell<TId, CId>  | undefined, getCellChange: GetCellChange  | undefined] : never;
+
+/** Table args for CellListener. */
+type CellListenerArgsArrayOuter<TId = TableId> = TId extends TableId ? CellListenerArgsArrayInner<TId> : never;
+
 /** A function for listening to changes to a Cell in a Row. */
-export type CellListener = (...[s, tableId, rowId, cellId, newCell, oldCell, getCellChange]: [s: S, tableId: 't1', rowId: Id, cellId: 'c1', newCell: number | undefined, oldCell: number | undefined, getCellChange: GetCellChange | undefined] | [s: S, tableId: 't1', rowId: Id, cellId: 'c2', newCell: string | undefined, oldCell: string | undefined, getCellChange: GetCellChange | undefined] | [s: S, tableId: 't1', rowId: Id, cellId: 'c3', newCell: string | undefined, oldCell: string | undefined, getCellChange: GetCellChange | undefined] | [s: S, tableId: 't1', rowId: Id, cellId: '', newCell: string | undefined, oldCell: string | undefined, getCellChange: GetCellChange | undefined]) => void;
+export type CellListener = (...[s, tableId, rowId, cellId, newCell, oldCell, getCellChange]: CellListenerArgsArrayOuter) => void;
 
 /** A function for listening to changes to invalid Cell changes in the Store. */
 export type InvalidCellListener = (s: S, tableId: Id, rowId: Id, cellId: Id, invalidCells: any[]) => void;
