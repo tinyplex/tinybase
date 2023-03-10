@@ -348,7 +348,7 @@ export interface Tools {
    * const dTsLines = dTs.split('\n');
    * console.log(dTsLines[3]);
    * // -> `export type Tables = {'pets'?: {[rowId: Id]: {'price'?: number}}};`
-   * console.log(dTsLines[18]);
+   * console.log(dTsLines[21]);
    * // -> 'export type PetsRow = PetsTable[Id];'
    *
    * const tsLines = ts.split('\n');
@@ -369,7 +369,7 @@ export interface Tools {
    * const dTsLines = dTs.split('\n');
    * console.log(dTsLines[3]);
    * // -> `export type Tables = {'pets'?: {[rowId: Id]: {'price': number}}};`
-   * console.log(dTsLines[18]);
+   * console.log(dTsLines[21]);
    * // -> 'export type PetsRow = PetsTable[Id];'
    *
    * const tsLines = ts.split('\n');
@@ -430,7 +430,7 @@ export interface Tools {
    * const dTsLines = dTs.split('\n');
    * console.log(dTsLines[5]);
    * // -> `export type Tables = {pets?: {[rowId: Id]: {price?: number}}};`
-   * console.log(dTsLines[30]);
+   * console.log(dTsLines[35]);
    * // -> 'export type PetsRow = PetsTable[Id];'
    *
    * const tsLines = ts.split('\n');
@@ -453,7 +453,7 @@ export interface Tools {
    * const dTsLines = dTs.split('\n');
    * console.log(dTsLines[5]);
    * // -> 'export type Tables = {pets?: {[rowId: Id]: {price: number}}};'
-   * console.log(dTsLines[30]);
+   * console.log(dTsLines[35]);
    * // -> 'export type PetsRow = PetsTable[Id];'
    *
    * const tsLines = ts.split('\n');

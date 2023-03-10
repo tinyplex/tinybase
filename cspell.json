@@ -1,8 +1,5 @@
 {
-  "ignorePaths": [
-    "*.tsv",
-    "*.webp"
-  ],
+  "ignorePaths": ["*.tsv", "*.webp"],
   "words": [
     "Abad",
     "Adrien",
@@ -44,6 +41,7 @@
     "Kayoo",
     "keyframes",
     "kotofurumiya",
+    "keyof",
     "lcov",
     "linebreak",
     "Lumet",
