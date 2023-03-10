@@ -275,18 +275,24 @@ export type ValuesWhenSet = {
 /**
  * A Value Id in the Store.
  */
-export type ValueId = 'v1' | 'v2' | 'v3' | '';
+export type ValueId = keyof Values;
 
 /**
- * A function that takes a Value Id, and value.
+ * A Value Id in the Store.
  */
-export type ValueCallback = (
-  ...[valueId, rowCallback]:
-    | [valueId: 'v1', value: number]
-    | [valueId: 'v2', value: string]
-    | [valueId: 'v3', value: string]
-    | [valueId: '', value: string]
-) => void;
+export type Value<VId extends ValueId> = NonNullable<Values[VId]>;
+
+/**
+ * Value Ids and types in the Store.
+ */
+type ValueIdValueArray<VId = ValueId> = VId extends ValueId
+  ? [valueId: VId, value: Value<VId>]
+  : never;
+
+/**
+ * A function that takes a Value Id, and Value.
+ */
+export type ValueCallback = (...[valueId, value]: ValueIdValueArray) => void;
 
 /**
  * A function for returning information about any Value's changes during a
@@ -308,38 +314,23 @@ export type ValuesListener = (
 export type ValueIdsListener = (s: S) => void;
 
 /**
+ * Value args for ValueListener.
+ */
+type ValueListenerArgsArray<VId = ValueId> = VId extends ValueId
+  ? [
+      s: S,
+      valueId: VId,
+      newValue: Value<VId> | undefined,
+      oldValue: Value<VId> | undefined,
+      getValueChange: GetValueChange | undefined,
+    ]
+  : never;
+
+/**
  * A function for listening to changes to a Value in the Store.
  */
 export type ValueListener = (
-  ...[s, valueId, newValue, oldValue, getValueChange]:
-    | [
-        s: S,
-        valueId: 'v1',
-        newValue: number | undefined,
-        oldValue: number | undefined,
-        getValueChange: GetValueChange | undefined,
-      ]
-    | [
-        s: S,
-        valueId: 'v2',
-        newValue: string | undefined,
-        oldValue: string | undefined,
-        getValueChange: GetValueChange | undefined,
-      ]
-    | [
-        s: S,
-        valueId: 'v3',
-        newValue: string | undefined,
-        oldValue: string | undefined,
-        getValueChange: GetValueChange | undefined,
-      ]
-    | [
-        s: S,
-        valueId: '',
-        newValue: string | undefined,
-        oldValue: string | undefined,
-        getValueChange: GetValueChange | undefined,
-      ]
+  ...[s, valueId, newValue, oldValue, getValueChange]: ValueListenerArgsArray
 ) => void;
 
 /**
@@ -3099,18 +3090,24 @@ export type ValuesWhenSet = {
 /**
  * A Value Id in the Store.
  */
-export type ValueId = 'v1' | 'v2' | 'v3' | '';
+export type ValueId = keyof Values;
 
 /**
- * A function that takes a Value Id, and value.
+ * A Value Id in the Store.
  */
-export type ValueCallback = (
-  ...[valueId, rowCallback]:
-    | [valueId: 'v1', value: number]
-    | [valueId: 'v2', value: string]
-    | [valueId: 'v3', value: string]
-    | [valueId: '', value: string]
-) => void;
+export type Value<VId extends ValueId> = NonNullable<Values[VId]>;
+
+/**
+ * Value Ids and types in the Store.
+ */
+type ValueIdValueArray<VId = ValueId> = VId extends ValueId
+  ? [valueId: VId, value: Value<VId>]
+  : never;
+
+/**
+ * A function that takes a Value Id, and Value.
+ */
+export type ValueCallback = (...[valueId, value]: ValueIdValueArray) => void;
 
 /**
  * A function for returning information about any Value's changes during a
@@ -3132,38 +3129,23 @@ export type ValuesListener = (
 export type ValueIdsListener = (s: S) => void;
 
 /**
+ * Value args for ValueListener.
+ */
+type ValueListenerArgsArray<VId = ValueId> = VId extends ValueId
+  ? [
+      s: S,
+      valueId: VId,
+      newValue: Value<VId> | undefined,
+      oldValue: Value<VId> | undefined,
+      getValueChange: GetValueChange | undefined,
+    ]
+  : never;
+
+/**
  * A function for listening to changes to a Value in the Store.
  */
 export type ValueListener = (
-  ...[s, valueId, newValue, oldValue, getValueChange]:
-    | [
-        s: S,
-        valueId: 'v1',
-        newValue: number | undefined,
-        oldValue: number | undefined,
-        getValueChange: GetValueChange | undefined,
-      ]
-    | [
-        s: S,
-        valueId: 'v2',
-        newValue: string | undefined,
-        oldValue: string | undefined,
-        getValueChange: GetValueChange | undefined,
-      ]
-    | [
-        s: S,
-        valueId: 'v3',
-        newValue: string | undefined,
-        oldValue: string | undefined,
-        getValueChange: GetValueChange | undefined,
-      ]
-    | [
-        s: S,
-        valueId: '',
-        newValue: string | undefined,
-        oldValue: string | undefined,
-        getValueChange: GetValueChange | undefined,
-      ]
+  ...[s, valueId, newValue, oldValue, getValueChange]: ValueListenerArgsArray
 ) => void;
 
 /**
@@ -6539,10 +6521,16 @@ export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string};
 export type ValuesWhenSet = {'v1'?: number; 'v2'?: string; 'v3'?: string; ''?: string};
 
 /** A Value Id in the Store. */
-export type ValueId = 'v1' | 'v2' | 'v3' | '';
+export type ValueId = keyof Values;
 
-/** A function that takes a Value Id, and value. */
-export type ValueCallback = (...[valueId, rowCallback]: [valueId: 'v1', value: number] | [valueId: 'v2', value: string] | [valueId: 'v3', value: string] | [valueId: '', value: string]) => void;
+/** A Value Id in the Store. */
+export type Value<VId extends ValueId> = NonNullable<Values[VId]>;
+
+/** Value Ids and types in the Store. */
+type ValueIdValueArray<VId = ValueId> = VId extends ValueId ? [valueId: VId, value: Value<VId>] : never;
+
+/** A function that takes a Value Id, and Value. */
+export type ValueCallback = (...[valueId, value]: ValueIdValueArray) => void;
 
 /** A function for returning information about any Value's changes during a transaction. */
 export type GetValueChange = (valueId: ValueId) => ValueChange;
@@ -6553,8 +6541,11 @@ export type ValuesListener = (s: S, getValueChange: GetValueChange | undefined) 
 /** A function for listening to changes to the Value Ids in the Store. */
 export type ValueIdsListener = (s: S) => void;
 
+/** Value args for ValueListener. */
+type ValueListenerArgsArray<VId = ValueId> = VId extends ValueId ? [s: S, valueId: VId, newValue: Value<VId>  | undefined, oldValue: Value<VId>  | undefined, getValueChange: GetValueChange  | undefined] : never;
+
 /** A function for listening to changes to a Value in the Store. */
-export type ValueListener = (...[s, valueId, newValue, oldValue, getValueChange]: [s: S, valueId: 'v1', newValue: number | undefined, oldValue: number | undefined, getValueChange: GetValueChange | undefined] | [s: S, valueId: 'v2', newValue: string | undefined, oldValue: string | undefined, getValueChange: GetValueChange | undefined] | [s: S, valueId: 'v3', newValue: string | undefined, oldValue: string | undefined, getValueChange: GetValueChange | undefined] | [s: S, valueId: '', newValue: string | undefined, oldValue: string | undefined, getValueChange: GetValueChange | undefined]) => void;
+export type ValueListener = (...[s, valueId, newValue, oldValue, getValueChange]: ValueListenerArgsArray) => void;
 
 /** A function for listening to changes to invalid Value changes in the Store. */
 export type InvalidValueListener = (s: S, valueId: Id, invalidValues: any[]) => void;
@@ -7647,10 +7638,16 @@ export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string};
 export type ValuesWhenSet = {'v1'?: number; 'v2'?: string; 'v3'?: string; ''?: string};
 
 /** A Value Id in the Store. */
-export type ValueId = 'v1' | 'v2' | 'v3' | '';
+export type ValueId = keyof Values;
 
-/** A function that takes a Value Id, and value. */
-export type ValueCallback = (...[valueId, rowCallback]: [valueId: 'v1', value: number] | [valueId: 'v2', value: string] | [valueId: 'v3', value: string] | [valueId: '', value: string]) => void;
+/** A Value Id in the Store. */
+export type Value<VId extends ValueId> = NonNullable<Values[VId]>;
+
+/** Value Ids and types in the Store. */
+type ValueIdValueArray<VId = ValueId> = VId extends ValueId ? [valueId: VId, value: Value<VId>] : never;
+
+/** A function that takes a Value Id, and Value. */
+export type ValueCallback = (...[valueId, value]: ValueIdValueArray) => void;
 
 /** A function for returning information about any Value's changes during a transaction. */
 export type GetValueChange = (valueId: ValueId) => ValueChange;
@@ -7661,8 +7658,11 @@ export type ValuesListener = (s: S, getValueChange: GetValueChange | undefined) 
 /** A function for listening to changes to the Value Ids in the Store. */
 export type ValueIdsListener = (s: S) => void;
 
+/** Value args for ValueListener. */
+type ValueListenerArgsArray<VId = ValueId> = VId extends ValueId ? [s: S, valueId: VId, newValue: Value<VId>  | undefined, oldValue: Value<VId>  | undefined, getValueChange: GetValueChange  | undefined] : never;
+
 /** A function for listening to changes to a Value in the Store. */
-export type ValueListener = (...[s, valueId, newValue, oldValue, getValueChange]: [s: S, valueId: 'v1', newValue: number | undefined, oldValue: number | undefined, getValueChange: GetValueChange | undefined] | [s: S, valueId: 'v2', newValue: string | undefined, oldValue: string | undefined, getValueChange: GetValueChange | undefined] | [s: S, valueId: 'v3', newValue: string | undefined, oldValue: string | undefined, getValueChange: GetValueChange | undefined] | [s: S, valueId: '', newValue: string | undefined, oldValue: string | undefined, getValueChange: GetValueChange | undefined]) => void;
+export type ValueListener = (...[s, valueId, newValue, oldValue, getValueChange]: ValueListenerArgsArray) => void;
 
 /** A function for listening to changes to invalid Value changes in the Store. */
 export type InvalidValueListener = (s: S, valueId: Id, invalidValues: any[]) => void;
@@ -9146,6 +9146,34 @@ export type ValuesWhenSet = {
   ''?: string;
 };
 
+/**
+ * A Value Id in the Store.
+ */
+export type ValueId = keyof Values;
+
+/**
+ * A Value Id in the Store.
+ */
+export type Value<VId extends ValueId> = NonNullable<Values[VId]>;
+
+/**
+ * Value Ids and types in the Store.
+ */
+type ValueIdValueArray<VId = ValueId> = VId extends ValueId
+  ? [valueId: VId, value: Value<VId>]
+  : never;
+
+/**
+ * A function that takes a Value Id, and Value.
+ */
+export type ValueCallback = (...[valueId, value]: ValueIdValueArray) => void;
+
+/**
+ * A function for returning information about any Value's changes during a
+ * transaction.
+ */
+export type GetValueChange = (valueId: ValueId) => ValueChange;
+
 interface Refined {
   /**
    * Gets the tabular content of the Store.
@@ -9214,6 +9242,34 @@ export type ValuesWhenSet = {
   v3?: string;
   ''?: string;
 };
+
+/**
+ * A Value Id in the Store.
+ */
+export type ValueId = keyof Values;
+
+/**
+ * A Value Id in the Store.
+ */
+export type Value<VId extends ValueId> = NonNullable<Values[VId]>;
+
+/**
+ * Value Ids and types in the Store.
+ */
+type ValueIdValueArray<VId = ValueId> = VId extends ValueId
+  ? [valueId: VId, value: Value<VId>]
+  : never;
+
+/**
+ * A function that takes a Value Id, and Value.
+ */
+export type ValueCallback = (...[valueId, value]: ValueIdValueArray) => void;
+
+/**
+ * A function for returning information about any Value's changes during a
+ * transaction.
+ */
+export type GetValueChange = (valueId: ValueId) => ValueChange;
 
 interface Refined {
   /**
@@ -9445,6 +9501,21 @@ export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string};
 /** Represents the keyed value content of the Store when setting it. */
 export type ValuesWhenSet = {'v1'?: number; 'v2'?: string; 'v3'?: string; ''?: string};
 
+/** A Value Id in the Store. */
+export type ValueId = keyof Values;
+
+/** A Value Id in the Store. */
+export type Value<VId extends ValueId> = NonNullable<Values[VId]>;
+
+/** Value Ids and types in the Store. */
+type ValueIdValueArray<VId = ValueId> = VId extends ValueId ? [valueId: VId, value: Value<VId>] : never;
+
+/** A function that takes a Value Id, and Value. */
+export type ValueCallback = (...[valueId, value]: ValueIdValueArray) => void;
+
+/** A function for returning information about any Value's changes during a transaction. */
+export type GetValueChange = (valueId: ValueId) => ValueChange;
+
 interface Refined {
 /** Gets the tabular content of the Store. */
 getTables(): Tables;
@@ -9487,6 +9558,21 @@ export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string};
 
 /** Represents the keyed value content of the Store when setting it. */
 export type ValuesWhenSet = {'v1'?: number; 'v2'?: string; 'v3'?: string; ''?: string};
+
+/** A Value Id in the Store. */
+export type ValueId = keyof Values;
+
+/** A Value Id in the Store. */
+export type Value<VId extends ValueId> = NonNullable<Values[VId]>;
+
+/** Value Ids and types in the Store. */
+type ValueIdValueArray<VId = ValueId> = VId extends ValueId ? [valueId: VId, value: Value<VId>] : never;
+
+/** A function that takes a Value Id, and Value. */
+export type ValueCallback = (...[valueId, value]: ValueIdValueArray) => void;
+
+/** A function for returning information about any Value's changes during a transaction. */
+export type GetValueChange = (valueId: ValueId) => ValueChange;
 
 interface Refined {
 /** Gets the keyed value content of the Store. */

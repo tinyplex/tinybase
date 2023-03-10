@@ -269,8 +269,8 @@ export const getStoreCoreApi = (
     addImport(null, 'tinybase', IDS);
 
     // Tables, TablesWhenSet, TableId,
-    // Table<>, TableWhenSet<>, Row<>, RowWhenSet<>, CellId<>, Cell<>
-    // CellCallback, RowCallback, TableCallback
+    // Table<>, TableWhenSet<>, Row<>, RowWhenSet<>, CellId<>, Cell<>,
+    // CellCallback, RowCallback, TableCallback, GetCellChange
     const [
       tablesType,
       tablesWhenSetType,
@@ -824,39 +824,17 @@ export const getStoreCoreApi = (
   }
 
   if (!objIsEmpty(valuesSchema)) {
-    // Values, ValuesWhenSet
-    const [valuesType, valuesWhenSetType] = getValuesTypes();
-
-    // ValueId
-    const valueIdType = addType(
-      VALUE + ID,
-      join(
-        mapValuesSchema((valueId) => `'${valueId}'`),
-        ' | ',
-      ),
-      'A Value Id in ' + THE_STORE,
-    );
-
-    // ValueCallback
-    const valueCallbackType = addType(
-      VALUE + CALLBACK,
-      `(...[valueId, rowCallback]: ${join(
-        mapValuesSchema(
-          (valueId, type) => `[valueId: '${valueId}', value: ${type}]`,
-        ),
-        ' | ',
-      )})` + RETURNS_VOID,
-      getCallbackDoc('a Value Id, and value'),
-    );
-
-    // GetValueChange
-    const getValueChangeType = addType(
-      'GetValueChange',
-      `(valueId: ${valueIdType}) => ValueChange`,
-      A_FUNCTION_FOR +
-        ` returning information about any Value's changes during a ` +
-        TRANSACTION_,
-    );
+    // Values, ValuesWhenSet, ValueId,
+    // Value<>,
+    // ValueCallback, ValuesCallback, GetValueChange
+    const [
+      valuesType,
+      valuesWhenSetType,
+      valueIdType,
+      valueType,
+      valueCallbackType,
+      getValueChangeType,
+    ] = getValuesTypes();
 
     // ValueListener
     const valuesListenerType = addType(
@@ -874,21 +852,24 @@ export const getStoreCoreApi = (
       getListenerTypeDoc(10),
     );
 
+    const valueListenerArgsArrayType = addType(
+      'ValueListenerArgsArray',
+      `VId extends ${valueIdType} ? ` +
+        `[${storeInstance}: ${storeType}, valueId: VId, ` +
+        `newValue: ${valueType}<VId> ${OR_UNDEFINED}, ` +
+        `oldValue: ${valueType}<VId> ${OR_UNDEFINED}, ` +
+        `getValueChange: ${getValueChangeType} ${OR_UNDEFINED}] : never`,
+      'Value args for ValueListener',
+      `<VId = ${valueIdType}>`,
+      0,
+    );
+
     // ValueListener
     const valueListenerType = addType(
       VALUE + LISTENER,
-      `(...[${storeInstance}, valueId, newValue, oldValue, ` +
-        `getValueChange]: ${join(
-          mapValuesSchema(
-            (valueId, type) =>
-              `[${storeInstance}: ${storeType}, valueId: '${valueId}', ` +
-              `newValue: ${type}${OR_UNDEFINED}, ` +
-              `oldValue: ${type}${OR_UNDEFINED}, ` +
-              `getValueChange: ${getValueChangeType} ` +
-              '| undefined]',
-          ),
-          ' | ',
-        )})` +
+      `(...[${storeInstance}, valueId, newValue, oldValue, getValueChange]: ` +
+        valueListenerArgsArrayType +
+        ')' +
         RETURNS_VOID,
       getListenerTypeDoc(11),
     );
