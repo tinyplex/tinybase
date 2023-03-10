@@ -76,7 +76,7 @@ export const getStoreCoreRefinement = (
     generic = EMPTY_STRING,
   ): Id => mapUnique(methods, name, [parameters, returnType, doc, generic]);
 
-  addImport(0, 'tinybase', 'Id', 'Store as StoreCore');
+  addImport(0, 'tinybase', 'Id', 'Store as StoreCore', 'CellChange');
 
   if (!objIsEmpty(tablesSchema)) {
     // Tables, TablesWhenSet

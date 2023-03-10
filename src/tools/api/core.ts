@@ -265,6 +265,7 @@ export const getStoreCoreApi = (
   );
 
   if (!objIsEmpty(tablesSchema)) {
+    addImport(0, 'tinybase', 'CellChange');
     addImport(null, 'tinybase', IDS);
 
     // Tables, TablesWhenSet, TableId,
@@ -786,7 +787,6 @@ export const getStoreCoreApi = (
     );
 
     addImport(1, moduleDefinition, ...collValues(mapCellOrValueTypes));
-    addImport(0, 'tinybase', 'CellChange');
 
     arrayPush(
       createSteps,
