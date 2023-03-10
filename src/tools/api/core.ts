@@ -229,6 +229,7 @@ export const getStoreCoreApi = (
     params = EMPTY_STRING,
     paramsInCall = EMPTY_STRING,
     mutator = 1,
+    generic = EMPTY_STRING,
   ): Id =>
     addMethod(
       (ADD + underlyingName + LISTENER) as string,
@@ -244,6 +245,7 @@ export const getStoreCoreApi = (
         mutator ? 'mutator' : EMPTY_STRING,
       ),
       doc,
+      generic,
     );
 
   const moduleDefinition = `./${camel(module)}.d`;
@@ -464,6 +466,7 @@ export const getStoreCoreApi = (
       tablesType,
       tablesWhenSetType,
       tableIdType,
+      cellIdType,
       tableCallbackType,
       tablesListenerType,
       tableIdsListenerType,
@@ -743,13 +746,15 @@ export const getStoreCoreApi = (
       sortedRowIdsListenerType,
       getListenerDoc(13, 3, 1),
       getParameterList(
-        'tableId: ' + tableIdType,
-        'cellId: Id' + OR_UNDEFINED,
+        'tableId: TId',
+        `cellId: ${cellIdType}<TId>` + OR_UNDEFINED,
         'descending: boolean',
         'offset: number',
         'limit: number' + OR_UNDEFINED,
       ),
       getParameterList('tableId', 'cellId', 'descending', 'offset', 'limit'),
+      1,
+      '<TId extends TableId>',
     );
 
     // addRowListener
