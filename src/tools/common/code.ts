@@ -103,7 +103,7 @@ export const getPropTypeList = (...props: string[]) =>
 export const getCodeFunctions = (): [
   (...lines: LINE_TREE) => string,
   (location: null | 0 | 1, source: string, ...items: string[]) => void,
-  (name: Id, body: LINE, doc: string) => Id,
+  (name: Id, body: LINE, doc: string, generic?: string, exported?: 0 | 1) => Id,
   (name: Id, parameters: string, body: LINE_OR_LINE_TREE) => Id,
   (name: Id, body: LINE_OR_LINE_TREE) => Id,
   (location?: 0 | 1) => LINES,
