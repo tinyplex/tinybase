@@ -33,6 +33,26 @@ export type TablesWhenSet = {
 export type TableId = keyof Tables;
 
 /**
+ * A Table Id in the Store.
+ */
+export type Table<TId extends TableId> = NonNullable<Tables[TId]>;
+
+/**
+ * A Table Id in the Store when setting it.
+ */
+export type TableWhenSet<TId extends TableId> = NonNullable<TablesWhenSet[TId]>;
+
+/**
+ * A Row in a Table.
+ */
+export type Row<TId extends TableId> = Table<TId>[Id];
+
+/**
+ * A Row in a Table when setting it.
+ */
+export type RowWhenSet<TId extends TableId> = TableWhenSet<TId>[Id];
+
+/**
  * A Cell Id in a Row.
  */
 export type CellId<TId extends TableId> = keyof NonNullable<Tables[TId]>[Id];
@@ -84,22 +104,22 @@ export type TableCallback = (
 /**
  * Represents the 't1' Table.
  */
-export type T1Table = NonNullable<Tables['t1']>;
+export type T1Table = Table<'t1'>;
 
 /**
  * Represents the 't1' Table when setting it.
  */
-export type T1TableWhenSet = NonNullable<TablesWhenSet['t1']>;
+export type T1TableWhenSet = TableWhenSet<'t1'>;
 
 /**
  * Represents a Row when getting the content of the 't1' Table.
  */
-export type T1Row = T1Table[Id];
+export type T1Row = Row<'t1'>;
 
 /**
  * Represents a Row when setting the content of the 't1' Table.
  */
-export type T1RowWhenSet = T1TableWhenSet[Id];
+export type T1RowWhenSet = RowWhenSet<'t1'>;
 
 /**
  * A Cell Id for the 't1' Table.
@@ -4229,6 +4249,26 @@ export type TablesWhenSet = {
 export type TableId = keyof Tables;
 
 /**
+ * A Table Id in the Store.
+ */
+export type Table<TId extends TableId> = NonNullable<Tables[TId]>;
+
+/**
+ * A Table Id in the Store when setting it.
+ */
+export type TableWhenSet<TId extends TableId> = NonNullable<TablesWhenSet[TId]>;
+
+/**
+ * A Row in a Table.
+ */
+export type Row<TId extends TableId> = Table<TId>[Id];
+
+/**
+ * A Row in a Table when setting it.
+ */
+export type RowWhenSet<TId extends TableId> = TableWhenSet<TId>[Id];
+
+/**
  * A Cell Id in a Row.
  */
 export type CellId<TId extends TableId> = keyof NonNullable<Tables[TId]>[Id];
@@ -4280,22 +4320,22 @@ export type TableCallback = (
 /**
  * Represents the 't1' Table.
  */
-export type T1Table = NonNullable<Tables['t1']>;
+export type T1Table = Table<'t1'>;
 
 /**
  * Represents the 't1' Table when setting it.
  */
-export type T1TableWhenSet = NonNullable<TablesWhenSet['t1']>;
+export type T1TableWhenSet = TableWhenSet<'t1'>;
 
 /**
  * Represents a Row when getting the content of the 't1' Table.
  */
-export type T1Row = T1Table[Id];
+export type T1Row = Row<'t1'>;
 
 /**
  * Represents a Row when setting the content of the 't1' Table.
  */
-export type T1RowWhenSet = T1TableWhenSet[Id];
+export type T1RowWhenSet = RowWhenSet<'t1'>;
 
 /**
  * A Cell Id for the 't1' Table.
@@ -6391,6 +6431,18 @@ export type TablesWhenSet = {'t1'?: {[rowId: Id]: {'c1'?: number; 'c2'?: string;
 /** A Table Id in the Store. */
 export type TableId = keyof Tables;
 
+/** A Table Id in the Store. */
+export type Table<TId extends TableId> = NonNullable<Tables[TId]>;
+
+/** A Table Id in the Store when setting it. */
+export type TableWhenSet<TId extends TableId> = NonNullable<TablesWhenSet[TId]>;
+
+/** A Row in a Table. */
+export type Row<TId extends TableId> = Table<TId>[Id];
+
+/** A Row in a Table when setting it. */
+export type RowWhenSet<TId extends TableId> = TableWhenSet<TId>[Id];
+
 /** A Cell Id in a Row. */
 export type CellId<TId extends TableId> = keyof NonNullable<Tables[TId]>[Id];
 
@@ -6413,16 +6465,16 @@ type TableIdAndForEachRowArray<TId = TableId> = TId extends TableId ? [tableId: 
 export type TableCallback = (...[tableId, forEachRow]: TableIdAndForEachRowArray) => void;
 
 /** Represents the 't1' Table. */
-export type T1Table = NonNullable<Tables['t1']>;
+export type T1Table = Table<'t1'>;
 
 /** Represents the 't1' Table when setting it. */
-export type T1TableWhenSet = NonNullable<TablesWhenSet['t1']>;
+export type T1TableWhenSet = TableWhenSet<'t1'>;
 
 /** Represents a Row when getting the content of the 't1' Table. */
-export type T1Row = T1Table[Id];
+export type T1Row = Row<'t1'>;
 
 /** Represents a Row when setting the content of the 't1' Table. */
-export type T1RowWhenSet = T1TableWhenSet[Id];
+export type T1RowWhenSet = RowWhenSet<'t1'>;
 
 /** A Cell Id for the 't1' Table. */
 export type T1CellId = CellId<'t1'>;
@@ -8113,6 +8165,18 @@ export type TablesWhenSet = {'t1'?: {[rowId: Id]: {'c1'?: number; 'c2'?: string;
 /** A Table Id in the Store. */
 export type TableId = keyof Tables;
 
+/** A Table Id in the Store. */
+export type Table<TId extends TableId> = NonNullable<Tables[TId]>;
+
+/** A Table Id in the Store when setting it. */
+export type TableWhenSet<TId extends TableId> = NonNullable<TablesWhenSet[TId]>;
+
+/** A Row in a Table. */
+export type Row<TId extends TableId> = Table<TId>[Id];
+
+/** A Row in a Table when setting it. */
+export type RowWhenSet<TId extends TableId> = TableWhenSet<TId>[Id];
+
 /** A Cell Id in a Row. */
 export type CellId<TId extends TableId> = keyof NonNullable<Tables[TId]>[Id];
 
@@ -8135,16 +8199,16 @@ type TableIdAndForEachRowArray<TId = TableId> = TId extends TableId ? [tableId: 
 export type TableCallback = (...[tableId, forEachRow]: TableIdAndForEachRowArray) => void;
 
 /** Represents the 't1' Table. */
-export type T1Table = NonNullable<Tables['t1']>;
+export type T1Table = Table<'t1'>;
 
 /** Represents the 't1' Table when setting it. */
-export type T1TableWhenSet = NonNullable<TablesWhenSet['t1']>;
+export type T1TableWhenSet = TableWhenSet<'t1'>;
 
 /** Represents a Row when getting the content of the 't1' Table. */
-export type T1Row = T1Table[Id];
+export type T1Row = Row<'t1'>;
 
 /** Represents a Row when setting the content of the 't1' Table. */
-export type T1RowWhenSet = T1TableWhenSet[Id];
+export type T1RowWhenSet = RowWhenSet<'t1'>;
 
 /** A Cell Id for the 't1' Table. */
 export type T1CellId = CellId<'t1'>;
@@ -8958,6 +9022,26 @@ export type TablesWhenSet = {
 export type TableId = keyof Tables;
 
 /**
+ * A Table Id in the Store.
+ */
+export type Table<TId extends TableId> = NonNullable<Tables[TId]>;
+
+/**
+ * A Table Id in the Store when setting it.
+ */
+export type TableWhenSet<TId extends TableId> = NonNullable<TablesWhenSet[TId]>;
+
+/**
+ * A Row in a Table.
+ */
+export type Row<TId extends TableId> = Table<TId>[Id];
+
+/**
+ * A Row in a Table when setting it.
+ */
+export type RowWhenSet<TId extends TableId> = TableWhenSet<TId>[Id];
+
+/**
  * A Cell Id in a Row.
  */
 export type CellId<TId extends TableId> = keyof NonNullable<Tables[TId]>[Id];
@@ -9139,6 +9223,26 @@ export type TablesWhenSet = {
 export type TableId = keyof Tables;
 
 /**
+ * A Table Id in the Store.
+ */
+export type Table<TId extends TableId> = NonNullable<Tables[TId]>;
+
+/**
+ * A Table Id in the Store when setting it.
+ */
+export type TableWhenSet<TId extends TableId> = NonNullable<TablesWhenSet[TId]>;
+
+/**
+ * A Row in a Table.
+ */
+export type Row<TId extends TableId> = Table<TId>[Id];
+
+/**
+ * A Row in a Table when setting it.
+ */
+export type RowWhenSet<TId extends TableId> = TableWhenSet<TId>[Id];
+
+/**
  * A Cell Id in a Row.
  */
 export type CellId<TId extends TableId> = keyof NonNullable<Tables[TId]>[Id];
@@ -9240,6 +9344,18 @@ export type TablesWhenSet = {'t1'?: {[rowId: Id]: {'c1'?: number; 'c2'?: string;
 /** A Table Id in the Store. */
 export type TableId = keyof Tables;
 
+/** A Table Id in the Store. */
+export type Table<TId extends TableId> = NonNullable<Tables[TId]>;
+
+/** A Table Id in the Store when setting it. */
+export type TableWhenSet<TId extends TableId> = NonNullable<TablesWhenSet[TId]>;
+
+/** A Row in a Table. */
+export type Row<TId extends TableId> = Table<TId>[Id];
+
+/** A Row in a Table when setting it. */
+export type RowWhenSet<TId extends TableId> = TableWhenSet<TId>[Id];
+
 /** A Cell Id in a Row. */
 export type CellId<TId extends TableId> = keyof NonNullable<Tables[TId]>[Id];
 
@@ -9340,6 +9456,18 @@ export type TablesWhenSet = {'t1'?: {[rowId: Id]: {'c1'?: number; 'c2'?: string;
 
 /** A Table Id in the Store. */
 export type TableId = keyof Tables;
+
+/** A Table Id in the Store. */
+export type Table<TId extends TableId> = NonNullable<Tables[TId]>;
+
+/** A Table Id in the Store when setting it. */
+export type TableWhenSet<TId extends TableId> = NonNullable<TablesWhenSet[TId]>;
+
+/** A Row in a Table. */
+export type Row<TId extends TableId> = Table<TId>[Id];
+
+/** A Row in a Table when setting it. */
+export type RowWhenSet<TId extends TableId> = TableWhenSet<TId>[Id];
 
 /** A Cell Id in a Row. */
 export type CellId<TId extends TableId> = keyof NonNullable<Tables[TId]>[Id];

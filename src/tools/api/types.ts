@@ -6,6 +6,7 @@ import {
   RETURNS_VOID,
   THE_STORE,
   WHEN_SET,
+  WHEN_SETTING_IT,
   getCallbackDoc,
   getTheContentOfTheStoreDoc,
 } from '../common/strings';
@@ -83,6 +84,34 @@ export const getTypeFunctions = (
       'A ' + TABLE + ' Id in ' + THE_STORE,
     );
 
+    const tableType = addType(
+      TABLE,
+      NON_NULLABLE + `<${tablesType}[TId]>`,
+      'A ' + TABLE + ' Id in ' + THE_STORE,
+      `<TId extends ${tableIdType}>`,
+    );
+
+    const tableWhenSetType = addType(
+      TABLE + WHEN_SET,
+      NON_NULLABLE + `<${tablesWhenSetType}[TId]>`,
+      'A ' + TABLE + ' Id in ' + THE_STORE + WHEN_SETTING_IT,
+      `<TId extends ${tableIdType}>`,
+    );
+
+    const rowType = addType(
+      ROW,
+      tableType + '<TId>[Id]',
+      'A ' + ROW + ' in a ' + TABLE,
+      `<TId extends ${tableIdType}>`,
+    );
+
+    const rowWhenSetType = addType(
+      ROW + WHEN_SET,
+      tableWhenSetType + '<TId>[Id]',
+      'A ' + ROW + ' in a ' + TABLE + WHEN_SETTING_IT,
+      `<TId extends ${tableIdType}>`,
+    );
+
     const cellIdType = addType(
       CELL + ID,
       `keyof ${NON_NULLABLE}<${tablesType}[TId]>[Id]`,
@@ -145,6 +174,10 @@ export const getTypeFunctions = (
       tablesType,
       tablesWhenSetType,
       tableIdType,
+      tableType,
+      tableWhenSetType,
+      rowType,
+      rowWhenSetType,
       cellIdType,
       cellCallbackType,
       rowCallbackType,
