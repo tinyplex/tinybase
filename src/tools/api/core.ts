@@ -1,5 +1,24 @@
 import {
-  A,
+  ADD,
+  BOOLEAN,
+  CELL,
+  CELL_IDS,
+  DEFAULT,
+  EMPTY_STRING,
+  IDS,
+  LISTENER,
+  ROW,
+  ROW_IDS,
+  SORTED_ROW_IDS,
+  TABLE,
+  TABLES,
+  TABLE_IDS,
+  TYPE,
+  VALUE,
+  VALUES,
+  VALUE_IDS,
+} from '../../common/strings';
+import {
   A_FUNCTION_FOR,
   CALLBACK,
   EXPORT,
@@ -37,26 +56,6 @@ import {
   getTheContentOfTheStoreDoc,
   getValueContentDoc,
 } from '../common/strings';
-import {
-  ADD,
-  BOOLEAN,
-  CELL,
-  CELL_IDS,
-  DEFAULT,
-  EMPTY_STRING,
-  IDS,
-  LISTENER,
-  ROW,
-  ROW_IDS,
-  SORTED_ROW_IDS,
-  TABLE,
-  TABLES,
-  TABLE_IDS,
-  TYPE,
-  VALUE,
-  VALUES,
-  VALUE_IDS,
-} from '../../common/strings';
 import {
   IdMap,
   mapForEach,
@@ -269,12 +268,21 @@ export const getStoreCoreApi = (
   if (!objIsEmpty(tablesSchema)) {
     addImport(null, 'tinybase', IDS);
 
-    // Tables, TablesWhenSet, TableId, RowId, CellId
-    const [tablesType, tablesWhenSetType, tableIdType, cellIdType] =
-      getTablesTypes();
+    // Tables, TablesWhenSet, TableId, TableCallback
+    const [
+      tablesType,
+      tablesWhenSetType,
+      tableIdType,
+      cellIdType,
+      cellCallbackType,
+      rowCallbackType,
+      tableCallbackType,
+    ] = getTablesTypes();
 
     const tablesTypes: IdMap<TableTypes> = mapNew();
     mapTablesSchema((tableId: Id, tableName: string) => {
+      const tableIdGeneric = `<'${tableId}'>`;
+
       // Table
       const tableType = addType(
         tableName + TABLE,
@@ -306,20 +314,14 @@ export const getStoreCoreApi = (
         // CellId
         addType(
           tableName + CELL + ID,
-          cellIdType + `<'${tableId}'>`,
+          cellIdType + tableIdGeneric,
           `A Cell Id for the '${tableId}' ` + TABLE,
         ),
 
         // CellCallback
         addType(
           tableName + CELL + CALLBACK,
-          `(...[cellId, cell]: ${join(
-            mapCellSchema(
-              tableId,
-              (cellId, type) => `[cellId: '${cellId}', cell: ${type}]`,
-            ),
-            ' | ',
-          )})` + RETURNS_VOID,
+          cellCallbackType + tableIdGeneric,
           getCallbackDoc(
             `a Cell Id and value from a Row in the '${tableId}' ` + TABLE,
           ),
@@ -328,10 +330,7 @@ export const getStoreCoreApi = (
         // RowCallback
         addType(
           tableName + ROW + CALLBACK,
-          `(rowId: Id, forEachCell: (cellCallback: ${tableName}CellCallback)` +
-            RETURNS_VOID +
-            ')' +
-            RETURNS_VOID,
+          rowCallbackType + tableIdGeneric,
           getCallbackDoc(
             `a Row Id from the '${tableId}' Table, and a Cell iterator`,
           ),
@@ -340,22 +339,6 @@ export const getStoreCoreApi = (
       mapSet(tablesTypes, tableId, tableTypes);
       addImport(1, moduleDefinition, ...tableTypes);
     });
-
-    // TableCallback
-    const tableCallbackType = addType(
-      TABLE + CALLBACK,
-      `(...[tableId, rowCallback]: ${join(
-        mapTablesSchema(
-          (tableId) =>
-            `[tableId: '${tableId}', ` +
-            `forEachRow: (rowCallback: ${
-              mapGet(tablesTypes, tableId)?.[6]
-            })${RETURNS_VOID}]`,
-        ),
-        ' | ',
-      )})` + RETURNS_VOID,
-      getCallbackDoc(A + TABLE + ' Id, and a Row iterator'),
-    );
 
     // GetCellChange
     const getCellChangeType = addType(

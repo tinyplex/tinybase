@@ -38,6 +38,50 @@ export type TableId = keyof Tables;
 export type CellId<TId extends TableId> = keyof NonNullable<Tables[TId]>[Id];
 
 /**
+ * A Cell in a Row.
+ */
+export type Cell<TId extends TableId, CId extends CellId<TId>> = NonNullable<
+  Tables[TId]
+>[Id][CId];
+
+/**
+ * Cell Ids and types in a Row.
+ */
+type CellIdAndCellArray<
+  TId extends TableId,
+  CId = CellId<TId>,
+> = CId extends CellId<TId> ? [cellId: CId, cell: Cell<TId, CId>] : never;
+
+/**
+ * A function that takes a Cell Id, and Cell.
+ */
+export type CellCallback<TId extends TableId> = (
+  ...[cellId, cell]: CellIdAndCellArray<TId>
+) => void;
+
+/**
+ * A function that takes a Row Id, and a Cell iterator.
+ */
+export type RowCallback<TId extends TableId> = (
+  rowId: Id,
+  forEachCell: (cellCallback: CellCallback<TId>) => void,
+) => void;
+
+/**
+ * Table Ids and callback types.
+ */
+type TableIdAndForEachRowArray<TId = TableId> = TId extends TableId
+  ? [tableId: TId, forEachRow: (rowCallback: RowCallback<TId>) => void]
+  : never;
+
+/**
+ * A function that takes a Table Id, and a Row iterator.
+ */
+export type TableCallback = (
+  ...[tableId, forEachRow]: TableIdAndForEachRowArray
+) => void;
+
+/**
  * Represents the 't1' Table.
  */
 export type T1Table = NonNullable<Tables['t1']>;
@@ -65,31 +109,12 @@ export type T1CellId = CellId<'t1'>;
 /**
  * A function that takes a Cell Id and value from a Row in the 't1' Table.
  */
-export type T1CellCallback = (
-  ...[cellId, cell]:
-    | [cellId: 'c1', cell: number]
-    | [cellId: 'c2', cell: string]
-    | [cellId: 'c3', cell: string]
-    | [cellId: '', cell: string]
-) => void;
+export type T1CellCallback = CellCallback<'t1'>;
 
 /**
  * A function that takes a Row Id from the 't1' Table, and a Cell iterator.
  */
-export type T1RowCallback = (
-  rowId: Id,
-  forEachCell: (cellCallback: T1CellCallback) => void,
-) => void;
-
-/**
- * A function that takes a Table Id, and a Row iterator.
- */
-export type TableCallback = (
-  ...[tableId, rowCallback]: [
-    tableId: 't1',
-    forEachRow: (rowCallback: T1RowCallback) => void,
-  ]
-) => void;
+export type T1RowCallback = RowCallback<'t1'>;
 
 /**
  * A function for returning information about any Cell's changes during a
@@ -4209,6 +4234,50 @@ export type TableId = keyof Tables;
 export type CellId<TId extends TableId> = keyof NonNullable<Tables[TId]>[Id];
 
 /**
+ * A Cell in a Row.
+ */
+export type Cell<TId extends TableId, CId extends CellId<TId>> = NonNullable<
+  Tables[TId]
+>[Id][CId];
+
+/**
+ * Cell Ids and types in a Row.
+ */
+type CellIdAndCellArray<
+  TId extends TableId,
+  CId = CellId<TId>,
+> = CId extends CellId<TId> ? [cellId: CId, cell: Cell<TId, CId>] : never;
+
+/**
+ * A function that takes a Cell Id, and Cell.
+ */
+export type CellCallback<TId extends TableId> = (
+  ...[cellId, cell]: CellIdAndCellArray<TId>
+) => void;
+
+/**
+ * A function that takes a Row Id, and a Cell iterator.
+ */
+export type RowCallback<TId extends TableId> = (
+  rowId: Id,
+  forEachCell: (cellCallback: CellCallback<TId>) => void,
+) => void;
+
+/**
+ * Table Ids and callback types.
+ */
+type TableIdAndForEachRowArray<TId = TableId> = TId extends TableId
+  ? [tableId: TId, forEachRow: (rowCallback: RowCallback<TId>) => void]
+  : never;
+
+/**
+ * A function that takes a Table Id, and a Row iterator.
+ */
+export type TableCallback = (
+  ...[tableId, forEachRow]: TableIdAndForEachRowArray
+) => void;
+
+/**
  * Represents the 't1' Table.
  */
 export type T1Table = NonNullable<Tables['t1']>;
@@ -4236,31 +4305,12 @@ export type T1CellId = CellId<'t1'>;
 /**
  * A function that takes a Cell Id and value from a Row in the 't1' Table.
  */
-export type T1CellCallback = (
-  ...[cellId, cell]:
-    | [cellId: 'c1', cell: number]
-    | [cellId: 'c2', cell: string]
-    | [cellId: 'c3', cell: string]
-    | [cellId: '', cell: string]
-) => void;
+export type T1CellCallback = CellCallback<'t1'>;
 
 /**
  * A function that takes a Row Id from the 't1' Table, and a Cell iterator.
  */
-export type T1RowCallback = (
-  rowId: Id,
-  forEachCell: (cellCallback: T1CellCallback) => void,
-) => void;
-
-/**
- * A function that takes a Table Id, and a Row iterator.
- */
-export type TableCallback = (
-  ...[tableId, rowCallback]: [
-    tableId: 't1',
-    forEachRow: (rowCallback: T1RowCallback) => void,
-  ]
-) => void;
+export type T1RowCallback = RowCallback<'t1'>;
 
 /**
  * A function for returning information about any Cell's changes during a
@@ -6344,6 +6394,24 @@ export type TableId = keyof Tables;
 /** A Cell Id in a Row. */
 export type CellId<TId extends TableId> = keyof NonNullable<Tables[TId]>[Id];
 
+/** A Cell in a Row. */
+export type Cell<TId extends TableId, CId extends CellId<TId>> = NonNullable<Tables[TId]>[Id][CId];
+
+/** Cell Ids and types in a Row. */
+type CellIdAndCellArray<TId extends TableId, CId = CellId<TId>> = CId extends CellId<TId> ? [cellId: CId, cell: Cell<TId, CId>] : never;
+
+/** A function that takes a Cell Id, and Cell. */
+export type CellCallback<TId extends TableId> = (...[cellId, cell]: CellIdAndCellArray<TId>) => void;
+
+/** A function that takes a Row Id, and a Cell iterator. */
+export type RowCallback<TId extends TableId> = (rowId: Id, forEachCell: (cellCallback: CellCallback<TId>)  => void)  => void;
+
+/** Table Ids and callback types. */
+type TableIdAndForEachRowArray<TId = TableId> = TId extends TableId ? [tableId: TId, forEachRow: (rowCallback: RowCallback<TId>) => void] : never;
+
+/** A function that takes a Table Id, and a Row iterator. */
+export type TableCallback = (...[tableId, forEachRow]: TableIdAndForEachRowArray) => void;
+
 /** Represents the 't1' Table. */
 export type T1Table = NonNullable<Tables['t1']>;
 
@@ -6360,13 +6428,10 @@ export type T1RowWhenSet = T1TableWhenSet[Id];
 export type T1CellId = CellId<'t1'>;
 
 /** A function that takes a Cell Id and value from a Row in the 't1' Table. */
-export type T1CellCallback = (...[cellId, cell]: [cellId: 'c1', cell: number] | [cellId: 'c2', cell: string] | [cellId: 'c3', cell: string] | [cellId: '', cell: string]) => void;
+export type T1CellCallback = CellCallback<'t1'>;
 
 /** A function that takes a Row Id from the 't1' Table, and a Cell iterator. */
-export type T1RowCallback = (rowId: Id, forEachCell: (cellCallback: T1CellCallback) => void) => void;
-
-/** A function that takes a Table Id, and a Row iterator. */
-export type TableCallback = (...[tableId, rowCallback]: [tableId: 't1', forEachRow: (rowCallback: T1RowCallback) => void]) => void;
+export type T1RowCallback = RowCallback<'t1'>;
 
 /** A function for returning information about any Cell's changes during a transaction. */
 export type GetCellChange = (...[tableId, rowId, cellId]: [tableId: 't1', rowId: Id, cellId: T1CellId]) => CellChange;
@@ -8051,6 +8116,24 @@ export type TableId = keyof Tables;
 /** A Cell Id in a Row. */
 export type CellId<TId extends TableId> = keyof NonNullable<Tables[TId]>[Id];
 
+/** A Cell in a Row. */
+export type Cell<TId extends TableId, CId extends CellId<TId>> = NonNullable<Tables[TId]>[Id][CId];
+
+/** Cell Ids and types in a Row. */
+type CellIdAndCellArray<TId extends TableId, CId = CellId<TId>> = CId extends CellId<TId> ? [cellId: CId, cell: Cell<TId, CId>] : never;
+
+/** A function that takes a Cell Id, and Cell. */
+export type CellCallback<TId extends TableId> = (...[cellId, cell]: CellIdAndCellArray<TId>) => void;
+
+/** A function that takes a Row Id, and a Cell iterator. */
+export type RowCallback<TId extends TableId> = (rowId: Id, forEachCell: (cellCallback: CellCallback<TId>)  => void)  => void;
+
+/** Table Ids and callback types. */
+type TableIdAndForEachRowArray<TId = TableId> = TId extends TableId ? [tableId: TId, forEachRow: (rowCallback: RowCallback<TId>) => void] : never;
+
+/** A function that takes a Table Id, and a Row iterator. */
+export type TableCallback = (...[tableId, forEachRow]: TableIdAndForEachRowArray) => void;
+
 /** Represents the 't1' Table. */
 export type T1Table = NonNullable<Tables['t1']>;
 
@@ -8067,13 +8150,10 @@ export type T1RowWhenSet = T1TableWhenSet[Id];
 export type T1CellId = CellId<'t1'>;
 
 /** A function that takes a Cell Id and value from a Row in the 't1' Table. */
-export type T1CellCallback = (...[cellId, cell]: [cellId: 'c1', cell: number] | [cellId: 'c2', cell: string] | [cellId: 'c3', cell: string] | [cellId: '', cell: string]) => void;
+export type T1CellCallback = CellCallback<'t1'>;
 
 /** A function that takes a Row Id from the 't1' Table, and a Cell iterator. */
-export type T1RowCallback = (rowId: Id, forEachCell: (cellCallback: T1CellCallback) => void) => void;
-
-/** A function that takes a Table Id, and a Row iterator. */
-export type TableCallback = (...[tableId, rowCallback]: [tableId: 't1', forEachRow: (rowCallback: T1RowCallback) => void]) => void;
+export type T1RowCallback = RowCallback<'t1'>;
 
 /** A function for returning information about any Cell's changes during a transaction. */
 export type GetCellChange = (...[tableId, rowId, cellId]: [tableId: 't1', rowId: Id, cellId: T1CellId]) => CellChange;
@@ -8883,6 +8963,50 @@ export type TableId = keyof Tables;
 export type CellId<TId extends TableId> = keyof NonNullable<Tables[TId]>[Id];
 
 /**
+ * A Cell in a Row.
+ */
+export type Cell<TId extends TableId, CId extends CellId<TId>> = NonNullable<
+  Tables[TId]
+>[Id][CId];
+
+/**
+ * Cell Ids and types in a Row.
+ */
+type CellIdAndCellArray<
+  TId extends TableId,
+  CId = CellId<TId>,
+> = CId extends CellId<TId> ? [cellId: CId, cell: Cell<TId, CId>] : never;
+
+/**
+ * A function that takes a Cell Id, and Cell.
+ */
+export type CellCallback<TId extends TableId> = (
+  ...[cellId, cell]: CellIdAndCellArray<TId>
+) => void;
+
+/**
+ * A function that takes a Row Id, and a Cell iterator.
+ */
+export type RowCallback<TId extends TableId> = (
+  rowId: Id,
+  forEachCell: (cellCallback: CellCallback<TId>) => void,
+) => void;
+
+/**
+ * Table Ids and callback types.
+ */
+type TableIdAndForEachRowArray<TId = TableId> = TId extends TableId
+  ? [tableId: TId, forEachRow: (rowCallback: RowCallback<TId>) => void]
+  : never;
+
+/**
+ * A function that takes a Table Id, and a Row iterator.
+ */
+export type TableCallback = (
+  ...[tableId, forEachRow]: TableIdAndForEachRowArray
+) => void;
+
+/**
  * Represents the keyed value content of the Store.
  */
 export type Values = {v1: number; v2: string; v3: string; ''?: string};
@@ -9019,6 +9143,50 @@ export type TableId = keyof Tables;
  */
 export type CellId<TId extends TableId> = keyof NonNullable<Tables[TId]>[Id];
 
+/**
+ * A Cell in a Row.
+ */
+export type Cell<TId extends TableId, CId extends CellId<TId>> = NonNullable<
+  Tables[TId]
+>[Id][CId];
+
+/**
+ * Cell Ids and types in a Row.
+ */
+type CellIdAndCellArray<
+  TId extends TableId,
+  CId = CellId<TId>,
+> = CId extends CellId<TId> ? [cellId: CId, cell: Cell<TId, CId>] : never;
+
+/**
+ * A function that takes a Cell Id, and Cell.
+ */
+export type CellCallback<TId extends TableId> = (
+  ...[cellId, cell]: CellIdAndCellArray<TId>
+) => void;
+
+/**
+ * A function that takes a Row Id, and a Cell iterator.
+ */
+export type RowCallback<TId extends TableId> = (
+  rowId: Id,
+  forEachCell: (cellCallback: CellCallback<TId>) => void,
+) => void;
+
+/**
+ * Table Ids and callback types.
+ */
+type TableIdAndForEachRowArray<TId = TableId> = TId extends TableId
+  ? [tableId: TId, forEachRow: (rowCallback: RowCallback<TId>) => void]
+  : never;
+
+/**
+ * A function that takes a Table Id, and a Row iterator.
+ */
+export type TableCallback = (
+  ...[tableId, forEachRow]: TableIdAndForEachRowArray
+) => void;
+
 interface Refined {
   /**
    * Gets the tabular content of the Store.
@@ -9074,6 +9242,24 @@ export type TableId = keyof Tables;
 
 /** A Cell Id in a Row. */
 export type CellId<TId extends TableId> = keyof NonNullable<Tables[TId]>[Id];
+
+/** A Cell in a Row. */
+export type Cell<TId extends TableId, CId extends CellId<TId>> = NonNullable<Tables[TId]>[Id][CId];
+
+/** Cell Ids and types in a Row. */
+type CellIdAndCellArray<TId extends TableId, CId = CellId<TId>> = CId extends CellId<TId> ? [cellId: CId, cell: Cell<TId, CId>] : never;
+
+/** A function that takes a Cell Id, and Cell. */
+export type CellCallback<TId extends TableId> = (...[cellId, cell]: CellIdAndCellArray<TId>) => void;
+
+/** A function that takes a Row Id, and a Cell iterator. */
+export type RowCallback<TId extends TableId> = (rowId: Id, forEachCell: (cellCallback: CellCallback<TId>)  => void)  => void;
+
+/** Table Ids and callback types. */
+type TableIdAndForEachRowArray<TId = TableId> = TId extends TableId ? [tableId: TId, forEachRow: (rowCallback: RowCallback<TId>) => void] : never;
+
+/** A function that takes a Table Id, and a Row iterator. */
+export type TableCallback = (...[tableId, forEachRow]: TableIdAndForEachRowArray) => void;
 
 /** Represents the keyed value content of the Store. */
 export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string};
@@ -9157,6 +9343,24 @@ export type TableId = keyof Tables;
 
 /** A Cell Id in a Row. */
 export type CellId<TId extends TableId> = keyof NonNullable<Tables[TId]>[Id];
+
+/** A Cell in a Row. */
+export type Cell<TId extends TableId, CId extends CellId<TId>> = NonNullable<Tables[TId]>[Id][CId];
+
+/** Cell Ids and types in a Row. */
+type CellIdAndCellArray<TId extends TableId, CId = CellId<TId>> = CId extends CellId<TId> ? [cellId: CId, cell: Cell<TId, CId>] : never;
+
+/** A function that takes a Cell Id, and Cell. */
+export type CellCallback<TId extends TableId> = (...[cellId, cell]: CellIdAndCellArray<TId>) => void;
+
+/** A function that takes a Row Id, and a Cell iterator. */
+export type RowCallback<TId extends TableId> = (rowId: Id, forEachCell: (cellCallback: CellCallback<TId>)  => void)  => void;
+
+/** Table Ids and callback types. */
+type TableIdAndForEachRowArray<TId = TableId> = TId extends TableId ? [tableId: TId, forEachRow: (rowCallback: RowCallback<TId>) => void] : never;
+
+/** A function that takes a Table Id, and a Row iterator. */
+export type TableCallback = (...[tableId, forEachRow]: TableIdAndForEachRowArray) => void;
 
 interface Refined {
 /** Gets the tabular content of the Store. */

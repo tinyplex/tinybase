@@ -1,4 +1,15 @@
 import {
+  A,
+  CALLBACK,
+  ID,
+  NON_NULLABLE,
+  RETURNS_VOID,
+  THE_STORE,
+  WHEN_SET,
+  getCallbackDoc,
+  getTheContentOfTheStoreDoc,
+} from '../common/strings';
+import {
   CELL,
   EMPTY_STRING,
   ROW,
@@ -6,13 +17,6 @@ import {
   TABLES,
   VALUES,
 } from '../../common/strings';
-import {
-  ID,
-  NON_NULLABLE,
-  THE_STORE,
-  WHEN_SET,
-  getTheContentOfTheStoreDoc,
-} from '../common/strings';
 import {
   MapCellSchema,
   MapTablesSchema,
@@ -84,10 +88,68 @@ export const getTypeFunctions = (
       `keyof ${NON_NULLABLE}<${tablesType}[TId]>[Id]`,
       'A ' + CELL + ' Id in a ' + ROW,
       `<TId extends ${tableIdType}>`,
+    );
+
+    const cellType = addType(
+      CELL,
+      NON_NULLABLE + `<${tablesType}[TId]>[Id][CId]`,
+      'A ' + CELL + ' in a ' + ROW,
+      `<TId extends ${tableIdType}, CId extends ${cellIdType}<TId>>`,
+    );
+
+    const cellIdAndCellArrayType = addType(
+      'CellIdAndCellArray',
+      `CId extends ${cellIdType}<TId> ? ` +
+        `[cellId: CId, cell: ${cellType}<TId, CId>] : never`,
+      CELL + ' Ids and types in a ' + ROW,
+      `<TId extends ${tableIdType}, CId = ${cellIdType}<TId>>`,
       0,
     );
 
-    return [tablesType, tablesWhenSetType, tableIdType, cellIdType];
+    const cellCallbackType = addType(
+      CELL + CALLBACK,
+      `(...[cellId, cell]: ${cellIdAndCellArrayType}<TId>)` + RETURNS_VOID,
+      getCallbackDoc(A + CELL + ' Id, and ' + CELL),
+      `<TId extends ${tableIdType}>`,
+    );
+
+    const rowCallbackType = addType(
+      ROW + CALLBACK,
+      '(rowId: Id, forEachCell: (cellCallback: CellCallback<TId>) ' +
+        RETURNS_VOID +
+        ') ' +
+        RETURNS_VOID,
+      getCallbackDoc(A + ROW + ' Id, and a ' + CELL + ' iterator'),
+      `<TId extends ${tableIdType}>`,
+    );
+
+    const tableIdAndForEachRowArrayType = addType(
+      'TableIdAndForEachRowArray',
+      `TId extends ${tableIdType} ? [tableId: TId, forEachRow: ` +
+        `(rowCallback: ${rowCallbackType}<TId>)${RETURNS_VOID}]` +
+        ' : never',
+      TABLE + ' Ids and callback types',
+      `<TId = ${tableIdType}>`,
+      0,
+    );
+
+    const tableCallbackType = addType(
+      TABLE + CALLBACK,
+      `(...[tableId, forEachRow]: ${tableIdAndForEachRowArrayType})` +
+        RETURNS_VOID,
+      getCallbackDoc(A + TABLE + ' Id, and a ' + ROW + ' iterator'),
+      EMPTY_STRING,
+    );
+
+    return [
+      tablesType,
+      tablesWhenSetType,
+      tableIdType,
+      cellIdType,
+      cellCallbackType,
+      rowCallbackType,
+      tableCallbackType,
+    ];
   };
 
   const getValuesTypes = () => {
