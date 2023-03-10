@@ -1,10 +1,12 @@
 import {
   A,
+  A_FUNCTION_FOR,
   CALLBACK,
   ID,
   NON_NULLABLE,
   RETURNS_VOID,
   THE_STORE,
+  TRANSACTION_,
   WHEN_SET,
   WHEN_SETTING_IT,
   getCallbackDoc,
@@ -126,8 +128,8 @@ export const getTypeFunctions = (
       `<TId extends ${tableIdType}, CId extends ${cellIdType}<TId>>`,
     );
 
-    const cellIdAndCellArrayType = addType(
-      'CellIdAndCellArray',
+    const cellIdCellArrayType = addType(
+      'CellIdCellArray',
       `CId extends ${cellIdType}<TId> ? ` +
         `[cellId: CId, cell: ${cellType}<TId, CId>] : never`,
       CELL + ' Ids and types in a ' + ROW,
@@ -137,7 +139,7 @@ export const getTypeFunctions = (
 
     const cellCallbackType = addType(
       CELL + CALLBACK,
-      `(...[cellId, cell]: ${cellIdAndCellArrayType}<TId>)` + RETURNS_VOID,
+      `(...[cellId, cell]: ${cellIdCellArrayType}<TId>)` + RETURNS_VOID,
       getCallbackDoc(A + CELL + ' Id, and ' + CELL),
       `<TId extends ${tableIdType}>`,
     );
@@ -152,8 +154,8 @@ export const getTypeFunctions = (
       `<TId extends ${tableIdType}>`,
     );
 
-    const tableIdAndForEachRowArrayType = addType(
-      'TableIdAndForEachRowArray',
+    const tableIdForEachRowArrayType = addType(
+      'TableIdForEachRowArray',
       `TId extends ${tableIdType} ? [tableId: TId, forEachRow: ` +
         `(rowCallback: ${rowCallbackType}<TId>)${RETURNS_VOID}]` +
         ' : never',
@@ -164,10 +166,28 @@ export const getTypeFunctions = (
 
     const tableCallbackType = addType(
       TABLE + CALLBACK,
-      `(...[tableId, forEachRow]: ${tableIdAndForEachRowArrayType})` +
+      `(...[tableId, forEachRow]: ${tableIdForEachRowArrayType})` +
         RETURNS_VOID,
       getCallbackDoc(A + TABLE + ' Id, and a ' + ROW + ' iterator'),
       EMPTY_STRING,
+    );
+
+    const tableIdRowIdCellIdArrayType = addType(
+      'TableIdRowIdCellIdArray',
+      `TId extends ${tableIdType} ? ` +
+        `[tableId: TId, rowId: Id, cellId: ${cellIdType}<TId>] : never`,
+      'Ids for GetCellChange',
+      `<TId = ${tableIdType}>`,
+      0,
+    );
+
+    const getCellChangeType = addType(
+      'GetCellChange',
+      `(...[tableId, rowId, cellId]: ${tableIdRowIdCellIdArrayType})` +
+        ' => CellChange',
+      A_FUNCTION_FOR +
+        ` returning information about any Cell's changes during a ` +
+        TRANSACTION_,
     );
 
     return [
@@ -179,9 +199,11 @@ export const getTypeFunctions = (
       rowType,
       rowWhenSetType,
       cellIdType,
+      cellType,
       cellCallbackType,
       rowCallbackType,
       tableCallbackType,
+      getCellChangeType,
     ];
   };
 

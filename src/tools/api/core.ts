@@ -267,7 +267,9 @@ export const getStoreCoreApi = (
   if (!objIsEmpty(tablesSchema)) {
     addImport(null, 'tinybase', IDS);
 
-    // Tables, TablesWhenSet, TableId, TableCallback
+    // Tables, TablesWhenSet, TableId,
+    // Table<>, TableWhenSet<>, Row<>, RowWhenSet<>, CellId<>, Cell<>
+    // CellCallback, RowCallback, TableCallback
     const [
       tablesType,
       tablesWhenSetType,
@@ -277,9 +279,11 @@ export const getStoreCoreApi = (
       rowType,
       rowWhenSetType,
       cellIdType,
+      _cellType,
       cellCallbackType,
       rowCallbackType,
       tableCallbackType,
+      getCellChangeType,
     ] = getTablesTypes();
 
     const tablesTypes: IdMap<TableTypes> = mapNew();
@@ -343,23 +347,6 @@ export const getStoreCoreApi = (
       mapSet(tablesTypes, tableId, tableTypes);
       addImport(1, moduleDefinition, ...tableTypes);
     });
-
-    // GetCellChange
-    const getCellChangeType = addType(
-      'GetCellChange',
-      `(...[tableId, rowId, cellId]: ${join(
-        mapTablesSchema(
-          (tableId) =>
-            `[tableId: '${tableId}', rowId: Id, cellId: ${
-              mapGet(tablesTypes, tableId)?.[4]
-            }]`,
-        ),
-        ' | ',
-      )}) => CellChange`,
-      A_FUNCTION_FOR +
-        ` returning information about any Cell's changes during a ` +
-        TRANSACTION_,
-    );
 
     // TablesListener
     const tablesListenerType = addType(
