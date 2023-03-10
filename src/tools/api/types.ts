@@ -18,6 +18,7 @@ import {
   ROW,
   TABLE,
   TABLES,
+  VALUE,
   VALUES,
 } from '../../common/strings';
 import {
@@ -229,7 +230,50 @@ export const getTypeFunctions = (
       getTheContentOfTheStoreDoc(2, 5, 1),
     );
 
-    return [valuesType, valuesWhenSetType];
+    const valueIdType = addType(
+      VALUE + ID,
+      'keyof ' + valuesType,
+      'A ' + VALUE + ' Id in ' + THE_STORE,
+    );
+
+    const valueType = addType(
+      VALUE,
+      NON_NULLABLE + `<${valuesType}[VId]>`,
+      'A ' + VALUE + ' Id in ' + THE_STORE,
+      `<VId extends ${valueIdType}>`,
+    );
+
+    const valueIdValueArrayType = addType(
+      'ValueIdValueArray',
+      `VId extends ${valueIdType} ? ` +
+        `[valueId: VId, value: ${valueType}<VId>] : never`,
+      VALUE + ' Ids and types in ' + THE_STORE,
+      `<VId = ${valueIdType}>`,
+      0,
+    );
+
+    const valueCallbackType = addType(
+      VALUE + CALLBACK,
+      `(...[valueId, value]: ${valueIdValueArrayType})` + RETURNS_VOID,
+      getCallbackDoc(A + VALUE + ' Id, and ' + VALUE),
+    );
+
+    const getValueChangeType = addType(
+      'GetValueChange',
+      `(valueId: ${valueIdType}) => ValueChange`,
+      A_FUNCTION_FOR +
+        ` returning information about any Value's changes during a ` +
+        TRANSACTION_,
+    );
+
+    return [
+      valuesType,
+      valuesWhenSetType,
+      valueIdType,
+      valueType,
+      valueCallbackType,
+      getValueChangeType,
+    ];
   };
 
   return [getTablesTypes, getValuesTypes];
