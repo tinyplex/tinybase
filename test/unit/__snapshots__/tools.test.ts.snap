@@ -33,12 +33,12 @@ export type TablesWhenSet = {
 export type TableId = keyof Tables;
 
 /**
- * A Table Id in the Store.
+ * A Table in the Store.
  */
 export type Table<TId extends TableId> = NonNullable<Tables[TId]>;
 
 /**
- * A Table Id in the Store when setting it.
+ * A Table in the Store when setting it.
  */
 export type TableWhenSet<TId extends TableId> = NonNullable<TablesWhenSet[TId]>;
 
@@ -55,7 +55,7 @@ export type RowWhenSet<TId extends TableId> = TableWhenSet<TId>[Id];
 /**
  * A Cell Id in a Row.
  */
-export type CellId<TId extends TableId> = keyof NonNullable<Tables[TId]>[Id];
+export type CellId<TId extends TableId> = Extract<keyof Row<TId>, Id>;
 
 /**
  * A Cell in a Row.
@@ -598,9 +598,9 @@ export interface S {
    * Registers a listener that will be called whenever the sorted Row Ids in a
    * Table change.
    */
-  addSortedRowIdsListener(
-    tableId: TableId,
-    cellId: Id | undefined,
+  addSortedRowIdsListener<TId extends TableId>(
+    tableId: TId,
+    cellId: CellId<TId> | undefined,
     descending: boolean,
     offset: number,
     limit: number | undefined,
@@ -868,6 +868,7 @@ export interface S {
 export function createS(): S;
 ",
   "import {
+  CellId,
   CellIdsListener,
   CellListener,
   InvalidCellListener,
@@ -1084,9 +1085,9 @@ export const createS: typeof createSDecl = () => {
       mutator?: boolean,
     ): Id => store.addRowIdsListener(tableId, proxy(listener), mutator),
 
-    addSortedRowIdsListener: (
-      tableId: TableId,
-      cellId: Id | undefined,
+    addSortedRowIdsListener: <TId extends TableId>(
+      tableId: TId,
+      cellId: CellId<TId> | undefined,
       descending: boolean,
       offset: number,
       limit: number | undefined,
@@ -4235,12 +4236,12 @@ export type TablesWhenSet = {
 export type TableId = keyof Tables;
 
 /**
- * A Table Id in the Store.
+ * A Table in the Store.
  */
 export type Table<TId extends TableId> = NonNullable<Tables[TId]>;
 
 /**
- * A Table Id in the Store when setting it.
+ * A Table in the Store when setting it.
  */
 export type TableWhenSet<TId extends TableId> = NonNullable<TablesWhenSet[TId]>;
 
@@ -4257,7 +4258,7 @@ export type RowWhenSet<TId extends TableId> = TableWhenSet<TId>[Id];
 /**
  * A Cell Id in a Row.
  */
-export type CellId<TId extends TableId> = keyof NonNullable<Tables[TId]>[Id];
+export type CellId<TId extends TableId> = Extract<keyof Row<TId>, Id>;
 
 /**
  * A Cell in a Row.
@@ -4715,9 +4716,9 @@ export interface S {
    * Registers a listener that will be called whenever the sorted Row Ids in a
    * Table change.
    */
-  addSortedRowIdsListener(
-    tableId: TableId,
-    cellId: Id | undefined,
+  addSortedRowIdsListener<TId extends TableId>(
+    tableId: TId,
+    cellId: CellId<TId> | undefined,
     descending: boolean,
     offset: number,
     limit: number | undefined,
@@ -4828,6 +4829,7 @@ export interface S {
 export function createS(): S;
 ",
   "import {
+  CellId,
   CellIdsListener,
   CellListener,
   InvalidCellListener,
@@ -5023,9 +5025,9 @@ export const createS: typeof createSDecl = () => {
       mutator?: boolean,
     ): Id => store.addRowIdsListener(tableId, proxy(listener), mutator),
 
-    addSortedRowIdsListener: (
-      tableId: TableId,
-      cellId: Id | undefined,
+    addSortedRowIdsListener: <TId extends TableId>(
+      tableId: TId,
+      cellId: CellId<TId> | undefined,
       descending: boolean,
       offset: number,
       limit: number | undefined,
@@ -6421,10 +6423,10 @@ export type TablesWhenSet = {'t1'?: {[rowId: Id]: {'c1'?: number; 'c2'?: string;
 /** A Table Id in the Store. */
 export type TableId = keyof Tables;
 
-/** A Table Id in the Store. */
+/** A Table in the Store. */
 export type Table<TId extends TableId> = NonNullable<Tables[TId]>;
 
-/** A Table Id in the Store when setting it. */
+/** A Table in the Store when setting it. */
 export type TableWhenSet<TId extends TableId> = NonNullable<TablesWhenSet[TId]>;
 
 /** A Row in a Table. */
@@ -6434,7 +6436,7 @@ export type Row<TId extends TableId> = Table<TId>[Id];
 export type RowWhenSet<TId extends TableId> = TableWhenSet<TId>[Id];
 
 /** A Cell Id in a Row. */
-export type CellId<TId extends TableId> = keyof NonNullable<Tables[TId]>[Id];
+export type CellId<TId extends TableId> = Extract<keyof Row<TId>, Id>;
 
 /** A Cell in a Row. */
 export type Cell<TId extends TableId, CId extends CellId<TId>> = NonNullable<Tables[TId]>[Id][CId];
@@ -6690,7 +6692,7 @@ addTableListener(tableId: TableId | null, listener: TableListener, mutator?: boo
 addRowIdsListener(tableId: TableId | null, listener: RowIdsListener, mutator?: boolean): Id;
 
 /** Registers a listener that will be called whenever the sorted Row Ids in a Table change. */
-addSortedRowIdsListener(tableId: TableId, cellId: Id | undefined, descending: boolean, offset: number, limit: number | undefined, listener: SortedRowIdsListener, mutator?: boolean): Id;
+addSortedRowIdsListener<TId extends TableId>(tableId: TId, cellId: CellId<TId> | undefined, descending: boolean, offset: number, limit: number | undefined, listener: SortedRowIdsListener, mutator?: boolean): Id;
 
 /** Registers a listener that will be called whenever a Row in a Table changes. */
 addRowListener(tableId: TableId | null, rowId: IdOrNull, listener: RowListener, mutator?: boolean): Id;
@@ -6825,7 +6827,7 @@ getStore(): Store;
 
 /** Creates a S object. */
 export function createS(): S;",
-  "import {CellIdsListener, CellListener, InvalidCellListener, InvalidValueListener, MapNumber, MapString, RowIdsListener, RowListener, S, SortedRowIdsListener, T1CellCallback, T1CellId, T1Row, T1RowCallback, T1RowWhenSet, T1Table, T1TableWhenSet, TableCallback, TableId, TableIdsListener, TableListener, Tables, TablesListener, TablesWhenSet, TransactionListener, ValueCallback, ValueId, ValueIdsListener, ValueListener, Values, ValuesListener, ValuesWhenSet, createS as createSDecl} from './s.d';
+  "import {CellId, CellIdsListener, CellListener, InvalidCellListener, InvalidValueListener, MapNumber, MapString, RowIdsListener, RowListener, S, SortedRowIdsListener, T1CellCallback, T1CellId, T1Row, T1RowCallback, T1RowWhenSet, T1Table, T1TableWhenSet, TableCallback, TableId, TableIdsListener, TableListener, Tables, TablesListener, TablesWhenSet, TransactionListener, ValueCallback, ValueId, ValueIdsListener, ValueListener, Values, ValuesListener, ValuesWhenSet, createS as createSDecl} from './s.d';
 import {DoRollback, Id, IdOrNull, Ids, Json, Store, createStore} from 'tinybase';
 
 export const createS: typeof createSDecl = () => {
@@ -6967,7 +6969,7 @@ addTableListener: (tableId: TableId | null, listener: TableListener, mutator?: b
 
 addRowIdsListener: (tableId: TableId | null, listener: RowIdsListener, mutator?: boolean): Id => store.addRowIdsListener(tableId, proxy(listener), mutator),
 
-addSortedRowIdsListener: (tableId: TableId, cellId: Id | undefined, descending: boolean, offset: number, limit: number | undefined, listener: SortedRowIdsListener, mutator?: boolean): Id => store.addSortedRowIdsListener(tableId, cellId, descending, offset, limit, proxy(listener), mutator),
+addSortedRowIdsListener: <TId extends TableId>(tableId: TId, cellId: CellId<TId> | undefined, descending: boolean, offset: number, limit: number | undefined, listener: SortedRowIdsListener, mutator?: boolean): Id => store.addSortedRowIdsListener(tableId, cellId, descending, offset, limit, proxy(listener), mutator),
 
 addRowListener: (tableId: TableId | null, rowId: IdOrNull, listener: RowListener, mutator?: boolean): Id => store.addRowListener(tableId, rowId, proxy(listener), mutator),
 
@@ -8182,10 +8184,10 @@ export type TablesWhenSet = {'t1'?: {[rowId: Id]: {'c1'?: number; 'c2'?: string;
 /** A Table Id in the Store. */
 export type TableId = keyof Tables;
 
-/** A Table Id in the Store. */
+/** A Table in the Store. */
 export type Table<TId extends TableId> = NonNullable<Tables[TId]>;
 
-/** A Table Id in the Store when setting it. */
+/** A Table in the Store when setting it. */
 export type TableWhenSet<TId extends TableId> = NonNullable<TablesWhenSet[TId]>;
 
 /** A Row in a Table. */
@@ -8195,7 +8197,7 @@ export type Row<TId extends TableId> = Table<TId>[Id];
 export type RowWhenSet<TId extends TableId> = TableWhenSet<TId>[Id];
 
 /** A Cell Id in a Row. */
-export type CellId<TId extends TableId> = keyof NonNullable<Tables[TId]>[Id];
+export type CellId<TId extends TableId> = Extract<keyof Row<TId>, Id>;
 
 /** A Cell in a Row. */
 export type Cell<TId extends TableId, CId extends CellId<TId>> = NonNullable<Tables[TId]>[Id][CId];
@@ -8415,7 +8417,7 @@ addTableListener(tableId: TableId | null, listener: TableListener, mutator?: boo
 addRowIdsListener(tableId: TableId | null, listener: RowIdsListener, mutator?: boolean): Id;
 
 /** Registers a listener that will be called whenever the sorted Row Ids in a Table change. */
-addSortedRowIdsListener(tableId: TableId, cellId: Id | undefined, descending: boolean, offset: number, limit: number | undefined, listener: SortedRowIdsListener, mutator?: boolean): Id;
+addSortedRowIdsListener<TId extends TableId>(tableId: TId, cellId: CellId<TId> | undefined, descending: boolean, offset: number, limit: number | undefined, listener: SortedRowIdsListener, mutator?: boolean): Id;
 
 /** Registers a listener that will be called whenever a Row in a Table changes. */
 addRowListener(tableId: TableId | null, rowId: IdOrNull, listener: RowListener, mutator?: boolean): Id;
@@ -8463,7 +8465,7 @@ getStore(): Store;
 
 /** Creates a S object. */
 export function createS(): S;",
-  "import {CellIdsListener, CellListener, InvalidCellListener, MapNumber, MapString, RowIdsListener, RowListener, S, SortedRowIdsListener, T1CellCallback, T1CellId, T1Row, T1RowCallback, T1RowWhenSet, T1Table, T1TableWhenSet, TableCallback, TableId, TableIdsListener, TableListener, Tables, TablesListener, TablesWhenSet, TransactionListener, createS as createSDecl} from './s.d';
+  "import {CellId, CellIdsListener, CellListener, InvalidCellListener, MapNumber, MapString, RowIdsListener, RowListener, S, SortedRowIdsListener, T1CellCallback, T1CellId, T1Row, T1RowCallback, T1RowWhenSet, T1Table, T1TableWhenSet, TableCallback, TableId, TableIdsListener, TableListener, Tables, TablesListener, TablesWhenSet, TransactionListener, createS as createSDecl} from './s.d';
 import {DoRollback, Id, IdOrNull, Ids, Json, Store, createStore} from 'tinybase';
 
 export const createS: typeof createSDecl = () => {
@@ -8593,7 +8595,7 @@ addTableListener: (tableId: TableId | null, listener: TableListener, mutator?: b
 
 addRowIdsListener: (tableId: TableId | null, listener: RowIdsListener, mutator?: boolean): Id => store.addRowIdsListener(tableId, proxy(listener), mutator),
 
-addSortedRowIdsListener: (tableId: TableId, cellId: Id | undefined, descending: boolean, offset: number, limit: number | undefined, listener: SortedRowIdsListener, mutator?: boolean): Id => store.addSortedRowIdsListener(tableId, cellId, descending, offset, limit, proxy(listener), mutator),
+addSortedRowIdsListener: <TId extends TableId>(tableId: TId, cellId: CellId<TId> | undefined, descending: boolean, offset: number, limit: number | undefined, listener: SortedRowIdsListener, mutator?: boolean): Id => store.addSortedRowIdsListener(tableId, cellId, descending, offset, limit, proxy(listener), mutator),
 
 addRowListener: (tableId: TableId | null, rowId: IdOrNull, listener: RowListener, mutator?: boolean): Id => store.addRowListener(tableId, rowId, proxy(listener), mutator),
 
@@ -9048,12 +9050,12 @@ export type TablesWhenSet = {
 export type TableId = keyof Tables;
 
 /**
- * A Table Id in the Store.
+ * A Table in the Store.
  */
 export type Table<TId extends TableId> = NonNullable<Tables[TId]>;
 
 /**
- * A Table Id in the Store when setting it.
+ * A Table in the Store when setting it.
  */
 export type TableWhenSet<TId extends TableId> = NonNullable<TablesWhenSet[TId]>;
 
@@ -9070,7 +9072,7 @@ export type RowWhenSet<TId extends TableId> = TableWhenSet<TId>[Id];
 /**
  * A Cell Id in a Row.
  */
-export type CellId<TId extends TableId> = keyof NonNullable<Tables[TId]>[Id];
+export type CellId<TId extends TableId> = Extract<keyof Row<TId>, Id>;
 
 /**
  * A Cell in a Row.
@@ -9320,12 +9322,12 @@ export type TablesWhenSet = {
 export type TableId = keyof Tables;
 
 /**
- * A Table Id in the Store.
+ * A Table in the Store.
  */
 export type Table<TId extends TableId> = NonNullable<Tables[TId]>;
 
 /**
- * A Table Id in the Store when setting it.
+ * A Table in the Store when setting it.
  */
 export type TableWhenSet<TId extends TableId> = NonNullable<TablesWhenSet[TId]>;
 
@@ -9342,7 +9344,7 @@ export type RowWhenSet<TId extends TableId> = TableWhenSet<TId>[Id];
 /**
  * A Cell Id in a Row.
  */
-export type CellId<TId extends TableId> = keyof NonNullable<Tables[TId]>[Id];
+export type CellId<TId extends TableId> = Extract<keyof Row<TId>, Id>;
 
 /**
  * A Cell in a Row.
@@ -9456,10 +9458,10 @@ export type TablesWhenSet = {'t1'?: {[rowId: Id]: {'c1'?: number; 'c2'?: string;
 /** A Table Id in the Store. */
 export type TableId = keyof Tables;
 
-/** A Table Id in the Store. */
+/** A Table in the Store. */
 export type Table<TId extends TableId> = NonNullable<Tables[TId]>;
 
-/** A Table Id in the Store when setting it. */
+/** A Table in the Store when setting it. */
 export type TableWhenSet<TId extends TableId> = NonNullable<TablesWhenSet[TId]>;
 
 /** A Row in a Table. */
@@ -9469,7 +9471,7 @@ export type Row<TId extends TableId> = Table<TId>[Id];
 export type RowWhenSet<TId extends TableId> = TableWhenSet<TId>[Id];
 
 /** A Cell Id in a Row. */
-export type CellId<TId extends TableId> = keyof NonNullable<Tables[TId]>[Id];
+export type CellId<TId extends TableId> = Extract<keyof Row<TId>, Id>;
 
 /** A Cell in a Row. */
 export type Cell<TId extends TableId, CId extends CellId<TId>> = NonNullable<Tables[TId]>[Id][CId];
@@ -9605,10 +9607,10 @@ export type TablesWhenSet = {'t1'?: {[rowId: Id]: {'c1'?: number; 'c2'?: string;
 /** A Table Id in the Store. */
 export type TableId = keyof Tables;
 
-/** A Table Id in the Store. */
+/** A Table in the Store. */
 export type Table<TId extends TableId> = NonNullable<Tables[TId]>;
 
-/** A Table Id in the Store when setting it. */
+/** A Table in the Store when setting it. */
 export type TableWhenSet<TId extends TableId> = NonNullable<TablesWhenSet[TId]>;
 
 /** A Row in a Table. */
@@ -9618,7 +9620,7 @@ export type Row<TId extends TableId> = Table<TId>[Id];
 export type RowWhenSet<TId extends TableId> = TableWhenSet<TId>[Id];
 
 /** A Cell Id in a Row. */
-export type CellId<TId extends TableId> = keyof NonNullable<Tables[TId]>[Id];
+export type CellId<TId extends TableId> = Extract<keyof Row<TId>, Id>;
 
 /** A Cell in a Row. */
 export type Cell<TId extends TableId, CId extends CellId<TId>> = NonNullable<Tables[TId]>[Id][CId];
