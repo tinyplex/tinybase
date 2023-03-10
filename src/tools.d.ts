@@ -348,8 +348,8 @@ export interface Tools {
    * const dTsLines = dTs.split('\n');
    * console.log(dTsLines[3]);
    * // -> `export type Tables = {'pets'?: {[rowId: Id]: {'price'?: number}}};`
-   * console.log(dTsLines[39]);
-   * // -> 'export type PetsRow = PetsTable[Id];'
+   * console.log(dTsLines[51]);
+   * // -> 'export type PetsRow = Row<\'pets\'>;'
    *
    * const tsLines = ts.split('\n');
    * console.log(tsLines[39]);
@@ -369,8 +369,8 @@ export interface Tools {
    * const dTsLines = dTs.split('\n');
    * console.log(dTsLines[3]);
    * // -> `export type Tables = {'pets'?: {[rowId: Id]: {'price': number}}};`
-   * console.log(dTsLines[39]);
-   * // -> 'export type PetsRow = PetsTable[Id];'
+   * console.log(dTsLines[51]);
+   * // -> 'export type PetsRow = Row<\'pets\'>;'
    *
    * const tsLines = ts.split('\n');
    * console.log(tsLines[41]);
@@ -430,8 +430,8 @@ export interface Tools {
    * const dTsLines = dTs.split('\n');
    * console.log(dTsLines[5]);
    * // -> `export type Tables = {pets?: {[rowId: Id]: {price?: number}}};`
-   * console.log(dTsLines[79]);
-   * // -> 'export type PetsRow = PetsTable[Id];'
+   * console.log(dTsLines[99]);
+   * // -> 'export type PetsRow = Row<\'pets\'>;'
    *
    * const tsLines = ts.split('\n');
    * console.log(tsLines[78]);
@@ -453,8 +453,8 @@ export interface Tools {
    * const dTsLines = dTs.split('\n');
    * console.log(dTsLines[5]);
    * // -> 'export type Tables = {pets?: {[rowId: Id]: {price: number}}};'
-   * console.log(dTsLines[79]);
-   * // -> 'export type PetsRow = PetsTable[Id];'
+   * console.log(dTsLines[99]);
+   * // -> 'export type PetsRow = Row<\'pets\'>;'
    *
    * const tsLines = ts.split('\n');
    * console.log(tsLines[80]);

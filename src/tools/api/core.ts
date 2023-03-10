@@ -27,7 +27,6 @@ import {
   JSON,
   LISTENER_,
   METHOD_PREFIX_VERBS,
-  NON_NULLABLE,
   OR_UNDEFINED,
   PARTIAL,
   REGISTERS_A_LISTENER,
@@ -273,6 +272,10 @@ export const getStoreCoreApi = (
       tablesType,
       tablesWhenSetType,
       tableIdType,
+      tableType,
+      tableWhenSetType,
+      rowType,
+      rowWhenSetType,
       cellIdType,
       cellCallbackType,
       rowCallbackType,
@@ -283,31 +286,32 @@ export const getStoreCoreApi = (
     mapTablesSchema((tableId: Id, tableName: string) => {
       const tableIdGeneric = `<'${tableId}'>`;
 
-      // Table
-      const tableType = addType(
-        tableName + TABLE,
-        NON_NULLABLE + `<${tablesType}['${tableId}']>`,
-        REPRESENTS + ` the '${tableId}' ` + TABLE,
-      );
-
-      // TableWhenSet
-      const tableWhenSetType = addType(
-        tableName + TABLE + WHEN_SET,
-        NON_NULLABLE + `<${tablesWhenSetType}['${tableId}']>`,
-        REPRESENTS + ` the '${tableId}' ` + TABLE + WHEN_SETTING_IT,
-      );
-
       const tableTypes = [
-        tableType,
-        tableWhenSetType,
+        // Table
+        addType(
+          tableName + TABLE,
+          tableType + tableIdGeneric,
+          REPRESENTS + ` the '${tableId}' ` + TABLE,
+        ),
+
+        // TableWhenSet
+        addType(
+          tableName + TABLE + WHEN_SET,
+          tableWhenSetType + tableIdGeneric,
+          REPRESENTS + ` the '${tableId}' ` + TABLE + WHEN_SETTING_IT,
+        ),
 
         // Row
-        addType(tableName + ROW, tableType + '[Id]', getRowTypeDoc(tableId)),
+        addType(
+          tableName + ROW,
+          rowType + tableIdGeneric,
+          getRowTypeDoc(tableId),
+        ),
 
         // RowWhenSet
         addType(
           tableName + ROW + WHEN_SET,
-          tableWhenSetType + '[Id]',
+          rowWhenSetType + tableIdGeneric,
           getRowTypeDoc(tableId, 1),
         ),
 
