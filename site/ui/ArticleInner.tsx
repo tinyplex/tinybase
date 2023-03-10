@@ -10,8 +10,9 @@ import React from 'react';
 export const ArticleInner: NoPropComponent = (): any => {
   const rootNode = useRootNode();
   const pageNode = usePageNode();
+  const isHome = pageNode == rootNode;
 
-  return (
+  return isHome ? null : (
     <>
       <nav>
         <ul>

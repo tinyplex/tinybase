@@ -8,7 +8,7 @@
     Modern apps deserve better. Why trade reactive user experiences to be able 
     to use relational data? Why sacrifice store features for bundle size? And 
     why should the cloud do all the work 
-    <a href='https://www.inkandswitch.com/local-first/' target='_blank'>anyway</a>?
+    <a href='https://localfirstweb.dev/' target='_blank'>anyway</a>?
   </p>
   <p><em>TinyBase is a smart new way to structure your local app data:</em></p>
   <ul>
@@ -516,7 +516,7 @@ export const createShop: typeof createShopDecl = () => {
       <a href='https://facebook.com/tinybasejs'>Facebook</a>.
     </li>
     <li>
-      <a href='@@EVAL("metadata.repository")/discussion'>Discussions</a> and 
+      <a href='@@EVAL("metadata.repository")/discussions'>Discussions</a> and 
       <a href='@@EVAL("metadata.repository")/issues'>issues</a> on 
       <a href='@@EVAL("metadata.repository")'>GitHub</a>.
     </li>
