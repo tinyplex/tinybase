@@ -1,4 +1,5 @@
 import {
+  A,
   CALLBACK,
   DEL,
   EXPORT,
@@ -353,6 +354,7 @@ export const getStoreUiReactApi = (
       tablesType,
       tablesWhenSetType,
       tableIdType,
+      cellIdType,
       tablesListenerType,
       tableIdsListenerType,
       tableListenerType,
@@ -379,6 +381,7 @@ export const getStoreUiReactApi = (
       cellIdsListenerType,
       cellListenerType,
     );
+    addImport(0, moduleDefinition, cellIdType);
     addImport(1, moduleDefinition, storeType);
     addImport(null, 'tinybase', IDS, 'IdOrNull');
 
@@ -488,20 +491,80 @@ export const getStoreUiReactApi = (
       THEN_AND_THEN_DEPS_IN_CALL,
     );
 
+    // CellProps
+    const cellPropsType = addType(
+      CELL + PROPS,
+      getPropTypeList(
+        'tableId?: TId',
+        'rowId: Id',
+        'cellId?: CId',
+        storeInstance + OPTIONAL_COLON + storeType,
+        DEBUG_IDS_PROP_TYPE,
+      ),
+      getPropsDoc(A + CELL),
+      `<TId extends ${tableIdType}, CId extends ${cellIdType}<TId>>`,
+    );
+
+    // RowProps
+    const rowPropsType = addType(
+      ROW + PROPS,
+      getPropTypeList(
+        `tableId?: TId`,
+        'rowId: Id',
+        storeInstance + OPTIONAL_COLON + storeType,
+        'cellComponents?: {readonly [CId in ' +
+          cellIdType +
+          `<TId>]?: ComponentType<${cellPropsType}<TId, CId>>;}`,
+        `getCellComponentProps?: (cellId: ${cellIdType}<TId>) => ExtraProps`,
+        SEPARATOR_PROP_TYPE,
+        DEBUG_IDS_PROP_TYPE,
+      ),
+      getPropsDoc(A + ROW),
+      `<TId extends ${tableIdType}>`,
+    );
+
+    // TableProps
+    const tablePropsType = addType(
+      TABLE + PROPS,
+      getPropTypeList(
+        `tableId?: TId`,
+        storeInstance + OPTIONAL_COLON + storeType,
+        `rowComponent?: ComponentType<${rowPropsType}<TId>>`,
+        `getRowComponentProps?: (rowId: Id) => ExtraProps`,
+        SEPARATOR_PROP_TYPE,
+        DEBUG_IDS_PROP_TYPE,
+      ),
+      getPropsDoc(A + TABLE),
+      `<TId extends ${tableIdType}>`,
+    );
+
+    // SortedTableProps
+    const sortedTablePropsType = addType(
+      'Sorted' + TABLE + PROPS,
+      getPropTypeList(
+        `tableId?: TId`,
+        'cellId?: ' + cellIdType + '<TId>',
+        'descending?: boolean',
+        'offset?: number',
+        'limit?: number',
+        storeInstance + OPTIONAL_COLON + storeType,
+        `rowComponent?: ComponentType<${rowPropsType}<TId>>`,
+        `getRowComponentProps?: (rowId: Id) => ExtraProps`,
+        SEPARATOR_PROP_TYPE,
+        DEBUG_IDS_PROP_TYPE,
+      ),
+      getPropsDoc(A + 'sorted ' + TABLE),
+      `<TId extends ${tableIdType}>`,
+    );
+
     // TablesProps
     const tablesPropsType = addType(
       TABLES + PROPS,
       getPropTypeList(
         storeInstance + OPTIONAL_COLON + storeType,
-        'tableComponents?: {' +
-          join(
-            mapTablesSchema(
-              (tableId: Id, tableName: string) =>
-                `'${tableId}'?: ComponentType<${tableName}TableProps>`,
-            ),
-            ', ',
-          ) +
-          '}',
+        'tableComponents?: {readonly [TId in ' +
+          tableIdType +
+          `]?: ComponentType<${tablePropsType}<TId>>;}`,
         `getTableComponentProps?: (tableId: ${tableIdType}) => ExtraProps`,
         SEPARATOR_PROP_TYPE,
         DEBUG_IDS_PROP_TYPE,
@@ -509,18 +572,15 @@ export const getStoreUiReactApi = (
       getPropsDoc(getTheContentOfDoc(1, 1)),
     );
 
-    // CellProps
-    const cellPropsType = addType(
-      CELL + PROPS,
-      getPropTypeList(
-        'rowId: Id',
-        storeInstance + OPTIONAL_COLON + storeType,
-        DEBUG_IDS_PROP_TYPE,
-      ),
-      getPropsDoc('a Cell'),
+    addImport(
+      1,
+      uiReactModuleDefinition,
+      tablesPropsType,
+      tablePropsType,
+      sortedTablePropsType,
+      rowPropsType,
+      cellPropsType,
     );
-
-    addImport(1, uiReactModuleDefinition, tablesPropsType, cellPropsType);
 
     // TablesView
     addComponent(
@@ -533,11 +593,12 @@ export const getStoreUiReactApi = (
         tablesPropsType,
       [
         wrap + `(${useTableIds}(${storeInstance}).map((tableId) => {`,
-        'const Table = tableComponents?.[tableId] ?? ' +
+        'const Table = (tableComponents?.[tableId] ?? ' +
           getDefaultTableComponent +
-          '(tableId);',
+          `(tableId)) as React.ComponentType<TableProps<typeof tableId>>;`,
         'return <Table',
         `{...${getProps}(getTableComponentProps, tableId)}`,
+        'tableId={tableId}',
         'key={tableId}',
         storeProp,
         DEBUG_IDS_PROP,
@@ -723,66 +784,6 @@ export const getStoreUiReactApi = (
         THEN_AND_THEN_DEPS_IN_CALL,
       );
 
-      // RowProps
-      const rowPropsType = addType(
-        tableName + 'RowProps',
-        getPropTypeList(
-          'rowId: Id',
-          storeInstance + OPTIONAL_COLON + storeType,
-          'cellComponents?: {' +
-            join(
-              mapCellSchema(
-                tableId,
-                (cellId: Id) => `'${cellId}'?: ComponentType<${cellPropsType}>`,
-              ),
-              ', ',
-            ) +
-            '}',
-          `getCellComponentProps?: (cellId: ${cellIdType}) => ExtraProps`,
-          SEPARATOR_PROP_TYPE,
-          DEBUG_IDS_PROP_TYPE,
-        ),
-        getPropsDoc(getRowDoc(tableId)),
-      );
-
-      // TableProps
-      const tablePropsType = addType(
-        tableName + 'TableProps',
-        getPropTypeList(
-          storeInstance + OPTIONAL_COLON + storeType,
-          `rowComponent?: ComponentType<${rowPropsType}>`,
-          `getRowComponentProps?: (rowId: Id) => ExtraProps`,
-          SEPARATOR_PROP_TYPE,
-          DEBUG_IDS_PROP_TYPE,
-        ),
-        getPropsDoc(getTableDoc(tableId)),
-      );
-
-      // SortedTableProps
-      const sortedTablePropsType = addType(
-        tableName + 'SortedTableProps',
-        getPropTypeList(
-          'cellId?: ' + cellIdType,
-          'descending?: boolean',
-          'offset?: number',
-          'limit?: number',
-          storeInstance + OPTIONAL_COLON + storeType,
-          `rowComponent?: ComponentType<${rowPropsType}>`,
-          `getRowComponentProps?: (rowId: Id) => ExtraProps`,
-          SEPARATOR_PROP_TYPE,
-          DEBUG_IDS_PROP_TYPE,
-        ),
-        getPropsDoc(getTableDoc(tableId)) + ', sorted',
-      );
-
-      addImport(
-        1,
-        uiReactModuleDefinition,
-        rowPropsType,
-        tablePropsType,
-        sortedTablePropsType,
-      );
-
       // RowView
       const rowView = addComponent(
         tableName + ROW + VIEW,
@@ -790,17 +791,20 @@ export const getStoreUiReactApi = (
           storeInstance +
           ', cellComponents, getCellComponentProps' +
           SEPARATOR_AND_DEBUG_IDS +
-          '}: ' +
-          rowPropsType,
+          `}: ${rowPropsType}<'${tableId}'>`,
         [
           wrap + `(${useCellIds}(rowId, ${storeInstance}).map((cellId) => {`,
-          'const Cell = cellComponents?.[cellId] ?? ' +
+          'const Cell = (cellComponents?.[cellId] ?? ' +
             getDefaultCellComponent +
-            `(${TABLE_ID}, cellId);`,
+            `(${TABLE_ID}, cellId)) as React.ComponentType<CellProps<typeof ` +
+            TABLE_ID +
+            ', typeof cellId>>;',
           'return <Cell',
           `{...${getProps}(getCellComponentProps, cellId)} `,
           'key={cellId}',
+          `tableId={${TABLE_ID}}`,
           ROW_ID_PROP,
+          'cellId={cellId}',
           storeProp,
           DEBUG_IDS_PROP,
           '/>;',
@@ -809,11 +813,12 @@ export const getStoreUiReactApi = (
         getRowContentDoc(tableId, 13) + AND_REGISTERS,
       );
 
-      // SortedRowView
+      // SortedTableView
       addComponent(
         tableName + 'Sorted' + TABLE + VIEW,
         '{cellId, descending, offset, limit, ...props}: ' +
-          sortedTablePropsType,
+          sortedTablePropsType +
+          `<'${tableId}'>`,
         tableView +
           '(props, ' +
           useSortedRowIds +
@@ -825,7 +830,7 @@ export const getStoreUiReactApi = (
       // TableView
       addComponent(
         tableName + TABLE + VIEW,
-        'props: ' + tablePropsType,
+        `props: ${tablePropsType}<'${tableId}'>`,
         tableView +
           '(props, ' +
           useRowIds +
@@ -887,7 +892,9 @@ export const getStoreUiReactApi = (
           // CellView
           addComponent(
             tableName + cellName + CELL + VIEW,
-            `{rowId, ${storeInstance}, debugIds}: ` + cellPropsType,
+            `{rowId, ${storeInstance}, debugIds}: ` +
+              cellPropsType +
+              `<'${tableId}', '${cellId}'>`,
             [
               wrap +
                 `('' + ${useCell}(rowId, ` +
@@ -1121,10 +1128,12 @@ export const getStoreUiReactApi = (
     const valuePropsType = addType(
       VALUE + PROPS,
       getPropTypeList(
+        `valueId?: VId`,
         storeInstance + OPTIONAL_COLON + storeType,
         DEBUG_IDS_PROP_TYPE,
       ),
       getPropsDoc('a Value'),
+      `<VId extends ${valueIdType}>`,
     );
 
     // ValuesProps
@@ -1132,15 +1141,9 @@ export const getStoreUiReactApi = (
       VALUES + PROPS,
       getPropTypeList(
         storeInstance + OPTIONAL_COLON + storeType,
-        'valueComponents?: {' +
-          join(
-            mapValuesSchema(
-              (valueId: Id) =>
-                `'${valueId}'?: ComponentType<${valuePropsType}>`,
-            ),
-            ', ',
-          ) +
-          '}',
+        'valueComponents?: {readonly [VId in ' +
+          valueIdType +
+          `]?: ComponentType<${valuePropsType}<VId>>;}`,
         `getValueComponentProps?: (valueId: ${valueIdType}) => ExtraProps`,
         SEPARATOR_PROP_TYPE,
         DEBUG_IDS_PROP_TYPE,
@@ -1226,7 +1229,7 @@ export const getStoreUiReactApi = (
       // ValueView
       addComponent(
         valueName + VALUE + VIEW,
-        `{${storeInstance}, debugIds}: ` + valuePropsType,
+        `{${storeInstance}, debugIds}: ${valuePropsType}<'${valueId}'>`,
         [
           wrap +
             `('' + ${useValue}(` +
