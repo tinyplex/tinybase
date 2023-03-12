@@ -1,6 +1,24 @@
 import {
+  A,
+  ID,
+  METHOD_PREFIX_VERBS,
+  SORTED_ARGS,
+  SQUARE_BRACKETS,
+  STORE,
+  THE_STORE,
+  VOID,
+  getContentDoc,
+  getIdsDoc,
+  getTheContentOfTheStoreDoc,
+} from '../common/strings';
+import {
   BOOLEAN,
   EMPTY_STRING,
+  GET,
+  IDS,
+  ROW,
+  ROW_IDS,
+  SORTED_ROW_IDS,
   TABLE,
   TABLES,
   TABLE_IDS,
@@ -13,16 +31,6 @@ import {
   getCodeFunctions,
   mapUnique,
 } from '../common/code';
-import {
-  METHOD_PREFIX_VERBS,
-  SQUARE_BRACKETS,
-  STORE,
-  THE_STORE,
-  VOID,
-  getContentDoc,
-  getIdsDoc,
-  getTheContentOfTheStoreDoc,
-} from '../common/strings';
 import {TablesSchema, ValuesSchema} from '../../store.d';
 import {Id} from '../../common.d';
 import {arrayForEach} from '../../common/array';
@@ -81,8 +89,9 @@ export const getStoreCoreRefinement = (
   addImport(
     0,
     'tinybase',
-    'Id',
-    'Store as StoreCore',
+    ID,
+    IDS,
+    STORE + ' as StoreCore',
     'CellChange',
     'ValueChange',
   );
@@ -97,7 +106,7 @@ export const getStoreCoreRefinement = (
       tableWhenSetType,
       _rowType,
       _rowWhenSetType,
-      _cellIdType,
+      cellIdType,
       _cellType,
       _cellCallbackType,
       _rowCallbackType,
@@ -124,7 +133,7 @@ export const getStoreCoreRefinement = (
 
     // getTableIds
     addMethod(
-      METHOD_PREFIX_VERBS[0] + TABLE_IDS,
+      GET + TABLE_IDS,
       EMPTY_STRING,
       tableIdType + SQUARE_BRACKETS,
       getIdsDoc(TABLE, THE_STORE),
@@ -157,6 +166,18 @@ export const getStoreCoreRefinement = (
       'tableCallback: ' + tableCallbackType,
       VOID,
       getContentDoc(5, 3),
+    );
+
+    // getRowIds
+    addMethod(GET + ROW_IDS, tableIdParam, IDS, getIdsDoc(ROW, A + TABLE));
+
+    // getSortedRowIds
+    addMethod(
+      GET + SORTED_ROW_IDS,
+      tIdParam + ', cellId?: ' + cellIdType + '<TId>' + SORTED_ARGS,
+      IDS,
+      getIdsDoc(ROW, A + TABLE),
+      tIdGeneric,
     );
   }
 
