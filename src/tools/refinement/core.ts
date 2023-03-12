@@ -18,6 +18,8 @@ import {
   SQUARE_BRACKETS,
   STORE,
   THE_STORE,
+  VOID,
+  getContentDoc,
   getIdsDoc,
   getTheContentOfTheStoreDoc,
 } from '../common/strings';
@@ -87,7 +89,21 @@ export const getStoreCoreRefinement = (
 
   if (!objIsEmpty(tablesSchema)) {
     // Tables, TablesWhenSet
-    const [tablesType, tablesWhenSetType, tableIdType] = getTablesTypes();
+    const [
+      tablesType,
+      tablesWhenSetType,
+      tableIdType,
+      tableType,
+      tableWhenSetType,
+      _rowType,
+      _rowWhenSetType,
+      _cellIdType,
+      _cellType,
+      _cellCallbackType,
+      _rowCallbackType,
+      tableCallbackType,
+      _getCellChangeType,
+    ] = getTablesTypes();
 
     // getTables, hasTables, setTables, delTables
     arrayForEach(
@@ -112,6 +128,35 @@ export const getStoreCoreRefinement = (
       EMPTY_STRING,
       tableIdType + SQUARE_BRACKETS,
       getIdsDoc(TABLE, THE_STORE),
+    );
+
+    // getTable, hasTable, setTable, delTable
+    const tableIdParam = 'tableId: ' + tableIdType;
+    const tIdParam = 'tableId: TId';
+    const tIdGeneric = `<TId extends ${tableIdType}>`;
+    arrayForEach(
+      [
+        [tableType + '<TId>', tIdParam, tIdGeneric],
+        [BOOLEAN, tableIdParam],
+        [STORE, tIdParam + `, table: ${tableWhenSetType}<TId>`, tIdGeneric],
+        [STORE, tableIdParam],
+      ],
+      ([returnType, params, generic], verb) =>
+        addMethod(
+          METHOD_PREFIX_VERBS[verb] + TABLE,
+          params ?? EMPTY_STRING,
+          returnType,
+          getContentDoc(verb, 3),
+          generic,
+        ),
+    );
+
+    // forEachTable
+    addMethod(
+      METHOD_PREFIX_VERBS[5] + TABLE,
+      'tableCallback: ' + tableCallbackType,
+      VOID,
+      getContentDoc(5, 3),
     );
   }
 
@@ -138,7 +183,8 @@ export const getStoreCoreRefinement = (
       ...getMethods(),
       '}',
       EMPTY_STRING,
-      'export type Store = Omit<StoreCore, keyof Refined> & Refined;',
+      'export type Todo = Omit<StoreCore, keyof Refined>;',
+      'export type Store = Todo & Refined;',
       EMPTY_STRING,
       comment(`Creates a Store object`),
       'export function createStore(): Store',
