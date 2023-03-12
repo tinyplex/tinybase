@@ -9259,6 +9259,31 @@ interface Refined {
   getTableIds(): TableId[];
 
   /**
+   * Gets a Table.
+   */
+  getTable<TId extends TableId>(tableId: TId): Table<TId>;
+
+  /**
+   * Checks existence of a Table.
+   */
+  hasTable(tableId: TableId): boolean;
+
+  /**
+   * Sets a Table.
+   */
+  setTable<TId extends TableId>(tableId: TId, table: TableWhenSet<TId>): Store;
+
+  /**
+   * Deletes a Table.
+   */
+  delTable(tableId: TableId): Store;
+
+  /**
+   * Represents a Table.
+   */
+  forEachTable(tableCallback: TableCallback): void;
+
+  /**
    * Gets the keyed value content of the Store.
    */
   getValues(): Values;
@@ -9269,7 +9294,8 @@ interface Refined {
   setValues(values: ValuesWhenSet): Store;
 }
 
-export type Store = Omit<StoreCore, keyof Refined> & Refined;
+export type Todo = Omit<StoreCore, keyof Refined>;
+export type Store = Todo & Refined;
 
 /**
  * Creates a Store object.
@@ -9341,7 +9367,8 @@ interface Refined {
   setValues(values: ValuesWhenSet): Store;
 }
 
-export type Store = Omit<StoreCore, keyof Refined> & Refined;
+export type Todo = Omit<StoreCore, keyof Refined>;
+export type Store = Todo & Refined;
 
 /**
  * Creates a Store object.
@@ -9486,9 +9513,35 @@ interface Refined {
    * Gets the Ids of the Tables in the Store.
    */
   getTableIds(): TableId[];
+
+  /**
+   * Gets a Table.
+   */
+  getTable<TId extends TableId>(tableId: TId): Table<TId>;
+
+  /**
+   * Checks existence of a Table.
+   */
+  hasTable(tableId: TableId): boolean;
+
+  /**
+   * Sets a Table.
+   */
+  setTable<TId extends TableId>(tableId: TId, table: TableWhenSet<TId>): Store;
+
+  /**
+   * Deletes a Table.
+   */
+  delTable(tableId: TableId): Store;
+
+  /**
+   * Represents a Table.
+   */
+  forEachTable(tableCallback: TableCallback): void;
 }
 
-export type Store = Omit<StoreCore, keyof Refined> & Refined;
+export type Todo = Omit<StoreCore, keyof Refined>;
+export type Store = Todo & Refined;
 
 /**
  * Creates a Store object.
@@ -9590,6 +9643,21 @@ delTables(): Store;
 /** Gets the Ids of the Tables in the Store. */
 getTableIds(): TableId[];
 
+/** Gets a Table. */
+getTable<TId extends TableId>(tableId: TId): Table<TId>;
+
+/** Checks existence of a Table. */
+hasTable(tableId: TableId): boolean;
+
+/** Sets a Table. */
+setTable<TId extends TableId>(tableId: TId, table: TableWhenSet<TId>): Store;
+
+/** Deletes a Table. */
+delTable(tableId: TableId): Store;
+
+/** Represents a Table. */
+forEachTable(tableCallback: TableCallback): void;
+
 /** Gets the keyed value content of the Store. */
 getValues(): Values;
 
@@ -9598,7 +9666,8 @@ setValues(values: ValuesWhenSet): Store;
 
 }
 
-export type Store = Omit<StoreCore, keyof Refined> & Refined;
+export type Todo = Omit<StoreCore, keyof Refined>;
+export type Store = Todo & Refined;
 
 /** Creates a Store object. */
 export function createStore(): Store",
@@ -9641,7 +9710,8 @@ setValues(values: ValuesWhenSet): Store;
 
 }
 
-export type Store = Omit<StoreCore, keyof Refined> & Refined;
+export type Todo = Omit<StoreCore, keyof Refined>;
+export type Store = Todo & Refined;
 
 /** Creates a Store object. */
 export function createStore(): Store",
@@ -9718,9 +9788,25 @@ delTables(): Store;
 /** Gets the Ids of the Tables in the Store. */
 getTableIds(): TableId[];
 
+/** Gets a Table. */
+getTable<TId extends TableId>(tableId: TId): Table<TId>;
+
+/** Checks existence of a Table. */
+hasTable(tableId: TableId): boolean;
+
+/** Sets a Table. */
+setTable<TId extends TableId>(tableId: TId, table: TableWhenSet<TId>): Store;
+
+/** Deletes a Table. */
+delTable(tableId: TableId): Store;
+
+/** Represents a Table. */
+forEachTable(tableCallback: TableCallback): void;
+
 }
 
-export type Store = Omit<StoreCore, keyof Refined> & Refined;
+export type Todo = Omit<StoreCore, keyof Refined>;
+export type Store = Todo & Refined;
 
 /** Creates a Store object. */
 export function createStore(): Store",

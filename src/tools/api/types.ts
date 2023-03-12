@@ -87,41 +87,41 @@ export const getTypeFunctions = (
       'A ' + TABLE + ' Id in ' + THE_STORE,
     );
 
-    const tidGeneric = `<TId extends ${tableIdType}>`;
+    const tIdGeneric = `<TId extends ${tableIdType}>`;
 
     const tableType = addType(
       TABLE,
       NON_NULLABLE + `<${tablesType}[TId]>`,
       'A ' + TABLE + ' in ' + THE_STORE,
-      tidGeneric,
+      tIdGeneric,
     );
 
     const tableWhenSetType = addType(
       TABLE + WHEN_SET,
       NON_NULLABLE + `<${tablesWhenSetType}[TId]>`,
       'A ' + TABLE + ' in ' + THE_STORE + WHEN_SETTING_IT,
-      tidGeneric,
+      tIdGeneric,
     );
 
     const rowType = addType(
       ROW,
       tableType + '<TId>[Id]',
       'A ' + ROW + ' in a ' + TABLE,
-      tidGeneric,
+      tIdGeneric,
     );
 
     const rowWhenSetType = addType(
       ROW + WHEN_SET,
       tableWhenSetType + '<TId>[Id]',
       'A ' + ROW + ' in a ' + TABLE + WHEN_SETTING_IT,
-      tidGeneric,
+      tIdGeneric,
     );
 
     const cellIdType = addType(
       CELL + ID,
       `Extract<keyof ${rowType}<TId>, Id>`,
       'A ' + CELL + ' Id in a ' + ROW,
-      tidGeneric,
+      tIdGeneric,
     );
 
     const cellType = addType(
@@ -144,7 +144,7 @@ export const getTypeFunctions = (
       CELL + CALLBACK,
       `(...[cellId, cell]: ${cellIdCellArrayType}<TId>)` + RETURNS_VOID,
       getCallbackDoc(A + CELL + ' Id, and ' + CELL),
-      tidGeneric,
+      tIdGeneric,
     );
 
     const rowCallbackType = addType(
@@ -154,7 +154,7 @@ export const getTypeFunctions = (
         ') ' +
         RETURNS_VOID,
       getCallbackDoc(A + ROW + ' Id, and a ' + CELL + ' iterator'),
-      tidGeneric,
+      tIdGeneric,
     );
 
     const tableIdForEachRowArrayType = addType(
