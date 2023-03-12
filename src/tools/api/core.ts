@@ -32,6 +32,7 @@ import {
   REGISTERS_A_LISTENER,
   REPRESENTS,
   RETURNS_VOID,
+  SORTED_ARGS,
   SQUARE_BRACKETS,
   THE_END_OF_THE_TRANSACTION,
   THE_STORE,
@@ -585,9 +586,7 @@ export const getStoreCoreApi = (
         SORTED_ROW_IDS,
         IDS,
         getIdsDoc(ROW, getTableDoc(tableId), 1),
-        'cellId?: ' +
-          cellIdType +
-          ', descending?: boolean, offset?: number, limit?: number',
+        'cellId?: ' + cellIdType + SORTED_ARGS,
         TABLE_ID + ', cellId, descending, offset, limit',
       );
 

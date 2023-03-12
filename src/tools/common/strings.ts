@@ -32,6 +32,8 @@ export const PARTIAL = 'Partial';
 export const REGISTERS_A_LISTENER = `Registers a ${LISTENER_} that will be called`;
 export const REPRESENTS = 'Represents';
 export const SET = 'Set';
+export const SORTED_ARGS =
+  ', descending?: boolean, offset?: number, limit?: number';
 export const SQUARE_BRACKETS = '[]';
 export const STORE = 'Store';
 export const THE_STORE = 'the ' + STORE;
