@@ -110,6 +110,9 @@ export const getTableDoc = (tableId: Id) => `the '${tableId}' ` + TABLE;
 export const getRowDoc = (tableId: Id) =>
   'the specified Row in ' + getTableDoc(tableId);
 
+export const getContentDoc = (verb = 0, noun = 0) =>
+  VERBS[verb] + SPACE + NOUNS[noun];
+
 export const getTableContentDoc = (tableId: Id, verb = 0) =>
   VERBS[verb] + ` ${getTheContentOfDoc()} ` + getTableDoc(tableId);
 
