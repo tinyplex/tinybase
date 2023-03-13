@@ -114,7 +114,7 @@ export const getStoreCoreRefinement = (
       rowType,
       rowWhenSetType,
       cellIdType,
-      _cellType,
+      cellType,
       cellCallbackType,
       rowCallbackType,
       tableCallbackType,
@@ -154,16 +154,16 @@ export const getStoreCoreRefinement = (
       getForEachDoc(TABLE, THE_STORE),
     );
 
-    // getTable, hasTable, setTable, delTable
-    const tableIdParam = 'tableId: ' + tableIdType;
     const tIdParam = 'tableId: TId';
     const tIdGeneric = `<TId extends ${tableIdType}>`;
+
+    // getTable, hasTable, setTable, delTable
     arrayForEach(
       [
         [tableType + '<TId>', tIdParam, tIdGeneric],
-        [BOOLEAN, tableIdParam],
+        [BOOLEAN, tIdParam, tIdGeneric],
         [STORE, tIdParam + `, table: ${tableWhenSetType}<TId>`, tIdGeneric],
-        [STORE, tableIdParam],
+        [STORE, tIdParam, tIdGeneric],
       ],
       ([returnType, params, generic], verb) =>
         addMethod(
@@ -176,7 +176,13 @@ export const getStoreCoreRefinement = (
     );
 
     // getRowIds
-    addMethod(GET + ROW_IDS, tableIdParam, IDS, getIdsDoc(ROW, A + TABLE));
+    addMethod(
+      GET + ROW_IDS,
+      tIdParam,
+      IDS,
+      getIdsDoc(ROW, A + TABLE),
+      tIdGeneric,
+    );
 
     // getSortedRowIds
     addMethod(
@@ -196,17 +202,15 @@ export const getStoreCoreRefinement = (
       tIdGeneric,
     );
 
+    const rowIdParams = tIdParam + ', ' + ROW_ID_PARAM;
+
     // getRow, hasRow, setRow, delRow
     arrayForEach(
       [
-        [rowType + '<TId>', tIdParam + ', ' + ROW_ID_PARAM, tIdGeneric],
-        [BOOLEAN, tableIdParam + ', ' + ROW_ID_PARAM],
-        [
-          STORE,
-          tIdParam + ', ' + ROW_ID_PARAM + `, row: ${rowWhenSetType}<TId>`,
-          tIdGeneric,
-        ],
-        [STORE, tableIdParam + ', ' + ROW_ID_PARAM],
+        [rowType + '<TId>', rowIdParams, tIdGeneric],
+        [BOOLEAN, rowIdParams, tIdGeneric],
+        [STORE, rowIdParams + `, row: ${rowWhenSetType}<TId>`, tIdGeneric],
+        [STORE, rowIdParams, tIdGeneric],
       ],
       ([returnType, params, generic], verb) =>
         addMethod(
@@ -257,6 +261,28 @@ export const getStoreCoreRefinement = (
       VOID,
       getForEachDoc(CELL, A + ROW),
       tIdGeneric,
+    );
+
+    const cIdParams = rowIdParams + ', cellId: CId';
+    const cIdGeneric =
+      `<TId extends ${tableIdType}, ` + `CId extends ${cellIdType}<TId>>`;
+
+    // getCell, hasCell, setCell, delCell
+    arrayForEach(
+      [
+        [cellType + '<TId, CId>', cIdParams, cIdGeneric],
+        [BOOLEAN, cIdParams, cIdGeneric],
+        [STORE, cIdParams + `, cell: ${cellType}<TId, CId>`, cIdGeneric],
+        [STORE, cIdParams, cIdGeneric],
+      ],
+      ([returnType, params, generic], verb) =>
+        addMethod(
+          METHOD_PREFIX_VERBS[verb] + CELL,
+          params ?? EMPTY_STRING,
+          returnType,
+          getContentDoc(verb, 7),
+          generic,
+        ),
     );
   }
 
