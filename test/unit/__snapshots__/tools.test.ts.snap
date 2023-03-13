@@ -9259,6 +9259,11 @@ interface Refined {
   getTableIds(): TableId[];
 
   /**
+   * Calls a function for each Table in the Store.
+   */
+  forEachTable(tableCallback: TableCallback): void;
+
+  /**
    * Gets a Table.
    */
   getTable<TId extends TableId>(tableId: TId): Table<TId>;
@@ -9279,11 +9284,6 @@ interface Refined {
   delTable(tableId: TableId): Store;
 
   /**
-   * Represents a Table.
-   */
-  forEachTable(tableCallback: TableCallback): void;
-
-  /**
    * Gets the Ids of the Rows in a Table.
    */
   getRowIds(tableId: TableId): Ids;
@@ -9298,6 +9298,14 @@ interface Refined {
     offset?: number,
     limit?: number,
   ): Ids;
+
+  /**
+   * Calls a function for each Row in a Table.
+   */
+  forEachRow<TId extends TableId>(
+    tableId: TId,
+    rowCallback: RowCallback<TId>,
+  ): void;
 
   /**
    * Gets a Row.
@@ -9339,6 +9347,20 @@ interface Refined {
     tableId: TId,
     row: RowWhenSet<TId>,
   ): Id | undefined;
+
+  /**
+   * Gets the Ids of the Cells in a Row.
+   */
+  getCellIds<TId extends TableId>(tableId: TId, rowId: Id): CellId<TId>[];
+
+  /**
+   * Calls a function for each Cell in a Row.
+   */
+  forEachCell<TId extends TableId>(
+    tableId: TId,
+    rowId: Id,
+    cellCallback: CellCallback<TId>,
+  ): void;
 
   /**
    * Gets the keyed value content of the Store.
@@ -9572,6 +9594,11 @@ interface Refined {
   getTableIds(): TableId[];
 
   /**
+   * Calls a function for each Table in the Store.
+   */
+  forEachTable(tableCallback: TableCallback): void;
+
+  /**
    * Gets a Table.
    */
   getTable<TId extends TableId>(tableId: TId): Table<TId>;
@@ -9592,11 +9619,6 @@ interface Refined {
   delTable(tableId: TableId): Store;
 
   /**
-   * Represents a Table.
-   */
-  forEachTable(tableCallback: TableCallback): void;
-
-  /**
    * Gets the Ids of the Rows in a Table.
    */
   getRowIds(tableId: TableId): Ids;
@@ -9611,6 +9633,14 @@ interface Refined {
     offset?: number,
     limit?: number,
   ): Ids;
+
+  /**
+   * Calls a function for each Row in a Table.
+   */
+  forEachRow<TId extends TableId>(
+    tableId: TId,
+    rowCallback: RowCallback<TId>,
+  ): void;
 
   /**
    * Gets a Row.
@@ -9652,6 +9682,20 @@ interface Refined {
     tableId: TId,
     row: RowWhenSet<TId>,
   ): Id | undefined;
+
+  /**
+   * Gets the Ids of the Cells in a Row.
+   */
+  getCellIds<TId extends TableId>(tableId: TId, rowId: Id): CellId<TId>[];
+
+  /**
+   * Calls a function for each Cell in a Row.
+   */
+  forEachCell<TId extends TableId>(
+    tableId: TId,
+    rowId: Id,
+    cellCallback: CellCallback<TId>,
+  ): void;
 }
 
 export type Todo = Omit<StoreCore, keyof Refined>;
@@ -9757,6 +9801,9 @@ delTables(): Store;
 /** Gets the Ids of the Tables in the Store. */
 getTableIds(): TableId[];
 
+/** Calls a function for each Table in the Store. */
+forEachTable(tableCallback: TableCallback): void;
+
 /** Gets a Table. */
 getTable<TId extends TableId>(tableId: TId): Table<TId>;
 
@@ -9769,14 +9816,14 @@ setTable<TId extends TableId>(tableId: TId, table: TableWhenSet<TId>): Store;
 /** Deletes a Table. */
 delTable(tableId: TableId): Store;
 
-/** Represents a Table. */
-forEachTable(tableCallback: TableCallback): void;
-
 /** Gets the Ids of the Rows in a Table. */
 getRowIds(tableId: TableId): Ids;
 
 /** Gets the Ids of the Rows in a Table. */
 getSortedRowIds<TId extends TableId>(tableId: TId, cellId?: CellId<TId>, descending?: boolean, offset?: number, limit?: number): Ids;
+
+/** Calls a function for each Row in a Table. */
+forEachRow<TId extends TableId>(tableId: TId, rowCallback: RowCallback<TId>): void;
 
 /** Gets a Row. */
 getRow<TId extends TableId>(tableId: TId, rowId: Id): Row<TId>;
@@ -9795,6 +9842,12 @@ setPartialRow<TId extends TableId>(tableId: TId, rowId: Id, partialRow: RowWhenS
 
 /** Add a new Row. */
 addRow<TId extends TableId>(tableId: TId, row: RowWhenSet<TId>): Id | undefined;
+
+/** Gets the Ids of the Cells in a Row. */
+getCellIds<TId extends TableId>(tableId: TId, rowId: Id): CellId<TId>[];
+
+/** Calls a function for each Cell in a Row. */
+forEachCell<TId extends TableId>(tableId: TId, rowId: Id, cellCallback: CellCallback<TId>): void;
 
 /** Gets the keyed value content of the Store. */
 getValues(): Values;
@@ -9926,6 +9979,9 @@ delTables(): Store;
 /** Gets the Ids of the Tables in the Store. */
 getTableIds(): TableId[];
 
+/** Calls a function for each Table in the Store. */
+forEachTable(tableCallback: TableCallback): void;
+
 /** Gets a Table. */
 getTable<TId extends TableId>(tableId: TId): Table<TId>;
 
@@ -9938,14 +9994,14 @@ setTable<TId extends TableId>(tableId: TId, table: TableWhenSet<TId>): Store;
 /** Deletes a Table. */
 delTable(tableId: TableId): Store;
 
-/** Represents a Table. */
-forEachTable(tableCallback: TableCallback): void;
-
 /** Gets the Ids of the Rows in a Table. */
 getRowIds(tableId: TableId): Ids;
 
 /** Gets the Ids of the Rows in a Table. */
 getSortedRowIds<TId extends TableId>(tableId: TId, cellId?: CellId<TId>, descending?: boolean, offset?: number, limit?: number): Ids;
+
+/** Calls a function for each Row in a Table. */
+forEachRow<TId extends TableId>(tableId: TId, rowCallback: RowCallback<TId>): void;
 
 /** Gets a Row. */
 getRow<TId extends TableId>(tableId: TId, rowId: Id): Row<TId>;
@@ -9964,6 +10020,12 @@ setPartialRow<TId extends TableId>(tableId: TId, rowId: Id, partialRow: RowWhenS
 
 /** Add a new Row. */
 addRow<TId extends TableId>(tableId: TId, row: RowWhenSet<TId>): Id | undefined;
+
+/** Gets the Ids of the Cells in a Row. */
+getCellIds<TId extends TableId>(tableId: TId, rowId: Id): CellId<TId>[];
+
+/** Calls a function for each Cell in a Row. */
+forEachCell<TId extends TableId>(tableId: TId, rowId: Id, cellCallback: CellCallback<TId>): void;
 
 }
 
