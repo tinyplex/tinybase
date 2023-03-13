@@ -11,12 +11,15 @@ import {
   THE_STORE,
   VOID,
   getContentDoc,
+  getForEachDoc,
   getIdsDoc,
   getTheContentOfTheStoreDoc,
 } from '../common/strings';
 import {
   ADD,
   BOOLEAN,
+  CELL,
+  CELL_IDS,
   EMPTY_STRING,
   GET,
   IDS,
@@ -112,8 +115,8 @@ export const getStoreCoreRefinement = (
       rowWhenSetType,
       cellIdType,
       _cellType,
-      _cellCallbackType,
-      _rowCallbackType,
+      cellCallbackType,
+      rowCallbackType,
       tableCallbackType,
       _getCellChangeType,
     ] = getTablesTypes();
@@ -143,6 +146,14 @@ export const getStoreCoreRefinement = (
       getIdsDoc(TABLE, THE_STORE),
     );
 
+    // forEachTable
+    addMethod(
+      METHOD_PREFIX_VERBS[5] + TABLE,
+      'tableCallback: ' + tableCallbackType,
+      VOID,
+      getForEachDoc(TABLE, THE_STORE),
+    );
+
     // getTable, hasTable, setTable, delTable
     const tableIdParam = 'tableId: ' + tableIdType;
     const tIdParam = 'tableId: TId';
@@ -164,14 +175,6 @@ export const getStoreCoreRefinement = (
         ),
     );
 
-    // forEachTable
-    addMethod(
-      METHOD_PREFIX_VERBS[5] + TABLE,
-      'tableCallback: ' + tableCallbackType,
-      VOID,
-      getContentDoc(5, 3),
-    );
-
     // getRowIds
     addMethod(GET + ROW_IDS, tableIdParam, IDS, getIdsDoc(ROW, A + TABLE));
 
@@ -181,6 +184,15 @@ export const getStoreCoreRefinement = (
       tIdParam + ', cellId?: ' + cellIdType + '<TId>' + SORTED_ARGS,
       IDS,
       getIdsDoc(ROW, A + TABLE),
+      tIdGeneric,
+    );
+
+    // forEachRow
+    addMethod(
+      METHOD_PREFIX_VERBS[5] + ROW,
+      tIdParam + ', rowCallback: ' + rowCallbackType + '<TId>',
+      VOID,
+      getForEachDoc(ROW, A + TABLE),
       tIdGeneric,
     );
 
@@ -221,6 +233,29 @@ export const getStoreCoreRefinement = (
       tIdParam + `, row: ${rowWhenSetType}<TId>`,
       ID + OR_UNDEFINED,
       'Add a new ' + ROW,
+      tIdGeneric,
+    );
+
+    // getCellIds
+    addMethod(
+      GET + CELL_IDS,
+      tIdParam + ', ' + ROW_ID_PARAM,
+      cellIdType + '<TId>' + SQUARE_BRACKETS,
+      getIdsDoc(CELL, A + ROW),
+      tIdGeneric,
+    );
+
+    // forEachCell
+    addMethod(
+      METHOD_PREFIX_VERBS[5] + CELL,
+      tIdParam +
+        ', ' +
+        ROW_ID_PARAM +
+        ', cellCallback: ' +
+        cellCallbackType +
+        '<TId>',
+      VOID,
+      getForEachDoc(CELL, A + ROW),
       tIdGeneric,
     );
   }
