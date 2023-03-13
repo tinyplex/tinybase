@@ -31,6 +31,7 @@ export const NON_NULLABLE = 'NonNullable';
 export const PARTIAL = 'Partial';
 export const REGISTERS_A_LISTENER = `Registers a ${LISTENER_} that will be called`;
 export const REPRESENTS = 'Represents';
+export const ROW_ID_PARAM = 'rowId: Id';
 export const SET = 'Set';
 export const SORTED_ARGS =
   ', descending?: boolean, offset?: number, limit?: number';
