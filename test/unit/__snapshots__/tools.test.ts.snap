@@ -9471,7 +9471,7 @@ export function createStore(): Store;
 exports[`Refinements Pretty keyed value 1`] = `
 [
   "export * from 'tinybase';
-import {CellChange, Id, Ids, Store as StoreCore, ValueChange} from 'tinybase';
+import {Id, Ids, Store as StoreCore, ValueChange} from 'tinybase';
 
 /**
  * Represents the keyed value content of the Store.
@@ -9589,7 +9589,15 @@ export function createStore(): Store;
 exports[`Refinements Pretty tabular 1`] = `
 [
   "export * from 'tinybase';
-import {CellChange, Id, Ids, Store as StoreCore, ValueChange} from 'tinybase';
+import {
+  CellChange,
+  Id,
+  Ids,
+  Store as StoreCore,
+  Value,
+  ValueCallback,
+  Values,
+} from 'tinybase';
 
 /**
  * Represents the tabular content of the Store.
@@ -9860,6 +9868,61 @@ interface Refined {
     rowId: Id,
     cellId: CId,
   ): Store;
+
+  /**
+   * Gets the keyed value content of the Store.
+   */
+  getValues(): Values;
+
+  /**
+   * Checks existence of the keyed value content of the Store.
+   */
+  hasValues(): boolean;
+
+  /**
+   * Sets the keyed value content of the Store.
+   */
+  setValues(values: Values): Store;
+
+  /**
+   * Deletes the keyed value content of the Store.
+   */
+  delValues(): Store;
+
+  /**
+   * Sets part of the keyed value content of the Store.
+   */
+  setPartialValues(partialValues: Values): Store;
+
+  /**
+   * Gets the Ids of the Values in the Store.
+   */
+  getValueIds(): Id[];
+
+  /**
+   * Calls a function for each Value in the Store.
+   */
+  forEachValue(valueCallback: ValueCallback): void;
+
+  /**
+   * Gets a Value.
+   */
+  getValue(valueId: Id): Value;
+
+  /**
+   * Checks existence of a Value.
+   */
+  hasValue(valueId: Id): boolean;
+
+  /**
+   * Sets a Value.
+   */
+  setValue(valueId: Id, value: Value): Store;
+
+  /**
+   * Deletes a Value.
+   */
+  delValue(valueId: Id): Store;
 }
 
 export type Todo = Omit<StoreCore, keyof Refined>;
@@ -10072,7 +10135,7 @@ export function createStore(): Store",
 exports[`Refinements Unpretty keyed value 1`] = `
 [
   "export * from 'tinybase';
-import {CellChange, Id, Ids, Store as StoreCore, ValueChange} from 'tinybase';
+import {Id, Ids, Store as StoreCore, ValueChange} from 'tinybase';
 
 /** Represents the keyed value content of the Store. */
 export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string};
@@ -10143,7 +10206,7 @@ export function createStore(): Store",
 exports[`Refinements Unpretty tabular 1`] = `
 [
   "export * from 'tinybase';
-import {CellChange, Id, Ids, Store as StoreCore, ValueChange} from 'tinybase';
+import {CellChange, Id, Ids, Store as StoreCore, Value, ValueCallback, Values} from 'tinybase';
 
 /** Represents the tabular content of the Store. */
 export type Tables = {'t1'?: {[rowId: Id]: {'c1': number; 'c2': string; 'c3': string; ''?: string}}};
@@ -10268,6 +10331,39 @@ setCell<TId extends TableId, CId extends CellId<TId>>(tableId: TId, rowId: Id, c
 
 /** Deletes a Cell. */
 delCell<TId extends TableId, CId extends CellId<TId>>(tableId: TId, rowId: Id, cellId: CId): Store;
+
+/** Gets the keyed value content of the Store. */
+getValues(): Values;
+
+/** Checks existence of the keyed value content of the Store. */
+hasValues(): boolean;
+
+/** Sets the keyed value content of the Store. */
+setValues(values: Values): Store;
+
+/** Deletes the keyed value content of the Store. */
+delValues(): Store;
+
+/** Sets part of the keyed value content of the Store. */
+setPartialValues(partialValues: Values): Store;
+
+/** Gets the Ids of the Values in the Store. */
+getValueIds(): Id[];
+
+/** Calls a function for each Value in the Store. */
+forEachValue(valueCallback: ValueCallback): void;
+
+/** Gets a Value. */
+getValue(valueId: Id): Value;
+
+/** Checks existence of a Value. */
+hasValue(valueId: Id): boolean;
+
+/** Sets a Value. */
+setValue(valueId: Id, value: Value): Store;
+
+/** Deletes a Value. */
+delValue(valueId: Id): Store;
 
 }
 
