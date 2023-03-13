@@ -32,6 +32,7 @@ import {
   REGISTERS_A_LISTENER,
   REPRESENTS,
   RETURNS_VOID,
+  ROW_ID_PARAM,
   SORTED_ARGS,
   SQUARE_BRACKETS,
   THE_END_OF_THE_TRANSACTION,
@@ -407,8 +408,14 @@ export const getStoreCoreApi = (
     // RowListener
     const rowListenerType = addType(
       ROW + LISTENER,
-      `(${storeInstance}: ${storeType}, tableId: ${tableIdType}, rowId: Id, ` +
-        `getCellChange: ${getCellChangeType}${OR_UNDEFINED})` +
+      '(' +
+        getParameterList(
+          `${storeInstance}: ${storeType}`,
+          'tableId: ' + tableIdType,
+          ROW_ID_PARAM,
+          `getCellChange: ${getCellChangeType}${OR_UNDEFINED}`,
+        ) +
+        ')' +
         RETURNS_VOID,
       getListenerTypeDoc(5, 3),
     );
@@ -416,7 +423,13 @@ export const getStoreCoreApi = (
     // CellIdsListener
     const cellIdsListenerType = addType(
       CELL_IDS + LISTENER,
-      `(${storeInstance}: ${storeType}, tableId: ${tableIdType}, rowId: Id)` +
+      '(' +
+        getParameterList(
+          `${storeInstance}: ${storeType}`,
+          'tableId: ' + tableIdType,
+          ROW_ID_PARAM,
+        ) +
+        ')' +
         RETURNS_VOID,
       getListenerTypeDoc(6, 5),
     );
@@ -424,7 +437,7 @@ export const getStoreCoreApi = (
     const cellListenerArgsArrayInnerType = addType(
       'CellListenerArgsArrayInner',
       `CId extends ${cellIdType}<TId> ? ` +
-        `[${storeInstance}: ${storeType}, tableId: TId, rowId: Id, ` +
+        `[${storeInstance}: ${storeType}, tableId: TId, ${ROW_ID_PARAM}, ` +
         `cellId: CId, ` +
         `newCell: ${cellType}<TId, CId> ${OR_UNDEFINED}, ` +
         `oldCell: ${cellType}<TId, CId> ${OR_UNDEFINED}, ` +
@@ -456,8 +469,8 @@ export const getStoreCoreApi = (
     // InvalidCellListener
     const invalidCellListenerType = addType(
       INVALID + CELL + LISTENER,
-      `(${storeInstance}: ${storeType}, tableId: Id, rowId: Id, cellId: Id, ` +
-        `invalidCells: any[])` +
+      `(${storeInstance}: ${storeType}, tableId: Id, ${ROW_ID_PARAM}, ` +
+        'cellId: Id, invalidCells: any[])' +
         RETURNS_VOID,
       getListenerTypeDoc(8),
     );
@@ -620,7 +633,7 @@ export const getStoreCoreApi = (
             ROW,
             returnType,
             getRowContentDoc(tableId, verb),
-            'rowId: Id' + params,
+            ROW_ID_PARAM + params,
             TABLE_ID + ', rowId' + paramsInCall,
           ),
       );
@@ -631,7 +644,7 @@ export const getStoreCoreApi = (
         tableName,
         ROW,
         ID + OR_UNDEFINED,
-        'Adds a new Row to ' + getTableDoc(tableId),
+        'Add a new Row to ' + getTableDoc(tableId),
         'row: ' + rowWhenSetType,
         TABLE_ID + ', row',
       );
@@ -643,7 +656,7 @@ export const getStoreCoreApi = (
         CELL_IDS,
         cellIdType + SQUARE_BRACKETS,
         getIdsDoc(CELL, getRowDoc(tableId)),
-        'rowId: ' + ID,
+        ROW_ID_PARAM,
         TABLE_ID + ', rowId',
       );
 
@@ -654,7 +667,7 @@ export const getStoreCoreApi = (
         CELL,
         VOID,
         getForEachDoc(CELL, getRowDoc(tableId)),
-        'rowId: Id, cellCallback: ' + cellCallbackType,
+        ROW_ID_PARAM + ', cellCallback: ' + cellCallbackType,
         TABLE_ID + ', rowId, cellCallback as any',
       );
 
@@ -685,7 +698,7 @@ export const getStoreCoreApi = (
                 CELL,
                 returnType,
                 getCellContentDoc(tableId, cellId, verb),
-                'rowId: Id' + params,
+                ROW_ID_PARAM + params,
                 TABLE_ID + ', rowId, ' + CELL_ID + paramsInCall,
               ),
           );

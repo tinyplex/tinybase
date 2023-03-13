@@ -458,7 +458,7 @@ export interface S {
   setT1PartialRow(rowId: Id, partialRow: T1RowWhenSet): S;
 
   /**
-   * Adds a new Row to the 't1' Table.
+   * Add a new Row to the 't1' Table.
    */
   addT1Row(row: T1RowWhenSet): Id | undefined;
 
@@ -4614,7 +4614,7 @@ export interface S {
   setT1PartialRow(rowId: Id, partialRow: T1RowWhenSet): S;
 
   /**
-   * Adds a new Row to the 't1' Table.
+   * Add a new Row to the 't1' Table.
    */
   addT1Row(row: T1RowWhenSet): Id | undefined;
 
@@ -6666,7 +6666,7 @@ delT1Row(rowId: Id): S;
 /** Sets part of the content of the specified Row in the 't1' Table. */
 setT1PartialRow(rowId: Id, partialRow: T1RowWhenSet): S;
 
-/** Adds a new Row to the 't1' Table. */
+/** Add a new Row to the 't1' Table. */
 addT1Row(row: T1RowWhenSet): Id | undefined;
 
 /** Gets the Ids of the Cells in the specified Row in the 't1' Table. */
@@ -8394,7 +8394,7 @@ delT1Row(rowId: Id): S;
 /** Sets part of the content of the specified Row in the 't1' Table. */
 setT1PartialRow(rowId: Id, partialRow: T1RowWhenSet): S;
 
-/** Adds a new Row to the 't1' Table. */
+/** Add a new Row to the 't1' Table. */
 addT1Row(row: T1RowWhenSet): Id | undefined;
 
 /** Gets the Ids of the Cells in the specified Row in the 't1' Table. */
@@ -9300,6 +9300,47 @@ interface Refined {
   ): Ids;
 
   /**
+   * Gets a Row.
+   */
+  getRow<TId extends TableId>(tableId: TId, rowId: Id): Row<TId>;
+
+  /**
+   * Checks existence of a Row.
+   */
+  hasRow(tableId: TableId, rowId: Id): boolean;
+
+  /**
+   * Sets a Row.
+   */
+  setRow<TId extends TableId>(
+    tableId: TId,
+    rowId: Id,
+    row: RowWhenSet<TId>,
+  ): Store;
+
+  /**
+   * Deletes a Row.
+   */
+  delRow(tableId: TableId, rowId: Id): Store;
+
+  /**
+   * Sets part of a Row.
+   */
+  setPartialRow<TId extends TableId>(
+    tableId: TId,
+    rowId: Id,
+    partialRow: RowWhenSet<TId>,
+  ): Store;
+
+  /**
+   * Add a new Row.
+   */
+  addRow<TId extends TableId>(
+    tableId: TId,
+    row: RowWhenSet<TId>,
+  ): Id | undefined;
+
+  /**
    * Gets the keyed value content of the Store.
    */
   getValues(): Values;
@@ -9570,6 +9611,47 @@ interface Refined {
     offset?: number,
     limit?: number,
   ): Ids;
+
+  /**
+   * Gets a Row.
+   */
+  getRow<TId extends TableId>(tableId: TId, rowId: Id): Row<TId>;
+
+  /**
+   * Checks existence of a Row.
+   */
+  hasRow(tableId: TableId, rowId: Id): boolean;
+
+  /**
+   * Sets a Row.
+   */
+  setRow<TId extends TableId>(
+    tableId: TId,
+    rowId: Id,
+    row: RowWhenSet<TId>,
+  ): Store;
+
+  /**
+   * Deletes a Row.
+   */
+  delRow(tableId: TableId, rowId: Id): Store;
+
+  /**
+   * Sets part of a Row.
+   */
+  setPartialRow<TId extends TableId>(
+    tableId: TId,
+    rowId: Id,
+    partialRow: RowWhenSet<TId>,
+  ): Store;
+
+  /**
+   * Add a new Row.
+   */
+  addRow<TId extends TableId>(
+    tableId: TId,
+    row: RowWhenSet<TId>,
+  ): Id | undefined;
 }
 
 export type Todo = Omit<StoreCore, keyof Refined>;
@@ -9695,6 +9777,24 @@ getRowIds(tableId: TableId): Ids;
 
 /** Gets the Ids of the Rows in a Table. */
 getSortedRowIds<TId extends TableId>(tableId: TId, cellId?: CellId<TId>, descending?: boolean, offset?: number, limit?: number): Ids;
+
+/** Gets a Row. */
+getRow<TId extends TableId>(tableId: TId, rowId: Id): Row<TId>;
+
+/** Checks existence of a Row. */
+hasRow(tableId: TableId, rowId: Id): boolean;
+
+/** Sets a Row. */
+setRow<TId extends TableId>(tableId: TId, rowId: Id, row: RowWhenSet<TId>): Store;
+
+/** Deletes a Row. */
+delRow(tableId: TableId, rowId: Id): Store;
+
+/** Sets part of a Row. */
+setPartialRow<TId extends TableId>(tableId: TId, rowId: Id, partialRow: RowWhenSet<TId>): Store;
+
+/** Add a new Row. */
+addRow<TId extends TableId>(tableId: TId, row: RowWhenSet<TId>): Id | undefined;
 
 /** Gets the keyed value content of the Store. */
 getValues(): Values;
@@ -9846,6 +9946,24 @@ getRowIds(tableId: TableId): Ids;
 
 /** Gets the Ids of the Rows in a Table. */
 getSortedRowIds<TId extends TableId>(tableId: TId, cellId?: CellId<TId>, descending?: boolean, offset?: number, limit?: number): Ids;
+
+/** Gets a Row. */
+getRow<TId extends TableId>(tableId: TId, rowId: Id): Row<TId>;
+
+/** Checks existence of a Row. */
+hasRow(tableId: TableId, rowId: Id): boolean;
+
+/** Sets a Row. */
+setRow<TId extends TableId>(tableId: TId, rowId: Id, row: RowWhenSet<TId>): Store;
+
+/** Deletes a Row. */
+delRow(tableId: TableId, rowId: Id): Store;
+
+/** Sets part of a Row. */
+setPartialRow<TId extends TableId>(tableId: TId, rowId: Id, partialRow: RowWhenSet<TId>): Store;
+
+/** Add a new Row. */
+addRow<TId extends TableId>(tableId: TId, row: RowWhenSet<TId>): Id | undefined;
 
 }
 
