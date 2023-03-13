@@ -2,6 +2,9 @@ import {
   A,
   ID,
   METHOD_PREFIX_VERBS,
+  OR_UNDEFINED,
+  PARTIAL,
+  ROW_ID_PARAM,
   SORTED_ARGS,
   SQUARE_BRACKETS,
   STORE,
@@ -12,6 +15,7 @@ import {
   getTheContentOfTheStoreDoc,
 } from '../common/strings';
 import {
+  ADD,
   BOOLEAN,
   EMPTY_STRING,
   GET,
@@ -104,8 +108,8 @@ export const getStoreCoreRefinement = (
       tableIdType,
       tableType,
       tableWhenSetType,
-      _rowType,
-      _rowWhenSetType,
+      rowType,
+      rowWhenSetType,
       cellIdType,
       _cellType,
       _cellCallbackType,
@@ -177,6 +181,46 @@ export const getStoreCoreRefinement = (
       tIdParam + ', cellId?: ' + cellIdType + '<TId>' + SORTED_ARGS,
       IDS,
       getIdsDoc(ROW, A + TABLE),
+      tIdGeneric,
+    );
+
+    // getRow, hasRow, setRow, delRow
+    arrayForEach(
+      [
+        [rowType + '<TId>', tIdParam + ', ' + ROW_ID_PARAM, tIdGeneric],
+        [BOOLEAN, tableIdParam + ', ' + ROW_ID_PARAM],
+        [
+          STORE,
+          tIdParam + ', ' + ROW_ID_PARAM + `, row: ${rowWhenSetType}<TId>`,
+          tIdGeneric,
+        ],
+        [STORE, tableIdParam + ', ' + ROW_ID_PARAM],
+      ],
+      ([returnType, params, generic], verb) =>
+        addMethod(
+          METHOD_PREFIX_VERBS[verb] + ROW,
+          params ?? EMPTY_STRING,
+          returnType,
+          getContentDoc(verb, 5),
+          generic,
+        ),
+    );
+
+    // setPartialRow
+    addMethod(
+      'set' + PARTIAL + ROW,
+      tIdParam + ', ' + ROW_ID_PARAM + `, partialRow: ${rowWhenSetType}<TId>`,
+      STORE,
+      getContentDoc(4, 5),
+      tIdGeneric,
+    );
+
+    // addRow
+    addMethod(
+      ADD + ROW,
+      tIdParam + `, row: ${rowWhenSetType}<TId>`,
+      ID + OR_UNDEFINED,
+      'Add a new ' + ROW,
       tIdGeneric,
     );
   }
