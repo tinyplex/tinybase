@@ -9271,7 +9271,7 @@ interface Refined {
   /**
    * Checks existence of a Table.
    */
-  hasTable(tableId: TableId): boolean;
+  hasTable<TId extends TableId>(tableId: TId): boolean;
 
   /**
    * Sets a Table.
@@ -9281,12 +9281,12 @@ interface Refined {
   /**
    * Deletes a Table.
    */
-  delTable(tableId: TableId): Store;
+  delTable<TId extends TableId>(tableId: TId): Store;
 
   /**
    * Gets the Ids of the Rows in a Table.
    */
-  getRowIds(tableId: TableId): Ids;
+  getRowIds<TId extends TableId>(tableId: TId): Ids;
 
   /**
    * Gets the Ids of the Rows in a Table.
@@ -9315,7 +9315,7 @@ interface Refined {
   /**
    * Checks existence of a Row.
    */
-  hasRow(tableId: TableId, rowId: Id): boolean;
+  hasRow<TId extends TableId>(tableId: TId, rowId: Id): boolean;
 
   /**
    * Sets a Row.
@@ -9329,7 +9329,7 @@ interface Refined {
   /**
    * Deletes a Row.
    */
-  delRow(tableId: TableId, rowId: Id): Store;
+  delRow<TId extends TableId>(tableId: TId, rowId: Id): Store;
 
   /**
    * Sets part of a Row.
@@ -9361,6 +9361,43 @@ interface Refined {
     rowId: Id,
     cellCallback: CellCallback<TId>,
   ): void;
+
+  /**
+   * Gets a Cell.
+   */
+  getCell<TId extends TableId, CId extends CellId<TId>>(
+    tableId: TId,
+    rowId: Id,
+    cellId: CId,
+  ): Cell<TId, CId>;
+
+  /**
+   * Checks existence of a Cell.
+   */
+  hasCell<TId extends TableId, CId extends CellId<TId>>(
+    tableId: TId,
+    rowId: Id,
+    cellId: CId,
+  ): boolean;
+
+  /**
+   * Sets a Cell.
+   */
+  setCell<TId extends TableId, CId extends CellId<TId>>(
+    tableId: TId,
+    rowId: Id,
+    cellId: CId,
+    cell: Cell<TId, CId>,
+  ): Store;
+
+  /**
+   * Deletes a Cell.
+   */
+  delCell<TId extends TableId, CId extends CellId<TId>>(
+    tableId: TId,
+    rowId: Id,
+    cellId: CId,
+  ): Store;
 
   /**
    * Gets the keyed value content of the Store.
@@ -9606,7 +9643,7 @@ interface Refined {
   /**
    * Checks existence of a Table.
    */
-  hasTable(tableId: TableId): boolean;
+  hasTable<TId extends TableId>(tableId: TId): boolean;
 
   /**
    * Sets a Table.
@@ -9616,12 +9653,12 @@ interface Refined {
   /**
    * Deletes a Table.
    */
-  delTable(tableId: TableId): Store;
+  delTable<TId extends TableId>(tableId: TId): Store;
 
   /**
    * Gets the Ids of the Rows in a Table.
    */
-  getRowIds(tableId: TableId): Ids;
+  getRowIds<TId extends TableId>(tableId: TId): Ids;
 
   /**
    * Gets the Ids of the Rows in a Table.
@@ -9650,7 +9687,7 @@ interface Refined {
   /**
    * Checks existence of a Row.
    */
-  hasRow(tableId: TableId, rowId: Id): boolean;
+  hasRow<TId extends TableId>(tableId: TId, rowId: Id): boolean;
 
   /**
    * Sets a Row.
@@ -9664,7 +9701,7 @@ interface Refined {
   /**
    * Deletes a Row.
    */
-  delRow(tableId: TableId, rowId: Id): Store;
+  delRow<TId extends TableId>(tableId: TId, rowId: Id): Store;
 
   /**
    * Sets part of a Row.
@@ -9696,6 +9733,43 @@ interface Refined {
     rowId: Id,
     cellCallback: CellCallback<TId>,
   ): void;
+
+  /**
+   * Gets a Cell.
+   */
+  getCell<TId extends TableId, CId extends CellId<TId>>(
+    tableId: TId,
+    rowId: Id,
+    cellId: CId,
+  ): Cell<TId, CId>;
+
+  /**
+   * Checks existence of a Cell.
+   */
+  hasCell<TId extends TableId, CId extends CellId<TId>>(
+    tableId: TId,
+    rowId: Id,
+    cellId: CId,
+  ): boolean;
+
+  /**
+   * Sets a Cell.
+   */
+  setCell<TId extends TableId, CId extends CellId<TId>>(
+    tableId: TId,
+    rowId: Id,
+    cellId: CId,
+    cell: Cell<TId, CId>,
+  ): Store;
+
+  /**
+   * Deletes a Cell.
+   */
+  delCell<TId extends TableId, CId extends CellId<TId>>(
+    tableId: TId,
+    rowId: Id,
+    cellId: CId,
+  ): Store;
 }
 
 export type Todo = Omit<StoreCore, keyof Refined>;
@@ -9808,16 +9882,16 @@ forEachTable(tableCallback: TableCallback): void;
 getTable<TId extends TableId>(tableId: TId): Table<TId>;
 
 /** Checks existence of a Table. */
-hasTable(tableId: TableId): boolean;
+hasTable<TId extends TableId>(tableId: TId): boolean;
 
 /** Sets a Table. */
 setTable<TId extends TableId>(tableId: TId, table: TableWhenSet<TId>): Store;
 
 /** Deletes a Table. */
-delTable(tableId: TableId): Store;
+delTable<TId extends TableId>(tableId: TId): Store;
 
 /** Gets the Ids of the Rows in a Table. */
-getRowIds(tableId: TableId): Ids;
+getRowIds<TId extends TableId>(tableId: TId): Ids;
 
 /** Gets the Ids of the Rows in a Table. */
 getSortedRowIds<TId extends TableId>(tableId: TId, cellId?: CellId<TId>, descending?: boolean, offset?: number, limit?: number): Ids;
@@ -9829,13 +9903,13 @@ forEachRow<TId extends TableId>(tableId: TId, rowCallback: RowCallback<TId>): vo
 getRow<TId extends TableId>(tableId: TId, rowId: Id): Row<TId>;
 
 /** Checks existence of a Row. */
-hasRow(tableId: TableId, rowId: Id): boolean;
+hasRow<TId extends TableId>(tableId: TId, rowId: Id): boolean;
 
 /** Sets a Row. */
 setRow<TId extends TableId>(tableId: TId, rowId: Id, row: RowWhenSet<TId>): Store;
 
 /** Deletes a Row. */
-delRow(tableId: TableId, rowId: Id): Store;
+delRow<TId extends TableId>(tableId: TId, rowId: Id): Store;
 
 /** Sets part of a Row. */
 setPartialRow<TId extends TableId>(tableId: TId, rowId: Id, partialRow: RowWhenSet<TId>): Store;
@@ -9848,6 +9922,18 @@ getCellIds<TId extends TableId>(tableId: TId, rowId: Id): CellId<TId>[];
 
 /** Calls a function for each Cell in a Row. */
 forEachCell<TId extends TableId>(tableId: TId, rowId: Id, cellCallback: CellCallback<TId>): void;
+
+/** Gets a Cell. */
+getCell<TId extends TableId, CId extends CellId<TId>>(tableId: TId, rowId: Id, cellId: CId): Cell<TId, CId>;
+
+/** Checks existence of a Cell. */
+hasCell<TId extends TableId, CId extends CellId<TId>>(tableId: TId, rowId: Id, cellId: CId): boolean;
+
+/** Sets a Cell. */
+setCell<TId extends TableId, CId extends CellId<TId>>(tableId: TId, rowId: Id, cellId: CId, cell: Cell<TId, CId>): Store;
+
+/** Deletes a Cell. */
+delCell<TId extends TableId, CId extends CellId<TId>>(tableId: TId, rowId: Id, cellId: CId): Store;
 
 /** Gets the keyed value content of the Store. */
 getValues(): Values;
@@ -9986,16 +10072,16 @@ forEachTable(tableCallback: TableCallback): void;
 getTable<TId extends TableId>(tableId: TId): Table<TId>;
 
 /** Checks existence of a Table. */
-hasTable(tableId: TableId): boolean;
+hasTable<TId extends TableId>(tableId: TId): boolean;
 
 /** Sets a Table. */
 setTable<TId extends TableId>(tableId: TId, table: TableWhenSet<TId>): Store;
 
 /** Deletes a Table. */
-delTable(tableId: TableId): Store;
+delTable<TId extends TableId>(tableId: TId): Store;
 
 /** Gets the Ids of the Rows in a Table. */
-getRowIds(tableId: TableId): Ids;
+getRowIds<TId extends TableId>(tableId: TId): Ids;
 
 /** Gets the Ids of the Rows in a Table. */
 getSortedRowIds<TId extends TableId>(tableId: TId, cellId?: CellId<TId>, descending?: boolean, offset?: number, limit?: number): Ids;
@@ -10007,13 +10093,13 @@ forEachRow<TId extends TableId>(tableId: TId, rowCallback: RowCallback<TId>): vo
 getRow<TId extends TableId>(tableId: TId, rowId: Id): Row<TId>;
 
 /** Checks existence of a Row. */
-hasRow(tableId: TableId, rowId: Id): boolean;
+hasRow<TId extends TableId>(tableId: TId, rowId: Id): boolean;
 
 /** Sets a Row. */
 setRow<TId extends TableId>(tableId: TId, rowId: Id, row: RowWhenSet<TId>): Store;
 
 /** Deletes a Row. */
-delRow(tableId: TableId, rowId: Id): Store;
+delRow<TId extends TableId>(tableId: TId, rowId: Id): Store;
 
 /** Sets part of a Row. */
 setPartialRow<TId extends TableId>(tableId: TId, rowId: Id, partialRow: RowWhenSet<TId>): Store;
@@ -10026,6 +10112,18 @@ getCellIds<TId extends TableId>(tableId: TId, rowId: Id): CellId<TId>[];
 
 /** Calls a function for each Cell in a Row. */
 forEachCell<TId extends TableId>(tableId: TId, rowId: Id, cellCallback: CellCallback<TId>): void;
+
+/** Gets a Cell. */
+getCell<TId extends TableId, CId extends CellId<TId>>(tableId: TId, rowId: Id, cellId: CId): Cell<TId, CId>;
+
+/** Checks existence of a Cell. */
+hasCell<TId extends TableId, CId extends CellId<TId>>(tableId: TId, rowId: Id, cellId: CId): boolean;
+
+/** Sets a Cell. */
+setCell<TId extends TableId, CId extends CellId<TId>>(tableId: TId, rowId: Id, cellId: CId, cell: Cell<TId, CId>): Store;
+
+/** Deletes a Cell. */
+delCell<TId extends TableId, CId extends CellId<TId>>(tableId: TId, rowId: Id, cellId: CId): Store;
 
 }
 
