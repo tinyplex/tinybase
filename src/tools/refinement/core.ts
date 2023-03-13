@@ -1,5 +1,6 @@
 import {
   A,
+  CALLBACK,
   ID,
   METHOD_PREFIX_VERBS,
   OR_UNDEFINED,
@@ -42,8 +43,8 @@ import {
   mapUnique,
 } from '../common/code';
 import {TablesSchema, ValuesSchema} from '../../store.d';
+import {arrayForEach, arrayPush} from '../../common/array';
 import {Id} from '../../common.d';
-import {arrayForEach} from '../../common/array';
 import {getSchemaFunctions} from '../common/schema';
 import {getTypeFunctions} from '../api/types';
 import {objIsEmpty} from '../../common/obj';
@@ -96,17 +97,11 @@ export const getStoreCoreRefinement = (
     generic = EMPTY_STRING,
   ): Id => mapUnique(methods, name, [parameters, returnType, doc, generic]);
 
-  addImport(
-    0,
-    'tinybase',
-    ID,
-    IDS,
-    STORE + ' as StoreCore',
-    'CellChange',
-    'ValueChange',
-  );
+  addImport(0, 'tinybase', ID, IDS, STORE + ' as StoreCore');
 
   if (!objIsEmpty(tablesSchema)) {
+    addImport(0, 'tinybase', 'CellChange');
+
     // Tables, TablesWhenSet, TableId,
     // Table<>, TableWhenSet<>, Row<>, RowWhenSet<>, CellId<>, Cell<>,
     // CellCallback, RowCallback, TableCallback, GetCellChange
@@ -291,81 +286,86 @@ export const getStoreCoreRefinement = (
     );
   }
 
-  if (!objIsEmpty(valuesSchema)) {
-    // Values, ValuesWhenSet, ValueId,
-    // Value<>,
-    // ValueCallback, ValuesCallback, GetValueChange
-    const [
-      valuesType,
-      valuesWhenSetType,
-      valueIdType,
-      valueType,
-      valueCallbackType,
-      _getValueChangeType,
-    ] = getValuesTypes();
+  let valuesTypes: string[];
 
-    // getValues, hasValues, setValues, delValues
-    arrayForEach(
-      [
-        [valuesType],
-        [BOOLEAN],
-        [STORE, 'values: ' + valuesWhenSetType],
-        [STORE],
-      ],
-      ([returnType, params], verb) =>
-        addMethod(
-          METHOD_PREFIX_VERBS[verb] + VALUES,
-          params ?? EMPTY_STRING,
-          returnType,
-          getTheContentOfTheStoreDoc(2, verb),
-        ),
-    );
-
-    // setPartialValues
-    addMethod(
-      'set' + PARTIAL + VALUES,
-      'partialValues: ' + valuesWhenSetType,
-      STORE,
-      getTheContentOfTheStoreDoc(2, 4),
-    );
-
-    // getValueIds
-    addMethod(
-      GET + VALUE_IDS,
-      EMPTY_STRING,
-      valueIdType + SQUARE_BRACKETS,
-      getIdsDoc(VALUE, THE_STORE),
-    );
-
-    // forEachValue
-    addMethod(
-      METHOD_PREFIX_VERBS[5] + VALUE,
-      'valueCallback: ' + valueCallbackType,
-      VOID,
-      getForEachDoc(VALUE, THE_STORE),
-    );
-
-    const vIdParam = 'valueId: VId';
-    const vIdGeneric = `<VId extends ${valueIdType}>`;
-
-    // getValue, hasValue, setValue, delValue
-    arrayForEach(
-      [
-        [valueType + '<VId>', vIdParam],
-        [BOOLEAN, vIdParam],
-        [STORE, vIdParam + `, value: ${valueType}<VId>`],
-        [STORE, vIdParam],
-      ],
-      ([returnType, params], verb) =>
-        addMethod(
-          METHOD_PREFIX_VERBS[verb] + VALUE,
-          params ?? EMPTY_STRING,
-          returnType,
-          getContentDoc(verb, 11),
-          vIdGeneric,
-        ),
-    );
+  if (objIsEmpty(valuesSchema)) {
+    valuesTypes = [VALUES, VALUES, ID, VALUE, VALUE + CALLBACK];
+    addImport(0, 'tinybase', ...valuesTypes);
+    arrayPush(valuesTypes, 'GetValueChange', 'valueId: Id', EMPTY_STRING);
+  } else {
+    addImport(0, 'tinybase', 'ValueChange');
+    valuesTypes = getValuesTypes();
+    valuesTypes[3] += '<VId>';
+    arrayPush(valuesTypes, 'valueId: VId', `<VId extends ${valuesTypes[2]}>`);
   }
+
+  // Values, ValuesWhenSet, ValueId,
+  // Value<>,
+  // ValueCallback, ValuesCallback, GetValueChange
+  const [
+    valuesType,
+    valuesWhenSetType,
+    valueIdType,
+    valueType,
+    valueCallbackType,
+    _getValueChangeType,
+    vIdParam,
+    vIdGeneric,
+  ] = valuesTypes;
+
+  // getValues, hasValues, setValues, delValues
+  arrayForEach(
+    [[valuesType], [BOOLEAN], [STORE, 'values: ' + valuesWhenSetType], [STORE]],
+    ([returnType, params], verb) =>
+      addMethod(
+        METHOD_PREFIX_VERBS[verb] + VALUES,
+        params ?? EMPTY_STRING,
+        returnType,
+        getTheContentOfTheStoreDoc(2, verb),
+      ),
+  );
+
+  // setPartialValues
+  addMethod(
+    'set' + PARTIAL + VALUES,
+    'partialValues: ' + valuesWhenSetType,
+    STORE,
+    getTheContentOfTheStoreDoc(2, 4),
+  );
+
+  // getValueIds
+  addMethod(
+    GET + VALUE_IDS,
+    EMPTY_STRING,
+    valueIdType + SQUARE_BRACKETS,
+    getIdsDoc(VALUE, THE_STORE),
+  );
+
+  // forEachValue
+  addMethod(
+    METHOD_PREFIX_VERBS[5] + VALUE,
+    'valueCallback: ' + valueCallbackType,
+    VOID,
+    getForEachDoc(VALUE, THE_STORE),
+  );
+
+  // getValue, hasValue, setValue, delValue
+  arrayForEach(
+    [
+      [valueType, vIdParam],
+      [BOOLEAN, vIdParam],
+      [STORE, vIdParam + ', value: ' + valueType],
+      [STORE, vIdParam],
+    ],
+    ([returnType, params], verb) =>
+      addMethod(
+        METHOD_PREFIX_VERBS[verb] + VALUE,
+        params ?? EMPTY_STRING,
+        returnType,
+        getContentDoc(verb, 11),
+        vIdGeneric,
+      ),
+  );
 
   return [
     build(
