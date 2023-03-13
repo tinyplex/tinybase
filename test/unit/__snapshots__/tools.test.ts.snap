@@ -9405,9 +9405,54 @@ interface Refined {
   getValues(): Values;
 
   /**
+   * Checks existence of the keyed value content of the Store.
+   */
+  hasValues(): boolean;
+
+  /**
    * Sets the keyed value content of the Store.
    */
   setValues(values: ValuesWhenSet): Store;
+
+  /**
+   * Deletes the keyed value content of the Store.
+   */
+  delValues(): Store;
+
+  /**
+   * Sets part of the keyed value content of the Store.
+   */
+  setPartialValues(partialValues: ValuesWhenSet): Store;
+
+  /**
+   * Gets the Ids of the Values in the Store.
+   */
+  getValueIds(): ValueId[];
+
+  /**
+   * Calls a function for each Value in the Store.
+   */
+  forEachValue(valueCallback: ValueCallback): void;
+
+  /**
+   * Gets a Value.
+   */
+  getValue<VId extends ValueId>(valueId: VId): Value<VId>;
+
+  /**
+   * Checks existence of a Value.
+   */
+  hasValue<VId extends ValueId>(valueId: VId): boolean;
+
+  /**
+   * Sets a Value.
+   */
+  setValue<VId extends ValueId>(valueId: VId, value: Value<VId>): Store;
+
+  /**
+   * Deletes a Value.
+   */
+  delValue<VId extends ValueId>(valueId: VId): Store;
 }
 
 export type Todo = Omit<StoreCore, keyof Refined>;
@@ -9478,9 +9523,54 @@ interface Refined {
   getValues(): Values;
 
   /**
+   * Checks existence of the keyed value content of the Store.
+   */
+  hasValues(): boolean;
+
+  /**
    * Sets the keyed value content of the Store.
    */
   setValues(values: ValuesWhenSet): Store;
+
+  /**
+   * Deletes the keyed value content of the Store.
+   */
+  delValues(): Store;
+
+  /**
+   * Sets part of the keyed value content of the Store.
+   */
+  setPartialValues(partialValues: ValuesWhenSet): Store;
+
+  /**
+   * Gets the Ids of the Values in the Store.
+   */
+  getValueIds(): ValueId[];
+
+  /**
+   * Calls a function for each Value in the Store.
+   */
+  forEachValue(valueCallback: ValueCallback): void;
+
+  /**
+   * Gets a Value.
+   */
+  getValue<VId extends ValueId>(valueId: VId): Value<VId>;
+
+  /**
+   * Checks existence of a Value.
+   */
+  hasValue<VId extends ValueId>(valueId: VId): boolean;
+
+  /**
+   * Sets a Value.
+   */
+  setValue<VId extends ValueId>(valueId: VId, value: Value<VId>): Store;
+
+  /**
+   * Deletes a Value.
+   */
+  delValue<VId extends ValueId>(valueId: VId): Store;
 }
 
 export type Todo = Omit<StoreCore, keyof Refined>;
@@ -9938,8 +10028,35 @@ delCell<TId extends TableId, CId extends CellId<TId>>(tableId: TId, rowId: Id, c
 /** Gets the keyed value content of the Store. */
 getValues(): Values;
 
+/** Checks existence of the keyed value content of the Store. */
+hasValues(): boolean;
+
 /** Sets the keyed value content of the Store. */
 setValues(values: ValuesWhenSet): Store;
+
+/** Deletes the keyed value content of the Store. */
+delValues(): Store;
+
+/** Sets part of the keyed value content of the Store. */
+setPartialValues(partialValues: ValuesWhenSet): Store;
+
+/** Gets the Ids of the Values in the Store. */
+getValueIds(): ValueId[];
+
+/** Calls a function for each Value in the Store. */
+forEachValue(valueCallback: ValueCallback): void;
+
+/** Gets a Value. */
+getValue<VId extends ValueId>(valueId: VId): Value<VId>;
+
+/** Checks existence of a Value. */
+hasValue<VId extends ValueId>(valueId: VId): boolean;
+
+/** Sets a Value. */
+setValue<VId extends ValueId>(valueId: VId, value: Value<VId>): Store;
+
+/** Deletes a Value. */
+delValue<VId extends ValueId>(valueId: VId): Store;
 
 }
 
@@ -9982,8 +10099,35 @@ interface Refined {
 /** Gets the keyed value content of the Store. */
 getValues(): Values;
 
+/** Checks existence of the keyed value content of the Store. */
+hasValues(): boolean;
+
 /** Sets the keyed value content of the Store. */
 setValues(values: ValuesWhenSet): Store;
+
+/** Deletes the keyed value content of the Store. */
+delValues(): Store;
+
+/** Sets part of the keyed value content of the Store. */
+setPartialValues(partialValues: ValuesWhenSet): Store;
+
+/** Gets the Ids of the Values in the Store. */
+getValueIds(): ValueId[];
+
+/** Calls a function for each Value in the Store. */
+forEachValue(valueCallback: ValueCallback): void;
+
+/** Gets a Value. */
+getValue<VId extends ValueId>(valueId: VId): Value<VId>;
+
+/** Checks existence of a Value. */
+hasValue<VId extends ValueId>(valueId: VId): boolean;
+
+/** Sets a Value. */
+setValue<VId extends ValueId>(valueId: VId, value: Value<VId>): Store;
+
+/** Deletes a Value. */
+delValue<VId extends ValueId>(valueId: VId): Store;
 
 }
 

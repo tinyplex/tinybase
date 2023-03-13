@@ -29,6 +29,9 @@ import {
   TABLE,
   TABLES,
   TABLE_IDS,
+  VALUE,
+  VALUES,
+  VALUE_IDS,
 } from '../../common/strings';
 import {IdMap, mapMap, mapNew} from '../../common/map';
 import {
@@ -104,7 +107,9 @@ export const getStoreCoreRefinement = (
   );
 
   if (!objIsEmpty(tablesSchema)) {
-    // Tables, TablesWhenSet
+    // Tables, TablesWhenSet, TableId,
+    // Table<>, TableWhenSet<>, Row<>, RowWhenSet<>, CellId<>, Cell<>,
+    // CellCallback, RowCallback, TableCallback, GetCellChange
     const [
       tablesType,
       tablesWhenSetType,
@@ -160,18 +165,18 @@ export const getStoreCoreRefinement = (
     // getTable, hasTable, setTable, delTable
     arrayForEach(
       [
-        [tableType + '<TId>', tIdParam, tIdGeneric],
-        [BOOLEAN, tIdParam, tIdGeneric],
-        [STORE, tIdParam + `, table: ${tableWhenSetType}<TId>`, tIdGeneric],
-        [STORE, tIdParam, tIdGeneric],
+        [tableType + '<TId>', tIdParam],
+        [BOOLEAN, tIdParam],
+        [STORE, tIdParam + `, table: ${tableWhenSetType}<TId>`],
+        [STORE, tIdParam],
       ],
-      ([returnType, params, generic], verb) =>
+      ([returnType, params], verb) =>
         addMethod(
           METHOD_PREFIX_VERBS[verb] + TABLE,
           params ?? EMPTY_STRING,
           returnType,
           getContentDoc(verb, 3),
-          generic,
+          tIdGeneric,
         ),
     );
 
@@ -287,16 +292,78 @@ export const getStoreCoreRefinement = (
   }
 
   if (!objIsEmpty(valuesSchema)) {
-    // Values, ValuesWhenSet
-    const [valuesType, valuesWhenSetType] = getValuesTypes();
+    // Values, ValuesWhenSet, ValueId,
+    // Value<>,
+    // ValueCallback, ValuesCallback, GetValueChange
+    const [
+      valuesType,
+      valuesWhenSetType,
+      valueIdType,
+      valueType,
+      valueCallbackType,
+      _getValueChangeType,
+    ] = getValuesTypes();
 
-    addMethod('getValues', '', valuesType, getTheContentOfTheStoreDoc(2, 0));
+    // getValues, hasValues, setValues, delValues
+    arrayForEach(
+      [
+        [valuesType],
+        [BOOLEAN],
+        [STORE, 'values: ' + valuesWhenSetType],
+        [STORE],
+      ],
+      ([returnType, params], verb) =>
+        addMethod(
+          METHOD_PREFIX_VERBS[verb] + VALUES,
+          params ?? EMPTY_STRING,
+          returnType,
+          getTheContentOfTheStoreDoc(2, verb),
+        ),
+    );
 
+    // setPartialValues
     addMethod(
-      'setValues',
-      'values: ' + valuesWhenSetType,
-      'Store',
-      getTheContentOfTheStoreDoc(2, 2),
+      'set' + PARTIAL + VALUES,
+      'partialValues: ' + valuesWhenSetType,
+      STORE,
+      getTheContentOfTheStoreDoc(2, 4),
+    );
+
+    // getValueIds
+    addMethod(
+      GET + VALUE_IDS,
+      EMPTY_STRING,
+      valueIdType + SQUARE_BRACKETS,
+      getIdsDoc(VALUE, THE_STORE),
+    );
+
+    // forEachValue
+    addMethod(
+      METHOD_PREFIX_VERBS[5] + VALUE,
+      'valueCallback: ' + valueCallbackType,
+      VOID,
+      getForEachDoc(VALUE, THE_STORE),
+    );
+
+    const vIdParam = 'valueId: VId';
+    const vIdGeneric = `<VId extends ${valueIdType}>`;
+
+    // getValue, hasValue, setValue, delValue
+    arrayForEach(
+      [
+        [valueType + '<VId>', vIdParam],
+        [BOOLEAN, vIdParam],
+        [STORE, vIdParam + `, value: ${valueType}<VId>`],
+        [STORE, vIdParam],
+      ],
+      ([returnType, params], verb) =>
+        addMethod(
+          METHOD_PREFIX_VERBS[verb] + VALUE,
+          params ?? EMPTY_STRING,
+          returnType,
+          getContentDoc(verb, 11),
+          vIdGeneric,
+        ),
     );
   }
 
