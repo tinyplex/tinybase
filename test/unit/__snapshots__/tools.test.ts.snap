@@ -9471,7 +9471,19 @@ export function createStore(): Store;
 exports[`Refinements Pretty keyed value 1`] = `
 [
   "export * from 'tinybase';
-import {Id, Ids, Store as StoreCore, ValueChange} from 'tinybase';
+import {
+  Cell,
+  CellCallback,
+  Id,
+  Ids,
+  Row,
+  RowCallback,
+  Store as StoreCore,
+  Table,
+  TableCallback,
+  Tables,
+  ValueChange,
+} from 'tinybase';
 
 /**
  * Represents the keyed value content of the Store.
@@ -9517,6 +9529,137 @@ export type ValueCallback = (...[valueId, value]: ValueIdValueArray) => void;
 export type GetValueChange = (valueId: ValueId) => ValueChange;
 
 interface Refined {
+  /**
+   * Gets the tabular content of the Store.
+   */
+  getTables(): Tables;
+
+  /**
+   * Checks existence of the tabular content of the Store.
+   */
+  hasTables(): boolean;
+
+  /**
+   * Sets the tabular content of the Store.
+   */
+  setTables(tables: Tables): Store;
+
+  /**
+   * Deletes the tabular content of the Store.
+   */
+  delTables(): Store;
+
+  /**
+   * Gets the Ids of the Tables in the Store.
+   */
+  getTableIds(): Id[];
+
+  /**
+   * Calls a function for each Table in the Store.
+   */
+  forEachTable(tableCallback: TableCallback): void;
+
+  /**
+   * Gets a Table.
+   */
+  getTable(tableId: Id): Table;
+
+  /**
+   * Checks existence of a Table.
+   */
+  hasTable(tableId: Id): boolean;
+
+  /**
+   * Sets a Table.
+   */
+  setTable(tableId: Id, table: Table): Store;
+
+  /**
+   * Deletes a Table.
+   */
+  delTable(tableId: Id): Store;
+
+  /**
+   * Gets the Ids of the Rows in a Table.
+   */
+  getRowIds(tableId: Id): Ids;
+
+  /**
+   * Gets the Ids of the Rows in a Table.
+   */
+  getSortedRowIds(
+    tableId: Id,
+    cellId?: Id,
+    descending?: boolean,
+    offset?: number,
+    limit?: number,
+  ): Ids;
+
+  /**
+   * Calls a function for each Row in a Table.
+   */
+  forEachRow(tableId: Id, rowCallback: RowCallback): void;
+
+  /**
+   * Gets a Row.
+   */
+  getRow(tableId: Id, rowId: Id): Row;
+
+  /**
+   * Checks existence of a Row.
+   */
+  hasRow(tableId: Id, rowId: Id): boolean;
+
+  /**
+   * Sets a Row.
+   */
+  setRow(tableId: Id, rowId: Id, row: Row): Store;
+
+  /**
+   * Deletes a Row.
+   */
+  delRow(tableId: Id, rowId: Id): Store;
+
+  /**
+   * Sets part of a Row.
+   */
+  setPartialRow(tableId: Id, rowId: Id, partialRow: Row): Store;
+
+  /**
+   * Add a new Row.
+   */
+  addRow(tableId: Id, row: Row): Id | undefined;
+
+  /**
+   * Gets the Ids of the Cells in a Row.
+   */
+  getCellIds(tableId: Id, rowId: Id): Id[];
+
+  /**
+   * Calls a function for each Cell in a Row.
+   */
+  forEachCell(tableId: Id, rowId: Id, cellCallback: CellCallback): void;
+
+  /**
+   * Gets a Cell.
+   */
+  getCell(tableId: Id, rowId: Id, cellId: Id): Cell;
+
+  /**
+   * Checks existence of a Cell.
+   */
+  hasCell(tableId: Id, rowId: Id, cellId: Id): boolean;
+
+  /**
+   * Sets a Cell.
+   */
+  setCell(tableId: Id, rowId: Id, cellId: Id, cell: Cell): Store;
+
+  /**
+   * Deletes a Cell.
+   */
+  delCell(tableId: Id, rowId: Id, cellId: Id): Store;
+
   /**
    * Gets the keyed value content of the Store.
    */
@@ -10135,7 +10278,7 @@ export function createStore(): Store",
 exports[`Refinements Unpretty keyed value 1`] = `
 [
   "export * from 'tinybase';
-import {Id, Ids, Store as StoreCore, ValueChange} from 'tinybase';
+import {Cell, CellCallback, Id, Ids, Row, RowCallback, Store as StoreCore, Table, TableCallback, Tables, ValueChange} from 'tinybase';
 
 /** Represents the keyed value content of the Store. */
 export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string};
@@ -10159,6 +10302,81 @@ export type ValueCallback = (...[valueId, value]: ValueIdValueArray) => void;
 export type GetValueChange = (valueId: ValueId) => ValueChange;
 
 interface Refined {
+/** Gets the tabular content of the Store. */
+getTables(): Tables;
+
+/** Checks existence of the tabular content of the Store. */
+hasTables(): boolean;
+
+/** Sets the tabular content of the Store. */
+setTables(tables: Tables): Store;
+
+/** Deletes the tabular content of the Store. */
+delTables(): Store;
+
+/** Gets the Ids of the Tables in the Store. */
+getTableIds(): Id[];
+
+/** Calls a function for each Table in the Store. */
+forEachTable(tableCallback: TableCallback): void;
+
+/** Gets a Table. */
+getTable(tableId: Id): Table;
+
+/** Checks existence of a Table. */
+hasTable(tableId: Id): boolean;
+
+/** Sets a Table. */
+setTable(tableId: Id, table: Table): Store;
+
+/** Deletes a Table. */
+delTable(tableId: Id): Store;
+
+/** Gets the Ids of the Rows in a Table. */
+getRowIds(tableId: Id): Ids;
+
+/** Gets the Ids of the Rows in a Table. */
+getSortedRowIds(tableId: Id, cellId?: Id, descending?: boolean, offset?: number, limit?: number): Ids;
+
+/** Calls a function for each Row in a Table. */
+forEachRow(tableId: Id, rowCallback: RowCallback): void;
+
+/** Gets a Row. */
+getRow(tableId: Id, rowId: Id): Row;
+
+/** Checks existence of a Row. */
+hasRow(tableId: Id, rowId: Id): boolean;
+
+/** Sets a Row. */
+setRow(tableId: Id, rowId: Id, row: Row): Store;
+
+/** Deletes a Row. */
+delRow(tableId: Id, rowId: Id): Store;
+
+/** Sets part of a Row. */
+setPartialRow(tableId: Id, rowId: Id, partialRow: Row): Store;
+
+/** Add a new Row. */
+addRow(tableId: Id, row: Row): Id | undefined;
+
+/** Gets the Ids of the Cells in a Row. */
+getCellIds(tableId: Id, rowId: Id): Id[];
+
+/** Calls a function for each Cell in a Row. */
+forEachCell(tableId: Id, rowId: Id, cellCallback: CellCallback): void;
+
+/** Gets a Cell. */
+getCell(tableId: Id, rowId: Id, cellId: Id): Cell;
+
+/** Checks existence of a Cell. */
+hasCell(tableId: Id, rowId: Id, cellId: Id): boolean;
+
+/** Sets a Cell. */
+setCell(tableId: Id, rowId: Id, cellId: Id, cell: Cell): Store;
+
+/** Deletes a Cell. */
+delCell(tableId: Id, rowId: Id, cellId: Id): Store;
+
 /** Gets the keyed value content of the Store. */
 getValues(): Values;
 
