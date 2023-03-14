@@ -7,6 +7,7 @@ import {
   OR_UNDEFINED,
   PARTIAL,
   ROW_ID_PARAM,
+  SCHEMA,
   SORTED_ARGS,
   SQUARE_BRACKETS,
   STORE,
@@ -52,6 +53,9 @@ import {getSchemaFunctions} from '../common/schema';
 import {getTypeFunctions} from '../api/types';
 import {isArray} from '../../common/other';
 import {objIsEmpty} from '../../common/obj';
+
+const MAY_CONTRADICT_REFINEMENT =
+  '. Note that this may contradict the generated type refinements';
 
 export const getStoreCoreRefinement = (
   tablesSchema: TablesSchema,
@@ -107,7 +111,16 @@ export const getStoreCoreRefinement = (
       generic,
     ]);
 
-  addImport(0, 'tinybase', ID, IDS, STORE + ' as StoreCore', JSON);
+  addImport(
+    0,
+    'tinybase',
+    ID,
+    IDS,
+    STORE + ' as StoreCore',
+    JSON,
+    TABLES + SCHEMA,
+    VALUES + SCHEMA,
+  );
 
   let tablesTypes: string[];
   if (objIsEmpty(tablesSchema)) {
@@ -400,14 +413,14 @@ export const getStoreCoreRefinement = (
 
   // ---
 
-  // getJson, setJson
-  // getTablesJson, setTablesJson
-  // getValuesJson, setValuesJson
+  // getJson, setJson, getSchemaJson
+  // getTablesJson, setTablesJson, getTablesSchemaJson, setTablesSchema
+  // getValuesJson, setValuesJson, getValuesSchemaJson, setValuesSchema
   arrayForEach(
     [
-      [EMPTY_STRING, 'json'],
-      [TABLES, 'tablesJson'],
-      [VALUES, 'valuesJson'],
+      [EMPTY_STRING, 'tablesAndValues'],
+      [TABLES, 'tables'],
+      [VALUES, 'values'],
     ],
     ([noun, param], content) => {
       addMethod(
@@ -418,11 +431,37 @@ export const getStoreCoreRefinement = (
       );
       addMethod(
         'set' + noun + JSON,
-        param + ': ' + JSON,
+        param + JSON + ': ' + JSON,
         STORE,
         getTheContentOfTheStoreDoc(content as any, 7),
       );
+      addMethod(
+        GET + noun + SCHEMA + JSON,
+        EMPTY_STRING,
+        JSON,
+        getTheContentOfTheStoreDoc(content as any, 14),
+      );
+      if (noun) {
+        addMethod(
+          'set' + noun + SCHEMA,
+          param + SCHEMA + ': ' + noun + SCHEMA,
+          STORE,
+          getTheContentOfTheStoreDoc(content as any, 15) +
+            MAY_CONTRADICT_REFINEMENT,
+        );
+      }
     },
+  );
+
+  // setSchema
+  addMethod(
+    'set' + SCHEMA,
+    [
+      `tables${SCHEMA}: ` + TABLES + SCHEMA,
+      `values${SCHEMA}?: ` + VALUES + SCHEMA,
+    ],
+    STORE,
+    getTheContentOfTheStoreDoc(0, 15) + MAY_CONTRADICT_REFINEMENT,
   );
 
   return [

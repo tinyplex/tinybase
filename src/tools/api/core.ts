@@ -33,6 +33,7 @@ import {
   REPRESENTS,
   RETURNS_VOID,
   ROW_ID_PARAM,
+  SCHEMA,
   SORTED_ARGS,
   SQUARE_BRACKETS,
   THE_END_OF_THE_TRANSACTION,
@@ -816,7 +817,7 @@ export const getStoreCoreApi = (
 
     arrayPush(
       createSteps,
-      '.setTablesSchema({',
+      '.set' + TABLES + SCHEMA + '({',
       flat(
         mapTablesSchema((tableId, _, TABLE_ID) => [
           `[${TABLE_ID}]: {`,
@@ -1043,7 +1044,7 @@ export const getStoreCoreApi = (
 
     arrayPush(
       createSteps,
-      '.setValuesSchema({',
+      '.set' + VALUES + SCHEMA + '({',
       mapValuesSchema((_, type, defaultValue, VALUE_ID) => [
         `[${VALUE_ID}]: {[${addConstant(
           snake(TYPE),
@@ -1091,8 +1092,8 @@ export const getStoreCoreApi = (
     JSON,
     storeType,
     getTheContentOfTheStoreDoc(0, 7),
-    'json: ' + JSON,
-    'json',
+    'tablesAndValuesJson: ' + JSON,
+    'tablesAndValuesJson',
   );
 
   // transaction

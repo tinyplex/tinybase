@@ -32,12 +32,14 @@ export const PARTIAL = 'Partial';
 export const REGISTERS_A_LISTENER = `Registers a ${LISTENER_} that will be called`;
 export const REPRESENTS = 'Represents';
 export const ROW_ID_PARAM = 'rowId: Id';
+export const SCHEMA = 'Schema';
 export const SET = 'Set';
 export const SORTED_ARGS =
   ', descending?: boolean, offset?: number, limit?: number';
 export const SQUARE_BRACKETS = '[]';
 export const STORE = 'Store';
 export const THE_STORE = 'the ' + STORE;
+export const THE_SCHEMA_FOR = ' the schema for';
 export const TRANSACTION = 'Transaction';
 export const TRANSACTION_ = lower(TRANSACTION);
 export const THE_END_OF_THE_TRANSACTION = 'the end of the ' + TRANSACTION_;
@@ -143,6 +145,8 @@ export const VERBS = [
   GETS_A_CALLBACK_THAT_CAN + 'set part of',
   GETS_A_CALLBACK_THAT_CAN + 'delete',
   'Renders',
+  'Gets ' + A_STRING_SERIALIZATION_OF + THE_SCHEMA_FOR,
+  'Sets' + THE_SCHEMA_FOR,
 ];
 
 export const METHOD_PREFIX_VERBS = [
