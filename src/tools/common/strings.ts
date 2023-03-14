@@ -147,6 +147,7 @@ export const VERBS = [
   'Renders',
   'Gets ' + A_STRING_SERIALIZATION_OF + THE_SCHEMA_FOR,
   'Sets' + THE_SCHEMA_FOR,
+  'Deletes' + THE_SCHEMA_FOR,
 ];
 
 export const METHOD_PREFIX_VERBS = [
