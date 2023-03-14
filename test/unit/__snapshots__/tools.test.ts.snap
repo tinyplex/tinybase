@@ -9482,6 +9482,11 @@ interface Refined {
   getSchemaJson(): Json;
 
   /**
+   * Deletes the schema for the content of the Store.
+   */
+  delSchema(): Store;
+
+  /**
    * Gets a string serialization of the tabular content of the Store.
    */
   getTablesJson(): Json;
@@ -9504,6 +9509,11 @@ interface Refined {
   setTablesSchema(tablesSchema: TablesSchema): Store;
 
   /**
+   * Deletes the schema for the tabular content of the Store.
+   */
+  delTablesSchema(): Store;
+
+  /**
    * Gets a string serialization of the keyed value content of the Store.
    */
   getValuesJson(): Json;
@@ -9524,6 +9534,11 @@ interface Refined {
    * may contradict the generated type refinements.
    */
   setValuesSchema(valuesSchema: ValuesSchema): Store;
+
+  /**
+   * Deletes the schema for the keyed value content of the Store.
+   */
+  delValuesSchema(): Store;
 
   /**
    * Sets the schema for the content of the Store. Note that this may contradict
@@ -9811,6 +9826,11 @@ interface Refined {
   getSchemaJson(): Json;
 
   /**
+   * Deletes the schema for the content of the Store.
+   */
+  delSchema(): Store;
+
+  /**
    * Gets a string serialization of the tabular content of the Store.
    */
   getTablesJson(): Json;
@@ -9833,6 +9853,11 @@ interface Refined {
   setTablesSchema(tablesSchema: TablesSchema): Store;
 
   /**
+   * Deletes the schema for the tabular content of the Store.
+   */
+  delTablesSchema(): Store;
+
+  /**
    * Gets a string serialization of the keyed value content of the Store.
    */
   getValuesJson(): Json;
@@ -9853,6 +9878,11 @@ interface Refined {
    * may contradict the generated type refinements.
    */
   setValuesSchema(valuesSchema: ValuesSchema): Store;
+
+  /**
+   * Deletes the schema for the keyed value content of the Store.
+   */
+  delValuesSchema(): Store;
 
   /**
    * Sets the schema for the content of the Store. Note that this may contradict
@@ -10231,6 +10261,11 @@ interface Refined {
   getSchemaJson(): Json;
 
   /**
+   * Deletes the schema for the content of the Store.
+   */
+  delSchema(): Store;
+
+  /**
    * Gets a string serialization of the tabular content of the Store.
    */
   getTablesJson(): Json;
@@ -10253,6 +10288,11 @@ interface Refined {
   setTablesSchema(tablesSchema: TablesSchema): Store;
 
   /**
+   * Deletes the schema for the tabular content of the Store.
+   */
+  delTablesSchema(): Store;
+
+  /**
    * Gets a string serialization of the keyed value content of the Store.
    */
   getValuesJson(): Json;
@@ -10273,6 +10313,11 @@ interface Refined {
    * may contradict the generated type refinements.
    */
   setValuesSchema(valuesSchema: ValuesSchema): Store;
+
+  /**
+   * Deletes the schema for the keyed value content of the Store.
+   */
+  delValuesSchema(): Store;
 
   /**
    * Sets the schema for the content of the Store. Note that this may contradict
@@ -10486,6 +10531,9 @@ setJson(tablesAndValuesJson: Json): Store;
 /** Gets a string serialization of the schema for the content of the Store. */
 getSchemaJson(): Json;
 
+/** Deletes the schema for the content of the Store. */
+delSchema(): Store;
+
 /** Gets a string serialization of the tabular content of the Store. */
 getTablesJson(): Json;
 
@@ -10498,6 +10546,9 @@ getTablesSchemaJson(): Json;
 /** Sets the schema for the tabular content of the Store. Note that this may contradict the generated type refinements. */
 setTablesSchema(tablesSchema: TablesSchema): Store;
 
+/** Deletes the schema for the tabular content of the Store. */
+delTablesSchema(): Store;
+
 /** Gets a string serialization of the keyed value content of the Store. */
 getValuesJson(): Json;
 
@@ -10509,6 +10560,9 @@ getValuesSchemaJson(): Json;
 
 /** Sets the schema for the keyed value content of the Store. Note that this may contradict the generated type refinements. */
 setValuesSchema(valuesSchema: ValuesSchema): Store;
+
+/** Deletes the schema for the keyed value content of the Store. */
+delValuesSchema(): Store;
 
 /** Sets the schema for the content of the Store. Note that this may contradict the generated type refinements. */
 setSchema(tablesSchema: TablesSchema, valuesSchema?: ValuesSchema): Store;
@@ -10668,6 +10722,9 @@ setJson(tablesAndValuesJson: Json): Store;
 /** Gets a string serialization of the schema for the content of the Store. */
 getSchemaJson(): Json;
 
+/** Deletes the schema for the content of the Store. */
+delSchema(): Store;
+
 /** Gets a string serialization of the tabular content of the Store. */
 getTablesJson(): Json;
 
@@ -10680,6 +10737,9 @@ getTablesSchemaJson(): Json;
 /** Sets the schema for the tabular content of the Store. Note that this may contradict the generated type refinements. */
 setTablesSchema(tablesSchema: TablesSchema): Store;
 
+/** Deletes the schema for the tabular content of the Store. */
+delTablesSchema(): Store;
+
 /** Gets a string serialization of the keyed value content of the Store. */
 getValuesJson(): Json;
 
@@ -10691,6 +10751,9 @@ getValuesSchemaJson(): Json;
 
 /** Sets the schema for the keyed value content of the Store. Note that this may contradict the generated type refinements. */
 setValuesSchema(valuesSchema: ValuesSchema): Store;
+
+/** Deletes the schema for the keyed value content of the Store. */
+delValuesSchema(): Store;
 
 /** Sets the schema for the content of the Store. Note that this may contradict the generated type refinements. */
 setSchema(tablesSchema: TablesSchema, valuesSchema?: ValuesSchema): Store;
@@ -10877,6 +10940,9 @@ setJson(tablesAndValuesJson: Json): Store;
 /** Gets a string serialization of the schema for the content of the Store. */
 getSchemaJson(): Json;
 
+/** Deletes the schema for the content of the Store. */
+delSchema(): Store;
+
 /** Gets a string serialization of the tabular content of the Store. */
 getTablesJson(): Json;
 
@@ -10889,6 +10955,9 @@ getTablesSchemaJson(): Json;
 /** Sets the schema for the tabular content of the Store. Note that this may contradict the generated type refinements. */
 setTablesSchema(tablesSchema: TablesSchema): Store;
 
+/** Deletes the schema for the tabular content of the Store. */
+delTablesSchema(): Store;
+
 /** Gets a string serialization of the keyed value content of the Store. */
 getValuesJson(): Json;
 
@@ -10900,6 +10969,9 @@ getValuesSchemaJson(): Json;
 
 /** Sets the schema for the keyed value content of the Store. Note that this may contradict the generated type refinements. */
 setValuesSchema(valuesSchema: ValuesSchema): Store;
+
+/** Deletes the schema for the keyed value content of the Store. */
+delValuesSchema(): Store;
 
 /** Sets the schema for the content of the Store. Note that this may contradict the generated type refinements. */
 setSchema(tablesSchema: TablesSchema, valuesSchema?: ValuesSchema): Store;
