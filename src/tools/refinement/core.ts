@@ -2,6 +2,7 @@ import {
   A,
   CALLBACK,
   ID,
+  JSON,
   METHOD_PREFIX_VERBS,
   OR_UNDEFINED,
   PARTIAL,
@@ -71,7 +72,7 @@ export const getStoreCoreRefinement = (
   const [mapTablesSchema, mapCellSchema, mapValuesSchema] = getSchemaFunctions(
     tablesSchema,
     valuesSchema,
-    () => '',
+    () => EMPTY_STRING,
   );
 
   const [getTablesTypes, getValuesTypes] = getTypeFunctions(
@@ -106,7 +107,7 @@ export const getStoreCoreRefinement = (
       generic,
     ]);
 
-  addImport(0, 'tinybase', ID, IDS, STORE + ' as StoreCore');
+  addImport(0, 'tinybase', ID, IDS, STORE + ' as StoreCore', JSON);
 
   let tablesTypes: string[];
   if (objIsEmpty(tablesSchema)) {
@@ -395,6 +396,33 @@ export const getStoreCoreRefinement = (
         getContentDoc(verb, 11),
         vIdGeneric,
       ),
+  );
+
+  // ---
+
+  // getJson, setJson
+  // getTablesJson, setTablesJson
+  // getValuesJson, setValuesJson
+  arrayForEach(
+    [
+      [EMPTY_STRING, 'json'],
+      [TABLES, 'tablesJson'],
+      [VALUES, 'valuesJson'],
+    ],
+    ([noun, param], content) => {
+      addMethod(
+        GET + noun + JSON,
+        EMPTY_STRING,
+        JSON,
+        getTheContentOfTheStoreDoc(content as any, 6),
+      );
+      addMethod(
+        'set' + noun + JSON,
+        param + ': ' + JSON,
+        STORE,
+        getTheContentOfTheStoreDoc(content as any, 7),
+      );
+    },
   );
 
   return [
