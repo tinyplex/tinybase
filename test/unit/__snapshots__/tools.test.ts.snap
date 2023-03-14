@@ -9084,7 +9084,14 @@ value={useMemo(
 exports[`Refinements Pretty both 1`] = `
 [
   "export * from 'tinybase';
-import {CellChange, Id, Ids, Store as StoreCore, ValueChange} from 'tinybase';
+import {
+  CellChange,
+  Id,
+  Ids,
+  Json,
+  Store as StoreCore,
+  ValueChange,
+} from 'tinybase';
 
 /**
  * Represents the tabular content of the Store.
@@ -9453,6 +9460,36 @@ interface Refined {
    * Deletes a Value.
    */
   delValue<VId extends ValueId>(valueId: VId): Store;
+
+  /**
+   * Gets a string serialization of the content of the Store.
+   */
+  getJson(): Json;
+
+  /**
+   * Sets a string serialization of the content of the Store.
+   */
+  setJson(json: Json): Store;
+
+  /**
+   * Gets a string serialization of the tabular content of the Store.
+   */
+  getTablesJson(): Json;
+
+  /**
+   * Sets a string serialization of the tabular content of the Store.
+   */
+  setTablesJson(tablesJson: Json): Store;
+
+  /**
+   * Gets a string serialization of the keyed value content of the Store.
+   */
+  getValuesJson(): Json;
+
+  /**
+   * Sets a string serialization of the keyed value content of the Store.
+   */
+  setValuesJson(valuesJson: Json): Store;
 }
 
 export type Todo = Omit<StoreCore, keyof Refined>;
@@ -9476,6 +9513,7 @@ import {
   CellCallback,
   Id,
   Ids,
+  Json,
   Row,
   RowCallback,
   Store as StoreCore,
@@ -9714,6 +9752,36 @@ interface Refined {
    * Deletes a Value.
    */
   delValue<VId extends ValueId>(valueId: VId): Store;
+
+  /**
+   * Gets a string serialization of the content of the Store.
+   */
+  getJson(): Json;
+
+  /**
+   * Sets a string serialization of the content of the Store.
+   */
+  setJson(json: Json): Store;
+
+  /**
+   * Gets a string serialization of the tabular content of the Store.
+   */
+  getTablesJson(): Json;
+
+  /**
+   * Sets a string serialization of the tabular content of the Store.
+   */
+  setTablesJson(tablesJson: Json): Store;
+
+  /**
+   * Gets a string serialization of the keyed value content of the Store.
+   */
+  getValuesJson(): Json;
+
+  /**
+   * Sets a string serialization of the keyed value content of the Store.
+   */
+  setValuesJson(valuesJson: Json): Store;
 }
 
 export type Todo = Omit<StoreCore, keyof Refined>;
@@ -9736,6 +9804,7 @@ import {
   CellChange,
   Id,
   Ids,
+  Json,
   Store as StoreCore,
   Value,
   ValueCallback,
@@ -10066,6 +10135,36 @@ interface Refined {
    * Deletes a Value.
    */
   delValue(valueId: Id): Store;
+
+  /**
+   * Gets a string serialization of the content of the Store.
+   */
+  getJson(): Json;
+
+  /**
+   * Sets a string serialization of the content of the Store.
+   */
+  setJson(json: Json): Store;
+
+  /**
+   * Gets a string serialization of the tabular content of the Store.
+   */
+  getTablesJson(): Json;
+
+  /**
+   * Sets a string serialization of the tabular content of the Store.
+   */
+  setTablesJson(tablesJson: Json): Store;
+
+  /**
+   * Gets a string serialization of the keyed value content of the Store.
+   */
+  getValuesJson(): Json;
+
+  /**
+   * Sets a string serialization of the keyed value content of the Store.
+   */
+  setValuesJson(valuesJson: Json): Store;
 }
 
 export type Todo = Omit<StoreCore, keyof Refined>;
@@ -10084,7 +10183,7 @@ export function createStore(): Store;
 exports[`Refinements Unpretty both 1`] = `
 [
   "export * from 'tinybase';
-import {CellChange, Id, Ids, Store as StoreCore, ValueChange} from 'tinybase';
+import {CellChange, Id, Ids, Json, Store as StoreCore, ValueChange} from 'tinybase';
 
 /** Represents the tabular content of the Store. */
 export type Tables = {'t1'?: {[rowId: Id]: {'c1': number; 'c2': string; 'c3': string; ''?: string}}};
@@ -10264,6 +10363,24 @@ setValue<VId extends ValueId>(valueId: VId, value: Value<VId>): Store;
 /** Deletes a Value. */
 delValue<VId extends ValueId>(valueId: VId): Store;
 
+/** Gets a string serialization of the content of the Store. */
+getJson(): Json;
+
+/** Sets a string serialization of the content of the Store. */
+setJson(json: Json): Store;
+
+/** Gets a string serialization of the tabular content of the Store. */
+getTablesJson(): Json;
+
+/** Sets a string serialization of the tabular content of the Store. */
+setTablesJson(tablesJson: Json): Store;
+
+/** Gets a string serialization of the keyed value content of the Store. */
+getValuesJson(): Json;
+
+/** Sets a string serialization of the keyed value content of the Store. */
+setValuesJson(valuesJson: Json): Store;
+
 }
 
 export type Todo = Omit<StoreCore, keyof Refined>;
@@ -10278,7 +10395,7 @@ export function createStore(): Store",
 exports[`Refinements Unpretty keyed value 1`] = `
 [
   "export * from 'tinybase';
-import {Cell, CellCallback, Id, Ids, Row, RowCallback, Store as StoreCore, Table, TableCallback, Tables, ValueChange} from 'tinybase';
+import {Cell, CellCallback, Id, Ids, Json, Row, RowCallback, Store as StoreCore, Table, TableCallback, Tables, ValueChange} from 'tinybase';
 
 /** Represents the keyed value content of the Store. */
 export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string};
@@ -10410,6 +10527,24 @@ setValue<VId extends ValueId>(valueId: VId, value: Value<VId>): Store;
 /** Deletes a Value. */
 delValue<VId extends ValueId>(valueId: VId): Store;
 
+/** Gets a string serialization of the content of the Store. */
+getJson(): Json;
+
+/** Sets a string serialization of the content of the Store. */
+setJson(json: Json): Store;
+
+/** Gets a string serialization of the tabular content of the Store. */
+getTablesJson(): Json;
+
+/** Sets a string serialization of the tabular content of the Store. */
+setTablesJson(tablesJson: Json): Store;
+
+/** Gets a string serialization of the keyed value content of the Store. */
+getValuesJson(): Json;
+
+/** Sets a string serialization of the keyed value content of the Store. */
+setValuesJson(valuesJson: Json): Store;
+
 }
 
 export type Todo = Omit<StoreCore, keyof Refined>;
@@ -10424,7 +10559,7 @@ export function createStore(): Store",
 exports[`Refinements Unpretty tabular 1`] = `
 [
   "export * from 'tinybase';
-import {CellChange, Id, Ids, Store as StoreCore, Value, ValueCallback, Values} from 'tinybase';
+import {CellChange, Id, Ids, Json, Store as StoreCore, Value, ValueCallback, Values} from 'tinybase';
 
 /** Represents the tabular content of the Store. */
 export type Tables = {'t1'?: {[rowId: Id]: {'c1': number; 'c2': string; 'c3': string; ''?: string}}};
@@ -10582,6 +10717,24 @@ setValue(valueId: Id, value: Value): Store;
 
 /** Deletes a Value. */
 delValue(valueId: Id): Store;
+
+/** Gets a string serialization of the content of the Store. */
+getJson(): Json;
+
+/** Sets a string serialization of the content of the Store. */
+setJson(json: Json): Store;
+
+/** Gets a string serialization of the tabular content of the Store. */
+getTablesJson(): Json;
+
+/** Sets a string serialization of the tabular content of the Store. */
+setTablesJson(tablesJson: Json): Store;
+
+/** Gets a string serialization of the keyed value content of the Store. */
+getValuesJson(): Json;
+
+/** Sets a string serialization of the keyed value content of the Store. */
+setValuesJson(valuesJson: Json): Store;
 
 }
 
