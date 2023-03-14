@@ -413,9 +413,11 @@ export const getStoreCoreRefinement = (
 
   // ---
 
-  // getJson, setJson, getSchemaJson
-  // getTablesJson, setTablesJson, getTablesSchemaJson, setTablesSchema
-  // getValuesJson, setValuesJson, getValuesSchemaJson, setValuesSchema
+  // getJson, setJson, getSchemaJson, delSchema
+  // getTablesJson, setTablesJson, getTablesSchemaJson, setTablesSchema,
+  //   delTablesSchema
+  // getValuesJson, setValuesJson, getValuesSchemaJson, setValuesSchema,
+  //   delValuesSchema
   arrayForEach(
     [
       [EMPTY_STRING, 'tablesAndValues'],
@@ -450,6 +452,12 @@ export const getStoreCoreRefinement = (
             MAY_CONTRADICT_REFINEMENT,
         );
       }
+      addMethod(
+        'del' + noun + SCHEMA,
+        EMPTY_STRING,
+        STORE,
+        getTheContentOfTheStoreDoc(content as any, 16),
+      );
     },
   );
 
