@@ -99,192 +99,211 @@ export const getStoreCoreRefinement = (
 
   addImport(0, 'tinybase', ID, IDS, STORE + ' as StoreCore');
 
-  if (!objIsEmpty(tablesSchema)) {
+  let tablesTypes: string[];
+  if (objIsEmpty(tablesSchema)) {
+    tablesTypes = [
+      TABLES,
+      TABLES,
+      ID,
+      TABLE,
+      TABLE,
+      ROW,
+      ROW,
+      ID,
+      CELL,
+      CELL + CALLBACK,
+      ROW + CALLBACK,
+      TABLE + CALLBACK,
+    ];
+    addImport(0, 'tinybase', ...tablesTypes);
+    arrayPush(tablesTypes, 'GetCellChange', ID, EMPTY_STRING, ID);
+  } else {
     addImport(0, 'tinybase', 'CellChange');
-
-    // Tables, TablesWhenSet, TableId,
-    // Table<>, TableWhenSet<>, Row<>, RowWhenSet<>, CellId<>, Cell<>,
-    // CellCallback, RowCallback, TableCallback, GetCellChange
-    const [
-      tablesType,
-      tablesWhenSetType,
-      tableIdType,
-      tableType,
-      tableWhenSetType,
-      rowType,
-      rowWhenSetType,
-      cellIdType,
-      cellType,
-      cellCallbackType,
-      rowCallbackType,
-      tableCallbackType,
-      _getCellChangeType,
-    ] = getTablesTypes();
-
-    // getTables, hasTables, setTables, delTables
-    arrayForEach(
-      [
-        [tablesType],
-        [BOOLEAN],
-        [STORE, 'tables: ' + tablesWhenSetType],
-        [STORE],
-      ],
-      ([returnType, params], verb) =>
-        addMethod(
-          METHOD_PREFIX_VERBS[verb] + TABLES,
-          params ?? EMPTY_STRING,
-          returnType,
-          getTheContentOfTheStoreDoc(1, verb),
-        ),
-    );
-
-    // getTableIds
-    addMethod(
-      GET + TABLE_IDS,
-      EMPTY_STRING,
-      tableIdType + SQUARE_BRACKETS,
-      getIdsDoc(TABLE, THE_STORE),
-    );
-
-    // forEachTable
-    addMethod(
-      METHOD_PREFIX_VERBS[5] + TABLE,
-      'tableCallback: ' + tableCallbackType,
-      VOID,
-      getForEachDoc(TABLE, THE_STORE),
-    );
-
-    const tIdParam = 'tableId: TId';
-    const tIdGeneric = `<TId extends ${tableIdType}>`;
-
-    // getTable, hasTable, setTable, delTable
-    arrayForEach(
-      [
-        [tableType + '<TId>', tIdParam],
-        [BOOLEAN, tIdParam],
-        [STORE, tIdParam + `, table: ${tableWhenSetType}<TId>`],
-        [STORE, tIdParam],
-      ],
-      ([returnType, params], verb) =>
-        addMethod(
-          METHOD_PREFIX_VERBS[verb] + TABLE,
-          params ?? EMPTY_STRING,
-          returnType,
-          getContentDoc(verb, 3),
-          tIdGeneric,
-        ),
-    );
-
-    // getRowIds
-    addMethod(
-      GET + ROW_IDS,
-      tIdParam,
-      IDS,
-      getIdsDoc(ROW, A + TABLE),
-      tIdGeneric,
-    );
-
-    // getSortedRowIds
-    addMethod(
-      GET + SORTED_ROW_IDS,
-      tIdParam + ', cellId?: ' + cellIdType + '<TId>' + SORTED_ARGS,
-      IDS,
-      getIdsDoc(ROW, A + TABLE),
-      tIdGeneric,
-    );
-
-    // forEachRow
-    addMethod(
-      METHOD_PREFIX_VERBS[5] + ROW,
-      tIdParam + ', rowCallback: ' + rowCallbackType + '<TId>',
-      VOID,
-      getForEachDoc(ROW, A + TABLE),
-      tIdGeneric,
-    );
-
-    const rowIdParams = tIdParam + ', ' + ROW_ID_PARAM;
-
-    // getRow, hasRow, setRow, delRow
-    arrayForEach(
-      [
-        [rowType + '<TId>', rowIdParams, tIdGeneric],
-        [BOOLEAN, rowIdParams, tIdGeneric],
-        [STORE, rowIdParams + `, row: ${rowWhenSetType}<TId>`, tIdGeneric],
-        [STORE, rowIdParams, tIdGeneric],
-      ],
-      ([returnType, params, generic], verb) =>
-        addMethod(
-          METHOD_PREFIX_VERBS[verb] + ROW,
-          params ?? EMPTY_STRING,
-          returnType,
-          getContentDoc(verb, 5),
-          generic,
-        ),
-    );
-
-    // setPartialRow
-    addMethod(
-      'set' + PARTIAL + ROW,
-      tIdParam + ', ' + ROW_ID_PARAM + `, partialRow: ${rowWhenSetType}<TId>`,
-      STORE,
-      getContentDoc(4, 5),
-      tIdGeneric,
-    );
-
-    // addRow
-    addMethod(
-      ADD + ROW,
-      tIdParam + `, row: ${rowWhenSetType}<TId>`,
-      ID + OR_UNDEFINED,
-      'Add a new ' + ROW,
-      tIdGeneric,
-    );
-
-    // getCellIds
-    addMethod(
-      GET + CELL_IDS,
-      tIdParam + ', ' + ROW_ID_PARAM,
-      cellIdType + '<TId>' + SQUARE_BRACKETS,
-      getIdsDoc(CELL, A + ROW),
-      tIdGeneric,
-    );
-
-    // forEachCell
-    addMethod(
-      METHOD_PREFIX_VERBS[5] + CELL,
-      tIdParam +
-        ', ' +
-        ROW_ID_PARAM +
-        ', cellCallback: ' +
-        cellCallbackType +
-        '<TId>',
-      VOID,
-      getForEachDoc(CELL, A + ROW),
-      tIdGeneric,
-    );
-
-    const cIdParams = rowIdParams + ', cellId: CId';
-    const cIdGeneric =
-      `<TId extends ${tableIdType}, ` + `CId extends ${cellIdType}<TId>>`;
-
-    // getCell, hasCell, setCell, delCell
-    arrayForEach(
-      [
-        [cellType + '<TId, CId>', cIdParams, cIdGeneric],
-        [BOOLEAN, cIdParams, cIdGeneric],
-        [STORE, cIdParams + `, cell: ${cellType}<TId, CId>`, cIdGeneric],
-        [STORE, cIdParams, cIdGeneric],
-      ],
-      ([returnType, params, generic], verb) =>
-        addMethod(
-          METHOD_PREFIX_VERBS[verb] + CELL,
-          params ?? EMPTY_STRING,
-          returnType,
-          getContentDoc(verb, 7),
-          generic,
-        ),
+    tablesTypes = getTablesTypes();
+    arrayForEach([3, 4, 5, 6, 7, 9, 10], (i) => (tablesTypes[i] += '<TId>'));
+    tablesTypes[8] += '<TId, CId>';
+    arrayPush(
+      tablesTypes,
+      'TId',
+      `<TId extends ${tablesTypes[2]}>`,
+      'CId',
+      `<TId extends ${tablesTypes[2]}, CId extends ${tablesTypes[7]}>`,
     );
   }
+
+  // Tables, TablesWhenSet, TableId,
+  // Table<>, TableWhenSet<>, Row<>, RowWhenSet<>, CellId<>, Cell<>,
+  // CellCallback, RowCallback, TableCallback, GetCellChange
+  const [
+    tablesType,
+    tablesWhenSetType,
+    tableIdType,
+    tableType,
+    tableWhenSetType,
+    rowType,
+    rowWhenSetType,
+    cellIdType,
+    cellType,
+    cellCallbackType,
+    rowCallbackType,
+    tableCallbackType,
+    _getCellChangeType,
+    tId,
+    tIdGeneric,
+    cId,
+    cIdGeneric,
+  ] = tablesTypes;
+
+  const tableIdParam = 'tableId: ' + tId;
+  const rowIdParams = tableIdParam + ', ' + ROW_ID_PARAM;
+  const cellIdParams = rowIdParams + ', cellId: ' + cId;
+
+  // getTables, hasTables, setTables, delTables
+  arrayForEach(
+    [[tablesType], [BOOLEAN], [STORE, 'tables: ' + tablesWhenSetType], [STORE]],
+    ([returnType, params], verb) =>
+      addMethod(
+        METHOD_PREFIX_VERBS[verb] + TABLES,
+        params ?? EMPTY_STRING,
+        returnType,
+        getTheContentOfTheStoreDoc(1, verb),
+      ),
+  );
+
+  // getTableIds
+  addMethod(
+    GET + TABLE_IDS,
+    EMPTY_STRING,
+    tableIdType + SQUARE_BRACKETS,
+    getIdsDoc(TABLE, THE_STORE),
+  );
+
+  // forEachTable
+  addMethod(
+    METHOD_PREFIX_VERBS[5] + TABLE,
+    'tableCallback: ' + tableCallbackType,
+    VOID,
+    getForEachDoc(TABLE, THE_STORE),
+  );
+
+  // getTable, hasTable, setTable, delTable
+  arrayForEach(
+    [
+      [tableType, tableIdParam],
+      [BOOLEAN, tableIdParam],
+      [STORE, tableIdParam + ', table: ' + tableWhenSetType],
+      [STORE, tableIdParam],
+    ],
+    ([returnType, params], verb) =>
+      addMethod(
+        METHOD_PREFIX_VERBS[verb] + TABLE,
+        params ?? EMPTY_STRING,
+        returnType,
+        getContentDoc(verb, 3),
+        tIdGeneric,
+      ),
+  );
+
+  // getRowIds
+  addMethod(
+    GET + ROW_IDS,
+    tableIdParam,
+    IDS,
+    getIdsDoc(ROW, A + TABLE),
+    tIdGeneric,
+  );
+
+  // getSortedRowIds
+  addMethod(
+    GET + SORTED_ROW_IDS,
+    tableIdParam + ', cellId?: ' + cellIdType + SORTED_ARGS,
+    IDS,
+    getIdsDoc(ROW, A + TABLE),
+    tIdGeneric,
+  );
+
+  // forEachRow
+  addMethod(
+    METHOD_PREFIX_VERBS[5] + ROW,
+    tableIdParam + ', rowCallback: ' + rowCallbackType,
+    VOID,
+    getForEachDoc(ROW, A + TABLE),
+    tIdGeneric,
+  );
+
+  // getRow, hasRow, setRow, delRow
+  arrayForEach(
+    [
+      [rowType, rowIdParams, tIdGeneric],
+      [BOOLEAN, rowIdParams, tIdGeneric],
+      [STORE, rowIdParams + ', row: ' + rowWhenSetType, tIdGeneric],
+      [STORE, rowIdParams, tIdGeneric],
+    ],
+    ([returnType, params, generic], verb) =>
+      addMethod(
+        METHOD_PREFIX_VERBS[verb] + ROW,
+        params ?? EMPTY_STRING,
+        returnType,
+        getContentDoc(verb, 5),
+        generic,
+      ),
+  );
+
+  // setPartialRow
+  addMethod(
+    'set' + PARTIAL + ROW,
+    tableIdParam + ', ' + ROW_ID_PARAM + ', partialRow: ' + rowWhenSetType,
+    STORE,
+    getContentDoc(4, 5),
+    tIdGeneric,
+  );
+
+  // addRow
+  addMethod(
+    ADD + ROW,
+    tableIdParam + ', row: ' + rowWhenSetType,
+    ID + OR_UNDEFINED,
+    'Add a new ' + ROW,
+    tIdGeneric,
+  );
+
+  // getCellIds
+  addMethod(
+    GET + CELL_IDS,
+    tableIdParam + ', ' + ROW_ID_PARAM,
+    cellIdType + SQUARE_BRACKETS,
+    getIdsDoc(CELL, A + ROW),
+    tIdGeneric,
+  );
+
+  // forEachCell
+  addMethod(
+    METHOD_PREFIX_VERBS[5] + CELL,
+    tableIdParam + ', ' + ROW_ID_PARAM + ', cellCallback: ' + cellCallbackType,
+    VOID,
+    getForEachDoc(CELL, A + ROW),
+    tIdGeneric,
+  );
+
+  // getCell, hasCell, setCell, delCell
+  arrayForEach(
+    [
+      [cellType, cellIdParams, cIdGeneric],
+      [BOOLEAN, cellIdParams, cIdGeneric],
+      [STORE, cellIdParams + ', cell: ' + cellType, cIdGeneric],
+      [STORE, cellIdParams, cIdGeneric],
+    ],
+    ([returnType, params, generic], verb) =>
+      addMethod(
+        METHOD_PREFIX_VERBS[verb] + CELL,
+        params ?? EMPTY_STRING,
+        returnType,
+        getContentDoc(verb, 7),
+        generic,
+      ),
+  );
+
+  // ---
 
   let valuesTypes: string[];
 
