@@ -817,7 +817,7 @@ export interface S {
   /**
    * Sets a string serialization of the content of the Store.
    */
-  setJson(json: Json): S;
+  setJson(tablesAndValuesJson: Json): S;
 
   /**
    * Execute a transaction to make multiple mutations.
@@ -1220,7 +1220,8 @@ export const createS: typeof createSDecl = () => {
 
     getJson: (): Json => store.getJson() as Json,
 
-    setJson: (json: Json): S => fluent(() => store.setJson(json)),
+    setJson: (tablesAndValuesJson: Json): S =>
+      fluent(() => store.setJson(tablesAndValuesJson)),
 
     transaction: <Return>(
       actions: () => Return,
@@ -3368,7 +3369,7 @@ export interface S {
   /**
    * Sets a string serialization of the content of the Store.
    */
-  setJson(json: Json): S;
+  setJson(tablesAndValuesJson: Json): S;
 
   /**
    * Execute a transaction to make multiple mutations.
@@ -3552,7 +3553,8 @@ export const createS: typeof createSDecl = () => {
 
     getJson: (): Json => store.getJson() as Json,
 
-    setJson: (json: Json): S => fluent(() => store.setJson(json)),
+    setJson: (tablesAndValuesJson: Json): S =>
+      fluent(() => store.setJson(tablesAndValuesJson)),
 
     transaction: <Return>(
       actions: () => Return,
@@ -4816,7 +4818,7 @@ export interface S {
   /**
    * Sets a string serialization of the content of the Store.
    */
-  setJson(json: Json): S;
+  setJson(tablesAndValuesJson: Json): S;
 
   /**
    * Execute a transaction to make multiple mutations.
@@ -5122,7 +5124,8 @@ export const createS: typeof createSDecl = () => {
 
     getJson: (): Json => store.getJson() as Json,
 
-    setJson: (json: Json): S => fluent(() => store.setJson(json)),
+    setJson: (tablesAndValuesJson: Json): S =>
+      fluent(() => store.setJson(tablesAndValuesJson)),
 
     transaction: <Return>(
       actions: () => Return,
@@ -6847,7 +6850,7 @@ addInvalidValueListener(valueId: IdOrNull, listener: InvalidValueListener, mutat
 getJson(): Json;
 
 /** Sets a string serialization of the content of the Store. */
-setJson(json: Json): S;
+setJson(tablesAndValuesJson: Json): S;
 
 /** Execute a transaction to make multiple mutations. */
 transaction<Return>(actions: () => Return, doRollback?: DoRollback): Return;
@@ -7089,7 +7092,7 @@ addInvalidValueListener: (valueId: IdOrNull, listener: InvalidValueListener, mut
 
 getJson: (): Json => store.getJson() as Json,
 
-setJson: (json: Json): S => fluent(() => store.setJson(json)),
+setJson: (tablesAndValuesJson: Json): S => fluent(() => store.setJson(tablesAndValuesJson)),
 
 transaction: <Return>(actions: () => Return, doRollback?: DoRollback): Return => store.transaction(actions, doRollback),
 
@@ -7823,7 +7826,7 @@ addInvalidValueListener(valueId: IdOrNull, listener: InvalidValueListener, mutat
 getJson(): Json;
 
 /** Sets a string serialization of the content of the Store. */
-setJson(json: Json): S;
+setJson(tablesAndValuesJson: Json): S;
 
 /** Execute a transaction to make multiple mutations. */
 transaction<Return>(actions: () => Return, doRollback?: DoRollback): Return;
@@ -7953,7 +7956,7 @@ addInvalidValueListener: (valueId: IdOrNull, listener: InvalidValueListener, mut
 
 getJson: (): Json => store.getJson() as Json,
 
-setJson: (json: Json): S => fluent(() => store.setJson(json)),
+setJson: (tablesAndValuesJson: Json): S => fluent(() => store.setJson(tablesAndValuesJson)),
 
 transaction: <Return>(actions: () => Return, doRollback?: DoRollback): Return => store.transaction(actions, doRollback),
 
@@ -8488,7 +8491,7 @@ addInvalidCellListener(tableId: IdOrNull, rowId: IdOrNull, cellId: IdOrNull, lis
 getJson(): Json;
 
 /** Sets a string serialization of the content of the Store. */
-setJson(json: Json): S;
+setJson(tablesAndValuesJson: Json): S;
 
 /** Execute a transaction to make multiple mutations. */
 transaction<Return>(actions: () => Return, doRollback?: DoRollback): Return;
@@ -8660,7 +8663,7 @@ addInvalidCellListener: (tableId: IdOrNull, rowId: IdOrNull, cellId: IdOrNull, l
 
 getJson: (): Json => store.getJson() as Json,
 
-setJson: (json: Json): S => fluent(() => store.setJson(json)),
+setJson: (tablesAndValuesJson: Json): S => fluent(() => store.setJson(tablesAndValuesJson)),
 
 transaction: <Return>(actions: () => Return, doRollback?: DoRollback): Return => store.transaction(actions, doRollback),
 
@@ -9090,7 +9093,9 @@ import {
   Ids,
   Json,
   Store as StoreCore,
+  TablesSchema,
   ValueChange,
+  ValuesSchema,
 } from 'tinybase';
 
 /**
@@ -9469,7 +9474,12 @@ interface Refined {
   /**
    * Sets a string serialization of the content of the Store.
    */
-  setJson(json: Json): Store;
+  setJson(tablesAndValuesJson: Json): Store;
+
+  /**
+   * Gets a string serialization of the schema for the content of the Store.
+   */
+  getSchemaJson(): Json;
 
   /**
    * Gets a string serialization of the tabular content of the Store.
@@ -9482,6 +9492,18 @@ interface Refined {
   setTablesJson(tablesJson: Json): Store;
 
   /**
+   * Gets a string serialization of the schema for the tabular content of the
+   * Store.
+   */
+  getTablesSchemaJson(): Json;
+
+  /**
+   * Sets the schema for the tabular content of the Store. Note that this may
+   * contradict the generated type refinements.
+   */
+  setTablesSchema(tablesSchema: TablesSchema): Store;
+
+  /**
    * Gets a string serialization of the keyed value content of the Store.
    */
   getValuesJson(): Json;
@@ -9490,6 +9512,24 @@ interface Refined {
    * Sets a string serialization of the keyed value content of the Store.
    */
   setValuesJson(valuesJson: Json): Store;
+
+  /**
+   * Gets a string serialization of the schema for the keyed value content of
+   * the Store.
+   */
+  getValuesSchemaJson(): Json;
+
+  /**
+   * Sets the schema for the keyed value content of the Store. Note that this
+   * may contradict the generated type refinements.
+   */
+  setValuesSchema(valuesSchema: ValuesSchema): Store;
+
+  /**
+   * Sets the schema for the content of the Store. Note that this may contradict
+   * the generated type refinements.
+   */
+  setSchema(tablesSchema: TablesSchema, valuesSchema?: ValuesSchema): Store;
 }
 
 export type Todo = Omit<StoreCore, keyof Refined>;
@@ -9520,7 +9560,9 @@ import {
   Table,
   TableCallback,
   Tables,
+  TablesSchema,
   ValueChange,
+  ValuesSchema,
 } from 'tinybase';
 
 /**
@@ -9761,7 +9803,12 @@ interface Refined {
   /**
    * Sets a string serialization of the content of the Store.
    */
-  setJson(json: Json): Store;
+  setJson(tablesAndValuesJson: Json): Store;
+
+  /**
+   * Gets a string serialization of the schema for the content of the Store.
+   */
+  getSchemaJson(): Json;
 
   /**
    * Gets a string serialization of the tabular content of the Store.
@@ -9774,6 +9821,18 @@ interface Refined {
   setTablesJson(tablesJson: Json): Store;
 
   /**
+   * Gets a string serialization of the schema for the tabular content of the
+   * Store.
+   */
+  getTablesSchemaJson(): Json;
+
+  /**
+   * Sets the schema for the tabular content of the Store. Note that this may
+   * contradict the generated type refinements.
+   */
+  setTablesSchema(tablesSchema: TablesSchema): Store;
+
+  /**
    * Gets a string serialization of the keyed value content of the Store.
    */
   getValuesJson(): Json;
@@ -9782,6 +9841,24 @@ interface Refined {
    * Sets a string serialization of the keyed value content of the Store.
    */
   setValuesJson(valuesJson: Json): Store;
+
+  /**
+   * Gets a string serialization of the schema for the keyed value content of
+   * the Store.
+   */
+  getValuesSchemaJson(): Json;
+
+  /**
+   * Sets the schema for the keyed value content of the Store. Note that this
+   * may contradict the generated type refinements.
+   */
+  setValuesSchema(valuesSchema: ValuesSchema): Store;
+
+  /**
+   * Sets the schema for the content of the Store. Note that this may contradict
+   * the generated type refinements.
+   */
+  setSchema(tablesSchema: TablesSchema, valuesSchema?: ValuesSchema): Store;
 }
 
 export type Todo = Omit<StoreCore, keyof Refined>;
@@ -9806,9 +9883,11 @@ import {
   Ids,
   Json,
   Store as StoreCore,
+  TablesSchema,
   Value,
   ValueCallback,
   Values,
+  ValuesSchema,
 } from 'tinybase';
 
 /**
@@ -10144,7 +10223,12 @@ interface Refined {
   /**
    * Sets a string serialization of the content of the Store.
    */
-  setJson(json: Json): Store;
+  setJson(tablesAndValuesJson: Json): Store;
+
+  /**
+   * Gets a string serialization of the schema for the content of the Store.
+   */
+  getSchemaJson(): Json;
 
   /**
    * Gets a string serialization of the tabular content of the Store.
@@ -10157,6 +10241,18 @@ interface Refined {
   setTablesJson(tablesJson: Json): Store;
 
   /**
+   * Gets a string serialization of the schema for the tabular content of the
+   * Store.
+   */
+  getTablesSchemaJson(): Json;
+
+  /**
+   * Sets the schema for the tabular content of the Store. Note that this may
+   * contradict the generated type refinements.
+   */
+  setTablesSchema(tablesSchema: TablesSchema): Store;
+
+  /**
    * Gets a string serialization of the keyed value content of the Store.
    */
   getValuesJson(): Json;
@@ -10165,6 +10261,24 @@ interface Refined {
    * Sets a string serialization of the keyed value content of the Store.
    */
   setValuesJson(valuesJson: Json): Store;
+
+  /**
+   * Gets a string serialization of the schema for the keyed value content of
+   * the Store.
+   */
+  getValuesSchemaJson(): Json;
+
+  /**
+   * Sets the schema for the keyed value content of the Store. Note that this
+   * may contradict the generated type refinements.
+   */
+  setValuesSchema(valuesSchema: ValuesSchema): Store;
+
+  /**
+   * Sets the schema for the content of the Store. Note that this may contradict
+   * the generated type refinements.
+   */
+  setSchema(tablesSchema: TablesSchema, valuesSchema?: ValuesSchema): Store;
 }
 
 export type Todo = Omit<StoreCore, keyof Refined>;
@@ -10183,7 +10297,7 @@ export function createStore(): Store;
 exports[`Refinements Unpretty both 1`] = `
 [
   "export * from 'tinybase';
-import {CellChange, Id, Ids, Json, Store as StoreCore, ValueChange} from 'tinybase';
+import {CellChange, Id, Ids, Json, Store as StoreCore, TablesSchema, ValueChange, ValuesSchema} from 'tinybase';
 
 /** Represents the tabular content of the Store. */
 export type Tables = {'t1'?: {[rowId: Id]: {'c1': number; 'c2': string; 'c3': string; ''?: string}}};
@@ -10367,7 +10481,10 @@ delValue<VId extends ValueId>(valueId: VId): Store;
 getJson(): Json;
 
 /** Sets a string serialization of the content of the Store. */
-setJson(json: Json): Store;
+setJson(tablesAndValuesJson: Json): Store;
+
+/** Gets a string serialization of the schema for the content of the Store. */
+getSchemaJson(): Json;
 
 /** Gets a string serialization of the tabular content of the Store. */
 getTablesJson(): Json;
@@ -10375,11 +10492,26 @@ getTablesJson(): Json;
 /** Sets a string serialization of the tabular content of the Store. */
 setTablesJson(tablesJson: Json): Store;
 
+/** Gets a string serialization of the schema for the tabular content of the Store. */
+getTablesSchemaJson(): Json;
+
+/** Sets the schema for the tabular content of the Store. Note that this may contradict the generated type refinements. */
+setTablesSchema(tablesSchema: TablesSchema): Store;
+
 /** Gets a string serialization of the keyed value content of the Store. */
 getValuesJson(): Json;
 
 /** Sets a string serialization of the keyed value content of the Store. */
 setValuesJson(valuesJson: Json): Store;
+
+/** Gets a string serialization of the schema for the keyed value content of the Store. */
+getValuesSchemaJson(): Json;
+
+/** Sets the schema for the keyed value content of the Store. Note that this may contradict the generated type refinements. */
+setValuesSchema(valuesSchema: ValuesSchema): Store;
+
+/** Sets the schema for the content of the Store. Note that this may contradict the generated type refinements. */
+setSchema(tablesSchema: TablesSchema, valuesSchema?: ValuesSchema): Store;
 
 }
 
@@ -10395,7 +10527,7 @@ export function createStore(): Store",
 exports[`Refinements Unpretty keyed value 1`] = `
 [
   "export * from 'tinybase';
-import {Cell, CellCallback, Id, Ids, Json, Row, RowCallback, Store as StoreCore, Table, TableCallback, Tables, ValueChange} from 'tinybase';
+import {Cell, CellCallback, Id, Ids, Json, Row, RowCallback, Store as StoreCore, Table, TableCallback, Tables, TablesSchema, ValueChange, ValuesSchema} from 'tinybase';
 
 /** Represents the keyed value content of the Store. */
 export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string};
@@ -10531,7 +10663,10 @@ delValue<VId extends ValueId>(valueId: VId): Store;
 getJson(): Json;
 
 /** Sets a string serialization of the content of the Store. */
-setJson(json: Json): Store;
+setJson(tablesAndValuesJson: Json): Store;
+
+/** Gets a string serialization of the schema for the content of the Store. */
+getSchemaJson(): Json;
 
 /** Gets a string serialization of the tabular content of the Store. */
 getTablesJson(): Json;
@@ -10539,11 +10674,26 @@ getTablesJson(): Json;
 /** Sets a string serialization of the tabular content of the Store. */
 setTablesJson(tablesJson: Json): Store;
 
+/** Gets a string serialization of the schema for the tabular content of the Store. */
+getTablesSchemaJson(): Json;
+
+/** Sets the schema for the tabular content of the Store. Note that this may contradict the generated type refinements. */
+setTablesSchema(tablesSchema: TablesSchema): Store;
+
 /** Gets a string serialization of the keyed value content of the Store. */
 getValuesJson(): Json;
 
 /** Sets a string serialization of the keyed value content of the Store. */
 setValuesJson(valuesJson: Json): Store;
+
+/** Gets a string serialization of the schema for the keyed value content of the Store. */
+getValuesSchemaJson(): Json;
+
+/** Sets the schema for the keyed value content of the Store. Note that this may contradict the generated type refinements. */
+setValuesSchema(valuesSchema: ValuesSchema): Store;
+
+/** Sets the schema for the content of the Store. Note that this may contradict the generated type refinements. */
+setSchema(tablesSchema: TablesSchema, valuesSchema?: ValuesSchema): Store;
 
 }
 
@@ -10559,7 +10709,7 @@ export function createStore(): Store",
 exports[`Refinements Unpretty tabular 1`] = `
 [
   "export * from 'tinybase';
-import {CellChange, Id, Ids, Json, Store as StoreCore, Value, ValueCallback, Values} from 'tinybase';
+import {CellChange, Id, Ids, Json, Store as StoreCore, TablesSchema, Value, ValueCallback, Values, ValuesSchema} from 'tinybase';
 
 /** Represents the tabular content of the Store. */
 export type Tables = {'t1'?: {[rowId: Id]: {'c1': number; 'c2': string; 'c3': string; ''?: string}}};
@@ -10722,7 +10872,10 @@ delValue(valueId: Id): Store;
 getJson(): Json;
 
 /** Sets a string serialization of the content of the Store. */
-setJson(json: Json): Store;
+setJson(tablesAndValuesJson: Json): Store;
+
+/** Gets a string serialization of the schema for the content of the Store. */
+getSchemaJson(): Json;
 
 /** Gets a string serialization of the tabular content of the Store. */
 getTablesJson(): Json;
@@ -10730,11 +10883,26 @@ getTablesJson(): Json;
 /** Sets a string serialization of the tabular content of the Store. */
 setTablesJson(tablesJson: Json): Store;
 
+/** Gets a string serialization of the schema for the tabular content of the Store. */
+getTablesSchemaJson(): Json;
+
+/** Sets the schema for the tabular content of the Store. Note that this may contradict the generated type refinements. */
+setTablesSchema(tablesSchema: TablesSchema): Store;
+
 /** Gets a string serialization of the keyed value content of the Store. */
 getValuesJson(): Json;
 
 /** Sets a string serialization of the keyed value content of the Store. */
 setValuesJson(valuesJson: Json): Store;
+
+/** Gets a string serialization of the schema for the keyed value content of the Store. */
+getValuesSchemaJson(): Json;
+
+/** Sets the schema for the keyed value content of the Store. Note that this may contradict the generated type refinements. */
+setValuesSchema(valuesSchema: ValuesSchema): Store;
+
+/** Sets the schema for the content of the Store. Note that this may contradict the generated type refinements. */
+setSchema(tablesSchema: TablesSchema, valuesSchema?: ValuesSchema): Store;
 
 }
 
