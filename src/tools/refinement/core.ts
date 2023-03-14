@@ -37,9 +37,11 @@ import {
 import {IdMap, mapMap, mapNew} from '../../common/map';
 import {
   LINE,
+  LINES,
   LINE_TREE,
   comment,
   getCodeFunctions,
+  getParameterList,
   mapUnique,
 } from '../common/code';
 import {TablesSchema, ValuesSchema} from '../../store.d';
@@ -47,6 +49,7 @@ import {arrayForEach, arrayPush} from '../../common/array';
 import {Id} from '../../common.d';
 import {getSchemaFunctions} from '../common/schema';
 import {getTypeFunctions} from '../api/types';
+import {isArray} from '../../common/other';
 import {objIsEmpty} from '../../common/obj';
 
 export const getStoreCoreRefinement = (
@@ -79,23 +82,29 @@ export const getStoreCoreRefinement = (
   );
 
   const methods: IdMap<
-    [parameters: LINE, returnType: string, doc: string, generic: string]
+    [parameters: LINES, returnType: string, doc: string, generic: string]
   > = mapNew();
 
   const getMethods = (): LINE_TREE =>
     mapMap(methods, ([parameters, returnType, doc, generic], name) => [
       comment(doc),
-      name + generic + `(${parameters}): ${returnType};`,
+      name + generic + `(${getParameterList(...parameters)}): ${returnType};`,
       EMPTY_STRING,
     ]);
 
   const addMethod = (
     name: Id,
-    parameters: LINE,
+    parameters: LINE | LINES,
     returnType: string,
     doc: string,
     generic = EMPTY_STRING,
-  ): Id => mapUnique(methods, name, [parameters, returnType, doc, generic]);
+  ): Id =>
+    mapUnique(methods, name, [
+      isArray(parameters) ? parameters : [parameters],
+      returnType,
+      doc,
+      generic,
+    ]);
 
   addImport(0, 'tinybase', ID, IDS, STORE + ' as StoreCore');
 
@@ -155,8 +164,8 @@ export const getStoreCoreRefinement = (
   ] = tablesTypes;
 
   const tableIdParam = 'tableId: ' + tId;
-  const rowIdParams = tableIdParam + ', ' + ROW_ID_PARAM;
-  const cellIdParams = rowIdParams + ', cellId: ' + cId;
+  const rowIdParams = getParameterList(tableIdParam, ROW_ID_PARAM);
+  const cellIdParams = getParameterList(rowIdParams, 'cellId: ' + cId);
 
   // getTables, hasTables, setTables, delTables
   arrayForEach(
@@ -191,14 +200,14 @@ export const getStoreCoreRefinement = (
     [
       [tableType, tableIdParam],
       [BOOLEAN, tableIdParam],
-      [STORE, tableIdParam + ', table: ' + tableWhenSetType],
+      [STORE, [tableIdParam, 'table: ' + tableWhenSetType]],
       [STORE, tableIdParam],
     ],
     ([returnType, params], verb) =>
       addMethod(
         METHOD_PREFIX_VERBS[verb] + TABLE,
         params ?? EMPTY_STRING,
-        returnType,
+        returnType as string,
         getContentDoc(verb, 3),
         tIdGeneric,
       ),
@@ -216,7 +225,7 @@ export const getStoreCoreRefinement = (
   // getSortedRowIds
   addMethod(
     GET + SORTED_ROW_IDS,
-    tableIdParam + ', cellId?: ' + cellIdType + SORTED_ARGS,
+    [tableIdParam, 'cellId?: ' + cellIdType + SORTED_ARGS],
     IDS,
     getIdsDoc(ROW, A + TABLE),
     tIdGeneric,
@@ -225,7 +234,7 @@ export const getStoreCoreRefinement = (
   // forEachRow
   addMethod(
     METHOD_PREFIX_VERBS[5] + ROW,
-    tableIdParam + ', rowCallback: ' + rowCallbackType,
+    [tableIdParam, 'rowCallback: ' + rowCallbackType],
     VOID,
     getForEachDoc(ROW, A + TABLE),
     tIdGeneric,
@@ -234,25 +243,25 @@ export const getStoreCoreRefinement = (
   // getRow, hasRow, setRow, delRow
   arrayForEach(
     [
-      [rowType, rowIdParams, tIdGeneric],
-      [BOOLEAN, rowIdParams, tIdGeneric],
-      [STORE, rowIdParams + ', row: ' + rowWhenSetType, tIdGeneric],
-      [STORE, rowIdParams, tIdGeneric],
+      [rowType, rowIdParams],
+      [BOOLEAN, rowIdParams],
+      [STORE, [rowIdParams, 'row: ' + rowWhenSetType]],
+      [STORE, rowIdParams],
     ],
-    ([returnType, params, generic], verb) =>
+    ([returnType, params], verb) =>
       addMethod(
         METHOD_PREFIX_VERBS[verb] + ROW,
         params ?? EMPTY_STRING,
-        returnType,
+        returnType as string,
         getContentDoc(verb, 5),
-        generic,
+        tIdGeneric,
       ),
   );
 
   // setPartialRow
   addMethod(
     'set' + PARTIAL + ROW,
-    tableIdParam + ', ' + ROW_ID_PARAM + ', partialRow: ' + rowWhenSetType,
+    [tableIdParam, ROW_ID_PARAM, 'partialRow: ' + rowWhenSetType],
     STORE,
     getContentDoc(4, 5),
     tIdGeneric,
@@ -261,7 +270,7 @@ export const getStoreCoreRefinement = (
   // addRow
   addMethod(
     ADD + ROW,
-    tableIdParam + ', row: ' + rowWhenSetType,
+    [tableIdParam, 'row: ' + rowWhenSetType],
     ID + OR_UNDEFINED,
     'Add a new ' + ROW,
     tIdGeneric,
@@ -270,7 +279,7 @@ export const getStoreCoreRefinement = (
   // getCellIds
   addMethod(
     GET + CELL_IDS,
-    tableIdParam + ', ' + ROW_ID_PARAM,
+    [tableIdParam, ROW_ID_PARAM],
     cellIdType + SQUARE_BRACKETS,
     getIdsDoc(CELL, A + ROW),
     tIdGeneric,
@@ -279,7 +288,7 @@ export const getStoreCoreRefinement = (
   // forEachCell
   addMethod(
     METHOD_PREFIX_VERBS[5] + CELL,
-    tableIdParam + ', ' + ROW_ID_PARAM + ', cellCallback: ' + cellCallbackType,
+    [tableIdParam, ROW_ID_PARAM, 'cellCallback: ' + cellCallbackType],
     VOID,
     getForEachDoc(CELL, A + ROW),
     tIdGeneric,
@@ -288,18 +297,18 @@ export const getStoreCoreRefinement = (
   // getCell, hasCell, setCell, delCell
   arrayForEach(
     [
-      [cellType, cellIdParams, cIdGeneric],
-      [BOOLEAN, cellIdParams, cIdGeneric],
-      [STORE, cellIdParams + ', cell: ' + cellType, cIdGeneric],
-      [STORE, cellIdParams, cIdGeneric],
+      [cellType, cellIdParams],
+      [BOOLEAN, cellIdParams],
+      [STORE, [cellIdParams, 'cell: ' + cellType]],
+      [STORE, cellIdParams],
     ],
-    ([returnType, params, generic], verb) =>
+    ([returnType, params], verb) =>
       addMethod(
         METHOD_PREFIX_VERBS[verb] + CELL,
         params ?? EMPTY_STRING,
-        returnType,
+        returnType as string,
         getContentDoc(verb, 7),
-        generic,
+        cIdGeneric,
       ),
   );
 
@@ -310,12 +319,12 @@ export const getStoreCoreRefinement = (
   if (objIsEmpty(valuesSchema)) {
     valuesTypes = [VALUES, VALUES, ID, VALUE, VALUE + CALLBACK];
     addImport(0, 'tinybase', ...valuesTypes);
-    arrayPush(valuesTypes, 'GetValueChange', 'valueId: Id', EMPTY_STRING);
+    arrayPush(valuesTypes, 'GetValueChange', ID, EMPTY_STRING);
   } else {
     addImport(0, 'tinybase', 'ValueChange');
     valuesTypes = getValuesTypes();
     valuesTypes[3] += '<VId>';
-    arrayPush(valuesTypes, 'valueId: VId', `<VId extends ${valuesTypes[2]}>`);
+    arrayPush(valuesTypes, 'VId', `<VId extends ${valuesTypes[2]}>`);
   }
 
   // Values, ValuesWhenSet, ValueId,
@@ -328,9 +337,11 @@ export const getStoreCoreRefinement = (
     valueType,
     valueCallbackType,
     _getValueChangeType,
-    vIdParam,
+    vId,
     vIdGeneric,
   ] = valuesTypes;
+
+  const valueIdParam = 'valueId: ' + vId;
 
   // getValues, hasValues, setValues, delValues
   arrayForEach(
@@ -371,16 +382,16 @@ export const getStoreCoreRefinement = (
   // getValue, hasValue, setValue, delValue
   arrayForEach(
     [
-      [valueType, vIdParam],
-      [BOOLEAN, vIdParam],
-      [STORE, vIdParam + ', value: ' + valueType],
-      [STORE, vIdParam],
+      [valueType, valueIdParam],
+      [BOOLEAN, valueIdParam],
+      [STORE, [valueIdParam, 'value: ' + valueType]],
+      [STORE, valueIdParam],
     ],
     ([returnType, params], verb) =>
       addMethod(
         METHOD_PREFIX_VERBS[verb] + VALUE,
         params ?? EMPTY_STRING,
-        returnType,
+        returnType as string,
         getContentDoc(verb, 11),
         vIdGeneric,
       ),
