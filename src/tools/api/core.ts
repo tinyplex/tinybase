@@ -1044,7 +1044,7 @@ export const getStoreCoreApi = (
     arrayPush(
       createSteps,
       '.setValuesSchema({',
-      mapValuesSchema((valueId, type, defaultValue, VALUE_ID) => [
+      mapValuesSchema((_, type, defaultValue, VALUE_ID) => [
         `[${VALUE_ID}]: {[${addConstant(
           snake(TYPE),
           `'${TYPE}'`,
