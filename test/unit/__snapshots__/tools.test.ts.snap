@@ -117,41 +117,6 @@ export type GetCellChange = (
 ) => CellChange;
 
 /**
- * Represents the 't1' Table.
- */
-export type T1Table = Table<'t1'>;
-
-/**
- * Represents the 't1' Table when setting it.
- */
-export type T1TableWhenSet = TableWhenSet<'t1'>;
-
-/**
- * Represents a Row when getting the content of the 't1' Table.
- */
-export type T1Row = Row<'t1'>;
-
-/**
- * Represents a Row when setting the content of the 't1' Table.
- */
-export type T1RowWhenSet = RowWhenSet<'t1'>;
-
-/**
- * A Cell Id for the 't1' Table.
- */
-export type T1CellId = CellId<'t1'>;
-
-/**
- * A function that takes a Cell Id and value from a Row in the 't1' Table.
- */
-export type T1CellCallback = CellCallback<'t1'>;
-
-/**
- * A function that takes a Row Id from the 't1' Table, and a Cell iterator.
- */
-export type T1RowCallback = RowCallback<'t1'>;
-
-/**
  * A function for listening to changes to Tables in the Store.
  */
 export type TablesListener = (
@@ -256,6 +221,41 @@ export type InvalidCellListener = (
   cellId: Id,
   invalidCells: any[],
 ) => void;
+
+/**
+ * Represents the 't1' Table.
+ */
+export type T1Table = Table<'t1'>;
+
+/**
+ * Represents the 't1' Table when setting it.
+ */
+export type T1TableWhenSet = TableWhenSet<'t1'>;
+
+/**
+ * Represents a Row when getting the content of the 't1' Table.
+ */
+export type T1Row = Row<'t1'>;
+
+/**
+ * Represents a Row when setting the content of the 't1' Table.
+ */
+export type T1RowWhenSet = RowWhenSet<'t1'>;
+
+/**
+ * A Cell Id for the 't1' Table.
+ */
+export type T1CellId = CellId<'t1'>;
+
+/**
+ * A function that takes a Cell Id and value from a Row in the 't1' Table.
+ */
+export type T1CellCallback = CellCallback<'t1'>;
+
+/**
+ * A function that takes a Row Id from the 't1' Table, and a Cell iterator.
+ */
+export type T1RowCallback = RowCallback<'t1'>;
 
 /**
  * Represents the keyed value content of the Store.
@@ -4360,41 +4360,6 @@ export type GetCellChange = (
 ) => CellChange;
 
 /**
- * Represents the 't1' Table.
- */
-export type T1Table = Table<'t1'>;
-
-/**
- * Represents the 't1' Table when setting it.
- */
-export type T1TableWhenSet = TableWhenSet<'t1'>;
-
-/**
- * Represents a Row when getting the content of the 't1' Table.
- */
-export type T1Row = Row<'t1'>;
-
-/**
- * Represents a Row when setting the content of the 't1' Table.
- */
-export type T1RowWhenSet = RowWhenSet<'t1'>;
-
-/**
- * A Cell Id for the 't1' Table.
- */
-export type T1CellId = CellId<'t1'>;
-
-/**
- * A function that takes a Cell Id and value from a Row in the 't1' Table.
- */
-export type T1CellCallback = CellCallback<'t1'>;
-
-/**
- * A function that takes a Row Id from the 't1' Table, and a Cell iterator.
- */
-export type T1RowCallback = RowCallback<'t1'>;
-
-/**
  * A function for listening to changes to Tables in the Store.
  */
 export type TablesListener = (
@@ -4499,6 +4464,41 @@ export type InvalidCellListener = (
   cellId: Id,
   invalidCells: any[],
 ) => void;
+
+/**
+ * Represents the 't1' Table.
+ */
+export type T1Table = Table<'t1'>;
+
+/**
+ * Represents the 't1' Table when setting it.
+ */
+export type T1TableWhenSet = TableWhenSet<'t1'>;
+
+/**
+ * Represents a Row when getting the content of the 't1' Table.
+ */
+export type T1Row = Row<'t1'>;
+
+/**
+ * Represents a Row when setting the content of the 't1' Table.
+ */
+export type T1RowWhenSet = RowWhenSet<'t1'>;
+
+/**
+ * A Cell Id for the 't1' Table.
+ */
+export type T1CellId = CellId<'t1'>;
+
+/**
+ * A function that takes a Cell Id and value from a Row in the 't1' Table.
+ */
+export type T1CellCallback = CellCallback<'t1'>;
+
+/**
+ * A function that takes a Row Id from the 't1' Table, and a Cell iterator.
+ */
+export type T1RowCallback = RowCallback<'t1'>;
 
 /**
  * Takes a number Cell value and returns another.
@@ -6515,27 +6515,6 @@ type TableIdRowIdCellIdArray<TId = TableId> = TId extends TableId ? [tableId: TI
 /** A function for returning information about any Cell's changes during a transaction. */
 export type GetCellChange = (...[tableId, rowId, cellId]: TableIdRowIdCellIdArray) => CellChange;
 
-/** Represents the 't1' Table. */
-export type T1Table = Table<'t1'>;
-
-/** Represents the 't1' Table when setting it. */
-export type T1TableWhenSet = TableWhenSet<'t1'>;
-
-/** Represents a Row when getting the content of the 't1' Table. */
-export type T1Row = Row<'t1'>;
-
-/** Represents a Row when setting the content of the 't1' Table. */
-export type T1RowWhenSet = RowWhenSet<'t1'>;
-
-/** A Cell Id for the 't1' Table. */
-export type T1CellId = CellId<'t1'>;
-
-/** A function that takes a Cell Id and value from a Row in the 't1' Table. */
-export type T1CellCallback = CellCallback<'t1'>;
-
-/** A function that takes a Row Id from the 't1' Table, and a Cell iterator. */
-export type T1RowCallback = RowCallback<'t1'>;
-
 /** A function for listening to changes to Tables in the Store. */
 export type TablesListener = (s: S, getCellChange: GetCellChange | undefined) => void;
 
@@ -6568,6 +6547,27 @@ export type CellListener = (...[s, tableId, rowId, cellId, newCell, oldCell, get
 
 /** A function for listening to changes to invalid Cell changes in the Store. */
 export type InvalidCellListener = (s: S, tableId: Id, rowId: Id, cellId: Id, invalidCells: any[]) => void;
+
+/** Represents the 't1' Table. */
+export type T1Table = Table<'t1'>;
+
+/** Represents the 't1' Table when setting it. */
+export type T1TableWhenSet = TableWhenSet<'t1'>;
+
+/** Represents a Row when getting the content of the 't1' Table. */
+export type T1Row = Row<'t1'>;
+
+/** Represents a Row when setting the content of the 't1' Table. */
+export type T1RowWhenSet = RowWhenSet<'t1'>;
+
+/** A Cell Id for the 't1' Table. */
+export type T1CellId = CellId<'t1'>;
+
+/** A function that takes a Cell Id and value from a Row in the 't1' Table. */
+export type T1CellCallback = CellCallback<'t1'>;
+
+/** A function that takes a Row Id from the 't1' Table, and a Cell iterator. */
+export type T1RowCallback = RowCallback<'t1'>;
 
 /** Represents the keyed value content of the Store. */
 export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string};
@@ -8279,27 +8279,6 @@ type TableIdRowIdCellIdArray<TId = TableId> = TId extends TableId ? [tableId: TI
 /** A function for returning information about any Cell's changes during a transaction. */
 export type GetCellChange = (...[tableId, rowId, cellId]: TableIdRowIdCellIdArray) => CellChange;
 
-/** Represents the 't1' Table. */
-export type T1Table = Table<'t1'>;
-
-/** Represents the 't1' Table when setting it. */
-export type T1TableWhenSet = TableWhenSet<'t1'>;
-
-/** Represents a Row when getting the content of the 't1' Table. */
-export type T1Row = Row<'t1'>;
-
-/** Represents a Row when setting the content of the 't1' Table. */
-export type T1RowWhenSet = RowWhenSet<'t1'>;
-
-/** A Cell Id for the 't1' Table. */
-export type T1CellId = CellId<'t1'>;
-
-/** A function that takes a Cell Id and value from a Row in the 't1' Table. */
-export type T1CellCallback = CellCallback<'t1'>;
-
-/** A function that takes a Row Id from the 't1' Table, and a Cell iterator. */
-export type T1RowCallback = RowCallback<'t1'>;
-
 /** A function for listening to changes to Tables in the Store. */
 export type TablesListener = (s: S, getCellChange: GetCellChange | undefined) => void;
 
@@ -8332,6 +8311,27 @@ export type CellListener = (...[s, tableId, rowId, cellId, newCell, oldCell, get
 
 /** A function for listening to changes to invalid Cell changes in the Store. */
 export type InvalidCellListener = (s: S, tableId: Id, rowId: Id, cellId: Id, invalidCells: any[]) => void;
+
+/** Represents the 't1' Table. */
+export type T1Table = Table<'t1'>;
+
+/** Represents the 't1' Table when setting it. */
+export type T1TableWhenSet = TableWhenSet<'t1'>;
+
+/** Represents a Row when getting the content of the 't1' Table. */
+export type T1Row = Row<'t1'>;
+
+/** Represents a Row when setting the content of the 't1' Table. */
+export type T1RowWhenSet = RowWhenSet<'t1'>;
+
+/** A Cell Id for the 't1' Table. */
+export type T1CellId = CellId<'t1'>;
+
+/** A function that takes a Cell Id and value from a Row in the 't1' Table. */
+export type T1CellCallback = CellCallback<'t1'>;
+
+/** A function that takes a Row Id from the 't1' Table, and a Cell iterator. */
+export type T1RowCallback = RowCallback<'t1'>;
 
 /** Takes a number Cell value and returns another. */
 export type MapNumber = (cell: number | undefined) => number;
@@ -9203,6 +9203,116 @@ export type GetCellChange = (
 ) => CellChange;
 
 /**
+ * A function for listening to changes to Tables in the Store.
+ */
+export type TablesListener = (
+  store: Store,
+  getCellChange: GetCellChange | undefined,
+) => void;
+
+/**
+ * A function for listening to changes to the Table Ids in the Store.
+ */
+export type TableIdsListener = (store: Store) => void;
+
+/**
+ * A function for listening to changes to a Table in the Store.
+ */
+export type TableListener = (
+  store: Store,
+  tableId: TableId,
+  getCellChange: GetCellChange | undefined,
+) => void;
+
+/**
+ * A function for listening to changes to the Row Ids in a Table.
+ */
+export type RowIdsListener = (store: Store, tableId: TableId) => void;
+
+/**
+ * A function for listening to changes to the sorted Row Ids in a Table.
+ */
+export type SortedRowIdsListener = (
+  store: Store,
+  tableId: TableId,
+  cellId: Id | undefined,
+  descending: boolean,
+  offset: number,
+  limit: number | undefined,
+  sortedRowIds: Ids,
+) => void;
+
+/**
+ * A function for listening to changes to a Row in a Table.
+ */
+export type RowListener = (
+  store: Store,
+  tableId: TableId,
+  rowId: Id,
+  getCellChange: GetCellChange | undefined,
+) => void;
+
+/**
+ * A function for listening to changes to the Cell Ids in a Row.
+ */
+export type CellIdsListener = (
+  store: Store,
+  tableId: TableId,
+  rowId: Id,
+) => void;
+
+/**
+ * Cell args for CellListener.
+ */
+type CellListenerArgsArrayInner<
+  TId extends TableId,
+  CId = CellId<TId>,
+> = CId extends CellId<TId>
+  ? [
+      store: Store,
+      tableId: TId,
+      rowId: Id,
+      cellId: CId,
+      newCell: Cell<TId, CId> | undefined,
+      oldCell: Cell<TId, CId> | undefined,
+      getCellChange: GetCellChange | undefined,
+    ]
+  : never;
+
+/**
+ * Table args for CellListener.
+ */
+type CellListenerArgsArrayOuter<TId = TableId> = TId extends TableId
+  ? CellListenerArgsArrayInner<TId>
+  : never;
+
+/**
+ * A function for listening to changes to a Cell in a Row.
+ */
+export type CellListener = (
+  ...[
+    store,
+    tableId,
+    rowId,
+    cellId,
+    newCell,
+    oldCell,
+    getCellChange,
+  ]: CellListenerArgsArrayOuter
+) => void;
+
+/**
+ * A function for listening to changes to invalid Cell changes in the Store.
+ */
+export type InvalidCellListener = (
+  store: Store,
+  tableId: Id,
+  rowId: Id,
+  cellId: Id,
+  invalidCells: any[],
+) => void;
+
+/**
  * Represents the keyed value content of the Store.
  */
 export type Values = {v1: number; v2: string; v3: string; ''?: string};
@@ -9582,16 +9692,25 @@ exports[`Refinements Pretty keyed value 1`] = `
 import {
   Cell,
   CellCallback,
+  CellIdsListener,
+  CellListener,
   DoRollback,
   Id,
   Ids,
+  InvalidCellListener,
   Json,
   Row,
   RowCallback,
+  RowIdsListener,
+  RowListener,
+  SortedRowIdsListener,
   Store as StoreCore,
   Table,
   TableCallback,
+  TableIdsListener,
+  TableListener,
   Tables,
+  TablesListener,
   TablesSchema,
   ValueChange,
   ValuesSchema,
@@ -10056,6 +10175,116 @@ export type GetCellChange = (
   ...[tableId, rowId, cellId]: TableIdRowIdCellIdArray
 ) => CellChange;
 
+/**
+ * A function for listening to changes to Tables in the Store.
+ */
+export type TablesListener = (
+  store: Store,
+  getCellChange: GetCellChange | undefined,
+) => void;
+
+/**
+ * A function for listening to changes to the Table Ids in the Store.
+ */
+export type TableIdsListener = (store: Store) => void;
+
+/**
+ * A function for listening to changes to a Table in the Store.
+ */
+export type TableListener = (
+  store: Store,
+  tableId: TableId,
+  getCellChange: GetCellChange | undefined,
+) => void;
+
+/**
+ * A function for listening to changes to the Row Ids in a Table.
+ */
+export type RowIdsListener = (store: Store, tableId: TableId) => void;
+
+/**
+ * A function for listening to changes to the sorted Row Ids in a Table.
+ */
+export type SortedRowIdsListener = (
+  store: Store,
+  tableId: TableId,
+  cellId: Id | undefined,
+  descending: boolean,
+  offset: number,
+  limit: number | undefined,
+  sortedRowIds: Ids,
+) => void;
+
+/**
+ * A function for listening to changes to a Row in a Table.
+ */
+export type RowListener = (
+  store: Store,
+  tableId: TableId,
+  rowId: Id,
+  getCellChange: GetCellChange | undefined,
+) => void;
+
+/**
+ * A function for listening to changes to the Cell Ids in a Row.
+ */
+export type CellIdsListener = (
+  store: Store,
+  tableId: TableId,
+  rowId: Id,
+) => void;
+
+/**
+ * Cell args for CellListener.
+ */
+type CellListenerArgsArrayInner<
+  TId extends TableId,
+  CId = CellId<TId>,
+> = CId extends CellId<TId>
+  ? [
+      store: Store,
+      tableId: TId,
+      rowId: Id,
+      cellId: CId,
+      newCell: Cell<TId, CId> | undefined,
+      oldCell: Cell<TId, CId> | undefined,
+      getCellChange: GetCellChange | undefined,
+    ]
+  : never;
+
+/**
+ * Table args for CellListener.
+ */
+type CellListenerArgsArrayOuter<TId = TableId> = TId extends TableId
+  ? CellListenerArgsArrayInner<TId>
+  : never;
+
+/**
+ * A function for listening to changes to a Cell in a Row.
+ */
+export type CellListener = (
+  ...[
+    store,
+    tableId,
+    rowId,
+    cellId,
+    newCell,
+    oldCell,
+    getCellChange,
+  ]: CellListenerArgsArrayOuter
+) => void;
+
+/**
+ * A function for listening to changes to invalid Cell changes in the Store.
+ */
+export type InvalidCellListener = (
+  store: Store,
+  tableId: Id,
+  rowId: Id,
+  cellId: Id,
+  invalidCells: any[],
+) => void;
+
 interface Refined {
   /**
    * Gets the tabular content of the Store.
@@ -10440,6 +10669,39 @@ type TableIdRowIdCellIdArray<TId = TableId> = TId extends TableId ? [tableId: TI
 /** A function for returning information about any Cell's changes during a transaction. */
 export type GetCellChange = (...[tableId, rowId, cellId]: TableIdRowIdCellIdArray) => CellChange;
 
+/** A function for listening to changes to Tables in the Store. */
+export type TablesListener = (store: Store, getCellChange: GetCellChange | undefined) => void;
+
+/** A function for listening to changes to the Table Ids in the Store. */
+export type TableIdsListener = (store: Store) => void;
+
+/** A function for listening to changes to a Table in the Store. */
+export type TableListener = (store: Store, tableId: TableId, getCellChange: GetCellChange | undefined) => void;
+
+/** A function for listening to changes to the Row Ids in a Table. */
+export type RowIdsListener = (store: Store, tableId: TableId) => void;
+
+/** A function for listening to changes to the sorted Row Ids in a Table. */
+export type SortedRowIdsListener = (store: Store, tableId: TableId, cellId: Id | undefined, descending: boolean, offset: number, limit: number | undefined, sortedRowIds: Ids) => void;
+
+/** A function for listening to changes to a Row in a Table. */
+export type RowListener = (store: Store, tableId: TableId, rowId: Id, getCellChange: GetCellChange | undefined) => void;
+
+/** A function for listening to changes to the Cell Ids in a Row. */
+export type CellIdsListener = (store: Store, tableId: TableId, rowId: Id) => void;
+
+/** Cell args for CellListener. */
+type CellListenerArgsArrayInner<TId extends TableId, CId = CellId<TId>> = CId extends CellId<TId> ? [store: Store, tableId: TId, rowId: Id, cellId: CId, newCell: Cell<TId, CId>  | undefined, oldCell: Cell<TId, CId>  | undefined, getCellChange: GetCellChange  | undefined] : never;
+
+/** Table args for CellListener. */
+type CellListenerArgsArrayOuter<TId = TableId> = TId extends TableId ? CellListenerArgsArrayInner<TId> : never;
+
+/** A function for listening to changes to a Cell in a Row. */
+export type CellListener = (...[store, tableId, rowId, cellId, newCell, oldCell, getCellChange]: CellListenerArgsArrayOuter) => void;
+
+/** A function for listening to changes to invalid Cell changes in the Store. */
+export type InvalidCellListener = (store: Store, tableId: Id, rowId: Id, cellId: Id, invalidCells: any[]) => void;
+
 /** Represents the keyed value content of the Store. */
 export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string};
 
@@ -10638,7 +10900,7 @@ export function createStore(): Store",
 exports[`Refinements Unpretty keyed value 1`] = `
 [
   "export * from 'tinybase';
-import {Cell, CellCallback, DoRollback, Id, Ids, Json, Row, RowCallback, Store as StoreCore, Table, TableCallback, Tables, TablesSchema, ValueChange, ValuesSchema} from 'tinybase';
+import {Cell, CellCallback, CellIdsListener, CellListener, DoRollback, Id, Ids, InvalidCellListener, Json, Row, RowCallback, RowIdsListener, RowListener, SortedRowIdsListener, Store as StoreCore, Table, TableCallback, TableIdsListener, TableListener, Tables, TablesListener, TablesSchema, ValueChange, ValuesSchema} from 'tinybase';
 
 /** Represents the keyed value content of the Store. */
 export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string};
@@ -10887,6 +11149,39 @@ type TableIdRowIdCellIdArray<TId = TableId> = TId extends TableId ? [tableId: TI
 
 /** A function for returning information about any Cell's changes during a transaction. */
 export type GetCellChange = (...[tableId, rowId, cellId]: TableIdRowIdCellIdArray) => CellChange;
+
+/** A function for listening to changes to Tables in the Store. */
+export type TablesListener = (store: Store, getCellChange: GetCellChange | undefined) => void;
+
+/** A function for listening to changes to the Table Ids in the Store. */
+export type TableIdsListener = (store: Store) => void;
+
+/** A function for listening to changes to a Table in the Store. */
+export type TableListener = (store: Store, tableId: TableId, getCellChange: GetCellChange | undefined) => void;
+
+/** A function for listening to changes to the Row Ids in a Table. */
+export type RowIdsListener = (store: Store, tableId: TableId) => void;
+
+/** A function for listening to changes to the sorted Row Ids in a Table. */
+export type SortedRowIdsListener = (store: Store, tableId: TableId, cellId: Id | undefined, descending: boolean, offset: number, limit: number | undefined, sortedRowIds: Ids) => void;
+
+/** A function for listening to changes to a Row in a Table. */
+export type RowListener = (store: Store, tableId: TableId, rowId: Id, getCellChange: GetCellChange | undefined) => void;
+
+/** A function for listening to changes to the Cell Ids in a Row. */
+export type CellIdsListener = (store: Store, tableId: TableId, rowId: Id) => void;
+
+/** Cell args for CellListener. */
+type CellListenerArgsArrayInner<TId extends TableId, CId = CellId<TId>> = CId extends CellId<TId> ? [store: Store, tableId: TId, rowId: Id, cellId: CId, newCell: Cell<TId, CId>  | undefined, oldCell: Cell<TId, CId>  | undefined, getCellChange: GetCellChange  | undefined] : never;
+
+/** Table args for CellListener. */
+type CellListenerArgsArrayOuter<TId = TableId> = TId extends TableId ? CellListenerArgsArrayInner<TId> : never;
+
+/** A function for listening to changes to a Cell in a Row. */
+export type CellListener = (...[store, tableId, rowId, cellId, newCell, oldCell, getCellChange]: CellListenerArgsArrayOuter) => void;
+
+/** A function for listening to changes to invalid Cell changes in the Store. */
+export type InvalidCellListener = (store: Store, tableId: Id, rowId: Id, cellId: Id, invalidCells: any[]) => void;
 
 interface Refined {
 /** Gets the tabular content of the Store. */

@@ -5,6 +5,7 @@ import {
   DO_ROLLBACK_PARAM,
   FINISH_TRANSACTION_DOC,
   ID,
+  INVALID,
   JSON,
   METHOD_PREFIX_VERBS,
   OR_UNDEFINED,
@@ -33,6 +34,7 @@ import {
   EMPTY_STRING,
   GET,
   IDS,
+  LISTENER,
   ROW,
   ROW_IDS,
   SORTED_ROW_IDS,
@@ -145,12 +147,21 @@ export const getStoreCoreRefinement = (
       CELL + CALLBACK,
       ROW + CALLBACK,
       TABLE + CALLBACK,
+      TABLES + LISTENER,
+      TABLE_IDS + LISTENER,
+      TABLE + LISTENER,
+      ROW_IDS + LISTENER,
+      SORTED_ROW_IDS + LISTENER,
+      ROW + LISTENER,
+      CELL_IDS + LISTENER,
+      CELL + LISTENER,
+      INVALID + CELL + LISTENER,
     ];
     addImport(0, 'tinybase', ...tablesTypes);
-    arrayPush(tablesTypes, 'GetCellChange', ID, EMPTY_STRING, ID);
+    arrayPush(tablesTypes, ID, EMPTY_STRING, ID, EMPTY_STRING);
   } else {
     addImport(0, 'tinybase', 'CellChange');
-    tablesTypes = getTablesTypes();
+    tablesTypes = getTablesTypes('store', STORE);
     arrayForEach([3, 4, 5, 6, 7, 9, 10], (i) => (tablesTypes[i] += '<TId>'));
     tablesTypes[8] += '<TId, CId>';
     arrayPush(
@@ -164,7 +175,9 @@ export const getStoreCoreRefinement = (
 
   // Tables, TablesWhenSet, TableId,
   // Table<>, TableWhenSet<>, Row<>, RowWhenSet<>, CellId<>, Cell<>,
-  // CellCallback, RowCallback, TableCallback, GetCellChange
+  // CellCallback, RowCallback, TableCallback,
+  // TablesListener, TableIdsListener, TableListener, RowIdsListener,
+  // SortedRowIdsListener, RowListener, CellIdsListener
   const [
     tablesType,
     tablesWhenSetType,
@@ -178,7 +191,15 @@ export const getStoreCoreRefinement = (
     cellCallbackType,
     rowCallbackType,
     tableCallbackType,
-    _getCellChangeType,
+    _tablesListenerType,
+    _tableIdsListenerType,
+    _tableListenerType,
+    _rowIdsListenerType,
+    _sortedRowIdsListenerType,
+    _rowListenerType,
+    _cellIdsListenerType,
+    _cellListenerType,
+    _invalidCellListenerType,
     tId,
     tIdGeneric,
     cId,
@@ -344,7 +365,7 @@ export const getStoreCoreRefinement = (
     arrayPush(valuesTypes, 'GetValueChange', ID, EMPTY_STRING);
   } else {
     addImport(0, 'tinybase', 'ValueChange');
-    valuesTypes = getValuesTypes();
+    valuesTypes = getValuesTypes('store', STORE);
     valuesTypes[3] += '<VId>';
     arrayPush(valuesTypes, 'VId', `<VId extends ${valuesTypes[2]}>`);
   }
