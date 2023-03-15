@@ -1,6 +1,9 @@
 import {
   A,
   CALLBACK,
+  DO_ACTIONS_AND_ROLLBACK_PARAMS,
+  DO_ROLLBACK_PARAM,
+  FINISH_TRANSACTION_DOC,
   ID,
   JSON,
   METHOD_PREFIX_VERBS,
@@ -10,8 +13,12 @@ import {
   SCHEMA,
   SORTED_ARGS,
   SQUARE_BRACKETS,
+  START_TRANSACTION_DOC,
   STORE,
   THE_STORE,
+  TRANSACTION,
+  TRANSACTION_,
+  TRANSACTION_DOC,
   VOID,
   getContentDoc,
   getForEachDoc,
@@ -120,6 +127,7 @@ export const getStoreCoreRefinement = (
     JSON,
     TABLES + SCHEMA,
     VALUES + SCHEMA,
+    'DoRollback',
   );
 
   let tablesTypes: string[];
@@ -470,6 +478,26 @@ export const getStoreCoreRefinement = (
     ],
     STORE,
     getTheContentOfTheStoreDoc(0, 15) + MAY_CONTRADICT_REFINEMENT,
+  );
+
+  // transaction,
+  addMethod(
+    TRANSACTION_,
+    DO_ACTIONS_AND_ROLLBACK_PARAMS,
+    'Return',
+    TRANSACTION_DOC,
+    '<Return>',
+  );
+
+  // startTransaction,
+  addMethod('start' + TRANSACTION, EMPTY_STRING, STORE, START_TRANSACTION_DOC);
+
+  // finishTransaction
+  addMethod(
+    'finish' + TRANSACTION,
+    DO_ROLLBACK_PARAM,
+    STORE,
+    FINISH_TRANSACTION_DOC,
   );
 
   return [

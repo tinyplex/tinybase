@@ -21,7 +21,10 @@ import {
 import {
   A_FUNCTION_FOR,
   CALLBACK,
+  DO_ACTIONS_AND_ROLLBACK_PARAMS,
+  DO_ROLLBACK_PARAM,
   EXPORT,
+  FINISH_TRANSACTION_DOC,
   ID,
   INVALID,
   JSON,
@@ -36,10 +39,12 @@ import {
   SCHEMA,
   SORTED_ARGS,
   SQUARE_BRACKETS,
+  START_TRANSACTION_DOC,
   THE_END_OF_THE_TRANSACTION,
   THE_STORE,
   TRANSACTION,
   TRANSACTION_,
+  TRANSACTION_DOC,
   VERBS,
   VOID,
   WHEN_SET,
@@ -1102,8 +1107,8 @@ export const getStoreCoreApi = (
     EMPTY_STRING,
     TRANSACTION_,
     'Return',
-    'Execute a ' + TRANSACTION_ + ' to make multiple mutations',
-    'actions: () => Return, doRollback?: DoRollback',
+    TRANSACTION_DOC,
+    DO_ACTIONS_AND_ROLLBACK_PARAMS,
     'actions, doRollback',
     '<Return>',
   );
@@ -1114,7 +1119,7 @@ export const getStoreCoreApi = (
     EMPTY_STRING,
     'start' + TRANSACTION,
     storeType,
-    'Explicitly starts a ' + TRANSACTION_,
+    START_TRANSACTION_DOC,
   );
 
   // finishTransaction
@@ -1123,8 +1128,8 @@ export const getStoreCoreApi = (
     EMPTY_STRING,
     'finish' + TRANSACTION,
     storeType,
-    'Explicitly finishes a ' + TRANSACTION_,
-    'doRollback?: DoRollback,',
+    FINISH_TRANSACTION_DOC,
+    DO_ROLLBACK_PARAM,
     'doRollback',
   );
 
