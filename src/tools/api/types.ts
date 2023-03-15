@@ -3,21 +3,30 @@ import {
   A_FUNCTION_FOR,
   CALLBACK,
   ID,
+  INVALID,
   NON_NULLABLE,
+  OR_UNDEFINED,
   RETURNS_VOID,
+  ROW_ID_PARAM,
   THE_STORE,
   TRANSACTION_,
   WHEN_SET,
   WHEN_SETTING_IT,
   getCallbackDoc,
+  getListenerTypeDoc,
   getTheContentOfTheStoreDoc,
 } from '../common/strings';
 import {
   CELL,
+  CELL_IDS,
   EMPTY_STRING,
+  LISTENER,
   ROW,
+  ROW_IDS,
+  SORTED_ROW_IDS,
   TABLE,
   TABLES,
+  TABLE_IDS,
   VALUE,
   VALUES,
 } from '../../common/strings';
@@ -26,7 +35,7 @@ import {
   MapTablesSchema,
   MapValuesSchema,
 } from '../common/schema';
-import {getFieldTypeList} from '../common/code';
+import {getFieldTypeList, getParameterList} from '../common/code';
 import {isUndefined} from '../../common/other';
 
 export const getTypeFunctions = (
@@ -41,7 +50,9 @@ export const getTypeFunctions = (
   mapCellSchema: MapCellSchema,
   mapValuesSchema: MapValuesSchema,
 ) => {
-  const getTablesTypes = () => {
+  const getTablesTypes = (storeInstance: string, storeType: string) => {
+    const storeParam = storeInstance + ': ' + storeType;
+
     const tablesType = addType(
       TABLES,
       getFieldTypeList(
@@ -193,6 +204,117 @@ export const getTypeFunctions = (
         TRANSACTION_,
     );
 
+    const tablesListenerType = addType(
+      TABLES + LISTENER,
+      `(${storeParam}, ` +
+        `getCellChange: ${getCellChangeType}${OR_UNDEFINED})` +
+        RETURNS_VOID,
+      getListenerTypeDoc(1),
+    );
+
+    const tableIdsListenerType = addType(
+      TABLE_IDS + LISTENER,
+      `(${storeParam})` + RETURNS_VOID,
+      getListenerTypeDoc(2),
+    );
+
+    const tableListenerType = addType(
+      TABLE + LISTENER,
+      `(${storeParam}, tableId: ${tableIdType}, ` +
+        `getCellChange: ${getCellChangeType}${OR_UNDEFINED})` +
+        RETURNS_VOID,
+      getListenerTypeDoc(3),
+    );
+
+    const rowIdsListenerType = addType(
+      ROW_IDS + LISTENER,
+      `(${storeParam}, tableId: ${tableIdType})` + RETURNS_VOID,
+      getListenerTypeDoc(4, 3),
+    );
+
+    const sortedRowIdsListenerType = addType(
+      SORTED_ROW_IDS + LISTENER,
+      '(' +
+        getParameterList(
+          storeParam,
+          'tableId: ' + tableIdType,
+          'cellId: Id' + OR_UNDEFINED,
+          'descending: boolean',
+          'offset: number',
+          'limit: number' + OR_UNDEFINED,
+          'sortedRowIds: Ids',
+        ) +
+        ')' +
+        RETURNS_VOID,
+      getListenerTypeDoc(13, 3),
+    );
+
+    const rowListenerType = addType(
+      ROW + LISTENER,
+      '(' +
+        getParameterList(
+          `${storeParam}`,
+          'tableId: ' + tableIdType,
+          ROW_ID_PARAM,
+          `getCellChange: ${getCellChangeType}${OR_UNDEFINED}`,
+        ) +
+        ')' +
+        RETURNS_VOID,
+      getListenerTypeDoc(5, 3),
+    );
+
+    const cellIdsListenerType = addType(
+      CELL_IDS + LISTENER,
+      '(' +
+        getParameterList(
+          `${storeParam}`,
+          'tableId: ' + tableIdType,
+          ROW_ID_PARAM,
+        ) +
+        ')' +
+        RETURNS_VOID,
+      getListenerTypeDoc(6, 5),
+    );
+
+    const cellListenerArgsArrayInnerType = addType(
+      'CellListenerArgsArrayInner',
+      `CId extends ${cellIdType}<TId> ? ` +
+        `[${storeParam}, tableId: TId, ${ROW_ID_PARAM}, ` +
+        `cellId: CId, ` +
+        `newCell: ${cellType}<TId, CId> ${OR_UNDEFINED}, ` +
+        `oldCell: ${cellType}<TId, CId> ${OR_UNDEFINED}, ` +
+        `getCellChange: ${getCellChangeType} ${OR_UNDEFINED}] : never`,
+      'Cell args for CellListener',
+      `<TId extends ${tableIdType}, CId = ${cellIdType}<TId>>`,
+      0,
+    );
+
+    const cellListenerArgsArrayOuterType = addType(
+      'CellListenerArgsArrayOuter',
+      `TId extends ${tableIdType} ? ` +
+        cellListenerArgsArrayInnerType +
+        '<TId> : never',
+      'Table args for CellListener',
+      `<TId = ${tableIdType}>`,
+      0,
+    );
+
+    const cellListenerType = addType(
+      CELL + LISTENER,
+      `(...[${storeInstance}, tableId, rowId, cellId, newCell, oldCell, ` +
+        `getCellChange]: ${cellListenerArgsArrayOuterType})` +
+        RETURNS_VOID,
+      getListenerTypeDoc(7, 5),
+    );
+
+    const invalidCellListenerType = addType(
+      INVALID + CELL + LISTENER,
+      `(${storeParam}, tableId: Id, ${ROW_ID_PARAM}, ` +
+        'cellId: Id, invalidCells: any[])' +
+        RETURNS_VOID,
+      getListenerTypeDoc(8),
+    );
+
     return [
       tablesType,
       tablesWhenSetType,
@@ -206,11 +328,19 @@ export const getTypeFunctions = (
       cellCallbackType,
       rowCallbackType,
       tableCallbackType,
-      getCellChangeType,
+      tablesListenerType,
+      tableIdsListenerType,
+      tableListenerType,
+      rowIdsListenerType,
+      sortedRowIdsListenerType,
+      rowListenerType,
+      cellIdsListenerType,
+      cellListenerType,
+      invalidCellListenerType,
     ];
   };
 
-  const getValuesTypes = () => {
+  const getValuesTypes = (_storeParam: string) => {
     const valuesType = addType(
       VALUES,
       getFieldTypeList(

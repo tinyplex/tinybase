@@ -275,6 +275,8 @@ export const getStoreCoreApi = (
     `create${storeType} as create${storeType}Decl`,
   );
 
+  const storeParam = storeInstance + ': ' + storeType;
+
   if (!objIsEmpty(tablesSchema)) {
     addImport(0, 'tinybase', 'CellChange');
     addImport(null, 'tinybase', IDS);
@@ -282,6 +284,9 @@ export const getStoreCoreApi = (
     // Tables, TablesWhenSet, TableId,
     // Table<>, TableWhenSet<>, Row<>, RowWhenSet<>, CellId<>, Cell<>,
     // CellCallback, RowCallback, TableCallback, GetCellChange
+    // TablesListener, TableIdsListener, TableListener, RowIdsListener,
+    // SortedRowIdsListener, RowListener, CellIdsListener, CellListener,
+    // InvalidCellListener;
     const [
       tablesType,
       tablesWhenSetType,
@@ -291,12 +296,20 @@ export const getStoreCoreApi = (
       rowType,
       rowWhenSetType,
       cellIdType,
-      cellType,
+      _cellType,
       cellCallbackType,
       rowCallbackType,
       tableCallbackType,
-      getCellChangeType,
-    ] = getTablesTypes();
+      tablesListenerType,
+      tableIdsListenerType,
+      tableListenerType,
+      rowIdsListenerType,
+      sortedRowIdsListenerType,
+      rowListenerType,
+      cellIdsListenerType,
+      cellListenerType,
+      invalidCellListenerType,
+    ] = getTablesTypes(storeInstance, storeType);
 
     const tablesTypes: IdMap<TableTypes> = mapNew();
     mapTablesSchema((tableId: Id, tableName: string) => {
@@ -359,127 +372,6 @@ export const getStoreCoreApi = (
       mapSet(tablesTypes, tableId, tableTypes);
       addImport(1, moduleDefinition, ...tableTypes);
     });
-
-    // TablesListener
-    const tablesListenerType = addType(
-      TABLES + LISTENER,
-      `(${storeInstance}: ${storeType}, ` +
-        `getCellChange: ${getCellChangeType}${OR_UNDEFINED})` +
-        RETURNS_VOID,
-      getListenerTypeDoc(1),
-    );
-
-    // TableIdsListener
-    const tableIdsListenerType = addType(
-      TABLE_IDS + LISTENER,
-      `(${storeInstance}: ${storeType})` + RETURNS_VOID,
-      getListenerTypeDoc(2),
-    );
-
-    // TableListener
-    const tableListenerType = addType(
-      TABLE + LISTENER,
-      `(${storeInstance}: ${storeType}, tableId: ${tableIdType}, ` +
-        `getCellChange: ${getCellChangeType}${OR_UNDEFINED})` +
-        RETURNS_VOID,
-      getListenerTypeDoc(3),
-    );
-
-    // RowIdsListener
-    const rowIdsListenerType = addType(
-      ROW_IDS + LISTENER,
-      `(${storeInstance}: ${storeType}, tableId: ${tableIdType})` +
-        RETURNS_VOID,
-      getListenerTypeDoc(4, 3),
-    );
-
-    // SortedRowIdsListener
-    const sortedRowIdsListenerType = addType(
-      SORTED_ROW_IDS + LISTENER,
-      '(' +
-        getParameterList(
-          storeInstance + ': ' + storeType,
-          'tableId: ' + tableIdType,
-          'cellId: Id' + OR_UNDEFINED,
-          'descending: boolean',
-          'offset: number',
-          'limit: number' + OR_UNDEFINED,
-          'sortedRowIds: Ids',
-        ) +
-        ')' +
-        RETURNS_VOID,
-      getListenerTypeDoc(13, 3),
-    );
-
-    // RowListener
-    const rowListenerType = addType(
-      ROW + LISTENER,
-      '(' +
-        getParameterList(
-          `${storeInstance}: ${storeType}`,
-          'tableId: ' + tableIdType,
-          ROW_ID_PARAM,
-          `getCellChange: ${getCellChangeType}${OR_UNDEFINED}`,
-        ) +
-        ')' +
-        RETURNS_VOID,
-      getListenerTypeDoc(5, 3),
-    );
-
-    // CellIdsListener
-    const cellIdsListenerType = addType(
-      CELL_IDS + LISTENER,
-      '(' +
-        getParameterList(
-          `${storeInstance}: ${storeType}`,
-          'tableId: ' + tableIdType,
-          ROW_ID_PARAM,
-        ) +
-        ')' +
-        RETURNS_VOID,
-      getListenerTypeDoc(6, 5),
-    );
-
-    const cellListenerArgsArrayInnerType = addType(
-      'CellListenerArgsArrayInner',
-      `CId extends ${cellIdType}<TId> ? ` +
-        `[${storeInstance}: ${storeType}, tableId: TId, ${ROW_ID_PARAM}, ` +
-        `cellId: CId, ` +
-        `newCell: ${cellType}<TId, CId> ${OR_UNDEFINED}, ` +
-        `oldCell: ${cellType}<TId, CId> ${OR_UNDEFINED}, ` +
-        `getCellChange: ${getCellChangeType} ${OR_UNDEFINED}] : never`,
-      'Cell args for CellListener',
-      `<TId extends ${tableIdType}, CId = ${cellIdType}<TId>>`,
-      0,
-    );
-
-    const cellListenerArgsArrayOuterType = addType(
-      'CellListenerArgsArrayOuter',
-      `TId extends ${tableIdType} ? ` +
-        cellListenerArgsArrayInnerType +
-        '<TId> : never',
-      'Table args for CellListener',
-      `<TId = ${tableIdType}>`,
-      0,
-    );
-
-    // CellListener
-    const cellListenerType = addType(
-      CELL + LISTENER,
-      `(...[${storeInstance}, tableId, rowId, cellId, newCell, oldCell, ` +
-        `getCellChange]: ${cellListenerArgsArrayOuterType})` +
-        RETURNS_VOID,
-      getListenerTypeDoc(7, 5),
-    );
-
-    // InvalidCellListener
-    const invalidCellListenerType = addType(
-      INVALID + CELL + LISTENER,
-      `(${storeInstance}: ${storeType}, tableId: Id, ${ROW_ID_PARAM}, ` +
-        'cellId: Id, invalidCells: any[])' +
-        RETURNS_VOID,
-      getListenerTypeDoc(8),
-    );
 
     addImport(
       1,
@@ -859,12 +751,12 @@ export const getStoreCoreApi = (
       valueType,
       valueCallbackType,
       getValueChangeType,
-    ] = getValuesTypes();
+    ] = getValuesTypes(storeInstance, storeType);
 
     // ValueListener
     const valuesListenerType = addType(
       VALUES + LISTENER,
-      `(${storeInstance}: ${storeType}, ` +
+      `(${storeParam}, ` +
         `getValueChange: ${getValueChangeType}${OR_UNDEFINED})` +
         RETURNS_VOID,
       getListenerTypeDoc(9),
@@ -873,14 +765,14 @@ export const getStoreCoreApi = (
     // ValueIdsListener
     const valueIdsListenerType = addType(
       VALUE_IDS + LISTENER,
-      `(${storeInstance}: ${storeType})` + RETURNS_VOID,
+      `(${storeParam})` + RETURNS_VOID,
       getListenerTypeDoc(10),
     );
 
     const valueListenerArgsArrayType = addType(
       'ValueListenerArgsArray',
       `VId extends ${valueIdType} ? ` +
-        `[${storeInstance}: ${storeType}, valueId: VId, ` +
+        `[${storeParam}, valueId: VId, ` +
         `newValue: ${valueType}<VId> ${OR_UNDEFINED}, ` +
         `oldValue: ${valueType}<VId> ${OR_UNDEFINED}, ` +
         `getValueChange: ${getValueChangeType} ${OR_UNDEFINED}] : never`,
@@ -902,9 +794,7 @@ export const getStoreCoreApi = (
     // InvalidValueListener
     const invalidValueListenerType = addType(
       INVALID + VALUE + LISTENER,
-      `(${storeInstance}: ${storeType}, valueId: Id, ` +
-        `invalidValues: any[])` +
-        RETURNS_VOID,
+      `(${storeParam}, valueId: Id, ` + `invalidValues: any[])` + RETURNS_VOID,
       getListenerTypeDoc(12),
     );
 
@@ -1081,7 +971,7 @@ export const getStoreCoreApi = (
   // TransactionListener
   const transactionListenerType = addType(
     TRANSACTION + LISTENER,
-    `(${storeInstance}: ${storeType}, cellsTouched: boolean, ` +
+    `(${storeParam}, cellsTouched: boolean, ` +
       `valuesTouched: boolean)` +
       RETURNS_VOID,
     A_FUNCTION_FOR + ' listening to the completion of a ' + TRANSACTION_,
