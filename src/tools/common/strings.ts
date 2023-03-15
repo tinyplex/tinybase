@@ -21,6 +21,9 @@ export const A = 'a ';
 export const A_FUNCTION_FOR = 'A function for';
 export const CALLBACK = 'Callback';
 export const DEL = 'Del';
+export const DO_ROLLBACK_PARAM = 'doRollback?: DoRollback';
+export const DO_ACTIONS_AND_ROLLBACK_PARAMS =
+  'actions: () => Return, ' + DO_ROLLBACK_PARAM;
 export const EXPORT = 'export';
 export const ID = 'Id';
 export const INVALID = 'Invalid';
@@ -42,6 +45,10 @@ export const THE_STORE = 'the ' + STORE;
 export const THE_SCHEMA_FOR = ' the schema for';
 export const TRANSACTION = 'Transaction';
 export const TRANSACTION_ = lower(TRANSACTION);
+export const TRANSACTION_DOC =
+  'Execute a ' + TRANSACTION_ + ' to make multiple mutations';
+export const START_TRANSACTION_DOC = 'Explicitly starts a ' + TRANSACTION_;
+export const FINISH_TRANSACTION_DOC = 'Explicitly finishes a ' + TRANSACTION_;
 export const THE_END_OF_THE_TRANSACTION = 'the end of the ' + TRANSACTION_;
 export const VOID = 'void';
 export const RETURNS_VOID = ' => ' + VOID;
