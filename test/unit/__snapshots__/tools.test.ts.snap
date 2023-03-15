@@ -6859,7 +6859,7 @@ transaction<Return>(actions: () => Return, doRollback?: DoRollback): Return;
 startTransaction(): S;
 
 /** Explicitly finishes a transaction. */
-finishTransaction(doRollback?: DoRollback,): S;
+finishTransaction(doRollback?: DoRollback): S;
 
 /** Registers a listener that will be called just before the end of the transaction. */
 addWillFinishTransactionListener(listener: TransactionListener): Id;
@@ -7098,7 +7098,7 @@ transaction: <Return>(actions: () => Return, doRollback?: DoRollback): Return =>
 
 startTransaction: (): S => fluent(() => store.startTransaction()),
 
-finishTransaction: (doRollback?: DoRollback,): S => fluent(() => store.finishTransaction(doRollback)),
+finishTransaction: (doRollback?: DoRollback): S => fluent(() => store.finishTransaction(doRollback)),
 
 addWillFinishTransactionListener: (listener: TransactionListener): Id => store.addWillFinishTransactionListener(proxy(listener)),
 
@@ -7835,7 +7835,7 @@ transaction<Return>(actions: () => Return, doRollback?: DoRollback): Return;
 startTransaction(): S;
 
 /** Explicitly finishes a transaction. */
-finishTransaction(doRollback?: DoRollback,): S;
+finishTransaction(doRollback?: DoRollback): S;
 
 /** Registers a listener that will be called just before the end of the transaction. */
 addWillFinishTransactionListener(listener: TransactionListener): Id;
@@ -7962,7 +7962,7 @@ transaction: <Return>(actions: () => Return, doRollback?: DoRollback): Return =>
 
 startTransaction: (): S => fluent(() => store.startTransaction()),
 
-finishTransaction: (doRollback?: DoRollback,): S => fluent(() => store.finishTransaction(doRollback)),
+finishTransaction: (doRollback?: DoRollback): S => fluent(() => store.finishTransaction(doRollback)),
 
 addWillFinishTransactionListener: (listener: TransactionListener): Id => store.addWillFinishTransactionListener(proxy(listener)),
 
@@ -8500,7 +8500,7 @@ transaction<Return>(actions: () => Return, doRollback?: DoRollback): Return;
 startTransaction(): S;
 
 /** Explicitly finishes a transaction. */
-finishTransaction(doRollback?: DoRollback,): S;
+finishTransaction(doRollback?: DoRollback): S;
 
 /** Registers a listener that will be called just before the end of the transaction. */
 addWillFinishTransactionListener(listener: TransactionListener): Id;
@@ -8669,7 +8669,7 @@ transaction: <Return>(actions: () => Return, doRollback?: DoRollback): Return =>
 
 startTransaction: (): S => fluent(() => store.startTransaction()),
 
-finishTransaction: (doRollback?: DoRollback,): S => fluent(() => store.finishTransaction(doRollback)),
+finishTransaction: (doRollback?: DoRollback): S => fluent(() => store.finishTransaction(doRollback)),
 
 addWillFinishTransactionListener: (listener: TransactionListener): Id => store.addWillFinishTransactionListener(proxy(listener)),
 
@@ -9089,6 +9089,7 @@ exports[`Refinements Pretty both 1`] = `
   "export * from 'tinybase';
 import {
   CellChange,
+  DoRollback,
   Id,
   Ids,
   Json,
@@ -9545,6 +9546,21 @@ interface Refined {
    * the generated type refinements.
    */
   setSchema(tablesSchema: TablesSchema, valuesSchema?: ValuesSchema): Store;
+
+  /**
+   * Execute a transaction to make multiple mutations.
+   */
+  transaction<Return>(actions: () => Return, doRollback?: DoRollback): Return;
+
+  /**
+   * Explicitly starts a transaction.
+   */
+  startTransaction(): Store;
+
+  /**
+   * Explicitly finishes a transaction.
+   */
+  finishTransaction(doRollback?: DoRollback): Store;
 }
 
 export type Todo = Omit<StoreCore, keyof Refined>;
@@ -9566,6 +9582,7 @@ exports[`Refinements Pretty keyed value 1`] = `
 import {
   Cell,
   CellCallback,
+  DoRollback,
   Id,
   Ids,
   Json,
@@ -9889,6 +9906,21 @@ interface Refined {
    * the generated type refinements.
    */
   setSchema(tablesSchema: TablesSchema, valuesSchema?: ValuesSchema): Store;
+
+  /**
+   * Execute a transaction to make multiple mutations.
+   */
+  transaction<Return>(actions: () => Return, doRollback?: DoRollback): Return;
+
+  /**
+   * Explicitly starts a transaction.
+   */
+  startTransaction(): Store;
+
+  /**
+   * Explicitly finishes a transaction.
+   */
+  finishTransaction(doRollback?: DoRollback): Store;
 }
 
 export type Todo = Omit<StoreCore, keyof Refined>;
@@ -9909,6 +9941,7 @@ exports[`Refinements Pretty tabular 1`] = `
   "export * from 'tinybase';
 import {
   CellChange,
+  DoRollback,
   Id,
   Ids,
   Json,
@@ -10324,6 +10357,21 @@ interface Refined {
    * the generated type refinements.
    */
   setSchema(tablesSchema: TablesSchema, valuesSchema?: ValuesSchema): Store;
+
+  /**
+   * Execute a transaction to make multiple mutations.
+   */
+  transaction<Return>(actions: () => Return, doRollback?: DoRollback): Return;
+
+  /**
+   * Explicitly starts a transaction.
+   */
+  startTransaction(): Store;
+
+  /**
+   * Explicitly finishes a transaction.
+   */
+  finishTransaction(doRollback?: DoRollback): Store;
 }
 
 export type Todo = Omit<StoreCore, keyof Refined>;
@@ -10342,7 +10390,7 @@ export function createStore(): Store;
 exports[`Refinements Unpretty both 1`] = `
 [
   "export * from 'tinybase';
-import {CellChange, Id, Ids, Json, Store as StoreCore, TablesSchema, ValueChange, ValuesSchema} from 'tinybase';
+import {CellChange, DoRollback, Id, Ids, Json, Store as StoreCore, TablesSchema, ValueChange, ValuesSchema} from 'tinybase';
 
 /** Represents the tabular content of the Store. */
 export type Tables = {'t1'?: {[rowId: Id]: {'c1': number; 'c2': string; 'c3': string; ''?: string}}};
@@ -10567,6 +10615,15 @@ delValuesSchema(): Store;
 /** Sets the schema for the content of the Store. Note that this may contradict the generated type refinements. */
 setSchema(tablesSchema: TablesSchema, valuesSchema?: ValuesSchema): Store;
 
+/** Execute a transaction to make multiple mutations. */
+transaction<Return>(actions: () => Return, doRollback?: DoRollback): Return;
+
+/** Explicitly starts a transaction. */
+startTransaction(): Store;
+
+/** Explicitly finishes a transaction. */
+finishTransaction(doRollback?: DoRollback): Store;
+
 }
 
 export type Todo = Omit<StoreCore, keyof Refined>;
@@ -10581,7 +10638,7 @@ export function createStore(): Store",
 exports[`Refinements Unpretty keyed value 1`] = `
 [
   "export * from 'tinybase';
-import {Cell, CellCallback, Id, Ids, Json, Row, RowCallback, Store as StoreCore, Table, TableCallback, Tables, TablesSchema, ValueChange, ValuesSchema} from 'tinybase';
+import {Cell, CellCallback, DoRollback, Id, Ids, Json, Row, RowCallback, Store as StoreCore, Table, TableCallback, Tables, TablesSchema, ValueChange, ValuesSchema} from 'tinybase';
 
 /** Represents the keyed value content of the Store. */
 export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string};
@@ -10758,6 +10815,15 @@ delValuesSchema(): Store;
 /** Sets the schema for the content of the Store. Note that this may contradict the generated type refinements. */
 setSchema(tablesSchema: TablesSchema, valuesSchema?: ValuesSchema): Store;
 
+/** Execute a transaction to make multiple mutations. */
+transaction<Return>(actions: () => Return, doRollback?: DoRollback): Return;
+
+/** Explicitly starts a transaction. */
+startTransaction(): Store;
+
+/** Explicitly finishes a transaction. */
+finishTransaction(doRollback?: DoRollback): Store;
+
 }
 
 export type Todo = Omit<StoreCore, keyof Refined>;
@@ -10772,7 +10838,7 @@ export function createStore(): Store",
 exports[`Refinements Unpretty tabular 1`] = `
 [
   "export * from 'tinybase';
-import {CellChange, Id, Ids, Json, Store as StoreCore, TablesSchema, Value, ValueCallback, Values, ValuesSchema} from 'tinybase';
+import {CellChange, DoRollback, Id, Ids, Json, Store as StoreCore, TablesSchema, Value, ValueCallback, Values, ValuesSchema} from 'tinybase';
 
 /** Represents the tabular content of the Store. */
 export type Tables = {'t1'?: {[rowId: Id]: {'c1': number; 'c2': string; 'c3': string; ''?: string}}};
@@ -10975,6 +11041,15 @@ delValuesSchema(): Store;
 
 /** Sets the schema for the content of the Store. Note that this may contradict the generated type refinements. */
 setSchema(tablesSchema: TablesSchema, valuesSchema?: ValuesSchema): Store;
+
+/** Execute a transaction to make multiple mutations. */
+transaction<Return>(actions: () => Return, doRollback?: DoRollback): Return;
+
+/** Explicitly starts a transaction. */
+startTransaction(): Store;
+
+/** Explicitly finishes a transaction. */
+finishTransaction(doRollback?: DoRollback): Store;
 
 }
 
