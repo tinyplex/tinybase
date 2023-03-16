@@ -995,9 +995,9 @@ export const getStoreCoreApi = (
     EMPTY_STRING,
     'call' + LISTENER,
     storeType,
-    `Manually provoke a listener to be called`,
-    `listenerId: Id`,
-    `listenerId`,
+    'Manually provoke a listener to be called',
+    'listenerId: Id',
+    'listenerId',
   );
 
   // delListener
