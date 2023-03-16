@@ -5,11 +5,15 @@ import {
   DO_ROLLBACK_PARAM,
   FINISH_TRANSACTION_DOC,
   ID,
+  ID_OR_NULL,
   INVALID,
   JSON,
+  LISTENER_,
   METHOD_PREFIX_VERBS,
   OR_UNDEFINED,
   PARTIAL,
+  REGISTERS_A_LISTENER,
+  ROW_ID_OR_NULL_PARAM,
   ROW_ID_PARAM,
   SCHEMA,
   SORTED_ARGS,
@@ -24,6 +28,7 @@ import {
   getContentDoc,
   getForEachDoc,
   getIdsDoc,
+  getListenerDoc,
   getTheContentOfTheStoreDoc,
 } from '../common/strings';
 import {
@@ -53,6 +58,7 @@ import {
   comment,
   getCodeFunctions,
   getParameterList,
+  join,
   mapUnique,
 } from '../common/code';
 import {TablesSchema, ValuesSchema} from '../../store.d';
@@ -125,6 +131,7 @@ export const getStoreCoreRefinement = (
     'tinybase',
     ID,
     IDS,
+    ID_OR_NULL,
     STORE + ' as StoreCore',
     JSON,
     TABLES + SCHEMA,
@@ -158,7 +165,7 @@ export const getStoreCoreRefinement = (
       INVALID + CELL + LISTENER,
     ];
     addImport(0, 'tinybase', ...tablesTypes);
-    arrayPush(tablesTypes, ID, EMPTY_STRING, ID, EMPTY_STRING);
+    arrayPush(tablesTypes, ID, ID_OR_NULL, ID, EMPTY_STRING, ID, EMPTY_STRING);
   } else {
     addImport(0, 'tinybase', 'CellChange');
     tablesTypes = getTablesTypes('store', STORE);
@@ -167,6 +174,11 @@ export const getStoreCoreRefinement = (
     arrayPush(
       tablesTypes,
       'TId',
+      'TId | null',
+      join(
+        mapTablesSchema((tableId) => `CellId<'${tableId}'>`),
+        ' | ',
+      ),
       `<TId extends ${tablesTypes[2]}>`,
       'CId',
       `<TId extends ${tablesTypes[2]}, CId extends ${tablesTypes[7]}>`,
@@ -191,24 +203,36 @@ export const getStoreCoreRefinement = (
     cellCallbackType,
     rowCallbackType,
     tableCallbackType,
-    _tablesListenerType,
-    _tableIdsListenerType,
-    _tableListenerType,
-    _rowIdsListenerType,
-    _sortedRowIdsListenerType,
-    _rowListenerType,
-    _cellIdsListenerType,
-    _cellListenerType,
-    _invalidCellListenerType,
-    tId,
+    tablesListenerType,
+    tableIdsListenerType,
+    tableListenerType,
+    rowIdsListenerType,
+    sortedRowIdsListenerType,
+    rowListenerType,
+    cellIdsListenerType,
+    cellListenerType,
+    invalidCellListenerType,
+    tableId,
+    tableIdOrNull,
+    allCellIdsType,
     tIdGeneric,
     cId,
     cIdGeneric,
   ] = tablesTypes;
 
-  const tableIdParam = 'tableId: ' + tId;
+  const tableIdParam = 'tableId: ' + tableId;
   const rowIdParams = getParameterList(tableIdParam, ROW_ID_PARAM);
   const cellIdParams = getParameterList(rowIdParams, 'cellId: ' + cId);
+
+  const tableIdOrNullParam = 'tableId: ' + tableIdOrNull;
+  const rowIdOrNullParams = getParameterList(
+    tableIdOrNullParam,
+    ROW_ID_OR_NULL_PARAM,
+  );
+  const cellIdOrNullParams = getParameterList(
+    rowIdOrNullParams,
+    'cellId: ' + allCellIdsType,
+  );
 
   // getTables, hasTables, setTables, delTables
   arrayForEach(
@@ -353,6 +377,118 @@ export const getStoreCoreRefinement = (
         getContentDoc(verb, 7),
         cIdGeneric,
       ),
+  );
+
+  // addTablesListener
+  addMethod(
+    ADD + TABLES + LISTENER,
+    [LISTENER_ + ': ' + tablesListenerType, 'mutator?: boolean'],
+    ID,
+    getTheContentOfTheStoreDoc(1, 8) + ' changes',
+  );
+
+  // addTableIdsListener
+  addMethod(
+    ADD + TABLE_IDS + LISTENER,
+    [LISTENER_ + ': ' + tableIdsListenerType, 'mutator?: boolean'],
+    ID,
+    getListenerDoc(2, 0, 1),
+  );
+
+  // addTableListener
+  addMethod(
+    ADD + TABLE + LISTENER,
+    [
+      tableIdOrNullParam,
+      LISTENER_ + ': ' + tableListenerType,
+      'mutator?: boolean',
+    ],
+    ID,
+    getListenerDoc(3, 0),
+    tIdGeneric,
+  );
+
+  // addRowIdsListener
+  addMethod(
+    ADD + ROW_IDS + LISTENER,
+    [
+      tableIdOrNullParam,
+      LISTENER_ + ': ' + rowIdsListenerType,
+      'mutator?: boolean',
+    ],
+    ID,
+    getListenerDoc(4, 3, 1),
+    tIdGeneric,
+  );
+
+  // addSortedRowIdsListener
+  addMethod(
+    ADD + SORTED_ROW_IDS + LISTENER,
+    [
+      tableIdParam,
+      'cellId: ' + cellIdType + OR_UNDEFINED,
+      'descending: boolean',
+      'offset: number',
+      'limit: number' + OR_UNDEFINED,
+      LISTENER_ + ': ' + sortedRowIdsListenerType,
+      'mutator?: boolean',
+    ],
+    ID,
+    getListenerDoc(13, 3, 1),
+    tIdGeneric,
+  );
+
+  // addRowListener
+  addMethod(
+    ADD + ROW + LISTENER,
+    [
+      rowIdOrNullParams,
+      LISTENER_ + ': ' + rowListenerType,
+      'mutator?: boolean',
+    ],
+    ID,
+    getListenerDoc(5, 3),
+    tIdGeneric,
+  );
+
+  // addCellIdsListener
+  addMethod(
+    ADD + CELL_IDS + LISTENER,
+    [
+      rowIdOrNullParams,
+      LISTENER_ + ': ' + cellIdsListenerType,
+      'mutator?: boolean',
+    ],
+    ID,
+    getListenerDoc(6, 5, 1),
+    tIdGeneric,
+  );
+
+  // addCellListener
+  addMethod(
+    ADD + CELL + LISTENER,
+    [
+      cellIdOrNullParams,
+      LISTENER_ + ': ' + cellListenerType,
+      'mutator?: boolean',
+    ],
+    ID,
+    getListenerDoc(7, 5),
+    tIdGeneric,
+  );
+
+  // addInvalidCellListener
+  addMethod(
+    ADD + INVALID + CELL + LISTENER,
+    [
+      'tableId: ' + ID_OR_NULL,
+      'rowId: ' + ID_OR_NULL,
+      'cellId: ' + ID_OR_NULL,
+      LISTENER_ + ': ' + invalidCellListenerType,
+      'mutator?: boolean',
+    ],
+    ID,
+    REGISTERS_A_LISTENER + ' whenever an invalid Cell change was attempted',
   );
 
   // ---

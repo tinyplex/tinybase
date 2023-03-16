@@ -9091,6 +9091,7 @@ import {
   CellChange,
   DoRollback,
   Id,
+  IdOrNull,
   Ids,
   Json,
   Store as StoreCore,
@@ -9523,6 +9524,96 @@ interface Refined {
   ): Store;
 
   /**
+   * Registers a listener that will be called whenever the tabular content of
+   * the Store changes.
+   */
+  addTablesListener(listener: TablesListener, mutator?: boolean): Id;
+
+  /**
+   * Registers a listener that will be called whenever the Table Ids in the
+   * Store change.
+   */
+  addTableIdsListener(listener: TableIdsListener, mutator?: boolean): Id;
+
+  /**
+   * Registers a listener that will be called whenever a Table in the Store
+   * changes.
+   */
+  addTableListener<TId extends TableId>(
+    tableId: TId | null,
+    listener: TableListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * Registers a listener that will be called whenever the Row Ids in a Table
+   * change.
+   */
+  addRowIdsListener<TId extends TableId>(
+    tableId: TId | null,
+    listener: RowIdsListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * Registers a listener that will be called whenever the sorted Row Ids in a
+   * Table change.
+   */
+  addSortedRowIdsListener<TId extends TableId>(
+    tableId: TId,
+    cellId: CellId<TId> | undefined,
+    descending: boolean,
+    offset: number,
+    limit: number | undefined,
+    listener: SortedRowIdsListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * Registers a listener that will be called whenever a Row in a Table changes.
+   */
+  addRowListener<TId extends TableId>(
+    tableId: TId | null,
+    rowId: IdOrNull,
+    listener: RowListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * Registers a listener that will be called whenever the Cell Ids in a Row
+   * change.
+   */
+  addCellIdsListener<TId extends TableId>(
+    tableId: TId | null,
+    rowId: IdOrNull,
+    listener: CellIdsListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * Registers a listener that will be called whenever a Cell in a Row changes.
+   */
+  addCellListener<TId extends TableId>(
+    tableId: TId | null,
+    rowId: IdOrNull,
+    cellId: CellId<'t1'>,
+    listener: CellListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * Registers a listener that will be called whenever an invalid Cell change
+   * was attempted.
+   */
+  addInvalidCellListener(
+    tableId: IdOrNull,
+    rowId: IdOrNull,
+    cellId: IdOrNull,
+    listener: InvalidCellListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
    * Gets the keyed value content of the Store.
    */
   getValues(): Values;
@@ -9696,6 +9787,7 @@ import {
   CellListener,
   DoRollback,
   Id,
+  IdOrNull,
   Ids,
   InvalidCellListener,
   Json,
@@ -9892,6 +9984,96 @@ interface Refined {
   delCell(tableId: Id, rowId: Id, cellId: Id): Store;
 
   /**
+   * Registers a listener that will be called whenever the tabular content of
+   * the Store changes.
+   */
+  addTablesListener(listener: TablesListener, mutator?: boolean): Id;
+
+  /**
+   * Registers a listener that will be called whenever the Table Ids in the
+   * Store change.
+   */
+  addTableIdsListener(listener: TableIdsListener, mutator?: boolean): Id;
+
+  /**
+   * Registers a listener that will be called whenever a Table in the Store
+   * changes.
+   */
+  addTableListener(
+    tableId: IdOrNull,
+    listener: TableListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * Registers a listener that will be called whenever the Row Ids in a Table
+   * change.
+   */
+  addRowIdsListener(
+    tableId: IdOrNull,
+    listener: RowIdsListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * Registers a listener that will be called whenever the sorted Row Ids in a
+   * Table change.
+   */
+  addSortedRowIdsListener(
+    tableId: Id,
+    cellId: Id | undefined,
+    descending: boolean,
+    offset: number,
+    limit: number | undefined,
+    listener: SortedRowIdsListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * Registers a listener that will be called whenever a Row in a Table changes.
+   */
+  addRowListener(
+    tableId: IdOrNull,
+    rowId: IdOrNull,
+    listener: RowListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * Registers a listener that will be called whenever the Cell Ids in a Row
+   * change.
+   */
+  addCellIdsListener(
+    tableId: IdOrNull,
+    rowId: IdOrNull,
+    listener: CellIdsListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * Registers a listener that will be called whenever a Cell in a Row changes.
+   */
+  addCellListener(
+    tableId: IdOrNull,
+    rowId: IdOrNull,
+    cellId: Id,
+    listener: CellListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * Registers a listener that will be called whenever an invalid Cell change
+   * was attempted.
+   */
+  addInvalidCellListener(
+    tableId: IdOrNull,
+    rowId: IdOrNull,
+    cellId: IdOrNull,
+    listener: InvalidCellListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
    * Gets the keyed value content of the Store.
    */
   getValues(): Values;
@@ -10062,6 +10244,7 @@ import {
   CellChange,
   DoRollback,
   Id,
+  IdOrNull,
   Ids,
   Json,
   Store as StoreCore,
@@ -10453,6 +10636,96 @@ interface Refined {
   ): Store;
 
   /**
+   * Registers a listener that will be called whenever the tabular content of
+   * the Store changes.
+   */
+  addTablesListener(listener: TablesListener, mutator?: boolean): Id;
+
+  /**
+   * Registers a listener that will be called whenever the Table Ids in the
+   * Store change.
+   */
+  addTableIdsListener(listener: TableIdsListener, mutator?: boolean): Id;
+
+  /**
+   * Registers a listener that will be called whenever a Table in the Store
+   * changes.
+   */
+  addTableListener<TId extends TableId>(
+    tableId: TId | null,
+    listener: TableListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * Registers a listener that will be called whenever the Row Ids in a Table
+   * change.
+   */
+  addRowIdsListener<TId extends TableId>(
+    tableId: TId | null,
+    listener: RowIdsListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * Registers a listener that will be called whenever the sorted Row Ids in a
+   * Table change.
+   */
+  addSortedRowIdsListener<TId extends TableId>(
+    tableId: TId,
+    cellId: CellId<TId> | undefined,
+    descending: boolean,
+    offset: number,
+    limit: number | undefined,
+    listener: SortedRowIdsListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * Registers a listener that will be called whenever a Row in a Table changes.
+   */
+  addRowListener<TId extends TableId>(
+    tableId: TId | null,
+    rowId: IdOrNull,
+    listener: RowListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * Registers a listener that will be called whenever the Cell Ids in a Row
+   * change.
+   */
+  addCellIdsListener<TId extends TableId>(
+    tableId: TId | null,
+    rowId: IdOrNull,
+    listener: CellIdsListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * Registers a listener that will be called whenever a Cell in a Row changes.
+   */
+  addCellListener<TId extends TableId>(
+    tableId: TId | null,
+    rowId: IdOrNull,
+    cellId: CellId<'t1'>,
+    listener: CellListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * Registers a listener that will be called whenever an invalid Cell change
+   * was attempted.
+   */
+  addInvalidCellListener(
+    tableId: IdOrNull,
+    rowId: IdOrNull,
+    cellId: IdOrNull,
+    listener: InvalidCellListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
    * Gets the keyed value content of the Store.
    */
   getValues(): Values;
@@ -10619,7 +10892,7 @@ export function createStore(): Store;
 exports[`Refinements Unpretty both 1`] = `
 [
   "export * from 'tinybase';
-import {CellChange, DoRollback, Id, Ids, Json, Store as StoreCore, TablesSchema, ValueChange, ValuesSchema} from 'tinybase';
+import {CellChange, DoRollback, Id, IdOrNull, Ids, Json, Store as StoreCore, TablesSchema, ValueChange, ValuesSchema} from 'tinybase';
 
 /** Represents the tabular content of the Store. */
 export type Tables = {'t1'?: {[rowId: Id]: {'c1': number; 'c2': string; 'c3': string; ''?: string}}};
@@ -10798,6 +11071,33 @@ setCell<TId extends TableId, CId extends CellId<TId>>(tableId: TId, rowId: Id, c
 
 /** Deletes a Cell. */
 delCell<TId extends TableId, CId extends CellId<TId>>(tableId: TId, rowId: Id, cellId: CId): Store;
+
+/** Registers a listener that will be called whenever the tabular content of the Store changes. */
+addTablesListener(listener: TablesListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever the Table Ids in the Store change. */
+addTableIdsListener(listener: TableIdsListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever a Table in the Store changes. */
+addTableListener<TId extends TableId>(tableId: TId | null, listener: TableListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever the Row Ids in a Table change. */
+addRowIdsListener<TId extends TableId>(tableId: TId | null, listener: RowIdsListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever the sorted Row Ids in a Table change. */
+addSortedRowIdsListener<TId extends TableId>(tableId: TId, cellId: CellId<TId> | undefined, descending: boolean, offset: number, limit: number | undefined, listener: SortedRowIdsListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever a Row in a Table changes. */
+addRowListener<TId extends TableId>(tableId: TId | null, rowId: IdOrNull, listener: RowListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever the Cell Ids in a Row change. */
+addCellIdsListener<TId extends TableId>(tableId: TId | null, rowId: IdOrNull, listener: CellIdsListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever a Cell in a Row changes. */
+addCellListener<TId extends TableId>(tableId: TId | null, rowId: IdOrNull, cellId: CellId<'t1'>, listener: CellListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever an invalid Cell change was attempted. */
+addInvalidCellListener(tableId: IdOrNull, rowId: IdOrNull, cellId: IdOrNull, listener: InvalidCellListener, mutator?: boolean): Id;
 
 /** Gets the keyed value content of the Store. */
 getValues(): Values;
@@ -10900,7 +11200,7 @@ export function createStore(): Store",
 exports[`Refinements Unpretty keyed value 1`] = `
 [
   "export * from 'tinybase';
-import {Cell, CellCallback, CellIdsListener, CellListener, DoRollback, Id, Ids, InvalidCellListener, Json, Row, RowCallback, RowIdsListener, RowListener, SortedRowIdsListener, Store as StoreCore, Table, TableCallback, TableIdsListener, TableListener, Tables, TablesListener, TablesSchema, ValueChange, ValuesSchema} from 'tinybase';
+import {Cell, CellCallback, CellIdsListener, CellListener, DoRollback, Id, IdOrNull, Ids, InvalidCellListener, Json, Row, RowCallback, RowIdsListener, RowListener, SortedRowIdsListener, Store as StoreCore, Table, TableCallback, TableIdsListener, TableListener, Tables, TablesListener, TablesSchema, ValueChange, ValuesSchema} from 'tinybase';
 
 /** Represents the keyed value content of the Store. */
 export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string};
@@ -10998,6 +11298,33 @@ setCell(tableId: Id, rowId: Id, cellId: Id, cell: Cell): Store;
 
 /** Deletes a Cell. */
 delCell(tableId: Id, rowId: Id, cellId: Id): Store;
+
+/** Registers a listener that will be called whenever the tabular content of the Store changes. */
+addTablesListener(listener: TablesListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever the Table Ids in the Store change. */
+addTableIdsListener(listener: TableIdsListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever a Table in the Store changes. */
+addTableListener(tableId: IdOrNull, listener: TableListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever the Row Ids in a Table change. */
+addRowIdsListener(tableId: IdOrNull, listener: RowIdsListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever the sorted Row Ids in a Table change. */
+addSortedRowIdsListener(tableId: Id, cellId: Id | undefined, descending: boolean, offset: number, limit: number | undefined, listener: SortedRowIdsListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever a Row in a Table changes. */
+addRowListener(tableId: IdOrNull, rowId: IdOrNull, listener: RowListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever the Cell Ids in a Row change. */
+addCellIdsListener(tableId: IdOrNull, rowId: IdOrNull, listener: CellIdsListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever a Cell in a Row changes. */
+addCellListener(tableId: IdOrNull, rowId: IdOrNull, cellId: Id, listener: CellListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever an invalid Cell change was attempted. */
+addInvalidCellListener(tableId: IdOrNull, rowId: IdOrNull, cellId: IdOrNull, listener: InvalidCellListener, mutator?: boolean): Id;
 
 /** Gets the keyed value content of the Store. */
 getValues(): Values;
@@ -11100,7 +11427,7 @@ export function createStore(): Store",
 exports[`Refinements Unpretty tabular 1`] = `
 [
   "export * from 'tinybase';
-import {CellChange, DoRollback, Id, Ids, Json, Store as StoreCore, TablesSchema, Value, ValueCallback, Values, ValuesSchema} from 'tinybase';
+import {CellChange, DoRollback, Id, IdOrNull, Ids, Json, Store as StoreCore, TablesSchema, Value, ValueCallback, Values, ValuesSchema} from 'tinybase';
 
 /** Represents the tabular content of the Store. */
 export type Tables = {'t1'?: {[rowId: Id]: {'c1': number; 'c2': string; 'c3': string; ''?: string}}};
@@ -11258,6 +11585,33 @@ setCell<TId extends TableId, CId extends CellId<TId>>(tableId: TId, rowId: Id, c
 
 /** Deletes a Cell. */
 delCell<TId extends TableId, CId extends CellId<TId>>(tableId: TId, rowId: Id, cellId: CId): Store;
+
+/** Registers a listener that will be called whenever the tabular content of the Store changes. */
+addTablesListener(listener: TablesListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever the Table Ids in the Store change. */
+addTableIdsListener(listener: TableIdsListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever a Table in the Store changes. */
+addTableListener<TId extends TableId>(tableId: TId | null, listener: TableListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever the Row Ids in a Table change. */
+addRowIdsListener<TId extends TableId>(tableId: TId | null, listener: RowIdsListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever the sorted Row Ids in a Table change. */
+addSortedRowIdsListener<TId extends TableId>(tableId: TId, cellId: CellId<TId> | undefined, descending: boolean, offset: number, limit: number | undefined, listener: SortedRowIdsListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever a Row in a Table changes. */
+addRowListener<TId extends TableId>(tableId: TId | null, rowId: IdOrNull, listener: RowListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever the Cell Ids in a Row change. */
+addCellIdsListener<TId extends TableId>(tableId: TId | null, rowId: IdOrNull, listener: CellIdsListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever a Cell in a Row changes. */
+addCellListener<TId extends TableId>(tableId: TId | null, rowId: IdOrNull, cellId: CellId<'t1'>, listener: CellListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever an invalid Cell change was attempted. */
+addInvalidCellListener(tableId: IdOrNull, rowId: IdOrNull, cellId: IdOrNull, listener: InvalidCellListener, mutator?: boolean): Id;
 
 /** Gets the keyed value content of the Store. */
 getValues(): Values;
