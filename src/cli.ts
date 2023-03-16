@@ -11,7 +11,7 @@ import {createTools} from './tools';
 import {fileURLToPath} from 'url';
 import {objMap} from './common/obj';
 
-type Schemas = [TablesSchema, ValuesSchema | undefined];
+const FILE_ERROR = 'provide a valid schemaFile, storeName, and outputDir';
 
 const log = (...lines: string[]) =>
   arrayForEach(lines, (line) => process.stdout.write(`${line}\n`));
@@ -19,6 +19,29 @@ const log = (...lines: string[]) =>
 const err = (line: string) => process.stderr.write(`ERROR: ${line}\n`);
 
 const getJson = (file: string) => jsonParse(readFileSync(file, UTF8));
+
+const writeFile = (
+  outputDir: string,
+  fileName: string,
+  content: string,
+  label: string,
+) => {
+  const file = resolve(outputDir, fileName);
+  log(label.padStart(23) + ': ' + file);
+  writeFileSync(file, content, UTF8);
+};
+
+const getTools = (schemaFile: string) => {
+  const schema = getJson(schemaFile);
+  return createTools(
+    createStore().setSchema(
+      ...((isArray(schema) ? schema : [schema]) as [
+        TablesSchema,
+        ValuesSchema | undefined,
+      ]),
+    ),
+  );
+};
 
 const help = () => {
   log('', 'tinybase <command>', '', 'Usage:', '');
@@ -40,31 +63,46 @@ const getStoreApi = async (
   outputDir: string,
 ) => {
   try {
-    const schema = getJson(schemaFile);
-    const tools = createTools(
-      createStore().setSchema(
-        ...((isArray(schema) ? schema : [schema]) as Schemas),
-      ),
+    const [dTs, ts, uiReactDTs, uiReactTsx] = await getTools(
+      schemaFile,
+    ).getPrettyStoreApi(storeName);
+    writeFile(outputDir, storeName + '.d.ts', dTs, 'Definition');
+    writeFile(outputDir, storeName + '.ts', ts, 'Implementation');
+    writeFile(
+      outputDir,
+      storeName + '-ui-react.d.ts',
+      uiReactDTs,
+      'UI React definition',
     );
-    const [dTs, ts, uiReactDTs, uiReactTsx] = await tools.getPrettyStoreApi(
-      storeName,
-    );
-    const dTsFile = resolve(outputDir, `${storeName}.d.ts`);
-    writeFileSync(dTsFile, dTs, UTF8);
-    const tsFile = resolve(outputDir, `${storeName}.ts`);
-    writeFileSync(tsFile, ts, UTF8);
-    const uiReactDTsFile = resolve(outputDir, `${storeName}-ui-react.d.ts`);
-    writeFileSync(uiReactDTsFile, uiReactDTs, UTF8);
-    const uiReactTsxFile = resolve(outputDir, `${storeName}-ui-react.tsx`);
-    writeFileSync(uiReactTsxFile, uiReactTsx, UTF8);
-    log(
-      `             Definition: ${dTsFile}`,
-      `         Implementation: ${tsFile}`,
-      `    UI React definition: ${uiReactDTsFile}`,
-      `UI React implementation: ${uiReactTsxFile}`,
+    writeFile(
+      outputDir,
+      storeName + '-ui-react.tsx',
+      uiReactTsx,
+      'UI React implementation',
     );
   } catch {
-    err('provide a valid schemaFile, storeName, and outputDir');
+    err(FILE_ERROR);
+  }
+};
+
+const getStoreRefinement = async (
+  schemaFile: string,
+  storeName: string,
+  outputDir: string,
+) => {
+  try {
+    const [dTs, uiReactDTs] = await getTools(
+      schemaFile,
+    ).getPrettyStoreRefinement(storeName);
+    writeFile(outputDir, storeName + '-refinement.d.ts', dTs, 'Definition');
+    writeFile(
+      outputDir,
+      storeName + '-ui-react-refinement.d.ts',
+      uiReactDTs,
+      'UI React definition',
+    );
+  } catch {
+    err(FILE_ERROR);
   }
 };
 
@@ -80,7 +118,12 @@ const commands: {
   getStoreApi: [
     getStoreApi,
     '<schemaFile> <storeName> <outputDir>',
-    'generate .d.ts, .ts, and .tsx files from a schema file',
+    'generate .d.ts, .ts, and .tsx API files from a schema file',
+  ],
+  getStoreRefinement: [
+    getStoreRefinement,
+    '<schemaFile> <storeName> <outputDir>',
+    'generate .d.ts refinement files from a schema file',
   ],
 };
 

@@ -27,15 +27,23 @@ Usage:
  - get the current TinyBase version
 
  tinybase getStoreApi <schemaFile> <storeName> <outputDir>
- - generate .d.ts, .ts, and .tsx files from a schema file
+ - generate .d.ts, .ts, and .tsx API files from a schema file
+
+ tinybase getStoreRefinement <schemaFile> <storeName> <outputDir>
+ - generate .d.ts refinement files from a schema file
 ```
 
-Currently there are three commands. `help` generates this message and `version`
+Currently there are four commands. `help` generates this message and `version`
 prints out the version of the installed tinybase module.
 
-More interestingly, `getStoreApi` takes schemas (a TablesSchema and
-ValuesSchema, JSON-encoded in an array pair) from a file and emits `.d.ts`,
-`.ts`, and `.tsx` files for it (much as described in the Generating APIs guide).
+The `getStoreApi` command takes schemas (a TablesSchema and ValuesSchema,
+JSON-encoded in an array pair) from a file and emits `.d.ts`, `.ts`, and `.tsx`
+files representing a code-generated API for it (much as described in the
+Generating APIs guide).
+
+The `getStoreRefinement` command similarly takes schemas from a file and emits
+`.d.ts` files to refine the API (much as described in the Generating APIs
+guide).
 
 For example, imagine if you have defined TinyBase TablesSchema and ValuesSchema
 objects in a file called `schema.json`:
