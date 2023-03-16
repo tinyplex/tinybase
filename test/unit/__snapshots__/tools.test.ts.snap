@@ -9094,7 +9094,6 @@ import {
   IdOrNull,
   Ids,
   Json,
-  Store as StoreCore,
   StoreListenerStats,
   TablesSchema,
   ValueChange,
@@ -9414,7 +9413,7 @@ export type TransactionListener = (
   valuesTouched: boolean,
 ) => void;
 
-interface Refined {
+export interface Store {
   /**
    * Gets the tabular content of the Store.
    */
@@ -9881,9 +9880,6 @@ interface Refined {
   getListenerStats(): StoreListenerStats;
 }
 
-export type Todo = Omit<StoreCore, keyof Refined>;
-export type Store = Todo & Refined;
-
 /**
  * Creates a Store object.
  */
@@ -9913,7 +9909,6 @@ import {
   RowIdsListener,
   RowListener,
   SortedRowIdsListener,
-  Store as StoreCore,
   StoreListenerStats,
   Table,
   TableCallback,
@@ -10026,7 +10021,7 @@ export type TransactionListener = (
   valuesTouched: boolean,
 ) => void;
 
-interface Refined {
+export interface Store {
   /**
    * Gets the tabular content of the Store.
    */
@@ -10458,9 +10453,6 @@ interface Refined {
   getListenerStats(): StoreListenerStats;
 }
 
-export type Todo = Omit<StoreCore, keyof Refined>;
-export type Store = Todo & Refined;
-
 /**
  * Creates a Store object.
  */
@@ -10482,7 +10474,6 @@ import {
   Ids,
   InvalidValueListener,
   Json,
-  Store as StoreCore,
   StoreListenerStats,
   TablesSchema,
   Value,
@@ -10716,7 +10707,7 @@ export type TransactionListener = (
   valuesTouched: boolean,
 ) => void;
 
-interface Refined {
+export interface Store {
   /**
    * Gets the tabular content of the Store.
    */
@@ -11183,9 +11174,6 @@ interface Refined {
   getListenerStats(): StoreListenerStats;
 }
 
-export type Todo = Omit<StoreCore, keyof Refined>;
-export type Store = Todo & Refined;
-
 /**
  * Creates a Store object.
  */
@@ -11199,7 +11187,7 @@ export function createStore(): Store;
 exports[`Refinements Unpretty both 1`] = `
 [
   "export * from 'tinybase';
-import {CellChange, DoRollback, Id, IdOrNull, Ids, Json, Store as StoreCore, StoreListenerStats, TablesSchema, ValueChange, ValuesSchema} from 'tinybase';
+import {CellChange, DoRollback, Id, IdOrNull, Ids, Json, StoreListenerStats, TablesSchema, ValueChange, ValuesSchema} from 'tinybase';
 
 /** Represents the tabular content of the Store. */
 export type Tables = {'t1'?: {[rowId: Id]: {'c1': number; 'c2': string; 'c3': string; ''?: string}}};
@@ -11321,7 +11309,7 @@ export type InvalidValueListener = (store: Store, valueId: Id, invalidValues: an
 /** A function for listening to the completion of a transaction. */
 export type TransactionListener = (store: Store, cellsTouched: boolean, valuesTouched: boolean) => void;
 
-interface Refined {
+export interface Store {
 /** Gets the tabular content of the Store. */
 getTables(): Tables;
 
@@ -11540,9 +11528,6 @@ getListenerStats(): StoreListenerStats;
 
 }
 
-export type Todo = Omit<StoreCore, keyof Refined>;
-export type Store = Todo & Refined;
-
 /** Creates a Store object. */
 export function createStore(): Store",
   "export * from 'tinybase/ui-react';",
@@ -11552,7 +11537,7 @@ export function createStore(): Store",
 exports[`Refinements Unpretty keyed value 1`] = `
 [
   "export * from 'tinybase';
-import {Cell, CellCallback, CellIdsListener, CellListener, DoRollback, Id, IdOrNull, Ids, InvalidCellListener, Json, Row, RowCallback, RowIdsListener, RowListener, SortedRowIdsListener, Store as StoreCore, StoreListenerStats, Table, TableCallback, TableIdsListener, TableListener, Tables, TablesListener, TablesSchema, ValueChange, ValuesSchema} from 'tinybase';
+import {Cell, CellCallback, CellIdsListener, CellListener, DoRollback, Id, IdOrNull, Ids, InvalidCellListener, Json, Row, RowCallback, RowIdsListener, RowListener, SortedRowIdsListener, StoreListenerStats, Table, TableCallback, TableIdsListener, TableListener, Tables, TablesListener, TablesSchema, ValueChange, ValuesSchema} from 'tinybase';
 
 /** Represents the keyed value content of the Store. */
 export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string};
@@ -11593,7 +11578,7 @@ export type InvalidValueListener = (store: Store, valueId: Id, invalidValues: an
 /** A function for listening to the completion of a transaction. */
 export type TransactionListener = (store: Store, cellsTouched: boolean, valuesTouched: boolean) => void;
 
-interface Refined {
+export interface Store {
 /** Gets the tabular content of the Store. */
 getTables(): Tables;
 
@@ -11812,9 +11797,6 @@ getListenerStats(): StoreListenerStats;
 
 }
 
-export type Todo = Omit<StoreCore, keyof Refined>;
-export type Store = Todo & Refined;
-
 /** Creates a Store object. */
 export function createStore(): Store",
   "export * from 'tinybase/ui-react';",
@@ -11824,7 +11806,7 @@ export function createStore(): Store",
 exports[`Refinements Unpretty tabular 1`] = `
 [
   "export * from 'tinybase';
-import {CellChange, DoRollback, Id, IdOrNull, Ids, InvalidValueListener, Json, Store as StoreCore, StoreListenerStats, TablesSchema, Value, ValueCallback, ValueIdsListener, ValueListener, Values, ValuesListener, ValuesSchema} from 'tinybase';
+import {CellChange, DoRollback, Id, IdOrNull, Ids, InvalidValueListener, Json, StoreListenerStats, TablesSchema, Value, ValueCallback, ValueIdsListener, ValueListener, Values, ValuesListener, ValuesSchema} from 'tinybase';
 
 /** Represents the tabular content of the Store. */
 export type Tables = {'t1'?: {[rowId: Id]: {'c1': number; 'c2': string; 'c3': string; ''?: string}}};
@@ -11910,7 +11892,7 @@ export type InvalidCellListener = (store: Store, tableId: Id, rowId: Id, cellId:
 /** A function for listening to the completion of a transaction. */
 export type TransactionListener = (store: Store, cellsTouched: boolean, valuesTouched: boolean) => void;
 
-interface Refined {
+export interface Store {
 /** Gets the tabular content of the Store. */
 getTables(): Tables;
 
@@ -12128,9 +12110,6 @@ delListener(listenerId: Id): Store;
 getListenerStats(): StoreListenerStats;
 
 }
-
-export type Todo = Omit<StoreCore, keyof Refined>;
-export type Store = Todo & Refined;
 
 /** Creates a Store object. */
 export function createStore(): Store",
