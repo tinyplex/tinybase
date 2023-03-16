@@ -140,6 +140,7 @@ export const getStoreCoreRefinement = (
   );
 
   let tablesTypes: string[];
+
   if (objIsEmpty(tablesSchema)) {
     tablesTypes = [
       TABLES,
@@ -496,31 +497,51 @@ export const getStoreCoreRefinement = (
   let valuesTypes: string[];
 
   if (objIsEmpty(valuesSchema)) {
-    valuesTypes = [VALUES, VALUES, ID, VALUE, VALUE + CALLBACK];
+    valuesTypes = [
+      VALUES,
+      VALUES,
+      ID,
+      VALUE,
+      VALUE + CALLBACK,
+      VALUES + LISTENER,
+      VALUE_IDS + LISTENER,
+      VALUE + LISTENER,
+      INVALID + VALUE + LISTENER,
+    ];
     addImport(0, 'tinybase', ...valuesTypes);
-    arrayPush(valuesTypes, 'GetValueChange', ID, EMPTY_STRING);
+    arrayPush(valuesTypes, ID, ID_OR_NULL, EMPTY_STRING);
   } else {
     addImport(0, 'tinybase', 'ValueChange');
     valuesTypes = getValuesTypes('store', STORE);
     valuesTypes[3] += '<VId>';
-    arrayPush(valuesTypes, 'VId', `<VId extends ${valuesTypes[2]}>`);
+    arrayPush(
+      valuesTypes,
+      'VId',
+      'VId | null',
+      `<VId extends ${valuesTypes[2]}>`,
+    );
   }
 
   // Values, ValuesWhenSet, ValueId,
   // Value<>,
-  // ValueCallback, ValuesCallback, GetValueChange
+  // ValueCallback
+  // ValueListener, ValueIdsListener, ValueListener, InvalidValueListener
   const [
     valuesType,
     valuesWhenSetType,
     valueIdType,
     valueType,
     valueCallbackType,
-    _getValueChangeType,
-    vId,
+    valuesListenerType,
+    valueIdsListenerType,
+    valueListenerType,
+    invalidValueListenerType,
+    valueId,
+    valueIdOrNull,
     vIdGeneric,
   ] = valuesTypes;
 
-  const valueIdParam = 'valueId: ' + vId;
+  const valueIdParam = 'valueId: ' + valueId;
 
   // getValues, hasValues, setValues, delValues
   arrayForEach(
@@ -574,6 +595,47 @@ export const getStoreCoreRefinement = (
         getContentDoc(verb, 11),
         vIdGeneric,
       ),
+  );
+
+  // addValuesListener
+  addMethod(
+    ADD + VALUES + LISTENER,
+    [LISTENER_ + ': ' + valuesListenerType, 'mutator?: boolean'],
+    ID,
+    getTheContentOfTheStoreDoc(2, 8) + ' changes',
+  );
+
+  // addValueIdsListener
+  addMethod(
+    ADD + VALUE_IDS + LISTENER,
+    [LISTENER_ + ': ' + valueIdsListenerType, 'mutator?: boolean'],
+    ID,
+    getListenerDoc(10, 0, 1),
+  );
+
+  // addValueListener
+  addMethod(
+    ADD + VALUE + LISTENER,
+    [
+      'valueId: ' + valueIdOrNull,
+      LISTENER_ + ': ' + valueListenerType,
+      'mutator?: boolean',
+    ],
+    ID,
+    getListenerDoc(11, 0),
+    vIdGeneric,
+  );
+
+  // addInvalidValueListener
+  addMethod(
+    ADD + INVALID + VALUE + LISTENER,
+    [
+      'valueId: ' + ID_OR_NULL,
+      LISTENER_ + ': ' + invalidValueListenerType,
+      'mutator?: boolean',
+    ],
+    ID,
+    REGISTERS_A_LISTENER + ' whenever an invalid Value change was attempted',
   );
 
   // ---

@@ -9356,6 +9356,54 @@ export type ValueCallback = (...[valueId, value]: ValueIdValueArray) => void;
  */
 export type GetValueChange = (valueId: ValueId) => ValueChange;
 
+/**
+ * A function for listening to changes to Values in the Store.
+ */
+export type ValuesListener = (
+  store: Store,
+  getValueChange: GetValueChange | undefined,
+) => void;
+
+/**
+ * A function for listening to changes to the Value Ids in the Store.
+ */
+export type ValueIdsListener = (store: Store) => void;
+
+/**
+ * Value args for ValueListener.
+ */
+type ValueListenerArgsArray<VId = ValueId> = VId extends ValueId
+  ? [
+      store: Store,
+      valueId: VId,
+      newValue: Value<VId> | undefined,
+      oldValue: Value<VId> | undefined,
+      getValueChange: GetValueChange | undefined,
+    ]
+  : never;
+
+/**
+ * A function for listening to changes to a Value in the Store.
+ */
+export type ValueListener = (
+  ...[
+    store,
+    valueId,
+    newValue,
+    oldValue,
+    getValueChange,
+  ]: ValueListenerArgsArray
+) => void;
+
+/**
+ * A function for listening to changes to invalid Value changes in the Store.
+ */
+export type InvalidValueListener = (
+  store: Store,
+  valueId: Id,
+  invalidValues: any[],
+) => void;
+
 interface Refined {
   /**
    * Gets the tabular content of the Store.
@@ -9669,6 +9717,38 @@ interface Refined {
   delValue<VId extends ValueId>(valueId: VId): Store;
 
   /**
+   * Registers a listener that will be called whenever the keyed value content
+   * of the Store changes.
+   */
+  addValuesListener(listener: ValuesListener, mutator?: boolean): Id;
+
+  /**
+   * Registers a listener that will be called whenever the Value Ids in the
+   * Store change.
+   */
+  addValueIdsListener(listener: ValueIdsListener, mutator?: boolean): Id;
+
+  /**
+   * Registers a listener that will be called whenever a Value in the Store
+   * changes.
+   */
+  addValueListener<VId extends ValueId>(
+    valueId: VId | null,
+    listener: ValueListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * Registers a listener that will be called whenever an invalid Value change
+   * was attempted.
+   */
+  addInvalidValueListener(
+    valueId: IdOrNull,
+    listener: InvalidValueListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
    * Gets a string serialization of the content of the Store.
    */
   getJson(): Json;
@@ -9850,6 +9930,54 @@ export type ValueCallback = (...[valueId, value]: ValueIdValueArray) => void;
  * transaction.
  */
 export type GetValueChange = (valueId: ValueId) => ValueChange;
+
+/**
+ * A function for listening to changes to Values in the Store.
+ */
+export type ValuesListener = (
+  store: Store,
+  getValueChange: GetValueChange | undefined,
+) => void;
+
+/**
+ * A function for listening to changes to the Value Ids in the Store.
+ */
+export type ValueIdsListener = (store: Store) => void;
+
+/**
+ * Value args for ValueListener.
+ */
+type ValueListenerArgsArray<VId = ValueId> = VId extends ValueId
+  ? [
+      store: Store,
+      valueId: VId,
+      newValue: Value<VId> | undefined,
+      oldValue: Value<VId> | undefined,
+      getValueChange: GetValueChange | undefined,
+    ]
+  : never;
+
+/**
+ * A function for listening to changes to a Value in the Store.
+ */
+export type ValueListener = (
+  ...[
+    store,
+    valueId,
+    newValue,
+    oldValue,
+    getValueChange,
+  ]: ValueListenerArgsArray
+) => void;
+
+/**
+ * A function for listening to changes to invalid Value changes in the Store.
+ */
+export type InvalidValueListener = (
+  store: Store,
+  valueId: Id,
+  invalidValues: any[],
+) => void;
 
 interface Refined {
   /**
@@ -10129,6 +10257,38 @@ interface Refined {
   delValue<VId extends ValueId>(valueId: VId): Store;
 
   /**
+   * Registers a listener that will be called whenever the keyed value content
+   * of the Store changes.
+   */
+  addValuesListener(listener: ValuesListener, mutator?: boolean): Id;
+
+  /**
+   * Registers a listener that will be called whenever the Value Ids in the
+   * Store change.
+   */
+  addValueIdsListener(listener: ValueIdsListener, mutator?: boolean): Id;
+
+  /**
+   * Registers a listener that will be called whenever a Value in the Store
+   * changes.
+   */
+  addValueListener<VId extends ValueId>(
+    valueId: VId | null,
+    listener: ValueListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * Registers a listener that will be called whenever an invalid Value change
+   * was attempted.
+   */
+  addInvalidValueListener(
+    valueId: IdOrNull,
+    listener: InvalidValueListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
    * Gets a string serialization of the content of the Store.
    */
   getJson(): Json;
@@ -10246,12 +10406,16 @@ import {
   Id,
   IdOrNull,
   Ids,
+  InvalidValueListener,
   Json,
   Store as StoreCore,
   TablesSchema,
   Value,
   ValueCallback,
+  ValueIdsListener,
+  ValueListener,
   Values,
+  ValuesListener,
   ValuesSchema,
 } from 'tinybase';
 
@@ -10781,6 +10945,38 @@ interface Refined {
   delValue(valueId: Id): Store;
 
   /**
+   * Registers a listener that will be called whenever the keyed value content
+   * of the Store changes.
+   */
+  addValuesListener(listener: ValuesListener, mutator?: boolean): Id;
+
+  /**
+   * Registers a listener that will be called whenever the Value Ids in the
+   * Store change.
+   */
+  addValueIdsListener(listener: ValueIdsListener, mutator?: boolean): Id;
+
+  /**
+   * Registers a listener that will be called whenever a Value in the Store
+   * changes.
+   */
+  addValueListener(
+    valueId: IdOrNull,
+    listener: ValueListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * Registers a listener that will be called whenever an invalid Value change
+   * was attempted.
+   */
+  addInvalidValueListener(
+    valueId: IdOrNull,
+    listener: InvalidValueListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
    * Gets a string serialization of the content of the Store.
    */
   getJson(): Json;
@@ -10996,6 +11192,21 @@ export type ValueCallback = (...[valueId, value]: ValueIdValueArray) => void;
 /** A function for returning information about any Value's changes during a transaction. */
 export type GetValueChange = (valueId: ValueId) => ValueChange;
 
+/** A function for listening to changes to Values in the Store. */
+export type ValuesListener = (store: Store, getValueChange: GetValueChange | undefined) => void;
+
+/** A function for listening to changes to the Value Ids in the Store. */
+export type ValueIdsListener = (store: Store) => void;
+
+/** Value args for ValueListener. */
+type ValueListenerArgsArray<VId = ValueId> = VId extends ValueId ? [store: Store, valueId: VId, newValue: Value<VId>  | undefined, oldValue: Value<VId>  | undefined, getValueChange: GetValueChange  | undefined] : never;
+
+/** A function for listening to changes to a Value in the Store. */
+export type ValueListener = (...[store, valueId, newValue, oldValue, getValueChange]: ValueListenerArgsArray) => void;
+
+/** A function for listening to changes to invalid Value changes in the Store. */
+export type InvalidValueListener = (store: Store, valueId: Id, invalidValues: any[]) => void;
+
 interface Refined {
 /** Gets the tabular content of the Store. */
 getTables(): Tables;
@@ -11132,6 +11343,18 @@ setValue<VId extends ValueId>(valueId: VId, value: Value<VId>): Store;
 /** Deletes a Value. */
 delValue<VId extends ValueId>(valueId: VId): Store;
 
+/** Registers a listener that will be called whenever the keyed value content of the Store changes. */
+addValuesListener(listener: ValuesListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever the Value Ids in the Store change. */
+addValueIdsListener(listener: ValueIdsListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever a Value in the Store changes. */
+addValueListener<VId extends ValueId>(valueId: VId | null, listener: ValueListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever an invalid Value change was attempted. */
+addInvalidValueListener(valueId: IdOrNull, listener: InvalidValueListener, mutator?: boolean): Id;
+
 /** Gets a string serialization of the content of the Store. */
 getJson(): Json;
 
@@ -11222,6 +11445,21 @@ export type ValueCallback = (...[valueId, value]: ValueIdValueArray) => void;
 
 /** A function for returning information about any Value's changes during a transaction. */
 export type GetValueChange = (valueId: ValueId) => ValueChange;
+
+/** A function for listening to changes to Values in the Store. */
+export type ValuesListener = (store: Store, getValueChange: GetValueChange | undefined) => void;
+
+/** A function for listening to changes to the Value Ids in the Store. */
+export type ValueIdsListener = (store: Store) => void;
+
+/** Value args for ValueListener. */
+type ValueListenerArgsArray<VId = ValueId> = VId extends ValueId ? [store: Store, valueId: VId, newValue: Value<VId>  | undefined, oldValue: Value<VId>  | undefined, getValueChange: GetValueChange  | undefined] : never;
+
+/** A function for listening to changes to a Value in the Store. */
+export type ValueListener = (...[store, valueId, newValue, oldValue, getValueChange]: ValueListenerArgsArray) => void;
+
+/** A function for listening to changes to invalid Value changes in the Store. */
+export type InvalidValueListener = (store: Store, valueId: Id, invalidValues: any[]) => void;
 
 interface Refined {
 /** Gets the tabular content of the Store. */
@@ -11359,6 +11597,18 @@ setValue<VId extends ValueId>(valueId: VId, value: Value<VId>): Store;
 /** Deletes a Value. */
 delValue<VId extends ValueId>(valueId: VId): Store;
 
+/** Registers a listener that will be called whenever the keyed value content of the Store changes. */
+addValuesListener(listener: ValuesListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever the Value Ids in the Store change. */
+addValueIdsListener(listener: ValueIdsListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever a Value in the Store changes. */
+addValueListener<VId extends ValueId>(valueId: VId | null, listener: ValueListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever an invalid Value change was attempted. */
+addInvalidValueListener(valueId: IdOrNull, listener: InvalidValueListener, mutator?: boolean): Id;
+
 /** Gets a string serialization of the content of the Store. */
 getJson(): Json;
 
@@ -11427,7 +11677,7 @@ export function createStore(): Store",
 exports[`Refinements Unpretty tabular 1`] = `
 [
   "export * from 'tinybase';
-import {CellChange, DoRollback, Id, IdOrNull, Ids, Json, Store as StoreCore, TablesSchema, Value, ValueCallback, Values, ValuesSchema} from 'tinybase';
+import {CellChange, DoRollback, Id, IdOrNull, Ids, InvalidValueListener, Json, Store as StoreCore, TablesSchema, Value, ValueCallback, ValueIdsListener, ValueListener, Values, ValuesListener, ValuesSchema} from 'tinybase';
 
 /** Represents the tabular content of the Store. */
 export type Tables = {'t1'?: {[rowId: Id]: {'c1': number; 'c2': string; 'c3': string; ''?: string}}};
@@ -11645,6 +11895,18 @@ setValue(valueId: Id, value: Value): Store;
 
 /** Deletes a Value. */
 delValue(valueId: Id): Store;
+
+/** Registers a listener that will be called whenever the keyed value content of the Store changes. */
+addValuesListener(listener: ValuesListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever the Value Ids in the Store change. */
+addValueIdsListener(listener: ValueIdsListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever a Value in the Store changes. */
+addValueListener(valueId: IdOrNull, listener: ValueListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever an invalid Value change was attempted. */
+addInvalidValueListener(valueId: IdOrNull, listener: InvalidValueListener, mutator?: boolean): Id;
 
 /** Gets a string serialization of the content of the Store. */
 getJson(): Json;
