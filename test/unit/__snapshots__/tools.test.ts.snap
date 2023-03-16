@@ -9404,6 +9404,15 @@ export type InvalidValueListener = (
   invalidValues: any[],
 ) => void;
 
+/**
+ * A function for listening to the completion of a transaction.
+ */
+export type TransactionListener = (
+  store: Store,
+  cellsTouched: boolean,
+  valuesTouched: boolean,
+) => void;
+
 interface Refined {
   /**
    * Gets the tabular content of the Store.
@@ -9842,6 +9851,18 @@ interface Refined {
    * Explicitly finishes a transaction.
    */
   finishTransaction(doRollback?: DoRollback): Store;
+
+  /**
+   * Registers a listener that will be called just before the end of the
+   * transaction.
+   */
+  addWillFinishTransactionListener(listener: TransactionListener): Id;
+
+  /**
+   * Registers a listener that will be called just after the end of the
+   * transaction.
+   */
+  addDidFinishTransactionListener(listener: TransactionListener): Id;
 }
 
 export type Todo = Omit<StoreCore, keyof Refined>;
@@ -9977,6 +9998,15 @@ export type InvalidValueListener = (
   store: Store,
   valueId: Id,
   invalidValues: any[],
+) => void;
+
+/**
+ * A function for listening to the completion of a transaction.
+ */
+export type TransactionListener = (
+  store: Store,
+  cellsTouched: boolean,
+  valuesTouched: boolean,
 ) => void;
 
 interface Refined {
@@ -10382,6 +10412,18 @@ interface Refined {
    * Explicitly finishes a transaction.
    */
   finishTransaction(doRollback?: DoRollback): Store;
+
+  /**
+   * Registers a listener that will be called just before the end of the
+   * transaction.
+   */
+  addWillFinishTransactionListener(listener: TransactionListener): Id;
+
+  /**
+   * Registers a listener that will be called just after the end of the
+   * transaction.
+   */
+  addDidFinishTransactionListener(listener: TransactionListener): Id;
 }
 
 export type Todo = Omit<StoreCore, keyof Refined>;
@@ -10630,6 +10672,15 @@ export type InvalidCellListener = (
   rowId: Id,
   cellId: Id,
   invalidCells: any[],
+) => void;
+
+/**
+ * A function for listening to the completion of a transaction.
+ */
+export type TransactionListener = (
+  store: Store,
+  cellsTouched: boolean,
+  valuesTouched: boolean,
 ) => void;
 
 interface Refined {
@@ -11070,6 +11121,18 @@ interface Refined {
    * Explicitly finishes a transaction.
    */
   finishTransaction(doRollback?: DoRollback): Store;
+
+  /**
+   * Registers a listener that will be called just before the end of the
+   * transaction.
+   */
+  addWillFinishTransactionListener(listener: TransactionListener): Id;
+
+  /**
+   * Registers a listener that will be called just after the end of the
+   * transaction.
+   */
+  addDidFinishTransactionListener(listener: TransactionListener): Id;
 }
 
 export type Todo = Omit<StoreCore, keyof Refined>;
@@ -11206,6 +11269,9 @@ export type ValueListener = (...[store, valueId, newValue, oldValue, getValueCha
 
 /** A function for listening to changes to invalid Value changes in the Store. */
 export type InvalidValueListener = (store: Store, valueId: Id, invalidValues: any[]) => void;
+
+/** A function for listening to the completion of a transaction. */
+export type TransactionListener = (store: Store, cellsTouched: boolean, valuesTouched: boolean) => void;
 
 interface Refined {
 /** Gets the tabular content of the Store. */
@@ -11409,6 +11475,12 @@ startTransaction(): Store;
 /** Explicitly finishes a transaction. */
 finishTransaction(doRollback?: DoRollback): Store;
 
+/** Registers a listener that will be called just before the end of the transaction. */
+addWillFinishTransactionListener(listener: TransactionListener): Id;
+
+/** Registers a listener that will be called just after the end of the transaction. */
+addDidFinishTransactionListener(listener: TransactionListener): Id;
+
 }
 
 export type Todo = Omit<StoreCore, keyof Refined>;
@@ -11460,6 +11532,9 @@ export type ValueListener = (...[store, valueId, newValue, oldValue, getValueCha
 
 /** A function for listening to changes to invalid Value changes in the Store. */
 export type InvalidValueListener = (store: Store, valueId: Id, invalidValues: any[]) => void;
+
+/** A function for listening to the completion of a transaction. */
+export type TransactionListener = (store: Store, cellsTouched: boolean, valuesTouched: boolean) => void;
 
 interface Refined {
 /** Gets the tabular content of the Store. */
@@ -11663,6 +11738,12 @@ startTransaction(): Store;
 /** Explicitly finishes a transaction. */
 finishTransaction(doRollback?: DoRollback): Store;
 
+/** Registers a listener that will be called just before the end of the transaction. */
+addWillFinishTransactionListener(listener: TransactionListener): Id;
+
+/** Registers a listener that will be called just after the end of the transaction. */
+addDidFinishTransactionListener(listener: TransactionListener): Id;
+
 }
 
 export type Todo = Omit<StoreCore, keyof Refined>;
@@ -11759,6 +11840,9 @@ export type CellListener = (...[store, tableId, rowId, cellId, newCell, oldCell,
 
 /** A function for listening to changes to invalid Cell changes in the Store. */
 export type InvalidCellListener = (store: Store, tableId: Id, rowId: Id, cellId: Id, invalidCells: any[]) => void;
+
+/** A function for listening to the completion of a transaction. */
+export type TransactionListener = (store: Store, cellsTouched: boolean, valuesTouched: boolean) => void;
 
 interface Refined {
 /** Gets the tabular content of the Store. */
@@ -11961,6 +12045,12 @@ startTransaction(): Store;
 
 /** Explicitly finishes a transaction. */
 finishTransaction(doRollback?: DoRollback): Store;
+
+/** Registers a listener that will be called just before the end of the transaction. */
+addWillFinishTransactionListener(listener: TransactionListener): Id;
+
+/** Registers a listener that will be called just after the end of the transaction. */
+addDidFinishTransactionListener(listener: TransactionListener): Id;
 
 }
 
