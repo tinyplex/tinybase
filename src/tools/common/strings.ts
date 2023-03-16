@@ -44,7 +44,6 @@ export const SORTED_ARGS =
 export const SQUARE_BRACKETS = '[]';
 export const STORE = 'Store';
 export const THE_STORE = 'the ' + STORE;
-export const THE_SCHEMA_FOR = ' the schema for';
 export const TRANSACTION = 'Transaction';
 export const TRANSACTION_ = lower(TRANSACTION);
 export const TRANSACTION_DOC =
@@ -61,6 +60,7 @@ const A_STRING_SERIALIZATION_OF = A + 'string serialization of';
 const SPACE = ' ';
 const GETS_A_CALLBACK_THAT_CAN = 'Gets a callback that can ';
 const THE = 'the ';
+const THE_SCHEMA_FOR = ' the schema for';
 
 export const getTheContentOfDoc = (
   content: 0 | 1 | 2 = 0,
