@@ -9095,6 +9095,7 @@ import {
   Ids,
   Json,
   Store as StoreCore,
+  StoreListenerStats,
   TablesSchema,
   ValueChange,
   ValuesSchema,
@@ -9863,6 +9864,21 @@ interface Refined {
    * transaction.
    */
   addDidFinishTransactionListener(listener: TransactionListener): Id;
+
+  /**
+   * Manually provoke a listener to be called.
+   */
+  callListener(listenerId: Id): Store;
+
+  /**
+   * Remove a listener that was previously added to the Store.
+   */
+  delListener(listenerId: Id): Store;
+
+  /**
+   * Get listener statistics.
+   */
+  getListenerStats(): StoreListenerStats;
 }
 
 export type Todo = Omit<StoreCore, keyof Refined>;
@@ -9898,6 +9914,7 @@ import {
   RowListener,
   SortedRowIdsListener,
   Store as StoreCore,
+  StoreListenerStats,
   Table,
   TableCallback,
   TableIdsListener,
@@ -10424,6 +10441,21 @@ interface Refined {
    * transaction.
    */
   addDidFinishTransactionListener(listener: TransactionListener): Id;
+
+  /**
+   * Manually provoke a listener to be called.
+   */
+  callListener(listenerId: Id): Store;
+
+  /**
+   * Remove a listener that was previously added to the Store.
+   */
+  delListener(listenerId: Id): Store;
+
+  /**
+   * Get listener statistics.
+   */
+  getListenerStats(): StoreListenerStats;
 }
 
 export type Todo = Omit<StoreCore, keyof Refined>;
@@ -10451,6 +10483,7 @@ import {
   InvalidValueListener,
   Json,
   Store as StoreCore,
+  StoreListenerStats,
   TablesSchema,
   Value,
   ValueCallback,
@@ -11133,6 +11166,21 @@ interface Refined {
    * transaction.
    */
   addDidFinishTransactionListener(listener: TransactionListener): Id;
+
+  /**
+   * Manually provoke a listener to be called.
+   */
+  callListener(listenerId: Id): Store;
+
+  /**
+   * Remove a listener that was previously added to the Store.
+   */
+  delListener(listenerId: Id): Store;
+
+  /**
+   * Get listener statistics.
+   */
+  getListenerStats(): StoreListenerStats;
 }
 
 export type Todo = Omit<StoreCore, keyof Refined>;
@@ -11151,7 +11199,7 @@ export function createStore(): Store;
 exports[`Refinements Unpretty both 1`] = `
 [
   "export * from 'tinybase';
-import {CellChange, DoRollback, Id, IdOrNull, Ids, Json, Store as StoreCore, TablesSchema, ValueChange, ValuesSchema} from 'tinybase';
+import {CellChange, DoRollback, Id, IdOrNull, Ids, Json, Store as StoreCore, StoreListenerStats, TablesSchema, ValueChange, ValuesSchema} from 'tinybase';
 
 /** Represents the tabular content of the Store. */
 export type Tables = {'t1'?: {[rowId: Id]: {'c1': number; 'c2': string; 'c3': string; ''?: string}}};
@@ -11481,6 +11529,15 @@ addWillFinishTransactionListener(listener: TransactionListener): Id;
 /** Registers a listener that will be called just after the end of the transaction. */
 addDidFinishTransactionListener(listener: TransactionListener): Id;
 
+/** Manually provoke a listener to be called. */
+callListener(listenerId: Id): Store;
+
+/** Remove a listener that was previously added to the Store. */
+delListener(listenerId: Id): Store;
+
+/** Get listener statistics. */
+getListenerStats(): StoreListenerStats;
+
 }
 
 export type Todo = Omit<StoreCore, keyof Refined>;
@@ -11495,7 +11552,7 @@ export function createStore(): Store",
 exports[`Refinements Unpretty keyed value 1`] = `
 [
   "export * from 'tinybase';
-import {Cell, CellCallback, CellIdsListener, CellListener, DoRollback, Id, IdOrNull, Ids, InvalidCellListener, Json, Row, RowCallback, RowIdsListener, RowListener, SortedRowIdsListener, Store as StoreCore, Table, TableCallback, TableIdsListener, TableListener, Tables, TablesListener, TablesSchema, ValueChange, ValuesSchema} from 'tinybase';
+import {Cell, CellCallback, CellIdsListener, CellListener, DoRollback, Id, IdOrNull, Ids, InvalidCellListener, Json, Row, RowCallback, RowIdsListener, RowListener, SortedRowIdsListener, Store as StoreCore, StoreListenerStats, Table, TableCallback, TableIdsListener, TableListener, Tables, TablesListener, TablesSchema, ValueChange, ValuesSchema} from 'tinybase';
 
 /** Represents the keyed value content of the Store. */
 export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string};
@@ -11744,6 +11801,15 @@ addWillFinishTransactionListener(listener: TransactionListener): Id;
 /** Registers a listener that will be called just after the end of the transaction. */
 addDidFinishTransactionListener(listener: TransactionListener): Id;
 
+/** Manually provoke a listener to be called. */
+callListener(listenerId: Id): Store;
+
+/** Remove a listener that was previously added to the Store. */
+delListener(listenerId: Id): Store;
+
+/** Get listener statistics. */
+getListenerStats(): StoreListenerStats;
+
 }
 
 export type Todo = Omit<StoreCore, keyof Refined>;
@@ -11758,7 +11824,7 @@ export function createStore(): Store",
 exports[`Refinements Unpretty tabular 1`] = `
 [
   "export * from 'tinybase';
-import {CellChange, DoRollback, Id, IdOrNull, Ids, InvalidValueListener, Json, Store as StoreCore, TablesSchema, Value, ValueCallback, ValueIdsListener, ValueListener, Values, ValuesListener, ValuesSchema} from 'tinybase';
+import {CellChange, DoRollback, Id, IdOrNull, Ids, InvalidValueListener, Json, Store as StoreCore, StoreListenerStats, TablesSchema, Value, ValueCallback, ValueIdsListener, ValueListener, Values, ValuesListener, ValuesSchema} from 'tinybase';
 
 /** Represents the tabular content of the Store. */
 export type Tables = {'t1'?: {[rowId: Id]: {'c1': number; 'c2': string; 'c3': string; ''?: string}}};
@@ -12051,6 +12117,15 @@ addWillFinishTransactionListener(listener: TransactionListener): Id;
 
 /** Registers a listener that will be called just after the end of the transaction. */
 addDidFinishTransactionListener(listener: TransactionListener): Id;
+
+/** Manually provoke a listener to be called. */
+callListener(listenerId: Id): Store;
+
+/** Remove a listener that was previously added to the Store. */
+delListener(listenerId: Id): Store;
+
+/** Get listener statistics. */
+getListenerStats(): StoreListenerStats;
 
 }
 
