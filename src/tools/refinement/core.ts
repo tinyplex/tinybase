@@ -129,6 +129,7 @@ export const getStoreCoreRefinement = (
     ID,
     IDS,
     ID_OR_NULL,
+    'StoreListenerStats',
     STORE + ' as StoreCore',
     JSON,
     TABLES + SCHEMA,
@@ -733,6 +734,27 @@ export const getStoreCoreRefinement = (
     LISTENER_ + ': ' + transactionListenerType,
     ID,
     REGISTERS_A_LISTENER + ' just after ' + THE_END_OF_THE_TRANSACTION,
+  );
+
+  addMethod(
+    'call' + LISTENER,
+    'listenerId: Id',
+    STORE,
+    'Manually provoke a listener to be called',
+  );
+
+  addMethod(
+    'del' + LISTENER,
+    'listenerId: Id',
+    STORE,
+    'Remove a listener that was previously added to ' + THE_STORE,
+  );
+
+  addMethod(
+    GET + LISTENER + 'Stats',
+    EMPTY_STRING,
+    'StoreListenerStats',
+    'Get listener statistics',
   );
 
   return [
