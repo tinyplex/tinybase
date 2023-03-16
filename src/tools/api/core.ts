@@ -54,7 +54,6 @@ import {
   getForEachDoc,
   getIdsDoc,
   getListenerDoc,
-  getListenerTypeDoc,
   getRowContentDoc,
   getRowDoc,
   getRowTypeDoc,
@@ -743,60 +742,18 @@ export const getStoreCoreApi = (
   if (!objIsEmpty(valuesSchema)) {
     // Values, ValuesWhenSet, ValueId,
     // Value<>,
-    // ValueCallback, ValuesCallback, GetValueChange
+    // ValueCallback
     const [
       valuesType,
       valuesWhenSetType,
       valueIdType,
-      valueType,
+      _valueType,
       valueCallbackType,
-      getValueChangeType,
+      valuesListenerType,
+      valueIdsListenerType,
+      valueListenerType,
+      invalidValueListenerType,
     ] = getValuesTypes(storeInstance, storeType);
-
-    // ValueListener
-    const valuesListenerType = addType(
-      VALUES + LISTENER,
-      `(${storeParam}, ` +
-        `getValueChange: ${getValueChangeType}${OR_UNDEFINED})` +
-        RETURNS_VOID,
-      getListenerTypeDoc(9),
-    );
-
-    // ValueIdsListener
-    const valueIdsListenerType = addType(
-      VALUE_IDS + LISTENER,
-      `(${storeParam})` + RETURNS_VOID,
-      getListenerTypeDoc(10),
-    );
-
-    const valueListenerArgsArrayType = addType(
-      'ValueListenerArgsArray',
-      `VId extends ${valueIdType} ? ` +
-        `[${storeParam}, valueId: VId, ` +
-        `newValue: ${valueType}<VId> ${OR_UNDEFINED}, ` +
-        `oldValue: ${valueType}<VId> ${OR_UNDEFINED}, ` +
-        `getValueChange: ${getValueChangeType} ${OR_UNDEFINED}] : never`,
-      'Value args for ValueListener',
-      `<VId = ${valueIdType}>`,
-      0,
-    );
-
-    // ValueListener
-    const valueListenerType = addType(
-      VALUE + LISTENER,
-      `(...[${storeInstance}, valueId, newValue, oldValue, getValueChange]: ` +
-        valueListenerArgsArrayType +
-        ')' +
-        RETURNS_VOID,
-      getListenerTypeDoc(11),
-    );
-
-    // InvalidValueListener
-    const invalidValueListenerType = addType(
-      INVALID + VALUE + LISTENER,
-      `(${storeParam}, valueId: Id, ` + `invalidValues: any[])` + RETURNS_VOID,
-      getListenerTypeDoc(12),
-    );
 
     addImport(
       1,
