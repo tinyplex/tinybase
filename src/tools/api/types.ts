@@ -9,6 +9,7 @@ import {
   RETURNS_VOID,
   ROW_ID_PARAM,
   THE_STORE,
+  TRANSACTION,
   TRANSACTION_,
   WHEN_SET,
   WHEN_SETTING_IT,
@@ -50,7 +51,11 @@ export const getTypeFunctions = (
   mapTablesSchema: MapTablesSchema,
   mapCellSchema: MapCellSchema,
   mapValuesSchema: MapValuesSchema,
-) => {
+): [
+  (storeInstance: string, storeType: string) => string[],
+  (storeInstance: string, storeType: string) => string[],
+  (storeInstance: string, storeType: string) => string,
+] => {
   const getTablesTypes = (storeInstance: string, storeType: string) => {
     const storeParam = storeInstance + ': ' + storeType;
 
@@ -455,5 +460,17 @@ export const getTypeFunctions = (
     ];
   };
 
-  return [getTablesTypes, getValuesTypes];
+  const getTransactionListenerType = (
+    storeInstance: string,
+    storeType: string,
+  ) =>
+    addType(
+      TRANSACTION + LISTENER,
+      `(${storeInstance}: ${storeType}, cellsTouched: boolean, ` +
+        `valuesTouched: boolean)` +
+        RETURNS_VOID,
+      A_FUNCTION_FOR + ' listening to the completion of a ' + TRANSACTION_,
+    );
+
+  return [getTablesTypes, getValuesTypes, getTransactionListenerType];
 };

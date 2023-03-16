@@ -20,6 +20,7 @@ import {
   SQUARE_BRACKETS,
   START_TRANSACTION_DOC,
   STORE,
+  THE_END_OF_THE_TRANSACTION,
   THE_STORE,
   TRANSACTION,
   TRANSACTION_,
@@ -94,12 +95,8 @@ export const getStoreCoreRefinement = (
     () => EMPTY_STRING,
   );
 
-  const [getTablesTypes, getValuesTypes] = getTypeFunctions(
-    addType,
-    mapTablesSchema,
-    mapCellSchema,
-    mapValuesSchema,
-  );
+  const [getTablesTypes, getValuesTypes, getTransactionListenerType] =
+    getTypeFunctions(addType, mapTablesSchema, mapCellSchema, mapValuesSchema);
 
   const methods: IdMap<
     [parameters: LINES, returnType: string, doc: string, generic: string]
@@ -717,6 +714,25 @@ export const getStoreCoreRefinement = (
     DO_ROLLBACK_PARAM,
     STORE,
     FINISH_TRANSACTION_DOC,
+  );
+
+  // TransactionListener
+  const transactionListenerType = getTransactionListenerType('store', STORE);
+
+  // addWillFinishTransaction
+  addMethod(
+    ADD + 'WillFinish' + TRANSACTION + LISTENER,
+    LISTENER_ + ': ' + transactionListenerType,
+    ID,
+    REGISTERS_A_LISTENER + ' just before ' + THE_END_OF_THE_TRANSACTION,
+  );
+
+  // addDidFinishTransaction
+  addMethod(
+    ADD + 'DidFinish' + TRANSACTION + LISTENER,
+    LISTENER_ + ': ' + transactionListenerType,
+    ID,
+    REGISTERS_A_LISTENER + ' just after ' + THE_END_OF_THE_TRANSACTION,
   );
 
   return [

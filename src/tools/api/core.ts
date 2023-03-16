@@ -19,7 +19,6 @@ import {
   VALUE_IDS,
 } from '../../common/strings';
 import {
-  A_FUNCTION_FOR,
   CALLBACK,
   DO_ACTIONS_AND_ROLLBACK_PARAMS,
   DO_ROLLBACK_PARAM,
@@ -34,7 +33,6 @@ import {
   PARTIAL,
   REGISTERS_A_LISTENER,
   REPRESENTS,
-  RETURNS_VOID,
   ROW_ID_PARAM,
   SCHEMA,
   SORTED_ARGS,
@@ -163,12 +161,8 @@ export const getStoreCoreApi = (
     addConstant,
   );
 
-  const [getTablesTypes, getValuesTypes] = getTypeFunctions(
-    addType,
-    mapTablesSchema,
-    mapCellSchema,
-    mapValuesSchema,
-  );
+  const [getTablesTypes, getValuesTypes, getTransactionListenerType] =
+    getTypeFunctions(addType, mapTablesSchema, mapCellSchema, mapValuesSchema);
 
   const methods: IdMap<
     [
@@ -273,8 +267,6 @@ export const getStoreCoreApi = (
     storeType,
     `create${storeType} as create${storeType}Decl`,
   );
-
-  const storeParam = storeInstance + ': ' + storeType;
 
   if (!objIsEmpty(tablesSchema)) {
     addImport(0, 'tinybase', 'CellChange');
@@ -925,15 +917,6 @@ export const getStoreCoreApi = (
 
   addImport(null, 'tinybase', 'DoRollback', ID, 'IdOrNull', JSON, 'Store');
 
-  // TransactionListener
-  const transactionListenerType = addType(
-    TRANSACTION + LISTENER,
-    `(${storeParam}, cellsTouched: boolean, ` +
-      `valuesTouched: boolean)` +
-      RETURNS_VOID,
-    A_FUNCTION_FOR + ' listening to the completion of a ' + TRANSACTION_,
-  );
-
   // getJson
   addProxyMethod(0, EMPTY_STRING, JSON, JSON, getTheContentOfTheStoreDoc(0, 6));
 
@@ -980,7 +963,13 @@ export const getStoreCoreApi = (
     'doRollback',
   );
 
-  // addWillFinishTransaction
+  // TransactionListener
+  const transactionListenerType = getTransactionListenerType(
+    storeInstance,
+    storeType,
+  );
+
+  // addWillFinishTransactionListener
   addProxyListener(
     'WillFinish' + TRANSACTION,
     transactionListenerType,
@@ -990,7 +979,7 @@ export const getStoreCoreApi = (
     0,
   );
 
-  // addDidFinishTransaction
+  // addDidFinishTransactionListener
   addProxyListener(
     'DidFinish' + TRANSACTION,
     transactionListenerType,
