@@ -241,6 +241,8 @@ export const getStoreUiReactApi = (
       return lines;
     });
 
+  // ---
+
   addImport(
     null,
     'tinybase',
