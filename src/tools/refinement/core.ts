@@ -86,7 +86,6 @@ export const getStoreCoreRefinement = (
     _addConstant,
     getImports,
     getTypes,
-    _getConstants,
   ] = getCodeFunctions();
 
   const [mapTablesSchema, mapCellSchema, mapValuesSchema] = getSchemaFunctions(
@@ -735,6 +734,7 @@ export const getStoreCoreRefinement = (
     REGISTERS_A_LISTENER + ' just after ' + THE_END_OF_THE_TRANSACTION,
   );
 
+  // callListener
   addMethod(
     'call' + LISTENER,
     'listenerId: Id',
@@ -742,6 +742,7 @@ export const getStoreCoreRefinement = (
     'Manually provoke a listener to be called',
   );
 
+  // delListener
   addMethod(
     'del' + LISTENER,
     'listenerId: Id',
@@ -749,6 +750,7 @@ export const getStoreCoreRefinement = (
     'Remove a listener that was previously added to ' + THE_STORE,
   );
 
+  // getListenerStats
   addMethod(
     GET + LISTENER + 'Stats',
     EMPTY_STRING,

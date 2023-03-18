@@ -9886,6 +9886,12 @@ export interface Store {
 export function createStore(): Store;
 ",
   "export * from 'tinybase/ui-react';
+import {Id, Store} from './s-refinement.d';
+
+/**
+ * Used when you need to refer to a Store in a React hook or component.
+ */
+export type StoreOrStoreId = Store | Id;
 ",
 ]
 `;
@@ -10459,6 +10465,12 @@ export interface Store {
 export function createStore(): Store;
 ",
   "export * from 'tinybase/ui-react';
+import {Id, Store} from './s-refinement.d';
+
+/**
+ * Used when you need to refer to a Store in a React hook or component.
+ */
+export type StoreOrStoreId = Store | Id;
 ",
 ]
 `;
@@ -11180,6 +11192,12 @@ export interface Store {
 export function createStore(): Store;
 ",
   "export * from 'tinybase/ui-react';
+import {Id, Store} from './s-refinement.d';
+
+/**
+ * Used when you need to refer to a Store in a React hook or component.
+ */
+export type StoreOrStoreId = Store | Id;
 ",
 ]
 `;
@@ -11530,7 +11548,12 @@ getListenerStats(): StoreListenerStats;
 
 /** Creates a Store object. */
 export function createStore(): Store",
-  "export * from 'tinybase/ui-react';",
+  "export * from 'tinybase/ui-react';
+import {Id, Store} from './s-refinement.d';
+
+/** Used when you need to refer to a Store in a React hook or component. */
+export type StoreOrStoreId = Store | Id;
+",
 ]
 `;
 
@@ -11799,7 +11822,12 @@ getListenerStats(): StoreListenerStats;
 
 /** Creates a Store object. */
 export function createStore(): Store",
-  "export * from 'tinybase/ui-react';",
+  "export * from 'tinybase/ui-react';
+import {Id, Store} from './s-refinement.d';
+
+/** Used when you need to refer to a Store in a React hook or component. */
+export type StoreOrStoreId = Store | Id;
+",
 ]
 `;
 
@@ -12113,6 +12141,11 @@ getListenerStats(): StoreListenerStats;
 
 /** Creates a Store object. */
 export function createStore(): Store",
-  "export * from 'tinybase/ui-react';",
+  "export * from 'tinybase/ui-react';
+import {Id, Store} from './s-refinement.d';
+
+/** Used when you need to refer to a Store in a React hook or component. */
+export type StoreOrStoreId = Store | Id;
+",
 ]
 `;
