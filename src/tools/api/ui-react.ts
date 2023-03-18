@@ -5,7 +5,10 @@ import {
   EXPORT,
   ID,
   LISTENER_,
+  OPTIONAL_COLON,
   PARTIAL,
+  PROPS,
+  PROVIDER,
   RETURNS_VOID,
   SET,
   SQUARE_BRACKETS,
@@ -74,18 +77,15 @@ const DEPS_SUFFIX = DEPS + '?: React.DependencyList';
 const THEN_DEPS = 'then' + DEPS_SUFFIX;
 const PARAMETER = 'Parameter';
 const GETTER_ARGS = ': (parameter: ' + PARAMETER + ', store: Store) => ';
-const PROVIDER = 'Provider';
 const USE_CONTEXT = 'const contextValue = useContext(Context);';
 const AND_REGISTERS =
   ', and registers a listener so that any changes to ' +
   'that result will cause a re-render';
 const BASED_ON_A_PARAMETER = ', based on a parameter';
 const COLON_SPACE = ': ';
-const OPTIONAL_COLON = '?: ';
 const GENERIC_PARAMETER = '<' + PARAMETER + ',>';
 const PARAMETERIZED_CALLBACK =
   PARAMETER + 'ized' + CALLBACK + '<' + PARAMETER + '>';
-const PROPS = 'Props';
 const ROW_ID = 'rowId';
 const ROW_ID_PROP = 'rowId={rowId}';
 const SEPARATOR_AND_DEBUG_IDS = ', separator, debugIds';

@@ -1,14 +1,22 @@
+import {
+  EXPORT,
+  ID,
+  OPTIONAL_COLON,
+  PROPS,
+  PROVIDER,
+  STORE,
+} from '../common/strings';
 import {IdMap, mapMap, mapNew} from '../../common/map';
 import {
   LINE,
   LINE_TREE,
-  getCodeFunctions,
-  mapUnique,
   camel,
+  getCodeFunctions,
+  getPropTypeList,
+  mapUnique,
 } from '../common/code';
 import {TablesSchema, ValuesSchema} from '../../store.d';
 import {EMPTY_STRING} from '../../common/strings';
-import {EXPORT, ID, STORE} from '../common/strings';
 import {Id} from '../../common.d';
 import {getSchemaFunctions} from '../common/schema';
 
@@ -48,7 +56,7 @@ export const getStoreUiReactRefinement = (
     generic = EMPTY_STRING,
   ): Id => mapUnique(functions, name, [parameters, returnType, doc, generic]);
 
-  const _addHook = (
+  const addHook = (
     name: string,
     parameters: LINE,
     returnType: string,
@@ -56,7 +64,7 @@ export const getStoreUiReactRefinement = (
     generic = EMPTY_STRING,
   ) => addFunction(`use${name}`, parameters, returnType, doc, generic);
 
-  const _addComponent = (name: Id, parameters: LINE, doc: string) =>
+  const addComponent = (name: Id, parameters: LINE, doc: string) =>
     addFunction(name, parameters, 1, doc);
 
   const getFunctions = (): LINE_TREE =>
@@ -74,10 +82,22 @@ export const getStoreUiReactRefinement = (
   //  addImport(0, tinyBaseUiReact, 'ComponentReturnType');
 
   // StoreOrStoreId
-  const _storeOrStoreIdType = addType(
+  const storeOrStoreIdType = addType(
     'StoreOrStoreId',
     STORE + ' | ' + ID,
     'Used when you need to refer to a Store in a React hook or component',
+  );
+
+  // ProviderProps
+  const providerPropsType = addType(
+    PROVIDER + PROPS,
+    getPropTypeList(
+      'store' + OPTIONAL_COLON + STORE,
+      `storeById?: {[storeId: Id]: ${STORE}}`,
+    ),
+    `Used with the ${PROVIDER} component, so that a ` +
+      STORE +
+      ' can be passed into the context of an application',
   );
 
   return [
