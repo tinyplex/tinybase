@@ -9892,6 +9892,15 @@ import {Id, Store} from './s-refinement.d';
  * Used when you need to refer to a Store in a React hook or component.
  */
 export type StoreOrStoreId = Store | Id;
+
+/**
+ * Used with the Provider component, so that a Store can be passed into the
+ * context of an application.
+ */
+export type ProviderProps = {
+  readonly store?: Store;
+  readonly storeById?: {[storeId: Id]: Store};
+};
 ",
 ]
 `;
@@ -10471,6 +10480,15 @@ import {Id, Store} from './s-refinement.d';
  * Used when you need to refer to a Store in a React hook or component.
  */
 export type StoreOrStoreId = Store | Id;
+
+/**
+ * Used with the Provider component, so that a Store can be passed into the
+ * context of an application.
+ */
+export type ProviderProps = {
+  readonly store?: Store;
+  readonly storeById?: {[storeId: Id]: Store};
+};
 ",
 ]
 `;
@@ -11198,6 +11216,15 @@ import {Id, Store} from './s-refinement.d';
  * Used when you need to refer to a Store in a React hook or component.
  */
 export type StoreOrStoreId = Store | Id;
+
+/**
+ * Used with the Provider component, so that a Store can be passed into the
+ * context of an application.
+ */
+export type ProviderProps = {
+  readonly store?: Store;
+  readonly storeById?: {[storeId: Id]: Store};
+};
 ",
 ]
 `;
@@ -11553,6 +11580,9 @@ import {Id, Store} from './s-refinement.d';
 
 /** Used when you need to refer to a Store in a React hook or component. */
 export type StoreOrStoreId = Store | Id;
+
+/** Used with the Provider component, so that a Store can be passed into the context of an application. */
+export type ProviderProps = {readonly store?: Store; readonly storeById?: {[storeId: Id]: Store}};
 ",
 ]
 `;
@@ -11827,6 +11857,9 @@ import {Id, Store} from './s-refinement.d';
 
 /** Used when you need to refer to a Store in a React hook or component. */
 export type StoreOrStoreId = Store | Id;
+
+/** Used with the Provider component, so that a Store can be passed into the context of an application. */
+export type ProviderProps = {readonly store?: Store; readonly storeById?: {[storeId: Id]: Store}};
 ",
 ]
 `;
@@ -12146,6 +12179,9 @@ import {Id, Store} from './s-refinement.d';
 
 /** Used when you need to refer to a Store in a React hook or component. */
 export type StoreOrStoreId = Store | Id;
+
+/** Used with the Provider component, so that a Store can be passed into the context of an application. */
+export type ProviderProps = {readonly store?: Store; readonly storeById?: {[storeId: Id]: Store}};
 ",
 ]
 `;
