@@ -9901,6 +9901,14 @@ export type ProviderProps = {
   readonly store?: Store;
   readonly storeById?: {[storeId: Id]: Store};
 };
+
+/**
+ * Create a Store within a React application with convenient memoization.
+ */
+export function useCreateStore(
+  create: () => Store,
+  createDeps?: React.DependencyList,
+): Store;
 ",
 ]
 `;
@@ -10489,6 +10497,14 @@ export type ProviderProps = {
   readonly store?: Store;
   readonly storeById?: {[storeId: Id]: Store};
 };
+
+/**
+ * Create a Store within a React application with convenient memoization.
+ */
+export function useCreateStore(
+  create: () => Store,
+  createDeps?: React.DependencyList,
+): Store;
 ",
 ]
 `;
@@ -11225,6 +11241,14 @@ export type ProviderProps = {
   readonly store?: Store;
   readonly storeById?: {[storeId: Id]: Store};
 };
+
+/**
+ * Create a Store within a React application with convenient memoization.
+ */
+export function useCreateStore(
+  create: () => Store,
+  createDeps?: React.DependencyList,
+): Store;
 ",
 ]
 `;
@@ -11583,6 +11607,9 @@ export type StoreOrStoreId = Store | Id;
 
 /** Used with the Provider component, so that a Store can be passed into the context of an application. */
 export type ProviderProps = {readonly store?: Store; readonly storeById?: {[storeId: Id]: Store}};
+
+/** Create a Store within a React application with convenient memoization. */
+export function useCreateStore(create: () => Store, createDeps?: React.DependencyList): Store;
 ",
 ]
 `;
@@ -11860,6 +11887,9 @@ export type StoreOrStoreId = Store | Id;
 
 /** Used with the Provider component, so that a Store can be passed into the context of an application. */
 export type ProviderProps = {readonly store?: Store; readonly storeById?: {[storeId: Id]: Store}};
+
+/** Create a Store within a React application with convenient memoization. */
+export function useCreateStore(create: () => Store, createDeps?: React.DependencyList): Store;
 ",
 ]
 `;
@@ -12182,6 +12212,9 @@ export type StoreOrStoreId = Store | Id;
 
 /** Used with the Provider component, so that a Store can be passed into the context of an application. */
 export type ProviderProps = {readonly store?: Store; readonly storeById?: {[storeId: Id]: Store}};
+
+/** Create a Store within a React application with convenient memoization. */
+export function useCreateStore(create: () => Store, createDeps?: React.DependencyList): Store;
 ",
 ]
 `;

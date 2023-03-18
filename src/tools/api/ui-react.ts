@@ -2,6 +2,8 @@ import {
   A,
   CALLBACK,
   DEL,
+  DEPS,
+  DEPS_SUFFIX,
   EXPORT,
   ID,
   LISTENER_,
@@ -65,15 +67,12 @@ import {getSchemaFunctions} from '../common/schema';
 import {isUndefined} from '../../common/other';
 import {objIsEmpty} from '../../common/obj';
 
-const DEPS = 'Deps';
-
 const getGet = (noun: string) => GET + noun;
 const getGetAndGetDeps = (noun: string) =>
   getParameterList(getGet(noun), getGet(noun) + DEPS);
 
 const DEBUG_IDS_PROP_TYPE = 'debugIds?: boolean';
 const DEBUG_IDS_PROP = 'debugIds={debugIds}';
-const DEPS_SUFFIX = DEPS + '?: React.DependencyList';
 const THEN_DEPS = 'then' + DEPS_SUFFIX;
 const PARAMETER = 'Parameter';
 const GETTER_ARGS = ': (parameter: ' + PARAMETER + ', store: Store) => ';
@@ -290,6 +289,7 @@ export const getStoreUiReactApi = (
       `{[${storeInstance}Id: Id]: ${storeType}}?]>([])`,
   );
 
+  // useCreateStore
   addHook(
     `Create${storeType}`,
     `create: () => ${storeType}, create` + DEPS_SUFFIX,
