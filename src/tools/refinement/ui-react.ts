@@ -1,4 +1,5 @@
 import {
+  DEPS_SUFFIX,
   EXPORT,
   ID,
   OPTIONAL_COLON,
@@ -11,6 +12,7 @@ import {
   LINE,
   LINE_TREE,
   camel,
+  comment,
   getCodeFunctions,
   getPropTypeList,
   mapUnique,
@@ -69,7 +71,7 @@ export const getStoreUiReactRefinement = (
 
   const getFunctions = (): LINE_TREE =>
     mapMap(functions, ([parameters, returnType, doc, generic], name) => [
-      doc,
+      comment(doc),
       EXPORT +
         ` function ${name}${generic}(${parameters}` +
         `): ${returnType == 1 ? 'ComponentReturnType' : returnType};`,
@@ -98,6 +100,15 @@ export const getStoreUiReactRefinement = (
     `Used with the ${PROVIDER} component, so that a ` +
       STORE +
       ' can be passed into the context of an application',
+  );
+
+  // useCreateStore
+  addHook(
+    'Create' + STORE,
+    `create: () => ${STORE}, create` + DEPS_SUFFIX,
+    STORE,
+    `Create a ${STORE} within a React application with convenient ` +
+      'memoization',
   );
 
   return [
