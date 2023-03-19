@@ -9886,7 +9886,7 @@ export interface Store {
 export function createStore(): Store;
 ",
   "export * from 'tinybase/ui-react';
-import {Id, Store} from './s-refinement.d';
+import {Id, Store, Tables} from './s-refinement.d';
 
 /**
  * Used when you need to refer to a Store in a React hook or component.
@@ -9909,6 +9909,12 @@ export function useCreateStore(
   create: () => Store,
   createDeps?: React.DependencyList,
 ): Store;
+
+/**
+ * Gets the tabular content of the Store, and registers a listener so that any
+ * changes to that result will cause a re-render.
+ */
+export function useTables(storeOrStoreId?: StoreOrStoreId): Tables;
 ",
 ]
 `;
@@ -10483,6 +10489,7 @@ export function createStore(): Store;
 ",
   "export * from 'tinybase/ui-react';
 import {Id, Store} from './s-refinement.d';
+import {Tables} from 'tinybase';
 
 /**
  * Used when you need to refer to a Store in a React hook or component.
@@ -10505,6 +10512,12 @@ export function useCreateStore(
   create: () => Store,
   createDeps?: React.DependencyList,
 ): Store;
+
+/**
+ * Gets the tabular content of the Store, and registers a listener so that any
+ * changes to that result will cause a re-render.
+ */
+export function useTables(storeOrStoreId?: StoreOrStoreId): Tables;
 ",
 ]
 `;
@@ -11226,7 +11239,7 @@ export interface Store {
 export function createStore(): Store;
 ",
   "export * from 'tinybase/ui-react';
-import {Id, Store} from './s-refinement.d';
+import {Id, Store, Tables} from './s-refinement.d';
 
 /**
  * Used when you need to refer to a Store in a React hook or component.
@@ -11249,6 +11262,12 @@ export function useCreateStore(
   create: () => Store,
   createDeps?: React.DependencyList,
 ): Store;
+
+/**
+ * Gets the tabular content of the Store, and registers a listener so that any
+ * changes to that result will cause a re-render.
+ */
+export function useTables(storeOrStoreId?: StoreOrStoreId): Tables;
 ",
 ]
 `;
@@ -11600,7 +11619,7 @@ getListenerStats(): StoreListenerStats;
 /** Creates a Store object. */
 export function createStore(): Store",
   "export * from 'tinybase/ui-react';
-import {Id, Store} from './s-refinement.d';
+import {Id, Store, Tables} from './s-refinement.d';
 
 /** Used when you need to refer to a Store in a React hook or component. */
 export type StoreOrStoreId = Store | Id;
@@ -11610,6 +11629,9 @@ export type ProviderProps = {readonly store?: Store; readonly storeById?: {[stor
 
 /** Create a Store within a React application with convenient memoization. */
 export function useCreateStore(create: () => Store, createDeps?: React.DependencyList): Store;
+
+/** Gets the tabular content of the Store, and registers a listener so that any changes to that result will cause a re-render. */
+export function useTables(storeOrStoreId?: StoreOrStoreId): Tables;
 ",
 ]
 `;
@@ -11881,6 +11903,7 @@ getListenerStats(): StoreListenerStats;
 export function createStore(): Store",
   "export * from 'tinybase/ui-react';
 import {Id, Store} from './s-refinement.d';
+import {Tables} from 'tinybase';
 
 /** Used when you need to refer to a Store in a React hook or component. */
 export type StoreOrStoreId = Store | Id;
@@ -11890,6 +11913,9 @@ export type ProviderProps = {readonly store?: Store; readonly storeById?: {[stor
 
 /** Create a Store within a React application with convenient memoization. */
 export function useCreateStore(create: () => Store, createDeps?: React.DependencyList): Store;
+
+/** Gets the tabular content of the Store, and registers a listener so that any changes to that result will cause a re-render. */
+export function useTables(storeOrStoreId?: StoreOrStoreId): Tables;
 ",
 ]
 `;
@@ -12205,7 +12231,7 @@ getListenerStats(): StoreListenerStats;
 /** Creates a Store object. */
 export function createStore(): Store",
   "export * from 'tinybase/ui-react';
-import {Id, Store} from './s-refinement.d';
+import {Id, Store, Tables} from './s-refinement.d';
 
 /** Used when you need to refer to a Store in a React hook or component. */
 export type StoreOrStoreId = Store | Id;
@@ -12215,6 +12241,9 @@ export type ProviderProps = {readonly store?: Store; readonly storeById?: {[stor
 
 /** Create a Store within a React application with convenient memoization. */
 export function useCreateStore(create: () => Store, createDeps?: React.DependencyList): Store;
+
+/** Gets the tabular content of the Store, and registers a listener so that any changes to that result will cause a re-render. */
+export function useTables(storeOrStoreId?: StoreOrStoreId): Tables;
 ",
 ]
 `;

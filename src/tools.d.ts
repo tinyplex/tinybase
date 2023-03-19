@@ -488,7 +488,7 @@ export interface Tools {
    * import * as tinybase from 'tinybase';
    * import shopRefinement from './shop-refinement.d';
    *
-   * const {createStore} = tinybase as typeof shopRefinement;
+   * const {createStore} = tinybase as any as typeof shopRefinement;
    *
    * const shop = createStore(); // shop is a refined Store
    * // ...
@@ -506,7 +506,7 @@ export interface Tools {
    *   useTables, // a refined hook
    *   RowView, //   a refined component
    *   // ...
-   * } = tinybaseUiReact as typeof shopUiReactRefinement;
+   * } = tinybaseUiReact as any as typeof shopUiReactRefinement;
    *
    * // ...
    * ```

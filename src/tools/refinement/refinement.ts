@@ -13,10 +13,19 @@ export const getStoreRefinement = (
     return [EMPTY_STRING, EMPTY_STRING];
   }
 
-  const [dTsCore] = getStoreCoreRefinement(tablesSchema, valuesSchema, module);
+  const [dTsCore, sharedTypes] = getStoreCoreRefinement(
+    tablesSchema,
+    valuesSchema,
+    module,
+  );
 
   return [
     dTsCore,
-    ...getStoreUiReactRefinement(tablesSchema, valuesSchema, module),
+    ...getStoreUiReactRefinement(
+      tablesSchema,
+      valuesSchema,
+      module,
+      sharedTypes,
+    ),
   ];
 };
