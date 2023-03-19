@@ -19,6 +19,9 @@ export const lower = (str: string) => str.toLowerCase();
 
 export const A = 'a ';
 export const A_FUNCTION_FOR = 'A function for';
+export const AND_REGISTERS =
+  ', and registers a listener so that any changes to ' +
+  'that result will cause a re-render';
 export const CALLBACK = 'Callback';
 export const DEL = 'Del';
 export const DEPS = 'Deps';

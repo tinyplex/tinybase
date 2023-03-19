@@ -70,6 +70,48 @@ import {getTypeFunctions} from '../api/types';
 import {isArray} from '../../common/other';
 import {objIsEmpty} from '../../common/obj';
 
+export type SharedTypes = [
+  tablesType: string,
+  tablesWhenSetType: string,
+  tableIdType: string,
+  tableType: string,
+  tableWhenSetType: string,
+  rowType: string,
+  rowWhenSetType: string,
+  cellIdType: string,
+  cellType: string,
+  cellCallbackType: string,
+  rowCallbackType: string,
+  tableCallbackType: string,
+  tablesListenerType: string,
+  tableIdsListenerType: string,
+  tableListenerType: string,
+  rowIdsListenerType: string,
+  sortedRowIdsListenerType: string,
+  rowListenerType: string,
+  cellIdsListenerType: string,
+  cellListenerType: string,
+  invalidCellListenerType: string,
+  tableId: string,
+  tableIdOrNull: string,
+  allCellIdsType: string,
+  tIdGeneric: string,
+  cId: string,
+  cIdGeneric: string,
+  valuesType: string,
+  valuesWhenSetType: string,
+  valueIdType: string,
+  valueType: string,
+  valueCallbackType: string,
+  valuesListenerType: string,
+  valueIdsListenerType: string,
+  valueListenerType: string,
+  invalidValueListenerType: string,
+  valueId: string,
+  valueIdOrNull: string,
+  vIdGeneric: string,
+];
+
 const MAY_CONTRADICT_REFINEMENT =
   '. Note that this may contradict the generated type refinements';
 
@@ -77,7 +119,7 @@ export const getStoreCoreRefinement = (
   tablesSchema: TablesSchema,
   valuesSchema: ValuesSchema,
   _module: string,
-): [string] => {
+): [string, SharedTypes] => {
   const [
     build,
     addImport,
@@ -770,5 +812,6 @@ export const getStoreCoreRefinement = (
       comment(`Creates a Store object`),
       'export function createStore(): Store',
     ),
+    [...tablesTypes, ...valuesTypes] as SharedTypes,
   ];
 };

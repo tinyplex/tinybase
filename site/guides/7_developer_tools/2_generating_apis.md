@@ -90,13 +90,13 @@ import * as tinybaseUiReact from 'tinybase/ui-react';
 import shopRefinement from './shop-refinement.d';
 import shopUiReactRefinement from './shop-ui-react-refinement.d';
 
-const {createStore} = tinybase as typeof shopRefinement;
+const {createStore} = tinybase as any as typeof shopRefinement;
 const shop = createStore(); // a refined Store
 
 const {
   useTables, //                a refined hook
   RowView, //                  a refined component
-} = tinybaseUiReact as typeof shopUiReactRefinement;
+} = tinybaseUiReact as any as typeof shopUiReactRefinement;
 ```
 
 ## Prettified Code

@@ -1,4 +1,5 @@
 import {
+  AND_REGISTERS,
   DEPS_SUFFIX,
   EXPORT,
   ID,
@@ -6,7 +7,9 @@ import {
   PROPS,
   PROVIDER,
   STORE,
+  getTheContentOfTheStoreDoc,
 } from '../common/strings';
+import {EMPTY_STRING, TABLES} from '../../common/strings';
 import {IdMap, mapMap, mapNew} from '../../common/map';
 import {
   LINE,
@@ -18,14 +21,16 @@ import {
   mapUnique,
 } from '../common/code';
 import {TablesSchema, ValuesSchema} from '../../store.d';
-import {EMPTY_STRING} from '../../common/strings';
 import {Id} from '../../common.d';
+import {SharedTypes} from './core';
 import {getSchemaFunctions} from '../common/schema';
+import {objIsEmpty} from '../../common/obj';
 
 export const getStoreUiReactRefinement = (
   tablesSchema: TablesSchema,
   valuesSchema: ValuesSchema,
   module: string,
+  sharedTypes: SharedTypes,
 ): [string] => {
   const [
     build,
@@ -78,6 +83,48 @@ export const getStoreUiReactRefinement = (
       EMPTY_STRING,
     ]);
 
+  const [
+    tablesType,
+    _tablesWhenSetType,
+    _tableIdType,
+    _tableType,
+    _tableWhenSetType,
+    _rowType,
+    _rowWhenSetType,
+    _cellIdType,
+    _cellType,
+    _cellCallbackType,
+    _rowCallbackType,
+    _tableCallbackType,
+    _tablesListenerType,
+    _tableIdsListenerType,
+    _tableListenerType,
+    _rowIdsListenerType,
+    _sortedRowIdsListenerType,
+    _rowListenerType,
+    _cellIdsListenerType,
+    _cellListenerType,
+    _invalidCellListenerType,
+    _tableId,
+    _tableIdOrNull,
+    _allCellIdsType,
+    _tIdGeneric,
+    _cId,
+    _cIdGeneric,
+    _valuesType,
+    _valuesWhenSetType,
+    _valueIdType,
+    _valueType,
+    _valueCallbackType,
+    _valuesListenerType,
+    _valueIdsListenerType,
+    _valueListenerType,
+    _invalidValueListenerType,
+    _valueId,
+    _valueIdOrNull,
+    _vIdGeneric,
+  ] = sharedTypes as SharedTypes;
+
   // ---
 
   addImport(0, moduleDefinition, STORE, ID);
@@ -109,6 +156,23 @@ export const getStoreUiReactRefinement = (
     STORE,
     `Create a ${STORE} within a React application with convenient ` +
       'memoization',
+  );
+
+  const storeOrStoreIdParameter =
+    'storeOrStoreId' + OPTIONAL_COLON + storeOrStoreIdType;
+
+  if (objIsEmpty(tablesSchema)) {
+    addImport(0, 'tinybase', tablesType);
+  } else {
+    addImport(0, moduleDefinition, tablesType);
+  }
+
+  // useTables
+  addHook(
+    TABLES,
+    storeOrStoreIdParameter,
+    tablesType,
+    getTheContentOfTheStoreDoc(1, 0) + AND_REGISTERS,
   );
 
   return [
