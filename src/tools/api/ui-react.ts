@@ -1,5 +1,6 @@
 import {
   A,
+  AND_REGISTERS,
   CALLBACK,
   DEL,
   DEPS,
@@ -77,9 +78,6 @@ const THEN_DEPS = 'then' + DEPS_SUFFIX;
 const PARAMETER = 'Parameter';
 const GETTER_ARGS = ': (parameter: ' + PARAMETER + ', store: Store) => ';
 const USE_CONTEXT = 'const contextValue = useContext(Context);';
-const AND_REGISTERS =
-  ', and registers a listener so that any changes to ' +
-  'that result will cause a re-render';
 const BASED_ON_A_PARAMETER = ', based on a parameter';
 const COLON_SPACE = ': ';
 const GENERIC_PARAMETER = '<' + PARAMETER + ',>';
@@ -1039,11 +1037,7 @@ export const getStoreUiReactApi = (
       valueListenerType,
     ] = sharedValueTypes as SharedValueTypes;
 
-    addImport(
-      null,
-      moduleDefinition,
-      ...(sharedValueTypes as SharedValueTypes),
-    );
+    addImport(null, moduleDefinition, ...sharedValueTypes);
     addImport(1, moduleDefinition, storeType);
 
     const getDefaultValueComponent = addInternalFunction(
