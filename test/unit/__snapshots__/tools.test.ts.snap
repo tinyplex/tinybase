@@ -9894,15 +9894,6 @@ import {Id, Store, Tables} from './s-refinement.d';
 export type StoreOrStoreId = Store | Id;
 
 /**
- * Used with the Provider component, so that a Store can be passed into the
- * context of an application.
- */
-export type ProviderProps = {
-  readonly store?: Store;
-  readonly storeById?: {[storeId: Id]: Store};
-};
-
-/**
  * Create a Store within a React application with convenient memoization.
  */
 export function useCreateStore(
@@ -10495,15 +10486,6 @@ import {Tables} from 'tinybase';
  * Used when you need to refer to a Store in a React hook or component.
  */
 export type StoreOrStoreId = Store | Id;
-
-/**
- * Used with the Provider component, so that a Store can be passed into the
- * context of an application.
- */
-export type ProviderProps = {
-  readonly store?: Store;
-  readonly storeById?: {[storeId: Id]: Store};
-};
 
 /**
  * Create a Store within a React application with convenient memoization.
@@ -11247,15 +11229,6 @@ import {Id, Store, Tables} from './s-refinement.d';
 export type StoreOrStoreId = Store | Id;
 
 /**
- * Used with the Provider component, so that a Store can be passed into the
- * context of an application.
- */
-export type ProviderProps = {
-  readonly store?: Store;
-  readonly storeById?: {[storeId: Id]: Store};
-};
-
-/**
  * Create a Store within a React application with convenient memoization.
  */
 export function useCreateStore(
@@ -11624,9 +11597,6 @@ import {Id, Store, Tables} from './s-refinement.d';
 /** Used when you need to refer to a Store in a React hook or component. */
 export type StoreOrStoreId = Store | Id;
 
-/** Used with the Provider component, so that a Store can be passed into the context of an application. */
-export type ProviderProps = {readonly store?: Store; readonly storeById?: {[storeId: Id]: Store}};
-
 /** Create a Store within a React application with convenient memoization. */
 export function useCreateStore(create: () => Store, createDeps?: React.DependencyList): Store;
 
@@ -11907,9 +11877,6 @@ import {Tables} from 'tinybase';
 
 /** Used when you need to refer to a Store in a React hook or component. */
 export type StoreOrStoreId = Store | Id;
-
-/** Used with the Provider component, so that a Store can be passed into the context of an application. */
-export type ProviderProps = {readonly store?: Store; readonly storeById?: {[storeId: Id]: Store}};
 
 /** Create a Store within a React application with convenient memoization. */
 export function useCreateStore(create: () => Store, createDeps?: React.DependencyList): Store;
@@ -12235,9 +12202,6 @@ import {Id, Store, Tables} from './s-refinement.d';
 
 /** Used when you need to refer to a Store in a React hook or component. */
 export type StoreOrStoreId = Store | Id;
-
-/** Used with the Provider component, so that a Store can be passed into the context of an application. */
-export type ProviderProps = {readonly store?: Store; readonly storeById?: {[storeId: Id]: Store}};
 
 /** Create a Store within a React application with convenient memoization. */
 export function useCreateStore(create: () => Store, createDeps?: React.DependencyList): Store;
