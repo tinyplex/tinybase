@@ -17,6 +17,10 @@ import {Id, IdOrNull, Ids, Json} from './common.d';
  * The Tables type is the data structure representing all of the data in a
  * Store.
  *
+ * ```ts override
+ * {[tableId: Id]: Table}
+ * ```
+ *
  * A Tables object is used when setting all of the tables together with the
  * setTables method, and when getting them back out again with the getTables
  * method. A Tables object is a regular JavaScript object containing individual
@@ -42,6 +46,10 @@ export type Tables = {[tableId: Id]: Table};
 /**
  * The Table type is the data structure representing the data in a single table.
  *
+ * ```ts override
+ * {[rowId: Id]: Row}
+ * ```
+ *
  * A Table is used when setting a table with the setTable method, and when
  * getting it back out again with the getTable method. A Table object is a
  * regular JavaScript object containing individual Row objects, keyed by their
@@ -60,6 +68,10 @@ export type Table = {[rowId: Id]: Row};
 
 /**
  * The Row type is the data structure representing the data in a single row.
+ *
+ * ```ts override
+ * {[cellId: Id]: Cell}
+ * ```
  *
  * A Row is used when setting a row with the setRow method, and when getting it
  * back out again with the getRow method. A Row object is a regular JavaScript
@@ -1248,6 +1260,10 @@ export interface Store {
    * The getTable method returns an object containing the entire data of a
    * single Table in the Store.
    *
+   * ```ts override
+   * getTable(tableId: Id): Table
+   * ```
+   *
    * Note that this returns a copy of, rather than a reference to the underlying
    * data, so changes made to the returned object are not made to the Store
    * itself.
@@ -1422,6 +1438,13 @@ export interface Store {
   /**
    * The getRow method returns an object containing the entire data of a single
    * Row in a given Table.
+   *
+   * ```ts override
+   * getRow(
+   *   tableId: Id,
+   *   rowId: Id,
+   * ): Row
+   * ```
    *
    * Note that this returns a copy of, rather than a reference to the underlying
    * data, so changes made to the returned object are not made to the Store
@@ -1975,6 +1998,13 @@ export interface Store {
    * The setTable method takes an object and sets the entire data of a single
    * Table in the Store.
    *
+   * ```ts override
+   * setTable(
+   *   tableId: Id,
+   *   table: Table,
+   * ): Store
+   * ```
+   *
    * This method will cause listeners to be called for any Table, Row, Cell, or
    * Id changes resulting from it.
    *
@@ -2026,6 +2056,14 @@ export interface Store {
    * The setRow method takes an object and sets the entire data of a single Row
    * in the Store.
    *
+   * ```ts override
+   * setRow(
+   *   tableId: Id,
+   *   rowId: Id,
+   *   row: Row,
+   * ): Store
+   * ```
+   *
    * This method will cause listeners to be called for any Table, Row, Cell, or
    * Id changes resulting from it.
    *
@@ -2075,6 +2113,13 @@ export interface Store {
   /**
    * The addRow method takes an object and creates a new Row in the Store,
    * returning the unique Id assigned to it.
+   *
+   * ```ts override
+   * addRow(
+   *   tableId: Id,
+   *   row: Row,
+   * ): Id | undefined
+   * ```
    *
    * This method will cause listeners to be called for any Table, Row, Cell, or
    * Id changes resulting from it.
@@ -2128,6 +2173,14 @@ export interface Store {
   /**
    * The setPartialRow method takes an object and sets partial data of a single
    * Row in the Store, leaving other Cell values unaffected.
+   *
+   * ```ts override
+   * setPartialRow(
+   *   tableId: Id,
+   *   rowId: Id,
+   *   partialRow: Row,
+   * ): Store
+   * ```
    *
    * This method will cause listeners to be called for any Table, Row, Cell, or
    * Id changes resulting from it.
