@@ -4,8 +4,8 @@ import {
   EXPORT,
   ID,
   OPTIONAL_COLON,
-  PROPS,
-  PROVIDER,
+  // PROPS,
+  // PROVIDER,
   STORE,
   getTheContentOfTheStoreDoc,
 } from '../common/strings';
@@ -17,13 +17,13 @@ import {
   camel,
   comment,
   getCodeFunctions,
-  getPropTypeList,
+  // getPropTypeList,
   mapUnique,
 } from '../common/code';
 import {TablesSchema, ValuesSchema} from '../../store.d';
 import {Id} from '../../common.d';
 import {SharedTypes} from './core';
-import {getSchemaFunctions} from '../common/schema';
+// import {getSchemaFunctions} from '../common/schema';
 import {objIsEmpty} from '../../common/obj';
 
 export const getStoreUiReactRefinement = (
@@ -42,14 +42,15 @@ export const getStoreUiReactRefinement = (
     getTypes,
   ] = getCodeFunctions();
 
-  const [mapTablesSchema, mapCellSchema, mapValuesSchema] = getSchemaFunctions(
-    tablesSchema,
-    valuesSchema,
-    () => EMPTY_STRING,
-  );
+  // const [mapTablesSchema, mapCellSchema, mapValuesSchema] =
+  // getSchemaFunctions(
+  //   tablesSchema,
+  //   valuesSchema,
+  //   () => EMPTY_STRING,
+  // );
 
   const moduleDefinition = `./${camel(module)}-refinement.d`;
-  const tinyBaseUiReact = 'tinybase/ui-react';
+  // const tinyBaseUiReact = 'tinybase/ui-react';
 
   const functions: IdMap<
     [parameters: LINE, returnType: string | 1, doc: string, generic: string]
@@ -71,8 +72,8 @@ export const getStoreUiReactRefinement = (
     generic = EMPTY_STRING,
   ) => addFunction(`use${name}`, parameters, returnType, doc, generic);
 
-  const addComponent = (name: Id, parameters: LINE, doc: string) =>
-    addFunction(name, parameters, 1, doc);
+  // const addComponent = (name: Id, parameters: LINE, doc: string) =>
+  //   addFunction(name, parameters, 1, doc);
 
   const getFunctions = (): LINE_TREE =>
     mapMap(functions, ([parameters, returnType, doc, generic], name) => [
@@ -137,17 +138,17 @@ export const getStoreUiReactRefinement = (
     'Used when you need to refer to a Store in a React hook or component',
   );
 
-  // ProviderProps
-  const providerPropsType = addType(
-    PROVIDER + PROPS,
-    getPropTypeList(
-      'store' + OPTIONAL_COLON + STORE,
-      `storeById?: {[storeId: Id]: ${STORE}}`,
-    ),
-    `Used with the ${PROVIDER} component, so that a ` +
-      STORE +
-      ' can be passed into the context of an application',
-  );
+  // // ProviderProps
+  // const providerPropsType = addType(
+  //   PROVIDER + PROPS,
+  //   getPropTypeList(
+  //     'store' + OPTIONAL_COLON + STORE,
+  //     `storeById?: {[storeId: Id]: ${STORE}}`,
+  //   ),
+  //   `Used with the ${PROVIDER} component, so that a ` +
+  //     STORE +
+  //     ' can be passed into the context of an application',
+  // );
 
   // useCreateStore
   addHook(
