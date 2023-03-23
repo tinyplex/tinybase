@@ -41,7 +41,7 @@ import {Id, IdOrNull, Ids, Json} from './common.d';
  * ```
  * @category Store
  */
-export type Tables = {[tableId: Id]: Table};
+export type Tables = {[tableId: Id]: {[rowId: Id]: {[cellId: Id]: Cell}}};
 
 /**
  * The Table type is the data structure representing the data in a single table.
@@ -64,7 +64,7 @@ export type Tables = {[tableId: Id]: Table};
  * ```
  * @category Store
  */
-export type Table = {[rowId: Id]: Row};
+export type Table<TableId extends Id = Id> = Tables[TableId];
 
 /**
  * The Row type is the data structure representing the data in a single row.
@@ -83,7 +83,7 @@ export type Table = {[rowId: Id]: Row};
  * ```
  * @category Store
  */
-export type Row = {[cellId: Id]: Cell};
+export type Row<TableId extends Id = Id> = Table<TableId>[Id];
 
 /**
  * The Cell type is the data structure representing the data in a single cell.
