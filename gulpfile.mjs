@@ -28,6 +28,7 @@ const BIN_DIR = 'bin';
 const LIB_DIR = 'lib';
 const DOCS_DIR = 'docs';
 const TMP_DIR = 'tmp';
+const LINT_BLOCKS = /```[jt]sx?( [^\n]+)?(\n.*?)```/gms;
 
 const getPrettierConfig = async () => ({
   ...JSON.parse(await promises.readFile('.prettierrc', 'utf-8')),
@@ -101,18 +102,19 @@ const lintCheck = async (dir) => {
       throw `${filePath} not pretty`;
     }
     if (filePath.endsWith('.d.ts')) {
-      code
-        .match(/(?<=```[jt]sx?( [^\n]+)?)\n.*?(?=```)/gms)
-        ?.forEach((docBlock) => {
-          const code = docBlock.replace(/\n +\* ?/g, '\n').trimStart();
-          if (!prettier.check(code, docConfig)) {
-            const pretty = prettier
-              .format(code, docConfig)
-              .trim()
-              .replace(/^|\n/g, '\n * ');
-            throw `${filePath} not pretty:\n${code}\n\nShould be:\n${pretty}\n`;
-          }
-        });
+      [...(code.matchAll(LINT_BLOCKS) ?? [])].forEach(([_, hint, docBlock]) => {
+        if (hint?.trim() == 'override') {
+          return; // can't lint orphaned TS methods
+        }
+        const code = docBlock.replace(/\n +\* ?/g, '\n').trimStart();
+        if (!prettier.check(code, docConfig)) {
+          const pretty = prettier
+            .format(code, docConfig)
+            .trim()
+            .replace(/^|\n/g, '\n * ');
+          throw `${filePath} not pretty:\n${code}\n\nShould be:\n${pretty}\n`;
+        }
+      });
     }
   });
 };
