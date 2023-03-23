@@ -1690,6 +1690,10 @@ export interface Queries {
    * The getResultTable method returns an object containing the entire data of
    * the result Table of the given query.
    *
+   * ```ts override
+   * getResultTable(queryId: Id): Table
+   * ```
+   *
    * This has the same behavior as a Store's getTable method. For example, if
    * the query Id is invalid, the method returns an empty object. Similarly, it
    * returns a copy of, rather than a reference to the underlying data, so
@@ -1844,6 +1848,13 @@ export interface Queries {
   /**
    * The getResultRow method returns an object containing the entire data of a
    * single Row in the result Table of the given query.
+   *
+   * ```ts override
+   * getResultRow(
+   *   queryId: Id,
+   *   rowId: Id,
+   * ): Row
+   * ```
    *
    * This has the same behavior as a Store's getRow method. For example, if the
    * query or Row Id is invalid, the method returns an empty object. Similarly,
