@@ -27,6 +27,7 @@
  * @module persisters
  */
 
+import {NoSchemas, OptionalSchemas} from './common/types';
 import {Store, Tables, Values} from './store.d';
 import {Callback} from './common.d';
 
@@ -145,7 +146,7 @@ export type PersisterStats = {
  * ```
  * @category Persister
  */
-export interface Persister {
+export interface Persister<Schemas extends OptionalSchemas = NoSchemas> {
   /**
    * The load method gets persisted data from storage, and loads it into the
    * Store with which the Persister is associated, once.
@@ -310,7 +311,7 @@ export interface Persister {
    * ```
    * @category Load
    */
-  stopAutoLoad(): Persister;
+  stopAutoLoad(): Persister<Schemas>;
 
   /**
    * The save method takes data from the Store with which the Persister is
@@ -415,7 +416,7 @@ export interface Persister {
    * ```
    * @category Save
    */
-  stopAutoSave(): Persister;
+  stopAutoSave(): Persister<Schemas>;
 
   /**
    * The getStore method returns a reference to the underlying Store that is
@@ -439,7 +440,7 @@ export interface Persister {
    * ```
    * @category Getter
    */
-  getStore(): Store;
+  getStore(): Store<Schemas>;
 
   /**
    * The destroy method should be called when this Persister object is no longer
@@ -470,7 +471,7 @@ export interface Persister {
    * ```
    * @category Lifecycle
    */
-  destroy(): Persister;
+  destroy(): Persister<Schemas>;
 
   /**
    * The getStats method provides a set of statistics about the Persister, and
@@ -546,10 +547,9 @@ export interface Persister {
  * ```
  * @category Creation
  */
-export function createSessionPersister(
-  store: Store,
-  storageName: string,
-): Persister;
+export function createSessionPersister<
+  Schemas extends OptionalSchemas = NoSchemas,
+>(store: Store<Schemas>, storageName: string): Persister<Schemas>;
 
 /**
  * The createLocalPersister function creates a Persister object that can
@@ -579,10 +579,9 @@ export function createSessionPersister(
  * ```
  * @category Creation
  */
-export function createLocalPersister(
-  store: Store,
-  storageName: string,
-): Persister;
+export function createLocalPersister<
+  Schemas extends OptionalSchemas = NoSchemas,
+>(store: Store<Schemas>, storageName: string): Persister<Schemas>;
 
 /**
  * The createRemotePersister function creates a Persister object that can
@@ -626,12 +625,14 @@ export function createLocalPersister(
  * ```
  * @category Creation
  */
-export function createRemotePersister(
-  store: Store,
+export function createRemotePersister<
+  Schemas extends OptionalSchemas = NoSchemas,
+>(
+  store: Store<Schemas>,
   loadUrl: string,
   saveUrl: string,
   autoLoadIntervalSeconds: number,
-): Persister;
+): Persister<Schemas>;
 
 /**
  * The createFilePersister function creates a Persister object that can persist
@@ -661,7 +662,9 @@ export function createRemotePersister(
  * ```
  * @category Creation
  */
-export function createFilePersister(store: Store, filePath: string): Persister;
+export function createFilePersister<
+  Schemas extends OptionalSchemas = NoSchemas,
+>(store: Store<Schemas>, filePath: string): Persister<Schemas>;
 
 /**
  * The createCustomPersister function creates a Persister object that you can
@@ -718,10 +721,12 @@ export function createFilePersister(store: Store, filePath: string): Persister;
  * ```
  * @category Creation
  */
-export function createCustomPersister(
-  store: Store,
+export function createCustomPersister<
+  Schemas extends OptionalSchemas = NoSchemas,
+>(
+  store: Store<Schemas>,
   getPersisted: () => Promise<string | null | undefined>,
   setPersisted: (json: string) => Promise<void>,
   startListeningToPersisted: (didChange: Callback) => void,
   stopListeningToPersisted: Callback,
-): Persister;
+): Persister<Schemas>;
