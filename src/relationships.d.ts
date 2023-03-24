@@ -13,6 +13,7 @@
 
 import {GetCell, RowCallback, Store} from './store.d';
 import {Id, IdOrNull, Ids} from './common.d';
+import {NoSchemas, OptionalSchemas} from './common/types';
 
 /**
  * The Relationship type represents the concept of a map that connects one Row
@@ -247,7 +248,7 @@ export type RelationshipsListenerStats = {
  * @see Drawing demo
  * @category Relationships
  */
-export interface Relationships {
+export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
   /**
    * The setRelationshipDefinition method lets you set the definition of a
    * Relationship.
@@ -404,7 +405,7 @@ export interface Relationships {
    * ```
    * @category Getter
    */
-  getStore(): Store;
+  getStore(): Store<Schemas>;
 
   /**
    * The getRelationshipIds method returns an array of the Relationship Ids
@@ -1198,4 +1199,6 @@ export interface Relationships {
  * ```
  * @category Creation
  */
-export function createRelationships(store: Store): Relationships;
+export function createRelationships<
+  Schemas extends OptionalSchemas = NoSchemas,
+>(store: Store<Schemas>): Relationships<Schemas>;

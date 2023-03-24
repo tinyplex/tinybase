@@ -13,6 +13,7 @@
 
 import {GetCell, RowCallback, Store} from './store.d';
 import {Id, IdOrNull, Ids, SortKey} from './common.d';
+import {NoSchemas, OptionalSchemas} from './common/types';
 
 /**
  * The Index type represents the concept of a map of Slice objects, keyed by Id.
@@ -195,7 +196,7 @@ export type IndexesListenerStats = {
  * @see Word Frequencies demo
  * @category Indexes
  */
-export interface Indexes {
+export interface Indexes<Schemas extends OptionalSchemas = NoSchemas> {
   /**
    * The setIndexDefinition method lets you set the definition of an Index.
    *
@@ -404,7 +405,7 @@ export interface Indexes {
    * ```
    * @category Getter
    */
-  getStore(): Store;
+  getStore(): Store<Schemas>;
 
   /**
    * The getIndexIds method returns an array of the Index Ids registered with
@@ -963,4 +964,6 @@ export interface Indexes {
  * ```
  * @category Creation
  */
-export function createIndexes(store: Store): Indexes;
+export function createIndexes<Schemas extends OptionalSchemas = NoSchemas>(
+  store: Store<Schemas>,
+): Indexes<Schemas>;

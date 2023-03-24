@@ -25,6 +25,7 @@ import {
   TableCallback,
 } from './store.d';
 import {Id, IdOrNull, Ids} from './common.d';
+import {NoSchemas, OptionalSchemas} from './common/types';
 
 /**
  * The Aggregate type describes a custom function that takes an array of Cell
@@ -1427,7 +1428,7 @@ export type Having = {
  * @category Queries
  * @since v2.0.0
  */
-export interface Queries {
+export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
   /**
    * The setQueryDefinition method lets you set the definition of a query.
    *
@@ -1560,7 +1561,7 @@ export interface Queries {
    * @category Getter
    * @since v2.0.0
    */
-  getStore(): Store;
+  getStore(): Store<Schemas>;
 
   /**
    * The getQueryIds method returns an array of the query Ids registered with
@@ -3032,4 +3033,6 @@ export interface Queries {
  * @category Creation
  * @since v2.0.0
  */
-export function createQueries(store: Store): Queries;
+export function createQueries<Schemas extends OptionalSchemas = NoSchemas>(
+  store: Store<Schemas>,
+): Queries<Schemas>;

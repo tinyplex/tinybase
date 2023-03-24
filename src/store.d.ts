@@ -12,6 +12,7 @@
  */
 
 import {Id, IdOrNull, Ids, Json} from './common.d';
+import {NoSchemas, OptionalSchemas} from './common/types';
 
 /**
  * The Tables type is the data structure representing all of the data in a
@@ -317,8 +318,8 @@ export type DoRollback = (
  * transaction, since v3.0.0.
  * @category Listener
  */
-export type TransactionListener = (
-  store: Store,
+export type TransactionListener<Schemas extends OptionalSchemas = NoSchemas> = (
+  store: Store<Schemas>,
   cellsTouched: boolean,
   valuesTouched: boolean,
 ) => void;
@@ -343,8 +344,8 @@ export type TransactionListener = (
  * changes.
  * @category Listener
  */
-export type TablesListener = (
-  store: Store,
+export type TablesListener<Schemas extends OptionalSchemas = NoSchemas> = (
+  store: Store<Schemas>,
   getCellChange: GetCellChange | undefined,
 ) => void;
 
@@ -360,7 +361,9 @@ export type TablesListener = (
  * @param store A reference to the Store that changed.
  * @category Listener
  */
-export type TableIdsListener = (store: Store) => void;
+export type TableIdsListener<Schemas extends OptionalSchemas = NoSchemas> = (
+  store: Store<Schemas>,
+) => void;
 
 /**
  * The TableListener type describes a function that is used to listen to changes
@@ -383,8 +386,8 @@ export type TableIdsListener = (store: Store) => void;
  * changes.
  * @category Listener
  */
-export type TableListener = (
-  store: Store,
+export type TableListener<Schemas extends OptionalSchemas = NoSchemas> = (
+  store: Store<Schemas>,
   tableId: Id,
   getCellChange: GetCellChange | undefined,
 ) => void;
@@ -403,7 +406,10 @@ export type TableListener = (
  * @param tableId The Id of the Table that changed.
  * @category Listener
  */
-export type RowIdsListener = (store: Store, tableId: Id) => void;
+export type RowIdsListener<Schemas extends OptionalSchemas = NoSchemas> = (
+  store: Store<Schemas>,
+  tableId: Id,
+) => void;
 
 /**
  * The SortedRowIdsListener type describes a function that is used to listen to
@@ -429,15 +435,16 @@ export type RowIdsListener = (store: Store, tableId: Id) => void;
  * @category Listener
  * @since v2.0.0
  */
-export type SortedRowIdsListener = (
-  store: Store,
-  tableId: Id,
-  cellId: Id | undefined,
-  descending: boolean,
-  offset: number,
-  limit: number | undefined,
-  sortedRowIds: Ids,
-) => void;
+export type SortedRowIdsListener<Schemas extends OptionalSchemas = NoSchemas> =
+  (
+    store: Store<Schemas>,
+    tableId: Id,
+    cellId: Id | undefined,
+    descending: boolean,
+    offset: number,
+    limit: number | undefined,
+    sortedRowIds: Ids,
+  ) => void;
 
 /**
  * The RowListener type describes a function that is used to listen to changes
@@ -462,8 +469,8 @@ export type SortedRowIdsListener = (
  * changes.
  * @category Listener
  */
-export type RowListener = (
-  store: Store,
+export type RowListener<Schemas extends OptionalSchemas = NoSchemas> = (
+  store: Store<Schemas>,
   tableId: Id,
   rowId: Id,
   getCellChange: GetCellChange | undefined,
@@ -484,7 +491,11 @@ export type RowListener = (
  * @param rowId The Id of the Row that changed.
  * @category Listener
  */
-export type CellIdsListener = (store: Store, tableId: Id, rowId: Id) => void;
+export type CellIdsListener<Schemas extends OptionalSchemas = NoSchemas> = (
+  store: Store<Schemas>,
+  tableId: Id,
+  rowId: Id,
+) => void;
 
 /**
  * The CellListener type describes a function that is used to listen to changes
@@ -514,8 +525,8 @@ export type CellIdsListener = (store: Store, tableId: Id, rowId: Id) => void;
  * changes.
  * @category Listener
  */
-export type CellListener = (
-  store: Store,
+export type CellListener<Schemas extends OptionalSchemas = NoSchemas> = (
+  store: Store<Schemas>,
   tableId: Id,
   rowId: Id,
   cellId: Id,
@@ -544,8 +555,8 @@ export type CellListener = (
  * changes.
  * @category Listener
  */
-export type ValuesListener = (
-  store: Store,
+export type ValuesListener<Schemas extends OptionalSchemas = NoSchemas> = (
+  store: Store<Schemas>,
   getValueChange: GetValueChange | undefined,
 ) => void;
 
@@ -561,7 +572,9 @@ export type ValuesListener = (
  * @param store A reference to the Store that changed.
  * @category Listener
  */
-export type ValueIdsListener = (store: Store) => void;
+export type ValueIdsListener<Schemas extends OptionalSchemas = NoSchemas> = (
+  store: Store<Schemas>,
+) => void;
 
 /**
  * The ValueListener type describes a function that is used to listen to changes
@@ -589,8 +602,8 @@ export type ValueIdsListener = (store: Store) => void;
  * @category Listener
  * @since v3.0.0
  */
-export type ValueListener = (
-  store: Store,
+export type ValueListener<Schemas extends OptionalSchemas = NoSchemas> = (
+  store: Store<Schemas>,
   valueId: Id,
   newValue: Value,
   oldValue: Value,
@@ -619,8 +632,8 @@ export type ValueListener = (
  * @category Listener
  * @since v1.1.0
  */
-export type InvalidCellListener = (
-  store: Store,
+export type InvalidCellListener<Schemas extends OptionalSchemas = NoSchemas> = (
+  store: Store<Schemas>,
   tableId: Id,
   rowId: Id,
   cellId: Id,
@@ -647,11 +660,8 @@ export type InvalidCellListener = (
  * @category Listener
  * @since v3.0.0
  */
-export type InvalidValueListener = (
-  store: Store,
-  valueId: Id,
-  invalidValues: any[],
-) => void;
+export type InvalidValueListener<Schemas extends OptionalSchemas = NoSchemas> =
+  (store: Store<Schemas>, valueId: Id, invalidValues: any[]) => void;
 
 /**
  * The GetCellChange type describes a function that returns information about
@@ -1137,9 +1147,16 @@ export type StoreListenerStats = {
  * requires its type to be specified, and can also take a default value for when
  * it's not specified.
  *
- * You can also get a serialization of the schemas out of the Store with
- * the getSchemaJson method, and remove the schemas altogether with
- * the delValuesSchema method and delTablesSchema method.
+ * You can also get a serialization of the schemas out of the Store with the
+ * getSchemaJson method, and remove the schemas altogether with the
+ * delValuesSchema method and delTablesSchema method.
+ *
+ * Throughout this API documentation, you will see the generic type parameter
+ * `Schemas`, which refers to a pair of TablesSchema and ValuesSchema
+ * respectively. These can be used on the Store interface to constrain its
+ * methods, for example. This type parameter is defaulted if not provided, and
+ * so if you are using a Store without schemas, you can ignore it and use the
+ * Store type bare.
  *
  * Read more about schemas in the Using Schemas guide.
  *
@@ -1187,7 +1204,7 @@ export type StoreListenerStats = {
  * @see Todo App demos
  * @category Store
  */
-export interface Store {
+export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   /**
    * The getTables method returns a Tables object containing the entire data of
    * the Store.
@@ -1992,7 +2009,7 @@ export interface Store {
    * ```
    * @category Setter
    */
-  setTables(tables: Tables): Store;
+  setTables(tables: Tables): Store<Schemas>;
 
   /**
    * The setTable method takes an object and sets the entire data of a single
@@ -2002,7 +2019,7 @@ export interface Store {
    * setTable(
    *   tableId: Id,
    *   table: Table,
-   * ): Store
+   * ): Store<Schemas>
    * ```
    *
    * This method will cause listeners to be called for any Table, Row, Cell, or
@@ -2050,7 +2067,7 @@ export interface Store {
    * ```
    * @category Setter
    */
-  setTable(tableId: Id, table: Table): Store;
+  setTable(tableId: Id, table: Table): Store<Schemas>;
 
   /**
    * The setRow method takes an object and sets the entire data of a single Row
@@ -2061,7 +2078,7 @@ export interface Store {
    *   tableId: Id,
    *   rowId: Id,
    *   row: Row,
-   * ): Store
+   * ): Store<Schemas>
    * ```
    *
    * This method will cause listeners to be called for any Table, Row, Cell, or
@@ -2108,7 +2125,7 @@ export interface Store {
    * ```
    * @category Setter
    */
-  setRow(tableId: Id, rowId: Id, row: Row): Store;
+  setRow(tableId: Id, rowId: Id, row: Row): Store<Schemas>;
 
   /**
    * The addRow method takes an object and creates a new Row in the Store,
@@ -2179,7 +2196,7 @@ export interface Store {
    *   tableId: Id,
    *   rowId: Id,
    *   partialRow: Row,
-   * ): Store
+   * ): Store<Schemas>
    * ```
    *
    * This method will cause listeners to be called for any Table, Row, Cell, or
@@ -2228,7 +2245,7 @@ export interface Store {
    * ```
    * @category Setter
    */
-  setPartialRow(tableId: Id, rowId: Id, partialRow: Row): Store;
+  setPartialRow(tableId: Id, rowId: Id, partialRow: Row): Store<Schemas>;
 
   /**
    * The setCell method sets the value of a single Cell in the Store.
@@ -2286,7 +2303,12 @@ export interface Store {
    * ```
    * @category Setter
    */
-  setCell(tableId: Id, rowId: Id, cellId: Id, cell: Cell | MapCell): Store;
+  setCell(
+    tableId: Id,
+    rowId: Id,
+    cellId: Id,
+    cell: Cell | MapCell,
+  ): Store<Schemas>;
 
   /**
    * The setValues method takes an object and sets all the Values in the Store.
@@ -2334,7 +2356,7 @@ export interface Store {
    * @category Setter
    * @since v3.0.0
    */
-  setValues(values: Values): Store;
+  setValues(values: Values): Store<Schemas>;
 
   /**
    * The setPartialValues method takes an object and sets its Values in the
@@ -2384,7 +2406,7 @@ export interface Store {
    * @category Setter
    * @since v3.0.0
    */
-  setPartialValues(partialValues: Values): Store;
+  setPartialValues(partialValues: Values): Store<Schemas>;
 
   /**
    * The setValue method sets a single keyed Value in the Store.
@@ -2438,7 +2460,7 @@ export interface Store {
    * @category Setter
    * @since v3.0.0
    */
-  setValue(valueId: Id, value: Value | MapValue): Store;
+  setValue(valueId: Id, value: Value | MapValue): Store<Schemas>;
 
   /**
    * The setTablesJson method takes a string serialization of all of the Tables
@@ -2473,7 +2495,7 @@ export interface Store {
    * @category Setter
    * @since v3.0.0
    */
-  setTablesJson(tablesJson: Json): Store;
+  setTablesJson(tablesJson: Json): Store<Schemas>;
 
   /**
    * The setValuesJson method takes a string serialization of all of the Values
@@ -2508,7 +2530,7 @@ export interface Store {
    * @category Setter
    * @since v3.0.0
    */
-  setValuesJson(valuesJson: Json): Store;
+  setValuesJson(valuesJson: Json): Store<Schemas>;
 
   /**
    * The setJson method takes a string serialization of all of the Tables and
@@ -2567,7 +2589,7 @@ export interface Store {
    * ```
    * @category Setter
    */
-  setJson(tablesAndValuesJson: Json): Store;
+  setJson(tablesAndValuesJson: Json): Store<Schemas>;
 
   /**
    * The setTablesSchema method lets you specify the TablesSchema of the tabular
@@ -2600,7 +2622,7 @@ export interface Store {
    * @category Setter
    * @since v3.0.0
    */
-  setTablesSchema(tablesSchema: TablesSchema): Store;
+  setTablesSchema(tablesSchema: TablesSchema): Store<Schemas>;
 
   /**
    * The setValuesSchema method lets you specify the ValuesSchema of the keyed
@@ -2630,7 +2652,7 @@ export interface Store {
    * @category Setter
    * @since v3.0.0
    */
-  setValuesSchema(valuesSchema: ValuesSchema): Store;
+  setValuesSchema(valuesSchema: ValuesSchema): Store<Schemas>;
 
   /**
    * The setSchema method lets you specify the TablesSchema and ValuesSchema of
@@ -2689,7 +2711,10 @@ export interface Store {
    * ```
    * @category Setter
    */
-  setSchema(tablesSchema: TablesSchema, valuesSchema?: ValuesSchema): Store;
+  setSchema(
+    tablesSchema: TablesSchema,
+    valuesSchema?: ValuesSchema,
+  ): Store<Schemas>;
 
   /**
    * The delTables method lets you remove all of the data in a Store.
@@ -2707,7 +2732,7 @@ export interface Store {
    * ```
    * @category Deleter
    */
-  delTables(): Store;
+  delTables(): Store<Schemas>;
 
   /**
    * The delTable method lets you remove a single Table from the Store.
@@ -2729,7 +2754,7 @@ export interface Store {
    * ```
    * @category Deleter
    */
-  delTable(tableId: Id): Store;
+  delTable(tableId: Id): Store<Schemas>;
 
   /**
    * The delRow method lets you remove a single Row from a Table.
@@ -2753,7 +2778,7 @@ export interface Store {
    * ```
    * @category Deleter
    */
-  delRow(tableId: Id, rowId: Id): Store;
+  delRow(tableId: Id, rowId: Id): Store<Schemas>;
 
   /**
    * The delCell method lets you remove a single Cell from a Row.
@@ -2837,7 +2862,12 @@ export interface Store {
    * ```
    * @category Deleter
    */
-  delCell(tableId: Id, rowId: Id, cellId: Id, forceDel?: boolean): Store;
+  delCell(
+    tableId: Id,
+    rowId: Id,
+    cellId: Id,
+    forceDel?: boolean,
+  ): Store<Schemas>;
 
   /**
    * The delValues method lets you remove all the Values from a Store.
@@ -2876,7 +2906,7 @@ export interface Store {
    * @category Deleter
    * @since v3.0.0
    */
-  delValues(): Store;
+  delValues(): Store<Schemas>;
 
   /**
    * The delValue method lets you remove a single Value from a Store.
@@ -2916,7 +2946,7 @@ export interface Store {
    * @category Deleter
    * @since v3.0.0
    */
-  delValue(valueId: Id): Store;
+  delValue(valueId: Id): Store<Schemas>;
 
   /**
    * The delTablesSchema method lets you remove the TablesSchema of the Store.
@@ -2935,7 +2965,7 @@ export interface Store {
    * ```
    * @category Deleter
    */
-  delTablesSchema(): Store;
+  delTablesSchema(): Store<Schemas>;
 
   /**
    * The delValuesSchema method lets you remove the ValuesSchema of the Store.
@@ -2955,7 +2985,7 @@ export interface Store {
    * @category Deleter
    * @since v3.0.0
    */
-  delValuesSchema(): Store;
+  delValuesSchema(): Store<Schemas>;
 
   /**
    * The delSchema method lets you remove both the TablesSchema and ValuesSchema
@@ -2982,7 +3012,7 @@ export interface Store {
    * @category Deleter
    * @since v3.0.0
    */
-  delSchema(): Store;
+  delSchema(): Store<Schemas>;
 
   /**
    * The transaction method takes a function that makes multiple mutations to
@@ -3161,7 +3191,7 @@ export interface Store {
    * @category Transaction
    * @since v1.3.0
    */
-  startTransaction(): Store;
+  startTransaction(): Store<Schemas>;
 
   /**
    * The finishTransaction method allows you to explicitly finish a transaction
@@ -3259,7 +3289,7 @@ export interface Store {
    * @category Transaction
    * @since v1.3.0
    */
-  finishTransaction(doRollback?: DoRollback): Store;
+  finishTransaction(doRollback?: DoRollback): Store<Schemas>;
 
   /**
    * The forEachTable method takes a function that it will then call for each
@@ -3444,7 +3474,7 @@ export interface Store {
    * ```
    * @category Listener
    */
-  addTablesListener(listener: TablesListener, mutator?: boolean): Id;
+  addTablesListener(listener: TablesListener<Schemas>, mutator?: boolean): Id;
 
   /**
    * The addTableIdsListener method registers a listener function with the Store
@@ -3507,7 +3537,10 @@ export interface Store {
    * ```
    * @category Listener
    */
-  addTableIdsListener(listener: TableIdsListener, mutator?: boolean): Id;
+  addTableIdsListener(
+    listener: TableIdsListener<Schemas>,
+    mutator?: boolean,
+  ): Id;
 
   /**
    * The addTableListener method registers a listener function with the Store
@@ -3602,7 +3635,7 @@ export interface Store {
    */
   addTableListener(
     tableId: IdOrNull,
-    listener: TableListener,
+    listener: TableListener<Schemas>,
     mutator?: boolean,
   ): Id;
 
@@ -3694,7 +3727,7 @@ export interface Store {
    */
   addRowIdsListener(
     tableId: IdOrNull,
-    listener: RowIdsListener,
+    listener: RowIdsListener<Schemas>,
     mutator?: boolean,
   ): Id;
 
@@ -3920,7 +3953,7 @@ export interface Store {
     descending: boolean,
     offset: number,
     limit: number | undefined,
-    listener: SortedRowIdsListener,
+    listener: SortedRowIdsListener<Schemas>,
     mutator?: boolean,
   ): Id;
 
@@ -4030,7 +4063,7 @@ export interface Store {
   addRowListener(
     tableId: IdOrNull,
     rowId: IdOrNull,
-    listener: RowListener,
+    listener: RowListener<Schemas>,
     mutator?: boolean,
   ): Id;
 
@@ -4136,7 +4169,7 @@ export interface Store {
   addCellIdsListener(
     tableId: IdOrNull,
     rowId: IdOrNull,
-    listener: CellIdsListener,
+    listener: CellIdsListener<Schemas>,
     mutator?: boolean,
   ): Id;
 
@@ -4256,7 +4289,7 @@ export interface Store {
     tableId: IdOrNull,
     rowId: IdOrNull,
     cellId: IdOrNull,
-    listener: CellListener,
+    listener: CellListener<Schemas>,
     mutator?: boolean,
   ): Id;
 
@@ -4319,7 +4352,7 @@ export interface Store {
    * @category Listener
    * @since v3.0.0
    */
-  addValuesListener(listener: ValuesListener, mutator?: boolean): Id;
+  addValuesListener(listener: ValuesListener<Schemas>, mutator?: boolean): Id;
 
   /**
    * The addValueIdsListener method registers a listener function with the Store
@@ -4383,7 +4416,10 @@ export interface Store {
    * @category Listener
    * @since v3.0.0
    */
-  addValueIdsListener(listener: ValueIdsListener, mutator?: boolean): Id;
+  addValueIdsListener(
+    listener: ValueIdsListener<Schemas>,
+    mutator?: boolean,
+  ): Id;
 
   /**
    * The addValueListener method registers a listener function with the Store
@@ -4474,7 +4510,7 @@ export interface Store {
    */
   addValueListener(
     valueId: IdOrNull,
-    listener: ValueListener,
+    listener: ValueListener<Schemas>,
     mutator?: boolean,
   ): Id;
 
@@ -4705,7 +4741,7 @@ export interface Store {
     tableId: IdOrNull,
     rowId: IdOrNull,
     cellId: IdOrNull,
-    listener: InvalidCellListener,
+    listener: InvalidCellListener<Schemas>,
     mutator?: boolean,
   ): Id;
 
@@ -4881,7 +4917,7 @@ export interface Store {
    */
   addInvalidValueListener(
     valueId: IdOrNull,
-    listener: InvalidValueListener,
+    listener: InvalidValueListener<Schemas>,
     mutator?: boolean,
   ): Id;
 
@@ -4975,7 +5011,7 @@ export interface Store {
    * @category Listener
    * @since v1.3.0
    */
-  addWillFinishTransactionListener(listener: TransactionListener): Id;
+  addWillFinishTransactionListener(listener: TransactionListener<Schemas>): Id;
 
   /**
    * The addDidFinishTransactionListener method registers a listener function
@@ -5068,7 +5104,7 @@ export interface Store {
    * @category Listener
    * @since v1.3.0
    */
-  addDidFinishTransactionListener(listener: TransactionListener): Id;
+  addDidFinishTransactionListener(listener: TransactionListener<Schemas>): Id;
 
   /**
    * The callListener method provides a way for you to manually provoke a
@@ -5185,7 +5221,7 @@ export interface Store {
    * ```
    * @category Listener
    */
-  callListener(listenerId: Id): Store;
+  callListener(listenerId: Id): Store<Schemas>;
 
   /**
    * The delListener method removes a listener that was previously added to the
@@ -5218,7 +5254,7 @@ export interface Store {
    * ```
    * @category Listener
    */
-  delListener(listenerId: Id): Store;
+  delListener(listenerId: Id): Store<Schemas>;
 
   /**
    * The getListenerStats method provides a set of statistics about the

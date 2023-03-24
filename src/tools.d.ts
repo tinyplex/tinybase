@@ -10,6 +10,7 @@
  * @since v2.2.0
  */
 
+import {NoSchemas, OptionalSchemas} from './common/types';
 import {Store, TablesSchema, ValuesSchema} from './store.d';
 import {Id} from './common.d';
 
@@ -109,7 +110,7 @@ export type StoreStatsRowDetail = {
  * @category Tools
  * @since v2.2.0
  */
-export interface Tools {
+export interface Tools<Schemas extends OptionalSchemas = NoSchemas> {
   /* eslint-disable max-len */
   /**
    * The getStoreStats method provides a set of statistics about the Store, and
@@ -651,7 +652,7 @@ export interface Tools {
    * @category Getter
    * @since v3.0.0
    */
-  getStore(): Store;
+  getStore(): Store<Schemas>;
 }
 
 /* eslint-disable max-len */
@@ -698,5 +699,7 @@ export interface Tools {
  * @category Creation
  * @since v2.2.0
  */
-export function createTools(store: Store): Tools;
+export function createTools<Schemas extends OptionalSchemas = NoSchemas>(
+  store: Store<Schemas>,
+): Tools<Schemas>;
 /* eslint-enable max-len */
