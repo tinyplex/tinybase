@@ -13,6 +13,7 @@
 
 import {GetCell, Store} from './store.d';
 import {Id, IdOrNull, Ids} from './common.d';
+import {NoSchemas, OptionalSchemas} from './common/types';
 
 /**
  * The Metric type is simply an alias, but represents a number formed by
@@ -246,7 +247,7 @@ export type MetricsListenerStats = {
  * @see Todo App demos
  * @category Metrics
  */
-export interface Metrics {
+export interface Metrics<Schemas extends OptionalSchemas = NoSchemas> {
   /**
    * The setMetricDefinition method lets you set the definition of a Metric.
    *
@@ -469,7 +470,7 @@ export interface Metrics {
    * ```
    * @category Getter
    */
-  getStore(): Store;
+  getStore(): Store<Schemas>;
 
   /**
    * The getMetricIds method returns an array of the Metric Ids registered with
@@ -824,4 +825,6 @@ export interface Metrics {
  * ```
  * @category Creation
  */
-export function createMetrics(store: Store): Metrics;
+export function createMetrics<Schemas extends OptionalSchemas = NoSchemas>(
+  store: Store<Schemas>,
+): Metrics<Schemas>;

@@ -12,6 +12,7 @@
  */
 
 import {Id, IdOrNull, Ids} from './common.d';
+import {NoSchemas, OptionalSchemas} from './common/types';
 import {Store} from './store.d';
 
 /**
@@ -177,7 +178,7 @@ export type CheckpointsListenerStats = {
  * @see Drawing demo
  * @category Checkpoints
  */
-export interface Checkpoints {
+export interface Checkpoints<Schemas extends OptionalSchemas = NoSchemas> {
   /**
    * The setSize method lets you specify how many checkpoints the Checkpoints
    * object will store.
@@ -341,7 +342,7 @@ export interface Checkpoints {
    * ```
    * @category Getter
    */
-  getStore(): Store;
+  getStore(): Store<Schemas>;
 
   /**
    * The getCheckpointIds method returns an array of the checkpoint Ids being
@@ -956,4 +957,6 @@ export interface Checkpoints {
  * ```
  * @category Creation
  */
-export function createCheckpoints(store: Store): Checkpoints;
+export function createCheckpoints<Schemas extends OptionalSchemas = NoSchemas>(
+  store: Store<Schemas>,
+): Checkpoints;
