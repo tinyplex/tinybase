@@ -1,8 +1,8 @@
 import {TablesSchema, ValuesSchema} from '../store.d';
 
-type NoTablesSchema = undefined;
+export type NoTablesSchema = undefined;
 
-type NoValuesSchema = undefined;
+export type NoValuesSchema = undefined;
 
 export type OptionalSchemas = [
   TablesSchema | NoTablesSchema,
