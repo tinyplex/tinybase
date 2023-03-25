@@ -37,7 +37,7 @@ const getTools = (schemaFile: string) => {
     createStore().setSchema(
       ...((isArray(schema) ? schema : [schema]) as [
         TablesSchema,
-        ValuesSchema | undefined,
+        ValuesSchema,
       ]),
     ),
   );
