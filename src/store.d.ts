@@ -12,7 +12,12 @@
  */
 
 import {Id, IdOrNull, Ids, Json} from './common.d';
-import {NoSchemas, OptionalSchemas} from './common/types';
+import {
+  NoSchemas,
+  NoTablesSchema,
+  NoValuesSchema,
+  OptionalSchemas,
+} from './common/types';
 
 /**
  * The Tables type is the data structure representing all of the data in a
@@ -2595,6 +2600,12 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * The setTablesSchema method lets you specify the TablesSchema of the tabular
    * part of the Store.
    *
+   * ```ts override
+   * setTablesSchema(
+   *   tablesSchema: TablesSchema,
+   * ): Store<[typeof tablesSchema, Schemas[1]]>
+   * ```
+   *
    * Note that this may result in a change to data in the Store, as defaults are
    * applied or as invalid Table, Row, or Cell objects are removed. These
    * changes will fire any listeners to that data, as expected.
@@ -2622,11 +2633,19 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Setter
    * @since v3.0.0
    */
-  setTablesSchema(tablesSchema: TablesSchema): Store<Schemas>;
+  setTablesSchema<NewTablesSchema extends TablesSchema>(
+    tablesSchema: NewTablesSchema,
+  ): Store<[typeof tablesSchema, Schemas[1]]>;
 
   /**
    * The setValuesSchema method lets you specify the ValuesSchema of the keyed
    * Values part of the Store.
+   *
+   * ```ts override
+   * setValuesSchema(
+   *   valuesSchema: ValuesSchema,
+   * ): Store<[Schemas[0], typeof valuesSchema]>
+   * ```
    *
    * Note that this may result in a change to data in the Store, as defaults are
    * applied or as invalid Values are removed. These changes will fire any
@@ -2652,11 +2671,20 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Setter
    * @since v3.0.0
    */
-  setValuesSchema(valuesSchema: ValuesSchema): Store<Schemas>;
+  setValuesSchema<NewValuesSchema extends ValuesSchema>(
+    valuesSchema: NewValuesSchema,
+  ): Store<[Schemas[0], typeof valuesSchema]>;
 
   /**
    * The setSchema method lets you specify the TablesSchema and ValuesSchema of
    * the Store.
+   *
+   * ```ts override
+   * setSchema(
+   *   tablesSchema: TablesSchema,
+   *   valuesSchema?: ValuesSchema,
+   * ): Store<[typeof tablesSchema, typeof valuesSchema]>
+   * ```
    *
    * Note that this may result in a change to data in the Store, as defaults are
    * applied or as invalid Table, Row, Cell, or Value objects are removed. These
@@ -2711,10 +2739,20 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  setSchema(
-    tablesSchema: TablesSchema,
-    valuesSchema?: ValuesSchema,
-  ): Store<Schemas>;
+  setSchema<
+    NewTablesSchema extends TablesSchema,
+    NewValuesSchema extends ValuesSchema,
+  >(
+    tablesSchema: NewTablesSchema,
+    valuesSchema?: NewValuesSchema,
+  ): Store<
+    [
+      typeof tablesSchema,
+      Exclude<ValuesSchema, typeof valuesSchema> extends never
+        ? NoValuesSchema
+        : NonNullable<typeof valuesSchema>,
+    ]
+  >;
 
   /**
    * The delTables method lets you remove all of the data in a Store.
@@ -2965,7 +3003,7 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Deleter
    */
-  delTablesSchema(): Store<Schemas>;
+  delTablesSchema(): Store<[NoTablesSchema, Schemas[1]]>;
 
   /**
    * The delValuesSchema method lets you remove the ValuesSchema of the Store.
@@ -2985,7 +3023,7 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Deleter
    * @since v3.0.0
    */
-  delValuesSchema(): Store<Schemas>;
+  delValuesSchema(): Store<[Schemas[0], NoValuesSchema]>;
 
   /**
    * The delSchema method lets you remove both the TablesSchema and ValuesSchema
@@ -3012,7 +3050,7 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Deleter
    * @since v3.0.0
    */
-  delSchema(): Store<Schemas>;
+  delSchema(): Store<NoSchemas>;
 
   /**
    * The transaction method takes a function that makes multiple mutations to
