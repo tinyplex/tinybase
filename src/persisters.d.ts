@@ -27,8 +27,7 @@
  * @module persisters
  */
 
-import {NoSchemas, OptionalSchemas} from './common/types';
-import {Store, Tables, Values} from './store.d';
+import {NoSchemas, OptionalSchemas, Store, Tables, Values} from './store.d';
 import {Callback} from './common.d';
 
 /**
@@ -207,7 +206,10 @@ export interface Persister<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Load
    */
-  load(initialTables?: Tables, initialValues?: Values): Promise<Persister>;
+  load(
+    initialTables?: Tables<Schemas[0]>,
+    initialValues?: Values,
+  ): Promise<Persister>;
 
   /**
    * The startAutoLoad method gets persisted data from storage, and loads it
@@ -264,7 +266,7 @@ export interface Persister<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Load
    */
   startAutoLoad(
-    initialTables?: Tables,
+    initialTables?: Tables<Schemas[0]>,
     initialValues?: Values,
   ): Promise<Persister>;
 

@@ -11,9 +11,8 @@
  * @module metrics
  */
 
-import {GetCell, Store} from './store.d';
+import {GetCell, NoSchemas, OptionalSchemas, Store} from './store.d';
 import {Id, IdOrNull, Ids} from './common.d';
-import {NoSchemas, OptionalSchemas} from './common/types';
 
 /**
  * The Metric type is simply an alias, but represents a number formed by
