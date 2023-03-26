@@ -11,9 +11,14 @@
  * @module relationships
  */
 
-import {GetCell, RowCallback, Store} from './store.d';
+import {
+  GetCell,
+  NoSchemas,
+  OptionalSchemas,
+  RowCallback,
+  Store,
+} from './store.d';
 import {Id, IdOrNull, Ids} from './common.d';
-import {NoSchemas, OptionalSchemas} from './common/types';
 
 /**
  * The Relationship type represents the concept of a map that connects one Row

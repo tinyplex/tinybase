@@ -18,6 +18,8 @@ import {
   CellOrUndefined,
   GetCell,
   GetCellChange,
+  NoSchemas,
+  OptionalSchemas,
   Row,
   RowCallback,
   Store,
@@ -25,7 +27,6 @@ import {
   TableCallback,
 } from './store.d';
 import {Id, IdOrNull, Ids} from './common.d';
-import {NoSchemas, OptionalSchemas} from './common/types';
 
 /**
  * The Aggregate type describes a custom function that takes an array of Cell

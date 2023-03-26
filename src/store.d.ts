@@ -12,12 +12,11 @@
  */
 
 import {Id, IdOrNull, Ids, Json} from './common.d';
-import {
-  NoSchemas,
-  NoTablesSchema,
-  NoValuesSchema,
-  OptionalSchemas,
-} from './common/types';
+
+export type OptionalTableSchema = TablesSchema | undefined;
+export type OptionalValueSchema = ValuesSchema | undefined;
+export type OptionalSchemas = [OptionalTableSchema, OptionalValueSchema];
+export type NoSchemas = [undefined, undefined];
 
 /**
  * The Tables type is the data structure representing all of the data in a
@@ -47,7 +46,32 @@ import {
  * ```
  * @category Store
  */
-export type Tables = {[tableId: Id]: {[rowId: Id]: {[cellId: Id]: Cell}}};
+export type Tables<Schema extends OptionalTableSchema = undefined> =
+  Schema extends TablesSchema
+    ? TablesFrom<Schema>
+    : {[tableId: Id]: {[rowId: Id]: {[cellId: Id]: Cell}}};
+
+export type TablesFrom<Schema extends TablesSchema> = {
+  -readonly [TableId in keyof Schema]?: {
+    [rowId: Id]: {
+      -readonly [CellId in keyof Schema[TableId]]: CellFrom<
+        Schema,
+        TableId,
+        CellId
+      >;
+    };
+  };
+};
+
+export type CellFrom<
+  Schema extends TablesSchema,
+  TableId extends keyof Schema,
+  CellId extends keyof Schema[TableId],
+> = Schema[TableId][CellId]['type'] extends 'string'
+  ? string
+  : Schema[TableId][CellId]['type'] extends 'number'
+  ? number
+  : boolean;
 
 /**
  * The Table type is the data structure representing the data in a single table.
@@ -70,7 +94,10 @@ export type Tables = {[tableId: Id]: {[rowId: Id]: {[cellId: Id]: Cell}}};
  * ```
  * @category Store
  */
-export type Table<TableId extends Id = Id> = Tables[TableId];
+export type Table<
+  Schema extends OptionalTableSchema = undefined,
+  TableId extends keyof Tables<Schema> = Id,
+> = Tables<Schema>[TableId];
 
 /**
  * The Row type is the data structure representing the data in a single row.
@@ -89,7 +116,10 @@ export type Table<TableId extends Id = Id> = Tables[TableId];
  * ```
  * @category Store
  */
-export type Row<TableId extends Id = Id> = Table<TableId>[Id];
+export type Row<
+  Schema extends OptionalTableSchema = undefined,
+  TableId extends keyof Tables<Schema> = Id,
+> = NonNullable<Tables<Schema>[TableId]>[Id];
 
 /**
  * The Cell type is the data structure representing the data in a single cell.
@@ -1245,7 +1275,7 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * @see Indexes
    * @category Getter
    */
-  getTables(): Tables;
+  getTables(): Tables<Schemas[0]>;
 
   /**
    * The getTableIds method returns the Ids of every Table in the Store.
@@ -1314,7 +1344,7 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getTable(tableId: Id): Table;
+  getTable(tableId: Id): Table<Schemas[0]>;
 
   /**
    * The getRowIds method returns the Ids of every Row in a given Table.
@@ -1499,7 +1529,7 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getRow(tableId: Id, rowId: Id): Row;
+  getRow(tableId: Id, rowId: Id): Row<Schemas[0]>;
 
   /**
    * The getCellIds method returns the Ids of every Cell in a given Row, in a
@@ -2014,7 +2044,7 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  setTables(tables: Tables): Store<Schemas>;
+  setTables(tables: Tables<Schemas[0]>): Store<Schemas>;
 
   /**
    * The setTable method takes an object and sets the entire data of a single
@@ -2072,7 +2102,7 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  setTable(tableId: Id, table: Table): Store<Schemas>;
+  setTable(tableId: Id, table: Table<Schemas[0]>): Store<Schemas>;
 
   /**
    * The setRow method takes an object and sets the entire data of a single Row
@@ -2130,7 +2160,7 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  setRow(tableId: Id, rowId: Id, row: Row): Store<Schemas>;
+  setRow(tableId: Id, rowId: Id, row: Row<Schemas[0]>): Store<Schemas>;
 
   /**
    * The addRow method takes an object and creates a new Row in the Store,
@@ -2190,7 +2220,7 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  addRow(tableId: Id, row: Row): Id | undefined;
+  addRow(tableId: Id, row: Row<Schemas[0]>): Id | undefined;
 
   /**
    * The setPartialRow method takes an object and sets partial data of a single
@@ -2250,7 +2280,11 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  setPartialRow(tableId: Id, rowId: Id, partialRow: Row): Store<Schemas>;
+  setPartialRow(
+    tableId: Id,
+    rowId: Id,
+    partialRow: Row<Schemas[0]>,
+  ): Store<Schemas>;
 
   /**
    * The setCell method sets the value of a single Cell in the Store.
@@ -2749,7 +2783,7 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
     [
       typeof tablesSchema,
       Exclude<ValuesSchema, typeof valuesSchema> extends never
-        ? NoValuesSchema
+        ? undefined
         : NonNullable<typeof valuesSchema>,
     ]
   >;
@@ -3003,7 +3037,7 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Deleter
    */
-  delTablesSchema(): Store<[NoTablesSchema, Schemas[1]]>;
+  delTablesSchema(): Store<[undefined, Schemas[1]]>;
 
   /**
    * The delValuesSchema method lets you remove the ValuesSchema of the Store.
@@ -3023,7 +3057,7 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Deleter
    * @since v3.0.0
    */
-  delValuesSchema(): Store<[Schemas[0], NoValuesSchema]>;
+  delValuesSchema(): Store<[Schemas[0], undefined]>;
 
   /**
    * The delSchema method lets you remove both the TablesSchema and ValuesSchema
