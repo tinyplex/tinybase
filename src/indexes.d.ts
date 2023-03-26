@@ -11,9 +11,14 @@
  * @module indexes
  */
 
-import {GetCell, RowCallback, Store} from './store.d';
+import {
+  GetCell,
+  NoSchemas,
+  OptionalSchemas,
+  RowCallback,
+  Store,
+} from './store.d';
 import {Id, IdOrNull, Ids, SortKey} from './common.d';
-import {NoSchemas, OptionalSchemas} from './common/types';
 
 /**
  * The Index type represents the concept of a map of Slice objects, keyed by Id.

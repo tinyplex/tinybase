@@ -10,8 +10,13 @@
  * @since v2.2.0
  */
 
-import {NoSchemas, OptionalSchemas} from './common/types';
-import {Store, TablesSchema, ValuesSchema} from './store.d';
+import {
+  NoSchemas,
+  OptionalSchemas,
+  Store,
+  TablesSchema,
+  ValuesSchema,
+} from './store.d';
 import {Id} from './common.d';
 
 /**
