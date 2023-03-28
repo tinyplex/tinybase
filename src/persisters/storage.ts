@@ -49,12 +49,22 @@ const getStoragePersister = (
   );
 };
 
-export const createLocalPersister: typeof createLocalPersisterDecl = (
+export const createLocalPersister = ((
   store: Store,
   storageName: string,
-): Persister => getStoragePersister(store, storageName, localStorage);
+): Persister =>
+  getStoragePersister(
+    store,
+    storageName,
+    localStorage,
+  )) as typeof createLocalPersisterDecl;
 
-export const createSessionPersister: typeof createSessionPersisterDecl = (
+export const createSessionPersister = ((
   store: Store,
   storageName: string,
-): Persister => getStoragePersister(store, storageName, sessionStorage);
+): Persister =>
+  getStoragePersister(
+    store,
+    storageName,
+    sessionStorage,
+  )) as typeof createSessionPersisterDecl;

@@ -9,7 +9,7 @@ import {Store} from '../store.d';
 import {UTF8} from '../common/strings';
 import {createCustomPersister} from './common';
 
-export const createFilePersister: typeof createFilePersisterDecl = (
+export const createFilePersister = ((
   store: Store,
   filePath: string,
 ): Persister => {
@@ -43,4 +43,4 @@ export const createFilePersister: typeof createFilePersisterDecl = (
     startListeningToPersisted,
     stopListeningToPersisted,
   );
-};
+}) as typeof createFilePersisterDecl;
