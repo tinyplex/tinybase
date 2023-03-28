@@ -31,8 +31,8 @@ import {objFreeze} from './common/obj';
 
 type Relationship = [IdMap<Id>, IdMap<IdSet>, IdMap<IdSet>, IdMap<number>];
 
-export const createRelationships: typeof createRelationshipsDecl =
-  getCreateFunction((store: Store): Relationships => {
+export const createRelationships = getCreateFunction(
+  (store: Store): Relationships => {
     const remoteTableIds: IdMap<Id> = mapNew();
     const remoteRowIdListeners: IdSet3 = mapNew();
     const localRowIdsListeners: IdSet3 = mapNew();
@@ -277,4 +277,5 @@ export const createRelationships: typeof createRelationshipsDecl =
     };
 
     return objFreeze(relationships);
-  });
+  },
+) as typeof createRelationshipsDecl;
