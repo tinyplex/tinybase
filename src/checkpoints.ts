@@ -41,8 +41,8 @@ import {objFreeze} from './common/obj';
 type CellsDelta = IdMap2<IdMap<[CellOrUndefined, CellOrUndefined]>>;
 type ValuesDelta = IdMap<[ValueOrUndefined, ValueOrUndefined]>;
 
-export const createCheckpoints: typeof createCheckpointsDecl =
-  getCreateFunction((store: Store): Checkpoints => {
+export const createCheckpoints = getCreateFunction(
+  (store: Store): Checkpoints => {
     let backwardIdsSize = 100;
     let currentId: Id | undefined;
     let cellsDelta: CellsDelta = mapNew();
@@ -340,4 +340,5 @@ export const createCheckpoints: typeof createCheckpointsDecl =
     };
 
     return objFreeze(checkpoints.clear());
-  });
+  },
+) as typeof createCheckpointsDecl;

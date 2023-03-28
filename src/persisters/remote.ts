@@ -9,7 +9,7 @@ import {createCustomPersister} from './common';
 
 const getETag = (response: Response) => response.headers.get('ETag');
 
-export const createRemotePersister: typeof createRemotePersisterDecl = (
+export const createRemotePersister = ((
   store: Store,
   loadUrl: string,
   saveUrl: string,
@@ -58,4 +58,4 @@ export const createRemotePersister: typeof createRemotePersisterDecl = (
     startListeningToPersisted,
     stopListeningToPersisted,
   );
-};
+}) as typeof createRemotePersisterDecl;

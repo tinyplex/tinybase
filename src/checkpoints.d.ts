@@ -12,8 +12,7 @@
  */
 
 import {Id, IdOrNull, Ids} from './common.d';
-import {NoSchemas, OptionalSchemas} from './common/types';
-import {Store} from './store.d';
+import {NoSchemas, OptionalSchemas, Store} from './store.d';
 
 /**
  * The CheckpointIds type is a representation of the list of checkpoint Ids
