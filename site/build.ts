@@ -18,6 +18,7 @@ const CATEGORIES = [
   '*',
   'Deleter',
   'Development',
+  'Internal',
   'Other',
 ];
 const REFLECTIONS = [
@@ -50,6 +51,7 @@ const REFLECTIONS = [
   /ProviderProps/,
   /ExtraProps/,
   /Store/,
+  /^Tables/,
   /Tables/,
   /TableIds/,
   /Table/,
@@ -58,6 +60,9 @@ const REFLECTIONS = [
   /Row/,
   /CellIds/,
   /Cell/,
+  /^Values/,
+  /Values/,
+  /Value/,
   '*',
 ];
 

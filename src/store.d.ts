@@ -13,10 +13,78 @@
 
 import {Id, IdOrNull, Ids, Json} from './common.d';
 
-export type OptionalTableSchema = TablesSchema | undefined;
-export type OptionalValueSchema = ValuesSchema | undefined;
-export type OptionalSchemas = [OptionalTableSchema, OptionalValueSchema];
+/**
+ * The OptionalTablesSchema type is used by generic types that can optionally
+ * take a TablesSchema.
+ *
+ * @category Schema
+ */
+export type OptionalTablesSchema = TablesSchema | undefined;
+
+/**
+ * The OptionalValuesSchema type is used by generic types that can optionally
+ * take a ValuesSchema.
+ * *
+ * @category Schema
+ */
+export type OptionalValuesSchema = ValuesSchema | undefined;
+
+/**
+ * The OptionalSchemas type is used by generic types that can optionally
+ * take either or both of a TablesSchema and ValuesSchema.
+ *
+ * @category Schema
+ */
+export type OptionalSchemas = [OptionalTablesSchema, OptionalValuesSchema];
+
+/**
+ * The NoSchemas type is used as a default by generic types that can optionally
+ * take either or both of a TablesSchema and ValuesSchema.
+ *
+ * @category Schema
+ */
 export type NoSchemas = [undefined, undefined];
+
+/**
+ * The TablesFrom type is a utility for determining a Tables structure from a
+ * provided Schema.
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type TablesFrom<Schema extends TablesSchema> = {
+  -readonly [TableId in keyof Schema]?: {
+    [rowId: Id]: {
+      -readonly [CellId in keyof Schema[TableId]]: CellFrom<
+        Schema,
+        TableId,
+        CellId
+      >;
+    };
+  };
+};
+
+/**
+ * The CellFrom type is a utility for determining a Cell type from a provided
+ * Schema.
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type CellFrom<
+  Schema extends TablesSchema,
+  TableId extends keyof Schema,
+  CellId extends keyof Schema[TableId],
+  CellType = Schema[TableId][CellId]['type'],
+> = CellType extends 'string'
+  ? string
+  : CellType extends 'number'
+  ? number
+  : boolean;
 
 /**
  * The Tables type is the data structure representing all of the data in a
@@ -46,32 +114,10 @@ export type NoSchemas = [undefined, undefined];
  * ```
  * @category Store
  */
-export type Tables<Schema extends OptionalTableSchema = undefined> =
+export type Tables<Schema extends OptionalTablesSchema = undefined> =
   Schema extends TablesSchema
     ? TablesFrom<Schema>
     : {[tableId: Id]: {[rowId: Id]: {[cellId: Id]: Cell}}};
-
-export type TablesFrom<Schema extends TablesSchema> = {
-  -readonly [TableId in keyof Schema]?: {
-    [rowId: Id]: {
-      -readonly [CellId in keyof Schema[TableId]]: CellFrom<
-        Schema,
-        TableId,
-        CellId
-      >;
-    };
-  };
-};
-
-export type CellFrom<
-  Schema extends TablesSchema,
-  TableId extends keyof Schema,
-  CellId extends keyof Schema[TableId],
-> = Schema[TableId][CellId]['type'] extends 'string'
-  ? string
-  : Schema[TableId][CellId]['type'] extends 'number'
-  ? number
-  : boolean;
 
 /**
  * The Table type is the data structure representing the data in a single table.
@@ -95,7 +141,7 @@ export type CellFrom<
  * @category Store
  */
 export type Table<
-  Schema extends OptionalTableSchema = undefined,
+  Schema extends OptionalTablesSchema = undefined,
   TableId extends keyof Tables<Schema> = Id,
 > = Tables<Schema>[TableId];
 
@@ -117,7 +163,7 @@ export type Table<
  * @category Store
  */
 export type Row<
-  Schema extends OptionalTableSchema = undefined,
+  Schema extends OptionalTablesSchema = undefined,
   TableId extends keyof Tables<Schema> = Id,
 > = NonNullable<Tables<Schema>[TableId]>[Id];
 
