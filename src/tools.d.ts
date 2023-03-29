@@ -115,7 +115,7 @@ export type StoreStatsRowDetail = {
  * @category Tools
  * @since v2.2.0
  */
-export interface Tools<Schemas extends OptionalSchemas = NoSchemas> {
+export interface Tools<StoreSchemas extends OptionalSchemas = NoSchemas> {
   /* eslint-disable max-len */
   /**
    * The getStoreStats method provides a set of statistics about the Store, and
@@ -657,7 +657,7 @@ export interface Tools<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Getter
    * @since v3.0.0
    */
-  getStore(): Store<Schemas>;
+  getStore(): Store<StoreSchemas>;
 }
 
 /* eslint-disable max-len */
@@ -704,7 +704,7 @@ export interface Tools<Schemas extends OptionalSchemas = NoSchemas> {
  * @category Creation
  * @since v2.2.0
  */
-export function createTools<Schemas extends OptionalSchemas = NoSchemas>(
-  store: Store<Schemas>,
-): Tools<Schemas>;
+export function createTools<StoreSchemas extends OptionalSchemas = NoSchemas>(
+  store: Store<StoreSchemas>,
+): Tools<StoreSchemas>;
 /* eslint-enable max-len */

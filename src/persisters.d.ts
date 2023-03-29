@@ -145,7 +145,7 @@ export type PersisterStats = {
  * ```
  * @category Persister
  */
-export interface Persister<Schemas extends OptionalSchemas = NoSchemas> {
+export interface Persister<StoreSchemas extends OptionalSchemas = NoSchemas> {
   /**
    * The load method gets persisted data from storage, and loads it into the
    * Store with which the Persister is associated, once.
@@ -207,7 +207,7 @@ export interface Persister<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Load
    */
   load(
-    initialTables?: Tables<Schemas[0], true>,
+    initialTables?: Tables<StoreSchemas[0], true>,
     initialValues?: Values,
   ): Promise<Persister>;
 
@@ -266,7 +266,7 @@ export interface Persister<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Load
    */
   startAutoLoad(
-    initialTables?: Tables<Schemas[0], true>,
+    initialTables?: Tables<StoreSchemas[0], true>,
     initialValues?: Values,
   ): Promise<Persister>;
 
@@ -313,7 +313,7 @@ export interface Persister<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Load
    */
-  stopAutoLoad(): Persister<Schemas>;
+  stopAutoLoad(): Persister<StoreSchemas>;
 
   /**
    * The save method takes data from the Store with which the Persister is
@@ -418,7 +418,7 @@ export interface Persister<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Save
    */
-  stopAutoSave(): Persister<Schemas>;
+  stopAutoSave(): Persister<StoreSchemas>;
 
   /**
    * The getStore method returns a reference to the underlying Store that is
@@ -442,7 +442,7 @@ export interface Persister<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getStore(): Store<Schemas>;
+  getStore(): Store<StoreSchemas>;
 
   /**
    * The destroy method should be called when this Persister object is no longer
@@ -473,7 +473,7 @@ export interface Persister<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Lifecycle
    */
-  destroy(): Persister<Schemas>;
+  destroy(): Persister<StoreSchemas>;
 
   /**
    * The getStats method provides a set of statistics about the Persister, and
@@ -724,11 +724,11 @@ export function createFilePersister<
  * @category Creation
  */
 export function createCustomPersister<
-  Schemas extends OptionalSchemas = NoSchemas,
+  StoreSchemas extends OptionalSchemas = NoSchemas,
 >(
-  store: Store<Schemas>,
+  store: Store<StoreSchemas>,
   getPersisted: () => Promise<string | null | undefined>,
   setPersisted: (json: string) => Promise<void>,
   startListeningToPersisted: (didChange: Callback) => void,
   stopListeningToPersisted: Callback,
-): Persister<Schemas>;
+): Persister<StoreSchemas>;
