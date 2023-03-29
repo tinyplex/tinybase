@@ -201,7 +201,7 @@ export type IndexesListenerStats = {
  * @see Word Frequencies demo
  * @category Indexes
  */
-export interface Indexes<Schemas extends OptionalSchemas = NoSchemas> {
+export interface Indexes<StoreSchemas extends OptionalSchemas = NoSchemas> {
   /**
    * The setIndexDefinition method lets you set the definition of an Index.
    *
@@ -410,7 +410,7 @@ export interface Indexes<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getStore(): Store<Schemas>;
+  getStore(): Store<StoreSchemas>;
 
   /**
    * The getIndexIds method returns an array of the Index Ids registered with
@@ -969,6 +969,6 @@ export interface Indexes<Schemas extends OptionalSchemas = NoSchemas> {
  * ```
  * @category Creation
  */
-export function createIndexes<Schemas extends OptionalSchemas = NoSchemas>(
-  store: Store<Schemas>,
-): Indexes<Schemas>;
+export function createIndexes<StoreSchemas extends OptionalSchemas = NoSchemas>(
+  store: Store<StoreSchemas>,
+): Indexes<StoreSchemas>;

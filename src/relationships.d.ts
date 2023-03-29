@@ -253,7 +253,9 @@ export type RelationshipsListenerStats = {
  * @see Drawing demo
  * @category Relationships
  */
-export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
+export interface Relationships<
+  StoreSchemas extends OptionalSchemas = NoSchemas,
+> {
   /**
    * The setRelationshipDefinition method lets you set the definition of a
    * Relationship.
@@ -410,7 +412,7 @@ export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getStore(): Store<Schemas>;
+  getStore(): Store<StoreSchemas>;
 
   /**
    * The getRelationshipIds method returns an array of the Relationship Ids
@@ -1205,5 +1207,5 @@ export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
  * @category Creation
  */
 export function createRelationships<
-  Schemas extends OptionalSchemas = NoSchemas,
->(store: Store<Schemas>): Relationships<Schemas>;
+  StoreSchemas extends OptionalSchemas = NoSchemas,
+>(store: Store<StoreSchemas>): Relationships<StoreSchemas>;
