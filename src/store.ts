@@ -1004,7 +1004,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
         if (validateRow(tableId, rowId, partialRow, 1)) {
           const table = getOrCreateTable(tableId);
           objMap(partialRow, (cell, cellId) =>
-            setCellIntoDefaultRow(tableId, table, rowId, cellId, cell),
+            setCellIntoDefaultRow(tableId, table, rowId, cellId, cell as Cell),
           );
         }
       },
