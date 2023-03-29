@@ -1429,7 +1429,7 @@ export type Having = {
  * @category Queries
  * @since v2.0.0
  */
-export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
+export interface Queries<StoreSchemas extends OptionalSchemas = NoSchemas> {
   /**
    * The setQueryDefinition method lets you set the definition of a query.
    *
@@ -1562,7 +1562,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Getter
    * @since v2.0.0
    */
-  getStore(): Store<Schemas>;
+  getStore(): Store<StoreSchemas>;
 
   /**
    * The getQueryIds method returns an array of the query Ids registered with
@@ -3034,6 +3034,6 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
  * @category Creation
  * @since v2.0.0
  */
-export function createQueries<Schemas extends OptionalSchemas = NoSchemas>(
-  store: Store<Schemas>,
-): Queries<Schemas>;
+export function createQueries<StoreSchemas extends OptionalSchemas = NoSchemas>(
+  store: Store<StoreSchemas>,
+): Queries<StoreSchemas>;

@@ -177,7 +177,7 @@ export type CheckpointsListenerStats = {
  * @see Drawing demo
  * @category Checkpoints
  */
-export interface Checkpoints<Schemas extends OptionalSchemas = NoSchemas> {
+export interface Checkpoints<StoreSchemas extends OptionalSchemas = NoSchemas> {
   /**
    * The setSize method lets you specify how many checkpoints the Checkpoints
    * object will store.
@@ -341,7 +341,7 @@ export interface Checkpoints<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getStore(): Store<Schemas>;
+  getStore(): Store<StoreSchemas>;
 
   /**
    * The getCheckpointIds method returns an array of the checkpoint Ids being
@@ -956,6 +956,6 @@ export interface Checkpoints<Schemas extends OptionalSchemas = NoSchemas> {
  * ```
  * @category Creation
  */
-export function createCheckpoints<Schemas extends OptionalSchemas = NoSchemas>(
-  store: Store<Schemas>,
-): Checkpoints;
+export function createCheckpoints<
+  StoreSchemas extends OptionalSchemas = NoSchemas,
+>(store: Store<StoreSchemas>): Checkpoints;

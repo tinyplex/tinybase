@@ -246,7 +246,7 @@ export type MetricsListenerStats = {
  * @see Todo App demos
  * @category Metrics
  */
-export interface Metrics<Schemas extends OptionalSchemas = NoSchemas> {
+export interface Metrics<StoreSchemas extends OptionalSchemas = NoSchemas> {
   /**
    * The setMetricDefinition method lets you set the definition of a Metric.
    *
@@ -469,7 +469,7 @@ export interface Metrics<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getStore(): Store<Schemas>;
+  getStore(): Store<StoreSchemas>;
 
   /**
    * The getMetricIds method returns an array of the Metric Ids registered with
@@ -824,6 +824,6 @@ export interface Metrics<Schemas extends OptionalSchemas = NoSchemas> {
  * ```
  * @category Creation
  */
-export function createMetrics<Schemas extends OptionalSchemas = NoSchemas>(
-  store: Store<Schemas>,
-): Metrics<Schemas>;
+export function createMetrics<StoreSchemas extends OptionalSchemas = NoSchemas>(
+  store: Store<StoreSchemas>,
+): Metrics<StoreSchemas>;
