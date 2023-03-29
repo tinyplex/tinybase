@@ -1418,7 +1418,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getTableIds(): Ids;
+  getTableIds(): (keyof Tables<StoreSchemas[0]>)[];
 
   /**
    * The getTable method returns an object containing the entire data of a
@@ -1456,7 +1456,9 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getTable(tableId: Id): Table<StoreSchemas[0]>;
+  getTable<TableId extends keyof Tables<StoreSchemas[0]>>(
+    tableId: TableId,
+  ): Table<StoreSchemas[0], TableId>;
 
   /**
    * The getRowIds method returns the Ids of every Row in a given Table.
@@ -1490,7 +1492,9 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getRowIds(tableId: Id): Ids;
+  getRowIds<TableId extends keyof Tables<StoreSchemas[0]>>(
+    tableId: TableId,
+  ): Ids;
 
   /**
    * The getSortedRowIds method returns the Ids of every Row in a given Table,
@@ -1591,9 +1595,12 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Getter
    * @since v2.0.0
    */
-  getSortedRowIds(
-    tableId: Id,
-    cellId?: Id,
+  getSortedRowIds<
+    TableId extends keyof Tables<StoreSchemas[0]>,
+    CellId extends keyof Table<StoreSchemas[0], TableId>[Id],
+  >(
+    tableId: TableId,
+    cellId?: CellId,
     descending?: boolean,
     offset?: number,
     limit?: number,
@@ -1641,7 +1648,10 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getRow(tableId: Id, rowId: Id): Row<StoreSchemas[0]>;
+  getRow<TableId extends keyof Tables<StoreSchemas[0]>>(
+    tableId: TableId,
+    rowId: Id,
+  ): Row<StoreSchemas[0], TableId>;
 
   /**
    * The getCellIds method returns the Ids of every Cell in a given Row, in a
@@ -1676,7 +1686,13 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getCellIds(tableId: Id, rowId: Id): Ids;
+  getCellIds<
+    TableId extends keyof Tables<StoreSchemas[0]>,
+    CellId extends keyof Table<StoreSchemas[0], TableId>[Id],
+  >(
+    tableId: TableId,
+    rowId: Id,
+  ): CellId[];
 
   /**
    * The getCell method returns the value of a single Cell in a given Row, in a
@@ -1706,7 +1722,14 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getCell(tableId: Id, rowId: Id, cellId: Id): CellOrUndefined;
+  getCell<
+    TableId extends keyof Tables<StoreSchemas[0]>,
+    CellId extends keyof Table<StoreSchemas[0], TableId>[Id],
+  >(
+    tableId: TableId,
+    rowId: Id,
+    cellId: CellId,
+  ): CellOrUndefined;
 
   /**
    * The getValues method returns an object containing the entire set of keyed
@@ -1832,7 +1855,9 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  hasTable(tableId: Id): boolean;
+  hasTable<TableId extends keyof Tables<StoreSchemas[0]>>(
+    tableId: TableId,
+  ): boolean;
 
   /**
    * The hasRow method returns a boolean indicating whether a given Row exists
@@ -1853,7 +1878,10 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  hasRow(tableId: Id, rowId: Id): boolean;
+  hasRow<TableId extends keyof Tables<StoreSchemas[0]>>(
+    tableId: TableId,
+    rowId: Id,
+  ): boolean;
 
   /**
    * The hasCell method returns a boolean indicating whether a given Cell exists
@@ -1875,7 +1903,14 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  hasCell(tableId: Id, rowId: Id, cellId: Id): boolean;
+  hasCell<
+    TableId extends keyof Tables<StoreSchemas[0]>,
+    CellId extends keyof Table<StoreSchemas[0], TableId>[Id],
+  >(
+    tableId: TableId,
+    rowId: Id,
+    cellId: CellId,
+  ): boolean;
 
   /**
    * The hasValues method returns a boolean indicating whether any Values exist
@@ -2214,9 +2249,9 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  setTable(
-    tableId: Id,
-    table: Table<StoreSchemas[0], Id, true>,
+  setTable<TableId extends keyof Tables<StoreSchemas[0]>>(
+    tableId: TableId,
+    table: Table<StoreSchemas[0], TableId, true>,
   ): Store<StoreSchemas>;
 
   /**
@@ -2275,10 +2310,10 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  setRow(
-    tableId: Id,
+  setRow<TableId extends keyof Tables<StoreSchemas[0]>>(
+    tableId: TableId,
     rowId: Id,
-    row: Row<StoreSchemas[0], Id, true>,
+    row: Row<StoreSchemas[0], TableId, true>,
   ): Store<StoreSchemas>;
 
   /**
@@ -2339,7 +2374,10 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  addRow(tableId: Id, row: Row<StoreSchemas[0], Id, true>): Id | undefined;
+  addRow<TableId extends keyof Tables<StoreSchemas[0]>>(
+    tableId: TableId,
+    row: Row<StoreSchemas[0], TableId, true>,
+  ): Id | undefined;
 
   /**
    * The setPartialRow method takes an object and sets partial data of a single
@@ -2399,10 +2437,10 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  setPartialRow(
-    tableId: Id,
+  setPartialRow<TableId extends keyof Tables<StoreSchemas[0]>>(
+    tableId: TableId,
     rowId: Id,
-    partialRow: Row<StoreSchemas[0], Id, true>,
+    partialRow: Row<StoreSchemas[0], TableId, true>,
   ): Store<StoreSchemas>;
 
   /**
@@ -2461,10 +2499,13 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  setCell(
-    tableId: Id,
+  setCell<
+    TableId extends keyof Tables<StoreSchemas[0]>,
+    CellId extends keyof Table<StoreSchemas[0], TableId>[Id],
+  >(
+    tableId: TableId,
     rowId: Id,
-    cellId: Id,
+    cellId: CellId,
     cell: Cell | MapCell,
   ): Store<StoreSchemas>;
 
@@ -2945,7 +2986,9 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Deleter
    */
-  delTable(tableId: Id): Store<StoreSchemas>;
+  delTable<TableId extends keyof Tables<StoreSchemas[0]>>(
+    tableId: TableId,
+  ): Store<StoreSchemas>;
 
   /**
    * The delRow method lets you remove a single Row from a Table.
@@ -2969,7 +3012,10 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Deleter
    */
-  delRow(tableId: Id, rowId: Id): Store<StoreSchemas>;
+  delRow<TableId extends keyof Tables<StoreSchemas[0]>>(
+    tableId: TableId,
+    rowId: Id,
+  ): Store<StoreSchemas>;
 
   /**
    * The delCell method lets you remove a single Cell from a Row.
@@ -3053,10 +3099,13 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Deleter
    */
-  delCell(
-    tableId: Id,
+  delCell<
+    TableId extends keyof Tables<StoreSchemas[0]>,
+    CellId extends keyof Table<StoreSchemas[0], TableId>[Id],
+  >(
+    tableId: TableId,
     rowId: Id,
-    cellId: Id,
+    cellId: CellId,
     forceDel?: boolean,
   ): Store<StoreSchemas>;
 
