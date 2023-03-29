@@ -54,10 +54,27 @@ export type NoSchemas = [undefined, undefined];
  *
  * @category Internal
  */
-export type TablesFrom<Schema extends TablesSchema> = {
+export type TablesFrom<
+  Schema extends TablesSchema,
+  WhenSet extends boolean = false,
+> = {
   -readonly [TableId in keyof Schema]?: {
-    [rowId: Id]: {
-      -readonly [CellId in keyof Schema[TableId]]: CellFrom<
+    [rowId: Id]: (WhenSet extends true
+      ? {
+          -readonly [CellId in CellIdsFrom<Schema, TableId>]?: CellFrom<
+            Schema,
+            TableId,
+            CellId
+          >;
+        }
+      : {
+          -readonly [CellId in CellIdsFrom<Schema, TableId>]: CellFrom<
+            Schema,
+            TableId,
+            CellId
+          >;
+        }) & {
+      -readonly [CellId in CellIdsFrom<Schema, TableId, false>]?: CellFrom<
         Schema,
         TableId,
         CellId
@@ -87,6 +104,30 @@ export type CellFrom<
   : boolean;
 
 /**
+ * The CellIdsWithDefaultFrom type is a utility for determining Cells with or
+ * without default status from a provided Schema.
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type CellIdsFrom<
+  Schema extends TablesSchema,
+  TableId extends keyof Schema,
+  IsDefaulted extends boolean = true,
+  TableSchema = Schema[TableId],
+> = {
+  [CellId in keyof TableSchema]: TableSchema[CellId] extends {default: Cell}
+    ? IsDefaulted extends true
+      ? CellId
+      : never
+    : IsDefaulted extends true
+    ? never
+    : CellId;
+}[keyof TableSchema];
+
+/**
  * The Tables type is the data structure representing all of the data in a
  * Store.
  *
@@ -114,10 +155,12 @@ export type CellFrom<
  * ```
  * @category Store
  */
-export type Tables<Schema extends OptionalTablesSchema = undefined> =
-  Schema extends TablesSchema
-    ? TablesFrom<Schema>
-    : {[tableId: Id]: {[rowId: Id]: {[cellId: Id]: Cell}}};
+export type Tables<
+  Schema extends OptionalTablesSchema = undefined,
+  WhenSet extends boolean = false,
+> = Schema extends TablesSchema
+  ? TablesFrom<Schema, WhenSet>
+  : {[tableId: Id]: {[rowId: Id]: {[cellId: Id]: Cell}}};
 
 /**
  * The Table type is the data structure representing the data in a single table.
@@ -142,8 +185,9 @@ export type Tables<Schema extends OptionalTablesSchema = undefined> =
  */
 export type Table<
   Schema extends OptionalTablesSchema = undefined,
-  TableId extends keyof Tables<Schema> = Id,
-> = Tables<Schema>[TableId];
+  TableId extends keyof Tables<Schema, WhenSet> = Id,
+  WhenSet extends boolean = false,
+> = Tables<Schema, WhenSet>[TableId];
 
 /**
  * The Row type is the data structure representing the data in a single row.
@@ -164,8 +208,9 @@ export type Table<
  */
 export type Row<
   Schema extends OptionalTablesSchema = undefined,
-  TableId extends keyof Tables<Schema> = Id,
-> = NonNullable<Tables<Schema>[TableId]>[Id];
+  TableId extends keyof Tables<Schema, WhenSet> = Id,
+  WhenSet extends boolean = false,
+> = NonNullable<Tables<Schema, WhenSet>[TableId]>[Id];
 
 /**
  * The Cell type is the data structure representing the data in a single cell.
@@ -2090,7 +2135,7 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  setTables(tables: Tables<Schemas[0]>): Store<Schemas>;
+  setTables(tables: Tables<Schemas[0], true>): Store<Schemas>;
 
   /**
    * The setTable method takes an object and sets the entire data of a single
@@ -2148,7 +2193,7 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  setTable(tableId: Id, table: Table<Schemas[0]>): Store<Schemas>;
+  setTable(tableId: Id, table: Table<Schemas[0], Id, true>): Store<Schemas>;
 
   /**
    * The setRow method takes an object and sets the entire data of a single Row
@@ -2206,7 +2251,11 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  setRow(tableId: Id, rowId: Id, row: Row<Schemas[0]>): Store<Schemas>;
+  setRow(
+    tableId: Id,
+    rowId: Id,
+    row: Row<Schemas[0], Id, true>,
+  ): Store<Schemas>;
 
   /**
    * The addRow method takes an object and creates a new Row in the Store,
@@ -2266,7 +2315,7 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  addRow(tableId: Id, row: Row<Schemas[0]>): Id | undefined;
+  addRow(tableId: Id, row: Row<Schemas[0], Id, true>): Id | undefined;
 
   /**
    * The setPartialRow method takes an object and sets partial data of a single
@@ -2329,7 +2378,7 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   setPartialRow(
     tableId: Id,
     rowId: Id,
-    partialRow: Row<Schemas[0]>,
+    partialRow: Row<Schemas[0], Id, true>,
   ): Store<Schemas>;
 
   /**
