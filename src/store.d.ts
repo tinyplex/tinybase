@@ -1329,7 +1329,11 @@ export type StoreListenerStats = {
  * @see Todo App demos
  * @category Store
  */
-export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
+export interface Store<
+  StoreSchemas extends OptionalSchemas = NoSchemas,
+  StoreTablesSchema extends OptionalTablesSchema = StoreSchemas[0],
+  StoreValuesSchema extends OptionalValuesSchema = StoreSchemas[1],
+> {
   /**
    * The getTables method returns a Tables object containing the entire data of
    * the Store.
@@ -1365,7 +1369,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @see Indexes
    * @category Getter
    */
-  getTables(): Tables<StoreSchemas[0]>;
+  getTables(): Tables<StoreTablesSchema>;
 
   /**
    * The getTableIds method returns the Ids of every Table in the Store.
@@ -1434,7 +1438,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getTable(tableId: Id): Table<StoreSchemas[0]>;
+  getTable(tableId: Id): Table<StoreTablesSchema>;
 
   /**
    * The getRowIds method returns the Ids of every Row in a given Table.
@@ -1619,7 +1623,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getRow(tableId: Id, rowId: Id): Row<StoreSchemas[0]>;
+  getRow(tableId: Id, rowId: Id): Row<StoreTablesSchema>;
 
   /**
    * The getCellIds method returns the Ids of every Cell in a given Row, in a
@@ -2134,7 +2138,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  setTables(tables: Tables<StoreSchemas[0], true>): Store<StoreSchemas>;
+  setTables(tables: Tables<StoreTablesSchema, true>): Store<StoreSchemas>;
 
   /**
    * The setTable method takes an object and sets the entire data of a single
@@ -2194,7 +2198,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    */
   setTable(
     tableId: Id,
-    table: Table<StoreSchemas[0], Id, true>,
+    table: Table<StoreTablesSchema, Id, true>,
   ): Store<StoreSchemas>;
 
   /**
@@ -2256,7 +2260,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
   setRow(
     tableId: Id,
     rowId: Id,
-    row: Row<StoreSchemas[0], Id, true>,
+    row: Row<StoreTablesSchema, Id, true>,
   ): Store<StoreSchemas>;
 
   /**
@@ -2317,7 +2321,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  addRow(tableId: Id, row: Row<StoreSchemas[0], Id, true>): Id | undefined;
+  addRow(tableId: Id, row: Row<StoreTablesSchema, Id, true>): Id | undefined;
 
   /**
    * The setPartialRow method takes an object and sets partial data of a single
@@ -2380,7 +2384,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
   setPartialRow(
     tableId: Id,
     rowId: Id,
-    partialRow: Row<StoreSchemas[0], Id, true>,
+    partialRow: Row<StoreTablesSchema, Id, true>,
   ): Store<StoreSchemas>;
 
   /**
@@ -2766,7 +2770,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    */
   setTablesSchema<NewTablesSchema extends TablesSchema>(
     tablesSchema: NewTablesSchema,
-  ): Store<[typeof tablesSchema, StoreSchemas[1]]>;
+  ): Store<[typeof tablesSchema, StoreValuesSchema]>;
 
   /**
    * The setValuesSchema method lets you specify the ValuesSchema of the keyed
@@ -2804,7 +2808,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    */
   setValuesSchema<NewValuesSchema extends ValuesSchema>(
     valuesSchema: NewValuesSchema,
-  ): Store<[StoreSchemas[0], typeof valuesSchema]>;
+  ): Store<[StoreTablesSchema, typeof valuesSchema]>;
 
   /**
    * The setSchema method lets you specify the TablesSchema and ValuesSchema of
@@ -3134,7 +3138,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Deleter
    */
-  delTablesSchema(): Store<[undefined, StoreSchemas[1]]>;
+  delTablesSchema(): Store<[undefined, StoreValuesSchema]>;
 
   /**
    * The delValuesSchema method lets you remove the ValuesSchema of the Store.
@@ -3154,7 +3158,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Deleter
    * @since v3.0.0
    */
-  delValuesSchema(): Store<[StoreSchemas[0], undefined]>;
+  delValuesSchema(): Store<[StoreTablesSchema, undefined]>;
 
   /**
    * The delSchema method lets you remove both the TablesSchema and ValuesSchema
