@@ -46,7 +46,43 @@ export type OptionalSchemas = [OptionalTablesSchema, OptionalValuesSchema];
 export type NoSchemas = [undefined, undefined];
 
 /**
- * The TablesFrom type is a utility for determining a Tables structure from a
+ * The TablesFromSchema type is a utility for determining a Tables structure
+ * from a provided Schema.
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type TablesFromSchema<
+  Schema extends TablesSchema,
+  WhenSet extends boolean = false,
+> = {
+  -readonly [TableId in keyof Schema]?: {
+    [rowId: Id]: (WhenSet extends true
+      ? {
+          -readonly [CellId in CellIdsFromSchema<
+            Schema,
+            TableId
+          >]?: CellFromSchema<Schema, TableId, CellId>;
+        }
+      : {
+          -readonly [CellId in CellIdsFromSchema<
+            Schema,
+            TableId
+          >]: CellFromSchema<Schema, TableId, CellId>;
+        }) & {
+      -readonly [CellId in CellIdsFromSchema<
+        Schema,
+        TableId,
+        false
+      >]?: CellFromSchema<Schema, TableId, CellId>;
+    };
+  };
+};
+
+/**
+ * The CellFromSchema type is a utility for determining a Cell type from a
  * provided Schema.
  *
  * This type is used internally to the TinyBase type system and you are not
@@ -54,45 +90,7 @@ export type NoSchemas = [undefined, undefined];
  *
  * @category Internal
  */
-export type TablesFrom<
-  Schema extends TablesSchema,
-  WhenSet extends boolean = false,
-> = {
-  -readonly [TableId in keyof Schema]?: {
-    [rowId: Id]: (WhenSet extends true
-      ? {
-          -readonly [CellId in CellIdsFrom<Schema, TableId>]?: CellFrom<
-            Schema,
-            TableId,
-            CellId
-          >;
-        }
-      : {
-          -readonly [CellId in CellIdsFrom<Schema, TableId>]: CellFrom<
-            Schema,
-            TableId,
-            CellId
-          >;
-        }) & {
-      -readonly [CellId in CellIdsFrom<Schema, TableId, false>]?: CellFrom<
-        Schema,
-        TableId,
-        CellId
-      >;
-    };
-  };
-};
-
-/**
- * The CellFrom type is a utility for determining a Cell type from a provided
- * Schema.
- *
- * This type is used internally to the TinyBase type system and you are not
- * expected to need to use it directly.
- *
- * @category Internal
- */
-export type CellFrom<
+export type CellFromSchema<
   Schema extends TablesSchema,
   TableId extends keyof Schema,
   CellId extends keyof Schema[TableId],
@@ -104,15 +102,15 @@ export type CellFrom<
   : boolean;
 
 /**
- * The CellIdsWithDefaultFrom type is a utility for determining Cells with or
- * without default status from a provided Schema.
+ * The CellIdsFromSchema type is a utility for determining Cells with or without
+ * default status from a provided Schema.
  *
  * This type is used internally to the TinyBase type system and you are not
  * expected to need to use it directly.
  *
  * @category Internal
  */
-export type CellIdsFrom<
+export type CellIdsFromSchema<
   Schema extends TablesSchema,
   TableId extends keyof Schema,
   IsDefaulted extends boolean = true,
@@ -159,7 +157,7 @@ export type Tables<
   Schema extends OptionalTablesSchema = undefined,
   WhenSet extends boolean = false,
 > = Schema extends TablesSchema
-  ? TablesFrom<Schema, WhenSet>
+  ? TablesFromSchema<Schema, WhenSet>
   : {[tableId: Id]: {[rowId: Id]: {[cellId: Id]: Cell}}};
 
 /**
