@@ -14,6 +14,117 @@
 import {Id, IdOrNull, Ids, Json} from './common.d';
 
 /**
+ * The TablesSchema type describes the tabular structure of a Store in terms of
+ * valid Table Ids and the types of Cell that can exist within them.
+ *
+ * A TablesSchema comprises a JavaScript object describing each Table, in turn a
+ * nested JavaScript object containing information about each Cell and its
+ * CellSchema. It is provided to the setTablesSchema method.
+ *
+ * @example
+ * When applied to a Store, this TablesSchema only allows one Table called
+ * `pets`, in which each Row may contain a string `species` Cell, and is
+ * guaranteed to contain a boolean `sold` Cell that defaults to `false`.
+ *
+ *```js
+ * const tableSchema: TablesSchema = {
+ *   pets: {
+ *     species: {type: 'string'},
+ *     sold: {type: 'boolean', default: false},
+ *   },
+ * };
+ * ```
+ * @category Schema
+ */
+export type TablesSchema = {
+  [tableId: Id]: {
+    [cellId: Id]: CellSchema;
+  };
+};
+
+/**
+ * The CellSchema type describes what values are allowed for each Cell in a
+ * Table.
+ *
+ * A CellSchema specifies the type of the Cell (`string`, `boolean`, or
+ * `number`), and what the default value can be when an explicit value is not
+ * specified.
+ *
+ * If a default value is provided (and its type is correct), you can be certain
+ * that that Cell will always be present in a Row.
+ *
+ * If the default value is _not_ provided (or its type is incorrect), the Cell
+ * may be missing from the Row, but when present you can be guaranteed it is of
+ * the correct type.
+ *
+ * @example
+ * When applied to a Store, this CellSchema ensures a boolean Cell is always
+ * present, and defaults it to `false`.
+ *
+ *```js
+ * const requiredBoolean: CellSchema = {type: 'boolean', default: false};
+ * ```
+ * @category Schema
+ */
+export type CellSchema =
+  | {type: 'string'; default?: string}
+  | {type: 'number'; default?: number}
+  | {type: 'boolean'; default?: boolean};
+
+/**
+ * The ValuesSchema type describes the keyed Values that can be set in a Store
+ * and their types.
+ *
+ * A ValuesSchema comprises a JavaScript object describing each Value and its
+ * ValueSchema. It is provided to the setValuesSchema method.
+ *
+ * @example
+ * When applied to a Store, this ValuesSchema only allows one boolean Value
+ * called `open`, that defaults to `false`.
+ *
+ *```js
+ * const valuesSchema: ValuesSchema = {
+ *   open: {type: 'boolean', default: false},
+ * };
+ * ```
+ * @category Schema
+ * @since v3.0.0
+ */
+export type ValuesSchema = {
+  [valueId: Id]: ValueSchema;
+};
+
+/**
+ * The ValueSchema type describes what values are allowed for keyed Values in a
+ * Store.
+ *
+ * A ValueSchema specifies the type of the Value (`string`, `boolean`, or
+ * `number`), and what the default value can be when an explicit value is not
+ * specified.
+ *
+ * If a default value is provided (and its type is correct), you can be certain
+ * that the Value will always be present in a Store.
+ *
+ * If the default value is _not_ provided (or its type is incorrect), the Value
+ * may not be present in the Store, but when present you can be guaranteed it is
+ * of the correct type.
+ *
+ * @example
+ * When applied to a Store, this ValueSchema ensures a boolean Value is always
+ * present, and defaults it to `false`.
+ *
+ *```js
+ * const requiredBoolean: ValueSchema = {type: 'boolean', default: false};
+ * ```
+ * @category Schema
+ * @since v3.0.0
+ */
+export type ValueSchema =
+  | {type: 'string'; default?: string}
+  | {type: 'number'; default?: number}
+  | {type: 'boolean'; default?: boolean};
+
+/**
  * The NoTablesSchema type is a TablesSchema-like type for when one has not been
  * provided.
  *
@@ -874,117 +985,6 @@ export type ValueChange = [
   oldValue: ValueOrUndefined,
   newValue: ValueOrUndefined,
 ];
-
-/**
- * The TablesSchema type describes the tabular structure of a Store in terms of
- * valid Table Ids and the types of Cell that can exist within them.
- *
- * A TablesSchema comprises a JavaScript object describing each Table, in turn a
- * nested JavaScript object containing information about each Cell and its
- * CellSchema. It is provided to the setTablesSchema method.
- *
- * @example
- * When applied to a Store, this TablesSchema only allows one Table called
- * `pets`, in which each Row may contain a string `species` Cell, and is
- * guaranteed to contain a boolean `sold` Cell that defaults to `false`.
- *
- *```js
- * const tableSchema: TablesSchema = {
- *   pets: {
- *     species: {type: 'string'},
- *     sold: {type: 'boolean', default: false},
- *   },
- * };
- * ```
- * @category Schema
- */
-export type TablesSchema = {
-  [tableId: Id]: {
-    [cellId: Id]: CellSchema;
-  };
-};
-
-/**
- * The CellSchema type describes what values are allowed for each Cell in a
- * Table.
- *
- * A CellSchema specifies the type of the Cell (`string`, `boolean`, or
- * `number`), and what the default value can be when an explicit value is not
- * specified.
- *
- * If a default value is provided (and its type is correct), you can be certain
- * that that Cell will always be present in a Row.
- *
- * If the default value is _not_ provided (or its type is incorrect), the Cell
- * may be missing from the Row, but when present you can be guaranteed it is of
- * the correct type.
- *
- * @example
- * When applied to a Store, this CellSchema ensures a boolean Cell is always
- * present, and defaults it to `false`.
- *
- *```js
- * const requiredBoolean: CellSchema = {type: 'boolean', default: false};
- * ```
- * @category Schema
- */
-export type CellSchema =
-  | {type: 'string'; default?: string}
-  | {type: 'number'; default?: number}
-  | {type: 'boolean'; default?: boolean};
-
-/**
- * The ValuesSchema type describes the keyed Values that can be set in a Store
- * and their types.
- *
- * A ValuesSchema comprises a JavaScript object describing each Value and its
- * ValueSchema. It is provided to the setValuesSchema method.
- *
- * @example
- * When applied to a Store, this ValuesSchema only allows one boolean Value
- * called `open`, that defaults to `false`.
- *
- *```js
- * const valuesSchema: ValuesSchema = {
- *   open: {type: 'boolean', default: false},
- * };
- * ```
- * @category Schema
- * @since v3.0.0
- */
-export type ValuesSchema = {
-  [valueId: Id]: ValueSchema;
-};
-
-/**
- * The ValueSchema type describes what values are allowed for keyed Values in a
- * Store.
- *
- * A ValueSchema specifies the type of the Value (`string`, `boolean`, or
- * `number`), and what the default value can be when an explicit value is not
- * specified.
- *
- * If a default value is provided (and its type is correct), you can be certain
- * that the Value will always be present in a Store.
- *
- * If the default value is _not_ provided (or its type is incorrect), the Value
- * may not be present in the Store, but when present you can be guaranteed it is
- * of the correct type.
- *
- * @example
- * When applied to a Store, this ValueSchema ensures a boolean Value is always
- * present, and defaults it to `false`.
- *
- *```js
- * const requiredBoolean: ValueSchema = {type: 'boolean', default: false};
- * ```
- * @category Schema
- * @since v3.0.0
- */
-export type ValueSchema =
-  | {type: 'string'; default?: string}
-  | {type: 'number'; default?: number}
-  | {type: 'boolean'; default?: boolean};
 
 /**
  * The ChangedCells type describes the Cell values that have been changed during
