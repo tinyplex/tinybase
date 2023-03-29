@@ -207,7 +207,7 @@ export interface Persister<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Load
    */
   load(
-    initialTables?: Tables<Schemas[0]>,
+    initialTables?: Tables<Schemas[0], true>,
     initialValues?: Values,
   ): Promise<Persister>;
 
@@ -266,7 +266,7 @@ export interface Persister<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Load
    */
   startAutoLoad(
-    initialTables?: Tables<Schemas[0]>,
+    initialTables?: Tables<Schemas[0], true>,
     initialValues?: Values,
   ): Promise<Persister>;
 
