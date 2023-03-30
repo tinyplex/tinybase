@@ -1503,7 +1503,7 @@ export interface Queries<StoreSchemas extends OptionalSchemas = NoSchemas> {
       group: Group;
       having: Having;
     }) => void,
-  ): Queries;
+  ): Queries<StoreSchemas>;
 
   /**
    * The delQueryDefinition method removes an existing query definition.
@@ -1536,7 +1536,7 @@ export interface Queries<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Configuration
    * @since v2.0.0
    */
-  delQueryDefinition(queryId: Id): Queries;
+  delQueryDefinition(queryId: Id): Queries<StoreSchemas>;
 
   /**
    * The getStore method returns a reference to the underlying Store that is
@@ -2932,7 +2932,7 @@ export interface Queries<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Listener
    * @since v2.0.0
    */
-  delListener(listenerId: Id): Queries;
+  delListener(listenerId: Id): Queries<StoreSchemas>;
 
   /**
    * The destroy method should be called when this Queries object is no longer
@@ -3034,6 +3034,6 @@ export interface Queries<StoreSchemas extends OptionalSchemas = NoSchemas> {
  * @category Creation
  * @since v2.0.0
  */
-export function createQueries<StoreSchemas extends OptionalSchemas = NoSchemas>(
+export function createQueries<StoreSchemas extends OptionalSchemas>(
   store: Store<StoreSchemas>,
 ): Queries<StoreSchemas>;

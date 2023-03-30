@@ -209,7 +209,7 @@ export interface Persister<StoreSchemas extends OptionalSchemas = NoSchemas> {
   load(
     initialTables?: Tables<StoreSchemas[0], true>,
     initialValues?: Values,
-  ): Promise<Persister>;
+  ): Promise<Persister<StoreSchemas>>;
 
   /**
    * The startAutoLoad method gets persisted data from storage, and loads it
@@ -268,7 +268,7 @@ export interface Persister<StoreSchemas extends OptionalSchemas = NoSchemas> {
   startAutoLoad(
     initialTables?: Tables<StoreSchemas[0], true>,
     initialValues?: Values,
-  ): Promise<Persister>;
+  ): Promise<Persister<StoreSchemas>>;
 
   /**
    * The stopAutoLoad method stops the automatic loading of data from storage
@@ -342,7 +342,7 @@ export interface Persister<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Save
    */
-  save(): Promise<Persister>;
+  save(): Promise<Persister<StoreSchemas>>;
 
   /**
    * The startAutoSave method takes data from the Store with which the Persister
@@ -380,7 +380,7 @@ export interface Persister<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Save
    */
-  startAutoSave(): Promise<Persister>;
+  startAutoSave(): Promise<Persister<StoreSchemas>>;
 
   /**
    * The stopAutoSave method stops the automatic save of data to storage
@@ -549,9 +549,10 @@ export interface Persister<StoreSchemas extends OptionalSchemas = NoSchemas> {
  * ```
  * @category Creation
  */
-export function createSessionPersister<
-  Schemas extends OptionalSchemas = NoSchemas,
->(store: Store<Schemas>, storageName: string): Persister<Schemas>;
+export function createSessionPersister<Schemas extends OptionalSchemas>(
+  store: Store<Schemas>,
+  storageName: string,
+): Persister<Schemas>;
 
 /**
  * The createLocalPersister function creates a Persister object that can
@@ -581,9 +582,10 @@ export function createSessionPersister<
  * ```
  * @category Creation
  */
-export function createLocalPersister<
-  Schemas extends OptionalSchemas = NoSchemas,
->(store: Store<Schemas>, storageName: string): Persister<Schemas>;
+export function createLocalPersister<Schemas extends OptionalSchemas>(
+  store: Store<Schemas>,
+  storageName: string,
+): Persister<Schemas>;
 
 /**
  * The createRemotePersister function creates a Persister object that can
@@ -627,9 +629,7 @@ export function createLocalPersister<
  * ```
  * @category Creation
  */
-export function createRemotePersister<
-  Schemas extends OptionalSchemas = NoSchemas,
->(
+export function createRemotePersister<Schemas extends OptionalSchemas>(
   store: Store<Schemas>,
   loadUrl: string,
   saveUrl: string,
@@ -664,9 +664,10 @@ export function createRemotePersister<
  * ```
  * @category Creation
  */
-export function createFilePersister<
-  Schemas extends OptionalSchemas = NoSchemas,
->(store: Store<Schemas>, filePath: string): Persister<Schemas>;
+export function createFilePersister<Schemas extends OptionalSchemas>(
+  store: Store<Schemas>,
+  filePath: string,
+): Persister<Schemas>;
 
 /**
  * The createCustomPersister function creates a Persister object that you can
@@ -723,9 +724,7 @@ export function createFilePersister<
  * ```
  * @category Creation
  */
-export function createCustomPersister<
-  StoreSchemas extends OptionalSchemas = NoSchemas,
->(
+export function createCustomPersister<StoreSchemas extends OptionalSchemas>(
   store: Store<StoreSchemas>,
   getPersisted: () => Promise<string | null | undefined>,
   setPersisted: (json: string) => Promise<void>,

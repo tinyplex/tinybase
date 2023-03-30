@@ -420,7 +420,7 @@ export interface Metrics<StoreSchemas extends OptionalSchemas = NoSchemas> {
     aggregateAdd?: AggregateAdd,
     aggregateRemove?: AggregateRemove,
     aggregateReplace?: AggregateReplace,
-  ): Metrics;
+  ): Metrics<StoreSchemas>;
 
   /**
    * The delMetricDefinition method removes an existing Metric definition.
@@ -449,7 +449,7 @@ export interface Metrics<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Configuration
    */
-  delMetricDefinition(metricId: Id): Metrics;
+  delMetricDefinition(metricId: Id): Metrics<StoreSchemas>;
 
   /**
    * The getStore method returns a reference to the underlying Store that is
@@ -729,7 +729,7 @@ export interface Metrics<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Listener
    */
-  delListener(listenerId: Id): Metrics;
+  delListener(listenerId: Id): Metrics<StoreSchemas>;
 
   /**
    * The destroy method should be called when this Metrics object is no longer
@@ -824,6 +824,6 @@ export interface Metrics<StoreSchemas extends OptionalSchemas = NoSchemas> {
  * ```
  * @category Creation
  */
-export function createMetrics<StoreSchemas extends OptionalSchemas = NoSchemas>(
+export function createMetrics<StoreSchemas extends OptionalSchemas>(
   store: Store<StoreSchemas>,
 ): Metrics<StoreSchemas>;

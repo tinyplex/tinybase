@@ -361,7 +361,7 @@ export interface Indexes<StoreSchemas extends OptionalSchemas = NoSchemas> {
     getSortKey?: Id | ((getCell: GetCell, rowId: Id) => SortKey),
     sliceIdSorter?: (sliceId1: Id, sliceId2: Id) => number,
     rowIdSorter?: (sortKey1: SortKey, sortKey2: SortKey, sliceId: Id) => number,
-  ): Indexes;
+  ): Indexes<StoreSchemas>;
 
   /**
    * The delIndexDefinition method removes an existing Index definition.
@@ -390,7 +390,7 @@ export interface Indexes<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Configuration
    */
-  delIndexDefinition(indexId: Id): Indexes;
+  delIndexDefinition(indexId: Id): Indexes<StoreSchemas>;
 
   /**
    * The getStore method returns a reference to the underlying Store that is
@@ -866,7 +866,7 @@ export interface Indexes<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Listener
    */
-  delListener(listenerId: Id): Indexes;
+  delListener(listenerId: Id): Indexes<StoreSchemas>;
 
   /**
    * The destroy method should be called when this Indexes object is no longer
@@ -969,6 +969,6 @@ export interface Indexes<StoreSchemas extends OptionalSchemas = NoSchemas> {
  * ```
  * @category Creation
  */
-export function createIndexes<StoreSchemas extends OptionalSchemas = NoSchemas>(
+export function createIndexes<StoreSchemas extends OptionalSchemas>(
   store: Store<StoreSchemas>,
 ): Indexes<StoreSchemas>;
