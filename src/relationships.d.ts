@@ -347,7 +347,7 @@ export interface Relationships<
     localTableId: Id,
     remoteTableId: Id,
     getRemoteRowId: Id | ((getCell: GetCell, localRowId: Id) => Id),
-  ): Relationships;
+  ): Relationships<StoreSchemas>;
 
   /**
    * The delRelationshipDefinition method removes an existing Relationship
@@ -387,7 +387,7 @@ export interface Relationships<
    * ```
    * @category Configuration
    */
-  delRelationshipDefinition(relationshipId: Id): Relationships;
+  delRelationshipDefinition(relationshipId: Id): Relationships<StoreSchemas>;
 
   /**
    * The getStore method returns a reference to the underlying Store that is
@@ -1089,7 +1089,7 @@ export interface Relationships<
    * ```
    * @category Listener
    */
-  delListener(listenerId: Id): Relationships;
+  delListener(listenerId: Id): Relationships<StoreSchemas>;
 
   /**
    * The destroy method should be called when this Relationships object is no
@@ -1206,6 +1206,6 @@ export interface Relationships<
  * ```
  * @category Creation
  */
-export function createRelationships<
-  StoreSchemas extends OptionalSchemas = NoSchemas,
->(store: Store<StoreSchemas>): Relationships<StoreSchemas>;
+export function createRelationships<StoreSchemas extends OptionalSchemas>(
+  store: Store<StoreSchemas>,
+): Relationships<StoreSchemas>;

@@ -704,7 +704,7 @@ export interface Tools<StoreSchemas extends OptionalSchemas = NoSchemas> {
  * @category Creation
  * @since v2.2.0
  */
-export function createTools<StoreSchemas extends OptionalSchemas = NoSchemas>(
+export function createTools<StoreSchemas extends OptionalSchemas>(
   store: Store<StoreSchemas>,
 ): Tools<StoreSchemas>;
 /* eslint-enable max-len */
