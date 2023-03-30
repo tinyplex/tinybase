@@ -637,6 +637,7 @@ describe('tablesSchemas applied before data set, listening', () => {
       listener.listenToCell('/t*/r*/c*', null, null, null);
       listener.listenToInvalidCell('invalids', null, null, null);
       store.setTables({
+        // @ts-ignore
         t1: {r1: {c1: 1}, r2: {c1: true}, r3: {c1: 'a'}, r4: {}},
       });
       expect(store.getTables()).toEqual({
@@ -916,7 +917,9 @@ describe('tablesSchemas applied before data set, listening', () => {
       listener.listenToInvalidCell('invalids', null, null, null);
       store.setTable('t1', {
         r1: {c1: 1},
+        // @ts-ignore
         r2: {c1: true},
+        // @ts-ignore
         r3: {c1: 'a'},
         r4: {},
       });
@@ -1103,7 +1106,9 @@ describe('tablesSchemas applied before data set, listening', () => {
       listener.listenToInvalidCell('invalids', null, null, null);
       store
         .setRow('t1', 'r1', {c1: 1})
+        // @ts-ignore
         .setRow('t1', 'r2', {c1: true})
+        // @ts-ignore
         .setRow('t1', 'r3', {c1: 'a'});
       expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
       expectChanges(listener, '/t1/r1', {t1: {r1: {c1: 1}}});
@@ -1210,7 +1215,9 @@ describe('tablesSchemas applied before data set, listening', () => {
       listener.listenToInvalidCell('invalids', null, null, null);
       store
         .setRow('t1', 'r1', {c1: 1})
+        // @ts-ignore
         .setRow('t1', 'r2', {c1: true})
+        // @ts-ignore
         .setRow('t1', 'r3', {c1: 'a'})
         .setRow('t1', 'r4', {});
       expect(store.getTables()).toEqual({
@@ -1291,7 +1298,9 @@ describe('tablesSchemas applied before data set, listening', () => {
       listener.listenToInvalidCell('invalids', null, null, null);
       store
         .setRow('t1', 'r1', {c1: 3})
+        // @ts-ignore
         .setRow('t1', 'r1', {c1: true})
+        // @ts-ignore
         .setRow('t1', 'r1', {c1: 'a'});
       expect(store.getTables()).toEqual({
         t1: {r1: {c1: 2}},
@@ -1403,7 +1412,9 @@ describe('tablesSchemas applied before data set, listening', () => {
       listener.listenToInvalidCell('invalids', null, null, null);
       store
         .setPartialRow('t1', 'r1', {c1: 1})
+        // @ts-ignore
         .setPartialRow('t1', 'r2', {c1: true})
+        // @ts-ignore
         .setPartialRow('t1', 'r3', {c1: 'a'});
       expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
       expectChanges(listener, '/t1/r1', {t1: {r1: {c1: 1}}});
@@ -1509,7 +1520,9 @@ describe('tablesSchemas applied before data set, listening', () => {
       listener.listenToInvalidCell('invalids', null, null, null);
       store
         .setPartialRow('t1', 'r1', {c1: 1})
+        // @ts-ignore
         .setPartialRow('t1', 'r2', {c1: true})
+        // @ts-ignore
         .setPartialRow('t1', 'r3', {c1: 'a'});
       expect(store.getTables()).toEqual({
         t1: {r1: {c1: 1}, r2: {c1: 2}, r3: {c1: 2}},
@@ -1580,7 +1593,9 @@ describe('tablesSchemas applied before data set, listening', () => {
       listener.listenToInvalidCell('invalids', null, null, null);
       store
         .setPartialRow('t1', 'r1', {c1: 3})
+        // @ts-ignore
         .setPartialRow('t1', 'r1', {c1: true})
+        // @ts-ignore
         .setPartialRow('t1', 'r1', {c1: 'a'});
       expect(store.getTables()).toEqual({
         t1: {r1: {c1: 2}},
