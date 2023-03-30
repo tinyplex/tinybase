@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import {
   Cell,
   Id,
@@ -18,7 +19,7 @@ import {
 type AddMutator = (store: Store) => void;
 
 const addAllowCellMutator = <C extends Cell>(
-  store: Store,
+  store: Store<any>,
   tableId: Id,
   cellId: Id,
   cells: C[],
@@ -510,6 +511,7 @@ describe('tablesSchemas applied before data set, listening', () => {
       listener.listenToTables('/');
       listener.listenToCell('/t*/r*/c*', null, null, null);
       listener.listenToInvalidCell('invalids', null, null, null);
+      // @ts-ignore
       store.setTables({t2: {r1: {c1: 1}}});
       expect(store.getTables()).toEqual({});
       expectChangesNoJson(listener, 'invalids', {
@@ -524,6 +526,7 @@ describe('tablesSchemas applied before data set, listening', () => {
       listener.listenToTables('/');
       listener.listenToCell('/t*/r*/c*', null, null, null);
       listener.listenToInvalidCell('invalids', null, null, null);
+      // @ts-ignore
       store.setTables({t1: {r1: {c2: 1}}});
       expect(store.getTables()).toEqual({});
       expectChangesNoJson(
@@ -541,6 +544,7 @@ describe('tablesSchemas applied before data set, listening', () => {
       listener.listenToTables('/');
       listener.listenToCell('/t*/r*/c*', null, null, null);
       listener.listenToInvalidCell('invalids', null, null, null);
+      // @ts-ignore
       store.setTables({t1: {r1: {c1: 1}, r2: {c1: true}, r3: {c1: 'a'}}});
       expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
       expectChanges(listener, '/', {t1: {r1: {c1: 1}}});
@@ -605,18 +609,18 @@ describe('tablesSchemas applied before data set, listening', () => {
           expectChanges(
             listener,
             '/t*/r*/c*',
-            {t1: {r1: {c1: expected.t1.r1.c1}}},
-            {t1: {r2: {c1: expected.t1.r2.c1}}},
-            {t1: {r3: {c1: expected.t1.r3.c1}}},
+            {t1: {r1: {c1: expected.t1?.r1.c1}}},
+            {t1: {r2: {c1: expected.t1?.r2.c1}}},
+            {t1: {r3: {c1: expected.t1?.r3.c1}}},
           );
-          if (expected.t1.r4 != null) {
+          if (expected.t1?.r4 != null) {
             expectChanges(listener, '/t*/r*/c*', {
-              t1: {r4: {c1: expected.t1.r4.c1}},
+              t1: {r4: {c1: expected.t1?.r4.c1}},
             });
           }
-          if (expected.t1.r5 != null) {
+          if (expected.t1?.r5 != null) {
             expectChanges(listener, '/t*/r*/c*', {
-              t1: {r5: {c1: expected.t1.r5.c1}},
+              t1: {r5: {c1: expected.t1?.r5.c1}},
             });
           }
           expectNoChanges(listener);
@@ -708,7 +712,9 @@ describe('tablesSchemas applied before data set, listening', () => {
       listener.listenToCell('/t*/r*/c*', null, null, null);
       listener.listenToInvalidCell('invalids', null, null, null);
       store.setTables({t1: {r1: {c1: 3}}});
+      // @ts-ignore
       store.setTables({t1: {r1: {c1: true}}});
+      // @ts-ignore
       store.setTables({t1: {r1: {c1: 'a'}}});
       expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
       expectChanges(listener, '/', {t1: {r1: {c1: 3}}}, {t1: {r1: {c1: 2}}});
@@ -782,6 +788,7 @@ describe('tablesSchemas applied before data set, listening', () => {
       listener.listenToTable('/t2', 't2');
       listener.listenToCell('/t*/r*/c*', null, null, null);
       listener.listenToInvalidCell('invalids', null, null, null);
+      // @ts-ignore
       store.setTable('t2', {r1: {c1: 1}});
       expect(store.getTables()).toEqual({});
       expectChangesNoJson(listener, 'invalids', {
@@ -796,6 +803,7 @@ describe('tablesSchemas applied before data set, listening', () => {
       listener.listenToTable('/t1', 't1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
       listener.listenToInvalidCell('invalids', null, null, null);
+      // @ts-ignore
       store.setTable('t1', {r1: {c2: 1}});
       expect(store.getTables()).toEqual({});
       expectChangesNoJson(
@@ -813,6 +821,7 @@ describe('tablesSchemas applied before data set, listening', () => {
       listener.listenToTable('/t1', 't1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
       listener.listenToInvalidCell('invalids', null, null, null);
+      // @ts-ignore
       store.setTable('t1', {r1: {c1: 1}, r2: {c1: true}, r3: {c1: 'a'}});
       expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
       expectChanges(listener, '/t1', {t1: {r1: {c1: 1}}});
@@ -878,18 +887,18 @@ describe('tablesSchemas applied before data set, listening', () => {
           expectChanges(
             listener,
             '/t*/r*/c*',
-            {t1: {r1: {c1: expected.t1.r1.c1}}},
-            {t1: {r2: {c1: expected.t1.r2.c1}}},
-            {t1: {r3: {c1: expected.t1.r3.c1}}},
+            {t1: {r1: {c1: expected.t1?.r1.c1}}},
+            {t1: {r2: {c1: expected.t1?.r2.c1}}},
+            {t1: {r3: {c1: expected.t1?.r3.c1}}},
           );
-          if (expected.t1.r4 != null) {
+          if (expected.t1?.r4 != null) {
             expectChanges(listener, '/t*/r*/c*', {
-              t1: {r4: {c1: expected.t1.r4.c1}},
+              t1: {r4: {c1: expected.t1?.r4.c1}},
             });
           }
-          if (expected.t1.r5 != null) {
+          if (expected.t1?.r5 != null) {
             expectChanges(listener, '/t*/r*/c*', {
-              t1: {r5: {c1: expected.t1.r5.c1}},
+              t1: {r5: {c1: expected.t1?.r5.c1}},
             });
           }
           expectNoChanges(listener);
@@ -982,7 +991,9 @@ describe('tablesSchemas applied before data set, listening', () => {
       listener.listenToCell('/t*/r*/c*', null, null, null);
       listener.listenToInvalidCell('invalids', null, null, null);
       store.setTable('t1', {r1: {c1: 3}});
+      // @ts-ignore
       store.setTable('t1', {r1: {c1: true}});
+      // @ts-ignore
       store.setTable('t1', {r1: {c1: 'a'}});
       expect(store.getTables()).toEqual({
         t1: {r1: {c1: 2}},
@@ -1057,6 +1068,7 @@ describe('tablesSchemas applied before data set, listening', () => {
       listener.listenToRow('/t2/r1', 't2', 'r1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
       listener.listenToInvalidCell('invalids', null, null, null);
+      // @ts-ignore
       store.setRow('t2', 'r1', {c1: 1});
       expect(store.getTables()).toEqual({});
       expectChanges(listener, 'invalids', {t2: {r1: {c1: [1]}}});
@@ -1069,6 +1081,7 @@ describe('tablesSchemas applied before data set, listening', () => {
       listener.listenToRow('/t1/r1', 't1', 'r1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
       listener.listenToInvalidCell('invalids', null, null, null);
+      // @ts-ignore
       store.setRow('t1', 'r1', {c2: 1});
       expect(store.getTables()).toEqual({});
       expectChangesNoJson(
@@ -1157,26 +1170,26 @@ describe('tablesSchemas applied before data set, listening', () => {
             .setRow('t1', 'r4', {c1: true})
             .setRow('t1', 'r5', {c1: 'a'});
           expect(store.getTables()).toEqual(expected);
-          expectChanges(listener, '/t1/r1', {t1: {r1: expected.t1.r1}});
-          expectChanges(listener, '/t1/r2', {t1: {r2: expected.t1.r2}});
-          expectChanges(listener, '/t1/r3', {t1: {r3: expected.t1.r3}});
+          expectChanges(listener, '/t1/r1', {t1: {r1: expected.t1?.r1}});
+          expectChanges(listener, '/t1/r2', {t1: {r2: expected.t1?.r2}});
+          expectChanges(listener, '/t1/r3', {t1: {r3: expected.t1?.r3}});
           expectChanges(
             listener,
             '/t*/r*/c*',
-            {t1: {r1: {c1: expected.t1.r1.c1}}},
-            {t1: {r2: {c1: expected.t1.r2.c1}}},
-            {t1: {r3: {c1: expected.t1.r3.c1}}},
+            {t1: {r1: {c1: expected.t1?.r1.c1}}},
+            {t1: {r2: {c1: expected.t1?.r2.c1}}},
+            {t1: {r3: {c1: expected.t1?.r3.c1}}},
           );
-          if (expected.t1.r4 != null) {
-            expectChanges(listener, '/t1/r4', {t1: {r4: expected.t1.r4}});
+          if (expected.t1?.r4 != null) {
+            expectChanges(listener, '/t1/r4', {t1: {r4: expected.t1?.r4}});
             expectChanges(listener, '/t*/r*/c*', {
-              t1: {r4: {c1: expected.t1.r4.c1}},
+              t1: {r4: {c1: expected.t1?.r4.c1}},
             });
           }
-          if (expected.t1.r5 != null) {
-            expectChanges(listener, '/t1/r5', {t1: {r5: expected.t1.r5}});
+          if (expected.t1?.r5 != null) {
+            expectChanges(listener, '/t1/r5', {t1: {r5: expected.t1?.r5}});
             expectChanges(listener, '/t*/r*/c*', {
-              t1: {r5: {c1: expected.t1.r5.c1}},
+              t1: {r5: {c1: expected.t1?.r5.c1}},
             });
           }
           expectNoChanges(listener);
@@ -1360,6 +1373,7 @@ describe('tablesSchemas applied before data set, listening', () => {
       listener.listenToRow('/t2/r1', 't2', 'r1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
       listener.listenToInvalidCell('invalids', null, null, null);
+      // @ts-ignore
       store.setPartialRow('t2', 'r1', {c1: 1});
       expect(store.getTables()).toEqual({});
       expectChanges(listener, 'invalids', {t2: {r1: {c1: [1]}}});
@@ -1372,6 +1386,7 @@ describe('tablesSchemas applied before data set, listening', () => {
       listener.listenToRow('/t1/r1', 't1', 'r1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
       listener.listenToInvalidCell('invalids', null, null, null);
+      // @ts-ignore
       store.setPartialRow('t1', 'r1', {c2: 1});
       expect(store.getTables()).toEqual({});
       expectChanges(listener, 'invalids', {t1: {r1: {c2: [1]}}});
@@ -1455,26 +1470,26 @@ describe('tablesSchemas applied before data set, listening', () => {
             .setPartialRow('t1', 'r4', {c1: true})
             .setPartialRow('t1', 'r5', {c1: 'a'});
           expect(store.getTables()).toEqual(expected);
-          expectChanges(listener, '/t1/r1', {t1: {r1: expected.t1.r1}});
-          expectChanges(listener, '/t1/r2', {t1: {r2: expected.t1.r2}});
-          expectChanges(listener, '/t1/r3', {t1: {r3: expected.t1.r3}});
+          expectChanges(listener, '/t1/r1', {t1: {r1: expected.t1?.r1}});
+          expectChanges(listener, '/t1/r2', {t1: {r2: expected.t1?.r2}});
+          expectChanges(listener, '/t1/r3', {t1: {r3: expected.t1?.r3}});
           expectChanges(
             listener,
             '/t*/r*/c*',
-            {t1: {r1: {c1: expected.t1.r1.c1}}},
-            {t1: {r2: {c1: expected.t1.r2.c1}}},
-            {t1: {r3: {c1: expected.t1.r3.c1}}},
+            {t1: {r1: {c1: expected.t1?.r1.c1}}},
+            {t1: {r2: {c1: expected.t1?.r2.c1}}},
+            {t1: {r3: {c1: expected.t1?.r3.c1}}},
           );
-          if (expected.t1.r4 != null) {
-            expectChanges(listener, '/t1/r4', {t1: {r4: expected.t1.r4}});
+          if (expected.t1?.r4 != null) {
+            expectChanges(listener, '/t1/r4', {t1: {r4: expected.t1?.r4}});
             expectChanges(listener, '/t*/r*/c*', {
-              t1: {r4: {c1: expected.t1.r4.c1}},
+              t1: {r4: {c1: expected.t1?.r4.c1}},
             });
           }
-          if (expected.t1.r5 != null) {
-            expectChanges(listener, '/t1/r5', {t1: {r5: expected.t1.r5}});
+          if (expected.t1?.r5 != null) {
+            expectChanges(listener, '/t1/r5', {t1: {r5: expected.t1?.r5}});
             expectChanges(listener, '/t*/r*/c*', {
-              t1: {r5: {c1: expected.t1.r5.c1}},
+              t1: {r5: {c1: expected.t1?.r5.c1}},
             });
           }
           expectNoChanges(listener);
@@ -1649,6 +1664,7 @@ describe('tablesSchemas applied before data set, listening', () => {
       listener.listenToCell('/t2/r1/c1', 't2', 'r1', 'c1');
       listener.listenToCell('/t*/r*/c*', null, null, null);
       listener.listenToInvalidCell('invalids', null, null, null);
+      // @ts-ignore
       store.setCell('t2', 'r1', 'c1', 1);
       expect(store.getTables()).toEqual({});
       expectChanges(listener, 'invalids', {t2: {r1: {c1: [1]}}});
@@ -1661,6 +1677,7 @@ describe('tablesSchemas applied before data set, listening', () => {
       listener.listenToCell('t1/r1/c2', 't1', 'r1', 'c2');
       listener.listenToCell('/t*/r*/c*', null, null, null);
       listener.listenToInvalidCell('invalids', null, null, null);
+      // @ts-ignore
       store.setCell('t1', 'r1', 'c2', 1);
       expect(store.getTables()).toEqual({});
       expectChanges(listener, 'invalids', {t1: {r1: {c2: [1]}}});
@@ -2108,35 +2125,35 @@ describe('tablesSchemas applied before data set, listening', () => {
             .setCell('t1', 'r5', 'c1', 't1');
           expect(store.getTables()).toEqual(expected);
           expectChanges(listener, '/t1/r1/c1', {
-            t1: {r1: {c1: expected.t1.r1.c1}},
+            t1: {r1: {c1: expected.t1?.r1.c1}},
           });
           expectChanges(listener, '/t1/r2/c1', {
-            t1: {r2: {c1: expected.t1.r2.c1}},
+            t1: {r2: {c1: expected.t1?.r2.c1}},
           });
           expectChanges(listener, '/t1/r3/c1', {
-            t1: {r3: {c1: expected.t1.r3.c1}},
+            t1: {r3: {c1: expected.t1?.r3.c1}},
           });
           expectChanges(
             listener,
             '/t*/r*/c*',
-            {t1: {r1: {c1: expected.t1.r1.c1}}},
-            {t1: {r2: {c1: expected.t1.r2.c1}}},
-            {t1: {r3: {c1: expected.t1.r3.c1}}},
+            {t1: {r1: {c1: expected.t1?.r1.c1}}},
+            {t1: {r2: {c1: expected.t1?.r2.c1}}},
+            {t1: {r3: {c1: expected.t1?.r3.c1}}},
           );
-          if (expected.t1.r4 != null) {
+          if (expected.t1?.r4 != null) {
             expectChanges(listener, '/t1/r4/c1', {
-              t1: {r4: {c1: expected.t1.r4.c1}},
+              t1: {r4: {c1: expected.t1?.r4.c1}},
             });
             expectChanges(listener, '/t*/r*/c*', {
-              t1: {r4: {c1: expected.t1.r4.c1}},
+              t1: {r4: {c1: expected.t1?.r4.c1}},
             });
           }
-          if (expected.t1.r5 != null) {
+          if (expected.t1?.r5 != null) {
             expectChanges(listener, '/t1/r5/c1', {
-              t1: {r5: {c1: expected.t1.r5.c1}},
+              t1: {r5: {c1: expected.t1?.r5.c1}},
             });
             expectChanges(listener, '/t*/r*/c*', {
-              t1: {r5: {c1: expected.t1.r5.c1}},
+              t1: {r5: {c1: expected.t1?.r5.c1}},
             });
           }
           expectNoChanges(listener);
@@ -2524,11 +2541,11 @@ describe('Miscellaneous', () => {
       't1',
       null,
       'c1',
-      (store, tableId, rowId, cellId, newCell, oldCell) =>
+      (store, _tableId, rowId, _cellId, newCell, oldCell) =>
         store.setCell(
-          tableId,
+          't1',
           rowId,
-          cellId,
+          'c1',
           oldCell == null || newCell > oldCell ? newCell : oldCell,
         ),
       true,
