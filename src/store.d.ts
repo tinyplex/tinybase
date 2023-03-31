@@ -179,88 +179,6 @@ export type OptionalSchemas = [OptionalTablesSchema, OptionalValuesSchema];
 export type NoSchemas = [NoTablesSchema, NoValuesSchema];
 
 /**
- * The TablesFromSchema type is a utility for determining a Tables structure
- * from a provided Schema.
- *
- * This type is used internally to the TinyBase type system and you are not
- * expected to need to use it directly.
- *
- * @category Internal
- */
-export type TablesFromSchema<
-  Schema extends OptionalTablesSchema,
-  WhenSet extends boolean = false,
-> = {
-  -readonly [TableId in keyof Schema]?: {
-    [rowId: Id]: (WhenSet extends true
-      ? {
-          -readonly [CellId in CellIdsDefaultedFromSchema<
-            Schema,
-            TableId
-          >]?: CellTypeFromSchema<Schema, TableId, CellId>;
-        }
-      : {
-          -readonly [CellId in CellIdsDefaultedFromSchema<
-            Schema,
-            TableId
-          >]: CellTypeFromSchema<Schema, TableId, CellId>;
-        }) & {
-      -readonly [CellId in CellIdsDefaultedFromSchema<
-        Schema,
-        TableId,
-        false
-      >]?: CellTypeFromSchema<Schema, TableId, CellId>;
-    };
-  };
-};
-
-/**
- * The CellTypeFromSchema type is a utility for determining a Cell type from a
- * provided Schema.
- *
- * This type is used internally to the TinyBase type system and you are not
- * expected to need to use it directly.
- *
- * @category Internal
- */
-export type CellTypeFromSchema<
-  Schema extends OptionalTablesSchema,
-  TableId extends keyof Schema,
-  CellId extends keyof Schema[TableId],
-  CellType = Schema[TableId][CellId]['type'],
-> = CellType extends 'string'
-  ? string
-  : CellType extends 'number'
-  ? number
-  : CellType extends 'boolean'
-  ? boolean
-  : Cell;
-
-/**
- * The CellIdsDefaultedFromSchema type is a utility for determining Cells with
- * or without default status from a provided Schema.
- *
- * This type is used internally to the TinyBase type system and you are not
- * expected to need to use it directly.
- *
- * @category Internal
- */
-export type CellIdsDefaultedFromSchema<
-  Schema extends OptionalTablesSchema,
-  TableId extends keyof Schema,
-  IsDefaulted extends boolean = true,
-  TableSchema = Schema[TableId],
-> = {
-  [CellId in keyof TableSchema]: TableSchema[CellId] extends {default: Cell}
-    ? IsDefaulted extends true
-      ? CellId
-      : never
-    : IsDefaulted extends true
-    ? never
-    : CellId;
-}[keyof TableSchema];
-
-/**
  * The Tables type is the data structure representing all of the data in a
  * Store.
  *
@@ -5702,3 +5620,85 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
  * @category Creation
  */
 export function createStore(): Store;
+
+/**
+ * The TablesFromSchema type is a utility for determining a Tables structure
+ * from a provided Schema.
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type TablesFromSchema<
+  Schema extends OptionalTablesSchema,
+  WhenSet extends boolean = false,
+> = {
+  -readonly [TableId in keyof Schema]?: {
+    [rowId: Id]: (WhenSet extends true
+      ? {
+          -readonly [CellId in CellIdsDefaultedFromSchema<
+            Schema,
+            TableId
+          >]?: CellTypeFromSchema<Schema, TableId, CellId>;
+        }
+      : {
+          -readonly [CellId in CellIdsDefaultedFromSchema<
+            Schema,
+            TableId
+          >]: CellTypeFromSchema<Schema, TableId, CellId>;
+        }) & {
+      -readonly [CellId in CellIdsDefaultedFromSchema<
+        Schema,
+        TableId,
+        false
+      >]?: CellTypeFromSchema<Schema, TableId, CellId>;
+    };
+  };
+};
+
+/**
+ * The CellTypeFromSchema type is a utility for determining a Cell type from a
+ * provided Schema.
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type CellTypeFromSchema<
+  Schema extends OptionalTablesSchema,
+  TableId extends keyof Schema,
+  CellId extends keyof Schema[TableId],
+  CellType = Schema[TableId][CellId]['type'],
+> = CellType extends 'string'
+  ? string
+  : CellType extends 'number'
+  ? number
+  : CellType extends 'boolean'
+  ? boolean
+  : Cell;
+
+/**
+ * The CellIdsDefaultedFromSchema type is a utility for determining Cells with
+ * or without default status from a provided Schema.
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type CellIdsDefaultedFromSchema<
+  Schema extends OptionalTablesSchema,
+  TableId extends keyof Schema,
+  IsDefaulted extends boolean = true,
+  TableSchema = Schema[TableId],
+> = {
+  [CellId in keyof TableSchema]: TableSchema[CellId] extends {default: Cell}
+    ? IsDefaulted extends true
+      ? CellId
+      : never
+    : IsDefaulted extends true
+    ? never
+    : CellId;
+}[keyof TableSchema];
