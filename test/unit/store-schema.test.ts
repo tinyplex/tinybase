@@ -2279,6 +2279,7 @@ describe('valuesSchemas applied before data set, listening', () => {
       listener.listenToValues('/');
       listener.listenToValue('/v*', null);
       listener.listenToInvalidValue('invalids', null);
+      // @ts-ignore
       store.setValues({v1: 1, v2: 2});
       expect(store.getValues()).toEqual({v1: 1});
       expectChanges(listener, '/', {v1: 1});
@@ -2297,8 +2298,10 @@ describe('valuesSchemas applied before data set, listening', () => {
       listener.listenToInvalidValue('invalids', null);
       store.setValues({v1: 1});
       expect(store.getValues()).toEqual({v1: 1});
+      // @ts-ignore
       store.setValues({v1: true});
       expect(store.getValues()).toEqual({v1: 2});
+      // @ts-ignore
       store.setValues({v1: 'a'});
       expect(store.getValues()).toEqual({v1: 2});
       expectChanges(listener, '/', {v1: 1}, {v1: 2});
@@ -2315,6 +2318,7 @@ describe('valuesSchemas applied before data set, listening', () => {
       listener.listenToValues('/');
       listener.listenToValue('/v*', null);
       listener.listenToInvalidValue('invalids', null);
+      // @ts-ignore
       store.setValues({v1: 3}).setValues({v1: true}).setValues({v1: 'a'});
       expect(store.getValues()).toEqual({v1: 2});
       expectChanges(listener, '/', {v1: 3}, {v1: 2});
@@ -2410,7 +2414,9 @@ describe('valuesSchemas applied before data set, listening', () => {
       listener.listenToInvalidValue('invalids', null);
       store
         .setPartialValues({v1: 1, v2: 2, v3: 3})
+        // @ts-ignore
         .setPartialValues({v1: 2, v2: 'a'})
+        // @ts-ignore
         .setPartialValues({v1: 3, v2: true});
       expect(store.getValues()).toEqual({v1: 3, v2: 2, v3: 3});
       expectChanges(

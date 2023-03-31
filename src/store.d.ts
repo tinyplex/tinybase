@@ -304,7 +304,10 @@ export type CellOrUndefined = Cell | undefined;
  * @category Store
  * @since v3.0.0
  */
-export type Values = {[valueId: Id]: Value};
+export type Values<
+  Schema extends OptionalValuesSchema = NoValuesSchema,
+  WhenSet extends boolean = false,
+> = ValuesFromSchema<Schema, WhenSet>;
 
 /**
  * The Value type is the data structure representing the data in a single keyed
@@ -1715,7 +1718,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Getter
    * @since v3.0.0
    */
-  getValues(): Values;
+  getValues(): Values<StoreSchemas[1]>;
 
   /**
    * The getValueIds method returns the Ids of every Value in a Store.
@@ -1744,7 +1747,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Getter
    * @since v3.0.0
    */
-  getValueIds(): Ids;
+  getValueIds(): (keyof Values<StoreSchemas[1]>)[];
 
   /**
    * The getValue method returns a single keyed Value in the Store.
@@ -1770,7 +1773,9 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Getter
    * @since v3.0.0
    */
-  getValue(valueId: Id): ValueOrUndefined;
+  getValue<ValueId extends keyof Values<StoreSchemas[1]>>(
+    valueId: ValueId,
+  ): ValueOrUndefined;
 
   /**
    * The hasTables method returns a boolean indicating whether any Table objects
@@ -1926,7 +1931,9 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Getter
    * @since v3.0.0
    */
-  hasValue(valueId: Id): boolean;
+  hasValue<ValueId extends keyof Values<StoreSchemas[1]>>(
+    valueId: ValueId,
+  ): boolean;
 
   /**
    * The getTablesJson method returns a string serialization of all of the
@@ -2542,7 +2549,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Setter
    * @since v3.0.0
    */
-  setValues(values: Values): Store<StoreSchemas>;
+  setValues(values: Values<StoreSchemas[1], true>): Store<StoreSchemas>;
 
   /**
    * The setPartialValues method takes an object and sets its Values in the
@@ -2592,7 +2599,9 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Setter
    * @since v3.0.0
    */
-  setPartialValues(partialValues: Values): Store<StoreSchemas>;
+  setPartialValues(
+    partialValues: Values<StoreSchemas[1], true>,
+  ): Store<StoreSchemas>;
 
   /**
    * The setValue method sets a single keyed Value in the Store.
@@ -2646,7 +2655,10 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Setter
    * @since v3.0.0
    */
-  setValue(valueId: Id, value: Value | MapValue): Store<StoreSchemas>;
+  setValue<ValueId extends keyof Values<StoreSchemas[1]>>(
+    valueId: ValueId,
+    value: Value | MapValue,
+  ): Store<StoreSchemas>;
 
   /**
    * The setTablesJson method takes a string serialization of all of the Tables
@@ -3205,7 +3217,9 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Deleter
    * @since v3.0.0
    */
-  delValue(valueId: Id): Store<StoreSchemas>;
+  delValue<ValueId extends keyof Values<StoreSchemas[1]>>(
+    valueId: ValueId,
+  ): Store<StoreSchemas>;
 
   /**
    * The delTablesSchema method lets you remove the TablesSchema of the Store.
@@ -5623,7 +5637,7 @@ export function createStore(): Store;
 
 /**
  * The TablesFromSchema type is a utility for determining a Tables structure
- * from a provided Schema.
+ * from a provided TablesSchema.
  *
  * This type is used internally to the TinyBase type system and you are not
  * expected to need to use it directly.
@@ -5637,18 +5651,18 @@ export type TablesFromSchema<
   -readonly [TableId in keyof Schema]?: {
     [rowId: Id]: (WhenSet extends true
       ? {
-          -readonly [CellId in CellIdsDefaultedFromSchema<
+          -readonly [CellId in CellIdsFromSchema<
             Schema,
             TableId
           >]?: CellTypeFromSchema<Schema, TableId, CellId>;
         }
       : {
-          -readonly [CellId in CellIdsDefaultedFromSchema<
+          -readonly [CellId in CellIdsFromSchema<
             Schema,
             TableId
           >]: CellTypeFromSchema<Schema, TableId, CellId>;
         }) & {
-      -readonly [CellId in CellIdsDefaultedFromSchema<
+      -readonly [CellId in CellIdsFromSchema<
         Schema,
         TableId,
         false
@@ -5659,7 +5673,7 @@ export type TablesFromSchema<
 
 /**
  * The CellTypeFromSchema type is a utility for determining a Cell type from a
- * provided Schema.
+ * provided TablesSchema.
  *
  * This type is used internally to the TinyBase type system and you are not
  * expected to need to use it directly.
@@ -5681,14 +5695,14 @@ export type CellTypeFromSchema<
 
 /**
  * The CellIdsDefaultedFromSchema type is a utility for determining Cells with
- * or without default status from a provided Schema.
+ * or without default status from a provided TablesSchema.
  *
  * This type is used internally to the TinyBase type system and you are not
  * expected to need to use it directly.
  *
  * @category Internal
  */
-export type CellIdsDefaultedFromSchema<
+export type CellIdsFromSchema<
   Schema extends OptionalTablesSchema,
   TableId extends keyof Schema,
   IsDefaulted extends boolean = true,
@@ -5702,3 +5716,77 @@ export type CellIdsDefaultedFromSchema<
     ? never
     : CellId;
 }[keyof TableSchema];
+
+/**
+ * The ValuesFromSchema type is a utility for determining a Values structure
+ * from a provided ValuesSchema.
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type ValuesFromSchema<
+  Schema extends OptionalValuesSchema,
+  WhenSet extends boolean = false,
+> = (WhenSet extends true
+  ? {
+      -readonly [ValueId in ValueIdsFromSchema<Schema>]?: ValueTypeFromSchema<
+        Schema,
+        ValueId
+      >;
+    }
+  : {
+      -readonly [ValueId in ValueIdsFromSchema<Schema>]: ValueTypeFromSchema<
+        Schema,
+        ValueId
+      >;
+    }) & {
+  -readonly [ValueId in ValueIdsFromSchema<
+    Schema,
+    false
+  >]?: ValueTypeFromSchema<Schema, ValueId>;
+};
+
+/**
+ * The ValueTypeFromSchema type is a utility for determining a Value type from a
+ * provided ValuesSchema.
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type ValueTypeFromSchema<
+  Schema extends OptionalValuesSchema,
+  ValueId extends keyof Schema,
+  ValueType = Schema[ValueId]['type'],
+> = ValueType extends 'string'
+  ? string
+  : ValueType extends 'number'
+  ? number
+  : ValueType extends 'boolean'
+  ? boolean
+  : Value;
+
+/**
+ * The ValueIdsDefaultedFromSchema type is a utility for determining Values with
+ * or without default status from a provided ValuesSchema.
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type ValueIdsFromSchema<
+  Schema extends OptionalValuesSchema,
+  IsDefaulted extends boolean = true,
+> = {
+  [ValueId in keyof Schema]: Schema[ValueId] extends {default: Value}
+    ? IsDefaulted extends true
+      ? ValueId
+      : never
+    : IsDefaulted extends true
+    ? never
+    : ValueId;
+}[keyof Schema];
