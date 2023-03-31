@@ -1050,7 +1050,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     fluentTransaction(() =>
       validateValues(partialValues, 1)
         ? objMap(partialValues, (value, valueId) =>
-            setValidValue(valueId, value),
+            setValidValue(valueId, value as Value),
           )
         : 0,
     );
