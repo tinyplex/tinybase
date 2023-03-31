@@ -234,7 +234,7 @@ export type Tables<
  */
 export type Table<
   Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends keyof Tables<Schema, WhenSet> = Id,
+  TableId extends TableIdFromSchema<Schema> = Id,
   WhenSet extends boolean = false,
 > = NonNullable<Tables<Schema, WhenSet>[TableId]>;
 
@@ -257,7 +257,7 @@ export type Table<
  */
 export type Row<
   Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends keyof Tables<Schema, WhenSet> = Id,
+  TableId extends TableIdFromSchema<Schema> = Id,
   WhenSet extends boolean = false,
 > = NonNullable<Tables<Schema, WhenSet>[TableId]>[Id];
 
@@ -1347,7 +1347,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getTableIds(): (keyof Tables<StoreSchemas[0]>)[];
+  getTableIds(): TableIdFromSchema<StoreSchemas[0]>[];
 
   /**
    * The getTable method returns an object containing the entire data of a
@@ -1385,7 +1385,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getTable<TableId extends keyof Tables<StoreSchemas[0]>>(
+  getTable<TableId extends TableIdFromSchema<StoreSchemas[0]>>(
     tableId: TableId,
   ): Table<StoreSchemas[0], TableId>;
 
@@ -1425,7 +1425,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getRowIds<TableId extends keyof Tables<StoreSchemas[0]>>(
+  getRowIds<TableId extends TableIdFromSchema<StoreSchemas[0]>>(
     tableId: TableId,
   ): Ids;
 
@@ -1539,8 +1539,8 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @since v2.0.0
    */
   getSortedRowIds<
-    TableId extends keyof Tables<StoreSchemas[0]>,
-    CellId extends keyof Table<StoreSchemas[0], TableId>[Id],
+    TableId extends TableIdFromSchema<StoreSchemas[0]>,
+    CellId extends CellIdFromSchema<StoreSchemas[0], TableId>,
   >(
     tableId: TableId,
     cellId?: CellId,
@@ -1591,7 +1591,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getRow<TableId extends keyof Tables<StoreSchemas[0]>>(
+  getRow<TableId extends TableIdFromSchema<StoreSchemas[0]>>(
     tableId: TableId,
     rowId: Id,
   ): Row<StoreSchemas[0], TableId>;
@@ -1637,8 +1637,8 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Getter
    */
   getCellIds<
-    TableId extends keyof Tables<StoreSchemas[0]>,
-    CellId extends keyof Table<StoreSchemas[0], TableId>[Id],
+    TableId extends TableIdFromSchema<StoreSchemas[0]>,
+    CellId extends CellIdFromSchema<StoreSchemas[0], TableId>,
   >(
     tableId: TableId,
     rowId: Id,
@@ -1681,8 +1681,8 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Getter
    */
   getCell<
-    TableId extends keyof Tables<StoreSchemas[0]>,
-    CellId extends keyof Table<StoreSchemas[0], TableId>[Id],
+    TableId extends TableIdFromSchema<StoreSchemas[0]>,
+    CellId extends CellIdFromSchema<StoreSchemas[0], TableId>,
   >(
     tableId: TableId,
     rowId: Id,
@@ -1747,7 +1747,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Getter
    * @since v3.0.0
    */
-  getValueIds(): (keyof Values<StoreSchemas[1]>)[];
+  getValueIds(): ValueIdFromSchema<StoreSchemas[1]>[];
 
   /**
    * The getValue method returns a single keyed Value in the Store.
@@ -1773,7 +1773,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Getter
    * @since v3.0.0
    */
-  getValue<ValueId extends keyof Values<StoreSchemas[1]>>(
+  getValue<ValueId extends ValueIdFromSchema<StoreSchemas[1]>>(
     valueId: ValueId,
   ): ValueOrUndefined;
 
@@ -1819,7 +1819,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  hasTable<TableId extends keyof Tables<StoreSchemas[0]>>(
+  hasTable<TableId extends TableIdFromSchema<StoreSchemas[0]>>(
     tableId: TableId,
   ): boolean;
 
@@ -1849,7 +1849,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  hasRow<TableId extends keyof Tables<StoreSchemas[0]>>(
+  hasRow<TableId extends TableIdFromSchema<StoreSchemas[0]>>(
     tableId: TableId,
     rowId: Id,
   ): boolean;
@@ -1883,8 +1883,8 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Getter
    */
   hasCell<
-    TableId extends keyof Tables<StoreSchemas[0]>,
-    CellId extends keyof Table<StoreSchemas[0], TableId>[Id],
+    TableId extends TableIdFromSchema<StoreSchemas[0]>,
+    CellId extends CellIdFromSchema<StoreSchemas[0], TableId>,
   >(
     tableId: TableId,
     rowId: Id,
@@ -1931,7 +1931,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Getter
    * @since v3.0.0
    */
-  hasValue<ValueId extends keyof Values<StoreSchemas[1]>>(
+  hasValue<ValueId extends ValueIdFromSchema<StoreSchemas[1]>>(
     valueId: ValueId,
   ): boolean;
 
@@ -2234,7 +2234,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  setTable<TableId extends keyof Tables<StoreSchemas[0]>>(
+  setTable<TableId extends TableIdFromSchema<StoreSchemas[0]>>(
     tableId: TableId,
     table: Table<StoreSchemas[0], TableId, true>,
   ): Store<StoreSchemas>;
@@ -2295,7 +2295,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  setRow<TableId extends keyof Tables<StoreSchemas[0]>>(
+  setRow<TableId extends TableIdFromSchema<StoreSchemas[0]>>(
     tableId: TableId,
     rowId: Id,
     row: Row<StoreSchemas[0], TableId, true>,
@@ -2359,7 +2359,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  addRow<TableId extends keyof Tables<StoreSchemas[0]>>(
+  addRow<TableId extends TableIdFromSchema<StoreSchemas[0]>>(
     tableId: TableId,
     row: Row<StoreSchemas[0], TableId, true>,
   ): Id | undefined;
@@ -2422,7 +2422,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  setPartialRow<TableId extends keyof Tables<StoreSchemas[0]>>(
+  setPartialRow<TableId extends TableIdFromSchema<StoreSchemas[0]>>(
     tableId: TableId,
     rowId: Id,
     partialRow: Row<StoreSchemas[0], TableId, true>,
@@ -2494,8 +2494,8 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Setter
    */
   setCell<
-    TableId extends keyof Tables<StoreSchemas[0]>,
-    CellId extends keyof Table<StoreSchemas[0], TableId>[Id],
+    TableId extends TableIdFromSchema<StoreSchemas[0]>,
+    CellId extends CellIdFromSchema<StoreSchemas[0], TableId>,
   >(
     tableId: TableId,
     rowId: Id,
@@ -2655,7 +2655,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Setter
    * @since v3.0.0
    */
-  setValue<ValueId extends keyof Values<StoreSchemas[1]>>(
+  setValue<ValueId extends ValueIdFromSchema<StoreSchemas[1]>>(
     valueId: ValueId,
     value: Value | MapValue,
   ): Store<StoreSchemas>;
@@ -3001,7 +3001,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Deleter
    */
-  delTable<TableId extends keyof Tables<StoreSchemas[0]>>(
+  delTable<TableId extends TableIdFromSchema<StoreSchemas[0]>>(
     tableId: TableId,
   ): Store<StoreSchemas>;
 
@@ -3034,7 +3034,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Deleter
    */
-  delRow<TableId extends keyof Tables<StoreSchemas[0]>>(
+  delRow<TableId extends TableIdFromSchema<StoreSchemas[0]>>(
     tableId: TableId,
     rowId: Id,
   ): Store<StoreSchemas>;
@@ -3131,8 +3131,8 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Deleter
    */
   delCell<
-    TableId extends keyof Tables<StoreSchemas[0]>,
-    CellId extends keyof Table<StoreSchemas[0], TableId>[Id],
+    TableId extends TableIdFromSchema<StoreSchemas[0]>,
+    CellId extends CellIdFromSchema<StoreSchemas[0], TableId>,
   >(
     tableId: TableId,
     rowId: Id,
@@ -3217,7 +3217,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Deleter
    * @since v3.0.0
    */
-  delValue<ValueId extends keyof Values<StoreSchemas[1]>>(
+  delValue<ValueId extends ValueIdFromSchema<StoreSchemas[1]>>(
     valueId: ValueId,
   ): Store<StoreSchemas>;
 
@@ -5648,7 +5648,7 @@ export type TablesFromSchema<
   Schema extends OptionalTablesSchema,
   WhenSet extends boolean = false,
 > = {
-  -readonly [TableId in keyof Schema]?: {
+  -readonly [TableId in TableIdFromSchema<Schema>]?: {
     [rowId: Id]: (WhenSet extends true
       ? {
           -readonly [CellId in CellIdsFromSchema<
@@ -5672,6 +5672,18 @@ export type TablesFromSchema<
 };
 
 /**
+ * The TableIdFromSchema type is a utility for determining the Id of Tables from
+ * a provided TablesSchema.
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type TableIdFromSchema<Schema extends OptionalTablesSchema> =
+  keyof Schema;
+
+/**
  * The CellTypeFromSchema type is a utility for determining a Cell type from a
  * provided TablesSchema.
  *
@@ -5682,8 +5694,8 @@ export type TablesFromSchema<
  */
 export type CellTypeFromSchema<
   Schema extends OptionalTablesSchema,
-  TableId extends keyof Schema,
-  CellId extends keyof Schema[TableId],
+  TableId extends TableIdFromSchema<Schema>,
+  CellId extends CellIdFromSchema<Schema, TableId>,
   CellType = Schema[TableId][CellId]['type'],
 > = CellType extends 'string'
   ? string
@@ -5704,7 +5716,7 @@ export type CellTypeFromSchema<
  */
 export type CellIdsFromSchema<
   Schema extends OptionalTablesSchema,
-  TableId extends keyof Schema,
+  TableId extends TableIdFromSchema<Schema>,
   IsDefaulted extends boolean = true,
   TableSchema = Schema[TableId],
 > = {
@@ -5716,6 +5728,20 @@ export type CellIdsFromSchema<
     ? never
     : CellId;
 }[keyof TableSchema];
+
+/**
+ * The CellIdFromSchema type is a utility for determining the Id of Cells from a
+ * provided TablesSchema.
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type CellIdFromSchema<
+  Schema extends OptionalTablesSchema,
+  TableId extends TableIdFromSchema<Schema>,
+> = keyof Schema[TableId];
 
 /**
  * The ValuesFromSchema type is a utility for determining a Values structure
@@ -5749,6 +5775,18 @@ export type ValuesFromSchema<
 };
 
 /**
+ * The ValueIdFromSchema type is a utility for determining the Id of Values from
+ * a provided ValuesSchema.
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type ValueIdFromSchema<Schema extends OptionalValuesSchema> =
+  keyof Schema;
+
+/**
  * The ValueTypeFromSchema type is a utility for determining a Value type from a
  * provided ValuesSchema.
  *
@@ -5759,7 +5797,7 @@ export type ValuesFromSchema<
  */
 export type ValueTypeFromSchema<
   Schema extends OptionalValuesSchema,
-  ValueId extends keyof Schema,
+  ValueId extends ValueIdFromSchema<Schema>,
   ValueType = Schema[ValueId]['type'],
 > = ValueType extends 'string'
   ? string
@@ -5782,11 +5820,13 @@ export type ValueIdsFromSchema<
   Schema extends OptionalValuesSchema,
   IsDefaulted extends boolean = true,
 > = {
-  [ValueId in keyof Schema]: Schema[ValueId] extends {default: Value}
+  [ValueId in ValueIdFromSchema<Schema>]: Schema[ValueId] extends {
+    default: Value;
+  }
     ? IsDefaulted extends true
       ? ValueId
       : never
     : IsDefaulted extends true
     ? never
     : ValueId;
-}[keyof Schema];
+}[ValueIdFromSchema<Schema>];
