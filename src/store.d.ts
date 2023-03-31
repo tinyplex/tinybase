@@ -352,9 +352,12 @@ export type ValueOrUndefined = Value | undefined;
  * in this Table.
  * @category Callback
  */
-export type TableCallback = (
-  tableId: Id,
-  forEachRow: (rowCallback: RowCallback) => void,
+export type TableCallback<
+  Schema extends OptionalTablesSchema = NoTablesSchema,
+  TableId extends TableIdFromSchema<Schema> = Id,
+> = (
+  tableId: TableId,
+  forEachRow: (rowCallback: RowCallback<Schema, TableId>) => void,
 ) => void;
 
 /**
@@ -370,9 +373,12 @@ export type TableCallback = (
  * in this Row.
  * @category Callback
  */
-export type RowCallback = (
+export type RowCallback<
+  Schema extends OptionalTablesSchema = NoTablesSchema,
+  TableId extends TableIdFromSchema<Schema> = Id,
+> = (
   rowId: Id,
-  forEachCell: (cellCallback: CellCallback) => void,
+  forEachCell: (cellCallback: CellCallback<Schema, TableId>) => void,
 ) => void;
 
 /**
@@ -387,7 +393,11 @@ export type RowCallback = (
  * @param cell The value of the Cell.
  * @category Callback
  */
-export type CellCallback = (cellId: Id, cell: Cell) => void;
+export type CellCallback<
+  Schema extends OptionalTablesSchema = NoTablesSchema,
+  TableId extends TableIdFromSchema<Schema> = Id,
+  CellId extends CellIdFromSchema<Schema, TableId> = Id,
+> = (cellId: CellId, cell: Cell) => void;
 
 /**
  * The ValueCallback type describes a function that takes a Value's Id and its
@@ -402,7 +412,10 @@ export type CellCallback = (cellId: Id, cell: Cell) => void;
  * @category Callback
  * @since v3.0.0
  */
-export type ValueCallback = (valueId: Id, value: Value) => void;
+export type ValueCallback<
+  Schema extends OptionalValuesSchema = NoValuesSchema,
+  ValueId extends ValueIdFromSchema<Schema> = Id,
+> = (valueId: ValueId, value: Value) => void;
 
 /**
  * The MapCell type describes a function that takes an existing Cell value and
@@ -3615,7 +3628,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Iterator
    */
-  forEachTable(tableCallback: TableCallback): void;
+  forEachTable(tableCallback: TableCallback<StoreSchemas[0]>): void;
 
   /**
    * The forEachRow method takes a function that it will then call for each Row
@@ -3650,7 +3663,10 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Iterator
    */
-  forEachRow(tableId: Id, rowCallback: RowCallback): void;
+  forEachRow<TableId extends TableIdFromSchema<StoreSchemas[0]>>(
+    tableId: TableId,
+    rowCallback: RowCallback<StoreSchemas[0], TableId>,
+  ): void;
 
   /**
    * The forEachCell method takes a function that it will then call for each
@@ -3678,7 +3694,11 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Iterator
    */
-  forEachCell(tableId: Id, rowId: Id, cellCallback: CellCallback): void;
+  forEachCell<TableId extends TableIdFromSchema<StoreSchemas[0]>>(
+    tableId: TableId,
+    rowId: Id,
+    cellCallback: CellCallback<StoreSchemas[0], TableId>,
+  ): void;
 
   /**
    * The forEachValue method takes a function that it will then call for each
@@ -3703,7 +3723,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Iterator
    * @since v3.0.0
    */
-  forEachValue(valueCallback: ValueCallback): void;
+  forEachValue(valueCallback: ValueCallback<StoreSchemas[1]>): void;
 
   /**
    * The addTablesListener method registers a listener function with the Store
