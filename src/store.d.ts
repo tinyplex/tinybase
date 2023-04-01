@@ -509,10 +509,8 @@ export type DoRollback = (
  * transaction, since v3.0.0.
  * @category Listener
  */
-export type TransactionListener<
-  StoreSchemas extends OptionalSchemas = NoSchemas,
-> = (
-  store: Store<StoreSchemas>,
+export type TransactionListener<Schemas extends OptionalSchemas = NoSchemas> = (
+  store: Store<Schemas>,
   cellsTouched: boolean,
   valuesTouched: boolean,
 ) => void;
@@ -537,9 +535,9 @@ export type TransactionListener<
  * changes.
  * @category Listener
  */
-export type TablesListener<StoreSchemas extends OptionalSchemas = NoSchemas> = (
-  store: Store<StoreSchemas>,
-  getCellChange: GetCellChange<StoreSchemas[0]> | undefined,
+export type TablesListener<Schemas extends OptionalSchemas = NoSchemas> = (
+  store: Store<Schemas>,
+  getCellChange: GetCellChange<Schemas[0]> | undefined,
 ) => void;
 
 /**
@@ -554,8 +552,9 @@ export type TablesListener<StoreSchemas extends OptionalSchemas = NoSchemas> = (
  * @param store A reference to the Store that changed.
  * @category Listener
  */
-export type TableIdsListener<StoreSchemas extends OptionalSchemas = NoSchemas> =
-  (store: Store<StoreSchemas>) => void;
+export type TableIdsListener<Schemas extends OptionalSchemas = NoSchemas> = (
+  store: Store<Schemas>,
+) => void;
 
 /**
  * The TableListener type describes a function that is used to listen to changes
@@ -579,14 +578,14 @@ export type TableIdsListener<StoreSchemas extends OptionalSchemas = NoSchemas> =
  * @category Listener
  */
 export type TableListener<
-  StoreSchemas extends OptionalSchemas = NoSchemas,
-  TableIdOrNull extends TableIdFromSchema<StoreSchemas[0]> | null = null,
+  Schemas extends OptionalSchemas = NoSchemas,
+  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null = null,
 > = (
-  store: Store<StoreSchemas>,
+  store: Store<Schemas>,
   tableId: TableIdOrNull extends null
-    ? TableIdFromSchema<StoreSchemas[0]>
+    ? TableIdFromSchema<Schemas[0]>
     : TableIdOrNull,
-  getCellChange: GetCellChange<StoreSchemas[0]> | undefined,
+  getCellChange: GetCellChange<Schemas[0]> | undefined,
 ) => void;
 
 /**
@@ -604,12 +603,12 @@ export type TableListener<
  * @category Listener
  */
 export type RowIdsListener<
-  StoreSchemas extends OptionalSchemas = NoSchemas,
-  TableIdOrNull extends TableIdFromSchema<StoreSchemas[0]> | null = null,
+  Schemas extends OptionalSchemas = NoSchemas,
+  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null = null,
 > = (
-  store: Store<StoreSchemas>,
+  store: Store<Schemas>,
   tableId: TableIdOrNull extends null
-    ? TableIdFromSchema<StoreSchemas[0]>
+    ? TableIdFromSchema<Schemas[0]>
     : TableIdOrNull,
 ) => void;
 
@@ -638,16 +637,16 @@ export type RowIdsListener<
  * @since v2.0.0
  */
 export type SortedRowIdsListener<
-  StoreSchemas extends OptionalSchemas = NoSchemas,
-  TableId extends TableIdFromSchema<StoreSchemas[0]> = Id,
-  CellId extends CellIdFromSchema<StoreSchemas[0], TableId> | undefined =
+  Schemas extends OptionalSchemas = NoSchemas,
+  TableId extends TableIdFromSchema<Schemas[0]> = Id,
+  CellId extends CellIdFromSchema<Schemas[0], TableId> | undefined =
     | Id
     | undefined,
   Descending extends boolean = boolean,
   Offset extends number = number,
   Limit extends number | undefined = number | undefined,
 > = (
-  store: Store<StoreSchemas>,
+  store: Store<Schemas>,
   tableId: TableId,
   cellId: CellId | undefined,
   descending: Descending,
@@ -680,16 +679,16 @@ export type SortedRowIdsListener<
  * @category Listener
  */
 export type RowListener<
-  StoreSchemas extends OptionalSchemas = NoSchemas,
-  TableIdOrNull extends TableIdFromSchema<StoreSchemas[0]> | null = null,
+  Schemas extends OptionalSchemas = NoSchemas,
+  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null = null,
   RowIdOrNull extends IdOrNull = null,
 > = (
-  store: Store<StoreSchemas>,
+  store: Store<Schemas>,
   tableId: TableIdOrNull extends null
-    ? TableIdFromSchema<StoreSchemas[0]>
+    ? TableIdFromSchema<Schemas[0]>
     : TableIdOrNull,
   rowId: RowIdOrNull extends null ? Id : RowIdOrNull,
-  getCellChange: GetCellChange<StoreSchemas[0]> | undefined,
+  getCellChange: GetCellChange<Schemas[0]> | undefined,
 ) => void;
 
 /**
@@ -708,13 +707,13 @@ export type RowListener<
  * @category Listener
  */
 export type CellIdsListener<
-  StoreSchemas extends OptionalSchemas = NoSchemas,
-  TableIdOrNull extends TableIdFromSchema<StoreSchemas[0]> | null = null,
+  Schemas extends OptionalSchemas = NoSchemas,
+  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null = null,
   RowIdOrNull extends IdOrNull = null,
 > = (
-  store: Store<StoreSchemas>,
+  store: Store<Schemas>,
   tableId: TableIdOrNull extends null
-    ? TableIdFromSchema<StoreSchemas[0]>
+    ? TableIdFromSchema<Schemas[0]>
     : TableIdOrNull,
   rowId: RowIdOrNull extends null ? Id : RowIdOrNull,
 ) => void;
@@ -748,28 +747,25 @@ export type CellIdsListener<
  * @category Listener
  */
 export type CellListener<
-  StoreSchemas extends OptionalSchemas = NoSchemas,
-  TableIdOrNull extends TableIdFromSchema<StoreSchemas[0]> | null = null,
+  Schemas extends OptionalSchemas = NoSchemas,
+  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null = null,
   RowIdOrNull extends IdOrNull = null,
-  CellIdOrNull extends CellIdOrNullFromSchema<
-    StoreSchemas[0],
-    TableIdOrNull
-  > = null,
+  CellIdOrNull extends CellIdOrNullFromSchema<Schemas[0], TableIdOrNull> = null,
   TableId = TableIdOrNull extends null
-    ? TableIdFromSchema<StoreSchemas[0]>
+    ? TableIdFromSchema<Schemas[0]>
     : TableIdOrNull,
 > = (
-  store: Store<StoreSchemas>,
+  store: Store<Schemas>,
   tableId: TableId,
   rowId: RowIdOrNull extends null ? Id : RowIdOrNull,
   cellId: CellIdOrNull extends null
     ? TableId extends Id
-      ? CellIdFromSchema<StoreSchemas[0], TableId>
+      ? CellIdFromSchema<Schemas[0], TableId>
       : never
     : CellIdOrNull,
   newCell: Cell,
   oldCell: Cell,
-  getCellChange: GetCellChange<StoreSchemas[0]> | undefined,
+  getCellChange: GetCellChange<Schemas[0]> | undefined,
 ) => void;
 
 /**
@@ -792,9 +788,9 @@ export type CellListener<
  * changes.
  * @category Listener
  */
-export type ValuesListener<StoreSchemas extends OptionalSchemas = NoSchemas> = (
-  store: Store<StoreSchemas>,
-  getValueChange: GetValueChange<StoreSchemas[1]> | undefined,
+export type ValuesListener<Schemas extends OptionalSchemas = NoSchemas> = (
+  store: Store<Schemas>,
+  getValueChange: GetValueChange<Schemas[1]> | undefined,
 ) => void;
 
 /**
@@ -809,8 +805,9 @@ export type ValuesListener<StoreSchemas extends OptionalSchemas = NoSchemas> = (
  * @param store A reference to the Store that changed.
  * @category Listener
  */
-export type ValueIdsListener<StoreSchemas extends OptionalSchemas = NoSchemas> =
-  (store: Store<StoreSchemas>) => void;
+export type ValueIdsListener<Schemas extends OptionalSchemas = NoSchemas> = (
+  store: Store<Schemas>,
+) => void;
 
 /**
  * The ValueListener type describes a function that is used to listen to changes
@@ -839,17 +836,17 @@ export type ValueIdsListener<StoreSchemas extends OptionalSchemas = NoSchemas> =
  * @since v3.0.0
  */
 export type ValueListener<
-  StoreSchemas extends OptionalSchemas = NoSchemas,
-  ValueIdOrNull extends ValueIdFromSchema<StoreSchemas[1]> | null = null,
+  Schemas extends OptionalSchemas = NoSchemas,
+  ValueIdOrNull extends ValueIdFromSchema<Schemas[1]> | null = null,
   ValueId = ValueIdOrNull extends null
-    ? ValueIdFromSchema<StoreSchemas[1]>
+    ? ValueIdFromSchema<Schemas[1]>
     : ValueIdOrNull,
 > = (
-  store: Store<StoreSchemas>,
+  store: Store<Schemas>,
   valueId: ValueId,
   newValue: Value,
   oldValue: Value,
-  getValueChange: GetValueChange<StoreSchemas[1]> | undefined,
+  getValueChange: GetValueChange<Schemas[1]> | undefined,
 ) => void;
 
 /**
@@ -874,10 +871,8 @@ export type ValueListener<
  * @category Listener
  * @since v1.1.0
  */
-export type InvalidCellListener<
-  StoreSchemas extends OptionalSchemas = NoSchemas,
-> = (
-  store: Store<StoreSchemas>,
+export type InvalidCellListener<Schemas extends OptionalSchemas = NoSchemas> = (
+  store: Store<Schemas>,
   tableId: Id,
   rowId: Id,
   cellId: Id,
@@ -904,9 +899,8 @@ export type InvalidCellListener<
  * @category Listener
  * @since v3.0.0
  */
-export type InvalidValueListener<
-  StoreSchemas extends OptionalSchemas = NoSchemas,
-> = (store: Store<StoreSchemas>, valueId: Id, invalidValues: any[]) => void;
+export type InvalidValueListener<Schemas extends OptionalSchemas = NoSchemas> =
+  (store: Store<Schemas>, valueId: Id, invalidValues: any[]) => void;
 
 /**
  * The GetCellChange type describes a function that returns information about
@@ -1351,7 +1345,7 @@ export type StoreListenerStats = {
  * @see Todo App demos
  * @category Store
  */
-export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
+export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   /**
    * The getTables method returns a Tables object containing the entire data of
    * the Store.
@@ -1391,7 +1385,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @see Indexes
    * @category Getter
    */
-  getTables(): Tables<StoreSchemas[0]>;
+  getTables(): Tables<Schemas[0]>;
 
   /**
    * The getTableIds method returns the Ids of every Table in the Store.
@@ -1426,7 +1420,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getTableIds(): TableIdFromSchema<StoreSchemas[0]>[];
+  getTableIds(): TableIdFromSchema<Schemas[0]>[];
 
   /**
    * The getTable method returns an object containing the entire data of a
@@ -1464,9 +1458,9 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getTable<TableId extends TableIdFromSchema<StoreSchemas[0]>>(
+  getTable<TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
-  ): Table<StoreSchemas[0], TableId>;
+  ): Table<Schemas[0], TableId>;
 
   /**
    * The getRowIds method returns the Ids of every Row in a given Table.
@@ -1504,7 +1498,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getRowIds<TableId extends TableIdFromSchema<StoreSchemas[0]>>(
+  getRowIds<TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
   ): Ids;
 
@@ -1618,8 +1612,8 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @since v2.0.0
    */
   getSortedRowIds<
-    TableId extends TableIdFromSchema<StoreSchemas[0]>,
-    CellId extends CellIdFromSchema<StoreSchemas[0], TableId>,
+    TableId extends TableIdFromSchema<Schemas[0]>,
+    CellId extends CellIdFromSchema<Schemas[0], TableId>,
   >(
     tableId: TableId,
     cellId?: CellId,
@@ -1670,10 +1664,10 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getRow<TableId extends TableIdFromSchema<StoreSchemas[0]>>(
+  getRow<TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
     rowId: Id,
-  ): Row<StoreSchemas[0], TableId>;
+  ): Row<Schemas[0], TableId>;
 
   /**
    * The getCellIds method returns the Ids of every Cell in a given Row, in a
@@ -1716,8 +1710,8 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Getter
    */
   getCellIds<
-    TableId extends TableIdFromSchema<StoreSchemas[0]>,
-    CellId extends CellIdFromSchema<StoreSchemas[0], TableId>,
+    TableId extends TableIdFromSchema<Schemas[0]>,
+    CellId extends CellIdFromSchema<Schemas[0], TableId>,
   >(
     tableId: TableId,
     rowId: Id,
@@ -1760,8 +1754,8 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Getter
    */
   getCell<
-    TableId extends TableIdFromSchema<StoreSchemas[0]>,
-    CellId extends CellIdFromSchema<StoreSchemas[0], TableId>,
+    TableId extends TableIdFromSchema<Schemas[0]>,
+    CellId extends CellIdFromSchema<Schemas[0], TableId>,
   >(
     tableId: TableId,
     rowId: Id,
@@ -1797,7 +1791,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Getter
    * @since v3.0.0
    */
-  getValues(): Values<StoreSchemas[1]>;
+  getValues(): Values<Schemas[1]>;
 
   /**
    * The getValueIds method returns the Ids of every Value in a Store.
@@ -1826,7 +1820,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Getter
    * @since v3.0.0
    */
-  getValueIds(): ValueIdFromSchema<StoreSchemas[1]>[];
+  getValueIds(): ValueIdFromSchema<Schemas[1]>[];
 
   /**
    * The getValue method returns a single keyed Value in the Store.
@@ -1852,7 +1846,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Getter
    * @since v3.0.0
    */
-  getValue<ValueId extends ValueIdFromSchema<StoreSchemas[1]>>(
+  getValue<ValueId extends ValueIdFromSchema<Schemas[1]>>(
     valueId: ValueId,
   ): ValueOrUndefined;
 
@@ -1898,7 +1892,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  hasTable<TableId extends TableIdFromSchema<StoreSchemas[0]>>(
+  hasTable<TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
   ): boolean;
 
@@ -1928,7 +1922,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  hasRow<TableId extends TableIdFromSchema<StoreSchemas[0]>>(
+  hasRow<TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
     rowId: Id,
   ): boolean;
@@ -1962,8 +1956,8 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Getter
    */
   hasCell<
-    TableId extends TableIdFromSchema<StoreSchemas[0]>,
-    CellId extends CellIdFromSchema<StoreSchemas[0], TableId>,
+    TableId extends TableIdFromSchema<Schemas[0]>,
+    CellId extends CellIdFromSchema<Schemas[0], TableId>,
   >(
     tableId: TableId,
     rowId: Id,
@@ -2010,7 +2004,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Getter
    * @since v3.0.0
    */
-  hasValue<ValueId extends ValueIdFromSchema<StoreSchemas[1]>>(
+  hasValue<ValueId extends ValueIdFromSchema<Schemas[1]>>(
     valueId: ValueId,
   ): boolean;
 
@@ -2255,7 +2249,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  setTables(tables: Tables<StoreSchemas[0], true>): Store<StoreSchemas>;
+  setTables(tables: Tables<Schemas[0], true>): Store<Schemas>;
 
   /**
    * The setTable method takes an object and sets the entire data of a single
@@ -2313,10 +2307,10 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  setTable<TableId extends TableIdFromSchema<StoreSchemas[0]>>(
+  setTable<TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
-    table: Table<StoreSchemas[0], TableId, true>,
-  ): Store<StoreSchemas>;
+    table: Table<Schemas[0], TableId, true>,
+  ): Store<Schemas>;
 
   /**
    * The setRow method takes an object and sets the entire data of a single Row
@@ -2374,11 +2368,11 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  setRow<TableId extends TableIdFromSchema<StoreSchemas[0]>>(
+  setRow<TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
     rowId: Id,
-    row: Row<StoreSchemas[0], TableId, true>,
-  ): Store<StoreSchemas>;
+    row: Row<Schemas[0], TableId, true>,
+  ): Store<Schemas>;
 
   /**
    * The addRow method takes an object and creates a new Row in the Store,
@@ -2438,9 +2432,9 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  addRow<TableId extends TableIdFromSchema<StoreSchemas[0]>>(
+  addRow<TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
-    row: Row<StoreSchemas[0], TableId, true>,
+    row: Row<Schemas[0], TableId, true>,
   ): Id | undefined;
 
   /**
@@ -2501,11 +2495,11 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  setPartialRow<TableId extends TableIdFromSchema<StoreSchemas[0]>>(
+  setPartialRow<TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
     rowId: Id,
-    partialRow: Row<StoreSchemas[0], TableId, true>,
-  ): Store<StoreSchemas>;
+    partialRow: Row<Schemas[0], TableId, true>,
+  ): Store<Schemas>;
 
   /**
    * The setCell method sets the value of a single Cell in the Store.
@@ -2573,14 +2567,14 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Setter
    */
   setCell<
-    TableId extends TableIdFromSchema<StoreSchemas[0]>,
-    CellId extends CellIdFromSchema<StoreSchemas[0], TableId>,
+    TableId extends TableIdFromSchema<Schemas[0]>,
+    CellId extends CellIdFromSchema<Schemas[0], TableId>,
   >(
     tableId: TableId,
     rowId: Id,
     cellId: CellId,
     cell: Cell | MapCell,
-  ): Store<StoreSchemas>;
+  ): Store<Schemas>;
 
   /**
    * The setValues method takes an object and sets all the Values in the Store.
@@ -2628,7 +2622,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Setter
    * @since v3.0.0
    */
-  setValues(values: Values<StoreSchemas[1], true>): Store<StoreSchemas>;
+  setValues(values: Values<Schemas[1], true>): Store<Schemas>;
 
   /**
    * The setPartialValues method takes an object and sets its Values in the
@@ -2678,9 +2672,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Setter
    * @since v3.0.0
    */
-  setPartialValues(
-    partialValues: Values<StoreSchemas[1], true>,
-  ): Store<StoreSchemas>;
+  setPartialValues(partialValues: Values<Schemas[1], true>): Store<Schemas>;
 
   /**
    * The setValue method sets a single keyed Value in the Store.
@@ -2734,10 +2726,10 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Setter
    * @since v3.0.0
    */
-  setValue<ValueId extends ValueIdFromSchema<StoreSchemas[1]>>(
+  setValue<ValueId extends ValueIdFromSchema<Schemas[1]>>(
     valueId: ValueId,
     value: Value | MapValue,
-  ): Store<StoreSchemas>;
+  ): Store<Schemas>;
 
   /**
    * The setTablesJson method takes a string serialization of all of the Tables
@@ -2776,7 +2768,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Setter
    * @since v3.0.0
    */
-  setTablesJson(tablesJson: Json): Store<StoreSchemas>;
+  setTablesJson(tablesJson: Json): Store<Schemas>;
 
   /**
    * The setValuesJson method takes a string serialization of all of the Values
@@ -2815,7 +2807,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Setter
    * @since v3.0.0
    */
-  setValuesJson(valuesJson: Json): Store<StoreSchemas>;
+  setValuesJson(valuesJson: Json): Store<Schemas>;
 
   /**
    * The setJson method takes a string serialization of all of the Tables and
@@ -2878,7 +2870,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  setJson(tablesAndValuesJson: Json): Store<StoreSchemas>;
+  setJson(tablesAndValuesJson: Json): Store<Schemas>;
 
   /**
    * The setTablesSchema method lets you specify the TablesSchema of the tabular
@@ -2917,7 +2909,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    */
   setTablesSchema<NewTablesSchema extends TablesSchema>(
     tablesSchema: NewTablesSchema,
-  ): Store<[typeof tablesSchema, StoreSchemas[1]]>;
+  ): Store<[typeof tablesSchema, Schemas[1]]>;
 
   /**
    * The setValuesSchema method lets you specify the ValuesSchema of the keyed
@@ -2953,7 +2945,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    */
   setValuesSchema<NewValuesSchema extends ValuesSchema>(
     valuesSchema: NewValuesSchema,
-  ): Store<[StoreSchemas[0], typeof valuesSchema]>;
+  ): Store<[Schemas[0], typeof valuesSchema]>;
 
   /**
    * The setSchema method lets you specify the TablesSchema and ValuesSchema of
@@ -3054,7 +3046,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Deleter
    */
-  delTables(): Store<StoreSchemas>;
+  delTables(): Store<Schemas>;
 
   /**
    * The delTable method lets you remove a single Table from the Store.
@@ -3080,9 +3072,9 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Deleter
    */
-  delTable<TableId extends TableIdFromSchema<StoreSchemas[0]>>(
+  delTable<TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
-  ): Store<StoreSchemas>;
+  ): Store<Schemas>;
 
   /**
    * The delRow method lets you remove a single Row from a Table.
@@ -3113,10 +3105,10 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Deleter
    */
-  delRow<TableId extends TableIdFromSchema<StoreSchemas[0]>>(
+  delRow<TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
     rowId: Id,
-  ): Store<StoreSchemas>;
+  ): Store<Schemas>;
 
   /**
    * The delCell method lets you remove a single Cell from a Row.
@@ -3210,14 +3202,14 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Deleter
    */
   delCell<
-    TableId extends TableIdFromSchema<StoreSchemas[0]>,
-    CellId extends CellIdFromSchema<StoreSchemas[0], TableId>,
+    TableId extends TableIdFromSchema<Schemas[0]>,
+    CellId extends CellIdFromSchema<Schemas[0], TableId>,
   >(
     tableId: TableId,
     rowId: Id,
     cellId: CellId,
     forceDel?: boolean,
-  ): Store<StoreSchemas>;
+  ): Store<Schemas>;
 
   /**
    * The delValues method lets you remove all the Values from a Store.
@@ -3256,7 +3248,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Deleter
    * @since v3.0.0
    */
-  delValues(): Store<StoreSchemas>;
+  delValues(): Store<Schemas>;
 
   /**
    * The delValue method lets you remove a single Value from a Store.
@@ -3296,9 +3288,9 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Deleter
    * @since v3.0.0
    */
-  delValue<ValueId extends ValueIdFromSchema<StoreSchemas[1]>>(
+  delValue<ValueId extends ValueIdFromSchema<Schemas[1]>>(
     valueId: ValueId,
-  ): Store<StoreSchemas>;
+  ): Store<Schemas>;
 
   /**
    * The delTablesSchema method lets you remove the TablesSchema of the Store.
@@ -3321,7 +3313,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Deleter
    */
-  delTablesSchema(): Store<[NoTablesSchema, StoreSchemas[1]]>;
+  delTablesSchema(): Store<[NoTablesSchema, Schemas[1]]>;
 
   /**
    * The delValuesSchema method lets you remove the ValuesSchema of the Store.
@@ -3345,7 +3337,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Deleter
    * @since v3.0.0
    */
-  delValuesSchema(): Store<[StoreSchemas[0], NoValuesSchema]>;
+  delValuesSchema(): Store<[Schemas[0], NoValuesSchema]>;
 
   /**
    * The delSchema method lets you remove both the TablesSchema and ValuesSchema
@@ -3559,7 +3551,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Transaction
    * @since v1.3.0
    */
-  startTransaction(): Store<StoreSchemas>;
+  startTransaction(): Store<Schemas>;
 
   /**
    * The finishTransaction method allows you to explicitly finish a transaction
@@ -3661,7 +3653,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Transaction
    * @since v1.3.0
    */
-  finishTransaction(doRollback?: DoRollback): Store<StoreSchemas>;
+  finishTransaction(doRollback?: DoRollback): Store<Schemas>;
 
   /**
    * The forEachTable method takes a function that it will then call for each
@@ -3694,7 +3686,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Iterator
    */
-  forEachTable(tableCallback: TableCallback<StoreSchemas[0]>): void;
+  forEachTable(tableCallback: TableCallback<Schemas[0]>): void;
 
   /**
    * The forEachRow method takes a function that it will then call for each Row
@@ -3729,9 +3721,9 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Iterator
    */
-  forEachRow<TableId extends TableIdFromSchema<StoreSchemas[0]>>(
+  forEachRow<TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
-    rowCallback: RowCallback<StoreSchemas[0], TableId>,
+    rowCallback: RowCallback<Schemas[0], TableId>,
   ): void;
 
   /**
@@ -3760,10 +3752,10 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Iterator
    */
-  forEachCell<TableId extends TableIdFromSchema<StoreSchemas[0]>>(
+  forEachCell<TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
     rowId: Id,
-    cellCallback: CellCallback<StoreSchemas[0], TableId>,
+    cellCallback: CellCallback<Schemas[0], TableId>,
   ): void;
 
   /**
@@ -3789,7 +3781,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Iterator
    * @since v3.0.0
    */
-  forEachValue(valueCallback: ValueCallback<StoreSchemas[1]>): void;
+  forEachValue(valueCallback: ValueCallback<Schemas[1]>): void;
 
   /**
    * The addTablesListener method registers a listener function with the Store
@@ -3853,10 +3845,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Listener
    */
-  addTablesListener(
-    listener: TablesListener<StoreSchemas>,
-    mutator?: boolean,
-  ): Id;
+  addTablesListener(listener: TablesListener<Schemas>, mutator?: boolean): Id;
 
   /**
    * The addTableIdsListener method registers a listener function with the Store
@@ -3920,7 +3909,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Listener
    */
   addTableIdsListener(
-    listener: TableIdsListener<StoreSchemas>,
+    listener: TableIdsListener<Schemas>,
     mutator?: boolean,
   ): Id;
 
@@ -4015,11 +4004,9 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Listener
    */
-  addTableListener<
-    TableIdOrNull extends TableIdFromSchema<StoreSchemas[0]> | null,
-  >(
+  addTableListener<TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null>(
     tableId: TableIdOrNull,
-    listener: TableListener<StoreSchemas, TableIdOrNull>,
+    listener: TableListener<Schemas, TableIdOrNull>,
     mutator?: boolean,
   ): Id;
 
@@ -4109,11 +4096,9 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Listener
    */
-  addRowIdsListener<
-    TableIdOrNull extends TableIdFromSchema<StoreSchemas[0]> | null,
-  >(
+  addRowIdsListener<TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null>(
     tableId: TableIdOrNull,
-    listener: RowIdsListener<StoreSchemas, TableIdOrNull>,
+    listener: RowIdsListener<Schemas, TableIdOrNull>,
     mutator?: boolean,
   ): Id;
 
@@ -4334,8 +4319,8 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @since v2.0.0
    */
   addSortedRowIdsListener<
-    TableId extends TableIdFromSchema<StoreSchemas[0]>,
-    CellId extends CellIdFromSchema<StoreSchemas[0], TableId> | undefined,
+    TableId extends TableIdFromSchema<Schemas[0]>,
+    CellId extends CellIdFromSchema<Schemas[0], TableId> | undefined,
     Descending extends boolean,
     Offset extends number,
     Limit extends number | undefined,
@@ -4346,7 +4331,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
     offset: Offset,
     limit: Limit,
     listener: SortedRowIdsListener<
-      StoreSchemas,
+      Schemas,
       TableId,
       CellId,
       Descending,
@@ -4460,12 +4445,12 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Listener
    */
   addRowListener<
-    TableIdOrNull extends TableIdFromSchema<StoreSchemas[0]> | null,
+    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
     RowIdOrNull extends IdOrNull,
   >(
     tableId: TableIdOrNull,
     rowId: RowIdOrNull,
-    listener: RowListener<StoreSchemas, TableIdOrNull, RowIdOrNull>,
+    listener: RowListener<Schemas, TableIdOrNull, RowIdOrNull>,
     mutator?: boolean,
   ): Id;
 
@@ -4569,12 +4554,12 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Listener
    */
   addCellIdsListener<
-    TableIdOrNull extends TableIdFromSchema<StoreSchemas[0]> | null,
+    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
     RowIdOrNull extends IdOrNull,
   >(
     tableId: TableIdOrNull,
     rowId: RowIdOrNull,
-    listener: CellIdsListener<StoreSchemas, TableIdOrNull, RowIdOrNull>,
+    listener: CellIdsListener<Schemas, TableIdOrNull, RowIdOrNull>,
     mutator?: boolean,
   ): Id;
 
@@ -4691,19 +4676,14 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Listener
    */
   addCellListener<
-    TableIdOrNull extends TableIdFromSchema<StoreSchemas[0]> | null,
+    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
     RowIdOrNull extends IdOrNull,
-    CellIdOrNull extends CellIdOrNullFromSchema<StoreSchemas[0], TableIdOrNull>,
+    CellIdOrNull extends CellIdOrNullFromSchema<Schemas[0], TableIdOrNull>,
   >(
     tableId: TableIdOrNull,
     rowId: RowIdOrNull,
     cellId: CellIdOrNull,
-    listener: CellListener<
-      StoreSchemas,
-      TableIdOrNull,
-      RowIdOrNull,
-      CellIdOrNull
-    >,
+    listener: CellListener<Schemas, TableIdOrNull, RowIdOrNull, CellIdOrNull>,
     mutator?: boolean,
   ): Id;
 
@@ -4766,10 +4746,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Listener
    * @since v3.0.0
    */
-  addValuesListener(
-    listener: ValuesListener<StoreSchemas>,
-    mutator?: boolean,
-  ): Id;
+  addValuesListener(listener: ValuesListener<Schemas>, mutator?: boolean): Id;
 
   /**
    * The addValueIdsListener method registers a listener function with the Store
@@ -4834,7 +4811,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @since v3.0.0
    */
   addValueIdsListener(
-    listener: ValueIdsListener<StoreSchemas>,
+    listener: ValueIdsListener<Schemas>,
     mutator?: boolean,
   ): Id;
 
@@ -4925,11 +4902,9 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Listener
    * @since v3.0.0
    */
-  addValueListener<
-    ValueIdOrNull extends ValueIdFromSchema<StoreSchemas[1]> | null,
-  >(
+  addValueListener<ValueIdOrNull extends ValueIdFromSchema<Schemas[1]> | null>(
     valueId: ValueIdOrNull,
-    listener: ValueListener<StoreSchemas, ValueIdOrNull>,
+    listener: ValueListener<Schemas, ValueIdOrNull>,
     mutator?: boolean,
   ): Id;
 
@@ -5160,7 +5135,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
     tableId: IdOrNull,
     rowId: IdOrNull,
     cellId: IdOrNull,
-    listener: InvalidCellListener<StoreSchemas>,
+    listener: InvalidCellListener<Schemas>,
     mutator?: boolean,
   ): Id;
 
@@ -5336,7 +5311,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    */
   addInvalidValueListener(
     valueId: IdOrNull,
-    listener: InvalidValueListener<StoreSchemas>,
+    listener: InvalidValueListener<Schemas>,
     mutator?: boolean,
   ): Id;
 
@@ -5430,9 +5405,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Listener
    * @since v1.3.0
    */
-  addWillFinishTransactionListener(
-    listener: TransactionListener<StoreSchemas>,
-  ): Id;
+  addWillFinishTransactionListener(listener: TransactionListener<Schemas>): Id;
 
   /**
    * The addDidFinishTransactionListener method registers a listener function
@@ -5525,9 +5498,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Listener
    * @since v1.3.0
    */
-  addDidFinishTransactionListener(
-    listener: TransactionListener<StoreSchemas>,
-  ): Id;
+  addDidFinishTransactionListener(listener: TransactionListener<Schemas>): Id;
 
   /**
    * The callListener method provides a way for you to manually provoke a
@@ -5644,7 +5615,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Listener
    */
-  callListener(listenerId: Id): Store<StoreSchemas>;
+  callListener(listenerId: Id): Store<Schemas>;
 
   /**
    * The delListener method removes a listener that was previously added to the
@@ -5677,7 +5648,7 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Listener
    */
-  delListener(listenerId: Id): Store<StoreSchemas>;
+  delListener(listenerId: Id): Store<Schemas>;
 
   /**
    * The getListenerStats method provides a set of statistics about the

@@ -145,7 +145,7 @@ export type PersisterStats = {
  * ```
  * @category Persister
  */
-export interface Persister<StoreSchemas extends OptionalSchemas = NoSchemas> {
+export interface Persister<Schemas extends OptionalSchemas = NoSchemas> {
   /**
    * The load method gets persisted data from storage, and loads it into the
    * Store with which the Persister is associated, once.
@@ -207,9 +207,9 @@ export interface Persister<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Load
    */
   load(
-    initialTables?: Tables<StoreSchemas[0], true>,
+    initialTables?: Tables<Schemas[0], true>,
     initialValues?: Values,
-  ): Promise<Persister<StoreSchemas>>;
+  ): Promise<Persister<Schemas>>;
 
   /**
    * The startAutoLoad method gets persisted data from storage, and loads it
@@ -266,9 +266,9 @@ export interface Persister<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Load
    */
   startAutoLoad(
-    initialTables?: Tables<StoreSchemas[0], true>,
+    initialTables?: Tables<Schemas[0], true>,
     initialValues?: Values,
-  ): Promise<Persister<StoreSchemas>>;
+  ): Promise<Persister<Schemas>>;
 
   /**
    * The stopAutoLoad method stops the automatic loading of data from storage
@@ -313,7 +313,7 @@ export interface Persister<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Load
    */
-  stopAutoLoad(): Persister<StoreSchemas>;
+  stopAutoLoad(): Persister<Schemas>;
 
   /**
    * The save method takes data from the Store with which the Persister is
@@ -342,7 +342,7 @@ export interface Persister<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Save
    */
-  save(): Promise<Persister<StoreSchemas>>;
+  save(): Promise<Persister<Schemas>>;
 
   /**
    * The startAutoSave method takes data from the Store with which the Persister
@@ -380,7 +380,7 @@ export interface Persister<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Save
    */
-  startAutoSave(): Promise<Persister<StoreSchemas>>;
+  startAutoSave(): Promise<Persister<Schemas>>;
 
   /**
    * The stopAutoSave method stops the automatic save of data to storage
@@ -418,7 +418,7 @@ export interface Persister<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Save
    */
-  stopAutoSave(): Persister<StoreSchemas>;
+  stopAutoSave(): Persister<Schemas>;
 
   /**
    * The getStore method returns a reference to the underlying Store that is
@@ -442,7 +442,7 @@ export interface Persister<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getStore(): Store<StoreSchemas>;
+  getStore(): Store<Schemas>;
 
   /**
    * The destroy method should be called when this Persister object is no longer
@@ -473,7 +473,7 @@ export interface Persister<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Lifecycle
    */
-  destroy(): Persister<StoreSchemas>;
+  destroy(): Persister<Schemas>;
 
   /**
    * The getStats method provides a set of statistics about the Persister, and
@@ -724,10 +724,10 @@ export function createFilePersister<Schemas extends OptionalSchemas>(
  * ```
  * @category Creation
  */
-export function createCustomPersister<StoreSchemas extends OptionalSchemas>(
-  store: Store<StoreSchemas>,
+export function createCustomPersister<Schemas extends OptionalSchemas>(
+  store: Store<Schemas>,
   getPersisted: () => Promise<string | null | undefined>,
   setPersisted: (json: string) => Promise<void>,
   startListeningToPersisted: (didChange: Callback) => void,
   stopListeningToPersisted: Callback,
-): Persister<StoreSchemas>;
+): Persister<Schemas>;
