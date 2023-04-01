@@ -682,12 +682,13 @@ export type SortedRowIdsListener<
 export type RowListener<
   StoreSchemas extends OptionalSchemas = NoSchemas,
   TableIdOrNull extends TableIdFromSchema<StoreSchemas[0]> | null = null,
+  RowIdOrNull extends IdOrNull = null,
 > = (
   store: Store<StoreSchemas>,
   tableId: TableIdOrNull extends null
     ? TableIdFromSchema<StoreSchemas[0]>
     : TableIdOrNull,
-  rowId: Id,
+  rowId: RowIdOrNull extends null ? Id : RowIdOrNull,
   getCellChange: GetCellChange | undefined,
 ) => void;
 
@@ -709,12 +710,13 @@ export type RowListener<
 export type CellIdsListener<
   StoreSchemas extends OptionalSchemas = NoSchemas,
   TableIdOrNull extends TableIdFromSchema<StoreSchemas[0]> | null = null,
+  RowIdOrNull extends IdOrNull = null,
 > = (
   store: Store<StoreSchemas>,
   tableId: TableIdOrNull extends null
     ? TableIdFromSchema<StoreSchemas[0]>
     : TableIdOrNull,
-  rowId: Id,
+  rowId: RowIdOrNull extends null ? Id : RowIdOrNull,
 ) => void;
 
 /**
@@ -748,6 +750,7 @@ export type CellIdsListener<
 export type CellListener<
   StoreSchemas extends OptionalSchemas = NoSchemas,
   TableIdOrNull extends TableIdFromSchema<StoreSchemas[0]> | null = null,
+  RowIdOrNull extends IdOrNull = null,
   CellIdOrNull extends CellIdOrNullFromSchema<
     StoreSchemas[0],
     TableIdOrNull
@@ -758,7 +761,7 @@ export type CellListener<
 > = (
   store: Store<StoreSchemas>,
   tableId: TableId,
-  rowId: Id,
+  rowId: RowIdOrNull extends null ? Id : RowIdOrNull,
   cellId: CellIdOrNull extends null
     ? TableId extends Id
       ? CellIdFromSchema<StoreSchemas[0], TableId>
@@ -4445,10 +4448,11 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    */
   addRowListener<
     TableIdOrNull extends TableIdFromSchema<StoreSchemas[0]> | null,
+    RowIdOrNull extends IdOrNull,
   >(
     tableId: TableIdOrNull,
-    rowId: IdOrNull,
-    listener: RowListener<StoreSchemas, TableIdOrNull>,
+    rowId: RowIdOrNull,
+    listener: RowListener<StoreSchemas, TableIdOrNull, RowIdOrNull>,
     mutator?: boolean,
   ): Id;
 
@@ -4553,10 +4557,11 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    */
   addCellIdsListener<
     TableIdOrNull extends TableIdFromSchema<StoreSchemas[0]> | null,
+    RowIdOrNull extends IdOrNull,
   >(
     tableId: TableIdOrNull,
-    rowId: IdOrNull,
-    listener: CellIdsListener<StoreSchemas, TableIdOrNull>,
+    rowId: RowIdOrNull,
+    listener: CellIdsListener<StoreSchemas, TableIdOrNull, RowIdOrNull>,
     mutator?: boolean,
   ): Id;
 
@@ -4674,12 +4679,18 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    */
   addCellListener<
     TableIdOrNull extends TableIdFromSchema<StoreSchemas[0]> | null,
+    RowIdOrNull extends IdOrNull,
     CellIdOrNull extends CellIdOrNullFromSchema<StoreSchemas[0], TableIdOrNull>,
   >(
     tableId: TableIdOrNull,
-    rowId: IdOrNull,
+    rowId: RowIdOrNull,
     cellId: CellIdOrNull,
-    listener: CellListener<StoreSchemas, TableIdOrNull, CellIdOrNull>,
+    listener: CellListener<
+      StoreSchemas,
+      TableIdOrNull,
+      RowIdOrNull,
+      CellIdOrNull
+    >,
     mutator?: boolean,
   ): Id;
 
