@@ -539,7 +539,7 @@ export type TransactionListener<
  */
 export type TablesListener<StoreSchemas extends OptionalSchemas = NoSchemas> = (
   store: Store<StoreSchemas>,
-  getCellChange: GetCellChange | undefined,
+  getCellChange: GetCellChange<StoreSchemas[0]> | undefined,
 ) => void;
 
 /**
@@ -586,7 +586,7 @@ export type TableListener<
   tableId: TableIdOrNull extends null
     ? TableIdFromSchema<StoreSchemas[0]>
     : TableIdOrNull,
-  getCellChange: GetCellChange | undefined,
+  getCellChange: GetCellChange<StoreSchemas[0]> | undefined,
 ) => void;
 
 /**
@@ -689,7 +689,7 @@ export type RowListener<
     ? TableIdFromSchema<StoreSchemas[0]>
     : TableIdOrNull,
   rowId: RowIdOrNull extends null ? Id : RowIdOrNull,
-  getCellChange: GetCellChange | undefined,
+  getCellChange: GetCellChange<StoreSchemas[0]> | undefined,
 ) => void;
 
 /**
@@ -769,7 +769,7 @@ export type CellListener<
     : CellIdOrNull,
   newCell: Cell,
   oldCell: Cell,
-  getCellChange: GetCellChange | undefined,
+  getCellChange: GetCellChange<StoreSchemas[0]> | undefined,
 ) => void;
 
 /**
@@ -794,7 +794,7 @@ export type CellListener<
  */
 export type ValuesListener<StoreSchemas extends OptionalSchemas = NoSchemas> = (
   store: Store<StoreSchemas>,
-  getValueChange: GetValueChange | undefined,
+  getValueChange: GetValueChange<StoreSchemas[1]> | undefined,
 ) => void;
 
 /**
@@ -849,7 +849,7 @@ export type ValueListener<
   valueId: ValueId,
   newValue: Value,
   oldValue: Value,
-  getValueChange: GetValueChange | undefined,
+  getValueChange: GetValueChange<StoreSchemas[1]> | undefined,
 ) => void;
 
 /**
@@ -923,7 +923,16 @@ export type InvalidValueListener<
  * @returns A CellChange array containing information about the Cell's changes.
  * @category Listener
  */
-export type GetCellChange = (tableId: Id, rowId: Id, cellId: Id) => CellChange;
+export type GetCellChange<
+  Schema extends OptionalTablesSchema = NoTablesSchema,
+> = <
+  TableId extends TableIdFromSchema<Schema>,
+  CellId extends CellIdFromSchema<Schema, TableId>,
+>(
+  tableId: TableId,
+  rowId: Id,
+  cellId: CellId,
+) => CellChange;
 
 /**
  * The CellChange type describes a Cell's changes during a transaction.
@@ -955,7 +964,11 @@ export type CellChange = [
  * changes.
  * @category Listener
  */
-export type GetValueChange = (valueId: Id) => ValueChange;
+export type GetValueChange<
+  Schema extends OptionalValuesSchema = NoValuesSchema,
+> = <ValueId extends ValueIdFromSchema<Schema>>(
+  valueId: ValueId,
+) => ValueChange;
 
 /**
  * The ValueChange type describes a Value's changes during a transaction.
