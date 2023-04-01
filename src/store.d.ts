@@ -476,10 +476,10 @@ export type GetCell = (cellId: Id) => CellOrUndefined;
  * @param invalidValues Any invalid attempts to change Values, since v3.0.0.
  * @category Callback
  */
-export type DoRollback = (
-  changedCells: ChangedCells,
+export type DoRollback<Schemas extends OptionalSchemas = NoSchemas> = (
+  changedCells: ChangedCells<Schemas[0]>,
   invalidCells: InvalidCells,
-  changedValues: ChangedValues,
+  changedValues: ChangedValues<Schemas[1]>,
   invalidValues: InvalidValues,
 ) => boolean;
 
@@ -1005,13 +1005,17 @@ export type ValueChange = [
  * @category Transaction
  * @since v1.2.0
  */
-export type ChangedCells = {
-  [tableId: Id]: {
-    [rowId: Id]: {
-      [cellId: Id]: [CellOrUndefined, CellOrUndefined];
+export type ChangedCells<Schema extends OptionalTablesSchema = NoTablesSchema> =
+  {
+    [TableId in TableIdFromSchema<Schema>]?: {
+      [rowId: Id]: {
+        [CellId in CellIdFromSchema<Schema, TableId>]?: [
+          CellOrUndefined,
+          CellOrUndefined,
+        ];
+      };
     };
   };
-};
 
 /**
  * The InvalidCells type describes the invalid Cell values that have been
@@ -1062,8 +1066,10 @@ export type InvalidCells = {
  * @category Transaction
  * @since v3.0.0
  */
-export type ChangedValues = {
-  [valueId: Id]: [ValueOrUndefined, ValueOrUndefined];
+export type ChangedValues<
+  Schema extends OptionalValuesSchema = NoValuesSchema,
+> = {
+  [ValueId in ValueIdFromSchema<Schema>]?: [ValueOrUndefined, ValueOrUndefined];
 };
 /**
  * The InvalidValues type describes the invalid Values that have been attempted
@@ -3496,7 +3502,10 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Transaction
    */
-  transaction<Return>(actions: () => Return, doRollback?: DoRollback): Return;
+  transaction<Return>(
+    actions: () => Return,
+    doRollback?: DoRollback<Schemas>,
+  ): Return;
 
   /**
    * The startTransaction method allows you to explicitly start a transaction
@@ -3653,7 +3662,7 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Transaction
    * @since v1.3.0
    */
-  finishTransaction(doRollback?: DoRollback): Store<Schemas>;
+  finishTransaction(doRollback?: DoRollback<Schemas>): Store<Schemas>;
 
   /**
    * The forEachTable method takes a function that it will then call for each
