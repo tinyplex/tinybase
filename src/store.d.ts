@@ -5787,8 +5787,10 @@ export type TablesFromSchema<
  *
  * @category Internal
  */
-export type TableIdFromSchema<Schema extends OptionalTablesSchema> =
-  keyof Schema;
+export type TableIdFromSchema<Schema extends OptionalTablesSchema> = Exclude<
+  keyof Schema & Id,
+  number
+>;
 
 /**
  * The CellTypeFromSchema type is a utility for determining a Cell type from a
@@ -5834,7 +5836,8 @@ export type CellIdsFromSchema<
     : IsDefaulted extends true
     ? never
     : CellId;
-}[keyof TableSchema];
+}[keyof TableSchema] &
+  Id;
 
 /**
  * The CellIdFromSchema type is a utility for determining the Id of Cells from a
@@ -5848,7 +5851,7 @@ export type CellIdsFromSchema<
 export type CellIdFromSchema<
   Schema extends OptionalTablesSchema,
   TableId extends TableIdFromSchema<Schema>,
-> = keyof Schema[TableId];
+> = Exclude<keyof Schema[TableId] & Id, number>;
 
 /**
  * The CellIdOrNullFromSchema type is a utility for determining the Id of Cells
@@ -5870,7 +5873,7 @@ type CellIdOrNullFromSchema<
       ? EveryTableId extends Id
         ? CellIdFromSchema<Schema, EveryTableId>
         : never
-      : CellIdFromSchema<Schema, NonNullable<TableIdOrNull>>)
+      : CellIdFromSchema<Schema, TableIdOrNull & Id>)
   | null;
 
 /**
@@ -5958,5 +5961,7 @@ export type ValueIdsFromSchema<
  *
  * @category Internal
  */
-export type ValueIdFromSchema<Schema extends OptionalValuesSchema> =
-  keyof Schema;
+export type ValueIdFromSchema<Schema extends OptionalValuesSchema> = Exclude<
+  keyof Schema & Id,
+  number
+>;
