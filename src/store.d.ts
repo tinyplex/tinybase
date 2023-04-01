@@ -5905,18 +5905,6 @@ export type ValuesFromSchema<
 };
 
 /**
- * The ValueIdFromSchema type is a utility for determining the Id of Values from
- * a provided ValuesSchema.
- *
- * This type is used internally to the TinyBase type system and you are not
- * expected to need to use it directly.
- *
- * @category Internal
- */
-export type ValueIdFromSchema<Schema extends OptionalValuesSchema> =
-  keyof Schema;
-
-/**
  * The ValueTypeFromSchema type is a utility for determining a Value type from a
  * provided ValuesSchema.
  *
@@ -5960,3 +5948,15 @@ export type ValueIdsFromSchema<
     ? never
     : ValueId;
 }[ValueIdFromSchema<Schema>];
+
+/**
+ * The ValueIdFromSchema type is a utility for determining the Id of Values from
+ * a provided ValuesSchema.
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type ValueIdFromSchema<Schema extends OptionalValuesSchema> =
+  keyof Schema;
