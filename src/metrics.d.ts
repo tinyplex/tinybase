@@ -246,7 +246,7 @@ export type MetricsListenerStats = {
  * @see Todo App demos
  * @category Metrics
  */
-export interface Metrics<StoreSchemas extends OptionalSchemas = NoSchemas> {
+export interface Metrics<Schemas extends OptionalSchemas = NoSchemas> {
   /**
    * The setMetricDefinition method lets you set the definition of a Metric.
    *
@@ -420,7 +420,7 @@ export interface Metrics<StoreSchemas extends OptionalSchemas = NoSchemas> {
     aggregateAdd?: AggregateAdd,
     aggregateRemove?: AggregateRemove,
     aggregateReplace?: AggregateReplace,
-  ): Metrics<StoreSchemas>;
+  ): Metrics<Schemas>;
 
   /**
    * The delMetricDefinition method removes an existing Metric definition.
@@ -449,7 +449,7 @@ export interface Metrics<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Configuration
    */
-  delMetricDefinition(metricId: Id): Metrics<StoreSchemas>;
+  delMetricDefinition(metricId: Id): Metrics<Schemas>;
 
   /**
    * The getStore method returns a reference to the underlying Store that is
@@ -469,7 +469,7 @@ export interface Metrics<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getStore(): Store<StoreSchemas>;
+  getStore(): Store<Schemas>;
 
   /**
    * The getMetricIds method returns an array of the Metric Ids registered with
@@ -729,7 +729,7 @@ export interface Metrics<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Listener
    */
-  delListener(listenerId: Id): Metrics<StoreSchemas>;
+  delListener(listenerId: Id): Metrics<Schemas>;
 
   /**
    * The destroy method should be called when this Metrics object is no longer
@@ -824,6 +824,6 @@ export interface Metrics<StoreSchemas extends OptionalSchemas = NoSchemas> {
  * ```
  * @category Creation
  */
-export function createMetrics<StoreSchemas extends OptionalSchemas>(
-  store: Store<StoreSchemas>,
-): Metrics<StoreSchemas>;
+export function createMetrics<Schemas extends OptionalSchemas>(
+  store: Store<Schemas>,
+): Metrics<Schemas>;

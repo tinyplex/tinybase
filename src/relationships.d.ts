@@ -253,9 +253,7 @@ export type RelationshipsListenerStats = {
  * @see Drawing demo
  * @category Relationships
  */
-export interface Relationships<
-  StoreSchemas extends OptionalSchemas = NoSchemas,
-> {
+export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
   /**
    * The setRelationshipDefinition method lets you set the definition of a
    * Relationship.
@@ -347,7 +345,7 @@ export interface Relationships<
     localTableId: Id,
     remoteTableId: Id,
     getRemoteRowId: Id | ((getCell: GetCell, localRowId: Id) => Id),
-  ): Relationships<StoreSchemas>;
+  ): Relationships<Schemas>;
 
   /**
    * The delRelationshipDefinition method removes an existing Relationship
@@ -387,7 +385,7 @@ export interface Relationships<
    * ```
    * @category Configuration
    */
-  delRelationshipDefinition(relationshipId: Id): Relationships<StoreSchemas>;
+  delRelationshipDefinition(relationshipId: Id): Relationships<Schemas>;
 
   /**
    * The getStore method returns a reference to the underlying Store that is
@@ -412,7 +410,7 @@ export interface Relationships<
    * ```
    * @category Getter
    */
-  getStore(): Store<StoreSchemas>;
+  getStore(): Store<Schemas>;
 
   /**
    * The getRelationshipIds method returns an array of the Relationship Ids
@@ -1089,7 +1087,7 @@ export interface Relationships<
    * ```
    * @category Listener
    */
-  delListener(listenerId: Id): Relationships<StoreSchemas>;
+  delListener(listenerId: Id): Relationships<Schemas>;
 
   /**
    * The destroy method should be called when this Relationships object is no
@@ -1206,6 +1204,6 @@ export interface Relationships<
  * ```
  * @category Creation
  */
-export function createRelationships<StoreSchemas extends OptionalSchemas>(
-  store: Store<StoreSchemas>,
-): Relationships<StoreSchemas>;
+export function createRelationships<Schemas extends OptionalSchemas>(
+  store: Store<Schemas>,
+): Relationships<Schemas>;
