@@ -837,7 +837,10 @@ export type ValueIdsListener<StoreSchemas extends OptionalSchemas = NoSchemas> =
  */
 export type ValueListener<
   StoreSchemas extends OptionalSchemas = NoSchemas,
-  ValueId extends ValueIdFromSchema<StoreSchemas[1]> = Id,
+  ValueIdOrNull extends ValueIdFromSchema<StoreSchemas[1]> | null = null,
+  ValueId = ValueIdOrNull extends null
+    ? ValueIdFromSchema<StoreSchemas[1]>
+    : ValueIdOrNull,
 > = (
   store: Store<StoreSchemas>,
   valueId: ValueId,
@@ -4898,9 +4901,11 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * @category Listener
    * @since v3.0.0
    */
-  addValueListener(
-    valueId: IdOrNull,
-    listener: ValueListener<StoreSchemas>,
+  addValueListener<
+    ValueIdOrNull extends ValueIdFromSchema<StoreSchemas[1]> | null,
+  >(
+    valueId: ValueIdOrNull,
+    listener: ValueListener<StoreSchemas, ValueIdOrNull>,
     mutator?: boolean,
   ): Id;
 
