@@ -748,15 +748,13 @@ export type CellIdsListener<
 export type CellListener<
   StoreSchemas extends OptionalSchemas = NoSchemas,
   TableIdOrNull extends TableIdFromSchema<StoreSchemas[0]> | null = null,
-  CellIdOrNull extends
-    | (TableIdOrNull extends null
-        ? EveryTableId extends Id
-          ? CellIdFromSchema<StoreSchemas[0], EveryTableId>
-          : never
-        : CellIdFromSchema<StoreSchemas[0], NonNullable<TableIdOrNull>>)
-    | null = null,
-  EveryTableId = TableIdFromSchema<StoreSchemas[0]>,
-  TableId = TableIdOrNull extends null ? EveryTableId : TableIdOrNull,
+  CellIdOrNull extends CellIdOrNullFromSchema<
+    StoreSchemas[0],
+    TableIdOrNull
+  > = null,
+  TableId = TableIdOrNull extends null
+    ? TableIdFromSchema<StoreSchemas[0]>
+    : TableIdOrNull,
 > = (
   store: Store<StoreSchemas>,
   tableId: TableId,
@@ -4673,24 +4671,12 @@ export interface Store<StoreSchemas extends OptionalSchemas = NoSchemas> {
    */
   addCellListener<
     TableIdOrNull extends TableIdFromSchema<StoreSchemas[0]> | null,
-    CellIdOrNull extends
-      | (TableIdOrNull extends null
-          ? EveryTableId extends Id
-            ? CellIdFromSchema<StoreSchemas[0], EveryTableId>
-            : never
-          : CellIdFromSchema<StoreSchemas[0], NonNullable<TableIdOrNull>>)
-      | null,
-    EveryTableId = TableIdFromSchema<StoreSchemas[0]>,
+    CellIdOrNull extends CellIdOrNullFromSchema<StoreSchemas[0], TableIdOrNull>,
   >(
     tableId: TableIdOrNull,
     rowId: IdOrNull,
     cellId: CellIdOrNull,
-    listener: CellListener<
-      StoreSchemas,
-      TableIdOrNull,
-      CellIdOrNull,
-      EveryTableId
-    >,
+    listener: CellListener<StoreSchemas, TableIdOrNull, CellIdOrNull>,
     mutator?: boolean,
   ): Id;
 
@@ -5847,6 +5833,29 @@ export type CellIdFromSchema<
   Schema extends OptionalTablesSchema,
   TableId extends TableIdFromSchema<Schema>,
 > = keyof Schema[TableId];
+
+/**
+ * The CellIdOrNullFromSchema type is a utility for determining the Id of Cells
+ * from a provided TablesSchema, and when a Table Id may or may not have been
+ * provided (such as when adding a listener).
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+
+type CellIdOrNullFromSchema<
+  Schema extends OptionalTablesSchema,
+  TableIdOrNull extends TableIdFromSchema<Schema> | null,
+  EveryTableId = TableIdFromSchema<Schema>,
+> =
+  | (TableIdOrNull extends null
+      ? EveryTableId extends Id
+        ? CellIdFromSchema<Schema, EveryTableId>
+        : never
+      : CellIdFromSchema<Schema, NonNullable<TableIdOrNull>>)
+  | null;
 
 /**
  * The ValuesFromSchema type is a utility for determining a Values structure
