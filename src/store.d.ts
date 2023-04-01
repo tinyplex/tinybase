@@ -640,12 +640,12 @@ export type RowIdsListener<
 export type SortedRowIdsListener<
   StoreSchemas extends OptionalSchemas = NoSchemas,
   TableId extends TableIdFromSchema<StoreSchemas[0]> = Id,
-  CellId extends
-    | CellIdFromSchema<StoreSchemas[0], TableId>
-    | undefined = undefined,
-  Descending extends boolean = false,
-  Offset extends number = 0,
-  Limit extends number | undefined = undefined,
+  CellId extends CellIdFromSchema<StoreSchemas[0], TableId> | undefined =
+    | Id
+    | undefined,
+  Descending extends boolean = boolean,
+  Offset extends number = number,
+  Limit extends number | undefined = number | undefined,
 > = (
   store: Store<StoreSchemas>,
   tableId: TableId,
