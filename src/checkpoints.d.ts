@@ -177,7 +177,7 @@ export type CheckpointsListenerStats = {
  * @see Drawing demo
  * @category Checkpoints
  */
-export interface Checkpoints<StoreSchemas extends OptionalSchemas = NoSchemas> {
+export interface Checkpoints<Schemas extends OptionalSchemas = NoSchemas> {
   /**
    * The setSize method lets you specify how many checkpoints the Checkpoints
    * object will store.
@@ -220,7 +220,7 @@ export interface Checkpoints<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Configuration
    */
-  setSize(size: number): Checkpoints<StoreSchemas>;
+  setSize(size: number): Checkpoints<Schemas>;
 
   /**
    * The addCheckpoint method records a checkpoint of the Store into the
@@ -320,7 +320,7 @@ export interface Checkpoints<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  setCheckpoint(checkpointId: Id, label: string): Checkpoints<StoreSchemas>;
+  setCheckpoint(checkpointId: Id, label: string): Checkpoints<Schemas>;
 
   /**
    * The getStore method returns a reference to the underlying Store that is
@@ -341,7 +341,7 @@ export interface Checkpoints<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getStore(): Store<StoreSchemas>;
+  getStore(): Store<Schemas>;
 
   /**
    * The getCheckpointIds method returns an array of the checkpoint Ids being
@@ -637,7 +637,7 @@ export interface Checkpoints<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Listener
    */
-  delListener(listenerId: Id): Checkpoints<StoreSchemas>;
+  delListener(listenerId: Id): Checkpoints<Schemas>;
 
   /**
    * The goBackward method moves the state of the underlying Store back to the
@@ -670,7 +670,7 @@ export interface Checkpoints<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Movement
    */
-  goBackward(): Checkpoints<StoreSchemas>;
+  goBackward(): Checkpoints<Schemas>;
 
   /**
    * The goForward method moves the state of the underlying Store forwards to a
@@ -750,7 +750,7 @@ export interface Checkpoints<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Movement
    */
-  goForward(): Checkpoints<StoreSchemas>;
+  goForward(): Checkpoints<Schemas>;
 
   /**
    * The goTo method moves the state of the underlying Store backwards or
@@ -800,7 +800,7 @@ export interface Checkpoints<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Movement
    */
-  goTo(checkpointId: Id): Checkpoints<StoreSchemas>;
+  goTo(checkpointId: Id): Checkpoints<Schemas>;
 
   /**
    * The clear method resets this Checkpoints object to its initial state,
@@ -858,7 +858,7 @@ export interface Checkpoints<StoreSchemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Lifecycle
    */
-  clear(): Checkpoints<StoreSchemas>;
+  clear(): Checkpoints<Schemas>;
 
   /**
    * The destroy method should be called when this Checkpoints object is no
@@ -956,6 +956,6 @@ export interface Checkpoints<StoreSchemas extends OptionalSchemas = NoSchemas> {
  * ```
  * @category Creation
  */
-export function createCheckpoints<StoreSchemas extends OptionalSchemas>(
-  store: Store<StoreSchemas>,
-): Checkpoints<StoreSchemas>;
+export function createCheckpoints<Schemas extends OptionalSchemas>(
+  store: Store<Schemas>,
+): Checkpoints<Schemas>;
