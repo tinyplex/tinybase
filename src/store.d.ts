@@ -259,7 +259,7 @@ export type Row<
   Schema extends OptionalTablesSchema = NoTablesSchema,
   TableId extends TableIdFromSchema<Schema> = Id,
   WhenSet extends boolean = false,
-> = NonNullable<Tables<Schema, WhenSet>[TableId]>[Id];
+> = NonNullable<Table<Schema, TableId, WhenSet>>[Id];
 
 /**
  * The Cell type is the data structure representing the data in a single cell.
