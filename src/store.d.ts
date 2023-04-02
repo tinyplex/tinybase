@@ -1451,7 +1451,7 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * @see Indexes
    * @category Getter
    */
-  getTables(): Tables<Schemas[0]>;
+  getTables<Tables = TablesFromSchema<Schemas[0]>>(): Tables;
 
   /**
    * The getTableIds method returns the Ids of every Table in the Store.
@@ -1482,7 +1482,7 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getTableIds(): TableIdFromSchema<Schemas[0]>[];
+  getTableIds<Ids = TableIdFromSchema<Schemas[0]>[]>(): Ids;
 
   /**
    * The getTable method returns an object containing the entire data of a
@@ -1516,9 +1516,12 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getTable<TableId extends TableIdFromSchema<Schemas[0]>>(
+  getTable<
+    TableId extends TableIdFromSchema<Schemas[0]>,
+    Table = TableFromSchema<Schemas[0]>,
+  >(
     tableId: TableId,
-  ): Table<Schemas[0], TableId>;
+  ): Table;
 
   /**
    * The getRowIds method returns the Ids of every Row in a given Table.
@@ -1701,10 +1704,13 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getRow<TableId extends TableIdFromSchema<Schemas[0]>>(
+  getRow<
+    TableId extends TableIdFromSchema<Schemas[0]>,
+    Row = RowFromSchema<Schemas[0], TableId>,
+  >(
     tableId: TableId,
     rowId: Id,
-  ): Row<Schemas[0], TableId>;
+  ): Row;
 
   /**
    * The getCellIds method returns the Ids of every Cell in a given Row, in a
@@ -1741,11 +1747,11 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    */
   getCellIds<
     TableId extends TableIdFromSchema<Schemas[0]>,
-    CellId extends CellIdFromSchema<Schemas[0], TableId>,
+    Ids extends CellIdFromSchema<Schemas[0], TableId>[],
   >(
     tableId: TableId,
     rowId: Id,
-  ): CellId[];
+  ): Ids;
 
   /**
    * The getCell method returns the value of a single Cell in a given Row, in a
@@ -1778,11 +1784,12 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   getCell<
     TableId extends TableIdFromSchema<Schemas[0]>,
     CellId extends CellIdFromSchema<Schemas[0], TableId>,
+    Cell = CellFromSchema<Schemas[0], TableId, CellId>,
   >(
     tableId: TableId,
     rowId: Id,
     cellId: CellId,
-  ): CellOrUndefined<Schemas[0], TableId, CellId>;
+  ): Cell | undefined;
 
   /**
    * The getValues method returns an object containing the entire set of keyed
@@ -1813,7 +1820,7 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Getter
    * @since v3.0.0
    */
-  getValues(): Values<Schemas[1]>;
+  getValues<Values = ValuesFromSchema<Schemas[1]>>(): Values;
 
   /**
    * The getValueIds method returns the Ids of every Value in a Store.
@@ -1842,7 +1849,7 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Getter
    * @since v3.0.0
    */
-  getValueIds(): ValueIdFromSchema<Schemas[1]>[];
+  getValueIds<Ids = ValueIdFromSchema<Schemas[1]>[]>(): Ids;
 
   /**
    * The getValue method returns a single keyed Value in the Store.
@@ -1868,9 +1875,12 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Getter
    * @since v3.0.0
    */
-  getValue<ValueId extends ValueIdFromSchema<Schemas[1]>>(
+  getValue<
+    ValueId extends ValueIdFromSchema<Schemas[1]>,
+    Value = ValueFromSchema<Schemas[1], ValueId>,
+  >(
     valueId: ValueId,
-  ): ValueOrUndefined<Schemas[1], ValueId>;
+  ): Value | undefined;
 
   /**
    * The hasTables method returns a boolean indicating whether any Table objects
