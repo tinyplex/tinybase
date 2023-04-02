@@ -180,7 +180,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const changedCellIds: ChangedIdsMap3 = mapNew();
   const changedCells: IdMap3<[CellOrUndefined, CellOrUndefined]> = mapNew();
   const changedValueIds: ChangedIdsMap = mapNew();
-  const changedValues: IdMap<[CellOrUndefined, CellOrUndefined]> = mapNew();
+  const changedValues: IdMap<[ValueOrUndefined, ValueOrUndefined]> = mapNew();
   const invalidCells: IdMap3<any[]> = mapNew();
   const invalidValues: IdMap<any[]> = mapNew();
   const tablesSchemaMap: TablesSchemaMap = mapNew();
