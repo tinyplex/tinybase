@@ -577,7 +577,8 @@ describe('Miscellaneous', () => {
   });
 
   test('with schema defaults', () => {
-    store = createStore().setTablesSchema({
+    store = createStore();
+    store.setTablesSchema({
       t1: {
         c0: {type: 'number', default: 0},
         c1: {type: 'number'},
