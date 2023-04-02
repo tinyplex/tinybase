@@ -274,7 +274,18 @@ export type Row<
  * ```
  * @category Store
  */
-export type Cell = string | number | boolean;
+export type Cell<
+  Schema extends OptionalTablesSchema = NoTablesSchema,
+  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+  CellId extends CellIdFromSchema<Schema, TableId> = CellIdFromSchema<
+    Schema,
+    TableId
+  >,
+> = NonNullable<
+  CellId extends keyof Row<Schema, TableId>
+    ? Row<Schema, TableId>[CellId]
+    : never
+>;
 
 /**
  * The CellOrUndefined type is a data structure representing the data in a
@@ -286,7 +297,14 @@ export type Cell = string | number | boolean;
  *
  * @category Store
  */
-export type CellOrUndefined = Cell | undefined;
+export type CellOrUndefined<
+  Schema extends OptionalTablesSchema = NoTablesSchema,
+  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+  CellId extends CellIdFromSchema<Schema, TableId> = CellIdFromSchema<
+    Schema,
+    TableId
+  >,
+> = Cell<Schema, TableId, CellId> | undefined;
 
 /**
  * The Values type is the data structure representing all the keyed values in a
@@ -400,7 +418,7 @@ export type CellCallback<
     Schema,
     TableId
   >,
-> = (cellId: CellId, cell: Cell) => void;
+> = (cellId: CellId, cell: Cell<Schema, TableId, CellId>) => void;
 
 /**
  * The ValueCallback type describes a function that takes a Value's Id and its
@@ -772,22 +790,21 @@ export type CellListener<
         ? CellIdFromSchema<Schemas[0], TableIdOrNull>
         : AllCellIdFromSchema<Schemas[0]>)
     | null,
-> = <
-  TableId extends TableIdOrNull extends null
+  TableId extends Id = TableIdOrNull extends null
     ? TableIdFromSchema<Schemas[0]>
     : TableIdOrNull,
-  CellId extends CellIdOrNull extends null
+  CellId extends Id = CellIdOrNull extends null
     ? TableIdOrNull extends TableIdFromSchema<Schemas[0]>
       ? CellIdFromSchema<Schemas[0], TableIdOrNull>
       : AllCellIdFromSchema<Schemas[0]>
     : CellIdOrNull,
->(
+> = (
   store: Store<Schemas>,
   tableId: TableId,
   rowId: RowIdOrNull extends null ? Id : RowIdOrNull,
   cellId: CellId,
-  newCell: Cell,
-  oldCell: Cell,
+  newCell: Cell<Schemas[0], TableId, CellId>,
+  oldCell: Cell<Schemas[0], TableId, CellId>,
   getCellChange: GetCellChange<Schemas[0]> | undefined,
 ) => void;
 
@@ -1791,7 +1808,7 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
     tableId: TableId,
     rowId: Id,
     cellId: CellId,
-  ): CellOrUndefined;
+  ): CellOrUndefined<Schemas[0], TableId, CellId>;
 
   /**
    * The getValues method returns an object containing the entire set of keyed
@@ -2604,7 +2621,7 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
     tableId: TableId,
     rowId: Id,
     cellId: CellId,
-    cell: Cell | MapCell,
+    cell: Cell<Schemas[0], TableId, CellId> | MapCell,
   ): Store<Schemas>;
 
   /**
@@ -5833,7 +5850,7 @@ export type CellTypeFromSchema<
   ? number
   : CellType extends 'boolean'
   ? boolean
-  : Cell;
+  : string | number | boolean;
 
 /**
  * The CellIdsDefaultedFromSchema type is a utility for determining Cells with
@@ -5854,7 +5871,7 @@ export type CellIdsFromSchema<
       Schema,
       TableId
     >]: Schema[TableId][CellId] extends {
-      default: Cell;
+      default: string | number | boolean;
     }
       ? IsDefaulted extends true
         ? CellId
