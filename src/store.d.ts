@@ -281,11 +281,7 @@ export type Cell<
     Schema,
     TableId
   >,
-> = NonNullable<
-  CellId extends keyof Row<Schema, TableId>
-    ? Row<Schema, TableId>[CellId]
-    : never
->;
+> = NonNullable<CellFromSchema<Schema, TableId, CellId>>;
 
 /**
  * The CellOrUndefined type is a data structure representing the data in a
@@ -345,9 +341,7 @@ export type Values<
 export type Value<
   Schema extends OptionalValuesSchema = NoValuesSchema,
   ValueId extends ValueIdFromSchema<Schema> = ValueIdFromSchema<Schema>,
-> = NonNullable<
-  ValueId extends keyof Values<Schema> ? Values<Schema>[ValueId] : never
->;
+> = NonNullable<ValueFromSchema<Schema, ValueId>>;
 
 /**
  * The ValueOrUndefined type is a data structure representing the data in a
@@ -995,7 +989,7 @@ export type GetCellChange<
   tableId: TableId,
   rowId: Id,
   cellId: CellId,
-) => CellChange;
+) => CellChange<Schema, TableId, CellId>;
 
 /**
  * The CellChange type describes a Cell's changes during a transaction.
@@ -1007,10 +1001,17 @@ export type GetCellChange<
  *
  * @category Listener
  */
-export type CellChange = [
+export type CellChange<
+  Schema extends OptionalTablesSchema = NoTablesSchema,
+  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+  CellId extends CellIdFromSchema<Schema, TableId> = CellIdFromSchema<
+    Schema,
+    TableId
+  >,
+> = [
   changed: boolean,
-  oldCell: CellOrUndefined,
-  newCell: CellOrUndefined,
+  oldCell: CellOrUndefined<Schema, TableId, CellId>,
+  newCell: CellOrUndefined<Schema, TableId, CellId>,
 ];
 
 /**
@@ -1031,7 +1032,7 @@ export type GetValueChange<
   Schema extends OptionalValuesSchema = NoValuesSchema,
 > = <ValueId extends ValueIdFromSchema<Schema>>(
   valueId: ValueId,
-) => ValueChange;
+) => ValueChange<Schema, ValueId>;
 
 /**
  * The ValueChange type describes a Value's changes during a transaction.
@@ -1082,8 +1083,8 @@ export type ChangedCells<Schema extends OptionalTablesSchema = NoTablesSchema> =
     [TableId in TableIdFromSchema<Schema>]?: {
       [rowId: Id]: {
         [CellId in CellIdFromSchema<Schema, TableId>]?: [
-          CellOrUndefined,
-          CellOrUndefined,
+          CellOrUndefined<Schema, TableId, CellId>,
+          CellOrUndefined<Schema, TableId, CellId>,
         ];
       };
     };
@@ -1141,7 +1142,10 @@ export type InvalidCells = {
 export type ChangedValues<
   Schema extends OptionalValuesSchema = NoValuesSchema,
 > = {
-  [ValueId in ValueIdFromSchema<Schema>]?: [ValueOrUndefined, ValueOrUndefined];
+  [ValueId in ValueIdFromSchema<Schema>]?: [
+    ValueOrUndefined<Schema, ValueId>,
+    ValueOrUndefined<Schema, ValueId>,
+  ];
 };
 /**
  * The InvalidValues type describes the invalid Values that have been attempted
@@ -5832,19 +5836,19 @@ export type TablesFromSchema<
           -readonly [CellId in CellIdsFromSchema<
             Schema,
             TableId
-          >]?: CellTypeFromSchema<Schema, TableId, CellId>;
+          >]?: CellFromSchema<Schema, TableId, CellId>;
         }
       : {
           -readonly [CellId in CellIdsFromSchema<
             Schema,
             TableId
-          >]: CellTypeFromSchema<Schema, TableId, CellId>;
+          >]: CellFromSchema<Schema, TableId, CellId>;
         }) & {
       -readonly [CellId in CellIdsFromSchema<
         Schema,
         TableId,
         false
-      >]?: CellTypeFromSchema<Schema, TableId, CellId>;
+      >]?: CellFromSchema<Schema, TableId, CellId>;
     };
   };
 };
@@ -5871,7 +5875,7 @@ export type TableIdFromSchema<Schema extends OptionalTablesSchema> = AsId<
  *
  * @category Internal
  */
-export type CellTypeFromSchema<
+export type CellFromSchema<
   Schema extends OptionalTablesSchema,
   TableId extends TableIdFromSchema<Schema>,
   CellId extends CellIdFromSchema<Schema, TableId>,
@@ -5958,21 +5962,21 @@ export type ValuesFromSchema<
   WhenSet extends boolean = false,
 > = (WhenSet extends true
   ? {
-      -readonly [ValueId in ValueIdsFromSchema<Schema>]?: ValueTypeFromSchema<
+      -readonly [ValueId in ValueIdsFromSchema<Schema>]?: ValueFromSchema<
         Schema,
         ValueId
       >;
     }
   : {
-      -readonly [ValueId in ValueIdsFromSchema<Schema>]: ValueTypeFromSchema<
+      -readonly [ValueId in ValueIdsFromSchema<Schema>]: ValueFromSchema<
         Schema,
         ValueId
       >;
     }) & {
-  -readonly [ValueId in ValueIdsFromSchema<
+  -readonly [ValueId in ValueIdsFromSchema<Schema, false>]?: ValueFromSchema<
     Schema,
-    false
-  >]?: ValueTypeFromSchema<Schema, ValueId>;
+    ValueId
+  >;
 };
 
 /**
@@ -5984,7 +5988,7 @@ export type ValuesFromSchema<
  *
  * @category Internal
  */
-export type ValueTypeFromSchema<
+export type ValueFromSchema<
   Schema extends OptionalValuesSchema,
   ValueId extends ValueIdFromSchema<Schema>,
   ValueType = Schema[ValueId]['type'],
