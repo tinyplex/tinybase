@@ -2852,9 +2852,17 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * The setTablesSchema method lets you specify the TablesSchema of the tabular
    * part of the Store.
    *
+   * ```ts override
+   * setTablesSchema(tablesSchema: TablesSchema): Store<Schemas>
+   * ```
+   *
    * Note that this may result in a change to data in the Store, as defaults are
    * applied or as invalid Table, Row, or Cell objects are removed. These
    * changes will fire any listeners to that data, as expected.
+   *
+   * This method will return a Store that is typed according to the schema that
+   * you provided. To benefit from that, you may wish to assign it to a new
+   * variable so that TypeScript is able to reason about its subsequent usage.
    *
    * When no longer needed, you can also completely remove an existing
    * TablesSchema with the delTablesSchema method.
@@ -2890,9 +2898,17 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * The setValuesSchema method lets you specify the ValuesSchema of the keyed
    * Values part of the Store.
    *
+   * ```ts override
+   * setValuesSchema(valuesSchema: ValuesSchema): Store<Schemas>
+   * ```
+   *
    * Note that this may result in a change to data in the Store, as defaults are
    * applied or as invalid Values are removed. These changes will fire any
    * listeners to that data, as expected.
+   *
+   * This method will return a Store that is typed according to the schema that
+   * you provided. To benefit from that, you may wish to assign it to a new
+   * variable so that TypeScript is able to reason about its subsequent usage.
    *
    * When no longer needed, you can also completely remove an existing
    * ValuesSchema with the delValuesSchema method.
@@ -2925,9 +2941,20 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * The setSchema method lets you specify the TablesSchema and ValuesSchema of
    * the Store.
    *
+   * ```ts override
+   * setSchema(
+   *   tablesSchema: TablesSchema,
+   *   valuesSchema?: ValuesSchema,
+   * ): Store<Schemas>
+   * ```
+   *
    * Note that this may result in a change to data in the Store, as defaults are
    * applied or as invalid Table, Row, Cell, or Value objects are removed. These
    * changes will fire any listeners to that data, as expected.
+   *
+   * This method will return a Store that is typed according to the schemas that
+   * you provided. To benefit from that, you may wish to assign it to a new
+   * variable so that TypeScript is able to reason about its subsequent usage.
    *
    * From v3.0.0 onwards, this method takes two arguments. The first is the
    * TablesSchema object, the second the ValuesSchema. In previous versions
