@@ -6045,4 +6045,4 @@ export type ValueIdFromSchema<Schema extends OptionalValuesSchema> = AsId<
  *
  * @category Internal
  */
-export type AsId<T> = Exclude<T & Id, number>;
+export type AsId<Key> = Exclude<Key & Id, number>;
