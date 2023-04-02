@@ -2518,7 +2518,12 @@ describe('valuesSchemas applied before data set, listening', () => {
       listener.listenToValues('/');
       listener.listenToValue('/v*', null);
       listener.listenToInvalidValue('invalids', null);
-      store.setValue('v1', 1).setValue('v1', 'a').setValue('v1', true);
+      store
+        .setValue('v1', 1)
+        // @ts-ignore
+        .setValue('v1', 'a')
+        // @ts-ignore
+        .setValue('v1', true);
       expect(store.getValues()).toEqual({v1: 1});
       expectChanges(listener, '/', {v1: 1});
       expectChanges(listener, '/v*', {v1: 1});

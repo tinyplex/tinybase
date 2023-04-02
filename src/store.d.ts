@@ -342,7 +342,12 @@ export type Values<
  * @category Store
  * @since v3.0.0
  */
-export type Value = string | number | boolean;
+export type Value<
+  Schema extends OptionalValuesSchema = NoValuesSchema,
+  ValueId extends ValueIdFromSchema<Schema> = ValueIdFromSchema<Schema>,
+> = NonNullable<
+  ValueId extends keyof Values<Schema> ? Values<Schema>[ValueId] : never
+>;
 
 /**
  * The ValueOrUndefined type is a data structure representing the data in a
@@ -355,7 +360,10 @@ export type Value = string | number | boolean;
  * @category Store
  * @since v3.0.0
  */
-export type ValueOrUndefined = Value | undefined;
+export type ValueOrUndefined<
+  Schema extends OptionalValuesSchema = NoValuesSchema,
+  ValueId extends ValueIdFromSchema<Schema> = ValueIdFromSchema<Schema>,
+> = Value<Schema, ValueId> | undefined;
 
 /**
  * The TableCallback type describes a function that takes a Table's Id and a
@@ -436,7 +444,7 @@ export type CellCallback<
 export type ValueCallback<
   Schema extends OptionalValuesSchema = NoValuesSchema,
   ValueId extends ValueIdFromSchema<Schema> = ValueIdFromSchema<Schema>,
-> = (valueId: ValueId, value: Value) => void;
+> = (valueId: ValueId, value: Value<Schema, ValueId>) => void;
 
 /**
  * The MapCell type describes a function that takes an existing Cell value and
@@ -472,7 +480,10 @@ export type MapCell<
  * @category Callback
  * @since v3.0.0
  */
-export type MapValue = (value: ValueOrUndefined) => Value;
+export type MapValue<
+  Schema extends OptionalValuesSchema = NoValuesSchema,
+  ValueId extends ValueIdFromSchema<Schema> = ValueIdFromSchema<Schema>,
+> = (value: ValueOrUndefined<Schema, ValueId>) => Value<Schema, ValueId>;
 
 /**
  * The GetCell type describes a function that takes a Id and returns the Cell
@@ -896,14 +907,14 @@ export type ValueListener<
   ValueIdOrNull extends ValueIdFromSchema<
     Schemas[1]
   > | null = ValueIdFromSchema<Schemas[1]> | null,
-  ValueId = ValueIdOrNull extends null
+  ValueId extends Id = ValueIdOrNull extends null
     ? ValueIdFromSchema<Schemas[1]>
     : ValueIdOrNull,
 > = (
   store: Store<Schemas>,
   valueId: ValueId,
-  newValue: Value,
-  oldValue: Value,
+  newValue: Value<Schemas[1], ValueId>,
+  oldValue: Value<Schemas[1], ValueId>,
   getValueChange: GetValueChange<Schemas[1]> | undefined,
 ) => void;
 
@@ -1032,10 +1043,13 @@ export type GetValueChange<
  *
  * @category Listener
  */
-export type ValueChange = [
+export type ValueChange<
+  Schema extends OptionalValuesSchema = NoValuesSchema,
+  ValueId extends ValueIdFromSchema<Schema> = ValueIdFromSchema<Schema>,
+> = [
   changed: boolean,
-  oldValue: ValueOrUndefined,
-  newValue: ValueOrUndefined,
+  oldValue: ValueOrUndefined<Schema, ValueId>,
+  newValue: ValueOrUndefined<Schema, ValueId>,
 ];
 
 /**
@@ -1912,7 +1926,7 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    */
   getValue<ValueId extends ValueIdFromSchema<Schemas[1]>>(
     valueId: ValueId,
-  ): ValueOrUndefined;
+  ): ValueOrUndefined<Schemas[1], ValueId>;
 
   /**
    * The hasTables method returns a boolean indicating whether any Table objects
@@ -2794,7 +2808,7 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    */
   setValue<ValueId extends ValueIdFromSchema<Schemas[1]>>(
     valueId: ValueId,
-    value: Value | MapValue,
+    value: Value<Schemas[1], ValueId> | MapValue<Schemas[1], ValueId>,
   ): Store<Schemas>;
 
   /**
@@ -5980,7 +5994,7 @@ export type ValueTypeFromSchema<
   ? number
   : ValueType extends 'boolean'
   ? boolean
-  : Value;
+  : string | number | boolean;
 
 /**
  * The ValueIdsDefaultedFromSchema type is a utility for determining Values with
@@ -5996,7 +6010,7 @@ export type ValueIdsFromSchema<
   IsDefaulted extends boolean = true,
 > = {
   [ValueId in ValueIdFromSchema<Schema>]: Schema[ValueId] extends {
-    default: Value;
+    default: string | number | boolean;
   }
     ? IsDefaulted extends true
       ? ValueId
