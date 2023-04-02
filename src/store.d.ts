@@ -182,10 +182,6 @@ export type NoSchemas = [NoTablesSchema, NoValuesSchema];
  * The Tables type is the data structure representing all of the data in a
  * Store.
  *
- * ```ts override
- * {[tableId: Id]: Table}
- * ```
- *
  * A Tables object is used when setting all of the tables together with the
  * setTables method, and when getting them back out again with the getTables
  * method. A Tables object is a regular JavaScript object containing individual
@@ -214,10 +210,6 @@ export type Tables<
 /**
  * The Table type is the data structure representing the data in a single table.
  *
- * ```ts override
- * {[rowId: Id]: Row}
- * ```
- *
  * A Table is used when setting a table with the setTable method, and when
  * getting it back out again with the getTable method. A Table object is a
  * regular JavaScript object containing individual Row objects, keyed by their
@@ -240,10 +232,6 @@ export type Table<
 
 /**
  * The Row type is the data structure representing the data in a single row.
- *
- * ```ts override
- * {[cellId: Id]: Cell}
- * ```
  *
  * A Row is used when setting a row with the setRow method, and when getting it
  * back out again with the getRow method. A Row object is a regular JavaScript
@@ -1432,10 +1420,6 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * The getTables method returns a Tables object containing the entire data of
    * the Store.
    *
-   * ```ts override
-   * getTables(): Tables
-   * ```
-   *
    * Note that this returns a copy of, rather than a reference to the underlying
    * data, so changes made to the returned object are not made to the Store
    * itself.
@@ -1472,10 +1456,6 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   /**
    * The getTableIds method returns the Ids of every Table in the Store.
    *
-   * ```ts override
-   * getTableIds(): Ids
-   * ```
-   *
    * Note that this returns a copy of, rather than a reference, to the list of
    * Ids, so changes made to the list are not made to the Store itself.
    *
@@ -1507,10 +1487,6 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   /**
    * The getTable method returns an object containing the entire data of a
    * single Table in the Store.
-   *
-   * ```ts override
-   * getTable(tableId: Id): Table
-   * ```
    *
    * Note that this returns a copy of, rather than a reference to the underlying
    * data, so changes made to the returned object are not made to the Store
@@ -1546,10 +1522,6 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
 
   /**
    * The getRowIds method returns the Ids of every Row in a given Table.
-   *
-   * ```ts override
-   * getRowIds(tableId: Id): Ids
-   * ```
    *
    * Note that this returns a copy of, rather than a reference, to the list of
    * Ids, so changes made to the list are not made to the Store itself.
@@ -1587,16 +1559,6 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   /**
    * The getSortedRowIds method returns the Ids of every Row in a given Table,
    * sorted according to the values in a specified Cell.
-   *
-   * ```ts override
-   * getSortedRowIds(
-   *   tableId: Id,
-   *   cellId?: Id,
-   *   descending?: boolean,
-   *   offset?: number,
-   *   limit?: number,
-   * ): Ids
-   *  ```
    *
    * The sorting of the rows is alphanumeric, and you can indicate whether it
    * should be in descending order. The `offset` and `limit` parameters are used
@@ -1708,13 +1670,6 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * The getRow method returns an object containing the entire data of a single
    * Row in a given Table.
    *
-   * ```ts override
-   * getRow(
-   *   tableId: Id,
-   *   rowId: Id,
-   * ): Row
-   * ```
-   *
    * Note that this returns a copy of, rather than a reference to the underlying
    * data, so changes made to the returned object are not made to the Store
    * itself.
@@ -1754,13 +1709,6 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   /**
    * The getCellIds method returns the Ids of every Cell in a given Row, in a
    * given Table.
-   *
-   * ```ts override
-   * getCellIds(
-   *   tableId: Id,
-   *   rowId: Id,
-   * ): Ids
-   * ```
    *
    * Note that this returns a copy of, rather than a reference, to the list of
    * Ids, so changes made to the list are not made to the Store itself.
@@ -1802,14 +1750,6 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   /**
    * The getCell method returns the value of a single Cell in a given Row, in a
    * given Table.
-   *
-   * ```ts override
-   * getCell(
-   *   tableId: Id,
-   *   rowId: Id,
-   *   cellId: Id,
-   * ): CellOrUndefined
-   * ```
    *
    * @param tableId The Id of the Table in the Store.
    * @param rowId The Id of the Row in the Table.
@@ -1956,10 +1896,6 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * The hasTable method returns a boolean indicating whether a given Table
    * exists in the Store.
    *
-   * ```ts override
-   * hasTable(tableId: Id): boolean
-   * ```
-   *
    * @param tableId The Id of a possible Table in the Store.
    * @returns Whether a Table with that Id exists.
    * @example
@@ -1981,13 +1917,6 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   /**
    * The hasRow method returns a boolean indicating whether a given Row exists
    * in the Store.
-   *
-   * ```ts override
-   * hasRow(
-   *   tableId: Id,
-   *   rowId: Id,
-   * ): boolean
-   * ```
    *
    * @param tableId The Id of a possible Table in the Store.
    * @param rowId The Id of a possible Row in the Table.
@@ -2012,14 +1941,6 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   /**
    * The hasCell method returns a boolean indicating whether a given Cell exists
    * in the Store.
-   *
-   * ```ts override
-   * hasCell(
-   *   tableId: Id,
-   *   rowId: Id,
-   *   cellId: Id,
-   * ): boolean
-   * ```
    *
    * @param tableId The Id of a possible Table in the Store.
    * @param rowId The Id of a possible Row in the Table.
@@ -2284,10 +2205,6 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   /**
    * The setTables method takes an object and sets the entire data of the Store.
    *
-   * ```ts override
-   * setTables(tables: Tables): Store
-   * ```
-   *
    * This method will cause listeners to be called for any Table, Row, Cell, or
    * Id changes resulting from it.
    *
@@ -2336,13 +2253,6 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   /**
    * The setTable method takes an object and sets the entire data of a single
    * Table in the Store.
-   *
-   * ```ts override
-   * setTable(
-   *   tableId: Id,
-   *   table: Table,
-   * ): Store
-   * ```
    *
    * This method will cause listeners to be called for any Table, Row, Cell, or
    * Id changes resulting from it.
@@ -2398,14 +2308,6 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * The setRow method takes an object and sets the entire data of a single Row
    * in the Store.
    *
-   * ```ts override
-   * setRow(
-   *   tableId: Id,
-   *   rowId: Id,
-   *   row: Row,
-   * ): Store
-   * ```
-   *
    * This method will cause listeners to be called for any Table, Row, Cell, or
    * Id changes resulting from it.
    *
@@ -2459,13 +2361,6 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   /**
    * The addRow method takes an object and creates a new Row in the Store,
    * returning the unique Id assigned to it.
-   *
-   * ```ts override
-   * addRow(
-   *   tableId: Id,
-   *   row: Row,
-   * ): Id | undefined
-   * ```
    *
    * This method will cause listeners to be called for any Table, Row, Cell, or
    * Id changes resulting from it.
@@ -2523,14 +2418,6 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * The setPartialRow method takes an object and sets partial data of a single
    * Row in the Store, leaving other Cell values unaffected.
    *
-   * ```ts override
-   * setPartialRow(
-   *   tableId: Id,
-   *   rowId: Id,
-   *   partialRow: Row,
-   * ): Store
-   * ```
-   *
    * This method will cause listeners to be called for any Table, Row, Cell, or
    * Id changes resulting from it.
    *
@@ -2585,15 +2472,6 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
 
   /**
    * The setCell method sets the value of a single Cell in the Store.
-   *
-   * ```ts override
-   * setCell(
-   *   tableId: Id,
-   *   rowId: Id,
-   *   cellId: Id,
-   *   cell: Cell,
-   * ): Store
-   * ```
    *
    * This method will cause listeners to be called for any Table, Row, Cell, or
    * Id changes resulting from it.
@@ -2819,10 +2697,6 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * The setTablesJson method takes a string serialization of all of the Tables
    * in the Store and attempts to update them to that.
    *
-   * ```ts override
-   * setTablesJson(tablesJson: string): Store
-   * ```
-   *
    * If the JSON cannot be parsed, this will fail silently. If it can be parsed,
    * it will then be subject to the same validation rules as the setTables
    * method (according to the Tables type, and matching any TablesSchema
@@ -2858,10 +2732,6 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * The setValuesJson method takes a string serialization of all of the Values
    * in the Store and attempts to update them to those values.
    *
-   * ```ts override
-   * setValuesJson(valuesJson: Json): Store
-   * ```
-   *
    * If the JSON cannot be parsed, this will fail silently. If it can be parsed,
    * it will then be subject to the same validation rules as the setValues
    * method (according to the Values type, and matching any ValuesSchema
@@ -2896,10 +2766,6 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   /**
    * The setJson method takes a string serialization of all of the Tables and
    * Values in the Store and attempts to update them to those values.
-   *
-   * ```ts override
-   * setJson(tablesAndValuesJson: Json): Store
-   * ```
    *
    * From v3.0.0 onwards, the serialization should be of an array with two
    * entries. The first is the Tables object, the second the Values. In previous
@@ -2960,10 +2826,6 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * The setTablesSchema method lets you specify the TablesSchema of the tabular
    * part of the Store.
    *
-   * ```ts override
-   * setTablesSchema(tablesSchema: TablesSchema): Store
-   * ```
-   *
    * Note that this may result in a change to data in the Store, as defaults are
    * applied or as invalid Table, Row, or Cell objects are removed. These
    * changes will fire any listeners to that data, as expected.
@@ -2999,10 +2861,6 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * The setValuesSchema method lets you specify the ValuesSchema of the keyed
    * Values part of the Store.
    *
-   * ```ts override
-   * setValuesSchema(valuesSchema: ValuesSchema): Store
-   * ```
-   *
    * Note that this may result in a change to data in the Store, as defaults are
    * applied or as invalid Values are removed. These changes will fire any
    * listeners to that data, as expected.
@@ -3034,13 +2892,6 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   /**
    * The setSchema method lets you specify the TablesSchema and ValuesSchema of
    * the Store.
-   *
-   * ```ts override
-   * setSchema(
-   *   tablesSchema: TablesSchema,
-   *   valuesSchema?: ValuesSchema,
-   * ): Store
-   * ```
    *
    * Note that this may result in a change to data in the Store, as defaults are
    * applied or as invalid Table, Row, Cell, or Value objects are removed. These
@@ -3113,10 +2964,6 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   /**
    * The delTables method lets you remove all of the data in a Store.
    *
-   * ```ts override
-   * delTables(): Store
-   * ```
-   *
    * @returns A reference to the Store.
    * @example
    * This example removes the data of a Store.
@@ -3134,10 +2981,6 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
 
   /**
    * The delTable method lets you remove a single Table from the Store.
-   *
-   * ```ts override
-   * delTable(tableId: Id): Store
-   * ```
    *
    * @param tableId The Id of the Table in the Store.
    * @returns A reference to the Store.
@@ -3162,13 +3005,6 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
 
   /**
    * The delRow method lets you remove a single Row from a Table.
-   *
-   * ```ts override
-   * delRow(
-   *   tableId: Id,
-   *   rowId: Id,
-   * ): Store
-   * ```
    *
    * If this is the last Row in its Table, then that Table will be removed.
    *
@@ -3196,15 +3032,6 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
 
   /**
    * The delCell method lets you remove a single Cell from a Row.
-   *
-   * ```ts override
-   * delRow(
-   *   tableId: Id,
-   *   rowId: Id,
-   *   cellId: Id,
-   *   forceDel?: boolean,
-   * ): Store
-   * ```
    *
    * When there is no TablesSchema applied to the Store, then if this is the
    * last Cell in its Row, then that Row will be removed. If, in turn, that is
@@ -3379,10 +3206,6 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   /**
    * The delTablesSchema method lets you remove the TablesSchema of the Store.
    *
-   * ```ts override
-   * delTablesSchema(): Store
-   * ```
-   *
    * @returns A reference to the Store.
    * @example
    * This example removes the TablesSchema of a Store.
@@ -3401,10 +3224,6 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
 
   /**
    * The delValuesSchema method lets you remove the ValuesSchema of the Store.
-   *
-   * ```ts override
-   * delValuesSchema(): Store
-   * ```
    *
    * @returns A reference to the Store.
    * @example
@@ -3426,10 +3245,6 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   /**
    * The delSchema method lets you remove both the TablesSchema and ValuesSchema
    * of the Store.
-   *
-   * ```ts override
-   * delSchema(): Store
-   * ```
    *
    * Prior to v3.0.0, this method removed the TablesSchema only.
    *
@@ -3591,10 +3406,6 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * relevant listeners until it completes when you call the finishTransaction
    * method.
    *
-   * ```ts override
-   * startTransaction(): Store
-   * ```
-   *
    * Transactions are useful for making bulk changes to the data in a Store, and
    * when you don't want listeners to be called as you make each change. Changes
    * are made silently during the transaction, and listeners relevant to the
@@ -3644,10 +3455,6 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * The finishTransaction method allows you to explicitly finish a transaction
    * that has made multiple mutations to the Store, triggering all calls to the
    * relevant listeners.
-   *
-   * ```ts override
-   * finishTransaction(): Store
-   * ```
    *
    * Transactions are useful for making bulk changes to the data in a Store, and
    * when you don't want listeners to be called as you make each change. Changes

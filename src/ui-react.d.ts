@@ -1361,17 +1361,6 @@ export function useSetTablesCallback<Parameter>(
  * The useSetTableCallback hook returns a parameterized callback that can be
  * used to set the data of a single Table in a Store.
  *
- * ```ts override
- * useSetTableCallback<Parameter>(
- *   tableId: Id,
- *   getTable: (parameter: Parameter, store: Store) => Table,
- *   getTableDeps?: React.DependencyList,
- *   storeOrStoreId?: StoreOrStoreId,
- *   then?: (store: Store, table: Table) => void,
- *   thenDeps?: React.DependencyList,
- * ): ParameterizedCallback<Parameter>
- * ```
- *
  * This hook is useful, for example, when creating an event handler that will
  * mutate the data in the Store. In this case, the parameter will likely be the
  * event, so that you can use data from it as part of the mutation.
@@ -1457,18 +1446,6 @@ export function useSetTableCallback<Parameter>(
 /**
  * The useSetRowCallback hook returns a parameterized callback that can be used
  * to set the data of a single Row in a Store.
- *
- * ```ts override
- * useSetRowCallback<Parameter>(
- *   tableId: Id,
- *   rowId: Id,
- *   getRow: (parameter: Parameter, store: Store) => Row,
- *   getRowDeps?: React.DependencyList,
- *   storeOrStoreId?: StoreOrStoreId,
- *   then?: (store: Store, row: Row) => void,
- *   thenDeps?: React.DependencyList,
- * ): ParameterizedCallback<Parameter>
- * ```
  *
  * This hook is useful, for example, when creating an event handler that will
  * mutate the data in the Store. In this case, the parameter will likely be the
@@ -1559,17 +1536,6 @@ export function useSetRowCallback<Parameter>(
  * The useAddRowCallback hook returns a parameterized callback that can be used
  * to create a new Row in a Store.
  *
- * ```ts override
- * useAddRowCallback<Parameter>(
- *   tableId: Id,
- *   getRow: (parameter: Parameter, store: Store) => Row,
- *   getRowDeps?: React.DependencyList,
- *   storeOrStoreId?: StoreOrStoreId,
- *   then?: (rowId: Id | undefined, store: Store, row: Row) => void,
- *   thenDeps?: React.DependencyList,
- * ): ParameterizedCallback<Parameter>
- * ```
- *
  * This hook is useful, for example, when creating an event handler that will
  * mutate the data in the Store. In this case, the parameter will likely be the
  * event, so that you can use data from it as part of the mutation.
@@ -1656,18 +1622,6 @@ export function useAddRowCallback<Parameter>(
  * The useSetPartialRowCallback hook returns a parameterized callback that can
  * be used to set partial data of a single Row in the Store, leaving other Cell
  * values unaffected.
- *
- * ```ts override
- * useSetPartialRowCallback<Parameter>(
- *   tableId: Id,
- *   rowId: Id,
- *   getPartialRow: (parameter: Parameter, store: Store) => Row,
- *   getPartialRowDeps?: React.DependencyList,
- *   storeOrStoreId?: StoreOrStoreId,
- *   then?: (store: Store, partialRow: Row) => void,
- *   thenDeps?: React.DependencyList,
- * ): ParameterizedCallback<Parameter>
- * ```
  *
  * This hook is useful, for example, when creating an event handler that will
  * mutate the data in Store. In this case, the parameter will likely be the
