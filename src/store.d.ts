@@ -449,7 +449,16 @@ export type ValueCallback<
  * @param cell The current value of the Cell to map to a new value.
  * @category Callback
  */
-export type MapCell = (cell: CellOrUndefined) => Cell;
+export type MapCell<
+  Schema extends OptionalTablesSchema = NoTablesSchema,
+  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+  CellId extends CellIdFromSchema<Schema, TableId> = CellIdFromSchema<
+    Schema,
+    TableId
+  >,
+> = (
+  cell: CellOrUndefined<Schema, TableId, CellId>,
+) => Cell<Schema, TableId, CellId>;
 
 /**
  * The MapValue type describes a function that takes an existing Value and
@@ -476,7 +485,14 @@ export type MapValue = (value: ValueOrUndefined) => Value;
  * @param cellId The Id of the Cell to fetch the value for.
  * @category Callback
  */
-export type GetCell = (cellId: Id) => CellOrUndefined;
+export type GetCell<
+  Schema extends OptionalTablesSchema = NoTablesSchema,
+  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+  CellId extends CellIdFromSchema<Schema, TableId> = CellIdFromSchema<
+    Schema,
+    TableId
+  >,
+> = (cellId: CellId) => CellOrUndefined<Schema, TableId, CellId>;
 
 /**
  * The DoRollback type describes a function that you can use to rollback the
@@ -2621,7 +2637,9 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
     tableId: TableId,
     rowId: Id,
     cellId: CellId,
-    cell: Cell<Schemas[0], TableId, CellId> | MapCell,
+    cell:
+      | Cell<Schemas[0], TableId, CellId>
+      | MapCell<Schemas[0], TableId, CellId>,
   ): Store<Schemas>;
 
   /**
