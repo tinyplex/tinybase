@@ -234,7 +234,7 @@ export type Tables<
  */
 export type Table<
   Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = Id,
+  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
   WhenSet extends boolean = false,
 > = NonNullable<Tables<Schema, WhenSet>[TableId]>;
 
@@ -257,7 +257,7 @@ export type Table<
  */
 export type Row<
   Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = Id,
+  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
   WhenSet extends boolean = false,
 > = NonNullable<Table<Schema, TableId, WhenSet>>[Id];
 
@@ -354,7 +354,7 @@ export type ValueOrUndefined = Value | undefined;
  */
 export type TableCallback<
   Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = Id,
+  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
 > = (
   tableId: TableId,
   forEachRow: (rowCallback: RowCallback<Schema, TableId>) => void,
@@ -375,7 +375,7 @@ export type TableCallback<
  */
 export type RowCallback<
   Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = Id,
+  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
 > = (
   rowId: Id,
   forEachCell: (cellCallback: CellCallback<Schema, TableId>) => void,
@@ -395,8 +395,11 @@ export type RowCallback<
  */
 export type CellCallback<
   Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = Id,
-  CellId extends CellIdFromSchema<Schema, TableId> = Id,
+  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+  CellId extends CellIdFromSchema<Schema, TableId> = CellIdFromSchema<
+    Schema,
+    TableId
+  >,
 > = (cellId: CellId, cell: Cell) => void;
 
 /**
@@ -414,7 +417,7 @@ export type CellCallback<
  */
 export type ValueCallback<
   Schema extends OptionalValuesSchema = NoValuesSchema,
-  ValueId extends ValueIdFromSchema<Schema> = Id,
+  ValueId extends ValueIdFromSchema<Schema> = ValueIdFromSchema<Schema>,
 > = (valueId: ValueId, value: Value) => void;
 
 /**
@@ -579,7 +582,9 @@ export type TableIdsListener<Schemas extends OptionalSchemas = NoSchemas> = (
  */
 export type TableListener<
   Schemas extends OptionalSchemas = NoSchemas,
-  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null = null,
+  TableIdOrNull extends TableIdFromSchema<
+    Schemas[0]
+  > | null = TableIdFromSchema<Schemas[0]> | null,
 > = (
   store: Store<Schemas>,
   tableId: TableIdOrNull extends null
@@ -604,7 +609,9 @@ export type TableListener<
  */
 export type RowIdsListener<
   Schemas extends OptionalSchemas = NoSchemas,
-  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null = null,
+  TableIdOrNull extends TableIdFromSchema<
+    Schemas[0]
+  > | null = TableIdFromSchema<Schemas[0]> | null,
 > = (
   store: Store<Schemas>,
   tableId: TableIdOrNull extends null
@@ -638,9 +645,9 @@ export type RowIdsListener<
  */
 export type SortedRowIdsListener<
   Schemas extends OptionalSchemas = NoSchemas,
-  TableId extends TableIdFromSchema<Schemas[0]> = Id,
+  TableId extends TableIdFromSchema<Schemas[0]> = TableIdFromSchema<Schemas[0]>,
   CellId extends CellIdFromSchema<Schemas[0], TableId> | undefined =
-    | Id
+    | CellIdFromSchema<Schemas[0], TableId>
     | undefined,
   Descending extends boolean = boolean,
   Offset extends number = number,
@@ -648,7 +655,7 @@ export type SortedRowIdsListener<
 > = (
   store: Store<Schemas>,
   tableId: TableId,
-  cellId: CellId | undefined,
+  cellId: CellId,
   descending: Descending,
   offset: Offset,
   limit: Limit,
@@ -680,8 +687,10 @@ export type SortedRowIdsListener<
  */
 export type RowListener<
   Schemas extends OptionalSchemas = NoSchemas,
-  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null = null,
-  RowIdOrNull extends IdOrNull = null,
+  TableIdOrNull extends TableIdFromSchema<
+    Schemas[0]
+  > | null = TableIdFromSchema<Schemas[0]> | null,
+  RowIdOrNull extends IdOrNull = IdOrNull,
 > = (
   store: Store<Schemas>,
   tableId: TableIdOrNull extends null
@@ -708,7 +717,9 @@ export type RowListener<
  */
 export type CellIdsListener<
   Schemas extends OptionalSchemas = NoSchemas,
-  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null = null,
+  TableIdOrNull extends TableIdFromSchema<
+    Schemas[0]
+  > | null = TableIdFromSchema<Schemas[0]> | null,
   RowIdOrNull extends IdOrNull = null,
 > = (
   store: Store<Schemas>,
@@ -748,21 +759,33 @@ export type CellIdsListener<
  */
 export type CellListener<
   Schemas extends OptionalSchemas = NoSchemas,
-  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null = null,
-  RowIdOrNull extends IdOrNull = null,
-  CellIdOrNull extends CellIdOrNullFromSchema<Schemas[0], TableIdOrNull> = null,
-  TableId = TableIdOrNull extends null
+  TableIdOrNull extends TableIdFromSchema<
+    Schemas[0]
+  > | null = TableIdFromSchema<Schemas[0]> | null,
+  RowIdOrNull extends IdOrNull = IdOrNull,
+  CellIdOrNull extends
+    | (TableIdOrNull extends TableIdFromSchema<Schemas[0]>
+        ? CellIdFromSchema<Schemas[0], TableIdOrNull>
+        : AllCellIdFromSchema<Schemas[0]>)
+    | null =
+    | (TableIdOrNull extends TableIdFromSchema<Schemas[0]>
+        ? CellIdFromSchema<Schemas[0], TableIdOrNull>
+        : AllCellIdFromSchema<Schemas[0]>)
+    | null,
+> = <
+  TableId extends TableIdOrNull extends null
     ? TableIdFromSchema<Schemas[0]>
     : TableIdOrNull,
-> = (
+  CellId extends CellIdOrNull extends null
+    ? TableIdOrNull extends TableIdFromSchema<Schemas[0]>
+      ? CellIdFromSchema<Schemas[0], TableIdOrNull>
+      : AllCellIdFromSchema<Schemas[0]>
+    : CellIdOrNull,
+>(
   store: Store<Schemas>,
   tableId: TableId,
   rowId: RowIdOrNull extends null ? Id : RowIdOrNull,
-  cellId: CellIdOrNull extends null
-    ? TableId extends Id
-      ? CellIdFromSchema<Schemas[0], TableId>
-      : never
-    : CellIdOrNull,
+  cellId: CellId,
   newCell: Cell,
   oldCell: Cell,
   getCellChange: GetCellChange<Schemas[0]> | undefined,
@@ -837,7 +860,9 @@ export type ValueIdsListener<Schemas extends OptionalSchemas = NoSchemas> = (
  */
 export type ValueListener<
   Schemas extends OptionalSchemas = NoSchemas,
-  ValueIdOrNull extends ValueIdFromSchema<Schemas[1]> | null = null,
+  ValueIdOrNull extends ValueIdFromSchema<
+    Schemas[1]
+  > | null = ValueIdFromSchema<Schemas[1]> | null,
   ValueId = ValueIdOrNull extends null
     ? ValueIdFromSchema<Schemas[1]>
     : ValueIdOrNull,
@@ -4687,7 +4712,11 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   addCellListener<
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
     RowIdOrNull extends IdOrNull,
-    CellIdOrNull extends CellIdOrNullFromSchema<Schemas[0], TableIdOrNull>,
+    CellIdOrNull extends
+      | (TableIdOrNull extends TableIdFromSchema<Schemas[0]>
+          ? CellIdFromSchema<Schemas[0], TableIdOrNull>
+          : AllCellIdFromSchema<Schemas[0]>)
+      | null,
   >(
     tableId: TableIdOrNull,
     rowId: RowIdOrNull,
@@ -5780,9 +5809,8 @@ export type TablesFromSchema<
  *
  * @category Internal
  */
-export type TableIdFromSchema<Schema extends OptionalTablesSchema> = Exclude<
-  keyof Schema & Id,
-  number
+export type TableIdFromSchema<Schema extends OptionalTablesSchema> = AsId<
+  keyof Schema
 >;
 
 /**
@@ -5820,17 +5848,22 @@ export type CellIdsFromSchema<
   Schema extends OptionalTablesSchema,
   TableId extends TableIdFromSchema<Schema>,
   IsDefaulted extends boolean = true,
-  TableSchema = Schema[TableId],
-> = {
-  [CellId in keyof TableSchema]: TableSchema[CellId] extends {default: Cell}
-    ? IsDefaulted extends true
-      ? CellId
-      : never
-    : IsDefaulted extends true
-    ? never
-    : CellId;
-}[keyof TableSchema] &
-  Id;
+> = AsId<
+  {
+    [CellId in CellIdFromSchema<
+      Schema,
+      TableId
+    >]: Schema[TableId][CellId] extends {
+      default: Cell;
+    }
+      ? IsDefaulted extends true
+        ? CellId
+        : never
+      : IsDefaulted extends true
+      ? never
+      : CellId;
+  }[CellIdFromSchema<Schema, TableId>]
+>;
 
 /**
  * The CellIdFromSchema type is a utility for determining the Id of Cells from a
@@ -5844,30 +5877,23 @@ export type CellIdsFromSchema<
 export type CellIdFromSchema<
   Schema extends OptionalTablesSchema,
   TableId extends TableIdFromSchema<Schema>,
-> = Exclude<keyof Schema[TableId] & Id, number>;
+> = AsId<keyof Schema[TableId]>;
 
 /**
- * The CellIdOrNullFromSchema type is a utility for determining the Id of Cells
- * from a provided TablesSchema, and when a Table Id may or may not have been
- * provided (such as when adding a listener).
+ * The AllCellIdFromSchema type is a utility for determining the Id of Cells
+ * across all Tables, from a provided TablesSchema.
  *
  * This type is used internally to the TinyBase type system and you are not
  * expected to need to use it directly.
  *
  * @category Internal
  */
-
-type CellIdOrNullFromSchema<
+export type AllCellIdFromSchema<
   Schema extends OptionalTablesSchema,
-  TableIdOrNull extends TableIdFromSchema<Schema> | null,
-  EveryTableId = TableIdFromSchema<Schema>,
-> =
-  | (TableIdOrNull extends null
-      ? EveryTableId extends Id
-        ? CellIdFromSchema<Schema, EveryTableId>
-        : never
-      : CellIdFromSchema<Schema, TableIdOrNull & Id>)
-  | null;
+  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+> = TableId extends TableIdFromSchema<Schema>
+  ? CellIdFromSchema<Schema, TableId>
+  : never;
 
 /**
  * The ValuesFromSchema type is a utility for determining a Values structure
@@ -5954,7 +5980,16 @@ export type ValueIdsFromSchema<
  *
  * @category Internal
  */
-export type ValueIdFromSchema<Schema extends OptionalValuesSchema> = Exclude<
-  keyof Schema & Id,
-  number
+export type ValueIdFromSchema<Schema extends OptionalValuesSchema> = AsId<
+  keyof Schema
 >;
+
+/**
+ * The AsId type is a utility for coercing keys to be Id-like.
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type AsId<T> = Exclude<T & Id, number>;
