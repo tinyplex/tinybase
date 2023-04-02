@@ -228,7 +228,7 @@ export type Table<
   Schema extends OptionalTablesSchema = NoTablesSchema,
   TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
   WhenSet extends boolean = false,
-> = NonNullable<Tables<Schema, WhenSet>[TableId]>;
+> = TableFromSchema<Schema, TableId, WhenSet>;
 
 /**
  * The Row type is the data structure representing the data in a single row.
@@ -5637,27 +5637,11 @@ export type TablesFromSchema<
   Schema extends OptionalTablesSchema,
   WhenSet extends boolean = false,
 > = {
-  -readonly [TableId in TableIdFromSchema<Schema>]?: {
-    [rowId: Id]: (WhenSet extends true
-      ? {
-          -readonly [CellId in CellIdsFromSchema<
-            Schema,
-            TableId
-          >]?: CellFromSchema<Schema, TableId, CellId>;
-        }
-      : {
-          -readonly [CellId in CellIdsFromSchema<
-            Schema,
-            TableId
-          >]: CellFromSchema<Schema, TableId, CellId>;
-        }) & {
-      -readonly [CellId in CellIdsFromSchema<
-        Schema,
-        TableId,
-        false
-      >]?: CellFromSchema<Schema, TableId, CellId>;
-    };
-  };
+  -readonly [TableId in TableIdFromSchema<Schema>]?: TableFromSchema<
+    Schema,
+    TableId,
+    WhenSet
+  >;
 };
 
 /**
@@ -5674,7 +5658,42 @@ export type TableIdFromSchema<Schema extends OptionalTablesSchema> = AsId<
 >;
 
 /**
- * The CellTypeFromSchema type is a utility for determining a Cell type from a
+ * The TableFromSchema type is a utility for determining a Table structure
+ * from a provided TablesSchema.
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type TableFromSchema<
+  Schema extends OptionalTablesSchema = NoTablesSchema,
+  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+  WhenSet extends boolean = false,
+> = {
+  [rowId: Id]: (WhenSet extends true
+    ? {
+        -readonly [CellId in CellIdsFromSchema<
+          Schema,
+          TableId
+        >]?: CellFromSchema<Schema, TableId, CellId>;
+      }
+    : {
+        -readonly [CellId in CellIdsFromSchema<
+          Schema,
+          TableId
+        >]: CellFromSchema<Schema, TableId, CellId>;
+      }) & {
+    -readonly [CellId in CellIdsFromSchema<
+      Schema,
+      TableId,
+      false
+    >]?: CellFromSchema<Schema, TableId, CellId>;
+  };
+};
+
+/**
+ * The CellFromSchema type is a utility for determining a Cell type from a
  * provided TablesSchema.
  *
  * This type is used internally to the TinyBase type system and you are not
@@ -5787,7 +5806,7 @@ export type ValuesFromSchema<
 };
 
 /**
- * The ValueTypeFromSchema type is a utility for determining a Value type from a
+ * The ValueFromSchema type is a utility for determining a Value type from a
  * provided ValuesSchema.
  *
  * This type is used internally to the TinyBase type system and you are not
