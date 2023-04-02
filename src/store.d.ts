@@ -2258,7 +2258,9 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  setTables(tables: Tables<Schemas[0], true>): Store<Schemas>;
+  setTables<Tables = TablesFromSchema<Schemas[0], true>>(
+    tables: Tables,
+  ): Store<Schemas>;
 
   /**
    * The setTable method takes an object and sets the entire data of a single
@@ -2309,9 +2311,12 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  setTable<TableId extends TableIdFromSchema<Schemas[0]>>(
+  setTable<
+    TableId extends TableIdFromSchema<Schemas[0]>,
+    Table = TableFromSchema<Schemas[0], TableId, true>,
+  >(
     tableId: TableId,
-    table: Table<Schemas[0], TableId, true>,
+    table: Table,
   ): Store<Schemas>;
 
   /**
@@ -2362,10 +2367,13 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  setRow<TableId extends TableIdFromSchema<Schemas[0]>>(
+  setRow<
+    TableId extends TableIdFromSchema<Schemas[0]>,
+    Row = RowFromSchema<Schemas[0], TableId, true>,
+  >(
     tableId: TableId,
     rowId: Id,
-    row: Row<Schemas[0], TableId, true>,
+    row: Row,
   ): Store<Schemas>;
 
   /**
@@ -2419,9 +2427,12 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  addRow<TableId extends TableIdFromSchema<Schemas[0]>>(
+  addRow<
+    TableId extends TableIdFromSchema<Schemas[0]>,
+    Row = RowFromSchema<Schemas[0], TableId, true>,
+  >(
     tableId: TableId,
-    row: Row<Schemas[0], TableId, true>,
+    row: Row,
   ): Id | undefined;
 
   /**
@@ -2474,10 +2485,13 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  setPartialRow<TableId extends TableIdFromSchema<Schemas[0]>>(
+  setPartialRow<
+    TableId extends TableIdFromSchema<Schemas[0]>,
+    Row = RowFromSchema<Schemas[0], TableId, true>,
+  >(
     tableId: TableId,
     rowId: Id,
-    partialRow: Row<Schemas[0], TableId, true>,
+    partialRow: Row,
   ): Store<Schemas>;
 
   /**
@@ -2539,13 +2553,13 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   setCell<
     TableId extends TableIdFromSchema<Schemas[0]>,
     CellId extends CellIdFromSchema<Schemas[0], TableId>,
+    Cell = CellFromSchema<Schemas[0], TableId, CellId>,
+    MapCell = (cell: Cell | undefined) => Cell,
   >(
     tableId: TableId,
     rowId: Id,
     cellId: CellId,
-    cell:
-      | Cell<Schemas[0], TableId, CellId>
-      | MapCell<Schemas[0], TableId, CellId>,
+    cell: Cell | MapCell,
   ): Store<Schemas>;
 
   /**
@@ -2594,7 +2608,9 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Setter
    * @since v3.0.0
    */
-  setValues(values: Values<Schemas[1], true>): Store<Schemas>;
+  setValues<Values = ValuesFromSchema<Schemas[1], true>>(
+    values: Values,
+  ): Store<Schemas>;
 
   /**
    * The setPartialValues method takes an object and sets its Values in the
@@ -2644,7 +2660,9 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Setter
    * @since v3.0.0
    */
-  setPartialValues(partialValues: Values<Schemas[1], true>): Store<Schemas>;
+  setPartialValues<Values = ValuesFromSchema<Schemas[1], true>>(
+    partialValues: Values,
+  ): Store<Schemas>;
 
   /**
    * The setValue method sets a single keyed Value in the Store.
@@ -2698,9 +2716,13 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Setter
    * @since v3.0.0
    */
-  setValue<ValueId extends ValueIdFromSchema<Schemas[1]>>(
+  setValue<
+    ValueId extends ValueIdFromSchema<Schemas[1]>,
+    Value = ValueFromSchema<Schemas[1], ValueId>,
+    MapValue = (value: Value | undefined) => Value,
+  >(
     valueId: ValueId,
-    value: Value<Schemas[1], ValueId> | MapValue<Schemas[1], ValueId>,
+    value: Value | MapValue,
   ): Store<Schemas>;
 
   /**
