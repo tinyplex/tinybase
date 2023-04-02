@@ -36,11 +36,7 @@ import {Id, IdOrNull, Ids, Json} from './common.d';
  * ```
  * @category Schema
  */
-export type TablesSchema = {
-  [tableId: Id]: {
-    [cellId: Id]: CellSchema;
-  };
-};
+export type TablesSchema = {[tableId: Id]: {[cellId: Id]: CellSchema}};
 
 /**
  * The CellSchema type describes what values are allowed for each Cell in a
@@ -90,9 +86,7 @@ export type CellSchema =
  * @category Schema
  * @since v3.0.0
  */
-export type ValuesSchema = {
-  [valueId: Id]: ValueSchema;
-};
+export type ValuesSchema = {[valueId: Id]: ValueSchema};
 
 /**
  * The ValueSchema type describes what values are allowed for keyed Values in a
@@ -2885,9 +2879,12 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Setter
    * @since v3.0.0
    */
-  setTablesSchema<NewTablesSchema extends TablesSchema>(
-    tablesSchema: NewTablesSchema,
-  ): Store<[typeof tablesSchema, Schemas[1]]>;
+  setTablesSchema<
+    TablesSchema extends TablesSchemaAlias,
+    ValuesSchema extends OptionalValuesSchema = Schemas[1],
+  >(
+    tablesSchema: TablesSchema,
+  ): Store<[typeof tablesSchema, ValuesSchema]>;
 
   /**
    * The setValuesSchema method lets you specify the ValuesSchema of the keyed
@@ -2917,9 +2914,12 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Setter
    * @since v3.0.0
    */
-  setValuesSchema<NewValuesSchema extends ValuesSchema>(
-    valuesSchema: NewValuesSchema,
-  ): Store<[Schemas[0], typeof valuesSchema]>;
+  setValuesSchema<
+    ValuesSchema extends ValuesSchemaAlias,
+    TablesSchema extends OptionalTablesSchema = Schemas[0],
+  >(
+    valuesSchema: ValuesSchema,
+  ): Store<[TablesSchema, typeof valuesSchema]>;
 
   /**
    * The setSchema method lets you specify the TablesSchema and ValuesSchema of
@@ -2979,15 +2979,15 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Setter
    */
   setSchema<
-    NewTablesSchema extends TablesSchema,
-    NewValuesSchema extends ValuesSchema,
+    TablesSchema extends TablesSchemaAlias,
+    ValuesSchema extends ValuesSchemaAlias,
   >(
-    tablesSchema: NewTablesSchema,
-    valuesSchema?: NewValuesSchema,
+    tablesSchema: TablesSchema,
+    valuesSchema?: ValuesSchema,
   ): Store<
     [
       typeof tablesSchema,
-      Exclude<ValuesSchema, typeof valuesSchema> extends never
+      Exclude<ValuesSchemaAlias, typeof valuesSchema> extends never
         ? NoValuesSchema
         : NonNullable<typeof valuesSchema>,
     ]
@@ -5917,3 +5917,25 @@ export type ValueFromSchema<
  * @category Internal
  */
 export type AsId<Key> = Exclude<Key & Id, number>;
+
+/**
+ * The TablesSchemaAlias type is a duplicate of TablesSchema, required to mask
+ * complex generics from documentation.
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type TablesSchemaAlias = TablesSchema;
+
+/**
+ * The ValuesSchemaAlias type is a duplicate of ValuesSchema, required to mask
+ * complex generics from documentation.
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type ValuesSchemaAlias = ValuesSchema;
