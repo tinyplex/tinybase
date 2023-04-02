@@ -14,8 +14,6 @@ import {
   Ids,
   Indexes,
   Metrics,
-  NoSchemas,
-  OptionalSchemas,
   Queries,
   Relationships,
   Store,
@@ -148,11 +146,7 @@ export const expectNoChanges = (listener: Listener): void => {
   Object.values(listener.logs).forEach((log) => expect(log).toHaveLength(0));
 };
 
-export const createStoreListener = <
-  Schemas extends OptionalSchemas = NoSchemas,
->(
-  store: Store<Schemas>,
-): StoreListener => {
+export const createStoreListener = (store: Store): StoreListener => {
   const logs: Logs = {};
 
   return Object.freeze({
