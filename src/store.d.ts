@@ -163,8 +163,8 @@ export type OptionalTablesSchema = TablesSchema | NoTablesSchema;
 export type OptionalValuesSchema = ValuesSchema | NoValuesSchema;
 
 /**
- * The OptionalSchemas type is used by generic types that can optionally
- * take either or both of a TablesSchema and ValuesSchema.
+ * The OptionalSchemas type is used by generic types that can optionally take
+ * either or both of a TablesSchema and ValuesSchema.
  *
  * @category Schema
  */
@@ -247,7 +247,7 @@ export type Row<
   Schema extends OptionalTablesSchema = NoTablesSchema,
   TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
   WhenSet extends boolean = false,
-> = NonNullable<Table<Schema, TableId, WhenSet>>[Id];
+> = RowFromSchema<Schema, TableId, WhenSet>;
 
 /**
  * The Cell type is the data structure representing the data in a single cell.
@@ -269,7 +269,7 @@ export type Cell<
     Schema,
     TableId
   >,
-> = NonNullable<CellFromSchema<Schema, TableId, CellId>>;
+> = CellFromSchema<Schema, TableId, CellId>;
 
 /**
  * The CellOrUndefined type is a data structure representing the data in a
@@ -329,7 +329,7 @@ export type Values<
 export type Value<
   Schema extends OptionalValuesSchema = NoValuesSchema,
   ValueId extends ValueIdFromSchema<Schema> = ValueIdFromSchema<Schema>,
-> = NonNullable<ValueFromSchema<Schema, ValueId>>;
+> = ValueFromSchema<Schema, ValueId>;
 
 /**
  * The ValueOrUndefined type is a data structure representing the data in a
@@ -535,8 +535,8 @@ export type DoRollback<Schemas extends OptionalSchemas = NoSchemas> = (
  * @param store A reference to the Store that is completing a transaction.
  * @param cellsTouched Whether Cell values have been touched during the
  * transaction.
- * @param valuesTouched Whether Values have been touched during the
- * transaction, since v3.0.0.
+ * @param valuesTouched Whether Values have been touched during the transaction,
+ * since v3.0.0.
  * @category Listener
  */
 export type TransactionListener<Schemas extends OptionalSchemas = NoSchemas> = (
@@ -2038,8 +2038,8 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   getTablesJson(): Json;
 
   /**
-   * The getValuesJson method returns a string serialization of all of the
-   * keyed Values in the Store.
+   * The getValuesJson method returns a string serialization of all of the keyed
+   * Values in the Store.
    *
    * @returns A string serialization of all of the Values in the Store.
    * @example
@@ -3473,8 +3473,8 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * been a corresponding startTransaction method that this completes, of
    * course, otherwise this function has no effect.
    *
-   * The optional parameter, `doRollback` is a DoRollback callback that
-   * you can use to rollback the transaction if it did not complete to your
+   * The optional parameter, `doRollback` is a DoRollback callback that you can
+   * use to rollback the transaction if it did not complete to your
    * satisfaction. It is called with `changedCells`, `invalidCells`,
    * `changedValues`, and `invalidValues` parameters, which inform you of the
    * net changes that have been made during the transaction, and any invalid
@@ -5658,8 +5658,8 @@ export type TableIdFromSchema<Schema extends OptionalTablesSchema> = AsId<
 >;
 
 /**
- * The TableFromSchema type is a utility for determining a Table structure
- * from a provided TablesSchema.
+ * The TableFromSchema type is a utility for determining a Table structure from
+ * a provided TablesSchema.
  *
  * This type is used internally to the TinyBase type system and you are not
  * expected to need to use it directly.
@@ -5670,27 +5670,100 @@ export type TableFromSchema<
   Schema extends OptionalTablesSchema = NoTablesSchema,
   TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
   WhenSet extends boolean = false,
-> = {
-  [rowId: Id]: (WhenSet extends true
-    ? {
-        -readonly [CellId in CellIdsFromSchema<
-          Schema,
-          TableId
-        >]?: CellFromSchema<Schema, TableId, CellId>;
-      }
-    : {
-        -readonly [CellId in CellIdsFromSchema<
-          Schema,
-          TableId
-        >]: CellFromSchema<Schema, TableId, CellId>;
-      }) & {
-    -readonly [CellId in CellIdsFromSchema<
-      Schema,
-      TableId,
-      false
-    >]?: CellFromSchema<Schema, TableId, CellId>;
-  };
+> = {[rowId: Id]: RowFromSchema<Schema, TableId, WhenSet>};
+
+/**
+ * The RowFromSchema type is a utility for determining a Row structure from a
+ * provided TablesSchema.
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type RowFromSchema<
+  Schema extends OptionalTablesSchema = NoTablesSchema,
+  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+  WhenSet extends boolean = false,
+> = (WhenSet extends true
+  ? {
+      -readonly [CellId in DefaultCellIdFromSchema<
+        Schema,
+        TableId
+      >]?: CellFromSchema<Schema, TableId, CellId>;
+    }
+  : {
+      -readonly [CellId in DefaultCellIdFromSchema<
+        Schema,
+        TableId
+      >]: CellFromSchema<Schema, TableId, CellId>;
+    }) & {
+  -readonly [CellId in DefaultCellIdFromSchema<
+    Schema,
+    TableId,
+    false
+  >]?: CellFromSchema<Schema, TableId, CellId>;
 };
+
+/**
+ * The CellIdFromSchema type is a utility for determining the Id of Cells from a
+ * provided TablesSchema.
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type CellIdFromSchema<
+  Schema extends OptionalTablesSchema,
+  TableId extends TableIdFromSchema<Schema>,
+> = AsId<keyof Schema[TableId]>;
+
+/**
+ * The DefaultCellIdFromSchema type is a utility for determining Cells with or
+ * without default status from a provided TablesSchema.
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type DefaultCellIdFromSchema<
+  Schema extends OptionalTablesSchema,
+  TableId extends TableIdFromSchema<Schema>,
+  IsDefaulted extends boolean = true,
+> = AsId<
+  {
+    [CellId in CellIdFromSchema<
+      Schema,
+      TableId
+    >]: Schema[TableId][CellId] extends {
+      default: string | number | boolean;
+    }
+      ? IsDefaulted extends true
+        ? CellId
+        : never
+      : IsDefaulted extends true
+      ? never
+      : CellId;
+  }[CellIdFromSchema<Schema, TableId>]
+>;
+
+/**
+ * The AllCellIdFromSchema type is a utility for determining the Id of Cells
+ * across all Tables, from a provided TablesSchema.
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type AllCellIdFromSchema<
+  Schema extends OptionalTablesSchema,
+  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+> = TableId extends TableIdFromSchema<Schema>
+  ? CellIdFromSchema<Schema, TableId>
+  : never;
 
 /**
  * The CellFromSchema type is a utility for determining a Cell type from a
@@ -5715,66 +5788,6 @@ export type CellFromSchema<
   : string | number | boolean;
 
 /**
- * The CellIdsDefaultedFromSchema type is a utility for determining Cells with
- * or without default status from a provided TablesSchema.
- *
- * This type is used internally to the TinyBase type system and you are not
- * expected to need to use it directly.
- *
- * @category Internal
- */
-export type CellIdsFromSchema<
-  Schema extends OptionalTablesSchema,
-  TableId extends TableIdFromSchema<Schema>,
-  IsDefaulted extends boolean = true,
-> = AsId<
-  {
-    [CellId in CellIdFromSchema<
-      Schema,
-      TableId
-    >]: Schema[TableId][CellId] extends {
-      default: string | number | boolean;
-    }
-      ? IsDefaulted extends true
-        ? CellId
-        : never
-      : IsDefaulted extends true
-      ? never
-      : CellId;
-  }[CellIdFromSchema<Schema, TableId>]
->;
-
-/**
- * The CellIdFromSchema type is a utility for determining the Id of Cells from a
- * provided TablesSchema.
- *
- * This type is used internally to the TinyBase type system and you are not
- * expected to need to use it directly.
- *
- * @category Internal
- */
-export type CellIdFromSchema<
-  Schema extends OptionalTablesSchema,
-  TableId extends TableIdFromSchema<Schema>,
-> = AsId<keyof Schema[TableId]>;
-
-/**
- * The AllCellIdFromSchema type is a utility for determining the Id of Cells
- * across all Tables, from a provided TablesSchema.
- *
- * This type is used internally to the TinyBase type system and you are not
- * expected to need to use it directly.
- *
- * @category Internal
- */
-export type AllCellIdFromSchema<
-  Schema extends OptionalTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-> = TableId extends TableIdFromSchema<Schema>
-  ? CellIdFromSchema<Schema, TableId>
-  : never;
-
-/**
  * The ValuesFromSchema type is a utility for determining a Values structure
  * from a provided ValuesSchema.
  *
@@ -5788,22 +5801,59 @@ export type ValuesFromSchema<
   WhenSet extends boolean = false,
 > = (WhenSet extends true
   ? {
-      -readonly [ValueId in ValueIdsFromSchema<Schema>]?: ValueFromSchema<
+      -readonly [ValueId in DefaultValueIdFromSchema<Schema>]?: ValueFromSchema<
         Schema,
         ValueId
       >;
     }
   : {
-      -readonly [ValueId in ValueIdsFromSchema<Schema>]: ValueFromSchema<
+      -readonly [ValueId in DefaultValueIdFromSchema<Schema>]: ValueFromSchema<
         Schema,
         ValueId
       >;
     }) & {
-  -readonly [ValueId in ValueIdsFromSchema<Schema, false>]?: ValueFromSchema<
+  -readonly [ValueId in DefaultValueIdFromSchema<
     Schema,
-    ValueId
-  >;
+    false
+  >]?: ValueFromSchema<Schema, ValueId>;
 };
+
+/**
+ * The ValueIdFromSchema type is a utility for determining the Id of Values from
+ * a provided ValuesSchema.
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type ValueIdFromSchema<Schema extends OptionalValuesSchema> = AsId<
+  keyof Schema
+>;
+
+/**
+ * The DefaultValueIdFromSchema type is a utility for determining Values with or
+ * without default status from a provided ValuesSchema.
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type DefaultValueIdFromSchema<
+  Schema extends OptionalValuesSchema,
+  IsDefaulted extends boolean = true,
+> = {
+  [ValueId in ValueIdFromSchema<Schema>]: Schema[ValueId] extends {
+    default: string | number | boolean;
+  }
+    ? IsDefaulted extends true
+      ? ValueId
+      : never
+    : IsDefaulted extends true
+    ? never
+    : ValueId;
+}[ValueIdFromSchema<Schema>];
 
 /**
  * The ValueFromSchema type is a utility for determining a Value type from a
@@ -5825,43 +5875,6 @@ export type ValueFromSchema<
   : ValueType extends 'boolean'
   ? boolean
   : string | number | boolean;
-
-/**
- * The ValueIdsDefaultedFromSchema type is a utility for determining Values with
- * or without default status from a provided ValuesSchema.
- *
- * This type is used internally to the TinyBase type system and you are not
- * expected to need to use it directly.
- *
- * @category Internal
- */
-export type ValueIdsFromSchema<
-  Schema extends OptionalValuesSchema,
-  IsDefaulted extends boolean = true,
-> = {
-  [ValueId in ValueIdFromSchema<Schema>]: Schema[ValueId] extends {
-    default: string | number | boolean;
-  }
-    ? IsDefaulted extends true
-      ? ValueId
-      : never
-    : IsDefaulted extends true
-    ? never
-    : ValueId;
-}[ValueIdFromSchema<Schema>];
-
-/**
- * The ValueIdFromSchema type is a utility for determining the Id of Values from
- * a provided ValuesSchema.
- *
- * This type is used internally to the TinyBase type system and you are not
- * expected to need to use it directly.
- *
- * @category Internal
- */
-export type ValueIdFromSchema<Schema extends OptionalValuesSchema> = AsId<
-  keyof Schema
->;
 
 /**
  * The AsId type is a utility for coercing keys to be Id-like.
