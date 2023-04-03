@@ -85,27 +85,6 @@ const getStoreApi = async (
   }
 };
 
-const getStoreRefinement = async (
-  schemaFile: string,
-  storeName: string,
-  outputDir: string,
-) => {
-  try {
-    const [dTs, uiReactDTs] = await getTools(
-      schemaFile,
-    ).getPrettyStoreRefinement(storeName);
-    writeFile(outputDir, storeName + '-refinement.d.ts', dTs, 'Definition');
-    writeFile(
-      outputDir,
-      storeName + '-ui-react-refinement.d.ts',
-      uiReactDTs,
-      'UI React definition',
-    );
-  } catch {
-    err(FILE_ERROR);
-  }
-};
-
 const commands: {
   [command: string]: [
     call: (...args: string[]) => void,
@@ -119,11 +98,6 @@ const commands: {
     getStoreApi,
     '<schemaFile> <storeName> <outputDir>',
     'generate .d.ts, .ts, and .tsx API files from a schema file',
-  ],
-  getStoreRefinement: [
-    getStoreRefinement,
-    '<schemaFile> <storeName> <outputDir>',
-    'generate .d.ts refinement files from a schema file',
   ],
 };
 
