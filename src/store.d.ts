@@ -1778,12 +1778,12 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   getCell<
     TableId extends TableIdFromSchema<Schemas[0]>,
     CellId extends CellIdFromSchema<Schemas[0], TableId>,
-    Cell = CellFromSchema<Schemas[0], TableId, CellId>,
+    CellOrUndefined = CellFromSchema<Schemas[0], TableId, CellId> | undefined,
   >(
     tableId: TableId,
     rowId: Id,
     cellId: CellId,
-  ): Cell | undefined;
+  ): CellOrUndefined;
 
   /**
    * The getValues method returns an object containing the entire set of keyed
@@ -1871,10 +1871,10 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    */
   getValue<
     ValueId extends ValueIdFromSchema<Schemas[1]>,
-    Value = ValueFromSchema<Schemas[1], ValueId>,
+    ValueOrUndefined = ValueFromSchema<Schemas[1], ValueId> | undefined,
   >(
     valueId: ValueId,
-  ): Value | undefined;
+  ): ValueOrUndefined;
 
   /**
    * The hasTables method returns a boolean indicating whether any Table objects
@@ -3279,7 +3279,9 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Deleter
    */
-  delTablesSchema(): Store<[NoTablesSchema, Schemas[1]]>;
+  delTablesSchema<
+    ValuesSchema extends OptionalValuesSchema = Schemas[1],
+  >(): Store<[NoTablesSchema, ValuesSchema]>;
 
   /**
    * The delValuesSchema method lets you remove the ValuesSchema of the Store.
@@ -3299,7 +3301,9 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Deleter
    * @since v3.0.0
    */
-  delValuesSchema(): Store<[Schemas[0], NoValuesSchema]>;
+  delValuesSchema<
+    TablesSchema extends OptionalTablesSchema = Schemas[0],
+  >(): Store<[TablesSchema, NoValuesSchema]>;
 
   /**
    * The delSchema method lets you remove both the TablesSchema and ValuesSchema
@@ -3639,7 +3643,9 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Iterator
    */
-  forEachTable(tableCallback: TableCallback<Schemas[0]>): void;
+  forEachTable<TableCallback = TableCallbackAlias<Schemas[0]>>(
+    tableCallback: TableCallback,
+  ): void;
 
   /**
    * The forEachRow method takes a function that it will then call for each Row
@@ -3674,9 +3680,12 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Iterator
    */
-  forEachRow<TableId extends TableIdFromSchema<Schemas[0]>>(
+  forEachRow<
+    TableId extends TableIdFromSchema<Schemas[0]>,
+    RowCallback = RowCallbackAlias<Schemas[0], TableId>,
+  >(
     tableId: TableId,
-    rowCallback: RowCallback<Schemas[0], TableId>,
+    rowCallback: RowCallback,
   ): void;
 
   /**
@@ -3705,10 +3714,13 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Iterator
    */
-  forEachCell<TableId extends TableIdFromSchema<Schemas[0]>>(
+  forEachCell<
+    TableId extends TableIdFromSchema<Schemas[0]>,
+    CellCallback = CellCallbackAlias<Schemas[0], TableId>,
+  >(
     tableId: TableId,
     rowId: Id,
-    cellCallback: CellCallback<Schemas[0], TableId>,
+    cellCallback: CellCallback,
   ): void;
 
   /**
@@ -3734,7 +3746,9 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Iterator
    * @since v3.0.0
    */
-  forEachValue(valueCallback: ValueCallback<Schemas[1]>): void;
+  forEachValue<ValueCallback = ValueCallbackAlias<Schemas[1]>>(
+    valueCallback: ValueCallback,
+  ): void;
 
   /**
    * The addTablesListener method registers a listener function with the Store
@@ -5966,3 +5980,63 @@ export type TablesSchemaAlias = TablesSchema;
  * @category Internal
  */
 export type ValuesSchemaAlias = ValuesSchema;
+
+/**
+ * The TableCallbackAlias type is a duplicate of TableCallback, required to mask
+ * complex generics from documentation.
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type TableCallbackAlias<
+  Schema extends OptionalTablesSchema = NoTablesSchema,
+  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+> = TableCallback<Schema, TableId>;
+
+/**
+ * The RowCallbackAlias type is a duplicate of RowCallback, required to mask
+ * complex generics from documentation.
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type RowCallbackAlias<
+  Schema extends OptionalTablesSchema = NoTablesSchema,
+  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+> = RowCallback<Schema, TableId>;
+
+/**
+ * The CellCallbackAlias type is a duplicate of CellCallback, required to mask
+ * complex generics from documentation.
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type CellCallbackAlias<
+  Schema extends OptionalTablesSchema = NoTablesSchema,
+  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+  CellId extends CellIdFromSchema<Schema, TableId> = CellIdFromSchema<
+    Schema,
+    TableId
+  >,
+> = CellCallback<Schema, TableId, CellId>;
+
+/**
+ * The ValueCallbackAlias type is a duplicate of ValueCallback, required to mask
+ * complex generics from documentation.
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type ValueCallbackAlias<
+  Schema extends OptionalValuesSchema = NoValuesSchema,
+  ValueId extends ValueIdFromSchema<Schema> = ValueIdFromSchema<Schema>,
+> = ValueCallback<Schema, ValueId>;
