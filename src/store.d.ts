@@ -176,6 +176,10 @@ export type NoSchemas = [NoTablesSchema, NoValuesSchema];
  * The Tables type is the data structure representing all of the data in a
  * Store.
  *
+ * ```ts override
+ * {[tableId: Id]: Table}
+ * ```
+ *
  * A Tables object is used when setting all of the tables together with the
  * setTables method, and when getting them back out again with the getTables
  * method. A Tables object is a regular JavaScript object containing individual
@@ -204,6 +208,10 @@ export type Tables<
 /**
  * The Table type is the data structure representing the data in a single table.
  *
+ * ```ts override
+ * {[rowId: Id]: Row}
+ * ```
+ *
  * A Table is used when setting a table with the setTable method, and when
  * getting it back out again with the getTable method. A Table object is a
  * regular JavaScript object containing individual Row objects, keyed by their
@@ -227,6 +235,10 @@ export type Table<
 /**
  * The Row type is the data structure representing the data in a single row.
  *
+ * ```ts override
+ * {[cellId: Id]: Cell}
+ * ```
+ *
  * A Row is used when setting a row with the setRow method, and when getting it
  * back out again with the getRow method. A Row object is a regular JavaScript
  * object containing individual Cell objects, keyed by their Id.
@@ -245,6 +257,10 @@ export type Row<
 
 /**
  * The Cell type is the data structure representing the data in a single cell.
+ *
+ * ```ts override
+ * string | number | boolean
+ * ```
  *
  * A Cell is used when setting a cell with the setCell method, and when getting
  * it back out again with the getCell method. A Cell is a JavaScript string,
@@ -282,11 +298,16 @@ export type CellOrUndefined<
     Schema,
     TableId
   >,
-> = Cell<Schema, TableId, CellId> | undefined;
+  Cell = CellFromSchema<Schema, TableId, CellId>,
+> = Cell | undefined;
 
 /**
  * The Values type is the data structure representing all the keyed values in a
  * Store.
+ *
+ * ```ts override
+ * {[valueId: Id]: Value}
+ * ```
  *
  * A Values object is used when setting values with the setValues method, and
  * when getting them back out again with the getValues method. A Values object
@@ -308,6 +329,10 @@ export type Values<
 /**
  * The Value type is the data structure representing the data in a single keyed
  * value.
+ *
+ * ```ts override
+ * string | number | boolean
+ * ```
  *
  * A Value is used when setting a value with the setValue method, and when
  * getting it back out again with the getValue method. A Value is a JavaScript
@@ -339,7 +364,8 @@ export type Value<
 export type ValueOrUndefined<
   Schema extends OptionalValuesSchema = NoValuesSchema,
   ValueId extends ValueIdFromSchema<Schema> = ValueIdFromSchema<Schema>,
-> = Value<Schema, ValueId> | undefined;
+  Value = ValueFromSchema<Schema, ValueId>,
+> = Value | undefined;
 
 /**
  * The TableCallback type describes a function that takes a Table's Id and a
@@ -1050,6 +1076,16 @@ export type ValueChange<
  * a transaction, primarily used so that you can indicate whether the
  * transaction should be rolled back.
  *
+ * ```ts override
+ * {
+ *   [tableId: Id]: {
+ *     [rowId: Id]: {
+ *       [cellId: Id]: [CellOrUndefined, CellOrUndefined],
+ *     },
+ *   },
+ * }
+ * ```
+ *
  * A ChangedCells object is provided to the `doRollback` callback when using the
  * transaction method and the finishTransaction method. See those methods for
  * specific examples.
@@ -1111,6 +1147,10 @@ export type InvalidCells = {
  * The ChangedValues type describes the Values that have been changed during a
  * transaction, primarily used so that you can indicate whether the transaction
  * should be rolled back.
+ *
+ * ```ts override
+ * {[valueId: Id]: [ValueOrUndefined, ValueOrUndefined]}
+ * ```
  *
  * A ChangedValues object is provided to the `doRollback` callback when using
  * the transaction method and the finishTransaction method. See those methods
