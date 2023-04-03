@@ -31,7 +31,6 @@ export const DO_ACTIONS_AND_ROLLBACK_PARAMS =
   'actions: () => Return, ' + DO_ROLLBACK_PARAM;
 export const EXPORT = 'export';
 export const ID = 'Id';
-export const ID_OR_NULL = 'IdOrNull';
 export const INVALID = 'Invalid';
 export const JSON = 'Json';
 export const LISTENER_ = lower(LISTENER);
@@ -44,14 +43,12 @@ export const PROVIDER = 'Provider';
 export const REGISTERS_A_LISTENER = `Registers a ${LISTENER_} that will be called`;
 export const REPRESENTS = 'Represents';
 export const ROW_ID_PARAM = 'rowId: ' + ID;
-export const ROW_ID_OR_NULL_PARAM = 'rowId: ' + ID_OR_NULL;
 export const SCHEMA = 'Schema';
 export const SET = 'Set';
 export const SORTED_ARGS =
   ', descending?: boolean, offset?: number, limit?: number';
 export const SQUARE_BRACKETS = '[]';
-export const STORE = 'Store';
-export const THE_STORE = 'the ' + STORE;
+export const THE_STORE = 'the Store';
 export const TRANSACTION = 'Transaction';
 export const TRANSACTION_ = lower(TRANSACTION);
 export const TRANSACTION_DOC =
@@ -131,9 +128,6 @@ export const getTableDoc = (tableId: Id) => `the '${tableId}' ` + TABLE;
 
 export const getRowDoc = (tableId: Id) =>
   'the specified Row in ' + getTableDoc(tableId);
-
-export const getContentDoc = (verb = 0, noun = 0) =>
-  VERBS[verb] + SPACE + NOUNS[noun];
 
 export const getTableContentDoc = (tableId: Id, verb = 0) =>
   VERBS[verb] + ` ${getTheContentOfDoc()} ` + getTableDoc(tableId);
