@@ -500,10 +500,14 @@ export type GetCell<
  * @param invalidValues Any invalid attempts to change Values, since v3.0.0.
  * @category Callback
  */
-export type DoRollback<Schemas extends OptionalSchemas = NoSchemas> = (
-  changedCells: ChangedCells<Schemas[0]>,
+export type DoRollback<
+  Schemas extends OptionalSchemas = NoSchemas,
+  TablesSchema extends OptionalTablesSchema = Schemas[0],
+  ValuesSchema extends OptionalValuesSchema = Schemas[1],
+> = (
+  changedCells: ChangedCells<TablesSchema>,
   invalidCells: InvalidCells,
-  changedValues: ChangedValues<Schemas[1]>,
+  changedValues: ChangedValues<ValuesSchema>,
   invalidValues: InvalidValues,
 ) => boolean;
 
@@ -559,9 +563,12 @@ export type TransactionListener<Schemas extends OptionalSchemas = NoSchemas> = (
  * changes.
  * @category Listener
  */
-export type TablesListener<Schemas extends OptionalSchemas = NoSchemas> = (
+export type TablesListener<
+  Schemas extends OptionalSchemas = NoSchemas,
+  TablesSchema extends OptionalTablesSchema = Schemas[0],
+> = (
   store: Store<Schemas>,
-  getCellChange: GetCellChange<Schemas[0]> | undefined,
+  getCellChange: GetCellChange<TablesSchema> | undefined,
 ) => void;
 
 /**
@@ -606,12 +613,14 @@ export type TableListener<
   TableIdOrNull extends TableIdFromSchema<
     Schemas[0]
   > | null = TableIdFromSchema<Schemas[0]> | null,
-> = (
-  store: Store<Schemas>,
-  tableId: TableIdOrNull extends null
+  TableId = TableIdOrNull extends null
     ? TableIdFromSchema<Schemas[0]>
     : TableIdOrNull,
-  getCellChange: GetCellChange<Schemas[0]> | undefined,
+  TablesSchema extends OptionalTablesSchema = Schemas[0],
+> = (
+  store: Store<Schemas>,
+  tableId: TableId,
+  getCellChange: GetCellChange<TablesSchema> | undefined,
 ) => void;
 
 /**
@@ -633,12 +642,10 @@ export type RowIdsListener<
   TableIdOrNull extends TableIdFromSchema<
     Schemas[0]
   > | null = TableIdFromSchema<Schemas[0]> | null,
-> = (
-  store: Store<Schemas>,
-  tableId: TableIdOrNull extends null
+  TableId = TableIdOrNull extends null
     ? TableIdFromSchema<Schemas[0]>
     : TableIdOrNull,
-) => void;
+> = (store: Store<Schemas>, tableId: TableId) => void;
 
 /**
  * The SortedRowIdsListener type describes a function that is used to listen to
@@ -712,13 +719,16 @@ export type RowListener<
     Schemas[0]
   > | null = TableIdFromSchema<Schemas[0]> | null,
   RowIdOrNull extends IdOrNull = IdOrNull,
-> = (
-  store: Store<Schemas>,
-  tableId: TableIdOrNull extends null
+  TableId = TableIdOrNull extends null
     ? TableIdFromSchema<Schemas[0]>
     : TableIdOrNull,
-  rowId: RowIdOrNull extends null ? Id : RowIdOrNull,
-  getCellChange: GetCellChange<Schemas[0]> | undefined,
+  RowId = RowIdOrNull extends null ? Id : RowIdOrNull,
+  TablesSchema extends OptionalTablesSchema = Schemas[0],
+> = (
+  store: Store<Schemas>,
+  tableId: TableId,
+  rowId: RowId,
+  getCellChange: GetCellChange<TablesSchema> | undefined,
 ) => void;
 
 /**
@@ -742,13 +752,11 @@ export type CellIdsListener<
     Schemas[0]
   > | null = TableIdFromSchema<Schemas[0]> | null,
   RowIdOrNull extends IdOrNull = null,
-> = (
-  store: Store<Schemas>,
-  tableId: TableIdOrNull extends null
+  TableId = TableIdOrNull extends null
     ? TableIdFromSchema<Schemas[0]>
     : TableIdOrNull,
-  rowId: RowIdOrNull extends null ? Id : RowIdOrNull,
-) => void;
+  RowId = RowIdOrNull extends null ? Id : RowIdOrNull,
+> = (store: Store<Schemas>, tableId: TableId, rowId: RowId) => void;
 
 /**
  * The CellListener type describes a function that is used to listen to changes
@@ -796,19 +804,22 @@ export type CellListener<
   TableId extends Id = TableIdOrNull extends null
     ? TableIdFromSchema<Schemas[0]>
     : TableIdOrNull,
+  RowId = RowIdOrNull extends null ? Id : RowIdOrNull,
   CellId extends Id = CellIdOrNull extends null
     ? TableIdOrNull extends TableIdFromSchema<Schemas[0]>
       ? CellIdFromSchema<Schemas[0], TableIdOrNull>
       : AllCellIdFromSchema<Schemas[0]>
     : CellIdOrNull,
+  Cell = CellFromSchema<Schemas[0], TableId, CellId>,
+  TablesSchema extends OptionalTablesSchema = Schemas[0],
 > = (
   store: Store<Schemas>,
   tableId: TableId,
-  rowId: RowIdOrNull extends null ? Id : RowIdOrNull,
+  rowId: RowId,
   cellId: CellId,
-  newCell: Cell<Schemas[0], TableId, CellId>,
-  oldCell: Cell<Schemas[0], TableId, CellId>,
-  getCellChange: GetCellChange<Schemas[0]> | undefined,
+  newCell: Cell,
+  oldCell: Cell,
+  getCellChange: GetCellChange<TablesSchema> | undefined,
 ) => void;
 
 /**
@@ -831,9 +842,12 @@ export type CellListener<
  * changes.
  * @category Listener
  */
-export type ValuesListener<Schemas extends OptionalSchemas = NoSchemas> = (
+export type ValuesListener<
+  Schemas extends OptionalSchemas = NoSchemas,
+  ValuesSchema extends OptionalValuesSchema = Schemas[1],
+> = (
   store: Store<Schemas>,
-  getValueChange: GetValueChange<Schemas[1]> | undefined,
+  getValueChange: GetValueChange<ValuesSchema> | undefined,
 ) => void;
 
 /**
@@ -886,12 +900,14 @@ export type ValueListener<
   ValueId extends Id = ValueIdOrNull extends null
     ? ValueIdFromSchema<Schemas[1]>
     : ValueIdOrNull,
+  Value = ValueFromSchema<Schemas[1], ValueId>,
+  ValuesSchema extends OptionalValuesSchema = Schemas[1],
 > = (
   store: Store<Schemas>,
   valueId: ValueId,
-  newValue: Value<Schemas[1], ValueId>,
-  oldValue: Value<Schemas[1], ValueId>,
-  getValueChange: GetValueChange<Schemas[1]> | undefined,
+  newValue: Value,
+  oldValue: Value,
+  getValueChange: GetValueChange<ValuesSchema> | undefined,
 ) => void;
 
 /**
@@ -990,11 +1006,8 @@ export type CellChange<
     Schema,
     TableId
   >,
-> = [
-  changed: boolean,
-  oldCell: CellOrUndefined<Schema, TableId, CellId>,
-  newCell: CellOrUndefined<Schema, TableId, CellId>,
-];
+  CellOrUndefined = Cell<Schema, TableId, CellId> | undefined,
+> = [changed: boolean, oldCell: CellOrUndefined, newCell: CellOrUndefined];
 
 /**
  * The GetValueChange type describes a function that returns information about
@@ -1029,11 +1042,8 @@ export type GetValueChange<
 export type ValueChange<
   Schema extends OptionalValuesSchema = NoValuesSchema,
   ValueId extends ValueIdFromSchema<Schema> = ValueIdFromSchema<Schema>,
-> = [
-  changed: boolean,
-  oldValue: ValueOrUndefined<Schema, ValueId>,
-  newValue: ValueOrUndefined<Schema, ValueId>,
-];
+  ValueOrUndefined = Value<Schema, ValueId> | undefined,
+> = [changed: boolean, oldValue: ValueOrUndefined, newValue: ValueOrUndefined];
 
 /**
  * The ChangedCells type describes the Cell values that have been changed during
