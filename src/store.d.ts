@@ -4650,11 +4650,17 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
           ? CellIdFromSchema<Schemas[0], TableIdOrNull>
           : AllCellIdFromSchema<Schemas[0]>)
       | null,
+    CellListener extends CellListenerAlias<
+      Schemas,
+      TableIdOrNull,
+      RowIdOrNull,
+      CellIdOrNull
+    >,
   >(
     tableId: TableIdOrNull,
     rowId: RowIdOrNull,
     cellId: CellIdOrNull,
-    listener: CellListener<Schemas, TableIdOrNull, RowIdOrNull, CellIdOrNull>,
+    listener: CellListener,
     mutator?: boolean,
   ): Id;
 
@@ -4873,9 +4879,12 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Listener
    * @since v3.0.0
    */
-  addValueListener<ValueIdOrNull extends ValueIdFromSchema<Schemas[1]> | null>(
+  addValueListener<
+    ValueIdOrNull extends ValueIdFromSchema<Schemas[1]> | null,
+    ValueListener = ValueListenerAlias<Schemas, ValueIdOrNull>,
+  >(
     valueId: ValueIdOrNull,
-    listener: ValueListener<Schemas, ValueIdOrNull>,
+    listener: ValueListener,
     mutator?: boolean,
   ): Id;
 
@@ -5960,7 +5969,7 @@ export type ValueFromSchema<
 export type AsId<Key> = Exclude<Key & Id, number>;
 
 /**
- * The TablesSchemaAlias type is a duplicate of TablesSchema, required to mask
+ * The TablesSchemaAlias type is a duplicate of TablesSchema, used to mask
  * complex generics from documentation.
  *
  * This type is used internally to the TinyBase type system and you are not
@@ -5971,7 +5980,7 @@ export type AsId<Key> = Exclude<Key & Id, number>;
 export type TablesSchemaAlias = TablesSchema;
 
 /**
- * The ValuesSchemaAlias type is a duplicate of ValuesSchema, required to mask
+ * The ValuesSchemaAlias type is a duplicate of ValuesSchema, used to mask
  * complex generics from documentation.
  *
  * This type is used internally to the TinyBase type system and you are not
@@ -5982,7 +5991,7 @@ export type TablesSchemaAlias = TablesSchema;
 export type ValuesSchemaAlias = ValuesSchema;
 
 /**
- * The TableCallbackAlias type is a duplicate of TableCallback, required to mask
+ * The TableCallbackAlias type is a duplicate of TableCallback, used to mask
  * complex generics from documentation.
  *
  * This type is used internally to the TinyBase type system and you are not
@@ -5996,8 +6005,8 @@ export type TableCallbackAlias<
 > = TableCallback<Schema, TableId>;
 
 /**
- * The RowCallbackAlias type is a duplicate of RowCallback, required to mask
- * complex generics from documentation.
+ * The RowCallbackAlias type is a duplicate of RowCallback, used to mask complex
+ * generics from documentation.
  *
  * This type is used internally to the TinyBase type system and you are not
  * expected to need to use it directly.
@@ -6010,7 +6019,7 @@ export type RowCallbackAlias<
 > = RowCallback<Schema, TableId>;
 
 /**
- * The CellCallbackAlias type is a duplicate of CellCallback, required to mask
+ * The CellCallbackAlias type is a duplicate of CellCallback, used to mask
  * complex generics from documentation.
  *
  * This type is used internally to the TinyBase type system and you are not
@@ -6028,7 +6037,7 @@ export type CellCallbackAlias<
 > = CellCallback<Schema, TableId, CellId>;
 
 /**
- * The ValueCallbackAlias type is a duplicate of ValueCallback, required to mask
+ * The ValueCallbackAlias type is a duplicate of ValueCallback, used to mask
  * complex generics from documentation.
  *
  * This type is used internally to the TinyBase type system and you are not
@@ -6040,3 +6049,45 @@ export type ValueCallbackAlias<
   Schema extends OptionalValuesSchema = NoValuesSchema,
   ValueId extends ValueIdFromSchema<Schema> = ValueIdFromSchema<Schema>,
 > = ValueCallback<Schema, ValueId>;
+
+/**
+ * The CellListenerAlias type is a duplicate of CellListener, used to mask
+ * complex generics from documentation.
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type CellListenerAlias<
+  Schemas extends OptionalSchemas = NoSchemas,
+  TableIdOrNull extends TableIdFromSchema<
+    Schemas[0]
+  > | null = TableIdFromSchema<Schemas[0]> | null,
+  RowIdOrNull extends IdOrNull = IdOrNull,
+  CellIdOrNull extends
+    | (TableIdOrNull extends TableIdFromSchema<Schemas[0]>
+        ? CellIdFromSchema<Schemas[0], TableIdOrNull>
+        : AllCellIdFromSchema<Schemas[0]>)
+    | null =
+    | (TableIdOrNull extends TableIdFromSchema<Schemas[0]>
+        ? CellIdFromSchema<Schemas[0], TableIdOrNull>
+        : AllCellIdFromSchema<Schemas[0]>)
+    | null,
+> = CellListener<Schemas, TableIdOrNull, RowIdOrNull, CellIdOrNull>;
+
+/**
+ * The ValueListenerAlias type is a duplicate of ValueListener, used to mask
+ * complex generics from documentation.
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type ValueListenerAlias<
+  Schemas extends OptionalSchemas = NoSchemas,
+  ValueIdOrNull extends ValueIdFromSchema<
+    Schemas[1]
+  > | null = ValueIdFromSchema<Schemas[1]> | null,
+> = ValueListener<Schemas, ValueIdOrNull>;
