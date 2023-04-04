@@ -369,18 +369,20 @@ describe('Sets', () => {
       expect(queries.getStore().getListenerStats().row).toEqual(0);
     });
 
-    test('double-joined table by id', () => {
+    test('double-joined table by id, aliased intermediate', () => {
       setCells();
       setCells('t2', '', '.j1');
       setCells('t3', '', '.j2');
       queries.setQueryDefinition('q1', 't1', ({select, join}) => {
         select('c1').as('t1.c1');
-        select('t2', 'c1').as('t2.c1');
+        select('t2a', 'c1').as('t2.c1');
         select('t3', 'c1').as('t3.c1');
-        join('t2', (getCell) => `r${(getCell('c2') as string)?.length}`);
+        join('t2', (getCell) => `r${(getCell('c2') as string)?.length}`).as(
+          't2a',
+        );
         join(
           't3',
-          't2',
+          't2a',
           (getCell) => `r${(getCell('c1') as string)?.length - 5}`,
         );
       });
@@ -409,6 +411,23 @@ describe('Sets', () => {
         where('c1', 'two');
       });
       expect(queries.getResultTable('q1')).toEqual({r2: {c1: 'two'}});
+      delCells();
+      expect(queries.getResultTable('q1')).toEqual({});
+      expect(queries.getStore().getListenerStats().row).toEqual(1);
+      queries.delQueryDefinition('q1');
+      expect(queries.getStore().getListenerStats().row).toEqual(0);
+    });
+
+    test('root table column by unselected value', () => {
+      setCells();
+      queries.setQueryDefinition('q1', 't1', ({select, where}) => {
+        select('c1');
+        where('c2', 'even');
+      });
+      expect(queries.getResultTable('q1')).toEqual({
+        r2: {c1: 'two'},
+        r4: {c1: 'four'},
+      });
       delCells();
       expect(queries.getResultTable('q1')).toEqual({});
       expect(queries.getStore().getListenerStats().row).toEqual(1);
@@ -2188,15 +2207,17 @@ describe('Listens to Queries when sets', () => {
       expectNoChanges(listener);
     });
 
-    test('double-joined table by id; t1, t2, t3', () => {
+    test('double-joined table by id, aliased intermediate; t1, t2, t3', () => {
       queries.setQueryDefinition('q1', 't1', ({select, join}) => {
         select('c1').as('t1.c1');
-        select('t2', 'c1').as('t2.c1');
+        select('t2a', 'c1').as('t2.c1');
         select('t3', 'c1').as('t3.c1');
-        join('t2', (getCell) => `r${(getCell('c2') as string)?.length}`);
+        join('t2', (getCell) => `r${(getCell('c2') as string)?.length}`).as(
+          't2a',
+        );
         join(
           't3',
-          't2',
+          't2a',
           (getCell) => `r${(getCell('c1') as string)?.length - 5}`,
         );
       });
@@ -2298,15 +2319,17 @@ describe('Listens to Queries when sets', () => {
       expectNoChanges(listener);
     });
 
-    test('double-joined table by id; t1, t3, t2', () => {
+    test('double-joined table by id, aliased intermediate; t1, t3, t2', () => {
       queries.setQueryDefinition('q1', 't1', ({select, join}) => {
         select('c1').as('t1.c1');
-        select('t2', 'c1').as('t2.c1');
+        select('t2a', 'c1').as('t2.c1');
         select('t3', 'c1').as('t3.c1');
-        join('t2', (getCell) => `r${(getCell('c2') as string)?.length}`);
+        join('t2', (getCell) => `r${(getCell('c2') as string)?.length}`).as(
+          't2a',
+        );
         join(
           't3',
-          't2',
+          't2a',
           (getCell) => `r${(getCell('c1') as string)?.length - 5}`,
         );
       });
@@ -2384,15 +2407,17 @@ describe('Listens to Queries when sets', () => {
       expectNoChanges(listener);
     });
 
-    test('double-joined table by id; t2, t3, t1', () => {
+    test('double-joined table by id, aliased intermediate; t2, t3, t1', () => {
       queries.setQueryDefinition('q1', 't1', ({select, join}) => {
         select('c1').as('t1.c1');
-        select('t2', 'c1').as('t2.c1');
+        select('t2a', 'c1').as('t2.c1');
         select('t3', 'c1').as('t3.c1');
-        join('t2', (getCell) => `r${(getCell('c2') as string)?.length}`);
+        join('t2', (getCell) => `r${(getCell('c2') as string)?.length}`).as(
+          't2a',
+        );
         join(
           't3',
-          't2',
+          't2a',
           (getCell) => `r${(getCell('c1') as string)?.length - 5}`,
         );
       });
@@ -2483,6 +2508,26 @@ describe('Listens to Queries when sets', () => {
       delCells();
       ['/q1', '/q*'].forEach((listenerId) =>
         expectChanges(listener, listenerId, {q1: {r2: {c1: 'two'}}}, {q1: {}}),
+      );
+      expectNoChanges(listener);
+    });
+
+    test('root table column by unselected value', () => {
+      queries.setQueryDefinition('q1', 't1', ({select, where}) => {
+        select('c1');
+        where('c2', 'even');
+      });
+      setCells();
+      delCells();
+      ['/q1', '/q*'].forEach((listenerId) =>
+        expectChanges(
+          listener,
+          listenerId,
+          {q1: {r2: {c1: 'two'}}},
+          {q1: {r2: {c1: 'two'}, r4: {c1: 'four'}}},
+          {q1: {r2: {c1: 'two'}}},
+          {q1: {}},
+        ),
       );
       expectNoChanges(listener);
     });
