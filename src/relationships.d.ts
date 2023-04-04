@@ -12,11 +12,13 @@
  */
 
 import {
-  GetCell,
+  CellIdFromSchema,
+  GetCellAlias,
   NoSchemas,
   OptionalSchemas,
   RowCallback,
   Store,
+  TableIdFromSchema,
 } from './store.d';
 import {Id, IdOrNull, Ids} from './common.d';
 
@@ -340,11 +342,16 @@ export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Configuration
    */
-  setRelationshipDefinition(
+  setRelationshipDefinition<
+    LocalTableId extends TableIdFromSchema<Schemas[0]>,
+    RemoteTableId extends TableIdFromSchema<Schemas[0]>,
+    LocalCellId extends CellIdFromSchema<Schemas[0], LocalTableId>,
+    GetCell = GetCellAlias<Schemas[0], LocalTableId>,
+  >(
     relationshipId: Id,
-    localTableId: Id,
-    remoteTableId: Id,
-    getRemoteRowId: Id | ((getCell: GetCell, localRowId: Id) => Id),
+    localTableId: LocalTableId,
+    remoteTableId: RemoteTableId,
+    getRemoteRowId: LocalCellId | ((getCell: GetCell, localRowId: Id) => Id),
   ): Relationships<Schemas>;
 
   /**

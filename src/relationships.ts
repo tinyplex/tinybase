@@ -253,7 +253,7 @@ export const createRelationships = getCreateFunction(
           }
         : {};
 
-    const relationships: Relationships = {
+    const relationships: any = {
       setRelationshipDefinition,
       delRelationshipDefinition,
 
@@ -276,6 +276,6 @@ export const createRelationships = getCreateFunction(
       getListenerStats,
     };
 
-    return objFreeze(relationships);
+    return objFreeze(relationships as Relationships);
   },
 ) as typeof createRelationshipsDecl;
