@@ -14,10 +14,13 @@
 
 import {
   Cell,
-  CellOrUndefined,
+  CellIdFromSchema,
   GetCell,
+  GetCellAlias,
   NoSchemas,
+  NoTablesSchema,
   OptionalSchemas,
+  OptionalTablesSchema,
   Store,
   TableIdFromSchema,
 } from './store.d';
@@ -513,20 +516,31 @@ export type QueriesListenerStats = {
  * @category Callback
  * @since v2.0.0
  */
-export type GetTableCell = {
+export type GetTableCell<
+  Schema extends OptionalTablesSchema = NoTablesSchema,
+  RootTableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+> = {
   /**
-   * When called with one parameter, this function will return the value of the
-   * specified Cell from the query's main Table for the Row being selected or
-   * filtered.
+   * When called with one parameter, this function will return the value of
+   * the specified Cell from the query's root Table for the Row being selected
+   * or filtered.
    *
    * @param cellId The Id of the Cell to fetch the value for.
    * @returns A Cell value or `undefined`.
    */
-  (cellId: Id): CellOrUndefined;
+  <
+    RootCellId extends CellIdFromSchema<Schema, RootTableId> = CellIdFromSchema<
+      Schema,
+      RootTableId
+    >,
+    CellOrUndefined = Cell<Schema, RootTableId, RootCellId> | undefined,
+  >(
+    cellId: RootCellId,
+  ): CellOrUndefined;
   /**
-   * When called with two parameters, this function will return the value of the
-   * specified Cell from a Table that has been joined in the query, for the Row
-   * being selected or filtered.
+   * When called with two parameters, this function will return the value of
+   * the specified Cell from a Table that has been joined in the query, for
+   * the Row being selected or filtered.
    *
    * @param joinedTableId The Id of the Table to fetch the value from. If the
    * underlying Table was joined 'as' a different Id, that should instead be
@@ -534,7 +548,27 @@ export type GetTableCell = {
    * @param joinedCellId The Id of the Cell to fetch the value for.
    * @returns A Cell value or `undefined`.
    */
-  (joinedTableId: Id, joinedCellId: Id): CellOrUndefined;
+  <
+    JoinedTableId extends TableIdFromSchema<Schema> | Id =
+      | TableIdFromSchema<Schema>
+      | Id,
+    JoinedCellId extends JoinedCellIdOrId<
+      Schema,
+      JoinedTableId
+    > = JoinedCellIdOrId<Schema, JoinedTableId>,
+    CellOrUndefined extends
+      | (JoinedTableId extends TableIdFromSchema<Schema>
+          ? Cell<Schema, JoinedTableId, JoinedCellId>
+          : Cell)
+      | undefined =
+      | (JoinedTableId extends TableIdFromSchema<Schema>
+          ? Cell<Schema, JoinedTableId, JoinedCellId>
+          : Cell)
+      | undefined,
+  >(
+    joinedTableId: JoinedTableId,
+    joinedCellId: JoinedCellId,
+  ): CellOrUndefined;
 };
 
 /**
@@ -634,16 +668,26 @@ export type GetTableCell = {
  * @category Definition
  * @since v2.0.0
  */
-export type Select = {
+export type Select<
+  Schema extends OptionalTablesSchema = NoTablesSchema,
+  RootTableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+> = {
   /**
    * Calling this function with one Id parameter will indicate that the query
-   * should select the value of the specified Cell from the query's main Table.
+   * should select the value of the specified Cell from the query's root Table.
    *
    * @param cellId The Id of the Cell to fetch the value for.
    * @returns A SelectedAs object so that the selected Cell Id can be optionally
    * aliased.
    */
-  (cellId: Id): SelectedAs;
+  <
+    RootCellId extends CellIdFromSchema<Schema, RootTableId> = CellIdFromSchema<
+      Schema,
+      RootTableId
+    >,
+  >(
+    cellId: RootCellId,
+  ): SelectedAs;
   /**
    * Calling this function with two parameters will indicate that the query
    * should select the value of the specified Cell from a Table that has been
@@ -656,11 +700,22 @@ export type Select = {
    * @returns A SelectedAs object so that the selected Cell Id can be optionally
    * aliased.
    */
-  (joinedTableId: Id, joinedCellId: Id): SelectedAs;
+  <
+    JoinedTableId extends TableIdFromSchema<Schema> | Id =
+      | TableIdFromSchema<Schema>
+      | Id,
+    JoinedCellId extends JoinedCellIdOrId<
+      Schema,
+      JoinedTableId
+    > = JoinedCellIdOrId<Schema, JoinedTableId>,
+  >(
+    joinedTableId: JoinedTableId,
+    joinedCellId: JoinedCellId,
+  ): SelectedAs;
   /**
    * Calling this function with one callback parameter will indicate that the
    * query should select a calculated value, based on one or more Cell values in
-   * the main Table or a joined Table, or on the main Table's Row Id.
+   * the root Table or a joined Table, or on the root Table's Row Id.
    *
    * @param getCell A callback that takes a GetTableCell function and the main
    * Table's Row Id. These can be used to programmatically create a calculated
@@ -668,10 +723,16 @@ export type Select = {
    * @returns A SelectedAs object so that the selected Cell Id can be optionally
    * aliased.
    */
-  (
-    getCell: (getTableCell: GetTableCell, rowId: Id) => CellOrUndefined,
+  <
+    GetTableCell extends GetTableCellAlias<
+      Schema,
+      RootTableId
+    > = GetTableCellAlias<Schema, RootTableId>,
+  >(
+    getCell: (getTableCell: GetTableCell, rowId: Id) => ResultCellOrUndefined,
   ): SelectedAs;
 };
+
 /**
  * The SelectedAs type describes an object returned from calling a Select
  * function so that the selected Cell Id can be optionally aliased.
@@ -742,11 +803,11 @@ export type SelectedAs = {
  * distant join Table.
  *
  * Because a Join clause is used to identify which unique Row Id of the joined
- * Table will be joined to each Row of the main Table, queries follow the 'left
+ * Table will be joined to each Row of the root Table, queries follow the 'left
  * join' semantics you may be familiar with from SQL. This means that an
  * unfiltered query will only ever return the same number of Rows as the main
  * Table being queried, and indeed the resulting table (assuming it has not been
- * aggregated) will even preserve the main Table's original Row Ids.
+ * aggregated) will even preserve the root Table's original Row Ids.
  *
  * @example
  * This example shows a query that joins a single Table by using an Id present
@@ -817,7 +878,7 @@ export type SelectedAs = {
  * ```
  * @example
  * This example shows a query that calculates the Id of the joined Table based
- * from multiple values in the main Table rather than a single Cell.
+ * from multiple values in the root Table rather than a single Cell.
  *
  * ```js
  * const store = createStore()
@@ -892,34 +953,46 @@ export type SelectedAs = {
  * @category Definition
  * @since v2.0.0
  */
-export type Join = {
+export type Join<
+  Schema extends OptionalTablesSchema = NoTablesSchema,
+  RootTableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+> = {
   /**
    * Calling this function with two Id parameters will indicate that the join to
    * a Row in an adjacent Table is made by finding its Id in a Cell of the
-   * query's main Table.
+   * query's root Table.
    *
    * @param joinedTableId The Id of the Table to join to.
-   * @param on The Id of the Cell in the main Table that contains the joined
+   * @param on The Id of the Cell in the root Table that contains the joined
    * Table's Row Id.
    * @returns A JoinedAs object so that the joined Table Id can be optionally
    * aliased.
    */
-  (joinedTableId: Id, on: Id): JoinedAs;
+  <
+    JoinedTableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+    RootCellId extends CellIdFromSchema<Schema, RootTableId> = CellIdFromSchema<
+      Schema,
+      RootTableId
+    >,
+  >(
+    joinedTableId: JoinedTableId,
+    on: RootCellId,
+  ): JoinedAs;
   /**
    * Calling this function with two parameters (where the second is a function)
    * will indicate that the join to a Row in an adjacent Table is made by
-   * calculating its Id from the Cells and the Row Id of the query's main Table.
+   * calculating its Id from the Cells and the Row Id of the query's root Table.
    *
    * @param joinedTableId The Id of the Table to join to.
-   * @param on A callback that takes a GetCell function and the main Table's Row
+   * @param on A callback that takes a GetCell function and the root Table's Row
    * Id. These can be used to programmatically calculate the joined Table's Row
    * Id.
    * @returns A JoinedAs object so that the joined Table Id can be optionally
    * aliased.
    */
-  (
-    joinedTableId: Id,
-    on: (getCell: GetCell, rowId: Id) => Id | undefined,
+  <JoinedTableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>>(
+    joinedTableId: JoinedTableId,
+    on: (getCell: GetCell<Schema, RootTableId>, rowId: Id) => Id | undefined,
   ): JoinedAs;
   /**
    * Calling this function with three Id parameters will indicate that the join
@@ -935,7 +1008,20 @@ export type Join = {
    * @returns A JoinedAs object so that the joined Table Id can be optionally
    * aliased.
    */
-  (joinedTableId: Id, fromIntermediateJoinedTableId: Id, on: Id): JoinedAs;
+  <
+    JoinedTableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+    IntermediateJoinedTableId extends TableIdFromSchema<Schema> | Id =
+      | TableIdFromSchema<Schema>
+      | Id,
+    IntermediateJoinedCellId extends JoinedCellIdOrId<
+      Schema,
+      IntermediateJoinedTableId
+    > = JoinedCellIdOrId<Schema, IntermediateJoinedTableId>,
+  >(
+    joinedTableId: JoinedTableId,
+    fromIntermediateJoinedTableId: IntermediateJoinedTableId,
+    on: IntermediateJoinedCellId,
+  ): JoinedAs;
   /**
    * Calling this function with three parameters (where the third is a function)
    * will indicate that the join to a Row in distant Table is made by
@@ -952,15 +1038,24 @@ export type Join = {
    * @returns A JoinedAs object so that the joined Table Id can be optionally
    * aliased.
    */
-  (
-    joinedTableId: Id,
-    fromIntermediateJoinedTableId: Id,
+  <
+    JoinedTableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+    IntermediateJoinedTableId extends TableIdFromSchema<Schema> | Id =
+      | TableIdFromSchema<Schema>
+      | Id,
+    GetCell = IntermediateJoinedTableId extends TableIdFromSchema<Schema>
+      ? GetCellAlias<Schema, IntermediateJoinedTableId>
+      : GetCellAlias,
+  >(
+    joinedTableId: JoinedTableId,
+    fromIntermediateJoinedTableId: IntermediateJoinedTableId,
     on: (
       getIntermediateJoinedCell: GetCell,
-      intermediateJoinedTableRowId: Id,
+      intermediateJoinedRowId: Id,
     ) => Id | undefined,
   ): JoinedAs;
 };
+
 /**
  * The JoinedAs type describes an object returned from calling a Join function
  * so that the joined Table Id can be optionally aliased.
@@ -968,6 +1063,9 @@ export type Join = {
  * Note that if two Join clauses are both aliased to the same name (or if you
  * create two joins to the same underlying Table, both _without_ aliases), only
  * the latter of two will be used in the query.
+ *
+ * For the purposes of clarity, it's recommended to use an alias that does not
+ * collide with a real underlying Table (whether included in the query or not).
  *
  * @example
  * This example shows a query that joins the same underlying Table twice, for
@@ -1010,13 +1108,13 @@ export type JoinedAs = {as: (joinedTableId: Id) => void};
 
 /**
  * The Where type describes a function that lets you specify conditions to
- * filter results, based on the underlying Cells of the main or joined Tables.
+ * filter results, based on the underlying Cells of the root or joined Tables.
  *
  * The Where function is provided to the third `query` parameter of the
  * setQueryDefinition method.
  *
  * If you do not specify a Where clause, you should expect every non-empty Row
- * of the main Table to appear in the query's results.
+ * of the root Table to appear in the query's results.
  *
  * A Where condition has to be true for a Row to be included in the results.
  * Each Where class is additive, as though combined with a logical 'and'. If you
@@ -1124,17 +1222,33 @@ export type JoinedAs = {as: (joinedTableId: Id) => void};
  * @category Definition
  * @since v2.0.0
  */
-export type Where = {
+export type Where<
+  Schema extends OptionalTablesSchema = NoTablesSchema,
+  RootTableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+> = {
   /**
    * Calling this function with two parameters is used to include only those
-   * Rows for which a specified Cell in the query's main Table has a specified
+   * Rows for which a specified Cell in the query's root Table has a specified
    * value.
    *
-   * @param cellId The Id of the Cell in the query's main Table to test.
+   * @param cellId The Id of the Cell in the query's root Table to test.
    * @param equals The value that the Cell has to have for the Row to be
    * included in the result.
    */
-  (cellId: Id, equals: Cell): void;
+  <
+    RootCellId extends CellIdFromSchema<Schema, RootTableId> = CellIdFromSchema<
+      Schema,
+      RootTableId
+    >,
+    RootCell extends Cell<Schema, RootTableId, RootCellId> = Cell<
+      Schema,
+      RootTableId,
+      RootCellId
+    >,
+  >(
+    cellId: RootCellId,
+    equals: RootCell,
+  ): void;
   /**
    * Calling this function with three parameters is used to include only those
    * Rows for which a specified Cell in a joined Table has a specified value.
@@ -1146,7 +1260,24 @@ export type Where = {
    * @param equals The value that the Cell has to have for the Row to be
    * included in the result.
    */
-  (joinedTableId: Id, joinedCellId: Id, equals: Cell): void;
+  <
+    JoinedTableId extends TableIdFromSchema<Schema> | Id =
+      | TableIdFromSchema<Schema>
+      | Id,
+    JoinedCellId extends JoinedCellIdOrId<
+      Schema,
+      JoinedTableId
+    > = JoinedCellIdOrId<Schema, JoinedTableId>,
+    JoinedCell extends Cell<Schema, JoinedTableId, JoinedCellId> = Cell<
+      Schema,
+      JoinedTableId,
+      JoinedCellId
+    >,
+  >(
+    joinedTableId: JoinedTableId,
+    joinedCellId: JoinedCellId,
+    equals: JoinedCell,
+  ): void;
   /**
    * Calling this function with one callback parameter is used to include only
    * those Rows which meet a calculated boolean condition, based on values in
@@ -1155,7 +1286,14 @@ export type Where = {
    * @param condition A callback that takes a GetTableCell function and that
    * should return `true` for the Row to be included in the result.
    */
-  (condition: (getTableCell: GetTableCell) => boolean): void;
+  <
+    GetTableCell extends GetTableCellAlias<
+      Schema,
+      RootTableId
+    > = GetTableCellAlias<Schema, RootTableId>,
+  >(
+    condition: (getTableCell: GetTableCell) => boolean,
+  ): void;
 };
 
 /**
@@ -1375,6 +1513,7 @@ export type Group = (
  * @category Definition
  * @since v2.0.0
  */
+
 export type GroupedAs = {as: (groupedCellId: Id) => void};
 
 /**
@@ -1468,7 +1607,7 @@ export type GroupedAs = {as: (groupedCellId: Id) => void};
 export type Having = {
   /**
    * Calling this function with two parameters is used to include only those
-   * Rows for which a specified Cell in the query's main Table has a specified
+   * Rows for which a specified Cell in the query's root Table has a specified
    * value.
    *
    * @param selectedOrGroupedCellId The Id of the Cell in the query to test.
@@ -1590,9 +1729,9 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * Every query definition is identified by a unique Id, and if you re-use an
    * existing Id with this method, the previous definition is overwritten.
    *
-   * A query provides a tabular result formed from each Row within a main Table.
-   * The definition must specify this 'main' Table (by its Id) to be aggregated.
-   * Other Tables can be joined to that using Join clauses.
+   * A query provides a tabular result formed from each Row within a root Table.
+   * The definition must specify this Table (by its Id) to be aggregated. Other
+   * Tables can be joined to that using Join clauses.
    *
    * The third `query` parameter is a callback that you provide to define the
    * query. That callback is provided with a `keywords` object that contains the
@@ -1619,7 +1758,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * addResultSortedRowIdsListener method to sort and paginate the results.
    *
    * @param queryId The Id of the query to define.
-   * @param tableId The Id of the main Table the query will be based on.
+   * @param tableId The Id of the root Table the query will be based on.
    * @param query A callback which can take a `keywords` object and which uses
      the functions it contains to define the query.
    * @returns A reference to the Queries object.
@@ -1647,13 +1786,16 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Configuration
    * @since v2.0.0
    */
-  setQueryDefinition(
+  setQueryDefinition<
+    RootTableId extends TableIdFromSchema<Schemas[0]>,
+    Schema extends OptionalTablesSchema = Schemas[0],
+  >(
     queryId: Id,
-    tableId: Id,
+    tableId: RootTableId,
     query: (keywords: {
-      select: Select;
-      join: Join;
-      where: Where;
+      select: Select<Schema, RootTableId>;
+      join: Join<Schema, RootTableId>;
+      where: Where<Schema, RootTableId>;
       group: Group;
       having: Having;
     }) => void,
@@ -3185,3 +3327,35 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
 export function createQueries<Schemas extends OptionalSchemas>(
   store: Store<Schemas>,
 ): Queries<Schemas>;
+
+/**
+ * The GetTableCellAlias type is a duplicate of GetTableCell, used to mask
+ * complex generics from documentation.
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type GetTableCellAlias<
+  Schema extends OptionalTablesSchema = NoTablesSchema,
+  RootTableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+> = GetTableCell<Schema, RootTableId>;
+
+/**
+ * The JoinedCellIdOrId type is a utility for returning a schema-specific Id (if
+ * the Table is known), or a plain Id (if it is merely an alias for a Table).
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type JoinedCellIdOrId<
+  Schema extends OptionalTablesSchema = NoTablesSchema,
+  JoinedTableId extends TableIdFromSchema<Schema> | Id =
+    | TableIdFromSchema<Schema>
+    | Id,
+> = JoinedTableId extends TableIdFromSchema<Schema>
+  ? CellIdFromSchema<Schema, JoinedTableId>
+  : Id;
