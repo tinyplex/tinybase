@@ -25,6 +25,7 @@ import {
   Store,
   Table,
   TableCallback,
+  TableIdFromSchema,
 } from './store.d';
 import {Id, IdOrNull, Ids} from './common.d';
 
@@ -1686,7 +1687,9 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Getter
    * @since v2.0.0
    */
-  getTableId(queryId: Id): Id | undefined;
+  getTableId<TableId extends TableIdFromSchema<Schemas[0]>>(
+    queryId: Id,
+  ): TableId;
 
   /**
    * The getResultTable method returns an object containing the entire data of

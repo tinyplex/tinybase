@@ -587,7 +587,9 @@ export interface Indexes<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getTableId(indexId: Id): Id;
+  getTableId<TableId extends TableIdFromSchema<Schemas[0]>>(
+    indexId: Id,
+  ): TableId;
 
   /**
    * The getSliceIds method gets the list of Slice Ids in an Index.

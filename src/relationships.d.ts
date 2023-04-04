@@ -535,7 +535,9 @@ export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getLocalTableId(relationshipId: Id): Id;
+  getLocalTableId<TableId extends TableIdFromSchema<Schemas[0]>>(
+    relationshipId: Id,
+  ): TableId;
 
   /**
    * The getRemoteTableId method returns the Id of the underlying remote Table
@@ -567,7 +569,9 @@ export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getRemoteTableId(relationshipId: Id): Id;
+  getRemoteTableId<TableId extends TableIdFromSchema<Schemas[0]>>(
+    relationshipId: Id,
+  ): TableId;
 
   /**
    * The getRemoteRowId method gets the remote Row Id for a given local Row in a
