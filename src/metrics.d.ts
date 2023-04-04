@@ -584,7 +584,9 @@ export interface Metrics<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getTableId(metricId: Id): Id | undefined;
+  getTableId<TableId extends TableIdFromSchema<Schemas[0]>>(
+    metricId: Id,
+  ): TableId | undefined;
 
   /**
    * The getMetric method gets the current value of a Metric.
