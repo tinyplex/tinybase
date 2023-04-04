@@ -14,20 +14,76 @@
 
 import {
   Cell,
-  CellCallback,
   CellOrUndefined,
   GetCell,
-  GetCellChange,
   NoSchemas,
   OptionalSchemas,
-  Row,
-  RowCallback,
   Store,
-  Table,
-  TableCallback,
   TableIdFromSchema,
 } from './store.d';
 import {Id, IdOrNull, Ids} from './common.d';
+
+/**
+ * The ResultTable type is the data structure representing the results of a
+ * query.
+ *
+ * A ResultTable is typically accessed with the getResultTable method or
+ * addResultTableListener method. It is similar to the Table type in the store
+ * module, but without schema-specific typing, and is a regular JavaScript
+ * object containing individual ResultRow objects, keyed by their Id.
+ *
+ * @example
+ * ```js
+ * const resultTable: ResultTable = {
+ *   fido: {species: 'dog', color: 'brown'},
+ *   felix: {species: 'cat'},
+ * };
+ * ```
+ * @category Result
+ */
+export type ResultTable = {[rowId: Id]: ResultRow};
+
+/**
+ * The ResultRow type is the data structure representing a single row in the
+ * results of a query.
+ *
+ * A ResultRow is typically accessed with the getResultRow method or
+ * addResultRowListener method. It is similar to the Row type in the store
+ * module, but without schema-specific typing, and is a regular JavaScript
+ * object containing individual ResultCell objects, keyed by their Id.
+ *
+ * @example
+ * ```js
+ * const resultRow: ResultRow = {species: 'dog', color: 'brown'};
+ * ```
+ * @category Result
+ */
+export type ResultRow = {[cellId: Id]: ResultCell};
+
+/**
+ * The ResultCell type is the data structure representing a single cell in the
+ * results of a query.
+ *
+ * A ResultCell is typically accessed with the getResultCell method or
+ * addResultCellListener method. It is similar to the Cell type in the store
+ * module, but without schema-specific typing, and is a JavaScript string,
+ * number, or boolean.
+ *
+ * @example
+ * ```js
+ * const resultCell: ResultCell = 'dog';
+ * ```
+ * @category Result
+ */
+export type ResultCell = string | number | boolean;
+
+/**
+ * The ResultCellOrUndefined type is the data structure representing a single
+ * cell in the results of a query, or the value `undefined`.
+ *
+ * @category Result
+ */
+export type ResultCellOrUndefined = ResultCell | undefined;
 
 /**
  * The Aggregate type describes a custom function that takes an array of Cell
@@ -43,7 +99,7 @@ import {Id, IdOrNull, Ids} from './common.d';
  * @category Aggregators
  * @since v2.0.0
  */
-export type Aggregate = (cells: Cell[], length: number) => Cell;
+export type Aggregate = (cells: Cell[], length: number) => ResultCell;
 
 /**
  * The AggregateAdd type describes a function that can be used to optimize a
@@ -73,7 +129,7 @@ export type AggregateAdd = (
   current: Cell,
   add: Cell,
   length: number,
-) => Cell | undefined;
+) => ResultCellOrUndefined;
 
 /**
  * The AggregateRemove type describes a function that can be used to optimize a
@@ -106,7 +162,7 @@ export type AggregateRemove = (
   current: Cell,
   remove: Cell,
   length: number,
-) => Cell | undefined;
+) => ResultCellOrUndefined;
 
 /**
  * The AggregateReplace type describes a function that can be used to optimize a
@@ -139,7 +195,7 @@ export type AggregateReplace = (
   add: Cell,
   remove: Cell,
   length: number,
-) => Cell | undefined;
+) => ResultCellOrUndefined;
 
 /**
  * The QueryCallback type describes a function that takes a query's Id.
@@ -155,43 +211,95 @@ export type AggregateReplace = (
 export type QueryCallback = (queryId: Id) => void;
 
 /**
+ * The ResultTableCallback type describes a function that takes a ResultTable's
+ * Id and a callback to loop over each ResultRow within it.
+ *
+ * A ResultTableCallback is provided when using the forEachResultTable method,
+ * so that you can do something based on every ResultTable in the Queries
+ * object. See that method for specific examples.
+ *
+ * @param tableId The Id of the ResultTable that the callback can operate on.
+ * @param forEachRow A function that will let you iterate over the ResultRow
+ * objects in this ResultTable.
+ * @category Callback
+ */
+export type ResultTableCallback = (
+  tableId: Id,
+  forEachRow: (rowCallback: ResultRowCallback) => void,
+) => void;
+
+/**
+ * The ResultRowCallback type describes a function that takes a ResultRow's Id
+ * and a callback to loop over each ResultCell within it.
+ *
+ * A ResultRowCallback is provided when using the forEachResultRow method, so
+ * that you can do something based on every ResultRow in a ResultTable. See that
+ * method for specific examples.
+ *
+ * @param rowId The Id of the ResultRow that the callback can operate on.
+ * @param forEachRow A function that will let you iterate over the ResultCell
+ * values in this ResultRow.
+ * @category Callback
+ */
+export type ResultRowCallback = (
+  rowId: Id,
+  forEachCell: (cellCallback: ResultCellCallback) => void,
+) => void;
+
+/**
+ * The ResultCellCallback type describes a function that takes a ResultCell's Id
+ * and its value.
+ *
+ * A ResultCellCallback is provided when using the forEachResultCell method, so
+ * that you can do something based on every ResultCell in a ResultRow. See that
+ * method for specific examples.
+ *
+ * @param cellId The Id of the ResultCell that the callback can operate on.
+ * @param cell The value of the ResultCell.
+ * @category Callback
+ */
+export type ResultCellCallback = (cellId: Id, cell: ResultCell) => void;
+
+/**
  * The ResultTableListener type describes a function that is used to listen to
- * changes to a query's result Table.
+ * changes to a query's ResultTable.
  *
  * A ResultTableListener is provided when using the addResultTableListener
  * method. See that method for specific examples.
  *
  * When called, a ResultTableListener is given a reference to the Queries
- * object, the Id of the Table that changed (which is the same as the query Id),
- * and a GetCellChange function that can be used to query Cell values before and
- * after the change.
+ * object, the Id of the ResultTable that changed (which is the same as the
+ * query Id), and a GetCellResultChange function that can be used to query
+ * ResultCell values before and after the change.
  *
  * @param queries A reference to the Queries object that changed.
- * @param tableId The Id of the Table that changed, which is also the query Id.
- * @param getCellChange A function that returns information about any Cell's
- * changes.
+ * @param tableId The Id of the ResultTable that changed, which is also the
+ * query Id.
+ * @param getCellChange A function that returns information about any
+ * ResultCell's changes.
  * @category Listener
  * @since v2.0.0
  */
 export type ResultTableListener = (
   queries: Queries,
   tableId: Id,
-  getCellChange: GetCellChange | undefined,
+  getCellChange: GetCellResultChange,
 ) => void;
 
 /**
  * The ResultRowIdsListener type describes a function that is used to listen to
- * changes to the Row Ids in a query's result Table.
+ * changes to the ResultRow Ids in a query's ResultTable.
  *
  * A ResultRowIdsListener is provided when using the addResultRowIdsListener
  * method. See that method for specific examples.
  *
  * When called, a ResultRowIdsListener is given a reference to the Queries
- * object, and the Id of the Table whose Row Ids changed (which is the same as
- * the query Id).
+ * object, and the Id of the ResultTable whose ResultRow Ids changed (which is
+ * the same as the query Id).
  *
  * @param queries A reference to the Queries object that changed.
- * @param tableId The Id of the Table that changed, which is also the query Id.
+ * @param tableId The Id of the ResultTable that changed, which is also the
+ * query Id.
  * @category Listener
  * @since v2.0.0
  */
@@ -199,26 +307,28 @@ export type ResultRowIdsListener = (queries: Queries, tableId: Id) => void;
 
 /**
  * The ResultSortedRowIdsListener type describes a function that is used to
- * listen to changes to the sorted Row Ids in a query's result Table.
+ * listen to changes to the sorted ResultRow Ids in a query's ResultTable.
  *
  * A ResultSortedRowIdsListener is provided when using the
  * addResultSortedRowIdsListener method. See that method for specific examples.
  *
  * When called, a ResultSortedRowIdsListener is given a reference to the Queries
- * object, the Id of the Table whose Row Ids changed (which is the same as the
- * query Id), the Cell Id being used to sort them, whether descending or not,
- * and the offset and limit of the number of Ids returned, for pagination
- * purposes. It also receives the sorted array of Ids itself, so that you can
- * use them in the listener without the additional cost of an explicit call to
- * getResultSortedRowIds.
+ * object, the Id of the ResultTable whose ResultRow Ids changed (which is the
+ * same as the query Id), the ResultCell Id being used to sort them, whether
+ * descending or not, and the offset and limit of the number of Ids returned,
+ * for pagination purposes. It also receives the sorted array of Ids itself, so
+ * that you can use them in the listener without the additional cost of an
+ * explicit call to getResultSortedRowIds.
  *
  * @param queries A reference to the Queries object that changed.
- * @param tableId The Id of the Table that changed, which is also the query Id.
- * @param cellId The Id of the Cell whose values were used for the sorting.
+ * @param tableId The Id of the ResultTable that changed, which is also the
+ * query Id.
+ * @param cellId The Id of the ResultCell whose values were used for the
+ * sorting.
  * @param descending Whether the sorting was in descending order.
- * @param offset The number of Row Ids skipped.
- * @param limit The maximum number of Row Ids returned.
- * @param sortedRowIds The sorted Row Ids themselves.
+ * @param offset The number of ResultRow Ids skipped.
+ * @param limit The maximum number of ResultRow Ids returned.
+ * @param sortedRowIds The sorted ResultRow Ids themselves.
  * @category Listener
  * @since v2.0.0
  */
@@ -234,21 +344,22 @@ export type ResultSortedRowIdsListener = (
 
 /**
  * The ResultRowListener type describes a function that is used to listen to
- * changes to a Row in a query's result Table.
+ * changes to a ResultRow in a query's ResultTable.
  *
  * A ResultRowListener is provided when using the addResultRowListener method.
  * See that method for specific examples.
  *
  * When called, a ResultRowListener is given a reference to the Queries object,
- * the Id of the Table that changed (which is the same as the query Id), the Id
- * of the Row that changed, and a GetCellChange function that can be used to
- * query Cell values before and after the change.
+ * the Id of the ResultTable that changed (which is the same as the query Id),
+ * the Id of the ResultRow that changed, and a GetCellResultChange function that
+ * can be used to query ResultCell values before and after the change.
  *
  * @param queries A reference to the Queries object that changed.
- * @param tableId The Id of the Table that changed, which is also the query Id.
- * @param rowId The Id of the Row that changed.
- * @param getCellChange A function that returns information about any Cell's
- * changes.
+ * @param tableId The Id of the ResultTable that changed, which is also the
+ * query Id.
+ * @param rowId The Id of the ResultRow that changed.
+ * @param getCellChange A function that returns information about any
+ * ResultCell's changes.
  * @category Listener
  * @since v2.0.0
  */
@@ -256,23 +367,24 @@ export type ResultRowListener = (
   queries: Queries,
   tableId: Id,
   rowId: Id,
-  getCellChange: GetCellChange | undefined,
+  getCellChange: GetCellResultChange,
 ) => void;
 
 /**
  * The ResultCellIdsListener type describes a function that is used to listen to
- * changes to the Cell Ids in a Row in a query's result Table.
+ * changes to the ResultCell Ids in a ResultRow in a query's ResultTable.
  *
  * A ResultCellIdsListener is provided when using the addResultCellIdsListener
  * method. See that method for specific examples.
  *
  * When called, a ResultCellIdsListener is given a reference to the Queries
- * object, the Id of the Table that changed (which is the same as the query Id),
- * and the Id of the Row whose Cell Ids changed.
+ * object, the Id of the ResultTable that changed (which is the same as the
+ * query Id), and the Id of the ResultRow whose ResultCell Ids changed.
  *
  * @param queries A reference to the Queries object that changed.
- * @param tableId The Id of the Table that changed, which is also the query Id.
- * @param rowId The Id of the Row that changed.
+ * @param tableId The Id of the ResultTable that changed, which is also the
+ * query Id.
+ * @param rowId The Id of the ResultRow that changed.
  * @category Listener
  * @since v2.0.0
  */
@@ -284,25 +396,27 @@ export type ResultCellIdsListener = (
 
 /**
  * The ResultCellListener type describes a function that is used to listen to
- * changes to a Cell in a query's result Table.
+ * changes to a ResultCell in a query's ResultTable.
  *
  * A ResultCellListener is provided when using the addResultCellListener method.
  * See that method for specific examples.
  *
  * When called, a ResultCellListener is given a reference to the Queries object,
- * the Id of the Table that changed (which is the same as the query Id), the Id
- * of the Row that changed, and the Id of Cell that changed. It is also given
- * the new value of the Cell, the old value of the Cell, and a GetCellChange
- * function that can be used to query Cell values before and after the change.
+ * the Id of the ResultTable that changed (which is the same as the query Id),
+ * the Id of the ResultRow that changed, and the Id of ResultCell that changed.
+ * It is also given the new value of the ResultCell, the old value of the
+ * ResultCell, and a GetCellResultChange function that can be used to query
+ * ResultCell values before and after the change.
  *
  * @param queries A reference to the Queries object that changed.
- * @param tableId The Id of the Table that changed, which is also the query Id.
- * @param rowId The Id of the Row that changed.
- * @param cellId The Id of the Cell that changed.
- * @param newCell The new value of the Cell that changed.
- * @param oldCell The old value of the Cell that changed.
- * @param getCellChange A function that returns information about any Cell's
- * changes.
+ * @param tableId The Id of the ResultTable that changed, which is also the
+ * query Id.
+ * @param rowId The Id of the ResultRow that changed.
+ * @param cellId The Id of the ResultCell that changed.
+ * @param newCell The new value of the ResultCell that changed.
+ * @param oldCell The old value of the ResultCell that changed.
+ * @param getCellChange A function that returns information about any
+ * ResultCell's changes.
  * @category Listener
  * @since v2.0.0
  */
@@ -311,10 +425,49 @@ export type ResultCellListener = (
   tableId: Id,
   rowId: Id,
   cellId: Id,
-  newCell: Cell,
-  oldCell: Cell,
-  getCellChange: GetCellChange | undefined,
+  newCell: ResultCell,
+  oldCell: ResultCell,
+  getCellChange: GetCellResultChange,
 ) => void;
+
+/**
+ * The GetCellResultChange type describes a function that returns information
+ * about any ResultCell's changes during a transaction.
+ *
+ * A GetCellResultChange function is provided to every listener when called due
+ * the Store changing. The listener can then fetch the previous value of a
+ * ResultCell before the current transaction, the new value after it, and a
+ * convenience flag that indicates that the value has changed.
+ *
+ * @param tableId The Id of the ResultTable to inspect.
+ * @param rowId The Id of the ResultRow to inspect.
+ * @param cellId The Id of the ResultCell to inspect.
+ * @returns A ResultCellChange array containing information about the
+ * ResultCell's changes.
+ * @category Listener
+ */
+export type GetCellResultChange = (
+  tableId: Id,
+  rowId: Id,
+  cellId: Id,
+) => ResultCellChange;
+
+/**
+ * The ResultCellChange type describes a ResultCell's changes during a
+ * transaction.
+ *
+ * This is returned by the GetResultCellChange function that is provided to
+ * every listener when called. This array contains the previous value of a
+ * ResultCell before the current transaction, the new value after it, and a
+ * convenience flag that indicates that the value has changed.
+ *
+ * @category Listener
+ */
+export type ResultCellChange = [
+  changed: boolean,
+  oldCell: ResultCellOrUndefined,
+  newCell: ResultCellOrUndefined,
+];
 
 /**
  * The QueriesListenerStats type describes the number of listeners registered
@@ -631,7 +784,7 @@ export type SelectedAs = {
  * This example shows a query that joins the same underlying Table twice, and
  * aliases them (and the selected Cell Ids). Note the left-join semantics: Felix
  * the cat was bought, but the seller was unknown. The record still exists in
- * the result Table.
+ * the ResultTable.
  *
  * ```js
  * const store = createStore()
@@ -1007,7 +1160,7 @@ export type Where = {
 
 /**
  * The Group type describes a function that lets you specify that the values of
- * a Cell in multiple result Rows should be aggregated together.
+ * a Cell in multiple ResultRows should be aggregated together.
  *
  * The Group function is provided to the third `query` parameter of the
  * setQueryDefinition method. When called, it should refer to a Cell Id (or
@@ -1047,7 +1200,7 @@ export type Where = {
  * input values - for example, when a Row is added to the Table.
  * @param aggregateRemove A function that can be used to optimize a custom
  * Aggregate by providing a shortcut for when a single value is removed from the
- * input values - for example ,when a Row is removed from the Table.
+ * input values - for example, when a Row is removed from the Table.
  * @param aggregateReplace A function that can be used to optimize a custom
  * Aggregate by providing a shortcut for when a single value in the input values
  * is replaced with another - for example, when a Row is updated.
@@ -1455,7 +1608,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    *   filter results, based on the underlying Cells of the main or joined
    *   Tables.
    * - The Group type describes a function that lets you specify that the values
-   *   of a Cell in multiple result Rows should be aggregated together.
+   *   of a Cell in multiple ResultRows should be aggregated together.
    * - The Having type describes a function that lets you specify conditions to
    *   filter results, based on the grouped Cells resulting from a Group clause.
    *
@@ -1693,7 +1846,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
 
   /**
    * The getResultTable method returns an object containing the entire data of
-   * the result Table of the given query.
+   * the ResultTable of the given query.
    *
    * This has the same behavior as a Store's getTable method. For example, if
    * the query Id is invalid, the method returns an empty object. Similarly, it
@@ -1702,13 +1855,13 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * themselves.
    *
    * @param queryId The Id of a query.
-   * @returns An object containing the entire data of the result Table of the
+   * @returns An object containing the entire data of the ResultTable of the
    * query.
-   * @returns The result of the query, structured as a Table.
+   * @returns The result of the query, structured as a ResultTable.
    * @example
    * This example creates a Queries object, a single query definition, and then
    * calls this method on it (as well as a non-existent definition) to get the
-   * result Table.
+   * ResultTable.
    *
    * ```js
    * const store = createStore().setTable('pets', {
@@ -1735,11 +1888,11 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Result
    * @since v2.0.0
    */
-  getResultTable(queryId: Id): Table;
+  getResultTable(queryId: Id): ResultTable;
 
   /**
-   * The getResultRowIds method returns the Ids of every Row in the result Table
-   * of the given query.
+   * The getResultRowIds method returns the Ids of every ResultRow in the
+   * ResultTable of the given query.
    *
    * This has the same behavior as a Store's getRowIds method. For example, if
    * the query Id is invalid, the method returns an empty array. Similarly, it
@@ -1747,11 +1900,11 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * made to the list object are not made to the query results themselves.
    *
    * @param queryId The Id of a query.
-   * @returns An array of the Ids of every Row in the result of the query.
+   * @returns An array of the Ids of every ResultRow in the result of the query.
    * @example
    * This example creates a Queries object, a single query definition, and then
    * calls this method on it (as well as a non-existent definition) to get the
-   * result Row Ids.
+   * ResultRow Ids.
    *
    * ```js
    * const store = createStore().setTable('pets', {
@@ -1781,37 +1934,37 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
   getResultRowIds(queryId: Id): Ids;
 
   /**
-   * The getResultSortedRowIds method returns the Ids of every Row in the result
-   * Table of the given query, sorted according to the values in a specified
-   * Cell.
+   * The getResultSortedRowIds method returns the Ids of every ResultRow in the
+   * ResultTable of the given query, sorted according to the values in a
+   * specified ResultCell.
    *
    * This has the same behavior as a Store's getSortedRowIds method. For
    * example, if the query Id is invalid, the method returns an empty array.
    * Similarly, the sorting of the rows is alphanumeric, and you can indicate
    * whether it should be in descending order. The `offset` and `limit`
    * parameters are used to paginate results, but default to `0` and `undefined`
-   * to return all available Row Ids if not specified.
+   * to return all available ResultRow Ids if not specified.
    *
    * Note that every call to this method will perform the sorting afresh - there
    * is no caching of the results - and so you are advised to memoize the
-   * results yourself, especially when the result Table is large. For a
-   * performant approach to tracking the sorted Row Ids when they change, use
-   * the addResultSortedRowIdsListener method.
+   * results yourself, especially when the ResultTable is large. For a
+   * performant approach to tracking the sorted ResultRow Ids when they change,
+   * use the addResultSortedRowIdsListener method.
    *
    * @param queryId The Id of a query.
-   * @param cellId The Id of the Cell whose values are used for the sorting, or
-   * `undefined` to by sort the Row Id itself.
+   * @param cellId The Id of the ResultCell whose values are used for the
+   * sorting, or `undefined` to by sort the ResultRow Id itself.
    * @param descending Whether the sorting should be in descending order.
-   * @param offset The number of Row Ids to skip for pagination purposes, if
-   * any.
-   * @param limit The maximum number of Row Ids to return, or `undefined` for
-   * all.
-   * @returns An array of the sorted Ids of every Row in the result of the
+   * @param offset The number of ResultRow Ids to skip for pagination purposes,
+   * if any.
+   * @param limit The maximum number of ResultRow Ids to return, or `undefined`
+   * for all.
+   * @returns An array of the sorted Ids of every ResultRow in the result of the
    * query.
    * @example
    * This example creates a Queries object, a single query definition, and then
    * calls this method on it (as well as a non-existent definition) to get the
-   * result Row Ids.
+   * ResultRow Ids.
    *
    * ```js
    * const store = createStore().setTable('pets', {
@@ -1848,22 +2001,22 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
 
   /**
    * The getResultRow method returns an object containing the entire data of a
-   * single Row in the result Table of the given query.
+   * single ResultRow in the ResultTable of the given query.
    *
    * This has the same behavior as a Store's getRow method. For example, if the
-   * query or Row Id is invalid, the method returns an empty object. Similarly,
-   * it returns a copy of, rather than a reference to the underlying data, so
-   * changes made to the returned object are not made to the query results
-   * themselves.
+   * query or ResultRow Id is invalid, the method returns an empty object.
+   * Similarly, it returns a copy of, rather than a reference to the underlying
+   * data, so changes made to the returned object are not made to the query
+   * results themselves.
    *
    * @param queryId The Id of a query.
-   * @param rowId The Id of the Row in the result Table.
-   * @returns An object containing the entire data of the Row in the result
-   * Table of the query.
+   * @param rowId The Id of the ResultRow in the ResultTable.
+   * @returns An object containing the entire data of the ResultRow in the
+   * ResultTable of the query.
    * @example
    * This example creates a Queries object, a single query definition, and then
-   * calls this method on it (as well as a non-existent  Row Id) to get the
-   * result Row.
+   * calls this method on it (as well as a non-existent ResultRow Id) to get
+   * the ResultRow.
    *
    * ```js
    * const store = createStore().setTable('pets', {
@@ -1890,26 +2043,26 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Result
    * @since v2.0.0
    */
-  getResultRow(queryId: Id, rowId: Id): Row;
+  getResultRow(queryId: Id, rowId: Id): ResultRow;
 
   /**
-   * The getResultCellIds method returns the Ids of every Cell in a given Row,
-   * in the result Table of the given query.
+   * The getResultCellIds method returns the Ids of every ResultCell in a given
+   * ResultRow, in the ResultTable of the given query.
    *
    * This has the same behavior as a Store's getCellIds method. For example, if
-   * the query Id or Row Id is invalid, the method returns an empty array.
+   * the query Id or ResultRow Id is invalid, the method returns an empty array.
    * Similarly, it returns a copy of, rather than a reference to the list of
    * Ids, so changes made to the list object are not made to the query results
    * themselves.
    *
    * @param queryId The Id of a query.
-   * @param rowId The Id of the Row in the result Table.
-   * @returns An array of the Ids of every Cell in the Row in the result of the
-   * query.
+   * @param rowId The Id of the ResultRow in the ResultTable.
+   * @returns An array of the Ids of every ResultCell in the ResultRow in the
+   * result of the query.
    * @example
    * This example creates a Queries object, a single query definition, and then
-   * calls this method on it (as well as a non-existent Row Id) to get the
-   * result Cell Ids.
+   * calls this method on it (as well as a non-existent ResultRow Id) to get the
+   * ResultCell Ids.
    *
    * ```js
    * const store = createStore().setTable('pets', {
@@ -1939,20 +2092,21 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
   getResultCellIds(queryId: Id, rowId: Id): Ids;
 
   /**
-   * The getResultCell method returns the value of a single Cell in a given Row,
-   * in the result Table of the given query.
+   * The getResultCell method returns the value of a single ResultCell in a
+   * given ResultRow, in the ResultTable of the given query.
    *
    * This has the same behavior as a Store's getCell method. For example, if the
-   * query, or Row, or Cell Id is invalid, the method returns `undefined`.
+   * query, or ResultRow, or ResultCell Id is invalid, the method returns
+   * `undefined`.
    *
    * @param queryId The Id of a query.
-   * @param rowId The Id of the Row in the result Table.
-   * @param cellId The Id of the Cell in the Row.
-   * @returns The value of the Cell, or `undefined`.
+   * @param rowId The Id of the ResultRow in the ResultTable.
+   * @param cellId The Id of the ResultCell in the ResultRow.
+   * @returns The value of the ResultCell, or `undefined`.
    * @example
    * This example creates a Queries object, a single query definition, and then
-   * calls this method on it (as well as a non-existent Cell Id) to get the
-   * result Cell.
+   * calls this method on it (as well as a non-existent ResultCell Id) to get
+   * the ResultCell.
    *
    * ```js
    * const store = createStore().setTable('pets', {
@@ -1979,16 +2133,16 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Result
    * @since v2.0.0
    */
-  getResultCell(queryId: Id, rowId: Id, cellId: Id): CellOrUndefined;
+  getResultCell(queryId: Id, rowId: Id, cellId: Id): ResultCellOrUndefined;
 
   /**
    * The hasResultTable method returns a boolean indicating whether a given
-   * result Table exists.
+   * ResultTable exists.
    *
    * @param queryId The Id of a possible query.
-   * @returns Whether a result Table for that query Id exists.
+   * @returns Whether a ResultTable for that query Id exists.
    * @example
-   * This example shows two simple result Table existence checks.
+   * This example shows two simple ResultTable existence checks.
    *
    * ```js
    * const store = createStore().setTable('pets', {
@@ -2017,14 +2171,14 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
   hasResultTable(queryId: Id): boolean;
 
   /**
-   * The hasResultRow method returns a boolean indicating whether a given result
-   * Row exists.
+   * The hasResultRow method returns a boolean indicating whether a given
+   * ResultRow exists.
    *
    * @param queryId The Id of a possible query.
-   * @param rowId The Id of a possible Row.
-   * @returns Whether a result Row for that Id exists.
+   * @param rowId The Id of a possible ResultRow.
+   * @returns Whether a ResultRow for that Id exists.
    * @example
-   * This example shows two simple result Row existence checks.
+   * This example shows two simple ResultRow existence checks.
    *
    * ```js
    * const store = createStore().setTable('pets', {
@@ -2054,14 +2208,14 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
 
   /**
    * The hasResultCell method returns a boolean indicating whether a given
-   * result Cell exists.
+   * ResultCell exists.
    *
    * @param queryId The Id of a possible query.
-   * @param rowId The Id of a possible Row.
-   * @param cellId The Id of a possible Cell.
-   * @returns Whether a result Cell for that Id exists.
+   * @param rowId The Id of a possible ResultRow.
+   * @param cellId The Id of a possible ResultCell.
+   * @returns Whether a ResultCell for that Id exists.
    * @example
-   * This example shows two simple result Row existence checks.
+   * This example shows two simple ResultRow existence checks.
    *
    * ```js
    * const store = createStore().setTable('pets', {
@@ -2091,18 +2245,18 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
 
   /**
    * The forEachResultTable method takes a function that it will then call for
-   * each result Table in the Queries object.
+   * each ResultTable in the Queries object.
    *
-   * This method is useful for iterating over all the result Tables of the
+   * This method is useful for iterating over all the ResultTables of the
    * queries in a functional style. The `tableCallback` parameter is a
-   * TableCallback function that will be called with the Id of each result
-   * Table, and with a function that can then be used to iterate over each Row
-   * of the result Table, should you wish.
+   * ResultTableCallback function that will be called with the Id of each
+   * ResultTable, and with a function that can then be used to iterate over each
+   * ResultRow of the ResultTable, should you wish.
    *
    * @param tableCallback The function that should be called for every query's
-   * result Table.
+   * ResultTable.
    * @example
-   * This example iterates over each query's result Table in a Queries object.
+   * This example iterates over each query's ResultTable in a Queries object.
    *
    * ```js
    * const store = createStore().setTable('pets', {
@@ -2134,23 +2288,23 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Iterator
    * @since v2.0.0
    */
-  forEachResultTable(tableCallback: TableCallback): void;
+  forEachResultTable(tableCallback: ResultTableCallback): void;
 
   /**
    * The forEachResultRow method takes a function that it will then call for
-   * each Row in the result Table of a query.
+   * each ResultRow in the ResultTable of a query.
    *
-   * This method is useful for iterating over each Row of the result Table of
-   * the query in a functional style. The `rowCallback` parameter is a
-   * RowCallback function that will be called with the Id of each result Row,
-   * and with a function that can then be used to iterate over each Cell of the
-   * result Row, should you wish.
+   * This method is useful for iterating over each ResultRow of the ResultTable
+   * of the query in a functional style. The `rowCallback` parameter is a
+   * ResultRowCallback function that will be called with the Id of each
+   * ResultRow, and with a function that can then be used to iterate over each
+   * ResultCell of the ResultRow, should you wish.
    *
    * @param queryId The Id of a query.
-   * @param rowCallback The function that should be called for every Row of the
-   * query's result Table.
+   * @param rowCallback The function that should be called for every ResultRow
+   * of the query's ResultTable.
    * @example
-   * This example iterates over each Row in a query's result Table.
+   * This example iterates over each ResultRow in a query's ResultTable.
    *
    * ```js
    * const store = createStore().setTable('pets', {
@@ -2180,22 +2334,23 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Iterator
    * @since v2.0.0
    */
-  forEachResultRow(queryId: Id, rowCallback: RowCallback): void;
+  forEachResultRow(queryId: Id, rowCallback: ResultRowCallback): void;
 
   /**
    * The forEachResultCell method takes a function that it will then call for
-   * each Cell in the result Row of a query.
+   * each ResultCell in the ResultRow of a query.
    *
-   * This method is useful for iterating over each Cell of the result Row of the
-   * query in a functional style. The `cellCallback` parameter is a CellCallback
-   * function that will be called with the Id and value of each result Cell.
+   * This method is useful for iterating over each ResultCell of the ResultRow
+   * of the query in a functional style. The `cellCallback` parameter is a
+   * ResultCellCallback function that will be called with the Id and value of
+   * each ResultCell.
    *
    * @param queryId The Id of a query.
-   * @param rowId The Id of a Row in the query's result Table.
-   * @param cellCallback The function that should be called for every Cell of
-   * the query's result Row.
+   * @param rowId The Id of a ResultRow in the query's ResultTable.
+   * @param cellCallback The function that should be called for every ResultCell
+   * of the query's ResultRow.
    * @example
-   * This example iterates over each Cell in a query's result Row.
+   * This example iterates over each ResultCell in a query's ResultRow.
    *
    * ```js
    * const store = createStore().setTable('pets', {
@@ -2223,28 +2378,32 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Iterator
    * @since v2.0.0
    */
-  forEachResultCell(queryId: Id, rowId: Id, cellCallback: CellCallback): void;
+  forEachResultCell(
+    queryId: Id,
+    rowId: Id,
+    cellCallback: ResultCellCallback,
+  ): void;
 
   /**
    * The addResultTableListener method registers a listener function with the
-   * Queries object that will be called whenever data in a result Table changes.
+   * Queries object that will be called whenever data in a ResultTable changes.
    *
    * The provided listener is a ResultTableListener function, and will be called
-   * with a reference to the Queries object, the Id of the Table that changed
-   * (which is also the query Id), and a GetCellChange function in case you need
-   * to inspect any changes that occurred.
+   * with a reference to the Queries object, the Id of the ResultTable that
+   * changed (which is also the query Id), and a GetCellResultChange function in
+   * case you need to inspect any changes that occurred.
    *
-   * You can either listen to a single result Table (by specifying a query Id as
-   * the method's first parameter) or changes to any result Table (by providing
-   * a `null` wildcard).
+   * You can either listen to a single ResultTable (by specifying a query Id as
+   * the method's first parameter) or changes to any ResultTable (by providing a
+   * `null` wildcard).
    *
    * @param queryId The Id of the query to listen to, or `null` as a wildcard.
    * @param listener The function that will be called whenever data in the
-   * matching result Table changes.
+   * matching ResultTable changes.
    * @returns A unique Id for the listener that can later be used to remove it.
    * @example
    * This example registers a listener that responds to any changes to a
-   * specific result Table.
+   * specific ResultTable.
    *
    * ```js
    * const store = createStore().setTable('pets', {
@@ -2278,7 +2437,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @example
    * This example registers a listener that responds to any changes to any
-   * result Table.
+   * ResultTable.
    *
    * ```js
    * const store = createStore().setTable('pets', {
@@ -2318,28 +2477,28 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
 
   /**
    * The addResultRowIdsListener method registers a listener function with the
-   * Queries object that will be called whenever the Row Ids in a result Table
-   * change.
+   * Queries object that will be called whenever the ResultRow Ids in a
+   * ResultTable change.
    *
    * The provided listener is a ResultRowIdsListener function, and will be
-   * called with a reference to the Queries object and the Id of the Table that
-   * changed (which is also the query Id).
+   * called with a reference to the Queries object and the Id of the ResultTable
+   * that changed (which is also the query Id).
    *
-   * By default, such a listener is only called when a Row is added to, or
-   * removed from, the result Table. To listen to all changes in the result
-   * Table, use the addResultTableListener method.
+   * By default, such a listener is only called when a ResultRow is added to, or
+   * removed from, the ResultTable. To listen to all changes in the ResultTable,
+   * use the addResultTableListener method.
    *
-   * You can either listen to a single result Table (by specifying a query Id as
-   * the method's first parameter) or changes to any result Table (by providing
-   * a `null` wildcard).
+   * You can either listen to a single ResultTable (by specifying a query Id as
+   * the method's first parameter) or changes to any ResultTable (by providing a
+   * `null` wildcard).
    *
    * @param queryId The Id of the query to listen to, or `null` as a wildcard.
-   * @param listener The function that will be called whenever the Row Ids in
-   * the result Table change.
+   * @param listener The function that will be called whenever the ResultRow Ids
+   * in the ResultTable change.
    * @returns A unique Id for the listener that can later be used to remove it.
    * @example
-   * This example registers a listener that responds to any change to the Row
-   * Ids of a specific result Table.
+   * This example registers a listener that responds to any change to the
+   * ResultRow Ids of a specific ResultTable.
    *
    * ```js
    * const store = createStore().setTable('pets', {
@@ -2372,8 +2531,8 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * store.delListener(listenerId);
    * ```
    * @example
-   * This example registers a listener that responds to any change to the Row
-   * Ids of any result Table.
+   * This example registers a listener that responds to any change to the
+   * ResultRow Ids of any ResultTable.
    *
    * ```js
    * const store = createStore().setTable('pets', {
@@ -2417,44 +2576,44 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
   /**
    * The addResultSortedRowIdsListener method registers a listener function with
    * the Queries object that will be called whenever sorted (and optionally,
-   * paginated) Row Ids in a result Table change.
+   * paginated) ResultRow Ids in a ResultTable change.
    *
    * The provided listener is a ResultSortedRowIdsListener function, and will be
-   * called with a reference to the Queries object, the Id of the result Table
-   * whose Row Ids sorting changed (which is also the query Id), the Cell Id
-   * being used to sort them, whether descending or not, and the offset and
-   * limit of the number of Ids returned, for pagination purposes. It also
-   * receives the sorted array of Ids itself, so that you can use them in the
-   * listener without the additional cost of an explicit call to
+   * called with a reference to the Queries object, the Id of the ResultTable
+   * whose ResultRow Ids sorting changed (which is also the query Id), the
+   * ResultCell Id being used to sort them, whether descending or not, and the
+   * offset and limit of the number of Ids returned, for pagination purposes. It
+   * also receives the sorted array of Ids itself, so that you can use them in
+   * the listener without the additional cost of an explicit call to
    * getResultSortedRowIds
    *
-   * Such a listener is called when a Row is added or removed, but also when a
-   * value in the specified Cell (somewhere in the result Table) has changed
-   * enough to change the sorting of the Row Ids.
+   * Such a listener is called when a ResultRow is added or removed, but also
+   * when a value in the specified ResultCell (somewhere in the ResultTable) has
+   * changed enough to change the sorting of the ResultRow Ids.
    *
    * Unlike most other listeners, you cannot provide wildcards (due to the cost
    * of detecting changes to the sorting). You can only listen to a single
-   * specified result Table, sorted by a single specified Cell.
+   * specified ResultTable, sorted by a single specified ResultCell.
    *
    * The sorting of the rows is alphanumeric, and you can indicate whether it
    * should be in descending order. The `offset` and `limit` parameters are used
    * to paginate results, but default to `0` and `undefined` to return all
-   * available Row Ids if not specified.
+   * available ResultRow Ids if not specified.
    *
    * @param queryId The Id of the query to listen to.
-   * @param cellId The Id of the Cell whose values are used for the sorting, or
-   * `undefined` to by sort the result Row Id itself.
+   * @param cellId The Id of the ResultCell whose values are used for the
+   * sorting, or `undefined` to by sort the ResultRow Id itself.
    * @param descending Whether the sorting should be in descending order.
-   * @param offset The number of Row Ids to skip for pagination purposes, if
-   * any.
-   * @param limit The maximum number of Row Ids to return, or `undefined` for
-   * all.
-   * @param listener The function that will be called whenever the sorted Row
-   * Ids in the result Table change.
+   * @param offset The number of ResultRow Ids to skip for pagination purposes,
+   * if any.
+   * @param limit The maximum number of ResultRow Ids to return, or `undefined`
+   * for all.
+   * @param listener The function that will be called whenever the sorted
+   * ResultRow Ids in the ResultTable change.
    * @returns A unique Id for the listener that can later be used to remove it.
    * @example
    * This example registers a listener that responds to any change to the sorted
-   * Row Ids of a specific result Table.
+   * ResultRow Ids of a specific ResultTable.
    *
    * ```js
    * const store = createStore().setTable('pets', {
@@ -2479,22 +2638,22 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    *   0,
    *   undefined,
    *   (queries, tableId, cellId, descending, offset, limit, sortedRowIds) => {
-   *     console.log(`Sorted Row Ids for dogColors result table changed`);
+   *     console.log(`Sorted row Ids for dogColors result table changed`);
    *     console.log(sortedRowIds);
    *     // ^ cheaper than calling getResultSortedRowIds again
    *   },
    * );
    *
    * store.setRow('pets', 'rex', {species: 'dog', color: 'tan'});
-   * // -> 'Sorted Row Ids for dogColors result table changed'
+   * // -> 'Sorted row Ids for dogColors result table changed'
    * // -> ['cujo', 'fido', 'rex']
    *
    * store.delListener(listenerId);
    * ```
    * @example
    * This example registers a listener that responds to any change to the sorted
-   * Row Ids of a specific Table. The Row Ids are sorted by their own value,
-   * since the `cellId` parameter is explicitly undefined.
+   * ResultRow Ids of a specific ResultTable. The ResultRow Ids are sorted by
+   * their own value, since the `cellId` parameter is explicitly undefined.
    *
    * ```js
    * const store = createStore().setTable('pets', {
@@ -2521,14 +2680,14 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    *   0,
    *   undefined,
    *   (queries, tableId, cellId, descending, offset, limit, sortedRowIds) => {
-   *     console.log(`Sorted Row Ids for dogColors result table changed`);
+   *     console.log(`Sorted row Ids for dogColors result table changed`);
    *     console.log(sortedRowIds);
    *     // ^ cheaper than calling getSortedRowIds again
    *   },
    * );
    *
    * store.setRow('pets', 'rex', {species: 'dog', color: 'tan'});
-   * // -> 'Sorted Row Ids for dogColors result table changed'
+   * // -> 'Sorted row Ids for dogColors result table changed'
    * // -> ['cujo', 'fido', 'rex']
    *
    * store.delListener(listenerId);
@@ -2547,31 +2706,30 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
 
   /**
    * The addResultRowListener method registers a listener function with the
-   * Queries object that will be called whenever data in a result Row changes.
+   * Queries object that will be called whenever data in a ResultRow changes.
    *
    * The provided listener is a ResultRowListener function, and will be called
-   * with a reference to the Queries object, the Id of the Table that changed
-   * (which is also the query Id), and a GetCellChange function in case you need
-   * to inspect any changes that occurred.
+   * with a reference to the Queries object, the Id of the ResultTable that
+   * changed (which is also the query Id), and a GetCellResultChange function in
+   * case you need to inspect any changes that occurred.
    *
-   * You can either listen to a single result Row (by specifying a query Id and
-   * Row Id as the method's first two parameters) or changes to any result Row
-   * (by providing `null` wildcards).
+   * You can either listen to a single ResultRow (by specifying a query Id and
+   * ResultRow Id as the method's first two parameters) or changes to any
+   * ResultRow (by providing `null` wildcards).
    *
    * Both, either, or neither of the `queryId` and `rowId` parameters can be
-   * wildcarded with `null`. You can listen to a specific result Row in a
-   * specific query, any result Row in a specific query, a specific result Row
-   * in any query, or any result Row in any query.
+   * wildcarded with `null`. You can listen to a specific ResultRow in a
+   * specific query, any ResultRow in a specific query, a specific ResultRow in
+   * any query, or any ResultRow in any query.
    *
    * @param queryId The Id of the query to listen to, or `null` as a wildcard.
-   * @param rowId The Id of the result Row to listen to, or `null` as a
-   * wildcard.
+   * @param rowId The Id of the ResultRow to listen to, or `null` as a wildcard.
    * @param listener The function that will be called whenever data in the
-   * matching result Row changes.
+   * matching ResultRow changes.
    * @returns A unique Id for the listener that can later be used to remove it.
    * @example
    * This example registers a listener that responds to any changes to a
-   * specific result Row.
+   * specific ResultRow.
    *
    * ```js
    * const store = createStore().setTable('pets', {
@@ -2606,7 +2764,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @example
    * This example registers a listener that responds to any changes to any
-   * result Row.
+   * ResultRow.
    *
    * ```js
    * const store = createStore().setTable('pets', {
@@ -2651,35 +2809,34 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
 
   /**
    * The addResultCellIdsListener method registers a listener function with the
-   * Queries object that will be called whenever the Cell Ids in a result Row
-   * change.
+   * Queries object that will be called whenever the ResultCell Ids in a
+   * ResultRow change.
    *
    * The provided listener is a ResultCellIdsListener function, and will be
-   * called with a reference to the Queries object, the Id of the Table (which
-   * is also the query Id), and the Id of the result Row that changed.
+   * called with a reference to the Queries object, the Id of the ResultTable
+   * (which is also the query Id), and the Id of the ResultRow that changed.
    *
-   * Such a listener is only called when a Cell is added to, or removed from,
-   * the result Row. To listen to all changes in the result Row, use the
+   * Such a listener is only called when a ResultCell is added to, or removed
+   * from, the ResultRow. To listen to all changes in the ResultRow, use the
    * addResultRowListener method.
    *
-   * You can either listen to a single result Row (by specifying the query Id
-   * and Row Id as the method's first two parameters) or changes to any Row (by
-   * providing `null` wildcards).
+   * You can either listen to a single ResultRow (by specifying the query Id and
+   * ResultRow Id as the method's first two parameters) or changes to any
+   * ResultRow (by providing `null` wildcards).
    *
    * Both, either, or neither of the `queryId` and `rowId` parameters can be
-   * wildcarded with `null`. You can listen to a specific result Row in a
-   * specific query, any result Row in a specific query, a specific result Row
-   * in any query, or any result Row in any query.
+   * wildcarded with `null`. You can listen to a specific ResultRow in a
+   * specific query, any ResultRow in a specific query, a specific ResultRow in
+   * any query, or any ResultRow in any query.
    *
    * @param queryId The Id of the query to listen to, or `null` as a wildcard.
-   * @param rowId The Id of the result Row to listen to, or `null` as a
-   * wildcard.
-   * @param listener The function that will be called whenever the Cell Ids in
-   * the result Row change.
+   * @param rowId The Id of the ResultRow to listen to, or `null` as a wildcard.
+   * @param listener The function that will be called whenever the ResultCell
+   * Ids in the ResultRow change.
    * @returns A unique Id for the listener that can later be used to remove it.
    * @example
-   * This example registers a listener that responds to any change to the Cell
-   * Ids of a specific result Row.
+   * This example registers a listener that responds to any change to the
+   * ResultCell Ids of a specific ResultRow.
    *
    * ```js
    * const store = createStore().setTable('pets', {
@@ -2714,8 +2871,8 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * store.delListener(listenerId);
    * ```
    * @example
-   * This example registers a listener that responds to any change to the Cell
-   * Ids of any result Row.
+   * This example registers a listener that responds to any change to the
+   * ResultCell Ids of any ResultRow.
    *
    * ```js
    * const store = createStore().setTable('pets', {
@@ -2764,35 +2921,34 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
 
   /**
    * The addResultCellListener method registers a listener function with the
-   * Queries object that will be called whenever data in a result Cell changes.
+   * Queries object that will be called whenever data in a ResultCell changes.
    *
    * The provided listener is a ResultCellListener function, and will be called
-   * with a reference to the Queries object, the Id of the Table that changed
-   * (which is also the query Id), the Id of the Row that changed, the Id of the
-   * Cell that changed, the new Cell value, the old Cell value, and a
-   * GetCellChange function in case you need to inspect any changes that
-   * occurred.
+   * with a reference to the Queries object, the Id of the ResultTable that
+   * changed (which is also the query Id), the Id of the ResultRow that changed,
+   * the Id of the ResultCell that changed, the new ResultCell value, the old
+   * ResultCell value, and a GetCellResultChange function in case you need to
+   * inspect any changes that occurred.
    *
-   * You can either listen to a single result Row (by specifying a query Id, Row
-   * Id, and Cell Id as the method's first three parameters) or changes to any
-   * result Cell (by providing `null` wildcards).
+   * You can either listen to a single ResultRow (by specifying a query Id,
+   * ResultRow Id, and ResultCell Id as the method's first three parameters) or
+   * changes to any ResultCell (by providing `null` wildcards).
    *
    * All, some, or none of the `queryId`, `rowId`, and `cellId` parameters can
-   * be wildcarded with `null`. You can listen to a specific Cell in a specific
-   * result Row in a specific query, any Cell in any result Row in any query,
-   * for example - or every other combination of wildcards.
+   * be wildcarded with `null`. You can listen to a specific ResultCell in a
+   * specific ResultRow in a specific query, any ResultCell in any ResultRow in
+   * any query, for example - or every other combination of wildcards.
    *
    * @param queryId The Id of the query to listen to, or `null` as a wildcard.
-   * @param rowId The Id of the result Row to listen to, or `null` as a
-   * wildcard.
-   * @param cellId The Id of the result Cell to listen to, or `null` as a
+   * @param rowId The Id of the ResultRow to listen to, or `null` as a wildcard.
+   * @param cellId The Id of the ResultCell to listen to, or `null` as a
    * wildcard.
    * @param listener The function that will be called whenever data in the
-   * matching result Cell changes.
+   * matching ResultCell changes.
    * @returns A unique Id for the listener that can later be used to remove it.
    * @example
    * This example registers a listener that responds to any changes to a
-   * specific result Cell.
+   * specific ResultCell.
    *
    * ```js
    * const store = createStore().setTable('pets', {
@@ -2832,7 +2988,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @example
    * This example registers a listener that responds to any changes to any
-   * result Cell.
+   * ResultCell.
    *
    * ```js
    * const store = createStore().setTable('pets', {
