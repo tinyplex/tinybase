@@ -143,7 +143,7 @@ export const getDefinableFunctions = <Thing, RowValue>(
         store.getCell(tableId, rowId, cellId);
       const oldRowValue = mapGet(rowValues, rowId);
       const newRowValue = hasRow(tableId, rowId)
-        ? validateRowValue(getRowValue(getCell, rowId))
+        ? validateRowValue(getRowValue(getCell as any, rowId))
         : undefined;
       if (
         !(
@@ -159,7 +159,7 @@ export const getDefinableFunctions = <Thing, RowValue>(
       if (!isUndefined(getSortKey)) {
         const oldSortKey = mapGet(sortKeys, rowId);
         const newSortKey = hasRow(tableId, rowId)
-          ? getSortKey(getCell, rowId)
+          ? getSortKey(getCell as any, rowId)
           : undefined;
         if (oldSortKey != newSortKey) {
           mapSet(changedSortKeys, rowId, newSortKey);
