@@ -355,7 +355,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
             if (
               collIsEmpty(selectedRowIds) ||
               !arrayEvery(havings, (having) =>
-                having((cellId: Id) => groupRow[cellId]),
+                having((cellId) => groupRow[cellId] as any),
               )
             ) {
               resultStore.delRow(queryId, groupRowId);
@@ -488,7 +488,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
       arrayForEach(joinedTableIds, (remoteAsTableId) => {
         const [realJoinedTableId, , on, nextJoinedTableIds, remoteIdPair] =
           mapGet(joins, remoteAsTableId) as JoinClause;
-        const remoteRowId = on?.(getCell, rootRowId);
+        const remoteRowId = on?.(getCell as any, rootRowId);
         const [previousRemoteRowId, previousRemoteListenerId] =
           mapGet(remoteIdPair, rootRowId) ?? [];
         if (remoteRowId != previousRemoteRowId) {

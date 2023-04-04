@@ -501,9 +501,12 @@ export type MapValue<
 export type GetCell<
   Schema extends OptionalTablesSchema = NoTablesSchema,
   TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-> = <CellId extends CellIdFromSchema<Schema, TableId>>(
+> = <
+  CellId extends CellIdFromSchema<Schema, TableId>,
+  CellOrUndefined = Cell<Schema, TableId, CellId> | undefined,
+>(
   cellId: CellId,
-) => CellOrUndefined<Schema, TableId, CellId>;
+) => CellOrUndefined;
 
 /**
  * The DoRollback type describes a function that you can use to rollback the
