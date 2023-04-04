@@ -501,11 +501,9 @@ export type MapValue<
 export type GetCell<
   Schema extends OptionalTablesSchema = NoTablesSchema,
   TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-  CellId extends CellIdFromSchema<Schema, TableId> = CellIdFromSchema<
-    Schema,
-    TableId
-  >,
-> = (cellId: CellId) => CellOrUndefined<Schema, TableId, CellId>;
+> = <CellId extends CellIdFromSchema<Schema, TableId>>(
+  cellId: CellId,
+) => CellOrUndefined<Schema, TableId, CellId>;
 
 /**
  * The DoRollback type describes a function that you can use to rollback the
@@ -6125,6 +6123,20 @@ export type CellListenerAlias<
         : AllCellIdFromSchema<Schemas[0]>)
     | null,
 > = CellListener<Schemas, TableIdOrNull, RowIdOrNull, CellIdOrNull>;
+
+/**
+ * The GetCellAlias type is a duplicate of GetCell, used to mask complex
+ * generics from documentation.
+ *
+ * This type is used internally to the TinyBase type system and you are not
+ * expected to need to use it directly.
+ *
+ * @category Internal
+ */
+export type GetCellAlias<
+  Schema extends OptionalTablesSchema = NoTablesSchema,
+  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+> = GetCell<Schema, TableId>;
 
 /**
  * The ValueListenerAlias type is a duplicate of ValueListener, used to mask
