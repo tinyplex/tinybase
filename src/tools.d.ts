@@ -13,9 +13,9 @@
 import {
   NoSchemas,
   OptionalSchemas,
+  OptionalTablesSchema,
+  OptionalValuesSchema,
   Store,
-  TablesSchema,
-  ValuesSchema,
 } from './store.d';
 import {Id} from './common.d';
 
@@ -236,7 +236,9 @@ export interface Tools<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Modelling
    * @since v3.0.0
    */
-  getStoreTablesSchema(): TablesSchema;
+  getStoreTablesSchema<
+    TablesSchema extends OptionalTablesSchema = Schemas[0],
+  >(): TablesSchema;
 
   /**
    * The getStoreValuesSchema method returns the ValuesSchema of the Store as an
@@ -275,7 +277,9 @@ export interface Tools<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Modelling
    * @since v3.0.0
    */
-  getStoreValuesSchema(): ValuesSchema;
+  getStoreValuesSchema<
+    ValuesSchema extends OptionalValuesSchema = Schemas[1],
+  >(): ValuesSchema;
 
   /**
    * The getStoreApi method returns code-generated `.d.ts` and `.ts(x)` files
