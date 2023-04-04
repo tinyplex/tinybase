@@ -139,7 +139,7 @@ export const createMetrics = getCreateFunction((store: Store): Metrics => {
   const getListenerStats = (): MetricsListenerStats =>
     DEBUG ? {metric: collSize2(metricListeners)} : {};
 
-  const metrics: Metrics = {
+  const metrics: any = {
     setMetricDefinition,
     delMetricDefinition,
 
@@ -157,5 +157,5 @@ export const createMetrics = getCreateFunction((store: Store): Metrics => {
     getListenerStats,
   };
 
-  return objFreeze(metrics);
+  return objFreeze(metrics as Metrics);
 }) as typeof createMetricsDecl;
