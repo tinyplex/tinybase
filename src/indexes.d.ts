@@ -12,11 +12,13 @@
  */
 
 import {
-  GetCell,
+  CellIdFromSchema,
+  GetCellAlias,
   NoSchemas,
   OptionalSchemas,
   RowCallback,
   Store,
+  TableIdFromSchema,
 } from './store.d';
 import {Id, IdOrNull, Ids, SortKey} from './common.d';
 
@@ -354,11 +356,15 @@ export interface Indexes<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Configuration
    */
-  setIndexDefinition(
+  setIndexDefinition<
+    TableId extends TableIdFromSchema<Schemas[0]>,
+    CellId extends CellIdFromSchema<Schemas[0], TableId>,
+    GetCell = GetCellAlias<Schemas[0], TableId>,
+  >(
     indexId: Id,
-    tableId: Id,
-    getSliceIdOrIds?: Id | ((getCell: GetCell, rowId: Id) => Id | Ids),
-    getSortKey?: Id | ((getCell: GetCell, rowId: Id) => SortKey),
+    tableId: TableId,
+    getSliceIdOrIds?: CellId | ((getCell: GetCell, rowId: Id) => Id | Ids),
+    getSortKey?: CellId | ((getCell: GetCell, rowId: Id) => SortKey),
     sliceIdSorter?: (sliceId1: Id, sliceId2: Id) => number,
     rowIdSorter?: (sortKey1: SortKey, sortKey2: SortKey, sliceId: Id) => number,
   ): Indexes<Schemas>;

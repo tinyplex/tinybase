@@ -256,7 +256,7 @@ export const createIndexes = getCreateFunction((store: Store): Indexes => {
         }
       : {};
 
-  const indexes: Indexes = {
+  const indexes: any = {
     setIndexDefinition,
     delIndexDefinition,
 
@@ -278,5 +278,5 @@ export const createIndexes = getCreateFunction((store: Store): Indexes => {
     getListenerStats,
   };
 
-  return objFreeze(indexes);
+  return objFreeze(indexes as Indexes);
 }) as typeof createIndexesDecl;
