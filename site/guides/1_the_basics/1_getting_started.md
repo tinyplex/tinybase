@@ -82,4 +82,9 @@ If that all worked, you are set up and ready to learn more about TinyBase! From
 here on, we will mostly show Node-based code snippets, but most should be easily
 translatable to run in a browser too.
 
+Before we move on, you should be aware that the overall package includes a
+number of different versions of TinyBase, transpiled for different targets and
+formats. You may want to take a look at the Importing TinyBase guide if the code
+above isn't working in your environment - React Native in particular.
+
 Let's move onto the Creating A Store guide.

@@ -108,5 +108,5 @@ console.log(store.getTables());
 We've covered all of the essential basics of working with a TinyBase Store, but
 that's still just the start!
 
-Next we will show how you can quickly build user interfaces on top of a Store,
-and for that, it's time to proceed to the Building UIs guide.
+Before we move on, we have a quick aside about how to use various flavors of
+TinyBase in your app, in the Importing TinyBase guide.

@@ -44,5 +44,17 @@ are merely to support JSX in the browser and for the purposes of illustrating
 how to get started quickly. In a production environment you should pre-compile
 and your JSX and modules to create a bundled browser app.
 
-Let's first understand how to use hooks in the ui-react module, and move on to
-the Using React Hooks guide.
+If you're bundling the whole app, you can of course import the ui-react module
+something like this:
+
+```js yolo
+import {createStore} from 'tinybase';
+import {CellView} from 'tinybase/ui-react';
+// ...
+```
+
+(You can also select different targets and flavors of the ui-react module as
+described in the Importing TinyBase guide.)
+
+Boilerplate aside, let's move on to understand how to use hooks in the ui-react
+module, with the Using React Hooks guide.

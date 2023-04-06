@@ -64,11 +64,11 @@ the `.d.ts` type definitions, the compiled `.js` files, and their compressed
 submodules.
 
 The `tinybase.js` and `tinybase.js.gz` files represent the master package of
-everything together (except the ui-react module, which always remains a
-standalone option). Since many of the submodules share compiled-in dependencies,
-the master package is smaller to include than including all of the submodules
-separately. However, for a very minimal set of modules, you may save size by
-including them piecemeal.
+everything together (except the ui-react module and tools module, which always
+remain standalone options). Since many of the submodules share compiled-in
+dependencies, the master package is smaller to include than including all of the
+submodules separately. However, for a very minimal set of modules, you may save
+size by including them piecemeal.
 
 In the root of the `lib` directory, all of these files are built to the
 [`esnext`](https://esbuild.github.io/api/#target) target and the
@@ -77,13 +77,14 @@ are subdirectories that contain builds of different types:
 
 | Directory | Target | Format | Minified |
 | --------- | ------ | ------ | -------- |
-| .         | esnext | esm    | true     |
-| ./debug   | esnext | esm    | false    |
-| ./umd     | esnext | umd    | true     |
-| ./cjs     | esnext | cjs    | true     |
-| ./es6     | es6    | esm    | true     |
-| ./umd-es6 | es6    | umd    | true     |
-| ./cjs-es6 | es6    | cjs    | true     |
+| .         | esnext | esm    | yes      |
+| ./debug   | esnext | esm    | no       |
+| ./umd     | esnext | umd    | yes      |
+| ./cjs     | esnext | cjs    | yes      |
+| ./es6     | es6    | esm    | yes      |
+| ./umd-es6 | es6    | umd    | yes      |
+| ./cjs-es6 | es6    | cjs    | yes      |
 
 These build configurations are all defined in the `compileForProd` task in
-`gulpfile.mjs`.
+`gulpfile.mjs`, and instructions for importing them are in the Importing
+TinyBase guide.
