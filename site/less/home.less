@@ -87,6 +87,13 @@ body > main > article#home {
   .table {
     box-shadow: @shadow;
   }
+  > section:nth-of-type(2),
+  > section:nth-of-type(3) {
+    text-align: center;
+    img {
+      border-radius: 50%;
+    }
+  }
 }
 
 @media (min-width: 56rem) {
@@ -109,10 +116,10 @@ body > main > article#home {
     > .table {
       margin-top: 0.5rem;
     }
-    > section:nth-of-type(even) {
+    > section:nth-of-type(2n + 3) {
       grid-column-start: 4;
     }
-    > section:nth-of-type(2n + 3) {
+    > section:nth-of-type(2n + 4) {
       text-align: right;
     }
     > section#hero {

@@ -69,6 +69,32 @@
 
 ---
 
+> ### Proud to be sponsored by:
+>
+> @@EVAL("getGitHubAvatar('expo')")
+> @@EVAL("getGitHubAvatar('WonderPanda')")
+> @@EVAL("getGitHubAvatar('arpitBhalla')")
+
+> ### Excited to be used by:
+>
+> @@EVAL("getGitHubAvatar('brentvatne')")
+> @@EVAL("getGitHubAvatar('circadian-risk')")
+> @@EVAL("getGitHubAvatar('WonderPanda')")
+> @@EVAL("getGitHubAvatar('miking-the-viking')")
+> @@EVAL("getGitHubAvatar('cubecull')")
+> @@EVAL("getGitHubAvatar('Apocalypsor')")
+> @@EVAL("getGitHubAvatar('uptonking')")
+> @@EVAL("getGitHubAvatar('erwinkn')")
+> @@EVAL("getGitHubAvatar('Kayoo-asso')")
+> @@EVAL("getGitHubAvatar('tinyplex')")
+> @@EVAL("getGitHubAvatar('shaneosullivan')")
+> @@EVAL("getGitHubAvatar('generates')")
+> @@EVAL("getGitHubAvatar('flaming-codes')")
+> @@EVAL("getGitHubAvatar('jaysc')")
+> @@EVAL("getGitHubAvatar('kotofurumiya')")
+
+---
+
 > ## Start with a simple key-value store.
 >
 > Creating a Store requires just a simple call to the createStore function. Once

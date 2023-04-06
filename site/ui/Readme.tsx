@@ -38,6 +38,7 @@ export const useReadme = (node: Node): [string, string] => {
     coverage,
     getSizeTable: () => getSizeTable(sizes),
     getCoverageTable: () => getCoverageTable(coverage),
+    getGitHubAvatar,
   }).forEach(([key, value]) => {
     (globalThis as any)[key] = value;
   });
@@ -97,3 +98,8 @@ const getCoverageTable = (coverage: any) =>
       )
       .join('')}
  </table>`;
+
+const getGitHubAvatar = (username: string) =>
+  `<a href='https://github.com/${username}' target='_blank'><img 
+      title='${username}' src='https://github.com/${username}.png?size=48' 
+      width='48' height='48' /></a>`;
