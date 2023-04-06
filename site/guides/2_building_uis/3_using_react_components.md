@@ -96,7 +96,7 @@ the react-ui module components has a prop that takes an alternative rendering
 for its children.
 
 For example, the TableView component takes a `rowComponent` prop that lets you
-indicate how the each Row should be rendered, and the RowView component takes a
+indicate how each Row should be rendered, and the RowView component takes a
 `cellComponent` prop that lets you indicate how each Cell should be rendered.
 The component passed in to such props itself needs to be capable of taking the
 same props that the default component would have.
