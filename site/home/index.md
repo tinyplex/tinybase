@@ -86,7 +86,6 @@
 > @@EVAL("getGitHubAvatar('uptonking')")
 > @@EVAL("getGitHubAvatar('erwinkn')")
 > @@EVAL("getGitHubAvatar('Kayoo-asso')")
-> @@EVAL("getGitHubAvatar('tinyplex')")
 > @@EVAL("getGitHubAvatar('shaneosullivan')")
 > @@EVAL("getGitHubAvatar('generates')")
 > @@EVAL("getGitHubAvatar('flaming-codes')")
