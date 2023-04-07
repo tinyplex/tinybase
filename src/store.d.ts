@@ -592,10 +592,10 @@ export type TransactionListener<Schemas extends OptionalSchemas = NoSchemas> = (
  */
 export type TablesListener<
   Schemas extends OptionalSchemas = NoSchemas,
-  TablesSchema extends OptionalTablesSchema = Schemas[0],
+  Schema extends OptionalTablesSchema = Schemas[0],
 > = (
   store: Store<Schemas>,
-  getCellChange: GetCellChange<TablesSchema> | undefined,
+  getCellChange: GetCellChange<Schema> | undefined,
 ) => void;
 
 /**
@@ -643,11 +643,11 @@ export type TableListener<
   TableId = TableIdOrNull extends null
     ? TableIdFromSchema<Schemas[0]>
     : TableIdOrNull,
-  TablesSchema extends OptionalTablesSchema = Schemas[0],
+  Schema extends OptionalTablesSchema = Schemas[0],
 > = (
   store: Store<Schemas>,
   tableId: TableId,
-  getCellChange: GetCellChange<TablesSchema> | undefined,
+  getCellChange: GetCellChange<Schema> | undefined,
 ) => void;
 
 /**
@@ -750,12 +750,12 @@ export type RowListener<
     ? TableIdFromSchema<Schemas[0]>
     : TableIdOrNull,
   RowId = RowIdOrNull extends null ? Id : RowIdOrNull,
-  TablesSchema extends OptionalTablesSchema = Schemas[0],
+  Schema extends OptionalTablesSchema = Schemas[0],
 > = (
   store: Store<Schemas>,
   tableId: TableId,
   rowId: RowId,
-  getCellChange: GetCellChange<TablesSchema> | undefined,
+  getCellChange: GetCellChange<Schema> | undefined,
 ) => void;
 
 /**
@@ -838,7 +838,7 @@ export type CellListener<
       : AllCellIdFromSchema<Schemas[0]>
     : CellIdOrNull,
   Cell = CellFromSchema<Schemas[0], TableId, CellId>,
-  TablesSchema extends OptionalTablesSchema = Schemas[0],
+  Schema extends OptionalTablesSchema = Schemas[0],
 > = (
   store: Store<Schemas>,
   tableId: TableId,
@@ -846,7 +846,7 @@ export type CellListener<
   cellId: CellId,
   newCell: Cell,
   oldCell: Cell,
-  getCellChange: GetCellChange<TablesSchema> | undefined,
+  getCellChange: GetCellChange<Schema> | undefined,
 ) => void;
 
 /**
@@ -871,10 +871,10 @@ export type CellListener<
  */
 export type ValuesListener<
   Schemas extends OptionalSchemas = NoSchemas,
-  ValuesSchema extends OptionalValuesSchema = Schemas[1],
+  Schema extends OptionalValuesSchema = Schemas[1],
 > = (
   store: Store<Schemas>,
-  getValueChange: GetValueChange<ValuesSchema> | undefined,
+  getValueChange: GetValueChange<Schema> | undefined,
 ) => void;
 
 /**
@@ -928,13 +928,13 @@ export type ValueListener<
     ? ValueIdFromSchema<Schemas[1]>
     : ValueIdOrNull,
   Value = ValueFromSchema<Schemas[1], ValueId>,
-  ValuesSchema extends OptionalValuesSchema = Schemas[1],
+  Schema extends OptionalValuesSchema = Schemas[1],
 > = (
   store: Store<Schemas>,
   valueId: ValueId,
   newValue: Value,
   oldValue: Value,
-  getValueChange: GetValueChange<ValuesSchema> | undefined,
+  getValueChange: GetValueChange<Schema> | undefined,
 ) => void;
 
 /**
