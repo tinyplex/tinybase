@@ -11,21 +11,7 @@
  * @module queries
  * @since v2.0.0
  */
-
-import {
-  Cell,
-  CellIdFromSchema,
-  GetCell,
-  GetCellAlias,
-  NoSchemas,
-  NoTablesSchema,
-  OptionalSchemas,
-  OptionalTablesSchema,
-  Store,
-  TableIdFromSchema,
-} from './store.d';
-import {Id, IdOrNull, Ids} from './common';
-
+/// queries
 /**
  * The ResultTable type is the data structure representing the results of a
  * query.
@@ -44,8 +30,7 @@ import {Id, IdOrNull, Ids} from './common';
  * ```
  * @category Result
  */
-export type ResultTable = {[rowId: Id]: ResultRow};
-
+/// ResultTable
 /**
  * The ResultRow type is the data structure representing a single row in the
  * results of a query.
@@ -61,8 +46,7 @@ export type ResultTable = {[rowId: Id]: ResultRow};
  * ```
  * @category Result
  */
-export type ResultRow = {[cellId: Id]: ResultCell};
-
+/// ResultRow
 /**
  * The ResultCell type is the data structure representing a single cell in the
  * results of a query.
@@ -78,16 +62,14 @@ export type ResultRow = {[cellId: Id]: ResultCell};
  * ```
  * @category Result
  */
-export type ResultCell = string | number | boolean;
-
+/// ResultCell
 /**
  * The ResultCellOrUndefined type is the data structure representing a single
  * cell in the results of a query, or the value `undefined`.
  *
  * @category Result
  */
-export type ResultCellOrUndefined = ResultCell | undefined;
-
+/// ResultCellOrUndefined
 /**
  * The Aggregate type describes a custom function that takes an array of Cell
  * values and returns an aggregate of them.
@@ -102,8 +84,7 @@ export type ResultCellOrUndefined = ResultCell | undefined;
  * @category Aggregators
  * @since v2.0.0
  */
-export type Aggregate = (cells: Cell[], length: number) => ResultCell;
-
+/// Aggregate
 /**
  * The AggregateAdd type describes a function that can be used to optimize a
  * custom Aggregate by providing a shortcut for when a single value is added to
@@ -128,12 +109,7 @@ export type Aggregate = (cells: Cell[], length: number) => ResultCell;
  * @category Aggregators
  * @since v2.0.0
  */
-export type AggregateAdd = (
-  current: Cell,
-  add: Cell,
-  length: number,
-) => ResultCellOrUndefined;
-
+/// AggregateAdd
 /**
  * The AggregateRemove type describes a function that can be used to optimize a
  * custom Aggregate by providing a shortcut for when a single value is removed
@@ -161,12 +137,7 @@ export type AggregateAdd = (
  * @category Aggregators
  * @since v2.0.0
  */
-export type AggregateRemove = (
-  current: Cell,
-  remove: Cell,
-  length: number,
-) => ResultCellOrUndefined;
-
+/// AggregateRemove
 /**
  * The AggregateReplace type describes a function that can be used to optimize a
  * custom Aggregate by providing a shortcut for when a single value in the input
@@ -193,13 +164,7 @@ export type AggregateRemove = (
  * @category Aggregators
  * @since v2.0.0
  */
-export type AggregateReplace = (
-  current: Cell,
-  add: Cell,
-  remove: Cell,
-  length: number,
-) => ResultCellOrUndefined;
-
+/// AggregateReplace
 /**
  * The QueryCallback type describes a function that takes a query's Id.
  *
@@ -211,8 +176,7 @@ export type AggregateReplace = (
  * @category Callback
  * @since v2.0.0
  */
-export type QueryCallback = (queryId: Id) => void;
-
+/// QueryCallback
 /**
  * The ResultTableCallback type describes a function that takes a ResultTable's
  * Id and a callback to loop over each ResultRow within it.
@@ -226,11 +190,7 @@ export type QueryCallback = (queryId: Id) => void;
  * objects in this ResultTable.
  * @category Callback
  */
-export type ResultTableCallback = (
-  tableId: Id,
-  forEachRow: (rowCallback: ResultRowCallback) => void,
-) => void;
-
+/// ResultTableCallback
 /**
  * The ResultRowCallback type describes a function that takes a ResultRow's Id
  * and a callback to loop over each ResultCell within it.
@@ -244,11 +204,7 @@ export type ResultTableCallback = (
  * values in this ResultRow.
  * @category Callback
  */
-export type ResultRowCallback = (
-  rowId: Id,
-  forEachCell: (cellCallback: ResultCellCallback) => void,
-) => void;
-
+/// ResultRowCallback
 /**
  * The ResultCellCallback type describes a function that takes a ResultCell's Id
  * and its value.
@@ -261,8 +217,7 @@ export type ResultRowCallback = (
  * @param cell The value of the ResultCell.
  * @category Callback
  */
-export type ResultCellCallback = (cellId: Id, cell: ResultCell) => void;
-
+/// ResultCellCallback
 /**
  * The ResultTableListener type describes a function that is used to listen to
  * changes to a query's ResultTable.
@@ -283,12 +238,7 @@ export type ResultCellCallback = (cellId: Id, cell: ResultCell) => void;
  * @category Listener
  * @since v2.0.0
  */
-export type ResultTableListener = (
-  queries: Queries,
-  tableId: Id,
-  getCellChange: GetCellResultChange,
-) => void;
-
+/// ResultTableListener
 /**
  * The ResultRowIdsListener type describes a function that is used to listen to
  * changes to the ResultRow Ids in a query's ResultTable.
@@ -306,8 +256,7 @@ export type ResultTableListener = (
  * @category Listener
  * @since v2.0.0
  */
-export type ResultRowIdsListener = (queries: Queries, tableId: Id) => void;
-
+/// ResultRowIdsListener
 /**
  * The ResultSortedRowIdsListener type describes a function that is used to
  * listen to changes to the sorted ResultRow Ids in a query's ResultTable.
@@ -335,16 +284,7 @@ export type ResultRowIdsListener = (queries: Queries, tableId: Id) => void;
  * @category Listener
  * @since v2.0.0
  */
-export type ResultSortedRowIdsListener = (
-  queries: Queries,
-  tableId: Id,
-  cellId: Id | undefined,
-  descending: boolean,
-  offset: number,
-  limit: number | undefined,
-  sortedRowIds: Ids,
-) => void;
-
+/// ResultSortedRowIdsListener
 /**
  * The ResultRowListener type describes a function that is used to listen to
  * changes to a ResultRow in a query's ResultTable.
@@ -366,13 +306,7 @@ export type ResultSortedRowIdsListener = (
  * @category Listener
  * @since v2.0.0
  */
-export type ResultRowListener = (
-  queries: Queries,
-  tableId: Id,
-  rowId: Id,
-  getCellChange: GetCellResultChange,
-) => void;
-
+/// ResultRowListener
 /**
  * The ResultCellIdsListener type describes a function that is used to listen to
  * changes to the ResultCell Ids in a ResultRow in a query's ResultTable.
@@ -391,12 +325,7 @@ export type ResultRowListener = (
  * @category Listener
  * @since v2.0.0
  */
-export type ResultCellIdsListener = (
-  queries: Queries,
-  tableId: Id,
-  rowId: Id,
-) => void;
-
+/// ResultCellIdsListener
 /**
  * The ResultCellListener type describes a function that is used to listen to
  * changes to a ResultCell in a query's ResultTable.
@@ -423,16 +352,7 @@ export type ResultCellIdsListener = (
  * @category Listener
  * @since v2.0.0
  */
-export type ResultCellListener = (
-  queries: Queries,
-  tableId: Id,
-  rowId: Id,
-  cellId: Id,
-  newCell: ResultCell,
-  oldCell: ResultCell,
-  getCellChange: GetCellResultChange,
-) => void;
-
+/// ResultCellListener
 /**
  * The GetCellResultChange type describes a function that returns information
  * about any ResultCell's changes during a transaction.
@@ -449,12 +369,7 @@ export type ResultCellListener = (
  * ResultCell's changes.
  * @category Listener
  */
-export type GetCellResultChange = (
-  tableId: Id,
-  rowId: Id,
-  cellId: Id,
-) => ResultCellChange;
-
+/// GetCellResultChange
 /**
  * The ResultCellChange type describes a ResultCell's changes during a
  * transaction.
@@ -466,12 +381,7 @@ export type GetCellResultChange = (
  *
  * @category Listener
  */
-export type ResultCellChange = [
-  changed: boolean,
-  oldCell: ResultCellOrUndefined,
-  newCell: ResultCellOrUndefined,
-];
-
+/// ResultCellChange
 /**
  * The QueriesListenerStats type describes the number of listeners registered
  * with the Queries object, and can be used for debugging purposes.
@@ -482,29 +392,29 @@ export type ResultCellChange = [
  * @category Development
  * @since v2.0.0
  */
-export type QueriesListenerStats = {
+/// QueriesListenerStats
+{
   /**
    * The number of ResultTableListener functions registered with the Store.
    */
-  table?: number;
+  /// QueriesListenerStats.table
   /**
    * The number of ResultRowIdsListener functions registered with the Store.
    */
-  rowIds?: number;
+  /// QueriesListenerStats.rowIds
   /**
    * The number of ResultRowListener functions registered with the Store.
    */
-  row?: number;
+  /// QueriesListenerStats.row
   /**
    * The number of ResultCellIdsListener functions registered with the Store.
    */
-  cellIds?: number;
+  /// QueriesListenerStats.cellIds
   /**
    * The number of ResultCellListener functions registered with the Store.
    */
-  cell?: number;
-};
-
+  /// QueriesListenerStats.cell
+}
 /**
  * The GetTableCell type describes a function that takes a Id and returns the
  * Cell value for a particular Row, optionally in a joined Table.
@@ -516,10 +426,8 @@ export type QueriesListenerStats = {
  * @category Callback
  * @since v2.0.0
  */
-export type GetTableCell<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  RootTableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-> = {
+/// GetTableCell
+{
   /**
    * When called with one parameter, this function will return the value of
    * the specified Cell from the query's root Table for the Row being selected
@@ -528,15 +436,7 @@ export type GetTableCell<
    * @param cellId The Id of the Cell to fetch the value for.
    * @returns A Cell value or `undefined`.
    */
-  <
-    RootCellId extends CellIdFromSchema<Schema, RootTableId> = CellIdFromSchema<
-      Schema,
-      RootTableId
-    >,
-    CellOrUndefined = Cell<Schema, RootTableId, RootCellId> | undefined,
-  >(
-    cellId: RootCellId,
-  ): CellOrUndefined;
+  /// GetTableCell.1
   /**
    * When called with two parameters, this function will return the value of
    * the specified Cell from a Table that has been joined in the query, for
@@ -548,29 +448,8 @@ export type GetTableCell<
    * @param joinedCellId The Id of the Cell to fetch the value for.
    * @returns A Cell value or `undefined`.
    */
-  <
-    JoinedTableId extends TableIdFromSchema<Schema> | Id =
-      | TableIdFromSchema<Schema>
-      | Id,
-    JoinedCellId extends JoinedCellIdOrId<
-      Schema,
-      JoinedTableId
-    > = JoinedCellIdOrId<Schema, JoinedTableId>,
-    CellOrUndefined extends
-      | (JoinedTableId extends TableIdFromSchema<Schema>
-          ? Cell<Schema, JoinedTableId, JoinedCellId>
-          : Cell)
-      | undefined =
-      | (JoinedTableId extends TableIdFromSchema<Schema>
-          ? Cell<Schema, JoinedTableId, JoinedCellId>
-          : Cell)
-      | undefined,
-  >(
-    joinedTableId: JoinedTableId,
-    joinedCellId: JoinedCellId,
-  ): CellOrUndefined;
-};
-
+  /// GetTableCell.2
+}
 /**
  * The Select type describes a function that lets you specify a Cell or
  * calculated value for including into the query's result.
@@ -668,10 +547,8 @@ export type GetTableCell<
  * @category Definition
  * @since v2.0.0
  */
-export type Select<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  RootTableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-> = {
+/// Select
+{
   /**
    * Calling this function with one Id parameter will indicate that the query
    * should select the value of the specified Cell from the query's root Table.
@@ -680,14 +557,7 @@ export type Select<
    * @returns A SelectedAs object so that the selected Cell Id can be optionally
    * aliased.
    */
-  <
-    RootCellId extends CellIdFromSchema<Schema, RootTableId> = CellIdFromSchema<
-      Schema,
-      RootTableId
-    >,
-  >(
-    cellId: RootCellId,
-  ): SelectedAs;
+  /// Select.1
   /**
    * Calling this function with two parameters will indicate that the query
    * should select the value of the specified Cell from a Table that has been
@@ -700,18 +570,7 @@ export type Select<
    * @returns A SelectedAs object so that the selected Cell Id can be optionally
    * aliased.
    */
-  <
-    JoinedTableId extends TableIdFromSchema<Schema> | Id =
-      | TableIdFromSchema<Schema>
-      | Id,
-    JoinedCellId extends JoinedCellIdOrId<
-      Schema,
-      JoinedTableId
-    > = JoinedCellIdOrId<Schema, JoinedTableId>,
-  >(
-    joinedTableId: JoinedTableId,
-    joinedCellId: JoinedCellId,
-  ): SelectedAs;
+  /// Select.2
   /**
    * Calling this function with one callback parameter will indicate that the
    * query should select a calculated value, based on one or more Cell values in
@@ -723,16 +582,8 @@ export type Select<
    * @returns A SelectedAs object so that the selected Cell Id can be optionally
    * aliased.
    */
-  <
-    GetTableCell extends GetTableCellAlias<
-      Schema,
-      RootTableId
-    > = GetTableCellAlias<Schema, RootTableId>,
-  >(
-    getCell: (getTableCell: GetTableCell, rowId: Id) => ResultCellOrUndefined,
-  ): SelectedAs;
-};
-
+  /// Select.3
+}
 /**
  * The SelectedAs type describes an object returned from calling a Select
  * function so that the selected Cell Id can be optionally aliased.
@@ -780,13 +631,13 @@ export type Select<
  * @category Definition
  * @since v2.0.0
  */
-export type SelectedAs = {
+/// SelectedAs
+{
   /**
    * A function that lets you specify an alias for the Cell Id.
    */
-  as: (selectedCellId: Id) => void;
-};
-
+  /// SelectedAs.as
+}
 /**
  * The Join type describes a function that lets you specify a Cell or calculated
  * value to join the main query Table to other Tables, by their Row Id.
@@ -953,10 +804,8 @@ export type SelectedAs = {
  * @category Definition
  * @since v2.0.0
  */
-export type Join<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  RootTableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-> = {
+/// Join
+{
   /**
    * Calling this function with two Id parameters will indicate that the join to
    * a Row in an adjacent Table is made by finding its Id in a Cell of the
@@ -968,16 +817,7 @@ export type Join<
    * @returns A JoinedAs object so that the joined Table Id can be optionally
    * aliased.
    */
-  <
-    JoinedTableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-    RootCellId extends CellIdFromSchema<Schema, RootTableId> = CellIdFromSchema<
-      Schema,
-      RootTableId
-    >,
-  >(
-    joinedTableId: JoinedTableId,
-    on: RootCellId,
-  ): JoinedAs;
+  /// Join.1
   /**
    * Calling this function with two parameters (where the second is a function)
    * will indicate that the join to a Row in an adjacent Table is made by
@@ -990,10 +830,7 @@ export type Join<
    * @returns A JoinedAs object so that the joined Table Id can be optionally
    * aliased.
    */
-  <JoinedTableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>>(
-    joinedTableId: JoinedTableId,
-    on: (getCell: GetCell<Schema, RootTableId>, rowId: Id) => Id | undefined,
-  ): JoinedAs;
+  /// Join.2
   /**
    * Calling this function with three Id parameters will indicate that the join
    * to a Row in distant Table is made by finding its Id in a Cell of an
@@ -1008,20 +845,7 @@ export type Join<
    * @returns A JoinedAs object so that the joined Table Id can be optionally
    * aliased.
    */
-  <
-    JoinedTableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-    IntermediateJoinedTableId extends TableIdFromSchema<Schema> | Id =
-      | TableIdFromSchema<Schema>
-      | Id,
-    IntermediateJoinedCellId extends JoinedCellIdOrId<
-      Schema,
-      IntermediateJoinedTableId
-    > = JoinedCellIdOrId<Schema, IntermediateJoinedTableId>,
-  >(
-    joinedTableId: JoinedTableId,
-    fromIntermediateJoinedTableId: IntermediateJoinedTableId,
-    on: IntermediateJoinedCellId,
-  ): JoinedAs;
+  /// Join.3
   /**
    * Calling this function with three parameters (where the third is a function)
    * will indicate that the join to a Row in distant Table is made by
@@ -1038,24 +862,8 @@ export type Join<
    * @returns A JoinedAs object so that the joined Table Id can be optionally
    * aliased.
    */
-  <
-    JoinedTableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-    IntermediateJoinedTableId extends TableIdFromSchema<Schema> | Id =
-      | TableIdFromSchema<Schema>
-      | Id,
-    GetCell = IntermediateJoinedTableId extends TableIdFromSchema<Schema>
-      ? GetCellAlias<Schema, IntermediateJoinedTableId>
-      : GetCellAlias,
-  >(
-    joinedTableId: JoinedTableId,
-    fromIntermediateJoinedTableId: IntermediateJoinedTableId,
-    on: (
-      getIntermediateJoinedCell: GetCell,
-      intermediateJoinedRowId: Id,
-    ) => Id | undefined,
-  ): JoinedAs;
-};
-
+  /// Join.4
+}
 /**
  * The JoinedAs type describes an object returned from calling a Join function
  * so that the joined Table Id can be optionally aliased.
@@ -1104,8 +912,11 @@ export type Join<
  * @category Definition
  * @since v2.0.0
  */
-export type JoinedAs = {as: (joinedTableId: Id) => void};
-
+/// JoinedAs
+/**
+ * A function that lets you specify an alias for the joined Table Id.
+ */
+/// JoinedAs.as
 /**
  * The Where type describes a function that lets you specify conditions to
  * filter results, based on the underlying Cells of the root or joined Tables.
@@ -1222,10 +1033,8 @@ export type JoinedAs = {as: (joinedTableId: Id) => void};
  * @category Definition
  * @since v2.0.0
  */
-export type Where<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  RootTableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-> = {
+/// Where
+{
   /**
    * Calling this function with two parameters is used to include only those
    * Rows for which a specified Cell in the query's root Table has a specified
@@ -1235,20 +1044,7 @@ export type Where<
    * @param equals The value that the Cell has to have for the Row to be
    * included in the result.
    */
-  <
-    RootCellId extends CellIdFromSchema<Schema, RootTableId> = CellIdFromSchema<
-      Schema,
-      RootTableId
-    >,
-    RootCell extends Cell<Schema, RootTableId, RootCellId> = Cell<
-      Schema,
-      RootTableId,
-      RootCellId
-    >,
-  >(
-    cellId: RootCellId,
-    equals: RootCell,
-  ): void;
+  /// Where.1
   /**
    * Calling this function with three parameters is used to include only those
    * Rows for which a specified Cell in a joined Table has a specified value.
@@ -1260,24 +1056,7 @@ export type Where<
    * @param equals The value that the Cell has to have for the Row to be
    * included in the result.
    */
-  <
-    JoinedTableId extends TableIdFromSchema<Schema> | Id =
-      | TableIdFromSchema<Schema>
-      | Id,
-    JoinedCellId extends JoinedCellIdOrId<
-      Schema,
-      JoinedTableId
-    > = JoinedCellIdOrId<Schema, JoinedTableId>,
-    JoinedCell extends Cell<Schema, JoinedTableId, JoinedCellId> = Cell<
-      Schema,
-      JoinedTableId,
-      JoinedCellId
-    >,
-  >(
-    joinedTableId: JoinedTableId,
-    joinedCellId: JoinedCellId,
-    equals: JoinedCell,
-  ): void;
+  /// Where.2
   /**
    * Calling this function with one callback parameter is used to include only
    * those Rows which meet a calculated boolean condition, based on values in
@@ -1286,16 +1065,8 @@ export type Where<
    * @param condition A callback that takes a GetTableCell function and that
    * should return `true` for the Row to be included in the result.
    */
-  <
-    GetTableCell extends GetTableCellAlias<
-      Schema,
-      RootTableId
-    > = GetTableCellAlias<Schema, RootTableId>,
-  >(
-    condition: (getTableCell: GetTableCell) => boolean,
-  ): void;
-};
-
+  /// Where.3
+}
 /**
  * The Group type describes a function that lets you specify that the values of
  * a Cell in multiple ResultRows should be aggregated together.
@@ -1468,13 +1239,7 @@ export type Where<
  * @category Definition
  * @since v2.0.0
  */
-export type Group = (
-  selectedCellId: Id,
-  aggregate: 'count' | 'sum' | 'avg' | 'min' | 'max' | Aggregate,
-  aggregateAdd?: AggregateAdd,
-  aggregateRemove?: AggregateRemove,
-  aggregateReplace?: AggregateReplace,
-) => GroupedAs;
+/// Group
 /**
  * The GroupedAs type describes an object returned from calling a Group function
  * so that the grouped Cell Id can be optionally aliased.
@@ -1513,9 +1278,11 @@ export type Group = (
  * @category Definition
  * @since v2.0.0
  */
-
-export type GroupedAs = {as: (groupedCellId: Id) => void};
-
+/// GroupedAs
+/**
+ * A function that lets you specify an alias for the grouped Cell Id.
+ */
+/// GroupedAs.as
 /**
  * The Having type describes a function that lets you specify conditions to
  * filter results, based on the grouped Cells resulting from a Group clause.
@@ -1604,7 +1371,8 @@ export type GroupedAs = {as: (groupedCellId: Id) => void};
  * @category Definition
  * @since v2.0.0
  */
-export type Having = {
+/// Having
+{
   /**
    * Calling this function with two parameters is used to include only those
    * Rows for which a specified Cell in the query's root Table has a specified
@@ -1614,7 +1382,7 @@ export type Having = {
    * @param equals The value that the Cell has to have for the Row to be
    * included in the result.
    */
-  (selectedOrGroupedCellId: Id, equals: Cell): void;
+  /// Having.1
   /**
    * Calling this function with one callback parameter is used to include only
    * those Rows which meet a calculated boolean condition.
@@ -1622,9 +1390,8 @@ export type Having = {
    * @param condition A callback that takes a GetCell function and that should
    * return `true` for the Row to be included in the result.
    */
-  (condition: (getSelectedOrGroupedCell: GetCell) => boolean): void;
-};
-
+  /// Having.2
+}
 /**
  * A Queries object lets you create and track queries of the data in Store
  * objects.
@@ -1722,7 +1489,8 @@ export type Having = {
  * @category Queries
  * @since v2.0.0
  */
-export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
+/// Queries
+{
   /**
    * The setQueryDefinition method lets you set the definition of a query.
    *
@@ -1786,21 +1554,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Configuration
    * @since v2.0.0
    */
-  setQueryDefinition<
-    RootTableId extends TableIdFromSchema<Schemas[0]>,
-    Schema extends OptionalTablesSchema = Schemas[0],
-  >(
-    queryId: Id,
-    tableId: RootTableId,
-    query: (keywords: {
-      select: Select<Schema, RootTableId>;
-      join: Join<Schema, RootTableId>;
-      where: Where<Schema, RootTableId>;
-      group: Group;
-      having: Having;
-    }) => void,
-  ): Queries<Schemas>;
-
+  /// Queries.setQueryDefinition
   /**
    * The delQueryDefinition method removes an existing query definition.
    *
@@ -1832,8 +1586,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Configuration
    * @since v2.0.0
    */
-  delQueryDefinition(queryId: Id): Queries<Schemas>;
-
+  /// Queries.delQueryDefinition
   /**
    * The getStore method returns a reference to the underlying Store that is
    * backing this Queries object.
@@ -1858,8 +1611,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Getter
    * @since v2.0.0
    */
-  getStore(): Store<Schemas>;
-
+  /// Queries.getStore
   /**
    * The getQueryIds method returns an array of the query Ids registered with
    * this Queries object.
@@ -1886,8 +1638,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Getter
    * @since v2.0.0
    */
-  getQueryIds(): Ids;
-
+  /// Queries.getQueryIds
   /**
    * The forEachQuery method takes a function that it will then call for each
    * Query in the Queries object.
@@ -1920,8 +1671,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Iterator
    * @since v2.0.0
    */
-  forEachQuery(queryCallback: QueryCallback): void;
-
+  /// Queries.forEachQuery
   /**
    * The hasQuery method returns a boolean indicating whether a given query
    * exists in the Queries object.
@@ -1949,8 +1699,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Getter
    * @since v2.0.0
    */
-  hasQuery(queryId: Id): boolean;
-
+  /// Queries.hasQuery
   /**
    * The getTableId method returns the Id of the underlying Table that is
    * backing a query.
@@ -1982,10 +1731,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Getter
    * @since v2.0.0
    */
-  getTableId<TableId extends TableIdFromSchema<Schemas[0]>>(
-    queryId: Id,
-  ): TableId;
-
+  /// Queries.getTableId
   /**
    * The getResultTable method returns an object containing the entire data of
    * the ResultTable of the given query.
@@ -2030,8 +1776,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Result
    * @since v2.0.0
    */
-  getResultTable(queryId: Id): ResultTable;
-
+  /// Queries.getResultTable
   /**
    * The getResultRowIds method returns the Ids of every ResultRow in the
    * ResultTable of the given query.
@@ -2073,8 +1818,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Result
    * @since v2.0.0
    */
-  getResultRowIds(queryId: Id): Ids;
-
+  /// Queries.getResultRowIds
   /**
    * The getResultSortedRowIds method returns the Ids of every ResultRow in the
    * ResultTable of the given query, sorted according to the values in a
@@ -2133,14 +1877,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Result
    * @since v2.0.0
    */
-  getResultSortedRowIds(
-    queryId: Id,
-    cellId?: Id,
-    descending?: boolean,
-    offset?: number,
-    limit?: number,
-  ): Ids;
-
+  /// Queries.getResultSortedRowIds
   /**
    * The getResultRow method returns an object containing the entire data of a
    * single ResultRow in the ResultTable of the given query.
@@ -2185,8 +1922,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Result
    * @since v2.0.0
    */
-  getResultRow(queryId: Id, rowId: Id): ResultRow;
-
+  /// Queries.getResultRow
   /**
    * The getResultCellIds method returns the Ids of every ResultCell in a given
    * ResultRow, in the ResultTable of the given query.
@@ -2231,8 +1967,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Result
    * @since v2.0.0
    */
-  getResultCellIds(queryId: Id, rowId: Id): Ids;
-
+  /// Queries.getResultCellIds
   /**
    * The getResultCell method returns the value of a single ResultCell in a
    * given ResultRow, in the ResultTable of the given query.
@@ -2275,8 +2010,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Result
    * @since v2.0.0
    */
-  getResultCell(queryId: Id, rowId: Id, cellId: Id): ResultCellOrUndefined;
-
+  /// Queries.getResultCell
   /**
    * The hasResultTable method returns a boolean indicating whether a given
    * ResultTable exists.
@@ -2310,8 +2044,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Result
    * @since v2.0.0
    */
-  hasResultTable(queryId: Id): boolean;
-
+  /// Queries.hasResultTable
   /**
    * The hasResultRow method returns a boolean indicating whether a given
    * ResultRow exists.
@@ -2346,8 +2079,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Result
    * @since v2.0.0
    */
-  hasResultRow(queryId: Id, rowId: Id): boolean;
-
+  /// Queries.hasResultRow
   /**
    * The hasResultCell method returns a boolean indicating whether a given
    * ResultCell exists.
@@ -2383,8 +2115,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Result
    * @since v2.0.0
    */
-  hasResultCell(queryId: Id, rowId: Id, cellId: Id): boolean;
-
+  /// Queries.hasResultCell
   /**
    * The forEachResultTable method takes a function that it will then call for
    * each ResultTable in the Queries object.
@@ -2430,8 +2161,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Iterator
    * @since v2.0.0
    */
-  forEachResultTable(tableCallback: ResultTableCallback): void;
-
+  /// Queries.forEachResultTable
   /**
    * The forEachResultRow method takes a function that it will then call for
    * each ResultRow in the ResultTable of a query.
@@ -2476,8 +2206,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Iterator
    * @since v2.0.0
    */
-  forEachResultRow(queryId: Id, rowCallback: ResultRowCallback): void;
-
+  /// Queries.forEachResultRow
   /**
    * The forEachResultCell method takes a function that it will then call for
    * each ResultCell in the ResultRow of a query.
@@ -2520,12 +2249,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Iterator
    * @since v2.0.0
    */
-  forEachResultCell(
-    queryId: Id,
-    rowId: Id,
-    cellCallback: ResultCellCallback,
-  ): void;
-
+  /// Queries.forEachResultCell
   /**
    * The addResultTableListener method registers a listener function with the
    * Queries object that will be called whenever data in a ResultTable changes.
@@ -2615,8 +2339,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Listener
    * @since v2.0.0
    */
-  addResultTableListener(queryId: IdOrNull, listener: ResultTableListener): Id;
-
+  /// Queries.addResultTableListener
   /**
    * The addResultRowIdsListener method registers a listener function with the
    * Queries object that will be called whenever the ResultRow Ids in a
@@ -2710,11 +2433,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Listener
    * @since v2.0.0
    */
-  addResultRowIdsListener(
-    queryId: IdOrNull,
-    listener: ResultRowIdsListener,
-  ): Id;
-
+  /// Queries.addResultRowIdsListener
   /**
    * The addResultSortedRowIdsListener method registers a listener function with
    * the Queries object that will be called whenever sorted (and optionally,
@@ -2837,15 +2556,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Listener
    * @since v2.0.0
    */
-  addResultSortedRowIdsListener(
-    queryId: Id,
-    cellId: Id | undefined,
-    descending: boolean,
-    offset: number,
-    limit: number | undefined,
-    listener: ResultSortedRowIdsListener,
-  ): Id;
-
+  /// Queries.addResultSortedRowIdsListener
   /**
    * The addResultRowListener method registers a listener function with the
    * Queries object that will be called whenever data in a ResultRow changes.
@@ -2943,12 +2654,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Listener
    * @since v2.0.0
    */
-  addResultRowListener(
-    queryId: IdOrNull,
-    rowId: IdOrNull,
-    listener: ResultRowListener,
-  ): Id;
-
+  /// Queries.addResultRowListener
   /**
    * The addResultCellIdsListener method registers a listener function with the
    * Queries object that will be called whenever the ResultCell Ids in a
@@ -3055,12 +2761,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Listener
    * @since v2.0.0
    */
-  addResultCellIdsListener(
-    queryId: IdOrNull,
-    rowId: IdOrNull,
-    listener: ResultCellIdsListener,
-  ): Id;
-
+  /// Queries.addResultCellIdsListener
   /**
    * The addResultCellListener method registers a listener function with the
    * Queries object that will be called whenever data in a ResultCell changes.
@@ -3171,13 +2872,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Listener
    * @since v2.0.0
    */
-  addResultCellListener(
-    queryId: IdOrNull,
-    rowId: IdOrNull,
-    cellId: IdOrNull,
-    listener: ResultCellListener,
-  ): Id;
-
+  /// Queries.addResultCellListener
   /**
    * The delListener method removes a listener that was previously added to the
    * Queries object.
@@ -3222,8 +2917,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Listener
    * @since v2.0.0
    */
-  delListener(listenerId: Id): Queries<Schemas>;
-
+  /// Queries.delListener
   /**
    * The destroy method should be called when this Queries object is no longer
    * used.
@@ -3258,8 +2952,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Lifecycle
    * @since v2.0.0
    */
-  destroy(): void;
-
+  /// Queries.destroy
   /**
    * The getListenerStats method provides a set of statistics about the
    * listeners registered with the Queries object, and is used for debugging
@@ -3288,9 +2981,8 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Development
    * @since v2.0.0
    */
-  getListenerStats(): QueriesListenerStats;
+  /// Queries.getListenerStats
 }
-
 /**
  * The createQueries function creates a Queries object, and is the main entry
  * point into the queries module.
@@ -3324,10 +3016,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
  * @category Creation
  * @since v2.0.0
  */
-export function createQueries<Schemas extends OptionalSchemas>(
-  store: Store<Schemas>,
-): Queries<Schemas>;
-
+/// createQueries
 /**
  * The GetTableCellAlias type is a duplicate of GetTableCell, used to mask
  * complex generics from documentation.
@@ -3337,11 +3026,7 @@ export function createQueries<Schemas extends OptionalSchemas>(
  *
  * @category Internal
  */
-export type GetTableCellAlias<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  RootTableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-> = GetTableCell<Schema, RootTableId>;
-
+/// GetTableCellAlias
 /**
  * The JoinedCellIdOrId type is a utility for returning a schema-specific Id (if
  * the Table is known), or a plain Id (if it is merely an alias for a Table).
@@ -3351,11 +3036,4 @@ export type GetTableCellAlias<
  *
  * @category Internal
  */
-export type JoinedCellIdOrId<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  JoinedTableId extends TableIdFromSchema<Schema> | Id =
-    | TableIdFromSchema<Schema>
-    | Id,
-> = JoinedTableId extends TableIdFromSchema<Schema>
-  ? CellIdFromSchema<Schema, JoinedTableId>
-  : Id;
+/// JoinedCellIdOrId
