@@ -5,15 +5,14 @@
  * @packageDocumentation
  * @module common
  */
-
+/// common
 /**
  * The Json type is a simple alias for a string, but is used to indicate that
  * the string should be considered to be a JSON serialization of an object.
  *
  * @category General
  */
-export type Json = string;
-
+/// Json
 /**
  * The Ids type is a simple alias for an array of strings, but is used to
  * indicate that the strings should be considered to be the keys of objects
@@ -21,8 +20,7 @@ export type Json = string;
  *
  * @category Identity
  */
-export type Ids = Id[];
-
+/// Ids
 /**
  * The Id type is a simple alias for a string, but is used to indicate that the
  * string should be considered to be the key of an object (such as a Row Id
@@ -30,8 +28,7 @@ export type Ids = Id[];
  *
  * @category Identity
  */
-export type Id = string;
-
+/// Id
 /**
  * The Id type is a simple alias for the union of a string or `null` value,
  * where the string should be considered to be the key of an objects (such as a
@@ -40,31 +37,27 @@ export type Id = string;
  *
  * @category Identity
  */
-export type IdOrNull = Id | null;
-
+/// IdOrNull
 /**
  * The ParameterizedCallback type represents a generic function that will take
  * an optional parameter - such as the handler of a DOM event.
  *
  * @category Callback
  */
-export type ParameterizedCallback<Parameter> = (parameter?: Parameter) => void;
-
+/// ParameterizedCallback
 /**
  * The Callback type represents a function that is used as a callback and which
  * does not take a parameter.
  *
  * @category Callback
  */
-export type Callback = () => void;
-
+/// Callback
 /**
  * The SortKey type represents a value that can be used by a sort function.
  *
  * @category Parameter
  */
-export type SortKey = string | number | boolean;
-
+/// SortKey
 /**
  * The defaultSorter function is provided as a convenience to sort keys
  * alphanumerically, and can be provided to the `sliceIdSorter` and
@@ -112,4 +105,4 @@ export type SortKey = string | number | boolean;
  * ```
  * @category Convenience
  */
-export function defaultSorter(sortKey1: SortKey, sortKey2: SortKey): number;
+/// defaultSorter
