@@ -43,50 +43,50 @@
   "typesVersions": {
     "*": {
       "cjs": [
-        "./lib/tinybase.d.ts"
+        "./lib/types/tinybase.d.ts"
       ],
       "cjs/*": [
-        "./lib/*.d.ts"
+        "./lib/types/*.d.ts"
       ],
       "cjs-es6": [
-        "./lib/tinybase.d.ts"
+        "./lib/types/tinybase.d.ts"
       ],
       "cjs-es6/*": [
-        "./lib/*.d.ts"
+        "./lib/types/*.d.ts"
       ],
       "es6": [
-        "./lib/tinybase.d.ts"
+        "./lib/types/tinybase.d.ts"
       ],
       "es6/*": [
-        "./lib/*.d.ts"
+        "./lib/types/*.d.ts"
       ],
       "debug": [
-        "./lib/tinybase.d.ts"
+        "./lib/types/tinybase.d.ts"
       ],
       "debug/*": [
-        "./lib/*.d.ts"
+        "./lib/types/*.d.ts"
       ],
       "umd": [
-        "./lib/tinybase.d.ts"
+        "./lib/types/tinybase.d.ts"
       ],
       "umd/*": [
-        "./lib/*.d.ts"
+        "./lib/types/*.d.ts"
       ],
       "umd-es6": [
-        "./lib/tinybase.d.ts"
+        "./lib/types/tinybase.d.ts"
       ],
       "umd-es6/*": [
-        "./lib/*.d.ts"
+        "./lib/types/*.d.ts"
       ],
       "lib": [
-        "./lib/tinybase.d.ts"
+        "./lib/types/tinybase.d.ts"
       ],
       "lib/*": [
-        "./lib/*.d.ts"
+        "./lib/types/*.d.ts"
       ],
       "*": [
-        "./lib/*.d.ts",
-        "./lib/tinybase.d.ts"
+        "./lib/types/*.d.ts",
+        "./lib/types/tinybase.d.ts"
       ]
     }
   },

@@ -60,9 +60,11 @@ const copyDefinition = async (module, dir = LIB_DIR) => {
   return await promises.copyFile(`src/${module}.d.ts`, `${dir}/${module}.d.ts`);
 };
 
-const copyDefinitions = async (dir = LIB_DIR) => {
-  await copyDefinition('common', dir);
-  await allModules((module) => copyDefinition(module, dir));
+const copyDefinitions = async () => {
+  const typeDir = LIB_DIR + '/types';
+  await makeDir(typeDir);
+  await copyDefinition('common', typeDir);
+  await allModules((module) => copyDefinition(module, typeDir));
 };
 
 const execute = async (cmd) => {
@@ -369,7 +371,6 @@ export const spell = async () => {
 export const ts = async () => {
   await copyDefinitions();
   await tsCheck('src');
-  await copyDefinitions(`${LIB_DIR}/debug`);
   await tsCheck('test');
   await tsCheck('site');
 };
@@ -405,13 +406,13 @@ export const compileForProd = async () => {
                   .filter((token) => token)
                   .join('-')}`;
                 await compileModule(module, debug, folder, format, target);
-                await copyDefinitions(folder);
               },
             ),
         ),
     );
   });
 
+  await copyDefinitions();
   await compileForCli();
 };
 
