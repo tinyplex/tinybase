@@ -342,8 +342,8 @@ export interface Persister {
   save(): Promise<Persister>;
 
   /**
-   * The save method takes data from the Store with which the Persister is
-   * associated and persists it into storage, once, and then continuously.
+   * The startAutoSave method takes data from the Store with which the Persister
+   * is associated and persists it into storage, once, and then continuously.
    *
    * This method first runs a single call to the save method to ensure the data
    * is in sync with the persisted storage. It then continues to watch for
