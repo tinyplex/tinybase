@@ -13,6 +13,7 @@ import {promises} from 'fs';
 
 const {parallel, series} = gulp;
 
+const UTF8 = 'utf-8';
 const TEST_MODULES = ['tinybase', 'ui-react', 'tools'];
 const ALL_MODULES = TEST_MODULES.concat([
   'store',
@@ -26,12 +27,15 @@ const ALL_MODULES = TEST_MODULES.concat([
 ]);
 const BIN_DIR = 'bin';
 const LIB_DIR = 'lib';
+const TYPES_DIR = 'lib/types';
 const DOCS_DIR = 'docs';
 const TMP_DIR = 'tmp';
 const LINT_BLOCKS = /```[jt]sx?( [^\n]+)?(\n.*?)```/gms;
+const TYPES_DOC_LABELS = /\/\/\/\s*(\S*)/g;
+const TYPES_DOC_BLOCKS = /(\/\*\*.*?\*\/)\s*\/\/\/\s*(\S*)/gs;
 
 const getPrettierConfig = async () => ({
-  ...JSON.parse(await promises.readFile('.prettierrc', 'utf-8')),
+  ...JSON.parse(await promises.readFile('.prettierrc', UTF8)),
   parser: 'typescript',
 });
 
@@ -57,15 +61,30 @@ const clearDir = async (dir = LIB_DIR) => {
 };
 
 const copyDefinition = async (module) => {
-  const typeDir = LIB_DIR + '/types';
-  await makeDir(typeDir);
-  return await promises.copyFile(
-    `src/types/${module}.d.ts`,
-    `${typeDir}/${module}.d.ts`,
+  const labelBlocks = new Map();
+  [
+    ...(await promises.readFile(`src/types/docs/${module}.js`, UTF8)).matchAll(
+      TYPES_DOC_BLOCKS,
+    ),
+  ].forEach(([_, block, label]) => labelBlocks.set(label, block));
+
+  return await promises.writeFile(
+    `${TYPES_DIR}/${module}.d.ts`,
+    (
+      await promises.readFile(`src/types/${module}.d.ts`, UTF8)
+    ).replace(TYPES_DOC_LABELS, (_, label) => {
+      if (labelBlocks.has(label)) {
+        return labelBlocks.get(label);
+      }
+      // eslint-disable-next-line no-console
+      throw `Missing docs label ${label} in ${module}`;
+    }),
+    UTF8,
   );
 };
 
 const copyDefinitions = async () => {
+  await makeDir(TYPES_DIR);
   await copyDefinition('common');
   await allModules((module) => copyDefinition(module));
 };
@@ -101,7 +120,7 @@ const lintCheck = async (dir) => {
   const prettierConfig = await getPrettierConfig();
   const docConfig = {...prettierConfig, printWidth: 75};
   await allOf(results, async ({filePath}) => {
-    const code = await promises.readFile(filePath, 'utf-8');
+    const code = await promises.readFile(filePath, UTF8);
     if (!prettier.check(code, prettierConfig)) {
       throw `${filePath} not pretty`;
     }
@@ -323,7 +342,7 @@ const test = async (
         ...JSON.parse(await promises.readFile('./tmp/coverage-summary.json'))
           .total,
       }),
-      'utf-8',
+      UTF8,
     );
   }
   if (coverageMode < 3) {
