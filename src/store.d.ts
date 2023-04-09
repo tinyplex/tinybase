@@ -1691,7 +1691,7 @@ export interface Store {
   hasCell(tableId: Id, rowId: Id, cellId: Id): boolean;
 
   /**
-   * The hasTables method returns a boolean indicating whether any Values exist
+   * The hasValues method returns a boolean indicating whether any Values exist
    * in the Store.
    *
    * @returns Whether any Values exist.
