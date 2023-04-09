@@ -10,18 +10,7 @@
  * @packageDocumentation
  * @module indexes
  */
-
-import {
-  CellIdFromSchema,
-  GetCellAlias,
-  NoSchemas,
-  OptionalSchemas,
-  RowCallback,
-  Store,
-  TableIdFromSchema,
-} from './store.d';
-import {Id, IdOrNull, Ids, SortKey} from './common';
-
+/// indexes
 /**
  * The Index type represents the concept of a map of Slice objects, keyed by Id.
  *
@@ -35,8 +24,7 @@ import {Id, IdOrNull, Ids, SortKey} from './common';
  *
  * @category Concept
  */
-export type Index = {[sliceId: Id]: Slice};
-
+/// Index
 /**
  * The Slice type represents the concept of a set of Row objects that comprise
  * part of an Index.
@@ -49,8 +37,7 @@ export type Index = {[sliceId: Id]: Slice};
  *
  * @category Concept
  */
-export type Slice = Ids;
-
+/// Slice
 /**
  * The IndexCallback type describes a function that takes an Index's Id and a
  * callback to loop over each Slice within it.
@@ -64,11 +51,7 @@ export type Slice = Ids;
  * in this Index.
  * @category Callback
  */
-export type IndexCallback = (
-  indexId: Id,
-  forEachSlice: (sliceCallback: SliceCallback) => void,
-) => void;
-
+/// IndexCallback
 /**
  * The SliceCallback type describes a function that takes a Slice's Id and a
  * callback to loop over each Row within it.
@@ -82,11 +65,7 @@ export type IndexCallback = (
  * in this Slice.
  * @category Callback
  */
-export type SliceCallback = (
-  sliceId: Id,
-  forEachRow: (rowCallback: RowCallback) => void,
-) => void;
-
+/// SliceCallback
 /**
  * The SliceIdsListener type describes a function that is used to listen to
  * changes to the Slice Ids in an Index.
@@ -101,8 +80,7 @@ export type SliceCallback = (
  * @param indexId The Id of the Index that changed.
  * @category Listener
  */
-export type SliceIdsListener = (indexes: Indexes, indexId: Id) => void;
-
+/// SliceIdsListener
 /**
  * The SliceRowIdsListener type describes a function that is used to listen to
  * changes to the Row Ids in a Slice.
@@ -119,12 +97,7 @@ export type SliceIdsListener = (indexes: Indexes, indexId: Id) => void;
  * @param sliceId The Id of the Slice that changed.
  * @category Listener
  */
-export type SliceRowIdsListener = (
-  indexes: Indexes,
-  indexId: Id,
-  sliceId: Id,
-) => void;
-
+/// SliceRowIdsListener
 /**
  * The IndexesListenerStats type describes the number of listeners registered
  * with the Indexes object, and can be used for debugging purposes.
@@ -134,19 +107,19 @@ export type SliceRowIdsListener = (
  *
  * @category Development
  */
-export type IndexesListenerStats = {
+/// IndexesListenerStats
+{
   /**
    * The number of SlideIdsListener functions registered with the Indexes
    * object.
    */
-  sliceIds?: number;
+  /// IndexesListenerStats.sliceIds
   /**
    * The number of SliceRowIdsListener functions registered with the Indexes
    * object.
    */
-  sliceRowIds?: number;
-};
-
+  /// IndexesListenerStats.sliceRowIds
+}
 /**
  * An Indexes object lets you look up all the Row objects in a Table that have a
  * certain Cell value.
@@ -203,7 +176,8 @@ export type IndexesListenerStats = {
  * @see Word Frequencies demo
  * @category Indexes
  */
-export interface Indexes<Schemas extends OptionalSchemas = NoSchemas> {
+/// Indexes
+{
   /**
    * The setIndexDefinition method lets you set the definition of an Index.
    *
@@ -356,19 +330,7 @@ export interface Indexes<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Configuration
    */
-  setIndexDefinition<
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    CellId extends CellIdFromSchema<Schemas[0], TableId>,
-    GetCell = GetCellAlias<Schemas[0], TableId>,
-  >(
-    indexId: Id,
-    tableId: TableId,
-    getSliceIdOrIds?: CellId | ((getCell: GetCell, rowId: Id) => Id | Ids),
-    getSortKey?: CellId | ((getCell: GetCell, rowId: Id) => SortKey),
-    sliceIdSorter?: (sliceId1: Id, sliceId2: Id) => number,
-    rowIdSorter?: (sortKey1: SortKey, sortKey2: SortKey, sliceId: Id) => number,
-  ): Indexes<Schemas>;
-
+  /// Indexes.setIndexDefinition
   /**
    * The delIndexDefinition method removes an existing Index definition.
    *
@@ -396,8 +358,7 @@ export interface Indexes<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Configuration
    */
-  delIndexDefinition(indexId: Id): Indexes<Schemas>;
-
+  /// Indexes.delIndexDefinition
   /**
    * The getStore method returns a reference to the underlying Store that is
    * backing this Indexes object.
@@ -416,8 +377,7 @@ export interface Indexes<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getStore(): Store<Schemas>;
-
+  /// Indexes.getStore
   /**
    * The getIndexIds method returns an array of the Index Ids registered with
    * this Indexes object.
@@ -437,8 +397,7 @@ export interface Indexes<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getIndexIds(): Ids;
-
+  /// Indexes.getIndexIds
   /**
    * The forEachIndex method takes a function that it will then call for each
    * Index in a specified Indexes object.
@@ -477,8 +436,7 @@ export interface Indexes<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Iterator
    */
-  forEachIndex(indexCallback: IndexCallback): void;
-
+  /// Indexes.forEachIndex
   /**
    * The forEachSlice method takes a function that it will then call for each
    * Slice in a specified Index.
@@ -514,8 +472,7 @@ export interface Indexes<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Iterator
    */
-  forEachSlice(indexId: Id, sliceCallback: SliceCallback): void;
-
+  /// Indexes.forEachSlice
   /**
    * The hasIndex method returns a boolean indicating whether a given Index
    * exists in the Indexes object.
@@ -535,8 +492,7 @@ export interface Indexes<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  hasIndex(indexId: Id): boolean;
-
+  /// Indexes.hasIndex
   /**
    * The hasSlice method returns a boolean indicating whether a given Slice
    * exists in the Indexes object.
@@ -562,8 +518,7 @@ export interface Indexes<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  hasSlice(indexId: Id, sliceId: Id): boolean;
-
+  /// Indexes.hasSlice
   /**
    * The getTableId method returns the Id of the underlying Table that is
    * backing an Index.
@@ -587,10 +542,7 @@ export interface Indexes<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getTableId<TableId extends TableIdFromSchema<Schemas[0]>>(
-    indexId: Id,
-  ): TableId;
-
+  /// Indexes.getTableId
   /**
    * The getSliceIds method gets the list of Slice Ids in an Index.
    *
@@ -621,8 +573,7 @@ export interface Indexes<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getSliceIds(indexId: Id): Ids;
-
+  /// Indexes.getSliceIds
   /**
    * The getSliceRowIds method gets the list of Row Ids in a given Slice, within
    * a given Index.
@@ -657,8 +608,7 @@ export interface Indexes<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getSliceRowIds(indexId: Id, sliceId: Id): Ids;
-
+  /// Indexes.getSliceRowIds
   /**
    * The addSliceIdsListener method registers a listener function with the
    * Indexes object that will be called whenever the Slice Ids in an Index
@@ -737,8 +687,7 @@ export interface Indexes<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Listener
    */
-  addSliceIdsListener(indexId: IdOrNull, listener: SliceIdsListener): Id;
-
+  /// Indexes.addSliceIdsListener
   /**
    * The addSliceRowIdsListener method registers a listener function with the
    * Indexes object that will be called whenever the Row Ids in a Slice change.
@@ -826,12 +775,7 @@ export interface Indexes<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Listener
    */
-  addSliceRowIdsListener(
-    indexId: IdOrNull,
-    sliceId: IdOrNull,
-    listener: SliceRowIdsListener,
-  ): Id;
-
+  /// Indexes.addSliceRowIdsListener
   /**
    * The delListener method removes a listener that was previously added to the
    * Indexes object.
@@ -874,8 +818,7 @@ export interface Indexes<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Listener
    */
-  delListener(listenerId: Id): Indexes<Schemas>;
-
+  /// Indexes.delListener
   /**
    * The destroy method should be called when this Indexes object is no longer
    * used.
@@ -907,8 +850,7 @@ export interface Indexes<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Lifecycle
    */
-  destroy(): void;
-
+  /// Indexes.destroy
   /**
    * The getListenerStats method provides a set of statistics about the
    * listeners registered with the Indexes object, and is used for debugging
@@ -942,9 +884,8 @@ export interface Indexes<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Development
    */
-  getListenerStats(): IndexesListenerStats;
+  /// Indexes.getListenerStats
 }
-
 /**
  * The createIndexes function creates an Indexes object, and is the main entry
  * point into the indexes module.
@@ -977,6 +918,4 @@ export interface Indexes<Schemas extends OptionalSchemas = NoSchemas> {
  * ```
  * @category Creation
  */
-export function createIndexes<Schemas extends OptionalSchemas>(
-  store: Store<Schemas>,
-): Indexes<Schemas>;
+/// createIndexes
