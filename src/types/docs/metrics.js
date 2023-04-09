@@ -10,25 +10,14 @@
  * @packageDocumentation
  * @module metrics
  */
-
-import {
-  CellIdFromSchema,
-  GetCellAlias,
-  NoSchemas,
-  OptionalSchemas,
-  Store,
-  TableIdFromSchema,
-} from './store.d';
-import {Id, IdOrNull, Ids} from './common';
-
+/// metrics
 /**
  * The Metric type is simply an alias, but represents a number formed by
  * aggregating multiple other numbers together.
  *
  * @category Metric
  */
-export type Metric = number;
-
+/// Metric
 /**
  * The MetricCallback type describes a function that takes a Metric's Id and a
  * callback to loop over each Row within it.
@@ -41,8 +30,7 @@ export type Metric = number;
  * @param metric The value of the Metric.
  * @category Callback
  */
-export type MetricCallback = (metricId: Id, metric?: Metric) => void;
-
+/// MetricCallback
 /**
  * The MetricAggregate type describes a custom function that takes an array of
  * numbers and returns an aggregate that is used as a Metric.
@@ -57,8 +45,7 @@ export type MetricCallback = (metricId: Id, metric?: Metric) => void;
  * @returns The value of the Metric.
  * @category Aggregators
  */
-export type MetricAggregate = (numbers: number[], length: number) => Metric;
-
+/// MetricAggregate
 /**
  * The MetricAggregateAdd type describes a function that can be used to optimize
  * a custom MetricAggregate by providing a shortcut for when a single value is
@@ -83,12 +70,7 @@ export type MetricAggregate = (numbers: number[], length: number) => Metric;
  * @returns The new value of the Metric.
  * @category Aggregators
  */
-export type MetricAggregateAdd = (
-  metric: Metric,
-  add: number,
-  length: number,
-) => Metric | undefined;
-
+/// MetricAggregateAdd
 /**
  * The MetricAggregateRemove type describes a function that can be used to
  * optimize a custom MetricAggregate by providing a shortcut for when a single
@@ -116,12 +98,7 @@ export type MetricAggregateAdd = (
  * @returns The new value of the Metric.
  * @category Aggregators
  */
-export type MetricAggregateRemove = (
-  metric: Metric,
-  remove: number,
-  length: number,
-) => Metric | undefined;
-
+/// MetricAggregateRemove
 /**
  * The MetricAggregateReplace type describes a function that can be used to
  * optimize a custom MetricAggregate by providing a shortcut for when a single
@@ -147,13 +124,7 @@ export type MetricAggregateRemove = (
  * @returns The new value of the Metric.
  * @category Aggregators
  */
-export type MetricAggregateReplace = (
-  metric: Metric,
-  add: number,
-  remove: number,
-  length: number,
-) => Metric | undefined;
-
+/// MetricAggregateReplace
 /**
  * The MetricListener type describes a function that is used to listen to
  * changes to a Metric.
@@ -174,13 +145,7 @@ export type MetricAggregateReplace = (
  * @param oldMetric The old value of the Metric that changed.
  * @category Listener
  */
-export type MetricListener = (
-  metrics: Metrics,
-  metricId: Id,
-  newMetric: Metric | undefined,
-  oldMetric: Metric | undefined,
-) => void;
-
+/// MetricListener
 /**
  * The MetricsListenerStats type describes the number of listeners registered
  * with the Metrics object, and can be used for debugging purposes.
@@ -190,13 +155,13 @@ export type MetricListener = (
  *
  * @category Development
  */
-export type MetricsListenerStats = {
+/// MetricsListenerStats
+{
   /**
    * The number of MetricListener functions registered with the Metrics object.
    */
-  metric?: number;
-};
-
+  /// MetricsListenerStats.metric
+}
 /**
  * A Metrics object lets you define, query, and listen to, aggregations of Cell
  * values within a Table in a Store.
@@ -252,7 +217,8 @@ export type MetricsListenerStats = {
  * @see Todo App demos
  * @category Metrics
  */
-export interface Metrics<Schemas extends OptionalSchemas = NoSchemas> {
+/// Metrics
+{
   /**
    * The setMetricDefinition method lets you set the definition of a Metric.
    *
@@ -418,20 +384,7 @@ export interface Metrics<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Configuration
    */
-  setMetricDefinition<
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    CellId extends CellIdFromSchema<Schemas[0], TableId>,
-    GetCell = GetCellAlias<Schemas[0], TableId>,
-  >(
-    metricId: Id,
-    tableId: TableId,
-    aggregate?: 'sum' | 'avg' | 'min' | 'max' | MetricAggregate,
-    getNumber?: CellId | ((getCell: GetCell, rowId: Id) => number),
-    aggregateAdd?: MetricAggregateAdd,
-    aggregateRemove?: MetricAggregateRemove,
-    aggregateReplace?: MetricAggregateReplace,
-  ): Metrics<Schemas>;
-
+  /// Metrics.setMetricDefinition
   /**
    * The delMetricDefinition method removes an existing Metric definition.
    *
@@ -459,8 +412,7 @@ export interface Metrics<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Configuration
    */
-  delMetricDefinition(metricId: Id): Metrics<Schemas>;
-
+  /// Metrics.delMetricDefinition
   /**
    * The getStore method returns a reference to the underlying Store that is
    * backing this Metrics object.
@@ -479,8 +431,7 @@ export interface Metrics<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getStore(): Store<Schemas>;
-
+  /// Metrics.getStore
   /**
    * The getMetricIds method returns an array of the Metric Ids registered with
    * this Metrics object.
@@ -500,8 +451,7 @@ export interface Metrics<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getMetricIds(): Ids;
-
+  /// Metrics.getMetricIds
   /**
    * The forEachMetric method takes a function that it will then call for each
    * Metric in the Metrics object.
@@ -532,8 +482,7 @@ export interface Metrics<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Iterator
    */
-  forEachMetric(metricCallback: MetricCallback): void;
-
+  /// Metrics.forEachMetric
   /**
    * The hasMetric method returns a boolean indicating whether a given Metric
    * exists in the Metrics object, and has a value.
@@ -558,8 +507,7 @@ export interface Metrics<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  hasMetric(metricId: Id): boolean;
-
+  /// Metrics.hasMetric
   /**
    * The getTableId method returns the Id of the underlying Table that is
    * backing a Metric.
@@ -583,10 +531,7 @@ export interface Metrics<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getTableId<TableId extends TableIdFromSchema<Schemas[0]>>(
-    metricId: Id,
-  ): TableId | undefined;
-
+  /// Metrics.getTableId
   /**
    * The getMetric method gets the current value of a Metric.
    *
@@ -618,8 +563,7 @@ export interface Metrics<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getMetric(metricId: Id): Metric | undefined;
-
+  /// Metrics.getMetric
   /**
    * The addMetricListener method registers a listener function with the Metrics
    * object that will be called whenever the value of a specified Metric
@@ -698,8 +642,7 @@ export interface Metrics<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Listener
    */
-  addMetricListener(metricId: IdOrNull, listener: MetricListener): Id;
-
+  /// Metrics.addMetricListener
   /**
    * The delListener method removes a listener that was previously added to the
    * Metrics object.
@@ -741,8 +684,7 @@ export interface Metrics<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Listener
    */
-  delListener(listenerId: Id): Metrics<Schemas>;
-
+  /// Metrics.delListener
   /**
    * The destroy method should be called when this Metrics object is no longer
    * used.
@@ -774,8 +716,7 @@ export interface Metrics<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Lifecycle
    */
-  destroy(): void;
-
+  /// Metrics.destroy
   /**
    * The getListenerStats method provides a set of statistics about the
    * listeners registered with the Metrics object, and is used for debugging
@@ -801,9 +742,8 @@ export interface Metrics<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Development
    */
-  getListenerStats(): MetricsListenerStats;
+  /// Metrics.getListenerStats
 }
-
 /**
  * The createMetrics function creates a Metrics object, and is the main entry
  * point into the metrics module.
@@ -836,6 +776,4 @@ export interface Metrics<Schemas extends OptionalSchemas = NoSchemas> {
  * ```
  * @category Creation
  */
-export function createMetrics<Schemas extends OptionalSchemas>(
-  store: Store<Schemas>,
-): Metrics<Schemas>;
+/// createMetrics
