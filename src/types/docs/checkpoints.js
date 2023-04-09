@@ -10,10 +10,7 @@
  * @packageDocumentation
  * @module checkpoints
  */
-
-import {Id, IdOrNull, Ids} from './common';
-import {NoSchemas, OptionalSchemas, Store} from './store.d';
-
+/// checkpoints
 /**
  * The CheckpointIds type is a representation of the list of checkpoint Ids
  * stored in a Checkpoints object.
@@ -31,8 +28,7 @@ import {NoSchemas, OptionalSchemas, Store} from './store.d';
  *
  * @category Identity
  */
-export type CheckpointIds = [Ids, Id | undefined, Ids];
-
+/// CheckpointIds
 /**
  * The CheckpointCallback type describes a function that takes a Checkpoint's
  * Id.
@@ -45,8 +41,7 @@ export type CheckpointIds = [Ids, Id | undefined, Ids];
  * on.
  * @category Callback
  */
-export type CheckpointCallback = (checkpointId: Id, label?: string) => void;
-
+/// CheckpointCallback
 /**
  * The CheckpointIdsListener type describes a function that is used to listen to
  * changes to the checkpoint Ids in a Checkpoints object.
@@ -60,8 +55,7 @@ export type CheckpointCallback = (checkpointId: Id, label?: string) => void;
  * @param checkpoints A reference to the Checkpoints object that changed.
  * @category Listener
  */
-export type CheckpointIdsListener = (checkpoints: Checkpoints) => void;
-
+/// CheckpointIdsListener
 /**
  * The CheckpointListener type describes a function that is used to listen to
  * changes to a checkpoint's label in a Checkpoints object.
@@ -76,11 +70,7 @@ export type CheckpointIdsListener = (checkpoints: Checkpoints) => void;
  * @param checkpointId The Id of the checkpoint that changed.
  * @category Listener
  */
-export type CheckpointListener = (
-  checkpoints: Checkpoints,
-  checkpointId: Id,
-) => void;
-
+/// CheckpointListener
 /**
  * The CheckpointsListenerStats type describes the number of listeners
  * registered with the Checkpoints object, and can be used for debugging
@@ -91,19 +81,19 @@ export type CheckpointListener = (
  *
  * @category Development
  */
-export type CheckpointsListenerStats = {
+/// CheckpointsListenerStats
+{
   /**
    * The number of CheckpointIdsListener functions registered with the
    * Checkpoints object.
    */
-  checkpointIds?: number;
+  /// CheckpointsListenerStats.checkpointIds
   /**
    * The number of CheckpointListener functions registered with the Checkpoints
    * object.
    */
-  checkpoint?: number;
-};
-
+  /// CheckpointsListenerStats.checkpoint
+}
 /**
  * A Checkpoints object lets you set checkpoints on a Store, and move forward
  * and backward through them to create undo and redo functionality.
@@ -177,7 +167,8 @@ export type CheckpointsListenerStats = {
  * @see Drawing demo
  * @category Checkpoints
  */
-export interface Checkpoints<Schemas extends OptionalSchemas = NoSchemas> {
+/// Checkpoints
+{
   /**
    * The setSize method lets you specify how many checkpoints the Checkpoints
    * object will store.
@@ -220,8 +211,7 @@ export interface Checkpoints<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Configuration
    */
-  setSize(size: number): Checkpoints<Schemas>;
-
+  /// Checkpoints.setSize
   /**
    * The addCheckpoint method records a checkpoint of the Store into the
    * Checkpoints object that can be reverted to in the future.
@@ -265,8 +255,7 @@ export interface Checkpoints<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  addCheckpoint(label?: string): Id;
-
+  /// Checkpoints.addCheckpoint
   /**
    * The setCheckpoint method updates the label for a checkpoint in the
    * Checkpoints object after it has been created
@@ -320,8 +309,7 @@ export interface Checkpoints<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Setter
    */
-  setCheckpoint(checkpointId: Id, label: string): Checkpoints<Schemas>;
-
+  /// Checkpoints.setCheckpoint
   /**
    * The getStore method returns a reference to the underlying Store that is
    * backing this Checkpoints object.
@@ -341,8 +329,7 @@ export interface Checkpoints<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getStore(): Store<Schemas>;
-
+  /// Checkpoints.getStore
   /**
    * The getCheckpointIds method returns an array of the checkpoint Ids being
    * managed by this Checkpoints object.
@@ -381,8 +368,7 @@ export interface Checkpoints<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getCheckpointIds(): CheckpointIds;
-
+  /// Checkpoints.getCheckpointIds
   /**
    * The forEachCheckpoint method takes a function that it will then call for
    * each Checkpoint in a specified Checkpoints object.
@@ -411,8 +397,7 @@ export interface Checkpoints<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Iterator
    */
-  forEachCheckpoint(checkpointCallback: CheckpointCallback): void;
-
+  /// Checkpoints.forEachCheckpoint
   /**
    * The hasCheckpoint method returns a boolean indicating whether a given
    * Checkpoint exists in the Checkpoints object.
@@ -433,8 +418,7 @@ export interface Checkpoints<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  hasCheckpoint(checkpointId: Id): boolean;
-
+  /// Checkpoints.hasCheckpoint
   /**
    * The getCheckpoint method fetches the label for a checkpoint, if it had been
    * provided at the time of the addCheckpoint method or set subsequently with
@@ -484,8 +468,7 @@ export interface Checkpoints<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getCheckpoint(checkpointId: Id): string | undefined;
-
+  /// Checkpoints.getCheckpoint
   /**
    * The addCheckpointIdsListener method registers a listener function with the
    * Checkpoints object that will be called whenever its set of checkpoints
@@ -534,8 +517,7 @@ export interface Checkpoints<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Listener
    */
-  addCheckpointIdsListener(listener: CheckpointIdsListener): Id;
-
+  /// Checkpoints.addCheckpointIdsListener
   /**
    * The addCheckpointListener method registers a listener function with the
    * Checkpoints object that will be called whenever the label of a checkpoint
@@ -594,11 +576,7 @@ export interface Checkpoints<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Listener
    */
-  addCheckpointListener(
-    checkpointId: IdOrNull,
-    listener: CheckpointListener,
-  ): Id;
-
+  /// Checkpoints.addCheckpointListener
   /**
    * The delListener method removes a listener that was previously added to the
    * Checkpoints object.
@@ -637,8 +615,7 @@ export interface Checkpoints<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Listener
    */
-  delListener(listenerId: Id): Checkpoints<Schemas>;
-
+  /// Checkpoints.delListener
   /**
    * The goBackward method moves the state of the underlying Store back to the
    * previous checkpoint, effectively performing an 'undo' on the Store data.
@@ -670,8 +647,7 @@ export interface Checkpoints<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Movement
    */
-  goBackward(): Checkpoints<Schemas>;
-
+  /// Checkpoints.goBackward
   /**
    * The goForward method moves the state of the underlying Store forwards to a
    * future checkpoint, effectively performing an 'redo' on the Store data.
@@ -750,8 +726,7 @@ export interface Checkpoints<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Movement
    */
-  goForward(): Checkpoints<Schemas>;
-
+  /// Checkpoints.goForward
   /**
    * The goTo method moves the state of the underlying Store backwards or
    * forwards to a specified checkpoint.
@@ -800,8 +775,7 @@ export interface Checkpoints<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Movement
    */
-  goTo(checkpointId: Id): Checkpoints<Schemas>;
-
+  /// Checkpoints.goTo
   /**
    * The clear method resets this Checkpoints object to its initial state,
    * removing all the checkpoints it has been managing.
@@ -858,8 +832,7 @@ export interface Checkpoints<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Lifecycle
    */
-  clear(): Checkpoints<Schemas>;
-
+  /// Checkpoints.clear
   /**
    * The destroy method should be called when this Checkpoints object is no
    * longer used.
@@ -886,8 +859,7 @@ export interface Checkpoints<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Lifecycle
    */
-  destroy(): void;
-
+  /// Checkpoints.destroy
   /**
    * The getListenerStats method provides a set of statistics about the
    * listeners registered with the Checkpoints object, and is used for debugging
@@ -921,9 +893,8 @@ export interface Checkpoints<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Development
    */
-  getListenerStats(): CheckpointsListenerStats;
+  /// Checkpoints.getListenerStats
 }
-
 /**
  * The createCheckpoints function creates a Checkpoints object, and is the main
  * entry point into the checkpoints module.
@@ -956,6 +927,4 @@ export interface Checkpoints<Schemas extends OptionalSchemas = NoSchemas> {
  * ```
  * @category Creation
  */
-export function createCheckpoints<Schemas extends OptionalSchemas>(
-  store: Store<Schemas>,
-): Checkpoints<Schemas>;
+/// createCheckpoints
