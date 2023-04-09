@@ -1,4 +1,4 @@
-import {Id} from '../common.d';
+import {Id} from '../types/common.d';
 
 export const getTypeOf = (thing: unknown): string => typeof thing;
 

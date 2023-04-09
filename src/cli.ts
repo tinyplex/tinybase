@@ -1,6 +1,6 @@
 #! /usr/bin/env node
 
-import {TablesSchema, ValuesSchema} from './store.d';
+import {TablesSchema, ValuesSchema} from './types/store.d';
 import {dirname, resolve} from 'path';
 import {isArray, jsonParse} from './common/other';
 import {readFileSync, writeFileSync} from 'fs';

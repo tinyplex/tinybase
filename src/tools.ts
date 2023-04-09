@@ -1,8 +1,12 @@
-import {Cell, Store, TablesSchema, ValuesSchema} from './store.d';
+import {Cell, Store, TablesSchema, ValuesSchema} from './types/store.d';
 import {CellOrValueType, getCellOrValueType} from './common/cell';
 import {DEFAULT, TYPE} from './common/strings';
 import {IdMap, mapEnsure, mapNew, mapSet} from './common/map';
-import {StoreStats, Tools, createTools as createToolsDecl} from './tools.d';
+import {
+  StoreStats,
+  Tools,
+  createTools as createToolsDecl,
+} from './types/tools.d';
 import {arrayEvery, arrayLength, arrayMap} from './common/array';
 import {formatJsDoc, length} from './tools/common/code';
 import {objFreeze, objIsEmpty} from './common/obj';

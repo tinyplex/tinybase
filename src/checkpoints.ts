@@ -1,4 +1,4 @@
-import {CellOrUndefined, Store, ValueOrUndefined} from './store.d';
+import {CellOrUndefined, Store, ValueOrUndefined} from './types/store.d';
 import {
   CheckpointCallback,
   CheckpointIds,
@@ -7,9 +7,9 @@ import {
   Checkpoints,
   CheckpointsListenerStats,
   createCheckpoints as createCheckpointsDecl,
-} from './checkpoints.d';
+} from './types/checkpoints';
 import {DEBUG, ifNotUndefined, isUndefined} from './common/other';
-import {Id, IdOrNull, Ids} from './common.d';
+import {Id, IdOrNull, Ids} from './types/common.d';
 import {
   IdMap,
   IdMap2,

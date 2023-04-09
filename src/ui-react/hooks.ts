@@ -15,7 +15,13 @@ import {
   VALUES,
   VALUE_IDS,
 } from '../common/strings';
-import {Callback, Id, IdOrNull, Ids, ParameterizedCallback} from '../common.d';
+import {
+  Callback,
+  Id,
+  IdOrNull,
+  Ids,
+  ParameterizedCallback,
+} from '../types/common.d';
 import {
   Cell,
   CellIdsListener,
@@ -37,13 +43,13 @@ import {
   ValueListener,
   Values,
   ValuesListener,
-} from '../store.d';
+} from '../types/store.d';
 import {
   CheckpointIds,
   CheckpointIdsListener,
   CheckpointListener,
   Checkpoints,
-} from '../checkpoints.d';
+} from '../types/checkpoints';
 import {
   CheckpointsOrCheckpointsId,
   IndexesOrIndexesId,
@@ -130,15 +136,19 @@ import {
   useValueListener as useValueListenerDecl,
   useValues as useValuesDecl,
   useValuesListener as useValuesListenerDecl,
-} from '../ui-react.d';
-import {Indexes, SliceIdsListener, SliceRowIdsListener} from '../indexes.d';
+} from '../types/ui-react.d';
+import {
+  Indexes,
+  SliceIdsListener,
+  SliceRowIdsListener,
+} from '../types/indexes.d';
 import {
   LinkedRowIdsListener,
   LocalRowIdsListener,
   Relationships,
   RemoteRowIdListener,
-} from '../relationships.d';
-import {MetricListener, Metrics} from '../metrics.d';
+} from '../types/relationships.d';
+import {MetricListener, Metrics} from '../types/metrics.d';
 import {
   Queries,
   ResultCellIdsListener,
@@ -147,7 +157,7 @@ import {
   ResultRowListener,
   ResultSortedRowIdsListener,
   ResultTableListener,
-} from '../queries.d';
+} from '../types/queries.d';
 import {getUndefined, ifNotUndefined, isUndefined} from '../common/other';
 import {
   useCheckpointsOrCheckpointsId,
@@ -158,7 +168,7 @@ import {
   useStoreOrStoreId,
 } from './common';
 import {ListenerArgument} from '../common/listeners';
-import {Persister} from '../persisters.d';
+import {Persister} from '../types/persisters.d';
 import React from 'react';
 import {arrayIsEmpty} from '../common/array';
 

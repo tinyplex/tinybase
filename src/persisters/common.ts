@@ -1,7 +1,7 @@
-import {Callback, Id} from '../common.d';
+import {Callback, Id} from '../types/common.d';
 import {DEBUG, ifNotUndefined, isUndefined} from '../common/other';
-import {Persister, PersisterStats} from '../persisters.d';
-import {Store, Tables, Values} from '../store.d';
+import {Persister, PersisterStats} from '../types/persisters.d';
+import {Store, Tables, Values} from '../types/store.d';
 import {EMPTY_STRING} from '../common/strings';
 import {objFreeze} from '../common/obj';
 

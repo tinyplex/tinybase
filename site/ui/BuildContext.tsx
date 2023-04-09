@@ -3,13 +3,13 @@ import {readFileSync, statSync} from 'fs';
 import {basename} from 'path';
 import {forEachDirAndFile} from 'tinydocs';
 
-export type CoverageStats = {
+type CoverageStats = {
   total: number;
   covered: number;
   skipped: number;
   pct: number;
 };
-export type Coverage = {
+type Coverage = {
   tests: number;
   assertions: number;
   lines: CoverageStats;
@@ -17,7 +17,7 @@ export type Coverage = {
   functions: CoverageStats;
   branches: CoverageStats;
 };
-export type Metadata = {
+type Metadata = {
   package: string;
   version: string;
   repository: string;

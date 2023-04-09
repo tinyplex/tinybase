@@ -11,21 +11,21 @@ import {
   useQueries as useQueriesDecl,
   useRelationships as useRelationshipsDecl,
   useStore as useStoreDecl,
-} from '../ui-react.d';
+} from '../types/ui-react.d';
 import {IdObj, objGet} from '../common/obj';
 import {isString, isUndefined} from '../common/other';
-import {Checkpoints} from '../checkpoints.d';
-import {Id} from '../common.d';
-import {Indexes} from '../indexes.d';
-import {Metrics} from '../metrics.d';
-import {Queries} from '../queries.d';
+import {Checkpoints} from '../types/checkpoints';
+import {Id} from '../types/common.d';
+import {Indexes} from '../types/indexes.d';
+import {Metrics} from '../types/metrics.d';
+import {Queries} from '../types/queries.d';
 import React from 'react';
-import {Relationships} from '../relationships.d';
-import {Store} from '../store.d';
+import {Relationships} from '../types/relationships.d';
+import {Store} from '../types/store.d';
 
 const {createContext, useContext} = React;
 
-export type ContextValue = [
+type ContextValue = [
   Store?,
   {[storeId: Id]: Store}?,
   Metrics?,

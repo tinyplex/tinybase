@@ -1,7 +1,7 @@
-import {Cell, CellOrUndefined, Store, ValueOrUndefined} from '../store.d';
+import {Cell, CellOrUndefined, Store, ValueOrUndefined} from '../types/store.d';
 import {NUMBER, getTypeOf} from './strings';
 import {isFiniteNumber, isTypeStringOrBoolean, isUndefined} from './other';
-import {Id} from '../common.d';
+import {Id} from '../types/common.d';
 
 export type CellOrValueType = 'string' | 'number' | 'boolean';
 

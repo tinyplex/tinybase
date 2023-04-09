@@ -116,16 +116,16 @@ export const build = (outDir: string, api = true, pages = true): void => {
 
 const addApi = (docs: Docs): Docs =>
   docs
-    .addApiFile('src/common.d.ts')
-    .addApiFile('src/store.d.ts')
-    .addApiFile('src/checkpoints.d.ts')
-    .addApiFile('src/indexes.d.ts')
-    .addApiFile('src/metrics.d.ts')
-    .addApiFile('src/relationships.d.ts')
-    .addApiFile('src/queries.d.ts')
-    .addApiFile('src/persisters.d.ts')
-    .addApiFile('src/tools.d.ts')
-    .addApiFile('src/ui-react.d.ts');
+    .addApiFile('src/types/common.d.ts')
+    .addApiFile('src/types/store.d.ts')
+    .addApiFile('src/types/checkpoints.d.ts')
+    .addApiFile('src/types/indexes.d.ts')
+    .addApiFile('src/types/metrics.d.ts')
+    .addApiFile('src/types/relationships.d.ts')
+    .addApiFile('src/types/queries.d.ts')
+    .addApiFile('src/types/persisters.d.ts')
+    .addApiFile('src/types/tools.d.ts')
+    .addApiFile('src/types/ui-react.d.ts');
 
 const addPages = (docs: Docs): Docs =>
   docs

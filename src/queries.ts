@@ -25,7 +25,7 @@ import {
   Select,
   Where,
   createQueries as createQueriesDecl,
-} from './queries.d';
+} from './types/queries.d';
 import {
   Cell,
   CellOrUndefined,
@@ -33,8 +33,8 @@ import {
   GetCellChange,
   Row,
   Store,
-} from './store.d';
-import {Id, IdOrNull, Ids} from './common.d';
+} from './types/store.d';
+import {Id, IdOrNull, Ids} from './types/common.d';
 import {
   IdMap,
   IdMap2,

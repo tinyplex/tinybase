@@ -19,11 +19,10 @@ import {
 } from '../../common/array';
 import {collHas, collValues} from '../../common/coll';
 import {EMPTY_STRING} from '../../common/strings';
-import {Id} from '../../common.d';
+import {Id} from '../../types/common.d';
 import {isArray} from '../../common/other';
 
 export type LINE = string;
-export type LINES = LINE[];
 export type LINE_TREE = LINE_OR_LINE_TREE[];
 export type LINE_OR_LINE_TREE = LINE | LINE_TREE;
 
@@ -106,7 +105,7 @@ export const getCodeFunctions = (): [
   (name: Id, body: LINE, doc: string, generic?: string, exported?: 0 | 1) => Id,
   (name: Id, parameters: string, body: LINE_OR_LINE_TREE) => Id,
   (name: Id, body: LINE_OR_LINE_TREE) => Id,
-  (location?: 0 | 1) => LINES,
+  (location?: 0 | 1) => LINE[],
   () => LINE_TREE,
   () => LINE_TREE,
 ] => {
@@ -158,7 +157,7 @@ export const getCodeFunctions = (): [
   const addConstant = (name: Id, body: LINE_OR_LINE_TREE): Id =>
     mapGet(constants, name) === body ? name : mapUnique(constants, name, body);
 
-  const getImports = (location: 0 | 1 = 0): LINES =>
+  const getImports = (location: 0 | 1 = 0): LINE[] =>
     arrayMap(
       [
         ...arraySort(

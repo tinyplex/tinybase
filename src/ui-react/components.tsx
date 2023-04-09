@@ -46,14 +46,14 @@ import {
   ValueView as ValueViewDecl,
   ValuesProps,
   ValuesView as ValuesViewDecl,
-} from '../ui-react.d';
+} from '../types/ui-react.d';
 import {
   Context,
   useCheckpointsOrCheckpointsId,
   useIndexesOrIndexesId,
   useRelationshipsOrRelationshipsId,
 } from './common';
-import {Id, Ids} from '../common.d';
+import {Id, Ids} from '../types/common.d';
 import React, {ReactElement, useContext} from 'react';
 import {isArray, isUndefined} from '../common/other';
 import {
@@ -77,11 +77,11 @@ import {
   useValue,
   useValueIds,
 } from './hooks';
-import {CheckpointIds} from '../checkpoints.d';
+import {CheckpointIds} from '../types/checkpoints';
 import {EMPTY_STRING} from '../common/strings';
 import {IdObj} from '../common/obj';
-import {Relationships} from '../relationships.d';
-import {Store} from '../store.d';
+import {Relationships} from '../types/relationships.d';
+import {Store} from '../types/store.d';
 import {arrayMap} from '../common/array';
 
 const {createElement, useMemo} = React;

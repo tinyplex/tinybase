@@ -13,22 +13,26 @@ import {
   ValueIdsListener,
   ValueListener,
   ValuesListener,
-} from '../store.d';
+} from '../types/store.d';
 import {
   CheckpointIdsListener,
   CheckpointListener,
   Checkpoints,
-} from '../checkpoints.d';
-import {Id, IdOrNull, Ids} from '../common.d';
+} from '../types/checkpoints';
+import {Id, IdOrNull, Ids} from '../types/common.d';
 import {IdMap, Node, mapGet, mapNew, mapSet, visitTree} from './map';
 import {IdSet, setAdd, setNew} from './set';
-import {Indexes, SliceIdsListener, SliceRowIdsListener} from '../indexes.d';
+import {
+  Indexes,
+  SliceIdsListener,
+  SliceRowIdsListener,
+} from '../types/indexes.d';
 import {
   LocalRowIdsListener,
   Relationships,
   RemoteRowIdListener,
-} from '../relationships.d';
-import {MetricListener, Metrics} from '../metrics.d';
+} from '../types/relationships.d';
+import {MetricListener, Metrics} from '../types/metrics.d';
 import {arrayForEach, arrayLength, arrayPush} from './array';
 import {collDel, collForEach, collIsEmpty} from './coll';
 import {ifNotUndefined, isUndefined} from './other';
