@@ -1,10 +1,10 @@
-import {Callback, Json} from '../common.d';
+import {Callback, Json} from '../types/common.d';
 import {
   Persister,
   createRemotePersister as createRemotePersisterDecl,
-} from '../persisters.d';
+} from '../types/persisters.d';
 import {ifNotUndefined, isUndefined} from '../common/other';
-import {Store} from '../store.d';
+import {Store} from '../types/store.d';
 import {createCustomPersister} from './common';
 
 const getETag = (response: Response) => response.headers.get('ETag');

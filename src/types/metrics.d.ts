@@ -1,6 +1,6 @@
 /**
- * The metrics module of the TinyBase project provides the ability to create
- * and track metrics and aggregates of the data in Store objects.
+ * The metrics module of the TinyBase project provides the ability to create and
+ * track metrics and aggregates of the data in Store objects.
  *
  * The main entry point to this module is the createMetrics function, which
  * returns a new Metrics object. From there, you can create new Metric
@@ -44,8 +44,8 @@ export type Metric = number;
 export type MetricCallback = (metricId: Id, metric?: Metric) => void;
 
 /**
- * The Aggregate type describes a custom function that takes an array of numbers
- * and returns an aggregate that is used as a Metric.
+ * The MetricAggregate type describes a custom function that takes an array of
+ * numbers and returns an aggregate that is used as a Metric.
  *
  * There are a number of common predefined aggregators, such as for counting,
  * summing, and averaging values. This type is instead used for when you wish to
@@ -57,12 +57,12 @@ export type MetricCallback = (metricId: Id, metric?: Metric) => void;
  * @returns The value of the Metric.
  * @category Aggregators
  */
-export type Aggregate = (numbers: number[], length: number) => Metric;
+export type MetricAggregate = (numbers: number[], length: number) => Metric;
 
 /**
- * The AggregateAdd type describes a function that can be used to optimize a
- * custom Aggregate by providing a shortcut for when a single value is added to
- * the input values.
+ * The MetricAggregateAdd type describes a function that can be used to optimize
+ * a custom MetricAggregate by providing a shortcut for when a single value is
+ * added to the input values.
  *
  * Some aggregation functions do not need to recalculate the aggregation of the
  * whole set when one value changes. For example, when adding a new number to a
@@ -72,10 +72,10 @@ export type Aggregate = (numbers: number[], length: number) => Metric;
  * being added, return `undefined` and the Metric will be completely
  * recalculated.
  *
- * Where possible, if you are providing a custom Aggregate, seek an
- * implementation of an AggregateAdd function that can reduce the complexity
- * cost of growing the input data set. See the setMetricDefinition method for
- * more examples.
+ * Where possible, if you are providing a custom MetricAggregate, seek an
+ * implementation of an MetricAggregateAdd function that can reduce the
+ * complexity cost of growing the input data set. See the setMetricDefinition
+ * method for more examples.
  *
  * @param metric The current value of the Metric.
  * @param add The number being added to the Metric's aggregation.
@@ -83,16 +83,16 @@ export type Aggregate = (numbers: number[], length: number) => Metric;
  * @returns The new value of the Metric.
  * @category Aggregators
  */
-export type AggregateAdd = (
+export type MetricAggregateAdd = (
   metric: Metric,
   add: number,
   length: number,
 ) => Metric | undefined;
 
 /**
- * The AggregateRemove type describes a function that can be used to optimize a
- * custom Aggregate by providing a shortcut for when a single value is removed
- * from the input values.
+ * The MetricAggregateRemove type describes a function that can be used to
+ * optimize a custom MetricAggregate by providing a shortcut for when a single
+ * value is removed from the input values.
  *
  * Some aggregation functions do not need to recalculate the aggregation of the
  * whole set when one value changes. For example, when removing a number from a
@@ -105,10 +105,10 @@ export type AggregateAdd = (
  * values, and the previous minimum is being removed. The whole of the rest of
  * the list will need to be re-scanned to find a new minimum.
  *
- * Where possible, if you are providing a custom Aggregate, seek an
- * implementation of an AggregateRemove function that can reduce the complexity
- * cost of shrinking the input data set. See the setMetricDefinition method for
- * more examples.
+ * Where possible, if you are providing a custom MetricAggregate, seek an
+ * implementation of an MetricAggregateRemove function that can reduce the
+ * complexity cost of shrinking the input data set. See the setMetricDefinition
+ * method for more examples.
  *
  * @param metric The current value of the Metric.
  * @param remove The number being removed from the Metric's aggregation.
@@ -116,16 +116,16 @@ export type AggregateAdd = (
  * @returns The new value of the Metric.
  * @category Aggregators
  */
-export type AggregateRemove = (
+export type MetricAggregateRemove = (
   metric: Metric,
   remove: number,
   length: number,
 ) => Metric | undefined;
 
 /**
- * The AggregateReplace type describes a function that can be used to optimize a
- * custom Aggregate by providing a shortcut for when a single value in the input
- * values is replaced with another.
+ * The MetricAggregateReplace type describes a function that can be used to
+ * optimize a custom MetricAggregate by providing a shortcut for when a single
+ * value in the input values is replaced with another.
  *
  * Some aggregation functions do not need to recalculate the aggregation of the
  * whole set when one value changes. For example, when replacing a number in a
@@ -133,13 +133,12 @@ export type AggregateRemove = (
  * minus the old value.
  *
  * If it is not possible to shortcut the aggregation based on just one value
- * changing, return `undefined` and the Metric will be completely
- * recalculated.
+ * changing, return `undefined` and the Metric will be completely recalculated.
  *
- * Where possible, if you are providing a custom Aggregate, seek an
- * implementation of an AggregateReplace function that can reduce the complexity
- * cost of changing the input data set in place. See the setMetricDefinition
- * method for more examples.
+ * Where possible, if you are providing a custom MetricAggregate, seek an
+ * implementation of an MetricAggregateReplace function that can reduce the
+ * complexity cost of changing the input data set in place. See the
+ * setMetricDefinition method for more examples.
  *
  * @param metric The current value of the Metric.
  * @param add The number being added to the Metric's aggregation.
@@ -148,7 +147,7 @@ export type AggregateRemove = (
  * @returns The new value of the Metric.
  * @category Aggregators
  */
-export type AggregateReplace = (
+export type MetricAggregateReplace = (
   metric: Metric,
   add: number,
   remove: number,
@@ -294,14 +293,14 @@ export interface Metrics<Schemas extends OptionalSchemas = NoSchemas> {
    * that if the `aggregate` and `getNumber` parameters are both omitted, the
    * Metric will simply be a count of the Row objects in the Table).
    * @param aggregateAdd A function that can be used to optimize a custom
-   * Aggregate by providing a shortcut for when a single value is added to the
-   * input values - for example, when a Row is added to the Table.
+   * MetricAggregate by providing a shortcut for when a single value is added to
+   * the input values - for example, when a Row is added to the Table.
    * @param aggregateRemove A function that can be used to optimize a custom
-   * Aggregate by providing a shortcut for when a single value is removed from
-   * the input values - for example ,when a Row is removed from the Table.
+   * MetricAggregate by providing a shortcut for when a single value is removed
+   * from the input values - for example ,when a Row is removed from the Table.
    * @param aggregateReplace A function that can be used to optimize a custom
-   * Aggregate by providing a shortcut for when a single value in the input
-   * values is replaced with another - for example, when a Row is updated.
+   * MetricAggregate by providing a shortcut for when a single value in the
+   * input values is replaced with another - for example, when a Row is updated.
    * @returns A reference to the Metrics object.
    * @example
    * This example creates a Store, creates a Metrics object, and defines a
@@ -426,11 +425,11 @@ export interface Metrics<Schemas extends OptionalSchemas = NoSchemas> {
   >(
     metricId: Id,
     tableId: TableId,
-    aggregate?: 'sum' | 'avg' | 'min' | 'max' | Aggregate,
+    aggregate?: 'sum' | 'avg' | 'min' | 'max' | MetricAggregate,
     getNumber?: CellId | ((getCell: GetCell, rowId: Id) => number),
-    aggregateAdd?: AggregateAdd,
-    aggregateRemove?: AggregateRemove,
-    aggregateReplace?: AggregateReplace,
+    aggregateAdd?: MetricAggregateAdd,
+    aggregateRemove?: MetricAggregateRemove,
+    aggregateReplace?: MetricAggregateReplace,
   ): Metrics<Schemas>;
 
   /**

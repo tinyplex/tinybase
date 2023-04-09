@@ -44,7 +44,7 @@ import {
   Values,
   ValuesSchema,
   createStore as createStoreDecl,
-} from './store.d';
+} from './types/store.d';
 import {
   DEBUG,
   ifNotUndefined,
@@ -60,7 +60,7 @@ import {
   PathGetters,
   getListenerFunctions,
 } from './common/listeners';
-import {Id, Ids, Json} from './common.d';
+import {Id, Ids, Json} from './types/common.d';
 import {
   IdMap,
   IdMap2,

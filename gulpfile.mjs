@@ -56,16 +56,18 @@ const clearDir = async (dir = LIB_DIR) => {
   await makeDir(dir);
 };
 
-const copyDefinition = async (module, dir = LIB_DIR) => {
-  await makeDir(dir);
-  return await promises.copyFile(`src/${module}.d.ts`, `${dir}/${module}.d.ts`);
+const copyDefinition = async (module) => {
+  const typeDir = LIB_DIR + '/types';
+  await makeDir(typeDir);
+  return await promises.copyFile(
+    `src/types/${module}.d.ts`,
+    `${typeDir}/${module}.d.ts`,
+  );
 };
 
 const copyDefinitions = async () => {
-  const typeDir = LIB_DIR + '/types';
-  await makeDir(typeDir);
-  await copyDefinition('common', typeDir);
-  await allModules((module) => copyDefinition(module, typeDir));
+  await copyDefinition('common');
+  await allModules((module) => copyDefinition(module));
 };
 
 const execute = async (cmd) => {
@@ -157,7 +159,7 @@ const tsCheck = async (dir) => {
   }
   const unusedResults = Object.entries(
     unusedExports(`${path.resolve(dir)}/tsconfig.json`, [
-      '--allowUnusedTypes',
+      '--excludeDeclarationFiles',
       '--excludePathsFromReport=tinybase.ts;ui-react.ts;tools.ts;build.ts',
     ]),
   )
@@ -382,8 +384,7 @@ export const compileForTest = async () => {
   await testModules(async (module) => {
     await compileModule(module, true, `${LIB_DIR}/debug`);
   });
-  await copyDefinitions(`${LIB_DIR}/debug`);
-
+  await copyDefinitions();
   await compileForCli();
 };
 

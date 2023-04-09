@@ -1,7 +1,7 @@
 import {DEBUG, ifNotUndefined, isArray, isUndefined} from './common/other';
 import {EMPTY_STRING, id} from './common/strings';
-import {GetCell, Store} from './store.d';
-import {Id, IdOrNull, Ids, SortKey} from './common.d';
+import {GetCell, Store} from './types/store.d';
+import {Id, IdOrNull, Ids, SortKey} from './types/common.d';
 import {IdMap, mapForEach, mapGet, mapKeys, mapNew, mapSet} from './common/map';
 import {IdSet, IdSet2, IdSet3, setAdd, setNew} from './common/set';
 import {
@@ -12,7 +12,7 @@ import {
   SliceIdsListener,
   SliceRowIdsListener,
   createIndexes as createIndexesDecl,
-} from './indexes.d';
+} from './types/indexes.d';
 import {arrayIsSorted, arrayMap, arraySort} from './common/array';
 import {
   collDel,

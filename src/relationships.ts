@@ -1,6 +1,6 @@
 import {DEBUG, ifNotUndefined, isUndefined} from './common/other';
-import {GetCell, Store} from './store.d';
-import {Id, IdOrNull, Ids} from './common.d';
+import {GetCell, Store} from './types/store.d';
+import {Id, IdOrNull, Ids} from './types/common.d';
 import {IdMap, mapForEach, mapGet, mapNew, mapSet} from './common/map';
 import {IdSet, IdSet3, setAdd, setNew} from './common/set';
 import {
@@ -11,7 +11,7 @@ import {
   RelationshipsListenerStats,
   RemoteRowIdListener,
   createRelationships as createRelationshipsDecl,
-} from './relationships.d';
+} from './types/relationships.d';
 import {
   collDel,
   collForEach,

@@ -1,14 +1,4 @@
 import {
-  Aggregate,
-  AggregateAdd,
-  AggregateRemove,
-  AggregateReplace,
-  MetricListener,
-  Metrics,
-  MetricsListenerStats,
-  createMetrics as createMetricsDecl,
-} from './metrics.d';
-import {
   DEBUG,
   getUndefined,
   isFiniteNumber,
@@ -16,9 +6,19 @@ import {
   isUndefined,
 } from './common/other';
 import {EMPTY_STRING, SUM} from './common/strings';
-import {GetCell, Store} from './store.d';
-import {Id, IdOrNull} from './common.d';
+import {GetCell, Store} from './types/store.d';
+import {Id, IdOrNull} from './types/common.d';
 import {IdMap, mapGet, mapNew} from './common/map';
+import {
+  MetricAggregate,
+  MetricAggregateAdd,
+  MetricAggregateRemove,
+  MetricAggregateReplace,
+  MetricListener,
+  Metrics,
+  MetricsListenerStats,
+  createMetrics as createMetricsDecl,
+} from './types/metrics.d';
 import {collSize, collSize2} from './common/coll';
 import {getAggregateValue, numericAggregators} from './common/aggregators';
 import {
@@ -31,10 +31,10 @@ import {getListenerFunctions} from './common/listeners';
 import {objFreeze} from './common/obj';
 
 type Aggregators = [
-  Aggregate,
-  AggregateAdd?,
-  AggregateRemove?,
-  AggregateReplace?,
+  MetricAggregate,
+  MetricAggregateAdd?,
+  MetricAggregateRemove?,
+  MetricAggregateReplace?,
 ];
 
 export const createMetrics = getCreateFunction((store: Store): Metrics => {
@@ -70,11 +70,11 @@ export const createMetrics = getCreateFunction((store: Store): Metrics => {
   const setMetricDefinition = (
     metricId: Id,
     tableId: Id,
-    aggregate?: 'sum' | 'avg' | 'min' | 'max' | Aggregate,
+    aggregate?: 'sum' | 'avg' | 'min' | 'max' | MetricAggregate,
     getNumber?: Id | ((getCell: GetCell, rowId: Id) => number),
-    aggregateAdd?: AggregateAdd,
-    aggregateRemove?: AggregateRemove,
-    aggregateReplace?: AggregateReplace,
+    aggregateAdd?: MetricAggregateAdd,
+    aggregateRemove?: MetricAggregateRemove,
+    aggregateReplace?: MetricAggregateReplace,
   ): Metrics => {
     const aggregators: Aggregators = isFunction(aggregate)
       ? [aggregate, aggregateAdd, aggregateRemove, aggregateReplace]

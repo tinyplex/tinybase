@@ -1,6 +1,6 @@
 import {arrayIsEmpty, arrayMap} from './array';
 import {ifNotUndefined, isInstanceOf, isUndefined} from './other';
-import {Id} from '../common.d';
+import {Id} from '../types/common.d';
 
 export type IdObj<Value> = {[id: string]: Value};
 export type IdObj2<Value> = IdObj<{[id: string]: Value}>;

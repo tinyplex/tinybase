@@ -1,10 +1,10 @@
-import {Callback, Json} from '../common.d';
+import {Callback, Json} from '../types/common.d';
 import {
   Persister,
   createLocalPersister as createLocalPersisterDecl,
   createSessionPersister as createSessionPersisterDecl,
-} from '../persisters.d';
-import {Store} from '../store.d';
+} from '../types/persisters.d';
+import {Store} from '../types/store.d';
 import {createCustomPersister} from './common';
 
 const STORAGE = 'storage';

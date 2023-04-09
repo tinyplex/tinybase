@@ -1,11 +1,11 @@
-import {Callback, Json} from '../common.d';
+import {Callback, Json} from '../types/common.d';
 import {
   Persister,
   createFilePersister as createFilePersisterDecl,
-} from '../persisters.d';
+} from '../types/persisters.d';
 import {promises, watch} from 'fs';
 import {FSWatcher} from 'fs';
-import {Store} from '../store.d';
+import {Store} from '../types/store.d';
 import {UTF8} from '../common/strings';
 import {createCustomPersister} from './common';
 

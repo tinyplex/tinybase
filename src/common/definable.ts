@@ -1,5 +1,5 @@
-import {Cell, GetCell, Store} from '../store.d';
-import {Id, Ids, SortKey} from '../common.d';
+import {Cell, GetCell, Store} from '../types/store.d';
+import {Id, Ids, SortKey} from '../types/common.d';
 import {
   IdMap,
   IdMap2,
@@ -21,13 +21,13 @@ import {
   collValues,
 } from './coll';
 import {ifNotUndefined, isArray, isString, isUndefined} from './other';
-import {Checkpoints} from '../checkpoints.d';
+import {Checkpoints} from '../types/checkpoints';
 import {EMPTY_STRING} from './strings';
-import {Indexes} from '../indexes.d';
-import {Metrics} from '../metrics.d';
-import {Queries} from '../queries.d';
-import {Relationships} from '../relationships.d';
-import {Tools} from '../tools.d';
+import {Indexes} from '../types/indexes.d';
+import {Metrics} from '../types/metrics.d';
+import {Queries} from '../types/queries.d';
+import {Relationships} from '../types/relationships.d';
+import {Tools} from '../types/tools.d';
 
 type OnChangedDecl<RowValue> = (
   change: () => void,

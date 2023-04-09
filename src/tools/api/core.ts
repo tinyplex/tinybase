@@ -80,10 +80,10 @@ import {
   mapUnique,
   snake,
 } from '../common/code';
-import {TablesSchema, ValuesSchema} from '../../store.d';
+import {TablesSchema, ValuesSchema} from '../../types/store.d';
 import {arrayForEach, arrayPush, arrayUnshift} from '../../common/array';
 import {isString, isUndefined} from '../../common/other';
-import {Id} from '../../common.d';
+import {Id} from '../../types/common.d';
 import {collValues} from '../../common/coll';
 import {getSchemaFunctions} from '../common/schema';
 import {getTypeFunctions} from './types';

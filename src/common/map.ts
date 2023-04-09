@@ -1,7 +1,7 @@
 import {arrayLength, arrayMap} from './array';
 import {collDel, collForEach, collHas, collIsEmpty} from './coll';
 import {ifNotUndefined, isUndefined} from './other';
-import {Id} from '../common.d';
+import {Id} from '../types/common.d';
 import {IdObj} from './obj';
 
 export type IdMap<Value> = Map<Id, Value>;
