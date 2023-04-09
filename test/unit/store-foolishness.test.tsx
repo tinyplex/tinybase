@@ -15,7 +15,7 @@ import {
   createMetrics,
   createRelationships,
   createStore,
-} from '../../lib/debug/tinybase';
+} from 'tinybase/debug';
 import {
   StoreListener,
   createStoreListener,
@@ -38,7 +38,7 @@ import {
   useTable,
   useTableIds,
   useTables,
-} from '../../lib/debug/ui-react';
+} from 'tinybase/debug/ui-react';
 import React from 'react';
 
 let renderer: ReactTestRenderer;

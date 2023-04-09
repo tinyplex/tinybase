@@ -1,9 +1,9 @@
 import * as React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
 import * as ReactDOMTestUtils from 'react-dom/test-utils';
-import * as TinyBase from '../../lib/debug/tinybase';
-import * as TinyBaseReact from '../../lib/debug/ui-react';
-import * as TinyBaseTools from '../../lib/debug/tools';
+import * as TinyBase from 'tinybase/debug';
+import * as TinyBaseReact from 'tinybase/debug/ui-react';
+import * as TinyBaseTools from 'tinybase/debug/tools';
 import {join, resolve} from 'path';
 import {readFileSync, readdirSync} from 'fs';
 import {transformSync} from 'esbuild';

@@ -8,7 +8,7 @@ import {
   createRemotePersister,
   createSessionPersister,
   createStore,
-} from '../../lib/debug/tinybase';
+} from 'tinybase/debug';
 import crypto from 'crypto';
 import fetchMock from 'jest-fetch-mock';
 import fs from 'fs';

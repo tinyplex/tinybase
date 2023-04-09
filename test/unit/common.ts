@@ -17,7 +17,7 @@ import {
   Queries,
   Relationships,
   Store,
-} from '../../lib/debug/tinybase';
+} from 'tinybase/debug';
 
 type IdObj<Value> = {[id: string]: Value};
 type IdObj2<Value> = IdObj<{[id: string]: Value}>;

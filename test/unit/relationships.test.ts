@@ -5,7 +5,7 @@ import {
   Store,
   createRelationships,
   createStore,
-} from '../../lib/debug/tinybase';
+} from 'tinybase/debug';
 import {
   RelationshipsListener,
   createRelationshipsListener,

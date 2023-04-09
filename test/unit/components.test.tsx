@@ -65,7 +65,7 @@ import {
   useSliceRowIds,
   useTable,
   useTables,
-} from '../../lib/debug/ui-react';
+} from 'tinybase/debug/ui-react';
 import {
   Checkpoints,
   Id,
@@ -80,7 +80,7 @@ import {
   createQueries,
   createRelationships,
   createStore,
-} from '../../lib/debug/tinybase';
+} from 'tinybase/debug';
 import React, {useCallback} from 'react';
 import {ReactTestRenderer, act, create} from 'react-test-renderer';
 

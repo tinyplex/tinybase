@@ -1,9 +1,4 @@
-import {
-  Metrics,
-  Store,
-  createMetrics,
-  createStore,
-} from '../../lib/debug/tinybase';
+import {Metrics, Store, createMetrics, createStore} from 'tinybase/debug';
 import {
   MetricsListener,
   createMetricsListener,

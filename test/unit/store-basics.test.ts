@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import {Store, createStore} from '../../lib/debug/tinybase';
+import {Store, createStore} from 'tinybase/debug';
 
 let store: Store;
 

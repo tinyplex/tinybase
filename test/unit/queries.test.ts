@@ -1,10 +1,4 @@
-import {
-  Id,
-  Queries,
-  Store,
-  createQueries,
-  createStore,
-} from '../../lib/debug/tinybase';
+import {Id, Queries, Store, createQueries, createStore} from 'tinybase/debug';
 import {
   QueriesListener,
   createQueriesListener,

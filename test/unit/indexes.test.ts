@@ -6,7 +6,7 @@ import {
   Store,
   createIndexes,
   createStore,
-} from '../../lib/debug/tinybase';
+} from 'tinybase/debug';
 import {
   IndexesListener,
   createIndexesListener,

@@ -1,12 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import {
-  Row,
-  Store,
-  Table,
-  Tables,
-  Values,
-  createStore,
-} from '../../lib/debug/tinybase';
+import {Row, Store, Table, Tables, Values, createStore} from 'tinybase/debug';
 import {
   StoreListener,
   createStoreListener,

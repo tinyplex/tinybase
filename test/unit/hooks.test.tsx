@@ -19,7 +19,7 @@ import {
   createQueries,
   createRelationships,
   createStore,
-} from '../../lib/debug/tinybase';
+} from 'tinybase/debug';
 import {
   Provider,
   useAddRowCallback,
@@ -105,7 +105,7 @@ import {
   useValueListener,
   useValues,
   useValuesListener,
-} from '../../lib/debug/ui-react';
+} from 'tinybase/debug/ui-react';
 import {ReactTestRenderer, act, create} from 'react-test-renderer';
 import React from 'react';
 import {pause} from './common';

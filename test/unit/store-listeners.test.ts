@@ -1,12 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import {
-  Cell,
-  Id,
-  IdOrNull,
-  Store,
-  Value,
-  createStore,
-} from '../../lib/debug/tinybase';
+import {Cell, Id, IdOrNull, Store, Value, createStore} from 'tinybase/debug';
 import {
   StoreListener,
   createStoreListener,

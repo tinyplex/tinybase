@@ -1,5 +1,5 @@
-import {Store, createStore} from '../../lib/debug/tinybase';
-import {Tools, createTools} from '../../lib/debug/tools';
+import {Store, createStore} from 'tinybase/debug';
+import {Tools, createTools} from 'tinybase/debug/tools';
 
 let store: Store;
 let tools: Tools;

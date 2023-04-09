@@ -6,7 +6,7 @@ import {
   Values,
   createCheckpoints,
   createStore,
-} from '../../lib/debug/tinybase';
+} from 'tinybase/debug';
 import {
   CheckpointsListener,
   createCheckpointsListener,

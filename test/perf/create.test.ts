@@ -4,7 +4,7 @@ import {
   createMetrics,
   createQueries,
   createStore,
-} from '../../lib/debug/tinybase';
+} from 'tinybase/debug';
 import {
   getNCells,
   getNRows,

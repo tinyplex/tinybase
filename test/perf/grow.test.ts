@@ -1,4 +1,4 @@
-import {Store, createStore} from '../../lib/debug/tinybase';
+import {Store, createStore} from 'tinybase/debug';
 import {repeatRows} from './common';
 
 let store: Store;
