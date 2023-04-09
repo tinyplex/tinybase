@@ -26,7 +26,7 @@ import {Id, IdOrNull, Ids, Json} from './common.d';
  * `pets`, in which each Row may contain a string `species` Cell, and is
  * guaranteed to contain a boolean `sold` Cell that defaults to `false`.
  *
- *```js
+ * ```js
  * const tableSchema: TablesSchema = {
  *   pets: {
  *     species: {type: 'string'},
@@ -57,7 +57,7 @@ export type TablesSchema = {[tableId: Id]: {[cellId: Id]: CellSchema}};
  * When applied to a Store, this CellSchema ensures a boolean Cell is always
  * present, and defaults it to `false`.
  *
- *```js
+ * ```js
  * const requiredBoolean: CellSchema = {type: 'boolean', default: false};
  * ```
  * @category Schema
@@ -78,7 +78,7 @@ export type CellSchema =
  * When applied to a Store, this ValuesSchema only allows one boolean Value
  * called `open`, that defaults to `false`.
  *
- *```js
+ * ```js
  * const valuesSchema: ValuesSchema = {
  *   open: {type: 'boolean', default: false},
  * };
@@ -107,7 +107,7 @@ export type ValuesSchema = {[valueId: Id]: ValueSchema};
  * When applied to a Store, this ValueSchema ensures a boolean Value is always
  * present, and defaults it to `false`.
  *
- *```js
+ * ```js
  * const requiredBoolean: ValueSchema = {type: 'boolean', default: false};
  * ```
  * @category Schema
