@@ -1,8 +1,4 @@
-/**
- * This is everything.
- *
- * @packageDocumentation
- */
+/// tinybase
 
 export * from './checkpoints.d';
 export * from './common.d';
