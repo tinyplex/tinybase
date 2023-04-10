@@ -76,7 +76,6 @@ const copyDefinition = async (module) => {
       if (labelBlocks.has(label)) {
         return labelBlocks.get(label);
       }
-      // eslint-disable-next-line no-console
       throw `Missing docs label ${label} in ${module}`;
     }),
     UTF8,
