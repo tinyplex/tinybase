@@ -9,16 +9,7 @@
  * @module tools
  * @since v2.2.0
  */
-
-import {
-  NoSchemas,
-  OptionalSchemas,
-  OptionalTablesSchema,
-  OptionalValuesSchema,
-  Store,
-} from './store.d';
-import {Id} from './common';
-
+/// tools
 /**
  * The StoreStats type describes a set of statistics about the Store, and
  * is used for debugging purposes.
@@ -28,35 +19,35 @@ import {Id} from './common';
  * @category Statistics
  * @since v2.2.0
  */
-export type StoreStats = {
+/// StoreStats
+{
   /**
    * The number of Table objects in the Store.
    */
-  totalTables: number;
+  /// StoreStats.totalTables
   /**
    * The number of Row objects in the Store, across all Table objects.
    */
-  totalRows: number;
+  /// StoreStats.totalRows
   /**
    * The number of Cell objects in the Store, across all Row objects, across all
    * Table objects.
    */
-  totalCells: number;
+  /// StoreStats.totalCells
   /**
    * The number of Value objects in the Store, since v3.0.0.
    */
-  totalValues: number;
+  /// StoreStats.totalValues
   /**
    * The string length of the Store when serialized to JSON.
    */
-  jsonLength: number;
+  /// StoreStats.jsonLength
   /**
    * Additional detailed statistics about the Store if the `detail` flag is
    * specified in the getStoreStats method.
    */
-  detail?: StoreStatsDetail;
-};
-
+  /// StoreStats.detail
+}
 /**
  * The StoreStatsDetail type describes a more detailed set of statistics about
  * the Store, and is used for debugging purposes.
@@ -67,13 +58,13 @@ export type StoreStats = {
  * @category Statistics
  * @since v2.2.0
  */
-export type StoreStatsDetail = {
+/// StoreStatsDetail
+{
   /**
    * Information about each Table in the Store.
    */
-  tables: {[tableId: Id]: StoreStatsTableDetail};
-};
-
+  /// StoreStatsDetail.tables
+}
 /**
  * The StoreStatsTableDetail type describes a detailed set of statistics about a
  * single Table in the Store, and is used for debugging purposes.
@@ -81,18 +72,21 @@ export type StoreStatsDetail = {
  * @category Statistics
  * @since v2.2.0
  */
-export type StoreStatsTableDetail = {
+/// StoreStatsTableDetail
+{
   /**
    * The number of Row objects in the Table.
    */
-  tableRows: number;
+  /// StoreStatsTableDetail.tableRows
   /**
    * The number of Cell objects in the Table, across all Row objects.
    */
-  tableCells: number;
-  rows: {[rowId: Id]: StoreStatsRowDetail};
-};
-
+  /// StoreStatsTableDetail.tableCells
+  /**
+   * Detail about the Table object.
+   */
+  /// StoreStatsTableDetail.rows
+}
 /**
  * The StoreStatsRowDetail type describes statistics about a single Row in the
  * Store, and is used for debugging purposes.
@@ -100,13 +94,13 @@ export type StoreStatsTableDetail = {
  * @category Statistics
  * @since v2.2.0
  */
-export type StoreStatsRowDetail = {
+/// StoreStatsRowDetail
+{
   /**
    * The number of Cell objects in the Row.
    */
-  rowCells: number;
-};
-
+  /// StoreStatsRowDetail.rowCells
+}
 /**
  * A Tools object lets you run various utilities on, and get certain information
  * about, Store objects in development.
@@ -115,7 +109,8 @@ export type StoreStatsRowDetail = {
  * @category Tools
  * @since v2.2.0
  */
-export interface Tools<Schemas extends OptionalSchemas = NoSchemas> {
+/// Tools
+{
   /* eslint-disable max-len */
   /**
    * The getStoreStats method provides a set of statistics about the Store, and
@@ -173,9 +168,8 @@ export interface Tools<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Statistics
    * @since v2.2.0
    */
-  getStoreStats(detail?: boolean): StoreStats;
+  /// getStoreStats
   /* eslint-enable max-len */
-
   /**
    * The getStoreTablesSchema method returns the TablesSchema of the Store as an
    * object.
@@ -236,10 +230,7 @@ export interface Tools<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Modelling
    * @since v3.0.0
    */
-  getStoreTablesSchema<
-    TablesSchema extends OptionalTablesSchema = Schemas[0],
-  >(): TablesSchema;
-
+  /// getStoreTablesSchema
   /**
    * The getStoreValuesSchema method returns the ValuesSchema of the Store as an
    * object.
@@ -277,10 +268,7 @@ export interface Tools<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Modelling
    * @since v3.0.0
    */
-  getStoreValuesSchema<
-    ValuesSchema extends OptionalValuesSchema = Schemas[1],
-  >(): ValuesSchema;
-
+  /// getStoreValuesSchema
   /**
    * The getStoreApi method returns code-generated `.d.ts` and `.ts(x)` files
    * that describe the schema of a Store and React bindings (since v3.1.0) in an
@@ -385,8 +373,7 @@ export interface Tools<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Modelling
    * @since v2.2.0
    */
-  getStoreApi(storeName: string): [string, string, string, string];
-
+  /// getStoreApi
   /**
    * The getPrettyStoreApi method attempts to return prettified code-generated
    * `.d.ts` and `.ts(x)` files that describe the schema of a Store and React
@@ -465,10 +452,7 @@ export interface Tools<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Modelling
    * @since v2.2.0
    */
-  getPrettyStoreApi(
-    storeName: string,
-  ): Promise<[string, string, string, string]>;
-
+  /// getPrettyStoreApi
   /**
    * The getStore method returns a reference to the underlying Store that is
    * backing this Tools object.
@@ -487,9 +471,8 @@ export interface Tools<Schemas extends OptionalSchemas = NoSchemas> {
    * @category Getter
    * @since v3.0.0
    */
-  getStore(): Store<Schemas>;
+  /// getStore
 }
-
 /* eslint-disable max-len */
 /**
  * The createTools function creates a Tools object, and is the main entry point
@@ -534,7 +517,5 @@ export interface Tools<Schemas extends OptionalSchemas = NoSchemas> {
  * @category Creation
  * @since v2.2.0
  */
-export function createTools<Schemas extends OptionalSchemas>(
-  store: Store<Schemas>,
-): Tools<Schemas>;
+/// createTools
 /* eslint-enable max-len */
