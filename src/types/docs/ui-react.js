@@ -22,54 +22,7 @@
  * @packageDocumentation
  * @module ui-react
  */
-
-import {Callback, Id, IdOrNull, Ids, ParameterizedCallback} from './common';
-import {
-  Cell,
-  CellIdsListener,
-  CellListener,
-  MapCell,
-  Row,
-  RowIdsListener,
-  RowListener,
-  SortedRowIdsListener,
-  Store,
-  Table,
-  TableIdsListener,
-  TableListener,
-  Tables,
-  TablesListener,
-  Value,
-  ValueIdsListener,
-  ValueListener,
-  Values,
-  ValuesListener,
-} from './store.d';
-import {
-  CheckpointIds,
-  CheckpointIdsListener,
-  CheckpointListener,
-  Checkpoints,
-} from './checkpoints';
-import {ComponentType, ReactElement} from 'react';
-import {Indexes, SliceIdsListener, SliceRowIdsListener} from './indexes';
-import {
-  LinkedRowIdsListener,
-  LocalRowIdsListener,
-  Relationships,
-  RemoteRowIdListener,
-} from './relationships';
-import {MetricListener, Metrics} from './metrics';
-import {
-  Queries,
-  ResultCellIdsListener,
-  ResultCellListener,
-  ResultRowIdsListener,
-  ResultRowListener,
-  ResultTableListener,
-} from './queries';
-import {Persister} from './persisters';
-
+/// ui-react
 /**
  * The StoreOrStoreId type is used when you need to refer to a Store in a React
  * hook or component.
@@ -85,8 +38,7 @@ import {Persister} from './persisters';
  *
  * @category Identity
  */
-export type StoreOrStoreId = Store | Id;
-
+/// StoreOrStoreId
 /**
  * The MetricsOrMetricsId type is used when you need to refer to a Metrics
  * object in a React hook or component.
@@ -104,8 +56,7 @@ export type StoreOrStoreId = Store | Id;
  *
  * @category Identity
  */
-export type MetricsOrMetricsId = Metrics | Id;
-
+/// MetricsOrMetricsId
 /**
  * The IndexesOrIndexesId type is used when you need to refer to a Indexes
  * object in a React hook or component.
@@ -123,8 +74,7 @@ export type MetricsOrMetricsId = Metrics | Id;
  *
  * @category Identity
  */
-export type IndexesOrIndexesId = Indexes | Id;
-
+/// IndexesOrIndexesId
 /**
  * The RelationshipsOrRelationshipsId type is used when you need to refer to a
  * Relationships object in a React hook or component.
@@ -142,8 +92,7 @@ export type IndexesOrIndexesId = Indexes | Id;
  *
  * @category Identity
  */
-export type RelationshipsOrRelationshipsId = Relationships | Id;
-
+/// RelationshipsOrRelationshipsId
 /**
  * The QueriesOrQueriesId type is used when you need to refer to a Queries
  * object in a React hook or component.
@@ -162,8 +111,7 @@ export type RelationshipsOrRelationshipsId = Relationships | Id;
  * @category Identity
  * @since v2.0.0
  */
-export type QueriesOrQueriesId = Queries | Id;
-
+/// QueriesOrQueriesId
 /**
  * The CheckpointsOrCheckpointsId type is used when you need to refer to a
  * Checkpoints object in a React hook or component.
@@ -181,8 +129,7 @@ export type QueriesOrQueriesId = Queries | Id;
  *
  * @category Identity
  */
-export type CheckpointsOrCheckpointsId = Checkpoints | Id;
-
+/// CheckpointsOrCheckpointsId
 /**
  * The UndoOrRedoInformation type is an array that you can fetch from a
  * Checkpoints object to that indicates if and how you can move the state of the
@@ -194,8 +141,7 @@ export type CheckpointsOrCheckpointsId = Checkpoints | Id;
  *
  * @category Checkpoints
  */
-export type UndoOrRedoInformation = [boolean, Callback, Id | undefined, string];
-
+/// UndoOrRedoInformation
 /**
  * The useCreateStore hook is used to create a Store within a React application
  * with convenient memoization.
@@ -277,11 +223,7 @@ export type UndoOrRedoInformation = [boolean, Callback, Id | undefined, string];
  * ```
  * @category Store hooks
  */
-export function useCreateStore(
-  create: () => Store,
-  createDeps?: React.DependencyList,
-): Store;
-
+/// useCreateStore
 /**
  * The useStore hook is used to get a reference to a Store from within a
  * Provider component context.
@@ -341,8 +283,7 @@ export function useCreateStore(
  * ```
  * @category Store hooks
  */
-export function useStore(id?: Id): Store | undefined;
-
+/// useStore
 /**
  * The useTables hook returns a Tables object containing the tabular data of a
  * Store, and registers a listener so that any changes to that result will cause
@@ -419,8 +360,7 @@ export function useStore(id?: Id): Store | undefined;
  * ```
  * @category Store hooks
  */
-export function useTables(storeOrStoreId?: StoreOrStoreId): Tables;
-
+/// useTables
 /**
  * The useTableIds hook returns the Ids of every Table in a Store, and registers
  * a listener so that any changes to that result will cause a re-render.
@@ -495,8 +435,7 @@ export function useTables(storeOrStoreId?: StoreOrStoreId): Tables;
  * ```
  * @category Store hooks
  */
-export function useTableIds(storeOrStoreId?: StoreOrStoreId): Ids;
-
+/// useTableIds
 /**
  * The useTable hook returns an object containing the data of a single Table in
  * a Store, and registers a listener so that any changes to that result will
@@ -575,8 +514,7 @@ export function useTableIds(storeOrStoreId?: StoreOrStoreId): Ids;
  * ```
  * @category Store hooks
  */
-export function useTable(tableId: Id, storeOrStoreId?: StoreOrStoreId): Table;
-
+/// useTable
 /**
  * The useRowIds hook returns the Ids of every Row in a given Table, and
  * registers a listener so that any changes to that result will cause a
@@ -655,8 +593,7 @@ export function useTable(tableId: Id, storeOrStoreId?: StoreOrStoreId): Table;
  * ```
  * @category Store hooks
  */
-export function useRowIds(tableId: Id, storeOrStoreId?: StoreOrStoreId): Ids;
-
+/// useRowIds
 /**
  * The useSortedRowIds hook returns the sorted (and optionally, paginated) Ids
  * of every Row in a given Table, and registers a listener so that any changes
@@ -766,15 +703,7 @@ export function useRowIds(tableId: Id, storeOrStoreId?: StoreOrStoreId): Ids;
  * @category Store hooks
  * @since v2.0.0
  */
-export function useSortedRowIds(
-  tableId: Id,
-  cellId?: Id,
-  descending?: boolean,
-  offset?: number,
-  limit?: number,
-  storeOrStoreId?: StoreOrStoreId,
-): Ids;
-
+/// useSortedRowIds
 /**
  * The useRow hook returns an object containing the data of a single Row in a
  * given Table, and registers a listener so that any changes to that result will
@@ -856,12 +785,7 @@ export function useSortedRowIds(
  * ```
  * @category Store hooks
  */
-export function useRow(
-  tableId: Id,
-  rowId: Id,
-  storeOrStoreId?: StoreOrStoreId,
-): Row;
-
+/// useRow
 /**
  * The useCellIds hook returns the Ids of every Cell in a given Row, in a given
  * Table, and registers a listener so that any changes to that result will cause
@@ -945,12 +869,7 @@ export function useRow(
  * ```
  * @category Store hooks
  */
-export function useCellIds(
-  tableId: Id,
-  rowId: Id,
-  storeOrStoreId?: StoreOrStoreId,
-): Ids;
-
+/// useCellIds
 /**
  * The useCell hook returns an object containing the value of a single Cell in a
  * given Row, in a given Table, and registers a listener so that any changes to
@@ -1031,13 +950,7 @@ export function useCellIds(
  * ```
  * @category Store hooks
  */
-export function useCell(
-  tableId: Id,
-  rowId: Id,
-  cellId: Id,
-  storeOrStoreId?: StoreOrStoreId,
-): Cell | undefined;
-
+/// useCell
 /**
  * The useValues hook returns a Values object containing the keyed value data of
  * a Store, and registers a listener so that any changes to that result will
@@ -1114,8 +1027,7 @@ export function useCell(
  * @category Store hooks
  * @since v3.0.0
  */
-export function useValues(storeOrStoreId?: StoreOrStoreId): Values;
-
+/// useValues
 /**
  * The useValueIds hook returns the Ids of every Value in a Store, and registers
  * a listener so that any changes to that result will cause a re-render.
@@ -1191,8 +1103,7 @@ export function useValues(storeOrStoreId?: StoreOrStoreId): Values;
  * @category Store hooks
  * @since v3.0.0
  */
-export function useValueIds(storeOrStoreId?: StoreOrStoreId): Ids;
-
+/// useValueIds
 /**
  * The useValue hook returns an object containing the data of a single Value in
  * a Store, and registers a listener so that any changes to that result will
@@ -1272,8 +1183,7 @@ export function useValueIds(storeOrStoreId?: StoreOrStoreId): Ids;
  * @category Store hooks
  * @since v3.0.0
  */
-export function useValue(valueId: Id, storeOrStoreId?: StoreOrStoreId): Value;
-
+/// useValue
 /**
  * The useSetTablesCallback hook returns a parameterized callback that can be
  * used to set the tabular data of a Store.
@@ -1349,14 +1259,7 @@ export function useValue(valueId: Id, storeOrStoreId?: StoreOrStoreId): Value;
  * ```
  * @category Store hooks
  */
-export function useSetTablesCallback<Parameter>(
-  getTables: (parameter: Parameter, store: Store) => Tables,
-  getTablesDeps?: React.DependencyList,
-  storeOrStoreId?: StoreOrStoreId,
-  then?: (store: Store, tables: Tables) => void,
-  thenDeps?: React.DependencyList,
-): ParameterizedCallback<Parameter>;
-
+/// useSetTablesCallback
 /**
  * The useSetTableCallback hook returns a parameterized callback that can be
  * used to set the data of a single Table in a Store.
@@ -1434,15 +1337,7 @@ export function useSetTablesCallback<Parameter>(
  * ```
  * @category Store hooks
  */
-export function useSetTableCallback<Parameter>(
-  tableId: Id,
-  getTable: (parameter: Parameter, store: Store) => Table,
-  getTableDeps?: React.DependencyList,
-  storeOrStoreId?: StoreOrStoreId,
-  then?: (store: Store, table: Table) => void,
-  thenDeps?: React.DependencyList,
-): ParameterizedCallback<Parameter>;
-
+/// useSetTableCallback
 /**
  * The useSetRowCallback hook returns a parameterized callback that can be used
  * to set the data of a single Row in a Store.
@@ -1522,16 +1417,7 @@ export function useSetTableCallback<Parameter>(
  * ```
  * @category Store hooks
  */
-export function useSetRowCallback<Parameter>(
-  tableId: Id,
-  rowId: Id,
-  getRow: (parameter: Parameter, store: Store) => Row,
-  getRowDeps?: React.DependencyList,
-  storeOrStoreId?: StoreOrStoreId,
-  then?: (store: Store, row: Row) => void,
-  thenDeps?: React.DependencyList,
-): ParameterizedCallback<Parameter>;
-
+/// useSetRowCallback
 /**
  * The useAddRowCallback hook returns a parameterized callback that can be used
  * to create a new Row in a Store.
@@ -1609,15 +1495,7 @@ export function useSetRowCallback<Parameter>(
  * ```
  * @category Store hooks
  */
-export function useAddRowCallback<Parameter>(
-  tableId: Id,
-  getRow: (parameter: Parameter, store: Store) => Row,
-  getRowDeps?: React.DependencyList,
-  storeOrStoreId?: StoreOrStoreId,
-  then?: (rowId: Id | undefined, store: Store, row: Row) => void,
-  thenDeps?: React.DependencyList,
-): ParameterizedCallback<Parameter>;
-
+/// useAddRowCallback
 /**
  * The useSetPartialRowCallback hook returns a parameterized callback that can
  * be used to set partial data of a single Row in the Store, leaving other Cell
@@ -1699,16 +1577,7 @@ export function useAddRowCallback<Parameter>(
  * ```
  * @category Store hooks
  */
-export function useSetPartialRowCallback<Parameter>(
-  tableId: Id,
-  rowId: Id,
-  getPartialRow: (parameter: Parameter, store: Store) => Row,
-  getPartialRowDeps?: React.DependencyList,
-  storeOrStoreId?: StoreOrStoreId,
-  then?: (store: Store, partialRow: Row) => void,
-  thenDeps?: React.DependencyList,
-): ParameterizedCallback<Parameter>;
-
+/// useSetPartialRowCallback
 /**
  * The useSetCellCallback hook returns a parameterized callback that can be used
  * to set the value of a single Cell in a Store.
@@ -1827,17 +1696,7 @@ export function useSetPartialRowCallback<Parameter>(
  * ```
  * @category Store hooks
  */
-export function useSetCellCallback<Parameter>(
-  tableId: Id,
-  rowId: Id,
-  cellId: Id,
-  getCell: (parameter: Parameter, store: Store) => Cell | MapCell,
-  getCellDeps?: React.DependencyList,
-  storeOrStoreId?: StoreOrStoreId,
-  then?: (store: Store, cell: Cell | MapCell) => void,
-  thenDeps?: React.DependencyList,
-): ParameterizedCallback<Parameter>;
-
+/// useSetCellCallback
 /**
  * The useSetValuesCallback hook returns a parameterized callback that can be
  * used to set the keyed value data of a Store.
@@ -1914,14 +1773,7 @@ export function useSetCellCallback<Parameter>(
  * @category Store hooks
  * @since v3.0.0
  */
-export function useSetValuesCallback<Parameter>(
-  getValues: (parameter: Parameter, store: Store) => Values,
-  getValuesDeps?: React.DependencyList,
-  storeOrStoreId?: StoreOrStoreId,
-  then?: (store: Store, values: Values) => void,
-  thenDeps?: React.DependencyList,
-): ParameterizedCallback<Parameter>;
-
+/// useSetValuesCallback
 /**
  * The useSetPartialValuesCallback hook returns a parameterized callback that
  * can be used to set partial Values data in the Store, leaving other Values
@@ -2000,14 +1852,7 @@ export function useSetValuesCallback<Parameter>(
  * @category Store hooks
  * @since v3.0.0
  */
-export function useSetPartialValuesCallback<Parameter>(
-  getPartialValues: (parameter: Parameter, store: Store) => Values,
-  getPartialValuesDeps?: React.DependencyList,
-  storeOrStoreId?: StoreOrStoreId,
-  then?: (store: Store, partialValues: Values) => void,
-  thenDeps?: React.DependencyList,
-): ParameterizedCallback<Parameter>;
-
+/// useSetPartialValuesCallback
 /**
  * The useSetValueCallback hook returns a parameterized callback that can be
  * used to set the data of a single Value in a Store.
@@ -2086,15 +1931,7 @@ export function useSetPartialValuesCallback<Parameter>(
  * @category Store hooks
  * @since v3.0.0
  */
-export function useSetValueCallback<Parameter>(
-  valueId: Id,
-  getValue: (parameter: Parameter, store: Store) => Value,
-  getValueDeps?: React.DependencyList,
-  storeOrStoreId?: StoreOrStoreId,
-  then?: (store: Store, value: Value) => void,
-  thenDeps?: React.DependencyList,
-): ParameterizedCallback<Parameter>;
-
+/// useSetValueCallback
 /**
  * The useDelTablesCallback hook returns a callback that can be used to remove
  * all of the tabular data in a Store.
@@ -2152,12 +1989,7 @@ export function useSetValueCallback<Parameter>(
  * ```
  * @category Store hooks
  */
-export function useDelTablesCallback(
-  storeOrStoreId?: StoreOrStoreId,
-  then?: (store: Store) => void,
-  thenDeps?: React.DependencyList,
-): Callback;
-
+/// useDelTablesCallback
 /**
  * The useDelTableCallback hook returns a callback that can be used to remove a
  * single Table from a Store.
@@ -2216,13 +2048,7 @@ export function useDelTablesCallback(
  * ```
  * @category Store hooks
  */
-export function useDelTableCallback(
-  tableId: Id,
-  storeOrStoreId?: StoreOrStoreId,
-  then?: (store: Store) => void,
-  thenDeps?: React.DependencyList,
-): Callback;
-
+/// useDelTableCallback
 /**
  * The useDelRowCallback hook returns a callback that can be used to remove a
  * single Row from a Table.
@@ -2282,14 +2108,7 @@ export function useDelTableCallback(
  * ```
  * @category Store hooks
  */
-export function useDelRowCallback(
-  tableId: Id,
-  rowId: Id,
-  storeOrStoreId?: StoreOrStoreId,
-  then?: (store: Store) => void,
-  thenDeps?: React.DependencyList,
-): Callback;
-
+/// useDelRowCallback
 /**
  * The useDelCellCallback hook returns a callback that can be used to remove a
  * single Cell from a Row.
@@ -2358,16 +2177,7 @@ export function useDelRowCallback(
  * ```
  * @category Store hooks
  */
-export function useDelCellCallback(
-  tableId: Id,
-  rowId: Id,
-  cellId: Id,
-  forceDel?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
-  then?: (store: Store) => void,
-  thenDeps?: React.DependencyList,
-): Callback;
-
+/// useDelCellCallback
 /**
  * The useDelValuesCallback hook returns a callback that can be used to remove
  * all of the keyed value data in a Store.
@@ -2426,12 +2236,7 @@ export function useDelCellCallback(
  * @category Store hooks
  * @since v3.0.0
  */
-export function useDelValuesCallback(
-  storeOrStoreId?: StoreOrStoreId,
-  then?: (store: Store) => void,
-  thenDeps?: React.DependencyList,
-): Callback;
-
+/// useDelValuesCallback
 /**
  * The useDelValueCallback hook returns a callback that can be used to remove a
  * single Value from a Store.
@@ -2491,13 +2296,7 @@ export function useDelValuesCallback(
  * @category Store hooks
  * @since v3.0.0
  */
-export function useDelValueCallback(
-  valueId: Id,
-  storeOrStoreId?: StoreOrStoreId,
-  then?: (store: Store) => void,
-  thenDeps?: React.DependencyList,
-): Callback;
-
+/// useDelValueCallback
 /**
  * The useTablesListener hook registers a listener function with a Store that
  * will be called whenever tabular data in it changes.
@@ -2553,13 +2352,7 @@ export function useDelValueCallback(
  * ```
  * @category Store hooks
  */
-export function useTablesListener(
-  listener: TablesListener,
-  listenerDeps?: React.DependencyList,
-  mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
-): void;
-
+/// useTablesListener
 /**
  * The useTableIdsListener hook registers a listener function with a Store that
  * will be called whenever the Table Ids in it change.
@@ -2616,13 +2409,7 @@ export function useTablesListener(
  * ```
  * @category Store hooks
  */
-export function useTableIdsListener(
-  listener: TableIdsListener,
-  listenerDeps?: React.DependencyList,
-  mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
-): void;
-
+/// useTableIdsListener
 /**
  * The useTableListener hook registers a listener function with a Store that
  * will be called whenever data in a Table changes.
@@ -2682,14 +2469,7 @@ export function useTableIdsListener(
  * ```
  * @category Store hooks
  */
-export function useTableListener(
-  tableId: IdOrNull,
-  listener: TableListener,
-  listenerDeps?: React.DependencyList,
-  mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
-): void;
-
+/// useTableListener
 /**
  * The useRowIdsListener hook registers a listener function with a Store that
  * will be called whenever the Row Ids in a Table change.
@@ -2749,14 +2529,7 @@ export function useTableListener(
  * ```
  * @category Store hooks
  */
-export function useRowIdsListener(
-  tableId: IdOrNull,
-  listener: RowIdsListener,
-  listenerDeps?: React.DependencyList,
-  mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
-): void;
-
+/// useRowIdsListener
 /**
  * The useSortedRowIdsListener hook registers a listener function with a Store
  * that will be called whenever sorted (and optionally, paginated) Row Ids in a
@@ -2828,18 +2601,7 @@ export function useRowIdsListener(
  * @category Store hooks
  * @since v2.0.0
  */
-export function useSortedRowIdsListener(
-  tableId: Id,
-  cellId: Id | undefined,
-  descending: boolean,
-  offset: number,
-  limit: number | undefined,
-  listener: SortedRowIdsListener,
-  listenerDeps?: React.DependencyList,
-  mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
-): void;
-
+/// useSortedRowIdsListener
 /**
  * The useRowListener hook registers a listener function with a Store that will
  * be called whenever data in a Row changes.
@@ -2906,15 +2668,7 @@ export function useSortedRowIdsListener(
  * ```
  * @category Store hooks
  */
-export function useRowListener(
-  tableId: IdOrNull,
-  rowId: IdOrNull,
-  listener: RowListener,
-  listenerDeps?: React.DependencyList,
-  mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
-): void;
-
+/// useRowListener
 /**
  * The useCellIdsListener hook registers a listener function with a Store that
  * will be called whenever the Cell Ids in a Row change.
@@ -2984,15 +2738,7 @@ export function useRowListener(
  * ```
  * @category Store hooks
  */
-export function useCellIdsListener(
-  tableId: IdOrNull,
-  rowId: IdOrNull,
-  listener: CellIdsListener,
-  listenerDeps?: React.DependencyList,
-  mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
-): void;
-
+/// useCellIdsListener
 /**
  * The useCellListener hook registers a listener function with a Store that will
  * be called whenever data in a Cell changes.
@@ -3062,16 +2808,7 @@ export function useCellIdsListener(
  * ```
  * @category Store hooks
  */
-export function useCellListener(
-  tableId: IdOrNull,
-  rowId: IdOrNull,
-  cellId: IdOrNull,
-  listener: CellListener,
-  listenerDeps?: React.DependencyList,
-  mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
-): void;
-
+/// useCellListener
 /**
  * The useValuesListener hook registers a listener function with a Store that
  * will be called whenever keyed value data in it changes.
@@ -3128,13 +2865,7 @@ export function useCellListener(
  * @category Store hooks
  * @since v3.0.0
  */
-export function useValuesListener(
-  listener: ValuesListener,
-  listenerDeps?: React.DependencyList,
-  mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
-): void;
-
+/// useValuesListener
 /**
  * The useValueIdsListener hook registers a listener function with a Store that
  * will be called whenever the Value Ids in it change.
@@ -3192,13 +2923,7 @@ export function useValuesListener(
  * @category Store hooks
  * @since v3.0.0
  */
-export function useValueIdsListener(
-  listener: ValueIdsListener,
-  listenerDeps?: React.DependencyList,
-  mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
-): void;
-
+/// useValueIdsListener
 /**
  * The useValueListener hook registers a listener function with a Store that
  * will be called whenever data in a Value changes.
@@ -3259,14 +2984,7 @@ export function useValueIdsListener(
  * @category Store hooks
  * @since v3.0.0
  */
-export function useValueListener(
-  valueId: IdOrNull,
-  listener: ValueListener,
-  listenerDeps?: React.DependencyList,
-  mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
-): void;
-
+/// useValueListener
 /**
  * The useCreateMetrics hook is used to create a Metrics object within a React
  * application with convenient memoization.
@@ -3372,12 +3090,7 @@ export function useValueListener(
  * ```
  * @category Metrics hooks
  */
-export function useCreateMetrics(
-  store: Store,
-  create: (store: Store) => Metrics,
-  createDeps?: React.DependencyList,
-): Metrics;
-
+/// useCreateMetrics
 /**
  * The useMetrics hook is used to get a reference to a Metrics object from
  * within a Provider component context.
@@ -3439,8 +3152,7 @@ export function useCreateMetrics(
  * ```
  * @category Metrics hooks
  */
-export function useMetrics(id?: Id): Metrics | undefined;
-
+/// useMetrics
 /**
  * The useMetric hook gets the current value of a Metric, and registers a
  * listener so that any changes to that result will cause a re-render.
@@ -3537,11 +3249,7 @@ export function useMetrics(id?: Id): Metrics | undefined;
  * ```
  * @category Metrics hooks
  */
-export function useMetric(
-  metricId: Id,
-  metricsOrMetricsId?: MetricsOrMetricsId,
-): number | undefined;
-
+/// useMetric
 /**
  * The useMetricListener hook registers a listener function with the Metrics
  * object that will be called whenever the value of a specified Metric changes.
@@ -3607,13 +3315,7 @@ export function useMetric(
  * ```
  * @category Metrics hooks
  */
-export function useMetricListener(
-  metricId: IdOrNull,
-  listener: MetricListener,
-  listenerDeps?: React.DependencyList,
-  metricsOrMetricsId?: MetricsOrMetricsId,
-): void;
-
+/// useMetricListener
 /**
  * The useCreateIndexes hook is used to create an Indexes object within a React
  * application with convenient memoization.
@@ -3727,12 +3429,7 @@ export function useMetricListener(
  * ```
  * @category Indexes hooks
  */
-export function useCreateIndexes(
-  store: Store,
-  create: (store: Store) => Indexes,
-  createDeps?: React.DependencyList,
-): Indexes;
-
+/// useCreateIndexes
 /**
  * The useIndexes hook is used to get a reference to an Indexes object from
  * within a Provider component context.
@@ -3794,8 +3491,7 @@ export function useCreateIndexes(
  * ```
  * @category Indexes hooks
  */
-export function useIndexes(id?: Id): Indexes | undefined;
-
+/// useIndexes
 /**
  * The useSliceIds hook gets the list of Slice Ids in an Index, and registers a
  * listener so that any changes to that result will cause a re-render.
@@ -3896,11 +3592,7 @@ export function useIndexes(id?: Id): Indexes | undefined;
  * ```
  * @category Indexes hooks
  */
-export function useSliceIds(
-  indexId: Id,
-  indexesOrIndexesId?: IndexesOrIndexesId,
-): Ids;
-
+/// useSliceIds
 /**
  * The useSliceRowIds hook gets the list of Row Ids in a given Slice, and
  * registers a listener so that any changes to that result will cause a
@@ -4009,12 +3701,7 @@ export function useSliceIds(
  * ```
  * @category Indexes hooks
  */
-export function useSliceRowIds(
-  indexId: Id,
-  sliceId: Id,
-  indexesOrIndexesId?: IndexesOrIndexesId,
-): Ids;
-
+/// useSliceRowIds
 /**
  * The useSliceIdsListener hook registers a listener function with the Indexes
  * object that will be called whenever the Slice Ids in an Index change.
@@ -4081,13 +3768,7 @@ export function useSliceRowIds(
  * ```
  * @category Indexes hooks
  */
-export function useSliceIdsListener(
-  indexId: IdOrNull,
-  listener: SliceIdsListener,
-  listenerDeps?: React.DependencyList,
-  indexesOrIndexesId?: IndexesOrIndexesId,
-): void;
-
+/// useSliceIdsListener
 /**
  * The useSliceRowIdsListener hook registers a listener function with the
  * Indexes object that will be called whenever the Row Ids in a Slice change.
@@ -4162,14 +3843,7 @@ export function useSliceIdsListener(
  * ```
  * @category Indexes hooks
  */
-export function useSliceRowIdsListener(
-  indexId: IdOrNull,
-  sliceId: IdOrNull,
-  listener: SliceRowIdsListener,
-  listenerDeps?: React.DependencyList,
-  indexesOrIndexesId?: IndexesOrIndexesId,
-): void;
-
+/// useSliceRowIdsListener
 /**
  * The useCreateRelationships hook is used to create a Relationships object
  * within a React application with convenient memoization.
@@ -4291,12 +3965,7 @@ export function useSliceRowIdsListener(
  * ```
  * @category Relationships hooks
  */
-export function useCreateRelationships(
-  store: Store,
-  create: (store: Store) => Relationships,
-  createDeps?: React.DependencyList,
-): Relationships;
-
+/// useCreateRelationships
 /**
  * The useRelationships hook is used to get a reference to a Relationships
  * object from within a Provider component context.
@@ -4366,8 +4035,7 @@ export function useCreateRelationships(
  * ```
  * @category Relationships hooks
  */
-export function useRelationships(id?: Id): Relationships | undefined;
-
+/// useRelationships
 /**
  * The useRemoteRowId hook gets the remote Row Id for a given local Row in a
  * Relationship, and registers a listener so that any changes to that result
@@ -4471,12 +4139,7 @@ export function useRelationships(id?: Id): Relationships | undefined;
  * ```
  * @category Relationships hooks
  */
-export function useRemoteRowId(
-  relationshipId: Id,
-  localRowId: Id,
-  relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
-): Id | undefined;
-
+/// useRemoteRowId
 /**
  * The useLocalRowIds hook gets the local Row Ids for a given remote Row in a
  * Relationship, and registers a listener so that any changes to that result
@@ -4588,12 +4251,7 @@ export function useRemoteRowId(
  * ```
  * @category Relationships hooks
  */
-export function useLocalRowIds(
-  relationshipId: Id,
-  remoteRowId: Id,
-  relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
-): Ids;
-
+/// useLocalRowIds
 /**
  * The useLinkedRowIds hook gets the linked Row Ids for a given Row in a linked
  * list Relationship, and registers a listener so that any changes to that
@@ -4712,12 +4370,7 @@ export function useLocalRowIds(
  * ```
  * @category Relationships hooks
  */
-export function useLinkedRowIds(
-  relationshipId: Id,
-  firstRowId: Id,
-  relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
-): Ids;
-
+/// useLinkedRowIds
 /**
  * The useRemoteRowIdListener hook registers a listener function with the
  * Relationships object that will be called whenever a remote Row Id in a
@@ -4799,14 +4452,7 @@ export function useLinkedRowIds(
  * ```
  * @category Relationships hooks
  */
-export function useRemoteRowIdListener(
-  relationshipId: IdOrNull,
-  localRowId: IdOrNull,
-  listener: RemoteRowIdListener,
-  listenerDeps?: React.DependencyList,
-  relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
-): void;
-
+/// useRemoteRowIdListener
 /**
  * The useLocalRowIdsListener hook registers a listener function with the
  * Relationships object that will be called whenever the local Row Ids in a
@@ -4888,14 +4534,7 @@ export function useRemoteRowIdListener(
  * ```
  * @category Relationships hooks
  */
-export function useLocalRowIdsListener(
-  relationshipId: IdOrNull,
-  remoteRowId: IdOrNull,
-  listener: LocalRowIdsListener,
-  listenerDeps?: React.DependencyList,
-  relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
-): void;
-
+/// useLocalRowIdsListener
 /**
  * The useLinkedRowIdsListener hook registers a listener function with the
  * Relationships object that will be called whenever the linked Row Ids in a
@@ -4974,14 +4613,7 @@ export function useLocalRowIdsListener(
  * ```
  * @category Relationships hooks
  */
-export function useLinkedRowIdsListener(
-  relationshipId: Id,
-  firstRowId: Id,
-  listener: LinkedRowIdsListener,
-  listenerDeps?: React.DependencyList,
-  relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
-): void;
-
+/// useLinkedRowIdsListener
 /**
  * The useCreateQueries hook is used to create a Queries object within a React
  * application with convenient memoization.
@@ -5098,12 +4730,7 @@ export function useLinkedRowIdsListener(
  * @category Queries hooks
  * @since v2.0.0
  */
-export function useCreateQueries(
-  store: Store,
-  create: (store: Store) => Queries,
-  createDeps?: React.DependencyList,
-): Queries;
-
+/// useCreateQueries
 /**
  * The useQueries hook is used to get a reference to a Queries object from
  * within a Provider component context.
@@ -5166,8 +4793,7 @@ export function useCreateQueries(
  * @category Queries hooks
  * @since v2.0.0
  */
-export function useQueries(id?: Id): Queries | undefined;
-
+/// useQueries
 /**
  * The useResultTable hook returns an object containing the entire data of the
  * result Table of the given query, and registers a listener so that any changes
@@ -5283,11 +4909,7 @@ export function useQueries(id?: Id): Queries | undefined;
  * @category Queries hooks
  * @since v2.0.0
  */
-export function useResultTable(
-  queryId: Id,
-  queriesOrQueriesId?: QueriesOrQueriesId,
-): Table;
-
+/// useResultTable
 /**
  * The useResultRowIds hook returns the Ids of every Row in the result Table of
  * the given query, and registers a listener so that any changes to those Ids
@@ -5404,11 +5026,7 @@ export function useResultTable(
  * @category Queries hooks
  * @since v2.0.0
  */
-export function useResultRowIds(
-  queryId: Id,
-  queriesOrQueriesId?: QueriesOrQueriesId,
-): Ids;
-
+/// useResultRowIds
 /**
  * The useResultSortedRowIds hook returns the sorted (and optionally, paginated)
  * Ids of every Row in the result Table of the given query, and registers a
@@ -5553,15 +5171,7 @@ export function useResultRowIds(
  * @category Queries hooks
  * @since v2.0.0
  */
-export function useResultSortedRowIds(
-  queryId: Id,
-  cellId?: Id,
-  descending?: boolean,
-  offset?: number,
-  limit?: number,
-  queriesOrQueriesId?: QueriesOrQueriesId,
-): Ids;
-
+/// useResultSortedRowIds
 /**
  * The useResultRow hook returns an object containing the data of a
  * single Row in the result Table of the given query, and registers a listener
@@ -5681,12 +5291,7 @@ export function useResultSortedRowIds(
  * @category Queries hooks
  * @since v2.0.0
  */
-export function useResultRow(
-  queryId: Id,
-  rowId: Id,
-  queriesOrQueriesId?: QueriesOrQueriesId,
-): Row;
-
+/// useResultRow
 /**
  * The useResultCellIds hook returns the Ids of every Cell in a given Row in the
  * result Table of the given query, and registers a listener so that any changes
@@ -5812,12 +5417,7 @@ export function useResultRow(
  * @category Queries hooks
  * @since v2.0.0
  */
-export function useResultCellIds(
-  queryId: Id,
-  rowId: Id,
-  queriesOrQueriesId?: QueriesOrQueriesId,
-): Ids;
-
+/// useResultCellIds
 /**
  * The useResultCell hook returns the value of a single Cell in a given Row in
  * the result Table of the given query, and registers a listener so that any
@@ -5939,13 +5539,7 @@ export function useResultCellIds(
  * @category Queries hooks
  * @since v2.0.0
  */
-export function useResultCell(
-  queryId: Id,
-  rowId: Id,
-  cellId: Id,
-  queriesOrQueriesId?: QueriesOrQueriesId,
-): Cell | undefined;
-
+/// useResultCell
 /**
  * The useResultTableListener hook registers a listener function with a Queries
  * object that will be called whenever data in a result Table changes.
@@ -6017,13 +5611,7 @@ export function useResultCell(
  * @category Queries hooks
  * @since v2.0.0
  */
-export function useResultTableListener(
-  queryId: IdOrNull,
-  listener: ResultTableListener,
-  listenerDeps?: React.DependencyList,
-  queriesOrQueriesId?: QueriesOrQueriesId,
-): void;
-
+/// useResultTableListener
 /**
  * The useResultRowIdsListener hook registers a listener function with a Queries
  * object that will be called whenever the Row Ids in a result Table change.
@@ -6095,13 +5683,7 @@ export function useResultTableListener(
  * @category Queries hooks
  * @since v2.0.0
  */
-export function useResultRowIdsListener(
-  queryId: IdOrNull,
-  listener: ResultRowIdsListener,
-  listenerDeps?: React.DependencyList,
-  queriesOrQueriesId?: QueriesOrQueriesId,
-): void;
-
+/// useResultRowIdsListener
 /**
  * The useResultSortedRowIdsListener hook registers a listener function with a
  * Queries object that will be called whenever the sorted (and optionally,
@@ -6180,17 +5762,7 @@ export function useResultRowIdsListener(
  * @category Queries hooks
  * @since v2.0.0
  */
-export function useResultSortedRowIdsListener(
-  queryId: Id,
-  cellId: Id | undefined,
-  descending: boolean,
-  offset: number,
-  limit: number | undefined,
-  listener: ResultRowIdsListener,
-  listenerDeps?: React.DependencyList,
-  queriesOrQueriesId?: QueriesOrQueriesId,
-): void;
-
+/// useResultSortedRowIdsListener
 /**
  * The useResultRowListener hook registers a listener function with a Queries
  * object that will be called whenever data in a result Row changes.
@@ -6268,14 +5840,7 @@ export function useResultSortedRowIdsListener(
  * @category Queries hooks
  * @since v2.0.0
  */
-export function useResultRowListener(
-  queryId: IdOrNull,
-  rowId: IdOrNull,
-  listener: ResultRowListener,
-  listenerDeps?: React.DependencyList,
-  queriesOrQueriesId?: QueriesOrQueriesId,
-): void;
-
+/// useResultRowListener
 /**
  * The useResultCellIdsListener hook registers a listener function with a
  * Queries object that will be called whenever the Cell Ids in a result Row
@@ -6353,14 +5918,7 @@ export function useResultRowListener(
  * @category Queries hooks
  * @since v2.0.0
  */
-export function useResultCellIdsListener(
-  queryId: IdOrNull,
-  rowId: IdOrNull,
-  listener: ResultCellIdsListener,
-  listenerDeps?: React.DependencyList,
-  queriesOrQueriesId?: QueriesOrQueriesId,
-): void;
-
+/// useResultCellIdsListener
 /**
  * The useResultCellListener hook registers a listener function with a Queries
  * object that will be called whenever data in a Cell changes.
@@ -6440,15 +5998,7 @@ export function useResultCellIdsListener(
  * @category Queries hooks
  * @since v2.0.0
  */
-export function useResultCellListener(
-  queryId: IdOrNull,
-  rowId: IdOrNull,
-  cellId: IdOrNull,
-  listener: ResultCellListener,
-  listenerDeps?: React.DependencyList,
-  queriesOrQueriesId?: QueriesOrQueriesId,
-): void;
-
+/// useResultCellListener
 /**
  * The useCreateCheckpoints hook is used to create a Checkpoints object within a
  * React application with convenient memoization.
@@ -6544,12 +6094,7 @@ export function useResultCellListener(
  * ```
  * @category Checkpoints hooks
  */
-export function useCreateCheckpoints(
-  store: Store,
-  create: (store: Store) => Checkpoints,
-  createDeps?: React.DependencyList,
-): Checkpoints;
-
+/// useCreateCheckpoints
 /**
  * The useCheckpoints hook is used to get a reference to a Checkpoints object
  * from within a Provider component context.
@@ -6617,8 +6162,7 @@ export function useCreateCheckpoints(
  * ```
  * @category Checkpoints hooks
  */
-export function useCheckpoints(id?: Id): Checkpoints | undefined;
-
+/// useCheckpoints
 /**
  * The useCheckpointIds hook returns an array of the checkpoint Ids being
  * managed by this Checkpoints object, and registers a listener so that any
@@ -6716,10 +6260,7 @@ export function useCheckpoints(id?: Id): Checkpoints | undefined;
  * ```
  * @category Checkpoints hooks
  */
-export function useCheckpointIds(
-  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
-): CheckpointIds;
-
+/// useCheckpointIds
 /**
  * The useCheckpoint hook returns the label for a checkpoint, and registers a
  * listener so that any changes to that result will cause a re-render.
@@ -6809,11 +6350,7 @@ export function useCheckpointIds(
  * ```
  * @category Checkpoints hooks
  */
-export function useCheckpoint(
-  checkpointId: Id,
-  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
-): string | undefined;
-
+/// useCheckpoint
 /**
  * The useSetCheckpointCallback hook returns a parameterized callback that can
  * be used to record a checkpoint of a Store into a Checkpoints object that can
@@ -6889,14 +6426,7 @@ export function useCheckpoint(
  * ```
  * @category Checkpoints hooks
  */
-export function useSetCheckpointCallback<Parameter>(
-  getCheckpoint?: (parameter: Parameter) => string,
-  getCheckpointDeps?: React.DependencyList,
-  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
-  then?: (checkpointId: Id, checkpoints: Checkpoints, label?: string) => void,
-  thenDeps?: React.DependencyList,
-): ParameterizedCallback<Parameter>;
-
+/// useSetCheckpointCallback
 /**
  * The useGoBackwardCallback hook returns a callback that moves the state of the
  * underlying Store back to the previous checkpoint, effectively performing an
@@ -6941,10 +6471,7 @@ export function useSetCheckpointCallback<Parameter>(
  * ```
  * @category Checkpoints hooks
  */
-export function useGoBackwardCallback(
-  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
-): Callback;
-
+/// useGoBackwardCallback
 /**
  * The useGoForwardCallback hook returns a callback that moves the state of the
  * underlying Store forwards to a future checkpoint, effectively performing an
@@ -6993,10 +6520,7 @@ export function useGoBackwardCallback(
  * ```
  * @category Checkpoints hooks
  */
-export function useGoForwardCallback(
-  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
-): Callback;
-
+/// useGoForwardCallback
 /**
  * The useGoToCallback hook returns a parameterized callback that can be used to
  * move the state of the underlying Store backwards or forwards to a specified
@@ -7069,14 +6593,7 @@ export function useGoForwardCallback(
  * ```
  * @category Checkpoints hooks
  */
-export function useGoToCallback<Parameter>(
-  getCheckpointId: (parameter: Parameter) => Id,
-  getCheckpointIdDeps?: React.DependencyList,
-  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
-  then?: (checkpoints: Checkpoints, checkpointId: Id) => void,
-  thenDeps?: React.DependencyList,
-): ParameterizedCallback<Parameter>;
-
+/// useGoToCallback
 /**
  * The useUndoInformation hook returns an UndoOrRedoInformation array that
  * indicates if and how you can move the state of the underlying Store backward
@@ -7119,10 +6636,7 @@ export function useGoToCallback<Parameter>(
  * ```
  * @category Checkpoints hooks
  */
-export function useUndoInformation(
-  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
-): UndoOrRedoInformation;
-
+/// useUndoInformation
 /**
  * The useRedoInformation hook returns an UndoOrRedoInformation array that
  * indicates if and how you can move the state of the underlying Store forwards
@@ -7166,10 +6680,7 @@ export function useUndoInformation(
  * ```
  * @category Checkpoints hooks
  */
-export function useRedoInformation(
-  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
-): UndoOrRedoInformation;
-
+/// useRedoInformation
 /**
  * The useCheckpointIdsListener hook registers a listener function with the
  * Checkpoints object that will be called whenever its set of checkpoints
@@ -7229,12 +6740,7 @@ export function useRedoInformation(
  * ```
  * @category Checkpoints hooks
  */
-export function useCheckpointIdsListener(
-  listener: CheckpointIdsListener,
-  listenerDeps?: React.DependencyList,
-  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
-): void;
-
+/// useCheckpointIdsListener
 /**
  * The useCheckpointListener hook registers a listener function with the
  * Checkpoints object that will be called whenever the label of a checkpoint
@@ -7300,13 +6806,7 @@ export function useCheckpointIdsListener(
  * ```
  * @category Checkpoints hooks
  */
-export function useCheckpointListener(
-  checkpointId: IdOrNull,
-  listener: CheckpointListener,
-  listenerDeps?: React.DependencyList,
-  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
-): void;
-
+/// useCheckpointListener
 /**
  * The useCreatePersister hook is used to create a Persister within a React
  * application along with convenient memoization and callbacks.
@@ -7435,91 +6935,83 @@ export function useCheckpointListener(
  * ```
  *  @category Persister hooks
  */
-export function useCreatePersister(
-  store: Store,
-  create: (store: Store) => Persister,
-  createDeps?: React.DependencyList,
-  then?: (persister: Persister) => Promise<void>,
-  thenDeps?: React.DependencyList,
-): Persister;
-
+/// useCreatePersister
 /**
  * The ExtraProps type represents a set of arbitrary additional props.
  *
  * @category Props
  */
-export type ExtraProps = {[propName: string]: any};
-
+/// ExtraProps
 /**
  * TablesProps props are used for components that refer to all the Tables in a
  * Store, such as the TablesView component.
  *
  * @category Props
  */
-export type TablesProps = {
+/// TablesProps
+{
   /**
    * The Store to be accessed: omit for the default context Store, provide an Id
    * for a named context Store, or provide an explicit reference.
    */
-  readonly store?: StoreOrStoreId;
+  /// TablesProps.store
   /**
    * A component for rendering each Table in the Store (to override the default
    * TableView component).
    */
-  readonly tableComponent?: ComponentType<TableProps>;
+  /// TablesProps.tableComponent
   /**
    * A custom function for generating extra props for each Table component based
    * on its Id.
    */
-  readonly getTableComponentProps?: (tableId: Id) => ExtraProps;
+  /// TablesProps.getTableComponentProps
   /**
    * A component or string to separate each Table component.
    */
-  readonly separator?: ReactElement | string;
+  /// TablesProps.separator
   /**
    * Whether the component should also render the Ids of each Table, and its
    * descendent objects, to assist with debugging.
    */
-  readonly debugIds?: boolean;
-};
-
+  /// TablesProps.debugIds
+}
 /**
  * TableProps props are used for components that refer to a single Table in a
  * Store, such as the TableView component.
  *
  * @category Props
  */
-export type TableProps = {
+/// TableProps
+{
   /**
    * The Id of the Table in the Store to be rendered.
    */
-  readonly tableId: Id;
+  /// TableProps.tableId
   /**
    * The Store to be accessed: omit for the default context Store, provide an Id
    * for a named context Store, or provide an explicit reference.
    */
-  readonly store?: StoreOrStoreId;
+  /// TableProps.store
   /**
    * A custom component for rendering each Row in the Table (to override the
    * default RowView component).
    */
-  readonly rowComponent?: ComponentType<RowProps>;
+  /// TableProps.rowComponent
   /**
    * A function for generating extra props for each custom Row component based
    * on its Id.
    */
-  readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
+  /// TableProps.getRowComponentProps
   /**
    * A component or string to separate each Row component.
    */
-  readonly separator?: ReactElement | string;
+  /// TableProps.separator
   /**
    * Whether the component should also render the Id of the Table, and its
    * descendent objects, to assist with debugging.
    */
-  readonly debugIds?: boolean;
-};
-
+  /// TableProps.debugIds
+}
 /**
  * SortedTableProps props are used for components that refer to a single sorted
  * Table in a Store, such as the SortedTableView component.
@@ -7527,126 +7019,126 @@ export type TableProps = {
  * @category Props
  * @since v2.0.0
  */
-export type SortedTableProps = {
+/// SortedTableProps
+{
   /**
    * The Id of the Table in the Store to be rendered.
    */
-  readonly tableId: Id;
+  /// SortedTableProps.tableId
   /**
    * The Id of the Cell whose values are used for the sorting. If omitted, the
    * view will sort the Row Id itself.
    */
-  readonly cellId?: Id;
+  /// SortedTableProps.cellId
   /**
    * Whether the sorting should be in descending order.
    */
-  readonly descending?: boolean;
+  /// SortedTableProps.descending
   /**
    * The number of Row Ids to skip for pagination purposes.
    */
-  readonly offset?: number;
+  /// SortedTableProps.offset
   /**
    * The maximum number of Row Ids to return.
    */
-  readonly limit?: number;
+  /// SortedTableProps.limit
   /**
    * The Store to be accessed: omit for the default context Store, provide an Id
    * for a named context Store, or provide an explicit reference.
    */
-  readonly store?: StoreOrStoreId;
+  /// SortedTableProps.store
   /**
    * A custom component for rendering each Row in the Table (to override the
    * default RowView component).
    */
-  readonly rowComponent?: ComponentType<RowProps>;
+  /// SortedTableProps.rowComponent
   /**
    * A function for generating extra props for each custom Row component based
    * on its Id.
    */
-  readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
+  /// SortedTableProps.getRowComponentProps
   /**
    * A component or string to separate each Row component.
    */
-  readonly separator?: ReactElement | string;
+  /// SortedTableProps.separator
   /**
    * Whether the component should also render the Id of the Table, and its
    * descendent objects, to assist with debugging.
    */
-  readonly debugIds?: boolean;
-};
-
+  /// SortedTableProps.debugIds
+}
 /**
  * RowProps props are used for components that refer to a single Row in a Table,
  * such as the RowView component.
  *
  * @category Props
  */
-export type RowProps = {
+/// RowProps
+{
   /**
    * The Id of the Table in the Store.
    */
-  readonly tableId: Id;
+  /// RowProps.tableId
   /**
    * The Id of the Row in the Table to be rendered.
    */
-  readonly rowId: Id;
+  /// RowProps.rowId
   /**
    * The Store to be accessed: omit for the default context Store, provide an Id
    * for a named context Store, or provide an explicit reference.
    */
-  readonly store?: StoreOrStoreId;
+  /// RowProps.store
   /**
    * A custom component for rendering each Cell in the Row (to override the
    * default CellView component).
    */
-  readonly cellComponent?: ComponentType<CellProps>;
+  /// RowProps.cellComponent
   /**
    * A function for generating extra props for each custom Cell component based
    * on its Id.
    */
-  readonly getCellComponentProps?: (cellId: Id) => ExtraProps;
+  /// RowProps.getCellComponentProps
   /**
    * A component or string to separate each Cell component.
    */
-  readonly separator?: ReactElement | string;
+  /// RowProps.separator
   /**
    * Whether the component should also render the Id of the Row, and its
    * descendent objects, to assist with debugging.
    */
-  readonly debugIds?: boolean;
-};
-
+  /// RowProps.debugIds
+}
 /**
  * CellProps props are used for components that refer to a single Cell in a Row,
  * such as the CellView component.
  *
  * @category Props
  */
-export type CellProps = {
+/// CellProps
+{
   /**
    * The Id of the Table in the Store.
    */
-  readonly tableId: Id;
+  /// CellProps.tableId
   /**
    * The Id of the Row in the Table.
    */
-  readonly rowId: Id;
+  /// CellProps.rowId
   /**
    * The Id of the Cell in the Row to be rendered.
    */
-  readonly cellId: Id;
+  /// CellProps.cellId
   /**
    * The Store to be accessed: omit for the default context Store, provide an Id
    * for a named context Store, or provide an explicit reference.
    */
-  readonly store?: StoreOrStoreId;
+  /// CellProps.store
   /**
    * Whether the component should also render the Id of the Cell to assist with
    * debugging.
    */
-  readonly debugIds?: boolean;
-};
-
+  /// CellProps.debugIds
+}
 /**
  * ValuesProps props are used for components that refer to all the Values in a
  * Store, such as the ValuesView component.
@@ -7654,33 +7146,33 @@ export type CellProps = {
  * @category Props
  * @since v3.0.0
  */
-export type ValuesProps = {
+/// ValuesProps
+{
   /**
    * The Store to be accessed: omit for the default context Store, provide an Id
    * for a named context Store, or provide an explicit reference.
    */
-  readonly store?: StoreOrStoreId;
+  /// ValuesProps.store
   /**
    * A custom component for rendering each Value in the Store (to override the
    * default ValueView component).
    */
-  readonly valueComponent?: ComponentType<ValueProps>;
+  /// ValuesProps.valueComponent
   /**
    * A function for generating extra props for each custom Value component based
    * on its Id.
    */
-  readonly getValueComponentProps?: (valueId: Id) => ExtraProps;
+  /// ValuesProps.getValueComponentProps
   /**
    * A component or string to separate each Value component.
    */
-  readonly separator?: ReactElement | string;
+  /// ValuesProps.separator
   /**
    * Whether the component should also render the Ids of each Value to assist
    * with debugging.
    */
-  readonly debugIds?: boolean;
-};
-
+  /// ValuesProps.debugIds
+}
 /**
  * ValueProps props are used for components that refer to a single Value in a
  * Row, such as the ValueView component.
@@ -7688,125 +7180,125 @@ export type ValuesProps = {
  * @category Props
  * @since v3.0.0
  */
-export type ValueProps = {
+/// ValueProps
+{
   /**
    * The Id of the Value in the Row to be rendered.
    */
-  readonly valueId: Id;
+  /// ValueProps.valueId
   /**
    * The Store to be accessed: omit for the default context Store, provide an Id
    * for a named context Store, or provide an explicit reference.
    */
-  readonly store?: StoreOrStoreId;
+  /// ValueProps.store
   /**
    * Whether the component should also render the Id of the Value to assist with
    * debugging.
    */
-  readonly debugIds?: boolean;
-};
-
+  /// ValueProps.debugIds
+}
 /**
  * MetricProps props are used for components that refer to a single Metric in a
  * Metrics object, such as the MetricView component.
  *
  * @category Props
  */
-export type MetricProps = {
+/// MetricProps
+{
   /**
    * The Id of the Metric in the Metrics object to be rendered.
    */
-  readonly metricId: Id;
+  /// MetricProps.metricId
   /**
    * The Metrics object to be accessed: omit for the default context Metrics
    * object, provide an Id for a named context Metrics object, or provide an
    * explicit reference.
    */
-  readonly metrics?: MetricsOrMetricsId;
+  /// MetricProps.metrics
   /**
    * Whether the component should also render the Id of the Metric to assist
    * with debugging.
    */
-  readonly debugIds?: boolean;
-};
-
+  /// MetricProps.debugIds
+}
 /**
  * IndexProps props are used for components that refer to a single Index in an
  * Indexes object, such as the IndexView component.
  *
  * @category Props
  */
-export type IndexProps = {
+/// IndexProps
+{
   /**
    * The Id of the Index in the Indexes object to be rendered.
    */
-  readonly indexId: Id;
+  /// IndexProps.indexId
   /**
    * The Indexes object to be accessed: omit for the default context Indexes
    * object, provide an Id for a named context Indexes object, or provide an
    * explicit reference.
    */
-  readonly indexes?: IndexesOrIndexesId;
+  /// IndexProps.indexes
   /**
    * A component for rendering each Slice in the Index.
    */
-  readonly sliceComponent?: ComponentType<SliceProps>;
+  /// IndexProps.sliceComponent
   /**
    * A function for generating extra props for each Slice component based on its
    * Id.
    */
-  readonly getSliceComponentProps?: (sliceId: Id) => ExtraProps;
+  /// IndexProps.getSliceComponentProps
   /**
    * A component or string to separate each Slice component.
    */
-  readonly separator?: ReactElement | string;
+  /// IndexProps.separator
   /**
    * Whether the component should also render the Id of the Index, and its
    * descendent objects, to assist with debugging.
    */
-  readonly debugIds?: boolean;
-};
-
+  /// IndexProps.debugIds
+}
 /**
- * IndexProps props are used for components that refer to a single Slice in an
+ * SliceProps props are used for components that refer to a single Slice in an
  * Index object, such as the SliceView component.
  *
  * @category Props
  */
-export type SliceProps = {
+/// SliceProps
+{
   /**
    * The Id of the Index in the Indexes object.
    */
-  readonly indexId: Id;
+  /// SliceProps.indexId
   /**
    * The Id of the Slice in the Index to be rendered.
    */
-  readonly sliceId: Id;
+  /// SliceProps.sliceId
   /**
    * The Indexes object to be accessed: omit for the default context Indexes
    * object, provide an Id for a named context Indexes object, or provide an
    * explicit reference.
    */
-  readonly indexes?: IndexesOrIndexesId;
+  /// SliceProps.indexes
   /**
    * A component for rendering each Row in the Index.
    */
-  readonly rowComponent?: ComponentType<RowProps>;
+  /// SliceProps.rowComponent
   /**
    * A function for generating extra props for each Row component based on its
    * Id.
    */
-  readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
+  /// SliceProps.getRowComponentProps
   /**
    * A component or string to separate each Row component.
    */
-  readonly separator?: ReactElement | string;
+  /// SliceProps.separator
   /**
    * Whether the component should also render the Id of the Slice, and its
    * descendent objects, to assist with debugging.
    */
-  readonly debugIds?: boolean;
-};
-
+  /// SliceProps.debugIds
+}
 /**
  * RemoteRowProps props are used for components that refer to a single
  * Relationship in a Relationships object, and where you want to render a remote
@@ -7814,38 +7306,38 @@ export type SliceProps = {
  *
  * @category Props
  */
-export type RemoteRowProps = {
+/// RemoteRowProps
+{
   /**
    * The Id of the Relationship in the Relationships object.
    */
-  readonly relationshipId: Id;
+  /// RemoteRowProps.relationshipId
   /**
    * The Id of the local Row for which to render the remote Row.
    */
-  readonly localRowId: Id;
+  /// RemoteRowProps.localRowId
   /**
    * The Relationships object to be accessed: omit for the default context
    * Relationships object, provide an Id for a named context Relationships
    * object, or provide an explicit reference.
    */
-  readonly relationships?: RelationshipsOrRelationshipsId;
+  /// RemoteRowProps.relationships
   /**
    * A component for rendering each (remote, local, or linked) Row in the
    * Relationship.
    */
-  readonly rowComponent?: ComponentType<RowProps>;
+  /// RemoteRowProps.rowComponent
   /**
    * A function for generating extra props for each Row component based on its
    * Id.
    */
-  readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
+  /// RemoteRowProps.getRowComponentProps
   /**
    * Whether the component should also render the Id of the Row in the
    * Relationship, and its descendent objects, to assist with debugging.
    */
-  readonly debugIds?: boolean;
-};
-
+  /// RemoteRowProps.debugIds
+}
 /**
  * LocalRowsProps props are used for components that refer to a single
  * Relationship in a Relationships object, and where you want to render local
@@ -7853,42 +7345,42 @@ export type RemoteRowProps = {
  *
  * @category Props
  */
-export type LocalRowsProps = {
+/// LocalRowsProps
+{
   /**
    * The Id of the Relationship in the Relationships object.
    */
-  readonly relationshipId: Id;
+  /// LocalRowsProps.relationshipId
   /**
    * The Id of the remote Row for which to render the local Rows.
    */
-  readonly remoteRowId: Id;
+  /// LocalRowsProps.remoteRowId
   /**
    * The Relationships object to be accessed: omit for the default context
    * Relationships object, provide an Id for a named context Relationships
    * object, or provide an explicit reference.
    */
-  readonly relationships?: RelationshipsOrRelationshipsId;
+  /// LocalRowsProps.relationships
   /**
    * A component for rendering each (remote, local, or linked) Row in the
    * Relationship.
    */
-  readonly rowComponent?: ComponentType<RowProps>;
+  /// LocalRowsProps.rowComponent
   /**
    * A function for generating extra props for each Row component based on its
    * Id.
    */
-  readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
+  /// LocalRowsProps.getRowComponentProps
   /**
    * A component or string to separate each Row component.
    */
-  readonly separator?: ReactElement | string;
+  /// LocalRowsProps.separator
   /**
    * Whether the component should also render the Id of the Row in the
    * Relationship, and its descendent objects, to assist with debugging.
    */
-  readonly debugIds?: boolean;
-};
-
+  /// LocalRowsProps.debugIds
+}
 /**
  * LinkedRowsProps props are used for components that refer to a single
  * Relationship in a Relationships object, and where you want to render a linked
@@ -7896,42 +7388,42 @@ export type LocalRowsProps = {
  *
  * @category Props
  */
-export type LinkedRowsProps = {
+/// LinkedRowsProps
+{
   /**
    * The Id of the Relationship in the Relationships object.
    */
-  readonly relationshipId: Id;
+  /// LinkedRowsProps.relationshipId
   /**
    * The Id of the first Row in the linked list Relationship.
    */
-  readonly firstRowId: Id;
+  /// LinkedRowsProps.firstRowId
   /**
    * The Relationships object to be accessed: omit for the default context
    * Relationships object, provide an Id for a named context Relationships
    * object, or provide an explicit reference.
    */
-  readonly relationships?: RelationshipsOrRelationshipsId;
+  /// LinkedRowsProps.relationships
   /**
    * A component for rendering each (remote, local, or linked) Row in the
    * Relationship.
    */
-  readonly rowComponent?: ComponentType<RowProps>;
+  /// LinkedRowsProps.rowComponent
   /**
    * A function for generating extra props for each Row component based on its
    * Id.
    */
-  readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
+  /// LinkedRowsProps.getRowComponentProps
   /**
    * A component or string to separate each Row component.
    */
-  readonly separator?: ReactElement | string;
+  /// LinkedRowsProps.separator
   /**
    * Whether the component should also render the Id of the Row in the
    * Relationship, and its descendent objects, to assist with debugging.
    */
-  readonly debugIds?: boolean;
-};
-
+  /// LinkedRowsProps.debugIds
+}
 /**
  * ResultTableProps props are used for components that refer to a single query
  * result Table, such as the ResultTableView component.
@@ -7939,39 +7431,39 @@ export type LinkedRowsProps = {
  * @category Props
  * @since v2.0.0
  */
-export type ResultTableProps = {
+/// ResultTableProps
+{
   /**
    * The Id of the query in the Queries object for which the result Table will
    * be rendered.
    */
-  readonly queryId: Id;
+  /// ResultTableProps.queryId
   /**
    * The Queries object to be accessed: omit for the default context Queries
    * object, provide an Id for a named context Queries object, or provide an
    * explicit reference.
    */
-  readonly queries?: QueriesOrQueriesId;
+  /// ResultTableProps.queries
   /**
    * A custom component for rendering each Row in the Table (to override the
    * default ResultRowView component).
    */
-  readonly resultRowComponent?: ComponentType<ResultRowProps>;
+  /// ResultTableProps.resultRowComponent
   /**
    * A function for generating extra props for each custom Row component based
    * on its Id.
    */
-  readonly getResultRowComponentProps?: (rowId: Id) => ExtraProps;
+  /// ResultTableProps.getResultRowComponentProps
   /**
    * A component or string to separate each Row component.
    */
-  readonly separator?: ReactElement | string;
+  /// ResultTableProps.separator
   /**
    * Whether the component should also render the Id of the query, and its
    * descendent objects, to assist with debugging.
    */
-  readonly debugIds?: boolean;
-};
-
+  /// ResultTableProps.debugIds
+}
 /**
  * ResultSortedTableProps props are used for components that refer to a single
  * sorted query result Table, such as the ResultSortedTableView component.
@@ -7979,56 +7471,56 @@ export type ResultTableProps = {
  * @category Props
  * @since v2.0.0
  */
-export type ResultSortedTableProps = {
+/// ResultSortedTableProps
+{
   /**
    * The Id of the query in the Queries object for which the sorted result Table
    * will be rendered.
    */
-  readonly queryId: Id;
+  /// ResultSortedTableProps.queryId
   /**
    * The Id of the Cell whose values are used for the sorting. If omitted, the
    * view will sort the Row Id itself.
    */
-  readonly cellId?: Id;
+  /// ResultSortedTableProps.cellId
   /**
    * Whether the sorting should be in descending order.
    */
-  readonly descending?: boolean;
+  /// ResultSortedTableProps.descending
   /**
    * The number of Row Ids to skip for pagination purposes.
    */
-  readonly offset?: number;
+  /// ResultSortedTableProps.offset
   /**
    * The maximum number of Row Ids to return.
    */
-  readonly limit?: number;
+  /// ResultSortedTableProps.limit
   /**
    * The Queries object to be accessed: omit for the default context Queries
    * object, provide an Id for a named context Queries object, or provide an
    * explicit reference.
    */
-  readonly queries?: QueriesOrQueriesId;
+  /// ResultSortedTableProps.queries
   /**
    * A custom component for rendering each Row in the Table (to override the
    * default ResultRowView component).
    */
-  readonly resultRowComponent?: ComponentType<ResultRowProps>;
+  /// ResultSortedTableProps.resultRowComponent
   /**
    * A function for generating extra props for each custom Row component based
    * on its Id.
    */
-  readonly getResultRowComponentProps?: (rowId: Id) => ExtraProps;
+  /// ResultSortedTableProps.getResultRowComponentProps
   /**
    * A component or string to separate each Row component.
    */
-  readonly separator?: ReactElement | string;
+  /// ResultSortedTableProps.separator
   /**
    * Whether the component should also render the Id of the query, and its
    * descendent objects, to assist with debugging.
    */
-  readonly debugIds?: boolean;
-};
-
+  /// ResultSortedTableProps.debugIds
+}
 /**
  * ResultRowProps props are used for components that refer to a single Row in a
  * query result Table, such as the ResultRowView component.
@@ -8036,43 +7528,43 @@ export type ResultSortedTableProps = {
  * @category Props
  * @since v2.0.0
  */
-export type ResultRowProps = {
+/// ResultRowProps
+{
   /**
    * The Id of the query in the Queries object for which the result Table will
    * be rendered.
    */
-  readonly queryId: Id;
+  /// ResultRowProps.queryId
   /**
    * The Id of the Row in the result Table to be rendered.
    */
-  readonly rowId: Id;
+  /// ResultRowProps.rowId
   /**
    * The Queries object to be accessed: omit for the default context Queries
    * object, provide an Id for a named context Queries object, or provide an
    * explicit reference.
    */
-  readonly queries?: QueriesOrQueriesId;
+  /// ResultRowProps.queries
   /**
    * A custom component for rendering each Cell in the Row (to override the
    * default CellView component).
    */
-  readonly resultCellComponent?: ComponentType<ResultCellProps>;
+  /// ResultRowProps.resultCellComponent
   /**
    * A function for generating extra props for each custom Cell component based
    * on its Id.
    */
-  readonly getResultCellComponentProps?: (cellId: Id) => ExtraProps;
+  /// ResultRowProps.getResultCellComponentProps
   /**
    * A component or string to separate each Cell component.
    */
-  readonly separator?: ReactElement | string;
+  /// ResultRowProps.separator
   /**
    * Whether the component should also render the Id of the Row, and its
    * descendent objects, to assist with debugging.
    */
-  readonly debugIds?: boolean;
-};
-
+  /// ResultRowProps.debugIds
+}
 /**
  * ResultRowProps props are used for components that refer to a single Cell in a
  * Row of a result Table, such as the ResultCellView component.
@@ -8080,57 +7572,57 @@ export type ResultRowProps = {
  * @category Props
  * @since v2.0.0
  */
-export type ResultCellProps = {
+/// ResultCellProps
+{
   /**
    * The Id of the query in the Queries object for which the result Table will
    * be rendered.
    */
-  readonly queryId: Id;
+  /// ResultCellProps.queryId
   /**
    * The Id of the Row in the Table.
    */
-  readonly rowId: Id;
+  /// ResultCellProps.rowId
   /**
    * The Id of the Cell in the Row to be rendered.
    */
-  readonly cellId: Id;
+  /// ResultCellProps.cellId
   /**
    * The Queries object to be accessed: omit for the default context Queries
    * object, provide an Id for a named context Queries object, or provide an
    * explicit reference.
    */
-  readonly queries?: QueriesOrQueriesId;
+  /// ResultCellProps.queries
   /**
    * Whether the component should also render the Id of the Cell to assist with
    * debugging.
    */
-  readonly debugIds?: boolean;
-};
-
+  /// ResultCellProps.debugIds
+}
 /**
  * CheckpointProps props are used for components that refer to a single
  * checkpoint in a Checkpoints object, such as the CheckpointView component.
  *
  * @category Props
  */
-export type CheckpointProps = {
+/// CheckpointProps
+{
   /**
    * The Id of the checkpoint in the Checkpoints object.
    */
-  readonly checkpointId: Id;
+  /// CheckpointProps.checkpointId
   /**
    * The Checkpoints object to be accessed: omit for the default context
    * Checkpoints object, provide an Id for a named context Checkpoints object,
    * or provide an explicit reference.
    */
-  readonly checkpoints?: CheckpointsOrCheckpointsId;
+  /// CheckpointProps.checkpoints
   /**
    * Whether the component should also render the Id of the checkpoint to assist
    * with debugging.
    */
-  readonly debugIds?: boolean;
-};
-
+  /// CheckpointProps.debugIds
+}
 /**
  * BackwardCheckpointsProps props are used for components that refer to a list
  * of previous checkpoints in a Checkpoints object, such as the
@@ -8138,33 +7630,33 @@ export type CheckpointProps = {
  *
  * @category Props
  */
-export type BackwardCheckpointsProps = {
+/// BackwardCheckpointsProps
+{
   /**
    * The Checkpoints object to be accessed: omit for the default context
    * Checkpoints object, provide an Id for a named context Checkpoints object,
    * or provide an explicit reference.
    */
-  readonly checkpoints?: CheckpointsOrCheckpointsId;
+  /// BackwardCheckpointsProps.checkpoints
   /**
    * A component for rendering each checkpoint in the Checkpoints object.
    */
-  readonly checkpointComponent?: ComponentType<CheckpointProps>;
+  /// BackwardCheckpointsProps.checkpointComponent
   /**
    * A function for generating extra props for each checkpoint component based
    * on its Id.
    */
-  readonly getCheckpointComponentProps?: (checkpointId: Id) => ExtraProps;
+  /// BackwardCheckpointsProps.getCheckpointComponentProps
   /**
    * A component or string to separate each Checkpoint component.
    */
-  readonly separator?: ReactElement | string;
+  /// BackwardCheckpointsProps.separator
   /**
    * Whether the component should also render the Ids of the checkpoints to
    * assist with debugging.
    */
-  readonly debugIds?: boolean;
-};
-
+  /// BackwardCheckpointsProps.debugIds
+}
 /**
  * CurrentCheckpointsProps props are used for components that refer to the
  * current checkpoints in a Checkpoints object, such as the
@@ -8172,29 +7664,29 @@ export type BackwardCheckpointsProps = {
  *
  * @category Props
  */
-export type CurrentCheckpointProps = {
+/// CurrentCheckpointProps
+{
   /**
    * The Checkpoints object to be accessed: omit for the default context
    * Checkpoints object, provide an Id for a named context Checkpoints object,
    * or provide an explicit reference.
    */
-  readonly checkpoints?: CheckpointsOrCheckpointsId;
+  /// CurrentCheckpointProps.checkpoints
   /**
    * A component for rendering each checkpoint in the Checkpoints object.
    */
-  readonly checkpointComponent?: ComponentType<CheckpointProps>;
+  /// CurrentCheckpointProps.checkpointComponent
   /**
    * A function for generating extra props for each checkpoint component based
    * on its Id.
    */
-  readonly getCheckpointComponentProps?: (checkpointId: Id) => ExtraProps;
+  /// CurrentCheckpointProps.getCheckpointComponentProps
   /**
    * Whether the component should also render the Ids of the checkpoints to
    * assist with debugging.
    */
-  readonly debugIds?: boolean;
-};
-
+  /// CurrentCheckpointProps.debugIds
+}
 /**
  * ForwardCheckpointsProps props are used for components that refer to a list of
  * future checkpoints in a Checkpoints object, such as the
@@ -8202,33 +7694,33 @@ export type CurrentCheckpointProps = {
  *
  * @category Props
  */
-export type ForwardCheckpointsProps = {
+/// ForwardCheckpointsProps
+{
   /**
    * The Checkpoints object to be accessed: omit for the default context
    * Checkpoints object, provide an Id for a named context Checkpoints object,
    * or provide an explicit reference.
    */
-  readonly checkpoints?: CheckpointsOrCheckpointsId;
+  /// ForwardCheckpointsProps.checkpoints
   /**
    * A component for rendering each checkpoint in the Checkpoints object.
    */
-  readonly checkpointComponent?: ComponentType<CheckpointProps>;
+  /// ForwardCheckpointsProps.checkpointComponent
   /**
    * A function for generating extra props for each checkpoint component based
    * on its Id.
    */
-  readonly getCheckpointComponentProps?: (checkpointId: Id) => ExtraProps;
+  /// ForwardCheckpointsProps.getCheckpointComponentProps
   /**
    * A component or string to separate each Checkpoint component.
    */
-  readonly separator?: ReactElement | string;
+  /// ForwardCheckpointsProps.separator
   /**
    * Whether the component should also render the Ids of the checkpoints to
    * assist with debugging.
    */
-  readonly debugIds?: boolean;
-};
-
+  /// ForwardCheckpointsProps.debugIds
+}
 /**
  * ProviderProps props are used with the Provider component, so that Store
  * Metrics, Indexes, Relationships, Queries, and Checkpoints objects can be
@@ -8240,77 +7732,76 @@ export type ForwardCheckpointsProps = {
  *
  * @category Props
  */
-export type ProviderProps = {
+/// ProviderProps
+{
   /**
    * A default single Store object that will be available within the Provider
    * context.
    */
-  readonly store?: Store;
+  /// ProviderProps.store
   /**
    * An object containing multiple Store objects that will be available within
    * the Provider context by their Id.
    */
-  readonly storesById?: {[storeId: Id]: Store};
+  /// ProviderProps.storesById
   /**
    * A default single Metrics object that will be available within the Provider
    * context.
    */
-  readonly metrics?: Metrics;
+  /// ProviderProps.metrics
   /**
    * An object containing multiple Metrics objects that will be available within
    * the Provider context by their Id.
    */
-  readonly metricsById?: {[metricsId: Id]: Metrics};
+  /// ProviderProps.metricsById
   /**
    * A default single Indexes object that will be available within the Provider
    * context.
    */
-  readonly indexes?: Indexes;
+  /// ProviderProps.indexes
   /**
    * An object containing multiple Indexes objects that will be available within
    * the Provider context by their Id.
    */
-  readonly indexesById?: {[indexesId: Id]: Indexes};
+  /// ProviderProps.indexesById
   /**
    * A default single Relationships object that will be available within the
    * Provider context.
    */
-  readonly relationships?: Relationships;
+  /// ProviderProps.relationships
   /**
    * An object containing multiple Relationships objects that will be available
    * within the Provider context by their Id.
    */
-  readonly relationshipsById?: {[relationshipsId: Id]: Relationships};
+  /// ProviderProps.relationshipsById
   /**
    * A default single Queries object that will be available within the Provider
    * context, since v2.0.0.
    */
-  readonly queries?: Queries;
+  /// ProviderProps.queries
   /**
    * An object containing multiple Queries objects that will be available within
    * the Provider context by their Id, since v2.0.0.
    */
-  readonly queriesById?: {[queriesId: Id]: Queries};
+  /// ProviderProps.queriesById
   /**
    * A default single Checkpoints object that will be available within the
    * Provider context.
    */
-  readonly checkpoints?: Checkpoints;
+  /// ProviderProps.checkpoints
   /**
    * An object containing multiple Checkpoints objects that will be available
    * within the Provider context by their Id.
    */
-  readonly checkpointsById?: {[checkpointsId: Id]: Checkpoints};
-};
-
+  /// ProviderProps.checkpointsById
+}
 /**
  * ComponentReturnType is a simple alias for what a React component can return:
  * either a ReactElement, or `null` for an empty component.
  *
  * @category Component
  */
-export type ComponentReturnType = ReactElement<any, any> | null;
-
+/// ComponentReturnType
 /**
  * The Provider component is used to wrap part of an application in a context
  * that provides default objects to be used by hooks and components within.
@@ -8407,10 +7898,7 @@ export type ComponentReturnType = ReactElement<any, any> | null;
  * ```
  * @category Context components
  */
-export function Provider(
-  props: ProviderProps & {children: React.ReactNode},
-): ComponentReturnType;
-
+/// Provider
 /**
  * The CellView component renders the value of a single Cell in a given Row, in
  * a given Table, and registers a listener so that any changes to that result
@@ -8500,8 +7988,7 @@ export function Provider(
  * ```
  * @category Store components
  */
-export function CellView(props: CellProps): ComponentReturnType;
-
+/// CellView
 /**
  * The RowView component renders the contents of a single Row in a given Table,
  * and registers a listener so that any changes to that result will cause a
@@ -8614,8 +8101,7 @@ export function CellView(props: CellProps): ComponentReturnType;
  * ```
  * @category Store components
  */
-export function RowView(props: RowProps): ComponentReturnType;
-
+/// RowView
 /**
  * The SortedTableView component renders the contents of a single sorted Table
  * in a Store, and registers a listener so that any changes to that result will
@@ -8744,8 +8230,7 @@ export function RowView(props: RowProps): ComponentReturnType;
  * @category Store components
  * @since v2.0.0
  */
-export function SortedTableView(props: SortedTableProps): ComponentReturnType;
-
+/// SortedTableView
 /**
  * The TableView component renders the contents of a single Table in a Store,
  * and registers a listener so that any changes to that result will cause a
@@ -8856,8 +8341,7 @@ export function SortedTableView(props: SortedTableProps): ComponentReturnType;
  * ```
  * @category Store components
  */
-export function TableView(props: TableProps): ComponentReturnType;
-
+/// TableView
 /**
  * The TablesView component renders the tabular contents of a Store, and
  * registers a listener so that any changes to that result will cause a
@@ -8964,8 +8448,7 @@ export function TableView(props: TableProps): ComponentReturnType;
  * ```
  * @category Store components
  */
-export function TablesView(props: TablesProps): ComponentReturnType;
-
+/// TablesView
 /**
  * The ValueView component renders the value of a single Value, and registers a
  * listener so that any changes to that result will cause a re-render.
@@ -9055,8 +8538,7 @@ export function TablesView(props: TablesProps): ComponentReturnType;
  * @category Store components
  * @since v3.0.0
  */
-export function ValueView(props: ValueProps): ComponentReturnType;
-
+/// ValueView
 /**
  * The ValuesView component renders the keyed value contents of a Store, and
  * registers a listener so that any changes to that result will cause a
@@ -9161,8 +8643,7 @@ export function ValueView(props: ValueProps): ComponentReturnType;
  * @category Store components
  * @since v3.0.0
  */
-export function ValuesView(props: ValuesProps): ComponentReturnType;
-
+/// ValuesView
 /**
  * The MetricView component renders the current value of a Metric, and registers
  * a listener so that any changes to that result will cause a re-render.
@@ -9266,8 +8747,7 @@ export function ValuesView(props: ValuesProps): ComponentReturnType;
  * ```
  * @category Metrics components
  */
-export function MetricView(props: MetricProps): ComponentReturnType;
-
+/// MetricView
 /**
  * The SliceView component renders the contents of a Slice, and registers a
  * listener so that any changes to that result will cause a re-render.
@@ -9392,8 +8872,7 @@ export function MetricView(props: MetricProps): ComponentReturnType;
  * ```
  * @category Indexes components
  */
-export function SliceView(props: SliceProps): ComponentReturnType;
-
+/// SliceView
 /**
  * The IndexView component renders the contents of a Index, and registers a
  * listener so that any changes to that result will cause a re-render.
@@ -9513,8 +8992,7 @@ export function SliceView(props: SliceProps): ComponentReturnType;
  * ```
  * @category Indexes components
  */
-export function IndexView(props: IndexProps): ComponentReturnType;
-
+/// IndexView
 /**
  * The RemoteRowView component renders the remote Row Id for a given local Row
  * in a Relationship, and registers a listener so that any changes to that
@@ -9647,8 +9125,7 @@ export function IndexView(props: IndexProps): ComponentReturnType;
  * ```
  * @category Relationships components
  */
-export function RemoteRowView(props: RemoteRowProps): ComponentReturnType;
-
+/// RemoteRowView
 /**
  * The LocalRowsView component renders the local Row objects for a given remote
  * Row in a Relationship, and registers a listener so that any changes to that
@@ -9782,8 +9259,7 @@ export function RemoteRowView(props: RemoteRowProps): ComponentReturnType;
  * ```
  * @category Relationships components
  */
-export function LocalRowsView(props: LocalRowsProps): ComponentReturnType;
-
+/// LocalRowsView
 /**
  * The LinkedRowsView component renders the local Row objects for a given remote
  * Row in a Relationship, and registers a listener so that any changes to that
@@ -9922,8 +9398,7 @@ export function LocalRowsView(props: LocalRowsProps): ComponentReturnType;
  * ```
  * @category Relationships components
  */
-export function LinkedRowsView(props: LinkedRowsProps): ComponentReturnType;
-
+/// LinkedRowsView
 /**
  * The ResultCellView component renders the value of a single Cell in a given
  * Row, in a given query's result Table, and registers a listener so that any
@@ -10045,8 +9520,7 @@ export function LinkedRowsView(props: LinkedRowsProps): ComponentReturnType;
  * @category Queries components
  * @since v2.0.0
  */
-export function ResultCellView(props: ResultCellProps): ComponentReturnType;
-
+/// ResultCellView
 /**
  * The ResultRowView component renders the contents of a single Row in a given
  * query's result Table, and registers a listener so that any changes to that
@@ -10192,8 +9666,7 @@ export function ResultCellView(props: ResultCellProps): ComponentReturnType;
  * @category Queries components
  * @since v2.0.0
  */
-export function ResultRowView(props: ResultRowProps): ComponentReturnType;
-
+/// ResultRowView
 /**
  * The ResultSortedTableView component renders the contents of a single query's
  * sorted result Table in a Queries object, and registers a listener so that any
@@ -10330,10 +9803,7 @@ export function ResultRowView(props: ResultRowProps): ComponentReturnType;
  * @category Queries components
  * @since v2.0.0
  */
-export function ResultSortedTableView(
-  props: ResultSortedTableProps,
-): ComponentReturnType;
-
+/// ResultSortedTableView
 /**
  * The ResultTableView component renders the contents of a single query's result
  * Table in a Queries object, and registers a listener so that any changes to
@@ -10455,8 +9925,7 @@ export function ResultSortedTableView(
  * @category Queries components
  * @since v2.0.0
  */
-export function ResultTableView(props: ResultTableProps): ComponentReturnType;
-
+/// ResultTableView
 /**
  * The CheckpointView component simply renders the label of a checkpoint.
  *
@@ -10506,8 +9975,7 @@ export function ResultTableView(props: ResultTableProps): ComponentReturnType;
  * ```
  * @category Checkpoints components
  */
-export function CheckpointView(props: CheckpointProps): ComponentReturnType;
-
+/// CheckpointView
 /**
  * The BackwardCheckpointsView component renders a list of previous checkpoints
  * that the underlying Store can go back to.
@@ -10641,10 +10109,7 @@ export function CheckpointView(props: CheckpointProps): ComponentReturnType;
  * ```
  * @category Checkpoints components
  */
-export function BackwardCheckpointsView(
-  props: BackwardCheckpointsProps,
-): ComponentReturnType;
-
+/// BackwardCheckpointsView
 /**
  * The CurrentCheckpointView component renders the current checkpoint that the
  * underlying Store is currently on.
@@ -10778,10 +10243,7 @@ export function BackwardCheckpointsView(
  * ```
  * @category Checkpoints components
  */
-export function CurrentCheckpointView(
-  props: CurrentCheckpointProps,
-): ComponentReturnType;
-
+/// CurrentCheckpointView
 /**
  * The ForwardCheckpointsView component renders a list of future checkpoints
  * that the underlying Store can go forwards to.
@@ -10916,6 +10378,4 @@ export function CurrentCheckpointView(
  * ```
  * @category Checkpoints components
  */
-export function ForwardCheckpointsView(
-  props: ForwardCheckpointsProps,
-): ComponentReturnType;
+/// ForwardCheckpointsView
