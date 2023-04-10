@@ -7767,7 +7767,7 @@ export type IndexProps = {
 };
 
 /**
- * IndexProps props are used for components that refer to a single Slice in an
+ * SliceProps props are used for components that refer to a single Slice in an
  * Index object, such as the SliceView component.
  *
  * @category Props
