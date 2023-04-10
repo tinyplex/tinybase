@@ -114,13 +114,13 @@ const prepareTestResultsFromBlock = (block: string, prefix: string): void => {
 
 describe('Documentation tests', () => {
   forEachDeepFile(
-    'src',
+    'src/types/docs',
     (file) =>
       readFileSync(file, 'utf-8')
         .match(/(?<=\* @example\n).*?(?=\s*(\*\/|\* @))/gms)
         ?.map((examples) => examples.replace(/^\s*?\* ?/gms, ''))
         ?.forEach((block) => prepareTestResultsFromBlock(block, file)),
-    '.d.ts',
+    '.js',
   );
   ['site/guides', 'site/home'].forEach((root) =>
     forEachDeepFile(
