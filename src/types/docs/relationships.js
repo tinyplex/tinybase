@@ -10,18 +10,7 @@
  * @packageDocumentation
  * @module relationships
  */
-
-import {
-  CellIdFromSchema,
-  GetCellAlias,
-  NoSchemas,
-  OptionalSchemas,
-  RowCallback,
-  Store,
-  TableIdFromSchema,
-} from './store.d';
-import {Id, IdOrNull, Ids} from './common';
-
+/// relationships
 /**
  * The Relationship type represents the concept of a map that connects one Row
  * object to another, often in another Table.
@@ -41,12 +30,7 @@ import {Id, IdOrNull, Ids} from './common';
  *
  * @category Concept
  */
-export type Relationship = {
-  remoteRowId: {[localRowId: Id]: Id};
-  localRowIds: {[remoteRowId: Id]: Ids};
-  linkedRowIds: {[firstRowId: Id]: Ids};
-};
-
+/// Relationship
 /**
  * The RelationshipCallback type describes a function that takes a
  * Relationship's Id and a callback to loop over each local Row within it.
@@ -61,11 +45,7 @@ export type Relationship = {
  * objects in this Relationship.
  * @category Callback
  */
-export type RelationshipCallback = (
-  relationshipId: Id,
-  forEachRow: (rowCallback: RowCallback) => void,
-) => void;
-
+/// RelationshipCallback
 /**
  * The RemoteRowIdListener type describes a function that is used to listen to
  * changes to the remote Row Id end of a Relationship.
@@ -82,12 +62,7 @@ export type RelationshipCallback = (
  * @param localRowId The Id of the local Row whose remote Row Id changed.
  * @category Listener
  */
-export type RemoteRowIdListener = (
-  relationships: Relationships,
-  relationshipId: Id,
-  localRowId: Id,
-) => void;
-
+/// RemoteRowIdListener
 /**
  * The LocalRowIdsListener type describes a function that is used to listen to
  * changes to the local Row Id ends of a Relationship.
@@ -104,12 +79,7 @@ export type RemoteRowIdListener = (
  * @param remoteRowId The Id of the remote Row whose local Row Ids changed.
  * @category Listener
  */
-export type LocalRowIdsListener = (
-  relationships: Relationships,
-  relationshipId: Id,
-  remoteRowId: Id,
-) => void;
-
+/// LocalRowIdsListener
 /**
  * The LinkedRowIdsListener type describes a function that is used to listen to
  * changes to the local Row Id ends of a Relationship.
@@ -127,12 +97,7 @@ export type LocalRowIdsListener = (
  * members changed.
  * @category Listener
  */
-export type LinkedRowIdsListener = (
-  relationships: Relationships,
-  relationshipId: Id,
-  firstRowId: Id,
-) => void;
-
+/// LinkedRowIdsListener
 /**
  * The RelationshipsListenerStats type describes the number of listeners
  * registered with the Relationships object, and can be used for debugging
@@ -143,24 +108,24 @@ export type LinkedRowIdsListener = (
  *
  * @category Development
  */
-export type RelationshipsListenerStats = {
+/// RelationshipsListenerStats
+{
   /**
    * The number of RemoteRowIdListener functions registered with the
    * Relationships object.
    */
-  remoteRowId?: number;
+  /// RelationshipsListenerStats.remoteRowId
   /**
    * The number of LocalRowIdsListener functions registered with the
    * Relationships object.
    */
-  localRowIds?: number;
+  /// RelationshipsListenerStats.localRowIds
   /**
    * The number of LinkedRowId functions registered with the Relationships
    * object.
    */
-  linkedRowIds?: number;
-};
-
+  /// RelationshipsListenerStats.linkedRowIds
+}
 /**
  * A Relationships object lets you associate a Row in a one Table with the Id of
  * a Row in another Table.
@@ -255,7 +220,8 @@ export type RelationshipsListenerStats = {
  * @see Drawing demo
  * @category Relationships
  */
-export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
+/// Relationships
+{
   /**
    * The setRelationshipDefinition method lets you set the definition of a
    * Relationship.
@@ -342,18 +308,7 @@ export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Configuration
    */
-  setRelationshipDefinition<
-    LocalTableId extends TableIdFromSchema<Schemas[0]>,
-    RemoteTableId extends TableIdFromSchema<Schemas[0]>,
-    LocalCellId extends CellIdFromSchema<Schemas[0], LocalTableId>,
-    GetCell = GetCellAlias<Schemas[0], LocalTableId>,
-  >(
-    relationshipId: Id,
-    localTableId: LocalTableId,
-    remoteTableId: RemoteTableId,
-    getRemoteRowId: LocalCellId | ((getCell: GetCell, localRowId: Id) => Id),
-  ): Relationships<Schemas>;
-
+  /// setRelationshipDefinition
   /**
    * The delRelationshipDefinition method removes an existing Relationship
    * definition.
@@ -392,8 +347,7 @@ export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Configuration
    */
-  delRelationshipDefinition(relationshipId: Id): Relationships<Schemas>;
-
+  /// delRelationshipDefinition
   /**
    * The getStore method returns a reference to the underlying Store that is
    * backing this Relationships object.
@@ -417,8 +371,7 @@ export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getStore(): Store<Schemas>;
-
+  /// getStore
   /**
    * The getRelationshipIds method returns an array of the Relationship Ids
    * registered with this Relationships object.
@@ -437,8 +390,7 @@ export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getRelationshipIds(): Ids;
-
+  /// getRelationshipIds
   /**
    * The forEachRelationship method takes a function that it will then call for
    * each Relationship in a specified Relationships object.
@@ -480,8 +432,7 @@ export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Iterator
    */
-  forEachRelationship(relationshipCallback: RelationshipCallback): void;
-
+  /// forEachRelationship
   /**
    * The hasRelationship method returns a boolean indicating whether a given
    * Relationship exists in the Relationships object.
@@ -503,8 +454,7 @@ export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  hasRelationship(indexId: Id): boolean;
-
+  /// hasRelationship
   /**
    * The getLocalTableId method returns the Id of the underlying local Table
    * that is used in the Relationship.
@@ -535,10 +485,7 @@ export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getLocalTableId<TableId extends TableIdFromSchema<Schemas[0]>>(
-    relationshipId: Id,
-  ): TableId;
-
+  /// getLocalTableId
   /**
    * The getRemoteTableId method returns the Id of the underlying remote Table
    * that is used in the Relationship.
@@ -569,10 +516,7 @@ export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getRemoteTableId<TableId extends TableIdFromSchema<Schemas[0]>>(
-    relationshipId: Id,
-  ): TableId;
-
+  /// getRemoteTableId
   /**
    * The getRemoteRowId method gets the remote Row Id for a given local Row in a
    * Relationship.
@@ -618,8 +562,7 @@ export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getRemoteRowId(relationshipId: Id, localRowId: Id): Id | undefined;
-
+  /// getRemoteRowId
   /**
    * The getLocalRowIds method gets the local Row Ids for a given remote Row in
    * a Relationship.
@@ -665,8 +608,7 @@ export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getLocalRowIds(relationshipId: Id, remoteRowId: Id): Ids;
-
+  /// getLocalRowIds
   /**
    * The getLinkedRowIds method gets the linked Row Ids for a given Row in a
    * linked list Relationship.
@@ -714,8 +656,7 @@ export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Getter
    */
-  getLinkedRowIds(relationshipId: Id, firstRowId: Id): Ids;
-
+  /// getLinkedRowIds
   /**
    * The addRemoteRowIdListener method registers a listener function with the
    * Relationships object that will be called whenever a remote Row Id in a
@@ -841,12 +782,7 @@ export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Listener
    */
-  addRemoteRowIdListener(
-    relationshipId: IdOrNull,
-    localRowId: IdOrNull,
-    listener: RemoteRowIdListener,
-  ): Id;
-
+  /// addRemoteRowIdListener
   /**
    * The addLocalRowIdsListener method registers a listener function with the
    * Relationships object that will be called whenever the local Row Ids in
@@ -967,12 +903,7 @@ export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Listener
    */
-  addLocalRowIdsListener(
-    relationshipId: IdOrNull,
-    remoteRowId: IdOrNull,
-    listener: LocalRowIdsListener,
-  ): Id;
-
+  /// addLocalRowIdsListener
   /**
    * The addLinkedRowIdsListener method registers a listener function with the
    * Relationships object that will be called whenever the linked Row Ids in a
@@ -1038,12 +969,7 @@ export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Listener
    */
-  addLinkedRowIdsListener(
-    relationshipId: Id,
-    firstRowId: Id,
-    listener: LinkedRowIdsListener,
-  ): Id;
-
+  /// addLinkedRowIdsListener
   /**
    * The delListener method removes a listener that was previously added to the
    * Relationships object.
@@ -1098,8 +1024,7 @@ export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Listener
    */
-  delListener(listenerId: Id): Relationships<Schemas>;
-
+  /// delListener
   /**
    * The destroy method should be called when this Relationships object is no
    * longer used.
@@ -1142,8 +1067,7 @@ export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Lifecycle
    */
-  destroy(): void;
-
+  /// destroy
   /**
    * The getListenerStats method provides a set of statistics about the
    * listeners registered with the Relationships object, and is used for
@@ -1180,9 +1104,8 @@ export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
    * ```
    * @category Development
    */
-  getListenerStats(): RelationshipsListenerStats;
+  /// getListenerStats
 }
-
 /**
  * The createRelationships function creates a Relationships object, and is the
  * main entry point into the relationships module.
@@ -1215,6 +1138,4 @@ export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
  * ```
  * @category Creation
  */
-export function createRelationships<Schemas extends OptionalSchemas>(
-  store: Store<Schemas>,
-): Relationships<Schemas>;
+/// createRelationships
