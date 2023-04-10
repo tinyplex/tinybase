@@ -116,16 +116,16 @@ export const build = (outDir: string, api = true, pages = true): void => {
 
 const addApi = (docs: Docs): Docs =>
   docs
-    .addApiFile('src/types/common.d.ts')
-    .addApiFile('src/types/store.d.ts')
-    .addApiFile('src/types/checkpoints.d.ts')
-    .addApiFile('src/types/indexes.d.ts')
-    .addApiFile('src/types/metrics.d.ts')
-    .addApiFile('src/types/relationships.d.ts')
-    .addApiFile('src/types/queries.d.ts')
-    .addApiFile('src/types/persisters.d.ts')
-    .addApiFile('src/types/tools.d.ts')
-    .addApiFile('src/types/ui-react.d.ts');
+    .addApiFile('lib/types/common.d.ts')
+    .addApiFile('lib/types/store.d.ts')
+    .addApiFile('lib/types/checkpoints.d.ts')
+    .addApiFile('lib/types/indexes.d.ts')
+    .addApiFile('lib/types/metrics.d.ts')
+    .addApiFile('lib/types/relationships.d.ts')
+    .addApiFile('lib/types/queries.d.ts')
+    .addApiFile('lib/types/persisters.d.ts')
+    .addApiFile('lib/types/tools.d.ts')
+    .addApiFile('lib/types/ui-react.d.ts');
 
 const addPages = (docs: Docs): Docs =>
   docs
