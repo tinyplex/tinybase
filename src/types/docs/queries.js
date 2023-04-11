@@ -3017,23 +3017,3 @@
  * @since v2.0.0
  */
 /// createQueries
-/**
- * The GetTableCellAlias type is a duplicate of GetTableCell, used to mask
- * complex generics from documentation.
- *
- * This type is used internally to the TinyBase type system and you are not
- * expected to need to use it directly.
- *
- * @category Internal
- */
-/// GetTableCellAlias
-/**
- * The JoinedCellIdOrId type is a utility for returning a schema-specific Id (if
- * the Table is known), or a plain Id (if it is merely an alias for a Table).
- *
- * This type is used internally to the TinyBase type system and you are not
- * expected to need to use it directly.
- *
- * @category Internal
- */
-/// JoinedCellIdOrId
