@@ -182,6 +182,10 @@ export type GetTableCell<
     joinedCellId: JoinedCellId,
   ): CellOrUndefined;
 };
+export type GetTableCellAlias<
+  Schema extends OptionalTablesSchema = NoTablesSchema,
+  RootTableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+> = GetTableCell<Schema, RootTableId>;
 
 /// Select
 export type Select<
@@ -500,11 +504,6 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
 export function createQueries<Schemas extends OptionalSchemas>(
   store: Store<Schemas>,
 ): Queries<Schemas>;
-
-export type GetTableCellAlias<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  RootTableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-> = GetTableCell<Schema, RootTableId>;
 
 export type JoinedCellIdOrId<
   Schema extends OptionalTablesSchema = NoTablesSchema,
