@@ -501,13 +501,11 @@ export function createQueries<Schemas extends OptionalSchemas>(
   store: Store<Schemas>,
 ): Queries<Schemas>;
 
-/// GetTableCellAlias
 export type GetTableCellAlias<
   Schema extends OptionalTablesSchema = NoTablesSchema,
   RootTableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
 > = GetTableCell<Schema, RootTableId>;
 
-/// JoinedCellIdOrId
 export type JoinedCellIdOrId<
   Schema extends OptionalTablesSchema = NoTablesSchema,
   JoinedTableId extends TableIdFromSchema<Schema> | Id =
