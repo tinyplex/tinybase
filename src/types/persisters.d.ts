@@ -1,6 +1,6 @@
 /// persisters
 
-import {NoSchemas, OptionalSchemas, Store, Tables, Values} from './store.d';
+import {Store, Tables, Values} from './store.d';
 import {Callback} from './common.d';
 
 /// PersisterStats
@@ -12,72 +12,66 @@ export type PersisterStats = {
 };
 
 /// Persister
-export interface Persister<Schemas extends OptionalSchemas = NoSchemas> {
+export interface Persister {
   /// Persister.load
-  load(
-    initialTables?: Tables<Schemas[0], true>,
-    initialValues?: Values,
-  ): Promise<Persister<Schemas>>;
+  load(initialTables?: Tables, initialValues?: Values): Promise<Persister>;
 
   /// Persister.startAutoLoad
   startAutoLoad(
-    initialTables?: Tables<Schemas[0], true>,
+    initialTables?: Tables,
     initialValues?: Values,
-  ): Promise<Persister<Schemas>>;
+  ): Promise<Persister>;
 
   /// Persister.stopAutoLoad
-  stopAutoLoad(): Persister<Schemas>;
+  stopAutoLoad(): Persister;
 
   /// Persister.save
-  save(): Promise<Persister<Schemas>>;
+  save(): Promise<Persister>;
 
   /// Persister.startAutoSave
-  startAutoSave(): Promise<Persister<Schemas>>;
+  startAutoSave(): Promise<Persister>;
 
   /// Persister.stopAutoSave
-  stopAutoSave(): Persister<Schemas>;
+  stopAutoSave(): Persister;
 
   /// Persister.getStore
-  getStore(): Store<Schemas>;
+  getStore(): Store;
 
   /// Persister.destroy
-  destroy(): Persister<Schemas>;
+  destroy(): Persister;
 
   /// Persister.getStats
   getStats(): PersisterStats;
 }
 
 /// createSessionPersister
-export function createSessionPersister<Schemas extends OptionalSchemas>(
-  store: Store<Schemas>,
+export function createSessionPersister(
+  store: Store,
   storageName: string,
-): Persister<Schemas>;
+): Persister;
 
 /// createLocalPersister
-export function createLocalPersister<Schemas extends OptionalSchemas>(
-  store: Store<Schemas>,
+export function createLocalPersister(
+  store: Store,
   storageName: string,
-): Persister<Schemas>;
+): Persister;
 
 /// createRemotePersister
-export function createRemotePersister<Schemas extends OptionalSchemas>(
-  store: Store<Schemas>,
+export function createRemotePersister(
+  store: Store,
   loadUrl: string,
   saveUrl: string,
   autoLoadIntervalSeconds: number,
-): Persister<Schemas>;
+): Persister;
 
 /// createFilePersister
-export function createFilePersister<Schemas extends OptionalSchemas>(
-  store: Store<Schemas>,
-  filePath: string,
-): Persister<Schemas>;
+export function createFilePersister(store: Store, filePath: string): Persister;
 
 /// createCustomPersister
-export function createCustomPersister<Schemas extends OptionalSchemas>(
-  store: Store<Schemas>,
+export function createCustomPersister(
+  store: Store,
   getPersisted: () => Promise<string | null | undefined>,
   setPersisted: (json: string) => Promise<void>,
   startListeningToPersisted: (didChange: Callback) => void,
   stopListeningToPersisted: Callback,
-): Persister<Schemas>;
+): Persister;

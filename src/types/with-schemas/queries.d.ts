@@ -397,7 +397,7 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
   /// Queries.getTableId
   getTableId<TableId extends TableIdFromSchema<Schemas[0]>>(
     queryId: Id,
-  ): TableId;
+  ): TableId | undefined;
 
   /// Queries.getResultTable
   getResultTable(queryId: Id): ResultTable;

@@ -1,7 +1,7 @@
 /// checkpoints
 
 import {Id, IdOrNull, Ids} from './common.d';
-import {NoSchemas, OptionalSchemas, Store} from './store.d';
+import {Store} from './store.d';
 
 /// CheckpointIds
 export type CheckpointIds = [Ids, Id | undefined, Ids];
@@ -27,18 +27,18 @@ export type CheckpointsListenerStats = {
 };
 
 /// Checkpoints
-export interface Checkpoints<Schemas extends OptionalSchemas = NoSchemas> {
+export interface Checkpoints {
   /// Checkpoints.setSize
-  setSize(size: number): Checkpoints<Schemas>;
+  setSize(size: number): Checkpoints;
 
   /// Checkpoints.addCheckpoint
   addCheckpoint(label?: string): Id;
 
   /// Checkpoints.setCheckpoint
-  setCheckpoint(checkpointId: Id, label: string): Checkpoints<Schemas>;
+  setCheckpoint(checkpointId: Id, label: string): Checkpoints;
 
   /// Checkpoints.getStore
-  getStore(): Store<Schemas>;
+  getStore(): Store;
 
   /// Checkpoints.getCheckpointIds
   getCheckpointIds(): CheckpointIds;
@@ -62,19 +62,19 @@ export interface Checkpoints<Schemas extends OptionalSchemas = NoSchemas> {
   ): Id;
 
   /// Checkpoints.delListener
-  delListener(listenerId: Id): Checkpoints<Schemas>;
+  delListener(listenerId: Id): Checkpoints;
 
   /// Checkpoints.goBackward
-  goBackward(): Checkpoints<Schemas>;
+  goBackward(): Checkpoints;
 
   /// Checkpoints.goForward
-  goForward(): Checkpoints<Schemas>;
+  goForward(): Checkpoints;
 
   /// Checkpoints.goTo
-  goTo(checkpointId: Id): Checkpoints<Schemas>;
+  goTo(checkpointId: Id): Checkpoints;
 
   /// Checkpoints.clear
-  clear(): Checkpoints<Schemas>;
+  clear(): Checkpoints;
 
   /// Checkpoints.destroy
   destroy(): void;
@@ -84,6 +84,4 @@ export interface Checkpoints<Schemas extends OptionalSchemas = NoSchemas> {
 }
 
 /// createCheckpoints
-export function createCheckpoints<Schemas extends OptionalSchemas>(
-  store: Store<Schemas>,
-): Checkpoints<Schemas>;
+export function createCheckpoints(store: Store): Checkpoints;

@@ -1,12 +1,6 @@
 /// tools
 
-import {
-  NoSchemas,
-  OptionalSchemas,
-  OptionalTablesSchema,
-  OptionalValuesSchema,
-  Store,
-} from './store.d';
+import {Store, TablesSchema, ValuesSchema} from './store.d';
 import {Id} from './common.d';
 
 /// StoreStats
@@ -48,21 +42,17 @@ export type StoreStatsRowDetail = {
 };
 
 /// Tools
-export interface Tools<Schemas extends OptionalSchemas = NoSchemas> {
+export interface Tools {
   /* eslint-disable max-len */
   /// getStoreStats
   getStoreStats(detail?: boolean): StoreStats;
   /* eslint-enable max-len */
 
   /// getStoreTablesSchema
-  getStoreTablesSchema<
-    TablesSchema extends OptionalTablesSchema = Schemas[0],
-  >(): TablesSchema;
+  getStoreTablesSchema(): TablesSchema;
 
   /// getStoreValuesSchema
-  getStoreValuesSchema<
-    ValuesSchema extends OptionalValuesSchema = Schemas[1],
-  >(): ValuesSchema;
+  getStoreValuesSchema(): ValuesSchema;
 
   /// getStoreApi
   getStoreApi(storeName: string): [string, string, string, string];
@@ -73,12 +63,10 @@ export interface Tools<Schemas extends OptionalSchemas = NoSchemas> {
   ): Promise<[string, string, string, string]>;
 
   /// getStore
-  getStore(): Store<Schemas>;
+  getStore(): Store;
 }
 
 /* eslint-disable max-len */
 /// createTools
-export function createTools<Schemas extends OptionalSchemas>(
-  store: Store<Schemas>,
-): Tools<Schemas>;
+export function createTools(store: Store): Tools;
 /* eslint-enable max-len */

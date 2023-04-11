@@ -88,12 +88,12 @@ export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
   /// getLocalTableId
   getLocalTableId<TableId extends TableIdFromSchema<Schemas[0]>>(
     relationshipId: Id,
-  ): TableId;
+  ): TableId | undefined;
 
   /// getRemoteTableId
   getRemoteTableId<TableId extends TableIdFromSchema<Schemas[0]>>(
     relationshipId: Id,
-  ): TableId;
+  ): TableId | undefined;
 
   /// getRemoteRowId
   getRemoteRowId(relationshipId: Id, localRowId: Id): Id | undefined;

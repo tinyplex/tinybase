@@ -1,14 +1,6 @@
 /// indexes
 
-import {
-  CellIdFromSchema,
-  GetCellAlias,
-  NoSchemas,
-  OptionalSchemas,
-  RowCallback,
-  Store,
-  TableIdFromSchema,
-} from './store.d';
+import {GetCell, RowCallback, Store} from './store.d';
 import {Id, IdOrNull, Ids, SortKey} from './common.d';
 
 /// Index
@@ -48,26 +40,22 @@ export type IndexesListenerStats = {
 };
 
 /// Indexes
-export interface Indexes<Schemas extends OptionalSchemas = NoSchemas> {
+export interface Indexes {
   /// Indexes.setIndexDefinition
-  setIndexDefinition<
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    CellId extends CellIdFromSchema<Schemas[0], TableId>,
-    GetCell = GetCellAlias<Schemas[0], TableId>,
-  >(
+  setIndexDefinition(
     indexId: Id,
-    tableId: TableId,
-    getSliceIdOrIds?: CellId | ((getCell: GetCell, rowId: Id) => Id | Ids),
-    getSortKey?: CellId | ((getCell: GetCell, rowId: Id) => SortKey),
+    tableId: Id,
+    getSliceIdOrIds?: Id | ((getCell: GetCell, rowId: Id) => Id | Ids),
+    getSortKey?: Id | ((getCell: GetCell, rowId: Id) => SortKey),
     sliceIdSorter?: (sliceId1: Id, sliceId2: Id) => number,
     rowIdSorter?: (sortKey1: SortKey, sortKey2: SortKey, sliceId: Id) => number,
-  ): Indexes<Schemas>;
+  ): Indexes;
 
   /// Indexes.delIndexDefinition
-  delIndexDefinition(indexId: Id): Indexes<Schemas>;
+  delIndexDefinition(indexId: Id): Indexes;
 
   /// Indexes.getStore
-  getStore(): Store<Schemas>;
+  getStore(): Store;
 
   /// Indexes.getIndexIds
   getIndexIds(): Ids;
@@ -85,9 +73,7 @@ export interface Indexes<Schemas extends OptionalSchemas = NoSchemas> {
   hasSlice(indexId: Id, sliceId: Id): boolean;
 
   /// Indexes.getTableId
-  getTableId<TableId extends TableIdFromSchema<Schemas[0]>>(
-    indexId: Id,
-  ): TableId;
+  getTableId(indexId: Id): Id | undefined;
 
   /// Indexes.getSliceIds
   getSliceIds(indexId: Id): Ids;
@@ -106,7 +92,7 @@ export interface Indexes<Schemas extends OptionalSchemas = NoSchemas> {
   ): Id;
 
   /// Indexes.delListener
-  delListener(listenerId: Id): Indexes<Schemas>;
+  delListener(listenerId: Id): Indexes;
 
   /// Indexes.destroy
   destroy(): void;
@@ -116,6 +102,4 @@ export interface Indexes<Schemas extends OptionalSchemas = NoSchemas> {
 }
 
 /// createIndexes
-export function createIndexes<Schemas extends OptionalSchemas>(
-  store: Store<Schemas>,
-): Indexes<Schemas>;
+export function createIndexes(store: Store): Indexes;

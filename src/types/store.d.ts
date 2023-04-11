@@ -20,332 +20,145 @@ export type ValueSchema =
   | {type: 'number'; default?: number}
   | {type: 'boolean'; default?: boolean};
 
-/// NoTablesSchema
-export type NoTablesSchema = {[tableId: Id]: {[cellId: Id]: {type: 'any'}}};
-
-/// NoValuesSchema
-export type NoValuesSchema = {[valueId: Id]: {type: 'any'}};
-
-/// OptionalTablesSchema
-export type OptionalTablesSchema = TablesSchema | NoTablesSchema;
-
-/// OptionalValuesSchema
-export type OptionalValuesSchema = ValuesSchema | NoValuesSchema;
-
-/// OptionalSchemas
-export type OptionalSchemas = [OptionalTablesSchema, OptionalValuesSchema];
-
-/// NoSchemas
-export type NoSchemas = [NoTablesSchema, NoValuesSchema];
-
 /// Tables
-export type Tables<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  WhenSet extends boolean = false,
-> = TablesFromSchema<Schema, WhenSet>;
+export type Tables = {[tableId: Id]: Table};
 
 /// Table
-export type Table<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-  WhenSet extends boolean = false,
-> = TableFromSchema<Schema, TableId, WhenSet>;
+export type Table = {[rowId: Id]: Row};
 
 /// Row
-export type Row<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-  WhenSet extends boolean = false,
-> = RowFromSchema<Schema, TableId, WhenSet>;
+export type Row = {[cellId: Id]: Cell};
 
 /// Cell
-export type Cell<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-  CellId extends CellIdFromSchema<Schema, TableId> = CellIdFromSchema<
-    Schema,
-    TableId
-  >,
-> = CellFromSchema<Schema, TableId, CellId>;
+export type Cell = string | number | boolean;
 
 /// CellOrUndefined
-export type CellOrUndefined<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-  CellId extends CellIdFromSchema<Schema, TableId> = CellIdFromSchema<
-    Schema,
-    TableId
-  >,
-  Cell = CellFromSchema<Schema, TableId, CellId>,
-> = Cell | undefined;
+export type CellOrUndefined = Cell | undefined;
 
 /// Values
-export type Values<
-  Schema extends OptionalValuesSchema = NoValuesSchema,
-  WhenSet extends boolean = false,
-> = ValuesFromSchema<Schema, WhenSet>;
+export type Values = {[valueId: Id]: Value};
 
 /// Value
-export type Value<
-  Schema extends OptionalValuesSchema = NoValuesSchema,
-  ValueId extends ValueIdFromSchema<Schema> = ValueIdFromSchema<Schema>,
-> = ValueFromSchema<Schema, ValueId>;
+export type Value = string | number | boolean;
 
 /// ValueOrUndefined
-export type ValueOrUndefined<
-  Schema extends OptionalValuesSchema = NoValuesSchema,
-  ValueId extends ValueIdFromSchema<Schema> = ValueIdFromSchema<Schema>,
-  Value = ValueFromSchema<Schema, ValueId>,
-> = Value | undefined;
+export type ValueOrUndefined = Value | undefined;
 
 /// TableCallback
-export type TableCallback<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-> = (
-  tableId: TableId,
-  forEachRow: (rowCallback: RowCallback<Schema, TableId>) => void,
+export type TableCallback = (
+  tableId: Id,
+  forEachRow: (rowCallback: RowCallback) => void,
 ) => void;
 
 /// RowCallback
-export type RowCallback<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-> = (
+export type RowCallback = (
   rowId: Id,
-  forEachCell: (cellCallback: CellCallback<Schema, TableId>) => void,
+  forEachCell: (cellCallback: CellCallback) => void,
 ) => void;
 
 /// CellCallback
-export type CellCallback<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-  CellId extends CellIdFromSchema<Schema, TableId> = CellIdFromSchema<
-    Schema,
-    TableId
-  >,
-> = (cellId: CellId, cell: Cell<Schema, TableId, CellId>) => void;
+export type CellCallback = (cellId: Id, cell: Cell) => void;
 
 /// ValueCallback
-export type ValueCallback<
-  Schema extends OptionalValuesSchema = NoValuesSchema,
-  ValueId extends ValueIdFromSchema<Schema> = ValueIdFromSchema<Schema>,
-> = (valueId: ValueId, value: Value<Schema, ValueId>) => void;
+export type ValueCallback = (valueId: Id, value: Value) => void;
 
 /// MapCell
-export type MapCell<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-  CellId extends CellIdFromSchema<Schema, TableId> = CellIdFromSchema<
-    Schema,
-    TableId
-  >,
-> = (
-  cell: CellOrUndefined<Schema, TableId, CellId>,
-) => Cell<Schema, TableId, CellId>;
+export type MapCell = (cell: CellOrUndefined) => Cell;
 
 /// MapValue
-export type MapValue<
-  Schema extends OptionalValuesSchema = NoValuesSchema,
-  ValueId extends ValueIdFromSchema<Schema> = ValueIdFromSchema<Schema>,
-> = (value: ValueOrUndefined<Schema, ValueId>) => Value<Schema, ValueId>;
+export type MapValue = (value: ValueOrUndefined) => Value;
 
 /// GetCell
-export type GetCell<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-> = <
-  CellId extends CellIdFromSchema<Schema, TableId>,
-  CellOrUndefined = Cell<Schema, TableId, CellId> | undefined,
->(
-  cellId: CellId,
-) => CellOrUndefined;
+export type GetCell = (cellId: Id) => CellOrUndefined;
 
 /// DoRollback
-export type DoRollback<
-  Schemas extends OptionalSchemas = NoSchemas,
-  TablesSchema extends OptionalTablesSchema = Schemas[0],
-  ValuesSchema extends OptionalValuesSchema = Schemas[1],
-> = (
-  changedCells: ChangedCells<TablesSchema>,
+export type DoRollback = (
+  changedCells: ChangedCells,
   invalidCells: InvalidCells,
-  changedValues: ChangedValues<ValuesSchema>,
+  changedValues: ChangedValues,
   invalidValues: InvalidValues,
 ) => boolean;
 
 /// TransactionListener
-export type TransactionListener<Schemas extends OptionalSchemas = NoSchemas> = (
-  store: Store<Schemas>,
+export type TransactionListener = (
+  store: Store,
   cellsTouched: boolean,
   valuesTouched: boolean,
 ) => void;
 
 /// TablesListener
-export type TablesListener<
-  Schemas extends OptionalSchemas = NoSchemas,
-  Schema extends OptionalTablesSchema = Schemas[0],
-> = (
-  store: Store<Schemas>,
-  getCellChange: GetCellChange<Schema> | undefined,
+export type TablesListener = (
+  store: Store,
+  getCellChange: GetCellChange | undefined,
 ) => void;
 
 /// TableIdsListener
-export type TableIdsListener<Schemas extends OptionalSchemas = NoSchemas> = (
-  store: Store<Schemas>,
-) => void;
+export type TableIdsListener = (store: Store) => void;
 
 /// TableListener
-export type TableListener<
-  Schemas extends OptionalSchemas = NoSchemas,
-  TableIdOrNull extends TableIdFromSchema<
-    Schemas[0]
-  > | null = TableIdFromSchema<Schemas[0]> | null,
-  TableId = TableIdOrNull extends null
-    ? TableIdFromSchema<Schemas[0]>
-    : TableIdOrNull,
-  Schema extends OptionalTablesSchema = Schemas[0],
-> = (
-  store: Store<Schemas>,
-  tableId: TableId,
-  getCellChange: GetCellChange<Schema> | undefined,
+export type TableListener = (
+  store: Store,
+  tableId: Id,
+  getCellChange: GetCellChange | undefined,
 ) => void;
 
 /// RowIdsListener
-export type RowIdsListener<
-  Schemas extends OptionalSchemas = NoSchemas,
-  TableIdOrNull extends TableIdFromSchema<
-    Schemas[0]
-  > | null = TableIdFromSchema<Schemas[0]> | null,
-  TableId = TableIdOrNull extends null
-    ? TableIdFromSchema<Schemas[0]>
-    : TableIdOrNull,
-> = (store: Store<Schemas>, tableId: TableId) => void;
+export type RowIdsListener = (store: Store, tableId: Id) => void;
 
 /// SortedRowIdsListener
-export type SortedRowIdsListener<
-  Schemas extends OptionalSchemas = NoSchemas,
-  TableId extends TableIdFromSchema<Schemas[0]> = TableIdFromSchema<Schemas[0]>,
-  CellId extends CellIdFromSchema<Schemas[0], TableId> | undefined =
-    | CellIdFromSchema<Schemas[0], TableId>
-    | undefined,
-  Descending extends boolean = boolean,
-  Offset extends number = number,
-  Limit extends number | undefined = number | undefined,
-> = (
-  store: Store<Schemas>,
-  tableId: TableId,
-  cellId: CellId,
-  descending: Descending,
-  offset: Offset,
-  limit: Limit,
+export type SortedRowIdsListener = (
+  store: Store,
+  tableId: Id,
+  cellId: Id | undefined,
+  descending: boolean,
+  offset: number,
+  limit: number | undefined,
   sortedRowIds: Ids,
 ) => void;
 
 /// RowListener
-export type RowListener<
-  Schemas extends OptionalSchemas = NoSchemas,
-  TableIdOrNull extends TableIdFromSchema<
-    Schemas[0]
-  > | null = TableIdFromSchema<Schemas[0]> | null,
-  RowIdOrNull extends IdOrNull = IdOrNull,
-  TableId = TableIdOrNull extends null
-    ? TableIdFromSchema<Schemas[0]>
-    : TableIdOrNull,
-  RowId = RowIdOrNull extends null ? Id : RowIdOrNull,
-  Schema extends OptionalTablesSchema = Schemas[0],
-> = (
-  store: Store<Schemas>,
-  tableId: TableId,
-  rowId: RowId,
-  getCellChange: GetCellChange<Schema> | undefined,
+export type RowListener = (
+  store: Store,
+  tableId: Id,
+  rowId: Id,
+  getCellChange: GetCellChange | undefined,
 ) => void;
 
 /// CellIdsListener
-export type CellIdsListener<
-  Schemas extends OptionalSchemas = NoSchemas,
-  TableIdOrNull extends TableIdFromSchema<
-    Schemas[0]
-  > | null = TableIdFromSchema<Schemas[0]> | null,
-  RowIdOrNull extends IdOrNull = null,
-  TableId = TableIdOrNull extends null
-    ? TableIdFromSchema<Schemas[0]>
-    : TableIdOrNull,
-  RowId = RowIdOrNull extends null ? Id : RowIdOrNull,
-> = (store: Store<Schemas>, tableId: TableId, rowId: RowId) => void;
+export type CellIdsListener = (store: Store, tableId: Id, rowId: Id) => void;
 
 /// CellListener
-export type CellListener<
-  Schemas extends OptionalSchemas = NoSchemas,
-  TableIdOrNull extends TableIdFromSchema<
-    Schemas[0]
-  > | null = TableIdFromSchema<Schemas[0]> | null,
-  RowIdOrNull extends IdOrNull = IdOrNull,
-  CellIdOrNull extends
-    | (TableIdOrNull extends TableIdFromSchema<Schemas[0]>
-        ? CellIdFromSchema<Schemas[0], TableIdOrNull>
-        : AllCellIdFromSchema<Schemas[0]>)
-    | null =
-    | (TableIdOrNull extends TableIdFromSchema<Schemas[0]>
-        ? CellIdFromSchema<Schemas[0], TableIdOrNull>
-        : AllCellIdFromSchema<Schemas[0]>)
-    | null,
-  TableId extends Id = TableIdOrNull extends null
-    ? TableIdFromSchema<Schemas[0]>
-    : TableIdOrNull,
-  RowId = RowIdOrNull extends null ? Id : RowIdOrNull,
-  CellId extends Id = CellIdOrNull extends null
-    ? TableIdOrNull extends TableIdFromSchema<Schemas[0]>
-      ? CellIdFromSchema<Schemas[0], TableIdOrNull>
-      : AllCellIdFromSchema<Schemas[0]>
-    : CellIdOrNull,
-  Cell = CellFromSchema<Schemas[0], TableId, CellId>,
-  Schema extends OptionalTablesSchema = Schemas[0],
-> = (
-  store: Store<Schemas>,
-  tableId: TableId,
-  rowId: RowId,
-  cellId: CellId,
+export type CellListener = (
+  store: Store,
+  tableId: Id,
+  rowId: Id,
+  cellId: Id,
   newCell: Cell,
   oldCell: Cell,
-  getCellChange: GetCellChange<Schema> | undefined,
+  getCellChange: GetCellChange | undefined,
 ) => void;
 
 /// ValuesListener
-export type ValuesListener<
-  Schemas extends OptionalSchemas = NoSchemas,
-  Schema extends OptionalValuesSchema = Schemas[1],
-> = (
-  store: Store<Schemas>,
-  getValueChange: GetValueChange<Schema> | undefined,
+export type ValuesListener = (
+  store: Store,
+  getValueChange: GetValueChange | undefined,
 ) => void;
 
 /// ValueIdsListener
-export type ValueIdsListener<Schemas extends OptionalSchemas = NoSchemas> = (
-  store: Store<Schemas>,
-) => void;
+export type ValueIdsListener = (store: Store) => void;
 
 /// ValueListener
-export type ValueListener<
-  Schemas extends OptionalSchemas = NoSchemas,
-  ValueIdOrNull extends ValueIdFromSchema<
-    Schemas[1]
-  > | null = ValueIdFromSchema<Schemas[1]> | null,
-  ValueId extends Id = ValueIdOrNull extends null
-    ? ValueIdFromSchema<Schemas[1]>
-    : ValueIdOrNull,
-  Value = ValueFromSchema<Schemas[1], ValueId>,
-  Schema extends OptionalValuesSchema = Schemas[1],
-> = (
-  store: Store<Schemas>,
-  valueId: ValueId,
+export type ValueListener = (
+  store: Store,
+  valueId: Id,
   newValue: Value,
   oldValue: Value,
-  getValueChange: GetValueChange<Schema> | undefined,
+  getValueChange: GetValueChange | undefined,
 ) => void;
 
 /// InvalidCellListener
-export type InvalidCellListener<Schemas extends OptionalSchemas = NoSchemas> = (
-  store: Store<Schemas>,
+export type InvalidCellListener = (
+  store: Store,
   tableId: Id,
   rowId: Id,
   cellId: Id,
@@ -353,58 +166,40 @@ export type InvalidCellListener<Schemas extends OptionalSchemas = NoSchemas> = (
 ) => void;
 
 /// InvalidValueListener
-export type InvalidValueListener<Schemas extends OptionalSchemas = NoSchemas> =
-  (store: Store<Schemas>, valueId: Id, invalidValues: any[]) => void;
+export type InvalidValueListener = (
+  store: Store,
+  valueId: Id,
+  invalidValues: any[],
+) => void;
 
 /// GetCellChange
-export type GetCellChange<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-> = <
-  TableId extends TableIdFromSchema<Schema>,
-  CellId extends CellIdFromSchema<Schema, TableId>,
->(
-  tableId: TableId,
-  rowId: Id,
-  cellId: CellId,
-) => CellChange<Schema, TableId, CellId>;
+export type GetCellChange = (tableId: Id, rowId: Id, cellId: Id) => CellChange;
 
 /// CellChange
-export type CellChange<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-  CellId extends CellIdFromSchema<Schema, TableId> = CellIdFromSchema<
-    Schema,
-    TableId
-  >,
-  CellOrUndefined = Cell<Schema, TableId, CellId> | undefined,
-> = [changed: boolean, oldCell: CellOrUndefined, newCell: CellOrUndefined];
+export type CellChange = [
+  changed: boolean,
+  oldCell: CellOrUndefined,
+  newCell: CellOrUndefined,
+];
 
 /// GetValueChange
-export type GetValueChange<
-  Schema extends OptionalValuesSchema = NoValuesSchema,
-> = <ValueId extends ValueIdFromSchema<Schema>>(
-  valueId: ValueId,
-) => ValueChange<Schema, ValueId>;
+export type GetValueChange = (valueId: Id) => ValueChange;
 
 /// ValueChange
-export type ValueChange<
-  Schema extends OptionalValuesSchema = NoValuesSchema,
-  ValueId extends ValueIdFromSchema<Schema> = ValueIdFromSchema<Schema>,
-  ValueOrUndefined = Value<Schema, ValueId> | undefined,
-> = [changed: boolean, oldValue: ValueOrUndefined, newValue: ValueOrUndefined];
+export type ValueChange = [
+  changed: boolean,
+  oldValue: ValueOrUndefined,
+  newValue: ValueOrUndefined,
+];
 
 /// ChangedCells
-export type ChangedCells<Schema extends OptionalTablesSchema = NoTablesSchema> =
-  {
-    [TableId in TableIdFromSchema<Schema>]?: {
-      [rowId: Id]: {
-        [CellId in CellIdFromSchema<Schema, TableId>]?: [
-          CellOrUndefined<Schema, TableId, CellId>,
-          CellOrUndefined<Schema, TableId, CellId>,
-        ];
-      };
+export type ChangedCells = {
+  [tableId: Id]: {
+    [rowId: Id]: {
+      [cellId: Id]: [CellOrUndefined, CellOrUndefined];
     };
   };
+};
 
 /// InvalidCells
 export type InvalidCells = {
@@ -416,13 +211,8 @@ export type InvalidCells = {
 };
 
 /// ChangedValues
-export type ChangedValues<
-  Schema extends OptionalValuesSchema = NoValuesSchema,
-> = {
-  [ValueId in ValueIdFromSchema<Schema>]?: [
-    ValueOrUndefined<Schema, ValueId>,
-    ValueOrUndefined<Schema, ValueId>,
-  ];
+export type ChangedValues = {
+  [valueId: Id]: [ValueOrUndefined, ValueOrUndefined];
 };
 
 /// InvalidValues
@@ -463,112 +253,63 @@ export type StoreListenerStats = {
 };
 
 /// Store
-export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
+export interface Store {
   /// Store.getTables
-  getTables<Tables = TablesFromSchema<Schemas[0]>>(): Tables;
+  getTables(): Tables;
 
   /// Store.getTableIds
-  getTableIds<Ids = TableIdFromSchema<Schemas[0]>[]>(): Ids;
+  getTableIds(): Ids;
 
   /// Store.getTable
-  getTable<
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    Table = TableFromSchema<Schemas[0]>,
-  >(
-    tableId: TableId,
-  ): Table;
+  getTable(tableId: Id): Table;
 
   /// Store.getRowIds
-  getRowIds<TableId extends TableIdFromSchema<Schemas[0]>>(
-    tableId: TableId,
-  ): Ids;
+  getRowIds(tableId: Id): Ids;
 
   /// Store.getSortedRowIds
-  getSortedRowIds<
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    CellId extends CellIdFromSchema<Schemas[0], TableId>,
-  >(
-    tableId: TableId,
-    cellId?: CellId,
+  getSortedRowIds(
+    tableId: Id,
+    cellId?: Id,
     descending?: boolean,
     offset?: number,
     limit?: number,
   ): Ids;
 
   /// Store.getRow
-  getRow<
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    Row = RowFromSchema<Schemas[0], TableId>,
-  >(
-    tableId: TableId,
-    rowId: Id,
-  ): Row;
+  getRow(tableId: Id, rowId: Id): Row;
 
   /// Store.getCellIds
-  getCellIds<
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    Ids extends CellIdFromSchema<Schemas[0], TableId>[],
-  >(
-    tableId: TableId,
-    rowId: Id,
-  ): Ids;
+  getCellIds(tableId: Id, rowId: Id): Ids;
 
   /// Store.getCell
-  getCell<
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    CellId extends CellIdFromSchema<Schemas[0], TableId>,
-    CellOrUndefined = CellFromSchema<Schemas[0], TableId, CellId> | undefined,
-  >(
-    tableId: TableId,
-    rowId: Id,
-    cellId: CellId,
-  ): CellOrUndefined;
+  getCell(tableId: Id, rowId: Id, cellId: Id): CellOrUndefined;
 
   /// Store.getValues
-  getValues<Values = ValuesFromSchema<Schemas[1]>>(): Values;
+  getValues(): Values;
 
   /// Store.getValueIds
-  getValueIds<Ids = ValueIdFromSchema<Schemas[1]>[]>(): Ids;
+  getValueIds(): Ids;
 
   /// Store.getValue
-  getValue<
-    ValueId extends ValueIdFromSchema<Schemas[1]>,
-    ValueOrUndefined = ValueFromSchema<Schemas[1], ValueId> | undefined,
-  >(
-    valueId: ValueId,
-  ): ValueOrUndefined;
+  getValue(valueId: Id): ValueOrUndefined;
 
   /// Store.hasTables
   hasTables(): boolean;
 
   /// Store.hasTable
-  hasTable<TableId extends TableIdFromSchema<Schemas[0]>>(
-    tableId: TableId,
-  ): boolean;
+  hasTable(tableId: Id): boolean;
 
   /// Store.hasRow
-  hasRow<TableId extends TableIdFromSchema<Schemas[0]>>(
-    tableId: TableId,
-    rowId: Id,
-  ): boolean;
+  hasRow(tableId: Id, rowId: Id): boolean;
 
   /// Store.hasCell
-  hasCell<
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    CellId extends CellIdFromSchema<Schemas[0], TableId>,
-  >(
-    tableId: TableId,
-    rowId: Id,
-    cellId: CellId,
-  ): boolean;
+  hasCell(tableId: Id, rowId: Id, cellId: Id): boolean;
 
   /// Store.hasValues
   hasValues(): boolean;
 
   /// Store.hasValue
-  hasValue<ValueId extends ValueIdFromSchema<Schemas[1]>>(
-    valueId: ValueId,
-  ): boolean;
+  hasValue(valueId: Id): boolean;
 
   /// Store.getTablesJson
   getTablesJson(): Json;
@@ -589,316 +330,163 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   getSchemaJson(): Json;
 
   /// Store.setTables
-  setTables<Tables = TablesFromSchema<Schemas[0], true>>(
-    tables: Tables,
-  ): Store<Schemas>;
+  setTables(tables: Tables): Store;
 
   /// Store.setTable
-  setTable<
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    Table = TableFromSchema<Schemas[0], TableId, true>,
-  >(
-    tableId: TableId,
-    table: Table,
-  ): Store<Schemas>;
+  setTable(tableId: Id, table: Table): Store;
 
   /// Store.setRow
-  setRow<
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    Row = RowFromSchema<Schemas[0], TableId, true>,
-  >(
-    tableId: TableId,
-    rowId: Id,
-    row: Row,
-  ): Store<Schemas>;
+  setRow(tableId: Id, rowId: Id, row: Row): Store;
 
   /// Store.addRow
-  addRow<
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    Row = RowFromSchema<Schemas[0], TableId, true>,
-  >(
-    tableId: TableId,
-    row: Row,
-  ): Id | undefined;
+  addRow(tableId: Id, row: Row): Id | undefined;
 
   /// Store.setPartialRow
-  setPartialRow<
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    Row = RowFromSchema<Schemas[0], TableId, true>,
-  >(
-    tableId: TableId,
-    rowId: Id,
-    partialRow: Row,
-  ): Store<Schemas>;
+  setPartialRow(tableId: Id, rowId: Id, partialRow: Row): Store;
 
   /// Store.setCell
-  setCell<
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    CellId extends CellIdFromSchema<Schemas[0], TableId>,
-    Cell = CellFromSchema<Schemas[0], TableId, CellId>,
-    MapCell = (cell: Cell | undefined) => Cell,
-  >(
-    tableId: TableId,
-    rowId: Id,
-    cellId: CellId,
-    cell: Cell | MapCell,
-  ): Store<Schemas>;
+  setCell(tableId: Id, rowId: Id, cellId: Id, cell: Cell | MapCell): Store;
 
   /// Store.setValues
-  setValues<Values = ValuesFromSchema<Schemas[1], true>>(
-    values: Values,
-  ): Store<Schemas>;
+  setValues(values: Values): Store;
 
   /// Store.setPartialValues
-  setPartialValues<Values = ValuesFromSchema<Schemas[1], true>>(
-    partialValues: Values,
-  ): Store<Schemas>;
+  setPartialValues(partialValues: Values): Store;
 
   /// Store.setValue
-  setValue<
-    ValueId extends ValueIdFromSchema<Schemas[1]>,
-    Value = ValueFromSchema<Schemas[1], ValueId>,
-    MapValue = (value: Value | undefined) => Value,
-  >(
-    valueId: ValueId,
-    value: Value | MapValue,
-  ): Store<Schemas>;
+  setValue(valueId: Id, value: Value | MapValue): Store;
 
   /// Store.setTablesJson
-  setTablesJson(tablesJson: Json): Store<Schemas>;
+  setTablesJson(tablesJson: Json): Store;
 
   /// Store.setValuesJson
-  setValuesJson(valuesJson: Json): Store<Schemas>;
+  setValuesJson(valuesJson: Json): Store;
 
   /// Store.setJson
-  setJson(tablesAndValuesJson: Json): Store<Schemas>;
+  setJson(tablesAndValuesJson: Json): Store;
 
   /// Store.setTablesSchema
-  setTablesSchema<
-    TablesSchema extends TablesSchemaAlias,
-    ValuesSchema extends OptionalValuesSchema = Schemas[1],
-  >(
-    tablesSchema: TablesSchema,
-  ): Store<[typeof tablesSchema, ValuesSchema]>;
+  setTablesSchema(tablesSchema: TablesSchema): Store;
 
   /// Store.setValuesSchema
-  setValuesSchema<
-    ValuesSchema extends ValuesSchemaAlias,
-    TablesSchema extends OptionalTablesSchema = Schemas[0],
-  >(
-    valuesSchema: ValuesSchema,
-  ): Store<[TablesSchema, typeof valuesSchema]>;
+  setValuesSchema(valuesSchema: ValuesSchema): Store;
 
   /// Store.setSchema
-  setSchema<
-    TablesSchema extends TablesSchemaAlias,
-    ValuesSchema extends ValuesSchemaAlias,
-  >(
-    tablesSchema: TablesSchema,
-    valuesSchema?: ValuesSchema,
-  ): Store<
-    [
-      typeof tablesSchema,
-      Exclude<ValuesSchemaAlias, typeof valuesSchema> extends never
-        ? NoValuesSchema
-        : NonNullable<typeof valuesSchema>,
-    ]
-  >;
+  setSchema(tablesSchema: TablesSchema, valuesSchema?: ValuesSchema): Store;
 
   /// Store.delTables
-  delTables(): Store<Schemas>;
+  delTables(): Store;
 
   /// Store.delTable
-  delTable<TableId extends TableIdFromSchema<Schemas[0]>>(
-    tableId: TableId,
-  ): Store<Schemas>;
+  delTable(tableId: Id): Store;
 
   /// Store.delRow
-  delRow<TableId extends TableIdFromSchema<Schemas[0]>>(
-    tableId: TableId,
-    rowId: Id,
-  ): Store<Schemas>;
+  delRow(tableId: Id, rowId: Id): Store;
 
   /// Store.delCell
-  delCell<
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    CellId extends CellIdFromSchema<Schemas[0], TableId>,
-  >(
-    tableId: TableId,
-    rowId: Id,
-    cellId: CellId,
-    forceDel?: boolean,
-  ): Store<Schemas>;
+  delCell(tableId: Id, rowId: Id, cellId: Id, forceDel?: boolean): Store;
 
   /// Store.delValues
-  delValues(): Store<Schemas>;
+  delValues(): Store;
 
   /// Store.delValue
-  delValue<ValueId extends ValueIdFromSchema<Schemas[1]>>(
-    valueId: ValueId,
-  ): Store<Schemas>;
+  delValue(valueId: Id): Store;
 
   /// Store.delTablesSchema
-  delTablesSchema<
-    ValuesSchema extends OptionalValuesSchema = Schemas[1],
-  >(): Store<[NoTablesSchema, ValuesSchema]>;
+  delTablesSchema(): Store;
 
   /// Store.delValuesSchema
-  delValuesSchema<
-    TablesSchema extends OptionalTablesSchema = Schemas[0],
-  >(): Store<[TablesSchema, NoValuesSchema]>;
+  delValuesSchema(): Store;
 
   /// Store.delSchema
-  delSchema(): Store<NoSchemas>;
+  delSchema(): Store;
 
   /// Store.transaction
-  transaction<Return>(
-    actions: () => Return,
-    doRollback?: DoRollback<Schemas>,
-  ): Return;
+  transaction<Return>(actions: () => Return, doRollback?: DoRollback): Return;
 
   /// Store.startTransaction
-  startTransaction(): Store<Schemas>;
+  startTransaction(): Store;
 
   /// Store.finishTransaction
-  finishTransaction(doRollback?: DoRollback<Schemas>): Store<Schemas>;
+  finishTransaction(doRollback?: DoRollback): Store;
 
   /// Store.forEachTable
-  forEachTable<TableCallback = TableCallbackAlias<Schemas[0]>>(
-    tableCallback: TableCallback,
-  ): void;
+  forEachTable(tableCallback: TableCallback): void;
 
   /// Store.forEachRow
-  forEachRow<
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    RowCallback = RowCallbackAlias<Schemas[0], TableId>,
-  >(
-    tableId: TableId,
-    rowCallback: RowCallback,
-  ): void;
+  forEachRow(tableId: Id, rowCallback: RowCallback): void;
 
   /// Store.forEachCell
-  forEachCell<
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    CellCallback = CellCallbackAlias<Schemas[0], TableId>,
-  >(
-    tableId: TableId,
-    rowId: Id,
-    cellCallback: CellCallback,
-  ): void;
+  forEachCell(tableId: Id, rowId: Id, cellCallback: CellCallback): void;
 
   /// Store.forEachValue
-  forEachValue<ValueCallback = ValueCallbackAlias<Schemas[1]>>(
-    valueCallback: ValueCallback,
-  ): void;
+  forEachValue(valueCallback: ValueCallback): void;
 
   /// Store.addTablesListener
-  addTablesListener(listener: TablesListener<Schemas>, mutator?: boolean): Id;
+  addTablesListener(listener: TablesListener, mutator?: boolean): Id;
 
   /// Store.addTableIdsListener
-  addTableIdsListener(
-    listener: TableIdsListener<Schemas>,
-    mutator?: boolean,
-  ): Id;
+  addTableIdsListener(listener: TableIdsListener, mutator?: boolean): Id;
 
   /// Store.addTableListener
-  addTableListener<TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null>(
-    tableId: TableIdOrNull,
-    listener: TableListener<Schemas, TableIdOrNull>,
+  addTableListener(
+    tableId: IdOrNull,
+    listener: TableListener,
     mutator?: boolean,
   ): Id;
 
   /// Store.addRowIdsListener
-  addRowIdsListener<TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null>(
-    tableId: TableIdOrNull,
-    listener: RowIdsListener<Schemas, TableIdOrNull>,
+  addRowIdsListener(
+    tableId: IdOrNull,
+    listener: RowIdsListener,
     mutator?: boolean,
   ): Id;
 
   /// Store.addSortedRowIdsListener
-  addSortedRowIdsListener<
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    CellId extends CellIdFromSchema<Schemas[0], TableId> | undefined,
-    Descending extends boolean,
-    Offset extends number,
-    Limit extends number | undefined,
-  >(
-    tableId: TableId,
-    cellId: CellId,
-    descending: Descending,
-    offset: Offset,
-    limit: Limit,
-    listener: SortedRowIdsListener<
-      Schemas,
-      TableId,
-      CellId,
-      Descending,
-      Offset,
-      Limit
-    >,
+  addSortedRowIdsListener(
+    tableId: Id,
+    cellId: Id | undefined,
+    descending: boolean,
+    offset: number,
+    limit: number | undefined,
+    listener: SortedRowIdsListener,
     mutator?: boolean,
   ): Id;
 
   /// Store.addRowListener
-  addRowListener<
-    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
-    RowIdOrNull extends IdOrNull,
-  >(
-    tableId: TableIdOrNull,
-    rowId: RowIdOrNull,
-    listener: RowListener<Schemas, TableIdOrNull, RowIdOrNull>,
+  addRowListener(
+    tableId: IdOrNull,
+    rowId: IdOrNull,
+    listener: RowListener,
     mutator?: boolean,
   ): Id;
 
   /// Store.addCellIdsListener
-  addCellIdsListener<
-    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
-    RowIdOrNull extends IdOrNull,
-  >(
-    tableId: TableIdOrNull,
-    rowId: RowIdOrNull,
-    listener: CellIdsListener<Schemas, TableIdOrNull, RowIdOrNull>,
+  addCellIdsListener(
+    tableId: IdOrNull,
+    rowId: IdOrNull,
+    listener: CellIdsListener,
     mutator?: boolean,
   ): Id;
 
   /// Store.addCellListener
-  addCellListener<
-    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
-    RowIdOrNull extends IdOrNull,
-    CellIdOrNull extends
-      | (TableIdOrNull extends TableIdFromSchema<Schemas[0]>
-          ? CellIdFromSchema<Schemas[0], TableIdOrNull>
-          : AllCellIdFromSchema<Schemas[0]>)
-      | null,
-    CellListener extends CellListenerAlias<
-      Schemas,
-      TableIdOrNull,
-      RowIdOrNull,
-      CellIdOrNull
-    >,
-  >(
-    tableId: TableIdOrNull,
-    rowId: RowIdOrNull,
-    cellId: CellIdOrNull,
+  addCellListener(
+    tableId: IdOrNull,
+    rowId: IdOrNull,
+    cellId: IdOrNull,
     listener: CellListener,
     mutator?: boolean,
   ): Id;
 
   /// Store.addValuesListener
-  addValuesListener(listener: ValuesListener<Schemas>, mutator?: boolean): Id;
+  addValuesListener(listener: ValuesListener, mutator?: boolean): Id;
 
   /// Store.addValueIdsListener
-  addValueIdsListener(
-    listener: ValueIdsListener<Schemas>,
-    mutator?: boolean,
-  ): Id;
+  addValueIdsListener(listener: ValueIdsListener, mutator?: boolean): Id;
 
   /// Store.addValueListener
-  addValueListener<
-    ValueIdOrNull extends ValueIdFromSchema<Schemas[1]> | null,
-    ValueListener = ValueListenerAlias<Schemas, ValueIdOrNull>,
-  >(
-    valueId: ValueIdOrNull,
+  addValueListener(
+    valueId: IdOrNull,
     listener: ValueListener,
     mutator?: boolean,
   ): Id;
@@ -908,28 +496,28 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
     tableId: IdOrNull,
     rowId: IdOrNull,
     cellId: IdOrNull,
-    listener: InvalidCellListener<Schemas>,
+    listener: InvalidCellListener,
     mutator?: boolean,
   ): Id;
 
   /// Store.addInvalidValueListener
   addInvalidValueListener(
     valueId: IdOrNull,
-    listener: InvalidValueListener<Schemas>,
+    listener: InvalidValueListener,
     mutator?: boolean,
   ): Id;
 
   /// Store.addWillFinishTransactionListener
-  addWillFinishTransactionListener(listener: TransactionListener<Schemas>): Id;
+  addWillFinishTransactionListener(listener: TransactionListener): Id;
 
   /// Store.addDidFinishTransactionListener
-  addDidFinishTransactionListener(listener: TransactionListener<Schemas>): Id;
+  addDidFinishTransactionListener(listener: TransactionListener): Id;
 
   /// Store.callListener
-  callListener(listenerId: Id): Store<Schemas>;
+  callListener(listenerId: Id): Store;
 
   /// Store.delListener
-  delListener(listenerId: Id): Store<Schemas>;
+  delListener(listenerId: Id): Store;
 
   /// Store.getListenerStats
   getListenerStats(): StoreListenerStats;
@@ -937,228 +525,3 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
 
 /// createStore
 export function createStore(): Store;
-
-/// TablesFromSchema
-export type TablesFromSchema<
-  Schema extends OptionalTablesSchema,
-  WhenSet extends boolean = false,
-> = {
-  -readonly [TableId in TableIdFromSchema<Schema>]?: TableFromSchema<
-    Schema,
-    TableId,
-    WhenSet
-  >;
-};
-
-/// TableIdFromSchema
-export type TableIdFromSchema<Schema extends OptionalTablesSchema> = AsId<
-  keyof Schema
->;
-
-/// TableFromSchema
-export type TableFromSchema<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-  WhenSet extends boolean = false,
-> = {[rowId: Id]: RowFromSchema<Schema, TableId, WhenSet>};
-
-/// RowFromSchema
-export type RowFromSchema<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-  WhenSet extends boolean = false,
-> = (WhenSet extends true
-  ? {
-      -readonly [CellId in DefaultCellIdFromSchema<
-        Schema,
-        TableId
-      >]?: CellFromSchema<Schema, TableId, CellId>;
-    }
-  : {
-      -readonly [CellId in DefaultCellIdFromSchema<
-        Schema,
-        TableId
-      >]: CellFromSchema<Schema, TableId, CellId>;
-    }) & {
-  -readonly [CellId in DefaultCellIdFromSchema<
-    Schema,
-    TableId,
-    false
-  >]?: CellFromSchema<Schema, TableId, CellId>;
-};
-
-/// CellIdFromSchema
-export type CellIdFromSchema<
-  Schema extends OptionalTablesSchema,
-  TableId extends TableIdFromSchema<Schema>,
-> = AsId<keyof Schema[TableId]>;
-
-/// DefaultCellIdFromSchema
-export type DefaultCellIdFromSchema<
-  Schema extends OptionalTablesSchema,
-  TableId extends TableIdFromSchema<Schema>,
-  IsDefaulted extends boolean = true,
-> = AsId<
-  {
-    [CellId in CellIdFromSchema<
-      Schema,
-      TableId
-    >]: Schema[TableId][CellId] extends {
-      default: string | number | boolean;
-    }
-      ? IsDefaulted extends true
-        ? CellId
-        : never
-      : IsDefaulted extends true
-      ? never
-      : CellId;
-  }[CellIdFromSchema<Schema, TableId>]
->;
-
-/// AllCellIdFromSchema
-export type AllCellIdFromSchema<
-  Schema extends OptionalTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-> = TableId extends TableIdFromSchema<Schema>
-  ? CellIdFromSchema<Schema, TableId>
-  : never;
-
-/// CellFromSchema
-export type CellFromSchema<
-  Schema extends OptionalTablesSchema,
-  TableId extends TableIdFromSchema<Schema>,
-  CellId extends CellIdFromSchema<Schema, TableId>,
-  CellType = Schema[TableId][CellId]['type'],
-> = CellType extends 'string'
-  ? string
-  : CellType extends 'number'
-  ? number
-  : CellType extends 'boolean'
-  ? boolean
-  : string | number | boolean;
-
-/// ValuesFromSchema
-export type ValuesFromSchema<
-  Schema extends OptionalValuesSchema,
-  WhenSet extends boolean = false,
-> = (WhenSet extends true
-  ? {
-      -readonly [ValueId in DefaultValueIdFromSchema<Schema>]?: ValueFromSchema<
-        Schema,
-        ValueId
-      >;
-    }
-  : {
-      -readonly [ValueId in DefaultValueIdFromSchema<Schema>]: ValueFromSchema<
-        Schema,
-        ValueId
-      >;
-    }) & {
-  -readonly [ValueId in DefaultValueIdFromSchema<
-    Schema,
-    false
-  >]?: ValueFromSchema<Schema, ValueId>;
-};
-
-/// ValueIdFromSchema
-export type ValueIdFromSchema<Schema extends OptionalValuesSchema> = AsId<
-  keyof Schema
->;
-
-/// DefaultValueIdFromSchema
-export type DefaultValueIdFromSchema<
-  Schema extends OptionalValuesSchema,
-  IsDefaulted extends boolean = true,
-> = {
-  [ValueId in ValueIdFromSchema<Schema>]: Schema[ValueId] extends {
-    default: string | number | boolean;
-  }
-    ? IsDefaulted extends true
-      ? ValueId
-      : never
-    : IsDefaulted extends true
-    ? never
-    : ValueId;
-}[ValueIdFromSchema<Schema>];
-
-/// ValueFromSchema
-export type ValueFromSchema<
-  Schema extends OptionalValuesSchema,
-  ValueId extends ValueIdFromSchema<Schema>,
-  ValueType = Schema[ValueId]['type'],
-> = ValueType extends 'string'
-  ? string
-  : ValueType extends 'number'
-  ? number
-  : ValueType extends 'boolean'
-  ? boolean
-  : string | number | boolean;
-
-/// AsId
-export type AsId<Key> = Exclude<Key & Id, number>;
-
-/// TablesSchemaAlias
-export type TablesSchemaAlias = TablesSchema;
-
-/// ValuesSchemaAlias
-export type ValuesSchemaAlias = ValuesSchema;
-
-/// TableCallbackAlias
-export type TableCallbackAlias<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-> = TableCallback<Schema, TableId>;
-
-/// RowCallbackAlias
-export type RowCallbackAlias<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-> = RowCallback<Schema, TableId>;
-
-/// CellCallbackAlias
-export type CellCallbackAlias<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-  CellId extends CellIdFromSchema<Schema, TableId> = CellIdFromSchema<
-    Schema,
-    TableId
-  >,
-> = CellCallback<Schema, TableId, CellId>;
-
-/// ValueCallbackAlias
-export type ValueCallbackAlias<
-  Schema extends OptionalValuesSchema = NoValuesSchema,
-  ValueId extends ValueIdFromSchema<Schema> = ValueIdFromSchema<Schema>,
-> = ValueCallback<Schema, ValueId>;
-
-/// CellListenerAlias
-export type CellListenerAlias<
-  Schemas extends OptionalSchemas = NoSchemas,
-  TableIdOrNull extends TableIdFromSchema<
-    Schemas[0]
-  > | null = TableIdFromSchema<Schemas[0]> | null,
-  RowIdOrNull extends IdOrNull = IdOrNull,
-  CellIdOrNull extends
-    | (TableIdOrNull extends TableIdFromSchema<Schemas[0]>
-        ? CellIdFromSchema<Schemas[0], TableIdOrNull>
-        : AllCellIdFromSchema<Schemas[0]>)
-    | null =
-    | (TableIdOrNull extends TableIdFromSchema<Schemas[0]>
-        ? CellIdFromSchema<Schemas[0], TableIdOrNull>
-        : AllCellIdFromSchema<Schemas[0]>)
-    | null,
-> = CellListener<Schemas, TableIdOrNull, RowIdOrNull, CellIdOrNull>;
-
-/// GetCellAlias
-export type GetCellAlias<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-> = GetCell<Schema, TableId>;
-
-/// ValueListenerAlias
-export type ValueListenerAlias<
-  Schemas extends OptionalSchemas = NoSchemas,
-  ValueIdOrNull extends ValueIdFromSchema<
-    Schemas[1]
-  > | null = ValueIdFromSchema<Schemas[1]> | null,
-> = ValueListener<Schemas, ValueIdOrNull>;

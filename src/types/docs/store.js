@@ -158,10 +158,6 @@
  * The Tables type is the data structure representing all of the data in a
  * Store.
  *
- * ```ts override
- * {[tableId: Id]: Table}
- * ```
- *
  * A Tables object is used when setting all of the tables together with the
  * setTables method, and when getting them back out again with the getTables
  * method. A Tables object is a regular JavaScript object containing individual
@@ -186,10 +182,6 @@
 /**
  * The Table type is the data structure representing the data in a single table.
  *
- * ```ts override
- * {[rowId: Id]: Row}
- * ```
- *
  * A Table is used when setting a table with the setTable method, and when
  * getting it back out again with the getTable method. A Table object is a
  * regular JavaScript object containing individual Row objects, keyed by their
@@ -208,10 +200,6 @@
 /**
  * The Row type is the data structure representing the data in a single row.
  *
- * ```ts override
- * {[cellId: Id]: Cell}
- * ```
- *
  * A Row is used when setting a row with the setRow method, and when getting it
  * back out again with the getRow method. A Row object is a regular JavaScript
  * object containing individual Cell objects, keyed by their Id.
@@ -225,10 +213,6 @@
 /// Row
 /**
  * The Cell type is the data structure representing the data in a single cell.
- *
- * ```ts override
- * string | number | boolean
- * ```
  *
  * A Cell is used when setting a cell with the setCell method, and when getting
  * it back out again with the getCell method. A Cell is a JavaScript string,
@@ -256,10 +240,6 @@
  * The Values type is the data structure representing all the keyed values in a
  * Store.
  *
- * ```ts override
- * {[valueId: Id]: Value}
- * ```
- *
  * A Values object is used when setting values with the setValues method, and
  * when getting them back out again with the getValues method. A Values object
  * is a regular JavaScript object containing individual Value objects, keyed by
@@ -276,10 +256,6 @@
 /**
  * The Value type is the data structure representing the data in a single keyed
  * value.
- *
- * ```ts override
- * string | number | boolean
- * ```
  *
  * A Value is used when setting a value with the setValue method, and when
  * getting it back out again with the getValue method. A Value is a JavaScript
@@ -772,16 +748,6 @@
  * a transaction, primarily used so that you can indicate whether the
  * transaction should be rolled back.
  *
- * ```ts override
- * {
- *   [tableId: Id]: {
- *     [rowId: Id]: {
- *       [cellId: Id]: [CellOrUndefined, CellOrUndefined],
- *     },
- *   },
- * }
- * ```
- *
  * A ChangedCells object is provided to the `doRollback` callback when using the
  * transaction method and the finishTransaction method. See those methods for
  * specific examples.
@@ -825,10 +791,6 @@
  * The ChangedValues type describes the Values that have been changed during a
  * transaction, primarily used so that you can indicate whether the transaction
  * should be rolled back.
- *
- * ```ts override
- * {[valueId: Id]: [ValueOrUndefined, ValueOrUndefined]}
- * ```
  *
  * A ChangedValues object is provided to the `doRollback` callback when using
  * the transaction method and the finishTransaction method. See those methods
@@ -1073,13 +1035,6 @@
  * You can also get a serialization of the schemas out of the Store with the
  * getSchemaJson method, and remove the schemas altogether with the
  * delValuesSchema method and delTablesSchema method.
- *
- * Throughout this API documentation, you will see the generic type parameter
- * `Schemas`, which refers to a pair of TablesSchema and ValuesSchema
- * respectively. These can be used on the Store interface to constrain its
- * methods, for example. This type parameter is defaulted if not provided, and
- * so if you are using a Store without schemas, you can ignore it and use the
- * Store type bare.
  *
  * Read more about schemas in the Using Schemas guide.
  *
@@ -2428,17 +2383,9 @@
    * The setTablesSchema method lets you specify the TablesSchema of the tabular
    * part of the Store.
    *
-   * ```ts override
-   * setTablesSchema(tablesSchema: TablesSchema): Store<Schemas>
-   * ```
-   *
    * Note that this may result in a change to data in the Store, as defaults are
    * applied or as invalid Table, Row, or Cell objects are removed. These
    * changes will fire any listeners to that data, as expected.
-   *
-   * This method will return a Store that is typed according to the schema that
-   * you provided. To benefit from that, you may wish to assign it to a new
-   * variable so that TypeScript is able to reason about its subsequent usage.
    *
    * When no longer needed, you can also completely remove an existing
    * TablesSchema with the delTablesSchema method.
@@ -2468,17 +2415,9 @@
    * The setValuesSchema method lets you specify the ValuesSchema of the keyed
    * Values part of the Store.
    *
-   * ```ts override
-   * setValuesSchema(valuesSchema: ValuesSchema): Store<Schemas>
-   * ```
-   *
    * Note that this may result in a change to data in the Store, as defaults are
    * applied or as invalid Values are removed. These changes will fire any
    * listeners to that data, as expected.
-   *
-   * This method will return a Store that is typed according to the schema that
-   * you provided. To benefit from that, you may wish to assign it to a new
-   * variable so that TypeScript is able to reason about its subsequent usage.
    *
    * When no longer needed, you can also completely remove an existing
    * ValuesSchema with the delValuesSchema method.
@@ -2505,20 +2444,9 @@
    * The setSchema method lets you specify the TablesSchema and ValuesSchema of
    * the Store.
    *
-   * ```ts override
-   * setSchema(
-   *   tablesSchema: TablesSchema,
-   *   valuesSchema?: ValuesSchema,
-   * ): Store<Schemas>
-   * ```
-   *
    * Note that this may result in a change to data in the Store, as defaults are
    * applied or as invalid Table, Row, Cell, or Value objects are removed. These
    * changes will fire any listeners to that data, as expected.
-   *
-   * This method will return a Store that is typed according to the schemas that
-   * you provided. To benefit from that, you may wish to assign it to a new
-   * variable so that TypeScript is able to reason about its subsequent usage.
    *
    * From v3.0.0 onwards, this method takes two arguments. The first is the
    * TablesSchema object, the second the ValuesSchema. In previous versions

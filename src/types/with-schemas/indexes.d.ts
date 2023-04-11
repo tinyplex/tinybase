@@ -87,7 +87,7 @@ export interface Indexes<Schemas extends OptionalSchemas = NoSchemas> {
   /// Indexes.getTableId
   getTableId<TableId extends TableIdFromSchema<Schemas[0]>>(
     indexId: Id,
-  ): TableId;
+  ): TableId | undefined;
 
   /// Indexes.getSliceIds
   getSliceIds(indexId: Id): Ids;
