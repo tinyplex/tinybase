@@ -589,14 +589,23 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   getSchemaJson(): Json;
 
   /// Store.setTables
-  setTables<Tables = TablesFromSchema<Schemas[0], true>>(
+  setTables<
+    Tables extends TablesFromSchema<Schemas[0], true> = TablesFromSchema<
+      Schemas[0],
+      true
+    >,
+  >(
     tables: Tables,
   ): Store<Schemas>;
 
   /// Store.setTable
   setTable<
     TableId extends TableIdFromSchema<Schemas[0]>,
-    Table = TableFromSchema<Schemas[0], TableId, true>,
+    Table extends TableFromSchema<Schemas[0], TableId, true> = TableFromSchema<
+      Schemas[0],
+      TableId,
+      true
+    >,
   >(
     tableId: TableId,
     table: Table,
@@ -605,7 +614,11 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   /// Store.setRow
   setRow<
     TableId extends TableIdFromSchema<Schemas[0]>,
-    Row = RowFromSchema<Schemas[0], TableId, true>,
+    Row extends RowFromSchema<Schemas[0], TableId, true> = RowFromSchema<
+      Schemas[0],
+      TableId,
+      true
+    >,
   >(
     tableId: TableId,
     rowId: Id,
@@ -615,7 +628,11 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   /// Store.addRow
   addRow<
     TableId extends TableIdFromSchema<Schemas[0]>,
-    Row = RowFromSchema<Schemas[0], TableId, true>,
+    Row extends RowFromSchema<Schemas[0], TableId, true> = RowFromSchema<
+      Schemas[0],
+      TableId,
+      true
+    >,
   >(
     tableId: TableId,
     row: Row,
@@ -624,7 +641,11 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   /// Store.setPartialRow
   setPartialRow<
     TableId extends TableIdFromSchema<Schemas[0]>,
-    Row = RowFromSchema<Schemas[0], TableId, true>,
+    Row extends RowFromSchema<Schemas[0], TableId, true> = RowFromSchema<
+      Schemas[0],
+      TableId,
+      true
+    >,
   >(
     tableId: TableId,
     rowId: Id,
@@ -635,8 +656,14 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   setCell<
     TableId extends TableIdFromSchema<Schemas[0]>,
     CellId extends CellIdFromSchema<Schemas[0], TableId>,
-    Cell = CellFromSchema<Schemas[0], TableId, CellId>,
-    MapCell = (cell: Cell | undefined) => Cell,
+    Cell extends CellFromSchema<Schemas[0], TableId, CellId> = CellFromSchema<
+      Schemas[0],
+      TableId,
+      CellId
+    >,
+    MapCell extends (cell: Cell | undefined) => Cell = (
+      cell: Cell | undefined,
+    ) => Cell,
   >(
     tableId: TableId,
     rowId: Id,
@@ -645,20 +672,35 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   ): Store<Schemas>;
 
   /// Store.setValues
-  setValues<Values = ValuesFromSchema<Schemas[1], true>>(
+  setValues<
+    Values extends ValuesFromSchema<Schemas[1], true> = ValuesFromSchema<
+      Schemas[1],
+      true
+    >,
+  >(
     values: Values,
   ): Store<Schemas>;
 
   /// Store.setPartialValues
-  setPartialValues<Values = ValuesFromSchema<Schemas[1], true>>(
+  setPartialValues<
+    Values extends ValuesFromSchema<Schemas[1], true> = ValuesFromSchema<
+      Schemas[1],
+      true
+    >,
+  >(
     partialValues: Values,
   ): Store<Schemas>;
 
   /// Store.setValue
   setValue<
     ValueId extends ValueIdFromSchema<Schemas[1]>,
-    Value = ValueFromSchema<Schemas[1], ValueId>,
-    MapValue = (value: Value | undefined) => Value,
+    Value extends ValueFromSchema<Schemas[1], ValueId> = ValueFromSchema<
+      Schemas[1],
+      ValueId
+    >,
+    MapValue extends (value: Value | undefined) => Value = (
+      value: Value | undefined,
+    ) => Value,
   >(
     valueId: ValueId,
     value: Value | MapValue,
@@ -764,14 +806,21 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   finishTransaction(doRollback?: DoRollback<Schemas>): Store<Schemas>;
 
   /// Store.forEachTable
-  forEachTable<TableCallback = TableCallbackAlias<Schemas[0]>>(
+  forEachTable<
+    TableCallback extends TableCallbackAlias<Schemas[0]> = TableCallbackAlias<
+      Schemas[0]
+    >,
+  >(
     tableCallback: TableCallback,
   ): void;
 
   /// Store.forEachRow
   forEachRow<
     TableId extends TableIdFromSchema<Schemas[0]>,
-    RowCallback = RowCallbackAlias<Schemas[0], TableId>,
+    RowCallback extends RowCallbackAlias<
+      Schemas[0],
+      TableId
+    > = RowCallbackAlias<Schemas[0], TableId>,
   >(
     tableId: TableId,
     rowCallback: RowCallback,
@@ -780,7 +829,10 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   /// Store.forEachCell
   forEachCell<
     TableId extends TableIdFromSchema<Schemas[0]>,
-    CellCallback = CellCallbackAlias<Schemas[0], TableId>,
+    CellCallback extends CellCallbackAlias<
+      Schemas[0],
+      TableId
+    > = CellCallbackAlias<Schemas[0], TableId>,
   >(
     tableId: TableId,
     rowId: Id,
@@ -788,7 +840,11 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   ): void;
 
   /// Store.forEachValue
-  forEachValue<ValueCallback = ValueCallbackAlias<Schemas[1]>>(
+  forEachValue<
+    ValueCallback extends ValueCallbackAlias<Schemas[1]> = ValueCallbackAlias<
+      Schemas[1]
+    >,
+  >(
     valueCallback: ValueCallback,
   ): void;
 
@@ -896,7 +952,7 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   /// Store.addValueListener
   addValueListener<
     ValueIdOrNull extends ValueIdFromSchema<Schemas[1]> | null,
-    ValueListener = ValueListenerAlias<Schemas, ValueIdOrNull>,
+    ValueListener extends ValueListenerAlias<Schemas, ValueIdOrNull>,
   >(
     valueId: ValueIdOrNull,
     listener: ValueListener,
