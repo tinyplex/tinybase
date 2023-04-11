@@ -68,22 +68,25 @@ const copyDefinition = async (module) => {
     ),
   ].forEach(([_, block, label]) => labelBlocks.set(label, block));
 
-  return await promises.writeFile(
-    `${TYPES_DIR}/${module}.d.ts`,
-    (
-      await promises.readFile(`src/types/${module}.d.ts`, UTF8)
-    ).replace(TYPES_DOC_LABELS, (_, label) => {
-      if (labelBlocks.has(label)) {
-        return labelBlocks.get(label);
-      }
-      throw `Missing docs label ${label} in ${module}`;
-    }),
-    UTF8,
-  );
+  await allOf(['', 'with-schemas/'], async (extraDir) => {
+    await promises.writeFile(
+      `${TYPES_DIR}/${extraDir}${module}.d.ts`,
+      (
+        await promises.readFile(`src/types/${extraDir}${module}.d.ts`, UTF8)
+      ).replace(TYPES_DOC_LABELS, (_, label) => {
+        if (labelBlocks.has(label)) {
+          return labelBlocks.get(label);
+        }
+        throw `Missing docs label ${label} in ${module}`;
+      }),
+      UTF8,
+    );
+  });
 };
 
 const copyDefinitions = async () => {
   await makeDir(TYPES_DIR);
+  await makeDir(`${TYPES_DIR}/with-schemas/`);
   await copyDefinition('common');
   await allModules((module) => copyDefinition(module));
 };

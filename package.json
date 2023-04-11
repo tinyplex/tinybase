@@ -23,21 +23,37 @@
   },
   "exports": {
     ".": "./lib/tinybase.js",
+    "./with-schemas": "./lib/tinybase.js",
     "./package.json": "./package.json",
     "./cjs": "./lib/cjs/tinybase.cjs",
+    "./cjs/with-schemas": "./lib/cjs/tinybase.cjs",
+    "./cjs/*/with-schemas": "./lib/cjs/*.cjs",
     "./cjs/*": "./lib/cjs/*.cjs",
     "./cjs-es6": "./lib/cjs-es6/tinybase.cjs",
+    "./cjs-es6/with-schemas": "./lib/cjs-es6/tinybase.cjs",
+    "./cjs-es6/*/with-schemas": "./lib/cjs-es6/*.cjs",
     "./cjs-es6/*": "./lib/cjs-es6/*.cjs",
     "./es6": "./lib/es6/tinybase.js",
+    "./es6/with-schemas": "./lib/es6/tinybase.js",
+    "./es6/*/with-schemas": "./lib/es6/*.js",
     "./es6/*": "./lib/es6/*.js",
     "./debug": "./lib/debug/tinybase.js",
+    "./debug/with-schemas": "./lib/debug/tinybase.js",
+    "./debug/*/with-schemas": "./lib/debug/*.js",
     "./debug/*": "./lib/debug/*.js",
     "./umd": "./lib/umd/tinybase.js",
+    "./umd/with-schemas": "./lib/umd/tinybase.js",
+    "./umd/*/with-schemas": "./lib/umd/*.js",
     "./umd/*": "./lib/umd/*.js",
     "./umd-es6": "./lib/umd-es6/tinybase.js",
+    "./umd-es6/with-schemas": "./lib/umd-es6/tinybase.js",
+    "./umd-es6/*/with-schemas": "./lib/umd-es6/*.js",
     "./umd-es6/*": "./lib/umd-es6/*.js",
     "./lib": "./lib/tinybase.js",
+    "./lib/with-schemas": "./lib/tinybase.js",
+    "./lib/*/with-schemas": "./lib/*.js",
     "./lib/*": "./lib/*.js",
+    "./*/with-schemas": "./lib/*.js",
     "./*": "./lib/*.js"
   },
   "typesVersions": {
@@ -45,11 +61,23 @@
       "cjs": [
         "./lib/types/tinybase.d.ts"
       ],
+      "cjs/with-schemas": [
+        "./lib/types/with-schemas/tinybase.d.ts"
+      ],
+      "cjs/*/with-schemas": [
+        "./lib/types/with-schemas/*.d.ts"
+      ],
       "cjs/*": [
         "./lib/types/*.d.ts"
       ],
       "cjs-es6": [
         "./lib/types/tinybase.d.ts"
+      ],
+      "cjs-es6/with-schemas": [
+        "./lib/types/with-schemas/tinybase.d.ts"
+      ],
+      "cjs-es6/*/with-schemas": [
+        "./lib/types/with-schemas/*.d.ts"
       ],
       "cjs-es6/*": [
         "./lib/types/*.d.ts"
@@ -57,11 +85,23 @@
       "es6": [
         "./lib/types/tinybase.d.ts"
       ],
+      "es6/with-schemas": [
+        "./lib/types/with-schemas/tinybase.d.ts"
+      ],
+      "es6/*/with-schemas": [
+        "./lib/types/with-schemas/*.d.ts"
+      ],
       "es6/*": [
         "./lib/types/*.d.ts"
       ],
       "debug": [
         "./lib/types/tinybase.d.ts"
+      ],
+      "debug/with-schemas": [
+        "./lib/types/with-schemas/tinybase.d.ts"
+      ],
+      "debug/*/with-schemas": [
+        "./lib/types/with-schemas/*.d.ts"
       ],
       "debug/*": [
         "./lib/types/*.d.ts"
@@ -69,11 +109,23 @@
       "umd": [
         "./lib/types/tinybase.d.ts"
       ],
+      "umd/with-schemas": [
+        "./lib/types/with-schemas/tinybase.d.ts"
+      ],
+      "umd/*/with-schemas": [
+        "./lib/types/with-schemas/*.d.ts"
+      ],
       "umd/*": [
         "./lib/types/*.d.ts"
       ],
       "umd-es6": [
         "./lib/types/tinybase.d.ts"
+      ],
+      "umd-es6/with-schemas": [
+        "./lib/types/with-schemas/tinybase.d.ts"
+      ],
+      "umd-es6/*/with-schemas": [
+        "./lib/types/with-schemas/*.d.ts"
       ],
       "umd-es6/*": [
         "./lib/types/*.d.ts"
@@ -81,8 +133,22 @@
       "lib": [
         "./lib/types/tinybase.d.ts"
       ],
+      "lib/with-schemas": [
+        "./lib/types/with-schemas/tinybase.d.ts"
+      ],
+      "lib/*/with-schemas": [
+        "./lib/types/with-schemas/*.d.ts"
+      ],
       "lib/*": [
         "./lib/types/*.d.ts"
+      ],
+      "with-schemas": [
+        "./lib/types/with-schemas/*.d.ts",
+        "./lib/types/with-schemas/tinybase.d.ts"
+      ],
+      "*/with-schemas": [
+        "./lib/types/with-schemas/*.d.ts",
+        "./lib/types/with-schemas/tinybase.d.ts"
       ],
       "*": [
         "./lib/types/*.d.ts",
