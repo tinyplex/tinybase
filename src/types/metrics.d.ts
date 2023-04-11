@@ -1,13 +1,6 @@
 /// metrics
 
-import {
-  CellIdFromSchema,
-  GetCellAlias,
-  NoSchemas,
-  OptionalSchemas,
-  Store,
-  TableIdFromSchema,
-} from './store.d';
+import {GetCell, Store} from './store.d';
 import {Id, IdOrNull, Ids} from './common.d';
 
 /// Metric
@@ -56,27 +49,23 @@ export type MetricsListenerStats = {
 };
 
 /// Metrics
-export interface Metrics<Schemas extends OptionalSchemas = NoSchemas> {
+export interface Metrics {
   /// Metrics.setMetricDefinition
-  setMetricDefinition<
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    CellId extends CellIdFromSchema<Schemas[0], TableId>,
-    GetCell = GetCellAlias<Schemas[0], TableId>,
-  >(
+  setMetricDefinition(
     metricId: Id,
-    tableId: TableId,
+    tableId: Id,
     aggregate?: 'sum' | 'avg' | 'min' | 'max' | MetricAggregate,
-    getNumber?: CellId | ((getCell: GetCell, rowId: Id) => number),
+    getNumber?: Id | ((getCell: GetCell, rowId: Id) => number),
     aggregateAdd?: MetricAggregateAdd,
     aggregateRemove?: MetricAggregateRemove,
     aggregateReplace?: MetricAggregateReplace,
-  ): Metrics<Schemas>;
+  ): Metrics;
 
   /// Metrics.delMetricDefinition
-  delMetricDefinition(metricId: Id): Metrics<Schemas>;
+  delMetricDefinition(metricId: Id): Metrics;
 
   /// Metrics.getStore
-  getStore(): Store<Schemas>;
+  getStore(): Store;
 
   /// Metrics.getMetricIds
   getMetricIds(): Ids;
@@ -88,9 +77,7 @@ export interface Metrics<Schemas extends OptionalSchemas = NoSchemas> {
   hasMetric(metricId: Id): boolean;
 
   /// Metrics.getTableId
-  getTableId<TableId extends TableIdFromSchema<Schemas[0]>>(
-    metricId: Id,
-  ): TableId | undefined;
+  getTableId(metricId: Id): Id | undefined;
 
   /// Metrics.getMetric
   getMetric(metricId: Id): Metric | undefined;
@@ -99,7 +86,7 @@ export interface Metrics<Schemas extends OptionalSchemas = NoSchemas> {
   addMetricListener(metricId: IdOrNull, listener: MetricListener): Id;
 
   /// Metrics.delListener
-  delListener(listenerId: Id): Metrics<Schemas>;
+  delListener(listenerId: Id): Metrics;
 
   /// Metrics.destroy
   destroy(): void;
@@ -109,6 +96,4 @@ export interface Metrics<Schemas extends OptionalSchemas = NoSchemas> {
 }
 
 /// createMetrics
-export function createMetrics<Schemas extends OptionalSchemas>(
-  store: Store<Schemas>,
-): Metrics<Schemas>;
+export function createMetrics(store: Store): Metrics;

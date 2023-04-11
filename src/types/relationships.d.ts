@@ -1,14 +1,6 @@
 /// relationships
 
-import {
-  CellIdFromSchema,
-  GetCellAlias,
-  NoSchemas,
-  OptionalSchemas,
-  RowCallback,
-  Store,
-  TableIdFromSchema,
-} from './store.d';
+import {GetCell, RowCallback, Store} from './store.d';
 import {Id, IdOrNull, Ids} from './common.d';
 
 /// Relationship
@@ -56,25 +48,20 @@ export type RelationshipsListenerStats = {
 };
 
 /// Relationships
-export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
+export interface Relationships {
   /// setRelationshipDefinition
-  setRelationshipDefinition<
-    LocalTableId extends TableIdFromSchema<Schemas[0]>,
-    RemoteTableId extends TableIdFromSchema<Schemas[0]>,
-    LocalCellId extends CellIdFromSchema<Schemas[0], LocalTableId>,
-    GetCell = GetCellAlias<Schemas[0], LocalTableId>,
-  >(
+  setRelationshipDefinition(
     relationshipId: Id,
-    localTableId: LocalTableId,
-    remoteTableId: RemoteTableId,
-    getRemoteRowId: LocalCellId | ((getCell: GetCell, localRowId: Id) => Id),
-  ): Relationships<Schemas>;
+    localTableId: Id,
+    remoteTableId: Id,
+    getRemoteRowId: Id | ((getCell: GetCell, localRowId: Id) => Id),
+  ): Relationships;
 
   /// delRelationshipDefinition
-  delRelationshipDefinition(relationshipId: Id): Relationships<Schemas>;
+  delRelationshipDefinition(relationshipId: Id): Relationships;
 
   /// getStore
-  getStore(): Store<Schemas>;
+  getStore(): Store;
 
   /// getRelationshipIds
   getRelationshipIds(): Ids;
@@ -86,14 +73,10 @@ export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
   hasRelationship(indexId: Id): boolean;
 
   /// getLocalTableId
-  getLocalTableId<TableId extends TableIdFromSchema<Schemas[0]>>(
-    relationshipId: Id,
-  ): TableId;
+  getLocalTableId(relationshipId: Id): Id | undefined;
 
   /// getRemoteTableId
-  getRemoteTableId<TableId extends TableIdFromSchema<Schemas[0]>>(
-    relationshipId: Id,
-  ): TableId;
+  getRemoteTableId(relationshipId: Id): Id | undefined;
 
   /// getRemoteRowId
   getRemoteRowId(relationshipId: Id, localRowId: Id): Id | undefined;
@@ -126,7 +109,7 @@ export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
   ): Id;
 
   /// delListener
-  delListener(listenerId: Id): Relationships<Schemas>;
+  delListener(listenerId: Id): Relationships;
 
   /// destroy
   destroy(): void;
@@ -136,6 +119,4 @@ export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
 }
 
 /// createRelationships
-export function createRelationships<Schemas extends OptionalSchemas>(
-  store: Store<Schemas>,
-): Relationships<Schemas>;
+export function createRelationships(store: Store): Relationships;
