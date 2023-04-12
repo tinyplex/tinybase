@@ -15,16 +15,16 @@ const {parallel, series} = gulp;
 
 const UTF8 = 'utf-8';
 const TEST_MODULES = ['tinybase', 'ui-react', 'tools'];
-const ALL_MODULES = TEST_MODULES.concat([
-  'store',
+const MODULES_TYPED_WITH_INTERNALS = ['store', 'queries'];
+const ALL_MODULES = [].concat(TEST_MODULES, MODULES_TYPED_WITH_INTERNALS, [
   'indexes',
   'metrics',
   'relationships',
-  'queries',
   'checkpoints',
   'persisters',
   'common',
 ]);
+
 const BIN_DIR = 'bin';
 const LIB_DIR = 'lib';
 const TYPES_DIR = 'lib/types';
@@ -69,31 +69,35 @@ const copyDefinition = async (module) => {
     ),
   ].forEach(([_, block, label]) => labelBlocks.set(label, block));
 
-  await allOf(['', 'with-schemas/'], async (extraDir) => {
-    await promises.writeFile(
-      `${TYPES_DIR}/${extraDir}${module}.d.ts`,
-      (
-        await promises.readFile(`src/types/${extraDir}${module}.d.ts`, UTF8)
-      ).replace(TYPES_DOC_LABELS, (_, label) => {
-        if (labelBlocks.has(label)) {
-          return labelBlocks.get(label);
-        }
-        throw `Missing docs label ${label} in ${module}`;
-      }),
-      UTF8,
-    );
-  });
+  await allOf(
+    ['', 'with-schemas/'].concat(
+      ...(MODULES_TYPED_WITH_INTERNALS.includes(module)
+        ? ['with-schemas/internal/']
+        : []),
+    ),
+    async (extraDir) => {
+      await promises.writeFile(
+        `${TYPES_DIR}/${extraDir}${module}.d.ts`,
+        (
+          await promises.readFile(`src/types/${extraDir}${module}.d.ts`, UTF8)
+        ).replace(TYPES_DOC_LABELS, (_, label) => {
+          if (labelBlocks.has(label)) {
+            return labelBlocks.get(label);
+          }
+          throw `Missing docs label ${label} in ${module}`;
+        }),
+        UTF8,
+      );
+    },
+  );
 };
 
 const copyDefinitions = async () => {
   await makeDir(TYPES_DIR);
   await makeDir(TYPES_SCHEMA_DIR);
+  await makeDir(`${TYPES_SCHEMA_DIR}/internal`);
   await copyDefinition('common');
   await allModules((module) => copyDefinition(module));
-  await promises.copyFile(
-    `src/types/with-schemas/internal.d.ts`,
-    `${TYPES_SCHEMA_DIR}internal.d.ts`,
-  );
 };
 
 const execute = async (cmd) => {

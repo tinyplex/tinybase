@@ -12,9 +12,9 @@ import {
 import {
   CellIdFromSchema,
   GetCellAlias,
-  JoinedCellIdOrId,
   TableIdFromSchema,
-} from './internal';
+} from './internal/store';
+import {GetTableCellAlias, JoinedCellIdOrId} from './internal/queries';
 import {Id, IdOrNull, Ids} from './common.d';
 
 /// ResultTable
@@ -185,10 +185,6 @@ export type GetTableCell<
     joinedCellId: JoinedCellId,
   ): CellOrUndefined;
 };
-export type GetTableCellAlias<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  RootTableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-> = GetTableCell<Schema, RootTableId>;
 
 /// Select
 export type Select<

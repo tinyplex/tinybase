@@ -32,7 +32,7 @@ import {
   ValuesFromSchema,
   ValuesListenerAlias,
   ValuesSchemaAlias,
-} from './internal';
+} from './internal/store';
 import {Id, IdOrNull, Ids, Json} from './common.d';
 
 /// TablesSchema
