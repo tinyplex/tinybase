@@ -28,6 +28,7 @@ const ALL_MODULES = TEST_MODULES.concat([
 const BIN_DIR = 'bin';
 const LIB_DIR = 'lib';
 const TYPES_DIR = 'lib/types';
+const TYPES_SCHEMA_DIR = `${TYPES_DIR}/with-schemas/`;
 const DOCS_DIR = 'docs';
 const TMP_DIR = 'tmp';
 const LINT_BLOCKS = /```[jt]sx?( [^\n]+)?(\n.*?)```/gms;
@@ -86,9 +87,13 @@ const copyDefinition = async (module) => {
 
 const copyDefinitions = async () => {
   await makeDir(TYPES_DIR);
-  await makeDir(`${TYPES_DIR}/with-schemas/`);
+  await makeDir(TYPES_SCHEMA_DIR);
   await copyDefinition('common');
   await allModules((module) => copyDefinition(module));
+  await promises.copyFile(
+    `src/types/with-schemas/internal.d.ts`,
+    `${TYPES_SCHEMA_DIR}internal.d.ts`,
+  );
 };
 
 const execute = async (cmd) => {

@@ -1,14 +1,8 @@
 /// metrics
 
-import {
-  CellIdFromSchema,
-  GetCellAlias,
-  NoSchemas,
-  OptionalSchemas,
-  Store,
-  TableIdFromSchema,
-} from './store.d';
+import {CellIdFromSchema, GetCellAlias, TableIdFromSchema} from './internal';
 import {Id, IdOrNull, Ids} from './common.d';
+import {NoSchemas, OptionalSchemas, Store} from './store.d';
 
 /// Metric
 export type Metric = number;

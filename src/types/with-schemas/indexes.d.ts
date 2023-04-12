@@ -1,15 +1,8 @@
 /// indexes
 
-import {
-  CellIdFromSchema,
-  GetCellAlias,
-  NoSchemas,
-  OptionalSchemas,
-  RowCallback,
-  Store,
-  TableIdFromSchema,
-} from './store.d';
+import {CellIdFromSchema, GetCellAlias, TableIdFromSchema} from './internal';
 import {Id, IdOrNull, Ids, SortKey} from './common.d';
+import {NoSchemas, OptionalSchemas, RowCallback, Store} from './store.d';
 
 /// Index
 export type Index = {[sliceId: Id]: Slice};

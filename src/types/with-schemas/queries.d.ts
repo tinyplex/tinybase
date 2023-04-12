@@ -2,16 +2,19 @@
 
 import {
   Cell,
-  CellIdFromSchema,
   GetCell,
-  GetCellAlias,
   NoSchemas,
   NoTablesSchema,
   OptionalSchemas,
   OptionalTablesSchema,
   Store,
-  TableIdFromSchema,
 } from './store.d';
+import {
+  CellIdFromSchema,
+  GetCellAlias,
+  JoinedCellIdOrId,
+  TableIdFromSchema,
+} from './internal';
 import {Id, IdOrNull, Ids} from './common.d';
 
 /// ResultTable
@@ -504,12 +507,3 @@ export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
 export function createQueries<Schemas extends OptionalSchemas>(
   store: Store<Schemas>,
 ): Queries<Schemas>;
-
-export type JoinedCellIdOrId<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  JoinedTableId extends TableIdFromSchema<Schema> | Id =
-    | TableIdFromSchema<Schema>
-    | Id,
-> = JoinedTableId extends TableIdFromSchema<Schema>
-  ? CellIdFromSchema<Schema, JoinedTableId>
-  : Id;
