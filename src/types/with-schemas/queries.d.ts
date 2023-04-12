@@ -274,7 +274,7 @@ export type Join<
       | Id,
     GetCell = IntermediateJoinedTableId extends TableIdFromSchema<Schema>
       ? GetCellAlias<Schema, IntermediateJoinedTableId>
-      : GetCellAlias<Schema, TableIdFromSchema<Schema>>,
+      : GetCellAlias<NoTablesSchema, Id>,
   >(
     joinedTableId: JoinedTableId,
     fromIntermediateJoinedTableId: IntermediateJoinedTableId,
