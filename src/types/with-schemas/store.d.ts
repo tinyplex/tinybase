@@ -108,10 +108,8 @@ export type TableCallback<
   tableId: TableId,
   forEachRow: (rowCallback: RowCallback<Schema, TableId>) => void,
 ) => void;
-export type TableCallbackAlias<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-> = TableCallback<Schema, TableId>;
+export type TableCallbackAlias<Schema extends OptionalTablesSchema> =
+  TableCallback<Schema>;
 
 /// RowCallback
 export type RowCallback<
@@ -122,8 +120,8 @@ export type RowCallback<
   forEachCell: (cellCallback: CellCallback<Schema, TableId>) => void,
 ) => void;
 export type RowCallbackAlias<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+  Schema extends OptionalTablesSchema,
+  TableId extends TableIdFromSchema<Schema>,
 > = RowCallback<Schema, TableId>;
 
 /// CellCallback
@@ -136,23 +134,17 @@ export type CellCallback<
   >,
 > = (cellId: CellId, cell: Cell<Schema, TableId, CellId>) => void;
 export type CellCallbackAlias<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-  CellId extends CellIdFromSchema<Schema, TableId> = CellIdFromSchema<
-    Schema,
-    TableId
-  >,
-> = CellCallback<Schema, TableId, CellId>;
+  Schema extends OptionalTablesSchema,
+  TableId extends TableIdFromSchema<Schema>,
+> = CellCallback<Schema, TableId>;
 
 /// ValueCallback
 export type ValueCallback<
   Schema extends OptionalValuesSchema = NoValuesSchema,
   ValueId extends ValueIdFromSchema<Schema> = ValueIdFromSchema<Schema>,
 > = (valueId: ValueId, value: Value<Schema, ValueId>) => void;
-export type ValueCallbackAlias<
-  Schema extends OptionalValuesSchema = NoValuesSchema,
-  ValueId extends ValueIdFromSchema<Schema> = ValueIdFromSchema<Schema>,
-> = ValueCallback<Schema, ValueId>;
+export type ValueCallbackAlias<Schema extends OptionalValuesSchema> =
+  ValueCallback<Schema>;
 
 /// MapCell
 export type MapCell<
@@ -183,8 +175,8 @@ export type GetCell<
   cellId: CellId,
 ) => CellOrUndefined;
 export type GetCellAlias<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+  Schema extends OptionalTablesSchema,
+  TableId extends TableIdFromSchema<Schema>,
 > = GetCell<Schema, TableId>;
 
 /// DoRollback
@@ -336,16 +328,10 @@ export type CellListener<
   getCellChange: GetCellChange<Schema> | undefined,
 ) => void;
 export type CellListenerAlias<
-  Schemas extends OptionalSchemas = NoSchemas,
-  TableIdOrNull extends TableIdFromSchema<
-    Schemas[0]
-  > | null = TableIdFromSchema<Schemas[0]> | null,
-  RowIdOrNull extends IdOrNull = IdOrNull,
+  Schemas extends OptionalSchemas,
+  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+  RowIdOrNull extends IdOrNull,
   CellIdOrNull extends
-    | (TableIdOrNull extends TableIdFromSchema<Schemas[0]>
-        ? CellIdFromSchema<Schemas[0], TableIdOrNull>
-        : AllCellIdFromSchema<Schemas[0]>)
-    | null =
     | (TableIdOrNull extends TableIdFromSchema<Schemas[0]>
         ? CellIdFromSchema<Schemas[0], TableIdOrNull>
         : AllCellIdFromSchema<Schemas[0]>)
@@ -385,10 +371,8 @@ export type ValueListener<
   getValueChange: GetValueChange<Schema> | undefined,
 ) => void;
 export type ValueListenerAlias<
-  Schemas extends OptionalSchemas = NoSchemas,
-  ValueIdOrNull extends ValueIdFromSchema<
-    Schemas[1]
-  > | null = ValueIdFromSchema<Schemas[1]> | null,
+  Schemas extends OptionalSchemas,
+  ValueIdOrNull extends ValueIdFromSchema<Schemas[1]> | null,
 > = ValueListener<Schemas, ValueIdOrNull>;
 
 /// InvalidCellListener
