@@ -18,6 +18,7 @@ import {
   Relationships,
   Store,
 } from 'tinybase/debug';
+import {Store as StoreWithSchemas} from 'tinybase/debug/with-schemas';
 
 type IdObj<Value> = {[id: string]: Value};
 type IdObj2<Value> = IdObj<{[id: string]: Value}>;
@@ -146,7 +147,9 @@ export const expectNoChanges = (listener: Listener): void => {
   Object.values(listener.logs).forEach((log) => expect(log).toHaveLength(0));
 };
 
-export const createStoreListener = (store: Store): StoreListener => {
+export const createStoreListener = (
+  store: Store | StoreWithSchemas,
+): StoreListener => {
   const logs: Logs = {};
 
   return Object.freeze({
@@ -534,7 +537,7 @@ export const getRelationshipsObject = (
   relationships.forEachRelationship((relationshipId) => {
     relationshipsObject[relationshipId] = [{}, {}];
     store
-      .getRowIds(relationships.getLocalTableId(relationshipId))
+      .getRowIds(relationships.getLocalTableId(relationshipId) as string)
       .forEach((rowId) => {
         const remoteRowId = relationships.getRemoteRowId(relationshipId, rowId);
         if (remoteRowId != null) {
@@ -542,7 +545,7 @@ export const getRelationshipsObject = (
         }
       });
     store
-      .getRowIds(relationships.getRemoteTableId(relationshipId))
+      .getRowIds(relationships.getRemoteTableId(relationshipId) as string)
       .forEach((remoteRowId) => {
         const localRowIds = relationships.getLocalRowIds(
           relationshipId,

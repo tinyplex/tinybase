@@ -7,7 +7,7 @@ import {
   TablesSchema,
   Value,
   createStore,
-} from 'tinybase/debug';
+} from 'tinybase/debug/with-schemas';
 import {
   StoreListener,
   createStoreListener,
