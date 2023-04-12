@@ -1,15 +1,8 @@
 /// relationships
 
-import {
-  CellIdFromSchema,
-  GetCellAlias,
-  NoSchemas,
-  OptionalSchemas,
-  RowCallback,
-  Store,
-  TableIdFromSchema,
-} from './store.d';
+import {CellIdFromSchema, GetCellAlias, TableIdFromSchema} from './internal';
 import {Id, IdOrNull, Ids} from './common.d';
+import {NoSchemas, OptionalSchemas, RowCallback, Store} from './store.d';
 
 /// Relationship
 export type Relationship = {
