@@ -190,6 +190,8 @@ export type DoRollback<
   changedValues: ChangedValues<ValuesSchema>,
   invalidValues: InvalidValues,
 ) => boolean;
+export type DoRollbackAlias<Schemas extends OptionalSchemas> =
+  DoRollback<Schemas>;
 
 /// TransactionListener
 export type TransactionListener<Schemas extends OptionalSchemas = NoSchemas> = (
@@ -197,6 +199,8 @@ export type TransactionListener<Schemas extends OptionalSchemas = NoSchemas> = (
   cellsTouched: boolean,
   valuesTouched: boolean,
 ) => void;
+export type TransactionListenerAlias<Schemas extends OptionalSchemas> =
+  TransactionListener<Schemas>;
 
 /// TablesListener
 export type TablesListener<
@@ -206,11 +210,15 @@ export type TablesListener<
   store: Store<Schemas>,
   getCellChange: GetCellChange<Schema> | undefined,
 ) => void;
+export type TablesListenerAlias<Schemas extends OptionalSchemas> =
+  TablesListener<Schemas>;
 
 /// TableIdsListener
 export type TableIdsListener<Schemas extends OptionalSchemas = NoSchemas> = (
   store: Store<Schemas>,
 ) => void;
+export type TableIdsListenerAlias<Schemas extends OptionalSchemas> =
+  TableIdsListener<Schemas>;
 
 /// TableListener
 export type TableListener<
@@ -227,6 +235,10 @@ export type TableListener<
   tableId: TableId,
   getCellChange: GetCellChange<Schema> | undefined,
 ) => void;
+export type TableListenerAlias<
+  Schemas extends OptionalSchemas,
+  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+> = TableListener<Schemas, TableIdOrNull>;
 
 /// RowIdsListener
 export type RowIdsListener<
@@ -238,6 +250,10 @@ export type RowIdsListener<
     ? TableIdFromSchema<Schemas[0]>
     : TableIdOrNull,
 > = (store: Store<Schemas>, tableId: TableId) => void;
+export type RowIdsListenerAlias<
+  Schemas extends OptionalSchemas,
+  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+> = RowIdsListener<Schemas, TableIdOrNull>;
 
 /// SortedRowIdsListener
 export type SortedRowIdsListener<
@@ -258,6 +274,14 @@ export type SortedRowIdsListener<
   limit: Limit,
   sortedRowIds: Ids,
 ) => void;
+export type SortedRowIdsListenerAlias<
+  Schemas extends OptionalSchemas,
+  TableId extends TableIdFromSchema<Schemas[0]>,
+  CellId extends CellIdFromSchema<Schemas[0], TableId> | undefined,
+  Descending extends boolean,
+  Offset extends number,
+  Limit extends number | undefined,
+> = SortedRowIdsListener<Schemas, TableId, CellId, Descending, Offset, Limit>;
 
 /// RowListener
 export type RowListener<
@@ -277,6 +301,11 @@ export type RowListener<
   rowId: RowId,
   getCellChange: GetCellChange<Schema> | undefined,
 ) => void;
+export type RowListenerAlias<
+  Schemas extends OptionalSchemas,
+  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+  RowIdOrNull extends IdOrNull,
+> = RowListener<Schemas, TableIdOrNull, RowIdOrNull>;
 
 /// CellIdsListener
 export type CellIdsListener<
@@ -290,6 +319,11 @@ export type CellIdsListener<
     : TableIdOrNull,
   RowId = RowIdOrNull extends null ? Id : RowIdOrNull,
 > = (store: Store<Schemas>, tableId: TableId, rowId: RowId) => void;
+export type CellIdsListenerAlias<
+  Schemas extends OptionalSchemas,
+  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+  RowIdOrNull extends IdOrNull,
+> = CellIdsListener<Schemas, TableIdOrNull, RowIdOrNull>;
 
 /// CellListener
 export type CellListener<
@@ -346,11 +380,15 @@ export type ValuesListener<
   store: Store<Schemas>,
   getValueChange: GetValueChange<Schema> | undefined,
 ) => void;
+export type ValuesListenerAlias<Schemas extends OptionalSchemas> =
+  ValuesListener<Schemas>;
 
 /// ValueIdsListener
 export type ValueIdsListener<Schemas extends OptionalSchemas = NoSchemas> = (
   store: Store<Schemas>,
 ) => void;
+export type ValueIdsListenerAlias<Schemas extends OptionalSchemas> =
+  ValueIdsListener<Schemas>;
 
 /// ValueListener
 export type ValueListener<
@@ -383,10 +421,14 @@ export type InvalidCellListener<Schemas extends OptionalSchemas = NoSchemas> = (
   cellId: Id,
   invalidCells: any[],
 ) => void;
+export type InvalidCellListenerAlias<Schemas extends OptionalSchemas> =
+  InvalidCellListener<Schemas>;
 
 /// InvalidValueListener
 export type InvalidValueListener<Schemas extends OptionalSchemas = NoSchemas> =
   (store: Store<Schemas>, valueId: Id, invalidValues: any[]) => void;
+export type InvalidValueListenerAlias<Schemas extends OptionalSchemas> =
+  InvalidValueListener<Schemas>;
 
 /// GetCellChange
 export type GetCellChange<
@@ -826,16 +868,18 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   delSchema(): Store<NoSchemas>;
 
   /// Store.transaction
-  transaction<Return>(
+  transaction<Return, DoRollback extends DoRollbackAlias<Schemas>>(
     actions: () => Return,
-    doRollback?: DoRollback<Schemas>,
+    doRollback?: DoRollback,
   ): Return;
 
   /// Store.startTransaction
   startTransaction(): Store<Schemas>;
 
   /// Store.finishTransaction
-  finishTransaction(doRollback?: DoRollback<Schemas>): Store<Schemas>;
+  finishTransaction<DoRollback extends DoRollbackAlias<Schemas>>(
+    doRollback?: DoRollback,
+  ): Store<Schemas>;
 
   /// Store.forEachTable
   forEachTable<
@@ -881,25 +925,34 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   ): void;
 
   /// Store.addTablesListener
-  addTablesListener(listener: TablesListener<Schemas>, mutator?: boolean): Id;
+  addTablesListener<TablesListener extends TablesListenerAlias<Schemas>>(
+    listener: TablesListener,
+    mutator?: boolean,
+  ): Id;
 
   /// Store.addTableIdsListener
-  addTableIdsListener(
-    listener: TableIdsListener<Schemas>,
+  addTableIdsListener<TableIdsListener extends TableIdsListenerAlias<Schemas>>(
+    listener: TableIdsListener,
     mutator?: boolean,
   ): Id;
 
   /// Store.addTableListener
-  addTableListener<TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null>(
+  addTableListener<
+    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+    TableListener extends TableListenerAlias<Schemas, TableIdOrNull>,
+  >(
     tableId: TableIdOrNull,
-    listener: TableListener<Schemas, TableIdOrNull>,
+    listener: TableListener,
     mutator?: boolean,
   ): Id;
 
   /// Store.addRowIdsListener
-  addRowIdsListener<TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null>(
+  addRowIdsListener<
+    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+    RowIdsListener extends RowIdsListenerAlias<Schemas, TableIdOrNull>,
+  >(
     tableId: TableIdOrNull,
-    listener: RowIdsListener<Schemas, TableIdOrNull>,
+    listener: RowIdsListener,
     mutator?: boolean,
   ): Id;
 
@@ -910,13 +963,7 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
     Descending extends boolean,
     Offset extends number,
     Limit extends number | undefined,
-  >(
-    tableId: TableId,
-    cellId: CellId,
-    descending: Descending,
-    offset: Offset,
-    limit: Limit,
-    listener: SortedRowIdsListener<
+    SortedRowIdsListener extends SortedRowIdsListenerAlias<
       Schemas,
       TableId,
       CellId,
@@ -924,6 +971,13 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
       Offset,
       Limit
     >,
+  >(
+    tableId: TableId,
+    cellId: CellId,
+    descending: Descending,
+    offset: Offset,
+    limit: Limit,
+    listener: SortedRowIdsListener,
     mutator?: boolean,
   ): Id;
 
@@ -931,10 +985,11 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   addRowListener<
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
     RowIdOrNull extends IdOrNull,
+    RowListener extends RowListenerAlias<Schemas, TableIdOrNull, RowIdOrNull>,
   >(
     tableId: TableIdOrNull,
     rowId: RowIdOrNull,
-    listener: RowListener<Schemas, TableIdOrNull, RowIdOrNull>,
+    listener: RowListener,
     mutator?: boolean,
   ): Id;
 
@@ -942,10 +997,15 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   addCellIdsListener<
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
     RowIdOrNull extends IdOrNull,
+    CellIdsListener extends CellIdsListenerAlias<
+      Schemas,
+      TableIdOrNull,
+      RowIdOrNull
+    >,
   >(
     tableId: TableIdOrNull,
     rowId: RowIdOrNull,
-    listener: CellIdsListener<Schemas, TableIdOrNull, RowIdOrNull>,
+    listener: CellIdsListener,
     mutator?: boolean,
   ): Id;
 
@@ -973,11 +1033,14 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   ): Id;
 
   /// Store.addValuesListener
-  addValuesListener(listener: ValuesListener<Schemas>, mutator?: boolean): Id;
+  addValuesListener<ValuesListener extends ValuesListenerAlias<Schemas>>(
+    listener: ValuesListener,
+    mutator?: boolean,
+  ): Id;
 
   /// Store.addValueIdsListener
-  addValueIdsListener(
-    listener: ValueIdsListener<Schemas>,
+  addValueIdsListener<ValueIdsListener extends ValueIdsListenerAlias<Schemas>>(
+    listener: ValueIdsListener,
     mutator?: boolean,
   ): Id;
 
@@ -992,26 +1055,38 @@ export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
   ): Id;
 
   /// Store.addInvalidCellListener
-  addInvalidCellListener(
+  addInvalidCellListener<
+    InvalidCellListener extends InvalidCellListenerAlias<Schemas>,
+  >(
     tableId: IdOrNull,
     rowId: IdOrNull,
     cellId: IdOrNull,
-    listener: InvalidCellListener<Schemas>,
+    listener: InvalidCellListener,
     mutator?: boolean,
   ): Id;
 
   /// Store.addInvalidValueListener
-  addInvalidValueListener(
+  addInvalidValueListener<
+    InvalidValueListener extends InvalidValueListenerAlias<Schemas>,
+  >(
     valueId: IdOrNull,
-    listener: InvalidValueListener<Schemas>,
+    listener: InvalidValueListener,
     mutator?: boolean,
   ): Id;
 
   /// Store.addWillFinishTransactionListener
-  addWillFinishTransactionListener(listener: TransactionListener<Schemas>): Id;
+  addWillFinishTransactionListener<
+    TransactionListener extends TransactionListenerAlias<Schemas>,
+  >(
+    listener: TransactionListener,
+  ): Id;
 
   /// Store.addDidFinishTransactionListener
-  addDidFinishTransactionListener(listener: TransactionListener<Schemas>): Id;
+  addDidFinishTransactionListener<
+    TransactionListener extends TransactionListenerAlias<Schemas>,
+  >(
+    listener: TransactionListener,
+  ): Id;
 
   /// Store.callListener
   callListener(listenerId: Id): Store<Schemas>;
