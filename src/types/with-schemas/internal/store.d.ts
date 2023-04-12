@@ -25,115 +25,8 @@ import {
   ValueListener,
   ValuesListener,
   ValuesSchema,
-} from './store';
+} from '../store';
 import {Id, IdOrNull} from '../common';
-
-export type TablesSchemaAlias = TablesSchema;
-
-export type ValuesSchemaAlias = ValuesSchema;
-
-export type TableCallbackAlias<Schema extends OptionalTablesSchema> =
-  TableCallback<Schema>;
-
-export type RowCallbackAlias<
-  Schema extends OptionalTablesSchema,
-  TableId extends TableIdFromSchema<Schema>,
-> = RowCallback<Schema, TableId>;
-
-export type CellCallbackAlias<
-  Schema extends OptionalTablesSchema,
-  TableId extends TableIdFromSchema<Schema>,
-> = CellCallback<Schema, TableId>;
-
-export type ValueCallbackAlias<Schema extends OptionalValuesSchema> =
-  ValueCallback<Schema>;
-
-export type GetCellAlias<
-  Schema extends OptionalTablesSchema,
-  TableId extends TableIdFromSchema<Schema>,
-> = GetCell<Schema, TableId>;
-
-export type DoRollbackAlias<Schemas extends OptionalSchemas> =
-  DoRollback<Schemas>;
-
-export type TransactionListenerAlias<Schemas extends OptionalSchemas> =
-  TransactionListener<Schemas>;
-
-export type TablesListenerAlias<Schemas extends OptionalSchemas> =
-  TablesListener<Schemas>;
-
-export type TableIdsListenerAlias<Schemas extends OptionalSchemas> =
-  TableIdsListener<Schemas>;
-
-export type TableListenerAlias<
-  Schemas extends OptionalSchemas,
-  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
-> = TableListener<Schemas, TableIdOrNull>;
-
-export type RowIdsListenerAlias<
-  Schemas extends OptionalSchemas,
-  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
-> = RowIdsListener<Schemas, TableIdOrNull>;
-
-export type SortedRowIdsListenerAlias<
-  Schemas extends OptionalSchemas,
-  TableId extends TableIdFromSchema<Schemas[0]>,
-  CellId extends CellIdFromSchema<Schemas[0], TableId> | undefined,
-  Descending extends boolean,
-  Offset extends number,
-  Limit extends number | undefined,
-> = SortedRowIdsListener<Schemas, TableId, CellId, Descending, Offset, Limit>;
-
-export type RowListenerAlias<
-  Schemas extends OptionalSchemas,
-  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
-  RowIdOrNull extends IdOrNull,
-> = RowListener<Schemas, TableIdOrNull, RowIdOrNull>;
-
-export type CellIdsListenerAlias<
-  Schemas extends OptionalSchemas,
-  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
-  RowIdOrNull extends IdOrNull,
-> = CellIdsListener<Schemas, TableIdOrNull, RowIdOrNull>;
-
-export type CellListenerAlias<
-  Schemas extends OptionalSchemas,
-  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
-  RowIdOrNull extends IdOrNull,
-  CellIdOrNull extends
-    | (TableIdOrNull extends TableIdFromSchema<Schemas[0]>
-        ? CellIdFromSchema<Schemas[0], TableIdOrNull>
-        : AllCellIdFromSchema<Schemas[0]>)
-    | null,
-> = CellListener<Schemas, TableIdOrNull, RowIdOrNull, CellIdOrNull>;
-
-export type ValuesListenerAlias<Schemas extends OptionalSchemas> =
-  ValuesListener<Schemas>;
-
-export type ValueIdsListenerAlias<Schemas extends OptionalSchemas> =
-  ValueIdsListener<Schemas>;
-
-export type ValueListenerAlias<
-  Schemas extends OptionalSchemas,
-  ValueIdOrNull extends ValueIdFromSchema<Schemas[1]> | null,
-> = ValueListener<Schemas, ValueIdOrNull>;
-
-export type JoinedCellIdOrId<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  JoinedTableId extends TableIdFromSchema<Schema> | Id =
-    | TableIdFromSchema<Schema>
-    | Id,
-> = JoinedTableId extends TableIdFromSchema<Schema>
-  ? CellIdFromSchema<Schema, JoinedTableId>
-  : Id;
-
-export type InvalidCellListenerAlias<Schemas extends OptionalSchemas> =
-  InvalidCellListener<Schemas>;
-
-export type InvalidValueListenerAlias<Schemas extends OptionalSchemas> =
-  InvalidValueListener<Schemas>;
-
-// ---
 
 export type TablesFromSchema<
   Schema extends OptionalTablesSchema,
@@ -280,3 +173,101 @@ export type ValueFromSchema<
   : string | number | boolean;
 
 export type AsId<Key> = Exclude<Key & Id, number>;
+
+// ---
+
+export type TablesSchemaAlias = TablesSchema;
+
+export type ValuesSchemaAlias = ValuesSchema;
+
+export type TableCallbackAlias<Schema extends OptionalTablesSchema> =
+  TableCallback<Schema>;
+
+export type RowCallbackAlias<
+  Schema extends OptionalTablesSchema,
+  TableId extends TableIdFromSchema<Schema>,
+> = RowCallback<Schema, TableId>;
+
+export type CellCallbackAlias<
+  Schema extends OptionalTablesSchema,
+  TableId extends TableIdFromSchema<Schema>,
+> = CellCallback<Schema, TableId>;
+
+export type ValueCallbackAlias<Schema extends OptionalValuesSchema> =
+  ValueCallback<Schema>;
+
+export type GetCellAlias<
+  Schema extends OptionalTablesSchema,
+  TableId extends TableIdFromSchema<Schema>,
+> = GetCell<Schema, TableId>;
+
+export type DoRollbackAlias<Schemas extends OptionalSchemas> =
+  DoRollback<Schemas>;
+
+export type TransactionListenerAlias<Schemas extends OptionalSchemas> =
+  TransactionListener<Schemas>;
+
+export type TablesListenerAlias<Schemas extends OptionalSchemas> =
+  TablesListener<Schemas>;
+
+export type TableIdsListenerAlias<Schemas extends OptionalSchemas> =
+  TableIdsListener<Schemas>;
+
+export type TableListenerAlias<
+  Schemas extends OptionalSchemas,
+  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+> = TableListener<Schemas, TableIdOrNull>;
+
+export type RowIdsListenerAlias<
+  Schemas extends OptionalSchemas,
+  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+> = RowIdsListener<Schemas, TableIdOrNull>;
+
+export type SortedRowIdsListenerAlias<
+  Schemas extends OptionalSchemas,
+  TableId extends TableIdFromSchema<Schemas[0]>,
+  CellId extends CellIdFromSchema<Schemas[0], TableId> | undefined,
+  Descending extends boolean,
+  Offset extends number,
+  Limit extends number | undefined,
+> = SortedRowIdsListener<Schemas, TableId, CellId, Descending, Offset, Limit>;
+
+export type RowListenerAlias<
+  Schemas extends OptionalSchemas,
+  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+  RowIdOrNull extends IdOrNull,
+> = RowListener<Schemas, TableIdOrNull, RowIdOrNull>;
+
+export type CellIdsListenerAlias<
+  Schemas extends OptionalSchemas,
+  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+  RowIdOrNull extends IdOrNull,
+> = CellIdsListener<Schemas, TableIdOrNull, RowIdOrNull>;
+
+export type CellListenerAlias<
+  Schemas extends OptionalSchemas,
+  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+  RowIdOrNull extends IdOrNull,
+  CellIdOrNull extends
+    | (TableIdOrNull extends TableIdFromSchema<Schemas[0]>
+        ? CellIdFromSchema<Schemas[0], TableIdOrNull>
+        : AllCellIdFromSchema<Schemas[0]>)
+    | null,
+> = CellListener<Schemas, TableIdOrNull, RowIdOrNull, CellIdOrNull>;
+
+export type ValuesListenerAlias<Schemas extends OptionalSchemas> =
+  ValuesListener<Schemas>;
+
+export type ValueIdsListenerAlias<Schemas extends OptionalSchemas> =
+  ValueIdsListener<Schemas>;
+
+export type ValueListenerAlias<
+  Schemas extends OptionalSchemas,
+  ValueIdOrNull extends ValueIdFromSchema<Schemas[1]> | null,
+> = ValueListener<Schemas, ValueIdOrNull>;
+
+export type InvalidCellListenerAlias<Schemas extends OptionalSchemas> =
+  InvalidCellListener<Schemas>;
+
+export type InvalidValueListenerAlias<Schemas extends OptionalSchemas> =
+  InvalidValueListener<Schemas>;

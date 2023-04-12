@@ -1,6 +1,10 @@
 /// indexes
 
-import {CellIdFromSchema, GetCellAlias, TableIdFromSchema} from './internal';
+import {
+  CellIdFromSchema,
+  GetCellAlias,
+  TableIdFromSchema,
+} from './internal/store';
 import {Id, IdOrNull, Ids, SortKey} from './common.d';
 import {NoSchemas, OptionalSchemas, RowCallback, Store} from './store.d';
 
