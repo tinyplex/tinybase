@@ -27,7 +27,9 @@ export type CheckpointsListenerStats = {
 };
 
 /// Checkpoints
-export interface Checkpoints<Schemas extends OptionalSchemas = NoSchemas> {
+export interface Checkpoints<
+  in out Schemas extends OptionalSchemas = NoSchemas,
+> {
   /// Checkpoints.setSize
   setSize(size: number): Checkpoints<Schemas>;
 

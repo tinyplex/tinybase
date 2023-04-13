@@ -45,7 +45,7 @@ export type IndexesListenerStats = {
 };
 
 /// Indexes
-export interface Indexes<Schemas extends OptionalSchemas = NoSchemas> {
+export interface Indexes<in out Schemas extends OptionalSchemas = NoSchemas> {
   /// Indexes.setIndexDefinition
   setIndexDefinition<
     TableId extends TableIdFromSchema<Schemas[0]>,

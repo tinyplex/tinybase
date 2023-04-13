@@ -48,7 +48,7 @@ export type StoreStatsRowDetail = {
 };
 
 /// Tools
-export interface Tools<Schemas extends OptionalSchemas = NoSchemas> {
+export interface Tools<in out Schemas extends OptionalSchemas = NoSchemas> {
   /* eslint-disable max-len */
   /// getStoreStats
   getStoreStats(detail?: boolean): StoreStats;

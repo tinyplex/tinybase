@@ -365,7 +365,7 @@ export type Having = {
 };
 
 /// Queries
-export interface Queries<Schemas extends OptionalSchemas = NoSchemas> {
+export interface Queries<in out Schemas extends OptionalSchemas = NoSchemas> {
   /// Queries.setQueryDefinition
   setQueryDefinition<
     RootTableId extends TableIdFromSchema<Schemas[0]>,
