@@ -12,7 +12,7 @@ export type PersisterStats = {
 };
 
 /// Persister
-export interface Persister<Schemas extends OptionalSchemas = NoSchemas> {
+export interface Persister<in out Schemas extends OptionalSchemas = NoSchemas> {
   /// Persister.load
   load(
     initialTables?: Tables<Schemas[0], true>,

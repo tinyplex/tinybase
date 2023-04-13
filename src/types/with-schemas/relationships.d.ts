@@ -53,7 +53,9 @@ export type RelationshipsListenerStats = {
 };
 
 /// Relationships
-export interface Relationships<Schemas extends OptionalSchemas = NoSchemas> {
+export interface Relationships<
+  in out Schemas extends OptionalSchemas = NoSchemas,
+> {
   /// setRelationshipDefinition
   setRelationshipDefinition<
     LocalTableId extends TableIdFromSchema<Schemas[0]>,

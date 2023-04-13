@@ -54,7 +54,7 @@ export type MetricsListenerStats = {
 };
 
 /// Metrics
-export interface Metrics<Schemas extends OptionalSchemas = NoSchemas> {
+export interface Metrics<in out Schemas extends OptionalSchemas = NoSchemas> {
   /// Metrics.setMetricDefinition
   setMetricDefinition<
     TableId extends TableIdFromSchema<Schemas[0]>,

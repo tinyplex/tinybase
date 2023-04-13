@@ -496,7 +496,7 @@ export type StoreListenerStats = {
 };
 
 /// Store
-export interface Store<Schemas extends OptionalSchemas = NoSchemas> {
+export interface Store<in out Schemas extends OptionalSchemas = NoSchemas> {
   /// Store.getTables
   getTables<Tables = TablesFromSchema<Schemas[0]>>(): Tables;
 
