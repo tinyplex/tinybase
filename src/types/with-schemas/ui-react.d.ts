@@ -1,11 +1,44 @@
 /// ui-react
 
+import {
+  BackwardCheckpointsProps,
+  CellProps,
+  CheckpointProps,
+  CheckpointsOrCheckpointsId,
+  ComponentReturnType,
+  CurrentCheckpointProps,
+  ExtraProps,
+  ForwardCheckpointsProps,
+  IndexProps,
+  IndexesOrIndexesId,
+  LinkedRowsProps,
+  LocalRowsProps,
+  MetricProps,
+  MetricsOrMetricsId,
+  QueriesOrQueriesId,
+  RelationshipsOrRelationshipsId,
+  RemoteRowProps,
+  ResultCellProps,
+  ResultRowProps,
+  ResultSortedTableProps,
+  ResultTableProps,
+  RowProps,
+  SliceProps,
+  SortedTableProps,
+  StoreOrStoreId,
+  TableProps,
+  TablesProps,
+  UndoOrRedoInformation,
+  ValueProps,
+  ValuesProps,
+} from './internal/ui-react';
 import {Callback, Id, IdOrNull, Ids, ParameterizedCallback} from './common.d';
 import {
   Cell,
   CellIdsListener,
   CellListener,
   MapCell,
+  OptionalSchemas,
   Row,
   RowIdsListener,
   RowListener,
@@ -28,7 +61,6 @@ import {
   CheckpointListener,
   Checkpoints,
 } from './checkpoints.d';
-import {ComponentType, ReactElement} from 'react';
 import {Indexes, SliceIdsListener, SliceRowIdsListener} from './indexes.d';
 import {
   LinkedRowIdsListener,
@@ -37,6 +69,7 @@ import {
   RemoteRowIdListener,
 } from './relationships.d';
 import {MetricListener, Metrics} from './metrics.d';
+import {ProviderProps, ReactElement} from 'react';
 import {
   Queries,
   ResultCellIdsListener,
@@ -47,1082 +80,794 @@ import {
 } from './queries.d';
 import {Persister} from './persisters.d';
 
-/// StoreOrStoreId
-export type StoreOrStoreId = Store | Id;
-
-/// MetricsOrMetricsId
-export type MetricsOrMetricsId = Metrics | Id;
-
-/// IndexesOrIndexesId
-export type IndexesOrIndexesId = Indexes | Id;
-
-/// RelationshipsOrRelationshipsId
-export type RelationshipsOrRelationshipsId = Relationships | Id;
-
-/// QueriesOrQueriesId
-export type QueriesOrQueriesId = Queries | Id;
-
-/// CheckpointsOrCheckpointsId
-export type CheckpointsOrCheckpointsId = Checkpoints | Id;
-
-/// UndoOrRedoInformation
-export type UndoOrRedoInformation = [boolean, Callback, Id | undefined, string];
-
-/// useCreateStore
-export function useCreateStore(
-  create: () => Store,
-  createDeps?: React.DependencyList,
-): Store;
-
-/// useStore
-export function useStore(id?: Id): Store | undefined;
-
-/// useTables
-export function useTables(storeOrStoreId?: StoreOrStoreId): Tables;
-
-/// useTableIds
-export function useTableIds(storeOrStoreId?: StoreOrStoreId): Ids;
-
-/// useTable
-export function useTable(tableId: Id, storeOrStoreId?: StoreOrStoreId): Table;
-
-/// useRowIds
-export function useRowIds(tableId: Id, storeOrStoreId?: StoreOrStoreId): Ids;
-
-/// useSortedRowIds
-export function useSortedRowIds(
-  tableId: Id,
-  cellId?: Id,
-  descending?: boolean,
-  offset?: number,
-  limit?: number,
-  storeOrStoreId?: StoreOrStoreId,
-): Ids;
-
-/// useRow
-export function useRow(
-  tableId: Id,
-  rowId: Id,
-  storeOrStoreId?: StoreOrStoreId,
-): Row;
-
-/// useCellIds
-export function useCellIds(
-  tableId: Id,
-  rowId: Id,
-  storeOrStoreId?: StoreOrStoreId,
-): Ids;
-
-/// useCell
-export function useCell(
-  tableId: Id,
-  rowId: Id,
-  cellId: Id,
-  storeOrStoreId?: StoreOrStoreId,
-): Cell | undefined;
-
-/// useValues
-export function useValues(storeOrStoreId?: StoreOrStoreId): Values;
-
-/// useValueIds
-export function useValueIds(storeOrStoreId?: StoreOrStoreId): Ids;
-
-/// useValue
-export function useValue(valueId: Id, storeOrStoreId?: StoreOrStoreId): Value;
-
-/// useSetTablesCallback
-export function useSetTablesCallback<Parameter>(
-  getTables: (parameter: Parameter, store: Store) => Tables,
-  getTablesDeps?: React.DependencyList,
-  storeOrStoreId?: StoreOrStoreId,
-  then?: (store: Store, tables: Tables) => void,
-  thenDeps?: React.DependencyList,
-): ParameterizedCallback<Parameter>;
-
-/// useSetTableCallback
-export function useSetTableCallback<Parameter>(
-  tableId: Id,
-  getTable: (parameter: Parameter, store: Store) => Table,
-  getTableDeps?: React.DependencyList,
-  storeOrStoreId?: StoreOrStoreId,
-  then?: (store: Store, table: Table) => void,
-  thenDeps?: React.DependencyList,
-): ParameterizedCallback<Parameter>;
-
-/// useSetRowCallback
-export function useSetRowCallback<Parameter>(
-  tableId: Id,
-  rowId: Id,
-  getRow: (parameter: Parameter, store: Store) => Row,
-  getRowDeps?: React.DependencyList,
-  storeOrStoreId?: StoreOrStoreId,
-  then?: (store: Store, row: Row) => void,
-  thenDeps?: React.DependencyList,
-): ParameterizedCallback<Parameter>;
-
-/// useAddRowCallback
-export function useAddRowCallback<Parameter>(
-  tableId: Id,
-  getRow: (parameter: Parameter, store: Store) => Row,
-  getRowDeps?: React.DependencyList,
-  storeOrStoreId?: StoreOrStoreId,
-  then?: (rowId: Id | undefined, store: Store, row: Row) => void,
-  thenDeps?: React.DependencyList,
-): ParameterizedCallback<Parameter>;
-
-/// useSetPartialRowCallback
-export function useSetPartialRowCallback<Parameter>(
-  tableId: Id,
-  rowId: Id,
-  getPartialRow: (parameter: Parameter, store: Store) => Row,
-  getPartialRowDeps?: React.DependencyList,
-  storeOrStoreId?: StoreOrStoreId,
-  then?: (store: Store, partialRow: Row) => void,
-  thenDeps?: React.DependencyList,
-): ParameterizedCallback<Parameter>;
-
-/// useSetCellCallback
-export function useSetCellCallback<Parameter>(
-  tableId: Id,
-  rowId: Id,
-  cellId: Id,
-  getCell: (parameter: Parameter, store: Store) => Cell | MapCell,
-  getCellDeps?: React.DependencyList,
-  storeOrStoreId?: StoreOrStoreId,
-  then?: (store: Store, cell: Cell | MapCell) => void,
-  thenDeps?: React.DependencyList,
-): ParameterizedCallback<Parameter>;
-
-/// useSetValuesCallback
-export function useSetValuesCallback<Parameter>(
-  getValues: (parameter: Parameter, store: Store) => Values,
-  getValuesDeps?: React.DependencyList,
-  storeOrStoreId?: StoreOrStoreId,
-  then?: (store: Store, values: Values) => void,
-  thenDeps?: React.DependencyList,
-): ParameterizedCallback<Parameter>;
-
-/// useSetPartialValuesCallback
-export function useSetPartialValuesCallback<Parameter>(
-  getPartialValues: (parameter: Parameter, store: Store) => Values,
-  getPartialValuesDeps?: React.DependencyList,
-  storeOrStoreId?: StoreOrStoreId,
-  then?: (store: Store, partialValues: Values) => void,
-  thenDeps?: React.DependencyList,
-): ParameterizedCallback<Parameter>;
-
-/// useSetValueCallback
-export function useSetValueCallback<Parameter>(
-  valueId: Id,
-  getValue: (parameter: Parameter, store: Store) => Value,
-  getValueDeps?: React.DependencyList,
-  storeOrStoreId?: StoreOrStoreId,
-  then?: (store: Store, value: Value) => void,
-  thenDeps?: React.DependencyList,
-): ParameterizedCallback<Parameter>;
-
-/// useDelTablesCallback
-export function useDelTablesCallback(
-  storeOrStoreId?: StoreOrStoreId,
-  then?: (store: Store) => void,
-  thenDeps?: React.DependencyList,
-): Callback;
-
-/// useDelTableCallback
-export function useDelTableCallback(
-  tableId: Id,
-  storeOrStoreId?: StoreOrStoreId,
-  then?: (store: Store) => void,
-  thenDeps?: React.DependencyList,
-): Callback;
-
-/// useDelRowCallback
-export function useDelRowCallback(
-  tableId: Id,
-  rowId: Id,
-  storeOrStoreId?: StoreOrStoreId,
-  then?: (store: Store) => void,
-  thenDeps?: React.DependencyList,
-): Callback;
-
-/// useDelCellCallback
-export function useDelCellCallback(
-  tableId: Id,
-  rowId: Id,
-  cellId: Id,
-  forceDel?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
-  then?: (store: Store) => void,
-  thenDeps?: React.DependencyList,
-): Callback;
-
-/// useDelValuesCallback
-export function useDelValuesCallback(
-  storeOrStoreId?: StoreOrStoreId,
-  then?: (store: Store) => void,
-  thenDeps?: React.DependencyList,
-): Callback;
-
-/// useDelValueCallback
-export function useDelValueCallback(
-  valueId: Id,
-  storeOrStoreId?: StoreOrStoreId,
-  then?: (store: Store) => void,
-  thenDeps?: React.DependencyList,
-): Callback;
-
-/// useTablesListener
-export function useTablesListener(
-  listener: TablesListener,
-  listenerDeps?: React.DependencyList,
-  mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
-): void;
-
-/// useTableIdsListener
-export function useTableIdsListener(
-  listener: TableIdsListener,
-  listenerDeps?: React.DependencyList,
-  mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
-): void;
-
-/// useTableListener
-export function useTableListener(
-  tableId: IdOrNull,
-  listener: TableListener,
-  listenerDeps?: React.DependencyList,
-  mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
-): void;
-
-/// useRowIdsListener
-export function useRowIdsListener(
-  tableId: IdOrNull,
-  listener: RowIdsListener,
-  listenerDeps?: React.DependencyList,
-  mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
-): void;
-
-/// useSortedRowIdsListener
-export function useSortedRowIdsListener(
-  tableId: Id,
-  cellId: Id | undefined,
-  descending: boolean,
-  offset: number,
-  limit: number | undefined,
-  listener: SortedRowIdsListener,
-  listenerDeps?: React.DependencyList,
-  mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
-): void;
-
-/// useRowListener
-export function useRowListener(
-  tableId: IdOrNull,
-  rowId: IdOrNull,
-  listener: RowListener,
-  listenerDeps?: React.DependencyList,
-  mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
-): void;
-
-/// useCellIdsListener
-export function useCellIdsListener(
-  tableId: IdOrNull,
-  rowId: IdOrNull,
-  listener: CellIdsListener,
-  listenerDeps?: React.DependencyList,
-  mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
-): void;
-
-/// useCellListener
-export function useCellListener(
-  tableId: IdOrNull,
-  rowId: IdOrNull,
-  cellId: IdOrNull,
-  listener: CellListener,
-  listenerDeps?: React.DependencyList,
-  mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
-): void;
-
-/// useValuesListener
-export function useValuesListener(
-  listener: ValuesListener,
-  listenerDeps?: React.DependencyList,
-  mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
-): void;
-
-/// useValueIdsListener
-export function useValueIdsListener(
-  listener: ValueIdsListener,
-  listenerDeps?: React.DependencyList,
-  mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
-): void;
-
-/// useValueListener
-export function useValueListener(
-  valueId: IdOrNull,
-  listener: ValueListener,
-  listenerDeps?: React.DependencyList,
-  mutator?: boolean,
-  storeOrStoreId?: StoreOrStoreId,
-): void;
-
-/// useCreateMetrics
-export function useCreateMetrics(
-  store: Store,
-  create: (store: Store) => Metrics,
-  createDeps?: React.DependencyList,
-): Metrics;
-
-/// useMetrics
-export function useMetrics(id?: Id): Metrics | undefined;
-
-/// useMetric
-export function useMetric(
-  metricId: Id,
-  metricsOrMetricsId?: MetricsOrMetricsId,
-): number | undefined;
-
-/// useMetricListener
-export function useMetricListener(
-  metricId: IdOrNull,
-  listener: MetricListener,
-  listenerDeps?: React.DependencyList,
-  metricsOrMetricsId?: MetricsOrMetricsId,
-): void;
-
-/// useCreateIndexes
-export function useCreateIndexes(
-  store: Store,
-  create: (store: Store) => Indexes,
-  createDeps?: React.DependencyList,
-): Indexes;
-
-/// useIndexes
-export function useIndexes(id?: Id): Indexes | undefined;
-
-/// useSliceIds
-export function useSliceIds(
-  indexId: Id,
-  indexesOrIndexesId?: IndexesOrIndexesId,
-): Ids;
-
-/// useSliceRowIds
-export function useSliceRowIds(
-  indexId: Id,
-  sliceId: Id,
-  indexesOrIndexesId?: IndexesOrIndexesId,
-): Ids;
-
-/// useSliceIdsListener
-export function useSliceIdsListener(
-  indexId: IdOrNull,
-  listener: SliceIdsListener,
-  listenerDeps?: React.DependencyList,
-  indexesOrIndexesId?: IndexesOrIndexesId,
-): void;
-
-/// useSliceRowIdsListener
-export function useSliceRowIdsListener(
-  indexId: IdOrNull,
-  sliceId: IdOrNull,
-  listener: SliceRowIdsListener,
-  listenerDeps?: React.DependencyList,
-  indexesOrIndexesId?: IndexesOrIndexesId,
-): void;
-
-/// useCreateRelationships
-export function useCreateRelationships(
-  store: Store,
-  create: (store: Store) => Relationships,
-  createDeps?: React.DependencyList,
-): Relationships;
-
-/// useRelationships
-export function useRelationships(id?: Id): Relationships | undefined;
-
-/// useRemoteRowId
-export function useRemoteRowId(
-  relationshipId: Id,
-  localRowId: Id,
-  relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
-): Id | undefined;
-
-/// useLocalRowIds
-export function useLocalRowIds(
-  relationshipId: Id,
-  remoteRowId: Id,
-  relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
-): Ids;
-
-/// useLinkedRowIds
-export function useLinkedRowIds(
-  relationshipId: Id,
-  firstRowId: Id,
-  relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
-): Ids;
-
-/// useRemoteRowIdListener
-export function useRemoteRowIdListener(
-  relationshipId: IdOrNull,
-  localRowId: IdOrNull,
-  listener: RemoteRowIdListener,
-  listenerDeps?: React.DependencyList,
-  relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
-): void;
-
-/// useLocalRowIdsListener
-export function useLocalRowIdsListener(
-  relationshipId: IdOrNull,
-  remoteRowId: IdOrNull,
-  listener: LocalRowIdsListener,
-  listenerDeps?: React.DependencyList,
-  relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
-): void;
-
-/// useLinkedRowIdsListener
-export function useLinkedRowIdsListener(
-  relationshipId: Id,
-  firstRowId: Id,
-  listener: LinkedRowIdsListener,
-  listenerDeps?: React.DependencyList,
-  relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
-): void;
-
-/// useCreateQueries
-export function useCreateQueries(
-  store: Store,
-  create: (store: Store) => Queries,
-  createDeps?: React.DependencyList,
-): Queries;
-
-/// useQueries
-export function useQueries(id?: Id): Queries | undefined;
-
-/// useResultTable
-export function useResultTable(
-  queryId: Id,
-  queriesOrQueriesId?: QueriesOrQueriesId,
-): Table;
-
-/// useResultRowIds
-export function useResultRowIds(
-  queryId: Id,
-  queriesOrQueriesId?: QueriesOrQueriesId,
-): Ids;
-
-/// useResultSortedRowIds
-export function useResultSortedRowIds(
-  queryId: Id,
-  cellId?: Id,
-  descending?: boolean,
-  offset?: number,
-  limit?: number,
-  queriesOrQueriesId?: QueriesOrQueriesId,
-): Ids;
-
-/// useResultRow
-export function useResultRow(
-  queryId: Id,
-  rowId: Id,
-  queriesOrQueriesId?: QueriesOrQueriesId,
-): Row;
-
-/// useResultCellIds
-export function useResultCellIds(
-  queryId: Id,
-  rowId: Id,
-  queriesOrQueriesId?: QueriesOrQueriesId,
-): Ids;
-
-/// useResultCell
-export function useResultCell(
-  queryId: Id,
-  rowId: Id,
-  cellId: Id,
-  queriesOrQueriesId?: QueriesOrQueriesId,
-): Cell | undefined;
-
-/// useResultTableListener
-export function useResultTableListener(
-  queryId: IdOrNull,
-  listener: ResultTableListener,
-  listenerDeps?: React.DependencyList,
-  queriesOrQueriesId?: QueriesOrQueriesId,
-): void;
-
-/// useResultRowIdsListener
-export function useResultRowIdsListener(
-  queryId: IdOrNull,
-  listener: ResultRowIdsListener,
-  listenerDeps?: React.DependencyList,
-  queriesOrQueriesId?: QueriesOrQueriesId,
-): void;
-
-/// useResultSortedRowIdsListener
-export function useResultSortedRowIdsListener(
-  queryId: Id,
-  cellId: Id | undefined,
-  descending: boolean,
-  offset: number,
-  limit: number | undefined,
-  listener: ResultRowIdsListener,
-  listenerDeps?: React.DependencyList,
-  queriesOrQueriesId?: QueriesOrQueriesId,
-): void;
-
-/// useResultRowListener
-export function useResultRowListener(
-  queryId: IdOrNull,
-  rowId: IdOrNull,
-  listener: ResultRowListener,
-  listenerDeps?: React.DependencyList,
-  queriesOrQueriesId?: QueriesOrQueriesId,
-): void;
-
-/// useResultCellIdsListener
-export function useResultCellIdsListener(
-  queryId: IdOrNull,
-  rowId: IdOrNull,
-  listener: ResultCellIdsListener,
-  listenerDeps?: React.DependencyList,
-  queriesOrQueriesId?: QueriesOrQueriesId,
-): void;
-
-/// useResultCellListener
-export function useResultCellListener(
-  queryId: IdOrNull,
-  rowId: IdOrNull,
-  cellId: IdOrNull,
-  listener: ResultCellListener,
-  listenerDeps?: React.DependencyList,
-  queriesOrQueriesId?: QueriesOrQueriesId,
-): void;
-
-/// useCreateCheckpoints
-export function useCreateCheckpoints(
-  store: Store,
-  create: (store: Store) => Checkpoints,
-  createDeps?: React.DependencyList,
-): Checkpoints;
-
-/// useCheckpoints
-export function useCheckpoints(id?: Id): Checkpoints | undefined;
-
-/// useCheckpointIds
-export function useCheckpointIds(
-  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
-): CheckpointIds;
-
-/// useCheckpoint
-export function useCheckpoint(
-  checkpointId: Id,
-  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
-): string | undefined;
-
-/// useSetCheckpointCallback
-export function useSetCheckpointCallback<Parameter>(
-  getCheckpoint?: (parameter: Parameter) => string,
-  getCheckpointDeps?: React.DependencyList,
-  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
-  then?: (checkpointId: Id, checkpoints: Checkpoints, label?: string) => void,
-  thenDeps?: React.DependencyList,
-): ParameterizedCallback<Parameter>;
-
-/// useGoBackwardCallback
-export function useGoBackwardCallback(
-  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
-): Callback;
-
-/// useGoForwardCallback
-export function useGoForwardCallback(
-  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
-): Callback;
-
-/// useGoToCallback
-export function useGoToCallback<Parameter>(
-  getCheckpointId: (parameter: Parameter) => Id,
-  getCheckpointIdDeps?: React.DependencyList,
-  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
-  then?: (checkpoints: Checkpoints, checkpointId: Id) => void,
-  thenDeps?: React.DependencyList,
-): ParameterizedCallback<Parameter>;
-
-/// useUndoInformation
-export function useUndoInformation(
-  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
-): UndoOrRedoInformation;
-
-/// useRedoInformation
-export function useRedoInformation(
-  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
-): UndoOrRedoInformation;
-
-/// useCheckpointIdsListener
-export function useCheckpointIdsListener(
-  listener: CheckpointIdsListener,
-  listenerDeps?: React.DependencyList,
-  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
-): void;
-
-/// useCheckpointListener
-export function useCheckpointListener(
-  checkpointId: IdOrNull,
-  listener: CheckpointListener,
-  listenerDeps?: React.DependencyList,
-  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
-): void;
-
-/// useCreatePersister
-export function useCreatePersister(
-  store: Store,
-  create: (store: Store) => Persister,
-  createDeps?: React.DependencyList,
-  then?: (persister: Persister) => Promise<void>,
-  thenDeps?: React.DependencyList,
-): Persister;
-
-/// ExtraProps
-export type ExtraProps = {[propName: string]: any};
-
-/// TablesProps
-export type TablesProps = {
-  /// TablesProps.store
-  readonly store?: StoreOrStoreId;
-  /// TablesProps.tableComponent
-  readonly tableComponent?: ComponentType<TableProps>;
-  /// TablesProps.getTableComponentProps
-  readonly getTableComponentProps?: (tableId: Id) => ExtraProps;
-  /// TablesProps.separator
-  readonly separator?: ReactElement | string;
-  /// TablesProps.debugIds
-  readonly debugIds?: boolean;
+export type WithSchemas<Schemas extends OptionalSchemas> = {
+  /// StoreOrStoreId
+  StoreOrStoreId: StoreOrStoreId<Schemas>;
+
+  /// MetricsOrMetricsId
+  MetricsOrMetricsId: MetricsOrMetricsId<Schemas>;
+
+  /// IndexesOrIndexesId
+  IndexesOrIndexesId: IndexesOrIndexesId<Schemas>;
+
+  /// RelationshipsOrRelationshipsId
+  RelationshipsOrRelationshipsId: RelationshipsOrRelationshipsId<Schemas>;
+
+  /// QueriesOrQueriesId
+  QueriesOrQueriesId: QueriesOrQueriesId<Schemas>;
+
+  /// CheckpointsOrCheckpointsId
+  CheckpointsOrCheckpointsId: CheckpointsOrCheckpointsId<Schemas>;
+
+  /// UndoOrRedoInformation
+  UndoOrRedoInformation: UndoOrRedoInformation;
+
+  /// useCreateStore
+  useCreateStore: (
+    create: () => Store<Schemas>,
+    createDeps?: React.DependencyList,
+  ) => Store<Schemas>;
+
+  /// useStore
+  useStore: (id?: Id) => Store<Schemas> | undefined;
+
+  /// useTables
+  useTables: (storeOrStoreId?: StoreOrStoreId<Schemas>) => Tables;
+
+  /// useTableIds
+  useTableIds: (storeOrStoreId?: StoreOrStoreId<Schemas>) => Ids;
+
+  /// useTable
+  useTable: (tableId: Id, storeOrStoreId?: StoreOrStoreId<Schemas>) => Table;
+
+  /// useRowIds
+  useRowIds: (tableId: Id, storeOrStoreId?: StoreOrStoreId<Schemas>) => Ids;
+
+  /// useSortedRowIds
+  useSortedRowIds: (
+    tableId: Id,
+    cellId?: Id,
+    descending?: boolean,
+    offset?: number,
+    limit?: number,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => Ids;
+
+  /// useRow
+  useRow: (
+    tableId: Id,
+    rowId: Id,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => Row;
+
+  /// useCellIds
+  useCellIds: (
+    tableId: Id,
+    rowId: Id,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => Ids;
+
+  /// useCell
+  useCell: (
+    tableId: Id,
+    rowId: Id,
+    cellId: Id,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => Cell | undefined;
+
+  /// useValues
+  useValues: (storeOrStoreId?: StoreOrStoreId<Schemas>) => Values;
+
+  /// useValueIds
+  useValueIds: (storeOrStoreId?: StoreOrStoreId<Schemas>) => Ids;
+
+  /// useValue
+  useValue: (valueId: Id, storeOrStoreId?: StoreOrStoreId<Schemas>) => Value;
+
+  /// useSetTablesCallback
+  useSetTablesCallback: <Parameter>(
+    getTables: (parameter: Parameter, store: Store) => Tables,
+    getTablesDeps?: React.DependencyList,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    then?: (store: Store, tables: Tables) => void,
+    thenDeps?: React.DependencyList,
+  ) => ParameterizedCallback<Parameter>;
+
+  /// useSetTableCallback
+  useSetTableCallback: <Parameter>(
+    tableId: Id,
+    getTable: (parameter: Parameter, store: Store) => Table,
+    getTableDeps?: React.DependencyList,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    then?: (store: Store, table: Table) => void,
+    thenDeps?: React.DependencyList,
+  ) => ParameterizedCallback<Parameter>;
+
+  /// useSetRowCallback
+  useSetRowCallback: <Parameter>(
+    tableId: Id,
+    rowId: Id,
+    getRow: (parameter: Parameter, store: Store) => Row,
+    getRowDeps?: React.DependencyList,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    then?: (store: Store, row: Row) => void,
+    thenDeps?: React.DependencyList,
+  ) => ParameterizedCallback<Parameter>;
+
+  /// useAddRowCallback
+  useAddRowCallback: <Parameter>(
+    tableId: Id,
+    getRow: (parameter: Parameter, store: Store) => Row,
+    getRowDeps?: React.DependencyList,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    then?: (rowId: Id | undefined, store: Store, row: Row) => void,
+    thenDeps?: React.DependencyList,
+  ) => ParameterizedCallback<Parameter>;
+
+  /// useSetPartialRowCallback
+  useSetPartialRowCallback: <Parameter>(
+    tableId: Id,
+    rowId: Id,
+    getPartialRow: (parameter: Parameter, store: Store) => Row,
+    getPartialRowDeps?: React.DependencyList,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    then?: (store: Store, partialRow: Row) => void,
+    thenDeps?: React.DependencyList,
+  ) => ParameterizedCallback<Parameter>;
+
+  /// useSetCellCallback
+  useSetCellCallback: <Parameter>(
+    tableId: Id,
+    rowId: Id,
+    cellId: Id,
+    getCell: (parameter: Parameter, store: Store) => Cell | MapCell,
+    getCellDeps?: React.DependencyList,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    then?: (store: Store, cell: Cell | MapCell) => void,
+    thenDeps?: React.DependencyList,
+  ) => ParameterizedCallback<Parameter>;
+
+  /// useSetValuesCallback
+  useSetValuesCallback: <Parameter>(
+    getValues: (parameter: Parameter, store: Store) => Values,
+    getValuesDeps?: React.DependencyList,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    then?: (store: Store, values: Values) => void,
+    thenDeps?: React.DependencyList,
+  ) => ParameterizedCallback<Parameter>;
+
+  /// useSetPartialValuesCallback
+  useSetPartialValuesCallback: <Parameter>(
+    getPartialValues: (parameter: Parameter, store: Store) => Values,
+    getPartialValuesDeps?: React.DependencyList,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    then?: (store: Store, partialValues: Values) => void,
+    thenDeps?: React.DependencyList,
+  ) => ParameterizedCallback<Parameter>;
+
+  /// useSetValueCallback
+  useSetValueCallback: <Parameter>(
+    valueId: Id,
+    getValue: (parameter: Parameter, store: Store) => Value,
+    getValueDeps?: React.DependencyList,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    then?: (store: Store, value: Value) => void,
+    thenDeps?: React.DependencyList,
+  ) => ParameterizedCallback<Parameter>;
+
+  /// useDelTablesCallback
+  useDelTablesCallback: (
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    then?: (store: Store) => void,
+    thenDeps?: React.DependencyList,
+  ) => Callback;
+
+  /// useDelTableCallback
+  useDelTableCallback: (
+    tableId: Id,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    then?: (store: Store) => void,
+    thenDeps?: React.DependencyList,
+  ) => Callback;
+
+  /// useDelRowCallback
+  useDelRowCallback: (
+    tableId: Id,
+    rowId: Id,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    then?: (store: Store) => void,
+    thenDeps?: React.DependencyList,
+  ) => Callback;
+
+  /// useDelCellCallback
+  useDelCellCallback: (
+    tableId: Id,
+    rowId: Id,
+    cellId: Id,
+    forceDel?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    then?: (store: Store) => void,
+    thenDeps?: React.DependencyList,
+  ) => Callback;
+
+  /// useDelValuesCallback
+  useDelValuesCallback: (
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    then?: (store: Store) => void,
+    thenDeps?: React.DependencyList,
+  ) => Callback;
+
+  /// useDelValueCallback
+  useDelValueCallback: (
+    valueId: Id,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+    then?: (store: Store) => void,
+    thenDeps?: React.DependencyList,
+  ) => Callback;
+
+  /// useTablesListener
+  useTablesListener: (
+    listener: TablesListener,
+    listenerDeps?: React.DependencyList,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// useTableIdsListener
+  useTableIdsListener: (
+    listener: TableIdsListener,
+    listenerDeps?: React.DependencyList,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// useTableListener
+  useTableListener: (
+    tableId: IdOrNull,
+    listener: TableListener,
+    listenerDeps?: React.DependencyList,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// useRowIdsListener
+  useRowIdsListener: (
+    tableId: IdOrNull,
+    listener: RowIdsListener,
+    listenerDeps?: React.DependencyList,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// useSortedRowIdsListener
+  useSortedRowIdsListener: (
+    tableId: Id,
+    cellId: Id | undefined,
+    descending: boolean,
+    offset: number,
+    limit: number | undefined,
+    listener: SortedRowIdsListener,
+    listenerDeps?: React.DependencyList,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// useRowListener
+  useRowListener: (
+    tableId: IdOrNull,
+    rowId: IdOrNull,
+    listener: RowListener,
+    listenerDeps?: React.DependencyList,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// useCellIdsListener
+  useCellIdsListener: (
+    tableId: IdOrNull,
+    rowId: IdOrNull,
+    listener: CellIdsListener,
+    listenerDeps?: React.DependencyList,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// useCellListener
+  useCellListener: (
+    tableId: IdOrNull,
+    rowId: IdOrNull,
+    cellId: IdOrNull,
+    listener: CellListener,
+    listenerDeps?: React.DependencyList,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// useValuesListener
+  useValuesListener: (
+    listener: ValuesListener,
+    listenerDeps?: React.DependencyList,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// useValueIdsListener
+  useValueIdsListener: (
+    listener: ValueIdsListener,
+    listenerDeps?: React.DependencyList,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// useValueListener
+  useValueListener: (
+    valueId: IdOrNull,
+    listener: ValueListener,
+    listenerDeps?: React.DependencyList,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// useCreateMetrics
+  useCreateMetrics: (
+    store: Store,
+    create: (store: Store) => Metrics,
+    createDeps?: React.DependencyList,
+  ) => Metrics;
+
+  /// useMetrics
+  useMetrics: (id?: Id) => Metrics | undefined;
+
+  /// useMetric
+  useMetric: (
+    metricId: Id,
+    metricsOrMetricsId?: MetricsOrMetricsId<Schemas>,
+  ) => number | undefined;
+
+  /// useMetricListener
+  useMetricListener: (
+    metricId: IdOrNull,
+    listener: MetricListener,
+    listenerDeps?: React.DependencyList,
+    metricsOrMetricsId?: MetricsOrMetricsId<Schemas>,
+  ) => void;
+
+  /// useCreateIndexes
+  useCreateIndexes: (
+    store: Store,
+    create: (store: Store) => Indexes,
+    createDeps?: React.DependencyList,
+  ) => Indexes;
+
+  /// useIndexes
+  useIndexes: (id?: Id) => Indexes | undefined;
+
+  /// useSliceIds
+  useSliceIds: (
+    indexId: Id,
+    indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
+  ) => Ids;
+
+  /// useSliceRowIds
+  useSliceRowIds: (
+    indexId: Id,
+    sliceId: Id,
+    indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
+  ) => Ids;
+
+  /// useSliceIdsListener
+  useSliceIdsListener: (
+    indexId: IdOrNull,
+    listener: SliceIdsListener,
+    listenerDeps?: React.DependencyList,
+    indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
+  ) => void;
+
+  /// useSliceRowIdsListener
+  useSliceRowIdsListener: (
+    indexId: IdOrNull,
+    sliceId: IdOrNull,
+    listener: SliceRowIdsListener,
+    listenerDeps?: React.DependencyList,
+    indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
+  ) => void;
+
+  /// useCreateRelationships
+  useCreateRelationships: (
+    store: Store,
+    create: (store: Store) => Relationships,
+    createDeps?: React.DependencyList,
+  ) => Relationships;
+
+  /// useRelationships
+  useRelationships: (id?: Id) => Relationships | undefined;
+
+  /// useRemoteRowId
+  useRemoteRowId: (
+    relationshipId: Id,
+    localRowId: Id,
+    relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
+  ) => Id | undefined;
+
+  /// useLocalRowIds
+  useLocalRowIds: (
+    relationshipId: Id,
+    remoteRowId: Id,
+    relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
+  ) => Ids;
+
+  /// useLinkedRowIds
+  useLinkedRowIds: (
+    relationshipId: Id,
+    firstRowId: Id,
+    relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
+  ) => Ids;
+
+  /// useRemoteRowIdListener
+  useRemoteRowIdListener: (
+    relationshipId: IdOrNull,
+    localRowId: IdOrNull,
+    listener: RemoteRowIdListener,
+    listenerDeps?: React.DependencyList,
+    relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
+  ) => void;
+
+  /// useLocalRowIdsListener
+  useLocalRowIdsListener: (
+    relationshipId: IdOrNull,
+    remoteRowId: IdOrNull,
+    listener: LocalRowIdsListener,
+    listenerDeps?: React.DependencyList,
+    relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
+  ) => void;
+
+  /// useLinkedRowIdsListener
+  useLinkedRowIdsListener: (
+    relationshipId: Id,
+    firstRowId: Id,
+    listener: LinkedRowIdsListener,
+    listenerDeps?: React.DependencyList,
+    relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
+  ) => void;
+
+  /// useCreateQueries
+  useCreateQueries: (
+    store: Store,
+    create: (store: Store) => Queries,
+    createDeps?: React.DependencyList,
+  ) => Queries;
+
+  /// useQueries
+  useQueries: (id?: Id) => Queries | undefined;
+
+  /// useResultTable
+  useResultTable: (
+    queryId: Id,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+  ) => Table;
+
+  /// useResultRowIds
+  useResultRowIds: (
+    queryId: Id,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+  ) => Ids;
+
+  /// useResultSortedRowIds
+  useResultSortedRowIds: (
+    queryId: Id,
+    cellId?: Id,
+    descending?: boolean,
+    offset?: number,
+    limit?: number,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+  ) => Ids;
+
+  /// useResultRow
+  useResultRow: (
+    queryId: Id,
+    rowId: Id,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+  ) => Row;
+
+  /// useResultCellIds
+  useResultCellIds: (
+    queryId: Id,
+    rowId: Id,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+  ) => Ids;
+
+  /// useResultCell
+  useResultCell: (
+    queryId: Id,
+    rowId: Id,
+    cellId: Id,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+  ) => Cell | undefined;
+
+  /// useResultTableListener
+  useResultTableListener: (
+    queryId: IdOrNull,
+    listener: ResultTableListener,
+    listenerDeps?: React.DependencyList,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+  ) => void;
+
+  /// useResultRowIdsListener
+  useResultRowIdsListener: (
+    queryId: IdOrNull,
+    listener: ResultRowIdsListener,
+    listenerDeps?: React.DependencyList,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+  ) => void;
+
+  /// useResultSortedRowIdsListener
+  useResultSortedRowIdsListener: (
+    queryId: Id,
+    cellId: Id | undefined,
+    descending: boolean,
+    offset: number,
+    limit: number | undefined,
+    listener: ResultRowIdsListener,
+    listenerDeps?: React.DependencyList,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+  ) => void;
+
+  /// useResultRowListener
+  useResultRowListener: (
+    queryId: IdOrNull,
+    rowId: IdOrNull,
+    listener: ResultRowListener,
+    listenerDeps?: React.DependencyList,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+  ) => void;
+
+  /// useResultCellIdsListener
+  useResultCellIdsListener: (
+    queryId: IdOrNull,
+    rowId: IdOrNull,
+    listener: ResultCellIdsListener,
+    listenerDeps?: React.DependencyList,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+  ) => void;
+
+  /// useResultCellListener
+  useResultCellListener: (
+    queryId: IdOrNull,
+    rowId: IdOrNull,
+    cellId: IdOrNull,
+    listener: ResultCellListener,
+    listenerDeps?: React.DependencyList,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+  ) => void;
+
+  /// useCreateCheckpoints
+  useCreateCheckpoints: (
+    store: Store,
+    create: (store: Store) => Checkpoints,
+    createDeps?: React.DependencyList,
+  ) => Checkpoints;
+
+  /// useCheckpoints
+  useCheckpoints: (id?: Id) => Checkpoints | undefined;
+
+  /// useCheckpointIds
+  useCheckpointIds: (
+    checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
+  ) => CheckpointIds;
+
+  /// useCheckpoint
+  useCheckpoint: (
+    checkpointId: Id,
+    checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
+  ) => string | undefined;
+
+  /// useSetCheckpointCallback
+  useSetCheckpointCallback: <Parameter>(
+    getCheckpoint?: (parameter: Parameter) => string,
+    getCheckpointDeps?: React.DependencyList,
+    checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
+    then?: (checkpointId: Id, checkpoints: Checkpoints, label?: string) => void,
+    thenDeps?: React.DependencyList,
+  ) => ParameterizedCallback<Parameter>;
+
+  /// useGoBackwardCallback
+  useGoBackwardCallback: (
+    checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
+  ) => Callback;
+
+  /// useGoForwardCallback
+  useGoForwardCallback: (
+    checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
+  ) => Callback;
+
+  /// useGoToCallback
+  useGoToCallback: <Parameter>(
+    getCheckpointId: (parameter: Parameter) => Id,
+    getCheckpointIdDeps?: React.DependencyList,
+    checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
+    then?: (checkpoints: Checkpoints, checkpointId: Id) => void,
+    thenDeps?: React.DependencyList,
+  ) => ParameterizedCallback<Parameter>;
+
+  /// useUndoInformation
+  useUndoInformation: (
+    checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
+  ) => UndoOrRedoInformation;
+
+  /// useRedoInformation
+  useRedoInformation: (
+    checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
+  ) => UndoOrRedoInformation;
+
+  /// useCheckpointIdsListener
+  useCheckpointIdsListener: (
+    listener: CheckpointIdsListener,
+    listenerDeps?: React.DependencyList,
+    checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
+  ) => void;
+
+  /// useCheckpointListener
+  useCheckpointListener: (
+    checkpointId: IdOrNull,
+    listener: CheckpointListener,
+    listenerDeps?: React.DependencyList,
+    checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
+  ) => void;
+
+  /// useCreatePersister
+  useCreatePersister: (
+    store: Store,
+    create: (store: Store) => Persister,
+    createDeps?: React.DependencyList,
+    then?: (persister: Persister) => Promise<void>,
+    thenDeps?: React.DependencyList,
+  ) => Persister;
+
+  /// ExtraProps
+  ExtraProps: ExtraProps;
+
+  /// TablesProps
+  TablesProps: TablesProps<Schemas>;
+
+  /// TableProps
+  TableProps: TableProps<Schemas>;
+
+  /// SortedTableProps
+  SortedTableProps: SortedTableProps<Schemas>;
+
+  /// RowProps
+  RowProps: RowProps<Schemas>;
+
+  /// CellProps
+  CellProps: CellProps<Schemas>;
+
+  /// ValuesProps
+  ValuesProps: ValuesProps<Schemas>;
+
+  /// ValueProps
+  ValueProps: ValueProps<Schemas>;
+
+  /// MetricProps
+  MetricProps: MetricProps<Schemas>;
+
+  /// IndexProps
+  IndexProps: IndexProps<Schemas>;
+
+  /// SliceProps
+  SliceProps: SliceProps<Schemas>;
+
+  /// RemoteRowProps
+  RemoteRowProps: RemoteRowProps<Schemas>;
+
+  /// LocalRowsProps
+  LocalRowsProps: LocalRowsProps<Schemas>;
+
+  /// LinkedRowsProps
+  LinkedRowsProps: LinkedRowsProps<Schemas>;
+
+  /// ResultTableProps
+  ResultTableProps: ResultTableProps<Schemas>;
+
+  /// ResultSortedTableProps
+  ResultSortedTableProps: ResultSortedTableProps<Schemas>;
+
+  /// ResultRowProps
+  ResultRowProps: ResultRowProps<Schemas>;
+
+  /// ResultCellProps
+  ResultCellProps: ResultCellProps<Schemas>;
+
+  /// CheckpointProps
+  CheckpointProps: CheckpointProps<Schemas>;
+
+  /// BackwardCheckpointsProps
+  BackwardCheckpointsProps: BackwardCheckpointsProps<Schemas>;
+
+  /// CurrentCheckpointProps
+  CurrentCheckpointProps: CurrentCheckpointProps<Schemas>;
+
+  /// ForwardCheckpointsProps
+  ForwardCheckpointsProps: ForwardCheckpointsProps<Schemas>;
+
+  /// ProviderProps
+  ProviderProps: ProviderProps<Schemas>;
+
+  /// ComponentReturnType
+  ComponentReturnType: ReactElement<any, any> | null;
+
+  /// Provider
+  Provider: (
+    props: ProviderProps<Schemas> & {children: React.ReactNode},
+  ) => ComponentReturnType;
+
+  /// CellView
+  CellView: (props: CellProps<Schemas>) => ComponentReturnType;
+
+  /// RowView
+  RowView: (props: RowProps<Schemas>) => ComponentReturnType;
+
+  /// SortedTableView
+  SortedTableView: (props: SortedTableProps<Schemas>) => ComponentReturnType;
+
+  /// TableView
+  TableView: (props: TableProps<Schemas>) => ComponentReturnType;
+
+  /// TablesView
+  TablesView: (props: TablesProps<Schemas>) => ComponentReturnType;
+
+  /// ValueView
+  ValueView: (props: ValueProps<Schemas>) => ComponentReturnType;
+
+  /// ValuesView
+  ValuesView: (props: ValuesProps<Schemas>) => ComponentReturnType;
+
+  /// MetricView
+  MetricView: (props: MetricProps<Schemas>) => ComponentReturnType;
+
+  /// SliceView
+  SliceView: (props: SliceProps<Schemas>) => ComponentReturnType;
+
+  /// IndexView
+  IndexView: (props: IndexProps<Schemas>) => ComponentReturnType;
+
+  /// RemoteRowView
+  RemoteRowView: (props: RemoteRowProps<Schemas>) => ComponentReturnType;
+
+  /// LocalRowsView
+  LocalRowsView: (props: LocalRowsProps<Schemas>) => ComponentReturnType;
+
+  /// LinkedRowsView
+  LinkedRowsView: (props: LinkedRowsProps<Schemas>) => ComponentReturnType;
+
+  /// ResultCellView
+  ResultCellView: (props: ResultCellProps<Schemas>) => ComponentReturnType;
+
+  /// ResultRowView
+  ResultRowView: (props: ResultRowProps<Schemas>) => ComponentReturnType;
+
+  /// ResultSortedTableView
+  ResultSortedTableView: (
+    props: ResultSortedTableProps<Schemas>,
+  ) => ComponentReturnType;
+
+  /// ResultTableView
+  ResultTableView: (props: ResultTableProps<Schemas>) => ComponentReturnType;
+
+  /// CheckpointView
+  CheckpointView: (props: CheckpointProps<Schemas>) => ComponentReturnType;
+
+  /// BackwardCheckpointsView
+  BackwardCheckpointsView: (
+    props: BackwardCheckpointsProps<Schemas>,
+  ) => ComponentReturnType;
+
+  /// CurrentCheckpointView
+  CurrentCheckpointView: (
+    props: CurrentCheckpointProps<Schemas>,
+  ) => ComponentReturnType;
+
+  /// ForwardCheckpointsView
+  ForwardCheckpointsView: (
+    props: ForwardCheckpointsProps<Schemas>,
+  ) => ComponentReturnType;
 };
-
-/// TableProps
-export type TableProps = {
-  /// TableProps.tableId
-  readonly tableId: Id;
-  /// TableProps.store
-  readonly store?: StoreOrStoreId;
-  /// TableProps.rowComponent
-  readonly rowComponent?: ComponentType<RowProps>;
-  /// TableProps.getRowComponentProps
-  readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
-  /// TableProps.separator
-  readonly separator?: ReactElement | string;
-  /// TableProps.debugIds
-  readonly debugIds?: boolean;
-};
-
-/// SortedTableProps
-export type SortedTableProps = {
-  /// SortedTableProps.tableId
-  readonly tableId: Id;
-  /// SortedTableProps.cellId
-  readonly cellId?: Id;
-  /// SortedTableProps.descending
-  readonly descending?: boolean;
-  /// SortedTableProps.offset
-  readonly offset?: number;
-  /// SortedTableProps.limit
-  readonly limit?: number;
-  /// SortedTableProps.store
-  readonly store?: StoreOrStoreId;
-  /// SortedTableProps.rowComponent
-  readonly rowComponent?: ComponentType<RowProps>;
-  /// SortedTableProps.getRowComponentProps
-  readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
-  /// SortedTableProps.separator
-  readonly separator?: ReactElement | string;
-  /// SortedTableProps.debugIds
-  readonly debugIds?: boolean;
-};
-
-/// RowProps
-export type RowProps = {
-  /// RowProps.tableId
-  readonly tableId: Id;
-  /// RowProps.rowId
-  readonly rowId: Id;
-  /// RowProps.store
-  readonly store?: StoreOrStoreId;
-  /// RowProps.cellComponent
-  readonly cellComponent?: ComponentType<CellProps>;
-  /// RowProps.getCellComponentProps
-  readonly getCellComponentProps?: (cellId: Id) => ExtraProps;
-  /// RowProps.separator
-  readonly separator?: ReactElement | string;
-  /// RowProps.debugIds
-  readonly debugIds?: boolean;
-};
-
-/// CellProps
-export type CellProps = {
-  /// CellProps.tableId
-  readonly tableId: Id;
-  /// CellProps.rowId
-  readonly rowId: Id;
-  /// CellProps.cellId
-  readonly cellId: Id;
-  /// CellProps.store
-  readonly store?: StoreOrStoreId;
-  /// CellProps.debugIds
-  readonly debugIds?: boolean;
-};
-
-/// ValuesProps
-export type ValuesProps = {
-  /// ValuesProps.store
-  readonly store?: StoreOrStoreId;
-  /// ValuesProps.valueComponent
-  readonly valueComponent?: ComponentType<ValueProps>;
-  /// ValuesProps.getValueComponentProps
-  readonly getValueComponentProps?: (valueId: Id) => ExtraProps;
-  /// ValuesProps.separator
-  readonly separator?: ReactElement | string;
-  /// ValuesProps.debugIds
-  readonly debugIds?: boolean;
-};
-
-/// ValueProps
-export type ValueProps = {
-  /// ValueProps.valueId
-  readonly valueId: Id;
-  /// ValueProps.store
-  readonly store?: StoreOrStoreId;
-  /// ValueProps.debugIds
-  readonly debugIds?: boolean;
-};
-
-/// MetricProps
-export type MetricProps = {
-  /// MetricProps.metricId
-  readonly metricId: Id;
-  /// MetricProps.metrics
-  readonly metrics?: MetricsOrMetricsId;
-  /// MetricProps.debugIds
-  readonly debugIds?: boolean;
-};
-
-/// IndexProps
-export type IndexProps = {
-  /// IndexProps.indexId
-  readonly indexId: Id;
-  /// IndexProps.indexes
-  readonly indexes?: IndexesOrIndexesId;
-  /// IndexProps.sliceComponent
-  readonly sliceComponent?: ComponentType<SliceProps>;
-  /// IndexProps.getSliceComponentProps
-  readonly getSliceComponentProps?: (sliceId: Id) => ExtraProps;
-  /// IndexProps.separator
-  readonly separator?: ReactElement | string;
-  /// IndexProps.debugIds
-  readonly debugIds?: boolean;
-};
-
-/// SliceProps
-export type SliceProps = {
-  /// SliceProps.indexId
-  readonly indexId: Id;
-  /// SliceProps.sliceId
-  readonly sliceId: Id;
-  /// SliceProps.indexes
-  readonly indexes?: IndexesOrIndexesId;
-  /// SliceProps.rowComponent
-  readonly rowComponent?: ComponentType<RowProps>;
-  /// SliceProps.getRowComponentProps
-  readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
-  /// SliceProps.separator
-  readonly separator?: ReactElement | string;
-  /// SliceProps.debugIds
-  readonly debugIds?: boolean;
-};
-
-/// RemoteRowProps
-export type RemoteRowProps = {
-  /// RemoteRowProps.relationshipId
-  readonly relationshipId: Id;
-  /// RemoteRowProps.localRowId
-  readonly localRowId: Id;
-  /// RemoteRowProps.relationships
-  readonly relationships?: RelationshipsOrRelationshipsId;
-  /// RemoteRowProps.rowComponent
-  readonly rowComponent?: ComponentType<RowProps>;
-  /// RemoteRowProps.getRowComponentProps
-  readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
-  /// RemoteRowProps.debugIds
-  readonly debugIds?: boolean;
-};
-
-/// LocalRowsProps
-export type LocalRowsProps = {
-  /// LocalRowsProps.relationshipId
-  readonly relationshipId: Id;
-  /// LocalRowsProps.remoteRowId
-  readonly remoteRowId: Id;
-  /// LocalRowsProps.relationships
-  readonly relationships?: RelationshipsOrRelationshipsId;
-  /// LocalRowsProps.rowComponent
-  readonly rowComponent?: ComponentType<RowProps>;
-  /// LocalRowsProps.getRowComponentProps
-  readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
-  /// LocalRowsProps.separator
-  readonly separator?: ReactElement | string;
-  /// LocalRowsProps.debugIds
-  readonly debugIds?: boolean;
-};
-
-/// LinkedRowsProps
-export type LinkedRowsProps = {
-  /// LinkedRowsProps.relationshipId
-  readonly relationshipId: Id;
-  /// LinkedRowsProps.firstRowId
-  readonly firstRowId: Id;
-  /// LinkedRowsProps.relationships
-  readonly relationships?: RelationshipsOrRelationshipsId;
-  /// LinkedRowsProps.rowComponent
-  readonly rowComponent?: ComponentType<RowProps>;
-  /// LinkedRowsProps.getRowComponentProps
-  readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
-  /// LinkedRowsProps.separator
-  readonly separator?: ReactElement | string;
-  /// LinkedRowsProps.debugIds
-  readonly debugIds?: boolean;
-};
-
-/// ResultTableProps
-export type ResultTableProps = {
-  /// ResultTableProps.queryId
-  readonly queryId: Id;
-  /// ResultTableProps.queries
-  readonly queries?: QueriesOrQueriesId;
-  /// ResultTableProps.resultRowComponent
-  readonly resultRowComponent?: ComponentType<ResultRowProps>;
-  /// ResultTableProps.getResultRowComponentProps
-  readonly getResultRowComponentProps?: (rowId: Id) => ExtraProps;
-  /// ResultTableProps.separator
-  readonly separator?: ReactElement | string;
-  /// ResultTableProps.debugIds
-  readonly debugIds?: boolean;
-};
-
-/// ResultSortedTableProps
-export type ResultSortedTableProps = {
-  /// ResultSortedTableProps.queryId
-  readonly queryId: Id;
-  /// ResultSortedTableProps.cellId
-  readonly cellId?: Id;
-  /// ResultSortedTableProps.descending
-  readonly descending?: boolean;
-  /// ResultSortedTableProps.offset
-  readonly offset?: number;
-  /// ResultSortedTableProps.limit
-  readonly limit?: number;
-  /// ResultSortedTableProps.queries
-  readonly queries?: QueriesOrQueriesId;
-  /// ResultSortedTableProps.resultRowComponent
-  readonly resultRowComponent?: ComponentType<ResultRowProps>;
-  /// ResultSortedTableProps.getResultRowComponentProps
-  readonly getResultRowComponentProps?: (rowId: Id) => ExtraProps;
-  /// ResultSortedTableProps.separator
-  readonly separator?: ReactElement | string;
-  /// ResultSortedTableProps.debugIds
-  readonly debugIds?: boolean;
-};
-
-/// ResultRowProps
-export type ResultRowProps = {
-  /// ResultRowProps.queryId
-  readonly queryId: Id;
-  /// ResultRowProps.rowId
-  readonly rowId: Id;
-  /// ResultRowProps.queries
-  readonly queries?: QueriesOrQueriesId;
-  /// ResultRowProps.resultCellComponent
-  readonly resultCellComponent?: ComponentType<ResultCellProps>;
-  /// ResultRowProps.getResultCellComponentProps
-  readonly getResultCellComponentProps?: (cellId: Id) => ExtraProps;
-  /// ResultRowProps.separator
-  readonly separator?: ReactElement | string;
-  /// ResultRowProps.debugIds
-  readonly debugIds?: boolean;
-};
-
-/// ResultCellProps
-export type ResultCellProps = {
-  /// ResultCellProps.queryId
-  readonly queryId: Id;
-  /// ResultCellProps.rowId
-  readonly rowId: Id;
-  /// ResultCellProps.cellId
-  readonly cellId: Id;
-  /// ResultCellProps.queries
-  readonly queries?: QueriesOrQueriesId;
-  /// ResultCellProps.debugIds
-  readonly debugIds?: boolean;
-};
-
-/// CheckpointProps
-export type CheckpointProps = {
-  /// CheckpointProps.checkpointId
-  readonly checkpointId: Id;
-  /// CheckpointProps.checkpoints
-  readonly checkpoints?: CheckpointsOrCheckpointsId;
-  /// CheckpointProps.debugIds
-  readonly debugIds?: boolean;
-};
-
-/// BackwardCheckpointsProps
-export type BackwardCheckpointsProps = {
-  /// BackwardCheckpointsProps.checkpoints
-  readonly checkpoints?: CheckpointsOrCheckpointsId;
-  /// BackwardCheckpointsProps.checkpointComponent
-  readonly checkpointComponent?: ComponentType<CheckpointProps>;
-  /// BackwardCheckpointsProps.getCheckpointComponentProps
-  readonly getCheckpointComponentProps?: (checkpointId: Id) => ExtraProps;
-  /// BackwardCheckpointsProps.separator
-  readonly separator?: ReactElement | string;
-  /// BackwardCheckpointsProps.debugIds
-  readonly debugIds?: boolean;
-};
-
-/// CurrentCheckpointProps
-export type CurrentCheckpointProps = {
-  /// CurrentCheckpointProps.checkpoints
-  readonly checkpoints?: CheckpointsOrCheckpointsId;
-  /// CurrentCheckpointProps.checkpointComponent
-  readonly checkpointComponent?: ComponentType<CheckpointProps>;
-  /// CurrentCheckpointProps.getCheckpointComponentProps
-  readonly getCheckpointComponentProps?: (checkpointId: Id) => ExtraProps;
-  /// CurrentCheckpointProps.debugIds
-  readonly debugIds?: boolean;
-};
-
-/// ForwardCheckpointsProps
-export type ForwardCheckpointsProps = {
-  /// ForwardCheckpointsProps.checkpoints
-  readonly checkpoints?: CheckpointsOrCheckpointsId;
-  /// ForwardCheckpointsProps.checkpointComponent
-  readonly checkpointComponent?: ComponentType<CheckpointProps>;
-  /// ForwardCheckpointsProps.getCheckpointComponentProps
-  readonly getCheckpointComponentProps?: (checkpointId: Id) => ExtraProps;
-  /// ForwardCheckpointsProps.separator
-  readonly separator?: ReactElement | string;
-  /// ForwardCheckpointsProps.debugIds
-  readonly debugIds?: boolean;
-};
-
-/// ProviderProps
-export type ProviderProps = {
-  /// ProviderProps.store
-  readonly store?: Store;
-  /// ProviderProps.storesById
-  readonly storesById?: {[storeId: Id]: Store};
-  /// ProviderProps.metrics
-  readonly metrics?: Metrics;
-  /// ProviderProps.metricsById
-  readonly metricsById?: {[metricsId: Id]: Metrics};
-  /// ProviderProps.indexes
-  readonly indexes?: Indexes;
-  /// ProviderProps.indexesById
-  readonly indexesById?: {[indexesId: Id]: Indexes};
-  /// ProviderProps.relationships
-  readonly relationships?: Relationships;
-  /// ProviderProps.relationshipsById
-  readonly relationshipsById?: {[relationshipsId: Id]: Relationships};
-  /// ProviderProps.queries
-  readonly queries?: Queries;
-  /// ProviderProps.queriesById
-  readonly queriesById?: {[queriesId: Id]: Queries};
-  /// ProviderProps.checkpoints
-  readonly checkpoints?: Checkpoints;
-  /// ProviderProps.checkpointsById
-  readonly checkpointsById?: {[checkpointsId: Id]: Checkpoints};
-};
-
-/// ComponentReturnType
-export type ComponentReturnType = ReactElement<any, any> | null;
-
-/// Provider
-export function Provider(
-  props: ProviderProps & {children: React.ReactNode},
-): ComponentReturnType;
-
-/// CellView
-export function CellView(props: CellProps): ComponentReturnType;
-
-/// RowView
-export function RowView(props: RowProps): ComponentReturnType;
-
-/// SortedTableView
-export function SortedTableView(props: SortedTableProps): ComponentReturnType;
-
-/// TableView
-export function TableView(props: TableProps): ComponentReturnType;
-
-/// TablesView
-export function TablesView(props: TablesProps): ComponentReturnType;
-
-/// ValueView
-export function ValueView(props: ValueProps): ComponentReturnType;
-
-/// ValuesView
-export function ValuesView(props: ValuesProps): ComponentReturnType;
-
-/// MetricView
-export function MetricView(props: MetricProps): ComponentReturnType;
-
-/// SliceView
-export function SliceView(props: SliceProps): ComponentReturnType;
-
-/// IndexView
-export function IndexView(props: IndexProps): ComponentReturnType;
-
-/// RemoteRowView
-export function RemoteRowView(props: RemoteRowProps): ComponentReturnType;
-
-/// LocalRowsView
-export function LocalRowsView(props: LocalRowsProps): ComponentReturnType;
-
-/// LinkedRowsView
-export function LinkedRowsView(props: LinkedRowsProps): ComponentReturnType;
-
-/// ResultCellView
-export function ResultCellView(props: ResultCellProps): ComponentReturnType;
-
-/// ResultRowView
-export function ResultRowView(props: ResultRowProps): ComponentReturnType;
-
-/// ResultSortedTableView
-export function ResultSortedTableView(
-  props: ResultSortedTableProps,
-): ComponentReturnType;
-
-/// ResultTableView
-export function ResultTableView(props: ResultTableProps): ComponentReturnType;
-
-/// CheckpointView
-export function CheckpointView(props: CheckpointProps): ComponentReturnType;
-
-/// BackwardCheckpointsView
-export function BackwardCheckpointsView(
-  props: BackwardCheckpointsProps,
-): ComponentReturnType;
-
-/// CurrentCheckpointView
-export function CurrentCheckpointView(
-  props: CurrentCheckpointProps,
-): ComponentReturnType;
-
-/// ForwardCheckpointsView
-export function ForwardCheckpointsView(
-  props: ForwardCheckpointsProps,
-): ComponentReturnType;
