@@ -15,15 +15,20 @@ const {parallel, series} = gulp;
 
 const UTF8 = 'utf-8';
 const TEST_MODULES = ['tinybase', 'ui-react', 'tools'];
-const MODULES_TYPED_WITH_INTERNALS = ['store', 'queries'];
-const ALL_MODULES = [].concat(TEST_MODULES, MODULES_TYPED_WITH_INTERNALS, [
-  'indexes',
+const MODULES_TYPED_WITH_INTERNALS = ['store', 'queries', 'ui-react'];
+const ALL_MODULES = [
+  'tinybase',
+  'store',
   'metrics',
+  'indexes',
   'relationships',
+  'queries',
   'checkpoints',
   'persisters',
   'common',
-]);
+  'ui-react',
+  'tools',
+];
 
 const BIN_DIR = 'bin';
 const LIB_DIR = 'lib';
