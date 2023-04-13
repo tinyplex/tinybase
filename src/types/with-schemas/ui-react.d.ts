@@ -78,6 +78,11 @@ import {
   ResultRowListener,
   ResultTableListener,
 } from './queries.d';
+import {
+  TableFromSchema,
+  TableIdFromSchema,
+  TablesFromSchema,
+} from './internal/store';
 import {Persister} from './persisters.d';
 
 export type WithSchemas<Schemas extends OptionalSchemas> = {
@@ -112,16 +117,29 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useStore: (id?: Id) => Store<Schemas> | undefined;
 
   /// useTables
-  useTables: (storeOrStoreId?: StoreOrStoreId<Schemas>) => Tables;
+  useTables: <Tables = TablesFromSchema<Schemas[0]>>(
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => Tables;
 
   /// useTableIds
-  useTableIds: (storeOrStoreId?: StoreOrStoreId<Schemas>) => Ids;
+  useTableIds: <Ids = TableIdFromSchema<Schemas[0]>[]>(
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => Ids;
 
   /// useTable
-  useTable: (tableId: Id, storeOrStoreId?: StoreOrStoreId<Schemas>) => Table;
+  useTable: <
+    TableId extends TableIdFromSchema<Schemas[0]>,
+    Table = TableFromSchema<Schemas[0]>,
+  >(
+    tableId: TableId,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => Table;
 
   /// useRowIds
-  useRowIds: (tableId: Id, storeOrStoreId?: StoreOrStoreId<Schemas>) => Ids;
+  useRowIds: <TableId extends TableIdFromSchema<Schemas[0]>>(
+    tableId: TableId,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => Ids;
 
   /// useSortedRowIds
   useSortedRowIds: (
