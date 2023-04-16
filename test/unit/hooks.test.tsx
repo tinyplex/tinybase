@@ -5,6 +5,7 @@ import {
   Checkpoints,
   Id,
   MapCell,
+  MapValue,
   Persister,
   Row,
   Store,
@@ -2064,13 +2065,13 @@ describe('Write Hooks', () => {
   });
 
   test('useSetValueCallback', () => {
-    const then = jest.fn((_store?: Store, _value?: Value) => null);
+    const then = jest.fn((_store?: Store, _value?: Value | MapValue) => null);
     const Test = ({
       value,
       then,
     }: {
       value: number;
-      then: (store?: Store, value?: Value) => void;
+      then: (store?: Store, value?: Value | MapValue) => void;
     }) => {
       return (
         <div

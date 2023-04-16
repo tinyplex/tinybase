@@ -21,6 +21,7 @@ import {
   CellIdsListener,
   CellListener,
   MapCell,
+  MapValue,
   Row,
   RowIdsListener,
   RowListener,
@@ -235,12 +236,12 @@ const useListener = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [thing, ...preArgs, ...listenerDeps, ...postArgs]);
 
-const useSetCallback = <Parameter, Value>(
+const useSetCallback = <Parameter, Thing>(
   storeOrStoreId: StoreOrStoreId | undefined,
   settable: string,
-  get: (parameter: Parameter, store: Store) => Value,
+  get: (parameter: Parameter, store: Store) => Thing,
   getDeps: React.DependencyList = [],
-  then: (store: Store, value: Value) => void = getUndefined,
+  then: (store: Store, thing: Thing) => void = getUndefined,
   thenDeps: React.DependencyList = [],
   ...args: Ids
 ): ParameterizedCallback<Parameter> => {
@@ -248,8 +249,8 @@ const useSetCallback = <Parameter, Value>(
   return useCallback(
     (parameter) =>
       ifNotUndefined(store, (store: any) =>
-        ifNotUndefined(get(parameter as any, store), (value: Value) =>
-          then(store['set' + settable](...args, value), value),
+        ifNotUndefined(get(parameter as any, store), (thing: Thing) =>
+          then(store['set' + settable](...args, thing), thing),
         ),
       ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -534,10 +535,10 @@ export const useSetPartialValuesCallback: typeof useSetPartialValuesCallbackDecl
 
 export const useSetValueCallback: typeof useSetValueCallbackDecl = <Parameter>(
   valueId: Id,
-  getValue: (parameter: Parameter, store: Store) => Value,
+  getValue: (parameter: Parameter, store: Store) => Value | MapValue,
   getValueDeps?: React.DependencyList,
   storeOrStoreId?: StoreOrStoreId,
-  then?: (store: Store, value: Value) => void,
+  then?: (store: Store, value: Value | MapValue) => void,
   thenDeps?: React.DependencyList,
 ): ParameterizedCallback<Parameter> =>
   useSetCallback(

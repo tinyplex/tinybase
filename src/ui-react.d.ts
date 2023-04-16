@@ -29,6 +29,7 @@ import {
   CellIdsListener,
   CellListener,
   MapCell,
+  MapValue,
   Row,
   RowIdsListener,
   RowListener,
@@ -2088,10 +2089,10 @@ export function useSetPartialValuesCallback<Parameter>(
  */
 export function useSetValueCallback<Parameter>(
   valueId: Id,
-  getValue: (parameter: Parameter, store: Store) => Value,
+  getValue: (parameter: Parameter, store: Store) => Value | MapValue,
   getValueDeps?: React.DependencyList,
   storeOrStoreId?: StoreOrStoreId,
-  then?: (store: Store, value: Value) => void,
+  then?: (store: Store, value: Value | MapValue) => void,
   thenDeps?: React.DependencyList,
 ): ParameterizedCallback<Parameter>;
 
