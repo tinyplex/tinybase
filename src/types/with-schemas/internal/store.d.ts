@@ -226,11 +226,18 @@ export type RowIdsListenerAlias<
 export type SortedRowIdsListenerAlias<
   Schemas extends OptionalSchemas,
   TableId extends TableIdFromSchema<Schemas[0]>,
-  CellId extends CellIdFromSchema<Schemas[0], TableId> | undefined,
+  CellIdOrUndefined extends CellIdFromSchema<Schemas[0], TableId> | undefined,
   Descending extends boolean,
   Offset extends number,
   Limit extends number | undefined,
-> = SortedRowIdsListener<Schemas, TableId, CellId, Descending, Offset, Limit>;
+> = SortedRowIdsListener<
+  Schemas,
+  TableId,
+  CellIdOrUndefined,
+  Descending,
+  Offset,
+  Limit
+>;
 
 export type RowListenerAlias<
   Schemas extends OptionalSchemas,

@@ -480,21 +480,21 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// useSortedRowIdsListener
   useSortedRowIdsListener: <
     TableId extends TableIdFromSchema<Schemas[0]>,
-    CellId extends CellIdFromSchema<Schemas[0], TableId> | undefined,
+    CellIdOrUndefined extends CellIdFromSchema<Schemas[0], TableId> | undefined,
     Descending extends boolean,
     Offset extends number,
     Limit extends number | undefined,
     SortedRowIdsListener extends SortedRowIdsListenerAlias<
       Schemas,
       TableId,
-      CellId,
+      CellIdOrUndefined,
       Descending,
       Offset,
       Limit
     >,
   >(
     tableId: TableId,
-    cellId: CellId,
+    cellId: CellIdOrUndefined,
     descending: Descending,
     offset: Offset,
     limit: Limit,
