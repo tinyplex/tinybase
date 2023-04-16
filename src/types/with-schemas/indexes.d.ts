@@ -27,14 +27,14 @@ export type SliceCallback = (
 ) => void;
 
 /// SliceIdsListener
-export type SliceIdsListener = (indexes: Indexes, indexId: Id) => void;
+export type SliceIdsListener<
+  in out Schemas extends OptionalSchemas = NoSchemas,
+> = (indexes: Indexes<Schemas>, indexId: Id) => void;
 
 /// SliceRowIdsListener
-export type SliceRowIdsListener = (
-  indexes: Indexes,
-  indexId: Id,
-  sliceId: Id,
-) => void;
+export type SliceRowIdsListener<
+  in out Schemas extends OptionalSchemas = NoSchemas,
+> = (indexes: Indexes<Schemas>, indexId: Id, sliceId: Id) => void;
 
 /// IndexesListenerStats
 export type IndexesListenerStats = {

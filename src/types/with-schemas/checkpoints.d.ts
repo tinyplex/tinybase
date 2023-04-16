@@ -10,13 +10,14 @@ export type CheckpointIds = [Ids, Id | undefined, Ids];
 export type CheckpointCallback = (checkpointId: Id, label?: string) => void;
 
 /// CheckpointIdsListener
-export type CheckpointIdsListener = (checkpoints: Checkpoints) => void;
+export type CheckpointIdsListener<
+  in out Schemas extends OptionalSchemas = NoSchemas,
+> = (checkpoints: Checkpoints<Schemas>) => void;
 
 /// CheckpointListener
-export type CheckpointListener = (
-  checkpoints: Checkpoints,
-  checkpointId: Id,
-) => void;
+export type CheckpointListener<
+  in out Schemas extends OptionalSchemas = NoSchemas,
+> = (checkpoints: Checkpoints<Schemas>, checkpointId: Id) => void;
 
 /// CheckpointsListenerStats
 export type CheckpointsListenerStats = {
@@ -55,12 +56,12 @@ export interface Checkpoints<
   getCheckpoint(checkpointId: Id): string | undefined;
 
   /// Checkpoints.addCheckpointIdsListener
-  addCheckpointIdsListener(listener: CheckpointIdsListener): Id;
+  addCheckpointIdsListener(listener: CheckpointIdsListener<Schemas>): Id;
 
   /// Checkpoints.addCheckpointListener
   addCheckpointListener(
     checkpointId: IdOrNull,
-    listener: CheckpointListener,
+    listener: CheckpointListener<Schemas>,
   ): Id;
 
   /// Checkpoints.delListener

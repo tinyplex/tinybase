@@ -73,18 +73,24 @@ export type ResultRowCallback = (
 export type ResultCellCallback = (cellId: Id, cell: ResultCell) => void;
 
 /// ResultTableListener
-export type ResultTableListener = (
-  queries: Queries,
+export type ResultTableListener<
+  in out Schemas extends OptionalSchemas = NoSchemas,
+> = (
+  queries: Queries<Schemas>,
   tableId: Id,
   getCellChange: GetCellResultChange,
 ) => void;
 
 /// ResultRowIdsListener
-export type ResultRowIdsListener = (queries: Queries, tableId: Id) => void;
+export type ResultRowIdsListener<
+  in out Schemas extends OptionalSchemas = NoSchemas,
+> = (queries: Queries<Schemas>, tableId: Id) => void;
 
 /// ResultSortedRowIdsListener
-export type ResultSortedRowIdsListener = (
-  queries: Queries,
+export type ResultSortedRowIdsListener<
+  in out Schemas extends OptionalSchemas = NoSchemas,
+> = (
+  queries: Queries<Schemas>,
   tableId: Id,
   cellId: Id | undefined,
   descending: boolean,
@@ -94,23 +100,25 @@ export type ResultSortedRowIdsListener = (
 ) => void;
 
 /// ResultRowListener
-export type ResultRowListener = (
-  queries: Queries,
+export type ResultRowListener<
+  in out Schemas extends OptionalSchemas = NoSchemas,
+> = (
+  queries: Queries<Schemas>,
   tableId: Id,
   rowId: Id,
   getCellChange: GetCellResultChange,
 ) => void;
 
 /// ResultCellIdsListener
-export type ResultCellIdsListener = (
-  queries: Queries,
-  tableId: Id,
-  rowId: Id,
-) => void;
+export type ResultCellIdsListener<
+  in out Schemas extends OptionalSchemas = NoSchemas,
+> = (queries: Queries<Schemas>, tableId: Id, rowId: Id) => void;
 
 /// ResultCellListener
-export type ResultCellListener = (
-  queries: Queries,
+export type ResultCellListener<
+  in out Schemas extends OptionalSchemas = NoSchemas,
+> = (
+  queries: Queries<Schemas>,
   tableId: Id,
   rowId: Id,
   cellId: Id,
