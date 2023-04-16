@@ -22,22 +22,28 @@ export type RelationshipCallback = (
 ) => void;
 
 /// RemoteRowIdListener
-export type RemoteRowIdListener = (
-  relationships: Relationships,
+export type RemoteRowIdListener<
+  in out Schemas extends OptionalSchemas = NoSchemas,
+> = (
+  relationships: Relationships<Schemas>,
   relationshipId: Id,
   localRowId: Id,
 ) => void;
 
 /// LocalRowIdsListener
-export type LocalRowIdsListener = (
-  relationships: Relationships,
+export type LocalRowIdsListener<
+  in out Schemas extends OptionalSchemas = NoSchemas,
+> = (
+  relationships: Relationships<Schemas>,
   relationshipId: Id,
   remoteRowId: Id,
 ) => void;
 
 /// LinkedRowIdsListener
-export type LinkedRowIdsListener = (
-  relationships: Relationships,
+export type LinkedRowIdsListener<
+  in out Schemas extends OptionalSchemas = NoSchemas,
+> = (
+  relationships: Relationships<Schemas>,
   relationshipId: Id,
   firstRowId: Id,
 ) => void;

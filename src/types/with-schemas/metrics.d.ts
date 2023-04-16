@@ -40,8 +40,8 @@ export type MetricAggregateReplace = (
 ) => Metric | undefined;
 
 /// MetricListener
-export type MetricListener = (
-  metrics: Metrics,
+export type MetricListener<in out Schemas extends OptionalSchemas> = (
+  metrics: Metrics<Schemas>,
   metricId: Id,
   newMetric: Metric | undefined,
   oldMetric: Metric | undefined,
@@ -94,7 +94,7 @@ export interface Metrics<in out Schemas extends OptionalSchemas = NoSchemas> {
   getMetric(metricId: Id): Metric | undefined;
 
   /// Metrics.addMetricListener
-  addMetricListener(metricId: IdOrNull, listener: MetricListener): Id;
+  addMetricListener(metricId: IdOrNull, listener: MetricListener<Schemas>): Id;
 
   /// Metrics.delListener
   delListener(listenerId: Id): Metrics<Schemas>;
