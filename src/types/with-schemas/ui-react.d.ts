@@ -373,50 +373,53 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// useDelTablesCallback
   useDelTablesCallback: (
     storeOrStoreId?: StoreOrStoreId<Schemas>,
-    then?: (store: Store) => void,
+    then?: (store: Store<Schemas>) => void,
     thenDeps?: React.DependencyList,
   ) => Callback;
 
   /// useDelTableCallback
-  useDelTableCallback: (
-    tableId: Id,
+  useDelTableCallback: <TableId extends TableIdFromSchema<Schemas[0]>>(
+    tableId: TableId,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
-    then?: (store: Store) => void,
+    then?: (store: Store<Schemas>) => void,
     thenDeps?: React.DependencyList,
   ) => Callback;
 
   /// useDelRowCallback
-  useDelRowCallback: (
-    tableId: Id,
+  useDelRowCallback: <TableId extends TableIdFromSchema<Schemas[0]>>(
+    tableId: TableId,
     rowId: Id,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
-    then?: (store: Store) => void,
+    then?: (store: Store<Schemas>) => void,
     thenDeps?: React.DependencyList,
   ) => Callback;
 
   /// useDelCellCallback
-  useDelCellCallback: (
-    tableId: Id,
+  useDelCellCallback: <
+    TableId extends TableIdFromSchema<Schemas[0]>,
+    CellId extends CellIdFromSchema<Schemas[0], TableId>,
+  >(
+    tableId: TableId,
     rowId: Id,
-    cellId: Id,
+    cellId: CellId,
     forceDel?: boolean,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
-    then?: (store: Store) => void,
+    then?: (store: Store<Schemas>) => void,
     thenDeps?: React.DependencyList,
   ) => Callback;
 
   /// useDelValuesCallback
   useDelValuesCallback: (
     storeOrStoreId?: StoreOrStoreId<Schemas>,
-    then?: (store: Store) => void,
+    then?: (store: Store<Schemas>) => void,
     thenDeps?: React.DependencyList,
   ) => Callback;
 
   /// useDelValueCallback
-  useDelValueCallback: (
-    valueId: Id,
+  useDelValueCallback: <ValueId extends ValueIdFromSchema<Schemas[1]>>(
+    valueId: ValueId,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
-    then?: (store: Store) => void,
+    then?: (store: Store<Schemas>) => void,
     thenDeps?: React.DependencyList,
   ) => Callback;
 
