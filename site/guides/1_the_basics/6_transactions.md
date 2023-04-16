@@ -43,7 +43,7 @@ If multiple changes are made to a piece of Store data throughout the
 transaction, a relevant listener will only be called with the final value
 (assuming it is different to the value at the start of the transaction),
 regardless of the changes that happened in between. For example, if a Cell
-had a value `'b'` and then, within a transaction, it was changed to `'b'`
+had a value `'a'` and then, within a transaction, it was changed to `'b'`
 and then `'c'`, any CellListener registered for that cell would be called
 once as if there had been a single change from `'a'` to `'c'`:
 
