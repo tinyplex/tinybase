@@ -56,6 +56,17 @@ import {
   ValuesListener,
 } from './store.d';
 import {
+  CellFromSchema,
+  CellIdFromSchema,
+  RowFromSchema,
+  TableFromSchema,
+  TableIdFromSchema,
+  TablesFromSchema,
+  ValueFromSchema,
+  ValueIdFromSchema,
+  ValuesFromSchema,
+} from './internal/store';
+import {
   CheckpointIds,
   CheckpointIdsListener,
   CheckpointListener,
@@ -78,11 +89,6 @@ import {
   ResultRowListener,
   ResultTableListener,
 } from './queries.d';
-import {
-  TableFromSchema,
-  TableIdFromSchema,
-  TablesFromSchema,
-} from './internal/store';
 import {Persister} from './persisters.d';
 
 export type WithSchemas<Schemas extends OptionalSchemas> = {
@@ -142,9 +148,12 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   ) => Ids;
 
   /// useSortedRowIds
-  useSortedRowIds: (
-    tableId: Id,
-    cellId?: Id,
+  useSortedRowIds: <
+    TableId extends TableIdFromSchema<Schemas[0]>,
+    CellId extends CellIdFromSchema<Schemas[0], TableId>,
+  >(
+    tableId: TableId,
+    cellId?: CellId,
     descending?: boolean,
     offset?: number,
     limit?: number,
@@ -152,35 +161,55 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   ) => Ids;
 
   /// useRow
-  useRow: (
-    tableId: Id,
+  useRow: <
+    TableId extends TableIdFromSchema<Schemas[0]>,
+    Row = RowFromSchema<Schemas[0], TableId>,
+  >(
+    tableId: TableId,
     rowId: Id,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => Row;
 
   /// useCellIds
-  useCellIds: (
-    tableId: Id,
+  useCellIds: <
+    TableId extends TableIdFromSchema<Schemas[0]>,
+    Ids extends CellIdFromSchema<Schemas[0], TableId>[],
+  >(
+    tableId: TableId,
     rowId: Id,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => Ids;
 
   /// useCell
-  useCell: (
-    tableId: Id,
+  useCell: <
+    TableId extends TableIdFromSchema<Schemas[0]>,
+    CellId extends CellIdFromSchema<Schemas[0], TableId>,
+    CellOrUndefined = CellFromSchema<Schemas[0], TableId, CellId> | undefined,
+  >(
+    tableId: TableId,
     rowId: Id,
-    cellId: Id,
+    cellId: CellId,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
-  ) => Cell | undefined;
+  ) => CellOrUndefined;
 
   /// useValues
-  useValues: (storeOrStoreId?: StoreOrStoreId<Schemas>) => Values;
+  useValues: <Values = ValuesFromSchema<Schemas[1]>>(
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => Values;
 
   /// useValueIds
-  useValueIds: (storeOrStoreId?: StoreOrStoreId<Schemas>) => Ids;
+  useValueIds: <Ids = ValueIdFromSchema<Schemas[1]>[]>(
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => Ids;
 
   /// useValue
-  useValue: (valueId: Id, storeOrStoreId?: StoreOrStoreId<Schemas>) => Value;
+  useValue: <
+    ValueId extends ValueIdFromSchema<Schemas[1]>,
+    ValueOrUndefined = ValueFromSchema<Schemas[1], ValueId> | undefined,
+  >(
+    valueId: ValueId,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => ValueOrUndefined;
 
   /// useSetTablesCallback
   useSetTablesCallback: <Parameter>(

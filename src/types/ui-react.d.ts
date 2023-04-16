@@ -5,6 +5,7 @@ import {
   Cell,
   CellIdsListener,
   CellListener,
+  CellOrUndefined,
   MapCell,
   MapValue,
   Row,
@@ -20,6 +21,7 @@ import {
   Value,
   ValueIdsListener,
   ValueListener,
+  ValueOrUndefined,
   Values,
   ValuesListener,
 } from './store.d';
@@ -120,7 +122,7 @@ export function useCell(
   rowId: Id,
   cellId: Id,
   storeOrStoreId?: StoreOrStoreId,
-): Cell | undefined;
+): CellOrUndefined;
 
 /// useValues
 export function useValues(storeOrStoreId?: StoreOrStoreId): Values;
@@ -129,7 +131,10 @@ export function useValues(storeOrStoreId?: StoreOrStoreId): Values;
 export function useValueIds(storeOrStoreId?: StoreOrStoreId): Ids;
 
 /// useValue
-export function useValue(valueId: Id, storeOrStoreId?: StoreOrStoreId): Value;
+export function useValue(
+  valueId: Id,
+  storeOrStoreId?: StoreOrStoreId,
+): ValueOrUndefined;
 
 /// useSetTablesCallback
 export function useSetTablesCallback<Parameter>(
