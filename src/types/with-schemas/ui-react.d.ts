@@ -576,13 +576,13 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// useCreateMetrics
   useCreateMetrics: (
-    store: Store,
-    create: (store: Store) => Metrics,
+    store: Store<Schemas>,
+    create: (store: Store<Schemas>) => Metrics<Schemas>,
     createDeps?: React.DependencyList,
-  ) => Metrics;
+  ) => Metrics<Schemas>;
 
   /// useMetrics
-  useMetrics: (id?: Id) => Metrics | undefined;
+  useMetrics: (id?: Id) => Metrics<Schemas> | undefined;
 
   /// useMetric
   useMetric: (
@@ -593,20 +593,20 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// useMetricListener
   useMetricListener: (
     metricId: IdOrNull,
-    listener: MetricListener,
+    listener: MetricListener<Schemas>,
     listenerDeps?: React.DependencyList,
     metricsOrMetricsId?: MetricsOrMetricsId<Schemas>,
   ) => void;
 
   /// useCreateIndexes
   useCreateIndexes: (
-    store: Store,
-    create: (store: Store) => Indexes,
+    store: Store<Schemas>,
+    create: (store: Store<Schemas>) => Indexes<Schemas>,
     createDeps?: React.DependencyList,
-  ) => Indexes;
+  ) => Indexes<Schemas>;
 
   /// useIndexes
-  useIndexes: (id?: Id) => Indexes | undefined;
+  useIndexes: (id?: Id) => Indexes<Schemas> | undefined;
 
   /// useSliceIds
   useSliceIds: (
@@ -624,7 +624,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// useSliceIdsListener
   useSliceIdsListener: (
     indexId: IdOrNull,
-    listener: SliceIdsListener,
+    listener: SliceIdsListener<Schemas>,
     listenerDeps?: React.DependencyList,
     indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
   ) => void;
@@ -633,20 +633,20 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useSliceRowIdsListener: (
     indexId: IdOrNull,
     sliceId: IdOrNull,
-    listener: SliceRowIdsListener,
+    listener: SliceRowIdsListener<Schemas>,
     listenerDeps?: React.DependencyList,
     indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
   ) => void;
 
   /// useCreateRelationships
   useCreateRelationships: (
-    store: Store,
-    create: (store: Store) => Relationships,
+    store: Store<Schemas>,
+    create: (store: Store<Schemas>) => Relationships<Schemas>,
     createDeps?: React.DependencyList,
-  ) => Relationships;
+  ) => Relationships<Schemas>;
 
   /// useRelationships
-  useRelationships: (id?: Id) => Relationships | undefined;
+  useRelationships: (id?: Id) => Relationships<Schemas> | undefined;
 
   /// useRemoteRowId
   useRemoteRowId: (
@@ -673,7 +673,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useRemoteRowIdListener: (
     relationshipId: IdOrNull,
     localRowId: IdOrNull,
-    listener: RemoteRowIdListener,
+    listener: RemoteRowIdListener<Schemas>,
     listenerDeps?: React.DependencyList,
     relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
   ) => void;
@@ -682,7 +682,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useLocalRowIdsListener: (
     relationshipId: IdOrNull,
     remoteRowId: IdOrNull,
-    listener: LocalRowIdsListener,
+    listener: LocalRowIdsListener<Schemas>,
     listenerDeps?: React.DependencyList,
     relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
   ) => void;
@@ -691,20 +691,20 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useLinkedRowIdsListener: (
     relationshipId: Id,
     firstRowId: Id,
-    listener: LinkedRowIdsListener,
+    listener: LinkedRowIdsListener<Schemas>,
     listenerDeps?: React.DependencyList,
     relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
   ) => void;
 
   /// useCreateQueries
   useCreateQueries: (
-    store: Store,
-    create: (store: Store) => Queries,
+    store: Store<Schemas>,
+    create: (store: Store<Schemas>) => Queries<Schemas>,
     createDeps?: React.DependencyList,
-  ) => Queries;
+  ) => Queries<Schemas>;
 
   /// useQueries
-  useQueries: (id?: Id) => Queries | undefined;
+  useQueries: (id?: Id) => Queries<Schemas> | undefined;
 
   /// useResultTable
   useResultTable: (
@@ -753,7 +753,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// useResultTableListener
   useResultTableListener: (
     queryId: IdOrNull,
-    listener: ResultTableListener,
+    listener: ResultTableListener<Schemas>,
     listenerDeps?: React.DependencyList,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
@@ -761,7 +761,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// useResultRowIdsListener
   useResultRowIdsListener: (
     queryId: IdOrNull,
-    listener: ResultRowIdsListener,
+    listener: ResultRowIdsListener<Schemas>,
     listenerDeps?: React.DependencyList,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
@@ -773,7 +773,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     descending: boolean,
     offset: number,
     limit: number | undefined,
-    listener: ResultRowIdsListener,
+    listener: ResultRowIdsListener<Schemas>,
     listenerDeps?: React.DependencyList,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
@@ -782,7 +782,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useResultRowListener: (
     queryId: IdOrNull,
     rowId: IdOrNull,
-    listener: ResultRowListener,
+    listener: ResultRowListener<Schemas>,
     listenerDeps?: React.DependencyList,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
@@ -791,7 +791,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useResultCellIdsListener: (
     queryId: IdOrNull,
     rowId: IdOrNull,
-    listener: ResultCellIdsListener,
+    listener: ResultCellIdsListener<Schemas>,
     listenerDeps?: React.DependencyList,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
@@ -801,20 +801,20 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     queryId: IdOrNull,
     rowId: IdOrNull,
     cellId: IdOrNull,
-    listener: ResultCellListener,
+    listener: ResultCellListener<Schemas>,
     listenerDeps?: React.DependencyList,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
 
   /// useCreateCheckpoints
   useCreateCheckpoints: (
-    store: Store,
-    create: (store: Store) => Checkpoints,
+    store: Store<Schemas>,
+    create: (store: Store) => Checkpoints<Schemas>,
     createDeps?: React.DependencyList,
-  ) => Checkpoints;
+  ) => Checkpoints<Schemas>;
 
   /// useCheckpoints
-  useCheckpoints: (id?: Id) => Checkpoints | undefined;
+  useCheckpoints: (id?: Id) => Checkpoints<Schemas> | undefined;
 
   /// useCheckpointIds
   useCheckpointIds: (
@@ -832,7 +832,11 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     getCheckpoint?: (parameter: Parameter) => string,
     getCheckpointDeps?: React.DependencyList,
     checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
-    then?: (checkpointId: Id, checkpoints: Checkpoints, label?: string) => void,
+    then?: (
+      checkpointId: Id,
+      checkpoints: Checkpoints<Schemas>,
+      label?: string,
+    ) => void,
     thenDeps?: React.DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
@@ -851,7 +855,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     getCheckpointId: (parameter: Parameter) => Id,
     getCheckpointIdDeps?: React.DependencyList,
     checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
-    then?: (checkpoints: Checkpoints, checkpointId: Id) => void,
+    then?: (checkpoints: Checkpoints<Schemas>, checkpointId: Id) => void,
     thenDeps?: React.DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
@@ -882,12 +886,12 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// useCreatePersister
   useCreatePersister: (
-    store: Store,
-    create: (store: Store) => Persister,
+    store: Store<Schemas>,
+    create: (store: Store<Schemas>) => Persister<Schemas>,
     createDeps?: React.DependencyList,
-    then?: (persister: Persister) => Promise<void>,
+    then?: (persister: Persister<Schemas>) => Promise<void>,
     thenDeps?: React.DependencyList,
-  ) => Persister;
+  ) => Persister<Schemas>;
 
   /// ExtraProps
   ExtraProps: ExtraProps;
