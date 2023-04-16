@@ -33,24 +33,7 @@ import {
   ValuesProps,
 } from './internal/ui-react';
 import {Callback, Id, IdOrNull, Ids, ParameterizedCallback} from './common.d';
-import {
-  Cell,
-  CellIdsListener,
-  CellListener,
-  OptionalSchemas,
-  Row,
-  RowIdsListener,
-  RowListener,
-  SortedRowIdsListener,
-  Store,
-  Table,
-  TableIdsListener,
-  TableListener,
-  TablesListener,
-  ValueIdsListener,
-  ValueListener,
-  ValuesListener,
-} from './store.d';
+import {Cell, OptionalSchemas, Row, Store, Table} from './store.d';
 import {
   AllCellIdFromSchema,
   CellFromSchema,
