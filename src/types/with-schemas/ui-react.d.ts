@@ -52,15 +52,27 @@ import {
   ValuesListener,
 } from './store.d';
 import {
+  AllCellIdFromSchema,
   CellFromSchema,
   CellIdFromSchema,
+  CellIdsListenerAlias,
+  CellListenerAlias,
   RowFromSchema,
+  RowIdsListenerAlias,
+  RowListenerAlias,
+  SortedRowIdsListenerAlias,
   TableFromSchema,
   TableIdFromSchema,
+  TableIdsListenerAlias,
+  TableListenerAlias,
   TablesFromSchema,
+  TablesListenerAlias,
   ValueFromSchema,
   ValueIdFromSchema,
+  ValueIdsListenerAlias,
+  ValueListenerAlias,
   ValuesFromSchema,
+  ValuesListenerAlias,
 } from './internal/store';
 import {
   CheckpointIds,
@@ -424,7 +436,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   ) => Callback;
 
   /// useTablesListener
-  useTablesListener: (
+  useTablesListener: <TablesListener extends TablesListenerAlias<Schemas>>(
     listener: TablesListener,
     listenerDeps?: React.DependencyList,
     mutator?: boolean,
@@ -432,7 +444,9 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   ) => void;
 
   /// useTableIdsListener
-  useTableIdsListener: (
+  useTableIdsListener: <
+    TableIdsListener extends TableIdsListenerAlias<Schemas>,
+  >(
     listener: TableIdsListener,
     listenerDeps?: React.DependencyList,
     mutator?: boolean,
@@ -440,8 +454,11 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   ) => void;
 
   /// useTableListener
-  useTableListener: (
-    tableId: IdOrNull,
+  useTableListener: <
+    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+    TableListener extends TableListenerAlias<Schemas, TableIdOrNull>,
+  >(
+    tableId: TableIdOrNull,
     listener: TableListener,
     listenerDeps?: React.DependencyList,
     mutator?: boolean,
@@ -449,8 +466,11 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   ) => void;
 
   /// useRowIdsListener
-  useRowIdsListener: (
-    tableId: IdOrNull,
+  useRowIdsListener: <
+    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+    RowIdsListener extends RowIdsListenerAlias<Schemas, TableIdOrNull>,
+  >(
+    tableId: TableIdOrNull,
     listener: RowIdsListener,
     listenerDeps?: React.DependencyList,
     mutator?: boolean,
@@ -458,12 +478,26 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   ) => void;
 
   /// useSortedRowIdsListener
-  useSortedRowIdsListener: (
-    tableId: Id,
-    cellId: Id | undefined,
-    descending: boolean,
-    offset: number,
-    limit: number | undefined,
+  useSortedRowIdsListener: <
+    TableId extends TableIdFromSchema<Schemas[0]>,
+    CellId extends CellIdFromSchema<Schemas[0], TableId> | undefined,
+    Descending extends boolean,
+    Offset extends number,
+    Limit extends number | undefined,
+    SortedRowIdsListener extends SortedRowIdsListenerAlias<
+      Schemas,
+      TableId,
+      CellId,
+      Descending,
+      Offset,
+      Limit
+    >,
+  >(
+    tableId: TableId,
+    cellId: CellId,
+    descending: Descending,
+    offset: Offset,
+    limit: Limit,
     listener: SortedRowIdsListener,
     listenerDeps?: React.DependencyList,
     mutator?: boolean,
@@ -471,9 +505,13 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   ) => void;
 
   /// useRowListener
-  useRowListener: (
-    tableId: IdOrNull,
-    rowId: IdOrNull,
+  useRowListener: <
+    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+    RowIdOrNull extends IdOrNull,
+    RowListener extends RowListenerAlias<Schemas, TableIdOrNull, RowIdOrNull>,
+  >(
+    tableId: TableIdOrNull,
+    rowId: RowIdOrNull,
     listener: RowListener,
     listenerDeps?: React.DependencyList,
     mutator?: boolean,
@@ -481,9 +519,17 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   ) => void;
 
   /// useCellIdsListener
-  useCellIdsListener: (
-    tableId: IdOrNull,
-    rowId: IdOrNull,
+  useCellIdsListener: <
+    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+    RowIdOrNull extends IdOrNull,
+    CellIdsListener extends CellIdsListenerAlias<
+      Schemas,
+      TableIdOrNull,
+      RowIdOrNull
+    >,
+  >(
+    tableId: TableIdOrNull,
+    rowId: RowIdOrNull,
     listener: CellIdsListener,
     listenerDeps?: React.DependencyList,
     mutator?: boolean,
@@ -491,10 +537,24 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   ) => void;
 
   /// useCellListener
-  useCellListener: (
-    tableId: IdOrNull,
-    rowId: IdOrNull,
-    cellId: IdOrNull,
+  useCellListener: <
+    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+    RowIdOrNull extends IdOrNull,
+    CellIdOrNull extends
+      | (TableIdOrNull extends TableIdFromSchema<Schemas[0]>
+          ? CellIdFromSchema<Schemas[0], TableIdOrNull>
+          : AllCellIdFromSchema<Schemas[0]>)
+      | null,
+    CellListener extends CellListenerAlias<
+      Schemas,
+      TableIdOrNull,
+      RowIdOrNull,
+      CellIdOrNull
+    >,
+  >(
+    tableId: TableIdOrNull,
+    rowId: RowIdOrNull,
+    cellId: CellIdOrNull,
     listener: CellListener,
     listenerDeps?: React.DependencyList,
     mutator?: boolean,
@@ -502,7 +562,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   ) => void;
 
   /// useValuesListener
-  useValuesListener: (
+  useValuesListener: <ValuesListener extends ValuesListenerAlias<Schemas>>(
     listener: ValuesListener,
     listenerDeps?: React.DependencyList,
     mutator?: boolean,
@@ -510,7 +570,9 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   ) => void;
 
   /// useValueIdsListener
-  useValueIdsListener: (
+  useValueIdsListener: <
+    ValueIdsListener extends ValueIdsListenerAlias<Schemas>,
+  >(
     listener: ValueIdsListener,
     listenerDeps?: React.DependencyList,
     mutator?: boolean,
@@ -518,8 +580,11 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   ) => void;
 
   /// useValueListener
-  useValueListener: (
-    valueId: IdOrNull,
+  useValueListener: <
+    ValueIdOrNull extends ValueIdFromSchema<Schemas[1]> | null,
+    ValueListener extends ValueListenerAlias<Schemas, ValueIdOrNull>,
+  >(
+    valueId: ValueIdOrNull,
     listener: ValueListener,
     listenerDeps?: React.DependencyList,
     mutator?: boolean,
