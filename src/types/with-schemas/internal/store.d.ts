@@ -84,18 +84,13 @@ export type DefaultCellIdFromSchema<
   IsDefaulted extends boolean = true,
 > = AsId<
   {
-    [CellId in CellIdFromSchema<
+    [CellId in CellIdFromSchema<Schema, TableId>]: CellIsDefaultedFromSchema<
       Schema,
-      TableId
-    >]: Schema[TableId][CellId] extends {
-      default: string | number | boolean;
-    }
-      ? IsDefaulted extends true
-        ? CellId
-        : never
-      : IsDefaulted extends true
-      ? never
-      : CellId;
+      TableId,
+      CellId,
+      IsDefaulted extends true ? CellId : never,
+      IsDefaulted extends true ? never : CellId
+    >;
   }[CellIdFromSchema<Schema, TableId>]
 >;
 
@@ -118,6 +113,18 @@ export type CellFromSchema<
   : CellType extends 'boolean'
   ? boolean
   : string | number | boolean;
+
+export type CellIsDefaultedFromSchema<
+  Schema extends OptionalTablesSchema,
+  TableId extends TableIdFromSchema<Schema>,
+  CellId extends CellIdFromSchema<Schema, TableId>,
+  Then,
+  Else,
+> = Schema[TableId][CellId] extends {
+  default: string | number | boolean;
+}
+  ? Then
+  : Else;
 
 export type ValuesFromSchema<
   Schema extends OptionalValuesSchema,
@@ -149,15 +156,12 @@ export type DefaultValueIdFromSchema<
   Schema extends OptionalValuesSchema,
   IsDefaulted extends boolean = true,
 > = {
-  [ValueId in ValueIdFromSchema<Schema>]: Schema[ValueId] extends {
-    default: string | number | boolean;
-  }
-    ? IsDefaulted extends true
-      ? ValueId
-      : never
-    : IsDefaulted extends true
-    ? never
-    : ValueId;
+  [ValueId in ValueIdFromSchema<Schema>]: ValueIsDefaultedFromSchema<
+    Schema,
+    ValueId,
+    IsDefaulted extends true ? ValueId : never,
+    IsDefaulted extends true ? never : ValueId
+  >;
 }[ValueIdFromSchema<Schema>];
 
 export type ValueFromSchema<
@@ -171,6 +175,17 @@ export type ValueFromSchema<
   : ValueType extends 'boolean'
   ? boolean
   : string | number | boolean;
+
+export type ValueIsDefaultedFromSchema<
+  Schema extends OptionalValuesSchema,
+  ValueId extends ValueIdFromSchema<Schema>,
+  Then,
+  Else,
+> = Schema[ValueId] extends {
+  default: string | number | boolean;
+}
+  ? Then
+  : Else;
 
 export type AsId<Key> = Exclude<Key & Id, number>;
 

@@ -6,6 +6,7 @@ import {
   CellFromSchema,
   CellIdFromSchema,
   CellIdsListenerAlias,
+  CellIsDefaultedFromSchema,
   CellListenerAlias,
   DoRollbackAlias,
   InvalidCellListenerAlias,
@@ -28,6 +29,7 @@ import {
   ValueFromSchema,
   ValueIdFromSchema,
   ValueIdsListenerAlias,
+  ValueIsDefaultedFromSchema,
   ValueListenerAlias,
   ValuesFromSchema,
   ValuesListenerAlias,
@@ -556,12 +558,13 @@ export interface Store<in out Schemas extends OptionalSchemas = NoSchemas> {
   getCell<
     TableId extends TableIdFromSchema<Schemas[0]>,
     CellId extends CellIdFromSchema<Schemas[0], TableId>,
-    CellOrUndefined = CellFromSchema<Schemas[0], TableId, CellId> | undefined,
   >(
     tableId: TableId,
     rowId: Id,
     cellId: CellId,
-  ): CellOrUndefined;
+  ):
+    | CellFromSchema<Schemas[0], TableId, CellId>
+    | CellIsDefaultedFromSchema<Schemas[0], TableId, CellId, never, undefined>;
 
   /// Store.getValues
   getValues<Values = ValuesFromSchema<Schemas[1]>>(): Values;
@@ -570,12 +573,11 @@ export interface Store<in out Schemas extends OptionalSchemas = NoSchemas> {
   getValueIds<Ids = ValueIdFromSchema<Schemas[1]>[]>(): Ids;
 
   /// Store.getValue
-  getValue<
-    ValueId extends ValueIdFromSchema<Schemas[1]>,
-    ValueOrUndefined = ValueFromSchema<Schemas[1], ValueId> | undefined,
-  >(
+  getValue<ValueId extends ValueIdFromSchema<Schemas[1]>>(
     valueId: ValueId,
-  ): ValueOrUndefined;
+  ):
+    | ValueFromSchema<Schemas[1], ValueId>
+    | ValueIsDefaultedFromSchema<Schemas[1], ValueId, never, undefined>;
 
   /// Store.hasTables
   hasTables(): boolean;
