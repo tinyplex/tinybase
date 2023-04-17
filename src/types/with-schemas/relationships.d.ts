@@ -6,7 +6,14 @@ import {
   TableIdFromSchema,
 } from './internal/store';
 import {Id, IdOrNull, Ids} from './common.d';
-import {NoSchemas, OptionalSchemas, RowCallback, Store} from './store.d';
+import {
+  NoSchemas,
+  NoTablesSchema,
+  OptionalSchemas,
+  OptionalTablesSchema,
+  RowCallback,
+  Store,
+} from './store.d';
 
 /// Relationship
 export type Relationship = {
@@ -16,9 +23,11 @@ export type Relationship = {
 };
 
 /// RelationshipCallback
-export type RelationshipCallback = (
+export type RelationshipCallback<
+  in out Schema extends OptionalTablesSchema = NoTablesSchema,
+> = (
   relationshipId: Id,
-  forEachRow: (rowCallback: RowCallback) => void,
+  forEachRow: (rowCallback: RowCallback<Schema>) => void,
 ) => void;
 
 /// RemoteRowIdListener
