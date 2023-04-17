@@ -15,18 +15,13 @@ test('Types with schemas', () => {
   const results = tsc.getPreEmitDiagnostics(
     tsc.createProgram([__filename], options),
   );
-  const resultText =
-    results.length > 0
-      ? results
-          .map((result) => {
-            const {file, messageText, start} = result;
-            if (file != null && start != null) {
-              const {line, character} =
-                file.getLineAndCharacterOfPosition(start);
-              return `${line}:${character}\n${JSON.stringify(messageText)}`;
-            }
-          })
-          .join('\n\n')
-      : 'OK';
-  expect(resultText).toMatchSnapshot();
+  results.map((result) => {
+    const {file, messageText, start} = result;
+    const {line, character} = file?.getLineAndCharacterOfPosition(
+      start ?? 0,
+    ) ?? {line: 0, character: 0};
+    expect(
+      `${line}:${character}\n${JSON.stringify(messageText)}`,
+    ).toMatchSnapshot();
+  });
 });
