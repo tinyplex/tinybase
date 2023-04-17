@@ -6,7 +6,14 @@ import {
   TableIdFromSchema,
 } from './internal/store';
 import {Id, IdOrNull, Ids, SortKey} from './common.d';
-import {NoSchemas, OptionalSchemas, RowCallback, Store} from './store.d';
+import {
+  NoSchemas,
+  NoTablesSchema,
+  OptionalSchemas,
+  OptionalTablesSchema,
+  RowCallback,
+  Store,
+} from './store.d';
 
 /// Index
 export type Index = {[sliceId: Id]: Slice};
@@ -15,15 +22,17 @@ export type Index = {[sliceId: Id]: Slice};
 export type Slice = Ids;
 
 /// IndexCallback
-export type IndexCallback = (
+export type IndexCallback<in out Schema extends OptionalTablesSchema> = (
   indexId: Id,
-  forEachSlice: (sliceCallback: SliceCallback) => void,
+  forEachSlice: (sliceCallback: SliceCallback<Schema>) => void,
 ) => void;
 
 /// SliceCallback
-export type SliceCallback = (
+export type SliceCallback<
+  in out Schema extends OptionalTablesSchema = NoTablesSchema,
+> = (
   sliceId: Id,
-  forEachRow: (rowCallback: RowCallback) => void,
+  forEachRow: (rowCallback: RowCallback<Schema>) => void,
 ) => void;
 
 /// SliceIdsListener
@@ -70,10 +79,10 @@ export interface Indexes<in out Schemas extends OptionalSchemas = NoSchemas> {
   getIndexIds(): Ids;
 
   /// Indexes.forEachIndex
-  forEachIndex(indexCallback: IndexCallback): void;
+  forEachIndex(indexCallback: IndexCallback<Schemas[0]>): void;
 
   /// Indexes.forEachSlice
-  forEachSlice(indexId: Id, sliceCallback: SliceCallback): void;
+  forEachSlice(indexId: Id, sliceCallback: SliceCallback<Schemas[0]>): void;
 
   /// Indexes.hasIndex
   hasIndex(indexId: Id): boolean;
