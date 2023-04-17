@@ -1,4 +1,5 @@
 import {Callback, Id} from '../common';
+import {CellIdFromSchema, TableIdFromSchema, ValueIdFromSchema} from './store';
 import {ComponentType, ReactElement} from 'react';
 import {OptionalSchemas, Store} from '../store';
 import {Checkpoints} from '../checkpoints';
@@ -6,7 +7,6 @@ import {Indexes} from '../indexes';
 import {Metrics} from '../metrics';
 import {Queries} from '../queries';
 import {Relationships} from '../relationships';
-import {CellIdFromSchema, TableIdFromSchema, ValueIdFromSchema} from './store';
 
 type StoreOrStoreId<Schemas extends OptionalSchemas> = Store<Schemas> | Id;
 
