@@ -628,67 +628,32 @@ export interface Store<in out Schemas extends OptionalSchemas = NoSchemas> {
   getSchemaJson(): Json;
 
   /// Store.setTables
-  setTables<
-    Tables extends TablesFromSchema<Schemas[0], true> = TablesFromSchema<
-      Schemas[0],
-      true
-    >,
-  >(
-    tables: Tables,
-  ): Store<Schemas>;
+  setTables(tables: TablesFromSchema<Schemas[0], true>): Store<Schemas>;
 
   /// Store.setTable
-  setTable<
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    Table extends TableFromSchema<Schemas[0], TableId, true> = TableFromSchema<
-      Schemas[0],
-      TableId,
-      true
-    >,
-  >(
+  setTable<TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
-    table: Table,
+    table: TableFromSchema<Schemas[0], TableId, true>,
   ): Store<Schemas>;
 
   /// Store.setRow
-  setRow<
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    Row extends RowFromSchema<Schemas[0], TableId, true> = RowFromSchema<
-      Schemas[0],
-      TableId,
-      true
-    >,
-  >(
+  setRow<TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
     rowId: Id,
-    row: Row,
+    row: RowFromSchema<Schemas[0], TableId, true>,
   ): Store<Schemas>;
 
   /// Store.addRow
-  addRow<
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    Row extends RowFromSchema<Schemas[0], TableId, true> = RowFromSchema<
-      Schemas[0],
-      TableId,
-      true
-    >,
-  >(
+  addRow<TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
-    row: Row,
+    row: RowFromSchema<Schemas[0], TableId, true>,
   ): Id | undefined;
 
   /// Store.setPartialRow
-  setPartialRow<
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    Row extends RowFromSchema<Schemas[0], TableId, true> = RowFromSchema<
-      Schemas[0],
-      TableId,
-      true
-    >,
-  >(
+  setPartialRow<TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
     rowId: Id,
-    partialRow: Row,
+    partialRow: RowFromSchema<Schemas[0], TableId, true>,
   ): Store<Schemas>;
 
   /// Store.setCell
@@ -707,27 +672,15 @@ export interface Store<in out Schemas extends OptionalSchemas = NoSchemas> {
     tableId: TableId,
     rowId: Id,
     cellId: CellId,
-    cell: Cell | MapCell,
+    cell: CellFromSchema<Schemas[0], TableId, CellId> | MapCell,
   ): Store<Schemas>;
 
   /// Store.setValues
-  setValues<
-    Values extends ValuesFromSchema<Schemas[1], true> = ValuesFromSchema<
-      Schemas[1],
-      true
-    >,
-  >(
-    values: Values,
-  ): Store<Schemas>;
+  setValues(values: ValuesFromSchema<Schemas[1], true>): Store<Schemas>;
 
   /// Store.setPartialValues
-  setPartialValues<
-    Values extends ValuesFromSchema<Schemas[1], true> = ValuesFromSchema<
-      Schemas[1],
-      true
-    >,
-  >(
-    partialValues: Values,
+  setPartialValues(
+    partialValues: ValuesFromSchema<Schemas[1], true>,
   ): Store<Schemas>;
 
   /// Store.setValue
