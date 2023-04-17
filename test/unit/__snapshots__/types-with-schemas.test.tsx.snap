@@ -1,6 +1,321 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Types with schemas 1`] = `
-"4:29
-"Argument of type 'never[]' is not assignable to parameter of type 'Cell | MapCell'.""
+"27:0
+{"messageText":"Conversion of type 'number | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.","category":1,"code":2352,"next":[{"messageText":"Type 'number' is not comparable to type 'string'.","category":1,"code":2678}]}"
+`;
+
+exports[`Types with schemas 2`] = `
+"28:0
+"Conversion of type 'string' to type 'undefined' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.""
+`;
+
+exports[`Types with schemas 3`] = `
+"29:37
+"Property 'c2' does not exist on type 'RowFromSchema<{ readonly t1: { readonly c1: { readonly type: \\"number\\"; }; readonly c1d: { readonly type: \\"string\\"; readonly default: \\"\\"; }; }; }, \\"t1\\", false>'.""
+`;
+
+exports[`Types with schemas 4`] = `
+"30:29
+"Property 't2' does not exist on type 'TablesFromSchema<{ readonly t1: { readonly c1: { readonly type: \\"number\\"; }; readonly c1d: { readonly type: \\"string\\"; readonly default: \\"\\"; }; }; }>'.""
+`;
+
+exports[`Types with schemas 5`] = `
+"31:29
+"Property 't2' does not exist on type 'TablesFromSchema<{ readonly t1: { readonly c1: { readonly type: \\"number\\"; }; readonly c1d: { readonly type: \\"string\\"; readonly default: \\"\\"; }; }; }>'.""
+`;
+
+exports[`Types with schemas 6`] = `
+"34:40
+"Argument of type '\\"t2\\"' is not assignable to parameter of type '\\"t1\\"'.""
+`;
+
+exports[`Types with schemas 7`] = `
+"37:26
+"Argument of type '\\"t2\\"' is not assignable to parameter of type '\\"t1\\"'.""
+`;
+
+exports[`Types with schemas 8`] = `
+"43:0
+{"messageText":"Conversion of type 'number | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.","category":1,"code":2352,"next":[{"messageText":"Type 'number' is not comparable to type 'string'.","category":1,"code":2678}]}"
+`;
+
+exports[`Types with schemas 9`] = `
+"44:0
+"Conversion of type 'string' to type 'undefined' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.""
+`;
+
+exports[`Types with schemas 10`] = `
+"45:26
+"Argument of type '\\"t2\\"' is not assignable to parameter of type '\\"t1\\"'.""
+`;
+
+exports[`Types with schemas 11`] = `
+"48:27
+"Argument of type '\\"t2\\"' is not assignable to parameter of type '\\"t1\\"'.""
+`;
+
+exports[`Types with schemas 12`] = `
+"51:39
+"Argument of type '\\"c2\\"' is not assignable to parameter of type '\\"c1\\" | \\"c1d\\" | undefined'.""
+`;
+
+exports[`Types with schemas 13`] = `
+"52:33
+"Argument of type '\\"t2\\"' is not assignable to parameter of type '\\"t1\\"'.""
+`;
+
+exports[`Types with schemas 14`] = `
+"55:24
+"Argument of type '\\"t2\\"' is not assignable to parameter of type '\\"t1\\"'.""
+`;
+
+exports[`Types with schemas 15`] = `
+"61:0
+{"messageText":"Conversion of type 'number | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.","category":1,"code":2352,"next":[{"messageText":"Type 'number' is not comparable to type 'string'.","category":1,"code":2678}]}"
+`;
+
+exports[`Types with schemas 16`] = `
+"62:0
+"Conversion of type 'string' to type 'undefined' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.""
+`;
+
+exports[`Types with schemas 17`] = `
+"63:24
+"Argument of type '\\"t2\\"' is not assignable to parameter of type '\\"t1\\"'.""
+`;
+
+exports[`Types with schemas 18`] = `
+"66:49
+"Argument of type '\\"c2\\"' is not assignable to parameter of type '\\"c1\\" | \\"c1d\\"'.""
+`;
+
+exports[`Types with schemas 19`] = `
+"67:28
+"Argument of type '\\"t2\\"' is not assignable to parameter of type '\\"t1\\"'.""
+`;
+
+exports[`Types with schemas 20`] = `
+"70:37
+"Argument of type '\\"c2\\"' is not assignable to parameter of type '\\"c1\\" | \\"c1d\\"'.""
+`;
+
+exports[`Types with schemas 21`] = `
+"71:25
+"Argument of type '\\"t2\\"' is not assignable to parameter of type '\\"t1\\"'.""
+`;
+
+exports[`Types with schemas 22`] = `
+"76:0
+{"messageText":"Conversion of type 'number | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.","category":1,"code":2352,"next":[{"messageText":"Type 'number' is not comparable to type 'string'.","category":1,"code":2678}]}"
+`;
+
+exports[`Types with schemas 23`] = `
+"77:0
+"Conversion of type 'string' to type 'undefined' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.""
+`;
+
+exports[`Types with schemas 24`] = `
+"78:37
+"Argument of type '\\"c2\\"' is not assignable to parameter of type '\\"c1\\" | \\"c1d\\"'.""
+`;
+
+exports[`Types with schemas 25`] = `
+"79:25
+"Argument of type '\\"t2\\"' is not assignable to parameter of type '\\"t1\\"'.""
+`;
+
+exports[`Types with schemas 26`] = `
+"85:0
+{"messageText":"Conversion of type 'number | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.","category":1,"code":2352,"next":[{"messageText":"Type 'number' is not comparable to type 'string'.","category":1,"code":2678}]}"
+`;
+
+exports[`Types with schemas 27`] = `
+"86:0
+"Conversion of type 'string' to type 'undefined' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.""
+`;
+
+exports[`Types with schemas 28`] = `
+"87:29
+"Property 'v2' does not exist on type 'ValuesFromSchema<{ readonly v1: { readonly type: \\"number\\"; }; readonly v1d: { readonly type: \\"string\\"; readonly default: \\"\\"; }; }>'.""
+`;
+
+exports[`Types with schemas 29`] = `
+"90:40
+"Argument of type '\\"v2\\"' is not assignable to parameter of type '\\"v1\\" | \\"v1d\\"'.""
+`;
+
+exports[`Types with schemas 30`] = `
+"93:26
+"Argument of type '\\"v2\\"' is not assignable to parameter of type '\\"v1\\" | \\"v1d\\"'.""
+`;
+
+exports[`Types with schemas 31`] = `
+"98:0
+{"messageText":"Conversion of type 'number | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.","category":1,"code":2352,"next":[{"messageText":"Type 'number' is not comparable to type 'string'.","category":1,"code":2678}]}"
+`;
+
+exports[`Types with schemas 32`] = `
+"99:0
+"Conversion of type 'string' to type 'undefined' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.""
+`;
+
+exports[`Types with schemas 33`] = `
+"100:26
+"Argument of type '\\"v2\\"' is not assignable to parameter of type '\\"v1\\" | \\"v1d\\"'.""
+`;
+
+exports[`Types with schemas 34`] = `
+"105:38
+{"messageText":"Type '{ c2: number; }' is not assignable to type 'RowFromSchema<{ readonly t1: { readonly c1: { readonly type: \\"number\\"; }; readonly c1d: { readonly type: \\"string\\"; readonly default: \\"\\"; }; }; }, \\"t1\\", true>'.","category":1,"code":2322,"next":[{"messageText":"Object literal may only specify known properties, and 'c2' does not exist in type 'RowFromSchema<{ readonly t1: { readonly c1: { readonly type: \\"number\\"; }; readonly c1d: { readonly type: \\"string\\"; readonly default: \\"\\"; }; }; }, \\"t1\\", true>'.","category":1,"code":2353}]}"
+`;
+
+exports[`Types with schemas 35`] = `
+"106:38
+"Type 'string' is not assignable to type 'number'.""
+`;
+
+exports[`Types with schemas 36`] = `
+"107:28
+{"messageText":"Argument of type '{ t2: { r2: { c2: number; }; }; }' is not assignable to parameter of type 'TablesFromSchema<{ readonly t1: { readonly c1: { readonly type: \\"number\\"; }; readonly c1d: { readonly type: \\"string\\"; readonly default: \\"\\"; }; }; }, true>'.","category":1,"code":2345,"next":[{"messageText":"Object literal may only specify known properties, and 't2' does not exist in type 'TablesFromSchema<{ readonly t1: { readonly c1: { readonly type: \\"number\\"; }; readonly c1d: { readonly type: \\"string\\"; readonly default: \\"\\"; }; }; }, true>'.","category":1,"code":2353}]}"
+`;
+
+exports[`Types with schemas 37`] = `
+"110:38
+{"messageText":"Type '{ c2: number; }' is not assignable to type 'RowFromSchema<{ readonly t1: { readonly c1: { readonly type: \\"number\\"; }; readonly c1d: { readonly type: \\"string\\"; readonly default: \\"\\"; }; }; }, \\"t1\\", true>'.","category":1,"code":2322,"next":[{"messageText":"Object literal may only specify known properties, and 'c2' does not exist in type 'RowFromSchema<{ readonly t1: { readonly c1: { readonly type: \\"number\\"; }; readonly c1d: { readonly type: \\"string\\"; readonly default: \\"\\"; }; }; }, \\"t1\\", true>'.","category":1,"code":2353}]}"
+`;
+
+exports[`Types with schemas 38`] = `
+"111:38
+"Type 'string' is not assignable to type 'number'.""
+`;
+
+exports[`Types with schemas 39`] = `
+"112:26
+"Argument of type '\\"t2\\"' is not assignable to parameter of type '\\"t1\\"'.""
+`;
+
+exports[`Types with schemas 40`] = `
+"115:26
+"Argument of type '\\"t2\\"' is not assignable to parameter of type '\\"t1\\"'.""
+`;
+
+exports[`Types with schemas 41`] = `
+"118:37
+{"messageText":"Argument of type '{ c2: number; }' is not assignable to parameter of type 'RowFromSchema<{ readonly t1: { readonly c1: { readonly type: \\"number\\"; }; readonly c1d: { readonly type: \\"string\\"; readonly default: \\"\\"; }; }; }, \\"t1\\", true>'.","category":1,"code":2345,"next":[{"messageText":"Object literal may only specify known properties, and 'c2' does not exist in type 'RowFromSchema<{ readonly t1: { readonly c1: { readonly type: \\"number\\"; }; readonly c1d: { readonly type: \\"string\\"; readonly default: \\"\\"; }; }; }, \\"t1\\", true>'.","category":1,"code":2353}]}"
+`;
+
+exports[`Types with schemas 42`] = `
+"119:37
+"Type 'string' is not assignable to type 'number'.""
+`;
+
+exports[`Types with schemas 43`] = `
+"120:24
+"Argument of type '\\"t2\\"' is not assignable to parameter of type '\\"t1\\"'.""
+`;
+
+exports[`Types with schemas 44`] = `
+"123:31
+{"messageText":"Argument of type '{ c2: number; }' is not assignable to parameter of type 'RowFromSchema<{ readonly t1: { readonly c1: { readonly type: \\"number\\"; }; readonly c1d: { readonly type: \\"string\\"; readonly default: \\"\\"; }; }; }, \\"t1\\", true>'.","category":1,"code":2345,"next":[{"messageText":"Object literal may only specify known properties, and 'c2' does not exist in type 'RowFromSchema<{ readonly t1: { readonly c1: { readonly type: \\"number\\"; }; readonly c1d: { readonly type: \\"string\\"; readonly default: \\"\\"; }; }; }, \\"t1\\", true>'.","category":1,"code":2353}]}"
+`;
+
+exports[`Types with schemas 45`] = `
+"124:31
+"Type 'string' is not assignable to type 'number'.""
+`;
+
+exports[`Types with schemas 46`] = `
+"125:24
+"Argument of type '\\"t2\\"' is not assignable to parameter of type '\\"t1\\"'.""
+`;
+
+exports[`Types with schemas 47`] = `
+"128:44
+{"messageText":"Argument of type '{ c2: number; }' is not assignable to parameter of type 'RowFromSchema<{ readonly t1: { readonly c1: { readonly type: \\"number\\"; }; readonly c1d: { readonly type: \\"string\\"; readonly default: \\"\\"; }; }; }, \\"t1\\", true>'.","category":1,"code":2345,"next":[{"messageText":"Object literal may only specify known properties, and 'c2' does not exist in type 'RowFromSchema<{ readonly t1: { readonly c1: { readonly type: \\"number\\"; }; readonly c1d: { readonly type: \\"string\\"; readonly default: \\"\\"; }; }; }, \\"t1\\", true>'.","category":1,"code":2353}]}"
+`;
+
+exports[`Types with schemas 48`] = `
+"129:44
+"Type 'string' is not assignable to type 'number'.""
+`;
+
+exports[`Types with schemas 49`] = `
+"130:31
+"Argument of type '\\"t2\\"' is not assignable to parameter of type '\\"t1\\"'.""
+`;
+
+exports[`Types with schemas 50`] = `
+"133:24
+"Argument of type '\\"t2\\"' is not assignable to parameter of type '\\"t1\\"'.""
+`;
+
+exports[`Types with schemas 51`] = `
+"137:37
+"Argument of type '\\"c2\\"' is not assignable to parameter of type '\\"c1\\" | \\"c1d\\"'.""
+`;
+
+exports[`Types with schemas 52`] = `
+"138:43
+"Argument of type 'string' is not assignable to parameter of type 'number | ((cell: number | undefined) => number)'.""
+`;
+
+exports[`Types with schemas 53`] = `
+"139:43
+{"messageText":"Argument of type '() => string' is not assignable to parameter of type 'number | ((cell: number | undefined) => number)'.","category":1,"code":2345,"next":[{"messageText":"Type '() => string' is not assignable to type '(cell: number | undefined) => number'.","category":1,"code":2322,"next":[{"messageText":"Type 'string' is not assignable to type 'number'.","category":1,"code":2322}]}]}"
+`;
+
+exports[`Types with schemas 54`] = `
+"140:25
+"Argument of type '\\"t2\\"' is not assignable to parameter of type '\\"t1\\"'.""
+`;
+
+exports[`Types with schemas 55`] = `
+"143:37
+"Argument of type '\\"c2\\"' is not assignable to parameter of type '\\"c1\\" | \\"c1d\\"'.""
+`;
+
+exports[`Types with schemas 56`] = `
+"144:25
+"Argument of type '\\"t2\\"' is not assignable to parameter of type '\\"t1\\"'.""
+`;
+
+exports[`Types with schemas 57`] = `
+"147:28
+"Type 'string' is not assignable to type 'number'.""
+`;
+
+exports[`Types with schemas 58`] = `
+"148:28
+{"messageText":"Argument of type '{ v2: number; }' is not assignable to parameter of type 'ValuesFromSchema<{ readonly v1: { readonly type: \\"number\\"; }; readonly v1d: { readonly type: \\"string\\"; readonly default: \\"\\"; }; }, true>'.","category":1,"code":2345,"next":[{"messageText":"Object literal may only specify known properties, and 'v2' does not exist in type 'ValuesFromSchema<{ readonly v1: { readonly type: \\"number\\"; }; readonly v1d: { readonly type: \\"string\\"; readonly default: \\"\\"; }; }, true>'.","category":1,"code":2353}]}"
+`;
+
+exports[`Types with schemas 59`] = `
+"151:35
+"Type 'string' is not assignable to type 'number'.""
+`;
+
+exports[`Types with schemas 60`] = `
+"152:35
+{"messageText":"Argument of type '{ v2: number; }' is not assignable to parameter of type 'ValuesFromSchema<{ readonly v1: { readonly type: \\"number\\"; }; readonly v1d: { readonly type: \\"string\\"; readonly default: \\"\\"; }; }, true>'.","category":1,"code":2345,"next":[{"messageText":"Object literal may only specify known properties, and 'v2' does not exist in type 'ValuesFromSchema<{ readonly v1: { readonly type: \\"number\\"; }; readonly v1d: { readonly type: \\"string\\"; readonly default: \\"\\"; }; }, true>'.","category":1,"code":2353}]}"
+`;
+
+exports[`Types with schemas 61`] = `
+"156:32
+"Argument of type 'string' is not assignable to parameter of type 'number | ((value: number | undefined) => number)'.""
+`;
+
+exports[`Types with schemas 62`] = `
+"157:32
+{"messageText":"Argument of type '() => string' is not assignable to parameter of type 'number | ((value: number | undefined) => number)'.","category":1,"code":2345,"next":[{"messageText":"Type '() => string' is not assignable to type '(value: number | undefined) => number'.","category":1,"code":2322,"next":[{"messageText":"Type 'string' is not assignable to type 'number'.","category":1,"code":2322}]}]}"
+`;
+
+exports[`Types with schemas 63`] = `
+"158:26
+"Argument of type '\\"v2\\"' is not assignable to parameter of type '\\"v1\\" | \\"v1d\\"'.""
+`;
+
+exports[`Types with schemas 64`] = `
+"161:26
+"Argument of type '\\"v2\\"' is not assignable to parameter of type '\\"v1\\" | \\"v1d\\"'.""
 `;
