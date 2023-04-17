@@ -1,0 +1,6 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Types with schemas 1`] = `
+"4:29
+"Argument of type 'never[]' is not assignable to parameter of type 'Cell | MapCell'.""
+`;

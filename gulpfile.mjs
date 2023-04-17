@@ -178,7 +178,12 @@ const tsCheck = async (dir) => {
   } = await import('ts-unused-exports');
   const {fileNames, options} = await getTsOptions(dir);
   const results = tsc.getPreEmitDiagnostics(
-    tsc.createProgram(fileNames, options),
+    tsc.createProgram(
+      fileNames.filter(
+        (fileName) => fileName != 'test/unit/types-with-schemas.test.tsx',
+      ),
+      options,
+    ),
   );
   if (results.length > 0) {
     const resultText = results
