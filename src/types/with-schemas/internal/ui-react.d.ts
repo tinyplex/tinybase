@@ -6,6 +6,7 @@ import {Indexes} from '../indexes';
 import {Metrics} from '../metrics';
 import {Queries} from '../queries';
 import {Relationships} from '../relationships';
+import {CellIdFromSchema, TableIdFromSchema, ValueIdFromSchema} from './store';
 
 type StoreOrStoreId<Schemas extends OptionalSchemas> = Store<Schemas> | Id;
 
@@ -45,9 +46,13 @@ type TablesProps<Schemas extends OptionalSchemas> = {
   /// TablesProps.debugIds
   readonly debugIds?: boolean;
 };
-export type TableProps<Schemas extends OptionalSchemas> = {
+
+export type TableProps<
+  Schemas extends OptionalSchemas,
+  TableId extends TableIdFromSchema<Schemas[0]> = TableIdFromSchema<Schemas[0]>,
+> = {
   /// TableProps.tableId
-  readonly tableId: Id;
+  readonly tableId: TableId;
   /// TableProps.store
   readonly store?: StoreOrStoreId<Schemas>;
   /// TableProps.rowComponent
@@ -60,11 +65,18 @@ export type TableProps<Schemas extends OptionalSchemas> = {
   readonly debugIds?: boolean;
 };
 
-export type SortedTableProps<Schemas extends OptionalSchemas> = {
+export type SortedTableProps<
+  Schemas extends OptionalSchemas,
+  TableId extends TableIdFromSchema<Schemas[0]> = TableIdFromSchema<Schemas[0]>,
+  CellId extends CellIdFromSchema<Schemas[0], TableId> = CellIdFromSchema<
+    Schemas[0],
+    TableId
+  >,
+> = {
   /// SortedTableProps.tableId
-  readonly tableId: Id;
+  readonly tableId: TableId;
   /// SortedTableProps.cellId
-  readonly cellId?: Id;
+  readonly cellId?: CellId;
   /// SortedTableProps.descending
   readonly descending?: boolean;
   /// SortedTableProps.offset
@@ -74,7 +86,7 @@ export type SortedTableProps<Schemas extends OptionalSchemas> = {
   /// SortedTableProps.store
   readonly store?: StoreOrStoreId<Schemas>;
   /// SortedTableProps.rowComponent
-  readonly rowComponent?: ComponentType<RowProps<Schemas>>;
+  readonly rowComponent?: ComponentType<RowProps<Schemas, TableId>>;
   /// SortedTableProps.getRowComponentProps
   readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
   /// SortedTableProps.separator
@@ -83,15 +95,18 @@ export type SortedTableProps<Schemas extends OptionalSchemas> = {
   readonly debugIds?: boolean;
 };
 
-export type RowProps<Schemas extends OptionalSchemas> = {
+export type RowProps<
+  Schemas extends OptionalSchemas,
+  TableId extends TableIdFromSchema<Schemas[0]> = TableIdFromSchema<Schemas[0]>,
+> = {
   /// RowProps.tableId
-  readonly tableId: Id;
+  readonly tableId: TableId;
   /// RowProps.rowId
   readonly rowId: Id;
   /// RowProps.store
   readonly store?: StoreOrStoreId<Schemas>;
   /// RowProps.cellComponent
-  readonly cellComponent?: ComponentType<CellProps<Schemas>>;
+  readonly cellComponent?: ComponentType<CellProps<Schemas, TableId>>;
   /// RowProps.getCellComponentProps
   readonly getCellComponentProps?: (cellId: Id) => ExtraProps;
   /// RowProps.separator
@@ -100,13 +115,20 @@ export type RowProps<Schemas extends OptionalSchemas> = {
   readonly debugIds?: boolean;
 };
 
-export type CellProps<Schemas extends OptionalSchemas> = {
+export type CellProps<
+  Schemas extends OptionalSchemas,
+  TableId extends TableIdFromSchema<Schemas[0]> = TableIdFromSchema<Schemas[0]>,
+  CellId extends CellIdFromSchema<Schemas[0], TableId> = CellIdFromSchema<
+    Schemas[0],
+    TableId
+  >,
+> = {
   /// CellProps.tableId
-  readonly tableId: Id;
+  readonly tableId: TableId;
   /// CellProps.rowId
   readonly rowId: Id;
   /// CellProps.cellId
-  readonly cellId: Id;
+  readonly cellId: CellId;
   /// CellProps.store
   readonly store?: StoreOrStoreId<Schemas>;
   /// CellProps.debugIds
@@ -126,9 +148,12 @@ export type ValuesProps<Schemas extends OptionalSchemas> = {
   readonly debugIds?: boolean;
 };
 
-export type ValueProps<Schemas extends OptionalSchemas> = {
+export type ValueProps<
+  Schemas extends OptionalSchemas,
+  ValueId extends ValueIdFromSchema<Schemas[1]> = ValueIdFromSchema<Schemas[1]>,
+> = {
   /// ValueProps.valueId
-  readonly valueId: Id;
+  readonly valueId: ValueId;
   /// ValueProps.store
   readonly store?: StoreOrStoreId<Schemas>;
   /// ValueProps.debugIds
