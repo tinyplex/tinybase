@@ -73,13 +73,13 @@ export type NoSchemas = [NoTablesSchema, NoValuesSchema];
 
 /// Tables
 export type Tables<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
+  in out Schema extends OptionalTablesSchema = NoTablesSchema,
   WhenSet extends boolean = false,
 > = TablesFromSchema<Schema, WhenSet>;
 
 /// Table
 export type Table<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
+  in out Schema extends OptionalTablesSchema = NoTablesSchema,
   TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
   WhenSet extends boolean = false,
 > = TableFromSchema<Schema, TableId, WhenSet>;
@@ -133,7 +133,7 @@ export type ValueOrUndefined<
 
 /// TableCallback
 export type TableCallback<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
+  in out Schema extends OptionalTablesSchema = NoTablesSchema,
   TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
 > = (
   tableId: TableId,
@@ -142,7 +142,7 @@ export type TableCallback<
 
 /// RowCallback
 export type RowCallback<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
+  in out Schema extends OptionalTablesSchema = NoTablesSchema,
   TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
 > = (
   rowId: Id,
@@ -151,7 +151,7 @@ export type RowCallback<
 
 /// CellCallback
 export type CellCallback<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
+  in out Schema extends OptionalTablesSchema = NoTablesSchema,
   TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
   CellId extends CellIdFromSchema<Schema, TableId> = CellIdFromSchema<
     Schema,
@@ -161,13 +161,13 @@ export type CellCallback<
 
 /// ValueCallback
 export type ValueCallback<
-  Schema extends OptionalValuesSchema = NoValuesSchema,
+  in out Schema extends OptionalValuesSchema = NoValuesSchema,
   ValueId extends ValueIdFromSchema<Schema> = ValueIdFromSchema<Schema>,
 > = (valueId: ValueId, value: Value<Schema, ValueId>) => void;
 
 /// MapCell
 export type MapCell<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
+  in out Schema extends OptionalTablesSchema = NoTablesSchema,
   TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
   CellId extends CellIdFromSchema<Schema, TableId> = CellIdFromSchema<
     Schema,
@@ -179,13 +179,13 @@ export type MapCell<
 
 /// MapValue
 export type MapValue<
-  Schema extends OptionalValuesSchema = NoValuesSchema,
+  in out Schema extends OptionalValuesSchema = NoValuesSchema,
   ValueId extends ValueIdFromSchema<Schema> = ValueIdFromSchema<Schema>,
 > = (value: ValueOrUndefined<Schema, ValueId>) => Value<Schema, ValueId>;
 
 /// GetCell
 export type GetCell<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
+  in out Schema extends OptionalTablesSchema = NoTablesSchema,
   TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
 > = <
   CellId extends CellIdFromSchema<Schema, TableId>,
@@ -196,7 +196,7 @@ export type GetCell<
 
 /// DoRollback
 export type DoRollback<
-  Schemas extends OptionalSchemas = NoSchemas,
+  in out Schemas extends OptionalSchemas = NoSchemas,
   TablesSchema extends OptionalTablesSchema = Schemas[0],
   ValuesSchema extends OptionalValuesSchema = Schemas[1],
 > = (
@@ -207,7 +207,9 @@ export type DoRollback<
 ) => boolean;
 
 /// TransactionListener
-export type TransactionListener<Schemas extends OptionalSchemas = NoSchemas> = (
+export type TransactionListener<
+  in out Schemas extends OptionalSchemas = NoSchemas,
+> = (
   store: Store<Schemas>,
   cellsTouched: boolean,
   valuesTouched: boolean,
@@ -215,7 +217,7 @@ export type TransactionListener<Schemas extends OptionalSchemas = NoSchemas> = (
 
 /// TablesListener
 export type TablesListener<
-  Schemas extends OptionalSchemas = NoSchemas,
+  in out Schemas extends OptionalSchemas = NoSchemas,
   Schema extends OptionalTablesSchema = Schemas[0],
 > = (
   store: Store<Schemas>,
@@ -223,13 +225,13 @@ export type TablesListener<
 ) => void;
 
 /// TableIdsListener
-export type TableIdsListener<Schemas extends OptionalSchemas = NoSchemas> = (
-  store: Store<Schemas>,
-) => void;
+export type TableIdsListener<
+  in out Schemas extends OptionalSchemas = NoSchemas,
+> = (store: Store<Schemas>) => void;
 
 /// TableListener
 export type TableListener<
-  Schemas extends OptionalSchemas = NoSchemas,
+  in out Schemas extends OptionalSchemas = NoSchemas,
   TableIdOrNull extends TableIdFromSchema<
     Schemas[0]
   > | null = TableIdFromSchema<Schemas[0]> | null,
@@ -245,7 +247,7 @@ export type TableListener<
 
 /// RowIdsListener
 export type RowIdsListener<
-  Schemas extends OptionalSchemas = NoSchemas,
+  in out Schemas extends OptionalSchemas = NoSchemas,
   TableIdOrNull extends TableIdFromSchema<
     Schemas[0]
   > | null = TableIdFromSchema<Schemas[0]> | null,
@@ -256,7 +258,7 @@ export type RowIdsListener<
 
 /// SortedRowIdsListener
 export type SortedRowIdsListener<
-  Schemas extends OptionalSchemas = NoSchemas,
+  in out Schemas extends OptionalSchemas = NoSchemas,
   TableId extends TableIdFromSchema<Schemas[0]> = TableIdFromSchema<Schemas[0]>,
   CellId extends CellIdFromSchema<Schemas[0], TableId> | undefined =
     | CellIdFromSchema<Schemas[0], TableId>
@@ -276,7 +278,7 @@ export type SortedRowIdsListener<
 
 /// RowListener
 export type RowListener<
-  Schemas extends OptionalSchemas = NoSchemas,
+  in out Schemas extends OptionalSchemas = NoSchemas,
   TableIdOrNull extends TableIdFromSchema<
     Schemas[0]
   > | null = TableIdFromSchema<Schemas[0]> | null,
@@ -295,7 +297,7 @@ export type RowListener<
 
 /// CellIdsListener
 export type CellIdsListener<
-  Schemas extends OptionalSchemas = NoSchemas,
+  in out Schemas extends OptionalSchemas = NoSchemas,
   TableIdOrNull extends TableIdFromSchema<
     Schemas[0]
   > | null = TableIdFromSchema<Schemas[0]> | null,
@@ -308,7 +310,7 @@ export type CellIdsListener<
 
 /// CellListener
 export type CellListener<
-  Schemas extends OptionalSchemas = NoSchemas,
+  in out Schemas extends OptionalSchemas = NoSchemas,
   TableIdOrNull extends TableIdFromSchema<
     Schemas[0]
   > | null = TableIdFromSchema<Schemas[0]> | null,
@@ -345,7 +347,7 @@ export type CellListener<
 
 /// ValuesListener
 export type ValuesListener<
-  Schemas extends OptionalSchemas = NoSchemas,
+  in out Schemas extends OptionalSchemas = NoSchemas,
   Schema extends OptionalValuesSchema = Schemas[1],
 > = (
   store: Store<Schemas>,
@@ -353,13 +355,13 @@ export type ValuesListener<
 ) => void;
 
 /// ValueIdsListener
-export type ValueIdsListener<Schemas extends OptionalSchemas = NoSchemas> = (
-  store: Store<Schemas>,
-) => void;
+export type ValueIdsListener<
+  in out Schemas extends OptionalSchemas = NoSchemas,
+> = (store: Store<Schemas>) => void;
 
 /// ValueListener
 export type ValueListener<
-  Schemas extends OptionalSchemas = NoSchemas,
+  in out Schemas extends OptionalSchemas = NoSchemas,
   ValueIdOrNull extends ValueIdFromSchema<
     Schemas[1]
   > | null = ValueIdFromSchema<Schemas[1]> | null,
@@ -377,7 +379,9 @@ export type ValueListener<
 ) => void;
 
 /// InvalidCellListener
-export type InvalidCellListener<Schemas extends OptionalSchemas = NoSchemas> = (
+export type InvalidCellListener<
+  in out Schemas extends OptionalSchemas = NoSchemas,
+> = (
   store: Store<Schemas>,
   tableId: Id,
   rowId: Id,
@@ -386,12 +390,13 @@ export type InvalidCellListener<Schemas extends OptionalSchemas = NoSchemas> = (
 ) => void;
 
 /// InvalidValueListener
-export type InvalidValueListener<Schemas extends OptionalSchemas = NoSchemas> =
-  (store: Store<Schemas>, valueId: Id, invalidValues: any[]) => void;
+export type InvalidValueListener<
+  in out Schemas extends OptionalSchemas = NoSchemas,
+> = (store: Store<Schemas>, valueId: Id, invalidValues: any[]) => void;
 
 /// GetCellChange
 export type GetCellChange<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
+  in out Schema extends OptionalTablesSchema = NoTablesSchema,
 > = <
   TableId extends TableIdFromSchema<Schema>,
   CellId extends CellIdFromSchema<Schema, TableId>,
@@ -414,7 +419,7 @@ export type CellChange<
 
 /// GetValueChange
 export type GetValueChange<
-  Schema extends OptionalValuesSchema = NoValuesSchema,
+  in out Schema extends OptionalValuesSchema = NoValuesSchema,
 > = <ValueId extends ValueIdFromSchema<Schema>>(
   valueId: ValueId,
 ) => ValueChange<Schema, ValueId>;
@@ -427,17 +432,18 @@ export type ValueChange<
 > = [changed: boolean, oldValue: ValueOrUndefined, newValue: ValueOrUndefined];
 
 /// ChangedCells
-export type ChangedCells<Schema extends OptionalTablesSchema = NoTablesSchema> =
-  {
-    [TableId in TableIdFromSchema<Schema>]?: {
-      [rowId: Id]: {
-        [CellId in CellIdFromSchema<Schema, TableId>]?: [
-          CellOrUndefined<Schema, TableId, CellId>,
-          CellOrUndefined<Schema, TableId, CellId>,
-        ];
-      };
+export type ChangedCells<
+  in out Schema extends OptionalTablesSchema = NoTablesSchema,
+> = {
+  [TableId in TableIdFromSchema<Schema>]?: {
+    [rowId: Id]: {
+      [CellId in CellIdFromSchema<Schema, TableId>]?: [
+        CellOrUndefined<Schema, TableId, CellId>,
+        CellOrUndefined<Schema, TableId, CellId>,
+      ];
     };
   };
+};
 
 /// InvalidCells
 export type InvalidCells = {
@@ -450,7 +456,7 @@ export type InvalidCells = {
 
 /// ChangedValues
 export type ChangedValues<
-  Schema extends OptionalValuesSchema = NoValuesSchema,
+  in out Schema extends OptionalValuesSchema = NoValuesSchema,
 > = {
   [ValueId in ValueIdFromSchema<Schema>]?: [
     ValueOrUndefined<Schema, ValueId>,
