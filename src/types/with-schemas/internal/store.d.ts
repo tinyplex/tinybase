@@ -126,6 +126,14 @@ export type CellIsDefaultedFromSchema<
   ? Then
   : Else;
 
+export type DefaultedCellFromSchema<
+  Schema extends OptionalTablesSchema,
+  TableId extends TableIdFromSchema<Schema>,
+  CellId extends CellIdFromSchema<Schema, TableId>,
+> =
+  | CellFromSchema<Schema, TableId, CellId>
+  | CellIsDefaultedFromSchema<Schema, TableId, CellId, never, undefined>;
+
 export type ValuesFromSchema<
   Schema extends OptionalValuesSchema,
   WhenSet extends boolean = false,
@@ -186,6 +194,13 @@ export type ValueIsDefaultedFromSchema<
 }
   ? Then
   : Else;
+
+export type DefaultedValueFromSchema<
+  Schema extends OptionalValuesSchema,
+  ValueId extends ValueIdFromSchema<Schema>,
+> =
+  | ValueFromSchema<Schema, ValueId>
+  | ValueIsDefaultedFromSchema<Schema, ValueId, never, undefined>;
 
 export type AsId<Key> = Exclude<Key & Id, number>;
 
