@@ -1,12 +1,8 @@
 /// indexes
 
+import {CellIdFromSchema, TableIdFromSchema} from './internal/store';
 import {
-  CellIdFromSchema,
-  GetCellAlias,
-  TableIdFromSchema,
-} from './internal/store';
-import {Id, IdOrNull, Ids, SortKey} from './common.d';
-import {
+  GetCell,
   NoSchemas,
   NoTablesSchema,
   OptionalSchemas,
@@ -14,6 +10,7 @@ import {
   RowCallback,
   Store,
 } from './store.d';
+import {Id, IdOrNull, Ids, SortKey} from './common.d';
 
 /// Index
 export type Index = {[sliceId: Id]: Slice};
@@ -59,12 +56,15 @@ export interface Indexes<in out Schemas extends OptionalSchemas = NoSchemas> {
   setIndexDefinition<
     TableId extends TableIdFromSchema<Schemas[0]>,
     CellId extends CellIdFromSchema<Schemas[0], TableId>,
-    GetCell = GetCellAlias<Schemas[0], TableId>,
   >(
     indexId: Id,
     tableId: TableId,
-    getSliceIdOrIds?: CellId | ((getCell: GetCell, rowId: Id) => Id | Ids),
-    getSortKey?: CellId | ((getCell: GetCell, rowId: Id) => SortKey),
+    getSliceIdOrIds?:
+      | CellId
+      | ((getCell: GetCell<Schemas[0], TableId>, rowId: Id) => Id | Ids),
+    getSortKey?:
+      | CellId
+      | ((getCell: GetCell<Schemas[0], TableId>, rowId: Id) => SortKey),
     sliceIdSorter?: (sliceId1: Id, sliceId2: Id) => number,
     rowIdSorter?: (sortKey1: SortKey, sortKey2: SortKey, sliceId: Id) => number,
   ): Indexes<Schemas>;

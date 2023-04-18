@@ -9,13 +9,9 @@ import {
   OptionalTablesSchema,
   Store,
 } from './store.d';
-import {
-  CellIdFromSchema,
-  GetCellAlias,
-  TableIdFromSchema,
-} from './internal/store';
-import {GetTableCellAlias, JoinedCellIdOrId} from './internal/queries';
+import {CellIdFromSchema, TableIdFromSchema} from './internal/store';
 import {Id, IdOrNull, Ids} from './common.d';
+import {JoinedCellIdOrId} from './internal/queries';
 
 /// ResultTable
 export type ResultTable = {[rowId: Id]: ResultRow};
@@ -222,13 +218,11 @@ export type Select<
     joinedCellId: JoinedCellId,
   ): SelectedAs;
   /// Select.3
-  <
-    GetTableCell extends GetTableCellAlias<
-      Schema,
-      RootTableId
-    > = GetTableCellAlias<Schema, RootTableId>,
-  >(
-    getCell: (getTableCell: GetTableCell, rowId: Id) => ResultCellOrUndefined,
+  (
+    getCell: (
+      getTableCell: GetTableCell<Schema, RootTableId>,
+      rowId: Id,
+    ) => ResultCellOrUndefined,
   ): SelectedAs;
 };
 
@@ -280,14 +274,15 @@ export type Join<
     IntermediateJoinedTableId extends TableIdFromSchema<Schema> | Id =
       | TableIdFromSchema<Schema>
       | Id,
-    GetCell = IntermediateJoinedTableId extends TableIdFromSchema<Schema>
-      ? GetCellAlias<Schema, IntermediateJoinedTableId>
-      : GetCellAlias<NoTablesSchema, Id>,
   >(
     joinedTableId: JoinedTableId,
     fromIntermediateJoinedTableId: IntermediateJoinedTableId,
     on: (
-      getIntermediateJoinedCell: GetCell,
+      // prettier-ignore
+      getIntermediateJoinedCell: 
+        IntermediateJoinedTableId extends TableIdFromSchema<Schema>
+          ? GetCell<Schema, IntermediateJoinedTableId>
+          : GetCell<NoTablesSchema, Id>,
       intermediateJoinedRowId: Id,
     ) => Id | undefined,
   ): JoinedAs;
@@ -339,13 +334,8 @@ export type Where<
     equals: JoinedCell,
   ): void;
   /// Where.3
-  <
-    GetTableCell extends GetTableCellAlias<
-      Schema,
-      RootTableId
-    > = GetTableCellAlias<Schema, RootTableId>,
-  >(
-    condition: (getTableCell: GetTableCell) => boolean,
+  (
+    condition: (getTableCell: GetTableCell<Schema, RootTableId>) => boolean,
   ): void;
 };
 
