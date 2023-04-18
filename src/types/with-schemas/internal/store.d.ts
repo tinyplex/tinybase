@@ -204,8 +204,8 @@ export type RowCallbackAlias<
 > = RowCallback<Schema, TableId>;
 
 export type CellCallbackAlias<
-  Schema extends OptionalTablesSchema,
-  TableId extends TableIdFromSchema<Schema>,
+  in out Schema extends OptionalTablesSchema,
+  in out TableId extends TableIdFromSchema<Schema>,
 > = CellCallback<Schema, TableId>;
 
 export type ValueCallbackAlias<Schema extends OptionalValuesSchema> =

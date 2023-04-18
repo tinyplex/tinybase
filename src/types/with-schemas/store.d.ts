@@ -25,7 +25,6 @@ import {
   TablesListenerAlias,
   TablesSchemaAlias,
   TransactionListenerAlias,
-  ValueCallbackAlias,
   ValueFromSchema,
   ValueIdFromSchema,
   ValueIdsListenerAlias,
@@ -153,19 +152,27 @@ export type RowCallback<
 
 /// CellCallback
 export type CellCallback<
-  in out Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+  in out Schema extends OptionalTablesSchema,
+  in out TableId extends TableIdFromSchema<Schema>,
   CellId extends CellIdFromSchema<Schema, TableId> = CellIdFromSchema<
     Schema,
     TableId
   >,
-> = (cellId: CellId, cell: Cell<Schema, TableId, CellId>) => void;
+> = (
+  ...[cellId, cell]: CellId extends any
+    ? [cellId: CellId, cell: CellFromSchema<Schema, TableId, CellId>]
+    : never
+) => void;
 
 /// ValueCallback
 export type ValueCallback<
-  in out Schema extends OptionalValuesSchema = NoValuesSchema,
+  in out Schema extends OptionalValuesSchema,
   ValueId extends ValueIdFromSchema<Schema> = ValueIdFromSchema<Schema>,
-> = (valueId: ValueId, value: Value<Schema, ValueId>) => void;
+> = (
+  ...[valueId, value]: ValueId extends any
+    ? [valueId: ValueId, value: ValueFromSchema<Schema, ValueId>]
+    : never
+) => void;
 
 /// MapCell
 export type MapCell<
@@ -823,26 +830,14 @@ export interface Store<in out Schemas extends OptionalSchemas = NoSchemas> {
   ): void;
 
   /// Store.forEachCell
-  forEachCell<
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    CellCallback extends CellCallbackAlias<
-      Schemas[0],
-      TableId
-    > = CellCallbackAlias<Schemas[0], TableId>,
-  >(
+  forEachCell<TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
     rowId: Id,
-    cellCallback: CellCallback,
+    cellCallback: CellCallbackAlias<Schemas[0], TableId>,
   ): void;
 
   /// Store.forEachValue
-  forEachValue<
-    ValueCallback extends ValueCallbackAlias<Schemas[1]> = ValueCallbackAlias<
-      Schemas[1]
-    >,
-  >(
-    valueCallback: ValueCallback,
-  ): void;
+  forEachValue(valueCallback: ValueCallback<Schemas[1]>): void;
 
   /// Store.addTablesListener
   addTablesListener<TablesListener extends TablesListenerAlias<Schemas>>(
