@@ -166,27 +166,29 @@ storeWithSchemas.delValue('v2'); // !
 storeWithSchemas.forEachTable((tableId, forEachRow) => {
   tableId == 't1';
   tableId == 't2'; // !
-  forEachRow((_rowId, forEachCell) => {
-    forEachCell((cellId, cell) => {
-      if (cellId == 'c1') {
-        cell as number;
-        cell as string; // !
-        cell as undefined; // !
-      }
-      if (cellId == 'c1d') {
-        cell as string;
-        cell as number; // !
-        cell as undefined; // !
-      }
-      cellId == 'c2'; // !
+  if (tableId == 't1') {
+    forEachRow((_rowId, forEachCell) => {
+      forEachCell((cellId, cell) => {
+        if (cellId == 'c1') {
+          cell as number;
+          cell as string; // !
+          cell as undefined; // !
+        }
+        if (cellId == 'c1d') {
+          cell as string;
+          cell as number; // !
+          cell as undefined; // !
+        }
+        cellId == 'c2'; // !
+      });
     });
-  });
+  }
 });
 
 storeWithSchemas.forEachRow('t1', (_rowId, forEachCell) => {
   forEachCell((cellId, cell) => {
     if (cellId == 'c1') {
-      cell;
+      cell as number;
       cell as string; // !
       cell as undefined; // !
     }
@@ -203,8 +205,8 @@ storeWithSchemas.forEachRow('t2', () => null); // !
 storeWithSchemas.forEachCell('t1', 'r1', (cellId, cell) => {
   if (cellId == 'c1') {
     cell as number;
-    cell as string; // !
     cell as undefined; // !
+    cell as string; // !
   }
   if (cellId == 'c1d') {
     cell as string;
@@ -213,6 +215,12 @@ storeWithSchemas.forEachCell('t1', 'r1', (cellId, cell) => {
   }
   cellId == 'c2'; // !
 });
+storeWithSchemas.forEachCell('t1', 'r1', (cellId) => {
+  cellId == 'c1';
+  cellId == 'c1d';
+  cellId == 'c2'; // !
+});
+storeWithSchemas.forEachCell('t1', 'r1', () => null);
 storeWithSchemas.forEachCell('t2', 'r2', () => null); // !
 
 storeWithSchemas.forEachValue((valueId, value) => {
@@ -226,8 +234,13 @@ storeWithSchemas.forEachValue((valueId, value) => {
     value as number; // !
     value as undefined; // !
   }
-  valueId == 'c2'; // !
+  valueId == 'v2'; // !
 });
+storeWithSchemas.forEachValue((valueId) => {
+  valueId == 'v1';
+  valueId == 'v2'; // !
+});
+storeWithSchemas.forEachValue(() => null);
 
 // Transactions
 
