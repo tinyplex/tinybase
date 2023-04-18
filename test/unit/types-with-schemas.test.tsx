@@ -273,8 +273,9 @@ test('Types with schemas', () => {
     const {line, character} = file?.getLineAndCharacterOfPosition(
       start ?? 0,
     ) ?? {line: 0, character: 0};
-    expect(
-      `${line}:${character}\n${JSON.stringify(messageText)}`,
-    ).toMatchSnapshot();
+    expect([
+      `${line}:${character}`,
+      typeof messageText == 'string' ? messageText : messageText.messageText,
+    ]).toMatchSnapshot();
   });
 });
