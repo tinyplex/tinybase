@@ -75,7 +75,6 @@ storeWithSchemas.getCell('t1', 'r1', 'c1') as number;
 storeWithSchemas.getCell('t1', 'r1', 'c1') as undefined;
 storeWithSchemas.getCell('t1', 'r1', 'c1d') as string;
 storeWithSchemas.getCell('t1', 'r1', 'c1') as string; // !
-storeWithSchemas.getCell('t1', 'r1', 'c1d') as undefined; // !
 storeWithSchemas.getCell('t1', 'r1', 'c2'); // !
 storeWithSchemas.getCell('t2', 'r2', 'c2'); // !
 
@@ -238,9 +237,6 @@ storeWithSchemas.transaction(
     changedCells.t1?.r1?.c1 as [number, undefined];
     changedCells.t1?.r1?.c1 as [undefined, number];
     changedCells.t1?.r1?.c1d as [string, string];
-    changedCells.t1?.r1?.c1d as [string, undefined]; // !
-    changedCells.t1?.r1?.c1d as [undefined, string]; // !
-    changedCells.t1?.r1?.c1d as [undefined, undefined]; // !
     changedCells.t1?.r1?.c1 as [string, string]; // !
     changedCells.t1?.r1?.c1d as [number, number]; // !
 

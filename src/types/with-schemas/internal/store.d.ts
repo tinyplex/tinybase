@@ -103,14 +103,6 @@ export type CellIsDefaultedFromSchema<
   ? Then
   : Else;
 
-export type DefaultedCellFromSchema<
-  Schema extends OptionalTablesSchema,
-  TableId extends TableIdFromSchema<Schema>,
-  CellId extends CellIdFromSchema<Schema, TableId>,
-> =
-  | CellFromSchema<Schema, TableId, CellId>
-  | CellIsDefaultedFromSchema<Schema, TableId, CellId, never, undefined>;
-
 export type ValuesFromSchema<
   Schema extends OptionalValuesSchema,
   WhenSet extends boolean = false,
