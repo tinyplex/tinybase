@@ -1,12 +1,8 @@
 /// metrics
 
-import {
-  CellIdFromSchema,
-  GetCellAlias,
-  TableIdFromSchema,
-} from './internal/store';
+import {CellIdFromSchema, TableIdFromSchema} from './internal/store';
+import {GetCell, NoSchemas, OptionalSchemas, Store} from './store.d';
 import {Id, IdOrNull, Ids} from './common.d';
-import {NoSchemas, OptionalSchemas, Store} from './store.d';
 
 /// Metric
 export type Metric = number;
@@ -59,12 +55,13 @@ export interface Metrics<in out Schemas extends OptionalSchemas = NoSchemas> {
   setMetricDefinition<
     TableId extends TableIdFromSchema<Schemas[0]>,
     CellId extends CellIdFromSchema<Schemas[0], TableId>,
-    GetCell = GetCellAlias<Schemas[0], TableId>,
   >(
     metricId: Id,
     tableId: TableId,
     aggregate?: 'sum' | 'avg' | 'min' | 'max' | MetricAggregate,
-    getNumber?: CellId | ((getCell: GetCell, rowId: Id) => number),
+    getNumber?:
+      | CellId
+      | ((getCell: GetCell<Schemas[0], TableId>, rowId: Id) => number),
     aggregateAdd?: MetricAggregateAdd,
     aggregateRemove?: MetricAggregateRemove,
     aggregateReplace?: MetricAggregateReplace,

@@ -1,12 +1,8 @@
 /// relationships
 
+import {CellIdFromSchema, TableIdFromSchema} from './internal/store';
 import {
-  CellIdFromSchema,
-  GetCellAlias,
-  TableIdFromSchema,
-} from './internal/store';
-import {Id, IdOrNull, Ids} from './common.d';
-import {
+  GetCell,
   NoSchemas,
   NoTablesSchema,
   OptionalSchemas,
@@ -14,6 +10,7 @@ import {
   RowCallback,
   Store,
 } from './store.d';
+import {Id, IdOrNull, Ids} from './common.d';
 
 /// Relationship
 export type Relationship = {
@@ -76,12 +73,13 @@ export interface Relationships<
     LocalTableId extends TableIdFromSchema<Schemas[0]>,
     RemoteTableId extends TableIdFromSchema<Schemas[0]>,
     LocalCellId extends CellIdFromSchema<Schemas[0], LocalTableId>,
-    GetCell = GetCellAlias<Schemas[0], LocalTableId>,
   >(
     relationshipId: Id,
     localTableId: LocalTableId,
     remoteTableId: RemoteTableId,
-    getRemoteRowId: LocalCellId | ((getCell: GetCell, localRowId: Id) => Id),
+    getRemoteRowId:
+      | LocalCellId
+      | ((getCell: GetCell<Schemas[0], LocalTableId>, localRowId: Id) => Id),
   ): Relationships<Schemas>;
 
   /// delRelationshipDefinition
