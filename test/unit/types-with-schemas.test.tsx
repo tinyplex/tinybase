@@ -161,6 +161,66 @@ storeWithSchemas.setValue('v2', 1); // !
 storeWithSchemas.delValue('v1');
 storeWithSchemas.delValue('v2'); // !
 
+// Iterators
+
+storeWithSchemas.forEachTable((tableId, forEachRow) => {
+  tableId == 't1';
+  tableId == 't2'; // !
+  forEachRow((_rowId, forEachCell) => {
+    forEachCell((cellId, cell) => {
+      if (cellId == 'c1') {
+        cell as number;
+        cell as string; // !
+      }
+      if (cellId == 'c1d') {
+        cell as string;
+        cell as number; // !
+      }
+      cellId == 'c2'; // !
+    });
+  });
+});
+
+storeWithSchemas.forEachRow('t1', (_rowId, forEachCell) => {
+  forEachCell((cellId, cell) => {
+    if (cellId == 'c1') {
+      cell;
+      cell as string; // !
+    }
+    if (cellId == 'c1d') {
+      cell as string;
+      cell as number; // !
+    }
+    cellId == 'c2'; // !
+  });
+});
+storeWithSchemas.forEachRow('t2', () => null); // !
+
+storeWithSchemas.forEachCell('t1', 'r1', (cellId, cell) => {
+  if (cellId == 'c1') {
+    cell as number;
+    cell as string; // !
+  }
+  if (cellId == 'c1d') {
+    cell as string;
+    cell as number; // !
+  }
+  cellId == 'c2'; // !
+});
+storeWithSchemas.forEachCell('t2', 'r2', () => null); // !
+
+storeWithSchemas.forEachValue((valueId, value) => {
+  if (valueId == 'v1') {
+    value as number;
+    value as string; // !
+  }
+  if (valueId == 'v1d') {
+    value as string;
+    value as number; // !
+  }
+  valueId == 'c2'; // !
+});
+
 //--
 
 test('Types with schemas', () => {
