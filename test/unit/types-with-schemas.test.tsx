@@ -6,6 +6,7 @@ import {createStore} from 'tinybase/debug/with-schemas';
 import tsc from 'typescript';
 
 const tablesSchema = {
+  t0: {c0: {type: 'number'}},
   t1: {c1: {type: 'number'}, c1d: {type: 'string', default: ''}},
 } as const;
 
@@ -279,6 +280,259 @@ storeWithSchemas
       return true;
     },
   );
+
+// Listeners
+
+storeWithSchemas.addTablesListener((store, getCellChange) => {
+  store.getTables().t1;
+  getCellChange?.('t1', 'r1', 'c1') as [true, number, number];
+  store.getTables().t2; // !
+  getCellChange?.('t1', 'r1', 'c1') as [true, number, string]; // !
+  getCellChange?.('t1', 'r1', 'c1') as [true, string, number]; // !
+});
+
+storeWithSchemas.addTableIdsListener((store) => {
+  store.getTables().t1;
+  store.getTables().t2; // !
+});
+
+storeWithSchemas.addTableListener('t1', (store, tableId, getCellChange) => {
+  store.getTables().t1;
+  tableId == 't1';
+  getCellChange?.('t1', 'r1', 'c1') as [true, number, number];
+  store.getTables().t2; // !
+  tableId == 't0'; // !
+  tableId == 't2'; // !
+});
+storeWithSchemas.addTableListener(null, (_store, tableId) => {
+  tableId == 't1';
+  tableId == 't0';
+  tableId == 't2'; // !
+});
+storeWithSchemas.addTableListener('t2', () => null); // !
+
+storeWithSchemas.addRowIdsListener('t1', (store, tableId) => {
+  store.getTables().t1;
+  tableId == 't1';
+  store.getTables().t2; // !
+  tableId == 't0'; // !
+  tableId == 't2'; // !
+});
+storeWithSchemas.addRowIdsListener(null, (_store, tableId) => {
+  tableId == 't1';
+  tableId == 't0';
+  tableId == 't2'; // !
+});
+storeWithSchemas.addRowIdsListener('t2', () => null); // !
+
+storeWithSchemas.addRowListener(
+  't1',
+  'r1',
+  (store, tableId, rowId, getCellChange) => {
+    store.getTables().t1;
+    tableId == 't1';
+    rowId == 'r1';
+    getCellChange?.('t1', 'r1', 'c1') as [true, number, number];
+    store.getTables().t2; // !
+    tableId == 't0'; // !
+    tableId == 't2'; // !
+    rowId == 'r2'; // !
+  },
+);
+storeWithSchemas.addRowListener('t1', null, (_store, tableId, rowId) => {
+  tableId == 't1';
+  rowId == 'r1';
+  rowId == 'r2';
+  tableId == 't0'; // !
+  tableId == 't2'; // !
+});
+storeWithSchemas.addRowListener(null, 'r1', (_store, tableId, rowId) => {
+  tableId == 't1';
+  tableId == 't0';
+  rowId == 'r1';
+  tableId == 't2'; // !
+  rowId == 'r2'; // !
+});
+storeWithSchemas.addRowListener(null, null, (_store, tableId, rowId) => {
+  tableId == 't1';
+  tableId == 't0';
+  rowId == 'r1';
+  rowId == 'r2';
+  tableId == 't2'; // !
+});
+storeWithSchemas.addRowListener('t2', 'r2', () => null); // !
+
+storeWithSchemas.addCellIdsListener('t1', 'r1', (store, tableId, rowId) => {
+  store.getTables().t1;
+  tableId == 't1';
+  rowId == 'r1';
+  store.getTables().t2; // !
+  tableId == 't0'; // !
+  tableId == 't2'; // !
+  rowId == 'r2'; // !
+});
+storeWithSchemas.addCellIdsListener('t1', null, (_store, tableId, rowId) => {
+  tableId == 't1';
+  rowId == 'r1';
+  rowId == 'r2';
+  tableId == 't0'; // !
+  tableId == 't2'; // !
+});
+storeWithSchemas.addCellIdsListener(null, 'r1', (_store, tableId, rowId) => {
+  tableId == 't1';
+  tableId == 't0';
+  rowId == 'r1';
+  tableId == 't2'; // !
+  rowId == 'r2'; // !
+});
+storeWithSchemas.addCellIdsListener(null, null, (_store, tableId, rowId) => {
+  tableId == 't1';
+  tableId == 't0';
+  rowId == 'r1';
+  rowId == 'r2';
+  tableId == 't2'; // !
+});
+storeWithSchemas.addCellIdsListener('t2', 'r2', () => null); // !
+
+storeWithSchemas.addCellListener(
+  't1',
+  'r1',
+  'c1',
+  (store, tableId, rowId, cellId) => {
+    store.getTables().t1;
+    tableId == 't1';
+    rowId == 'r1';
+    cellId == 'c1';
+    store.getTables().t2; // !
+    tableId == 't0'; // !
+    tableId == 't2'; // !
+    rowId == 'r2'; // !
+    cellId == 'c1d'; // !
+    cellId == 'c2'; // !
+  },
+);
+storeWithSchemas.addCellListener(
+  't1',
+  'r1',
+  null,
+  (_store, tableId, rowId, cellId) => {
+    tableId == 't1';
+    rowId == 'r1';
+    cellId == 'c1';
+    cellId == 'c1d';
+    tableId == 't0'; // !
+    tableId == 't2'; // !
+    rowId == 'r2'; // !
+    cellId == 'c2'; // !
+  },
+);
+storeWithSchemas.addCellListener(
+  't1',
+  null,
+  'c1',
+  (_store, tableId, rowId, cellId) => {
+    tableId == 't1';
+    rowId == 'r1';
+    rowId == 'r2';
+    cellId == 'c1';
+    tableId == 't0'; // !
+    tableId == 't2'; // !
+    cellId == 'c1d'; // !
+    cellId == 'c2'; // !
+  },
+);
+storeWithSchemas.addCellListener(
+  't1',
+  null,
+  null,
+  (_store, tableId, rowId, cellId) => {
+    tableId == 't1';
+    rowId == 'r1';
+    rowId == 'r2';
+    cellId == 'c1';
+    cellId == 'c1d';
+    tableId == 't0'; // !
+    tableId == 't2'; // !
+    cellId == 'c2'; // !
+  },
+);
+storeWithSchemas.addCellListener(
+  null,
+  'r1',
+  'c1',
+  (_store, tableId, rowId, cellId) => {
+    tableId == 't1';
+    tableId == 't0';
+    rowId == 'r1';
+    cellId == 'c1';
+    cellId == 'c1d'; // !
+    cellId == 'c0'; // !
+    tableId == 't2'; // !
+    rowId == 'r2'; // !
+    cellId == 'c2'; // !
+  },
+);
+storeWithSchemas.addCellListener(
+  null,
+  'r1',
+  null,
+  (_store, tableId, rowId, cellId) => {
+    tableId == 't1';
+    tableId == 't0';
+    rowId == 'r1';
+    cellId == 'c1';
+    cellId == 'c1d';
+    cellId == 'c0';
+    if (tableId == 't1') {
+      cellId == 'c1';
+      cellId == 'c1d';
+      cellId == 'c0'; // ?
+    }
+    tableId == 't2'; // !
+    rowId == 'r2'; // !
+    cellId == 'c2'; // !
+  },
+);
+storeWithSchemas.addCellListener(
+  null,
+  null,
+  'c1',
+  (_store, tableId, rowId, cellId) => {
+    tableId == 't1';
+    tableId == 't0';
+    rowId == 'r1';
+    rowId == 'r2';
+    cellId == 'c1';
+    tableId == 't2'; // !
+    cellId == 'c1d'; // !
+    cellId == 'c0'; // !
+    cellId == 'c2'; // !
+  },
+);
+storeWithSchemas.addCellListener(
+  null,
+  null,
+  null,
+  (_store, tableId, rowId, cellId) => {
+    tableId == 't1';
+    tableId == 't0';
+    rowId == 'r1';
+    rowId == 'r2';
+    cellId == 'c1';
+    cellId == 'c1d';
+    cellId == 'c0';
+    if (tableId == 't1') {
+      cellId == 'c1';
+      cellId == 'c1d';
+      cellId == 'c0'; // ?
+    }
+    tableId == 't2'; // !
+    cellId == 'c2'; // !
+  },
+);
+storeWithSchemas.addCellListener('t1', 'r2', 'c2', () => null); // !
+storeWithSchemas.addCellListener(null, 'r2', 'c2', () => null); // !
+storeWithSchemas.addCellListener('t2', 'r2', 'c1', () => null); // !
 
 //--
 

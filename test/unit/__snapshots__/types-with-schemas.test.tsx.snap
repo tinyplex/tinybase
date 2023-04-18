@@ -2,700 +2,1162 @@
 
 exports[`Types with schemas 1`] = `
 [
-  "27:0",
+  "28:0",
   "Conversion of type 'number | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 2`] = `
 [
-  "28:0",
+  "29:0",
   "Conversion of type 'string' to type 'undefined' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 3`] = `
 [
-  "29:37",
-  "Property 'c2' does not exist on type 'RowFromSchema<{ readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", false>'.",
+  "30:37",
+  "Property 'c2' does not exist on type 'RowFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", false>'.",
 ]
 `;
 
 exports[`Types with schemas 4`] = `
 [
-  "30:29",
-  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
+  "31:29",
+  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
 ]
 `;
 
 exports[`Types with schemas 5`] = `
 [
-  "31:29",
-  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
+  "32:29",
+  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
 ]
 `;
 
 exports[`Types with schemas 6`] = `
 [
-  "34:40",
-  "Argument of type '"t2"' is not assignable to parameter of type '"t1"'.",
+  "35:40",
+  "Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'.",
 ]
 `;
 
 exports[`Types with schemas 7`] = `
 [
-  "37:26",
-  "Argument of type '"t2"' is not assignable to parameter of type '"t1"'.",
+  "38:26",
+  "Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'.",
 ]
 `;
 
 exports[`Types with schemas 8`] = `
 [
-  "43:0",
-  "Conversion of type 'number | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "41:36",
+  "Property 'c1' does not exist on type 'RowFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t0" | "t1", false>'.",
 ]
 `;
 
 exports[`Types with schemas 9`] = `
 [
-  "44:0",
-  "Conversion of type 'string' to type 'undefined' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "42:36",
+  "Property 'c1' does not exist on type 'RowFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t0" | "t1", false>'.",
 ]
 `;
 
 exports[`Types with schemas 10`] = `
 [
-  "45:26",
-  "Argument of type '"t2"' is not assignable to parameter of type '"t1"'.",
+  "43:36",
+  "Property 'c1d' does not exist on type 'RowFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t0" | "t1", false>'.",
 ]
 `;
 
 exports[`Types with schemas 11`] = `
 [
-  "48:27",
-  "Argument of type '"t2"' is not assignable to parameter of type '"t1"'.",
+  "44:36",
+  "Property 'c1' does not exist on type 'RowFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t0" | "t1", false>'.",
 ]
 `;
 
 exports[`Types with schemas 12`] = `
 [
-  "51:39",
-  "Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d" | undefined'.",
+  "45:36",
+  "Property 'c1d' does not exist on type 'RowFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t0" | "t1", false>'.",
 ]
 `;
 
 exports[`Types with schemas 13`] = `
 [
-  "52:33",
-  "Argument of type '"t2"' is not assignable to parameter of type '"t1"'.",
+  "46:26",
+  "Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'.",
 ]
 `;
 
 exports[`Types with schemas 14`] = `
 [
-  "55:24",
-  "Argument of type '"t2"' is not assignable to parameter of type '"t1"'.",
+  "49:27",
+  "Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'.",
 ]
 `;
 
 exports[`Types with schemas 15`] = `
 [
-  "61:0",
-  "Conversion of type 'number | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "52:39",
+  "Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d" | undefined'.",
 ]
 `;
 
 exports[`Types with schemas 16`] = `
 [
-  "62:0",
-  "Conversion of type 'string' to type 'undefined' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "53:33",
+  "Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'.",
 ]
 `;
 
 exports[`Types with schemas 17`] = `
 [
-  "63:24",
-  "Argument of type '"t2"' is not assignable to parameter of type '"t1"'.",
+  "56:24",
+  "Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'.",
 ]
 `;
 
 exports[`Types with schemas 18`] = `
 [
-  "66:49",
-  "Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d"'.",
+  "62:0",
+  "Conversion of type 'number | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 19`] = `
 [
-  "67:28",
-  "Argument of type '"t2"' is not assignable to parameter of type '"t1"'.",
+  "63:0",
+  "Conversion of type 'string' to type 'undefined' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 20`] = `
 [
-  "70:37",
-  "Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d"'.",
+  "64:24",
+  "Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'.",
 ]
 `;
 
 exports[`Types with schemas 21`] = `
 [
-  "71:25",
-  "Argument of type '"t2"' is not assignable to parameter of type '"t1"'.",
+  "67:49",
+  "Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d"'.",
 ]
 `;
 
 exports[`Types with schemas 22`] = `
 [
-  "76:0",
-  "Conversion of type 'CellOrUndefined<{ readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1", number>' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "68:28",
+  "Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'.",
 ]
 `;
 
 exports[`Types with schemas 23`] = `
 [
-  "77:37",
+  "71:37",
   "Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d"'.",
 ]
 `;
 
 exports[`Types with schemas 24`] = `
 [
-  "78:25",
-  "Argument of type '"t2"' is not assignable to parameter of type '"t1"'.",
+  "72:25",
+  "Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'.",
 ]
 `;
 
 exports[`Types with schemas 25`] = `
 [
-  "84:0",
-  "Conversion of type 'number | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "77:0",
+  "Conversion of type 'CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1", number>' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 26`] = `
 [
-  "85:0",
-  "Conversion of type 'string' to type 'undefined' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "78:37",
+  "Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d"'.",
 ]
 `;
 
 exports[`Types with schemas 27`] = `
 [
-  "86:29",
-  "Property 'v2' does not exist on type 'ValuesFromSchema<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }>'.",
+  "79:25",
+  "Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'.",
 ]
 `;
 
 exports[`Types with schemas 28`] = `
 [
-  "89:40",
-  "Argument of type '"v2"' is not assignable to parameter of type '"v1" | "v1d"'.",
+  "85:0",
+  "Conversion of type 'number | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 29`] = `
 [
-  "92:26",
-  "Argument of type '"v2"' is not assignable to parameter of type '"v1" | "v1d"'.",
+  "86:0",
+  "Conversion of type 'string' to type 'undefined' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 30`] = `
 [
-  "97:0",
-  "Conversion of type 'DefaultedValueFromSchema<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "87:29",
+  "Property 'v2' does not exist on type 'ValuesFromSchema<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }>'.",
 ]
 `;
 
 exports[`Types with schemas 31`] = `
 [
-  "98:0",
-  "Conversion of type 'string' to type 'undefined' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "90:40",
+  "Argument of type '"v2"' is not assignable to parameter of type '"v1" | "v1d"'.",
 ]
 `;
 
 exports[`Types with schemas 32`] = `
 [
-  "99:26",
+  "93:26",
   "Argument of type '"v2"' is not assignable to parameter of type '"v1" | "v1d"'.",
 ]
 `;
 
 exports[`Types with schemas 33`] = `
 [
-  "104:38",
-  "Type '{ c2: number; }' is not assignable to type 'RowFromSchema<{ readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'.",
+  "98:0",
+  "Conversion of type 'DefaultedValueFromSchema<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 34`] = `
 [
-  "105:38",
-  "Type 'string' is not assignable to type 'number'.",
+  "99:0",
+  "Conversion of type 'string' to type 'undefined' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 35`] = `
 [
-  "106:28",
-  "Argument of type '{ t2: { r2: { c2: number; }; }; }' is not assignable to parameter of type 'TablesFromSchema<{ readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, true>'.",
+  "100:26",
+  "Argument of type '"v2"' is not assignable to parameter of type '"v1" | "v1d"'.",
 ]
 `;
 
 exports[`Types with schemas 36`] = `
 [
-  "109:38",
-  "Type '{ c2: number; }' is not assignable to type 'RowFromSchema<{ readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'.",
+  "105:38",
+  "Type '{ c2: number; }' is not assignable to type 'RowFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'.",
 ]
 `;
 
 exports[`Types with schemas 37`] = `
 [
-  "110:38",
+  "106:38",
   "Type 'string' is not assignable to type 'number'.",
 ]
 `;
 
 exports[`Types with schemas 38`] = `
 [
-  "111:26",
-  "Argument of type '"t2"' is not assignable to parameter of type '"t1"'.",
+  "107:28",
+  "Argument of type '{ t2: { r2: { c2: number; }; }; }' is not assignable to parameter of type 'TablesFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, true>'.",
 ]
 `;
 
 exports[`Types with schemas 39`] = `
 [
-  "114:26",
-  "Argument of type '"t2"' is not assignable to parameter of type '"t1"'.",
+  "110:38",
+  "Type '{ c2: number; }' is not assignable to type 'RowFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'.",
 ]
 `;
 
 exports[`Types with schemas 40`] = `
 [
-  "117:37",
-  "Argument of type '{ c2: number; }' is not assignable to parameter of type 'RowFromSchema<{ readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'.",
+  "111:38",
+  "Type 'string' is not assignable to type 'number'.",
 ]
 `;
 
 exports[`Types with schemas 41`] = `
 [
-  "118:37",
-  "Type 'string' is not assignable to type 'number'.",
+  "112:26",
+  "Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'.",
 ]
 `;
 
 exports[`Types with schemas 42`] = `
 [
-  "119:24",
-  "Argument of type '"t2"' is not assignable to parameter of type '"t1"'.",
+  "115:26",
+  "Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'.",
 ]
 `;
 
 exports[`Types with schemas 43`] = `
 [
-  "122:31",
-  "Argument of type '{ c2: number; }' is not assignable to parameter of type 'RowFromSchema<{ readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'.",
+  "118:37",
+  "Argument of type '{ c2: number; }' is not assignable to parameter of type 'RowFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'.",
 ]
 `;
 
 exports[`Types with schemas 44`] = `
 [
-  "123:31",
+  "119:37",
   "Type 'string' is not assignable to type 'number'.",
 ]
 `;
 
 exports[`Types with schemas 45`] = `
 [
-  "124:24",
-  "Argument of type '"t2"' is not assignable to parameter of type '"t1"'.",
+  "120:24",
+  "Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'.",
 ]
 `;
 
 exports[`Types with schemas 46`] = `
 [
-  "127:44",
-  "Argument of type '{ c2: number; }' is not assignable to parameter of type 'RowFromSchema<{ readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'.",
+  "123:31",
+  "Argument of type '{ c2: number; }' is not assignable to parameter of type 'RowFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'.",
 ]
 `;
 
 exports[`Types with schemas 47`] = `
 [
-  "128:44",
+  "124:31",
   "Type 'string' is not assignable to type 'number'.",
 ]
 `;
 
 exports[`Types with schemas 48`] = `
 [
-  "129:31",
-  "Argument of type '"t2"' is not assignable to parameter of type '"t1"'.",
+  "125:24",
+  "Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'.",
 ]
 `;
 
 exports[`Types with schemas 49`] = `
 [
-  "132:24",
-  "Argument of type '"t2"' is not assignable to parameter of type '"t1"'.",
+  "128:44",
+  "Argument of type '{ c2: number; }' is not assignable to parameter of type 'RowFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'.",
 ]
 `;
 
 exports[`Types with schemas 50`] = `
 [
-  "136:37",
-  "Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d"'.",
+  "129:44",
+  "Type 'string' is not assignable to type 'number'.",
 ]
 `;
 
 exports[`Types with schemas 51`] = `
 [
-  "137:43",
-  "Argument of type 'string' is not assignable to parameter of type 'number | ((cell: number | undefined) => number)'.",
+  "130:31",
+  "Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'.",
 ]
 `;
 
 exports[`Types with schemas 52`] = `
 [
-  "138:43",
-  "Argument of type '() => string' is not assignable to parameter of type 'number | ((cell: number | undefined) => number)'.",
+  "133:24",
+  "Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'.",
 ]
 `;
 
 exports[`Types with schemas 53`] = `
 [
-  "139:25",
-  "Argument of type '"t2"' is not assignable to parameter of type '"t1"'.",
+  "137:37",
+  "Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d"'.",
 ]
 `;
 
 exports[`Types with schemas 54`] = `
 [
-  "142:37",
-  "Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d"'.",
+  "138:43",
+  "Argument of type 'string' is not assignable to parameter of type 'number | ((cell: number | undefined) => number)'.",
 ]
 `;
 
 exports[`Types with schemas 55`] = `
 [
-  "143:25",
-  "Argument of type '"t2"' is not assignable to parameter of type '"t1"'.",
+  "139:43",
+  "Argument of type '() => string' is not assignable to parameter of type 'number | ((cell: number | undefined) => number)'.",
 ]
 `;
 
 exports[`Types with schemas 56`] = `
 [
-  "146:28",
-  "Type 'string' is not assignable to type 'number'.",
+  "140:25",
+  "Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'.",
 ]
 `;
 
 exports[`Types with schemas 57`] = `
 [
-  "147:28",
-  "Argument of type '{ v2: number; }' is not assignable to parameter of type 'ValuesFromSchema<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, true>'.",
+  "143:37",
+  "Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d"'.",
 ]
 `;
 
 exports[`Types with schemas 58`] = `
 [
-  "150:35",
-  "Type 'string' is not assignable to type 'number'.",
+  "144:25",
+  "Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'.",
 ]
 `;
 
 exports[`Types with schemas 59`] = `
 [
-  "151:35",
-  "Argument of type '{ v2: number; }' is not assignable to parameter of type 'ValuesFromSchema<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, true>'.",
+  "147:28",
+  "Type 'string' is not assignable to type 'number'.",
 ]
 `;
 
 exports[`Types with schemas 60`] = `
 [
-  "155:32",
-  "Argument of type 'string' is not assignable to parameter of type 'number | ((value: number | undefined) => number)'.",
+  "148:28",
+  "Argument of type '{ v2: number; }' is not assignable to parameter of type 'ValuesFromSchema<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, true>'.",
 ]
 `;
 
 exports[`Types with schemas 61`] = `
 [
-  "156:32",
-  "Argument of type '() => string' is not assignable to parameter of type 'number | ((value: number | undefined) => number)'.",
+  "151:35",
+  "Type 'string' is not assignable to type 'number'.",
 ]
 `;
 
 exports[`Types with schemas 62`] = `
 [
-  "157:26",
-  "Argument of type '"v2"' is not assignable to parameter of type '"v1" | "v1d"'.",
+  "152:35",
+  "Argument of type '{ v2: number; }' is not assignable to parameter of type 'ValuesFromSchema<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, true>'.",
 ]
 `;
 
 exports[`Types with schemas 63`] = `
 [
-  "160:26",
-  "Argument of type '"v2"' is not assignable to parameter of type '"v1" | "v1d"'.",
+  "156:32",
+  "Argument of type 'string' is not assignable to parameter of type 'number | ((value: number | undefined) => number)'.",
 ]
 `;
 
 exports[`Types with schemas 64`] = `
 [
-  "166:2",
-  "This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap.",
+  "157:32",
+  "Argument of type '() => string' is not assignable to parameter of type 'number | ((value: number | undefined) => number)'.",
 ]
 `;
 
 exports[`Types with schemas 65`] = `
 [
-  "171:8",
-  "Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "158:26",
+  "Argument of type '"v2"' is not assignable to parameter of type '"v1" | "v1d"'.",
 ]
 `;
 
 exports[`Types with schemas 66`] = `
 [
-  "172:8",
-  "Conversion of type 'number' to type 'undefined' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "161:26",
+  "Argument of type '"v2"' is not assignable to parameter of type '"v1" | "v1d"'.",
 ]
 `;
 
 exports[`Types with schemas 67`] = `
 [
-  "176:8",
-  "Conversion of type 'string' to type 'number' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "167:2",
+  "This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 68`] = `
 [
-  "177:8",
-  "Conversion of type 'string' to type 'undefined' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "189:6",
+  "Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 69`] = `
 [
-  "179:6",
-  "This comparison appears to be unintentional because the types '"c1" | "c1d"' and '"c2"' have no overlap.",
+  "190:6",
+  "Conversion of type 'number' to type 'undefined' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 70`] = `
 [
-  "188:6",
-  "Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "194:6",
+  "Conversion of type 'string' to type 'number' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 71`] = `
 [
-  "189:6",
-  "Conversion of type 'number' to type 'undefined' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "195:6",
+  "Conversion of type 'string' to type 'undefined' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 72`] = `
 [
-  "193:6",
-  "Conversion of type 'string' to type 'number' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "197:4",
+  "This comparison appears to be unintentional because the types '"c1" | "c1d"' and '"c2"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 73`] = `
 [
-  "194:6",
-  "Conversion of type 'string' to type 'undefined' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "200:28",
+  "Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'.",
 ]
 `;
 
 exports[`Types with schemas 74`] = `
 [
-  "196:4",
-  "This comparison appears to be unintentional because the types '"c1" | "c1d"' and '"c2"' have no overlap.",
+  "205:4",
+  "Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 75`] = `
 [
-  "199:28",
-  "Argument of type '"t2"' is not assignable to parameter of type '"t1"'.",
+  "206:4",
+  "Conversion of type 'number' to type 'undefined' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 76`] = `
 [
-  "204:4",
-  "Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "210:4",
+  "Conversion of type 'string' to type 'number' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 77`] = `
 [
-  "205:4",
-  "Conversion of type 'number' to type 'undefined' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "211:4",
+  "Conversion of type 'string' to type 'undefined' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 78`] = `
 [
-  "209:4",
-  "Conversion of type 'string' to type 'number' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "213:2",
+  "This comparison appears to be unintentional because the types '"c1" | "c1d"' and '"c2"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 79`] = `
 [
-  "210:4",
-  "Conversion of type 'string' to type 'undefined' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "215:29",
+  "Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'.",
 ]
 `;
 
 exports[`Types with schemas 80`] = `
 [
-  "212:2",
-  "This comparison appears to be unintentional because the types '"c1" | "c1d"' and '"c2"' have no overlap.",
+  "220:4",
+  "Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 81`] = `
 [
-  "214:29",
-  "Argument of type '"t2"' is not assignable to parameter of type '"t1"'.",
+  "221:4",
+  "Conversion of type 'number' to type 'undefined' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 82`] = `
 [
-  "219:4",
-  "Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "225:4",
+  "Conversion of type 'string' to type 'number' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 83`] = `
 [
-  "220:4",
-  "Conversion of type 'number' to type 'undefined' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "226:4",
+  "Conversion of type 'string' to type 'undefined' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 84`] = `
 [
-  "224:4",
-  "Conversion of type 'string' to type 'number' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "228:2",
+  "This comparison appears to be unintentional because the types '"v1" | "v1d"' and '"c2"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 85`] = `
 [
-  "225:4",
-  "Conversion of type 'string' to type 'undefined' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "240:4",
+  "Conversion of type '[CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1", number>, CellOrUndefined<...>] | undefined' to type '[string, string]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 86`] = `
 [
-  "227:2",
-  "This comparison appears to be unintentional because the types '"v1" | "v1d"' and '"c2"' have no overlap.",
+  "241:4",
+  "Conversion of type '[CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1d", string>, CellOrUndefined<...>] | undefined' to type '[number, number]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 87`] = `
 [
-  "239:4",
-  "Conversion of type '[CellOrUndefined<{ readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1", number>, CellOrUndefined<...>] | undefined' to type '[string, string]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "247:4",
+  "Conversion of type '[string, string] | undefined' to type '[string, undefined]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 88`] = `
 [
-  "240:4",
-  "Conversion of type '[CellOrUndefined<{ readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1d", string>, CellOrUndefined<...>] | undefined' to type '[number, number]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "248:4",
+  "Conversion of type '[string, string] | undefined' to type '[undefined, string]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 89`] = `
 [
-  "246:4",
-  "Conversion of type '[string, string] | undefined' to type '[string, undefined]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "249:4",
+  "Conversion of type '[string, string] | undefined' to type '[undefined, undefined]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 90`] = `
 [
-  "247:4",
-  "Conversion of type '[string, string] | undefined' to type '[undefined, string]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "250:4",
+  "Conversion of type '[DefaultedValueFromSchema<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">, DefaultedValueFromSchema<{ readonly v1: { ...; }; readonly v1d: { ...; }; }, "v1">] | undefined' to type '[string, string]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 91`] = `
 [
-  "248:4",
-  "Conversion of type '[string, string] | undefined' to type '[undefined, undefined]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "251:4",
+  "Conversion of type '[string, string] | undefined' to type '[number, number]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 92`] = `
 [
-  "249:4",
-  "Conversion of type '[DefaultedValueFromSchema<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">, DefaultedValueFromSchema<{ readonly v1: { ...; }; readonly v1d: { ...; }; }, "v1">] | undefined' to type '[string, string]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "267:6",
+  "Conversion of type '[CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1", number>, CellOrUndefined<...>] | undefined' to type '[string, string]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 93`] = `
 [
-  "250:4",
-  "Conversion of type '[string, string] | undefined' to type '[number, number]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "268:6",
+  "Conversion of type '[CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1d", string>, CellOrUndefined<...>] | undefined' to type '[number, number]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 94`] = `
 [
-  "266:6",
-  "Conversion of type '[CellOrUndefined<{ readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1", number>, CellOrUndefined<...>] | undefined' to type '[string, string]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "274:6",
+  "Conversion of type '[string, string] | undefined' to type '[string, undefined]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 95`] = `
 [
-  "267:6",
-  "Conversion of type '[CellOrUndefined<{ readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1d", string>, CellOrUndefined<...>] | undefined' to type '[number, number]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "275:6",
+  "Conversion of type '[string, string] | undefined' to type '[undefined, string]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 96`] = `
 [
-  "273:6",
-  "Conversion of type '[string, string] | undefined' to type '[string, undefined]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "276:6",
+  "Conversion of type '[string, string] | undefined' to type '[undefined, undefined]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 97`] = `
 [
-  "274:6",
-  "Conversion of type '[string, string] | undefined' to type '[undefined, string]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "277:6",
+  "Conversion of type '[DefaultedValueFromSchema<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">, DefaultedValueFromSchema<{ readonly v1: { ...; }; readonly v1d: { ...; }; }, "v1">] | undefined' to type '[string, string]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 98`] = `
 [
-  "275:6",
-  "Conversion of type '[string, string] | undefined' to type '[undefined, undefined]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "278:6",
+  "Conversion of type '[string, string] | undefined' to type '[number, number]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 99`] = `
 [
-  "276:6",
-  "Conversion of type '[DefaultedValueFromSchema<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">, DefaultedValueFromSchema<{ readonly v1: { ...; }; readonly v1d: { ...; }; }, "v1">] | undefined' to type '[string, string]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "288:20",
+  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
 ]
 `;
 
 exports[`Types with schemas 100`] = `
 [
-  "277:6",
-  "Conversion of type '[string, string] | undefined' to type '[number, number]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+  "289:2",
+  "Conversion of type 'CellChange<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1", number | undefined> | undefined' to type '[true, number, string]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+]
+`;
+
+exports[`Types with schemas 101`] = `
+[
+  "290:2",
+  "Conversion of type 'CellChange<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1", number | undefined> | undefined' to type '[true, string, number]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+]
+`;
+
+exports[`Types with schemas 102`] = `
+[
+  "295:20",
+  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
+]
+`;
+
+exports[`Types with schemas 103`] = `
+[
+  "302:20",
+  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
+]
+`;
+
+exports[`Types with schemas 104`] = `
+[
+  "303:2",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 105`] = `
+[
+  "304:2",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 106`] = `
+[
+  "309:2",
+  "This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 107`] = `
+[
+  "311:34",
+  "Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1" | null'.",
+]
+`;
+
+exports[`Types with schemas 108`] = `
+[
+  "316:20",
+  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
+]
+`;
+
+exports[`Types with schemas 109`] = `
+[
+  "317:2",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 110`] = `
+[
+  "318:2",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 111`] = `
+[
+  "323:2",
+  "This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 112`] = `
+[
+  "325:35",
+  "Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1" | null'.",
+]
+`;
+
+exports[`Types with schemas 113`] = `
+[
+  "335:22",
+  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
+]
+`;
+
+exports[`Types with schemas 114`] = `
+[
+  "336:4",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 115`] = `
+[
+  "337:4",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 116`] = `
+[
+  "338:4",
+  "This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 117`] = `
+[
+  "345:2",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 118`] = `
+[
+  "346:2",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 119`] = `
+[
+  "352:2",
+  "This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 120`] = `
+[
+  "353:2",
+  "This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 121`] = `
+[
+  "360:2",
+  "This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 122`] = `
+[
+  "362:32",
+  "Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1" | null'.",
+]
+`;
+
+exports[`Types with schemas 123`] = `
+[
+  "368:20",
+  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
+]
+`;
+
+exports[`Types with schemas 124`] = `
+[
+  "369:2",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 125`] = `
+[
+  "370:2",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 126`] = `
+[
+  "371:2",
+  "This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 127`] = `
+[
+  "377:2",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 128`] = `
+[
+  "378:2",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 129`] = `
+[
+  "384:2",
+  "This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 130`] = `
+[
+  "385:2",
+  "This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 131`] = `
+[
+  "392:2",
+  "This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 132`] = `
+[
+  "394:36",
+  "Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1" | null'.",
+]
+`;
+
+exports[`Types with schemas 133`] = `
+[
+  "405:22",
+  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
+]
+`;
+
+exports[`Types with schemas 134`] = `
+[
+  "406:4",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 135`] = `
+[
+  "407:4",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 136`] = `
+[
+  "408:4",
+  "This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 137`] = `
+[
+  "409:4",
+  "This comparison appears to be unintentional because the types '"c1"' and '"c1d"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 138`] = `
+[
+  "410:4",
+  "This comparison appears to be unintentional because the types '"c1"' and '"c2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 139`] = `
+[
+  "422:4",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 140`] = `
+[
+  "423:4",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 141`] = `
+[
+  "424:4",
+  "This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 142`] = `
+[
+  "425:4",
+  "This comparison appears to be unintentional because the types '"c1" | "c1d"' and '"c2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 143`] = `
+[
+  "437:4",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 144`] = `
+[
+  "438:4",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 145`] = `
+[
+  "439:4",
+  "This comparison appears to be unintentional because the types '"c1"' and '"c1d"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 146`] = `
+[
+  "440:4",
+  "This comparison appears to be unintentional because the types '"c1"' and '"c2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 147`] = `
+[
+  "453:4",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 148`] = `
+[
+  "454:4",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 149`] = `
+[
+  "455:4",
+  "This comparison appears to be unintentional because the types '"c1" | "c1d"' and '"c2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 150`] = `
+[
+  "467:4",
+  "This comparison appears to be unintentional because the types '"c1"' and '"c1d"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 151`] = `
+[
+  "468:4",
+  "This comparison appears to be unintentional because the types '"c1"' and '"c0"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 152`] = `
+[
+  "469:4",
+  "This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 153`] = `
+[
+  "470:4",
+  "This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 154`] = `
+[
+  "471:4",
+  "This comparison appears to be unintentional because the types '"c1"' and '"c2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 155`] = `
+[
+  "490:4",
+  "This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 156`] = `
+[
+  "491:4",
+  "This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 157`] = `
+[
+  "492:4",
+  "This comparison appears to be unintentional because the types '"c0" | "c1" | "c1d"' and '"c2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 158`] = `
+[
+  "505:4",
+  "This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 159`] = `
+[
+  "506:4",
+  "This comparison appears to be unintentional because the types '"c1"' and '"c1d"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 160`] = `
+[
+  "507:4",
+  "This comparison appears to be unintentional because the types '"c1"' and '"c0"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 161`] = `
+[
+  "508:4",
+  "This comparison appears to be unintentional because the types '"c1"' and '"c2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 162`] = `
+[
+  "528:4",
+  "This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 163`] = `
+[
+  "529:4",
+  "This comparison appears to be unintentional because the types '"c0" | "c1" | "c1d"' and '"c2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 164`] = `
+[
+  "532:45",
+  "Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d" | null'.",
+]
+`;
+
+exports[`Types with schemas 165`] = `
+[
+  "533:45",
+  "Argument of type '"c2"' is not assignable to parameter of type '"c0" | "c1" | "c1d" | null'.",
+]
+`;
+
+exports[`Types with schemas 166`] = `
+[
+  "534:33",
+  "Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1" | null'.",
 ]
 `;
