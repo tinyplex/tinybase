@@ -4,7 +4,6 @@ import {
   AllCellIdFromSchema,
   CellFromSchema,
   CellIdFromSchema,
-  DefaultedCellFromSchema,
   DefaultedValueFromSchema,
   RowFromSchema,
   TableFromSchema,
@@ -427,8 +426,8 @@ export type ChangedCells<
   [TableId in TableIdFromSchema<Schema>]?: {
     [rowId: Id]: {
       [CellId in CellIdFromSchema<Schema, TableId>]?: [
-        DefaultedCellFromSchema<Schema, TableId, CellId>,
-        DefaultedCellFromSchema<Schema, TableId, CellId>,
+        CellOrUndefined<Schema, TableId, CellId>,
+        CellOrUndefined<Schema, TableId, CellId>,
       ];
     };
   };
@@ -549,7 +548,7 @@ export interface Store<in out Schemas extends OptionalSchemas = NoSchemas> {
     tableId: TableId,
     rowId: Id,
     cellId: CellId,
-  ): DefaultedCellFromSchema<Schemas[0], TableId, CellId>;
+  ): CellOrUndefined<Schemas[0], TableId, CellId>;
 
   /// Store.getValues
   getValues<Values = ValuesFromSchema<Schemas[1]>>(): Values;
