@@ -257,6 +257,33 @@ storeWithSchemas.transaction(
   },
 );
 
+storeWithSchemas
+  .startTransaction()
+  .finishTransaction(
+    (changedCells, _invalidCells, changedValues, _invalidValues) => {
+      changedCells.t1?.r1?.c1 as [number, number];
+      changedCells.t1?.r1?.c1 as [number, undefined];
+      changedCells.t1?.r1?.c1 as [undefined, number];
+      changedCells.t1?.r1?.c1d as [string, string];
+      changedCells.t1?.r1?.c1d as [string, undefined]; // !
+      changedCells.t1?.r1?.c1d as [undefined, string]; // !
+      changedCells.t1?.r1?.c1d as [undefined, undefined]; // !
+      changedCells.t1?.r1?.c1 as [string, string]; // !
+      changedCells.t1?.r1?.c1d as [number, number]; // !
+
+      changedValues.v1 as [number, number];
+      changedValues.v1 as [number, undefined];
+      changedValues.v1 as [undefined, number];
+      changedValues.v1d as [string, string];
+      changedValues.v1d as [string, undefined]; // !
+      changedValues.v1d as [undefined, string]; // !
+      changedValues.v1d as [undefined, undefined]; // !
+      changedValues.v1 as [string, string]; // !
+      changedValues.v1d as [number, number]; // !
+      return true;
+    },
+  );
+
 //--
 
 test('Types with schemas', () => {
