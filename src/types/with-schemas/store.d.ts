@@ -5,10 +5,12 @@ import {
   CellFromSchema,
   CellIdFromSchema,
   DefaultedValueFromSchema,
+  NoInfer,
   RowFromSchema,
   TableFromSchema,
   TableIdFromSchema,
   TablesFromSchema,
+  Truncate,
   ValueFromSchema,
   ValueIdFromSchema,
   ValuesFromSchema,
@@ -113,45 +115,50 @@ export type ValueOrUndefined<
 
 /// TableCallback
 export type TableCallback<
-  in out Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-> = (
-  tableId: TableId,
-  forEachRow: (rowCallback: RowCallback<Schema, TableId>) => void,
-) => void;
+  Schema extends OptionalTablesSchema = NoTablesSchema,
+  TableId = TableIdFromSchema<Schema>,
+  Params2 extends any[] = TableId extends TableIdFromSchema<Schema>
+    ? [TableId, (rowCallback: RowCallback<Schema, TableId>) => void]
+    : never,
+  Params1 extends any[] = Truncate<Params2>,
+> =
+  | ((...params: Params2) => void)
+  | ((...params: Params1) => void)
+  | (() => void);
 
 /// RowCallback
 export type RowCallback<
   in out Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-> = (
-  rowId: Id,
-  forEachCell: (cellCallback: CellCallback<Schema, TableId>) => void,
-) => void;
+  in out TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+  in out Callback = NoInfer<CellCallback<Schema, TableId>>,
+> = (rowId: Id, forEachCell: (cellCallback: Callback) => void) => void;
 
 /// CellCallback
 export type CellCallback<
-  in out Schema extends OptionalTablesSchema,
-  in out TableId extends TableIdFromSchema<Schema>,
-  CellId extends CellIdFromSchema<Schema, TableId> = CellIdFromSchema<
-    Schema,
-    TableId
-  >,
-> = (
-  ...[cellId, cell]: CellId extends any
-    ? [cellId: CellId, cell: CellFromSchema<Schema, TableId, CellId>]
-    : never
-) => void;
+  Schema extends OptionalTablesSchema,
+  TableId extends NoInfer<TableIdFromSchema<Schema>>,
+  CellId = CellIdFromSchema<Schema, TableId>,
+  Params2 extends any[] = CellId extends CellIdFromSchema<Schema, TableId>
+    ? [CellId, CellFromSchema<Schema, TableId, CellId>]
+    : never,
+  Params1 extends any[] = Truncate<Params2>,
+> =
+  | ((...params: Params2) => void)
+  | ((...params: Params1) => void)
+  | (() => void);
 
 /// ValueCallback
 export type ValueCallback<
-  in out Schema extends OptionalValuesSchema,
-  ValueId extends ValueIdFromSchema<Schema> = ValueIdFromSchema<Schema>,
-> = (
-  ...[valueId, value]: ValueId extends any
-    ? [valueId: ValueId, value: ValueFromSchema<Schema, ValueId>]
-    : never
-) => void;
+  Schema extends OptionalValuesSchema,
+  ValueId = ValueIdFromSchema<Schema>,
+  Params2 extends any[] = ValueId extends ValueIdFromSchema<Schema>
+    ? [ValueId, ValueFromSchema<Schema, ValueId>]
+    : never,
+  Params1 extends any[] = Truncate<Params2>,
+> =
+  | ((...params: Params2) => void)
+  | ((...params: Params1) => void)
+  | (() => void);
 
 /// MapCell
 export type MapCell<
@@ -773,19 +780,25 @@ export interface Store<in out Schemas extends OptionalSchemas = NoSchemas> {
   finishTransaction(doRollback?: DoRollback<Schemas>): Store<Schemas>;
 
   /// Store.forEachTable
-  forEachTable(tableCallback: TableCallback<Schemas[0]>): void;
+  forEachTable(tableCallback: NoInfer<TableCallback<Schemas[0]>>): void;
 
   /// Store.forEachRow
-  forEachRow<TableId extends TableIdFromSchema<Schemas[0]>>(
+  forEachRow<
+    TableId extends TableIdFromSchema<Schemas[0]>,
+    Callback = RowCallback<Schemas[0], TableId>,
+  >(
     tableId: TableId,
-    rowCallback: RowCallback<Schemas[0], TableId>,
+    rowCallback: NoInfer<Callback>,
   ): void;
 
   /// Store.forEachCell
-  forEachCell<TableId extends TableIdFromSchema<Schemas[0]>>(
+  forEachCell<
+    TableId extends TableIdFromSchema<Schemas[0]>,
+    Callback = CellCallback<Schemas[0], TableId>,
+  >(
     tableId: TableId,
     rowId: Id,
-    cellCallback: CellCallback<Schemas[0], TableId>,
+    cellCallback: NoInfer<Callback>,
   ): void;
 
   /// Store.forEachValue
