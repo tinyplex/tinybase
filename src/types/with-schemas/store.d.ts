@@ -793,9 +793,9 @@ export interface Store<in out Schemas extends OptionalSchemas = NoSchemas> {
   delSchema(): Store<NoSchemas>;
 
   /// Store.transaction
-  transaction<Return, DoRollback extends DoRollbackAlias<Schemas>>(
+  transaction<Return>(
     actions: () => Return,
-    doRollback?: DoRollback,
+    doRollback?: DoRollback<Schemas>,
   ): Return;
 
   /// Store.startTransaction
