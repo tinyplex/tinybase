@@ -171,10 +171,12 @@ storeWithSchemas.forEachTable((tableId, forEachRow) => {
       if (cellId == 'c1') {
         cell as number;
         cell as string; // !
+        cell as undefined; // !
       }
       if (cellId == 'c1d') {
         cell as string;
         cell as number; // !
+        cell as undefined; // !
       }
       cellId == 'c2'; // !
     });
@@ -186,10 +188,12 @@ storeWithSchemas.forEachRow('t1', (_rowId, forEachCell) => {
     if (cellId == 'c1') {
       cell;
       cell as string; // !
+      cell as undefined; // !
     }
     if (cellId == 'c1d') {
       cell as string;
       cell as number; // !
+      cell as undefined; // !
     }
     cellId == 'c2'; // !
   });
@@ -200,10 +204,12 @@ storeWithSchemas.forEachCell('t1', 'r1', (cellId, cell) => {
   if (cellId == 'c1') {
     cell as number;
     cell as string; // !
+    cell as undefined; // !
   }
   if (cellId == 'c1d') {
     cell as string;
     cell as number; // !
+    cell as undefined; // !
   }
   cellId == 'c2'; // !
 });
@@ -213,13 +219,43 @@ storeWithSchemas.forEachValue((valueId, value) => {
   if (valueId == 'v1') {
     value as number;
     value as string; // !
+    value as undefined; // !
   }
   if (valueId == 'v1d') {
     value as string;
     value as number; // !
+    value as undefined; // !
   }
   valueId == 'c2'; // !
 });
+
+// Transactions
+
+storeWithSchemas.transaction(
+  () => null,
+  (changedCells, _invalidCells, changedValues, _invalidValues) => {
+    changedCells.t1?.r1?.c1 as [number, number];
+    changedCells.t1?.r1?.c1 as [number, undefined];
+    changedCells.t1?.r1?.c1 as [undefined, number];
+    changedCells.t1?.r1?.c1d as [string, string];
+    changedCells.t1?.r1?.c1d as [string, undefined]; // !
+    changedCells.t1?.r1?.c1d as [undefined, string]; // !
+    changedCells.t1?.r1?.c1d as [undefined, undefined]; // !
+    changedCells.t1?.r1?.c1 as [string, string]; // !
+    changedCells.t1?.r1?.c1d as [number, number]; // !
+
+    changedValues.v1 as [number, number];
+    changedValues.v1 as [number, undefined];
+    changedValues.v1 as [undefined, number];
+    changedValues.v1d as [string, string];
+    changedValues.v1d as [string, undefined]; // !
+    changedValues.v1d as [undefined, string]; // !
+    changedValues.v1d as [undefined, undefined]; // !
+    changedValues.v1 as [string, string]; // !
+    changedValues.v1d as [number, number]; // !
+    return true;
+  },
+);
 
 //--
 
