@@ -167,7 +167,8 @@ storeWithSchemas.forEachTable((tableId, forEachRow) => {
   tableId == 't1';
   tableId == 't2'; // !
   if (tableId == 't1') {
-    forEachRow((_rowId, forEachCell) => {
+    forEachRow((rowId, forEachCell) => {
+      rowId as string;
       forEachCell((cellId, cell) => {
         if (cellId == 'c1') {
           cell as number;
@@ -181,11 +182,27 @@ storeWithSchemas.forEachTable((tableId, forEachRow) => {
         }
         cellId == 'c2'; // !
       });
+      forEachCell((cellId) => {
+        cellId == 'c1';
+        cellId == 'c1d';
+        cellId == 'c2'; // !
+      });
+      forEachCell(() => null);
     });
+    forEachRow((rowId) => {
+      rowId as string;
+    });
+    forEachRow(() => null);
   }
 });
+storeWithSchemas.forEachTable((tableId) => {
+  tableId == 't1';
+  tableId == 't2'; // !
+});
+storeWithSchemas.forEachTable(() => null);
 
-storeWithSchemas.forEachRow('t1', (_rowId, forEachCell) => {
+storeWithSchemas.forEachRow('t1', (rowId, forEachCell) => {
+  rowId as string;
   forEachCell((cellId, cell) => {
     if (cellId == 'c1') {
       cell as number;
@@ -199,7 +216,17 @@ storeWithSchemas.forEachRow('t1', (_rowId, forEachCell) => {
     }
     cellId == 'c2'; // !
   });
+  forEachCell((cellId) => {
+    cellId == 'c1';
+    cellId == 'c1d';
+    cellId == 'c2'; // !
+  });
+  forEachCell(() => null);
 });
+storeWithSchemas.forEachRow('t1', (rowId) => {
+  rowId as string;
+});
+storeWithSchemas.forEachRow('t1', () => null);
 storeWithSchemas.forEachRow('t2', () => null); // !
 
 storeWithSchemas.forEachCell('t1', 'r1', (cellId, cell) => {
