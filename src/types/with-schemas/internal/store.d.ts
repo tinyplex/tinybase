@@ -173,6 +173,8 @@ export type DefaultedValueFromSchema<
 
 export type AsId<Key> = Exclude<Key & Id, number>;
 
-export type Truncate<Tuple> = Tuple extends [...infer U, any] ? [...U] : never;
+export type Truncate<Params> = Params extends [...infer ShorterParams, any]
+  ? [...ShorterParams]
+  : never;
 
-export type NoInfer<A> = [A][A extends any ? 0 : never];
+export type NoInfer<Type> = Type & {[Key in keyof Type]: Type[Key]};
