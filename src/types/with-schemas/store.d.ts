@@ -303,42 +303,91 @@ export type CellIdsListener<
   RowId = RowIdOrNull extends null ? Id : RowIdOrNull,
 > = (store: Store<Schemas>, tableId: TableId, rowId: RowId) => void;
 
-/// CellListener
-export type CellListener<
-  in out Schemas extends OptionalSchemas = NoSchemas,
-  TableIdOrNull extends TableIdFromSchema<
-    Schemas[0]
-  > | null = TableIdFromSchema<Schemas[0]> | null,
-  RowIdOrNull extends IdOrNull = IdOrNull,
-  CellIdOrNull extends
-    | (TableIdOrNull extends TableIdFromSchema<Schemas[0]>
-        ? CellIdFromSchema<Schemas[0], TableIdOrNull>
-        : AllCellIdFromSchema<Schemas[0]>)
-    | null =
-    | (TableIdOrNull extends TableIdFromSchema<Schemas[0]>
-        ? CellIdFromSchema<Schemas[0], TableIdOrNull>
-        : AllCellIdFromSchema<Schemas[0]>)
-    | null,
-  TableId extends Id = TableIdOrNull extends null
+export type CellListenerParams2<
+  Schemas extends OptionalSchemas,
+  TableId extends TableIdFromSchema<Schemas[0]>,
+  RowIdOrNull extends IdOrNull,
+  CellIdOrNull extends IdOrNull,
+  CellIdOrIds = CellIdOrNull extends null
+    ? CellIdFromSchema<Schemas[0], TableId>
+    : CellIdOrNull,
+> = CellIdOrIds extends infer CellId
+  ? CellId extends CellIdFromSchema<Schemas[0], TableId>
+    ? [
+        store: Store<Schemas>,
+        tableId: TableId,
+        rowId: RowIdOrNull extends null ? Id : RowIdOrNull,
+        cellId: CellId,
+        newCell: CellFromSchema<Schemas[0], TableId, CellId>,
+        oldCell: CellFromSchema<Schemas[0], TableId, CellId>,
+        getCellChange: GetCellChange<Schemas[0]> | undefined,
+      ]
+    : never
+  : never;
+
+export type NeverParams = [
+  store: never,
+  tableId: never,
+  rowId: never,
+  cellId: never,
+  newCell: never,
+  oldCell: never,
+  getCellChange: never,
+];
+
+export type CellListenerParams<
+  Schemas extends OptionalSchemas,
+  TableIdOrNull extends IdOrNull,
+  RowIdOrNull extends IdOrNull,
+  CellIdOrNull extends IdOrNull,
+  TableIdOrIds = TableIdOrNull extends null
     ? TableIdFromSchema<Schemas[0]>
     : TableIdOrNull,
-  RowId = RowIdOrNull extends null ? Id : RowIdOrNull,
-  CellId extends Id = CellIdOrNull extends null
-    ? TableIdOrNull extends TableIdFromSchema<Schemas[0]>
-      ? CellIdFromSchema<Schemas[0], TableIdOrNull>
-      : AllCellIdFromSchema<Schemas[0]>
-    : CellIdOrNull,
-  Cell = CellFromSchema<Schemas[0], TableId, CellId>,
-  Schema extends OptionalTablesSchema = Schemas[0],
-> = (
-  store: Store<Schemas>,
-  tableId: TableId,
-  rowId: RowId,
-  cellId: CellId,
-  newCell: Cell,
-  oldCell: Cell,
-  getCellChange: GetCellChange<Schema> | undefined,
-) => void;
+> = TableIdOrIds extends infer TableId
+  ? TableId extends TableIdFromSchema<Schemas[0]>
+    ? CellListenerParams2<Schemas, TableId, RowIdOrNull, CellIdOrNull>
+    : never
+  : never;
+
+export type CellListenerImpl<
+  Schemas extends OptionalSchemas = NoSchemas,
+  TableIdOrNull extends IdOrNull = IdOrNull,
+  RowIdOrNull extends IdOrNull = IdOrNull,
+  CellIdOrNull extends IdOrNull = IdOrNull,
+  P7 extends any[] =
+    | CellListenerParams<Schemas, TableIdOrNull, RowIdOrNull, CellIdOrNull>
+    | NeverParams,
+  P6 extends any[] = Truncate<P7>,
+  P5 extends any[] = Truncate<P6>,
+  P4 extends any[] = Truncate<P5>,
+  // P3 extends any[] = Truncate<P4>,
+  // P2 extends any[] = Truncate<P3>,
+  // P1 extends any[] = Truncate<P2>,
+> = CellListenerParams<
+  Schemas,
+  TableIdOrNull,
+  RowIdOrNull,
+  CellIdOrNull
+> extends any
+  ?
+      | ((...params: P7) => void)
+      | ((...params: P6) => void)
+      | ((...params: P5) => void)
+      | ((...params: P4) => void)
+  : // The unions may no longer be discriminatory with fewer parameters, and
+    // TypeScript fails to resolve callback signatures in some cases.
+    // | ((...params: P3) => void)
+    // | ((...params: P2) => void)
+    // | ((...params: P1) => void)
+    never;
+
+/// CellListener
+export type CellListener<
+  Schemas extends OptionalSchemas = NoSchemas,
+  TableIdOrNull extends IdOrNull = IdOrNull,
+  RowIdOrNull extends IdOrNull = IdOrNull,
+  CellIdOrNull extends IdOrNull = IdOrNull,
+> = CellListenerImpl<Schemas, TableIdOrNull, RowIdOrNull, CellIdOrNull>;
 
 /// ValuesListener
 export type ValuesListener<
@@ -507,7 +556,7 @@ export interface Store<in out Schemas extends OptionalSchemas = NoSchemas> {
   /// Store.getTable
   getTable<
     TableId extends TableIdFromSchema<Schemas[0]>,
-    Table = TableFromSchema<Schemas[0]>,
+    Table = TableFromSchema<Schemas[0], TableId>,
   >(
     tableId: TableId,
   ): Table;

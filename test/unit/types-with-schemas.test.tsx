@@ -3,6 +3,7 @@
 // NB: an exclamation mark after a line visually indicates an expected TS error
 
 import {createStore} from 'tinybase/debug/with-schemas';
+// import {createStore} from '../../src/types/with-schemas/store.d';
 import tsc from 'typescript';
 
 const tablesSchema = {
@@ -561,10 +562,10 @@ storeWithSchemas.addCellListener(
   (store, tableId, rowId, cellId) => {
     store.getTables().t1;
     tableId == 't1';
-    tableId == 't0';
     rowId == 'r1';
     cellId == 'c1';
     store.getTables().t2; // !
+    tableId == 't0'; // !
     cellId == 'c1d'; // !
     cellId == 'c0'; // !
     tableId == 't2'; // !
@@ -587,7 +588,7 @@ storeWithSchemas.addCellListener(
     if (tableId == 't1') {
       cellId == 'c1';
       cellId == 'c1d';
-      cellId == 'c0'; // ?
+      cellId == 'c0'; // !
     }
     store.getTables().t2; // !
     tableId == 't2'; // !
@@ -602,11 +603,11 @@ storeWithSchemas.addCellListener(
   (store, tableId, rowId, cellId) => {
     store.getTables().t1;
     tableId == 't1';
-    tableId == 't0';
     rowId == 'r1';
     rowId == 'r2';
     cellId == 'c1';
     store.getTables().t2; // !
+    tableId == 't0'; // !
     tableId == 't2'; // !
     cellId == 'c1d'; // !
     cellId == 'c0'; // !
@@ -629,30 +630,35 @@ storeWithSchemas.addCellListener(
     if (tableId == 't1') {
       cellId == 'c1';
       cellId == 'c1d';
-      cellId == 'c0'; // ?
+      cellId == 'c0'; // !
     }
     store.getTables().t2; // !
     tableId == 't2'; // !
     cellId == 'c2'; // !
   },
 );
-storeWithSchemas.addCellListener('t1', 'r1', 'c1', (store, tableId, rowId) => {
+storeWithSchemas.addCellListener(
+  't1',
+  'r1',
+  'c1',
+  (store, tableId, rowId, ..._) => {
+    store.getTables().t1;
+    tableId == 't1';
+    rowId == 'r1';
+    store.getTables().t2; // !
+    tableId == 't0'; // !
+    tableId == 't2'; // !
+    rowId == 'r2'; // !
+  },
+);
+storeWithSchemas.addCellListener('t1', 'r1', 'c1', (store, tableId, ..._) => {
   store.getTables().t1;
   tableId == 't1';
-  rowId == 'r1';
   store.getTables().t2; // !
   tableId == 't0'; // !
   tableId == 't2'; // !
-  rowId == 'r2'; // !
 });
-storeWithSchemas.addCellListener('t1', 'r1', 'c1', (store, tableId) => {
-  store.getTables().t1;
-  tableId == 't1';
-  store.getTables().t2; // !
-  tableId == 't0'; // !
-  tableId == 't2'; // !
-});
-storeWithSchemas.addCellListener('t1', 'r1', 'c1', (store) => {
+storeWithSchemas.addCellListener('t1', 'r1', 'c1', (store, ..._) => {
   store.getTables().t1;
   store.getTables().t2; // !
 });
