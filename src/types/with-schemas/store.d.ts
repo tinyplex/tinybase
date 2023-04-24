@@ -184,7 +184,7 @@ export type ValueCallback<
   Schema extends OptionalValuesSchema,
   ValueId = ValueIdFromSchema<Schema>,
   Params2 extends any[] = ValueId extends ValueIdFromSchema<Schema>
-    ? [ValueId, ValueFromSchema<Schema, ValueId>]
+    ? [ValueId, ValueFromSchema<Schema, ValueId>] | [never, never]
     : never,
   Params1 extends any[] = Truncate<Params2>,
 > =

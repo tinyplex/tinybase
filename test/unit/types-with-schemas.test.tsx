@@ -16,10 +16,16 @@ const valuesSchema = {
   v1d: {type: 'string', default: ''},
 } as const;
 
+const oneValueSchema = {
+  v1: {type: 'number'},
+} as const;
+
 const store = createStore();
 
 const storeWithSchemas = store.setSchema(tablesSchema, valuesSchema);
 storeWithSchemas.setTables({t1: {r1: {c1: 1}}});
+
+const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
 
 // Getters
 
@@ -298,6 +304,19 @@ storeWithSchemas.forEachValue((valueId) => {
   valueId == 'v2'; // !
 });
 storeWithSchemas.forEachValue(() => null);
+storeWithSchemasOneValue.forEachValue((valueId, value) => {
+  if (valueId == 'v1') {
+    value as number;
+    value as string; // !
+    value as undefined; // !
+  }
+  valueId == 'v2'; // !
+});
+storeWithSchemasOneValue.forEachValue((valueId) => {
+  valueId == 'v1';
+  valueId == 'v2'; // !
+});
+storeWithSchemasOneValue.forEachValue(() => null);
 
 // Transactions
 
