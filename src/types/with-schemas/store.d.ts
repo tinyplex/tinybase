@@ -5,7 +5,6 @@ import {
   CellFromSchema,
   CellIdFromSchema,
   DefaultedValueFromSchema,
-  NoInfer,
   RowFromSchema,
   TableFromSchema,
   TableIdFromSchema,
@@ -819,7 +818,7 @@ export interface Store<in out Schemas extends OptionalSchemas = NoSchemas> {
   finishTransaction(doRollback?: DoRollback<Schemas>): Store<Schemas>;
 
   /// Store.forEachTable
-  forEachTable(tableCallback: NoInfer<TableCallback<Schemas[0]>>): void;
+  forEachTable(tableCallback: TableCallback<Schemas[0]>): void;
 
   /// Store.forEachRow
   forEachRow<TableId extends TableIdFromSchema<Schemas[0]>>(
