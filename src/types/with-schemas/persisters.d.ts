@@ -16,13 +16,13 @@ export interface Persister<in out Schemas extends OptionalSchemas = NoSchemas> {
   /// Persister.load
   load(
     initialTables?: Tables<Schemas[0], true>,
-    initialValues?: Values,
+    initialValues?: Values<Schemas[1], true>,
   ): Promise<Persister<Schemas>>;
 
   /// Persister.startAutoLoad
   startAutoLoad(
     initialTables?: Tables<Schemas[0], true>,
-    initialValues?: Values,
+    initialValues?: Values<Schemas[1], true>,
   ): Promise<Persister<Schemas>>;
 
   /// Persister.stopAutoLoad
