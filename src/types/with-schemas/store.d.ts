@@ -564,7 +564,7 @@ export type StoreListenerStats = {
 };
 
 /// Store
-export interface Store<in out Schemas extends OptionalSchemas = NoSchemas> {
+export interface Store<in out Schemas extends OptionalSchemas> {
   /// Store.getTables
   getTables(): Tables<Schemas[0]>;
 
@@ -951,4 +951,4 @@ export interface Store<in out Schemas extends OptionalSchemas = NoSchemas> {
 }
 
 /// createStore
-export function createStore(): Store;
+export function createStore(): Store<NoSchemas>;

@@ -748,7 +748,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// useCreateCheckpoints
   useCreateCheckpoints: (
     store: Store<Schemas>,
-    create: (store: Store) => Checkpoints<Schemas>,
+    create: (store: Store<Schemas>) => Checkpoints<Schemas>,
     createDeps?: React.DependencyList,
   ) => Checkpoints<Schemas>;
 
@@ -810,7 +810,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// useCheckpointIdsListener
   useCheckpointIdsListener: (
-    listener: CheckpointIdsListener,
+    listener: CheckpointIdsListener<Schemas>,
     listenerDeps?: React.DependencyList,
     checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
   ) => void;
@@ -818,7 +818,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// useCheckpointListener
   useCheckpointListener: (
     checkpointId: IdOrNull,
-    listener: CheckpointListener,
+    listener: CheckpointListener<Schemas>,
     listenerDeps?: React.DependencyList,
     checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
   ) => void;

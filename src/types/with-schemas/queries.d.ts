@@ -3,7 +3,6 @@
 import {
   Cell,
   GetCell,
-  NoSchemas,
   NoTablesSchema,
   OptionalSchemas,
   OptionalTablesSchema,
@@ -69,23 +68,20 @@ export type ResultRowCallback = (
 export type ResultCellCallback = (cellId: Id, cell: ResultCell) => void;
 
 /// ResultTableListener
-export type ResultTableListener<
-  in out Schemas extends OptionalSchemas = NoSchemas,
-> = (
+export type ResultTableListener<Schemas extends OptionalSchemas> = (
   queries: Queries<Schemas>,
   tableId: Id,
   getCellChange: GetCellResultChange,
 ) => void;
 
 /// ResultRowIdsListener
-export type ResultRowIdsListener<
-  in out Schemas extends OptionalSchemas = NoSchemas,
-> = (queries: Queries<Schemas>, tableId: Id) => void;
+export type ResultRowIdsListener<Schemas extends OptionalSchemas> = (
+  queries: Queries<Schemas>,
+  tableId: Id,
+) => void;
 
 /// ResultSortedRowIdsListener
-export type ResultSortedRowIdsListener<
-  in out Schemas extends OptionalSchemas = NoSchemas,
-> = (
+export type ResultSortedRowIdsListener<Schemas extends OptionalSchemas> = (
   queries: Queries<Schemas>,
   tableId: Id,
   cellId: Id | undefined,
@@ -96,9 +92,7 @@ export type ResultSortedRowIdsListener<
 ) => void;
 
 /// ResultRowListener
-export type ResultRowListener<
-  in out Schemas extends OptionalSchemas = NoSchemas,
-> = (
+export type ResultRowListener<Schemas extends OptionalSchemas> = (
   queries: Queries<Schemas>,
   tableId: Id,
   rowId: Id,
@@ -106,14 +100,14 @@ export type ResultRowListener<
 ) => void;
 
 /// ResultCellIdsListener
-export type ResultCellIdsListener<
-  in out Schemas extends OptionalSchemas = NoSchemas,
-> = (queries: Queries<Schemas>, tableId: Id, rowId: Id) => void;
+export type ResultCellIdsListener<Schemas extends OptionalSchemas> = (
+  queries: Queries<Schemas>,
+  tableId: Id,
+  rowId: Id,
+) => void;
 
 /// ResultCellListener
-export type ResultCellListener<
-  in out Schemas extends OptionalSchemas = NoSchemas,
-> = (
+export type ResultCellListener<Schemas extends OptionalSchemas> = (
   queries: Queries<Schemas>,
   tableId: Id,
   rowId: Id,
@@ -363,7 +357,7 @@ export type Having = {
 };
 
 /// Queries
-export interface Queries<in out Schemas extends OptionalSchemas = NoSchemas> {
+export interface Queries<in out Schemas extends OptionalSchemas> {
   /// Queries.setQueryDefinition
   setQueryDefinition<
     RootTableId extends TableIdFromSchema<Schemas[0]>,
@@ -447,12 +441,15 @@ export interface Queries<in out Schemas extends OptionalSchemas = NoSchemas> {
   ): void;
 
   /// Queries.addResultTableListener
-  addResultTableListener(queryId: IdOrNull, listener: ResultTableListener): Id;
+  addResultTableListener(
+    queryId: IdOrNull,
+    listener: ResultTableListener<Schemas>,
+  ): Id;
 
   /// Queries.addResultRowIdsListener
   addResultRowIdsListener(
     queryId: IdOrNull,
-    listener: ResultRowIdsListener,
+    listener: ResultRowIdsListener<Schemas>,
   ): Id;
 
   /// Queries.addResultSortedRowIdsListener
@@ -462,21 +459,21 @@ export interface Queries<in out Schemas extends OptionalSchemas = NoSchemas> {
     descending: boolean,
     offset: number,
     limit: number | undefined,
-    listener: ResultSortedRowIdsListener,
+    listener: ResultSortedRowIdsListener<Schemas>,
   ): Id;
 
   /// Queries.addResultRowListener
   addResultRowListener(
     queryId: IdOrNull,
     rowId: IdOrNull,
-    listener: ResultRowListener,
+    listener: ResultRowListener<Schemas>,
   ): Id;
 
   /// Queries.addResultCellIdsListener
   addResultCellIdsListener(
     queryId: IdOrNull,
     rowId: IdOrNull,
-    listener: ResultCellIdsListener,
+    listener: ResultCellIdsListener<Schemas>,
   ): Id;
 
   /// Queries.addResultCellListener
@@ -484,7 +481,7 @@ export interface Queries<in out Schemas extends OptionalSchemas = NoSchemas> {
     queryId: IdOrNull,
     rowId: IdOrNull,
     cellId: IdOrNull,
-    listener: ResultCellListener,
+    listener: ResultCellListener<Schemas>,
   ): Id;
 
   /// Queries.delListener

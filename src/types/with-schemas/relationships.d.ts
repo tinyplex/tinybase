@@ -3,8 +3,6 @@
 import {CellIdFromSchema, TableIdFromSchema} from './internal/store';
 import {
   GetCell,
-  NoSchemas,
-  NoTablesSchema,
   OptionalSchemas,
   OptionalTablesSchema,
   RowCallback,
@@ -20,35 +18,27 @@ export type Relationship = {
 };
 
 /// RelationshipCallback
-export type RelationshipCallback<
-  in out Schema extends OptionalTablesSchema = NoTablesSchema,
-> = (
+export type RelationshipCallback<Schema extends OptionalTablesSchema> = (
   relationshipId: Id,
   forEachRow: (rowCallback: RowCallback<Schema, Id>) => void,
 ) => void;
 
 /// RemoteRowIdListener
-export type RemoteRowIdListener<
-  in out Schemas extends OptionalSchemas = NoSchemas,
-> = (
+export type RemoteRowIdListener<Schemas extends OptionalSchemas> = (
   relationships: Relationships<Schemas>,
   relationshipId: Id,
   localRowId: Id,
 ) => void;
 
 /// LocalRowIdsListener
-export type LocalRowIdsListener<
-  in out Schemas extends OptionalSchemas = NoSchemas,
-> = (
+export type LocalRowIdsListener<Schemas extends OptionalSchemas> = (
   relationships: Relationships<Schemas>,
   relationshipId: Id,
   remoteRowId: Id,
 ) => void;
 
 /// LinkedRowIdsListener
-export type LinkedRowIdsListener<
-  in out Schemas extends OptionalSchemas = NoSchemas,
-> = (
+export type LinkedRowIdsListener<Schemas extends OptionalSchemas> = (
   relationships: Relationships<Schemas>,
   relationshipId: Id,
   firstRowId: Id,
@@ -65,9 +55,7 @@ export type RelationshipsListenerStats = {
 };
 
 /// Relationships
-export interface Relationships<
-  in out Schemas extends OptionalSchemas = NoSchemas,
-> {
+export interface Relationships<in out Schemas extends OptionalSchemas> {
   /// setRelationshipDefinition
   setRelationshipDefinition<
     LocalTableId extends TableIdFromSchema<Schemas[0]>,
@@ -92,7 +80,9 @@ export interface Relationships<
   getRelationshipIds(): Ids;
 
   /// forEachRelationship
-  forEachRelationship(relationshipCallback: RelationshipCallback): void;
+  forEachRelationship(
+    relationshipCallback: RelationshipCallback<Schemas[0]>,
+  ): void;
 
   /// hasRelationship
   hasRelationship(indexId: Id): boolean;
@@ -120,21 +110,21 @@ export interface Relationships<
   addRemoteRowIdListener(
     relationshipId: IdOrNull,
     localRowId: IdOrNull,
-    listener: RemoteRowIdListener,
+    listener: RemoteRowIdListener<Schemas>,
   ): Id;
 
   /// addLocalRowIdsListener
   addLocalRowIdsListener(
     relationshipId: IdOrNull,
     remoteRowId: IdOrNull,
-    listener: LocalRowIdsListener,
+    listener: LocalRowIdsListener<Schemas>,
   ): Id;
 
   /// addLinkedRowIdsListener
   addLinkedRowIdsListener(
     relationshipId: Id,
     firstRowId: Id,
-    listener: LinkedRowIdsListener,
+    listener: LinkedRowIdsListener<Schemas>,
   ): Id;
 
   /// delListener
