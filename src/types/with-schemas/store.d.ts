@@ -118,34 +118,66 @@ export type TableCallback<
   Schema extends OptionalTablesSchema = NoTablesSchema,
   TableId = TableIdFromSchema<Schema>,
   Params2 extends any[] = TableId extends TableIdFromSchema<Schema>
-    ? [TableId, (rowCallback: RowCallback<Schema, TableId>) => void]
+    ?
+        | [TableId, (rowCallback: RowCallback<Schema, TableId>) => void]
+        | [never, never]
     : never,
   Params1 extends any[] = Truncate<Params2>,
-> =
-  | ((...params: Params2) => void)
-  | ((...params: Params1) => void)
-  | (() => void);
+> = ((...params: Params2) => void) | ((...params: Params1) => void);
 
 /// RowCallback
 export type RowCallback<
-  in out Schema extends OptionalTablesSchema = NoTablesSchema,
-  in out TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-  in out Callback = NoInfer<CellCallback<Schema, TableId>>,
-> = (rowId: Id, forEachCell: (cellCallback: Callback) => void) => void;
+  Schema extends OptionalTablesSchema = NoTablesSchema,
+  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+> = RowCallbackImpl<Schema, TableId>;
+
+export type RowCallbackImpl<
+  Schema extends OptionalTablesSchema = NoTablesSchema,
+  TableId extends TableIdFromSchema<Schema> = Id,
+  Params extends any[] = [
+    rowId: Id,
+    forEachCell: (cellCallback: CellCallback<Schema, TableId>) => void,
+  ],
+  P2 extends any[] = Params | [rowId: never, forEachCell: never],
+  // P1 extends any[] = Truncate<P2>,
+> = Params extends any[]
+  ? (...params: P2) => void
+  : // | ((...params: P1) => void)
+    never;
+
+export type RowCallbackParams<
+  Schema extends OptionalTablesSchema,
+  TableId extends TableIdFromSchema<Schema>,
+> = [
+  rowId: Id,
+  forEachCell: (cellCallback: CellCallback<Schema, TableId>) => void,
+];
 
 /// CellCallback
 export type CellCallback<
+  Schema extends OptionalTablesSchema = NoTablesSchema,
+  TableId extends TableIdFromSchema<Schema> = Id,
+> = CellCallbackImpl<Schema, TableId>;
+
+export type CellCallbackImpl<
+  Schema extends OptionalTablesSchema = NoTablesSchema,
+  TableId extends TableIdFromSchema<Schema> = Id,
+  Params extends any[] = CellCallbackParams<Schema, TableId>,
+  P2 extends any[] = Params | [cellId: never, cell: never],
+  P1 extends any[] = Truncate<P2>,
+> = Params extends any[]
+  ? ((...params: P2) => void) | ((...params: P1) => void)
+  : never;
+
+export type CellCallbackParams<
   Schema extends OptionalTablesSchema,
-  TableId extends NoInfer<TableIdFromSchema<Schema>>,
-  CellId = CellIdFromSchema<Schema, TableId>,
-  Params2 extends any[] = CellId extends CellIdFromSchema<Schema, TableId>
-    ? [CellId, CellFromSchema<Schema, TableId, CellId>]
-    : never,
-  Params1 extends any[] = Truncate<Params2>,
-> =
-  | ((...params: Params2) => void)
-  | ((...params: Params1) => void)
-  | (() => void);
+  TableId extends TableIdFromSchema<Schema>,
+  CellIds = CellIdFromSchema<Schema, TableId>,
+> = CellIds extends infer CellId
+  ? CellId extends CellIdFromSchema<Schema, TableId>
+    ? [cellId: CellId, cell: CellFromSchema<Schema, TableId, CellId>]
+    : never
+  : never;
 
 /// ValueCallback
 export type ValueCallback<
@@ -832,22 +864,16 @@ export interface Store<in out Schemas extends OptionalSchemas = NoSchemas> {
   forEachTable(tableCallback: NoInfer<TableCallback<Schemas[0]>>): void;
 
   /// Store.forEachRow
-  forEachRow<
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    Callback = RowCallback<Schemas[0], TableId>,
-  >(
+  forEachRow<TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
-    rowCallback: NoInfer<Callback>,
+    rowCallback: RowCallback<Schemas[0], TableId>,
   ): void;
 
   /// Store.forEachCell
-  forEachCell<
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    Callback = CellCallback<Schemas[0], TableId>,
-  >(
+  forEachCell<TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
     rowId: Id,
-    cellCallback: NoInfer<Callback>,
+    cellCallback: CellCallback<Schemas[0], TableId>,
   ): void;
 
   /// Store.forEachValue

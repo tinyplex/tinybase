@@ -224,7 +224,23 @@ storeWithSchemas.forEachRow('t1', (rowId, forEachCell) => {
   });
   forEachCell(() => null);
 });
-storeWithSchemas.forEachRow('t1', (rowId) => {
+storeWithSchemas.forEachRow('t0', (rowId, forEachCell) => {
+  rowId as string;
+  forEachCell((cellId, cell) => {
+    if (cellId == 'c0') {
+      cell as number;
+      cell as string; // !
+      cell as undefined; // !
+    }
+    cellId == 'c2'; // !
+  });
+  forEachCell((cellId) => {
+    cellId == 'c0';
+    cellId == 'c2'; // !
+  });
+  forEachCell(() => null);
+});
+storeWithSchemas.forEachRow('t1', (rowId, ..._) => {
   rowId as string;
 });
 storeWithSchemas.forEachRow('t1', () => null);
@@ -240,6 +256,19 @@ storeWithSchemas.forEachCell('t1', 'r1', (cellId, cell) => {
     cell as string;
     cell as number; // !
     cell as undefined; // !
+  }
+  cellId == 'c2'; // !
+});
+storeWithSchemas.forEachCell('t1', 'r1', (cellId) => {
+  cellId == 'c1';
+  cellId == 'c1d';
+  cellId == 'c2'; // !
+});
+storeWithSchemas.forEachCell('t0', 'r0', (cellId, cell) => {
+  if (cellId == 'c0') {
+    cell as number;
+    cell as undefined; // !
+    cell as string; // !
   }
   cellId == 'c2'; // !
 });
