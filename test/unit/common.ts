@@ -8,6 +8,11 @@ declare global {
 }
 
 import {
+  Cell,
+  Store as StoreWithSchemas,
+  Value,
+} from 'tinybase/debug/with-schemas';
+import {
   Checkpoints,
   Id,
   IdOrNull,
@@ -18,7 +23,6 @@ import {
   Relationships,
   Store,
 } from 'tinybase/debug';
-import {Store as StoreWithSchemas} from 'tinybase/debug/with-schemas';
 
 type IdObj<Value> = {[id: string]: Value};
 type IdObj2<Value> = IdObj<{[id: string]: Value}>;
@@ -223,8 +227,13 @@ export const createStoreListener = (
         tableId,
         rowId,
         cellId,
-        (_, tableId, rowId, cellId, newCell) =>
-          logs[id].push({[tableId]: {[rowId]: {[cellId]: newCell}}}),
+        (
+          _: any,
+          tableId: Id,
+          rowId: Id,
+          cellId: Id,
+          newCell: Cell<any, any, any>,
+        ) => logs[id].push({[tableId]: {[rowId]: {[cellId]: newCell}}}),
       );
     },
 
@@ -255,8 +264,10 @@ export const createStoreListener = (
 
     listenToValue: (id, valueId) => {
       logs[id] = [];
-      return store.addValueListener(valueId, (_, valueId, newValue) =>
-        logs[id].push({[valueId]: newValue}),
+      return store.addValueListener(
+        valueId,
+        (_: any, valueId: Id, newValue: Value<any, any, any>) =>
+          logs[id].push({[valueId]: newValue}),
       );
     },
 

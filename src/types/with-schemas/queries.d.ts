@@ -10,8 +10,8 @@ import {
   Store,
 } from './store.d';
 import {CellIdFromSchema, TableIdFromSchema} from './internal/store';
+import {GetResultCell, JoinedCellIdOrId} from './internal/queries';
 import {Id, IdOrNull, Ids} from './common.d';
-import {JoinedCellIdOrId} from './internal/queries';
 
 /// ResultTable
 export type ResultTable = {[rowId: Id]: ResultRow};
@@ -26,27 +26,27 @@ export type ResultCell = string | number | boolean;
 export type ResultCellOrUndefined = ResultCell | undefined;
 
 /// Aggregate
-export type Aggregate = (cells: Cell[], length: number) => ResultCell;
+export type Aggregate = (cells: ResultCell[], length: number) => ResultCell;
 
 /// AggregateAdd
 export type AggregateAdd = (
-  current: Cell,
-  add: Cell,
+  current: ResultCell,
+  add: ResultCell,
   length: number,
 ) => ResultCellOrUndefined;
 
 /// AggregateRemove
 export type AggregateRemove = (
-  current: Cell,
-  remove: Cell,
+  current: ResultCell,
+  remove: ResultCell,
   length: number,
 ) => ResultCellOrUndefined;
 
 /// AggregateReplace
 export type AggregateReplace = (
-  current: Cell,
-  add: Cell,
-  remove: Cell,
+  current: ResultCell,
+  add: ResultCell,
+  remove: ResultCell,
   length: number,
 ) => ResultCellOrUndefined;
 
@@ -178,11 +178,11 @@ export type GetTableCell<
     CellOrUndefined extends
       | (JoinedTableId extends TableIdFromSchema<Schema>
           ? Cell<Schema, JoinedTableId, JoinedCellId>
-          : Cell)
+          : Cell<any, any, any>)
       | undefined =
       | (JoinedTableId extends TableIdFromSchema<Schema>
           ? Cell<Schema, JoinedTableId, JoinedCellId>
-          : Cell)
+          : Cell<any, any, any>)
       | undefined,
   >(
     joinedTableId: JoinedTableId,
@@ -357,9 +357,9 @@ export type GroupedAs = {
 /// Having
 export type Having = {
   /// Having.1
-  (selectedOrGroupedCellId: Id, equals: Cell): void;
+  (selectedOrGroupedCellId: Id, equals: ResultCell): void;
   /// Having.2
-  (condition: (getSelectedOrGroupedCell: GetCell) => boolean): void;
+  (condition: (getSelectedOrGroupedCell: GetResultCell) => boolean): void;
 };
 
 /// Queries

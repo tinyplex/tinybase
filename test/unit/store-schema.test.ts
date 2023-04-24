@@ -18,7 +18,7 @@ import {
 
 type AddMutator = (store: Store) => void;
 
-const addAllowCellMutator = <C extends Cell>(
+const addAllowCellMutator = <C extends Cell<any, any, any>>(
   store: Store<any>,
   tableId: Id,
   cellId: Id,
@@ -35,14 +35,14 @@ const addAllowCellMutator = <C extends Cell>(
     true,
   );
 
-const addAllowValueMutator = <V extends Value>(
+const addAllowValueMutator = <V extends Value<any, any, any>>(
   store: Store,
   valueId: Id,
   values: V[],
 ): Id =>
   store.addValueListener(
     valueId,
-    (store) => {
+    (store, ..._) => {
       if (!values.includes(store.getValue(valueId) as V)) {
         store.delValue(valueId);
       }
@@ -73,7 +73,7 @@ const cellBoundsSchemaAndExpected: [
   name: string,
   tablesSchema: TablesSchema,
   addMutator: AddMutator,
-  expected: Tables,
+  expected: Tables<any, any>,
 ][] = [
   [
     'non-defaulted min',
@@ -371,7 +371,7 @@ describe('tablesSchemas applied before data set', () => {
         _name,
         tablesSchema: TablesSchema,
         addMutator: AddMutator,
-        expected: Tables,
+        expected: Tables<any>,
       ) => {
         const store = createStore();
         store.setTablesSchema(tablesSchema);
@@ -593,7 +593,7 @@ describe('tablesSchemas applied before data set, listening', () => {
           _name,
           tablesSchema: TablesSchema,
           addMutator: AddMutator,
-          expected: Tables,
+          expected: Tables<any>,
         ) => {
           const store = createStore();
           store.setTablesSchema(tablesSchema);
@@ -883,7 +883,7 @@ describe('tablesSchemas applied before data set, listening', () => {
           _name,
           tablesSchema: TablesSchema,
           addMutator: AddMutator,
-          expected: Tables,
+          expected: Tables<any>,
         ) => {
           const store = createStore();
           store.setTablesSchema(tablesSchema);
@@ -1180,7 +1180,7 @@ describe('tablesSchemas applied before data set, listening', () => {
           _name,
           tablesSchema: TablesSchema,
           addMutator: AddMutator,
-          expected: Tables,
+          expected: Tables<any>,
         ) => {
           const store = createStore();
           store.setTablesSchema(tablesSchema);
@@ -1495,7 +1495,7 @@ describe('tablesSchemas applied before data set, listening', () => {
           _name,
           tablesSchema: TablesSchema,
           addMutator: AddMutator,
-          expected: Tables,
+          expected: Tables<any>,
         ) => {
           const store = createStore();
           store.setTablesSchema(tablesSchema);
@@ -2197,7 +2197,7 @@ describe('tablesSchemas applied before data set, listening', () => {
           _name,
           tablesSchema: TablesSchema,
           addMutator: AddMutator,
-          expected: Tables,
+          expected: Tables<any>,
         ) => {
           const store = createStore();
           store.setTablesSchema(tablesSchema);

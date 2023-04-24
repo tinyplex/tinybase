@@ -1,54 +1,9 @@
-import {
-  NoTablesSchema,
-  OptionalTablesSchema,
-  OptionalValuesSchema,
-} from '../store';
+import {OptionalTablesSchema, OptionalValuesSchema, Value} from '../store';
 import {Id} from '../common';
-
-export type TablesFromSchema<
-  Schema extends OptionalTablesSchema,
-  WhenSet extends boolean = false,
-> = {
-  -readonly [TableId in TableIdFromSchema<Schema>]?: TableFromSchema<
-    Schema,
-    TableId,
-    WhenSet
-  >;
-};
 
 export type TableIdFromSchema<Schema extends OptionalTablesSchema> = AsId<
   keyof Schema
 >;
-
-export type TableFromSchema<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-  WhenSet extends boolean = false,
-> = {[rowId: Id]: RowFromSchema<Schema, TableId, WhenSet>};
-
-export type RowFromSchema<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-  WhenSet extends boolean = false,
-> = (WhenSet extends true
-  ? {
-      -readonly [CellId in DefaultCellIdFromSchema<
-        Schema,
-        TableId
-      >]?: CellFromSchema<Schema, TableId, CellId>;
-    }
-  : {
-      -readonly [CellId in DefaultCellIdFromSchema<
-        Schema,
-        TableId
-      >]: CellFromSchema<Schema, TableId, CellId>;
-    }) & {
-  -readonly [CellId in DefaultCellIdFromSchema<
-    Schema,
-    TableId,
-    false
-  >]?: CellFromSchema<Schema, TableId, CellId>;
-};
 
 export type CellIdFromSchema<
   Schema extends OptionalTablesSchema,
@@ -78,19 +33,6 @@ export type AllCellIdFromSchema<
   ? CellIdFromSchema<Schema, TableId>
   : never;
 
-export type CellFromSchema<
-  Schema extends OptionalTablesSchema,
-  TableId extends TableIdFromSchema<Schema>,
-  CellId extends CellIdFromSchema<Schema, TableId>,
-  CellType = Schema[TableId][CellId]['type'],
-> = CellType extends 'string'
-  ? string
-  : CellType extends 'number'
-  ? number
-  : CellType extends 'boolean'
-  ? boolean
-  : string | number | boolean;
-
 export type CellIsDefaultedFromSchema<
   Schema extends OptionalTablesSchema,
   TableId extends TableIdFromSchema<Schema>,
@@ -102,28 +44,6 @@ export type CellIsDefaultedFromSchema<
 }
   ? Then
   : Else;
-
-export type ValuesFromSchema<
-  Schema extends OptionalValuesSchema,
-  WhenSet extends boolean = false,
-> = (WhenSet extends true
-  ? {
-      -readonly [ValueId in DefaultValueIdFromSchema<Schema>]?: ValueFromSchema<
-        Schema,
-        ValueId
-      >;
-    }
-  : {
-      -readonly [ValueId in DefaultValueIdFromSchema<Schema>]: ValueFromSchema<
-        Schema,
-        ValueId
-      >;
-    }) & {
-  -readonly [ValueId in DefaultValueIdFromSchema<
-    Schema,
-    false
-  >]?: ValueFromSchema<Schema, ValueId>;
-};
 
 export type ValueIdFromSchema<Schema extends OptionalValuesSchema> = AsId<
   keyof Schema
@@ -141,18 +61,6 @@ export type DefaultValueIdFromSchema<
   >;
 }[ValueIdFromSchema<Schema>];
 
-export type ValueFromSchema<
-  Schema extends OptionalValuesSchema,
-  ValueId extends ValueIdFromSchema<Schema>,
-  ValueType = Schema[ValueId]['type'],
-> = ValueType extends 'string'
-  ? string
-  : ValueType extends 'number'
-  ? number
-  : ValueType extends 'boolean'
-  ? boolean
-  : string | number | boolean;
-
 export type ValueIsDefaultedFromSchema<
   Schema extends OptionalValuesSchema,
   ValueId extends ValueIdFromSchema<Schema>,
@@ -168,7 +76,7 @@ export type DefaultedValueFromSchema<
   Schema extends OptionalValuesSchema,
   ValueId extends ValueIdFromSchema<Schema>,
 > =
-  | ValueFromSchema<Schema, ValueId>
+  | Value<Schema, ValueId>
   | ValueIsDefaultedFromSchema<Schema, ValueId, never, undefined>;
 
 export type AsId<Key> = Exclude<Key & Id, number>;

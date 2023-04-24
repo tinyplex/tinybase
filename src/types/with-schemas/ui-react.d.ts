@@ -2,15 +2,9 @@
 
 import {
   AllCellIdFromSchema,
-  CellFromSchema,
   CellIdFromSchema,
-  RowFromSchema,
-  TableFromSchema,
   TableIdFromSchema,
-  TablesFromSchema,
-  ValueFromSchema,
   ValueIdFromSchema,
-  ValuesFromSchema,
 } from './internal/store';
 import {
   BackwardCheckpointsProps,
@@ -49,6 +43,8 @@ import {
   Cell,
   CellIdsListener,
   CellListener,
+  MapCell,
+  MapValue,
   OptionalSchemas,
   Row,
   RowIdsListener,
@@ -58,9 +54,12 @@ import {
   Table,
   TableIdsListener,
   TableListener,
+  Tables,
   TablesListener,
+  Value,
   ValueIdsListener,
   ValueListener,
+  Values,
   ValuesListener,
 } from './store.d';
 import {
@@ -80,10 +79,13 @@ import {MetricListener, Metrics} from './metrics.d';
 import {ProviderProps, ReactElement} from 'react';
 import {
   Queries,
+  ResultCell,
   ResultCellIdsListener,
   ResultCellListener,
+  ResultRow,
   ResultRowIdsListener,
   ResultRowListener,
+  ResultTable,
   ResultTableListener,
 } from './queries.d';
 import {Persister} from './persisters.d';
@@ -120,9 +122,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useStore: (id?: Id) => Store<Schemas> | undefined;
 
   /// useTables
-  useTables: <Tables = TablesFromSchema<Schemas[0]>>(
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
-  ) => Tables;
+  useTables: (storeOrStoreId?: StoreOrStoreId<Schemas>) => Tables<Schemas[0]>;
 
   /// useTableIds
   useTableIds: <Ids = TableIdFromSchema<Schemas[0]>[]>(
@@ -130,13 +130,10 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   ) => Ids;
 
   /// useTable
-  useTable: <
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    Table = TableFromSchema<Schemas[0]>,
-  >(
+  useTable: <TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
-  ) => Table;
+  ) => Table<Schemas[0], TableId>;
 
   /// useRowIds
   useRowIds: <TableId extends TableIdFromSchema<Schemas[0]>>(
@@ -158,14 +155,11 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   ) => Ids;
 
   /// useRow
-  useRow: <
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    Row = RowFromSchema<Schemas[0], TableId>,
-  >(
+  useRow: <TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
     rowId: Id,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
-  ) => Row;
+  ) => Row<Schemas[0], TableId>;
 
   /// useCellIds
   useCellIds: <
@@ -181,7 +175,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useCell: <
     TableId extends TableIdFromSchema<Schemas[0]>,
     CellId extends CellIdFromSchema<Schemas[0], TableId>,
-    CellOrUndefined = CellFromSchema<Schemas[0], TableId, CellId> | undefined,
+    CellOrUndefined = Cell<Schemas[0], TableId, CellId> | undefined,
   >(
     tableId: TableId,
     rowId: Id,
@@ -190,9 +184,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   ) => CellOrUndefined;
 
   /// useValues
-  useValues: <Values = ValuesFromSchema<Schemas[1]>>(
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
-  ) => Values;
+  useValues: (storeOrStoreId?: StoreOrStoreId<Schemas>) => Values<Schemas[1]>;
 
   /// useValueIds
   useValueIds: <Ids = ValueIdFromSchema<Schemas[1]>[]>(
@@ -200,26 +192,17 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   ) => Ids;
 
   /// useValue
-  useValue: <
-    ValueId extends ValueIdFromSchema<Schemas[1]>,
-    ValueOrUndefined = ValueFromSchema<Schemas[1], ValueId> | undefined,
-  >(
+  useValue: <ValueId extends ValueIdFromSchema<Schemas[1]>>(
     valueId: ValueId,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
-  ) => ValueOrUndefined;
+  ) => Value<Schemas[1], ValueId> | undefined;
 
   /// useSetTablesCallback
-  useSetTablesCallback: <
-    Parameter,
-    Tables extends TablesFromSchema<Schemas[0], true> = TablesFromSchema<
-      Schemas[0],
-      true
-    >,
-  >(
-    getTables: (parameter: Parameter, store: Store<Schemas>) => Tables,
+  useSetTablesCallback: <Parameter, SetTables = Tables<Schemas[0], true>>(
+    getTables: (parameter: Parameter, store: Store<Schemas>) => SetTables,
     getTablesDeps?: React.DependencyList,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
-    then?: (store: Store<Schemas>, tables: Tables) => void,
+    then?: (store: Store<Schemas>, tables: SetTables) => void,
     thenDeps?: React.DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
@@ -227,17 +210,13 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useSetTableCallback: <
     Parameter,
     TableId extends TableIdFromSchema<Schemas[0]>,
-    Table extends TableFromSchema<Schemas[0], TableId, true> = TableFromSchema<
-      Schemas[0],
-      TableId,
-      true
-    >,
+    SetTable = Table<Schemas[0], TableId, true>,
   >(
     tableId: TableId,
-    getTable: (parameter: Parameter, store: Store<Schemas>) => Table,
+    getTable: (parameter: Parameter, store: Store<Schemas>) => SetTable,
     getTableDeps?: React.DependencyList,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
-    then?: (store: Store<Schemas>, table: Table) => void,
+    then?: (store: Store<Schemas>, table: SetTable) => void,
     thenDeps?: React.DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
@@ -245,18 +224,14 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useSetRowCallback: <
     Parameter,
     TableId extends TableIdFromSchema<Schemas[0]>,
-    Row extends RowFromSchema<Schemas[0], TableId, true> = RowFromSchema<
-      Schemas[0],
-      TableId,
-      true
-    >,
+    SetRow = Row<Schemas[0], TableId, true>,
   >(
     tableId: TableId,
     rowId: Id,
-    getRow: (parameter: Parameter, store: Store<Schemas>) => Row,
+    getRow: (parameter: Parameter, store: Store<Schemas>) => SetRow,
     getRowDeps?: React.DependencyList,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
-    then?: (store: Store<Schemas>, row: Row) => void,
+    then?: (store: Store<Schemas>, row: SetRow) => void,
     thenDeps?: React.DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
@@ -264,17 +239,13 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useAddRowCallback: <
     Parameter,
     TableId extends TableIdFromSchema<Schemas[0]>,
-    Row extends RowFromSchema<Schemas[0], TableId, true> = RowFromSchema<
-      Schemas[0],
-      TableId,
-      true
-    >,
+    AddRow = Row<Schemas[0], TableId, true>,
   >(
     tableId: TableId,
-    getRow: (parameter: Parameter, store: Store<Schemas>) => Row,
+    getRow: (parameter: Parameter, store: Store<Schemas>) => AddRow,
     getRowDeps?: React.DependencyList,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
-    then?: (rowId: Id | undefined, store: Store<Schemas>, row: Row) => void,
+    then?: (rowId: Id | undefined, store: Store<Schemas>, row: AddRow) => void,
     thenDeps?: React.DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
@@ -282,18 +253,17 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useSetPartialRowCallback: <
     Parameter,
     TableId extends TableIdFromSchema<Schemas[0]>,
-    Row extends RowFromSchema<Schemas[0], TableId, true> = RowFromSchema<
-      Schemas[0],
-      TableId,
-      true
-    >,
+    SetPartialRow = Row<Schemas[0], TableId, true>,
   >(
     tableId: TableId,
     rowId: Id,
-    getPartialRow: (parameter: Parameter, store: Store<Schemas>) => Row,
+    getPartialRow: (
+      parameter: Parameter,
+      store: Store<Schemas>,
+    ) => SetPartialRow,
     getPartialRowDeps?: React.DependencyList,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
-    then?: (store: Store<Schemas>, partialRow: Row) => void,
+    then?: (store: Store<Schemas>, partialRow: SetPartialRow) => void,
     thenDeps?: React.DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
@@ -302,52 +272,41 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     Parameter,
     TableId extends TableIdFromSchema<Schemas[0]>,
     CellId extends CellIdFromSchema<Schemas[0], TableId>,
-    Cell extends CellFromSchema<Schemas[0], TableId, CellId> = CellFromSchema<
-      Schemas[0],
-      TableId,
-      CellId
-    >,
-    MapCell extends (cell: Cell | undefined) => Cell = (
-      cell: Cell | undefined,
-    ) => Cell,
+    SetOrMapCell =
+      | Cell<Schemas[0], TableId, CellId>
+      | MapCell<Schemas[0], TableId, CellId>,
   >(
     tableId: TableId,
     rowId: Id,
     cellId: CellId,
-    getCell: (parameter: Parameter, store: Store<Schemas>) => Cell | MapCell,
+    getCell: (parameter: Parameter, store: Store<Schemas>) => SetOrMapCell,
     getCellDeps?: React.DependencyList,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
-    then?: (store: Store<Schemas>, cell: Cell | MapCell) => void,
+    then?: (store: Store<Schemas>, cell: SetOrMapCell) => void,
     thenDeps?: React.DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
   /// useSetValuesCallback
-  useSetValuesCallback: <
-    Parameter,
-    Values extends ValuesFromSchema<Schemas[1], true> = ValuesFromSchema<
-      Schemas[1],
-      true
-    >,
-  >(
-    getValues: (parameter: Parameter, store: Store<Schemas>) => Values,
+  useSetValuesCallback: <Parameter, SetValues = Values<Schemas[1], true>>(
+    getValues: (parameter: Parameter, store: Store<Schemas>) => SetValues,
     getValuesDeps?: React.DependencyList,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
-    then?: (store: Store<Schemas>, values: Values) => void,
+    then?: (store: Store<Schemas>, values: SetValues) => void,
     thenDeps?: React.DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
   /// useSetPartialValuesCallback
   useSetPartialValuesCallback: <
     Parameter,
-    Values extends ValuesFromSchema<Schemas[1], true> = ValuesFromSchema<
-      Schemas[1],
-      true
-    >,
+    SetPartialValues = Values<Schemas[1], true>,
   >(
-    getPartialValues: (parameter: Parameter, store: Store<Schemas>) => Values,
+    getPartialValues: (
+      parameter: Parameter,
+      store: Store<Schemas>,
+    ) => SetPartialValues,
     getPartialValuesDeps?: React.DependencyList,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
-    then?: (store: Store<Schemas>, partialValues: Values) => void,
+    then?: (store: Store<Schemas>, partialValues: SetPartialValues) => void,
     thenDeps?: React.DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
@@ -355,19 +314,13 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useSetValueCallback: <
     Parameter,
     ValueId extends ValueIdFromSchema<Schemas[1]>,
-    Value extends ValueFromSchema<Schemas[1], ValueId> = ValueFromSchema<
-      Schemas[1],
-      ValueId
-    >,
-    MapValue extends (value: Value | undefined) => Value = (
-      value: Value | undefined,
-    ) => Value,
+    SetOrMapValue = Value<Schemas[1], ValueId> | MapValue<Schemas[1], ValueId>,
   >(
     valueId: ValueId,
-    getValue: (parameter: Parameter, store: Store<Schemas>) => Value | MapValue,
+    getValue: (parameter: Parameter, store: Store<Schemas>) => SetOrMapValue,
     getValueDeps?: React.DependencyList,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
-    then?: (store: Store<Schemas>, value: Value) => void,
+    then?: (store: Store<Schemas>, value: SetOrMapValue) => void,
     thenDeps?: React.DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
@@ -696,7 +649,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useResultTable: (
     queryId: Id,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
-  ) => Table;
+  ) => ResultTable;
 
   /// useResultRowIds
   useResultRowIds: (
@@ -719,7 +672,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     queryId: Id,
     rowId: Id,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
-  ) => Row;
+  ) => ResultRow;
 
   /// useResultCellIds
   useResultCellIds: (
@@ -734,7 +687,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     rowId: Id,
     cellId: Id,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
-  ) => Cell | undefined;
+  ) => ResultCell | undefined;
 
   /// useResultTableListener
   useResultTableListener: (
