@@ -196,7 +196,7 @@ storeWithSchemas.forEachTable((tableId, forEachRow) => {
       });
       forEachCell(() => null);
     });
-    forEachRow((rowId) => {
+    forEachRow((rowId, ..._) => {
       rowId as string;
     });
     forEachRow(() => null);
@@ -432,6 +432,48 @@ storeWithSchemas.addRowIdsListener('t1', (store) => {
 });
 storeWithSchemas.addRowIdsListener('t1', () => null);
 storeWithSchemas.addRowIdsListener('t2', () => null); // !
+
+storeWithSchemas.addSortedRowIdsListener(
+  't1',
+  'c1',
+  true,
+  0,
+  10,
+  (store, tableId) => {
+    store.getTables().t1;
+    tableId == 't1';
+    store.getTables().t2; // !
+    tableId == 't0'; // !
+    tableId == 't2'; // !
+  },
+);
+storeWithSchemas.addSortedRowIdsListener(
+  't1',
+  'c2', // !
+  true,
+  0,
+  10,
+  (store, tableId) => {
+    store.getTables().t1;
+    tableId == 't1';
+    tableId == 't0';
+    store.getTables().t2; // !
+    tableId == 't2'; // !
+  },
+);
+storeWithSchemas.addSortedRowIdsListener('t1', 'c1', true, 0, 10, (store) => {
+  store.getTables().t1;
+  store.getTables().t2; // !
+});
+storeWithSchemas.addSortedRowIdsListener('t1', 'c1', true, 0, 10, () => null);
+storeWithSchemas.addSortedRowIdsListener(
+  't2', // !
+  undefined,
+  true,
+  0,
+  10,
+  () => null,
+);
 
 storeWithSchemas.addRowListener(
   't1',
