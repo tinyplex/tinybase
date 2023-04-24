@@ -1,7 +1,7 @@
 /// checkpoints
 
 import {Id, IdOrNull, Ids} from './common.d';
-import {NoSchemas, OptionalSchemas, Store} from './store.d';
+import {OptionalSchemas, Store} from './store.d';
 
 /// CheckpointIds
 export type CheckpointIds = [Ids, Id | undefined, Ids];
@@ -10,14 +10,15 @@ export type CheckpointIds = [Ids, Id | undefined, Ids];
 export type CheckpointCallback = (checkpointId: Id, label?: string) => void;
 
 /// CheckpointIdsListener
-export type CheckpointIdsListener<
-  in out Schemas extends OptionalSchemas = NoSchemas,
-> = (checkpoints: Checkpoints<Schemas>) => void;
+export type CheckpointIdsListener<Schemas extends OptionalSchemas> = (
+  checkpoints: Checkpoints<Schemas>,
+) => void;
 
 /// CheckpointListener
-export type CheckpointListener<
-  in out Schemas extends OptionalSchemas = NoSchemas,
-> = (checkpoints: Checkpoints<Schemas>, checkpointId: Id) => void;
+export type CheckpointListener<Schemas extends OptionalSchemas> = (
+  checkpoints: Checkpoints<Schemas>,
+  checkpointId: Id,
+) => void;
 
 /// CheckpointsListenerStats
 export type CheckpointsListenerStats = {
@@ -28,9 +29,7 @@ export type CheckpointsListenerStats = {
 };
 
 /// Checkpoints
-export interface Checkpoints<
-  in out Schemas extends OptionalSchemas = NoSchemas,
-> {
+export interface Checkpoints<in out Schemas extends OptionalSchemas> {
   /// Checkpoints.setSize
   setSize(size: number): Checkpoints<Schemas>;
 

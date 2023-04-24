@@ -1,7 +1,6 @@
 /// tools
 
 import {
-  NoSchemas,
   OptionalSchemas,
   OptionalTablesSchema,
   OptionalValuesSchema,
@@ -48,7 +47,7 @@ export type StoreStatsRowDetail = {
 };
 
 /// Tools
-export interface Tools<in out Schemas extends OptionalSchemas = NoSchemas> {
+export interface Tools<in out Schemas extends OptionalSchemas> {
   /* eslint-disable max-len */
   /// getStoreStats
   getStoreStats(detail?: boolean): StoreStats;

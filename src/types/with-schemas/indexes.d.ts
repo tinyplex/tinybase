@@ -3,7 +3,6 @@
 import {CellIdFromSchema, TableIdFromSchema} from './internal/store';
 import {
   GetCell,
-  NoSchemas,
   NoTablesSchema,
   OptionalSchemas,
   OptionalTablesSchema,
@@ -33,14 +32,17 @@ export type SliceCallback<
 ) => void;
 
 /// SliceIdsListener
-export type SliceIdsListener<
-  in out Schemas extends OptionalSchemas = NoSchemas,
-> = (indexes: Indexes<Schemas>, indexId: Id) => void;
+export type SliceIdsListener<Schemas extends OptionalSchemas> = (
+  indexes: Indexes<Schemas>,
+  indexId: Id,
+) => void;
 
 /// SliceRowIdsListener
-export type SliceRowIdsListener<
-  in out Schemas extends OptionalSchemas = NoSchemas,
-> = (indexes: Indexes<Schemas>, indexId: Id, sliceId: Id) => void;
+export type SliceRowIdsListener<Schemas extends OptionalSchemas> = (
+  indexes: Indexes<Schemas>,
+  indexId: Id,
+  sliceId: Id,
+) => void;
 
 /// IndexesListenerStats
 export type IndexesListenerStats = {
@@ -51,7 +53,7 @@ export type IndexesListenerStats = {
 };
 
 /// Indexes
-export interface Indexes<in out Schemas extends OptionalSchemas = NoSchemas> {
+export interface Indexes<in out Schemas extends OptionalSchemas> {
   /// Indexes.setIndexDefinition
   setIndexDefinition<
     TableId extends TableIdFromSchema<Schemas[0]>,
@@ -102,13 +104,16 @@ export interface Indexes<in out Schemas extends OptionalSchemas = NoSchemas> {
   getSliceRowIds(indexId: Id, sliceId: Id): Ids;
 
   /// Indexes.addSliceIdsListener
-  addSliceIdsListener(indexId: IdOrNull, listener: SliceIdsListener): Id;
+  addSliceIdsListener(
+    indexId: IdOrNull,
+    listener: SliceIdsListener<Schemas>,
+  ): Id;
 
   /// Indexes.addSliceRowIdsListener
   addSliceRowIdsListener(
     indexId: IdOrNull,
     sliceId: IdOrNull,
-    listener: SliceRowIdsListener,
+    listener: SliceRowIdsListener<Schemas>,
   ): Id;
 
   /// Indexes.delListener

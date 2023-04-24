@@ -1,6 +1,6 @@
 /// persisters
 
-import {NoSchemas, OptionalSchemas, Store, Tables, Values} from './store.d';
+import {OptionalSchemas, Store, Tables, Values} from './store.d';
 import {Callback} from './common.d';
 
 /// PersisterStats
@@ -12,7 +12,7 @@ export type PersisterStats = {
 };
 
 /// Persister
-export interface Persister<in out Schemas extends OptionalSchemas = NoSchemas> {
+export interface Persister<in out Schemas extends OptionalSchemas> {
   /// Persister.load
   load(
     initialTables?: Tables<Schemas[0], true>,

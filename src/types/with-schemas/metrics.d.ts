@@ -1,7 +1,7 @@
 /// metrics
 
 import {CellIdFromSchema, TableIdFromSchema} from './internal/store';
-import {GetCell, NoSchemas, OptionalSchemas, Store} from './store.d';
+import {GetCell, OptionalSchemas, Store} from './store.d';
 import {Id, IdOrNull, Ids} from './common.d';
 
 /// Metric
@@ -36,7 +36,7 @@ export type MetricAggregateReplace = (
 ) => Metric | undefined;
 
 /// MetricListener
-export type MetricListener<in out Schemas extends OptionalSchemas> = (
+export type MetricListener<Schemas extends OptionalSchemas> = (
   metrics: Metrics<Schemas>,
   metricId: Id,
   newMetric: Metric | undefined,
@@ -50,7 +50,7 @@ export type MetricsListenerStats = {
 };
 
 /// Metrics
-export interface Metrics<in out Schemas extends OptionalSchemas = NoSchemas> {
+export interface Metrics<in out Schemas extends OptionalSchemas> {
   /// Metrics.setMetricDefinition
   setMetricDefinition<
     TableId extends TableIdFromSchema<Schemas[0]>,

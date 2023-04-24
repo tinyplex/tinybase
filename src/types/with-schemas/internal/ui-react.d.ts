@@ -376,13 +376,13 @@ export type ProviderProps<Schemas extends OptionalSchemas> = {
   /// ProviderProps.indexes
   readonly indexes?: Indexes<Schemas>;
   /// ProviderProps.indexesById
-  readonly indexesById?: {[indexesId: Id]: Indexes};
+  readonly indexesById?: {[indexesId: Id]: Indexes<Schemas>};
   /// ProviderProps.relationships
   readonly relationships?: Relationships<Schemas>;
   /// ProviderProps.relationshipsById
   readonly relationshipsById?: {[relationshipsId: Id]: Relationships<Schemas>};
   /// ProviderProps.queries
-  readonly queries?: Queries;
+  readonly queries?: Queries<Schemas>;
   /// ProviderProps.queriesById
   readonly queriesById?: {[queriesId: Id]: Queries<Schemas>};
   /// ProviderProps.checkpoints
