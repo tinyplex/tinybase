@@ -581,11 +581,15 @@ storeWithSchemas.addCellListener(
   't1',
   'r1',
   'c1',
-  (store, tableId, rowId, cellId) => {
+  (store, tableId, rowId, cellId, newCell, oldCell) => {
     store.getTables().t1;
     tableId == 't1';
     rowId == 'r1';
     cellId == 'c1';
+    newCell as number;
+    oldCell as number;
+    newCell as string; // !
+    oldCell as string; // !
     store.getTables().t2; // !
     tableId == 't0'; // !
     tableId == 't2'; // !
@@ -598,12 +602,28 @@ storeWithSchemas.addCellListener(
   't1',
   'r1',
   null,
-  (store, tableId, rowId, cellId) => {
+  (store, tableId, rowId, cellId, newCell, oldCell) => {
     store.getTables().t1;
     tableId == 't1';
     rowId == 'r1';
     cellId == 'c1';
     cellId == 'c1d';
+    newCell as number;
+    oldCell as number;
+    newCell as string;
+    oldCell as string;
+    if (cellId == 'c1') {
+      newCell as number;
+      oldCell as number;
+      newCell as string; // !
+      oldCell as string; // !
+    }
+    if (cellId == 'c1d') {
+      newCell as string;
+      oldCell as string;
+      newCell as number; // !
+      oldCell as number; // !
+    }
     store.getTables().t2; // !
     tableId == 't0'; // !
     tableId == 't2'; // !
@@ -667,7 +687,7 @@ storeWithSchemas.addCellListener(
   null,
   'r1',
   null,
-  (store, tableId, rowId, cellId) => {
+  (store, tableId, rowId, cellId, newCell, oldCell) => {
     store.getTables().t1;
     tableId == 't1';
     tableId == 't0';
@@ -675,10 +695,36 @@ storeWithSchemas.addCellListener(
     cellId == 'c1';
     cellId == 'c1d';
     cellId == 'c0';
+    newCell as number;
+    oldCell as number;
+    newCell as string;
+    oldCell as string;
     if (tableId == 't1') {
       cellId == 'c1';
       cellId == 'c1d';
+      newCell as number;
+      oldCell as number;
+      newCell as string;
+      oldCell as string;
       cellId == 'c0'; // !
+    }
+    if (tableId == 't0') {
+      newCell as number;
+      oldCell as number;
+      newCell as string; // !
+      oldCell as string; // !
+    }
+    if (cellId == 'c1') {
+      newCell as number;
+      oldCell as number;
+      newCell as string; // !
+      oldCell as string; // !
+    }
+    if (cellId == 'c1d') {
+      newCell as string;
+      oldCell as string;
+      newCell as number; // !
+      oldCell as number; // !
     }
     store.getTables().t2; // !
     tableId == 't2'; // !
@@ -756,6 +802,70 @@ storeWithSchemas.addCellListener('t1', 'r1', 'c1', () => null);
 storeWithSchemas.addCellListener('t1', 'r2', 'c2', () => null); // !
 storeWithSchemas.addCellListener(null, 'r2', 'c2', () => null); // !
 storeWithSchemas.addCellListener('t2', 'r2', 'c1', () => null); // !
+
+storeWithSchemas.addValuesListener((store, getValueChange) => {
+  store.getValues().v1;
+  getValueChange?.('v1') as [true, number, number];
+  store.getValues().v2; // !
+  getValueChange?.('v1') as [true, number, string]; // !
+  getValueChange?.('v1') as [true, string, number]; // !
+});
+storeWithSchemas.addValuesListener((store) => {
+  store.getValues().v1;
+  store.getValues().v2; // !
+});
+storeWithSchemas.addValuesListener(() => null);
+
+storeWithSchemas.addValueIdsListener((store) => {
+  store.getValues().v1;
+  store.getValues().v2; // !
+});
+storeWithSchemas.addValueIdsListener(() => null);
+
+storeWithSchemas.addValueListener(
+  'v1',
+  (store, valueId, newValue, oldValue) => {
+    store.getValues().v1;
+    valueId == 'v1';
+    newValue as number;
+    oldValue as number;
+    store.getValues().v2; // !
+    valueId == 'v2'; // !
+    newValue as string; // !
+    oldValue as string; // !
+  },
+);
+storeWithSchemas.addValueListener(
+  null,
+  (store, valueId, newValue, oldValue) => {
+    store.getValues().v1;
+    valueId == 'v1';
+    valueId == 'v1d';
+    newValue as number;
+    oldValue as number;
+    newValue as string;
+    oldValue as string;
+    if (valueId == 'v1') {
+      newValue as number;
+      oldValue as number;
+      newValue as string; // !
+      oldValue as string; // !
+    }
+    if (valueId == 'v1d') {
+      newValue as string;
+      oldValue as string;
+      newValue as number; // !
+      oldValue as number; // !
+    }
+    store.getValues().v2; // !
+    valueId == 'v2'; // !
+  },
+);
+storeWithSchemas.addValueListener(null, (store, ..._) => {
+  store.getValues().v1;
+  store.getValues().v2; // !
+});
+storeWithSchemas.addValueListener('v2', () => null); // !
 
 //--
 

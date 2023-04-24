@@ -402,15 +402,15 @@ export type ValueListener<
   Params4 extends any[] = Truncate<Params5>,
   Params3 extends any[] = Truncate<Params4>,
   Params2 extends any[] = Truncate<Params3>,
-  Params1 extends any[] = Truncate<Params2>,
+  //  Params1 extends any[] = Truncate<Params2>,
 > = Params extends any
   ?
       | ((...params: Params5) => void)
       | ((...params: Params4) => void)
       | ((...params: Params3) => void)
       | ((...params: Params2) => void)
-      | ((...params: Params1) => void)
-  : never;
+  : // | ((...params: Params1) => void)
+    never;
 
 /// InvalidCellListener
 export type InvalidCellListener<Schemas extends OptionalSchemas> = (

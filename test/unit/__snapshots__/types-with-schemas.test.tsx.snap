@@ -1241,371 +1241,574 @@ exports[`Types with schemas 177`] = `
 
 exports[`Types with schemas 178`] = `
 [
-  "588:22",
-  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
+  "590:4",
+  "Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 179`] = `
 [
-  "589:4",
-  "This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap.",
+  "591:4",
+  "Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 180`] = `
 [
-  "590:4",
-  "This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap.",
+  "592:22",
+  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
 ]
 `;
 
 exports[`Types with schemas 181`] = `
 [
-  "591:4",
-  "This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap.",
+  "593:4",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 182`] = `
 [
-  "592:4",
-  "This comparison appears to be unintentional because the types '"c1"' and '"c1d"' have no overlap.",
+  "594:4",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 183`] = `
 [
-  "593:4",
-  "This comparison appears to be unintentional because the types '"c1"' and '"c2"' have no overlap.",
+  "595:4",
+  "This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 184`] = `
 [
-  "606:22",
-  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
+  "596:4",
+  "This comparison appears to be unintentional because the types '"c1"' and '"c1d"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 185`] = `
 [
-  "607:4",
-  "This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap.",
+  "597:4",
+  "This comparison appears to be unintentional because the types '"c1"' and '"c2"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 186`] = `
 [
-  "608:4",
-  "This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap.",
+  "617:6",
+  "Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 187`] = `
 [
-  "609:4",
-  "This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap.",
+  "618:6",
+  "Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 188`] = `
 [
-  "610:4",
-  "This comparison appears to be unintentional because the types '"c1" | "c1d"' and '"c2"' have no overlap.",
+  "623:6",
+  "Conversion of type 'string' to type 'number' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 189`] = `
 [
-  "623:22",
-  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
+  "624:6",
+  "Conversion of type 'string' to type 'number' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 190`] = `
 [
-  "624:4",
-  "This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap.",
+  "626:22",
+  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
 ]
 `;
 
 exports[`Types with schemas 191`] = `
 [
-  "625:4",
-  "This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap.",
+  "627:4",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 192`] = `
 [
-  "626:4",
-  "This comparison appears to be unintentional because the types '"c1"' and '"c1d"' have no overlap.",
+  "628:4",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 193`] = `
 [
-  "627:4",
-  "This comparison appears to be unintentional because the types '"c1"' and '"c2"' have no overlap.",
+  "629:4",
+  "This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 194`] = `
 [
-  "641:22",
-  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
+  "630:4",
+  "This comparison appears to be unintentional because the types '"c1" | "c1d"' and '"c2"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 195`] = `
 [
-  "642:4",
-  "This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap.",
+  "643:22",
+  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
 ]
 `;
 
 exports[`Types with schemas 196`] = `
 [
-  "643:4",
-  "This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap.",
+  "644:4",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 197`] = `
 [
-  "644:4",
-  "This comparison appears to be unintentional because the types '"c1" | "c1d"' and '"c2"' have no overlap.",
+  "645:4",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 198`] = `
 [
-  "656:22",
-  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
+  "646:4",
+  "This comparison appears to be unintentional because the types '"c1"' and '"c1d"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 199`] = `
 [
-  "657:4",
-  "This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap.",
+  "647:4",
+  "This comparison appears to be unintentional because the types '"c1"' and '"c2"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 200`] = `
 [
-  "658:4",
-  "This comparison appears to be unintentional because the types '"c1"' and '"c1d"' have no overlap.",
+  "661:22",
+  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
 ]
 `;
 
 exports[`Types with schemas 201`] = `
 [
-  "659:4",
-  "This comparison appears to be unintentional because the types '"c1"' and '"c0"' have no overlap.",
+  "662:4",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 202`] = `
 [
-  "660:4",
+  "663:4",
   "This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 203`] = `
 [
-  "661:4",
-  "This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap.",
+  "664:4",
+  "This comparison appears to be unintentional because the types '"c1" | "c1d"' and '"c2"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 204`] = `
 [
-  "662:4",
-  "This comparison appears to be unintentional because the types '"c1"' and '"c2"' have no overlap.",
+  "676:22",
+  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
 ]
 `;
 
 exports[`Types with schemas 205`] = `
 [
-  "680:6",
-  "This comparison appears to be unintentional because the types '"c1" | "c1d"' and '"c0"' have no overlap.",
+  "677:4",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 206`] = `
 [
-  "682:22",
-  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
+  "678:4",
+  "This comparison appears to be unintentional because the types '"c1"' and '"c1d"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 207`] = `
 [
-  "683:4",
-  "This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap.",
+  "679:4",
+  "This comparison appears to be unintentional because the types '"c1"' and '"c0"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 208`] = `
 [
-  "684:4",
-  "This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap.",
+  "680:4",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 209`] = `
 [
-  "685:4",
-  "This comparison appears to be unintentional because the types '"c0" | "c1" | "c1d"' and '"c2"' have no overlap.",
+  "681:4",
+  "This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 210`] = `
 [
-  "698:22",
-  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
+  "682:4",
+  "This comparison appears to be unintentional because the types '"c1"' and '"c2"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 211`] = `
 [
-  "699:4",
-  "This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap.",
+  "708:6",
+  "This comparison appears to be unintentional because the types '"c1" | "c1d"' and '"c0"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 212`] = `
 [
-  "700:4",
-  "This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap.",
+  "713:6",
+  "Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 213`] = `
 [
-  "701:4",
-  "This comparison appears to be unintentional because the types '"c1"' and '"c1d"' have no overlap.",
+  "714:6",
+  "Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 214`] = `
 [
-  "702:4",
-  "This comparison appears to be unintentional because the types '"c1"' and '"c0"' have no overlap.",
+  "719:6",
+  "Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 215`] = `
 [
-  "703:4",
-  "This comparison appears to be unintentional because the types '"c1"' and '"c2"' have no overlap.",
+  "720:6",
+  "Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 216`] = `
 [
-  "722:6",
-  "This comparison appears to be unintentional because the types '"c1" | "c1d"' and '"c0"' have no overlap.",
+  "725:6",
+  "Conversion of type 'string' to type 'number' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 217`] = `
 [
-  "724:22",
-  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
+  "726:6",
+  "Conversion of type 'string' to type 'number' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
 ]
 `;
 
 exports[`Types with schemas 218`] = `
 [
-  "725:4",
-  "This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap.",
+  "728:22",
+  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
 ]
 `;
 
 exports[`Types with schemas 219`] = `
 [
-  "726:4",
-  "This comparison appears to be unintentional because the types '"c0" | "c1" | "c1d"' and '"c2"' have no overlap.",
+  "729:4",
+  "This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 220`] = `
 [
-  "737:22",
-  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
+  "730:4",
+  "This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 221`] = `
 [
-  "738:4",
-  "This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap.",
+  "731:4",
+  "This comparison appears to be unintentional because the types '"c0" | "c1" | "c1d"' and '"c2"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 222`] = `
 [
-  "739:4",
-  "This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap.",
+  "744:22",
+  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
 ]
 `;
 
 exports[`Types with schemas 223`] = `
 [
-  "740:4",
-  "This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap.",
+  "745:4",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 224`] = `
 [
-  "746:20",
-  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
+  "746:4",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 225`] = `
 [
-  "747:2",
-  "This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap.",
+  "747:4",
+  "This comparison appears to be unintentional because the types '"c1"' and '"c1d"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 226`] = `
 [
-  "748:2",
-  "This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap.",
+  "748:4",
+  "This comparison appears to be unintentional because the types '"c1"' and '"c0"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 227`] = `
 [
-  "752:20",
-  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
+  "749:4",
+  "This comparison appears to be unintentional because the types '"c1"' and '"c2"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 228`] = `
 [
-  "755:45",
-  "Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d" | null'.",
+  "768:6",
+  "This comparison appears to be unintentional because the types '"c1" | "c1d"' and '"c0"' have no overlap.",
 ]
 `;
 
 exports[`Types with schemas 229`] = `
 [
-  "756:45",
-  "Argument of type '"c2"' is not assignable to parameter of type '"c0" | "c1" | "c1d" | null'.",
+  "770:22",
+  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
 ]
 `;
 
 exports[`Types with schemas 230`] = `
 [
-  "757:33",
+  "771:4",
+  "This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 231`] = `
+[
+  "772:4",
+  "This comparison appears to be unintentional because the types '"c0" | "c1" | "c1d"' and '"c2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 232`] = `
+[
+  "783:22",
+  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
+]
+`;
+
+exports[`Types with schemas 233`] = `
+[
+  "784:4",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 234`] = `
+[
+  "785:4",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 235`] = `
+[
+  "786:4",
+  "This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 236`] = `
+[
+  "792:20",
+  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
+]
+`;
+
+exports[`Types with schemas 237`] = `
+[
+  "793:2",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 238`] = `
+[
+  "794:2",
+  "This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 239`] = `
+[
+  "798:20",
+  "Property 't2' does not exist on type 'TablesFromSchema<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'.",
+]
+`;
+
+exports[`Types with schemas 240`] = `
+[
+  "801:45",
+  "Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d" | null'.",
+]
+`;
+
+exports[`Types with schemas 241`] = `
+[
+  "802:45",
+  "Argument of type '"c2"' is not assignable to parameter of type '"c0" | "c1" | "c1d" | null'.",
+]
+`;
+
+exports[`Types with schemas 242`] = `
+[
+  "803:33",
   "Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1" | null'.",
+]
+`;
+
+exports[`Types with schemas 243`] = `
+[
+  "808:20",
+  "Property 'v2' does not exist on type 'ValuesFromSchema<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }>'.",
+]
+`;
+
+exports[`Types with schemas 244`] = `
+[
+  "809:2",
+  "Conversion of type 'ValueChange<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1", number | undefined> | undefined' to type '[true, number, string]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+]
+`;
+
+exports[`Types with schemas 245`] = `
+[
+  "810:2",
+  "Conversion of type 'ValueChange<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1", number | undefined> | undefined' to type '[true, string, number]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+]
+`;
+
+exports[`Types with schemas 246`] = `
+[
+  "814:20",
+  "Property 'v2' does not exist on type 'ValuesFromSchema<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }>'.",
+]
+`;
+
+exports[`Types with schemas 247`] = `
+[
+  "820:20",
+  "Property 'v2' does not exist on type 'ValuesFromSchema<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }>'.",
+]
+`;
+
+exports[`Types with schemas 248`] = `
+[
+  "831:22",
+  "Property 'v2' does not exist on type 'ValuesFromSchema<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }>'.",
+]
+`;
+
+exports[`Types with schemas 249`] = `
+[
+  "832:4",
+  "This comparison appears to be unintentional because the types '"v1"' and '"v2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 250`] = `
+[
+  "833:4",
+  "Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+]
+`;
+
+exports[`Types with schemas 251`] = `
+[
+  "834:4",
+  "Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+]
+`;
+
+exports[`Types with schemas 252`] = `
+[
+  "850:6",
+  "Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+]
+`;
+
+exports[`Types with schemas 253`] = `
+[
+  "851:6",
+  "Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+]
+`;
+
+exports[`Types with schemas 254`] = `
+[
+  "856:6",
+  "Conversion of type 'string' to type 'number' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+]
+`;
+
+exports[`Types with schemas 255`] = `
+[
+  "857:6",
+  "Conversion of type 'string' to type 'number' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.",
+]
+`;
+
+exports[`Types with schemas 256`] = `
+[
+  "859:22",
+  "Property 'v2' does not exist on type 'ValuesFromSchema<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }>'.",
+]
+`;
+
+exports[`Types with schemas 257`] = `
+[
+  "860:4",
+  "This comparison appears to be unintentional because the types '"v1" | "v1d"' and '"v2"' have no overlap.",
+]
+`;
+
+exports[`Types with schemas 258`] = `
+[
+  "865:20",
+  "Property 'v2' does not exist on type 'ValuesFromSchema<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }>'.",
+]
+`;
+
+exports[`Types with schemas 259`] = `
+[
+  "867:34",
+  "Argument of type '"v2"' is not assignable to parameter of type '"v1" | "v1d" | null'.",
 ]
 `;
