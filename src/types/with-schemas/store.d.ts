@@ -115,82 +115,62 @@ export type ValueOrUndefined<
 
 /// TableCallback
 export type TableCallback<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId = TableIdFromSchema<Schema>,
-  Params2 extends any[] = TableId extends TableIdFromSchema<Schema>
-    ?
-        | [TableId, (rowCallback: RowCallback<Schema, TableId>) => void]
-        | [never, never]
+  Schema extends OptionalTablesSchema,
+  Params extends any[] = TableIdFromSchema<Schema> extends infer TableId
+    ? TableId extends TableIdFromSchema<Schema>
+      ? [
+          tableId: TableId,
+          forEachRow: (rowCallback: RowCallback<Schema, TableId>) => void,
+        ]
+      : never
     : never,
+  Params2 extends any[] = Params | [tableId: never, forEachRow: never],
   Params1 extends any[] = Truncate<Params2>,
 > = ((...params: Params2) => void) | ((...params: Params1) => void);
 
 /// RowCallback
 export type RowCallback<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-> = RowCallbackImpl<Schema, TableId>;
-
-export type RowCallbackImpl<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = Id,
+  Schema extends OptionalTablesSchema,
+  TableId extends TableIdFromSchema<Schema>,
   Params extends any[] = [
     rowId: Id,
     forEachCell: (cellCallback: CellCallback<Schema, TableId>) => void,
   ],
-  P2 extends any[] = Params | [rowId: never, forEachCell: never],
-  // P1 extends any[] = Truncate<P2>,
-> = Params extends any[]
-  ? (...params: P2) => void
-  : // | ((...params: P1) => void)
-    never;
-
-export type RowCallbackParams<
-  Schema extends OptionalTablesSchema,
-  TableId extends TableIdFromSchema<Schema>,
-> = [
-  rowId: Id,
-  forEachCell: (cellCallback: CellCallback<Schema, TableId>) => void,
-];
+  Params2 extends any[] = Params | [rowId: never, forEachCell: never],
+  // Params1 extends any[] = Truncate<Params2>,
+> = Params extends any[] ? (...params: Params2) => void : never;
+// | ((...params: Params1) => void)
 
 /// CellCallback
 export type CellCallback<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = Id,
-> = CellCallbackImpl<Schema, TableId>;
-
-export type CellCallbackImpl<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = Id,
-  Params extends any[] = CellCallbackParams<Schema, TableId>,
-  P2 extends any[] = Params | [cellId: never, cell: never],
-  P1 extends any[] = Truncate<P2>,
-> = Params extends any[]
-  ? ((...params: P2) => void) | ((...params: P1) => void)
-  : never;
-
-export type CellCallbackParams<
   Schema extends OptionalTablesSchema,
   TableId extends TableIdFromSchema<Schema>,
-  CellIds = CellIdFromSchema<Schema, TableId>,
-> = CellIds extends infer CellId
-  ? CellId extends CellIdFromSchema<Schema, TableId>
-    ? [cellId: CellId, cell: CellFromSchema<Schema, TableId, CellId>]
-    : never
+  Params extends any[] = CellIdFromSchema<Schema, TableId> extends infer CellId
+    ? CellId extends CellIdFromSchema<Schema, TableId>
+      ? [cellId: CellId, cell: CellFromSchema<Schema, TableId, CellId>]
+      : never
+    : never,
+  Params2 extends any[] = Params | [cellId: never, cell: never],
+  Params1 extends any[] = Truncate<Params2>,
+> = Params extends any[]
+  ? ((...params: Params2) => void) | ((...params: Params1) => void)
   : never;
 
 /// ValueCallback
 export type ValueCallback<
   Schema extends OptionalValuesSchema,
-  ValueId = ValueIdFromSchema<Schema>,
-  Params2 extends any[] = ValueId extends ValueIdFromSchema<Schema>
-    ? [ValueId, ValueFromSchema<Schema, ValueId>] | [never, never]
+  Params extends any[] = ValueIdFromSchema<Schema> extends infer ValueId
+    ? ValueId extends ValueIdFromSchema<Schema>
+      ?
+          | [valueId: ValueId, value: ValueFromSchema<Schema, ValueId>]
+          | [valueId: never, value: never]
+      : never
     : never,
+  Params2 extends any[] = Params | [valueId: never, value: never],
   Params1 extends any[] = Truncate<Params2>,
-> =
-  | ((...params: Params2) => void)
-  | ((...params: Params1) => void)
-  | (() => void);
+> = Params extends any[]
+  ? ((...params: Params2) => void) | ((...params: Params1) => void)
+  : never;
 
 /// MapCell
 export type MapCell<
@@ -234,65 +214,54 @@ export type DoRollback<
 ) => boolean;
 
 /// TransactionListener
-export type TransactionListener<
-  in out Schemas extends OptionalSchemas = NoSchemas,
-> = (
+export type TransactionListener<Schemas extends OptionalSchemas> = (
   store: Store<Schemas>,
   cellsTouched: boolean,
   valuesTouched: boolean,
 ) => void;
 
 /// TablesListener
-export type TablesListener<
-  in out Schemas extends OptionalSchemas = NoSchemas,
-  Schema extends OptionalTablesSchema = Schemas[0],
-> = (
+export type TablesListener<Schemas extends OptionalSchemas> = (
   store: Store<Schemas>,
-  getCellChange: GetCellChange<Schema> | undefined,
+  getCellChange: GetCellChange<Schemas[0]> | undefined,
 ) => void;
 
 /// TableIdsListener
-export type TableIdsListener<
-  in out Schemas extends OptionalSchemas = NoSchemas,
-> = (store: Store<Schemas>) => void;
+export type TableIdsListener<Schemas extends OptionalSchemas> = (
+  store: Store<Schemas>,
+) => void;
 
 /// TableListener
 export type TableListener<
-  in out Schemas extends OptionalSchemas = NoSchemas,
-  TableIdOrNull extends TableIdFromSchema<
-    Schemas[0]
-  > | null = TableIdFromSchema<Schemas[0]> | null,
-  TableId = TableIdOrNull extends null
-    ? TableIdFromSchema<Schemas[0]>
-    : TableIdOrNull,
-  Schema extends OptionalTablesSchema = Schemas[0],
+  Schemas extends OptionalSchemas,
+  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
 > = (
   store: Store<Schemas>,
-  tableId: TableId,
-  getCellChange: GetCellChange<Schema> | undefined,
+  tableId: TableIdOrNull extends null
+    ? TableIdFromSchema<Schemas[0]>
+    : TableIdOrNull,
+  getCellChange: GetCellChange<Schemas[0]> | undefined,
 ) => void;
 
 /// RowIdsListener
 export type RowIdsListener<
-  in out Schemas extends OptionalSchemas = NoSchemas,
-  TableIdOrNull extends TableIdFromSchema<
-    Schemas[0]
-  > | null = TableIdFromSchema<Schemas[0]> | null,
-  TableId = TableIdOrNull extends null
+  Schemas extends OptionalSchemas,
+  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+> = (
+  store: Store<Schemas>,
+  tableId: TableIdOrNull extends null
     ? TableIdFromSchema<Schemas[0]>
     : TableIdOrNull,
-> = (store: Store<Schemas>, tableId: TableId) => void;
+) => void;
 
 /// SortedRowIdsListener
 export type SortedRowIdsListener<
-  in out Schemas extends OptionalSchemas = NoSchemas,
-  TableId extends TableIdFromSchema<Schemas[0]> = TableIdFromSchema<Schemas[0]>,
-  CellId extends CellIdFromSchema<Schemas[0], TableId> | undefined =
-    | CellIdFromSchema<Schemas[0], TableId>
-    | undefined,
-  Descending extends boolean = boolean,
-  Offset extends number = number,
-  Limit extends number | undefined = number | undefined,
+  Schemas extends OptionalSchemas,
+  TableId extends TableIdFromSchema<Schemas[0]>,
+  CellId extends CellIdFromSchema<Schemas[0], TableId> | undefined,
+  Descending extends boolean,
+  Offset extends number,
+  Limit extends number | undefined,
 > = (
   store: Store<Schemas>,
   tableId: TableId,
@@ -305,159 +274,146 @@ export type SortedRowIdsListener<
 
 /// RowListener
 export type RowListener<
-  in out Schemas extends OptionalSchemas = NoSchemas,
-  TableIdOrNull extends TableIdFromSchema<
-    Schemas[0]
-  > | null = TableIdFromSchema<Schemas[0]> | null,
-  RowIdOrNull extends IdOrNull = IdOrNull,
-  TableId = TableIdOrNull extends null
-    ? TableIdFromSchema<Schemas[0]>
-    : TableIdOrNull,
-  RowId = RowIdOrNull extends null ? Id : RowIdOrNull,
-  Schema extends OptionalTablesSchema = Schemas[0],
+  Schemas extends OptionalSchemas,
+  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+  RowIdOrNull extends IdOrNull,
 > = (
   store: Store<Schemas>,
-  tableId: TableId,
-  rowId: RowId,
-  getCellChange: GetCellChange<Schema> | undefined,
+  tableId: TableIdOrNull extends null
+    ? TableIdFromSchema<Schemas[0]>
+    : TableIdOrNull,
+  rowId: RowIdOrNull extends null ? Id : RowIdOrNull,
+  getCellChange: GetCellChange<Schemas[0]> | undefined,
 ) => void;
 
 /// CellIdsListener
 export type CellIdsListener<
-  in out Schemas extends OptionalSchemas = NoSchemas,
-  TableIdOrNull extends TableIdFromSchema<
-    Schemas[0]
-  > | null = TableIdFromSchema<Schemas[0]> | null,
-  RowIdOrNull extends IdOrNull = null,
-  TableId = TableIdOrNull extends null
+  Schemas extends OptionalSchemas,
+  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+  RowIdOrNull extends IdOrNull,
+> = (
+  store: Store<Schemas>,
+  tableId: TableIdOrNull extends null
     ? TableIdFromSchema<Schemas[0]>
     : TableIdOrNull,
-  RowId = RowIdOrNull extends null ? Id : RowIdOrNull,
-> = (store: Store<Schemas>, tableId: TableId, rowId: RowId) => void;
-
-export type CellListenerParams2<
-  Schemas extends OptionalSchemas,
-  TableId extends TableIdFromSchema<Schemas[0]>,
-  RowIdOrNull extends IdOrNull,
-  CellIdOrNull extends IdOrNull,
-  CellIdOrIds = CellIdOrNull extends null
-    ? CellIdFromSchema<Schemas[0], TableId>
-    : CellIdOrNull,
-> = CellIdOrIds extends infer CellId
-  ? CellId extends CellIdFromSchema<Schemas[0], TableId>
-    ? [
-        store: Store<Schemas>,
-        tableId: TableId,
-        rowId: RowIdOrNull extends null ? Id : RowIdOrNull,
-        cellId: CellId,
-        newCell: CellFromSchema<Schemas[0], TableId, CellId>,
-        oldCell: CellFromSchema<Schemas[0], TableId, CellId>,
-        getCellChange: GetCellChange<Schemas[0]> | undefined,
-      ]
-    : never
-  : never;
-
-export type NeverParams = [
-  store: never,
-  tableId: never,
-  rowId: never,
-  cellId: never,
-  newCell: never,
-  oldCell: never,
-  getCellChange: never,
-];
-
-export type CellListenerParams<
-  Schemas extends OptionalSchemas,
-  TableIdOrNull extends IdOrNull,
-  RowIdOrNull extends IdOrNull,
-  CellIdOrNull extends IdOrNull,
-  TableIdOrIds = TableIdOrNull extends null
-    ? TableIdFromSchema<Schemas[0]>
-    : TableIdOrNull,
-> = TableIdOrIds extends infer TableId
-  ? TableId extends TableIdFromSchema<Schemas[0]>
-    ? CellListenerParams2<Schemas, TableId, RowIdOrNull, CellIdOrNull>
-    : never
-  : never;
-
-export type CellListenerImpl<
-  Schemas extends OptionalSchemas = NoSchemas,
-  TableIdOrNull extends IdOrNull = IdOrNull,
-  RowIdOrNull extends IdOrNull = IdOrNull,
-  CellIdOrNull extends IdOrNull = IdOrNull,
-  P7 extends any[] =
-    | CellListenerParams<Schemas, TableIdOrNull, RowIdOrNull, CellIdOrNull>
-    | NeverParams,
-  P6 extends any[] = Truncate<P7>,
-  P5 extends any[] = Truncate<P6>,
-  P4 extends any[] = Truncate<P5>,
-  // P3 extends any[] = Truncate<P4>,
-  // P2 extends any[] = Truncate<P3>,
-  // P1 extends any[] = Truncate<P2>,
-> = CellListenerParams<
-  Schemas,
-  TableIdOrNull,
-  RowIdOrNull,
-  CellIdOrNull
-> extends any
-  ?
-      | ((...params: P7) => void)
-      | ((...params: P6) => void)
-      | ((...params: P5) => void)
-      | ((...params: P4) => void)
-  : // The unions may no longer be discriminatory with fewer parameters, and
-    // TypeScript fails to resolve callback signatures in some cases.
-    // | ((...params: P3) => void)
-    // | ((...params: P2) => void)
-    // | ((...params: P1) => void)
-    never;
+  rowId: RowIdOrNull extends null ? Id : RowIdOrNull,
+) => void;
 
 /// CellListener
 export type CellListener<
-  Schemas extends OptionalSchemas = NoSchemas,
-  TableIdOrNull extends IdOrNull = IdOrNull,
-  RowIdOrNull extends IdOrNull = IdOrNull,
-  CellIdOrNull extends IdOrNull = IdOrNull,
-> = CellListenerImpl<Schemas, TableIdOrNull, RowIdOrNull, CellIdOrNull>;
+  Schemas extends OptionalSchemas,
+  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+  RowIdOrNull extends IdOrNull,
+  CellIdOrNull extends
+    | (TableIdOrNull extends TableIdFromSchema<Schemas[0]>
+        ? CellIdFromSchema<Schemas[0], TableIdOrNull>
+        : AllCellIdFromSchema<Schemas[0]>)
+    | null,
+  Params extends any[] = (
+    TableIdOrNull extends null ? TableIdFromSchema<Schemas[0]> : TableIdOrNull
+  ) extends infer TableId
+    ? TableId extends TableIdFromSchema<Schemas[0]>
+      ? (
+          CellIdOrNull extends null
+            ? CellIdFromSchema<Schemas[0], TableId>
+            : CellIdOrNull
+        ) extends infer CellId
+        ? CellId extends CellIdFromSchema<Schemas[0], TableId>
+          ? [
+              store: Store<Schemas>,
+              tableId: TableId,
+              rowId: RowIdOrNull extends null ? Id : RowIdOrNull,
+              cellId: CellId,
+              newCell: CellFromSchema<Schemas[0], TableId, CellId>,
+              oldCell: CellFromSchema<Schemas[0], TableId, CellId>,
+              getCellChange: GetCellChange<Schemas[0]> | undefined,
+            ]
+          : never
+        : never
+      : never
+    : never,
+  Params7 extends any[] =
+    | Params
+    | [
+        store: never,
+        tableId: never,
+        rowId: never,
+        cellId: never,
+        newCell: never,
+        oldCell: never,
+        getCellChange: never,
+      ],
+  Params6 extends any[] = Truncate<Params7>,
+  Params5 extends any[] = Truncate<Params6>,
+  Params4 extends any[] = Truncate<Params5>,
+  // Params3 extends any[] = Truncate<Params4>,
+  // Params2 extends any[] = Truncate<Params3>,
+  // Params1 extends any[] = Truncate<Params2>,
+> = Params extends any
+  ?
+      | ((...params: Params7) => void)
+      | ((...params: Params6) => void)
+      | ((...params: Params5) => void)
+      | ((...params: Params4) => void)
+  : // The unions may no longer be discriminatory with fewer parameters, and
+    // TypeScript fails to resolve callback signatures in some cases.
+    // | ((...params: Params3) => void)
+    // | ((...params: Params2) => void)
+    // | ((...params: Params1) => void)
+    never;
 
 /// ValuesListener
-export type ValuesListener<
-  in out Schemas extends OptionalSchemas = NoSchemas,
-  Schema extends OptionalValuesSchema = Schemas[1],
-> = (
+export type ValuesListener<Schemas extends OptionalSchemas> = (
   store: Store<Schemas>,
-  getValueChange: GetValueChange<Schema> | undefined,
+  getValueChange: GetValueChange<Schemas[1]> | undefined,
 ) => void;
 
 /// ValueIdsListener
-export type ValueIdsListener<
-  in out Schemas extends OptionalSchemas = NoSchemas,
-> = (store: Store<Schemas>) => void;
+export type ValueIdsListener<Schemas extends OptionalSchemas> = (
+  store: Store<Schemas>,
+) => void;
 
 /// ValueListener
 export type ValueListener<
-  in out Schemas extends OptionalSchemas = NoSchemas,
-  ValueIdOrNull extends ValueIdFromSchema<
-    Schemas[1]
-  > | null = ValueIdFromSchema<Schemas[1]> | null,
-  ValueId extends Id = ValueIdOrNull extends null
-    ? ValueIdFromSchema<Schemas[1]>
-    : ValueIdOrNull,
-  Value = ValueFromSchema<Schemas[1], ValueId>,
-  Schema extends OptionalValuesSchema = Schemas[1],
-> = (
-  store: Store<Schemas>,
-  valueId: ValueId,
-  newValue: Value,
-  oldValue: Value,
-  getValueChange: GetValueChange<Schema> | undefined,
-) => void;
+  Schemas extends OptionalSchemas,
+  ValueIdOrNull extends ValueIdFromSchema<Schemas[1]> | null,
+  Params extends any[] = (
+    ValueIdOrNull extends null ? ValueIdFromSchema<Schemas[1]> : ValueIdOrNull
+  ) extends infer ValueId
+    ? ValueId extends ValueIdFromSchema<Schemas[1]>
+      ? [
+          store: Store<Schemas>,
+          valueId: ValueId,
+          newValue: ValueFromSchema<Schemas[1], ValueId>,
+          oldValue: ValueFromSchema<Schemas[1], ValueId>,
+          getValueChange: GetValueChange<Schemas[1]> | undefined,
+        ]
+      : never
+    : never,
+  Params5 extends any[] =
+    | Params
+    | [
+        store: never,
+        valueId: never,
+        newValue: never,
+        oldValue: never,
+        getValueChange: never,
+      ],
+  Params4 extends any[] = Truncate<Params5>,
+  Params3 extends any[] = Truncate<Params4>,
+  Params2 extends any[] = Truncate<Params3>,
+  Params1 extends any[] = Truncate<Params2>,
+> = Params extends any
+  ?
+      | ((...params: Params5) => void)
+      | ((...params: Params4) => void)
+      | ((...params: Params3) => void)
+      | ((...params: Params2) => void)
+      | ((...params: Params1) => void)
+  : never;
 
 /// InvalidCellListener
-export type InvalidCellListener<
-  in out Schemas extends OptionalSchemas = NoSchemas,
-> = (
+export type InvalidCellListener<Schemas extends OptionalSchemas> = (
   store: Store<Schemas>,
   tableId: Id,
   rowId: Id,
@@ -466,9 +422,11 @@ export type InvalidCellListener<
 ) => void;
 
 /// InvalidValueListener
-export type InvalidValueListener<
-  in out Schemas extends OptionalSchemas = NoSchemas,
-> = (store: Store<Schemas>, valueId: Id, invalidValues: any[]) => void;
+export type InvalidValueListener<Schemas extends OptionalSchemas> = (
+  store: Store<Schemas>,
+  valueId: Id,
+  invalidValues: any[],
+) => void;
 
 /// GetCellChange
 export type GetCellChange<

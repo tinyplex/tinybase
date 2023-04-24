@@ -29,7 +29,7 @@ export type SliceCallback<
   in out Schema extends OptionalTablesSchema = NoTablesSchema,
 > = (
   sliceId: Id,
-  forEachRow: (rowCallback: RowCallback<Schema>) => void,
+  forEachRow: (rowCallback: RowCallback<Schema, Id>) => void,
 ) => void;
 
 /// SliceIdsListener

@@ -24,7 +24,7 @@ export type RelationshipCallback<
   in out Schema extends OptionalTablesSchema = NoTablesSchema,
 > = (
   relationshipId: Id,
-  forEachRow: (rowCallback: RowCallback<Schema>) => void,
+  forEachRow: (rowCallback: RowCallback<Schema, Id>) => void,
 ) => void;
 
 /// RemoteRowIdListener
