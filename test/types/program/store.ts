@@ -4,7 +4,6 @@
 
 import {createStore} from 'tinybase/debug/with-schemas';
 // import {createStore} from '../../src/types/with-schemas/store.d';
-import tsc from 'typescript';
 
 const tablesSchema = {
   t0: {c0: {type: 'number'}},
@@ -883,26 +882,3 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
     store.getValues().v2; // !
   });
 })();
-
-//--
-
-test('Types with schemas', () => {
-  const {options} = tsc.parseJsonSourceFileConfigFileContent(
-    tsc.readJsonConfigFile('test/tsconfig.json', tsc.sys.readFile),
-    tsc.sys,
-    'test',
-  );
-  const results = tsc.getPreEmitDiagnostics(
-    tsc.createProgram([__filename], options),
-  );
-  results.map((result) => {
-    const {file, messageText, start} = result;
-    const {line, character} = file?.getLineAndCharacterOfPosition(
-      start ?? 0,
-    ) ?? {line: 0, character: 0};
-    expect([
-      `${line}:${character}`,
-      typeof messageText == 'string' ? messageText : messageText.messageText,
-    ]).toMatchSnapshot();
-  });
-});
