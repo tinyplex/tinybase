@@ -9,6 +9,7 @@ declare global {
 
 import {
   Cell,
+  NoSchemas,
   Store as StoreWithSchemas,
   Value,
 } from 'tinybase/debug/with-schemas';
@@ -152,7 +153,7 @@ export const expectNoChanges = (listener: Listener): void => {
 };
 
 export const createStoreListener = (
-  store: Store | StoreWithSchemas,
+  store: Store | StoreWithSchemas<NoSchemas>,
 ): StoreListener => {
   const logs: Logs = {};
 

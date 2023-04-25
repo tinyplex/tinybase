@@ -180,7 +180,7 @@ const tsCheck = async (dir) => {
   const results = tsc.getPreEmitDiagnostics(
     tsc.createProgram(
       fileNames.filter(
-        (fileName) => fileName != 'test/unit/types-with-schemas.test.tsx',
+        (fileName) => !fileName.startsWith('test/types/program/'),
       ),
       options,
     ),
