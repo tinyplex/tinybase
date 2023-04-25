@@ -2,8 +2,8 @@
 
 // NB: an exclamation mark after a line visually indicates an expected TS error
 
-import {createStore} from 'tinybase/debug/with-schemas';
-// import {createStore} from '../../src/types/with-schemas/store.d';
+// import {createStore} from 'tinybase/debug/with-schemas';
+import {createStore} from '../../../src/types/with-schemas/store.d';
 
 const tablesSchema = {
   t0: {c0: {type: 'number'}},
@@ -881,4 +881,59 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
     store.getTables().t2; // !
     store.getValues().v2; // !
   });
+})();
+
+// Set schemas
+(() => {
+  const storeWithTablesSchema1 = store.setTablesSchema(tablesSchema);
+  storeWithTablesSchema1.getTables().t1;
+  storeWithTablesSchema1.getValues().v1;
+  storeWithTablesSchema1.getValues().v2;
+  storeWithTablesSchema1.getTables().t2; // !
+
+  const storeWithTablesSchema2 = storeWithSchemas.setTablesSchema({
+    t2: {c2: {type: 'number'}},
+  });
+  storeWithTablesSchema2.getTables().t2;
+  storeWithTablesSchema2.getValues().v1;
+  storeWithTablesSchema2.getTables().t1; // !
+  storeWithTablesSchema2.getValues().v2; // !
+
+  const storeWithTablesSchema3 = storeWithSchemas.delValuesSchema();
+  storeWithTablesSchema3.getTables().t1;
+  storeWithTablesSchema3.getValues().v1;
+  storeWithTablesSchema3.getValues().v2;
+  storeWithTablesSchema3.getTables().t2; // !
+
+  const storeWithTablesSchema4 = store.setSchema(tablesSchema);
+  storeWithTablesSchema4.getTables().t1;
+  storeWithTablesSchema4.getValues().v1;
+  storeWithTablesSchema4.getValues().v2;
+  storeWithTablesSchema4.getTables().t2; // !
+
+  const storeWithValuesSchema1 = store.setValuesSchema(valuesSchema);
+  storeWithValuesSchema1.getTables().t1;
+  storeWithValuesSchema1.getValues().v1;
+  storeWithValuesSchema1.getTables().t2;
+  storeWithValuesSchema1.getValues().v2; // !
+
+  const storeWithValuesSchema2 = storeWithSchemas.setValuesSchema({
+    v2: {type: 'number'},
+  });
+  storeWithValuesSchema2.getTables().t1;
+  storeWithValuesSchema2.getValues().v2;
+  storeWithValuesSchema2.getTables().t2; // !
+  storeWithValuesSchema2.getValues().v1; // !
+
+  const storeWithValueSchema3 = storeWithSchemas.delTablesSchema();
+  storeWithValueSchema3.getTables().t1;
+  storeWithValueSchema3.getTables().t2;
+  storeWithValueSchema3.getValues().v1;
+  storeWithValueSchema3.getValues().v2; // !
+
+  const storeWithNoSchemas = storeWithSchemas.delSchema();
+  storeWithNoSchemas.getValues().v1;
+  storeWithNoSchemas.getValues().v2;
+  storeWithNoSchemas.getTables().t1;
+  storeWithNoSchemas.getTables().t2;
 })();
