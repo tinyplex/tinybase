@@ -3,7 +3,6 @@
 import {CellIdFromSchema, TableIdFromSchema} from './internal/store';
 import {
   GetCell,
-  NoTablesSchema,
   OptionalSchemas,
   OptionalTablesSchema,
   RowCallback,
@@ -18,17 +17,15 @@ export type Index = {[sliceId: Id]: Slice};
 export type Slice = Ids;
 
 /// IndexCallback
-export type IndexCallback<in out Schema extends OptionalTablesSchema> = (
+export type IndexCallback<Schema extends OptionalTablesSchema> = (
   indexId: Id,
   forEachSlice: (sliceCallback: SliceCallback<Schema>) => void,
 ) => void;
 
 /// SliceCallback
-export type SliceCallback<
-  in out Schema extends OptionalTablesSchema = NoTablesSchema,
-> = (
+export type SliceCallback<Schema extends OptionalTablesSchema> = (
   sliceId: Id,
-  forEachRow: (rowCallback: RowCallback<Schema, Id>) => void,
+  forEachRow: (rowCallback: RowCallback<Schema>) => void,
 ) => void;
 
 /// SliceIdsListener
