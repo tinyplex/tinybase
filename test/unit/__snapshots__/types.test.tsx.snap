@@ -88,6 +88,36 @@ exports[`Types: metrics.ts:48:33 1`] = `"Property 't2' does not exist on type 'T
 
 exports[`Types: metrics.ts:52:59 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
+exports[`Types: persisters.ts:25:36 1`] = `"Type '{ c2: number; }' is not assignable to type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'."`;
+
+exports[`Types: persisters.ts:26:36 1`] = `"Type 'string' is not assignable to type 'number'."`;
+
+exports[`Types: persisters.ts:27:26 1`] = `"Argument of type '{ t2: { r2: { c2: number; }; }; }' is not assignable to parameter of type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, true>'."`;
+
+exports[`Types: persisters.ts:28:47 1`] = `"Type 'string' is not assignable to type 'number'."`;
+
+exports[`Types: persisters.ts:29:47 1`] = `"Argument of type '{ v2: number; }' is not assignable to parameter of type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, true>'."`;
+
+exports[`Types: persisters.ts:33:45 1`] = `"Type '{ c2: number; }' is not assignable to type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'."`;
+
+exports[`Types: persisters.ts:34:45 1`] = `"Type 'string' is not assignable to type 'number'."`;
+
+exports[`Types: persisters.ts:35:35 1`] = `"Argument of type '{ t2: { r2: { c2: number; }; }; }' is not assignable to parameter of type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, true>'."`;
+
+exports[`Types: persisters.ts:36:56 1`] = `"Type 'string' is not assignable to type 'number'."`;
+
+exports[`Types: persisters.ts:37:56 1`] = `"Argument of type '{ v2: number; }' is not assignable to parameter of type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, true>'."`;
+
+exports[`Types: persisters.ts:40:43 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: persisters.ts:43:58 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: persisters.ts:46:53 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: persisters.ts:50:60 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: persisters.ts:53:69 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
 exports[`Types: store.ts:33:2 1`] = `"Conversion of type 'number | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
 exports[`Types: store.ts:34:2 1`] = `"Conversion of type 'string' to type 'undefined' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
