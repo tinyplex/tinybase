@@ -1812,3 +1812,31 @@ exports[`Types with schemas 259`] = `
   "Argument of type '"v2"' is not assignable to parameter of type '"v1" | "v1d" | null'.",
 ]
 `;
+
+exports[`Types with schemas 260`] = `
+[
+  "875:22",
+  "Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'.",
+]
+`;
+
+exports[`Types with schemas 261`] = `
+[
+  "876:22",
+  "Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'.",
+]
+`;
+
+exports[`Types with schemas 262`] = `
+[
+  "881:22",
+  "Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'.",
+]
+`;
+
+exports[`Types with schemas 263`] = `
+[
+  "882:22",
+  "Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'.",
+]
+`;
