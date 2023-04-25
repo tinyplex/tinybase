@@ -175,10 +175,10 @@ export type TableCallback<
 /// RowCallback
 export type RowCallback<
   Schema extends OptionalTablesSchema,
-  TableId extends TableIdFromSchema<Schema>,
+  TableIdOrNull extends TableIdFromSchema<Schema> | null = null,
   Params extends any[] = [
     rowId: Id,
-    forEachCell: (cellCallback: CellCallback<Schema, TableId>) => void,
+    forEachCell: (cellCallback: CellCallback<Schema, TableIdOrNull>) => void,
   ],
   Params2 extends any[] = Params | [rowId: never, forEachCell: never],
   // Params1 extends any[] = Truncate<Params2>,
@@ -188,10 +188,16 @@ export type RowCallback<
 /// CellCallback
 export type CellCallback<
   Schema extends OptionalTablesSchema,
-  TableId extends TableIdFromSchema<Schema>,
-  Params extends any[] = CellIdFromSchema<Schema, TableId> extends infer CellId
-    ? CellId extends CellIdFromSchema<Schema, TableId>
-      ? [cellId: CellId, cell: Cell<Schema, TableId, CellId>]
+  TableIdOrNull extends TableIdFromSchema<Schema> | null = null,
+  Params extends any[] = (
+    TableIdOrNull extends null ? TableIdFromSchema<Schema> : TableIdOrNull
+  ) extends infer TableId
+    ? TableId extends TableIdFromSchema<Schema>
+      ? CellIdFromSchema<Schema, TableId> extends infer CellId
+        ? CellId extends CellIdFromSchema<Schema, TableId>
+          ? [cellId: CellId, cell: Cell<Schema, TableId, CellId>]
+          : never
+        : never
       : never
     : never,
   Params2 extends any[] = Params | [cellId: never, cell: never],
