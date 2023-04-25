@@ -869,6 +869,19 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
     store.getValues().v2; // !
   });
   storeWithSchemas.addValueListener('v2', () => null); // !
+
+  storeWithSchemas.addWillFinishTransactionListener((store) => {
+    store.getTables().t1;
+    store.getValues().v1;
+    store.getTables().t2; // !
+    store.getValues().v2; // !
+  });
+  storeWithSchemas.addDidFinishTransactionListener((store) => {
+    store.getTables().t1;
+    store.getValues().v1;
+    store.getTables().t2; // !
+    store.getValues().v2; // !
+  });
 })();
 
 //--
