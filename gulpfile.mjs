@@ -179,9 +179,7 @@ const tsCheck = async (dir) => {
   const {fileNames, options} = await getTsOptions(dir);
   const results = tsc.getPreEmitDiagnostics(
     tsc.createProgram(
-      fileNames.filter(
-        (fileName) => !fileName.startsWith('test/types/program/'),
-      ),
+      fileNames.filter((fileName) => !fileName.startsWith('test/unit/types')),
       options,
     ),
   );

@@ -16,7 +16,7 @@ import {
   expectNoChanges,
 } from './common';
 
-type AddMutator = (store: Store) => void;
+type AddMutator = (store: Store<any>) => void;
 
 const addAllowCellMutator = <C extends Cell<any, any, any>>(
   store: Store<any>,
@@ -36,7 +36,7 @@ const addAllowCellMutator = <C extends Cell<any, any, any>>(
   );
 
 const addAllowValueMutator = <V extends Value<any, any, any>>(
-  store: Store,
+  store: Store<any>,
   valueId: Id,
   values: V[],
 ): Id =>
@@ -136,7 +136,7 @@ const cellBoundsSchemaAndExpected: [
 ];
 
 describe('Get and set tablesSchemas', () => {
-  let store: Store;
+  let store: Store<any>;
   let listener: StoreListener;
 
   beforeEach(() => {
@@ -245,7 +245,7 @@ describe('Get and set tablesSchemas', () => {
 });
 
 describe('Get and set valuesSchemas', () => {
-  let store: Store;
+  let store: Store<any>;
   let listener: StoreListener;
 
   beforeEach(() => {
