@@ -175,6 +175,7 @@
     "testPerf": "gulp testPerf",
     "testE2e": "gulp testE2e",
     "compileAndTestUnit": "gulp compileAndTestUnit",
+    "compileAndTestPerf": "gulp compileAndTestPerf",
     "compileDocsPagesOnly": "gulp compileDocsPagesOnly",
     "compileDocsAssetsOnly": "gulp compileDocsAssetsOnly",
     "compileDocs": "gulp compileDocs",
