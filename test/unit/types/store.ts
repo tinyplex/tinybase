@@ -2,8 +2,7 @@
 
 // NB: an exclamation mark after a line visually indicates an expected TS error
 
-// import {createStore} from 'tinybase/debug/with-schemas';
-import {createStore} from '../../../src/types/with-schemas/store.d';
+import {createStore} from 'tinybase/debug/with-schemas';
 
 const tablesSchema = {
   t0: {c0: {type: 'number'}},
