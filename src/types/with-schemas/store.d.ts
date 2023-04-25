@@ -727,14 +727,14 @@ export interface Store<in out Schemas extends OptionalSchemas> {
   setJson(tablesAndValuesJson: Json): Store<Schemas>;
 
   /// Store.setTablesSchema
-  setTablesSchema<ValuesSchema extends OptionalValuesSchema = Schemas[1]>(
-    tablesSchema: TablesSchema,
-  ): Store<[typeof tablesSchema, ValuesSchema]>;
+  setTablesSchema<TS extends TablesSchema>(
+    tablesSchema: TS,
+  ): Store<[typeof tablesSchema, Schemas[1]]>;
 
   /// Store.setValuesSchema
-  setValuesSchema<TablesSchema extends OptionalTablesSchema = Schemas[0]>(
-    valuesSchema: ValuesSchema,
-  ): Store<[TablesSchema, typeof valuesSchema]>;
+  setValuesSchema<VS extends ValuesSchema>(
+    valuesSchema: VS,
+  ): Store<[Schemas[0], typeof valuesSchema]>;
 
   /// Store.setSchema
   setSchema<TS extends TablesSchema, VS extends ValuesSchema>(
