@@ -4,10 +4,10 @@ import tsc, {
   readJsonConfigFile,
   sys,
 } from 'typescript';
+import {readdirSync} from 'fs';
 import {resolve} from 'path';
 
-const testFiles = ['store'];
-
+const testFiles = readdirSync(resolve(__dirname, 'program'));
 test.each(testFiles)('Types', (testFile) => {
   const {options} = tsc.parseJsonSourceFileConfigFileContent(
     readJsonConfigFile('test/tsconfig.json', sys.readFile),
@@ -15,7 +15,7 @@ test.each(testFiles)('Types', (testFile) => {
     'test',
   );
   const program = createProgram(
-    [resolve(__dirname, `program/${testFile}`)],
+    [resolve(__dirname, 'program', testFile)],
     options,
   );
   const results = getPreEmitDiagnostics(program);
