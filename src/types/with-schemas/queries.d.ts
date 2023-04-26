@@ -2,6 +2,7 @@
 
 import {
   Cell,
+  CellOrUndefined,
   GetCell,
   NoTablesSchema,
   OptionalSchemas,
@@ -156,10 +157,9 @@ export type GetTableCell<
       Schema,
       RootTableId
     >,
-    CellOrUndefined = Cell<Schema, RootTableId, RootCellId> | undefined,
   >(
     cellId: RootCellId,
-  ): CellOrUndefined;
+  ): CellOrUndefined<Schema, RootTableId, RootCellId>;
   /// GetTableCell.2
   <
     JoinedTableId extends TableIdFromSchema<Schema> | Id =
@@ -169,19 +169,14 @@ export type GetTableCell<
       Schema,
       JoinedTableId
     > = JoinedCellIdOrId<Schema, JoinedTableId>,
-    CellOrUndefined extends
-      | (JoinedTableId extends TableIdFromSchema<Schema>
-          ? Cell<Schema, JoinedTableId, JoinedCellId>
-          : Cell<any, any, any>)
-      | undefined =
-      | (JoinedTableId extends TableIdFromSchema<Schema>
-          ? Cell<Schema, JoinedTableId, JoinedCellId>
-          : Cell<any, any, any>)
-      | undefined,
   >(
     joinedTableId: JoinedTableId,
     joinedCellId: JoinedCellId,
-  ): CellOrUndefined;
+  ):
+    | (JoinedTableId extends TableIdFromSchema<Schema>
+        ? Cell<Schema, JoinedTableId, JoinedCellId>
+        : Cell<any, any, any>)
+    | undefined;
 };
 
 /// Select
