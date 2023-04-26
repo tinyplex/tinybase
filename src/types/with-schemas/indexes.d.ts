@@ -52,17 +52,14 @@ export type IndexesListenerStats = {
 /// Indexes
 export interface Indexes<in out Schemas extends OptionalSchemas> {
   /// Indexes.setIndexDefinition
-  setIndexDefinition<
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    CellId extends CellIdFromSchema<Schemas[0], TableId>,
-  >(
+  setIndexDefinition<TableId extends TableIdFromSchema<Schemas[0]>>(
     indexId: Id,
     tableId: TableId,
     getSliceIdOrIds?:
-      | CellId
+      | CellIdFromSchema<Schemas[0], TableId>
       | ((getCell: GetCell<Schemas[0], TableId>, rowId: Id) => Id | Ids),
     getSortKey?:
-      | CellId
+      | CellIdFromSchema<Schemas[0], TableId>
       | ((getCell: GetCell<Schemas[0], TableId>, rowId: Id) => SortKey),
     sliceIdSorter?: (sliceId1: Id, sliceId2: Id) => number,
     rowIdSorter?: (sortKey1: SortKey, sortKey2: SortKey, sliceId: Id) => number,
