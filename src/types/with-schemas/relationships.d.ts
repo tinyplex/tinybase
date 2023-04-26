@@ -20,7 +20,7 @@ export type Relationship = {
 /// RelationshipCallback
 export type RelationshipCallback<Schema extends OptionalTablesSchema> = (
   relationshipId: Id,
-  forEachRow: (rowCallback: RowCallback<Schema, Id>) => void,
+  forEachRow: (rowCallback: RowCallback<Schema>) => void,
 ) => void;
 
 /// RemoteRowIdListener
