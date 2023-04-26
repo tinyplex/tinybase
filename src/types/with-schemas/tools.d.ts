@@ -54,14 +54,10 @@ export interface Tools<in out Schemas extends OptionalSchemas> {
   /* eslint-enable max-len */
 
   /// getStoreTablesSchema
-  getStoreTablesSchema<
-    TablesSchema extends OptionalTablesSchema = Schemas[0],
-  >(): TablesSchema;
+  getStoreTablesSchema(): Schemas[0];
 
   /// getStoreValuesSchema
-  getStoreValuesSchema<
-    ValuesSchema extends OptionalValuesSchema = Schemas[1],
-  >(): ValuesSchema;
+  getStoreValuesSchema(): Schemas[1];
 
   /// getStoreApi
   getStoreApi(storeName: string): [string, string, string, string];

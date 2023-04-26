@@ -765,3 +765,7 @@ exports[`Types: store.ts:923:37 1`] = `"Property 't2' does not exist on type 'Ta
 exports[`Types: store.ts:924:37 1`] = `"Property 'v1' does not exist on type 'Values<{ v2: { type: "number"; }; }, false>'."`;
 
 exports[`Types: store.ts:930:36 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
+
+exports[`Types: tools.ts:23:39 1`] = `"Property 't2' does not exist on type '{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }'."`;
+
+exports[`Types: tools.ts:29:39 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
