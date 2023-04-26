@@ -20,12 +20,23 @@ indexesWithSchema.setIndexDefinition('i1', 't1', 'c1', 'c1');
 indexesWithSchema.setIndexDefinition(
   'i1',
   't1',
-  (getCell) => getCell('c1'),
-  (getCell) => getCell('c1'),
+  (getCell) => getCell('c1d'),
+  (getCell) => getCell('c1d'),
 );
 indexesWithSchema.setIndexDefinition('i1', 't2', 'c1', 'c1'); // !
 indexesWithSchema.setIndexDefinition('i1', 't1', 'c2', 'c1'); // !
 indexesWithSchema.setIndexDefinition('i1', 't1', 'c1', 'c2'); // !
+indexesWithSchema.setIndexDefinition(
+  'i1',
+  't1',
+  (getCell) => getCell('c1'), // !
+);
+indexesWithSchema.setIndexDefinition(
+  'i1',
+  't1',
+  (getCell) => getCell('c1d'),
+  (getCell) => getCell('c1'), // !
+);
 indexesWithSchema.setIndexDefinition(
   'i1',
   't1',

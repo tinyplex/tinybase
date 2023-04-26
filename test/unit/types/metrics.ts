@@ -6,7 +6,11 @@ import {createMetrics, createStore} from 'tinybase/debug/with-schemas';
 
 const tablesSchema = {
   t0: {c0: {type: 'number'}},
-  t1: {c1: {type: 'number'}, c1d: {type: 'string', default: ''}},
+  t1: {
+    c1: {type: 'number'},
+    c1d: {type: 'number', default: 0},
+    c1s: {type: 'string', default: ''},
+  },
 } as const;
 
 const storeWithSchemas = createStore().setSchema(tablesSchema);
@@ -18,10 +22,22 @@ metricsWithNoSchema.getStore().getTables().t2;
 
 metricsWithSchema.setMetricDefinition('m1', 't1', 'sum', 'c1');
 metricsWithSchema.setMetricDefinition('m1', 't1', 'sum', (getCell) =>
-  getCell('c1'),
+  getCell('c1d'),
 );
 metricsWithSchema.setMetricDefinition('m1', 't2', 'sum', 'c1'); // !
 metricsWithSchema.setMetricDefinition('m1', 't1', 'sum', 'c2'); // !
+metricsWithSchema.setMetricDefinition(
+  'm1',
+  't1',
+  'sum',
+  (getCell) => getCell('c1'), // !
+);
+metricsWithSchema.setMetricDefinition(
+  'm1',
+  't1',
+  'sum',
+  (getCell) => getCell('c1s'), // !
+);
 metricsWithSchema.setMetricDefinition(
   'm1',
   't1',

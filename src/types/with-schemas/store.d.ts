@@ -5,6 +5,7 @@ import {
   CellIdFromSchema,
   DefaultCellIdFromSchema,
   DefaultValueIdFromSchema,
+  DefaultedCellFromSchema,
   DefaultedValueFromSchema,
   TableIdFromSchema,
   Truncate,
@@ -241,12 +242,9 @@ export type MapValue<
 export type GetCell<
   Schema extends OptionalTablesSchema,
   TableId extends TableIdFromSchema<Schema>,
-> = <
-  CellId extends CellIdFromSchema<Schema, TableId>,
-  CellOrUndefined = Cell<Schema, TableId, CellId> | undefined,
->(
+> = <CellId extends CellIdFromSchema<Schema, TableId>>(
   cellId: CellId,
-) => CellOrUndefined;
+) => DefaultedCellFromSchema<Schema, TableId, CellId>;
 
 /// DoRollback
 export type DoRollback<Schemas extends OptionalSchemas> = (
