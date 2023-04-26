@@ -581,9 +581,7 @@ export interface Store<in out Schemas extends OptionalSchemas> {
   ): Table<Schemas[0], TableId>;
 
   /// Store.getRowIds
-  getRowIds<TableId extends TableIdFromSchema<Schemas[0]>>(
-    tableId: TableId,
-  ): Ids;
+  getRowIds(tableId: TableIdFromSchema<Schemas[0]>): Ids;
 
   /// Store.getSortedRowIds
   getSortedRowIds<TableId extends TableIdFromSchema<Schemas[0]>>(
