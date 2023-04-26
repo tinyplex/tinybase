@@ -1,4 +1,9 @@
-import {OptionalTablesSchema, OptionalValuesSchema, Value} from '../store';
+import {
+  Cell,
+  OptionalTablesSchema,
+  OptionalValuesSchema,
+  Value,
+} from '../store';
 import {Id} from '../common';
 
 export type TableIdFromSchema<Schema extends OptionalTablesSchema> = AsId<
@@ -44,6 +49,14 @@ export type CellIsDefaultedFromSchema<
 }
   ? Then
   : Else;
+
+export type DefaultedCellFromSchema<
+  Schema extends OptionalTablesSchema,
+  TableId extends TableIdFromSchema<Schema>,
+  CellId extends CellIdFromSchema<Schema, TableId>,
+> =
+  | Cell<Schema, TableId, CellId>
+  | CellIsDefaultedFromSchema<Schema, TableId, CellId, never, undefined>;
 
 export type ValueIdFromSchema<Schema extends OptionalValuesSchema> = AsId<
   keyof Schema
