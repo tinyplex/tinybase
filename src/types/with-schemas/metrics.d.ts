@@ -52,15 +52,12 @@ export type MetricsListenerStats = {
 /// Metrics
 export interface Metrics<in out Schemas extends OptionalSchemas> {
   /// Metrics.setMetricDefinition
-  setMetricDefinition<
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    CellId extends CellIdFromSchema<Schemas[0], TableId>,
-  >(
+  setMetricDefinition<TableId extends TableIdFromSchema<Schemas[0]>>(
     metricId: Id,
     tableId: TableId,
     aggregate?: 'sum' | 'avg' | 'min' | 'max' | MetricAggregate,
     getNumber?:
-      | CellId
+      | CellIdFromSchema<Schemas[0], TableId>
       | ((getCell: GetCell<Schemas[0], TableId>, rowId: Id) => number),
     aggregateAdd?: MetricAggregateAdd,
     aggregateRemove?: MetricAggregateRemove,

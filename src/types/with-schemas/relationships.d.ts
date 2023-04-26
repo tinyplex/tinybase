@@ -57,16 +57,12 @@ export type RelationshipsListenerStats = {
 /// Relationships
 export interface Relationships<in out Schemas extends OptionalSchemas> {
   /// setRelationshipDefinition
-  setRelationshipDefinition<
-    LocalTableId extends TableIdFromSchema<Schemas[0]>,
-    RemoteTableId extends TableIdFromSchema<Schemas[0]>,
-    LocalCellId extends CellIdFromSchema<Schemas[0], LocalTableId>,
-  >(
+  setRelationshipDefinition<LocalTableId extends TableIdFromSchema<Schemas[0]>>(
     relationshipId: Id,
     localTableId: LocalTableId,
-    remoteTableId: RemoteTableId,
+    remoteTableId: TableIdFromSchema<Schemas[0]>,
     getRemoteRowId:
-      | LocalCellId
+      | CellIdFromSchema<Schemas[0], LocalTableId>
       | ((getCell: GetCell<Schemas[0], LocalTableId>, localRowId: Id) => Id),
   ): Relationships<Schemas>;
 

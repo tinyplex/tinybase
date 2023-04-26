@@ -148,23 +148,16 @@ export type QueriesListenerStats = {
 
 /// GetTableCell
 export type GetTableCell<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  RootTableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+  Schema extends OptionalTablesSchema,
+  RootTableId extends TableIdFromSchema<Schema>,
 > = {
   /// GetTableCell.1
-  <
-    RootCellId extends CellIdFromSchema<Schema, RootTableId> = CellIdFromSchema<
-      Schema,
-      RootTableId
-    >,
-  >(
+  <RootCellId extends CellIdFromSchema<Schema, RootTableId>>(
     cellId: RootCellId,
   ): CellOrUndefined<Schema, RootTableId, RootCellId>;
   /// GetTableCell.2
   <
-    JoinedTableId extends TableIdFromSchema<Schema> | Id =
-      | TableIdFromSchema<Schema>
-      | Id,
+    JoinedTableId extends TableIdFromSchema<Schema> | Id,
     JoinedCellId extends JoinedCellIdOrId<
       Schema,
       JoinedTableId
@@ -181,30 +174,17 @@ export type GetTableCell<
 
 /// Select
 export type Select<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  RootTableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+  Schema extends OptionalTablesSchema,
+  RootTableId extends TableIdFromSchema<Schema>,
 > = {
   /// Select.1
-  <
-    RootCellId extends CellIdFromSchema<Schema, RootTableId> = CellIdFromSchema<
-      Schema,
-      RootTableId
-    >,
-  >(
+  <RootCellId extends CellIdFromSchema<Schema, RootTableId>>(
     cellId: RootCellId,
   ): SelectedAs;
   /// Select.2
-  <
-    JoinedTableId extends TableIdFromSchema<Schema> | Id =
-      | TableIdFromSchema<Schema>
-      | Id,
-    JoinedCellId extends JoinedCellIdOrId<
-      Schema,
-      JoinedTableId
-    > = JoinedCellIdOrId<Schema, JoinedTableId>,
-  >(
+  <JoinedTableId extends TableIdFromSchema<Schema> | Id>(
     joinedTableId: JoinedTableId,
-    joinedCellId: JoinedCellId,
+    joinedCellId: JoinedCellIdOrId<Schema, JoinedTableId>,
   ): SelectedAs;
   /// Select.3
   (
@@ -223,28 +203,21 @@ export type SelectedAs = {
 
 /// Join
 export type Join<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  RootTableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+  Schema extends OptionalTablesSchema,
+  RootTableId extends TableIdFromSchema<Schema>,
 > = {
   /// Join.1
-  <
-    JoinedTableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-    RootCellId extends CellIdFromSchema<Schema, RootTableId> = CellIdFromSchema<
-      Schema,
-      RootTableId
-    >,
-  >(
-    joinedTableId: JoinedTableId,
-    on: RootCellId,
+  (
+    joinedTableId: TableIdFromSchema<Schema>,
+    on: CellIdFromSchema<Schema, RootTableId>,
   ): JoinedAs;
   /// Join.2
-  <JoinedTableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>>(
-    joinedTableId: JoinedTableId,
+  (
+    joinedTableId: TableIdFromSchema<Schema>,
     on: (getCell: GetCell<Schema, RootTableId>, rowId: Id) => Id | undefined,
   ): JoinedAs;
   /// Join.3
   <
-    JoinedTableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
     IntermediateJoinedTableId extends TableIdFromSchema<Schema> | Id =
       | TableIdFromSchema<Schema>
       | Id,
@@ -253,18 +226,17 @@ export type Join<
       IntermediateJoinedTableId
     > = JoinedCellIdOrId<Schema, IntermediateJoinedTableId>,
   >(
-    joinedTableId: JoinedTableId,
+    joinedTableId: TableIdFromSchema<Schema>,
     fromIntermediateJoinedTableId: IntermediateJoinedTableId,
     on: IntermediateJoinedCellId,
   ): JoinedAs;
   /// Join.4
   <
-    JoinedTableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
     IntermediateJoinedTableId extends TableIdFromSchema<Schema> | Id =
       | TableIdFromSchema<Schema>
       | Id,
   >(
-    joinedTableId: JoinedTableId,
+    joinedTableId: TableIdFromSchema<Schema>,
     fromIntermediateJoinedTableId: IntermediateJoinedTableId,
     on: (
       // prettier-ignore
@@ -285,29 +257,17 @@ export type JoinedAs = {
 
 /// Where
 export type Where<
-  Schema extends OptionalTablesSchema = NoTablesSchema,
-  RootTableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+  Schema extends OptionalTablesSchema,
+  RootTableId extends TableIdFromSchema<Schema>,
 > = {
   /// Where.1
-  <
-    RootCellId extends CellIdFromSchema<Schema, RootTableId> = CellIdFromSchema<
-      Schema,
-      RootTableId
-    >,
-    RootCell extends Cell<Schema, RootTableId, RootCellId> = Cell<
-      Schema,
-      RootTableId,
-      RootCellId
-    >,
-  >(
+  <RootCellId extends CellIdFromSchema<Schema, RootTableId>>(
     cellId: RootCellId,
-    equals: RootCell,
+    equals: Cell<Schema, RootTableId, RootCellId>,
   ): void;
   /// Where.2
   <
-    JoinedTableId extends TableIdFromSchema<Schema> | Id =
-      | TableIdFromSchema<Schema>
-      | Id,
+    JoinedTableId extends TableIdFromSchema<Schema> | Id,
     JoinedCellId extends JoinedCellIdOrId<
       Schema,
       JoinedTableId
@@ -354,16 +314,13 @@ export type Having = {
 /// Queries
 export interface Queries<in out Schemas extends OptionalSchemas> {
   /// Queries.setQueryDefinition
-  setQueryDefinition<
-    RootTableId extends TableIdFromSchema<Schemas[0]>,
-    Schema extends OptionalTablesSchema = Schemas[0],
-  >(
+  setQueryDefinition<RootTableId extends TableIdFromSchema<Schemas[0]>>(
     queryId: Id,
     tableId: RootTableId,
     query: (keywords: {
-      select: Select<Schema, RootTableId>;
-      join: Join<Schema, RootTableId>;
-      where: Where<Schema, RootTableId>;
+      select: Select<Schemas[0], RootTableId>;
+      join: Join<Schemas[0], RootTableId>;
+      where: Where<Schemas[0], RootTableId>;
       group: Group;
       having: Having;
     }) => void,
