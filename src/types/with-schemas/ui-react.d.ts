@@ -3,6 +3,8 @@
 import {
   AllCellIdFromSchema,
   CellIdFromSchema,
+  DefaultedValueFromSchema,
+  NoInfer,
   TableIdFromSchema,
   ValueIdFromSchema,
 } from './internal/store';
@@ -43,6 +45,7 @@ import {
   Cell,
   CellIdsListener,
   CellListener,
+  CellOrUndefined,
   MapCell,
   MapValue,
   OptionalSchemas,
@@ -125,9 +128,9 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useTables: (storeOrStoreId?: StoreOrStoreId<Schemas>) => Tables<Schemas[0]>;
 
   /// useTableIds
-  useTableIds: <Ids = TableIdFromSchema<Schemas[0]>[]>(
+  useTableIds: (
     storeOrStoreId?: StoreOrStoreId<Schemas>,
-  ) => Ids;
+  ) => TableIdFromSchema<Schemas[0]>[];
 
   /// useTable
   useTable: <TableId extends TableIdFromSchema<Schemas[0]>>(
@@ -136,8 +139,8 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   ) => Table<Schemas[0], TableId>;
 
   /// useRowIds
-  useRowIds: <TableId extends TableIdFromSchema<Schemas[0]>>(
-    tableId: TableId,
+  useRowIds: (
+    tableId: TableIdFromSchema<Schemas[0]>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => Ids;
 
@@ -175,27 +178,26 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useCell: <
     TableId extends TableIdFromSchema<Schemas[0]>,
     CellId extends CellIdFromSchema<Schemas[0], TableId>,
-    CellOrUndefined = Cell<Schemas[0], TableId, CellId> | undefined,
   >(
     tableId: TableId,
     rowId: Id,
     cellId: CellId,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
-  ) => CellOrUndefined;
+  ) => NoInfer<CellOrUndefined<Schemas[0], TableId, CellId>>;
 
   /// useValues
   useValues: (storeOrStoreId?: StoreOrStoreId<Schemas>) => Values<Schemas[1]>;
 
   /// useValueIds
-  useValueIds: <Ids = ValueIdFromSchema<Schemas[1]>[]>(
+  useValueIds: (
     storeOrStoreId?: StoreOrStoreId<Schemas>,
-  ) => Ids;
+  ) => ValueIdFromSchema<Schemas[1]>[];
 
   /// useValue
   useValue: <ValueId extends ValueIdFromSchema<Schemas[1]>>(
     valueId: ValueId,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
-  ) => Value<Schemas[1], ValueId> | undefined;
+  ) => DefaultedValueFromSchema<Schemas[1], ValueId>;
 
   /// useSetTablesCallback
   useSetTablesCallback: <Parameter, SetTables = Tables<Schemas[0], true>>(
