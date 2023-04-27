@@ -97,3 +97,5 @@ export type AsId<Key> = Exclude<Key & Id, number>;
 export type Truncate<Params> = Params extends [...infer ShorterParams, any]
   ? [...ShorterParams]
   : never;
+
+export type NoInfer<Type> = [Type][Type extends any ? 0 : never];
