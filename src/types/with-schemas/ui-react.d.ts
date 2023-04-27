@@ -201,7 +201,10 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// useSetTablesCallback
   useSetTablesCallback: <Parameter, SetTables = Tables<Schemas[0], true>>(
-    getTables: (parameter: Parameter, store: Store<Schemas>) => SetTables,
+    getTables: (
+      parameter: Parameter,
+      store: Store<Schemas>,
+    ) => NoInfer<SetTables>,
     getTablesDeps?: React.DependencyList,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
     then?: (store: Store<Schemas>, tables: SetTables) => void,
@@ -215,7 +218,10 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     SetTable = Table<Schemas[0], TableId, true>,
   >(
     tableId: TableId,
-    getTable: (parameter: Parameter, store: Store<Schemas>) => SetTable,
+    getTable: (
+      parameter: Parameter,
+      store: Store<Schemas>,
+    ) => NoInfer<SetTable>,
     getTableDeps?: React.DependencyList,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
     then?: (store: Store<Schemas>, table: SetTable) => void,
@@ -230,7 +236,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   >(
     tableId: TableId,
     rowId: Id,
-    getRow: (parameter: Parameter, store: Store<Schemas>) => SetRow,
+    getRow: (parameter: Parameter, store: Store<Schemas>) => NoInfer<SetRow>,
     getRowDeps?: React.DependencyList,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
     then?: (store: Store<Schemas>, row: SetRow) => void,
@@ -244,7 +250,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     AddRow = Row<Schemas[0], TableId, true>,
   >(
     tableId: TableId,
-    getRow: (parameter: Parameter, store: Store<Schemas>) => AddRow,
+    getRow: (parameter: Parameter, store: Store<Schemas>) => NoInfer<AddRow>,
     getRowDeps?: React.DependencyList,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
     then?: (rowId: Id | undefined, store: Store<Schemas>, row: AddRow) => void,
@@ -262,7 +268,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     getPartialRow: (
       parameter: Parameter,
       store: Store<Schemas>,
-    ) => SetPartialRow,
+    ) => NoInfer<SetPartialRow>,
     getPartialRowDeps?: React.DependencyList,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
     then?: (store: Store<Schemas>, partialRow: SetPartialRow) => void,
@@ -281,7 +287,10 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     tableId: TableId,
     rowId: Id,
     cellId: CellId,
-    getCell: (parameter: Parameter, store: Store<Schemas>) => SetOrMapCell,
+    getCell: (
+      parameter: Parameter,
+      store: Store<Schemas>,
+    ) => NoInfer<SetOrMapCell>,
     getCellDeps?: React.DependencyList,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
     then?: (store: Store<Schemas>, cell: SetOrMapCell) => void,
@@ -290,7 +299,10 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// useSetValuesCallback
   useSetValuesCallback: <Parameter, SetValues = Values<Schemas[1], true>>(
-    getValues: (parameter: Parameter, store: Store<Schemas>) => SetValues,
+    getValues: (
+      parameter: Parameter,
+      store: Store<Schemas>,
+    ) => NoInfer<SetValues>,
     getValuesDeps?: React.DependencyList,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
     then?: (store: Store<Schemas>, values: SetValues) => void,
@@ -305,7 +317,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     getPartialValues: (
       parameter: Parameter,
       store: Store<Schemas>,
-    ) => SetPartialValues,
+    ) => NoInfer<SetPartialValues>,
     getPartialValuesDeps?: React.DependencyList,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
     then?: (store: Store<Schemas>, partialValues: SetPartialValues) => void,
@@ -319,7 +331,10 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     SetOrMapValue = Value<Schemas[1], ValueId> | MapValue<Schemas[1], ValueId>,
   >(
     valueId: ValueId,
-    getValue: (parameter: Parameter, store: Store<Schemas>) => SetOrMapValue,
+    getValue: (
+      parameter: Parameter,
+      store: Store<Schemas>,
+    ) => NoInfer<SetOrMapValue>,
     getValueDeps?: React.DependencyList,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
     then?: (store: Store<Schemas>, value: SetOrMapValue) => void,
