@@ -23,6 +23,8 @@ const {
   useAddRowCallback,
   useCell,
   useCellIds,
+  useCellIdsListener,
+  useCellListener,
   useCreateStore,
   useDelCellCallback,
   useDelRowCallback,
@@ -32,6 +34,8 @@ const {
   useDelValuesCallback,
   useRow,
   useRowIds,
+  useRowIdsListener,
+  useRowListener,
   useSetCellCallback,
   useSetPartialRowCallback,
   useSetPartialValuesCallback,
@@ -41,13 +45,20 @@ const {
   useSetValueCallback,
   useSetValuesCallback,
   useSortedRowIds,
+  useSortedRowIdsListener,
   useStore,
   useTable,
   useTableIds,
+  useTableIdsListener,
+  useTableListener,
   useTables,
+  useTablesListener,
   useValue,
   useValueIds,
+  useValueIdsListener,
+  useValueListener,
   useValues,
+  useValuesListener,
 } = UiReact as UiReact.WithSchemas<[typeof tablesSchema, typeof valuesSchema]>;
 
 const _Getters = () => {
@@ -296,4 +307,454 @@ const _Deleters = () => {
 
   useDelValueCallback('v1');
   useDelValueCallback('v2'); // !
+};
+
+const _Listeners = () => {
+  useTablesListener((store, getCellChange) => {
+    store.getTables().t1;
+    getCellChange?.('t1', 'r1', 'c1') as [true, number, number];
+    store.getTables().t2; // !
+    getCellChange?.('t1', 'r1', 'c1') as [true, number, string]; // !
+    getCellChange?.('t1', 'r1', 'c1') as [true, string, number]; // !
+  });
+  useTablesListener((store) => {
+    store.getTables().t1;
+    store.getTables().t2; // !
+  });
+  useTablesListener(() => null);
+
+  useTableIdsListener((store) => {
+    store.getTables().t1;
+    store.getTables().t2; // !
+  });
+  useTableIdsListener(() => null);
+
+  useTableListener('t1', (store, tableId, getCellChange) => {
+    store.getTables().t1;
+    tableId == 't1';
+    getCellChange?.('t1', 'r1', 'c1') as [true, number, number];
+    store.getTables().t2; // !
+    tableId == 't0'; // !
+    tableId == 't2'; // !
+  });
+  useTableListener(null, (store, tableId) => {
+    store.getTables().t1;
+    tableId == 't1';
+    tableId == 't0';
+    store.getTables().t2; // !
+    tableId == 't2'; // !
+  });
+  useTableListener(null, (store) => {
+    store.getTables().t1;
+    store.getTables().t2; // !
+  });
+  useTableListener('t2', () => null); // !
+
+  useRowIdsListener('t1', (store, tableId) => {
+    store.getTables().t1;
+    tableId == 't1';
+    store.getTables().t2; // !
+    tableId == 't0'; // !
+    tableId == 't2'; // !
+  });
+  useRowIdsListener(null, (store, tableId) => {
+    store.getTables().t1;
+    tableId == 't1';
+    tableId == 't0';
+    store.getTables().t2; // !
+    tableId == 't2'; // !
+  });
+  useRowIdsListener('t1', (store) => {
+    store.getTables().t1;
+    store.getTables().t2; // !
+  });
+  useRowIdsListener('t1', () => null);
+  useRowIdsListener('t2', () => null); // !
+
+  useSortedRowIdsListener('t1', 'c1', true, 0, 10, (store, tableId) => {
+    store.getTables().t1;
+    tableId == 't1';
+    store.getTables().t2; // !
+    tableId == 't0'; // !
+    tableId == 't2'; // !
+  });
+  useSortedRowIdsListener(
+    't1',
+    'c2', // !
+    true,
+    0,
+    10,
+    (store, tableId) => {
+      store.getTables().t1;
+      tableId == 't1';
+      tableId == 't0';
+      store.getTables().t2; // !
+      tableId == 't2'; // !
+    },
+  );
+  useSortedRowIdsListener('t1', 'c1', true, 0, 10, (store) => {
+    store.getTables().t1;
+    store.getTables().t2; // !
+  });
+  useSortedRowIdsListener('t1', 'c1', true, 0, 10, () => null);
+  useSortedRowIdsListener(
+    't2', // !
+    undefined,
+    true,
+    0,
+    10,
+    () => null,
+  );
+
+  useRowListener('t1', 'r1', (store, tableId, rowId, getCellChange) => {
+    store.getTables().t1;
+    tableId == 't1';
+    rowId == 'r1';
+    getCellChange?.('t1', 'r1', 'c1') as [true, number, number];
+    store.getTables().t2; // !
+    tableId == 't0'; // !
+    tableId == 't2'; // !
+    rowId == 'r2'; // !
+  });
+  useRowListener('t1', null, (store, tableId, rowId) => {
+    store.getTables().t1;
+    tableId == 't1';
+    rowId == 'r1';
+    rowId == 'r2';
+    store.getTables().t2; // !
+    tableId == 't0'; // !
+    tableId == 't2'; // !
+  });
+  useRowListener(null, 'r1', (store, tableId, rowId) => {
+    store.getTables().t1;
+    tableId == 't1';
+    tableId == 't0';
+    rowId == 'r1';
+    store.getTables().t2; // !
+    tableId == 't2'; // !
+    rowId == 'r2'; // !
+  });
+  useRowListener(null, null, (store, tableId, rowId) => {
+    store.getTables().t1;
+    tableId == 't1';
+    tableId == 't0';
+    rowId == 'r1';
+    rowId == 'r2';
+    store.getTables().t2; // !
+    tableId == 't2'; // !
+  });
+  useRowListener('t1', 'r1', (store, tableId) => {
+    store.getTables().t1;
+    tableId == 't1';
+    store.getTables().t2; // !
+  });
+  useRowListener('t1', 'r1', (store) => {
+    store.getTables().t1;
+    store.getTables().t2; // !
+  });
+  useRowListener('t2', 'r2', () => null); // !
+
+  useCellIdsListener('t1', 'r1', (store, tableId, rowId) => {
+    store.getTables().t1;
+    tableId == 't1';
+    rowId == 'r1';
+    store.getTables().t2; // !
+    tableId == 't0'; // !
+    tableId == 't2'; // !
+    rowId == 'r2'; // !
+  });
+  useCellIdsListener('t1', null, (store, tableId, rowId) => {
+    store.getTables().t1;
+    tableId == 't1';
+    rowId == 'r1';
+    rowId == 'r2';
+    store.getTables().t2; // !
+    tableId == 't0'; // !
+    tableId == 't2'; // !
+  });
+  useCellIdsListener(null, 'r1', (store, tableId, rowId) => {
+    store.getTables().t1;
+    tableId == 't1';
+    tableId == 't0';
+    rowId == 'r1';
+    store.getTables().t2; // !
+    tableId == 't2'; // !
+    rowId == 'r2'; // !
+  });
+  useCellIdsListener(null, null, (store, tableId, rowId) => {
+    store.getTables().t1;
+    tableId == 't1';
+    tableId == 't0';
+    rowId == 'r1';
+    rowId == 'r2';
+    store.getTables().t2; // !
+    tableId == 't2'; // !
+  });
+  useCellIdsListener('t1', 'r1', (store, tableId) => {
+    store.getTables().t1;
+    tableId == 't1';
+    store.getTables().t2; // !
+    tableId == 't0'; // !
+    tableId == 't2'; // !
+  });
+  useCellIdsListener('t1', 'r1', (store) => {
+    store.getTables().t1;
+    store.getTables().t2; // !
+  });
+  useCellIdsListener('t1', 'r1', () => null);
+  useCellIdsListener('t2', 'r2', () => null); // !
+
+  useCellListener(
+    't1',
+    'r1',
+    'c1',
+    (store, tableId, rowId, cellId, newCell, oldCell) => {
+      store.getTables().t1;
+      tableId == 't1';
+      rowId == 'r1';
+      cellId == 'c1';
+      newCell as number;
+      oldCell as number;
+      newCell as string; // !
+      oldCell as string; // !
+      store.getTables().t2; // !
+      tableId == 't0'; // !
+      tableId == 't2'; // !
+      rowId == 'r2'; // !
+      cellId == 'c1d'; // !
+      cellId == 'c2'; // !
+    },
+  );
+  useCellListener(
+    't1',
+    'r1',
+    null,
+    (store, tableId, rowId, cellId, newCell, oldCell) => {
+      store.getTables().t1;
+      tableId == 't1';
+      rowId == 'r1';
+      cellId == 'c1';
+      cellId == 'c1d';
+      newCell as number;
+      oldCell as number;
+      newCell as string;
+      oldCell as string;
+      if (cellId == 'c1') {
+        newCell as number;
+        oldCell as number;
+        newCell as string; // !
+        oldCell as string; // !
+      }
+      if (cellId == 'c1d') {
+        newCell as string;
+        oldCell as string;
+        newCell as number; // !
+        oldCell as number; // !
+      }
+      store.getTables().t2; // !
+      tableId == 't0'; // !
+      tableId == 't2'; // !
+      rowId == 'r2'; // !
+      cellId == 'c2'; // !
+    },
+  );
+  useCellListener('t1', null, 'c1', (store, tableId, rowId, cellId) => {
+    store.getTables().t1;
+    tableId == 't1';
+    rowId == 'r1';
+    rowId == 'r2';
+    cellId == 'c1';
+    store.getTables().t2; // !
+    tableId == 't0'; // !
+    tableId == 't2'; // !
+    cellId == 'c1d'; // !
+    cellId == 'c2'; // !
+  });
+  useCellListener('t1', null, null, (store, tableId, rowId, cellId) => {
+    store.getTables().t1;
+    tableId == 't1';
+    rowId == 'r1';
+    rowId == 'r2';
+    cellId == 'c1';
+    cellId == 'c1d';
+    store.getTables().t2; // !
+    tableId == 't0'; // !
+    tableId == 't2'; // !
+    cellId == 'c2'; // !
+  });
+  useCellListener(null, 'r1', 'c1', (store, tableId, rowId, cellId) => {
+    store.getTables().t1;
+    tableId == 't1';
+    rowId == 'r1';
+    cellId == 'c1';
+    store.getTables().t2; // !
+    tableId == 't0'; // !
+    cellId == 'c1d'; // !
+    cellId == 'c0'; // !
+    tableId == 't2'; // !
+    rowId == 'r2'; // !
+    cellId == 'c2'; // !
+  });
+  useCellListener(
+    null,
+    'r1',
+    null,
+    (store, tableId, rowId, cellId, newCell, oldCell) => {
+      store.getTables().t1;
+      tableId == 't1';
+      tableId == 't0';
+      rowId == 'r1';
+      cellId == 'c1';
+      cellId == 'c1d';
+      cellId == 'c0';
+      newCell as number;
+      oldCell as number;
+      newCell as string;
+      oldCell as string;
+      if (tableId == 't1') {
+        cellId == 'c1';
+        cellId == 'c1d';
+        newCell as number;
+        oldCell as number;
+        newCell as string;
+        oldCell as string;
+        cellId == 'c0'; // !
+      }
+      if (tableId == 't0') {
+        newCell as number;
+        oldCell as number;
+        newCell as string; // !
+        oldCell as string; // !
+      }
+      if (cellId == 'c1') {
+        newCell as number;
+        oldCell as number;
+        newCell as string; // !
+        oldCell as string; // !
+      }
+      if (cellId == 'c1d') {
+        newCell as string;
+        oldCell as string;
+        newCell as number; // !
+        oldCell as number; // !
+      }
+      store.getTables().t2; // !
+      tableId == 't2'; // !
+      rowId == 'r2'; // !
+      cellId == 'c2'; // !
+    },
+  );
+  useCellListener(null, null, 'c1', (store, tableId, rowId, cellId) => {
+    store.getTables().t1;
+    tableId == 't1';
+    rowId == 'r1';
+    rowId == 'r2';
+    cellId == 'c1';
+    store.getTables().t2; // !
+    tableId == 't0'; // !
+    tableId == 't2'; // !
+    cellId == 'c1d'; // !
+    cellId == 'c0'; // !
+    cellId == 'c2'; // !
+  });
+  useCellListener(null, null, null, (store, tableId, rowId, cellId) => {
+    store.getTables().t1;
+    tableId == 't1';
+    tableId == 't0';
+    rowId == 'r1';
+    rowId == 'r2';
+    cellId == 'c1';
+    cellId == 'c1d';
+    cellId == 'c0';
+    if (tableId == 't1') {
+      cellId == 'c1';
+      cellId == 'c1d';
+      cellId == 'c0'; // !
+    }
+    store.getTables().t2; // !
+    tableId == 't2'; // !
+    cellId == 'c2'; // !
+  });
+  useCellListener('t1', 'r1', 'c1', (store, tableId, rowId, ..._) => {
+    store.getTables().t1;
+    tableId == 't1';
+    rowId == 'r1';
+    store.getTables().t2; // !
+    tableId == 't0'; // !
+    tableId == 't2'; // !
+    rowId == 'r2'; // !
+  });
+  useCellListener('t1', 'r1', 'c1', (store, tableId, ..._) => {
+    store.getTables().t1;
+    tableId == 't1';
+    store.getTables().t2; // !
+    tableId == 't0'; // !
+    tableId == 't2'; // !
+  });
+  useCellListener('t1', 'r1', 'c1', (store, ..._) => {
+    store.getTables().t1;
+    store.getTables().t2; // !
+  });
+  useCellListener('t1', 'r1', 'c1', () => null);
+  useCellListener('t1', 'r2', 'c2', () => null); // !
+  useCellListener(null, 'r2', 'c2', () => null); // !
+  useCellListener('t2', 'r2', 'c1', () => null); // !
+
+  useValuesListener((store, getValueChange) => {
+    store.getValues().v1;
+    getValueChange?.('v1') as [true, number, number];
+    store.getValues().v2; // !
+    getValueChange?.('v1') as [true, number, string]; // !
+    getValueChange?.('v1') as [true, string, number]; // !
+  });
+  useValuesListener((store) => {
+    store.getValues().v1;
+    store.getValues().v2; // !
+  });
+  useValuesListener(() => null);
+
+  useValueIdsListener((store) => {
+    store.getValues().v1;
+    store.getValues().v2; // !
+  });
+  useValueIdsListener(() => null);
+
+  useValueListener('v1', (store, valueId, newValue, oldValue) => {
+    store.getValues().v1;
+    valueId == 'v1';
+    newValue as number;
+    oldValue as number;
+    store.getValues().v2; // !
+    valueId == 'v2'; // !
+    newValue as string; // !
+    oldValue as string; // !
+  });
+  useValueListener(null, (store, valueId, newValue, oldValue) => {
+    store.getValues().v1;
+    valueId == 'v1';
+    valueId == 'v1d';
+    newValue as number;
+    oldValue as number;
+    newValue as string;
+    oldValue as string;
+    if (valueId == 'v1') {
+      newValue as number;
+      oldValue as number;
+      newValue as string; // !
+      oldValue as string; // !
+    }
+    if (valueId == 'v1d') {
+      newValue as string;
+      oldValue as string;
+      newValue as number; // !
+      oldValue as number; // !
+    }
+    store.getValues().v2; // !
+    valueId == 'v2'; // !
+  });
+  useValueListener(null, (store, ..._) => {
+    store.getValues().v1;
+    store.getValues().v2; // !
+  });
+  useValueListener('v2', () => null); // !
 };
