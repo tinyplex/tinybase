@@ -6,6 +6,7 @@ import * as UiReact from 'tinybase/ui-react/with-schemas';
 import {
   createIndexes,
   createMetrics,
+  createRelationships,
   createStore,
 } from 'tinybase/debug/with-schemas';
 
@@ -30,6 +31,7 @@ const {
   useCellListener,
   useCreateIndexes,
   useCreateMetrics,
+  useCreateRelationships,
   useCreateStore,
   useDelCellCallback,
   useDelRowCallback,
@@ -38,8 +40,12 @@ const {
   useDelValueCallback,
   useDelValuesCallback,
   useIndexes,
+  useLinkedRowIdsListener,
+  useLocalRowIdsListener,
   useMetricListener,
   useMetrics,
+  useRelationships,
+  useRemoteRowIdListener,
   useRow,
   useRowIds,
   useRowIdsListener,
@@ -807,5 +813,38 @@ const _Indexes = () => {
   useSliceRowIdsListener('i1', 's1', (indexes) => {
     indexes.getStore().getTables().t1;
     indexes.getStore().getTables().t2; // !
+  });
+};
+
+const _Relationships = () => {
+  const relationshipsWithSchema = useCreateRelationships(
+    createStore().setSchema(tablesSchema, valuesSchema),
+    createRelationships,
+  );
+  relationshipsWithSchema.getStore().getTables().t1;
+  relationshipsWithSchema.getStore().getTables().t2; // !
+  useCreateRelationships(createStore(), createRelationships); // !
+
+  useRelationships()?.getStore().getTables().t1;
+  useRelationships()?.getStore().getTables().t2; // !
+
+  useSliceIdsListener('i1', (relationships) => {
+    relationships.getStore().getTables().t1;
+    relationships.getStore().getTables().t2; // !
+  });
+
+  useRemoteRowIdListener('r1', 'r1', (relationships) => {
+    relationships.getStore().getTables().t1;
+    relationships.getStore().getTables().t2; // !
+  });
+
+  useLocalRowIdsListener('r1', 'r1', (relationships) => {
+    relationships.getStore().getTables().t1;
+    relationships.getStore().getTables().t2; // !
+  });
+
+  useLinkedRowIdsListener('r1', 'r1', (relationships) => {
+    relationships.getStore().getTables().t1;
+    relationships.getStore().getTables().t2; // !
   });
 };
