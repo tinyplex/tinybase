@@ -6,6 +6,7 @@ import * as UiReact from 'tinybase/ui-react/with-schemas';
 import {
   createIndexes,
   createMetrics,
+  createQueries,
   createRelationships,
   createStore,
 } from 'tinybase/debug/with-schemas';
@@ -24,6 +25,14 @@ const valuesSchema = {
 } as const;
 
 const {
+  useCreateQueries,
+  useQueries,
+  useResultTableListener,
+  useResultRowIdsListener,
+  useResultSortedRowIdsListener,
+  useResultRowListener,
+  useResultCellIdsListener,
+  useResultCellListener,
   useAddRowCallback,
   useCell,
   useCellIds,
@@ -828,11 +837,6 @@ const _Relationships = () => {
   useRelationships()?.getStore().getTables().t1;
   useRelationships()?.getStore().getTables().t2; // !
 
-  useSliceIdsListener('i1', (relationships) => {
-    relationships.getStore().getTables().t1;
-    relationships.getStore().getTables().t2; // !
-  });
-
   useRemoteRowIdListener('r1', 'r1', (relationships) => {
     relationships.getStore().getTables().t1;
     relationships.getStore().getTables().t2; // !
@@ -846,5 +850,48 @@ const _Relationships = () => {
   useLinkedRowIdsListener('r1', 'r1', (relationships) => {
     relationships.getStore().getTables().t1;
     relationships.getStore().getTables().t2; // !
+  });
+};
+
+const _Queries = () => {
+  const queriesWithSchema = useCreateQueries(
+    createStore().setSchema(tablesSchema, valuesSchema),
+    createQueries,
+  );
+  queriesWithSchema.getStore().getTables().t1;
+  queriesWithSchema.getStore().getTables().t2; // !
+  useCreateQueries(createStore(), createQueries); // !
+
+  useQueries()?.getStore().getTables().t1;
+  useQueries()?.getStore().getTables().t2; // !
+
+  useResultTableListener('q1', (queries) => {
+    queries.getStore().getTables().t1;
+    queries.getStore().getTables().t2; // !
+  });
+
+  useResultRowIdsListener('q1', (queries) => {
+    queries.getStore().getTables().t1;
+    queries.getStore().getTables().t2; // !
+  });
+
+  useResultSortedRowIdsListener('q1', 'rc1', true, 0, 10, (queries) => {
+    queries.getStore().getTables().t1;
+    queries.getStore().getTables().t2; // !
+  });
+
+  useResultRowListener('q1', 'rr1', (queries) => {
+    queries.getStore().getTables().t1;
+    queries.getStore().getTables().t2; // !
+  });
+
+  useResultCellIdsListener('q1', 'rr1', (queries) => {
+    queries.getStore().getTables().t1;
+    queries.getStore().getTables().t2; // !
+  });
+
+  useResultCellListener('q1', 'rr1', 'c1', (queries) => {
+    queries.getStore().getTables().t1;
+    queries.getStore().getTables().t2; // !
   });
 };
