@@ -5,6 +5,7 @@
 import * as UiReact from 'tinybase/ui-react/with-schemas';
 import {
   createCheckpoints,
+  createFilePersister,
   createIndexes,
   createMetrics,
   createQueries,
@@ -27,6 +28,7 @@ const valuesSchema = {
 
 const {
   useAddRowCallback,
+  useCreatePersister,
   useCell,
   useCellIds,
   useCellIdsListener,
@@ -944,4 +946,19 @@ const _Checkpoints = () => {
     checkpoints.getStore().getTables().t1;
     checkpoints.getStore().getTables().t2; // !
   });
+};
+
+const _Persister = () => {
+  const persisterWithSchema = useCreatePersister(
+    createStore().setSchema(tablesSchema, valuesSchema),
+    (store) => createFilePersister(store, ''),
+    undefined,
+    async (persister) => {
+      persister.getStore().getTables().t1;
+      persister.getStore().getTables().t2; // !
+    },
+  );
+  persisterWithSchema.getStore().getTables().t1;
+  persisterWithSchema.getStore().getTables().t2; // !
+  useCreatePersister(createStore(), (s) => createFilePersister(s, '')); // !
 };
