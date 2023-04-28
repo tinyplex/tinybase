@@ -3,8 +3,11 @@
 // NB: an exclamation mark after a line visually indicates an expected TS error
 
 import * as UiReact from 'tinybase/ui-react/with-schemas';
-import React from 'react';
-import {createMetrics, createStore} from 'tinybase/debug/with-schemas';
+import {
+  createIndexes,
+  createMetrics,
+  createStore,
+} from 'tinybase/debug/with-schemas';
 
 const tablesSchema = {
   t0: {c0: {type: 'number'}},
@@ -25,6 +28,7 @@ const {
   useCellIds,
   useCellIdsListener,
   useCellListener,
+  useCreateIndexes,
   useCreateMetrics,
   useCreateStore,
   useDelCellCallback,
@@ -33,6 +37,7 @@ const {
   useDelTablesCallback,
   useDelValueCallback,
   useDelValuesCallback,
+  useIndexes,
   useMetricListener,
   useMetrics,
   useRow,
@@ -47,6 +52,8 @@ const {
   useSetTablesCallback,
   useSetValueCallback,
   useSetValuesCallback,
+  useSliceIdsListener,
+  useSliceRowIdsListener,
   useSortedRowIds,
   useSortedRowIdsListener,
   useStore,
@@ -777,5 +784,28 @@ const _Metrics = () => {
   useMetricListener('m1', (metrics) => {
     metrics.getStore().getTables().t1;
     metrics.getStore().getTables().t2; // !
+  });
+};
+
+const _Indexes = () => {
+  const indexesWithSchema = useCreateIndexes(
+    createStore().setSchema(tablesSchema, valuesSchema),
+    createIndexes,
+  );
+  indexesWithSchema.getStore().getTables().t1;
+  indexesWithSchema.getStore().getTables().t2; // !
+  useCreateIndexes(createStore(), createIndexes); // !
+
+  useIndexes()?.getStore().getTables().t1;
+  useIndexes()?.getStore().getTables().t2; // !
+
+  useSliceIdsListener('i1', (indexes) => {
+    indexes.getStore().getTables().t1;
+    indexes.getStore().getTables().t2; // !
+  });
+
+  useSliceRowIdsListener('i1', 's1', (indexes) => {
+    indexes.getStore().getTables().t1;
+    indexes.getStore().getTables().t2; // !
   });
 };
