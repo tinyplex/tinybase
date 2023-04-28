@@ -4,6 +4,7 @@
 
 import * as UiReact from 'tinybase/ui-react/with-schemas';
 import {
+  createCheckpoints,
   createIndexes,
   createMetrics,
   createQueries,
@@ -25,21 +26,18 @@ const valuesSchema = {
 } as const;
 
 const {
-  useCreateQueries,
-  useQueries,
-  useResultTableListener,
-  useResultRowIdsListener,
-  useResultSortedRowIdsListener,
-  useResultRowListener,
-  useResultCellIdsListener,
-  useResultCellListener,
   useAddRowCallback,
   useCell,
   useCellIds,
   useCellIdsListener,
   useCellListener,
+  useCheckpointIdsListener,
+  useCheckpointListener,
+  useCheckpoints,
+  useCreateCheckpoints,
   useCreateIndexes,
   useCreateMetrics,
+  useCreateQueries,
   useCreateRelationships,
   useCreateStore,
   useDelCellCallback,
@@ -48,18 +46,27 @@ const {
   useDelTablesCallback,
   useDelValueCallback,
   useDelValuesCallback,
+  useGoToCallback,
   useIndexes,
   useLinkedRowIdsListener,
   useLocalRowIdsListener,
   useMetricListener,
   useMetrics,
+  useQueries,
   useRelationships,
   useRemoteRowIdListener,
+  useResultCellIdsListener,
+  useResultCellListener,
+  useResultRowIdsListener,
+  useResultRowListener,
+  useResultSortedRowIdsListener,
+  useResultTableListener,
   useRow,
   useRowIds,
   useRowIdsListener,
   useRowListener,
   useSetCellCallback,
+  useSetCheckpointCallback,
   useSetPartialRowCallback,
   useSetPartialValuesCallback,
   useSetRowCallback,
@@ -893,5 +900,48 @@ const _Queries = () => {
   useResultCellListener('q1', 'rr1', 'c1', (queries) => {
     queries.getStore().getTables().t1;
     queries.getStore().getTables().t2; // !
+  });
+};
+
+const _Checkpoints = () => {
+  const checkpointsWithSchema = useCreateCheckpoints(
+    createStore().setSchema(tablesSchema, valuesSchema),
+    createCheckpoints,
+  );
+  checkpointsWithSchema.getStore().getTables().t1;
+  checkpointsWithSchema.getStore().getTables().t2; // !
+  useCreateCheckpoints(createStore(), createCheckpoints); // !
+
+  useCheckpoints()?.getStore().getTables().t1;
+  useCheckpoints()?.getStore().getTables().t2; // !
+
+  useSetCheckpointCallback(
+    undefined,
+    undefined,
+    undefined,
+    (_checkpointId, checkpoints) => {
+      checkpoints.getStore().getTables().t1;
+      checkpoints.getStore().getTables().t2; // !
+    },
+  );
+
+  useGoToCallback(
+    () => 'c1',
+    undefined,
+    undefined,
+    (checkpoints) => {
+      checkpoints.getStore().getTables().t1;
+      checkpoints.getStore().getTables().t2; // !
+    },
+  );
+
+  useCheckpointIdsListener((checkpoints) => {
+    checkpoints.getStore().getTables().t1;
+    checkpoints.getStore().getTables().t2; // !
+  });
+
+  useCheckpointListener('c1', (checkpoints) => {
+    checkpoints.getStore().getTables().t1;
+    checkpoints.getStore().getTables().t2; // !
   });
 };
