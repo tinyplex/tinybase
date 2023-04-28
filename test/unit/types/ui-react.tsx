@@ -4,7 +4,7 @@
 
 import * as UiReact from 'tinybase/ui-react/with-schemas';
 import React from 'react';
-import {createStore} from 'tinybase/debug/with-schemas';
+import {createMetrics, createStore} from 'tinybase/debug/with-schemas';
 
 const tablesSchema = {
   t0: {c0: {type: 'number'}},
@@ -25,6 +25,7 @@ const {
   useCellIds,
   useCellIdsListener,
   useCellListener,
+  useCreateMetrics,
   useCreateStore,
   useDelCellCallback,
   useDelRowCallback,
@@ -32,6 +33,8 @@ const {
   useDelTablesCallback,
   useDelValueCallback,
   useDelValuesCallback,
+  useMetricListener,
+  useMetrics,
   useRow,
   useRowIds,
   useRowIdsListener,
@@ -757,4 +760,22 @@ const _Listeners = () => {
     store.getValues().v2; // !
   });
   useValueListener('v2', () => null); // !
+};
+
+const _Metrics = () => {
+  const metricsWithSchema = useCreateMetrics(
+    createStore().setSchema(tablesSchema, valuesSchema),
+    createMetrics,
+  );
+  metricsWithSchema.getStore().getTables().t1;
+  metricsWithSchema.getStore().getTables().t2; // !
+  useCreateMetrics(createStore(), createMetrics); // !
+
+  useMetrics()?.getStore().getTables().t1;
+  useMetrics()?.getStore().getTables().t2; // !
+
+  useMetricListener('m1', (metrics) => {
+    metrics.getStore().getTables().t1;
+    metrics.getStore().getTables().t2; // !
+  });
 };
