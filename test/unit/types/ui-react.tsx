@@ -24,6 +24,12 @@ const {
   useCell,
   useCellIds,
   useCreateStore,
+  useDelCellCallback,
+  useDelRowCallback,
+  useDelTableCallback,
+  useDelTablesCallback,
+  useDelValueCallback,
+  useDelValuesCallback,
   useRow,
   useRowIds,
   useSetCellCallback,
@@ -265,4 +271,29 @@ const _Setters = () => {
   useSetValueCallback('v1', () => () => ''); // !
   useSetValueCallback('v1', () => ''); // !
   useSetValueCallback('v2', () => 1); // !
+};
+
+const _Deleters = () => {
+  useDelTablesCallback(undefined, (store) => {
+    store.getTables().t1;
+    store.getTables().t2; // !
+  });
+
+  useDelTableCallback('t1');
+  useDelTableCallback('t2'); // !
+
+  useDelRowCallback('t1', 'r1');
+  useDelRowCallback('t2', 'r1'); // !
+
+  useDelCellCallback('t1', 'r1', 'c1');
+  useDelCellCallback('t1', 'r1', 'c2'); // !
+  useDelCellCallback('t2', 'r1'); // !
+
+  useDelValuesCallback(undefined, (store) => {
+    store.getValues().v1;
+    store.getValues().v2; // !
+  });
+
+  useDelValueCallback('v1');
+  useDelValueCallback('v2'); // !
 };
