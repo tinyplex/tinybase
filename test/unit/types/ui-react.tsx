@@ -2,9 +2,10 @@
 
 // NB: an exclamation mark after a line visually indicates an expected TS error
 
-import * as UiReact from 'tinybase/ui-react/with-schemas';
+import * as UiReact from 'tinybase/debug/ui-react/with-schemas';
 import {
   Id,
+  NoValuesSchema,
   createCheckpoints,
   createFilePersister,
   createIndexes,
@@ -28,6 +29,9 @@ const valuesSchema = {
   v1d: {type: 'string', default: ''},
 } as const;
 
+const UiReactWithSchemas = UiReact as UiReact.WithSchemas<
+  [typeof tablesSchema, typeof valuesSchema]
+>;
 const {
   CellView,
   LinkedRowsView,
@@ -106,7 +110,12 @@ const {
   useValuesListener,
   ValuesView,
   ValueView,
-} = UiReact as UiReact.WithSchemas<[typeof tablesSchema, typeof valuesSchema]>;
+} = UiReactWithSchemas;
+
+const UiReactWithSchemas2 = UiReact as UiReact.WithSchemas<
+  [{t2: {c2: {type: 'number'}}}, NoValuesSchema]
+>;
+const {useStore: useStore2} = UiReactWithSchemas2;
 
 const _Getters = () => {
   const storeWithSchemas = useCreateStore(() =>
@@ -120,6 +129,9 @@ const _Getters = () => {
 
   useStore()?.getTables().t1;
   useStore()?.getTables().t2; // !
+
+  useStore2()?.getTables().t2;
+  useStore2()?.getTables().t3; // !
 
   useTables().t1;
   useTables().t2; // !
@@ -345,7 +357,7 @@ const _Deleters = () => {
 
   useDelCellCallback('t1', 'r1', 'c1');
   useDelCellCallback('t1', 'r1', 'c2'); // !
-  useDelCellCallback('t2', 'r1'); // !
+  useDelCellCallback('t2', 'r1', 'c1'); // !
 
   useDelValuesCallback(undefined, (store) => {
     store.getValues().v1;
