@@ -41,9 +41,8 @@
       UI</a>.
     </li>
     <li>
-      <a href='#generate-orm-like-apis'>Generate ORM-like APIs</a> 
-      (<em>new!</em>) in TypeScript, based on a schema or inferred from actual 
-      data.
+      <a href='#type-definitions-orm-like-apis'>Type definitions &amp; ORM-like APIs</a> 
+      (<em>new!</em>), based on a schema or inferred from actual data.
     </li>
   </ul>
   <p>
@@ -470,13 +469,16 @@ console.log(store.getCell('pets', 'felix', 'sold'));
 // -> false
 ```
 
-> ## Generate ORM-like APIs
+> ## Type definitions &amp; ORM-like APIs
 >
-> You can easily create TypeScript `.d.ts` definitions that model your data and
-> encourage type-safety when reading and writing data - as well as `.ts`
-> implementations that provide ORM-like methods for your named tables.
+> TinyBase has comprehensive type definitions, and even offers definitions that
+> infer API types from the data schemas you apply.
 >
-> Read more about TinyBase's tools and CLI in the Developer Tools guide.
+> Furthermore, you can easily create TypeScript `.d.ts` definitions that model
+> your data and encourage type-safety when reading and writing data - as well as
+> `.ts` implementations that provide ORM-like methods for your named tables.
+>
+> Read more about the type support in the TinyBase and TypeScript guide.
 
 ```js yolo
 const tools = createTools(store);
