@@ -23,6 +23,7 @@ import {
   LocalRowsProps,
   MetricProps,
   MetricsOrMetricsId,
+  ProviderProps,
   QueriesOrQueriesId,
   RelationshipsOrRelationshipsId,
   RemoteRowProps,
@@ -79,7 +80,6 @@ import {
   RemoteRowIdListener,
 } from './relationships.d';
 import {MetricListener, Metrics} from './metrics.d';
-import {ProviderProps, ReactElement} from 'react';
 import {
   Queries,
   ResultCell,
@@ -92,6 +92,7 @@ import {
   ResultTableListener,
 } from './queries.d';
 import {Persister} from './persisters.d';
+import {ReactElement} from 'react';
 
 export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// StoreOrStoreId

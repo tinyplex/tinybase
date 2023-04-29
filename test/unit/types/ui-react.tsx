@@ -4,6 +4,7 @@
 
 import * as UiReact from 'tinybase/ui-react/with-schemas';
 import {
+  Id,
   createCheckpoints,
   createFilePersister,
   createIndexes,
@@ -12,6 +13,7 @@ import {
   createRelationships,
   createStore,
 } from 'tinybase/debug/with-schemas';
+import React from 'react';
 
 const tablesSchema = {
   t0: {c0: {type: 'number'}},
@@ -27,8 +29,16 @@ const valuesSchema = {
 } as const;
 
 const {
+  CellView,
+  LinkedRowsView,
+  LocalRowsView,
+  RemoteRowView,
+  RowView,
+  Provider,
+  SortedTableView,
+  TablesView,
+  TableView,
   useAddRowCallback,
-  useCreatePersister,
   useCell,
   useCellIds,
   useCellIdsListener,
@@ -39,6 +49,7 @@ const {
   useCreateCheckpoints,
   useCreateIndexes,
   useCreateMetrics,
+  useCreatePersister,
   useCreateQueries,
   useCreateRelationships,
   useCreateStore,
@@ -93,6 +104,8 @@ const {
   useValueListener,
   useValues,
   useValuesListener,
+  ValuesView,
+  ValueView,
 } = UiReact as UiReact.WithSchemas<[typeof tablesSchema, typeof valuesSchema]>;
 
 const _Getters = () => {
@@ -962,3 +975,195 @@ const _Persister = () => {
   persisterWithSchema.getStore().getTables().t2; // !
   useCreatePersister(createStore(), (s) => createFilePersister(s, '')); // !
 };
+
+const GoodTableView = ({tableId}: {tableId: 't0' | 't1'}) => <b>{tableId}</b>;
+const PoorTableView = ({tableId}: {tableId: 't0' | 't2'}) => <b>{tableId}</b>;
+
+const GoodRowView = ({tableId, rowId}: {tableId: 't0' | 't1'; rowId: Id}) => (
+  <b>
+    {tableId}/{rowId}
+  </b>
+);
+const PoorRowView = ({tableId, rowId}: {tableId: 't0' | 't2'; rowId: Id}) => (
+  <b>
+    {tableId}/{rowId}
+  </b>
+);
+const GoodT1RowView = ({tableId, rowId}: {tableId: 't1'; rowId: Id}) => (
+  <b>
+    {tableId}/{rowId}
+  </b>
+);
+const PoorT1RowView = ({tableId, rowId}: {tableId: 't2'; rowId: Id}) => (
+  <b>
+    {tableId}/{rowId}
+  </b>
+);
+
+const GoodCellView = ({
+  tableId,
+  rowId,
+  cellId,
+}: {
+  tableId: 't0' | 't1';
+  rowId: Id;
+  cellId: 'c0' | 'c1' | 'c1d';
+}) => (
+  <b>
+    {tableId}/{rowId}/{cellId}
+  </b>
+);
+const GoodT1CellView = ({
+  tableId,
+  rowId,
+  cellId,
+}: {
+  tableId: 't1';
+  rowId: Id;
+  cellId: 'c1' | 'c1d';
+}) => (
+  <b>
+    {tableId}/{rowId}/{cellId}
+  </b>
+);
+const PoorCellView = ({
+  tableId,
+  rowId,
+  cellId,
+}: {
+  tableId: 't0' | 't1';
+  rowId: Id;
+  cellId: 'c0' | 'c2';
+}) => (
+  <b>
+    {tableId}/{rowId}/{cellId}
+  </b>
+);
+const PoorT1CellView = ({
+  tableId,
+  rowId,
+  cellId,
+}: {
+  tableId: 't1';
+  rowId: Id;
+  cellId: 'c2';
+}) => (
+  <b>
+    {tableId}/{rowId}/{cellId}
+  </b>
+);
+
+const GoodValueView = ({valueId}: {valueId: 'v1' | 'v1d'}) => <b>{valueId}</b>;
+const PoorValueView = ({valueId}: {valueId: 'v1' | 'v2'}) => <b>{valueId}</b>;
+
+const _App = () => (
+  <>
+    <TablesView />
+    <TablesView tableComponent={GoodTableView} />
+    <TablesView tableComponent={PoorTableView} /> {/* ! */}
+    {/* 
+    
+    */}
+    <TableView tableId="t1" />
+    <TableView tableId="t1" rowComponent={GoodRowView} />
+    <TableView tableId="t1" rowComponent={GoodT1RowView} />
+    <TableView tableId="t1" rowComponent={PoorRowView} /> {/* ! */}
+    <TableView tableId="t1" rowComponent={PoorT1RowView} /> {/* ! */}
+    <TableView tableId="t2" /> {/* ! */}
+    {/*
+    
+    */}
+    <SortedTableView tableId="t1" />
+    <SortedTableView tableId="t1" rowComponent={GoodRowView} />
+    <SortedTableView tableId="t1" rowComponent={GoodT1RowView} />
+    <SortedTableView tableId="t1" rowComponent={PoorRowView} /> {/* ! */}
+    <SortedTableView tableId="t1" rowComponent={PoorT1RowView} /> {/* ! */}
+    <SortedTableView tableId="t2" /> {/* ! */}
+    {/* 
+    
+    */}
+    <RowView tableId="t1" rowId="r1" />
+    <RowView tableId="t1" rowId="r1" cellComponent={GoodCellView} />
+    <RowView tableId="t1" rowId="r1" cellComponent={GoodT1CellView} />
+    <RowView tableId="t1" rowId="r1" cellComponent={PoorCellView} /> {/* ! */}
+    <RowView tableId="t1" rowId="r1" cellComponent={PoorT1CellView} /> {/* ! */}
+    <RowView tableId="t2" rowId="r2" /> {/* ! */}
+    {/* 
+    
+    */}
+    <CellView tableId="t1" rowId="r1" cellId="c1" />
+    <CellView tableId="t1" rowId="r1" cellId="c2" /> {/* ! */}
+    <CellView tableId="t2" rowId="r1" cellId="c2" /> {/* ! */}
+    {/* 
+    
+    */}
+    <ValuesView />
+    <ValuesView valueComponent={GoodValueView} />
+    <ValuesView valueComponent={PoorValueView} /> {/* ! */}
+    {/* 
+    
+    */}
+    <ValueView valueId="v1" />
+    <ValueView valueId="v2" /> {/* ! */}
+    {/* 
+    
+    */}
+    <RemoteRowView
+      relationshipId="r1"
+      localRowId="r1"
+      rowComponent={GoodRowView}
+    />
+    <RemoteRowView
+      relationshipId="r1"
+      localRowId="r1"
+      rowComponent={PoorRowView} // !
+    />
+    {/* 
+    
+    */}
+    <LocalRowsView
+      relationshipId="r1"
+      remoteRowId="r1"
+      rowComponent={GoodRowView}
+    />
+    <LocalRowsView
+      relationshipId="r1"
+      remoteRowId="r1"
+      rowComponent={PoorRowView} // !
+    />
+    {/* 
+    
+    */}
+    <LinkedRowsView
+      relationshipId="r1"
+      firstRowId="r1"
+      rowComponent={GoodRowView}
+    />
+    <LocalRowsView
+      relationshipId="r1"
+      firstRowId="r1"
+      rowComponent={PoorRowView} // !
+    />
+    {/* 
+    
+    */}
+    <Provider store={createStore().setSchema(tablesSchema, valuesSchema)}>
+      <b />
+    </Provider>
+    <Provider
+      store={createStore().setTablesSchema(tablesSchema)} // !
+    >
+      <b />
+    </Provider>
+    <Provider
+      store={createStore().setValuesSchema(valuesSchema)} // !
+    >
+      <b />
+    </Provider>
+    <Provider
+      store={createStore()} // !
+    >
+      <b />
+    </Provider>
+  </>
+);

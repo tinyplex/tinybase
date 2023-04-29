@@ -49,91 +49,107 @@ type TablesProps<Schemas extends OptionalSchemas> = {
 
 export type TableProps<
   Schemas extends OptionalSchemas,
-  TableId extends TableIdFromSchema<Schemas[0]> = TableIdFromSchema<Schemas[0]>,
-> = {
-  /// TableProps.tableId
-  readonly tableId: TableId;
-  /// TableProps.store
-  readonly store?: StoreOrStoreId<Schemas>;
-  /// TableProps.rowComponent
-  readonly rowComponent?: ComponentType<RowProps<Schemas>>;
-  /// TableProps.getRowComponentProps
-  readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
-  /// TableProps.separator
-  readonly separator?: ReactElement | string;
-  /// TableProps.debugIds
-  readonly debugIds?: boolean;
-};
+  TableIds extends TableIdFromSchema<Schemas[0]> = TableIdFromSchema<
+    Schemas[0]
+  >,
+> = TableIds extends infer TableId
+  ? TableId extends TableIdFromSchema<Schemas[0]>
+    ? {
+        /// TableProps.tableId
+        readonly tableId: TableId;
+        /// TableProps.store
+        readonly store?: StoreOrStoreId<Schemas>;
+        /// TableProps.rowComponent
+        readonly rowComponent?: ComponentType<RowProps<Schemas, TableId>>;
+        /// TableProps.getRowComponentProps
+        readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
+        /// TableProps.separator
+        readonly separator?: ReactElement | string;
+        /// TableProps.debugIds
+        readonly debugIds?: boolean;
+      }
+    : never
+  : never;
 
 export type SortedTableProps<
   Schemas extends OptionalSchemas,
-  TableId extends TableIdFromSchema<Schemas[0]> = TableIdFromSchema<Schemas[0]>,
-  CellId extends CellIdFromSchema<Schemas[0], TableId> = CellIdFromSchema<
-    Schemas[0],
-    TableId
+  TableIds extends TableIdFromSchema<Schemas[0]> = TableIdFromSchema<
+    Schemas[0]
   >,
-> = {
-  /// SortedTableProps.tableId
-  readonly tableId: TableId;
-  /// SortedTableProps.cellId
-  readonly cellId?: CellId;
-  /// SortedTableProps.descending
-  readonly descending?: boolean;
-  /// SortedTableProps.offset
-  readonly offset?: number;
-  /// SortedTableProps.limit
-  readonly limit?: number;
-  /// SortedTableProps.store
-  readonly store?: StoreOrStoreId<Schemas>;
-  /// SortedTableProps.rowComponent
-  readonly rowComponent?: ComponentType<RowProps<Schemas, TableId>>;
-  /// SortedTableProps.getRowComponentProps
-  readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
-  /// SortedTableProps.separator
-  readonly separator?: ReactElement | string;
-  /// SortedTableProps.debugIds
-  readonly debugIds?: boolean;
-};
+> = TableIds extends infer TableId
+  ? TableId extends TableIdFromSchema<Schemas[0]>
+    ? {
+        /// SortedTableProps.tableId
+        readonly tableId: TableId;
+        /// SortedTableProps.cellId
+        readonly cellId?: CellIdFromSchema<Schemas[0], TableId>;
+        /// SortedTableProps.descending
+        readonly descending?: boolean;
+        /// SortedTableProps.offset
+        readonly offset?: number;
+        /// SortedTableProps.limit
+        readonly limit?: number;
+        /// SortedTableProps.store
+        readonly store?: StoreOrStoreId<Schemas>;
+        /// SortedTableProps.rowComponent
+        readonly rowComponent?: ComponentType<RowProps<Schemas, TableId>>;
+        /// SortedTableProps.getRowComponentProps
+        readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
+        /// SortedTableProps.separator
+        readonly separator?: ReactElement | string;
+        /// SortedTableProps.debugIds
+        readonly debugIds?: boolean;
+      }
+    : never
+  : never;
 
 export type RowProps<
   Schemas extends OptionalSchemas,
-  TableId extends TableIdFromSchema<Schemas[0]> = TableIdFromSchema<Schemas[0]>,
-> = {
-  /// RowProps.tableId
-  readonly tableId: TableId;
-  /// RowProps.rowId
-  readonly rowId: Id;
-  /// RowProps.store
-  readonly store?: StoreOrStoreId<Schemas>;
-  /// RowProps.cellComponent
-  readonly cellComponent?: ComponentType<CellProps<Schemas, TableId>>;
-  /// RowProps.getCellComponentProps
-  readonly getCellComponentProps?: (cellId: Id) => ExtraProps;
-  /// RowProps.separator
-  readonly separator?: ReactElement | string;
-  /// RowProps.debugIds
-  readonly debugIds?: boolean;
-};
+  TableIds extends TableIdFromSchema<Schemas[0]> = TableIdFromSchema<
+    Schemas[0]
+  >,
+> = TableIds extends infer TableId
+  ? TableId extends TableIdFromSchema<Schemas[0]>
+    ? {
+        /// RowProps.tableId
+        readonly tableId: TableId;
+        /// RowProps.rowId
+        readonly rowId: Id;
+        /// RowProps.store
+        readonly store?: StoreOrStoreId<Schemas>;
+        /// RowProps.cellComponent
+        readonly cellComponent?: ComponentType<CellProps<Schemas, TableId>>;
+        /// RowProps.getCellComponentProps
+        readonly getCellComponentProps?: (cellId: Id) => ExtraProps;
+        /// RowProps.separator
+        readonly separator?: ReactElement | string;
+        /// RowProps.debugIds
+        readonly debugIds?: boolean;
+      }
+    : never
+  : never;
 
 export type CellProps<
   Schemas extends OptionalSchemas,
-  TableId extends TableIdFromSchema<Schemas[0]> = TableIdFromSchema<Schemas[0]>,
-  CellId extends CellIdFromSchema<Schemas[0], TableId> = CellIdFromSchema<
-    Schemas[0],
-    TableId
+  TableIds extends TableIdFromSchema<Schemas[0]> = TableIdFromSchema<
+    Schemas[0]
   >,
-> = {
-  /// CellProps.tableId
-  readonly tableId: TableId;
-  /// CellProps.rowId
-  readonly rowId: Id;
-  /// CellProps.cellId
-  readonly cellId: CellId;
-  /// CellProps.store
-  readonly store?: StoreOrStoreId<Schemas>;
-  /// CellProps.debugIds
-  readonly debugIds?: boolean;
-};
+> = TableIds extends infer TableId
+  ? TableId extends TableIdFromSchema<Schemas[0]>
+    ? {
+        /// CellProps.tableId
+        readonly tableId: TableId;
+        /// CellProps.rowId
+        readonly rowId: Id;
+        /// CellProps.cellId
+        readonly cellId: CellIdFromSchema<Schemas[0], TableId>;
+        /// CellProps.store
+        readonly store?: StoreOrStoreId<Schemas>;
+        /// CellProps.debugIds
+        readonly debugIds?: boolean;
+      }
+    : never
+  : never;
 
 export type ValuesProps<Schemas extends OptionalSchemas> = {
   /// ValuesProps.store
@@ -148,12 +164,9 @@ export type ValuesProps<Schemas extends OptionalSchemas> = {
   readonly debugIds?: boolean;
 };
 
-export type ValueProps<
-  Schemas extends OptionalSchemas,
-  ValueId extends ValueIdFromSchema<Schemas[1]> = ValueIdFromSchema<Schemas[1]>,
-> = {
+export type ValueProps<Schemas extends OptionalSchemas> = {
   /// ValueProps.valueId
-  readonly valueId: ValueId;
+  readonly valueId: ValueIdFromSchema<Schemas[1]>;
   /// ValueProps.store
   readonly store?: StoreOrStoreId<Schemas>;
   /// ValueProps.debugIds
