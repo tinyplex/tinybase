@@ -1,11 +1,6 @@
 /// tools
 
-import {
-  OptionalSchemas,
-  OptionalTablesSchema,
-  OptionalValuesSchema,
-  Store,
-} from './store.d';
+import {OptionalSchemas, Store} from './store.d';
 import {Id} from './common.d';
 
 /// StoreStats
