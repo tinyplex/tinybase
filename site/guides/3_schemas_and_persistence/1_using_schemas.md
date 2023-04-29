@@ -1,7 +1,6 @@
 # Using Schemas
 
-Schemas are a simple declarative way to say what data you would like to
-store.
+Schemas are a simple declarative way to say what data you would like to store.
 
 A ValuesSchema simply describes specific Value types and default. A TablesSchema
 describes specific Cell types and defaults in specific Tables.
@@ -124,5 +123,5 @@ with the delValuesSchema method or the delTablesSchema method.
 Adding a schema gives you a simple declarative way to describe your data
 structure.
 
-Sometimes, however, you may require more complex programmatic enforcement of
-your data, and for that we turn to the Mutating Data With Listeners guide.
+You can also benefit from a better developer experience based on these schemas,
+and for that we turn to the Schema-Based Typing guide.

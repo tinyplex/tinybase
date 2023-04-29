@@ -59,6 +59,6 @@ import {createStore} from 'tinybase/lib';
 import {useCell} from 'tinybase/lib/ui-react';
 ```
 
-OK, enough with the `import` shenanigans. Next we will show how you can quickly
-build user interfaces on top of a Store, and for that, it's time to proceed to
-the Building UIs guide.
+OK, enough with the `import` shenanigans. Let's briefly look at how TinyBase
+benefits from using TypeScript to improve your developer experience in the
+TinyBase and TypeScript guide.
