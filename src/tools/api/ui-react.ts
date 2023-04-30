@@ -746,8 +746,9 @@ export const getStoreUiReactApi = (
             'store: Store',
             'row: ' + rowWhenSetType + ')' + RETURNS_VOID,
             'then' + DEPS_SUFFIX,
-          ),
-        THEN_AND_THEN_DEPS_IN_CALL,
+          ) +
+          ', reuseRowIds?: boolean',
+        THEN_AND_THEN_DEPS_IN_CALL + ', reuseRowIds',
       );
 
       // useSetPartialRowCallback

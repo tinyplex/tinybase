@@ -534,8 +534,8 @@ export const getStoreCoreApi = (
         ROW,
         ID + OR_UNDEFINED,
         'Add a new Row to ' + getTableDoc(tableId),
-        'row: ' + rowWhenSetType,
-        TABLE_ID + ', row',
+        'row: ' + rowWhenSetType + ', reuseIds?: boolean',
+        TABLE_ID + ', row, reuseIds',
       );
 
       // getCellIds
