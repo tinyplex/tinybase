@@ -308,7 +308,7 @@
    * ```
    * @category Configuration
    */
-  /// setRelationshipDefinition
+  /// Relationships.setRelationshipDefinition
   /**
    * The delRelationshipDefinition method removes an existing Relationship
    * definition.
@@ -347,7 +347,7 @@
    * ```
    * @category Configuration
    */
-  /// delRelationshipDefinition
+  /// Relationships.delRelationshipDefinition
   /**
    * The getStore method returns a reference to the underlying Store that is
    * backing this Relationships object.
@@ -371,7 +371,7 @@
    * ```
    * @category Getter
    */
-  /// getStore
+  /// Relationships.getStore
   /**
    * The getRelationshipIds method returns an array of the Relationship Ids
    * registered with this Relationships object.
@@ -390,7 +390,7 @@
    * ```
    * @category Getter
    */
-  /// getRelationshipIds
+  /// Relationships.getRelationshipIds
   /**
    * The forEachRelationship method takes a function that it will then call for
    * each Relationship in a specified Relationships object.
@@ -432,7 +432,7 @@
    * ```
    * @category Iterator
    */
-  /// forEachRelationship
+  /// Relationships.forEachRelationship
   /**
    * The hasRelationship method returns a boolean indicating whether a given
    * Relationship exists in the Relationships object.
@@ -454,7 +454,7 @@
    * ```
    * @category Getter
    */
-  /// hasRelationship
+  /// Relationships.hasRelationship
   /**
    * The getLocalTableId method returns the Id of the underlying local Table
    * that is used in the Relationship.
@@ -485,7 +485,7 @@
    * ```
    * @category Getter
    */
-  /// getLocalTableId
+  /// Relationships.getLocalTableId
   /**
    * The getRemoteTableId method returns the Id of the underlying remote Table
    * that is used in the Relationship.
@@ -516,7 +516,7 @@
    * ```
    * @category Getter
    */
-  /// getRemoteTableId
+  /// Relationships.getRemoteTableId
   /**
    * The getRemoteRowId method gets the remote Row Id for a given local Row in a
    * Relationship.
@@ -562,7 +562,7 @@
    * ```
    * @category Getter
    */
-  /// getRemoteRowId
+  /// Relationships.getRemoteRowId
   /**
    * The getLocalRowIds method gets the local Row Ids for a given remote Row in
    * a Relationship.
@@ -608,7 +608,7 @@
    * ```
    * @category Getter
    */
-  /// getLocalRowIds
+  /// Relationships.getLocalRowIds
   /**
    * The getLinkedRowIds method gets the linked Row Ids for a given Row in a
    * linked list Relationship.
@@ -656,7 +656,7 @@
    * ```
    * @category Getter
    */
-  /// getLinkedRowIds
+  /// Relationships.getLinkedRowIds
   /**
    * The addRemoteRowIdListener method registers a listener function with the
    * Relationships object that will be called whenever a remote Row Id in a
@@ -782,7 +782,7 @@
    * ```
    * @category Listener
    */
-  /// addRemoteRowIdListener
+  /// Relationships.addRemoteRowIdListener
   /**
    * The addLocalRowIdsListener method registers a listener function with the
    * Relationships object that will be called whenever the local Row Ids in
@@ -903,7 +903,7 @@
    * ```
    * @category Listener
    */
-  /// addLocalRowIdsListener
+  /// Relationships.addLocalRowIdsListener
   /**
    * The addLinkedRowIdsListener method registers a listener function with the
    * Relationships object that will be called whenever the linked Row Ids in a
@@ -969,7 +969,7 @@
    * ```
    * @category Listener
    */
-  /// addLinkedRowIdsListener
+  /// Relationships.addLinkedRowIdsListener
   /**
    * The delListener method removes a listener that was previously added to the
    * Relationships object.
@@ -1024,7 +1024,7 @@
    * ```
    * @category Listener
    */
-  /// delListener
+  /// Relationships.delListener
   /**
    * The destroy method should be called when this Relationships object is no
    * longer used.
@@ -1067,7 +1067,7 @@
    * ```
    * @category Lifecycle
    */
-  /// destroy
+  /// Relationships.destroy
   /**
    * The getListenerStats method provides a set of statistics about the
    * listeners registered with the Relationships object, and is used for
@@ -1104,7 +1104,7 @@
    * ```
    * @category Development
    */
-  /// getListenerStats
+  /// Relationships.getListenerStats
 }
 /**
  * The createRelationships function creates a Relationships object, and is the

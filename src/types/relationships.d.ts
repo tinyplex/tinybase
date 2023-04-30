@@ -49,7 +49,7 @@ export type RelationshipsListenerStats = {
 
 /// Relationships
 export interface Relationships {
-  /// setRelationshipDefinition
+  /// Relationships.setRelationshipDefinition
   setRelationshipDefinition(
     relationshipId: Id,
     localTableId: Id,
@@ -57,64 +57,64 @@ export interface Relationships {
     getRemoteRowId: Id | ((getCell: GetCell, localRowId: Id) => Id),
   ): Relationships;
 
-  /// delRelationshipDefinition
+  /// Relationships.delRelationshipDefinition
   delRelationshipDefinition(relationshipId: Id): Relationships;
 
-  /// getStore
+  /// Relationships.getStore
   getStore(): Store;
 
-  /// getRelationshipIds
+  /// Relationships.getRelationshipIds
   getRelationshipIds(): Ids;
 
-  /// forEachRelationship
+  /// Relationships.forEachRelationship
   forEachRelationship(relationshipCallback: RelationshipCallback): void;
 
-  /// hasRelationship
+  /// Relationships.hasRelationship
   hasRelationship(indexId: Id): boolean;
 
-  /// getLocalTableId
+  /// Relationships.getLocalTableId
   getLocalTableId(relationshipId: Id): Id | undefined;
 
-  /// getRemoteTableId
+  /// Relationships.getRemoteTableId
   getRemoteTableId(relationshipId: Id): Id | undefined;
 
-  /// getRemoteRowId
+  /// Relationships.getRemoteRowId
   getRemoteRowId(relationshipId: Id, localRowId: Id): Id | undefined;
 
-  /// getLocalRowIds
+  /// Relationships.getLocalRowIds
   getLocalRowIds(relationshipId: Id, remoteRowId: Id): Ids;
 
-  /// getLinkedRowIds
+  /// Relationships.getLinkedRowIds
   getLinkedRowIds(relationshipId: Id, firstRowId: Id): Ids;
 
-  /// addRemoteRowIdListener
+  /// Relationships.addRemoteRowIdListener
   addRemoteRowIdListener(
     relationshipId: IdOrNull,
     localRowId: IdOrNull,
     listener: RemoteRowIdListener,
   ): Id;
 
-  /// addLocalRowIdsListener
+  /// Relationships.addLocalRowIdsListener
   addLocalRowIdsListener(
     relationshipId: IdOrNull,
     remoteRowId: IdOrNull,
     listener: LocalRowIdsListener,
   ): Id;
 
-  /// addLinkedRowIdsListener
+  /// Relationships.addLinkedRowIdsListener
   addLinkedRowIdsListener(
     relationshipId: Id,
     firstRowId: Id,
     listener: LinkedRowIdsListener,
   ): Id;
 
-  /// delListener
+  /// Relationships.delListener
   delListener(listenerId: Id): Relationships;
 
-  /// destroy
+  /// Relationships.destroy
   destroy(): void;
 
-  /// getListenerStats
+  /// Relationships.getListenerStats
   getListenerStats(): RelationshipsListenerStats;
 }
 

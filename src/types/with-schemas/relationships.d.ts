@@ -56,7 +56,7 @@ export type RelationshipsListenerStats = {
 
 /// Relationships
 export interface Relationships<in out Schemas extends OptionalSchemas> {
-  /// setRelationshipDefinition
+  /// Relationships.setRelationshipDefinition
   setRelationshipDefinition<LocalTableId extends TableIdFromSchema<Schemas[0]>>(
     relationshipId: Id,
     localTableId: LocalTableId,
@@ -66,70 +66,70 @@ export interface Relationships<in out Schemas extends OptionalSchemas> {
       | ((getCell: GetCell<Schemas[0], LocalTableId>, localRowId: Id) => Id),
   ): Relationships<Schemas>;
 
-  /// delRelationshipDefinition
+  /// Relationships.delRelationshipDefinition
   delRelationshipDefinition(relationshipId: Id): Relationships<Schemas>;
 
-  /// getStore
+  /// Relationships.getStore
   getStore(): Store<Schemas>;
 
-  /// getRelationshipIds
+  /// Relationships.getRelationshipIds
   getRelationshipIds(): Ids;
 
-  /// forEachRelationship
+  /// Relationships.forEachRelationship
   forEachRelationship(
     relationshipCallback: RelationshipCallback<Schemas[0]>,
   ): void;
 
-  /// hasRelationship
+  /// Relationships.hasRelationship
   hasRelationship(indexId: Id): boolean;
 
-  /// getLocalTableId
+  /// Relationships.getLocalTableId
   getLocalTableId<TableId extends TableIdFromSchema<Schemas[0]>>(
     relationshipId: Id,
   ): TableId | undefined;
 
-  /// getRemoteTableId
+  /// Relationships.getRemoteTableId
   getRemoteTableId<TableId extends TableIdFromSchema<Schemas[0]>>(
     relationshipId: Id,
   ): TableId | undefined;
 
-  /// getRemoteRowId
+  /// Relationships.getRemoteRowId
   getRemoteRowId(relationshipId: Id, localRowId: Id): Id | undefined;
 
-  /// getLocalRowIds
+  /// Relationships.getLocalRowIds
   getLocalRowIds(relationshipId: Id, remoteRowId: Id): Ids;
 
-  /// getLinkedRowIds
+  /// Relationships.getLinkedRowIds
   getLinkedRowIds(relationshipId: Id, firstRowId: Id): Ids;
 
-  /// addRemoteRowIdListener
+  /// Relationships.addRemoteRowIdListener
   addRemoteRowIdListener(
     relationshipId: IdOrNull,
     localRowId: IdOrNull,
     listener: RemoteRowIdListener<Schemas>,
   ): Id;
 
-  /// addLocalRowIdsListener
+  /// Relationships.addLocalRowIdsListener
   addLocalRowIdsListener(
     relationshipId: IdOrNull,
     remoteRowId: IdOrNull,
     listener: LocalRowIdsListener<Schemas>,
   ): Id;
 
-  /// addLinkedRowIdsListener
+  /// Relationships.addLinkedRowIdsListener
   addLinkedRowIdsListener(
     relationshipId: Id,
     firstRowId: Id,
     listener: LinkedRowIdsListener<Schemas>,
   ): Id;
 
-  /// delListener
+  /// Relationships.delListener
   delListener(listenerId: Id): Relationships<Schemas>;
 
-  /// destroy
+  /// Relationships.destroy
   destroy(): void;
 
-  /// getListenerStats
+  /// Relationships.getListenerStats
   getListenerStats(): RelationshipsListenerStats;
 }
 
