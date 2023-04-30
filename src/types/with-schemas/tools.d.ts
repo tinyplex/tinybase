@@ -46,6 +46,7 @@ export interface Tools<in out Schemas extends OptionalSchemas> {
   /* eslint-disable max-len */
   /// getStoreStats
   getStoreStats(detail?: boolean): StoreStats;
+
   /* eslint-enable max-len */
 
   /// getStoreTablesSchema
@@ -71,4 +72,5 @@ export interface Tools<in out Schemas extends OptionalSchemas> {
 export function createTools<Schemas extends OptionalSchemas>(
   store: Store<Schemas>,
 ): Tools<Schemas>;
+
 /* eslint-enable max-len */

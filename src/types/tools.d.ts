@@ -46,6 +46,7 @@ export interface Tools {
   /* eslint-disable max-len */
   /// getStoreStats
   getStoreStats(detail?: boolean): StoreStats;
+
   /* eslint-enable max-len */
 
   /// getStoreTablesSchema
@@ -69,4 +70,5 @@ export interface Tools {
 /* eslint-disable max-len */
 /// createTools
 export function createTools(store: Store): Tools;
+
 /* eslint-enable max-len */
