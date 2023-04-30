@@ -222,6 +222,7 @@ export type Having = {
 
 /// Queries
 export interface Queries {
+  //
   /// Queries.setQueryDefinition
   setQueryDefinition(
     queryId: Id,
@@ -348,6 +349,7 @@ export interface Queries {
 
   /// Queries.getListenerStats
   getListenerStats(): QueriesListenerStats;
+  //
 }
 
 /// createQueries

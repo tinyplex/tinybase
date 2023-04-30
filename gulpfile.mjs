@@ -37,7 +37,7 @@ const TYPES_SCHEMA_DIR = `${TYPES_DIR}/with-schemas/`;
 const DOCS_DIR = 'docs';
 const TMP_DIR = 'tmp';
 const LINT_BLOCKS = /```[jt]sx?( [^\n]+)?(\n.*?)```/gms;
-const TYPES_DOC_LABELS = /\/\/\/\s*(\S*)/g;
+const TYPES_DOC_CODE_BLOCKS = /\/\/\/\s*(\S*)(.*?)(?=(\s*\/\/)|(\n\n)|(\n$))/gs;
 const TYPES_DOC_BLOCKS = /(\/\*\*.*?\*\/)\s*\/\/\/\s*(\S*)/gs;
 
 const getPrettierConfig = async () => ({
@@ -74,6 +74,56 @@ const copyDefinition = async (module) => {
     ),
   ].forEach(([_, block, label]) => labelBlocks.set(label, block));
 
+  // Add easier-to-read with-schemas blocks
+  const codeBlocks = new Map();
+  [
+    ...(await promises.readFile(`src/types/${module}.d.ts`, UTF8)).matchAll(
+      TYPES_DOC_CODE_BLOCKS,
+    ),
+  ].forEach(([_, label, code]) => {
+    const prefix = code.match(/^\n\s*/m)?.[0];
+    if (prefix) {
+      codeBlocks.set(
+        label,
+        code
+          .replace(/export type \S+ =\s/, '')
+          .replace(/export function /, '')
+          .replaceAll(prefix, prefix + ' * '),
+      );
+    }
+  });
+  const fileRewrite = (block, addOverrideSnippet) =>
+    block.replace(TYPES_DOC_CODE_BLOCKS, (_, label, code) => {
+      if (labelBlocks.has(label)) {
+        const codeOverride = codeBlocks.get(label);
+        let block = labelBlocks.get(label);
+        if (
+          addOverrideSnippet &&
+          codeBlocks.has(label) &&
+          code.includes('<') &&
+          code.includes('Schema') &&
+          !codeOverride.endsWith('{')
+        ) {
+          const prefix = block.match(/^\s+\*$/m)?.[0];
+          if (prefix) {
+            const line = '\n' + prefix;
+            block = block.replace(
+              /^\s+\*$/m,
+              `${prefix}${line}` +
+                ' This has schema-based typing.' +
+                ' The following is a simplified representation:' +
+                `${line}${line} \`\`\`ts override` +
+                codeOverride.trimEnd() +
+                `${line} \`\`\`${line}`,
+            );
+          }
+          code = code.replace(/^\s*?\/\/\/.*?\n/gm, '');
+        }
+        return block + code;
+      }
+      throw `Missing docs label ${label} in ${module}`;
+    });
+
   await allOf(
     ['', 'with-schemas/'].concat(
       ...(MODULES_TYPED_WITH_INTERNALS.includes(module)
@@ -83,14 +133,10 @@ const copyDefinition = async (module) => {
     async (extraDir) => {
       await promises.writeFile(
         `${TYPES_DIR}/${extraDir}${module}.d.ts`,
-        (
-          await promises.readFile(`src/types/${extraDir}${module}.d.ts`, UTF8)
-        ).replace(TYPES_DOC_LABELS, (_, label) => {
-          if (labelBlocks.has(label)) {
-            return labelBlocks.get(label);
-          }
-          throw `Missing docs label ${label} in ${module}`;
-        }),
+        fileRewrite(
+          await promises.readFile(`src/types/${extraDir}${module}.d.ts`, UTF8),
+          extraDir != '',
+        ),
         UTF8,
       );
     },

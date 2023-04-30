@@ -43,6 +43,7 @@ export type StoreStatsRowDetail = {
 
 /// Tools
 export interface Tools {
+  //
   /* eslint-disable max-len */
   /// getStoreStats
   getStoreStats(detail?: boolean): StoreStats;
@@ -65,10 +66,12 @@ export interface Tools {
 
   /// getStore
   getStore(): Store;
+  //
 }
 
 /* eslint-disable max-len */
 /// createTools
 export function createTools(store: Store): Tools;
+//
 
 /* eslint-enable max-len */

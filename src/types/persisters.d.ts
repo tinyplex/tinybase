@@ -13,6 +13,7 @@ export type PersisterStats = {
 
 /// Persister
 export interface Persister {
+  //
   /// Persister.load
   load(initialTables?: Tables, initialValues?: Values): Promise<Persister>;
 
@@ -42,6 +43,7 @@ export interface Persister {
 
   /// Persister.getStats
   getStats(): PersisterStats;
+  //
 }
 
 /// createSessionPersister

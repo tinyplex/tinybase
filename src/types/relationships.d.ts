@@ -49,6 +49,7 @@ export type RelationshipsListenerStats = {
 
 /// Relationships
 export interface Relationships {
+  //
   /// Relationships.setRelationshipDefinition
   setRelationshipDefinition(
     relationshipId: Id,
@@ -116,6 +117,7 @@ export interface Relationships {
 
   /// Relationships.getListenerStats
   getListenerStats(): RelationshipsListenerStats;
+  //
 }
 
 /// createRelationships

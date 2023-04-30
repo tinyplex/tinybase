@@ -50,6 +50,7 @@ export type MetricsListenerStats = {
 
 /// Metrics
 export interface Metrics {
+  //
   /// Metrics.setMetricDefinition
   setMetricDefinition(
     metricId: Id,
@@ -93,6 +94,7 @@ export interface Metrics {
 
   /// Metrics.getListenerStats
   getListenerStats(): MetricsListenerStats;
+  //
 }
 
 /// createMetrics
