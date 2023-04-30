@@ -5,11 +5,15 @@ import {test} from './other';
 
 const INTEGER = /^\d+$/;
 
-export const getPoolFunctions = (): [() => Id, (id: Id) => void] => {
+export const getPoolFunctions = (): [
+  (reuse: 0 | 1) => Id,
+  (id: Id) => void,
+] => {
   const pool: Ids = [];
   let nextId = 0;
   return [
-    (): Id => arrayShift(pool) ?? EMPTY_STRING + nextId++,
+    (reuse: 0 | 1): Id =>
+      (reuse ? arrayShift(pool) : null) ?? EMPTY_STRING + nextId++,
     (id: Id): void => {
       if (test(INTEGER, id) && arrayLength(pool) < 1e3) {
         arrayPush(pool, id);

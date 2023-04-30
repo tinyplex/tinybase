@@ -113,7 +113,7 @@ export const getListenerFunctions = (
     extraArgsGetter: ExtraArgsGetter = () => [],
   ): Id => {
     thing ??= getThing();
-    const id = getId();
+    const id = getId(1);
     mapSet(allListeners, id, [
       listener,
       idSetNode,

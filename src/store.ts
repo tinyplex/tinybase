@@ -495,13 +495,13 @@ export const createStore: typeof createStoreDecl = (): Store => {
     }
   };
 
-  const getNewRowId = (tableId: Id): Id => {
+  const getNewRowId = (tableId: Id, reuse: 0 | 1): Id => {
     const [getId] = mapEnsure(tablePoolFunctions, tableId, getPoolFunctions);
-    const rowId = getId();
+    const rowId = getId(reuse);
     if (!collHas(mapGet(tablesMap, tableId), rowId)) {
       return rowId;
     }
-    return getNewRowId(tableId);
+    return getNewRowId(tableId, reuse);
   };
 
   const getOrCreateTable = (tableId: Id) =>
@@ -983,7 +983,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       rowId,
     );
 
-  const addRow = (tableId: Id, row: Row): Id | undefined =>
+  const addRow = (tableId: Id, row: Row, reuseRowIds = true): Id | undefined =>
     transaction(() => {
       let rowId: Id | undefined = undefined;
       if (validateRow(tableId, rowId, row)) {
@@ -991,7 +991,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
         setValidRow(
           tableId,
           getOrCreateTable(tableId),
-          (rowId = getNewRowId(tableId)),
+          (rowId = getNewRowId(tableId, reuseRowIds ? 1 : 0)),
           row,
         );
       }
