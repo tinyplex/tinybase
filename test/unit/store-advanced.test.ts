@@ -442,7 +442,7 @@ describe('Miscellaneous', () => {
     expectNoChanges(listener);
   });
 
-  test('increments or reuses listenerId', () => {
+  test('increments or re-uses listenerId', () => {
     expect(listener.listenToRow('/t1/r1a', 't1', 'r1')).toEqual('0');
     store.setRow('t1', 'r1', {c1: 1});
     expect(listener.listenToRow('/t1/r1b', 't1', 'r1')).toEqual('1');

@@ -648,7 +648,7 @@ describe('Miscellaneous', () => {
     expect(metrics1).not.toBe(metrics2);
   });
 
-  test('reuses metrics against existing store', () => {
+  test('re-uses metrics against existing store', () => {
     const store = createStore();
     const metrics1 = createMetrics(store);
     const metrics2 = createMetrics(store);

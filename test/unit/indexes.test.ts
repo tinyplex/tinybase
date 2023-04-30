@@ -1894,7 +1894,7 @@ describe('Miscellaneous', () => {
     expect(indexes1).not.toBe(indexes2);
   });
 
-  test('reuses indexes against existing store', () => {
+  test('re-uses indexes against existing store', () => {
     const store = createStore();
     const indexes1 = createIndexes(store);
     const indexes2 = createIndexes(store);

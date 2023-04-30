@@ -4431,7 +4431,7 @@ describe('Miscellaneous', () => {
     expect(queries1).not.toBe(queries2);
   });
 
-  test('reuses queries against existing store', () => {
+  test('re-uses queries against existing store', () => {
     const store = createStore();
     const queries1 = createQueries(store);
     const queries2 = createQueries(store);

@@ -797,7 +797,7 @@ describe('Miscellaneous', () => {
     expect(relationships1).not.toBe(relationships2);
   });
 
-  test('reuses relationships against existing store', () => {
+  test('re-uses relationships against existing store', () => {
     const store = createStore();
     const relationships1 = createRelationships(store);
     const relationships2 = createRelationships(store);
