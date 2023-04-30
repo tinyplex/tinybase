@@ -20,6 +20,24 @@ export type ValueSchema =
   | {type: 'number'; default?: number}
   | {type: 'boolean'; default?: boolean};
 
+/// NoTablesSchema
+export type NoTablesSchema = {[tableId: Id]: {[cellId: Id]: {type: 'any'}}};
+
+/// NoValuesSchema
+export type NoValuesSchema = {[valueId: Id]: {type: 'any'}};
+
+/// OptionalTablesSchema
+export type OptionalTablesSchema = TablesSchema | NoTablesSchema;
+
+/// OptionalValuesSchema
+export type OptionalValuesSchema = ValuesSchema | NoValuesSchema;
+
+/// OptionalSchemas
+export type OptionalSchemas = [OptionalTablesSchema, OptionalValuesSchema];
+
+/// NoSchemas
+export type NoSchemas = [NoTablesSchema, NoValuesSchema];
+
 /// Tables
 export type Tables = {[tableId: Id]: Table};
 

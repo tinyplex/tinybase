@@ -110,20 +110,14 @@
  * The NoTablesSchema type is a TablesSchema-like type for when one has not been
  * provided.
  *
- * This type is used internally to the TinyBase type system and you are not
- * expected to need to use it directly.
- *
- * @category Internal
+ * @category Schema
  */
 /// NoTablesSchema
 /**
  * The NoValuesSchema type is a ValuesSchema-like type for when one has not been
  * provided.
  *
- * This type is used internally to the TinyBase type system and you are not
- * expected to need to use it directly.
- *
- * @category Internal
+ * @category Schema
  */
 /// NoValuesSchema
 /**
