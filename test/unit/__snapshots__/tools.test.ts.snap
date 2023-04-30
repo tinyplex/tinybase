@@ -460,7 +460,7 @@ export interface S {
   /**
    * Add a new Row to the 't1' Table.
    */
-  addT1Row(row: T1RowWhenSet): Id | undefined;
+  addT1Row(row: T1RowWhenSet, reuseIds?: boolean): Id | undefined;
 
   /**
    * Gets the Ids of the Cells in the specified Row in the 't1' Table.
@@ -1017,7 +1017,8 @@ export const createS: typeof createSDecl = () => {
     setT1PartialRow: (rowId: Id, partialRow: T1RowWhenSet): S =>
       fluent(() => store.setPartialRow(T1, rowId, partialRow)),
 
-    addT1Row: (row: T1RowWhenSet): Id | undefined => store.addRow(T1, row),
+    addT1Row: (row: T1RowWhenSet, reuseIds?: boolean): Id | undefined =>
+      store.addRow(T1, row, reuseIds),
 
     getT1CellIds: (rowId: Id): T1CellId[] =>
       store.getCellIds(T1, rowId) as T1CellId[],
@@ -1531,6 +1532,7 @@ export function useAddT1RowCallback<Parameter>(
   sOrSId?: SOrSId,
   then?: (rowId: Id | undefined, store: Store, row: T1RowWhenSet) => void,
   thenDeps?: React.DependencyList,
+  reuseRowIds?: boolean,
 ): ParameterizedCallback<Parameter>;
 
 /**
@@ -2487,12 +2489,13 @@ export const useAddT1RowCallback: typeof useAddT1RowCallbackDecl = <Parameter,>(
   sOrSId?: SOrSId,
   then?: (rowId: Id | undefined, store: Store, row: T1RowWhenSet) => void,
   thenDeps?: React.DependencyList,
+  reuseRowIds?: boolean,
 ): ParameterizedCallback<Parameter> =>
   useHook(
     sOrSId,
     useAddRowCallbackCore,
     [T1, getRow, getRowDeps],
-    [then, thenDeps],
+    [then, thenDeps, reuseRowIds],
   );
 
 export const useSetT1PartialRowCallback: typeof useSetT1PartialRowCallbackDecl =
@@ -4618,7 +4621,7 @@ export interface S {
   /**
    * Add a new Row to the 't1' Table.
    */
-  addT1Row(row: T1RowWhenSet): Id | undefined;
+  addT1Row(row: T1RowWhenSet, reuseIds?: boolean): Id | undefined;
 
   /**
    * Gets the Ids of the Cells in the specified Row in the 't1' Table.
@@ -4997,7 +5000,8 @@ export const createS: typeof createSDecl = () => {
     setT1PartialRow: (rowId: Id, partialRow: T1RowWhenSet): S =>
       fluent(() => store.setPartialRow(T1, rowId, partialRow)),
 
-    addT1Row: (row: T1RowWhenSet): Id | undefined => store.addRow(T1, row),
+    addT1Row: (row: T1RowWhenSet, reuseIds?: boolean): Id | undefined =>
+      store.addRow(T1, row, reuseIds),
 
     getT1CellIds: (rowId: Id): T1CellId[] =>
       store.getCellIds(T1, rowId) as T1CellId[],
@@ -5406,6 +5410,7 @@ export function useAddT1RowCallback<Parameter>(
   sOrSId?: SOrSId,
   then?: (rowId: Id | undefined, store: Store, row: T1RowWhenSet) => void,
   thenDeps?: React.DependencyList,
+  reuseRowIds?: boolean,
 ): ParameterizedCallback<Parameter>;
 
 /**
@@ -6073,12 +6078,13 @@ export const useAddT1RowCallback: typeof useAddT1RowCallbackDecl = <Parameter,>(
   sOrSId?: SOrSId,
   then?: (rowId: Id | undefined, store: Store, row: T1RowWhenSet) => void,
   thenDeps?: React.DependencyList,
+  reuseRowIds?: boolean,
 ): ParameterizedCallback<Parameter> =>
   useHook(
     sOrSId,
     useAddRowCallbackCore,
     [T1, getRow, getRowDeps],
-    [then, thenDeps],
+    [then, thenDeps, reuseRowIds],
   );
 
 export const useSetT1PartialRowCallback: typeof useSetT1PartialRowCallbackDecl =
@@ -6670,7 +6676,7 @@ delT1Row(rowId: Id): S;
 setT1PartialRow(rowId: Id, partialRow: T1RowWhenSet): S;
 
 /** Add a new Row to the 't1' Table. */
-addT1Row(row: T1RowWhenSet): Id | undefined;
+addT1Row(row: T1RowWhenSet, reuseIds?: boolean): Id | undefined;
 
 /** Gets the Ids of the Cells in the specified Row in the 't1' Table. */
 getT1CellIds(rowId: Id): T1CellId[];
@@ -6972,7 +6978,7 @@ delT1Row: (rowId: Id): S => fluent(() => store.delRow(T1, rowId)),
 
 setT1PartialRow: (rowId: Id, partialRow: T1RowWhenSet): S => fluent(() => store.setPartialRow(T1, rowId, partialRow)),
 
-addT1Row: (row: T1RowWhenSet): Id | undefined => store.addRow(T1, row),
+addT1Row: (row: T1RowWhenSet, reuseIds?: boolean): Id | undefined => store.addRow(T1, row, reuseIds),
 
 getT1CellIds: (rowId: Id): T1CellId[] => store.getCellIds(T1, rowId) as T1CellId[],
 
@@ -7192,7 +7198,7 @@ export function useDelT1TableCallback(sOrSId?: SOrSId, then?: (store: Store) => 
 export function useSetT1RowCallback<Parameter,>(rowId: Id, getRow: (parameter: Parameter, store: Store) => T1RowWhenSet, getRowDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, row: T1RowWhenSet) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter>;
 
 /** Gets a callback that can add the content of the specified Row in the 't1' Table, based on a parameter. */
-export function useAddT1RowCallback<Parameter,>(getRow: (parameter: Parameter, store: Store) => T1RowWhenSet, getRowDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (rowId: Id | undefined, store: Store, row: T1RowWhenSet) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter>;
+export function useAddT1RowCallback<Parameter,>(getRow: (parameter: Parameter, store: Store) => T1RowWhenSet, getRowDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (rowId: Id | undefined, store: Store, row: T1RowWhenSet) => void, thenDeps?: React.DependencyList, reuseRowIds?: boolean): ParameterizedCallback<Parameter>;
 
 /** Gets a callback that can set part of the content of the specified Row in the 't1' Table, based on a parameter. */
 export function useSetT1PartialRowCallback<Parameter,>(rowId: Id, getPartialRow: (parameter: Parameter, store: Store) => T1RowWhenSet, getPartialRowDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, partialRow: T1RowWhenSet) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter>;
@@ -7484,8 +7490,8 @@ useHook(sOrSId, useDelTableCallbackCore, [T1], [then, thenDeps]);
 export const useSetT1RowCallback: typeof useSetT1RowCallbackDecl = <Parameter,>(rowId: Id, getRow: (parameter: Parameter, store: Store) => T1RowWhenSet, getRowDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, row: T1RowWhenSet) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter> =>
 useHook(sOrSId, useSetRowCallbackCore, [T1, rowId, getRow, getRowDeps], [then, thenDeps]);
 
-export const useAddT1RowCallback: typeof useAddT1RowCallbackDecl = <Parameter,>(getRow: (parameter: Parameter, store: Store) => T1RowWhenSet, getRowDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (rowId: Id | undefined, store: Store, row: T1RowWhenSet) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter> =>
-useHook(sOrSId, useAddRowCallbackCore, [T1, getRow, getRowDeps], [then, thenDeps]);
+export const useAddT1RowCallback: typeof useAddT1RowCallbackDecl = <Parameter,>(getRow: (parameter: Parameter, store: Store) => T1RowWhenSet, getRowDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (rowId: Id | undefined, store: Store, row: T1RowWhenSet) => void, thenDeps?: React.DependencyList, reuseRowIds?: boolean): ParameterizedCallback<Parameter> =>
+useHook(sOrSId, useAddRowCallbackCore, [T1, getRow, getRowDeps], [then, thenDeps, reuseRowIds]);
 
 export const useSetT1PartialRowCallback: typeof useSetT1PartialRowCallbackDecl = <Parameter,>(rowId: Id, getPartialRow: (parameter: Parameter, store: Store) => T1RowWhenSet, getPartialRowDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, partialRow: T1RowWhenSet) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter> =>
 useHook(sOrSId, useSetPartialRowCallbackCore, [T1, rowId, getPartialRow, getPartialRowDeps], [then, thenDeps]);
@@ -8398,7 +8404,7 @@ delT1Row(rowId: Id): S;
 setT1PartialRow(rowId: Id, partialRow: T1RowWhenSet): S;
 
 /** Add a new Row to the 't1' Table. */
-addT1Row(row: T1RowWhenSet): Id | undefined;
+addT1Row(row: T1RowWhenSet, reuseIds?: boolean): Id | undefined;
 
 /** Gets the Ids of the Cells in the specified Row in the 't1' Table. */
 getT1CellIds(rowId: Id): T1CellId[];
@@ -8601,7 +8607,7 @@ delT1Row: (rowId: Id): S => fluent(() => store.delRow(T1, rowId)),
 
 setT1PartialRow: (rowId: Id, partialRow: T1RowWhenSet): S => fluent(() => store.setPartialRow(T1, rowId, partialRow)),
 
-addT1Row: (row: T1RowWhenSet): Id | undefined => store.addRow(T1, row),
+addT1Row: (row: T1RowWhenSet, reuseIds?: boolean): Id | undefined => store.addRow(T1, row, reuseIds),
 
 getT1CellIds: (rowId: Id): T1CellId[] => store.getCellIds(T1, rowId) as T1CellId[],
 
@@ -8757,7 +8763,7 @@ export function useDelT1TableCallback(sOrSId?: SOrSId, then?: (store: Store) => 
 export function useSetT1RowCallback<Parameter,>(rowId: Id, getRow: (parameter: Parameter, store: Store) => T1RowWhenSet, getRowDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, row: T1RowWhenSet) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter>;
 
 /** Gets a callback that can add the content of the specified Row in the 't1' Table, based on a parameter. */
-export function useAddT1RowCallback<Parameter,>(getRow: (parameter: Parameter, store: Store) => T1RowWhenSet, getRowDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (rowId: Id | undefined, store: Store, row: T1RowWhenSet) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter>;
+export function useAddT1RowCallback<Parameter,>(getRow: (parameter: Parameter, store: Store) => T1RowWhenSet, getRowDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (rowId: Id | undefined, store: Store, row: T1RowWhenSet) => void, thenDeps?: React.DependencyList, reuseRowIds?: boolean): ParameterizedCallback<Parameter>;
 
 /** Gets a callback that can set part of the content of the specified Row in the 't1' Table, based on a parameter. */
 export function useSetT1PartialRowCallback<Parameter,>(rowId: Id, getPartialRow: (parameter: Parameter, store: Store) => T1RowWhenSet, getPartialRowDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, partialRow: T1RowWhenSet) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter>;
@@ -8966,8 +8972,8 @@ useHook(sOrSId, useDelTableCallbackCore, [T1], [then, thenDeps]);
 export const useSetT1RowCallback: typeof useSetT1RowCallbackDecl = <Parameter,>(rowId: Id, getRow: (parameter: Parameter, store: Store) => T1RowWhenSet, getRowDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, row: T1RowWhenSet) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter> =>
 useHook(sOrSId, useSetRowCallbackCore, [T1, rowId, getRow, getRowDeps], [then, thenDeps]);
 
-export const useAddT1RowCallback: typeof useAddT1RowCallbackDecl = <Parameter,>(getRow: (parameter: Parameter, store: Store) => T1RowWhenSet, getRowDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (rowId: Id | undefined, store: Store, row: T1RowWhenSet) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter> =>
-useHook(sOrSId, useAddRowCallbackCore, [T1, getRow, getRowDeps], [then, thenDeps]);
+export const useAddT1RowCallback: typeof useAddT1RowCallbackDecl = <Parameter,>(getRow: (parameter: Parameter, store: Store) => T1RowWhenSet, getRowDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (rowId: Id | undefined, store: Store, row: T1RowWhenSet) => void, thenDeps?: React.DependencyList, reuseRowIds?: boolean): ParameterizedCallback<Parameter> =>
+useHook(sOrSId, useAddRowCallbackCore, [T1, getRow, getRowDeps], [then, thenDeps, reuseRowIds]);
 
 export const useSetT1PartialRowCallback: typeof useSetT1PartialRowCallbackDecl = <Parameter,>(rowId: Id, getPartialRow: (parameter: Parameter, store: Store) => T1RowWhenSet, getPartialRowDeps?: React.DependencyList, sOrSId?: SOrSId, then?: (store: Store, partialRow: T1RowWhenSet) => void, thenDeps?: React.DependencyList): ParameterizedCallback<Parameter> =>
 useHook(sOrSId, useSetPartialRowCallbackCore, [T1, rowId, getPartialRow, getPartialRowDeps], [then, thenDeps]);
