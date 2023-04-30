@@ -28,6 +28,7 @@ export type CheckpointsListenerStats = {
 
 /// Checkpoints
 export interface Checkpoints {
+  //
   /// Checkpoints.setSize
   setSize(size: number): Checkpoints;
 
@@ -81,6 +82,7 @@ export interface Checkpoints {
 
   /// Checkpoints.getListenerStats
   getListenerStats(): CheckpointsListenerStats;
+  //
 }
 
 /// createCheckpoints

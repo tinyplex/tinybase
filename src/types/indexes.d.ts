@@ -41,6 +41,7 @@ export type IndexesListenerStats = {
 
 /// Indexes
 export interface Indexes {
+  //
   /// Indexes.setIndexDefinition
   setIndexDefinition(
     indexId: Id,
@@ -99,6 +100,7 @@ export interface Indexes {
 
   /// Indexes.getListenerStats
   getListenerStats(): IndexesListenerStats;
+  //
 }
 
 /// createIndexes
