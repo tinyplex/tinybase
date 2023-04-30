@@ -450,17 +450,18 @@ export const useAddRowCallback: typeof useAddRowCallbackDecl = <Parameter>(
   storeOrStoreId?: StoreOrStoreId,
   then: (rowId: Id | undefined, store: Store, row: Row) => void = getUndefined,
   thenDeps: React.DependencyList = [],
+  reuseRowIds = true,
 ): ParameterizedCallback<Parameter> => {
   const store = useStoreOrStoreId(storeOrStoreId);
   return useCallback(
     (parameter) =>
       ifNotUndefined(store, (store) =>
         ifNotUndefined(getRow(parameter as any, store), (row: Row) =>
-          then(store.addRow(tableId, row), store, row),
+          then(store.addRow(tableId, row, reuseRowIds), store, row),
         ),
       ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [store, tableId, ...getRowDeps, ...thenDeps],
+    [store, tableId, ...getRowDeps, ...thenDeps, reuseRowIds],
   );
 };
 
