@@ -174,6 +174,7 @@ export function useAddRowCallback<Parameter>(
   storeOrStoreId?: StoreOrStoreId,
   then?: (rowId: Id | undefined, store: Store, row: Row) => void,
   thenDeps?: React.DependencyList,
+  reuseRowIds?: boolean,
 ): ParameterizedCallback<Parameter>;
 
 /// useSetPartialRowCallback

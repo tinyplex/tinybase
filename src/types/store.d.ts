@@ -358,7 +358,7 @@ export interface Store {
   setRow(tableId: Id, rowId: Id, row: Row): Store;
 
   /// Store.addRow
-  addRow(tableId: Id, row: Row): Id | undefined;
+  addRow(tableId: Id, row: Row, reuseRowIds?: boolean): Id | undefined;
 
   /// Store.setPartialRow
   setPartialRow(tableId: Id, rowId: Id, partialRow: Row): Store;

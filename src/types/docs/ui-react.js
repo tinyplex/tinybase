@@ -1443,6 +1443,13 @@
  * hook's `storeOrStoreId` parameter) is always automatically used as a hook
  * dependency for the callback.
  *
+ * The `reuseRowIds` parameter defaults to `true`, which means that if you
+ * delete a Row and then add another, the Id will be re-used - unless you delete
+ * the entire Table, in which case all Row Ids will reset. Otherwise, if you
+ * specify `reuseRowIds` to be `false`, then the Id will be a monotonically
+ * increasing string representation of an increasing integer, regardless of any
+ * you may have previously deleted.
+ *
  * @param tableId The Id of the Table in the Store.
  * @param getRow A function which returns the Row object that will be used to
  * update the Store, based on the parameter the callback will receive (and which
@@ -1458,6 +1465,9 @@
  * @param thenDeps An optional array of dependencies for the `then` function,
  * which, if any change, result in the regeneration of the callback. This
  * parameter defaults to an empty array.
+ * @param reuseRowIds Whether Ids should be recycled from previously deleted Row
+ * objects, defaulting to `true`.
+ *
  * @returns A parameterized callback for subsequent use.
  * @example
  * This example uses the useAddRowCallback hook to create an event handler which

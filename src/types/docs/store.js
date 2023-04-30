@@ -1957,8 +1957,17 @@
    * Row is added to the Table. However it is likely to be a string
    * representation of an increasing integer.
    *
+   * The `reuseRowIds` parameter defaults to `true`, which means that if you
+   * delete a Row and then add another, the Id will be re-used - unless you
+   * delete the entire Table, in which case all Row Ids will reset. Otherwise,
+   * if you specify `reuseRowIds` to be `false`, then the Id will be a
+   * monotonically increasing string representation of an increasing integer,
+   * regardless of any you may have previously deleted.
+   *
    * @param tableId The Id of the Table in the Store.
    * @param row The data of a single Row to be added.
+   * @param reuseRowIds Whether Ids should be recycled from previously deleted
+   * Row objects, defaulting to `true`.
    * @returns A reference to the Store.
    * @example
    * This example adds a single Row.

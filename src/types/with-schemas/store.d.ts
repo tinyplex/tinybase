@@ -685,6 +685,7 @@ export interface Store<in out Schemas extends OptionalSchemas> {
   addRow<TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
     row: Row<Schemas[0], TableId, true>,
+    reuseRowIds?: boolean,
   ): Id | undefined;
 
   /// Store.setPartialRow

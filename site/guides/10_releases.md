@@ -43,6 +43,11 @@ These are each described in the new TinyBase and TypeScript guide.
 Also in v3.1, the ORM-like type definition generation in the tools module has
 been extended to emit ui-react definitions.
 
+Finally, v3.0.1 adds a `reuseRowIds` parameter to the addRow method and the
+useAddRowCallback hook. It defaults to `true`, for backwards compatibility, but
+if set to `false`, new Row Ids will not be reused unless the whole Table is
+deleted.
+
 ## v3.0
 
 This major new release adds key/value store functionality to TinyBase. Alongside

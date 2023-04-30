@@ -256,6 +256,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
     then?: (rowId: Id | undefined, store: Store<Schemas>, row: AddRow) => void,
     thenDeps?: React.DependencyList,
+    reuseRowIds?: boolean,
   ) => ParameterizedCallback<Parameter>;
 
   /// useSetPartialRowCallback
