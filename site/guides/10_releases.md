@@ -3,6 +3,46 @@
 This is a reverse chronological list of the major TinyBase releases, with
 highlighted features.
 
+## v3.1
+
+This new release adds a powerful schema-based type system to TinyBase.
+
+If you define the shape and structure of your data with a TablesSchema or
+ValuesSchema, you can benefit from an enhanced developer experience when
+operating on it. For example:
+
+```ts yolo
+// Import the 'with-schemas' definition:
+import {createStore} from 'tinybase/with-schemas';
+
+// Set a schema for a new Store:
+const store = createStore().setValuesSchema({
+  employees: {type: 'number'},
+  open: {type: 'boolean', default: false},
+});
+
+// Benefit from inline TypeScript errors.
+store.setValues({employees: 3}); //                      OK
+store.setValues({employees: true}); //                   TypeScript error
+store.setValues({employees: 3, website: 'pets.com'}); // TypeScript error
+```
+
+The schema-based typing is used comprehensively throughout every module - from
+the core Store interface all the way through to the ui-react module. See the new
+Schema-Based Typing guide for instructions on how to use it.
+
+This now means that there are _three_ progressive ways to use TypeScript with
+TinyBase:
+
+- Basic Type Support (since v1.0)
+- Schema-based Typing (since v3.1)
+- ORM-like type definitions (since v2.2)
+
+These are each described in the new TinyBase and TypeScript guide.
+
+Also in v3.1, the ORM-like type definition generation in the tools module has
+been extended to emit ui-react definitions.
+
 ## v3.0
 
 This major new release adds key/value store functionality to TinyBase. Alongside
@@ -31,10 +71,11 @@ Guides and documentation have been fully updated, and certain demos - such as th
 Todo App v2 (indexes) demo, and the Countries demo - have been updated to use
 this new functionality.
 
-If you use the optional ui-react module with TinyBase, v3.0 now uses and expects React v18.
+If you use the optional ui-react module with TinyBase, v3.0 now uses and expects
+React v18.
 
-In terms of core API changes in v3.0, there are some minor breaking changes (see below),
-but the majority of the alterations are additions.
+In terms of core API changes in v3.0, there are some minor breaking changes (see
+below), but the majority of the alterations are additions.
 
 The Store object gains the following:
 
@@ -68,8 +109,9 @@ The following types have been added to the store module:
 
 Additionally:
 
-- The persisters' load method and startAutoLoad method take an optional `initialValues` parameter for
-  setting Values when a persisted Store is bootstrapped.
+- The persisters' load method and startAutoLoad method take an optional
+  `initialValues` parameter for setting Values when a persisted Store is
+  bootstrapped.
 - The Checkpoints module will undo and redo changes to keyed values in the same
   way they do for tabular data.
 - The tools module provides a getStoreValuesSchema method for inferring
