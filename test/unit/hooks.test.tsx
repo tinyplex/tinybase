@@ -1889,6 +1889,15 @@ describe('Write Hooks', () => {
           undefined,
           store,
         )}
+        onSelect={useAddRowCallback(
+          't1',
+          (e) => ({c1: e.timeStamp}),
+          undefined,
+          store,
+          undefined,
+          undefined,
+          false,
+        )}
       />
     );
     act(() => {
@@ -1898,15 +1907,33 @@ describe('Write Hooks', () => {
     const clickHandler1 = renderer.root.findByType('div').props.onClick;
     const focusHandler = renderer.root.findByType('div').props.onFocus;
     const blurHandler = renderer.root.findByType('div').props.onBlur;
+    const selectHandler = renderer.root.findByType('div').props.onSelect;
     act(() => {
       clickHandler1({screenX: 2});
       focusHandler({timeStamp: 3});
       blurHandler({timeStamp: 5});
+      selectHandler({timeStamp: 7});
     });
     expect(store.getTables()).toEqual({
-      t1: {'0': {c1: 4}, '1': {c1: 6}, '2': {c1: 5}, r1: {c1: 1}},
+      t1: {'0': {c1: 4}, '1': {c1: 6}, '2': {c1: 5}, '3': {c1: 7}, r1: {c1: 1}},
     });
     expect(then).toHaveBeenCalledWith('0', store, {c1: 4});
+
+    act(() => {
+      store.delRow('t1', '3');
+      blurHandler({timeStamp: 5});
+    });
+    expect(store.getTables()).toEqual({
+      t1: {'0': {c1: 4}, '1': {c1: 6}, '2': {c1: 5}, '3': {c1: 5}, r1: {c1: 1}},
+    });
+
+    act(() => {
+      store.delRow('t1', '3');
+      selectHandler({timeStamp: 5});
+    });
+    expect(store.getTables()).toEqual({
+      t1: {'0': {c1: 4}, '1': {c1: 6}, '2': {c1: 5}, '4': {c1: 5}, r1: {c1: 1}},
+    });
 
     act(() => {
       renderer.update(<Test value={3} then={then} />);
