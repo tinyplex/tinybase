@@ -502,6 +502,65 @@ describe('Miscellaneous', () => {
     expect(store.addTablesListener(() => 0)).toEqual('666');
   });
 
+  describe('re-uses rowIds', () => {
+    test('adding', () => {
+      store.addRow('t1', {c0: 0});
+      store.addRow('t1', {c1: 1});
+      expect(store.getTables()).toEqual({t1: {0: {c0: 0}, 1: {c1: 1}}});
+    });
+
+    test('delete and add again', () => {
+      store.addRow('t1', {c0: 0});
+      store.addRow('t1', {c1: 1});
+      store.delRow('t1', '1');
+      expect(store.getTables()).toEqual({t1: {0: {c0: 0}}});
+      store.addRow('t1', {c1: 1});
+      expect(store.getTables()).toEqual({t1: {0: {c0: 0}, 1: {c1: 1}}});
+    });
+
+    test('delete all and add again', () => {
+      store.addRow('t1', {c0: 0});
+      store.addRow('t1', {c1: 1});
+      store.delTables();
+      store.addRow('t1', {c0: 0});
+      store.addRow('t1', {c1: 1});
+      expect(store.getTables()).toEqual({t1: {0: {c0: 0}, 1: {c1: 1}}});
+    });
+
+    test('delete one, then manually insert, then add again', () => {
+      store.addRow('t1', {c0: 0});
+      store.addRow('t1', {c1: 1});
+      store.delTables();
+      store.setRow('t1', '0', {c0: 0});
+      store.setRow('t1', '1', {c1: 1});
+      store.addRow('t1', {c2: 2});
+      store.addRow('t1', {c3: 3});
+      expect(store.getTables()).toEqual({
+        t1: {0: {c0: 0}, 1: {c1: 1}, 2: {c2: 2}, 3: {c3: 3}},
+      });
+    });
+  });
+
+  describe('does not re-use rowIds', () => {
+    test('delete and add again', () => {
+      store.addRow('t1', {c0: 0});
+      store.addRow('t1', {c1: 1});
+      store.delRow('t1', '1');
+      expect(store.getTables()).toEqual({t1: {0: {c0: 0}}});
+      store.addRow('t1', {c1: 1}, false);
+      expect(store.getTables()).toEqual({t1: {0: {c0: 0}, 2: {c1: 1}}});
+    });
+
+    test('delete all and add again', () => {
+      store.addRow('t1', {c0: 0});
+      store.addRow('t1', {c1: 1});
+      store.delTables();
+      store.addRow('t1', {c0: 0}, false);
+      store.addRow('t1', {c1: 1}, false);
+      expect(store.getTables()).toEqual({t1: {0: {c0: 0}, 1: {c1: 1}}});
+    });
+  });
+
   test('removed non-existent listener', () => {
     expect(listener.listenToRow('/t1/r1a', 't1', 'r1')).toEqual('0');
     store.delListener('1');
