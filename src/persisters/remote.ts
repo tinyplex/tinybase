@@ -3,9 +3,9 @@ import {
   Persister,
   createRemotePersister as createRemotePersisterDecl,
 } from '../types/persisters.d';
-import {ifNotUndefined, isUndefined} from '../common/other';
 import {Store} from '../types/store.d';
 import {createCustomPersister} from './common';
+import {isUndefined} from '../common/other';
 
 const getETag = (response: Response) => response.headers.get('ETag');
 
@@ -15,7 +15,6 @@ export const createRemotePersister = ((
   saveUrl: string,
   autoLoadIntervalSeconds: number,
 ): Persister => {
-  let interval: NodeJS.Timeout | undefined;
   let lastEtag: string | null;
 
   const getPersisted = async (): Promise<string | null | undefined> => {
@@ -31,8 +30,8 @@ export const createRemotePersister = ((
       body: json,
     });
 
-  const startListeningToPersisted = (didChange: Callback): void => {
-    interval = setInterval(async () => {
+  const startListeningToPersisted = (didChange: Callback): NodeJS.Timeout =>
+    setInterval(async () => {
       const response = await fetch(loadUrl, {method: 'HEAD'});
       const currentEtag = getETag(response);
       if (
@@ -44,12 +43,9 @@ export const createRemotePersister = ((
         didChange();
       }
     }, autoLoadIntervalSeconds * 1000);
-  };
 
-  const stopListeningToPersisted = (): void => {
-    ifNotUndefined(interval, clearInterval);
-    interval = undefined;
-  };
+  const stopListeningToPersisted = (interval: NodeJS.Timeout): void =>
+    clearInterval(interval);
 
   return createCustomPersister(
     store,
