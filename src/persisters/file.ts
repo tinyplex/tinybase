@@ -13,8 +13,6 @@ export const createFilePersister = ((
   store: Store,
   filePath: string,
 ): Persister => {
-  let watcher: FSWatcher | undefined;
-
   const getPersisted = async (): Promise<string | null | undefined> => {
     try {
       return await promises.readFile(filePath, UTF8);
@@ -27,14 +25,11 @@ export const createFilePersister = ((
     } catch {}
   };
 
-  const startListeningToPersisted = (didChange: Callback): void => {
-    watcher = watch(filePath, didChange);
-  };
+  const startListeningToPersisted = (didChange: Callback): FSWatcher =>
+    watch(filePath, didChange);
 
-  const stopListeningToPersisted = (): void => {
+  const stopListeningToPersisted = (watcher: FSWatcher): void =>
     watcher?.close();
-    watcher = undefined;
-  };
 
   return createCustomPersister(
     store,
