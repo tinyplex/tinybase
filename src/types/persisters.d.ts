@@ -70,10 +70,10 @@ export function createRemotePersister(
 export function createFilePersister(store: Store, filePath: string): Persister;
 
 /// createCustomPersister
-export function createCustomPersister(
+export function createCustomPersister<ListeningHandle>(
   store: Store,
   getPersisted: () => Promise<string | null | undefined>,
   setPersisted: (json: string) => Promise<void>,
-  startListeningToPersisted: (didChange: Callback) => void,
-  stopListeningToPersisted: Callback,
+  startListeningToPersisted: (didChange: Callback) => ListeningHandle,
+  stopListeningToPersisted: (listeningHandle: ListeningHandle) => void,
 ): Persister;
