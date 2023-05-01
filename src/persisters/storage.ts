@@ -7,6 +7,7 @@ import {
 import {Store} from '../types/store.d';
 import {createCustomPersister} from './common';
 
+type Listener = (event: StorageEvent) => void;
 const STORAGE = 'storage';
 const WINDOW = globalThis.window;
 
@@ -15,30 +16,24 @@ const getStoragePersister = (
   storageName: string,
   storage: Storage,
 ): Persister => {
-  let listener: ((event: StorageEvent) => void) | undefined;
-
   const getPersisted = async (): Promise<string | null | undefined> =>
     storage.getItem(storageName);
 
   const setPersisted = async (json: Json): Promise<void> =>
     storage.setItem(storageName, json);
 
-  const startListeningToPersisted = (didChange: Callback): void => {
-    listener = (event: StorageEvent): void => {
+  const startListeningToPersisted = (didChange: Callback): Listener => {
+    const listener = (event: StorageEvent): void => {
       if (event.storageArea === storage && event.key === storageName) {
         didChange();
       }
     };
     WINDOW.addEventListener(STORAGE, listener);
+    return listener;
   };
 
-  const stopListeningToPersisted = (): void => {
-    WINDOW.removeEventListener(
-      STORAGE,
-      listener as (event: StorageEvent) => void,
-    );
-    listener = undefined;
-  };
+  const stopListeningToPersisted = (listener: Listener): void =>
+    WINDOW.removeEventListener(STORAGE, listener);
 
   return createCustomPersister(
     store,

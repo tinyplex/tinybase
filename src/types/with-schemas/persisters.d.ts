@@ -74,10 +74,13 @@ export function createFilePersister<Schemas extends OptionalSchemas>(
 ): Persister<Schemas>;
 
 /// createCustomPersister
-export function createCustomPersister<Schemas extends OptionalSchemas>(
+export function createCustomPersister<
+  Schemas extends OptionalSchemas,
+  ListeningHandle,
+>(
   store: Store<Schemas>,
   getPersisted: () => Promise<string | null | undefined>,
   setPersisted: (json: string) => Promise<void>,
-  startListeningToPersisted: (didChange: Callback) => void,
-  stopListeningToPersisted: Callback,
+  startListeningToPersisted: (didChange: Callback) => ListeningHandle,
+  stopListeningToPersisted: (listeningHandle: ListeningHandle) => void,
 ): Persister<Schemas>;

@@ -653,9 +653,12 @@
  * @param setPersisted An asynchronous function which will send JSON to the
  * persistence layer.
  * @param startListeningToPersisted A function that will register a `didChange`
- * listener on underlying changes to the persistence layer.
+ * listener on underlying changes to the persistence layer. You can return a
+ * listening handle that will be provided again when `stopListeningToPersisted`
+ * is called.
  * @param stopListeningToPersisted A function that will unregister the listener
- * from the underlying changes to the persistence layer.
+ * from the underlying changes to the persistence layer. It receives whatever
+ * was returned from your `startListeningToPersisted` implementation.
  * @returns A reference to the new Persister object.
  * @example
  * This example creates a custom Persister object and persists the Store to a
@@ -665,14 +668,13 @@
  * ```js
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * let storeJson;
- * let interval;
  *
  * const persister = createCustomPersister(
  *   store,
  *   async () => storeJson,
  *   async (json) => (storeJson = json),
- *   (didChange) => (interval = setInterval(didChange, 1000)),
- *   () => clearInterval(interval),
+ *   (didChange) => setInterval(didChange, 1000),
+ *   (interval) => clearInterval(interval),
  * );
  *
  * await persister.save();

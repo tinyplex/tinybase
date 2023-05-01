@@ -5,18 +5,21 @@ import {Store, Tables, Values} from '../types/store.d';
 import {EMPTY_STRING} from '../common/strings';
 import {objFreeze} from '../common/obj';
 
-export const createCustomPersister = (
+export const createCustomPersister = <ListeningHandle>(
   store: Store,
   getPersisted: () => Promise<string | null | undefined>,
   setPersisted: (json: string) => Promise<void>,
-  startListeningToPersisted: (didChange: Callback) => void,
-  stopListeningToPersisted: Callback,
+  startListeningToPersisted: (didChange: Callback) => ListeningHandle,
+  stopListeningToPersisted: (listeningHandle: ListeningHandle) => void,
 ): Persister => {
   let tablesListenerId: Id | undefined;
   let valuesListenerId: Id | undefined;
   let loadSave = 0;
   let loads = 0;
   let saves = 0;
+
+  let listening = false;
+  let listeningHandle: ListeningHandle | undefined;
 
   const persister: Persister = {
     load: async (
@@ -50,12 +53,17 @@ export const createCustomPersister = (
     ): Promise<Persister> => {
       persister.stopAutoLoad();
       await persister.load(initialTables, initialValues);
-      startListeningToPersisted(persister.load);
+      listening = true;
+      listeningHandle = startListeningToPersisted(persister.load);
       return persister;
     },
 
     stopAutoLoad: (): Persister => {
-      stopListeningToPersisted();
+      if (listening) {
+        stopListeningToPersisted(listeningHandle as ListeningHandle);
+        listeningHandle = undefined;
+        listening = false;
+      }
       return persister;
     },
 
