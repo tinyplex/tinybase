@@ -1,5 +1,6 @@
 /* eslint-disable jest/no-conditional-expect */
 
+import * as Y from 'yjs';
 import {
   Persister,
   Store,
@@ -9,6 +10,7 @@ import {
   createSessionPersister,
   createStore,
 } from 'tinybase/debug';
+import {createYjsPersister} from 'tinybase/debug/persister-yjs';
 import crypto from 'crypto';
 import fetchMock from 'jest-fetch-mock';
 import fs from 'fs';
@@ -18,15 +20,16 @@ import tmp from 'tmp';
 const GET_HOST = 'http://get.com';
 const SET_HOST = 'http://set.com';
 
-type Persistable = {
+type Persistable<Location = string> = {
   beforeEach?: () => void;
   autoLoadPause?: number;
-  getLocation: () => string;
-  getPersister: (store: Store, location: string) => Persister;
-  get: (location: string) => string | null;
-  set: (location: string, value: any) => void;
-  write: (location: string, value: string) => void;
-  delete: (location: string) => void;
+  getLocation: () => Location;
+  getPersister: (store: Store, location: Location) => Persister;
+  get: (location: Location) => string | null;
+  set: (location: Location, value: any) => void;
+  write: (location: Location, value: string) => void;
+  delete: (location: Location) => void;
+  testMissing: boolean;
 };
 
 const nextLoop = async (): Promise<void> => await pause(0);
@@ -51,6 +54,7 @@ const mockFile: Persistable = {
   write: (location: string, value: any): void =>
     fs.writeFileSync(location, value, 'utf-8'),
   delete: (location: string): void => fs.unlinkSync(location),
+  testMissing: true,
 };
 
 const mockRemote: Persistable = {
@@ -96,6 +100,7 @@ const mockRemote: Persistable = {
   write: (location: string, value: any): void =>
     fs.writeFileSync(location, value, 'utf-8'),
   delete: (location: string): void => fs.unlinkSync(location),
+  testMissing: true,
 };
 
 const getMockedStorage = (
@@ -130,6 +135,7 @@ const getMockedStorage = (
       );
     },
     delete: (location: string): void => storage.removeItem(location),
+    testMissing: true,
   };
   return mockStorage;
 };
@@ -143,12 +149,36 @@ const mockSessionStorage = getMockedStorage(
   createSessionPersister,
 );
 
+const mockYjs: Persistable<Y.Doc> = {
+  autoLoadPause: 100,
+  getLocation: () => new Y.Doc(),
+  getPersister: createYjsPersister,
+  get: (location: Y.Doc): string | null => {
+    try {
+      return JSON.parse(
+        location.getMap('tinybase/store').get('json') as string,
+      );
+    } catch (e) {
+      return null;
+    }
+  },
+  set: (location: Y.Doc, value: any): void => {
+    mockYjs.write(location, JSON.stringify(value));
+  },
+  write: (location: Y.Doc, value: any): void => {
+    location.getMap('tinybase/store').set('json', value);
+  },
+  delete: (location: Y.Doc): void => location.destroy(),
+  testMissing: false,
+};
+
 describe.each([
   ['file', mockFile],
   ['remote', mockRemote],
   ['localStorage', mockLocalStorage],
   ['sessionStorage', mockSessionStorage],
-])('Persists to/from %s', (name: string, persistable: Persistable) => {
+  ['yjs', mockYjs],
+])('Persists to/from %s', (name: string, persistable: Persistable<any>) => {
   let location: string;
   let store: Store;
   let persister: Persister;
@@ -300,9 +330,11 @@ describe.each([
   });
 
   test('does not load from non-existent', async () => {
-    store.setTables({t1: {r1: {c1: 1}}});
-    await persistable.getPersister(store, '_').load({});
-    expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+    if (persistable.testMissing) {
+      store.setTables({t1: {r1: {c1: 1}}});
+      await persistable.getPersister(store, '_').load({});
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+    }
   });
 
   test('does not load from possibly invalid', async () => {
