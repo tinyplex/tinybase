@@ -245,7 +245,8 @@ const tsCheck = async (dir) => {
   const unusedResults = Object.entries(
     unusedExports(`${path.resolve(dir)}/tsconfig.json`, [
       '--excludeDeclarationFiles',
-      '--excludePathsFromReport=tinybase.ts;ui-react.ts;tools.ts;build.ts',
+      '--excludePathsFromReport=' +
+        'tinybase.ts;ui-react.ts;tools.ts;persister-yjs.ts;build.ts',
     ]),
   )
     .map(
@@ -281,6 +282,7 @@ const compileModule = async (
       'prettier',
       'react',
       'url',
+      'yjs',
       './tinybase',
       './tools',
     ],
@@ -332,6 +334,7 @@ const compileModule = async (
     format,
     globals: {
       react: 'React',
+      yjs: 'yjs',
       fs: 'fs',
     },
     interop: 'default',
@@ -341,6 +344,8 @@ const compileModule = async (
         ? ''
         : module == 'ui-react'
         ? 'UiReact'
+        : module == 'persister-yjs'
+        ? 'PersisterYjs'
         : module[0].toUpperCase() + module.slice(1)),
   };
 
@@ -373,6 +378,7 @@ const test = async (
             collectCoverageFrom: [
               `${LIB_DIR}/debug/tinybase.js`,
               `${LIB_DIR}/debug/ui-react.js`,
+              `${LIB_DIR}/debug/persister-yjs.js`,
               // `${LIB_DIR}/debug/tools.js`,
               // ^ some common functions cannot be fully exercised
             ],
@@ -423,7 +429,7 @@ const compileDocsAndAssets = async (api = true, pages = true) => {
   await makeDir(TMP_DIR);
   await esbuild.build({
     entryPoints: ['site/build.ts'],
-    external: ['tinydocs', 'react', 'prettier'],
+    external: ['tinydocs', 'react', 'yjs', 'prettier'],
     bundle: true,
     outfile: buildModule,
     format: 'esm',
