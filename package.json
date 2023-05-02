@@ -247,13 +247,17 @@
   },
   "peerDependencies": {
     "prettier": "^2.0.0",
-    "react": ">=17.0.0"
+    "react": ">=17.0.0",
+    "yjs": "^13.6.0"
   },
   "peerDependenciesMeta": {
     "react": {
       "optional": true
     },
     "prettier": {
+      "optional": true
+    },
+    "yjs": {
       "optional": true
     }
   }
