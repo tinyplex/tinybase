@@ -14,7 +14,7 @@ import {promises} from 'fs';
 const {parallel, series} = gulp;
 
 const UTF8 = 'utf-8';
-const TEST_MODULES = ['tinybase', 'ui-react', 'tools'];
+const TEST_MODULES = ['tinybase', 'ui-react', 'tools', 'persister-yjs'];
 const MODULES_TYPED_WITH_INTERNALS = ['store', 'queries', 'ui-react'];
 const ALL_MODULES = [
   'tinybase',
@@ -28,6 +28,7 @@ const ALL_MODULES = [
   'common',
   'ui-react',
   'tools',
+  'persister-yjs',
 ];
 
 const BIN_DIR = 'bin';
