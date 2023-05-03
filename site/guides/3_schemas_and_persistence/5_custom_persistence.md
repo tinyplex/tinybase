@@ -10,9 +10,9 @@ functions that handle how to fetch, write, and listen to, the persistence layer.
 
 To build a custom Persister, you should provide four functions:
 
-- `getPersisted`, an asynchronous function which will fetch JSON from the
+- `getPersisted`, an asynchronous function which will fetch content from the
   persistence layer (or `null` or `undefined` if not present).
-- `setPersisted`, an asynchronous function which will send JSON to the
+- `setPersisted`, an asynchronous function which will send content to the
   persistence layer.
 - `startListeningToPersisted`, a function that will register a `didChange`
   listener on underlying changes to the persistence layer.
@@ -34,7 +34,7 @@ let interval;
 const persister = createCustomPersister(
   store,
   async () => storeJson,
-  async (json) => (storeJson = json),
+  async (getJson) => (storeJson = getJson()),
   (didChange) => (interval = setInterval(didChange, 1000)),
   () => clearInterval(interval),
 );
