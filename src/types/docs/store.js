@@ -1088,16 +1088,48 @@
 /// Store
 {
   /**
-   * The getTables method returns a Tables object containing the entire data of
-   * the Store.
+   * The getContent method returns a Tables object and a Values object in an
+   * array, representing the entire content of the Store.
+   *
+   * Note that this returns a copy of, rather than a reference to the underlying
+   * data, so changes made to the returned objects are not made to the Store
+   * itself.
+   *
+   * @returns An array of a Tables object and a Values object.
+   * @example
+   * This example retrieves the content of a Store.
+   *
+   * ```js
+   * const store = createStore()
+   *   .setTables({pets: {fido: {species: 'dog'}}})
+   *   .setValues({open: true, employees: 3});
+   * console.log(store.getContent());
+   * // -> [{pets: {fido: {species: 'dog'}}}, {open: true, employees: 3}]
+   * ```
+   * @example
+   * This example retrieves the Tables and Values of an empty Store, returning
+   * empty objects.
+   *
+   * ```js
+   * const store = createStore();
+   * console.log(store.getContent());
+   * // -> [{}, {}]
+   * ```
+   * @category Getter
+   * @since v4.0.0
+   */
+  /// Store.getContent
+  /**
+   * The getTables method returns a Tables object containing the entire tabular
+   * data of the Store.
    *
    * Note that this returns a copy of, rather than a reference to the underlying
    * data, so changes made to the returned object are not made to the Store
    * itself.
    *
-   * @returns A Tables object containing the entire data of the Store.
+   * @returns A Tables object containing the tabular data of the Store.
    * @example
-   * This example retrieves the data in a Store.
+   * This example retrieves the tabular data in a Store.
    *
    * ```js
    * const store = createStore().setTables({
@@ -1422,9 +1454,9 @@
    * data, so changes made to the returned object are not made to the Store
    * itself.
    *
-   * @returns An object containing the entire data of the Values.
+   * @returns An object containing the set of keyed Values in the Store.
    * @example
-   * This example retrieves the keyed Values data in a Store.
+   * This example retrieves the set of keyed Values in the Store.
    *
    * ```js
    * const store = createStore().setValues({open: true, employees: 3});
@@ -1432,7 +1464,7 @@
    * // -> {open: true, employees: 3}
    * ```
    * @example
-   * This example retrieves a Values from a Store that has none, returning an
+   * This example retrieves Values from a Store that has none, returning an
    * empty object.
    *
    * ```js
