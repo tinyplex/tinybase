@@ -3142,28 +3142,84 @@ describe('Listeners', () => {
 
     test('in implicit transactions', () => {
       store.setTables({t1: {r1: {c1: 1}}});
-      expectChanges(listener, '/will', [true, false]);
-      expectChanges(listener, '/did', [true, false]);
+      expectChanges(listener, '/will', [
+        true,
+        false,
+        {t1: {r1: {c1: [null, 1]}}},
+        {},
+        {},
+        {},
+      ]);
+      expectChanges(listener, '/did', [
+        true,
+        false,
+        {t1: {r1: {c1: [null, 1]}}},
+        {},
+        {},
+        {},
+      ]);
       expectNoChanges(listener);
       store.delTables();
-      expectChanges(listener, '/will', [true, false]);
-      expectChanges(listener, '/did', [true, false]);
+      expectChanges(listener, '/will', [
+        true,
+        false,
+        {t1: {r1: {c1: [1, null]}}},
+        {},
+        {},
+        {},
+      ]);
+      expectChanges(listener, '/did', [
+        true,
+        false,
+        {t1: {r1: {c1: [1, null]}}},
+        {},
+        {},
+        {},
+      ]);
       expectNoChanges(listener);
       store.delTables();
-      expectChanges(listener, '/will', [false, false]);
-      expectChanges(listener, '/did', [false, false]);
+      expectChanges(listener, '/will', [false, false, {}, {}, {}, {}]);
+      expectChanges(listener, '/did', [false, false, {}, {}, {}, {}]);
       expectNoChanges(listener);
       store.setValues({v1: 1});
-      expectChanges(listener, '/will', [false, true]);
-      expectChanges(listener, '/did', [false, true]);
+      expectChanges(listener, '/will', [
+        false,
+        true,
+        {},
+        {},
+        {v1: [null, 1]},
+        {},
+      ]);
+      expectChanges(listener, '/did', [
+        false,
+        true,
+        {},
+        {},
+        {v1: [null, 1]},
+        {},
+      ]);
       expectNoChanges(listener);
       store.delValues();
-      expectChanges(listener, '/will', [false, true]);
-      expectChanges(listener, '/did', [false, true]);
+      expectChanges(listener, '/will', [
+        false,
+        true,
+        {},
+        {},
+        {v1: [1, null]},
+        {},
+      ]);
+      expectChanges(listener, '/did', [
+        false,
+        true,
+        {},
+        {},
+        {v1: [1, null]},
+        {},
+      ]);
       expectNoChanges(listener);
       store.delValues();
-      expectChanges(listener, '/will', [false, false]);
-      expectChanges(listener, '/did', [false, false]);
+      expectChanges(listener, '/will', [false, false, {}, {}, {}, {}]);
+      expectChanges(listener, '/did', [false, false, {}, {}, {}, {}]);
       expectNoChanges(listener);
     });
 
@@ -3172,8 +3228,22 @@ describe('Listeners', () => {
       store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
       expectNoChanges(listener);
       store.finishTransaction();
-      expectChanges(listener, '/will', [true, true]);
-      expectChanges(listener, '/did', [true, true]);
+      expectChanges(listener, '/will', [
+        true,
+        true,
+        {t1: {r1: {c1: [null, 1]}}},
+        {},
+        {v1: [null, 1]},
+        {},
+      ]);
+      expectChanges(listener, '/did', [
+        true,
+        true,
+        {t1: {r1: {c1: [null, 1]}}},
+        {},
+        {v1: [null, 1]},
+        {},
+      ]);
       expectNoChanges(listener);
     });
 
@@ -3182,8 +3252,22 @@ describe('Listeners', () => {
         store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
         expectNoChanges(listener);
       });
-      expectChanges(listener, '/will', [true, true]);
-      expectChanges(listener, '/did', [true, true]);
+      expectChanges(listener, '/will', [
+        true,
+        true,
+        {t1: {r1: {c1: [null, 1]}}},
+        {},
+        {v1: [null, 1]},
+        {},
+      ]);
+      expectChanges(listener, '/did', [
+        true,
+        true,
+        {t1: {r1: {c1: [null, 1]}}},
+        {},
+        {v1: [null, 1]},
+        {},
+      ]);
       expectNoChanges(listener);
     });
 
@@ -3191,8 +3275,8 @@ describe('Listeners', () => {
       store.transaction(() => {
         expectNoChanges(listener);
       });
-      expectChanges(listener, '/will', [false, false]);
-      expectChanges(listener, '/did', [false, false]);
+      expectChanges(listener, '/will', [false, false, {}, {}, {}, {}]);
+      expectChanges(listener, '/did', [false, false, {}, {}, {}, {}]);
       expectNoChanges(listener);
     });
 
@@ -3201,8 +3285,8 @@ describe('Listeners', () => {
         store.delTables();
         expectNoChanges(listener);
       });
-      expectChanges(listener, '/will', [false, false]);
-      expectChanges(listener, '/did', [false, false]);
+      expectChanges(listener, '/will', [false, false, {}, {}, {}, {}]);
+      expectChanges(listener, '/did', [false, false, {}, {}, {}, {}]);
       expectNoChanges(listener);
     });
 
@@ -3213,8 +3297,8 @@ describe('Listeners', () => {
         store.delTables().delValues();
         expectNoChanges(listener);
       });
-      expectChanges(listener, '/will', [true, true]);
-      expectChanges(listener, '/did', [true, true]);
+      expectChanges(listener, '/will', [true, true, {}, {}, {}, {}]);
+      expectChanges(listener, '/did', [true, true, {}, {}, {}, {}]);
       expectNoChanges(listener);
     });
 
@@ -3226,8 +3310,8 @@ describe('Listeners', () => {
         },
         () => true,
       );
-      expectChanges(listener, '/will', [false, false]);
-      expectChanges(listener, '/did', [false, false]);
+      expectChanges(listener, '/will', [false, false, {}, {}, {}, {}]);
+      expectChanges(listener, '/did', [false, false, {}, {}, {}, {}]);
       expectNoChanges(listener);
     });
   });
