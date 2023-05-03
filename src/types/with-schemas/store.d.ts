@@ -265,6 +265,10 @@ export type TransactionListener<Schemas extends OptionalSchemas> = (
   store: Store<Schemas>,
   cellsTouched: boolean,
   valuesTouched: boolean,
+  changedCells: ChangedCells<Schemas[0]>,
+  invalidCells: InvalidCells,
+  changedValues: ChangedValues<Schemas[1]>,
+  invalidValues: InvalidValues,
 ) => void;
 
 /// TablesListener

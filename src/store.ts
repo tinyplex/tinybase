@@ -22,9 +22,13 @@ import {
   CellChange,
   CellOrUndefined,
   CellSchema,
+  ChangedCells,
+  ChangedValues,
   DoRollback,
   GetCellChange,
   GetValueChange,
+  InvalidCells,
+  InvalidValues,
   MapCell,
   Row,
   RowCallback,
@@ -1262,34 +1266,44 @@ export const createStore: typeof createStoreDecl = (): Store => {
           callKeyedValuesListenersForChanges(1);
         }
 
-        if (
-          doRollback?.(
-            mapToObj(
-              changedCells,
-              (table) =>
+        let transactionChanges: [
+          changedCells: ChangedCells,
+          invalidCells: InvalidCells,
+          changedValues: ChangedValues,
+          invalidValues: InvalidValues,
+        ] =
+          doRollback ||
+          !collIsEmpty(finishTransactionListeners[0]) ||
+          !collIsEmpty(finishTransactionListeners[1])
+            ? [
                 mapToObj(
-                  table,
-                  (row) =>
+                  changedCells,
+                  (table) =>
                     mapToObj(
-                      row,
-                      (cells) => [...cells],
-                      ([oldCell, newCell]) => oldCell === newCell,
+                      table,
+                      (row) =>
+                        mapToObj(
+                          row,
+                          (cells) => [...cells],
+                          ([oldCell, newCell]) => oldCell === newCell,
+                        ),
+                      objIsEmpty,
                     ),
                   objIsEmpty,
                 ),
-              objIsEmpty,
-            ),
-            mapToObj<IdMap2<any[]>, IdObj2<any[]>>(invalidCells, (map) =>
-              mapToObj<IdMap<any[]>, IdObj<any[]>>(map, mapToObj),
-            ),
-            mapToObj(
-              changedValues,
-              (values) => [...values],
-              ([oldValue, newValue]) => oldValue === newValue,
-            ),
-            mapToObj(invalidValues),
-          )
-        ) {
+                mapToObj<IdMap2<any[]>, IdObj2<any[]>>(invalidCells, (map) =>
+                  mapToObj<IdMap<any[]>, IdObj<any[]>>(map, mapToObj),
+                ),
+                mapToObj(
+                  changedValues,
+                  (values) => [...values],
+                  ([oldValue, newValue]) => oldValue === newValue,
+                ),
+                mapToObj(invalidValues),
+              ]
+            : [{}, {}, {}, {}];
+
+        if (doRollback?.(...transactionChanges)) {
           collForEach(changedCells, (table, tableId) =>
             collForEach(table, (row, rowId) =>
               collForEach(row, ([oldCell], cellId) =>
@@ -1301,6 +1315,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
             setOrDelValue(store, valueId, oldValue),
           );
           cellsTouched = valuesTouched = false;
+          transactionChanges = [{}, {}, {}, {}];
         }
 
         callListeners(
@@ -1308,6 +1323,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
           undefined,
           cellsTouched,
           valuesTouched,
+          ...transactionChanges,
         );
 
         transactions = -1;
@@ -1324,6 +1340,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
           undefined,
           cellsTouched,
           valuesTouched,
+          ...transactionChanges,
         );
 
         transactions = 0;
