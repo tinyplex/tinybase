@@ -875,6 +875,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   // --
 
+  const getContent = (): [Tables, Values] => [getTables(), getValues()];
+
   const getTables = (): Tables =>
     mapToObj<TableMap, Table>(tablesMap, (table) =>
       mapToObj<RowMap, Row>(table, mapToObj),
@@ -1428,6 +1430,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
       : {};
 
   const store: any = {
+    getContent,
+
     getTables,
     getTableIds,
     getTable,

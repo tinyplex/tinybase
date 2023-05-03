@@ -354,4 +354,5 @@ test('setTables and setValues', () => {
   expect(store.getJson()).toEqual(
     JSON.stringify([{t1: {r1: {c1: 1}}}, {v1: 1}]),
   );
+  expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
 });
