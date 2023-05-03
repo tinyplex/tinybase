@@ -10,8 +10,8 @@ export const createYjsPersister = (store: Store, yDoc: Y.Doc): Persister => {
   const getPersisted = async (): Promise<string | null | undefined> =>
     map.get('json') as string;
 
-  const setPersisted = async (json: Json): Promise<void> => {
-    map.set('json', json);
+  const setPersisted = async (getJson: () => Json): Promise<void> => {
+    map.set('json', getJson());
   };
 
   const startListeningToPersisted = (didChange: Callback): Callback => {
