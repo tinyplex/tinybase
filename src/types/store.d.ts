@@ -277,6 +277,9 @@ export type StoreListenerStats = {
 /// Store
 export interface Store {
   //
+  /// Store.getContent
+  getContent(): [Tables, Values];
+
   /// Store.getTables
   getTables(): Tables;
 
