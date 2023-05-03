@@ -406,11 +406,20 @@
  * of `cellsTouched` and `valuesTouched` in the listener will be `false` because
  * all changes have been reverted.
  *
+ * Since v4.0, the listener also receives the list of (valid and invalid) Cell
+ * and Value changes made during the transaction.
+ *
  * @param store A reference to the Store that is completing a transaction.
  * @param cellsTouched Whether Cell values have been touched during the
  * transaction.
  * @param valuesTouched Whether Values have been touched during the transaction,
  * since v3.0.0.
+ * @param changedCells Any Cells that were changed during the transaction, since
+ * v4.0.0.
+ * @param invalidCells Any invalid attempts to change Cells, since v4.0.0.
+ * @param changedValues Any Values that were changed during the transaction,
+ * since v4.0.0.
+ * @param invalidValues Any invalid attempts to change Values, since v4.0.0.
  * @category Listener
  */
 /// TransactionListener
