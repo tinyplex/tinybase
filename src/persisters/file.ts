@@ -19,9 +19,9 @@ export const createFilePersister = ((
     } catch {}
   };
 
-  const setPersisted = async (json: Json): Promise<void> => {
+  const setPersisted = async (getJson: () => Json): Promise<void> => {
     try {
-      await promises.writeFile(filePath, json, UTF8);
+      await promises.writeFile(filePath, getJson(), UTF8);
     } catch {}
   };
 

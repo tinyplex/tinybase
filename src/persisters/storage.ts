@@ -19,8 +19,8 @@ const getStoragePersister = (
   const getPersisted = async (): Promise<string | null | undefined> =>
     storage.getItem(storageName);
 
-  const setPersisted = async (json: Json): Promise<void> =>
-    storage.setItem(storageName, json);
+  const setPersisted = async (getJson: () => Json): Promise<void> =>
+    storage.setItem(storageName, getJson());
 
   const startListeningToPersisted = (didChange: Callback): Listener => {
     const listener = (event: StorageEvent): void => {
