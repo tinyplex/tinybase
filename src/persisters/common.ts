@@ -1,4 +1,4 @@
-import {Callback, Id} from '../types/common.d';
+import {Callback, Id, Json} from '../types/common.d';
 import {DEBUG, ifNotUndefined, isUndefined} from '../common/other';
 import {Persister, PersisterStats} from '../types/persisters.d';
 import {Store, Tables, Values} from '../types/store.d';
@@ -8,12 +8,14 @@ import {objFreeze} from '../common/obj';
 export const createCustomPersister = <ListeningHandle>(
   store: Store,
   getPersisted: () => Promise<string | null | undefined>,
-  setPersisted: (json: string) => Promise<void>,
+  setPersisted: (
+    getJson: () => Json,
+    getContent: () => [Tables, Values],
+  ) => Promise<void>,
   startListeningToPersisted: (didChange: Callback) => ListeningHandle,
   stopListeningToPersisted: (listeningHandle: ListeningHandle) => void,
 ): Persister => {
-  let tablesListenerId: Id | undefined;
-  let valuesListenerId: Id | undefined;
+  let listenerId: Id | undefined;
   let loadSave = 0;
   let loads = 0;
   let saves = 0;
@@ -74,7 +76,7 @@ export const createCustomPersister = <ListeningHandle>(
         if (DEBUG) {
           saves++;
         }
-        await setPersisted(store.getJson());
+        await setPersisted(store.getJson, store.getContent);
         loadSave = 0;
       }
       return persister;
@@ -82,14 +84,12 @@ export const createCustomPersister = <ListeningHandle>(
 
     startAutoSave: async (): Promise<Persister> => {
       await persister.stopAutoSave().save();
-      tablesListenerId = store.addTablesListener(persister.save);
-      valuesListenerId = store.addValuesListener(persister.save);
+      listenerId = store.addDidFinishTransactionListener(persister.save);
       return persister;
     },
 
     stopAutoSave: (): Persister => {
-      ifNotUndefined(tablesListenerId, store.delListener);
-      ifNotUndefined(valuesListenerId, store.delListener);
+      ifNotUndefined(listenerId, store.delListener);
       return persister;
     },
 

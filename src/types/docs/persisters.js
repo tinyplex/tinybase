@@ -448,12 +448,12 @@
    * const persister = createSessionPersister(store, 'pets');
    * await persister.startAutoSave();
    *
-   * console.log(store.getListenerStats().tables);
+   * console.log(store.getListenerStats().transaction);
    * // -> 1
    *
    * persister.destroy();
    *
-   * console.log(store.getListenerStats().tables);
+   * console.log(store.getListenerStats().transaction);
    * // -> 0
    * ```
    * @category Lifecycle
@@ -647,10 +647,15 @@
  * covers. See those implementations for ideas on how to implement your own
  * Persister types.
  *
+ * This API changed in v4.0.0. Any custom persisters created on previous
+ * versions should be upgraded. Most notably, the `setPersisted` function
+ * parameter is provided with a `getJson` function to get the JSON from the
+ * Store, rather than the JSON itself.
+ *
  * @param store The Store to persist.
- * @param getPersisted An asynchronous function which will fetch JSON from the
- * persistence layer (or `null` or `undefined` if not present).
- * @param setPersisted An asynchronous function which will send JSON to the
+ * @param getPersisted An asynchronous function which will fetch content from
+ * the persistence layer (or `null` or `undefined` if not present).
+ * @param setPersisted An asynchronous function which will send content to the
  * persistence layer.
  * @param startListeningToPersisted A function that will register a `didChange`
  * listener on underlying changes to the persistence layer. You can return a
@@ -672,7 +677,7 @@
  * const persister = createCustomPersister(
  *   store,
  *   async () => storeJson,
- *   async (json) => (storeJson = json),
+ *   async (getJson) => (storeJson = getJson()),
  *   (didChange) => setInterval(didChange, 1000),
  *   (interval) => clearInterval(interval),
  * );

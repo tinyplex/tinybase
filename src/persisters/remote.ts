@@ -23,11 +23,11 @@ export const createRemotePersister = ((
     return response.text();
   };
 
-  const setPersisted = async (json: Json): Promise<any> =>
+  const setPersisted = async (getJson: () => Json): Promise<any> =>
     await fetch(saveUrl, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: json,
+      body: getJson(),
     });
 
   const startListeningToPersisted = (didChange: Callback): NodeJS.Timeout =>
