@@ -630,6 +630,9 @@ export type StoreListenerStats = {
 
 /// Store
 export interface Store<in out Schemas extends OptionalSchemas> {
+  /// Store.getContent
+  getContent(): [Tables<Schemas[0]>, Values<Schemas[1]>];
+
   /// Store.getTables
   getTables(): Tables<Schemas[0]>;
 
