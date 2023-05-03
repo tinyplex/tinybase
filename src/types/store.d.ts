@@ -105,6 +105,10 @@ export type TransactionListener = (
   store: Store,
   cellsTouched: boolean,
   valuesTouched: boolean,
+  changedCells: ChangedCells,
+  invalidCells: InvalidCells,
+  changedValues: ChangedValues,
+  invalidValues: InvalidValues,
 ) => void;
 
 /// TablesListener
