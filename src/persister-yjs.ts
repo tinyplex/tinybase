@@ -7,8 +7,11 @@ import {createCustomPersister} from './persisters';
 export const createYjsPersister = (store: Store, yDoc: Y.Doc): Persister => {
   const map = yDoc.getMap('tinybase/store');
 
-  const getPersisted = async (): Promise<string | null | undefined> =>
-    map.get('json') as string;
+  const getPersisted = async (): Promise<[Tables, Values] | undefined> => {
+    try {
+      return JSON.parse(map.get('json') as string);
+    } catch {}
+  };
 
   const setPersisted = async (
     getContent: () => [Tables, Values],

@@ -12,9 +12,9 @@ export const createFilePersister = ((
   store: Store,
   filePath: string,
 ): Persister => {
-  const getPersisted = async (): Promise<string | null | undefined> => {
+  const getPersisted = async (): Promise<[Tables, Values] | undefined> => {
     try {
-      return await readFile(filePath, UTF8);
+      return JSON.parse(await readFile(filePath, UTF8));
     } catch {}
   };
 
