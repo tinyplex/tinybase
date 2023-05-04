@@ -3,7 +3,6 @@ import {Store, Tables, Values} from './types/store.d';
 import {Callback} from './types/common.d';
 import {Persister} from './types/persisters.d';
 import {createCustomPersister} from './persisters/common';
-import {jsonString} from './common/other';
 
 export const createYjsPersister = (store: Store, yDoc: Y.Doc): Persister => {
   const map = yDoc.getMap('tinybase/store');
@@ -14,7 +13,7 @@ export const createYjsPersister = (store: Store, yDoc: Y.Doc): Persister => {
   const setPersisted = async (
     getContent: () => [Tables, Values],
   ): Promise<void> => {
-    map.set('json', jsonString(getContent()));
+    map.set('json', JSON.stringify(getContent()));
   };
 
   const startListeningToPersisted = (didChange: Callback): Callback => {
