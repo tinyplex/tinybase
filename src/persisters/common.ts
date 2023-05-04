@@ -39,9 +39,7 @@ export const createCustomPersister = <ListeningHandle>(
         if (!isUndefined(body) && body != EMPTY_STRING) {
           store.setJson(body);
         } else {
-          store.transaction(() =>
-            store.setTables(initialTables).setValues(initialValues),
-          );
+          store.setContent([initialTables as Tables, initialValues as Values]);
         }
         loadSave = 0;
       }
@@ -55,7 +53,21 @@ export const createCustomPersister = <ListeningHandle>(
       persister.stopAutoLoad();
       await persister.load(initialTables, initialValues);
       listening = true;
-      listeningHandle = addPersisterListener(() => persister.load());
+      listeningHandle = addPersisterListener(async (content) => {
+        if (isUndefined(content)) {
+          await persister.load();
+        } else {
+          /*! istanbul ignore else */
+          if (loadSave != 2) {
+            loadSave = 1;
+            if (DEBUG) {
+              loads++;
+            }
+            store.setContent(content);
+            loadSave = 0;
+          }
+        }
+      });
       return persister;
     },
 

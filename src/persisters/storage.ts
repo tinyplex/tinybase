@@ -5,6 +5,7 @@ import {
   createSessionPersister as createSessionPersisterDecl,
 } from '../types/persisters.d';
 import {Store, Tables, Values} from '../types/store.d';
+import {EMPTY_STRING} from '../common/strings';
 import {createCustomPersister} from './common';
 import {jsonString} from '../common/other';
 
@@ -27,7 +28,11 @@ const getStoragePersister = (
   const addPersisterListener = (listener: PersisterListener): StoreListener => {
     const storeListener = (event: StorageEvent): void => {
       if (event.storageArea === storage && event.key === storageName) {
-        listener();
+        let newValue;
+        try {
+          newValue = JSON.parse(event.newValue as string);
+        } catch {}
+        listener(newValue);
       }
     };
     WINDOW.addEventListener(STORAGE, storeListener);
