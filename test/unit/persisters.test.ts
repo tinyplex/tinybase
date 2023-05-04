@@ -1,7 +1,14 @@
 /* eslint-disable jest/no-conditional-expect */
 
 import * as Y from 'yjs';
-import {Persister, Store, createStore} from 'tinybase/debug';
+import {
+  Persister,
+  Store,
+  Tables,
+  Values,
+  createCustomPersister,
+  createStore,
+} from 'tinybase/debug';
 import {
   createLocalPersister,
   createSessionPersister,
@@ -32,6 +39,52 @@ type Persistable<Location = string> = {
 
 const nextLoop = async (): Promise<void> => await pause(0);
 // fs.watch misses changes made in the same loop, seemingly
+
+let customPersister: any;
+let customPersisterListener: ((content?: [Tables, Values]) => void) | undefined;
+
+const getMockedCustom = (
+  write: (location: string, value: string) => void,
+): Persistable => ({
+  autoLoadPause: 100,
+  getLocation: (): string => '',
+  getPersister: (store: Store) => {
+    customPersister = '';
+    return createCustomPersister(
+      store,
+      async () => customPersister,
+      async (getContent) => {
+        customPersister = getContent();
+      },
+      (listener) => {
+        customPersisterListener = listener;
+      },
+      () => (customPersisterListener = undefined),
+    );
+  },
+  get: (): string | null => customPersister,
+  set: (location: string, value: any): void =>
+    mockCustom1.write(location, JSON.stringify(value)),
+  write,
+  delete: (): void => {
+    customPersister = '';
+  },
+  testMissing: true,
+});
+
+const mockCustom1: Persistable<string> = getMockedCustom(
+  (_location: string, value: any): void => {
+    customPersister = value;
+    customPersisterListener?.();
+  },
+);
+
+const mockCustom2: Persistable<string> = getMockedCustom(
+  (_location: string, value: any): void => {
+    customPersister = value;
+    customPersisterListener?.(value);
+  },
+);
 
 const mockFile: Persistable = {
   autoLoadPause: 100,
@@ -172,6 +225,8 @@ const mockYjs: Persistable<Y.Doc> = {
 };
 
 describe.each([
+  ['custom1', mockCustom1],
+  ['custom2', mockCustom2],
   ['file', mockFile],
   ['remote', mockRemote],
   ['localStorage', mockLocalStorage],
