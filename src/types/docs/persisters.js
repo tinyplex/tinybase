@@ -48,6 +48,11 @@
   /// PersisterStats.saves
 }
 /**
+ * A PersisterListener is a callback that lets a Persister inform the Store that
+ * a change has happened to the underlying data.
+ */
+/// PersisterListener
+/**
  * A Persister object lets you save and load Store data to and from different
  * locations, or underlying storage types.
  *
@@ -657,7 +662,7 @@
  * the persistence layer (or `null` or `undefined` if not present).
  * @param setPersisted An asynchronous function which will send content to the
  * persistence layer.
- * @param startListeningToPersisted A function that will register a `didChange`
+ * @param startListeningToPersisted A function that will register a `listener`
  * listener on underlying changes to the persistence layer. You can return a
  * listening handle that will be provided again when `stopListeningToPersisted`
  * is called.
@@ -678,7 +683,7 @@
  *   store,
  *   async () => storeJson,
  *   async (getContent) => (storeJson = JSON.stringify(getContent())),
- *   (didChange) => setInterval(didChange, 1000),
+ *   (listener) => setInterval(listener, 1000),
  *   (interval) => clearInterval(interval),
  * );
  *
