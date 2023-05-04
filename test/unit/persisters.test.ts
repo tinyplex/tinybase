@@ -125,6 +125,7 @@ const getMockedStorage = (
         new StorageEvent('storage', {
           storageArea: storage,
           key: location,
+          newValue: value,
         }),
       );
       window.dispatchEvent(
@@ -246,7 +247,7 @@ describe.each([
   });
 
   test('loads backwards compatible', async () => {
-    persistable.set(location, {t1: {r1: {c1: 1}}});
+    persistable.set(location, [{t1: {r1: {c1: 1}}}]);
     await persister.load({});
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     expect(persister.getStats()).toEqual({loads: 1, saves: 0});
@@ -276,12 +277,12 @@ describe.each([
   });
 
   test('autoLoads', async () => {
-    persistable.set(location, {t1: {r1: {c1: 1}}});
+    persistable.set(location, [{t1: {r1: {c1: 1}}}]);
     await persister.startAutoLoad({});
     await nextLoop();
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     expect(persister.getStats()).toEqual({loads: 1, saves: 0});
-    persistable.set(location, {t1: {r1: {c1: 2}}});
+    persistable.set(location, [{t1: {r1: {c1: 2}}}]);
     await pause(persistable.autoLoadPause);
     expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
     expect(persister.getStats()).toEqual({loads: 2, saves: 0});
@@ -305,14 +306,14 @@ describe.each([
       await persister.startAutoSave();
       await nextLoop();
       expect(persister.getStats()).toEqual({loads: 1, saves: 1});
-      persistable.set(location, {t1: {r1: {c1: 2}}});
+      persistable.set(location, [{t1: {r1: {c1: 2}}}]);
       await nextLoop();
       expect(persister.getStats()).toEqual({loads: 2, saves: 1});
     }
   });
 
   test('does not delete when autoLoaded is deleted', async () => {
-    persistable.set(location, {t1: {r1: {c1: 1}}});
+    persistable.set(location, [{t1: {r1: {c1: 1}}}]);
     await persister.startAutoLoad({});
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     persistable.delete(location);
@@ -321,7 +322,7 @@ describe.each([
   });
 
   test('does not delete when autoLoaded is corrupted', async () => {
-    persistable.set(location, {t1: {r1: {c1: 1}}});
+    persistable.set(location, [{t1: {r1: {c1: 1}}}]);
     await persister.startAutoLoad({});
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     persistable.write(location, '{');
