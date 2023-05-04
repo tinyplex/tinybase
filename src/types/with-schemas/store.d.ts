@@ -740,6 +740,12 @@ export interface Store<in out Schemas extends OptionalSchemas> {
   /// Store.getSchemaJson
   getSchemaJson(): Json;
 
+  /// Store.setContent
+  setContent([tables, values]: [
+    Tables<Schemas[0], true>,
+    Values<Schemas[1], true>,
+  ]): Store<Schemas>;
+
   /// Store.setTables
   setTables(tables: Tables<Schemas[0], true>): Store<Schemas>;
 
