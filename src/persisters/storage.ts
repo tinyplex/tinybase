@@ -1,14 +1,14 @@
 import {
   Persister,
+  PersisterListener,
   createLocalPersister as createLocalPersisterDecl,
   createSessionPersister as createSessionPersisterDecl,
 } from '../types/persisters.d';
 import {Store, Tables, Values} from '../types/store.d';
-import {Callback} from '../types/common.d';
 import {createCustomPersister} from './common';
 import {jsonString} from '../common/other';
 
-type Listener = (event: StorageEvent) => void;
+type StoreListener = (event: StorageEvent) => void;
 const STORAGE = 'storage';
 const WINDOW = globalThis.window;
 
@@ -24,18 +24,20 @@ const getStoragePersister = (
     getContent: () => [Tables, Values],
   ): Promise<void> => storage.setItem(storageName, jsonString(getContent()));
 
-  const startListeningToPersisted = (didChange: Callback): Listener => {
-    const listener = (event: StorageEvent): void => {
+  const startListeningToPersisted = (
+    listener: PersisterListener,
+  ): StoreListener => {
+    const storeListener = (event: StorageEvent): void => {
       if (event.storageArea === storage && event.key === storageName) {
-        didChange();
+        listener();
       }
     };
-    WINDOW.addEventListener(STORAGE, listener);
-    return listener;
+    WINDOW.addEventListener(STORAGE, storeListener);
+    return storeListener;
   };
 
-  const stopListeningToPersisted = (listener: Listener): void =>
-    WINDOW.removeEventListener(STORAGE, listener);
+  const stopListeningToPersisted = (storeListener: StoreListener): void =>
+    WINDOW.removeEventListener(STORAGE, storeListener);
 
   return createCustomPersister(
     store,
