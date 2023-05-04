@@ -28,10 +28,11 @@ const REFLECTIONS = [
   'relationships',
   'queries',
   'checkpoints',
-  'persisters',
-  'ui-react',
   'common',
+  'persisters',
+  /^persister/,
   'tools',
+  'ui-react',
   /^TablesProps/,
   /^TableProps/,
   /^SortedTableProps/,
@@ -124,6 +125,10 @@ const addApi = (docs: Docs): Docs =>
     .addApiFile('lib/types/relationships.d.ts')
     .addApiFile('lib/types/queries.d.ts')
     .addApiFile('lib/types/persisters.d.ts')
+    .addApiFile('lib/types/persister-browser.d.ts')
+    .addApiFile('lib/types/persister-file.d.ts')
+    .addApiFile('lib/types/persister-remote.d.ts')
+    // .addApiFile('lib/types/persister-yjs.d.ts')
     .addApiFile('lib/types/tools.d.ts')
     .addApiFile('lib/types/ui-react.d.ts');
 
