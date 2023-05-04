@@ -961,6 +961,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const getSchemaJson = (): Json =>
     jsonString([tablesSchemaMap, valuesSchemaMap]);
 
+  const setContent = ([tables, values]: [Tables, Values]): Store =>
+    fluentTransaction(() => {
+      setTables(tables);
+      setValues(values);
+    });
+
   const setTables = (tables: Tables): Store =>
     fluentTransaction(() =>
       validateTables(tables) ? setValidTables(tables) : 0,
@@ -1468,6 +1474,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     getValuesSchemaJson,
     getSchemaJson,
 
+    setContent,
     setTables,
     setTable,
     setRow,
