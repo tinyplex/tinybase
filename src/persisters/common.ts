@@ -1,4 +1,4 @@
-import {Callback, Id, Json} from '../types/common.d';
+import {Callback, Id} from '../types/common.d';
 import {DEBUG, ifNotUndefined, isUndefined} from '../common/other';
 import {Persister, PersisterStats} from '../types/persisters.d';
 import {Store, Tables, Values} from '../types/store.d';
@@ -8,10 +8,7 @@ import {objFreeze} from '../common/obj';
 export const createCustomPersister = <ListeningHandle>(
   store: Store,
   getPersisted: () => Promise<string | null | undefined>,
-  setPersisted: (
-    getJson: () => Json,
-    getContent: () => [Tables, Values],
-  ) => Promise<void>,
+  setPersisted: (getContent: () => [Tables, Values]) => Promise<void>,
   startListeningToPersisted: (didChange: Callback) => ListeningHandle,
   stopListeningToPersisted: (listeningHandle: ListeningHandle) => void,
 ): Persister => {
@@ -76,7 +73,7 @@ export const createCustomPersister = <ListeningHandle>(
         if (DEBUG) {
           saves++;
         }
-        await setPersisted(store.getJson, store.getContent);
+        await setPersisted(store.getContent);
         loadSave = 0;
       }
       return persister;
