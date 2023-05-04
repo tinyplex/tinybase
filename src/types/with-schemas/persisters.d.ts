@@ -1,7 +1,6 @@
 /// persisters
 
 import {OptionalSchemas, Store, Tables, Values} from './store.d';
-import {Callback} from './common.d';
 
 /// PersisterStats
 export type PersisterStats = {
@@ -10,6 +9,11 @@ export type PersisterStats = {
   /// PersisterStats.saves
   saves?: number;
 };
+
+/// PersisterListener
+export type PersisterListener<Schemas extends OptionalSchemas> = (
+  content?: [Tables<Schemas[0], true>, Values<Schemas[1], true>],
+) => void;
 
 /// Persister
 export interface Persister<in out Schemas extends OptionalSchemas> {
@@ -83,6 +87,8 @@ export function createCustomPersister<
   setPersisted: (
     getContent: () => [Tables<Schemas[0]>, Values<Schemas[1]>],
   ) => Promise<void>,
-  startListeningToPersisted: (didChange: Callback) => ListeningHandle,
+  startListeningToPersisted: (
+    listener: PersisterListener<Schemas>,
+  ) => ListeningHandle,
   stopListeningToPersisted: (listeningHandle: ListeningHandle) => void,
 ): Persister<Schemas>;
