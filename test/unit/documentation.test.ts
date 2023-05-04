@@ -2,6 +2,10 @@ import * as React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
 import * as ReactDOMTestUtils from 'react-dom/test-utils';
 import * as TinyBase from 'tinybase/debug';
+import * as TinyBasePersisterBrowser from 'tinybase/debug/persister-browser';
+import * as TinyBasePersisterFile from 'tinybase/debug/persister-file';
+import * as TinyBasePersisterRemote from 'tinybase/debug/persister-remote';
+import * as TinyBasePersisterYjs from 'tinybase/debug/persister-yjs';
 import * as TinyBaseReact from 'tinybase/debug/ui-react';
 import * as TinyBaseTools from 'tinybase/debug/tools';
 import {join, resolve} from 'path';
@@ -10,6 +14,10 @@ import {transformSync} from 'esbuild';
 
 [
   TinyBase,
+  TinyBasePersisterBrowser,
+  TinyBasePersisterFile,
+  TinyBasePersisterRemote,
+  TinyBasePersisterYjs,
   TinyBaseReact,
   TinyBaseTools,
   ReactDOMTestUtils,

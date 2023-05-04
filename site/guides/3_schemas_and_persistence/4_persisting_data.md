@@ -10,16 +10,17 @@ disk in a environment with filesystem access.
 ## Types Of Persisters
 
 Creating a Persister for a Store depends on the choice of underlying storage
-where the data is to be stored. Options include:
+where the data is to be stored. Options (in separately installed modules)
+include:
 
-- The createSessionPersister function, which returns a Persister that uses the
-  browser's session storage.
-- The createLocalPersister function, which returns a Persister that uses the
-  browser's local storage.
-- The createRemotePersister function, which returns a Persister that uses a
-  remote server.
-- The createFilePersister function, which returns a Persister that uses a local
-  file (in an appropriate environment).
+- The createSessionPersister function (in the persister-browser module)
+  returns a Persister that uses the browser's session storage.
+- The createLocalPersister function (in the persister-browser module) returns
+  a Persister that uses the browser's local storage.
+- The createRemotePersister function (in the persister-remote module) returns
+  a Persister that uses a remote server.
+- The createFilePersister function (in the persister-file module) returns a
+  Persister that uses a local file (in an appropriate environment).
 
 There is also a way to developer custom Persisters of your own, which we
 describe in the Custom Persistence guide.
