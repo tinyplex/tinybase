@@ -1,7 +1,7 @@
 /// persisters
 
-import {Callback, Json} from './common.d';
 import {Store, Tables, Values} from './store.d';
+import {Callback} from './common.d';
 
 /// PersisterStats
 export type PersisterStats = {
@@ -73,10 +73,7 @@ export function createFilePersister(store: Store, filePath: string): Persister;
 export function createCustomPersister<ListeningHandle>(
   store: Store,
   getPersisted: () => Promise<string | null | undefined>,
-  setPersisted: (
-    getJson: () => Json,
-    getContent: () => [Tables, Values],
-  ) => Promise<void>,
+  setPersisted: (getContent: () => [Tables, Values]) => Promise<void>,
   startListeningToPersisted: (didChange: Callback) => ListeningHandle,
   stopListeningToPersisted: (listeningHandle: ListeningHandle) => void,
 ): Persister;

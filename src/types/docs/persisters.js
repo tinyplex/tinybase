@@ -649,8 +649,8 @@
  *
  * This API changed in v4.0.0. Any custom persisters created on previous
  * versions should be upgraded. Most notably, the `setPersisted` function
- * parameter is provided with a `getJson` function to get the JSON from the
- * Store, rather than the JSON itself.
+ * parameter is provided with a `getContent` function to get the content from
+ * the Store itself, rather than being passed pre-serialized JSON.
  *
  * @param store The Store to persist.
  * @param getPersisted An asynchronous function which will fetch content from
@@ -677,7 +677,7 @@
  * const persister = createCustomPersister(
  *   store,
  *   async () => storeJson,
- *   async (getJson) => (storeJson = getJson()),
+ *   async (getContent) => (storeJson = JSON.stringify(getContent())),
  *   (didChange) => setInterval(didChange, 1000),
  *   (interval) => clearInterval(interval),
  * );
