@@ -1,11 +1,11 @@
-import {Callback, Json} from '../types/common.d';
 import {
   Persister,
   createRemotePersister as createRemotePersisterDecl,
 } from '../types/persisters.d';
-import {Store} from '../types/store.d';
+import {Store, Tables, Values} from '../types/store.d';
+import {isUndefined, jsonString} from '../common/other';
+import {Callback} from '../types/common.d';
 import {createCustomPersister} from './common';
-import {isUndefined} from '../common/other';
 
 const getETag = (response: Response) => response.headers.get('ETag');
 
@@ -23,11 +23,13 @@ export const createRemotePersister = ((
     return response.text();
   };
 
-  const setPersisted = async (getJson: () => Json): Promise<any> =>
+  const setPersisted = async (
+    getContent: () => [Tables, Values],
+  ): Promise<any> =>
     await fetch(saveUrl, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: getJson(),
+      body: jsonString(getContent()),
     });
 
   const startListeningToPersisted = (didChange: Callback): NodeJS.Timeout =>

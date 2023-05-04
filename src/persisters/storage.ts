@@ -1,11 +1,12 @@
-import {Callback, Json} from '../types/common.d';
 import {
   Persister,
   createLocalPersister as createLocalPersisterDecl,
   createSessionPersister as createSessionPersisterDecl,
 } from '../types/persisters.d';
-import {Store} from '../types/store.d';
+import {Store, Tables, Values} from '../types/store.d';
+import {Callback} from '../types/common.d';
 import {createCustomPersister} from './common';
+import {jsonString} from '../common/other';
 
 type Listener = (event: StorageEvent) => void;
 const STORAGE = 'storage';
@@ -19,8 +20,9 @@ const getStoragePersister = (
   const getPersisted = async (): Promise<string | null | undefined> =>
     storage.getItem(storageName);
 
-  const setPersisted = async (getJson: () => Json): Promise<void> =>
-    storage.setItem(storageName, getJson());
+  const setPersisted = async (
+    getContent: () => [Tables, Values],
+  ): Promise<void> => storage.setItem(storageName, jsonString(getContent()));
 
   const startListeningToPersisted = (didChange: Callback): Listener => {
     const listener = (event: StorageEvent): void => {
