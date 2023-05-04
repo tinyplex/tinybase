@@ -1,10 +1,10 @@
 import {
   Persister,
+  PersisterListener,
   createFilePersister as createFilePersisterDecl,
 } from '../types/persisters.d';
 import {Store, Tables, Values} from '../types/store.d';
 import {promises, watch} from 'fs';
-import {Callback} from '../types/common.d';
 import {FSWatcher} from 'fs';
 import {UTF8} from '../common/strings';
 import {createCustomPersister} from './common';
@@ -28,8 +28,8 @@ export const createFilePersister = ((
     } catch {}
   };
 
-  const startListeningToPersisted = (didChange: Callback): FSWatcher =>
-    watch(filePath, didChange);
+  const startListeningToPersisted = (listener: PersisterListener): FSWatcher =>
+    watch(filePath, () => listener());
 
   const stopListeningToPersisted = (watcher: FSWatcher): void =>
     watcher?.close();
