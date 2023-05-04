@@ -16,9 +16,11 @@ const getStoragePersister = (
   storageName: string,
   storage: Storage,
 ): Persister => {
-  const getPersisted = async (): Promise<string | null | undefined> =>
-    storage.getItem(storageName);
-
+  const getPersisted = async (): Promise<[Tables, Values] | undefined> => {
+    try {
+      return JSON.parse(storage.getItem(storageName) as string);
+    } catch {}
+  };
   const setPersisted = async (
     getContent: () => [Tables, Values],
   ): Promise<void> => storage.setItem(storageName, jsonString(getContent()));

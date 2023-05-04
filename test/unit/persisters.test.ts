@@ -59,7 +59,11 @@ const getMockedCustom = (
     customPersister = '';
     return createCustomPersister(
       store,
-      async () => customPersister,
+      async () => {
+        try {
+          return JSON.parse(customPersister);
+        } catch {}
+      },
       async (getContent, changedCells, changedValues) => {
         customPersister = getContent();
         customPersisterChanges = [changedCells, changedValues];
