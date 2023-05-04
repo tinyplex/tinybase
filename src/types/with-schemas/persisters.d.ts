@@ -64,7 +64,9 @@ export function createCustomPersister<
   ListeningHandle,
 >(
   store: Store<Schemas>,
-  getPersisted: () => Promise<string | null | undefined>,
+  getPersisted: () => Promise<
+    [Tables<Schemas[0]>, Values<Schemas[1]>] | undefined
+  >,
   setPersisted: (
     getContent: () => [Tables<Schemas[0]>, Values<Schemas[1]>],
     changedCells?: ChangedCells<Schemas[0]>,

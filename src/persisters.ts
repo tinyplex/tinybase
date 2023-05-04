@@ -11,13 +11,12 @@ import {
   PersisterListener,
   PersisterStats,
 } from './types/persisters.d';
-import {EMPTY_STRING} from './common/strings';
 import {Id} from './types/common.d';
 import {objFreeze} from './common/obj';
 
 export const createCustomPersister = <ListeningHandle>(
   store: Store,
-  getPersisted: () => Promise<string | null | undefined>,
+  getPersisted: () => Promise<[Tables, Values] | undefined>,
   setPersisted: (
     getContent: () => [Tables, Values],
     changedCells?: ChangedCells,
@@ -45,12 +44,12 @@ export const createCustomPersister = <ListeningHandle>(
         if (DEBUG) {
           loads++;
         }
-        const body = await getPersisted();
-        if (!isUndefined(body) && body != EMPTY_STRING) {
-          store.setJson(body);
-        } else {
-          store.setContent([initialTables as Tables, initialValues as Values]);
-        }
+        store.setContent(
+          (await getPersisted()) ?? [
+            initialTables as Tables,
+            initialValues as Values,
+          ],
+        );
         loadSave = 0;
       }
       return persister;

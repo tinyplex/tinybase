@@ -525,22 +525,23 @@
  * This API changed in v4.0.0. Any custom persisters created on previous
  * versions should be upgraded. Most notably, the `setPersisted` function
  * parameter is provided with a `getContent` function to get the content from
- * the Store itself, rather than being passed pre-serialized JSON.
- * `addPersisterListener` has been renamed `addPersisterListener`, and
+ * the Store itself, rather than being passed pre-serialized JSON. The
+ * `getPersisted` function must return the content (or nothing) rather than
+ * JSON. `addPersisterListener` has been renamed `addPersisterListener`, and
  * `addPersisterListener` has been renamed `delPersisterListener`.
  *
  * @param store The Store to persist.
  * @param getPersisted An asynchronous function which will fetch content from
- * the persistence layer (or `null` or `undefined` if not present).
+ * the persistence layer (or `undefined` if not present).
  * @param setPersisted An asynchronous function which will send content to the
  * persistence layer.
  * @param addPersisterListener A function that will register a `listener`
  * listener on underlying changes to the persistence layer. You can return a
- * listening handle that will be provided again when `delPersisterListener`
- * is called.
- * @param delPersisterListener A function that will unregister the listener
- * from the underlying changes to the persistence layer. It receives whatever
- * was returned from your `addPersisterListener` implementation.
+ * listening handle that will be provided again when `delPersisterListener` is
+ * called.
+ * @param delPersisterListener A function that will unregister the listener from
+ * the underlying changes to the persistence layer. It receives whatever was
+ * returned from your `addPersisterListener` implementation.
  * @returns A reference to the new Persister object.
  * @example
  * This example creates a custom Persister object and persists the Store to a
@@ -553,7 +554,11 @@
  *
  * const persister = createCustomPersister(
  *   store,
- *   async () => storeJson,
+ *   async () => {
+ *     try {
+ *       return JSON.parse(storeJson);
+ *     } catch {}
+ *   },
  *   async (getContent) => (storeJson = JSON.stringify(getContent())),
  *   (listener) => setInterval(listener, 1000),
  *   (interval) => clearInterval(interval),
