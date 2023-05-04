@@ -87,8 +87,8 @@ export function createCustomPersister<
   setPersisted: (
     getContent: () => [Tables<Schemas[0]>, Values<Schemas[1]>],
   ) => Promise<void>,
-  startListeningToPersisted: (
+  addPersisterListener: (
     listener: PersisterListener<Schemas>,
   ) => ListeningHandle,
-  stopListeningToPersisted: (listeningHandle: ListeningHandle) => void,
+  delPersisterListener: (listeningHandle: ListeningHandle) => void,
 ): Persister<Schemas>;
