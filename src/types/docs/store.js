@@ -1834,8 +1834,8 @@
    */
   /// Store.getSchemaJson
   /**
-   * The setContent method takes an object and sets the entire data of the
-   * Store.
+   * The setContent method takes an array of two objects and sets the entire
+   * data of the Store.
    *
    * This method will cause listeners to be called for any Table, Row, Cell,
    * Value, or Id changes resulting from it.
