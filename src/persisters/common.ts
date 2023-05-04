@@ -13,8 +13,8 @@ export const createCustomPersister = <ListeningHandle>(
   store: Store,
   getPersisted: () => Promise<string | null | undefined>,
   setPersisted: (getContent: () => [Tables, Values]) => Promise<void>,
-  startListeningToPersisted: (listener: PersisterListener) => ListeningHandle,
-  stopListeningToPersisted: (listeningHandle: ListeningHandle) => void,
+  addPersisterListener: (listener: PersisterListener) => ListeningHandle,
+  delPersisterListener: (listeningHandle: ListeningHandle) => void,
 ): Persister => {
   let listenerId: Id | undefined;
   let loadSave = 0;
@@ -57,13 +57,13 @@ export const createCustomPersister = <ListeningHandle>(
       persister.stopAutoLoad();
       await persister.load(initialTables, initialValues);
       listening = true;
-      listeningHandle = startListeningToPersisted(() => persister.load());
+      listeningHandle = addPersisterListener(() => persister.load());
       return persister;
     },
 
     stopAutoLoad: (): Persister => {
       if (listening) {
-        stopListeningToPersisted(listeningHandle as ListeningHandle);
+        delPersisterListener(listeningHandle as ListeningHandle);
         listeningHandle = undefined;
         listening = false;
       }
