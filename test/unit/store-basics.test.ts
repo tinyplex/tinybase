@@ -349,10 +349,18 @@ test('setTables and setValues', () => {
   store = createStore()
     .setTables({t1: {r1: {c1: 1}}})
     .setValues({v1: 1});
+  expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+  expect(store.getValues()).toEqual({v1: 1});
   expect(store.getTablesJson()).toEqual(JSON.stringify({t1: {r1: {c1: 1}}}));
   expect(store.getValuesJson()).toEqual(JSON.stringify({v1: 1}));
   expect(store.getJson()).toEqual(
     JSON.stringify([{t1: {r1: {c1: 1}}}, {v1: 1}]),
   );
+});
+
+test('setContent & getContent', () => {
+  store = createStore().setContent([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+  expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+  expect(store.getValues()).toEqual({v1: 1});
   expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
 });

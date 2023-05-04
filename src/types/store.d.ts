@@ -355,6 +355,9 @@ export interface Store {
   /// Store.getSchemaJson
   getSchemaJson(): Json;
 
+  /// Store.setContent
+  setContent([tables, values]: [Tables, Values]): Store;
+
   /// Store.setTables
   setTables(tables: Tables): Store;
 
