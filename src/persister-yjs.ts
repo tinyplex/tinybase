@@ -16,20 +16,20 @@ export const createYjsPersister = (store: Store, yDoc: Y.Doc): Persister => {
     map.set('json', JSON.stringify(getContent()));
   };
 
-  const startListeningToPersisted = (listener: PersisterListener): Callback => {
+  const addPersisterListener = (listener: PersisterListener): Callback => {
     const observer = () => listener();
     map.observe(observer);
     return observer;
   };
 
-  const stopListeningToPersisted = (observer: Callback): void =>
+  const delPersisterListener = (observer: Callback): void =>
     map.unobserve(observer);
 
   return createCustomPersister(
     store,
     getPersisted,
     setPersisted,
-    startListeningToPersisted,
-    stopListeningToPersisted,
+    addPersisterListener,
+    delPersisterListener,
   );
 };

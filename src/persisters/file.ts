@@ -28,17 +28,16 @@ export const createFilePersister = ((
     } catch {}
   };
 
-  const startListeningToPersisted = (listener: PersisterListener): FSWatcher =>
+  const addPersisterListener = (listener: PersisterListener): FSWatcher =>
     watch(filePath, () => listener());
 
-  const stopListeningToPersisted = (watcher: FSWatcher): void =>
-    watcher?.close();
+  const delPersisterListener = (watcher: FSWatcher): void => watcher?.close();
 
   return createCustomPersister(
     store,
     getPersisted,
     setPersisted,
-    startListeningToPersisted,
-    stopListeningToPersisted,
+    addPersisterListener,
+    delPersisterListener,
   );
 }) as typeof createFilePersisterDecl;

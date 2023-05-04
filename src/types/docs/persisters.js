@@ -656,19 +656,21 @@
  * versions should be upgraded. Most notably, the `setPersisted` function
  * parameter is provided with a `getContent` function to get the content from
  * the Store itself, rather than being passed pre-serialized JSON.
+ * `addPersisterListener` has been renamed `addPersisterListener`, and
+ * `addPersisterListener` has been renamed `delPersisterListener`.
  *
  * @param store The Store to persist.
  * @param getPersisted An asynchronous function which will fetch content from
  * the persistence layer (or `null` or `undefined` if not present).
  * @param setPersisted An asynchronous function which will send content to the
  * persistence layer.
- * @param startListeningToPersisted A function that will register a `listener`
+ * @param addPersisterListener A function that will register a `listener`
  * listener on underlying changes to the persistence layer. You can return a
- * listening handle that will be provided again when `stopListeningToPersisted`
+ * listening handle that will be provided again when `delPersisterListener`
  * is called.
- * @param stopListeningToPersisted A function that will unregister the listener
+ * @param delPersisterListener A function that will unregister the listener
  * from the underlying changes to the persistence layer. It receives whatever
- * was returned from your `startListeningToPersisted` implementation.
+ * was returned from your `addPersisterListener` implementation.
  * @returns A reference to the new Persister object.
  * @example
  * This example creates a custom Persister object and persists the Store to a

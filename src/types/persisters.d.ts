@@ -76,6 +76,6 @@ export function createCustomPersister<ListeningHandle>(
   store: Store,
   getPersisted: () => Promise<string | null | undefined>,
   setPersisted: (getContent: () => [Tables, Values]) => Promise<void>,
-  startListeningToPersisted: (listener: PersisterListener) => ListeningHandle,
-  stopListeningToPersisted: (listeningHandle: ListeningHandle) => void,
+  addPersisterListener: (listener: PersisterListener) => ListeningHandle,
+  delPersisterListener: (listeningHandle: ListeningHandle) => void,
 ): Persister;
