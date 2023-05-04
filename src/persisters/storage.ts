@@ -24,9 +24,7 @@ const getStoragePersister = (
     getContent: () => [Tables, Values],
   ): Promise<void> => storage.setItem(storageName, jsonString(getContent()));
 
-  const startListeningToPersisted = (
-    listener: PersisterListener,
-  ): StoreListener => {
+  const addPersisterListener = (listener: PersisterListener): StoreListener => {
     const storeListener = (event: StorageEvent): void => {
       if (event.storageArea === storage && event.key === storageName) {
         listener();
@@ -36,15 +34,15 @@ const getStoragePersister = (
     return storeListener;
   };
 
-  const stopListeningToPersisted = (storeListener: StoreListener): void =>
+  const delPersisterListener = (storeListener: StoreListener): void =>
     WINDOW.removeEventListener(STORAGE, storeListener);
 
   return createCustomPersister(
     store,
     getPersisted,
     setPersisted,
-    startListeningToPersisted,
-    stopListeningToPersisted,
+    addPersisterListener,
+    delPersisterListener,
   );
 };
 
