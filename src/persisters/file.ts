@@ -1,13 +1,14 @@
-import {Callback, Json} from '../types/common.d';
 import {
   Persister,
   createFilePersister as createFilePersisterDecl,
 } from '../types/persisters.d';
+import {Store, Tables, Values} from '../types/store.d';
 import {promises, watch} from 'fs';
+import {Callback} from '../types/common.d';
 import {FSWatcher} from 'fs';
-import {Store} from '../types/store.d';
 import {UTF8} from '../common/strings';
 import {createCustomPersister} from './common';
+import {jsonString} from '../common/other';
 
 export const createFilePersister = ((
   store: Store,
@@ -19,9 +20,11 @@ export const createFilePersister = ((
     } catch {}
   };
 
-  const setPersisted = async (getJson: () => Json): Promise<void> => {
+  const setPersisted = async (
+    getContent: () => [Tables, Values],
+  ): Promise<void> => {
     try {
-      await promises.writeFile(filePath, getJson(), UTF8);
+      await promises.writeFile(filePath, jsonString(getContent()), UTF8);
     } catch {}
   };
 
