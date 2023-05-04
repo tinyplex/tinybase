@@ -34,7 +34,7 @@ let interval;
 const persister = createCustomPersister(
   store,
   async () => storeJson,
-  async (getJson) => (storeJson = getJson()),
+  async (getContent) => (storeJson = JSON.stringify(getContent())),
   (didChange) => (interval = setInterval(didChange, 1000)),
   () => clearInterval(interval),
 );
