@@ -1,13 +1,11 @@
+import {Persister, PersisterListener} from './types/persisters';
+import {Store, Tables, Values} from './types/store';
 import {
-  Persister,
-  PersisterListener,
   createLocalPersister as createLocalPersisterDecl,
   createSessionPersister as createSessionPersisterDecl,
-} from '../types/persisters.d';
-import {Store, Tables, Values} from '../types/store.d';
-import {EMPTY_STRING} from '../common/strings';
-import {createCustomPersister} from './common';
-import {jsonString} from '../common/other';
+} from './types/persister-browser';
+import {createCustomPersister} from './persisters';
+import {jsonString} from './common/other';
 
 type StoreListener = (event: StorageEvent) => void;
 const STORAGE = 'storage';

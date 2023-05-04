@@ -14,7 +14,15 @@ import {promises} from 'fs';
 const {parallel, series} = gulp;
 
 const UTF8 = 'utf-8';
-const TEST_MODULES = ['tinybase', 'ui-react', 'tools', 'persister-yjs'];
+const TEST_MODULES = [
+  'tinybase',
+  'ui-react',
+  'tools',
+  'persister-browser',
+  'persister-file',
+  'persister-remote',
+  'persister-yjs',
+];
 const MODULES_TYPED_WITH_INTERNALS = ['store', 'queries', 'ui-react'];
 const ALL_MODULES = [
   'tinybase',
@@ -28,6 +36,9 @@ const ALL_MODULES = [
   'common',
   'ui-react',
   'tools',
+  'persister-browser',
+  'persister-file',
+  'persister-remote',
   'persister-yjs',
 ];
 
@@ -40,6 +51,15 @@ const TMP_DIR = 'tmp';
 const LINT_BLOCKS = /```[jt]sx?( [^\n]+)?(\n.*?)```/gms;
 const TYPES_DOC_CODE_BLOCKS = /\/\/\/\s*(\S*)(.*?)(?=(\s*\/\/)|(\n\n)|(\n$))/gs;
 const TYPES_DOC_BLOCKS = /(\/\*\*.*?\*\/)\s*\/\/\/\s*(\S*)/gs;
+
+const getGlobalName = (module) =>
+  'TinyBase' +
+  (module == 'tinybase'
+    ? ''
+    : module
+        .split('-')
+        .map((part) => part[0].toUpperCase() + part.slice(1).toLowerCase())
+        .join(''));
 
 const getPrettierConfig = async () => ({
   ...JSON.parse(await promises.readFile('.prettierrc', UTF8)),
@@ -246,7 +266,8 @@ const tsCheck = async (dir) => {
     unusedExports(`${path.resolve(dir)}/tsconfig.json`, [
       '--excludeDeclarationFiles',
       '--excludePathsFromReport=' +
-        'tinybase.ts;ui-react.ts;tools.ts;persister-yjs.ts;build.ts',
+        'build.ts;' +
+        TEST_MODULES.map((module) => `${module}.ts`).join(';'),
     ]),
   )
     .map(
@@ -340,15 +361,7 @@ const compileModule = async (
       'fs/promises': 'fs/promises',
     },
     interop: 'default',
-    name:
-      'TinyBase' +
-      (module == 'tinybase'
-        ? ''
-        : module == 'ui-react'
-        ? 'UiReact'
-        : module == 'persister-yjs'
-        ? 'PersisterYjs'
-        : module[0].toUpperCase() + module.slice(1)),
+    name: getGlobalName(module),
   };
 
   await (await rollup(inputConfig)).write(outputConfig);
@@ -380,9 +393,7 @@ const test = async (
             collectCoverageFrom: [
               `${LIB_DIR}/debug/tinybase.js`,
               `${LIB_DIR}/debug/ui-react.js`,
-              // `${LIB_DIR}/debug/persister-yjs.js`,
-              // `${LIB_DIR}/debug/tools.js`,
-              // ^ some common functions cannot be fully exercised
+              // Other modules cannot be fully exercised in isolation.
             ],
             coverageReporters: ['text-summary']
               .concat(coverageMode > 1 ? ['json-summary'] : [])

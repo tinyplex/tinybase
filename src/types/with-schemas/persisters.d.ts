@@ -51,32 +51,6 @@ export interface Persister<in out Schemas extends OptionalSchemas> {
   getStats(): PersisterStats;
 }
 
-/// createSessionPersister
-export function createSessionPersister<Schemas extends OptionalSchemas>(
-  store: Store<Schemas>,
-  storageName: string,
-): Persister<Schemas>;
-
-/// createLocalPersister
-export function createLocalPersister<Schemas extends OptionalSchemas>(
-  store: Store<Schemas>,
-  storageName: string,
-): Persister<Schemas>;
-
-/// createRemotePersister
-export function createRemotePersister<Schemas extends OptionalSchemas>(
-  store: Store<Schemas>,
-  loadUrl: string,
-  saveUrl: string,
-  autoLoadIntervalSeconds: number,
-): Persister<Schemas>;
-
-/// createFilePersister
-export function createFilePersister<Schemas extends OptionalSchemas>(
-  store: Store<Schemas>,
-  filePath: string,
-): Persister<Schemas>;
-
 /// createCustomPersister
 export function createCustomPersister<
   Schemas extends OptionalSchemas,
