@@ -1,15 +1,19 @@
-import {Callback, Id} from '../types/common.d';
 import {DEBUG, ifNotUndefined, isUndefined} from '../common/other';
-import {Persister, PersisterStats} from '../types/persisters.d';
+import {
+  Persister,
+  PersisterListener,
+  PersisterStats,
+} from '../types/persisters.d';
 import {Store, Tables, Values} from '../types/store.d';
 import {EMPTY_STRING} from '../common/strings';
+import {Id} from '../types/common.d';
 import {objFreeze} from '../common/obj';
 
 export const createCustomPersister = <ListeningHandle>(
   store: Store,
   getPersisted: () => Promise<string | null | undefined>,
   setPersisted: (getContent: () => [Tables, Values]) => Promise<void>,
-  startListeningToPersisted: (didChange: Callback) => ListeningHandle,
+  startListeningToPersisted: (listener: PersisterListener) => ListeningHandle,
   stopListeningToPersisted: (listeningHandle: ListeningHandle) => void,
 ): Persister => {
   let listenerId: Id | undefined;
@@ -51,7 +55,7 @@ export const createCustomPersister = <ListeningHandle>(
       persister.stopAutoLoad();
       await persister.load(initialTables, initialValues);
       listening = true;
-      listeningHandle = startListeningToPersisted(persister.load);
+      listeningHandle = startListeningToPersisted(() => persister.load());
       return persister;
     },
 

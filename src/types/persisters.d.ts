@@ -1,7 +1,6 @@
 /// persisters
 
 import {Store, Tables, Values} from './store.d';
-import {Callback} from './common.d';
 
 /// PersisterStats
 export type PersisterStats = {
@@ -10,6 +9,9 @@ export type PersisterStats = {
   /// PersisterStats.saves
   saves?: number;
 };
+
+/// PersisterListener
+export type PersisterListener = (content?: [Tables, Values]) => void;
 
 /// Persister
 export interface Persister {
@@ -74,6 +76,6 @@ export function createCustomPersister<ListeningHandle>(
   store: Store,
   getPersisted: () => Promise<string | null | undefined>,
   setPersisted: (getContent: () => [Tables, Values]) => Promise<void>,
-  startListeningToPersisted: (didChange: Callback) => ListeningHandle,
+  startListeningToPersisted: (listener: PersisterListener) => ListeningHandle,
   stopListeningToPersisted: (listeningHandle: ListeningHandle) => void,
 ): Persister;

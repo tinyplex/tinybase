@@ -1,10 +1,10 @@
 import {
   Persister,
+  PersisterListener,
   createRemotePersister as createRemotePersisterDecl,
 } from '../types/persisters.d';
 import {Store, Tables, Values} from '../types/store.d';
 import {isUndefined, jsonString} from '../common/other';
-import {Callback} from '../types/common.d';
 import {createCustomPersister} from './common';
 
 const getETag = (response: Response) => response.headers.get('ETag');
@@ -32,7 +32,9 @@ export const createRemotePersister = ((
       body: jsonString(getContent()),
     });
 
-  const startListeningToPersisted = (didChange: Callback): NodeJS.Timeout =>
+  const startListeningToPersisted = (
+    listener: PersisterListener,
+  ): NodeJS.Timeout =>
     setInterval(async () => {
       const response = await fetch(loadUrl, {method: 'HEAD'});
       const currentEtag = getETag(response);
@@ -42,7 +44,7 @@ export const createRemotePersister = ((
         currentEtag != lastEtag
       ) {
         lastEtag = currentEtag;
-        didChange();
+        listener();
       }
     }, autoLoadIntervalSeconds * 1000);
 
