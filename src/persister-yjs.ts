@@ -1,7 +1,7 @@
 import * as Y from 'yjs';
+import {Persister, PersisterListener} from './types/persisters.d';
 import {Store, Tables, Values} from './types/store.d';
 import {Callback} from './types/common.d';
-import {Persister} from './types/persisters.d';
 import {createCustomPersister} from './persisters/common';
 
 export const createYjsPersister = (store: Store, yDoc: Y.Doc): Persister => {
@@ -16,8 +16,8 @@ export const createYjsPersister = (store: Store, yDoc: Y.Doc): Persister => {
     map.set('json', JSON.stringify(getContent()));
   };
 
-  const startListeningToPersisted = (didChange: Callback): Callback => {
-    const observer = () => didChange();
+  const startListeningToPersisted = (listener: PersisterListener): Callback => {
+    const observer = () => listener();
     map.observe(observer);
     return observer;
   };
