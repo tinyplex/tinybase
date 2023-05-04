@@ -1834,7 +1834,66 @@
    */
   /// Store.getSchemaJson
   /**
-   * The setTables method takes an object and sets the entire data of the Store.
+   * The setContent method takes an object and sets the entire data of the
+   * Store.
+   *
+   * This method will cause listeners to be called for any Table, Row, Cell,
+   * Value, or Id changes resulting from it.
+   *
+   * Any part of the provided objects that are invalid (either according to the
+   * Tables or Values type, or because it does not match a TablesSchema or
+   * ValuesSchema associated with the Store), will be ignored silently.
+   *
+   * Assuming that at least some of the provided Tables object or Values object
+   * is valid, any data that was already present in that part of the Store will
+   * be completely overwritten. If either object is completely invalid, no
+   * change will be made to the corresponding part of the Store.
+   *
+   * The method returns a reference to the Store so that subsequent operations
+   * can be chained in a fluent style.
+   *
+   * @param content An array containing the tabular and keyed-value data of the
+   * Store to be set.
+   * @example
+   * This example sets the data of a Store.
+   *
+   * ```js
+   * const store = createStore().setContent([
+   *   {pets: {fido: {species: 'dog'}}},
+   *   {open: true, employees: 3},
+   * ]);
+   * console.log(store.getTables());
+   * // -> {pets: {fido: {species: 'dog'}}}
+   * console.log(store.getValues());
+   * // -> {open: true, employees: 3}
+   * ```
+   * @example
+   * This example attempts to set the data of an existing Store with partly
+   * invalid, and then completely invalid objects.
+   *
+   * ```js
+   * const store = createStore().setContent([
+   *   {pets: {fido: {species: 'dog'}}},
+   *   {open: true, employees: 3},
+   * ]);
+   *
+   * store.setContent([{pets: {felix: {species: 'cat', bug: []}}}, '']);
+   * console.log(store.getTables());
+   * // -> {pets: {felix: {species: 'cat'}}}
+   * console.log(store.getValues());
+   * // -> {open: true, employees: 3}
+   *
+   * store.setContent([{meaning: 42}]);
+   * console.log(store.getTables());
+   * // -> {pets: {felix: {species: 'cat'}}}
+   * ```
+   * @category Setter
+   * @since 4.0.0
+   */
+  /// Store.setContent
+  /**
+   * The setTables method takes an object and sets the entire tabular data of
+   * the Store.
    *
    * This method will cause listeners to be called for any Table, Row, Cell, or
    * Id changes resulting from it.
@@ -1852,7 +1911,7 @@
    *
    * @param tables The data of the Store to be set.
    * @example
-   * This example sets the data of a Store.
+   * This example sets the tabular data of a Store.
    *
    * ```js
    * const store = createStore().setTables({
@@ -1863,8 +1922,8 @@
    * // -> {pets: {fido: {species: 'dog'}}, species: {dog: {price: 5}}}
    * ```
    * @example
-   * This example attempts to set the data of an existing Store with partly
-   * invalid, and then completely invalid, Tables objects.
+   * This example attempts to set the tabular data of an existing Store with
+   * partly invalid, and then completely invalid, Tables objects.
    *
    * ```js
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
