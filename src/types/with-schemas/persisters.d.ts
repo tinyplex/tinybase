@@ -1,6 +1,13 @@
 /// persisters
 
-import {OptionalSchemas, Store, Tables, Values} from './store.d';
+import {
+  ChangedCells,
+  ChangedValues,
+  OptionalSchemas,
+  Store,
+  Tables,
+  Values,
+} from './store.d';
 
 /// PersisterStats
 export type PersisterStats = {
@@ -60,6 +67,8 @@ export function createCustomPersister<
   getPersisted: () => Promise<string | null | undefined>,
   setPersisted: (
     getContent: () => [Tables<Schemas[0]>, Values<Schemas[1]>],
+    changedCells?: ChangedCells<Schemas[0]>,
+    changedValues?: ChangedValues<Schemas[1]>,
   ) => Promise<void>,
   addPersisterListener: (
     listener: PersisterListener<Schemas>,
