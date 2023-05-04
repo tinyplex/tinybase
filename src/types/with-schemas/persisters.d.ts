@@ -1,7 +1,7 @@
 /// persisters
 
-import {Callback, Json} from './common.d';
 import {OptionalSchemas, Store, Tables, Values} from './store.d';
+import {Callback} from './common.d';
 
 /// PersisterStats
 export type PersisterStats = {
@@ -81,7 +81,6 @@ export function createCustomPersister<
   store: Store<Schemas>,
   getPersisted: () => Promise<string | null | undefined>,
   setPersisted: (
-    getJson: () => Json,
     getContent: () => [Tables<Schemas[0]>, Values<Schemas[1]>],
   ) => Promise<void>,
   startListeningToPersisted: (didChange: Callback) => ListeningHandle,
