@@ -48,29 +48,6 @@ export interface Persister {
   //
 }
 
-/// createSessionPersister
-export function createSessionPersister(
-  store: Store,
-  storageName: string,
-): Persister;
-
-/// createLocalPersister
-export function createLocalPersister(
-  store: Store,
-  storageName: string,
-): Persister;
-
-/// createRemotePersister
-export function createRemotePersister(
-  store: Store,
-  loadUrl: string,
-  saveUrl: string,
-  autoLoadIntervalSeconds: number,
-): Persister;
-
-/// createFilePersister
-export function createFilePersister(store: Store, filePath: string): Persister;
-
 /// createCustomPersister
 export function createCustomPersister<ListeningHandle>(
   store: Store,

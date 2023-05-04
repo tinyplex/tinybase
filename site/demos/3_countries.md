@@ -11,20 +11,16 @@ First, we pull in React, ReactDOM, and TinyBase:
 <script src="/umd/react.production.min.js"></script>
 <script src="/umd/react-dom.production.min.js"></script>
 <script src="/umd/tinybase.js"></script>
+<script src="/umd/persister-browser.js"></script>
+<script src="/umd/persister-remote.js"></script>
 <script src="/umd/ui-react.js"></script>
 ```
 
 We import the functions and components we need:
 
 ```js
-const {
-  createLocalPersister,
-  createRemotePersister,
-  createSessionPersister,
-  createIndexes,
-  createStore,
-  defaultSorter,
-} = TinyBase;
+const {createIndexes, createStore, defaultSorter} = TinyBase;
+const {createLocalPersister, createSessionPersister} = TinyBasePersisterBrowser;
 const {
   CellView,
   IndexView,
@@ -41,6 +37,7 @@ const {
   useSliceRowIds,
   useValues,
 } = TinyBaseUiReact;
+const {createRemotePersister} = TinyBasePersisterRemote;
 const {useCallback} = React;
 ```
 

@@ -3,21 +3,21 @@
  * saving and loading Store data, to and from different destinations, or
  * underlying storage types.
  *
- * Several entry points are provided, each of which returns a new Persister
- * object that can load and save a Store:
+ * Several entry points are provided (in separately installed modules), each of
+ * which returns a new Persister object that can load and save a Store:
  *
- * - The createSessionPersister function returns a Persister that uses the
- *   browser's session storage.
- * - The createLocalPersister function returns a Persister that uses the
- *   browser's local storage.
- * - The createRemotePersister function returns a Persister that uses a remote
- *   server.
- * - The createFilePersister function returns a Persister that uses a local file
- *   (in an appropriate environment).
+ * - The createSessionPersister function (in the persister-browser module)
+ *   returns a Persister that uses the browser's session storage.
+ * - The createLocalPersister function (in the persister-browser module) returns
+ *   a Persister that uses the browser's local storage.
+ * - The createRemotePersister function (in the persister-remote module) returns
+ *   a Persister that uses a remote server.
+ * - The createFilePersister function (in the persister-file module) returns a
+ *   Persister that uses a local file (in an appropriate environment).
  *
  * Since persistence requirements can be different for every app, the
- * createCustomPersister function can also be used to easily create a fully
- * customized way to save and load Store data.
+ * createCustomPersister function in this module can also be used to easily
+ * create a fully customized way to save and load Store data.
  *
  * @see Persisting Data guide
  * @see Countries demo
@@ -509,136 +509,6 @@
    */
   /// Persister.getStats
 }
-/**
- * The createSessionPersister function creates a Persister object that can
- * persist the Store to the browser's session storage.
- *
- * As well as providing a reference to the Store to persist, you must provide a
- * `storageName` parameter which is unique to your application. This is the key
- * that the browser uses to identify the storage location.
- *
- * @param store The Store to persist.
- * @param storageName The unique key to identify the storage location.
- * @returns A reference to the new Persister object.
- * @example
- * This example creates a Persister object and persists the Store to the
- * browser's session storage.
- *
- * ```js
- * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
- * const persister = createSessionPersister(store, 'pets');
- *
- * await persister.save();
- * console.log(sessionStorage.getItem('pets'));
- * // -> '[{"pets":{"fido":{"species":"dog"}}},{}]'
- *
- * persister.destroy();
- * sessionStorage.clear();
- * ```
- * @category Creation
- */
-/// createSessionPersister
-/**
- * The createLocalPersister function creates a Persister object that can
- * persist the Store to the browser's local storage.
- *
- * As well as providing a reference to the Store to persist, you must provide a
- * `storageName` parameter which is unique to your application. This is the key
- * that the browser uses to identify the storage location.
- *
- * @param store The Store to persist.
- * @param storageName The unique key to identify the storage location.
- * @returns A reference to the new Persister object.
- * @example
- * This example creates a Persister object and persists the Store to the
- * browser's local storage.
- *
- * ```js
- * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
- * const persister = createLocalPersister(store, 'pets');
- *
- * await persister.save();
- * console.log(localStorage.getItem('pets'));
- * // -> '[{"pets":{"fido":{"species":"dog"}}},{}]'
- *
- * persister.destroy();
- * localStorage.clear();
- * ```
- * @category Creation
- */
-/// createLocalPersister
-/**
- * The createRemotePersister function creates a Persister object that can
- * persist the Store to a remote server.
- *
- * As well as providing a reference to the Store to persist, you must provide
- * `loadUrl` and `saveUrl` parameters. These identify the endpoints of the
- * server that support the `GET` method (to fetch the Store JSON to load) and
- * the `POST` method (to send the Store JSON to save) respectively.
- *
- * For when you choose to enable automatic loading for the Persister (with the
- * startAutoLoad method), it will poll the loadUrl for changes. The
- * `autoLoadIntervalSeconds` method is used to indicate how often to do this.
- *
- * @param store The Store to persist.
- * @param loadUrl The endpoint that supports a `GET` method to load JSON.
- * @param saveUrl The endpoint that supports a `POST` method to save JSON.
- * @param autoLoadIntervalSeconds How often to poll the `loadUrl` when
- * automatically loading changes from the server.
- * @returns A reference to the new Persister object.
- * @example
- * This example creates a Persister object and persists the Store to a remote
- * server.
- *
- * ```js yolo
- * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
- * const persister = createRemotePersister(
- *   store,
- *   'https://example.com/load',
- *   'https://example.com/save',
- *   5,
- * );
- *
- * await persister.save();
- * // Store JSON will be sent to server in a POST request.
- *
- * await persister.load();
- * // Store JSON will be fetched from server with a GET request.
- *
- * persister.destroy();
- * ```
- * @category Creation
- */
-/// createRemotePersister
-/**
- * The createFilePersister function creates a Persister object that can persist
- * the Store to a local file (in an appropriate environment).
- *
- * As well as providing a reference to the Store to persist, you must provide
- * `filePath` parameter which identifies the file to persist it to.
- *
- * @param store The Store to persist.
- * @param filePath The location of the local file to persist the Store to.
- * @returns A reference to the new Persister object.
- * @example
- * This example creates a Persister object and persists the Store to a local
- * file.
- *
- * ```js yolo
- * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
- * const persister = createFilePersister(store, '/app/persisted.json');
- *
- * await persister.save();
- * // Store JSON will be saved to the file.
- *
- * await persister.load();
- * // Store JSON will be loaded from the file.
- *
- * persister.destroy();
- * ```
- * @category Creation
- */
-/// createFilePersister
 /**
  * The createCustomPersister function creates a Persister object that you can
  * configure to persist the Store in any way you wish.
