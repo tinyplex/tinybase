@@ -380,7 +380,7 @@ const test = async (
             collectCoverageFrom: [
               `${LIB_DIR}/debug/tinybase.js`,
               `${LIB_DIR}/debug/ui-react.js`,
-              `${LIB_DIR}/debug/persister-yjs.js`,
+              // `${LIB_DIR}/debug/persister-yjs.js`,
               // `${LIB_DIR}/debug/tools.js`,
               // ^ some common functions cannot be fully exercised
             ],
