@@ -14,18 +14,14 @@ First, we pull in React, ReactDOM, and TinyBase:
 <script src="/umd/react.production.min.js"></script>
 <script src="/umd/react-dom.production.min.js"></script>
 <script src="/umd/tinybase.js"></script>
+<script src="/umd/persister-browser.js"></script>
 <script src="/umd/ui-react.js"></script>
 ```
 
 We'll use a good selection of the TinyBase API and the ui-react module:
 
 ```js
-const {
-  createCheckpoints,
-  createLocalPersister,
-  createRelationships,
-  createStore,
-} = TinyBase;
+const {createCheckpoints, createRelationships, createStore} = TinyBase;
 const {
   LinkedRowsView,
   Provider,
@@ -56,6 +52,7 @@ const {
   useRef,
   useState,
 } = React;
+const {createLocalPersister} = TinyBasePersisterBrowser;
 ```
 
 The drawing app relies heavily on being able to drag and drop shapes and their

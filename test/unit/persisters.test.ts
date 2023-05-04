@@ -1,15 +1,13 @@
 /* eslint-disable jest/no-conditional-expect */
 
 import * as Y from 'yjs';
+import {Persister, Store, createStore} from 'tinybase/debug';
 import {
-  Persister,
-  Store,
-  createFilePersister,
   createLocalPersister,
-  createRemotePersister,
   createSessionPersister,
-  createStore,
-} from 'tinybase/debug';
+} from 'tinybase/debug/persister-browser';
+import {createFilePersister} from 'tinybase/debug/persister-file';
+import {createRemotePersister} from 'tinybase/debug/persister-remote';
 import {createYjsPersister} from 'tinybase/debug/persister-yjs';
 import crypto from 'crypto';
 import fetchMock from 'jest-fetch-mock';

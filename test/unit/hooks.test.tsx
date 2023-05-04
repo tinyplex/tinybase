@@ -14,7 +14,6 @@ import {
   Value,
   Values,
   createCheckpoints,
-  createFilePersister,
   createIndexes,
   createMetrics,
   createQueries,
@@ -109,6 +108,7 @@ import {
 } from 'tinybase/debug/ui-react';
 import {ReactTestRenderer, act, create} from 'react-test-renderer';
 import React from 'react';
+import {createFilePersister} from 'tinybase/debug/persister-file';
 import {pause} from './common';
 import tmp from 'tmp';
 

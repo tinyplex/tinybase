@@ -10,17 +10,28 @@ functions that handle how to fetch, write, and listen to, the persistence layer.
 
 To build a custom Persister, you should provide four functions:
 
-- `getPersisted`, an asynchronous function which will fetch content from the
-  persistence layer (or `null` or `undefined` if not present).
+- `getPersisted`, an asynchronous function which will fetch content from
+  the persistence layer (or `null` or `undefined` if not present).
 - `setPersisted`, an asynchronous function which will send content to the
   persistence layer.
-- `startListeningToPersisted`, a function that will register a `didChange`
-  listener on underlying changes to the persistence layer.
-- `stopListeningToPersisted`, a function that will unregister the listener from
-  the underlying changes to the persistence layer.
+- `addPersisterListener`, a function that will register a `listener`
+  listener on underlying changes to the persistence layer. You can return a
+  listening handle that will be provided again when `delPersisterListener`
+  is called.
+- `delPersisterListener`, a function that will unregister the listener
+  from the underlying changes to the persistence layer. It receives whatever
+  was returned from your `addPersisterListener` implementation.
+  @returns A reference to the new Persister object.
 
 Note that the first two functions are synchronous and must return promises. The
 latter two are synchronous and should return `void`.
+
+This API changed in v4.0.0. Any custom persisters created on previous versions
+should be upgraded. Most notably, the `setPersisted` function parameter is
+provided with a `getContent` function to get the content from the Store itself,
+rather than being passed pre-serialized JSON. `addPersisterListener` has been
+renamed `addPersisterListener`, and `addPersisterListener` has been renamed
+`delPersisterListener`.
 
 This example creates a custom Persister object that persists the Store to a
 local string called `storeJson` and which would automatically load by polling

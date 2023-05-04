@@ -2,7 +2,7 @@ import * as Y from 'yjs';
 import {Persister, PersisterListener} from './types/persisters.d';
 import {Store, Tables, Values} from './types/store.d';
 import {Callback} from './types/common.d';
-import {createCustomPersister} from './persisters/common';
+import {createCustomPersister} from './persisters';
 
 export const createYjsPersister = (store: Store, yDoc: Y.Doc): Persister => {
   const map = yDoc.getMap('tinybase/store');
