@@ -11,7 +11,6 @@ import {
   Store,
   createCheckpoints,
   createIndexes,
-  createLocalPersister,
   createMetrics,
   createRelationships,
   createStore,
@@ -40,6 +39,7 @@ import {
   useTables,
 } from 'tinybase/debug/ui-react';
 import React from 'react';
+import {createLocalPersister} from 'tinybase/debug/persister-browser';
 
 let renderer: ReactTestRenderer;
 
