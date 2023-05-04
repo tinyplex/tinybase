@@ -2,6 +2,8 @@
 
 import * as Y from 'yjs';
 import {
+  ChangedCells,
+  ChangedValues,
   Persister,
   Store,
   Tables,
@@ -34,6 +36,7 @@ type Persistable<Location = string> = {
   set: (location: Location, value: any) => void;
   write: (location: Location, value: string) => void;
   delete: (location: Location) => void;
+  getChanges?: () => [ChangedCells | undefined, ChangedValues | undefined];
   testMissing: boolean;
 };
 
@@ -42,6 +45,10 @@ const nextLoop = async (): Promise<void> => await pause(0);
 
 let customPersister: any;
 let customPersisterListener: ((content?: [Tables, Values]) => void) | undefined;
+let customPersisterChanges: [
+  ChangedCells | undefined,
+  ChangedValues | undefined,
+] = [undefined, undefined];
 
 const getMockedCustom = (
   write: (location: string, value: string) => void,
@@ -53,8 +60,9 @@ const getMockedCustom = (
     return createCustomPersister(
       store,
       async () => customPersister,
-      async (getContent) => {
+      async (getContent, changedCells, changedValues) => {
         customPersister = getContent();
+        customPersisterChanges = [changedCells, changedValues];
       },
       (listener) => {
         customPersisterListener = listener;
@@ -69,6 +77,7 @@ const getMockedCustom = (
   delete: (): void => {
     customPersister = '';
   },
+  getChanges: () => customPersisterChanges,
   testMissing: true,
 });
 
@@ -271,9 +280,15 @@ describe.each([
     store.setTables({t1: {r1: {c1: 2}}});
     await pause();
     expect(persistable.get(location)).toEqual([{t1: {r1: {c1: 2}}}, {v1: 1}]);
+    if (persistable.getChanges) {
+      expect(persistable.getChanges()).toEqual([{t1: {r1: {c1: [1, 2]}}}, {}]);
+    }
     store.setValues({v1: 2});
     await pause();
     expect(persistable.get(location)).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
+    if (persistable.getChanges) {
+      expect(persistable.getChanges()).toEqual([{}, {v1: [1, 2]}]);
+    }
     expect(persister.getStats()).toEqual({loads: 0, saves: 3});
   });
 

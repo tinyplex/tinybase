@@ -1,6 +1,6 @@
 /// persisters
 
-import {Store, Tables, Values} from './store.d';
+import {ChangedCells, ChangedValues, Store, Tables, Values} from './store.d';
 
 /// PersisterStats
 export type PersisterStats = {
@@ -52,7 +52,11 @@ export interface Persister {
 export function createCustomPersister<ListeningHandle>(
   store: Store,
   getPersisted: () => Promise<string | null | undefined>,
-  setPersisted: (getContent: () => [Tables, Values]) => Promise<void>,
+  setPersisted: (
+    getContent: () => [Tables, Values],
+    changedCells?: ChangedCells,
+    changedValues?: ChangedValues,
+  ) => Promise<void>,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
 ): Persister;
