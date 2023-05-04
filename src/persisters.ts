@@ -1,10 +1,16 @@
+import {
+  ChangedCells,
+  ChangedValues,
+  Store,
+  Tables,
+  Values,
+} from './types/store.d';
 import {DEBUG, ifNotUndefined, isUndefined} from './common/other';
 import {
   Persister,
   PersisterListener,
   PersisterStats,
 } from './types/persisters.d';
-import {Store, Tables, Values} from './types/store.d';
 import {EMPTY_STRING} from './common/strings';
 import {Id} from './types/common.d';
 import {objFreeze} from './common/obj';
@@ -12,7 +18,11 @@ import {objFreeze} from './common/obj';
 export const createCustomPersister = <ListeningHandle>(
   store: Store,
   getPersisted: () => Promise<string | null | undefined>,
-  setPersisted: (getContent: () => [Tables, Values]) => Promise<void>,
+  setPersisted: (
+    getContent: () => [Tables, Values],
+    changedCells?: ChangedCells,
+    changedValues?: ChangedValues,
+  ) => Promise<void>,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
 ): Persister => {
@@ -80,14 +90,17 @@ export const createCustomPersister = <ListeningHandle>(
       return persister;
     },
 
-    save: async (): Promise<Persister> => {
+    save: async (
+      changedCells?: ChangedCells,
+      changedValues?: ChangedValues,
+    ): Promise<Persister> => {
       /*! istanbul ignore else */
       if (loadSave != 1) {
         loadSave = 2;
         if (DEBUG) {
           saves++;
         }
-        await setPersisted(store.getContent);
+        await setPersisted(store.getContent, changedCells, changedValues);
         loadSave = 0;
       }
       return persister;
@@ -95,7 +108,9 @@ export const createCustomPersister = <ListeningHandle>(
 
     startAutoSave: async (): Promise<Persister> => {
       await persister.stopAutoSave().save();
-      listenerId = store.addDidFinishTransactionListener(persister.save);
+      listenerId = store.addDidFinishTransactionListener((...args) =>
+        (persister.save as any)(args[3], args[5]),
+      );
       return persister;
     },
 
