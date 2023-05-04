@@ -29,9 +29,10 @@ latter two are synchronous and should return `void`.
 This API changed in v4.0.0. Any custom persisters created on previous versions
 should be upgraded. Most notably, the `setPersisted` function parameter is
 provided with a `getContent` function to get the content from the Store itself,
-rather than being passed pre-serialized JSON. `addPersisterListener` has been
-renamed `addPersisterListener`, and `addPersisterListener` has been renamed
-`delPersisterListener`.
+rather than being passed pre-serialized JSON. The `getPersisted` function must
+return the content (or nothing) rather than JSON `addPersisterListener` has been
+renamed `addPersisterListener`, and `addPersisterListener` has been
+renamed `delPersisterListener`.
 
 This example creates a custom Persister object that persists the Store to a
 local string called `storeJson` and which would automatically load by polling
@@ -44,7 +45,11 @@ let interval;
 
 const persister = createCustomPersister(
   store,
-  async () => storeJson,
+  async () => {
+    try {
+      return JSON.parse(storeJson);
+    } catch {}
+  },
   async (getContent) => (storeJson = JSON.stringify(getContent())),
   (didChange) => (interval = setInterval(didChange, 1000)),
   () => clearInterval(interval),

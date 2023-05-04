@@ -51,7 +51,7 @@ export interface Persister {
 /// createCustomPersister
 export function createCustomPersister<ListeningHandle>(
   store: Store,
-  getPersisted: () => Promise<string | null | undefined>,
+  getPersisted: () => Promise<[Tables, Values] | undefined>,
   setPersisted: (
     getContent: () => [Tables, Values],
     changedCells?: ChangedCells,

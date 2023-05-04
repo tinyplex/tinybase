@@ -7027,7 +7027,10 @@
  *   return <span>{JSON.stringify(useTables(store))}</span>;
  * };
  *
- * sessionStorage.setItem('pets', '{"pets":{"fido":{"species":"dog"}}}');
+ * sessionStorage.setItem(
+ *   'pets',
+ *   '[{"pets":{"fido":{"species":"dog"}}}, {}]',
+ * );
  *
  * const app = document.createElement('div');
  * const root = ReactDOMClient.createRoot(app);
@@ -7067,8 +7070,14 @@
  *   return <span>{JSON.stringify(useTables(store))}</span>;
  * };
  *
- * sessionStorage.setItem('fidoStore', '{"pets":{"fido":{"species":"dog"}}}');
- * sessionStorage.setItem('cujoStore', '{"pets":{"cujo":{"species":"dog"}}}');
+ * sessionStorage.setItem(
+ *   'fidoStore',
+ *   '[{"pets":{"fido":{"species":"dog"}}}, {}]',
+ * );
+ * sessionStorage.setItem(
+ *   'cujoStore',
+ *   '[{"pets":{"cujo":{"species":"dog"}}}, {}]',
+ * );
  *
  * const app = document.createElement('div');
  * const root = ReactDOMClient.createRoot(app);
