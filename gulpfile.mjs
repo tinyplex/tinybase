@@ -278,6 +278,7 @@ const compileModule = async (
   const inputConfig = {
     external: [
       'fs',
+      'fs/promises',
       'path',
       'prettier',
       'react',
@@ -336,6 +337,7 @@ const compileModule = async (
       react: 'React',
       yjs: 'yjs',
       fs: 'fs',
+      'fs/promises': 'fs/promises',
     },
     interop: 'default',
     name:
