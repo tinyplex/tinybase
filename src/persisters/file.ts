@@ -4,11 +4,12 @@ import {
   createFilePersister as createFilePersisterDecl,
 } from '../types/persisters.d';
 import {Store, Tables, Values} from '../types/store.d';
-import {promises, watch} from 'fs';
+import {readFile, writeFile} from 'fs/promises';
 import {FSWatcher} from 'fs';
 import {UTF8} from '../common/strings';
 import {createCustomPersister} from './common';
 import {jsonString} from '../common/other';
+import {watch} from 'fs';
 
 export const createFilePersister = ((
   store: Store,
@@ -16,7 +17,7 @@ export const createFilePersister = ((
 ): Persister => {
   const getPersisted = async (): Promise<string | null | undefined> => {
     try {
-      return await promises.readFile(filePath, UTF8);
+      return await readFile(filePath, UTF8);
     } catch {}
   };
 
@@ -24,7 +25,7 @@ export const createFilePersister = ((
     getContent: () => [Tables, Values],
   ): Promise<void> => {
     try {
-      await promises.writeFile(filePath, jsonString(getContent()), UTF8);
+      await writeFile(filePath, jsonString(getContent()), UTF8);
     } catch {}
   };
 
