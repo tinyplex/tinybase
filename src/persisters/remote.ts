@@ -32,9 +32,7 @@ export const createRemotePersister = ((
       body: jsonString(getContent()),
     });
 
-  const startListeningToPersisted = (
-    listener: PersisterListener,
-  ): NodeJS.Timeout =>
+  const addPersisterListener = (listener: PersisterListener): NodeJS.Timeout =>
     setInterval(async () => {
       const response = await fetch(loadUrl, {method: 'HEAD'});
       const currentEtag = getETag(response);
@@ -48,14 +46,14 @@ export const createRemotePersister = ((
       }
     }, autoLoadIntervalSeconds * 1000);
 
-  const stopListeningToPersisted = (interval: NodeJS.Timeout): void =>
+  const delPersisterListener = (interval: NodeJS.Timeout): void =>
     clearInterval(interval);
 
   return createCustomPersister(
     store,
     getPersisted,
     setPersisted,
-    startListeningToPersisted,
-    stopListeningToPersisted,
+    addPersisterListener,
+    delPersisterListener,
   );
 }) as typeof createRemotePersisterDecl;
