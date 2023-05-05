@@ -76,6 +76,7 @@
 
 > ### Excited to be used by:
 >
+> @@EVAL("getGitHubAvatar('SuperSonicHub1')")
 > @@EVAL("getGitHubAvatar('brentvatne')")
 > @@EVAL("getGitHubAvatar('circadian-risk')")
 > @@EVAL("getGitHubAvatar('WonderPanda')")
