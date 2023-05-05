@@ -6,8 +6,8 @@ export type IdObj<Value> = {[id: string]: Value};
 export type IdObj2<Value> = IdObj<{[id: string]: Value}>;
 
 const object = Object;
+const objIds = object.keys;
 
-export const objIds = object.keys;
 export const objFrozen = object.isFrozen;
 export const objFreeze = object.freeze;
 

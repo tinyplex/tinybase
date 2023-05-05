@@ -1079,16 +1079,16 @@
 /// Store
 {
   /**
-   * The getTables method returns a Tables object containing the entire data of
-   * the Store.
+   * The getTables method returns a Tables object containing the entire tabular
+   * data of the Store.
    *
    * Note that this returns a copy of, rather than a reference to the underlying
    * data, so changes made to the returned object are not made to the Store
    * itself.
    *
-   * @returns A Tables object containing the entire data of the Store.
+   * @returns A Tables object containing the tabular data of the Store.
    * @example
-   * This example retrieves the data in a Store.
+   * This example retrieves the tabular data in a Store.
    *
    * ```js
    * const store = createStore().setTables({
@@ -1413,9 +1413,9 @@
    * data, so changes made to the returned object are not made to the Store
    * itself.
    *
-   * @returns An object containing the entire data of the Values.
+   * @returns An object containing the set of keyed Values in the Store.
    * @example
-   * This example retrieves the keyed Values data in a Store.
+   * This example retrieves the set of keyed Values in the Store.
    *
    * ```js
    * const store = createStore().setValues({open: true, employees: 3});
@@ -1423,7 +1423,7 @@
    * // -> {open: true, employees: 3}
    * ```
    * @example
-   * This example retrieves a Values from a Store that has none, returning an
+   * This example retrieves Values from a Store that has none, returning an
    * empty object.
    *
    * ```js
@@ -1793,7 +1793,8 @@
    */
   /// Store.getSchemaJson
   /**
-   * The setTables method takes an object and sets the entire data of the Store.
+   * The setTables method takes an object and sets the entire tabular data of
+   * the Store.
    *
    * This method will cause listeners to be called for any Table, Row, Cell, or
    * Id changes resulting from it.
@@ -1811,7 +1812,7 @@
    *
    * @param tables The data of the Store to be set.
    * @example
-   * This example sets the data of a Store.
+   * This example sets the tabular data of a Store.
    *
    * ```js
    * const store = createStore().setTables({
@@ -1822,8 +1823,8 @@
    * // -> {pets: {fido: {species: 'dog'}}, species: {dog: {price: 5}}}
    * ```
    * @example
-   * This example attempts to set the data of an existing Store with partly
-   * invalid, and then completely invalid, Tables objects.
+   * This example attempts to set the tabular data of an existing Store with
+   * partly invalid, and then completely invalid, Tables objects.
    *
    * ```js
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
