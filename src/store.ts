@@ -84,14 +84,12 @@ import {
   objFreeze,
   objFrozen,
   objHas,
-  objIds,
   objIsEmpty,
   objMap,
 } from './common/obj';
 import {IdSet, IdSet2, IdSet3, IdSet4, setAdd, setNew} from './common/set';
 import {Pair, pairCollSize2, pairNew, pairNewMap} from './common/pairs';
 import {
-  arrayFilter,
   arrayForEach,
   arrayHas,
   arrayIsEqual,
@@ -124,20 +122,14 @@ type ChangedIdsMap = IdMap<IdAdded>;
 type ChangedIdsMap2 = IdMap2<IdAdded>;
 type ChangedIdsMap3 = IdMap3<IdAdded>;
 
-const transformMap = <MapValue, ObjectValue>(
+const mapMatch = <MapValue, ObjectValue>(
   map: IdMap<MapValue>,
-  toBeLikeObject: IdObj<ObjectValue>,
-  setId: (map: IdMap<MapValue>, id: Id, cell: any) => void,
-  delId: (map: IdMap<MapValue>, id: Id) => void = mapSet,
+  obj: IdObj<ObjectValue>,
+  set: (map: IdMap<MapValue>, id: Id, value: ObjectValue) => void,
+  del: (map: IdMap<MapValue>, id: Id) => void = mapSet,
 ): IdMap<MapValue> => {
-  const idsToDelete = arrayFilter(
-    mapKeys(map),
-    (id) => !objHas(toBeLikeObject, id),
-  );
-  arrayForEach(objIds(toBeLikeObject), (id) =>
-    setId(map, id, toBeLikeObject[id]),
-  );
-  arrayForEach(idsToDelete, (id) => delId(map, id));
+  objMap(obj, (value, id) => set(map, id, value));
+  mapForEach(map, (id) => (objHas(obj, id) ? 0 : del(map, id)));
   return map;
 };
 
@@ -351,13 +343,13 @@ export const createStore: typeof createStoreDecl = (): Store => {
   };
 
   const setValidTablesSchema = (tablesSchema: TablesSchema): TablesSchemaMap =>
-    transformMap(
+    mapMatch(
       tablesSchemaMap,
       tablesSchema,
       (_tablesSchema, tableId, tableSchema) => {
         const rowDefaulted = mapNew();
         const rowNonDefaulted = setNew();
-        transformMap(
+        mapMatch(
           mapEnsure<Id, IdMap<CellSchema>>(tablesSchemaMap, tableId, mapNew),
           tableSchema,
           (tableSchemaMap, cellId, cellSchema) => {
@@ -378,7 +370,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     );
 
   const setValidValuesSchema = (valuesSchema: ValuesSchema): ValuesSchemaMap =>
-    transformMap(
+    mapMatch(
       valuesSchemaMap,
       valuesSchema,
       (_valuesSchema, valueId, valueSchema) => {
@@ -400,7 +392,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     objIsEmpty(tables) ? delTables() : setTables(tables);
 
   const setValidTables = (tables: Tables): TablesMap =>
-    transformMap(
+    mapMatch(
       tablesMap,
       tables,
       (_tables, tableId, table) => setValidTable(tableId, table),
@@ -408,7 +400,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     );
 
   const setValidTable = (tableId: Id, table: Table): TableMap =>
-    transformMap(
+    mapMatch(
       mapEnsure(tablesMap, tableId, () => {
         tableIdsChanged(tableId, 1);
         return mapNew();
@@ -425,7 +417,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     row: Row,
     forceDel?: boolean,
   ): RowMap =>
-    transformMap(
+    mapMatch(
       mapEnsure(tableMap, rowId, () => {
         rowIdsChanged(tableId, rowId, 1);
         return mapNew();
@@ -477,7 +469,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     objIsEmpty(values) ? delValues() : setValues(values);
 
   const setValidValues = (values: Values): RowMap =>
-    transformMap(
+    mapMatch(
       valuesMap,
       values,
       (_valuesMap, valueId, value) => setValidValue(valueId, value),
