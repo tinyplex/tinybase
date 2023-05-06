@@ -1,9 +1,9 @@
 /* eslint-disable jest/no-conditional-expect */
 
-import * as Y from 'yjs';
 import {
   ChangedCells,
   ChangedValues,
+  Id,
   Persister,
   Store,
   Tables,
@@ -11,6 +11,7 @@ import {
   createCustomPersister,
   createStore,
 } from 'tinybase/debug';
+import {Doc as YDoc, Map as YMap} from 'yjs';
 import {
   createLocalPersister,
   createSessionPersister,
@@ -32,12 +33,40 @@ type Persistable<Location = string> = {
   autoLoadPause?: number;
   getLocation: () => Location;
   getPersister: (store: Store, location: Location) => Persister;
-  get: (location: Location) => string | null;
+  get: (location: Location) => [Tables, Values] | void;
   set: (location: Location, value: any) => void;
   write: (location: Location, value: string) => void;
   delete: (location: Location) => void;
   getChanges?: () => [ChangedCells | undefined, ChangedValues | undefined];
   testMissing: boolean;
+};
+
+const yMapEnsure = (yMap: YMap<any>, id: Id) =>
+  yMap.get(id) ?? yMap.set(id, new YMap());
+
+const yMapMatch = (
+  parentYMap: YMap<any>,
+  id: Id,
+  obj: {[id: Id]: any},
+  set: (yMap: YMap<any>, id: Id, value: any) => 1 | void,
+): 1 | void => {
+  const yMap = yMapEnsure(parentYMap, id);
+  let changed: 1 | undefined;
+  Object.entries(obj).forEach(([id, value]) => {
+    if (set(yMap, id, value)) {
+      changed = 1;
+    }
+  });
+  yMap.forEach((_: any, id: Id) => {
+    if (obj[id] == null) {
+      yMap.delete(id);
+      changed = 1;
+    }
+  });
+  if (!yMap.size) {
+    parentYMap.delete(id);
+  }
+  return changed;
 };
 
 const nextLoop = async (): Promise<void> => await pause(0);
@@ -74,7 +103,7 @@ const getMockedCustom = (
       () => (customPersisterListener = undefined),
     );
   },
-  get: (): string | null => customPersister,
+  get: (): [Tables, Values] | void => customPersister,
   set: (location: string, value: any): void =>
     mockCustom1.write(location, JSON.stringify(value)),
   write,
@@ -106,12 +135,10 @@ const mockFile: Persistable = {
     return tmp.fileSync().name;
   },
   getPersister: createFilePersister,
-  get: (location: string): string | null => {
+  get: (location: string): [Tables, Values] | void => {
     try {
       return JSON.parse(fs.readFileSync(location, 'utf-8'));
-    } catch (e) {
-      return null;
-    }
+    } catch {}
   },
   set: (location: string, value: any): void =>
     mockFile.write(location, JSON.stringify(value)),
@@ -152,12 +179,10 @@ const mockRemote: Persistable = {
   },
   getPersister: (store, location) =>
     createRemotePersister(store, GET_HOST + location, SET_HOST + location, 0.1),
-  get: (location: string): string | null => {
+  get: (location: string): [Tables, Values] | void => {
     try {
       return JSON.parse(fs.readFileSync(location, 'utf-8'));
-    } catch (e) {
-      return null;
-    }
+    } catch {}
   },
   set: (location: string, value: any): void =>
     mockRemote.write(location, JSON.stringify(value)),
@@ -174,12 +199,10 @@ const getMockedStorage = (
   const mockStorage = {
     getLocation: (): string => 'test' + Math.random(),
     getPersister,
-    get: (location: string): string | null => {
+    get: (location: string): [Tables, Values] | void => {
       try {
         return JSON.parse(storage.getItem(location) ?? '');
-      } catch (e) {
-        return null;
-      }
+      } catch {}
     },
     set: (location: string, value: any): void =>
       mockStorage.write(location, JSON.stringify(value)),
@@ -214,26 +237,46 @@ const mockSessionStorage = getMockedStorage(
   createSessionPersister,
 );
 
-const mockYjs: Persistable<Y.Doc> = {
+const mockYjs: Persistable<YDoc> = {
   autoLoadPause: 100,
-  getLocation: () => new Y.Doc(),
+  getLocation: () => new YDoc(),
   getPersister: createYjsPersister,
-  get: (location: Y.Doc): string | null => {
+  get: (location: YDoc): [Tables, Values] | void => {
     try {
-      return JSON.parse(
-        location.getMap('tinybase/store').get('json') as string,
-      );
-    } catch (e) {
-      return null;
+      const content = location.getMap('tinybase').toJSON();
+      return [content['t'], content['v']];
+    } catch {}
+  },
+  set: (location: YDoc, value: any): void => {
+    mockYjs.write(location, value);
+  },
+  write: (location: YDoc, value: any): void => {
+    if (typeof value != 'string') {
+      const yMap = location.getMap('tinybase');
+      location.transact(() => {
+        yMapMatch(yMap, 't', value[0], (tablesMap, tableId, table) =>
+          yMapMatch(tablesMap, tableId, table, (tableMap, rowId, row) =>
+            yMapMatch(tableMap, rowId, row, (rowMap, cellId, cell) => {
+              if (rowMap.get(cellId) !== cell) {
+                rowMap.set(cellId, cell);
+                return 1;
+              }
+            }),
+          ),
+        );
+        if (value[1]) {
+          yMapMatch(yMap, 'v', value[1], (valuesMap, valueId, value) => {
+            if (valuesMap.get(valueId) !== value) {
+              valuesMap.set(valueId, value);
+            }
+          });
+        }
+      });
+    } else {
+      location.getMap('broken');
     }
   },
-  set: (location: Y.Doc, value: any): void => {
-    mockYjs.write(location, JSON.stringify(value));
-  },
-  write: (location: Y.Doc, value: any): void => {
-    location.getMap('tinybase/store').set('json', value);
-  },
-  delete: (location: Y.Doc): void => location.destroy(),
+  delete: (location: YDoc): void => location.destroy(),
   testMissing: false,
 };
 
