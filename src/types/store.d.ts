@@ -218,10 +218,13 @@ export type ValueChange = [
 export type ChangedCells = {
   [tableId: Id]: {
     [rowId: Id]: {
-      [cellId: Id]: [CellOrUndefined, CellOrUndefined];
+      [cellId: Id]: ChangedCell;
     };
   };
 };
+
+/// ChangedCell
+export type ChangedCell = [CellOrUndefined, CellOrUndefined];
 
 /// InvalidCells
 export type InvalidCells = {
@@ -234,8 +237,11 @@ export type InvalidCells = {
 
 /// ChangedValues
 export type ChangedValues = {
-  [valueId: Id]: [ValueOrUndefined, ValueOrUndefined];
+  [valueId: Id]: ChangedValue;
 };
+
+/// ChangedValue
+export type ChangedValue = [ValueOrUndefined, ValueOrUndefined];
 
 /// InvalidValues
 export type InvalidValues = {
