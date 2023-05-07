@@ -23,12 +23,17 @@ import {
   CellOrUndefined,
   CellSchema,
   ChangedCell,
+  ChangedCellIds,
   ChangedCells,
+  ChangedRowIds,
+  ChangedTableIds,
   ChangedValue,
+  ChangedValueIds,
   ChangedValues,
   DoRollback,
   GetCellChange,
   GetValueChange,
+  IdAdded,
   InvalidCells,
   InvalidValues,
   MapCell,
@@ -134,10 +139,21 @@ type RowMap = IdMap<Cell>;
 type TableMap = IdMap<RowMap>;
 type TablesMap = IdMap<TableMap>;
 type ValuesMap = IdMap<Value>;
-type IdAdded = 1 | -1;
 type ChangedIdsMap = IdMap<IdAdded>;
 type ChangedIdsMap2 = IdMap2<IdAdded>;
 type ChangedIdsMap3 = IdMap3<IdAdded>;
+
+const getEmptyTransactionChanges = () =>
+  Array(8).fill({}) as [
+    ChangedCells,
+    InvalidCells,
+    ChangedValues,
+    InvalidValues,
+    ChangedTableIds,
+    ChangedRowIds,
+    ChangedCellIds,
+    ChangedValueIds,
+  ];
 
 const mapMatch = <MapValue, ObjectValue>(
   map: IdMap<MapValue>,
@@ -1279,6 +1295,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
           invalidCells: InvalidCells,
           changedValues: ChangedValues,
           invalidValues: InvalidValues,
+          changedTableIds: ChangedTableIds,
+          changedRowIds: ChangedRowIds,
+          changedCellIds: ChangedCellIds,
+          changedValueIds: ChangedValueIds,
         ] =
           doRollback ||
           !collIsEmpty(finishTransactionListeners[0]) ||
@@ -1288,8 +1308,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
                 mapToObj3(invalidCells),
                 mapToObj(changedValues, pairClone, pairIsEqual),
                 mapToObj(invalidValues),
+                mapToObj(changedTableIds),
+                mapToObj2(changedRowIds),
+                mapToObj3(changedCellIds),
+                mapToObj(changedValueIds),
               ]
-            : [{}, {}, {}, {}];
+            : getEmptyTransactionChanges();
 
         if (doRollback?.(...transactionChanges)) {
           collForEach(changedCells, (table, tableId) =>
@@ -1303,7 +1327,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
             setOrDelValue(store, valueId, oldValue),
           );
           cellsTouched = valuesTouched = false;
-          transactionChanges = [{}, {}, {}, {}];
+          transactionChanges = getEmptyTransactionChanges();
         }
 
         callListeners(

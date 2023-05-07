@@ -92,12 +92,24 @@ export type MapValue = (value: ValueOrUndefined) => Value;
 /// GetCell
 export type GetCell = (cellId: Id) => CellOrUndefined;
 
+export type IdAdded = 1 | -1;
+export type ChangedTableIds = {[tableId: Id]: IdAdded};
+export type ChangedRowIds = {[tableId: Id]: {[rowId: Id]: IdAdded}};
+export type ChangedCellIds = {
+  [tableId: Id]: {[rowId: Id]: {[cellId: Id]: IdAdded}};
+};
+export type ChangedValueIds = {[valueId: Id]: IdAdded};
+
 /// DoRollback
 export type DoRollback = (
   changedCells: ChangedCells,
   invalidCells: InvalidCells,
   changedValues: ChangedValues,
   invalidValues: InvalidValues,
+  changedTableIds: ChangedTableIds,
+  changedRowIds: ChangedRowIds,
+  changedCellIds: ChangedCellIds,
+  changedValueIds: ChangedValueIds,
 ) => boolean;
 
 /// TransactionListener
