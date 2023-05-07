@@ -1,4 +1,3 @@
-import {Callback, Id} from './types/common.d';
 import {
   ChangedCells,
   ChangedValues,
@@ -7,10 +6,13 @@ import {
   Values,
 } from './types/store.d';
 import {Persister, PersisterListener} from './types/persisters.d';
-import {Doc as YDoc, Map as YMap} from 'yjs';
+import {Doc as YDoc, YEvent, Map as YMap} from 'yjs';
 import {objHas, objMap} from './common/obj';
+import {Id} from './types/common.d';
 import {IdObj} from './common/obj';
 import {createCustomPersister} from './persisters';
+
+type Observer = (events: YEvent<any>[]) => void;
 
 const tablesKey = 't';
 const valuesKey = 'v';
@@ -81,13 +83,15 @@ export const createYjsPersister = (
     });
   };
 
-  const addPersisterListener = (listener: PersisterListener): Callback => {
-    const observer = () => listener();
+  const addPersisterListener = (listener: PersisterListener): Observer => {
+    const observer: Observer = () => {
+      listener();
+    };
     yMap.observeDeep(observer);
     return observer;
   };
 
-  const delPersisterListener = (observer: Callback): void => {
+  const delPersisterListener = (observer: Observer): void => {
     yMap.unobserveDeep(observer);
   };
 
