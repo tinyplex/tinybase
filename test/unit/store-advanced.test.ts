@@ -805,11 +805,20 @@ describe('Transactions', () => {
   describe('Rolling back', () => {
     describe('doRollback gets changed and invalid cells, returns true', () => {
       test('with setTables', () => {
-        expect.assertions(6);
+        expect.assertions(10);
         store.transaction(
           // @ts-ignore
           () => store.setTables({t2: {r2: {c2: 2, c3: [3]}}}),
-          (changedCells, invalidCells, changedValues, invalidValues) => {
+          (
+            changedCells,
+            invalidCells,
+            changedValues,
+            invalidValues,
+            changedTableIds,
+            changedRowIds,
+            changedCellIds,
+            changedValueIds,
+          ) => {
             expect(store.getTables()).toEqual({t2: {r2: {c2: 2}}});
             expect(changedCells).toEqual({
               t1: {r1: {c1: [1, undefined]}},
@@ -818,6 +827,13 @@ describe('Transactions', () => {
             expect(invalidCells).toEqual({t2: {r2: {c3: [[3]]}}});
             expect(changedValues).toEqual({});
             expect(invalidValues).toEqual({});
+            expect(changedTableIds).toEqual({t1: -1, t2: 1});
+            expect(changedRowIds).toEqual({t1: {r1: -1}, t2: {r2: 1}});
+            expect(changedCellIds).toEqual({
+              t1: {r1: {c1: -1}},
+              t2: {r2: {c2: 1}},
+            });
+            expect(changedValueIds).toEqual({});
             return true;
           },
         );
@@ -825,11 +841,20 @@ describe('Transactions', () => {
       });
 
       test('with setTable', () => {
-        expect.assertions(6);
+        expect.assertions(10);
         store.transaction(
           // @ts-ignore
           () => store.setTable('t2', {r2: {c2: 2, c3: [3]}}),
-          (changedCells, invalidCells, changedValues, invalidValues) => {
+          (
+            changedCells,
+            invalidCells,
+            changedValues,
+            invalidValues,
+            changedTableIds,
+            changedRowIds,
+            changedCellIds,
+            changedValueIds,
+          ) => {
             expect(store.getTables()).toEqual({
               t1: {r1: {c1: 1}},
               t2: {r2: {c2: 2}},
@@ -838,6 +863,10 @@ describe('Transactions', () => {
             expect(invalidCells).toEqual({t2: {r2: {c3: [[3]]}}});
             expect(changedValues).toEqual({});
             expect(invalidValues).toEqual({});
+            expect(changedTableIds).toEqual({t2: 1});
+            expect(changedRowIds).toEqual({t2: {r2: 1}});
+            expect(changedCellIds).toEqual({t2: {r2: {c2: 1}}});
+            expect(changedValueIds).toEqual({});
             return true;
           },
         );
@@ -845,11 +874,20 @@ describe('Transactions', () => {
       });
 
       test('with setRow', () => {
-        expect.assertions(6);
+        expect.assertions(10);
         store.transaction(
           // @ts-ignore
           () => store.setRow('t2', 'r2', {c2: 2, c3: [3]}),
-          (changedCells, invalidCells, changedValues, invalidValues) => {
+          (
+            changedCells,
+            invalidCells,
+            changedValues,
+            invalidValues,
+            changedTableIds,
+            changedRowIds,
+            changedCellIds,
+            changedValueIds,
+          ) => {
             expect(store.getTables()).toEqual({
               t1: {r1: {c1: 1}},
               t2: {r2: {c2: 2}},
@@ -858,6 +896,10 @@ describe('Transactions', () => {
             expect(invalidCells).toEqual({t2: {r2: {c3: [[3]]}}});
             expect(changedValues).toEqual({});
             expect(invalidValues).toEqual({});
+            expect(changedTableIds).toEqual({t2: 1});
+            expect(changedRowIds).toEqual({t2: {r2: 1}});
+            expect(changedCellIds).toEqual({t2: {r2: {c2: 1}}});
+            expect(changedValueIds).toEqual({});
             return true;
           },
         );
@@ -865,13 +907,22 @@ describe('Transactions', () => {
       });
 
       test('with valid setCells', () => {
-        expect.assertions(6);
+        expect.assertions(10);
         store.transaction(
           () => {
             store.setCell('t1', 'r1', 'c1', 2);
             store.setCell('t2', 'r2', 'c2', 2);
           },
-          (changedCells, invalidCells, changedValues, invalidValues) => {
+          (
+            changedCells,
+            invalidCells,
+            changedValues,
+            invalidValues,
+            changedTableIds,
+            changedRowIds,
+            changedCellIds,
+            changedValueIds,
+          ) => {
             expect(store.getTables()).toEqual({
               t1: {r1: {c1: 2}},
               t2: {r2: {c2: 2}},
@@ -883,6 +934,10 @@ describe('Transactions', () => {
             expect(invalidCells).toEqual({});
             expect(changedValues).toEqual({});
             expect(invalidValues).toEqual({});
+            expect(changedTableIds).toEqual({t2: 1});
+            expect(changedRowIds).toEqual({t2: {r2: 1}});
+            expect(changedCellIds).toEqual({t2: {r2: {c2: 1}}});
+            expect(changedValueIds).toEqual({});
             return true;
           },
         );
@@ -890,16 +945,29 @@ describe('Transactions', () => {
       });
 
       test('with invalid setCell', () => {
-        expect.assertions(6);
+        expect.assertions(10);
         store.transaction(
           // @ts-ignore
           () => store.setCell('t2', 'r2', 'c3', [3]),
-          (changedCells, invalidCells, changedValues, invalidValues) => {
+          (
+            changedCells,
+            invalidCells,
+            changedValues,
+            invalidValues,
+            changedTableIds,
+            changedRowIds,
+            changedCellIds,
+            changedValueIds,
+          ) => {
             expect(store.getTables()).toEqual(originalTables);
             expect(changedCells).toEqual({});
             expect(invalidCells).toEqual({t2: {r2: {c3: [[3]]}}});
             expect(changedValues).toEqual({});
             expect(invalidValues).toEqual({});
+            expect(changedTableIds).toEqual({});
+            expect(changedRowIds).toEqual({});
+            expect(changedCellIds).toEqual({});
+            expect(changedValueIds).toEqual({});
             return true;
           },
         );
@@ -907,11 +975,20 @@ describe('Transactions', () => {
       });
 
       test('with setValues', () => {
-        expect.assertions(6);
+        expect.assertions(10);
         store.transaction(
           // @ts-ignore
           () => store.setValues({v2: 2, v3: [3]}),
-          (changedCells, invalidCells, changedValues, invalidValues) => {
+          (
+            changedCells,
+            invalidCells,
+            changedValues,
+            invalidValues,
+            changedTableIds,
+            changedRowIds,
+            changedCellIds,
+            changedValueIds,
+          ) => {
             expect(store.getValues()).toEqual({v2: 2});
             expect(changedCells).toEqual({});
             expect(invalidCells).toEqual({});
@@ -920,6 +997,10 @@ describe('Transactions', () => {
               v2: [undefined, 2],
             });
             expect(invalidValues).toEqual({v3: [[3]]});
+            expect(changedTableIds).toEqual({});
+            expect(changedRowIds).toEqual({});
+            expect(changedCellIds).toEqual({});
+            expect(changedValueIds).toEqual({v1: -1, v2: 1});
             return true;
           },
         );
@@ -927,18 +1008,31 @@ describe('Transactions', () => {
       });
 
       test('with valid setValues', () => {
-        expect.assertions(6);
+        expect.assertions(10);
         store.transaction(
           () => {
             store.setValue('v1', 2);
             store.setValue('v2', 2);
           },
-          (changedCells, invalidCells, changedValues, invalidValues) => {
+          (
+            changedCells,
+            invalidCells,
+            changedValues,
+            invalidValues,
+            changedTableIds,
+            changedRowIds,
+            changedCellIds,
+            changedValueIds,
+          ) => {
             expect(store.getValues()).toEqual({v1: 2, v2: 2});
             expect(changedCells).toEqual({});
             expect(invalidCells).toEqual({});
             expect(changedValues).toEqual({v1: [1, 2], v2: [undefined, 2]});
             expect(invalidValues).toEqual({});
+            expect(changedTableIds).toEqual({});
+            expect(changedRowIds).toEqual({});
+            expect(changedCellIds).toEqual({});
+            expect(changedValueIds).toEqual({v2: 1});
             return true;
           },
         );
@@ -946,16 +1040,29 @@ describe('Transactions', () => {
       });
 
       test('with invalid setValue', () => {
-        expect.assertions(6);
+        expect.assertions(10);
         store.transaction(
           // @ts-ignore
           () => store.setValue('v3', [3]),
-          (changedCells, invalidCells, changedValues, invalidValues) => {
+          (
+            changedCells,
+            invalidCells,
+            changedValues,
+            invalidValues,
+            changedTableIds,
+            changedRowIds,
+            changedCellIds,
+            changedValueIds,
+          ) => {
             expect(store.getValues()).toEqual(originalValues);
             expect(changedCells).toEqual({});
             expect(invalidCells).toEqual({});
             expect(changedValues).toEqual({});
             expect(invalidValues).toEqual({v3: [[3]]});
+            expect(changedTableIds).toEqual({});
+            expect(changedRowIds).toEqual({});
+            expect(changedCellIds).toEqual({});
+            expect(changedValueIds).toEqual({});
             return true;
           },
         );
