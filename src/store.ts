@@ -72,6 +72,7 @@ import {
   IdMap3,
   mapClone,
   mapClone2,
+  mapClone3,
   mapEnsure,
   mapForEach,
   mapGet,
@@ -80,10 +81,11 @@ import {
   mapNew,
   mapSet,
   mapToObj,
+  mapToObj2,
+  mapToObj3,
 } from './common/map';
 import {
   IdObj,
-  IdObj2,
   isObject,
   objDel,
   objFreeze,
@@ -93,7 +95,14 @@ import {
   objMap,
 } from './common/obj';
 import {IdSet, IdSet2, IdSet3, IdSet4, setAdd, setNew} from './common/set';
-import {Pair, pairCollSize2, pairNew, pairNewMap} from './common/pairs';
+import {
+  Pair,
+  pairClone,
+  pairCollSize2,
+  pairIsEqual,
+  pairNew,
+  pairNewMap,
+} from './common/pairs';
 import {PoolFunctions, getPoolFunctions} from './common/pool';
 import {
   arrayForEach,
@@ -693,7 +702,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const callInvalidCellListeners = (mutator: 0 | 1) =>
     !collIsEmpty(invalidCells) && !collIsEmpty(invalidCellListeners[mutator])
       ? collForEach(
-          mutator ? mapClone(invalidCells, mapClone2) : invalidCells,
+          mutator ? mapClone3(invalidCells) : invalidCells,
           (rows, tableId) =>
             collForEach(rows, (cells, rowId) =>
               collForEach(cells, (invalidCell, cellId) =>
@@ -758,8 +767,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
             mapClone(changedTableIds),
             mapClone2(changedTableCellIds),
             mapClone2(changedRowIds),
-            mapClone(changedCellIds, mapClone2),
-            mapClone(changedCells, mapClone2),
+            mapClone3(changedCellIds),
+            mapClone3(changedCells),
           ]
         : [
             changedTableIds,
@@ -910,15 +919,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const getContent = (): [Tables, Values] => [getTables(), getValues()];
 
-  const getTables = (): Tables =>
-    mapToObj<TableMap, Table>(tablesMap, (table) =>
-      mapToObj<RowMap, Row>(table, mapToObj),
-    );
+  const getTables = (): Tables => mapToObj3(tablesMap);
 
   const getTableIds = (): Ids => mapKeys(tablesMap);
 
   const getTable = (tableId: Id): Table =>
-    mapToObj<RowMap, Row>(mapGet(tablesMap, id(tableId)), mapToObj);
+    mapToObj2(mapGet(tablesMap, id(tableId)));
 
   const getTableCellIds = (tableId: Id): Ids =>
     mapKeys(mapGet(tableCellIds, id(tableId)));
@@ -1284,29 +1290,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
           !collIsEmpty(finishTransactionListeners[0]) ||
           !collIsEmpty(finishTransactionListeners[1])
             ? [
-                mapToObj(
-                  changedCells,
-                  (table) =>
-                    mapToObj(
-                      table,
-                      (row) =>
-                        mapToObj(
-                          row,
-                          (cells) => [...cells],
-                          ([oldCell, newCell]) => oldCell === newCell,
-                        ),
-                      objIsEmpty,
-                    ),
-                  objIsEmpty,
-                ),
-                mapToObj<IdMap2<any[]>, IdObj2<any[]>>(invalidCells, (map) =>
-                  mapToObj<IdMap<any[]>, IdObj<any[]>>(map, mapToObj),
-                ),
-                mapToObj(
-                  changedValues,
-                  (values) => [...values],
-                  ([oldValue, newValue]) => oldValue === newValue,
-                ),
+                mapToObj3(changedCells, pairClone, pairIsEqual),
+                mapToObj3(invalidCells),
+                mapToObj(changedValues, pairClone, pairIsEqual),
                 mapToObj(invalidValues),
               ]
             : [{}, {}, {}, {}];

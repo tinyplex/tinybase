@@ -1,8 +1,8 @@
+import {IdObj, objIsEmpty} from './obj';
 import {arrayLength, arrayMap} from './array';
 import {collDel, collForEach, collHas, collIsEmpty} from './coll';
 import {ifNotUndefined, isUndefined} from './other';
 import {Id} from '../types/common.d';
-import {IdObj} from './obj';
 
 export type IdMap<Value> = Map<Id, Value>;
 export type IdMap2<Value> = IdMap<IdMap<Value>>;
@@ -49,35 +49,59 @@ export const mapEnsure = <Key, Value>(
   return mapGet(map, key) as Value;
 };
 
-export const mapToObj = <MapValue, ObjectValue>(
+export const mapToObj = <MapValue, ObjectValue = MapValue>(
   map: IdMap<MapValue> | undefined,
-  childMapper?: (mapValue: MapValue) => ObjectValue,
-  childExclude?: (objectValue: ObjectValue) => boolean,
+  mapValue?: (mapValue: MapValue) => ObjectValue,
+  excludeValue?: (objectValue: ObjectValue) => boolean,
 ): IdObj<ObjectValue> => {
   const obj: IdObj<ObjectValue> = {};
-  const mapper =
-    childMapper ?? ((mapValue: MapValue) => mapValue as any as ObjectValue);
   collForEach(map, (value, key) =>
-    ifNotUndefined(mapper(value), (mappedValue) =>
-      childExclude?.(mappedValue) ? 0 : (obj[key] = mappedValue),
+    ifNotUndefined(
+      mapValue?.(value) ?? (value as any as ObjectValue),
+      (mappedValue) =>
+        excludeValue?.(mappedValue) ? 0 : (obj[key] = mappedValue),
     ),
   );
   return obj;
 };
 
-export const mapClone = <Key, Value>(
-  map: Map<Key, Value> | undefined,
-  childMapper?: (mapValue: Value) => Value,
-): Map<Key, Value> => {
-  const map2: Map<Key, Value> = mapNew();
-  const mapper = childMapper ?? ((mapValue: Value) => mapValue);
-  collForEach(map, (value, key) => map2.set(key, mapper(value)));
+export const mapToObj2 = <MapValue, ObjectValue = MapValue>(
+  map: IdMap2<MapValue> | undefined,
+  mapValue?: (mapValue: MapValue) => ObjectValue,
+  excludeValue?: (objectValue: ObjectValue) => boolean,
+) =>
+  mapToObj(
+    map,
+    (childMap) => mapToObj(childMap, mapValue, excludeValue),
+    objIsEmpty,
+  );
+
+export const mapToObj3 = <MapValue, ObjectValue = MapValue>(
+  map: IdMap3<MapValue>,
+  mapValue?: (mapValue: MapValue) => ObjectValue,
+  excludeValue?: (objectValue: ObjectValue) => boolean,
+) =>
+  mapToObj(
+    map,
+    (childMap) =>
+      mapToObj2<MapValue, ObjectValue>(childMap, mapValue, excludeValue),
+    objIsEmpty,
+  );
+
+export const mapClone = <MapValue>(
+  map: IdMap<MapValue> | undefined,
+  mapValue?: (mapValue: MapValue) => MapValue,
+): IdMap<MapValue> => {
+  const map2: IdMap<MapValue> = mapNew();
+  collForEach(map, (value, key) => map2.set(key, mapValue?.(value) ?? value));
   return map2;
 };
 
-export const mapClone2 = <Key1, Key2, Value>(
-  map: Map<Key1, Map<Key2, Value>> | undefined,
-) => mapClone(map, mapClone);
+export const mapClone2 = <MapValue>(map: IdMap2<MapValue> | undefined) =>
+  mapClone(map, mapClone);
+
+export const mapClone3 = <MapValue>(map: IdMap3<MapValue> | undefined) =>
+  mapClone(map, mapClone2);
 
 export type Node<Path, Leaf> = Map<Path, Node<Path, Leaf> | Leaf>;
 export const visitTree = <Path, Leaf>(

@@ -11,3 +11,8 @@ export const pairCollSize2 = (
 ): number => func(pair[0]) + func(pair[1]);
 
 export const pairNewMap = <Value>(): Pair<IdMap<Value>> => [mapNew(), mapNew()];
+
+export const pairClone = <Value>(array: Pair<Value>): Pair<Value> => [...array];
+
+export const pairIsEqual = <Value>([entry1, entry2]: Pair<Value>): boolean =>
+  entry1 === entry2;
