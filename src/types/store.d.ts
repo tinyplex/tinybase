@@ -89,13 +89,22 @@ export type MapValue = (value: ValueOrUndefined) => Value;
 /// GetCell
 export type GetCell = (cellId: Id) => CellOrUndefined;
 
-export type IdAdded = 1 | -1;
-export type ChangedTableIds = {[tableId: Id]: IdAdded};
-export type ChangedRowIds = {[tableId: Id]: {[rowId: Id]: IdAdded}};
+/// IdAddedOrRemoved
+export type IdAddedOrRemoved = 1 | -1;
+
+/// ChangedTableIds
+export type ChangedTableIds = {[tableId: Id]: IdAddedOrRemoved};
+
+/// ChangedRowIds
+export type ChangedRowIds = {[tableId: Id]: {[rowId: Id]: IdAddedOrRemoved}};
+
+/// ChangedCellIds
 export type ChangedCellIds = {
-  [tableId: Id]: {[rowId: Id]: {[cellId: Id]: IdAdded}};
+  [tableId: Id]: {[rowId: Id]: {[cellId: Id]: IdAddedOrRemoved}};
 };
-export type ChangedValueIds = {[valueId: Id]: IdAdded};
+
+/// ChangedValueIds
+export type ChangedValueIds = {[valueId: Id]: IdAddedOrRemoved};
 
 /// DoRollback
 export type DoRollback = (
@@ -118,6 +127,10 @@ export type TransactionListener = (
   invalidCells: InvalidCells,
   changedValues: ChangedValues,
   invalidValues: InvalidValues,
+  changedTableIds: ChangedTableIds,
+  changedRowIds: ChangedRowIds,
+  changedCellIds: ChangedCellIds,
+  changedValueIds: ChangedValueIds,
 ) => void;
 
 /// TablesListener

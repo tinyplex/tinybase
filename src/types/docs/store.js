@@ -368,6 +368,78 @@
  */
 /// GetCell
 /**
+ * The IdAddedOrRemoved type describes a change made to an Id in either the
+ * tabular of keyed-value part of the Store.
+ *
+ * This type is used in other types like ChangedTableIds, ChangedRowIds,
+ * ChangedCellIds, and ChangedValueIds.
+ *
+ * It is a simple number: a 1 indicates that a given Id was added to the Store
+ * during a transaction, and a -1 indicates that it was removed.
+ *
+ */
+/// IdAddedOrRemoved
+/**
+ * The ChangedTableIds type describes the Table Ids that were added or removed
+ * during a transaction.
+ *
+ * It is available to the DoRollback function and to a TransactionListener
+ * function.
+ *
+ * It is a simple object that has Table Id as key, and an IdAddedOrRemoved
+ * number indicating whether the Table Id was added (1) or removed (-1).
+ *
+ * Note that there will be no entry if the content of the Table itself changed.
+ * For that you should consult the ChangedRowIds, ChangedCellIds, or
+ * ChangedCells types.
+ */
+/// ChangedTableIds
+/**
+ * The ChangedRowIds type describes the Row Ids that were added or removed
+ * during a transaction.
+ *
+ * It is available to the DoRollback function and to a TransactionListener
+ * function.
+ *
+ * It is a nested object that has Table Id as a top-level key, and then Row Id
+ * as an inner key. The values of the inner objects are IdAddedOrRemoved numbers
+ * indicating whether the Row Id was added (1) or removed (-1) to the given
+ * Table.
+ *
+ * Note that there will be no entry if the content of the Row itself changed.
+ * For that you should consult the ChangedCellIds or ChangedCells types.
+ */
+/// ChangedRowIds
+/**
+ * The ChangedCellIds type describes the Cell Ids that were added or removed
+ * during a transaction.
+ *
+ * It is available to the DoRollback function and to a TransactionListener
+ * function.
+ *
+ * It is a nested object that has Table Id as a top-level key, and Row Id, and
+ * then CellId as inner keys. The values of the inner objects are
+ * IdAddedOrRemoved numbers indicating whether the Cell Id was added (1) or
+ * removed (-1) to the given Row.
+ *
+ * Note that there will be no entry if the content of the Cell itself changed.
+ * For that you should consult the ChangedCells type.
+ */
+/// ChangedCellIds
+/**
+ * The ChangedValueIds type describes the Value Ids that were added or removed
+ * during a transaction.
+ *
+ * It is available to the DoRollback function and to a TransactionListener
+ * function.
+ *
+ * It is a simple object that has Value Id as key, and an IdAddedOrRemoved
+ * number indicating whether the Value Id was added (1) or removed (-1).
+ *
+ * Note that there will be no entry if the content of the Value itself changed.
+ * For that you should consult the ChangedValues type.
+ */ /// ChangedValueIds
+/**
  * The DoRollback type describes a function that you can use to rollback the
  * transaction if it did not complete to your satisfaction.
  *
@@ -379,11 +451,22 @@
  * been made during the transaction, and any invalid attempts to do so,
  * respectively.
  *
+ * Since v4.0, it is also called with sets of Id additions or removals made
+ * during the transaction.
+ *
  * @param changedCells Any Cells that were changed during the transaction.
  * @param invalidCells Any invalid attempts to change Cells.
  * @param changedValues Any Values that were changed during the transaction,
  * since v3.0.0.
  * @param invalidValues Any invalid attempts to change Values, since v3.0.0.
+ * @param changedTableIds Any Table Ids added or removed during the transaction,
+ * since v4.0.0.
+ * @param changedRowIds Any Row Ids added or removed during the transaction,
+ * since v4.0.0.
+ * @param changedCellIds Any Cell Ids added or removed during the transaction,
+ * since v4.0.0.
+ * @param changedValueIds Any Value Ids added or removed during the transaction,
+ * since v4.0.0.
  * @category Callback
  */
 /// DoRollback
@@ -407,7 +490,7 @@
  * all changes have been reverted.
  *
  * Since v4.0, the listener also receives the list of (valid and invalid) Cell
- * and Value changes made during the transaction.
+ * and Value changes (and Id additions or removals) made during the transaction.
  *
  * @param store A reference to the Store that is completing a transaction.
  * @param cellsTouched Whether Cell values have been touched during the
@@ -420,6 +503,14 @@
  * @param changedValues Any Values that were changed during the transaction,
  * since v4.0.0.
  * @param invalidValues Any invalid attempts to change Values, since v4.0.0.
+ * @param changedTableIds Any Table Ids added or removed during the transaction,
+ * since v4.0.0.
+ * @param changedRowIds Any Row Ids added or removed during the transaction,
+ * since v4.0.0.
+ * @param changedCellIds Any Cell Ids added or removed during the transaction,
+ * since v4.0.0.
+ * @param changedValueIds Any Value Ids added or removed during the transaction,
+ * since v4.0.0.
  * @category Listener
  */
 /// TransactionListener
