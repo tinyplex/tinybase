@@ -33,7 +33,7 @@ import {
   DoRollback,
   GetCellChange,
   GetValueChange,
-  IdAdded,
+  IdAddedOrRemoved,
   InvalidCells,
   InvalidValues,
   MapCell,
@@ -137,9 +137,9 @@ type RowMap = IdMap<Cell>;
 type TableMap = IdMap<RowMap>;
 type TablesMap = IdMap<TableMap>;
 type ValuesMap = IdMap<Value>;
-type ChangedIdsMap = IdMap<IdAdded>;
-type ChangedIdsMap2 = IdMap2<IdAdded>;
-type ChangedIdsMap3 = IdMap3<IdAdded>;
+type ChangedIdsMap = IdMap<IdAddedOrRemoved>;
+type ChangedIdsMap2 = IdMap2<IdAddedOrRemoved>;
+type ChangedIdsMap3 = IdMap3<IdAddedOrRemoved>;
 
 const getEmptyTransactionChanges = () =>
   Array(8).fill({}) as [
@@ -184,12 +184,12 @@ const validate = (
 const idsChanged = (
   changedIds: ChangedIdsMap,
   id: Id,
-  added: IdAdded,
+  addedOrRemoved: IdAddedOrRemoved,
 ): ChangedIdsMap =>
   mapSet(
     changedIds,
     id,
-    mapGet(changedIds, id) == -added ? undefined : added,
+    mapGet(changedIds, id) == -addedOrRemoved ? undefined : addedOrRemoved,
   ) as ChangedIdsMap;
 
 export const createStore: typeof createStoreDecl = (): Store => {
@@ -583,25 +583,27 @@ export const createStore: typeof createStoreDecl = (): Store => {
     mapSet(valuesMap, valueId);
   };
 
-  const tableIdsChanged = (tableId: Id, added: IdAdded): ChangedIdsMap =>
-    idsChanged(changedTableIds, tableId, added);
+  const tableIdsChanged = (
+    tableId: Id,
+    addedOrRemoved: IdAddedOrRemoved,
+  ): ChangedIdsMap => idsChanged(changedTableIds, tableId, addedOrRemoved);
 
   const rowIdsChanged = (
     tableId: Id,
     rowId: Id,
-    added: IdAdded,
+    addedOrRemoved: IdAddedOrRemoved,
   ): ChangedIdsMap =>
     idsChanged(
       mapEnsure(changedRowIds, tableId, mapNew) as ChangedIdsMap,
       rowId,
-      added,
+      addedOrRemoved,
     );
 
   const cellIdsChanged = (
     tableId: Id,
     rowId: Id,
     cellId: Id,
-    added: IdAdded,
+    addedOrRemoved: IdAddedOrRemoved,
   ): ChangedIdsMap =>
     idsChanged(
       mapEnsure(
@@ -610,7 +612,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
         mapNew,
       ) as ChangedIdsMap,
       cellId,
-      added,
+      addedOrRemoved,
     );
 
   const cellChanged = (
@@ -630,8 +632,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
       () => [oldCell, 0],
     )[1] = newCell);
 
-  const valueIdsChanged = (valueId: Id, added: IdAdded): ChangedIdsMap =>
-    idsChanged(changedValueIds, valueId, added);
+  const valueIdsChanged = (
+    valueId: Id,
+    addedOrRemoved: IdAddedOrRemoved,
+  ): ChangedIdsMap => idsChanged(changedValueIds, valueId, addedOrRemoved);
 
   const valueChanged = (
     valueId: Id,
