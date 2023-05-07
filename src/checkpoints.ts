@@ -1,4 +1,10 @@
-import {CellOrUndefined, Store, ValueOrUndefined} from './types/store.d';
+import {
+  CellOrUndefined,
+  ChangedCell,
+  ChangedValue,
+  Store,
+  ValueOrUndefined,
+} from './types/store.d';
 import {
   CheckpointCallback,
   CheckpointIds,
@@ -13,6 +19,7 @@ import {Id, IdOrNull, Ids} from './types/common.d';
 import {
   IdMap,
   IdMap2,
+  IdMap3,
   mapEnsure,
   mapForEach,
   mapGet,
@@ -38,8 +45,8 @@ import {getCreateFunction} from './common/definable';
 import {getListenerFunctions} from './common/listeners';
 import {objFreeze} from './common/obj';
 
-type CellsDelta = IdMap2<IdMap<[CellOrUndefined, CellOrUndefined]>>;
-type ValuesDelta = IdMap<[ValueOrUndefined, ValueOrUndefined]>;
+type CellsDelta = IdMap3<ChangedCell>;
+type ValuesDelta = IdMap<ChangedValue>;
 
 export const createCheckpoints = getCreateFunction(
   (store: Store): Checkpoints => {
@@ -81,7 +88,7 @@ export const createCheckpoints = getCreateFunction(
           ),
         );
         collForEach(valuesDelta, (oldNew, valueId) =>
-          setOrDelValue(store, valueId, oldNew[oldOrNew] as CellOrUndefined),
+          setOrDelValue(store, valueId, oldNew[oldOrNew] as ValueOrUndefined),
         );
       });
       listening = 1;
@@ -126,20 +133,16 @@ export const createCheckpoints = getCreateFunction(
       (_store, tableId, rowId, cellId, newCell, oldCell) => {
         if (listening) {
           storeChanged();
-          const table = mapEnsure<
-            Id,
-            IdMap2<[CellOrUndefined, CellOrUndefined]>
-          >(cellsDelta, tableId, mapNew);
-          const row = mapEnsure<Id, IdMap<[CellOrUndefined, CellOrUndefined]>>(
-            table,
-            rowId,
+          const table = mapEnsure<Id, IdMap2<ChangedCell>>(
+            cellsDelta,
+            tableId,
             mapNew,
           );
-          const oldNew = mapEnsure<Id, [CellOrUndefined, CellOrUndefined]>(
-            row,
-            cellId,
-            () => [oldCell, undefined],
-          );
+          const row = mapEnsure<Id, IdMap<ChangedCell>>(table, rowId, mapNew);
+          const oldNew = mapEnsure<Id, ChangedCell>(row, cellId, () => [
+            oldCell,
+            undefined,
+          ]);
           oldNew[1] = newCell;
           if (
             oldNew[0] === newCell &&
@@ -159,7 +162,7 @@ export const createCheckpoints = getCreateFunction(
       (_store, valueId, newValue, oldValue) => {
         if (listening) {
           storeChanged();
-          const oldNew = mapEnsure<Id, [ValueOrUndefined, ValueOrUndefined]>(
+          const oldNew = mapEnsure<Id, ChangedValue>(
             valuesDelta,
             valueId,
             () => [oldValue, undefined],

@@ -22,7 +22,9 @@ import {
   CellChange,
   CellOrUndefined,
   CellSchema,
+  ChangedCell,
   ChangedCells,
+  ChangedValue,
   ChangedValues,
   DoRollback,
   GetCellChange,
@@ -183,9 +185,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const changedTableIds: ChangedIdsMap = mapNew();
   const changedRowIds: ChangedIdsMap2 = mapNew();
   const changedCellIds: ChangedIdsMap3 = mapNew();
-  const changedCells: IdMap3<[CellOrUndefined, CellOrUndefined]> = mapNew();
+  const changedCells: IdMap3<ChangedCell> = mapNew();
   const changedValueIds: ChangedIdsMap = mapNew();
-  const changedValues: IdMap<[ValueOrUndefined, ValueOrUndefined]> = mapNew();
+  const changedValues: IdMap<ChangedValue> = mapNew();
   const invalidCells: IdMap3<any[]> = mapNew();
   const invalidValues: IdMap<any[]> = mapNew();
   const tablesSchemaMap: TablesSchemaMap = mapNew();
@@ -602,13 +604,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
     oldCell: CellOrUndefined,
     newCell?: CellOrUndefined,
   ): CellOrUndefined =>
-    (mapEnsure<Id, [CellOrUndefined, CellOrUndefined]>(
-      mapEnsure<Id, IdMap<[CellOrUndefined, CellOrUndefined]>>(
-        mapEnsure<Id, IdMap2<[CellOrUndefined, CellOrUndefined]>>(
-          changedCells,
-          tableId,
-          mapNew,
-        ),
+    (mapEnsure<Id, ChangedCell>(
+      mapEnsure<Id, IdMap<ChangedCell>>(
+        mapEnsure<Id, IdMap2<ChangedCell>>(changedCells, tableId, mapNew),
         rowId,
         mapNew,
       ),
@@ -624,11 +622,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
     oldValue: ValueOrUndefined,
     newValue?: ValueOrUndefined,
   ): ValueOrUndefined =>
-    (mapEnsure<Id, [ValueOrUndefined, ValueOrUndefined]>(
-      changedValues,
-      valueId,
-      () => [oldValue, 0],
-    )[1] = newValue);
+    (mapEnsure<Id, ChangedValue>(changedValues, valueId, () => [
+      oldValue,
+      0,
+    ])[1] = newValue);
 
   const cellInvalid = (
     tableId?: Id,
@@ -742,7 +739,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
         ChangedIdsMap,
         ChangedIdsMap2,
         ChangedIdsMap3,
-        IdMap3<[CellOrUndefined, CellOrUndefined]>,
+        IdMap3<ChangedCell>,
       ] = mutator
         ? [
             mapClone(changedTableIds),
@@ -842,10 +839,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       collIsEmpty(valueListeners[mutator]) &&
       collIsEmpty(valuesListeners[mutator]);
     if (!emptyIdListeners || !emptyOtherListeners) {
-      const changes: [
-        ChangedIdsMap,
-        IdMap<[CellOrUndefined, CellOrUndefined]>,
-      ] = mutator
+      const changes: [ChangedIdsMap, IdMap<ChangedCell>] = mutator
         ? [mapClone(changedValueIds), mapClone(changedValues)]
         : [changedValueIds, changedValues];
 

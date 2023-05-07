@@ -773,6 +773,27 @@
  */
 /// ChangedCells
 /**
+ * The ChangedCell type describes a Cell that has been changed during a
+ * transaction, primarily used so that you can indicate whether the transaction
+ * should be rolled back.
+ *
+ * It provides both the old and new Cell values in a two-part array. These are
+ * describing the state of the changed Cell in the Store at the _start_ of the
+ * transaction, and by the _end_ of the transaction.
+ *
+ * Hence, an `undefined` value for the first item in the array means that the
+ * Cell was added during the transaction. An `undefined` value for the second
+ * item in the array means that the Cell was removed during the transaction. An
+ * array with two different Cell values indicates that it was changed. The
+ * two-part array will never contain two items of the same value (including two
+ * `undefined` values), even if, during the transaction, a Cell was changed to a
+ * different value and then changed back.
+ *
+ * @category Transaction
+ * @since v1.2.0
+ */
+/// ChangedCell
+/**
  * The InvalidCells type describes the invalid Cell values that have been
  * attempted during a transaction, primarily used so that you can indicate
  * whether the transaction should be rolled back.
@@ -815,6 +836,27 @@
  * @since v3.0.0
  */
 /// ChangedValues
+/**
+ * The ChangedValue type describes a Value that has been changed during a
+ * transaction, primarily used so that you can indicate whether the transaction
+ * should be rolled back.
+ *
+ * It provides both the the old and new Values in a two-part array. These
+ * describe the state of the changed Value in the Store at the _start_ of the
+ * transaction, and by the _end_ of the transaction.
+ *
+ * Hence, an `undefined` value for the first item in the array means that the
+ * Value was added during the transaction. An `undefined` value for the second
+ * item in the array means that the Value was removed during the transaction. An
+ * array with two different Values indicates that it was changed. The two-part
+ * array will never contain two items of the same value (including two
+ * `undefined` values), even if, during the transaction, a Value was changed to
+ * a different value and then changed back.
+ *
+ * @category Transaction
+ * @since v3.0.0
+ */
+/// ChangedValue
 /**
  * The InvalidValues type describes the invalid Values that have been attempted
  * during a transaction, primarily used so that you can indicate whether the
