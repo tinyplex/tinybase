@@ -29,6 +29,7 @@ import {
 import {
   Cell,
   CellOrUndefined,
+  ChangedCell,
   GetCell,
   GetCellChange,
   Row,
@@ -339,7 +340,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
                         groupRow[groupedCellId],
                         oldLength,
                         selectedCell as IdMap<Cell>,
-                        oldNewSet as Set<[CellOrUndefined, CellOrUndefined]>,
+                        oldNewSet as Set<ChangedCell>,
                         aggregators,
                       );
                       groupRow[groupedCellId] = (
