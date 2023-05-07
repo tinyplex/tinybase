@@ -246,12 +246,43 @@ export type GetCell<
   cellId: CellId,
 ) => DefaultedCellFromSchema<Schema, TableId, CellId>;
 
+/// IdAddedOrRemoved
+export type IdAddedOrRemoved = 1 | -1;
+
+/// ChangedTableIds
+export type ChangedTableIds<Schema extends OptionalTablesSchema> = {
+  [TableId in TableIdFromSchema<Schema>]: IdAddedOrRemoved;
+};
+
+/// ChangedRowIds
+export type ChangedRowIds<Schema extends OptionalTablesSchema> = {
+  [TableId in TableIdFromSchema<Schema>]: {[rowId: Id]: IdAddedOrRemoved};
+};
+
+/// ChangedCellIds
+export type ChangedCellIds<Schema extends OptionalTablesSchema> = {
+  [TableId in TableIdFromSchema<Schema>]: {
+    [rowId: Id]: {
+      [CellId in CellIdFromSchema<Schema, TableId>]: IdAddedOrRemoved;
+    };
+  };
+};
+
+/// ChangedValueIds
+export type ChangedValueIds<Schema extends OptionalValuesSchema> = {
+  [ValueId in ValueIdFromSchema<Schema>]: IdAddedOrRemoved;
+};
+
 /// DoRollback
 export type DoRollback<Schemas extends OptionalSchemas> = (
   changedCells: ChangedCells<Schemas[0]>,
   invalidCells: InvalidCells,
   changedValues: ChangedValues<Schemas[1]>,
   invalidValues: InvalidValues,
+  changedTableIds: ChangedTableIds<Schemas[0]>,
+  changedRowIds: ChangedRowIds<Schemas[0]>,
+  changedCellIds: ChangedCellIds<Schemas[0]>,
+  changedValueIds: ChangedValueIds<Schemas[1]>,
 ) => boolean;
 
 /// TransactionListener
@@ -263,6 +294,10 @@ export type TransactionListener<Schemas extends OptionalSchemas> = (
   invalidCells: InvalidCells,
   changedValues: ChangedValues<Schemas[1]>,
   invalidValues: InvalidValues,
+  changedTableIds: ChangedTableIds<Schemas[0]>,
+  changedRowIds: ChangedRowIds<Schemas[0]>,
+  changedCellIds: ChangedCellIds<Schemas[0]>,
+  changedValueIds: ChangedValueIds<Schemas[1]>,
 ) => void;
 
 /// TablesListener
