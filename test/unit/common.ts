@@ -292,6 +292,10 @@ export const createStoreListener = (
           invalidCells,
           changedValues,
           invalidValues,
+          changedTableIds,
+          changedRowIds,
+          changedCellIds,
+          changedValueIds,
         ) =>
           logs[id].push([
             cellsChanged,
@@ -300,6 +304,10 @@ export const createStoreListener = (
             invalidCells,
             changedValues,
             invalidValues,
+            changedTableIds,
+            changedRowIds,
+            changedCellIds,
+            changedValueIds,
           ]),
       );
     },
@@ -315,6 +323,10 @@ export const createStoreListener = (
           invalidCells,
           changedValues,
           invalidValues,
+          changedTableIds,
+          changedRowIds,
+          changedCellIds,
+          changedValueIds,
         ) =>
           logs[id].push([
             cellsChanged,
@@ -323,6 +335,10 @@ export const createStoreListener = (
             invalidCells,
             changedValues,
             invalidValues,
+            changedTableIds,
+            changedRowIds,
+            changedCellIds,
+            changedValueIds,
           ]),
       );
     },
