@@ -564,13 +564,24 @@ export type ValueChange<
 export type ChangedCells<Schema extends OptionalTablesSchema> = {
   [TableId in TableIdFromSchema<Schema>]?: {
     [rowId: Id]: {
-      [CellId in CellIdFromSchema<Schema, TableId>]?: [
-        CellOrUndefined<Schema, TableId, CellId>,
-        CellOrUndefined<Schema, TableId, CellId>,
-      ];
+      [CellId in CellIdFromSchema<Schema, TableId>]?: ChangedCell<
+        Schema,
+        TableId,
+        CellId
+      >;
     };
   };
 };
+
+/// ChangedCell
+export type ChangedCell<
+  Schema extends OptionalTablesSchema,
+  TableId extends TableIdFromSchema<Schema>,
+  CellId extends CellIdFromSchema<Schema, TableId>,
+> = [
+  CellOrUndefined<Schema, TableId, CellId>,
+  CellOrUndefined<Schema, TableId, CellId>,
+];
 
 /// InvalidCells
 export type InvalidCells = {
@@ -583,11 +594,17 @@ export type InvalidCells = {
 
 /// ChangedValues
 export type ChangedValues<Schema extends OptionalValuesSchema> = {
-  [ValueId in ValueIdFromSchema<Schema>]?: [
-    DefaultedValueFromSchema<Schema, ValueId>,
-    DefaultedValueFromSchema<Schema, ValueId>,
-  ];
+  [ValueId in ValueIdFromSchema<Schema>]?: ChangedValue<Schema, ValueId>;
 };
+
+/// ChangedValue
+export type ChangedValue<
+  Schema extends OptionalValuesSchema,
+  ValueId extends ValueIdFromSchema<Schema>,
+> = [
+  DefaultedValueFromSchema<Schema, ValueId>,
+  DefaultedValueFromSchema<Schema, ValueId>,
+];
 
 /// InvalidValues
 export type InvalidValues = {
