@@ -1,7 +1,11 @@
 /// persisters
 
 import {
+  ChangedCellIds,
   ChangedCells,
+  ChangedRowIds,
+  ChangedTableIds,
+  ChangedValueIds,
   ChangedValues,
   OptionalSchemas,
   Store,
@@ -71,6 +75,10 @@ export function createCustomPersister<
     getContent: () => [Tables<Schemas[0]>, Values<Schemas[1]>],
     changedCells?: ChangedCells<Schemas[0]>,
     changedValues?: ChangedValues<Schemas[1]>,
+    changedTableIds?: ChangedTableIds<Schemas[0]>,
+    changedRowIds?: ChangedRowIds<Schemas[0]>,
+    changedCellIds?: ChangedCellIds<Schemas[0]>,
+    changedValueIds?: ChangedValueIds<Schemas[1]>,
   ) => Promise<void>,
   addPersisterListener: (
     listener: PersisterListener<Schemas>,
