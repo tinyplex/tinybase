@@ -1,5 +1,9 @@
 import {
+  ChangedCellIds,
   ChangedCells,
+  ChangedRowIds,
+  ChangedTableIds,
+  ChangedValueIds,
   ChangedValues,
   Store,
   Tables,
@@ -21,6 +25,10 @@ export const createCustomPersister = <ListeningHandle>(
     getContent: () => [Tables, Values],
     changedCells?: ChangedCells,
     changedValues?: ChangedValues,
+    changedTableIds?: ChangedTableIds,
+    changedRowIds?: ChangedRowIds,
+    changedCellIds?: ChangedCellIds,
+    changedValueIds?: ChangedValueIds,
   ) => Promise<void>,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
@@ -92,6 +100,10 @@ export const createCustomPersister = <ListeningHandle>(
     save: async (
       changedCells?: ChangedCells,
       changedValues?: ChangedValues,
+      changedTableIds?: ChangedTableIds,
+      changedRowIds?: ChangedRowIds,
+      changedCellIds?: ChangedCellIds,
+      changedValueIds?: ChangedValueIds,
     ): Promise<Persister> => {
       /*! istanbul ignore else */
       if (loadSave != 1) {
@@ -99,7 +111,15 @@ export const createCustomPersister = <ListeningHandle>(
         if (DEBUG) {
           saves++;
         }
-        await setPersisted(store.getContent, changedCells, changedValues);
+        await setPersisted(
+          store.getContent,
+          changedCells,
+          changedValues,
+          changedTableIds,
+          changedRowIds,
+          changedCellIds,
+          changedValueIds,
+        );
         loadSave = 0;
       }
       return persister;
@@ -107,8 +127,18 @@ export const createCustomPersister = <ListeningHandle>(
 
     startAutoSave: async (): Promise<Persister> => {
       await persister.stopAutoSave().save();
-      listenerId = store.addDidFinishTransactionListener((...args) =>
-        (persister.save as any)(args[3], args[5]),
+      listenerId = store.addDidFinishTransactionListener(
+        (
+          _store,
+          _cellsTouched,
+          _valuesTouched,
+          changedCells,
+          _invalidCells,
+          changedValues,
+          _invalidValues,
+          ...changedIds
+        ) =>
+          (persister.save as any)(changedCells, changedValues, ...changedIds),
       );
       return persister;
     },
