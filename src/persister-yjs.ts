@@ -1,5 +1,9 @@
 import {
+  ChangedCellIds,
   ChangedCells,
+  ChangedRowIds,
+  ChangedTableIds,
+  ChangedValueIds,
   ChangedValues,
   Store,
   Tables,
@@ -62,6 +66,10 @@ export const createYjsPersister = (
     getContent: () => [Tables, Values],
     _changedCells?: ChangedCells,
     _changedValues?: ChangedValues,
+    _changedTableIds?: ChangedTableIds,
+    _changedRowIds?: ChangedRowIds,
+    _changedCellIds?: ChangedCellIds,
+    _changedValueIds?: ChangedValueIds,
   ): Promise<void> => {
     const [tables, values] = getContent();
     yDoc.transact(() => {
