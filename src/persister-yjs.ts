@@ -10,24 +10,25 @@ import {
   Values,
 } from './types/store.d';
 import {Persister, PersisterListener} from './types/persisters.d';
-import {Doc as YDoc, YEvent, Map as YMap} from 'yjs';
+import {Array as YArray, Doc as YDoc, YEvent, Map as YMap} from 'yjs';
 import {objHas, objMap} from './common/obj';
 import {Id} from './types/common.d';
 import {IdObj} from './common/obj';
+import {arrayIsEmpty} from './common/array';
 import {createCustomPersister} from './persisters';
+import {isUndefined} from './common/other';
 
 type Observer = (events: YEvent<any>[]) => void;
 
-const tablesKey = 't';
-const valuesKey = 'v';
-
 const yMapMatch = (
-  parentYMap: YMap<any>,
-  id: Id,
+  yMapOrParent: YMap<any>,
+  idInParent: Id | undefined,
   obj: IdObj<any>,
   set: (yMap: YMap<any>, id: Id, value: any) => 1 | void,
 ): 1 | void => {
-  const yMap = parentYMap.get(id) ?? parentYMap.set(id, new YMap());
+  const yMap = isUndefined(idInParent)
+    ? yMapOrParent
+    : yMapOrParent.get(idInParent) ?? yMapOrParent.set(idInParent, new YMap());
   let changed: 1 | undefined;
   objMap(obj, (value, id) => {
     if (set(yMap, id, value)) {
@@ -40,8 +41,8 @@ const yMapMatch = (
       changed = 1;
     }
   });
-  if (!yMap.size) {
-    parentYMap.delete(id);
+  if (!isUndefined(idInParent) && !yMap.size) {
+    yMapOrParent.delete(idInParent);
   }
   return changed;
 };
@@ -49,17 +50,15 @@ const yMapMatch = (
 export const createYjsPersister = (
   store: Store,
   yDoc: YDoc,
-  yMapName = 'tinybase',
+  yArrayName = 'tinybase',
 ): Persister => {
-  const yMap: YMap<any> = yDoc.getMap(yMapName);
+  const contentArray: YArray<any> = yDoc.getArray(yArrayName);
 
   const getPersisted = async (): Promise<[Tables, Values] | undefined> => {
-    try {
-      const content = yMap.toJSON();
-      if (content[tablesKey]) {
-        return [content[tablesKey], content[valuesKey]];
-      }
-    } catch {}
+    const content = contentArray.toJSON();
+    if (!arrayIsEmpty(content)) {
+      return content as [Tables, Values];
+    }
   };
 
   const setPersisted = async (
@@ -71,9 +70,13 @@ export const createYjsPersister = (
     _changedCellIds?: ChangedCellIds,
     _changedValueIds?: ChangedValueIds,
   ): Promise<void> => {
+    if (!contentArray.length) {
+      contentArray.push([new YMap(), new YMap()]);
+    }
+    const [tablesMap, valuesMap] = contentArray.toArray();
     const [tables, values] = getContent();
     yDoc.transact(() => {
-      yMapMatch(yMap, tablesKey, tables, (tablesMap, tableId, table) =>
+      yMapMatch(tablesMap, undefined, tables, (tablesMap, tableId, table) =>
         yMapMatch(tablesMap, tableId, table, (tableMap, rowId, row) =>
           yMapMatch(tableMap, rowId, row, (rowMap, cellId, cell) => {
             if (rowMap.get(cellId) !== cell) {
@@ -83,7 +86,7 @@ export const createYjsPersister = (
           }),
         ),
       );
-      yMapMatch(yMap, valuesKey, values, (valuesMap, valueId, value) => {
+      yMapMatch(valuesMap, undefined, values, (valuesMap, valueId, value) => {
         if (valuesMap.get(valueId) !== value) {
           valuesMap.set(valueId, value);
         }
@@ -95,12 +98,12 @@ export const createYjsPersister = (
     const observer: Observer = () => {
       listener();
     };
-    yMap.observeDeep(observer);
+    contentArray.observeDeep(observer);
     return observer;
   };
 
   const delPersisterListener = (observer: Observer): void => {
-    yMap.unobserveDeep(observer);
+    contentArray.unobserveDeep(observer);
   };
 
   return createCustomPersister(
