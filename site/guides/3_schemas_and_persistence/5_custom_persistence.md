@@ -29,10 +29,11 @@ latter two are synchronous and should return `void`.
 This API changed in v4.0.0. Any custom persisters created on previous versions
 should be upgraded. Most notably, the `setPersisted` function parameter is
 provided with a `getContent` function to get the content from the Store itself,
-rather than being passed pre-serialized JSON. The `getPersisted` function must
+rather than being passed pre-serialized JSON. It also receives information
+about the changes made during a transaction. The `getPersisted` function must
 return the content (or nothing) rather than JSON `addPersisterListener` has been
-renamed `addPersisterListener`, and `addPersisterListener` has been
-renamed `delPersisterListener`.
+renamed `addPersisterListener`, and `addPersisterListener` has been renamed
+`delPersisterListener`.
 
 This example creates a custom Persister object that persists the Store to a
 local string called `storeJson` and which would automatically load by polling
