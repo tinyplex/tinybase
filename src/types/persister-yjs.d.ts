@@ -8,5 +8,5 @@ import {Doc as YDoc} from 'yjs';
 export function createYjsPersister(
   store: Store,
   yDoc: YDoc,
-  yMapName?: string,
+  yArrayName?: string,
 ): Persister;

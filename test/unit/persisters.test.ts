@@ -41,16 +41,17 @@ type Persistable<Location = string> = {
   testMissing: boolean;
 };
 
-const yMapEnsure = (yMap: YMap<any>, id: Id) =>
-  yMap.get(id) ?? yMap.set(id, new YMap());
-
 const yMapMatch = (
-  parentYMap: YMap<any>,
-  id: Id,
+  yMapOrParent: YMap<any>,
+  idInParent: Id | undefined,
   obj: {[id: Id]: any},
   set: (yMap: YMap<any>, id: Id, value: any) => 1 | void,
 ): 1 | void => {
-  const yMap = yMapEnsure(parentYMap, id);
+  const yMap =
+    idInParent == undefined
+      ? yMapOrParent
+      : yMapOrParent.get(idInParent) ??
+        yMapOrParent.set(idInParent, new YMap());
   let changed: 1 | undefined;
   Object.entries(obj).forEach(([id, value]) => {
     if (set(yMap, id, value)) {
@@ -63,8 +64,8 @@ const yMapMatch = (
       changed = 1;
     }
   });
-  if (!yMap.size) {
-    parentYMap.delete(id);
+  if (idInParent != undefined && !yMap.size) {
+    yMapOrParent.delete(idInParent);
   }
   return changed;
 };
@@ -241,20 +242,29 @@ const mockYjs: Persistable<YDoc> = {
   autoLoadPause: 100,
   getLocation: () => new YDoc(),
   getPersister: createYjsPersister,
-  get: (location: YDoc): [Tables, Values] | void => {
-    try {
-      const content = location.getMap('tinybase').toJSON();
-      return [content['t'], content['v']];
-    } catch {}
+  get: (yDoc: YDoc): [Tables, Values] | void => {
+    const content = yDoc.getArray('tinybase').toJSON();
+    if (content.length) {
+      return content as [Tables, Values];
+    }
   },
-  set: (location: YDoc, value: any): void => {
-    mockYjs.write(location, value);
+  set: (yDoc: YDoc, value: any): void => {
+    mockYjs.write(yDoc, value);
   },
-  write: (location: YDoc, value: any): void => {
+  write: (yDoc: YDoc, value: any): void => {
     if (typeof value != 'string') {
-      const yMap = location.getMap('tinybase');
-      location.transact(() => {
-        yMapMatch(yMap, 't', value[0], (tablesMap, tableId, table) =>
+      const contentArray = yDoc.getArray('tinybase');
+      if (!contentArray.length) {
+        contentArray.push([new YMap(), new YMap()]);
+      }
+      const [tablesMap, valuesMap] = contentArray.toArray() as [
+        YMap<any>,
+        YMap<any>,
+      ];
+      const [tables, values] = value as [Tables, Values];
+
+      yDoc.transact(() => {
+        yMapMatch(tablesMap, undefined, tables, (tablesMap, tableId, table) =>
           yMapMatch(tablesMap, tableId, table, (tableMap, rowId, row) =>
             yMapMatch(tableMap, rowId, row, (rowMap, cellId, cell) => {
               if (rowMap.get(cellId) !== cell) {
@@ -264,16 +274,21 @@ const mockYjs: Persistable<YDoc> = {
             }),
           ),
         );
-        if (value[1]) {
-          yMapMatch(yMap, 'v', value[1], (valuesMap, valueId, value) => {
-            if (valuesMap.get(valueId) !== value) {
-              valuesMap.set(valueId, value);
-            }
-          });
+        if (values) {
+          yMapMatch(
+            valuesMap,
+            undefined,
+            values,
+            (valuesMap, valueId, value) => {
+              if (valuesMap.get(valueId) !== value) {
+                valuesMap.set(valueId, value);
+              }
+            },
+          );
         }
       });
     } else {
-      location.getMap('broken');
+      yDoc.getArray('broken');
     }
   },
   delete: (location: YDoc): void => location.destroy(),
