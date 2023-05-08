@@ -8,5 +8,5 @@ import {Doc as YDoc} from 'yjs';
 export function createYjsPersister<Schemas extends OptionalSchemas>(
   store: Store<Schemas>,
   yDoc: YDoc,
-  yMapName?: string,
+  yArrayName?: string,
 ): Persister<Schemas>;
