@@ -8,6 +8,22 @@ import {
   expectNoChanges,
 } from './common';
 
+const EMPTY_CHANGES_AND_LOG = [
+  [{}, {}],
+  {
+    cellsTouched: false,
+    valuesTouched: false,
+    changedCells: {},
+    invalidCells: {},
+    changedValues: {},
+    invalidValues: {},
+    changedTableIds: {},
+    changedRowIds: {},
+    changedCellIds: {},
+    changedValueIds: {},
+  },
+];
+
 let store: Store;
 let listener: StoreListener;
 
@@ -3497,368 +3513,419 @@ describe('Listeners', () => {
 
     test('in implicit transactions', () => {
       store.setTables({t1: {r1: {c1: 1}}});
-      expectChanges(listener, '/start', [false, false]);
-      expectChanges(listener, '/willFinish', [
-        true,
-        false,
-        {t1: {r1: {c1: [null, 1]}}},
-        {},
-        {},
-        {},
-        {t1: 1},
-        {t1: {r1: 1}},
-        {t1: {r1: {c1: 1}}},
-        {},
-      ]);
-      expectChanges(listener, '/didFinish', [
-        true,
-        false,
-        {t1: {r1: {c1: [null, 1]}}},
-        {},
-        {},
-        {},
-        {t1: 1},
-        {t1: {r1: 1}},
-        {t1: {r1: {c1: 1}}},
-        {},
-      ]);
+      expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
+      ['/willFinish', '/didFinish'].forEach((label) =>
+        expectChanges(listener, label, [
+          [{t1: {r1: {c1: 1}}}, {}],
+          {
+            cellsTouched: true,
+            valuesTouched: false,
+            changedCells: {t1: {r1: {c1: [null, 1]}}},
+            invalidCells: {},
+            changedValues: {},
+            invalidValues: {},
+            changedTableIds: {t1: 1},
+            changedRowIds: {t1: {r1: 1}},
+            changedCellIds: {t1: {r1: {c1: 1}}},
+            changedValueIds: {},
+          },
+        ]),
+      );
       expectNoChanges(listener);
       store.delTables();
-      expectChanges(listener, '/start', [false, false]);
-      expectChanges(listener, '/willFinish', [
-        true,
-        false,
-        {t1: {r1: {c1: [1, null]}}},
-        {},
-        {},
-        {},
-        {t1: -1},
-        {t1: {r1: -1}},
-        {t1: {r1: {c1: -1}}},
-        {},
-      ]);
-      expectChanges(listener, '/didFinish', [
-        true,
-        false,
-        {t1: {r1: {c1: [1, null]}}},
-        {},
-        {},
-        {},
-        {t1: -1},
-        {t1: {r1: -1}},
-        {t1: {r1: {c1: -1}}},
-        {},
-      ]);
+      expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
+      ['/willFinish', '/didFinish'].forEach((label) =>
+        expectChanges(listener, label, [
+          [{t1: null}, {}],
+          {
+            cellsTouched: true,
+            valuesTouched: false,
+            changedCells: {t1: {r1: {c1: [1, null]}}},
+            invalidCells: {},
+            changedValues: {},
+            invalidValues: {},
+            changedTableIds: {t1: -1},
+            changedRowIds: {t1: {r1: -1}},
+            changedCellIds: {t1: {r1: {c1: -1}}},
+            changedValueIds: {},
+          },
+        ]),
+      );
       expectNoChanges(listener);
       store.delTables();
-      expectChanges(listener, '/start', [false, false]);
-      expectChanges(listener, '/willFinish', [
-        false,
-        false,
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-      ]);
-      expectChanges(listener, '/didFinish', [
-        false,
-        false,
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-      ]);
+      expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
+      ['/willFinish', '/didFinish'].forEach((label) =>
+        expectChanges(listener, label, [
+          [{}, {}],
+          {
+            cellsTouched: false,
+            valuesTouched: false,
+            changedCells: {},
+            invalidCells: {},
+            changedValues: {},
+            invalidValues: {},
+            changedTableIds: {},
+            changedRowIds: {},
+            changedCellIds: {},
+            changedValueIds: {},
+          },
+        ]),
+      );
       expectNoChanges(listener);
       store.setValues({v1: 1});
-      expectChanges(listener, '/start', [false, false]);
-      expectChanges(listener, '/willFinish', [
-        false,
-        true,
-        {},
-        {},
-        {v1: [null, 1]},
-        {},
-        {},
-        {},
-        {},
-        {v1: 1},
-      ]);
-      expectChanges(listener, '/didFinish', [
-        false,
-        true,
-        {},
-        {},
-        {v1: [null, 1]},
-        {},
-        {},
-        {},
-        {},
-        {v1: 1},
-      ]);
+      expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
+      ['/willFinish', '/didFinish'].forEach((label) =>
+        expectChanges(listener, label, [
+          [{}, {v1: 1}],
+          {
+            cellsTouched: false,
+            valuesTouched: true,
+            changedCells: {},
+            invalidCells: {},
+            changedValues: {v1: [null, 1]},
+            invalidValues: {},
+            changedTableIds: {},
+            changedRowIds: {},
+            changedCellIds: {},
+            changedValueIds: {v1: 1},
+          },
+        ]),
+      );
       expectNoChanges(listener);
       store.delValues();
-      expectChanges(listener, '/start', [false, false]);
-      expectChanges(listener, '/willFinish', [
-        false,
-        true,
-        {},
-        {},
-        {v1: [1, null]},
-        {},
-        {},
-        {},
-        {},
-        {v1: -1},
-      ]);
-      expectChanges(listener, '/didFinish', [
-        false,
-        true,
-        {},
-        {},
-        {v1: [1, null]},
-        {},
-        {},
-        {},
-        {},
-        {v1: -1},
-      ]);
+      expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
+      ['/willFinish', '/didFinish'].forEach((label) =>
+        expectChanges(listener, label, [
+          [{}, {v1: null}],
+          {
+            cellsTouched: false,
+            valuesTouched: true,
+            changedCells: {},
+            invalidCells: {},
+            changedValues: {v1: [1, null]},
+            invalidValues: {},
+            changedTableIds: {},
+            changedRowIds: {},
+            changedCellIds: {},
+            changedValueIds: {v1: -1},
+          },
+        ]),
+      );
       expectNoChanges(listener);
       store.delValues();
-      expectChanges(listener, '/start', [false, false]);
-      expectChanges(listener, '/willFinish', [
-        false,
-        false,
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-      ]);
-      expectChanges(listener, '/didFinish', [
-        false,
-        false,
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-      ]);
+      expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
+      ['/willFinish', '/didFinish'].forEach((label) =>
+        expectChanges(listener, label, [
+          [{}, {}],
+          {
+            cellsTouched: false,
+            valuesTouched: false,
+            changedCells: {},
+            invalidCells: {},
+            changedValues: {},
+            invalidValues: {},
+            changedTableIds: {},
+            changedRowIds: {},
+            changedCellIds: {},
+            changedValueIds: {},
+          },
+        ]),
+      );
       expectNoChanges(listener);
     });
 
     test('in explicit transaction', () => {
       store.startTransaction();
-      expectChanges(listener, '/start', [false, false]);
+      expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
       store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
       expectNoChanges(listener);
       store.finishTransaction();
-      expectChanges(listener, '/willFinish', [
-        true,
-        true,
-        {t1: {r1: {c1: [null, 1]}}},
-        {},
-        {v1: [null, 1]},
-        {},
-        {t1: 1},
-        {t1: {r1: 1}},
-        {t1: {r1: {c1: 1}}},
-        {v1: 1},
-      ]);
-      expectChanges(listener, '/didFinish', [
-        true,
-        true,
-        {t1: {r1: {c1: [null, 1]}}},
-        {},
-        {v1: [null, 1]},
-        {},
-        {t1: 1},
-        {t1: {r1: 1}},
-        {t1: {r1: {c1: 1}}},
-        {v1: 1},
-      ]);
+      ['/willFinish', '/didFinish'].forEach((label) =>
+        expectChanges(listener, label, [
+          [{t1: {r1: {c1: 1}}}, {v1: 1}],
+          {
+            cellsTouched: true,
+            valuesTouched: true,
+            changedCells: {t1: {r1: {c1: [null, 1]}}},
+            invalidCells: {},
+            changedValues: {v1: [null, 1]},
+            invalidValues: {},
+            changedTableIds: {t1: 1},
+            changedRowIds: {t1: {r1: 1}},
+            changedCellIds: {t1: {r1: {c1: 1}}},
+            changedValueIds: {v1: 1},
+          },
+        ]),
+      );
       expectNoChanges(listener);
     });
 
     test('in wrapped transaction with changes', () => {
       store.transaction(() => {
         store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
-        expectChanges(listener, '/start', [false, false]);
+        expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
         expectNoChanges(listener);
       });
-      expectChanges(listener, '/willFinish', [
-        true,
-        true,
-        {t1: {r1: {c1: [null, 1]}}},
-        {},
-        {v1: [null, 1]},
-        {},
-        {t1: 1},
-        {t1: {r1: 1}},
-        {t1: {r1: {c1: 1}}},
-        {v1: 1},
-      ]);
-      expectChanges(listener, '/didFinish', [
-        true,
-        true,
-        {t1: {r1: {c1: [null, 1]}}},
-        {},
-        {v1: [null, 1]},
-        {},
-        {t1: 1},
-        {t1: {r1: 1}},
-        {t1: {r1: {c1: 1}}},
-        {v1: 1},
-      ]);
+      ['/willFinish', '/didFinish'].forEach((label) =>
+        expectChanges(listener, label, [
+          [{t1: {r1: {c1: 1}}}, {v1: 1}],
+          {
+            cellsTouched: true,
+            valuesTouched: true,
+            changedCells: {t1: {r1: {c1: [null, 1]}}},
+            invalidCells: {},
+            changedValues: {v1: [null, 1]},
+            invalidValues: {},
+            changedTableIds: {t1: 1},
+            changedRowIds: {t1: {r1: 1}},
+            changedCellIds: {t1: {r1: {c1: 1}}},
+            changedValueIds: {v1: 1},
+          },
+        ]),
+      );
       expectNoChanges(listener);
     });
 
     test('in wrapped transaction with no actions', () => {
       store.transaction(() => {
-        expectChanges(listener, '/start', [false, false]);
+        expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
         expectNoChanges(listener);
       });
-      expectChanges(listener, '/willFinish', [
-        false,
-        false,
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-      ]);
-      expectChanges(listener, '/didFinish', [
-        false,
-        false,
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-      ]);
+      ['/willFinish', '/didFinish'].forEach((label) =>
+        expectChanges(listener, label, [
+          [{}, {}],
+          {
+            cellsTouched: false,
+            valuesTouched: false,
+            changedCells: {},
+            invalidCells: {},
+            changedValues: {},
+            invalidValues: {},
+            changedTableIds: {},
+            changedRowIds: {},
+            changedCellIds: {},
+            changedValueIds: {},
+          },
+        ]),
+      );
       expectNoChanges(listener);
     });
 
     test('in wrapped transaction with no touches', () => {
       store.transaction(() => {
-        expectChanges(listener, '/start', [false, false]);
+        expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
         store.delTables();
         expectNoChanges(listener);
       });
-      expectChanges(listener, '/willFinish', [
-        false,
-        false,
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-      ]);
-      expectChanges(listener, '/didFinish', [
-        false,
-        false,
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-      ]);
+      ['/willFinish', '/didFinish'].forEach((label) =>
+        expectChanges(listener, label, [
+          [{}, {}],
+          {
+            cellsTouched: false,
+            valuesTouched: false,
+            changedCells: {},
+            invalidCells: {},
+            changedValues: {},
+            invalidValues: {},
+            changedTableIds: {},
+            changedRowIds: {},
+            changedCellIds: {},
+            changedValueIds: {},
+          },
+        ]),
+      );
       expectNoChanges(listener);
     });
 
-    test('in wrapped transaction with touches', () => {
-      store.transaction(() => {
-        expectChanges(listener, '/start', [false, false]);
-        store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
-        expectNoChanges(listener);
-        store.delTables().delValues();
+    describe('in wrapped transaction with various operations & touches', () => {
+      beforeEach(() => {
+        store.transaction(() => {
+          store
+            .setTables({
+              t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}},
+              t2: {r1: {c1: 1}},
+            })
+            .setValues({v1: 1, v2: 2});
+        });
+        expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
+        ['/willFinish', '/didFinish'].forEach((label) =>
+          expectChanges(listener, label, [
+            [
+              {t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
+              {v1: 1, v2: 2},
+            ],
+            {
+              cellsTouched: true,
+              valuesTouched: true,
+              changedCells: {
+                t1: {r1: {c1: [null, 1], c2: [null, 2]}, r2: {c1: [null, 1]}},
+                t2: {r1: {c1: [null, 1]}},
+              },
+              invalidCells: {},
+              changedValues: {v1: [null, 1], v2: [null, 2]},
+              invalidValues: {},
+              changedTableIds: {t1: 1, t2: 1},
+              changedRowIds: {t1: {r1: 1, r2: 1}, t2: {r1: 1}},
+              changedCellIds: {
+                t1: {r1: {c1: 1, c2: 1}, r2: {c1: 1}},
+                t2: {r1: {c1: 1}},
+              },
+              changedValueIds: {v1: 1, v2: 1},
+            },
+          ]),
+        );
         expectNoChanges(listener);
       });
-      expectChanges(listener, '/willFinish', [
-        true,
-        true,
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-      ]);
-      expectChanges(listener, '/didFinish', [
-        true,
-        true,
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-      ]);
-      expectNoChanges(listener);
+
+      test('change back to same value', () => {
+        store.transaction(() => {
+          store.setCell('t1', 'r1', 'c1', 2).setValue('v1', 2);
+          store.setCell('t1', 'r1', 'c1', 1).setValue('v1', 1);
+        });
+        expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
+        ['/willFinish', '/didFinish'].forEach((label) =>
+          expectChanges(listener, label, [
+            [{}, {}],
+            {
+              cellsTouched: true,
+              valuesTouched: true,
+              changedCells: {},
+              invalidCells: {},
+              changedValues: {},
+              invalidValues: {},
+              changedTableIds: {},
+              changedRowIds: {},
+              changedCellIds: {},
+              changedValueIds: {},
+            },
+          ]),
+        );
+        expectNoChanges(listener);
+      });
+
+      test('delete cell & value', () => {
+        store.transaction(() => store.delCell('t1', 'r1', 'c2').delValue('v2'));
+        expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
+        ['/willFinish', '/didFinish'].forEach((label) =>
+          expectChanges(listener, label, [
+            [{t1: {r1: {c2: null}}}, {v2: null}],
+            {
+              cellsTouched: true,
+              valuesTouched: true,
+              changedCells: {t1: {r1: {c2: [2, null]}}},
+              invalidCells: {},
+              changedValues: {v2: [2, null]},
+              invalidValues: {},
+              changedTableIds: {},
+              changedRowIds: {},
+              changedCellIds: {t1: {r1: {c2: -1}}},
+              changedValueIds: {v2: -1},
+            },
+          ]),
+        );
+      });
+      test('delete row', () => {
+        store.delRow('t1', 'r2');
+        expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
+        ['/willFinish', '/didFinish'].forEach((label) =>
+          expectChanges(listener, label, [
+            [{t1: {r2: null}}, {}],
+            {
+              cellsTouched: true,
+              valuesTouched: false,
+              changedCells: {t1: {r2: {c1: [1, null]}}},
+              invalidCells: {},
+              changedValues: {},
+              invalidValues: {},
+              changedTableIds: {},
+              changedRowIds: {t1: {r2: -1}},
+              changedCellIds: {t1: {r2: {c1: -1}}},
+              changedValueIds: {},
+            },
+          ]),
+        );
+      });
+      test('delete table', () => {
+        store.delTable('t1');
+        expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
+        ['/willFinish', '/didFinish'].forEach((label) =>
+          expectChanges(listener, label, [
+            [{t1: null}, {}],
+            {
+              cellsTouched: true,
+              valuesTouched: false,
+              changedCells: {
+                t1: {r1: {c1: [1, null], c2: [2, null]}, r2: {c1: [1, null]}},
+              },
+              invalidCells: {},
+              changedValues: {},
+              invalidValues: {},
+              changedTableIds: {t1: -1},
+              changedRowIds: {t1: {r1: -1, r2: -1}},
+              changedCellIds: {t1: {r1: {c1: -1, c2: -1}, r2: {c1: -1}}},
+              changedValueIds: {},
+            },
+          ]),
+        );
+      });
+      test('delete everything', () => {
+        store.transaction(() => store.delTables().delValues());
+        expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
+        ['/willFinish', '/didFinish'].forEach((label) =>
+          expectChanges(listener, label, [
+            [
+              {t1: null, t2: null},
+              {v1: null, v2: null},
+            ],
+            {
+              cellsTouched: true,
+              valuesTouched: true,
+              changedCells: {
+                t1: {r1: {c1: [1, null], c2: [2, null]}, r2: {c1: [1, null]}},
+                t2: {r1: {c1: [1, null]}},
+              },
+              invalidCells: {},
+              changedValues: {v1: [1, null], v2: [2, null]},
+              invalidValues: {},
+              changedTableIds: {t1: -1, t2: -1},
+              changedRowIds: {t1: {r1: -1, r2: -1}, t2: {r1: -1}},
+              changedCellIds: {
+                t1: {r1: {c1: -1, c2: -1}, r2: {c1: -1}},
+                t2: {r1: {c1: -1}},
+              },
+              changedValueIds: {v1: -1, v2: -1},
+            },
+          ]),
+        );
+      });
     });
 
     test('in wrapped transaction with rollback', () => {
       store.transaction(
         () => {
-          expectChanges(listener, '/start', [false, false]);
+          expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
           store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
           expectNoChanges(listener);
         },
         () => true,
       );
-      expectChanges(listener, '/willFinish', [
-        false,
-        false,
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-      ]);
-      expectChanges(listener, '/didFinish', [
-        false,
-        false,
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-      ]);
+      ['/willFinish', '/didFinish'].forEach((label) =>
+        expectChanges(listener, label, [
+          [{}, {}],
+          {
+            cellsTouched: false,
+            valuesTouched: false,
+            changedCells: {},
+            invalidCells: {},
+            changedValues: {},
+            invalidValues: {},
+            changedTableIds: {},
+            changedRowIds: {},
+            changedCellIds: {},
+            changedValueIds: {},
+          },
+        ]),
+      );
       expectNoChanges(listener);
     });
   });

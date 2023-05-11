@@ -338,7 +338,20 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
 
   storeWithSchemas.transaction(
     () => null,
-    (changedCells, _invalidCells, changedValues, _invalidValues) => {
+    (getTransactionChanges, getTransactionLog) => {
+      const [cellChanges, valueChanges] = getTransactionChanges();
+      const {changedCells, changedValues} = getTransactionLog();
+      cellChanges.t1?.r1?.c1 as number;
+      cellChanges.t1?.r1?.c1 as null;
+      cellChanges.t1?.r1?.c1 as string; // !
+      cellChanges.t1?.r1?.c2; // !
+      cellChanges.t2?.r1?.c1; // !
+
+      valueChanges.v1 as number;
+      valueChanges.v1 as null;
+      valueChanges.v1 as string; // !
+      valueChanges.v2; // !
+
       changedCells.t1?.r1?.c1 as [number, number];
       changedCells.t1?.r1?.c1 as [number, undefined];
       changedCells.t1?.r1?.c1 as [undefined, number];
@@ -361,30 +374,41 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
 
   storeWithSchemas
     .startTransaction()
-    .finishTransaction(
-      (changedCells, _invalidCells, changedValues, _invalidValues) => {
-        changedCells.t1?.r1?.c1 as [number, number];
-        changedCells.t1?.r1?.c1 as [number, undefined];
-        changedCells.t1?.r1?.c1 as [undefined, number];
-        changedCells.t1?.r1?.c1d as [string, string];
-        changedCells.t1?.r1?.c1d as [string, undefined];
-        changedCells.t1?.r1?.c1d as [undefined, string];
-        changedCells.t1?.r1?.c1d as [undefined, undefined];
-        changedCells.t1?.r1?.c1 as [string, string]; // !
-        changedCells.t1?.r1?.c1d as [number, number]; // !
+    .finishTransaction((getTransactionChanges, getTransactionLog) => {
+      const [cellChanges, valueChanges] = getTransactionChanges();
+      const {changedCells, changedValues} = getTransactionLog();
+      cellChanges.t1?.r1?.c1 as number;
+      cellChanges.t1?.r1?.c1 as null;
+      cellChanges.t1?.r1?.c1 as string; // !
+      cellChanges.t1?.r1?.c2; // !
+      cellChanges.t2?.r1?.c1; // !
 
-        changedValues.v1 as [number, number];
-        changedValues.v1 as [number, undefined];
-        changedValues.v1 as [undefined, number];
-        changedValues.v1d as [string, string];
-        changedValues.v1d as [string, undefined]; // !
-        changedValues.v1d as [undefined, string]; // !
-        changedValues.v1d as [undefined, undefined]; // !
-        changedValues.v1 as [string, string]; // !
-        changedValues.v1d as [number, number]; // !
-        return true;
-      },
-    );
+      valueChanges.v1 as number;
+      valueChanges.v1 as null;
+      valueChanges.v1 as string; // !
+      valueChanges.v2; // !
+
+      changedCells.t1?.r1?.c1 as [number, number];
+      changedCells.t1?.r1?.c1 as [number, undefined];
+      changedCells.t1?.r1?.c1 as [undefined, number];
+      changedCells.t1?.r1?.c1d as [string, string];
+      changedCells.t1?.r1?.c1d as [string, undefined];
+      changedCells.t1?.r1?.c1d as [undefined, string];
+      changedCells.t1?.r1?.c1d as [undefined, undefined];
+      changedCells.t1?.r1?.c1 as [string, string]; // !
+      changedCells.t1?.r1?.c1d as [number, number]; // !
+
+      changedValues.v1 as [number, number];
+      changedValues.v1 as [number, undefined];
+      changedValues.v1 as [undefined, number];
+      changedValues.v1d as [string, string];
+      changedValues.v1d as [string, undefined]; // !
+      changedValues.v1d as [undefined, string]; // !
+      changedValues.v1d as [undefined, undefined]; // !
+      changedValues.v1 as [string, string]; // !
+      changedValues.v1d as [number, number]; // !
+      return true;
+    });
 })();
 
 // Listeners
@@ -938,18 +962,60 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
   });
   storeWithSchemas.addValueListener('v2', () => null); // !
 
-  storeWithSchemas.addWillFinishTransactionListener((store) => {
-    store.getTables().t1;
-    store.getValues().v1;
-    store.getTables().t2; // !
-    store.getValues().v2; // !
-  });
-  storeWithSchemas.addDidFinishTransactionListener((store) => {
-    store.getTables().t1;
-    store.getValues().v1;
-    store.getTables().t2; // !
-    store.getValues().v2; // !
-  });
+  storeWithSchemas.addWillFinishTransactionListener(
+    (store, getTransactionChanges, getTransactionLog) => {
+      const [cellChanges, valueChanges] = getTransactionChanges();
+      const {changedCells, changedValues} = getTransactionLog();
+
+      store.getTables().t1;
+      store.getValues().v1;
+      store.getTables().t2; // !
+      store.getValues().v2; // !
+
+      cellChanges.t1?.r1?.c1 as number;
+      cellChanges.t1?.r1?.c1 as null;
+      cellChanges.t1?.r1?.c1 as string; // !
+      cellChanges.t1?.r1?.c2; // !
+      cellChanges.t2?.r1?.c1; // !
+
+      valueChanges.v1 as number;
+      valueChanges.v1 as null;
+      valueChanges.v1 as string; // !
+      valueChanges.v2; // !
+
+      changedCells.t1;
+      changedValues.v1;
+      changedCells.t2; // !
+      changedValues.v2; // !
+    },
+  );
+  storeWithSchemas.addDidFinishTransactionListener(
+    (store, getTransactionChanges, getTransactionLog) => {
+      const [cellChanges, valueChanges] = getTransactionChanges();
+      const {changedCells, changedValues} = getTransactionLog();
+
+      store.getTables().t1;
+      store.getValues().v1;
+      store.getTables().t2; // !
+      store.getValues().v2; // !
+
+      cellChanges.t1?.r1?.c1 as number;
+      cellChanges.t1?.r1?.c1 as null;
+      cellChanges.t1?.r1?.c1 as string; // !
+      cellChanges.t1?.r1?.c2; // !
+      cellChanges.t2?.r1?.c1; // !
+
+      valueChanges.v1 as number;
+      valueChanges.v1 as null;
+      valueChanges.v1 as string; // !
+      valueChanges.v2; // !
+
+      changedCells.t1;
+      changedValues.v1;
+      changedCells.t2; // !
+      changedValues.v2; // !
+    },
+  );
 })();
 
 // Set schemas

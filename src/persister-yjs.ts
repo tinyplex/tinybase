@@ -1,14 +1,4 @@
-import {
-  ChangedCellIds,
-  ChangedCells,
-  ChangedRowIds,
-  ChangedTableIds,
-  ChangedValueIds,
-  ChangedValues,
-  Store,
-  Tables,
-  Values,
-} from './types/store.d';
+import {GetTransactionChanges, Store, Tables, Values} from './types/store.d';
 import {Persister, PersisterListener} from './types/persisters.d';
 import {Array as YArray, Doc as YDoc, YEvent, Map as YMap} from 'yjs';
 import {objHas, objMap} from './common/obj';
@@ -63,12 +53,7 @@ export const createYjsPersister = (
 
   const setPersisted = async (
     getContent: () => [Tables, Values],
-    _changedCells?: ChangedCells,
-    _changedValues?: ChangedValues,
-    _changedTableIds?: ChangedTableIds,
-    _changedRowIds?: ChangedRowIds,
-    _changedCellIds?: ChangedCellIds,
-    _changedValueIds?: ChangedValueIds,
+    _getTransactionChanges?: GetTransactionChanges,
   ): Promise<void> => {
     if (!contentArray.length) {
       contentArray.push([new YMap(), new YMap()]);

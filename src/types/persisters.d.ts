@@ -1,16 +1,6 @@
 /// persisters
 
-import {
-  ChangedCellIds,
-  ChangedCells,
-  ChangedRowIds,
-  ChangedTableIds,
-  ChangedValueIds,
-  ChangedValues,
-  Store,
-  Tables,
-  Values,
-} from './store.d';
+import {GetTransactionChanges, Store, Tables, Values} from './store.d';
 
 /// PersisterStats
 export type PersisterStats = {
@@ -64,12 +54,7 @@ export function createCustomPersister<ListeningHandle>(
   getPersisted: () => Promise<[Tables, Values] | undefined>,
   setPersisted: (
     getContent: () => [Tables, Values],
-    changedCells?: ChangedCells,
-    changedValues?: ChangedValues,
-    changedTableIds?: ChangedTableIds,
-    changedRowIds?: ChangedRowIds,
-    changedCellIds?: ChangedCellIds,
-    changedValueIds?: ChangedValueIds,
+    getTransactionChanges?: GetTransactionChanges,
   ) => Promise<void>,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,

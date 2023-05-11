@@ -281,29 +281,15 @@ export type ChangedValueIds<Schema extends OptionalValuesSchema> = {
 
 /// DoRollback
 export type DoRollback<Schemas extends OptionalSchemas> = (
-  changedCells: ChangedCells<Schemas[0]>,
-  invalidCells: InvalidCells,
-  changedValues: ChangedValues<Schemas[1]>,
-  invalidValues: InvalidValues,
-  changedTableIds: ChangedTableIds<Schemas[0]>,
-  changedRowIds: ChangedRowIds<Schemas[0]>,
-  changedCellIds: ChangedCellIds<Schemas[0]>,
-  changedValueIds: ChangedValueIds<Schemas[1]>,
+  getTransactionChanges: GetTransactionChanges<Schemas>,
+  getTransactionLog: GetTransactionLog<Schemas>,
 ) => boolean;
 
 /// TransactionListener
 export type TransactionListener<Schemas extends OptionalSchemas> = (
   store: Store<Schemas>,
-  cellsTouched: boolean,
-  valuesTouched: boolean,
-  changedCells: ChangedCells<Schemas[0]>,
-  invalidCells: InvalidCells,
-  changedValues: ChangedValues<Schemas[1]>,
-  invalidValues: InvalidValues,
-  changedTableIds: ChangedTableIds<Schemas[0]>,
-  changedRowIds: ChangedRowIds<Schemas[0]>,
-  changedCellIds: ChangedCellIds<Schemas[0]>,
-  changedValueIds: ChangedValueIds<Schemas[1]>,
+  getTransactionChanges: GetTransactionChanges<Schemas>,
+  getTransactionLog: GetTransactionLog<Schemas>,
 ) => void;
 
 /// TablesListener
@@ -620,11 +606,7 @@ export type ChangedCell<
 
 /// InvalidCells
 export type InvalidCells = {
-  [tableId: Id]: {
-    [rowId: Id]: {
-      [cellId: Id]: any[];
-    };
-  };
+  [tableId: Id]: {[rowId: Id]: {[cellId: Id]: any[]}};
 };
 
 /// ChangedValues
@@ -642,9 +624,52 @@ export type ChangedValue<
 ];
 
 /// InvalidValues
-export type InvalidValues = {
-  [valueId: Id]: any[];
+export type InvalidValues = {[valueId: Id]: any[]};
+
+// TransactionChanges
+export type TransactionChanges<Schemas extends OptionalSchemas> = [
+  {
+    [TableId in TableIdFromSchema<Schemas[0]>]?: {
+      [rowId: Id]:
+        | {
+            [CellId in CellIdFromSchema<Schemas[0], TableId>]?: Cell<
+              Schemas[0],
+              TableId,
+              CellId
+            > | null;
+          }
+        | null;
+    } | null;
+  },
+  {
+    [ValueId in ValueIdFromSchema<Schemas[1]>]?: Value<
+      Schemas[1],
+      ValueId
+    > | null;
+  },
+];
+
+/// GetTransactionChanges
+export type GetTransactionChanges<Schemas extends OptionalSchemas> =
+  () => TransactionChanges<Schemas>;
+
+/// TransactionLog
+export type TransactionLog<Schemas extends OptionalSchemas> = {
+  cellsTouched: boolean;
+  valuesTouched: boolean;
+  changedCells: ChangedCells<Schemas[0]>;
+  invalidCells: InvalidCells;
+  changedValues: ChangedValues<Schemas[1]>;
+  invalidValues: InvalidValues;
+  changedTableIds: ChangedTableIds<Schemas[0]>;
+  changedRowIds: ChangedRowIds<Schemas[0]>;
+  changedCellIds: ChangedCellIds<Schemas[0]>;
+  changedValueIds: ChangedValueIds<Schemas[1]>;
 };
+
+/// GetTransactionLog
+export type GetTransactionLog<Schemas extends OptionalSchemas> =
+  () => TransactionLog<Schemas>;
 
 /// StoreListenerStats
 export type StoreListenerStats = {

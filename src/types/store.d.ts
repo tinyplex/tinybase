@@ -111,29 +111,15 @@ export type ChangedValueIds = {[valueId: Id]: IdAddedOrRemoved};
 
 /// DoRollback
 export type DoRollback = (
-  changedCells: ChangedCells,
-  invalidCells: InvalidCells,
-  changedValues: ChangedValues,
-  invalidValues: InvalidValues,
-  changedTableIds: ChangedTableIds,
-  changedRowIds: ChangedRowIds,
-  changedCellIds: ChangedCellIds,
-  changedValueIds: ChangedValueIds,
+  getTransactionChanges: GetTransactionChanges,
+  getTransactionLog: GetTransactionLog,
 ) => boolean;
 
 /// TransactionListener
 export type TransactionListener = (
   store: Store,
-  cellsTouched: boolean,
-  valuesTouched: boolean,
-  changedCells: ChangedCells,
-  invalidCells: InvalidCells,
-  changedValues: ChangedValues,
-  invalidValues: InvalidValues,
-  changedTableIds: ChangedTableIds,
-  changedRowIds: ChangedRowIds,
-  changedCellIds: ChangedCellIds,
-  changedValueIds: ChangedValueIds,
+  getTransactionChanges: GetTransactionChanges,
+  getTransactionLog: GetTransactionLog,
 ) => void;
 
 /// TablesListener
@@ -269,11 +255,7 @@ export type ValueChange = [
 
 /// ChangedCells
 export type ChangedCells = {
-  [tableId: Id]: {
-    [rowId: Id]: {
-      [cellId: Id]: ChangedCell;
-    };
-  };
+  [tableId: Id]: {[rowId: Id]: {[cellId: Id]: ChangedCell}};
 };
 
 /// ChangedCell
@@ -281,11 +263,7 @@ export type ChangedCell = [CellOrUndefined, CellOrUndefined];
 
 /// InvalidCells
 export type InvalidCells = {
-  [tableId: Id]: {
-    [rowId: Id]: {
-      [cellId: Id]: any[];
-    };
-  };
+  [tableId: Id]: {[rowId: Id]: {[cellId: Id]: any[]}};
 };
 
 /// ChangedValues
@@ -297,9 +275,33 @@ export type ChangedValues = {
 export type ChangedValue = [ValueOrUndefined, ValueOrUndefined];
 
 /// InvalidValues
-export type InvalidValues = {
-  [valueId: Id]: any[];
+export type InvalidValues = {[valueId: Id]: any[]};
+
+/// TransactionChanges
+export type TransactionChanges = [
+  {[tableId: Id]: {[rowId: Id]: {[cellId: Id]: Cell | null} | null} | null},
+  {[valueId: Id]: Value | null},
+];
+
+/// GetTransactionChanges
+export type GetTransactionChanges = () => TransactionChanges;
+
+/// TransactionLog
+export type TransactionLog = {
+  cellsTouched: boolean;
+  valuesTouched: boolean;
+  changedCells: ChangedCells;
+  invalidCells: InvalidCells;
+  changedValues: ChangedValues;
+  invalidValues: InvalidValues;
+  changedTableIds: ChangedTableIds;
+  changedRowIds: ChangedRowIds;
+  changedCellIds: ChangedCellIds;
+  changedValueIds: ChangedValueIds;
 };
+
+/// GetTransactionLog
+export type GetTransactionLog = () => TransactionLog;
 
 /// StoreListenerStats
 export type StoreListenerStats = {
