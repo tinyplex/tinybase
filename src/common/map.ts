@@ -51,23 +51,22 @@ export const mapEnsure = <Key, Value>(
 
 export const mapToObj = <MapValue, ObjectValue = MapValue>(
   map: IdMap<MapValue> | undefined,
-  mapValue?: (mapValue: MapValue) => ObjectValue,
-  excludeValue?: (objectValue: ObjectValue) => boolean,
+  mapValue?: (mapValue: MapValue, id: Id) => ObjectValue,
+  excludeValue?: (objectValue: ObjectValue, mapValue: MapValue) => boolean,
 ): IdObj<ObjectValue> => {
   const obj: IdObj<ObjectValue> = {};
-  collForEach(map, (value, key) =>
-    ifNotUndefined(
-      mapValue?.(value) ?? (value as any as ObjectValue),
-      (mappedValue) =>
-        excludeValue?.(mappedValue) ? 0 : (obj[key] = mappedValue),
-    ),
-  );
+  collForEach(map, (value, id) => {
+    const mappedValue = mapValue
+      ? mapValue(value, id)
+      : (value as any as ObjectValue);
+    excludeValue?.(mappedValue, value) ? 0 : (obj[id] = mappedValue);
+  });
   return obj;
 };
 
 export const mapToObj2 = <MapValue, ObjectValue = MapValue>(
   map: IdMap2<MapValue> | undefined,
-  mapValue?: (mapValue: MapValue) => ObjectValue,
+  mapValue?: (mapValue: MapValue, id: Id) => ObjectValue,
   excludeValue?: (objectValue: ObjectValue) => boolean,
 ) =>
   mapToObj(
@@ -78,7 +77,7 @@ export const mapToObj2 = <MapValue, ObjectValue = MapValue>(
 
 export const mapToObj3 = <MapValue, ObjectValue = MapValue>(
   map: IdMap3<MapValue>,
-  mapValue?: (mapValue: MapValue) => ObjectValue,
+  mapValue?: (mapValue: MapValue, id: Id) => ObjectValue,
   excludeValue?: (objectValue: ObjectValue) => boolean,
 ) =>
   mapToObj(

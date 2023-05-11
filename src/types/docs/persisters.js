@@ -535,7 +535,7 @@
  * @param getPersisted An asynchronous function which will fetch content from
  * the persistence layer (or `undefined` if not present).
  * @param setPersisted An asynchronous function which will send content to the
- * persistence layer. Since v4.0.0, it receives a function for getting the Store
+ * persistence layer. Since v4.0.0, it receives functions for getting the Store
  * content and information about the changes made during a transaction.
  * @param addPersisterListener A function that will register a `listener`
  * listener on underlying changes to the persistence layer. You can return a

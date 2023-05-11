@@ -1,12 +1,11 @@
 /* eslint-disable jest/no-conditional-expect */
 
 import {
-  ChangedCells,
-  ChangedValues,
   Id,
   Persister,
   Store,
   Tables,
+  TransactionChanges,
   Values,
   createCustomPersister,
   createStore,
@@ -37,7 +36,7 @@ type Persistable<Location = string> = {
   set: (location: Location, value: any) => void;
   write: (location: Location, value: string) => void;
   delete: (location: Location) => void;
-  getChanges?: () => [ChangedCells | undefined, ChangedValues | undefined];
+  getChanges?: () => TransactionChanges;
   testMissing: boolean;
 };
 
@@ -75,10 +74,7 @@ const nextLoop = async (): Promise<void> => await pause(0);
 
 let customPersister: any;
 let customPersisterListener: ((content?: [Tables, Values]) => void) | undefined;
-let customPersisterChanges: [
-  ChangedCells | undefined,
-  ChangedValues | undefined,
-] = [undefined, undefined];
+let customPersisterChanges: TransactionChanges = [{}, {}];
 
 const getMockedCustom = (
   write: (location: string, value: string) => void,
@@ -94,9 +90,9 @@ const getMockedCustom = (
           return JSON.parse(customPersister);
         } catch {}
       },
-      async (getContent, changedCells, changedValues) => {
+      async (getContent, getTransactionChanges) => {
         customPersister = getContent();
-        customPersisterChanges = [changedCells, changedValues];
+        customPersisterChanges = getTransactionChanges?.() ?? [{}, {}];
       },
       (listener) => {
         customPersisterListener = listener;
@@ -343,13 +339,13 @@ describe.each([
     await pause();
     expect(persistable.get(location)).toEqual([{t1: {r1: {c1: 2}}}, {v1: 1}]);
     if (persistable.getChanges) {
-      expect(persistable.getChanges()).toEqual([{t1: {r1: {c1: [1, 2]}}}, {}]);
+      expect(persistable.getChanges()).toEqual([{t1: {r1: {c1: 2}}}, {}]);
     }
     store.setValues({v1: 2});
     await pause();
     expect(persistable.get(location)).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
     if (persistable.getChanges) {
-      expect(persistable.getChanges()).toEqual([{}, {v1: [1, 2]}]);
+      expect(persistable.getChanges()).toEqual([{}, {v1: 2}]);
     }
     expect(persister.getStats()).toEqual({loads: 0, saves: 3});
   });
