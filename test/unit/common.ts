@@ -284,62 +284,18 @@ export const createStoreListener = (
     listenToWillFinishTransaction: (id) => {
       logs[id] = [];
       return store.addWillFinishTransactionListener(
-        (
-          _,
-          cellsChanged,
-          valuesChanged,
-          changedCells,
-          invalidCells,
-          changedValues,
-          invalidValues,
-          changedTableIds,
-          changedRowIds,
-          changedCellIds,
-          changedValueIds,
-        ) =>
-          logs[id].push([
-            cellsChanged,
-            valuesChanged,
-            changedCells,
-            invalidCells,
-            changedValues,
-            invalidValues,
-            changedTableIds,
-            changedRowIds,
-            changedCellIds,
-            changedValueIds,
-          ]),
+        (_, getTransactionChanges, getTransactionLog) => {
+          logs[id].push([getTransactionChanges(), getTransactionLog()]);
+        },
       );
     },
 
     listenToDidFinishTransaction: (id) => {
       logs[id] = [];
       return store.addDidFinishTransactionListener(
-        (
-          _,
-          cellsChanged,
-          valuesChanged,
-          changedCells,
-          invalidCells,
-          changedValues,
-          invalidValues,
-          changedTableIds,
-          changedRowIds,
-          changedCellIds,
-          changedValueIds,
-        ) =>
-          logs[id].push([
-            cellsChanged,
-            valuesChanged,
-            changedCells,
-            invalidCells,
-            changedValues,
-            invalidValues,
-            changedTableIds,
-            changedRowIds,
-            changedCellIds,
-            changedValueIds,
-          ]),
+        (_, getTransactionChanges, getTransactionLog) => {
+          logs[id].push([getTransactionChanges(), getTransactionLog()]);
+        },
       );
     },
 
