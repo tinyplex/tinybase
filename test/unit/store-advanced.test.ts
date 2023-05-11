@@ -825,16 +825,17 @@ describe('Transactions', () => {
         store.transaction(
           // @ts-ignore
           () => store.setTables({t2: {r2: {c2: 2, c3: [3]}}}),
-          (
-            changedCells,
-            invalidCells,
-            changedValues,
-            invalidValues,
-            changedTableIds,
-            changedRowIds,
-            changedCellIds,
-            changedValueIds,
-          ) => {
+          (_getTransactionChanges, getTransactionLog) => {
+            const {
+              changedCells,
+              invalidCells,
+              changedValues,
+              invalidValues,
+              changedTableIds,
+              changedRowIds,
+              changedCellIds,
+              changedValueIds,
+            } = getTransactionLog();
             expect(store.getTables()).toEqual({t2: {r2: {c2: 2}}});
             expect(changedCells).toEqual({
               t1: {r1: {c1: [1, undefined]}},
@@ -861,16 +862,17 @@ describe('Transactions', () => {
         store.transaction(
           // @ts-ignore
           () => store.setTable('t2', {r2: {c2: 2, c3: [3]}}),
-          (
-            changedCells,
-            invalidCells,
-            changedValues,
-            invalidValues,
-            changedTableIds,
-            changedRowIds,
-            changedCellIds,
-            changedValueIds,
-          ) => {
+          (_getTransactionChanges, getTransactionLog) => {
+            const {
+              changedCells,
+              invalidCells,
+              changedValues,
+              invalidValues,
+              changedTableIds,
+              changedRowIds,
+              changedCellIds,
+              changedValueIds,
+            } = getTransactionLog();
             expect(store.getTables()).toEqual({
               t1: {r1: {c1: 1}},
               t2: {r2: {c2: 2}},
@@ -894,16 +896,17 @@ describe('Transactions', () => {
         store.transaction(
           // @ts-ignore
           () => store.setRow('t2', 'r2', {c2: 2, c3: [3]}),
-          (
-            changedCells,
-            invalidCells,
-            changedValues,
-            invalidValues,
-            changedTableIds,
-            changedRowIds,
-            changedCellIds,
-            changedValueIds,
-          ) => {
+          (_getTransactionChanges, getTransactionLog) => {
+            const {
+              changedCells,
+              invalidCells,
+              changedValues,
+              invalidValues,
+              changedTableIds,
+              changedRowIds,
+              changedCellIds,
+              changedValueIds,
+            } = getTransactionLog();
             expect(store.getTables()).toEqual({
               t1: {r1: {c1: 1}},
               t2: {r2: {c2: 2}},
@@ -929,16 +932,17 @@ describe('Transactions', () => {
             store.setCell('t1', 'r1', 'c1', 2);
             store.setCell('t2', 'r2', 'c2', 2);
           },
-          (
-            changedCells,
-            invalidCells,
-            changedValues,
-            invalidValues,
-            changedTableIds,
-            changedRowIds,
-            changedCellIds,
-            changedValueIds,
-          ) => {
+          (_getTransactionChanges, getTransactionLog) => {
+            const {
+              changedCells,
+              invalidCells,
+              changedValues,
+              invalidValues,
+              changedTableIds,
+              changedRowIds,
+              changedCellIds,
+              changedValueIds,
+            } = getTransactionLog();
             expect(store.getTables()).toEqual({
               t1: {r1: {c1: 2}},
               t2: {r2: {c2: 2}},
@@ -965,16 +969,17 @@ describe('Transactions', () => {
         store.transaction(
           // @ts-ignore
           () => store.setCell('t2', 'r2', 'c3', [3]),
-          (
-            changedCells,
-            invalidCells,
-            changedValues,
-            invalidValues,
-            changedTableIds,
-            changedRowIds,
-            changedCellIds,
-            changedValueIds,
-          ) => {
+          (_getTransactionChanges, getTransactionLog) => {
+            const {
+              changedCells,
+              invalidCells,
+              changedValues,
+              invalidValues,
+              changedTableIds,
+              changedRowIds,
+              changedCellIds,
+              changedValueIds,
+            } = getTransactionLog();
             expect(store.getTables()).toEqual(originalTables);
             expect(changedCells).toEqual({});
             expect(invalidCells).toEqual({t2: {r2: {c3: [[3]]}}});
@@ -995,16 +1000,17 @@ describe('Transactions', () => {
         store.transaction(
           // @ts-ignore
           () => store.setValues({v2: 2, v3: [3]}),
-          (
-            changedCells,
-            invalidCells,
-            changedValues,
-            invalidValues,
-            changedTableIds,
-            changedRowIds,
-            changedCellIds,
-            changedValueIds,
-          ) => {
+          (_getTransactionChanges, getTransactionLog) => {
+            const {
+              changedCells,
+              invalidCells,
+              changedValues,
+              invalidValues,
+              changedTableIds,
+              changedRowIds,
+              changedCellIds,
+              changedValueIds,
+            } = getTransactionLog();
             expect(store.getValues()).toEqual({v2: 2});
             expect(changedCells).toEqual({});
             expect(invalidCells).toEqual({});
@@ -1030,16 +1036,17 @@ describe('Transactions', () => {
             store.setValue('v1', 2);
             store.setValue('v2', 2);
           },
-          (
-            changedCells,
-            invalidCells,
-            changedValues,
-            invalidValues,
-            changedTableIds,
-            changedRowIds,
-            changedCellIds,
-            changedValueIds,
-          ) => {
+          (_getTransactionChanges, getTransactionLog) => {
+            const {
+              changedCells,
+              invalidCells,
+              changedValues,
+              invalidValues,
+              changedTableIds,
+              changedRowIds,
+              changedCellIds,
+              changedValueIds,
+            } = getTransactionLog();
             expect(store.getValues()).toEqual({v1: 2, v2: 2});
             expect(changedCells).toEqual({});
             expect(invalidCells).toEqual({});
@@ -1060,16 +1067,17 @@ describe('Transactions', () => {
         store.transaction(
           // @ts-ignore
           () => store.setValue('v3', [3]),
-          (
-            changedCells,
-            invalidCells,
-            changedValues,
-            invalidValues,
-            changedTableIds,
-            changedRowIds,
-            changedCellIds,
-            changedValueIds,
-          ) => {
+          (_getTransactionChanges, getTransactionLog) => {
+            const {
+              changedCells,
+              invalidCells,
+              changedValues,
+              invalidValues,
+              changedTableIds,
+              changedRowIds,
+              changedCellIds,
+              changedValueIds,
+            } = getTransactionLog();
             expect(store.getValues()).toEqual(originalValues);
             expect(changedCells).toEqual({});
             expect(invalidCells).toEqual({});
@@ -1095,7 +1103,8 @@ describe('Transactions', () => {
             store.delRow('t1', 'r1');
             store.delTable('t2');
           },
-          (changedCells, invalidCells) => {
+          (_getTransactionChanges, getTransactionLog) => {
+            const {changedCells, invalidCells} = getTransactionLog();
             expect(store.getTables()).toEqual({t3: {r3: {c3: 3}}});
             expect(changedCells).toEqual({
               t1: {r1: {c1: [1, undefined]}},
@@ -1161,7 +1170,8 @@ describe('Transactions', () => {
       store.setTable('t3', {r3: {c3: 3}});
       store.delRow('t1', 'r1');
       store.delTable('t2');
-      store.finishTransaction((changedCells, invalidCells) => {
+      store.finishTransaction((_getTransactionChanges, getTransactionLog) => {
+        const {changedCells, invalidCells} = getTransactionLog();
         expect(store.getTables()).toEqual({t3: {r3: {c3: 3}}});
         expect(changedCells).toEqual({
           t1: {r1: {c1: [1, undefined]}},

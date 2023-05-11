@@ -370,21 +370,10 @@ In addition, see the addWillFinishTransactionListener method and the
 addDidFinishTransactionListener method for details around listening to
 transactions completing.
 
-```js
-store.addWillFinishTransactionListener((store, cellsTouched) =>
-  console.log(`Cells touched: ${cellsTouched}`),
-);
-
-store.transaction(() => store.setCell('pets', 'fido', 'species', 'dog'));
-// -> 'Cells touched: false'
-
-store.transaction(() => store.setCell('pets', 'fido', 'color', 'walnut'));
-// -> 'Cells touched: true'
-// -> 'Fido changed'
-```
-
 Together, this release allows stores to couple their transaction life-cycles
 together, which we need for the query engine.
+
+Note: this API was updated to be more comprehensive in v4.0.0.
 
 ## v1.2.0
 
@@ -398,6 +387,8 @@ The callback is provided with two objects, `changedCells` and `invalidCells`,
 which list all the net changes and invalid attempts at changes that were made
 during the transaction. You will most likely use the contents of those objects
 to decide whether the transaction should be rolled back.
+
+Note: this API was updated to be more comprehensive in v4.0.0.
 
 ## v1.1.0
 

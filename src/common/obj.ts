@@ -28,5 +28,5 @@ export const objMap = <Value, Return>(
   cb: (value: Value, id: string) => Return,
 ): Return[] => arrayMap(object.entries(obj), ([id, value]) => cb(value, id));
 
-export const objIsEmpty = <Value>(obj: IdObj<Value>): boolean =>
+export const objIsEmpty = <Value>(obj: IdObj<Value> | any): boolean =>
   isObject(obj) && arrayIsEmpty(objIds(obj));

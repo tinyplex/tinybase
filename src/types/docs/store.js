@@ -384,7 +384,7 @@
  * during a transaction.
  *
  * It is available to the DoRollback function and to a TransactionListener
- * function.
+ * function via the TransactionLog object.
  *
  * It is a simple object that has Table Id as key, and an IdAddedOrRemoved
  * number indicating whether the Table Id was added (1) or removed (-1).
@@ -399,7 +399,7 @@
  * during a transaction.
  *
  * It is available to the DoRollback function and to a TransactionListener
- * function.
+ * function via the TransactionLog object.
  *
  * It is a nested object that has Table Id as a top-level key, and then Row Id
  * as an inner key. The values of the inner objects are IdAddedOrRemoved numbers
@@ -415,7 +415,7 @@
  * during a transaction.
  *
  * It is available to the DoRollback function and to a TransactionListener
- * function.
+ * function via the TransactionLog object.
  *
  * It is a nested object that has Table Id as a top-level key, and Row Id, and
  * then CellId as inner keys. The values of the inner objects are
@@ -431,7 +431,7 @@
  * during a transaction.
  *
  * It is available to the DoRollback function and to a TransactionListener
- * function.
+ * function via the TransactionLog object.
  *
  * It is a simple object that has Value Id as key, and an IdAddedOrRemoved
  * number indicating whether the Value Id was added (1) or removed (-1).
@@ -446,27 +446,15 @@
  * A DoRollback can be provided when calling the transaction method or the
  * finishTransaction method. See those methods for specific examples.
  *
- * It is called with `changedCells`, `invalidCells`, `changedValues`, and
- * `invalidValues` parameters, which inform you of the net changes that have
- * been made during the transaction, and any invalid attempts to do so,
- * respectively.
+ * Since v4.0, this function is provided only with two functions that you can
+ * call to get information about the changes made within the transaction (in
+ * order to decide whether to do the rollback). See the GetTransactionChanges
+ * and GetTransactionLog function types for more details.
  *
- * Since v4.0, it is also called with sets of Id additions or removals made
- * during the transaction.
- *
- * @param changedCells Any Cells that were changed during the transaction.
- * @param invalidCells Any invalid attempts to change Cells.
- * @param changedValues Any Values that were changed during the transaction,
- * since v3.0.0.
- * @param invalidValues Any invalid attempts to change Values, since v3.0.0.
- * @param changedTableIds Any Table Ids added or removed during the transaction,
- * since v4.0.0.
- * @param changedRowIds Any Row Ids added or removed during the transaction,
- * since v4.0.0.
- * @param changedCellIds Any Cell Ids added or removed during the transaction,
- * since v4.0.0.
- * @param changedValueIds Any Value Ids added or removed during the transaction,
- * since v4.0.0.
+ * @param getTransactionChanges A function to be called to get the changes made
+ * to the Store during the transaction, since v4.0.
+ * @param getTransactionChanges A function to be called to get a more detailed
+ * log of the changes made or attempted during the transaction, since v4.0.
  * @category Callback
  */
 /// DoRollback
@@ -479,38 +467,15 @@
  * See those methods for specific examples.
  *
  * When called, a TransactionListener is simply given a reference to the Store
- * and booleans to indicate whether Cell or Value data has been touched during
- * the transaction. The two flags are intended as a hint about whether
- * non-mutating listeners might be being called at the end of the transaction.
- *
- * Here, 'touched' means that Cell or Value data has either been changed, or
- * changed and then changed back to its original value during the transaction.
- * The exception is a transaction that has been rolled back, for which the value
- * of `cellsTouched` and `valuesTouched` in the listener will be `false` because
- * all changes have been reverted.
- *
- * Since v4.0, the listener also receives the list of (valid and invalid) Cell
- * and Value changes (and Id additions or removals) made during the transaction.
+ * and, since v4.0, two functions that you can call to get information about the
+ * changes made within the transaction. See the GetTransactionChanges and
+ * GetTransactionLog function types for more details.
  *
  * @param store A reference to the Store that is completing a transaction.
- * @param cellsTouched Whether Cell values have been touched during the
- * transaction.
- * @param valuesTouched Whether Values have been touched during the transaction,
- * since v3.0.0.
- * @param changedCells Any Cells that were changed during the transaction, since
- * v4.0.0.
- * @param invalidCells Any invalid attempts to change Cells, since v4.0.0.
- * @param changedValues Any Values that were changed during the transaction,
- * since v4.0.0.
- * @param invalidValues Any invalid attempts to change Values, since v4.0.0.
- * @param changedTableIds Any Table Ids added or removed during the transaction,
- * since v4.0.0.
- * @param changedRowIds Any Row Ids added or removed during the transaction,
- * since v4.0.0.
- * @param changedCellIds Any Cell Ids added or removed during the transaction,
- * since v4.0.0.
- * @param changedValueIds Any Value Ids added or removed during the transaction,
- * since v4.0.0.
+ * @param getTransactionChanges A function to be called to get the changes made
+ * to the Store during the transaction, since v4.0.
+ * @param getTransactionChanges A function to be called to get a more detailed
+ * log of the changes made or attempted during the transaction, since v4.0.
  * @category Listener
  */
 /// TransactionListener
@@ -965,6 +930,105 @@
  * @since v3.0.0
  */
 /// InvalidValues
+/**
+ * The TransactionChanges type describes the net meaningful changes that were
+ * made to a Store during a transaction.
+ *
+ * This contains mostly equivalent information to a TransactionLog, but in a
+ * form that can be more efficiently parsed and serialized (for example in the
+ * case of synchronization between systems).
+ *
+ * It is an array of two objects, representing tabular and keyed value changes.
+ * If the first item is an empty object, it means no tabular changes were made.
+ * If the second item is an empty object, it means no keyed value changes were
+ * made.
+ *
+ * If not empty, the first object has an entry for each Table in a Store that
+ * has had a change within it. If the entry is null, it means that whole Table
+ * was deleted. Otherwise, the entry will be an object with an entry for each
+ * Row in that Table that had a change within it. In turn, if that entry is
+ * null, it means the Row was deleted. Otherwise, the entry will be an object
+ * with an entry for each Cell in that Row that had a change within it. If the
+ * entry is null, the Cell was deleted, otherwise it will contain the new value
+ * the Cell was changed to during the transaction.
+ *
+ * If not empty, the second object has an entry for each Value in a Store that
+ * has had a change. If the entry is null, the Value was deleted, otherwise it
+ * will contain the new Value it was changed to during the transaction.
+ *
+ * @example
+ * The following is a valid TransactionChanges array that conveys the following:
+ * ```json
+ * [
+ *   {                     // changes to tabular data in the Store
+ *     "pets": {             // this Table was changed
+ *       "fido": null,         // this Row was deleted
+ *       "felix": {            // this Row was changed
+ *         "sold": true,         // this Cell was changed
+ *         "price": null,        // this Cell was deleted
+ *       },
+ *     },
+ *     "pendingSales": null, // this Table was deleted
+ *   },
+ *   {},                   // no changes to keyed value data in the Store
+ * ]
+ * ```
+ *
+ * @category Transaction
+ * @since v4.0.0
+ */
+/// TransactionChanges
+/**
+ * The GetTransactionChanges type describes a function that returns the net
+ * meaningful changes that were made to a Store during a transaction.
+ *
+ * It is provided to the DoRollback callback and to a TransactionListener
+ * listener when a transaction completes. See the TransactionChanges type for
+ * more information and an example of the returned data structure.
+ *
+ * @category Transaction
+ * @since v4.0.0
+ */
+/// GetTransactionChanges
+/**
+ * The TransactionLog type describes the changes that were made to a Store
+ * during a transaction in detail.
+ *
+ * This contains equivalent information to a TransactionChanges object, but also
+ * information about what the previous state of the Store was. The changedCells
+ * and changedValues entries contain information about all changes to those
+ * parts of the Store, with their before and after values, for example.
+ *
+ * `cellsTouched` and `valuesTouched` indicate whether Cell or Value data has
+ * been touched during the transaction. The two flags are intended as a hint
+ * about whether non-mutating listeners might be being called at the end of the
+ * transaction.
+ *
+ * Here, 'touched' means that Cell or Value data has either been changed, or
+ * changed and then changed back to its original value during the transaction.
+ * The exception is a transaction that has been rolled back, for which the value
+ * of `cellsTouched` and `valuesTouched` in the listener will be `false` because
+ * all changes have been reverted.
+ *
+ * See the documentation for the types of the inner objects for other details.
+ *
+ * @category Transaction
+ * @since v4.0.0
+ */
+/// TransactionLog
+/// GetTransactionLog
+/**
+ * The GetTransactionLog type describes a function that returns the changes that
+ * were made to a Store during a transaction in detail.
+ *
+ * It is provided to the DoRollback callback and to a TransactionListener
+ * listener when a transaction completes. See the TransactionLog type for more
+ * information.
+ *
+ * @category Transaction
+ * @since v4.0.0
+ */
+/// GetTransactionLog
 /**
  * The StoreListenerStats type describes the number of listeners registered with
  * the Store, and can be used for debugging purposes.
@@ -2021,7 +2085,7 @@
    * // -> {pets: {felix: {species: 'cat'}}}
    * ```
    * @category Setter
-   * @since 4.0.0
+   * @since v4.0.0
    */
   /// Store.setContent
   /**
@@ -3042,10 +3106,10 @@
    *
    * The second, optional parameter, `doRollback` is a DoRollback callback that
    * you can use to rollback the transaction if it did not complete to your
-   * satisfaction. It is called with `changedCells`, `invalidCells`,
-   * `changedValues`, and `invalidValues` parameters, which inform you of the
-   * net changes that have been made during the transaction, and any invalid
-   * attempts to do so, respectively.
+   * satisfaction. It is called with `getTransactionChanges` and
+   * `getTransactionLog` parameters, which inform you of the net changes that
+   * have been made during the transaction, at different levels of detail. See
+   * the DoRollback documentation for more details.
    *
    * @param actions The function to be executed as a transaction.
    * @param doRollback An optional callback that should return `true` if you
@@ -3122,7 +3186,9 @@
    *       .setCell('pets', 'fido', 'info', {sold: null})
    *       .setValue('open', false)
    *       .setValue('employees', ['alice', 'bob']),
-   *   (changedCells, invalidCells, changedValues, invalidValues) => {
+   *   (_, getTransactionLog) => {
+   *     const {changedCells, invalidCells, changedValues, invalidValues} =
+   *       getTransactionLog();
    *     console.log(store.getTables());
    *     console.log(changedCells);
    *     console.log(invalidCells);
@@ -3219,10 +3285,10 @@
    *
    * The optional parameter, `doRollback` is a DoRollback callback that you can
    * use to rollback the transaction if it did not complete to your
-   * satisfaction. It is called with `changedCells`, `invalidCells`,
-   * `changedValues`, and `invalidValues` parameters, which inform you of the
-   * net changes that have been made during the transaction, and any invalid
-   * attempts to do so, respectively.
+   * satisfaction. It is called with `getTransactionChanges` and
+   * `getTransactionLog` parameters, which inform you of the net changes that
+   * have been made during the transaction, at different levels of detail. See
+   * the DoRollback documentation for more details.
    *
    * @param doRollback An optional callback that should return `true` if you
    * want to rollback the transaction at the end.
@@ -3267,16 +3333,16 @@
    *   .setCell('pets', 'fido', 'info', {sold: null})
    *   .setValue('open', false)
    *   .setValue('employees', ['alice', 'bob'])
-   *   .finishTransaction(
-   *     (changedCells, invalidCells, changedValues, invalidValues) => {
-   *       console.log(store.getTables());
-   *       console.log(changedCells);
-   *       console.log(invalidCells);
-   *       console.log(changedValues);
-   *       console.log(invalidValues);
-   *       return invalidCells['pets'] != null;
-   *     },
-   *   );
+   *   .finishTransaction((_, getTransactionLog) => {
+   *     const {changedCells, invalidCells, changedValues, invalidValues} =
+   *       getTransactionLog();
+   *     console.log(store.getTables());
+   *     console.log(changedCells);
+   *     console.log(invalidCells);
+   *     console.log(changedValues);
+   *     console.log(invalidValues);
+   *     return invalidCells['pets'] != null;
+   *   });
    * // -> {pets: {fido: {species: 'dog', color: 'black'}}}
    * // -> {pets: {fido: {color: ['brown', 'black']}}}
    * // -> {pets: {fido: {eyes: [['left', 'right']], info: [{sold: null}]}}}
@@ -4936,7 +5002,8 @@
    *   })
    *   .setValues({open: true, employees: 3});
    * const listenerId = store.addWillFinishTransactionListener(
-   *   (store, cellsTouched, valuesTouched) => {
+   *   (store, _, getTransactionLog) => {
+   *     const {cellsTouched, valuesTouched} = getTransactionLog?.() ?? {};
    *     console.log(`Cells/Values touched: ${cellsTouched}/${valuesTouched}`);
    *   },
    * );
@@ -5031,7 +5098,8 @@
    *   })
    *   .setValues({open: true, employees: 3});
    * const listenerId = store.addDidFinishTransactionListener(
-   *   (store, cellsTouched, valuesTouched) => {
+   *   (store, _, getTransactionLog) => {
+   *     const {cellsTouched, valuesTouched} = getTransactionLog?.() ?? {};
    *     console.log(`Cells/Values touched: ${cellsTouched}/${valuesTouched}`);
    *   },
    * );
