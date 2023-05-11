@@ -1,15 +1,5 @@
-import {
-  ChangedCellIds,
-  ChangedCells,
-  ChangedRowIds,
-  ChangedTableIds,
-  ChangedValueIds,
-  ChangedValues,
-  Store,
-  Tables,
-  Values,
-} from './types/store.d';
 import {DEBUG, ifNotUndefined, isUndefined} from './common/other';
+import {GetTransactionChanges, Store, Tables, Values} from './types/store.d';
 import {
   Persister,
   PersisterListener,
@@ -23,12 +13,7 @@ export const createCustomPersister = <ListeningHandle>(
   getPersisted: () => Promise<[Tables, Values] | undefined>,
   setPersisted: (
     getContent: () => [Tables, Values],
-    changedCells?: ChangedCells,
-    changedValues?: ChangedValues,
-    changedTableIds?: ChangedTableIds,
-    changedRowIds?: ChangedRowIds,
-    changedCellIds?: ChangedCellIds,
-    changedValueIds?: ChangedValueIds,
+    getTransactionChanges?: GetTransactionChanges,
   ) => Promise<void>,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
@@ -98,12 +83,7 @@ export const createCustomPersister = <ListeningHandle>(
     },
 
     save: async (
-      changedCells?: ChangedCells,
-      changedValues?: ChangedValues,
-      changedTableIds?: ChangedTableIds,
-      changedRowIds?: ChangedRowIds,
-      changedCellIds?: ChangedCellIds,
-      changedValueIds?: ChangedValueIds,
+      getTransactionChanges?: GetTransactionChanges,
     ): Promise<Persister> => {
       /*! istanbul ignore else */
       if (loadSave != 1) {
@@ -111,15 +91,7 @@ export const createCustomPersister = <ListeningHandle>(
         if (DEBUG) {
           saves++;
         }
-        await setPersisted(
-          store.getContent,
-          changedCells,
-          changedValues,
-          changedTableIds,
-          changedRowIds,
-          changedCellIds,
-          changedValueIds,
-        );
+        await setPersisted(store.getContent, getTransactionChanges);
         loadSave = 0;
       }
       return persister;
@@ -128,17 +100,8 @@ export const createCustomPersister = <ListeningHandle>(
     startAutoSave: async (): Promise<Persister> => {
       await persister.stopAutoSave().save();
       listenerId = store.addDidFinishTransactionListener(
-        (
-          _store,
-          _cellsTouched,
-          _valuesTouched,
-          changedCells,
-          _invalidCells,
-          changedValues,
-          _invalidValues,
-          ...changedIds
-        ) =>
-          (persister.save as any)(changedCells, changedValues, ...changedIds),
+        (_store, getTransactionChanges) =>
+          (persister.save as any)(getTransactionChanges),
       );
       return persister;
     },

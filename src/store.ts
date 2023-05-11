@@ -23,19 +23,11 @@ import {
   CellOrUndefined,
   CellSchema,
   ChangedCell,
-  ChangedCellIds,
-  ChangedCells,
-  ChangedRowIds,
-  ChangedTableIds,
   ChangedValue,
-  ChangedValueIds,
-  ChangedValues,
   DoRollback,
   GetCellChange,
   GetValueChange,
   IdAddedOrRemoved,
-  InvalidCells,
-  InvalidValues,
   MapCell,
   Row,
   RowCallback,
@@ -47,7 +39,9 @@ import {
   TableCellCallback,
   Tables,
   TablesSchema,
+  TransactionChanges,
   TransactionListener,
+  TransactionLog,
   Value,
   ValueCallback,
   ValueChange,
@@ -143,18 +137,6 @@ type ChangedIdsMap = IdMap<IdAddedOrRemoved>;
 type ChangedIdsMap2 = IdMap2<IdAddedOrRemoved>;
 type ChangedIdsMap3 = IdMap3<IdAddedOrRemoved>;
 
-const getEmptyTransactionChanges = () =>
-  Array(8).fill({}) as [
-    ChangedCells,
-    InvalidCells,
-    ChangedValues,
-    InvalidValues,
-    ChangedTableIds,
-    ChangedRowIds,
-    ChangedCellIds,
-    ChangedValueIds,
-  ];
-
 const mapMatch = <MapValue, ObjectValue>(
   map: IdMap<MapValue>,
   obj: IdObj<ObjectValue>,
@@ -197,8 +179,8 @@ const idsChanged = (
 export const createStore: typeof createStoreDecl = (): Store => {
   let hasTablesSchema: boolean;
   let hasValuesSchema: boolean;
-  let cellsTouched: boolean;
-  let valuesTouched: boolean;
+  let cellsTouched = false;
+  let valuesTouched = false;
   let transactions = 0;
   const changedTableIds: ChangedIdsMap = mapNew();
   const changedTableCellIds: ChangedIdsMap2 = mapNew();
@@ -936,6 +918,46 @@ export const createStore: typeof createStoreDecl = (): Store => {
     return store;
   };
 
+  const getTransactionChanges = (): TransactionChanges => [
+    mapToObj(
+      changedCells,
+      (table, tableId) =>
+        mapGet(changedTableIds, tableId) === -1
+          ? null
+          : mapToObj(
+              table,
+              (row, rowId) =>
+                mapGet(mapGet(changedRowIds, tableId), rowId) === -1
+                  ? null
+                  : mapToObj(
+                      row,
+                      ([, newCell]) => newCell ?? null,
+                      (_, changedCell) => pairIsEqual(changedCell),
+                    ),
+              objIsEmpty,
+            ),
+      objIsEmpty,
+    ),
+    mapToObj(
+      changedValues,
+      ([, newValue]) => newValue ?? null,
+      (_, changedValue) => pairIsEqual(changedValue),
+    ),
+  ];
+
+  const getTransactionLog = (): TransactionLog => ({
+    cellsTouched,
+    valuesTouched,
+    changedCells: mapToObj3(changedCells, pairClone, pairIsEqual),
+    invalidCells: mapToObj3(invalidCells),
+    changedValues: mapToObj(changedValues, pairClone, pairIsEqual),
+    invalidValues: mapToObj(invalidValues),
+    changedTableIds: mapToObj(changedTableIds),
+    changedRowIds: mapToObj2(changedRowIds),
+    changedCellIds: mapToObj3(changedCellIds),
+    changedValueIds: mapToObj(changedValueIds),
+  });
+
   // --
 
   const getContent = (): [Tables, Values] => [getTables(), getValues()];
@@ -1279,7 +1301,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
       transactions++;
     }
     if (transactions == 1) {
-      callListeners(startTransactionListeners, undefined, false, false);
+      callListeners(
+        startTransactionListeners,
+        undefined,
+        getTransactionChanges,
+        getTransactionLog,
+      );
     }
     return store;
   };
@@ -1301,32 +1328,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
           callKeyedValuesListenersForChanges(1);
         }
 
-        let transactionChanges: [
-          changedCells: ChangedCells,
-          invalidCells: InvalidCells,
-          changedValues: ChangedValues,
-          invalidValues: InvalidValues,
-          changedTableIds: ChangedTableIds,
-          changedRowIds: ChangedRowIds,
-          changedCellIds: ChangedCellIds,
-          changedValueIds: ChangedValueIds,
-        ] =
-          doRollback ||
-          !collIsEmpty(finishTransactionListeners[0]) ||
-          !collIsEmpty(finishTransactionListeners[1])
-            ? [
-                mapToObj3(changedCells, pairClone, pairIsEqual),
-                mapToObj3(invalidCells),
-                mapToObj(changedValues, pairClone, pairIsEqual),
-                mapToObj(invalidValues),
-                mapToObj(changedTableIds),
-                mapToObj2(changedRowIds),
-                mapToObj3(changedCellIds),
-                mapToObj(changedValueIds),
-              ]
-            : getEmptyTransactionChanges();
-
-        if (doRollback?.(...transactionChanges)) {
+        if (doRollback?.(getTransactionChanges, getTransactionLog)) {
           collForEach(changedCells, (table, tableId) =>
             collForEach(table, (row, rowId) =>
               collForEach(row, ([oldCell], cellId) =>
@@ -1338,15 +1340,13 @@ export const createStore: typeof createStoreDecl = (): Store => {
             setOrDelValue(store, valueId, oldValue),
           );
           cellsTouched = valuesTouched = false;
-          transactionChanges = getEmptyTransactionChanges();
         }
 
         callListeners(
           finishTransactionListeners[0],
           undefined,
-          cellsTouched,
-          valuesTouched,
-          ...transactionChanges,
+          getTransactionChanges,
+          getTransactionLog,
         );
 
         transactions = -1;
@@ -1361,12 +1361,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
         callListeners(
           finishTransactionListeners[1],
           undefined,
-          cellsTouched,
-          valuesTouched,
-          ...transactionChanges,
+          getTransactionChanges,
+          getTransactionLog,
         );
 
         transactions = 0;
+        cellsTouched = valuesTouched = false;
         arrayForEach(
           [
             changedTableIds,
