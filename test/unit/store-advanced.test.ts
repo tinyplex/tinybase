@@ -15,6 +15,74 @@ beforeEach(() => {
   listener = createStoreListener(store);
 });
 
+describe('setTransactionChanges', () => {
+  beforeEach(() =>
+    store
+      .setTables({t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}})
+      .setValues({v1: 1, v2: 2}),
+  );
+
+  test('delete table', () => {
+    store.setTransactionChanges([{t2: null}, {}]);
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}}});
+    expect(store.getValues()).toEqual({v1: 1, v2: 2});
+  });
+
+  test('delete row', () => {
+    store.setTransactionChanges([{t1: {r2: null}}, {}]);
+    expect(store.getTables()).toEqual({
+      t1: {r1: {c1: 1, c2: 2}},
+      t2: {r1: {c1: 1}},
+    });
+    expect(store.getValues()).toEqual({v1: 1, v2: 2});
+  });
+
+  test('delete cell', () => {
+    store.setTransactionChanges([{t1: {r1: {c2: null}}}, {}]);
+    expect(store.getTables()).toEqual({
+      t1: {r1: {c1: 1}, r2: {c1: 1}},
+      t2: {r1: {c1: 1}},
+    });
+    expect(store.getValues()).toEqual({v1: 1, v2: 2});
+  });
+
+  test('delete value', () => {
+    store.setTransactionChanges([{}, {v2: null}]);
+    expect(store.getTables()).toEqual({
+      t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}},
+      t2: {r1: {c1: 1}},
+    });
+    expect(store.getValues()).toEqual({v1: 1});
+  });
+
+  test('set cell', () => {
+    store.setTransactionChanges([{t1: {r1: {c1: 2}}}, {}]);
+    expect(store.getTables()).toEqual({
+      t1: {r1: {c1: 2, c2: 2}, r2: {c1: 1}},
+      t2: {r1: {c1: 1}},
+    });
+    expect(store.getValues()).toEqual({v1: 1, v2: 2});
+  });
+
+  test('set value', () => {
+    store.setTransactionChanges([{}, {v1: 2}]);
+    expect(store.getTables()).toEqual({
+      t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}},
+      t2: {r1: {c1: 1}},
+    });
+    expect(store.getValues()).toEqual({v1: 2, v2: 2});
+  });
+
+  test('multiple changes', () => {
+    store.setTransactionChanges([
+      {t1: {r1: {c1: 2, c2: null}, r2: null}, t2: null},
+      {v1: 2, v2: null},
+    ]);
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
+    expect(store.getValues()).toEqual({v1: 2});
+  });
+});
+
 describe('setTablesJson', () => {
   beforeEach(() => store.setTables({t1: {r1: {c1: 1, c2: 1}}}));
 
