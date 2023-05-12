@@ -1116,6 +1116,32 @@ export const createStore: typeof createStoreDecl = (): Store => {
       valueId,
     );
 
+  const setTransactionChanges = (
+    transactionChanges: TransactionChanges,
+  ): Store =>
+    fluentTransaction(() => {
+      objMap(transactionChanges[0], (table, tableId) =>
+        isUndefined(table)
+          ? delTable(tableId)
+          : objMap(table, (row, rowId) =>
+              isUndefined(row)
+                ? delRow(tableId, rowId)
+                : objMap(row, (cell, cellId) =>
+                    setOrDelCell(
+                      store,
+                      tableId,
+                      rowId,
+                      cellId,
+                      cell as CellOrUndefined,
+                    ),
+                  ),
+            ),
+      );
+      objMap(transactionChanges[1], (value, valueId) =>
+        setOrDelValue(store, valueId, value as ValueOrUndefined),
+      );
+    });
+
   const setTablesJson = (tablesJson: Json): Store => {
     try {
       setOrDelTables(jsonParse(tablesJson));
@@ -1492,6 +1518,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     setValues,
     setPartialValues,
     setValue,
+    setTransactionChanges,
 
     setTablesJson,
     setValuesJson,

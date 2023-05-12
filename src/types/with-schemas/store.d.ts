@@ -810,6 +810,11 @@ export interface Store<in out Schemas extends OptionalSchemas> {
     value: Value<Schemas[1], ValueId> | MapValue<Schemas[1], ValueId>,
   ): Store<Schemas>;
 
+  /// Store.setTransactionChanges
+  setTransactionChanges(
+    transactionChanges: TransactionChanges<Schemas>,
+  ): Store<Schemas>;
+
   /// Store.setTablesJson
   setTablesJson(tablesJson: Json): Store<Schemas>;
 
