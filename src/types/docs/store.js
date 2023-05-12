@@ -2688,6 +2688,47 @@
    */
   /// Store.setValue
   /**
+   * The setTransactionChanges method applies a set of TransactionChanges to the
+   * Store.
+   *
+   * This method will take a TransactionChanges object (which is available at
+   * the end of a transaction) and apply it to a Store. The most likely need to
+   * do this is to take the changes made during the transaction of one Store,
+   * and apply it to the content of _another_ Store - such as when persisting
+   * and synchronizing data.
+   *
+   * Any part of the provided TransactionChanges object are invalid (either
+   * because of its type, or because it does not match the schemas associated
+   * with the Store) will be ignored silently.
+   *
+   * The method returns a reference to the Store so that subsequent operations
+   * can be chained in a fluent style.
+   *
+   * @param transactionChanges The TransactionChanges to apply to the Store.
+   * @returns A reference to the Store.
+   * @example
+   * This example applies a TransactionChanges object that sets a Cell and
+   * removes a Value.
+   *
+   * ```js
+   * const store = createStore()
+   *   .setTables({pets: {fido: {species: 'dog', color: 'brown'}}})
+   *   .setValues({open: true});
+   *
+   * store.setTransactionChanges([
+   *   {pets: {fido: {color: 'black'}}},
+   *   {open: null},
+   * ]);
+   * console.log(store.getTables());
+   * // -> {pets: {fido: {species: 'dog', color: 'black'}}}
+   * console.log(store.getValues());
+   * // -> {}
+   * ```
+   * @category Setter
+   * @since v4.0.0
+   */
+  /// Store.setTransactionChanges
+  /**
    * The setTablesJson method takes a string serialization of all of the Tables
    * in the Store and attempts to update them to that.
    *

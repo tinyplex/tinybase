@@ -454,6 +454,9 @@ export interface Store {
   /// Store.setValue
   setValue(valueId: Id, value: Value | MapValue): Store;
 
+  /// Store.setTransactionChanges
+  setTransactionChanges(transactionChanges: TransactionChanges): Store;
+
   /// Store.setTablesJson
   setTablesJson(tablesJson: Json): Store;
 
