@@ -1,12 +1,19 @@
-import {GetTransactionChanges, Store, Tables, Values} from './types/store.d';
+import {
+  Cell,
+  GetTransactionChanges,
+  Store,
+  Tables,
+  Value,
+  Values,
+} from './types/store.d';
 import {Persister, PersisterListener} from './types/persisters.d';
 import {Array as YArray, Doc as YDoc, YEvent, Map as YMap} from 'yjs';
+import {ifNotUndefined, isUndefined} from './common/other';
 import {objHas, objMap} from './common/obj';
 import {Id} from './types/common.d';
 import {IdObj} from './common/obj';
 import {arrayIsEmpty} from './common/array';
 import {createCustomPersister} from './persisters';
-import {isUndefined} from './common/other';
 
 type Observer = (events: YEvent<any>[]) => void;
 
@@ -42,10 +49,10 @@ export const createYjsPersister = (
   yDoc: YDoc,
   yArrayName = 'tinybase',
 ): Persister => {
-  const contentArray: YArray<any> = yDoc.getArray(yArrayName);
+  const yContent: YArray<any> = yDoc.getArray(yArrayName);
 
   const getPersisted = async (): Promise<[Tables, Values] | undefined> => {
-    const content = contentArray.toJSON();
+    const content = yContent.toJSON();
     if (!arrayIsEmpty(content)) {
       return content as [Tables, Values];
     }
@@ -53,29 +60,77 @@ export const createYjsPersister = (
 
   const setPersisted = async (
     getContent: () => [Tables, Values],
-    _getTransactionChanges?: GetTransactionChanges,
+    getTransactionChanges?: GetTransactionChanges,
   ): Promise<void> => {
-    if (!contentArray.length) {
-      contentArray.push([new YMap(), new YMap()]);
+    if (!yContent.length) {
+      yContent.push([new YMap(), new YMap()]);
     }
-    const [tablesMap, valuesMap] = contentArray.toArray();
-    const [tables, values] = getContent();
+    const [yTables, yValues] = yContent.toArray() as [
+      YMap<YMap<YMap<Cell>>>,
+      YMap<Value>,
+    ];
+
     yDoc.transact(() => {
-      yMapMatch(tablesMap, undefined, tables, (tablesMap, tableId, table) =>
-        yMapMatch(tablesMap, tableId, table, (tableMap, rowId, row) =>
-          yMapMatch(tableMap, rowId, row, (rowMap, cellId, cell) => {
-            if (rowMap.get(cellId) !== cell) {
-              rowMap.set(cellId, cell);
-              return 1;
-            }
-          }),
-        ),
-      );
-      yMapMatch(valuesMap, undefined, values, (valuesMap, valueId, value) => {
-        if (valuesMap.get(valueId) !== value) {
-          valuesMap.set(valueId, value);
-        }
-      });
+      let transactionChangesFailed = 1;
+      if (getTransactionChanges) {
+        const transactionChangesDidFail = () => {
+          transactionChangesFailed = 1;
+        };
+        transactionChangesFailed = 0;
+        const [cellChanges, valueChanges] = getTransactionChanges();
+        objMap(cellChanges, (table, tableId) =>
+          transactionChangesFailed
+            ? 0
+            : isUndefined(table)
+            ? yTables.delete(tableId)
+            : ifNotUndefined(
+                yTables.get(tableId),
+                (yTable) =>
+                  objMap(table, (row, rowId) =>
+                    transactionChangesFailed
+                      ? 0
+                      : isUndefined(row)
+                      ? yTable.delete(rowId)
+                      : ifNotUndefined(
+                          yTable.get(rowId),
+                          (yRow) =>
+                            objMap(row, (cell, cellId) =>
+                              isUndefined(cell)
+                                ? yRow.delete(cellId)
+                                : yRow.set(cellId, cell),
+                            ),
+                          transactionChangesDidFail,
+                        ),
+                  ),
+                transactionChangesDidFail,
+              ),
+        );
+        objMap(valueChanges, (value, valueId) =>
+          transactionChangesFailed
+            ? 0
+            : isUndefined(value)
+            ? yValues.delete(valueId)
+            : yValues.set(valueId, value),
+        );
+      }
+      if (transactionChangesFailed) {
+        const [tables, values] = getContent();
+        yMapMatch(yTables, undefined, tables, (_, tableId, table) =>
+          yMapMatch(yTables, tableId, table, (yTable, rowId, row) =>
+            yMapMatch(yTable, rowId, row, (yRow, cellId, cell) => {
+              if (yRow.get(cellId) !== cell) {
+                yRow.set(cellId, cell);
+                return 1;
+              }
+            }),
+          ),
+        );
+        yMapMatch(yValues, undefined, values, (_, valueId, value) => {
+          if (yValues.get(valueId) !== value) {
+            yValues.set(valueId, value);
+          }
+        });
+      }
     });
   };
 
@@ -83,12 +138,12 @@ export const createYjsPersister = (
     const observer: Observer = () => {
       listener();
     };
-    contentArray.observeDeep(observer);
+    yContent.observeDeep(observer);
     return observer;
   };
 
   const delPersisterListener = (observer: Observer): void => {
-    contentArray.unobserveDeep(observer);
+    yContent.unobserveDeep(observer);
   };
 
   return createCustomPersister(
