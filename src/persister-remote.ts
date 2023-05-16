@@ -14,12 +14,10 @@ export const createRemotePersister = ((
 ): Persister => {
   let lastEtag: string | null;
 
-  const getPersisted = async (): Promise<[Tables, Values] | undefined> => {
-    try {
-      const response = await fetch(loadUrl);
-      lastEtag = getETag(response);
-      return JSON.parse(await response.text());
-    } catch {}
+  const getPersisted = async (): Promise<[Tables, Values]> => {
+    const response = await fetch(loadUrl);
+    lastEtag = getETag(response);
+    return JSON.parse(await response.text());
   };
 
   const setPersisted = async (
