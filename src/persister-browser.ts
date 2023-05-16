@@ -16,11 +16,9 @@ const getStoragePersister = (
   storageName: string,
   storage: Storage,
 ): Persister => {
-  const getPersisted = async (): Promise<[Tables, Values] | undefined> => {
-    try {
-      return JSON.parse(storage.getItem(storageName) as string);
-    } catch {}
-  };
+  const getPersisted = async (): Promise<[Tables, Values]> =>
+    JSON.parse(storage.getItem(storageName) as string);
+
   const setPersisted = async (
     getContent: () => [Tables, Values],
   ): Promise<void> => storage.setItem(storageName, jsonString(getContent()));
@@ -28,11 +26,7 @@ const getStoragePersister = (
   const addPersisterListener = (listener: PersisterListener): StoreListener => {
     const storeListener = (event: StorageEvent): void => {
       if (event.storageArea === storage && event.key === storageName) {
-        let newValue;
-        try {
-          newValue = JSON.parse(event.newValue as string);
-        } catch {}
-        listener(newValue);
+        listener(() => JSON.parse(event.newValue as string));
       }
     };
     WINDOW.addEventListener(STORAGE, storeListener);

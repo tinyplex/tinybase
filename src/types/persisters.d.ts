@@ -11,7 +11,10 @@ export type PersisterStats = {
 };
 
 /// PersisterListener
-export type PersisterListener = (content?: [Tables, Values]) => void;
+export type PersisterListener = (
+  getContent?: () => [Tables, Values],
+  getTransactionChanges?: GetTransactionChanges,
+) => void;
 
 /// Persister
 export interface Persister {

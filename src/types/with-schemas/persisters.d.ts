@@ -18,7 +18,8 @@ export type PersisterStats = {
 
 /// PersisterListener
 export type PersisterListener<Schemas extends OptionalSchemas> = (
-  content?: [Tables<Schemas[0], true>, Values<Schemas[1], true>],
+  getContent?: () => [Tables<Schemas[0], true>, Values<Schemas[1], true>],
+  getTransactionChanges?: GetTransactionChanges<Schemas>,
 ) => void;
 
 /// Persister

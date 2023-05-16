@@ -73,7 +73,13 @@ const nextLoop = async (): Promise<void> => await pause(0);
 // fs.watch misses changes made in the same loop, seemingly
 
 let customPersister: any;
-let customPersisterListener: ((content?: [Tables, Values]) => void) | undefined;
+let customPersisterListener:
+  | ((getContent?: () => [Tables, Values]) => void)
+  | ((
+      getContent?: () => [Tables, Values],
+      getTransactionChanges?: () => [Tables, Values],
+    ) => void)
+  | undefined;
 let customPersisterChanges: TransactionChanges = [{}, {}];
 
 const getMockedCustom = (
@@ -102,7 +108,7 @@ const getMockedCustom = (
   },
   get: (): [Tables, Values] | void => customPersister,
   set: (location: string, value: any): void =>
-    mockCustom1.write(location, JSON.stringify(value)),
+    mockCustomNoContentListener.write(location, JSON.stringify(value)),
   write,
   delete: (): void => {
     customPersister = '';
@@ -111,17 +117,27 @@ const getMockedCustom = (
   testMissing: true,
 });
 
-const mockCustom1: Persistable<string> = getMockedCustom(
+const mockCustomNoContentListener: Persistable<string> = getMockedCustom(
   (_location: string, value: any): void => {
     customPersister = value;
     customPersisterListener?.();
   },
 );
 
-const mockCustom2: Persistable<string> = getMockedCustom(
+const mockCustomContentListener: Persistable<string> = getMockedCustom(
   (_location: string, value: any): void => {
     customPersister = value;
-    customPersisterListener?.(value);
+    customPersisterListener?.(() => value);
+  },
+);
+
+const mockCustomChangesListener: Persistable<string> = getMockedCustom(
+  (_location: string, value: any): void => {
+    customPersister = value;
+    customPersisterListener?.(
+      () => value,
+      () => (typeof value != 'string' ? value : [{}, {}]),
+    );
   },
 );
 
@@ -292,8 +308,9 @@ const mockYjs: Persistable<YDoc> = {
 };
 
 describe.each([
-  ['custom1', mockCustom1],
-  ['custom2', mockCustom2],
+  ['mockCustomNoContentListener', mockCustomNoContentListener],
+  ['mockCustomContentListener', mockCustomContentListener],
+  ['mockCustomChangesListener', mockCustomChangesListener],
   ['file', mockFile],
   ['remote', mockRemote],
   ['localStorage', mockLocalStorage],
