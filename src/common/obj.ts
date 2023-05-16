@@ -13,6 +13,8 @@ export const objFreeze = object.freeze;
 export const isObject = (obj: unknown): boolean =>
   isInstanceOf(obj, object) && (obj as any).constructor == object;
 
+export const objNew = () => ({});
+
 export const objGet = <Value>(
   obj: IdObj<Value> | Value[] | undefined,
   id: Id,
@@ -30,3 +32,14 @@ export const objMap = <Value, Return>(
 
 export const objIsEmpty = <Value>(obj: IdObj<Value> | any): boolean =>
   isObject(obj) && arrayIsEmpty(objIds(obj));
+
+export const objEnsure = <Value>(
+  obj: IdObj<Value>,
+  id: Id | number,
+  getDefaultValue: () => Value,
+): Value => {
+  if (!objHas(obj, id as Id)) {
+    obj[id] = getDefaultValue();
+  }
+  return obj[id] as Value;
+};
