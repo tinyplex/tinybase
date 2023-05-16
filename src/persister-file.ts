@@ -12,11 +12,8 @@ export const createFilePersister = ((
   store: Store,
   filePath: string,
 ): Persister => {
-  const getPersisted = async (): Promise<[Tables, Values] | undefined> => {
-    try {
-      return JSON.parse(await readFile(filePath, UTF8));
-    } catch {}
-  };
+  const getPersisted = async (): Promise<[Tables, Values]> =>
+    JSON.parse(await readFile(filePath, UTF8));
 
   const setPersisted = async (
     getContent: () => [Tables, Values],

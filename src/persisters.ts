@@ -1,4 +1,4 @@
-import {DEBUG, ifNotUndefined, isUndefined} from './common/other';
+import {DEBUG, ifNotUndefined} from './common/other';
 import {GetTransactionChanges, Store, Tables, Values} from './types/store.d';
 import {
   Persister,
@@ -26,25 +26,30 @@ export const createCustomPersister = <ListeningHandle>(
   let listening = false;
   let listeningHandle: ListeningHandle | undefined;
 
+  const loadLock = async (actions: () => Promise<any>) => {
+    /*! istanbul ignore else */
+    if (loadSave != 2) {
+      loadSave = 1;
+      if (DEBUG) {
+        loads++;
+      }
+      await actions();
+      loadSave = 0;
+    }
+  };
+
   const persister: Persister = {
     load: async (
       initialTables?: Tables,
       initialValues?: Values,
     ): Promise<Persister> => {
-      /*! istanbul ignore else */
-      if (loadSave != 2) {
-        loadSave = 1;
-        if (DEBUG) {
-          loads++;
+      await loadLock(async () => {
+        try {
+          store.setContent((await getPersisted()) as [Tables, Values]);
+        } catch {
+          store.setContent([initialTables as Tables, initialValues as Values]);
         }
-        store.setContent(
-          (await getPersisted()) ?? [
-            initialTables as Tables,
-            initialValues as Values,
-          ],
-        );
-        loadSave = 0;
-      }
+      });
       return persister;
     },
 
@@ -55,21 +60,22 @@ export const createCustomPersister = <ListeningHandle>(
       persister.stopAutoLoad();
       await persister.load(initialTables, initialValues);
       listening = true;
-      listeningHandle = addPersisterListener(async (content) => {
-        if (isUndefined(content)) {
-          await persister.load();
-        } else {
-          /*! istanbul ignore else */
-          if (loadSave != 2) {
-            loadSave = 1;
-            if (DEBUG) {
-              loads++;
+      listeningHandle = addPersisterListener(
+        async (getContent, getTransactionChanges) => {
+          await loadLock(async () => {
+            if (getTransactionChanges) {
+              store.setTransactionChanges(getTransactionChanges());
+            } else {
+              try {
+                store.setContent(
+                  getContent?.() ??
+                    ((await getPersisted()) as [Tables, Values]),
+                );
+              } catch {}
             }
-            store.setContent(content);
-            loadSave = 0;
-          }
-        }
-      });
+          });
+        },
+      );
       return persister;
     },
 

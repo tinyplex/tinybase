@@ -52,7 +52,7 @@ const persister = createCustomPersister(
     } catch {}
   },
   async (getContent) => (storeJson = JSON.stringify(getContent())),
-  (didChange) => (interval = setInterval(didChange, 1000)),
+  (listener) => (interval = setInterval(listener, 1000)),
   () => clearInterval(interval),
 );
 
