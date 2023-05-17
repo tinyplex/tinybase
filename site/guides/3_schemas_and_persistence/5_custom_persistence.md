@@ -73,3 +73,6 @@ Note that the other creation functions (such as the createSessionPersister
 function and createFilePersister function, for example) all use this function
 under the covers. See those implementations for ideas on how to implement your
 own Persister types.
+
+Finally we move on to look at how to fully synchronize TinyBase Stores using
+more complex persisters such as Yjs.

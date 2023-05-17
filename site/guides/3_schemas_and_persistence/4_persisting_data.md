@@ -25,6 +25,14 @@ include:
 There is also a way to developer custom Persisters of your own, which we
 describe in the Custom Persistence guide.
 
+For more complex synchronization, TinyBase includes persisters for frameworks
+like Yjs:
+
+- The createYjsPersister function (in the persister-yjs module) returns a
+  Persister that connects to a Yjs document.
+
+(See the Synchronizing Data guide for more details on those.)
+
 ## Persister Operations
 
 A Persister lets you explicit save or load data, with the save method and the
