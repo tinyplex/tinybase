@@ -34,7 +34,7 @@
  * await persister.save();
  * // Store JSON will be saved to the document.
  *
- * console.log(doc.toJSON())
+ * console.log(doc.toJSON());
  * // -> {tinybase: {t: {pets: {fido: {species: 'dog'}}}, v: {}}}
  *
  * persister.destroy();
@@ -58,7 +58,7 @@
  * const syncDocs = async () => {
  *   Y.applyUpdate(doc1, Y.encodeStateAsUpdate(doc2));
  *   Y.applyUpdate(doc2, Y.encodeStateAsUpdate(doc1));
- * }
+ * };
  *
  * // Bind a persisted Store to each document.
  * const store1 = createStore();
