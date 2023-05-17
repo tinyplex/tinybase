@@ -6,7 +6,7 @@ import {
   Values,
 } from './types/store.d';
 import {Persister, PersisterListener} from './types/persisters.d';
-import {Array as YArray, Doc as YDoc, YEvent, Map as YMap} from 'yjs';
+import {Doc as YDoc, YEvent, Map as YMap} from 'yjs';
 import {
   arrayForEach,
   arrayIsEmpty,
@@ -23,20 +23,34 @@ import {mapForEach} from './common/map';
 
 type Observer = (events: YEvent<any>[]) => void;
 
+const tablesKey = 't';
+const valuesKey = 'v';
 const DELETE = 'delete';
 
+const ensureYContent = (yContent: YMap<any>) => {
+  if (!yContent.size) {
+    yContent.set(tablesKey, new YMap());
+    yContent.set(valuesKey, new YMap());
+  }
+};
+
+const getYContent = (yContent: YMap<any>) => [
+  yContent.get(tablesKey),
+  yContent.get(valuesKey),
+];
+
 const getTransactionChangesFromYDoc = (
-  yContent: YArray<any>,
+  yContent: YMap<any>,
   events: YEvent<any>[],
 ): TransactionChanges => {
   if (arrayLength(events) == 1 && arrayIsEmpty(events[0].path)) {
-    return yContent.toJSON() as TransactionChanges;
+    return [yContent.get('t').toJSON(), yContent.get('v').toJSON()];
   }
-  const [yTables, yValues] = yContent.toArray();
+  const [yTables, yValues] = getYContent(yContent);
   const tables = {} as any;
   const values = {} as any;
   arrayForEach(events, ({path, changes: {keys}}) =>
-    arrayShift(path) == 0
+    arrayShift(path) == tablesKey
       ? ifNotUndefined(
           arrayShift(path) as string,
           (yTableId) => {
@@ -80,14 +94,12 @@ const getTransactionChangesFromYDoc = (
 };
 
 const setTransactionChangesToYDoc = (
-  yContent: YArray<any>,
+  yContent: YMap<any>,
   getContent: () => [Tables, Values],
   getTransactionChanges?: GetTransactionChanges,
 ) => {
-  if (!yContent.length) {
-    yContent.push([new YMap(), new YMap()]);
-  }
-  const [yTables, yValues] = yContent.toArray();
+  ensureYContent(yContent);
+  const [yTables, yValues] = getYContent(yContent);
   const transactionChangesDidFail = () => {
     transactionChangesFailed = 1;
   };
@@ -179,28 +191,25 @@ const yMapMatch = (
 export const createYjsPersister = (
   store: Store,
   yDoc: YDoc,
-  yArrayName = 'tinybase',
+  yMapName = 'tinybase',
 ): Persister => {
-  const yContent: YArray<any> = yDoc.getArray(yArrayName);
+  const yContent: YMap<any> = yDoc.getMap(yMapName);
 
-  const getPersisted = async (): Promise<[Tables, Values] | undefined> => {
-    const content = yContent.toJSON();
-    if (!arrayIsEmpty(content)) {
-      return content as [Tables, Values];
-    }
-  };
+  const getPersisted = async (): Promise<[Tables, Values] | undefined> =>
+    yContent.size
+      ? ([yContent.get('t').toJSON(), yContent.get('v').toJSON()] as [
+          Tables,
+          Values,
+        ])
+      : undefined;
 
   const setPersisted = async (
     getContent: () => [Tables, Values],
     getTransactionChanges?: GetTransactionChanges,
-  ): Promise<void> => {
-    if (!yContent.length) {
-      yContent.push([new YMap(), new YMap()]);
-    }
+  ): Promise<void> =>
     yDoc.transact(() =>
       setTransactionChangesToYDoc(yContent, getContent, getTransactionChanges),
     );
-  };
 
   const addPersisterListener = (listener: PersisterListener): Observer => {
     const observer: Observer = (events) =>
