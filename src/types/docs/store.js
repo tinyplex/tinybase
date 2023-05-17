@@ -644,10 +644,10 @@
  * The InvalidCellListener type describes a function that is used to listen to
  * attempts to set invalid data to a Cell.
  *
- * A InvalidCellListener is provided when using the addInvalidCellListener
+ * An InvalidCellListener is provided when using the addInvalidCellListener
  * method. See that method for specific examples.
  *
- * When called, a InvalidCellListener is given a reference to the Store, the Id
+ * When called, an InvalidCellListener is given a reference to the Store, the Id
  * of the Table, the Id of the Row, and the Id of Cell that was being attempted
  * to be changed. It is also given the invalid value of the Cell, which could
  * have been of absolutely any type. Since there could have been multiple failed
@@ -667,11 +667,11 @@
  * The InvalidValueListener type describes a function that is used to listen to
  * attempts to set invalid data to a Value.
  *
- * A InvalidValueListener is provided when using the addInvalidValueListener
+ * An InvalidValueListener is provided when using the addInvalidValueListener
  * method. See that method for specific examples.
  *
- * When called, a InvalidValueListener is given a reference to the Store and the
- * Id of Value that was being attempted to be changed. It is also given the
+ * When called, an InvalidValueListener is given a reference to the Store and
+ * the Id of Value that was being attempted to be changed. It is also given the
  * invalid value of the Value, which could have been of absolutely any type.
  * Since there could have been multiple failed attempts to set the Value within
  * a single transaction, this is an array containing each attempt,
@@ -1225,7 +1225,7 @@
    *
    * @param tableId The Id of the Table in the Store.
    * @param cellId The Id of the Cell whose values are used for the sorting, or
-   * `undefined` to by sort the Row Id itself.
+   * `undefined` to sort by the Row Id itself.
    * @param descending Whether the sorting should be in descending order.
    * @param offset The number of Row Ids to skip for pagination purposes, if
    * any.
@@ -2369,7 +2369,7 @@
    * // -> {}
    * ```
    * @example
-   * This example attempts to set the the tabular and keyed value contents of a
+   * This example attempts to set both the tabular and keyed value contents of a
    * Store from an invalid serialization.
    *
    * ```js
@@ -3517,7 +3517,7 @@
    *
    * @param tableId The Id of the Table to listen to.
    * @param cellId The Id of the Cell whose values are used for the sorting, or
-   * `undefined` to by sort the Row Id itself.
+   * `undefined` to sort by the Row Id itself.
    * @param descending Whether the sorting should be in descending order.
    * @param offset The number of Row Ids to skip for pagination purposes, if
    * any.
@@ -4890,7 +4890,7 @@
    * ```
    * @example
    * This example registers listeners for the end of transactions, and for
-   * invalid Cells. The are explicitly called, meaninglessly. The former
+   * invalid Cells. They are explicitly called, meaninglessly. The former
    * receives empty arguments. The latter is not called at all.
    *
    * ```js
