@@ -255,9 +255,12 @@ const mockYjs: Persistable<YDoc> = {
   getLocation: () => new YDoc(),
   getPersister: createYjsPersister,
   get: (yDoc: YDoc): [Tables, Values] | void => {
-    const content = yDoc.getArray('tinybase').toJSON();
-    if (content.length) {
-      return content as [Tables, Values];
+    const yContent = yDoc.getMap('tinybase') as YMap<any>;
+    if (yContent.size) {
+      return [yContent.get('t').toJSON(), yContent.get('v').toJSON()] as [
+        Tables,
+        Values,
+      ];
     }
   },
   set: (yDoc: YDoc, value: any): void => {
@@ -265,30 +268,33 @@ const mockYjs: Persistable<YDoc> = {
   },
   write: (yDoc: YDoc, value: any): void => {
     if (typeof value != 'string') {
-      const contentArray = yDoc.getArray('tinybase');
-      if (!contentArray.length) {
-        contentArray.push([new YMap(), new YMap()]);
+      const yContent = yDoc.getMap('tinybase');
+      if (!yContent.size) {
+        yContent.set('t', new YMap());
+        yContent.set('v', new YMap());
       }
-      const [tablesMap, valuesMap] = contentArray.toArray() as [
-        YMap<any>,
-        YMap<any>,
-      ];
-      const [tables, values] = value as [Tables, Values];
+      const tablesMap = yContent.get('t');
+      const valuesMap = yContent.get('v');
+      const [tables, values] = value;
 
       yDoc.transact(() => {
-        yMapMatch(tablesMap, undefined, tables, (tablesMap, tableId, table) =>
-          yMapMatch(tablesMap, tableId, table, (tableMap, rowId, row) =>
-            yMapMatch(tableMap, rowId, row, (rowMap, cellId, cell) => {
-              if (rowMap.get(cellId) !== cell) {
-                rowMap.set(cellId, cell);
-                return 1;
-              }
-            }),
-          ),
+        yMapMatch(
+          tablesMap as YMap<any>,
+          undefined,
+          tables,
+          (tablesMap, tableId, table) =>
+            yMapMatch(tablesMap, tableId, table, (tableMap, rowId, row) =>
+              yMapMatch(tableMap, rowId, row, (rowMap, cellId, cell) => {
+                if (rowMap.get(cellId) !== cell) {
+                  rowMap.set(cellId, cell);
+                  return 1;
+                }
+              }),
+            ),
         );
         if (values) {
           yMapMatch(
-            valuesMap,
+            valuesMap as YMap<any>,
             undefined,
             values,
             (valuesMap, valueId, value) => {
