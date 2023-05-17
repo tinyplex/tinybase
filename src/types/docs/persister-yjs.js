@@ -5,7 +5,7 @@
  * A single entry point, the createYjsPersister function, is provided, which
  * returns a new Persister object that can load and save a Store.:
  *
- * @see Persisting Data guide
+ * @see Synchronizing Data guide
  * @packageDocumentation
  * @module persister-yjs
  * @since v4.0.0
@@ -75,8 +75,9 @@
  * await syncDocs();
  *
  * // Make a change to each of the two Stores.
- * await store1.setTables({pets: {fido: {species: 'dog'}}});
- * await store2.setValues({open: true});
+ * store1.setTables({pets: {fido: {species: 'dog'}}});
+ * store2.setValues({open: true});
+ * // ...
  *
  * // Synchronize the documents with each other again.
  * await syncDocs();
