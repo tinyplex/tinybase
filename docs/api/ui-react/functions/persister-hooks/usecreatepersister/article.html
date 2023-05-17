@@ -21,7 +21,10 @@
   <span class="keyword">return</span> <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>span</span><span class="punctuation">></span></span><span class="punctuation">{</span><span class="constant">JSON</span><span class="punctuation">.</span><span class="function">stringify</span><span class="punctuation">(</span><span class="function"><a href="/api/ui-react/functions/store-hooks/usetables/">useTables</a></span><span class="punctuation">(</span>store<span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">}</span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>span</span><span class="punctuation">></span></span><span class="punctuation">;</span>
 <span class="punctuation">}</span><span class="punctuation">;</span>
 
-sessionStorage<span class="punctuation">.</span><span class="function">setItem</span><span class="punctuation">(</span><span class="string">'pets'</span><span class="punctuation">,</span> <span class="string">'{"pets":{"fido":{"species":"dog"}}}'</span><span class="punctuation">)</span><span class="punctuation">;</span>
+sessionStorage<span class="punctuation">.</span><span class="function">setItem</span><span class="punctuation">(</span>
+  <span class="string">'pets'</span><span class="punctuation">,</span>
+  <span class="string">'[{"pets":{"fido":{"species":"dog"}}}, {}]'</span><span class="punctuation">,</span>
+<span class="punctuation">)</span><span class="punctuation">;</span>
 
 <span class="keyword">const</span> app <span class="operator">=</span> document<span class="punctuation">.</span><span class="function">createElement</span><span class="punctuation">(</span><span class="string">'div'</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="keyword">const</span> root <span class="operator">=</span> ReactDOMClient<span class="punctuation">.</span><span class="function">createRoot</span><span class="punctuation">(</span>app<span class="punctuation">)</span><span class="punctuation">;</span>
@@ -53,8 +56,14 @@ root<span class="punctuation">.</span><span class="function">unmount</span><span
   <span class="keyword">return</span> <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>span</span><span class="punctuation">></span></span><span class="punctuation">{</span><span class="constant">JSON</span><span class="punctuation">.</span><span class="function">stringify</span><span class="punctuation">(</span><span class="function"><a href="/api/ui-react/functions/store-hooks/usetables/">useTables</a></span><span class="punctuation">(</span>store<span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">}</span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>span</span><span class="punctuation">></span></span><span class="punctuation">;</span>
 <span class="punctuation">}</span><span class="punctuation">;</span>
 
-sessionStorage<span class="punctuation">.</span><span class="function">setItem</span><span class="punctuation">(</span><span class="string">'fidoStore'</span><span class="punctuation">,</span> <span class="string">'{"pets":{"fido":{"species":"dog"}}}'</span><span class="punctuation">)</span><span class="punctuation">;</span>
-sessionStorage<span class="punctuation">.</span><span class="function">setItem</span><span class="punctuation">(</span><span class="string">'cujoStore'</span><span class="punctuation">,</span> <span class="string">'{"pets":{"cujo":{"species":"dog"}}}'</span><span class="punctuation">)</span><span class="punctuation">;</span>
+sessionStorage<span class="punctuation">.</span><span class="function">setItem</span><span class="punctuation">(</span>
+  <span class="string">'fidoStore'</span><span class="punctuation">,</span>
+  <span class="string">'[{"pets":{"fido":{"species":"dog"}}}, {}]'</span><span class="punctuation">,</span>
+<span class="punctuation">)</span><span class="punctuation">;</span>
+sessionStorage<span class="punctuation">.</span><span class="function">setItem</span><span class="punctuation">(</span>
+  <span class="string">'cujoStore'</span><span class="punctuation">,</span>
+  <span class="string">'[{"pets":{"cujo":{"species":"dog"}}}, {}]'</span><span class="punctuation">,</span>
+<span class="punctuation">)</span><span class="punctuation">;</span>
 
 <span class="keyword">const</span> app <span class="operator">=</span> document<span class="punctuation">.</span><span class="function">createElement</span><span class="punctuation">(</span><span class="string">'div'</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="keyword">const</span> root <span class="operator">=</span> ReactDOMClient<span class="punctuation">.</span><span class="function">createRoot</span><span class="punctuation">(</span>app<span class="punctuation">)</span><span class="punctuation">;</span>
