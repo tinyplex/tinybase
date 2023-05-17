@@ -7,7 +7,7 @@
  *
  * @packageDocumentation
  * @module tools
- * @since v2.2.0
+ * @since v2.2
  */
 /// tools
 /**
@@ -17,7 +17,7 @@
  * A StoreStats object is returned from the getStoreStats method.
  *
  * @category Statistics
- * @since v2.2.0
+ * @since v2.2
  */
 /// StoreStats
 {
@@ -35,7 +35,7 @@
    */
   /// StoreStats.totalCells
   /**
-   * The number of Value objects in the Store, since v3.0.0.
+   * The number of Value objects in the Store, since v3.0.
    */
   /// StoreStats.totalValues
   /**
@@ -56,7 +56,7 @@
  * the getStoreStats method) when the `detail` flag is specified.
  *
  * @category Statistics
- * @since v2.2.0
+ * @since v2.2
  */
 /// StoreStatsDetail
 {
@@ -70,7 +70,7 @@
  * single Table in the Store, and is used for debugging purposes.
  *
  * @category Statistics
- * @since v2.2.0
+ * @since v2.2
  */
 /// StoreStatsTableDetail
 {
@@ -92,7 +92,7 @@
  * Store, and is used for debugging purposes.
  *
  * @category Statistics
- * @since v2.2.0
+ * @since v2.2
  */
 /// StoreStatsRowDetail
 {
@@ -107,7 +107,7 @@
  *
  * @see Developer Tools guides
  * @category Tools
- * @since v2.2.0
+ * @since v2.2
  */
 /// Tools
 {
@@ -166,7 +166,7 @@
    * // -> {fido: {rowCells: 2}, felix: {rowCells: 2}, cujo: {rowCells: 2}}
    * ```
    * @category Statistics
-   * @since v2.2.0
+   * @since v2.2
    */
   /// getStoreStats
   /* eslint-enable max-len */
@@ -228,7 +228,7 @@
    * // -> {type: 'boolean'}
    * ```
    * @category Modelling
-   * @since v3.0.0
+   * @since v3.0
    */
   /// getStoreTablesSchema
   /**
@@ -266,12 +266,12 @@
    * // -> {open: {type: 'boolean'}, employees: {type: 'number'}}
    * ```
    * @category Modelling
-   * @since v3.0.0
+   * @since v3.0
    */
   /// getStoreValuesSchema
   /**
    * The getStoreApi method returns code-generated `.d.ts` and `.ts(x)` files
-   * that describe the schema of a Store and React bindings (since v3.1.0) in an
+   * that describe the schema of a Store and React bindings (since v3.1) in an
    * ORM style.
    *
    * If the Store does not already have an explicit TablesSchema or ValuesSchema
@@ -371,13 +371,13 @@
    * // -> 'getPetsTable: (): PetsTable => store.getTable(PETS) as PetsTable,'
    * ```
    * @category Modelling
-   * @since v2.2.0
+   * @since v2.2
    */
   /// getStoreApi
   /**
    * The getPrettyStoreApi method attempts to return prettified code-generated
    * `.d.ts` and `.ts(x)` files that describe the schema of a Store and React
-   * bindings (since v3.1.0) in an ORM style.
+   * bindings (since v3.1) in an ORM style.
    *
    * This is simply a wrapper around the getStoreApi method that attempts to
    * invoke the `prettier` module (which it hopes you have installed) to format
@@ -450,7 +450,7 @@
    * // -> '    hasPetsTable: (): boolean => store.hasTable(PETS),'
    * ```
    * @category Modelling
-   * @since v2.2.0
+   * @since v2.2
    */
   /// getPrettyStoreApi
   /**
@@ -469,7 +469,7 @@
    * // -> 1
    * ```
    * @category Getter
-   * @since v3.0.0
+   * @since v3.0
    */
   /// getStore
 }
@@ -515,7 +515,7 @@
  * // -> true
  * ```
  * @category Creation
- * @since v2.2.0
+ * @since v2.2
  */
 /// createTools
 /* eslint-enable max-len */

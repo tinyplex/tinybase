@@ -77,7 +77,7 @@
  * };
  * ```
  * @category Schema
- * @since v3.0.0
+ * @since v3.0
  */
 /// ValuesSchema
 /**
@@ -103,7 +103,7 @@
  * const requiredBoolean: ValueSchema = {type: 'boolean', default: false};
  * ```
  * @category Schema
- * @since v3.0.0
+ * @since v3.0
  */
 /// ValueSchema
 /**
@@ -244,7 +244,7 @@
  * const values: Values = {open: true, employees: 4};
  * ```
  * @category Store
- * @since v3.0.0
+ * @since v3.0
  */
 /// Values
 /**
@@ -260,7 +260,7 @@
  * const value: Value = 'dog';
  * ```
  * @category Store
- * @since v3.0.0
+ * @since v3.0
  */
 /// Value
 /**
@@ -272,7 +272,7 @@
  * state where the Value has since been added.
  *
  * @category Store
- * @since v3.0.0
+ * @since v3.0
  */
 /// ValueOrUndefined
 /**
@@ -340,7 +340,7 @@
  * @param valueId The Id of the Value that the callback can operate on.
  * @param value The Value itself.
  * @category Callback
- * @since v3.0.0
+ * @since v3.0
  */
 /// ValueCallback
 /**
@@ -365,7 +365,7 @@
  *
  * @param value The current Value to map to a new Value.
  * @category Callback
- * @since v3.0.0
+ * @since v3.0
  */
 /// MapValue
 /**
@@ -613,7 +613,7 @@
  * @param limit The maximum number of Row Ids returned.
  * @param sortedRowIds The sorted Row Ids themselves.
  * @category Listener
- * @since v2.0.0
+ * @since v2.0
  */
 /// SortedRowIdsListener
 /**
@@ -753,7 +753,7 @@
  * @param getValueChange A function that returns information about any Value's
  * changes.
  * @category Listener
- * @since v3.0.0
+ * @since v3.0
  */
 /// ValueListener
 /**
@@ -776,7 +776,7 @@
  * @param cellId The Id of the Cell that was being changed.
  * @param invalidCells An array of the values of the Cell that were invalid.
  * @category Listener
- * @since v1.1.0
+ * @since v1.1
  */
 /// InvalidCellListener
 /**
@@ -797,7 +797,7 @@
  * @param valueId The Id of the Value that was being changed.
  * @param invalidValues An array of the Values that were invalid.
  * @category Listener
- * @since v3.0.0
+ * @since v3.0
  */
 /// InvalidValueListener
 /**
@@ -892,7 +892,7 @@
  * different value and then changed back.
  *
  * @category Transaction
- * @since v1.2.0
+ * @since v1.2
  */
 /// ChangedCells
 /**
@@ -913,7 +913,7 @@
  * different value and then changed back.
  *
  * @category Transaction
- * @since v1.2.0
+ * @since v1.2
  */
 /// ChangedCell
 /**
@@ -931,7 +931,7 @@
  * a Cell during the transaction are described.
  *
  * @category Transaction
- * @since v1.2.0
+ * @since v1.2
  */
 /// InvalidCells
 /**
@@ -956,7 +956,7 @@
  * a different value and then changed back.
  *
  * @category Transaction
- * @since v3.0.0
+ * @since v3.0
  */
 /// ChangedValues
 /**
@@ -977,7 +977,7 @@
  * a different value and then changed back.
  *
  * @category Transaction
- * @since v3.0.0
+ * @since v3.0
  */
 /// ChangedValue
 /**
@@ -994,7 +994,7 @@
  * attempts to change a Value during the transaction are described.
  *
  * @category Transaction
- * @since v3.0.0
+ * @since v3.0
  */
 /// InvalidValues
 /**
@@ -1042,7 +1042,7 @@
  * ```
  *
  * @category Transaction
- * @since v4.0.0
+ * @since v4.0
  */
 /// TransactionChanges
 /**
@@ -1054,7 +1054,7 @@
  * more information and an example of the returned data structure.
  *
  * @category Transaction
- * @since v4.0.0
+ * @since v4.0
  */
 /// GetTransactionChanges
 /**
@@ -1080,7 +1080,7 @@
  * See the documentation for the types of the inner objects for other details.
  *
  * @category Transaction
- * @since v4.0.0
+ * @since v4.0
  */
 /// TransactionLog
 /// GetTransactionLog
@@ -1093,7 +1093,7 @@
  * information.
  *
  * @category Transaction
- * @since v4.0.0
+ * @since v4.0
  */
 /// GetTransactionLog
 /**
@@ -1152,22 +1152,22 @@
   /// StoreListenerStats.invalidCell
   /**
    * The number of ValuesListener functions registered with the Store, since
-   * v3.0.0.
+   * v3.0.
    */
   /// StoreListenerStats.values
   /**
    * The number of ValueIdsListener functions registered with the Store, since
-   * v3.0.0.
+   * v3.0.
    */
   /// StoreListenerStats.valueIds
   /**
    * The number of ValueListener functions registered with the Store, since
-   * v3.0.0.
+   * v3.0.
    */
   /// StoreListenerStats.value
   /**
    * The number of InvalidValueListener functions registered with the Store,
-   * since v3.0.0.
+   * since v3.0.
    */
   /// StoreListenerStats.invalidValue
   /**
@@ -1386,7 +1386,7 @@
    * // -> [{}, {}]
    * ```
    * @category Getter
-   * @since v4.0.0
+   * @since v4.0
    */
   /// Store.getContent
   /**
@@ -1650,7 +1650,7 @@
    * // -> []
    * ```
    * @category Getter
-   * @since v2.0.0
+   * @since v2.0
    */
   /// Store.getSortedRowIds
   /**
@@ -1779,7 +1779,7 @@
    * // -> {}
    * ```
    * @category Getter
-   * @since v3.0.0
+   * @since v3.0
    */
   /// Store.getValues
   /**
@@ -1807,7 +1807,7 @@
    * // -> []
    * ```
    * @category Getter
-   * @since v3.0.0
+   * @since v3.0
    */
   /// Store.getValueIds
   /**
@@ -1832,7 +1832,7 @@
    * // -> undefined
    * ```
    * @category Getter
-   * @since v3.0.0
+   * @since v3.0
    */
   /// Store.getValue
   /**
@@ -1956,7 +1956,7 @@
    * // -> true
    * ```
    * @category Getter
-   * @since v3.0.0
+   * @since v3.0
    */
   /// Store.hasValues
   /**
@@ -1976,7 +1976,7 @@
    * // -> false
    * ```
    * @category Getter
-   * @since v3.0.0
+   * @since v3.0
    */
   /// Store.hasValue
   /**
@@ -2001,7 +2001,7 @@
    * // -> '{}'
    * ```
    * @category Getter
-   * @since v3.0.0
+   * @since v3.0
    */
   /// Store.getTablesJson
   /**
@@ -2026,14 +2026,14 @@
    * // -> '{}'
    * ```
    * @category Getter
-   * @since v3.0.0
+   * @since v3.0
    */
   /// Store.getValuesJson
   /**
    * The getJson method returns a string serialization of all the Store content:
    * both the Tables and the keyed Values.
    *
-   * From v3.0.0 onwards, the serialization is of an array with two entries. The
+   * From v3.0 onwards, the serialization is of an array with two entries. The
    * first is the Tables object, the second the Values. In previous versions
    * (before the existence of the Values data structure), it was a sole object
    * of Tables.
@@ -2091,7 +2091,7 @@
    * // -> '{}'
    * ```
    * @category Getter
-   * @since v3.0.0
+   * @since v3.0
    */
   /// Store.getTablesSchemaJson
   /**
@@ -2122,14 +2122,14 @@
    * // -> '{}'
    * ```
    * @category Getter
-   * @since v3.0.0
+   * @since v3.0
    */
   /// Store.getValuesSchemaJson
   /**
    * The getSchemaJson method returns a string serialization of both the
    * TablesSchema and ValuesSchema of the Store.
    *
-   * From v3.0.0 onwards, the serialization is of an array with two entries. The
+   * From v3.0 onwards, the serialization is of an array with two entries. The
    * first is the TablesSchema object, the second the ValuesSchema. In previous
    * versions (before the existence of the ValuesSchema data structure), it was
    * a sole object of TablesSchema.
@@ -2219,7 +2219,7 @@
    * // -> {pets: {felix: {species: 'cat'}}}
    * ```
    * @category Setter
-   * @since v4.0.0
+   * @since v4.0
    */
   /// Store.setContent
   /**
@@ -2582,7 +2582,7 @@
    * // -> {employees: 3}
    * ```
    * @category Setter
-   * @since v3.0.0
+   * @since v3.0
    */
   /// Store.setValues
   /**
@@ -2631,7 +2631,7 @@
    * // -> {open: true, employees: 3}
    * ```
    * @category Setter
-   * @since v3.0.0
+   * @since v3.0
    */
   /// Store.setPartialValues
   /**
@@ -2684,7 +2684,7 @@
    * // -> {employees: 3}
    * ```
    * @category Setter
-   * @since v3.0.0
+   * @since v3.0
    */
   /// Store.setValue
   /**
@@ -2725,7 +2725,7 @@
    * // -> {}
    * ```
    * @category Setter
-   * @since v4.0.0
+   * @since v4.0
    */
   /// Store.setTransactionChanges
   /**
@@ -2759,7 +2759,7 @@
    * // -> {}
    * ```
    * @category Setter
-   * @since v3.0.0
+   * @since v3.0
    */
   /// Store.setTablesJson
   /**
@@ -2793,14 +2793,14 @@
    * // -> {}
    * ```
    * @category Setter
-   * @since v3.0.0
+   * @since v3.0
    */
   /// Store.setValuesJson
   /**
    * The setJson method takes a string serialization of all of the Tables and
    * Values in the Store and attempts to update them to those values.
    *
-   * From v3.0.0 onwards, the serialization should be of an array with two
+   * From v3.0 onwards, the serialization should be of an array with two
    * entries. The first is the Tables object, the second the Values. In previous
    * versions (before the existence of the Values data structure), it was a sole
    * object of Tables. For backwards compatibility, if a serialization of a
@@ -2883,7 +2883,7 @@
    * // -> {pets: {0: {species: 'dog', sold: false}}}
    * ```
    * @category Setter
-   * @since v3.0.0
+   * @since v3.0
    */
   /// Store.setTablesSchema
   /**
@@ -2912,7 +2912,7 @@
    * // -> {open: false}
    * ```
    * @category Setter
-   * @since v3.0.0
+   * @since v3.0
    */
   /// Store.setValuesSchema
   /**
@@ -2923,7 +2923,7 @@
    * applied or as invalid Table, Row, Cell, or Value objects are removed. These
    * changes will fire any listeners to that data, as expected.
    *
-   * From v3.0.0 onwards, this method takes two arguments. The first is the
+   * From v3.0 onwards, this method takes two arguments. The first is the
    * TablesSchema object, the second the ValuesSchema. In previous versions
    * (before the existence of the ValuesSchema data structure), only the first
    * was present. For backwards compatibility the new second parameter is
@@ -3152,7 +3152,7 @@
    * // -> {open: false}
    * ```
    * @category Deleter
-   * @since v3.0.0
+   * @since v3.0
    */
   /// Store.delValues
   /**
@@ -3191,7 +3191,7 @@
    * // -> {open: false, employees: 3}
    * ```
    * @category Deleter
-   * @since v3.0.0
+   * @since v3.0
    */
   /// Store.delValue
   /**
@@ -3228,14 +3228,14 @@
    * // -> '{}'
    * ```
    * @category Deleter
-   * @since v3.0.0
+   * @since v3.0
    */
   /// Store.delValuesSchema
   /**
    * The delSchema method lets you remove both the TablesSchema and ValuesSchema
    * of the Store.
    *
-   * Prior to v3.0.0, this method removed the TablesSchema only.
+   * Prior to v3.0, this method removed the TablesSchema only.
    *
    * @returns A reference to the Store.
    * @example
@@ -3254,7 +3254,7 @@
    * // -> '[{},{}]'
    * ```
    * @category Deleter
-   * @since v3.0.0
+   * @since v3.0
    */
   /// Store.delSchema
   /**
@@ -3288,7 +3288,7 @@
    *
    * @param actions The function to be executed as a transaction.
    * @param doRollback An optional callback that should return `true` if you
-   * want to rollback the transaction at the end. Since v1.2.0.
+   * want to rollback the transaction at the end. Since v1.2.
    * @returns Whatever value the provided transaction function returns.
    * @example
    * This example makes changes to two Cells, first outside, and secondly
@@ -3433,7 +3433,7 @@
    * // -> 'Fido changed'
    * ```
    * @category Transaction
-   * @since v1.3.0
+   * @since v1.3
    */
   /// Store.startTransaction
   /**
@@ -3530,7 +3530,7 @@
    * // -> {open: true}
    * ```
    * @category Transaction
-   * @since v1.3.0
+   * @since v1.3
    */
   /// Store.finishTransaction
   /**
@@ -3676,7 +3676,7 @@
    * // -> 'employees: 3'
    * ```
    * @category Iterator
-   * @since v3.0.0
+   * @since v3.0
    */
   /// Store.forEachValue
   /**
@@ -4297,7 +4297,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
-   * @since v2.0.0
+   * @since v2.0
    */
   /// Store.addSortedRowIdsListener
   /**
@@ -4674,7 +4674,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
-   * @since v3.0.0
+   * @since v3.0
    */
   /// Store.addValuesListener
   /**
@@ -4737,7 +4737,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
-   * @since v3.0.0
+   * @since v3.0
    */
   /// Store.addValueIdsListener
   /**
@@ -4825,7 +4825,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
-   * @since v3.0.0
+   * @since v3.0
    */
   /// Store.addValueListener
   /**
@@ -5049,7 +5049,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
-   * @since v1.1.0
+   * @since v1.1
    */
   /// Store.addInvalidCellListener
   /**
@@ -5220,7 +5220,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
-   * @since v3.0.0
+   * @since v3.0
    */
   /// Store.addInvalidValueListener
   /**
@@ -5361,7 +5361,7 @@
    *   .delListener(listenerId3);
    * ```
    * @category Listener
-   * @since v1.3.0
+   * @since v1.3
    */
   /// Store.addWillFinishTransactionListener
   /**
@@ -5457,7 +5457,7 @@
    *   .delListener(listenerId3);
    * ```
    * @category Listener
-   * @since v1.3.0
+   * @since v1.3
    */
   /// Store.addDidFinishTransactionListener
   /**

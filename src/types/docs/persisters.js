@@ -179,7 +179,7 @@
    * @param initialTables An optional Tables object used when the underlying
    * storage has not previously been populated.
    * @param initialValues An optional Values object used when the underlying
-   * storage has not previously been populated, since v3.0.0.
+   * storage has not previously been populated, since v3.0.
    * @returns A Promise containing a reference to the Persister object.
    * @example
    * This example creates an empty Store, and loads data into it from the
@@ -246,7 +246,7 @@
    * @param initialTables An optional Tables object used when the underlying
    * storage has not previously been populated.
    * @param initialValues An optional Values object used when the underlying
-   * storage has not previously been populated, since v3.0.0.
+   * storage has not previously been populated, since v3.0.
    * @returns A Promise containing a reference to the Persister object.
    * @example
    * This example creates an empty Store, and loads data into it from the
@@ -534,7 +534,7 @@
  * covers. See those implementations for ideas on how to implement your own
  * Persister types.
  *
- * This API changed in v4.0.0. Any custom persisters created on previous
+ * This API changed in v4.0. Any custom persisters created on previous
  * versions should be upgraded. Most notably, the `setPersisted` function
  * parameter is provided with a `getContent` function to get the content from
  * the Store itself, rather than being passed pre-serialized JSON. It also
@@ -547,7 +547,7 @@
  * @param getPersisted An asynchronous function which will fetch content from
  * the persistence layer (or `undefined` if not present).
  * @param setPersisted An asynchronous function which will send content to the
- * persistence layer. Since v4.0.0, it receives functions for getting the Store
+ * persistence layer. Since v4.0, it receives functions for getting the Store
  * content and information about the changes made during a transaction.
  * @param addPersisterListener A function that will register a `listener`
  * listener on underlying changes to the persistence layer. You can return a
