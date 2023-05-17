@@ -109,7 +109,7 @@
  * parameter or a prop, allowing you to pass in either the Store or its Id.
  *
  * @category Identity
- * @since v2.0.0
+ * @since v2.0
  */
 /// QueriesOrQueriesId
 /**
@@ -701,7 +701,7 @@
  * // -> '<span>["felix","fido"]</span>'
  * ```
  * @category Store hooks
- * @since v2.0.0
+ * @since v2.0
  */
 /// useSortedRowIds
 /**
@@ -1025,7 +1025,7 @@
  * // -> '<span>{"open":true}</span>'
  * ```
  * @category Store hooks
- * @since v3.0.0
+ * @since v3.0
  */
 /// useValues
 /**
@@ -1101,7 +1101,7 @@
  * // -> '<span>["open"]</span>'
  * ```
  * @category Store hooks
- * @since v3.0.0
+ * @since v3.0
  */
 /// useValueIds
 /**
@@ -1181,7 +1181,7 @@
  * // -> '<span>true</span>'
  * ```
  * @category Store hooks
- * @since v3.0.0
+ * @since v3.0
  */
 /// useValue
 /**
@@ -1781,7 +1781,7 @@
  * // -> '{"bubbles":true}'
  * ```
  * @category Store hooks
- * @since v3.0.0
+ * @since v3.0
  */
 /// useSetValuesCallback
 /**
@@ -1860,7 +1860,7 @@
  * // -> '{"open":true,"bubbles":true}'
  * ```
  * @category Store hooks
- * @since v3.0.0
+ * @since v3.0
  */
 /// useSetPartialValuesCallback
 /**
@@ -1939,7 +1939,7 @@
  * // -> '{"open":true,"bubbles":true}'
  * ```
  * @category Store hooks
- * @since v3.0.0
+ * @since v3.0
  */
 /// useSetValueCallback
 /**
@@ -2244,7 +2244,7 @@
  * // -> '{}'
  * ```
  * @category Store hooks
- * @since v3.0.0
+ * @since v3.0
  */
 /// useDelValuesCallback
 /**
@@ -2304,7 +2304,7 @@
  * // -> '{"employees":3}'
  * ```
  * @category Store hooks
- * @since v3.0.0
+ * @since v3.0
  */
 /// useDelValueCallback
 /**
@@ -2609,7 +2609,7 @@
  * // -> 0
  * ```
  * @category Store hooks
- * @since v2.0.0
+ * @since v2.0
  */
 /// useSortedRowIdsListener
 /**
@@ -2873,7 +2873,7 @@
  * // -> 0
  * ```
  * @category Store hooks
- * @since v3.0.0
+ * @since v3.0
  */
 /// useValuesListener
 /**
@@ -2931,7 +2931,7 @@
  * // -> 0
  * ```
  * @category Store hooks
- * @since v3.0.0
+ * @since v3.0
  */
 /// useValueIdsListener
 /**
@@ -2992,7 +2992,7 @@
  * // -> 0
  * ```
  * @category Store hooks
- * @since v3.0.0
+ * @since v3.0
  */
 /// useValueListener
 /**
@@ -4738,7 +4738,7 @@
  * // -> '<span>brown</span>'
  * ```
  * @category Queries hooks
- * @since v2.0.0
+ * @since v2.0
  */
 /// useCreateQueries
 /**
@@ -4801,7 +4801,7 @@
  * // -> '<span>0</span>'
  * ```
  * @category Queries hooks
- * @since v2.0.0
+ * @since v2.0
  */
 /// useQueries
 /**
@@ -4917,7 +4917,7 @@
  * // -> '<span>{"fido":{"color":"brown"},"cujo":{"color":"black"}}</span>'
  * ```
  * @category Queries hooks
- * @since v2.0.0
+ * @since v2.0
  */
 /// useResultTable
 /**
@@ -5034,7 +5034,7 @@
  * // -> '<span>["fido","cujo"]</span>'
  * ```
  * @category Queries hooks
- * @since v2.0.0
+ * @since v2.0
  */
 /// useResultRowIds
 /**
@@ -5179,7 +5179,7 @@
  * // -> '<span>["cujo","fido"]</span>'
  * ```
  * @category Queries hooks
- * @since v2.0.0
+ * @since v2.0
  */
 /// useResultSortedRowIds
 /**
@@ -5299,7 +5299,7 @@
  * // -> '<span>{"color":"brown"}</span>'
  * ```
  * @category Queries hooks
- * @since v2.0.0
+ * @since v2.0
  */
 /// useResultRow
 /**
@@ -5425,7 +5425,7 @@
  * // -> '<span>["species","color"]</span>'
  * ```
  * @category Queries hooks
- * @since v2.0.0
+ * @since v2.0
  */
 /// useResultCellIds
 /**
@@ -5547,7 +5547,7 @@
  * // -> '<span>brown</span>'
  * ```
  * @category Queries hooks
- * @since v2.0.0
+ * @since v2.0
  */
 /// useResultCell
 /**
@@ -5619,7 +5619,7 @@
  * // -> 0
  * ```
  * @category Queries hooks
- * @since v2.0.0
+ * @since v2.0
  */
 /// useResultTableListener
 /**
@@ -5691,7 +5691,7 @@
  * // -> 0
  * ```
  * @category Queries hooks
- * @since v2.0.0
+ * @since v2.0
  */
 /// useResultRowIdsListener
 /**
@@ -5770,7 +5770,7 @@
  * // -> 0
  * ```
  * @category Queries hooks
- * @since v2.0.0
+ * @since v2.0
  */
 /// useResultSortedRowIdsListener
 /**
@@ -5848,7 +5848,7 @@
  * // -> 0
  * ```
  * @category Queries hooks
- * @since v2.0.0
+ * @since v2.0
  */
 /// useResultRowListener
 /**
@@ -5926,7 +5926,7 @@
  * // -> 0
  * ```
  * @category Queries hooks
- * @since v2.0.0
+ * @since v2.0
  */
 /// useResultCellIdsListener
 /**
@@ -6006,7 +6006,7 @@
  * // -> 0
  * ```
  * @category Queries hooks
- * @since v2.0.0
+ * @since v2.0
  */
 /// useResultCellListener
 /**
@@ -7036,7 +7036,7 @@
  * Table in a Store, such as the SortedTableView component.
  *
  * @category Props
- * @since v2.0.0
+ * @since v2.0
  */
 /// SortedTableProps
 {
@@ -7163,7 +7163,7 @@
  * Store, such as the ValuesView component.
  *
  * @category Props
- * @since v3.0.0
+ * @since v3.0
  */
 /// ValuesProps
 {
@@ -7197,7 +7197,7 @@
  * Row, such as the ValueView component.
  *
  * @category Props
- * @since v3.0.0
+ * @since v3.0
  */
 /// ValueProps
 {
@@ -7448,7 +7448,7 @@
  * result Table, such as the ResultTableView component.
  *
  * @category Props
- * @since v2.0.0
+ * @since v2.0
  */
 /// ResultTableProps
 {
@@ -7488,7 +7488,7 @@
  * sorted query result Table, such as the ResultSortedTableView component.
  *
  * @category Props
- * @since v2.0.0
+ * @since v2.0
  */
 /// ResultSortedTableProps
 {
@@ -7545,7 +7545,7 @@
  * query result Table, such as the ResultRowView component.
  *
  * @category Props
- * @since v2.0.0
+ * @since v2.0
  */
 /// ResultRowProps
 {
@@ -7589,7 +7589,7 @@
  * Row of a result Table, such as the ResultCellView component.
  *
  * @category Props
- * @since v2.0.0
+ * @since v2.0
  */
 /// ResultCellProps
 {
@@ -7795,12 +7795,12 @@
   /// ProviderProps.relationshipsById
   /**
    * A default single Queries object that will be available within the Provider
-   * context, since v2.0.0.
+   * context, since v2.0.
    */
   /// ProviderProps.queries
   /**
    * An object containing multiple Queries objects that will be available within
-   * the Provider context by their Id, since v2.0.0.
+   * the Provider context by their Id, since v2.0.
    */
   /// ProviderProps.queriesById
   /**
@@ -8247,7 +8247,7 @@
  * // -> '<div><span>felix: cat</span><span><b>fido</b>: dog</span></div>'
  * ```
  * @category Store components
- * @since v2.0.0
+ * @since v2.0
  */
 /// SortedTableView
 /**
@@ -8555,7 +8555,7 @@
  * // -> '<span></span>'
  * ```
  * @category Store components
- * @since v3.0.0
+ * @since v3.0
  */
 /// ValueView
 /**
@@ -8660,7 +8660,7 @@
  * // -> '<div><span><b>open</b>: true</span><span>employees: 3</span></div>'
  * ```
  * @category Store components
- * @since v3.0.0
+ * @since v3.0
  */
 /// ValuesView
 /**
@@ -9537,7 +9537,7 @@
  * // -> '<span></span>'
  * ```
  * @category Queries components
- * @since v2.0.0
+ * @since v2.0
  */
 /// ResultCellView
 /**
@@ -9683,7 +9683,7 @@
  * // -> '<div><span><b>species</b>: dog</span><span>color: brown</span></div>'
  * ```
  * @category Queries components
- * @since v2.0.0
+ * @since v2.0
  */
 /// ResultRowView
 /**
@@ -9820,7 +9820,7 @@
  * // -> '<div><span>felix: black</span><span><b>fido</b>: brown</span></div>'
  * ```
  * @category Queries components
- * @since v2.0.0
+ * @since v2.0
  */
 /// ResultSortedTableView
 /**
@@ -9942,7 +9942,7 @@
  * // -> '<div><span><b>fido</b>: brown</span><span>felix: black</span></div>'
  * ```
  * @category Queries components
- * @since v2.0.0
+ * @since v2.0
  */
 /// ResultTableView
 /**
