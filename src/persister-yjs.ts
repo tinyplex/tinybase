@@ -7,7 +7,12 @@ import {
 } from './types/store.d';
 import {Persister, PersisterListener} from './types/persisters.d';
 import {Array as YArray, Doc as YDoc, YEvent, Map as YMap} from 'yjs';
-import {arrayForEach, arrayIsEmpty, arrayShift} from './common/array';
+import {
+  arrayForEach,
+  arrayIsEmpty,
+  arrayLength,
+  arrayShift,
+} from './common/array';
 import {ifNotUndefined, isUndefined} from './common/other';
 import {objEnsure, objHas, objMap, objNew} from './common/obj';
 import {Id} from './types/common.d';
@@ -24,9 +29,12 @@ const getTransactionChangesFromYDoc = (
   yContent: YArray<any>,
   events: YEvent<any>[],
 ): TransactionChanges => {
+  if (arrayLength(events) == 1 && arrayIsEmpty(events[0].path)) {
+    return yContent.toJSON() as TransactionChanges;
+  }
+  const [yTables, yValues] = yContent.toArray();
   const tables = {} as any;
   const values = {} as any;
-  const [yTables, yValues] = yContent.toArray();
   arrayForEach(events, ({path, changes: {keys}}) =>
     arrayShift(path) == 0
       ? ifNotUndefined(
