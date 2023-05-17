@@ -3,7 +3,8 @@
  * load Store data, to and from a Yjs document.
  *
  * A single entry point, the createYjsPersister function, is provided, which
- * returns a new Persister object that can load and save a Store.:
+ * returns a new Persister object that can bind a Store to a provided Yjs
+ * document.
  *
  * @see Synchronizing Data guide
  * @packageDocumentation
