@@ -8,7 +8,7 @@
  * @see Synchronizing Data guide
  * @packageDocumentation
  * @module persister-yjs
- * @since v4.0.0
+ * @since v4.0
  */
 /// persister-yjs
 /**
@@ -92,6 +92,6 @@
  * persister2.destroy();
  * ```
  * @category Creation
- * @since v4.0.0
+ * @since v4.0
  */
 /// createYjsPersister
