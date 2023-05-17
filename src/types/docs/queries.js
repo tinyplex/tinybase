@@ -9,7 +9,7 @@
  *
  * @packageDocumentation
  * @module queries
- * @since v2.0.0
+ * @since v2.0
  */
 /// queries
 /**
@@ -82,7 +82,7 @@
  * @param length The length of the array of Cell values to be aggregated.
  * @returns The value of the aggregation.
  * @category Aggregators
- * @since v2.0.0
+ * @since v2.0
  */
 /// Aggregate
 /**
@@ -107,7 +107,7 @@
  * @param length The length of the array of Cell values in the aggregation.
  * @returns The new value of the aggregation.
  * @category Aggregators
- * @since v2.0.0
+ * @since v2.0
  */
 /// AggregateAdd
 /**
@@ -135,7 +135,7 @@
  * @param length The length of the array of Cell values in the aggregation.
  * @returns The new value of the aggregation.
  * @category Aggregators
- * @since v2.0.0
+ * @since v2.0
  */
 /// AggregateRemove
 /**
@@ -162,7 +162,7 @@
  * @param length The length of the array of Cell values in the aggregation.
  * @returns The new value of the aggregation.
  * @category Aggregators
- * @since v2.0.0
+ * @since v2.0
  */
 /// AggregateReplace
 /**
@@ -174,7 +174,7 @@
  *
  * @param queryId The Id of the query that the callback can operate on.
  * @category Callback
- * @since v2.0.0
+ * @since v2.0
  */
 /// QueryCallback
 /**
@@ -236,7 +236,7 @@
  * @param getCellChange A function that returns information about any
  * ResultCell's changes.
  * @category Listener
- * @since v2.0.0
+ * @since v2.0
  */
 /// ResultTableListener
 /**
@@ -254,7 +254,7 @@
  * @param tableId The Id of the ResultTable that changed, which is also the
  * query Id.
  * @category Listener
- * @since v2.0.0
+ * @since v2.0
  */
 /// ResultRowIdsListener
 /**
@@ -282,7 +282,7 @@
  * @param limit The maximum number of ResultRow Ids returned.
  * @param sortedRowIds The sorted ResultRow Ids themselves.
  * @category Listener
- * @since v2.0.0
+ * @since v2.0
  */
 /// ResultSortedRowIdsListener
 /**
@@ -304,7 +304,7 @@
  * @param getCellChange A function that returns information about any
  * ResultCell's changes.
  * @category Listener
- * @since v2.0.0
+ * @since v2.0
  */
 /// ResultRowListener
 /**
@@ -323,7 +323,7 @@
  * query Id.
  * @param rowId The Id of the ResultRow that changed.
  * @category Listener
- * @since v2.0.0
+ * @since v2.0
  */
 /// ResultCellIdsListener
 /**
@@ -350,7 +350,7 @@
  * @param getCellChange A function that returns information about any
  * ResultCell's changes.
  * @category Listener
- * @since v2.0.0
+ * @since v2.0
  */
 /// ResultCellListener
 /**
@@ -390,7 +390,7 @@
  * and is only populated in a debug build.
  *
  * @category Development
- * @since v2.0.0
+ * @since v2.0
  */
 /// QueriesListenerStats
 {
@@ -424,7 +424,7 @@
  * calculated values. See those methods for specific examples.
  *
  * @category Callback
- * @since v2.0.0
+ * @since v2.0
  */
 /// GetTableCell
 {
@@ -545,7 +545,7 @@
  * // -> {cujo: {description: 'dog for Carol'}}
  * ```
  * @category Definition
- * @since v2.0.0
+ * @since v2.0
  */
 /// Select
 {
@@ -629,7 +629,7 @@
  * // -> {cujo: {petSpecies: 'dog', ownerName: 'Carol'}}
  * ```
  * @category Definition
- * @since v2.0.0
+ * @since v2.0
  */
 /// SelectedAs
 {
@@ -802,7 +802,7 @@
  * // -> {cujo: {description: 'dog in Washington'}}
  * ```
  * @category Definition
- * @since v2.0.0
+ * @since v2.0
  */
 /// Join
 {
@@ -910,7 +910,7 @@
  * // -> {cujo: {buyer: 'Carol', seller: 'Alice'}}
  * ```
  * @category Definition
- * @since v2.0.0
+ * @since v2.0
  */
 /// JoinedAs
 /**
@@ -1031,7 +1031,7 @@
  * // -> {cujo: {species: 'dog', state: 'WA'}}
  * ```
  * @category Definition
- * @since v2.0.0
+ * @since v2.0
  */
 /// Where
 {
@@ -1237,7 +1237,7 @@
  * // Both have a parrot at 3. Alice's worm at 1 is excluded from aggregation.
  * ```
  * @category Definition
- * @since v2.0.0
+ * @since v2.0
  */
 /// Group
 /**
@@ -1276,7 +1276,7 @@
  * // -> {1: {species: 'cat', minPrice: 3, maxPrice: 4}}
  * ```
  * @category Definition
- * @since v2.0.0
+ * @since v2.0
  */
 /// GroupedAs
 /**
@@ -1369,7 +1369,7 @@
  * // Parrots are filtered out because they have zero range in price.
  * ```
  * @category Definition
- * @since v2.0.0
+ * @since v2.0
  */
 /// Having
 {
@@ -1487,7 +1487,7 @@
  * @see Car Analysis demo
  * @see Movie Database demo
  * @category Queries
- * @since v2.0.0
+ * @since v2.0
  */
 /// Queries
 {
@@ -1552,7 +1552,7 @@
    * // -> {fido: {color: 'brown'}, cujo: {color: 'black'}}
    * ```
    * @category Configuration
-   * @since v2.0.0
+   * @since v2.0
    */
   /// Queries.setQueryDefinition
   /**
@@ -1584,7 +1584,7 @@
    * // -> []
    * ```
    * @category Configuration
-   * @since v2.0.0
+   * @since v2.0
    */
   /// Queries.delQueryDefinition
   /**
@@ -1609,7 +1609,7 @@
    * // -> {fido: {color: 'brown'}}
    * ```
    * @category Getter
-   * @since v2.0.0
+   * @since v2.0
    */
   /// Queries.getStore
   /**
@@ -1636,7 +1636,7 @@
    * // -> ['dogColors', 'catColors']
    * ```
    * @category Getter
-   * @since v2.0.0
+   * @since v2.0
    */
   /// Queries.getQueryIds
   /**
@@ -1669,7 +1669,7 @@
    * // -> 'catColors'
    * ```
    * @category Iterator
-   * @since v2.0.0
+   * @since v2.0
    */
   /// Queries.forEachQuery
   /**
@@ -1697,7 +1697,7 @@
    * // -> false
    * ```
    * @category Getter
-   * @since v2.0.0
+   * @since v2.0
    */
   /// Queries.hasQuery
   /**
@@ -1729,7 +1729,7 @@
    * // -> undefined
    * ```
    * @category Getter
-   * @since v2.0.0
+   * @since v2.0
    */
   /// Queries.getTableId
   /**
@@ -1774,7 +1774,7 @@
    * // -> {}
    * ```
    * @category Result
-   * @since v2.0.0
+   * @since v2.0
    */
   /// Queries.getResultTable
   /**
@@ -1816,7 +1816,7 @@
    * // -> []
    * ```
    * @category Result
-   * @since v2.0.0
+   * @since v2.0
    */
   /// Queries.getResultRowIds
   /**
@@ -1875,7 +1875,7 @@
    * // -> []
    * ```
    * @category Result
-   * @since v2.0.0
+   * @since v2.0
    */
   /// Queries.getResultSortedRowIds
   /**
@@ -1920,7 +1920,7 @@
    * // -> {}
    * ```
    * @category Result
-   * @since v2.0.0
+   * @since v2.0
    */
   /// Queries.getResultRow
   /**
@@ -1965,7 +1965,7 @@
    * // -> []
    * ```
    * @category Result
-   * @since v2.0.0
+   * @since v2.0
    */
   /// Queries.getResultCellIds
   /**
@@ -2008,7 +2008,7 @@
    * // -> undefined
    * ```
    * @category Result
-   * @since v2.0.0
+   * @since v2.0
    */
   /// Queries.getResultCell
   /**
@@ -2042,7 +2042,7 @@
    * // -> false
    * ```
    * @category Result
-   * @since v2.0.0
+   * @since v2.0
    */
   /// Queries.hasResultTable
   /**
@@ -2077,7 +2077,7 @@
    * // -> false
    * ```
    * @category Result
-   * @since v2.0.0
+   * @since v2.0
    */
   /// Queries.hasResultRow
   /**
@@ -2113,7 +2113,7 @@
    * // -> false
    * ```
    * @category Result
-   * @since v2.0.0
+   * @since v2.0
    */
   /// Queries.hasResultCell
   /**
@@ -2159,7 +2159,7 @@
    * // -> '- felix'
    * ```
    * @category Iterator
-   * @since v2.0.0
+   * @since v2.0
    */
   /// Queries.forEachResultTable
   /**
@@ -2204,7 +2204,7 @@
    * // -> '- color'
    * ```
    * @category Iterator
-   * @since v2.0.0
+   * @since v2.0
    */
   /// Queries.forEachResultRow
   /**
@@ -2247,7 +2247,7 @@
    * // -> 'color: brown'
    * ```
    * @category Iterator
-   * @since v2.0.0
+   * @since v2.0
    */
   /// Queries.forEachResultCell
   /**
@@ -2337,7 +2337,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
-   * @since v2.0.0
+   * @since v2.0
    */
   /// Queries.addResultTableListener
   /**
@@ -2431,7 +2431,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
-   * @since v2.0.0
+   * @since v2.0
    */
   /// Queries.addResultRowIdsListener
   /**
@@ -2554,7 +2554,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
-   * @since v2.0.0
+   * @since v2.0
    */
   /// Queries.addResultSortedRowIdsListener
   /**
@@ -2652,7 +2652,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
-   * @since v2.0.0
+   * @since v2.0
    */
   /// Queries.addResultRowListener
   /**
@@ -2759,7 +2759,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
-   * @since v2.0.0
+   * @since v2.0
    */
   /// Queries.addResultCellIdsListener
   /**
@@ -2870,7 +2870,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
-   * @since v2.0.0
+   * @since v2.0
    */
   /// Queries.addResultCellListener
   /**
@@ -2915,7 +2915,7 @@
    * // The listener is not called.
    * ```
    * @category Listener
-   * @since v2.0.0
+   * @since v2.0
    */
   /// Queries.delListener
   /**
@@ -2950,7 +2950,7 @@
    * // -> 0
    * ```
    * @category Lifecycle
-   * @since v2.0.0
+   * @since v2.0
    */
   /// Queries.destroy
   /**
@@ -2979,7 +2979,7 @@
    * // -> 0
    * ```
    * @category Development
-   * @since v2.0.0
+   * @since v2.0
    */
   /// Queries.getListenerStats
 }
@@ -3014,6 +3014,6 @@
  * // -> true
  * ```
  * @category Creation
- * @since v2.0.0
+ * @since v2.0
  */
 /// createQueries
