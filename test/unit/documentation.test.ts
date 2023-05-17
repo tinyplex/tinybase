@@ -8,6 +8,7 @@ import * as TinyBasePersisterRemote from 'tinybase/debug/persister-remote';
 import * as TinyBasePersisterYjs from 'tinybase/debug/persister-yjs';
 import * as TinyBaseReact from 'tinybase/debug/ui-react';
 import * as TinyBaseTools from 'tinybase/debug/tools';
+import * as Y from 'yjs';
 import {join, resolve} from 'path';
 import {readFileSync, readdirSync} from 'fs';
 import {transformSync} from 'esbuild';
@@ -22,6 +23,7 @@ import {transformSync} from 'esbuild';
   TinyBaseTools,
   ReactDOMTestUtils,
   {React, ReactDOMClient},
+  {Y},
 ].forEach((module) =>
   Object.entries(module).forEach(([key, value]) => {
     (globalThis as any)[key] = value;
