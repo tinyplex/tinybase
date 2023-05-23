@@ -20,8 +20,8 @@ export const createCustomPersister = (
 
   const persister: Persister = {
     load: async (
-      initialTables?: Tables,
-      initialValues?: Values,
+      initialTables: Tables = {},
+      initialValues: Values = {},
     ): Promise<Persister> => {
       /*! istanbul ignore else */
       if (loadSave != 2) {
@@ -34,9 +34,7 @@ export const createCustomPersister = (
           store.setJson(body);
         } else {
           store.transaction(() =>
-            store
-              .setTables(initialTables as Tables)
-              .setValues(initialValues as Values),
+            store.setTables(initialTables).setValues(initialValues),
           );
         }
         loadSave = 0;
@@ -45,8 +43,8 @@ export const createCustomPersister = (
     },
 
     startAutoLoad: async (
-      initialTables?: Tables,
-      initialValues?: Values,
+      initialTables: Tables = {},
+      initialValues: Values = {},
     ): Promise<Persister> => {
       persister.stopAutoLoad();
       await persister.load(initialTables, initialValues);
