@@ -40,24 +40,22 @@ export const createCustomPersister = <ListeningHandle>(
 
   const persister: Persister = {
     load: async (
-      initialTables?: Tables,
-      initialValues?: Values,
+      initialTables: Tables = {},
+      initialValues: Values = {},
     ): Promise<Persister> => {
       await loadLock(async () => {
         let content;
         try {
           content = await getPersisted();
         } catch {}
-        store.setContent(
-          content ?? [initialTables as Tables, initialValues as Values],
-        );
+        store.setContent(content ?? [initialTables, initialValues]);
       });
       return persister;
     },
 
     startAutoLoad: async (
-      initialTables?: Tables,
-      initialValues?: Values,
+      initialTables: Tables = {},
+      initialValues: Values = {},
     ): Promise<Persister> => {
       persister.stopAutoLoad();
       await persister.load(initialTables, initialValues);
