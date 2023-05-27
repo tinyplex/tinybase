@@ -129,6 +129,7 @@ const addApi = (docs: Docs): Docs =>
     .addApiFile('lib/types/persister-file.d.ts')
     .addApiFile('lib/types/persister-remote.d.ts')
     .addApiFile('lib/types/persister-yjs.d.ts')
+    .addApiFile('lib/types/persister-automerge.d.ts')
     .addApiFile('lib/types/tools.d.ts')
     .addApiFile('lib/types/ui-react.d.ts');
 
