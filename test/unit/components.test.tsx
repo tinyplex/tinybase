@@ -83,6 +83,7 @@ import {
 } from 'tinybase/debug';
 import React, {useCallback} from 'react';
 import {ReactTestRenderer, act, create} from 'react-test-renderer';
+import {jest} from '@jest/globals';
 
 let store: Store;
 let renderer: ReactTestRenderer;
