@@ -22,6 +22,7 @@ const TEST_MODULES = [
   'persister-file',
   'persister-remote',
   'persister-yjs',
+  'persister-automerge',
 ];
 const MODULES_TYPED_WITH_INTERNALS = ['store', 'queries', 'ui-react'];
 const ALL_MODULES = [
@@ -40,6 +41,7 @@ const ALL_MODULES = [
   'persister-file',
   'persister-remote',
   'persister-yjs',
+  'persister-automerge',
 ];
 
 const BIN_DIR = 'bin';
