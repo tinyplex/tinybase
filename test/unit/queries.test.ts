@@ -5,6 +5,7 @@ import {
   expectChanges,
   expectNoChanges,
 } from './common';
+import {jest} from '@jest/globals';
 
 let store: Store;
 let queries: Queries;

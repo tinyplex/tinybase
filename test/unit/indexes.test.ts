@@ -14,6 +14,7 @@ import {
   expectNoChanges,
   getIndexesObject,
 } from './common';
+import {jest} from '@jest/globals';
 
 let store: Store;
 let indexes: Indexes;

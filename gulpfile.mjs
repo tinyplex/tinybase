@@ -374,6 +374,8 @@ const test = async (
 ) => {
   const {default: jest} = await import('jest');
   await makeDir(TMP_DIR);
+  process.env.NODE_NO_WARNINGS = 1;
+  process.env.NODE_OPTIONS = '--experimental-vm-modules';
   const {
     results: {success},
   } = await jest.runCLI(

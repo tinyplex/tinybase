@@ -1,12 +1,3 @@
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace jest {
-    interface Matchers<R> {
-      toEqualWithOrder(expected: any): R;
-    }
-  }
-}
-
 import {
   Cell,
   NoSchemas,
@@ -24,6 +15,15 @@ import {
   Relationships,
   Store,
 } from 'tinybase/debug';
+
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace jest {
+    interface Matchers<R> {
+      toEqualWithOrder(expected: any): R;
+    }
+  }
+}
 
 type IdObj<Value> = {[id: string]: Value};
 type IdObj2<Value> = IdObj<{[id: string]: Value}>;

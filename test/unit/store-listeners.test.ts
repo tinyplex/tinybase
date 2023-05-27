@@ -7,6 +7,7 @@ import {
   expectChangesNoJson,
   expectNoChanges,
 } from './common';
+import {jest} from '@jest/globals';
 
 let store: Store;
 let listener: StoreListener;
