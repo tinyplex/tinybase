@@ -427,7 +427,7 @@ describe.each([
 
   test('autoLoads', async () => {
     persistable.set(location, [{t1: {r1: {c1: 1}}}]);
-    await persister.startAutoLoad({});
+    await persister.startAutoLoad();
     await nextLoop();
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     expect(persister.getStats()).toEqual({loads: 1, saves: 0});
