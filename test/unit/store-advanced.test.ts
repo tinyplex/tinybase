@@ -6,6 +6,7 @@ import {
   expectChanges,
   expectNoChanges,
 } from './common';
+import {jest} from '@jest/globals';
 
 let store: Store;
 let listener: StoreListener;
@@ -654,7 +655,7 @@ describe('Miscellaneous', () => {
   test('row listener with cell changes function', () => {
     expect.assertions(5);
     store = createStore().setTables({t1: {r1: {c1: 1, c2: 2, c3: 3}}});
-    const listener = jest.fn((_store, _tableId, _rowId, getCellChange) => {
+    const listener = jest.fn((_store, _tableId, _rowId, getCellChange: any) => {
       expect(getCellChange('t1', 'r1', 'c1')).toEqual([false, 1, 1]);
       expect(getCellChange('t1', 'r1', 'c2')).toEqual([true, 2, 3]);
       expect(getCellChange('t1', 'r1', 'c3')).toEqual([true, 3, undefined]);
@@ -681,7 +682,7 @@ describe('Miscellaneous', () => {
   test('values listener with value changes function', () => {
     expect.assertions(5);
     store = createStore().setValues({v1: 1, v2: 2, v3: 3});
-    const listener = jest.fn((_store, getValueChange) => {
+    const listener = jest.fn((_store, getValueChange: any) => {
       expect(getValueChange('v1')).toEqual([false, 1, 1]);
       expect(getValueChange('v2')).toEqual([true, 2, 3]);
       expect(getValueChange('v3')).toEqual([true, 3, undefined]);
