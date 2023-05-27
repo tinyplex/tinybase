@@ -22,7 +22,7 @@
  * @param store The Store to persist.
  * @param yDoc The Yjs document to persist the Store to.
  * @param yMapName The name of the Y.Map used inside the Yjs document to sync
- * the Store too (which otherwise will default to 'tinybase').
+ * the Store to (which otherwise will default to 'tinybase').
  * @returns A reference to the new Persister object.
  * @example
  * This example creates a Persister object and persists the Store to a Yjs

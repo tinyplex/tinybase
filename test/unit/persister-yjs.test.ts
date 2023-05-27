@@ -14,10 +14,10 @@ beforeEach(() => {
 });
 
 test('custom name', async () => {
-  const doc1 = new YDoc();
-  const persister = createYjsPersister(store1, doc1, 'test');
+  const doc = new YDoc();
+  const persister = createYjsPersister(store1, doc, 'test');
   await persister.save();
-  expect(doc1.toJSON()).toEqual({test: {t: {}, v: {}}});
+  expect(doc.toJSON()).toEqual({test: {t: {}, v: {}}});
 });
 
 describe('Save to empty doc', () => {
