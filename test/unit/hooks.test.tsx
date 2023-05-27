@@ -108,15 +108,16 @@ import {
   useValues,
   useValuesListener,
 } from 'tinybase/debug/ui-react';
+import React, {ReactElement} from 'react';
 import {ReactTestRenderer, act, create} from 'react-test-renderer';
-import React from 'react';
 import {createFilePersister} from 'tinybase/debug/persister-file';
+import {jest} from '@jest/globals';
 import {pause} from './common';
 import tmp from 'tmp';
 
 let store: Store;
 let renderer: ReactTestRenderer;
-let didRender: jest.Mock;
+let didRender: jest.Mock<(component: ReactElement) => ReactElement>;
 
 beforeEach(() => {
   store = createStore()
@@ -127,7 +128,7 @@ beforeEach(() => {
 
 describe('Create Hooks', () => {
   test('useCreateStore', () => {
-    const initStore = jest.fn((count) =>
+    const initStore = jest.fn((count: any) =>
       createStore().setTables({t1: {r1: {c1: count}}}),
     );
     const Test = ({count}: {count: number}) => {
@@ -313,7 +314,7 @@ describe('Create Hooks', () => {
     const initStore = jest.fn(() =>
       createStore().setTables({t1: {r1: {c1: 1}}}),
     );
-    const initCheckpoints = jest.fn((store: Store, count) => {
+    const initCheckpoints = jest.fn((store: Store, count: number) => {
       const checkpoints = createCheckpoints(store);
       checkpoints.getStore().setCell('t1', 'r1', 'c1', count + 1);
       checkpoints.addCheckpoint(`checkpoint${count}`);
@@ -364,9 +365,11 @@ describe('Create Hooks', () => {
       _persister = createFilePersister(store, `${fileName}`);
       return _persister;
     });
-    const initPersister = jest.fn(async (persister: Persister, count) => {
-      await persister.startAutoLoad({t1: {r1: {c1: count}}});
-    });
+    const initPersister = jest.fn(
+      async (persister: Persister, count: number) => {
+        await persister.startAutoLoad({t1: {r1: {c1: count}}});
+      },
+    );
     const Test = ({count}: {count: number}) => {
       const store = useCreateStore(initStore);
       const persister = useCreatePersister(
