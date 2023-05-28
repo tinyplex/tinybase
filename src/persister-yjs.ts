@@ -3,8 +3,10 @@ import {
   GetTransactionChanges,
   Store,
   Tables,
+  TransactionChanges,
   Values,
 } from './types/store.d';
+import {IdObj, objEnsure, objHas, objMap, objNew} from './common/obj';
 import {Persister, PersisterListener} from './types/persisters.d';
 import {Doc as YDoc, YEvent, Map as YMap} from 'yjs';
 import {
@@ -14,10 +16,7 @@ import {
   arrayShift,
 } from './common/array';
 import {ifNotUndefined, isUndefined} from './common/other';
-import {objEnsure, objHas, objMap, objNew} from './common/obj';
 import {Id} from './types/common.d';
-import {IdObj} from './common/obj';
-import {TransactionChanges} from './types/store.d';
 import {createCustomPersister} from './persisters';
 import {mapForEach} from './common/map';
 
@@ -197,10 +196,10 @@ export const createYjsPersister = (
 
   const getPersisted = async (): Promise<[Tables, Values] | undefined> =>
     yContent.size
-      ? ([yContent.get('t').toJSON(), yContent.get('v').toJSON()] as [
-          Tables,
-          Values,
-        ])
+      ? ([
+          yContent.get(tablesKey).toJSON(),
+          yContent.get(valuesKey).toJSON(),
+        ] as [Tables, Values])
       : undefined;
 
   const setPersisted = async (
