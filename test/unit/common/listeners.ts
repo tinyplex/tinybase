@@ -1,14 +1,22 @@
 import {
   Checkpoints,
   Id,
-  IdOrNull,
-  Ids,
   Indexes,
   Metrics,
   Queries,
   Relationships,
   Store,
 } from 'tinybase/debug';
+import {
+  CheckpointsListener,
+  IndexesListener,
+  Listener,
+  Logs,
+  MetricsListener,
+  QueriesListener,
+  RelationshipsListener,
+  StoreListener,
+} from './types';
 import {
   NoSchemas,
   Store as StoreWithSchemas,
@@ -22,106 +30,6 @@ declare global {
     }
   }
 }
-
-type IdObj<Value> = {[id: string]: Value};
-type IdObj2<Value> = IdObj<{[id: string]: Value}>;
-type Logs = IdObj<any[]>;
-
-type Listener = Readonly<{
-  logs: Logs;
-}>;
-
-export type StoreListener = Listener &
-  Readonly<{
-    listenToTables: (id: Id) => Id;
-    listenToTableIds: (id: Id) => Id;
-    listenToTable: (id: Id, tableId: IdOrNull) => Id;
-    listenToTableCellIds: (id: Id, tableId: IdOrNull) => Id;
-    listenToRowIds: (id: Id, tableId: IdOrNull) => Id;
-    listenToSortedRowIds: (
-      id: Id,
-      tableId: Id,
-      cellId: Id | undefined,
-      descending: boolean,
-      offset: number,
-      limit: number | undefined,
-    ) => Id;
-    listenToRow: (id: Id, tableId: IdOrNull, rowId: IdOrNull) => Id;
-    listenToCellIds: (id: Id, tableId: IdOrNull, rowId: IdOrNull) => Id;
-    listenToCell: (
-      id: Id,
-      tableId: IdOrNull,
-      rowId: IdOrNull,
-      cellId: IdOrNull,
-    ) => Id;
-    listenToInvalidCell: (
-      id: Id,
-      tableId: IdOrNull,
-      rowId: IdOrNull,
-      cellId: IdOrNull,
-    ) => Id;
-    listenToValues: (id: Id) => Id;
-    listenToValueIds: (id: Id) => Id;
-    listenToValue: (id: Id, valueId: IdOrNull) => Id;
-    listenToInvalidValue: (id: Id, valueId: IdOrNull) => Id;
-    listenToStartTransaction: (id: Id) => Id;
-    listenToWillFinishTransaction: (id: Id) => Id;
-    listenToDidFinishTransaction: (id: Id) => Id;
-  }>;
-
-export type MetricsListener = Listener &
-  Readonly<{
-    listenToMetric: (id: Id, metricId: IdOrNull) => Id;
-  }>;
-
-export type IndexesListener = Listener &
-  Readonly<{
-    listenToSliceIds: (id: Id, indexId: IdOrNull) => Id;
-    listenToSliceRowIds: (id: Id, indexId: IdOrNull, sliceId: IdOrNull) => Id;
-  }>;
-
-export type RelationshipsListener = Listener &
-  Readonly<{
-    listenToRemoteRowId: (
-      id: Id,
-      relationshipId: IdOrNull,
-      localRowId: IdOrNull,
-    ) => Id;
-    listenToLocalRowIds: (
-      id: Id,
-      relationshipId: IdOrNull,
-      remoteRowId: IdOrNull,
-    ) => Id;
-    listenToLinkedRowIds: (id: Id, relationshipId: Id, firstRowId: Id) => Id;
-  }>;
-
-export type QueriesListener = Listener &
-  Readonly<{
-    listenToResultTable: (id: Id, queryId: IdOrNull) => Id;
-    listenToResultRowIds: (id: Id, queryId: IdOrNull) => Id;
-    listenToResultSortedRowIds: (
-      id: Id,
-      queryId: Id,
-      cellId: Id | undefined,
-      descending: boolean,
-      offset: number,
-      limit: number | undefined,
-    ) => Id;
-    listenToResultRow: (id: Id, queryId: IdOrNull, rowId: IdOrNull) => Id;
-    listenToResultCellIds: (id: Id, queryId: IdOrNull, rowId: IdOrNull) => Id;
-    listenToResultCell: (
-      id: Id,
-      queryId: IdOrNull,
-      rowId: IdOrNull,
-      cellId: IdOrNull,
-    ) => Id;
-  }>;
-
-export type CheckpointsListener = Listener &
-  Readonly<{
-    listenToCheckpoints: (id: Id) => Id;
-    listenToCheckpoint: (id: Id, checkpointId: IdOrNull) => Id;
-  }>;
 
 export const pause = async (ms = 50): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve, ms));
@@ -536,79 +444,3 @@ export const createCheckpointsListener = (
     logs,
   });
 };
-
-export const getMetricsObject = (
-  metrics: Metrics,
-): IdObj<number | undefined> => {
-  const metricsObject: IdObj<number | undefined> = {};
-  metrics.forEachMetric(
-    (metricId) => (metricsObject[metricId] = metrics.getMetric(metricId)),
-  );
-  return metricsObject;
-};
-
-export const getIndexesObject = (indexes: Indexes): IdObj2<Ids> => {
-  const indexesObject: IdObj2<Ids> = {};
-  indexes.forEachIndex((indexId) => {
-    indexesObject[indexId] = {};
-    indexes
-      .getSliceIds(indexId)
-      .forEach(
-        (sliceId) =>
-          (indexesObject[indexId][sliceId] = indexes.getSliceRowIds(
-            indexId,
-            sliceId,
-          )),
-      );
-  });
-  return indexesObject;
-};
-
-export const getRelationshipsObject = (
-  relationships: Relationships,
-): IdObj<[IdObj<Id>, IdObj<Ids>]> => {
-  const store = relationships.getStore();
-  const relationshipsObject: IdObj<[IdObj<Id>, IdObj<Ids>]> = {};
-  relationships.forEachRelationship((relationshipId) => {
-    relationshipsObject[relationshipId] = [{}, {}];
-    store
-      .getRowIds(relationships.getLocalTableId(relationshipId) as string)
-      .forEach((rowId) => {
-        const remoteRowId = relationships.getRemoteRowId(relationshipId, rowId);
-        if (remoteRowId != null) {
-          relationshipsObject[relationshipId][0][rowId] = remoteRowId;
-        }
-      });
-    store
-      .getRowIds(relationships.getRemoteTableId(relationshipId) as string)
-      .forEach((remoteRowId) => {
-        const localRowIds = relationships.getLocalRowIds(
-          relationshipId,
-          remoteRowId,
-        );
-        if (localRowIds.length > 0) {
-          relationshipsObject[relationshipId][1][remoteRowId] = localRowIds;
-        }
-      });
-  });
-  return relationshipsObject;
-};
-
-expect.extend({
-  toEqualWithOrder: (received, expected) =>
-    JSON.stringify(received) === JSON.stringify(expected)
-      ? {
-          message: () =>
-            `expected ${JSON.stringify(
-              received,
-            )} not to order-equal ${JSON.stringify(expected)}`,
-          pass: true,
-        }
-      : {
-          message: () =>
-            `expected ${JSON.stringify(
-              received,
-            )} to order-equal ${JSON.stringify(expected)}`,
-          pass: false,
-        },
-});

@@ -16,12 +16,10 @@ import {
   createStore,
 } from 'tinybase/debug';
 import {
-  StoreListener,
-  createStoreListener,
   expectChanges,
   expectChangesNoJson,
   expectNoChanges,
-} from './common';
+} from './common/expect';
 import {
   useCell,
   useCellIds,
@@ -39,7 +37,9 @@ import {
   useTables,
 } from 'tinybase/debug/ui-react';
 import React from 'react';
+import {StoreListener} from './common/types';
 import {createLocalPersister} from 'tinybase/debug/persister-browser';
+import {createStoreListener} from './common/listeners';
 
 let renderer: ReactTestRenderer;
 

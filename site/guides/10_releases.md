@@ -43,6 +43,8 @@ await automergePersister.save();
 console.log(docHandler.doc);
 // -> {tinybase: {t: {pets: {fido: {species: 'dog'}}}, v: {}}}
 automergePersister.destroy();
+
+store.delTables();
 ```
 
 There are some breaking changes in this release:
@@ -73,8 +75,6 @@ use different Cells. Consider this Store, where each pet has a different set of
 Cell Ids:
 
 ```js
-const store = createStore();
-
 store.setTable('pets', {
   fido: {species: 'dog'},
   felix: {species: 'cat', friendly: true},
