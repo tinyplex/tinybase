@@ -5,40 +5,79 @@ import {
   objEnsure,
   objGet,
   objHas,
+  objIds,
   objIsEmpty,
   objMap,
 } from './common/obj';
 import {Persister, PersisterListener} from './types/persisters';
+import {ifNotUndefined, isUndefined} from './common/other';
 import {DocHandle} from 'automerge-repo';
 import {Id} from './types/common';
+import {arrayLength} from './common/array';
 import {createCustomPersister} from './persisters';
-import {isUndefined} from './common/other';
 
-type Observer = () => void;
-
-const tablesKey = 't';
-const valuesKey = 'v';
+type Observer = ({doc}: {doc: any}) => void;
 
 const ensureDocContent = (doc: any, docObjName: string) => {
   if (objIsEmpty(doc[docObjName])) {
-    doc[docObjName] = {[tablesKey]: {}, [valuesKey]: {}};
+    doc[docObjName] = {t: {}, v: {}};
   }
 };
 
-const getDocContent = (doc: any, docObjName: string) => [
-  doc[docObjName][tablesKey],
-  doc[docObjName][valuesKey],
+const getDocContent = (doc: any, docObjName: string): [Tables, Values] => [
+  doc[docObjName].t,
+  doc[docObjName].v,
 ];
 
 const setTransactionChangesToDoc = (
   doc: any,
   docObjName: string,
   getContent: () => [Tables, Values],
-  _getTransactionChanges?: GetTransactionChanges,
+  getTransactionChanges?: GetTransactionChanges,
 ) => {
   ensureDocContent(doc, docObjName);
   const [docTables, docValues] = getDocContent(doc, docObjName);
+  const transactionChangesDidFail = () => {
+    transactionChangesFailed = 1;
+  };
   let transactionChangesFailed = 1;
+  ifNotUndefined(getTransactionChanges?.(), ([cellChanges, valueChanges]) => {
+    transactionChangesFailed = 0;
+    objMap(cellChanges, (table, tableId) =>
+      transactionChangesFailed
+        ? 0
+        : isUndefined(table)
+        ? objDel(docTables, tableId)
+        : ifNotUndefined(
+            docTables[tableId],
+            (docTable) =>
+              objMap(table, (row, rowId) =>
+                transactionChangesFailed
+                  ? 0
+                  : isUndefined(row)
+                  ? objDel(docTable, rowId)
+                  : ifNotUndefined(
+                      objGet(docTable, rowId),
+                      (docRow: any) =>
+                        objMap(row, (cell, cellId) =>
+                          isUndefined(cell)
+                            ? objDel(docRow, cellId)
+                            : (docRow[cellId] = cell),
+                        ),
+                      transactionChangesDidFail as any,
+                    ),
+              ),
+            transactionChangesDidFail,
+          ),
+    );
+    objMap(valueChanges, (value, valueId) =>
+      transactionChangesFailed
+        ? 0
+        : isUndefined(value)
+        ? objDel(docValues, valueId)
+        : (docValues[valueId] = value),
+    );
+  });
   if (transactionChangesFailed) {
     const [tables, values] = getContent();
     docObjMatch(docTables, undefined, tables, (_, tableId, table) =>
@@ -93,8 +132,11 @@ export const createAutomergePersister = (
 ): Persister => {
   docHandle.change((doc) => (doc[docObjName] = {}));
 
-  const getPersisted = async (): Promise<[Tables, Values] | undefined> =>
-    undefined;
+  const getPersisted = async (): Promise<[Tables, Values] | undefined> => {
+    return arrayLength(objIds(docHandle.doc[docObjName])) == 2
+      ? getDocContent(docHandle.doc, docObjName)
+      : undefined;
+  };
 
   const setPersisted = async (
     getContent: () => [Tables, Values],
@@ -111,9 +153,8 @@ export const createAutomergePersister = (
   };
 
   const addPersisterListener = (listener: PersisterListener): Observer => {
-    const observer: Observer = (...args) => {
-      listener();
-    };
+    const observer: Observer = ({doc}) =>
+      listener(() => getDocContent(doc, docObjName));
     docHandle.on('change', observer);
     return observer;
   };
