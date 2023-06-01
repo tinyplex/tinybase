@@ -7,13 +7,10 @@ import {
   createIndexes,
   createStore,
 } from 'tinybase/debug';
-import {
-  IndexesListener,
-  createIndexesListener,
-  expectChanges,
-  expectNoChanges,
-  getIndexesObject,
-} from './common';
+import {expectChanges, expectNoChanges} from './common/expect';
+import {IndexesListener} from './common/types';
+import {createIndexesListener} from './common/listeners';
+import {getIndexesObject} from './common/other';
 import {jest} from '@jest/globals';
 
 let store: Store;

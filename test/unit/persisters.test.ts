@@ -23,7 +23,7 @@ import {createYjsPersister} from 'tinybase/debug/persister-yjs';
 import crypto from 'crypto';
 import fetchMock from 'jest-fetch-mock';
 import fs from 'fs';
-import {pause} from './common';
+import {pause} from './common/other';
 import tmp from 'tmp';
 
 const GET_HOST = 'http://get.com';
