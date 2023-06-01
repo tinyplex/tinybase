@@ -26,13 +26,13 @@ To build a custom Persister, you should provide four functions:
 Note that the first two functions are synchronous and must return promises. The
 latter two are synchronous and should return `void`.
 
-This API changed in v4.0.0. Any custom persisters created on previous versions
+This API changed in v4.0. Any custom persisters created on previous versions
 should be upgraded. Most notably, the `setPersisted` function parameter is
 provided with a `getContent` function to get the content from the Store itself,
-rather than being passed pre-serialized JSON. It also receives information
-about the changes made during a transaction. The `getPersisted` function must
-return the content (or nothing) rather than JSON `addPersisterListener` has been
-renamed `addPersisterListener`, and `addPersisterListener` has been renamed
+rather than being passed pre-serialized JSON. It also receives information about
+the changes made during a transaction. The `getPersisted` function must return
+the content (or nothing) rather than JSON. `startListeningToPersisted` has been
+renamed `addPersisterListener`, and `stopListeningToPersisted` has been renamed
 `delPersisterListener`.
 
 This example creates a custom Persister object that persists the Store to a

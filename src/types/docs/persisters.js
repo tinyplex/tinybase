@@ -534,14 +534,14 @@
  * covers. See those implementations for ideas on how to implement your own
  * Persister types.
  *
- * This API changed in v4.0. Any custom persisters created on previous
- * versions should be upgraded. Most notably, the `setPersisted` function
- * parameter is provided with a `getContent` function to get the content from
- * the Store itself, rather than being passed pre-serialized JSON. It also
- * receives information about the changes made during a transaction. The
- * `getPersisted` function must return the content (or nothing) rather than
- * JSON. `addPersisterListener` has been renamed `addPersisterListener`, and
- * `addPersisterListener` has been renamed `delPersisterListener`.
+ * This API changed in v4.0. Any custom persisters created on previous versions
+ * should be upgraded. Most notably, the `setPersisted` function parameter is
+ * provided with a `getContent` function to get the content from the Store
+ * itself, rather than being passed pre-serialized JSON. It also receives
+ * information about the changes made during a transaction. The `getPersisted`
+ * function must return the content (or nothing) rather than JSON.
+ * `startListeningToPersisted` has been renamed `addPersisterListener`, and
+ * `stopListeningToPersisted` has been renamed `delPersisterListener`.
  *
  * @param store The Store to persist.
  * @param getPersisted An asynchronous function which will fetch content from
