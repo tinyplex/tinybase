@@ -5,11 +5,14 @@ exports[`API Pretty both 1`] = `
   "import {
   CellChange,
   DoRollback,
+  GetTransactionChanges,
+  GetTransactionLog,
   Id,
   IdOrNull,
   Ids,
   Json,
   Store,
+  TransactionChanges,
   ValueChange,
 } from 'tinybase';
 
@@ -357,8 +360,8 @@ export type MapString = (cell: string | undefined) => string;
  */
 export type TransactionListener = (
   s: S,
-  cellsTouched: boolean,
-  valuesTouched: boolean,
+  getTransactionChanges: GetTransactionChanges,
+  getTransactionLog: GetTransactionLog,
 ) => void;
 
 export interface S {
@@ -810,6 +813,21 @@ export interface S {
   ): Id;
 
   /**
+   * Gets the content of the Store.
+   */
+  getContent(): [Tables, Values];
+
+  /**
+   * Sets the content of the Store.
+   */
+  setContent([tables, values]: [Tables, Values]): S;
+
+  /**
+   * Applies a set of TransactionChanges to the Store.
+   */
+  setTransactionChanges(transactionChanges: TransactionChanges): S;
+
+  /**
    * Gets a string serialization of the content of the Store.
    */
   getJson(): Json;
@@ -910,6 +928,7 @@ import {
   Ids,
   Json,
   Store,
+  TransactionChanges,
   createStore,
 } from 'tinybase';
 
@@ -1218,6 +1237,14 @@ export const createS: typeof createSDecl = () => {
       listener: InvalidValueListener,
       mutator?: boolean,
     ): Id => store.addInvalidValueListener(valueId, proxy(listener), mutator),
+
+    getContent: (): [Tables, Values] => store.getContent() as [Tables, Values],
+
+    setContent: ([tables, values]: [Tables, Values]): S =>
+      fluent(() => store.setContent([tables, values])),
+
+    setTransactionChanges: (transactionChanges: TransactionChanges): S =>
+      fluent(() => store.setTransactionChanges(transactionChanges)),
 
     getJson: (): Json => store.getJson() as Json,
 
@@ -3100,7 +3127,18 @@ export const Provider: typeof ProviderDecl = ({
 
 exports[`API Pretty keyed value 1`] = `
 [
-  "import {DoRollback, Id, IdOrNull, Json, Store, ValueChange} from 'tinybase';
+  "import {
+  DoRollback,
+  GetTransactionChanges,
+  GetTransactionLog,
+  Id,
+  IdOrNull,
+  Json,
+  Store,
+  Tables,
+  TransactionChanges,
+  ValueChange,
+} from 'tinybase';
 
 /**
  * Represents the keyed value content of the Store.
@@ -3202,8 +3240,8 @@ export type MapString = (cell: string | undefined) => string;
  */
 export type TransactionListener = (
   s: S,
-  cellsTouched: boolean,
-  valuesTouched: boolean,
+  getTransactionChanges: GetTransactionChanges,
+  getTransactionLog: GetTransactionLog,
 ) => void;
 
 export interface S {
@@ -3365,6 +3403,21 @@ export interface S {
   ): Id;
 
   /**
+   * Gets the content of the Store.
+   */
+  getContent(): [Tables, Values];
+
+  /**
+   * Sets the content of the Store.
+   */
+  setContent([tables, values]: [Tables, Values]): S;
+
+  /**
+   * Applies a set of TransactionChanges to the Store.
+   */
+  setTransactionChanges(transactionChanges: TransactionChanges): S;
+
+  /**
    * Gets a string serialization of the content of the Store.
    */
   getJson(): Json;
@@ -3422,7 +3475,16 @@ export interface S {
  */
 export function createS(): S;
 ",
-  "import {DoRollback, Id, IdOrNull, Json, Store, createStore} from 'tinybase';
+  "import {
+  DoRollback,
+  Id,
+  IdOrNull,
+  Json,
+  Store,
+  Tables,
+  TransactionChanges,
+  createStore,
+} from 'tinybase';
 import {
   InvalidValueListener,
   MapNumber,
@@ -3553,6 +3615,14 @@ export const createS: typeof createSDecl = () => {
       listener: InvalidValueListener,
       mutator?: boolean,
     ): Id => store.addInvalidValueListener(valueId, proxy(listener), mutator),
+
+    getContent: (): [Tables, Values] => store.getContent() as [Tables, Values],
+
+    setContent: ([tables, values]: [Tables, Values]): S =>
+      fluent(() => store.setContent([tables, values])),
+
+    setTransactionChanges: (transactionChanges: TransactionChanges): S =>
+      fluent(() => store.setTransactionChanges(transactionChanges)),
 
     getJson: (): Json => store.getJson() as Json,
 
@@ -4257,7 +4327,19 @@ export const Provider: typeof ProviderDecl = ({
 
 exports[`API Pretty tabular 1`] = `
 [
-  "import {CellChange, DoRollback, Id, IdOrNull, Ids, Json, Store} from 'tinybase';
+  "import {
+  CellChange,
+  DoRollback,
+  GetTransactionChanges,
+  GetTransactionLog,
+  Id,
+  IdOrNull,
+  Ids,
+  Json,
+  Store,
+  TransactionChanges,
+  Values,
+} from 'tinybase';
 
 /**
  * Represents the tabular content of the Store.
@@ -4518,8 +4600,8 @@ export type MapString = (cell: string | undefined) => string;
  */
 export type TransactionListener = (
   s: S,
-  cellsTouched: boolean,
-  valuesTouched: boolean,
+  getTransactionChanges: GetTransactionChanges,
+  getTransactionLog: GetTransactionLog,
 ) => void;
 
 export interface S {
@@ -4814,6 +4896,21 @@ export interface S {
   ): Id;
 
   /**
+   * Gets the content of the Store.
+   */
+  getContent(): [Tables, Values];
+
+  /**
+   * Sets the content of the Store.
+   */
+  setContent([tables, values]: [Tables, Values]): S;
+
+  /**
+   * Applies a set of TransactionChanges to the Store.
+   */
+  setTransactionChanges(transactionChanges: TransactionChanges): S;
+
+  /**
    * Gets a string serialization of the content of the Store.
    */
   getJson(): Json;
@@ -4906,6 +5003,8 @@ import {
   Ids,
   Json,
   Store,
+  TransactionChanges,
+  Values,
   createStore,
 } from 'tinybase';
 
@@ -5125,6 +5224,14 @@ export const createS: typeof createSDecl = () => {
         proxy(listener),
         mutator,
       ),
+
+    getContent: (): [Tables, Values] => store.getContent() as [Tables, Values],
+
+    setContent: ([tables, values]: [Tables, Values]): S =>
+      fluent(() => store.setContent([tables, values])),
+
+    setTransactionChanges: (transactionChanges: TransactionChanges): S =>
+      fluent(() => store.setTransactionChanges(transactionChanges)),
 
     getJson: (): Json => store.getJson() as Json,
 
@@ -6471,7 +6578,7 @@ export const Provider: typeof ProviderDecl = ({
 
 exports[`API Unpretty both 1`] = `
 [
-  "import {CellChange, DoRollback, Id, IdOrNull, Ids, Json, Store, ValueChange} from 'tinybase';
+  "import {CellChange, DoRollback, GetTransactionChanges, GetTransactionLog, Id, IdOrNull, Ids, Json, Store, TransactionChanges, ValueChange} from 'tinybase';
 
 /** Represents the tabular content of the Store. */
 export type Tables = {'t1'?: {[rowId: Id]: {'c1': number; 'c2': string; 'c3': string; ''?: string}}};
@@ -6618,7 +6725,7 @@ export type MapNumber = (cell: number | undefined) => number;
 export type MapString = (cell: string | undefined) => string;
 
 /** A function for listening to the completion of a transaction. */
-export type TransactionListener = (s: S, cellsTouched: boolean, valuesTouched: boolean) => void;
+export type TransactionListener = (s: S, getTransactionChanges: GetTransactionChanges, getTransactionLog: GetTransactionLog) => void;
 
 export interface S {
 /** Gets the tabular content of the Store. */
@@ -6852,6 +6959,15 @@ addValueListener(valueId: ValueId | null, listener: ValueListener, mutator?: boo
 /** Registers a listener that will be called whenever an invalid Value change was attempted. */
 addInvalidValueListener(valueId: IdOrNull, listener: InvalidValueListener, mutator?: boolean): Id;
 
+/** Gets the content of the Store. */
+getContent(): [Tables, Values];
+
+/** Sets the content of the Store. */
+setContent([tables, values]: [Tables, Values]): S;
+
+/** Applies a set of TransactionChanges to the Store. */
+setTransactionChanges(transactionChanges: TransactionChanges): S;
+
 /** Gets a string serialization of the content of the Store. */
 getJson(): Json;
 
@@ -6887,7 +7003,7 @@ getStore(): Store;
 /** Creates a S object. */
 export function createS(): S;",
   "import {CellId, CellIdsListener, CellListener, InvalidCellListener, InvalidValueListener, MapNumber, MapString, RowIdsListener, RowListener, S, SortedRowIdsListener, T1CellCallback, T1CellId, T1Row, T1RowCallback, T1RowWhenSet, T1Table, T1TableWhenSet, TableCallback, TableId, TableIdsListener, TableListener, Tables, TablesListener, TablesWhenSet, TransactionListener, ValueCallback, ValueId, ValueIdsListener, ValueListener, Values, ValuesListener, ValuesWhenSet, createS as createSDecl} from './s.d';
-import {DoRollback, Id, IdOrNull, Ids, Json, Store, createStore} from 'tinybase';
+import {DoRollback, Id, IdOrNull, Ids, Json, Store, TransactionChanges, createStore} from 'tinybase';
 
 export const createS: typeof createSDecl = () => {
 const T1 = 't1';
@@ -7095,6 +7211,12 @@ addValueIdsListener: (listener: ValueIdsListener, mutator?: boolean): Id => stor
 addValueListener: (valueId: ValueId | null, listener: ValueListener, mutator?: boolean): Id => store.addValueListener(valueId, proxy(listener), mutator),
 
 addInvalidValueListener: (valueId: IdOrNull, listener: InvalidValueListener, mutator?: boolean): Id => store.addInvalidValueListener(valueId, proxy(listener), mutator),
+
+getContent: (): [Tables, Values] => store.getContent() as [Tables, Values],
+
+setContent: ([tables, values]: [Tables, Values]): S => fluent(() => store.setContent([tables, values])),
+
+setTransactionChanges: (transactionChanges: TransactionChanges): S => fluent(() => store.setTransactionChanges(transactionChanges)),
 
 getJson: (): Json => store.getJson() as Json,
 
@@ -7693,7 +7815,7 @@ value={useMemo(
 
 exports[`API Unpretty keyed value 1`] = `
 [
-  "import {DoRollback, Id, IdOrNull, Json, Store, ValueChange} from 'tinybase';
+  "import {DoRollback, GetTransactionChanges, GetTransactionLog, Id, IdOrNull, Json, Store, Tables, TransactionChanges, ValueChange} from 'tinybase';
 
 /** Represents the keyed value content of the Store. */
 export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string};
@@ -7738,7 +7860,7 @@ export type MapNumber = (cell: number | undefined) => number;
 export type MapString = (cell: string | undefined) => string;
 
 /** A function for listening to the completion of a transaction. */
-export type TransactionListener = (s: S, cellsTouched: boolean, valuesTouched: boolean) => void;
+export type TransactionListener = (s: S, getTransactionChanges: GetTransactionChanges, getTransactionLog: GetTransactionLog) => void;
 
 export interface S {
 /** Gets the keyed value content of the Store. */
@@ -7828,6 +7950,15 @@ addValueListener(valueId: ValueId | null, listener: ValueListener, mutator?: boo
 /** Registers a listener that will be called whenever an invalid Value change was attempted. */
 addInvalidValueListener(valueId: IdOrNull, listener: InvalidValueListener, mutator?: boolean): Id;
 
+/** Gets the content of the Store. */
+getContent(): [Tables, Values];
+
+/** Sets the content of the Store. */
+setContent([tables, values]: [Tables, Values]): S;
+
+/** Applies a set of TransactionChanges to the Store. */
+setTransactionChanges(transactionChanges: TransactionChanges): S;
+
 /** Gets a string serialization of the content of the Store. */
 getJson(): Json;
 
@@ -7862,7 +7993,7 @@ getStore(): Store;
 
 /** Creates a S object. */
 export function createS(): S;",
-  "import {DoRollback, Id, IdOrNull, Json, Store, createStore} from 'tinybase';
+  "import {DoRollback, Id, IdOrNull, Json, Store, Tables, TransactionChanges, createStore} from 'tinybase';
 import {InvalidValueListener, MapNumber, MapString, S, TransactionListener, ValueCallback, ValueId, ValueIdsListener, ValueListener, Values, ValuesListener, ValuesWhenSet, createS as createSDecl} from './s.d';
 
 export const createS: typeof createSDecl = () => {
@@ -7959,6 +8090,12 @@ addValueIdsListener: (listener: ValueIdsListener, mutator?: boolean): Id => stor
 addValueListener: (valueId: ValueId | null, listener: ValueListener, mutator?: boolean): Id => store.addValueListener(valueId, proxy(listener), mutator),
 
 addInvalidValueListener: (valueId: IdOrNull, listener: InvalidValueListener, mutator?: boolean): Id => store.addInvalidValueListener(valueId, proxy(listener), mutator),
+
+getContent: (): [Tables, Values] => store.getContent() as [Tables, Values],
+
+setContent: ([tables, values]: [Tables, Values]): S => fluent(() => store.setContent([tables, values])),
+
+setTransactionChanges: (transactionChanges: TransactionChanges): S => fluent(() => store.setTransactionChanges(transactionChanges)),
 
 getJson: (): Json => store.getJson() as Json,
 
@@ -8235,7 +8372,7 @@ value={useMemo(
 
 exports[`API Unpretty tabular 1`] = `
 [
-  "import {CellChange, DoRollback, Id, IdOrNull, Ids, Json, Store} from 'tinybase';
+  "import {CellChange, DoRollback, GetTransactionChanges, GetTransactionLog, Id, IdOrNull, Ids, Json, Store, TransactionChanges, Values} from 'tinybase';
 
 /** Represents the tabular content of the Store. */
 export type Tables = {'t1'?: {[rowId: Id]: {'c1': number; 'c2': string; 'c3': string; ''?: string}}};
@@ -8346,7 +8483,7 @@ export type MapNumber = (cell: number | undefined) => number;
 export type MapString = (cell: string | undefined) => string;
 
 /** A function for listening to the completion of a transaction. */
-export type TransactionListener = (s: S, cellsTouched: boolean, valuesTouched: boolean) => void;
+export type TransactionListener = (s: S, getTransactionChanges: GetTransactionChanges, getTransactionLog: GetTransactionLog) => void;
 
 export interface S {
 /** Gets the tabular content of the Store. */
@@ -8493,6 +8630,15 @@ addCellListener(tableId: TableId | null, rowId: IdOrNull, cellId: T1CellId | nul
 /** Registers a listener that will be called whenever an invalid Cell change was attempted. */
 addInvalidCellListener(tableId: IdOrNull, rowId: IdOrNull, cellId: IdOrNull, listener: InvalidCellListener, mutator?: boolean): Id;
 
+/** Gets the content of the Store. */
+getContent(): [Tables, Values];
+
+/** Sets the content of the Store. */
+setContent([tables, values]: [Tables, Values]): S;
+
+/** Applies a set of TransactionChanges to the Store. */
+setTransactionChanges(transactionChanges: TransactionChanges): S;
+
 /** Gets a string serialization of the content of the Store. */
 getJson(): Json;
 
@@ -8528,7 +8674,7 @@ getStore(): Store;
 /** Creates a S object. */
 export function createS(): S;",
   "import {CellId, CellIdsListener, CellListener, InvalidCellListener, MapNumber, MapString, RowIdsListener, RowListener, S, SortedRowIdsListener, T1CellCallback, T1CellId, T1Row, T1RowCallback, T1RowWhenSet, T1Table, T1TableWhenSet, TableCallback, TableId, TableIdsListener, TableListener, Tables, TablesListener, TablesWhenSet, TransactionListener, createS as createSDecl} from './s.d';
-import {DoRollback, Id, IdOrNull, Ids, Json, Store, createStore} from 'tinybase';
+import {DoRollback, Id, IdOrNull, Ids, Json, Store, TransactionChanges, Values, createStore} from 'tinybase';
 
 export const createS: typeof createSDecl = () => {
 const T1 = 't1';
@@ -8666,6 +8812,12 @@ addCellIdsListener: (tableId: TableId | null, rowId: IdOrNull, listener: CellIds
 addCellListener: (tableId: TableId | null, rowId: IdOrNull, cellId: T1CellId | null, listener: CellListener, mutator?: boolean): Id => store.addCellListener(tableId, rowId, cellId, proxy(listener), mutator),
 
 addInvalidCellListener: (tableId: IdOrNull, rowId: IdOrNull, cellId: IdOrNull, listener: InvalidCellListener, mutator?: boolean): Id => store.addInvalidCellListener(tableId, rowId, cellId, proxy(listener), mutator),
+
+getContent: (): [Tables, Values] => store.getContent() as [Tables, Values],
+
+setContent: ([tables, values]: [Tables, Values]): S => fluent(() => store.setContent([tables, values])),
+
+setTransactionChanges: (transactionChanges: TransactionChanges): S => fluent(() => store.setTransactionChanges(transactionChanges)),
 
 getJson: (): Json => store.getJson() as Json,
 
