@@ -18,6 +18,7 @@
       "http-server"
     ],
     "skipLibCheck": true,
-    "allowJs": true
+    "allowJs": true,
+    "outDir": "./_"
   }
 }
