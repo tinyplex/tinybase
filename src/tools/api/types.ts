@@ -481,8 +481,9 @@ export const getTypeFunctions = (
   ) =>
     addType(
       TRANSACTION + LISTENER,
-      `(${storeInstance}: ${storeType}, cellsTouched: boolean, ` +
-        `valuesTouched: boolean)` +
+      `(${storeInstance}: ${storeType}, ` +
+        'getTransactionChanges: GetTransactionChanges, ' +
+        'getTransactionLog: GetTransactionLog)' +
         RETURNS_VOID,
       A_FUNCTION_FOR + ' listening to the completion of a ' + TRANSACTION_,
     );

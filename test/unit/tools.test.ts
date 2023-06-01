@@ -252,6 +252,6 @@ describe('API', () => {
       });
 
     const files = await tools.getPrettyStoreApi('s');
-    expect(files).toMatchSnapshot();
+    expect([...files]).toMatchSnapshot();
   });
 });
