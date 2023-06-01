@@ -7,8 +7,9 @@ These include:
 
 - The createYjsPersister function (in the persister-yjs module) returns a
   Persister that connects to a [Yjs](https://yjs.dev/) document.
-- The createAutomergePersister function (in the persister-automerge module) returns a
-  Persister that connects to an [Automerge](https://automerge.org/) document via [automerge-repo](https://github.com/automerge/automerge-repo).
+- The createAutomergePersister function (in the persister-automerge module)
+  returns a Persister that connects to an [Automerge](https://automerge.org/)
+  document via [automerge-repo](https://github.com/automerge/automerge-repo).
 
 The APIs are exactly the same as for other persisters, but there is some
 additional infrastructure behind the scenes to ensure that the updates are as
