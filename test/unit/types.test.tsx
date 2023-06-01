@@ -1,11 +1,10 @@
-import {dirname, resolve} from 'path';
-import {fileURLToPath} from 'url';
 import {readdirSync} from 'fs';
+import {resolve} from 'path';
 import tsc from 'typescript';
 
 const {createProgram, getPreEmitDiagnostics, readJsonConfigFile, sys} = tsc;
 
-const dir = dirname(fileURLToPath(import.meta.url));
+const dir = __dirname;
 
 const testFiles = readdirSync(resolve(dir, 'types'));
 test.each(testFiles)('Types', (testFile) => {
