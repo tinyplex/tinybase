@@ -56,7 +56,7 @@
   </p>
 </section>
 
-<a id='new' href='/guides/releases/#v3-3'><em>NEW!</em> v3.3 release</a>
+<a id='new' href='/guides/releases/#v4-0'><em>NEW!</em> v4.0β release</a>
 
 ---
 
