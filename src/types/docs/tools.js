@@ -421,11 +421,11 @@
    * ).getPrettyStoreApi('shop');
    *
    * const dTsLines = dTs.split('\n');
-   * console.log(dTsLines[5]);
+   * console.log(dTsLines[17]);
    * // -> `export type Tables = {pets?: {[rowId: Id]: {price?: number}}};`
    *
    * const tsLines = ts.split('\n');
-   * console.log(tsLines[79]);
+   * console.log(tsLines[81]);
    * // -> '    hasPetsTable: (): boolean => store.hasTable(PETS),'
    * ```
    * @example
@@ -442,11 +442,11 @@
    * ).getPrettyStoreApi('shop');
    *
    * const dTsLines = dTs.split('\n');
-   * console.log(dTsLines[5]);
+   * console.log(dTsLines[17]);
    * // -> 'export type Tables = {pets?: {[rowId: Id]: {price: number}}};'
    *
    * const tsLines = ts.split('\n');
-   * console.log(tsLines[81]);
+   * console.log(tsLines[83]);
    * // -> '    hasPetsTable: (): boolean => store.hasTable(PETS),'
    * ```
    * @category Modelling
