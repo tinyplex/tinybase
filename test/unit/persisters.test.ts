@@ -1,5 +1,6 @@
 /* eslint-disable jest/no-conditional-expect */
 
+import {DocHandle, Repo} from 'automerge-repo';
 import {
   Id,
   Persister,
@@ -15,6 +16,7 @@ import {
   createLocalPersister,
   createSessionPersister,
 } from 'tinybase/debug/persister-browser';
+import {createAutomergePersister} from 'tinybase/debug/persister-automerge';
 import {createFilePersister} from 'tinybase/debug/persister-file';
 import {createRemotePersister} from 'tinybase/debug/persister-remote';
 import {createYjsPersister} from 'tinybase/debug/persister-yjs';
@@ -65,6 +67,45 @@ const yMapMatch = (
   });
   if (idInParent != undefined && !yMap.size) {
     yMapOrParent.delete(idInParent);
+  }
+  return changed;
+};
+
+const objEnsure = <Value>(
+  obj: {[id: Id]: Value},
+  id: Id,
+  getDefaultValue: () => Value,
+): Value => {
+  if (obj[id] == undefined) {
+    obj[id] = getDefaultValue();
+  }
+  return obj[id] as Value;
+};
+
+const docObjMatch = (
+  docObjOrParent: {[id: Id]: any},
+  idInParent: Id | undefined,
+  obj: {[id: Id]: any},
+  set: (docObj: {[id: Id]: any}, id: Id, value: any) => 1 | void,
+): 1 | void => {
+  const docObj =
+    idInParent == undefined
+      ? docObjOrParent
+      : objEnsure(docObjOrParent, idInParent, () => ({}));
+  let changed: 1 | undefined;
+  Object.entries(obj).forEach(([id, value]) => {
+    if (set(docObj, id, value)) {
+      changed = 1;
+    }
+  });
+  Object.keys(docObj).forEach((id: Id) => {
+    if (obj[id] == undefined) {
+      delete docObj[id];
+      changed = 1;
+    }
+  });
+  if (idInParent != undefined && Object.keys(docObj).length == 0) {
+    delete docObjOrParent[idInParent];
   }
   return changed;
 };
@@ -267,17 +308,17 @@ const mockYjs: Persistable<YDoc> = {
     mockYjs.write(yDoc, value);
   },
   write: (yDoc: YDoc, value: any): void => {
-    if (typeof value != 'string') {
-      const yContent = yDoc.getMap('tinybase');
-      if (!yContent.size) {
-        yContent.set('t', new YMap());
-        yContent.set('v', new YMap());
-      }
-      const tablesMap = yContent.get('t');
-      const valuesMap = yContent.get('v');
-      const [tables, values] = value;
+    yDoc.transact(() => {
+      if (typeof value != 'string') {
+        const yContent = yDoc.getMap('tinybase');
+        if (!yContent.size) {
+          yContent.set('t', new YMap());
+          yContent.set('v', new YMap());
+        }
+        const tablesMap = yContent.get('t');
+        const valuesMap = yContent.get('v');
+        const [tables, values] = value;
 
-      yDoc.transact(() => {
         yMapMatch(
           tablesMap as YMap<any>,
           undefined,
@@ -304,12 +345,63 @@ const mockYjs: Persistable<YDoc> = {
             },
           );
         }
-      });
-    } else {
-      yDoc.getArray('broken');
-    }
+      } else {
+        yDoc.getArray('broken');
+      }
+    });
   },
   delete: (location: YDoc): void => location.destroy(),
+  testMissing: false,
+};
+
+const mockAutomerge: Persistable<DocHandle<any>> = {
+  autoLoadPause: 100,
+  getLocation: () => new Repo({network: []}).create(),
+  getPersister: createAutomergePersister,
+  get: (docHandle: DocHandle<any>): [Tables, Values] | void => {
+    const docContent = docHandle.doc['tinybase'];
+    if (Object.keys(docContent).length > 0) {
+      return [docContent['t'], docContent['v']] as [Tables, Values];
+    }
+  },
+  set: (docHandle: DocHandle<any>, value: any): void => {
+    mockAutomerge.write(docHandle, value);
+  },
+  write: (docHandle: DocHandle<any>, value: any): void => {
+    docHandle.change((doc) => {
+      if (typeof value != 'string') {
+        const docContent = doc['tinybase'];
+        if (Object.keys(docContent).length == 0) {
+          docContent['t'] = {};
+          docContent['v'] = {};
+        }
+        const docTables = docContent['t'];
+        const docValues = docContent['v'];
+        const [tables, values] = value;
+
+        docObjMatch(docTables, undefined, tables, (_, tableId, table) =>
+          docObjMatch(docTables, tableId, table, (docTable, rowId, row) =>
+            docObjMatch(docTable, rowId, row, (docRow, cellId, cell) => {
+              if (docRow[cellId] !== cell) {
+                docRow[cellId] = cell;
+                return 1;
+              }
+            }),
+          ),
+        );
+        if (values) {
+          docObjMatch(docValues, undefined, values, (_, valueId, value) => {
+            if (docValues[valueId] !== value) {
+              docValues[valueId] = value;
+            }
+          });
+        }
+      } else {
+        doc = 'broken';
+      }
+    });
+  },
+  delete: (docHandle: DocHandle<any>): void => docHandle.delete(),
   testMissing: false,
 };
 
@@ -322,6 +414,7 @@ describe.each([
   ['localStorage', mockLocalStorage],
   ['sessionStorage', mockSessionStorage],
   ['yjs', mockYjs],
+  ['automerge', mockAutomerge],
 ])('Persists to/from %s', (name: string, persistable: Persistable<any>) => {
   let location: string;
   let store: Store;
