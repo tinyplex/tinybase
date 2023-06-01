@@ -1,3 +1,4 @@
+import * as AutomergeRepo from 'automerge-repo';
 import * as React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
 import * as ReactDOMTestUtils from 'react-dom/test-utils';
@@ -26,6 +27,7 @@ import {transformSync} from 'esbuild';
   ReactDOMTestUtils,
   {React, ReactDOMClient},
   {Y},
+  {AutomergeRepo},
 ].forEach((module) =>
   Object.entries(module).forEach(([key, value]) => {
     (globalThis as any)[key] = value;
