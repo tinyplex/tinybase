@@ -209,7 +209,7 @@ That's now provided by the setTablesJson method, and the setJson method instead
 expects a two-part array containing the tabular data and the keyed value data
 (as emitted by the getJson method). However, for backwards compatibility, if the
 setJson method is passed an object, it _will_ set the tabular data, as it did
-prior to v3.0.0.
+prior to v3.0.
 
 Along similar lines, the setSchema method's previous behavior is now provided by
 the setTablesSchema method. The setSchema method now takes two arguments, the
@@ -355,7 +355,7 @@ and we hope you enjoy using it as much as we did building it. Please provide
 feedback via [Github](https://github.com/tinyplex/tinybase) and
 [Twitter](https://twitter.com/tinybasejs)!
 
-## v1.3.0
+## v1.3
 
 Adds support for explicit transaction start and finish methods, as well as
 listeners for transactions finishing.
@@ -389,9 +389,9 @@ transactions completing.
 Together, this release allows stores to couple their transaction life-cycles
 together, which we need for the query engine.
 
-Note: this API was updated to be more comprehensive in v4.0.0.
+Note: this API was updated to be more comprehensive in v4.0.
 
-## v1.2.0
+## v1.2
 
 This adds a way to revert transactions if they have not met certain conditions.
 
@@ -404,9 +404,9 @@ which list all the net changes and invalid attempts at changes that were made
 during the transaction. You will most likely use the contents of those objects
 to decide whether the transaction should be rolled back.
 
-Note: this API was updated to be more comprehensive in v4.0.0.
+Note: this API was updated to be more comprehensive in v4.0.
 
-## v1.1.0
+## v1.1
 
 This release allows you to listen to invalid data being added to a Store,
 allowing you to gracefully handle errors, rather than them failing silently.
