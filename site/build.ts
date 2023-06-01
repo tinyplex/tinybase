@@ -85,10 +85,10 @@ export const build = (outDir: string, api = true, pages = true): void => {
     .addDir('site/extras')
     .addDir('site/data', 'assets')
     .addStringFile(
-      `{"countries":${readFileSync(
+      `[{"countries":${readFileSync(
         'node_modules/country-flag-emoji-json/dist/by-code.json',
         'utf-8',
-      )}}`,
+      )}}, {}]`,
       'assets/countries.json',
     );
   if (api) {
