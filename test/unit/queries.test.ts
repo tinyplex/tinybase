@@ -1,10 +1,7 @@
 import {Id, Queries, Store, createQueries, createStore} from 'tinybase/debug';
-import {
-  QueriesListener,
-  createQueriesListener,
-  expectChanges,
-  expectNoChanges,
-} from './common';
+import {expectChanges, expectNoChanges} from './common/expect';
+import {QueriesListener} from './common/types';
+import {createQueriesListener} from './common/listeners';
 import {jest} from '@jest/globals';
 
 let store: Store;

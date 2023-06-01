@@ -13,7 +13,7 @@ import * as TinyBaseTools from 'tinybase/debug/tools';
 import * as Y from 'yjs';
 import {join, resolve} from 'path';
 import {readFileSync, readdirSync} from 'fs';
-import {AutomergeTestNetworkAdapter as BroadcastChannelNetworkAdapter} from './automerge-adaptor';
+import {AutomergeTestNetworkAdapter as BroadcastChannelNetworkAdapter} from './common/automerge-adaptor';
 import {transformSync} from 'esbuild';
 
 [

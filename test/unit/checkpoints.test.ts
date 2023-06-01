@@ -7,12 +7,9 @@ import {
   createCheckpoints,
   createStore,
 } from 'tinybase/debug';
-import {
-  CheckpointsListener,
-  createCheckpointsListener,
-  expectChanges,
-  expectNoChanges,
-} from './common';
+import {expectChanges, expectNoChanges} from './common/expect';
+import {CheckpointsListener} from './common/types';
+import {createCheckpointsListener} from './common/listeners';
 
 let store: Store;
 let checkpoints: Checkpoints;

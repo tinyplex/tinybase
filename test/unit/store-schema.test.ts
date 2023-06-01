@@ -9,12 +9,12 @@ import {
   createStore,
 } from 'tinybase/debug/with-schemas';
 import {
-  StoreListener,
-  createStoreListener,
   expectChanges,
   expectChangesNoJson,
   expectNoChanges,
-} from './common';
+} from './common/expect';
+import {StoreListener} from './common/types';
+import {createStoreListener} from './common/listeners';
 
 type AddMutator = (store: Store<any>) => void;
 
