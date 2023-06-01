@@ -50,6 +50,7 @@ export const SORTED_ARGS =
 export const SQUARE_BRACKETS = '[]';
 export const THE_STORE = 'the Store';
 export const TRANSACTION = 'Transaction';
+export const TRANSACTION_CHANGES = TRANSACTION + 'Changes';
 export const TRANSACTION_ = lower(TRANSACTION);
 export const TRANSACTION_DOC =
   'Execute a ' + TRANSACTION_ + ' to make multiple mutations';
