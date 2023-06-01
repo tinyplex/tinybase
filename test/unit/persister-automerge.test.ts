@@ -1,110 +1,8 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-import {
-  ChannelId,
-  DocHandle,
-  NetworkAdapter,
-  PeerId,
-  Repo,
-} from 'automerge-repo';
+import {AutomergeTestNetworkAdapter, resetNetwork} from './automerge-adaptor';
+import {DocHandle, Repo} from 'automerge-repo';
 import {Persister, Store, createStore} from 'tinybase/debug';
 import {createAutomergePersister} from 'tinybase/debug/persister-automerge';
 import {pause} from './common';
-
-const adaptors: Set<TestNetworkAdapter> = new Set();
-
-type NetworkEvent = {
-  senderId: PeerId;
-  targetId?: PeerId;
-  type: string;
-  channelId?: ChannelId;
-  message?: any;
-  broadcast?: boolean;
-};
-
-class TestNetworkAdapter extends NetworkAdapter {
-  connect(peerId: PeerId) {
-    this.peerId = peerId;
-    adaptors.add(this);
-  }
-
-  sendEvent(event: NetworkEvent) {
-    adaptors.forEach((adaptor) => adaptor.receiveEvent(event));
-  }
-
-  receiveEvent({
-    senderId,
-    targetId,
-    type,
-    channelId,
-    message,
-    broadcast,
-  }: NetworkEvent) {
-    if (targetId && targetId !== this.peerId && !broadcast) {
-      return;
-    }
-    switch (type) {
-      case 'arrive':
-        this.sendEvent({
-          senderId: this.peerId!,
-          targetId: senderId,
-          type: 'welcome',
-        });
-        this.announceConnection(channelId!, senderId);
-        break;
-      case 'welcome':
-        this.announceConnection(channelId!, senderId);
-        break;
-      case 'message':
-        this.emit('message', {
-          senderId,
-          targetId: targetId!,
-          channelId: channelId!,
-          message: new Uint8Array(message),
-          broadcast: broadcast!,
-        });
-        break;
-      default:
-        throw new Error('unhandled message from network');
-    }
-  }
-
-  announceConnection(channelId: ChannelId, peerId: PeerId) {
-    this.emit('peer-candidate', {peerId, channelId});
-  }
-
-  sendMessage(
-    peerId: PeerId,
-    channelId: ChannelId,
-    uint8message: Uint8Array,
-    broadcast: boolean,
-  ) {
-    const message = uint8message.buffer.slice(
-      uint8message.byteOffset,
-      uint8message.byteOffset + uint8message.byteLength,
-    );
-    this.sendEvent({
-      senderId: this.peerId!,
-      targetId: peerId,
-      type: 'message',
-      channelId,
-      message,
-      broadcast,
-    });
-  }
-
-  join(joinChannelId: ChannelId) {
-    this.sendEvent({
-      senderId: this.peerId!,
-      channelId: joinChannelId,
-      type: 'arrive',
-      broadcast: true,
-    });
-  }
-
-  leave() {
-    //
-  }
-}
 
 let repo1: Repo;
 let docHandler1: DocHandle<any>;
@@ -112,8 +10,8 @@ let store1: Store;
 let persister1: Persister;
 
 beforeEach(async () => {
-  adaptors.clear();
-  repo1 = new Repo({network: [new TestNetworkAdapter()]});
+  resetNetwork();
+  repo1 = new Repo({network: [new AutomergeTestNetworkAdapter()]});
   docHandler1 = repo1.create();
   store1 = createStore();
   persister1 = createAutomergePersister(store1, docHandler1);
@@ -280,7 +178,7 @@ describe('Two stores, two docs', () => {
   };
 
   beforeEach(async () => {
-    const repo2 = new Repo({network: [new TestNetworkAdapter()]});
+    const repo2 = new Repo({network: [new AutomergeTestNetworkAdapter()]});
     docHandler2 = repo2.find(docHandler1.documentId);
     await syncDocs();
     store2 = createStore();
