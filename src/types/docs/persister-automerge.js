@@ -34,7 +34,7 @@
  * const persister = createAutomergePersister(store, docHandler);
  *
  * await persister.save();
- * // Store JSON will be saved to the document.
+ * // Store will be saved to the document.
  *
  * console.log(docHandler.doc);
  * // -> {tinybase: {t: {pets: {fido: {species: 'dog'}}}, v: {}}}
