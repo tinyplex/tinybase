@@ -27,6 +27,7 @@
  * @example
  * This example creates a Persister object and persists the Store to a Yjs
  * document.
+ *
  * ```js
  * const doc = new Y.Doc();
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
