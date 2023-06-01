@@ -43,6 +43,8 @@ await automergePersister.save();
 console.log(docHandler.doc);
 // -> {tinybase: {t: {pets: {fido: {species: 'dog'}}}, v: {}}}
 automergePersister.destroy();
+
+store.delTables();
 ```
 
 There are some breaking changes in this release:
@@ -77,8 +79,6 @@ Transactions added with the existing addDidFinishTransactionListener method
 _cannot_ mutate data.
 
 ```js
-const store = createStore();
-
 const startListenerId = store.addStartTransactionListener(() => {
   console.log('Start transaction');
   console.log(store.getTables());

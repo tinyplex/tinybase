@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import {Cell, Id, IdOrNull, Store, Value, createStore} from 'tinybase/debug';
 import {
-  StoreListener,
-  createStoreListener,
   expectChanges,
   expectChangesNoJson,
   expectNoChanges,
-} from './common';
+} from './common/expect';
+import {StoreListener} from './common/types';
+import {createStoreListener} from './common/listeners';
 import {jest} from '@jest/globals';
 
 const EMPTY_CHANGES_AND_LOG = [

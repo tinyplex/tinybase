@@ -17,8 +17,7 @@
       "jest-environment-puppeteer",
       "http-server"
     ],
-    "skipLibCheck": true,
-    "allowJs": true
+    "skipLibCheck": true
   },
   "references": [{"path": "../src"}]
 }
