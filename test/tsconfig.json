@@ -17,8 +17,6 @@
       "jest-environment-puppeteer",
       "http-server"
     ],
-    "skipLibCheck": true,
-    "allowJs": true,
-    "outDir": "./_"
+    "skipLibCheck": true
   }
 }

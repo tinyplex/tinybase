@@ -1,6 +1,6 @@
 {
   "name": "tinybase",
-  "version": "4.0.0-beta.2",
+  "version": "4.0.0-beta.3",
   "author": "jamesgpearce",
   "repository": "github:tinyplex/tinybase",
   "license": "MIT",
@@ -268,7 +268,6 @@
     "tinybase": "file:./",
     "tinydocs": "^0.1.26",
     "tmp": "^0.2.1",
-    "ts-jest": "^29.1.0",
     "ts-unused-exports": "^9.0.4",
     "typescript": "5.0.4",
     "yjs": "^13.6.1"
