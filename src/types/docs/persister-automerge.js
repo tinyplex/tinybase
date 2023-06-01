@@ -51,7 +51,7 @@
  * const repo1 = new AutomergeRepo.Repo({
  *   network: [new BroadcastChannelNetworkAdapter()],
  * });
- * const docHandler1 = repo1.create()
+ * const docHandler1 = repo1.create();
  * await docHandler1.value();
  * const store1 = createStore();
  * const persister1 = createAutomergePersister(store1, docHandler1);
