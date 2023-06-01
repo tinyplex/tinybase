@@ -13,6 +13,7 @@ import * as TinyBaseTools from 'tinybase/debug/tools';
 import * as Y from 'yjs';
 import {join, resolve} from 'path';
 import {readFileSync, readdirSync} from 'fs';
+import {AutomergeTestNetworkAdapter as BroadcastChannelNetworkAdapter} from './automerge-adaptor';
 import {transformSync} from 'esbuild';
 
 [
@@ -28,6 +29,7 @@ import {transformSync} from 'esbuild';
   {React, ReactDOMClient},
   {Y},
   {AutomergeRepo},
+  {BroadcastChannelNetworkAdapter},
 ].forEach((module) =>
   Object.entries(module).forEach(([key, value]) => {
     (globalThis as any)[key] = value;
