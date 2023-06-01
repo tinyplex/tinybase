@@ -3,6 +3,66 @@
 This is a reverse chronological list of the major TinyBase releases, with
 highlighted features.
 
+## v4.0
+
+This major release provides Persister modules that connect TinyBase to CRDT
+frameworks that can provide synchronization and local-first reconciliation:
+
+- The createYjsPersister function (in the persister-yjs module) returns a
+  Persister that connects to a [Yjs](https://yjs.dev/) document.
+- The createAutomergePersister function (in the persister-automerge module) returns a
+  Persister that connects to an [Automerge](https://automerge.org/) document via [automerge-repo](https://github.com/automerge/automerge-repo).
+
+For example, the following will persist a TinyBase Store to a Yjs document:
+
+```js
+const store = createStore();
+store.setTables({pets: {fido: {species: 'dog'}}});
+
+const doc = new Y.Doc();
+const yJsPersister = createYjsPersister(store, doc);
+
+await yJsPersister.save();
+// Store will be saved to the document.
+console.log(doc.toJSON());
+// -> {tinybase: {t: {pets: {fido: {species: 'dog'}}}, v: {}}}
+yJsPersister.destroy();
+```
+
+The following is the equivalent for an Automerge document that will sync over
+the broadcast channel:
+
+```js
+const docHandler = new AutomergeRepo.Repo({
+  network: [new BroadcastChannelNetworkAdapter()],
+}).create();
+const automergePersister = createAutomergePersister(store, docHandler);
+
+await automergePersister.save();
+// Store will be saved to the document.
+console.log(docHandler.doc);
+// -> {tinybase: {t: {pets: {fido: {species: 'dog'}}}, v: {}}}
+automergePersister.destroy();
+```
+
+There are some breaking changes in this release:
+
+- The way that data is provided to the doRollback function callback and
+  transaction listeners has changed. Where previously they received content
+  about changed Cell and Value content, they now receive functions that they can
+  choose to call to receive that same data. This has a performance improvement,
+  and also allows the callback or listener to choose between concise
+  TransactionChanges or more verbose TransactionLog structures for that data.
+
+- If you have build a custom persister, you will need to update your
+  implementation. Most notably, the `setPersisted` function parameter is
+  provided with a `getContent` function to get the content from the Store
+  itself, rather than being passed pre-serialized JSON. It also receives
+  information about the changes made during a transaction. The `getPersisted`
+  function must return the content (or nothing) rather than JSON.
+  `startListeningToPersisted` has been renamed `addPersisterListener`, and
+  `stopListeningToPersisted` has been renamed `delPersisterListener`.
+
 ## v3.2
 
 This release lets you add a listener to the start of a transaction, and detect

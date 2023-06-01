@@ -34,7 +34,7 @@
  * const persister = createYjsPersister(store, doc);
  *
  * await persister.save();
- * // Store JSON will be saved to the document.
+ * // Store will be saved to the document.
  *
  * console.log(doc.toJSON());
  * // -> {tinybase: {t: {pets: {fido: {species: 'dog'}}}, v: {}}}
