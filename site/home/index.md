@@ -35,8 +35,8 @@
       for your app state! - out of the box.
     </li>
     <li>
-      Easily <a href='#persist-data-to-browser-file-or-server'>sync your
-      data</a> to local or remote storage, and use
+      Easily <a href='#persist-data-to-storage-or-crdts'>sync your
+      data</a> to storage or (<em>new!</em>) CRDTs, and use
       <a href='#call-hooks-to-bind-to-data'>idiomatic bindings</a> to your
       UI</a>.
     </li>
@@ -255,11 +255,13 @@ console.log(store.getRow('pets', 'felix'));
 store.delTablesSchema();
 ```
 
-> ## Persist data to browser, file, or server.
+> ## Persist data to storage or CRDTs.
 >
 > You can easily persist a Store between browser page reloads or sessions. You
 > can also synchronize it with a web endpoint, or (if you're using TinyBase in
-> an appropriate environment), load and save it to a file.
+> an appropriate environment), load and save it to a file. [New in
+> v4.0](/guides/releases/#v4-0), you can bind TinyBase to
+> [Yjs](https://yjs.dev/) or [Automerge](https://automerge.org/) CRDTs.
 >
 > Read more about persisters in the Persisting Data guide.
 

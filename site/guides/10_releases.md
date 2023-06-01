@@ -55,24 +55,24 @@ The new setTransactionChanges method lets you replay TransactionChanges
 (received at the end of a transaction via listeners) into a Store, allowing you
 to take changes from one Store and apply them to another.
 
-There are some breaking changes in this release:
+### Breaking changes
 
-- The way that data is provided to the DoRollback and TransactionListener
-  callbacks at the end of a transaction has changed. Where previously they
-  directly received content about changed Cell and Value content, they now
-  receive functions that they can choose to call to receive that same data. This
-  has a performance improvement, and your callback or listener can choose
-  between concise TransactionChanges or more verbose TransactionLog structures
-  for that data.
+The way that data is provided to the DoRollback and TransactionListener
+callbacks at the end of a transaction has changed. Where previously they
+directly received content about changed Cell and Value content, they now
+receive functions that they can choose to call to receive that same data. This
+has a performance improvement, and your callback or listener can choose
+between concise TransactionChanges or more verbose TransactionLog structures
+for that data.
 
-- If you have build a custom persister, you will need to update your
-  implementation. Most notably, the `setPersisted` function parameter is
-  provided with a `getContent` function to get the content from the Store
-  itself, rather than being passed pre-serialized JSON. It also receives
-  information about the changes made during a transaction. The `getPersisted`
-  function must return the content (or nothing) rather than JSON.
-  `startListeningToPersisted` has been renamed `addPersisterListener`, and
-  `stopListeningToPersisted` has been renamed `delPersisterListener`.
+If you have build a custom persister, you will need to update your
+implementation. Most notably, the `setPersisted` function parameter is
+provided with a `getContent` function to get the content from the Store
+itself, rather than being passed pre-serialized JSON. It also receives
+information about the changes made during a transaction. The `getPersisted`
+function must return the content (or nothing) rather than JSON.
+`startListeningToPersisted` has been renamed `addPersisterListener`, and
+`stopListeningToPersisted` has been renamed `delPersisterListener`.
 
 ## v3.3
 
