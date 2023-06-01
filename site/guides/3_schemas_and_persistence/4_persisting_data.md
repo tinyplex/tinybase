@@ -4,8 +4,9 @@ The persister module lets you save and load Store data to and from different
 locations, or underlying storage types.
 
 This is useful for preserving Store data between browser sessions or reloads,
-saving or loading browser state to or from a server, or saving Store data to
-disk in a environment with filesystem access.
+saving or loading browser state to or from a server, saving Store data to
+disk in a environment with filesystem access, or, in v4.0 and above, to CRDT
+frameworks like [Yjs](https://yjs.dev/) and [Automerge](https://automerge.org/).
 
 ## Types Of Persisters
 
@@ -25,11 +26,13 @@ include:
 There is also a way to developer custom Persisters of your own, which we
 describe in the Custom Persistence guide.
 
-For more complex synchronization, TinyBase includes persisters for frameworks
-like Yjs:
+For more complex synchronization, TinyBase includes persisters for CRDT
+frameworks:
 
 - The createYjsPersister function (in the persister-yjs module) returns a
-  Persister that connects to a Yjs document.
+  Persister that connects to a [Yjs](https://yjs.dev/) document.
+- The createAutomergePersister function (in the persister-automerge module) returns a
+  Persister that connects to an [Automerge](https://automerge.org/) document via [automerge-repo](https://github.com/automerge/automerge-repo).
 
 (See the Synchronizing Data guide for more details on those.)
 
