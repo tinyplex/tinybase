@@ -1,8 +1,5 @@
 {
-  "ignorePaths": [
-    "*.tsv",
-    "*.webp"
-  ],
+  "ignorePaths": ["*.tsv", "*.webp"],
   "words": [
     "Abad",
     "Adrien",
@@ -26,6 +23,7 @@
     "cujo",
     "Culligan",
     "D1MGR8VRWJ",
+    "degit",
     "deletable",
     "deleter",
     "deleters",

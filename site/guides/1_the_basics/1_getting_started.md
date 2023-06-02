@@ -8,14 +8,49 @@ browser or Node-based development environment.
 
 Note that TinyBase requires a reasonably modern environment, as it makes
 extensive use of contemporary JavaScript features. A regularly-updated browser
-and Node 16 (or above) are recommended.
+and Node 16 (or above) are recommended. If you find you need older
+compatibility, there are additional transpilations in the `lib/es6` folder of
+the distribution.
 
-(If you find you need older compatibility, there are additional transpilations
-in the `lib/es6` folder of the distribution.)
+Let's go!
+
+## TinyBase from a Vite template
+
+[Vite](https://vitejs.dev/) is a build tool that makes it easy to get started
+with modern web projects based on application templates. To use the TinyBase
+template, firstly make a copy of it:
+
+```sh
+npx degit tinyplex/vite-tinybase my-tinybase-app
+```
+
+Then go into the directory, install the dependencies, and run the application:
+
+```sh
+cd my-tinybase-app
+npm install
+npm run dev
+```
+
+The final step will display a local URL, which should serve up a basic TinyBase
+application for you:
+
+![Thumbnail of Vite app](https://tinybase.org/vite-tinybase.png 'Thumbnail of Vite app')
+
+In fact, there are four Vite templates for TinyBase, depending on whether you
+want to use TypeScript or React. Instructions are available in the README of
+each:
+
+| Template                                                                     | Language   | React |
+| ---------------------------------------------------------------------------- | ---------- | ----- |
+| [vite-tinybase](https://github.com/tinyplex/vite-tinybase)                   | JavaScript | No    |
+| [vite-tinybase-ts](https://github.com/tinyplex/vite-tinybase-ts)             | TypeScript | No    |
+| [vite-tinybase-react](https://github.com/tinyplex/vite-tinybase-react)       | JavaScript | Yes   |
+| [vite-tinybase-ts-react](https://github.com/tinyplex/vite-tinybase-ts-react) | TypeScript | Yes   |
 
 ## TinyBase in a browser
 
-One simple way to get started with TinyBase is to include it as a UMD script
+Another simple way to get started with TinyBase is to include it as a UMD script
 from a CDN in a web page. Create a file called `index.html`, for example:
 
 ```html
