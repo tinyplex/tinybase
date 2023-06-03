@@ -196,6 +196,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const valuesListeners: Pair<IdSet2> = pairNewMap();
   const valueIdsListeners: Pair<IdSet2> = pairNewMap();
   const valueListeners: Pair<IdSet2> = pairNewMap();
+  const startTransactionListeners: IdSet2 = mapNew();
   const finishTransactionListeners: Pair<IdSet2> = pairNewMap();
 
   const [addListener, callListeners, delListenerImpl, callListenerImpl] =
@@ -1198,6 +1199,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
   };
 
   const startTransaction = (): Store => {
+    if (transactions == 0) {
+      callListeners(startTransactionListeners, undefined, false, false);
+    }
     transactions++;
     return store;
   };
@@ -1373,6 +1377,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
     );
   };
 
+  const addStartTransactionListener = (listener: TransactionListener): Id =>
+    addListener(listener, startTransactionListeners);
+
   const addWillFinishTransactionListener = (
     listener: TransactionListener,
   ): Id => addListener(listener, finishTransactionListeners[0]);
@@ -1474,6 +1481,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     forEachValue,
 
     addSortedRowIdsListener,
+    addStartTransactionListener,
     addWillFinishTransactionListener,
     addDidFinishTransactionListener,
 

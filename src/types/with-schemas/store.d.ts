@@ -937,6 +937,9 @@ export interface Store<in out Schemas extends OptionalSchemas> {
     mutator?: boolean,
   ): Id;
 
+  /// Store.addStartTransactionListener
+  addStartTransactionListener(listener: TransactionListener<Schemas>): Id;
+
   /// Store.addWillFinishTransactionListener
   addWillFinishTransactionListener(listener: TransactionListener<Schemas>): Id;
 

@@ -65,6 +65,7 @@ export type StoreListener = Listener &
     listenToValueIds: (id: Id) => Id;
     listenToValue: (id: Id, valueId: IdOrNull) => Id;
     listenToInvalidValue: (id: Id, valueId: IdOrNull) => Id;
+    listenToStartTransaction: (id: Id) => Id;
     listenToWillFinishTransaction: (id: Id) => Id;
     listenToDidFinishTransaction: (id: Id) => Id;
   }>;
@@ -278,6 +279,14 @@ export const createStoreListener = (
         cellId,
         (_, valueId, invalidValues) =>
           logs[id].push({[valueId]: invalidValues}),
+      );
+    },
+
+    listenToStartTransaction: (id) => {
+      logs[id] = [];
+      return store.addStartTransactionListener(
+        (_, cellsChanged, valuesChanged) =>
+          logs[id].push([cellsChanged, valuesChanged]),
       );
     },
 

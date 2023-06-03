@@ -526,6 +526,9 @@ export interface Store {
     mutator?: boolean,
   ): Id;
 
+  /// Store.addStartTransactionListener
+  addStartTransactionListener(listener: TransactionListener): Id;
+
   /// Store.addWillFinishTransactionListener
   addWillFinishTransactionListener(listener: TransactionListener): Id;
 

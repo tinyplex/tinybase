@@ -4622,6 +4622,46 @@
    */
   /// Store.addInvalidValueListener
   /**
+   * The addStartTransactionListener method registers a listener function with
+   * the Store that will be called at the start of a transaction.
+   *
+   * The provided TransactionListener will receive a reference to the Store and
+   * two booleans to indicate whether Cell or Value data has been touched during
+   * the transaction. Since this is called at the start, they will both be
+   * `false`!
+   *
+   * @returns A unique Id for the listener that can later be used to remove it.
+   * @example
+   * This example registers a listener that is called at start end of the
+   * transaction, just before its listeners will be called.
+   *
+   * ```js
+   * const store = createStore()
+   *   .setTables({
+   *     pets: {fido: {species: 'dog', color: 'brown'}},
+   *   })
+   *   .setValues({open: true, employees: 3});
+   * const listenerId = store.addStartTransactionListener(
+   *   (store, cellsTouched, valuesTouched) => {
+   *     console.log('Transaction started');
+   *   },
+   * );
+   *
+   * store.transaction(() =>
+   *   store.setCell('pets', 'fido', 'color', 'brown').setValue('employees', 3),
+   * );
+   * // -> 'Transaction started'
+   *
+   * store.callListener(listenerId);
+   * // -> 'Transaction started'
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @category Listener
+   * @since v3.2.0
+   */
+  ///  Store.addStartTransactionListener
+  /**
    * The addWillFinishTransactionListener method registers a listener function
    * with the Store that will be called just before other non-mutating listeners
    * are called at the end of the transaction.
