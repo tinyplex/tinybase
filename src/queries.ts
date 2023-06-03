@@ -157,7 +157,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     addPreStoreListener(
       fromStore,
       queryId,
-      fromStore.addWillFinishTransactionListener(toStore.startTransaction),
+      fromStore.addStartTransactionListener(toStore.startTransaction),
       fromStore.addDidFinishTransactionListener(() =>
         toStore.finishTransaction(),
       ),
