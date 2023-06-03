@@ -1186,23 +1186,24 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const transaction = <Return>(
     actions: () => Return,
     doRollback?: DoRollback,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore void return only occurs internally
   ): Return => {
-    if (transactions == -1) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore only occurs internally
-      return;
+    if (transactions != -1) {
+      startTransaction();
+      const result = actions();
+      finishTransaction(doRollback);
+      return result as Return;
     }
-    startTransaction();
-    const result = actions();
-    finishTransaction(doRollback);
-    return result as Return;
   };
 
   const startTransaction = (): Store => {
     if (transactions == 0) {
       callListeners(startTransactionListeners, undefined, false, false);
     }
-    transactions++;
+    if (transactions != -1) {
+      transactions++;
+    }
     return store;
   };
 

@@ -721,7 +721,7 @@ describe('Transactions', () => {
     expectNoChanges(listener);
   });
 
-  test('Transaction in a listener ignored', () => {
+  test('Transaction in a listener ignored 1', () => {
     listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
     const listenerTransaction = jest.fn(() => {
       store.setTables({t1: {r1: {c1: 3}}});
@@ -733,6 +733,22 @@ describe('Transactions', () => {
     expectChanges(listener, '/t1/r1/c1', {t1: {r1: {c1: 2}}});
     expectNoChanges(listener);
     expect(listenerTransaction).not.toHaveBeenCalled();
+  });
+
+  test('Transaction in a listener ignored 2', () => {
+    listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
+    const listenerTransaction = jest.fn(() => {
+      store.setTables({t1: {r1: {c1: 3}}});
+    });
+    store.addCellListener('t1', 'r1', 'c1', () => {
+      store.startTransaction();
+      listenerTransaction();
+      store.finishTransaction();
+    });
+    store.setTables({t1: {r1: {c1: 2}}});
+    expectChanges(listener, '/t1/r1/c1', {t1: {r1: {c1: 2}}});
+    expectNoChanges(listener);
+    expect(listenerTransaction).toHaveBeenCalledTimes(1);
   });
 
   test('Adding a peer listener in a listener', () => {
