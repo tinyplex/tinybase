@@ -1264,7 +1264,6 @@ export const createStore: typeof createStoreDecl = (): Store => {
           );
           cellsTouched = valuesTouched = false;
         }
-        transactions = -1;
 
         callListeners(
           finishTransactionListeners[0],
@@ -1272,6 +1271,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
           cellsTouched,
           valuesTouched,
         );
+
+        transactions = -1;
         callInvalidCellListeners(0);
         if (cellsTouched) {
           callTabularListenersForChanges(0);
