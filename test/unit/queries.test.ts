@@ -4265,6 +4265,17 @@ describe('Sorted Row Ids', () => {
 });
 
 describe('Miscellaneous', () => {
+  test('Listener cannot mutate original store', () => {
+    queries.setQueryDefinition('q1', 't1', ({select}) => select('c1'));
+    queries.addResultTableListener('q1', () => {
+      store.setValue('mutated', true);
+    });
+    store.setCell('t1', 'r1', 'c1', 1);
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+    expect(queries.getResultTable('q1')).toEqual({r1: {c1: 1}});
+    expect(store.getValues()).toEqual({});
+  });
+
   test('cleans results when deleted', () => {
     setCells();
     queries.setQueryDefinition('q1', 't1', ({select}) => select('c1'));
