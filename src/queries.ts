@@ -505,17 +505,13 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
                   ...addStoreListeners(
                     queryId,
                     1,
-                    store.addRowListener(
-                      realJoinedTableId,
-                      remoteRowId,
-                      () =>
-                        listenToTable(
-                          rootRowId,
-                          realJoinedTableId,
-                          remoteRowId,
-                          nextJoinedTableIds,
-                        ),
-                      true,
+                    store.addRowListener(realJoinedTableId, remoteRowId, () =>
+                      listenToTable(
+                        rootRowId,
+                        realJoinedTableId,
+                        remoteRowId,
+                        nextJoinedTableIds,
+                      ),
                     ),
                   ),
                 ],
@@ -549,7 +545,6 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
               );
             }
           },
-          true,
         ),
       ),
     );
