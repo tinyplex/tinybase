@@ -1223,7 +1223,6 @@ export const createStore: typeof createStoreDecl = (): Store => {
         if (valuesTouched) {
           callKeyedValuesListenersForChanges(1);
         }
-        transactions = -1;
 
         if (
           doRollback?.(
@@ -1253,7 +1252,6 @@ export const createStore: typeof createStoreDecl = (): Store => {
             mapToObj(invalidValues),
           )
         ) {
-          transactions = 1;
           collForEach(changedCells, (table, tableId) =>
             collForEach(table, (row, rowId) =>
               collForEach(row, ([oldCell], cellId) =>
@@ -1264,9 +1262,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
           collForEach(changedValues, ([oldValue], valueId) =>
             setOrDelValue(store, valueId, oldValue),
           );
-          transactions = -1;
           cellsTouched = valuesTouched = false;
         }
+        transactions = -1;
 
         callListeners(
           finishTransactionListeners[0],
