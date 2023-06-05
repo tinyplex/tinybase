@@ -11,6 +11,7 @@
     "typeRoots": ["../node_modules/@types"],
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "types": ["node"]
+    "types": ["node"],
+    "composite": true
   }
 }

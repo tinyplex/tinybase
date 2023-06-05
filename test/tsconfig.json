@@ -19,5 +19,6 @@
       "http-server"
     ],
     "skipLibCheck": true
-  }
+  },
+  "references": [{"path": "../src"}]
 }
