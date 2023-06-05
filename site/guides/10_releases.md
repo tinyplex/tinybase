@@ -3,6 +3,58 @@
 This is a reverse chronological list of the major TinyBase releases, with
 highlighted features.
 
+## v3.2
+
+This release lets you add a listener to the start of a transaction. This lets
+you detect that a set of changes are about to be made to a Store.
+
+To use this, call the addStartTransaction method on your Store. The listener you
+add can itself mutate the data in the Store.
+
+From this release onwards, listeners added with the existing
+addWillFinishTransaction are also able to mutate data. Transactions added with
+the existing addDidFinishTransaction _cannot_ mutate data.
+
+```js
+const store = createStore();
+
+const startListenerId = store.addStartTransactionListener(() => {
+  console.log('Start transaction');
+  console.log(store.getTables());
+  // Can mutate data
+});
+
+const willFinishListenerId = store.addWillFinishTransactionListener(() => {
+  console.log('Will finish transaction');
+  console.log(store.getTables());
+  // Can mutate data
+});
+
+const didFinishListenerId = store.addDidFinishTransactionListener(() => {
+  console.log('Did finish transaction');
+  console.log(store.getTables());
+  // Cannot mutate data
+});
+
+store.setTable('pets', {fido: {species: 'dog'}});
+// -> 'Start transaction'
+// -> {}
+// -> 'Will finish transaction'
+// -> {pets: {fido: {species: 'dog'}}}
+// -> 'Did finish transaction'
+// -> {pets: {fido: {species: 'dog'}}}
+
+store
+  .delListener(startListenerId)
+  .delListener(willFinishListenerId)
+  .delListener(didFinishListenerId);
+
+store.delTables();
+```
+
+This release also fixes a bug where using the explicit startTransaction method
+_inside_ another listener could create infinite recursion.
+
 ## v3.1
 
 This new release adds a powerful schema-based type system to TinyBase.
@@ -55,7 +107,7 @@ existing tabular data, it allows you to get, set, and listen to, individual
 Value items, each with a unique Id.
 
 ```js
-const store = createStore().setValues({employees: 3, open: true});
+store.setValues({employees: 3, open: true});
 console.log(store.getValues());
 // -> {employees: 3, open: true}
 

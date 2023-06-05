@@ -103,6 +103,54 @@ console.log(store.getTables());
 // -> {pets: {fido: {species: 'dog', color: 'brown', sold: true}}}
 ```
 
+## Listening to transactions
+
+You can register listeners to the start and finish of a transaction. There are
+three points in its lifecycle:
+
+| Event      | Add a listener with              | When                                      | Can mutate data |
+| ---------- | -------------------------------- | ----------------------------------------- | --------------- |
+| Start      | addStartTransactionListener      | Before changes                            | Yes             |
+| WillFinish | addWillFinishTransactionListener | After changes and other mutator listeners | Yes             |
+| DidFinish  | addDidFinishTransactionListener  | After non-mutator listeners               | No              |
+
+For example:
+
+```js
+store.delTables();
+
+const startListenerId = store.addStartTransactionListener(() => {
+  console.log('Start transaction');
+  console.log(store.getTables());
+  // Can mutate data
+});
+
+const willFinishListenerId = store.addWillFinishTransactionListener(() => {
+  console.log('Will finish transaction');
+  console.log(store.getTables());
+  // Can mutate data
+});
+
+const didFinishListenerId = store.addDidFinishTransactionListener(() => {
+  console.log('Did finish transaction');
+  console.log(store.getTables());
+  // Cannot mutate data
+});
+
+store.setTable('pets', {fido: {species: 'dog'}});
+// -> 'Start transaction'
+// -> {}
+// -> 'Will finish transaction'
+// -> {pets: {fido: {species: 'dog'}}}
+// -> 'Did finish transaction'
+// -> {pets: {fido: {species: 'dog'}}}
+
+store
+  .delListener(startListenerId)
+  .delListener(willFinishListenerId)
+  .delListener(didFinishListenerId);
+```
+
 ## Summary
 
 We've covered all of the essential basics of working with a TinyBase Store, but
