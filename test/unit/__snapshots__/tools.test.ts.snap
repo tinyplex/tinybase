@@ -835,6 +835,12 @@ export interface S {
   finishTransaction(doRollback?: DoRollback): S;
 
   /**
+   * Registers a listener that will be called just before the start of the
+   * transaction.
+   */
+  addStartTransactionListener(listener: TransactionListener): Id;
+
+  /**
    * Registers a listener that will be called just before the end of the
    * transaction.
    */
@@ -1233,6 +1239,9 @@ export const createS: typeof createSDecl = () => {
 
     finishTransaction: (doRollback?: DoRollback): S =>
       fluent(() => store.finishTransaction(doRollback)),
+
+    addStartTransactionListener: (listener: TransactionListener): Id =>
+      store.addStartTransactionListener(proxy(listener)),
 
     addWillFinishTransactionListener: (listener: TransactionListener): Id =>
       store.addWillFinishTransactionListener(proxy(listener)),
@@ -3390,6 +3399,12 @@ export interface S {
   finishTransaction(doRollback?: DoRollback): S;
 
   /**
+   * Registers a listener that will be called just before the start of the
+   * transaction.
+   */
+  addStartTransactionListener(listener: TransactionListener): Id;
+
+  /**
    * Registers a listener that will be called just before the end of the
    * transaction.
    */
@@ -3568,6 +3583,9 @@ export const createS: typeof createSDecl = () => {
 
     finishTransaction: (doRollback?: DoRollback): S =>
       fluent(() => store.finishTransaction(doRollback)),
+
+    addStartTransactionListener: (listener: TransactionListener): Id =>
+      store.addStartTransactionListener(proxy(listener)),
 
     addWillFinishTransactionListener: (listener: TransactionListener): Id =>
       store.addWillFinishTransactionListener(proxy(listener)),
@@ -4839,6 +4857,12 @@ export interface S {
   finishTransaction(doRollback?: DoRollback): S;
 
   /**
+   * Registers a listener that will be called just before the start of the
+   * transaction.
+   */
+  addStartTransactionListener(listener: TransactionListener): Id;
+
+  /**
    * Registers a listener that will be called just before the end of the
    * transaction.
    */
@@ -5140,6 +5164,9 @@ export const createS: typeof createSDecl = () => {
 
     finishTransaction: (doRollback?: DoRollback): S =>
       fluent(() => store.finishTransaction(doRollback)),
+
+    addStartTransactionListener: (listener: TransactionListener): Id =>
+      store.addStartTransactionListener(proxy(listener)),
 
     addWillFinishTransactionListener: (listener: TransactionListener): Id =>
       store.addWillFinishTransactionListener(proxy(listener)),
@@ -6867,6 +6894,9 @@ startTransaction(): S;
 /** Explicitly finishes a transaction. */
 finishTransaction(doRollback?: DoRollback): S;
 
+/** Registers a listener that will be called just before the start of the transaction. */
+addStartTransactionListener(listener: TransactionListener): Id;
+
 /** Registers a listener that will be called just before the end of the transaction. */
 addWillFinishTransactionListener(listener: TransactionListener): Id;
 
@@ -7105,6 +7135,8 @@ transaction: <Return>(actions: () => Return, doRollback?: DoRollback): Return =>
 startTransaction: (): S => fluent(() => store.startTransaction()),
 
 finishTransaction: (doRollback?: DoRollback): S => fluent(() => store.finishTransaction(doRollback)),
+
+addStartTransactionListener: (listener: TransactionListener): Id => store.addStartTransactionListener(proxy(listener)),
 
 addWillFinishTransactionListener: (listener: TransactionListener): Id => store.addWillFinishTransactionListener(proxy(listener)),
 
@@ -7843,6 +7875,9 @@ startTransaction(): S;
 /** Explicitly finishes a transaction. */
 finishTransaction(doRollback?: DoRollback): S;
 
+/** Registers a listener that will be called just before the start of the transaction. */
+addStartTransactionListener(listener: TransactionListener): Id;
+
 /** Registers a listener that will be called just before the end of the transaction. */
 addWillFinishTransactionListener(listener: TransactionListener): Id;
 
@@ -7969,6 +8004,8 @@ transaction: <Return>(actions: () => Return, doRollback?: DoRollback): Return =>
 startTransaction: (): S => fluent(() => store.startTransaction()),
 
 finishTransaction: (doRollback?: DoRollback): S => fluent(() => store.finishTransaction(doRollback)),
+
+addStartTransactionListener: (listener: TransactionListener): Id => store.addStartTransactionListener(proxy(listener)),
 
 addWillFinishTransactionListener: (listener: TransactionListener): Id => store.addWillFinishTransactionListener(proxy(listener)),
 
@@ -8508,6 +8545,9 @@ startTransaction(): S;
 /** Explicitly finishes a transaction. */
 finishTransaction(doRollback?: DoRollback): S;
 
+/** Registers a listener that will be called just before the start of the transaction. */
+addStartTransactionListener(listener: TransactionListener): Id;
+
 /** Registers a listener that will be called just before the end of the transaction. */
 addWillFinishTransactionListener(listener: TransactionListener): Id;
 
@@ -8676,6 +8716,8 @@ transaction: <Return>(actions: () => Return, doRollback?: DoRollback): Return =>
 startTransaction: (): S => fluent(() => store.startTransaction()),
 
 finishTransaction: (doRollback?: DoRollback): S => fluent(() => store.finishTransaction(doRollback)),
+
+addStartTransactionListener: (listener: TransactionListener): Id => store.addStartTransactionListener(proxy(listener)),
 
 addWillFinishTransactionListener: (listener: TransactionListener): Id => store.addWillFinishTransactionListener(proxy(listener)),
 

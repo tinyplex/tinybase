@@ -969,6 +969,16 @@ export const getStoreCoreApi = (
     storeType,
   );
 
+  // addStartTransactionListener
+  addProxyListener(
+    'Start' + TRANSACTION,
+    transactionListenerType,
+    REGISTERS_A_LISTENER + ' just before the start of the ' + TRANSACTION_,
+    EMPTY_STRING,
+    EMPTY_STRING,
+    0,
+  );
+
   // addWillFinishTransactionListener
   addProxyListener(
     'WillFinish' + TRANSACTION,
