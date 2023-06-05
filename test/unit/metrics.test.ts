@@ -579,6 +579,19 @@ describe('Listens to Metrics when sets', () => {
 });
 
 describe('Miscellaneous', () => {
+  test('Listener cannot mutate original store', () => {
+    const listener = jest.fn(() => {
+      store.setValue('mutated', true);
+    });
+    metrics.setMetricDefinition('m1', 't1');
+    metrics.addMetricListener('m1', listener);
+    store.setCell('t1', 'r1', 'c1', 1);
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+    expect(metrics.getMetric('m1')).toEqual(1);
+    expect(store.getValues()).toEqual({});
+  });
+
   test('remove listener', () => {
     listener = createMetricsListener(metrics);
     const listenerId = listener.listenToMetric('/m1', 'm1');

@@ -4266,11 +4266,13 @@ describe('Sorted Row Ids', () => {
 
 describe('Miscellaneous', () => {
   test('Listener cannot mutate original store', () => {
-    queries.setQueryDefinition('q1', 't1', ({select}) => select('c1'));
-    queries.addResultTableListener('q1', () => {
+    const listener = jest.fn(() => {
       store.setValue('mutated', true);
     });
+    queries.setQueryDefinition('q1', 't1', ({select}) => select('c1'));
+    queries.addResultTableListener('q1', listener);
     store.setCell('t1', 'r1', 'c1', 1);
+    expect(listener).toHaveBeenCalledTimes(1);
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     expect(queries.getResultTable('q1')).toEqual({r1: {c1: 1}});
     expect(store.getValues()).toEqual({});

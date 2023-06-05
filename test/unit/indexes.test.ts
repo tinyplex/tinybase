@@ -1757,6 +1757,19 @@ describe('Listens to SliceRowIds when sets', () => {
 });
 
 describe('Miscellaneous', () => {
+  test('Listener cannot mutate original store', () => {
+    const listener = jest.fn(() => {
+      store.setValue('mutated', true);
+    });
+    indexes.setIndexDefinition('i1', 't1', 'c1');
+    indexes.addSliceIdsListener('i1', listener);
+    store.setCell('t1', 'r1', 'c1', 1);
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+    expect(indexes.getSliceIds('i1')).toEqual(['1']);
+    expect(store.getValues()).toEqual({});
+  });
+
   test('bad sort key', () => {
     indexes.setIndexDefinition('i1', 't1', 'c2', 'c0');
     setCells();

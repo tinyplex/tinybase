@@ -724,6 +724,19 @@ describe('Linked lists', () => {
 });
 
 describe('Miscellaneous', () => {
+  test('Listener cannot mutate original store', () => {
+    const listener = jest.fn(() => {
+      store.setValue('mutated', true);
+    });
+    relationships.setRelationshipDefinition('r1', 't1', 't1', 'c1');
+    relationships.addRemoteRowIdListener('r1', 'r1', listener);
+    store.setCell('t1', 'r1', 'c1', 'r1');
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 'r1'}}});
+    expect(relationships.getRemoteRowId('r1', 'r1')).toEqual('r1');
+    expect(store.getValues()).toEqual({});
+  });
+
   test('remove listener', () => {
     listener = createRelationshipsListener(relationships);
     const listenerId = listener.listenToRemoteRowId('/r1/r1', 'r1', 'r1');
