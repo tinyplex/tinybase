@@ -1,4 +1,43 @@
-<p>This is a reverse chronological list of the major <a href="https://tinybase.org/">TinyBase</a> releases, with highlighted features.</p><h2 id="v3-1">v3.1</h2><p>This new release adds a powerful schema-based type system to <a href="https://tinybase.org/">TinyBase</a>.</p><p>If you define the shape and structure of your data with a <a href="https://tinybase.org/api/store/type-aliases/schema/tablesschema/"><code>TablesSchema</code></a> or <a href="https://tinybase.org/api/store/type-aliases/schema/valuesschema/"><code>ValuesSchema</code></a>, you can benefit from an enhanced developer experience when operating on it. For example:</p>
+<p>This is a reverse chronological list of the major <a href="https://tinybase.org/">TinyBase</a> releases, with highlighted features.</p><h2 id="v3-2">v3.2</h2><p>This release lets you add a listener to the start of a transaction. This lets you detect that a set of changes are about to be made to a <a href="https://tinybase.org/api/store/interfaces/store/store/"><code>Store</code></a>.</p><p>To use this, call the addStartTransaction method on your <a href="https://tinybase.org/api/store/interfaces/store/store/"><code>Store</code></a>. The listener you add can itself mutate the data in the <a href="https://tinybase.org/api/store/interfaces/store/store/"><code>Store</code></a>.</p><p>From this release onwards, listeners added with the existing addWillFinishTransaction are also able to mutate data. <a href="https://tinybase.org/guides/the-basics/transactions/">Transactions</a> added with the existing addDidFinishTransaction <em>cannot</em> mutate data.</p>
+
+```js
+const store = createStore();
+
+const startListenerId = store.addStartTransactionListener(() => {
+  console.log('Start transaction');
+  console.log(store.getTables());
+  // Can mutate data
+});
+
+const willFinishListenerId = store.addWillFinishTransactionListener(() => {
+  console.log('Will finish transaction');
+  console.log(store.getTables());
+  // Can mutate data
+});
+
+const didFinishListenerId = store.addDidFinishTransactionListener(() => {
+  console.log('Did finish transaction');
+  console.log(store.getTables());
+  // Cannot mutate data
+});
+
+store.setTable('pets', {fido: {species: 'dog'}});
+// -> 'Start transaction'
+// -> {}
+// -> 'Will finish transaction'
+// -> {pets: {fido: {species: 'dog'}}}
+// -> 'Did finish transaction'
+// -> {pets: {fido: {species: 'dog'}}}
+
+store
+  .delListener(startListenerId)
+  .delListener(willFinishListenerId)
+  .delListener(didFinishListenerId);
+
+store.delTables();
+```
+
+<p>This release also fixes a bug where using the explicit <a href="https://tinybase.org/api/store/interfaces/store/store/methods/transaction/starttransaction/"><code>startTransaction</code></a> method <em>inside</em> another listener could create infinite recursion.</p><h2 id="v3-1">v3.1</h2><p>This new release adds a powerful schema-based type system to <a href="https://tinybase.org/">TinyBase</a>.</p><p>If you define the shape and structure of your data with a <a href="https://tinybase.org/api/store/type-aliases/schema/tablesschema/"><code>TablesSchema</code></a> or <a href="https://tinybase.org/api/store/type-aliases/schema/valuesschema/"><code>ValuesSchema</code></a>, you can benefit from an enhanced developer experience when operating on it. For example:</p>
 
 ```ts yolo
 // Import the 'with-schemas' definition:
@@ -19,7 +58,7 @@ store.setValues({employees: 3, website: 'pets.com'}); // TypeScript error
 <p>The schema-based typing is used comprehensively throughout every module - from the core <a href="https://tinybase.org/api/store/interfaces/store/store/"><code>Store</code></a> interface all the way through to the <a href="https://tinybase.org/api/ui-react/"><code>ui-react</code></a> module. See the new <a href="https://tinybase.org/guides/schemas-and-persistence/schema-based-typing/">Schema-Based Typing</a> guide for instructions on how to use it.</p><p>This now means that there are <em>three</em> progressive ways to use TypeScript with <a href="https://tinybase.org/">TinyBase</a>:</p><ul><li>Basic Type Support (since v1.0)</li><li>Schema-based Typing (since v3.1)</li><li>ORM-like type definitions (since v2.2)</li></ul><p>These are each described in the new <a href="https://tinybase.org/guides/the-basics/tinybase-and-typescript/">TinyBase and TypeScript</a> guide.</p><p>Also in v3.1, the ORM-like type definition generation in the <a href="https://tinybase.org/api/tools/"><code>tools</code></a> module has been extended to emit <a href="https://tinybase.org/api/ui-react/"><code>ui-react</code></a> module definitions.</p><p>Finally, v3.1.1 adds a <code>reuseRowIds</code> parameter to the <a href="https://tinybase.org/api/store/interfaces/store/store/methods/setter/addrow/"><code>addRow</code></a> method and the <a href="https://tinybase.org/api/ui-react/functions/store-hooks/useaddrowcallback/"><code>useAddRowCallback</code></a> hook. It defaults to <code>true</code>, for backwards compatibility, but if set to <code>false</code>, new <a href="https://tinybase.org/api/store/type-aliases/store/row/"><code>Row</code></a> <a href="https://tinybase.org/api/common/type-aliases/identity/ids/"><code>Ids</code></a> will not be reused unless the whole <a href="https://tinybase.org/api/store/type-aliases/store/table/"><code>Table</code></a> is deleted.</p><h2 id="v3-0">v3.0</h2><p>This major new release adds key/value store functionality to <a href="https://tinybase.org/">TinyBase</a>. Alongside existing tabular data, it allows you to get, set, and listen to, individual <a href="https://tinybase.org/api/store/type-aliases/store/value/"><code>Value</code></a> items, each with a unique <a href="https://tinybase.org/api/common/type-aliases/identity/id/"><code>Id</code></a>.</p>
 
 ```js
-const store = createStore().setValues({employees: 3, open: true});
+store.setValues({employees: 3, open: true});
 console.log(store.getValues());
 // -> {employees: 3, open: true}
 
