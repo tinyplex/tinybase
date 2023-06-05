@@ -1185,20 +1185,27 @@ describe('Stats', () => {
       expect(store.getListenerStats()).toEqual(expectedListenerStats);
     });
 
-    test.each([['willFinishTransaction'], ['didFinishTransaction']])(
-      '%s',
-      (thing) => {
-        const addListener =
-          'add' + thing[0].toUpperCase() + thing.substr(1) + 'Listener';
-        expect(((store as any)[addListener] as any)((): null => null)).toEqual(
-          '0',
-        );
-        expectedListenerStats.transaction = 1;
-        expect(store.getListenerStats()).toEqual(expectedListenerStats);
-        store.delListener('0');
-        expectedListenerStats.transaction = 0;
-        expect(store.getListenerStats()).toEqual(expectedListenerStats);
-      },
-    );
+    test.each([
+      ['startTransaction'],
+      ['willFinishTransaction'],
+      ['didFinishTransaction'],
+    ])('%s', (thing) => {
+      const addListener =
+        'add' + thing[0].toUpperCase() + thing.substr(1) + 'Listener';
+      expect(((store as any)[addListener] as any)((): null => null)).toEqual(
+        '0',
+      );
+      expect(((store as any)[addListener] as any)((): null => null)).toEqual(
+        '1',
+      );
+      expectedListenerStats.transaction = 2;
+      expect(store.getListenerStats()).toEqual(expectedListenerStats);
+      store.delListener('1');
+      expectedListenerStats.transaction = 1;
+      expect(store.getListenerStats()).toEqual(expectedListenerStats);
+      store.delListener('0');
+      expectedListenerStats.transaction = 0;
+      expect(store.getListenerStats()).toEqual(expectedListenerStats);
+    });
   });
 });
