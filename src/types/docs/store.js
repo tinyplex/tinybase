@@ -4630,6 +4630,10 @@
    * the transaction. Since this is called at the start, they will both be
    * `false`!
    *
+   * Note that a TransactionListener added to the Store with this method can
+   * mutate the Store, and its changes will be treated as part of the
+   * transaction that is starting.
+   *
    * @returns A unique Id for the listener that can later be used to remove it.
    * @example
    * This example registers a listener that is called at start end of the
@@ -4680,6 +4684,11 @@
    * The exception is a transaction that has been rolled back, for which the
    * value of `cellsTouched` and `valuesTouched` in the listener will be `false`
    * because all changes have been reverted.
+   *
+   * Note that a TransactionListener added to the Store with this method can
+   * mutate the Store itself, and its changes will be treated as part of the
+   * transaction that is starting (and may fire non-mutating listeners after
+   * this).
    *
    * @returns A unique Id for the listener that can later be used to remove it.
    * @example
@@ -4772,6 +4781,9 @@
    * The exception is a transaction that has been rolled back, for which the
    * value of `cellsTouched` and `valuesTouched` in the listener will be `false`
    * because all changes have been reverted.
+   *
+   * Note that a TransactionListener added to the Store with this method
+   * _cannot_ mutate the Store itself, and attempts to do so will fail silently.
    *
    * @returns A unique Id for the listener that can later be used to remove it.
    * @example

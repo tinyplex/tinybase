@@ -3132,7 +3132,7 @@ describe('Listeners', () => {
     });
   });
 
-  describe('Will and did finish transaction', () => {
+  describe('transaction', () => {
     beforeEach(() => {
       store = createStore();
       listener = createStoreListener(store);
@@ -4898,6 +4898,45 @@ describe('Mutating listeners', () => {
         {v1__: [[[1]]]},
       );
       expectNoChanges(listener);
+    });
+  });
+
+  describe('transaction', () => {
+    beforeEach(() => {
+      store = createStore();
+    });
+
+    test('start can mutate', () => {
+      const listener = jest.fn(() => {
+        store.setValue('mutated', true);
+      });
+      store.addStartTransactionListener(listener);
+      store.setCell('t1', 'r1', 'c1', 'r1');
+      expect(listener).toHaveBeenCalledTimes(1);
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 'r1'}}});
+      expect(store.getValues()).toEqual({mutated: true});
+    });
+
+    test('willFinish can mutate', () => {
+      const listener = jest.fn(() => {
+        store.setValue('mutated', true);
+      });
+      store.addWillFinishTransactionListener(listener);
+      store.setCell('t1', 'r1', 'c1', 'r1');
+      expect(listener).toHaveBeenCalledTimes(1);
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 'r1'}}});
+      expect(store.getValues()).toEqual({mutated: true});
+    });
+
+    test('didFinish cannot mutate', () => {
+      const listener = jest.fn(() => {
+        store.setValue('mutated', true);
+      });
+      store.addDidFinishTransactionListener(listener);
+      store.setCell('t1', 'r1', 'c1', 'r1');
+      expect(listener).toHaveBeenCalledTimes(1);
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 'r1'}}});
+      expect(store.getValues()).toEqual({});
     });
   });
 
