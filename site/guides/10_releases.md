@@ -5,15 +5,16 @@ highlighted features.
 
 ## v3.2
 
-This release lets you add a listener to the start of a transaction. This lets
-you detect that a set of changes are about to be made to a Store.
+This release lets you add a listener to the start of a transaction, and detect
+that a set of changes are about to be made to a Store.
 
-To use this, call the addStartTransaction method on your Store. The listener you
-add can itself mutate the data in the Store.
+To use this, call the addStartTransactionListener method on your Store. The
+listener you add can itself mutate the data in the Store.
 
 From this release onwards, listeners added with the existing
-addWillFinishTransaction are also able to mutate data. Transactions added with
-the existing addDidFinishTransaction _cannot_ mutate data.
+addWillFinishTransactionListener method are also able to mutate data.
+Transactions added with the existing addDidFinishTransactionListener method
+_cannot_ mutate data.
 
 ```js
 const store = createStore();
