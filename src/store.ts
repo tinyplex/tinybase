@@ -104,6 +104,7 @@ import {
   collForEach,
   collHas,
   collIsEmpty,
+  collSize2,
   collSize3,
   collSize4,
 } from './common/coll';
@@ -1198,11 +1199,11 @@ export const createStore: typeof createStoreDecl = (): Store => {
   };
 
   const startTransaction = (): Store => {
-    if (transactions == 0) {
-      callListeners(startTransactionListeners, undefined, false, false);
-    }
     if (transactions != -1) {
       transactions++;
+    }
+    if (transactions == 1) {
+      callListeners(startTransactionListeners, undefined, false, false);
     }
     return store;
   };
@@ -1413,7 +1414,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
           valueIds: pairCollSize2(valueIdsListeners),
           value: pairCollSize2(valueListeners),
           invalidValue: pairCollSize2(invalidValueListeners),
-          transaction: pairCollSize2(finishTransactionListeners),
+          transaction:
+            collSize2(startTransactionListeners) +
+            pairCollSize2(finishTransactionListeners),
         }
       : {};
 
