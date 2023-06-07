@@ -1,7 +1,7 @@
 import {Persister, PersisterListener} from './types/persisters';
 import {Store, Tables, Values} from './types/store';
 import {createCustomPersister} from './persisters';
-import {createFilePersister as createFilePersisterDecl} from './types/persister-file';
+import {createSqliteWasmPersister as createSqliteWasmPersisterDecl} from './types/persister-sqlite-wasm';
 import {jsonString} from './common/other';
 
 export const createSqliteWasmPersister = ((
@@ -42,4 +42,4 @@ export const createSqliteWasmPersister = ((
     addPersisterListener,
     delPersisterListener,
   );
-}) as typeof createFilePersisterDecl;
+}) as typeof createSqliteWasmPersisterDecl;
