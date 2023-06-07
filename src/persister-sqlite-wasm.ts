@@ -9,7 +9,7 @@ export const createSqliteWasmPersister = ((
   sqlite3: any,
   db: any,
 ): Persister => {
-  const getPersisted = async (): Promise<[Tables, Values]> =>
+  const getPersisted = (): Promise<[Tables, Values]> =>
     new Promise((resolve) =>
       db.exec('SELECT json FROM tinybase LIMIT 1', {
         callback: (row: string) => resolve(JSON.parse(row)),
@@ -24,7 +24,7 @@ export const createSqliteWasmPersister = ((
         'CREATE TABLE IF NOT EXISTS tinybase(json); ' +
           'INSERT INTO tinybase(rowId, json) VALUES (1, ?) ON CONFLICT DO ' +
           'UPDATE SET json=excluded.json',
-        {bind: jsonString(getContent())},
+        {bind: [jsonString(getContent())]},
       );
     } catch {}
   };

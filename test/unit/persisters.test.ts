@@ -1,5 +1,6 @@
 /* eslint-disable jest/no-conditional-expect */
 
+import 'fake-indexeddb/auto';
 import {DocHandle, Repo} from 'automerge-repo';
 import {
   Id,
@@ -17,7 +18,9 @@ import {
   createLocalPersister,
   createSessionPersister,
 } from 'tinybase/debug/persister-browser';
+import initWasm, {DB} from '@vlcn.io/crsqlite-wasm';
 import {createAutomergePersister} from 'tinybase/debug/persister-automerge';
+import {createCrSqliteWasmPersister} from 'tinybase/debug/persister-cr-sqlite-wasm';
 import {createFilePersister} from 'tinybase/debug/persister-file';
 import {createRemotePersister} from 'tinybase/debug/persister-remote';
 import {createSqliteWasmPersister} from 'tinybase/debug/persister-sqlite-wasm';
@@ -47,6 +50,30 @@ type Persistable<Location = string> = {
   testMissing: boolean;
 };
 type SqliteLocation = [sqlite3: any, db: any];
+
+const suppressWarnings = async <Return>(actions: () => Promise<Return>) => {
+  /* eslint-disable no-console */
+  const warn = console.warn;
+  console.warn = () => 0;
+  const result = await actions();
+  console.warn = warn;
+  /* eslint-enable no-console */
+  return result;
+};
+
+const mockFetchWasm = (): void => {
+  fetchMock.enableMocks();
+  fetchMock.resetMocks();
+  fetchMock.doMock(async (req) => {
+    if (req.url.startsWith('file://')) {
+      return {
+        status: 200,
+        body: fs.readFileSync(req.url.substring(7)) as any,
+      };
+    }
+    return '';
+  });
+};
 
 const yMapMatch = (
   yMapOrParent: YMap<any>,
@@ -299,30 +326,14 @@ const mockSessionStorage = getMockedStorage(
 );
 
 const mockSqliteWasm: Persistable<SqliteLocation> = {
-  beforeEach: (): void => {
-    fetchMock.enableMocks();
-    fetchMock.resetMocks();
-    fetchMock.doMock(async (req) => {
-      if (req.url.startsWith('file://')) {
-        return {
-          status: 200,
-          body: fs.readFileSync(req.url.substring(7)) as any,
-        };
-      }
-      return '';
-    });
-  },
+  beforeEach: mockFetchWasm,
   autoLoadPause: 100,
-  getLocation: async (): Promise<SqliteLocation> => {
-    /* eslint-disable no-console */
-    const warn = console.warn;
-    console.warn = () => 0;
-    const sqlite3 = await sqlite3InitModule();
-    const db = new sqlite3.oo1.DB('/db.sqlite3', 'c');
-    console.warn = warn;
-    /* eslint-enable no-console */
-    return [sqlite3, db];
-  },
+  getLocation: async (): Promise<SqliteLocation> =>
+    suppressWarnings(async () => {
+      const sqlite3 = await sqlite3InitModule();
+      const db = new sqlite3.oo1.DB('/db.sqlite3', 'c');
+      return [sqlite3, db];
+    }),
   getPersister: (store: Store, [sqlite3, db]: SqliteLocation) =>
     createSqliteWasmPersister(store, sqlite3, db),
   get: ([_sqlite3, db]: SqliteLocation): Promise<[Tables, Values] | void> =>
@@ -338,9 +349,38 @@ const mockSqliteWasm: Persistable<SqliteLocation> = {
       'CREATE TABLE IF NOT EXISTS tinybase(json); ' +
         'INSERT INTO tinybase(rowId, json) VALUES (1, ?) ON CONFLICT DO ' +
         'UPDATE SET json=excluded.json',
-      {bind: value},
+      {bind: [value]},
     ),
   delete: (_location: SqliteLocation): void => {
+    return;
+  },
+  testMissing: true,
+};
+
+const mockCrSqliteWasm: Persistable<DB> = {
+  beforeEach: mockFetchWasm,
+  autoLoadPause: 100,
+  getLocation: async (): Promise<DB> =>
+    suppressWarnings(async () => {
+      const crSqlite3 = await initWasm();
+      const db = await crSqlite3.open();
+      return db;
+    }),
+  getPersister: (store: Store, db: DB) =>
+    createCrSqliteWasmPersister(store, db),
+  get: async (db: DB): Promise<[Tables, Values] | void> =>
+    JSON.parse((await db.execA('SELECT json FROM tinybase LIMIT 1'))[0][0]),
+  set: async (db: DB, value: any): Promise<void> =>
+    await mockCrSqliteWasm.write(db, JSON.stringify(value)),
+  write: async (db: DB, value: any): Promise<void> => {
+    await db.exec('CREATE TABLE IF NOT EXISTS tinybase(json);');
+    await db.exec(
+      'INSERT INTO tinybase(rowId, json) VALUES (1, ?) ON CONFLICT DO ' +
+        'UPDATE SET json=excluded.json',
+      [value],
+    );
+  },
+  delete: (_db: DB): void => {
     return;
   },
   testMissing: true,
@@ -467,6 +507,7 @@ describe.each([
   ['localStorage', mockLocalStorage],
   ['sessionStorage', mockSessionStorage],
   ['sqliteWasm', mockSqliteWasm],
+  ['crSqliteWasm', mockCrSqliteWasm],
   ['yjs', mockYjs],
   ['automerge', mockAutomerge],
 ])('Persists to/from %s', (name: string, persistable: Persistable<any>) => {
@@ -604,7 +645,7 @@ describe.each([
     await pause(persistable.autoLoadPause);
     expect(store.getTables()).toEqual({t1: {r1: {c1: 3}}});
     expect(persister.getStats()).toEqual({loads: 3, saves: 0});
-    await persister.stopAutoLoad();
+    persister.stopAutoLoad();
     await persistable.set(location, [{t1: {r1: {c1: 4}}}]);
     await pause(persistable.autoLoadPause);
     expect(store.getTables()).toEqual({t1: {r1: {c1: 3}}});

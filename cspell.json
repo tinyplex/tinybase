@@ -27,6 +27,7 @@
     "CONCAT",
     "CRDT",
     "CRDTs",
+    "crsqlite",
     "cubecull",
     "cujo",
     "Culligan",
@@ -45,6 +46,7 @@
     "gzipped",
     "havings",
     "hypot",
+    "indexeddb",
     "ized",
     "jamesgpearce",
     "jaysc",
@@ -96,8 +98,10 @@
     "uptonking",
     "vadlamuru",
     "visible",
+    "vlcn",
     "webp",
     "wildcarded",
+    "xplat",
     "yolo"
   ]
 }
