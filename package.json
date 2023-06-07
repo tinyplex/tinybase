@@ -218,6 +218,7 @@
     "@babel/preset-typescript": "^7.22.5",
     "@rollup/plugin-replace": "^5.0.2",
     "@rollup/plugin-terser": "^0.4.3",
+    "@sqlite.org/sqlite-wasm": "^3.42.0-build1",
     "@types/asciichart": "^1.5.6",
     "@types/expect-puppeteer": "^5.0.3",
     "@types/http-server": "^0.12.1",
@@ -236,6 +237,7 @@
     "automerge-repo": "^0.0.54",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^29.5.0",
+    "babel-plugin-transform-import-meta": "^2.2.0",
     "babel-preset-minify": "^0.5.2",
     "buffer-replace": "^1.0.0",
     "country-flag-emoji-json": "^2.0.0",
@@ -273,12 +275,16 @@
     "yjs": "^13.6.1"
   },
   "peerDependencies": {
+    "@sqlite.org/sqlite-wasm": "^3.42.0-build1",
     "automerge-repo": "^0.0.54",
     "prettier": ">=2.0.0",
     "react": ">=17.0.0",
     "yjs": ">=13.6.0"
   },
   "peerDependenciesMeta": {
+    "@sqlite.org/sqlite-wasm": {
+      "optional": true
+    },
     "automerge-repo": {
       "optional": true
     },

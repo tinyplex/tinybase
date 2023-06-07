@@ -1,5 +1,1 @@
-module.exports = {
-  launch: {
-    headless: 'new',
-  },
-};
+module.exports = {launch: {headless: 'new'}};

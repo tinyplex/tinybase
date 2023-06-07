@@ -20,11 +20,13 @@ import {
 import {createAutomergePersister} from 'tinybase/debug/persister-automerge';
 import {createFilePersister} from 'tinybase/debug/persister-file';
 import {createRemotePersister} from 'tinybase/debug/persister-remote';
+import {createSqliteWasmPersister} from 'tinybase/debug/persister-sqlite-wasm';
 import {createYjsPersister} from 'tinybase/debug/persister-yjs';
 import crypto from 'crypto';
 import fetchMock from 'jest-fetch-mock';
 import fs from 'fs';
 import {pause} from './common/other';
+import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import tmp from 'tmp';
 
 Object.assign(globalThis, {TextDecoder, TextEncoder});
@@ -44,6 +46,7 @@ type Persistable<Location = string> = {
   getChanges?: () => TransactionChanges;
   testMissing: boolean;
 };
+type SqliteLocation = [sqlite3: any, db: any];
 
 const yMapMatch = (
   yMapOrParent: YMap<any>,
@@ -226,12 +229,6 @@ const mockRemote: Persistable = {
         const body = await req.text();
         await mockRemote.write(req.url.substr(SET_HOST.length), body);
       }
-      if (req.url.startsWith('file://')) {
-        return {
-          status: 200,
-          body: fs.readFileSync(req.url.substring(7)) as any,
-        };
-      }
       return '';
     });
   },
@@ -300,6 +297,54 @@ const mockSessionStorage = getMockedStorage(
   window.sessionStorage,
   createSessionPersister,
 );
+
+const mockSqliteWasm: Persistable<SqliteLocation> = {
+  beforeEach: (): void => {
+    fetchMock.enableMocks();
+    fetchMock.resetMocks();
+    fetchMock.doMock(async (req) => {
+      if (req.url.startsWith('file://')) {
+        return {
+          status: 200,
+          body: fs.readFileSync(req.url.substring(7)) as any,
+        };
+      }
+      return '';
+    });
+  },
+  autoLoadPause: 100,
+  getLocation: async (): Promise<SqliteLocation> => {
+    /* eslint-disable no-console */
+    const warn = console.warn;
+    console.warn = () => 0;
+    const sqlite3 = await sqlite3InitModule();
+    const db = new sqlite3.oo1.DB('/db.sqlite3', 'c');
+    console.warn = warn;
+    /* eslint-enable no-console */
+    return [sqlite3, db];
+  },
+  getPersister: (store: Store, [sqlite3, db]: SqliteLocation) =>
+    createSqliteWasmPersister(store, sqlite3, db),
+  get: ([_sqlite3, db]: SqliteLocation): Promise<[Tables, Values] | void> =>
+    new Promise((resolve) =>
+      db.exec('SELECT json FROM tinybase LIMIT 1', {
+        callback: (row: string) => resolve(JSON.parse(row)),
+      }),
+    ),
+  set: async (location: SqliteLocation, value: any): Promise<void> =>
+    await mockSqliteWasm.write(location, JSON.stringify(value)),
+  write: async ([_sqlite3, db]: SqliteLocation, value: any): Promise<void> =>
+    db.exec(
+      'CREATE TABLE IF NOT EXISTS tinybase(json); ' +
+        'INSERT INTO tinybase(rowId, json) VALUES (1, ?) ON CONFLICT DO ' +
+        'UPDATE SET json=excluded.json',
+      {bind: value},
+    ),
+  delete: (_location: SqliteLocation): void => {
+    return;
+  },
+  testMissing: true,
+};
 
 const mockYjs: Persistable<YDoc> = {
   autoLoadPause: 100,
@@ -421,6 +466,7 @@ describe.each([
   ['remote', mockRemote],
   ['localStorage', mockLocalStorage],
   ['sessionStorage', mockSessionStorage],
+  ['sqliteWasm', mockSqliteWasm],
   ['yjs', mockYjs],
   ['automerge', mockAutomerge],
 ])('Persists to/from %s', (name: string, persistable: Persistable<any>) => {
@@ -554,6 +600,15 @@ describe.each([
     await pause(persistable.autoLoadPause);
     expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
     expect(persister.getStats()).toEqual({loads: 2, saves: 0});
+    await persistable.set(location, [{t1: {r1: {c1: 3}}}]);
+    await pause(persistable.autoLoadPause);
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 3}}});
+    expect(persister.getStats()).toEqual({loads: 3, saves: 0});
+    await persister.stopAutoLoad();
+    await persistable.set(location, [{t1: {r1: {c1: 4}}}]);
+    await pause(persistable.autoLoadPause);
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 3}}});
+    expect(persister.getStats()).toEqual({loads: 3, saves: 0});
   });
 
   test('autoSave & autoLoad: no load when saving', async () => {
