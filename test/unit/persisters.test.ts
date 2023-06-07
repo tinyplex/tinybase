@@ -11,6 +11,7 @@ import {
   createCustomPersister,
   createStore,
 } from 'tinybase/debug';
+import {TextDecoder, TextEncoder} from 'util';
 import {Doc as YDoc, Map as YMap} from 'yjs';
 import {
   createLocalPersister,
@@ -26,17 +27,19 @@ import fs from 'fs';
 import {pause} from './common/other';
 import tmp from 'tmp';
 
+Object.assign(globalThis, {TextDecoder, TextEncoder});
+
 const GET_HOST = 'http://get.com';
 const SET_HOST = 'http://set.com';
 
 type Persistable<Location = string> = {
   beforeEach?: () => void;
   autoLoadPause?: number;
-  getLocation: () => Location;
+  getLocation: () => Promise<Location>;
   getPersister: (store: Store, location: Location) => Persister;
-  get: (location: Location) => [Tables, Values] | void;
-  set: (location: Location, value: any) => void;
-  write: (location: Location, value: string) => void;
+  get: (location: Location) => Promise<[Tables, Values] | void>;
+  set: (location: Location, value: any) => Promise<void>;
+  write: (location: Location, value: string) => Promise<void>;
   delete: (location: Location) => void;
   getChanges?: () => TransactionChanges;
   testMissing: boolean;
@@ -124,10 +127,10 @@ let customPersisterListener:
 let customPersisterChanges: TransactionChanges = [{}, {}];
 
 const getMockedCustom = (
-  write: (location: string, value: string) => void,
+  write: (location: string, value: string) => Promise<void>,
 ): Persistable => ({
   autoLoadPause: 100,
-  getLocation: (): string => '',
+  getLocation: async (): Promise<string> => '',
   getPersister: (store: Store) => {
     customPersister = '';
     return createCustomPersister(
@@ -147,9 +150,9 @@ const getMockedCustom = (
       () => (customPersisterListener = undefined),
     );
   },
-  get: (): [Tables, Values] | void => customPersister,
-  set: (location: string, value: any): void =>
-    mockCustomNoContentListener.write(location, JSON.stringify(value)),
+  get: async (): Promise<[Tables, Values] | void> => customPersister,
+  set: async (location: string, value: any): Promise<void> =>
+    await mockCustomNoContentListener.write(location, JSON.stringify(value)),
   write,
   delete: (): void => {
     customPersister = '';
@@ -159,21 +162,21 @@ const getMockedCustom = (
 });
 
 const mockCustomNoContentListener: Persistable<string> = getMockedCustom(
-  (_location: string, value: any): void => {
+  async (_location: string, value: any): Promise<void> => {
     customPersister = value;
     customPersisterListener?.();
   },
 );
 
 const mockCustomContentListener: Persistable<string> = getMockedCustom(
-  (_location: string, value: any): void => {
+  async (_location: string, value: any): Promise<void> => {
     customPersister = value;
     customPersisterListener?.(() => value);
   },
 );
 
 const mockCustomChangesListener: Persistable<string> = getMockedCustom(
-  (_location: string, value: any): void => {
+  async (_location: string, value: any): Promise<void> => {
     customPersister = value;
     customPersisterListener?.(
       () => value,
@@ -184,19 +187,19 @@ const mockCustomChangesListener: Persistable<string> = getMockedCustom(
 
 const mockFile: Persistable = {
   autoLoadPause: 100,
-  getLocation: (): string => {
+  getLocation: async (): Promise<string> => {
     tmp.setGracefulCleanup();
     return tmp.fileSync().name;
   },
   getPersister: createFilePersister,
-  get: (location: string): [Tables, Values] | void => {
+  get: async (location: string): Promise<[Tables, Values] | void> => {
     try {
       return JSON.parse(fs.readFileSync(location, 'utf-8'));
     } catch {}
   },
-  set: (location: string, value: any): void =>
-    mockFile.write(location, JSON.stringify(value)),
-  write: (location: string, value: any): void =>
+  set: async (location: string, value: any): Promise<void> =>
+    await mockFile.write(location, JSON.stringify(value)),
+  write: async (location: string, value: any): Promise<void> =>
     fs.writeFileSync(location, value, 'utf-8'),
   delete: (location: string): void => fs.unlinkSync(location),
   testMissing: true,
@@ -208,7 +211,7 @@ const mockRemote: Persistable = {
     fetchMock.resetMocks();
     fetchMock.doMock(async (req) => {
       if (req.url.startsWith(GET_HOST)) {
-        const rawBody = mockRemote.get(req.url.substr(GET_HOST.length));
+        const rawBody = await mockRemote.get(req.url.substr(GET_HOST.length));
         if (rawBody != null) {
           const body = JSON.stringify(rawBody);
           return {
@@ -221,26 +224,32 @@ const mockRemote: Persistable = {
       }
       if (req.url.startsWith(SET_HOST) && req.method == 'POST') {
         const body = await req.text();
-        mockRemote.write(req.url.substr(SET_HOST.length), body);
+        await mockRemote.write(req.url.substr(SET_HOST.length), body);
+      }
+      if (req.url.startsWith('file://')) {
+        return {
+          status: 200,
+          body: fs.readFileSync(req.url.substring(7)) as any,
+        };
       }
       return '';
     });
   },
   autoLoadPause: 500,
-  getLocation: (): string => {
+  getLocation: async (): Promise<string> => {
     tmp.setGracefulCleanup();
     return tmp.fileSync().name;
   },
   getPersister: (store, location) =>
     createRemotePersister(store, GET_HOST + location, SET_HOST + location, 0.1),
-  get: (location: string): [Tables, Values] | void => {
+  get: async (location: string): Promise<[Tables, Values] | void> => {
     try {
       return JSON.parse(fs.readFileSync(location, 'utf-8'));
     } catch {}
   },
-  set: (location: string, value: any): void =>
-    mockRemote.write(location, JSON.stringify(value)),
-  write: (location: string, value: any): void =>
+  set: async (location: string, value: any): Promise<void> =>
+    await mockRemote.write(location, JSON.stringify(value)),
+  write: async (location: string, value: any): Promise<void> =>
     fs.writeFileSync(location, value, 'utf-8'),
   delete: (location: string): void => fs.unlinkSync(location),
   testMissing: true,
@@ -251,16 +260,16 @@ const getMockedStorage = (
   getPersister: (store: Store, location: string) => Persister,
 ): Persistable => {
   const mockStorage = {
-    getLocation: (): string => 'test' + Math.random(),
+    getLocation: async (): Promise<string> => 'test' + Math.random(),
     getPersister,
-    get: (location: string): [Tables, Values] | void => {
+    get: async (location: string): Promise<[Tables, Values] | void> => {
       try {
         return JSON.parse(storage.getItem(location) ?? '');
       } catch {}
     },
-    set: (location: string, value: any): void =>
-      mockStorage.write(location, JSON.stringify(value)),
-    write: (location: string, value: any): void => {
+    set: async (location: string, value: any): Promise<void> =>
+      await mockStorage.write(location, JSON.stringify(value)),
+    write: async (location: string, value: any): Promise<void> => {
       storage.setItem(location, value);
       window.dispatchEvent(
         new StorageEvent('storage', {
@@ -286,6 +295,7 @@ const mockLocalStorage = getMockedStorage(
   window.localStorage,
   createLocalPersister,
 );
+
 const mockSessionStorage = getMockedStorage(
   window.sessionStorage,
   createSessionPersister,
@@ -293,9 +303,9 @@ const mockSessionStorage = getMockedStorage(
 
 const mockYjs: Persistable<YDoc> = {
   autoLoadPause: 100,
-  getLocation: () => new YDoc(),
+  getLocation: async () => new YDoc(),
   getPersister: createYjsPersister,
-  get: (yDoc: YDoc): [Tables, Values] | void => {
+  get: async (yDoc: YDoc): Promise<[Tables, Values] | void> => {
     const yContent = yDoc.getMap('tinybase') as YMap<any>;
     if (yContent.size) {
       return [yContent.get('t').toJSON(), yContent.get('v').toJSON()] as [
@@ -304,10 +314,9 @@ const mockYjs: Persistable<YDoc> = {
       ];
     }
   },
-  set: (yDoc: YDoc, value: any): void => {
-    mockYjs.write(yDoc, value);
-  },
-  write: (yDoc: YDoc, value: any): void => {
+  set: async (yDoc: YDoc, value: any): Promise<void> =>
+    await mockYjs.write(yDoc, value),
+  write: async (yDoc: YDoc, value: any): Promise<void> => {
     yDoc.transact(() => {
       if (typeof value != 'string') {
         const yContent = yDoc.getMap('tinybase');
@@ -356,18 +365,17 @@ const mockYjs: Persistable<YDoc> = {
 
 const mockAutomerge: Persistable<DocHandle<any>> = {
   autoLoadPause: 100,
-  getLocation: () => new Repo({network: []}).create(),
+  getLocation: async () => new Repo({network: []}).create(),
   getPersister: createAutomergePersister,
-  get: (docHandle: DocHandle<any>): [Tables, Values] | void => {
+  get: async (docHandle: DocHandle<any>): Promise<[Tables, Values] | void> => {
     const docContent = docHandle.doc['tinybase'];
     if (Object.keys(docContent).length > 0) {
       return [docContent['t'], docContent['v']] as [Tables, Values];
     }
   },
-  set: (docHandle: DocHandle<any>, value: any): void => {
-    mockAutomerge.write(docHandle, value);
-  },
-  write: (docHandle: DocHandle<any>, value: any): void => {
+  set: async (docHandle: DocHandle<any>, value: any): Promise<void> =>
+    await mockAutomerge.write(docHandle, value),
+  write: async (docHandle: DocHandle<any>, value: any): Promise<void> => {
     docHandle.change((doc) => {
       if (typeof value != 'string') {
         const docContent = doc['tinybase'];
@@ -420,12 +428,12 @@ describe.each([
   let store: Store;
   let persister: Persister;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     if (persistable.beforeEach != null) {
       persistable.beforeEach();
     }
     store = createStore();
-    location = persistable.getLocation();
+    location = await persistable.getLocation();
     persister = persistable.getPersister(store, location);
   });
 
@@ -442,24 +450,36 @@ describe.each([
   test('saves', async () => {
     store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
     await persister.save();
-    expect(persistable.get(location)).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+    expect(await persistable.get(location)).toEqual([
+      {t1: {r1: {c1: 1}}},
+      {v1: 1},
+    ]);
     expect(persister.getStats()).toEqual({loads: 0, saves: 1});
   });
 
   test('autoSaves', async () => {
     store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
     await persister.startAutoSave();
-    expect(persistable.get(location)).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+    expect(await persistable.get(location)).toEqual([
+      {t1: {r1: {c1: 1}}},
+      {v1: 1},
+    ]);
     expect(persister.getStats()).toEqual({loads: 0, saves: 1});
     store.setTables({t1: {r1: {c1: 2}}});
     await pause();
-    expect(persistable.get(location)).toEqual([{t1: {r1: {c1: 2}}}, {v1: 1}]);
+    expect(await persistable.get(location)).toEqual([
+      {t1: {r1: {c1: 2}}},
+      {v1: 1},
+    ]);
     if (persistable.getChanges) {
       expect(persistable.getChanges()).toEqual([{t1: {r1: {c1: 2}}}, {}]);
     }
     store.setValues({v1: 2});
     await pause();
-    expect(persistable.get(location)).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
+    expect(await persistable.get(location)).toEqual([
+      {t1: {r1: {c1: 2}}},
+      {v1: 2},
+    ]);
     if (persistable.getChanges) {
       expect(persistable.getChanges()).toEqual([{}, {v1: 2}]);
     }
@@ -470,18 +490,24 @@ describe.each([
     if (name == 'file') {
       store.setTables({t1: {r1: {c1: 1}}});
       await persister.startAutoSave();
-      expect(persistable.get(location)).toEqual([{t1: {r1: {c1: 1}}}, {}]);
+      expect(await persistable.get(location)).toEqual([
+        {t1: {r1: {c1: 1}}},
+        {},
+      ]);
       expect(persister.getStats()).toEqual({loads: 0, saves: 1});
       store.setTables({t1: {r1: {c1: 2}}});
       store.setTables({t1: {r1: {c1: 3}}});
       await pause();
-      expect(persistable.get(location)).toEqual([{t1: {r1: {c1: 3}}}, {}]);
+      expect(await persistable.get(location)).toEqual([
+        {t1: {r1: {c1: 3}}},
+        {},
+      ]);
       expect(persister.getStats()).toEqual({loads: 0, saves: 3});
     }
   });
 
   test('loads', async () => {
-    persistable.set(location, [{t1: {r1: {c1: 1}}}, {v1: 1}]);
+    await persistable.set(location, [{t1: {r1: {c1: 1}}}, {v1: 1}]);
     await persister.load({});
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     expect(store.getValues()).toEqual({v1: 1});
@@ -489,7 +515,7 @@ describe.each([
   });
 
   test('loads backwards compatible', async () => {
-    persistable.set(location, [{t1: {r1: {c1: 1}}}]);
+    await persistable.set(location, [{t1: {r1: {c1: 1}}}]);
     await persister.load({});
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     expect(persister.getStats()).toEqual({loads: 1, saves: 0});
@@ -519,12 +545,12 @@ describe.each([
   });
 
   test('autoLoads', async () => {
-    persistable.set(location, [{t1: {r1: {c1: 1}}}]);
+    await persistable.set(location, [{t1: {r1: {c1: 1}}}]);
     await persister.startAutoLoad();
     await nextLoop();
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     expect(persister.getStats()).toEqual({loads: 1, saves: 0});
-    persistable.set(location, [{t1: {r1: {c1: 2}}}]);
+    await persistable.set(location, [{t1: {r1: {c1: 2}}}]);
     await pause(persistable.autoLoadPause);
     expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
     expect(persister.getStats()).toEqual({loads: 2, saves: 0});
@@ -548,14 +574,14 @@ describe.each([
       await persister.startAutoSave();
       await nextLoop();
       expect(persister.getStats()).toEqual({loads: 1, saves: 1});
-      persistable.set(location, [{t1: {r1: {c1: 2}}}]);
+      await persistable.set(location, [{t1: {r1: {c1: 2}}}]);
       await nextLoop();
       expect(persister.getStats()).toEqual({loads: 2, saves: 1});
     }
   });
 
   test('does not delete when autoLoaded is deleted', async () => {
-    persistable.set(location, [{t1: {r1: {c1: 1}}}]);
+    await persistable.set(location, [{t1: {r1: {c1: 1}}}]);
     await persister.startAutoLoad({});
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     persistable.delete(location);
@@ -564,7 +590,7 @@ describe.each([
   });
 
   test('does not delete when autoLoaded is corrupted', async () => {
-    persistable.set(location, [{t1: {r1: {c1: 1}}}]);
+    await persistable.set(location, [{t1: {r1: {c1: 1}}}]);
     await persister.startAutoLoad({});
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     persistable.write(location, '{');
