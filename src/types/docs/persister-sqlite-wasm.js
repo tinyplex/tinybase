@@ -18,7 +18,7 @@
  *
  * @param store The Store to persist.
  * @param sqlite3 The WASM module that was returned from `sqlite3InitModule`.
- * @param sqlite3 The database instance that was returned from `new
+ * @param db The database instance that was returned from `new
  * sqlite3.oo1.DB(...)`.
  * @returns A reference to the new Persister object.
  * @example
