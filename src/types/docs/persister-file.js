@@ -11,7 +11,7 @@
  * The createFilePersister function creates a Persister object that can persist
  * the Store to a local file (in an appropriate environment).
  *
- * As well as providing a reference to the Store to persist, you must provide
+ * As well as providing a reference to the Store to persist, you must provide a
  * `filePath` parameter which identifies the file to persist it to.
  *
  * @param store The Store to persist.
