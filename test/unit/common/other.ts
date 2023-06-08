@@ -1,8 +1,39 @@
 import {Id, Ids, Indexes, Metrics, Relationships} from 'tinybase/debug';
 import {IdObj, IdObj2} from './types';
+import {TextDecoder, TextEncoder} from 'util';
+import fetchMock from 'jest-fetch-mock';
+import fs from 'fs';
+
+Object.assign(globalThis, {TextDecoder, TextEncoder});
 
 export const pause = async (ms = 50): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve, ms));
+
+export const mockFetchWasm = (): void => {
+  fetchMock.enableMocks();
+  fetchMock.resetMocks();
+  fetchMock.doMock(async (req) => {
+    if (req.url.startsWith('file://')) {
+      return {
+        status: 200,
+        body: fs.readFileSync(req.url.substring(7)) as any,
+      };
+    }
+    return '';
+  });
+};
+
+export const suppressWarnings = async <Return>(
+  actions: () => Promise<Return>,
+) => {
+  /* eslint-disable no-console */
+  const warn = console.warn;
+  console.warn = () => 0;
+  const result = await actions();
+  console.warn = warn;
+  /* eslint-enable no-console */
+  return result;
+};
 
 export const getMetricsObject = (
   metrics: Metrics,
