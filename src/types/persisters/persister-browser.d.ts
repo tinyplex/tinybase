@@ -1,7 +1,7 @@
 /// persister-browser
 
-import {Persister} from './persisters';
-import {Store} from './store';
+import {Persister} from '../persisters';
+import {Store} from '../store';
 
 /// createSessionPersister
 export function createSessionPersister(

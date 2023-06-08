@@ -1,6 +1,6 @@
 // NB: an exclamation mark after a line visually indicates an expected TS error
 
-import {createFilePersister} from 'tinybase/debug/persister-file/with-schemas';
+import {createFilePersister} from 'tinybase/debug/persisters/persister-file/with-schemas';
 import {createStore} from 'tinybase/debug/with-schemas';
 
 const tablesSchema = {

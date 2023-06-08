@@ -1,8 +1,8 @@
-import {Persister, PersisterListener} from './types/persisters';
-import {Store, Tables, Values} from './types/store';
-import {isUndefined, jsonString} from './common/other';
-import {createCustomPersister} from './persisters';
-import {createRemotePersister as createRemotePersisterDecl} from './types/persister-remote';
+import {Persister, PersisterListener} from '../types/persisters';
+import {Store, Tables, Values} from '../types/store';
+import {isUndefined, jsonString} from '../common/other';
+import {createCustomPersister} from '../persisters';
+import {createRemotePersister as createRemotePersisterDecl} from '../types/persisters/persister-remote';
 
 const getETag = (response: Response) => response.headers.get('ETag');
 

@@ -1,7 +1,7 @@
 /* eslint-disable jest/no-conditional-expect */
 import {Persister, Store, createStore} from 'tinybase/debug';
 import {Doc as YDoc, Map as YMap, applyUpdate, encodeStateAsUpdate} from 'yjs';
-import {createYjsPersister} from 'tinybase/debug/persister-yjs';
+import {createYjsPersister} from 'tinybase/debug/persisters/persister-yjs';
 
 let doc1: YDoc;
 let store1: Store;

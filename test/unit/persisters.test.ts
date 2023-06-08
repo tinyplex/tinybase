@@ -17,14 +17,14 @@ import {Doc as YDoc, Map as YMap} from 'yjs';
 import {
   createLocalPersister,
   createSessionPersister,
-} from 'tinybase/debug/persister-browser';
+} from 'tinybase/debug/persisters/persister-browser';
 import initWasm, {DB} from '@vlcn.io/crsqlite-wasm';
-import {createAutomergePersister} from 'tinybase/debug/persister-automerge';
-import {createCrSqliteWasmPersister} from 'tinybase/debug/persister-cr-sqlite-wasm';
-import {createFilePersister} from 'tinybase/debug/persister-file';
-import {createRemotePersister} from 'tinybase/debug/persister-remote';
-import {createSqliteWasmPersister} from 'tinybase/debug/persister-sqlite-wasm';
-import {createYjsPersister} from 'tinybase/debug/persister-yjs';
+import {createAutomergePersister} from 'tinybase/debug/persisters/persister-automerge';
+import {createCrSqliteWasmPersister} from 'tinybase/debug/persisters/persister-cr-sqlite-wasm';
+import {createFilePersister} from 'tinybase/debug/persisters/persister-file';
+import {createRemotePersister} from 'tinybase/debug/persisters/persister-remote';
+import {createSqliteWasmPersister} from 'tinybase/debug/persisters/persister-sqlite-wasm';
+import {createYjsPersister} from 'tinybase/debug/persisters/persister-yjs';
 import crypto from 'crypto';
 import fetchMock from 'jest-fetch-mock';
 import fs from 'fs';

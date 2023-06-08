@@ -125,11 +125,11 @@ const addApi = (docs: Docs): Docs =>
     .addApiFile('lib/types/relationships.d.ts')
     .addApiFile('lib/types/queries.d.ts')
     .addApiFile('lib/types/persisters.d.ts')
-    .addApiFile('lib/types/persister-browser.d.ts')
-    .addApiFile('lib/types/persister-file.d.ts')
-    .addApiFile('lib/types/persister-remote.d.ts')
-    .addApiFile('lib/types/persister-yjs.d.ts')
-    .addApiFile('lib/types/persister-automerge.d.ts')
+    .addApiFile('lib/types/persisters/persister-browser.d.ts')
+    .addApiFile('lib/types/persisters/persister-file.d.ts')
+    .addApiFile('lib/types/persisters/persister-remote.d.ts')
+    .addApiFile('lib/types/persisters/persister-yjs.d.ts')
+    .addApiFile('lib/types/persisters/persister-automerge.d.ts')
     .addApiFile('lib/types/tools.d.ts')
     .addApiFile('lib/types/ui-react.d.ts');
 

@@ -5,20 +5,20 @@ import {
   Tables,
   TransactionChanges,
   Values,
-} from './types/store.d';
-import {IdObj, objEnsure, objHas, objMap, objNew} from './common/obj';
-import {Persister, PersisterListener} from './types/persisters.d';
+} from '../types/store.d';
+import {IdObj, objEnsure, objHas, objMap, objNew} from '../common/obj';
+import {Persister, PersisterListener} from '../types/persisters.d';
 import {Doc as YDoc, YEvent, Map as YMap} from 'yjs';
 import {
   arrayForEach,
   arrayIsEmpty,
   arrayLength,
   arrayShift,
-} from './common/array';
-import {ifNotUndefined, isUndefined} from './common/other';
-import {Id} from './types/common.d';
-import {createCustomPersister} from './persisters';
-import {mapForEach} from './common/map';
+} from '../common/array';
+import {ifNotUndefined, isUndefined} from '../common/other';
+import {Id} from '../types/common.d';
+import {createCustomPersister} from '../persisters';
+import {mapForEach} from '../common/map';
 
 type Observer = (events: YEvent<any>[]) => void;
 

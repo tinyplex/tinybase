@@ -110,7 +110,7 @@ import {
 } from 'tinybase/debug/ui-react';
 import React, {ReactElement} from 'react';
 import {ReactTestRenderer, act, create} from 'react-test-renderer';
-import {createFilePersister} from 'tinybase/debug/persister-file';
+import {createFilePersister} from 'tinybase/debug/persisters/persister-file';
 import {jest} from '@jest/globals';
 import {pause} from './common/other';
 import tmp from 'tmp';

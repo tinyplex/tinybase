@@ -1,12 +1,11 @@
-import {Persister, PersisterListener} from './types/persisters';
-import {Store, Tables, Values} from './types/store';
+import {FSWatcher, watch} from 'fs';
+import {Persister, PersisterListener} from '../types/persisters';
+import {Store, Tables, Values} from '../types/store';
 import {readFile, writeFile} from 'fs/promises';
-import {FSWatcher} from 'fs';
-import {UTF8} from './common/strings';
-import {createCustomPersister} from './persisters';
-import {createFilePersister as createFilePersisterDecl} from './types/persister-file';
-import {jsonString} from './common/other';
-import {watch} from 'fs';
+import {UTF8} from '../common/strings';
+import {createCustomPersister} from '../persisters';
+import {createFilePersister as createFilePersisterDecl} from '../types/persisters/persister-file';
+import {jsonString} from '../common/other';
 
 export const createFilePersister = ((
   store: Store,
