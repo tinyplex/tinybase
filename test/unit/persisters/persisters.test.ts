@@ -12,13 +12,13 @@ import {
   createCustomPersister,
   createStore,
 } from 'tinybase/debug';
-import {TextDecoder, TextEncoder} from 'util';
 import {Doc as YDoc, Map as YMap} from 'yjs';
 import {
   createLocalPersister,
   createSessionPersister,
 } from 'tinybase/debug/persisters/persister-browser';
 import initWasm, {DB} from '@vlcn.io/crsqlite-wasm';
+import {mockFetchWasm, pause, suppressWarnings} from '../common/other';
 import {createAutomergePersister} from 'tinybase/debug/persisters/persister-automerge';
 import {createCrSqliteWasmPersister} from 'tinybase/debug/persisters/persister-cr-sqlite-wasm';
 import {createFilePersister} from 'tinybase/debug/persisters/persister-file';
@@ -28,11 +28,8 @@ import {createYjsPersister} from 'tinybase/debug/persisters/persister-yjs';
 import crypto from 'crypto';
 import fetchMock from 'jest-fetch-mock';
 import fs from 'fs';
-import {pause} from '../common/other';
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import tmp from 'tmp';
-
-Object.assign(globalThis, {TextDecoder, TextEncoder});
 
 const GET_HOST = 'http://get.com';
 const SET_HOST = 'http://set.com';
@@ -50,30 +47,6 @@ type Persistable<Location = string> = {
   testMissing: boolean;
 };
 type SqliteLocation = [sqlite3: any, db: any];
-
-const suppressWarnings = async <Return>(actions: () => Promise<Return>) => {
-  /* eslint-disable no-console */
-  const warn = console.warn;
-  console.warn = () => 0;
-  const result = await actions();
-  console.warn = warn;
-  /* eslint-enable no-console */
-  return result;
-};
-
-const mockFetchWasm = (): void => {
-  fetchMock.enableMocks();
-  fetchMock.resetMocks();
-  fetchMock.doMock(async (req) => {
-    if (req.url.startsWith('file://')) {
-      return {
-        status: 200,
-        body: fs.readFileSync(req.url.substring(7)) as any,
-      };
-    }
-    return '';
-  });
-};
 
 const yMapMatch = (
   yMapOrParent: YMap<any>,
@@ -329,7 +302,7 @@ const mockSqliteWasm: Persistable<SqliteLocation> = {
   beforeEach: mockFetchWasm,
   autoLoadPause: 100,
   getLocation: async (): Promise<SqliteLocation> =>
-    suppressWarnings(async () => {
+    await suppressWarnings(async () => {
       const sqlite3 = await sqlite3InitModule();
       const db = new sqlite3.oo1.DB('/db.sqlite3', 'c');
       return [sqlite3, db];
@@ -361,11 +334,7 @@ const mockCrSqliteWasm: Persistable<DB> = {
   beforeEach: mockFetchWasm,
   autoLoadPause: 100,
   getLocation: async (): Promise<DB> =>
-    suppressWarnings(async () => {
-      const crSqlite3 = await initWasm();
-      const db = await crSqlite3.open();
-      return db;
-    }),
+    await suppressWarnings(async () => await (await initWasm()).open()),
   getPersister: (store: Store, db: DB) =>
     createCrSqliteWasmPersister(store, db),
   get: async (db: DB): Promise<[Tables, Values] | void> =>
