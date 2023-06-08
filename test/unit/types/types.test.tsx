@@ -6,14 +6,16 @@ const {createProgram, getPreEmitDiagnostics, readJsonConfigFile, sys} = tsc;
 
 const dir = __dirname;
 
-const testFiles = readdirSync(resolve(dir, 'types'));
+const testFiles = readdirSync(dir).filter(
+  (file) => !file.includes('.test.') && !file.includes('__snapshots__'),
+);
 test.each(testFiles)('Types', (testFile) => {
   const {options} = tsc.parseJsonSourceFileConfigFileContent(
-    readJsonConfigFile('test/tsconfig.json', sys.readFile),
+    readJsonConfigFile('./test/tsconfig.json', sys.readFile),
     sys,
     'test',
   );
-  const program = createProgram([resolve(dir, 'types', testFile)], options);
+  const program = createProgram([resolve(dir, testFile)], options);
   const results = getPreEmitDiagnostics(program);
 
   results.map((result) => {

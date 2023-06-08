@@ -6,10 +6,10 @@ import {
   createRelationships,
   createStore,
 } from 'tinybase/debug';
-import {expectChanges, expectNoChanges} from './common/expect';
-import {RelationshipsListener} from './common/types';
-import {createRelationshipsListener} from './common/listeners';
-import {getRelationshipsObject} from './common/other';
+import {expectChanges, expectNoChanges} from '../common/expect';
+import {RelationshipsListener} from '../common/types';
+import {createRelationshipsListener} from '../common/listeners';
+import {getRelationshipsObject} from '../common/other';
 import {jest} from '@jest/globals';
 
 let store: Store;

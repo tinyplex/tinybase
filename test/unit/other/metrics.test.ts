@@ -1,8 +1,8 @@
 import {Metrics, Store, createMetrics, createStore} from 'tinybase/debug';
-import {expectChanges, expectNoChanges} from './common/expect';
-import {MetricsListener} from './common/types';
-import {createMetricsListener} from './common/listeners';
-import {getMetricsObject} from './common/other';
+import {expectChanges, expectNoChanges} from '../common/expect';
+import {MetricsListener} from '../common/types';
+import {createMetricsListener} from '../common/listeners';
+import {getMetricsObject} from '../common/other';
 import {jest} from '@jest/globals';
 
 let store: Store;

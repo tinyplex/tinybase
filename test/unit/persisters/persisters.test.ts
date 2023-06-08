@@ -28,7 +28,7 @@ import {createYjsPersister} from 'tinybase/debug/persisters/persister-yjs';
 import crypto from 'crypto';
 import fetchMock from 'jest-fetch-mock';
 import fs from 'fs';
-import {pause} from './common/other';
+import {pause} from '../common/other';
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import tmp from 'tmp';
 
