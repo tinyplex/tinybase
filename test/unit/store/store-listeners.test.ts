@@ -4,9 +4,9 @@ import {
   expectChanges,
   expectChangesNoJson,
   expectNoChanges,
-} from './common/expect';
-import {StoreListener} from './common/types';
-import {createStoreListener} from './common/listeners';
+} from '../common/expect';
+import {StoreListener} from '../common/types';
+import {createStoreListener} from '../common/listeners';
 import {jest} from '@jest/globals';
 
 const EMPTY_CHANGES_AND_LOG = [
