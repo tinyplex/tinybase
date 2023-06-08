@@ -19,10 +19,12 @@ import {
 } from 'tinybase/debug/persisters/persister-browser';
 import initWasm, {DB} from '@vlcn.io/crsqlite-wasm';
 import {mockFetchWasm, pause, suppressWarnings} from '../common/other';
+import sqlite3, {Database} from 'sqlite3';
 import {createAutomergePersister} from 'tinybase/debug/persisters/persister-automerge';
 import {createCrSqliteWasmPersister} from 'tinybase/debug/persisters/persister-cr-sqlite-wasm';
 import {createFilePersister} from 'tinybase/debug/persisters/persister-file';
 import {createRemotePersister} from 'tinybase/debug/persisters/persister-remote';
+import {createSqlite3Persister} from 'tinybase/debug/persisters/persister-sqlite3';
 import {createSqliteWasmPersister} from 'tinybase/debug/persisters/persister-sqlite-wasm';
 import {createYjsPersister} from 'tinybase/debug/persisters/persister-yjs';
 import crypto from 'crypto';
@@ -43,10 +45,11 @@ type Persistable<Location = string> = {
   set: (location: Location, value: any) => Promise<void>;
   write: (location: Location, value: string) => Promise<void>;
   delete: (location: Location) => void;
+  afterEach?: (location: Location) => void;
   getChanges?: () => TransactionChanges;
   testMissing: boolean;
 };
-type SqliteLocation = [sqlite3: any, db: any];
+type SqliteWasmLocation = [sqlite3: any, db: any];
 
 const yMapMatch = (
   yMapOrParent: YMap<any>,
@@ -298,33 +301,70 @@ const mockSessionStorage = getMockedStorage(
   createSessionPersister,
 );
 
-const mockSqliteWasm: Persistable<SqliteLocation> = {
+const mockSqlite3: Persistable<Database> = {
   beforeEach: mockFetchWasm,
   autoLoadPause: 100,
-  getLocation: async (): Promise<SqliteLocation> =>
+  getLocation: async (): Promise<Database> => new sqlite3.Database(':memory:'),
+  getPersister: (store: Store, db: Database) =>
+    createSqlite3Persister(store, db),
+  get: (db: Database): Promise<[Tables, Values] | void> =>
+    new Promise((resolve) =>
+      db.get('SELECT json FROM tinybase LIMIT 1', (_, row: {json: string}) =>
+        resolve(JSON.parse(row['json'])),
+      ),
+    ),
+  set: async (db: Database, value: any): Promise<void> =>
+    await mockSqlite3.write(db, JSON.stringify(value)),
+  write: (db: Database, value: any): Promise<void> =>
+    new Promise((resolve) =>
+      db.run('CREATE TABLE IF NOT EXISTS tinybase(json);', () =>
+        db.run(
+          'INSERT INTO tinybase(rowId, json) VALUES (1, ?) ON CONFLICT DO ' +
+            'UPDATE SET json=excluded.json',
+          [value],
+          () => resolve(),
+        ),
+      ),
+    ),
+  delete: (db: Database) => db.close(),
+  afterEach: (db: Database) => {
+    try {
+      db.close();
+    } catch {}
+  },
+  testMissing: true,
+};
+
+const mockSqliteWasm: Persistable<SqliteWasmLocation> = {
+  beforeEach: mockFetchWasm,
+  autoLoadPause: 100,
+  getLocation: async (): Promise<SqliteWasmLocation> =>
     await suppressWarnings(async () => {
       const sqlite3 = await sqlite3InitModule();
       const db = new sqlite3.oo1.DB('/db.sqlite3', 'c');
       return [sqlite3, db];
     }),
-  getPersister: (store: Store, [sqlite3, db]: SqliteLocation) =>
+  getPersister: (store: Store, [sqlite3, db]: SqliteWasmLocation) =>
     createSqliteWasmPersister(store, sqlite3, db),
-  get: ([_sqlite3, db]: SqliteLocation): Promise<[Tables, Values] | void> =>
+  get: ([_sqlite3, db]: SqliteWasmLocation): Promise<[Tables, Values] | void> =>
     new Promise((resolve) =>
       db.exec('SELECT json FROM tinybase LIMIT 1', {
         callback: (row: string) => resolve(JSON.parse(row)),
       }),
     ),
-  set: async (location: SqliteLocation, value: any): Promise<void> =>
+  set: async (location: SqliteWasmLocation, value: any): Promise<void> =>
     await mockSqliteWasm.write(location, JSON.stringify(value)),
-  write: async ([_sqlite3, db]: SqliteLocation, value: any): Promise<void> =>
+  write: async (
+    [_sqlite3, db]: SqliteWasmLocation,
+    value: any,
+  ): Promise<void> =>
     db.exec(
       'CREATE TABLE IF NOT EXISTS tinybase(json); ' +
         'INSERT INTO tinybase(rowId, json) VALUES (1, ?) ON CONFLICT DO ' +
         'UPDATE SET json=excluded.json',
       {bind: [value]},
     ),
-  delete: (_location: SqliteLocation): void => {
+  delete: (_location: SqliteWasmLocation): void => {
     return;
   },
   testMissing: true,
@@ -475,6 +515,7 @@ describe.each([
   ['remote', mockRemote],
   ['localStorage', mockLocalStorage],
   ['sessionStorage', mockSessionStorage],
+  ['sqlite3', mockSqlite3],
   ['sqliteWasm', mockSqliteWasm],
   ['crSqliteWasm', mockCrSqliteWasm],
   ['yjs', mockYjs],
@@ -495,6 +536,9 @@ describe.each([
 
   afterEach(() => {
     persister.destroy();
+    if (persistable.afterEach != null) {
+      persistable.afterEach(location);
+    }
   });
 
   // ---

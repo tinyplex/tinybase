@@ -269,6 +269,7 @@
     "rollup-plugin-gzip": "^3.1.0",
     "rollup-plugin-preserve-shebang": "^1.0.1",
     "rollup-plugin-prettier": "^3.0.0",
+    "sqlite3": "^5.1.6",
     "tinybase": "file:./",
     "tinydocs": "^0.1.26",
     "tmp": "^0.2.1",
@@ -282,6 +283,7 @@
     "automerge-repo": "^0.0.54",
     "prettier": ">=2.0.0",
     "react": ">=17.0.0",
+    "sqlite3": "^5.1.6",
     "yjs": ">=13.6.0"
   },
   "peerDependenciesMeta": {
@@ -298,6 +300,9 @@
       "optional": true
     },
     "react": {
+      "optional": true
+    },
+    "sqlite3": {
       "optional": true
     },
     "yjs": {
