@@ -14,7 +14,7 @@
  * environment).
  *
  * As well as providing a reference to the Store to persist, you must provide
- * a`db` parameter which identifies the database instance.
+ * a `db` parameter which identifies the database instance.
  *
  * @param store The Store to persist.
  * @param db The database instance that was returned from `crSqlite3.open(...)`.

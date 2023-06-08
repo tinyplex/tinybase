@@ -18,6 +18,7 @@ export const createCrSqliteWasmPersister = ((
       (await db.execA('SELECT json FROM tinybase LIMIT 1'))[0][0],
     );
   };
+
   const setPersisted = async (
     getContent: () => [Tables, Values],
   ): Promise<void> => {
