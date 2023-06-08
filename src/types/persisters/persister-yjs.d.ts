@@ -1,7 +1,7 @@
 /// persister-yjs
 
-import {Persister} from './persisters.d';
-import {Store} from './store.d';
+import {Persister} from '../persisters.d';
+import {Store} from '../store.d';
 import {Doc as YDoc} from 'yjs';
 
 /// createYjsPersister

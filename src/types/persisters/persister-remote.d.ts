@@ -1,7 +1,7 @@
 /// persister-remote
 
-import {Persister} from './persisters';
-import {Store} from './store';
+import {Persister} from '../persisters';
+import {Store} from '../store';
 
 /// createRemotePersister
 export function createRemotePersister(

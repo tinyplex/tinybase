@@ -1,4 +1,4 @@
-import {GetTransactionChanges, Store, Tables, Values} from './types/store';
+import {GetTransactionChanges, Store, Tables, Values} from '../types/store';
 import {
   IdObj,
   objDel,
@@ -8,13 +8,13 @@ import {
   objIds,
   objIsEmpty,
   objMap,
-} from './common/obj';
-import {Persister, PersisterListener} from './types/persisters';
-import {ifNotUndefined, isUndefined} from './common/other';
+} from '../common/obj';
+import {Persister, PersisterListener} from '../types/persisters';
+import {ifNotUndefined, isUndefined} from '../common/other';
 import {DocHandle} from 'automerge-repo';
-import {Id} from './types/common';
-import {arrayLength} from './common/array';
-import {createCustomPersister} from './persisters';
+import {Id} from '../types/common';
+import {arrayLength} from '../common/array';
+import {createCustomPersister} from '../persisters';
 
 type Observer = ({doc}: {doc: any}) => void;
 

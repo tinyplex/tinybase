@@ -1,7 +1,7 @@
 /// persister-sqlite-wasm
 
-import {Persister} from './persisters';
-import {Store} from './store';
+import {Persister} from '../persisters';
+import {Store} from '../store';
 
 /// createSqliteWasmPersister
 export function createSqliteWasmPersister(

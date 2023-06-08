@@ -8,6 +8,7 @@
 */
 
 // All other imports are lazy so that single tasks start up fast.
+import {basename, dirname} from 'path';
 import gulp from 'gulp';
 import {promises} from 'fs';
 
@@ -18,13 +19,13 @@ const TEST_MODULES = [
   'tinybase',
   'ui-react',
   'tools',
-  'persister-browser',
-  'persister-file',
-  'persister-sqlite-wasm',
-  'persister-cr-sqlite-wasm',
-  'persister-remote',
-  'persister-yjs',
-  'persister-automerge',
+  'persisters/persister-browser',
+  'persisters/persister-file',
+  'persisters/persister-sqlite-wasm',
+  'persisters/persister-cr-sqlite-wasm',
+  'persisters/persister-remote',
+  'persisters/persister-yjs',
+  'persisters/persister-automerge',
 ];
 const MODULES_TYPED_WITH_INTERNALS = ['store', 'queries', 'ui-react'];
 const ALL_MODULES = [
@@ -39,13 +40,13 @@ const ALL_MODULES = [
   'common',
   'ui-react',
   'tools',
-  'persister-browser',
-  'persister-file',
-  'persister-sqlite-wasm',
-  'persister-cr-sqlite-wasm',
-  'persister-remote',
-  'persister-yjs',
-  'persister-automerge',
+  'persisters/persister-browser',
+  'persisters/persister-file',
+  'persisters/persister-sqlite-wasm',
+  'persisters/persister-cr-sqlite-wasm',
+  'persisters/persister-remote',
+  'persisters/persister-yjs',
+  'persisters/persister-automerge',
 ];
 
 const BIN_DIR = 'bin';
@@ -62,7 +63,7 @@ const getGlobalName = (module) =>
   'TinyBase' +
   (module == 'tinybase'
     ? ''
-    : module
+    : basename(module)
         .split('-')
         .map((part) => part[0].toUpperCase() + part.slice(1).toLowerCase())
         .join(''));
@@ -80,6 +81,11 @@ const makeDir = async (dir) => {
   try {
     await promises.mkdir(dir);
   } catch (e) {}
+};
+
+const ensureDir = async (fileOrDirectory) => {
+  await promises.mkdir(dirname(fileOrDirectory), {recursive: true});
+  return fileOrDirectory;
 };
 
 const removeDir = async (dir) => {
@@ -159,7 +165,7 @@ const copyDefinition = async (module) => {
     ),
     async (extraDir) => {
       await promises.writeFile(
-        `${TYPES_DIR}/${extraDir}${module}.d.ts`,
+        await ensureDir(`${TYPES_DIR}/${extraDir}${module}.d.ts`),
         fileRewrite(
           await promises.readFile(`src/types/${extraDir}${module}.d.ts`, UTF8),
           extraDir != '',
@@ -250,12 +256,14 @@ const tsCheck = async (dir) => {
     default: {default: unusedExports},
   } = await import('ts-unused-exports');
   const {fileNames, options} = await getTsOptions(dir);
-  const results = tsc.getPreEmitDiagnostics(
-    tsc.createProgram(
-      fileNames.filter((fileName) => !fileName.startsWith('test/unit/types')),
-      options,
-    ),
-  );
+  const results = tsc
+    .getPreEmitDiagnostics(
+      tsc.createProgram(
+        fileNames.filter((fileName) => !fileName.startsWith('test/unit/types')),
+        options,
+      ),
+    )
+    .filter((result) => !result.file.fileName.includes('/node_modules/'));
   if (results.length > 0) {
     const resultText = results
       .map((result) => {
@@ -357,7 +365,7 @@ const compileModule = async (
   };
 
   const outputConfig = {
-    dir,
+    dir: dirname(await ensureDir(dir + '/' + module)),
     entryFileNames: `[name].${format == 'cjs' ? 'cjs' : 'js'}`,
     format,
     globals: {

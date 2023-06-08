@@ -38,7 +38,7 @@ import {
 } from 'tinybase/debug/ui-react';
 import React from 'react';
 import {StoreListener} from './common/types';
-import {createLocalPersister} from 'tinybase/debug/persister-browser';
+import {createLocalPersister} from 'tinybase/debug/persisters/persister-browser';
 import {createStoreListener} from './common/listeners';
 
 let renderer: ReactTestRenderer;

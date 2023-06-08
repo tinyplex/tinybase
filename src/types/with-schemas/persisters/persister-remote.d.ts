@@ -1,7 +1,7 @@
 /// persister-remote
 
-import {OptionalSchemas, Store} from './store';
-import {Persister} from './persisters';
+import {OptionalSchemas, Store} from '../store';
+import {Persister} from '../persisters';
 
 /// createRemotePersister
 export function createRemotePersister<Schemas extends OptionalSchemas>(
