@@ -4,6 +4,8 @@ import sqlite3, {Database} from 'sqlite3';
 import {createSqlite3Persister} from 'tinybase/debug/persisters/persister-sqlite3';
 import {dirname} from 'path';
 
+type Dump = [create: string, rows: {[column: string]: any}[]][];
+
 const TEST_FILE = 'tmp/test.sqlite3';
 
 let db: Database;
@@ -15,12 +17,12 @@ const get = (sql: string, args: any[] = []): Promise<{[id: string]: any}[]> =>
     db.all(sql, args, (_, rows: {[id: string]: any}[]) => resolve(rows)),
   );
 
-const getDatabaseDump = async () =>
+const getDatabaseDump = async (): Promise<Dump> =>
   await Promise.all(
     (
       await get('SELECT * FROM sqlite_schema')
     ).map(async (table: any) => [
-      table.name,
+      table.sql,
       await get('SELECT * FROM ' + table.name),
     ]),
   );
