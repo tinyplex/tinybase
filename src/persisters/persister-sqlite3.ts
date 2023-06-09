@@ -1,4 +1,4 @@
-import {IdObj, objMap} from '../common/obj';
+import {IdObj, objValues} from '../common/obj';
 import {Persister, PersisterListener} from '../types/persisters';
 import {Database} from 'sqlite3';
 import {Store} from '../types/store';
@@ -18,9 +18,7 @@ export const createSqlite3Persister = ((
     (sql: string): Promise<any[][]> =>
       promise((resolve) =>
         db.all(sql, (_, rows: IdObj<any>[]) =>
-          resolve(
-            arrayMap(rows, (row: IdObj<any>) => objMap(row, (value) => value)),
-          ),
+          resolve(arrayMap(rows, objValues)),
         ),
       ),
   );
