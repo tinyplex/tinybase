@@ -55,3 +55,10 @@ export const test = (regex: RegExp, subject: string): boolean =>
   regex.test(subject);
 
 export const getUndefined = (): undefined => undefined;
+
+export const promise = <Value>(
+  resolver: (
+    resolve: (value: Value) => void,
+    reject: (reason?: any) => void,
+  ) => void,
+): Promise<Value> => new Promise(resolver);
