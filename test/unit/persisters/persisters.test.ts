@@ -44,7 +44,7 @@ type Persistable<Location = string> = {
   get: (location: Location) => Promise<[Tables, Values] | void>;
   set: (location: Location, value: any) => Promise<void>;
   write: (location: Location, value: string) => Promise<void>;
-  delete: (location: Location) => void;
+  delete: (location: Location) => Promise<void>;
   afterEach?: (location: Location) => void;
   getChanges?: () => TransactionChanges;
   testMissing: boolean;
@@ -160,7 +160,7 @@ const getMockedCustom = (
   set: async (location: string, value: any): Promise<void> =>
     await mockCustomNoContentListener.write(location, JSON.stringify(value)),
   write,
-  delete: (): void => {
+  delete: async (): Promise<void> => {
     customPersister = '';
   },
   getChanges: () => customPersisterChanges,
@@ -207,7 +207,7 @@ const mockFile: Persistable = {
     await mockFile.write(location, JSON.stringify(value)),
   write: async (location: string, value: any): Promise<void> =>
     fs.writeFileSync(location, value, 'utf-8'),
-  delete: (location: string): void => fs.unlinkSync(location),
+  delete: async (location: string): Promise<void> => fs.unlinkSync(location),
   testMissing: true,
 };
 
@@ -251,7 +251,7 @@ const mockRemote: Persistable = {
     await mockRemote.write(location, JSON.stringify(value)),
   write: async (location: string, value: any): Promise<void> =>
     fs.writeFileSync(location, value, 'utf-8'),
-  delete: (location: string): void => fs.unlinkSync(location),
+  delete: async (location: string): Promise<void> => fs.unlinkSync(location),
   testMissing: true,
 };
 
@@ -285,7 +285,8 @@ const getMockedStorage = (
         }),
       );
     },
-    delete: (location: string): void => storage.removeItem(location),
+    delete: async (location: string): Promise<void> =>
+      storage.removeItem(location),
     testMissing: true,
   };
   return mockStorage;
@@ -326,7 +327,7 @@ const mockSqlite3: Persistable<Database> = {
         ),
       ),
     ),
-  delete: (db: Database) => db.close(),
+  delete: async (db: Database): Promise<void> => db.close(),
   afterEach: (db: Database) => {
     try {
       db.close();
@@ -364,9 +365,8 @@ const mockSqliteWasm: Persistable<SqliteWasmLocation> = {
         'UPDATE SET json=excluded.json',
       {bind: [value]},
     ),
-  delete: (_location: SqliteWasmLocation): void => {
-    return;
-  },
+  delete: async ([_sqlite3, db]: SqliteWasmLocation): Promise<void> =>
+    db.close(),
   testMissing: true,
 };
 
@@ -389,9 +389,7 @@ const mockCrSqliteWasm: Persistable<DB> = {
       [value],
     );
   },
-  delete: (_db: DB): void => {
-    return;
-  },
+  delete: async (db: DB): Promise<void> => await db.close(),
   testMissing: true,
 };
 
@@ -453,7 +451,7 @@ const mockYjs: Persistable<YDoc> = {
       }
     });
   },
-  delete: (location: YDoc): void => location.destroy(),
+  delete: async (location: YDoc): Promise<void> => location.destroy(),
   testMissing: false,
 };
 
@@ -503,7 +501,8 @@ const mockAutomerge: Persistable<DocHandle<any>> = {
       }
     });
   },
-  delete: (docHandle: DocHandle<any>): void => docHandle.delete(),
+  delete: async (docHandle: DocHandle<any>): Promise<void> =>
+    docHandle.delete(),
   testMissing: false,
 };
 
