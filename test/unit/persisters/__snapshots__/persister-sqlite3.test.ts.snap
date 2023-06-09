@@ -3,7 +3,7 @@
 exports[`Save to empty database both 1`] = `
 [
   [
-    "tinybase",
+    "CREATE TABLE tinybase(json)",
     [
       {
         "json": "[{"t1":{"r1":{"c1":1}}},{"v1":1}]",
@@ -16,7 +16,7 @@ exports[`Save to empty database both 1`] = `
 exports[`Save to empty database nothing 1`] = `
 [
   [
-    "tinybase",
+    "CREATE TABLE tinybase(json)",
     [
       {
         "json": "[{},{}]",
@@ -29,7 +29,7 @@ exports[`Save to empty database nothing 1`] = `
 exports[`Save to empty database tables 1`] = `
 [
   [
-    "tinybase",
+    "CREATE TABLE tinybase(json)",
     [
       {
         "json": "[{"t1":{"r1":{"c1":1}}},{}]",
@@ -42,7 +42,7 @@ exports[`Save to empty database tables 1`] = `
 exports[`Save to empty database values 1`] = `
 [
   [
-    "tinybase",
+    "CREATE TABLE tinybase(json)",
     [
       {
         "json": "[{},{"v1":1}]",
