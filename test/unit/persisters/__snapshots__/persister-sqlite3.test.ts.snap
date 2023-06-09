@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Save to empty database both 1`] = `
+[
+  [
+    "tinybase",
+    [
+      {
+        "json": "[{"t1":{"r1":{"c1":1}}},{"v1":1}]",
+      },
+    ],
+  ],
+]
+`;
+
+exports[`Save to empty database nothing 1`] = `
+[
+  [
+    "tinybase",
+    [
+      {
+        "json": "[{},{}]",
+      },
+    ],
+  ],
+]
+`;
+
+exports[`Save to empty database tables 1`] = `
+[
+  [
+    "tinybase",
+    [
+      {
+        "json": "[{"t1":{"r1":{"c1":1}}},{}]",
+      },
+    ],
+  ],
+]
+`;
+
+exports[`Save to empty database values 1`] = `
+[
+  [
+    "tinybase",
+    [
+      {
+        "json": "[{},{"v1":1}]",
+      },
+    ],
+  ],
+]
+`;
