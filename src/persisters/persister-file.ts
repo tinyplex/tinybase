@@ -16,11 +16,7 @@ export const createFilePersister = ((
 
   const setPersisted = async (
     getContent: () => [Tables, Values],
-  ): Promise<void> => {
-    try {
-      await writeFile(filePath, jsonString(getContent()), UTF8);
-    } catch {}
-  };
+  ): Promise<void> => await writeFile(filePath, jsonString(getContent()), UTF8);
 
   const addPersisterListener = (listener: PersisterListener): FSWatcher =>
     watch(filePath, () => listener());

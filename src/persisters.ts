@@ -97,7 +97,9 @@ export const createCustomPersister = <ListeningHandle>(
         if (DEBUG) {
           saves++;
         }
-        await setPersisted(store.getContent, getTransactionChanges);
+        try {
+          await setPersisted(store.getContent, getTransactionChanges);
+        } catch {}
         loadSave = 0;
       }
       return persister;
