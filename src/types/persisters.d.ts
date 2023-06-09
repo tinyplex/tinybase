@@ -16,6 +16,11 @@ export type PersisterListener = (
   getTransactionChanges?: GetTransactionChanges,
 ) => void;
 
+/// DatabasePersisterConfig
+export type DatabasePersisterConfig = {
+  storeTable?: string;
+};
+
 /// Persister
 export interface Persister {
   //

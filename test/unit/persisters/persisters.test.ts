@@ -318,9 +318,9 @@ const mockSqlite3: Persistable<Database> = {
     await mockSqlite3.write(db, JSON.stringify(value)),
   write: (db: Database, value: any): Promise<void> =>
     new Promise((resolve) =>
-      db.run('CREATE TABLE IF NOT EXISTS tinybase(json);', () =>
+      db.run('CREATE TABLE IF NOT EXISTS tinybase (json);', () =>
         db.run(
-          'INSERT INTO tinybase(rowId, json) VALUES (1, ?) ON CONFLICT DO ' +
+          'INSERT INTO tinybase (rowId, json) VALUES (1, ?) ON CONFLICT DO ' +
             'UPDATE SET json=excluded.json',
           [value],
           () => resolve(),
@@ -360,8 +360,8 @@ const mockSqliteWasm: Persistable<SqliteWasmLocation> = {
     value: any,
   ): Promise<void> =>
     db.exec(
-      'CREATE TABLE IF NOT EXISTS tinybase(json); ' +
-        'INSERT INTO tinybase(rowId, json) VALUES (1, ?) ON CONFLICT DO ' +
+      'CREATE TABLE IF NOT EXISTS tinybase (json); ' +
+        'INSERT INTO tinybase (rowId, json) VALUES (1, ?) ON CONFLICT DO ' +
         'UPDATE SET json=excluded.json',
       {bind: [value]},
     ),
@@ -382,9 +382,9 @@ const mockCrSqliteWasm: Persistable<DB> = {
   set: async (db: DB, value: any): Promise<void> =>
     await mockCrSqliteWasm.write(db, JSON.stringify(value)),
   write: async (db: DB, value: any): Promise<void> => {
-    await db.exec('CREATE TABLE IF NOT EXISTS tinybase(json);');
+    await db.exec('CREATE TABLE IF NOT EXISTS tinybase (json);');
     await db.exec(
-      'INSERT INTO tinybase(rowId, json) VALUES (1, ?) ON CONFLICT DO ' +
+      'INSERT INTO tinybase (rowId, json) VALUES (1, ?) ON CONFLICT DO ' +
         'UPDATE SET json=excluded.json',
       [value],
     );
