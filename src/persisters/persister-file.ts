@@ -1,18 +1,18 @@
 import {FSWatcher, watch} from 'fs';
 import {Persister, PersisterListener} from '../types/persisters';
 import {Store, Tables, Values} from '../types/store';
+import {jsonParse, jsonString} from '../common/other';
 import {readFile, writeFile} from 'fs/promises';
 import {UTF8} from '../common/strings';
 import {createCustomPersister} from '../persisters';
 import {createFilePersister as createFilePersisterDecl} from '../types/persisters/persister-file';
-import {jsonString} from '../common/other';
 
 export const createFilePersister = ((
   store: Store,
   filePath: string,
 ): Persister => {
   const getPersisted = async (): Promise<[Tables, Values]> =>
-    JSON.parse(await readFile(filePath, UTF8));
+    jsonParse(await readFile(filePath, UTF8));
 
   const setPersisted = async (
     getContent: () => [Tables, Values],
