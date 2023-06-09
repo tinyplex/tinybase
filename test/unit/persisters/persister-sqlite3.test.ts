@@ -67,25 +67,36 @@ afterEach(() => {
 describe('Save to empty database', () => {
   test('nothing', async () => {
     await persister.save();
-    expect(await getDatabase()).toMatchSnapshot();
+    expect(await getDatabase()).toEqual([
+      ['CREATE TABLE tinybase(json)', [{json: '[{},{}]'}]],
+    ]);
   });
 
   test('tables', async () => {
     store.setTables({t1: {r1: {c1: 1}}});
     await persister.save();
-    expect(await getDatabase()).toMatchSnapshot();
+    expect(await getDatabase()).toEqual([
+      ['CREATE TABLE tinybase(json)', [{json: '[{"t1":{"r1":{"c1":1}}},{}]'}]],
+    ]);
   });
 
   test('values', async () => {
     store.setValues({v1: 1});
     await persister.save();
-    expect(await getDatabase()).toMatchSnapshot();
+    expect(await getDatabase()).toEqual([
+      ['CREATE TABLE tinybase(json)', [{json: '[{},{"v1":1}]'}]],
+    ]);
   });
 
   test('both', async () => {
     store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
     await persister.save();
-    expect(await getDatabase()).toMatchSnapshot();
+    expect(await getDatabase()).toEqual([
+      [
+        'CREATE TABLE tinybase(json)',
+        [{json: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
+      ],
+    ]);
   });
 });
 
