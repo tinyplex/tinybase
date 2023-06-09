@@ -1,11 +1,12 @@
 /// persister-sqlite-wasm
 
+import {DatabasePersisterConfig, Persister} from '../persisters';
 import {OptionalSchemas, Store} from '../store';
-import {Persister} from '../persisters';
 
 /// createSqliteWasmPersister
 export function createSqliteWasmPersister<Schemas extends OptionalSchemas>(
   store: Store<Schemas>,
   sqlite3: any,
   db: any,
+  storeTableOrConfig?: string | DatabasePersisterConfig<Schemas>,
 ): Persister<Schemas>;

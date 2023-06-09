@@ -65,6 +65,12 @@
  */
 /// PersisterListener
 /**
+ * A DatabasePersisterConfig is a n object that can be used to configure a
+ * database-based Persister, such as the one provided by the persister-sqlite3
+ * module.
+ */
+/// DatabasePersisterConfig
+/**
  * A Persister object lets you save and load Store data to and from different
  * locations, or underlying storage types.
  *

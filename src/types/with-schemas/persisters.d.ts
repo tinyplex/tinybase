@@ -22,6 +22,11 @@ export type PersisterListener<Schemas extends OptionalSchemas> = (
   getTransactionChanges?: GetTransactionChanges<Schemas>,
 ) => void;
 
+/// DatabasePersisterConfig
+export type DatabasePersisterConfig<_Schemas extends OptionalSchemas> = {
+  storeTable?: string;
+};
+
 /// Persister
 export interface Persister<in out Schemas extends OptionalSchemas> {
   /// Persister.load

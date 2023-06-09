@@ -1,15 +1,21 @@
-import {Persister, PersisterListener} from '../types/persisters';
+import {
+  DatabasePersisterConfig,
+  Persister,
+  PersisterListener,
+} from '../types/persisters';
 import {Store} from '../types/store';
 import {createCustomPersister} from '../persisters';
 import {createSqliteWasmPersister as createSqliteWasmPersisterDecl} from '../types/persisters/persister-sqlite-wasm';
-import {getSqlitePersistedFunctions} from './common';
+import {getSqlitePersistedFunctions} from './sqlite';
 
 export const createSqliteWasmPersister = ((
   store: Store,
   sqlite3: any,
   db: any,
+  storeTableOrConfig?: string | DatabasePersisterConfig,
 ): Persister => {
   const [getPersisted, setPersisted] = getSqlitePersistedFunctions(
+    storeTableOrConfig,
     async (sql: string, args: any[] = []): Promise<void> =>
       db.exec(sql, {bind: args}),
     async (sql: string): Promise<any[][]> =>
