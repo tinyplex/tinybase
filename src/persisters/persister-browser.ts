@@ -4,8 +4,8 @@ import {
   createLocalPersister as createLocalPersisterDecl,
   createSessionPersister as createSessionPersisterDecl,
 } from '../types/persisters/persister-browser';
+import {jsonParse, jsonString} from '../common/other';
 import {createCustomPersister} from '../persisters';
-import {jsonString} from '../common/other';
 
 type StoreListener = (event: StorageEvent) => void;
 const STORAGE = 'storage';
@@ -17,7 +17,7 @@ const getStoragePersister = (
   storage: Storage,
 ): Persister => {
   const getPersisted = async (): Promise<[Tables, Values]> =>
-    JSON.parse(storage.getItem(storageName) as string);
+    jsonParse(storage.getItem(storageName) as string);
 
   const setPersisted = async (
     getContent: () => [Tables, Values],
@@ -26,7 +26,7 @@ const getStoragePersister = (
   const addPersisterListener = (listener: PersisterListener): StoreListener => {
     const storeListener = (event: StorageEvent): void => {
       if (event.storageArea === storage && event.key === storageName) {
-        listener(() => JSON.parse(event.newValue as string));
+        listener(() => jsonParse(event.newValue as string));
       }
     };
     WINDOW.addEventListener(STORAGE, storeListener);

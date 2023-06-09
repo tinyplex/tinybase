@@ -1,6 +1,6 @@
 import {Persister, PersisterListener} from '../types/persisters';
 import {Store, Tables, Values} from '../types/store';
-import {isUndefined, jsonString} from '../common/other';
+import {isUndefined, jsonParse, jsonString} from '../common/other';
 import {createCustomPersister} from '../persisters';
 import {createRemotePersister as createRemotePersisterDecl} from '../types/persisters/persister-remote';
 
@@ -17,7 +17,7 @@ export const createRemotePersister = ((
   const getPersisted = async (): Promise<[Tables, Values]> => {
     const response = await fetch(loadUrl);
     lastEtag = getETag(response);
-    return JSON.parse(await response.text());
+    return jsonParse(await response.text());
   };
 
   const setPersisted = async (

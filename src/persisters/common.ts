@@ -1,5 +1,5 @@
 import {Tables, Values} from '../types/store';
-import {jsonString} from '../common/other';
+import {jsonParse, jsonString} from '../common/other';
 
 export const getSqlitePersistedFunctions = (
   run: (sql: string, args?: any[]) => Promise<void>,
@@ -13,7 +13,7 @@ export const getSqlitePersistedFunctions = (
 
   const getPersisted = async (): Promise<[Tables, Values]> => {
     await ensureTable();
-    return JSON.parse((await get('SELECT json FROM tinybase LIMIT 1'))[0][0]);
+    return jsonParse((await get('SELECT json FROM tinybase LIMIT 1'))[0][0]);
   };
 
   const setPersisted = async (
