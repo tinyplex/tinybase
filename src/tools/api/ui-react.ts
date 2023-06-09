@@ -43,6 +43,7 @@ import {
   TABLE,
   TABLES,
   TABLE_IDS,
+  TINYBASE,
   VALUE,
   VALUES,
   VALUE_IDS,
@@ -242,7 +243,7 @@ export const getStoreUiReactApi = (
 
   addImport(
     null,
-    'tinybase',
+    TINYBASE,
     ID,
     'Store',
     CALLBACK,
@@ -385,7 +386,7 @@ export const getStoreUiReactApi = (
     );
     addImport(0, moduleDefinition, cellIdType);
     addImport(1, moduleDefinition, storeType);
-    addImport(null, 'tinybase', IDS, 'IdOrNull');
+    addImport(null, TINYBASE, IDS, 'IdOrNull');
 
     const tableView = addInternalFunction(
       'tableView',

@@ -2,6 +2,7 @@ import {Id} from '../types/common.d';
 
 export const getTypeOf = (thing: unknown): string => typeof thing;
 
+export const TINYBASE = 'tinybase';
 export const EMPTY_STRING = '';
 
 export const STRING = getTypeOf(EMPTY_STRING);

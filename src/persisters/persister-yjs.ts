@@ -17,6 +17,7 @@ import {
 } from '../common/array';
 import {ifNotUndefined, isUndefined} from '../common/other';
 import {Id} from '../types/common.d';
+import {TINYBASE} from '../common/strings';
 import {createCustomPersister} from '../persisters';
 import {mapForEach} from '../common/map';
 
@@ -190,7 +191,7 @@ const yMapMatch = (
 export const createYjsPersister = (
   store: Store,
   yDoc: YDoc,
-  yMapName = 'tinybase',
+  yMapName = TINYBASE,
 ): Persister => {
   const yContent: YMap<any> = yDoc.getMap(yMapName);
 
