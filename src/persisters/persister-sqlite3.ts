@@ -1,6 +1,8 @@
+import {IdObj, objMap} from '../common/obj';
 import {Persister, PersisterListener} from '../types/persisters';
 import {Store, Tables, Values} from '../types/store';
 import {Database} from 'sqlite3';
+import {arrayMap} from '../common/array';
 import {createCustomPersister} from '../persisters';
 import {createSqlite3Persister as createSqlite3PersisterDecl} from '../types/persisters/persister-sqlite3';
 import {jsonString} from '../common/other';
@@ -11,8 +13,12 @@ const run = (db: Database, sql: string, args: any[] = []): Promise<void> =>
   );
 
 const get = (db: Database, sql: string): Promise<any> =>
-  new Promise((resolve, reject) =>
-    db.get(sql, (err, row) => (err ? reject(err) : resolve(row ?? {}))),
+  new Promise((resolve) =>
+    db.all(sql, (_, rows: IdObj<any>[]) =>
+      resolve(
+        arrayMap(rows, (row: IdObj<any>) => objMap(row, (value) => value)),
+      ),
+    ),
   );
 
 const ensureTable = async (db: Database): Promise<void> =>
@@ -25,7 +31,7 @@ export const createSqlite3Persister = ((
   const getPersisted = async (): Promise<[Tables, Values]> => {
     await ensureTable(db);
     return JSON.parse(
-      (await get(db, 'SELECT json FROM tinybase LIMIT 1'))['json'],
+      (await get(db, 'SELECT json FROM tinybase LIMIT 1'))[0][0],
     );
   };
 

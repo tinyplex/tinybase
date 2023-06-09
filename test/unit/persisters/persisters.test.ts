@@ -349,7 +349,7 @@ const mockSqliteWasm: Persistable<SqliteWasmLocation> = {
   get: ([_sqlite3, db]: SqliteWasmLocation): Promise<[Tables, Values] | void> =>
     new Promise((resolve) =>
       db.exec('SELECT json FROM tinybase LIMIT 1', {
-        callback: (row: string) => resolve(JSON.parse(row)),
+        callback: (row: [string]) => resolve(JSON.parse(row[0])),
       }),
     ),
   set: async (location: SqliteWasmLocation, value: any): Promise<void> =>
