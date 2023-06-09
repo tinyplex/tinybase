@@ -13,6 +13,7 @@ import {
   TABLE,
   TABLES,
   TABLE_IDS,
+  TINYBASE,
   TYPE,
   VALUE,
   VALUES,
@@ -272,8 +273,8 @@ export const getStoreCoreApi = (
   );
 
   if (!objIsEmpty(tablesSchema)) {
-    addImport(0, 'tinybase', 'CellChange');
-    addImport(null, 'tinybase', IDS);
+    addImport(0, TINYBASE, 'CellChange');
+    addImport(null, TINYBASE, IDS);
 
     // Tables, TablesWhenSet, TableId,
     // Table<>, TableWhenSet<>, Row<>, RowWhenSet<>, CellId<>, Cell<>,
@@ -792,7 +793,7 @@ export const getStoreCoreApi = (
       '})',
     );
   } else {
-    addImport(null, 'tinybase', TABLES);
+    addImport(null, TINYBASE, TABLES);
   }
 
   if (!objIsEmpty(valuesSchema)) {
@@ -948,7 +949,7 @@ export const getStoreCoreApi = (
     );
 
     addImport(1, moduleDefinition, ...collValues(mapCellOrValueTypes));
-    addImport(0, 'tinybase', 'ValueChange');
+    addImport(0, TINYBASE, 'ValueChange');
 
     arrayPush(
       createSteps,
@@ -969,7 +970,7 @@ export const getStoreCoreApi = (
       '})',
     );
   } else {
-    addImport(null, 'tinybase', VALUES);
+    addImport(null, TINYBASE, VALUES);
   }
 
   // getContent
@@ -1014,7 +1015,7 @@ export const getStoreCoreApi = (
 
   addImport(
     null,
-    'tinybase',
+    TINYBASE,
     'DoRollback',
     ID,
     'IdOrNull',
@@ -1022,7 +1023,7 @@ export const getStoreCoreApi = (
     'Store',
     TRANSACTION_CHANGES,
   );
-  addImport(0, 'tinybase', 'Get' + TRANSACTION_CHANGES, 'GetTransactionLog');
+  addImport(0, TINYBASE, 'Get' + TRANSACTION_CHANGES, 'GetTransactionLog');
 
   // getJson
   addProxyMethod(0, EMPTY_STRING, JSON, JSON, getTheContentOfTheStoreDoc(0, 6));
@@ -1137,7 +1138,7 @@ export const getStoreCoreApi = (
     VERBS[0] + ' the underlying Store object',
   );
 
-  addImport(1, 'tinybase', 'createStore');
+  addImport(1, TINYBASE, 'createStore');
   addImport(
     1,
     moduleDefinition,

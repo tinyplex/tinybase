@@ -13,6 +13,7 @@ import {Persister, PersisterListener} from '../types/persisters';
 import {ifNotUndefined, isUndefined} from '../common/other';
 import {DocHandle} from 'automerge-repo';
 import {Id} from '../types/common';
+import {TINYBASE} from '../common/strings';
 import {arrayLength} from '../common/array';
 import {createCustomPersister} from '../persisters';
 
@@ -128,7 +129,7 @@ const docObjMatch = (
 export const createAutomergePersister = (
   store: Store,
   docHandle: DocHandle<any>,
-  docObjName = 'tinybase',
+  docObjName = TINYBASE,
 ): Persister => {
   docHandle.change((doc) => (doc[docObjName] = {}));
 

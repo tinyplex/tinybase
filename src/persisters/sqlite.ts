@@ -1,6 +1,7 @@
 import {Tables, Values} from '../types/store';
 import {isString, jsonParse, jsonString} from '../common/other';
 import {DatabasePersisterConfig} from '../types/persisters';
+import {TINYBASE} from '../common/strings';
 
 export const getSqlitePersistedFunctions = (
   storeTableOrConfig: string | DatabasePersisterConfig | undefined,
@@ -14,7 +15,7 @@ export const getSqlitePersistedFunctions = (
     ? {storeTable: storeTableOrConfig}
     : storeTableOrConfig ?? {};
 
-  const {storeTable = 'tinybase'} = config;
+  const {storeTable = TINYBASE} = config;
 
   const ensureTable = async (): Promise<void> =>
     await run(`CREATE TABLE IF NOT EXISTS "${storeTable}" (json);`);
