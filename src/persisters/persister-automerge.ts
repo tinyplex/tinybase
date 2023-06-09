@@ -132,16 +132,15 @@ export const createAutomergePersister = (
 ): Persister => {
   docHandle.change((doc) => (doc[docObjName] = {}));
 
-  const getPersisted = async (): Promise<[Tables, Values] | undefined> => {
-    return arrayLength(objIds(docHandle.doc[docObjName])) == 2
+  const getPersisted = async (): Promise<[Tables, Values] | undefined> =>
+    arrayLength(objIds(docHandle.doc[docObjName])) == 2
       ? getDocContent(docHandle.doc, docObjName)
       : undefined;
-  };
 
   const setPersisted = async (
     getContent: () => [Tables, Values],
     getTransactionChanges?: GetTransactionChanges,
-  ): Promise<void> => {
+  ): Promise<void> =>
     docHandle.change((doc) =>
       setTransactionChangesToDoc(
         doc,
@@ -150,7 +149,6 @@ export const createAutomergePersister = (
         getTransactionChanges,
       ),
     );
-  };
 
   const addPersisterListener = (listener: PersisterListener): Observer => {
     const observer: Observer = ({doc}) =>
