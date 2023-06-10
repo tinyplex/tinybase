@@ -73,7 +73,7 @@ export const createSqlitePersister = <ListeningHandle>(
     );
   };
 
-  const setRow = async (table: string, rowId: Id, row: Row) => {
+  const setRow = async (table: string, rowId: Id, row: Row | Values) => {
     const columns = arrayMap(
       objIds(row),
       (cellId) => `,${escapeId(cellId)}`,
@@ -108,7 +108,20 @@ export const createSqlitePersister = <ListeningHandle>(
     setPersisted = async (
       getContent: () => [Tables, Values],
     ): Promise<void> => {
-      const [_tables, values] = getContent();
+      const [tables, values] = getContent();
+      await Promise.all(
+        objMap(
+          tables,
+          async (table, tableId) =>
+            await Promise.all(
+              objMap(
+                table,
+                async (row, rowId) => await setRow(tableId, rowId, row),
+              ),
+            ),
+        ),
+      );
+
       await setRow(valuesTable, SINGLE_ROW_ID, values);
     };
   }
