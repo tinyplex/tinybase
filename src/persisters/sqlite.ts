@@ -64,13 +64,8 @@ export const createSqlitePersister = <ListeningHandle>(
     getPersisted = async (): Promise<[Tables, Values]> =>
       jsonParse((await getSingleRow(storeTable))[0]);
 
-    setPersisted = async (
-      getContent: () => [Tables, Values],
-    ): Promise<void> => {
-      try {
-        await setSingleRow(storeTable, [jsonString(getContent())]);
-      } catch {}
-    };
+    setPersisted = async (getContent: () => [Tables, Values]): Promise<void> =>
+      await setSingleRow(storeTable, [jsonString(getContent())]);
   } else {
     rowIdColumn = config.rowIdColumn ?? rowIdColumn;
 
