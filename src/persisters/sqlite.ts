@@ -9,7 +9,6 @@ import {isString, jsonParse, jsonString} from '../common/other';
 import {TINYBASE} from '../common/strings';
 import {createCustomPersister} from '../persisters';
 
-const ROW_ID_COL = '_id';
 const SINGLE_ROW_ID = '_';
 const STORE_COL = 'store';
 
@@ -25,18 +24,20 @@ export const createSqlitePersister = <ListeningHandle>(
     ? {storeTable: storeTableOrConfig}
     : storeTableOrConfig ?? {};
 
-  const {storeTable = TINYBASE} = config;
+  const {storeTable = TINYBASE, rowIdColumn = '_id'} = config;
 
   const ensureTable = async (): Promise<void> =>
     await run(
-      `CREATE TABLE IF NOT EXISTS"${storeTable}"(${ROW_ID_COL} ` +
+      `CREATE TABLE IF NOT EXISTS"${storeTable}"(${rowIdColumn} ` +
         `PRIMARY KEY ON CONFLICT REPLACE,${STORE_COL});`,
     );
 
   const getSingleRow = async (table: string) =>
     arraySlice(
       (
-        await get(`SELECT*FROM"${table}"WHERE ${ROW_ID_COL}=?`, [SINGLE_ROW_ID])
+        await get(`SELECT*FROM"${table}"WHERE ${rowIdColumn}=?`, [
+          SINGLE_ROW_ID,
+        ])
       )[0],
       1,
     );

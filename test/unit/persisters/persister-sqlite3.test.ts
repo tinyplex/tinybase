@@ -110,6 +110,20 @@ describe('Save to empty database', () => {
     ]);
   });
 
+  test('tables, custom id column', async () => {
+    const persister = createSqlite3Persister(store, db, {
+      rowIdColumn: '_rowId',
+    });
+    store.setTables({t1: {r1: {c1: 1}}});
+    await persister.save();
+    expect(await getDatabase()).toEqual([
+      [
+        'CREATE TABLE "tinybase"(_rowId PRIMARY KEY ON CONFLICT REPLACE,store)',
+        [{_rowId: '_', store: '[{"t1":{"r1":{"c1":1}}},{}]'}],
+      ],
+    ]);
+  });
+
   test('values', async () => {
     store.setValues({v1: 1});
     await persister.save();
