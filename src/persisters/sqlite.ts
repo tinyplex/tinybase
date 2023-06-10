@@ -1,16 +1,21 @@
-import {Tables, Values} from '../types/store';
+import {
+  DatabasePersisterConfig,
+  Persister,
+  PersisterListener,
+} from '../types/persisters';
+import {Store, Tables, Values} from '../types/store';
 import {isString, jsonParse, jsonString} from '../common/other';
-import {DatabasePersisterConfig} from '../types/persisters';
 import {TINYBASE} from '../common/strings';
+import {createCustomPersister} from '../persisters';
 
-export const getSqlitePersistedFunctions = (
+export const createSqlitePersister = <ListeningHandle>(
+  store: Store,
   storeTableOrConfig: string | DatabasePersisterConfig | undefined,
   run: (sql: string, args?: any[]) => Promise<void>,
   get: (sql: string) => Promise<any[][]>,
-): [
-  () => Promise<[Tables, Values]>,
-  (getContent: () => [Tables, Values]) => Promise<void>,
-] => {
+  addPersisterListener: (listener: PersisterListener) => ListeningHandle,
+  delPersisterListener: (listeningHandle: ListeningHandle) => void,
+): Persister => {
   const config: DatabasePersisterConfig = isString(storeTableOrConfig)
     ? {storeTable: storeTableOrConfig}
     : storeTableOrConfig ?? {};
@@ -40,5 +45,11 @@ export const getSqlitePersistedFunctions = (
     } catch {}
   };
 
-  return [getPersisted, setPersisted];
+  return createCustomPersister(
+    store,
+    getPersisted,
+    setPersisted,
+    addPersisterListener,
+    delPersisterListener,
+  );
 };
