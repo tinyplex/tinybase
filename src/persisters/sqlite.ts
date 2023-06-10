@@ -100,12 +100,16 @@ export const createSqlitePersister = <ListeningHandle>(
         [STORE_COLUMN]: jsonString(getContent()),
       });
   } else {
+    const {valuesTable = TINYBASE + '_values'} = config;
     rowIdColumn = config.rowIdColumn ?? rowIdColumn;
 
     getPersisted = async (): Promise<[Tables, Values]> => [{}, {}];
 
-    setPersisted = async (): Promise<void> => {
-      0;
+    setPersisted = async (
+      getContent: () => [Tables, Values],
+    ): Promise<void> => {
+      const [_tables, values] = getContent();
+      await setRow(valuesTable, SINGLE_ROW_ID, values);
     };
   }
 

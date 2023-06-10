@@ -232,3 +232,120 @@ describe('Serialized', () => {
     });
   });
 });
+
+describe('Non-serialized', () => {
+  beforeEach(async () => {
+    persister = createSqlite3Persister(store, db, {serialized: false});
+  });
+
+  describe('Custom row id column', () => {
+    test('word', async () => {
+      const persister = createSqlite3Persister(store, db, {
+        serialized: false,
+        rowIdColumn: 'test',
+      });
+      await persister.save();
+      expect(await getDatabase()).toEqual([
+        [
+          'CREATE TABLE "tinybase_values"("test" PRIMARY KEY ON CONFLICT REPLACE)',
+          [{test: '_'}],
+        ],
+      ]);
+    });
+
+    test('with spaces', async () => {
+      const persister = createSqlite3Persister(store, db, {
+        serialized: false,
+        rowIdColumn: 'test table',
+      });
+      await persister.save();
+      expect(await getDatabase()).toEqual([
+        [
+          'CREATE TABLE "tinybase_values"("test table" PRIMARY KEY ON CONFLICT REPLACE)',
+          [{'test table': '_'}],
+        ],
+      ]);
+    });
+
+    test('with quote', async () => {
+      const persister = createSqlite3Persister(store, db, {
+        serialized: false,
+        rowIdColumn: 'test "table"',
+      });
+      await persister.save();
+      expect(await getDatabase()).toEqual([
+        [
+          'CREATE TABLE "tinybase_values"("test ""table""" PRIMARY KEY ON CONFLICT REPLACE)',
+          [{'test "table"': '_'}],
+        ],
+      ]);
+    });
+  });
+
+  describe('Custom values table name', () => {
+    test('word', async () => {
+      const persister = createSqlite3Persister(store, db, {
+        serialized: false,
+        valuesTable: 'test',
+      });
+      await persister.save();
+      expect(await getDatabase()).toEqual([
+        [
+          'CREATE TABLE "test"("_id" PRIMARY KEY ON CONFLICT REPLACE)',
+          [{_id: '_'}],
+        ],
+      ]);
+    });
+
+    test('with spaces', async () => {
+      const persister = createSqlite3Persister(store, db, {
+        serialized: false,
+        valuesTable: 'test table',
+      });
+      await persister.save();
+      expect(await getDatabase()).toEqual([
+        [
+          'CREATE TABLE "test table"("_id" PRIMARY KEY ON CONFLICT REPLACE)',
+          [{_id: '_'}],
+        ],
+      ]);
+    });
+
+    test('with quote', async () => {
+      const persister = createSqlite3Persister(store, db, {
+        serialized: false,
+        valuesTable: 'test "table"',
+      });
+      await persister.save();
+      expect(await getDatabase()).toEqual([
+        [
+          'CREATE TABLE "test ""table"""("_id" PRIMARY KEY ON CONFLICT REPLACE)',
+          [{_id: '_'}],
+        ],
+      ]);
+    });
+  });
+
+  describe('Save to empty database', () => {
+    test('nothing', async () => {
+      await persister.save();
+      expect(await getDatabase()).toEqual([
+        [
+          'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE)',
+          [{_id: '_'}],
+        ],
+      ]);
+    });
+
+    test('values', async () => {
+      store.setValues({v1: 1});
+      await persister.save();
+      expect(await getDatabase()).toEqual([
+        [
+          'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE, "v1")',
+          [{_id: '_', v1: 1}],
+        ],
+      ]);
+    });
+  });
+});
