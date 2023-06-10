@@ -3,14 +3,16 @@ import {
   Persister,
   PersisterListener,
 } from '../types/persisters';
-import {Store, Tables, Values} from '../types/store';
-import {arrayLength, arraySlice} from '../common/array';
+import {EMPTY_STRING, TINYBASE} from '../common/strings';
+import {Row, Store, Tables, Values} from '../types/store';
+import {arrayLength, arrayMap, arraySlice} from '../common/array';
 import {isString, jsonParse, jsonString} from '../common/other';
-import {TINYBASE} from '../common/strings';
+import {objIds, objValues} from '../common/obj';
+import {Id} from '../types/common';
 import {createCustomPersister} from '../persisters';
 
 const SINGLE_ROW_ID = '_';
-const STORE_COL = 'store';
+const STORE_COLUMN = 'store';
 
 const defaultConfig: DatabasePersisterConfig = {serialized: true};
 
@@ -35,7 +37,7 @@ export const createSqlitePersister = <ListeningHandle>(
   const ensureTable = async (table: string): Promise<void> =>
     await run(
       `CREATE TABLE IF NOT EXISTS"${table}"("${rowIdColumn}" ` +
-        `PRIMARY KEY ON CONFLICT REPLACE,${STORE_COL});`,
+        `PRIMARY KEY ON CONFLICT REPLACE,${STORE_COLUMN});`,
     );
 
   const getSingleRow = async (table: string) => {
@@ -50,11 +52,17 @@ export const createSqlitePersister = <ListeningHandle>(
     );
   };
 
-  const setSingleRow = async (table: string, values: any[]) => {
+  const setRow = async (table: string, rowId: Id, row: Row) => {
+    const columns = arrayMap(objIds(row), (cellId) => `,"${cellId}"`).join(
+      EMPTY_STRING,
+    );
+    const values = objValues(row);
     await ensureTable(table);
     await run(
-      `INSERT INTO"${table}"VALUES(?${',?'.repeat(arrayLength(values))})`,
-      [SINGLE_ROW_ID, ...values],
+      `INSERT INTO"${table}"("${rowIdColumn}"${columns})VALUES(?${',?'.repeat(
+        arrayLength(values),
+      )})`,
+      [rowId, ...values],
     );
   };
 
@@ -65,13 +73,16 @@ export const createSqlitePersister = <ListeningHandle>(
       jsonParse((await getSingleRow(storeTable))[0]);
 
     setPersisted = async (getContent: () => [Tables, Values]): Promise<void> =>
-      await setSingleRow(storeTable, [jsonString(getContent())]);
+      await setRow(storeTable, SINGLE_ROW_ID, {
+        [STORE_COLUMN]: jsonString(getContent()),
+      });
   } else {
     rowIdColumn = config.rowIdColumn ?? rowIdColumn;
 
     getPersisted = async (): Promise<[Tables, Values]> => [{}, {}];
 
     setPersisted = async (): Promise<void> => {
+      0;
     };
   }
 
