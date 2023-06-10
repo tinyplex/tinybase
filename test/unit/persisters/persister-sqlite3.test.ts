@@ -64,152 +64,143 @@ afterEach(() => {
   db.close();
 });
 
-describe('Custom name', () => {
-  test('as string', async () => {
-    const persister = createSqlite3Persister(store, db, 'test');
-    await persister.save();
-    expect(await getDatabase()).toEqual([
-      [
-        'CREATE TABLE "test"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
-        [{_id: '_', store: '[{},{}]'}],
-      ],
-    ]);
-  });
-
-  test('as config', async () => {
-    const persister = createSqlite3Persister(store, db, {storeTable: 'test'});
-    await persister.save();
-    expect(await getDatabase()).toEqual([
-      [
-        'CREATE TABLE "test"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
-        [{_id: '_', store: '[{},{}]'}],
-      ],
-    ]);
-  });
-});
-
-describe('Save to empty database', () => {
-  test('nothing', async () => {
-    await persister.save();
-    expect(await getDatabase()).toEqual([
-      [
-        'CREATE TABLE "tinybase"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
-        [{_id: '_', store: '[{},{}]'}],
-      ],
-    ]);
-  });
-
-  test('tables', async () => {
-    store.setTables({t1: {r1: {c1: 1}}});
-    await persister.save();
-    expect(await getDatabase()).toEqual([
-      [
-        'CREATE TABLE "tinybase"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
-        [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{}]'}],
-      ],
-    ]);
-  });
-
-  test('tables, custom id column', async () => {
-    const persister = createSqlite3Persister(store, db, {
-      rowIdColumn: '_rowId',
+describe('Serialized', () => {
+  describe('Custom name', () => {
+    test('as string', async () => {
+      const persister = createSqlite3Persister(store, db, 'test');
+      await persister.save();
+      expect(await getDatabase()).toEqual([
+        [
+          'CREATE TABLE "test"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
+          [{_id: '_', store: '[{},{}]'}],
+        ],
+      ]);
     });
-    store.setTables({t1: {r1: {c1: 1}}});
-    await persister.save();
-    expect(await getDatabase()).toEqual([
-      [
-        'CREATE TABLE "tinybase"(_rowId PRIMARY KEY ON CONFLICT REPLACE,store)',
-        [{_rowId: '_', store: '[{"t1":{"r1":{"c1":1}}},{}]'}],
-      ],
-    ]);
+
+    test('as config', async () => {
+      const persister = createSqlite3Persister(store, db, {
+        serialized: true,
+        storeTable: 'test',
+      });
+      await persister.save();
+      expect(await getDatabase()).toEqual([
+        [
+          'CREATE TABLE "test"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
+          [{_id: '_', store: '[{},{}]'}],
+        ],
+      ]);
+    });
   });
 
-  test('values', async () => {
-    store.setValues({v1: 1});
-    await persister.save();
-    expect(await getDatabase()).toEqual([
-      [
-        'CREATE TABLE "tinybase"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
-        [{_id: '_', store: '[{},{"v1":1}]'}],
-      ],
-    ]);
+  describe('Save to empty database', () => {
+    test('nothing', async () => {
+      await persister.save();
+      expect(await getDatabase()).toEqual([
+        [
+          'CREATE TABLE "tinybase"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
+          [{_id: '_', store: '[{},{}]'}],
+        ],
+      ]);
+    });
+
+    test('tables', async () => {
+      store.setTables({t1: {r1: {c1: 1}}});
+      await persister.save();
+      expect(await getDatabase()).toEqual([
+        [
+          'CREATE TABLE "tinybase"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
+          [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{}]'}],
+        ],
+      ]);
+    });
+
+    test('values', async () => {
+      store.setValues({v1: 1});
+      await persister.save();
+      expect(await getDatabase()).toEqual([
+        [
+          'CREATE TABLE "tinybase"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
+          [{_id: '_', store: '[{},{"v1":1}]'}],
+        ],
+      ]);
+    });
+
+    test('both', async () => {
+      store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
+      await persister.save();
+      expect(await getDatabase()).toEqual([
+        [
+          'CREATE TABLE "tinybase"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
+          [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
+        ],
+      ]);
+    });
   });
 
-  test('both', async () => {
-    store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
-    await persister.save();
-    expect(await getDatabase()).toEqual([
-      [
-        'CREATE TABLE "tinybase"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
-        [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
-      ],
-    ]);
-  });
-});
+  describe('Load from database', () => {
+    test('nothing', async () => {
+      await persister.load();
+      expect(store.getContent()).toEqual([{}, {}]);
+    });
 
-describe('Load from database', () => {
-  test('nothing', async () => {
-    await persister.load();
-    expect(store.getContent()).toEqual([{}, {}]);
-  });
+    test('defaulted', async () => {
+      await persister.load({t1: {r1: {c1: 1}}}, {v1: 1});
+      expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+    });
 
-  test('defaulted', async () => {
-    await persister.load({t1: {r1: {c1: 1}}}, {v1: 1});
-    expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
-  });
+    test('broken', async () => {
+      setDatabase([
+        [
+          'CREATE TABLE "tinybase"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
+          [{_id: '_', store: '[{"t1": 1}]'}],
+        ],
+      ]);
+      await persister.load();
+      expect(store.getContent()).toEqual([{}, {}]);
+    });
 
-  test('broken', async () => {
-    setDatabase([
-      [
-        'CREATE TABLE "tinybase"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
-        [{_id: '_', store: '[{"t1": 1}]'}],
-      ],
-    ]);
-    await persister.load();
-    expect(store.getContent()).toEqual([{}, {}]);
-  });
+    test('broken, can default', async () => {
+      setDatabase([
+        [
+          'CREATE TABLE "tinybase"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
+          [{_id: '_', store: '[{"t1": }]'}],
+        ],
+      ]);
+      await persister.load({t1: {r1: {c1: 1}}}, {v1: 1});
+      expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+    });
 
-  test('broken, can default', async () => {
-    setDatabase([
-      [
-        'CREATE TABLE "tinybase"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
-        [{_id: '_', store: '[{"t1": }]'}],
-      ],
-    ]);
-    await persister.load({t1: {r1: {c1: 1}}}, {v1: 1});
-    expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
-  });
+    test('tables', async () => {
+      setDatabase([
+        [
+          'CREATE TABLE "tinybase"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
+          [{_id: '_', store: '[{"t1": {"r1": {"c1": 1}}}, {}]'}],
+        ],
+      ]);
+      await persister.load();
+      expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {}]);
+    });
 
-  test('tables', async () => {
-    setDatabase([
-      [
-        'CREATE TABLE "tinybase"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
-        [{_id: '_', store: '[{"t1": {"r1": {"c1": 1}}}, {}]'}],
-      ],
-    ]);
-    await persister.load();
-    expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {}]);
-  });
+    test('values', async () => {
+      setDatabase([
+        [
+          'CREATE TABLE "tinybase"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
+          [{_id: '_', store: '[{}, {"v1": 1}]'}],
+        ],
+      ]);
+      await persister.load();
+      expect(store.getContent()).toEqual([{}, {v1: 1}]);
+    });
 
-  test('values', async () => {
-    setDatabase([
-      [
-        'CREATE TABLE "tinybase"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
-        [{_id: '_', store: '[{}, {"v1": 1}]'}],
-      ],
-    ]);
-    await persister.load();
-    expect(store.getContent()).toEqual([{}, {v1: 1}]);
-  });
-
-  test('both', async () => {
-    setDatabase([
-      [
-        'CREATE TABLE "tinybase"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
-        [{_id: '_', store: '[{"t1": {"r1": {"c1": 1}}}, {"v1": 1}]'}],
-      ],
-    ]);
-    await persister.load();
-    expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+    test('both', async () => {
+      setDatabase([
+        [
+          'CREATE TABLE "tinybase"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
+          [{_id: '_', store: '[{"t1": {"r1": {"c1": 1}}}, {"v1": 1}]'}],
+        ],
+      ]);
+      await persister.load();
+      expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+    });
   });
 });
