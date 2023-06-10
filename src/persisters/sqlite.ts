@@ -4,6 +4,7 @@ import {
   PersisterListener,
 } from '../types/persisters';
 import {Store, Tables, Values} from '../types/store';
+import {arrayLength, arraySlice} from '../common/array';
 import {isString, jsonParse, jsonString} from '../common/other';
 import {TINYBASE} from '../common/strings';
 import {createCustomPersister} from '../persisters';
@@ -28,20 +29,29 @@ export const createSqlitePersister = <ListeningHandle>(
 
   const ensureTable = async (): Promise<void> =>
     await run(
-      `CREATE TABLE IF NOT EXISTS "${storeTable}"(${ROW_ID_COL} ` +
+      `CREATE TABLE IF NOT EXISTS"${storeTable}"(${ROW_ID_COL} ` +
         `PRIMARY KEY ON CONFLICT REPLACE,${STORE_COL});`,
     );
 
+  const getSingleRow = async (table: string) =>
+    arraySlice(
+      (
+        await get(`SELECT*FROM"${table}"WHERE ${ROW_ID_COL}=?`, [SINGLE_ROW_ID])
+      )[0],
+      1,
+    );
+
+  const setSingleRow = async (table: string, values: any[]) => {
+    await ensureTable();
+    await run(
+      `INSERT INTO"${table}"VALUES(?${',?'.repeat(arrayLength(values))})`,
+      [SINGLE_ROW_ID, ...values],
+    );
+  };
+
   const getPersisted = async (): Promise<[Tables, Values]> => {
     await ensureTable();
-    return jsonParse(
-      (
-        await get(
-          `SELECT ${STORE_COL} FROM "${storeTable}" WHERE ${ROW_ID_COL}=?`,
-          [SINGLE_ROW_ID],
-        )
-      )[0][0],
-    );
+    return jsonParse((await getSingleRow(storeTable))[0]);
   };
 
   const setPersisted = async (
@@ -49,10 +59,7 @@ export const createSqlitePersister = <ListeningHandle>(
   ): Promise<void> => {
     try {
       await ensureTable();
-      await run(
-        `INSERT INTO "${storeTable}"(${ROW_ID_COL},${STORE_COL})VALUES(?, ?)`,
-        [SINGLE_ROW_ID, jsonString(getContent())],
-      );
+      await setSingleRow(storeTable, [jsonString(getContent())]);
     } catch {}
   };
 
