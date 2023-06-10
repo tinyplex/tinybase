@@ -16,6 +16,8 @@ const STORE_COLUMN = 'store';
 
 const defaultConfig: DatabasePersisterConfig = {serialized: true};
 
+const escapeId = (str: string) => `"${str.replace(/"/g, '""')}"`;
+
 export const createSqlitePersister = <ListeningHandle>(
   store: Store,
   storeTableOrConfig: string | DatabasePersisterConfig | undefined,
@@ -36,32 +38,34 @@ export const createSqlitePersister = <ListeningHandle>(
 
   const ensureTable = async (table: string): Promise<void> =>
     await run(
-      `CREATE TABLE IF NOT EXISTS"${table}"("${rowIdColumn}" ` +
-        `PRIMARY KEY ON CONFLICT REPLACE,${STORE_COLUMN});`,
+      `CREATE TABLE IF NOT EXISTS${escapeId(table)}(${escapeId(rowIdColumn)} ` +
+        `PRIMARY KEY ON CONFLICT REPLACE,${escapeId(STORE_COLUMN)});`,
     );
 
   const getSingleRow = async (table: string) => {
     await ensureTable(table);
     return arraySlice(
       (
-        await get(`SELECT*FROM"${table}"WHERE "${rowIdColumn}"=?`, [
-          SINGLE_ROW_ID,
-        ])
+        await get(
+          `SELECT*FROM${escapeId(table)}WHERE ${escapeId(rowIdColumn)}=?`,
+          [SINGLE_ROW_ID],
+        )
       )[0],
       1,
     );
   };
 
   const setRow = async (table: string, rowId: Id, row: Row) => {
-    const columns = arrayMap(objIds(row), (cellId) => `,"${cellId}"`).join(
-      EMPTY_STRING,
-    );
+    const columns = arrayMap(
+      objIds(row),
+      (cellId) => `,${escapeId(cellId)}`,
+    ).join(EMPTY_STRING);
     const values = objValues(row);
     await ensureTable(table);
     await run(
-      `INSERT INTO"${table}"("${rowIdColumn}"${columns})VALUES(?${',?'.repeat(
-        arrayLength(values),
-      )})`,
+      `INSERT INTO${escapeId(table)}(${escapeId(
+        rowIdColumn,
+      )}${columns})VALUES(?${',?'.repeat(arrayLength(values))})`,
       [rowId, ...values],
     );
   };
