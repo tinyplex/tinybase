@@ -69,7 +69,7 @@ describe('Custom name', () => {
     const persister = createSqlite3Persister(store, db, 'test');
     await persister.save();
     expect(await getDatabase()).toEqual([
-      ['CREATE TABLE "test" (json)', [{json: '[{},{}]'}]],
+      ['CREATE TABLE "test" (store)', [{store: '[{},{}]'}]],
     ]);
   });
 
@@ -77,7 +77,7 @@ describe('Custom name', () => {
     const persister = createSqlite3Persister(store, db, {storeTable: 'test'});
     await persister.save();
     expect(await getDatabase()).toEqual([
-      ['CREATE TABLE "test" (json)', [{json: '[{},{}]'}]],
+      ['CREATE TABLE "test" (store)', [{store: '[{},{}]'}]],
     ]);
   });
 });
@@ -86,7 +86,7 @@ describe('Save to empty database', () => {
   test('nothing', async () => {
     await persister.save();
     expect(await getDatabase()).toEqual([
-      ['CREATE TABLE "tinybase" (json)', [{json: '[{},{}]'}]],
+      ['CREATE TABLE "tinybase" (store)', [{store: '[{},{}]'}]],
     ]);
   });
 
@@ -95,8 +95,8 @@ describe('Save to empty database', () => {
     await persister.save();
     expect(await getDatabase()).toEqual([
       [
-        'CREATE TABLE "tinybase" (json)',
-        [{json: '[{"t1":{"r1":{"c1":1}}},{}]'}],
+        'CREATE TABLE "tinybase" (store)',
+        [{store: '[{"t1":{"r1":{"c1":1}}},{}]'}],
       ],
     ]);
   });
@@ -105,7 +105,7 @@ describe('Save to empty database', () => {
     store.setValues({v1: 1});
     await persister.save();
     expect(await getDatabase()).toEqual([
-      ['CREATE TABLE "tinybase" (json)', [{json: '[{},{"v1":1}]'}]],
+      ['CREATE TABLE "tinybase" (store)', [{store: '[{},{"v1":1}]'}]],
     ]);
   });
 
@@ -114,8 +114,8 @@ describe('Save to empty database', () => {
     await persister.save();
     expect(await getDatabase()).toEqual([
       [
-        'CREATE TABLE "tinybase" (json)',
-        [{json: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
+        'CREATE TABLE "tinybase" (store)',
+        [{store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
       ],
     ]);
   });
@@ -133,13 +133,15 @@ describe('Load from database', () => {
   });
 
   test('broken', async () => {
-    setDatabase([['CREATE TABLE "tinybase" (json)', [{json: '[{"t1": 1}]'}]]]);
+    setDatabase([
+      ['CREATE TABLE "tinybase" (store)', [{store: '[{"t1": 1}]'}]],
+    ]);
     await persister.load();
     expect(store.getContent()).toEqual([{}, {}]);
   });
 
   test('broken, can default', async () => {
-    setDatabase([['CREATE TABLE "tinybase" (json)', [{json: '[{"t1": }]'}]]]);
+    setDatabase([['CREATE TABLE "tinybase" (store)', [{store: '[{"t1": }]'}]]]);
     await persister.load({t1: {r1: {c1: 1}}}, {v1: 1});
     expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
   });
@@ -147,8 +149,8 @@ describe('Load from database', () => {
   test('tables', async () => {
     setDatabase([
       [
-        'CREATE TABLE "tinybase" (json)',
-        [{json: '[{"t1": {"r1": {"c1": 1}}}, {}]'}],
+        'CREATE TABLE "tinybase" (store)',
+        [{store: '[{"t1": {"r1": {"c1": 1}}}, {}]'}],
       ],
     ]);
     await persister.load();
@@ -157,7 +159,7 @@ describe('Load from database', () => {
 
   test('values', async () => {
     setDatabase([
-      ['CREATE TABLE "tinybase" (json)', [{json: '[{}, {"v1": 1}]'}]],
+      ['CREATE TABLE "tinybase" (store)', [{store: '[{}, {"v1": 1}]'}]],
     ]);
     await persister.load();
     expect(store.getContent()).toEqual([{}, {v1: 1}]);
@@ -166,8 +168,8 @@ describe('Load from database', () => {
   test('both', async () => {
     setDatabase([
       [
-        'CREATE TABLE "tinybase" (json)',
-        [{json: '[{"t1": {"r1": {"c1": 1}}}, {"v1": 1}]'}],
+        'CREATE TABLE "tinybase" (store)',
+        [{store: '[{"t1": {"r1": {"c1": 1}}}, {"v1": 1}]'}],
       ],
     ]);
     await persister.load();
