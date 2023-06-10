@@ -7,9 +7,11 @@ import {EMPTY_STRING, TINYBASE} from '../common/strings';
 import {Row, Store, Tables, Values} from '../types/store';
 import {arrayLength, arrayMap, arraySlice} from '../common/array';
 import {isString, jsonParse, jsonString} from '../common/other';
-import {objIds, objValues} from '../common/obj';
+import {objIds, objMap, objValues} from '../common/obj';
 import {Id} from '../types/common';
+import {collHas} from '../common/coll';
 import {createCustomPersister} from '../persisters';
+import {setNew} from '../common/set';
 
 const SINGLE_ROW_ID = '_';
 const STORE_COLUMN = 'store';
@@ -39,8 +41,24 @@ export const createSqlitePersister = <ListeningHandle>(
   const ensureTable = async (table: string): Promise<void> =>
     await run(
       `CREATE TABLE IF NOT EXISTS${escapeId(table)}(${escapeId(rowIdColumn)} ` +
-        `PRIMARY KEY ON CONFLICT REPLACE,${escapeId(STORE_COLUMN)});`,
+        `PRIMARY KEY ON CONFLICT REPLACE);`,
     );
+
+  const ensureColumns = async (table: string, row: Row): Promise<void> => {
+    const columns = setNew(
+      ...(await get(`SELECT NAME FROM pragma_table_info(?) WHERE name != ?`, [
+        table,
+        rowIdColumn,
+      ])),
+    );
+    await Promise.all(
+      objMap(row, async (_, cellId) =>
+        collHas(columns, cellId)
+          ? 0
+          : await run(`ALTER TABLE${escapeId(table)}ADD${escapeId(cellId)}`),
+      ),
+    );
+  };
 
   const getSingleRow = async (table: string) => {
     await ensureTable(table);
@@ -62,6 +80,7 @@ export const createSqlitePersister = <ListeningHandle>(
     ).join(EMPTY_STRING);
     const values = objValues(row);
     await ensureTable(table);
+    await ensureColumns(table, row);
     await run(
       `INSERT INTO${escapeId(table)}(${escapeId(
         rowIdColumn,
