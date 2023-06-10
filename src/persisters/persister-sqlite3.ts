@@ -9,7 +9,7 @@ import {Store} from '../types/store';
 import {arrayMap} from '../common/array';
 import {createSqlite3Persister as createSqlite3PersisterDecl} from '../types/persisters/persister-sqlite3';
 import {createSqlitePersister} from './sqlite';
-import {promise} from '../common/other';
+import {promiseNew} from '../common/other';
 
 export const createSqlite3Persister = ((
   store: Store,
@@ -20,9 +20,9 @@ export const createSqlite3Persister = ((
     store,
     storeTableOrConfig,
     (sql: string, args: any[] = []): Promise<void> =>
-      promise((resolve) => db.run(sql, args, () => resolve())),
+      promiseNew((resolve) => db.run(sql, args, () => resolve())),
     (sql: string, args: any[] = []): Promise<any[][]> =>
-      promise((resolve) =>
+      promiseNew((resolve) =>
         db.all(sql, args, (_, rows: IdObj<any>[]) =>
           resolve(arrayMap(rows, objValues)),
         ),

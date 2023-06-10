@@ -1,6 +1,8 @@
 import {BOOLEAN, FUNCTION, STRING, getTypeOf} from './strings';
 import {arrayReduce} from './array';
 
+const promise = Promise;
+
 export const DEBUG = (globalThis as any).DEBUG ?? true;
 
 export const jsonString = (obj: unknown): string =>
@@ -56,9 +58,11 @@ export const test = (regex: RegExp, subject: string): boolean =>
 
 export const getUndefined = (): undefined => undefined;
 
-export const promise = <Value>(
+export const promiseNew = <Value>(
   resolver: (
     resolve: (value: Value) => void,
     reject: (reason?: any) => void,
   ) => void,
-): Promise<Value> => new Promise(resolver);
+): Promise<Value> => new promise(resolver);
+
+export const promiseAll = (promises: Promise<any>[]) => promise.all(promises);
