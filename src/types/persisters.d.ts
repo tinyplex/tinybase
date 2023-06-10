@@ -19,6 +19,7 @@ export type PersisterListener = (
 /// DatabasePersisterConfig
 export type DatabasePersisterConfig = {
   storeTable?: string;
+  rowIdColumn?: string;
 };
 
 /// Persister

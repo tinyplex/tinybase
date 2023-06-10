@@ -25,6 +25,7 @@ export type PersisterListener<Schemas extends OptionalSchemas> = (
 /// DatabasePersisterConfig
 export type DatabasePersisterConfig<_Schemas extends OptionalSchemas> = {
   storeTable?: string;
+  rowIdColumn?: string;
 };
 
 /// Persister
