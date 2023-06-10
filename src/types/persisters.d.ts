@@ -17,10 +17,16 @@ export type PersisterListener = (
 ) => void;
 
 /// DatabasePersisterConfig
-export type DatabasePersisterConfig = {
-  storeTable?: string;
-  rowIdColumn?: string;
-};
+export type DatabasePersisterConfig =
+  | {
+      serialized: true;
+      storeTable?: string;
+    }
+  | {
+      serialized: false;
+      rowIdColumn?: string;
+      valuesTable?: string;
+    };
 
 /// Persister
 export interface Persister {
