@@ -6,7 +6,7 @@ import {
 import {EMPTY_STRING, TINYBASE} from '../common/strings';
 import {Row, Store, Tables, Values} from '../types/store';
 import {arrayLength, arrayMap, arraySlice} from '../common/array';
-import {isString, jsonParse, jsonString} from '../common/other';
+import {isString, jsonParse, jsonString, promiseAll} from '../common/other';
 import {objIds, objMap, objValues} from '../common/obj';
 import {Id} from '../types/common';
 import {collHas} from '../common/coll';
@@ -51,7 +51,7 @@ export const createSqlitePersister = <ListeningHandle>(
         rowIdColumn,
       ])),
     );
-    await Promise.all(
+    await promiseAll(
       objMap(row, async (_, cellId) =>
         collHas(columns, cellId)
           ? 0
@@ -109,11 +109,11 @@ export const createSqlitePersister = <ListeningHandle>(
       getContent: () => [Tables, Values],
     ): Promise<void> => {
       const [tables, values] = getContent();
-      await Promise.all(
+      await promiseAll(
         objMap(
           tables,
           async (table, tableId) =>
-            await Promise.all(
+            await promiseAll(
               objMap(
                 table,
                 async (row, rowId) => await setRow(tableId, rowId, row),
@@ -121,7 +121,6 @@ export const createSqlitePersister = <ListeningHandle>(
             ),
         ),
       );
-
       await setRow(valuesTable, SINGLE_ROW_ID, values);
     };
   }
