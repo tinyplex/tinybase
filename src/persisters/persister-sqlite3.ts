@@ -3,10 +3,9 @@ import {
   Persister,
   PersisterListener,
 } from '../types/persisters';
-import {IdObj, objValues} from '../common/obj';
 import {Database} from 'sqlite3';
+import {IdObj} from '../common/obj';
 import {Store} from '../types/store';
-import {arrayMap} from '../common/array';
 import {createSqlite3Persister as createSqlite3PersisterDecl} from '../types/persisters/persister-sqlite3';
 import {createSqlitePersister} from './sqlite';
 import {promiseNew} from '../common/other';
@@ -21,11 +20,9 @@ export const createSqlite3Persister = ((
     storeTableOrConfig,
     (sql: string, args: any[] = []): Promise<void> =>
       promiseNew((resolve) => db.run(sql, args, () => resolve())),
-    (sql: string, args: any[] = []): Promise<any[][]> =>
+    (sql: string, args: any[] = []): Promise<IdObj<any>[]> =>
       promiseNew((resolve) =>
-        db.all(sql, args, (_, rows: IdObj<any>[]) =>
-          resolve(arrayMap(rows, objValues)),
-        ),
+        db.all(sql, args, (_, rows: IdObj<any>[]) => resolve(rows)),
       ),
     (listener: PersisterListener): (() => void) => {
       const observer = () => listener();

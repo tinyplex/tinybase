@@ -4,10 +4,10 @@ import {
   PersisterListener,
 } from '../types/persisters';
 import {EMPTY_STRING, TINYBASE} from '../common/strings';
+import {IdObj, objDel, objIds, objMap, objValues} from '../common/obj';
 import {Row, Store, Tables, Values} from '../types/store';
-import {arrayLength, arrayMap, arraySlice} from '../common/array';
+import {arrayLength, arrayMap} from '../common/array';
 import {isString, jsonParse, jsonString, promiseAll} from '../common/other';
-import {objIds, objMap, objValues} from '../common/obj';
 import {Id} from '../types/common';
 import {collHas} from '../common/coll';
 import {createCustomPersister} from '../persisters';
@@ -24,7 +24,7 @@ export const createSqlitePersister = <ListeningHandle>(
   store: Store,
   storeTableOrConfig: string | DatabasePersisterConfig | undefined,
   run: (sql: string, args?: any[]) => Promise<void>,
-  get: (sql: string, args?: any[]) => Promise<any[][]>,
+  get: (sql: string, args?: any[]) => Promise<IdObj<any>[]>,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
 ): Persister => {
@@ -46,10 +46,13 @@ export const createSqlitePersister = <ListeningHandle>(
 
   const ensureColumns = async (table: string, row: Row): Promise<void> => {
     const columns = setNew(
-      ...(await get(`SELECT NAME FROM pragma_table_info(?) WHERE name != ?`, [
-        table,
-        rowIdColumn,
-      ])),
+      arrayMap(
+        await get(`SELECT name FROM pragma_table_info(?) WHERE name != ?`, [
+          table,
+          rowIdColumn,
+        ]),
+        (row) => row['name'],
+      ),
     );
     await promiseAll(
       objMap(row, async (_, cellId) =>
@@ -60,16 +63,16 @@ export const createSqlitePersister = <ListeningHandle>(
     );
   };
 
-  const getSingleRow = async (table: string) => {
+  const getSingleRow = async (table: string): Promise<IdObj<any>> => {
     await ensureTable(table);
-    return arraySlice(
+    return objDel(
       (
         await get(
           `SELECT*FROM${escapeId(table)}WHERE ${escapeId(rowIdColumn)}=?`,
           [SINGLE_ROW_ID],
         )
       )[0],
-      1,
+      rowIdColumn,
     );
   };
 
@@ -93,7 +96,7 @@ export const createSqlitePersister = <ListeningHandle>(
     const {storeTable = TINYBASE} = config;
 
     getPersisted = async (): Promise<[Tables, Values]> =>
-      jsonParse((await getSingleRow(storeTable))[0]);
+      jsonParse((await getSingleRow(storeTable))[STORE_COLUMN]);
 
     setPersisted = async (getContent: () => [Tables, Values]): Promise<void> =>
       await setRow(storeTable, SINGLE_ROW_ID, {
