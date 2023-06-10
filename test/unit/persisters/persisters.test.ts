@@ -310,21 +310,25 @@ const mockSqlite3: Persistable<Database> = {
     createSqlite3Persister(store, db),
   get: (db: Database): Promise<[Tables, Values] | void> =>
     new Promise((resolve) =>
-      db.get('SELECT store FROM tinybase LIMIT 1', (_, row: {store: string}) =>
-        resolve(JSON.parse(row['store'])),
+      db.get(
+        'SELECT store FROM tinybase WHERE _id = ?',
+        ['_'],
+        (_, row: {store: string}) => resolve(JSON.parse(row['store'])),
       ),
     ),
   set: async (db: Database, value: any): Promise<void> =>
     await mockSqlite3.write(db, JSON.stringify(value)),
   write: (db: Database, value: any): Promise<void> =>
     new Promise((resolve) =>
-      db.run('CREATE TABLE IF NOT EXISTS tinybase (store);', () =>
-        db.run(
-          'INSERT INTO tinybase (rowId, store) VALUES (1, ?) ON CONFLICT DO ' +
-            'UPDATE SET store=excluded.store',
-          [value],
-          () => resolve(),
-        ),
+      db.run(
+        'CREATE TABLE IF NOT EXISTS tinybase ' +
+          '(_id PRIMARY KEY ON CONFLICT REPLACE, store);',
+        () =>
+          db.run(
+            'INSERT INTO tinybase (_id, store) VALUES (?, ?)',
+            ['_', value],
+            () => resolve(),
+          ),
       ),
     ),
   delete: async (db: Database): Promise<void> => db.close(),
@@ -349,7 +353,8 @@ const mockSqliteWasm: Persistable<SqliteWasmLocation> = {
     createSqliteWasmPersister(store, sqlite3, db),
   get: ([_sqlite3, db]: SqliteWasmLocation): Promise<[Tables, Values] | void> =>
     new Promise((resolve) =>
-      db.exec('SELECT store FROM tinybase LIMIT 1', {
+      db.exec('SELECT store FROM tinybase WHERE _id = ?', {
+        bind: ['_'],
         callback: (row: [string]) => resolve(JSON.parse(row[0])),
       }),
     ),
@@ -360,10 +365,10 @@ const mockSqliteWasm: Persistable<SqliteWasmLocation> = {
     value: any,
   ): Promise<void> =>
     db.exec(
-      'CREATE TABLE IF NOT EXISTS tinybase (store); ' +
-        'INSERT INTO tinybase (rowId, store) VALUES (1, ?) ON CONFLICT DO ' +
-        'UPDATE SET store=excluded.store',
-      {bind: [value]},
+      'CREATE TABLE IF NOT EXISTS tinybase ' +
+        '(_id PRIMARY KEY ON CONFLICT REPLACE, store); ' +
+        'INSERT INTO tinybase (_id, store) VALUES (?, ?)',
+      {bind: ['_', value]},
     ),
   delete: async ([_sqlite3, db]: SqliteWasmLocation): Promise<void> =>
     db.close(),
@@ -378,16 +383,20 @@ const mockCrSqliteWasm: Persistable<DB> = {
   getPersister: (store: Store, db: DB) =>
     createCrSqliteWasmPersister(store, db),
   get: async (db: DB): Promise<[Tables, Values] | void> =>
-    JSON.parse((await db.execA('SELECT store FROM tinybase LIMIT 1'))[0][0]),
+    JSON.parse(
+      (await db.execA('SELECT store FROM tinybase WHERE _id = ?', ['_']))[0][0],
+    ),
   set: async (db: DB, value: any): Promise<void> =>
     await mockCrSqliteWasm.write(db, JSON.stringify(value)),
   write: async (db: DB, value: any): Promise<void> => {
-    await db.exec('CREATE TABLE IF NOT EXISTS tinybase (store);');
     await db.exec(
-      'INSERT INTO tinybase (rowId, store) VALUES (1, ?) ON CONFLICT DO ' +
-        'UPDATE SET store=excluded.store',
-      [value],
+      'CREATE TABLE IF NOT EXISTS tinybase ' +
+        '(_id PRIMARY KEY ON CONFLICT REPLACE, store);',
     );
+    await db.exec('INSERT INTO tinybase (_id, store) VALUES (?, ?)', [
+      '_',
+      value,
+    ]);
   },
   delete: async (db: DB): Promise<void> => await db.close(),
   testMissing: true,

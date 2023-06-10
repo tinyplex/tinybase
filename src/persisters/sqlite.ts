@@ -8,13 +8,15 @@ import {isString, jsonParse, jsonString} from '../common/other';
 import {TINYBASE} from '../common/strings';
 import {createCustomPersister} from '../persisters';
 
-const STORE_CELL = 'store';
+const ROW_ID_COL = '_id';
+const SINGLE_ROW_ID = '_';
+const STORE_COL = 'store';
 
 export const createSqlitePersister = <ListeningHandle>(
   store: Store,
   storeTableOrConfig: string | DatabasePersisterConfig | undefined,
   run: (sql: string, args?: any[]) => Promise<void>,
-  get: (sql: string) => Promise<any[][]>,
+  get: (sql: string, args?: any[]) => Promise<any[][]>,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
 ): Persister => {
@@ -25,12 +27,20 @@ export const createSqlitePersister = <ListeningHandle>(
   const {storeTable = TINYBASE} = config;
 
   const ensureTable = async (): Promise<void> =>
-    await run(`CREATE TABLE IF NOT EXISTS "${storeTable}" (${STORE_CELL});`);
+    await run(
+      `CREATE TABLE IF NOT EXISTS "${storeTable}"(${ROW_ID_COL} ` +
+        `PRIMARY KEY ON CONFLICT REPLACE,${STORE_COL});`,
+    );
 
   const getPersisted = async (): Promise<[Tables, Values]> => {
     await ensureTable();
     return jsonParse(
-      (await get(`SELECT ${STORE_CELL} FROM "${storeTable}" LIMIT 1`))[0][0],
+      (
+        await get(
+          `SELECT ${STORE_COL} FROM "${storeTable}" WHERE ${ROW_ID_COL}=?`,
+          [SINGLE_ROW_ID],
+        )
+      )[0][0],
     );
   };
 
@@ -40,9 +50,8 @@ export const createSqlitePersister = <ListeningHandle>(
     try {
       await ensureTable();
       await run(
-        `INSERT INTO "${storeTable}" (rowId, ${STORE_CELL}) VALUES (1, ?) ` +
-          `ON CONFLICT DO UPDATE SET ${STORE_CELL}=excluded.${STORE_CELL}`,
-        [jsonString(getContent())],
+        `INSERT INTO "${storeTable}"(${ROW_ID_COL},${STORE_COL})VALUES(?, ?)`,
+        [SINGLE_ROW_ID, jsonString(getContent())],
       );
     } catch {}
   };

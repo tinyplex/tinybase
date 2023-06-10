@@ -21,9 +21,9 @@ export const createSqlite3Persister = ((
     storeTableOrConfig,
     (sql: string, args: any[] = []): Promise<void> =>
       promise((resolve) => db.run(sql, args, () => resolve())),
-    (sql: string): Promise<any[][]> =>
+    (sql: string, args: any[] = []): Promise<any[][]> =>
       promise((resolve) =>
-        db.all(sql, (_, rows: IdObj<any>[]) =>
+        db.all(sql, args, (_, rows: IdObj<any>[]) =>
           resolve(arrayMap(rows, objValues)),
         ),
       ),
