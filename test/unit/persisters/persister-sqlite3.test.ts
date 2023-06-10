@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {Persister, Store, createStore} from 'tinybase/debug';
 import {mkdirSync, unlinkSync} from 'fs';
 import sqlite3, {Database} from 'sqlite3';
@@ -57,7 +58,6 @@ beforeEach(async () => {
   } catch {}
   db = new sqlite3.Database(TEST_FILE);
   store = createStore();
-  persister = createSqlite3Persister(store, db);
 });
 
 afterEach(() => {
@@ -65,13 +65,17 @@ afterEach(() => {
 });
 
 describe('Serialized', () => {
-  describe('Custom name', () => {
+  beforeEach(async () => {
+    persister = createSqlite3Persister(store, db);
+  });
+
+  describe('Custom table name', () => {
     test('as string', async () => {
       const persister = createSqlite3Persister(store, db, 'test');
       await persister.save();
       expect(await getDatabase()).toEqual([
         [
-          'CREATE TABLE "test"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
+          'CREATE TABLE "test"("_id" PRIMARY KEY ON CONFLICT REPLACE,store)',
           [{_id: '_', store: '[{},{}]'}],
         ],
       ]);
@@ -85,7 +89,7 @@ describe('Serialized', () => {
       await persister.save();
       expect(await getDatabase()).toEqual([
         [
-          'CREATE TABLE "test"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
+          'CREATE TABLE "test"("_id" PRIMARY KEY ON CONFLICT REPLACE,store)',
           [{_id: '_', store: '[{},{}]'}],
         ],
       ]);
@@ -97,7 +101,7 @@ describe('Serialized', () => {
       await persister.save();
       expect(await getDatabase()).toEqual([
         [
-          'CREATE TABLE "tinybase"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
+          'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE,store)',
           [{_id: '_', store: '[{},{}]'}],
         ],
       ]);
@@ -108,7 +112,7 @@ describe('Serialized', () => {
       await persister.save();
       expect(await getDatabase()).toEqual([
         [
-          'CREATE TABLE "tinybase"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
+          'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE,store)',
           [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{}]'}],
         ],
       ]);
@@ -119,7 +123,7 @@ describe('Serialized', () => {
       await persister.save();
       expect(await getDatabase()).toEqual([
         [
-          'CREATE TABLE "tinybase"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
+          'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE,store)',
           [{_id: '_', store: '[{},{"v1":1}]'}],
         ],
       ]);
@@ -130,7 +134,7 @@ describe('Serialized', () => {
       await persister.save();
       expect(await getDatabase()).toEqual([
         [
-          'CREATE TABLE "tinybase"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
+          'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE,store)',
           [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
         ],
       ]);
@@ -151,7 +155,7 @@ describe('Serialized', () => {
     test('broken', async () => {
       setDatabase([
         [
-          'CREATE TABLE "tinybase"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
+          'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE,store)',
           [{_id: '_', store: '[{"t1": 1}]'}],
         ],
       ]);
@@ -162,7 +166,7 @@ describe('Serialized', () => {
     test('broken, can default', async () => {
       setDatabase([
         [
-          'CREATE TABLE "tinybase"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
+          'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE,store)',
           [{_id: '_', store: '[{"t1": }]'}],
         ],
       ]);
@@ -173,7 +177,7 @@ describe('Serialized', () => {
     test('tables', async () => {
       setDatabase([
         [
-          'CREATE TABLE "tinybase"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
+          'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE,store)',
           [{_id: '_', store: '[{"t1": {"r1": {"c1": 1}}}, {}]'}],
         ],
       ]);
@@ -184,7 +188,7 @@ describe('Serialized', () => {
     test('values', async () => {
       setDatabase([
         [
-          'CREATE TABLE "tinybase"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
+          'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE,store)',
           [{_id: '_', store: '[{}, {"v1": 1}]'}],
         ],
       ]);
@@ -195,7 +199,7 @@ describe('Serialized', () => {
     test('both', async () => {
       setDatabase([
         [
-          'CREATE TABLE "tinybase"(_id PRIMARY KEY ON CONFLICT REPLACE,store)',
+          'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE,store)',
           [{_id: '_', store: '[{"t1": {"r1": {"c1": 1}}}, {"v1": 1}]'}],
         ],
       ]);
