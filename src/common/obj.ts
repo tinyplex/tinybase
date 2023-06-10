@@ -13,7 +13,7 @@ export const objFreeze = object.freeze;
 export const isObject = (obj: unknown): boolean =>
   isInstanceOf(obj, object) && (obj as any).constructor == object;
 
-export const objNew = () => ({});
+export const objNew = (entries = []) => object.fromEntries(entries);
 
 export const objGet = <Value>(
   obj: IdObj<Value> | Value[] | undefined,
@@ -23,7 +23,10 @@ export const objGet = <Value>(
 export const objHas = (obj: IdObj<unknown> | undefined, id: Id): boolean =>
   !isUndefined(objGet(obj, id));
 
-export const objDel = (obj: IdObj<unknown>, id: Id): boolean => delete obj[id];
+export const objDel = (obj: IdObj<unknown>, id: Id): IdObj<unknown> => {
+  delete obj[id];
+  return obj;
+};
 
 export const objMap = <Value, Return>(
   obj: IdObj<Value>,
