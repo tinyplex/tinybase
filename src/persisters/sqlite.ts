@@ -34,7 +34,7 @@ export const createSqlitePersister = <ListeningHandle>(
 
   const ensureTable = async (table: string): Promise<void> =>
     await run(
-      `CREATE TABLE IF NOT EXISTS"${table}"(${rowIdColumn} ` +
+      `CREATE TABLE IF NOT EXISTS"${table}"("${rowIdColumn}" ` +
         `PRIMARY KEY ON CONFLICT REPLACE,${STORE_COL});`,
     );
 
@@ -42,7 +42,7 @@ export const createSqlitePersister = <ListeningHandle>(
     await ensureTable(table);
     return arraySlice(
       (
-        await get(`SELECT*FROM"${table}"WHERE ${rowIdColumn}=?`, [
+        await get(`SELECT*FROM"${table}"WHERE "${rowIdColumn}"=?`, [
           SINGLE_ROW_ID,
         ])
       )[0],
@@ -72,7 +72,6 @@ export const createSqlitePersister = <ListeningHandle>(
     getPersisted = async (): Promise<[Tables, Values]> => [{}, {}];
 
     setPersisted = async (): Promise<void> => {
-      //
     };
   }
 
