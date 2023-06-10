@@ -337,10 +337,40 @@ describe('Non-serialized', () => {
       ]);
     });
 
+    test('tables', async () => {
+      store.setTables({t1: {r1: {c1: 1}}});
+      await persister.save();
+      expect(await getDatabase()).toEqual([
+        [
+          'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE, "c1")',
+          [{_id: 'r1', c1: 1}],
+        ],
+        [
+          'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE)',
+          [{_id: '_'}],
+        ],
+      ]);
+    });
+
     test('values', async () => {
       store.setValues({v1: 1});
       await persister.save();
       expect(await getDatabase()).toEqual([
+        [
+          'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE, "v1")',
+          [{_id: '_', v1: 1}],
+        ],
+      ]);
+    });
+
+    test('both', async () => {
+      store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
+      await persister.save();
+      expect(await getDatabase()).toEqual([
+        [
+          'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE, "c1")',
+          [{_id: 'r1', c1: 1}],
+        ],
         [
           'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE, "v1")',
           [{_id: '_', v1: 1}],
