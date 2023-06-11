@@ -136,7 +136,6 @@ export const createSqlitePersister = <ListeningHandle>(
     rowIdColumn = config.rowIdColumn ?? rowIdColumn;
 
     getPersisted = async (): Promise<[Tables, Values] | undefined> => {
-      const values = await getSingleRow(valuesTable);
       const tables = objNew(
         arrayFilter(
           await promiseAll(
@@ -154,6 +153,7 @@ export const createSqlitePersister = <ListeningHandle>(
           ([_, table]) => !objIsEmpty(table),
         ),
       );
+      const values = await getSingleRow(valuesTable);
       return !objIsEmpty(tables) || !objIsEmpty(values)
         ? [tables as Tables, values as Values]
         : undefined;
