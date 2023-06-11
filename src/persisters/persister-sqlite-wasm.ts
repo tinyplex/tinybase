@@ -18,7 +18,9 @@ export const createSqliteWasmPersister = ((
     store,
     storeTableOrConfig,
     async (sql: string, args: any[] = []): Promise<IdObj<any>[]> =>
-      db.exec(sql, {bind: args, rowMode: 'object', returnValue: 'resultRows'}),
+      db
+        .exec(sql, {bind: args, rowMode: 'object', returnValue: 'resultRows'})
+        .map((row: IdObj<any>) => ({...row})),
     (listener: PersisterListener): void =>
       sqlite3.capi.sqlite3_update_hook(db, () => listener(), 0),
     (): void => sqlite3.capi.sqlite3_update_hook(db, () => 0, 0),
