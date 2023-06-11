@@ -41,9 +41,11 @@ export const getDatabaseFunctions = <Database>(
               await cmd(
                 db,
                 'INSERT INTO ' +
-                  name +
+                  escapeId(name) +
                   '(' +
-                  Object.keys(row).join(',') +
+                  Object.keys(row)
+                    .map((cellId) => escapeId(cellId))
+                    .join(',') +
                   ') VALUES (' +
                   Object.keys(row)
                     .map(() => '?')
