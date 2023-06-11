@@ -17,8 +17,6 @@ export const createCrSqliteWasmPersister = ((
   createSqlitePersister(
     store,
     storeTableOrConfig,
-    async (sql: string, args: any[] = []): Promise<void> =>
-      await db.exec(sql, args),
     async (sql: string, args: any[] = []): Promise<IdObj<any>[]> =>
       await db.execO(sql, args),
     (listener: PersisterListener): (() => void) =>

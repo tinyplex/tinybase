@@ -43,8 +43,7 @@ const escapeId = (str: string) => `"${str.replace(/"/g, '""')}"`;
 export const createSqlitePersister = <ListeningHandle>(
   store: Store,
   storeTableOrConfig: string | DatabasePersisterConfig | undefined,
-  run: (sql: string, args?: any[]) => Promise<void>,
-  get: (sql: string, args?: any[]) => Promise<IdObj<any>[]>,
+  cmd: (sql: string, args?: any[]) => Promise<IdObj<any>[]>,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
 ): Persister => {
@@ -58,16 +57,17 @@ export const createSqlitePersister = <ListeningHandle>(
 
   const {serialized} = config;
 
-  const ensureTable = async (table: string): Promise<void> =>
-    await run(
+  const ensureTable = async (table: string): Promise<void> => {
+    await cmd(
       `CREATE TABLE IF NOT EXISTS${escapeId(table)}(${escapeId(rowIdColumn)} ` +
         `PRIMARY KEY ON CONFLICT REPLACE);`,
     );
+  };
 
   const ensureColumns = async (table: string, row: Row): Promise<void> => {
     const columns = setNew(
       arrayMap(
-        await get(`SELECT name FROM pragma_table_info(?) WHERE name != ?`, [
+        await cmd(`SELECT name FROM pragma_table_info(?) WHERE name != ?`, [
           table,
           rowIdColumn,
         ]),
@@ -78,14 +78,14 @@ export const createSqlitePersister = <ListeningHandle>(
       objMap(row, async (_, cellId) =>
         collHas(columns, cellId)
           ? 0
-          : await run(`ALTER TABLE${escapeId(table)}ADD${escapeId(cellId)}`),
+          : await cmd(`ALTER TABLE${escapeId(table)}ADD${escapeId(cellId)}`),
       ),
     );
   };
 
   const getSingleRow = async (table: string): Promise<IdObj<any>> => {
     await ensureTable(table);
-    const rows = await get(
+    const rows = await cmd(
       `SELECT*FROM${escapeId(table)}WHERE ${escapeId(rowIdColumn)}=?`,
       [SINGLE_ROW_ID],
     );
@@ -113,7 +113,7 @@ export const createSqlitePersister = <ListeningHandle>(
     const values = objValues(row);
     await ensureTable(table);
     await ensureColumns(table, row);
-    await run(
+    await cmd(
       `INSERT INTO${escapeId(table)}(${escapeId(
         rowIdColumn,
       )}${columns})VALUES(?${',?'.repeat(arrayLength(values))})`,
@@ -141,13 +141,13 @@ export const createSqlitePersister = <ListeningHandle>(
         arrayFilter(
           await promiseAll(
             arrayMap(
-              (await get(
+              (await cmd(
                 `SELECT name FROM sqlite_schema WHERE type='table'AND name!=?`,
                 [valuesTable],
               )) as {name: string}[],
               async ({name}) => [
                 name as string,
-                rowArrayToObject(await get(`SELECT * FROM${escapeId(name)}`)),
+                rowArrayToObject(await cmd(`SELECT * FROM${escapeId(name)}`)),
               ],
             ),
           ),
