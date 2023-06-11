@@ -44,7 +44,7 @@ type Persistable<Location = string> = {
   get: (location: Location) => Promise<[Tables, Values] | void>;
   set: (location: Location, value: any) => Promise<void>;
   write: (location: Location, value: string) => Promise<void>;
-  delete: (location: Location) => Promise<void>;
+  del: (location: Location) => Promise<void>;
   afterEach?: (location: Location) => void;
   getChanges?: () => TransactionChanges;
   testMissing: boolean;
@@ -160,7 +160,7 @@ const getMockedCustom = (
   set: async (location: string, value: any): Promise<void> =>
     await mockCustomNoContentListener.write(location, JSON.stringify(value)),
   write,
-  delete: async (): Promise<void> => {
+  del: async (): Promise<void> => {
     customPersister = '';
   },
   getChanges: () => customPersisterChanges,
@@ -207,7 +207,7 @@ const mockFile: Persistable = {
     await mockFile.write(location, JSON.stringify(value)),
   write: async (location: string, value: any): Promise<void> =>
     fs.writeFileSync(location, value, 'utf-8'),
-  delete: async (location: string): Promise<void> => fs.unlinkSync(location),
+  del: async (location: string): Promise<void> => fs.unlinkSync(location),
   testMissing: true,
 };
 
@@ -251,7 +251,7 @@ const mockRemote: Persistable = {
     await mockRemote.write(location, JSON.stringify(value)),
   write: async (location: string, value: any): Promise<void> =>
     fs.writeFileSync(location, value, 'utf-8'),
-  delete: async (location: string): Promise<void> => fs.unlinkSync(location),
+  del: async (location: string): Promise<void> => fs.unlinkSync(location),
   testMissing: true,
 };
 
@@ -285,7 +285,7 @@ const getMockedStorage = (
         }),
       );
     },
-    delete: async (location: string): Promise<void> =>
+    del: async (location: string): Promise<void> =>
       storage.removeItem(location),
     testMissing: true,
   };
@@ -302,105 +302,82 @@ const mockSessionStorage = getMockedStorage(
   createSessionPersister,
 );
 
-const mockSqlite3: Persistable<Database> = {
-  beforeEach: mockFetchWasm,
-  autoLoadPause: 100,
-  getLocation: async (): Promise<Database> => new sqlite3.Database(':memory:'),
-  getPersister: (store: Store, db: Database) =>
-    createSqlite3Persister(store, db),
-  get: (db: Database): Promise<[Tables, Values] | void> =>
-    new Promise((resolve) =>
-      db.get(
-        'SELECT store FROM tinybase WHERE _id = ?',
-        ['_'],
-        (_, row: {store: string}) => resolve(JSON.parse(row['store'])),
+const getMockedSqlite = <Location>(
+  getLocation: () => Promise<Location>,
+  getPersister: (store: Store, location: Location) => Persister,
+  cmd: (
+    location: Location,
+    sql: string,
+    args?: any[],
+  ) => Promise<{[id: string]: any}[]>,
+  close: (location: Location) => Promise<void>,
+): Persistable<Location> => {
+  const mockSqlite = {
+    beforeEach: mockFetchWasm,
+    autoLoadPause: 100,
+    getLocation,
+    getPersister,
+    get: async (location: Location): Promise<[Tables, Values] | void> =>
+      JSON.parse(
+        (
+          await cmd(location, 'SELECT store FROM tinybase WHERE _id = ?', ['_'])
+        )[0]['store'],
       ),
-    ),
-  set: async (db: Database, value: any): Promise<void> =>
-    await mockSqlite3.write(db, JSON.stringify(value)),
-  write: (db: Database, value: any): Promise<void> =>
-    new Promise((resolve) =>
-      db.run(
+    set: async (location: Location, value: any): Promise<void> =>
+      await mockSqlite.write(location, JSON.stringify(value)),
+    write: async (location: Location, value: any): Promise<void> => {
+      await cmd(
+        location,
         'CREATE TABLE IF NOT EXISTS tinybase ' +
           '(_id PRIMARY KEY ON CONFLICT REPLACE, store);',
-        () =>
-          db.run(
-            'INSERT INTO tinybase (_id, store) VALUES (?, ?)',
-            ['_', value],
-            () => resolve(),
-          ),
-      ),
-    ),
-  delete: async (db: Database): Promise<void> => db.close(),
-  afterEach: (db: Database) => {
-    try {
-      db.close();
-    } catch {}
-  },
-  testMissing: true,
+      );
+      await cmd(location, 'INSERT INTO tinybase (_id, store) VALUES (?, ?)', [
+        '_',
+        value,
+      ]);
+    },
+    del: async (location: Location) => {
+      try {
+        await close(location);
+      } catch {}
+    },
+    afterEach: (location: Location) => mockSqlite.del(location),
+    testMissing: true,
+  };
+  return mockSqlite;
 };
 
-const mockSqliteWasm: Persistable<SqliteWasmLocation> = {
-  beforeEach: mockFetchWasm,
-  autoLoadPause: 100,
-  getLocation: async (): Promise<SqliteWasmLocation> =>
+const mockSqlite3 = getMockedSqlite<Database>(
+  async (): Promise<Database> => new sqlite3.Database(':memory:'),
+  (store: Store, db: Database) => createSqlite3Persister(store, db),
+  (db: Database, sql: string, args: any[] = []) =>
+    new Promise((resolve) =>
+      db.all(sql, args, (_, rows: {[id: string]: any}[]) => resolve(rows)),
+    ),
+  async (db: Database) => db.close(),
+);
+
+const mockSqliteWasm = getMockedSqlite<SqliteWasmLocation>(
+  async (): Promise<SqliteWasmLocation> =>
     await suppressWarnings(async () => {
       const sqlite3 = await sqlite3InitModule();
       const db = new sqlite3.oo1.DB('/db.sqlite3', 'c');
       return [sqlite3, db];
     }),
-  getPersister: (store: Store, [sqlite3, db]: SqliteWasmLocation) =>
+  (store: Store, [sqlite3, db]: SqliteWasmLocation) =>
     createSqliteWasmPersister(store, sqlite3, db),
-  get: ([_sqlite3, db]: SqliteWasmLocation): Promise<[Tables, Values] | void> =>
-    new Promise((resolve) =>
-      db.exec('SELECT store FROM tinybase WHERE _id = ?', {
-        bind: ['_'],
-        callback: (row: [string]) => resolve(JSON.parse(row[0])),
-      }),
-    ),
-  set: async (location: SqliteWasmLocation, value: any): Promise<void> =>
-    await mockSqliteWasm.write(location, JSON.stringify(value)),
-  write: async (
-    [_sqlite3, db]: SqliteWasmLocation,
-    value: any,
-  ): Promise<void> =>
-    db.exec(
-      'CREATE TABLE IF NOT EXISTS tinybase ' +
-        '(_id PRIMARY KEY ON CONFLICT REPLACE, store); ' +
-        'INSERT INTO tinybase (_id, store) VALUES (?, ?)',
-      {bind: ['_', value]},
-    ),
-  delete: async ([_sqlite3, db]: SqliteWasmLocation): Promise<void> =>
-    db.close(),
-  testMissing: true,
-};
+  async ([_, db]: SqliteWasmLocation, sql: string, args: any[] = []) =>
+    db.exec(sql, {bind: args, rowMode: 'object', returnValue: 'resultRows'}),
+  async ([_, db]: SqliteWasmLocation) => await db.close(),
+);
 
-const mockCrSqliteWasm: Persistable<DB> = {
-  beforeEach: mockFetchWasm,
-  autoLoadPause: 100,
-  getLocation: async (): Promise<DB> =>
+const mockCrSqliteWasm = getMockedSqlite<DB>(
+  async (): Promise<DB> =>
     await suppressWarnings(async () => await (await initWasm()).open()),
-  getPersister: (store: Store, db: DB) =>
-    createCrSqliteWasmPersister(store, db),
-  get: async (db: DB): Promise<[Tables, Values] | void> =>
-    JSON.parse(
-      (await db.execA('SELECT store FROM tinybase WHERE _id = ?', ['_']))[0][0],
-    ),
-  set: async (db: DB, value: any): Promise<void> =>
-    await mockCrSqliteWasm.write(db, JSON.stringify(value)),
-  write: async (db: DB, value: any): Promise<void> => {
-    await db.exec(
-      'CREATE TABLE IF NOT EXISTS tinybase ' +
-        '(_id PRIMARY KEY ON CONFLICT REPLACE, store);',
-    );
-    await db.exec('INSERT INTO tinybase (_id, store) VALUES (?, ?)', [
-      '_',
-      value,
-    ]);
-  },
-  delete: async (db: DB): Promise<void> => await db.close(),
-  testMissing: true,
-};
+  (store: Store, db: DB) => createCrSqliteWasmPersister(store, db),
+  async (db: DB, sql: string, args: any[] = []) => await db.execO(sql, args),
+  async (db: DB) => await db.close(),
+);
 
 const mockYjs: Persistable<YDoc> = {
   autoLoadPause: 100,
@@ -460,7 +437,7 @@ const mockYjs: Persistable<YDoc> = {
       }
     });
   },
-  delete: async (location: YDoc): Promise<void> => location.destroy(),
+  del: async (location: YDoc): Promise<void> => location.destroy(),
   testMissing: false,
 };
 
@@ -510,8 +487,7 @@ const mockAutomerge: Persistable<DocHandle<any>> = {
       }
     });
   },
-  delete: async (docHandle: DocHandle<any>): Promise<void> =>
-    docHandle.delete(),
+  del: async (docHandle: DocHandle<any>): Promise<void> => docHandle.delete(),
   testMissing: false,
 };
 
@@ -701,7 +677,7 @@ describe.each([
     await persistable.set(location, [{t1: {r1: {c1: 1}}}]);
     await persister.startAutoLoad({});
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
-    persistable.delete(location);
+    persistable.del(location);
     await pause(persistable.autoLoadPause);
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
   });
