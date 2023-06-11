@@ -27,6 +27,7 @@
     "CONCAT",
     "CRDT",
     "CRDTs",
+    "crsql",
     "crsqlite",
     "cubecull",
     "cujo",
