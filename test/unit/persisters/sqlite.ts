@@ -35,7 +35,7 @@ const DATABASE_FILE = 'tmp/test.sqlite3';
 
 const escapeId = (str: string) => `"${str.replace(/"/g, '""')}"`;
 
-export const variants: {[name: string]: SqliteVariant<any>} = {
+export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
   sqlite3: [
     async (): Promise<Database> => {
       try {
@@ -105,7 +105,9 @@ export const getDatabaseFunctions = <Database>(
       (
         await cmd(
           db,
-          `SELECT sql, name FROM sqlite_schema WHERE type = 'table'`,
+          'SELECT sql, name FROM sqlite_schema ' +
+            `WHERE type = 'table' AND name NOT LIKE ?`,
+          ['%crsql%'],
         )
       ).map(async ({sql, name}: any) => [
         name,
