@@ -8,16 +8,18 @@ import {getDatabaseFunctions} from './sqlite';
 
 const TEST_FILE = 'tmp/test.sqlite3';
 
-const [getDatabase, setDatabase] = getDatabaseFunctions(
-  (
-    db: Database,
-    sql: string,
-    args: any[] = [],
-  ): Promise<{[id: string]: any}[]> =>
-    new Promise((resolve) =>
-      db.all(sql, args, (_, rows: {[id: string]: any}[]) => resolve(rows)),
+const sqlite3Cmd = (
+  db: Database,
+  sql: string,
+  args: any[] = [],
+): Promise<{[id: string]: any}[]> =>
+  new Promise((resolve, reject) =>
+    db.all(sql, args, (error, rows: {[id: string]: any}[]) =>
+      error ? reject(error) : resolve(rows),
     ),
-);
+  );
+
+const [getDatabase, setDatabase] = getDatabaseFunctions(sqlite3Cmd);
 
 let db: Database;
 let store: Store;
@@ -32,9 +34,7 @@ beforeEach(async () => {
   store = createStore();
 });
 
-afterEach(() => {
-  db.close();
-});
+afterEach(async () => db.close());
 
 describe('Serialized', () => {
   beforeEach(async () => {
@@ -45,7 +45,7 @@ describe('Serialized', () => {
     test('as string', async () => {
       const persister = createSqlite3Persister(store, db, 'test');
       await persister.save();
-      expect(await getDatabase(db)).toEqual([
+      expect(await await getDatabase(db)).toEqual([
         [
           'test',
           'CREATE TABLE "test"("_id" PRIMARY KEY ON CONFLICT REPLACE, "store")',
@@ -57,7 +57,7 @@ describe('Serialized', () => {
     test('with spaces', async () => {
       const persister = createSqlite3Persister(store, db, 'test table');
       await persister.save();
-      expect(await getDatabase(db)).toEqual([
+      expect(await await getDatabase(db)).toEqual([
         [
           'test table',
           'CREATE TABLE "test table"("_id" PRIMARY KEY ON CONFLICT REPLACE, "store")',
@@ -69,7 +69,7 @@ describe('Serialized', () => {
     test('with quote', async () => {
       const persister = createSqlite3Persister(store, db, 'test "table"');
       await persister.save();
-      expect(await getDatabase(db)).toEqual([
+      expect(await await getDatabase(db)).toEqual([
         [
           'test "table"',
           'CREATE TABLE "test ""table"""("_id" PRIMARY KEY ON CONFLICT REPLACE, "store")',
@@ -84,7 +84,7 @@ describe('Serialized', () => {
         storeTable: 'test',
       });
       await persister.save();
-      expect(await getDatabase(db)).toEqual([
+      expect(await await getDatabase(db)).toEqual([
         [
           'test',
           'CREATE TABLE "test"("_id" PRIMARY KEY ON CONFLICT REPLACE, "store")',
@@ -97,7 +97,7 @@ describe('Serialized', () => {
   describe('Save to empty database', () => {
     test('nothing', async () => {
       await persister.save();
-      expect(await getDatabase(db)).toEqual([
+      expect(await await getDatabase(db)).toEqual([
         [
           'tinybase',
           'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE, "store")',
@@ -109,7 +109,7 @@ describe('Serialized', () => {
     test('tables', async () => {
       store.setTables({t1: {r1: {c1: 1}}});
       await persister.save();
-      expect(await getDatabase(db)).toEqual([
+      expect(await await getDatabase(db)).toEqual([
         [
           'tinybase',
           'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE, "store")',
@@ -121,7 +121,7 @@ describe('Serialized', () => {
     test('values', async () => {
       store.setValues({v1: 1});
       await persister.save();
-      expect(await getDatabase(db)).toEqual([
+      expect(await await getDatabase(db)).toEqual([
         [
           'tinybase',
           'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE, "store")',
@@ -133,7 +133,7 @@ describe('Serialized', () => {
     test('both', async () => {
       store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
       await persister.save();
-      expect(await getDatabase(db)).toEqual([
+      expect(await await getDatabase(db)).toEqual([
         [
           'tinybase',
           'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE, "store")',
@@ -155,7 +155,7 @@ describe('Serialized', () => {
     });
 
     test('broken', async () => {
-      setDatabase(db, [
+      await setDatabase(db, [
         [
           'tinybase',
           'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE, "store")',
@@ -167,7 +167,7 @@ describe('Serialized', () => {
     });
 
     test('broken, can default', async () => {
-      setDatabase(db, [
+      await setDatabase(db, [
         [
           'tinybase',
           'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE, "store")',
@@ -179,7 +179,7 @@ describe('Serialized', () => {
     });
 
     test('tables', async () => {
-      setDatabase(db, [
+      await setDatabase(db, [
         [
           'tinybase',
           'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE, "store")',
@@ -191,7 +191,7 @@ describe('Serialized', () => {
     });
 
     test('values', async () => {
-      setDatabase(db, [
+      await setDatabase(db, [
         [
           'tinybase',
           'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE, "store")',
@@ -203,7 +203,7 @@ describe('Serialized', () => {
     });
 
     test('both', async () => {
-      setDatabase(db, [
+      await setDatabase(db, [
         [
           'tinybase',
           'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE, "store")',
@@ -228,7 +228,7 @@ describe('Non-serialized', () => {
         rowIdColumn: 'test',
       });
       await persister.save();
-      expect(await getDatabase(db)).toEqual([
+      expect(await await getDatabase(db)).toEqual([
         [
           'tinybase_values',
           'CREATE TABLE "tinybase_values"("test" PRIMARY KEY ON CONFLICT REPLACE)',
@@ -243,7 +243,7 @@ describe('Non-serialized', () => {
         rowIdColumn: 'test table',
       });
       await persister.save();
-      expect(await getDatabase(db)).toEqual([
+      expect(await await getDatabase(db)).toEqual([
         [
           'tinybase_values',
           'CREATE TABLE "tinybase_values"("test table" PRIMARY KEY ON CONFLICT REPLACE)',
@@ -258,7 +258,7 @@ describe('Non-serialized', () => {
         rowIdColumn: 'test "table"',
       });
       await persister.save();
-      expect(await getDatabase(db)).toEqual([
+      expect(await await getDatabase(db)).toEqual([
         [
           'tinybase_values',
           'CREATE TABLE "tinybase_values"("test ""table""" PRIMARY KEY ON CONFLICT REPLACE)',
@@ -275,7 +275,7 @@ describe('Non-serialized', () => {
         valuesTable: 'test',
       });
       await persister.save();
-      expect(await getDatabase(db)).toEqual([
+      expect(await await getDatabase(db)).toEqual([
         [
           'test',
           'CREATE TABLE "test"("_id" PRIMARY KEY ON CONFLICT REPLACE)',
@@ -290,7 +290,7 @@ describe('Non-serialized', () => {
         valuesTable: 'test table',
       });
       await persister.save();
-      expect(await getDatabase(db)).toEqual([
+      expect(await await getDatabase(db)).toEqual([
         [
           'test table',
           'CREATE TABLE "test table"("_id" PRIMARY KEY ON CONFLICT REPLACE)',
@@ -305,7 +305,7 @@ describe('Non-serialized', () => {
         valuesTable: 'test "table"',
       });
       await persister.save();
-      expect(await getDatabase(db)).toEqual([
+      expect(await await getDatabase(db)).toEqual([
         [
           'test "table"',
           'CREATE TABLE "test ""table"""("_id" PRIMARY KEY ON CONFLICT REPLACE)',
@@ -318,7 +318,7 @@ describe('Non-serialized', () => {
   describe('Save to empty database', () => {
     test('nothing', async () => {
       await persister.save();
-      expect(await getDatabase(db)).toEqual([
+      expect(await await getDatabase(db)).toEqual([
         [
           'tinybase_values',
           'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE)',
@@ -330,7 +330,7 @@ describe('Non-serialized', () => {
     test('tables', async () => {
       store.setTables({t1: {r1: {c1: 1}}});
       await persister.save();
-      expect(await getDatabase(db)).toEqual([
+      expect(await await getDatabase(db)).toEqual([
         [
           't1',
           'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE, "c1")',
@@ -347,7 +347,7 @@ describe('Non-serialized', () => {
     test('values', async () => {
       store.setValues({v1: 1});
       await persister.save();
-      expect(await getDatabase(db)).toEqual([
+      expect(await await getDatabase(db)).toEqual([
         [
           'tinybase_values',
           'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE, "v1")',
@@ -359,7 +359,7 @@ describe('Non-serialized', () => {
     test('both', async () => {
       store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
       await persister.save();
-      expect(await getDatabase(db)).toEqual([
+      expect(await await getDatabase(db)).toEqual([
         [
           't1',
           'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE, "c1")',
@@ -386,7 +386,7 @@ describe('Non-serialized', () => {
     });
 
     test('broken', async () => {
-      setDatabase(db, [
+      await setDatabase(db, [
         [
           't1',
           'CREATE TABLE "t1"("di" PRIMARY KEY ON CONFLICT REPLACE, "c1")',
@@ -398,7 +398,7 @@ describe('Non-serialized', () => {
     });
 
     test('broken, can default', async () => {
-      setDatabase(db, [
+      await setDatabase(db, [
         [
           't1',
           'CREATE TABLE "t1"("di" PRIMARY KEY ON CONFLICT REPLACE, "c1")',
@@ -410,7 +410,7 @@ describe('Non-serialized', () => {
     });
 
     test('tables', async () => {
-      setDatabase(db, [
+      await setDatabase(db, [
         [
           't1',
           'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE, "c1")',
@@ -422,7 +422,7 @@ describe('Non-serialized', () => {
     });
 
     test('values', async () => {
-      setDatabase(db, [
+      await setDatabase(db, [
         [
           'tinybase_values',
           'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE, "v1")',
@@ -434,7 +434,7 @@ describe('Non-serialized', () => {
     });
 
     test('both', async () => {
-      setDatabase(db, [
+      await setDatabase(db, [
         [
           't1',
           'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE, "c1")',

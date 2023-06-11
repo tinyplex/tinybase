@@ -12,7 +12,10 @@ export const getDatabaseFunctions = <Database>(
     sql: string,
     args?: any[],
   ) => Promise<{[id: string]: any}[]>,
-): [(db: Database) => Promise<Dump>, (db: Database, dump: Dump) => void] => {
+): [
+  (db: Database) => Promise<Dump>,
+  (db: Database, dump: Dump) => Promise<void>,
+] => {
   const getDatabase = async (db: Database): Promise<Dump> =>
     await Promise.all(
       (
@@ -27,28 +30,33 @@ export const getDatabaseFunctions = <Database>(
       ]),
     );
 
-  const setDatabase = async (db: Database, dump: Dump) =>
-    dump.forEach(async ([name, sql, rows]) => {
-      await cmd(db, sql);
-      await Promise.all(
-        rows.map(
-          async (row) =>
-            await cmd(
-              db,
-              'INSERT INTO ' +
-                name +
-                '(' +
-                Object.keys(row).join(',') +
-                ') VALUES (' +
-                Object.keys(row)
-                  .map(() => '?')
-                  .join(',') +
-                ')',
-              Object.values(row),
-            ),
-        ),
-      );
-    });
+  const setDatabase = async (db: Database, dump: Dump) => {
+    await cmd(db, 'BEGIN TRANSACTION');
+    await Promise.all(
+      dump.map(async ([name, sql, rows]) => {
+        await cmd(db, sql);
+        await Promise.all(
+          rows.map(
+            async (row) =>
+              await cmd(
+                db,
+                'INSERT INTO ' +
+                  name +
+                  '(' +
+                  Object.keys(row).join(',') +
+                  ') VALUES (' +
+                  Object.keys(row)
+                    .map(() => '?')
+                    .join(',') +
+                  ')',
+                Object.values(row),
+              ),
+          ),
+        );
+      }),
+    );
+    await cmd(db, 'END TRANSACTION');
+  };
 
   return [getDatabase, setDatabase];
 };
