@@ -1,3 +1,7 @@
+import {DB} from '@vlcn.io/crsqlite-wasm';
+import {Database} from 'sqlite3';
+
+export type SqliteWasmDb = [sqlite3: any, db: any];
 export type Dump = [
   name: string,
   sql: string,
@@ -5,6 +9,26 @@ export type Dump = [
 ][];
 
 const escapeId = (str: string) => `"${str.replace(/"/g, '""')}"`;
+
+export const sqlite3Cmd = (
+  db: Database,
+  sql: string,
+  args: any[] = [],
+): Promise<{[id: string]: any}[]> =>
+  new Promise((resolve, reject) =>
+    db.all(sql, args, (error, rows: {[id: string]: any}[]) =>
+      error ? reject(error) : resolve(rows),
+    ),
+  );
+
+export const sqliteWasmCmd = async (
+  [_, db]: SqliteWasmDb,
+  sql: string,
+  args: any[] = [],
+) => db.exec(sql, {bind: args, rowMode: 'object', returnValue: 'resultRows'});
+
+export const crSqliteWasmCmd = async (db: DB, sql: string, args: any[] = []) =>
+  await db.execO(sql, args);
 
 export const getDatabaseFunctions = <Database>(
   cmd: (

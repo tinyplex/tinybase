@@ -1,23 +1,12 @@
 /* eslint-disable max-len */
 import {Persister, Store, createStore} from 'tinybase/debug';
+import {getDatabaseFunctions, sqlite3Cmd} from './sqlite';
 import {mkdirSync, unlinkSync} from 'fs';
 import sqlite3, {Database} from 'sqlite3';
 import {createSqlite3Persister} from 'tinybase/debug/persisters/persister-sqlite3';
 import {dirname} from 'path';
-import {getDatabaseFunctions} from './sqlite';
 
 const TEST_FILE = 'tmp/test.sqlite3';
-
-const sqlite3Cmd = (
-  db: Database,
-  sql: string,
-  args: any[] = [],
-): Promise<{[id: string]: any}[]> =>
-  new Promise((resolve, reject) =>
-    db.all(sql, args, (error, rows: {[id: string]: any}[]) =>
-      error ? reject(error) : resolve(rows),
-    ),
-  );
 
 const [getDatabase, setDatabase] = getDatabaseFunctions(sqlite3Cmd);
 
