@@ -12,7 +12,7 @@ import {
   createCustomPersister,
   createStore,
 } from 'tinybase/debug';
-import {SqliteWasmDb, variants} from './sqlite';
+import {SqliteWasmDb, VARIANTS} from './sqlite';
 import {Doc as YDoc, Map as YMap} from 'yjs';
 import {
   createLocalPersister,
@@ -343,11 +343,11 @@ const getMockedSqlite = <Location>(
   return mockSqlite;
 };
 
-const mockSqlite3 = getMockedSqlite<Database>(...variants.sqlite3);
+const mockSqlite3 = getMockedSqlite<Database>(...VARIANTS.sqlite3);
 
-const mockSqliteWasm = getMockedSqlite<SqliteWasmDb>(...variants.sqliteWasm);
+const mockSqliteWasm = getMockedSqlite<SqliteWasmDb>(...VARIANTS.sqliteWasm);
 
-const mockCrSqliteWasm = getMockedSqlite<DB>(...variants.crSqliteWasm);
+const mockCrSqliteWasm = getMockedSqlite<DB>(...VARIANTS.crSqliteWasm);
 
 const mockYjs: Persistable<YDoc> = {
   autoLoadPause: 100,
