@@ -17,8 +17,6 @@ export const createSqliteWasmPersister = ((
   createSqlitePersister(
     store,
     storeTableOrConfig,
-    async (sql: string, args: any[] = []): Promise<void> =>
-      db.exec(sql, {bind: args}),
     async (sql: string, args: any[] = []): Promise<IdObj<any>[]> =>
       db.exec(sql, {bind: args, rowMode: 'object', returnValue: 'resultRows'}),
     (listener: PersisterListener): void =>
