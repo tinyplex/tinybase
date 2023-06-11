@@ -12,6 +12,12 @@ import {
   createCustomPersister,
   createStore,
 } from 'tinybase/debug';
+import {
+  SqliteWasmDb,
+  crSqliteWasmCmd,
+  sqlite3Cmd,
+  sqliteWasmCmd,
+} from './sqlite';
 import {Doc as YDoc, Map as YMap} from 'yjs';
 import {
   createLocalPersister,
@@ -49,7 +55,6 @@ type Persistable<Location = string> = {
   getChanges?: () => TransactionChanges;
   testMissing: boolean;
 };
-type SqliteWasmLocation = [sqlite3: any, db: any];
 
 const yMapMatch = (
   yMapOrParent: YMap<any>,
@@ -350,32 +355,28 @@ const getMockedSqlite = <Location>(
 const mockSqlite3 = getMockedSqlite<Database>(
   async (): Promise<Database> => new sqlite3.Database(':memory:'),
   (store: Store, db: Database) => createSqlite3Persister(store, db),
-  (db: Database, sql: string, args: any[] = []) =>
-    new Promise((resolve) =>
-      db.all(sql, args, (_, rows: {[id: string]: any}[]) => resolve(rows)),
-    ),
+  sqlite3Cmd,
   async (db: Database) => db.close(),
 );
 
-const mockSqliteWasm = getMockedSqlite<SqliteWasmLocation>(
-  async (): Promise<SqliteWasmLocation> =>
+const mockSqliteWasm = getMockedSqlite<SqliteWasmDb>(
+  async (): Promise<SqliteWasmDb> =>
     await suppressWarnings(async () => {
       const sqlite3 = await sqlite3InitModule();
       const db = new sqlite3.oo1.DB('/db.sqlite3', 'c');
       return [sqlite3, db];
     }),
-  (store: Store, [sqlite3, db]: SqliteWasmLocation) =>
+  (store: Store, [sqlite3, db]: SqliteWasmDb) =>
     createSqliteWasmPersister(store, sqlite3, db),
-  async ([_, db]: SqliteWasmLocation, sql: string, args: any[] = []) =>
-    db.exec(sql, {bind: args, rowMode: 'object', returnValue: 'resultRows'}),
-  async ([_, db]: SqliteWasmLocation) => await db.close(),
+  sqliteWasmCmd,
+  async ([_, db]: SqliteWasmDb) => await db.close(),
 );
 
 const mockCrSqliteWasm = getMockedSqlite<DB>(
   async (): Promise<DB> =>
     await suppressWarnings(async () => await (await initWasm()).open()),
   (store: Store, db: DB) => createCrSqliteWasmPersister(store, db),
-  async (db: DB, sql: string, args: any[] = []) => await db.execO(sql, args),
+  crSqliteWasmCmd,
   async (db: DB) => await db.close(),
 );
 
