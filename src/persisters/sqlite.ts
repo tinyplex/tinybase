@@ -91,16 +91,13 @@ export const createSqlitePersister = <ListeningHandle>(
     );
     return arrayIsEmpty(rows) || !objHas(rows[0], rowIdColumn)
       ? {}
-      : objDel({...rows[0]}, rowIdColumn);
+      : objDel(rows[0], rowIdColumn);
   };
 
   const rowArrayToObject = (rows: IdObj<any>[]): IdObj<IdObj<any>> =>
     objNew(
       arrayFilter(
-        arrayMap(rows, (row) => [
-          row[rowIdColumn],
-          {...objDel(row, rowIdColumn)},
-        ]),
+        arrayMap(rows, (row) => [row[rowIdColumn], objDel(row, rowIdColumn)]),
         ([rowId, row]) => !isUndefined(rowId) && !objIsEmpty(row),
       ),
     );

@@ -56,7 +56,9 @@ export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
     ): Promise<{[id: string]: any}[]> =>
       new Promise((resolve, reject) =>
         db.all(sql, args, (error, rows: {[id: string]: any}[]) =>
-          error ? reject(error) : resolve(rows),
+          error
+            ? reject(error)
+            : resolve(rows.map((row: {[id: string]: any}) => ({...row}))),
         ),
       ),
     async (db: Database) => db.close(),
@@ -74,7 +76,9 @@ export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
       storeTableOrConfig?: string | DatabasePersisterConfig,
     ) => createSqliteWasmPersister(store, sqlite3, db, storeTableOrConfig),
     async ([_, db]: SqliteWasmDb, sql: string, args: any[] = []) =>
-      db.exec(sql, {bind: args, rowMode: 'object', returnValue: 'resultRows'}),
+      db
+        .exec(sql, {bind: args, rowMode: 'object', returnValue: 'resultRows'})
+        .map((row: {[id: string]: any}) => ({...row})),
     async ([_, db]: SqliteWasmDb) => await db.close(),
   ],
   crSqliteWasm: [
