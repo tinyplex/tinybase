@@ -1,13 +1,13 @@
-import {Persister, Store} from 'tinybase/debug';
+import {DatabasePersisterConfig, Persister, Store} from 'tinybase/debug';
 import initWasm, {DB} from '@vlcn.io/crsqlite-wasm';
+import {mkdirSync, unlinkSync} from 'fs';
 import sqlite3, {Database} from 'sqlite3';
 import {createCrSqliteWasmPersister} from 'tinybase/debug/persisters/persister-cr-sqlite-wasm';
 import {createSqlite3Persister} from 'tinybase/debug/persisters/persister-sqlite3';
 import {createSqliteWasmPersister} from 'tinybase/debug/persisters/persister-sqlite-wasm';
+import {dirname} from 'path';
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import {suppressWarnings} from '../common/other';
-
-const escapeId = (str: string) => `"${str.replace(/"/g, '""')}"`;
 
 export type SqliteWasmDb = [sqlite3: any, db: any];
 export type Dump = [
@@ -17,20 +17,38 @@ export type Dump = [
 ][];
 
 type SqliteVariant<Database> = [
-  getDatabase: () => Promise<Database>,
-  getPersister: (store: Store, location: Database) => Persister,
+  getOpenDatabase: () => Promise<Database>,
+  getPersister: (
+    store: Store,
+    db: Database,
+    storeTableOrConfig?: string | DatabasePersisterConfig,
+  ) => Persister,
   cmd: (
-    location: Database,
+    db: Database,
     sql: string,
     args?: any[],
   ) => Promise<{[id: string]: any}[]>,
-  close: (location: Database) => Promise<void>,
+  close: (db: Database) => Promise<void>,
 ];
+
+const DATABASE_FILE = 'tmp/test.sqlite3';
+
+const escapeId = (str: string) => `"${str.replace(/"/g, '""')}"`;
 
 export const variants: {[name: string]: SqliteVariant<any>} = {
   sqlite3: [
-    async (): Promise<Database> => new sqlite3.Database(':memory:'),
-    (store: Store, db: Database) => createSqlite3Persister(store, db),
+    async (): Promise<Database> => {
+      try {
+        mkdirSync(dirname(DATABASE_FILE), {recursive: true});
+        unlinkSync(DATABASE_FILE);
+      } catch {}
+      return new sqlite3.Database(DATABASE_FILE);
+    },
+    (
+      store: Store,
+      db: Database,
+      storeTableOrConfig?: string | DatabasePersisterConfig,
+    ) => createSqlite3Persister(store, db, storeTableOrConfig),
     (
       db: Database,
       sql: string,
@@ -47,11 +65,14 @@ export const variants: {[name: string]: SqliteVariant<any>} = {
     async (): Promise<SqliteWasmDb> =>
       await suppressWarnings(async () => {
         const sqlite3 = await sqlite3InitModule();
-        const db = new sqlite3.oo1.DB('/db.sqlite3', 'c');
+        const db = new sqlite3.oo1.DB(DATABASE_FILE, 'c');
         return [sqlite3, db];
       }),
-    (store: Store, [sqlite3, db]: SqliteWasmDb) =>
-      createSqliteWasmPersister(store, sqlite3, db),
+    (
+      store: Store,
+      [sqlite3, db]: SqliteWasmDb,
+      storeTableOrConfig?: string | DatabasePersisterConfig,
+    ) => createSqliteWasmPersister(store, sqlite3, db, storeTableOrConfig),
     async ([_, db]: SqliteWasmDb, sql: string, args: any[] = []) =>
       db.exec(sql, {bind: args, rowMode: 'object', returnValue: 'resultRows'}),
     async ([_, db]: SqliteWasmDb) => await db.close(),
@@ -59,13 +80,15 @@ export const variants: {[name: string]: SqliteVariant<any>} = {
   crSqliteWasm: [
     async (): Promise<DB> =>
       await suppressWarnings(async () => await (await initWasm()).open()),
-    (store: Store, db: DB) => createCrSqliteWasmPersister(store, db),
+    (
+      store: Store,
+      db: DB,
+      storeTableOrConfig?: string | DatabasePersisterConfig,
+    ) => createCrSqliteWasmPersister(store, db, storeTableOrConfig),
     async (db: DB, sql: string, args: any[] = []) => await db.execO(sql, args),
     async (db: DB) => await db.close(),
   ],
 };
-
-export const sqlite3Cmd = variants.sqlite3[2];
 
 export const getDatabaseFunctions = <Database>(
   cmd: (
