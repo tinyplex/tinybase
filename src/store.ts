@@ -240,7 +240,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       return false;
     }
     if (getCellOrValueType(schema[DEFAULT]) != type) {
-      objDel(schema, DEFAULT);
+      objDel(schema as any, DEFAULT);
     }
     return true;
   };
