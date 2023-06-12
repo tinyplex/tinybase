@@ -1,6 +1,7 @@
 import {Persister, Store, createStore} from 'tinybase/debug';
 import {Doc as YDoc, Map as YMap, applyUpdate, encodeStateAsUpdate} from 'yjs';
 import {createYjsPersister} from 'tinybase/debug/persisters/persister-yjs';
+import {pause} from '../common/other';
 
 let doc1: YDoc;
 let store1: Store;
@@ -113,6 +114,7 @@ describe('Two stores, one doc', () => {
   test('autoSave1', async () => {
     await persister1.startAutoSave();
     store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
+    await pause();
     await persister2.load();
     expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
   });
@@ -128,6 +130,7 @@ describe('Two stores, one doc', () => {
     await persister1.startAutoSave();
     await persister2.startAutoLoad();
     store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
+    await pause();
     expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
   });
 
@@ -137,27 +140,34 @@ describe('Two stores, one doc', () => {
     store1
       .setTables({t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}})
       .setValues({v1: 1, v2: 2});
+    await pause();
     expect(store2.getContent()).toEqual([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
       {v1: 1, v2: 2},
     ]);
     store1.delCell('t1', 'r1', 'c2');
+    await pause();
     expect(store2.getContent()).toEqual([
       {t1: {r1: {c1: 1}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
       {v1: 1, v2: 2},
     ]);
     store1.delRow('t1', 'r2');
+    await pause();
     expect(store2.getContent()).toEqual([
       {t1: {r1: {c1: 1}}, t2: {r1: {c1: 1}}},
       {v1: 1, v2: 2},
     ]);
     store1.delTable('t2');
+    await pause();
     expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1, v2: 2}]);
     store1.delValue('v2');
+    await pause();
     expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
     store1.setCell('t1', 'r1', 'c1', 2);
+    await pause();
     expect(store2.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 1}]);
     store1.setValue('v1', 2);
+    await pause();
     expect(store2.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
   });
 });
@@ -168,8 +178,10 @@ describe('Two stores, two docs', () => {
   let persister2: Persister;
 
   const syncDocs = async () => {
+    await pause();
     applyUpdate(doc1, encodeStateAsUpdate(doc2));
     applyUpdate(doc2, encodeStateAsUpdate(doc1));
+    await pause();
   };
 
   beforeEach(() => {
@@ -216,11 +228,11 @@ describe('Two stores, two docs', () => {
     await persister2.startAutoSave();
     await persister2.startAutoLoad();
     await syncDocs();
-    await store1.setTables({
+    store1.setTables({
       t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}},
       t2: {r1: {c1: 1}},
     });
-    await store2.setValues({v1: 1, v2: 2});
+    store2.setValues({v1: 1, v2: 2});
     await syncDocs();
     expect(store1.getContent()).toEqual([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},

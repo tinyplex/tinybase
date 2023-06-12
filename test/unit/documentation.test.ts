@@ -14,6 +14,7 @@ import * as Y from 'yjs';
 import {join, resolve} from 'path';
 import {readFileSync, readdirSync} from 'fs';
 import {AutomergeTestNetworkAdapter as BroadcastChannelNetworkAdapter} from './common/automerge-adaptor';
+import {pause} from './common/other';
 import {transformSync} from 'esbuild';
 
 [
@@ -35,8 +36,10 @@ import {transformSync} from 'esbuild';
     (globalThis as any)[key] = value;
   }),
 );
-
-(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
+Object.assign(globalThis as any, {
+  IS_REACT_ACT_ENVIRONMENT: true,
+  pause,
+});
 
 type Results = [any, any][];
 
@@ -103,9 +106,9 @@ const prepareTestResultsFromBlock = (block: string, prefix: string): void => {
         ?.replace(/\/\/ -> (.*?)$/gm, '_expected.push($1);\n')
         ?.replace(
           /\/\/ \.\.\. \/\/ !act$/gm,
-          'await act(async () => {await 0;});\n',
+          'await act(async () => {await pause();});\n',
         )
-        ?.replace(/\/\/ \.\.\.$/gm, 'await 0;\n')
+        ?.replace(/\/\/ \.\.\.$/gm, 'await pause();\n')
         ?.replace(/^(.*?) \/\/ !act$/gm, 'act(() => {$1});')
         ?.replace(/^(.*?) \/\/ !yolo$/gm, '')
         ?.replace(/\n+/g, '\n') ?? '';
