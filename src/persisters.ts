@@ -32,11 +32,6 @@ export const createCustomPersister = <ListeningHandle>(
 
   const actions: Action[] = [];
 
-  const schedule = async (action: Action): Promise<void> => {
-    arrayPush(actions, action);
-    await run();
-  };
-
   const run = async (): Promise<void> => {
     /*! istanbul ignore else */
     if (!running) {
@@ -62,7 +57,7 @@ export const createCustomPersister = <ListeningHandle>(
     }
   };
 
-  const persister: Persister = {
+  const persister: any = {
     load: async (
       initialTables: Tables = {},
       initialValues: Values = {},
@@ -115,7 +110,7 @@ export const createCustomPersister = <ListeningHandle>(
     save: async (
       getTransactionChanges?: GetTransactionChanges,
     ): Promise<Persister> => {
-      await schedule(async () => {
+      await persister.schedule(async () => {
         /*! istanbul ignore else */
         if (loadSave != 1) {
           loadSave = 2;
@@ -152,7 +147,12 @@ export const createCustomPersister = <ListeningHandle>(
     destroy: (): Persister => persister.stopAutoLoad().stopAutoSave(),
 
     getStats: (): PersisterStats => (DEBUG ? {loads, saves} : {}),
+
+    schedule: async (action: Action): Promise<void> => {
+      arrayPush(actions, action);
+      await run();
+    },
   };
 
-  return objFreeze(persister);
+  return objFreeze(persister as Persister);
 };
