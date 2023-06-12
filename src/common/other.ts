@@ -65,4 +65,5 @@ export const promiseNew = <Value>(
   ) => void,
 ): Promise<Value> => new promise(resolver);
 
-export const promiseAll = (promises: Promise<any>[]) => promise.all(promises);
+export const promiseAll = async (promises: Promise<any>[]) =>
+  promise.all(promises);

@@ -51,6 +51,11 @@ export const createSqlitePersister = <ListeningHandle>(
   let setPersisted;
   let rowIdColumn = '_id';
 
+  // cmd = async (sql: string, args: any[] = []): Promise<IdObj<any>[]> => {
+  //   console.log(sql, args);
+  //   return await cmd(sql, args);
+  // };
+
   const config: DatabasePersisterConfig = isString(storeTableOrConfig)
     ? {...defaultConfig, storeTable: storeTableOrConfig}
     : storeTableOrConfig ?? defaultConfig;
@@ -141,7 +146,7 @@ export const createSqlitePersister = <ListeningHandle>(
                 `SELECT name FROM sqlite_schema WHERE type='table'AND name!=?`,
                 [valuesTable],
               )) as {name: string}[],
-              async ({name}) => [
+              async ({name}: {name: string}) => [
                 name as string,
                 rowArrayToObject(await cmd(`SELECT * FROM${escapeId(name)}`)),
               ],
@@ -160,27 +165,22 @@ export const createSqlitePersister = <ListeningHandle>(
       getContent: () => [Tables, Values],
     ): Promise<void> => {
       const [tables, values] = getContent();
-      await promiseAll(
-        objMap(
-          tables,
-          async (table, tableId) =>
-            await promiseAll(
-              objMap(
-                table,
-                async (row, rowId) => await setRow(tableId, rowId, row),
-              ),
-            ),
-        ),
-      );
-      await setRow(valuesTable, SINGLE_ROW_ID, values);
+      objMap(tables, async (table, tableId) => {
+        objMap(table, (row, rowId) =>
+          persister.schedule(() => setRow(tableId, rowId, row)),
+        );
+      });
+      persister.schedule(() => setRow(valuesTable, SINGLE_ROW_ID, values));
     };
   }
 
-  return createCustomPersister(
+  const persister: any = createCustomPersister(
     store,
     getPersisted,
     setPersisted,
     addPersisterListener,
     delPersisterListener,
   );
+
+  return persister;
 };
