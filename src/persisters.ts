@@ -26,8 +26,8 @@ export const createCustomPersister = <ListeningHandle>(
   let loads = 0;
   let saves = 0;
   let running = 0;
-  let nextAction;
   let listening = 0;
+  let action;
   let listeningHandle: ListeningHandle | undefined;
 
   const actions: Action[] = [];
@@ -36,9 +36,9 @@ export const createCustomPersister = <ListeningHandle>(
     /*! istanbul ignore else */
     if (!running) {
       running = 1;
-      while (!isUndefined((nextAction = arrayShift(actions)))) {
+      while (!isUndefined((action = arrayShift(actions)))) {
         try {
-          await nextAction();
+          await action();
         } catch {}
       }
       running = 0;
