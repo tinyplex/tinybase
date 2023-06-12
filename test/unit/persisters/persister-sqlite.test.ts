@@ -2,8 +2,8 @@
 import 'fake-indexeddb/auto';
 import {Persister, Store, createStore} from 'tinybase/debug';
 import {VARIANTS, getDatabaseFunctions} from './sqlite';
+import {mockFetchWasm, pause} from '../common/other';
 import {Database} from 'sqlite3';
-import {mockFetchWasm} from '../common/other';
 
 describe.each(Object.entries(VARIANTS))(
   '%s',
@@ -245,6 +245,89 @@ describe.each(Object.entries(VARIANTS))(
               [{_id: '_', store: '[{"t1":{"r1":{"c1":2}}},{"v1":2}]'}],
             ],
           ]);
+        });
+      });
+
+      describe('Two stores, one connection, one database', () => {
+        let store2: Store;
+        let persister2: Persister;
+        beforeEach(() => {
+          store2 = createStore();
+          persister2 = getPersister(store2, db);
+        });
+
+        test('manual', async () => {
+          store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
+          await persister1.save();
+          await persister2.load();
+          expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+        });
+
+        test('autoSave1', async () => {
+          await persister1.startAutoSave();
+          store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
+          await pause();
+          await persister2.load();
+          expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+        });
+
+        test('autoLoad2', async () => {
+          await persister2.startAutoLoad();
+          store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
+          await persister1.save();
+          await pause();
+          expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+        });
+
+        test('autoSave1 & autoLoad2', async () => {
+          await persister1.startAutoSave();
+          await persister2.startAutoLoad();
+          store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
+          await pause();
+          expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+        });
+
+        test('autoSave1 & autoLoad2, complex transactions', async () => {
+          await persister1.startAutoSave();
+          await persister2.startAutoLoad();
+          store1
+            .setTables({
+              t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}},
+              t2: {r1: {c1: 1}},
+            })
+            .setValues({v1: 1, v2: 2});
+          await pause();
+          expect(store2.getContent()).toEqual([
+            {t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
+            {v1: 1, v2: 2},
+          ]);
+          store1.delCell('t1', 'r1', 'c2');
+          await pause();
+          expect(store2.getContent()).toEqual([
+            {t1: {r1: {c1: 1}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
+            {v1: 1, v2: 2},
+          ]);
+          store1.delRow('t1', 'r2');
+          await pause();
+          expect(store2.getContent()).toEqual([
+            {t1: {r1: {c1: 1}}, t2: {r1: {c1: 1}}},
+            {v1: 1, v2: 2},
+          ]);
+          store1.delTable('t2');
+          await pause();
+          expect(store2.getContent()).toEqual([
+            {t1: {r1: {c1: 1}}},
+            {v1: 1, v2: 2},
+          ]);
+          store1.delValue('v2');
+          await pause();
+          expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+          store1.setCell('t1', 'r1', 'c1', 2);
+          await pause();
+          expect(store2.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 1}]);
+          store1.setValue('v1', 2);
+          await pause();
+          expect(store2.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
         });
       });
     });
@@ -549,6 +632,89 @@ describe.each(Object.entries(VARIANTS))(
               [{_id: '_', v1: 2}],
             ],
           ]);
+        });
+      });
+
+      describe('Two stores, one connection, one database', () => {
+        let store2: Store;
+        let persister2: Persister;
+        beforeEach(() => {
+          store2 = createStore();
+          persister2 = getPersister(store2, db, {serialized: false});
+        });
+
+        test('manual', async () => {
+          store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
+          await persister1.save();
+          await persister2.load();
+          expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+        });
+
+        test('autoSave1', async () => {
+          await persister1.startAutoSave();
+          store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
+          await pause();
+          await persister2.load();
+          expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+        });
+
+        test('autoLoad2', async () => {
+          await persister2.startAutoLoad();
+          store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
+          await persister1.save();
+          await pause();
+          expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+        });
+
+        test('autoSave1 & autoLoad2', async () => {
+          await persister1.startAutoSave();
+          await persister2.startAutoLoad();
+          store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
+          await pause();
+          expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+        });
+
+        test('autoSave1 & autoLoad2, complex transactions', async () => {
+          await persister1.startAutoSave();
+          await persister2.startAutoLoad();
+          store1
+            .setTables({
+              t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}},
+              t2: {r1: {c1: 1}},
+            })
+            .setValues({v1: 1, v2: 2});
+          await pause();
+          expect(store2.getContent()).toEqual([
+            {t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
+            {v1: 1, v2: 2},
+          ]);
+          store1.delCell('t1', 'r1', 'c2');
+          await pause();
+          expect(store2.getContent()).toEqual([
+            {t1: {r1: {c1: 1}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
+            {v1: 1, v2: 2},
+          ]);
+          // store1.delRow('t1', 'r2');
+          // await pause();
+          // expect(store2.getContent()).toEqual([
+          //   {t1: {r1: {c1: 1}}, t2: {r1: {c1: 1}}},
+          //   {v1: 1, v2: 2},
+          // ]);
+          // store1.delTable('t2');
+          // await pause();
+          // expect(store2.getContent()).toEqual([
+          //   {t1: {r1: {c1: 1}}},
+          //   {v1: 1, v2: 2},
+          // ]);
+          // store1.delValue('v2');
+          // await pause();
+          // expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+          // store1.setCell('t1', 'r1', 'c1', 2);
+          // await pause();
+          // expect(store2.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 1}]);
+          // store1.setValue('v1', 2);
+          // await pause();
+          // expect(store2.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
         });
       });
     });

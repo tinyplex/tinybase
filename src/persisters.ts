@@ -1,12 +1,15 @@
-import {DEBUG, ifNotUndefined} from './common/other';
+import {DEBUG, ifNotUndefined, isUndefined} from './common/other';
 import {GetTransactionChanges, Store, Tables, Values} from './types/store.d';
 import {
   Persister,
   PersisterListener,
   PersisterStats,
 } from './types/persisters.d';
+import {arrayPush, arrayShift} from './common/array';
 import {Id} from './types/common.d';
 import {objFreeze} from './common/obj';
+
+type Action = () => Promise<any>;
 
 export const createCustomPersister = <ListeningHandle>(
   store: Store,
@@ -22,11 +25,32 @@ export const createCustomPersister = <ListeningHandle>(
   let loadSave = 0;
   let loads = 0;
   let saves = 0;
-
-  let listening = false;
+  let running = 0;
+  let nextAction;
+  let listening = 0;
   let listeningHandle: ListeningHandle | undefined;
 
-  const loadLock = async (actions: () => Promise<any>) => {
+  const actions: Action[] = [];
+
+  const schedule = async (action: Action): Promise<void> => {
+    arrayPush(actions, action);
+    await run();
+  };
+
+  const run = async (): Promise<void> => {
+    /*! istanbul ignore else */
+    if (!running) {
+      running = 1;
+      while (!isUndefined((nextAction = arrayShift(actions)))) {
+        try {
+          await nextAction();
+        } catch {}
+      }
+      running = 0;
+    }
+  };
+
+  const loadLock = async (actions: Action) => {
     /*! istanbul ignore else */
     if (loadSave != 2) {
       loadSave = 1;
@@ -59,7 +83,7 @@ export const createCustomPersister = <ListeningHandle>(
     ): Promise<Persister> => {
       persister.stopAutoLoad();
       await persister.load(initialTables, initialValues);
-      listening = true;
+      listening = 1;
       listeningHandle = addPersisterListener(
         async (getContent, getTransactionChanges) => {
           await loadLock(async () => {
@@ -83,7 +107,7 @@ export const createCustomPersister = <ListeningHandle>(
       if (listening) {
         delPersisterListener(listeningHandle as ListeningHandle);
         listeningHandle = undefined;
-        listening = false;
+        listening = 0;
       }
       return persister;
     },
@@ -91,25 +115,29 @@ export const createCustomPersister = <ListeningHandle>(
     save: async (
       getTransactionChanges?: GetTransactionChanges,
     ): Promise<Persister> => {
-      /*! istanbul ignore else */
-      if (loadSave != 1) {
-        loadSave = 2;
-        if (DEBUG) {
-          saves++;
+      await schedule(async () => {
+        /*! istanbul ignore else */
+        if (loadSave != 1) {
+          loadSave = 2;
+          if (DEBUG) {
+            saves++;
+          }
+          try {
+            await setPersisted(store.getContent, getTransactionChanges);
+          } catch {}
+          loadSave = 0;
         }
-        try {
-          await setPersisted(store.getContent, getTransactionChanges);
-        } catch {}
-        loadSave = 0;
-      }
+      });
       return persister;
     },
 
     startAutoSave: async (): Promise<Persister> => {
       await persister.stopAutoSave().save();
       listenerId = store.addDidFinishTransactionListener(
-        (_store, getTransactionChanges) =>
-          (persister.save as any)(getTransactionChanges),
+        (_store, getTransactionChanges) => {
+          const transactionChanges = getTransactionChanges();
+          (persister.save as any)(() => transactionChanges);
+        },
       );
       return persister;
     },
