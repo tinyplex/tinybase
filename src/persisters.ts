@@ -20,6 +20,7 @@ export const createCustomPersister = <ListeningHandle>(
   ) => Promise<void>,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
+  destroy?: () => void,
 ): Persister => {
   let listenerId: Id | undefined;
   let loadSave = 0;
@@ -142,16 +143,19 @@ export const createCustomPersister = <ListeningHandle>(
       return persister;
     },
 
-    getStore: (): Store => store,
-
-    destroy: (): Persister => persister.stopAutoLoad().stopAutoSave(),
-
-    getStats: (): PersisterStats => (DEBUG ? {loads, saves} : {}),
-
     schedule: async (...actions: Action[]): Promise<void> => {
       arrayPush(scheduledActions, ...actions);
       await run();
     },
+
+    getStore: (): Store => store,
+
+    destroy: (): Persister => {
+      destroy?.();
+      return persister.stopAutoLoad().stopAutoSave();
+    },
+
+    getStats: (): PersisterStats => (DEBUG ? {loads, saves} : {}),
   };
 
   return objFreeze(persister as Persister);
