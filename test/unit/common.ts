@@ -1,10 +1,4 @@
 import {
-  Cell,
-  NoSchemas,
-  Store as StoreWithSchemas,
-  Value,
-} from 'tinybase/debug/with-schemas';
-import {
   Checkpoints,
   Id,
   IdOrNull,
@@ -15,6 +9,10 @@ import {
   Relationships,
   Store,
 } from 'tinybase/debug';
+import {
+  NoSchemas,
+  Store as StoreWithSchemas,
+} from 'tinybase/debug/with-schemas';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -218,7 +216,7 @@ export const createStoreListener = (
 
     listenToCellIds: (id, tableId, rowId) => {
       logs[id] = [];
-      return store.addCellIdsListener(
+      return (store as Store).addCellIdsListener(
         tableId,
         rowId,
         (store, tableId, rowId, getIdChanges) =>
@@ -232,17 +230,12 @@ export const createStoreListener = (
 
     listenToCell: (id, tableId, rowId, cellId) => {
       logs[id] = [];
-      return store.addCellListener(
+      return (store as Store).addCellListener(
         tableId,
         rowId,
         cellId,
-        (
-          _: any,
-          tableId: Id,
-          rowId: Id,
-          cellId: Id,
-          newCell: Cell<any, any, any>,
-        ) => logs[id].push({[tableId]: {[rowId]: {[cellId]: newCell}}}),
+        (_, tableId, rowId, cellId, newCell) =>
+          logs[id].push({[tableId]: {[rowId]: {[cellId]: newCell}}}),
       );
     },
 
@@ -273,10 +266,9 @@ export const createStoreListener = (
 
     listenToValue: (id, valueId) => {
       logs[id] = [];
-      return store.addValueListener(
+      return (store as Store).addValueListener(
         valueId,
-        (_: any, valueId: Id, newValue: Value<any, any, any>) =>
-          logs[id].push({[valueId]: newValue}),
+        (_, valueId, newValue) => logs[id].push({[valueId]: newValue}),
       );
     },
 
