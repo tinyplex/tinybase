@@ -5,7 +5,7 @@ import {
 } from '../types/persisters';
 import {IdObj} from '../common/obj';
 import {Store} from '../types/store';
-import {createSqlitePersister} from './sqlite';
+import {createSqlitePersister} from './sqlite/create';
 import {createSqliteWasmPersister as createSqliteWasmPersisterDecl} from '../types/persisters/persister-sqlite-wasm';
 
 export const createSqliteWasmPersister = ((

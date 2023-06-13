@@ -7,7 +7,7 @@ import {DB} from '@vlcn.io/crsqlite-wasm';
 import {IdObj} from '../common/obj';
 import {Store} from '../types/store';
 import {createCrSqliteWasmPersister as createCrSqliteWasmPersisterDecl} from '../types/persisters/persister-cr-sqlite-wasm';
-import {createSqlitePersister} from './sqlite';
+import {createSqlitePersister} from './sqlite/create';
 
 export const createCrSqliteWasmPersister = ((
   store: Store,
