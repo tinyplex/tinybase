@@ -7,7 +7,7 @@ import {Database} from 'sqlite3';
 import {IdObj} from '../common/obj';
 import {Store} from '../types/store';
 import {createSqlite3Persister as createSqlite3PersisterDecl} from '../types/persisters/persister-sqlite3';
-import {createSqlitePersister} from './sqlite';
+import {createSqlitePersister} from './sqlite/create';
 import {promiseNew} from '../common/other';
 
 export const createSqlite3Persister = ((
