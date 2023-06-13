@@ -1,33 +1,26 @@
 import {Cmd, getCommandFunctions} from './commands';
-import {IdObj, objDel, objIsEmpty, objMap, objNew} from '../../common/obj';
 import {Persister, PersisterListener} from '../../types/persisters';
 import {SINGLE_ROW_ID, escapeId} from './common';
 import {Store, Table, Tables, Values} from '../../types/store';
 import {arrayFilter, arrayMap} from '../../common/array';
 import {isUndefined, promiseAll} from '../../common/other';
+import {objDel, objIsEmpty, objMap, objNew} from '../../common/obj';
 import {Id} from '../../types/common';
+import {TINYBASE} from '../../common/strings';
 import {createCustomPersister} from '../../persisters';
 
 export const createNonSerializedSqlitePersister = <ListeningHandle>(
   store: Store,
-  rowIdColumn: string,
-  valuesTable: string,
   cmd: Cmd,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
+  rowIdColumn = '_id',
+  valuesTable = TINYBASE + '_values',
 ): Persister => {
   const [ensureTable, getSingleRow, setRow] = getCommandFunctions(
     cmd,
     rowIdColumn,
   );
-
-  const rowArrayToObject = (rows: IdObj<any>[]): IdObj<IdObj<any>> =>
-    objNew(
-      arrayFilter(
-        arrayMap(rows, (row) => [row[rowIdColumn], objDel(row, rowIdColumn)]),
-        ([rowId, row]) => !isUndefined(rowId) && !objIsEmpty(row),
-      ),
-    );
 
   const setValues = (values: Values) => {
     persister.schedule(
@@ -57,7 +50,15 @@ export const createNonSerializedSqlitePersister = <ListeningHandle>(
             )) as {name: string}[],
             async ({name}: {name: string}) => [
               name as string,
-              rowArrayToObject(await cmd(`SELECT * FROM${escapeId(name)}`)),
+              objNew(
+                arrayFilter(
+                  arrayMap(
+                    await cmd(`SELECT * FROM${escapeId(name)}`),
+                    (row) => [row[rowIdColumn], objDel(row, rowIdColumn)],
+                  ),
+                  ([rowId, row]) => !isUndefined(rowId) && !objIsEmpty(row),
+                ),
+              ),
             ],
           ),
         ),
