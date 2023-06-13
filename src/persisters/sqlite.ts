@@ -14,7 +14,7 @@ import {
   objNew,
   objValues,
 } from '../common/obj';
-import {Row, Store, Tables, Values} from '../types/store';
+import {Row, Store, Table, Tables, Values} from '../types/store';
 import {
   arrayFilter,
   arrayIsEmpty,
@@ -51,9 +51,9 @@ export const createSqlitePersister = <ListeningHandle>(
   let setPersisted;
   let rowIdColumn = '_id';
 
-  // cmd = async (sql: string, args: any[] = []): Promise<IdObj<any>[]> => {
+  // const cmd = async (sql: string, args: any[] = []): Promise<IdObj<any>[]> => {
   //   console.log(sql, args);
-  //   return await cmd(sql, args);
+  //   return await cmd1(sql, args);
   // };
 
   const config: DatabasePersisterConfig = isString(storeTableOrConfig)
@@ -113,7 +113,6 @@ export const createSqlitePersister = <ListeningHandle>(
       (cellId) => `,${escapeId(cellId)}`,
     ).join(EMPTY_STRING);
     const values = objValues(row);
-    await ensureTable(table);
     await ensureColumns(table, row);
     await cmd(
       `INSERT INTO${escapeId(table)}(${escapeId(
@@ -130,12 +129,33 @@ export const createSqlitePersister = <ListeningHandle>(
       jsonParse(((await getSingleRow(storeTable)) ?? {})[STORE_COLUMN]);
 
     setPersisted = async (getContent: () => [Tables, Values]): Promise<void> =>
-      await setRow(storeTable, SINGLE_ROW_ID, {
-        [STORE_COLUMN]: jsonString(getContent()),
-      });
+      persister.schedule(
+        async () => await ensureTable(storeTable),
+        async () =>
+          await setRow(storeTable, SINGLE_ROW_ID, {
+            [STORE_COLUMN]: jsonString(getContent()),
+          }),
+      );
   } else {
     const {valuesTable = TINYBASE + '_values'} = config;
     rowIdColumn = config.rowIdColumn ?? rowIdColumn;
+
+    const setValues = (values: Values) => {
+      persister.schedule(
+        async () => await ensureTable(valuesTable),
+        async () => await setRow(valuesTable, SINGLE_ROW_ID, values),
+      );
+    };
+
+    const setTable = (table: Table, tableId: Id) => {
+      persister.schedule(
+        async () => await ensureTable(tableId),
+        ...objMap(
+          table,
+          (row, rowId) => async () => await setRow(tableId, rowId, row),
+        ),
+      );
+    };
 
     getPersisted = async (): Promise<[Tables, Values] | undefined> => {
       const tables = objNew(
@@ -165,12 +185,8 @@ export const createSqlitePersister = <ListeningHandle>(
       getContent: () => [Tables, Values],
     ): Promise<void> => {
       const [tables, values] = getContent();
-      objMap(tables, async (table, tableId) => {
-        objMap(table, (row, rowId) =>
-          persister.schedule(() => setRow(tableId, rowId, row)),
-        );
-      });
-      persister.schedule(() => setRow(valuesTable, SINGLE_ROW_ID, values));
+      objMap(tables, setTable);
+      setValues(values);
     };
   }
 

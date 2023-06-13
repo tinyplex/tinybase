@@ -30,13 +30,13 @@ export const createCustomPersister = <ListeningHandle>(
   let action;
   let listeningHandle: ListeningHandle | undefined;
 
-  const actions: Action[] = [];
+  const scheduledActions: Action[] = [];
 
   const run = async (): Promise<void> => {
     /*! istanbul ignore else */
     if (!running) {
       running = 1;
-      while (!isUndefined((action = arrayShift(actions)))) {
+      while (!isUndefined((action = arrayShift(scheduledActions)))) {
         try {
           await action();
         } catch {}
@@ -148,8 +148,8 @@ export const createCustomPersister = <ListeningHandle>(
 
     getStats: (): PersisterStats => (DEBUG ? {loads, saves} : {}),
 
-    schedule: async (action: Action): Promise<void> => {
-      arrayPush(actions, action);
+    schedule: async (...actions: Action[]): Promise<void> => {
+      arrayPush(scheduledActions, ...actions);
       await run();
     },
   };
