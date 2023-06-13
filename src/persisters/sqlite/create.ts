@@ -5,7 +5,6 @@ import {
 } from '../../types/persisters';
 import {Cmd} from './commands';
 import {Store} from '../../types/store';
-import {TINYBASE} from '../../common/strings';
 import {createNonSerializedSqlitePersister} from './non-serialized';
 import {createSerializedSqlitePersister} from './serialized';
 import {isString} from '../../common/other';
@@ -31,22 +30,20 @@ export const createSqlitePersister = <ListeningHandle>(
 
   const {serialized} = config;
 
-  if (serialized) {
-    return createSerializedSqlitePersister(
-      store,
-      config.storeTable ?? TINYBASE,
-      cmd,
-      addPersisterListener,
-      delPersisterListener,
-    );
-  } else {
-    return createNonSerializedSqlitePersister(
-      store,
-      config.rowIdColumn ?? '_id',
-      config.valuesTable ?? TINYBASE + '_values',
-      cmd,
-      addPersisterListener,
-      delPersisterListener,
-    );
-  }
+  return serialized
+    ? createSerializedSqlitePersister(
+        store,
+        cmd,
+        addPersisterListener,
+        delPersisterListener,
+        config.storeTable,
+      )
+    : createNonSerializedSqlitePersister(
+        store,
+        cmd,
+        addPersisterListener,
+        delPersisterListener,
+        config.rowIdColumn,
+        config.valuesTable,
+      );
 };

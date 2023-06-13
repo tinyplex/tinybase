@@ -3,16 +3,17 @@ import {Persister, PersisterListener} from '../../types/persisters';
 import {Store, Tables, Values} from '../../types/store';
 import {jsonParse, jsonString} from '../../common/other';
 import {SINGLE_ROW_ID} from './common';
+import {TINYBASE} from '../../common/strings';
 import {createCustomPersister} from '../../persisters';
 
 const STORE_COLUMN = 'store';
 
 export const createSerializedSqlitePersister = <ListeningHandle>(
   store: Store,
-  storeTable: string,
   cmd: Cmd,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
+  storeTable: string = TINYBASE,
 ): Persister => {
   const [ensureTable, getSingleRow, setRow] = getCommandFunctions(cmd, '_id');
 
