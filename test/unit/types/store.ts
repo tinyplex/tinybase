@@ -386,9 +386,13 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
   });
   storeWithSchemas.addTablesListener(() => null);
 
-  storeWithSchemas.addTableIdsListener((store) => {
+  storeWithSchemas.addTableIdsListener((store, getIdChanges) => {
     store.getTables().t1;
     store.getTables().t2; // !
+
+    const idChanges = getIdChanges?.() ?? {};
+    idChanges.t1 == 1;
+    idChanges.t2 == 1; // !
   });
   storeWithSchemas.addTableIdsListener(() => null);
 
@@ -528,15 +532,23 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
   });
   storeWithSchemas.addRowListener('t2', 'r2', () => null); // !
 
-  storeWithSchemas.addCellIdsListener('t1', 'r1', (store, tableId, rowId) => {
-    store.getTables().t1;
-    tableId == 't1';
-    rowId == 'r1';
-    store.getTables().t2; // !
-    tableId == 't0'; // !
-    tableId == 't2'; // !
-    rowId == 'r2'; // !
-  });
+  storeWithSchemas.addCellIdsListener(
+    't1',
+    'r1',
+    (store, tableId, rowId, getIdChanges) => {
+      store.getTables().t1;
+      tableId == 't1';
+      rowId == 'r1';
+      store.getTables().t2; // !
+      tableId == 't0'; // !
+      tableId == 't2'; // !
+      rowId == 'r2'; // !
+
+      const idChanges = getIdChanges?.() ?? {};
+      idChanges.c1 == 1;
+      idChanges.c2 == 1; // !
+    },
+  );
   storeWithSchemas.addCellIdsListener('t1', null, (store, tableId, rowId) => {
     store.getTables().t1;
     tableId == 't1';
@@ -555,23 +567,33 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
     tableId == 't2'; // !
     rowId == 'r2'; // !
   });
-  storeWithSchemas.addCellIdsListener(null, null, (store, tableId, rowId) => {
-    store.getTables().t1;
-    tableId == 't1';
-    tableId == 't0';
-    rowId == 'r1';
-    rowId == 'r2';
-    store.getTables().t2; // !
-    tableId == 't2'; // !
-  });
-  storeWithSchemas.addCellIdsListener('t1', 'r1', (store, tableId) => {
+  storeWithSchemas.addCellIdsListener(
+    null,
+    null,
+    (store, tableId, rowId, getIdChanges) => {
+      store.getTables().t1;
+      tableId == 't1';
+      tableId == 't0';
+      rowId == 'r1';
+      rowId == 'r2';
+      store.getTables().t2; // !
+      tableId == 't2'; // !
+
+      if (tableId == 't1') {
+        const idChanges = getIdChanges?.() ?? {};
+        idChanges.c1 == 1;
+        idChanges.c2 == 1; // !
+      }
+    },
+  );
+  storeWithSchemas.addCellIdsListener('t1', 'r1', (store, tableId, ..._) => {
     store.getTables().t1;
     tableId == 't1';
     store.getTables().t2; // !
     tableId == 't0'; // !
     tableId == 't2'; // !
   });
-  storeWithSchemas.addCellIdsListener('t1', 'r1', (store) => {
+  storeWithSchemas.addCellIdsListener('t1', 'r1', (store, ..._) => {
     store.getTables().t1;
     store.getTables().t2; // !
   });
@@ -817,9 +839,13 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
   });
   storeWithSchemas.addValuesListener(() => null);
 
-  storeWithSchemas.addValueIdsListener((store) => {
+  storeWithSchemas.addValueIdsListener((store, getIdChanges) => {
     store.getValues().v1;
     store.getValues().v2; // !
+
+    const idChanges = getIdChanges?.() ?? {};
+    idChanges.v1 == 1;
+    idChanges.v2 == 1; // !
   });
   storeWithSchemas.addValueIdsListener(() => null);
 

@@ -111,7 +111,10 @@ export type TablesListener = (
 ) => void;
 
 /// TableIdsListener
-export type TableIdsListener = (store: Store) => void;
+export type TableIdsListener = (
+  store: Store,
+  getIdChanges: GetIdChanges | undefined,
+) => void;
 
 /// TableListener
 export type TableListener = (
@@ -121,7 +124,11 @@ export type TableListener = (
 ) => void;
 
 /// RowIdsListener
-export type RowIdsListener = (store: Store, tableId: Id) => void;
+export type RowIdsListener = (
+  store: Store,
+  tableId: Id,
+  getIdChanges: GetIdChanges | undefined,
+) => void;
 
 /// SortedRowIdsListener
 export type SortedRowIdsListener = (
@@ -143,7 +150,12 @@ export type RowListener = (
 ) => void;
 
 /// CellIdsListener
-export type CellIdsListener = (store: Store, tableId: Id, rowId: Id) => void;
+export type CellIdsListener = (
+  store: Store,
+  tableId: Id,
+  rowId: Id,
+  getIdChanges: GetIdChanges | undefined,
+) => void;
 
 /// CellListener
 export type CellListener = (
@@ -163,7 +175,10 @@ export type ValuesListener = (
 ) => void;
 
 /// ValueIdsListener
-export type ValueIdsListener = (store: Store) => void;
+export type ValueIdsListener = (
+  store: Store,
+  getIdChanges: GetIdChanges | undefined,
+) => void;
 
 /// ValueListener
 export type ValueListener = (
@@ -189,6 +204,9 @@ export type InvalidValueListener = (
   valueId: Id,
   invalidValues: any[],
 ) => void;
+
+/// GetIdChanges
+export type GetIdChanges = () => {[id: Id]: 1 | -1};
 
 /// GetCellChange
 export type GetCellChange = (tableId: Id, rowId: Id, cellId: Id) => CellChange;

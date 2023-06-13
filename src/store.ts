@@ -707,7 +707,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     ids?: Ids,
   ): 1 | void => {
     if (!collIsEmpty(changedIds)) {
-      callListeners(listeners, ids);
+      callListeners(listeners, ids, () => mapToObj(changedIds));
       return 1;
     }
   };

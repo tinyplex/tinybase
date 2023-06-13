@@ -549,14 +549,14 @@ const _Listeners = () => {
     store.getTables().t2; // !
     tableId == 't2'; // !
   });
-  useCellIdsListener('t1', 'r1', (store, tableId) => {
+  useCellIdsListener('t1', 'r1', (store, tableId, ..._) => {
     store.getTables().t1;
     tableId == 't1';
     store.getTables().t2; // !
     tableId == 't0'; // !
     tableId == 't2'; // !
   });
-  useCellIdsListener('t1', 'r1', (store) => {
+  useCellIdsListener('t1', 'r1', (store, ..._) => {
     store.getTables().t1;
     store.getTables().t2; // !
   });

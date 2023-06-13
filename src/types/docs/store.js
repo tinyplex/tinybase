@@ -444,7 +444,12 @@
  *
  * When called, a TableIdsListener is given a reference to the Store.
  *
+ * Since v3.3, the listener is also passed a GetIdChanges function that can be
+ * used to query which Ids changed during the transaction.
+ *
  * @param store A reference to the Store that changed.
+ * @param getIdChanges A function that returns information Id changes, since
+ * 3.3.
  * @category Listener
  */
 /// TableIdsListener
@@ -480,8 +485,13 @@
  * When called, a RowIdsListener is given a reference to the Store, and the Id
  * of the Table whose Row Ids changed.
  *
+ * Since v3.3, the listener is also passed a GetIdChanges function that can be
+ * used to query which Ids changed during the transaction.
+ *
  * @param store A reference to the Store that changed.
  * @param tableId The Id of the Table that changed.
+ * @param getIdChanges A function that returns information Id changes, since
+ * 3.3.
  * @category Listener
  */
 /// RowIdsListener
@@ -544,9 +554,14 @@
  * When called, a CellIdsListener is given a reference to the Store, the Id of
  * the Table that changed, and the Id of the Row whose Cell Ids changed.
  *
+ * Since v3.3, the listener is also passed a GetIdChanges function that can be
+ * used to query which Ids changed during the transaction.
+ *
  * @param store A reference to the Store that changed.
  * @param tableId The Id of the Table that changed.
  * @param rowId The Id of the Row that changed.
+ * @param getIdChanges A function that returns information Id changes, since
+ * 3.3.
  * @category Listener
  */
 /// CellIdsListener
@@ -609,7 +624,12 @@
  *
  * When called, a ValueIdsListener is given a reference to the Store.
  *
+ * Since v3.3, the listener is also passed a GetIdChanges function that can be
+ * used to query which Ids changed during the transaction.
+ *
  * @param store A reference to the Store that changed.
+ * @param getIdChanges A function that returns information Id changes, since
+ * 3.3.
  * @category Listener
  */
 /// ValueIdsListener
@@ -684,6 +704,22 @@
  * @since v3.0.0
  */
 /// InvalidValueListener
+/**
+ * The GetIdChanges type describes a function that returns information about the
+ * changes to a set of Ids during a transaction.
+ *
+ * A GetIdChanges function is provided to every listener when called due Ids in
+ * the Store changing. It returns an object where each key is an Id that
+ * changed. The listener can then easily identify which Ids have been added
+ * (those with the value `1`), and which have been removed (those with the value
+ * `-1`).
+ *
+ * @returns An object keyed by Id with a numerical value. 1 means the Id was
+ * added, and 1 means it was removed.
+ * @category Listener
+ * @since v3.3.0
+ */
+/// GetIdChanges
 /**
  * The GetCellChange type describes a function that returns information about
  * any Cell's changes during a transaction.

@@ -168,8 +168,8 @@ export const createStoreListener = (
 
     listenToTableIds: (id) => {
       logs[id] = [];
-      return store.addTableIdsListener(() =>
-        logs[id].push(store.getTableIds()),
+      return store.addTableIdsListener((store, getIdChanges) =>
+        logs[id].push([store.getTableIds(), getIdChanges?.()]),
       );
     },
 
@@ -182,8 +182,10 @@ export const createStoreListener = (
 
     listenToRowIds: (id, tableId) => {
       logs[id] = [];
-      return store.addRowIdsListener(tableId, (store, tableId) =>
-        logs[id].push({[tableId]: store.getRowIds(tableId)}),
+      return store.addRowIdsListener(tableId, (store, tableId, getIdChanges) =>
+        logs[id].push({
+          [tableId]: [store.getRowIds(tableId), getIdChanges?.()],
+        }),
       );
     },
 
@@ -216,10 +218,15 @@ export const createStoreListener = (
 
     listenToCellIds: (id, tableId, rowId) => {
       logs[id] = [];
-      return store.addCellIdsListener(tableId, rowId, (store, tableId, rowId) =>
-        logs[id].push({
-          [tableId]: {[rowId]: store.getCellIds(tableId, rowId)},
-        }),
+      return store.addCellIdsListener(
+        tableId,
+        rowId,
+        (store, tableId, rowId, getIdChanges) =>
+          logs[id].push({
+            [tableId]: {
+              [rowId]: [store.getCellIds(tableId, rowId), getIdChanges?.()],
+            },
+          }),
       );
     },
 
@@ -259,8 +266,8 @@ export const createStoreListener = (
 
     listenToValueIds: (id) => {
       logs[id] = [];
-      return store.addValueIdsListener((store) =>
-        logs[id].push(store.getValueIds()),
+      return store.addValueIdsListener((store, getIdChanges) =>
+        logs[id].push([store.getValueIds(), getIdChanges?.()]),
       );
     },
 

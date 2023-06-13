@@ -270,6 +270,7 @@ export type TablesListener<Schemas extends OptionalSchemas> = (
 /// TableIdsListener
 export type TableIdsListener<Schemas extends OptionalSchemas> = (
   store: Store<Schemas>,
+  getIdChanges: GetIdChanges<TableIdFromSchema<Schemas[0]>> | undefined,
 ) => void;
 
 /// TableListener
@@ -293,6 +294,7 @@ export type RowIdsListener<
   tableId: TableIdOrNull extends null
     ? TableIdFromSchema<Schemas[0]>
     : TableIdOrNull,
+  getIdChanges: GetIdChanges<Id> | undefined,
 ) => void;
 
 /// SortedRowIdsListener
@@ -332,13 +334,29 @@ export type CellIdsListener<
   Schemas extends OptionalSchemas,
   TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
   RowIdOrNull extends IdOrNull,
-> = (
-  store: Store<Schemas>,
-  tableId: TableIdOrNull extends null
-    ? TableIdFromSchema<Schemas[0]>
-    : TableIdOrNull,
-  rowId: RowIdOrNull extends null ? Id : RowIdOrNull,
-) => void;
+  Params extends any[] = (
+    TableIdOrNull extends null ? TableIdFromSchema<Schemas[0]> : TableIdOrNull
+  ) extends infer TableId
+    ? TableId extends TableIdFromSchema<Schemas[0]>
+      ? [
+          store: Store<Schemas>,
+          tableId: TableId,
+          rowId: RowIdOrNull extends null ? Id : RowIdOrNull,
+          getIdChanges: GetIdChanges<CellIdFromSchema<Schemas[0], TableId>>,
+        ]
+      : never
+    : never,
+  Params4 extends any[] =
+    | Params
+    | [store: never, tableId: never, rowId: never, getIdChanges: never],
+  Params3 extends any[] = Truncate<Params4>,
+  // Params2 extends any[] = Truncate<Params3>,
+  // Params1 extends any[] = Truncate<Params2>,
+> = Params extends any
+  ? ((...params: Params4) => void) | ((...params: Params3) => void)
+  : //  | ((...params: Params2) => void)
+    // | ((...params: Params1) => void)
+    never;
 
 /// CellListener
 export type CellListener<
@@ -412,6 +430,7 @@ export type ValuesListener<Schemas extends OptionalSchemas> = (
 /// ValueIdsListener
 export type ValueIdsListener<Schemas extends OptionalSchemas> = (
   store: Store<Schemas>,
+  getIdChanges: GetIdChanges<ValueIdFromSchema<Schemas[1]>> | undefined,
 ) => void;
 
 /// ValueListener
@@ -468,6 +487,11 @@ export type InvalidValueListener<Schemas extends OptionalSchemas> = (
   valueId: Id,
   invalidValues: any[],
 ) => void;
+
+/// GetIdChanges
+export type GetIdChanges<ValidId extends Id> = () => {
+  [Id in ValidId]?: 1 | -1;
+};
 
 /// GetCellChange
 export type GetCellChange<Schema extends OptionalTablesSchema> = <
