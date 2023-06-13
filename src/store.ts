@@ -89,6 +89,7 @@ import {
 } from './common/obj';
 import {IdSet, IdSet2, IdSet3, IdSet4, setAdd, setNew} from './common/set';
 import {Pair, pairCollSize2, pairNew, pairNewMap} from './common/pairs';
+import {PoolFunctions, getPoolFunctions} from './common/pool';
 import {
   arrayForEach,
   arrayHas,
@@ -110,7 +111,6 @@ import {
 } from './common/coll';
 import {getCellOrValueType, setOrDelCell, setOrDelValue} from './common/cell';
 import {defaultSorter} from './common';
-import {getPoolFunctions} from './common/pool';
 
 type TablesSchemaMap = IdMap2<CellSchema>;
 type ValuesSchemaMap = IdMap<ValueSchema>;
@@ -181,7 +181,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const valuesSchemaMap: ValuesSchemaMap = mapNew();
   const valuesDefaulted: ValuesMap = mapNew();
   const valuesNonDefaulted: IdSet = setNew();
-  const tablePoolFunctions: IdMap<[() => Id, (id: Id) => void]> = mapNew();
+  const tablePoolFunctions: IdMap<PoolFunctions> = mapNew();
   const tablesMap: TablesMap = mapNew();
   const valuesMap: ValuesMap = mapNew();
   const tablesListeners: Pair<IdSet2> = pairNewMap();
@@ -405,6 +405,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     mapMatch(
       mapEnsure(tablesMap, tableId, () => {
         tableIdsChanged(tableId, 1);
+        mapSet(tablePoolFunctions, tableId, getPoolFunctions());
         return mapNew();
       }),
       table,
@@ -490,7 +491,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   };
 
   const getNewRowId = (tableId: Id, reuse: 0 | 1): Id => {
-    const [getId] = mapEnsure(tablePoolFunctions, tableId, getPoolFunctions);
+    const [getId] = mapGet(tablePoolFunctions, tableId) as PoolFunctions;
     const rowId = getId(reuse);
     if (!collHas(mapGet(tablesMap, tableId), rowId)) {
       return rowId;
@@ -504,11 +505,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const delValidTable = (tableId: Id): TableMap => setValidTable(tableId, {});
 
   const delValidRow = (tableId: Id, tableMap: TableMap, rowId: Id): void => {
-    const [, releaseId] = mapEnsure(
-      tablePoolFunctions,
-      tableId,
-      getPoolFunctions,
-    );
+    const [, releaseId] = mapGet(tablePoolFunctions, tableId) as PoolFunctions;
     releaseId(rowId);
     setValidRow(tableId, tableMap, rowId, {}, true);
   };

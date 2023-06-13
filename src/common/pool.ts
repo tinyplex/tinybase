@@ -5,10 +5,9 @@ import {test} from './other';
 
 const INTEGER = /^\d+$/;
 
-export const getPoolFunctions = (): [
-  (reuse: 0 | 1) => Id,
-  (id: Id) => void,
-] => {
+export type PoolFunctions = [(reuse: 0 | 1) => Id, (id: Id) => void];
+
+export const getPoolFunctions = (): PoolFunctions => {
   const pool: Ids = [];
   let nextId = 0;
   return [
