@@ -20,6 +20,7 @@ describe('Change tabular state', () => {
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     expect(store.getTableIds()).toEqual(['t1']);
     expect(store.getTable('t1')).toEqual({r1: {c1: 1}});
+    expect(store.getTableCellIds('t1')).toEqual(['c1']);
     expect(store.getRowIds('t1')).toEqual(['r1']);
     expect(store.getRow('t1', 'r1')).toEqual({c1: 1});
     expect(store.getCellIds('t1', 'r1')).toEqual(['c1']);

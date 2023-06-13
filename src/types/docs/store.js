@@ -717,7 +717,7 @@
  * @returns An object keyed by Id with a numerical value. 1 means the Id was
  * added, and 1 means it was removed.
  * @category Listener
- * @since v3.3.0
+ * @since v3.3
  */
 /// GetIdChanges
 /**
@@ -1210,6 +1210,42 @@
    */
   /// Store.getTable
   /**
+   * The getTableCellIds method returns the Ids of every Cell used across the
+   * whole Table.
+   *
+   * Note that this returns a copy of, rather than a reference, to the list of
+   * Ids, so changes made to the list are not made to the Store itself.
+   *
+   * @param tableId The Id of the Table in the Store.
+   * @returns An array of the Ids of every Cell used across the whole Table.
+   * @example
+   * This example retrieves the Cell Ids used across a whole Table.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {
+   *     fido: {species: 'dog', color: 'brown'},
+   *     felix: {species: 'cat', legs: 4},
+   *     cujo: {dangerous: true},
+   *   },
+   * });
+   * console.log(store.getTableCellIds('pets'));
+   * // -> ['species', 'color', 'legs', 'dangerous']
+   * ```
+   * @example
+   * This example retrieves the Cell Ids used across a Table that does not
+   * exist, returning an empty array.
+   *
+   * ```js
+   * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+   * console.log(store.getTableCellIds('species'));
+   * // -> []
+   * ```
+   * @category Getter
+   * @since v3.3
+   */
+  /// Store.getTableCellIds
+  /**
    * The getRowIds method returns the Ids of every Row in a given Table.
    *
    * Note that this returns a copy of, rather than a reference, to the list of
@@ -1379,7 +1415,7 @@
    */
   /// Store.getRow
   /**
-   * The getCellIds method returns the Ids of every Cell in a given Row, in a
+   * The getCellIds method returns the Ids of every Cell in a given Row in a
    * given Table.
    *
    * Note that this returns a copy of, rather than a reference, to the list of
@@ -1401,8 +1437,8 @@
    * // -> ['species', 'color']
    * ```
    * @example
-   * This example retrieves the Cell Ids of a Cell that does not exist,
-   * returning an empty array.
+   * This example retrieves the Cell Ids of a Row that does not exist, returning
+   * an empty array.
    *
    * ```js
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});

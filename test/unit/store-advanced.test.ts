@@ -156,6 +156,19 @@ describe('setJson', () => {
   });
 });
 
+test('Table Cell Ids', () => {
+  store = createStore();
+  expect(store.getTableCellIds('t1')).toEqual([]);
+  store.setRow('t1', 'r1', {c1: 1, c2: 2});
+  expect(store.getTableCellIds('t1')).toEqual(['c1', 'c2']);
+  store.setRow('t1', 'r2', {c2: 2, c3: 3});
+  expect(store.getTableCellIds('t1')).toEqual(['c1', 'c2', 'c3']);
+  store.setRow('t1', 'r2', {c4: 2, c5: 3});
+  expect(store.getTableCellIds('t1')).toEqual(['c1', 'c2', 'c4', 'c5']);
+  store.delRow('t1', 'r1');
+  expect(store.getTableCellIds('t1')).toEqual(['c4', 'c5']);
+});
+
 describe('Sorted Row Ids', () => {
   beforeEach(() => {
     store = createStore().setTables({

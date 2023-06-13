@@ -182,6 +182,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const valuesDefaulted: ValuesMap = mapNew();
   const valuesNonDefaulted: IdSet = setNew();
   const tablePoolFunctions: IdMap<PoolFunctions> = mapNew();
+  const tableCellIds: IdMap<IdMap<number>> = mapNew();
   const tablesMap: TablesMap = mapNew();
   const valuesMap: ValuesMap = mapNew();
   const tablesListeners: Pair<IdSet2> = pairNewMap();
@@ -406,6 +407,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       mapEnsure(tablesMap, tableId, () => {
         tableIdsChanged(tableId, 1);
         mapSet(tablePoolFunctions, tableId, getPoolFunctions());
+        mapSet(tableCellIds, tableId, mapNew());
         return mapNew();
       }),
       table,
@@ -537,6 +539,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
         tableIdsChanged(tableId, -1);
         mapSet(tablesMap, tableId);
         mapSet(tablePoolFunctions, tableId);
+        mapSet(tableCellIds, tableId);
       }
     }
   };
@@ -570,7 +573,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
     rowId: Id,
     cellId: Id,
     added: IdAdded,
-  ): ChangedIdsMap =>
+  ): void => {
+    const cellIds = mapGet(tableCellIds, tableId);
+    const count = (mapGet(cellIds, cellId) ?? 0) + added;
+    mapSet(cellIds, cellId, count != 0 ? count : null);
     idsChanged(
       mapEnsure(
         mapEnsure(changedCellIds, tableId, mapNew) as ChangedIdsMap2,
@@ -580,6 +586,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       cellId,
       added,
     );
+  };
 
   const cellChanged = (
     tableId: Id,
@@ -879,6 +886,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const getTable = (tableId: Id): Table =>
     mapToObj<RowMap, Row>(mapGet(tablesMap, id(tableId)), mapToObj);
+
+  const getTableCellIds = (tableId: Id): Ids =>
+    mapKeys(mapGet(tableCellIds, id(tableId)));
 
   const getRowIds = (tableId: Id): Ids =>
     mapKeys(mapGet(tablesMap, id(tableId)));
@@ -1421,6 +1431,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     getTables,
     getTableIds,
     getTable,
+    getTableCellIds,
     getRowIds,
     getSortedRowIds,
     getRow,

@@ -604,6 +604,11 @@ export interface Store<in out Schemas extends OptionalSchemas> {
     tableId: TableId,
   ): Table<Schemas[0], TableId>;
 
+  /// Store.getTableCellIds
+  getTableCellIds<TableId extends TableIdFromSchema<Schemas[0]>>(
+    tableId: TableId,
+  ): CellIdFromSchema<Schemas[0], TableId>[];
+
   /// Store.getRowIds
   getRowIds(tableId: TableIdFromSchema<Schemas[0]>): Ids;
 

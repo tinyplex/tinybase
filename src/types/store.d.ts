@@ -300,6 +300,9 @@ export interface Store {
   /// Store.getTable
   getTable(tableId: Id): Table;
 
+  /// Store.getTableCellIds
+  getTableCellIds(tableId: Id): Ids;
+
   /// Store.getRowIds
   getRowIds(tableId: Id): Ids;
 
