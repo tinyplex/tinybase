@@ -33,6 +33,7 @@ import {
   StoreListenerStats,
   Table,
   TableCallback,
+  TableCellCallback,
   Tables,
   TablesSchema,
   TransactionListener,
@@ -1329,6 +1330,11 @@ export const createStore: typeof createStoreDecl = (): Store => {
       ),
     );
 
+  const forEachTableCell = (
+    tableId: Id,
+    tableCellCallback: TableCellCallback,
+  ): void => mapForEach(mapGet(tableCellIds, id(tableId)), tableCellCallback);
+
   const forEachRow = (tableId: Id, rowCallback: RowCallback): void =>
     collForEach(mapGet(tablesMap, id(tableId)), (rowMap, rowId) =>
       rowCallback(rowId, (cellCallback) => mapForEach(rowMap, cellCallback)),
@@ -1491,6 +1497,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     finishTransaction,
 
     forEachTable,
+    forEachTableCell,
     forEachRow,
     forEachCell,
     forEachValue,

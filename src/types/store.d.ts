@@ -68,6 +68,9 @@ export type TableCallback = (
   forEachRow: (rowCallback: RowCallback) => void,
 ) => void;
 
+/// TableCellCallback
+export type TableCellCallback = (cellId: Id, count: number) => void;
+
 /// RowCallback
 export type RowCallback = (
   rowId: Id,
@@ -455,6 +458,9 @@ export interface Store {
 
   /// Store.forEachTable
   forEachTable(tableCallback: TableCallback): void;
+
+  /// Store.forEachTableCell
+  forEachTableCell(tableId: Id, tableCellCallback: TableCellCallback): void;
 
   /// Store.forEachRow
   forEachRow(tableId: Id, rowCallback: RowCallback): void;

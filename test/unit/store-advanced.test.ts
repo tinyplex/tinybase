@@ -389,6 +389,13 @@ describe('Miscellaneous', () => {
       expect(row).toEqual({c1: 1, c2: 2});
     });
 
+    test('forEachTableCell', () => {
+      store.setTables({t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2, c3: 3}}});
+      const cells: Row = {};
+      store.forEachTableCell('t1', (cellId, count) => (cells[cellId] = count));
+      expect(cells).toEqual({c1: 1, c2: 2, c3: 1});
+    });
+
     test('forEachValue', () => {
       store.setValues({v1: 1, v2: 2});
       const values: Values = {};

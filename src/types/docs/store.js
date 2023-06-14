@@ -290,6 +290,19 @@
  */
 /// TableCallback
 /**
+ * The TableCellCallback type describes a function that takes a Cell's Id and
+ * the count of times it appears across a whole Table.
+ *
+ * A TableCellCallback is provided when using the forEachTableCell method, so
+ * that you can do something based on every Cell used across a Table. See that
+ * method for specific examples.
+ *
+ * @param cellId The Id of the Cell that the callback can operate on.
+ * @param count The number of times this Cell is used across a whole Table.
+ * @category Callback
+ */
+/// TableCellCallback
+/**
  * The RowCallback type describes a function that takes a Row's Id and a
  * callback to loop over each Cell within it.
  *
@@ -3189,6 +3202,35 @@
    * @category Iterator
    */
   /// Store.forEachTable
+  /**
+   * The forEachTableCell method takes a function that it will then call for
+   * each Cell used across the whole Table.
+   *
+   * This method is useful for iterating over the Cell structure of the Table in
+   * a functional style. The `tableCellCallback` parameter is a
+   * TableCellCallback function that will be called with the Id of each Cell and
+   * the count of Rows in the Table in which it appears.
+   *
+   * @param tableId The Id of the Table containing the Cells to iterate over.
+   * @param tableCellCallback The function that should be called for every Cell
+   * Id used across the whole Table.
+   * @example
+   * This example iterates over each Cell Id used across the whole Table.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {fido: {species: 'dog'}, felix: {species: 'cat', legs: 4}},
+   * });
+   * store.forEachTableCell('pets', (cellId, count) => {
+   *   console.log(`${cellId}: ${count}`);
+   * });
+   * // -> 'species: 2'
+   * // -> 'legs: 1'
+   * ```
+   * @category Iterator
+   * @since v3.3
+   */
+  /// Store.forEachTableCell
   /**
    * The forEachRow method takes a function that it will then call for each Row
    * in a specified Table.

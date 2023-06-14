@@ -173,6 +173,12 @@ export type TableCallback<
   Params1 extends any[] = Truncate<Params2>,
 > = ((...params: Params2) => void) | ((...params: Params1) => void);
 
+/// TableCellCallback
+export type TableCellCallback<
+  Schema extends OptionalTablesSchema,
+  TableId extends TableIdFromSchema<Schema>,
+> = (cellId: CellIdFromSchema<Schema, TableId>, count: number) => void;
+
 /// RowCallback
 export type RowCallback<
   Schema extends OptionalTablesSchema,
@@ -837,6 +843,12 @@ export interface Store<in out Schemas extends OptionalSchemas> {
 
   /// Store.forEachTable
   forEachTable(tableCallback: TableCallback<Schemas[0]>): void;
+
+  /// Store.forEachTableCell
+  forEachTableCell<TableId extends TableIdFromSchema<Schemas[0]>>(
+    tableId: TableId,
+    tableCellCallback: TableCellCallback<Schemas[0], TableId>,
+  ): void;
 
   /// Store.forEachRow
   forEachRow<TableId extends TableIdFromSchema<Schemas[0]>>(
