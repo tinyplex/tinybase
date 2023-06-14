@@ -3613,7 +3613,7 @@
    * ```js
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
-   *   species: {dog: {price: 5}, }
+   *   species: {dog: {price: 5}},
    * });
    * const listenerId = store.addTableCellIdsListener(
    *   null,
