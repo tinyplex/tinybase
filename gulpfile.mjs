@@ -186,7 +186,7 @@ const lintCheck = async (dir) => {
     if (!prettier.check(code, prettierConfig)) {
       throw `${filePath} not pretty`;
     }
-    if (filePath.endsWith('.d.ts')) {
+    if (filePath.endsWith('.d.ts') || filePath.endsWith('.js')) {
       [...(code.matchAll(LINT_BLOCKS) ?? [])].forEach(([_, hint, docBlock]) => {
         if (hint?.trim() == 'override') {
           return; // can't lint orphaned TS methods
