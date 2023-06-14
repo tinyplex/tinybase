@@ -36,6 +36,7 @@ export type StoreListener = Listener &
     listenToTables: (id: Id) => Id;
     listenToTableIds: (id: Id) => Id;
     listenToTable: (id: Id, tableId: IdOrNull) => Id;
+    listenToTableCellIds: (id: Id, tableId: IdOrNull) => Id;
     listenToRowIds: (id: Id, tableId: IdOrNull) => Id;
     listenToSortedRowIds: (
       id: Id,
@@ -175,6 +176,17 @@ export const createStoreListener = (
       logs[id] = [];
       return store.addTableListener(tableId, (store, tableId) =>
         logs[id].push({[tableId]: store.getTable(tableId)}),
+      );
+    },
+
+    listenToTableCellIds: (id, tableId) => {
+      logs[id] = [];
+      return (store as Store).addTableCellIdsListener(
+        tableId,
+        (store, tableId, getIdChanges) =>
+          logs[id].push({
+            [tableId]: [store.getTableCellIds(tableId), getIdChanges?.()],
+          }),
       );
     },
 

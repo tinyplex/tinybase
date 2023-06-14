@@ -461,8 +461,8 @@
  * used to query which Ids changed during the transaction.
  *
  * @param store A reference to the Store that changed.
- * @param getIdChanges A function that returns information Id changes, since
- * 3.3.
+ * @param getIdChanges A function that returns information about the Id changes,
+ * since v3.3.
  * @category Listener
  */
 /// TableIdsListener
@@ -489,6 +489,24 @@
  */
 /// TableListener
 /**
+ * The TableCellIdsListener type describes a function that is used to listen to
+ * changes to the Cell Ids that appear anywhere in a Table.
+ *
+ * A TableCellIdsListener is provided when using the addTableCellIdsListener
+ * method. See that method for specific examples.
+ *
+ * When called, a TableCellIdsListener is given a reference to the Store, the Id
+ * of the Table whose Cell Ids changed, and a GetIdChanges function that can be
+ * used to query which Ids changed during the transaction.
+ *
+ * @param store A reference to the Store that changed.
+ * @param tableId The Id of the Table that changed.
+ * @param getIdChanges A function that returns information about the Id changes.
+ * @category Listener
+ * @since v3.3
+ */
+/// TableCellIdsListener
+/**
  * The RowIdsListener type describes a function that is used to listen to
  * changes to the Row Ids in a Table.
  *
@@ -503,8 +521,8 @@
  *
  * @param store A reference to the Store that changed.
  * @param tableId The Id of the Table that changed.
- * @param getIdChanges A function that returns information Id changes, since
- * 3.3.
+ * @param getIdChanges A function that returns information about the Id changes,
+ * since v3.3.
  * @category Listener
  */
 /// RowIdsListener
@@ -573,8 +591,8 @@
  * @param store A reference to the Store that changed.
  * @param tableId The Id of the Table that changed.
  * @param rowId The Id of the Row that changed.
- * @param getIdChanges A function that returns information Id changes, since
- * 3.3.
+ * @param getIdChanges A function that returns information about the Id changes,
+ * since v3.3.
  * @category Listener
  */
 /// CellIdsListener
@@ -641,8 +659,8 @@
  * used to query which Ids changed during the transaction.
  *
  * @param store A reference to the Store that changed.
- * @param getIdChanges A function that returns information Id changes, since
- * 3.3.
+ * @param getIdChanges A function that returns information about the Id changes,
+ * since v3.3.
  * @category Listener
  */
 /// ValueIdsListener
@@ -3534,6 +3552,106 @@
    */
   /// Store.addTableListener
   /**
+   * The addTableCellIdsListener method registers a listener function with the
+   * Store that will be called whenever the Cell Ids that appear anywhere in a
+   * Table change.
+   *
+   * The provided listener is a TableCellIdsListener function, and will be
+   * called with a reference to the Store and the Id of the Table that changed.
+   *
+   * By default, such a listener is only called when a Cell Id is added or
+   * removed from the whole of the Table. To listen to all changes in the Table,
+   * use the addTableListener method.
+   *
+   * You can either listen to a single Table (by specifying its Id as the
+   * method's first parameter) or changes to any Table (by providing a `null`
+   * wildcard).
+   *
+   * Use the optional mutator parameter to indicate that there is code in the
+   * listener that will mutate Store data. If set to `false` (or omitted), such
+   * mutations will be silently ignored. All relevant mutator listeners (with
+   * this flag set to `true`) are called _before_ any non-mutator listeners
+   * (since the latter may become relevant due to changes made in the former).
+   * The changes made by mutator listeners do not fire other mutating listeners,
+   * though they will fire non-mutator listeners.
+   *
+   * @param tableId The Id of the Table to listen to, or `null` as a wildcard.
+   * @param listener The function that will be called whenever the Cell Ids that
+   * appear anywhere in a Table change.
+   * @param mutator An optional boolean that indicates that the listener mutates
+   * Store data.
+   * @returns A unique Id for the listener that can later be used to call it
+   * explicitly, or to remove it.
+   * @example
+   * This example registers a listener that responds to any change to the Cell
+   * Ids that appear anywhere in a Table.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {fido: {species: 'dog', color: 'brown'}},
+   * });
+   * const listenerId = store.addTableCellIdsListener('pets', (store) => {
+   *   console.log('Cell Ids in pets table changed');
+   *   console.log(store.getTableCellIds('pets'));
+   * });
+   *
+   * store.setRow('pets', 'felix', {species: 'cat', legs: 4});
+   * // -> 'Cell Ids in pets table changed'
+   * // -> ['species', 'color', 'legs']
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @example
+   * This example registers a listener that responds to any change to the Cell
+   * Ids that appear anywhere in any Table.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {fido: {species: 'dog', color: 'brown'}},
+   *   species: {dog: {price: 5}, }
+   * });
+   * const listenerId = store.addTableCellIdsListener(
+   *   null,
+   *   (store, tableId) => {
+   *     console.log(`Cell Ids in ${tableId} table changed`);
+   *     console.log(store.getTableCellIds(tableId));
+   *   },
+   * );
+   *
+   * store.setRow('pets', 'felix', {species: 'cat', legs: 4});
+   * // -> 'Cell Ids in pets table changed'
+   * // -> ['species', 'color', 'legs']
+   *
+   * store.setRow('species', 'cat', {price: 4, friendly: true});
+   * // -> 'Cell Ids in species table changed'
+   * // -> ['price', 'friendly']
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @example
+   * This example registers a listener that responds to the Cell Ids that appear
+   * anywhere in a Table, and which also mutates the Store itself.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {fido: {species: 'dog', color: 'brown'}},
+   * });
+   * const listenerId = store.addTableCellIdsListener(
+   *   'pets',
+   *   (store, tableId) => store.setCell('meta', 'update', tableId, true),
+   *   true, // mutator
+   * );
+   *
+   * store.setRow('pets', 'felix', {species: 'cat', legs: 4});
+   * console.log(store.getTable('meta'));
+   * // -> {update: {pets: true}}
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @category Listener
+   */
+  /// Store.addTableCellIdsListener
+  /**
    * The addRowIdsListener method registers a listener function with the Store
    * that will be called whenever the Row Ids in a Table change.
    *
@@ -3702,7 +3820,7 @@
    * store.delListener(listenerId);
    * ```
    * @example
-   * This 111example registers a listener that responds to any change to a
+   * This example registers a listener that responds to any change to a
    * paginated section of the sorted Row Ids of a specific Table.
    *
    * ```js

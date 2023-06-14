@@ -291,6 +291,31 @@ export type TableListener<
   getCellChange: GetCellChange<Schemas[0]> | undefined,
 ) => void;
 
+/// TableCellIdsListener
+export type TableCellIdsListener<
+  Schemas extends OptionalSchemas,
+  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+  Params extends any[] = (
+    TableIdOrNull extends null ? TableIdFromSchema<Schemas[0]> : TableIdOrNull
+  ) extends infer TableId
+    ? TableId extends TableIdFromSchema<Schemas[0]>
+      ? [
+          store: Store<Schemas>,
+          tableId: TableId,
+          getIdChanges: GetIdChanges<CellIdFromSchema<Schemas[0], TableId>>,
+        ]
+      : never
+    : never,
+  Params3 extends any[] =
+    | Params
+    | [store: never, tableId: never, getIdChanges: never],
+  Params2 extends any[] = Truncate<Params3>,
+  // Params1 extends any[] = Truncate<Params2>,
+> = Params extends any
+  ? ((...params: Params3) => void) | ((...params: Params2) => void)
+  : // | ((...params: Params1) => void)
+    never;
+
 /// RowIdsListener
 export type RowIdsListener<
   Schemas extends OptionalSchemas,
@@ -879,6 +904,15 @@ export interface Store<in out Schemas extends OptionalSchemas> {
   addTableListener<TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null>(
     tableId: TableIdOrNull,
     listener: TableListener<Schemas, TableIdOrNull>,
+    mutator?: boolean,
+  ): Id;
+
+  /// Store.addTableCellIdsListener
+  addTableCellIdsListener<
+    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+  >(
+    tableId: TableIdOrNull,
+    listener: TableCellIdsListener<Schemas, TableIdOrNull>,
     mutator?: boolean,
   ): Id;
 

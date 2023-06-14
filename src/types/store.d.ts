@@ -126,6 +126,13 @@ export type TableListener = (
   getCellChange: GetCellChange | undefined,
 ) => void;
 
+/// TableCellIdsListener
+export type TableCellIdsListener = (
+  store: Store,
+  tableId: Id,
+  getIdChanges: GetIdChanges | undefined,
+) => void;
+
 /// RowIdsListener
 export type RowIdsListener = (
   store: Store,
@@ -481,6 +488,13 @@ export interface Store {
   addTableListener(
     tableId: IdOrNull,
     listener: TableListener,
+    mutator?: boolean,
+  ): Id;
+
+  /// Store.addTableCellIdsListener
+  addTableCellIdsListener(
+    tableId: IdOrNull,
+    listener: TableCellIdsListener,
     mutator?: boolean,
   ): Id;
 
