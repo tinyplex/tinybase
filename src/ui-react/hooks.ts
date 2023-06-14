@@ -34,6 +34,7 @@ import {
   SortedRowIdsListener,
   Store,
   Table,
+  TableCellIdsListener,
   TableIdsListener,
   TableListener,
   Tables,
@@ -124,6 +125,7 @@ import {
   useSortedRowIds as useSortedRowIdsDecl,
   useSortedRowIdsListener as useSortedRowIdsListenerDecl,
   useTableCellIds as useTableCellIdsDecl,
+  useTableCellIdsListener as useTableCellIdsListenerDecl,
   useTable as useTableDecl,
   useTableIds as useTableIdsDecl,
   useTableIdsListener as useTableIdsListenerDecl,
@@ -667,6 +669,22 @@ export const useTableListener: typeof useTableListenerDecl = (
 ): void =>
   useListener(
     TABLE,
+    useStoreOrStoreId(storeOrStoreId),
+    listener,
+    listenerDeps,
+    [tableId],
+    mutator,
+  );
+
+export const useTableCellIdsListener: typeof useTableCellIdsListenerDecl = (
+  tableId: IdOrNull,
+  listener: TableCellIdsListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  storeOrStoreId?: StoreOrStoreId,
+): void =>
+  useListener(
+    TABLE + CELL_IDS,
     useStoreOrStoreId(storeOrStoreId),
     listener,
     listenerDeps,

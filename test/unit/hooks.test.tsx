@@ -95,6 +95,7 @@ import {
   useStore,
   useTable,
   useTableCellIds,
+  useTableCellIdsListener,
   useTableIds,
   useTableIdsListener,
   useTableListener,
@@ -2519,6 +2520,41 @@ describe('Listener Hooks', () => {
       renderer.update(<div />);
     });
     expect(store.getListenerStats().table).toEqual(0);
+  });
+
+  test('useTableCellIdsListener', () => {
+    expect.assertions(6);
+    const Test = ({value}: {value: number}) => {
+      useTableCellIdsListener(
+        't1',
+        (store) => expect(store?.getCell('t1', 'r1', 'c1')).toEqual(value),
+        [value],
+        false,
+        store,
+      );
+      return <div />;
+    };
+    expect(store.getListenerStats().tableCellIds).toEqual(0);
+    act(() => {
+      renderer = create(<Test value={2} />);
+    });
+    expect(store.getListenerStats().tableCellIds).toEqual(1);
+    act(() => {
+      store.setCell('t1', 'r1', 'c1', 2);
+      store.setCell('t1', 'r1', 'c2', 0);
+    });
+    act(() => {
+      renderer.update(<Test value={3} />);
+    });
+    expect(store.getListenerStats().tableCellIds).toEqual(1);
+    act(() => {
+      store.setCell('t1', 'r1', 'c1', 3);
+      store.setCell('t1', 'r1', 'c3', 0);
+    });
+    act(() => {
+      renderer.update(<div />);
+    });
+    expect(store.getListenerStats().tableCellIds).toEqual(0);
   });
 
   test('useRowIdsListener', () => {

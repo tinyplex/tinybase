@@ -14,6 +14,7 @@ import {
   SortedRowIdsListener,
   Store,
   Table,
+  TableCellIdsListener,
   TableIdsListener,
   TableListener,
   Tables,
@@ -304,6 +305,15 @@ export function useTableIdsListener(
 export function useTableListener(
   tableId: IdOrNull,
   listener: TableListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  storeOrStoreId?: StoreOrStoreId,
+): void;
+
+/// useTableCellIdsListener
+export function useTableCellIdsListener(
+  tableId: IdOrNull,
+  listener: TableCellIdsListener,
   listenerDeps?: React.DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,

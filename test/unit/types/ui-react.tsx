@@ -98,6 +98,7 @@ const {
   useStore,
   useTable,
   useTableCellIds,
+  useTableCellIdsListener,
   useTableIds,
   useTableIdsListener,
   useTableListener,
@@ -412,6 +413,27 @@ const _Listeners = () => {
     store.getTables().t2; // !
   });
   useTableListener('t2', () => null); // !
+
+  useTableCellIdsListener('t1', (store, tableId) => {
+    store.getTables().t1;
+    tableId == 't1';
+    store.getTables().t2; // !
+    tableId == 't0'; // !
+    tableId == 't2'; // !
+  });
+  useTableCellIdsListener(null, (store, tableId) => {
+    store.getTables().t1;
+    tableId == 't1';
+    tableId == 't0';
+    store.getTables().t2; // !
+    tableId == 't2'; // !
+  });
+  useTableCellIdsListener('t1', (store, ..._) => {
+    store.getTables().t1;
+    store.getTables().t2; // !
+  });
+  useTableCellIdsListener('t1', () => null);
+  useTableCellIdsListener('t2', () => null); // !
 
   useRowIdsListener('t1', (store, tableId) => {
     store.getTables().t1;

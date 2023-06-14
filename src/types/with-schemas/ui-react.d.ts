@@ -56,6 +56,7 @@ import {
   SortedRowIdsListener,
   Store,
   Table,
+  TableCellIdsListener,
   TableIdsListener,
   TableListener,
   Tables,
@@ -421,6 +422,17 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   >(
     tableId: TableIdOrNull,
     listener: TableListener<Schemas, TableIdOrNull>,
+    listenerDeps?: React.DependencyList,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// useTableCellIdsListener
+  useTableCellIdsListener: <
+    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+  >(
+    tableId: TableIdOrNull,
+    listener: TableCellIdsListener<Schemas, TableIdOrNull>,
     listenerDeps?: React.DependencyList,
     mutator?: boolean,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
