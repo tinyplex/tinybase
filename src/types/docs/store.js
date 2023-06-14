@@ -1599,6 +1599,31 @@
    */
   /// Store.hasTable
   /**
+   * The hasTableCell method returns a boolean indicating whether a given Cell
+   * exists anywhere in a Table, not just in a specific Row.
+   *
+   * @param tableId The Id of a possible Table in the Store.
+   * @param cellId The Id of a possible Cell in the Table.
+   * @returns Whether a Cell with that Id exists anywhere in that Table.
+   * @example
+   * This example shows two simple Cell existence checks.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {fido: {species: 'dog'}, felix: {legs: 4}},
+   * });
+   * console.log(store.hasTableCell('pets', 'species'));
+   * // -> true
+   * console.log(store.hasTableCell('pets', 'legs'));
+   * // -> true
+   * console.log(store.hasTableCell('pets', 'color'));
+   * // -> false
+   * ```
+   * @category Getter
+   * @since v3.3
+   */
+  /// Store.hasTableCell
+  /**
    * The hasRow method returns a boolean indicating whether a given Row exists
    * in the Store.
    *
@@ -1620,7 +1645,7 @@
   /// Store.hasRow
   /**
    * The hasCell method returns a boolean indicating whether a given Cell exists
-   * in the Store.
+   * in a given Row in a given Table.
    *
    * @param tableId The Id of a possible Table in the Store.
    * @param rowId The Id of a possible Row in the Table.

@@ -939,6 +939,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const hasTable = (tableId: Id): boolean => collHas(tablesMap, id(tableId));
 
+  const hasTableCell = (tableId: Id, cellId: Id): boolean =>
+    collHas(mapGet(tableCellIds, id(tableId)), id(cellId));
+
   const hasRow = (tableId: Id, rowId: Id): boolean =>
     collHas(mapGet(tablesMap, id(tableId)), id(rowId));
 
@@ -1443,6 +1446,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
     hasTables,
     hasTable,
+    hasTableCell,
     hasRow,
     hasCell,
     hasValues,

@@ -400,6 +400,7 @@ describe('Miscellaneous', () => {
   test('are things present', () => {
     expect(store.hasTables()).toEqual(false);
     expect(store.hasTable('t1')).toEqual(false);
+    expect(store.hasTableCell('t1', 'c1')).toEqual(false);
     expect(store.hasRow('t1', 'r1')).toEqual(false);
     expect(store.hasCell('t1', 'r1', 'c1')).toEqual(false);
     expect(store.hasValues()).toEqual(false);
@@ -408,6 +409,8 @@ describe('Miscellaneous', () => {
     expect(store.hasTables()).toEqual(true);
     expect(store.hasTable('t1')).toEqual(true);
     expect(store.hasTable('t2')).toEqual(false);
+    expect(store.hasTableCell('t1', 'c1')).toEqual(true);
+    expect(store.hasTableCell('t1', 'c2')).toEqual(false);
     expect(store.hasRow('t1', 'r1')).toEqual(true);
     expect(store.hasRow('t1', 'r2')).toEqual(false);
     expect(store.hasCell('t1', 'r1', 'c1')).toEqual(true);

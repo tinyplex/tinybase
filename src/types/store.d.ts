@@ -339,6 +339,9 @@ export interface Store {
   /// Store.hasTable
   hasTable(tableId: Id): boolean;
 
+  /// Store.hasTableCell
+  hasTableCell(tableId: Id, cellId: Id): boolean;
+
   /// Store.hasRow
   hasRow(tableId: Id, rowId: Id): boolean;
 

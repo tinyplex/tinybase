@@ -660,6 +660,12 @@ export interface Store<in out Schemas extends OptionalSchemas> {
   /// Store.hasTable
   hasTable(tableId: TableIdFromSchema<Schemas[0]>): boolean;
 
+  /// Store.hasTableCell
+  hasTableCell<TableId extends TableIdFromSchema<Schemas[0]>>(
+    tableId: TableId,
+    cellId: CellIdFromSchema<Schemas[0], TableId>,
+  ): boolean;
+
   /// Store.hasRow
   hasRow(tableId: TableIdFromSchema<Schemas[0]>, rowId: Id): boolean;
 
