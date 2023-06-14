@@ -3,6 +3,70 @@
 This is a reverse chronological list of the major TinyBase releases, with
 highlighted features.
 
+## v3.3
+
+This release allows you to track the Cell Ids used across a whole Table,
+regardless of which Row they are in.
+
+In a Table (particularly in a Store without a TablesSchema), different Rows can
+use different Cells. Consider this Store, where each pet has a different set of
+Cell Ids:
+
+```js
+const store = createStore();
+
+store.setTable('pets', {
+  fido: {species: 'dog'},
+  felix: {species: 'cat', friendly: true},
+  cujo: {legs: 4},
+});
+```
+
+Prior to v3.3, you could only get the Cell Ids used in each Row at a time (with
+the getCellIds method). But you can now use the getTableCellIds method to get
+the union of all the Cell Ids used across the Table:
+
+```js
+console.log(store.getCellIds('pets', 'fido')); // previously available
+// -> ['species']
+
+console.log(store.getTableCellIds('pets')); //    new in v3.3
+// -> ['species', 'friendly', 'legs']
+```
+
+You can register a listener to track the Cell Ids used across a Table with the
+new addTableCellIdsListener method. Use cases for this might include knowing
+which headers to render when displaying a sparse Table in a user interface, or
+synchronizing data with relational or column-oriented database system.
+
+There is also a corresponding useTableCellIds hook in the optional ui-react
+module for accessing these Ids reactively, and a useTableCellIdsListener hook
+for more advanced purposes.
+
+Note that the bookkeeping behind these new accessors and listeners is efficient
+and should not be slowed by the number of Rows in the Table.
+
+This release also passes a getIdChanges function to every Id-related listener
+that, when called, returns information about the Id changes, both additions and
+removals, during a transaction. See the TableIdsListener type, for example.
+
+```js
+let listenerId = store.addRowIdsListener(
+  'pets',
+  (store, tableId, getIdChanges) => {
+    console.log(getIdChanges());
+  },
+);
+
+store.setRow('pets', 'lowly', {species: 'worm'});
+// -> {lowly: 1}
+
+store.delRow('pets', 'felix');
+// -> {felix: -1}
+
+store.delListener(listenerId).delTables();
+```
+
 ## v3.2
 
 This release lets you add a listener to the start of a transaction, and detect
@@ -17,8 +81,6 @@ Transactions added with the existing addDidFinishTransactionListener method
 _cannot_ mutate data.
 
 ```js
-const store = createStore();
-
 const startListenerId = store.addStartTransactionListener(() => {
   console.log('Start transaction');
   console.log(store.getTables());
@@ -112,7 +174,7 @@ store.setValues({employees: 3, open: true});
 console.log(store.getValues());
 // -> {employees: 3, open: true}
 
-const listenerId = store.addValueListener(
+listenerId = store.addValueListener(
   null,
   (store, valueId, newValue, oldValue) => {
     console.log(`Value '${valueId}' changed from ${oldValue} to ${newValue}`);

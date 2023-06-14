@@ -39,6 +39,7 @@ And for tabular data:
 - The useTables hook is the reactive equivalent of the getTables method.
 - The useTableIds hook is the reactive equivalent of the getTableIds method.
 - The useTable hook is the reactive equivalent of the getTable method.
+- The useTableCellIds hook is the reactive equivalent of the getTableCellIds method.
 - The useRowIds hook is the reactive equivalent of the getRowIds method.
 - The useSortedRowIds hook is the reactive equivalent of the getSortedRowIds method.
 - The useRow hook is the reactive equivalent of the getRow method.

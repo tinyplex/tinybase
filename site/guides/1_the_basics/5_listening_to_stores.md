@@ -15,6 +15,7 @@ And for tabular data:
 - Listen to Tables with the addTablesListener method.
 - Listen to Table Ids with the addTableIdsListener method.
 - Listen to a Table with the addTableListener method.
+- Listen to Cells Ids across a Table with the addTableCellIdsListener method.
 - Listen to Row Ids with the addRowIdsListener method.
 - Listen to sorted Row Ids with the addSortedRowIdsListener method.
 - Listen to a Row with the addRowListener method.

@@ -113,7 +113,8 @@ console.log(store.getCellIds('pets', 'fido'));
 ```
 
 There is also the getSortedRowIds method that lets you get the Ids sorted by a
-specific Cell Id.
+specific Cell Id, and the getTableCellIds method that lets you get all the Ids
+used across a whole Table.
 
 Again, the return types of these methods are by value, not by reference. So if
 you manipulate the returned array, the Store is not updated:

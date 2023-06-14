@@ -1059,6 +1059,7 @@
  * |Tables|getTables|setTables|delTables|addTablesListener|
  * |Table Ids|getTableIds|-|-|addTableIdsListener|
  * |Table|getTable|setTable|delTable|addTableListener|
+ * |Table Cell Ids|getTableCellIds|-|-|addTableCellIdsListener|
  * |Row Ids|getRowIds|-|-|addRowIdsListener|
  * |Row Ids (sorted)|getSortedRowIds|-|-|addSortedRowIdsListener|
  * |Row|getRow|setRow|delRow|addRowListener|
