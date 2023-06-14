@@ -51,6 +51,15 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
   storeWithSchemas.getTable('t1').r1!.c1d as undefined; // !
   storeWithSchemas.getTable('t2'); // !
 
+  storeWithSchemas.hasTableCell('t1', 'c1');
+  storeWithSchemas.hasTableCell('t1', 'c2'); // !
+  storeWithSchemas.hasTableCell('t2', 'c2'); // !
+
+  storeWithSchemas.getTableCellIds('t1');
+  storeWithSchemas.getTableCellIds('t1').includes('c1');
+  storeWithSchemas.getTableCellIds('t1').includes('c2'); // !
+  storeWithSchemas.getTableCellIds('t2'); // !
+
   storeWithSchemas.getRowIds('t1');
   storeWithSchemas.getRowIds('t2'); // !
 
@@ -207,6 +216,13 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
     tableId == 't2'; // !
   });
   storeWithSchemas.forEachTable(() => null);
+
+  storeWithSchemas.forEachTableCell('t1', (cellId) => {
+    cellId == 'c1';
+    cellId == 'c1d';
+    cellId == 'c2'; // !
+  });
+  storeWithSchemas.forEachTableCell('t2', () => null); // !
 
   storeWithSchemas.forEachRow('t1', (rowId, forEachCell) => {
     rowId as string;
@@ -416,6 +432,34 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
     store.getTables().t2; // !
   });
   storeWithSchemas.addTableListener('t2', () => null); // !
+
+  storeWithSchemas.addTableCellIdsListener(
+    't1',
+    (store, tableId, getIdChanges) => {
+      store.getTables().t1;
+      tableId == 't1';
+      store.getTables().t2; // !
+      tableId == 't0'; // !
+      tableId == 't2'; // !
+
+      const idChanges = getIdChanges?.() ?? {};
+      idChanges.c1 == 1;
+      idChanges.c2 == 1; // !
+    },
+  );
+  storeWithSchemas.addTableCellIdsListener(null, (store, tableId) => {
+    store.getTables().t1;
+    tableId == 't1';
+    tableId == 't0';
+    store.getTables().t2; // !
+    tableId == 't2'; // !
+  });
+  storeWithSchemas.addTableCellIdsListener('t1', (store, ..._) => {
+    store.getTables().t1;
+    store.getTables().t2; // !
+  });
+  storeWithSchemas.addTableCellIdsListener('t1', () => null);
+  storeWithSchemas.addTableCellIdsListener('t2', () => null); // !
 
   storeWithSchemas.addRowIdsListener('t1', (store, tableId) => {
     store.getTables().t1;
