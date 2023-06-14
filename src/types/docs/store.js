@@ -916,6 +916,11 @@
    */
   /// StoreListenerStats.table
   /**
+   * The number of TableCellIdsListener functions registered with the Store,
+   * since v3.3.
+   */
+  /// StoreListenerStats.tableCellIds
+  /**
    * The number of RowIdsListener functions registered with the Store.
    */
   /// StoreListenerStats.rowIds

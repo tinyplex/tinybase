@@ -274,6 +274,8 @@ export type StoreListenerStats = {
   tableIds?: number;
   /// StoreListenerStats.table
   table?: number;
+  /// StoreListenerStats.tableCellIds
+  tableCellIds?: number;
   /// StoreListenerStats.rowIds
   rowIds?: number;
   /// StoreListenerStats.sortedRowIds
