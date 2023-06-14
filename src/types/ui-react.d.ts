@@ -89,6 +89,12 @@ export function useTableIds(storeOrStoreId?: StoreOrStoreId): Ids;
 /// useTable
 export function useTable(tableId: Id, storeOrStoreId?: StoreOrStoreId): Table;
 
+/// useTableCellIds
+export function useTableCellIds(
+  tableId: Id,
+  storeOrStoreId?: StoreOrStoreId,
+): Ids;
+
 /// useRowIds
 export function useRowIds(tableId: Id, storeOrStoreId?: StoreOrStoreId): Ids;
 

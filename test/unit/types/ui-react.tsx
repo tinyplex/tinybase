@@ -97,6 +97,7 @@ const {
   useSortedRowIdsListener,
   useStore,
   useTable,
+  useTableCellIds,
   useTableIds,
   useTableIdsListener,
   useTableListener,
@@ -143,6 +144,9 @@ const _Getters = () => {
   useTable('t1').r1!.c1;
   useTable('t1').r1!.c2; // !
   useTable('t2'); // !
+
+  useTableCellIds('t1');
+  useTableCellIds('t2'); // !
 
   useRowIds('t1');
   useRowIds('t2'); // !

@@ -123,6 +123,7 @@ import {
   useSliceRowIdsListener as useSliceRowIdsListenerDecl,
   useSortedRowIds as useSortedRowIdsDecl,
   useSortedRowIdsListener as useSortedRowIdsListenerDecl,
+  useTableCellIds as useTableCellIdsDecl,
   useTable as useTableDecl,
   useTableIds as useTableIdsDecl,
   useTableIdsListener as useTableIdsListenerDecl,
@@ -317,6 +318,17 @@ export const useTable: typeof useTableDecl = (
   storeOrStoreId?: StoreOrStoreId,
 ): Table =>
   useListenable(TABLE, useStoreOrStoreId(storeOrStoreId), {}, [tableId]);
+
+export const useTableCellIds: typeof useTableCellIdsDecl = (
+  tableId: Id,
+  storeOrStoreId?: StoreOrStoreId,
+): Ids =>
+  useListenable(
+    TABLE + CELL_IDS,
+    useStoreOrStoreId(storeOrStoreId),
+    [],
+    [tableId],
+  );
 
 export const useRowIds: typeof useRowIdsDecl = (
   tableId: Id,

@@ -139,6 +139,12 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => Table<Schemas[0], TableId>;
 
+  /// useTableCellIds
+  useTableCellIds: <TableId extends TableIdFromSchema<Schemas[0]>>(
+    tableId: TableId,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => CellIdFromSchema<Schemas[0], TableId>[];
+
   /// useRowIds
   useRowIds: (
     tableId: TableIdFromSchema<Schemas[0]>,
@@ -166,14 +172,11 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   ) => Row<Schemas[0], TableId>;
 
   /// useCellIds
-  useCellIds: <
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    Ids extends CellIdFromSchema<Schemas[0], TableId>[],
-  >(
+  useCellIds: <TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
     rowId: Id,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
-  ) => Ids;
+  ) => CellIdFromSchema<Schemas[0], TableId>[];
 
   /// useCell
   useCell: <

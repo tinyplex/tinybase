@@ -516,6 +516,88 @@
  */
 /// useTable
 /**
+ * The useTableCellIds hook returns the Ids of every Cell used across the whole
+ * Table, and registers a listener so that any changes to that result will cause
+ * a re-render.
+ *
+ * A Provider component is used to wrap part of an application in a context, and
+ * it can contain a default Store or a set of Store objects named by Id. The
+ * useTableCellIds hook lets you indicate which Store to get data for: omit the
+ * optional final parameter for the default context Store, provide an Id for a
+ * named context Store, or provide a Store explicitly by reference.
+ *
+ * When first rendered, this hook will create a listener so that changes to the
+ * Table Cell Ids will cause a re-render. When the component containing this
+ * hook is unmounted, the listener will be automatically removed.
+ *
+ * @param tableId The Id of the Table in the Store.
+ * @param storeOrStoreId The Store to be accessed: omit for the default context
+ * Store, provide an Id for a named context Store, or provide an explicit
+ * reference.
+ * @returns An array of the Ids of every Cell used across the whole Table.
+ * @example
+ * This example creates a Store outside the application, which is used in the
+ * useTableCellIds hook by reference. A change to the data in the Store
+ * re-renders the component.
+ *
+ * ```jsx
+ * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
+ * const App = () => (
+ *   <span>{JSON.stringify(useTableCellIds('pets', store))}</span>
+ * );
+ *
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["color"]</span>'
+ *
+ * store.setCell('pets', 'felix', 'species', 'cat'); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["color","species"]</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a default Store is
+ * provided. A component within it then uses the useTableCellIds hook.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => <span>{JSON.stringify(useTableCellIds('pets'))}</span>;
+ *
+ * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["color"]</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a Store is provided, named
+ * by Id. A component within it then uses the useTableCellIds hook.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider storesById={{petStore: store}}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <span>{JSON.stringify(useTableCellIds('pets', 'petStore'))}</span>
+ * );
+ *
+ * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["color"]</span>'
+ * ```
+ * @category Store hooks
+ * @since v3.3
+ */
+/// useTableCellIds
+/**
  * The useRowIds hook returns the Ids of every Row in a given Table, and
  * registers a listener so that any changes to that result will cause a
  * re-render.
@@ -594,6 +676,7 @@
  * @category Store hooks
  */
 /// useRowIds
+
 /**
  * The useSortedRowIds hook returns the sorted (and optionally, paginated) Ids
  * of every Row in a given Table, and registers a listener so that any changes
