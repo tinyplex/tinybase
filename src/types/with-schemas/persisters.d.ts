@@ -26,12 +26,12 @@ export type PersisterListener<Schemas extends OptionalSchemas> = (
 export type DatabasePersisterConfig<_Schemas extends OptionalSchemas> =
   | {
       mode: 'json';
-      storeTable?: string;
+      storeTableName?: string;
     }
   | {
       mode: 'tabular';
-      rowIdColumn?: string;
-      valuesTable?: string;
+      rowIdColumnName?: string;
+      valuesTableName?: string;
     };
 
 /// Persister

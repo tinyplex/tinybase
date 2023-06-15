@@ -14,7 +14,7 @@ const DEFAULT_CONFIG: DatabasePersisterConfig = {mode: JSON};
 
 export const createSqlitePersister = <ListeningHandle>(
   store: Store,
-  storeTableOrConfig: string | DatabasePersisterConfig | undefined,
+  configOrStoreTableName: DatabasePersisterConfig | string | undefined,
   cmd: Cmd,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
@@ -25,9 +25,9 @@ export const createSqlitePersister = <ListeningHandle>(
   //   return await cmd1(sql, args);
   // };
 
-  const config: DatabasePersisterConfig = isString(storeTableOrConfig)
-    ? {...DEFAULT_CONFIG, storeTable: storeTableOrConfig}
-    : storeTableOrConfig ?? DEFAULT_CONFIG;
+  const config: DatabasePersisterConfig = isString(configOrStoreTableName)
+    ? {...DEFAULT_CONFIG, storeTableName: configOrStoreTableName}
+    : configOrStoreTableName ?? DEFAULT_CONFIG;
 
   return config.mode == JSON
     ? createJsonSqlitePersister(
@@ -35,14 +35,14 @@ export const createSqlitePersister = <ListeningHandle>(
         cmd,
         addPersisterListener,
         delPersisterListener,
-        config.storeTable,
+        config.storeTableName,
       )
     : createTabularSqlitePersister(
         store,
         cmd,
         addPersisterListener,
         delPersisterListener,
-        config.rowIdColumn,
-        config.valuesTable,
+        config.rowIdColumnName,
+        config.valuesTableName,
       );
 };

@@ -8,5 +8,5 @@ export function createSqliteWasmPersister(
   store: Store,
   sqlite3: any,
   db: any,
-  storeTableOrConfig?: string | DatabasePersisterConfig,
+  configOrStoreTableName?: string | DatabasePersisterConfig,
 ): Persister;

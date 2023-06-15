@@ -8,5 +8,5 @@ import {Store} from '../store';
 export function createCrSqliteWasmPersister(
   store: Store,
   db: DB,
-  storeTableOrConfig?: string | DatabasePersisterConfig,
+  configOrStoreTableName?: string | DatabasePersisterConfig,
 ): Persister;

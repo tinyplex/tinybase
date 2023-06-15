@@ -8,5 +8,5 @@ export function createSqliteWasmPersister<Schemas extends OptionalSchemas>(
   store: Store<Schemas>,
   sqlite3: any,
   db: any,
-  storeTableOrConfig?: string | DatabasePersisterConfig<Schemas>,
+  configOrStoreTableName?: DatabasePersisterConfig<Schemas> | string,
 ): Persister<Schemas>;

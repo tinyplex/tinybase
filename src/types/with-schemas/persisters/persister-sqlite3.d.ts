@@ -8,5 +8,5 @@ import {Database} from 'sqlite3';
 export function createSqlite3Persister<Schemas extends OptionalSchemas>(
   store: Store<Schemas>,
   db: Database,
-  storeTableOrConfig?: string | DatabasePersisterConfig<Schemas>,
+  configOrStoreTableName?: DatabasePersisterConfig<Schemas> | string,
 ): Persister<Schemas>;
