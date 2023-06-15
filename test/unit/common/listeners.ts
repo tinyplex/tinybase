@@ -1,6 +1,5 @@
 import {
   Checkpoints,
-  Id,
   Indexes,
   Metrics,
   Queries,
@@ -10,7 +9,6 @@ import {
 import {
   CheckpointsListener,
   IndexesListener,
-  Listener,
   Logs,
   MetricsListener,
   QueriesListener,
@@ -30,35 +28,6 @@ declare global {
     }
   }
 }
-
-export const pause = async (ms = 50): Promise<void> =>
-  new Promise((resolve) => setTimeout(resolve, ms));
-
-export const expectChanges = (
-  listener: Listener,
-  id: Id,
-  ...expectedChanges: any[]
-): void => {
-  const log: any[] = listener.logs[id];
-  expectedChanges.forEach((expectedChange) =>
-    expect(JSON.stringify(log.shift())).toEqual(JSON.stringify(expectedChange)),
-  );
-};
-
-export const expectChangesNoJson = (
-  listener: Listener,
-  id: Id,
-  ...expectedChanges: any[]
-): void => {
-  const log: any[] = listener.logs[id];
-  expectedChanges.forEach((expectedChange) =>
-    expect(log.shift()).toEqual(expectedChange),
-  );
-};
-
-export const expectNoChanges = (listener: Listener): void => {
-  Object.values(listener.logs).forEach((log) => expect(log).toHaveLength(0));
-};
 
 export const createStoreListener = (
   store: Store | StoreWithSchemas<NoSchemas>,

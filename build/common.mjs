@@ -455,6 +455,7 @@ export const compileDocsAndAssets = async (api = true, pages = true) => {
   await esbuild.build({
     entryPoints: ['site/build.ts'],
     external: ['tinydocs', 'react', 'yjs', 'prettier'],
+    target: 'esnext',
     bundle: true,
     outfile: './tmp/build.js',
     format: 'esm',

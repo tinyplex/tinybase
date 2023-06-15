@@ -10,11 +10,8 @@ import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import {suppressWarnings} from '../common/other';
 
 export type SqliteWasmDb = [sqlite3: any, db: any];
-export type Dump = [
-  name: string,
-  sql: string,
-  rows: {[column: string]: any}[],
-][];
+
+type Dump = [name: string, sql: string, rows: {[column: string]: any}[]][];
 
 type SqliteVariant<Database> = [
   getOpenDatabase: () => Promise<Database>,
