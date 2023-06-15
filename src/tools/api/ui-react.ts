@@ -9,6 +9,7 @@ import {
   ID,
   LISTENER_,
   OPTIONAL_COLON,
+  OR_UNDEFINED,
   PARTIAL,
   PROPS,
   PROVIDER,
@@ -63,7 +64,6 @@ import {SharedTableTypes, SharedValueTypes, TableTypes} from './core';
 import {TablesSchema, ValuesSchema} from '../../types/store.d';
 import {arrayPush, arrayUnshift} from '../../common/array';
 import {Id} from '../../types/common.d';
-import {OR_UNDEFINED} from '../common/strings';
 import {getSchemaFunctions} from '../common/schema';
 import {isUndefined} from '../../common/other';
 import {objIsEmpty} from '../../common/obj';
@@ -358,6 +358,7 @@ export const getStoreUiReactApi = (
       tablesListenerType,
       tableIdsListenerType,
       tableListenerType,
+      tableCellIdsListenerType,
       rowIdsListenerType,
       sortedRowIdsListenerType,
       rowListenerType,
@@ -375,6 +376,7 @@ export const getStoreUiReactApi = (
       tablesListenerType,
       tableIdsListenerType,
       tableListenerType,
+      tableCellIdsListenerType,
       rowIdsListenerType,
       sortedRowIdsListenerType,
       rowListenerType,
@@ -628,6 +630,16 @@ export const getStoreUiReactApi = (
         TABLE,
         tableType,
         getTableContentDoc(tableId) + AND_REGISTERS,
+        EMPTY_STRING,
+        TABLE_ID,
+      );
+
+      // useTableCellIds
+      addProxyHook(
+        tableName + TABLE + CELL_IDS,
+        TABLE + CELL_IDS,
+        IDS,
+        getIdsDoc(CELL, 'the whole of ' + getTableDoc(tableId)) + AND_REGISTERS,
         EMPTY_STRING,
         TABLE_ID,
       );
@@ -943,6 +955,19 @@ export const getStoreUiReactApi = (
       getListenerDoc(3, 0),
       getListenerHookParams(
         tableListenerType,
+        `tableId: ${tableIdType} | null`,
+      ),
+      getListenerHookParamsInCall('tableId'),
+    );
+
+    // useTableCellIdsListener
+    addProxyHook(
+      TABLE + CELL_IDS + LISTENER,
+      TABLE + CELL_IDS + LISTENER,
+      VOID,
+      getListenerDoc(14, 3, 1),
+      getListenerHookParams(
+        tableCellIdsListenerType,
         `tableId: ${tableIdType} | null`,
       ),
       getListenerHookParamsInCall('tableId'),

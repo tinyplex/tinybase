@@ -157,6 +157,11 @@ export const getCodeFunctions = (): [
   const addConstant = (name: Id, body: LINE_OR_LINE_TREE): Id =>
     mapGet(constants, name) === body ? name : mapUnique(constants, name, body);
 
+  const getSortableImport = (importMaybeAs: string): string => {
+    const as = importMaybeAs.indexOf(' as ');
+    return as != -1 ? importMaybeAs.substring(as + 4) : importMaybeAs;
+  };
+
   const getImports = (location: 0 | 1 = 0): LINE[] =>
     arrayMap(
       [
@@ -165,7 +170,11 @@ export const getCodeFunctions = (): [
             allImports[location],
             (items, source) =>
               `import {${join(
-                arraySort(collValues(items)),
+                arraySort(collValues(items), (import1, import2) =>
+                  getSortableImport(import1) > getSortableImport(import2)
+                    ? 1
+                    : -1,
+                ),
                 ', ',
               )}} from '${source}';`,
           ),

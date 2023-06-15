@@ -97,6 +97,7 @@ export type TableTypes = [
   cellIdType: string,
   cellCallbackType: string,
   rowCallbackType: string,
+  tableCellCallbackType: string,
 ];
 export type SharedTableTypes = [
   tablesType: string,
@@ -106,6 +107,7 @@ export type SharedTableTypes = [
   tablesListenerType: string,
   tableIdsListenerType: string,
   tableListenerType: string,
+  tableCellIdsListenerType: string,
   rowIdsListenerType: string,
   sortedRowIdsListenerType: string,
   rowListenerType: string,
@@ -290,10 +292,12 @@ export const getStoreCoreApi = (
       _cellType,
       cellCallbackType,
       rowCallbackType,
+      tableCellCallbackType,
       tableCallbackType,
       tablesListenerType,
       tableIdsListenerType,
       tableListenerType,
+      tableCellIdsListenerType,
       rowIdsListenerType,
       sortedRowIdsListenerType,
       rowListenerType,
@@ -359,6 +363,16 @@ export const getStoreCoreApi = (
             `a Row Id from the '${tableId}' Table, and a Cell iterator`,
           ),
         ),
+
+        // TableCellCallbackType
+        addType(
+          tableName + TABLE + CELL + CALLBACK,
+          tableCellCallbackType + tableIdGeneric,
+          getCallbackDoc(
+            `a Cell Id from anywhere in the '${tableId}' Table, and a count ` +
+              'of how many times it appears',
+          ),
+        ),
       ];
       mapSet(tablesTypes, tableId, tableTypes);
       addImport(1, moduleDefinition, ...tableTypes);
@@ -375,6 +389,7 @@ export const getStoreCoreApi = (
       tablesListenerType,
       tableIdsListenerType,
       tableListenerType,
+      tableCellIdsListenerType,
       rowIdsListenerType,
       sortedRowIdsListenerType,
       rowListenerType,
@@ -391,6 +406,7 @@ export const getStoreCoreApi = (
       tablesListenerType,
       tableIdsListenerType,
       tableListenerType,
+      tableCellIdsListenerType,
       rowIdsListenerType,
       sortedRowIdsListenerType,
       rowListenerType,
@@ -448,6 +464,7 @@ export const getStoreCoreApi = (
         cellIdType,
         cellCallbackType,
         rowCallbackType,
+        tableCellCallbackType,
       ] = mapGet(tablesTypes, tableId) as TableTypes;
 
       // getTable, hasTable, setTable, delTable
@@ -468,6 +485,28 @@ export const getStoreCoreApi = (
             params,
             TABLE_ID + paramsInCall,
           ),
+      );
+
+      // getTableCellIds
+      addProxyMethod(
+        0,
+        tableName,
+        TABLE + CELL_IDS,
+        IDS,
+        getIdsDoc(CELL, 'the whole of ' + getTableDoc(tableId)),
+        EMPTY_STRING,
+        TABLE_ID,
+      );
+
+      // forEachTableCell
+      addProxyMethod(
+        5,
+        tableName,
+        TABLE + CELL,
+        VOID,
+        getForEachDoc(TABLE + CELL, 'the whole of ' + getTableDoc(tableId)),
+        'tableCellCallback: ' + tableCellCallbackType,
+        TABLE_ID + ', tableCellCallback as any',
       );
 
       // getRowIds
@@ -591,6 +630,19 @@ export const getStoreCoreApi = (
                 TABLE_ID + ', rowId, ' + CELL_ID + paramsInCall,
               ),
           );
+
+          // hasTableCell
+          addProxyMethod(
+            1,
+            tableName + cellName,
+            TABLE + CELL,
+            BOOLEAN,
+            VERBS[1] +
+              ` the '${cellId}' Cell anywhere in ` +
+              getTableDoc(tableId),
+            EMPTY_STRING,
+            TABLE_ID + ', ' + CELL_ID,
+          );
         },
       );
     });
@@ -630,6 +682,15 @@ export const getStoreCoreApi = (
       TABLE,
       tableListenerType,
       getListenerDoc(3, 0),
+      `tableId: ${tableIdType} | null`,
+      'tableId',
+    );
+
+    // addTableCellIdsListener
+    addProxyListener(
+      TABLE + CELL_IDS,
+      tableCellIdsListenerType,
+      getListenerDoc(14, 3, 1),
       `tableId: ${tableIdType} | null`,
       'tableId',
     );

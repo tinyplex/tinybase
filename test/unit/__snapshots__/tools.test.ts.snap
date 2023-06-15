@@ -88,6 +88,14 @@ export type RowCallback<TId extends TableId> = (
 ) => void;
 
 /**
+ * A function that takes a Cell Id, and count of how many times it appears.
+ */
+export type TableCellCallback<TId extends TableId> = (
+  cellId: CellId<TId>,
+  count: number,
+) => void;
+
+/**
  * Table Ids and callback types.
  */
 type TableIdForEachRowArray<TId = TableId> = TId extends TableId
@@ -137,6 +145,11 @@ export type TableListener = (
   tableId: TableId,
   getCellChange: GetCellChange | undefined,
 ) => void;
+
+/**
+ * A function for listening to changes to the Cell Ids anywhere in a Table.
+ */
+export type TableCellIdsListener = (s: S, tableId: TableId) => void;
 
 /**
  * A function for listening to changes to the Row Ids in a Table.
@@ -256,6 +269,12 @@ export type T1CellCallback = CellCallback<'t1'>;
  * A function that takes a Row Id from the 't1' Table, and a Cell iterator.
  */
 export type T1RowCallback = RowCallback<'t1'>;
+
+/**
+ * A function that takes a Cell Id from anywhere in the 't1' Table, and a count
+ * of how many times it appears.
+ */
+export type T1TableCellCallback = TableCellCallback<'t1'>;
 
 /**
  * Represents the keyed value content of the Store.
@@ -413,6 +432,16 @@ export interface S {
   delT1Table(): S;
 
   /**
+   * Gets the Ids of the Cells in the whole of the 't1' Table.
+   */
+  getT1TableCellIds(): Ids;
+
+  /**
+   * Calls a function for each TableCell in the whole of the 't1' Table.
+   */
+  forEachT1TableCell(tableCellCallback: T1TableCellCallback): void;
+
+  /**
    * Gets the Ids of the Rows in the 't1' Table.
    */
   getT1RowIds(): Ids;
@@ -493,6 +522,11 @@ export interface S {
   delT1C1Cell(rowId: Id): S;
 
   /**
+   * Checks existence of the 'c1' Cell anywhere in the 't1' Table.
+   */
+  hasT1C1TableCell(): boolean;
+
+  /**
    * Gets the 'c2' Cell for the specified Row in the 't1' Table.
    */
   getT1C2Cell(rowId: Id): string;
@@ -511,6 +545,11 @@ export interface S {
    * Deletes the 'c2' Cell for the specified Row in the 't1' Table.
    */
   delT1C2Cell(rowId: Id): S;
+
+  /**
+   * Checks existence of the 'c2' Cell anywhere in the 't1' Table.
+   */
+  hasT1C2TableCell(): boolean;
 
   /**
    * Gets the 'c3' Cell for the specified Row in the 't1' Table.
@@ -533,6 +572,11 @@ export interface S {
   delT1C3Cell(rowId: Id): S;
 
   /**
+   * Checks existence of the 'c3' Cell anywhere in the 't1' Table.
+   */
+  hasT1C3TableCell(): boolean;
+
+  /**
    * Gets the '' Cell for the specified Row in the 't1' Table.
    */
   getT1Cell(rowId: Id): string | undefined;
@@ -551,6 +595,11 @@ export interface S {
    * Deletes the '' Cell for the specified Row in the 't1' Table.
    */
   delT1Cell(rowId: Id): S;
+
+  /**
+   * Checks existence of the '' Cell anywhere in the 't1' Table.
+   */
+  hasT1TableCell(): boolean;
 
   /**
    * Gets a string serialization of the tabular content of the Store.
@@ -581,6 +630,16 @@ export interface S {
   addTableListener(
     tableId: TableId | null,
     listener: TableListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * Registers a listener that will be called whenever the Cell Ids anywhere in
+   * a Table change.
+   */
+  addTableCellIdsListener(
+    tableId: TableId | null,
+    listener: TableCellIdsListener,
     mutator?: boolean,
   ): Id;
 
@@ -891,8 +950,10 @@ export function createS(): S;
   T1RowCallback,
   T1RowWhenSet,
   T1Table,
+  T1TableCellCallback,
   T1TableWhenSet,
   TableCallback,
+  TableCellIdsListener,
   TableId,
   TableIdsListener,
   TableListener,
@@ -998,6 +1059,11 @@ export const createS: typeof createSDecl = () => {
 
     delT1Table: (): S => fluent(() => store.delTable(T1)),
 
+    getT1TableCellIds: (): Ids => store.getTableCellIds(T1) as Ids,
+
+    forEachT1TableCell: (tableCellCallback: T1TableCellCallback): void =>
+      store.forEachTableCell(T1, tableCellCallback as any),
+
     getT1RowIds: (): Ids => store.getRowIds(T1) as Ids,
 
     getT1SortedRowIds: (
@@ -1041,6 +1107,8 @@ export const createS: typeof createSDecl = () => {
 
     delT1C1Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C1)),
 
+    hasT1C1TableCell: (): boolean => store.hasTableCell(T1, C1),
+
     getT1C2Cell: (rowId: Id): string => store.getCell(T1, rowId, C2) as string,
 
     hasT1C2Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C2),
@@ -1049,6 +1117,8 @@ export const createS: typeof createSDecl = () => {
       fluent(() => store.setCell(T1, rowId, C2, cell as any)),
 
     delT1C2Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C2)),
+
+    hasT1C2TableCell: (): boolean => store.hasTableCell(T1, C2),
 
     getT1C3Cell: (rowId: Id): string => store.getCell(T1, rowId, C3) as string,
 
@@ -1059,6 +1129,8 @@ export const createS: typeof createSDecl = () => {
 
     delT1C3Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C3)),
 
+    hasT1C3TableCell: (): boolean => store.hasTableCell(T1, C3),
+
     getT1Cell: (rowId: Id): string | undefined =>
       store.getCell(T1, rowId, _) as string | undefined,
 
@@ -1068,6 +1140,8 @@ export const createS: typeof createSDecl = () => {
       fluent(() => store.setCell(T1, rowId, _, cell as any)),
 
     delT1Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, _)),
+
+    hasT1TableCell: (): boolean => store.hasTableCell(T1, _),
 
     getTablesJson: (): Json => store.getTablesJson() as Json,
 
@@ -1085,6 +1159,12 @@ export const createS: typeof createSDecl = () => {
       listener: TableListener,
       mutator?: boolean,
     ): Id => store.addTableListener(tableId, proxy(listener), mutator),
+
+    addTableCellIdsListener: (
+      tableId: TableId | null,
+      listener: TableCellIdsListener,
+      mutator?: boolean,
+    ): Id => store.addTableCellIdsListener(tableId, proxy(listener), mutator),
 
     addRowIdsListener: (
       tableId: TableId | null,
@@ -1284,6 +1364,7 @@ import {
   T1RowWhenSet,
   T1Table,
   T1TableWhenSet,
+  TableCellIdsListener,
   TableId,
   TableIdsListener,
   TableListener,
@@ -1465,6 +1546,12 @@ export function TablesView({
  * changes to that result will cause a re-render.
  */
 export function useT1Table(sOrSId?: SOrSId): T1Table;
+
+/**
+ * Gets the Ids of the Cells in the whole of the 't1' Table, and registers a
+ * listener so that any changes to that result will cause a re-render.
+ */
+export function useT1TableCellIds(sOrSId?: SOrSId): Ids;
 
 /**
  * Gets the Ids of the Rows in the 't1' Table, and registers a listener so that
@@ -1798,6 +1885,18 @@ export function useTableListener(
 ): void;
 
 /**
+ * Registers a listener that will be called whenever the Cell Ids anywhere in a
+ * Table change.
+ */
+export function useTableCellIdsListener(
+  tableId: TableId | null,
+  listener: TableCellIdsListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  sOrSId?: SOrSId,
+): void;
+
+/**
  * Registers a listener that will be called whenever the Row Ids in a Table
  * change.
  */
@@ -2123,6 +2222,7 @@ import {
   T1RowWhenSet,
   T1Table,
   T1TableWhenSet,
+  TableCellIdsListener,
   TableId,
   TableIdsListener,
   TableListener,
@@ -2202,7 +2302,9 @@ import {
   useT1Row as useT1RowDecl,
   useT1RowIds as useT1RowIdsDecl,
   useT1SortedRowIds as useT1SortedRowIdsDecl,
+  useT1TableCellIds as useT1TableCellIdsDecl,
   useT1Table as useT1TableDecl,
+  useTableCellIdsListener as useTableCellIdsListenerDecl,
   useTableIds as useTableIdsDecl,
   useTableIdsListener as useTableIdsListenerDecl,
   useTableListener as useTableListenerDecl,
@@ -2245,6 +2347,8 @@ import {
   useSetValuesCallback as useSetValuesCallbackCore,
   useSortedRowIds as useSortedRowIdsCore,
   useSortedRowIdsListener as useSortedRowIdsListenerCore,
+  useTableCellIds as useTableCellIdsCore,
+  useTableCellIdsListener as useTableCellIdsListenerCore,
   useTable as useTableCore,
   useTableIds as useTableIdsCore,
   useTableIdsListener as useTableIdsListenerCore,
@@ -2432,6 +2536,10 @@ export const TablesView: typeof TablesViewDecl = ({
 
 export const useT1Table: typeof useT1TableDecl = (sOrSId?: SOrSId): T1Table =>
   useHook(sOrSId, useTableCore, [T1]);
+
+export const useT1TableCellIds: typeof useT1TableCellIdsDecl = (
+  sOrSId?: SOrSId,
+): Ids => useHook(sOrSId, useTableCellIdsCore, [T1]);
 
 export const useT1RowIds: typeof useT1RowIdsDecl = (sOrSId?: SOrSId): Ids =>
   useHook(sOrSId, useRowIdsCore, [T1]);
@@ -2776,6 +2884,20 @@ export const useTableListener: typeof useTableListenerDecl = (
   sOrSId?: SOrSId,
 ): void =>
   useHook(sOrSId, useTableListenerCore, [
+    tableId,
+    listener,
+    listenerDeps,
+    mutator,
+  ]);
+
+export const useTableCellIdsListener: typeof useTableCellIdsListenerDecl = (
+  tableId: TableId | null,
+  listener: TableCellIdsListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  sOrSId?: SOrSId,
+): void =>
+  useHook(sOrSId, useTableCellIdsListenerCore, [
     tableId,
     listener,
     listenerDeps,
@@ -4352,6 +4474,14 @@ export type RowCallback<TId extends TableId> = (
 ) => void;
 
 /**
+ * A function that takes a Cell Id, and count of how many times it appears.
+ */
+export type TableCellCallback<TId extends TableId> = (
+  cellId: CellId<TId>,
+  count: number,
+) => void;
+
+/**
  * Table Ids and callback types.
  */
 type TableIdForEachRowArray<TId = TableId> = TId extends TableId
@@ -4401,6 +4531,11 @@ export type TableListener = (
   tableId: TableId,
   getCellChange: GetCellChange | undefined,
 ) => void;
+
+/**
+ * A function for listening to changes to the Cell Ids anywhere in a Table.
+ */
+export type TableCellIdsListener = (s: S, tableId: TableId) => void;
 
 /**
  * A function for listening to changes to the Row Ids in a Table.
@@ -4522,6 +4657,12 @@ export type T1CellCallback = CellCallback<'t1'>;
 export type T1RowCallback = RowCallback<'t1'>;
 
 /**
+ * A function that takes a Cell Id from anywhere in the 't1' Table, and a count
+ * of how many times it appears.
+ */
+export type T1TableCellCallback = TableCellCallback<'t1'>;
+
+/**
  * Takes a number Cell value and returns another.
  */
 export type MapNumber = (cell: number | undefined) => number;
@@ -4590,6 +4731,16 @@ export interface S {
    * Deletes the content of the 't1' Table.
    */
   delT1Table(): S;
+
+  /**
+   * Gets the Ids of the Cells in the whole of the 't1' Table.
+   */
+  getT1TableCellIds(): Ids;
+
+  /**
+   * Calls a function for each TableCell in the whole of the 't1' Table.
+   */
+  forEachT1TableCell(tableCellCallback: T1TableCellCallback): void;
 
   /**
    * Gets the Ids of the Rows in the 't1' Table.
@@ -4672,6 +4823,11 @@ export interface S {
   delT1C1Cell(rowId: Id): S;
 
   /**
+   * Checks existence of the 'c1' Cell anywhere in the 't1' Table.
+   */
+  hasT1C1TableCell(): boolean;
+
+  /**
    * Gets the 'c2' Cell for the specified Row in the 't1' Table.
    */
   getT1C2Cell(rowId: Id): string;
@@ -4690,6 +4846,11 @@ export interface S {
    * Deletes the 'c2' Cell for the specified Row in the 't1' Table.
    */
   delT1C2Cell(rowId: Id): S;
+
+  /**
+   * Checks existence of the 'c2' Cell anywhere in the 't1' Table.
+   */
+  hasT1C2TableCell(): boolean;
 
   /**
    * Gets the 'c3' Cell for the specified Row in the 't1' Table.
@@ -4712,6 +4873,11 @@ export interface S {
   delT1C3Cell(rowId: Id): S;
 
   /**
+   * Checks existence of the 'c3' Cell anywhere in the 't1' Table.
+   */
+  hasT1C3TableCell(): boolean;
+
+  /**
    * Gets the '' Cell for the specified Row in the 't1' Table.
    */
   getT1Cell(rowId: Id): string | undefined;
@@ -4730,6 +4896,11 @@ export interface S {
    * Deletes the '' Cell for the specified Row in the 't1' Table.
    */
   delT1Cell(rowId: Id): S;
+
+  /**
+   * Checks existence of the '' Cell anywhere in the 't1' Table.
+   */
+  hasT1TableCell(): boolean;
 
   /**
    * Gets a string serialization of the tabular content of the Store.
@@ -4760,6 +4931,16 @@ export interface S {
   addTableListener(
     tableId: TableId | null,
     listener: TableListener,
+    mutator?: boolean,
+  ): Id;
+
+  /**
+   * Registers a listener that will be called whenever the Cell Ids anywhere in
+   * a Table change.
+   */
+  addTableCellIdsListener(
+    tableId: TableId | null,
+    listener: TableCellIdsListener,
     mutator?: boolean,
   ): Id;
 
@@ -4912,8 +5093,10 @@ export function createS(): S;
   T1RowCallback,
   T1RowWhenSet,
   T1Table,
+  T1TableCellCallback,
   T1TableWhenSet,
   TableCallback,
+  TableCellIdsListener,
   TableId,
   TableIdsListener,
   TableListener,
@@ -4999,6 +5182,11 @@ export const createS: typeof createSDecl = () => {
 
     delT1Table: (): S => fluent(() => store.delTable(T1)),
 
+    getT1TableCellIds: (): Ids => store.getTableCellIds(T1) as Ids,
+
+    forEachT1TableCell: (tableCellCallback: T1TableCellCallback): void =>
+      store.forEachTableCell(T1, tableCellCallback as any),
+
     getT1RowIds: (): Ids => store.getRowIds(T1) as Ids,
 
     getT1SortedRowIds: (
@@ -5042,6 +5230,8 @@ export const createS: typeof createSDecl = () => {
 
     delT1C1Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C1)),
 
+    hasT1C1TableCell: (): boolean => store.hasTableCell(T1, C1),
+
     getT1C2Cell: (rowId: Id): string => store.getCell(T1, rowId, C2) as string,
 
     hasT1C2Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C2),
@@ -5050,6 +5240,8 @@ export const createS: typeof createSDecl = () => {
       fluent(() => store.setCell(T1, rowId, C2, cell as any)),
 
     delT1C2Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C2)),
+
+    hasT1C2TableCell: (): boolean => store.hasTableCell(T1, C2),
 
     getT1C3Cell: (rowId: Id): string => store.getCell(T1, rowId, C3) as string,
 
@@ -5060,6 +5252,8 @@ export const createS: typeof createSDecl = () => {
 
     delT1C3Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C3)),
 
+    hasT1C3TableCell: (): boolean => store.hasTableCell(T1, C3),
+
     getT1Cell: (rowId: Id): string | undefined =>
       store.getCell(T1, rowId, _) as string | undefined,
 
@@ -5069,6 +5263,8 @@ export const createS: typeof createSDecl = () => {
       fluent(() => store.setCell(T1, rowId, _, cell as any)),
 
     delT1Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, _)),
+
+    hasT1TableCell: (): boolean => store.hasTableCell(T1, _),
 
     getTablesJson: (): Json => store.getTablesJson() as Json,
 
@@ -5086,6 +5282,12 @@ export const createS: typeof createSDecl = () => {
       listener: TableListener,
       mutator?: boolean,
     ): Id => store.addTableListener(tableId, proxy(listener), mutator),
+
+    addTableCellIdsListener: (
+      tableId: TableId | null,
+      listener: TableCellIdsListener,
+      mutator?: boolean,
+    ): Id => store.addTableCellIdsListener(tableId, proxy(listener), mutator),
 
     addRowIdsListener: (
       tableId: TableId | null,
@@ -5209,6 +5411,7 @@ import {
   T1RowWhenSet,
   T1Table,
   T1TableWhenSet,
+  TableCellIdsListener,
   TableId,
   TableIdsListener,
   TableListener,
@@ -5361,6 +5564,12 @@ export function TablesView({
  * changes to that result will cause a re-render.
  */
 export function useT1Table(sOrSId?: SOrSId): T1Table;
+
+/**
+ * Gets the Ids of the Cells in the whole of the 't1' Table, and registers a
+ * listener so that any changes to that result will cause a re-render.
+ */
+export function useT1TableCellIds(sOrSId?: SOrSId): Ids;
 
 /**
  * Gets the Ids of the Rows in the 't1' Table, and registers a listener so that
@@ -5694,6 +5903,18 @@ export function useTableListener(
 ): void;
 
 /**
+ * Registers a listener that will be called whenever the Cell Ids anywhere in a
+ * Table change.
+ */
+export function useTableCellIdsListener(
+  tableId: TableId | null,
+  listener: TableCellIdsListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  sOrSId?: SOrSId,
+): void;
+
+/**
  * Registers a listener that will be called whenever the Row Ids in a Table
  * change.
  */
@@ -5791,6 +6012,7 @@ import {
   T1RowWhenSet,
   T1Table,
   T1TableWhenSet,
+  TableCellIdsListener,
   TableId,
   TableIdsListener,
   TableListener,
@@ -5846,7 +6068,9 @@ import {
   useT1Row as useT1RowDecl,
   useT1RowIds as useT1RowIdsDecl,
   useT1SortedRowIds as useT1SortedRowIdsDecl,
+  useT1TableCellIds as useT1TableCellIdsDecl,
   useT1Table as useT1TableDecl,
+  useTableCellIdsListener as useTableCellIdsListenerDecl,
   useTableIds as useTableIdsDecl,
   useTableIdsListener as useTableIdsListenerDecl,
   useTableListener as useTableListenerDecl,
@@ -5875,6 +6099,8 @@ import {
   useSetTablesCallback as useSetTablesCallbackCore,
   useSortedRowIds as useSortedRowIdsCore,
   useSortedRowIdsListener as useSortedRowIdsListenerCore,
+  useTableCellIds as useTableCellIdsCore,
+  useTableCellIdsListener as useTableCellIdsListenerCore,
   useTable as useTableCore,
   useTableIds as useTableIdsCore,
   useTableIdsListener as useTableIdsListenerCore,
@@ -6039,6 +6265,10 @@ export const TablesView: typeof TablesViewDecl = ({
 
 export const useT1Table: typeof useT1TableDecl = (sOrSId?: SOrSId): T1Table =>
   useHook(sOrSId, useTableCore, [T1]);
+
+export const useT1TableCellIds: typeof useT1TableCellIdsDecl = (
+  sOrSId?: SOrSId,
+): Ids => useHook(sOrSId, useTableCellIdsCore, [T1]);
 
 export const useT1RowIds: typeof useT1RowIdsDecl = (sOrSId?: SOrSId): Ids =>
   useHook(sOrSId, useRowIdsCore, [T1]);
@@ -6389,6 +6619,20 @@ export const useTableListener: typeof useTableListenerDecl = (
     mutator,
   ]);
 
+export const useTableCellIdsListener: typeof useTableCellIdsListenerDecl = (
+  tableId: TableId | null,
+  listener: TableCellIdsListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  sOrSId?: SOrSId,
+): void =>
+  useHook(sOrSId, useTableCellIdsListenerCore, [
+    tableId,
+    listener,
+    listenerDeps,
+    mutator,
+  ]);
+
 export const useRowIdsListener: typeof useRowIdsListenerDecl = (
   tableId: TableId | null,
   listener: RowIdsListener,
@@ -6536,6 +6780,9 @@ export type CellCallback<TId extends TableId> = (...[cellId, cell]: CellIdCellAr
 /** A function that takes a Row Id, and a Cell iterator. */
 export type RowCallback<TId extends TableId> = (rowId: Id, forEachCell: (cellCallback: CellCallback<TId>)  => void)  => void;
 
+/** A function that takes a Cell Id, and count of how many times it appears. */
+export type TableCellCallback<TId extends TableId> = (cellId: CellId<TId>, count: number)  => void;
+
 /** Table Ids and callback types. */
 type TableIdForEachRowArray<TId = TableId> = TId extends TableId ? [tableId: TId, forEachRow: (rowCallback: RowCallback<TId>) => void] : never;
 
@@ -6556,6 +6803,9 @@ export type TableIdsListener = (s: S) => void;
 
 /** A function for listening to changes to a Table in the Store. */
 export type TableListener = (s: S, tableId: TableId, getCellChange: GetCellChange | undefined) => void;
+
+/** A function for listening to changes to the Cell Ids anywhere in a Table. */
+export type TableCellIdsListener = (s: S, tableId: TableId) => void;
 
 /** A function for listening to changes to the Row Ids in a Table. */
 export type RowIdsListener = (s: S, tableId: TableId) => void;
@@ -6601,6 +6851,9 @@ export type T1CellCallback = CellCallback<'t1'>;
 
 /** A function that takes a Row Id from the 't1' Table, and a Cell iterator. */
 export type T1RowCallback = RowCallback<'t1'>;
+
+/** A function that takes a Cell Id from anywhere in the 't1' Table, and a count of how many times it appears. */
+export type T1TableCellCallback = TableCellCallback<'t1'>;
 
 /** Represents the keyed value content of the Store. */
 export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string};
@@ -6678,6 +6931,12 @@ setT1Table(table: T1TableWhenSet): S;
 /** Deletes the content of the 't1' Table. */
 delT1Table(): S;
 
+/** Gets the Ids of the Cells in the whole of the 't1' Table. */
+getT1TableCellIds(): Ids;
+
+/** Calls a function for each TableCell in the whole of the 't1' Table. */
+forEachT1TableCell(tableCellCallback: T1TableCellCallback): void;
+
 /** Gets the Ids of the Rows in the 't1' Table. */
 getT1RowIds(): Ids;
 
@@ -6723,6 +6982,9 @@ setT1C1Cell(rowId: Id, cell: number | MapNumber): S;
 /** Deletes the 'c1' Cell for the specified Row in the 't1' Table. */
 delT1C1Cell(rowId: Id): S;
 
+/** Checks existence of the 'c1' Cell anywhere in the 't1' Table. */
+hasT1C1TableCell(): boolean;
+
 /** Gets the 'c2' Cell for the specified Row in the 't1' Table. */
 getT1C2Cell(rowId: Id): string;
 
@@ -6734,6 +6996,9 @@ setT1C2Cell(rowId: Id, cell: string | MapString): S;
 
 /** Deletes the 'c2' Cell for the specified Row in the 't1' Table. */
 delT1C2Cell(rowId: Id): S;
+
+/** Checks existence of the 'c2' Cell anywhere in the 't1' Table. */
+hasT1C2TableCell(): boolean;
 
 /** Gets the 'c3' Cell for the specified Row in the 't1' Table. */
 getT1C3Cell(rowId: Id): string;
@@ -6747,6 +7012,9 @@ setT1C3Cell(rowId: Id, cell: string | MapString): S;
 /** Deletes the 'c3' Cell for the specified Row in the 't1' Table. */
 delT1C3Cell(rowId: Id): S;
 
+/** Checks existence of the 'c3' Cell anywhere in the 't1' Table. */
+hasT1C3TableCell(): boolean;
+
 /** Gets the '' Cell for the specified Row in the 't1' Table. */
 getT1Cell(rowId: Id): string | undefined;
 
@@ -6758,6 +7026,9 @@ setT1Cell(rowId: Id, cell: string | MapString): S;
 
 /** Deletes the '' Cell for the specified Row in the 't1' Table. */
 delT1Cell(rowId: Id): S;
+
+/** Checks existence of the '' Cell anywhere in the 't1' Table. */
+hasT1TableCell(): boolean;
 
 /** Gets a string serialization of the tabular content of the Store. */
 getTablesJson(): Json;
@@ -6773,6 +7044,9 @@ addTableIdsListener(listener: TableIdsListener, mutator?: boolean): Id;
 
 /** Registers a listener that will be called whenever a Table in the Store changes. */
 addTableListener(tableId: TableId | null, listener: TableListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever the Cell Ids anywhere in a Table change. */
+addTableCellIdsListener(tableId: TableId | null, listener: TableCellIdsListener, mutator?: boolean): Id;
 
 /** Registers a listener that will be called whenever the Row Ids in a Table change. */
 addRowIdsListener(tableId: TableId | null, listener: RowIdsListener, mutator?: boolean): Id;
@@ -6916,7 +7190,7 @@ getStore(): Store;
 
 /** Creates a S object. */
 export function createS(): S;",
-  "import {CellId, CellIdsListener, CellListener, InvalidCellListener, InvalidValueListener, MapNumber, MapString, RowIdsListener, RowListener, S, SortedRowIdsListener, T1CellCallback, T1CellId, T1Row, T1RowCallback, T1RowWhenSet, T1Table, T1TableWhenSet, TableCallback, TableId, TableIdsListener, TableListener, Tables, TablesListener, TablesWhenSet, TransactionListener, ValueCallback, ValueId, ValueIdsListener, ValueListener, Values, ValuesListener, ValuesWhenSet, createS as createSDecl} from './s.d';
+  "import {CellId, CellIdsListener, CellListener, InvalidCellListener, InvalidValueListener, MapNumber, MapString, RowIdsListener, RowListener, S, SortedRowIdsListener, T1CellCallback, T1CellId, T1Row, T1RowCallback, T1RowWhenSet, T1Table, T1TableCellCallback, T1TableWhenSet, TableCallback, TableCellIdsListener, TableId, TableIdsListener, TableListener, Tables, TablesListener, TablesWhenSet, TransactionListener, ValueCallback, ValueId, ValueIdsListener, ValueListener, Values, ValuesListener, ValuesWhenSet, createS as createSDecl} from './s.d';
 import {DoRollback, Id, IdOrNull, Ids, Json, Store, createStore} from 'tinybase';
 
 export const createS: typeof createSDecl = () => {
@@ -6992,6 +7266,10 @@ setT1Table: (table: T1TableWhenSet): S => fluent(() => store.setTable(T1, table)
 
 delT1Table: (): S => fluent(() => store.delTable(T1)),
 
+getT1TableCellIds: (): Ids => store.getTableCellIds(T1) as Ids,
+
+forEachT1TableCell: (tableCellCallback: T1TableCellCallback): void => store.forEachTableCell(T1, tableCellCallback as any),
+
 getT1RowIds: (): Ids => store.getRowIds(T1) as Ids,
 
 getT1SortedRowIds: (cellId?: T1CellId, descending?: boolean, offset?: number, limit?: number): Ids => store.getSortedRowIds(T1, cellId, descending, offset, limit) as Ids,
@@ -7022,6 +7300,8 @@ setT1C1Cell: (rowId: Id, cell: number | MapNumber): S => fluent(() => store.setC
 
 delT1C1Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C1)),
 
+hasT1C1TableCell: (): boolean => store.hasTableCell(T1, C1),
+
 getT1C2Cell: (rowId: Id): string => store.getCell(T1, rowId, C2) as string,
 
 hasT1C2Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C2),
@@ -7029,6 +7309,8 @@ hasT1C2Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C2),
 setT1C2Cell: (rowId: Id, cell: string | MapString): S => fluent(() => store.setCell(T1, rowId, C2, cell as any)),
 
 delT1C2Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C2)),
+
+hasT1C2TableCell: (): boolean => store.hasTableCell(T1, C2),
 
 getT1C3Cell: (rowId: Id): string => store.getCell(T1, rowId, C3) as string,
 
@@ -7038,6 +7320,8 @@ setT1C3Cell: (rowId: Id, cell: string | MapString): S => fluent(() => store.setC
 
 delT1C3Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C3)),
 
+hasT1C3TableCell: (): boolean => store.hasTableCell(T1, C3),
+
 getT1Cell: (rowId: Id): string | undefined => store.getCell(T1, rowId, _) as string | undefined,
 
 hasT1Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, _),
@@ -7045,6 +7329,8 @@ hasT1Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, _),
 setT1Cell: (rowId: Id, cell: string | MapString): S => fluent(() => store.setCell(T1, rowId, _, cell as any)),
 
 delT1Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, _)),
+
+hasT1TableCell: (): boolean => store.hasTableCell(T1, _),
 
 getTablesJson: (): Json => store.getTablesJson() as Json,
 
@@ -7055,6 +7341,8 @@ addTablesListener: (listener: TablesListener, mutator?: boolean): Id => store.ad
 addTableIdsListener: (listener: TableIdsListener, mutator?: boolean): Id => store.addTableIdsListener(proxy(listener), mutator),
 
 addTableListener: (tableId: TableId | null, listener: TableListener, mutator?: boolean): Id => store.addTableListener(tableId, proxy(listener), mutator),
+
+addTableCellIdsListener: (tableId: TableId | null, listener: TableCellIdsListener, mutator?: boolean): Id => store.addTableCellIdsListener(tableId, proxy(listener), mutator),
 
 addRowIdsListener: (tableId: TableId | null, listener: RowIdsListener, mutator?: boolean): Id => store.addRowIdsListener(tableId, proxy(listener), mutator),
 
@@ -7153,7 +7441,7 @@ getStore: (): Store => store,
 return Object.freeze(s);
 };",
   "import {Callback, Id, IdOrNull, Ids, ParameterizedCallback, Store} from 'tinybase';
-import {CellId, CellIdsListener, CellListener, MapNumber, MapString, RowIdsListener, RowListener, S, SortedRowIdsListener, T1CellId, T1Row, T1RowWhenSet, T1Table, T1TableWhenSet, TableId, TableIdsListener, TableListener, Tables, TablesListener, TablesWhenSet, ValueId, ValueIdsListener, ValueListener, Values, ValuesListener, ValuesWhenSet} from './s.d';
+import {CellId, CellIdsListener, CellListener, MapNumber, MapString, RowIdsListener, RowListener, S, SortedRowIdsListener, T1CellId, T1Row, T1RowWhenSet, T1Table, T1TableWhenSet, TableCellIdsListener, TableId, TableIdsListener, TableListener, Tables, TablesListener, TablesWhenSet, ValueId, ValueIdsListener, ValueListener, Values, ValuesListener, ValuesWhenSet} from './s.d';
 import {ComponentReturnType, ExtraProps} from 'tinybase/ui-react';
 import {ComponentType, ReactElement} from 'react';
 
@@ -7207,6 +7495,9 @@ export function TablesView({s, tableComponents, getTableComponentProps, separato
 
 /** Gets the content of the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
 export function useT1Table(sOrSId?: SOrSId): T1Table;
+
+/** Gets the Ids of the Cells in the whole of the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
+export function useT1TableCellIds(sOrSId?: SOrSId): Ids;
 
 /** Gets the Ids of the Rows in the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
 export function useT1RowIds(sOrSId?: SOrSId): Ids;
@@ -7304,6 +7595,9 @@ export function useTableIdsListener(listener: TableIdsListener, listenerDeps?: R
 /** Registers a listener that will be called whenever a Table in the Store changes. */
 export function useTableListener(tableId: TableId | null, listener: TableListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void;
 
+/** Registers a listener that will be called whenever the Cell Ids anywhere in a Table change. */
+export function useTableCellIdsListener(tableId: TableId | null, listener: TableCellIdsListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void;
+
 /** Registers a listener that will be called whenever the Row Ids in a Table change. */
 export function useRowIdsListener(tableId: TableId | null, listener: RowIdsListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void;
 
@@ -7398,9 +7692,9 @@ export function useValueListener(valueId: ValueId | null, listener: ValueListene
 export function Provider({s, sById, children}: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
 ",
   "import {Callback, Id, IdOrNull, Ids, ParameterizedCallback, Store} from 'tinybase';
-import {CellIdsListener, CellListener, MapNumber, MapString, RowIdsListener, RowListener, S, SortedRowIdsListener, T1CellId, T1Row, T1RowWhenSet, T1Table, T1TableWhenSet, TableId, TableIdsListener, TableListener, Tables, TablesListener, TablesWhenSet, ValueId, ValueIdsListener, ValueListener, Values, ValuesListener, ValuesWhenSet} from './s.d';
-import {CellProps, Provider as ProviderDecl, ProviderProps, RowProps, SOrSId, SortedTableProps, T1C1CellView as T1C1CellViewDecl, T1C2CellView as T1C2CellViewDecl, T1C3CellView as T1C3CellViewDecl, T1CellView as T1CellViewDecl, T1RowView as T1RowViewDecl, T1SortedTableView as T1SortedTableViewDecl, T1TableView as T1TableViewDecl, TableProps, TablesProps, TablesView as TablesViewDecl, V1ValueView as V1ValueViewDecl, V2ValueView as V2ValueViewDecl, V3ValueView as V3ValueViewDecl, ValueProps, ValueView as ValueViewDecl, ValuesProps, ValuesView as ValuesViewDecl, useAddT1RowCallback as useAddT1RowCallbackDecl, useCellIdsListener as useCellIdsListenerDecl, useCellListener as useCellListenerDecl, useCreateS as useCreateSDecl, useDelT1C1CellCallback as useDelT1C1CellCallbackDecl, useDelT1C2CellCallback as useDelT1C2CellCallbackDecl, useDelT1C3CellCallback as useDelT1C3CellCallbackDecl, useDelT1CellCallback as useDelT1CellCallbackDecl, useDelT1RowCallback as useDelT1RowCallbackDecl, useDelT1TableCallback as useDelT1TableCallbackDecl, useDelTablesCallback as useDelTablesCallbackDecl, useDelV1ValueCallback as useDelV1ValueCallbackDecl, useDelV2ValueCallback as useDelV2ValueCallbackDecl, useDelV3ValueCallback as useDelV3ValueCallbackDecl, useDelValueCallback as useDelValueCallbackDecl, useDelValuesCallback as useDelValuesCallbackDecl, useRowIdsListener as useRowIdsListenerDecl, useRowListener as useRowListenerDecl, useS as useSDecl, useSetPartialValuesCallback as useSetPartialValuesCallbackDecl, useSetT1C1CellCallback as useSetT1C1CellCallbackDecl, useSetT1C2CellCallback as useSetT1C2CellCallbackDecl, useSetT1C3CellCallback as useSetT1C3CellCallbackDecl, useSetT1CellCallback as useSetT1CellCallbackDecl, useSetT1PartialRowCallback as useSetT1PartialRowCallbackDecl, useSetT1RowCallback as useSetT1RowCallbackDecl, useSetT1TableCallback as useSetT1TableCallbackDecl, useSetTablesCallback as useSetTablesCallbackDecl, useSetV1ValueCallback as useSetV1ValueCallbackDecl, useSetV2ValueCallback as useSetV2ValueCallbackDecl, useSetV3ValueCallback as useSetV3ValueCallbackDecl, useSetValueCallback as useSetValueCallbackDecl, useSetValuesCallback as useSetValuesCallbackDecl, useSortedRowIdsListener as useSortedRowIdsListenerDecl, useT1C1Cell as useT1C1CellDecl, useT1C2Cell as useT1C2CellDecl, useT1C3Cell as useT1C3CellDecl, useT1Cell as useT1CellDecl, useT1CellIds as useT1CellIdsDecl, useT1Row as useT1RowDecl, useT1RowIds as useT1RowIdsDecl, useT1SortedRowIds as useT1SortedRowIdsDecl, useT1Table as useT1TableDecl, useTableIds as useTableIdsDecl, useTableIdsListener as useTableIdsListenerDecl, useTableListener as useTableListenerDecl, useTables as useTablesDecl, useTablesListener as useTablesListenerDecl, useV1Value as useV1ValueDecl, useV2Value as useV2ValueDecl, useV3Value as useV3ValueDecl, useValue as useValueDecl, useValueIds as useValueIdsDecl, useValueIdsListener as useValueIdsListenerDecl, useValueListener as useValueListenerDecl, useValues as useValuesDecl, useValuesListener as useValuesListenerDecl} from './s-ui-react.d';
-import {ExtraProps, useAddRowCallback as useAddRowCallbackCore, useCell as useCellCore, useCellIds as useCellIdsCore, useCellIdsListener as useCellIdsListenerCore, useCellListener as useCellListenerCore, useDelCellCallback as useDelCellCallbackCore, useDelRowCallback as useDelRowCallbackCore, useDelTableCallback as useDelTableCallbackCore, useDelTablesCallback as useDelTablesCallbackCore, useDelValueCallback as useDelValueCallbackCore, useDelValuesCallback as useDelValuesCallbackCore, useRow as useRowCore, useRowIds as useRowIdsCore, useRowIdsListener as useRowIdsListenerCore, useRowListener as useRowListenerCore, useSetCellCallback as useSetCellCallbackCore, useSetPartialRowCallback as useSetPartialRowCallbackCore, useSetPartialValuesCallback as useSetPartialValuesCallbackCore, useSetRowCallback as useSetRowCallbackCore, useSetTableCallback as useSetTableCallbackCore, useSetTablesCallback as useSetTablesCallbackCore, useSetValueCallback as useSetValueCallbackCore, useSetValuesCallback as useSetValuesCallbackCore, useSortedRowIds as useSortedRowIdsCore, useSortedRowIdsListener as useSortedRowIdsListenerCore, useTable as useTableCore, useTableIds as useTableIdsCore, useTableIdsListener as useTableIdsListenerCore, useTableListener as useTableListenerCore, useTables as useTablesCore, useTablesListener as useTablesListenerCore, useValue as useValueCore, useValueIds as useValueIdsCore, useValueIdsListener as useValueIdsListenerCore, useValueListener as useValueListenerCore, useValues as useValuesCore, useValuesListener as useValuesListenerCore} from 'tinybase/ui-react';
+import {CellIdsListener, CellListener, MapNumber, MapString, RowIdsListener, RowListener, S, SortedRowIdsListener, T1CellId, T1Row, T1RowWhenSet, T1Table, T1TableWhenSet, TableCellIdsListener, TableId, TableIdsListener, TableListener, Tables, TablesListener, TablesWhenSet, ValueId, ValueIdsListener, ValueListener, Values, ValuesListener, ValuesWhenSet} from './s.d';
+import {CellProps, Provider as ProviderDecl, ProviderProps, RowProps, SOrSId, SortedTableProps, T1C1CellView as T1C1CellViewDecl, T1C2CellView as T1C2CellViewDecl, T1C3CellView as T1C3CellViewDecl, T1CellView as T1CellViewDecl, T1RowView as T1RowViewDecl, T1SortedTableView as T1SortedTableViewDecl, T1TableView as T1TableViewDecl, TableProps, TablesProps, TablesView as TablesViewDecl, V1ValueView as V1ValueViewDecl, V2ValueView as V2ValueViewDecl, V3ValueView as V3ValueViewDecl, ValueProps, ValueView as ValueViewDecl, ValuesProps, ValuesView as ValuesViewDecl, useAddT1RowCallback as useAddT1RowCallbackDecl, useCellIdsListener as useCellIdsListenerDecl, useCellListener as useCellListenerDecl, useCreateS as useCreateSDecl, useDelT1C1CellCallback as useDelT1C1CellCallbackDecl, useDelT1C2CellCallback as useDelT1C2CellCallbackDecl, useDelT1C3CellCallback as useDelT1C3CellCallbackDecl, useDelT1CellCallback as useDelT1CellCallbackDecl, useDelT1RowCallback as useDelT1RowCallbackDecl, useDelT1TableCallback as useDelT1TableCallbackDecl, useDelTablesCallback as useDelTablesCallbackDecl, useDelV1ValueCallback as useDelV1ValueCallbackDecl, useDelV2ValueCallback as useDelV2ValueCallbackDecl, useDelV3ValueCallback as useDelV3ValueCallbackDecl, useDelValueCallback as useDelValueCallbackDecl, useDelValuesCallback as useDelValuesCallbackDecl, useRowIdsListener as useRowIdsListenerDecl, useRowListener as useRowListenerDecl, useS as useSDecl, useSetPartialValuesCallback as useSetPartialValuesCallbackDecl, useSetT1C1CellCallback as useSetT1C1CellCallbackDecl, useSetT1C2CellCallback as useSetT1C2CellCallbackDecl, useSetT1C3CellCallback as useSetT1C3CellCallbackDecl, useSetT1CellCallback as useSetT1CellCallbackDecl, useSetT1PartialRowCallback as useSetT1PartialRowCallbackDecl, useSetT1RowCallback as useSetT1RowCallbackDecl, useSetT1TableCallback as useSetT1TableCallbackDecl, useSetTablesCallback as useSetTablesCallbackDecl, useSetV1ValueCallback as useSetV1ValueCallbackDecl, useSetV2ValueCallback as useSetV2ValueCallbackDecl, useSetV3ValueCallback as useSetV3ValueCallbackDecl, useSetValueCallback as useSetValueCallbackDecl, useSetValuesCallback as useSetValuesCallbackDecl, useSortedRowIdsListener as useSortedRowIdsListenerDecl, useT1C1Cell as useT1C1CellDecl, useT1C2Cell as useT1C2CellDecl, useT1C3Cell as useT1C3CellDecl, useT1Cell as useT1CellDecl, useT1CellIds as useT1CellIdsDecl, useT1Row as useT1RowDecl, useT1RowIds as useT1RowIdsDecl, useT1SortedRowIds as useT1SortedRowIdsDecl, useT1TableCellIds as useT1TableCellIdsDecl, useT1Table as useT1TableDecl, useTableCellIdsListener as useTableCellIdsListenerDecl, useTableIds as useTableIdsDecl, useTableIdsListener as useTableIdsListenerDecl, useTableListener as useTableListenerDecl, useTables as useTablesDecl, useTablesListener as useTablesListenerDecl, useV1Value as useV1ValueDecl, useV2Value as useV2ValueDecl, useV3Value as useV3ValueDecl, useValue as useValueDecl, useValueIds as useValueIdsDecl, useValueIdsListener as useValueIdsListenerDecl, useValueListener as useValueListenerDecl, useValues as useValuesDecl, useValuesListener as useValuesListenerDecl} from './s-ui-react.d';
+import {ExtraProps, useAddRowCallback as useAddRowCallbackCore, useCell as useCellCore, useCellIds as useCellIdsCore, useCellIdsListener as useCellIdsListenerCore, useCellListener as useCellListenerCore, useDelCellCallback as useDelCellCallbackCore, useDelRowCallback as useDelRowCallbackCore, useDelTableCallback as useDelTableCallbackCore, useDelTablesCallback as useDelTablesCallbackCore, useDelValueCallback as useDelValueCallbackCore, useDelValuesCallback as useDelValuesCallbackCore, useRow as useRowCore, useRowIds as useRowIdsCore, useRowIdsListener as useRowIdsListenerCore, useRowListener as useRowListenerCore, useSetCellCallback as useSetCellCallbackCore, useSetPartialRowCallback as useSetPartialRowCallbackCore, useSetPartialValuesCallback as useSetPartialValuesCallbackCore, useSetRowCallback as useSetRowCallbackCore, useSetTableCallback as useSetTableCallbackCore, useSetTablesCallback as useSetTablesCallbackCore, useSetValueCallback as useSetValueCallbackCore, useSetValuesCallback as useSetValuesCallbackCore, useSortedRowIds as useSortedRowIdsCore, useSortedRowIdsListener as useSortedRowIdsListenerCore, useTableCellIds as useTableCellIdsCore, useTableCellIdsListener as useTableCellIdsListenerCore, useTable as useTableCore, useTableIds as useTableIdsCore, useTableIdsListener as useTableIdsListenerCore, useTableListener as useTableListenerCore, useTables as useTablesCore, useTablesListener as useTablesListenerCore, useValue as useValueCore, useValueIds as useValueIdsCore, useValueIdsListener as useValueIdsListenerCore, useValueListener as useValueListenerCore, useValues as useValuesCore, useValuesListener as useValuesListenerCore} from 'tinybase/ui-react';
 import React from 'react';
 
 const {createContext, useContext, useMemo} = React;
@@ -7500,6 +7794,9 @@ debugIds={debugIds}
 
 export const useT1Table: typeof useT1TableDecl = (sOrSId?: SOrSId): T1Table =>
 useHook(sOrSId, useTableCore, [T1]);
+
+export const useT1TableCellIds: typeof useT1TableCellIdsDecl = (sOrSId?: SOrSId): Ids =>
+useHook(sOrSId, useTableCellIdsCore, [T1]);
 
 export const useT1RowIds: typeof useT1RowIdsDecl = (sOrSId?: SOrSId): Ids =>
 useHook(sOrSId, useRowIdsCore, [T1]);
@@ -7607,6 +7904,9 @@ useHook(sOrSId, useTableIdsListenerCore, [listener, listenerDeps, mutator]);
 
 export const useTableListener: typeof useTableListenerDecl = (tableId: TableId | null, listener: TableListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void =>
 useHook(sOrSId, useTableListenerCore, [tableId, listener, listenerDeps, mutator]);
+
+export const useTableCellIdsListener: typeof useTableCellIdsListenerDecl = (tableId: TableId | null, listener: TableCellIdsListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void =>
+useHook(sOrSId, useTableCellIdsListenerCore, [tableId, listener, listenerDeps, mutator]);
 
 export const useRowIdsListener: typeof useRowIdsListenerDecl = (tableId: TableId | null, listener: RowIdsListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void =>
 useHook(sOrSId, useRowIdsListenerCore, [tableId, listener, listenerDeps, mutator]);
@@ -8310,6 +8610,9 @@ export type CellCallback<TId extends TableId> = (...[cellId, cell]: CellIdCellAr
 /** A function that takes a Row Id, and a Cell iterator. */
 export type RowCallback<TId extends TableId> = (rowId: Id, forEachCell: (cellCallback: CellCallback<TId>)  => void)  => void;
 
+/** A function that takes a Cell Id, and count of how many times it appears. */
+export type TableCellCallback<TId extends TableId> = (cellId: CellId<TId>, count: number)  => void;
+
 /** Table Ids and callback types. */
 type TableIdForEachRowArray<TId = TableId> = TId extends TableId ? [tableId: TId, forEachRow: (rowCallback: RowCallback<TId>) => void] : never;
 
@@ -8330,6 +8633,9 @@ export type TableIdsListener = (s: S) => void;
 
 /** A function for listening to changes to a Table in the Store. */
 export type TableListener = (s: S, tableId: TableId, getCellChange: GetCellChange | undefined) => void;
+
+/** A function for listening to changes to the Cell Ids anywhere in a Table. */
+export type TableCellIdsListener = (s: S, tableId: TableId) => void;
 
 /** A function for listening to changes to the Row Ids in a Table. */
 export type RowIdsListener = (s: S, tableId: TableId) => void;
@@ -8376,6 +8682,9 @@ export type T1CellCallback = CellCallback<'t1'>;
 /** A function that takes a Row Id from the 't1' Table, and a Cell iterator. */
 export type T1RowCallback = RowCallback<'t1'>;
 
+/** A function that takes a Cell Id from anywhere in the 't1' Table, and a count of how many times it appears. */
+export type T1TableCellCallback = TableCellCallback<'t1'>;
+
 /** Takes a number Cell value and returns another. */
 export type MapNumber = (cell: number | undefined) => number;
 
@@ -8415,6 +8724,12 @@ setT1Table(table: T1TableWhenSet): S;
 
 /** Deletes the content of the 't1' Table. */
 delT1Table(): S;
+
+/** Gets the Ids of the Cells in the whole of the 't1' Table. */
+getT1TableCellIds(): Ids;
+
+/** Calls a function for each TableCell in the whole of the 't1' Table. */
+forEachT1TableCell(tableCellCallback: T1TableCellCallback): void;
 
 /** Gets the Ids of the Rows in the 't1' Table. */
 getT1RowIds(): Ids;
@@ -8461,6 +8776,9 @@ setT1C1Cell(rowId: Id, cell: number | MapNumber): S;
 /** Deletes the 'c1' Cell for the specified Row in the 't1' Table. */
 delT1C1Cell(rowId: Id): S;
 
+/** Checks existence of the 'c1' Cell anywhere in the 't1' Table. */
+hasT1C1TableCell(): boolean;
+
 /** Gets the 'c2' Cell for the specified Row in the 't1' Table. */
 getT1C2Cell(rowId: Id): string;
 
@@ -8472,6 +8790,9 @@ setT1C2Cell(rowId: Id, cell: string | MapString): S;
 
 /** Deletes the 'c2' Cell for the specified Row in the 't1' Table. */
 delT1C2Cell(rowId: Id): S;
+
+/** Checks existence of the 'c2' Cell anywhere in the 't1' Table. */
+hasT1C2TableCell(): boolean;
 
 /** Gets the 'c3' Cell for the specified Row in the 't1' Table. */
 getT1C3Cell(rowId: Id): string;
@@ -8485,6 +8806,9 @@ setT1C3Cell(rowId: Id, cell: string | MapString): S;
 /** Deletes the 'c3' Cell for the specified Row in the 't1' Table. */
 delT1C3Cell(rowId: Id): S;
 
+/** Checks existence of the 'c3' Cell anywhere in the 't1' Table. */
+hasT1C3TableCell(): boolean;
+
 /** Gets the '' Cell for the specified Row in the 't1' Table. */
 getT1Cell(rowId: Id): string | undefined;
 
@@ -8496,6 +8820,9 @@ setT1Cell(rowId: Id, cell: string | MapString): S;
 
 /** Deletes the '' Cell for the specified Row in the 't1' Table. */
 delT1Cell(rowId: Id): S;
+
+/** Checks existence of the '' Cell anywhere in the 't1' Table. */
+hasT1TableCell(): boolean;
 
 /** Gets a string serialization of the tabular content of the Store. */
 getTablesJson(): Json;
@@ -8511,6 +8838,9 @@ addTableIdsListener(listener: TableIdsListener, mutator?: boolean): Id;
 
 /** Registers a listener that will be called whenever a Table in the Store changes. */
 addTableListener(tableId: TableId | null, listener: TableListener, mutator?: boolean): Id;
+
+/** Registers a listener that will be called whenever the Cell Ids anywhere in a Table change. */
+addTableCellIdsListener(tableId: TableId | null, listener: TableCellIdsListener, mutator?: boolean): Id;
 
 /** Registers a listener that will be called whenever the Row Ids in a Table change. */
 addRowIdsListener(tableId: TableId | null, listener: RowIdsListener, mutator?: boolean): Id;
@@ -8567,7 +8897,7 @@ getStore(): Store;
 
 /** Creates a S object. */
 export function createS(): S;",
-  "import {CellId, CellIdsListener, CellListener, InvalidCellListener, MapNumber, MapString, RowIdsListener, RowListener, S, SortedRowIdsListener, T1CellCallback, T1CellId, T1Row, T1RowCallback, T1RowWhenSet, T1Table, T1TableWhenSet, TableCallback, TableId, TableIdsListener, TableListener, Tables, TablesListener, TablesWhenSet, TransactionListener, createS as createSDecl} from './s.d';
+  "import {CellId, CellIdsListener, CellListener, InvalidCellListener, MapNumber, MapString, RowIdsListener, RowListener, S, SortedRowIdsListener, T1CellCallback, T1CellId, T1Row, T1RowCallback, T1RowWhenSet, T1Table, T1TableCellCallback, T1TableWhenSet, TableCallback, TableCellIdsListener, TableId, TableIdsListener, TableListener, Tables, TablesListener, TablesWhenSet, TransactionListener, createS as createSDecl} from './s.d';
 import {DoRollback, Id, IdOrNull, Ids, Json, Store, createStore} from 'tinybase';
 
 export const createS: typeof createSDecl = () => {
@@ -8631,6 +8961,10 @@ setT1Table: (table: T1TableWhenSet): S => fluent(() => store.setTable(T1, table)
 
 delT1Table: (): S => fluent(() => store.delTable(T1)),
 
+getT1TableCellIds: (): Ids => store.getTableCellIds(T1) as Ids,
+
+forEachT1TableCell: (tableCellCallback: T1TableCellCallback): void => store.forEachTableCell(T1, tableCellCallback as any),
+
 getT1RowIds: (): Ids => store.getRowIds(T1) as Ids,
 
 getT1SortedRowIds: (cellId?: T1CellId, descending?: boolean, offset?: number, limit?: number): Ids => store.getSortedRowIds(T1, cellId, descending, offset, limit) as Ids,
@@ -8661,6 +8995,8 @@ setT1C1Cell: (rowId: Id, cell: number | MapNumber): S => fluent(() => store.setC
 
 delT1C1Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C1)),
 
+hasT1C1TableCell: (): boolean => store.hasTableCell(T1, C1),
+
 getT1C2Cell: (rowId: Id): string => store.getCell(T1, rowId, C2) as string,
 
 hasT1C2Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C2),
@@ -8668,6 +9004,8 @@ hasT1C2Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, C2),
 setT1C2Cell: (rowId: Id, cell: string | MapString): S => fluent(() => store.setCell(T1, rowId, C2, cell as any)),
 
 delT1C2Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C2)),
+
+hasT1C2TableCell: (): boolean => store.hasTableCell(T1, C2),
 
 getT1C3Cell: (rowId: Id): string => store.getCell(T1, rowId, C3) as string,
 
@@ -8677,6 +9015,8 @@ setT1C3Cell: (rowId: Id, cell: string | MapString): S => fluent(() => store.setC
 
 delT1C3Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, C3)),
 
+hasT1C3TableCell: (): boolean => store.hasTableCell(T1, C3),
+
 getT1Cell: (rowId: Id): string | undefined => store.getCell(T1, rowId, _) as string | undefined,
 
 hasT1Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, _),
@@ -8684,6 +9024,8 @@ hasT1Cell: (rowId: Id): boolean => store.hasCell(T1, rowId, _),
 setT1Cell: (rowId: Id, cell: string | MapString): S => fluent(() => store.setCell(T1, rowId, _, cell as any)),
 
 delT1Cell: (rowId: Id): S => fluent(() => store.delCell(T1, rowId, _)),
+
+hasT1TableCell: (): boolean => store.hasTableCell(T1, _),
 
 getTablesJson: (): Json => store.getTablesJson() as Json,
 
@@ -8694,6 +9036,8 @@ addTablesListener: (listener: TablesListener, mutator?: boolean): Id => store.ad
 addTableIdsListener: (listener: TableIdsListener, mutator?: boolean): Id => store.addTableIdsListener(proxy(listener), mutator),
 
 addTableListener: (tableId: TableId | null, listener: TableListener, mutator?: boolean): Id => store.addTableListener(tableId, proxy(listener), mutator),
+
+addTableCellIdsListener: (tableId: TableId | null, listener: TableCellIdsListener, mutator?: boolean): Id => store.addTableCellIdsListener(tableId, proxy(listener), mutator),
 
 addRowIdsListener: (tableId: TableId | null, listener: RowIdsListener, mutator?: boolean): Id => store.addRowIdsListener(tableId, proxy(listener), mutator),
 
@@ -8734,7 +9078,7 @@ getStore: (): Store => store,
 return Object.freeze(s);
 };",
   "import {Callback, Id, IdOrNull, Ids, ParameterizedCallback, Store} from 'tinybase';
-import {CellId, CellIdsListener, CellListener, MapNumber, MapString, RowIdsListener, RowListener, S, SortedRowIdsListener, T1CellId, T1Row, T1RowWhenSet, T1Table, T1TableWhenSet, TableId, TableIdsListener, TableListener, Tables, TablesListener, TablesWhenSet} from './s.d';
+import {CellId, CellIdsListener, CellListener, MapNumber, MapString, RowIdsListener, RowListener, S, SortedRowIdsListener, T1CellId, T1Row, T1RowWhenSet, T1Table, T1TableWhenSet, TableCellIdsListener, TableId, TableIdsListener, TableListener, Tables, TablesListener, TablesWhenSet} from './s.d';
 import {ComponentReturnType, ExtraProps} from 'tinybase/ui-react';
 import {ComponentType, ReactElement} from 'react';
 
@@ -8782,6 +9126,9 @@ export function TablesView({s, tableComponents, getTableComponentProps, separato
 
 /** Gets the content of the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
 export function useT1Table(sOrSId?: SOrSId): T1Table;
+
+/** Gets the Ids of the Cells in the whole of the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
+export function useT1TableCellIds(sOrSId?: SOrSId): Ids;
 
 /** Gets the Ids of the Rows in the 't1' Table, and registers a listener so that any changes to that result will cause a re-render. */
 export function useT1RowIds(sOrSId?: SOrSId): Ids;
@@ -8879,6 +9226,9 @@ export function useTableIdsListener(listener: TableIdsListener, listenerDeps?: R
 /** Registers a listener that will be called whenever a Table in the Store changes. */
 export function useTableListener(tableId: TableId | null, listener: TableListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void;
 
+/** Registers a listener that will be called whenever the Cell Ids anywhere in a Table change. */
+export function useTableCellIdsListener(tableId: TableId | null, listener: TableCellIdsListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void;
+
 /** Registers a listener that will be called whenever the Row Ids in a Table change. */
 export function useRowIdsListener(tableId: TableId | null, listener: RowIdsListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void;
 
@@ -8898,9 +9248,9 @@ export function useCellListener(tableId: TableId | null, rowId: IdOrNull, cellId
 export function Provider({s, sById, children}: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
 ",
   "import {Callback, Id, IdOrNull, Ids, ParameterizedCallback, Store} from 'tinybase';
-import {CellIdsListener, CellListener, MapNumber, MapString, RowIdsListener, RowListener, S, SortedRowIdsListener, T1CellId, T1Row, T1RowWhenSet, T1Table, T1TableWhenSet, TableId, TableIdsListener, TableListener, Tables, TablesListener, TablesWhenSet} from './s.d';
-import {CellProps, Provider as ProviderDecl, ProviderProps, RowProps, SOrSId, SortedTableProps, T1C1CellView as T1C1CellViewDecl, T1C2CellView as T1C2CellViewDecl, T1C3CellView as T1C3CellViewDecl, T1CellView as T1CellViewDecl, T1RowView as T1RowViewDecl, T1SortedTableView as T1SortedTableViewDecl, T1TableView as T1TableViewDecl, TableProps, TablesProps, TablesView as TablesViewDecl, useAddT1RowCallback as useAddT1RowCallbackDecl, useCellIdsListener as useCellIdsListenerDecl, useCellListener as useCellListenerDecl, useCreateS as useCreateSDecl, useDelT1C1CellCallback as useDelT1C1CellCallbackDecl, useDelT1C2CellCallback as useDelT1C2CellCallbackDecl, useDelT1C3CellCallback as useDelT1C3CellCallbackDecl, useDelT1CellCallback as useDelT1CellCallbackDecl, useDelT1RowCallback as useDelT1RowCallbackDecl, useDelT1TableCallback as useDelT1TableCallbackDecl, useDelTablesCallback as useDelTablesCallbackDecl, useRowIdsListener as useRowIdsListenerDecl, useRowListener as useRowListenerDecl, useS as useSDecl, useSetT1C1CellCallback as useSetT1C1CellCallbackDecl, useSetT1C2CellCallback as useSetT1C2CellCallbackDecl, useSetT1C3CellCallback as useSetT1C3CellCallbackDecl, useSetT1CellCallback as useSetT1CellCallbackDecl, useSetT1PartialRowCallback as useSetT1PartialRowCallbackDecl, useSetT1RowCallback as useSetT1RowCallbackDecl, useSetT1TableCallback as useSetT1TableCallbackDecl, useSetTablesCallback as useSetTablesCallbackDecl, useSortedRowIdsListener as useSortedRowIdsListenerDecl, useT1C1Cell as useT1C1CellDecl, useT1C2Cell as useT1C2CellDecl, useT1C3Cell as useT1C3CellDecl, useT1Cell as useT1CellDecl, useT1CellIds as useT1CellIdsDecl, useT1Row as useT1RowDecl, useT1RowIds as useT1RowIdsDecl, useT1SortedRowIds as useT1SortedRowIdsDecl, useT1Table as useT1TableDecl, useTableIds as useTableIdsDecl, useTableIdsListener as useTableIdsListenerDecl, useTableListener as useTableListenerDecl, useTables as useTablesDecl, useTablesListener as useTablesListenerDecl} from './s-ui-react.d';
-import {ExtraProps, useAddRowCallback as useAddRowCallbackCore, useCell as useCellCore, useCellIds as useCellIdsCore, useCellIdsListener as useCellIdsListenerCore, useCellListener as useCellListenerCore, useDelCellCallback as useDelCellCallbackCore, useDelRowCallback as useDelRowCallbackCore, useDelTableCallback as useDelTableCallbackCore, useDelTablesCallback as useDelTablesCallbackCore, useRow as useRowCore, useRowIds as useRowIdsCore, useRowIdsListener as useRowIdsListenerCore, useRowListener as useRowListenerCore, useSetCellCallback as useSetCellCallbackCore, useSetPartialRowCallback as useSetPartialRowCallbackCore, useSetRowCallback as useSetRowCallbackCore, useSetTableCallback as useSetTableCallbackCore, useSetTablesCallback as useSetTablesCallbackCore, useSortedRowIds as useSortedRowIdsCore, useSortedRowIdsListener as useSortedRowIdsListenerCore, useTable as useTableCore, useTableIds as useTableIdsCore, useTableIdsListener as useTableIdsListenerCore, useTableListener as useTableListenerCore, useTables as useTablesCore, useTablesListener as useTablesListenerCore} from 'tinybase/ui-react';
+import {CellIdsListener, CellListener, MapNumber, MapString, RowIdsListener, RowListener, S, SortedRowIdsListener, T1CellId, T1Row, T1RowWhenSet, T1Table, T1TableWhenSet, TableCellIdsListener, TableId, TableIdsListener, TableListener, Tables, TablesListener, TablesWhenSet} from './s.d';
+import {CellProps, Provider as ProviderDecl, ProviderProps, RowProps, SOrSId, SortedTableProps, T1C1CellView as T1C1CellViewDecl, T1C2CellView as T1C2CellViewDecl, T1C3CellView as T1C3CellViewDecl, T1CellView as T1CellViewDecl, T1RowView as T1RowViewDecl, T1SortedTableView as T1SortedTableViewDecl, T1TableView as T1TableViewDecl, TableProps, TablesProps, TablesView as TablesViewDecl, useAddT1RowCallback as useAddT1RowCallbackDecl, useCellIdsListener as useCellIdsListenerDecl, useCellListener as useCellListenerDecl, useCreateS as useCreateSDecl, useDelT1C1CellCallback as useDelT1C1CellCallbackDecl, useDelT1C2CellCallback as useDelT1C2CellCallbackDecl, useDelT1C3CellCallback as useDelT1C3CellCallbackDecl, useDelT1CellCallback as useDelT1CellCallbackDecl, useDelT1RowCallback as useDelT1RowCallbackDecl, useDelT1TableCallback as useDelT1TableCallbackDecl, useDelTablesCallback as useDelTablesCallbackDecl, useRowIdsListener as useRowIdsListenerDecl, useRowListener as useRowListenerDecl, useS as useSDecl, useSetT1C1CellCallback as useSetT1C1CellCallbackDecl, useSetT1C2CellCallback as useSetT1C2CellCallbackDecl, useSetT1C3CellCallback as useSetT1C3CellCallbackDecl, useSetT1CellCallback as useSetT1CellCallbackDecl, useSetT1PartialRowCallback as useSetT1PartialRowCallbackDecl, useSetT1RowCallback as useSetT1RowCallbackDecl, useSetT1TableCallback as useSetT1TableCallbackDecl, useSetTablesCallback as useSetTablesCallbackDecl, useSortedRowIdsListener as useSortedRowIdsListenerDecl, useT1C1Cell as useT1C1CellDecl, useT1C2Cell as useT1C2CellDecl, useT1C3Cell as useT1C3CellDecl, useT1Cell as useT1CellDecl, useT1CellIds as useT1CellIdsDecl, useT1Row as useT1RowDecl, useT1RowIds as useT1RowIdsDecl, useT1SortedRowIds as useT1SortedRowIdsDecl, useT1TableCellIds as useT1TableCellIdsDecl, useT1Table as useT1TableDecl, useTableCellIdsListener as useTableCellIdsListenerDecl, useTableIds as useTableIdsDecl, useTableIdsListener as useTableIdsListenerDecl, useTableListener as useTableListenerDecl, useTables as useTablesDecl, useTablesListener as useTablesListenerDecl} from './s-ui-react.d';
+import {ExtraProps, useAddRowCallback as useAddRowCallbackCore, useCell as useCellCore, useCellIds as useCellIdsCore, useCellIdsListener as useCellIdsListenerCore, useCellListener as useCellListenerCore, useDelCellCallback as useDelCellCallbackCore, useDelRowCallback as useDelRowCallbackCore, useDelTableCallback as useDelTableCallbackCore, useDelTablesCallback as useDelTablesCallbackCore, useRow as useRowCore, useRowIds as useRowIdsCore, useRowIdsListener as useRowIdsListenerCore, useRowListener as useRowListenerCore, useSetCellCallback as useSetCellCallbackCore, useSetPartialRowCallback as useSetPartialRowCallbackCore, useSetRowCallback as useSetRowCallbackCore, useSetTableCallback as useSetTableCallbackCore, useSetTablesCallback as useSetTablesCallbackCore, useSortedRowIds as useSortedRowIdsCore, useSortedRowIdsListener as useSortedRowIdsListenerCore, useTableCellIds as useTableCellIdsCore, useTableCellIdsListener as useTableCellIdsListenerCore, useTable as useTableCore, useTableIds as useTableIdsCore, useTableIdsListener as useTableIdsListenerCore, useTableListener as useTableListenerCore, useTables as useTablesCore, useTablesListener as useTablesListenerCore} from 'tinybase/ui-react';
 import React from 'react';
 
 const {createContext, useContext, useMemo} = React;
@@ -8992,6 +9342,9 @@ debugIds={debugIds}
 
 export const useT1Table: typeof useT1TableDecl = (sOrSId?: SOrSId): T1Table =>
 useHook(sOrSId, useTableCore, [T1]);
+
+export const useT1TableCellIds: typeof useT1TableCellIdsDecl = (sOrSId?: SOrSId): Ids =>
+useHook(sOrSId, useTableCellIdsCore, [T1]);
 
 export const useT1RowIds: typeof useT1RowIdsDecl = (sOrSId?: SOrSId): Ids =>
 useHook(sOrSId, useRowIdsCore, [T1]);
@@ -9099,6 +9452,9 @@ useHook(sOrSId, useTableIdsListenerCore, [listener, listenerDeps, mutator]);
 
 export const useTableListener: typeof useTableListenerDecl = (tableId: TableId | null, listener: TableListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void =>
 useHook(sOrSId, useTableListenerCore, [tableId, listener, listenerDeps, mutator]);
+
+export const useTableCellIdsListener: typeof useTableCellIdsListenerDecl = (tableId: TableId | null, listener: TableCellIdsListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void =>
+useHook(sOrSId, useTableCellIdsListenerCore, [tableId, listener, listenerDeps, mutator]);
 
 export const useRowIdsListener: typeof useRowIdsListenerDecl = (tableId: TableId | null, listener: RowIdsListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void =>
 useHook(sOrSId, useRowIdsListenerCore, [tableId, listener, listenerDeps, mutator]);

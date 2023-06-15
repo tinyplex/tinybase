@@ -187,6 +187,7 @@ const NOUNS = [
   A + VALUE,
   'invalid Value changes',
   THE + 'sorted ' + ROW + SPACE + IDS,
+  THE + CELL + SPACE + IDS + ' anywhere',
 ];
 
 const CONTENT = [EMPTY_STRING, 'tabular ', 'keyed value '];

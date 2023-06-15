@@ -174,6 +174,13 @@ export const getTypeFunctions = (
       tIdGeneric,
     );
 
+    const tableCellCallbackType = addType(
+      TABLE + CELL + CALLBACK,
+      `(cellId: ${cellIdType}<TId>, count: number) ` + RETURNS_VOID,
+      getCallbackDoc(A + CELL + ' Id, and count of how many times it appears'),
+      tIdGeneric,
+    );
+
     const tableIdForEachRowArrayType = addType(
       'TableIdForEachRowArray',
       `TId extends ${tableIdType} ? [tableId: TId, forEachRow: ` +
@@ -230,6 +237,12 @@ export const getTypeFunctions = (
         `getCellChange: ${getCellChangeType}${OR_UNDEFINED})` +
         RETURNS_VOID,
       getListenerTypeDoc(3),
+    );
+
+    const tableCellIdsListenerType = addType(
+      TABLE + CELL_IDS + LISTENER,
+      `(${storeParam}, tableId: ${tableIdType})` + RETURNS_VOID,
+      getListenerTypeDoc(14, 3),
     );
 
     const rowIdsListenerType = addType(
@@ -333,10 +346,12 @@ export const getTypeFunctions = (
       cellType,
       cellCallbackType,
       rowCallbackType,
+      tableCellCallbackType,
       tableCallbackType,
       tablesListenerType,
       tableIdsListenerType,
       tableListenerType,
+      tableCellIdsListenerType,
       rowIdsListenerType,
       sortedRowIdsListenerType,
       rowListenerType,
