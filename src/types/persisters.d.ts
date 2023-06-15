@@ -19,11 +19,11 @@ export type PersisterListener = (
 /// DatabasePersisterConfig
 export type DatabasePersisterConfig =
   | {
-      serialized: true;
+      mode: 'json';
       storeTable?: string;
     }
   | {
-      serialized: false;
+      mode: 'tabular';
       rowIdColumn?: string;
       valuesTable?: string;
     };

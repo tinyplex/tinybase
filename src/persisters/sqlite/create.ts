@@ -5,11 +5,12 @@ import {
 } from '../../types/persisters';
 import {Cmd} from './commands';
 import {Store} from '../../types/store';
-import {createNonSerializedSqlitePersister} from './non-serialized';
-import {createSerializedSqlitePersister} from './serialized';
+import {createJsonSqlitePersister} from './json';
+import {createTabularSqlitePersister} from './tabular';
 import {isString} from '../../common/other';
 
-const DEFAULT_CONFIG: DatabasePersisterConfig = {serialized: true};
+const JSON = 'json';
+const DEFAULT_CONFIG: DatabasePersisterConfig = {mode: JSON};
 
 export const createSqlitePersister = <ListeningHandle>(
   store: Store,
@@ -28,17 +29,15 @@ export const createSqlitePersister = <ListeningHandle>(
     ? {...DEFAULT_CONFIG, storeTable: storeTableOrConfig}
     : storeTableOrConfig ?? DEFAULT_CONFIG;
 
-  const {serialized} = config;
-
-  return serialized
-    ? createSerializedSqlitePersister(
+  return config.mode == JSON
+    ? createJsonSqlitePersister(
         store,
         cmd,
         addPersisterListener,
         delPersisterListener,
         config.storeTable,
       )
-    : createNonSerializedSqlitePersister(
+    : createTabularSqlitePersister(
         store,
         cmd,
         addPersisterListener,

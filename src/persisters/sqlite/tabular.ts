@@ -9,7 +9,7 @@ import {Id} from '../../types/common';
 import {TINYBASE} from '../../common/strings';
 import {createCustomPersister} from '../../persisters';
 
-export const createNonSerializedSqlitePersister = <ListeningHandle>(
+export const createTabularSqlitePersister = <ListeningHandle>(
   store: Store,
   cmd: Cmd,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
