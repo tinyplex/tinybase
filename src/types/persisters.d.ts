@@ -20,12 +20,12 @@ export type PersisterListener = (
 export type DatabasePersisterConfig =
   | {
       mode: 'json';
-      storeTable?: string;
+      storeTableName?: string;
     }
   | {
       mode: 'tabular';
-      rowIdColumn?: string;
-      valuesTable?: string;
+      rowIdColumnName?: string;
+      valuesTableName?: string;
     };
 
 /// Persister

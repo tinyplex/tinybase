@@ -13,11 +13,11 @@ import {promiseNew} from '../common/other';
 export const createSqlite3Persister = ((
   store: Store,
   db: Database,
-  storeTableOrConfig?: string | DatabasePersisterConfig,
+  configOrStoreTableName?: string | DatabasePersisterConfig,
 ): Persister =>
   createSqlitePersister(
     store,
-    storeTableOrConfig,
+    configOrStoreTableName,
     (sql: string, args: any[] = []): Promise<IdObj<any>[]> =>
       promiseNew((resolve, reject) =>
         db.all(sql, args, (error, rows: IdObj<any>[]) =>

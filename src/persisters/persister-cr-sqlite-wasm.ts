@@ -12,11 +12,11 @@ import {createSqlitePersister} from './sqlite/create';
 export const createCrSqliteWasmPersister = ((
   store: Store,
   db: DB,
-  storeTableOrConfig?: string | DatabasePersisterConfig,
+  configOrStoreTableName?: string | DatabasePersisterConfig,
 ): Persister =>
   createSqlitePersister(
     store,
-    storeTableOrConfig,
+    configOrStoreTableName,
     async (sql: string, args: any[] = []): Promise<IdObj<any>[]> =>
       await db.execO(sql, args),
     (listener: PersisterListener): (() => void) =>

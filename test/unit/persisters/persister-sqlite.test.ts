@@ -67,7 +67,7 @@ describe.each(Object.entries(VARIANTS))(
         test('as config', async () => {
           const persister = getPersister(store1, db, {
             mode: 'json',
-            storeTable: 'test',
+            storeTableName: 'test',
           });
           await persister.save();
           expect(await getDatabase(db)).toEqual([
@@ -341,7 +341,7 @@ describe.each(Object.entries(VARIANTS))(
         test('word', async () => {
           const persister = getPersister(store1, db, {
             mode: 'tabular',
-            rowIdColumn: 'test',
+            rowIdColumnName: 'test',
           });
           await persister.save();
           expect(await getDatabase(db)).toEqual([
@@ -356,7 +356,7 @@ describe.each(Object.entries(VARIANTS))(
         test('with spaces', async () => {
           const persister = getPersister(store1, db, {
             mode: 'tabular',
-            rowIdColumn: 'test table',
+            rowIdColumnName: 'test table',
           });
           await persister.save();
           expect(await getDatabase(db)).toEqual([
@@ -371,7 +371,7 @@ describe.each(Object.entries(VARIANTS))(
         test('with quote', async () => {
           const persister = getPersister(store1, db, {
             mode: 'tabular',
-            rowIdColumn: 'test "table"',
+            rowIdColumnName: 'test "table"',
           });
           await persister.save();
           expect(await getDatabase(db)).toEqual([
@@ -388,7 +388,7 @@ describe.each(Object.entries(VARIANTS))(
         test('word', async () => {
           const persister = getPersister(store1, db, {
             mode: 'tabular',
-            valuesTable: 'test',
+            valuesTableName: 'test',
           });
           await persister.save();
           expect(await getDatabase(db)).toEqual([
@@ -403,7 +403,7 @@ describe.each(Object.entries(VARIANTS))(
         test('with spaces', async () => {
           const persister = getPersister(store1, db, {
             mode: 'tabular',
-            valuesTable: 'test table',
+            valuesTableName: 'test table',
           });
           await persister.save();
           expect(await getDatabase(db)).toEqual([
@@ -418,7 +418,7 @@ describe.each(Object.entries(VARIANTS))(
         test('with quote', async () => {
           const persister = getPersister(store1, db, {
             mode: 'tabular',
-            valuesTable: 'test "table"',
+            valuesTableName: 'test "table"',
           });
           await persister.save();
           expect(await getDatabase(db)).toEqual([

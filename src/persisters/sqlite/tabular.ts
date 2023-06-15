@@ -14,18 +14,18 @@ export const createTabularSqlitePersister = <ListeningHandle>(
   cmd: Cmd,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
-  rowIdColumn = '_id',
-  valuesTable = TINYBASE + '_values',
+  rowIdColumnName = '_id',
+  valuesTableName = TINYBASE + '_values',
 ): Persister => {
   const [ensureTable, getSingleRow, setRow] = getCommandFunctions(
     cmd,
-    rowIdColumn,
+    rowIdColumnName,
   );
 
   const setValues = (values: Values) => {
     persister.schedule(
-      async () => await ensureTable(valuesTable),
-      async () => await setRow(valuesTable, SINGLE_ROW_ID, values),
+      async () => await ensureTable(valuesTableName),
+      async () => await setRow(valuesTableName, SINGLE_ROW_ID, values),
     );
   };
 
@@ -46,7 +46,7 @@ export const createTabularSqlitePersister = <ListeningHandle>(
           arrayMap(
             (await cmd(
               `SELECT name FROM sqlite_schema WHERE type='table'AND name!=?`,
-              [valuesTable],
+              [valuesTableName],
             )) as {name: string}[],
             async ({name}: {name: string}) => [
               name as string,
@@ -54,7 +54,10 @@ export const createTabularSqlitePersister = <ListeningHandle>(
                 arrayFilter(
                   arrayMap(
                     await cmd(`SELECT * FROM${escapeId(name)}`),
-                    (row) => [row[rowIdColumn], objDel(row, rowIdColumn)],
+                    (row) => [
+                      row[rowIdColumnName],
+                      objDel(row, rowIdColumnName),
+                    ],
                   ),
                   ([rowId, row]) => !isUndefined(rowId) && !objIsEmpty(row),
                 ),
@@ -65,7 +68,7 @@ export const createTabularSqlitePersister = <ListeningHandle>(
         ([_, table]) => !objIsEmpty(table),
       ),
     );
-    const values = await getSingleRow(valuesTable);
+    const values = await getSingleRow(valuesTableName);
     return !objIsEmpty(tables) || !objIsEmpty(values)
       ? [tables as Tables, values as Values]
       : undefined;

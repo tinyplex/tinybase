@@ -8,5 +8,5 @@ import {DB} from '@vlcn.io/crsqlite-wasm';
 export function createCrSqliteWasmPersister<Schemas extends OptionalSchemas>(
   store: Store<Schemas>,
   db: DB,
-  storeTableOrConfig?: string | DatabasePersisterConfig<Schemas>,
+  configOrStoreTableName?: DatabasePersisterConfig<Schemas> | string,
 ): Persister<Schemas>;

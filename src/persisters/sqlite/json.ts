@@ -13,20 +13,20 @@ export const createJsonSqlitePersister = <ListeningHandle>(
   cmd: Cmd,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
-  storeTable: string = TINYBASE,
+  storeTableName: string = TINYBASE,
 ): Persister => {
   const [ensureTable, getSingleRow, setRow] = getCommandFunctions(cmd, '_id');
 
   const getPersisted = async (): Promise<[Tables, Values]> =>
-    jsonParse(((await getSingleRow(storeTable)) ?? {})[STORE_COLUMN]);
+    jsonParse(((await getSingleRow(storeTableName)) ?? {})[STORE_COLUMN]);
 
   const setPersisted = async (
     getContent: () => [Tables, Values],
   ): Promise<void> =>
     persister.schedule(
-      async () => await ensureTable(storeTable),
+      async () => await ensureTable(storeTableName),
       async () =>
-        await setRow(storeTable, SINGLE_ROW_ID, {
+        await setRow(storeTableName, SINGLE_ROW_ID, {
           [STORE_COLUMN]: jsonString(getContent()),
         }),
     );

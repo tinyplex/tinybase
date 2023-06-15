@@ -12,11 +12,11 @@ export const createSqliteWasmPersister = ((
   store: Store,
   sqlite3: any,
   db: any,
-  storeTableOrConfig?: string | DatabasePersisterConfig,
+  configOrStoreTableName?: string | DatabasePersisterConfig,
 ): Persister =>
   createSqlitePersister(
     store,
-    storeTableOrConfig,
+    configOrStoreTableName,
     async (sql: string, args: any[] = []): Promise<IdObj<any>[]> =>
       db
         .exec(sql, {bind: args, rowMode: 'object', returnValue: 'resultRows'})
