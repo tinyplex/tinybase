@@ -22,7 +22,7 @@ describe.each(Object.entries(VARIANTS))(
 
     afterEach(async () => await close(db));
 
-    describe('Serialized', () => {
+    describe('json', () => {
       beforeEach(async () => {
         persister1 = getPersister(store1, db);
       });
@@ -66,7 +66,7 @@ describe.each(Object.entries(VARIANTS))(
 
         test('as config', async () => {
           const persister = getPersister(store1, db, {
-            serialized: true,
+            mode: 'json',
             storeTable: 'test',
           });
           await persister.save();
@@ -332,15 +332,15 @@ describe.each(Object.entries(VARIANTS))(
       });
     });
 
-    describe('Non-serialized', () => {
+    describe('Tabular', () => {
       beforeEach(async () => {
-        persister1 = getPersister(store1, db, {serialized: false});
+        persister1 = getPersister(store1, db, {mode: 'tabular'});
       });
 
       describe('Custom row id column', () => {
         test('word', async () => {
           const persister = getPersister(store1, db, {
-            serialized: false,
+            mode: 'tabular',
             rowIdColumn: 'test',
           });
           await persister.save();
@@ -355,7 +355,7 @@ describe.each(Object.entries(VARIANTS))(
 
         test('with spaces', async () => {
           const persister = getPersister(store1, db, {
-            serialized: false,
+            mode: 'tabular',
             rowIdColumn: 'test table',
           });
           await persister.save();
@@ -370,7 +370,7 @@ describe.each(Object.entries(VARIANTS))(
 
         test('with quote', async () => {
           const persister = getPersister(store1, db, {
-            serialized: false,
+            mode: 'tabular',
             rowIdColumn: 'test "table"',
           });
           await persister.save();
@@ -387,7 +387,7 @@ describe.each(Object.entries(VARIANTS))(
       describe('Custom values table name', () => {
         test('word', async () => {
           const persister = getPersister(store1, db, {
-            serialized: false,
+            mode: 'tabular',
             valuesTable: 'test',
           });
           await persister.save();
@@ -402,7 +402,7 @@ describe.each(Object.entries(VARIANTS))(
 
         test('with spaces', async () => {
           const persister = getPersister(store1, db, {
-            serialized: false,
+            mode: 'tabular',
             valuesTable: 'test table',
           });
           await persister.save();
@@ -417,7 +417,7 @@ describe.each(Object.entries(VARIANTS))(
 
         test('with quote', async () => {
           const persister = getPersister(store1, db, {
-            serialized: false,
+            mode: 'tabular',
             valuesTable: 'test "table"',
           });
           await persister.save();
@@ -640,7 +640,7 @@ describe.each(Object.entries(VARIANTS))(
         let persister2: Persister;
         beforeEach(() => {
           store2 = createStore();
-          persister2 = getPersister(store2, db, {serialized: false});
+          persister2 = getPersister(store2, db, {mode: 'tabular'});
         });
 
         test('manual', async () => {

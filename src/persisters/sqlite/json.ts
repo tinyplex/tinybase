@@ -8,7 +8,7 @@ import {createCustomPersister} from '../../persisters';
 
 const STORE_COLUMN = 'store';
 
-export const createSerializedSqlitePersister = <ListeningHandle>(
+export const createJsonSqlitePersister = <ListeningHandle>(
   store: Store,
   cmd: Cmd,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,

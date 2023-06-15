@@ -23,10 +23,16 @@ export type PersisterListener<Schemas extends OptionalSchemas> = (
 ) => void;
 
 /// DatabasePersisterConfig
-export type DatabasePersisterConfig<_Schemas extends OptionalSchemas> = {
-  storeTable?: string;
-  rowIdColumn?: string;
-};
+export type DatabasePersisterConfig<_Schemas extends OptionalSchemas> =
+  | {
+      mode: 'json';
+      storeTable?: string;
+    }
+  | {
+      mode: 'tabular';
+      rowIdColumn?: string;
+      valuesTable?: string;
+    };
 
 /// Persister
 export interface Persister<in out Schemas extends OptionalSchemas> {
