@@ -29,20 +29,9 @@ export const createSqlitePersister = <ListeningHandle>(
     ? {...DEFAULT_CONFIG, storeTableName: configOrStoreTableName}
     : configOrStoreTableName ?? DEFAULT_CONFIG;
 
-  return config.mode == JSON
-    ? createJsonSqlitePersister(
-        store,
-        cmd,
-        addPersisterListener,
-        delPersisterListener,
-        config.storeTableName,
-      )
-    : createTabularSqlitePersister(
-        store,
-        cmd,
-        addPersisterListener,
-        delPersisterListener,
-        config.rowIdColumnName,
-        config.valuesTableName,
-      );
+  return (
+    config.mode == JSON
+      ? createJsonSqlitePersister
+      : createTabularSqlitePersister
+  )(store, cmd, addPersisterListener, delPersisterListener, config as any);
 };
