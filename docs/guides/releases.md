@@ -1,8 +1,47 @@
-<p>This is a reverse chronological list of the major <a href="https://tinybase.org/">TinyBase</a> releases, with highlighted features.</p><h2 id="v3-2">v3.2</h2><p>This release lets you add a listener to the start of a transaction, and detect that a set of changes are about to be made to a <a href="https://tinybase.org/api/store/interfaces/store/store/"><code>Store</code></a>.</p><p>To use this, call the <a href="https://tinybase.org/api/store/interfaces/store/store/methods/listener/addstarttransactionlistener/"><code>addStartTransactionListener</code></a> method on your <a href="https://tinybase.org/api/store/interfaces/store/store/"><code>Store</code></a>. The listener you add can itself mutate the data in the <a href="https://tinybase.org/api/store/interfaces/store/store/"><code>Store</code></a>.</p><p>From this release onwards, listeners added with the existing <a href="https://tinybase.org/api/store/interfaces/store/store/methods/listener/addwillfinishtransactionlistener/"><code>addWillFinishTransactionListener</code></a> method are also able to mutate data. <a href="https://tinybase.org/guides/the-basics/transactions/">Transactions</a> added with the existing <a href="https://tinybase.org/api/store/interfaces/store/store/methods/listener/adddidfinishtransactionlistener/"><code>addDidFinishTransactionListener</code></a> method <em>cannot</em> mutate data.</p>
+<p>This is a reverse chronological list of the major <a href="https://tinybase.org/">TinyBase</a> releases, with highlighted features.</p><h2 id="v3-3">v3.3</h2><p>This release allows you to track the <a href="https://tinybase.org/api/store/type-aliases/store/cell/"><code>Cell</code></a> <a href="https://tinybase.org/api/common/type-aliases/identity/ids/"><code>Ids</code></a> used across a whole <a href="https://tinybase.org/api/store/type-aliases/store/table/"><code>Table</code></a>, regardless of which <a href="https://tinybase.org/api/store/type-aliases/store/row/"><code>Row</code></a> they are in.</p><p>In a <a href="https://tinybase.org/api/store/type-aliases/store/table/"><code>Table</code></a> (particularly in a <a href="https://tinybase.org/api/store/interfaces/store/store/"><code>Store</code></a> without a <a href="https://tinybase.org/api/store/type-aliases/schema/tablesschema/"><code>TablesSchema</code></a>), different Rows can use different Cells. Consider this <a href="https://tinybase.org/api/store/interfaces/store/store/"><code>Store</code></a>, where each pet has a different set of <a href="https://tinybase.org/api/store/type-aliases/store/cell/"><code>Cell</code></a> <a href="https://tinybase.org/api/common/type-aliases/identity/ids/"><code>Ids</code></a>:</p>
 
 ```js
 const store = createStore();
 
+store.setTable('pets', {
+  fido: {species: 'dog'},
+  felix: {species: 'cat', friendly: true},
+  cujo: {legs: 4},
+});
+```
+
+<p>Prior to v3.3, you could only get the <a href="https://tinybase.org/api/store/type-aliases/store/cell/"><code>Cell</code></a> <a href="https://tinybase.org/api/common/type-aliases/identity/ids/"><code>Ids</code></a> used in each <a href="https://tinybase.org/api/store/type-aliases/store/row/"><code>Row</code></a> at a time (with the <a href="https://tinybase.org/api/store/interfaces/store/store/methods/getter/getcellids/"><code>getCellIds</code></a> method). But you can now use the <a href="https://tinybase.org/api/store/interfaces/store/store/methods/getter/gettablecellids/"><code>getTableCellIds</code></a> method to get the union of all the <a href="https://tinybase.org/api/store/type-aliases/store/cell/"><code>Cell</code></a> <a href="https://tinybase.org/api/common/type-aliases/identity/ids/"><code>Ids</code></a> used across the <a href="https://tinybase.org/api/store/type-aliases/store/table/"><code>Table</code></a>:</p>
+
+```js
+console.log(store.getCellIds('pets', 'fido')); // previously available
+// -> ['species']
+
+console.log(store.getTableCellIds('pets')); //    new in v3.3
+// -> ['species', 'friendly', 'legs']
+```
+
+<p>You can register a listener to track the <a href="https://tinybase.org/api/store/type-aliases/store/cell/"><code>Cell</code></a> <a href="https://tinybase.org/api/common/type-aliases/identity/ids/"><code>Ids</code></a> used across a <a href="https://tinybase.org/api/store/type-aliases/store/table/"><code>Table</code></a> with the new <a href="https://tinybase.org/api/store/interfaces/store/store/methods/listener/addtablecellidslistener/"><code>addTableCellIdsListener</code></a> method. Use cases for this might include knowing which headers to render when displaying a sparse <a href="https://tinybase.org/api/store/type-aliases/store/table/"><code>Table</code></a> in a user interface, or synchronizing data with relational or column-oriented database system.</p><p>There is also a corresponding <a href="https://tinybase.org/api/ui-react/functions/store-hooks/usetablecellids/"><code>useTableCellIds</code></a> hook in the optional <a href="https://tinybase.org/api/ui-react/"><code>ui-react</code></a> module for accessing these <a href="https://tinybase.org/api/common/type-aliases/identity/ids/"><code>Ids</code></a> reactively, and a <a href="https://tinybase.org/api/ui-react/functions/store-hooks/usetablecellidslistener/"><code>useTableCellIdsListener</code></a> hook for more advanced purposes.</p><p>Note that the bookkeeping behind these new accessors and listeners is efficient and should not be slowed by the number of Rows in the <a href="https://tinybase.org/api/store/type-aliases/store/table/"><code>Table</code></a>.</p><p>This release also passes a getIdChanges function to every <a href="https://tinybase.org/api/common/type-aliases/identity/id/"><code>Id</code></a>-related listener that, when called, returns information about the <a href="https://tinybase.org/api/common/type-aliases/identity/id/"><code>Id</code></a> changes, both additions and removals, during a transaction. See the <a href="https://tinybase.org/api/store/type-aliases/listener/tableidslistener/"><code>TableIdsListener</code></a> type, for example.</p>
+
+```js
+let listenerId = store.addRowIdsListener(
+  'pets',
+  (store, tableId, getIdChanges) => {
+    console.log(getIdChanges());
+  },
+);
+
+store.setRow('pets', 'lowly', {species: 'worm'});
+// -> {lowly: 1}
+
+store.delRow('pets', 'felix');
+// -> {felix: -1}
+
+store.delListener(listenerId).delTables();
+```
+
+<h2 id="v3-2">v3.2</h2><p>This release lets you add a listener to the start of a transaction, and detect that a set of changes are about to be made to a <a href="https://tinybase.org/api/store/interfaces/store/store/"><code>Store</code></a>.</p><p>To use this, call the <a href="https://tinybase.org/api/store/interfaces/store/store/methods/listener/addstarttransactionlistener/"><code>addStartTransactionListener</code></a> method on your <a href="https://tinybase.org/api/store/interfaces/store/store/"><code>Store</code></a>. The listener you add can itself mutate the data in the <a href="https://tinybase.org/api/store/interfaces/store/store/"><code>Store</code></a>.</p><p>From this release onwards, listeners added with the existing <a href="https://tinybase.org/api/store/interfaces/store/store/methods/listener/addwillfinishtransactionlistener/"><code>addWillFinishTransactionListener</code></a> method are also able to mutate data. <a href="https://tinybase.org/guides/the-basics/transactions/">Transactions</a> added with the existing <a href="https://tinybase.org/api/store/interfaces/store/store/methods/listener/adddidfinishtransactionlistener/"><code>addDidFinishTransactionListener</code></a> method <em>cannot</em> mutate data.</p>
+
+```js
 const startListenerId = store.addStartTransactionListener(() => {
   console.log('Start transaction');
   console.log(store.getTables());
@@ -62,7 +101,7 @@ store.setValues({employees: 3, open: true});
 console.log(store.getValues());
 // -> {employees: 3, open: true}
 
-const listenerId = store.addValueListener(
+listenerId = store.addValueListener(
   null,
   (store, valueId, newValue, oldValue) => {
     console.log(`Value '${valueId}' changed from ${oldValue} to ${newValue}`);
