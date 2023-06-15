@@ -18,15 +18,21 @@ export type PersisterListener = (
 
 /// DatabasePersisterConfig
 export type DatabasePersisterConfig =
-  | {
-      mode: 'json';
-      storeTableName?: string;
-    }
-  | {
-      mode: 'tabular';
-      rowIdColumnName?: string;
-      valuesTableName?: string;
-    };
+  | DatabasePersisterJsonConfig
+  | DatabasePersisterTabularConfig;
+
+/// DatabasePersisterJsonConfig
+export type DatabasePersisterJsonConfig = {
+  mode: 'json';
+  storeTableName?: string;
+};
+
+/// DatabasePersisterTabularConfig
+export type DatabasePersisterTabularConfig = {
+  mode: 'tabular';
+  rowIdColumnName?: string;
+  valuesTableName?: string;
+};
 
 /// Persister
 export interface Persister {

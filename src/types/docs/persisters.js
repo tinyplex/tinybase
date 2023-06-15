@@ -65,11 +65,24 @@
  */
 /// PersisterListener
 /**
- * A DatabasePersisterConfig is a n object that can be used to configure a
+ * A DatabasePersisterConfig is an object that can be used to configure a
  * database-based Persister, such as the one provided by the persister-sqlite3
  * module.
  */
 /// DatabasePersisterConfig
+/**
+ * A DatabasePersisterJsonConfig is an object that can be used to configure a
+ * database-based Persister, such as the one provided by the persister-sqlite3
+ * module, such that the TinyBase content is serialized into JSON in the
+ * database.
+ */
+/// DatabasePersisterJsonConfig
+/**
+ * A DatabasePersisterTabularConfig is an object that can be used to configure a
+ * database-based Persister, such as the one provided by the persister-sqlite3
+ * module, such that the TinyBase content is synced into tables in the database.
+ */
+/// DatabasePersisterTabularConfig
 /**
  * A Persister object lets you save and load Store data to and from different
  * locations, or underlying storage types.

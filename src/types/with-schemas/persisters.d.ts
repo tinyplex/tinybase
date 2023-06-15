@@ -3,6 +3,7 @@
 import {
   GetTransactionChanges,
   OptionalSchemas,
+  OptionalTablesSchema,
   Store,
   Tables,
   Values,
@@ -23,16 +24,24 @@ export type PersisterListener<Schemas extends OptionalSchemas> = (
 ) => void;
 
 /// DatabasePersisterConfig
-export type DatabasePersisterConfig<_Schemas extends OptionalSchemas> =
-  | {
-      mode: 'json';
-      storeTableName?: string;
-    }
-  | {
-      mode: 'tabular';
-      rowIdColumnName?: string;
-      valuesTableName?: string;
-    };
+export type DatabasePersisterConfig<Schemas extends OptionalSchemas> =
+  | DatabasePersisterJsonConfig
+  | DatabasePersisterTabularConfig<Schemas[0]>;
+
+/// DatabasePersisterJsonConfig
+export type DatabasePersisterJsonConfig = {
+  mode: 'json';
+  storeTableName?: string;
+};
+
+/// DatabasePersisterTabularConfig
+export type DatabasePersisterTabularConfig<
+  _Schema extends OptionalTablesSchema,
+> = {
+  mode: 'tabular';
+  rowIdColumnName?: string;
+  valuesTableName?: string;
+};
 
 /// Persister
 export interface Persister<in out Schemas extends OptionalSchemas> {

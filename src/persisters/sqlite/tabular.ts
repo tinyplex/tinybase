@@ -1,5 +1,9 @@
 import {Cmd, getCommandFunctions} from './commands';
-import {Persister, PersisterListener} from '../../types/persisters';
+import {
+  DatabasePersisterTabularConfig,
+  Persister,
+  PersisterListener,
+} from '../../types/persisters';
 import {SINGLE_ROW_ID, escapeId} from './common';
 import {Store, Table, Tables, Values} from '../../types/store';
 import {arrayFilter, arrayMap} from '../../common/array';
@@ -14,8 +18,10 @@ export const createTabularSqlitePersister = <ListeningHandle>(
   cmd: Cmd,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
-  rowIdColumnName = '_id',
-  valuesTableName = TINYBASE + '_values',
+  {
+    rowIdColumnName = '_id',
+    valuesTableName = TINYBASE + '_values',
+  }: DatabasePersisterTabularConfig,
 ): Persister => {
   const [ensureTable, getSingleRow, setRow] = getCommandFunctions(
     cmd,

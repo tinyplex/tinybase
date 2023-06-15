@@ -1,5 +1,9 @@
 import {Cmd, getCommandFunctions} from './commands';
-import {Persister, PersisterListener} from '../../types/persisters';
+import {
+  DatabasePersisterJsonConfig,
+  Persister,
+  PersisterListener,
+} from '../../types/persisters';
 import {Store, Tables, Values} from '../../types/store';
 import {jsonParse, jsonString} from '../../common/other';
 import {SINGLE_ROW_ID} from './common';
@@ -13,7 +17,7 @@ export const createJsonSqlitePersister = <ListeningHandle>(
   cmd: Cmd,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
-  storeTableName: string = TINYBASE,
+  {storeTableName = TINYBASE}: DatabasePersisterJsonConfig,
 ): Persister => {
   const [ensureTable, getSingleRow, setRow] = getCommandFunctions(cmd, '_id');
 
