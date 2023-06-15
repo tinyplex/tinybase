@@ -785,19 +785,13 @@ export const createStore: typeof createStoreDecl = (): Store => {
           ];
 
       if (!emptyIdListeners) {
+        callIdsListenersIfChanged(tableIdsListeners[mutator], changes[0]);
+
         collForEach(changes[1], (changedIds, tableId) =>
           callIdsListenersIfChanged(
             tableCellIdsListeners[mutator],
             changedIds,
             [tableId],
-          ),
-        );
-        collForEach(changes[3], (rowCellIds, tableId) =>
-          collForEach(rowCellIds, (changedIds, rowId) =>
-            callIdsListenersIfChanged(cellIdsListeners[mutator], changedIds, [
-              tableId,
-              rowId,
-            ]),
           ),
         );
 
@@ -835,7 +829,14 @@ export const createStore: typeof createStoreDecl = (): Store => {
           });
         }
 
-        callIdsListenersIfChanged(tableIdsListeners[mutator], changes[0]);
+        collForEach(changes[3], (rowCellIds, tableId) =>
+          collForEach(rowCellIds, (changedIds, rowId) =>
+            callIdsListenersIfChanged(cellIdsListeners[mutator], changedIds, [
+              tableId,
+              rowId,
+            ]),
+          ),
+        );
       }
 
       if (!emptyOtherListeners) {
