@@ -6,6 +6,7 @@ import {
 } from '../../types/persisters';
 import {Store, Tables, Values} from '../../types/store';
 import {jsonParse, jsonString} from '../../common/other';
+import {DEFAULT_ROW_ID_COLUMN_NAME} from './tabular-config';
 import {SINGLE_ROW_ID} from './common';
 import {TINYBASE} from '../../common/strings';
 import {createCustomPersister} from '../../persisters';
@@ -19,20 +20,29 @@ export const createJsonSqlitePersister = <ListeningHandle>(
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   {storeTableName = TINYBASE}: DatabasePersisterJsonConfig,
 ): Persister => {
-  const [ensureTable, getSingleRow, setRow] = getCommandFunctions(cmd, '_id');
+  const [ensureTable, loadSingleRow, saveSingleRow] = getCommandFunctions(cmd);
 
   const getPersisted = async (): Promise<[Tables, Values]> =>
-    jsonParse(((await getSingleRow(storeTableName)) ?? {})[STORE_COLUMN]);
+    jsonParse(
+      ((await loadSingleRow(storeTableName, DEFAULT_ROW_ID_COLUMN_NAME)) ?? {})[
+        STORE_COLUMN
+      ],
+    );
 
   const setPersisted = async (
     getContent: () => [Tables, Values],
   ): Promise<void> =>
     persister.schedule(
-      async () => await ensureTable(storeTableName),
+      async () => await ensureTable(storeTableName, DEFAULT_ROW_ID_COLUMN_NAME),
       async () =>
-        await setRow(storeTableName, SINGLE_ROW_ID, {
-          [STORE_COLUMN]: jsonString(getContent()),
-        }),
+        await saveSingleRow(
+          storeTableName,
+          DEFAULT_ROW_ID_COLUMN_NAME,
+          SINGLE_ROW_ID,
+          {
+            [STORE_COLUMN]: jsonString(getContent()),
+          },
+        ),
     );
 
   const persister: any = createCustomPersister(

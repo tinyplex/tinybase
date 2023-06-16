@@ -65,24 +65,109 @@
  */
 /// PersisterListener
 /**
- * A DatabasePersisterConfig is an object that can be used to configure a
- * database-based Persister, such as the one provided by the persister-sqlite3
- * module.
+ * TODO
  */
 /// DatabasePersisterConfig
 /**
- * A DatabasePersisterJsonConfig is an object that can be used to configure a
- * database-based Persister, such as the one provided by the persister-sqlite3
- * module, such that the TinyBase content is serialized into JSON in the
- * database.
+ * The DpcJson type describes the configuration of a database-oriented
+ * Persister operating in serialized JSON mode.
+ *
+ * The 'Dpc' prefix indicates this is used within the DatabasePersisterConfig
+ * type.
+ *
+ * @category Configuration
+ * @since v4.0
  */
-/// DatabasePersisterJsonConfig
+/// DpcJson
 /**
- * A DatabasePersisterTabularConfig is an object that can be used to configure a
- * database-based Persister, such as the one provided by the persister-sqlite3
- * module, such that the TinyBase content is synced into tables in the database.
+ * The DpcTabular type describes the configuration of a
+ * database-oriented Persister that is operating in tabular mode.
+ *
+ * The 'Dpc' prefix indicates this is used within the DatabasePersisterConfig
+ * type.
+ *
+ * @category Configuration
+ * @since v4.0
  */
-/// DatabasePersisterTabularConfig
+/// DpcTabular
+/**
+ * The DpcTabularLoad type describes the configuration for loading Tables in a
+ * database-oriented Persister that is operating in tabular mode.
+ *
+ * The 'Dpc' prefix indicates this is used within the DatabasePersisterConfig
+ * type.
+ *
+ * @category Configuration
+ * @since v4.0
+ */
+/// DpcTabularLoad
+/**
+ * The DpcTabularLoadTable type describes the configuration for loading a Table
+ * in a database-oriented Persister that is operating in tabular mode.
+ *
+ * The 'Dpc' prefix indicates this is used within the DatabasePersisterConfig
+ * type.
+ *
+ * @category Configuration
+ * @since v4.0
+ */
+/// DpcTabularLoadTable
+/**
+ * The DpcTabularLoadDefault type describes the default configuration for
+ * loading Tables in a database-oriented Persister that is operating in tabular
+ * mode.
+ *
+ * The 'Dpc' prefix indicates this is used within the DatabasePersisterConfig
+ * type.
+ *
+ * @category Configuration
+ * @since v4.0
+ */
+/// DpcTabularLoadDefault
+/**
+ * The DpcTabularSave type describes the configuration for saving Tables in a
+ * database-oriented Persister that is operating in tabular mode.
+ *
+ * The 'Dpc' prefix indicates this is used within the DatabasePersisterConfig
+ * type.
+ *
+ * @category Configuration
+ * @since v4.0
+ */
+/// DpcTabularSave
+/**
+ * The DpcTabularSaveTable type describes the configuration for saving a Table
+ * in a database-oriented Persister that is operating in tabular mode.
+ *
+ * The 'Dpc' prefix indicates this is used within the DatabasePersisterConfig
+ * type.
+ *
+ * @category Configuration
+ * @since v4.0
+ */
+/// DpcTabularSaveTable
+/**
+ * The DpcTabularSaveDefault type describes the default configuration for saving
+ * Tables in a database-oriented Persister that is operating in tabular mode.
+ *
+ * The 'Dpc' prefix indicates this is used within the DatabasePersisterConfig
+ * type.
+ *
+ * @category Configuration
+ * @since v4.0
+ */
+/// DpcTabularSaveDefault
+/**
+ * The DpcTabularValues type describes the configuration for handling
+ * Values in a database-oriented Persister that is operating in tabular mode.
+ *
+ * The 'Dpc' prefix indicates this is used within the DatabasePersisterConfig
+ * type.
+ *
+ * @category Configuration
+ * @since v4.0
+ */
+/// DpcTabularValues
 /**
  * A Persister object lets you save and load Store data to and from different
  * locations, or underlying storage types.
