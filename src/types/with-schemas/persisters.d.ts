@@ -8,6 +8,7 @@ import {
   Tables,
   Values,
 } from './store.d';
+import {TableIdFromSchema} from './internal/store';
 
 /// PersisterStats
 export type PersisterStats = {
@@ -25,22 +26,68 @@ export type PersisterListener<Schemas extends OptionalSchemas> = (
 
 /// DatabasePersisterConfig
 export type DatabasePersisterConfig<Schemas extends OptionalSchemas> =
-  | DatabasePersisterJsonConfig
-  | DatabasePersisterTabularConfig<Schemas[0]>;
+  | DpcJson
+  | DpcTabular<Schemas[0]>;
 
-/// DatabasePersisterJsonConfig
-export type DatabasePersisterJsonConfig = {
+/// DpcJson
+export type DpcJson = {
   mode: 'json';
   storeTableName?: string;
 };
 
-/// DatabasePersisterTabularConfig
-export type DatabasePersisterTabularConfig<
-  _Schema extends OptionalTablesSchema,
-> = {
+/// DpcTabular
+export type DpcTabular<Schema extends OptionalTablesSchema> = {
   mode: 'tabular';
+  tables?: {
+    load?: DpcTabularLoad<Schema> | boolean;
+    save?: DpcTabularSave<Schema> | false;
+  };
+  values?: DpcTabularValues;
+};
+
+/// DpcTabularLoad
+export type DpcTabularLoad<Schema extends OptionalTablesSchema> = {
+  [tableName: string]: DpcTabularLoadTable<Schema> | boolean;
+  '*': DpcTabularLoadDefault<Schema> | boolean;
+};
+
+/// DpcTabularLoadTable
+export type DpcTabularLoadTable<Schema extends OptionalTablesSchema> = {
+  tableId?:
+    | TableIdFromSchema<Schema>
+    | ((tableName: string) => TableIdFromSchema<Schema> | false);
   rowIdColumnName?: string;
-  valuesTableName?: string;
+};
+
+/// DpcTabularLoadDefault
+export type DpcTabularLoadDefault<Schema extends OptionalTablesSchema> = {
+  tableId?: (tableName: string) => TableIdFromSchema<Schema> | false;
+  rowIdColumnName?: string;
+};
+
+/// DpcTabularSave
+export type DpcTabularSave<Schema extends OptionalTablesSchema> = {
+  [TableId in TableIdFromSchema<Schema>]: DpcTabularSaveTable<Schema> | false;
+};
+
+/// DpcTabularSaveTable
+export type DpcTabularSaveTable<Schema extends OptionalTablesSchema> = {
+  tableName?: string | ((tableId: TableIdFromSchema<Schema>) => string | false);
+  rowIdColumnName?: string;
+};
+
+/// DpcTabularSaveDefault
+export type DpcTabularSaveDefault<Schema extends OptionalTablesSchema> = {
+  tableName?: (tableId: TableIdFromSchema<Schema>) => string | false;
+  rowIdColumnName?: string;
+};
+
+/// DpcTabularValues
+export type DpcTabularValues = {
+  load?: boolean;
+  save?: boolean;
+  tableName?: string;
+  rowIdColumnName?: string;
 };
 
 /// Persister

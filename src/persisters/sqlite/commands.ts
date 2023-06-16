@@ -19,25 +19,40 @@ export type Cmd = (sql: string, args?: any[]) => Promise<IdObj<any>[]>;
 
 export const getCommandFunctions = (
   cmd: Cmd,
-  rowIdColumn: string,
 ): [
-  ensureTable: (table: string) => Promise<void>,
-  getSingleRow: (table: string) => Promise<IdObj<any>>,
-  setRow: (table: string, rowId: Id, row: Row | Values) => Promise<void>,
+  ensureTable: (tableName: string, rowIdColumnName: string) => Promise<void>,
+  loadSingleRow: (
+    tableName: string,
+    rowIdColumnName: string,
+  ) => Promise<IdObj<any>>,
+  saveSingleRow: (
+    table: string,
+    rowIdColumnName: string,
+    rowId: Id,
+    row: Row | Values,
+  ) => Promise<void>,
 ] => {
-  const ensureTable = async (table: string): Promise<void> => {
+  const ensureTable = async (
+    tableName: string,
+    rowIdColumnName: string,
+  ): Promise<void> => {
     await cmd(
-      `CREATE TABLE IF NOT EXISTS${escapeId(table)}(${escapeId(rowIdColumn)} ` +
-        `PRIMARY KEY ON CONFLICT REPLACE);`,
+      `CREATE TABLE IF NOT EXISTS${escapeId(tableName)}(${escapeId(
+        rowIdColumnName,
+      )} ` + `PRIMARY KEY ON CONFLICT REPLACE);`,
     );
   };
 
-  const ensureColumns = async (table: string, row: Row): Promise<void> => {
+  const ensureColumns = async (
+    tableName: string,
+    rowIdColumnName: string,
+    row: Row,
+  ): Promise<void> => {
     const columns = setNew(
       arrayMap(
         await cmd(`SELECT name FROM pragma_table_info(?) WHERE name != ?`, [
-          table,
-          rowIdColumn,
+          tableName,
+          rowIdColumnName,
         ]),
         (row) => row['name'],
       ),
@@ -46,24 +61,30 @@ export const getCommandFunctions = (
       objMap(row, async (_, cellId) =>
         collHas(columns, cellId)
           ? 0
-          : await cmd(`ALTER TABLE${escapeId(table)}ADD${escapeId(cellId)}`),
+          : await cmd(
+              `ALTER TABLE${escapeId(tableName)}ADD${escapeId(cellId)}`,
+            ),
       ),
     );
   };
 
-  const getSingleRow = async (table: string): Promise<IdObj<any>> => {
-    await ensureTable(table);
+  const loadSingleRow = async (
+    tableName: string,
+    rowIdColumnName: string,
+  ): Promise<IdObj<any>> => {
+    await ensureTable(tableName, rowIdColumnName);
     const rows = await cmd(
-      `SELECT*FROM${escapeId(table)}WHERE ${escapeId(rowIdColumn)}=?`,
+      `SELECT*FROM${escapeId(tableName)}WHERE ${escapeId(rowIdColumnName)}=?`,
       [SINGLE_ROW_ID],
     );
-    return arrayIsEmpty(rows) || !objHas(rows[0], rowIdColumn)
+    return arrayIsEmpty(rows) || !objHas(rows[0], rowIdColumnName)
       ? {}
-      : objDel(rows[0], rowIdColumn);
+      : objDel(rows[0], rowIdColumnName);
   };
 
-  const setRow = async (
-    table: string,
+  const saveSingleRow = async (
+    tableName: string,
+    rowIdColumnName: string,
     rowId: Id,
     row: Row | Values,
   ): Promise<void> => {
@@ -72,14 +93,14 @@ export const getCommandFunctions = (
       (cellId) => `,${escapeId(cellId)}`,
     ).join(EMPTY_STRING);
     const values = objValues(row);
-    await ensureColumns(table, row);
+    await ensureColumns(tableName, rowIdColumnName, row);
     await cmd(
-      `INSERT INTO${escapeId(table)}(${escapeId(
-        rowIdColumn,
+      `INSERT INTO${escapeId(tableName)}(${escapeId(
+        rowIdColumnName,
       )}${columns})VALUES(?${',?'.repeat(arrayLength(values))})`,
       [rowId, ...values],
     );
   };
 
-  return [ensureTable, getSingleRow, setRow];
+  return [ensureTable, loadSingleRow, saveSingleRow];
 };

@@ -1,6 +1,7 @@
 /// persisters
 
 import {GetTransactionChanges, Store, Tables, Values} from './store.d';
+import {Id} from './common.d';
 
 /// PersisterStats
 export type PersisterStats = {
@@ -17,21 +18,66 @@ export type PersisterListener = (
 ) => void;
 
 /// DatabasePersisterConfig
-export type DatabasePersisterConfig =
-  | DatabasePersisterJsonConfig
-  | DatabasePersisterTabularConfig;
+export type DatabasePersisterConfig = DpcJson | DpcTabular;
 
-/// DatabasePersisterJsonConfig
-export type DatabasePersisterJsonConfig = {
+/// DpcJson
+export type DpcJson = {
   mode: 'json';
   storeTableName?: string;
 };
 
-/// DatabasePersisterTabularConfig
-export type DatabasePersisterTabularConfig = {
+/// DpcTabular
+export type DpcTabular = {
   mode: 'tabular';
+  tables?: {
+    load?: DpcTabularLoad | boolean;
+    save?: DpcTabularSave | false;
+  };
+  values?: DpcTabularValues;
+};
+
+/// DpcTabularLoad
+export type DpcTabularLoad = {
+  [tableName: string]: DpcTabularLoadTable | boolean;
+  '*': DpcTabularLoadDefault | boolean;
+};
+
+/// DpcTabularLoadTable
+export type DpcTabularLoadTable = {
+  tableId?: Id | ((tableName: string) => Id | false);
   rowIdColumnName?: string;
-  valuesTableName?: string;
+};
+
+/// DpcTabularLoadDefault
+export type DpcTabularLoadDefault = {
+  tableId?: (tableName: string) => Id | false;
+  rowIdColumnName?: string;
+};
+
+/// DpcTabularSave
+export type DpcTabularSave = {
+  [tableId: Id]: DpcTabularSaveTable | false;
+  '*': DpcTabularSaveDefault | false;
+};
+
+/// DpcTabularSaveTable
+export type DpcTabularSaveTable = {
+  tableName?: string | ((tableId: Id) => string | false);
+  rowIdColumnName?: string;
+};
+
+/// DpcTabularSaveDefault
+export type DpcTabularSaveDefault = {
+  tableName?: (tableId: Id) => string | false;
+  rowIdColumnName?: string;
+};
+
+/// DpcTabularValues
+export type DpcTabularValues = {
+  load?: boolean;
+  save?: boolean;
+  tableName?: string;
+  rowIdColumnName?: string;
 };
 
 /// Persister
