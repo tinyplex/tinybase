@@ -11,21 +11,21 @@ describe.each(Object.entries(VARIANTS))(
     const [getDatabase, setDatabase] = getDatabaseFunctions(cmd);
 
     let db: Database;
-    let store1: Store;
-    let persister1: Persister;
+    let store: Store;
+    let persister: Persister;
 
     beforeEach(async () => {
       mockFetchWasm();
       db = await getOpenDatabase();
-      store1 = createStore();
-      persister1 = getPersister(store1, db);
+      store = createStore();
+      persister = getPersister(store, db);
     });
 
     afterEach(async () => await close(db));
 
     describe('Custom table name', () => {
       test('as string', async () => {
-        const persister = getPersister(store1, db, 'test');
+        const persister = getPersister(store, db, 'test');
         await persister.save();
         expect(await getDatabase(db)).toEqual([
           [
@@ -37,7 +37,7 @@ describe.each(Object.entries(VARIANTS))(
       });
 
       test('with spaces', async () => {
-        const persister = getPersister(store1, db, 'test table');
+        const persister = getPersister(store, db, 'test table');
         await persister.save();
         expect(await getDatabase(db)).toEqual([
           [
@@ -49,7 +49,7 @@ describe.each(Object.entries(VARIANTS))(
       });
 
       test('with quote', async () => {
-        const persister = getPersister(store1, db, 'test "table"');
+        const persister = getPersister(store, db, 'test "table"');
         await persister.save();
         expect(await getDatabase(db)).toEqual([
           [
@@ -61,7 +61,7 @@ describe.each(Object.entries(VARIANTS))(
       });
 
       test('as config', async () => {
-        const persister = getPersister(store1, db, {
+        const persister = getPersister(store, db, {
           mode: 'json',
           storeTableName: 'test',
         });
@@ -78,7 +78,7 @@ describe.each(Object.entries(VARIANTS))(
 
     describe('Save to empty database', () => {
       test('nothing', async () => {
-        await persister1.save();
+        await persister.save();
         expect(await getDatabase(db)).toEqual([
           [
             'tinybase',
@@ -89,7 +89,7 @@ describe.each(Object.entries(VARIANTS))(
       });
 
       test('nothing, empty config', async () => {
-        const persister = getPersister(store1, db, {mode: 'json'});
+        const persister = getPersister(store, db, {mode: 'json'});
         await persister.save();
         expect(await getDatabase(db)).toEqual([
           [
@@ -101,8 +101,8 @@ describe.each(Object.entries(VARIANTS))(
       });
 
       test('tables', async () => {
-        store1.setTables({t1: {r1: {c1: 1}}});
-        await persister1.save();
+        store.setTables({t1: {r1: {c1: 1}}});
+        await persister.save();
         expect(await getDatabase(db)).toEqual([
           [
             'tinybase',
@@ -113,8 +113,8 @@ describe.each(Object.entries(VARIANTS))(
       });
 
       test('values', async () => {
-        store1.setValues({v1: 1});
-        await persister1.save();
+        store.setValues({v1: 1});
+        await persister.save();
         expect(await getDatabase(db)).toEqual([
           [
             'tinybase',
@@ -125,8 +125,8 @@ describe.each(Object.entries(VARIANTS))(
       });
 
       test('both', async () => {
-        store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
-        await persister1.save();
+        store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
+        await persister.save();
         expect(await getDatabase(db)).toEqual([
           [
             'tinybase',
@@ -137,8 +137,8 @@ describe.each(Object.entries(VARIANTS))(
       });
 
       test('both, change, and then load again', async () => {
-        store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
-        await persister1.save();
+        store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
+        await persister.save();
         expect(await getDatabase(db)).toEqual([
           [
             'tinybase',
@@ -157,20 +157,20 @@ describe.each(Object.entries(VARIANTS))(
             [{_id: '_', store: '[{"t1":{"r1":{"c1":2}}},{"v1":2}]'}],
           ],
         ]);
-        await persister1.load();
-        expect(store1.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
+        await persister.load();
+        expect(store.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
       });
     });
 
     describe('Load from database', () => {
       test('nothing', async () => {
-        await persister1.load();
-        expect(store1.getContent()).toEqual([{}, {}]);
+        await persister.load();
+        expect(store.getContent()).toEqual([{}, {}]);
       });
 
       test('defaulted', async () => {
-        await persister1.load({t1: {r1: {c1: 1}}}, {v1: 1});
-        expect(store1.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+        await persister.load({t1: {r1: {c1: 1}}}, {v1: 1});
+        expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
       });
 
       test('broken', async () => {
@@ -181,8 +181,8 @@ describe.each(Object.entries(VARIANTS))(
             [{_id: '_', store: '[{"t1":1}]'}],
           ],
         ]);
-        await persister1.load();
-        expect(store1.getContent()).toEqual([{}, {}]);
+        await persister.load();
+        expect(store.getContent()).toEqual([{}, {}]);
       });
 
       test('broken, can default', async () => {
@@ -193,8 +193,8 @@ describe.each(Object.entries(VARIANTS))(
             [{_id: '_', store: '[{"t1":}]'}],
           ],
         ]);
-        await persister1.load({t1: {r1: {c1: 1}}}, {v1: 1});
-        expect(store1.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+        await persister.load({t1: {r1: {c1: 1}}}, {v1: 1});
+        expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
       });
 
       test('tables', async () => {
@@ -205,8 +205,8 @@ describe.each(Object.entries(VARIANTS))(
             [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{}]'}],
           ],
         ]);
-        await persister1.load();
-        expect(store1.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {}]);
+        await persister.load();
+        expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {}]);
       });
 
       test('values', async () => {
@@ -217,8 +217,8 @@ describe.each(Object.entries(VARIANTS))(
             [{_id: '_', store: '[{}, {"v1":1}]'}],
           ],
         ]);
-        await persister1.load();
-        expect(store1.getContent()).toEqual([{}, {v1: 1}]);
+        await persister.load();
+        expect(store.getContent()).toEqual([{}, {v1: 1}]);
       });
 
       test('both', async () => {
@@ -229,8 +229,8 @@ describe.each(Object.entries(VARIANTS))(
             [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
           ],
         ]);
-        await persister1.load();
-        expect(store1.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+        await persister.load();
+        expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
       });
 
       test('both, change, and then save again', async () => {
@@ -241,11 +241,11 @@ describe.each(Object.entries(VARIANTS))(
             [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
           ],
         ]);
-        await persister1.load();
-        expect(store1.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
-        store1.setCell('t1', 'r1', 'c1', 2).setValue('v1', 2);
-        expect(store1.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
-        await persister1.save();
+        await persister.load();
+        expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+        store.setCell('t1', 'r1', 'c1', 2).setValue('v1', 2);
+        expect(store.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
+        await persister.save();
         expect(await getDatabase(db)).toEqual([
           [
             'tinybase',
@@ -257,9 +257,13 @@ describe.each(Object.entries(VARIANTS))(
     });
 
     describe('Two stores, one connection, one database', () => {
+      let store1: Store;
+      let persister1: Persister;
       let store2: Store;
       let persister2: Persister;
       beforeEach(() => {
+        store1 = createStore();
+        persister1 = getPersister(store1, db);
         store2 = createStore();
         persister2 = getPersister(store2, db);
       });

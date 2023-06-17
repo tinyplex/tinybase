@@ -745,8 +745,8 @@ describe.each(Object.entries(VARIANTS))(
 
     describe('Two stores, one connection, one database', () => {
       let store1: Store;
-      let store2: Store;
       let persister1: Persister;
+      let store2: Store;
       let persister2: Persister;
 
       beforeEach(() => {
