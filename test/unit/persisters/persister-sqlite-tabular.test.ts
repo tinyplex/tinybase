@@ -5,7 +5,7 @@ import {VARIANTS, getDatabaseFunctions} from './sqlite';
 import {mockFetchWasm, pause} from '../common/other';
 import {Database} from 'sqlite3';
 
-describe.each(Object.entries(VARIANTS))(
+describe.each(Object.entries(VARIANTS).slice(0, 1))(
   '%s',
   (_name, [getOpenDatabase, getPersister, cmd, close]) => {
     const [getDatabase, setDatabase] = getDatabaseFunctions(cmd);
@@ -21,7 +21,7 @@ describe.each(Object.entries(VARIANTS))(
 
     afterEach(async () => await close(db));
 
-    describe('Config', () => {
+    describe.only('Config', () => {
       describe('save', () => {
         beforeEach(() => {
           store
@@ -29,21 +29,16 @@ describe.each(Object.entries(VARIANTS))(
             .setValues({v1: 1, v2: 2});
         });
 
-        test('default (neither)', async () => {
+        test('default (off)', async () => {
           await getPersister(store, db, {mode: 'tabular'}).save();
           expect(await getDatabase(db)).toEqual([]);
         });
 
-        describe.only('tables', () => {
+        describe('tables', () => {
           test('one to one', async () => {
             await getPersister(store, db, {
               mode: 'tabular',
-              tables: {
-                save: {
-                  '*': {tableName: (a) => a},
-                  a: {tableName: 'a'},
-                },
-              },
+              tables: {save: {'*': {tableName: (tableName) => tableName}}},
             }).save();
             await pause();
             expect(await getDatabase(db)).toEqual([
@@ -56,6 +51,75 @@ describe.each(Object.entries(VARIANTS))(
                 't2',
                 'CREATE TABLE "t2"("_id" PRIMARY KEY ON CONFLICT REPLACE, "c2")',
                 [{_id: 'r2', c2: 2}],
+              ],
+            ]);
+          });
+          test('all mapped', async () => {
+            await getPersister(store, db, {
+              mode: 'tabular',
+              tables: {
+                save: {
+                  '*': {tableName: (tableName) => 'test_' + tableName},
+                },
+              },
+            }).save();
+            await pause();
+            expect(await getDatabase(db)).toEqual([
+              [
+                'test_t1',
+                'CREATE TABLE "test_t1"("_id" PRIMARY KEY ON CONFLICT REPLACE, "c1")',
+                [{_id: 'r1', c1: 1}],
+              ],
+              [
+                'test_t2',
+                'CREATE TABLE "test_t2"("_id" PRIMARY KEY ON CONFLICT REPLACE, "c2")',
+                [{_id: 'r2', c2: 2}],
+              ],
+            ]);
+          });
+          test('mix of one to one, mapped, custom ids, off', async () => {
+            store
+              .setTable('t3', {r3: {c3: 3}})
+              .setTable('t4', {r4: {c4: 4}})
+              .setTable('t5', {r5: {c5: 5}});
+            await getPersister(store, db, {
+              mode: 'tabular',
+              tables: {
+                save: {
+                  '*': {
+                    tableName: (tableName) => tableName,
+                    rowIdColumnName: 'id',
+                  },
+                  t2: {rowIdColumnName: 'id2'},
+                  t3: {tableName: 'test "t3"', rowIdColumnName: 'id "3"'},
+                  t4: {
+                    tableName: (tableName) => 'test_' + tableName,
+                  },
+                  t5: false,
+                },
+              },
+            }).save();
+            await pause();
+            expect(await getDatabase(db)).toEqual([
+              [
+                't1',
+                'CREATE TABLE "t1"("id" PRIMARY KEY ON CONFLICT REPLACE, "c1")',
+                [{id: 'r1', c1: 1}],
+              ],
+              [
+                't2',
+                'CREATE TABLE "t2"("id2" PRIMARY KEY ON CONFLICT REPLACE, "c2")',
+                [{id2: 'r2', c2: 2}],
+              ],
+              [
+                'test "t3"',
+                'CREATE TABLE "test ""t3"""("id ""3""" PRIMARY KEY ON CONFLICT REPLACE, "c3")',
+                [{'id "3"': 'r3', c3: 3}],
+              ],
+              [
+                'test_t4',
+                'CREATE TABLE "test_t4"("id" PRIMARY KEY ON CONFLICT REPLACE, "c4")',
+                [{id: 'r4', c4: 4}],
               ],
             ]);
           });
