@@ -5,7 +5,7 @@ import {VARIANTS, getDatabaseFunctions} from './sqlite';
 import {mockFetchWasm, pause} from '../common/other';
 import {Database} from 'sqlite3';
 
-describe.each(Object.entries(VARIANTS).slice(0, 1))(
+describe.each(Object.entries(VARIANTS))(
   '%s',
   (_name, [getOpenDatabase, getPersister, cmd, close]) => {
     const [getDatabase, setDatabase] = getDatabaseFunctions(cmd);
@@ -21,7 +21,7 @@ describe.each(Object.entries(VARIANTS).slice(0, 1))(
 
     afterEach(async () => await close(db));
 
-    describe.only('Config', () => {
+    describe('Config', () => {
       describe('save', () => {
         beforeEach(() => {
           store
@@ -38,7 +38,7 @@ describe.each(Object.entries(VARIANTS).slice(0, 1))(
           test('one to one', async () => {
             await getPersister(store, db, {
               mode: 'tabular',
-              tables: {save: {'*': {tableName: (tableName) => tableName}}},
+              tables: {save: {'*': {tableName: (tableId) => tableId}}},
             }).save();
             await pause();
             expect(await getDatabase(db)).toEqual([
@@ -59,7 +59,7 @@ describe.each(Object.entries(VARIANTS).slice(0, 1))(
               mode: 'tabular',
               tables: {
                 save: {
-                  '*': {tableName: (tableName) => 'test_' + tableName},
+                  '*': {tableName: (tableId) => 'test_' + tableId},
                 },
               },
             }).save();
@@ -87,12 +87,12 @@ describe.each(Object.entries(VARIANTS).slice(0, 1))(
               tables: {
                 save: {
                   '*': {
-                    tableName: (tableName) => tableName,
+                    tableName: (tableId) => tableId,
                     rowIdColumnName: 'id',
                   },
                   t2: {rowIdColumnName: 'id2'},
                   t3: {tableName: 'test "t3"', rowIdColumnName: 'id "3"'},
-                  t4: {tableName: (tableName) => 'test_' + tableName},
+                  t4: {tableName: (tableId) => 'test_' + tableId},
                   t5: false,
                 },
               },
@@ -269,7 +269,9 @@ describe.each(Object.entries(VARIANTS).slice(0, 1))(
           test('all mapped', async () => {
             await getPersister(store, db, {
               mode: 'tabular',
-              tables: {load: {'*': {tableId: (tableId) => 'test_' + tableId}}},
+              tables: {
+                load: {'*': {tableId: (tableName) => 'test_' + tableName}},
+              },
             }).load();
             expect(store.getContent()).toEqual([
               {test_t1: {r1: {c1: 1}}, test_t2: {r2: {c2: 2}}},
@@ -315,7 +317,7 @@ describe.each(Object.entries(VARIANTS).slice(0, 1))(
               tables: {
                 load: {
                   '*': {
-                    tableId: (tableId) => tableId,
+                    tableId: (tableName) => tableName,
                     rowIdColumnName: 'id',
                   },
                   t2: {rowIdColumnName: 'id2'},
@@ -453,8 +455,17 @@ describe.each(Object.entries(VARIANTS).slice(0, 1))(
     });
 
     describe('Save to empty database', () => {
+      let persister: Persister;
+      beforeEach(() => {
+        persister = getPersister(store, db, {
+          mode: 'tabular',
+          tables: {save: {'*': {tableName: (tableId) => tableId}}},
+          values: {save: true},
+        });
+      });
+
       test('nothing', async () => {
-        await persister1.save();
+        await persister.save();
         expect(await getDatabase(db)).toEqual([
           [
             'tinybase_values',
@@ -466,7 +477,7 @@ describe.each(Object.entries(VARIANTS).slice(0, 1))(
 
       test('tables', async () => {
         store.setTables({t1: {r1: {c1: 1}}});
-        await persister1.save();
+        await persister.save();
         expect(await getDatabase(db)).toEqual([
           [
             't1',
@@ -483,7 +494,7 @@ describe.each(Object.entries(VARIANTS).slice(0, 1))(
 
       test('values', async () => {
         store.setValues({v1: 1});
-        await persister1.save();
+        await persister.save();
         expect(await getDatabase(db)).toEqual([
           [
             'tinybase_values',
@@ -495,7 +506,7 @@ describe.each(Object.entries(VARIANTS).slice(0, 1))(
 
       test('both', async () => {
         store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
-        await persister1.save();
+        await persister.save();
         expect(await getDatabase(db)).toEqual([
           [
             't1',
@@ -512,7 +523,7 @@ describe.each(Object.entries(VARIANTS).slice(0, 1))(
 
       test('both, change, and then load again', async () => {
         store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
-        await persister1.save();
+        await persister.save();
         expect(await getDatabase(db)).toEqual([
           [
             't1',
@@ -539,19 +550,24 @@ describe.each(Object.entries(VARIANTS).slice(0, 1))(
             [{_id: '_', v1: 2}],
           ],
         ]);
-        await persister1.load();
+        await persister.load();
         expect(store.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
       });
     });
 
     describe('Load from database', () => {
+      let persister: Persister;
+      beforeEach(() => {
+        persister = getPersister(store, db, {mode: 'tabular'});
+      });
+
       test('nothing', async () => {
-        await persister1.load();
+        await persister.load();
         expect(store.getContent()).toEqual([{}, {}]);
       });
 
       test('defaulted', async () => {
-        await persister1.load({t1: {r1: {c1: 1}}}, {v1: 1});
+        await persister.load({t1: {r1: {c1: 1}}}, {v1: 1});
         expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
       });
 
@@ -563,7 +579,7 @@ describe.each(Object.entries(VARIANTS).slice(0, 1))(
             [{di: 'r1', c1: 1}],
           ],
         ]);
-        await persister1.load();
+        await persister.load();
         expect(store.getContent()).toEqual([{}, {}]);
       });
 
@@ -575,7 +591,7 @@ describe.each(Object.entries(VARIANTS).slice(0, 1))(
             [{di: 'r1', c1: 1}],
           ],
         ]);
-        await persister1.load({t1: {r1: {c1: 1}}}, {v1: 1});
+        await persister.load({t1: {r1: {c1: 1}}}, {v1: 1});
         expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
       });
 
@@ -587,7 +603,7 @@ describe.each(Object.entries(VARIANTS).slice(0, 1))(
             [{_id: 'r1', c1: 1}],
           ],
         ]);
-        await persister1.load();
+        await persister.load();
         expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {}]);
       });
 
@@ -599,7 +615,7 @@ describe.each(Object.entries(VARIANTS).slice(0, 1))(
             [{_id: '_', v1: 1}],
           ],
         ]);
-        await persister1.load();
+        await persister.load();
         expect(store.getContent()).toEqual([{}, {v1: 1}]);
       });
 
@@ -616,11 +632,16 @@ describe.each(Object.entries(VARIANTS).slice(0, 1))(
             [{_id: '_', v1: 1}],
           ],
         ]);
-        await persister1.load();
+        await persister.load();
         expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
       });
 
       test('both, change, and then save again', async () => {
+        persister = getPersister(store, db, {
+          mode: 'tabular',
+          tables: {save: {'*': {tableName: (tableId) => tableId}}},
+          values: {save: true},
+        });
         await setDatabase(db, [
           [
             't1',
@@ -633,11 +654,11 @@ describe.each(Object.entries(VARIANTS).slice(0, 1))(
             [{_id: '_', v1: 1}],
           ],
         ]);
-        await persister1.load();
+        await persister.load();
         expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
         store.setCell('t1', 'r1', 'c1', 2).setValue('v1', 2);
         expect(store.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
-        await persister1.save();
+        await persister.save();
         expect(await getDatabase(db)).toEqual([
           [
             't1',
@@ -654,15 +675,28 @@ describe.each(Object.entries(VARIANTS).slice(0, 1))(
     });
 
     describe('Two stores, one connection, one database', () => {
+      let store1: Store;
       let store2: Store;
+      let persister1: Persister;
       let persister2: Persister;
+
       beforeEach(() => {
+        store1 = createStore();
+        persister1 = getPersister(store1, db, {
+          mode: 'tabular',
+          tables: {save: {'*': {tableName: (tableId) => tableId}}},
+          values: {save: true},
+        });
         store2 = createStore();
-        persister2 = getPersister(store2, db, {mode: 'tabular'});
+        persister2 = getPersister(store2, db, {
+          mode: 'tabular',
+          tables: {save: {'*': {tableName: (tableId) => tableId}}},
+          values: {save: true},
+        });
       });
 
       test('manual', async () => {
-        store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
+        store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
         await persister1.save();
         await persister2.load();
         expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
@@ -670,7 +704,7 @@ describe.each(Object.entries(VARIANTS).slice(0, 1))(
 
       test('autoSave1', async () => {
         await persister1.startAutoSave();
-        store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
+        store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
         await pause();
         await persister2.load();
         expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
@@ -678,7 +712,7 @@ describe.each(Object.entries(VARIANTS).slice(0, 1))(
 
       test('autoLoad2', async () => {
         await persister2.startAutoLoad();
-        store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
+        store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
         await persister1.save();
         await pause();
         expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
@@ -687,7 +721,7 @@ describe.each(Object.entries(VARIANTS).slice(0, 1))(
       test('autoSave1 & autoLoad2', async () => {
         await persister1.startAutoSave();
         await persister2.startAutoLoad();
-        store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
+        store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
         await pause();
         expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
       });
@@ -695,7 +729,7 @@ describe.each(Object.entries(VARIANTS).slice(0, 1))(
       test('autoSave1 & autoLoad2, complex transactions', async () => {
         await persister1.startAutoSave();
         await persister2.startAutoLoad();
-        store
+        store1
           .setTables({
             t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}},
             t2: {r1: {c1: 1}},
@@ -706,25 +740,25 @@ describe.each(Object.entries(VARIANTS).slice(0, 1))(
           {t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
           {v1: 1, v2: 2},
         ]);
-        store.setCell('t1', 'r1', 'c1', 2);
+        store1.setCell('t1', 'r1', 'c1', 2);
         await pause();
         expect(store2.getContent()).toEqual([
           {t1: {r1: {c1: 2, c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
           {v1: 1, v2: 2},
         ]);
-        store.delCell('t1', 'r1', 'c1');
+        store1.delCell('t1', 'r1', 'c1');
         await pause();
         expect(store2.getContent()).toEqual([
           {t1: {r1: {c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
           {v1: 1, v2: 2},
         ]);
-        store.setValue('v1', 2);
+        store1.setValue('v1', 2);
         await pause();
         expect(store2.getContent()).toEqual([
           {t1: {r1: {c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
           {v1: 2, v2: 2},
         ]);
-        store.delValue('v1');
+        store1.delValue('v1');
         await pause();
         expect(store2.getContent()).toEqual([
           {t1: {r1: {c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
