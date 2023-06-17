@@ -1,9 +1,5 @@
 import {Cmd, getCommandFunctions} from './commands';
-import {
-  DatabasePersisterJsonConfig,
-  Persister,
-  PersisterListener,
-} from '../../types/persisters';
+import {DpcJson, Persister, PersisterListener} from '../../types/persisters';
 import {Store, Tables, Values} from '../../types/store';
 import {jsonParse, jsonString} from '../../common/other';
 import {DEFAULT_ROW_ID_COLUMN_NAME} from './tabular-config';
@@ -18,7 +14,7 @@ export const createJsonSqlitePersister = <ListeningHandle>(
   cmd: Cmd,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
-  {storeTableName = TINYBASE}: DatabasePersisterJsonConfig,
+  {storeTableName = TINYBASE}: DpcJson,
 ): Persister => {
   const [ensureTable, loadSingleRow, saveSingleRow] = getCommandFunctions(cmd);
 
