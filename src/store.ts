@@ -79,6 +79,7 @@ import {
   mapGet,
   mapKeys,
   mapMap,
+  mapMatch,
   mapNew,
   mapSet,
   mapToObj,
@@ -136,17 +137,6 @@ type ValuesMap = IdMap<Value>;
 type ChangedIdsMap = IdMap<IdAddedOrRemoved>;
 type ChangedIdsMap2 = IdMap2<IdAddedOrRemoved>;
 type ChangedIdsMap3 = IdMap3<IdAddedOrRemoved>;
-
-const mapMatch = <MapValue, ObjectValue>(
-  map: IdMap<MapValue>,
-  obj: IdObj<ObjectValue>,
-  set: (map: IdMap<MapValue>, id: Id, value: ObjectValue) => void,
-  del: (map: IdMap<MapValue>, id: Id) => void = mapSet,
-): IdMap<MapValue> => {
-  objMap(obj, (value, id) => set(map, id, value));
-  mapForEach(map, (id) => (objHas(obj, id) ? 0 : del(map, id)));
-  return map;
-};
 
 const validate = (
   obj: IdObj<any> | undefined,
