@@ -24,7 +24,8 @@ export const createTabularSqlitePersister = <ListeningHandle>(
     [valuesLoad, valuesSave, valuesTableName, valuesRowIdColumnName],
   ] = getConfigFunctions(config);
 
-  const [ensureTable, loadSingleRow, saveSingleRow] = getCommandFunctions(cmd);
+  const [refreshSchema, loadSingleRow, saveSingleRow] =
+    getCommandFunctions(cmd);
 
   const scheduleSaveTables = (tables: Tables) =>
     tablesSave ? objMap(tables, scheduleSaveTable) : 0;
@@ -34,7 +35,7 @@ export const createTabularSqlitePersister = <ListeningHandle>(
     const tableName = getTableName(tableId);
     if (tableName !== false) {
       persister.schedule(
-        async () => await ensureTable(tableName, rowIdColumnName),
+        refreshSchema,
         ...objMap(
           table,
           (row, rowId) => async () =>
@@ -47,7 +48,7 @@ export const createTabularSqlitePersister = <ListeningHandle>(
   const scheduleSaveValues = (values: Values) =>
     valuesSave
       ? persister.schedule(
-          async () => await ensureTable(valuesTableName, valuesRowIdColumnName),
+          refreshSchema,
           async () =>
             await saveSingleRow(
               valuesTableName,
@@ -107,6 +108,7 @@ export const createTabularSqlitePersister = <ListeningHandle>(
       : {};
 
   const getPersisted = async (): Promise<[Tables, Values] | undefined> => {
+    await refreshSchema();
     const tables = await loadTables();
     const values = await loadValues();
     return !objIsEmpty(tables) || !objIsEmpty(values)
