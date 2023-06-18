@@ -1,11 +1,9 @@
 import {DatabasePersisterConfig, Persister, Store} from 'tinybase/debug';
 import initWasm, {DB} from '@vlcn.io/crsqlite-wasm';
-import {mkdirSync, unlinkSync} from 'fs';
 import sqlite3, {Database} from 'sqlite3';
 import {createCrSqliteWasmPersister} from 'tinybase/debug/persisters/persister-cr-sqlite-wasm';
 import {createSqlite3Persister} from 'tinybase/debug/persisters/persister-sqlite3';
 import {createSqliteWasmPersister} from 'tinybase/debug/persisters/persister-sqlite-wasm';
-import {dirname} from 'path';
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import {suppressWarnings} from '../common/other';
 
@@ -28,19 +26,11 @@ type SqliteVariant<Database> = [
   close: (db: Database) => Promise<void>,
 ];
 
-const DATABASE_FILE = 'tmp/test.sqlite3';
-
 const escapeId = (str: string) => `"${str.replace(/"/g, '""')}"`;
 
 export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
   sqlite3: [
-    async (): Promise<Database> => {
-      try {
-        mkdirSync(dirname(DATABASE_FILE), {recursive: true});
-        unlinkSync(DATABASE_FILE);
-      } catch {}
-      return new sqlite3.Database(DATABASE_FILE);
-    },
+    async (): Promise<Database> => new sqlite3.Database(':memory:'),
     (
       store: Store,
       db: Database,
@@ -64,7 +54,7 @@ export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
     async (): Promise<SqliteWasmDb> =>
       await suppressWarnings(async () => {
         const sqlite3 = await sqlite3InitModule();
-        const db = new sqlite3.oo1.DB(DATABASE_FILE, 'c');
+        const db = new sqlite3.oo1.DB(':memory:', 'c');
         return [sqlite3, db];
       }),
     (
