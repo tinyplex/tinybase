@@ -10,6 +10,8 @@ import {createSqlite3Persister as createSqlite3PersisterDecl} from '../types/per
 import {createSqlitePersister} from './sqlite/create';
 import {promiseNew} from '../common/other';
 
+const CHANGE = 'change';
+
 export const createSqlite3Persister = ((
   store: Store,
   db: Database,
@@ -28,8 +30,8 @@ export const createSqlite3Persister = ((
       ),
     (listener: PersisterListener): (() => void) => {
       const observer = () => listener();
-      db.on('change', observer);
+      db.on(CHANGE, observer);
       return observer;
     },
-    (observer: () => void): any => db.off('change', observer),
+    (observer: () => void): any => db.off(CHANGE, observer),
   )) as typeof createSqlite3PersisterDecl;
