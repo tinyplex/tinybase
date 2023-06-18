@@ -10,13 +10,18 @@ import {createTabularSqlitePersister} from './tabular';
 import {isString} from '../../common/other';
 import {objMerge} from '../../common/obj';
 
+type DataVersionPragma = [{data_version: number}];
+type SchemaVersionPragma = [{schema_version: number}];
+
 const JSON = 'json';
 const AUTO_LOAD_INTERVAL_SECONDS = 'autoLoadIntervalSeconds';
 const DEFAULT_CONFIG: DatabasePersisterConfig = {
   mode: JSON,
   [AUTO_LOAD_INTERVAL_SECONDS]: 1,
 };
+const PRAGMA = 'pragma ';
 const DATA_VERSION = 'data_version';
+const SCHEMA_VERSION = 'schema_version';
 
 export const createSqlitePersister = <ListeningHandle>(
   store: Store,
@@ -33,6 +38,7 @@ export const createSqlitePersister = <ListeningHandle>(
   );
 
   let dataVersion: number | null;
+  let schemaVersion: number | null;
 
   const addPersisterListener = (
     listener: PersisterListener,
@@ -40,12 +46,18 @@ export const createSqlitePersister = <ListeningHandle>(
     setInterval(async () => {
       try {
         const newDataVersion = (
-          await (cmd('pragma ' + DATA_VERSION) as any)
+          (await cmd(PRAGMA + DATA_VERSION)) as DataVersionPragma
         )[0][DATA_VERSION];
-        dataVersion ??= newDataVersion;
-        if (newDataVersion != dataVersion) {
-          dataVersion = newDataVersion;
+        const newSchemaVersion = (
+          (await cmd(PRAGMA + SCHEMA_VERSION)) as SchemaVersionPragma
+        )[0][SCHEMA_VERSION];
+        if (
+          newDataVersion != (dataVersion ??= newDataVersion) ||
+          newSchemaVersion != (schemaVersion ??= newSchemaVersion)
+        ) {
           listener();
+          dataVersion = newDataVersion;
+          schemaVersion = newSchemaVersion;
         }
       } catch {}
     }, (config[AUTO_LOAD_INTERVAL_SECONDS] as number) * 1000),
@@ -57,7 +69,7 @@ export const createSqlitePersister = <ListeningHandle>(
     ListeningHandle,
   ]): void => {
     clearInterval(interval);
-    dataVersion = null;
+    dataVersion = schemaVersion = null;
     delPersisterLocalListener(listeningHandle);
   };
 
