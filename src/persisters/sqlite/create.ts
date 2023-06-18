@@ -8,26 +8,58 @@ import {Store} from '../../types/store';
 import {createJsonSqlitePersister} from './json';
 import {createTabularSqlitePersister} from './tabular';
 import {isString} from '../../common/other';
+import {objMerge} from '../../common/obj';
 
 const JSON = 'json';
-const DEFAULT_CONFIG: DatabasePersisterConfig = {mode: JSON};
+const AUTO_LOAD_INTERVAL_SECONDS = 'autoLoadIntervalSeconds';
+const DEFAULT_CONFIG: DatabasePersisterConfig = {
+  mode: JSON,
+  [AUTO_LOAD_INTERVAL_SECONDS]: 1,
+};
+const DATA_VERSION = 'data_version';
 
 export const createSqlitePersister = <ListeningHandle>(
   store: Store,
   configOrStoreTableName: DatabasePersisterConfig | string | undefined,
   cmd: Cmd,
-  addPersisterListener: (listener: PersisterListener) => ListeningHandle,
-  delPersisterListener: (listeningHandle: ListeningHandle) => void,
+  addPersisterLocalListener: (listener: PersisterListener) => ListeningHandle,
+  delPersisterLocalListener: (listeningHandle: ListeningHandle) => void,
 ): Persister => {
-  // const cmd = async (sql: string, args: any[] = []):
-  // Promise<IdObj<any>[]> => {
-  //   console.log(sql, args);
-  //   return await cmd1(sql, args);
-  // };
+  const config: DatabasePersisterConfig = objMerge(
+    DEFAULT_CONFIG,
+    isString(configOrStoreTableName)
+      ? {storeTableName: configOrStoreTableName}
+      : configOrStoreTableName ?? {},
+  );
 
-  const config: DatabasePersisterConfig = isString(configOrStoreTableName)
-    ? {...DEFAULT_CONFIG, storeTableName: configOrStoreTableName}
-    : configOrStoreTableName ?? DEFAULT_CONFIG;
+  let dataVersion: number | null;
+
+  const addPersisterListener = (
+    listener: PersisterListener,
+  ): [NodeJS.Timeout, ListeningHandle] => [
+    setInterval(async () => {
+      try {
+        const newDataVersion = (
+          await (cmd('pragma ' + DATA_VERSION) as any)
+        )[0][DATA_VERSION];
+        dataVersion ??= newDataVersion;
+        if (newDataVersion != dataVersion) {
+          dataVersion = newDataVersion;
+          listener();
+        }
+      } catch {}
+    }, (config[AUTO_LOAD_INTERVAL_SECONDS] as number) * 1000),
+    addPersisterLocalListener(listener),
+  ];
+
+  const delPersisterListener = ([interval, listeningHandle]: [
+    NodeJS.Timeout,
+    ListeningHandle,
+  ]): void => {
+    clearInterval(interval);
+    dataVersion = null;
+    delPersisterLocalListener(listeningHandle);
+  };
 
   return (
     config.mode == JSON

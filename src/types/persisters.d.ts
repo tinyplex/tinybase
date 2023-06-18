@@ -18,7 +18,9 @@ export type PersisterListener = (
 ) => void;
 
 /// DatabasePersisterConfig
-export type DatabasePersisterConfig = DpcJson | DpcTabular;
+export type DatabasePersisterConfig = (DpcJson | DpcTabular) & {
+  autoLoadIntervalSeconds?: number;
+};
 
 /// DpcJson
 export type DpcJson = {
