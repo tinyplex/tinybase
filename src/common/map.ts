@@ -1,4 +1,4 @@
-import {IdObj, objIsEmpty} from './obj';
+import {IdObj, objHas, objIsEmpty, objMap} from './obj';
 import {arrayLength, arrayMap} from './array';
 import {collDel, collForEach, collHas, collIsEmpty} from './coll';
 import {ifNotUndefined, isUndefined} from './other';
@@ -47,6 +47,17 @@ export const mapEnsure = <Key, Value>(
     mapSet(map, key, getDefaultValue());
   }
   return mapGet(map, key) as Value;
+};
+
+export const mapMatch = <MapValue, ObjectValue>(
+  map: IdMap<MapValue>,
+  obj: IdObj<ObjectValue>,
+  set: (map: IdMap<MapValue>, id: Id, value: ObjectValue) => void,
+  del: (map: IdMap<MapValue>, id: Id) => void = mapSet,
+): IdMap<MapValue> => {
+  objMap(obj, (value, id) => set(map, id, value));
+  mapForEach(map, (id) => (objHas(obj, id) ? 0 : del(map, id)));
+  return map;
 };
 
 export const mapToObj = <MapValue, ObjectValue = MapValue>(
