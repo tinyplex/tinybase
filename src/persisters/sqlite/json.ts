@@ -16,30 +16,30 @@ export const createJsonSqlitePersister = <ListeningHandle>(
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   {storeTableName = TINYBASE}: DpcJson,
 ): Persister => {
-  const [ensureTable, loadSingleRow, saveSingleRow] = getCommandFunctions(cmd);
+  const [refreshSchema, loadSingleRow, saveSingleRow] =
+    getCommandFunctions(cmd);
 
-  const getPersisted = async (): Promise<[Tables, Values]> =>
-    jsonParse(
+  const getPersisted = async (): Promise<[Tables, Values]> => {
+    await refreshSchema();
+    return jsonParse(
       ((await loadSingleRow(storeTableName, DEFAULT_ROW_ID_COLUMN_NAME)) ?? {})[
         STORE_COLUMN
       ],
     );
+  };
 
   const setPersisted = async (
     getContent: () => [Tables, Values],
   ): Promise<void> =>
-    persister.schedule(
-      async () => await ensureTable(storeTableName, DEFAULT_ROW_ID_COLUMN_NAME),
-      async () =>
-        await saveSingleRow(
-          storeTableName,
-          DEFAULT_ROW_ID_COLUMN_NAME,
-          SINGLE_ROW_ID,
-          {
-            [STORE_COLUMN]: jsonString(getContent()),
-          },
-        ),
-    );
+    persister.schedule(async () => {
+      await refreshSchema();
+      await saveSingleRow(
+        storeTableName,
+        DEFAULT_ROW_ID_COLUMN_NAME,
+        SINGLE_ROW_ID,
+        {[STORE_COLUMN]: jsonString(getContent())},
+      );
+    });
 
   const persister: any = createCustomPersister(
     store,
