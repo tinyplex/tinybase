@@ -10,7 +10,7 @@ declare global {
 }
 
 export type IdObj<Value> = {[id: string]: Value};
-export type IdObj2<Value> = IdObj<{[id: string]: Value}>;
+export type IdObj2<Value> = IdObj<IdObj<Value>>;
 export type Logs = IdObj<any[]>;
 export type Listener = Readonly<{logs: Logs}>;
 

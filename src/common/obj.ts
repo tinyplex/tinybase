@@ -3,6 +3,7 @@ import {ifNotUndefined, isInstanceOf, isUndefined} from './other';
 import {Id} from '../types/common.d';
 
 export type IdObj<Value> = {[id: string]: Value};
+export type IdObj2<Value> = IdObj<IdObj<Value>>;
 
 const object = Object;
 
