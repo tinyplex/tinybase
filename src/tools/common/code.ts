@@ -11,6 +11,7 @@ import {IdSet2, setAdd, setNew} from '../../common/set';
 import {
   arrayFilter,
   arrayForEach,
+  arrayJoin,
   arrayMap,
   arrayPop,
   arrayPush,
@@ -61,12 +62,10 @@ export const formatJsDoc = (file: string): string =>
 
 export const length = (str: string) => str.length;
 
-export const join = (array: string[], sep = EMPTY_STRING) => array.join(sep);
-
 export const flat = (array: any[]) => array.flat(1e3);
 
 export const camel = (str: string, firstCap = 0) =>
-  join(
+  arrayJoin(
     arrayMap(
       str.split(NON_ALPHANUMERIC),
       (word, w) =>
@@ -77,7 +76,7 @@ export const camel = (str: string, firstCap = 0) =>
 
 export const snake = (str: string) =>
   upper(
-    join(
+    arrayJoin(
       (str && !NON_ALPHA.test(str[0]) ? str : ' ' + str).split(
         NON_ALPHANUMERIC,
       ),
@@ -88,13 +87,13 @@ export const snake = (str: string) =>
 export const comment = (doc: string) => `/** ${doc}. */`;
 
 export const getParameterList = (...params: string[]) =>
-  join(
+  arrayJoin(
     arrayFilter(params, (param) => param as any),
     ', ',
   );
 
 export const getFieldTypeList = (...props: string[]) =>
-  '{' + join(props, '; ') + '}';
+  '{' + arrayJoin(props, '; ') + '}';
 
 export const getPropTypeList = (...props: string[]) =>
   getFieldTypeList(...arrayMap(props, (prop) => 'readonly ' + prop));
@@ -118,7 +117,7 @@ export const getCodeFunctions = (): [
   const types: IdMap<[LINE, string, string, 0 | 1]> = mapNew();
   const constants: IdMap<LINE_OR_LINE_TREE> = mapNew();
 
-  const build = (...lines: LINE_TREE): string => join(flat(lines), '\n');
+  const build = (...lines: LINE_TREE): string => arrayJoin(flat(lines), '\n');
 
   const addImport = (
     location: null | 0 | 1,
@@ -169,7 +168,7 @@ export const getCodeFunctions = (): [
           mapMap(
             allImports[location],
             (items, source) =>
-              `import {${join(
+              `import {${arrayJoin(
                 arraySort(collValues(items), (import1, import2) =>
                   getSortableImport(import1) > getSortableImport(import2)
                     ? 1

@@ -58,12 +58,11 @@ import {
   getCodeFunctions,
   getParameterList,
   getPropTypeList,
-  join,
   mapUnique,
 } from '../common/code';
 import {SharedTableTypes, SharedValueTypes, TableTypes} from './core';
 import {TablesSchema, ValuesSchema} from '../../types/store.d';
-import {arrayPush, arrayUnshift} from '../../common/array';
+import {arrayJoin, arrayPush, arrayUnshift} from '../../common/array';
 import {Id} from '../../types/common.d';
 import {getSchemaFunctions} from '../common/schema';
 import {isUndefined} from '../../common/other';
@@ -415,7 +414,7 @@ export const getStoreUiReactApi = (
     const getDefaultTableComponent = addInternalFunction(
       'getDefaultTableComponent',
       'tableId: Id',
-      join(
+      arrayJoin(
         mapTablesSchema(
           (_, tableName, TABLE_ID) =>
             `tableId == ${TABLE_ID} ? ${tableName}TableView : `,
@@ -426,11 +425,11 @@ export const getStoreUiReactApi = (
     const getDefaultCellComponent = addInternalFunction(
       'getDefaultCellComponent',
       'tableId: Id, cellId: Id',
-      join(
+      arrayJoin(
         mapTablesSchema(
           (tableId, tableName, TABLE_ID) =>
             `tableId == ${TABLE_ID} ? ${
-              join(
+              arrayJoin(
                 mapCellSchema(
                   tableId,
                   (_, _2, _3, CELL_ID, cellName) =>
@@ -921,7 +920,7 @@ export const getStoreUiReactApi = (
       );
     });
 
-    const cellIdsType = join(
+    const cellIdsType = arrayJoin(
       mapTablesSchema(
         (tableId) => mapGet(tablesTypes, tableId)?.[4] ?? EMPTY_STRING,
       ),
@@ -1070,7 +1069,7 @@ export const getStoreUiReactApi = (
     const getDefaultValueComponent = addInternalFunction(
       'getDefaultValueComponent',
       'valueId: Id',
-      join(
+      arrayJoin(
         mapValuesSchema(
           (_, _2, _3, VALUE_ID, valueName) =>
             `valueId == ${VALUE_ID} ? ` + valueName + 'ValueView : ',
