@@ -13,7 +13,7 @@ import {DpcTabular} from '../../types/persisters';
 import {Id} from '../../types/common';
 import {isFunction} from '../../common/other';
 
-export type ConfigFunctions = [
+type ConfigFunctions = [
   tablesLoad: boolean,
   getTablesLoadConfig: (tableName: string) => TablesLoadConfig,
   tablesSave: boolean,
@@ -21,17 +21,17 @@ export type ConfigFunctions = [
   values: ValuesConfig,
 ];
 
-export type TablesLoadConfig = [
+type TablesLoadConfig = [
   getTableId: (tableName: string) => Id | false,
   rowIdColumnName: string,
 ];
 
-export type TablesSaveConfig = [
+type TablesSaveConfig = [
   getTableName: (tableId: Id) => string | false,
   rowIdColumnName: string,
 ];
 
-export type ValuesConfig = [
+type ValuesConfig = [
   load: boolean,
   save: boolean,
   tableName: string,
