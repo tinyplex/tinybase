@@ -2,6 +2,7 @@ import {
   IdMap2,
   mapEnsure,
   mapGet,
+  mapKeys,
   mapMatch,
   mapNew,
   mapSet,
@@ -114,23 +115,15 @@ export const getCommandFunctions = (
     rowIdColumnName: string,
     row: Row,
   ): Promise<void> => {
-    const columns = setNew(
-      arrayMap(
-        await cmd(`SELECT name FROM pragma_table_info(?) WHERE name != ?`, [
-          tableName,
-          rowIdColumnName,
-        ]),
-        (row) => row['name'],
-      ),
-    );
+    const tableSchemaMap = mapGet(schemaMap, tableName);
+    const columns = setNew(mapKeys(tableSchemaMap));
     await promiseAll(
-      objMap(row, async (_, cellId) =>
-        collHas(columns, cellId)
-          ? 0
-          : await cmd(
-              `ALTER TABLE${escapeId(tableName)}ADD${escapeId(cellId)}`,
-            ),
-      ),
+      objMap(row, async (_, cellId) => {
+        if (!collHas(columns, cellId) && cellId != rowIdColumnName) {
+          await cmd(`ALTER TABLE${escapeId(tableName)}ADD${escapeId(cellId)}`);
+          mapSet(tableSchemaMap, cellId, '');
+        }
+      }),
     );
   };
 
