@@ -31,8 +31,7 @@ export const createJsonSqlitePersister = <ListeningHandle>(
   const setPersisted = async (
     getContent: () => [Tables, Values],
   ): Promise<void> =>
-    persister.schedule(async () => {
-      await refreshSchema();
+    persister.schedule(refreshSchema, async () => {
       await saveSingleRow(
         storeTableName,
         DEFAULT_ROW_ID_COLUMN_NAME,

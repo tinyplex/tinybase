@@ -140,7 +140,7 @@ describe.each(Object.entries(VARIANTS))(
           });
 
           describe('tableName', () => {
-            test('word', async () => {
+            test('as string', async () => {
               await getPersister(store, db, {
                 mode: 'tabular',
                 values: {save: true, tableName: 'values'},
@@ -184,7 +184,7 @@ describe.each(Object.entries(VARIANTS))(
           });
 
           describe('rowIdColumnName', () => {
-            test('word', async () => {
+            test('as string', async () => {
               await getPersister(store, db, {
                 mode: 'tabular',
                 values: {save: true, rowIdColumnName: 'id'},
@@ -352,7 +352,7 @@ describe.each(Object.entries(VARIANTS))(
           });
 
           describe('tableName', () => {
-            test('word', async () => {
+            test('as string', async () => {
               db = await getOpenDatabase();
               await setDatabase(db, [
                 [
@@ -402,7 +402,7 @@ describe.each(Object.entries(VARIANTS))(
           });
 
           describe('rowIdColumnName', () => {
-            test('word', async () => {
+            test('as string', async () => {
               db = await getOpenDatabase();
               await setDatabase(db, [
                 [
