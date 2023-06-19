@@ -65,37 +65,37 @@ export const createTabularSqlitePersister = <ListeningHandle>(
       ? objNew(
           arrayFilter(
             await promiseAll(
-              arrayMap(
-                mapKeys(schema),
-                async (tableName) => await loadTable(tableName),
-              ),
+              arrayMap(mapKeys(schema), async (tableName) => {
+                const [getTableId, rowIdColumnName] =
+                  getTablesLoadConfig(tableName);
+                const tableId =
+                  canSelect(tableName, rowIdColumnName) &&
+                  tableName != valuesTableName &&
+                  getTableId(tableName);
+                return [
+                  tableId,
+                  tableId === false
+                    ? {}
+                    : objNew(
+                        arrayFilter(
+                          arrayMap(
+                            await cmd(`SELECT * FROM${escapeId(tableName)}`),
+                            (row) => [
+                              row[rowIdColumnName],
+                              objDel(row, rowIdColumnName),
+                            ],
+                          ),
+                          ([rowId, row]) =>
+                            !isUndefined(rowId) && !objIsEmpty(row),
+                        ),
+                      ),
+                ];
+              }),
             ),
             ([id, table]) => id !== false && !objIsEmpty(table),
           ),
         )
       : {};
-
-  const loadTable = async (tableName: string): Promise<[Id | false, Table]> => {
-    const [getTableId, rowIdColumnName] = getTablesLoadConfig(tableName);
-    const tableId =
-      canSelect(tableName, rowIdColumnName) &&
-      tableName != valuesTableName &&
-      getTableId(tableName);
-    return [
-      tableId,
-      tableId === false
-        ? {}
-        : objNew(
-            arrayFilter(
-              arrayMap(
-                await cmd(`SELECT * FROM${escapeId(tableName)}`),
-                (row) => [row[rowIdColumnName], objDel(row, rowIdColumnName)],
-              ),
-              ([rowId, row]) => !isUndefined(rowId) && !objIsEmpty(row),
-            ),
-          ),
-    ];
-  };
 
   const loadValues = async (): Promise<Values> =>
     valuesLoad
