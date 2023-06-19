@@ -12,13 +12,17 @@ import {
   IdObj2,
   objDel,
   objIds,
-  objMap,
   objNew,
   objValues,
 } from '../../common/obj';
 import {Row, Values} from '../../types/store';
 import {SINGLE_ROW_ID, escapeId} from './common';
-import {arrayIsEmpty, arrayLength, arrayMap} from '../../common/array';
+import {
+  arrayIsEmpty,
+  arrayJoin,
+  arrayLength,
+  arrayMap,
+} from '../../common/array';
 import {isUndefined, promiseAll} from '../../common/other';
 import {EMPTY_STRING} from '../../common/strings';
 import {Id} from '../../types/common';
@@ -100,31 +104,41 @@ export const getCommandFunctions = (
   const ensureTable = async (
     tableName: string,
     rowIdColumnName: string,
+    row: Row,
   ): Promise<void> => {
+    const cellIds = objIds(row);
     if (!collHas(schemaMap, tableName)) {
       await cmd(
         `CREATE TABLE${escapeId(tableName)}(${escapeId(rowIdColumnName)} ` +
-          `PRIMARY KEY ON CONFLICT REPLACE);`,
+          `PRIMARY KEY ON CONFLICT REPLACE${arrayJoin(
+            arrayMap(cellIds, (cellId) => ', ' + escapeId(cellId)),
+          )});`,
       );
-      mapSet(schemaMap, tableName, mapNew([[rowIdColumnName, '']]));
+      mapSet(
+        schemaMap,
+        tableName,
+        mapNew([
+          [rowIdColumnName, EMPTY_STRING],
+          ...arrayMap(
+            cellIds,
+            (cellId) => [cellId, EMPTY_STRING] as [string, string],
+          ),
+        ]),
+      );
+    } else {
+      const tableSchemaMap = mapGet(schemaMap, tableName);
+      const columns = setNew(mapKeys(tableSchemaMap));
+      await promiseAll(
+        arrayMap(cellIds, async (cellId) => {
+          if (!collHas(columns, cellId) && cellId != rowIdColumnName) {
+            await cmd(
+              `ALTER TABLE${escapeId(tableName)}ADD${escapeId(cellId)}`,
+            );
+            mapSet(tableSchemaMap, cellId, EMPTY_STRING);
+          }
+        }),
+      );
     }
-  };
-
-  const ensureColumns = async (
-    tableName: string,
-    rowIdColumnName: string,
-    row: Row,
-  ): Promise<void> => {
-    const tableSchemaMap = mapGet(schemaMap, tableName);
-    const columns = setNew(mapKeys(tableSchemaMap));
-    await promiseAll(
-      objMap(row, async (_, cellId) => {
-        if (!collHas(columns, cellId) && cellId != rowIdColumnName) {
-          await cmd(`ALTER TABLE${escapeId(tableName)}ADD${escapeId(cellId)}`);
-          mapSet(tableSchemaMap, cellId, '');
-        }
-      }),
-    );
   };
 
   const canSelect = (tableName: string, rowIdColumnName: string): boolean =>
@@ -151,15 +165,11 @@ export const getCommandFunctions = (
     rowId: Id,
     row: Row | Values,
   ): Promise<void> => {
-    await ensureTable(tableName, rowIdColumnName);
-
-    const columns = arrayMap(
-      objIds(row),
-      (cellId) => `,${escapeId(cellId)}`,
-    ).join(EMPTY_STRING);
+    await ensureTable(tableName, rowIdColumnName, row);
+    const columns = arrayJoin(
+      arrayMap(objIds(row), (cellId) => `,${escapeId(cellId)}`),
+    );
     const values = objValues(row);
-
-    await ensureColumns(tableName, rowIdColumnName, row);
     await cmd(
       `INSERT INTO${escapeId(tableName)}(${escapeId(
         rowIdColumnName,
