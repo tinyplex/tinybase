@@ -30,6 +30,7 @@ import {collHas} from '../../common/coll';
 import {setNew} from '../../common/set';
 
 export type Cmd = (sql: string, args?: any[]) => Promise<IdObj<any>[]>;
+export type Schema = IdMap2<string>;
 
 const FROM_PRAGMA_TABLE = 'FROM pragma_table_';
 // eslint-disable-next-line max-len
@@ -38,7 +39,7 @@ const WHERE_MAIN_TABLE = `WHERE schema='main'AND type='table'AND name!='sqlite_s
 export const getCommandFunctions = (
   cmd: Cmd,
 ): [
-  refreshSchema: () => Promise<IdMap2<string>>,
+  getSchema: () => Promise<Schema>,
   loadSingleRow: (
     tableName: string,
     rowIdColumnName: string,
@@ -49,50 +50,9 @@ export const getCommandFunctions = (
     rowId: Id,
     row: Row | Values,
   ) => Promise<void>,
+  canSelect: (tableName: string, rowIdColumnName: string) => boolean,
 ] => {
-  const schemaMap: IdMap2<string> = mapNew();
-
-  const refreshSchema = async (): Promise<IdMap2<string>> =>
-    mapMatch(
-      schemaMap,
-      objNew(
-        await promiseAll(
-          arrayMap(
-            await cmd(
-              'SELECT name ' + FROM_PRAGMA_TABLE + 'list ' + WHERE_MAIN_TABLE,
-            ),
-            async ({name: tableName}) => [
-              tableName,
-              objNew(
-                arrayMap(
-                  await cmd(
-                    'SELECT name,type ' + FROM_PRAGMA_TABLE + 'info(?)',
-                    [tableName],
-                  ),
-                  ({name: columnName, type}) => [columnName, type],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ) as IdObj2<string>,
-      (_, tableName, tableSchema) =>
-        mapSet(
-          schemaMap,
-          tableName,
-          mapMatch(
-            mapEnsure(schemaMap, tableName, mapNew<Id, string>),
-            tableSchema,
-            (tableSchemaMap, columnName, value) => {
-              if (value != mapGet(tableSchemaMap, columnName)) {
-                mapSet(tableSchemaMap, columnName, value);
-              }
-            },
-            (tableSchema, columnName) => mapSet(tableSchema, columnName),
-          ),
-        ),
-      (_, name) => mapSet(schemaMap, name),
-    );
+  const schemaMap: Schema = mapNew();
 
   const ensureTable = async (
     tableName: string,
@@ -134,8 +94,47 @@ export const getCommandFunctions = (
     }
   };
 
-  const canSelect = (tableName: string, rowIdColumnName: string): boolean =>
-    !isUndefined(mapGet(mapGet(schemaMap, tableName), rowIdColumnName));
+  const getSchema = async (): Promise<Schema> =>
+    mapMatch(
+      schemaMap,
+      objNew(
+        await promiseAll(
+          arrayMap(
+            await cmd(
+              'SELECT name ' + FROM_PRAGMA_TABLE + 'list ' + WHERE_MAIN_TABLE,
+            ),
+            async ({name: tableName}) => [
+              tableName,
+              objNew(
+                arrayMap(
+                  await cmd(
+                    'SELECT name,type ' + FROM_PRAGMA_TABLE + 'info(?)',
+                    [tableName],
+                  ),
+                  ({name: columnName, type}) => [columnName, type],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ) as IdObj2<string>,
+      (_, tableName, tableSchema) =>
+        mapSet(
+          schemaMap,
+          tableName,
+          mapMatch(
+            mapEnsure(schemaMap, tableName, mapNew<Id, string>),
+            tableSchema,
+            (tableSchemaMap, columnName, value) => {
+              if (value != mapGet(tableSchemaMap, columnName)) {
+                mapSet(tableSchemaMap, columnName, value);
+              }
+            },
+            (tableSchema, columnName) => mapSet(tableSchema, columnName),
+          ),
+        ),
+      (_, name) => mapSet(schemaMap, name),
+    );
 
   const loadSingleRow = async (
     tableName: string,
@@ -171,5 +170,8 @@ export const getCommandFunctions = (
     );
   };
 
-  return [refreshSchema, loadSingleRow, saveSingleRow];
+  const canSelect = (tableName: string, rowIdColumnName: string): boolean =>
+    !isUndefined(mapGet(mapGet(schemaMap, tableName), rowIdColumnName));
+
+  return [getSchema, loadSingleRow, saveSingleRow, canSelect];
 };

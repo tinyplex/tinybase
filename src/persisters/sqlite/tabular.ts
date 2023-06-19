@@ -1,4 +1,4 @@
-import {Cmd, getCommandFunctions} from './commands';
+import {Cmd, Schema, getCommandFunctions} from './commands';
 import {DpcTabular, Persister, PersisterListener} from '../../types/persisters';
 import {SINGLE_ROW_ID, escapeId} from './common';
 import {Store, Table, Tables, Values} from '../../types/store';
@@ -8,6 +8,7 @@ import {objDel, objIsEmpty, objMap, objNew} from '../../common/obj';
 import {Id} from '../../types/common';
 import {createCustomPersister} from '../../persisters';
 import {getConfigFunctions} from './tabular-config';
+import {mapKeys} from '../../common/map';
 
 export const createTabularSqlitePersister = <ListeningHandle>(
   store: Store,
@@ -24,7 +25,7 @@ export const createTabularSqlitePersister = <ListeningHandle>(
     [valuesLoad, valuesSave, valuesTableName, valuesRowIdColumnName],
   ] = getConfigFunctions(config);
 
-  const [refreshSchema, loadSingleRow, saveSingleRow] =
+  const [getSchema, loadSingleRow, saveSingleRow, canSelect] =
     getCommandFunctions(cmd);
 
   const scheduleSaveTables = (tables: Tables) =>
@@ -35,7 +36,7 @@ export const createTabularSqlitePersister = <ListeningHandle>(
     const tableName = getTableName(tableId);
     if (tableName !== false) {
       persister.schedule(
-        refreshSchema,
+        getSchema,
         ...objMap(
           table,
           (row, rowId) => async () =>
@@ -48,7 +49,7 @@ export const createTabularSqlitePersister = <ListeningHandle>(
   const scheduleSaveValues = (values: Values) =>
     valuesSave
       ? persister.schedule(
-          refreshSchema,
+          getSchema,
           async () =>
             await saveSingleRow(
               valuesTableName,
@@ -59,13 +60,13 @@ export const createTabularSqlitePersister = <ListeningHandle>(
         )
       : 0;
 
-  const loadTables = async (): Promise<Tables> =>
+  const loadTables = async (schema: Schema): Promise<Tables> =>
     tablesLoad
       ? objNew(
           arrayFilter(
             await promiseAll(
               arrayMap(
-                await loadTableNames(),
+                mapKeys(schema),
                 async (tableName) => await loadTable(tableName),
               ),
             ),
@@ -74,18 +75,12 @@ export const createTabularSqlitePersister = <ListeningHandle>(
         )
       : {};
 
-  const loadTableNames = async (): Promise<string[]> =>
-    arrayMap(
-      (await cmd(
-        `SELECT name FROM sqlite_schema WHERE type='table'AND name!=?`,
-        [valuesTableName],
-      )) as {name: string}[],
-      ({name}) => name,
-    );
-
   const loadTable = async (tableName: string): Promise<[Id | false, Table]> => {
     const [getTableId, rowIdColumnName] = getTablesLoadConfig(tableName);
-    const tableId = getTableId(tableName);
+    const tableId =
+      canSelect(tableName, rowIdColumnName) &&
+      tableName != valuesTableName &&
+      getTableId(tableName);
     return [
       tableId,
       tableId === false
@@ -108,8 +103,8 @@ export const createTabularSqlitePersister = <ListeningHandle>(
       : {};
 
   const getPersisted = async (): Promise<[Tables, Values] | undefined> => {
-    await refreshSchema();
-    const tables = await loadTables();
+    const schema = await getSchema();
+    const tables = await loadTables(schema);
     const values = await loadValues();
     return !objIsEmpty(tables) || !objIsEmpty(values)
       ? [tables as Tables, values as Values]
