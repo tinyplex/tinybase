@@ -78,12 +78,16 @@ import {
   flat,
   getCodeFunctions,
   getParameterList,
-  join,
   mapUnique,
   snake,
 } from '../common/code';
 import {TablesSchema, ValuesSchema} from '../../types/store.d';
-import {arrayForEach, arrayPush, arrayUnshift} from '../../common/array';
+import {
+  arrayForEach,
+  arrayJoin,
+  arrayPush,
+  arrayUnshift,
+} from '../../common/array';
 import {isString, isUndefined} from '../../common/other';
 import {Id} from '../../types/common.d';
 import {collValues} from '../../common/coll';
@@ -746,7 +750,7 @@ export const getStoreCoreApi = (
       CELL,
       cellListenerType,
       getListenerDoc(7, 5),
-      `tableId: ${tableIdType} | null, rowId: IdOrNull, cellId: ${join(
+      `tableId: ${tableIdType} | null, rowId: IdOrNull, cellId: ${arrayJoin(
         mapTablesSchema(
           (tableId) => mapGet(tablesTypes, tableId)?.[4] ?? EMPTY_STRING,
         ),

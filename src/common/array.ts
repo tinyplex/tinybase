@@ -1,3 +1,5 @@
+import {EMPTY_STRING} from './strings';
+
 export const arrayHas = <Value>(array: Value[], value: Value): boolean =>
   array.includes(value);
 
@@ -28,6 +30,9 @@ export const arrayForEach = <Value>(
   array: Value[],
   cb: (value: Value, index: number) => void,
 ): void => array.forEach(cb);
+
+export const arrayJoin = (array: string[], sep = EMPTY_STRING) =>
+  array.join(sep);
 
 export const arrayMap = <Value, Return>(
   array: Value[],
