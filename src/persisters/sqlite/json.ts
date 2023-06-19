@@ -16,11 +16,10 @@ export const createJsonSqlitePersister = <ListeningHandle>(
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   {storeTableName = TINYBASE}: DpcJson,
 ): Persister => {
-  const [refreshSchema, loadSingleRow, saveSingleRow] =
-    getCommandFunctions(cmd);
+  const [getSchema, loadSingleRow, saveSingleRow] = getCommandFunctions(cmd);
 
   const getPersisted = async (): Promise<[Tables, Values]> => {
-    await refreshSchema();
+    await getSchema();
     return jsonParse(
       ((await loadSingleRow(storeTableName, DEFAULT_ROW_ID_COLUMN_NAME)) ?? {})[
         STORE_COLUMN
@@ -31,7 +30,7 @@ export const createJsonSqlitePersister = <ListeningHandle>(
   const setPersisted = async (
     getContent: () => [Tables, Values],
   ): Promise<void> =>
-    persister.schedule(refreshSchema, async () => {
+    persister.schedule(getSchema, async () => {
       await saveSingleRow(
         storeTableName,
         DEFAULT_ROW_ID_COLUMN_NAME,
