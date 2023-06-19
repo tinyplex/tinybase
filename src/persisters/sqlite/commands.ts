@@ -12,12 +12,14 @@ import {
   IdObj2,
   objDel,
   objIds,
+  objIsEmpty,
   objNew,
   objValues,
 } from '../../common/obj';
 import {Row, Values} from '../../types/store';
 import {SINGLE_ROW_ID, escapeId} from './common';
 import {
+  arrayFilter,
   arrayIsEmpty,
   arrayJoin,
   arrayLength,
@@ -50,6 +52,10 @@ export const getCommandFunctions = (
     rowId: Id,
     row: Row | Values,
   ) => Promise<void>,
+  loadTable: (
+    tableName: string,
+    rowIdColumnName: string,
+  ) => Promise<IdObj2<any> | null>,
   canSelect: (tableName: string, rowIdColumnName: string) => boolean,
 ] => {
   const schemaMap: Schema = mapNew();
@@ -93,7 +99,6 @@ export const getCommandFunctions = (
       );
     }
   };
-
   const getSchema = async (): Promise<Schema> =>
     mapMatch(
       schemaMap,
@@ -142,7 +147,7 @@ export const getCommandFunctions = (
   ): Promise<IdObj<any>> => {
     const rows = canSelect(tableName, rowIdColumnName)
       ? await cmd(
-          `SELECT*FROM${escapeId(tableName)}WHERE ${escapeId(
+          `SELECT*FROM${escapeId(tableName)}WHERE${escapeId(
             rowIdColumnName,
           )}=?`,
           [SINGLE_ROW_ID],
@@ -170,8 +175,24 @@ export const getCommandFunctions = (
     );
   };
 
+  const loadTable = async (
+    tableName: string,
+    rowIdColumnName: string,
+  ): Promise<IdObj2<any> | null> =>
+    canSelect(tableName, rowIdColumnName)
+      ? objNew(
+          arrayFilter(
+            arrayMap(await cmd(`SELECT*FROM${escapeId(tableName)}`), (row) => [
+              row[rowIdColumnName],
+              objDel(row, rowIdColumnName),
+            ]),
+            ([rowId, row]) => !isUndefined(rowId) && !objIsEmpty(row),
+          ),
+        )
+      : null;
+
   const canSelect = (tableName: string, rowIdColumnName: string): boolean =>
     !isUndefined(mapGet(mapGet(schemaMap, tableName), rowIdColumnName));
 
-  return [getSchema, loadSingleRow, saveSingleRow, canSelect];
+  return [getSchema, loadSingleRow, saveSingleRow, loadTable, canSelect];
 };

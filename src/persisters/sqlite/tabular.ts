@@ -1,14 +1,14 @@
 import {Cmd, Schema, getCommandFunctions} from './commands';
 import {DpcTabular, Persister, PersisterListener} from '../../types/persisters';
-import {SINGLE_ROW_ID, escapeId} from './common';
 import {Store, Table, Tables, Values} from '../../types/store';
 import {arrayFilter, arrayMap} from '../../common/array';
-import {isUndefined, promiseAll} from '../../common/other';
-import {objDel, objIsEmpty, objMap, objNew} from '../../common/obj';
+import {objIsEmpty, objMap, objNew} from '../../common/obj';
 import {Id} from '../../types/common';
+import {SINGLE_ROW_ID} from './common';
 import {createCustomPersister} from '../../persisters';
 import {getConfigFunctions} from './tabular-config';
 import {mapKeys} from '../../common/map';
+import {promiseAll} from '../../common/other';
 
 export const createTabularSqlitePersister = <ListeningHandle>(
   store: Store,
@@ -25,7 +25,7 @@ export const createTabularSqlitePersister = <ListeningHandle>(
     [valuesLoad, valuesSave, valuesTableName, valuesRowIdColumnName],
   ] = getConfigFunctions(config);
 
-  const [getSchema, loadSingleRow, saveSingleRow, canSelect] =
+  const [getSchema, loadSingleRow, saveSingleRow, loadTable] =
     getCommandFunctions(cmd);
 
   const scheduleSaveTables = (tables: Tables) =>
@@ -66,33 +66,17 @@ export const createTabularSqlitePersister = <ListeningHandle>(
           arrayFilter(
             await promiseAll(
               arrayMap(mapKeys(schema), async (tableName) => {
-                const [getTableId, rowIdColumnName] =
-                  getTablesLoadConfig(tableName);
-                const tableId =
-                  canSelect(tableName, rowIdColumnName) &&
-                  tableName != valuesTableName &&
-                  getTableId(tableName);
-                return [
-                  tableId,
-                  tableId === false
-                    ? {}
-                    : objNew(
-                        arrayFilter(
-                          arrayMap(
-                            await cmd(`SELECT * FROM${escapeId(tableName)}`),
-                            (row) => [
-                              row[rowIdColumnName],
-                              objDel(row, rowIdColumnName),
-                            ],
-                          ),
-                          ([rowId, row]) =>
-                            !isUndefined(rowId) && !objIsEmpty(row),
-                        ),
-                      ),
-                ];
+                if (tableName != valuesTableName) {
+                  const [getTableId, rowIdColumnName] =
+                    getTablesLoadConfig(tableName);
+                  const tableId = getTableId(tableName);
+                  return tableId
+                    ? [tableId, await loadTable(tableName, rowIdColumnName)]
+                    : null;
+                }
               }),
             ),
-            ([id, table]) => id !== false && !objIsEmpty(table),
+            (pair) => pair && pair[1],
           ),
         )
       : {};
