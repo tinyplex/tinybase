@@ -44,12 +44,12 @@ describe.each(Object.entries(VARIANTS))(
             expect(await getDatabase(db)).toEqual([
               [
                 't1',
-                'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE, "c1")',
+                'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
                 [{_id: 'r1', c1: 1}],
               ],
               [
                 't2',
-                'CREATE TABLE "t2"("_id" PRIMARY KEY ON CONFLICT REPLACE, "c2")',
+                'CREATE TABLE "t2"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c2")',
                 [{_id: 'r2', c2: 2}],
               ],
             ]);
@@ -67,12 +67,12 @@ describe.each(Object.entries(VARIANTS))(
             expect(await getDatabase(db)).toEqual([
               [
                 'test_t1',
-                'CREATE TABLE "test_t1"("_id" PRIMARY KEY ON CONFLICT REPLACE, "c1")',
+                'CREATE TABLE "test_t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
                 [{_id: 'r1', c1: 1}],
               ],
               [
                 'test_t2',
-                'CREATE TABLE "test_t2"("_id" PRIMARY KEY ON CONFLICT REPLACE, "c2")',
+                'CREATE TABLE "test_t2"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c2")',
                 [{_id: 'r2', c2: 2}],
               ],
             ]);
@@ -101,22 +101,22 @@ describe.each(Object.entries(VARIANTS))(
             expect(await getDatabase(db)).toEqual([
               [
                 't1',
-                'CREATE TABLE "t1"("id" PRIMARY KEY ON CONFLICT REPLACE, "c1")',
+                'CREATE TABLE "t1"("id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
                 [{id: 'r1', c1: 1}],
               ],
               [
                 't2',
-                'CREATE TABLE "t2"("id2" PRIMARY KEY ON CONFLICT REPLACE, "c2")',
+                'CREATE TABLE "t2"("id2" PRIMARY KEY ON CONFLICT REPLACE,"c2")',
                 [{id2: 'r2', c2: 2}],
               ],
               [
                 'test "t3"',
-                'CREATE TABLE "test ""t3"""("id ""3""" PRIMARY KEY ON CONFLICT REPLACE, "c3")',
+                'CREATE TABLE "test ""t3"""("id ""3""" PRIMARY KEY ON CONFLICT REPLACE,"c3")',
                 [{'id "3"': 'r3', c3: 3}],
               ],
               [
                 'test_t4',
-                'CREATE TABLE "test_t4"("id" PRIMARY KEY ON CONFLICT REPLACE, "c4")',
+                'CREATE TABLE "test_t4"("id" PRIMARY KEY ON CONFLICT REPLACE,"c4")',
                 [{id: 'r4', c4: 4}],
               ],
             ]);
@@ -133,7 +133,7 @@ describe.each(Object.entries(VARIANTS))(
             expect(await getDatabase(db)).toEqual([
               [
                 'tinybase_values',
-                'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE, "v1", "v2")',
+                'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
                 [{_id: '_', v1: 1, v2: 2}],
               ],
             ]);
@@ -148,7 +148,7 @@ describe.each(Object.entries(VARIANTS))(
               expect(await getDatabase(db)).toEqual([
                 [
                   'values',
-                  'CREATE TABLE "values"("_id" PRIMARY KEY ON CONFLICT REPLACE, "v1", "v2")',
+                  'CREATE TABLE "values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
                   [{_id: '_', v1: 1, v2: 2}],
                 ],
               ]);
@@ -162,7 +162,7 @@ describe.each(Object.entries(VARIANTS))(
               expect(await getDatabase(db)).toEqual([
                 [
                   'tinybase values',
-                  'CREATE TABLE "tinybase values"("_id" PRIMARY KEY ON CONFLICT REPLACE, "v1", "v2")',
+                  'CREATE TABLE "tinybase values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
                   [{_id: '_', v1: 1, v2: 2}],
                 ],
               ]);
@@ -176,7 +176,7 @@ describe.each(Object.entries(VARIANTS))(
               expect(await getDatabase(db)).toEqual([
                 [
                   'tinybase "values"',
-                  'CREATE TABLE "tinybase ""values"""("_id" PRIMARY KEY ON CONFLICT REPLACE, "v1", "v2")',
+                  'CREATE TABLE "tinybase ""values"""("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
                   [{_id: '_', v1: 1, v2: 2}],
                 ],
               ]);
@@ -192,7 +192,7 @@ describe.each(Object.entries(VARIANTS))(
               expect(await getDatabase(db)).toEqual([
                 [
                   'tinybase_values',
-                  'CREATE TABLE "tinybase_values"("id" PRIMARY KEY ON CONFLICT REPLACE, "v1", "v2")',
+                  'CREATE TABLE "tinybase_values"("id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
                   [{id: '_', v1: 1, v2: 2}],
                 ],
               ]);
@@ -206,7 +206,7 @@ describe.each(Object.entries(VARIANTS))(
               expect(await getDatabase(db)).toEqual([
                 [
                   'tinybase_values',
-                  'CREATE TABLE "tinybase_values"("row id" PRIMARY KEY ON CONFLICT REPLACE, "v1", "v2")',
+                  'CREATE TABLE "tinybase_values"("row id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
                   [{'row id': '_', v1: 1, v2: 2}],
                 ],
               ]);
@@ -220,7 +220,7 @@ describe.each(Object.entries(VARIANTS))(
               expect(await getDatabase(db)).toEqual([
                 [
                   'tinybase_values',
-                  'CREATE TABLE "tinybase_values"("row ""id""" PRIMARY KEY ON CONFLICT REPLACE, "v1", "v2")',
+                  'CREATE TABLE "tinybase_values"("row ""id""" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
                   [{'row "id"': '_', v1: 1, v2: 2}],
                 ],
               ]);
@@ -234,17 +234,17 @@ describe.each(Object.entries(VARIANTS))(
           await setDatabase(db, [
             [
               't1',
-              'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE, "c1")',
+              'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
               [{_id: 'r1', c1: 1}],
             ],
             [
               't2',
-              'CREATE TABLE "t2"("_id" PRIMARY KEY ON CONFLICT REPLACE, "c2")',
+              'CREATE TABLE "t2"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c2")',
               [{_id: 'r2', c2: 2}],
             ],
             [
               'tinybase_values',
-              'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE, "v1", "v2")',
+              'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
               [{_id: '_', v1: 1, v2: 2}],
             ],
           ]);
@@ -283,32 +283,32 @@ describe.each(Object.entries(VARIANTS))(
             await setDatabase(db, [
               [
                 't1',
-                'CREATE TABLE "t1"("id" PRIMARY KEY ON CONFLICT REPLACE, "c1")',
+                'CREATE TABLE "t1"("id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
                 [{id: 'r1', c1: 1}],
               ],
               [
                 't2',
-                'CREATE TABLE "t2"("id2" PRIMARY KEY ON CONFLICT REPLACE, "c2")',
+                'CREATE TABLE "t2"("id2" PRIMARY KEY ON CONFLICT REPLACE,"c2")',
                 [{id2: 'r2', c2: 2}],
               ],
               [
                 't3',
-                'CREATE TABLE "t3"("id ""3""" PRIMARY KEY ON CONFLICT REPLACE, "c3")',
+                'CREATE TABLE "t3"("id ""3""" PRIMARY KEY ON CONFLICT REPLACE,"c3")',
                 [{'id "3"': 'r3', c3: 3}],
               ],
               [
                 't4',
-                'CREATE TABLE "t4"("id" PRIMARY KEY ON CONFLICT REPLACE, "c4")',
+                'CREATE TABLE "t4"("id" PRIMARY KEY ON CONFLICT REPLACE,"c4")',
                 [{id: 'r4', c4: 4}],
               ],
               [
                 't5',
-                'CREATE TABLE "t5"("id" PRIMARY KEY ON CONFLICT REPLACE, "c5")',
+                'CREATE TABLE "t5"("id" PRIMARY KEY ON CONFLICT REPLACE,"c5")',
                 [{id: 'r5', c5: 5}],
               ],
               [
                 'tinybase_values',
-                'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE, "v1", "v2")',
+                'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
                 [{_id: '_', v1: 1, v2: 2}],
               ],
             ]);
@@ -357,7 +357,7 @@ describe.each(Object.entries(VARIANTS))(
               await setDatabase(db, [
                 [
                   'values',
-                  'CREATE TABLE "values"("_id" PRIMARY KEY ON CONFLICT REPLACE, "v1", "v2")',
+                  'CREATE TABLE "values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
                   [{_id: '_', v1: 1, v2: 2}],
                 ],
               ]);
@@ -373,7 +373,7 @@ describe.each(Object.entries(VARIANTS))(
               await setDatabase(db, [
                 [
                   'tinybase values',
-                  'CREATE TABLE "tinybase values"("_id" PRIMARY KEY ON CONFLICT REPLACE, "v1", "v2")',
+                  'CREATE TABLE "tinybase values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
                   [{_id: '_', v1: 1, v2: 2}],
                 ],
               ]);
@@ -389,7 +389,7 @@ describe.each(Object.entries(VARIANTS))(
               await setDatabase(db, [
                 [
                   'tinybase "values"',
-                  'CREATE TABLE "tinybase ""values"""("_id" PRIMARY KEY ON CONFLICT REPLACE, "v1", "v2")',
+                  'CREATE TABLE "tinybase ""values"""("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
                   [{_id: '_', v1: 1, v2: 2}],
                 ],
               ]);
@@ -407,7 +407,7 @@ describe.each(Object.entries(VARIANTS))(
               await setDatabase(db, [
                 [
                   'tinybase_values',
-                  'CREATE TABLE "tinybase_values"("id" PRIMARY KEY ON CONFLICT REPLACE, "v1", "v2")',
+                  'CREATE TABLE "tinybase_values"("id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
                   [{id: '_', v1: 1, v2: 2}],
                 ],
               ]);
@@ -423,7 +423,7 @@ describe.each(Object.entries(VARIANTS))(
               await setDatabase(db, [
                 [
                   'tinybase_values',
-                  'CREATE TABLE "tinybase_values"("row id" PRIMARY KEY ON CONFLICT REPLACE, "v1", "v2")',
+                  'CREATE TABLE "tinybase_values"("row id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
                   [{'row id': '_', v1: 1, v2: 2}],
                 ],
               ]);
@@ -439,7 +439,7 @@ describe.each(Object.entries(VARIANTS))(
               await setDatabase(db, [
                 [
                   'tinybase_values',
-                  'CREATE TABLE "tinybase_values"("row ""id""" PRIMARY KEY ON CONFLICT REPLACE, "v1", "v2")',
+                  'CREATE TABLE "tinybase_values"("row ""id""" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
                   [{'row "id"': '_', v1: 1, v2: 2}],
                 ],
               ]);
@@ -485,7 +485,7 @@ describe.each(Object.entries(VARIANTS))(
           expect(await getDatabase(db)).toEqual([
             [
               't1',
-              'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE, "c1")',
+              'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
               [{_id: 'r1', c1: 1}],
             ],
             [
@@ -502,7 +502,7 @@ describe.each(Object.entries(VARIANTS))(
           expect(await getDatabase(db)).toEqual([
             [
               't1',
-              'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE, "c1", "c2", "c3")',
+              'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1", "c2", "c3")',
               [
                 {_id: 'r1', c1: 1, c2: 2, c3: null},
                 {_id: 'r3', c1: null, c2: null, c3: 3},
@@ -522,7 +522,7 @@ describe.each(Object.entries(VARIANTS))(
           expect(await getDatabase(db)).toEqual([
             [
               't1',
-              'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE, "c1")',
+              'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
               [{_id: 'r1', c1: 1}],
             ],
             [
@@ -532,12 +532,12 @@ describe.each(Object.entries(VARIANTS))(
             ],
             [
               't2',
-              'CREATE TABLE "t2"("_id" PRIMARY KEY ON CONFLICT REPLACE, "c2")',
+              'CREATE TABLE "t2"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c2")',
               [{_id: 'r2', c2: 2}],
             ],
             [
               't3',
-              'CREATE TABLE "t3"("_id" PRIMARY KEY ON CONFLICT REPLACE, "c3")',
+              'CREATE TABLE "t3"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c3")',
               [{_id: 'r3', c3: 3}],
             ],
           ]);
@@ -554,7 +554,7 @@ describe.each(Object.entries(VARIANTS))(
           expect(await getDatabase(db)).toEqual([
             [
               'tinybase_values',
-              'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE, "v1")',
+              'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1")',
               [{_id: '_', v1: 1}],
             ],
           ]);
@@ -566,7 +566,7 @@ describe.each(Object.entries(VARIANTS))(
           expect(await getDatabase(db)).toEqual([
             [
               'tinybase_values',
-              'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE, "v1", "v2", "v3")',
+              'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1", "v2", "v3")',
               [{_id: '_', v1: 1, v2: 2, v3: 3}],
             ],
           ]);
@@ -579,12 +579,12 @@ describe.each(Object.entries(VARIANTS))(
         expect(await getDatabase(db)).toEqual([
           [
             't1',
-            'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE, "c1")',
+            'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
             [{_id: 'r1', c1: 1}],
           ],
           [
             'tinybase_values',
-            'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE, "v1")',
+            'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1")',
             [{_id: '_', v1: 1}],
           ],
         ]);
@@ -596,12 +596,12 @@ describe.each(Object.entries(VARIANTS))(
         expect(await getDatabase(db)).toEqual([
           [
             't1',
-            'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE, "c1")',
+            'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
             [{_id: 'r1', c1: 1}],
           ],
           [
             'tinybase_values',
-            'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE, "v1")',
+            'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1")',
             [{_id: '_', v1: 1}],
           ],
         ]);
@@ -610,12 +610,12 @@ describe.each(Object.entries(VARIANTS))(
         expect(await getDatabase(db)).toEqual([
           [
             't1',
-            'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE, "c1")',
+            'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
             [{_id: 'r1', c1: 2}],
           ],
           [
             'tinybase_values',
-            'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE, "v1")',
+            'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1")',
             [{_id: '_', v1: 2}],
           ],
         ]);
@@ -644,7 +644,7 @@ describe.each(Object.entries(VARIANTS))(
         await setDatabase(db, [
           [
             't1',
-            'CREATE TABLE "t1"("di" PRIMARY KEY ON CONFLICT REPLACE, "c1")',
+            'CREATE TABLE "t1"("di" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
             [{di: 'r1', c1: 1}],
           ],
         ]);
@@ -656,7 +656,7 @@ describe.each(Object.entries(VARIANTS))(
         await setDatabase(db, [
           [
             't1',
-            'CREATE TABLE "t1"("di" PRIMARY KEY ON CONFLICT REPLACE, "c1")',
+            'CREATE TABLE "t1"("di" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
             [{di: 'r1', c1: 1}],
           ],
         ]);
@@ -668,7 +668,7 @@ describe.each(Object.entries(VARIANTS))(
         await setDatabase(db, [
           [
             't1',
-            'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE, "c1")',
+            'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
             [{_id: 'r1', c1: 1}],
           ],
         ]);
@@ -680,7 +680,7 @@ describe.each(Object.entries(VARIANTS))(
         await setDatabase(db, [
           [
             'tinybase_values',
-            'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE, "v1")',
+            'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1")',
             [{_id: '_', v1: 1}],
           ],
         ]);
@@ -692,12 +692,12 @@ describe.each(Object.entries(VARIANTS))(
         await setDatabase(db, [
           [
             't1',
-            'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE, "c1")',
+            'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
             [{_id: 'r1', c1: 1}],
           ],
           [
             'tinybase_values',
-            'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE, "v1")',
+            'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1")',
             [{_id: '_', v1: 1}],
           ],
         ]);
@@ -714,12 +714,12 @@ describe.each(Object.entries(VARIANTS))(
         await setDatabase(db, [
           [
             't1',
-            'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE, "c1")',
+            'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
             [{_id: 'r1', c1: 1}],
           ],
           [
             'tinybase_values',
-            'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE, "v1")',
+            'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1")',
             [{_id: '_', v1: 1}],
           ],
         ]);
@@ -731,12 +731,12 @@ describe.each(Object.entries(VARIANTS))(
         expect(await getDatabase(db)).toEqual([
           [
             't1',
-            'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE, "c1")',
+            'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
             [{_id: 'r1', c1: 2}],
           ],
           [
             'tinybase_values',
-            'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE, "v1")',
+            'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1")',
             [{_id: '_', v1: 2}],
           ],
         ]);

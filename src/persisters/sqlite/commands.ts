@@ -66,7 +66,7 @@ export const getCommandFunctions = (
               objNew(
                 arrayMap(
                   await cmd(
-                    'SELECT name, type ' + FROM_PRAGMA_TABLE + 'info(?)',
+                    'SELECT name,type ' + FROM_PRAGMA_TABLE + 'info(?)',
                     [tableName],
                   ),
                   ({name: columnName, type}) => [columnName, type],
@@ -85,20 +85,13 @@ export const getCommandFunctions = (
             tableSchema,
             (tableSchemaMap, columnName, value) => {
               if (value != mapGet(tableSchemaMap, columnName)) {
-                // console.log('add/change column', columnName);
                 mapSet(tableSchemaMap, columnName, value);
               }
             },
-            (tableSchema, columnName) => {
-              // console.log('del column', columnName);
-              mapSet(tableSchema, columnName);
-            },
+            (tableSchema, columnName) => mapSet(tableSchema, columnName),
           ),
         ),
-      (_, name) => {
-        // console.log('del table', name);
-        mapSet(schemaMap, name);
-      },
+      (_, name) => mapSet(schemaMap, name),
     );
 
   const ensureTable = async (
@@ -111,7 +104,7 @@ export const getCommandFunctions = (
       await cmd(
         `CREATE TABLE${escapeId(tableName)}(${escapeId(rowIdColumnName)} ` +
           `PRIMARY KEY ON CONFLICT REPLACE${arrayJoin(
-            arrayMap(cellIds, (cellId) => ', ' + escapeId(cellId)),
+            arrayMap(cellIds, (cellId) => ',' + escapeId(cellId)),
           )});`,
       );
       mapSet(
