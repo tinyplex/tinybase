@@ -74,12 +74,14 @@ export type DpcTabularSave<Schema extends OptionalTablesSchema> = {
 export type DpcTabularSaveTable<Schema extends OptionalTablesSchema> = {
   tableName?: string | ((tableId: TableIdFromSchema<Schema>) => string | false);
   rowIdColumnName?: string;
+  deleteColumns?: boolean;
 };
 
 /// DpcTabularSaveDefault
 export type DpcTabularSaveDefault<Schema extends OptionalTablesSchema> = {
   tableName?: (tableId: TableIdFromSchema<Schema>) => string | false;
   rowIdColumnName?: string;
+  deleteColumns?: boolean;
 };
 
 /// DpcTabularValues
