@@ -1,9 +1,8 @@
 import {Cmd, Schema, getCommandFunctions} from './commands';
 import {DpcTabular, Persister, PersisterListener} from '../../types/persisters';
-import {Store, Table, Tables, Values} from '../../types/store';
+import {Store, Tables, Values} from '../../types/store';
 import {arrayFilter, arrayMap} from '../../common/array';
 import {objIsEmpty, objMap, objNew} from '../../common/obj';
-import {Id} from '../../types/common';
 import {SINGLE_ROW_ID} from './common';
 import {createCustomPersister} from '../../persisters';
 import {getConfigFunctions} from './tabular-config';
@@ -29,24 +28,21 @@ export const createTabularSqlitePersister = <ListeningHandle>(
     getCommandFunctions(cmd);
 
   const scheduleSaveTables = (tables: Tables) =>
-    tablesSave ? objMap(tables, scheduleSaveTable) : 0;
-
-  // push into commands =>
-  const scheduleSaveTable = (table: Table, tableId: Id) => {
-    const [getTableName, rowIdColumnName] = getTablesSaveConfig(tableId);
-    const tableName = getTableName(tableId);
-    if (tableName !== false) {
-      persister.schedule(
-        getSchema,
-        async () => await saveTable(tableName, rowIdColumnName, table),
-      );
-    }
-  };
+    tablesSave
+      ? objMap(tables, (table, tableId) => {
+          const [getTableName, rowIdColumnName] = getTablesSaveConfig(tableId);
+          const tableName = getTableName(tableId);
+          if (tableName !== false) {
+            persister.schedule(
+              async () => await saveTable(tableName, rowIdColumnName, table),
+            );
+          }
+        })
+      : 0;
 
   const scheduleSaveValues = (values: Values) =>
     valuesSave
       ? persister.schedule(
-          getSchema,
           async () =>
             await saveSingleRow(
               valuesTableName,
@@ -96,6 +92,7 @@ export const createTabularSqlitePersister = <ListeningHandle>(
     getContent: () => [Tables, Values],
   ): Promise<void> => {
     const [tables, values] = getContent();
+    persister.schedule(getSchema);
     scheduleSaveTables(tables);
     scheduleSaveValues(values);
   };
