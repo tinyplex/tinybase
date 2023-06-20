@@ -1,3 +1,4 @@
+import {COMMA, EMPTY_STRING} from '../../common/strings';
 import {EXPORT, lower, upper} from './strings';
 import {
   IdMap,
@@ -19,7 +20,6 @@ import {
   arraySort,
 } from '../../common/array';
 import {collHas, collValues} from '../../common/coll';
-import {EMPTY_STRING} from '../../common/strings';
 import {Id} from '../../types/common.d';
 import {isArray} from '../../common/other';
 
@@ -34,7 +34,7 @@ const JSDOC = /^( *)\/\*\* *(.*?) *\*\/$/gm;
 const substr = (str: string, start: number, end?: number) =>
   str.substring(start, end);
 
-const stringHasComma = (str: string) => str.includes(',');
+const stringHasComma = (str: string) => str.includes(COMMA);
 
 export const mapUnique = <Value>(
   map: IdMap<Value>,

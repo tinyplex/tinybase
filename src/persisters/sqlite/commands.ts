@@ -1,4 +1,4 @@
-import {EMPTY_STRING, strRepeat} from '../../common/strings';
+import {COMMA, EMPTY_STRING, strRepeat} from '../../common/strings';
 import {
   IdMap2,
   mapEnsure,
@@ -35,9 +35,11 @@ import {Id} from '../../types/common';
 export type Cmd = (sql: string, args?: any[]) => Promise<IdObj<any>[]>;
 export type Schema = IdMap2<string>;
 
+const SELECT_STAR_FROM = 'SELECT*FROM';
 const FROM_PRAGMA_TABLE = 'FROM pragma_table_';
-// eslint-disable-next-line max-len
-const WHERE_MAIN_TABLE = `WHERE schema='main'AND type='table'AND name!='sqlite_schema'`;
+const WHERE = 'WHERE';
+const WHERE_MAIN_TABLE =
+  WHERE + ` schema='main'AND type='table'AND name!='sqlite_schema'`;
 
 export const getCommandFunctions = (
   cmd: Cmd,
@@ -74,7 +76,7 @@ export const getCommandFunctions = (
       await cmd(
         `CREATE TABLE${escapeId(tableName)}(${escapeId(rowIdColumnName)} ` +
           `PRIMARY KEY ON CONFLICT REPLACE${arrayJoin(
-            arrayMap(columnNames, (cellId) => ',' + escapeId(cellId)),
+            arrayMap(columnNames, (cellId) => COMMA + escapeId(cellId)),
           )});`,
       );
       mapSet(
@@ -155,9 +157,11 @@ export const getCommandFunctions = (
   ): Promise<IdObj<any>> => {
     const rows = canSelect(tableName, rowIdColumnName)
       ? await cmd(
-          `SELECT*FROM${escapeId(tableName)}WHERE${escapeId(
-            rowIdColumnName,
-          )}=?`,
+          SELECT_STAR_FROM +
+            escapeId(tableName) +
+            WHERE +
+            escapeId(rowIdColumnName) +
+            '=?',
           [SINGLE_ROW_ID],
         )
       : [];
@@ -179,10 +183,10 @@ export const getCommandFunctions = (
     canSelect(tableName, rowIdColumnName)
       ? objNew(
           arrayFilter(
-            arrayMap(await cmd(`SELECT*FROM${escapeId(tableName)}`), (row) => [
-              row[rowIdColumnName],
-              objDel(row, rowIdColumnName),
-            ]),
+            arrayMap(
+              await cmd(SELECT_STAR_FROM + escapeId(tableName)),
+              (row) => [row[rowIdColumnName], objDel(row, rowIdColumnName)],
+            ),
             ([rowId, row]) => !isUndefined(rowId) && !objIsEmpty(row),
           ),
         )
@@ -200,19 +204,23 @@ export const getCommandFunctions = (
     const columnNames = collValues(cellIds);
     await ensureTable(tableName, rowIdColumnName, columnNames);
 
-    const places: string[] = [];
+    const slots: string[] = [];
     const args: any[] = [];
     objMap(table, (row, rowId) => {
-      arrayPush(places, `(?${strRepeat(',?', arrayLength(columnNames))})`);
+      arrayPush(slots, `(?${strRepeat(',?', arrayLength(columnNames))})`);
       arrayPush(args, rowId, ...arrayMap(columnNames, (cellId) => row[cellId]));
     });
 
     await cmd(
-      `INSERT INTO${escapeId(tableName)}(${escapeId(
-        rowIdColumnName,
-      )}${arrayJoin(
-        arrayMap(columnNames, (columnName) => `,${escapeId(columnName)}`),
-      )})VALUES` + arrayJoin(places, ','),
+      'INSERT INTO' +
+        escapeId(tableName) +
+        '(' +
+        escapeId(rowIdColumnName) +
+        arrayJoin(
+          arrayMap(columnNames, (columnName) => COMMA + escapeId(columnName)),
+        ) +
+        ')VALUES' +
+        arrayJoin(slots, COMMA),
       args,
     );
   };
