@@ -25,23 +25,20 @@ export const createTabularSqlitePersister = <ListeningHandle>(
     [valuesLoad, valuesSave, valuesTableName, valuesRowIdColumnName],
   ] = getConfigFunctions(config);
 
-  const [getSchema, loadSingleRow, saveSingleRow, loadTable] =
+  const [getSchema, loadSingleRow, saveSingleRow, loadTable, saveTable] =
     getCommandFunctions(cmd);
 
   const scheduleSaveTables = (tables: Tables) =>
     tablesSave ? objMap(tables, scheduleSaveTable) : 0;
 
+  // push into commands =>
   const scheduleSaveTable = (table: Table, tableId: Id) => {
     const [getTableName, rowIdColumnName] = getTablesSaveConfig(tableId);
     const tableName = getTableName(tableId);
     if (tableName !== false) {
       persister.schedule(
         getSchema,
-        ...objMap(
-          table,
-          (row, rowId) => async () =>
-            await saveSingleRow(tableName, rowIdColumnName, rowId, row),
-        ),
+        async () => await saveTable(tableName, rowIdColumnName, table),
       );
     }
   };
