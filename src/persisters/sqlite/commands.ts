@@ -48,7 +48,7 @@ export const getCommandFunctions = (
   loadSingleRow: (
     tableName: string,
     rowIdColumnName: string,
-  ) => Promise<IdObj<any>>,
+  ) => Promise<IdObj<any> | null>,
   saveSingleRow: (
     table: string,
     rowIdColumnName: string,
@@ -154,7 +154,7 @@ export const getCommandFunctions = (
   const loadSingleRow = async (
     tableName: string,
     rowIdColumnName: string,
-  ): Promise<IdObj<any>> => {
+  ): Promise<IdObj<any> | null> => {
     const rows = canSelect(tableName, rowIdColumnName)
       ? await cmd(
           SELECT_STAR_FROM +
@@ -165,7 +165,7 @@ export const getCommandFunctions = (
           [SINGLE_ROW_ID],
         )
       : [];
-    return arrayIsEmpty(rows) ? {} : objDel(rows[0], rowIdColumnName);
+    return arrayIsEmpty(rows) ? null : objDel(rows[0], rowIdColumnName);
   };
 
   const saveSingleRow = async (

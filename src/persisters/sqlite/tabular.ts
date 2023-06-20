@@ -2,12 +2,12 @@ import {Cmd, Schema, getCommandFunctions} from './commands';
 import {DpcTabular, Persister, PersisterListener} from '../../types/persisters';
 import {Store, Tables, Values} from '../../types/store';
 import {arrayFilter, arrayMap} from '../../common/array';
+import {isUndefined, promiseAll} from '../../common/other';
 import {objIsEmpty, objMap, objNew} from '../../common/obj';
 import {SINGLE_ROW_ID} from './common';
 import {createCustomPersister} from '../../persisters';
 import {getConfigFunctions} from './tabular-config';
 import {mapKeys} from '../../common/map';
-import {promiseAll} from '../../common/other';
 
 export const createTabularSqlitePersister = <ListeningHandle>(
   store: Store,
@@ -27,31 +27,27 @@ export const createTabularSqlitePersister = <ListeningHandle>(
   const [getSchema, loadSingleRow, saveSingleRow, loadTable, saveTable] =
     getCommandFunctions(cmd);
 
-  const scheduleSaveTables = (tables: Tables) =>
+  const getSaveTablesActions = (tables: Tables) =>
     tablesSave
       ? objMap(tables, (table, tableId) => {
           const [getTableName, rowIdColumnName] = getTablesSaveConfig(tableId);
           const tableName = getTableName(tableId);
-          if (tableName !== false) {
-            persister.schedule(
-              async () => await saveTable(tableName, rowIdColumnName, table),
-            );
-          }
+          return tableName !== false
+            ? async () => await saveTable(tableName, rowIdColumnName, table)
+            : null;
         })
-      : 0;
+      : [];
 
-  const scheduleSaveValues = (values: Values) =>
+  const getSaveValuesAction = (values: Values) =>
     valuesSave
-      ? persister.schedule(
-          async () =>
-            await saveSingleRow(
-              valuesTableName,
-              valuesRowIdColumnName,
-              SINGLE_ROW_ID,
-              values,
-            ),
-        )
-      : 0;
+      ? async () =>
+          await saveSingleRow(
+            valuesTableName,
+            valuesRowIdColumnName,
+            SINGLE_ROW_ID,
+            values,
+          )
+      : null;
 
   const loadTables = async (schema: Schema): Promise<Tables> =>
     tablesLoad
@@ -74,7 +70,7 @@ export const createTabularSqlitePersister = <ListeningHandle>(
         )
       : {};
 
-  const loadValues = async (): Promise<Values> =>
+  const loadValues = async (): Promise<Values | null> =>
     valuesLoad
       ? await loadSingleRow(valuesTableName, valuesRowIdColumnName)
       : {};
@@ -83,7 +79,7 @@ export const createTabularSqlitePersister = <ListeningHandle>(
     const schema = await getSchema();
     const tables = await loadTables(schema);
     const values = await loadValues();
-    return !objIsEmpty(tables) || !objIsEmpty(values)
+    return !objIsEmpty(tables) || !isUndefined(values)
       ? [tables as Tables, values as Values]
       : undefined;
   };
@@ -92,9 +88,11 @@ export const createTabularSqlitePersister = <ListeningHandle>(
     getContent: () => [Tables, Values],
   ): Promise<void> => {
     const [tables, values] = getContent();
-    persister.schedule(getSchema);
-    scheduleSaveTables(tables);
-    scheduleSaveValues(values);
+    persister.schedule(
+      getSchema,
+      ...getSaveTablesActions(tables),
+      getSaveValuesAction(values),
+    );
   };
 
   const persister: any = createCustomPersister(
