@@ -30,10 +30,17 @@ export const createTabularSqlitePersister = <ListeningHandle>(
   const getSaveTablesActions = (tables: Tables) =>
     tablesSave
       ? objMap(tables, (table, tableId) => {
-          const [getTableName, rowIdColumnName] = getTablesSaveConfig(tableId);
+          const [getTableName, rowIdColumnName, deleteColumns] =
+            getTablesSaveConfig(tableId);
           const tableName = getTableName(tableId);
           return tableName !== false
-            ? async () => await saveTable(tableName, rowIdColumnName, table)
+            ? async () =>
+                await saveTable(
+                  tableName,
+                  rowIdColumnName,
+                  deleteColumns,
+                  table,
+                )
             : null;
         })
       : [];

@@ -27,7 +27,7 @@ import {
   arrayMap,
   arrayPush,
 } from '../../common/array';
-import {collHas, collValues} from '../../common/coll';
+import {collDel, collHas, collValues} from '../../common/coll';
 import {isUndefined, promiseAll} from '../../common/other';
 import {setAdd, setNew} from '../../common/set';
 import {Id} from '../../types/common';
@@ -62,6 +62,7 @@ export const getCommandFunctions = (
   saveTable: (
     tableName: string,
     rowIdColumnName: string,
+    deleteColumns: boolean,
     table: Table,
   ) => Promise<void>,
 ] => {
@@ -71,6 +72,7 @@ export const getCommandFunctions = (
     tableName: string,
     rowIdColumnName: string,
     columnNames: string[],
+    deleteColumns: boolean,
   ): Promise<void> => {
     if (!collHas(schemaMap, tableName)) {
       await cmd(
@@ -86,23 +88,38 @@ export const getCommandFunctions = (
           [rowIdColumnName, EMPTY_STRING],
           ...arrayMap(
             columnNames,
-            (cellId) => [cellId, EMPTY_STRING] as [string, string],
+            (columnName) => [columnName, EMPTY_STRING] as [string, string],
           ),
         ]),
       );
     } else {
       const tableSchemaMap = mapGet(schemaMap, tableName);
-      const columns = setNew(mapKeys(tableSchemaMap));
-      await promiseAll(
-        arrayMap(columnNames, async (cellId) => {
-          if (!collHas(columns, cellId) && cellId != rowIdColumnName) {
+      const columnNamesAccountedFor = setNew(mapKeys(tableSchemaMap));
+      await promiseAll([
+        ...arrayMap(columnNames, async (columnName) => {
+          if (!collDel(columnNamesAccountedFor, columnName)) {
             await cmd(
-              `ALTER TABLE${escapeId(tableName)}ADD${escapeId(cellId)}`,
+              `ALTER TABLE${escapeId(tableName)}ADD${escapeId(columnName)}`,
             );
-            mapSet(tableSchemaMap, cellId, EMPTY_STRING);
+            mapSet(tableSchemaMap, columnName, EMPTY_STRING);
           }
         }),
-      );
+        ...(deleteColumns
+          ? arrayMap(
+              collValues(columnNamesAccountedFor),
+              async (columnName) => {
+                if (columnName != rowIdColumnName) {
+                  await cmd(
+                    `ALTER TABLE${escapeId(tableName)}DROP${escapeId(
+                      columnName,
+                    )}`,
+                  );
+                  mapSet(tableSchemaMap, columnName);
+                }
+              },
+            )
+          : []),
+      ]);
     }
   };
 
@@ -174,7 +191,7 @@ export const getCommandFunctions = (
     rowId: Id,
     row: Row | Values,
   ): Promise<void> =>
-    await saveTable(tableName, rowIdColumnName, {[rowId]: row});
+    await saveTable(tableName, rowIdColumnName, true, {[rowId]: row});
 
   const loadTable = async (
     tableName: string,
@@ -195,6 +212,7 @@ export const getCommandFunctions = (
   const saveTable = async (
     tableName: string,
     rowIdColumnName: string,
+    deleteColumns: boolean,
     table: Table,
   ): Promise<void> => {
     const cellIds = setNew<string>();
@@ -202,7 +220,7 @@ export const getCommandFunctions = (
       arrayMap(objIds(row), (cellId) => setAdd(cellIds, cellId)),
     );
     const columnNames = collValues(cellIds);
-    await ensureTable(tableName, rowIdColumnName, columnNames);
+    await ensureTable(tableName, rowIdColumnName, columnNames, deleteColumns);
 
     const insertSlots: string[] = [];
     const insertBinds: any[] = [];

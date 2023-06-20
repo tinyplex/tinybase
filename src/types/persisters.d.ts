@@ -66,12 +66,14 @@ export type DpcTabularSave = {
 export type DpcTabularSaveTable = {
   tableName?: string | ((tableId: Id) => string | false);
   rowIdColumnName?: string;
+  deleteColumns?: boolean;
 };
 
 /// DpcTabularSaveDefault
 export type DpcTabularSaveDefault = {
   tableName?: (tableId: Id) => string | false;
   rowIdColumnName?: string;
+  deleteColumns?: boolean;
 };
 
 /// DpcTabularValues

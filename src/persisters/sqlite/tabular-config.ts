@@ -29,6 +29,7 @@ type TablesLoadConfig = [
 type TablesSaveConfig = [
   getTableName: (tableId: Id) => string | false,
   rowIdColumnName: string,
+  deleteColumns: boolean,
 ];
 
 type ValuesConfig = [
@@ -43,6 +44,7 @@ export const DEFAULT_ROW_ID_COLUMN_NAME = '_id';
 const ROW_ID_COLUMN_NAME = 'rowIdColumnName';
 const TABLE_ID = 'tableId';
 const TABLE_NAME = 'tableName';
+const DELETE_COLUMNS = 'deleteColumns';
 
 const DEFAULT_TABLE_MAPPING = (tableNameOrId: string) => tableNameOrId;
 const DISABLED_TABLE_MAPPING = () => false;
@@ -69,13 +71,14 @@ const getTablesConfigs = <TablesLoadOrSaveConfig>(
         },
       };
 
-  const tablesLoadConfigsMap = mapNew(
+  const tablesConfigsMap = mapNew(
     objMap(loadOrSaveConfigs, (tablesLoadConfig, tableName) => {
-      const [tableMap, rowIdColumnName] = objValues(
+      const [tableMap, rowIdColumnName, deleteColumns] = objValues(
         objMerge(
           {
             [tableMapFunctionName]: DEFAULT_TABLE_MAPPING,
             [ROW_ID_COLUMN_NAME]: DEFAULT_ROW_ID_COLUMN_NAME,
+            [DELETE_COLUMNS]: false,
           },
           objGet(loadOrSaveConfigs, STAR) ?? {},
           isObject(tablesLoadConfig)
@@ -89,7 +92,11 @@ const getTablesConfigs = <TablesLoadOrSaveConfig>(
       );
       return [
         tableName,
-        [isFunction(tableMap) ? tableMap : () => tableMap, rowIdColumnName],
+        [
+          isFunction(tableMap) ? tableMap : () => tableMap,
+          rowIdColumnName,
+          deleteColumns,
+        ],
       ];
     }),
   ) as IdMap<TablesLoadOrSaveConfig>;
@@ -98,9 +105,9 @@ const getTablesConfigs = <TablesLoadOrSaveConfig>(
     enabled,
     (tableName: string) =>
       mapEnsure(
-        tablesLoadConfigsMap,
+        tablesConfigsMap,
         tableName,
-        () => mapGet(tablesLoadConfigsMap, STAR) as TablesLoadOrSaveConfig,
+        () => mapGet(tablesConfigsMap, STAR) as TablesLoadOrSaveConfig,
       ),
   ];
 };
