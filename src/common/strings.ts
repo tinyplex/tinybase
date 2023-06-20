@@ -40,3 +40,5 @@ export const VALUES = VALUE + 's';
 export const VALUE_IDS = VALUE + IDS;
 
 export const id = (key: unknown): Id => EMPTY_STRING + key;
+
+export const strRepeat = (str: string, count: number) => str.repeat(count);

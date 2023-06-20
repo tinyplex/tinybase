@@ -1,16 +1,16 @@
 import {IdMap, mapEnsure, mapGet, mapNew} from '../../common/map';
 import {STAR, TINYBASE} from '../../common/strings';
-import {arrayLength, arraySlice} from '../../common/array';
 import {
   isObject,
   objGet,
-  objIds,
   objMap,
   objMerge,
+  objSize,
   objValues,
 } from '../../common/obj';
 import {DpcTabular} from '../../types/persisters';
 import {Id} from '../../types/common';
+import {arraySlice} from '../../common/array';
 import {isFunction} from '../../common/other';
 
 type ConfigFunctions = [
@@ -114,6 +114,6 @@ export const getConfigFunctions = ({
   arraySlice(
     objValues(objMerge(DEFAULT_VALUES_CONFIG, values)),
     0,
-    arrayLength(objIds(DEFAULT_VALUES_CONFIG)),
+    objSize(DEFAULT_VALUES_CONFIG),
   ) as ValuesConfig,
 ];

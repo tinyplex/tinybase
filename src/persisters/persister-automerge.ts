@@ -5,16 +5,15 @@ import {
   objEnsure,
   objGet,
   objHas,
-  objIds,
   objIsEmpty,
   objMap,
+  objSize,
 } from '../common/obj';
 import {Persister, PersisterListener} from '../types/persisters';
 import {ifNotUndefined, isUndefined} from '../common/other';
 import {DocHandle} from 'automerge-repo';
 import {Id} from '../types/common';
 import {TINYBASE} from '../common/strings';
-import {arrayLength} from '../common/array';
 import {createCustomPersister} from '../persisters';
 
 type Observer = ({doc}: {doc: any}) => void;
@@ -134,7 +133,7 @@ export const createAutomergePersister = (
   docHandle.change((doc) => (doc[docObjName] = {}));
 
   const getPersisted = async (): Promise<[Tables, Values] | undefined> =>
-    arrayLength(objIds(docHandle.doc[docObjName])) == 2
+    objSize(docHandle.doc[docObjName]) == 2
       ? getDocContent(docHandle.doc, docObjName)
       : undefined;
 

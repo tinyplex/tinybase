@@ -1,4 +1,4 @@
-import {arrayIsEmpty, arrayMap} from './array';
+import {arrayLength, arrayMap} from './array';
 import {ifNotUndefined, isInstanceOf, isUndefined} from './other';
 import {Id} from '../types/common.d';
 
@@ -42,8 +42,11 @@ export const objMap = <Value, Return>(
 export const objValues = <Value>(obj: IdObj<Value>): Value[] =>
   object.values(obj);
 
+export const objSize = (obj: IdObj<unknown>): number =>
+  arrayLength(objIds(obj));
+
 export const objIsEmpty = <Value>(obj: IdObj<Value> | any): boolean =>
-  isObject(obj) && arrayIsEmpty(objIds(obj));
+  isObject(obj) && objSize(obj) == 0;
 
 export const objEnsure = <Value>(
   obj: IdObj<Value>,
