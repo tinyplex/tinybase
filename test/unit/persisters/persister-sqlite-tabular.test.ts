@@ -542,6 +542,55 @@ describe.each(Object.entries(VARIANTS))(
             ],
           ]);
         });
+
+        describe('delete', () => {
+          let persister: Persister;
+          beforeEach(() => {
+            persister = getPersister(store, db, {
+              mode: 'tabular',
+              tables: {save: {'*': {tableName: (tableId) => tableId}}},
+              values: {save: true},
+            });
+            store.setCell('t1', 'r2', 'c2', 2).setCell('t1', 'r3', 'c3', 3);
+          });
+
+          test('rows', async () => {
+            await persister.save();
+            expect(await getDatabase(db)).toEqual([
+              [
+                't1',
+                'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1", "c2", "c3")',
+                [
+                  {_id: 'r1', c1: 1, c2: null, c3: null},
+                  {_id: 'r2', c1: null, c2: 2, c3: null},
+                  {_id: 'r3', c1: null, c2: null, c3: 3},
+                ],
+              ],
+              [
+                'tinybase_values',
+                'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE)',
+                [{_id: '_'}],
+              ],
+            ]);
+            store.delCell('t1', 'r3', 'c3');
+            await persister.save();
+            expect(await getDatabase(db)).toEqual([
+              [
+                't1',
+                'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1", "c2", "c3")',
+                [
+                  {_id: 'r1', c1: 1, c2: null, c3: null},
+                  {_id: 'r2', c1: null, c2: 2, c3: null},
+                ],
+              ],
+              [
+                'tinybase_values',
+                'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE)',
+                [{_id: '_'}],
+              ],
+            ]);
+          });
+        });
       });
 
       describe('values', () => {
@@ -815,23 +864,35 @@ describe.each(Object.entries(VARIANTS))(
           {t1: {r1: {c1: 2, c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
           {v1: 1, v2: 2},
         ]);
-        store1.delCell('t1', 'r1', 'c1');
+        store1.delCell('t1', 'r1', 'c2');
         await pause();
         expect(store2.getContent()).toEqual([
-          {t1: {r1: {c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
+          {t1: {r1: {c1: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
           {v1: 1, v2: 2},
+        ]);
+        store1.delRow('t1', 'r2');
+        await pause();
+        expect(store2.getContent()).toEqual([
+          {t1: {r1: {c1: 2}}, t2: {r1: {c1: 1}}},
+          {v1: 1, v2: 2},
+        ]);
+        // store1.delTable('t2');
+        // await pause();
+        // expect(store2.getContent()).toEqual([
+        //   {t1: {r1: {c1: 2}}},
+        //   {v1: 1, v2: 2},
+        // ]);
+        store1.delValue('v2');
+        await pause();
+        expect(store2.getContent()).toEqual([
+          {t1: {r1: {c1: 2}}, t2: {r1: {c1: 1}}},
+          {v1: 1},
         ]);
         store1.setValue('v1', 2);
         await pause();
         expect(store2.getContent()).toEqual([
-          {t1: {r1: {c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
-          {v1: 2, v2: 2},
-        ]);
-        store1.delValue('v1');
-        await pause();
-        expect(store2.getContent()).toEqual([
-          {t1: {r1: {c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
-          {v2: 2},
+          {t1: {r1: {c1: 2}}, t2: {r1: {c1: 1}}},
+          {v1: 2},
         ]);
       });
     });

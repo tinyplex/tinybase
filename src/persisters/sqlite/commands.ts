@@ -204,11 +204,17 @@ export const getCommandFunctions = (
     const columnNames = collValues(cellIds);
     await ensureTable(tableName, rowIdColumnName, columnNames);
 
-    const slots: string[] = [];
-    const args: any[] = [];
+    const insertSlots: string[] = [];
+    const insertBinds: any[] = [];
+    const deleteRowIds: string[] = [];
     objMap(table, (row, rowId) => {
-      arrayPush(slots, `(?${strRepeat(',?', arrayLength(columnNames))})`);
-      arrayPush(args, rowId, ...arrayMap(columnNames, (cellId) => row[cellId]));
+      arrayPush(insertSlots, `(?${strRepeat(',?', arrayLength(columnNames))})`);
+      arrayPush(
+        insertBinds,
+        rowId,
+        ...arrayMap(columnNames, (cellId) => row[cellId]),
+      );
+      arrayPush(deleteRowIds, rowId);
     });
 
     await cmd(
@@ -220,8 +226,21 @@ export const getCommandFunctions = (
           arrayMap(columnNames, (columnName) => COMMA + escapeId(columnName)),
         ) +
         ')VALUES' +
-        arrayJoin(slots, COMMA),
-      args,
+        arrayJoin(insertSlots, COMMA),
+      insertBinds,
+    );
+    await cmd(
+      'DELETE FROM' +
+        escapeId(tableName) +
+        WHERE +
+        escapeId(rowIdColumnName) +
+        'NOT IN(' +
+        arrayJoin(
+          arrayMap(deleteRowIds, () => '?'),
+          COMMA,
+        ) +
+        ')',
+      deleteRowIds,
     );
   };
 
