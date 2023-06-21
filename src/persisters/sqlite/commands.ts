@@ -33,7 +33,7 @@ import {setAdd, setNew} from '../../common/set';
 import {Id} from '../../types/common';
 
 export type Cmd = (sql: string, args?: any[]) => Promise<IdObj<any>[]>;
-export type Schema = IdMap2<string>;
+type Schema = IdMap2<string>;
 
 const SELECT_STAR_FROM = 'SELECT*FROM';
 const FROM_PRAGMA_TABLE = 'FROM pragma_table_';
@@ -44,7 +44,7 @@ const WHERE_MAIN_TABLE =
 export const getCommandFunctions = (
   cmd: Cmd,
 ): [
-  getSchema: () => Promise<Schema>,
+  refreshSchema: () => Promise<Schema>,
   loadSingleRow: (
     tableName: string,
     rowIdColumnName: string,
@@ -126,7 +126,7 @@ export const getCommandFunctions = (
   const canSelect = (tableName: string, rowIdColumnName: string): boolean =>
     !isUndefined(mapGet(mapGet(schemaMap, tableName), rowIdColumnName));
 
-  const getSchema = async (): Promise<Schema> =>
+  const refreshSchema = async (): Promise<Schema> =>
     mapMatch(
       schemaMap,
       objNew(
@@ -262,5 +262,5 @@ export const getCommandFunctions = (
     );
   };
 
-  return [getSchema, loadSingleRow, saveSingleRow, loadTable, saveTable];
+  return [refreshSchema, loadSingleRow, saveSingleRow, loadTable, saveTable];
 };

@@ -1,9 +1,8 @@
 import {Cmd, getCommandFunctions} from './commands';
+import {DEFAULT_ROW_ID_COLUMN_NAME, SINGLE_ROW_ID} from './common';
 import {DpcJson, Persister, PersisterListener} from '../../types/persisters';
 import {Store, Tables, Values} from '../../types/store';
 import {jsonParse, jsonString} from '../../common/other';
-import {DEFAULT_ROW_ID_COLUMN_NAME} from './tabular-config';
-import {SINGLE_ROW_ID} from './common';
 import {TINYBASE} from '../../common/strings';
 import {createCustomPersister} from '../../persisters';
 
@@ -16,10 +15,11 @@ export const createJsonSqlitePersister = <ListeningHandle>(
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   {storeTableName = TINYBASE}: DpcJson,
 ): Persister => {
-  const [getSchema, loadSingleRow, saveSingleRow] = getCommandFunctions(cmd);
+  const [refreshSchema, loadSingleRow, saveSingleRow] =
+    getCommandFunctions(cmd);
 
   const getPersisted = async (): Promise<[Tables, Values]> => {
-    await getSchema();
+    await refreshSchema();
     return jsonParse(
       ((await loadSingleRow(storeTableName, DEFAULT_ROW_ID_COLUMN_NAME)) ?? {})[
         STORE_COLUMN
@@ -30,7 +30,7 @@ export const createJsonSqlitePersister = <ListeningHandle>(
   const setPersisted = async (
     getContent: () => [Tables, Values],
   ): Promise<void> =>
-    persister.schedule(getSchema, async () => {
+    persister.schedule(refreshSchema, async () => {
       await saveSingleRow(
         storeTableName,
         DEFAULT_ROW_ID_COLUMN_NAME,
