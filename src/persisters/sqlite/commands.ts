@@ -63,6 +63,7 @@ export const getCommandFunctions = (
     tableName: string,
     rowIdColumnName: string,
     deleteEmptyColumns: boolean,
+    deleteEmptyTable: boolean,
     table: Table,
   ) => Promise<void>,
 ] => {
@@ -71,10 +72,25 @@ export const getCommandFunctions = (
   const ensureTable = async (
     tableName: string,
     rowIdColumnName: string,
-    columnNames: string[],
+    table: Table,
     deleteEmptyColumns: boolean,
-  ): Promise<void> => {
-    if (!collHas(schemaMap, tableName)) {
+    deleteEmptyTable: boolean,
+  ): Promise<string[]> => {
+    const cellIds = setNew<string>();
+    objMap(table ?? {}, (row) =>
+      arrayMap(objIds(row), (cellId) => setAdd(cellIds, cellId)),
+    );
+    const columnNames = collValues(cellIds);
+
+    if (arrayIsEmpty(columnNames) && collHas(schemaMap, tableName)) {
+      if (deleteEmptyTable) {
+        await cmd('DROP TABLE' + escapeId(tableName));
+        mapSet(schemaMap, tableName);
+        return columnNames;
+      }
+    }
+
+    if (!arrayIsEmpty(columnNames) && !collHas(schemaMap, tableName)) {
       await cmd(
         `CREATE TABLE${escapeId(tableName)}(${escapeId(rowIdColumnName)} ` +
           `PRIMARY KEY ON CONFLICT REPLACE${arrayJoin(
@@ -121,6 +137,7 @@ export const getCommandFunctions = (
           : []),
       ]);
     }
+    return columnNames;
   };
 
   const canSelect = (tableName: string, rowIdColumnName: string): boolean =>
@@ -191,7 +208,7 @@ export const getCommandFunctions = (
     rowId: Id,
     row: Row | Values,
   ): Promise<void> =>
-    await saveTable(tableName, rowIdColumnName, true, {[rowId]: row});
+    await saveTable(tableName, rowIdColumnName, true, true, {[rowId]: row});
 
   const loadTable = async (
     tableName: string,
@@ -213,58 +230,62 @@ export const getCommandFunctions = (
     tableName: string,
     rowIdColumnName: string,
     deleteEmptyColumns: boolean,
+    deleteEmptyTable: boolean,
     table: Table,
   ): Promise<void> => {
-    const cellIds = setNew<string>();
-    objMap(table, (row) =>
-      arrayMap(objIds(row), (cellId) => setAdd(cellIds, cellId)),
-    );
-    const columnNames = collValues(cellIds);
-    await ensureTable(
+    const columnNames = await ensureTable(
       tableName,
       rowIdColumnName,
-      columnNames,
+      table,
       deleteEmptyColumns,
+      deleteEmptyTable,
     );
 
-    const insertSlots: string[] = [];
-    const insertBinds: any[] = [];
-    const deleteRowIds: string[] = [];
-    objMap(table, (row, rowId) => {
-      arrayPush(insertSlots, `(?${strRepeat(',?', arrayLength(columnNames))})`);
-      arrayPush(
+    if (!arrayIsEmpty(columnNames)) {
+      const insertSlots: string[] = [];
+      const insertBinds: any[] = [];
+      const deleteRowIds: string[] = [];
+      objMap(table, (row, rowId) => {
+        arrayPush(
+          insertSlots,
+          `(?${strRepeat(',?', arrayLength(columnNames))})`,
+        );
+        arrayPush(
+          insertBinds,
+          rowId,
+          ...arrayMap(columnNames, (cellId) => row[cellId]),
+        );
+        arrayPush(deleteRowIds, rowId);
+      });
+
+      await cmd(
+        'INSERT INTO' +
+          escapeId(tableName) +
+          '(' +
+          escapeId(rowIdColumnName) +
+          arrayJoin(
+            arrayMap(columnNames, (columnName) => COMMA + escapeId(columnName)),
+          ) +
+          ')VALUES' +
+          arrayJoin(insertSlots, COMMA),
         insertBinds,
-        rowId,
-        ...arrayMap(columnNames, (cellId) => row[cellId]),
       );
-      arrayPush(deleteRowIds, rowId);
-    });
-
-    await cmd(
-      'INSERT INTO' +
-        escapeId(tableName) +
-        '(' +
-        escapeId(rowIdColumnName) +
-        arrayJoin(
-          arrayMap(columnNames, (columnName) => COMMA + escapeId(columnName)),
-        ) +
-        ')VALUES' +
-        arrayJoin(insertSlots, COMMA),
-      insertBinds,
-    );
-    await cmd(
-      'DELETE FROM' +
-        escapeId(tableName) +
-        WHERE +
-        escapeId(rowIdColumnName) +
-        'NOT IN(' +
-        arrayJoin(
-          arrayMap(deleteRowIds, () => '?'),
-          COMMA,
-        ) +
-        ')',
-      deleteRowIds,
-    );
+      await cmd(
+        'DELETE FROM' +
+          escapeId(tableName) +
+          WHERE +
+          escapeId(rowIdColumnName) +
+          'NOT IN(' +
+          arrayJoin(
+            arrayMap(deleteRowIds, () => '?'),
+            COMMA,
+          ) +
+          ')',
+        deleteRowIds,
+      );
+    } else if (!deleteEmptyTable) {
+      await cmd('DELETE FROM' + escapeId(tableName));
+    }
   };
 
   return [refreshSchema, loadSingleRow, saveSingleRow, loadTable, saveTable];

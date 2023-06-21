@@ -445,13 +445,7 @@ describe.each(Object.entries(VARIANTS))(
 
       test('nothing', async () => {
         await persister.save();
-        expect(await getDatabase(db)).toEqual([
-          [
-            'tinybase_values',
-            'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE)',
-            [{_id: '_'}],
-          ],
-        ]);
+        expect(await getDatabase(db)).toEqual([]);
       });
 
       describe('tables', () => {
@@ -466,11 +460,6 @@ describe.each(Object.entries(VARIANTS))(
               't1',
               'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
               [{_id: 'r1', c1: 1}],
-            ],
-            [
-              'tinybase_values',
-              'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE)',
-              [{_id: '_'}],
             ],
           ]);
         });
@@ -487,11 +476,6 @@ describe.each(Object.entries(VARIANTS))(
                 {_id: 'r3', c1: null, c2: null, c3: 3},
               ],
             ],
-            [
-              'tinybase_values',
-              'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE)',
-              [{_id: '_'}],
-            ],
           ]);
         });
 
@@ -503,11 +487,6 @@ describe.each(Object.entries(VARIANTS))(
               't1',
               'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
               [{_id: 'r1', c1: 1}],
-            ],
-            [
-              'tinybase_values',
-              'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE)',
-              [{_id: '_'}],
             ],
             [
               't2',
@@ -536,11 +515,6 @@ describe.each(Object.entries(VARIANTS))(
                   {_id: 'r3', c1: null, c2: null, c3: 3},
                 ],
               ],
-              [
-                'tinybase_values',
-                'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE)',
-                [{_id: '_'}],
-              ],
             ]);
             store.delCell('t1', 'r3', 'c3');
             await persister.save();
@@ -552,11 +526,6 @@ describe.each(Object.entries(VARIANTS))(
                   {_id: 'r1', c1: 1, c2: null, c3: null},
                   {_id: 'r2', c1: null, c2: 2, c3: null},
                 ],
-              ],
-              [
-                'tinybase_values',
-                'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE)',
-                [{_id: '_'}],
               ],
             ]);
           });
@@ -574,11 +543,6 @@ describe.each(Object.entries(VARIANTS))(
                   {_id: 'r3', c1: null, c2: null, c3: 3},
                 ],
               ],
-              [
-                'tinybase_values',
-                'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE)',
-                [{_id: '_'}],
-              ],
             ]);
             store.delCell('t1', 'r3', 'c3');
             await persister.save();
@@ -590,11 +554,6 @@ describe.each(Object.entries(VARIANTS))(
                   {_id: 'r1', c1: 1, c2: null, c3: null},
                   {_id: 'r2', c1: null, c2: 2, c3: null},
                 ],
-              ],
-              [
-                'tinybase_values',
-                'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE)',
-                [{_id: '_'}],
               ],
             ]);
           });
@@ -617,11 +576,6 @@ describe.each(Object.entries(VARIANTS))(
                   {_id: 'r3', c1: null, c2: null, c3: 3},
                 ],
               ],
-              [
-                'tinybase_values',
-                'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE)',
-                [{_id: '_'}],
-              ],
             ]);
             store.delCell('t1', 'r3', 'c3');
             await persister.save();
@@ -634,11 +588,6 @@ describe.each(Object.entries(VARIANTS))(
                   {_id: 'r2', c1: null, c2: 2},
                 ],
               ],
-              [
-                'tinybase_values',
-                'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE)',
-                [{_id: '_'}],
-              ],
             ]);
             store.delRow('t1', 'r2');
             await persister.save();
@@ -648,10 +597,104 @@ describe.each(Object.entries(VARIANTS))(
                 'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
                 [{_id: 'r1', c1: 1}],
               ],
+            ]);
+          });
+
+          test('tables (disabled)', async () => {
+            const persister = getPersister(store, db, {
+              mode: 'tabular',
+              tables: {
+                save: {
+                  t1: 't1',
+                  t2: 't2',
+                  t3: {tableName: 't3', deleteEmptyColumns: true},
+                },
+              },
+              values: {save: true},
+            });
+            store.setCell('t2', 'r2', 'c2', 2).setCell('t3', 'r3', 'c3', 3);
+            await persister.save();
+            expect(await getDatabase(db)).toEqual([
               [
-                'tinybase_values',
-                'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE)',
-                [{_id: '_'}],
+                't1',
+                'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
+                [{_id: 'r1', c1: 1}],
+              ],
+              [
+                't2',
+                'CREATE TABLE "t2"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c2")',
+                [{_id: 'r2', c2: 2}],
+              ],
+              [
+                't3',
+                'CREATE TABLE "t3"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c3")',
+                [{_id: 'r3', c3: 3}],
+              ],
+            ]);
+            store.delTables();
+            await persister.save();
+            expect(await getDatabase(db)).toEqual([
+              [
+                't1',
+                'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
+                [],
+              ],
+              [
+                't2',
+                'CREATE TABLE "t2"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c2")',
+                [],
+              ],
+              [
+                't3',
+                'CREATE TABLE "t3"("_id" PRIMARY KEY ON CONFLICT REPLACE)',
+                [],
+              ],
+            ]);
+          });
+
+          test('tables (enabled)', async () => {
+            const persister = getPersister(store, db, {
+              mode: 'tabular',
+              tables: {
+                save: {
+                  t1: 't1',
+                  t2: 't2',
+                  t3: {tableName: 't3', deleteEmptyTable: true},
+                },
+              },
+              values: {save: true},
+            });
+            store.setCell('t2', 'r2', 'c2', 2).setCell('t3', 'r3', 'c3', 3);
+            await persister.save();
+            expect(await getDatabase(db)).toEqual([
+              [
+                't1',
+                'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
+                [{_id: 'r1', c1: 1}],
+              ],
+              [
+                't2',
+                'CREATE TABLE "t2"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c2")',
+                [{_id: 'r2', c2: 2}],
+              ],
+              [
+                't3',
+                'CREATE TABLE "t3"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c3")',
+                [{_id: 'r3', c3: 3}],
+              ],
+            ]);
+            store.delTables();
+            await persister.save();
+            expect(await getDatabase(db)).toEqual([
+              [
+                't1',
+                'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
+                [],
+              ],
+              [
+                't2',
+                'CREATE TABLE "t2"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c2")',
+                [],
               ],
             ]);
           });
