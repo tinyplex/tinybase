@@ -602,7 +602,7 @@ describe.each(Object.entries(VARIANTS))(
           test('columns (enabled)', async () => {
             const persister = getPersister(store, db, {
               mode: 'tabular',
-              tables: {save: {t1: {tableName: 't1', deleteColumns: true}}},
+              tables: {save: {t1: {tableName: 't1', deleteEmptyColumns: true}}},
               values: {save: true},
             });
             store.setCell('t1', 'r2', 'c2', 2).setCell('t1', 'r3', 'c3', 3);

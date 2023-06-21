@@ -62,7 +62,7 @@ export const getCommandFunctions = (
   saveTable: (
     tableName: string,
     rowIdColumnName: string,
-    deleteColumns: boolean,
+    deleteEmptyColumns: boolean,
     table: Table,
   ) => Promise<void>,
 ] => {
@@ -72,7 +72,7 @@ export const getCommandFunctions = (
     tableName: string,
     rowIdColumnName: string,
     columnNames: string[],
-    deleteColumns: boolean,
+    deleteEmptyColumns: boolean,
   ): Promise<void> => {
     if (!collHas(schemaMap, tableName)) {
       await cmd(
@@ -104,7 +104,7 @@ export const getCommandFunctions = (
             mapSet(tableSchemaMap, columnName, EMPTY_STRING);
           }
         }),
-        ...(deleteColumns
+        ...(deleteEmptyColumns
           ? arrayMap(
               collValues(columnNamesAccountedFor),
               async (columnName) => {
@@ -212,7 +212,7 @@ export const getCommandFunctions = (
   const saveTable = async (
     tableName: string,
     rowIdColumnName: string,
-    deleteColumns: boolean,
+    deleteEmptyColumns: boolean,
     table: Table,
   ): Promise<void> => {
     const cellIds = setNew<string>();
@@ -220,7 +220,12 @@ export const getCommandFunctions = (
       arrayMap(objIds(row), (cellId) => setAdd(cellIds, cellId)),
     );
     const columnNames = collValues(cellIds);
-    await ensureTable(tableName, rowIdColumnName, columnNames, deleteColumns);
+    await ensureTable(
+      tableName,
+      rowIdColumnName,
+      columnNames,
+      deleteEmptyColumns,
+    );
 
     const insertSlots: string[] = [];
     const insertBinds: any[] = [];

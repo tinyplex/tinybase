@@ -46,7 +46,11 @@ export type DpcTabularLoad = {
 /// DpcTabularSave
 export type DpcTabularSave = {
   [tableId: Id]:
-    | {tableName: string; rowIdColumnName?: string; deleteColumns?: boolean}
+    | {
+        tableName: string;
+        rowIdColumnName?: string;
+        deleteEmptyColumns?: boolean;
+      }
     | string;
 };
 
