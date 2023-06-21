@@ -1,126 +1,95 @@
-import {IdMap, mapEnsure, mapGet, mapNew} from '../../common/map';
-import {STAR, TINYBASE} from '../../common/strings';
-import {
-  isObject,
-  objGet,
-  objMap,
-  objMerge,
-  objSize,
-  objValues,
-} from '../../common/obj';
+import {IdMap, mapNew, mapSet} from '../../common/map';
+import {IdObj, objMap, objMerge, objSize, objValues} from '../../common/obj';
+import {isString, isUndefined} from '../../common/other';
+import {DEFAULT_ROW_ID_COLUMN_NAME} from './common';
 import {DpcTabular} from '../../types/persisters';
 import {Id} from '../../types/common';
+import {TINYBASE} from '../../common/strings';
 import {arraySlice} from '../../common/array';
-import {isFunction} from '../../common/other';
 
-type ConfigFunctions = [
-  tablesLoad: boolean,
-  getTablesLoadConfig: (tableName: string) => TablesLoadConfig,
-  tablesSave: boolean,
-  getTablesSaveConfig: (tableName: string) => TablesSaveConfig,
-  values: ValuesConfig,
+type DefaultedConfig = [
+  tablesLoadConfig: IdMap<[tableId: Id, rowIdColumnName: string]>,
+  tablesSaveConfig: IdMap<
+    [tableName: string, rowIdColumnName: string, deleteColumns: boolean]
+  >,
+  valuesConfig: [
+    load: boolean,
+    save: boolean,
+    tableName: string,
+    rowIdColumnName: string,
+  ],
 ];
-
-type TablesLoadConfig = [
-  getTableId: (tableName: string) => Id | false,
-  rowIdColumnName: string,
-];
-
-type TablesSaveConfig = [
-  getTableName: (tableId: Id) => string | false,
-  rowIdColumnName: string,
-  deleteColumns: boolean,
-];
-
-type ValuesConfig = [
-  load: boolean,
-  save: boolean,
-  tableName: string,
-  rowIdColumnName: string,
-];
-
-export const DEFAULT_ROW_ID_COLUMN_NAME = '_id';
 
 const ROW_ID_COLUMN_NAME = 'rowIdColumnName';
 const TABLE_ID = 'tableId';
 const TABLE_NAME = 'tableName';
 const DELETE_COLUMNS = 'deleteColumns';
 
-const DEFAULT_TABLE_MAPPING = (tableNameOrId: string) => tableNameOrId;
-const DISABLED_TABLE_MAPPING = () => false;
-
-const DEFAULT_VALUES_CONFIG = {
-  load: true,
+const DEFAULTED_VALUES_CONFIG = {
+  load: false,
   save: false,
   [TABLE_NAME]: TINYBASE + '_values',
   [ROW_ID_COLUMN_NAME]: DEFAULT_ROW_ID_COLUMN_NAME,
 };
 
-const getTablesConfigs = <TablesLoadOrSaveConfig>(
-  loadOrSave: any,
-  tableMapFunctionName: string,
-): [boolean, (tableName: string) => TablesLoadOrSaveConfig] => {
-  const enabled = loadOrSave !== false;
-  const loadOrSaveConfigs = isObject(loadOrSave)
-    ? loadOrSave
-    : {
-        [STAR]: {
-          [tableMapFunctionName]: enabled
-            ? DEFAULT_TABLE_MAPPING
-            : DISABLED_TABLE_MAPPING,
-        },
-      };
-
-  const tablesConfigsMap = mapNew(
-    objMap(loadOrSaveConfigs, (tablesLoadConfig, tableName) => {
-      const [tableMap, rowIdColumnName, deleteColumns] = objValues(
+const getDefaultedTableConfigMap = (
+  configsObj: IdObj<any>,
+  defaultObj: IdObj<any>,
+  tableField: 'tableId' | 'tableName',
+  filter: (id: string, firstValue: string) => boolean,
+): IdMap<any[]> => {
+  const configMap = mapNew<Id, any[]>();
+  objMap(configsObj, (configObj, id) => {
+    const defaultedConfig = arraySlice(
+      objValues(
         objMerge(
-          {
-            [tableMapFunctionName]: DEFAULT_TABLE_MAPPING,
-            [ROW_ID_COLUMN_NAME]: DEFAULT_ROW_ID_COLUMN_NAME,
-            [DELETE_COLUMNS]: false,
-          },
-          objGet(loadOrSaveConfigs, STAR) ?? {},
-          isObject(tablesLoadConfig)
-            ? (tablesLoadConfig as any)
-            : {
-                [tableMapFunctionName]: tablesLoadConfig
-                  ? DEFAULT_TABLE_MAPPING
-                  : DISABLED_TABLE_MAPPING,
-              },
+          defaultObj,
+          isString(configObj) ? {[tableField]: configObj} : configObj,
         ),
-      );
-      return [
-        tableName,
-        [
-          isFunction(tableMap) ? tableMap : () => tableMap,
-          rowIdColumnName,
-          deleteColumns,
-        ],
-      ];
-    }),
-  ) as IdMap<TablesLoadOrSaveConfig>;
-
-  return [
-    enabled,
-    (tableName: string) =>
-      mapEnsure(
-        tablesConfigsMap,
-        tableName,
-        () => mapGet(tablesConfigsMap, STAR) as TablesLoadOrSaveConfig,
       ),
-  ];
+      0,
+      objSize(defaultObj),
+    );
+    if (
+      !isUndefined(defaultedConfig[0]) &&
+      !filter(id, defaultedConfig[0] as string)
+    ) {
+      mapSet(configMap, id, defaultedConfig);
+    }
+  });
+  return configMap;
 };
 
-export const getConfigFunctions = ({
-  tables: {load = true, save = false} = {},
+export const getDefaultedConfig = ({
+  tables: {load = {}, save = {}} = {},
   values = {},
-}: DpcTabular): ConfigFunctions => [
-  ...getTablesConfigs<TablesLoadConfig>(load, TABLE_ID),
-  ...getTablesConfigs<TablesSaveConfig>(save, TABLE_NAME),
-  arraySlice(
-    objValues(objMerge(DEFAULT_VALUES_CONFIG, values)),
+}: DpcTabular): DefaultedConfig => {
+  const valuesConfig = arraySlice(
+    objValues(objMerge(DEFAULTED_VALUES_CONFIG, values)),
     0,
-    objSize(DEFAULT_VALUES_CONFIG),
-  ) as ValuesConfig,
-];
+    objSize(DEFAULTED_VALUES_CONFIG),
+  );
+  const valuesTable = valuesConfig[2] as string;
+  return [
+    getDefaultedTableConfigMap(
+      load,
+      {
+        [TABLE_ID]: null,
+        [ROW_ID_COLUMN_NAME]: DEFAULT_ROW_ID_COLUMN_NAME,
+      },
+      TABLE_ID,
+      (tableName) => tableName == valuesTable,
+    ),
+    getDefaultedTableConfigMap(
+      save,
+      {
+        [TABLE_NAME]: null,
+        [ROW_ID_COLUMN_NAME]: DEFAULT_ROW_ID_COLUMN_NAME,
+        [DELETE_COLUMNS]: false,
+      },
+      TABLE_NAME,
+      (_, tableName) => tableName == valuesTable,
+    ),
+    valuesConfig,
+  ] as any;
+};

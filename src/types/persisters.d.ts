@@ -32,48 +32,22 @@ export type DpcJson = {
 export type DpcTabular = {
   mode: 'tabular';
   tables?: {
-    load?: DpcTabularLoad | boolean;
-    save?: DpcTabularSave | false;
+    load?: DpcTabularLoad;
+    save?: DpcTabularSave;
   };
   values?: DpcTabularValues;
 };
 
 /// DpcTabularLoad
 export type DpcTabularLoad = {
-  [tableName: string]: DpcTabularLoadTable | boolean;
-  '*': DpcTabularLoadDefault | boolean;
-};
-
-/// DpcTabularLoadTable
-export type DpcTabularLoadTable = {
-  tableId?: Id | ((tableName: string) => Id | false);
-  rowIdColumnName?: string;
-};
-
-/// DpcTabularLoadDefault
-export type DpcTabularLoadDefault = {
-  tableId?: (tableName: string) => Id | false;
-  rowIdColumnName?: string;
+  [tableName: string]: {tableId: Id; rowIdColumnName?: string} | Id;
 };
 
 /// DpcTabularSave
 export type DpcTabularSave = {
-  [tableId: Id]: DpcTabularSaveTable | false;
-  '*': DpcTabularSaveDefault | false;
-};
-
-/// DpcTabularSaveTable
-export type DpcTabularSaveTable = {
-  tableName?: string | ((tableId: Id) => string | false);
-  rowIdColumnName?: string;
-  deleteColumns?: boolean;
-};
-
-/// DpcTabularSaveDefault
-export type DpcTabularSaveDefault = {
-  tableName?: (tableId: Id) => string | false;
-  rowIdColumnName?: string;
-  deleteColumns?: boolean;
+  [tableId: Id]:
+    | {tableName: string; rowIdColumnName?: string; deleteColumns?: boolean}
+    | string;
 };
 
 /// DpcTabularValues

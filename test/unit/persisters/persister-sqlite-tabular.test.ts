@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable max-len */
 import 'fake-indexeddb/auto';
 import {Persister, Store, createStore} from 'tinybase/debug';
@@ -38,7 +39,7 @@ describe.each(Object.entries(VARIANTS))(
           test('one to one', async () => {
             await getPersister(store, db, {
               mode: 'tabular',
-              tables: {save: {'*': {tableName: (tableId) => tableId}}},
+              tables: {save: {t1: 't1', t2: 't2'}},
             }).save();
             await pause();
             expect(await getDatabase(db)).toEqual([
@@ -54,14 +55,10 @@ describe.each(Object.entries(VARIANTS))(
               ],
             ]);
           });
-          test('all mapped', async () => {
+          test('one mapped', async () => {
             await getPersister(store, db, {
               mode: 'tabular',
-              tables: {
-                save: {
-                  '*': {tableName: (tableId) => 'test_' + tableId},
-                },
-              },
+              tables: {save: {t1: 'test_t1'}},
             }).save();
             await pause();
             expect(await getDatabase(db)).toEqual([
@@ -70,14 +67,9 @@ describe.each(Object.entries(VARIANTS))(
                 'CREATE TABLE "test_t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
                 [{_id: 'r1', c1: 1}],
               ],
-              [
-                'test_t2',
-                'CREATE TABLE "test_t2"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c2")',
-                [{_id: 'r2', c2: 2}],
-              ],
             ]);
           });
-          test('mix of one to one, mapped, custom ids, off', async () => {
+          test('mix of one to one, mapped, custom ids, broken', async () => {
             store
               .setTable('t3', {r3: {c3: 3}})
               .setTable('t4', {r4: {c4: 4}})
@@ -86,13 +78,11 @@ describe.each(Object.entries(VARIANTS))(
               mode: 'tabular',
               tables: {
                 save: {
-                  '*': {
-                    tableName: (tableId) => tableId,
-                    rowIdColumnName: 'id',
-                  },
-                  t2: {rowIdColumnName: 'id2'},
+                  t1: 't1',
+                  t2: {tableName: 't2', rowIdColumnName: 'id2'},
                   t3: {tableName: 'test "t3"', rowIdColumnName: 'id "3"'},
-                  t4: {tableName: (tableId) => 'test_' + tableId},
+                  t4: {tableName: 'tinybase_values'},
+                  // @ts-ignore
                   t5: false,
                 },
               },
@@ -101,8 +91,8 @@ describe.each(Object.entries(VARIANTS))(
             expect(await getDatabase(db)).toEqual([
               [
                 't1',
-                'CREATE TABLE "t1"("id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
-                [{id: 'r1', c1: 1}],
+                'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
+                [{_id: 'r1', c1: 1}],
               ],
               [
                 't2',
@@ -114,17 +104,12 @@ describe.each(Object.entries(VARIANTS))(
                 'CREATE TABLE "test ""t3"""("id ""3""" PRIMARY KEY ON CONFLICT REPLACE,"c3")',
                 [{'id "3"': 'r3', c3: 3}],
               ],
-              [
-                'test_t4',
-                'CREATE TABLE "test_t4"("id" PRIMARY KEY ON CONFLICT REPLACE,"c4")',
-                [{id: 'r4', c4: 4}],
-              ],
             ]);
           });
         });
 
         describe('values', () => {
-          test('default', async () => {
+          test('on', async () => {
             await getPersister(store, db, {
               mode: 'tabular',
               values: {save: true},
@@ -250,41 +235,36 @@ describe.each(Object.entries(VARIANTS))(
           ]);
         });
 
-        test('default (on)', async () => {
+        test('default (off)', async () => {
           await getPersister(store, db, {mode: 'tabular'}).load();
-          expect(store.getContent()).toEqual([
-            {t1: {r1: {c1: 1}}, t2: {r2: {c2: 2}}},
-            {v1: 1, v2: 2},
-          ]);
+          expect(store.getContent()).toEqual([{}, {}]);
         });
 
         describe('tables', () => {
-          test('off', async () => {
+          test('one to one', async () => {
             await getPersister(store, db, {
               mode: 'tabular',
-              tables: {load: false},
-            }).load();
-            expect(store.getContent()).toEqual([{}, {v1: 1, v2: 2}]);
-          });
-          test('all mapped', async () => {
-            await getPersister(store, db, {
-              mode: 'tabular',
-              tables: {
-                load: {'*': {tableId: (tableName) => 'test_' + tableName}},
-              },
+              tables: {load: {t1: 't1', t2: 't2'}},
             }).load();
             expect(store.getContent()).toEqual([
-              {test_t1: {r1: {c1: 1}}, test_t2: {r2: {c2: 2}}},
-              {v1: 1, v2: 2},
+              {t1: {r1: {c1: 1}}, t2: {r2: {c2: 2}}},
+              {},
             ]);
           });
-          test('mix of one to one, mapped, custom ids, off', async () => {
+          test('one mapped', async () => {
+            await getPersister(store, db, {
+              mode: 'tabular',
+              tables: {load: {t1: 'test_t1'}},
+            }).load();
+            expect(store.getContent()).toEqual([{test_t1: {r1: {c1: 1}}}, {}]);
+          });
+          test('mix of one to one, mapped, custom ids, broken', async () => {
             db = await getOpenDatabase();
             await setDatabase(db, [
               [
                 't1',
-                'CREATE TABLE "t1"("id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
-                [{id: 'r1', c1: 1}],
+                'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
+                [{_id: 'r1', c1: 1}],
               ],
               [
                 't2',
@@ -298,13 +278,13 @@ describe.each(Object.entries(VARIANTS))(
               ],
               [
                 't4',
-                'CREATE TABLE "t4"("id" PRIMARY KEY ON CONFLICT REPLACE,"c4")',
-                [{id: 'r4', c4: 4}],
+                'CREATE TABLE "t4"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c4")',
+                [{_id: 'r4', c4: 4}],
               ],
               [
                 't5',
-                'CREATE TABLE "t5"("id" PRIMARY KEY ON CONFLICT REPLACE,"c5")',
-                [{id: 'r5', c5: 5}],
+                'CREATE TABLE "t5"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c5")',
+                [{_id: 'r5', c5: 5}],
               ],
               [
                 'tinybase_values',
@@ -316,14 +296,13 @@ describe.each(Object.entries(VARIANTS))(
               mode: 'tabular',
               tables: {
                 load: {
-                  '*': {
-                    tableId: (tableName) => tableName,
-                    rowIdColumnName: 'id',
-                  },
-                  t2: {rowIdColumnName: 'id2'},
+                  t1: 't1',
+                  t2: {tableId: 't2', rowIdColumnName: 'id2'},
                   t3: {tableId: 'test "t3"', rowIdColumnName: 'id "3"'},
-                  t4: {tableId: (tableId) => 'test_' + tableId},
+                  t4: {tableId: 'tinybase_values'},
+                  // @ts-ignore
                   t5: false,
+                  tinybase_values: {tableId: 'values'},
                 },
               },
             }).load();
@@ -332,23 +311,20 @@ describe.each(Object.entries(VARIANTS))(
                 t1: {r1: {c1: 1}},
                 t2: {r2: {c2: 2}},
                 'test "t3"': {r3: {c3: 3}},
-                test_t4: {r4: {c4: 4}},
+                tinybase_values: {r4: {c4: 4}},
               },
-              {v1: 1, v2: 2},
+              {},
             ]);
           });
         });
 
         describe('values', () => {
-          test('off', async () => {
+          test('on', async () => {
             await getPersister(store, db, {
               mode: 'tabular',
-              values: {load: false},
+              values: {load: true},
             }).load();
-            expect(store.getContent()).toEqual([
-              {t1: {r1: {c1: 1}}, t2: {r2: {c2: 2}}},
-              {},
-            ]);
+            expect(store.getContent()).toEqual([{}, {v1: 1, v2: 2}]);
           });
 
           describe('tableName', () => {
@@ -363,7 +339,7 @@ describe.each(Object.entries(VARIANTS))(
               ]);
               await getPersister(store, db, {
                 mode: 'tabular',
-                values: {tableName: 'values'},
+                values: {load: true, tableName: 'values'},
               }).load();
               expect(store.getContent()).toEqual([{}, {v1: 1, v2: 2}]);
             });
@@ -379,7 +355,7 @@ describe.each(Object.entries(VARIANTS))(
               ]);
               await getPersister(store, db, {
                 mode: 'tabular',
-                values: {tableName: 'tinybase values'},
+                values: {load: true, tableName: 'tinybase values'},
               }).load();
               expect(store.getContent()).toEqual([{}, {v1: 1, v2: 2}]);
             });
@@ -395,7 +371,7 @@ describe.each(Object.entries(VARIANTS))(
               ]);
               await getPersister(store, db, {
                 mode: 'tabular',
-                values: {tableName: 'tinybase "values"'},
+                values: {load: true, tableName: 'tinybase "values"'},
               }).load();
               expect(store.getContent()).toEqual([{}, {v1: 1, v2: 2}]);
             });
@@ -413,7 +389,7 @@ describe.each(Object.entries(VARIANTS))(
               ]);
               await getPersister(store, db, {
                 mode: 'tabular',
-                values: {rowIdColumnName: 'id'},
+                values: {load: true, rowIdColumnName: 'id'},
               }).load();
               expect(store.getContent()).toEqual([{}, {v1: 1, v2: 2}]);
             });
@@ -429,7 +405,7 @@ describe.each(Object.entries(VARIANTS))(
               ]);
               await getPersister(store, db, {
                 mode: 'tabular',
-                values: {rowIdColumnName: 'row id'},
+                values: {load: true, rowIdColumnName: 'row id'},
               }).load();
               expect(store.getContent()).toEqual([{}, {v1: 1, v2: 2}]);
             });
@@ -445,7 +421,7 @@ describe.each(Object.entries(VARIANTS))(
               ]);
               await getPersister(store, db, {
                 mode: 'tabular',
-                values: {rowIdColumnName: 'row "id"'},
+                values: {load: true, rowIdColumnName: 'row "id"'},
               }).load();
               expect(store.getContent()).toEqual([{}, {v1: 1, v2: 2}]);
             });
@@ -459,8 +435,11 @@ describe.each(Object.entries(VARIANTS))(
       beforeEach(() => {
         persister = getPersister(store, db, {
           mode: 'tabular',
-          tables: {save: {'*': {tableName: (tableId) => tableId}}},
-          values: {save: true},
+          tables: {
+            load: {t1: 't1', t2: 't2', t3: 't3'},
+            save: {t1: 't1', t2: 't2', t3: 't3'},
+          },
+          values: {load: true, save: true},
         });
       });
 
@@ -545,11 +524,6 @@ describe.each(Object.entries(VARIANTS))(
 
         describe('delete', () => {
           test('rows', async () => {
-            const persister = getPersister(store, db, {
-              mode: 'tabular',
-              tables: {save: {'*': {tableName: (tableId) => tableId}}},
-              values: {save: true},
-            });
             store.setCell('t1', 'r2', 'c2', 2).setCell('t1', 'r3', 'c3', 3);
             await persister.save();
             expect(await getDatabase(db)).toEqual([
@@ -588,11 +562,6 @@ describe.each(Object.entries(VARIANTS))(
           });
 
           test('columns (disabled)', async () => {
-            const persister = getPersister(store, db, {
-              mode: 'tabular',
-              tables: {save: {'*': {tableName: (tableId) => tableId}}},
-              values: {save: true},
-            });
             store.setCell('t1', 'r2', 'c2', 2).setCell('t1', 'r3', 'c3', 3);
             await persister.save();
             expect(await getDatabase(db)).toEqual([
@@ -633,11 +602,7 @@ describe.each(Object.entries(VARIANTS))(
           test('columns (enabled)', async () => {
             const persister = getPersister(store, db, {
               mode: 'tabular',
-              tables: {
-                save: {
-                  '*': {tableName: (tableId) => tableId, deleteColumns: true},
-                },
-              },
+              tables: {save: {t1: {tableName: 't1', deleteColumns: true}}},
               values: {save: true},
             });
             store.setCell('t1', 'r2', 'c2', 2).setCell('t1', 'r3', 'c3', 3);
@@ -797,7 +762,14 @@ describe.each(Object.entries(VARIANTS))(
     describe('Load from database', () => {
       let persister: Persister;
       beforeEach(() => {
-        persister = getPersister(store, db, {mode: 'tabular'});
+        persister = getPersister(store, db, {
+          mode: 'tabular',
+          tables: {
+            load: {t1: 't1', t2: 't2', t3: 't3'},
+            save: {t1: 't1', t2: 't2', t3: 't3'},
+          },
+          values: {load: true, save: true},
+        });
       });
 
       test('nothing', async () => {
@@ -876,11 +848,6 @@ describe.each(Object.entries(VARIANTS))(
       });
 
       test('both, change, and then save again', async () => {
-        persister = getPersister(store, db, {
-          mode: 'tabular',
-          tables: {save: {'*': {tableName: (tableId) => tableId}}},
-          values: {save: true},
-        });
         await setDatabase(db, [
           [
             't1',
@@ -923,14 +890,14 @@ describe.each(Object.entries(VARIANTS))(
         store1 = createStore();
         persister1 = getPersister(store1, db, {
           mode: 'tabular',
-          tables: {save: {'*': {tableName: (tableId) => tableId}}},
-          values: {save: true},
+          tables: {load: {t1: 't1', t2: 't2'}, save: {t1: 't1', t2: 't2'}},
+          values: {load: true, save: true},
         });
         store2 = createStore();
         persister2 = getPersister(store2, db, {
           mode: 'tabular',
-          tables: {save: {'*': {tableName: (tableId) => tableId}}},
-          values: {save: true},
+          tables: {load: {t1: 't1', t2: 't2'}, save: {t1: 't1', t2: 't2'}},
+          values: {load: true, save: true},
         });
       });
 

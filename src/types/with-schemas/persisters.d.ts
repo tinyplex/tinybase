@@ -25,9 +25,12 @@ export type PersisterListener<Schemas extends OptionalSchemas> = (
 ) => void;
 
 /// DatabasePersisterConfig
-export type DatabasePersisterConfig<Schemas extends OptionalSchemas> =
+export type DatabasePersisterConfig<Schemas extends OptionalSchemas> = (
   | DpcJson
-  | DpcTabular<Schemas[0]>;
+  | DpcTabular<Schemas[0]>
+) & {
+  autoLoadIntervalSeconds?: number;
+};
 
 /// DpcJson
 export type DpcJson = {
@@ -39,49 +42,24 @@ export type DpcJson = {
 export type DpcTabular<Schema extends OptionalTablesSchema> = {
   mode: 'tabular';
   tables?: {
-    load?: DpcTabularLoad<Schema> | boolean;
-    save?: DpcTabularSave<Schema> | false;
+    load?: DpcTabularLoad<Schema>;
+    save?: DpcTabularSave<Schema>;
   };
   values?: DpcTabularValues;
 };
 
 /// DpcTabularLoad
 export type DpcTabularLoad<Schema extends OptionalTablesSchema> = {
-  [tableName: string]: DpcTabularLoadTable<Schema> | boolean;
-  '*': DpcTabularLoadDefault<Schema> | boolean;
-};
-
-/// DpcTabularLoadTable
-export type DpcTabularLoadTable<Schema extends OptionalTablesSchema> = {
-  tableId?:
-    | TableIdFromSchema<Schema>
-    | ((tableName: string) => TableIdFromSchema<Schema> | false);
-  rowIdColumnName?: string;
-};
-
-/// DpcTabularLoadDefault
-export type DpcTabularLoadDefault<Schema extends OptionalTablesSchema> = {
-  tableId?: (tableName: string) => TableIdFromSchema<Schema> | false;
-  rowIdColumnName?: string;
+  [tableName: string]:
+    | {tableId: TableIdFromSchema<Schema>; rowIdColumnName?: string}
+    | TableIdFromSchema<Schema>;
 };
 
 /// DpcTabularSave
 export type DpcTabularSave<Schema extends OptionalTablesSchema> = {
-  [TableId in TableIdFromSchema<Schema>]: DpcTabularSaveTable<Schema> | false;
-};
-
-/// DpcTabularSaveTable
-export type DpcTabularSaveTable<Schema extends OptionalTablesSchema> = {
-  tableName?: string | ((tableId: TableIdFromSchema<Schema>) => string | false);
-  rowIdColumnName?: string;
-  deleteColumns?: boolean;
-};
-
-/// DpcTabularSaveDefault
-export type DpcTabularSaveDefault<Schema extends OptionalTablesSchema> = {
-  tableName?: (tableId: TableIdFromSchema<Schema>) => string | false;
-  rowIdColumnName?: string;
-  deleteColumns?: boolean;
+  [TableId in TableIdFromSchema<Schema>]:
+    | {tableName: string; rowIdColumnName?: string; deleteColumns?: boolean}
+    | string;
 };
 
 /// DpcTabularValues

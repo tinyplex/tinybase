@@ -102,29 +102,6 @@
  */
 /// DpcTabularLoad
 /**
- * The DpcTabularLoadTable type describes the configuration for loading a Table
- * in a database-oriented Persister that is operating in tabular mode.
- *
- * The 'Dpc' prefix indicates this is used within the DatabasePersisterConfig
- * type.
- *
- * @category Configuration
- * @since v4.0
- */
-/// DpcTabularLoadTable
-/**
- * The DpcTabularLoadDefault type describes the default configuration for
- * loading Tables in a database-oriented Persister that is operating in tabular
- * mode.
- *
- * The 'Dpc' prefix indicates this is used within the DatabasePersisterConfig
- * type.
- *
- * @category Configuration
- * @since v4.0
- */
-/// DpcTabularLoadDefault
-/**
  * The DpcTabularSave type describes the configuration for saving Tables in a
  * database-oriented Persister that is operating in tabular mode.
  *
@@ -135,28 +112,6 @@
  * @since v4.0
  */
 /// DpcTabularSave
-/**
- * The DpcTabularSaveTable type describes the configuration for saving a Table
- * in a database-oriented Persister that is operating in tabular mode.
- *
- * The 'Dpc' prefix indicates this is used within the DatabasePersisterConfig
- * type.
- *
- * @category Configuration
- * @since v4.0
- */
-/// DpcTabularSaveTable
-/**
- * The DpcTabularSaveDefault type describes the default configuration for saving
- * Tables in a database-oriented Persister that is operating in tabular mode.
- *
- * The 'Dpc' prefix indicates this is used within the DatabasePersisterConfig
- * type.
- *
- * @category Configuration
- * @since v4.0
- */
-/// DpcTabularSaveDefault
 /**
  * The DpcTabularValues type describes the configuration for handling
  * Values in a database-oriented Persister that is operating in tabular mode.
