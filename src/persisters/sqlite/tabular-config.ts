@@ -10,7 +10,12 @@ import {arraySlice} from '../../common/array';
 type DefaultedConfig = [
   tablesLoadConfig: IdMap<[tableId: Id, rowIdColumnName: string]>,
   tablesSaveConfig: IdMap<
-    [tableName: string, rowIdColumnName: string, deleteEmptyColumns: boolean]
+    [
+      tableName: string,
+      rowIdColumnName: string,
+      deleteEmptyColumns: boolean,
+      deleteEmptyTable: boolean,
+    ]
   >,
   valuesConfig: [
     load: boolean,
@@ -24,6 +29,7 @@ const ROW_ID_COLUMN_NAME = 'rowIdColumnName';
 const TABLE_ID = 'tableId';
 const TABLE_NAME = 'tableName';
 const DELETE_EMPTY_COLUMNS = 'deleteEmptyColumns';
+const DELETE_EMPTY_TABLE = 'deleteEmptyTable';
 
 const DEFAULTED_VALUES_CONFIG = {
   load: 0,
@@ -86,6 +92,7 @@ export const getDefaultedConfig = ({
         [TABLE_NAME]: null,
         [ROW_ID_COLUMN_NAME]: DEFAULT_ROW_ID_COLUMN_NAME,
         [DELETE_EMPTY_COLUMNS]: 0,
+        [DELETE_EMPTY_TABLE]: 0,
       },
       TABLE_NAME,
       (_, tableName) => tableName == valuesTable,

@@ -50,6 +50,7 @@ export type DpcTabularSave = {
         tableName: string;
         rowIdColumnName?: string;
         deleteEmptyColumns?: boolean;
+        deleteEmptyTable?: boolean;
       }
     | string;
 };
