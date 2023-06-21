@@ -58,7 +58,11 @@ export type DpcTabularLoad<Schema extends OptionalTablesSchema> = {
 /// DpcTabularSave
 export type DpcTabularSave<Schema extends OptionalTablesSchema> = {
   [TableId in TableIdFromSchema<Schema>]:
-    | {tableName: string; rowIdColumnName?: string; deleteColumns?: boolean}
+    | {
+        tableName: string;
+        rowIdColumnName?: string;
+        deleteEmptyColumns?: boolean;
+      }
     | string;
 };
 
