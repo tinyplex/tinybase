@@ -25,33 +25,46 @@ export type PersisterListener<Schemas extends OptionalSchemas> = (
 ) => void;
 
 /// DatabasePersisterConfig
-export type DatabasePersisterConfig<Schemas extends OptionalSchemas> = (
+export type DatabasePersisterConfig<Schemas extends OptionalSchemas> =
   | DpcJson
-  | DpcTabular<Schemas[0]>
-) & {
-  autoLoadIntervalSeconds?: number;
-};
+  | DpcTabular<Schemas[0]>;
 
 /// DpcJson
 export type DpcJson = {
+  /// DpcJson.mode
   mode: 'json';
+  /// DpcJson.storeTableName
   storeTableName?: string;
+  /// DatabasePersisterConfig.autoLoadIntervalSeconds
+  autoLoadIntervalSeconds?: number;
 };
 
 /// DpcTabular
 export type DpcTabular<Schema extends OptionalTablesSchema> = {
+  /// DpcTabular.mode
   mode: 'tabular';
+  /// DpcTabular.tables
   tables?: {
+    /// DpcTabular.tables.load
     load?: DpcTabularLoad<Schema>;
+    /// DpcTabular.tables.save
     save?: DpcTabularSave<Schema>;
   };
+  /// DpcTabular.values
   values?: DpcTabularValues;
+  /// DatabasePersisterConfig.autoLoadIntervalSeconds
+  autoLoadIntervalSeconds?: number;
 };
 
 /// DpcTabularLoad
 export type DpcTabularLoad<Schema extends OptionalTablesSchema> = {
   [tableName: string]:
-    | {tableId: TableIdFromSchema<Schema>; rowIdColumnName?: string}
+    | {
+        /// DpcTabularLoad.tableId
+        tableId: TableIdFromSchema<Schema>;
+        /// DpcTabularLoad.rowIdColumnName
+        rowIdColumnName?: string;
+      }
     | TableIdFromSchema<Schema>;
 };
 
@@ -59,9 +72,13 @@ export type DpcTabularLoad<Schema extends OptionalTablesSchema> = {
 export type DpcTabularSave<Schema extends OptionalTablesSchema> = {
   [TableId in TableIdFromSchema<Schema>]:
     | {
+        /// DpcTabularSave.tableName
         tableName: string;
+        /// DpcTabularSave.rowIdColumnName
         rowIdColumnName?: string;
+        /// DpcTabularSave.deleteEmptyColumns
         deleteEmptyColumns?: boolean;
+        /// DpcTabularSave.deleteEmptyTable
         deleteEmptyTable?: boolean;
       }
     | string;
@@ -69,8 +86,11 @@ export type DpcTabularSave<Schema extends OptionalTablesSchema> = {
 
 /// DpcTabularValues
 export type DpcTabularValues = {
+  /// DpcTabularValues.load
   load?: boolean;
+  /// DpcTabularValues.save
   save?: boolean;
+  /// DpcTabularValues.tableName
   tableName?: string;
 };
 

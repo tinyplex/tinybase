@@ -18,38 +18,58 @@ export type PersisterListener = (
 ) => void;
 
 /// DatabasePersisterConfig
-export type DatabasePersisterConfig = (DpcJson | DpcTabular) & {
-  autoLoadIntervalSeconds?: number;
-};
+export type DatabasePersisterConfig = DpcJson | DpcTabular;
 
 /// DpcJson
 export type DpcJson = {
+  /// DpcJson.mode
   mode: 'json';
+  /// DpcJson.storeTableName
   storeTableName?: string;
+  /// DatabasePersisterConfig.autoLoadIntervalSeconds
+  autoLoadIntervalSeconds?: number;
 };
 
 /// DpcTabular
 export type DpcTabular = {
+  /// DpcTabular.mode
   mode: 'tabular';
+  /// DpcTabular.tables
   tables?: {
+    /// DpcTabular.tables.load
     load?: DpcTabularLoad;
+    /// DpcTabular.tables.save
     save?: DpcTabularSave;
   };
+  /// DpcTabular.values
   values?: DpcTabularValues;
+  /// DatabasePersisterConfig.autoLoadIntervalSeconds
+  autoLoadIntervalSeconds?: number;
 };
 
 /// DpcTabularLoad
 export type DpcTabularLoad = {
-  [tableName: string]: {tableId: Id; rowIdColumnName?: string} | Id;
+  [tableName: string]:
+    | {
+        /// DpcTabularLoad.tableId
+        tableId: Id;
+        /// DpcTabularLoad.rowIdColumnName
+        rowIdColumnName?: string;
+      }
+    | Id;
 };
 
 /// DpcTabularSave
 export type DpcTabularSave = {
   [tableId: Id]:
     | {
+        /// DpcTabularSave.tableName
         tableName: string;
+        /// DpcTabularSave.rowIdColumnName
         rowIdColumnName?: string;
+        /// DpcTabularSave.deleteEmptyColumns
         deleteEmptyColumns?: boolean;
+        /// DpcTabularSave.deleteEmptyTable
         deleteEmptyTable?: boolean;
       }
     | string;
@@ -57,8 +77,11 @@ export type DpcTabularSave = {
 
 /// DpcTabularValues
 export type DpcTabularValues = {
+  /// DpcTabularValues.load
   load?: boolean;
+  /// DpcTabularValues.save
   save?: boolean;
+  /// DpcTabularValues.tableName
   tableName?: string;
 };
 
