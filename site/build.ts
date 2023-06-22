@@ -51,6 +51,8 @@ const REFLECTIONS = [
   /.Checkpoints?Props/,
   /ProviderProps/,
   /ExtraProps/,
+  /^Database/,
+  /^Dpc/,
   /Store/,
   /^Tables/,
   /Tables/,

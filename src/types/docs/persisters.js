@@ -62,59 +62,454 @@
  */
 /// PersisterListener
 /**
- * TODO
+ * The DatabasePersisterConfig type describes the configuration of a
+ * database-oriented Persister, such as those for SQLite.
+ *
+ * There are two modes for persisting a Store with a database:
+ *
+ * - A JSON serialization of the whole Store, which is stored in a single row of
+ *   a table (normally called `tinybase`) within the database. This is
+ *   configured by providing a DpcJson object.
+ * - A tabular mapping of Table Ids to database table names (and vice-versa).
+ *   Values are stored in a separate special table (normally called
+ *   `tinybase_values`). This is configured by providing a DpcTabular object.
+ *
+ * Please see the DpcJson and DpcTabular type documentation for more detail on
+ * each. If not specified otherwise, JSON serialization will be used for
+ * persistence.
+ *
+ * Changes made to the database (outside of this Persister) are picked up
+ * immediately if they are made via the same connection or library that it is
+ * using. If the database is being changed by another client, the Persister
+ * needs to poll for changes. Hence both configuration types also contain an
+ * `autoLoadIntervalSeconds` property which indicates how often it should do
+ * that. This defaults to 1 second.
+ *
+ * Note that all the nested types within this type have a 'Dpc' prefix, short
+ * for 'DatabasePersisterConfig'.
+ * @example
+ * When applied to a database Persister, this DatabasePersisterConfig will load
+ * and save a JSON serialization from and to a table called `my_tinybase`,
+ * polling the database every 2 seconds. See DpcJson for more details on these
+ * settings.
+ *
+ * ```js
+ * const databasePersisterConfig: DatabasePersisterConfig = {
+ *   mode: 'json',
+ *   storeTableName: 'my_tinybase',
+ *   autoLoadIntervalSeconds: 2,
+ * };
+ * ```
+ * @example
+ * When applied to a database Persister, this DatabasePersisterConfig will load
+ * and save tabular data from and to tables specified in the `load` and `save`
+ * mappings. See DpcTabular for more details on these settings.
+ *
+ * ```js
+ * const databasePersisterConfig: DatabasePersisterConfig = {
+ *   mode: 'tabular',
+ *   tables: {
+ *     load: {petsInDb: 'pets', speciesInDb: 'species'},
+ *     save: {pets: 'petsInDb', species: 'speciesInDb'},
+ *   }
+ * };
+ * ```
+ * @category Configuration
+ * @since v4.0.0
  */
 /// DatabasePersisterConfig
+{
+  /**
+   * How often the Persister should poll the database for any changes made to it
+   * by other clients, defaulting to 1 second.
+   */
+  /// DatabasePersisterConfig.autoLoadIntervalSeconds
+}
 /**
- * The DpcJson type describes the configuration of a database-oriented
- * Persister operating in serialized JSON mode.
+ * The DpcJson type describes the configuration of a database-oriented Persister
+ * operating in serialized JSON mode.
  *
- * The 'Dpc' prefix indicates this is used within the DatabasePersisterConfig
- * type.
+ * The only setting is the `storeTableName` property, which indicates the name
+ * of a table in the database which will be used to serialize the Store content
+ * into. It defaults to `tinybase`.
+ *
+ * That table in the database will be given two columns: a primary key column
+ * called `_id`, and one called `store`. The Persister will place a single row
+ * in this table with `_` in the `_id` column, and the JSON serialization in the
+ * `store` column, something like:
+ *
+ * ```
+ * > SELECT * FROM tinybase;
+ * +-----+-----------------------------------------------------+
+ * | _id | store                                               |
+ * +-----+-----------------------------------------------------+
+ * | _   | [{"pets":{"fido":{"species":"dog"}}},{"open":true}] |
+ * +-----+-----------------------------------------------------+
+ * ```
+ *
+ * The 'Dpc' prefix indicates that this type is used within the
+ * DatabasePersisterConfig type.
+ * @example
+ * When applied to a database Persister, this DatabasePersisterConfig will load
+ * and save a JSON serialization from and to a table called `tinybase_json`.
+ *
+ * ```js
+ * const databasePersisterConfig: DatabasePersisterConfig = {
+ *   mode: 'json',
+ *   storeTableName: 'tinybase_json',
+ * };
+ * ```
  * @category Configuration
  * @since v4.0.0
  */
 /// DpcJson
+{
+  /**
+   * The mode to be used for persisting the Store to the database, in this case
+   * JSON serialization. See the DpcTabular type for the alternative tabular
+   * mapping mode.
+   */
+  /// DpcJson.mode
+  /**
+   * An optional string which indicates the name of a table in the database
+   * which will be used to serialize the Store content into. It defaults to
+   * `tinybase`.
+   */
+  /// DpcJson.storeTableName
+}
 /**
- * The DpcTabular type describes the configuration of a
- * database-oriented Persister that is operating in tabular mode.
+ * The DpcTabular type describes the configuration of a database-oriented
+ * Persister that is operating in tabular mapping mode.
  *
- * The 'Dpc' prefix indicates this is used within the DatabasePersisterConfig
- * type.
+ * It is important to note that both the tabular mapping in ('save') and out
+ * ('load') of an underlying database are disabled by default. This is to ensure
+ * that if you pass in an existing populated database you don't run the
+ * immediate risk of corrupting or losing all your data.
+ *
+ * This configuration therefore takes a `tables` property object (with child
+ * `load` and `save` property objects) and a `values` property object. These
+ * indicate how you want to load and save Tables and Values respectively. At
+ * least one of these two properties are required for the Persister to do
+ * anything!
+ *
+ * Note that if you are planning to both load from and save to a database, it is
+ * important to make sure that the load and save table mappings are symmetrical.
+ * For example:
+ *
+ * ```js
+ * const databasePersisterConfig: DatabasePersisterConfig = {
+ *   mode: 'tabular',
+ *   tables: {
+ *     load: {petsInDb: 'pets', speciesInDb: 'species'},
+ *     save: {pets: 'petsInDb', species: 'speciesInDb'},
+ *   },
+ * };
+ * ```
+ *
+ * See the documentation for the DpcTabularLoad, DpcTabularSave, and
+ * DpcTabularValues types for more details on how to configure the tabular
+ * mapping mode.
+ *
+ * The 'Dpc' prefix indicates that this type is used within the
+ * DatabasePersisterConfig type.
+ * @example
+ * When applied to a database Persister, this DatabasePersisterConfig will load
+ * and save Tables data from and to tables specified in the `load` and `save`
+ * mappings, and Values data from and to a table called `my_tinybase_values`.
+ *
+ * ```js
+ * const databasePersisterConfig: DatabasePersisterConfig = {
+ *   mode: 'tabular',
+ *   tables: {
+ *     load: {petsInDb: 'pets', speciesInDb: 'species'},
+ *     save: {pets: 'petsInDb', species: 'speciesInDb'},
+ *   },
+ *   values: {
+ *     load: true,
+ *     save: true,
+ *     tableName: 'my_tinybase_values',
+ *   },
+ * };
+ * ```
  * @category Configuration
  * @since v4.0.0
  */
 /// DpcTabular
+{
+  /**
+   * The mode to be used for persisting the Store to the database, in this case
+   * tabular mapping. See the DpcJson type for the alternative JSON
+   * serialization mode.
+   */
+  /// DpcTabular.mode
+  /**
+   * The settings for how the Store Tables are mapped to and from the database.
+   */
+  /// DpcTabular.tables
+  {
+    /**
+     * The settings for how the database tables are mapped into the Store Tables
+     * when loading.
+     */
+    /// DpcTabular.tables.load
+    /**
+     * The settings for how the Store Tables are mapped out to the database
+     * tables when saving.
+     */
+    /// DpcTabular.tables.save
+  }
+  /**
+   * The settings for how the Store Values are mapped to and from the database.
+   */
+  /// DpcTabular.values
+}
 /**
  * The DpcTabularLoad type describes the configuration for loading Tables in a
  * database-oriented Persister that is operating in tabular mode.
  *
- * The 'Dpc' prefix indicates this is used within the DatabasePersisterConfig
- * type.
+ * It is an object where each key is a name of a database table, and the value
+ * is a child configuration object for how that table should be loaded into the
+ * Store. The properties of the child configuration object are:
+ *
+ * ||Type|Description|
+ * |-|-|-|
+ * |`tableId`|Id|The Id of the Store Table into which data from this database table should be loaded.|
+ * |`rowIdColumnName?`|string|The optional name of the column in the database table that will be used as the Row Ids in the Store Table, defaulting to '_id'.|
+ *
+ * As a shortcut, if you do not need to specify a custom `rowIdColumnName`, you
+ * can simply provide the Id of the Store Table instead of the whole object.
+ *
+ * The 'Dpc' prefix indicates that this type is used within the
+ * DatabasePersisterConfig type.
+ * @example
+ * When applied to a database Persister, this DatabasePersisterConfig will load
+ * the data of two database tables (called 'petsInDb' and 'speciesInDb') into
+ * two Store Tables (called 'pets' and 'species'). One has a column for the Row
+ * Id called 'id' and the other defaults it to '_id'.
+ *
+ * ```js
+ * const databasePersisterConfig: DatabasePersisterConfig = {
+ *   mode: 'tabular',
+ *   tables: {
+ *     load: {
+ *       petsInDb: {tableId: 'pets', rowIdColumnName: 'id'},
+ *       speciesInDb: 'species',
+ *     },
+ *   },
+ * };
+ * ```
+ *
+ * Imagine database tables that look like this:
+ *
+ * ```
+ * > SELECT * FROM petsInDb;
+ * +-------+---------+-------+
+ * | id    | species | color |
+ * +-------+---------+-------+
+ * | fido  | dog     | brown |
+ * | felix | cat     | black |
+ * +-------+---------+-------+
+ *
+ * > SELECT * FROM speciesInDb;
+ * +------+-------+
+ * | _id  | price |
+ * +------+-------+
+ * | dog  | 5     |
+ * | cat  | 4     |
+ * +------+-------+
+ * ```
+ *
+ * With the configuration above, this will load into a Store with Tables that
+ * look like this:
+ *
+ * ```json
+ * {
+ *   "pets": {
+ *     "fido": {"species": "dog", "color": "brown"},
+ *     "felix": {"species": "cat", "color": "black"},
+ *   },
+ *   "species": {
+ *     "dog": {"price": 5},
+ *     "cat": {"price": 4},
+ *   },
+ * }
  * @category Configuration
  * @since v4.0.0
  */
 /// DpcTabularLoad
+{
+  {
+    {
+      {
+        /**
+         * The Id of the Store Table into which data from this database table
+         * should be loaded.
+         */
+        /// DpcTabularLoad.tableId
+        /**
+         * The optional name of the column in the database table that will be
+         * used as the Row Ids in the Store Table, defaulting to '_id'.
+         */
+        /// DpcTabularLoad.rowIdColumnName
+      }
+    }
+  }
+}
 /**
  * The DpcTabularSave type describes the configuration for saving Tables in a
  * database-oriented Persister that is operating in tabular mode.
  *
- * The 'Dpc' prefix indicates this is used within the DatabasePersisterConfig
- * type.
+ * It is an object where each key is an Id of a Store Table, and the value is a
+ * child configuration object for how that Table should be saved out to the
+ * database. The properties of the child configuration object are:
+ *
+ * ||Type|Description|
+ * |-|-|-|
+ * |`tableName`|string|The name of the database table out to which the Store Table should be saved.|
+ * |`rowIdColumnName?`|string|The optional name of the column in the database table that will be used to save the Row Ids from the Store Table, defaulting to '_id'.|
+ * |`deleteEmptyColumns?`|boolean|Whether columns in the database table will be removed if they are empty in the Store Table, defaulting to false.|
+ * |`deleteEmptyTable?`|boolean|Whether tables in the database will be removed if the Store Table is empty, defaulting to false.|
+ *
+ * As a shortcut, if you do not need to specify a custom `rowIdColumnName`, or
+ * enable the `deleteEmptyColumns` or `deleteEmptyTable` settings, you can
+ * simply provide the name of the database table instead of the whole object.
+ *
+ * The 'Dpc' prefix indicates that this type is used within the
+ * DatabasePersisterConfig type.
+ * @example
+ * When applied to a database Persister, this DatabasePersisterConfig will save
+ * the data of two Store Tables (called 'pets' and 'species') into two database
+ * tables (called 'petsInDb' and 'speciesInDb'). One has a column for the Row
+ * Id called 'id' and will delete columns and the whole table if empty, the
+ * other defaults to '_id' and will not delete columns or the whole table if
+ * empty.
+ *
+ * ```js
+ * const databasePersisterConfig: DatabasePersisterConfig = {
+ *   mode: 'tabular',
+ *   tables: {
+ *     save: {
+ *       pets: {
+ *         tableName: 'petsInDb',
+ *         deleteEmptyColumns: true,
+ *         deleteEmptyTable: true,
+ *       },
+ *       species: 'speciesInDb',
+ *     },
+ *   },
+ * };
+ * ```
+ *
+ * Imagine a Store with Tables that look like this:
+ *
+ * ```json
+ * {
+ *   "pets": {
+ *     "fido": {"species": "dog", "color": "brown"},
+ *     "felix": {"species": "cat", "color": "black"},
+ *   },
+ *   "species": {
+ *     "dog": {"price": 5},
+ *     "cat": {"price": 4},
+ *   },
+ * }
+ * ```
+ *
+ * With the configuration above, this will save out to a database with tables
+ * that look like this:
+ *
+ * ```
+ * > SELECT * FROM petsInDb;
+ * +-------+---------+-------+
+ * | id    | species | color |
+ * +-------+---------+-------+
+ * | fido  | dog     | brown |
+ * | felix | cat     | black |
+ * +-------+---------+-------+
+ *
+ * > SELECT * FROM speciesInDb;
+ * +------+-------+
+ * | _id  | price |
+ * +------+-------+
+ * | dog  | 5     |
+ * | cat  | 4     |
+ * +------+-------+
+ * ```
  * @category Configuration
  * @since v4.0.0
  */
 /// DpcTabularSave
+{
+  {
+    {
+      {
+        /**
+         * The name of the database table out to which the Store Table should be
+         * saved.
+         */
+        /// DpcTabularSave.tableName
+        /**
+         * The optional name of the column in the database table that will be
+         * used to save the Row Ids from the Store Table, defaulting to '_id'.
+         */
+        /// DpcTabularSave.rowIdColumnName
+        /**
+         * Whether columns in the database table will be removed if they are
+         * empty in the Store Table, defaulting to false.
+         */
+        /// DpcTabularSave.deleteEmptyColumns
+        /**
+         * Whether tables in the database will be removed if the Store Table
+         * is empty, defaulting to false.
+         */
+        /// DpcTabularSave.deleteEmptyTable
+      }
+    }
+  }
+}
 /**
- * The DpcTabularValues type describes the configuration for handling
- * Values in a database-oriented Persister that is operating in tabular mode.
+ * The DpcTabularValues type describes the configuration for handling Values in
+ * a database-oriented Persister that is operating in tabular mode.
  *
- * The 'Dpc' prefix indicates this is used within the DatabasePersisterConfig
- * type.
+ * Note that both loading and saving of Values from and to the database are
+ * disabled by default.
+ *
+ * The 'Dpc' prefix indicates that this type is used within the
+ * DatabasePersisterConfig type.
+ * @example
+ * When applied to a database Persister, this DatabasePersisterConfig will load
+ * and save the data of a Store's Values into a database
+ * table called 'my_tinybase_values'.
+ *
+ * ```js
+ * const databasePersisterConfig: DatabasePersisterConfig = {
+ *   mode: 'tabular',
+ *   values: {
+ *     load: true,
+ *     save: true,
+ *     tableName: 'my_tinybase_values',
+ *   },
+ * };
+ * ```
  * @category Configuration
  * @since v4.0.0
  */
 /// DpcTabularValues
+{
+  /**
+   * Whether Store Values will be loaded from a database table.
+   */
+  /// DpcTabularValues.load
+  /**
+   * Whether Store Values will be saved to a database table.
+   */
+  /// DpcTabularValues.save
+  /**
+   * The optional name of the database table from and to which the Store Table
+   * should be loaded or saved, defaulting to `tinybase_values`.
+   */
+  /// DpcTabularValues.tableName
+}
 /**
  * A Persister object lets you save and load Store data to and from different
  * locations, or underlying storage types.
