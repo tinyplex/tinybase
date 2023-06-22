@@ -2,7 +2,6 @@
  * The persister-sqlite3 module of the TinyBase project lets you save and load
  * Store data to and from a local SQLite database (in an appropriate
  * environment).
- *
  * @see Persisting Data guide
  * @packageDocumentation
  * @module persister-sqlite3
@@ -14,7 +13,6 @@
  *
  * As well as providing a reference to the Store to persist, you must provide a
  * `db` parameter which identifies the database instance.
- *
  * @param store The Store to persist.
  * @param db The database instance that was returned from `new
  * sqlite3.Database(...)`.

@@ -1,7 +1,6 @@
 /**
  * The common module of the TinyBase project provides a small collection of
  * common types used across other modules.
- *
  * @packageDocumentation
  * @module common
  */
@@ -9,7 +8,6 @@
 /**
  * The Json type is a simple alias for a string, but is used to indicate that
  * the string should be considered to be a JSON serialization of an object.
- *
  * @category General
  */
 /// Json
@@ -17,7 +15,6 @@
  * The Ids type is a simple alias for an array of strings, but is used to
  * indicate that the strings should be considered to be the keys of objects
  * (such as the Row Id strings used in a Table).
- *
  * @category Identity
  */
 /// Ids
@@ -25,7 +22,6 @@
  * The Id type is a simple alias for a string, but is used to indicate that the
  * string should be considered to be the key of an object (such as a Row Id
  * string used in a Table).
- *
  * @category Identity
  */
 /// Id
@@ -34,27 +30,23 @@
  * where the string should be considered to be the key of an objects (such as a
  * Row Id string used in a Table), and typically `null` indicates a wildcard -
  * such as when used in the Store addRowListener method.
- *
  * @category Identity
  */
 /// IdOrNull
 /**
  * The ParameterizedCallback type represents a generic function that will take
  * an optional parameter - such as the handler of a DOM event.
- *
  * @category Callback
  */
 /// ParameterizedCallback
 /**
  * The Callback type represents a function that is used as a callback and which
  * does not take a parameter.
- *
  * @category Callback
  */
 /// Callback
 /**
  * The SortKey type represents a value that can be used by a sort function.
- *
  * @category Parameter
  */
 /// SortKey
@@ -63,7 +55,6 @@
  * alphanumerically, and can be provided to the `sliceIdSorter` and
  * `rowIdSorter` parameters of the setIndexDefinition method in the indexes
  * module, for example.
- *
  * @param sortKey1 The first item of the pair to compare.
  * @param sortKey2 The second item of the pair to compare.
  * @returns A number indicating how to sort the pair.

@@ -100,7 +100,7 @@
   },
   "overrides": [
     {
-      "files": ["src/*.d.ts"],
+      "files": ["src/types/**"],
       "extends": ["plugin:jsdoc/recommended"],
       "rules": {
         "jsdoc/check-tag-names": [

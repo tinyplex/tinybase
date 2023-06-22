@@ -1,7 +1,6 @@
 /**
  * The persister-file module of the TinyBase project lets you save and load
  * Store data to and from a local file system (in an appropriate environment).
- *
  * @see Persisting Data guide
  * @packageDocumentation
  * @module persister-file
@@ -13,7 +12,6 @@
  *
  * As well as providing a reference to the Store to persist, you must provide a
  * `filePath` parameter which identifies the file to persist it to.
- *
  * @param store The Store to persist.
  * @param filePath The location of the local file to persist the Store to.
  * @returns A reference to the new Persister object.

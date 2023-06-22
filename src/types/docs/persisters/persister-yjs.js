@@ -5,11 +5,10 @@
  * A single entry point, the createYjsPersister function, is provided, which
  * returns a new Persister object that can bind a Store to a provided Yjs
  * document.
- *
  * @see Synchronizing Data guide
  * @packageDocumentation
  * @module persister-yjs
- * @since v4.0
+ * @since v4.0.0
  */
 /// persister-yjs
 /**
@@ -18,7 +17,6 @@
  *
  * As well as providing a reference to the Store to persist, you must provide
  * the Yjs document to persist it to.
- *
  * @param store The Store to persist.
  * @param yDoc The Yjs document to persist the Store to.
  * @param yMapName The name of the Y.Map used inside the Yjs document to sync
@@ -94,6 +92,6 @@
  * persister2.destroy();
  * ```
  * @category Creation
- * @since v4.0
+ * @since v4.0.0
  */
 /// createYjsPersister

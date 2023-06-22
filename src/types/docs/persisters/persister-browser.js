@@ -9,7 +9,6 @@
  *   browser's session storage.
  * - The createLocalPersister function returns a Persister that uses the
  *   browser's local storage.
- *
  * @see Persisting Data guide
  * @packageDocumentation
  * @module persister-browser
@@ -22,7 +21,6 @@
  * As well as providing a reference to the Store to persist, you must provide a
  * `storageName` parameter which is unique to your application. This is the key
  * that the browser uses to identify the storage location.
- *
  * @param store The Store to persist.
  * @param storageName The unique key to identify the storage location.
  * @returns A reference to the new Persister object.
@@ -51,7 +49,6 @@
  * As well as providing a reference to the Store to persist, you must provide a
  * `storageName` parameter which is unique to your application. This is the key
  * that the browser uses to identify the storage location.
- *
  * @param store The Store to persist.
  * @param storageName The unique key to identify the storage location.
  * @returns A reference to the new Persister object.

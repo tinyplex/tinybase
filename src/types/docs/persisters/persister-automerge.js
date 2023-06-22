@@ -5,11 +5,10 @@
  * A single entry point, the createAutomergePersister function, is provided,
  * which returns a new Persister object that can bind a Store to a provided
  * Automerge document handle (and in turn, its document).
- *
  * @see Synchronizing Data guide
  * @packageDocumentation
  * @module persister-automerge
- * @since v4.0
+ * @since v4.0.0
  */
 /// persister-automerge
 /**
@@ -18,7 +17,6 @@
  *
  * As well as providing a reference to the Store to persist, you must provide
  * the Automerge document handler to persist it with.
- *
  * @param store The Store to persist.
  * @param docHandle The Automerge document handler to persist the Store with.
  * @param docMapName The name of the map used inside the Automerge document to
@@ -97,6 +95,6 @@
  * persister2.destroy();
  * ```
  * @category Creation
- * @since v4.0
+ * @since v4.0.0
  */
 /// createAutomergePersister

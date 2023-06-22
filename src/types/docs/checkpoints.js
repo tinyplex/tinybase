@@ -6,7 +6,6 @@
  * returns a new Checkpoints object. From there, you can create new checkpoints,
  * go forwards or backwards to others, and register listeners for when the list
  * of checkpoints change.
- *
  * @packageDocumentation
  * @module checkpoints
  */
@@ -25,7 +24,6 @@
  * - The 'forward' checkpoint Ids that can be rolled forward to (in other words,
  *   the checkpoints in the redo stack for this Store). They are in
  *   chronological order with the newest checkpoint at the end of the array.
- *
  * @category Identity
  */
 /// CheckpointIds
@@ -36,7 +34,6 @@
  * A CheckpointCallback is provided when using the forEachCheckpoint method,
  * so that you can do something based on every Checkpoint in the Checkpoints
  * object. See that method for specific examples.
- *
  * @param checkpointId The Id of the Checkpoint that the callback can operate
  * on.
  * @category Callback
@@ -51,7 +48,6 @@
  *
  * When called, a CheckpointIdsListener is given a reference to the Checkpoints
  * object.
- *
  * @param checkpoints A reference to the Checkpoints object that changed.
  * @category Listener
  */
@@ -65,7 +61,6 @@
  *
  * When called, a CheckpointListener is given a reference to the Checkpoints
  * object, and the Id of the checkpoint whose label changed.
- *
  * @param checkpoints A reference to the Checkpoints object that changed.
  * @param checkpointId The Id of the checkpoint that changed.
  * @category Listener
@@ -78,7 +73,6 @@
  *
  * A CheckpointsListenerStats object is returned from the getListenerStats
  * method, and is only populated in a debug build.
- *
  * @category Development
  */
 /// CheckpointsListenerStats
@@ -110,9 +104,6 @@
  * Every checkpoint can be given a label which can be used to describe the
  * actions that changed the Store before this checkpoint. This can be useful for
  * interfaces that let users 'Undo [last action]'.
- *
- * You
- *
  * @example
  * This example shows a simple lifecycle of a Checkpoints object: from creation,
  * to adding a checkpoint, getting the list of available checkpoints, and then
@@ -177,7 +168,6 @@
    * pruned to make room for more recent ones.
    *
    * The default size for a newly-created Checkpoints object is 100.
-   *
    * @param size The number of checkpoints that this Checkpoints object should
    * hold.
    * @returns A reference to the Checkpoints object.
@@ -222,7 +212,6 @@
    * The optional `label` parameter can be used to describe the actions that
    * changed the Store before this checkpoint. This can be useful for interfaces
    * that let users 'Undo [last action]'.
-   *
    * @param label An optional label to describe the actions leading up to this
    * checkpoint.
    * @returns The Id of the newly-created checkpoint.
@@ -269,7 +258,6 @@
    * change the label at a later point.
    *
    * You cannot add a label to a checkpoint that does not yet exist.
-   *
    * @param checkpointId The Id of the checkpoint to set the label for.
    * @param label A label to describe the actions leading up to this checkpoint
    * or left undefined if you want to clear the current label.
@@ -313,7 +301,6 @@
   /**
    * The getStore method returns a reference to the underlying Store that is
    * backing this Checkpoints object.
-   *
    * @returns A reference to the Store.
    * @example
    * This example creates a Checkpoints object against a newly-created Store
@@ -339,7 +326,6 @@
    * Together, these are sufficient to understand the state of the Checkpoints
    * object and what movement is possible backward or forward through the
    * checkpoint stack.
-   *
    * @returns A CheckpointIds array, containing the checkpoint Ids managed by
    * this Checkpoints object.
    * @example
@@ -377,7 +363,6 @@
    * object in a functional style. The `checkpointCallback` parameter is a
    * CheckpointCallback function that will be called with the Id of each
    * Checkpoint.
-   *
    * @param checkpointCallback The function that should be called for every
    * Checkpoint.
    * @example
@@ -401,7 +386,6 @@
   /**
    * The hasCheckpoint method returns a boolean indicating whether a given
    * Checkpoint exists in the Checkpoints object.
-   *
    * @param checkpointId The Id of a possible Checkpoint in the Checkpoints
    * object.
    * @returns Whether a Checkpoint with that Id exists.
@@ -426,7 +410,6 @@
    *
    * If the checkpoint has had no label provided, this method will return an
    * empty string.
-   *
    * @param checkpointId The Id of the checkpoint to get the label for.
    * @returns A string label for the requested checkpoint, an empty string if it
    * was never set, or `undefined` if the checkpoint does not exist.
@@ -476,7 +459,6 @@
    *
    * The provided listener is a CheckpointIdsListener function, and will be
    * called with a reference to the Checkpoints object.
-   *
    * @param listener The function that will be called whenever the checkpoints
    * change.
    * @returns A unique Id for the listener that can later be used to remove it.
@@ -530,7 +512,6 @@
    * The provided listener is a CheckpointListener function, and will be called
    * with a reference to the Checkpoints object, and the Id of the checkpoint
    * whose label changed.
-   *
    * @param checkpointId The Id of the checkpoint to listen to, or `null` as a
    * wildcard.
    * @param listener The function that will be called whenever the checkpoint
@@ -583,7 +564,6 @@
    *
    * Use the Id returned by the addCheckpointIdsListener method. Note that the
    * Checkpoints object may re-use this Id for future listeners added to it.
-   *
    * @param listenerId The Id of the listener to remove.
    * @returns A reference to the Checkpoints object.
    * @example
@@ -621,7 +601,6 @@
    * previous checkpoint, effectively performing an 'undo' on the Store data.
    *
    * If there is no previous checkpoint to return to, this method has no effect.
-   *
    * @returns A reference to the Checkpoints object.
    * @example
    * This example creates a Store, a Checkpoints object, makes a change and then
@@ -658,7 +637,6 @@
    * changes, the forwards 'redo' stack will only exist while you do not make
    * changes to the Store. In general the goForward method is expected to be
    * used to redo changes that were just undone.
-   *
    * @returns A reference to the Checkpoints object.
    * @example
    * This example creates a Store, a Checkpoints object, makes a change and then
@@ -732,7 +710,6 @@
    * forwards to a specified checkpoint.
    *
    * If there is no checkpoint with the Id specified, this method has no effect.
-   *
    * @param checkpointId The Id of the checkpoint to move to.
    * @returns A reference to the Checkpoints object.
    * @example
@@ -791,7 +768,6 @@
    * that is the baseline from which all subsequent changes are tracked.
    *
    * If you are listening to
-   *
    * @returns A reference to the Checkpoints object.
    * @example
    * This example creates a Store, a Checkpoints object, adds a listener, makes
@@ -839,7 +815,6 @@
    *
    * This guarantees that all of the listeners that the object registered with
    * the underlying Store are removed and it can be correctly garbage collected.
-   *
    * @example
    * This example creates a Store, adds a Checkpoints object (that registers a
    * CellListener with the underlying Store), and then destroys it again,
@@ -872,7 +847,6 @@
    * return an empty object. The method is intended to be used during
    * development to ensure your application is not leaking listener
    * registrations, for example.
-   *
    * @returns A CheckpointsListenerStats object containing Checkpoints listener
    * statistics.
    * @example
@@ -902,7 +876,6 @@
  * A given Store can only have one Checkpoints object associated with it. If you
  * call this function twice on the same Store, your second call will return a
  * reference to the Checkpoints object created by the first.
- *
  * @param store The Store for which to set Checkpoints.
  * @returns A reference to the new Checkpoints object.
  * @example

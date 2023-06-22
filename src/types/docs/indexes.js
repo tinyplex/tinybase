@@ -6,7 +6,6 @@
  * returns a new Indexes object. From there, you can create new Index
  * definitions, access the contents of those Indexes directly, and register
  * listeners for when they change.
- *
  * @packageDocumentation
  * @module indexes
  */
@@ -21,7 +20,6 @@
  * Note that the Index type is not actually used in the API, and you instead
  * enumerate and access its structure with the getSliceIds method and
  * getSliceRowIds method.
- *
  * @category Concept
  */
 /// Index
@@ -34,7 +32,6 @@
  *
  * Note that the Slice type is not actually used in the API, and you instead get
  * Row Ids directly with the getSliceRowIds method.
- *
  * @category Concept
  */
 /// Slice
@@ -45,7 +42,6 @@
  * A IndexCallback is provided when using the forEachIndex method, so that you
  * can do something based on every Index in the Indexes object. See that method
  * for specific examples.
- *
  * @param indexId The Id of the Index that the callback can operate on.
  * @param forEachRow A function that will let you iterate over the Slice objects
  * in this Index.
@@ -59,7 +55,6 @@
  * A SliceCallback is provided when using the forEachSlice method, so that you
  * can do something based on every Slice in an Index. See that method for
  * specific examples.
- *
  * @param sliceId The Id of the Slice that the callback can operate on.
  * @param forEachRow A function that will let you iterate over the Row objects
  * in this Slice.
@@ -75,7 +70,6 @@
  *
  * When called, a SliceIdsListener is given a reference to the Indexes object,
  * and the Id of the Index that changed.
- *
  * @param indexes A reference to the Indexes object that changed.
  * @param indexId The Id of the Index that changed.
  * @category Listener
@@ -91,7 +85,6 @@
  * When called, a SliceRowIdsListener is given a reference to the Indexes
  * object, the Id of the Index that changed, and the Id of the Slice whose Row
  * Ids changed.
- *
  * @param indexes A reference to the Indexes object that changed.
  * @param indexId The Id of the Index that changed.
  * @param sliceId The Id of the Slice that changed.
@@ -104,7 +97,6 @@
  *
  * A IndexesListenerStats object is returned from the getListenerStats method,
  * and is only populated in a debug build.
- *
  * @category Development
  */
 /// IndexesListenerStats
@@ -135,7 +127,6 @@
  *
  * This module defaults to indexing Row objects by one of their Cell values.
  * However, far more complex indexes can be configured with a custom function.
- *
  * @example
  * This example shows a very simple lifecycle of an Indexes object: from
  * creation, to adding a definition, getting its contents, and then registering
@@ -222,7 +213,6 @@
    * Slice Id parameter, in case you want to sort Row Ids differently in each
    * Slice. You can use the convenient defaultSorter function to default this to
    * be alphanumeric.
-   *
    * @param indexId The Id of the Index to define.
    * @param tableId The Id of the Table the Index will be generated from.
    * @param getSliceIdOrIds Either the Id of the Cell containing, or a function
@@ -333,7 +323,6 @@
   /// Indexes.setIndexDefinition
   /**
    * The delIndexDefinition method removes an existing Index definition.
-   *
    * @param indexId The Id of the Index to remove.
    * @returns A reference to the Indexes object.
    * @example
@@ -362,7 +351,6 @@
   /**
    * The getStore method returns a reference to the underlying Store that is
    * backing this Indexes object.
-   *
    * @returns A reference to the Store.
    * @example
    * This example creates an Indexes object against a newly-created Store and
@@ -381,7 +369,6 @@
   /**
    * The getIndexIds method returns an array of the Index Ids registered with
    * this Indexes object.
-   *
    * @returns An array of Ids.
    * @example
    * This example creates an Indexes object with two definitions, and then gets
@@ -407,7 +394,6 @@
    * IndexCallback function that will be called with the Id of each Index, and
    * with a function that can then be used to iterate over each Slice of the
    * Index, should you wish.
-   *
    * @param indexCallback The function that should be called for every Index.
    * @example
    * This example iterates over each Index in an Indexes object, and lists each
@@ -445,7 +431,6 @@
    * in a functional style. The `rowCallback` parameter is a RowCallback
    * function that will be called with the Id and value of each Row in the
    * Slice.
-   *
    * @param indexId The Id of the Index to iterate over.
    * @param sliceCallback The function that should be called for every Slice.
    * @example
@@ -476,7 +461,6 @@
   /**
    * The hasIndex method returns a boolean indicating whether a given Index
    * exists in the Indexes object.
-   *
    * @param indexId The Id of a possible Index in the Indexes object.
    * @returns Whether an Index with that Id exists.
    * @example
@@ -496,7 +480,6 @@
   /**
    * The hasSlice method returns a boolean indicating whether a given Slice
    * exists in the Indexes object.
-   *
    * @param indexId The Id of a possible Index in the Indexes object.
    * @param sliceId The Id of a possible Slice in the Index.
    * @returns Whether a Slice with that Id exists.
@@ -524,7 +507,6 @@
    * backing an Index.
    *
    * If the Index Id is invalid, the method returns `undefined`.
-   *
    * @param indexId The Id of an Index.
    * @returns The Id of the Table backing the Index, or `undefined`.
    * @example
@@ -548,7 +530,6 @@
    *
    * If the identified Index does not exist (or if the definition references a
    * Table that does not exist) then an empty array is returned.
-   *
    * @param indexId The Id of the Index.
    * @returns The Slice Ids in the Index, or an empty array.
    * @example
@@ -580,7 +561,6 @@
    *
    * If the identified Index or Slice do not exist (or if the definition
    * references a Table that does not exist) then an empty array is returned.
-   *
    * @param indexId The Id of the Index.
    * @param sliceId The Id of the Slice in the Index.
    * @returns The Row Ids in the Slice, or an empty array.
@@ -621,7 +601,6 @@
    * The provided listener is a SliceIdsListener function, and will be called
    * with a reference to the Indexes object, and the Id of the Index that
    * changed.
-   *
    * @param indexId The Id of the Index to listen to, or `null` as a wildcard.
    * @param listener The function that will be called whenever the Slice Ids in
    * the Index change.
@@ -704,7 +683,6 @@
    * The provided listener is a SliceRowIdsListener function, and will be called
    * with a reference to the Indexes object, the Id of the Index, and the Id of
    * the Slice that changed.
-   *
    * @param indexId The Id of the Index to listen to, or `null` as a wildcard.
    * @param sliceId The Id of the Slice to listen to, or `null` as a wildcard.
    * @param listener The function that will be called whenever the Row Ids in
@@ -783,7 +761,6 @@
    * Use the Id returned by whichever method was used to add the listener. Note
    * that the Indexes object may re-use this Id for future listeners added to
    * it.
-   *
    * @param listenerId The Id of the listener to remove.
    * @returns A reference to the Indexes object.
    * @example
@@ -825,7 +802,6 @@
    *
    * This guarantees that all of the listeners that the object registered with
    * the underlying Store are removed and it can be correctly garbage collected.
-   *
    * @example
    * This example creates a Store, adds an Indexes object with a
    * definition (that registers a RowListener with the underlying Store),
@@ -863,7 +839,6 @@
    * return an empty object. The method is intended to be used during
    * development to ensure your application is not leaking listener
    * registrations, for example.
-   *
    * @returns A IndexesListenerStats object containing Indexes listener
    * statistics.
    * @example
@@ -893,7 +868,6 @@
  * A given Store can only have one Indexes object associated with it. If you
  * call this function twice on the same Store, your second call will return a
  * reference to the Indexes object created by the first.
- *
  * @param store The Store for which to register Index definitions.
  * @returns A reference to the new Indexes object.
  * @example

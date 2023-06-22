@@ -2,7 +2,6 @@
  * The persister-sqlite-wasm module of the TinyBase project lets you save and
  * load Store data to and from a local SQLite database (in an appropriate
  * environment).
- *
  * @see Persisting Data guide
  * @packageDocumentation
  * @module persister-sqlite-wasm
@@ -15,7 +14,6 @@
  * As well as providing a reference to the Store to persist, you must provide
  * `sqlite3` and `db` parameters which identify the WASM module and database
  * instance respectively.
- *
  * @param store The Store to persist.
  * @param sqlite3 The WASM module that was returned from `sqlite3InitModule`.
  * @param db The database instance that was returned from `new
