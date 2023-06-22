@@ -18,7 +18,6 @@
  * Since persistence requirements can be different for every app, the
  * createCustomPersister function in this module can also be used to easily
  * create a fully customized way to save and load Store data.
- *
  * @see Persisting Data guide
  * @see Countries demo
  * @see Todo App demos
@@ -33,7 +32,6 @@
  *
  * A PersisterStats object is returned from the getStats method, and is only
  * populated in a debug build.
- *
  * @category Development
  */
 /// PersisterStats
@@ -56,7 +54,6 @@
  * function _is_ available, that will be used to make a wholesale change to the
  * Store. If neither are present, the content will be loaded from the
  * Persister's load method.
- *
  * @param getContent An optional function that, if provided, returns an array of
  * Store content and can be used to immediately wholesale update the Store.
  * @param getTransactionChanges An optional function that, if provided, returns
@@ -74,9 +71,8 @@
  *
  * The 'Dpc' prefix indicates this is used within the DatabasePersisterConfig
  * type.
- *
  * @category Configuration
- * @since v4.0
+ * @since v4.0.0
  */
 /// DpcJson
 /**
@@ -85,9 +81,8 @@
  *
  * The 'Dpc' prefix indicates this is used within the DatabasePersisterConfig
  * type.
- *
  * @category Configuration
- * @since v4.0
+ * @since v4.0.0
  */
 /// DpcTabular
 /**
@@ -96,9 +91,8 @@
  *
  * The 'Dpc' prefix indicates this is used within the DatabasePersisterConfig
  * type.
- *
  * @category Configuration
- * @since v4.0
+ * @since v4.0.0
  */
 /// DpcTabularLoad
 /**
@@ -107,9 +101,8 @@
  *
  * The 'Dpc' prefix indicates this is used within the DatabasePersisterConfig
  * type.
- *
  * @category Configuration
- * @since v4.0
+ * @since v4.0.0
  */
 /// DpcTabularSave
 /**
@@ -118,9 +111,8 @@
  *
  * The 'Dpc' prefix indicates this is used within the DatabasePersisterConfig
  * type.
- *
  * @category Configuration
- * @since v4.0
+ * @since v4.0.0
  */
 /// DpcTabularValues
 /**
@@ -166,7 +158,6 @@
  * persistence strategy to understand the opportunity for data loss (in the case
  * of trying to save data to a server under poor network conditions, for
  * example).
- *
  * @example
  * This example creates a Store, persists it to the browser's session storage as
  * a JSON string, changes the persisted data, updates the Store from it, and
@@ -234,7 +225,6 @@
    * machine or a filesystem. Even for those storage types that are synchronous
    * (like browser storage) it is still recommended that you `await` calls to
    * this method or handle the return type natively as a Promise.
-   *
    * @param initialTables An optional Tables object used when the underlying
    * storage has not previously been populated.
    * @param initialValues An optional Values object used when the underlying
@@ -301,7 +291,6 @@
    * the asynchronous load method. Even for those storage types that are
    * synchronous (like browser storage) it is still recommended that you `await`
    * calls to this method or handle the return type natively as a Promise.
-   *
    * @param initialTables An optional Tables object used when the underlying
    * storage has not previously been populated.
    * @param initialValues An optional Values object used when the underlying
@@ -342,7 +331,6 @@
    *
    * If the Persister is not currently set to automatically load, this method
    * has no effect.
-   *
    * @returns A reference to the Persister object.
    * @example
    * This example creates an empty Store, and starts automatically loading data
@@ -388,7 +376,6 @@
    * machine or a filesystem. Even for those storage types that are synchronous
    * (like browser storage) it is still recommended that you `await` calls to
    * this method or handle the return type natively as a Promise.
-   *
    * @returns A Promise containing a reference to the Persister object.
    * @example
    * This example creates a Store with some data, and saves into the browser's
@@ -420,7 +407,6 @@
    * the asynchronous save method. Even for those storage types that are
    * synchronous (like browser storage) it is still recommended that you `await`
    * calls to this method or handle the return type natively as a Promise.
-   *
    * @returns A Promise containing a reference to the Persister object.
    * @example
    * This example creates a Store with some data, and saves into the browser's
@@ -451,7 +437,6 @@
    *
    * If the Persister is not currently set to automatically save, this method
    * has no effect.
-   *
    * @returns A reference to the Persister object.
    * @example
    * This example creates a Store with some data, and saves into the browser's
@@ -485,7 +470,6 @@
   /**
    * The getStore method returns a reference to the underlying Store that is
    * backing this Persister object.
-   *
    * @returns A reference to the Store.
    * @example
    * This example creates a Persister object against a newly-created Store and
@@ -513,7 +497,6 @@
    * the underlying Store and storage are removed and it can be correctly
    * garbage collected. It is equivalent to running the stopAutoLoad method and
    * the stopAutoSave method in succession.
-   *
    * @example
    * This example creates a Store, associates a Persister object with it (that
    * registers a TablesListener with the underlying Store), and then destroys it
@@ -546,7 +529,6 @@
    * return an empty object. The method is intended to be used during
    * development to ensure your persistence layer is acting as expected, for
    * example.
-   *
    * @returns A PersisterStats object containing Persister load and save
    * statistics.
    * @example
@@ -601,7 +583,6 @@
  * function must return the content (or nothing) rather than JSON.
  * `startListeningToPersisted` has been renamed `addPersisterListener`, and
  * `stopListeningToPersisted` has been renamed `delPersisterListener`.
- *
  * @param store The Store to persist.
  * @param getPersisted An asynchronous function which will fetch content from
  * the persistence layer (or `undefined` if not present).

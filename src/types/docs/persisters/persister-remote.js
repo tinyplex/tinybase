@@ -1,7 +1,6 @@
 /**
  * The persister-remote module of the TinyBase project lets you save and load
  * Store data to and from a remote server.
- *
  * @see Persisting Data guide
  * @packageDocumentation
  * @module persister-remote
@@ -19,7 +18,6 @@
  * For when you choose to enable automatic loading for the Persister (with the
  * startAutoLoad method), it will poll the loadUrl for changes. The
  * `autoLoadIntervalSeconds` method is used to indicate how often to do this.
- *
  * @param store The Store to persist.
  * @param loadUrl The endpoint that supports a `GET` method to load JSON.
  * @param saveUrl The endpoint that supports a `POST` method to save JSON.

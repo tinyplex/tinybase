@@ -6,7 +6,6 @@
  * returns a new Store. From there, you can set and get data, register
  * listeners, and use other modules to build an entire app around the state and
  * tabular data within.
- *
  * @packageDocumentation
  * @module store
  */
@@ -18,7 +17,6 @@
  * A TablesSchema comprises a JavaScript object describing each Table, in turn a
  * nested JavaScript object containing information about each Cell and its
  * CellSchema. It is provided to the setTablesSchema method.
- *
  * @example
  * When applied to a Store, this TablesSchema only allows one Table called
  * `pets`, in which each Row may contain a string `species` Cell, and is
@@ -49,7 +47,6 @@
  * If the default value is _not_ provided (or its type is incorrect), the Cell
  * may be missing from the Row, but when present you can be guaranteed it is of
  * the correct type.
- *
  * @example
  * When applied to a Store, this CellSchema ensures a boolean Cell is always
  * present, and defaults it to `false`.
@@ -66,7 +63,6 @@
  *
  * A ValuesSchema comprises a JavaScript object describing each Value and its
  * ValueSchema. It is provided to the setValuesSchema method.
- *
  * @example
  * When applied to a Store, this ValuesSchema only allows one boolean Value
  * called `open`, that defaults to `false`.
@@ -77,7 +73,7 @@
  * };
  * ```
  * @category Schema
- * @since v3.0
+ * @since v3.0.0
  */
 /// ValuesSchema
 /**
@@ -94,7 +90,6 @@
  * If the default value is _not_ provided (or its type is incorrect), the Value
  * may not be present in the Store, but when present you can be guaranteed it is
  * of the correct type.
- *
  * @example
  * When applied to a Store, this ValueSchema ensures a boolean Value is always
  * present, and defaults it to `false`.
@@ -103,48 +98,42 @@
  * const requiredBoolean: ValueSchema = {type: 'boolean', default: false};
  * ```
  * @category Schema
- * @since v3.0
+ * @since v3.0.0
  */
 /// ValueSchema
 /**
  * The NoTablesSchema type is a TablesSchema-like type for when one has not been
  * provided.
- *
  * @category Schema
  */
 /// NoTablesSchema
 /**
  * The NoValuesSchema type is a ValuesSchema-like type for when one has not been
  * provided.
- *
  * @category Schema
  */
 /// NoValuesSchema
 /**
  * The OptionalTablesSchema type is used by generic types that can optionally
  * take a TablesSchema.
- *
  * @category Schema
  */
 /// OptionalTablesSchema
 /**
  * The OptionalValuesSchema type is used by generic types that can optionally
  * take a ValuesSchema.
- *
  * @category Schema
  */
 /// OptionalValuesSchema
 /**
  * The OptionalSchemas type is used by generic types that can optionally take
  * either or both of a TablesSchema and ValuesSchema.
- *
  * @category Schema
  */
 /// OptionalSchemas
 /**
  * The NoSchemas type is used as a default by generic types that can optionally
  * take either or both of a TablesSchema and ValuesSchema.
- *
  * @category Schema
  */
 /// NoSchemas
@@ -156,7 +145,6 @@
  * setTables method, and when getting them back out again with the getTables
  * method. A Tables object is a regular JavaScript object containing individual
  * Table objects, keyed by their Id.
- *
  * @example
  * ```js
  * const tables: Tables = {
@@ -180,7 +168,6 @@
  * getting it back out again with the getTable method. A Table object is a
  * regular JavaScript object containing individual Row objects, keyed by their
  * Id.
- *
  * @example
  * ```js
  * const table: Table = {
@@ -197,7 +184,6 @@
  * A Row is used when setting a row with the setRow method, and when getting it
  * back out again with the getRow method. A Row object is a regular JavaScript
  * object containing individual Cell objects, keyed by their Id.
- *
  * @example
  * ```js
  * const row: Row = {species: 'dog', color: 'brown'};
@@ -211,7 +197,6 @@
  * A Cell is used when setting a cell with the setCell method, and when getting
  * it back out again with the getCell method. A Cell is a JavaScript string,
  * number, or boolean.
- *
  * @example
  * ```js
  * const cell: Cell = 'dog';
@@ -226,7 +211,6 @@
  * This is used when describing a Cell that is present _or_ that is not present,
  * such as when it has been deleted, or when describing a previous state where
  * the Cell value has since been added.
- *
  * @category Store
  */
 /// CellOrUndefined
@@ -238,13 +222,12 @@
  * when getting them back out again with the getValues method. A Values object
  * is a regular JavaScript object containing individual Value objects, keyed by
  * their Id.
- *
  * @example
  * ```js
  * const values: Values = {open: true, employees: 4};
  * ```
  * @category Store
- * @since v3.0
+ * @since v3.0.0
  */
 /// Values
 /**
@@ -254,13 +237,12 @@
  * A Value is used when setting a value with the setValue method, and when
  * getting it back out again with the getValue method. A Value is a JavaScript
  * string, number, or boolean.
- *
  * @example
  * ```js
  * const value: Value = 'dog';
  * ```
  * @category Store
- * @since v3.0
+ * @since v3.0.0
  */
 /// Value
 /**
@@ -270,9 +252,8 @@
  * This is used when describing a Value that is present _or_ that is not
  * present, such as when it has been deleted, or when describing a previous
  * state where the Value has since been added.
- *
  * @category Store
- * @since v3.0
+ * @since v3.0.0
  */
 /// ValueOrUndefined
 /**
@@ -282,7 +263,6 @@
  * A TableCallback is provided when using the forEachTable method, so that you
  * can do something based on every Table in the Store. See that method for
  * specific examples.
- *
  * @param tableId The Id of the Table that the callback can operate on.
  * @param forEachRow A function that will let you iterate over the Row objects
  * in this Table.
@@ -296,7 +276,6 @@
  * A TableCellCallback is provided when using the forEachTableCell method, so
  * that you can do something based on every Cell used across a Table. See that
  * method for specific examples.
- *
  * @param cellId The Id of the Cell that the callback can operate on.
  * @param count The number of times this Cell is used across a whole Table.
  * @category Callback
@@ -309,7 +288,6 @@
  * A RowCallback is provided when using the forEachRow method, so that you can
  * do something based on every Row in a Table. See that method for specific
  * examples.
- *
  * @param rowId The Id of the Row that the callback can operate on.
  * @param forEachRow A function that will let you iterate over the Cell values
  * in this Row.
@@ -323,7 +301,6 @@
  * A CellCallback is provided when using the forEachCell method, so that you can
  * do something based on every Cell in a Row. See that method for specific
  * examples.
- *
  * @param cellId The Id of the Cell that the callback can operate on.
  * @param cell The value of the Cell.
  * @category Callback
@@ -336,11 +313,10 @@
  * A ValueCallback is provided when using the forEachValue method, so that you
  * can do something based on every Value in a Store. See that method for
  * specific examples.
- *
  * @param valueId The Id of the Value that the callback can operate on.
  * @param value The Value itself.
  * @category Callback
- * @since v3.0
+ * @since v3.0.0
  */
 /// ValueCallback
 /**
@@ -350,7 +326,6 @@
  * A MapCell can be provided in the setCell method to map an existing value to a
  * new one, such as when incrementing a number. See that method for specific
  * examples.
- *
  * @param cell The current value of the Cell to map to a new value.
  * @category Callback
  */
@@ -362,10 +337,9 @@
  * A MapValue can be provided in the setValue method to map an existing Value to
  * a new one, such as when incrementing a number. See that method for specific
  * examples.
- *
  * @param value The current Value to map to a new Value.
  * @category Callback
- * @since v3.0
+ * @since v3.0.0
  */
 /// MapValue
 /**
@@ -375,7 +349,6 @@
  * A GetCell can be provided when setting definitions, as in the
  * setMetricDefinition method of a Metrics object, or the setIndexDefinition
  * method of an Indexes object. See those methods for specific examples.
- *
  * @param cellId The Id of the Cell to fetch the value for.
  * @category Callback
  */
@@ -463,7 +436,6 @@
  * call to get information about the changes made within the transaction (in
  * order to decide whether to do the rollback). See the GetTransactionChanges
  * and GetTransactionLog function types for more details.
- *
  * @param getTransactionChanges A function to be called to get the changes made
  * to the Store during the transaction, since v4.0.
  * @param getTransactionChanges A function to be called to get a more detailed
@@ -483,7 +455,6 @@
  * and, since v4.0, two functions that you can call to get information about the
  * changes made within the transaction. See the GetTransactionChanges and
  * GetTransactionLog function types for more details.
- *
  * @param store A reference to the Store that is completing a transaction.
  * @param getTransactionChanges A function to be called to get the changes made
  * to the Store during the transaction, since v4.0.
@@ -506,7 +477,6 @@
  * Note that if the listener was manually forced to be called (with the
  * callListener method rather than due to a real change in the Store), the
  * GetCellChange function will not be present.
- *
  * @param store A reference to the Store that changed.
  * @param getCellChange A function that returns information about any Cell's
  * changes.
@@ -524,7 +494,6 @@
  *
  * Since v3.3, the listener is also passed a GetIdChanges function that can be
  * used to query which Ids changed during the transaction.
- *
  * @param store A reference to the Store that changed.
  * @param getIdChanges A function that returns information about the Id changes,
  * since v3.3.
@@ -545,7 +514,6 @@
  * Note that if the listener was manually forced to be called (with the
  * callListener method rather than due to a real change in the Store), the
  * GetCellChange function will not be present.
- *
  * @param store A reference to the Store that changed.
  * @param tableId The Id of the Table that changed.
  * @param getCellChange A function that returns information about any Cell's
@@ -563,12 +531,11 @@
  * When called, a TableCellIdsListener is given a reference to the Store, the Id
  * of the Table whose Cell Ids changed, and a GetIdChanges function that can be
  * used to query which Ids changed during the transaction.
- *
  * @param store A reference to the Store that changed.
  * @param tableId The Id of the Table that changed.
  * @param getIdChanges A function that returns information about the Id changes.
  * @category Listener
- * @since v3.3
+ * @since v3.3.0
  */
 /// TableCellIdsListener
 /**
@@ -583,7 +550,6 @@
  *
  * Since v3.3, the listener is also passed a GetIdChanges function that can be
  * used to query which Ids changed during the transaction.
- *
  * @param store A reference to the Store that changed.
  * @param tableId The Id of the Table that changed.
  * @param getIdChanges A function that returns information about the Id changes,
@@ -604,7 +570,6 @@
  * Ids returned, for pagination purposes. It also receives the sorted array of
  * Ids itself, so that you can use them in the listener without the additional
  * cost of an explicit call to getSortedRowIds.
- *
  * @param store A reference to the Store that changed.
  * @param tableId The Id of the Table whose sorted Row Ids changed.
  * @param cellId The Id of the Cell whose values were used for the sorting.
@@ -613,7 +578,7 @@
  * @param limit The maximum number of Row Ids returned.
  * @param sortedRowIds The sorted Row Ids themselves.
  * @category Listener
- * @since v2.0
+ * @since v2.0.0
  */
 /// SortedRowIdsListener
 /**
@@ -631,7 +596,6 @@
  * Note that if the listener was manually forced to be called (with the
  * callListener method rather than due to a real change in the Store), the
  * GetCellChange function will not be present.
- *
  * @param store A reference to the Store that changed.
  * @param tableId The Id of the Table that changed.
  * @param rowId The Id of the Row that changed.
@@ -652,7 +616,6 @@
  *
  * Since v3.3, the listener is also passed a GetIdChanges function that can be
  * used to query which Ids changed during the transaction.
- *
  * @param store A reference to the Store that changed.
  * @param tableId The Id of the Table that changed.
  * @param rowId The Id of the Row that changed.
@@ -678,7 +641,6 @@
  * callListener method rather than due to a real change in the Store), the
  * GetCellChange function will not be present and the new and old values of the
  * Cell will be the same.
- *
  * @param store A reference to the Store that changed.
  * @param tableId The Id of the Table that changed.
  * @param rowId The Id of the Row that changed.
@@ -704,7 +666,6 @@
  * Note that if the listener was manually forced to be called (with the
  * callListener method rather than due to a real change in the Store), the
  * GetValueChange function will not be present.
- *
  * @param store A reference to the Store that changed.
  * @param getValueChange A function that returns information about any Value's
  * changes.
@@ -722,7 +683,6 @@
  *
  * Since v3.3, the listener is also passed a GetIdChanges function that can be
  * used to query which Ids changed during the transaction.
- *
  * @param store A reference to the Store that changed.
  * @param getIdChanges A function that returns information about the Id changes,
  * since v3.3.
@@ -745,7 +705,6 @@
  * callListener method rather than due to a real change in the Store), the
  * GetValueChange function will not be present and the new and old values of the
  * Value will be the same.
- *
  * @param store A reference to the Store that changed.
  * @param valueId The Id of the Value that changed.
  * @param newValue The new value of the Value that changed.
@@ -753,7 +712,7 @@
  * @param getValueChange A function that returns information about any Value's
  * changes.
  * @category Listener
- * @since v3.0
+ * @since v3.0.0
  */
 /// ValueListener
 /**
@@ -769,14 +728,13 @@
  * have been of absolutely any type. Since there could have been multiple failed
  * attempts to set the Cell within a single transaction, this is an array
  * containing each attempt, chronologically.
- *
  * @param store A reference to the Store that was being changed.
  * @param tableId The Id of the Table that was being changed.
  * @param rowId The Id of the Row that was being changed.
  * @param cellId The Id of the Cell that was being changed.
  * @param invalidCells An array of the values of the Cell that were invalid.
  * @category Listener
- * @since v1.1
+ * @since v1.1.0
  */
 /// InvalidCellListener
 /**
@@ -792,12 +750,11 @@
  * Since there could have been multiple failed attempts to set the Value within
  * a single transaction, this is an array containing each attempt,
  * chronologically.
- *
  * @param store A reference to the Store that was being changed.
  * @param valueId The Id of the Value that was being changed.
  * @param invalidValues An array of the Values that were invalid.
  * @category Listener
- * @since v3.0
+ * @since v3.0.0
  */
 /// InvalidValueListener
 /**
@@ -809,11 +766,10 @@
  * changed. The listener can then easily identify which Ids have been added
  * (those with the value `1`), and which have been removed (those with the value
  * `-1`).
- *
  * @returns An object keyed by Id with a numerical value. 1 means the Id was
  * added, and 1 means it was removed.
  * @category Listener
- * @since v3.3
+ * @since v3.3.0
  */
 /// GetIdChanges
 /**
@@ -824,7 +780,6 @@
  * Store changing. The listener can then fetch the previous value of a Cell
  * before the current transaction, the new value after it, and a convenience
  * flag that indicates that the value has changed.
- *
  * @param tableId The Id of the Table to inspect.
  * @param rowId The Id of the Row to inspect.
  * @param cellId The Id of the Cell to inspect.
@@ -839,7 +794,6 @@
  * listener when called. This array contains the previous value of a Cell before
  * the current transaction, the new value after it, and a convenience flag that
  * indicates that the value has changed.
- *
  * @category Listener
  */
 /// CellChange
@@ -851,7 +805,6 @@
  * Store changing. The listener can then fetch the previous value of a Value
  * before the current transaction, the new value after it, and a convenience
  * flag that indicates that the value has changed.
- *
  * @param valueId The Id of the Value to inspect.
  * @returns A ValueChange array containing information about the Value's
  * changes.
@@ -865,7 +818,6 @@
  * listener when called. This array contains the previous value of a Value
  * before the current transaction, the new value after it, and a convenience
  * flag that indicates that the value has changed.
- *
  * @category Listener
  */
 /// ValueChange
@@ -890,9 +842,8 @@
  * two-part array will never contain two items of the same value (including two
  * `undefined` values), even if, during the transaction, a Cell was changed to a
  * different value and then changed back.
- *
  * @category Transaction
- * @since v1.2
+ * @since v1.2.0
  */
 /// ChangedCells
 /**
@@ -911,9 +862,8 @@
  * two-part array will never contain two items of the same value (including two
  * `undefined` values), even if, during the transaction, a Cell was changed to a
  * different value and then changed back.
- *
  * @category Transaction
- * @since v1.2
+ * @since v1.2.0
  */
 /// ChangedCell
 /**
@@ -929,9 +879,8 @@
  * the Tables object, but one for which Cell values are listed in array (much
  * like the InvalidCellListener type) so that multiple failed attempts to change
  * a Cell during the transaction are described.
- *
  * @category Transaction
- * @since v1.2
+ * @since v1.2.0
  */
 /// InvalidCells
 /**
@@ -954,9 +903,8 @@
  * array will never contain two items of the same value (including two
  * `undefined` values), even if, during the transaction, a Value was changed to
  * a different value and then changed back.
- *
  * @category Transaction
- * @since v3.0
+ * @since v3.0.0
  */
 /// ChangedValues
 /**
@@ -975,9 +923,8 @@
  * array will never contain two items of the same value (including two
  * `undefined` values), even if, during the transaction, a Value was changed to
  * a different value and then changed back.
- *
  * @category Transaction
- * @since v3.0
+ * @since v3.0.0
  */
 /// ChangedValue
 /**
@@ -992,9 +939,8 @@
  * This type is an object containing each invalid Value's attempt listed in
  * array (much like the InvalidValueListener type) so that multiple failed
  * attempts to change a Value during the transaction are described.
- *
  * @category Transaction
- * @since v3.0
+ * @since v3.0.0
  */
 /// InvalidValues
 /**
@@ -1022,7 +968,6 @@
  * If not empty, the second object has an entry for each Value in a Store that
  * has had a change. If the entry is null, the Value was deleted, otherwise it
  * will contain the new Value it was changed to during the transaction.
- *
  * @example
  * The following is a valid TransactionChanges array that conveys the following:
  * ```json
@@ -1040,9 +985,8 @@
  *   {},                   // no changes to keyed value data in the Store
  * ]
  * ```
- *
  * @category Transaction
- * @since v4.0
+ * @since v4.0.0
  */
 /// TransactionChanges
 /**
@@ -1052,9 +996,8 @@
  * It is provided to the DoRollback callback and to a TransactionListener
  * listener when a transaction completes. See the TransactionChanges type for
  * more information and an example of the returned data structure.
- *
  * @category Transaction
- * @since v4.0
+ * @since v4.0.0
  */
 /// GetTransactionChanges
 /**
@@ -1078,9 +1021,8 @@
  * all changes have been reverted.
  *
  * See the documentation for the types of the inner objects for other details.
- *
  * @category Transaction
- * @since v4.0
+ * @since v4.0.0
  */
 /// TransactionLog
 /// GetTransactionLog
@@ -1091,9 +1033,8 @@
  * It is provided to the DoRollback callback and to a TransactionListener
  * listener when a transaction completes. See the TransactionLog type for more
  * information.
- *
  * @category Transaction
- * @since v4.0
+ * @since v4.0.0
  */
 /// GetTransactionLog
 /**
@@ -1104,7 +1045,6 @@
  * listener. Totals include both mutator and non-mutator listeners. A
  * StoreListenerStats object is returned from the getListenerStats method, and
  * is only populated in a debug build.
- *
  * @category Development
  */
 /// StoreListenerStats
@@ -1326,7 +1266,6 @@
  *
  * Finally, the getListenerStats method describes the current state of the
  * Store's listeners for debugging purposes.
- *
  * @example
  * This example shows a very simple lifecycle of a Store: from creation, to
  * adding and getting some data, and then registering and removing a listener.
@@ -1364,7 +1303,6 @@
    * Note that this returns a copy of, rather than a reference to the underlying
    * data, so changes made to the returned objects are not made to the Store
    * itself.
-   *
    * @returns An array of a Tables object and a Values object.
    * @example
    * This example retrieves the content of a Store.
@@ -1386,7 +1324,7 @@
    * // -> [{}, {}]
    * ```
    * @category Getter
-   * @since v4.0
+   * @since v4.0.0
    */
   /// Store.getContent
   /**
@@ -1396,7 +1334,6 @@
    * Note that this returns a copy of, rather than a reference to the underlying
    * data, so changes made to the returned object are not made to the Store
    * itself.
-   *
    * @returns A Tables object containing the tabular data of the Store.
    * @example
    * This example retrieves the tabular data in a Store.
@@ -1426,7 +1363,6 @@
    *
    * Note that this returns a copy of, rather than a reference, to the list of
    * Ids, so changes made to the list are not made to the Store itself.
-   *
    * @returns An array of the Ids of every Table in the Store.
    * @example
    * This example retrieves the Table Ids in a Store.
@@ -1458,7 +1394,6 @@
    * Note that this returns a copy of, rather than a reference to the underlying
    * data, so changes made to the returned object are not made to the Store
    * itself.
-   *
    * @param tableId The Id of the Table in the Store.
    * @returns An object containing the entire data of the Table.
    * @example
@@ -1490,7 +1425,6 @@
    *
    * Note that this returns a copy of, rather than a reference, to the list of
    * Ids, so changes made to the list are not made to the Store itself.
-   *
    * @param tableId The Id of the Table in the Store.
    * @returns An array of the Ids of every Cell used across the whole Table.
    * @example
@@ -1517,7 +1451,7 @@
    * // -> []
    * ```
    * @category Getter
-   * @since v3.3
+   * @since v3.3.0
    */
   /// Store.getTableCellIds
   /**
@@ -1525,7 +1459,6 @@
    *
    * Note that this returns a copy of, rather than a reference, to the list of
    * Ids, so changes made to the list are not made to the Store itself.
-   *
    * @param tableId The Id of the Table in the Store.
    * @returns An array of the Ids of every Row in the Table.
    * @example
@@ -1569,7 +1502,6 @@
    * addSortedRowIdsListener method.
    *
    * If the Table does not exist, an empty array is returned.
-   *
    * @param tableId The Id of the Table in the Store.
    * @param cellId The Id of the Cell whose values are used for the sorting, or
    * `undefined` to sort by the Row Id itself.
@@ -1650,7 +1582,7 @@
    * // -> []
    * ```
    * @category Getter
-   * @since v2.0
+   * @since v2.0.0
    */
   /// Store.getSortedRowIds
   /**
@@ -1660,7 +1592,6 @@
    * Note that this returns a copy of, rather than a reference to the underlying
    * data, so changes made to the returned object are not made to the Store
    * itself.
-   *
    * @param tableId The Id of the Table in the Store.
    * @param rowId The Id of the Row in the Table.
    * @returns An object containing the entire data of the Row.
@@ -1695,7 +1626,6 @@
    *
    * Note that this returns a copy of, rather than a reference, to the list of
    * Ids, so changes made to the list are not made to the Store itself.
-   *
    * @param tableId The Id of the Table in the Store.
    * @param rowId The Id of the Row in the Table.
    * @returns An array of the Ids of every Cell in the Row.
@@ -1726,7 +1656,6 @@
   /**
    * The getCell method returns the value of a single Cell in a given Row, in a
    * given Table.
-   *
    * @param tableId The Id of the Table in the Store.
    * @param rowId The Id of the Row in the Table.
    * @param cellId The Id of the Cell in the Row.
@@ -1759,7 +1688,6 @@
    * Note that this returns a copy of, rather than a reference to the underlying
    * data, so changes made to the returned object are not made to the Store
    * itself.
-   *
    * @returns An object containing the set of keyed Values in the Store.
    * @example
    * This example retrieves the set of keyed Values in the Store.
@@ -1779,7 +1707,7 @@
    * // -> {}
    * ```
    * @category Getter
-   * @since v3.0
+   * @since v3.0.0
    */
   /// Store.getValues
   /**
@@ -1787,7 +1715,6 @@
    *
    * Note that this returns a copy of, rather than a reference, to the list of
    * Ids, so changes made to the list are not made to the Store itself.
-   *
    * @returns An array of the Ids of every Value in the Store.
    * @example
    * This example retrieves the Value Ids in a Store.
@@ -1807,12 +1734,11 @@
    * // -> []
    * ```
    * @category Getter
-   * @since v3.0
+   * @since v3.0.0
    */
   /// Store.getValueIds
   /**
    * The getValue method returns a single keyed Value in the Store.
-   *
    * @param valueId The Id of the Value in the Store.
    * @returns The Value, or `undefined`.
    * @example
@@ -1832,13 +1758,12 @@
    * // -> undefined
    * ```
    * @category Getter
-   * @since v3.0
+   * @since v3.0.0
    */
   /// Store.getValue
   /**
    * The hasTables method returns a boolean indicating whether any Table objects
    * exist in the Store.
-   *
    * @returns Whether any Tables exist.
    * @example
    * This example shows simple existence checks.
@@ -1857,7 +1782,6 @@
   /**
    * The hasTable method returns a boolean indicating whether a given Table
    * exists in the Store.
-   *
    * @param tableId The Id of a possible Table in the Store.
    * @returns Whether a Table with that Id exists.
    * @example
@@ -1876,7 +1800,6 @@
   /**
    * The hasTableCell method returns a boolean indicating whether a given Cell
    * exists anywhere in a Table, not just in a specific Row.
-   *
    * @param tableId The Id of a possible Table in the Store.
    * @param cellId The Id of a possible Cell in the Table.
    * @returns Whether a Cell with that Id exists anywhere in that Table.
@@ -1895,13 +1818,12 @@
    * // -> false
    * ```
    * @category Getter
-   * @since v3.3
+   * @since v3.3.0
    */
   /// Store.hasTableCell
   /**
    * The hasRow method returns a boolean indicating whether a given Row exists
    * in the Store.
-   *
    * @param tableId The Id of a possible Table in the Store.
    * @param rowId The Id of a possible Row in the Table.
    * @returns Whether a Row with that Id exists in that Table.
@@ -1921,7 +1843,6 @@
   /**
    * The hasCell method returns a boolean indicating whether a given Cell exists
    * in a given Row in a given Table.
-   *
    * @param tableId The Id of a possible Table in the Store.
    * @param rowId The Id of a possible Row in the Table.
    * @param cellId The Id of a possible Cell in the Row.
@@ -1942,7 +1863,6 @@
   /**
    * The hasTables method returns a boolean indicating whether any Values exist
    * in the Store.
-   *
    * @returns Whether any Values exist.
    * @example
    * This example shows simple existence checks.
@@ -1956,13 +1876,12 @@
    * // -> true
    * ```
    * @category Getter
-   * @since v3.0
+   * @since v3.0.0
    */
   /// Store.hasValues
   /**
    * The hasValue method returns a boolean indicating whether a given Value
    * exists in the Store.
-   *
    * @param valueId The Id of a possible Value in the Store.
    * @returns Whether a Value with that Id exists in the Store.
    * @example
@@ -1976,13 +1895,12 @@
    * // -> false
    * ```
    * @category Getter
-   * @since v3.0
+   * @since v3.0.0
    */
   /// Store.hasValue
   /**
    * The getTablesJson method returns a string serialization of all of the
    * Tables in the Store.
-   *
    * @returns A string serialization of all of the Tables in the Store.
    * @example
    * This example serializes the contents of a Store.
@@ -2001,13 +1919,12 @@
    * // -> '{}'
    * ```
    * @category Getter
-   * @since v3.0
+   * @since v3.0.0
    */
   /// Store.getTablesJson
   /**
    * The getValuesJson method returns a string serialization of all of the keyed
    * Values in the Store.
-   *
    * @returns A string serialization of all of the Values in the Store.
    * @example
    * This example serializes the keyed value contents of a Store.
@@ -2026,7 +1943,7 @@
    * // -> '{}'
    * ```
    * @category Getter
-   * @since v3.0
+   * @since v3.0.0
    */
   /// Store.getValuesJson
   /**
@@ -2037,7 +1954,6 @@
    * first is the Tables object, the second the Values. In previous versions
    * (before the existence of the Values data structure), it was a sole object
    * of Tables.
-   *
    * @returns A string serialization of the Tables and Values in the Store.
    * @example
    * This example serializes the tabular and keyed value contents of a Store.
@@ -2067,7 +1983,6 @@
    * If no TablesSchema has been set on the Store (or if it has been removed
    * with the delTablesSchema method), then it will return the serialization of
    * an empty object, `{}`.
-   *
    * @returns A string serialization of the TablesSchema of the Store.
    * @example
    * This example serializes the TablesSchema of a Store.
@@ -2091,7 +2006,7 @@
    * // -> '{}'
    * ```
    * @category Getter
-   * @since v3.0
+   * @since v3.0.0
    */
   /// Store.getTablesSchemaJson
   /**
@@ -2101,7 +2016,6 @@
    * If no ValuesSchema has been set on the Store (or if it has been removed
    * with the delValuesSchema method), then it will return the serialization of
    * an empty object, `{}`.
-   *
    * @returns A string serialization of the ValuesSchema of the Store.
    * @example
    * This example serializes the ValuesSchema of a Store.
@@ -2122,7 +2036,7 @@
    * // -> '{}'
    * ```
    * @category Getter
-   * @since v3.0
+   * @since v3.0.0
    */
   /// Store.getValuesSchemaJson
   /**
@@ -2133,7 +2047,6 @@
    * first is the TablesSchema object, the second the ValuesSchema. In previous
    * versions (before the existence of the ValuesSchema data structure), it was
    * a sole object of TablesSchema.
-   *
    * @returns A string serialization of the TablesSchema and ValuesSchema of the
    * Store.
    * @example
@@ -2182,7 +2095,6 @@
    *
    * The method returns a reference to the Store so that subsequent operations
    * can be chained in a fluent style.
-   *
    * @param content An array containing the tabular and keyed-value data of the
    * Store to be set.
    * @example
@@ -2219,7 +2131,7 @@
    * // -> {pets: {felix: {species: 'cat'}}}
    * ```
    * @category Setter
-   * @since v4.0
+   * @since v4.0.0
    */
   /// Store.setContent
   /**
@@ -2239,7 +2151,6 @@
    *
    * The method returns a reference to the Store so that subsequent operations
    * can be chained in a fluent style.
-   *
    * @param tables The data of the Store to be set.
    * @example
    * This example sets the tabular data of a Store.
@@ -2288,7 +2199,6 @@
    *
    * The method returns a reference to the Store so that subsequent operations
    * can be chained in a fluent style.
-   *
    * @param tableId The Id of the Table in the Store.
    * @param table The data of a single Table to be set.
    * @example
@@ -2338,7 +2248,6 @@
    *
    * The method returns a reference to the Store so that subsequent operations
    * can be chained in a fluent style.
-   *
    * @param tableId The Id of the Table in the Store.
    * @param rowId The Id of the Row in the Table.
    * @param row The data of a single Row to be set.
@@ -2394,7 +2303,6 @@
    * if you specify `reuseRowIds` to be `false`, then the Id will be a
    * monotonically increasing string representation of an increasing integer,
    * regardless of any you may have previously deleted.
-   *
    * @param tableId The Id of the Table in the Store.
    * @param row The data of a single Row to be added.
    * @param reuseRowIds Whether Ids should be recycled from previously deleted
@@ -2447,7 +2355,6 @@
    *
    * The method returns a reference to the Store so that subsequent operations
    * can be chained in a fluent style.
-   *
    * @param tableId The Id of the Table in the Store.
    * @param rowId The Id of the Row in the Table.
    * @param partialRow The partial data of a single Row to be set.
@@ -2498,7 +2405,6 @@
    *
    * The method returns a reference to the Store so that subsequent operations
    * can be chained in a fluent style.
-   *
    * @param tableId The Id of the Table in the Store.
    * @param rowId The Id of the Row in the Table.
    * @param cellId The Id of the Cell in the Row.
@@ -2555,7 +2461,6 @@
    *
    * The method returns a reference to the Store so that subsequent operations
    * can be chained in a fluent style.
-   *
    * @param values The Values object to be set.
    * @returns A reference to the Store.
    * @example
@@ -2582,7 +2487,7 @@
    * // -> {employees: 3}
    * ```
    * @category Setter
-   * @since v3.0
+   * @since v3.0.0
    */
   /// Store.setValues
   /**
@@ -2603,7 +2508,6 @@
    *
    * The method returns a reference to the Store so that subsequent operations
    * can be chained in a fluent style.
-   *
    * @param partialValues The Values to be set.
    * @returns A reference to the Store.
    * @example
@@ -2631,7 +2535,7 @@
    * // -> {open: true, employees: 3}
    * ```
    * @category Setter
-   * @since v3.0
+   * @since v3.0.0
    */
   /// Store.setPartialValues
   /**
@@ -2650,7 +2554,6 @@
    *
    * The method returns a reference to the Store so that subsequent operations
    * can be chained in a fluent style.
-   *
    * @param valueId The Id of the Value in the Store.
    * @param value The Value to be set, or a MapValue function to update it.
    * @returns A reference to the Store.
@@ -2684,7 +2587,7 @@
    * // -> {employees: 3}
    * ```
    * @category Setter
-   * @since v3.0
+   * @since v3.0.0
    */
   /// Store.setValue
   /**
@@ -2703,7 +2606,6 @@
    *
    * The method returns a reference to the Store so that subsequent operations
    * can be chained in a fluent style.
-   *
    * @param transactionChanges The TransactionChanges to apply to the Store.
    * @returns A reference to the Store.
    * @example
@@ -2725,7 +2627,7 @@
    * // -> {}
    * ```
    * @category Setter
-   * @since v4.0
+   * @since v4.0.0
    */
   /// Store.setTransactionChanges
   /**
@@ -2736,7 +2638,6 @@
    * it will then be subject to the same validation rules as the setTables
    * method (according to the Tables type, and matching any TablesSchema
    * associated with the Store).
-   *
    * @param tablesJson A string serialization of all of the Tables in the Store.
    * @returns A reference to the Store.
    * @example
@@ -2759,7 +2660,7 @@
    * // -> {}
    * ```
    * @category Setter
-   * @since v3.0
+   * @since v3.0.0
    */
   /// Store.setTablesJson
   /**
@@ -2770,7 +2671,6 @@
    * it will then be subject to the same validation rules as the setValues
    * method (according to the Values type, and matching any ValuesSchema
    * associated with the Store).
-   *
    * @param valuesJson A string serialization of all of the Values in the Store.
    * @returns A reference to the Store.
    * @example
@@ -2793,7 +2693,7 @@
    * // -> {}
    * ```
    * @category Setter
-   * @since v3.0
+   * @since v3.0.0
    */
   /// Store.setValuesJson
   /**
@@ -2811,7 +2711,6 @@
    * method (according to the Tables type, and matching any TablesSchema
    * associated with the Store), and the setValues method (according to the
    * Values type, and matching any ValuesSchema associated with the Store).
-   *
    * @param tablesAndValuesJson A string serialization of all of the Tables and
    * Values in the Store.
    * @returns A reference to the Store.
@@ -2864,7 +2763,6 @@
    *
    * When no longer needed, you can also completely remove an existing
    * TablesSchema with the delTablesSchema method.
-   *
    * @param tablesSchema The TablesSchema to be set for the Store.
    * @returns A reference to the Store.
    * @example
@@ -2883,7 +2781,7 @@
    * // -> {pets: {0: {species: 'dog', sold: false}}}
    * ```
    * @category Setter
-   * @since v3.0
+   * @since v3.0.0
    */
   /// Store.setTablesSchema
   /**
@@ -2896,7 +2794,6 @@
    *
    * When no longer needed, you can also completely remove an existing
    * ValuesSchema with the delValuesSchema method.
-   *
    * @param valuesSchema The ValuesSchema to be set for the Store.
    * @returns A reference to the Store.
    * @example
@@ -2912,7 +2809,7 @@
    * // -> {open: false}
    * ```
    * @category Setter
-   * @since v3.0
+   * @since v3.0.0
    */
   /// Store.setValuesSchema
   /**
@@ -2928,7 +2825,6 @@
    * (before the existence of the ValuesSchema data structure), only the first
    * was present. For backwards compatibility the new second parameter is
    * optional.
-   *
    * @param tablesSchema The TablesSchema to be set for the Store.
    * @param valuesSchema The ValuesSchema to be set for the Store.
    * @returns A reference to the Store.
@@ -2975,7 +2871,6 @@
   /// Store.setSchema
   /**
    * The delTables method lets you remove all of the data in a Store.
-   *
    * @returns A reference to the Store.
    * @example
    * This example removes the data of a Store.
@@ -2992,7 +2887,6 @@
   /// Store.delTables
   /**
    * The delTable method lets you remove a single Table from the Store.
-   *
    * @param tableId The Id of the Table in the Store.
    * @returns A reference to the Store.
    * @example
@@ -3015,7 +2909,6 @@
    * The delRow method lets you remove a single Row from a Table.
    *
    * If this is the last Row in its Table, then that Table will be removed.
-   *
    * @param tableId The Id of the Table in the Store.
    * @param rowId The Id of the Row in the Table.
    * @returns A reference to the Store.
@@ -3054,7 +2947,6 @@
    * invalid Row (according to the TablesSchema), in fact the whole Row is
    * deleted to retain the integrity of the Table. Therefore, this flag should
    * be used with caution.
-   *
    * @param tableId The Id of the Table in the Store.
    * @param rowId The Id of the Row in the Table.
    * @param cellId The Id of the Cell in the Row.
@@ -3123,7 +3015,6 @@
    * If there is a ValuesSchema applied to the Store and it specifies a default
    * value for any Value Id, then deletion will result in it being set back to
    * its default value.
-   *
    * @returns A reference to the Store.
    * @example
    * This example removes all Values from a Store without a ValuesSchema.
@@ -3152,7 +3043,7 @@
    * // -> {open: false}
    * ```
    * @category Deleter
-   * @since v3.0
+   * @since v3.0.0
    */
   /// Store.delValues
   /**
@@ -3161,7 +3052,6 @@
    * If there is a ValuesSchema applied to the Store and it specifies a default
    * value for this Value Id, then deletion will result in it being set back to
    * its default value.
-   *
    * @param valueId The Id of the Value in the Row.
    * @returns A reference to the Store.
    * @example
@@ -3191,12 +3081,11 @@
    * // -> {open: false, employees: 3}
    * ```
    * @category Deleter
-   * @since v3.0
+   * @since v3.0.0
    */
   /// Store.delValue
   /**
    * The delTablesSchema method lets you remove the TablesSchema of the Store.
-   *
    * @returns A reference to the Store.
    * @example
    * This example removes the TablesSchema of a Store.
@@ -3214,7 +3103,6 @@
   /// Store.delTablesSchema
   /**
    * The delValuesSchema method lets you remove the ValuesSchema of the Store.
-   *
    * @returns A reference to the Store.
    * @example
    * This example removes the ValuesSchema of a Store.
@@ -3228,7 +3116,7 @@
    * // -> '{}'
    * ```
    * @category Deleter
-   * @since v3.0
+   * @since v3.0.0
    */
   /// Store.delValuesSchema
   /**
@@ -3236,7 +3124,6 @@
    * of the Store.
    *
    * Prior to v3.0, this method removed the TablesSchema only.
-   *
    * @returns A reference to the Store.
    * @example
    * This example removes the TablesSchema and ValuesSchema of a Store.
@@ -3254,7 +3141,7 @@
    * // -> '[{},{}]'
    * ```
    * @category Deleter
-   * @since v3.0
+   * @since v3.0.0
    */
   /// Store.delSchema
   /**
@@ -3285,7 +3172,6 @@
    * `getTransactionLog` parameters, which inform you of the net changes that
    * have been made during the transaction, at different levels of detail. See
    * the DoRollback documentation for more details.
-   *
    * @param actions The function to be executed as a transaction.
    * @param doRollback An optional callback that should return `true` if you
    * want to rollback the transaction at the end. Since v1.2.
@@ -3408,7 +3294,6 @@
    * that are asynchronous or not occurring inline to your code. You must
    * remember to also call the finishTransaction method explicitly when it is
    * done, of course.
-   *
    * @returns A reference to the Store.
    * @example
    * This example makes changes to two Cells, first outside, and secondly
@@ -3433,7 +3318,7 @@
    * // -> 'Fido changed'
    * ```
    * @category Transaction
-   * @since v1.3
+   * @since v1.3.0
    */
   /// Store.startTransaction
   /**
@@ -3464,7 +3349,6 @@
    * `getTransactionLog` parameters, which inform you of the net changes that
    * have been made during the transaction, at different levels of detail. See
    * the DoRollback documentation for more details.
-   *
    * @param doRollback An optional callback that should return `true` if you
    * want to rollback the transaction at the end.
    * @returns A reference to the Store.
@@ -3530,7 +3414,7 @@
    * // -> {open: true}
    * ```
    * @category Transaction
-   * @since v1.3
+   * @since v1.3.0
    */
   /// Store.finishTransaction
   /**
@@ -3542,7 +3426,6 @@
    * function that will be called with the Id of each Table, and with a function
    * that can then be used to iterate over each Row of the Table, should you
    * wish.
-   *
    * @param tableCallback The function that should be called for every Table.
    * @example
    * This example iterates over each Table in a Store, and lists each Row Id
@@ -3573,7 +3456,6 @@
    * a functional style. The `tableCellCallback` parameter is a
    * TableCellCallback function that will be called with the Id of each Cell and
    * the count of Rows in the Table in which it appears.
-   *
    * @param tableId The Id of the Table containing the Cells to iterate over.
    * @param tableCellCallback The function that should be called for every Cell
    * Id used across the whole Table.
@@ -3591,7 +3473,7 @@
    * // -> 'legs: 1'
    * ```
    * @category Iterator
-   * @since v3.3
+   * @since v3.3.0
    */
   /// Store.forEachTableCell
   /**
@@ -3602,7 +3484,6 @@
    * a functional style. The `rowCallback` parameter is a RowCallback function
    * that will be called with the Id of each Row, and with a function that can
    * then be used to iterate over each Cell of the Row, should you wish.
-   *
    * @param tableId The Id of the Table to iterate over.
    * @param rowCallback The function that should be called for every Row.
    * @example
@@ -3635,7 +3516,6 @@
    * This method is useful for iterating over the Cell structure of the Row in a
    * functional style. The `cellCallback` parameter is a CellCallback function
    * that will be called with the Id and value of each Cell.
-   *
    * @param tableId The Id of the Table containing the Row to iterate over.
    * @param rowId The Id of the Row to iterate over.
    * @param cellCallback The function that should be called for every Cell.
@@ -3662,7 +3542,6 @@
    * This method is useful for iterating over the Value structure of the Store
    * in a functional style. The `valueCallback` parameter is a ValueCallback
    * function that will be called with the Id and value of each Value.
-   *
    * @param valueCallback The function that should be called for every Value.
    * @example
    * This example iterates over each Value in a Store, and lists its value.
@@ -3676,7 +3555,7 @@
    * // -> 'employees: 3'
    * ```
    * @category Iterator
-   * @since v3.0
+   * @since v3.0.0
    */
   /// Store.forEachValue
   /**
@@ -3694,7 +3573,6 @@
    * (since the latter may become relevant due to changes made in the former).
    * The changes made by mutator listeners do not fire other mutating listeners,
    * though they will fire non-mutator listeners.
-   *
    * @param listener The function that will be called whenever data in the Store
    * changes.
    * @param mutator An optional boolean that indicates that the listener mutates
@@ -3760,7 +3638,6 @@
    * (since the latter may become relevant due to changes made in the former).
    * The changes made by mutator listeners do not fire other mutating listeners,
    * though they will fire non-mutator listeners.
-   *
    * @param listener The function that will be called whenever the Table Ids in
    * the Store change.
    * @param mutator An optional boolean that indicates that the listener mutates
@@ -3824,7 +3701,6 @@
    * (since the latter may become relevant due to changes made in the former).
    * The changes made by mutator listeners do not fire other mutating listeners,
    * though they will fire non-mutator listeners.
-   *
    * @param tableId The Id of the Table to listen to, or `null` as a wildcard.
    * @param listener The function that will be called whenever data in the
    * matching Table changes.
@@ -3919,7 +3795,6 @@
    * (since the latter may become relevant due to changes made in the former).
    * The changes made by mutator listeners do not fire other mutating listeners,
    * though they will fire non-mutator listeners.
-   *
    * @param tableId The Id of the Table to listen to, or `null` as a wildcard.
    * @param listener The function that will be called whenever the Cell Ids that
    * appear anywhere in a Table change.
@@ -4017,7 +3892,6 @@
    * (since the latter may become relevant due to changes made in the former).
    * The changes made by mutator listeners do not fire other mutating listeners,
    * though they will fire non-mutator listeners.
-   *
    * @param tableId The Id of the Table to listen to, or `null` as a wildcard.
    * @param listener The function that will be called whenever the Row Ids in
    * the Table change.
@@ -4116,7 +3990,6 @@
    * (since the latter may become relevant due to changes made in the former).
    * The changes made by mutator listeners do not fire other mutating listeners,
    * though they will fire non-mutator listeners.
-   *
    * @param tableId The Id of the Table to listen to.
    * @param cellId The Id of the Cell whose values are used for the sorting, or
    * `undefined` to sort by the Row Id itself.
@@ -4297,7 +4170,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
-   * @since v2.0
+   * @since v2.0.0
    */
   /// Store.addSortedRowIdsListener
   /**
@@ -4325,7 +4198,6 @@
    * (since the latter may become relevant due to changes made in the former).
    * The changes made by mutator listeners do not fire other mutating listeners,
    * though they will fire non-mutator listeners.
-   *
    * @param tableId The Id of the Table to listen to, or `null` as a wildcard.
    * @param rowId The Id of the Row to listen to, or `null` as a wildcard.
    * @param listener The function that will be called whenever data in the
@@ -4431,7 +4303,6 @@
    * (since the latter may become relevant due to changes made in the former).
    * The changes made by mutator listeners do not fire other mutating listeners,
    * though they will fire non-mutator listeners.
-   *
    * @param tableId The Id of the Table to listen to, or `null` as a wildcard.
    * @param rowId The Id of the Row to listen to, or `null` as a wildcard.
    * @param listener The function that will be called whenever the Cell Ids in
@@ -4530,7 +4401,6 @@
    * (since the latter may become relevant due to changes made in the former).
    * The changes made by mutator listeners do not fire other mutating listeners,
    * though they will fire non-mutator listeners.
-   *
    * @param tableId The Id of the Table to listen to, or `null` as a wildcard.
    * @param rowId The Id of the Row to listen to, or `null` as a wildcard.
    * @param cellId The Id of the Cell to listen to, or `null` as a wildcard.
@@ -4632,7 +4502,6 @@
    * (since the latter may become relevant due to changes made in the former).
    * The changes made by mutator listeners do not fire other mutating listeners,
    * though they will fire non-mutator listeners.
-   *
    * @param listener The function that will be called whenever data in the
    * Values changes.
    * @param mutator An optional boolean that indicates that the listener mutates
@@ -4674,7 +4543,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
-   * @since v3.0
+   * @since v3.0.0
    */
   /// Store.addValuesListener
   /**
@@ -4695,7 +4564,6 @@
    * (since the latter may become relevant due to changes made in the former).
    * The changes made by mutator listeners do not fire other mutating listeners,
    * though they will fire non-mutator listeners.
-   *
    * @param listener The function that will be called whenever the Value Ids in
    * the Store change.
    * @param mutator An optional boolean that indicates that the listener mutates
@@ -4737,7 +4605,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
-   * @since v3.0
+   * @since v3.0.0
    */
   /// Store.addValueIdsListener
   /**
@@ -4759,7 +4627,6 @@
    * (since the latter may become relevant due to changes made in the former).
    * The changes made by mutator listeners do not fire other mutating listeners,
    * though they will fire non-mutator listeners.
-   *
    * @param valueId The Id of the Value to listen to, or `null` as a wildcard.
    * @param listener The function that will be called whenever data in the
    * matching Value changes.
@@ -4825,7 +4692,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
-   * @since v3.0
+   * @since v3.0.0
    */
   /// Store.addValueListener
   /**
@@ -4873,7 +4740,6 @@
    *
    * To help understand all of these schema-based conditions, please see the
    * TablesSchema example below.
-   *
    * @param tableId The Id of the Table to listen to, or `null` as a wildcard.
    * @param rowId The Id of the Row to listen to, or `null` as a wildcard.
    * @param cellId The Id of the Cell to listen to, or `null` as a wildcard.
@@ -5049,7 +4915,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
-   * @since v1.1
+   * @since v1.1.0
    */
   /// Store.addInvalidCellListener
   /**
@@ -5090,7 +4956,6 @@
    *
    * To help understand all of these schema-based conditions, please see the
    * ValuesSchema example below.
-   *
    * @param valueId The Id of the Value to listen to, or `null` as a wildcard.
    * @param listener The function that will be called whenever an attempt to
    * write invalid data to the matching Value was made.
@@ -5220,7 +5085,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
-   * @since v3.0
+   * @since v3.0.0
    */
   /// Store.addInvalidValueListener
   /**
@@ -5235,7 +5100,6 @@
    * Note that a TransactionListener added to the Store with this method can
    * mutate the Store, and its changes will be treated as part of the
    * transaction that is starting.
-   *
    * @returns A unique Id for the listener that can later be used to remove it.
    * @example
    * This example registers a listener that is called at start end of the
@@ -5291,7 +5155,6 @@
    * mutate the Store itself, and its changes will be treated as part of the
    * transaction that is starting (and may fire non-mutating listeners after
    * this).
-   *
    * @returns A unique Id for the listener that can later be used to remove it.
    * @example
    * This example registers a listener that is called at the end of the
@@ -5361,7 +5224,7 @@
    *   .delListener(listenerId3);
    * ```
    * @category Listener
-   * @since v1.3
+   * @since v1.3.0
    */
   /// Store.addWillFinishTransactionListener
   /**
@@ -5387,7 +5250,6 @@
    *
    * Note that a TransactionListener added to the Store with this method
    * _cannot_ mutate the Store itself, and attempts to do so will fail silently.
-   *
    * @returns A unique Id for the listener that can later be used to remove it.
    * @example
    * This example registers a listener that is called at the end of the
@@ -5457,7 +5319,7 @@
    *   .delListener(listenerId3);
    * ```
    * @category Listener
-   * @since v1.3
+   * @since v1.3.0
    */
   /// Store.addDidFinishTransactionListener
   /**
@@ -5467,7 +5329,6 @@
    * This is useful when you are using mutator listeners to guarantee that data
    * conforms to programmatic conditions, and those conditions change such that
    * you need to update the Store in bulk.
-   *
    * @param listenerId The Id of the listener to call.
    * @returns A reference to the Store.
    * @example
@@ -5582,7 +5443,6 @@
    *
    * Use the Id returned by whichever method was used to add the listener. Note
    * that the Store may re-use this Id for future listeners added to it.
-   *
    * @param listenerId The Id of the listener to remove.
    * @returns A reference to the Store.
    * @example
@@ -5619,7 +5479,6 @@
    * return an empty object. The method is intended to be used during
    * development to ensure your application is not leaking listener
    * registrations, for example.
-   *
    * @returns A StoreListenerStats object containing Store listener statistics.
    * @example
    * This example gets the listener statistics of a small and simple Store.
@@ -5645,7 +5504,6 @@
  *
  * Since (or perhaps _because_) it is the most important function in the whole
  * module, it is trivially simple.
- *
  * @returns A reference to the new Store.
  * @example
  * This example creates a Store.

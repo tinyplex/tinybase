@@ -6,7 +6,6 @@
  * returns a new Metrics object. From there, you can create new Metric
  * definitions, access the values of those Metrics directly, and register
  * listeners for when they change.
- *
  * @packageDocumentation
  * @module metrics
  */
@@ -14,7 +13,6 @@
 /**
  * The Metric type is simply an alias, but represents a number formed by
  * aggregating multiple other numbers together.
- *
  * @category Metric
  */
 /// Metric
@@ -25,7 +23,6 @@
  * A MetricCallback is provided when using the forEachMetric method, so that you
  * can do something based on every Metric in the Metrics object. See that method
  * for specific examples.
- *
  * @param metricId The Id of the Metric that the callback can operate on.
  * @param metric The value of the Metric.
  * @category Callback
@@ -39,7 +36,6 @@
  * summing, and averaging values. This type is instead used for when you wish to
  * use a more complex aggregation of your own devising. See the
  * setMetricDefinition method for more examples.
- *
  * @param numbers The array of numbers in the Metric's aggregation.
  * @param length The length of the array of numbers in the Metric's aggregation.
  * @returns The value of the Metric.
@@ -63,7 +59,6 @@
  * implementation of an MetricAggregateAdd function that can reduce the
  * complexity cost of growing the input data set. See the setMetricDefinition
  * method for more examples.
- *
  * @param metric The current value of the Metric.
  * @param add The number being added to the Metric's aggregation.
  * @param length The length of the array of numbers in the Metric's aggregation.
@@ -91,7 +86,6 @@
  * implementation of an MetricAggregateRemove function that can reduce the
  * complexity cost of shrinking the input data set. See the setMetricDefinition
  * method for more examples.
- *
  * @param metric The current value of the Metric.
  * @param remove The number being removed from the Metric's aggregation.
  * @param length The length of the array of numbers in the Metric's aggregation.
@@ -116,7 +110,6 @@
  * implementation of an MetricAggregateReplace function that can reduce the
  * complexity cost of changing the input data set in place. See the
  * setMetricDefinition method for more examples.
- *
  * @param metric The current value of the Metric.
  * @param add The number being added to the Metric's aggregation.
  * @param remove The number being removed from the Metric's aggregation.
@@ -138,7 +131,6 @@
  * If this is the first time that a Metric has had a value (such as when a table
  * has gained its first row), the old value will be `undefined`. If a Metric now
  * no longer has a value, the new value will be `undefined`.
- *
  * @param metrics A reference to the Metrics object that changed.
  * @param metricId The Id of the Metric that changed.
  * @param newMetric The new value of the Metric that changed.
@@ -152,7 +144,6 @@
  *
  * A MetricsListenerStats object is returned from the getListenerStats method,
  * and is only populated in a debug build.
- *
  * @category Development
  */
 /// MetricsListenerStats
@@ -178,7 +169,6 @@
  * ('sum', 'avg', 'min', and 'max'), and defaults to counting Row objects when
  * using the setMetricDefinition method. However, far more complex aggregations
  * can be configured with custom functions.
- *
  * @example
  * This example shows a very simple lifecycle of a Metrics object: from
  * creation, to adding a definition, getting a Metric, and then registering and
@@ -246,7 +236,6 @@
    * function's algorithmic complexity by providing shortcuts that can nudge an
    * aggregation result when a single value is added, removed, or replaced in
    * the input values.
-   *
    * @param metricId The Id of the Metric to define.
    * @param tableId The Id of the Table the Metric will be calculated from.
    * @param aggregate Either a string representing one of a set of common
@@ -387,7 +376,6 @@
   /// Metrics.setMetricDefinition
   /**
    * The delMetricDefinition method removes an existing Metric definition.
-   *
    * @param metricId The Id of the Metric to remove.
    * @returns A reference to the Metrics object.
    * @example
@@ -416,7 +404,6 @@
   /**
    * The getStore method returns a reference to the underlying Store that is
    * backing this Metrics object.
-   *
    * @returns A reference to the Store.
    * @example
    * This example creates a Metrics object against a newly-created Store and
@@ -435,7 +422,6 @@
   /**
    * The getMetricIds method returns an array of the Metric Ids registered with
    * this Metrics object.
-   *
    * @returns An array of Ids.
    * @example
    * This example creates a Metrics object with two definitions, and then gets
@@ -459,7 +445,6 @@
    * This method is useful for iterating over all the Metrics in a functional
    * style. The `metricCallback` parameter is a MetricCallback function that
    * will be called with the Id of each Metric and its value.
-   *
    * @param metricCallback The function that should be called for every Metric.
    * @example
    * This example iterates over each Metric in a Metrics object.
@@ -486,7 +471,6 @@
   /**
    * The hasMetric method returns a boolean indicating whether a given Metric
    * exists in the Metrics object, and has a value.
-   *
    * @param metricId The Id of a possible Metric in the Metrics object.
    * @returns Whether a Metric with that Id exists.
    * @example
@@ -513,7 +497,6 @@
    * backing a Metric.
    *
    * If the Metric Id is invalid, the method returns `undefined`.
-   *
    * @param metricId The Id of a Metric.
    * @returns The Id of the Table backing the Metric, or `undefined`.
    * @example
@@ -537,7 +520,6 @@
    *
    * If the identified Metric does not exist (or if the definition references a
    * Table or Cell value that does not exist) then `undefined` is returned.
-   *
    * @param metricId The Id of the Metric.
    * @returns The numeric value of the Metric, or `undefined`.
    * @example
@@ -576,7 +558,6 @@
    * The provided listener is a MetricListener function, and will be called with
    * a reference to the Metrics object, the Id of the Metric that changed, the
    * new Metric value, and the old Metric value.
-   *
    * @param metricId The Id of the Metric to listen to, or `null` as a wildcard.
    * @param listener The function that will be called whenever the Metric
    * changes.
@@ -649,7 +630,6 @@
    *
    * Use the Id returned by the addMetricListener method. Note that the Metrics
    * object may re-use this Id for future listeners added to it.
-   *
    * @param listenerId The Id of the listener to remove.
    * @returns A reference to the Metrics object.
    * @example
@@ -691,7 +671,6 @@
    *
    * This guarantees that all of the listeners that the object registered with
    * the underlying Store are removed and it can be correctly garbage collected.
-   *
    * @example
    * This example creates a Store, adds a Metrics object with a definition (that
    * registers a RowListener with the underlying Store), and then destroys it
@@ -726,7 +705,6 @@
    * return an empty object. The method is intended to be used during
    * development to ensure your application is not leaking listener
    * registrations, for example.
-   *
    * @returns A MetricsListenerStats object containing Metrics listener
    * statistics.
    * @example
@@ -751,7 +729,6 @@
  * A given Store can only have one Metrics object associated with it. If you
  * call this function twice on the same Store, your second call will return a
  * reference to the Metrics object created by the first.
- *
  * @param store The Store for which to register Metric definitions.
  * @returns A reference to the new Metrics object.
  * @example

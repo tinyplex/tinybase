@@ -9,7 +9,6 @@
  *
  * The components in this module provide a further abstraction over those hooks
  * to ease the composition of user interfaces that use TinyBase.
- *
  * @see Building UIs guides
  * @see Building UIs With Metrics guide
  * @see Building UIs With Indexes guide
@@ -35,7 +34,6 @@
  *
  * Many hooks and components in this ui-react module take this type as a
  * parameter or a prop, allowing you to pass in either the Store or its Id.
- *
  * @category Identity
  */
 /// StoreOrStoreId
@@ -53,7 +51,6 @@
  *
  * Many hooks and components in this ui-react module take this type as a
  * parameter or a prop, allowing you to pass in either the Store or its Id.
- *
  * @category Identity
  */
 /// MetricsOrMetricsId
@@ -71,7 +68,6 @@
  *
  * Many hooks and components in this ui-react module take this type as a
  * parameter or a prop, allowing you to pass in either the Store or its Id.
- *
  * @category Identity
  */
 /// IndexesOrIndexesId
@@ -89,7 +85,6 @@
  *
  * Many hooks and components in this ui-react module take this type as a
  * parameter or a prop, allowing you to pass in either the Store or its Id.
- *
  * @category Identity
  */
 /// RelationshipsOrRelationshipsId
@@ -107,9 +102,8 @@
  *
  * Many hooks and components in this ui-react module take this type as a
  * parameter or a prop, allowing you to pass in either the Store or its Id.
- *
  * @category Identity
- * @since v2.0
+ * @since v2.0.0
  */
 /// QueriesOrQueriesId
 /**
@@ -126,7 +120,6 @@
  *
  * Many hooks and components in this ui-react module take this type as a
  * parameter or a prop, allowing you to pass in either the Store or its Id.
- *
  * @category Identity
  */
 /// CheckpointsOrCheckpointsId
@@ -138,7 +131,6 @@
  * This type is useful if you are building undo or redo buttons. See the
  * useUndoInformation hook and the useRedoInformation hook for more details and
  * examples.
- *
  * @category Checkpoints
  */
 /// UndoOrRedoInformation
@@ -160,7 +152,6 @@
  * should cause the Store to be recreated, you can provide them in an array in
  * the optional second parameter, just as you would for any React hook with
  * dependencies.
- *
  * @param create A function for performing the creation of the Store, plus any
  * additional steps such as adding data or listeners, and returning it.
  * @param createDeps An optional array of dependencies for the `create`
@@ -236,7 +227,6 @@
  * The useStore hook lets you either get a reference to the default Store (when
  * called without a parameter), or one of the Store objects that are named by Id
  * (when called with an Id parameter).
- *
  * @param id An optional Id for accessing a Store that was named with an Id in
  * the Provider.
  * @returns A reference to the Store (or `undefined` if not within a Provider
@@ -298,7 +288,6 @@
  * When first rendered, this hook will create a listener so that changes to the
  * Tables will cause a re-render. When the component containing this hook is
  * unmounted, the listener will be automatically removed.
- *
  * @param storeOrStoreId The Store to be accessed: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
@@ -374,7 +363,6 @@
  * When first rendered, this hook will create a listener so that changes to the
  * Table Ids will cause a re-render. When the component containing this hook is
  * unmounted, the listener will be automatically removed.
- *
  * @param storeOrStoreId The Store to be accessed: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
@@ -450,7 +438,6 @@
  * When first rendered, this hook will create a listener so that changes to the
  * Table will cause a re-render. When the component containing this hook is
  * unmounted, the listener will be automatically removed.
- *
  * @param tableId The Id of the Table in the Store.
  * @param storeOrStoreId The Store to be accessed: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
@@ -529,7 +516,6 @@
  * When first rendered, this hook will create a listener so that changes to the
  * Table Cell Ids will cause a re-render. When the component containing this
  * hook is unmounted, the listener will be automatically removed.
- *
  * @param tableId The Id of the Table in the Store.
  * @param storeOrStoreId The Store to be accessed: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
@@ -594,7 +580,7 @@
  * // -> '<span>["color"]</span>'
  * ```
  * @category Store hooks
- * @since v3.3
+ * @since v3.3.0
  */
 /// useTableCellIds
 /**
@@ -611,7 +597,6 @@
  * When first rendered, this hook will create a listener so that changes to the
  * Row Ids will cause a re-render. When the component containing this hook is
  * unmounted, the listener will be automatically removed.
- *
  * @param tableId The Id of the Table in the Store.
  * @param storeOrStoreId The Store to be accessed: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
@@ -691,7 +676,6 @@
  * When first rendered, this hook will create a listener so that changes to the
  * sorted Row Ids will cause a re-render. When the component containing this
  * hook is unmounted, the listener will be automatically removed.
- *
  * @param tableId The Id of the Table in the Store.
  * @param cellId The Id of the Cell whose values are used for the sorting, or
  * `undefined` to by sort the Row Id itself.
@@ -784,7 +768,7 @@
  * // -> '<span>["felix","fido"]</span>'
  * ```
  * @category Store hooks
- * @since v2.0
+ * @since v2.0.0
  */
 /// useSortedRowIds
 /**
@@ -801,7 +785,6 @@
  * When first rendered, this hook will create a listener so that changes to the
  * Row will cause a re-render. When the component containing this hook is
  * unmounted, the listener will be automatically removed.
- *
  * @param tableId The Id of the Table in the Store.
  * @param rowId The Id of the Row in the Table.
  * @param storeOrStoreId The Store to be accessed: omit for the default context
@@ -883,7 +866,6 @@
  * When first rendered, this hook will create a listener so that changes to the
  * Cell Ids will cause a re-render. When the component containing this hook is
  * unmounted, the listener will be automatically removed.
- *
  * @param tableId The Id of the Table in the Store.
  * @param rowId The Id of the Row in the Table.
  * @param storeOrStoreId The Store to be accessed: omit for the default context
@@ -967,7 +949,6 @@
  * When first rendered, this hook will create a listener so that changes to the
  * Cell will cause a re-render. When the component containing this hook is
  * unmounted, the listener will be automatically removed.
- *
  * @param tableId The Id of the Table in the Store.
  * @param rowId The Id of the Row in the Table.
  * @param cellId The Id of the Cell in the Row.
@@ -1048,7 +1029,6 @@
  * When first rendered, this hook will create a listener so that changes to the
  * Values will cause a re-render. When the component containing this hook is
  * unmounted, the listener will be automatically removed.
- *
  * @param storeOrStoreId The Store to be accessed: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
@@ -1108,7 +1088,7 @@
  * // -> '<span>{"open":true}</span>'
  * ```
  * @category Store hooks
- * @since v3.0
+ * @since v3.0.0
  */
 /// useValues
 /**
@@ -1124,7 +1104,6 @@
  * When first rendered, this hook will create a listener so that changes to the
  * Value Ids will cause a re-render. When the component containing this hook is
  * unmounted, the listener will be automatically removed.
- *
  * @param storeOrStoreId The Store to be accessed: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
@@ -1184,7 +1163,7 @@
  * // -> '<span>["open"]</span>'
  * ```
  * @category Store hooks
- * @since v3.0
+ * @since v3.0.0
  */
 /// useValueIds
 /**
@@ -1201,7 +1180,6 @@
  * When first rendered, this hook will create a listener so that changes to the
  * Value will cause a re-render. When the component containing this hook is
  * unmounted, the listener will be automatically removed.
- *
  * @param valueId The Id of the Value in the Store.
  * @param storeOrStoreId The Store to be accessed: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
@@ -1264,7 +1242,7 @@
  * // -> '<span>true</span>'
  * ```
  * @category Store hooks
- * @since v3.0
+ * @since v3.0.0
  */
 /// useValue
 /**
@@ -1291,7 +1269,6 @@
  * The Store to which the callback will make the mutation (indicated by the
  * hook's `storeOrStoreId` parameter) is always automatically used as a hook
  * dependency for the callback.
- *
  * @param getTables A function which returns the Tables object that will be used
  * to update the Store, based on the parameter the callback will receive (and
  * which is most likely a DOM event).
@@ -1367,7 +1344,6 @@
  * The Store to which the callback will make the mutation (indicated by the
  * hook's `storeOrStoreId` parameter) is always automatically used as a hook
  * dependency for the callback.
- *
  * @param tableId The Id of the Table in the Store to set.
  * @param getTable A function which returns the Table object that will be used
  * to update the Store, based on the parameter the callback will receive (and
@@ -1445,7 +1421,6 @@
  * The Store to which the callback will make the mutation (indicated by the
  * hook's `storeOrStoreId` parameter) is always automatically used as a hook
  * dependency for the callback.
- *
  * @param tableId The Id of the Table in the Store.
  * @param rowId The Id of the Row in the Table to set.
  * @param getRow A function which returns the Row object that will be used to
@@ -1532,7 +1507,6 @@
  * specify `reuseRowIds` to be `false`, then the Id will be a monotonically
  * increasing string representation of an increasing integer, regardless of any
  * you may have previously deleted.
- *
  * @param tableId The Id of the Table in the Store.
  * @param getRow A function which returns the Row object that will be used to
  * update the Store, based on the parameter the callback will receive (and which
@@ -1550,7 +1524,6 @@
  * parameter defaults to an empty array.
  * @param reuseRowIds Whether Ids should be recycled from previously deleted Row
  * objects, defaulting to `true`.
- *
  * @returns A parameterized callback for subsequent use.
  * @example
  * This example uses the useAddRowCallback hook to create an event handler which
@@ -1614,7 +1587,6 @@
  * The Store to which the callback will make the mutation (indicated by the
  * hook's `storeOrStoreId` parameter) is always automatically used as a hook
  * dependency for the callback.
- *
  * @param tableId The Id of the Table in the Store.
  * @param rowId The Id of the Row in the Table to set.
  * @param getPartialRow A function which returns the partial Row object that
@@ -1695,7 +1667,6 @@
  * The Store to which the callback will make the mutation (indicated by the
  * hook's `storeOrStoreId` parameter) is always automatically used as a hook
  * dependency for the callback.
- *
  * @param tableId The Id of the Table in the Store.
  * @param rowId The Id of the Row in the Table.
  * @param cellId The Id of the Cell in the Row to set.
@@ -1814,7 +1785,6 @@
  * The Store to which the callback will make the mutation (indicated by the
  * hook's `storeOrStoreId` parameter) is always automatically used as a hook
  * dependency for the callback.
- *
  * @param getValues A function which returns the Values object that will be used
  * to update the Store, based on the parameter the callback will receive (and
  * which is most likely a DOM event).
@@ -1864,7 +1834,7 @@
  * // -> '{"bubbles":true}'
  * ```
  * @category Store hooks
- * @since v3.0
+ * @since v3.0.0
  */
 /// useSetValuesCallback
 /**
@@ -1892,7 +1862,6 @@
  * The Store to which the callback will make the mutation (indicated by the
  * hook's `storeOrStoreId` parameter) is always automatically used as a hook
  * dependency for the callback.
- *
  * @param getPartialValues A function which returns the partial Values object
  * that will be used to update the Store, based on the parameter the callback
  * will receive (and which is most likely a DOM event).
@@ -1943,7 +1912,7 @@
  * // -> '{"open":true,"bubbles":true}'
  * ```
  * @category Store hooks
- * @since v3.0
+ * @since v3.0.0
  */
 /// useSetPartialValuesCallback
 /**
@@ -1970,7 +1939,6 @@
  * The Store to which the callback will make the mutation (indicated by the
  * hook's `storeOrStoreId` parameter) is always automatically used as a hook
  * dependency for the callback.
- *
  * @param valueId The Id of the Value in the Store to set.
  * @param getValue A function which returns the Value object that will be used
  * to update the Store, based on the parameter the callback will receive (and
@@ -2022,7 +1990,7 @@
  * // -> '{"open":true,"bubbles":true}'
  * ```
  * @category Store hooks
- * @since v3.0
+ * @since v3.0.0
  */
 /// useSetValueCallback
 /**
@@ -2040,7 +2008,6 @@
  * The Store to which the callback will make the deletion (indicated by the
  * hook's `storeOrStoreId` parameter) is always automatically used as a hook
  * dependency for the callback.
- *
  * @param storeOrStoreId The Store to be updated: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
@@ -2098,7 +2065,6 @@
  * The Store to which the callback will make the deletion (indicated by the
  * hook's `storeOrStoreId` parameter) is always automatically used as a hook
  * dependency for the callback.
- *
  * @param tableId The Id of the Table in the Store.
  * @param storeOrStoreId The Store to be updated: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
@@ -2157,7 +2123,6 @@
  * The Store to which the callback will make the deletion (indicated by the
  * hook's `storeOrStoreId` parameter) is always automatically used as a hook
  * dependency for the callback.
- *
  * @param tableId The Id of the Table in the Store.
  * @param rowId The Id of the Row in the Table.
  * @param storeOrStoreId The Store to be updated: omit for the default context
@@ -2217,7 +2182,6 @@
  * The Store to which the callback will make the deletion (indicated by the
  * hook's `storeOrStoreId` parameter) is always automatically used as a hook
  * dependency for the callback.
- *
  * @param tableId The Id of the Table in the Store.
  * @param rowId The Id of the Row in the Table.
  * @param cellId The Id of the Cell in the Row.
@@ -2286,7 +2250,6 @@
  * The Store to which the callback will make the deletion (indicated by the
  * hook's `storeOrStoreId` parameter) is always automatically used as a hook
  * dependency for the callback.
- *
  * @param storeOrStoreId The Store to be updated: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
@@ -2327,7 +2290,7 @@
  * // -> '{}'
  * ```
  * @category Store hooks
- * @since v3.0
+ * @since v3.0.0
  */
 /// useDelValuesCallback
 /**
@@ -2345,7 +2308,6 @@
  * The Store to which the callback will make the deletion (indicated by the
  * hook's `storeOrStoreId` parameter) is always automatically used as a hook
  * dependency for the callback.
- *
  * @param valueId The Id of the Value in the Store.
  * @param storeOrStoreId The Store to be updated: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
@@ -2387,7 +2349,7 @@
  * // -> '{"employees":3}'
  * ```
  * @category Store hooks
- * @since v3.0
+ * @since v3.0.0
  */
 /// useDelValueCallback
 /**
@@ -2402,7 +2364,6 @@
  * you to remove it manually, the useTablesListener hook manages this lifecycle
  * for you: when the listener changes (per its `listenerDeps` dependencies) or
  * the component unmounts, the listener on the underlying Store will be deleted.
- *
  * @param listener The function that will be called whenever tabular data in the
  * Store changes.
  * @param listenerDeps An optional array of dependencies for the `listener`
@@ -2459,7 +2420,6 @@
  * lifecycle for you: when the listener changes (per its `listenerDeps`
  * dependencies) or the component unmounts, the listener on the underlying Store
  * will be deleted.
- *
  * @param listener The function that will be called whenever the Table Ids in
  * the Store change.
  * @param listenerDeps An optional array of dependencies for the `listener`
@@ -2518,7 +2478,6 @@
  * you to remove it manually, the useTableListener hook manages this lifecycle
  * for you: when the listener changes (per its `listenerDeps` dependencies) or
  * the component unmounts, the listener on the underlying Store will be deleted.
- *
  * @param tableId The Id of the Table to listen to, or `null` as a wildcard.
  * @param listener The function that will be called whenever data in the Table
  * changes.
@@ -2580,7 +2539,6 @@
  * this lifecycle for you: when the listener changes (per its `listenerDeps`
  * dependencies) or the component unmounts, the listener on the underlying Store
  * will be deleted.
- *
  * @param tableId The Id of the Table to listen to, or `null` as a wildcard.
  * @param listener The function that will be called whenever the Cell Ids that
  * appear anywhere in a Table change.
@@ -2640,7 +2598,6 @@
  * you to remove it manually, the useRowIdsListener hook manages this lifecycle
  * for you: when the listener changes (per its `listenerDeps` dependencies) or
  * the component unmounts, the listener on the underlying Store will be deleted.
- *
  * @param tableId The Id of the Table to listen to, or `null` as a wildcard.
  * @param listener The function that will be called whenever the Row Ids in the
  * Table change.
@@ -2699,7 +2656,6 @@
  * this lifecycle for you: when the listener changes (per its `listenerDeps`
  * dependencies) or the component unmounts, the listener on the underlying Store
  * will be deleted.
- *
  * @param tableId The Id of the Table in the Store.
  * @param cellId The Id of the Cell whose values are used for the sorting, or
  * `undefined` to by sort the Row Id itself.
@@ -2754,7 +2710,7 @@
  * // -> 0
  * ```
  * @category Store hooks
- * @since v2.0
+ * @since v2.0.0
  */
 /// useSortedRowIdsListener
 /**
@@ -2778,7 +2734,6 @@
  * you to remove it manually, the useRowListener hook manages this lifecycle for
  * you: when the listener changes (per its `listenerDeps` dependencies) or the
  * component unmounts, the listener on the underlying Store will be deleted.
- *
  * @param tableId The Id of the Table to listen to, or `null` as a wildcard.
  * @param rowId The Id of the Row to listen to, or `null` as a wildcard.
  * @param listener The function that will be called whenever data in the Row
@@ -2846,7 +2801,6 @@
  * lifecycle for you: when the listener changes (per its `listenerDeps`
  * dependencies) or the component unmounts, the listener on the underlying Store
  * will be deleted.
- *
  * @param tableId The Id of the Table to listen to, or `null` as a wildcard.
  * @param rowId The Id of the Row to listen to, or `null` as a wildcard.
  * @param listener The function that will be called whenever the Cell Ids in the
@@ -2915,7 +2869,6 @@
  * you to remove it manually, the useCellListener hook manages this lifecycle
  * for you: when the listener changes (per its `listenerDeps` dependencies) or
  * the component unmounts, the listener on the underlying Store will be deleted.
- *
  * @param tableId The Id of the Table to listen to, or `null` as a wildcard.
  * @param rowId The Id of the Row to listen to, or `null` as a wildcard.
  * @param cellId The Id of the Cell to listen to, or `null` as a wildcard.
@@ -2976,7 +2929,6 @@
  * you to remove it manually, the useValuesListener hook manages this lifecycle
  * for you: when the listener changes (per its `listenerDeps` dependencies) or
  * the component unmounts, the listener on the underlying Store will be deleted.
- *
  * @param listener The function that will be called whenever keyed value data in
  * the Store changes.
  * @param listenerDeps An optional array of dependencies for the `listener`
@@ -3018,7 +2970,7 @@
  * // -> 0
  * ```
  * @category Store hooks
- * @since v3.0
+ * @since v3.0.0
  */
 /// useValuesListener
 /**
@@ -3034,7 +2986,6 @@
  * lifecycle for you: when the listener changes (per its `listenerDeps`
  * dependencies) or the component unmounts, the listener on the underlying Store
  * will be deleted.
- *
  * @param listener The function that will be called whenever the Value Ids in
  * the Store change.
  * @param listenerDeps An optional array of dependencies for the `listener`
@@ -3076,7 +3027,7 @@
  * // -> 0
  * ```
  * @category Store hooks
- * @since v3.0
+ * @since v3.0.0
  */
 /// useValueIdsListener
 /**
@@ -3094,7 +3045,6 @@
  * you to remove it manually, the useValueListener hook manages this lifecycle
  * for you: when the listener changes (per its `listenerDeps` dependencies) or
  * the component unmounts, the listener on the underlying Store will be deleted.
- *
  * @param valueId The Id of the Value to listen to, or `null` as a wildcard.
  * @param listener The function that will be called whenever data in the Value
  * changes.
@@ -3137,7 +3087,7 @@
  * // -> 0
  * ```
  * @category Store hooks
- * @since v3.0
+ * @since v3.0.0
  */
 /// useValueListener
 /**
@@ -3161,7 +3111,6 @@
  *
  * This hook ensures the Metrics object is destroyed whenever a new one is
  * created or the component is unmounted.
- *
  * @param store A reference to the Store for which to create a new Metrics
  * object.
  * @param create A function for performing the creation steps of the Metrics
@@ -3258,7 +3207,6 @@
  * The useMetrics hook lets you either get a reference to the default Metrics
  * object (when called without a parameter), or one of the Metrics objects that
  * are named by Id (when called with an Id parameter).
- *
  * @param id An optional Id for accessing a Metrics object that was named with
  * an Id in the Provider.
  * @returns A reference to the Metrics object (or `undefined` if not within a
@@ -3322,7 +3270,6 @@
  * When first rendered, this hook will create a listener so that changes to the
  * Metric will cause a re-render. When the component containing this hook is
  * unmounted, the listener will be automatically removed.
- *
  * @param metricId The Id of the Metric.
  * @param metricsOrMetricsId The Metrics object to be accessed: omit for the
  * default context Metrics object, provide an Id for a named context Metrics
@@ -3422,7 +3369,6 @@
  * for you: when the listener changes (per its `listenerDeps` dependencies) or
  * the component unmounts, the listener on the underlying Metrics object, will
  * be deleted.
- *
  * @param metricId The Id of the Metric to listen to, or `null` as a wildcard.
  * @param listener The function that will be called whenever the Metric changes.
  * @param listenerDeps An optional array of dependencies for the `listener`
@@ -3492,7 +3438,6 @@
  *
  * This hook ensures the Indexes object is destroyed whenever a new one is
  * created or the component is unmounted.
- *
  * @param store A reference to the Store for which to create a new Indexes
  * object.
  * @param create A function for performing the creation steps of the Indexes
@@ -3597,7 +3542,6 @@
  * The useIndexes hook lets you either get a reference to the default Indexes
  * object (when called without a parameter), or one of the Indexes objects that
  * are named by Id (when called with an Id parameter).
- *
  * @param id An optional Id for accessing an Indexes object that was named with
  * an Id in the Provider.
  * @returns A reference to the Indexes object (or `undefined` if not within a
@@ -3661,7 +3605,6 @@
  * When first rendered, this hook will create a listener so that changes to the
  * Slice Ids will cause a re-render. When the component containing this hook is
  * unmounted, the listener will be automatically removed.
- *
  * @param indexId The Id of the Index.
  * @param indexesOrIndexesId The Indexes object to be accessed: omit for the
  * default context Indexes object, provide an Id for a named context Indexes
@@ -3763,7 +3706,6 @@
  * When first rendered, this hook will create a listener so that changes to the
  * Row Ids in the Slice will cause a re-render. When the component containing
  * this hook is unmounted, the listener will be automatically removed.
- *
  * @param indexId The Id of the Index.
  * @param sliceId The Id of the Slice in the Index.
  * @param indexesOrIndexesId The Indexes object to be accessed: omit for the
@@ -3874,7 +3816,6 @@
  * lifecycle for you: when the listener changes (per its `listenerDeps`
  * dependencies) or the component unmounts, the listener on the underlying
  * Indexes object will be deleted.
- *
  * @param indexId The Id of the Index to listen to, or `null` as a wildcard.
  * @param listener The function that will be called whenever the Slice Ids in
  * the Index change.
@@ -3946,7 +3887,6 @@
  * this lifecycle for you: when the listener changes (per its `listenerDeps`
  * dependencies) or the component unmounts, the listener on the underlying
  * Indexes object will be deleted.
- *
  * @param indexId The Id of the Index to listen to, or `null` as a wildcard.
  * @param sliceId The Id of the Slice to listen to, or `null` as a wildcard.
  * @param listener The function that will be called whenever the Row Ids in the
@@ -4021,7 +3961,6 @@
  *
  * This hook ensures the Relationships object is destroyed whenever a new one is
  * created or the component is unmounted.
- *
  * @param store A reference to the Store for which to create a new Relationships
  * object.
  * @param create An optional callback for performing post-creation steps on the
@@ -4134,7 +4073,6 @@
  * Relationships object (when called without a parameter), or one of the
  * Relationships objects that are named by Id (when called with an Id
  * parameter).
- *
  * @param id An optional Id for accessing a Relationships object that was named
  * with an Id in the Provider.
  * @returns A reference to the Relationships object (or `undefined` if not
@@ -4207,7 +4145,6 @@
  * When first rendered, this hook will create a listener so that changes to the
  * remote Row Id will cause a re-render. When the component containing this hook
  * is unmounted, the listener will be automatically removed.
- *
  * @param relationshipId The Id of the Relationship.
  * @param localRowId The Id of the local Row in the Relationship.
  * @param relationshipsOrRelationshipsId The Relationships object to be
@@ -4311,7 +4248,6 @@
  * When first rendered, this hook will create a listener so that changes to the
  * local Row Id will cause a re-render. When the component containing this hook
  * is unmounted, the listener will be automatically removed.
- *
  * @param relationshipId The Id of the Relationship.
  * @param remoteRowId The Id of the remote Row in the Relationship.
  * @param relationshipsOrRelationshipsId The Relationships object to be
@@ -4423,7 +4359,6 @@
  * When first rendered, this hook will create a listener so that changes to the
  * linked Row Ids will cause a re-render. When the component containing this
  * hook is unmounted, the listener will be automatically removed.
- *
  * @param relationshipId The Id of the Relationship.
  * @param firstRowId The Id of the first Row in the linked list Relationship.
  * @param relationshipsOrRelationshipsId The Relationships object to be
@@ -4549,7 +4484,6 @@
  * this lifecycle for you: when the listener changes (per its `listenerDeps`
  * dependencies) or the component unmounts, the listener on the underlying
  * Indexes object will be deleted.
- *
  * @param relationshipId The Id of the Relationship to listen to, or `null` as a
  * wildcard.
  * @param localRowId The Id of the local Row to listen to, or `null` as a
@@ -4631,7 +4565,6 @@
  * this lifecycle for you: when the listener changes (per its `listenerDeps`
  * dependencies) or the component unmounts, the listener on the underlying
  * Indexes object will be deleted.
- *
  * @param relationshipId The Id of the Relationship to listen to, or `null` as a
  * wildcard.
  * @param remoteRowId The Id of the remote Row to listen to, or `null` as a
@@ -4709,7 +4642,6 @@
  * this lifecycle for you: when the listener changes (per its `listenerDeps`
  * dependencies) or the component unmounts, the listener on the underlying
  * Indexes object will be deleted.
- *
  * @param relationshipId The Id of the Relationship to listen to.
  * @param firstRowId The Id of the first Row of the linked list to listen to.
  * @param listener The function that will be called whenever the linked Row Ids
@@ -4790,7 +4722,6 @@
  *
  * This hook ensures the Queries object is destroyed whenever a new one is
  * created or the component is unmounted.
- *
  * @param store A reference to the Store for which to create a new Queries
  * object.
  * @param create An optional callback for performing post-creation steps on the
@@ -4883,7 +4814,7 @@
  * // -> '<span>brown</span>'
  * ```
  * @category Queries hooks
- * @since v2.0
+ * @since v2.0.0
  */
 /// useCreateQueries
 /**
@@ -4898,7 +4829,6 @@
  * The useQueries hook lets you either get a reference to the default Queries
  * object (when called without a parameter), or one of the Queries objects that
  * are named by Id (when called with an Id parameter).
- *
  * @param id An optional Id for accessing a Queries object that was named with
  * an Id in the Provider.
  * @returns A reference to the Queries object (or `undefined` if not within a
@@ -4946,7 +4876,7 @@
  * // -> '<span>0</span>'
  * ```
  * @category Queries hooks
- * @since v2.0
+ * @since v2.0.0
  */
 /// useQueries
 /**
@@ -4964,7 +4894,6 @@
  * When first rendered, this hook will create a listener so that changes to the
  * query result will cause a re-render. When the component containing this hook
  * is unmounted, the listener will be automatically removed.
- *
  * @param queryId The Id of the query.
  * @param queriesOrQueriesId The Queries object to be accessed: omit for the
  * default context Queries object, provide an Id for a named context Queries
@@ -5062,7 +4991,7 @@
  * // -> '<span>{"fido":{"color":"brown"},"cujo":{"color":"black"}}</span>'
  * ```
  * @category Queries hooks
- * @since v2.0
+ * @since v2.0.0
  */
 /// useResultTable
 /**
@@ -5080,7 +5009,6 @@
  * When first rendered, this hook will create a listener so that changes to the
  * result Row Ids will cause a re-render. When the component containing this
  * hook is unmounted, the listener will be automatically removed.
- *
  * @param queryId The Id of the query.
  * @param queriesOrQueriesId The Queries object to be accessed: omit for the
  * default context Queries object, provide an Id for a named context Queries
@@ -5179,7 +5107,7 @@
  * // -> '<span>["fido","cujo"]</span>'
  * ```
  * @category Queries hooks
- * @since v2.0
+ * @since v2.0.0
  */
 /// useResultRowIds
 /**
@@ -5197,7 +5125,6 @@
  * When first rendered, this hook will create a listener so that changes to the
  * sorted result Row Ids will cause a re-render. When the component containing
  * this hook is unmounted, the listener will be automatically removed.
- *
  * @param queryId The Id of the query.
  * @param cellId The Id of the result Cell whose values are used for the
  * sorting, or `undefined` to by sort the result Row Id itself.
@@ -5324,7 +5251,7 @@
  * // -> '<span>["cujo","fido"]</span>'
  * ```
  * @category Queries hooks
- * @since v2.0
+ * @since v2.0.0
  */
 /// useResultSortedRowIds
 /**
@@ -5342,7 +5269,6 @@
  * When first rendered, this hook will create a listener so that changes to the
  * result Row will cause a re-render. When the component containing this hook is
  * unmounted, the listener will be automatically removed.
- *
  * @param queryId The Id of the query.
  * @param rowId The Id of the Row in the result Table.
  * @param queriesOrQueriesId The Queries object to be accessed: omit for the
@@ -5444,7 +5370,7 @@
  * // -> '<span>{"color":"brown"}</span>'
  * ```
  * @category Queries hooks
- * @since v2.0
+ * @since v2.0.0
  */
 /// useResultRow
 /**
@@ -5462,7 +5388,6 @@
  * When first rendered, this hook will create a listener so that changes to the
  * result Cell Ids will cause a re-render. When the component containing this
  * hook is unmounted, the listener will be automatically removed.
- *
  * @param queryId The Id of the query.
  * @param rowId The Id of the Row in the result Table.
  * @param queriesOrQueriesId The Queries object to be accessed: omit for the
@@ -5570,7 +5495,7 @@
  * // -> '<span>["species","color"]</span>'
  * ```
  * @category Queries hooks
- * @since v2.0
+ * @since v2.0.0
  */
 /// useResultCellIds
 /**
@@ -5588,7 +5513,6 @@
  * When first rendered, this hook will create a listener so that changes to the
  * result Cell will cause a re-render. When the component containing this hook
  * is unmounted, the listener will be automatically removed.
- *
  * @param queryId The Id of the query.
  * @param rowId The Id of the Row in the result Table.
  * @param cellId The Id of the Cell in the Row.
@@ -5692,7 +5616,7 @@
  * // -> '<span>brown</span>'
  * ```
  * @category Queries hooks
- * @since v2.0
+ * @since v2.0.0
  */
 /// useResultCell
 /**
@@ -5712,7 +5636,6 @@
  * this lifecycle for you: when the listener changes (per its `listenerDeps`
  * dependencies) or the component unmounts, the listener on the underlying
  * Queries object will be deleted.
- *
  * @param queryId The Id of the query to listen to, or `null` as a wildcard.
  * @param listener The function that will be called whenever data in the
  * matching result Table changes.
@@ -5764,7 +5687,7 @@
  * // -> 0
  * ```
  * @category Queries hooks
- * @since v2.0
+ * @since v2.0.0
  */
 /// useResultTableListener
 /**
@@ -5784,7 +5707,6 @@
  * this lifecycle for you: when the listener changes (per its `listenerDeps`
  * dependencies) or the component unmounts, the listener on the underlying
  * Queries object will be deleted.
- *
  * @param queryId The Id of the query to listen to, or `null` as a wildcard.
  * @param listener The function that will be called whenever the Row Ids in the
  * matching result Table change.
@@ -5836,7 +5758,7 @@
  * // -> 0
  * ```
  * @category Queries hooks
- * @since v2.0
+ * @since v2.0.0
  */
 /// useResultRowIdsListener
 /**
@@ -5853,7 +5775,6 @@
  * hook manages this lifecycle for you: when the listener changes (per its
  * `listenerDeps` dependencies) or the component unmounts, the listener on the
  * underlying Queries object will be deleted.
- *
  * @param queryId The Id of the query to listen to.
  * @param cellId The Id of the Cell whose values are used for the sorting, or
  * `undefined` to by sort the Row Id itself.
@@ -5915,7 +5836,7 @@
  * // -> 0
  * ```
  * @category Queries hooks
- * @since v2.0
+ * @since v2.0.0
  */
 /// useResultSortedRowIdsListener
 /**
@@ -5940,7 +5861,6 @@
  * this lifecycle for you: when the listener changes (per its `listenerDeps`
  * dependencies) or the component unmounts, the listener on the underlying
  * Queries object will be deleted.
- *
  * @param queryId The Id of the query to listen to, or `null` as a wildcard.
  * @param rowId The Id of the result Row to listen to, or `null` as a wildcard.
  * @param listener The function that will be called whenever data in the
@@ -5993,7 +5913,7 @@
  * // -> 0
  * ```
  * @category Queries hooks
- * @since v2.0
+ * @since v2.0.0
  */
 /// useResultRowListener
 /**
@@ -6015,7 +5935,6 @@
  * this lifecycle for you: when the listener changes (per its `listenerDeps`
  * dependencies) or the component unmounts, the listener on the underlying
  * Queries object will be deleted.
- *
  * @param queryId The Id of the query to listen to, or `null` as a wildcard.
  * @param rowId The Id of the result Row to listen to, or `null` as a wildcard.
  * @param listener The function that will be called whenever the Row Ids in the
@@ -6071,7 +5990,7 @@
  * // -> 0
  * ```
  * @category Queries hooks
- * @since v2.0
+ * @since v2.0.0
  */
 /// useResultCellIdsListener
 /**
@@ -6096,7 +6015,6 @@
  * this lifecycle for you: when the listener changes (per its `listenerDeps`
  * dependencies) or the component unmounts, the listener on the underlying
  * Queries object will be deleted.
- *
  * @param queryId The Id of the query to listen to, or `null` as a wildcard.
  * @param rowId The Id of the result Row to listen to, or `null` as a wildcard.
  * @param cellId The Id of the result Cell to listen to, or `null` as a
@@ -6151,7 +6069,7 @@
  * // -> 0
  * ```
  * @category Queries hooks
- * @since v2.0
+ * @since v2.0.0
  */
 /// useResultCellListener
 /**
@@ -6176,7 +6094,6 @@
  *
  * This hook ensures the Checkpoints object is destroyed whenever a new one is
  * created or the component is unmounted.
- *
  * @param store A reference to the Store for which to create a new Checkpoints
  * object.
  * @param create A function for performing the creation steps of the Checkpoints
@@ -6262,7 +6179,6 @@
  * The useCheckpoints hook lets you either get a reference to the default
  * Checkpoints object (when called without a parameter), or one of the
  * Checkpoints objects that are named by Id (when called with an Id parameter).
- *
  * @param id An optional Id for accessing a Checkpoints object that was named
  * with an Id in the Provider.
  * @returns A reference to the Checkpoints object (or `undefined` if not within
@@ -6334,7 +6250,6 @@
  * When first rendered, this hook will create a listener so that changes to the
  * checkpoint Ids will cause a re-render. When the component containing this
  * hook is unmounted, the listener will be automatically removed.
- *
  * @param checkpointsOrCheckpointsId The Checkpoints object to be accessed: omit
  * for the default context Checkpoints object, provide an Id for a named context
  * Checkpoints object, or provide an explicit reference.
@@ -6430,7 +6345,6 @@
  * When first rendered, this hook will create a listener so that changes to the
  * label will cause a re-render. When the component containing this hook is
  * unmounted, the listener will be automatically removed.
- *
  * @param checkpointId The Id of the checkpoint.
  * @param checkpointsOrCheckpointsId The Checkpoints object to be accessed: omit
  * for the default context Checkpoints object, provide an Id for a named context
@@ -6530,7 +6444,6 @@
  * The Checkpoints object for which the callback will set the checkpoint
  * (indicated by the hook's `checkpointsOrCheckpointsId` parameter) is always
  * automatically used as a hook dependency for the callback.
- *
  * @param getCheckpoint An optional function which returns a string that will be
  * used to describe the actions leading up to this checkpoint, based on the
  * parameter the callback will receive (and which is most likely a DOM event).
@@ -6591,7 +6504,6 @@
  * backward to the previous checkpoint - such as when clicking an undo button.
  *
  * If there is no previous checkpoint to return to, this callback has no effect.
- *
  * @param checkpointsOrCheckpointsId The Checkpoints object to use to go
  * backward: omit for the default context Checkpoints object, provide an Id for
  * a named context Checkpoints object, or provide an explicit reference.
@@ -6636,7 +6548,6 @@
  * forward to the next checkpoint - such as when clicking an redo button.
  *
  * If there is no future checkpoint to return to, this callback has no effect.
- *
  * @param checkpointsOrCheckpointsId The Checkpoints object to use to go
  * backward: omit for the default context Checkpoints object, provide an Id for
  * a named context Checkpoints object, or provide an explicit reference.
@@ -6700,7 +6611,6 @@
  * The Checkpoints object for which the callback will set the checkpoint
  * (indicated by the hook's `checkpointsOrCheckpointsId` parameter) is always
  * automatically used as a hook dependency for the callback.
- *
  * @param getCheckpointId A function which returns an Id that will be used to
  * indicate which checkpoint to move to, based on the parameter the callback
  * will receive (and which is most likely a DOM event).
@@ -6758,7 +6668,6 @@
  * contains whether an undo action is available (to enable the button), the
  * callback to perform the undo action, the current checkpoint Id that will be
  * undone, and its label, if available.
- *
  * @param checkpointsOrCheckpointsId The Checkpoints object to use to go
  * backward: omit for the default context Checkpoints object, provide an Id for
  * a named context Checkpoints object, or provide an explicit reference.
@@ -6801,7 +6710,6 @@
  * contains whether a redo action is available (to enable the button), the
  * callback to perform the redo action, the checkpoint Id that will be redone,
  * and its label, if available.
- *
  * @param checkpointsOrCheckpointsId The Checkpoints object to use to go
  * backward: omit for the default context Checkpoints object, provide an Id for
  * a named context Checkpoints object, or provide an explicit reference.
@@ -6850,7 +6758,6 @@
  * this lifecycle for you: when the listener changes (per its `listenerDeps`
  * dependencies) or the component unmounts, the listener on the underlying
  * Checkpoints object will be deleted.
- *
  * @param listener The function that will be called whenever the checkpoints
  * change.
  * @param listenerDeps An optional array of dependencies for the `listener`
@@ -6914,7 +6821,6 @@
  * this lifecycle for you: when the listener changes (per its `listenerDeps`
  * dependencies) or the component unmounts, the listener on the underlying
  * Checkpoints object will be deleted.
- *
  * @param checkpointId The Id of the checkpoint to listen to, or `null` as a
  * wildcard.
  * @param listener The function that will be called whenever the checkpoint
@@ -6990,7 +6896,6 @@
  *
  * This hook ensures the Persister object is destroyed whenever a new one is
  * created or the component is unmounted.
- *
  * @param store A reference to the Store for which to create a new Persister
  * object.
  * @param create A function for performing the creation steps of the Persister
@@ -7102,14 +7007,12 @@
 /// useCreatePersister
 /**
  * The ExtraProps type represents a set of arbitrary additional props.
- *
  * @category Props
  */
 /// ExtraProps
 /**
  * TablesProps props are used for components that refer to all the Tables in a
  * Store, such as the TablesView component.
- *
  * @category Props
  */
 /// TablesProps
@@ -7142,7 +7045,6 @@
 /**
  * TableProps props are used for components that refer to a single Table in a
  * Store, such as the TableView component.
- *
  * @category Props
  */
 /// TableProps
@@ -7179,9 +7081,8 @@
 /**
  * SortedTableProps props are used for components that refer to a single sorted
  * Table in a Store, such as the SortedTableView component.
- *
  * @category Props
- * @since v2.0
+ * @since v2.0.0
  */
 /// SortedTableProps
 {
@@ -7234,7 +7135,6 @@
 /**
  * RowProps props are used for components that refer to a single Row in a Table,
  * such as the RowView component.
- *
  * @category Props
  */
 /// RowProps
@@ -7275,7 +7175,6 @@
 /**
  * CellProps props are used for components that refer to a single Cell in a Row,
  * such as the CellView component.
- *
  * @category Props
  */
 /// CellProps
@@ -7306,9 +7205,8 @@
 /**
  * ValuesProps props are used for components that refer to all the Values in a
  * Store, such as the ValuesView component.
- *
  * @category Props
- * @since v3.0
+ * @since v3.0.0
  */
 /// ValuesProps
 {
@@ -7340,9 +7238,8 @@
 /**
  * ValueProps props are used for components that refer to a single Value in a
  * Row, such as the ValueView component.
- *
  * @category Props
- * @since v3.0
+ * @since v3.0.0
  */
 /// ValueProps
 {
@@ -7364,7 +7261,6 @@
 /**
  * MetricProps props are used for components that refer to a single Metric in a
  * Metrics object, such as the MetricView component.
- *
  * @category Props
  */
 /// MetricProps
@@ -7388,7 +7284,6 @@
 /**
  * IndexProps props are used for components that refer to a single Index in an
  * Indexes object, such as the IndexView component.
- *
  * @category Props
  */
 /// IndexProps
@@ -7425,7 +7320,6 @@
 /**
  * SliceProps props are used for components that refer to a single Slice in an
  * Index object, such as the SliceView component.
- *
  * @category Props
  */
 /// SliceProps
@@ -7467,7 +7361,6 @@
  * RemoteRowProps props are used for components that refer to a single
  * Relationship in a Relationships object, and where you want to render a remote
  * Row based on a local Row, such as in the RemoteRowView component.
- *
  * @category Props
  */
 /// RemoteRowProps
@@ -7506,7 +7399,6 @@
  * LocalRowsProps props are used for components that refer to a single
  * Relationship in a Relationships object, and where you want to render local
  * Rows based on a remote Row, such as the LocalRowsView component.
- *
  * @category Props
  */
 /// LocalRowsProps
@@ -7549,7 +7441,6 @@
  * LinkedRowsProps props are used for components that refer to a single
  * Relationship in a Relationships object, and where you want to render a linked
  * list of Rows starting from a first Row, such as the LinkedRowsView component.
- *
  * @category Props
  */
 /// LinkedRowsProps
@@ -7591,9 +7482,8 @@
 /**
  * ResultTableProps props are used for components that refer to a single query
  * result Table, such as the ResultTableView component.
- *
  * @category Props
- * @since v2.0
+ * @since v2.0.0
  */
 /// ResultTableProps
 {
@@ -7631,9 +7521,8 @@
 /**
  * ResultSortedTableProps props are used for components that refer to a single
  * sorted query result Table, such as the ResultSortedTableView component.
- *
  * @category Props
- * @since v2.0
+ * @since v2.0.0
  */
 /// ResultSortedTableProps
 {
@@ -7688,9 +7577,8 @@
 /**
  * ResultRowProps props are used for components that refer to a single Row in a
  * query result Table, such as the ResultRowView component.
- *
  * @category Props
- * @since v2.0
+ * @since v2.0.0
  */
 /// ResultRowProps
 {
@@ -7732,9 +7620,8 @@
 /**
  * ResultRowProps props are used for components that refer to a single Cell in a
  * Row of a result Table, such as the ResultCellView component.
- *
  * @category Props
- * @since v2.0
+ * @since v2.0.0
  */
 /// ResultCellProps
 {
@@ -7766,7 +7653,6 @@
 /**
  * CheckpointProps props are used for components that refer to a single
  * checkpoint in a Checkpoints object, such as the CheckpointView component.
- *
  * @category Props
  */
 /// CheckpointProps
@@ -7791,7 +7677,6 @@
  * BackwardCheckpointsProps props are used for components that refer to a list
  * of previous checkpoints in a Checkpoints object, such as the
  * BackwardCheckpointsView component.
- *
  * @category Props
  */
 /// BackwardCheckpointsProps
@@ -7825,7 +7710,6 @@
  * CurrentCheckpointsProps props are used for components that refer to the
  * current checkpoints in a Checkpoints object, such as the
  * BackwardCheckpointsView component.
- *
  * @category Props
  */
 /// CurrentCheckpointProps
@@ -7855,7 +7739,6 @@
  * ForwardCheckpointsProps props are used for components that refer to a list of
  * future checkpoints in a Checkpoints object, such as the
  * ForwardCheckpointsView component.
- *
  * @category Props
  */
 /// ForwardCheckpointsProps
@@ -7893,7 +7776,6 @@
  * One of each type of object can be provided as a default within the context.
  * Additionally, multiple of each type of object can be provided in an Id-keyed
  * map to the `___ById` props.
- *
  * @category Props
  */
 /// ProviderProps
@@ -7962,7 +7844,6 @@
 /**
  * ComponentReturnType is a simple alias for what a React component can return:
  * either a ReactElement, or `null` for an empty component.
- *
  * @category Component
  */
 /// ComponentReturnType
@@ -7982,7 +7863,6 @@
  * will be visible within the inner context. If the outer context contains a
  * Store named by Id and the inner context contains a Store named by a different
  * Id, both will be visible within the inner context.
- *
  * @param props The props for this component.
  * @returns A rendering of the child components.
  * @example
@@ -8079,7 +7959,6 @@
  *
  * This component uses the useCell hook under the covers, which means that any
  * changes to the specified Cell will cause a re-render.
- *
  * @param props The props for this component.
  * @returns A rendering of the Cell, or nothing, if not present.
  * @example
@@ -8174,7 +8053,6 @@
  *
  * This component uses the useCellIds hook under the covers, which means that
  * any changes to the structure of the Row will cause a re-render.
- *
  * @param props The props for this component.
  * @returns A rendering of the Row, or nothing, if not present.
  * @example
@@ -8288,7 +8166,6 @@
  * This component uses the useSortedRowIds hook under the covers, which means
  * that any changes to the structure or sorting of the Table will cause a
  * re-render.
- *
  * @param props The props for this component.
  * @returns A rendering of the Table, or nothing, if not present.
  * @example
@@ -8392,7 +8269,7 @@
  * // -> '<div><span>felix: cat</span><span><b>fido</b>: dog</span></div>'
  * ```
  * @category Store components
- * @since v2.0
+ * @since v2.0.0
  */
 /// SortedTableView
 /**
@@ -8415,7 +8292,6 @@
  *
  * This component uses the useRowIds hook under the covers, which means that any
  * changes to the structure of the Table will cause a re-render.
- *
  * @param props The props for this component.
  * @returns A rendering of the Table, or nothing, if not present.
  * @example
@@ -8523,7 +8399,6 @@
  *
  * This component uses the useTableIds hook under the covers, which means that
  * any changes to the structure of the Store will cause a re-render.
- *
  * @param props The props for this component.
  * @returns A rendering of the Store, or nothing, if not present.
  * @example
@@ -8628,7 +8503,6 @@
  *
  * This component uses the useValue hook under the covers, which means that any
  * changes to the specified Value will cause a re-render.
- *
  * @param props The props for this component.
  * @returns A rendering of the Value, or nothing, if not present.
  * @example
@@ -8700,7 +8574,7 @@
  * // -> '<span></span>'
  * ```
  * @category Store components
- * @since v3.0
+ * @since v3.0.0
  */
 /// ValueView
 /**
@@ -8723,7 +8597,6 @@
  *
  * This component uses the useValueIds hook under the covers, which means that
  * any changes to the Store's Values will cause a re-render.
- *
  * @param props The props for this component.
  * @returns A rendering of the Values, or nothing, if not present.
  * @example
@@ -8805,7 +8678,7 @@
  * // -> '<div><span><b>open</b>: true</span><span>employees: 3</span></div>'
  * ```
  * @category Store components
- * @since v3.0
+ * @since v3.0.0
  */
 /// ValuesView
 /**
@@ -8818,7 +8691,6 @@
  *
  * This component uses the useMetric hook under the covers, which means that any
  * changes to the Metric will cause a re-render.
- *
  * @param props The props for this component.
  * @returns A rendering of the Metric, or nothing, if not present.
  * @example
@@ -8928,7 +8800,6 @@
  *
  * This component uses the useSliceRowIds hook under the covers, which means
  * that any changes to the structure of the Slice will cause a re-render.
- *
  * @param props The props for this component.
  * @returns A rendering of the Slice, or nothing, if not present.
  * @example
@@ -9054,7 +8925,6 @@
  *
  * This component uses the useSliceIds hook under the covers, which means that
  * any changes to the structure of the Index will cause a re-render.
- *
  * @param props The props for this component.
  * @returns A rendering of the Index, or nothing, if not present.
  * @example
@@ -9176,7 +9046,6 @@
  * This component uses the useRemoteRowId hook under the covers, which means
  * that any changes to the remote Row Id in the Relationship will cause a
  * re-render.
- *
  * @param props The props for this component.
  * @returns A rendering of the remote Row, or nothing, if not present.
  * @example
@@ -9309,7 +9178,6 @@
  * This component uses the useLocalRowIds hook under the covers, which means
  * that any changes to the local Row Ids in the Relationship will cause a
  * re-render.
- *
  * @param props The props for this component.
  * @returns A rendering of the local Row objects, or nothing, if not present.
  * @example
@@ -9443,7 +9311,6 @@
  * This component uses the useLocalRowIds hook under the covers, which means
  * that any changes to the local Row Ids in the Relationship will cause a
  * re-render.
- *
  * @param props The props for this component.
  * @returns A rendering of the local Row objects, or nothing, if not present.
  * @example
@@ -9579,7 +9446,6 @@
  *
  * This component uses the useResultCell hook under the covers, which means that
  * any changes to the specified Cell will cause a re-render.
- *
  * @param props The props for this component.
  * @returns A rendering of the result Cell, or nothing, if not present.
  * @example
@@ -9682,7 +9548,7 @@
  * // -> '<span></span>'
  * ```
  * @category Queries components
- * @since v2.0
+ * @since v2.0.0
  */
 /// ResultCellView
 /**
@@ -9707,7 +9573,6 @@
  *
  * This component uses the useResultCellIds hook under the covers, which means
  * that any changes to the structure of the result Row will cause a re-render.
- *
  * @param props The props for this component.
  * @returns A rendering of the result Row, or nothing, if not present.
  * @example
@@ -9828,7 +9693,7 @@
  * // -> '<div><span><b>species</b>: dog</span><span>color: brown</span></div>'
  * ```
  * @category Queries components
- * @since v2.0
+ * @since v2.0.0
  */
 /// ResultRowView
 /**
@@ -9854,7 +9719,6 @@
  * This component uses the useResultSortedRowIds hook under the covers, which
  * means that any changes to the structure or sorting of the result Table will
  * cause a re-render.
- *
  * @param props The props for this component.
  * @returns A rendering of the result Table, or nothing, if not present.
  * @example
@@ -9965,7 +9829,7 @@
  * // -> '<div><span>felix: black</span><span><b>fido</b>: brown</span></div>'
  * ```
  * @category Queries components
- * @since v2.0
+ * @since v2.0.0
  */
 /// ResultSortedTableView
 /**
@@ -9986,7 +9850,6 @@
  *
  * This component uses the useResultRowIds hook under the covers, which means
  * that any changes to the structure of the result Table will cause a re-render.
- *
  * @param props The props for this component.
  * @returns A rendering of the result Table, or nothing, if not present.
  * @example
@@ -10087,7 +9950,7 @@
  * // -> '<div><span><b>fido</b>: brown</span><span>felix: black</span></div>'
  * ```
  * @category Queries components
- * @since v2.0
+ * @since v2.0.0
  */
 /// ResultTableView
 /**
@@ -10102,7 +9965,6 @@
  *
  * This component uses the useCheckpoint hook under the covers, which means that
  * any changes to the local Row Ids in the Relationship will cause a re-render.
- *
  * @param props The props for this component.
  * @returns A rendering of the checkpoint: its label if present, or Id.
  * @example
@@ -10158,7 +10020,6 @@
  * This component uses the useCheckpointIds hook under the covers, which means
  * that any changes to the checkpoint Ids in the Checkpoints object will cause a
  * re-render.
- *
  * @param props The props for this component.
  * @returns A rendering of the previous checkpoints, if present.
  * @example
@@ -10291,7 +10152,6 @@
  * This component uses the useCheckpointIds hook under the covers, which means
  * that any changes to the current checkpoint Id in the Checkpoints object will
  * cause a re-render.
- *
  * @param props The props for this component.
  * @returns A rendering of the current checkpoint, if present.
  * @example
@@ -10426,7 +10286,6 @@
  * This component uses the useCheckpointIds hook under the covers, which means
  * that any changes to the checkpoint Ids in the Checkpoints object will cause a
  * re-render.
- *
  * @param props The props for this component.
  * @returns A rendering of the future checkpoints, if present.
  * @example

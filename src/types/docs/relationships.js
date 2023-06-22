@@ -6,7 +6,6 @@
  * which returns a new Relationships object. From there, you can create new
  * Relationship definitions, access the associations within those Relationships
  * directly, and register listeners for when they change.
- *
  * @packageDocumentation
  * @module relationships
  */
@@ -27,7 +26,6 @@
  * Note that the Relationship type is not actually used in the API, and you
  * instead enumerate and access its structure with the getRemoteRowId method,
  * the getLocalRowIds method, and the getLinkedRowIds method.
- *
  * @category Concept
  */
 /// Relationship
@@ -38,7 +36,6 @@
  * A RelationshipCallback is provided when using the forEachRelationship method,
  * so that you can do something based on every Relationship in the Relationships
  * object. See that method for specific examples.
- *
  * @param relationshipId The Id of the Relationship that the callback can
  * operate on.
  * @param forEachRow A function that will let you iterate over the local Row
@@ -56,7 +53,6 @@
  * When called, a RemoteRowIdListener is given a reference to the Relationships
  * object, the Id of the Relationship that changed, and the Id of the local Row
  * whose remote Row Id changed.
- *
  * @param relationships A reference to the Relationships object that changed.
  * @param relationshipId The Id of the Relationship that changed.
  * @param localRowId The Id of the local Row whose remote Row Id changed.
@@ -73,7 +69,6 @@
  * When called, a LocalRowIdsListener is given a reference to the Relationships
  * object, the Id of the Relationship that changed, and the Id of the remote Row
  * whose local Row Ids changed.
- *
  * @param relationships A reference to the Relationships object that changed.
  * @param relationshipId The Id of the Relationship that changed.
  * @param remoteRowId The Id of the remote Row whose local Row Ids changed.
@@ -90,7 +85,6 @@
  * When called, a LinkedRowIdsListener is given a reference to the Relationships
  * object, the Id of the Relationship that changed, and the Id of the first Row
  * of the the linked list whose members changed.
- *
  * @param relationships A reference to the Relationships object that changed.
  * @param relationshipId The Id of the Relationship that changed.
  * @param firstRowId The Id of the first Row of the the linked list whose
@@ -105,7 +99,6 @@
  *
  * A RelationshipsListenerStats object is returned from the getListenerStats
  * method, and is only populated in a debug build.
- *
  * @category Development
  */
 /// RelationshipsListenerStats
@@ -145,7 +138,6 @@
  * This module defaults to creating relationships between Row objects by using
  * one of their Cell values. However, far more complex relationships can be
  * configured with a custom function.
- *
  * @example
  * This example shows a very simple lifecycle of a Relationships object: from
  * creation, to adding definitions (both local/remote table and linked list),
@@ -244,7 +236,6 @@
    * Cell values contains the (remote) Row Id, using the `getRemoteRowId`
    * parameter. Alternatively, a custom function can be provided that produces
    * your own remote Row Id from the local Row as a whole.
-   *
    * @param relationshipId The Id of the Relationship to define.
    * @param localTableId The Id of the local Table for the Relationship.
    * @param remoteTableId The Id of the remote Table for the Relationship (or
@@ -312,7 +303,6 @@
   /**
    * The delRelationshipDefinition method removes an existing Relationship
    * definition.
-   *
    * @param relationshipId The Id of the Relationship to remove.
    * @returns A reference to the Relationships object.
    * @example
@@ -351,7 +341,6 @@
   /**
    * The getStore method returns a reference to the underlying Store that is
    * backing this Relationships object.
-   *
    * @returns A reference to the Store.
    * @example
    * This example creates a Relationships object against a newly-created Store
@@ -375,7 +364,6 @@
   /**
    * The getRelationshipIds method returns an array of the Relationship Ids
    * registered with this Relationships object.
-   *
    * @returns An array of Ids.
    * @example
    * This example creates a Relationships object with two definitions, and then
@@ -400,7 +388,6 @@
    * RelationshipCallback function that will be called with the Id of each
    * Relationship, and with a function that can then be used to iterate over
    * each local Row involved in the Relationship.
-   *
    * @param relationshipCallback The function that should be called for every
    * Relationship.
    * @example
@@ -436,7 +423,6 @@
   /**
    * The hasRelationship method returns a boolean indicating whether a given
    * Relationship exists in the Relationships object.
-   *
    * @param relationshipId The Id of a possible Relationship in the
    * Relationships object.
    * @returns Whether a Relationship with that Id exists.
@@ -460,7 +446,6 @@
    * that is used in the Relationship.
    *
    * If the Relationship Id is invalid, the method returns `undefined`.
-   *
    * @param relationshipId The Id of a Relationship.
    * @returns The Id of the local Table backing the Relationship, or
    * `undefined`.
@@ -491,7 +476,6 @@
    * that is used in the Relationship.
    *
    * If the Relationship Id is invalid, the method returns `undefined`.
-   *
    * @param relationshipId The Id of a Relationship.
    * @returns The Id of the remote Table backing the Relationship, or
    * `undefined`.
@@ -523,7 +507,6 @@
    *
    * If the identified Relationship or Row does not exist (or if the definition
    * references a Table that does not exist) then `undefined` is returned.
-   *
    * @param relationshipId The Id of the Relationship.
    * @param localRowId The Id of the local Row in the Relationship.
    * @returns The remote Row Id in the Relationship, or `undefined`.
@@ -569,7 +552,6 @@
    *
    * If the identified Relationship or Row does not exist (or if the definition
    * references a Table that does not exist) then an empty array is returned.
-   *
    * @param relationshipId The Id of the Relationship.
    * @param remoteRowId The Id of the remote Row in the Relationship.
    * @returns The local Row Ids in the Relationship, or an empty array.
@@ -620,7 +602,6 @@
    * If the identified Relationship or Row does not exist (or if the definition
    * references a Table that does not exist) then an array containing just the
    * first Row Id is returned.
-   *
    * @param relationshipId The Id of the Relationship.
    * @param firstRowId The Id of the first Row in the linked list Relationship.
    * @returns The linked Row Ids in the Relationship.
@@ -675,7 +656,6 @@
    * The provided listener is a RemoteRowIdListener function, and will be called
    * with a reference to the Relationships object, the Id of the Relationship,
    * and the Id of the local Row that had its remote Row change.
-   *
    * @param relationshipId The Id of the Relationship to listen to, or `null` as
    * a wildcard.
    * @param localRowId The Id of the local Row to listen to, or `null` as a
@@ -801,7 +781,6 @@
    * The provided listener is a LocalRowIdsListener function, and will be called
    * with a reference to the Relationships object, the Id of the Relationship,
    * and the Id of the remote Row that had its local Row objects change.
-   *
    * @param relationshipId The Id of the Relationship to listen to, or `null` as
    * a wildcard.
    * @param remoteRowId The Id of the remote Row to listen to, or `null` as a
@@ -925,7 +904,6 @@
    * The provided listener is a LinkedRowIdsListener function, and will be
    * called with a reference to the Relationships object, the Id of the
    * Relationship, and the Id of the first Row that had its linked list change.
-   *
    * @param relationshipId The Id of the Relationship to listen to.
    * @param firstRowId The Id of the first Row of the linked list to listen to.
    * @param listener The function that will be called whenever the linked Row
@@ -977,7 +955,6 @@
    * Use the Id returned by whichever method was used to add the listener. Note
    * that the Relationships object may re-use this Id for future listeners added
    * to it.
-   *
    * @param listenerId The Id of the listener to remove.
    * @returns A reference to the Relationships object.
    * @example
@@ -1031,7 +1008,6 @@
    *
    * This guarantees that all of the listeners that the object registered with
    * the underlying Store are removed and it can be correctly garbage collected.
-   *
    * @example
    * This example creates a Store, adds a Relationships object with a
    * definition (that registers a RowListener with the underlying Store),
@@ -1080,7 +1056,6 @@
    * return an empty object. The method is intended to be used during
    * development to ensure your application is not leaking listener
    * registrations, for example.
-   *
    * @returns A RelationshipsListenerStats object containing Relationships
    * listener statistics.
    * @example
@@ -1113,7 +1088,6 @@
  * A given Store can only have one Relationships object associated with it. If
  * you call this function twice on the same Store, your second call will return
  * a reference to the Relationships object created by the first.
- *
  * @param store The Store for which to register Relationships.
  * @returns A reference to the new Relationships object.
  * @example

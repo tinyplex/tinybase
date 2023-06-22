@@ -6,10 +6,9 @@
  * function, which returns a new Queries object. That object in turn has methods
  * that let you create new query definitions, access their results directly, and
  * register listeners for when those results change.
- *
  * @packageDocumentation
  * @module queries
- * @since v2.0
+ * @since v2.0.0
  */
 /// queries
 /**
@@ -20,7 +19,6 @@
  * addResultTableListener method. It is similar to the Table type in the store
  * module, but without schema-specific typing, and is a regular JavaScript
  * object containing individual ResultRow objects, keyed by their Id.
- *
  * @example
  * ```js
  * const resultTable: ResultTable = {
@@ -39,7 +37,6 @@
  * addResultRowListener method. It is similar to the Row type in the store
  * module, but without schema-specific typing, and is a regular JavaScript
  * object containing individual ResultCell objects, keyed by their Id.
- *
  * @example
  * ```js
  * const resultRow: ResultRow = {species: 'dog', color: 'brown'};
@@ -55,7 +52,6 @@
  * addResultCellListener method. It is similar to the Cell type in the store
  * module, but without schema-specific typing, and is a JavaScript string,
  * number, or boolean.
- *
  * @example
  * ```js
  * const resultCell: ResultCell = 'dog';
@@ -66,7 +62,6 @@
 /**
  * The ResultCellOrUndefined type is the data structure representing a single
  * cell in the results of a query, or the value `undefined`.
- *
  * @category Result
  */
 /// ResultCellOrUndefined
@@ -77,12 +72,11 @@
  * There are a number of common predefined aggregators, such as for counting,
  * summing, and averaging values. This type is instead used for when you wish to
  * use a more complex aggregation of your own devising.
- *
  * @param cells The array of Cell values to be aggregated.
  * @param length The length of the array of Cell values to be aggregated.
  * @returns The value of the aggregation.
  * @category Aggregators
- * @since v2.0
+ * @since v2.0.0
  */
 /// Aggregate
 /**
@@ -101,13 +95,12 @@
  * Where possible, if you are providing a custom Aggregate, seek an
  * implementation of an AggregateAdd function that can reduce the complexity
  * cost of growing the input data set.
- *
  * @param current The current value of the aggregation.
  * @param add The Cell value being added to the aggregation.
  * @param length The length of the array of Cell values in the aggregation.
  * @returns The new value of the aggregation.
  * @category Aggregators
- * @since v2.0
+ * @since v2.0.0
  */
 /// AggregateAdd
 /**
@@ -129,13 +122,12 @@
  * Where possible, if you are providing a custom Aggregate, seek an
  * implementation of an AggregateRemove function that can reduce the complexity
  * cost of shrinking the input data set.
- *
  * @param current The current value of the aggregation.
  * @param remove The Cell value being removed from the aggregation.
  * @param length The length of the array of Cell values in the aggregation.
  * @returns The new value of the aggregation.
  * @category Aggregators
- * @since v2.0
+ * @since v2.0.0
  */
 /// AggregateRemove
 /**
@@ -155,14 +147,13 @@
  * Where possible, if you are providing a custom Aggregate, seek an
  * implementation of an AggregateReplace function that can reduce the complexity
  * cost of changing the input data set in place.
- *
  * @param current The current value of the aggregation.
  * @param add The Cell value being added to the aggregation.
  * @param remove The Cell value being removed from the aggregation.
  * @param length The length of the array of Cell values in the aggregation.
  * @returns The new value of the aggregation.
  * @category Aggregators
- * @since v2.0
+ * @since v2.0.0
  */
 /// AggregateReplace
 /**
@@ -171,10 +162,9 @@
  * A QueryCallback is provided when using the forEachQuery method, so that you
  * can do something based on every query in the Queries object. See that method
  * for specific examples.
- *
  * @param queryId The Id of the query that the callback can operate on.
  * @category Callback
- * @since v2.0
+ * @since v2.0.0
  */
 /// QueryCallback
 /**
@@ -184,7 +174,6 @@
  * A ResultTableCallback is provided when using the forEachResultTable method,
  * so that you can do something based on every ResultTable in the Queries
  * object. See that method for specific examples.
- *
  * @param tableId The Id of the ResultTable that the callback can operate on.
  * @param forEachRow A function that will let you iterate over the ResultRow
  * objects in this ResultTable.
@@ -198,7 +187,6 @@
  * A ResultRowCallback is provided when using the forEachResultRow method, so
  * that you can do something based on every ResultRow in a ResultTable. See that
  * method for specific examples.
- *
  * @param rowId The Id of the ResultRow that the callback can operate on.
  * @param forEachRow A function that will let you iterate over the ResultCell
  * values in this ResultRow.
@@ -212,7 +200,6 @@
  * A ResultCellCallback is provided when using the forEachResultCell method, so
  * that you can do something based on every ResultCell in a ResultRow. See that
  * method for specific examples.
- *
  * @param cellId The Id of the ResultCell that the callback can operate on.
  * @param cell The value of the ResultCell.
  * @category Callback
@@ -229,14 +216,13 @@
  * object, the Id of the ResultTable that changed (which is the same as the
  * query Id), and a GetCellResultChange function that can be used to query
  * ResultCell values before and after the change.
- *
  * @param queries A reference to the Queries object that changed.
  * @param tableId The Id of the ResultTable that changed, which is also the
  * query Id.
  * @param getCellChange A function that returns information about any
  * ResultCell's changes.
  * @category Listener
- * @since v2.0
+ * @since v2.0.0
  */
 /// ResultTableListener
 /**
@@ -249,12 +235,11 @@
  * When called, a ResultRowIdsListener is given a reference to the Queries
  * object, and the Id of the ResultTable whose ResultRow Ids changed (which is
  * the same as the query Id).
- *
  * @param queries A reference to the Queries object that changed.
  * @param tableId The Id of the ResultTable that changed, which is also the
  * query Id.
  * @category Listener
- * @since v2.0
+ * @since v2.0.0
  */
 /// ResultRowIdsListener
 /**
@@ -271,7 +256,6 @@
  * for pagination purposes. It also receives the sorted array of Ids itself, so
  * that you can use them in the listener without the additional cost of an
  * explicit call to getResultSortedRowIds.
- *
  * @param queries A reference to the Queries object that changed.
  * @param tableId The Id of the ResultTable that changed, which is also the
  * query Id.
@@ -282,7 +266,7 @@
  * @param limit The maximum number of ResultRow Ids returned.
  * @param sortedRowIds The sorted ResultRow Ids themselves.
  * @category Listener
- * @since v2.0
+ * @since v2.0.0
  */
 /// ResultSortedRowIdsListener
 /**
@@ -296,7 +280,6 @@
  * the Id of the ResultTable that changed (which is the same as the query Id),
  * the Id of the ResultRow that changed, and a GetCellResultChange function that
  * can be used to query ResultCell values before and after the change.
- *
  * @param queries A reference to the Queries object that changed.
  * @param tableId The Id of the ResultTable that changed, which is also the
  * query Id.
@@ -304,7 +287,7 @@
  * @param getCellChange A function that returns information about any
  * ResultCell's changes.
  * @category Listener
- * @since v2.0
+ * @since v2.0.0
  */
 /// ResultRowListener
 /**
@@ -317,13 +300,12 @@
  * When called, a ResultCellIdsListener is given a reference to the Queries
  * object, the Id of the ResultTable that changed (which is the same as the
  * query Id), and the Id of the ResultRow whose ResultCell Ids changed.
- *
  * @param queries A reference to the Queries object that changed.
  * @param tableId The Id of the ResultTable that changed, which is also the
  * query Id.
  * @param rowId The Id of the ResultRow that changed.
  * @category Listener
- * @since v2.0
+ * @since v2.0.0
  */
 /// ResultCellIdsListener
 /**
@@ -339,7 +321,6 @@
  * It is also given the new value of the ResultCell, the old value of the
  * ResultCell, and a GetCellResultChange function that can be used to query
  * ResultCell values before and after the change.
- *
  * @param queries A reference to the Queries object that changed.
  * @param tableId The Id of the ResultTable that changed, which is also the
  * query Id.
@@ -350,7 +331,7 @@
  * @param getCellChange A function that returns information about any
  * ResultCell's changes.
  * @category Listener
- * @since v2.0
+ * @since v2.0.0
  */
 /// ResultCellListener
 /**
@@ -361,7 +342,6 @@
  * the Store changing. The listener can then fetch the previous value of a
  * ResultCell before the current transaction, the new value after it, and a
  * convenience flag that indicates that the value has changed.
- *
  * @param tableId The Id of the ResultTable to inspect.
  * @param rowId The Id of the ResultRow to inspect.
  * @param cellId The Id of the ResultCell to inspect.
@@ -378,7 +358,6 @@
  * every listener when called. This array contains the previous value of a
  * ResultCell before the current transaction, the new value after it, and a
  * convenience flag that indicates that the value has changed.
- *
  * @category Listener
  */
 /// ResultCellChange
@@ -388,9 +367,8 @@
  *
  * A QueriesListenerStats object is returned from the getListenerStats method,
  * and is only populated in a debug build.
- *
  * @category Development
- * @since v2.0
+ * @since v2.0.0
  */
 /// QueriesListenerStats
 {
@@ -422,9 +400,8 @@
  * A GetTableCell can be provided when setting query definitions, specifically
  * in the Select and Where clauses when you want to create or filter on
  * calculated values. See those methods for specific examples.
- *
  * @category Callback
- * @since v2.0
+ * @since v2.0.0
  */
 /// GetTableCell
 {
@@ -432,7 +409,6 @@
    * When called with one parameter, this function will return the value of
    * the specified Cell from the query's root Table for the Row being selected
    * or filtered.
-   *
    * @param cellId The Id of the Cell to fetch the value for.
    * @returns A Cell value or `undefined`.
    */
@@ -441,7 +417,6 @@
    * When called with two parameters, this function will return the value of
    * the specified Cell from a Table that has been joined in the query, for
    * the Row being selected or filtered.
-   *
    * @param joinedTableId The Id of the Table to fetch the value from. If the
    * underlying Table was joined 'as' a different Id, that should instead be
    * used.
@@ -457,7 +432,6 @@
  * The Select function is provided to the third `query` parameter of the
  * setQueryDefinition method. A query definition must call the Select function
  * at least once, otherwise it will be meaningless and return no data.
- *
  * @example
  * This example shows a query that selects two Cells from the main query Table.
  *
@@ -545,14 +519,13 @@
  * // -> {cujo: {description: 'dog for Carol'}}
  * ```
  * @category Definition
- * @since v2.0
+ * @since v2.0.0
  */
 /// Select
 {
   /**
    * Calling this function with one Id parameter will indicate that the query
    * should select the value of the specified Cell from the query's root Table.
-   *
    * @param cellId The Id of the Cell to fetch the value for.
    * @returns A SelectedAs object so that the selected Cell Id can be optionally
    * aliased.
@@ -562,7 +535,6 @@
    * Calling this function with two parameters will indicate that the query
    * should select the value of the specified Cell from a Table that has been
    * joined in the query.
-   *
    * @param joinedTableId The Id of the Table to fetch the value from. If the
    * underlying Table was joined 'as' a different Id, that should instead be
    * used.
@@ -575,7 +547,6 @@
    * Calling this function with one callback parameter will indicate that the
    * query should select a calculated value, based on one or more Cell values in
    * the root Table or a joined Table, or on the root Table's Row Id.
-   *
    * @param getCell A callback that takes a GetTableCell function and the main
    * Table's Row Id. These can be used to programmatically create a calculated
    * value from multiple Cell values and the Row Id.
@@ -595,7 +566,6 @@
  * Note that if two Select clauses are both aliased to the same name (or if two
  * columns with the same underlying name are selected, both _without_ aliases),
  * only the latter of two will be used in the query.
- *
  * @example
  * This example shows a query that selects two Cells, one from a joined Table.
  * Both are aliased with the 'as' function:
@@ -629,7 +599,7 @@
  * // -> {cujo: {petSpecies: 'dog', ownerName: 'Carol'}}
  * ```
  * @category Definition
- * @since v2.0
+ * @since v2.0.0
  */
 /// SelectedAs
 {
@@ -659,7 +629,6 @@
  * unfiltered query will only ever return the same number of Rows as the main
  * Table being queried, and indeed the resulting table (assuming it has not been
  * aggregated) will even preserve the root Table's original Row Ids.
- *
  * @example
  * This example shows a query that joins a single Table by using an Id present
  * in the main query Table.
@@ -802,7 +771,7 @@
  * // -> {cujo: {description: 'dog in Washington'}}
  * ```
  * @category Definition
- * @since v2.0
+ * @since v2.0.0
  */
 /// Join
 {
@@ -810,7 +779,6 @@
    * Calling this function with two Id parameters will indicate that the join to
    * a Row in an adjacent Table is made by finding its Id in a Cell of the
    * query's root Table.
-   *
    * @param joinedTableId The Id of the Table to join to.
    * @param on The Id of the Cell in the root Table that contains the joined
    * Table's Row Id.
@@ -822,7 +790,6 @@
    * Calling this function with two parameters (where the second is a function)
    * will indicate that the join to a Row in an adjacent Table is made by
    * calculating its Id from the Cells and the Row Id of the query's root Table.
-   *
    * @param joinedTableId The Id of the Table to join to.
    * @param on A callback that takes a GetCell function and the root Table's Row
    * Id. These can be used to programmatically calculate the joined Table's Row
@@ -835,7 +802,6 @@
    * Calling this function with three Id parameters will indicate that the join
    * to a Row in distant Table is made by finding its Id in a Cell of an
    * intermediately joined Table.
-   *
    * @param joinedTableId The Id of the distant Table to join to.
    * @param fromIntermediateJoinedTableId The Id of an intermediate Table (which
    * should have been in turn joined to the main query table via other Join
@@ -851,7 +817,6 @@
    * will indicate that the join to a Row in distant Table is made by
    * calculating its Id from the Cells and the Row Id of an intermediately
    * joined Table.
-   *
    * @param joinedTableId The Id of the Table to join to.
    * @param fromIntermediateJoinedTableId The Id of an intermediate Table (which
    * should have been in turn joined to the main query table via other Join
@@ -874,7 +839,6 @@
  *
  * For the purposes of clarity, it's recommended to use an alias that does not
  * collide with a real underlying Table (whether included in the query or not).
- *
  * @example
  * This example shows a query that joins the same underlying Table twice, for
  * different purposes. Both joins are aliased with the 'as' function to
@@ -910,7 +874,7 @@
  * // -> {cujo: {buyer: 'Carol', seller: 'Alice'}}
  * ```
  * @category Definition
- * @since v2.0
+ * @since v2.0.0
  */
 /// JoinedAs
 /**
@@ -936,7 +900,6 @@
  * describes conditions that should be met by underlying Cell values (whether
  * selected or not), and the latter describes conditions based on calculated and
  * aggregated values - after Group clauses have been applied.
- *
  * @example
  * This example shows a query that filters the results from a single Table by
  * comparing an underlying Cell from it with a value.
@@ -1031,7 +994,7 @@
  * // -> {cujo: {species: 'dog', state: 'WA'}}
  * ```
  * @category Definition
- * @since v2.0
+ * @since v2.0.0
  */
 /// Where
 {
@@ -1039,7 +1002,6 @@
    * Calling this function with two parameters is used to include only those
    * Rows for which a specified Cell in the query's root Table has a specified
    * value.
-   *
    * @param cellId The Id of the Cell in the query's root Table to test.
    * @param equals The value that the Cell has to have for the Row to be
    * included in the result.
@@ -1048,7 +1010,6 @@
   /**
    * Calling this function with three parameters is used to include only those
    * Rows for which a specified Cell in a joined Table has a specified value.
-   *
    * @param joinedTableId The Id of the joined Table to test a value in. If the
    * underlying Table was joined 'as' a different Id, that should instead be
    * used.
@@ -1061,7 +1022,6 @@
    * Calling this function with one callback parameter is used to include only
    * those Rows which meet a calculated boolean condition, based on values in
    * the main and (optionally) joined Tables.
-   *
    * @param condition A callback that takes a GetTableCell function and that
    * should return `true` for the Row to be included in the result.
    */
@@ -1097,7 +1057,6 @@
  * function's algorithmic complexity by providing shortcuts that can nudge an
  * aggregation result when a single value is added, removed, or replaced in the
  * input values.
- *
  * @param selectedCellId The Id of the Cell to aggregate. If the underlying Cell
  * was selected 'as' a different Id, that should instead be used.
  * @param aggregate Either a string representing one of a set of common
@@ -1237,7 +1196,7 @@
  * // Both have a parrot at 3. Alice's worm at 1 is excluded from aggregation.
  * ```
  * @category Definition
- * @since v2.0
+ * @since v2.0.0
  */
 /// Group
 /**
@@ -1247,7 +1206,6 @@
  * Note that if two Group clauses are both aliased to the same name (or if you
  * create two groups of the same underlying Cell, both _without_ aliases), only
  * the latter of two will be used in the query.
- *
  * @example
  * This example shows a query that groups the same underlying Cell twice, for
  * different purposes. Both groups are aliased with the 'as' function to
@@ -1276,7 +1234,7 @@
  * // -> {1: {species: 'cat', minPrice: 3, maxPrice: 4}}
  * ```
  * @category Definition
- * @since v2.0
+ * @since v2.0.0
  */
 /// GroupedAs
 /**
@@ -1304,7 +1262,6 @@
  * have not been grouped with a Group clause, you should expect it to be less
  * performant than using a Where clause, due to that being applied earlier in
  * the query process.
- *
  * @example
  * This example shows a query that filters the results from a grouped Table by
  * comparing a Cell from it with a value.
@@ -1369,7 +1326,7 @@
  * // Parrots are filtered out because they have zero range in price.
  * ```
  * @category Definition
- * @since v2.0
+ * @since v2.0.0
  */
 /// Having
 {
@@ -1377,7 +1334,6 @@
    * Calling this function with two parameters is used to include only those
    * Rows for which a specified Cell in the query's root Table has a specified
    * value.
-   *
    * @param selectedOrGroupedCellId The Id of the Cell in the query to test.
    * @param equals The value that the Cell has to have for the Row to be
    * included in the result.
@@ -1386,7 +1342,6 @@
   /**
    * Calling this function with one callback parameter is used to include only
    * those Rows which meet a calculated boolean condition.
-   *
    * @param condition A callback that takes a GetCell function and that should
    * return `true` for the Row to be included in the result.
    */
@@ -1411,7 +1366,6 @@
  * getResultCell method, and so on), and add listeners for when they change
  * (with the addResultTableListener method, the addResultRowListener method, the
  * addResultCellListener method, and so on).
- *
  * @example
  * This example shows a very simple lifecycle of a Queries object: from
  * creation, to adding definitions, getting their contents, and then registering
@@ -1487,7 +1441,7 @@
  * @see Car Analysis demo
  * @see Movie Database demo
  * @category Queries
- * @since v2.0
+ * @since v2.0.0
  */
 /// Queries
 {
@@ -1524,7 +1478,6 @@
    *
    * Additionally, you can use the getResultSortedRowIds method and
    * addResultSortedRowIdsListener method to sort and paginate the results.
-   *
    * @param queryId The Id of the query to define.
    * @param tableId The Id of the root Table the query will be based on.
    * @param query A callback which can take a `keywords` object and which uses
@@ -1552,12 +1505,11 @@
    * // -> {fido: {color: 'brown'}, cujo: {color: 'black'}}
    * ```
    * @category Configuration
-   * @since v2.0
+   * @since v2.0.0
    */
   /// Queries.setQueryDefinition
   /**
    * The delQueryDefinition method removes an existing query definition.
-   *
    * @param queryId The Id of the query to remove.
    * @returns A reference to the Queries object.
    * @example
@@ -1584,13 +1536,12 @@
    * // -> []
    * ```
    * @category Configuration
-   * @since v2.0
+   * @since v2.0.0
    */
   /// Queries.delQueryDefinition
   /**
    * The getStore method returns a reference to the underlying Store that is
    * backing this Queries object.
-   *
    * @returns A reference to the Store.
    * @example
    * This example creates a Queries object against a newly-created Store and
@@ -1609,13 +1560,12 @@
    * // -> {fido: {color: 'brown'}}
    * ```
    * @category Getter
-   * @since v2.0
+   * @since v2.0.0
    */
   /// Queries.getStore
   /**
    * The getQueryIds method returns an array of the query Ids registered with
    * this Queries object.
-   *
    * @returns An array of Ids.
    * @example
    * This example creates a Queries object with two definitions, and then gets
@@ -1636,7 +1586,7 @@
    * // -> ['dogColors', 'catColors']
    * ```
    * @category Getter
-   * @since v2.0
+   * @since v2.0.0
    */
   /// Queries.getQueryIds
   /**
@@ -1646,7 +1596,6 @@
    * This method is useful for iterating over all the queries in a functional
    * style. The `queryCallback` parameter is a QueryCallback function that will
    * be called with the Id of each query.
-   *
    * @param queryCallback The function that should be called for every query.
    * @example
    * This example iterates over each query in a Queries object.
@@ -1669,13 +1618,12 @@
    * // -> 'catColors'
    * ```
    * @category Iterator
-   * @since v2.0
+   * @since v2.0.0
    */
   /// Queries.forEachQuery
   /**
    * The hasQuery method returns a boolean indicating whether a given query
    * exists in the Queries object.
-   *
    * @param queryId The Id of a possible query in the Queries object.
    * @returns Whether a query with that Id exists.
    * @example
@@ -1697,7 +1645,7 @@
    * // -> false
    * ```
    * @category Getter
-   * @since v2.0
+   * @since v2.0.0
    */
   /// Queries.hasQuery
   /**
@@ -1705,7 +1653,6 @@
    * backing a query.
    *
    * If the query Id is invalid, the method returns `undefined`.
-   *
    * @param queryId The Id of a query.
    * @returns The Id of the Table backing the query, or `undefined`.
    * @example
@@ -1729,7 +1676,7 @@
    * // -> undefined
    * ```
    * @category Getter
-   * @since v2.0
+   * @since v2.0.0
    */
   /// Queries.getTableId
   /**
@@ -1741,7 +1688,6 @@
    * returns a copy of, rather than a reference to the underlying data, so
    * changes made to the returned object are not made to the query results
    * themselves.
-   *
    * @param queryId The Id of a query.
    * @returns An object containing the entire data of the ResultTable of the
    * query.
@@ -1774,7 +1720,7 @@
    * // -> {}
    * ```
    * @category Result
-   * @since v2.0
+   * @since v2.0.0
    */
   /// Queries.getResultTable
   /**
@@ -1785,7 +1731,6 @@
    * the query Id is invalid, the method returns an empty array. Similarly, it
    * returns a copy of, rather than a reference to the list of Ids, so changes
    * made to the list object are not made to the query results themselves.
-   *
    * @param queryId The Id of a query.
    * @returns An array of the Ids of every ResultRow in the result of the query.
    * @example
@@ -1816,7 +1761,7 @@
    * // -> []
    * ```
    * @category Result
-   * @since v2.0
+   * @since v2.0.0
    */
   /// Queries.getResultRowIds
   /**
@@ -1836,7 +1781,6 @@
    * results yourself, especially when the ResultTable is large. For a
    * performant approach to tracking the sorted ResultRow Ids when they change,
    * use the addResultSortedRowIdsListener method.
-   *
    * @param queryId The Id of a query.
    * @param cellId The Id of the ResultCell whose values are used for the
    * sorting, or `undefined` to by sort the ResultRow Id itself.
@@ -1875,7 +1819,7 @@
    * // -> []
    * ```
    * @category Result
-   * @since v2.0
+   * @since v2.0.0
    */
   /// Queries.getResultSortedRowIds
   /**
@@ -1887,7 +1831,6 @@
    * Similarly, it returns a copy of, rather than a reference to the underlying
    * data, so changes made to the returned object are not made to the query
    * results themselves.
-   *
    * @param queryId The Id of a query.
    * @param rowId The Id of the ResultRow in the ResultTable.
    * @returns An object containing the entire data of the ResultRow in the
@@ -1920,7 +1863,7 @@
    * // -> {}
    * ```
    * @category Result
-   * @since v2.0
+   * @since v2.0.0
    */
   /// Queries.getResultRow
   /**
@@ -1932,7 +1875,6 @@
    * Similarly, it returns a copy of, rather than a reference to the list of
    * Ids, so changes made to the list object are not made to the query results
    * themselves.
-   *
    * @param queryId The Id of a query.
    * @param rowId The Id of the ResultRow in the ResultTable.
    * @returns An array of the Ids of every ResultCell in the ResultRow in the
@@ -1965,7 +1907,7 @@
    * // -> []
    * ```
    * @category Result
-   * @since v2.0
+   * @since v2.0.0
    */
   /// Queries.getResultCellIds
   /**
@@ -1975,7 +1917,6 @@
    * This has the same behavior as a Store's getCell method. For example, if the
    * query, or ResultRow, or ResultCell Id is invalid, the method returns
    * `undefined`.
-   *
    * @param queryId The Id of a query.
    * @param rowId The Id of the ResultRow in the ResultTable.
    * @param cellId The Id of the ResultCell in the ResultRow.
@@ -2008,13 +1949,12 @@
    * // -> undefined
    * ```
    * @category Result
-   * @since v2.0
+   * @since v2.0.0
    */
   /// Queries.getResultCell
   /**
    * The hasResultTable method returns a boolean indicating whether a given
    * ResultTable exists.
-   *
    * @param queryId The Id of a possible query.
    * @returns Whether a ResultTable for that query Id exists.
    * @example
@@ -2042,13 +1982,12 @@
    * // -> false
    * ```
    * @category Result
-   * @since v2.0
+   * @since v2.0.0
    */
   /// Queries.hasResultTable
   /**
    * The hasResultRow method returns a boolean indicating whether a given
    * ResultRow exists.
-   *
    * @param queryId The Id of a possible query.
    * @param rowId The Id of a possible ResultRow.
    * @returns Whether a ResultRow for that Id exists.
@@ -2077,13 +2016,12 @@
    * // -> false
    * ```
    * @category Result
-   * @since v2.0
+   * @since v2.0.0
    */
   /// Queries.hasResultRow
   /**
    * The hasResultCell method returns a boolean indicating whether a given
    * ResultCell exists.
-   *
    * @param queryId The Id of a possible query.
    * @param rowId The Id of a possible ResultRow.
    * @param cellId The Id of a possible ResultCell.
@@ -2113,7 +2051,7 @@
    * // -> false
    * ```
    * @category Result
-   * @since v2.0
+   * @since v2.0.0
    */
   /// Queries.hasResultCell
   /**
@@ -2125,7 +2063,6 @@
    * ResultTableCallback function that will be called with the Id of each
    * ResultTable, and with a function that can then be used to iterate over each
    * ResultRow of the ResultTable, should you wish.
-   *
    * @param tableCallback The function that should be called for every query's
    * ResultTable.
    * @example
@@ -2159,7 +2096,7 @@
    * // -> '- felix'
    * ```
    * @category Iterator
-   * @since v2.0
+   * @since v2.0.0
    */
   /// Queries.forEachResultTable
   /**
@@ -2171,7 +2108,6 @@
    * ResultRowCallback function that will be called with the Id of each
    * ResultRow, and with a function that can then be used to iterate over each
    * ResultCell of the ResultRow, should you wish.
-   *
    * @param queryId The Id of a query.
    * @param rowCallback The function that should be called for every ResultRow
    * of the query's ResultTable.
@@ -2204,7 +2140,7 @@
    * // -> '- color'
    * ```
    * @category Iterator
-   * @since v2.0
+   * @since v2.0.0
    */
   /// Queries.forEachResultRow
   /**
@@ -2215,7 +2151,6 @@
    * of the query in a functional style. The `cellCallback` parameter is a
    * ResultCellCallback function that will be called with the Id and value of
    * each ResultCell.
-   *
    * @param queryId The Id of a query.
    * @param rowId The Id of a ResultRow in the query's ResultTable.
    * @param cellCallback The function that should be called for every ResultCell
@@ -2247,7 +2182,7 @@
    * // -> 'color: brown'
    * ```
    * @category Iterator
-   * @since v2.0
+   * @since v2.0.0
    */
   /// Queries.forEachResultCell
   /**
@@ -2262,7 +2197,6 @@
    * You can either listen to a single ResultTable (by specifying a query Id as
    * the method's first parameter) or changes to any ResultTable (by providing a
    * `null` wildcard).
-   *
    * @param queryId The Id of the query to listen to, or `null` as a wildcard.
    * @param listener The function that will be called whenever data in the
    * matching ResultTable changes.
@@ -2337,7 +2271,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
-   * @since v2.0
+   * @since v2.0.0
    */
   /// Queries.addResultTableListener
   /**
@@ -2356,7 +2290,6 @@
    * You can either listen to a single ResultTable (by specifying a query Id as
    * the method's first parameter) or changes to any ResultTable (by providing a
    * `null` wildcard).
-   *
    * @param queryId The Id of the query to listen to, or `null` as a wildcard.
    * @param listener The function that will be called whenever the ResultRow Ids
    * in the ResultTable change.
@@ -2431,7 +2364,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
-   * @since v2.0
+   * @since v2.0.0
    */
   /// Queries.addResultRowIdsListener
   /**
@@ -2460,7 +2393,6 @@
    * should be in descending order. The `offset` and `limit` parameters are used
    * to paginate results, but default to `0` and `undefined` to return all
    * available ResultRow Ids if not specified.
-   *
    * @param queryId The Id of the query to listen to.
    * @param cellId The Id of the ResultCell whose values are used for the
    * sorting, or `undefined` to by sort the ResultRow Id itself.
@@ -2554,7 +2486,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
-   * @since v2.0
+   * @since v2.0.0
    */
   /// Queries.addResultSortedRowIdsListener
   /**
@@ -2574,7 +2506,6 @@
    * wildcarded with `null`. You can listen to a specific ResultRow in a
    * specific query, any ResultRow in a specific query, a specific ResultRow in
    * any query, or any ResultRow in any query.
-   *
    * @param queryId The Id of the query to listen to, or `null` as a wildcard.
    * @param rowId The Id of the ResultRow to listen to, or `null` as a wildcard.
    * @param listener The function that will be called whenever data in the
@@ -2652,7 +2583,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
-   * @since v2.0
+   * @since v2.0.0
    */
   /// Queries.addResultRowListener
   /**
@@ -2676,7 +2607,6 @@
    * wildcarded with `null`. You can listen to a specific ResultRow in a
    * specific query, any ResultRow in a specific query, a specific ResultRow in
    * any query, or any ResultRow in any query.
-   *
    * @param queryId The Id of the query to listen to, or `null` as a wildcard.
    * @param rowId The Id of the ResultRow to listen to, or `null` as a wildcard.
    * @param listener The function that will be called whenever the ResultCell
@@ -2759,7 +2689,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
-   * @since v2.0
+   * @since v2.0.0
    */
   /// Queries.addResultCellIdsListener
   /**
@@ -2781,7 +2711,6 @@
    * be wildcarded with `null`. You can listen to a specific ResultCell in a
    * specific ResultRow in a specific query, any ResultCell in any ResultRow in
    * any query, for example - or every other combination of wildcards.
-   *
    * @param queryId The Id of the query to listen to, or `null` as a wildcard.
    * @param rowId The Id of the ResultRow to listen to, or `null` as a wildcard.
    * @param cellId The Id of the ResultCell to listen to, or `null` as a
@@ -2870,7 +2799,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
-   * @since v2.0
+   * @since v2.0.0
    */
   /// Queries.addResultCellListener
   /**
@@ -2879,7 +2808,6 @@
    *
    * Use the Id returned by the addMetricListener method. Note that the Queries
    * object may re-use this Id for future listeners added to it.
-   *
    * @param listenerId The Id of the listener to remove.
    * @returns A reference to the Queries object.
    * @example
@@ -2915,7 +2843,7 @@
    * // The listener is not called.
    * ```
    * @category Listener
-   * @since v2.0
+   * @since v2.0.0
    */
   /// Queries.delListener
   /**
@@ -2924,7 +2852,6 @@
    *
    * This guarantees that all of the listeners that the object registered with
    * the underlying Store are removed and it can be correctly garbage collected.
-   *
    * @example
    * This example creates a Store, adds a Queries object with a definition (that
    * registers a RowListener with the underlying Store), and then destroys it
@@ -2950,7 +2877,7 @@
    * // -> 0
    * ```
    * @category Lifecycle
-   * @since v2.0
+   * @since v2.0.0
    */
   /// Queries.destroy
   /**
@@ -2962,7 +2889,6 @@
    * return an empty object. The method is intended to be used during
    * development to ensure your application is not leaking listener
    * registrations, for example.
-   *
    * @returns A QueriesListenerStats object containing Queries listener
    * statistics.
    * @example
@@ -2979,7 +2905,7 @@
    * // -> 0
    * ```
    * @category Development
-   * @since v2.0
+   * @since v2.0.0
    */
   /// Queries.getListenerStats
 }
@@ -2990,7 +2916,6 @@
  * A given Store can only have one Queries object associated with it. If you
  * call this function twice on the same Store, your second call will return a
  * reference to the Queries object created by the first.
- *
  * @param store The Store for which to register query definitions.
  * @returns A reference to the new Queries object.
  * @example
@@ -3014,6 +2939,6 @@
  * // -> true
  * ```
  * @category Creation
- * @since v2.0
+ * @since v2.0.0
  */
 /// createQueries
