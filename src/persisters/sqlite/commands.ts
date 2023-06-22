@@ -69,77 +69,6 @@ export const getCommandFunctions = (
 ] => {
   const schemaMap: Schema = mapNew();
 
-  const ensureTable = async (
-    tableName: string,
-    rowIdColumnName: string,
-    table: Table,
-    deleteEmptyColumns: boolean,
-    deleteEmptyTable: boolean,
-  ): Promise<string[]> => {
-    const cellIds = setNew<string>();
-    objMap(table ?? {}, (row) =>
-      arrayMap(objIds(row), (cellId) => setAdd(cellIds, cellId)),
-    );
-    const columnNames = collValues(cellIds);
-
-    if (arrayIsEmpty(columnNames) && collHas(schemaMap, tableName)) {
-      if (deleteEmptyTable) {
-        await cmd('DROP TABLE' + escapeId(tableName));
-        mapSet(schemaMap, tableName);
-        return columnNames;
-      }
-    }
-
-    if (!arrayIsEmpty(columnNames) && !collHas(schemaMap, tableName)) {
-      await cmd(
-        `CREATE TABLE${escapeId(tableName)}(${escapeId(rowIdColumnName)} ` +
-          `PRIMARY KEY ON CONFLICT REPLACE${arrayJoin(
-            arrayMap(columnNames, (cellId) => COMMA + escapeId(cellId)),
-          )});`,
-      );
-      mapSet(
-        schemaMap,
-        tableName,
-        mapNew([
-          [rowIdColumnName, EMPTY_STRING],
-          ...arrayMap(
-            columnNames,
-            (columnName) => [columnName, EMPTY_STRING] as [string, string],
-          ),
-        ]),
-      );
-    } else {
-      const tableSchemaMap = mapGet(schemaMap, tableName);
-      const columnNamesAccountedFor = setNew(mapKeys(tableSchemaMap));
-      await promiseAll([
-        ...arrayMap(columnNames, async (columnName) => {
-          if (!collDel(columnNamesAccountedFor, columnName)) {
-            await cmd(
-              `ALTER TABLE${escapeId(tableName)}ADD${escapeId(columnName)}`,
-            );
-            mapSet(tableSchemaMap, columnName, EMPTY_STRING);
-          }
-        }),
-        ...(deleteEmptyColumns
-          ? arrayMap(
-              collValues(columnNamesAccountedFor),
-              async (columnName) => {
-                if (columnName != rowIdColumnName) {
-                  await cmd(
-                    `ALTER TABLE${escapeId(tableName)}DROP${escapeId(
-                      columnName,
-                    )}`,
-                  );
-                  mapSet(tableSchemaMap, columnName);
-                }
-              },
-            )
-          : []),
-      ]);
-    }
-    return columnNames;
-  };
-
   const canSelect = (tableName: string, rowIdColumnName: string): boolean =>
     !isUndefined(mapGet(mapGet(schemaMap, tableName), rowIdColumnName));
 
@@ -233,13 +162,69 @@ export const getCommandFunctions = (
     deleteEmptyTable: boolean,
     table: Table,
   ): Promise<void> => {
-    const columnNames = await ensureTable(
-      tableName,
-      rowIdColumnName,
-      table,
-      deleteEmptyColumns,
-      deleteEmptyTable,
+    const cellIds = setNew<string>();
+    objMap(table ?? {}, (row) =>
+      arrayMap(objIds(row), (cellId) => setAdd(cellIds, cellId)),
     );
+    const columnNames = collValues(cellIds);
+
+    if (
+      arrayIsEmpty(columnNames) &&
+      collHas(schemaMap, tableName) &&
+      deleteEmptyTable
+    ) {
+      await cmd('DROP TABLE' + escapeId(tableName));
+      mapSet(schemaMap, tableName);
+      return;
+    }
+
+    if (!arrayIsEmpty(columnNames) && !collHas(schemaMap, tableName)) {
+      await cmd(
+        `CREATE TABLE${escapeId(tableName)}(${escapeId(rowIdColumnName)} ` +
+          `PRIMARY KEY ON CONFLICT REPLACE${arrayJoin(
+            arrayMap(columnNames, (cellId) => COMMA + escapeId(cellId)),
+          )});`,
+      );
+      mapSet(
+        schemaMap,
+        tableName,
+        mapNew([
+          [rowIdColumnName, EMPTY_STRING],
+          ...arrayMap(
+            columnNames,
+            (columnName) => [columnName, EMPTY_STRING] as [string, string],
+          ),
+        ]),
+      );
+    } else {
+      const tableSchemaMap = mapGet(schemaMap, tableName);
+      const columnNamesAccountedFor = setNew(mapKeys(tableSchemaMap));
+      await promiseAll([
+        ...arrayMap(columnNames, async (columnName) => {
+          if (!collDel(columnNamesAccountedFor, columnName)) {
+            await cmd(
+              `ALTER TABLE${escapeId(tableName)}ADD${escapeId(columnName)}`,
+            );
+            mapSet(tableSchemaMap, columnName, EMPTY_STRING);
+          }
+        }),
+        ...(deleteEmptyColumns
+          ? arrayMap(
+              collValues(columnNamesAccountedFor),
+              async (columnName) => {
+                if (columnName != rowIdColumnName) {
+                  await cmd(
+                    `ALTER TABLE${escapeId(tableName)}DROP${escapeId(
+                      columnName,
+                    )}`,
+                  );
+                  mapSet(tableSchemaMap, columnName);
+                }
+              },
+            )
+          : []),
+      ]);
+    }
 
     if (!arrayIsEmpty(columnNames)) {
       const insertSlots: string[] = [];
@@ -283,7 +268,7 @@ export const getCommandFunctions = (
           ')',
         deleteRowIds,
       );
-    } else if (!deleteEmptyTable) {
+    } else {
       await cmd('DELETE FROM' + escapeId(tableName));
     }
   };
