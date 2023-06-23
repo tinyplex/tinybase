@@ -12,7 +12,7 @@ import {createSqlitePersister} from './sqlite/create';
 export const createCrSqliteWasmPersister = ((
   store: Store,
   db: DB,
-  configOrStoreTableName?: string | DatabasePersisterConfig,
+  configOrStoreTableName?: DatabasePersisterConfig | string,
 ): Persister =>
   createSqlitePersister(
     store,

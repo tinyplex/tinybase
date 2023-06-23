@@ -15,7 +15,7 @@ const CHANGE = 'change';
 export const createSqlite3Persister = ((
   store: Store,
   db: Database,
-  configOrStoreTableName?: string | DatabasePersisterConfig,
+  configOrStoreTableName?: DatabasePersisterConfig | string,
 ): Persister =>
   createSqlitePersister(
     store,

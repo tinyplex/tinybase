@@ -8,5 +8,5 @@ import {Store} from '../store';
 export function createSqlite3Persister(
   store: Store,
   db: Database,
-  configOrStoreTableName?: string | DatabasePersisterConfig,
+  configOrStoreTableName?: DatabasePersisterConfig | string,
 ): Persister;
