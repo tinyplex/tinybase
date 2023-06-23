@@ -1,3 +1,4 @@
+import 'fake-indexeddb/auto';
 import * as AutomergeRepo from 'automerge-repo';
 import * as React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
@@ -8,15 +9,17 @@ import * as TinyBasePersisterBrowser from 'tinybase/debug/persisters/persister-b
 import * as TinyBasePersisterFile from 'tinybase/debug/persisters/persister-file';
 import * as TinyBasePersisterRemote from 'tinybase/debug/persisters/persister-remote';
 import * as TinyBasePersisterSqlite3 from 'tinybase/debug/persisters/persister-sqlite3';
+import * as TinyBasePersisterSqliteWasm from 'tinybase/debug/persisters/persister-sqlite-wasm';
 import * as TinyBasePersisterYjs from 'tinybase/debug/persisters/persister-yjs';
 import * as TinyBaseReact from 'tinybase/debug/ui-react';
 import * as TinyBaseTools from 'tinybase/debug/tools';
 import * as Y from 'yjs';
 import * as sqlite3 from 'sqlite3';
 import {join, resolve} from 'path';
+import {mockFetchWasm, pause, suppressWarnings} from './common/other';
 import {readFileSync, readdirSync} from 'fs';
 import {AutomergeTestNetworkAdapter as BroadcastChannelNetworkAdapter} from './common/automerge-adaptor';
-import {pause} from './common/other';
+import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import {transformSync} from 'esbuild';
 
 [
@@ -27,6 +30,7 @@ import {transformSync} from 'esbuild';
   TinyBasePersisterYjs,
   TinyBasePersisterAutomerge,
   TinyBasePersisterSqlite3,
+  TinyBasePersisterSqliteWasm,
   TinyBaseReact,
   TinyBaseTools,
   ReactDOMTestUtils,
@@ -35,6 +39,7 @@ import {transformSync} from 'esbuild';
   {AutomergeRepo},
   {BroadcastChannelNetworkAdapter},
   {sqlite3},
+  {sqlite3InitModule},
 ].forEach((module) =>
   Object.entries(module).forEach(([key, value]) => {
     (globalThis as any)[key] = value;
@@ -50,7 +55,6 @@ type Results = [any, any][];
 const resultsByName: {[name: string]: () => Promise<Results>} = {};
 
 const AsyncFunction = Object.getPrototypeOf(async () => null).constructor;
-
 const forEachDeepFile = (
   dir: string,
   callback: (file: string) => void,
@@ -154,7 +158,8 @@ describe('Documentation tests', () => {
   );
 
   test.each(Object.entries(resultsByName))('%s', async (_name, getResults) => {
-    const results = await getResults();
+    mockFetchWasm();
+    const results = await suppressWarnings(getResults);
     results.forEach(([expectedResult, actualResult]) => {
       // eslint-disable-next-line jest/no-conditional-expect
       expect(actualResult).toEqual(expectedResult);
