@@ -142,9 +142,10 @@ export const createCustomPersister = <ListeningHandle>(
       return persister;
     },
 
-    schedule: async (...actions: Action[]): Promise<void> => {
+    schedule: async (...actions: Action[]): Promise<Persister> => {
       arrayPush(scheduledActions, ...actions);
       await run();
+      return persister;
     },
 
     getStore: (): Store => store,

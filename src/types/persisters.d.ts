@@ -109,6 +109,9 @@ export interface Persister {
   /// Persister.stopAutoSave
   stopAutoSave(): Persister;
 
+  /// Persister.schedule
+  schedule(...actions: Promise<any>[]): Promise<Persister>;
+
   /// Persister.getStore
   getStore(): Store;
 
