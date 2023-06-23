@@ -12,7 +12,7 @@ export const createSqliteWasmPersister = ((
   store: Store,
   sqlite3: any,
   db: any,
-  configOrStoreTableName?: string | DatabasePersisterConfig,
+  configOrStoreTableName?: DatabasePersisterConfig | string,
 ): Persister =>
   createSqlitePersister(
     store,
