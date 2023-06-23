@@ -120,6 +120,9 @@ export interface Persister<in out Schemas extends OptionalSchemas> {
   /// Persister.stopAutoSave
   stopAutoSave(): Persister<Schemas>;
 
+  /// Persister.schedule
+  schedule(...actions: Promise<any>[]): Promise<Persister<Schemas>>;
+
   /// Persister.getStore
   getStore(): Store<Schemas>;
 

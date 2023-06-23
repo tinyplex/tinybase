@@ -863,6 +863,48 @@
    */
   /// Persister.stopAutoSave
   /**
+   * The schedule method allows you to queue up a series of asynchronous actions
+   * that must run in sequence during persistence.
+   *
+   * For example, a database Persister may need to ensure that multiple
+   * asynchronous tasks to check and update the database schema are completed
+   * before data is written to it. Therefore it's most likely you will be using
+   * this method inside your `setPersisted` implementation.
+   *
+   * Call this method to add a single asynchronous action, or a sequence of them
+   * in one call. This will also start to run the first task in the queue (which
+   * once complete will then run the next, and so on), and so this method itself
+   * is also asynchronous and returns a promise of the Persister.
+   * @returns A reference to the Persister object.
+   * @example
+   * This example creates a custom Persister object against a newly-created
+   * Store and then sequences two tasks in order to update its data on a
+   * hypothetical remote system.
+   *
+   * ```js yolo
+   * const store = createStore();
+   * const persister = createCustomPersister(
+   *   store,
+   *   async () => {
+   *     // getPersisted
+   *     return await getDataFromRemoteSystem();
+   *   },
+   *   async (getContent) => {
+   *     // setPersisted
+   *     await persister.schedule(
+   *       async () => await checkRemoteSystemIsReady(),
+   *       async () => await sendDataToRemoteSystem(getContent())
+   *     );
+   *   },
+   *   (listener) => setInterval(listener, 1000),
+   *   (interval) => clearInterval(interval),
+   * );
+   * ```
+   * @category Lifecycle
+   * @since v4.0.0
+   */
+  /// Persister.schedule
+  /**
    * The getStore method returns a reference to the underlying Store that is
    * backing this Persister object.
    * @returns A reference to the Store.
@@ -1004,11 +1046,13 @@
  * const persister = createCustomPersister(
  *   store,
  *   async () => {
- *     try {
- *       return JSON.parse(storeJson);
- *     } catch {}
+ *     // getPersisted
+ *     return JSON.parse(storeJson);
  *   },
- *   async (getContent) => (storeJson = JSON.stringify(getContent())),
+ *   async (getContent) =>{
+ *     // setPersisted
+ *     storeJson = JSON.stringify(getContent());
+ *   },
  *   (listener) => setInterval(listener, 1000),
  *   (interval) => clearInterval(interval),
  * );
