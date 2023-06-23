@@ -20,7 +20,6 @@ export const createCustomPersister = <ListeningHandle>(
   ) => Promise<void>,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
-  destroy?: () => void,
 ): Persister => {
   let listenerId: Id | undefined;
   let loadSave = 0;
@@ -150,10 +149,7 @@ export const createCustomPersister = <ListeningHandle>(
 
     getStore: (): Store => store,
 
-    destroy: (): Persister => {
-      destroy?.();
-      return persister.stopAutoLoad().stopAutoSave();
-    },
+    destroy: (): Persister => persister.stopAutoLoad().stopAutoSave(),
 
     getStats: (): PersisterStats => (DEBUG ? {loads, saves} : {}),
   };
