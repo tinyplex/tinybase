@@ -7,10 +7,12 @@ import * as TinyBasePersisterAutomerge from 'tinybase/debug/persisters/persister
 import * as TinyBasePersisterBrowser from 'tinybase/debug/persisters/persister-browser';
 import * as TinyBasePersisterFile from 'tinybase/debug/persisters/persister-file';
 import * as TinyBasePersisterRemote from 'tinybase/debug/persisters/persister-remote';
+import * as TinyBasePersisterSqlite3 from 'tinybase/debug/persisters/persister-sqlite3';
 import * as TinyBasePersisterYjs from 'tinybase/debug/persisters/persister-yjs';
 import * as TinyBaseReact from 'tinybase/debug/ui-react';
 import * as TinyBaseTools from 'tinybase/debug/tools';
 import * as Y from 'yjs';
+import * as sqlite3 from 'sqlite3';
 import {join, resolve} from 'path';
 import {readFileSync, readdirSync} from 'fs';
 import {AutomergeTestNetworkAdapter as BroadcastChannelNetworkAdapter} from './common/automerge-adaptor';
@@ -24,6 +26,7 @@ import {transformSync} from 'esbuild';
   TinyBasePersisterRemote,
   TinyBasePersisterYjs,
   TinyBasePersisterAutomerge,
+  TinyBasePersisterSqlite3,
   TinyBaseReact,
   TinyBaseTools,
   ReactDOMTestUtils,
@@ -31,6 +34,7 @@ import {transformSync} from 'esbuild';
   {Y},
   {AutomergeRepo},
   {BroadcastChannelNetworkAdapter},
+  {sqlite3},
 ].forEach((module) =>
   Object.entries(module).forEach(([key, value]) => {
     (globalThis as any)[key] = value;
