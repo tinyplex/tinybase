@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /**
  * The persisters module of the TinyBase project provides a simple framework for
  * saving and loading Store data, to and from different destinations, or
@@ -111,7 +112,7 @@
  *   tables: {
  *     load: {petsInDb: 'pets', speciesInDb: 'species'},
  *     save: {pets: 'petsInDb', species: 'speciesInDb'},
- *   }
+ *   },
  * };
  * ```
  * @category Configuration
@@ -893,7 +894,7 @@
    *     // setPersisted
    *     await persister.schedule(
    *       async () => await checkRemoteSystemIsReady(),
-   *       async () => await sendDataToRemoteSystem(getContent())
+   *       async () => await sendDataToRemoteSystem(getContent()),
    *     );
    *   },
    *   (listener) => setInterval(listener, 1000),
@@ -1049,7 +1050,7 @@
  *     // getPersisted
  *     return JSON.parse(storeJson);
  *   },
- *   async (getContent) =>{
+ *   async (getContent) => {
  *     // setPersisted
  *     storeJson = JSON.stringify(getContent());
  *   },
