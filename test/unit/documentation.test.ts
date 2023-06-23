@@ -6,6 +6,7 @@ import * as ReactDOMTestUtils from 'react-dom/test-utils';
 import * as TinyBase from 'tinybase/debug';
 import * as TinyBasePersisterAutomerge from 'tinybase/debug/persisters/persister-automerge';
 import * as TinyBasePersisterBrowser from 'tinybase/debug/persisters/persister-browser';
+import * as TinyBasePersisterCrSqliteWasm from 'tinybase/debug/persisters/persister-cr-sqlite-wasm';
 import * as TinyBasePersisterFile from 'tinybase/debug/persisters/persister-file';
 import * as TinyBasePersisterRemote from 'tinybase/debug/persisters/persister-remote';
 import * as TinyBasePersisterSqlite3 from 'tinybase/debug/persisters/persister-sqlite3';
@@ -19,6 +20,7 @@ import {join, resolve} from 'path';
 import {mockFetchWasm, pause, suppressWarnings} from './common/other';
 import {readFileSync, readdirSync} from 'fs';
 import {AutomergeTestNetworkAdapter as BroadcastChannelNetworkAdapter} from './common/automerge-adaptor';
+import initWasm from '@vlcn.io/crsqlite-wasm';
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import {transformSync} from 'esbuild';
 
@@ -31,6 +33,7 @@ import {transformSync} from 'esbuild';
   TinyBasePersisterAutomerge,
   TinyBasePersisterSqlite3,
   TinyBasePersisterSqliteWasm,
+  TinyBasePersisterCrSqliteWasm,
   TinyBaseReact,
   TinyBaseTools,
   ReactDOMTestUtils,
@@ -40,6 +43,7 @@ import {transformSync} from 'esbuild';
   {BroadcastChannelNetworkAdapter},
   {sqlite3},
   {sqlite3InitModule},
+  {initWasm},
 ].forEach((module) =>
   Object.entries(module).forEach(([key, value]) => {
     (globalThis as any)[key] = value;
