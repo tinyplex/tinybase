@@ -60,7 +60,6 @@ export type DpcTabularValues = {
   load?: boolean;
   save?: boolean;
   tableName?: string;
-  rowIdColumnName?: string;
 };
 
 /// Persister

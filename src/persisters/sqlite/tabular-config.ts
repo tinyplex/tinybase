@@ -17,12 +17,7 @@ type DefaultedConfig = [
       deleteEmptyTable: boolean,
     ]
   >,
-  valuesConfig: [
-    load: boolean,
-    save: boolean,
-    tableName: string,
-    rowIdColumnName: string,
-  ],
+  valuesConfig: [load: boolean, save: boolean, tableName: string],
 ];
 
 const ROW_ID_COLUMN_NAME = 'rowIdColumnName';
@@ -35,7 +30,6 @@ const DEFAULTED_VALUES_CONFIG = {
   load: 0,
   save: 0,
   [TABLE_NAME]: TINYBASE + '_values',
-  [ROW_ID_COLUMN_NAME]: DEFAULT_ROW_ID_COLUMN_NAME,
 };
 
 const getDefaultedTableConfigMap = (

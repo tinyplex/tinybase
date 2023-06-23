@@ -167,50 +167,6 @@ describe.each(Object.entries(VARIANTS))(
               ]);
             });
           });
-
-          describe('rowIdColumnName', () => {
-            test('as string', async () => {
-              await getPersister(store, db, {
-                mode: 'tabular',
-                values: {save: true, rowIdColumnName: 'id'},
-              }).save();
-              expect(await getDatabase(db)).toEqual([
-                [
-                  'tinybase_values',
-                  'CREATE TABLE "tinybase_values"("id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
-                  [{id: '_', v1: 1, v2: 2}],
-                ],
-              ]);
-            });
-
-            test('with space', async () => {
-              await getPersister(store, db, {
-                mode: 'tabular',
-                values: {save: true, rowIdColumnName: 'row id'},
-              }).save();
-              expect(await getDatabase(db)).toEqual([
-                [
-                  'tinybase_values',
-                  'CREATE TABLE "tinybase_values"("row id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
-                  [{'row id': '_', v1: 1, v2: 2}],
-                ],
-              ]);
-            });
-
-            test('with quote', async () => {
-              await getPersister(store, db, {
-                mode: 'tabular',
-                values: {save: true, rowIdColumnName: 'row "id"'},
-              }).save();
-              expect(await getDatabase(db)).toEqual([
-                [
-                  'tinybase_values',
-                  'CREATE TABLE "tinybase_values"("row ""id""" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
-                  [{'row "id"': '_', v1: 1, v2: 2}],
-                ],
-              ]);
-            });
-          });
         });
       });
 
@@ -372,56 +328,6 @@ describe.each(Object.entries(VARIANTS))(
               await getPersister(store, db, {
                 mode: 'tabular',
                 values: {load: true, tableName: 'tinybase "values"'},
-              }).load();
-              expect(store.getContent()).toEqual([{}, {v1: 1, v2: 2}]);
-            });
-          });
-
-          describe('rowIdColumnName', () => {
-            test('as string', async () => {
-              db = await getOpenDatabase();
-              await setDatabase(db, [
-                [
-                  'tinybase_values',
-                  'CREATE TABLE "tinybase_values"("id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
-                  [{id: '_', v1: 1, v2: 2}],
-                ],
-              ]);
-              await getPersister(store, db, {
-                mode: 'tabular',
-                values: {load: true, rowIdColumnName: 'id'},
-              }).load();
-              expect(store.getContent()).toEqual([{}, {v1: 1, v2: 2}]);
-            });
-
-            test('with space', async () => {
-              db = await getOpenDatabase();
-              await setDatabase(db, [
-                [
-                  'tinybase_values',
-                  'CREATE TABLE "tinybase_values"("row id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
-                  [{'row id': '_', v1: 1, v2: 2}],
-                ],
-              ]);
-              await getPersister(store, db, {
-                mode: 'tabular',
-                values: {load: true, rowIdColumnName: 'row id'},
-              }).load();
-              expect(store.getContent()).toEqual([{}, {v1: 1, v2: 2}]);
-            });
-
-            test('with quote', async () => {
-              db = await getOpenDatabase();
-              await setDatabase(db, [
-                [
-                  'tinybase_values',
-                  'CREATE TABLE "tinybase_values"("row ""id""" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
-                  [{'row "id"': '_', v1: 1, v2: 2}],
-                ],
-              ]);
-              await getPersister(store, db, {
-                mode: 'tabular',
-                values: {load: true, rowIdColumnName: 'row "id"'},
               }).load();
               expect(store.getContent()).toEqual([{}, {v1: 1, v2: 2}]);
             });

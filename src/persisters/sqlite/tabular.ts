@@ -1,9 +1,9 @@
 import {Cmd, getCommandFunctions} from './commands';
+import {DEFAULT_ROW_ID_COLUMN_NAME, SINGLE_ROW_ID} from './common';
 import {DpcTabular, Persister, PersisterListener} from '../../types/persisters';
 import {Store, Tables, Values} from '../../types/store';
 import {isUndefined, promiseAll} from '../../common/other';
 import {objIsEmpty, objNew} from '../../common/obj';
-import {SINGLE_ROW_ID} from './common';
 import {arrayFilter} from '../../common/array';
 import {createCustomPersister} from '../../persisters';
 import {getDefaultedConfig} from './tabular-config';
@@ -19,7 +19,7 @@ export const createTabularSqlitePersister = <ListeningHandle>(
   const [
     tablesLoadConfig,
     tablesSaveConfig,
-    [valuesLoad, valuesSave, valuesTableName, valuesRowIdColumnName],
+    [valuesLoad, valuesSave, valuesTableName],
   ] = getDefaultedConfig(config);
 
   const [refreshSchema, loadSingleRow, saveSingleRow, loadTable, saveTable] =
@@ -47,7 +47,7 @@ export const createTabularSqlitePersister = <ListeningHandle>(
       ? async () =>
           await saveSingleRow(
             valuesTableName,
-            valuesRowIdColumnName,
+            DEFAULT_ROW_ID_COLUMN_NAME,
             SINGLE_ROW_ID,
             values,
           )
@@ -71,7 +71,7 @@ export const createTabularSqlitePersister = <ListeningHandle>(
 
   const loadValues = async (): Promise<Values | null> =>
     valuesLoad
-      ? await loadSingleRow(valuesTableName, valuesRowIdColumnName)
+      ? await loadSingleRow(valuesTableName, DEFAULT_ROW_ID_COLUMN_NAME)
       : {};
 
   const getPersisted = async (): Promise<[Tables, Values] | undefined> => {
