@@ -55,10 +55,7 @@ export const getCommandFunctions = (
     rowId: Id,
     row: Row | Values,
   ) => Promise<void>,
-  loadTable: (
-    tableName: string,
-    rowIdColumnName: string,
-  ) => Promise<Table | null>,
+  loadTable: (tableName: string, rowIdColumnName: string) => Promise<Table>,
   saveTable: (
     tableName: string,
     rowIdColumnName: string,
@@ -142,7 +139,7 @@ export const getCommandFunctions = (
   const loadTable = async (
     tableName: string,
     rowIdColumnName: string,
-  ): Promise<Table | null> =>
+  ): Promise<Table> =>
     canSelect(tableName, rowIdColumnName)
       ? objNew(
           arrayFilter(
@@ -153,7 +150,7 @@ export const getCommandFunctions = (
             ([rowId, row]) => !isUndefined(rowId) && !objIsEmpty(row),
           ),
         )
-      : null;
+      : {};
 
   const saveTable = async (
     tableName: string,

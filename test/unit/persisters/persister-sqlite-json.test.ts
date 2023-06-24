@@ -221,16 +221,31 @@ describe.each(Object.entries(VARIANTS))(
         expect(store.getContent()).toEqual([{}, {v1: 1}]);
       });
 
-      test('both', async () => {
-        await setDatabase(db, [
-          [
-            'tinybase',
-            'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE,"store")',
-            [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
-          ],
-        ]);
-        await persister.load();
-        expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+      describe('both', () => {
+        beforeEach(async () => {
+          await setDatabase(db, [
+            [
+              'tinybase',
+              'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE,"store")',
+              [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
+            ],
+          ]);
+        });
+
+        test('check', async () => {
+          await persister.load();
+          expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+        });
+
+        test('then delete', async () => {
+          await persister.load();
+          await cmd(db, 'UPDATE tinybase SET store=? WHERE _id=?', [
+            '[{},{}]',
+            '_',
+          ]);
+          await persister.load();
+          expect(store.getContent()).toEqual([{}, {}]);
+        });
       });
 
       test('both, change, and then save again', async () => {
