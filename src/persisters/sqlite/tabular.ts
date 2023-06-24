@@ -65,7 +65,7 @@ export const createTabularSqlitePersister = <ListeningHandle>(
             ],
           ),
         ),
-        (pair) => pair[1],
+        (pair) => !objIsEmpty(pair[1]),
       ),
     );
 

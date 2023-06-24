@@ -779,21 +779,40 @@ describe.each(Object.entries(VARIANTS))(
         expect(store.getContent()).toEqual([{}, {v1: 1}]);
       });
 
-      test('both', async () => {
-        await setDatabase(db, [
-          [
-            't1',
-            'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
-            [{_id: 'r1', c1: 1}],
-          ],
-          [
-            'tinybase_values',
-            'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1")',
-            [{_id: '_', v1: 1}],
-          ],
-        ]);
-        await persister.load();
-        expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+      describe('both', () => {
+        beforeEach(async () => {
+          await setDatabase(db, [
+            [
+              't1',
+              'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
+              [{_id: 'r1', c1: 1}],
+            ],
+            [
+              'tinybase_values',
+              'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1")',
+              [{_id: '_', v1: 1}],
+            ],
+          ]);
+        });
+
+        test('check', async () => {
+          await persister.load();
+          expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+        });
+
+        test('then delete rows', async () => {
+          await persister.load();
+          await cmd(db, 'DELETE from t1');
+          await persister.load();
+          expect(store.getContent()).toEqual([{}, {v1: 1}]);
+        });
+
+        test('then drop table', async () => {
+          await persister.load();
+          await cmd(db, 'DROP TABLE t1');
+          await persister.load();
+          expect(store.getContent()).toEqual([{}, {v1: 1}]);
+        });
       });
 
       test('both, change, and then save again', async () => {
@@ -913,24 +932,18 @@ describe.each(Object.entries(VARIANTS))(
           {t1: {r1: {c1: 2}}, t2: {r1: {c1: 1}}},
           {v1: 1, v2: 2},
         ]);
-        // store1.delTable('t2');
-        // await pause();
-        // expect(store2.getContent()).toEqual([
-        //   {t1: {r1: {c1: 2}}},
-        //   {v1: 1, v2: 2},
-        // ]);
+        store1.delTable('t2');
+        await pause();
+        expect(store2.getContent()).toEqual([
+          {t1: {r1: {c1: 2}}},
+          {v1: 1, v2: 2},
+        ]);
         store1.delValue('v2');
         await pause();
-        expect(store2.getContent()).toEqual([
-          {t1: {r1: {c1: 2}}, t2: {r1: {c1: 1}}},
-          {v1: 1},
-        ]);
+        expect(store2.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 1}]);
         store1.setValue('v1', 2);
         await pause();
-        expect(store2.getContent()).toEqual([
-          {t1: {r1: {c1: 2}}, t2: {r1: {c1: 1}}},
-          {v1: 2},
-        ]);
+        expect(store2.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
       });
     });
   },
