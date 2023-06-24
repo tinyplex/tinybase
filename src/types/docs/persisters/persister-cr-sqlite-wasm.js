@@ -40,7 +40,7 @@
  *
  * ```js
  * const crSqlite3 = await initWasm();
- * const db = await crSqlite3.open(':memory:');
+ * const db = await crSqlite3.open();
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = createCrSqliteWasmPersister(store, db, 'my_tinybase');
  *
@@ -64,7 +64,7 @@
  *
  * ```js
  * const crSqlite3 = await initWasm();
- * const db = await crSqlite3.open(':memory:');
+ * const db = await crSqlite3.open();
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = createCrSqliteWasmPersister(store, db, {
  *   mode: 'tabular',
