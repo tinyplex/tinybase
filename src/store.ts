@@ -1040,8 +1040,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const setContent = ([tables, values]: [Tables, Values]): Store =>
     fluentTransaction(() => {
-      setTables(tables);
-      setValues(values);
+      (objIsEmpty(tables) ? delTables : setTables)(tables);
+      (objIsEmpty(values) ? delValues : setValues)(values);
     });
 
   const setTables = (tables: Tables): Store =>
