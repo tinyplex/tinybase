@@ -5,16 +5,21 @@
  * underlying storage types.
  *
  * Several entry points are provided (in separately installed modules), each of
- * which returns a new Persister object that can load and save a Store:
+ * which returns a new Persister object that can load and save a Store. Between
+ * them, these allow you to store your TinyBase data locally, remotely, to
+ * SQLite databases, and across synchronization boundaries with CRDT frameworks.
  *
- * - The createSessionPersister function (in the persister-browser module)
- *   returns a Persister that uses the browser's session storage.
- * - The createLocalPersister function (in the persister-browser module) returns
- *   a Persister that uses the browser's local storage.
- * - The createRemotePersister function (in the persister-remote module) returns
- *   a Persister that uses a remote server.
- * - The createFilePersister function (in the persister-file module) returns a
- *   Persister that uses a local file (in an appropriate environment).
+ * |Module|Function|Storage|
+ * |-|-|-|
+ * |persister-browser|createSessionPersister|Browser session storage|
+ * |persister-browser|createLocalPersister|Browser local storage|
+ * |persister-remote|createRemotePersister|Remote server|
+ * |persister-file|createFilePersister|Local file (where possible)|
+ * |persister-sqlite3|createSqlite3Persister|SQLite in Node, via [sqlite3](https://github.com/TryGhost/node-sqlite3)|
+ * |persister-sqlite-wasm|createSqliteWasmPersister|SQLite in a browser, via [sqlite-wasm](https://github.com/tomayac/sqlite-wasm)|
+ * |persister-cr-sqlite-wasm|createCrSqliteWasmPersister|SQLite CRDTs, via [cr-sqlite-wasm](https://github.com/vlcn-io/cr-sqlite)|
+ * |persister-yjs|createYjsPersister|Yjs CRDTs, via [yjs](https://github.com/yjs/yjs)|
+ * |persister-automerge|createSqliteWasmPersister|Automerge CRDTs, via [automerge-repo](https://github.com/automerge/automerge-repo)|
  *
  * Since persistence requirements can be different for every app, the
  * createCustomPersister function in this module can also be used to easily
@@ -60,6 +65,8 @@
  * @param getTransactionChanges An optional function that, if provided, returns
  * a TransactionChanges object and can be used to immediately incrementally
  * update the Store.
+ * @category Creation
+ * @since v4.0.0
  */
 /// PersisterListener
 /**
@@ -334,6 +341,7 @@
  *     "cat": {"price": 4},
  *   },
  * }
+ * ```
  * @category Configuration
  * @since v4.0.0
  */
