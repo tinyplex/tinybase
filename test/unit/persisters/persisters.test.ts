@@ -562,7 +562,7 @@ describe.each([
 
   test('loads', async () => {
     await persistable.set(location, [{t1: {r1: {c1: 1}}}, {v1: 1}]);
-    await persister.load({});
+    await persister.load();
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     expect(store.getValues()).toEqual({v1: 1});
     expect(persister.getStats()).toEqual({loads: 1, saves: 0});
@@ -570,14 +570,14 @@ describe.each([
 
   test('loads backwards compatible', async () => {
     await persistable.set(location, [{t1: {r1: {c1: 1}}}]);
-    await persister.load({});
+    await persister.load();
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     expect(persister.getStats()).toEqual({loads: 1, saves: 0});
   });
 
   test('does not load from empty', async () => {
     store.setTables({t1: {r1: {c1: 1}}});
-    await persister.load({});
+    await persister.load();
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     expect(persister.getStats()).toEqual({loads: 1, saves: 0});
   });
@@ -593,7 +593,7 @@ describe.each([
   test('does not load from corrupt', async () => {
     store.setTables({t1: {r1: {c1: 1}}});
     persistable.write(location, '{');
-    await persister.load({});
+    await persister.load();
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     expect(persister.getStats()).toEqual({loads: 1, saves: 0});
   });
@@ -664,7 +664,7 @@ describe.each([
   test('does not load from non-existent', async () => {
     if (persistable.testMissing) {
       store.setTables({t1: {r1: {c1: 1}}});
-      await persistable.getPersister(store, '_').load({});
+      await persistable.getPersister(store, '_').load();
       expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     }
   });
@@ -672,7 +672,7 @@ describe.each([
   test('does not load from possibly invalid', async () => {
     if (name == 'file') {
       store.setTables({t1: {r1: {c1: 1}}});
-      await persistable.getPersister(store, '.').load({});
+      await persistable.getPersister(store, '.').load();
       expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     }
   });
