@@ -14,14 +14,14 @@
   <ul>
     <li>
       Manage <a href='#start-with-a-simple-key-value-store'>key-value 
-      data</a> (<em>new!</em>), <a href='#level-up-to-use-tabular-data'>tabular 
-      data</a> - or both - with optional 
+      data</a>, <a href='#level-up-to-use-tabular-data'>tabular data</a> - or 
+      both - with optional 
       <a href='#apply-schemas-to-tables-and-values'>schematization</a> to model 
       it.
     </li>
     <li>
       <a href='#register-listeners-at-any-granularity'>Flexibly reactive</a> to
-      reconciled updates, so your UI only spends cycles on the data that changes.
+      reconciled updates, so you only spend cycles on things that change.
     </li>
     <li>
       <a href='#build-complex-queries-with-tinyql'>Powerful query engine</a> to
@@ -32,17 +32,19 @@
       <a href='#define-metrics-and-aggregations'>metrics</a>,
       <a href='#configure-relationships-between-tables'>relationships</a> - and
       even an <a href='#use-checkpoints-for-an-easy-undo-stack'>undo stack</a>
-      for your app state! - out of the box.
+      for your app state.
     </li>
     <li>
-      Easily <a href='#persist-data-to-storage-or-crdts'>sync your
-      data</a> to storage or (<em>new!</em>) CRDTs, and use
-      <a href='#call-hooks-to-bind-to-data'>idiomatic bindings</a> to your
-      UI</a>.
+      <a href='#type-definitions-orm-like-apis'>Type definitions &amp; ORM-like 
+      APIs</a> (<em>new!</em>), based on a schema or inference.
     </li>
     <li>
-      <a href='#type-definitions-orm-like-apis'>Type definitions &amp; ORM-like APIs</a> 
-      (<em>new!</em>), based on a schema or inferred from actual data.
+      Easily <a href='#persist-to-storage-sqlite-or-crdts'>sync your data</a> to 
+      storage, (<em>new!</em>) SQLite, or (<em>new!</em>) CRDTs.
+    </li>
+    <li>
+      Use idiomatic, optional, <a href='#call-hooks-to-bind-to-data'>bindings to 
+      React</a> for a fully reactive UI.
     </li>
   </ul>
   <p>
@@ -255,13 +257,15 @@ console.log(store.getRow('pets', 'felix'));
 store.delTablesSchema();
 ```
 
-> ## Persist data to storage or CRDTs.
+> ## Persist to storage, SQLite, or CRDTs.
 >
 > You can easily persist a Store between browser page reloads or sessions. You
 > can also synchronize it with a web endpoint, or (if you're using TinyBase in
 > an appropriate environment), load and save it to a file. [New in
-> v4.0](/guides/releases/#v4-0), you can bind TinyBase to
-> [Yjs](https://yjs.dev/) or [Automerge](https://automerge.org/) CRDTs.
+> v4.0](/guides/releases/#v4-0), you can bind [TinyBase to
+> SQLite](/guides/schemas-and-persistence/database-persistence/) via a range of
+> modules, or to [Yjs](https://yjs.dev/) or [Automerge](https://automerge.org/)
+> CRDT documents.
 >
 > Read more about persisters in the Persisting Data guide.
 
