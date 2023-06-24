@@ -4,37 +4,36 @@ The persister module lets you save and load Store data to and from different
 locations, or underlying storage types.
 
 This is useful for preserving Store data between browser sessions or reloads,
-saving or loading browser state to or from a server, saving Store data to
-disk in a environment with filesystem access, or, in v4.0 and above, to CRDT
-frameworks like [Yjs](https://yjs.dev/) and [Automerge](https://automerge.org/).
+saving or loading browser state to or from a server, saving Store data to disk
+in a environment with filesystem access, or, in v4.0 and above, to SQLite and
+CRDT frameworks like [Yjs](https://yjs.dev/) and
+[Automerge](https://automerge.org/).
 
 ## Types Of Persisters
 
-Creating a Persister for a Store depends on the choice of underlying storage
-where the data is to be stored. Options (in separately installed modules)
-include:
+Several entry points are provided (in separately installed modules), each of
+which returns a new Persister object that can load and save a Store. Between
+them, these allow you to store your TinyBase data locally, remotely, to SQLite
+databases, and across synchronization boundaries with CRDT frameworks.
 
-- The createSessionPersister function (in the persister-browser module)
-  returns a Persister that uses the browser's session storage.
-- The createLocalPersister function (in the persister-browser module) returns
-  a Persister that uses the browser's local storage.
-- The createRemotePersister function (in the persister-remote module) returns
-  a Persister that uses a remote server.
-- The createFilePersister function (in the persister-file module) returns a
-  Persister that uses a local file (in an appropriate environment).
+| Module                   | Function                    | Storage                                                                            |
+| ------------------------ | --------------------------- | ---------------------------------------------------------------------------------- |
+| persister-browser        | createSessionPersister      | Browser session storage                                                            |
+| persister-browser        | createLocalPersister        | Browser local storage                                                              |
+| persister-remote         | createRemotePersister       | Remote server                                                                      |
+| persister-file           | createFilePersister         | Local file (where possible)                                                        |
+| persister-sqlite3        | createSqlite3Persister      | SQLite in Node, via [sqlite3](https://github.com/TryGhost/node-sqlite3)            |
+| persister-sqlite-wasm    | createSqliteWasmPersister   | SQLite in a browser, via [sqlite-wasm](https://github.com/tomayac/sqlite-wasm)     |
+| persister-cr-sqlite-wasm | createCrSqliteWasmPersister | SQLite CRDTs, via [cr-sqlite-wasm](https://github.com/vlcn-io/cr-sqlite)           |
+| persister-yjs            | createYjsPersister          | Yjs CRDTs, via [yjs](https://github.com/yjs/yjs)                                   |
+| persister-automerge      | createSqliteWasmPersister   | Automerge CRDTs, via [automerge-repo](https://github.com/automerge/automerge-repo) |
 
 There is also a way to developer custom Persisters of your own, which we
 describe in the Custom Persistence guide.
 
-For more complex synchronization, TinyBase includes persisters for CRDT
-frameworks:
-
-- The createYjsPersister function (in the persister-yjs module) returns a
-  Persister that connects to a [Yjs](https://yjs.dev/) document.
-- The createAutomergePersister function (in the persister-automerge module) returns a
-  Persister that connects to an [Automerge](https://automerge.org/) document via [automerge-repo](https://github.com/automerge/automerge-repo).
-
-(See the Synchronizing Data guide for more details on those.)
+See the Database Persistence guide for details on how to work with SQLite
+database, and the Synchronizing Data guide for more complex synchronization with
+the CRDT frameworks.
 
 ## Persister Operations
 
