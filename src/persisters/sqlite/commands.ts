@@ -58,7 +58,7 @@ export const getCommandFunctions = (
   loadTable: (
     tableName: string,
     rowIdColumnName: string,
-  ) => Promise<IdObj2<any> | null>,
+  ) => Promise<Table | null>,
   saveTable: (
     tableName: string,
     rowIdColumnName: string,
@@ -142,7 +142,7 @@ export const getCommandFunctions = (
   const loadTable = async (
     tableName: string,
     rowIdColumnName: string,
-  ): Promise<IdObj2<any> | null> =>
+  ): Promise<Table | null> =>
     canSelect(tableName, rowIdColumnName)
       ? objNew(
           arrayFilter(
