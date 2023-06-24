@@ -160,9 +160,11 @@ changes back into the Store:
 
 ```js
 db.exec(`INSERT INTO pets (_id, species) VALUES ('cujo', 'wolf')`);
-await persister.load();
+await tabularPersister.load();
 console.log(store.getTable('pets'));
 // -> {felix: {species: 'cat'}, fido: {species: 'dog'}, cujo: {species: 'wolf'}}
+
+tabularPersister.destroy();
 ```
 
 Store Values are saved into a separate table, normally called `tinybase_values`.
