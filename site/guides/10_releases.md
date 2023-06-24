@@ -5,18 +5,55 @@ highlighted features.
 
 ## v4.0
 
-This major release provides Persister modules that connect TinyBase to CRDT
-frameworks that can provide synchronization and local-first reconciliation:
+This major release provides Persister modules that connect TinyBase to SQLite
+databases (in both browser and server contexts), and CRDT frameworks that can
+provide synchronization and local-first reconciliation:
 
-- The createYjsPersister function (in the persister-yjs module) returns a
-  Persister that connects to a [Yjs](https://yjs.dev/) document.
-- The createAutomergePersister function (in the persister-automerge module) returns a
-  Persister that connects to an [Automerge](https://automerge.org/) document via [automerge-repo](https://github.com/automerge/automerge-repo).
+| Module                   | Function                    | Storage                                                                            |
+| ------------------------ | --------------------------- | ---------------------------------------------------------------------------------- |
+| persister-sqlite3        | createSqlite3Persister      | SQLite in Node, via [sqlite3](https://github.com/TryGhost/node-sqlite3)            |
+| persister-sqlite-wasm    | createSqliteWasmPersister   | SQLite in a browser, via [sqlite-wasm](https://github.com/tomayac/sqlite-wasm)     |
+| persister-cr-sqlite-wasm | createCrSqliteWasmPersister | SQLite CRDTs, via [cr-sqlite-wasm](https://github.com/vlcn-io/cr-sqlite)           |
+| persister-yjs            | createYjsPersister          | Yjs CRDTs, via [yjs](https://github.com/yjs/yjs)                                   |
+| persister-automerge      | createSqliteWasmPersister   | Automerge CRDTs, via [automerge-repo](https://github.com/automerge/automerge-repo) |
 
-For example, the following will persist a TinyBase Store to a Yjs document:
+### SQLite databases
+
+You can persist Store data to a database with either a JSON serialization or
+tabular mapping. (See the DatabasePersisterConfig documentation for more
+details).
+
+For example, this creates a Persister object and saves and loads the Store to
+and from a local SQLite database. It uses an explicit tabular one-to-one mapping
+for the 'pets' table:
 
 ```js
-const store = createStore();
+const sqlite3 = await sqlite3InitModule();
+const db = new sqlite3.oo1.DB(':memory:', 'c');
+const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+const persister = createSqliteWasmPersister(store, sqlite3, db, {
+  mode: 'tabular',
+  tables: {load: {pets: 'pets'}, save: {pets: 'pets'}},
+});
+
+await persister.save();
+console.log(db.exec('SELECT * FROM pets;', {rowMode: 'object'}));
+// -> [{_id: 'fido', species: 'dog'}]
+
+db.exec(`INSERT INTO pets (_id, species) VALUES ('felix', 'cat')`);
+await persister.load();
+console.log(store.getTables());
+// -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
+
+persister.destroy();
+```
+
+### CRDT Frameworks
+
+CRDTs allow complex reconciliation and synchronization between clients. Yjs and
+Automerge are two popular examples. The API should be familiar! The following will persist a TinyBase Store to a Yjs document:
+
+```js
 store.setTables({pets: {fido: {species: 'dog'}}});
 
 const doc = new Y.Doc();
@@ -47,6 +84,8 @@ automergePersister.destroy();
 store.delTables();
 ```
 
+### New methods
+
 There are three new methods on the Store object. The getContent method lets you
 get the Store's Tables and Values in one call. The corresponding setContent
 method lets you set them simultaneously.
@@ -54,6 +93,9 @@ method lets you set them simultaneously.
 The new setTransactionChanges method lets you replay TransactionChanges
 (received at the end of a transaction via listeners) into a Store, allowing you
 to take changes from one Store and apply them to another.
+
+Persisters now provide a schedule method that lets you queue up asynchronous
+tasks, such as when persisting data that requires complex sequences of actions.
 
 ### Breaking changes
 

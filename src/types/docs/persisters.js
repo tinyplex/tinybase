@@ -25,6 +25,8 @@
  * createCustomPersister function in this module can also be used to easily
  * create a fully customized way to save and load Store data.
  * @see Persisting Data guide
+ * @see Database Persistence guide
+ * @see Synchronizing Data guide
  * @see Countries demo
  * @see Todo App demos
  * @see Drawing demo
