@@ -50,7 +50,7 @@
  *
  * await db.exec(
  *   'UPDATE my_tinybase SET store = ' +
- *   `'[{"pets":{"felix":{"species":"cat"}}},{}]' WHERE _id = '_';`,
+ *     `'[{"pets":{"felix":{"species":"cat"}}},{}]' WHERE _id = '_';`,
  * );
  * await persister.load();
  * console.log(store.getTables());
