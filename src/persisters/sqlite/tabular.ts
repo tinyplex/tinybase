@@ -8,7 +8,7 @@ import {mapKeys, mapMap} from '../../common/map';
 import {objIsEmpty, objNew} from '../../common/obj';
 import {collValues} from '../../common/coll';
 import {createCustomPersister} from '../../persisters';
-import {getDefaultedConfig} from './tabular-config';
+import {getDefaultedTabularConfig} from './config';
 import {setNew} from '../../common/set';
 
 export const createTabularSqlitePersister = <ListeningHandle>(
@@ -22,7 +22,7 @@ export const createTabularSqlitePersister = <ListeningHandle>(
     tablesLoadConfig,
     tablesSaveConfig,
     [valuesLoad, valuesSave, valuesTableName],
-  ] = getDefaultedConfig(config);
+  ] = getDefaultedTabularConfig(config);
 
   const [refreshSchema, loadSingleRow, saveSingleRow, loadTable, saveTable] =
     getCommandFunctions(

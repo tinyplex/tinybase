@@ -1,3 +1,4 @@
+import {AUTO_LOAD_INTERVAL_SECONDS, JSON, getDefaultedConfig} from './config';
 import {
   DatabasePersisterConfig,
   Persister,
@@ -7,18 +8,10 @@ import {Cmd} from './commands';
 import {Store} from '../../types/store';
 import {createJsonSqlitePersister} from './json';
 import {createTabularSqlitePersister} from './tabular';
-import {isString} from '../../common/other';
-import {objMerge} from '../../common/obj';
 
 type DataVersionPragma = [{data_version: number}];
 type SchemaVersionPragma = [{schema_version: number}];
 
-const JSON = 'json';
-const AUTO_LOAD_INTERVAL_SECONDS = 'autoLoadIntervalSeconds';
-const DEFAULT_CONFIG: DatabasePersisterConfig = {
-  mode: JSON,
-  [AUTO_LOAD_INTERVAL_SECONDS]: 1,
-};
 const PRAGMA = 'pragma ';
 const DATA_VERSION = 'data_version';
 const SCHEMA_VERSION = 'schema_version';
@@ -30,15 +23,10 @@ export const createSqlitePersister = <ListeningHandle>(
   addPersisterLocalListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterLocalListener: (listeningHandle: ListeningHandle) => void,
 ): Persister => {
-  const config: DatabasePersisterConfig = objMerge(
-    DEFAULT_CONFIG,
-    isString(configOrStoreTableName)
-      ? {storeTableName: configOrStoreTableName}
-      : configOrStoreTableName ?? {},
-  );
-
   let dataVersion: number | null;
   let schemaVersion: number | null;
+
+  const config = getDefaultedConfig(configOrStoreTableName);
 
   const addPersisterListener = (
     listener: PersisterListener,
