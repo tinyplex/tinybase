@@ -6,8 +6,8 @@ import {
   PersisterStats,
 } from './types/persisters.d';
 import {arrayPush, arrayShift} from './common/array';
+import {objFreeze, objIsEmpty} from './common/obj';
 import {Id} from './types/common.d';
-import {objFreeze} from './common/obj';
 
 type Action = () => Promise<any>;
 
@@ -130,8 +130,10 @@ export const createCustomPersister = <ListeningHandle>(
       await persister.stopAutoSave().save();
       listenerId = store.addDidFinishTransactionListener(
         (_store, getTransactionChanges) => {
-          const transactionChanges = getTransactionChanges();
-          (persister.save as any)(() => transactionChanges);
+          const [tableChanges, valueChanges] = getTransactionChanges();
+          if (!objIsEmpty(tableChanges) || !objIsEmpty(valueChanges)) {
+            (persister.save as any)(() => [tableChanges, valueChanges]);
+          }
         },
       );
       return persister;
