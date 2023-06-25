@@ -1,9 +1,9 @@
 import {Cmd, getCommandFunctions} from './commands';
 import {DEFAULT_ROW_ID_COLUMN_NAME, SINGLE_ROW_ID} from './common';
-import {DpcJson, Persister, PersisterListener} from '../../types/persisters';
+import {Persister, PersisterListener} from '../../types/persisters';
 import {Store, Tables, Values} from '../../types/store';
 import {jsonParse, jsonString} from '../../common/other';
-import {TINYBASE} from '../../common/strings';
+import {DefaultedJsonConfig} from './config';
 import {createCustomPersister} from '../../persisters';
 
 const STORE_COLUMN = 'store';
@@ -13,11 +13,12 @@ export const createJsonSqlitePersister = <ListeningHandle>(
   cmd: Cmd,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
-  {storeTableName = TINYBASE}: DpcJson,
+  [storeTableName]: DefaultedJsonConfig,
+  managedTableNames: string[],
 ): Persister => {
   const [refreshSchema, loadSingleRow, saveSingleRow] = getCommandFunctions(
     cmd,
-    [storeTableName],
+    managedTableNames,
   );
 
   const getPersisted = async (): Promise<[Tables, Values]> => {
