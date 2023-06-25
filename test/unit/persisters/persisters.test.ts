@@ -525,6 +525,12 @@ describe.each([
       {t1: {r1: {c1: 2}}},
       {v1: 1},
     ]);
+    store.setTables({t1: {r1: {c1: 2}}});
+    await pause();
+    expect(await persistable.get(location)).toEqual([
+      {t1: {r1: {c1: 2}}},
+      {v1: 1},
+    ]);
     if (persistable.getChanges) {
       expect(persistable.getChanges()).toEqual([{t1: {r1: {c1: 2}}}, {}]);
     }
