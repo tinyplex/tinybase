@@ -846,6 +846,38 @@ describe.each(Object.entries(VARIANTS))(
           ],
         ]);
       });
+
+      test('no conflict key, both, change, and then save again', async () => {
+        await setDatabase(db, [
+          [
+            't1',
+            'CREATE TABLE "t1"("_id" PRIMARY KEY,"c1")',
+            [{_id: 'r1', c1: 1}],
+          ],
+          [
+            'tinybase_values',
+            'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY,"v1")',
+            [{_id: '_', v1: 1}],
+          ],
+        ]);
+        await persister.load();
+        expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+        store.setCell('t1', 'r1', 'c1', 2).setValue('v1', 2);
+        expect(store.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
+        await persister.save();
+        expect(await getDatabase(db)).toEqual([
+          [
+            't1',
+            'CREATE TABLE "t1"("_id" PRIMARY KEY,"c1")',
+            [{_id: 'r1', c1: 2}],
+          ],
+          [
+            'tinybase_values',
+            'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY,"v1")',
+            [{_id: '_', v1: 2}],
+          ],
+        ]);
+      });
     });
 
     describe('Two stores, one connection, one database', () => {

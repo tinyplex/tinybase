@@ -230,29 +230,46 @@ export const getCommandFunctions = (
       const insertSlots: string[] = [];
       const insertBinds: any[] = [];
       const deleteRowIds: string[] = [];
+      const allColumnNames = arrayFilter(
+        mapKeys(mapGet(schemaMap, tableName)),
+        (columnName) => columnName != rowIdColumnName,
+      );
       objMap(table, (row, rowId) => {
         arrayPush(
           insertSlots,
-          `(?${strRepeat(',?', arrayLength(columnNames))})`,
+          `(?${strRepeat(',?', arrayLength(allColumnNames))})`,
         );
         arrayPush(
           insertBinds,
           rowId,
-          ...arrayMap(columnNames, (cellId) => row[cellId]),
+          ...arrayMap(allColumnNames, (cellId) => row[cellId]),
         );
         arrayPush(deleteRowIds, rowId);
       });
-
       await cmd(
         'INSERT INTO' +
           escapeId(tableName) +
           '(' +
           escapeId(rowIdColumnName) +
           arrayJoin(
-            arrayMap(columnNames, (columnName) => COMMA + escapeId(columnName)),
+            arrayMap(
+              allColumnNames,
+              (columnName) => COMMA + escapeId(columnName),
+            ),
           ) +
           ')VALUES' +
-          arrayJoin(insertSlots, COMMA),
+          arrayJoin(insertSlots, COMMA) +
+          'ON CONFLICT(' +
+          escapeId(rowIdColumnName) +
+          ')DO UPDATE SET' +
+          arrayJoin(
+            arrayMap(
+              allColumnNames,
+              (columnName) =>
+                escapeId(columnName) + '=excluded.' + escapeId(columnName),
+            ),
+            COMMA,
+          ),
         insertBinds,
       );
       await cmd(
