@@ -1,9 +1,9 @@
-import {AUTO_LOAD_INTERVAL_SECONDS, JSON, getDefaultedConfig} from './config';
 import {
   DatabasePersisterConfig,
   Persister,
   PersisterListener,
 } from '../../types/persisters';
+import {JSON, getModeConfigAndManagedTableNames} from './config';
 import {Cmd} from './commands';
 import {Store} from '../../types/store';
 import {createJsonSqlitePersister} from './json';
@@ -26,7 +26,8 @@ export const createSqlitePersister = <ListeningHandle>(
   let dataVersion: number | null;
   let schemaVersion: number | null;
 
-  const config = getDefaultedConfig(configOrStoreTableName);
+  const [mode, autoLoadIntervalSeconds, defaultedConfig, managedTableNames] =
+    getModeConfigAndManagedTableNames(configOrStoreTableName);
 
   const addPersisterListener = (
     listener: PersisterListener,
@@ -48,7 +49,7 @@ export const createSqlitePersister = <ListeningHandle>(
           schemaVersion = newSchemaVersion;
         }
       } catch {}
-    }, (config[AUTO_LOAD_INTERVAL_SECONDS] as number) * 1000),
+    }, (autoLoadIntervalSeconds as number) * 1000),
     addPersisterLocalListener(listener),
   ];
 
@@ -62,8 +63,13 @@ export const createSqlitePersister = <ListeningHandle>(
   };
 
   return (
-    config.mode == JSON
-      ? createJsonSqlitePersister
-      : createTabularSqlitePersister
-  )(store, cmd, addPersisterListener, delPersisterListener, config as any);
+    mode == JSON ? createJsonSqlitePersister : createTabularSqlitePersister
+  )(
+    store,
+    cmd,
+    addPersisterListener,
+    delPersisterListener,
+    defaultedConfig as any,
+    managedTableNames,
+  );
 };
