@@ -36,14 +36,14 @@ export const createTabularSqlitePersister = <ListeningHandle>(
       ),
     );
 
-  const getSaveTablesActions = (tables: Tables) =>
-    mapMap(
-      tablesSaveConfig,
-      (
+  const saveTables = async (tables: Tables) =>
+    await promiseAll(
+      mapMap(
+        tablesSaveConfig,
+        async (
           [tableName, rowIdColumnName, deleteEmptyColumns, deleteEmptyTable],
           tableId,
         ) =>
-        async () =>
           await saveTable(
             tableName,
             rowIdColumnName,
@@ -51,17 +51,17 @@ export const createTabularSqlitePersister = <ListeningHandle>(
             deleteEmptyTable,
             tables[tableId],
           ),
+      ),
     );
 
-  const getSaveValuesAction = (values: Values) =>
+  const saveValues = async (values: Values) =>
     valuesSave
-      ? async () =>
-          await saveSingleRow(
-            valuesTableName,
-            DEFAULT_ROW_ID_COLUMN_NAME,
-            SINGLE_ROW_ID,
-            values,
-          )
+      ? await saveSingleRow(
+          valuesTableName,
+          DEFAULT_ROW_ID_COLUMN_NAME,
+          SINGLE_ROW_ID,
+          values,
+        )
       : null;
 
   const loadTables = async (): Promise<Tables> =>
@@ -98,11 +98,9 @@ export const createTabularSqlitePersister = <ListeningHandle>(
     getContent: () => [Tables, Values],
   ): Promise<void> => {
     const [tables, values] = getContent();
-    persister.schedule(
-      refreshSchema,
-      ...getSaveTablesActions(tables),
-      getSaveValuesAction(values),
-    );
+    await refreshSchema();
+    await saveTables(tables);
+    await saveValues(values);
   };
 
   const persister: any = createCustomPersister(

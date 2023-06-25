@@ -44,6 +44,7 @@ copies full state between the documents:
 
 ```js
 const syncDocs = async () => {
+  // ...
   Y.applyUpdate(doc1, Y.encodeStateAsUpdate(doc2));
   Y.applyUpdate(doc2, Y.encodeStateAsUpdate(doc1));
 };

@@ -45,32 +45,33 @@ export const createCustomPersister = <ListeningHandle>(
     }
   };
 
-  const loadLock = async (actions: Action) => {
+  const loadLock = async (actions: Action): Promise<Persister> => {
     /*! istanbul ignore else */
     if (loadSave != 2) {
       loadSave = 1;
       if (DEBUG) {
         loads++;
       }
-      await actions();
-      loadSave = 0;
+      await persister.schedule(async () => {
+        await actions();
+        loadSave = 0;
+      });
     }
+    return persister;
   };
 
   const persister: any = {
     load: async (
       initialTables?: Tables,
       initialValues?: Values,
-    ): Promise<Persister> => {
+    ): Promise<Persister> =>
       await loadLock(async () => {
         try {
           store.setContent((await getPersisted()) as [Tables, Values]);
         } catch {
           store.setContent([initialTables, initialValues] as [Tables, Values]);
         }
-      });
-      return persister;
-    },
+      }),
 
     startAutoLoad: async (
       initialTables: Tables = {},
@@ -80,7 +81,7 @@ export const createCustomPersister = <ListeningHandle>(
       await persister.load(initialTables, initialValues);
       listening = 1;
       listeningHandle = addPersisterListener(
-        async (getContent, getTransactionChanges) => {
+        async (getContent, getTransactionChanges) =>
           await loadLock(async () => {
             if (getTransactionChanges) {
               store.setTransactionChanges(getTransactionChanges());
@@ -92,8 +93,7 @@ export const createCustomPersister = <ListeningHandle>(
                 );
               } catch {}
             }
-          });
-        },
+          }),
       );
       return persister;
     },
@@ -110,19 +110,19 @@ export const createCustomPersister = <ListeningHandle>(
     save: async (
       getTransactionChanges?: GetTransactionChanges,
     ): Promise<Persister> => {
-      await persister.schedule(async () => {
-        /*! istanbul ignore else */
-        if (loadSave != 1) {
-          loadSave = 2;
-          if (DEBUG) {
-            saves++;
-          }
+      /*! istanbul ignore else */
+      if (loadSave != 1) {
+        loadSave = 2;
+        if (DEBUG) {
+          saves++;
+        }
+        await persister.schedule(async () => {
           try {
             await setPersisted(store.getContent, getTransactionChanges);
           } catch {}
           loadSave = 0;
-        }
-      });
+        });
+      }
       return persister;
     },
 
