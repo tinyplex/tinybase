@@ -145,7 +145,10 @@ export const getCommandFunctions = (
           arrayFilter(
             arrayMap(
               await cmd(SELECT_STAR_FROM + escapeId(tableName)),
-              (row) => [row[rowIdColumnName], objDel(row, rowIdColumnName)],
+              (row) => [
+                row[rowIdColumnName],
+                objDel({...row}, rowIdColumnName),
+              ],
             ),
             ([rowId, row]) => !isUndefined(rowId) && !objIsEmpty(row),
           ),
