@@ -15,8 +15,10 @@ export const createJsonSqlitePersister = <ListeningHandle>(
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   {storeTableName = TINYBASE}: DpcJson,
 ): Persister => {
-  const [refreshSchema, loadSingleRow, saveSingleRow] =
-    getCommandFunctions(cmd);
+  const [refreshSchema, loadSingleRow, saveSingleRow] = getCommandFunctions(
+    cmd,
+    [storeTableName],
+  );
 
   const getPersisted = async (): Promise<[Tables, Values]> => {
     await refreshSchema();

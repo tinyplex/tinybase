@@ -2,12 +2,14 @@ import {Cmd, getCommandFunctions} from './commands';
 import {DEFAULT_ROW_ID_COLUMN_NAME, SINGLE_ROW_ID} from './common';
 import {DpcTabular, Persister, PersisterListener} from '../../types/persisters';
 import {Store, Tables, Values} from '../../types/store';
+import {arrayFilter, arrayMap} from '../../common/array';
 import {isUndefined, promiseAll} from '../../common/other';
+import {mapKeys, mapMap} from '../../common/map';
 import {objIsEmpty, objNew} from '../../common/obj';
-import {arrayFilter} from '../../common/array';
+import {collValues} from '../../common/coll';
 import {createCustomPersister} from '../../persisters';
 import {getDefaultedConfig} from './tabular-config';
-import {mapMap} from '../../common/map';
+import {setNew} from '../../common/set';
 
 export const createTabularSqlitePersister = <ListeningHandle>(
   store: Store,
@@ -23,7 +25,16 @@ export const createTabularSqlitePersister = <ListeningHandle>(
   ] = getDefaultedConfig(config);
 
   const [refreshSchema, loadSingleRow, saveSingleRow, loadTable, saveTable] =
-    getCommandFunctions(cmd);
+    getCommandFunctions(
+      cmd,
+      collValues(
+        setNew([
+          valuesTableName,
+          ...mapKeys(tablesLoadConfig),
+          ...arrayMap(collValues(tablesSaveConfig), ([tableName]) => tableName),
+        ]),
+      ),
+    );
 
   const getSaveTablesActions = (tables: Tables) =>
     mapMap(

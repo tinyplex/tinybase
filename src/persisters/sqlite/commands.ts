@@ -38,11 +38,10 @@ type Schema = IdMap2<string>;
 const SELECT_STAR_FROM = 'SELECT*FROM';
 const FROM_PRAGMA_TABLE = 'FROM pragma_table_';
 const WHERE = 'WHERE';
-const WHERE_MAIN_TABLE =
-  WHERE + ` schema='main'AND type='table'AND name!='sqlite_schema'`;
 
 export const getCommandFunctions = (
   cmd: Cmd,
+  managedTableNames: string[],
 ): [
   refreshSchema: () => Promise<Schema>,
   loadSingleRow: (
@@ -76,7 +75,13 @@ export const getCommandFunctions = (
         await promiseAll(
           arrayMap(
             await cmd(
-              'SELECT name ' + FROM_PRAGMA_TABLE + 'list ' + WHERE_MAIN_TABLE,
+              'SELECT name ' +
+                FROM_PRAGMA_TABLE +
+                'list ' +
+                `WHERE schema='main'AND type='table'AND name IN(` +
+                getPlaceholders(managedTableNames) +
+                `)`,
+              managedTableNames,
             ),
             async ({name: tableName}) => [
               tableName,
@@ -278,17 +283,20 @@ export const getCommandFunctions = (
           WHERE +
           escapeId(rowIdColumnName) +
           'NOT IN(' +
-          arrayJoin(
-            arrayMap(deleteRowIds, () => '?'),
-            COMMA,
-          ) +
+          getPlaceholders(deleteRowIds) +
           ')',
         deleteRowIds,
       );
-    } else {
+    } else if (collHas(schemaMap, tableName)) {
       await cmd('DELETE FROM' + escapeId(tableName));
     }
   };
 
   return [refreshSchema, loadSingleRow, saveSingleRow, loadTable, saveTable];
 };
+
+const getPlaceholders = (array: any[]) =>
+  arrayJoin(
+    arrayMap(array, () => '?'),
+    COMMA,
+  );
