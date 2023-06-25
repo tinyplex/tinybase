@@ -1,13 +1,13 @@
+import {DatabasePersisterConfig, DpcTabular} from '../../types/persisters';
 import {IdMap, mapNew, mapSet} from '../../common/map';
 import {IdObj, objMap, objMerge, objSize, objValues} from '../../common/obj';
 import {isString, isUndefined} from '../../common/other';
 import {DEFAULT_ROW_ID_COLUMN_NAME} from './common';
-import {DpcTabular} from '../../types/persisters';
 import {Id} from '../../types/common';
 import {TINYBASE} from '../../common/strings';
 import {arraySlice} from '../../common/array';
 
-type DefaultedConfig = [
+type DefaultedTabularConfig = [
   tablesLoadConfig: IdMap<[tableId: Id, rowIdColumnName: string]>,
   tablesSaveConfig: IdMap<
     [
@@ -20,19 +20,24 @@ type DefaultedConfig = [
   valuesConfig: [load: boolean, save: boolean, tableName: string],
 ];
 
+export const AUTO_LOAD_INTERVAL_SECONDS = 'autoLoadIntervalSeconds';
+export const JSON = 'json';
 const ROW_ID_COLUMN_NAME = 'rowIdColumnName';
 const TABLE_ID = 'tableId';
 const TABLE_NAME = 'tableName';
 const DELETE_EMPTY_COLUMNS = 'deleteEmptyColumns';
 const DELETE_EMPTY_TABLE = 'deleteEmptyTable';
-
-const DEFAULTED_VALUES_CONFIG = {
+const DEFAULT_CONFIG: DatabasePersisterConfig = {
+  mode: JSON,
+  [AUTO_LOAD_INTERVAL_SECONDS]: 1,
+};
+const DEFAULT_TABULAR_VALUES_CONFIG = {
   load: 0,
   save: 0,
   [TABLE_NAME]: TINYBASE + '_values',
 };
 
-const getDefaultedTableConfigMap = (
+const getDefaultedTabularConfigMap = (
   configsObj: IdObj<any>,
   defaultObj: IdObj<any>,
   tableField: 'tableId' | 'tableName',
@@ -60,18 +65,28 @@ const getDefaultedTableConfigMap = (
   return configMap;
 };
 
-export const getDefaultedConfig = ({
+export const getDefaultedConfig = (
+  configOrStoreTableName: DatabasePersisterConfig | string | undefined,
+): DatabasePersisterConfig =>
+  objMerge(
+    DEFAULT_CONFIG,
+    isString(configOrStoreTableName)
+      ? {storeTableName: configOrStoreTableName}
+      : configOrStoreTableName ?? {},
+  );
+
+export const getDefaultedTabularConfig = ({
   tables: {load = {}, save = {}} = {},
   values = {},
-}: DpcTabular): DefaultedConfig => {
+}: DpcTabular): DefaultedTabularConfig => {
   const valuesConfig = arraySlice(
-    objValues(objMerge(DEFAULTED_VALUES_CONFIG, values)),
+    objValues(objMerge(DEFAULT_TABULAR_VALUES_CONFIG, values)),
     0,
-    objSize(DEFAULTED_VALUES_CONFIG),
+    objSize(DEFAULT_TABULAR_VALUES_CONFIG),
   );
   const valuesTable = valuesConfig[2] as string;
   return [
-    getDefaultedTableConfigMap(
+    getDefaultedTabularConfigMap(
       load,
       {
         [TABLE_ID]: null,
@@ -80,7 +95,7 @@ export const getDefaultedConfig = ({
       TABLE_ID,
       (tableName) => tableName == valuesTable,
     ),
-    getDefaultedTableConfigMap(
+    getDefaultedTabularConfigMap(
       save,
       {
         [TABLE_NAME]: null,
