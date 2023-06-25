@@ -9,7 +9,7 @@ import {suppressWarnings} from '../common/other';
 
 export type SqliteWasmDb = [sqlite3: any, db: any];
 
-type Dump = [name: string, sql: string, rows: {[column: string]: any}[]][];
+type Dump = {[name: string]: [sql: string, rows: {[column: string]: any}[]]};
 
 type SqliteVariant<Database> = [
   getOpenDatabase: () => Promise<Database>,
@@ -92,25 +92,26 @@ export const getDatabaseFunctions = <Database>(
   (db: Database, dump: Dump) => Promise<void>,
 ] => {
   const getDatabase = async (db: Database): Promise<Dump> =>
-    await Promise.all(
-      (
-        await cmd(
-          db,
-          'SELECT sql, name FROM sqlite_schema ' +
-            `WHERE type = 'table' AND name NOT LIKE ?`,
-          ['%crsql%'],
-        )
-      ).map(async ({sql, name}: any) => [
-        name,
-        sql,
-        await cmd(db, 'SELECT * FROM ' + escapeId(name)),
-      ]),
+    Object.fromEntries(
+      await Promise.all(
+        (
+          await cmd(
+            db,
+            'SELECT sql, name FROM sqlite_schema ' +
+              `WHERE type = 'table' AND name NOT LIKE ?`,
+            ['%crsql%'],
+          )
+        ).map(async ({sql, name}: any) => [
+          name,
+          [sql, await cmd(db, 'SELECT * FROM ' + escapeId(name))],
+        ]),
+      ),
     );
 
   const setDatabase = async (db: Database, dump: Dump) => {
     await cmd(db, 'BEGIN TRANSACTION');
     await Promise.all(
-      dump.map(async ([name, sql, rows]) => {
+      Object.entries(dump).map(async ([name, [sql, rows]]) => {
         await cmd(db, sql);
         await Promise.all(
           rows.map(
