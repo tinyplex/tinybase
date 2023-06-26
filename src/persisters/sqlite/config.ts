@@ -81,17 +81,12 @@ const getDefaultedTabularConfigMap = (
 
 export const getModeConfigAndManagedTableNames = (
   configOrStoreTableName: DatabasePersisterConfig | string | undefined,
-): [
-  'json' | 'tabular',
-  number,
-  DefaultedJsonConfig | DefaultedTabularConfig,
-  string[],
-] => {
+): [0 | 1, number, DefaultedJsonConfig | DefaultedTabularConfig, string[]] => {
   const config = getDefaultedConfig(configOrStoreTableName);
   const autoLoadIntervalSeconds = config[AUTO_LOAD_INTERVAL_SECONDS] as number;
   if (config.mode == JSON) {
     const {storeTableName = TINYBASE} = config;
-    return [JSON, autoLoadIntervalSeconds, [storeTableName], [storeTableName]];
+    return [1, autoLoadIntervalSeconds, [storeTableName], [storeTableName]];
   }
 
   const {tables: {load = {}, save = {}} = {}, values = {}} = config;
@@ -127,7 +122,7 @@ export const getModeConfigAndManagedTableNames = (
   ] as any;
 
   return [
-    'tabular',
+    0,
     autoLoadIntervalSeconds,
     tabularConfig,
     collValues(managedTableNames),
