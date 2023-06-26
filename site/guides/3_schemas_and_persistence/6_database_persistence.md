@@ -1,15 +1,20 @@
 # Database Persistence
 
 Since v4.0, there are various options for persisting Store data to and from
-database, in particular SQLite.
+SQLite databases, via a range of third-party modules.
 
-There are currently three database-based persistence options:
+There are currently three SQLite-based persistence options:
 
 | Module                   | Function                    | Storage                                                                        |
 | ------------------------ | --------------------------- | ------------------------------------------------------------------------------ |
 | persister-sqlite3        | createSqlite3Persister      | SQLite in Node, via [sqlite3](https://github.com/TryGhost/node-sqlite3)        |
 | persister-sqlite-wasm    | createSqliteWasmPersister   | SQLite in a browser, via [sqlite-wasm](https://github.com/tomayac/sqlite-wasm) |
 | persister-cr-sqlite-wasm | createCrSqliteWasmPersister | SQLite CRDTs, via [cr-sqlite-wasm](https://github.com/vlcn-io/cr-sqlite)       |
+
+(Take a look at the
+[vite-tinybase-ts-react-crsqlite](https://github.com/tinyplex/vite-tinybase-ts-react-crsqlite)
+template, for example, which demonstrates Vulcan's cr-sqlite to provide
+persistence and synchronization via the third of these.)
 
 Each creation function takes a database reference, and a DatabasePersisterConfig
 object to describe its configuration. There are two modes for persisting a Store
@@ -169,6 +174,81 @@ tabularPersister.destroy();
 
 Store Values are saved into a separate table, normally called `tinybase_values`.
 See the DpcTabularValues documentation for examples of how to use that.
+
+## Working With An Existing Database
+
+In theory, it's possible to bind TinyBase to a SQLite database that already
+exists. You will obviously want to list the tables of interest in the `load`
+section of the configuration.
+
+Do be aware that TinyBase is an in-memory data structure, and so you will not
+want to do this if your database tables are particularly large and complex.
+
+Also be very careful when setting the `save` configuration, since it will mean that
+TinyBase writes its version of the data back to the database (optionally
+removing empty columns). If there is data that does not survive the round trip
+(because of schema constraints or data typing), it will be lost.
+
+The Persister maps a column in the database table to provide and store the Store
+Table's Row Ids. By default, this is a database column called `_id`, but you can
+set it to be something else, per table. It is required that this column is a
+primary or unique key in the database so that the Persister knows how to update
+existing records.
+
+So for example, imagine your existing database table looks like this, with the
+first column of each table being a primary key:
+
+```
+> SELECT * FROM the_pets_table;
++--------+---------+-------+
+| pet_id | species | color |
++--------+---------+-------+
+| fido   | dog     | brown |
+| felix  | cat     | black |
++--------+---------+-------+
+
+> SELECT * FROM the_species_table;
++------------+-------+
+| species_id | price |
++------------+-------+
+| dog        | 5     |
+| cat        | 4     |
++------------+-------+
+```
+
+For this, you may consider the following configuration for your Persister:
+
+```js
+const databasePersisterConfig: DatabasePersisterConfig = {
+  mode: 'tabular',
+  tables: {
+    load: {
+      the_pets_table: {tableId: 'pets', rowIdColumnName: 'pet_id'},
+      the_species_table: {tableId: 'species', rowIdColumnName: 'species_id'},
+    },
+    save: {
+      pets: {tableId: 'the_pets_table', rowIdColumnName: 'pet_id'},
+      species: {tableId: 'the_species_table', rowIdColumnName: 'species_id'},
+    },
+  },
+};
+```
+
+This will load into a Store (and save back again) with Tables that look like
+this:
+
+```json
+{
+  "pets": {
+    "fido": {"species": "dog", "color": "brown"},
+    "felix": {"species": "cat", "color": "black"}
+  },
+  "species": {
+    "dog": {"price": 5},
+    "cat": {"price": 4}
+  }
+}
+```
 
 ## Summary
 

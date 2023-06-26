@@ -28,12 +28,12 @@ databases, and across synchronization boundaries with CRDT frameworks.
 | persister-yjs            | createYjsPersister          | Yjs CRDTs, via [yjs](https://github.com/yjs/yjs)                                   |
 | persister-automerge      | createSqliteWasmPersister   | Automerge CRDTs, via [automerge-repo](https://github.com/automerge/automerge-repo) |
 
+See the Database Persistence guide for details on how to work with SQLite
+databases, and the Synchronizing Data guide for more complex synchronization
+with the CRDT frameworks.
+
 There is also a way to developer custom Persisters of your own, which we
 describe in the Custom Persistence guide.
-
-See the Database Persistence guide for details on how to work with SQLite
-database, and the Synchronizing Data guide for more complex synchronization with
-the CRDT frameworks.
 
 ## Persister Operations
 

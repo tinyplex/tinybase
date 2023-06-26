@@ -78,21 +78,22 @@
 
 > ### Excited to be used by:
 >
-> @@EVAL("getGitHubAvatar('SuperSonicHub1')")
+> @@EVAL("getGitHubAvatar('Apocalypsor')")
 > @@EVAL("getGitHubAvatar('brentvatne')")
 > @@EVAL("getGitHubAvatar('circadian-risk')")
-> @@EVAL("getGitHubAvatar('WonderPanda')")
-> @@EVAL("getGitHubAvatar('miking-the-viking')")
 > @@EVAL("getGitHubAvatar('cubecull')")
-> @@EVAL("getGitHubAvatar('Apocalypsor')")
-> @@EVAL("getGitHubAvatar('uptonking')")
 > @@EVAL("getGitHubAvatar('erwinkn')")
-> @@EVAL("getGitHubAvatar('Kayoo-asso')")
-> @@EVAL("getGitHubAvatar('shaneosullivan')")
-> @@EVAL("getGitHubAvatar('generates')")
 > @@EVAL("getGitHubAvatar('flaming-codes')")
+> @@EVAL("getGitHubAvatar('generates')")
+> @@EVAL("getGitHubAvatar('Giulio987')")
 > @@EVAL("getGitHubAvatar('jaysc')")
+> @@EVAL("getGitHubAvatar('Kayoo-asso')")
 > @@EVAL("getGitHubAvatar('kotofurumiya')")
+> @@EVAL("getGitHubAvatar('miking-the-viking')")
+> @@EVAL("getGitHubAvatar('shaneosullivan')")
+> @@EVAL("getGitHubAvatar('SuperSonicHub1')")
+> @@EVAL("getGitHubAvatar('uptonking')")
+> @@EVAL("getGitHubAvatar('WonderPanda')")
 
 ---
 
@@ -117,7 +118,7 @@ console.log(store.getValues());
 >
 > For other types of data applications, a tabular data structure is more
 > useful. TinyBase lets you set and get nested Table, Row, or Cell data, by
-> unique Id and in the same Store as the keyed values.
+> unique Id - and in the same Store as the keyed values!
 >
 > Read more about setting and changing data in The Basics guide.
 
