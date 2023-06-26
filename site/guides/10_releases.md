@@ -17,6 +17,15 @@ provide synchronization and local-first reconciliation:
 | persister-yjs            | createYjsPersister          | Yjs CRDTs, via [yjs](https://github.com/yjs/yjs)                                   |
 | persister-automerge      | createSqliteWasmPersister   | Automerge CRDTs, via [automerge-repo](https://github.com/automerge/automerge-repo) |
 
+See the Database Persistence guide for details on how to work with SQLite
+databases, and the Synchronizing Data guide for more complex synchronization
+with the CRDT frameworks.
+
+Take a look at the
+[vite-tinybase-ts-react-crsqlite](https://github.com/tinyplex/vite-tinybase-ts-react-crsqlite)
+template, for example, which demonstrates Vulcan's cr-sqlite to provide
+persistence and synchronization via this technique.
+
 ### SQLite databases
 
 You can persist Store data to a database with either a JSON serialization or
