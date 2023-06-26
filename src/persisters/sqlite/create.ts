@@ -5,6 +5,7 @@ import {
 } from '../../types/persisters';
 import {Cmd} from './commands';
 import {Store} from '../../types/store';
+import {collValues} from '../../common/coll';
 import {createJsonSqlitePersister} from './json';
 import {createTabularSqlitePersister} from './tabular';
 import {getConfigStructures} from './config';
@@ -27,8 +28,12 @@ export const createSqlitePersister = <UpdateListeningHandle>(
   let dataVersion: number | null;
   let schemaVersion: number | null;
 
-  const [isJson, autoLoadIntervalSeconds, defaultedConfig, managedTableNames] =
-    getConfigStructures(configOrStoreTableName);
+  const [
+    isJson,
+    autoLoadIntervalSeconds,
+    defaultedConfig,
+    managedTableNamesSet,
+  ] = getConfigStructures(configOrStoreTableName);
 
   const addPersisterListener = (
     listener: PersisterListener,
@@ -52,7 +57,7 @@ export const createSqlitePersister = <UpdateListeningHandle>(
       } catch {}
     }, (autoLoadIntervalSeconds as number) * 1000),
     addUpdateListener((tableName: string) =>
-      managedTableNames.includes(tableName) ? listener() : 0,
+      managedTableNamesSet.has(tableName) ? listener() : 0,
     ),
   ];
 
@@ -71,6 +76,6 @@ export const createSqlitePersister = <UpdateListeningHandle>(
     addPersisterListener,
     delPersisterListener,
     defaultedConfig as any,
-    managedTableNames,
+    collValues(managedTableNamesSet),
   );
 };
