@@ -79,9 +79,14 @@ const getDefaultedTabularConfigMap = (
   return configMap;
 };
 
-export const getModeConfigAndManagedTableNames = (
+export const getConfigStructures = (
   configOrStoreTableName: DatabasePersisterConfig | string | undefined,
-): [0 | 1, number, DefaultedJsonConfig | DefaultedTabularConfig, string[]] => {
+): [
+  isJson: 0 | 1,
+  autoLoadIntervalSeconds: number,
+  defaultedConfig: DefaultedJsonConfig | DefaultedTabularConfig,
+  managedTableNames: string[],
+] => {
   const config = getDefaultedConfig(configOrStoreTableName);
   const autoLoadIntervalSeconds = config[AUTO_LOAD_INTERVAL_SECONDS] as number;
   if (config.mode == JSON) {

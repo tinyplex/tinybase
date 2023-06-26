@@ -7,7 +7,7 @@ import {Cmd} from './commands';
 import {Store} from '../../types/store';
 import {createJsonSqlitePersister} from './json';
 import {createTabularSqlitePersister} from './tabular';
-import {getModeConfigAndManagedTableNames} from './config';
+import {getConfigStructures} from './config';
 
 export type UpdateListener = (tableName: string) => void;
 type DataVersionPragma = [{data_version: number}];
@@ -28,7 +28,7 @@ export const createSqlitePersister = <UpdateListeningHandle>(
   let schemaVersion: number | null;
 
   const [isJson, autoLoadIntervalSeconds, defaultedConfig, managedTableNames] =
-    getModeConfigAndManagedTableNames(configOrStoreTableName);
+    getConfigStructures(configOrStoreTableName);
 
   const addPersisterListener = (
     listener: PersisterListener,
