@@ -7,7 +7,6 @@ import {DatabasePersisterConfig} from '../../types/persisters';
 import {Id} from '../../types/common';
 import {TINYBASE} from '../../common/strings';
 import {arraySlice} from '../../common/array';
-import {collValues} from '../../common/coll';
 
 export type DefaultedJsonConfig = [storeTableName: string];
 export type DefaultedTabularConfig = [
@@ -85,13 +84,18 @@ export const getConfigStructures = (
   isJson: 0 | 1,
   autoLoadIntervalSeconds: number,
   defaultedConfig: DefaultedJsonConfig | DefaultedTabularConfig,
-  managedTableNames: string[],
+  managedTableNamesSet: Set<string>,
 ] => {
   const config = getDefaultedConfig(configOrStoreTableName);
   const autoLoadIntervalSeconds = config[AUTO_LOAD_INTERVAL_SECONDS] as number;
   if (config.mode == JSON) {
     const {storeTableName = TINYBASE} = config;
-    return [1, autoLoadIntervalSeconds, [storeTableName], [storeTableName]];
+    return [
+      1,
+      autoLoadIntervalSeconds,
+      [storeTableName],
+      setNew(storeTableName),
+    ];
   }
 
   const {tables: {load = {}, save = {}} = {}, values = {}} = config;
@@ -126,10 +130,5 @@ export const getConfigStructures = (
     valuesConfig,
   ] as any;
 
-  return [
-    0,
-    autoLoadIntervalSeconds,
-    tabularConfig,
-    collValues(managedTableNames),
-  ];
+  return [0, autoLoadIntervalSeconds, tabularConfig, managedTableNames];
 };
