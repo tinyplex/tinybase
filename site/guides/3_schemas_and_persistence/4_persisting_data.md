@@ -9,7 +9,7 @@ in a environment with filesystem access, or, in v4.0 and above, to SQLite and
 CRDT frameworks like [Yjs](https://yjs.dev/) and
 [Automerge](https://automerge.org/).
 
-## Types Of Persisters
+## Types of Persisters
 
 Several entry points are provided (in separately installed modules), each of
 which returns a new Persister object that can load and save a Store. Between

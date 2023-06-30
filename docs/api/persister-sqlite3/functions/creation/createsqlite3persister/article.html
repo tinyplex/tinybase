@@ -7,6 +7,8 @@
 <span class="keyword">const</span> persister <span class="operator">=</span> <span class="function"><a href="/api/persister-sqlite3/functions/creation/createsqlite3persister/">createSqlite3Persister</a></span><span class="punctuation">(</span>store<span class="punctuation">,</span> db<span class="punctuation">,</span> <span class="string">'my_tinybase'</span><span class="punctuation">)</span><span class="punctuation">;</span>
 
 <span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persisters/interfaces/persister/persister/methods/save/save/">save</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="comment">// Store will be saved to the database.</span>
+
 console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>
   <span class="keyword">await</span> <span class="keyword">new</span> <span class="class-name">Promise</span><span class="punctuation">(</span><span class="punctuation">(</span><span class="parameter">resolve</span><span class="punctuation">)</span> <span class="operator">=></span>
     db<span class="punctuation">.</span><span class="function">all</span><span class="punctuation">(</span><span class="string">'SELECT * FROM my_tinybase;'</span><span class="punctuation">,</span> <span class="punctuation">(</span><span class="parameter">_<span class="punctuation">,</span> rows</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="function">resolve</span><span class="punctuation">(</span>rows<span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">,</span>

@@ -8,6 +8,8 @@
 <span class="keyword">const</span> persister <span class="operator">=</span> <span class="function"><a href="/api/persister-cr-sqlite-wasm/functions/creation/createcrsqlitewasmpersister/">createCrSqliteWasmPersister</a></span><span class="punctuation">(</span>store<span class="punctuation">,</span> db<span class="punctuation">,</span> <span class="string">'my_tinybase'</span><span class="punctuation">)</span><span class="punctuation">;</span>
 
 <span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persisters/interfaces/persister/persister/methods/save/save/">save</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="comment">// Store will be saved to the database.</span>
+
 console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span><span class="keyword">await</span> db<span class="punctuation">.</span><span class="function">execO</span><span class="punctuation">(</span><span class="string">'SELECT * FROM my_tinybase;'</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// -> [{_id: '_', store: '[{"pets":{"fido":{"species":"dog"}}},{}]'}]</span>
 

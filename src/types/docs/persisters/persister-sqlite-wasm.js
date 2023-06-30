@@ -52,6 +52,8 @@
  * );
  *
  * await persister.save();
+ * // Store will be saved to the database.
+ *
  * console.log(db.exec('SELECT * FROM my_tinybase;', {rowMode: 'object'}));
  * // -> [{_id: '_', store: '[{"pets":{"fido":{"species":"dog"}}},{}]'}]
  *
