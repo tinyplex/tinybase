@@ -14,6 +14,8 @@
 <span class="punctuation">)</span><span class="punctuation">;</span>
 
 <span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persisters/interfaces/persister/persister/methods/save/save/">save</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="comment">// Store will be saved to the database.</span>
+
 console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>db<span class="punctuation">.</span><span class="function">exec</span><span class="punctuation">(</span><span class="string">'SELECT * FROM my_tinybase;'</span><span class="punctuation">,</span> <span class="punctuation">{</span><span class="literal-property">rowMode</span><span class="operator">:</span> <span class="string">'object'</span><span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// -> [{_id: '_', store: '[{"pets":{"fido":{"species":"dog"}}},{}]'}]</span>
 

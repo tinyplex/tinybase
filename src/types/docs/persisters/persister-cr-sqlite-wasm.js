@@ -45,6 +45,8 @@
  * const persister = createCrSqliteWasmPersister(store, db, 'my_tinybase');
  *
  * await persister.save();
+ * // Store will be saved to the database.
+ *
  * console.log(await db.execO('SELECT * FROM my_tinybase;'));
  * // -> [{_id: '_', store: '[{"pets":{"fido":{"species":"dog"}}},{}]'}]
  *

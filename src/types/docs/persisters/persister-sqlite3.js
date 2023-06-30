@@ -44,6 +44,8 @@
  * const persister = createSqlite3Persister(store, db, 'my_tinybase');
  *
  * await persister.save();
+ * // Store will be saved to the database.
+ *
  * console.log(
  *   await new Promise((resolve) =>
  *     db.all('SELECT * FROM my_tinybase;', (_, rows) => resolve(rows)),
