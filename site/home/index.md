@@ -6,8 +6,8 @@
   </h2>
   <p>
     Modern apps deserve better. Why trade reactive user experiences to be able 
-    to use relational data? Why sacrifice store features for bundle size? And 
-    why should the cloud do all the work 
+    to use relational data? Why sacrifice features for bundle size? And 
+    why does the cloud do all the work 
     <a href='https://localfirstweb.dev/' target='_blank'>anyway</a>?
   </p>
   <p><em>TinyBase is a smart new way to structure your local app data:</em></p>
@@ -16,7 +16,7 @@
       Manage <a href='#start-with-a-simple-key-value-store'>key-value 
       data</a>, <a href='#level-up-to-use-tabular-data'>tabular data</a> - or 
       both - with optional 
-      <a href='#apply-schemas-to-tables-and-values'>schematization</a> to model 
+      <a href='#apply-schemas-to-tables-values'>schematization</a> to model 
       it.
     </li>
     <li>
@@ -54,7 +54,6 @@
     zero dependencies. And of course it's <a href='#well-tested-and-documented'>
     well tested</a>, <a href='/guides/the-basics/getting-started/'>fully 
     documented</a>, and <a href='@@EVAL("metadata.repository")'>open source</a>.
-    Other <a href="/guides/faq/">FAQs</a>?
   </p>
 </section>
 
@@ -89,9 +88,11 @@
 > @@EVAL("getGitHubAvatar('jaysc')")
 > @@EVAL("getGitHubAvatar('Kayoo-asso')")
 > @@EVAL("getGitHubAvatar('kotofurumiya')")
+> @@EVAL("getGitHubAvatar('learn-anything')")
 > @@EVAL("getGitHubAvatar('miking-the-viking')")
 > @@EVAL("getGitHubAvatar('shaneosullivan')")
 > @@EVAL("getGitHubAvatar('SuperSonicHub1')")
+> @@EVAL("getGitHubAvatar('threepointone')")
 > @@EVAL("getGitHubAvatar('uptonking')")
 > @@EVAL("getGitHubAvatar('WonderPanda')")
 
@@ -185,7 +186,8 @@ console.log(app.innerHTML);
 > ## Use components for reactive apps.
 >
 > The react module provides simple React components with bindings that make it
-> easy to create a fully reactive user interface based on a Store.
+> easy to create a fully reactive user interface based on the content of a
+> Store.
 >
 > In this example, the library's RowView component just needs a reference to the
 > Store, the `tableId`, and the `rowId` in order to render the contents of that
@@ -230,7 +232,7 @@ console.log(app.innerHTML);
 root.unmount(); // !act
 ```
 
-> ## Apply schemas to tables and values.
+> ## Apply schemas to tables & values.
 >
 > By default, a Store can contain any arbitrary Value, and a Row can contain any
 > arbitrary Cell. But you can add a ValuesSchema or a TablesSchema to a Store to
@@ -486,7 +488,7 @@ console.log(store.getCell('pets', 'felix', 'sold'));
 > your data and encourage type-safety when reading and writing data - as well as
 > `.ts` implementations that provide ORM-like methods for your named tables.
 >
-> Read more about the type support in the TinyBase and TypeScript guide.
+> Read more about type support in the TinyBase and TypeScript guide.
 
 ```js yolo
 const tools = createTools(store);
@@ -526,8 +528,8 @@ export const createShop: typeof createShopDecl = () => {
 >
 > TinyBase has _@@EVAL("coverage.lines.pct.toFixed(1)")%_ test coverage,
 > including the code throughout the documentation - even on this page! The
-> guides, demos, and API examples are designed to make it as easy as possible to
-> get up and running.
+> guides, demos, and API examples are designed to make it as easy as possible
+> for you to get your TinyBase-powered app up and running.
 >
 > Read more about how TinyBase is tested in the Unit Testing guide.
 
