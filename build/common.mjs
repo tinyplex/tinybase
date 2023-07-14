@@ -9,7 +9,7 @@
 
 // All other imports are lazy so that single tasks start up fast.
 import {basename, dirname} from 'path';
-import {promises} from 'fs';
+import {existsSync, promises} from 'fs';
 
 const UTF8 = 'utf-8';
 const TEST_MODULES = [
@@ -311,6 +311,11 @@ export const compileModule = async (
   const {default: prettierPlugin} = await import('rollup-plugin-prettier');
   const {default: shebang} = await import('rollup-plugin-preserve-shebang');
 
+  let inputFile = `src/${module}.ts`;
+  if (!existsSync(inputFile)) {
+    inputFile += 'x';
+  }
+
   const inputConfig = {
     external: [
       'fs',
@@ -318,12 +323,14 @@ export const compileModule = async (
       'path',
       'prettier',
       'react',
+      'react-dom',
       'url',
       'yjs',
       './tinybase',
+      './ui-react',
       './tools',
     ],
-    input: `src/${module}.ts`,
+    input: inputFile,
     plugins: [
       esbuild({
         target,
