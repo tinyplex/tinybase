@@ -378,6 +378,7 @@ export const compileModule = async (
     format,
     globals: {
       react: 'React',
+      'react-dom': 'ReactDOM',
       yjs: 'yjs',
       fs: 'fs',
       'fs/promises': 'fs/promises',
