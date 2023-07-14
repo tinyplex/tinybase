@@ -15,6 +15,7 @@ const UTF8 = 'utf-8';
 const TEST_MODULES = [
   'tinybase',
   'ui-react',
+  'ui-react-dom',
   'tools',
   'persisters/persister-browser',
   'persisters/persister-file',
@@ -37,6 +38,7 @@ const ALL_MODULES = [
   'persisters',
   'common',
   'ui-react',
+  'ui-react-dom',
   'tools',
   'persisters/persister-browser',
   'persisters/persister-file',
