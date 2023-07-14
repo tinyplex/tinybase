@@ -1,7 +1,7 @@
 import {TablesSchema, ValuesSchema} from '../../types/store.d';
 import {EMPTY_STRING} from '../../common/strings';
 import {getStoreCoreApi} from './core';
-import {getStoreUiReactApi} from './ui-react';
+import {getStoreUiReactApi} from './react';
 import {objIsEmpty} from '../../common/obj';
 
 export const getStoreApi = (

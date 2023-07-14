@@ -61,9 +61,9 @@ import {
   mapUnique,
 } from '../common/code';
 import {SharedTableTypes, SharedValueTypes, TableTypes} from './core';
-import {TablesSchema, ValuesSchema} from '../../types/store.d';
+import {TablesSchema, ValuesSchema} from '../../types/store';
 import {arrayJoin, arrayPush, arrayUnshift} from '../../common/array';
-import {Id} from '../../types/common.d';
+import {Id} from '../../types/common';
 import {getSchemaFunctions} from '../common/schema';
 import {isUndefined} from '../../common/other';
 import {objIsEmpty} from '../../common/obj';
