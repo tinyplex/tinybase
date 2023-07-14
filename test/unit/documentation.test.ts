@@ -12,8 +12,9 @@ import * as TinyBasePersisterRemote from 'tinybase/debug/persisters/persister-re
 import * as TinyBasePersisterSqlite3 from 'tinybase/debug/persisters/persister-sqlite3';
 import * as TinyBasePersisterSqliteWasm from 'tinybase/debug/persisters/persister-sqlite-wasm';
 import * as TinyBasePersisterYjs from 'tinybase/debug/persisters/persister-yjs';
-import * as TinyBaseReact from 'tinybase/debug/ui-react';
 import * as TinyBaseTools from 'tinybase/debug/tools';
+import * as TinyBaseUiReact from 'tinybase/debug/ui-react';
+import * as TinyBaseUiReactDom from 'tinybase/debug/ui-react-dom';
 import * as Y from 'yjs';
 import * as sqlite3 from 'sqlite3';
 import {join, resolve} from 'path';
@@ -34,8 +35,9 @@ import {transformSync} from 'esbuild';
   TinyBasePersisterSqlite3,
   TinyBasePersisterSqliteWasm,
   TinyBasePersisterCrSqliteWasm,
-  TinyBaseReact,
   TinyBaseTools,
+  TinyBaseUiReact,
+  TinyBaseUiReactDom,
   ReactDOMTestUtils,
   {React, ReactDOMClient},
   {Y},
