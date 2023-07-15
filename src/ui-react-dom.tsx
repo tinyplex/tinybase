@@ -1,6 +1,15 @@
 /** @jsx createElement */
 
 import {
+  CellInHtmlTd as CellInHtmlTdDecl,
+  DomProps,
+  RowInHtmlTr as RowInHtmlTrDecl,
+  SortedTableInHtmlTable as SortedTableInHtmlTableDecl,
+  TableInHtmlTable as TableInHtmlTableDecl,
+  ValueInHtmlTr as ValueInHtmlTrDecl,
+  ValuesInHtmlTable as ValuesInHtmlTableDecl,
+} from './types/ui-react-dom.d';
+import {
   CellProps,
   RowProps,
   SortedTableProps,
@@ -16,15 +25,6 @@ import {
   ValueView,
   ValuesView,
 } from './ui-react';
-import {
-  DomProps,
-  DomSortedTableView as DomSortedTableViewDecl,
-  DomTableCellView as DomTableCellViewDecl,
-  DomTableRowView as DomTableRowViewDecl,
-  DomTableValueView as DomTableValueViewDecl,
-  DomTableValuesView as DomTableValuesViewDecl,
-  DomTableView as DomTableViewDecl,
-} from './types/ui-react-dom.d';
 import React from 'react';
 import {isUndefined} from './common/other';
 
@@ -33,7 +33,7 @@ const {createElement} = React;
 const useClassName = (className?: string): {className?: string} =>
   isUndefined(className) ? {} : {className};
 
-export const DomTableCellView: typeof DomTableCellViewDecl = ({
+export const CellInHtmlTd: typeof CellInHtmlTdDecl = ({
   className,
   ...props
 }: CellProps & DomProps): any => (
@@ -42,38 +42,38 @@ export const DomTableCellView: typeof DomTableCellViewDecl = ({
   </td>
 );
 
-export const DomTableRowView: typeof DomTableRowViewDecl = ({
+export const RowInHtmlTr: typeof RowInHtmlTrDecl = ({
   className,
   ...props
 }: RowProps & DomProps): any => (
   <tr {...useClassName(className)}>
-    <RowView cellComponent={DomTableCellView} {...props} />
+    <RowView cellComponent={CellInHtmlTd} {...props} />
   </tr>
 );
 
-export const DomSortedTableView: typeof DomSortedTableViewDecl = ({
+export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
   className,
   ...props
 }: SortedTableProps & DomProps): any => (
   <table {...useClassName(className)}>
     <tbody>
-      <SortedTableView rowComponent={DomTableRowView} {...props} />
+      <SortedTableView rowComponent={RowInHtmlTr} {...props} />
     </tbody>
   </table>
 );
 
-export const DomTableView: typeof DomTableViewDecl = ({
+export const TableInHtmlTable: typeof TableInHtmlTableDecl = ({
   className,
   ...props
 }: TableProps & DomProps): any => (
   <table {...useClassName(className)}>
     <tbody>
-      <TableView rowComponent={DomTableRowView} {...props} />
+      <TableView rowComponent={RowInHtmlTr} {...props} />
     </tbody>
   </table>
 );
 
-export const DomTableValueView: typeof DomTableValueViewDecl = ({
+export const ValueInHtmlTr: typeof ValueInHtmlTrDecl = ({
   className,
   ...props
 }: ValueProps & DomProps): any => (
@@ -84,13 +84,13 @@ export const DomTableValueView: typeof DomTableValueViewDecl = ({
   </tr>
 );
 
-export const DomTableValuesView: typeof DomTableValuesViewDecl = ({
+export const ValuesInHtmlTable: typeof ValuesInHtmlTableDecl = ({
   className,
   ...props
 }: ValuesProps & DomProps): any => (
   <table {...useClassName(className)}>
     <tbody>
-      <ValuesView valueComponent={DomTableValueView} {...props} />
+      <ValuesView valueComponent={ValueInHtmlTr} {...props} />
     </tbody>
   </table>
 );

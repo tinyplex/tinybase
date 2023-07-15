@@ -25,7 +25,7 @@
  */
 /// DomProps
 /**
- * The DomTableCellView component renders the value of a single Cell in a given
+ * The CellInHtmlTd component renders the value of a single Cell in a given
  * Row, in a given Table, as an HTML <td> element, and registers a listener so
  * that any changes to that result will cause a re-render.
  *
@@ -35,8 +35,8 @@
  *
  * A Cell contains a string, number, or boolean, so the value is rendered
  * directly without further decoration. You can create your own
- * DomTableCellView-like component to customize the way that a Cell is rendered:
- * see the DomTableRowView component for more details.
+ * CellInHtmlTd-like component to customize the way that a Cell is rendered:
+ * see the RowInHtmlTr component for more details.
  *
  * This component uses the useCell hook under the covers, which means that any
  * changes to the specified Cell will cause a re-render.
@@ -44,7 +44,7 @@
  * @returns A rendering of the Cell in a <td> element.
  * @example
  * This example creates a Provider context into which a default Store is
- * provided. The DomTableCellView component within it then renders the Cell in a
+ * provided. The CellInHtmlTd component within it then renders the Cell in a
  * <td> element with a CSS class.
  *
  * ```jsx
@@ -57,7 +57,7 @@
  *   <table>
  *     <tbody>
  *       <tr>
- *         <DomTableCellView
+ *         <CellInHtmlTd
  *           tableId="pets"
  *           rowId="fido"
  *           cellId="color"
@@ -77,9 +77,9 @@
  * @category Store components
  * @since v4.1.0
  */
-/// DomTableCellView
+/// CellInHtmlTd
 /**
- * The DomTableRowView component renders the contents of a single Row in a given
+ * The RowInHtmlTr component renders the contents of a single Row in a given
  * Table, as an HTML <tr> element, and registers a listener so that any changes
  * to that result will cause a re-render.
  *
@@ -88,14 +88,14 @@
  * or an explicit reference).
  *
  * This component renders a Row by iterating over its Cell values. By default
- * these are in turn rendered with the DomTableCellView component, but you can
+ * these are in turn rendered with the CellInHtmlTd component, but you can
  * override this behavior by providing a `cellComponent` prop, a custom
  * component of your own that will render a Cell based on CellProps. You can
  * also pass additional props to your custom component with the
  * `getCellComponentProps` callback prop.
  *
- * You can create your own DomTableRowView-like component to customize the way
- * that a Row is rendered: see the DomTableView component for more details.
+ * You can create your own RowInHtmlTr-like component to customize the way
+ * that a Row is rendered: see the TableInHtmlTable component for more details.
  *
  * This component uses the useCellIds hook under the covers, which means that
  * any changes to the structure of the Row will cause a re-render.
@@ -106,7 +106,7 @@
  * @returns A rendering of the Row in a <tr> element.
  * @example
  * This example creates a Provider context into which a default Store is
- * provided. The DomTableRowView component within it then renders the Row in a
+ * provided. The RowInHtmlTr component within it then renders the Row in a
  * <tr> element with a CSS class.
  *
  * ```jsx
@@ -118,7 +118,7 @@
  * const Pane = () => (
  *   <table>
  *     <tbody>
- *       <DomTableRowView tableId="pets" rowId="fido" className="row" />
+ *       <RowInHtmlTr tableId="pets" rowId="fido" className="row" />
  *     </tbody>
  *   </table>
  * );
@@ -134,7 +134,7 @@
  * ```
  * @example
  * This example creates a Provider context into which a default Store is
- * provided. The DomTableRowView component within it then renders the Row with a
+ * provided. The RowInHtmlTr component within it then renders the Row with a
  * custom Cell component and a custom props callback.
  *
  * ```jsx
@@ -146,7 +146,7 @@
  * const Pane = () => (
  *   <table>
  *     <tbody>
- *       <DomTableRowView
+ *       <RowInHtmlTr
  *         tableId="pets"
  *         rowId="fido"
  *         cellComponent={FormattedCellView}
@@ -175,9 +175,9 @@
  * @category Store components
  * @since v4.1.0
  */
-/// DomTableRowView
+/// RowInHtmlTr
 /**
- * The DomSortedTableView component renders the contents of a single sorted
+ * The SortedTableInHtmlTable component renders the contents of a single sorted
  * Table in a Store, as an HTML <table> element, and registers a listener so
  * that any changes to that result will cause a re-render.
  *
@@ -190,7 +190,7 @@
  *
  * This component renders a Table by iterating over its Row objects, in the
  * order dictated by the sort parameters. By default these are in turn rendered
- * with the DomTableRowView component, but you can override this behavior by
+ * with the RowInHtmlTr component, but you can override this behavior by
  * providing a `rowComponent` prop, a custom component of your own that will
  * render a Row based on RowProps. You can also pass additional props to your
  * custom component with the `getRowComponentProps` callback prop.
@@ -205,7 +205,7 @@
  * @returns A rendering of the Table in a <table> element.
  * @example
  * This example creates a Provider context into which a default Store is
- * provided. The DomSortedTableView component within it then renders the Table
+ * provided. The SortedTableInHtmlTable component within it then renders the Table
  * in a <table> element with a CSS class.
  *
  * ```jsx
@@ -215,7 +215,7 @@
  *   </Provider>
  * );
  * const Pane = () => (
- *   <DomSortedTableView tableId="pets" cellId="species" className="table" />
+ *   <SortedTableInHtmlTable tableId="pets" cellId="species" className="table" />
  * );
  *
  * const store = createStore().setTables({
@@ -231,7 +231,7 @@
  * ```
  * @example
  * This example creates a Provider context into which a default Store is
- * provided. The DomSortedTableView component within it then renders the Table
+ * provided. The SortedTableInHtmlTable component within it then renders the Table
  * with a custom Row component and a custom props callback.
  *
  * ```jsx
@@ -241,7 +241,7 @@
  *   </Provider>
  * );
  * const Pane = () => (
- *   <DomSortedTableView
+ *   <SortedTableInHtmlTable
  *     tableId="pets"
  *     cellId="species"
  *     rowComponent={FormattedRowView}
@@ -254,7 +254,7 @@
  *     <RowView
  *       tableId={tableId}
  *       rowId={rowId}
- *       cellComponent={DomTableCellView}
+ *       cellComponent={CellInHtmlTd}
  *     />
  *   </tr>
  * );
@@ -273,9 +273,9 @@
  * @category Store components
  * @since v4.1.0
  */
-/// DomSortedTableView
+/// SortedTableInHtmlTable
 /**
- * The DomTableView component renders the contents of a single Table in a Store
+ * The TableInHtmlTable component renders the contents of a single Table in a Store
  * as an HTML <table> element, and registers a listener so that any changes to
  * that result will cause a re-render.
  *
@@ -284,7 +284,7 @@
  * by explicit reference).
  *
  * This component renders a Table by iterating over its Row objects. By default
- * these are in turn rendered with the DomTableRowView component, but you can
+ * these are in turn rendered with the RowInHtmlTr component, but you can
  * override this behavior by providing a `rowComponent` prop, a custom component
  * of your own that will render a Row based on RowProps. You can also pass
  * additional props to your custom component with the `getRowComponentProps`
@@ -299,7 +299,7 @@
  * @returns A rendering of the Table in a <table> element.
  * @example
  * This example creates a Provider context into which a default Store is
- * provided. The DomTableView component within it then renders the Table in a
+ * provided. The TableInHtmlTable component within it then renders the Table in a
  * <table> element with a CSS class.
  *
  * ```jsx
@@ -309,7 +309,7 @@
  *   </Provider>
  * );
  * const Pane = () => (
- *   <DomTableView tableId="pets" className="row" />
+ *   <TableInHtmlTable tableId="pets" className="row" />
  * );
  *
  * const store = createStore().setTable('pets', {
@@ -323,7 +323,7 @@
  * ```
  * @example
  * This example creates a Provider context into which a default Store is
- * provided. The DomTableView component within it then renders the Table with a
+ * provided. The TableInHtmlTable component within it then renders the Table with a
  * custom Row component and a custom props callback.
  *
  * ```jsx
@@ -333,7 +333,7 @@
  *   </Provider>
  * );
  * const Pane = () => (
- *   <DomTableView
+ *   <TableInHtmlTable
  *     tableId="pets"
  *     rowComponent={FormattedRowView}
  *     getRowComponentProps={(rowId) => ({bold: rowId == 'fido'})}
@@ -345,7 +345,7 @@
  *     <RowView
  *       tableId={tableId}
  *       rowId={rowId}
- *       cellComponent={DomTableCellView}
+ *       cellComponent={CellInHtmlTd}
  *     />
  *   </tr>
  * );
@@ -362,9 +362,9 @@
  * @category Store components
  * @since v4.1.0
  */
-/// DomTableView
+/// TableInHtmlTable
 /**
- * The DomTableValueView component renders the value of a single Value, as an
+ * The ValueInHtmlTr component renders the value of a single Value, as an
  * HTML <tr> element, and registers a listener so that any changes to that
  * result will cause a re-render.
  *
@@ -374,8 +374,8 @@
  *
  * A Value contains a string, number, or boolean, so the value is rendered
  * directly without further decoration. You can create your own
- * DomTableValueView-like component to customize the way that a Value is
- * rendered: see the DomTableValuesView component for more details.
+ * ValueInHtmlTr-like component to customize the way that a Value is
+ * rendered: see the ValuesInHtmlTable component for more details.
  *
  * This component uses the useValue hook under the covers, which means that any
  * changes to the specified Value will cause a re-render.
@@ -383,7 +383,7 @@
  * @returns A rendering of the Value in a <tr> element.
  * @example
  * This example creates a Provider context into which a default Store is
- * provided. The DomTableValueView component within it then renders the Value in
+ * provided. The ValueInHtmlTr component within it then renders the Value in
  * a <tr> element with a CSS class.
  *
  * ```jsx
@@ -395,7 +395,7 @@
  * const Pane = () => (
  *   <table>
  *     <tbody>
- *       <DomTableValueView valueId="open" className="value" />
+ *       <ValueInHtmlTr valueId="open" className="value" />
  *     </tbody>
  *   </table>
  * );
@@ -409,9 +409,9 @@
  * @category Store components
  * @since v4.1.0
  */
-/// DomTableValueView
+/// ValueInHtmlTr
 /**
- * The DomTableValuesView component renders the keyed value contents of a Store
+ * The ValuesInHtmlTable component renders the keyed value contents of a Store
  * as an HTML <table> element, and registers a listener so that any changes to
  * that result will cause a re-render.
  *
@@ -420,7 +420,7 @@
  * or an explicit reference).
  *
  * This component renders a Store by iterating over its Value objects. By
- * default these are in turn rendered with the DomTableValueView component, but
+ * default these are in turn rendered with the ValueInHtmlTr component, but
  * you can override this behavior by providing a `valueComponent` prop, a custom
  * component of your own that will render a Value based on ValueProps. You can
  * also pass additional props to your custom component with the
@@ -436,7 +436,7 @@
  * @returns A rendering of the Values in a <table> element.
  * @example
  * This example creates a Provider context into which a default Store is
- * provided. The DomTableValuesView component within it then renders the Values
+ * provided. The ValuesInHtmlTable component within it then renders the Values
  * in a <table> element with a CSS class.
  *
  * ```jsx
@@ -446,7 +446,7 @@
  *   </Provider>
  * );
  * const Pane = () => (
- *   <DomTableValuesView className="values" />
+ *   <ValuesInHtmlTable className="values" />
  * );
  *
  * const store = createStore().setValues({open: true, employees: 3});
@@ -457,7 +457,7 @@
  * ```
  * @example
  * This example creates a Provider context into which a default Store is
- * provided. The DomTableValuesView component within it then renders the Row
+ * provided. The ValuesInHtmlTable component within it then renders the Row
  * with a custom Cell component and a custom props callback.
  *
  * ```jsx
@@ -467,7 +467,7 @@
  *   </Provider>
  * );
  * const Pane = () => (
- *   <DomTableValuesView
+ *   <ValuesInHtmlTable
  *     valueComponent={FormattedValueView}
  *     getValueComponentProps={(valueId) => ({bold: valueId == 'open'})}
  *   />
@@ -491,4 +491,4 @@
  * @category Store components
  * @since v4.1.0
  */
-/// DomTableValuesView
+/// ValuesInHtmlTable
