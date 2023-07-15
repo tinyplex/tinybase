@@ -36,7 +36,7 @@
  * A Cell contains a string, number, or boolean, so the value is rendered
  * directly without further decoration. You can create your own
  * DomTableCellView-like component to customize the way that a Cell is rendered:
- * see the RowView component for more details.
+ * see the DomTableRowView component for more details.
  *
  * This component uses the useCell hook under the covers, which means that any
  * changes to the specified Cell will cause a re-render.
@@ -363,3 +363,132 @@
  * @since v4.1.0
  */
 /// DomTableView
+/**
+ * The DomTableValueView component renders the value of a single Value, as an
+ * HTML <tr> element, and registers a listener so that any changes to that
+ * result will cause a re-render.
+ *
+ * The component's props identify which Value to render based on Value Id and
+ * Store (which is either the default context Store, a named context Store, or
+ * an explicit reference).
+ *
+ * A Value contains a string, number, or boolean, so the value is rendered
+ * directly without further decoration. You can create your own
+ * DomTableValueView-like component to customize the way that a Value is
+ * rendered: see the DomTableValuesView component for more details.
+ *
+ * This component uses the useValue hook under the covers, which means that any
+ * changes to the specified Value will cause a re-render.
+ * @param props The props for this component.
+ * @returns A rendering of the Value in a <tr> element.
+ * @example
+ * This example creates a Provider context into which a default Store is
+ * provided. The DomTableValueView component within it then renders the Value in
+ * a <tr> element with a CSS class.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <table>
+ *     <tbody>
+ *       <DomTableValueView valueId="open" className="value" />
+ *     </tbody>
+ *   </table>
+ * );
+ *
+ * const store = createStore().setValue('open', true);
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<table><tbody><tr class="value"><td>true</td></tr></tbody></table>'
+ * ```
+ * @category Store components
+ * @since v4.1.0
+ */
+/// DomTableValueView
+/**
+ * The DomTableValuesView component renders the keyed value contents of a Store
+ * as an HTML <table> element, and registers a listener so that any changes to
+ * that result will cause a re-render.
+ *
+ * The component's props identify which Row to render based on Table Id, Row Id,
+ * and Store (which is either the default context Store, a named context Store,
+ * or an explicit reference).
+ *
+ * This component renders a Store by iterating over its Value objects. By
+ * default these are in turn rendered with the DomTableValueView component, but
+ * you can override this behavior by providing a `valueComponent` prop, a custom
+ * component of your own that will render a Value based on ValueProps. You can
+ * also pass additional props to your custom component with the
+ * `getValueComponentProps` callback prop.
+ *
+ * This component uses the useValueIds hook under the covers, which means that
+ * any changes to the structure of the Values in the Store will cause a
+ * re-render.
+ *
+ * You are discouraged from using the `separator` and `debugIds` props with this
+ * component as they will insert raw text into the <table> element.
+ * @param props The props for this component.
+ * @returns A rendering of the Values in a <table> element.
+ * @example
+ * This example creates a Provider context into which a default Store is
+ * provided. The DomTableValuesView component within it then renders the Values
+ * in a <table> element with a CSS class.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <DomTableValuesView className="values" />
+ * );
+ *
+ * const store = createStore().setValues({open: true, employees: 3});
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<table class="values"><tbody><tr><td>true</td></tr><tr><td>3</td></tr></tbody></table>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a default Store is
+ * provided. The DomTableValuesView component within it then renders the Row
+ * with a custom Cell component and a custom props callback.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <DomTableValuesView
+ *     valueComponent={FormattedValueView}
+ *     getValueComponentProps={(valueId) => ({bold: valueId == 'open'})}
+ *   />
+ * );
+ * const FormattedValueView = ({valueId, bold}) => (
+ *   <tr>
+ *     <td>
+ *       {bold ? <b>{valueId}</b> : valueId}
+ *       {': '}
+ *       <ValueView valueId={valueId} />
+ *     </td>
+ *   </tr>
+ * );
+ *
+ * const store = createStore().setValues({open: true, employees: 3});
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<table><tbody><tr><td><b>open</b>: true</td></tr><tr><td>employees: 3</td></tr></tbody></table>'
+ * ```
+ * @category Store components
+ * @since v4.1.0
+ */
+/// DomTableValuesView
