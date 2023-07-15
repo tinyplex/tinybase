@@ -16,30 +16,28 @@ export type DomProps = {
   className?: string;
 };
 
-/// DomTableCellView
-export function DomTableCellView(
-  props: CellProps & DomProps,
-): ComponentReturnType;
+/// CellInHtmlTd
+export function CellInHtmlTd(props: CellProps & DomProps): ComponentReturnType;
 
-/// DomTableRowView
-export function DomTableRowView(
-  props: RowProps & DomProps,
-): ComponentReturnType;
+/// RowInHtmlTr
+export function RowInHtmlTr(props: RowProps & DomProps): ComponentReturnType;
 
-/// DomSortedTableView
-export function DomSortedTableView(
+/// SortedTableInHtmlTable
+export function SortedTableInHtmlTable(
   props: SortedTableProps & DomProps,
 ): ComponentReturnType;
 
-/// DomTableView
-export function DomTableView(props: TableProps & DomProps): ComponentReturnType;
+/// TableInHtmlTable
+export function TableInHtmlTable(
+  props: TableProps & DomProps,
+): ComponentReturnType;
 
-/// DomTableValueView
-export function DomTableValueView(
+/// ValueInHtmlTr
+export function ValueInHtmlTr(
   props: ValueProps & DomProps,
 ): ComponentReturnType;
 
-/// DomTableValuesView
-export function DomTableValuesView(
+/// ValuesInHtmlTable
+export function ValuesInHtmlTable(
   props: ValuesProps & DomProps,
 ): ComponentReturnType;
