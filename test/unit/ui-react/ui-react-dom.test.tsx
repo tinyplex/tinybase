@@ -34,7 +34,7 @@ beforeEach(() => {
 
 describe('Read Components', () => {
   describe('TableInHtmlTable', () => {
-    test('Basic', () => {
+    test('basic', () => {
       act(() => {
         renderer = create(<TableInHtmlTable store={store} tableId="t2" />);
       });
@@ -42,11 +42,17 @@ describe('Read Components', () => {
         <table>
           <tbody>
             <tr>
+              <th>
+                r1
+              </th>
               <td>
                 2
               </td>
             </tr>
             <tr>
+              <th>
+                r2
+              </th>
               <td>
                 3
               </td>
@@ -59,7 +65,7 @@ describe('Read Components', () => {
       `);
     });
 
-    test('Custom', () => {
+    test('custom', () => {
       act(() => {
         renderer = create(
           <TableInHtmlTable
@@ -84,7 +90,7 @@ describe('Read Components', () => {
       `);
     });
 
-    test('Class', () => {
+    test('className', () => {
       act(() => {
         renderer = create(
           <TableInHtmlTable store={store} tableId="t2" className="table" />,
@@ -94,6 +100,39 @@ describe('Read Components', () => {
         <table
           className="table"
         >
+          <tbody>
+            <tr>
+              <th>
+                r1
+              </th>
+              <td>
+                2
+              </td>
+            </tr>
+            <tr>
+              <th>
+                r2
+              </th>
+              <td>
+                3
+              </td>
+              <td>
+                4
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      `);
+    });
+
+    test('idColumn', () => {
+      act(() => {
+        renderer = create(
+          <TableInHtmlTable store={store} tableId="t2" idColumn={false} />,
+        );
+      });
+      expect(renderer.toJSON()).toMatchInlineSnapshot(`
+        <table>
           <tbody>
             <tr>
               <td>
@@ -115,7 +154,7 @@ describe('Read Components', () => {
   });
 
   describe('SortedTableInHtmlTable', () => {
-    test('Basic', () => {
+    test('basic', () => {
       act(() => {
         renderer = create(
           <SortedTableInHtmlTable
@@ -130,6 +169,9 @@ describe('Read Components', () => {
         <table>
           <tbody>
             <tr>
+              <th>
+                r2
+              </th>
               <td>
                 3
               </td>
@@ -138,6 +180,9 @@ describe('Read Components', () => {
               </td>
             </tr>
             <tr>
+              <th>
+                r1
+              </th>
               <td>
                 2
               </td>
@@ -147,7 +192,7 @@ describe('Read Components', () => {
       `);
     });
 
-    test('Custom', () => {
+    test('custom', () => {
       act(() => {
         renderer = create(
           <SortedTableInHtmlTable
@@ -174,7 +219,7 @@ describe('Read Components', () => {
       `);
     });
 
-    test('Class', () => {
+    test('className', () => {
       act(() => {
         renderer = create(
           <SortedTableInHtmlTable
@@ -190,6 +235,45 @@ describe('Read Components', () => {
         <table
           className="table"
         >
+          <tbody>
+            <tr>
+              <th>
+                r2
+              </th>
+              <td>
+                3
+              </td>
+              <td>
+                4
+              </td>
+            </tr>
+            <tr>
+              <th>
+                r1
+              </th>
+              <td>
+                2
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      `);
+    });
+
+    test('idColumn', () => {
+      act(() => {
+        renderer = create(
+          <SortedTableInHtmlTable
+            store={store}
+            tableId="t2"
+            cellId="c1"
+            descending={true}
+            idColumn={false}
+          />,
+        );
+      });
+      expect(renderer.toJSON()).toMatchInlineSnapshot(`
+        <table>
           <tbody>
             <tr>
               <td>
@@ -211,7 +295,7 @@ describe('Read Components', () => {
   });
 
   describe('DomRowView', () => {
-    test('Basic', () => {
+    test('basic', () => {
       act(() => {
         renderer = create(
           <RowInHtmlTr store={store} tableId="t2" rowId="r2" />,
@@ -219,6 +303,9 @@ describe('Read Components', () => {
       });
       expect(renderer.toJSON()).toMatchInlineSnapshot(`
         <tr>
+          <th>
+            r2
+          </th>
           <td>
             3
           </td>
@@ -229,7 +316,7 @@ describe('Read Components', () => {
       `);
     });
 
-    test('Custom', () => {
+    test('custom', () => {
       act(() => {
         renderer = create(
           <RowInHtmlTr
@@ -243,6 +330,9 @@ describe('Read Components', () => {
       });
       expect(renderer.toJSON()).toMatchInlineSnapshot(`
         <tr>
+          <th>
+            r2
+          </th>
           <b>
             {"id":"c1","tableId":"t2","rowId":"r2","cellId":"c1"}
           </b>
@@ -253,7 +343,7 @@ describe('Read Components', () => {
       `);
     });
 
-    test('Class', () => {
+    test('className', () => {
       act(() => {
         renderer = create(
           <RowInHtmlTr store={store} tableId="t2" rowId="r2" className="row" />,
@@ -263,6 +353,32 @@ describe('Read Components', () => {
         <tr
           className="row"
         >
+          <th>
+            r2
+          </th>
+          <td>
+            3
+          </td>
+          <td>
+            4
+          </td>
+        </tr>
+      `);
+    });
+
+    test('idColumn', () => {
+      act(() => {
+        renderer = create(
+          <RowInHtmlTr
+            store={store}
+            tableId="t2"
+            rowId="r2"
+            idColumn={false}
+          />,
+        );
+      });
+      expect(renderer.toJSON()).toMatchInlineSnapshot(`
+        <tr>
           <td>
             3
           </td>
@@ -275,7 +391,7 @@ describe('Read Components', () => {
   });
 
   describe('DomCellView', () => {
-    test('Basic', () => {
+    test('basic', () => {
       act(() => {
         renderer = create(
           <CellInHtmlTd store={store} tableId="t2" rowId="r2" cellId="c2" />,
@@ -288,7 +404,7 @@ describe('Read Components', () => {
       `);
     });
 
-    test('Class', () => {
+    test('className', () => {
       act(() => {
         renderer = create(
           <CellInHtmlTd
@@ -311,7 +427,7 @@ describe('Read Components', () => {
   });
 
   describe('ValuesInHtmlTable', () => {
-    test('Basic', () => {
+    test('basic', () => {
       act(() => {
         renderer = create(<ValuesInHtmlTable store={store} />);
       });
@@ -319,11 +435,17 @@ describe('Read Components', () => {
         <table>
           <tbody>
             <tr>
+              <th>
+                v1
+              </th>
               <td>
                 1
               </td>
             </tr>
             <tr>
+              <th>
+                v2
+              </th>
               <td>
                 2
               </td>
@@ -333,7 +455,7 @@ describe('Read Components', () => {
       `);
     });
 
-    test('Custom', () => {
+    test('custom', () => {
       act(() => {
         renderer = create(
           <ValuesInHtmlTable
@@ -357,7 +479,7 @@ describe('Read Components', () => {
       `);
     });
 
-    test('Class', () => {
+    test('className', () => {
       act(() => {
         renderer = create(
           <ValuesInHtmlTable store={store} className="values" />,
@@ -367,6 +489,34 @@ describe('Read Components', () => {
         <table
           className="values"
         >
+          <tbody>
+            <tr>
+              <th>
+                v1
+              </th>
+              <td>
+                1
+              </td>
+            </tr>
+            <tr>
+              <th>
+                v2
+              </th>
+              <td>
+                2
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      `);
+    });
+
+    test('idColumn', () => {
+      act(() => {
+        renderer = create(<ValuesInHtmlTable store={store} idColumn={false} />);
+      });
+      expect(renderer.toJSON()).toMatchInlineSnapshot(`
+        <table>
           <tbody>
             <tr>
               <td>
@@ -385,12 +535,15 @@ describe('Read Components', () => {
   });
 
   describe('ValueInHtmlTr', () => {
-    test('Basic', () => {
+    test('basic', () => {
       act(() => {
         renderer = create(<ValueInHtmlTr store={store} valueId="v1" />);
       });
       expect(renderer.toJSON()).toMatchInlineSnapshot(`
         <tr>
+          <th>
+            v1
+          </th>
           <td>
             1
           </td>
@@ -398,7 +551,7 @@ describe('Read Components', () => {
       `);
     });
 
-    test('Class', () => {
+    test('className', () => {
       act(() => {
         renderer = create(
           <ValueInHtmlTr store={store} valueId="v1" className="value" />,
@@ -408,6 +561,24 @@ describe('Read Components', () => {
         <tr
           className="value"
         >
+          <th>
+            v1
+          </th>
+          <td>
+            1
+          </td>
+        </tr>
+      `);
+    });
+
+    test('idColumn', () => {
+      act(() => {
+        renderer = create(
+          <ValueInHtmlTr store={store} valueId="v1" idColumn={false} />,
+        );
+      });
+      expect(renderer.toJSON()).toMatchInlineSnapshot(`
+        <tr>
           <td>
             1
           </td>

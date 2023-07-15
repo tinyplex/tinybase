@@ -17,32 +17,46 @@ export type HtmlProps = {
   className?: string;
 };
 
-export type WithSchemas<Schemas extends OptionalSchemas> = {
-  TableView: (props: TableProps<Schemas> & HtmlProps) => ComponentReturnType;
+/// HtmlTableProps
+export type HtmlTableProps = {
+  /// HtmlTableProps.headerRow
+  headerRow?: boolean;
+  /// HtmlTableProps.idColumn
+  idColumn?: boolean;
+};
 
+/// HtmlTrProps
+export type HtmlTrProps = {
+  /// HtmlTrProps.idColumn
+  idColumn?: boolean;
+};
+
+export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// CellInHtmlTd
   CellInHtmlTd: (props: CellProps<Schemas> & HtmlProps) => ComponentReturnType;
 
   /// RowInHtmlTr
-  RowInHtmlTr: (props: RowProps<Schemas> & HtmlProps) => ComponentReturnType;
+  RowInHtmlTr: (
+    props: RowProps<Schemas> & HtmlTrProps & HtmlProps,
+  ) => ComponentReturnType;
 
   /// SortedTableInHtmlTable
   SortedTableInHtmlTable: (
-    props: SortedTableProps<Schemas> & HtmlProps,
+    props: SortedTableProps<Schemas> & HtmlTableProps & HtmlProps,
   ) => ComponentReturnType;
 
   /// TableInHtmlTable
   TableInHtmlTable: (
-    props: TableProps<Schemas> & HtmlProps,
+    props: TableProps<Schemas> & HtmlTableProps & HtmlProps,
   ) => ComponentReturnType;
 
   /// ValueInHtmlTr
   ValueInHtmlTr: (
-    props: ValueProps<Schemas> & HtmlProps,
+    props: ValueProps<Schemas> & HtmlTrProps & HtmlProps,
   ) => ComponentReturnType;
 
   /// ValuesInHtmlTable
   ValuesInHtmlTable: (
-    props: ValuesProps<Schemas> & HtmlProps,
+    props: ValuesProps<Schemas> & HtmlTableProps & HtmlProps,
   ) => ComponentReturnType;
 };
