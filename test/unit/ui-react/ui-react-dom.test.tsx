@@ -2,12 +2,12 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 
 import {
-  DomSortedTableView,
-  DomTableCellView,
-  DomTableRowView,
-  DomTableValueView,
-  DomTableValuesView,
-  DomTableView,
+  CellInHtmlTd,
+  RowInHtmlTr,
+  SortedTableInHtmlTable,
+  TableInHtmlTable,
+  ValueInHtmlTr,
+  ValuesInHtmlTable,
 } from 'tinybase/debug/ui-react-dom';
 import {Id, Store, createStore} from 'tinybase/debug';
 import {ReactTestRenderer, act, create} from 'react-test-renderer';
@@ -33,10 +33,10 @@ beforeEach(() => {
 });
 
 describe('Read Components', () => {
-  describe('DomTableView', () => {
+  describe('TableInHtmlTable', () => {
     test('Basic', () => {
       act(() => {
-        renderer = create(<DomTableView store={store} tableId="t2" />);
+        renderer = create(<TableInHtmlTable store={store} tableId="t2" />);
       });
       expect(renderer.toJSON()).toMatchInlineSnapshot(`
         <table>
@@ -62,7 +62,7 @@ describe('Read Components', () => {
     test('Custom', () => {
       act(() => {
         renderer = create(
-          <DomTableView
+          <TableInHtmlTable
             store={store}
             tableId="t2"
             rowComponent={Custom}
@@ -87,7 +87,7 @@ describe('Read Components', () => {
     test('Class', () => {
       act(() => {
         renderer = create(
-          <DomTableView store={store} tableId="t2" className="table" />,
+          <TableInHtmlTable store={store} tableId="t2" className="table" />,
         );
       });
       expect(renderer.toJSON()).toMatchInlineSnapshot(`
@@ -114,11 +114,11 @@ describe('Read Components', () => {
     });
   });
 
-  describe('DomSortedTableView', () => {
+  describe('SortedTableInHtmlTable', () => {
     test('Basic', () => {
       act(() => {
         renderer = create(
-          <DomSortedTableView
+          <SortedTableInHtmlTable
             store={store}
             tableId="t2"
             cellId="c1"
@@ -150,7 +150,7 @@ describe('Read Components', () => {
     test('Custom', () => {
       act(() => {
         renderer = create(
-          <DomSortedTableView
+          <SortedTableInHtmlTable
             store={store}
             tableId="t2"
             cellId="c1"
@@ -177,7 +177,7 @@ describe('Read Components', () => {
     test('Class', () => {
       act(() => {
         renderer = create(
-          <DomSortedTableView
+          <SortedTableInHtmlTable
             store={store}
             tableId="t2"
             cellId="c1"
@@ -214,7 +214,7 @@ describe('Read Components', () => {
     test('Basic', () => {
       act(() => {
         renderer = create(
-          <DomTableRowView store={store} tableId="t2" rowId="r2" />,
+          <RowInHtmlTr store={store} tableId="t2" rowId="r2" />,
         );
       });
       expect(renderer.toJSON()).toMatchInlineSnapshot(`
@@ -232,7 +232,7 @@ describe('Read Components', () => {
     test('Custom', () => {
       act(() => {
         renderer = create(
-          <DomTableRowView
+          <RowInHtmlTr
             store={store}
             tableId="t2"
             rowId="r2"
@@ -256,12 +256,7 @@ describe('Read Components', () => {
     test('Class', () => {
       act(() => {
         renderer = create(
-          <DomTableRowView
-            store={store}
-            tableId="t2"
-            rowId="r2"
-            className="row"
-          />,
+          <RowInHtmlTr store={store} tableId="t2" rowId="r2" className="row" />,
         );
       });
       expect(renderer.toJSON()).toMatchInlineSnapshot(`
@@ -283,12 +278,7 @@ describe('Read Components', () => {
     test('Basic', () => {
       act(() => {
         renderer = create(
-          <DomTableCellView
-            store={store}
-            tableId="t2"
-            rowId="r2"
-            cellId="c2"
-          />,
+          <CellInHtmlTd store={store} tableId="t2" rowId="r2" cellId="c2" />,
         );
       });
       expect(renderer.toJSON()).toMatchInlineSnapshot(`
@@ -301,7 +291,7 @@ describe('Read Components', () => {
     test('Class', () => {
       act(() => {
         renderer = create(
-          <DomTableCellView
+          <CellInHtmlTd
             store={store}
             tableId="t2"
             rowId="r2"
@@ -320,10 +310,10 @@ describe('Read Components', () => {
     });
   });
 
-  describe('DomTableValuesView', () => {
+  describe('ValuesInHtmlTable', () => {
     test('Basic', () => {
       act(() => {
-        renderer = create(<DomTableValuesView store={store} />);
+        renderer = create(<ValuesInHtmlTable store={store} />);
       });
       expect(renderer.toJSON()).toMatchInlineSnapshot(`
         <table>
@@ -346,7 +336,7 @@ describe('Read Components', () => {
     test('Custom', () => {
       act(() => {
         renderer = create(
-          <DomTableValuesView
+          <ValuesInHtmlTable
             store={store}
             valueComponent={Custom}
             getValueComponentProps={getIdAsProp}
@@ -370,7 +360,7 @@ describe('Read Components', () => {
     test('Class', () => {
       act(() => {
         renderer = create(
-          <DomTableValuesView store={store} className="values" />,
+          <ValuesInHtmlTable store={store} className="values" />,
         );
       });
       expect(renderer.toJSON()).toMatchInlineSnapshot(`
@@ -394,10 +384,10 @@ describe('Read Components', () => {
     });
   });
 
-  describe('DomTableValueView', () => {
+  describe('ValueInHtmlTr', () => {
     test('Basic', () => {
       act(() => {
-        renderer = create(<DomTableValueView store={store} valueId="v1" />);
+        renderer = create(<ValueInHtmlTr store={store} valueId="v1" />);
       });
       expect(renderer.toJSON()).toMatchInlineSnapshot(`
         <tr>
@@ -411,7 +401,7 @@ describe('Read Components', () => {
     test('Class', () => {
       act(() => {
         renderer = create(
-          <DomTableValueView store={store} valueId="v1" className="value" />,
+          <ValueInHtmlTr store={store} valueId="v1" className="value" />,
         );
       });
       expect(renderer.toJSON()).toMatchInlineSnapshot(`
