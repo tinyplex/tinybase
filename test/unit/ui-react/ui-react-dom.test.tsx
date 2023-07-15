@@ -40,6 +40,16 @@ describe('Read Components', () => {
       });
       expect(renderer.toJSON()).toMatchInlineSnapshot(`
         <table>
+          <thead>
+            <tr>
+              <th>
+                Id
+              </th>
+              <th>
+                ...
+              </th>
+            </tr>
+          </thead>
           <tbody>
             <tr>
               <th>
@@ -78,6 +88,16 @@ describe('Read Components', () => {
       });
       expect(renderer.toJSON()).toMatchInlineSnapshot(`
         <table>
+          <thead>
+            <tr>
+              <th>
+                Id
+              </th>
+              <th>
+                ...
+              </th>
+            </tr>
+          </thead>
           <tbody>
             <b>
               {"id":"r1","tableId":"t2","rowId":"r1"}
@@ -100,6 +120,16 @@ describe('Read Components', () => {
         <table
           className="table"
         >
+          <thead>
+            <tr>
+              <th>
+                Id
+              </th>
+              <th>
+                ...
+              </th>
+            </tr>
+          </thead>
           <tbody>
             <tr>
               <th>
@@ -133,6 +163,13 @@ describe('Read Components', () => {
       });
       expect(renderer.toJSON()).toMatchInlineSnapshot(`
         <table>
+          <thead>
+            <tr>
+              <th>
+                ...
+              </th>
+            </tr>
+          </thead>
           <tbody>
             <tr>
               <td>
@@ -167,6 +204,16 @@ describe('Read Components', () => {
       });
       expect(renderer.toJSON()).toMatchInlineSnapshot(`
         <table>
+          <thead>
+            <tr>
+              <th>
+                Id
+              </th>
+              <th>
+                ...
+              </th>
+            </tr>
+          </thead>
           <tbody>
             <tr>
               <th>
@@ -207,6 +254,16 @@ describe('Read Components', () => {
       });
       expect(renderer.toJSON()).toMatchInlineSnapshot(`
         <table>
+          <thead>
+            <tr>
+              <th>
+                Id
+              </th>
+              <th>
+                ...
+              </th>
+            </tr>
+          </thead>
           <tbody>
             <b>
               {"id":"r2","tableId":"t2","rowId":"r2"}
@@ -235,6 +292,16 @@ describe('Read Components', () => {
         <table
           className="table"
         >
+          <thead>
+            <tr>
+              <th>
+                Id
+              </th>
+              <th>
+                ...
+              </th>
+            </tr>
+          </thead>
           <tbody>
             <tr>
               <th>
@@ -274,6 +341,13 @@ describe('Read Components', () => {
       });
       expect(renderer.toJSON()).toMatchInlineSnapshot(`
         <table>
+          <thead>
+            <tr>
+              <th>
+                ...
+              </th>
+            </tr>
+          </thead>
           <tbody>
             <tr>
               <td>
@@ -433,6 +507,16 @@ describe('Read Components', () => {
       });
       expect(renderer.toJSON()).toMatchInlineSnapshot(`
         <table>
+          <thead>
+            <tr>
+              <th>
+                Id
+              </th>
+              <th>
+                Value
+              </th>
+            </tr>
+          </thead>
           <tbody>
             <tr>
               <th>
@@ -467,6 +551,16 @@ describe('Read Components', () => {
       });
       expect(renderer.toJSON()).toMatchInlineSnapshot(`
         <table>
+          <thead>
+            <tr>
+              <th>
+                Id
+              </th>
+              <th>
+                Value
+              </th>
+            </tr>
+          </thead>
           <tbody>
             <b>
               {"id":"v1","valueId":"v1"}
@@ -489,6 +583,16 @@ describe('Read Components', () => {
         <table
           className="values"
         >
+          <thead>
+            <tr>
+              <th>
+                Id
+              </th>
+              <th>
+                Value
+              </th>
+            </tr>
+          </thead>
           <tbody>
             <tr>
               <th>
@@ -517,6 +621,13 @@ describe('Read Components', () => {
       });
       expect(renderer.toJSON()).toMatchInlineSnapshot(`
         <table>
+          <thead>
+            <tr>
+              <th>
+                Value
+              </th>
+            </tr>
+          </thead>
           <tbody>
             <tr>
               <td>
