@@ -16,28 +16,44 @@ export type HtmlProps = {
   className?: string;
 };
 
+/// HtmlTableProps
+export type HtmlTableProps = {
+  /// HtmlTableProps.headerRow
+  headerRow?: boolean;
+  /// HtmlTableProps.idColumn
+  idColumn?: boolean;
+};
+
+/// HtmlTrProps
+export type HtmlTrProps = {
+  /// HtmlTrProps.idColumn
+  idColumn?: boolean;
+};
+
 /// CellInHtmlTd
 export function CellInHtmlTd(props: CellProps & HtmlProps): ComponentReturnType;
 
 /// RowInHtmlTr
-export function RowInHtmlTr(props: RowProps & HtmlProps): ComponentReturnType;
+export function RowInHtmlTr(
+  props: RowProps & HtmlTrProps & HtmlProps,
+): ComponentReturnType;
 
 /// SortedTableInHtmlTable
 export function SortedTableInHtmlTable(
-  props: SortedTableProps & HtmlProps,
+  props: SortedTableProps & HtmlTableProps & HtmlProps,
 ): ComponentReturnType;
 
 /// TableInHtmlTable
 export function TableInHtmlTable(
-  props: TableProps & HtmlProps,
+  props: TableProps & HtmlTableProps & HtmlProps,
 ): ComponentReturnType;
 
 /// ValueInHtmlTr
 export function ValueInHtmlTr(
-  props: ValueProps & HtmlProps,
+  props: ValueProps & HtmlTrProps & HtmlProps,
 ): ComponentReturnType;
 
 /// ValuesInHtmlTable
 export function ValuesInHtmlTable(
-  props: ValuesProps & HtmlProps,
+  props: ValuesProps & HtmlTableProps & HtmlProps,
 ): ComponentReturnType;

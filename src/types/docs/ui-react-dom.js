@@ -24,6 +24,39 @@
  * @since v4.1.0
  */
 /// HtmlProps
+{
+  /**
+   * Whether a header row should be rendered at the top of the table, defaulting
+   * to `true`.
+   */
+  /// HtmlTableProps.headerRow
+  /**
+   * Whether an Id column should be rendered on the left of the table,
+   * defaulting to `true`.
+   */
+  /// HtmlTableProps.idColumn
+}
+/**
+ * HtmlTableProps props are used for components that will render HTML <table>
+ * elements.
+ * @category Props
+ * @since v4.1.0
+ */
+/// HtmlTableProps
+{
+  /**
+   * Whether an Id column should be rendered on the left of the table,
+   * defaulting to `true`.
+   */
+  /// HtmlTrProps.idColumn
+}
+/**
+ * HtmlTrProps props are used for components that will render HTML <tr>
+ * elements.
+ * @category Props
+ * @since v4.1.0
+ */
+/// HtmlTrProps
 /**
  * The CellInHtmlTd component renders the value of a single Cell in a given
  * Row, in a given Table, as an HTML <td> element, and registers a listener so
@@ -94,14 +127,16 @@
  * also pass additional props to your custom component with the
  * `getCellComponentProps` callback prop.
  *
- * You can create your own RowInHtmlTr-like component to customize the way
- * that a Row is rendered: see the TableInHtmlTable component for more details.
+ * You can create your own RowInHtmlTr-like component to customize the way that
+ * a Row is rendered: see the TableInHtmlTable component for more details.
  *
  * This component uses the useCellIds hook under the covers, which means that
  * any changes to the structure of the Row will cause a re-render.
  *
  * You are discouraged from using the `separator` and `debugIds` props with this
- * component as they will insert raw text into the <tr> element.
+ * component as they will insert raw text into the <tr> element. However, you
+ * can use the `idColumn` prop to control whether the Id appears in a <th>
+ * element at the start of the row.
  * @param props The props for this component.
  * @returns A rendering of the Row in a <tr> element.
  * @example
@@ -130,12 +165,13 @@
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
- * // -> '<table><tbody><tr class="row"><td>dog</td><td>walnut</td></tr></tbody></table>'
+ * // -> '<table><tbody><tr class="row"><th>fido</th><td>dog</td><td>walnut</td></tr></tbody></table>'
  * ```
  * @example
  * This example creates a Provider context into which a default Store is
  * provided. The RowInHtmlTr component within it then renders the Row with a
- * custom Cell component and a custom props callback.
+ * custom Cell component and a custom props callback. The Id column at the start
+ * of the row is removed.
  *
  * ```jsx
  * const App = ({store}) => (
@@ -151,6 +187,7 @@
  *         rowId="fido"
  *         cellComponent={FormattedCellView}
  *         getCellComponentProps={(cellId) => ({bold: cellId == 'species'})}
+ *         idColumn={false}
  *       />
  *     </tbody>
  *   </table>
@@ -200,7 +237,9 @@
  * re-render.
  *
  * You are discouraged from using the `separator` and `debugIds` props with this
- * component as they will insert raw text into the <table> element.
+ * component as they will insert raw text into the <table> element. However, you
+ * can use the `headerRow` and `idColumn` props to control whether the Ids
+ * appear in a <th> element at the top of the table, and the start of each row.
  * @param props The props for this component.
  * @returns A rendering of the Table in a <table> element.
  * @example
@@ -215,7 +254,11 @@
  *   </Provider>
  * );
  * const Pane = () => (
- *   <SortedTableInHtmlTable tableId="pets" cellId="species" className="table" />
+ *   <SortedTableInHtmlTable
+ *     tableId="pets"
+ *     cellId="species"
+ *     className="table"
+ *   />
  * );
  *
  * const store = createStore().setTables({
@@ -227,12 +270,13 @@
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
- * // -> '<table class="table"><tbody><tr><td>cat</td></tr><tr><td>dog</td></tr></tbody></table>'
+ * // -> '<table class="table"><tbody><tr><th>felix</th><td>cat</td></tr><tr><th>fido</th><td>dog</td></tr></tbody></table>'
  * ```
  * @example
  * This example creates a Provider context into which a default Store is
- * provided. The SortedTableInHtmlTable component within it then renders the Table
- * with a custom Row component and a custom props callback.
+ * provided. The SortedTableInHtmlTable component within it then renders the
+ * Table with a custom Row component and a custom props callback. The Id column
+ * at the start of the row is removed.
  *
  * ```jsx
  * const App = ({store}) => (
@@ -246,6 +290,7 @@
  *     cellId="species"
  *     rowComponent={FormattedRowView}
  *     getRowComponentProps={(rowId) => ({bold: rowId == 'fido'})}
+ *     idColumn={false}
  *   />
  * );
  * const FormattedRowView = ({tableId, rowId, bold}) => (
@@ -294,13 +339,15 @@
  * changes to the structure of the Table will cause a re-render.
  *
  * You are discouraged from using the `separator` and `debugIds` props with this
- * component as they will insert raw text into the <table> element.
+ * component as they will insert raw text into the <table> element. However, you
+ * can use the `headerRow` and `idColumn` props to control whether the Ids
+ * appear in a <th> element at the top of the table, and the start of each row.
  * @param props The props for this component.
  * @returns A rendering of the Table in a <table> element.
  * @example
  * This example creates a Provider context into which a default Store is
- * provided. The TableInHtmlTable component within it then renders the Table in a
- * <table> element with a CSS class.
+ * provided. The TableInHtmlTable component within it then renders the Table in
+ * a <table> element with a CSS class.
  *
  * ```jsx
  * const App = ({store}) => (
@@ -319,12 +366,13 @@
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
- * // -> '<table class="row"><tbody><tr><td>dog</td></tr><tr><td>cat</td></tr></tbody></table>'
+ * // -> '<table class="row"><tbody><tr><th>fido</th><td>dog</td></tr><tr><th>felix</th><td>cat</td></tr></tbody></table>'
  * ```
  * @example
  * This example creates a Provider context into which a default Store is
- * provided. The TableInHtmlTable component within it then renders the Table with a
- * custom Row component and a custom props callback.
+ * provided. The TableInHtmlTable component within it then renders the Table
+ * with a custom Row component and a custom props callback. The Id column at the
+ * start of the row is removed.
  *
  * ```jsx
  * const App = ({store}) => (
@@ -337,6 +385,7 @@
  *     tableId="pets"
  *     rowComponent={FormattedRowView}
  *     getRowComponentProps={(rowId) => ({bold: rowId == 'fido'})}
+ *     idColumn={false}
  *   />
  * );
  * const FormattedRowView = ({tableId, rowId, bold}) => (
@@ -379,6 +428,9 @@
  *
  * This component uses the useValue hook under the covers, which means that any
  * changes to the specified Value will cause a re-render.
+ *
+ * You can use the `idColumn` prop to control whether the Id appears in a <th>
+ * element at the start of the row.
  * @param props The props for this component.
  * @returns A rendering of the Value in a <tr> element.
  * @example
@@ -404,7 +456,7 @@
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
- * // -> '<table><tbody><tr class="value"><td>true</td></tr></tbody></table>'
+ * // -> '<table><tbody><tr class="value"><th>open</th><td>true</td></tr></tbody></table>'
  * ```
  * @category Store components
  * @since v4.1.0
@@ -431,7 +483,10 @@
  * re-render.
  *
  * You are discouraged from using the `separator` and `debugIds` props with this
- * component as they will insert raw text into the <table> element.
+ * component as they will insert raw text into the <table> element. However, you
+ * can use the `headerRow` and `idColumn` props to control whether labels and
+ * Ids appear in a <th> element at the top of the table, and the start of each
+ * row.
  * @param props The props for this component.
  * @returns A rendering of the Values in a <table> element.
  * @example
@@ -453,12 +508,13 @@
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
- * // -> '<table class="values"><tbody><tr><td>true</td></tr><tr><td>3</td></tr></tbody></table>'
+ * // -> '<table class="values"><tbody><tr><th>open</th><td>true</td></tr><tr><th>employees</th><td>3</td></tr></tbody></table>'
  * ```
  * @example
  * This example creates a Provider context into which a default Store is
  * provided. The ValuesInHtmlTable component within it then renders the Row
- * with a custom Cell component and a custom props callback.
+ * with a custom Cell component and a custom props callback. The Id column at
+ * the start of the row is removed.
  *
  * ```jsx
  * const App = ({store}) => (
@@ -470,6 +526,7 @@
  *   <ValuesInHtmlTable
  *     valueComponent={FormattedValueView}
  *     getValueComponentProps={(valueId) => ({bold: valueId == 'open'})}
+ *     idColumn={false}
  *   />
  * );
  * const FormattedValueView = ({valueId, bold}) => (
