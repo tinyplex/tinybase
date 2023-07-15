@@ -5,13 +5,24 @@ import {
   RowProps,
   SortedTableProps,
   TableProps,
+  ValueProps,
+  ValuesProps,
 } from './types/ui-react.d';
-import {CellView, RowView, SortedTableView, TableView} from './ui-react';
+import {
+  CellView,
+  RowView,
+  SortedTableView,
+  TableView,
+  ValueView,
+  ValuesView,
+} from './ui-react';
 import {
   DomProps,
   DomSortedTableView as DomSortedTableViewDecl,
   DomTableCellView as DomTableCellViewDecl,
   DomTableRowView as DomTableRowViewDecl,
+  DomTableValueView as DomTableValueViewDecl,
+  DomTableValuesView as DomTableValuesViewDecl,
   DomTableView as DomTableViewDecl,
 } from './types/ui-react-dom.d';
 import React from 'react';
@@ -58,6 +69,28 @@ export const DomTableView: typeof DomTableViewDecl = ({
   <table {...useClassName(className)}>
     <tbody>
       <TableView rowComponent={DomTableRowView} {...props} />
+    </tbody>
+  </table>
+);
+
+export const DomTableValueView: typeof DomTableValueViewDecl = ({
+  className,
+  ...props
+}: ValueProps & DomProps): any => (
+  <tr {...useClassName(className)}>
+    <td>
+      <ValueView {...props} />
+    </td>
+  </tr>
+);
+
+export const DomTableValuesView: typeof DomTableValuesViewDecl = ({
+  className,
+  ...props
+}: ValuesProps & DomProps): any => (
+  <table {...useClassName(className)}>
+    <tbody>
+      <ValuesView valueComponent={DomTableValueView} {...props} />
     </tbody>
   </table>
 );

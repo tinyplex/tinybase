@@ -6,6 +6,8 @@ import {
   RowProps,
   SortedTableProps,
   TableProps,
+  ValueProps,
+  ValuesProps,
 } from './ui-react';
 
 /// DomProps
@@ -31,3 +33,13 @@ export function DomSortedTableView(
 
 /// DomTableView
 export function DomTableView(props: TableProps & DomProps): ComponentReturnType;
+
+/// DomTableValueView
+export function DomTableValueView(
+  props: ValueProps & DomProps,
+): ComponentReturnType;
+
+/// DomTableValuesView
+export function DomTableValuesView(
+  props: ValuesProps & DomProps,
+): ComponentReturnType;
