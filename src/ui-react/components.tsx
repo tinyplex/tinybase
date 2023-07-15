@@ -38,6 +38,7 @@ import {
   SliceView as SliceViewDecl,
   SortedTableProps,
   SortedTableView as SortedTableViewDecl,
+  StoreOrStoreId,
   TableProps,
   TableView as TableViewDecl,
   TablesProps,
@@ -294,6 +295,16 @@ const wrap = (
   return encloseWithId ? [id, ':{', separated, '}'] : separated;
 };
 
+const useCustomOrDefaultCellIds = (
+  customCellIds: Ids | undefined,
+  tableId: Id,
+  rowId: Id,
+  store?: StoreOrStoreId,
+): Ids => {
+  const defaultCellIds = useCellIds(tableId, rowId, store);
+  return customCellIds ?? defaultCellIds;
+};
+
 export const CellView: typeof CellViewDecl = ({
   tableId,
   rowId,
@@ -314,21 +325,25 @@ export const RowView: typeof RowViewDecl = ({
   store,
   cellComponent: Cell = CellView,
   getCellComponentProps,
+  customCellIds,
   separator,
   debugIds,
 }: RowProps): any =>
   wrap(
-    arrayMap(useCellIds(tableId, rowId, store), (cellId) => (
-      <Cell
-        {...getProps(getCellComponentProps, cellId)}
-        key={cellId}
-        tableId={tableId}
-        rowId={rowId}
-        cellId={cellId}
-        store={store}
-        debugIds={debugIds}
-      />
-    )),
+    arrayMap(
+      useCustomOrDefaultCellIds(customCellIds, tableId, rowId, store),
+      (cellId) => (
+        <Cell
+          {...getProps(getCellComponentProps, cellId)}
+          key={cellId}
+          tableId={tableId}
+          rowId={rowId}
+          cellId={cellId}
+          store={store}
+          debugIds={debugIds}
+        />
+      ),
+    ),
     separator,
     debugIds,
     rowId,

@@ -121,6 +121,8 @@ export type RowProps<
         readonly cellComponent?: ComponentType<CellProps<Schemas, TableId>>;
         /// RowProps.getCellComponentProps
         readonly getCellComponentProps?: (cellId: Id) => ExtraProps;
+        /// RowProps.customCellIds
+        readonly customCellIds?: CellIdFromSchema<Schemas[0], TableId>[];
         /// RowProps.separator
         readonly separator?: ReactElement | string;
         /// RowProps.debugIds
