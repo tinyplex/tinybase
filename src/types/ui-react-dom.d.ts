@@ -10,34 +10,34 @@ import {
   ValuesProps,
 } from './ui-react';
 
-/// DomProps
-export type DomProps = {
-  /// DomProps.className
+/// HtmlProps
+export type HtmlProps = {
+  /// HtmlProps.className
   className?: string;
 };
 
 /// CellInHtmlTd
-export function CellInHtmlTd(props: CellProps & DomProps): ComponentReturnType;
+export function CellInHtmlTd(props: CellProps & HtmlProps): ComponentReturnType;
 
 /// RowInHtmlTr
-export function RowInHtmlTr(props: RowProps & DomProps): ComponentReturnType;
+export function RowInHtmlTr(props: RowProps & HtmlProps): ComponentReturnType;
 
 /// SortedTableInHtmlTable
 export function SortedTableInHtmlTable(
-  props: SortedTableProps & DomProps,
+  props: SortedTableProps & HtmlProps,
 ): ComponentReturnType;
 
 /// TableInHtmlTable
 export function TableInHtmlTable(
-  props: TableProps & DomProps,
+  props: TableProps & HtmlProps,
 ): ComponentReturnType;
 
 /// ValueInHtmlTr
 export function ValueInHtmlTr(
-  props: ValueProps & DomProps,
+  props: ValueProps & HtmlProps,
 ): ComponentReturnType;
 
 /// ValuesInHtmlTable
 export function ValuesInHtmlTable(
-  props: ValuesProps & DomProps,
+  props: ValuesProps & HtmlProps,
 ): ComponentReturnType;
