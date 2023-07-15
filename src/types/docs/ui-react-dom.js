@@ -244,8 +244,8 @@
  * @returns A rendering of the Table in a <table> element.
  * @example
  * This example creates a Provider context into which a default Store is
- * provided. The SortedTableInHtmlTable component within it then renders the Table
- * in a <table> element with a CSS class.
+ * provided. The SortedTableInHtmlTable component within it then renders the
+ * Table in a <table> element with a CSS class.
  *
  * ```jsx
  * const App = ({store}) => (
@@ -270,13 +270,14 @@
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
- * // -> '<table class="table"><tbody><tr><th>felix</th><td>cat</td></tr><tr><th>fido</th><td>dog</td></tr></tbody></table>'
+ * // -> '<table class="table"><thead><tr><th>Id</th><th>...</th></tr></thead><tbody><tr><th>felix</th><td>cat</td></tr><tr><th>fido</th><td>dog</td></tr></tbody></table>'
  * ```
  * @example
  * This example creates a Provider context into which a default Store is
  * provided. The SortedTableInHtmlTable component within it then renders the
- * Table with a custom Row component and a custom props callback. The Id column
- * at the start of the row is removed.
+ * Table with a custom Row component and a custom props callback. The header row
+ * at the top of the table and the Id column at the start of each row is
+ * removed.
  *
  * ```jsx
  * const App = ({store}) => (
@@ -290,6 +291,7 @@
  *     cellId="species"
  *     rowComponent={FormattedRowView}
  *     getRowComponentProps={(rowId) => ({bold: rowId == 'fido'})}
+ *     headerRow={false}
  *     idColumn={false}
  *   />
  * );
@@ -320,9 +322,9 @@
  */
 /// SortedTableInHtmlTable
 /**
- * The TableInHtmlTable component renders the contents of a single Table in a Store
- * as an HTML <table> element, and registers a listener so that any changes to
- * that result will cause a re-render.
+ * The TableInHtmlTable component renders the contents of a single Table in a
+ * Store as an HTML <table> element, and registers a listener so that any
+ * changes to that result will cause a re-render.
  *
  * The component's props identify which Table to render based on Table Id, and
  * Store (which is either the default context Store, a named context Store, or
@@ -366,13 +368,13 @@
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
- * // -> '<table class="row"><tbody><tr><th>fido</th><td>dog</td></tr><tr><th>felix</th><td>cat</td></tr></tbody></table>'
+ * // -> '<table class="row"><thead><tr><th>Id</th><th>...</th></tr></thead><tbody><tr><th>fido</th><td>dog</td></tr><tr><th>felix</th><td>cat</td></tr></tbody></table>'
  * ```
  * @example
  * This example creates a Provider context into which a default Store is
  * provided. The TableInHtmlTable component within it then renders the Table
- * with a custom Row component and a custom props callback. The Id column at the
- * start of the row is removed.
+ * with a custom Row component and a custom props callback. The header row at
+ * the top of the table and the Id column at the start of each row is removed.
  *
  * ```jsx
  * const App = ({store}) => (
@@ -385,6 +387,7 @@
  *     tableId="pets"
  *     rowComponent={FormattedRowView}
  *     getRowComponentProps={(rowId) => ({bold: rowId == 'fido'})}
+ *     headerRow={false}
  *     idColumn={false}
  *   />
  * );
@@ -508,13 +511,13 @@
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
- * // -> '<table class="values"><tbody><tr><th>open</th><td>true</td></tr><tr><th>employees</th><td>3</td></tr></tbody></table>'
+ * // -> '<table class="values"><thead><tr><th>Id</th><th>Value</th></tr></thead><tbody><tr><th>open</th><td>true</td></tr><tr><th>employees</th><td>3</td></tr></tbody></table>'
  * ```
  * @example
  * This example creates a Provider context into which a default Store is
  * provided. The ValuesInHtmlTable component within it then renders the Row
- * with a custom Cell component and a custom props callback. The Id column at
- * the start of the row is removed.
+ * with a custom Cell component and a custom props callback. The header row at
+ * the top of the table and the Id column at the start of each row is removed.
  *
  * ```jsx
  * const App = ({store}) => (
@@ -526,6 +529,7 @@
  *   <ValuesInHtmlTable
  *     valueComponent={FormattedValueView}
  *     getValueComponentProps={(valueId) => ({bold: valueId == 'open'})}
+ *     headerRow={false}
  *     idColumn={false}
  *   />
  * );
