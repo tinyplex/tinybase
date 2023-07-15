@@ -99,6 +99,9 @@
  *
  * This component uses the useCellIds hook under the covers, which means that
  * any changes to the structure of the Row will cause a re-render.
+ *
+ * You are discouraged from using the `separator` and `debugIds` props with this
+ * component as they will insert raw text into the <tr> element.
  * @param props The props for this component.
  * @returns A rendering of the Row in a <tr> element.
  * @example
@@ -195,6 +198,9 @@
  * This component uses the useSortedRowIds hook under the covers, which means
  * that any changes to the structure or sorting of the Table will cause a
  * re-render.
+ *
+ * You are discouraged from using the `separator` and `debugIds` props with this
+ * component as they will insert raw text into the <table> element.
  * @param props The props for this component.
  * @returns A rendering of the Table in a <table> element.
  * @example
@@ -286,6 +292,9 @@
  *
  * This component uses the useRowIds hook under the covers, which means that any
  * changes to the structure of the Table will cause a re-render.
+ *
+ * You are discouraged from using the `separator` and `debugIds` props with this
+ * component as they will insert raw text into the <table> element.
  * @param props The props for this component.
  * @returns A rendering of the Table in a <table> element.
  * @example
