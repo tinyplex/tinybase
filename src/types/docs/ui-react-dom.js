@@ -9,8 +9,21 @@
  * @see Building UIs guides
  * @packageDocumentation
  * @module ui-react-dom
+ * @since v4.1.0
  */
 /// ui-react-dom
+{
+  /**
+   * A string className to use on the root of the resulting element.
+   */
+  /// DomProps.className
+}
+/**
+ * DomProps props are used for components that will render HTML DOM elements.
+ * @category Props
+ * @since v4.1.0
+ */
+/// DomProps
 /**
  * The DomTableCellView component renders the value of a single Cell in a given
  * Row, in a given Table, as an HTML <td> element, and registers a listener so
@@ -32,7 +45,7 @@
  * @example
  * This example creates a Provider context into which a default Store is
  * provided. The DomTableCellView component within it then renders the Cell in a
- * <td> element.
+ * <td> element with a CSS class.
  *
  * ```jsx
  * const App = ({store}) => (
@@ -44,7 +57,12 @@
  *   <table>
  *     <tbody>
  *       <tr>
- *         <DomTableCellView tableId="pets" rowId="fido" cellId="color" />
+ *         <DomTableCellView
+ *           tableId="pets"
+ *           rowId="fido"
+ *           cellId="color"
+ *           className="cell"
+ *         />
  *       </tr>
  *     </tbody>
  *   </table>
@@ -54,7 +72,7 @@
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
- * // -> '<table><tbody><tr><td>brown</td></tr></tbody></table>'
+ * // -> '<table><tbody><tr><td class="cell">brown</td></tr></tbody></table>'
  * ```
  * @category Store components
  * @since v4.1.0
@@ -85,7 +103,8 @@
  * @returns A rendering of the Row in a <tr> element.
  * @example
  * This example creates a Provider context into which a default Store is
- * provided. The DomTableRowView component within it then renders the Row.
+ * provided. The DomTableRowView component within it then renders the Row in a
+ * <tr> element with a CSS class.
  *
  * ```jsx
  * const App = ({store}) => (
@@ -96,7 +115,7 @@
  * const Pane = () => (
  *   <table>
  *     <tbody>
- *       <DomTableRowView tableId="pets" rowId="fido" />
+ *       <DomTableRowView tableId="pets" rowId="fido" className="row" />
  *     </tbody>
  *   </table>
  * );
@@ -108,7 +127,7 @@
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
- * // -> '<table><tbody><tr><td>dog</td><td>walnut</td></tr></tbody></table>'
+ * // -> '<table><tbody><tr class="row"><td>dog</td><td>walnut</td></tr></tbody></table>'
  * ```
  * @example
  * This example creates a Provider context into which a default Store is
@@ -180,7 +199,8 @@
  * @returns A rendering of the Table in a <table> element.
  * @example
  * This example creates a Provider context into which a default Store is
- * provided. The DomSortedTableView component within it then renders the Table.
+ * provided. The DomSortedTableView component within it then renders the Table
+ * in a <table> element with a CSS class.
  *
  * ```jsx
  * const App = ({store}) => (
@@ -189,7 +209,7 @@
  *   </Provider>
  * );
  * const Pane = () => (
- *   <DomSortedTableView tableId="pets" cellId="species" />
+ *   <DomSortedTableView tableId="pets" cellId="species" className="table" />
  * );
  *
  * const store = createStore().setTables({
@@ -201,7 +221,7 @@
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
- * // -> '<table><tbody><tr><td>cat</td></tr><tr><td>dog</td></tr></tbody></table>'
+ * // -> '<table class="table"><tbody><tr><td>cat</td></tr><tr><td>dog</td></tr></tbody></table>'
  * ```
  * @example
  * This example creates a Provider context into which a default Store is
@@ -270,7 +290,8 @@
  * @returns A rendering of the Table in a <table> element.
  * @example
  * This example creates a Provider context into which a default Store is
- * provided. The DomTableView component within it then renders the Table.
+ * provided. The DomTableView component within it then renders the Table in a
+ * <table> element with a CSS class.
  *
  * ```jsx
  * const App = ({store}) => (
@@ -279,7 +300,7 @@
  *   </Provider>
  * );
  * const Pane = () => (
- *   <DomTableView tableId="pets" />
+ *   <DomTableView tableId="pets" className="row" />
  * );
  *
  * const store = createStore().setTable('pets', {
@@ -289,7 +310,7 @@
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
- * // -> '<table><tbody><tr><td>dog</td></tr><tr><td>cat</td></tr></tbody></table>'
+ * // -> '<table class="row"><tbody><tr><td>dog</td></tr><tr><td>cat</td></tr></tbody></table>'
  * ```
  * @example
  * This example creates a Provider context into which a default Store is
