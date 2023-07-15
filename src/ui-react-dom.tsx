@@ -2,7 +2,7 @@
 
 import {
   CellInHtmlTd as CellInHtmlTdDecl,
-  DomProps,
+  HtmlProps,
   RowInHtmlTr as RowInHtmlTrDecl,
   SortedTableInHtmlTable as SortedTableInHtmlTableDecl,
   TableInHtmlTable as TableInHtmlTableDecl,
@@ -36,7 +36,7 @@ const useClassName = (className?: string): {className?: string} =>
 export const CellInHtmlTd: typeof CellInHtmlTdDecl = ({
   className,
   ...props
-}: CellProps & DomProps): any => (
+}: CellProps & HtmlProps): any => (
   <td {...useClassName(className)}>
     <CellView {...props} />
   </td>
@@ -45,7 +45,7 @@ export const CellInHtmlTd: typeof CellInHtmlTdDecl = ({
 export const RowInHtmlTr: typeof RowInHtmlTrDecl = ({
   className,
   ...props
-}: RowProps & DomProps): any => (
+}: RowProps & HtmlProps): any => (
   <tr {...useClassName(className)}>
     <RowView cellComponent={CellInHtmlTd} {...props} />
   </tr>
@@ -54,7 +54,7 @@ export const RowInHtmlTr: typeof RowInHtmlTrDecl = ({
 export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
   className,
   ...props
-}: SortedTableProps & DomProps): any => (
+}: SortedTableProps & HtmlProps): any => (
   <table {...useClassName(className)}>
     <tbody>
       <SortedTableView rowComponent={RowInHtmlTr} {...props} />
@@ -65,7 +65,7 @@ export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
 export const TableInHtmlTable: typeof TableInHtmlTableDecl = ({
   className,
   ...props
-}: TableProps & DomProps): any => (
+}: TableProps & HtmlProps): any => (
   <table {...useClassName(className)}>
     <tbody>
       <TableView rowComponent={RowInHtmlTr} {...props} />
@@ -76,7 +76,7 @@ export const TableInHtmlTable: typeof TableInHtmlTableDecl = ({
 export const ValueInHtmlTr: typeof ValueInHtmlTrDecl = ({
   className,
   ...props
-}: ValueProps & DomProps): any => (
+}: ValueProps & HtmlProps): any => (
   <tr {...useClassName(className)}>
     <td>
       <ValueView {...props} />
@@ -87,7 +87,7 @@ export const ValueInHtmlTr: typeof ValueInHtmlTrDecl = ({
 export const ValuesInHtmlTable: typeof ValuesInHtmlTableDecl = ({
   className,
   ...props
-}: ValuesProps & DomProps): any => (
+}: ValuesProps & HtmlProps): any => (
   <table {...useClassName(className)}>
     <tbody>
       <ValuesView valueComponent={ValueInHtmlTr} {...props} />
