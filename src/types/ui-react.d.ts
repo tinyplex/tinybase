@@ -781,6 +781,8 @@ export type RowProps = {
   readonly cellComponent?: ComponentType<CellProps>;
   /// RowProps.getCellComponentProps
   readonly getCellComponentProps?: (cellId: Id) => ExtraProps;
+  /// RowProps.customCellIds
+  readonly customCellIds?: Ids;
   /// RowProps.separator
   readonly separator?: ReactElement | string;
   /// RowProps.debugIds

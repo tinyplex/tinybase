@@ -7163,6 +7163,11 @@
    */
   /// RowProps.getCellComponentProps
   /**
+   * An optional list of Cell Ids to use for rendering a prescribed set of the
+   * Row's Cells in a given order.
+   */
+  /// RowProps.customCellIds
+  /**
    * A component or string to separate each Cell component.
    */
   /// RowProps.separator
@@ -8051,8 +8056,10 @@
  * You can create your own RowView-like component to customize the way that a
  * Row is rendered: see the TableView component for more details.
  *
- * This component uses the useCellIds hook under the covers, which means that
- * any changes to the structure of the Row will cause a re-render.
+ * Since v4.1.0, you can use the `customCellIds` prop if you want to render a
+ * prescribed set of the Row's Cells in a given order. Otherwise, this component
+ * uses the useCellIds hook under the covers, which means that any changes to
+ * the structure of the Row will cause a re-render.
  * @param props The props for this component.
  * @returns A rendering of the Row, or nothing, if not present.
  * @example
@@ -8080,7 +8087,7 @@
  * @example
  * This example creates a Provider context into which a default Store is
  * provided. The RowView component within it then renders the Row (with Ids for
- * readability).
+ * readability), with a custom set of Cell Ids.
  *
  * ```jsx
  * const App = ({store}) => (
@@ -8088,20 +8095,27 @@
  *     <Pane />
  *   </Provider>
  * );
+ * const customCellIds = ['color', 'species'];
  * const Pane = () => (
  *   <div>
- *     <RowView tableId="pets" rowId="fido" debugIds={true} />
+ *     <RowView
+ *       tableId="pets"
+ *       rowId="fido"
+ *       customCellIds={customCellIds}
+ *       debugIds={true}
+ *     />
  *   </div>
  * );
  *
  * const store = createStore().setRow('pets', 'fido', {
  *   species: 'dog',
  *   color: 'walnut',
+ *   legs: 4,
  * });
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
- * // -> '<div>fido:{species:{dog}color:{walnut}}</div>'
+ * // -> '<div>fido:{color:{walnut}species:{dog}}</div>'
  * ```
  * @example
  * This example creates a Provider context into which a default Store is
