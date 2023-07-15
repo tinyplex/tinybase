@@ -1121,8 +1121,10 @@ const _App = () => (
     
     */}
     <RowView tableId="t1" rowId="r1" />
+    <RowView tableId="t1" rowId="r1" customCellIds={['c1']} />
     <RowView tableId="t1" rowId="r1" cellComponent={GoodCellView} />
     <RowView tableId="t1" rowId="r1" cellComponent={GoodT1CellView} />
+    <RowView tableId="t1" rowId="r1" customCellIds={['c2']} /> {/* ! */}
     <RowView tableId="t1" rowId="r1" cellComponent={PoorCellView} /> {/* ! */}
     <RowView tableId="t1" rowId="r1" cellComponent={PoorT1CellView} /> {/* ! */}
     <RowView tableId="t2" rowId="r2" /> {/* ! */}

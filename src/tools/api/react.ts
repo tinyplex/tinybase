@@ -249,6 +249,7 @@ export const getStoreUiReactApi = (
     PARAMETER + 'ized' + CALLBACK,
   );
   addImport(0, tinyBaseUiReact, 'ComponentReturnType');
+  addImport(1, tinyBaseUiReact, 'useCellIds');
   addImport(null, tinyBaseUiReact, 'ExtraProps');
   addImport(0, moduleDefinition, storeType);
 
@@ -344,6 +345,21 @@ export const getStoreUiReactApi = (
       ' ? children',
       ' : children.map((child, c) => (c > 0 ? [separator, child] : child));',
       `return encloseWithId ? [id, ':{', separated, '}'] : separated;`,
+    ],
+  );
+
+  const useCustomOrDefaultCellIds = addInternalFunction(
+    'useCustomOrDefaultCellIds',
+    getParameterList(
+      'customCellIds: Ids | undefined',
+      'tableId: Id',
+      'rowId: Id',
+      `${storeOrStoreId}?: ${storeOrStoreIdType} | undefined`,
+    ),
+    [
+      `const defaultCellIds = ${useHook}(${storeOrStoreId}, ` +
+        'useCellIds, [tableId, rowId]);',
+      'return customCellIds ?? defaultCellIds;',
     ],
   );
 
@@ -518,6 +534,7 @@ export const getStoreUiReactApi = (
           cellIdType +
           `<TId>]?: ComponentType<${cellPropsType}<TId, CId>>;}`,
         `getCellComponentProps?: (cellId: ${cellIdType}<TId>) => ExtraProps`,
+        `customCellIds?: ${cellIdType}<TId>[]`,
         SEPARATOR_PROP_TYPE,
         DEBUG_IDS_PROP_TYPE,
       ),
@@ -677,7 +694,7 @@ export const getStoreUiReactApi = (
       );
 
       // useCellIds
-      const useCellIds = addProxyHook(
+      addProxyHook(
         tableName + CELL_IDS,
         CELL_IDS,
         cellIdType + SQUARE_BRACKETS,
@@ -802,11 +819,14 @@ export const getStoreUiReactApi = (
         tableName + ROW + VIEW,
         '{rowId, ' +
           storeInstance +
-          ', cellComponents, getCellComponentProps' +
+          ', cellComponents, getCellComponentProps, customCellIds' +
           SEPARATOR_AND_DEBUG_IDS +
           `}: ${rowPropsType}<'${tableId}'>`,
         [
-          wrap + `(${useCellIds}(rowId, ${storeInstance}).map((cellId) => {`,
+          wrap +
+            `(${useCustomOrDefaultCellIds}(customCellIds, ` +
+            TABLE_ID +
+            `, rowId, ${storeInstance}).map((cellId: ${cellIdType}) => {`,
           'const Cell = (cellComponents?.[cellId] ?? ' +
             getDefaultCellComponent +
             `(${TABLE_ID}, cellId)) as React.ComponentType<CellProps<typeof ` +
