@@ -20,29 +20,27 @@ export type DomProps = {
 export type WithSchemas<Schemas extends OptionalSchemas> = {
   TableView: (props: TableProps<Schemas> & DomProps) => ComponentReturnType;
 
-  /// DomTableCellView
-  DomTableCellView: (
-    props: CellProps<Schemas> & DomProps,
-  ) => ComponentReturnType;
+  /// CellInHtmlTd
+  CellInHtmlTd: (props: CellProps<Schemas> & DomProps) => ComponentReturnType;
 
-  /// DomTableRowView
-  DomTableRowView: (props: RowProps<Schemas> & DomProps) => ComponentReturnType;
+  /// RowInHtmlTr
+  RowInHtmlTr: (props: RowProps<Schemas> & DomProps) => ComponentReturnType;
 
-  /// DomSortedTableView
-  DomSortedTableView: (
+  /// SortedTableInHtmlTable
+  SortedTableInHtmlTable: (
     props: SortedTableProps<Schemas> & DomProps,
   ) => ComponentReturnType;
 
-  /// DomTableView
-  DomTableView: (props: TableProps<Schemas> & DomProps) => ComponentReturnType;
-
-  /// DomTableValueView
-  DomTableValueView: (
-    props: ValueProps<Schemas> & DomProps,
+  /// TableInHtmlTable
+  TableInHtmlTable: (
+    props: TableProps<Schemas> & DomProps,
   ) => ComponentReturnType;
 
-  /// DomTableValuesView
-  DomTableValuesView: (
+  /// ValueInHtmlTr
+  ValueInHtmlTr: (props: ValueProps<Schemas> & DomProps) => ComponentReturnType;
+
+  /// ValuesInHtmlTable
+  ValuesInHtmlTable: (
     props: ValuesProps<Schemas> & DomProps,
   ) => ComponentReturnType;
 };
