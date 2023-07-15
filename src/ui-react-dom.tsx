@@ -3,6 +3,8 @@
 import {
   CellInHtmlTd as CellInHtmlTdDecl,
   HtmlProps,
+  HtmlTableProps,
+  HtmlTrProps,
   RowInHtmlTr as RowInHtmlTrDecl,
   SortedTableInHtmlTable as SortedTableInHtmlTableDecl,
   TableInHtmlTable as TableInHtmlTableDecl,
@@ -25,13 +27,16 @@ import {
   ValueView,
   ValuesView,
 } from './ui-react';
-import React from 'react';
+import React, {useCallback} from 'react';
 import {isUndefined} from './common/other';
 
 const {createElement} = React;
 
 const useClassName = (className?: string): {className?: string} =>
   isUndefined(className) ? {} : {className};
+
+const useGetTrProps = (idColumn = true): (() => {idColumn: boolean}) =>
+  useCallback(() => ({idColumn}), [idColumn]);
 
 export const CellInHtmlTd: typeof CellInHtmlTdDecl = ({
   className,
@@ -44,40 +49,54 @@ export const CellInHtmlTd: typeof CellInHtmlTdDecl = ({
 
 export const RowInHtmlTr: typeof RowInHtmlTrDecl = ({
   className,
+  idColumn,
   ...props
-}: RowProps & HtmlProps): any => (
+}: RowProps & HtmlTrProps & HtmlProps): any => (
   <tr {...useClassName(className)}>
+    {idColumn === false ? null : <th>{props.rowId}</th>}
     <RowView cellComponent={CellInHtmlTd} {...props} />
   </tr>
 );
 
 export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
   className,
+  idColumn,
   ...props
-}: SortedTableProps & HtmlProps): any => (
+}: SortedTableProps & HtmlTableProps & HtmlProps): any => (
   <table {...useClassName(className)}>
     <tbody>
-      <SortedTableView rowComponent={RowInHtmlTr} {...props} />
+      <SortedTableView
+        rowComponent={RowInHtmlTr}
+        getRowComponentProps={useGetTrProps(idColumn)}
+        {...props}
+      />
     </tbody>
   </table>
 );
 
 export const TableInHtmlTable: typeof TableInHtmlTableDecl = ({
   className,
+  idColumn,
   ...props
-}: TableProps & HtmlProps): any => (
+}: TableProps & HtmlTableProps & HtmlProps): any => (
   <table {...useClassName(className)}>
     <tbody>
-      <TableView rowComponent={RowInHtmlTr} {...props} />
+      <TableView
+        rowComponent={RowInHtmlTr}
+        getRowComponentProps={useGetTrProps(idColumn)}
+        {...props}
+      />
     </tbody>
   </table>
 );
 
 export const ValueInHtmlTr: typeof ValueInHtmlTrDecl = ({
   className,
+  idColumn,
   ...props
-}: ValueProps & HtmlProps): any => (
+}: ValueProps & HtmlTrProps & HtmlProps): any => (
   <tr {...useClassName(className)}>
+    {idColumn === false ? null : <th>{props.valueId}</th>}
     <td>
       <ValueView {...props} />
     </td>
@@ -86,11 +105,16 @@ export const ValueInHtmlTr: typeof ValueInHtmlTrDecl = ({
 
 export const ValuesInHtmlTable: typeof ValuesInHtmlTableDecl = ({
   className,
+  idColumn,
   ...props
-}: ValuesProps & HtmlProps): any => (
+}: ValuesProps & HtmlTableProps & HtmlProps): any => (
   <table {...useClassName(className)}>
     <tbody>
-      <ValuesView valueComponent={ValueInHtmlTr} {...props} />
+      <ValuesView
+        valueComponent={ValueInHtmlTr}
+        getValueComponentProps={useGetTrProps(idColumn)}
+        {...props}
+      />
     </tbody>
   </table>
 );
