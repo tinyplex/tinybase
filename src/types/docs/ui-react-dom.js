@@ -16,14 +16,14 @@
   /**
    * A string className to use on the root of the resulting element.
    */
-  /// DomProps.className
+  /// HtmlProps.className
 }
 /**
- * DomProps props are used for components that will render HTML DOM elements.
+ * HtmlProps props are used for components that will render HTML DOM elements.
  * @category Props
  * @since v4.1.0
  */
-/// DomProps
+/// HtmlProps
 /**
  * The CellInHtmlTd component renders the value of a single Cell in a given
  * Row, in a given Table, as an HTML <td> element, and registers a listener so
