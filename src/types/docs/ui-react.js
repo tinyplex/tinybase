@@ -8592,8 +8592,8 @@
  * also pass additional props to your custom component with the
  * `getValueComponentProps` callback prop.
  *
- * This component uses the useTableIds hook under the covers, which means that
- * any changes to the structure of the Store will cause a re-render.
+ * This component uses the useValueIds hook under the covers, which means that
+ * any changes to the Values in the Store will cause a re-render.
  *
  * This component uses the useValueIds hook under the covers, which means that
  * any changes to the Store's Values will cause a re-render.
