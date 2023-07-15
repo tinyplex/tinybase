@@ -6,6 +6,8 @@ import {
   RowProps,
   SortedTableProps,
   TableProps,
+  ValueProps,
+  ValuesProps,
 } from './internal/ui-react';
 import {OptionalSchemas} from '../store';
 
@@ -33,4 +35,14 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// DomTableView
   DomTableView: (props: TableProps<Schemas> & DomProps) => ComponentReturnType;
+
+  /// DomTableValueView
+  DomTableValueView: (
+    props: ValueProps<Schemas> & DomProps,
+  ) => ComponentReturnType;
+
+  /// DomTableValuesView
+  DomTableValuesView: (
+    props: ValuesProps<Schemas> & DomProps,
+  ) => ComponentReturnType;
 };
