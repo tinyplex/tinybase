@@ -57,7 +57,10 @@ const REFLECTIONS = [
   /^Tables/,
   /Tables/,
   /TableIds/,
+  /^Table/,
   /Table/,
+  /^SortedTable/,
+  /SortedTable/,
   /RowIds/,
   'setRow',
   /Row/,
@@ -137,7 +140,8 @@ const addApi = (docs: Docs): Docs =>
     .addApiFile('lib/types/persisters/persister-cr-sqlite-wasm.d.ts')
     .addApiFile('lib/types/persisters/persister-expo-sqlite.d.ts')
     .addApiFile('lib/types/tools.d.ts')
-    .addApiFile('lib/types/ui-react.d.ts');
+    .addApiFile('lib/types/ui-react.d.ts')
+    .addApiFile('lib/types/ui-react-dom.d.ts');
 
 const addPages = (docs: Docs): Docs =>
   docs
