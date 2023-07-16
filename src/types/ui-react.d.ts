@@ -739,6 +739,8 @@ export type TableProps = {
   readonly rowComponent?: ComponentType<RowProps>;
   /// TableProps.getRowComponentProps
   readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
+  /// TableProps.customCellIds
+  readonly customCellIds?: Ids;
   /// TableProps.separator
   readonly separator?: ReactElement | string;
   /// TableProps.debugIds
@@ -763,6 +765,8 @@ export type SortedTableProps = {
   readonly rowComponent?: ComponentType<RowProps>;
   /// SortedTableProps.getRowComponentProps
   readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
+  /// SortedTableProps.customCellIds
+  readonly customCellIds?: Ids;
   /// SortedTableProps.separator
   readonly separator?: ReactElement | string;
   /// SortedTableProps.debugIds
