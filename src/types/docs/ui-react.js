@@ -7069,6 +7069,11 @@
    */
   /// TableProps.getRowComponentProps
   /**
+   * An optional list of Cell Ids to use for rendering a prescribed set of the
+   * Table's Cells in a given order.
+   */
+  /// TableProps.customCellIds
+  /**
    * A component or string to separate each Row component.
    */
   /// TableProps.separator
@@ -7122,6 +7127,11 @@
    * on its Id.
    */
   /// SortedTableProps.getRowComponentProps
+  /**
+   * An optional list of Cell Ids to use for rendering a prescribed set of the
+   * sorted Table's Cells in a given order.
+   */
+  /// SortedTableProps.customCellIds
   /**
    * A component or string to separate each Row component.
    */
@@ -8086,8 +8096,8 @@
  * ```
  * @example
  * This example creates a Provider context into which a default Store is
- * provided. The RowView component within it then renders the Row (with Ids for
- * readability), with a custom set of Cell Ids.
+ * provided. The RowView component within it then renders the Row for a custom
+ * set of Cell Ids (and rendered with Ids for readability).
  *
  * ```jsx
  * const App = ({store}) => (
@@ -8180,6 +8190,9 @@
  * This component uses the useSortedRowIds hook under the covers, which means
  * that any changes to the structure or sorting of the Table will cause a
  * re-render.
+ *
+ * Since v4.1.0, you can use the `customCellIds` prop if you want to render a
+ * prescribed set of the Table's Cells in a given order for each Row.
  * @param props The props for this component.
  * @returns A rendering of the Table, or nothing, if not present.
  * @example
@@ -8216,8 +8229,8 @@
  * ```
  * @example
  * This example creates a Provider context into which a default Store is
- * provided. The SortedTableView component within it then renders the Table
- * (with Ids for readability).
+ * provided. The SortedTableView component within it then renders the Table for
+ * a custom set of Cell Ids (and rendered with Ids for readability).
  *
  * ```jsx
  * const App = ({store}) => (
@@ -8225,16 +8238,22 @@
  *     <Pane />
  *   </Provider>
  * );
+ * const customCellIds = ['species'];
  * const Pane = () => (
  *   <div>
- *     <SortedTableView tableId="pets" cellId="species" debugIds={true} />
+ *     <SortedTableView
+ *       tableId="pets"
+ *       cellId="species"
+ *       customCellIds={customCellIds}
+ *       debugIds={true}
+ *     />
  *   </div>
  * );
  *
  * const store = createStore().setTables({
  *   pets: {
- *     fido: {species: 'dog'},
- *     felix: {species: 'cat'},
+ *     fido: {color: 'black', species: 'dog'},
+ *     felix: {color: 'brown', species: 'cat'},
  *   },
  * });
  * const app = document.createElement('div');
@@ -8306,6 +8325,9 @@
  *
  * This component uses the useRowIds hook under the covers, which means that any
  * changes to the structure of the Table will cause a re-render.
+ *
+ * Since v4.1.0, you can use the `customCellIds` prop if you want to render a
+ * prescribed set of the Table's Cells in a given order for each Row.
  * @param props The props for this component.
  * @returns A rendering of the Table, or nothing, if not present.
  * @example
@@ -8332,8 +8354,8 @@
  * ```
  * @example
  * This example creates a Provider context into which a default Store is
- * provided. The TableView component within it then renders the Table (with Ids
- * for readability).
+ * provided. The TableView component within it then renders the Table for a
+ * custom set of Cell Ids (and rendered with Ids for readability).
  *
  * ```jsx
  * const App = ({store}) => (
@@ -8341,15 +8363,20 @@
  *     <Pane />
  *   </Provider>
  * );
+ * const customCellIds = ['species'];
  * const Pane = () => (
  *   <div>
- *     <TableView tableId="pets" debugIds={true} />
+ *     <TableView
+ *       tableId="pets"
+ *       customCellIds={customCellIds}
+ *       debugIds={true}
+ *     />
  *   </div>
  * );
  *
  * const store = createStore().setTable('pets', {
- *   fido: {species: 'dog'},
- *   felix: {species: 'cat'},
+ *   fido: {color: 'black', species: 'dog'},
+ *   felix: {color: 'brown', species: 'cat'},
  * });
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act

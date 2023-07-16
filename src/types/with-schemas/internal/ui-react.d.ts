@@ -63,6 +63,8 @@ export type TableProps<
         readonly rowComponent?: ComponentType<RowProps<Schemas, TableId>>;
         /// TableProps.getRowComponentProps
         readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
+        /// TableProps.customCellIds
+        readonly customCellIds?: CellIdFromSchema<Schemas[0], TableId>[];
         /// TableProps.separator
         readonly separator?: ReactElement | string;
         /// TableProps.debugIds
@@ -95,6 +97,8 @@ export type SortedTableProps<
         readonly rowComponent?: ComponentType<RowProps<Schemas, TableId>>;
         /// SortedTableProps.getRowComponentProps
         readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
+        /// SortedTableProps.customCellIds
+        readonly customCellIds?: CellIdFromSchema<Schemas[0], TableId>[];
         /// SortedTableProps.separator
         readonly separator?: ReactElement | string;
         /// SortedTableProps.debugIds
