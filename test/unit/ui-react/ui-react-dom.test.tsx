@@ -46,7 +46,10 @@ describe('Read Components', () => {
                 Id
               </th>
               <th>
-                ...
+                c1
+              </th>
+              <th>
+                c2
               </th>
             </tr>
           </thead>
@@ -58,6 +61,7 @@ describe('Read Components', () => {
               <td>
                 2
               </td>
+              <td />
             </tr>
             <tr>
               <th>
@@ -94,16 +98,19 @@ describe('Read Components', () => {
                 Id
               </th>
               <th>
-                ...
+                c1
+              </th>
+              <th>
+                c2
               </th>
             </tr>
           </thead>
           <tbody>
             <b>
-              {"id":"r1","tableId":"t2","rowId":"r1"}
+              {"id":"r1","tableId":"t2","rowId":"r1","customCellIds":["c1","c2"]}
             </b>
             <b>
-              {"id":"r2","tableId":"t2","rowId":"r2"}
+              {"id":"r2","tableId":"t2","rowId":"r2","customCellIds":["c1","c2"]}
             </b>
           </tbody>
         </table>
@@ -126,7 +133,10 @@ describe('Read Components', () => {
                 Id
               </th>
               <th>
-                ...
+                c1
+              </th>
+              <th>
+                c2
               </th>
             </tr>
           </thead>
@@ -138,6 +148,7 @@ describe('Read Components', () => {
               <td>
                 2
               </td>
+              <td />
             </tr>
             <tr>
               <th>
@@ -166,7 +177,10 @@ describe('Read Components', () => {
           <thead>
             <tr>
               <th>
-                ...
+                c1
+              </th>
+              <th>
+                c2
               </th>
             </tr>
           </thead>
@@ -175,6 +189,7 @@ describe('Read Components', () => {
               <td>
                 2
               </td>
+              <td />
             </tr>
             <tr>
               <td>
@@ -205,6 +220,7 @@ describe('Read Components', () => {
               <td>
                 2
               </td>
+              <td />
             </tr>
             <tr>
               <th>
@@ -243,7 +259,10 @@ describe('Read Components', () => {
                 Id
               </th>
               <th>
-                ...
+                c1
+              </th>
+              <th>
+                c2
               </th>
             </tr>
           </thead>
@@ -266,6 +285,7 @@ describe('Read Components', () => {
               <td>
                 2
               </td>
+              <td />
             </tr>
           </tbody>
         </table>
@@ -293,16 +313,19 @@ describe('Read Components', () => {
                 Id
               </th>
               <th>
-                ...
+                c1
+              </th>
+              <th>
+                c2
               </th>
             </tr>
           </thead>
           <tbody>
             <b>
-              {"id":"r2","tableId":"t2","rowId":"r2"}
+              {"id":"r2","tableId":"t2","rowId":"r2","customCellIds":["c1","c2"]}
             </b>
             <b>
-              {"id":"r1","tableId":"t2","rowId":"r1"}
+              {"id":"r1","tableId":"t2","rowId":"r1","customCellIds":["c1","c2"]}
             </b>
           </tbody>
         </table>
@@ -331,7 +354,10 @@ describe('Read Components', () => {
                 Id
               </th>
               <th>
-                ...
+                c1
+              </th>
+              <th>
+                c2
               </th>
             </tr>
           </thead>
@@ -354,6 +380,7 @@ describe('Read Components', () => {
               <td>
                 2
               </td>
+              <td />
             </tr>
           </tbody>
         </table>
@@ -377,7 +404,10 @@ describe('Read Components', () => {
           <thead>
             <tr>
               <th>
-                ...
+                c1
+              </th>
+              <th>
+                c2
               </th>
             </tr>
           </thead>
@@ -394,6 +424,7 @@ describe('Read Components', () => {
               <td>
                 2
               </td>
+              <td />
             </tr>
           </tbody>
         </table>
@@ -433,6 +464,7 @@ describe('Read Components', () => {
               <td>
                 2
               </td>
+              <td />
             </tr>
           </tbody>
         </table>
