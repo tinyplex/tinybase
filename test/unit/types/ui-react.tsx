@@ -1103,8 +1103,10 @@ const _App = () => (
     
     */}
     <TableView tableId="t1" />
+    <TableView tableId="t1" customCellIds={['c1']} />
     <TableView tableId="t1" rowComponent={GoodRowView} />
     <TableView tableId="t1" rowComponent={GoodT1RowView} />
+    <TableView tableId="t1" customCellIds={['c2']} /> {/* ! */}
     <TableView tableId="t1" rowComponent={PoorRowView} /> {/* ! */}
     <TableView tableId="t1" rowComponent={PoorT1RowView} /> {/* ! */}
     <TableView tableId="t2" /> {/* ! */}
@@ -1112,8 +1114,12 @@ const _App = () => (
     
     */}
     <SortedTableView tableId="t1" />
+    <SortedTableView tableId="t1" cellId="c1" />
+    <SortedTableView tableId="t1" customCellIds={['c1']} />
     <SortedTableView tableId="t1" rowComponent={GoodRowView} />
     <SortedTableView tableId="t1" rowComponent={GoodT1RowView} />
+    <SortedTableView tableId="t1" cellId="c2" /> {/* ! */}
+    <SortedTableView tableId="t1" customCellIds={['c2']} /> {/* ! */}
     <SortedTableView tableId="t1" rowComponent={PoorRowView} /> {/* ! */}
     <SortedTableView tableId="t1" rowComponent={PoorT1RowView} /> {/* ! */}
     <SortedTableView tableId="t2" /> {/* ! */}

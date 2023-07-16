@@ -405,7 +405,7 @@ export const getStoreUiReactApi = (
 
     const tableView = addInternalFunction(
       'tableView',
-      `{${storeInstance}, rowComponent, getRowComponentProps` +
+      `{${storeInstance}, rowComponent, getRowComponentProps, customCellIds` +
         SEPARATOR_AND_DEBUG_IDS +
         '}: any, rowIds: Ids, tableId: Id, ' +
         'defaultRowComponent: React.ComponentType<any>',
@@ -417,6 +417,7 @@ export const getStoreUiReactApi = (
         'key={rowId}',
         'tableId={tableId}',
         ROW_ID_PROP,
+        'customCellIds={customCellIds}',
         storeProp,
         DEBUG_IDS_PROP,
         '/>',
@@ -550,6 +551,7 @@ export const getStoreUiReactApi = (
         storeInstance + OPTIONAL_COLON + storeType,
         `rowComponent?: ComponentType<${rowPropsType}<TId>>`,
         `getRowComponentProps?: (rowId: Id) => ExtraProps`,
+        `customCellIds?: CellId<TId>[]`,
         SEPARATOR_PROP_TYPE,
         DEBUG_IDS_PROP_TYPE,
       ),
@@ -569,6 +571,7 @@ export const getStoreUiReactApi = (
         storeInstance + OPTIONAL_COLON + storeType,
         `rowComponent?: ComponentType<${rowPropsType}<TId>>`,
         `getRowComponentProps?: (rowId: Id) => ExtraProps`,
+        `customCellIds?: CellId<TId>[]`,
         SEPARATOR_PROP_TYPE,
         DEBUG_IDS_PROP_TYPE,
       ),
