@@ -1454,6 +1454,7 @@ export type TableProps<TId extends TableId> = {
   readonly s?: S;
   readonly rowComponent?: ComponentType<RowProps<TId>>;
   readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
+  readonly customCellIds?: CellId<TId>[];
   readonly separator?: ReactElement | string;
   readonly debugIds?: boolean;
 };
@@ -1470,6 +1471,7 @@ export type SortedTableProps<TId extends TableId> = {
   readonly s?: S;
   readonly rowComponent?: ComponentType<RowProps<TId>>;
   readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
+  readonly customCellIds?: CellId<TId>[];
   readonly separator?: ReactElement | string;
   readonly debugIds?: boolean;
 };
@@ -2441,7 +2443,14 @@ const useCustomOrDefaultCellIds = (
 const NullComponent = () => null;
 
 const tableView = (
-  {s, rowComponent, getRowComponentProps, separator, debugIds}: any,
+  {
+    s,
+    rowComponent,
+    getRowComponentProps,
+    customCellIds,
+    separator,
+    debugIds,
+  }: any,
   rowIds: Ids,
   tableId: Id,
   defaultRowComponent: React.ComponentType<any>,
@@ -2454,6 +2463,7 @@ const tableView = (
         key={rowId}
         tableId={tableId}
         rowId={rowId}
+        customCellIds={customCellIds}
         s={s}
         debugIds={debugIds}
       />
@@ -5602,6 +5612,7 @@ export type TableProps<TId extends TableId> = {
   readonly s?: S;
   readonly rowComponent?: ComponentType<RowProps<TId>>;
   readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
+  readonly customCellIds?: CellId<TId>[];
   readonly separator?: ReactElement | string;
   readonly debugIds?: boolean;
 };
@@ -5618,6 +5629,7 @@ export type SortedTableProps<TId extends TableId> = {
   readonly s?: S;
   readonly rowComponent?: ComponentType<RowProps<TId>>;
   readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
+  readonly customCellIds?: CellId<TId>[];
   readonly separator?: ReactElement | string;
   readonly debugIds?: boolean;
 };
@@ -6294,7 +6306,14 @@ const useCustomOrDefaultCellIds = (
 const NullComponent = () => null;
 
 const tableView = (
-  {s, rowComponent, getRowComponentProps, separator, debugIds}: any,
+  {
+    s,
+    rowComponent,
+    getRowComponentProps,
+    customCellIds,
+    separator,
+    debugIds,
+  }: any,
   rowIds: Ids,
   tableId: Id,
   defaultRowComponent: React.ComponentType<any>,
@@ -6307,6 +6326,7 @@ const tableView = (
         key={rowId}
         tableId={tableId}
         rowId={rowId}
+        customCellIds={customCellIds}
         s={s}
         debugIds={debugIds}
       />
@@ -7623,10 +7643,10 @@ export type CellProps<TId extends TableId, CId extends CellId<TId>> = {readonly 
 export type RowProps<TId extends TableId> = {readonly tableId?: TId; readonly rowId: Id; readonly s?: S; readonly cellComponents?: {readonly [CId in CellId<TId>]?: ComponentType<CellProps<TId, CId>>;}; readonly getCellComponentProps?: (cellId: CellId<TId>) => ExtraProps; readonly customCellIds?: CellId<TId>[]; readonly separator?: ReactElement | string; readonly debugIds?: boolean};
 
 /** The props passed to a component that renders a Table. */
-export type TableProps<TId extends TableId> = {readonly tableId?: TId; readonly s?: S; readonly rowComponent?: ComponentType<RowProps<TId>>; readonly getRowComponentProps?: (rowId: Id) => ExtraProps; readonly separator?: ReactElement | string; readonly debugIds?: boolean};
+export type TableProps<TId extends TableId> = {readonly tableId?: TId; readonly s?: S; readonly rowComponent?: ComponentType<RowProps<TId>>; readonly getRowComponentProps?: (rowId: Id) => ExtraProps; readonly customCellIds?: CellId<TId>[]; readonly separator?: ReactElement | string; readonly debugIds?: boolean};
 
 /** The props passed to a component that renders a sorted Table. */
-export type SortedTableProps<TId extends TableId> = {readonly tableId?: TId; readonly cellId?: CellId<TId>; readonly descending?: boolean; readonly offset?: number; readonly limit?: number; readonly s?: S; readonly rowComponent?: ComponentType<RowProps<TId>>; readonly getRowComponentProps?: (rowId: Id) => ExtraProps; readonly separator?: ReactElement | string; readonly debugIds?: boolean};
+export type SortedTableProps<TId extends TableId> = {readonly tableId?: TId; readonly cellId?: CellId<TId>; readonly descending?: boolean; readonly offset?: number; readonly limit?: number; readonly s?: S; readonly rowComponent?: ComponentType<RowProps<TId>>; readonly getRowComponentProps?: (rowId: Id) => ExtraProps; readonly customCellIds?: CellId<TId>[]; readonly separator?: ReactElement | string; readonly debugIds?: boolean};
 
 /** The props passed to a component that renders the tabular content of the Store. */
 export type TablesProps = {readonly s?: S; readonly tableComponents?: {readonly [TId in TableId]?: ComponentType<TableProps<TId>>;}; readonly getTableComponentProps?: (tableId: TableId) => ExtraProps; readonly separator?: ReactElement | string; readonly debugIds?: boolean};
@@ -7888,7 +7908,7 @@ return customCellIds ?? defaultCellIds;
 
 const NullComponent = () => null;
 
-const tableView = ({s, rowComponent, getRowComponentProps, separator, debugIds}: any, rowIds: Ids, tableId: Id, defaultRowComponent: React.ComponentType<any>) => {
+const tableView = ({s, rowComponent, getRowComponentProps, customCellIds, separator, debugIds}: any, rowIds: Ids, tableId: Id, defaultRowComponent: React.ComponentType<any>) => {
 const Row = rowComponent ?? defaultRowComponent;
 return wrap(rowIds.map((rowId) => (
 <Row
@@ -7896,6 +7916,7 @@ return wrap(rowIds.map((rowId) => (
 key={rowId}
 tableId={tableId}
 rowId={rowId}
+customCellIds={customCellIds}
 s={s}
 debugIds={debugIds}
 />
@@ -9300,10 +9321,10 @@ export type CellProps<TId extends TableId, CId extends CellId<TId>> = {readonly 
 export type RowProps<TId extends TableId> = {readonly tableId?: TId; readonly rowId: Id; readonly s?: S; readonly cellComponents?: {readonly [CId in CellId<TId>]?: ComponentType<CellProps<TId, CId>>;}; readonly getCellComponentProps?: (cellId: CellId<TId>) => ExtraProps; readonly customCellIds?: CellId<TId>[]; readonly separator?: ReactElement | string; readonly debugIds?: boolean};
 
 /** The props passed to a component that renders a Table. */
-export type TableProps<TId extends TableId> = {readonly tableId?: TId; readonly s?: S; readonly rowComponent?: ComponentType<RowProps<TId>>; readonly getRowComponentProps?: (rowId: Id) => ExtraProps; readonly separator?: ReactElement | string; readonly debugIds?: boolean};
+export type TableProps<TId extends TableId> = {readonly tableId?: TId; readonly s?: S; readonly rowComponent?: ComponentType<RowProps<TId>>; readonly getRowComponentProps?: (rowId: Id) => ExtraProps; readonly customCellIds?: CellId<TId>[]; readonly separator?: ReactElement | string; readonly debugIds?: boolean};
 
 /** The props passed to a component that renders a sorted Table. */
-export type SortedTableProps<TId extends TableId> = {readonly tableId?: TId; readonly cellId?: CellId<TId>; readonly descending?: boolean; readonly offset?: number; readonly limit?: number; readonly s?: S; readonly rowComponent?: ComponentType<RowProps<TId>>; readonly getRowComponentProps?: (rowId: Id) => ExtraProps; readonly separator?: ReactElement | string; readonly debugIds?: boolean};
+export type SortedTableProps<TId extends TableId> = {readonly tableId?: TId; readonly cellId?: CellId<TId>; readonly descending?: boolean; readonly offset?: number; readonly limit?: number; readonly s?: S; readonly rowComponent?: ComponentType<RowProps<TId>>; readonly getRowComponentProps?: (rowId: Id) => ExtraProps; readonly customCellIds?: CellId<TId>[]; readonly separator?: ReactElement | string; readonly debugIds?: boolean};
 
 /** The props passed to a component that renders the tabular content of the Store. */
 export type TablesProps = {readonly s?: S; readonly tableComponents?: {readonly [TId in TableId]?: ComponentType<TableProps<TId>>;}; readonly getTableComponentProps?: (tableId: TableId) => ExtraProps; readonly separator?: ReactElement | string; readonly debugIds?: boolean};
@@ -9484,7 +9505,7 @@ return customCellIds ?? defaultCellIds;
 
 const NullComponent = () => null;
 
-const tableView = ({s, rowComponent, getRowComponentProps, separator, debugIds}: any, rowIds: Ids, tableId: Id, defaultRowComponent: React.ComponentType<any>) => {
+const tableView = ({s, rowComponent, getRowComponentProps, customCellIds, separator, debugIds}: any, rowIds: Ids, tableId: Id, defaultRowComponent: React.ComponentType<any>) => {
 const Row = rowComponent ?? defaultRowComponent;
 return wrap(rowIds.map((rowId) => (
 <Row
@@ -9492,6 +9513,7 @@ return wrap(rowIds.map((rowId) => (
 key={rowId}
 tableId={tableId}
 rowId={rowId}
+customCellIds={customCellIds}
 s={s}
 debugIds={debugIds}
 />

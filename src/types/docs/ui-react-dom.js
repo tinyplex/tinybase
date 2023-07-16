@@ -270,7 +270,7 @@
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
- * // -> '<table class="table"><thead><tr><th>Id</th><th>...</th></tr></thead><tbody><tr><th>felix</th><td>cat</td></tr><tr><th>fido</th><td>dog</td></tr></tbody></table>'
+ * // -> '<table class="table"><thead><tr><th>Id</th><th>species</th></tr></thead><tbody><tr><th>felix</th><td>cat</td></tr><tr><th>fido</th><td>dog</td></tr></tbody></table>'
  * ```
  * @example
  * This example creates a Provider context into which a default Store is
@@ -368,7 +368,7 @@
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
- * // -> '<table class="row"><thead><tr><th>Id</th><th>...</th></tr></thead><tbody><tr><th>fido</th><td>dog</td></tr><tr><th>felix</th><td>cat</td></tr></tbody></table>'
+ * // -> '<table class="row"><thead><tr><th>Id</th><th>species</th></tr></thead><tbody><tr><th>fido</th><td>dog</td></tr><tr><th>felix</th><td>cat</td></tr></tbody></table>'
  * ```
  * @example
  * This example creates a Provider context into which a default Store is
