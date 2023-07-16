@@ -188,6 +188,39 @@ describe('Read Components', () => {
         </table>
       `);
     });
+
+    test('headerRow', () => {
+      act(() => {
+        renderer = create(
+          <TableInHtmlTable store={store} tableId="t2" headerRow={false} />,
+        );
+      });
+      expect(renderer.toJSON()).toMatchInlineSnapshot(`
+        <table>
+          <tbody>
+            <tr>
+              <th>
+                r1
+              </th>
+              <td>
+                2
+              </td>
+            </tr>
+            <tr>
+              <th>
+                r2
+              </th>
+              <td>
+                3
+              </td>
+              <td>
+                4
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      `);
+    });
   });
 
   describe('SortedTableInHtmlTable', () => {
@@ -358,6 +391,45 @@ describe('Read Components', () => {
               </td>
             </tr>
             <tr>
+              <td>
+                2
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      `);
+    });
+
+    test('headerRow', () => {
+      act(() => {
+        renderer = create(
+          <SortedTableInHtmlTable
+            store={store}
+            tableId="t2"
+            cellId="c1"
+            descending={true}
+            headerRow={false}
+          />,
+        );
+      });
+      expect(renderer.toJSON()).toMatchInlineSnapshot(`
+        <table>
+          <tbody>
+            <tr>
+              <th>
+                r2
+              </th>
+              <td>
+                3
+              </td>
+              <td>
+                4
+              </td>
+            </tr>
+            <tr>
+              <th>
+                r1
+              </th>
               <td>
                 2
               </td>
