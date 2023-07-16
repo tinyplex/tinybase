@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 /**
  * The ui-react-dom module of the TinyBase project provides components to make
  * it easy to create web-based reactive apps with Store objects.
@@ -165,7 +164,17 @@
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
- * // -> '<table><tbody><tr class="row"><th>fido</th><td>dog</td><td>walnut</td></tr></tbody></table>'
+ * // -> `
+ * <table>
+ *   <tbody>
+ *     <tr class="row">
+ *       <th>fido</th>
+ *       <td>dog</td>
+ *       <td>walnut</td>
+ *     </tr>
+ *   </tbody>
+ * </table>
+ * `
  * ```
  * @example
  * This example creates a Provider context into which a default Store is
@@ -207,7 +216,16 @@
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
- * // -> '<table><tbody><tr><td><b>species</b>: dog</td><td>color: walnut</td></tr></tbody></table>'
+ * // -> `
+ * <table>
+ *   <tbody>
+ *     <tr>
+ *       <td><b>species</b>: dog</td>
+ *       <td>color: walnut</td>
+ *     </tr>
+ *   </tbody>
+ * </table>
+ * `
  * ```
  * @category Store components
  * @since v4.1.0
@@ -270,7 +288,26 @@
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
- * // -> '<table class="table"><thead><tr><th>Id</th><th>species</th></tr></thead><tbody><tr><th>felix</th><td>cat</td></tr><tr><th>fido</th><td>dog</td></tr></tbody></table>'
+ * // -> `
+ * <table class="table">
+ *   <thead>
+ *     <tr>
+ *       <th>Id</th>
+ *       <th>species</th>
+ *     </tr>
+ *   </thead>
+ *   <tbody>
+ *     <tr>
+ *       <th>felix</th>
+ *       <td>cat</td>
+ *     </tr>
+ *     <tr>
+ *       <th>fido</th>
+ *       <td>dog</td>
+ *     </tr>
+ *   </tbody>
+ * </table>
+ * `
  * ```
  * @example
  * This example creates a Provider context into which a default Store is
@@ -315,7 +352,20 @@
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
- * // -> '<table><tbody><tr><td>felix</td><td>cat</td></tr><tr><td><b>fido</b></td><td>dog</td></tr></tbody></table>'
+ * // -> `
+ * <table>
+ *   <tbody>
+ *     <tr>
+ *       <td>felix</td>
+ *       <td>cat</td>
+ *     </tr>
+ *     <tr>
+ *       <td><b>fido</b></td>
+ *       <td>dog</td>
+ *     </tr>
+ *   </tbody>
+ * </table>
+ * `
  * ```
  * @category Store components
  * @since v4.1.0
@@ -368,7 +418,26 @@
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
- * // -> '<table class="row"><thead><tr><th>Id</th><th>species</th></tr></thead><tbody><tr><th>fido</th><td>dog</td></tr><tr><th>felix</th><td>cat</td></tr></tbody></table>'
+ * // -> `
+ * <table class="row">
+ *   <thead>
+ *     <tr>
+ *       <th>Id</th>
+ *       <th>species</th>
+ *     </tr>
+ *   </thead>
+ *   <tbody>
+ *     <tr>
+ *       <th>fido</th>
+ *       <td>dog</td>
+ *     </tr>
+ *     <tr>
+ *       <th>felix</th>
+ *       <td>cat</td>
+ *     </tr>
+ *   </tbody>
+ * </table>
+ * `
  * ```
  * @example
  * This example creates a Provider context into which a default Store is
@@ -409,7 +478,20 @@
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
- * // -> '<table><tbody><tr><td><b>fido</b></td><td>dog</td></tr><tr><td>felix</td><td>cat</td></tr></tbody></table>'
+ * // -> `
+ * <table>
+ *   <tbody>
+ *     <tr>
+ *       <td><b>fido</b></td>
+ *       <td>dog</td>
+ *     </tr>
+ *     <tr>
+ *       <td>felix</td>
+ *       <td>cat</td>
+ *     </tr>
+ *   </tbody>
+ * </table>
+ * `
  * ```
  * @category Store components
  * @since v4.1.0
@@ -459,7 +541,16 @@
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
- * // -> '<table><tbody><tr class="value"><th>open</th><td>true</td></tr></tbody></table>'
+ * // -> `
+ * <table>
+ *   <tbody>
+ *     <tr class="value">
+ *       <th>open</th>
+ *       <td>true</td>
+ *     </tr>
+ *   </tbody>
+ * </table>
+ * `
  * ```
  * @category Store components
  * @since v4.1.0
@@ -511,7 +602,26 @@
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
- * // -> '<table class="values"><thead><tr><th>Id</th><th>Value</th></tr></thead><tbody><tr><th>open</th><td>true</td></tr><tr><th>employees</th><td>3</td></tr></tbody></table>'
+ * // -> `
+ * <table class="values">
+ *   <thead>
+ *     <tr>
+ *       <th>Id</th>
+ *       <th>Value</th>
+ *     </tr>
+ *   </thead>
+ *   <tbody>
+ *     <tr>
+ *       <th>open</th>
+ *       <td>true</td>
+ *     </tr>
+ *     <tr>
+ *       <th>employees</th>
+ *       <td>3</td>
+ *     </tr>
+ *   </tbody>
+ * </table>
+ * `
  * ```
  * @example
  * This example creates a Provider context into which a default Store is
@@ -547,7 +657,14 @@
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
- * // -> '<table><tbody><tr><td><b>open</b>: true</td></tr><tr><td>employees: 3</td></tr></tbody></table>'
+ * // -> `
+ * <table>
+ *   <tbody>
+ *     <tr><td><b>open</b>: true</td></tr>
+ *     <tr><td>employees: 3</td></tr>
+ *   </tbody>
+ * </table>
+ * `
  * ```
  * @category Store components
  * @since v4.1.0
