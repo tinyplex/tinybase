@@ -93,6 +93,7 @@ export const tableView = (
     store,
     rowComponent: Row = RowView,
     getRowComponentProps,
+    customCellIds,
     separator,
     debugIds,
   }: TableProps,
@@ -105,6 +106,7 @@ export const tableView = (
         key={rowId}
         tableId={tableId}
         rowId={rowId}
+        customCellIds={customCellIds}
         store={store}
         debugIds={debugIds}
       />
