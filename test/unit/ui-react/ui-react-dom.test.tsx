@@ -237,6 +237,53 @@ describe('Read Components', () => {
         </table>
       `);
     });
+
+    test('customCellIds', () => {
+      act(() => {
+        renderer = create(
+          <TableInHtmlTable
+            store={store}
+            tableId="t2"
+            customCellIds={['c3', 'c2']}
+          />,
+        );
+      });
+      expect(renderer.toJSON()).toMatchInlineSnapshot(`
+        <table>
+          <thead>
+            <tr>
+              <th>
+                Id
+              </th>
+              <th>
+                c3
+              </th>
+              <th>
+                c2
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>
+                r1
+              </th>
+              <td />
+              <td />
+            </tr>
+            <tr>
+              <th>
+                r2
+              </th>
+              <td />
+              <td>
+                4
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      `);
+    });
   });
 
   describe('SortedTableInHtmlTable', () => {
@@ -470,6 +517,55 @@ describe('Read Components', () => {
         </table>
       `);
     });
+
+    test('customCellIds', () => {
+      act(() => {
+        renderer = create(
+          <SortedTableInHtmlTable
+            store={store}
+            tableId="t2"
+            cellId="c1"
+            descending={true}
+            customCellIds={['c3', 'c2']}
+          />,
+        );
+      });
+      expect(renderer.toJSON()).toMatchInlineSnapshot(`
+        <table>
+          <thead>
+            <tr>
+              <th>
+                Id
+              </th>
+              <th>
+                c3
+              </th>
+              <th>
+                c2
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>
+                r2
+              </th>
+              <td />
+              <td>
+                4
+              </td>
+            </tr>
+            <tr>
+              <th>
+                r1
+              </th>
+              <td />
+              <td />
+            </tr>
+          </tbody>
+        </table>
+      `);
+    });
   });
 
   describe('DomRowView', () => {
@@ -560,6 +656,30 @@ describe('Read Components', () => {
           <td>
             3
           </td>
+          <td>
+            4
+          </td>
+        </tr>
+      `);
+    });
+
+    test('customCellIds', () => {
+      act(() => {
+        renderer = create(
+          <RowInHtmlTr
+            store={store}
+            tableId="t2"
+            rowId="r2"
+            customCellIds={['c3', 'c2']}
+          />,
+        );
+      });
+      expect(renderer.toJSON()).toMatchInlineSnapshot(`
+        <tr>
+          <th>
+            r2
+          </th>
+          <td />
           <td>
             4
           </td>
