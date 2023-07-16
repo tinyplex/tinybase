@@ -305,6 +305,7 @@ export const compileModule = async (
   target = 'esnext',
   cli,
 ) => {
+  const path = await import('path');
   const {default: esbuild} = await import('rollup-plugin-esbuild');
   const {rollup} = await import('rollup');
   const {default: terser} = await import('@rollup/plugin-terser');
@@ -384,6 +385,7 @@ export const compileModule = async (
       yjs: 'yjs',
       fs: 'fs',
       'fs/promises': 'fs/promises',
+      [path.resolve('src/ui-react')]: getGlobalName('ui-react'),
     },
     interop: 'default',
     name: getGlobalName(module),
