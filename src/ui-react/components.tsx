@@ -87,7 +87,7 @@ import {arrayMap} from '../common/array';
 
 const {createElement, useMemo} = React;
 
-export const tableView = (
+const tableView = (
   {
     tableId,
     store,
