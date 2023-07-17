@@ -3,12 +3,31 @@
 import {
   CellProps,
   ComponentReturnType,
+  ExtraProps,
   RowProps,
   SortedTableProps,
+  StoreOrStoreId,
   TableProps,
   ValueProps,
-  ValuesProps,
 } from './ui-react';
+import {ComponentType} from 'react';
+import {Id} from './common';
+
+// ValuesInHtmlTableProps
+export type ValuesInHtmlTableProps = {
+  /// ValuesInHtmlTableProps.store
+  readonly store?: StoreOrStoreId;
+  /// ValuesInHtmlTableProps.valueComponent
+  readonly valueComponent?: ComponentType<ValueProps>;
+  /// ValuesInHtmlTableProps.getValueComponentProps
+  readonly getValueComponentProps?: (valueId: Id) => ExtraProps;
+  /// ValuesInHtmlTableProps.className
+  readonly className?: string;
+  /// ValuesInHtmlTableProps.headerRow
+  readonly headerRow?: boolean;
+  /// ValuesInHtmlTableProps.idColumn
+  readonly idColumn?: boolean;
+};
 
 /// HtmlProps
 export type HtmlProps = {
@@ -48,12 +67,7 @@ export function TableInHtmlTable(
   props: TableProps & HtmlTableProps & HtmlProps,
 ): ComponentReturnType;
 
-/// ValueInHtmlTr
-export function ValueInHtmlTr(
-  props: ValueProps & HtmlTrProps & HtmlProps,
-): ComponentReturnType;
-
 /// ValuesInHtmlTable
 export function ValuesInHtmlTable(
-  props: ValuesProps & HtmlTableProps & HtmlProps,
+  props: ValuesInHtmlTableProps,
 ): ComponentReturnType;
