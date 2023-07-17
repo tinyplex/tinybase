@@ -6,7 +6,6 @@ import {
   RowInHtmlTr,
   SortedTableInHtmlTable,
   TableInHtmlTable,
-  ValueInHtmlTr,
   ValuesInHtmlTable,
 } from 'tinybase/debug/ui-react-dom';
 import {Id, Store, createStore} from 'tinybase/debug';
@@ -786,12 +785,26 @@ describe('Read Components', () => {
             </tr>
           </thead>
           <tbody>
-            <b>
-              {"id":"v1","valueId":"v1"}
-            </b>
-            <b>
-              {"id":"v2","valueId":"v2"}
-            </b>
+            <tr>
+              <th>
+                v1
+              </th>
+              <td>
+                <b>
+                  {"id":"v1","valueId":"v1"}
+                </b>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                v2
+              </th>
+              <td>
+                <b>
+                  {"id":"v2","valueId":"v2"}
+                </b>
+              </td>
+            </tr>
           </tbody>
         </table>
       `);
@@ -865,59 +878,6 @@ describe('Read Components', () => {
             </tr>
           </tbody>
         </table>
-      `);
-    });
-  });
-
-  describe('ValueInHtmlTr', () => {
-    test('basic', () => {
-      act(() => {
-        renderer = create(<ValueInHtmlTr store={store} valueId="v1" />);
-      });
-      expect(renderer.toJSON()).toMatchInlineSnapshot(`
-        <tr>
-          <th>
-            v1
-          </th>
-          <td>
-            1
-          </td>
-        </tr>
-      `);
-    });
-
-    test('className', () => {
-      act(() => {
-        renderer = create(
-          <ValueInHtmlTr store={store} valueId="v1" className="value" />,
-        );
-      });
-      expect(renderer.toJSON()).toMatchInlineSnapshot(`
-        <tr
-          className="value"
-        >
-          <th>
-            v1
-          </th>
-          <td>
-            1
-          </td>
-        </tr>
-      `);
-    });
-
-    test('idColumn', () => {
-      act(() => {
-        renderer = create(
-          <ValueInHtmlTr store={store} valueId="v1" idColumn={false} />,
-        );
-      });
-      expect(renderer.toJSON()).toMatchInlineSnapshot(`
-        <tr>
-          <td>
-            1
-          </td>
-        </tr>
       `);
     });
   });

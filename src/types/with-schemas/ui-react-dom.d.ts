@@ -3,13 +3,32 @@
 import {
   CellProps,
   ComponentReturnType,
+  ExtraProps,
   RowProps,
   SortedTableProps,
+  StoreOrStoreId,
   TableProps,
   ValueProps,
-  ValuesProps,
 } from './internal/ui-react';
+import {ComponentType} from 'react';
+import {Id} from '../common';
 import {OptionalSchemas} from '../store';
+
+// ValuesInHtmlTableProps
+export type ValuesInHtmlTableProps<Schemas extends OptionalSchemas> = {
+  /// ValuesInHtmlTableProps.store
+  readonly store?: StoreOrStoreId<Schemas>;
+  /// ValuesInHtmlTableProps.valueComponent
+  readonly valueComponent?: ComponentType<ValueProps<Schemas>>;
+  /// ValuesInHtmlTableProps.getValueComponentProps
+  readonly getValueComponentProps?: (valueId: Id) => ExtraProps;
+  /// ValuesInHtmlTableProps.className
+  readonly className?: string;
+  /// ValuesInHtmlTableProps.headerRow
+  readonly headerRow?: boolean;
+  /// ValuesInHtmlTableProps.idColumn
+  readonly idColumn?: boolean;
+};
 
 /// HtmlProps
 export type HtmlProps = {
@@ -50,13 +69,8 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     props: TableProps<Schemas> & HtmlTableProps & HtmlProps,
   ) => ComponentReturnType;
 
-  /// ValueInHtmlTr
-  ValueInHtmlTr: (
-    props: ValueProps<Schemas> & HtmlTrProps & HtmlProps,
-  ) => ComponentReturnType;
-
   /// ValuesInHtmlTable
   ValuesInHtmlTable: (
-    props: ValuesProps<Schemas> & HtmlTableProps & HtmlProps,
+    props: ValuesInHtmlTableProps<Schemas>,
   ) => ComponentReturnType;
 };
