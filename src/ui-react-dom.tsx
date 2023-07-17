@@ -8,16 +8,14 @@ import {
   RowInHtmlTr as RowInHtmlTrDecl,
   SortedTableInHtmlTable as SortedTableInHtmlTableDecl,
   TableInHtmlTable as TableInHtmlTableDecl,
-  ValueInHtmlTr as ValueInHtmlTrDecl,
   ValuesInHtmlTable as ValuesInHtmlTableDecl,
+  ValuesInHtmlTableProps,
 } from './types/ui-react-dom.d';
 import {
   CellProps,
   RowProps,
   SortedTableProps,
   TableProps,
-  ValueProps,
-  ValuesProps,
 } from './types/ui-react.d';
 import {
   CellView,
@@ -25,13 +23,14 @@ import {
   SortedTableView,
   TableView,
   ValueView,
-  ValuesView,
   useTableCellIds,
+  useValueIds,
 } from './ui-react';
 import React, {useCallback} from 'react';
 import {ID} from './tools/common/strings';
 import {VALUE} from './common/strings';
 import {arrayMap} from './common/array';
+import {getProps} from './ui-react/common';
 import {isUndefined} from './common/other';
 
 const {createElement} = React;
@@ -113,26 +112,14 @@ export const TableInHtmlTable: typeof TableInHtmlTableDecl = (
   props: TableProps & HtmlTableProps & HtmlProps,
 ): any => <HtmlTable {...props} tableComponent={TableView} />;
 
-export const ValueInHtmlTr: typeof ValueInHtmlTrDecl = ({
-  idColumn,
-  className,
-  valueId,
-  ...props
-}: ValueProps & HtmlTrProps & HtmlProps): any => (
-  <tr {...useClassName(className)}>
-    {idColumn === false ? null : <th>{valueId}</th>}
-    <td>
-      <ValueView valueId={valueId} {...props} />
-    </td>
-  </tr>
-);
-
 export const ValuesInHtmlTable: typeof ValuesInHtmlTableDecl = ({
+  store,
+  valueComponent: Value = ValueView,
+  getValueComponentProps,
+  className,
   headerRow,
   idColumn,
-  className,
-  ...props
-}: ValuesProps & HtmlTableProps & HtmlProps): any => (
+}: ValuesInHtmlTableProps): any => (
   <table {...useClassName(className)}>
     {headerRow === false ? null : (
       <thead>
@@ -143,11 +130,18 @@ export const ValuesInHtmlTable: typeof ValuesInHtmlTableDecl = ({
       </thead>
     )}
     <tbody>
-      <ValuesView
-        valueComponent={ValueInHtmlTr}
-        getValueComponentProps={useGetTrProps(idColumn)}
-        {...props}
-      />
+      {arrayMap(useValueIds(store), (valueId) => (
+        <tr key={valueId}>
+          {idColumn === false ? null : <th>{valueId}</th>}
+          <td>
+            <Value
+              {...getProps(getValueComponentProps, valueId)}
+              valueId={valueId}
+              store={store}
+            />
+          </td>
+        </tr>
+      ))}
     </tbody>
   </table>
 );
