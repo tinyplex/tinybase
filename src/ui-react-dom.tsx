@@ -15,7 +15,6 @@ import {
   CellProps,
   RowProps,
   SortedTableProps,
-  StoreOrStoreId,
   TableProps,
   ValueProps,
   ValuesProps,
@@ -29,7 +28,6 @@ import {
   ValuesView,
   useTableCellIds,
 } from './ui-react';
-import {Id, Ids} from './types/common';
 import React, {useCallback} from 'react';
 import {ID} from './tools/common/strings';
 import {VALUE} from './common/strings';
@@ -44,13 +42,46 @@ const useClassName = (className?: string): {className?: string} =>
 const useGetTrProps = (idColumn = true): (() => {idColumn: boolean}) =>
   useCallback(() => ({idColumn}), [idColumn]);
 
-const useCustomOrDefaultTableCellIds = (
-  customCellIds: Ids | undefined,
-  tableId: Id,
-  store?: StoreOrStoreId,
-): Ids => {
+const HtmlTable = ({
+  headerRow,
+  idColumn,
+  className,
+  store,
+  tableId,
+  customCellIds,
+  tableComponent: Table,
+  ...props
+}: (TableProps | SortedTableProps) &
+  HtmlTableProps &
+  HtmlProps & {
+    tableComponent: typeof TableView | typeof SortedTableView;
+  }) => {
   const defaultTableCellIds = useTableCellIds(tableId, store);
-  return customCellIds ?? defaultTableCellIds;
+  const tableCellIds = customCellIds ?? defaultTableCellIds;
+  return (
+    <table {...useClassName(className)}>
+      {headerRow === false ? null : (
+        <thead>
+          <tr>
+            {idColumn === false ? null : <th>{ID}</th>}
+            {arrayMap(tableCellIds, (tableCellId) => (
+              <th key={tableCellId}>{tableCellId}</th>
+            ))}
+          </tr>
+        </thead>
+      )}
+      <tbody>
+        <Table
+          rowComponent={RowInHtmlTr}
+          getRowComponentProps={useGetTrProps(idColumn)}
+          store={store}
+          tableId={tableId}
+          customCellIds={tableCellIds}
+          {...props}
+        />
+      </tbody>
+    </table>
+  );
 };
 
 export const CellInHtmlTd: typeof CellInHtmlTdDecl = ({
@@ -74,85 +105,13 @@ export const RowInHtmlTr: typeof RowInHtmlTrDecl = ({
   </tr>
 );
 
-export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
-  headerRow,
-  idColumn,
-  className,
-  store,
-  tableId,
-  customCellIds,
-  ...props
-}: SortedTableProps & HtmlTableProps & HtmlProps): any => {
-  const tableCellIds = useCustomOrDefaultTableCellIds(
-    customCellIds,
-    tableId,
-    store,
-  );
-  return (
-    <table {...useClassName(className)}>
-      {headerRow === false ? null : (
-        <thead>
-          <tr>
-            {idColumn === false ? null : <th>{ID}</th>}
-            {arrayMap(tableCellIds, (tableCellId) => (
-              <th key={tableCellId}>{tableCellId}</th>
-            ))}
-          </tr>
-        </thead>
-      )}
-      <tbody>
-        <SortedTableView
-          rowComponent={RowInHtmlTr}
-          getRowComponentProps={useGetTrProps(idColumn)}
-          store={store}
-          tableId={tableId}
-          customCellIds={tableCellIds}
-          {...props}
-        />
-      </tbody>
-    </table>
-  );
-};
+export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = (
+  props: SortedTableProps & HtmlTableProps & HtmlProps,
+): any => <HtmlTable {...props} tableComponent={SortedTableView} />;
 
-export const TableInHtmlTable: typeof TableInHtmlTableDecl = ({
-  headerRow,
-  idColumn,
-  className,
-  store,
-  tableId,
-  customCellIds,
-  ...props
-}: TableProps & HtmlTableProps & HtmlProps): any => {
-  const tableCellIds = useCustomOrDefaultTableCellIds(
-    customCellIds,
-    tableId,
-    store,
-  );
-  return (
-    <table {...useClassName(className)}>
-      {headerRow === false ? null : (
-        <thead>
-          <tr>
-            {idColumn === false ? null : <th>{ID}</th>}
-            {arrayMap(tableCellIds, (tableCellId) => (
-              <th key={tableCellId}>{tableCellId}</th>
-            ))}
-          </tr>
-        </thead>
-      )}
-      <tbody>
-        <TableView
-          rowComponent={RowInHtmlTr}
-          getRowComponentProps={useGetTrProps(idColumn)}
-          store={store}
-          tableId={tableId}
-          customCellIds={tableCellIds}
-          {...props}
-        />
-      </tbody>
-    </table>
-  );
-};
+export const TableInHtmlTable: typeof TableInHtmlTableDecl = (
+  props: TableProps & HtmlTableProps & HtmlProps,
+): any => <HtmlTable {...props} tableComponent={TableView} />;
 
 export const ValueInHtmlTr: typeof ValueInHtmlTrDecl = ({
   idColumn,
