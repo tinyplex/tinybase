@@ -50,6 +50,7 @@ import {
 } from '../types/ui-react.d';
 import {
   Context,
+  getProps,
   useCheckpointsOrCheckpointsId,
   useIndexesOrIndexesId,
   useRelationshipsOrRelationshipsId,
@@ -80,7 +81,6 @@ import {
 } from './hooks';
 import {CheckpointIds} from '../types/checkpoints';
 import {EMPTY_STRING} from '../common/strings';
-import {IdObj} from '../common/obj';
 import {Relationships} from '../types/relationships.d';
 import {Store} from '../types/store.d';
 import {arrayMap} from '../common/array';
@@ -223,11 +223,6 @@ const getUseCheckpointView =
       separator,
     );
   };
-
-const getProps = <Props extends IdObj<any>>(
-  getProps: ((id: Id) => Props) | undefined,
-  id: Id,
-): Props => (isUndefined(getProps) ? ({} as Props) : getProps(id));
 
 export const Provider: typeof ProviderDecl = ({
   store,

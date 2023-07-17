@@ -13,6 +13,44 @@
 /// ui-react-dom
 {
   /**
+   * The Store to be accessed: omit for the default context Store, provide an Id
+   * for a named context Store, or provide an explicit reference.
+   */
+  /// ValuesInHtmlTableProps.store
+  /**
+   * A custom component for rendering each Value in the Store (to override the
+   * default ValueView component).
+   */
+  /// ValuesInHtmlTableProps.valueComponent
+  /**
+   * A function for generating extra props for each custom Value component based
+   * on its Id.
+   */
+  /// ValuesInHtmlTableProps.getValueComponentProps
+  /**
+   * A string className to use on the root of the resulting element.
+   */
+  /// ValuesInHtmlTableProps.className
+  /**
+   * Whether a header row should be rendered at the top of the table, defaulting
+   * to `true`.
+   */
+  /// ValuesInHtmlTableProps.headerRow
+  /**
+   * Whether an Id column should be rendered on the left of the table,
+   * defaulting to `true`.
+   */
+  /// ValuesInHtmlTableProps.idColumn
+}
+/**
+ * ValuesInHtmlTableProps props are used for components that will render Values
+ * in an HTML table, such as the ValuesInHtmlTable component.
+ * @category Props
+ * @since v4.1.0
+ */
+/// ValuesInHtmlTableProps
+{
+  /**
    * A string className to use on the root of the resulting element.
    */
   /// HtmlProps.className
@@ -498,65 +536,6 @@
  */
 /// TableInHtmlTable
 /**
- * The ValueInHtmlTr component renders the value of a single Value, as an
- * HTML <tr> element, and registers a listener so that any changes to that
- * result will cause a re-render.
- *
- * The component's props identify which Value to render based on Value Id and
- * Store (which is either the default context Store, a named context Store, or
- * an explicit reference).
- *
- * A Value contains a string, number, or boolean, so the value is rendered
- * directly without further decoration. You can create your own
- * ValueInHtmlTr-like component to customize the way that a Value is
- * rendered: see the ValuesInHtmlTable component for more details.
- *
- * This component uses the useValue hook under the covers, which means that any
- * changes to the specified Value will cause a re-render.
- *
- * You can use the `idColumn` prop to control whether the Id appears in a <th>
- * element at the start of the row.
- * @param props The props for this component.
- * @returns A rendering of the Value in a <tr> element.
- * @example
- * This example creates a Provider context into which a default Store is
- * provided. The ValueInHtmlTr component within it then renders the Value in
- * a <tr> element with a CSS class.
- *
- * ```jsx
- * const App = ({store}) => (
- *   <Provider store={store}>
- *     <Pane />
- *   </Provider>
- * );
- * const Pane = () => (
- *   <table>
- *     <tbody>
- *       <ValueInHtmlTr valueId="open" className="value" />
- *     </tbody>
- *   </table>
- * );
- *
- * const store = createStore().setValue('open', true);
- * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
- * console.log(app.innerHTML);
- * // -> `
- * <table>
- *   <tbody>
- *     <tr class="value">
- *       <th>open</th>
- *       <td>true</td>
- *     </tr>
- *   </tbody>
- * </table>
- * `
- * ```
- * @category Store components
- * @since v4.1.0
- */
-/// ValueInHtmlTr
-/**
  * The ValuesInHtmlTable component renders the keyed value contents of a Store
  * as an HTML <table> element, and registers a listener so that any changes to
  * that result will cause a re-render.
@@ -566,8 +545,8 @@
  * or an explicit reference).
  *
  * This component renders a Store by iterating over its Value objects. By
- * default these are in turn rendered with the ValueInHtmlTr component, but
- * you can override this behavior by providing a `valueComponent` prop, a custom
+ * default these are in turn rendered with the ValueInHtmlTr component, but you
+ * can override this behavior by providing a `valueComponent` prop, a custom
  * component of your own that will render a Value based on ValueProps. You can
  * also pass additional props to your custom component with the
  * `getValueComponentProps` callback prop.
@@ -576,11 +555,9 @@
  * any changes to the structure of the Values in the Store will cause a
  * re-render.
  *
- * You are discouraged from using the `separator` and `debugIds` props with this
- * component as they will insert raw text into the <table> element. However, you
- * can use the `headerRow` and `idColumn` props to control whether labels and
- * Ids appear in a <th> element at the top of the table, and the start of each
- * row.
+ * You can use the `headerRow` and `idColumn` props to control whether labels
+ * and Ids appear in a <th> element at the top of the table, and the start of
+ * each row.
  * @param props The props for this component.
  * @returns A rendering of the Values in a <table> element.
  * @example
@@ -644,13 +621,11 @@
  *   />
  * );
  * const FormattedValueView = ({valueId, bold}) => (
- *   <tr>
- *     <td>
- *       {bold ? <b>{valueId}</b> : valueId}
- *       {': '}
- *       <ValueView valueId={valueId} />
- *     </td>
- *   </tr>
+ *   <>
+ *     {bold ? <b>{valueId}</b> : valueId}
+ *     {': '}
+ *     <ValueView valueId={valueId} />
+ *   </>
  * );
  *
  * const store = createStore().setValues({open: true, employees: 3});

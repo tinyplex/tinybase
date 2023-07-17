@@ -82,6 +82,11 @@ const useThingOrThingId = <
     : (thingOrThingId as Thing);
 };
 
+export const getProps = <Props extends IdObj<any>>(
+  getProps: ((id: Id) => Props) | undefined,
+  id: Id,
+): Props => (isUndefined(getProps) ? ({} as Props) : getProps(id));
+
 export const useStore: typeof useStoreDecl = (id?: Id): Store | undefined =>
   useThing(id, 0);
 
