@@ -114,6 +114,11 @@
    * Row's Cells in a given order.
    */
   /// SortedTableInHtmlTableProps.customCellIds
+  /**
+   * Whether the table should be interactive such that clicking a header changes
+   * the sorting and/or direction.
+   */
+  /// SortedTableInHtmlTableProps.sortOnClick
 }
 /**
  * SortedTableInHtmlTableProps props are used for components that will render a
@@ -303,6 +308,11 @@
  *
  * You can use the `headerRow` and `idColumn` props to control whether the Ids
  * appear in a <th> element at the top of the table, and the start of each row.
+ *
+ * The `sortOnClick` prop makes the table's sorting interactive such that the
+ * user can click on a column heading to sort by that column. The style classes
+ * `sorted` and `ascending` (or `descending`) are added so that you can provide
+ * hints to the user how the sorting is being applied.
  * @param props The props for this component.
  * @returns A rendering of the Table in a <table> element.
  * @example
@@ -339,7 +349,7 @@
  *   <thead>
  *     <tr>
  *       <th>Id</th>
- *       <th>species</th>
+ *       <th class="sorted ascending">species</th>
  *     </tr>
  *   </thead>
  *   <tbody>
