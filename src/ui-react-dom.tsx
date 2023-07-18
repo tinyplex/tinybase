@@ -22,12 +22,8 @@ import React from 'react';
 import {VALUE} from './common/strings';
 import {arrayMap} from './common/array';
 import {getProps} from './ui-react/common';
-import {isUndefined} from './common/other';
 
 const {createElement} = React;
-
-const useClassName = (className?: string): {className?: string} =>
-  isUndefined(className) ? {} : {className};
 
 const HtmlTable = ({
   tableId,
@@ -45,7 +41,7 @@ const HtmlTable = ({
   const defaultCellIds = useTableCellIds(tableId, store);
   const cellIds = customCellIds ?? defaultCellIds;
   return (
-    <table {...useClassName(className)}>
+    <table className={className}>
       {headerRow === false ? null : (
         <thead>
           <tr>
@@ -116,7 +112,7 @@ export const ValuesInHtmlTable: typeof ValuesInHtmlTableDecl = ({
   headerRow,
   idColumn,
 }: ValuesInHtmlTableProps): any => (
-  <table {...useClassName(className)}>
+  <table className={className}>
     {headerRow === false ? null : (
       <thead>
         <tr>
