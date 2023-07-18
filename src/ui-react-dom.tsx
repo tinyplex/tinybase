@@ -8,6 +8,7 @@ import {
   useTableCellIds,
   useValueIds,
 } from './ui-react';
+import {EMPTY_STRING, VALUE} from './common/strings';
 import {IdOrNull, Ids} from './types/common';
 import {
   SortedTableInHtmlTable as SortedTableInHtmlTableDecl,
@@ -17,9 +18,7 @@ import {
   ValuesInHtmlTable as ValuesInHtmlTableDecl,
   ValuesInHtmlTableProps,
 } from './types/ui-react-dom.d';
-import {ID} from './tools/common/strings';
 import React from 'react';
-import {VALUE} from './common/strings';
 import {arrayMap} from './common/array';
 import {getProps} from './ui-react/common';
 import {isUndefined} from './common/other';
@@ -35,6 +34,18 @@ const sortedClassName = (
     : sorted[0] != cellId
     ? undefined
     : `sorted ${sorted[1] ? 'de' : 'a'}scending`;
+
+const HtmlHeaderTh = ({
+  cellId,
+  sorted,
+  label = cellId ?? EMPTY_STRING,
+}: {
+  cellId: IdOrNull;
+  sorted?: [IdOrNull, boolean?];
+  label?: string;
+}) => {
+  return <th className={sortedClassName(sorted, cellId)}>{label}</th>;
+};
 
 const HtmlTable = ({
   tableId,
@@ -59,12 +70,10 @@ const HtmlTable = ({
         <thead>
           <tr>
             {idColumn === false ? null : (
-              <th className={sortedClassName(sorted, null)}>{ID}</th>
+              <HtmlHeaderTh cellId={null} sorted={sorted} label="Id" />
             )}
             {arrayMap(cellIds, (cellId) => (
-              <th key={cellId} className={sortedClassName(sorted, cellId)}>
-                {cellId}
-              </th>
+              <HtmlHeaderTh key={cellId} cellId={cellId} sorted={sorted} />
             ))}
           </tr>
         </thead>
@@ -134,7 +143,7 @@ export const ValuesInHtmlTable: typeof ValuesInHtmlTableDecl = ({
     {headerRow === false ? null : (
       <thead>
         <tr>
-          {idColumn === false ? null : <th>{ID}</th>}
+          {idColumn === false ? null : <th>Id</th>}
           <th>{VALUE}</th>
         </tr>
       </thead>
