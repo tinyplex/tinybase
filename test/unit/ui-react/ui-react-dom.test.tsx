@@ -1,15 +1,13 @@
 /* eslint-disable max-len */
 /* eslint-disable react/jsx-no-useless-fragment */
 
+import {Ids, Store, createStore} from 'tinybase/debug';
+import {ReactTestRenderer, act, create} from 'react-test-renderer';
 import {
-  CellInHtmlTd,
-  RowInHtmlTr,
   SortedTableInHtmlTable,
   TableInHtmlTable,
   ValuesInHtmlTable,
 } from 'tinybase/debug/ui-react-dom';
-import {Id, Store, createStore} from 'tinybase/debug';
-import {ReactTestRenderer, act, create} from 'react-test-renderer';
 import {ExtraProps} from 'tinybase/debug/ui-react';
 import React from 'react';
 
@@ -20,7 +18,7 @@ const Custom = ({store: _store, ...props}: ExtraProps) => (
   <b>{JSON.stringify(props)}</b>
 );
 
-const getIdAsProp = (id: Id) => ({id});
+const getIdsAsProp = (...ids: Ids) => ({...ids});
 
 beforeEach(() => {
   store = createStore()
@@ -84,8 +82,8 @@ describe('Read Components', () => {
           <TableInHtmlTable
             store={store}
             tableId="t2"
-            rowComponent={Custom}
-            getRowComponentProps={getIdAsProp}
+            cellComponent={Custom}
+            getCellComponentProps={getIdsAsProp}
           />,
         );
       });
@@ -105,12 +103,36 @@ describe('Read Components', () => {
             </tr>
           </thead>
           <tbody>
-            <b>
-              {"id":"r1","tableId":"t2","rowId":"r1","customCellIds":["c1","c2"]}
-            </b>
-            <b>
-              {"id":"r2","tableId":"t2","rowId":"r2","customCellIds":["c1","c2"]}
-            </b>
+            <tr>
+              <th>
+                r1
+              </th>
+              <td>
+                <b>
+                  {"0":"r1","1":"c1","tableId":"t2","rowId":"r1","cellId":"c1"}
+                </b>
+              </td>
+              <td>
+                <b>
+                  {"0":"r1","1":"c2","tableId":"t2","rowId":"r1","cellId":"c2"}
+                </b>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                r2
+              </th>
+              <td>
+                <b>
+                  {"0":"r2","1":"c1","tableId":"t2","rowId":"r2","cellId":"c1"}
+                </b>
+              </td>
+              <td>
+                <b>
+                  {"0":"r2","1":"c2","tableId":"t2","rowId":"r2","cellId":"c2"}
+                </b>
+              </td>
+            </tr>
           </tbody>
         </table>
       `);
@@ -346,8 +368,8 @@ describe('Read Components', () => {
             tableId="t2"
             cellId="c1"
             descending={true}
-            rowComponent={Custom}
-            getRowComponentProps={getIdAsProp}
+            cellComponent={Custom}
+            getCellComponentProps={getIdsAsProp}
           />,
         );
       });
@@ -367,12 +389,36 @@ describe('Read Components', () => {
             </tr>
           </thead>
           <tbody>
-            <b>
-              {"id":"r2","tableId":"t2","rowId":"r2","customCellIds":["c1","c2"]}
-            </b>
-            <b>
-              {"id":"r1","tableId":"t2","rowId":"r1","customCellIds":["c1","c2"]}
-            </b>
+            <tr>
+              <th>
+                r2
+              </th>
+              <td>
+                <b>
+                  {"0":"r2","1":"c1","tableId":"t2","rowId":"r2","cellId":"c1"}
+                </b>
+              </td>
+              <td>
+                <b>
+                  {"0":"r2","1":"c2","tableId":"t2","rowId":"r2","cellId":"c2"}
+                </b>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                r1
+              </th>
+              <td>
+                <b>
+                  {"0":"r1","1":"c1","tableId":"t2","rowId":"r1","cellId":"c1"}
+                </b>
+              </td>
+              <td>
+                <b>
+                  {"0":"r1","1":"c2","tableId":"t2","rowId":"r1","cellId":"c2"}
+                </b>
+              </td>
+            </tr>
           </tbody>
         </table>
       `);
@@ -567,162 +613,6 @@ describe('Read Components', () => {
     });
   });
 
-  describe('DomRowView', () => {
-    test('basic', () => {
-      act(() => {
-        renderer = create(
-          <RowInHtmlTr store={store} tableId="t2" rowId="r2" />,
-        );
-      });
-      expect(renderer.toJSON()).toMatchInlineSnapshot(`
-        <tr>
-          <th>
-            r2
-          </th>
-          <td>
-            3
-          </td>
-          <td>
-            4
-          </td>
-        </tr>
-      `);
-    });
-
-    test('custom', () => {
-      act(() => {
-        renderer = create(
-          <RowInHtmlTr
-            store={store}
-            tableId="t2"
-            rowId="r2"
-            cellComponent={Custom}
-            getCellComponentProps={getIdAsProp}
-          />,
-        );
-      });
-      expect(renderer.toJSON()).toMatchInlineSnapshot(`
-        <tr>
-          <th>
-            r2
-          </th>
-          <b>
-            {"id":"c1","tableId":"t2","rowId":"r2","cellId":"c1"}
-          </b>
-          <b>
-            {"id":"c2","tableId":"t2","rowId":"r2","cellId":"c2"}
-          </b>
-        </tr>
-      `);
-    });
-
-    test('className', () => {
-      act(() => {
-        renderer = create(
-          <RowInHtmlTr store={store} tableId="t2" rowId="r2" className="row" />,
-        );
-      });
-      expect(renderer.toJSON()).toMatchInlineSnapshot(`
-        <tr
-          className="row"
-        >
-          <th>
-            r2
-          </th>
-          <td>
-            3
-          </td>
-          <td>
-            4
-          </td>
-        </tr>
-      `);
-    });
-
-    test('idColumn', () => {
-      act(() => {
-        renderer = create(
-          <RowInHtmlTr
-            store={store}
-            tableId="t2"
-            rowId="r2"
-            idColumn={false}
-          />,
-        );
-      });
-      expect(renderer.toJSON()).toMatchInlineSnapshot(`
-        <tr>
-          <td>
-            3
-          </td>
-          <td>
-            4
-          </td>
-        </tr>
-      `);
-    });
-
-    test('customCellIds', () => {
-      act(() => {
-        renderer = create(
-          <RowInHtmlTr
-            store={store}
-            tableId="t2"
-            rowId="r2"
-            customCellIds={['c3', 'c2']}
-          />,
-        );
-      });
-      expect(renderer.toJSON()).toMatchInlineSnapshot(`
-        <tr>
-          <th>
-            r2
-          </th>
-          <td />
-          <td>
-            4
-          </td>
-        </tr>
-      `);
-    });
-  });
-
-  describe('DomCellView', () => {
-    test('basic', () => {
-      act(() => {
-        renderer = create(
-          <CellInHtmlTd store={store} tableId="t2" rowId="r2" cellId="c2" />,
-        );
-      });
-      expect(renderer.toJSON()).toMatchInlineSnapshot(`
-        <td>
-          4
-        </td>
-      `);
-    });
-
-    test('className', () => {
-      act(() => {
-        renderer = create(
-          <CellInHtmlTd
-            store={store}
-            tableId="t2"
-            rowId="r2"
-            cellId="c2"
-            className="cell"
-          />,
-        );
-      });
-      expect(renderer.toJSON()).toMatchInlineSnapshot(`
-        <td
-          className="cell"
-        >
-          4
-        </td>
-      `);
-    });
-  });
-
   describe('ValuesInHtmlTable', () => {
     test('basic', () => {
       act(() => {
@@ -768,7 +658,7 @@ describe('Read Components', () => {
           <ValuesInHtmlTable
             store={store}
             valueComponent={Custom}
-            getValueComponentProps={getIdAsProp}
+            getValueComponentProps={getIdsAsProp}
           />,
         );
       });
@@ -791,7 +681,7 @@ describe('Read Components', () => {
               </th>
               <td>
                 <b>
-                  {"id":"v1","valueId":"v1"}
+                  {"0":"v1","valueId":"v1"}
                 </b>
               </td>
             </tr>
@@ -801,7 +691,7 @@ describe('Read Components', () => {
               </th>
               <td>
                 <b>
-                  {"id":"v2","valueId":"v2"}
+                  {"0":"v2","valueId":"v2"}
                 </b>
               </td>
             </tr>

@@ -12,10 +12,10 @@ import {
   useRelationships as useRelationshipsDecl,
   useStore as useStoreDecl,
 } from '../types/ui-react.d';
+import {Id, Ids} from '../types/common.d';
 import {IdObj, objGet} from '../common/obj';
 import {isString, isUndefined} from '../common/other';
 import {Checkpoints} from '../types/checkpoints';
-import {Id} from '../types/common.d';
 import {Indexes} from '../types/indexes.d';
 import {Metrics} from '../types/metrics.d';
 import {Queries} from '../types/queries.d';
@@ -83,9 +83,9 @@ const useThingOrThingId = <
 };
 
 export const getProps = <Props extends IdObj<any>>(
-  getProps: ((id: Id) => Props) | undefined,
-  id: Id,
-): Props => (isUndefined(getProps) ? ({} as Props) : getProps(id));
+  getProps: ((...ids: Ids) => Props) | undefined,
+  ...ids: Ids
+): Props => (isUndefined(getProps) ? ({} as Props) : getProps(...ids));
 
 export const useStore: typeof useStoreDecl = (id?: Id): Store | undefined =>
   useThing(id, 0);
