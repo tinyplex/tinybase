@@ -13,6 +13,117 @@
 /// ui-react-dom
 {
   /**
+   * The Id of the Table in the Store to be rendered.
+   */
+  /// TableInHtmlTableProps.tableId
+  /**
+   * The Store to be accessed: omit for the default context Store, provide an Id
+   * for a named context Store, or provide an explicit reference.
+   */
+  /// TableInHtmlTableProps.store
+  /**
+   * A custom component for rendering each Cell in the Table (to override the
+   * default CellView component).
+   */
+  /// TableInHtmlTableProps.cellComponent
+  /**
+   * A function for generating extra props for each custom Cell component based
+   * on its Id.
+   */
+  /// TableInHtmlTableProps.getCellComponentProps
+  /**
+   * A string className to use on the root of the resulting element.
+   */
+  /// TableInHtmlTableProps.className
+  /**
+   * Whether a header row should be rendered at the top of the table, defaulting
+   * to `true`.
+   */
+  /// TableInHtmlTableProps.headerRow
+  /**
+   * Whether an Id column should be rendered on the left of the table,
+   * defaulting to `true`.
+   */
+  /// TableInHtmlTableProps.idColumn
+  /**
+   * An optional list of Cell Ids to use for rendering a prescribed set of the
+   * Row's Cells in a given order.
+   */
+  /// TableInHtmlTableProps.customCellIds
+}
+/**
+ * TableInHtmlTableProps props are used for components that will render a
+ * Table in an HTML table, such as the TableInHtmlTableProps component.
+ * @category Props
+ * @since v4.1.0
+ */
+/// TableInHtmlTableProps
+{
+  /**
+   * The Id of the Table in the Store to be rendered.
+   */
+  /// SortedTableInHtmlTableProps.tableId
+  /**
+   * The Id of the Cell whose values are used for the sorting. If omitted, the
+   * view will sort the Row Id itself.
+   */
+  /// SortedTableInHtmlTableProps.cellId
+  /**
+   * Whether the sorting should be in descending order.
+   */
+  /// SortedTableInHtmlTableProps.descending
+  /**
+   * The number of Row Ids to skip for pagination purposes.
+   */
+  /// SortedTableInHtmlTableProps.offset
+  /**
+   * The maximum number of Row Ids to return.
+   */
+  /// SortedTableInHtmlTableProps.limit
+  /**
+   * The Store to be accessed: omit for the default context Store, provide an Id
+   * for a named context Store, or provide an explicit reference.
+   */
+  /// SortedTableInHtmlTableProps.store
+  /**
+   * A custom component for rendering each Cell in the Table (to override the
+   * default CellView component).
+   */
+  /// SortedTableInHtmlTableProps.cellComponent
+  /**
+   * A function for generating extra props for each custom Cell component based
+   * on its Id.
+   */
+  /// SortedTableInHtmlTableProps.getCellComponentProps
+  /**
+   * A string className to use on the root of the resulting element.
+   */
+  /// SortedTableInHtmlTableProps.className
+  /**
+   * Whether a header row should be rendered at the top of the table, defaulting
+   * to `true`.
+   */
+  /// SortedTableInHtmlTableProps.headerRow
+  /**
+   * Whether an Id column should be rendered on the left of the table,
+   * defaulting to `true`.
+   */
+  /// SortedTableInHtmlTableProps.idColumn
+  /**
+   * An optional list of Cell Ids to use for rendering a prescribed set of the
+   * Row's Cells in a given order.
+   */
+  /// SortedTableInHtmlTableProps.customCellIds
+}
+/**
+ * SortedTableInHtmlTableProps props are used for components that will render a
+ * sorted Table in an HTML table, such as the SortedTableInHtmlTable component.
+ * @category Props
+ * @since v4.1.0
+ */
+/// SortedTableInHtmlTableProps
+{
+  /**
    * The Store to be accessed: omit for the default context Store, provide an Id
    * for a named context Store, or provide an explicit reference.
    */
@@ -49,73 +160,33 @@
  * @since v4.1.0
  */
 /// ValuesInHtmlTableProps
-{
-  /**
-   * A string className to use on the root of the resulting element.
-   */
-  /// HtmlProps.className
-}
 /**
- * HtmlProps props are used for components that will render HTML DOM elements.
- * @category Props
- * @since v4.1.0
- */
-/// HtmlProps
-{
-  /**
-   * Whether a header row should be rendered at the top of the table, defaulting
-   * to `true`.
-   */
-  /// HtmlTableProps.headerRow
-  /**
-   * Whether an Id column should be rendered on the left of the table,
-   * defaulting to `true`.
-   */
-  /// HtmlTableProps.idColumn
-}
-/**
- * HtmlTableProps props are used for components that will render HTML <table>
- * elements.
- * @category Props
- * @since v4.1.0
- */
-/// HtmlTableProps
-{
-  /**
-   * Whether an Id column should be rendered on the left of the table,
-   * defaulting to `true`.
-   */
-  /// HtmlTrProps.idColumn
-}
-/**
- * HtmlTrProps props are used for components that will render HTML <tr>
- * elements.
- * @category Props
- * @since v4.1.0
- */
-/// HtmlTrProps
-/**
- * The CellInHtmlTd component renders the value of a single Cell in a given
- * Row, in a given Table, as an HTML <td> element, and registers a listener so
- * that any changes to that result will cause a re-render.
+ * The TableInHtmlTable component renders the contents of a single Table in a
+ * Store as an HTML <table> element, and registers a listener so that any
+ * changes to that result will cause a re-render.
  *
- * The component's props identify which Cell to render based on Table Id, Row
- * Id, Cell Id, and Store (which is either the default context Store, a named
- * context Store, or an explicit reference).
+ * The component's props identify which Table to render based on Table Id, and
+ * Store (which is either the default context Store, a named context Store, or
+ * by explicit reference).
  *
- * A Cell contains a string, number, or boolean, so the value is rendered
- * directly without further decoration. You can create your own
- * CellInHtmlTd-like component to customize the way that a Cell is rendered:
- * see the RowInHtmlTr component for more details.
+ * This component renders a Table by iterating over its Row objects. By default
+ * these are in turn rendered with the RowInHtmlTr component, but you can
+ * override this behavior by providing a `rowComponent` prop, a custom component
+ * of your own that will render a Row based on RowProps. You can also pass
+ * additional props to your custom component with the `getRowComponentProps`
+ * callback prop.
  *
- * This component uses the useCell hook under the covers, which means that any
- * changes to the specified Cell will cause a re-render.
+ * This component uses the useRowIds hook under the covers, which means that any
+ * changes to the structure of the Table will cause a re-render.
+ *
+ * You can use the `headerRow` and `idColumn` props to control whether the Ids
+ * appear in a <th> element at the top of the table, and the start of each row.
  * @param props The props for this component.
- * @returns A rendering of the Cell in a <td> element.
+ * @returns A rendering of the Table in a <table> element.
  * @example
  * This example creates a Provider context into which a default Store is
- * provided. The CellInHtmlTd component within it then renders the Cell in a
- * <td> element with a CSS class.
+ * provided. The TableInHtmlTable component within it then renders the Table in
+ * a <table> element with a CSS class.
  *
  * ```jsx
  * const App = ({store}) => (
@@ -124,91 +195,32 @@
  *   </Provider>
  * );
  * const Pane = () => (
- *   <table>
- *     <tbody>
- *       <tr>
- *         <CellInHtmlTd
- *           tableId="pets"
- *           rowId="fido"
- *           cellId="color"
- *           className="cell"
- *         />
- *       </tr>
- *     </tbody>
- *   </table>
+ *   <TableInHtmlTable tableId="pets" className="table" />
  * );
  *
- * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
- * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
- * console.log(app.innerHTML);
- * // -> '<table><tbody><tr><td class="cell">brown</td></tr></tbody></table>'
- * ```
- * @category Store components
- * @since v4.1.0
- */
-/// CellInHtmlTd
-/**
- * The RowInHtmlTr component renders the contents of a single Row in a given
- * Table, as an HTML <tr> element, and registers a listener so that any changes
- * to that result will cause a re-render.
- *
- * The component's props identify which Row to render based on Table Id, Row Id,
- * and Store (which is either the default context Store, a named context Store,
- * or an explicit reference).
- *
- * This component renders a Row by iterating over its Cell values. By default
- * these are in turn rendered with the CellInHtmlTd component, but you can
- * override this behavior by providing a `cellComponent` prop, a custom
- * component of your own that will render a Cell based on CellProps. You can
- * also pass additional props to your custom component with the
- * `getCellComponentProps` callback prop.
- *
- * You can create your own RowInHtmlTr-like component to customize the way that
- * a Row is rendered: see the TableInHtmlTable component for more details.
- *
- * This component uses the useCellIds hook under the covers, which means that
- * any changes to the structure of the Row will cause a re-render.
- *
- * You are discouraged from using the `separator` and `debugIds` props with this
- * component as they will insert raw text into the <tr> element. However, you
- * can use the `idColumn` prop to control whether the Id appears in a <th>
- * element at the start of the row.
- * @param props The props for this component.
- * @returns A rendering of the Row in a <tr> element.
- * @example
- * This example creates a Provider context into which a default Store is
- * provided. The RowInHtmlTr component within it then renders the Row in a
- * <tr> element with a CSS class.
- *
- * ```jsx
- * const App = ({store}) => (
- *   <Provider store={store}>
- *     <Pane />
- *   </Provider>
- * );
- * const Pane = () => (
- *   <table>
- *     <tbody>
- *       <RowInHtmlTr tableId="pets" rowId="fido" className="row" />
- *     </tbody>
- *   </table>
- * );
- *
- * const store = createStore().setRow('pets', 'fido', {
- *   species: 'dog',
- *   color: 'walnut',
+ * const store = createStore().setTable('pets', {
+ *   fido: {species: 'dog'},
+ *   felix: {species: 'cat'},
  * });
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> `
- * <table>
+ * <table class="table">
+ *   <thead>
+ *     <tr>
+ *       <th>Id</th>
+ *       <th>species</th>
+ *     </tr>
+ *   </thead>
  *   <tbody>
- *     <tr class="row">
+ *     <tr>
  *       <th>fido</th>
  *       <td>dog</td>
- *       <td>walnut</td>
+ *     </tr>
+ *     <tr>
+ *       <th>felix</th>
+ *       <td>cat</td>
  *     </tr>
  *   </tbody>
  * </table>
@@ -216,9 +228,9 @@
  * ```
  * @example
  * This example creates a Provider context into which a default Store is
- * provided. The RowInHtmlTr component within it then renders the Row with a
- * custom Cell component and a custom props callback. The Id column at the start
- * of the row is removed.
+ * provided. The TableInHtmlTable component within it then renders the Table
+ * with a custom Row component and a custom props callback. The header row at
+ * the top of the table and the Id column at the start of each row is removed.
  *
  * ```jsx
  * const App = ({store}) => (
@@ -227,29 +239,28 @@
  *   </Provider>
  * );
  * const Pane = () => (
- *   <table>
- *     <tbody>
- *       <RowInHtmlTr
- *         tableId="pets"
- *         rowId="fido"
- *         cellComponent={FormattedCellView}
- *         getCellComponentProps={(cellId) => ({bold: cellId == 'species'})}
- *         idColumn={false}
- *       />
- *     </tbody>
- *   </table>
+ *   <TableInHtmlTable
+ *     tableId="pets"
+ *     cellComponent={FormattedCellView}
+ *     getCellComponentProps={(rowId, cellId) => ({bold: rowId == 'fido'})}
+ *     headerRow={false}
+ *     idColumn={false}
+ *   />
  * );
  * const FormattedCellView = ({tableId, rowId, cellId, bold}) => (
- *   <td>
- *     {bold ? <b>{cellId}</b> : cellId}
- *     {': '}
- *     <CellView tableId={tableId} rowId={rowId} cellId={cellId} />
- *   </td>
+ *   <>
+ *     {bold ? <b>{rowId}</b> : rowId}:
+ *     <CellView
+ *       tableId={tableId}
+ *       rowId={rowId}
+ *       cellId={cellId}
+ *     />
+ *   </>
  * );
  *
- * const store = createStore().setRow('pets', 'fido', {
- *   species: 'dog',
- *   color: 'walnut',
+ * const store = createStore().setTable('pets', {
+ *   fido: {species: 'dog'},
+ *   felix: {species: 'cat'},
  * });
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
@@ -258,8 +269,10 @@
  * <table>
  *   <tbody>
  *     <tr>
- *       <td><b>species</b>: dog</td>
- *       <td>color: walnut</td>
+ *       <td><b>fido</b>:dog</td>
+ *     </tr>
+ *     <tr>
+ *       <td>felix:cat</td>
  *     </tr>
  *   </tbody>
  * </table>
@@ -268,7 +281,7 @@
  * @category Store components
  * @since v4.1.0
  */
-/// RowInHtmlTr
+/// TableInHtmlTable
 /**
  * The SortedTableInHtmlTable component renders the contents of a single sorted
  * Table in a Store, as an HTML <table> element, and registers a listener so
@@ -292,9 +305,7 @@
  * that any changes to the structure or sorting of the Table will cause a
  * re-render.
  *
- * You are discouraged from using the `separator` and `debugIds` props with this
- * component as they will insert raw text into the <table> element. However, you
- * can use the `headerRow` and `idColumn` props to control whether the Ids
+ * You can use the `headerRow` and `idColumn` props to control whether the Ids
  * appear in a <th> element at the top of the table, and the start of each row.
  * @param props The props for this component.
  * @returns A rendering of the Table in a <table> element.
@@ -364,21 +375,21 @@
  *   <SortedTableInHtmlTable
  *     tableId="pets"
  *     cellId="species"
- *     rowComponent={FormattedRowView}
- *     getRowComponentProps={(rowId) => ({bold: rowId == 'fido'})}
+ *     cellComponent={FormattedCellView}
+ *     getCellComponentProps={(rowId, cellId) => ({bold: rowId == 'fido'})}
  *     headerRow={false}
  *     idColumn={false}
  *   />
  * );
- * const FormattedRowView = ({tableId, rowId, bold}) => (
- *   <tr>
- *     <td>{bold ? <b>{rowId}</b> : rowId}</td>
- *     <RowView
+ * const FormattedCellView = ({tableId, rowId, cellId, bold}) => (
+ *   <>
+ *     {bold ? <b>{rowId}</b> : rowId}:
+ *     <CellView
  *       tableId={tableId}
  *       rowId={rowId}
- *       cellComponent={CellInHtmlTd}
+ *       cellId={cellId}
  *     />
- *   </tr>
+ *   </>
  * );
  *
  * const store = createStore().setTables({
@@ -394,12 +405,10 @@
  * <table>
  *   <tbody>
  *     <tr>
- *       <td>felix</td>
- *       <td>cat</td>
+ *       <td>felix:cat</td>
  *     </tr>
  *     <tr>
- *       <td><b>fido</b></td>
- *       <td>dog</td>
+ *       <td><b>fido</b>:dog</td>
  *     </tr>
  *   </tbody>
  * </table>
@@ -409,132 +418,6 @@
  * @since v4.1.0
  */
 /// SortedTableInHtmlTable
-/**
- * The TableInHtmlTable component renders the contents of a single Table in a
- * Store as an HTML <table> element, and registers a listener so that any
- * changes to that result will cause a re-render.
- *
- * The component's props identify which Table to render based on Table Id, and
- * Store (which is either the default context Store, a named context Store, or
- * by explicit reference).
- *
- * This component renders a Table by iterating over its Row objects. By default
- * these are in turn rendered with the RowInHtmlTr component, but you can
- * override this behavior by providing a `rowComponent` prop, a custom component
- * of your own that will render a Row based on RowProps. You can also pass
- * additional props to your custom component with the `getRowComponentProps`
- * callback prop.
- *
- * This component uses the useRowIds hook under the covers, which means that any
- * changes to the structure of the Table will cause a re-render.
- *
- * You are discouraged from using the `separator` and `debugIds` props with this
- * component as they will insert raw text into the <table> element. However, you
- * can use the `headerRow` and `idColumn` props to control whether the Ids
- * appear in a <th> element at the top of the table, and the start of each row.
- * @param props The props for this component.
- * @returns A rendering of the Table in a <table> element.
- * @example
- * This example creates a Provider context into which a default Store is
- * provided. The TableInHtmlTable component within it then renders the Table in
- * a <table> element with a CSS class.
- *
- * ```jsx
- * const App = ({store}) => (
- *   <Provider store={store}>
- *     <Pane />
- *   </Provider>
- * );
- * const Pane = () => (
- *   <TableInHtmlTable tableId="pets" className="row" />
- * );
- *
- * const store = createStore().setTable('pets', {
- *   fido: {species: 'dog'},
- *   felix: {species: 'cat'},
- * });
- * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
- * console.log(app.innerHTML);
- * // -> `
- * <table class="row">
- *   <thead>
- *     <tr>
- *       <th>Id</th>
- *       <th>species</th>
- *     </tr>
- *   </thead>
- *   <tbody>
- *     <tr>
- *       <th>fido</th>
- *       <td>dog</td>
- *     </tr>
- *     <tr>
- *       <th>felix</th>
- *       <td>cat</td>
- *     </tr>
- *   </tbody>
- * </table>
- * `
- * ```
- * @example
- * This example creates a Provider context into which a default Store is
- * provided. The TableInHtmlTable component within it then renders the Table
- * with a custom Row component and a custom props callback. The header row at
- * the top of the table and the Id column at the start of each row is removed.
- *
- * ```jsx
- * const App = ({store}) => (
- *   <Provider store={store}>
- *     <Pane />
- *   </Provider>
- * );
- * const Pane = () => (
- *   <TableInHtmlTable
- *     tableId="pets"
- *     rowComponent={FormattedRowView}
- *     getRowComponentProps={(rowId) => ({bold: rowId == 'fido'})}
- *     headerRow={false}
- *     idColumn={false}
- *   />
- * );
- * const FormattedRowView = ({tableId, rowId, bold}) => (
- *   <tr>
- *     <td>{bold ? <b>{rowId}</b> : rowId}</td>
- *     <RowView
- *       tableId={tableId}
- *       rowId={rowId}
- *       cellComponent={CellInHtmlTd}
- *     />
- *   </tr>
- * );
- *
- * const store = createStore().setTable('pets', {
- *   fido: {species: 'dog'},
- *   felix: {species: 'cat'},
- * });
- * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
- * console.log(app.innerHTML);
- * // -> `
- * <table>
- *   <tbody>
- *     <tr>
- *       <td><b>fido</b></td>
- *       <td>dog</td>
- *     </tr>
- *     <tr>
- *       <td>felix</td>
- *       <td>cat</td>
- *     </tr>
- *   </tbody>
- * </table>
- * `
- * ```
- * @category Store components
- * @since v4.1.0
- */
-/// TableInHtmlTable
 /**
  * The ValuesInHtmlTable component renders the keyed value contents of a Store
  * as an HTML <table> element, and registers a listener so that any changes to
