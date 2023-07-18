@@ -194,9 +194,7 @@
  *     <Pane />
  *   </Provider>
  * );
- * const Pane = () => (
- *   <TableInHtmlTable tableId="pets" className="table" />
- * );
+ * const Pane = () => <TableInHtmlTable tableId="pets" className="table" />;
  *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog'},
@@ -205,7 +203,8 @@
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
- * // -> `
+ * // ->
+ * `
  * <table class="table">
  *   <thead>
  *     <tr>
@@ -224,7 +223,7 @@
  *     </tr>
  *   </tbody>
  * </table>
- * `
+ * `;
  * ```
  * @example
  * This example creates a Provider context into which a default Store is
@@ -250,11 +249,7 @@
  * const FormattedCellView = ({tableId, rowId, cellId, bold}) => (
  *   <>
  *     {bold ? <b>{rowId}</b> : rowId}:
- *     <CellView
- *       tableId={tableId}
- *       rowId={rowId}
- *       cellId={cellId}
- *     />
+ *     <CellView tableId={tableId} rowId={rowId} cellId={cellId} />
  *   </>
  * );
  *
@@ -265,7 +260,8 @@
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
- * // -> `
+ * // ->
+ * `
  * <table>
  *   <tbody>
  *     <tr>
@@ -276,7 +272,7 @@
  *     </tr>
  *   </tbody>
  * </table>
- * `
+ * `;
  * ```
  * @category Store components
  * @since v4.1.0
@@ -337,7 +333,8 @@
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
- * // -> `
+ * // ->
+ * `
  * <table class="table">
  *   <thead>
  *     <tr>
@@ -356,7 +353,7 @@
  *     </tr>
  *   </tbody>
  * </table>
- * `
+ * `;
  * ```
  * @example
  * This example creates a Provider context into which a default Store is
@@ -384,11 +381,7 @@
  * const FormattedCellView = ({tableId, rowId, cellId, bold}) => (
  *   <>
  *     {bold ? <b>{rowId}</b> : rowId}:
- *     <CellView
- *       tableId={tableId}
- *       rowId={rowId}
- *       cellId={cellId}
- *     />
+ *     <CellView tableId={tableId} rowId={rowId} cellId={cellId} />
  *   </>
  * );
  *
@@ -401,7 +394,8 @@
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
- * // -> `
+ * // ->
+ * `
  * <table>
  *   <tbody>
  *     <tr>
@@ -412,7 +406,7 @@
  *     </tr>
  *   </tbody>
  * </table>
- * `
+ * `;
  * ```
  * @category Store components
  * @since v4.1.0
@@ -454,15 +448,14 @@
  *     <Pane />
  *   </Provider>
  * );
- * const Pane = () => (
- *   <ValuesInHtmlTable className="values" />
- * );
+ * const Pane = () => <ValuesInHtmlTable className="values" />;
  *
  * const store = createStore().setValues({open: true, employees: 3});
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
- * // -> `
+ * // ->
+ * `
  * <table class="values">
  *   <thead>
  *     <tr>
@@ -481,7 +474,7 @@
  *     </tr>
  *   </tbody>
  * </table>
- * `
+ * `;
  * ```
  * @example
  * This example creates a Provider context into which a default Store is
@@ -515,14 +508,15 @@
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
- * // -> `
+ * // ->
+ * `
  * <table>
  *   <tbody>
  *     <tr><td><b>open</b>: true</td></tr>
  *     <tr><td>employees: 3</td></tr>
  *   </tbody>
  * </table>
- * `
+ * `;
  * ```
  * @category Store components
  * @since v4.1.0

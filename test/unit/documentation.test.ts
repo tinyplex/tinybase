@@ -118,7 +118,7 @@ const prepareTestResultsFromBlock = (block: string, prefix: string): void => {
           'act(() => dispatchEvent(new $1));\n',
         )
         ?.replace(
-          /\/\/ -> `\n(.*?)\n\s*`$/gms,
+          /\/\/ ->\n`(.*?)`;$/gms,
           '_expected.push(`$1`.replace(/\\n\\s*/gms, ``));\n',
         )
         ?.replace(/\/\/ -> (.*?)$/gm, '_expected.push($1);\n')
