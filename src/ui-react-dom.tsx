@@ -9,7 +9,7 @@ import {
   useValueIds,
 } from './ui-react';
 import {EMPTY_STRING, VALUE} from './common/strings';
-import {IdOrNull, Ids} from './types/common';
+import {Id, Ids} from './types/common';
 import {
   SortedTableInHtmlTable as SortedTableInHtmlTableDecl,
   SortedTableInHtmlTableProps,
@@ -23,29 +23,49 @@ import {arrayMap} from './common/array';
 import {getProps} from './ui-react/common';
 import {isUndefined} from './common/other';
 
-const {createElement} = React;
+const {createElement, useCallback, useState} = React;
 
-const sortedClassName = (
-  sorted: [IdOrNull, boolean?] | undefined,
-  cellId: IdOrNull,
-) =>
-  isUndefined(sorted)
+type Sorting = [Id | undefined, boolean];
+
+const useCallbackOrUndefined = (
+  callback: any,
+  deps: React.DependencyList,
+  test: any,
+) => {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const returnCallback = useCallback(callback, deps);
+  return test ? returnCallback : undefined;
+};
+
+const sortedClassName = (sorting: Sorting | undefined, cellId?: Id) =>
+  isUndefined(sorting)
     ? undefined
-    : sorted[0] != cellId
+    : sorting[0] != cellId
     ? undefined
-    : `sorted ${sorted[1] ? 'de' : 'a'}scending`;
+    : `sorted ${sorting[1] ? 'de' : 'a'}scending`;
 
 const HtmlHeaderTh = ({
   cellId,
-  sorted,
+  sorting,
   label = cellId ?? EMPTY_STRING,
+  onClick,
 }: {
-  cellId: IdOrNull;
-  sorted?: [IdOrNull, boolean?];
+  cellId?: Id;
+  sorting?: Sorting;
   label?: string;
-}) => {
-  return <th className={sortedClassName(sorted, cellId)}>{label}</th>;
-};
+  onClick?: (cellId: Id | undefined) => void;
+}) => (
+  <th
+    onClick={useCallbackOrUndefined(
+      () => onClick?.(cellId),
+      [onClick, cellId],
+      !isUndefined(onClick),
+    )}
+    className={sortedClassName(sorting, cellId)}
+  >
+    {label}
+  </th>
+);
 
 const HtmlTable = ({
   tableId,
@@ -57,10 +77,12 @@ const HtmlTable = ({
   headerRow,
   idColumn,
   customCellIds,
-  sorted,
+  sorting,
+  onHeaderThClick,
 }: TableInHtmlTableProps & {
   rowIds: Ids;
-  sorted?: [IdOrNull, boolean?];
+  sorting?: Sorting;
+  onHeaderThClick?: (cellId: Id | undefined) => void;
 }) => {
   const defaultCellIds = useTableCellIds(tableId, store);
   const cellIds = customCellIds ?? defaultCellIds;
@@ -70,10 +92,19 @@ const HtmlTable = ({
         <thead>
           <tr>
             {idColumn === false ? null : (
-              <HtmlHeaderTh cellId={null} sorted={sorted} label="Id" />
+              <HtmlHeaderTh
+                sorting={sorting}
+                label="Id"
+                onClick={onHeaderThClick}
+              />
             )}
             {arrayMap(cellIds, (cellId) => (
-              <HtmlHeaderTh key={cellId} cellId={cellId} sorted={sorted} />
+              <HtmlHeaderTh
+                key={cellId}
+                cellId={cellId}
+                sorting={sorting}
+                onClick={onHeaderThClick}
+              />
             ))}
           </tr>
         </thead>
@@ -120,16 +151,30 @@ export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
   offset,
   limit,
   store,
+  sortOnClick,
   ...props
-}: SortedTableInHtmlTableProps): any => (
-  <HtmlTable
-    {...props}
-    tableId={tableId}
-    store={store}
-    rowIds={useSortedRowIds(tableId, cellId, descending, offset, limit, store)}
-    sorted={[cellId ?? null, descending]}
-  />
-);
+}: SortedTableInHtmlTableProps): any => {
+  const [sorting, setSorting] = useState<Sorting>([
+    cellId,
+    descending ? true : false,
+  ]);
+  const handleHeaderThClick = useCallbackOrUndefined(
+    (cellId: Id | undefined) =>
+      setSorting([cellId, cellId == sorting[0] ? !sorting[1] : false]),
+    [sorting],
+    sortOnClick,
+  );
+  return (
+    <HtmlTable
+      {...props}
+      tableId={tableId}
+      store={store}
+      rowIds={useSortedRowIds(tableId, ...sorting, offset, limit, store)}
+      sorting={sorting}
+      onHeaderThClick={handleHeaderThClick}
+    />
+  );
+};
 
 export const ValuesInHtmlTable: typeof ValuesInHtmlTableDecl = ({
   store,

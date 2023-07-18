@@ -29,7 +29,7 @@ beforeEach(() => {
     .setValues({v1: 1, v2: 2});
 });
 
-describe('Read Components', () => {
+describe('Components', () => {
   describe('TableInHtmlTable', () => {
     test('basic', () => {
       act(() => {
@@ -662,6 +662,311 @@ describe('Read Components', () => {
                 r1
               </th>
               <td />
+              <td />
+            </tr>
+          </tbody>
+        </table>
+      `);
+    });
+
+    test('sortOnClick', () => {
+      act(() => {
+        renderer = create(
+          <SortedTableInHtmlTable
+            store={store}
+            tableId="t2"
+            cellId="c1"
+            descending={true}
+            sortOnClick={true}
+          />,
+        );
+      });
+      expect(renderer.toJSON()).toMatchInlineSnapshot(`
+        <table>
+          <thead>
+            <tr>
+              <th
+                onClick={[Function]}
+              >
+                Id
+              </th>
+              <th
+                className="sorted descending"
+                onClick={[Function]}
+              >
+                c1
+              </th>
+              <th
+                onClick={[Function]}
+              >
+                c2
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>
+                r2
+              </th>
+              <td>
+                3
+              </td>
+              <td>
+                4
+              </td>
+            </tr>
+            <tr>
+              <th>
+                r1
+              </th>
+              <td>
+                2
+              </td>
+              <td />
+            </tr>
+          </tbody>
+        </table>
+      `);
+      act(() => {
+        renderer.root.findAllByType('th')[1].props.onClick();
+      });
+      expect(renderer.toJSON()).toMatchInlineSnapshot(`
+        <table>
+          <thead>
+            <tr>
+              <th
+                onClick={[Function]}
+              >
+                Id
+              </th>
+              <th
+                className="sorted ascending"
+                onClick={[Function]}
+              >
+                c1
+              </th>
+              <th
+                onClick={[Function]}
+              >
+                c2
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>
+                r1
+              </th>
+              <td>
+                2
+              </td>
+              <td />
+            </tr>
+            <tr>
+              <th>
+                r2
+              </th>
+              <td>
+                3
+              </td>
+              <td>
+                4
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      `);
+      act(() => {
+        renderer.root.findAllByType('th')[2].props.onClick();
+      });
+      expect(renderer.toJSON()).toMatchInlineSnapshot(`
+        <table>
+          <thead>
+            <tr>
+              <th
+                onClick={[Function]}
+              >
+                Id
+              </th>
+              <th
+                onClick={[Function]}
+              >
+                c1
+              </th>
+              <th
+                className="sorted ascending"
+                onClick={[Function]}
+              >
+                c2
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>
+                r1
+              </th>
+              <td>
+                2
+              </td>
+              <td />
+            </tr>
+            <tr>
+              <th>
+                r2
+              </th>
+              <td>
+                3
+              </td>
+              <td>
+                4
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      `);
+      act(() => {
+        renderer.root.findAllByType('th')[2].props.onClick();
+      });
+      expect(renderer.toJSON()).toMatchInlineSnapshot(`
+        <table>
+          <thead>
+            <tr>
+              <th
+                onClick={[Function]}
+              >
+                Id
+              </th>
+              <th
+                onClick={[Function]}
+              >
+                c1
+              </th>
+              <th
+                className="sorted descending"
+                onClick={[Function]}
+              >
+                c2
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>
+                r2
+              </th>
+              <td>
+                3
+              </td>
+              <td>
+                4
+              </td>
+            </tr>
+            <tr>
+              <th>
+                r1
+              </th>
+              <td>
+                2
+              </td>
+              <td />
+            </tr>
+          </tbody>
+        </table>
+      `);
+      act(() => {
+        renderer.root.findAllByType('th')[0].props.onClick();
+      });
+      expect(renderer.toJSON()).toMatchInlineSnapshot(`
+        <table>
+          <thead>
+            <tr>
+              <th
+                className="sorted ascending"
+                onClick={[Function]}
+              >
+                Id
+              </th>
+              <th
+                onClick={[Function]}
+              >
+                c1
+              </th>
+              <th
+                onClick={[Function]}
+              >
+                c2
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>
+                r1
+              </th>
+              <td>
+                2
+              </td>
+              <td />
+            </tr>
+            <tr>
+              <th>
+                r2
+              </th>
+              <td>
+                3
+              </td>
+              <td>
+                4
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      `);
+      act(() => {
+        renderer.root.findAllByType('th')[0].props.onClick();
+      });
+      expect(renderer.toJSON()).toMatchInlineSnapshot(`
+        <table>
+          <thead>
+            <tr>
+              <th
+                className="sorted descending"
+                onClick={[Function]}
+              >
+                Id
+              </th>
+              <th
+                onClick={[Function]}
+              >
+                c1
+              </th>
+              <th
+                onClick={[Function]}
+              >
+                c2
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>
+                r2
+              </th>
+              <td>
+                3
+              </td>
+              <td>
+                4
+              </td>
+            </tr>
+            <tr>
+              <th>
+                r1
+              </th>
+              <td>
+                2
+              </td>
               <td />
             </tr>
           </tbody>
