@@ -326,7 +326,9 @@ describe('Read Components', () => {
               <th>
                 Id
               </th>
-              <th>
+              <th
+                className="sorted descending"
+              >
                 c1
               </th>
               <th>
@@ -360,6 +362,55 @@ describe('Read Components', () => {
       `);
     });
 
+    test('no sorting specified', () => {
+      act(() => {
+        renderer = create(
+          <SortedTableInHtmlTable store={store} tableId="t2" />,
+        );
+      });
+      expect(renderer.toJSON()).toMatchInlineSnapshot(`
+        <table>
+          <thead>
+            <tr>
+              <th
+                className="sorted ascending"
+              >
+                Id
+              </th>
+              <th>
+                c1
+              </th>
+              <th>
+                c2
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>
+                r1
+              </th>
+              <td>
+                2
+              </td>
+              <td />
+            </tr>
+            <tr>
+              <th>
+                r2
+              </th>
+              <td>
+                3
+              </td>
+              <td>
+                4
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      `);
+    });
+
     test('custom', () => {
       act(() => {
         renderer = create(
@@ -380,7 +431,9 @@ describe('Read Components', () => {
               <th>
                 Id
               </th>
-              <th>
+              <th
+                className="sorted descending"
+              >
                 c1
               </th>
               <th>
@@ -445,7 +498,9 @@ describe('Read Components', () => {
               <th>
                 Id
               </th>
-              <th>
+              <th
+                className="sorted descending"
+              >
                 c1
               </th>
               <th>
@@ -495,7 +550,9 @@ describe('Read Components', () => {
         <table>
           <thead>
             <tr>
-              <th>
+              <th
+                className="sorted descending"
+              >
                 c1
               </th>
               <th>
