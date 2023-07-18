@@ -74,6 +74,8 @@ export type SortedTableInHtmlTableProps<
         readonly idColumn?: boolean;
         /// SortedTableInHtmlTableProps.customCellIds
         readonly customCellIds?: CellIdFromSchema<Schemas[0], TableId>[];
+        /// SortedTableInHtmlTableProps.sortOnClick
+        readonly sortOnClick?: boolean;
       }
     : never
   : never;

@@ -56,6 +56,8 @@ export type SortedTableInHtmlTableProps = {
   readonly idColumn?: boolean;
   /// SortedTableInHtmlTableProps.customCellIds
   readonly customCellIds?: Ids;
+  /// SortedTableInHtmlTableProps.sortOnClick
+  readonly sortOnClick?: boolean;
 };
 
 // ValuesInHtmlTableProps
