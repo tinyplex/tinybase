@@ -36,15 +36,15 @@
     </li>
     <li>
       <a href='#type-definitions-orm-like-apis'>Type definitions &amp; ORM-like 
-      APIs</a> (<em>new!</em>), based on a schema or inference.
+      APIs</a>, based on a schema or inference.
     </li>
     <li>
       Easily <a href='#persist-to-storage-sqlite-or-crdts'>sync your data</a> to 
       storage, (<em>new!</em>) SQLite, or (<em>new!</em>) CRDTs.
     </li>
     <li>
-      Use idiomatic, optional, <a href='#call-hooks-to-bind-to-data'>bindings to 
-      React</a> for a fully reactive UI.
+      Optional <a href='#call-hooks-to-bind-to-data'>bindings to React</a> and 
+      (<em>new!</em>) <a href='#pre-built-reactive-components'>pre-built components</a> for a fully reactive UI.
     </li>
   </ul>
   <p>
@@ -57,7 +57,7 @@
   </p>
 </section>
 
-<a id='new' href='/guides/releases/#v4-0'><em>NEW!</em> v4.0 release</a>
+<a id='new' href='/guides/releases/#v4-1'><em>NEW!</em> v4.1 release</a>
 
 ---
 
@@ -183,51 +183,49 @@ console.log(app.innerHTML);
 // -> 'Color: walnut'
 ```
 
-> ## Use components for reactive apps.
+> ## Pre-built reactive components.
 >
-> The react module provides simple React components with bindings that make it
-> easy to create a fully reactive user interface based on the content of a
-> Store.
+> The ui-react module provides bare React components that let you build up a
+> fully reactive user interface based on a Store.
 >
-> In this example, the library's RowView component just needs a reference to the
-> Store, the `tableId`, and the `rowId` in order to render the contents of that
-> row. An optional `cellComponent` prop lets you override how you want each Cell
-> rendered. Again, all the listeners and updates are taken care of for you.
+> For web applications in particular, the new ui-react-dom module provides
+> pre-built components for tabular display of your data. This example
+> demonstrates the fully-reactive SortedTableInHtmlTable component, which lets
+> you customize the sorting and column settings - as well as much more!
 >
-> The module also includes a context Provider that sets up default for an entire
-> app to use, reducing the need to drill all your props down into your app's
-> hierarchy.
->
-> Most of the demos showcase the use of these React hooks and components. Take a
-> look at Todo App v1 (the basics) to see these user interface binding patterns
-> in action.
->
-> Read more about the ui-react module in the Building UIs guides.
+> The pre-built components in the new ui-react-dom module are showcased in the
+> UI Components demos, and you can read more about the underlying ui-react
+> module in the Building UIs guides.
 
 ```jsx
-const MyCellView = (props) => (
-  <>
-    {props.cellId}: <CellView {...props} />
-    <hr />
-  </>
-);
-
 const App2 = () => (
-  <RowView
+  <SortedTableInHtmlTable
     store={store}
     tableId="pets"
-    rowId="fido"
-    cellComponent={MyCellView}
+    cellId="color"
+    customCellIds={['color', 'sold']}
   />
 );
 
+store.setRow('pets', 'felix', {
+  species: 'cat',
+  color: 'black',
+});
+
 root.render(<App2 />); // !act
 console.log(app.innerHTML);
-// -> 'species: dog<hr>color: walnut<hr>sold: false<hr>'
-
-store.setCell('pets', 'fido', 'sold', true); // !act
-console.log(app.innerHTML);
-// -> 'species: dog<hr>color: walnut<hr>sold: true<hr>'
+// ->
+`
+<table>
+  <thead>
+    <tr><th>Id</th><th class="sorted ascending">color</th><th>sold</th></tr>
+  </thead>
+  <tbody>
+    <tr><th>felix</th><td>black</td><td></td></tr>
+    <tr><th>fido</th><td>walnut</td><td>false</td></tr>
+  </tbody>
+</table>
+`;
 
 root.unmount(); // !act
 ```
@@ -239,7 +237,7 @@ root.unmount(); // !act
 > ensure that the values are always what you expect: constraining their types,
 > and providing defaults.
 >
-> In this example, we set a second Row without the `sold` Cell in it. The schema
+> In this example, we set a new Row without the `sold` Cell in it. The schema
 > ensures it's present with default of `false`.
 >
 > Read more about schemas in the Using Schemas guide.
@@ -253,9 +251,9 @@ store.setTablesSchema({
   },
 });
 
-store.setRow('pets', 'felix', {species: 'cat'});
-console.log(store.getRow('pets', 'felix'));
-// -> {species: 'cat', sold: false}
+store.setRow('pets', 'polly', {species: 'parrot'});
+console.log(store.getRow('pets', 'polly'));
+// -> {species: 'parrot', sold: false}
 
 store.delTablesSchema();
 ```
@@ -277,7 +275,19 @@ const persister = createSessionPersister(store, 'demo');
 await persister.save();
 
 console.log(sessionStorage.getItem('demo'));
-// -> '[{"pets":{"fido":{"species":"dog","color":"walnut","sold":true},"felix":{"species":"cat","sold":false}}},{"employees":3,"open":true}]'
+// ->
+`
+[
+  {
+    "pets":{
+      "fido":{"species":"dog","color":"walnut","sold":false},
+      "felix":{"species":"cat","color":"black","sold":false},
+      "polly":{"species":"parrot","sold":false}
+    }
+  },
+  {"employees":3,"open":true}
+]
+`;
 
 persister.destroy();
 sessionStorage.clear();
@@ -574,4 +584,4 @@ export const createShop: typeof createShopDecl = () => {
 > and documentation. It could not have been built without these great
 > [projects](/guides/how-tinybase-is-built/credits/#giants) and
 > [friends](/guides/how-tinybase-is-built/credits/#and-friends), and I hope you
-> enjoy using it!
+> enjoy using it as much as I do building it!
