@@ -40,7 +40,7 @@ component, requiring at least the Table Id:
      <>
 -      <TableInHtmlTable tableId='genres' />
 -      <TableInHtmlTable tableId='genres' headerRow={false} idColumn={false} />
--      <TableInHtmlTable tableId='genres' cellComponent={DictionaryCell} />
+-      <TableInHtmlTable tableId='genres' customCells={customCells} />
 +      <SortedTableInHtmlTable
 +        tableId='movies'
 +      />
@@ -49,23 +49,26 @@ component, requiring at least the Table Id:
  };
 ```
 
-Take a look at the SortedTableInHtmlTableProps type to see all the ways in which
-you can configure this component. We're going to use a few here.
+Take a look at the SortedTableInHtmlTableProps type and HtmlTableProps type to
+see all the ways in which you can configure this component. We're going to use a
+few here.
 
 Firstly, since the Table is very wide (and contains a lengthy description), we
 will first explicitly set the Cell Ids we want to display:
 
-```js
-const customCellIds = {name: 'Name', year: 'Year', rating: 'Rating'};
+```diff-js
+-const customCells = {name: {label: 'Name', component: DictionaryCell}};
++const customCells = {name: 'Name', year: 'Year', rating: 'Rating'};
 ```
 
-(This can either be an object with Cell Id as key and label as value, like this,
-or simply an array of the Cell Ids.)
+(This configuration can simply be an array of the Cell Ids, an object with Cell
+Id as key and label as value (like this), or an object made up of CustomCell
+objects. See the HtmlTableProps type for more details.)
 
 ```diff-jsx
        <SortedTableInHtmlTable
          tableId='movies'
-+        customCellIds={customCellIds}
++        customCells={customCells}
        />
 ```
 
@@ -77,7 +80,7 @@ the movies by rating accordingly:
 ```diff-jsx
        <SortedTableInHtmlTable
          tableId='movies'
-         customCellIds={customCellIds}
+         customCells={customCells}
 +        cellId='rating'
 +        descending={true}
        />
@@ -111,7 +114,7 @@ column headings to change the sorting:
 ```diff-jsx
        <SortedTableInHtmlTable
          tableId='movies'
-         customCellIds={customCellIds}
+         customCells={customCells}
          cellId='rating'
          descending={true}
 +        sortOnClick={true}
