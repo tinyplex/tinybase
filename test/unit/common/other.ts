@@ -28,9 +28,11 @@ export const suppressWarnings = async <Return>(
 ) => {
   /* eslint-disable no-console */
   const warn = console.warn;
-  console.warn = () => 0;
+  const error = console.error;
+  console.warn = console.error = () => 0;
   const result = await actions();
   console.warn = warn;
+  console.error = error;
   /* eslint-enable no-console */
   return result;
 };
