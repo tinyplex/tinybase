@@ -18,7 +18,7 @@ root.render(<App store={store} />);
 console.log(app.innerHTML);
 // ->
 `
-<table class="table">
+<table>
   <thead>
     <tr><th>Id</th><th class="sorted ascending">species</th></tr>
   </thead>
