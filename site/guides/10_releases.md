@@ -8,7 +8,9 @@ highlighted features.
 This release introduces the new ui-react-dom module. This provides pre-built
 components for tabular display of your data in a web application.
 
-These include the ValuesInHtmlTable component, the TableInHtmlTable component,
+These pre-built components are showcased in the UI Components demos.
+
+They include the ValuesInHtmlTable component, the TableInHtmlTable component,
 and the powerful, interactive SortedTableInHtmlTable component:
 
 ```jsx
@@ -57,8 +59,7 @@ console.log(app.innerHTML);
 root.unmount(); // !act
 ```
 
-These pre-built components are showcased in the UI Components demos and
-documented in the ui-react-dom module.
+There will be more components to come.
 
 ## v4.0
 

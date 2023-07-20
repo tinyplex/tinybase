@@ -158,7 +158,7 @@ table {
   font-size: inherit;
   line-height: inherit;
   outline: 1px solid #aaa;
-  margin: 1rem;
+  margin: 2rem;
   table-layout: fixed;
   th,
   td {
