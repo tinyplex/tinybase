@@ -208,7 +208,7 @@ const App2 = () => (
     store={store}
     tableId="pets"
     cellId="color"
-    customCellIds={['color', 'sold']}
+    customCells={['color', 'sold']}
   />
 );
 
