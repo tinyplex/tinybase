@@ -47,7 +47,9 @@
   /// TableInHtmlTableProps.idColumn
   /**
    * An optional list of Cell Ids to use for rendering a prescribed set of the
-   * Row's Cells in a given order.
+   * Table's Cells in a given order. This can also be an object with the desired
+   * Cell Ids as keys, and with a string value to be used as a label to show in
+   * the column header.
    */
   /// TableInHtmlTableProps.customCellIds
 }
@@ -111,7 +113,9 @@
   /// SortedTableInHtmlTableProps.idColumn
   /**
    * An optional list of Cell Ids to use for rendering a prescribed set of the
-   * Row's Cells in a given order.
+   * Table's Cells in a given order. This can also be an object with the desired
+   * Cell Ids as keys, and with a string value to be used as a label to show in
+   * the column header.
    */
   /// SortedTableInHtmlTableProps.customCellIds
   /**
