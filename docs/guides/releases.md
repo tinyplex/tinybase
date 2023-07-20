@@ -1,9 +1,57 @@
-<p>This is a reverse chronological list of the major <a href="https://beta.tinybase.org/">TinyBase</a> releases, with highlighted features.</p><h2 id="v4-0">v4.0</h2><p>This major release provides <a href="https://beta.tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a> modules that connect <a href="https://beta.tinybase.org/">TinyBase</a> to SQLite databases (in both browser and server contexts), and CRDT frameworks that can provide synchronization and local-first reconciliation:</p><div class="table"><table><thead><tr><th>Module</th><th>Function</th><th>Storage</th></tr></thead><tbody><tr><td><a href="https://beta.tinybase.org/api/persister-sqlite3/"><code>persister-sqlite3</code></a></td><td><a href="https://beta.tinybase.org/api/persister-sqlite3/functions/creation/createsqlite3persister/"><code>createSqlite3Persister</code></a></td><td>SQLite in Node, via <a href="https://github.com/TryGhost/node-sqlite3">sqlite3</a></td></tr><tr><td><a href="https://beta.tinybase.org/api/persister-sqlite-wasm/"><code>persister-sqlite-wasm</code></a></td><td><a href="https://beta.tinybase.org/api/persister-sqlite-wasm/functions/creation/createsqlitewasmpersister/"><code>createSqliteWasmPersister</code></a></td><td>SQLite in a browser, via <a href="https://github.com/tomayac/sqlite-wasm">sqlite-wasm</a></td></tr><tr><td><a href="https://beta.tinybase.org/api/persister-cr-sqlite-wasm/"><code>persister-cr-sqlite-wasm</code></a></td><td><a href="https://beta.tinybase.org/api/persister-cr-sqlite-wasm/functions/creation/createcrsqlitewasmpersister/"><code>createCrSqliteWasmPersister</code></a></td><td>SQLite CRDTs, via <a href="https://github.com/vlcn-io/cr-sqlite">cr-sqlite-wasm</a></td></tr><tr><td><a href="https://beta.tinybase.org/api/persister-yjs/"><code>persister-yjs</code></a></td><td><a href="https://beta.tinybase.org/api/persister-yjs/functions/creation/createyjspersister/"><code>createYjsPersister</code></a></td><td>Yjs CRDTs, via <a href="https://github.com/yjs/yjs">yjs</a></td></tr><tr><td><a href="https://beta.tinybase.org/api/persister-automerge/"><code>persister-automerge</code></a></td><td><a href="https://beta.tinybase.org/api/persister-sqlite-wasm/functions/creation/createsqlitewasmpersister/"><code>createSqliteWasmPersister</code></a></td><td>Automerge CRDTs, via <a href="https://github.com/automerge/automerge-repo">automerge-repo</a></td></tr></tbody></table></div><p>See the <a href="https://beta.tinybase.org/guides/schemas-and-persistence/database-persistence/">Database Persistence</a> guide for details on how to work with SQLite databases, and the <a href="https://beta.tinybase.org/guides/schemas-and-persistence/synchronizing-data/">Synchronizing Data</a> guide for more complex synchronization with the CRDT frameworks.</p><p>Take a look at the <a href="https://github.com/tinyplex/vite-tinybase-ts-react-crsqlite">vite-tinybase-ts-react-crsqlite</a> template, for example, which demonstrates Vulcan&#x27;s cr-sqlite to provide persistence and synchronization via this technique.</p><h3 id="sqlite-databases">SQLite databases</h3><p>You can persist <a href="https://beta.tinybase.org/api/store/interfaces/store/store/"><code>Store</code></a> data to a database with either a JSON serialization or tabular mapping. (See the <a href="https://beta.tinybase.org/api/persisters/type-aliases/configuration/databasepersisterconfig/"><code>DatabasePersisterConfig</code></a> documentation for more details).</p><p>For example, this creates a <a href="https://beta.tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a> object and saves and loads the <a href="https://beta.tinybase.org/api/store/interfaces/store/store/"><code>Store</code></a> to and from a local SQLite database. It uses an explicit tabular one-to-one mapping for the &#x27;pets&#x27; table:</p>
+<p>This is a reverse chronological list of the major <a href="https://beta.tinybase.org/">TinyBase</a> releases, with highlighted features.</p><h2 id="v4-1">v4.1</h2><p>This release introduces the new <a href="https://beta.tinybase.org/api/ui-react-dom/"><code>ui-react-dom</code></a> module. This provides pre-built components for tabular display of your data in a web application.</p><p>These pre-built components are showcased in the <a href="https://beta.tinybase.org/demos/ui-components/">UI Components</a> demos.</p><p>They include the <a href="https://beta.tinybase.org/api/ui-react-dom/functions/store-components/valuesinhtmltable/"><code>ValuesInHtmlTable</code></a> component, the <a href="https://beta.tinybase.org/api/ui-react-dom/functions/store-components/tableinhtmltable/"><code>TableInHtmlTable</code></a> component, and the powerful, interactive <a href="https://beta.tinybase.org/api/ui-react-dom/functions/store-components/sortedtableinhtmltable/"><code>SortedTableInHtmlTable</code></a> component:</p>
+
+```jsx
+const App = ({store}) => (
+  <SortedTableInHtmlTable
+    tableId="pets"
+    cellId="species"
+    className="table"
+    store={store}
+  />
+);
+
+const store = createStore().setTables({
+  pets: {
+    fido: {species: 'dog'},
+    felix: {species: 'cat'},
+  },
+});
+const app = document.createElement('div');
+const root = ReactDOMClient.createRoot(app);
+root.render(<App store={store} />);
+
+console.log(app.innerHTML);
+// ->
+`
+<table class="table">
+  <thead>
+    <tr>
+      <th>Id</th>
+      <th class="sorted ascending">species</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>felix</th>
+      <td>cat</td>
+    </tr>
+    <tr>
+      <th>fido</th>
+      <td>dog</td>
+    </tr>
+  </tbody>
+</table>
+`;
+
+root.unmount();
+```
+
+<p>There will be more components to come.</p><h2 id="v4-0">v4.0</h2><p>This major release provides <a href="https://beta.tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a> modules that connect <a href="https://beta.tinybase.org/">TinyBase</a> to SQLite databases (in both browser and server contexts), and CRDT frameworks that can provide synchronization and local-first reconciliation:</p><div class="table"><table><thead><tr><th>Module</th><th>Function</th><th>Storage</th></tr></thead><tbody><tr><td><a href="https://beta.tinybase.org/api/persister-sqlite3/"><code>persister-sqlite3</code></a></td><td><a href="https://beta.tinybase.org/api/persister-sqlite3/functions/creation/createsqlite3persister/"><code>createSqlite3Persister</code></a></td><td>SQLite in Node, via <a href="https://github.com/TryGhost/node-sqlite3">sqlite3</a></td></tr><tr><td><a href="https://beta.tinybase.org/api/persister-sqlite-wasm/"><code>persister-sqlite-wasm</code></a></td><td><a href="https://beta.tinybase.org/api/persister-sqlite-wasm/functions/creation/createsqlitewasmpersister/"><code>createSqliteWasmPersister</code></a></td><td>SQLite in a browser, via <a href="https://github.com/tomayac/sqlite-wasm">sqlite-wasm</a></td></tr><tr><td><a href="https://beta.tinybase.org/api/persister-cr-sqlite-wasm/"><code>persister-cr-sqlite-wasm</code></a></td><td><a href="https://beta.tinybase.org/api/persister-cr-sqlite-wasm/functions/creation/createcrsqlitewasmpersister/"><code>createCrSqliteWasmPersister</code></a></td><td>SQLite CRDTs, via <a href="https://github.com/vlcn-io/cr-sqlite">cr-sqlite-wasm</a></td></tr><tr><td><a href="https://beta.tinybase.org/api/persister-yjs/"><code>persister-yjs</code></a></td><td><a href="https://beta.tinybase.org/api/persister-yjs/functions/creation/createyjspersister/"><code>createYjsPersister</code></a></td><td>Yjs CRDTs, via <a href="https://github.com/yjs/yjs">yjs</a></td></tr><tr><td><a href="https://beta.tinybase.org/api/persister-automerge/"><code>persister-automerge</code></a></td><td><a href="https://beta.tinybase.org/api/persister-sqlite-wasm/functions/creation/createsqlitewasmpersister/"><code>createSqliteWasmPersister</code></a></td><td>Automerge CRDTs, via <a href="https://github.com/automerge/automerge-repo">automerge-repo</a></td></tr></tbody></table></div><p>See the <a href="https://beta.tinybase.org/guides/schemas-and-persistence/database-persistence/">Database Persistence</a> guide for details on how to work with SQLite databases, and the <a href="https://beta.tinybase.org/guides/schemas-and-persistence/synchronizing-data/">Synchronizing Data</a> guide for more complex synchronization with the CRDT frameworks.</p><p>Take a look at the <a href="https://github.com/tinyplex/vite-tinybase-ts-react-crsqlite">vite-tinybase-ts-react-crsqlite</a> template, for example, which demonstrates Vulcan&#x27;s cr-sqlite to provide persistence and synchronization via this technique.</p><h3 id="sqlite-databases">SQLite databases</h3><p>You can persist <a href="https://beta.tinybase.org/api/store/interfaces/store/store/"><code>Store</code></a> data to a database with either a JSON serialization or tabular mapping. (See the <a href="https://beta.tinybase.org/api/persisters/type-aliases/configuration/databasepersisterconfig/"><code>DatabasePersisterConfig</code></a> documentation for more details).</p><p>For example, this creates a <a href="https://beta.tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a> object and saves and loads the <a href="https://beta.tinybase.org/api/store/interfaces/store/store/"><code>Store</code></a> to and from a local SQLite database. It uses an explicit tabular one-to-one mapping for the &#x27;pets&#x27; table:</p>
 
 ```js
 const sqlite3 = await sqlite3InitModule();
 const db = new sqlite3.oo1.DB(':memory:', 'c');
-const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+store.setTables({pets: {fido: {species: 'dog'}}});
 const persister = createSqliteWasmPersister(store, sqlite3, db, {
   mode: 'tabular',
   tables: {load: {pets: 'pets'}, save: {pets: 'pets'}},
