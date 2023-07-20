@@ -93,14 +93,8 @@ the left with the `headerRow` and `idColumn` props respectively.
 
 This is a good opportunity to demonstrate how the table components can take
 custom components for rendering the inside of the cells in the table. Let's
-create a third table, where we pass in a custom `cellComponent` called
-`DictionaryCell`:
-
-```diff-jsx
-       <TableInHtmlTable tableId='genres' headerRow={false} idColumn={false} />
-+      <TableInHtmlTable tableId='genres' cellComponent={DictionaryCell} />
-     </>
-```
+create a third table, where we pass in a custom component called
+`DictionaryCell`.
 
 That component should accept props for the Table, Row, and Cell Ids (as well as
 the Store) in order to create a different rendering. Here we create a link to an
@@ -120,14 +114,29 @@ const DictionaryCell = ({tableId, rowId, cellId, store}) => {
 };
 ```
 
-We need to update the imports to get access to the useCell hook:
+Also we need to update the imports to get access to the useCell hook:
 
 ```diff-js
 -const {Provider, useCreateStore} = TinyBaseUiReact;
 +const {Provider, useCell, useCreateStore} = TinyBaseUiReact;
 ```
 
-And we can give the links some default styling.
+Then we configure this component to be used for the `name` Cell in the table,
+and capitalize the name at the top of the column:
+
+```js
+const customCells = {name: {label: 'Name', component: DictionaryCell}};
+```
+
+And apply that configuration to the table via the `customCells` prop:
+
+```diff-jsx
+       <TableInHtmlTable tableId='genres' headerRow={false} idColumn={false} />
++      <TableInHtmlTable tableId='genres' customCells={customCells} />
+     </>
+```
+
+Finally, we can give the links some default styling.
 
 ```less
 a {
@@ -135,9 +144,9 @@ a {
 }
 ```
 
-Take a look at the TableInHtmlTableProps type to see all the ways in which you
-can configure this component, and again, click the 'CodePen' link under the demo
-above to try them out.
+Take a look at the TableInHtmlTableProps type and HtmlTableProps type to see all
+the ways in which you can configure this component, and again, click the
+'CodePen' link under the demo above to try them out.
 
 Let's move on to a slightly more complex component in the
 <SortedTableInHtmlTable /> demo.

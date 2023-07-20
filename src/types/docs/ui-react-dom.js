@@ -13,6 +13,54 @@
 /// ui-react-dom
 {
   /**
+   * An optional string that will be used as the label at the top of the table
+   * column for this Cell.
+   */
+  /// CustomCell.label
+  /**
+   * An optional custom component for rendering each Cell in the Table (to
+   * override the default CellView component).
+   */
+  /// CustomCell.component
+  /**
+   * An optional function for generating extra props for each custom Cell
+   * component based on Row and Cell Id.
+   */
+  /// CustomCell.getComponentProps
+}
+/**
+ * The CustomCell object is used to configure custom cell rendering in an HTML
+ * table.
+ * @category Configuration
+ * @since v4.1.0
+ */
+/// CustomCell
+{
+  /**
+   * A string className to use on the root of the resulting element.
+   */
+  /// HtmlTableProps.className
+  /**
+   * Whether a header row should be rendered at the top of the table, defaulting
+   * to `true`.
+   */
+  /// HtmlTableProps.headerRow
+  /**
+   * Whether an Id column should be rendered on the left of the table,
+   * defaulting to `true`.
+   */
+  /// HtmlTableProps.idColumn
+}
+/**
+ * HtmlTableProps props are used for components that will render in an HTML
+ * table, such as the TableInHtmlTable component or SortedTableInHtmlTable
+ * component.
+ * @category Props
+ * @since v4.1.0
+ */
+/// HtmlTableProps
+{
+  /**
    * The Id of the Table in the Store to be rendered.
    */
   /// TableInHtmlTableProps.tableId
@@ -22,40 +70,17 @@
    */
   /// TableInHtmlTableProps.store
   /**
-   * A custom component for rendering each Cell in the Table (to override the
-   * default CellView component).
-   */
-  /// TableInHtmlTableProps.cellComponent
-  /**
-   * A function for generating extra props for each custom Cell component based
-   * on its Id.
-   */
-  /// TableInHtmlTableProps.getCellComponentProps
-  /**
-   * A string className to use on the root of the resulting element.
-   */
-  /// TableInHtmlTableProps.className
-  /**
-   * Whether a header row should be rendered at the top of the table, defaulting
-   * to `true`.
-   */
-  /// TableInHtmlTableProps.headerRow
-  /**
-   * Whether an Id column should be rendered on the left of the table,
-   * defaulting to `true`.
-   */
-  /// TableInHtmlTableProps.idColumn
-  /**
    * An optional list of Cell Ids to use for rendering a prescribed set of the
    * Table's Cells in a given order. This can also be an object with the desired
-   * Cell Ids as keys, and with a string value to be used as a label to show in
-   * the column header.
+   * Cell Ids as keys, and with a value that can either be a string label to
+   * show in the column header, or a CustomCell object to further configure the
+   * column.
    */
-  /// TableInHtmlTableProps.customCellIds
+  /// TableInHtmlTableProps.customCells
 }
 /**
  * TableInHtmlTableProps props are used for components that will render a
- * Table in an HTML table, such as the TableInHtmlTableProps component.
+ * Table in an HTML table, such as the TableInHtmlTable component.
  * @category Props
  * @since v4.1.0
  */
@@ -88,36 +113,13 @@
    */
   /// SortedTableInHtmlTableProps.store
   /**
-   * A custom component for rendering each Cell in the Table (to override the
-   * default CellView component).
-   */
-  /// SortedTableInHtmlTableProps.cellComponent
-  /**
-   * A function for generating extra props for each custom Cell component based
-   * on its Id.
-   */
-  /// SortedTableInHtmlTableProps.getCellComponentProps
-  /**
-   * A string className to use on the root of the resulting element.
-   */
-  /// SortedTableInHtmlTableProps.className
-  /**
-   * Whether a header row should be rendered at the top of the table, defaulting
-   * to `true`.
-   */
-  /// SortedTableInHtmlTableProps.headerRow
-  /**
-   * Whether an Id column should be rendered on the left of the table,
-   * defaulting to `true`.
-   */
-  /// SortedTableInHtmlTableProps.idColumn
-  /**
    * An optional list of Cell Ids to use for rendering a prescribed set of the
    * Table's Cells in a given order. This can also be an object with the desired
-   * Cell Ids as keys, and with a string value to be used as a label to show in
-   * the column header.
+   * Cell Ids as keys, and with a value that can either be a string label to
+   * show in the column header, or a CustomCell object to further configure the
+   * column.
    */
-  /// SortedTableInHtmlTableProps.customCellIds
+  /// SortedTableInHtmlTableProps.customCells
   /**
    * Whether the table should be interactive such that clicking a header changes
    * the sorting and/or direction.
@@ -147,20 +149,6 @@
    * on its Id.
    */
   /// ValuesInHtmlTableProps.getValueComponentProps
-  /**
-   * A string className to use on the root of the resulting element.
-   */
-  /// ValuesInHtmlTableProps.className
-  /**
-   * Whether a header row should be rendered at the top of the table, defaulting
-   * to `true`.
-   */
-  /// ValuesInHtmlTableProps.headerRow
-  /**
-   * Whether an Id column should be rendered on the left of the table,
-   * defaulting to `true`.
-   */
-  /// ValuesInHtmlTableProps.idColumn
 }
 /**
  * ValuesInHtmlTableProps props are used for components that will render Values
@@ -252,18 +240,24 @@
  * const Pane = () => (
  *   <TableInHtmlTable
  *     tableId="pets"
- *     cellComponent={FormattedCellView}
- *     getCellComponentProps={(rowId, cellId) => ({bold: rowId == 'fido'})}
+ *     customCells={customCells}
  *     headerRow={false}
  *     idColumn={false}
  *   />
  * );
+ *
  * const FormattedCellView = ({tableId, rowId, cellId, bold}) => (
  *   <>
  *     {bold ? <b>{rowId}</b> : rowId}:
  *     <CellView tableId={tableId} rowId={rowId} cellId={cellId} />
  *   </>
  * );
+ * const customCells = {
+ *   species: {
+ *     component: FormattedCellView,
+ *     getComponentProps: (rowId, cellId) => ({bold: rowId == 'fido'}),
+ *   }
+ * };
  *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog'},
@@ -377,9 +371,9 @@
  * @example
  * This example creates a Provider context into which a default Store is
  * provided. The SortedTableInHtmlTable component within it then renders the
- * Table with a custom Row component and a custom props callback. The header row
- * at the top of the table and the Id column at the start of each row is
- * removed.
+ * Table with a custom component and a custom props callback for the `species`
+ * Cell. The header row at the top of the table and the Id column at the start
+ * of each row is removed.
  *
  * ```jsx
  * const App = ({store}) => (
@@ -387,22 +381,29 @@
  *     <Pane />
  *   </Provider>
  * );
+ *
  * const Pane = () => (
  *   <SortedTableInHtmlTable
  *     tableId="pets"
  *     cellId="species"
- *     cellComponent={FormattedCellView}
- *     getCellComponentProps={(rowId, cellId) => ({bold: rowId == 'fido'})}
+ *     customCells={customCells}
  *     headerRow={false}
  *     idColumn={false}
  *   />
  * );
+ *
  * const FormattedCellView = ({tableId, rowId, cellId, bold}) => (
  *   <>
  *     {bold ? <b>{rowId}</b> : rowId}:
  *     <CellView tableId={tableId} rowId={rowId} cellId={cellId} />
  *   </>
  * );
+ * const customCells = {
+ *   species: {
+ *     component: FormattedCellView,
+ *     getComponentProps: (rowId, cellId) => ({bold: rowId == 'fido'}),
+ *   }
+ * };
  *
  * const store = createStore().setTables({
  *   pets: {
