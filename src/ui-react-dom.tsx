@@ -18,10 +18,11 @@ import {
   ValuesInHtmlTable as ValuesInHtmlTableDecl,
   ValuesInHtmlTableProps,
 } from './types/ui-react-dom.d';
+import {isArray, isUndefined} from './common/other';
+import {objMap, objNew} from './common/obj';
 import React from 'react';
 import {arrayMap} from './common/array';
 import {getProps} from './ui-react/common';
-import {isUndefined} from './common/other';
 
 const {createElement, useCallback, useState} = React;
 
@@ -86,6 +87,9 @@ const HtmlTable = ({
 }) => {
   const defaultCellIds = useTableCellIds(tableId, store);
   const cellIds = customCellIds ?? defaultCellIds;
+  const cellIdsAndLabels = isArray(cellIds)
+    ? objNew(arrayMap(cellIds, (cellId) => [cellId, cellId]))
+    : cellIds;
   return (
     <table className={className}>
       {headerRow === false ? null : (
@@ -98,10 +102,11 @@ const HtmlTable = ({
                 onClick={onHeaderThClick}
               />
             )}
-            {arrayMap(cellIds, (cellId) => (
+            {objMap(cellIdsAndLabels, (label, cellId) => (
               <HtmlHeaderTh
                 key={cellId}
                 cellId={cellId}
+                label={label}
                 sorting={sorting}
                 onClick={onHeaderThClick}
               />
@@ -113,7 +118,7 @@ const HtmlTable = ({
         {arrayMap(rowIds, (rowId) => (
           <tr key={rowId}>
             {idColumn === false ? null : <th>{rowId}</th>}
-            {arrayMap(cellIds, (cellId) => (
+            {objMap(cellIdsAndLabels, (_, cellId) => (
               <td key={cellId}>
                 <Cell
                   {...getProps(getCellComponentProps, rowId, cellId)}
