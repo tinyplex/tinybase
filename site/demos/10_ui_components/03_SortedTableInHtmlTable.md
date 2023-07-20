@@ -55,10 +55,17 @@ you can configure this component. We're going to use a few here.
 Firstly, since the Table is very wide (and contains a lengthy description), we
 will first explicitly set the Cell Ids we want to display:
 
+```js
+const customCellIds = {name: 'Name', year: 'Year', rating: 'Rating'};
+```
+
+(This can either be an object with Cell Id as key and label as value, like this,
+or simply an array of the Cell Ids.)
+
 ```diff-jsx
        <SortedTableInHtmlTable
          tableId='movies'
-+        customCellIds={['name', 'year', 'rating']}
++        customCellIds={customCellIds}
        />
 ```
 
@@ -70,7 +77,7 @@ the movies by rating accordingly:
 ```diff-jsx
        <SortedTableInHtmlTable
          tableId='movies'
-         customCellIds={['name', 'year', 'rating']}
+         customCellIds={customCellIds}
 +        cellId='rating'
 +        descending={true}
        />
@@ -104,7 +111,7 @@ column headings to change the sorting:
 ```diff-jsx
        <SortedTableInHtmlTable
          tableId='movies'
-         customCellIds={['name', 'year', 'rating']}
+         customCellIds={customCellIds}
          cellId='rating'
          descending={true}
 +        sortOnClick={true}

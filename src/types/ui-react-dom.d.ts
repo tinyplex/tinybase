@@ -27,7 +27,7 @@ export type TableInHtmlTableProps = {
   /// TableInHtmlTableProps.idColumn
   readonly idColumn?: boolean;
   /// TableInHtmlTableProps.customCellIds
-  readonly customCellIds?: Ids;
+  readonly customCellIds?: Ids | {[cellId: Id]: string};
 };
 
 // SortedTableInHtmlTableProps
@@ -55,7 +55,7 @@ export type SortedTableInHtmlTableProps = {
   /// SortedTableInHtmlTableProps.idColumn
   readonly idColumn?: boolean;
   /// SortedTableInHtmlTableProps.customCellIds
-  readonly customCellIds?: Ids;
+  readonly customCellIds?: Ids | {[cellId: Id]: string};
   /// SortedTableInHtmlTableProps.sortOnClick
   readonly sortOnClick?: boolean;
 };
