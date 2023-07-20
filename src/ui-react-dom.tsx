@@ -9,8 +9,8 @@ import {
   useValueIds,
 } from './ui-react';
 import {EMPTY_STRING, VALUE} from './common/strings';
-import {Id, Ids} from './types/common';
 import {
+  HtmlTableProps,
   SortedTableInHtmlTable as SortedTableInHtmlTableDecl,
   SortedTableInHtmlTableProps,
   TableInHtmlTable as TableInHtmlTableDecl,
@@ -18,13 +18,14 @@ import {
   ValuesInHtmlTable as ValuesInHtmlTableDecl,
   ValuesInHtmlTableProps,
 } from './types/ui-react-dom.d';
-import {isArray, isUndefined} from './common/other';
+import {Id, Ids} from './types/common';
+import {isArray, isString, isUndefined} from './common/other';
 import {objMap, objNew} from './common/obj';
 import React from 'react';
 import {arrayMap} from './common/array';
 import {getProps} from './ui-react/common';
 
-const {createElement, useCallback, useState} = React;
+const {createElement, useCallback, useMemo, useState} = React;
 
 type Sorting = [Id | undefined, boolean];
 
@@ -72,24 +73,39 @@ const HtmlTable = ({
   tableId,
   rowIds,
   store,
-  cellComponent: Cell = CellView,
-  getCellComponentProps,
   className,
   headerRow,
   idColumn,
-  customCellIds,
+  customCells,
   sorting,
   onHeaderThClick,
-}: TableInHtmlTableProps & {
-  rowIds: Ids;
-  sorting?: Sorting;
-  onHeaderThClick?: (cellId: Id | undefined) => void;
-}) => {
+}: TableInHtmlTableProps &
+  HtmlTableProps & {
+    rowIds: Ids;
+    sorting?: Sorting;
+    onHeaderThClick?: (cellId: Id | undefined) => void;
+  }) => {
   const defaultCellIds = useTableCellIds(tableId, store);
-  const cellIds = customCellIds ?? defaultCellIds;
-  const cellIdsAndLabels = isArray(cellIds)
-    ? objNew(arrayMap(cellIds, (cellId) => [cellId, cellId]))
-    : cellIds;
+  const customCellConfigurations = useMemo(() => {
+    const cellIds = customCells ?? defaultCellIds;
+    return objNew(
+      objMap(
+        isArray(cellIds)
+          ? objNew(arrayMap(cellIds, (cellId) => [cellId, cellId]))
+          : cellIds,
+        (labelOrCustomCell, cellId) => [
+          cellId,
+          {
+            ...{label: cellId},
+            ...(isString(labelOrCustomCell)
+              ? {label: labelOrCustomCell}
+              : labelOrCustomCell),
+          },
+        ],
+      ),
+    );
+  }, [customCells, defaultCellIds]);
+
   return (
     <table className={className}>
       {headerRow === false ? null : (
@@ -102,7 +118,7 @@ const HtmlTable = ({
                 onClick={onHeaderThClick}
               />
             )}
-            {objMap(cellIdsAndLabels, (label, cellId) => (
+            {objMap(customCellConfigurations, ({label}, cellId) => (
               <HtmlHeaderTh
                 key={cellId}
                 cellId={cellId}
@@ -118,17 +134,20 @@ const HtmlTable = ({
         {arrayMap(rowIds, (rowId) => (
           <tr key={rowId}>
             {idColumn === false ? null : <th>{rowId}</th>}
-            {objMap(cellIdsAndLabels, (_, cellId) => (
-              <td key={cellId}>
-                <Cell
-                  {...getProps(getCellComponentProps, rowId, cellId)}
-                  tableId={tableId}
-                  rowId={rowId}
-                  cellId={cellId}
-                  store={store}
-                />
-              </td>
-            ))}
+            {objMap(
+              customCellConfigurations,
+              ({component: Cell = CellView, getComponentProps}, cellId) => (
+                <td key={cellId}>
+                  <Cell
+                    {...getProps(getComponentProps, rowId, cellId)}
+                    tableId={tableId}
+                    rowId={rowId}
+                    cellId={cellId}
+                    store={store}
+                  />
+                </td>
+              ),
+            )}
           </tr>
         ))}
       </tbody>
@@ -140,7 +159,7 @@ export const TableInHtmlTable: typeof TableInHtmlTableDecl = ({
   tableId,
   store,
   ...props
-}: TableInHtmlTableProps): any => (
+}: TableInHtmlTableProps & HtmlTableProps): any => (
   <HtmlTable
     {...props}
     tableId={tableId}
@@ -158,7 +177,7 @@ export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
   store,
   sortOnClick,
   ...props
-}: SortedTableInHtmlTableProps): any => {
+}: SortedTableInHtmlTableProps & HtmlTableProps): any => {
   const [sorting, setSorting] = useState<Sorting>([
     cellId,
     descending ? true : false,
@@ -188,7 +207,7 @@ export const ValuesInHtmlTable: typeof ValuesInHtmlTableDecl = ({
   className,
   headerRow,
   idColumn,
-}: ValuesInHtmlTableProps): any => (
+}: ValuesInHtmlTableProps & HtmlTableProps): any => (
   <table className={className}>
     {headerRow === false ? null : (
       <thead>

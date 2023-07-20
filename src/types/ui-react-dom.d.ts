@@ -10,24 +10,34 @@ import {
 import {Id, Ids} from './common';
 import {ComponentType} from 'react';
 
+// CustomCell
+export type CustomCell = {
+  /// CustomCell.label
+  readonly label?: string;
+  /// CustomCell.component
+  readonly component?: ComponentType<CellProps>;
+  /// CustomCell.getComponentProps
+  readonly getComponentProps?: (rowId: Id, cellId: Id) => ExtraProps;
+};
+
+// HtmlTableProps
+export type HtmlTableProps = {
+  /// HtmlTableProps.className
+  readonly className?: string;
+  /// HtmlTableProps.headerRow
+  readonly headerRow?: boolean;
+  /// HtmlTableProps.idColumn
+  readonly idColumn?: boolean;
+};
+
 // TableInHtmlTableProps
 export type TableInHtmlTableProps = {
   /// TableInHtmlTableProps.tableId
   readonly tableId: Id;
   /// TableInHtmlTableProps.store
   readonly store?: StoreOrStoreId;
-  /// TableInHtmlTableProps.cellComponent
-  readonly cellComponent?: ComponentType<CellProps>;
-  /// TableInHtmlTableProps.getCellComponentProps
-  readonly getCellComponentProps?: (rowId: Id, cellId: Id) => ExtraProps;
-  /// TableInHtmlTableProps.className
-  readonly className?: string;
-  /// TableInHtmlTableProps.headerRow
-  readonly headerRow?: boolean;
-  /// TableInHtmlTableProps.idColumn
-  readonly idColumn?: boolean;
-  /// TableInHtmlTableProps.customCellIds
-  readonly customCellIds?: Ids | {[cellId: Id]: string};
+  /// TableInHtmlTableProps.customCells
+  readonly customCells?: Ids | {[cellId: Id]: string | CustomCell};
 };
 
 // SortedTableInHtmlTableProps
@@ -44,18 +54,8 @@ export type SortedTableInHtmlTableProps = {
   readonly limit?: number;
   /// SortedTableInHtmlTableProps.store
   readonly store?: StoreOrStoreId;
-  /// SortedTableInHtmlTableProps.cellComponent
-  readonly cellComponent?: ComponentType<CellProps>;
-  /// SortedTableInHtmlTableProps.getCellComponentProps
-  readonly getCellComponentProps?: (rowId: Id, cellId: Id) => ExtraProps;
-  /// SortedTableInHtmlTableProps.className
-  readonly className?: string;
-  /// SortedTableInHtmlTableProps.headerRow
-  readonly headerRow?: boolean;
-  /// SortedTableInHtmlTableProps.idColumn
-  readonly idColumn?: boolean;
-  /// SortedTableInHtmlTableProps.customCellIds
-  readonly customCellIds?: Ids | {[cellId: Id]: string};
+  /// SortedTableInHtmlTableProps.customCells
+  readonly customCells?: Ids | {[cellId: Id]: string | CustomCell};
   /// SortedTableInHtmlTableProps.sortOnClick
   readonly sortOnClick?: boolean;
 };
@@ -68,25 +68,19 @@ export type ValuesInHtmlTableProps = {
   readonly valueComponent?: ComponentType<ValueProps>;
   /// ValuesInHtmlTableProps.getValueComponentProps
   readonly getValueComponentProps?: (valueId: Id) => ExtraProps;
-  /// ValuesInHtmlTableProps.className
-  readonly className?: string;
-  /// ValuesInHtmlTableProps.headerRow
-  readonly headerRow?: boolean;
-  /// ValuesInHtmlTableProps.idColumn
-  readonly idColumn?: boolean;
 };
 
 /// TableInHtmlTable
 export function TableInHtmlTable(
-  props: TableInHtmlTableProps,
+  props: TableInHtmlTableProps & HtmlTableProps,
 ): ComponentReturnType;
 
 /// SortedTableInHtmlTable
 export function SortedTableInHtmlTable(
-  props: SortedTableInHtmlTableProps,
+  props: SortedTableInHtmlTableProps & HtmlTableProps,
 ): ComponentReturnType;
 
 /// ValuesInHtmlTable
 export function ValuesInHtmlTable(
-  props: ValuesInHtmlTableProps,
+  props: ValuesInHtmlTableProps & HtmlTableProps,
 ): ComponentReturnType;

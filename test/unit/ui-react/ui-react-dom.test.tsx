@@ -76,68 +76,6 @@ describe('Components', () => {
       `);
     });
 
-    test('custom', () => {
-      act(() => {
-        renderer = create(
-          <TableInHtmlTable
-            store={store}
-            tableId="t2"
-            cellComponent={Custom}
-            getCellComponentProps={getIdsAsProp}
-          />,
-        );
-      });
-      expect(renderer.toJSON()).toMatchInlineSnapshot(`
-        <table>
-          <thead>
-            <tr>
-              <th>
-                Id
-              </th>
-              <th>
-                c1
-              </th>
-              <th>
-                c2
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th>
-                r1
-              </th>
-              <td>
-                <b>
-                  {"0":"r1","1":"c1","tableId":"t2","rowId":"r1","cellId":"c1"}
-                </b>
-              </td>
-              <td>
-                <b>
-                  {"0":"r1","1":"c2","tableId":"t2","rowId":"r1","cellId":"c2"}
-                </b>
-              </td>
-            </tr>
-            <tr>
-              <th>
-                r2
-              </th>
-              <td>
-                <b>
-                  {"0":"r2","1":"c1","tableId":"t2","rowId":"r2","cellId":"c1"}
-                </b>
-              </td>
-              <td>
-                <b>
-                  {"0":"r2","1":"c2","tableId":"t2","rowId":"r2","cellId":"c2"}
-                </b>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      `);
-    });
-
     test('className', () => {
       act(() => {
         renderer = create(
@@ -259,13 +197,13 @@ describe('Components', () => {
       `);
     });
 
-    test('customCellIds', () => {
+    test('customCells array', () => {
       act(() => {
         renderer = create(
           <TableInHtmlTable
             store={store}
             tableId="t2"
-            customCellIds={['c3', 'c2']}
+            customCells={['c3', 'c2']}
           />,
         );
       });
@@ -306,13 +244,13 @@ describe('Components', () => {
       `);
     });
 
-    test('customCellIds 2', () => {
+    test('customCells labels', () => {
       act(() => {
         renderer = create(
           <TableInHtmlTable
             store={store}
             tableId="t2"
-            customCellIds={{c3: 'C three', c2: 'C two'}}
+            customCells={{c3: 'C three', c2: 'C two'}}
           />,
         );
       });
@@ -346,6 +284,77 @@ describe('Components', () => {
               <td />
               <td>
                 4
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      `);
+    });
+
+    test('customCells objects', () => {
+      act(() => {
+        renderer = create(
+          <TableInHtmlTable
+            store={store}
+            tableId="t2"
+            customCells={{
+              c1: {
+                label: 'C one',
+                component: Custom,
+                getComponentProps: getIdsAsProp,
+              },
+              c2: {
+                component: Custom,
+                getComponentProps: getIdsAsProp,
+              },
+            }}
+          />,
+        );
+      });
+      expect(renderer.toJSON()).toMatchInlineSnapshot(`
+        <table>
+          <thead>
+            <tr>
+              <th>
+                Id
+              </th>
+              <th>
+                C one
+              </th>
+              <th>
+                c2
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>
+                r1
+              </th>
+              <td>
+                <b>
+                  {"0":"r1","1":"c1","tableId":"t2","rowId":"r1","cellId":"c1"}
+                </b>
+              </td>
+              <td>
+                <b>
+                  {"0":"r1","1":"c2","tableId":"t2","rowId":"r1","cellId":"c2"}
+                </b>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                r2
+              </th>
+              <td>
+                <b>
+                  {"0":"r2","1":"c1","tableId":"t2","rowId":"r2","cellId":"c1"}
+                </b>
+              </td>
+              <td>
+                <b>
+                  {"0":"r2","1":"c2","tableId":"t2","rowId":"r2","cellId":"c2"}
+                </b>
               </td>
             </tr>
           </tbody>
@@ -451,72 +460,6 @@ describe('Components', () => {
               </td>
               <td>
                 4
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      `);
-    });
-
-    test('custom', () => {
-      act(() => {
-        renderer = create(
-          <SortedTableInHtmlTable
-            store={store}
-            tableId="t2"
-            cellId="c1"
-            descending={true}
-            cellComponent={Custom}
-            getCellComponentProps={getIdsAsProp}
-          />,
-        );
-      });
-      expect(renderer.toJSON()).toMatchInlineSnapshot(`
-        <table>
-          <thead>
-            <tr>
-              <th>
-                Id
-              </th>
-              <th
-                className="sorted descending"
-              >
-                c1
-              </th>
-              <th>
-                c2
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th>
-                r2
-              </th>
-              <td>
-                <b>
-                  {"0":"r2","1":"c1","tableId":"t2","rowId":"r2","cellId":"c1"}
-                </b>
-              </td>
-              <td>
-                <b>
-                  {"0":"r2","1":"c2","tableId":"t2","rowId":"r2","cellId":"c2"}
-                </b>
-              </td>
-            </tr>
-            <tr>
-              <th>
-                r1
-              </th>
-              <td>
-                <b>
-                  {"0":"r1","1":"c1","tableId":"t2","rowId":"r1","cellId":"c1"}
-                </b>
-              </td>
-              <td>
-                <b>
-                  {"0":"r1","1":"c2","tableId":"t2","rowId":"r1","cellId":"c2"}
-                </b>
               </td>
             </tr>
           </tbody>
@@ -667,7 +610,7 @@ describe('Components', () => {
       `);
     });
 
-    test('customCellIds', () => {
+    test('customCells array', () => {
       act(() => {
         renderer = create(
           <SortedTableInHtmlTable
@@ -675,7 +618,7 @@ describe('Components', () => {
             tableId="t2"
             cellId="c1"
             descending={true}
-            customCellIds={['c3', 'c2']}
+            customCells={['c3', 'c2']}
           />,
         );
       });
@@ -716,7 +659,7 @@ describe('Components', () => {
       `);
     });
 
-    test('customCellIds 2', () => {
+    test('customCells labels', () => {
       act(() => {
         renderer = create(
           <SortedTableInHtmlTable
@@ -724,7 +667,7 @@ describe('Components', () => {
             tableId="t2"
             cellId="c1"
             descending={true}
-            customCellIds={{c3: 'C three', c2: 'C two'}}
+            customCells={{c3: 'C three', c2: 'C two'}}
           />,
         );
       });
@@ -759,6 +702,81 @@ describe('Components', () => {
               </th>
               <td />
               <td />
+            </tr>
+          </tbody>
+        </table>
+      `);
+    });
+
+    test('customCells objects', () => {
+      act(() => {
+        renderer = create(
+          <SortedTableInHtmlTable
+            store={store}
+            tableId="t2"
+            cellId="c1"
+            descending={true}
+            customCells={{
+              c1: {
+                label: 'C one',
+                component: Custom,
+                getComponentProps: getIdsAsProp,
+              },
+              c2: {
+                component: Custom,
+                getComponentProps: getIdsAsProp,
+              },
+            }}
+          />,
+        );
+      });
+      expect(renderer.toJSON()).toMatchInlineSnapshot(`
+        <table>
+          <thead>
+            <tr>
+              <th>
+                Id
+              </th>
+              <th
+                className="sorted descending"
+              >
+                C one
+              </th>
+              <th>
+                c2
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>
+                r2
+              </th>
+              <td>
+                <b>
+                  {"0":"r2","1":"c1","tableId":"t2","rowId":"r2","cellId":"c1"}
+                </b>
+              </td>
+              <td>
+                <b>
+                  {"0":"r2","1":"c2","tableId":"t2","rowId":"r2","cellId":"c2"}
+                </b>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                r1
+              </th>
+              <td>
+                <b>
+                  {"0":"r1","1":"c1","tableId":"t2","rowId":"r1","cellId":"c1"}
+                </b>
+              </td>
+              <td>
+                <b>
+                  {"0":"r1","1":"c2","tableId":"t2","rowId":"r1","cellId":"c2"}
+                </b>
+              </td>
             </tr>
           </tbody>
         </table>
