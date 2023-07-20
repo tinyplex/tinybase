@@ -5,7 +5,7 @@
  * The components in this module use the react-dom module and so are not
  * appropriate for environments like React Native (although those in the
  * lower-level ui-react module are).
- * @see Building UIs guides
+ * @see UI Components demos
  * @packageDocumentation
  * @module ui-react-dom
  * @since v4.1.0
@@ -174,6 +174,8 @@
  * Store (which is either the default context Store, a named context Store, or
  * by explicit reference).
  *
+ * See the <TableInHtmlTable /> demo for this component in action.
+ *
  * This component renders a Table by iterating over its Row objects. By default
  * these are in turn rendered with the RowInHtmlTr component, but you can
  * override this behavior by providing a `rowComponent` prop, a custom component
@@ -188,6 +190,7 @@
  * appear in a <th> element at the top of the table, and the start of each row.
  * @param props The props for this component.
  * @returns A rendering of the Table in a <table> element.
+ * @see <TableInHtmlTable /> demo
  * @example
  * This example creates a Provider context into which a default Store is
  * provided. The TableInHtmlTable component within it then renders the Table in
@@ -294,6 +297,8 @@
  * indicate that the sorting should be in descending order. The `offset` and
  * `limit` props are used to paginate results, but default to `0` and
  * `undefined` to return all available Row Ids if not specified.
+ *
+ * See the <SortedTableInHtmlTable /> demo for this component in action.
  *
  * This component renders a Table by iterating over its Row objects, in the
  * order dictated by the sort parameters. By default these are in turn rendered
@@ -430,6 +435,8 @@
  * The component's props identify which Row to render based on Table Id, Row Id,
  * and Store (which is either the default context Store, a named context Store,
  * or an explicit reference).
+ *
+ * See the <ValuesInHtmlTable /> demo for this component in action.
  *
  * This component renders a Store by iterating over its Value objects. By
  * default these are in turn rendered with the ValueInHtmlTr component, but you

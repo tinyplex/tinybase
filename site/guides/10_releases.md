@@ -3,6 +3,63 @@
 This is a reverse chronological list of the major TinyBase releases, with
 highlighted features.
 
+## v4.1
+
+This release introduces the new ui-react-dom module. This provides pre-built
+components for tabular display of your data in a web application.
+
+These include the ValuesInHtmlTable component, the TableInHtmlTable component,
+and the powerful, interactive SortedTableInHtmlTable component:
+
+```jsx
+const App = ({store}) => (
+  <SortedTableInHtmlTable
+    tableId="pets"
+    cellId="species"
+    className="table"
+    store={store}
+  />
+);
+
+const store = createStore().setTables({
+  pets: {
+    fido: {species: 'dog'},
+    felix: {species: 'cat'},
+  },
+});
+const app = document.createElement('div');
+const root = ReactDOMClient.createRoot(app);
+root.render(<App store={store} />); // !act
+
+console.log(app.innerHTML);
+// ->
+`
+<table class="table">
+  <thead>
+    <tr>
+      <th>Id</th>
+      <th class="sorted ascending">species</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>felix</th>
+      <td>cat</td>
+    </tr>
+    <tr>
+      <th>fido</th>
+      <td>dog</td>
+    </tr>
+  </tbody>
+</table>
+`;
+
+root.unmount(); // !act
+```
+
+These pre-built components are showcased in the UI Components demos and
+documented in the ui-react-dom module.
+
 ## v4.0
 
 This major release provides Persister modules that connect TinyBase to SQLite
@@ -39,7 +96,7 @@ for the 'pets' table:
 ```js
 const sqlite3 = await sqlite3InitModule();
 const db = new sqlite3.oo1.DB(':memory:', 'c');
-const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+store.setTables({pets: {fido: {species: 'dog'}}});
 const persister = createSqliteWasmPersister(store, sqlite3, db, {
   mode: 'tabular',
   tables: {load: {pets: 'pets'}, save: {pets: 'pets'}},
