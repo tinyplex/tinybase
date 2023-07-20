@@ -305,6 +305,53 @@ describe('Components', () => {
         </table>
       `);
     });
+
+    test('customCellIds 2', () => {
+      act(() => {
+        renderer = create(
+          <TableInHtmlTable
+            store={store}
+            tableId="t2"
+            customCellIds={{c3: 'C three', c2: 'C two'}}
+          />,
+        );
+      });
+      expect(renderer.toJSON()).toMatchInlineSnapshot(`
+        <table>
+          <thead>
+            <tr>
+              <th>
+                Id
+              </th>
+              <th>
+                C three
+              </th>
+              <th>
+                C two
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>
+                r1
+              </th>
+              <td />
+              <td />
+            </tr>
+            <tr>
+              <th>
+                r2
+              </th>
+              <td />
+              <td>
+                4
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      `);
+    });
   });
 
   describe('SortedTableInHtmlTable', () => {
@@ -644,6 +691,55 @@ describe('Components', () => {
               </th>
               <th>
                 c2
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>
+                r2
+              </th>
+              <td />
+              <td>
+                4
+              </td>
+            </tr>
+            <tr>
+              <th>
+                r1
+              </th>
+              <td />
+              <td />
+            </tr>
+          </tbody>
+        </table>
+      `);
+    });
+
+    test('customCellIds 2', () => {
+      act(() => {
+        renderer = create(
+          <SortedTableInHtmlTable
+            store={store}
+            tableId="t2"
+            cellId="c1"
+            descending={true}
+            customCellIds={{c3: 'C three', c2: 'C two'}}
+          />,
+        );
+      });
+      expect(renderer.toJSON()).toMatchInlineSnapshot(`
+        <table>
+          <thead>
+            <tr>
+              <th>
+                Id
+              </th>
+              <th>
+                C three
+              </th>
+              <th>
+                C two
               </th>
             </tr>
           </thead>

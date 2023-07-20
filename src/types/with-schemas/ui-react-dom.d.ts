@@ -36,7 +36,9 @@ export type TableInHtmlTableProps<
         /// TableInHtmlTableProps.idColumn
         readonly idColumn?: boolean;
         /// TableInHtmlTableProps.customCellIds
-        readonly customCellIds?: CellIdFromSchema<Schemas[0], TableId>[];
+        readonly customCellIds?:
+          | CellIdFromSchema<Schemas[0], TableId>[]
+          | {[cellId in CellIdFromSchema<Schemas[0], TableId>]?: string};
       }
     : never
   : never;
@@ -73,7 +75,9 @@ export type SortedTableInHtmlTableProps<
         /// SortedTableInHtmlTableProps.idColumn
         readonly idColumn?: boolean;
         /// SortedTableInHtmlTableProps.customCellIds
-        readonly customCellIds?: CellIdFromSchema<Schemas[0], TableId>[];
+        readonly customCellIds?:
+          | CellIdFromSchema<Schemas[0], TableId>[]
+          | {[cellId in CellIdFromSchema<Schemas[0], TableId>]?: string};
         /// SortedTableInHtmlTableProps.sortOnClick
         readonly sortOnClick?: boolean;
       }
