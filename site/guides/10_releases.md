@@ -15,12 +15,7 @@ and the powerful, interactive SortedTableInHtmlTable component:
 
 ```jsx
 const App = ({store}) => (
-  <SortedTableInHtmlTable
-    tableId="pets"
-    cellId="species"
-    className="table"
-    store={store}
-  />
+  <SortedTableInHtmlTable tableId="pets" cellId="species" store={store} />
 );
 
 const store = createStore().setTables({
@@ -38,20 +33,11 @@ console.log(app.innerHTML);
 `
 <table class="table">
   <thead>
-    <tr>
-      <th>Id</th>
-      <th class="sorted ascending">species</th>
-    </tr>
+    <tr><th>Id</th><th class="sorted ascending">species</th></tr>
   </thead>
   <tbody>
-    <tr>
-      <th>felix</th>
-      <td>cat</td>
-    </tr>
-    <tr>
-      <th>fido</th>
-      <td>dog</td>
-    </tr>
+    <tr><th>felix</th><td>cat</td></tr>
+    <tr><th>fido</th><td>dog</td></tr>
   </tbody>
 </table>
 `;
