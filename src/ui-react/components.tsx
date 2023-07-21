@@ -238,7 +238,7 @@ export const Provider: typeof ProviderDecl = ({
   checkpoints,
   checkpointsById,
   children,
-}: ProviderProps & {children: React.ReactNode}): any => {
+}: ProviderProps & {readonly children: React.ReactNode}): any => {
   const parentValue = useContext(Context);
   return (
     <Context.Provider
