@@ -37,6 +37,30 @@
 /// CustomCell
 {
   /**
+   * An optional string that will be used as the label at the top of the table
+   * column for this Cell.
+   */
+  /// CustomResultCell.label
+  /**
+   * An optional custom component for rendering each Cell in the ResultTable (to
+   * override the default ResultCellView component).
+   */
+  /// CustomResultCell.component
+  /**
+   * An optional function for generating extra props for each custom Cell
+   * component based on Row and Cell Id.
+   */
+  /// CustomResultCell.getComponentProps
+}
+/**
+ * The CustomResultCell object is used to configure custom cell rendering for
+ * query results in an HTML table.
+ * @category Configuration
+ * @since v4.1.0
+ */
+/// CustomResultCell
+{
+  /**
    * A string className to use on the root of the resulting element.
    */
   /// HtmlTableProps.className

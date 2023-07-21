@@ -5,12 +5,13 @@ import {
   CellProps,
   ComponentReturnType,
   ExtraProps,
+  ResultCellProps,
   StoreOrStoreId,
   ValueProps,
 } from './internal/ui-react';
 import {ComponentType} from 'react';
 import {Id} from '../common';
-import {OptionalSchemas} from '../store';
+import {OptionalSchemas} from './store';
 
 // CustomCell
 export type CustomCell<
@@ -26,6 +27,16 @@ export type CustomCell<
     rowId: Id,
     cellId: CellIdFromSchema<Schemas[0], TableId>,
   ) => ExtraProps;
+};
+
+// CustomResultCell
+export type CustomResultCell<Schemas extends OptionalSchemas> = {
+  /// CustomResultCell.label
+  readonly label?: string;
+  /// CustomResultCell.component
+  readonly component?: ComponentType<ResultCellProps<Schemas>>;
+  /// CustomResultCell.getComponentProps
+  readonly getComponentProps?: (rowId: Id, cellId: Id) => ExtraProps;
 };
 
 // HtmlTableProps
