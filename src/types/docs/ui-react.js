@@ -4881,7 +4881,7 @@
 /// useQueries
 /**
  * The useResultTable hook returns an object containing the entire data of the
- * result Table of the given query, and registers a listener so that any changes
+ * ResultTable of the given query, and registers a listener so that any changes
  * to that result will cause a re-render.
  *
  * A Provider component is used to wrap part of an application in a context, and
@@ -4898,7 +4898,7 @@
  * @param queriesOrQueriesId The Queries object to be accessed: omit for the
  * default context Queries object, provide an Id for a named context Queries
  * object, or provide an explicit reference.
- * @returns An object containing the entire data of the result Table.
+ * @returns An object containing the entire data of the ResultTable.
  * @example
  * This example creates a Queries object outside the application, which is used
  * in the useTable hook by reference. A change to the data in the query
@@ -4995,7 +4995,7 @@
  */
 /// useResultTable
 /**
- * The useResultRowIds hook returns the Ids of every Row in the result Table of
+ * The useResultRowIds hook returns the Ids of every Row in the ResultTable of
  * the given query, and registers a listener so that any changes to those Ids
  * will cause a re-render.
  *
@@ -5112,7 +5112,7 @@
 /// useResultRowIds
 /**
  * The useResultSortedRowIds hook returns the sorted (and optionally, paginated)
- * Ids of every Row in the result Table of the given query, and registers a
+ * Ids of every Row in the ResultTable of the given query, and registers a
  * listener so that any changes to those Ids will cause a re-render.
  *
  * A Provider component is used to wrap part of an application in a context, and
@@ -5255,9 +5255,9 @@
  */
 /// useResultSortedRowIds
 /**
- * The useResultRow hook returns an object containing the data of a
- * single Row in the result Table of the given query, and registers a listener
- * so that any changes to that Row will cause a re-render.
+ * The useResultRow hook returns an object containing the data of a single Row
+ * in the ResultTable of the given query, and registers a listener so that any
+ * changes to that Row will cause a re-render.
  *
  * A Provider component is used to wrap part of an application in a context, and
  * it can contain a default Queries object or a set of Queries objects named by
@@ -5270,11 +5270,11 @@
  * result Row will cause a re-render. When the component containing this hook is
  * unmounted, the listener will be automatically removed.
  * @param queryId The Id of the query.
- * @param rowId The Id of the Row in the result Table.
+ * @param rowId The Id of the Row in the ResultTable.
  * @param queriesOrQueriesId The Queries object to be accessed: omit for the
  * default context Queries object, provide an Id for a named context Queries
  * object, or provide an explicit reference.
- * @returns An object containing the entire data of the Row in the result Table
+ * @returns An object containing the entire data of the Row in the ResultTable
  * of the query.
  * @example
  * This example creates a Queries object outside the application, which is used
@@ -5375,7 +5375,7 @@
 /// useResultRow
 /**
  * The useResultCellIds hook returns the Ids of every Cell in a given Row in the
- * result Table of the given query, and registers a listener so that any changes
+ * ResultTable of the given query, and registers a listener so that any changes
  * to those Ids will cause a re-render.
  *
  * A Provider component is used to wrap part of an application in a context, and
@@ -5389,7 +5389,7 @@
  * result Cell Ids will cause a re-render. When the component containing this
  * hook is unmounted, the listener will be automatically removed.
  * @param queryId The Id of the query.
- * @param rowId The Id of the Row in the result Table.
+ * @param rowId The Id of the Row in the ResultTable.
  * @param queriesOrQueriesId The Queries object to be accessed: omit for the
  * default context Queries object, provide an Id for a named context Queries
  * object, or provide an explicit reference.
@@ -5500,7 +5500,7 @@
 /// useResultCellIds
 /**
  * The useResultCell hook returns the value of a single Cell in a given Row in
- * the result Table of the given query, and registers a listener so that any
+ * the ResultTable of the given query, and registers a listener so that any
  * changes to that value will cause a re-render.
  *
  * A Provider component is used to wrap part of an application in a context, and
@@ -5514,7 +5514,7 @@
  * result Cell will cause a re-render. When the component containing this hook
  * is unmounted, the listener will be automatically removed.
  * @param queryId The Id of the query.
- * @param rowId The Id of the Row in the result Table.
+ * @param rowId The Id of the Row in the ResultTable.
  * @param cellId The Id of the Cell in the Row.
  * @param queriesOrQueriesId The Queries object to be accessed: omit for the
  * default context Queries object, provide an Id for a named context Queries
@@ -5621,14 +5621,14 @@
 /// useResultCell
 /**
  * The useResultTableListener hook registers a listener function with a Queries
- * object that will be called whenever data in a result Table changes.
+ * object that will be called whenever data in a ResultTable changes.
  *
  * This hook is useful for situations where a component needs to register its
  * own specific listener to do more than simply tracking the value (which is
  * more easily done with the useResultTable hook).
  *
- * You can either listen to a single result Table (by specifying a query Id as
- * the method's first parameter) or changes to any result Table (by providing a
+ * You can either listen to a single ResultTable (by specifying a query Id as
+ * the method's first parameter) or changes to any ResultTable (by providing a
  * `null` wildcard).
  *
  * Unlike the addResultTableListener method, which returns a listener Id and
@@ -5638,7 +5638,7 @@
  * Queries object will be deleted.
  * @param queryId The Id of the query to listen to, or `null` as a wildcard.
  * @param listener The function that will be called whenever data in the
- * matching result Table changes.
+ * matching ResultTable changes.
  * @param listenerDeps An optional array of dependencies for the `listener`
  * function, which, if any change, result in the re-registration of the
  * listener. This parameter defaults to an empty array.
@@ -5692,14 +5692,14 @@
 /// useResultTableListener
 /**
  * The useResultRowIdsListener hook registers a listener function with a Queries
- * object that will be called whenever the Row Ids in a result Table change.
+ * object that will be called whenever the Row Ids in a ResultTable change.
  *
  * This hook is useful for situations where a component needs to register its
  * own specific listener to do more than simply tracking the value (which is
  * more easily done with the useResultRowIds hook).
  *
- * You can either listen to a single result Table (by specifying a query Id as
- * the method's first parameter) or changes to any result Table (by providing a
+ * You can either listen to a single ResultTable (by specifying a query Id as
+ * the method's first parameter) or changes to any ResultTable (by providing a
  * `null` wildcard).
  *
  * Unlike the addResultRowIdsListener method, which returns a listener Id and
@@ -5709,7 +5709,7 @@
  * Queries object will be deleted.
  * @param queryId The Id of the query to listen to, or `null` as a wildcard.
  * @param listener The function that will be called whenever the Row Ids in the
- * matching result Table change.
+ * matching ResultTable change.
  * @param listenerDeps An optional array of dependencies for the `listener`
  * function, which, if any change, result in the re-registration of the
  * listener. This parameter defaults to an empty array.
@@ -5764,7 +5764,7 @@
 /**
  * The useResultSortedRowIdsListener hook registers a listener function with a
  * Queries object that will be called whenever the sorted (and optionally,
- * paginated) Row Ids in a result Table change.
+ * paginated) Row Ids in a ResultTable change.
  *
  * This hook is useful for situations where a component needs to register its
  * own specific listener to do more than simply tracking the value (which is
@@ -5782,7 +5782,7 @@
  * @param offset The number of Row Ids to skip for pagination purposes, if any.
  * @param limit The maximum number of Row Ids to return, or `undefined` for all.
  * @param listener The function that will be called whenever the Row Ids in the
- * matching result Table change.
+ * matching ResultTable change.
  * @param listenerDeps An optional array of dependencies for the `listener`
  * function, which, if any change, result in the re-registration of the
  * listener. This parameter defaults to an empty array.
@@ -5938,7 +5938,7 @@
  * @param queryId The Id of the query to listen to, or `null` as a wildcard.
  * @param rowId The Id of the result Row to listen to, or `null` as a wildcard.
  * @param listener The function that will be called whenever the Row Ids in the
- * matching result Table change.
+ * matching ResultTable change.
  * @param listenerDeps An optional array of dependencies for the `listener`
  * function, which, if any change, result in the re-registration of the
  * listener. This parameter defaults to an empty array.
@@ -7496,15 +7496,15 @@
 }
 /**
  * ResultTableProps props are used for components that refer to a single query
- * result Table, such as the ResultTableView component.
+ * ResultTable, such as the ResultTableView component.
  * @category Props
  * @since v2.0.0
  */
 /// ResultTableProps
 {
   /**
-   * The Id of the query in the Queries object for which the result Table will
-   * be rendered.
+   * The Id of the query in the Queries object for which the ResultTable will be
+   * rendered.
    */
   /// ResultTableProps.queryId
   /**
@@ -7535,14 +7535,14 @@
 }
 /**
  * ResultSortedTableProps props are used for components that refer to a single
- * sorted query result Table, such as the ResultSortedTableView component.
+ * sorted query ResultTable, such as the ResultSortedTableView component.
  * @category Props
  * @since v2.0.0
  */
 /// ResultSortedTableProps
 {
   /**
-   * The Id of the query in the Queries object for which the sorted result Table
+   * The Id of the query in the Queries object for which the sorted ResultTable
    * will be rendered.
    */
   /// ResultSortedTableProps.queryId
@@ -7591,19 +7591,19 @@
 }
 /**
  * ResultRowProps props are used for components that refer to a single Row in a
- * query result Table, such as the ResultRowView component.
+ * query ResultTable, such as the ResultRowView component.
  * @category Props
  * @since v2.0.0
  */
 /// ResultRowProps
 {
   /**
-   * The Id of the query in the Queries object for which the result Table will
-   * be rendered.
+   * The Id of the query in the Queries object for which the ResultTable will be
+   * rendered.
    */
   /// ResultRowProps.queryId
   /**
-   * The Id of the Row in the result Table to be rendered.
+   * The Id of the Row in the ResultTable to be rendered.
    */
   /// ResultRowProps.rowId
   /**
@@ -7634,15 +7634,15 @@
 }
 /**
  * ResultRowProps props are used for components that refer to a single Cell in a
- * Row of a result Table, such as the ResultCellView component.
+ * Row of a ResultTable, such as the ResultCellView component.
  * @category Props
  * @since v2.0.0
  */
 /// ResultCellProps
 {
   /**
-   * The Id of the query in the Queries object for which the result Table will
-   * be rendered.
+   * The Id of the query in the Queries object for which the ResultTable will be
+   * rendered.
    */
   /// ResultCellProps.queryId
   /**
@@ -9473,7 +9473,7 @@
 /// LinkedRowsView
 /**
  * The ResultCellView component renders the value of a single Cell in a given
- * Row, in a given query's result Table, and registers a listener so that any
+ * Row, in a given query's ResultTable, and registers a listener so that any
  * changes to that result will cause a re-render.
  *
  * The component's props identify which Cell to render based on query Id, Row
@@ -9594,7 +9594,7 @@
 /// ResultCellView
 /**
  * The ResultRowView component renders the contents of a single Row in a given
- * query's result Table, and registers a listener so that any changes to that
+ * query's ResultTable, and registers a listener so that any changes to that
  * result will cause a re-render.
  *
  * The component's props identify which Row to render based on query Id, Row Id,
@@ -9739,18 +9739,18 @@
 /// ResultRowView
 /**
  * The ResultSortedTableView component renders the contents of a single query's
- * sorted result Table in a Queries object, and registers a listener so that any
+ * sorted ResultTable in a Queries object, and registers a listener so that any
  * changes to that result will cause a re-render.
  *
- * The component's props identify which Table to render based on query Id, and
- * Queries object (which is either the default context Queries object, a named
- * context Queries object, or by explicit reference). It also takes a Cell Id to
- * sort by and a boolean to indicate that the sorting should be in descending
- * order. The `offset` and `limit` props are used to paginate results, but
- * default to `0` and `undefined` to return all available Row Ids if not
- * specified.
+ * The component's props identify which ResultTable to render based on query Id,
+ * and Queries object (which is either the default context Queries object, a
+ * named context Queries object, or by explicit reference). It also takes a Cell
+ * Id to sort by and a boolean to indicate that the sorting should be in
+ * descending order. The `offset` and `limit` props are used to paginate
+ * results, but default to `0` and `undefined` to return all available Row Ids
+ * if not specified.
  *
- * This component renders a result Table by iterating over its Row objects, in
+ * This component renders a ResultTable by iterating over its Row objects, in
  * the order dictated by the sort parameters. By default these are in turn
  * rendered with the ResultRowView component, but you can override this behavior
  * by providing a `resultRowComponent` prop, a custom component of your own that
@@ -9758,10 +9758,10 @@
  * to your custom component with the `getResultRowComponentProps` callback prop.
  *
  * This component uses the useResultSortedRowIds hook under the covers, which
- * means that any changes to the structure or sorting of the result Table will
+ * means that any changes to the structure or sorting of the ResultTable will
  * cause a re-render.
  * @param props The props for this component.
- * @returns A rendering of the result Table, or nothing, if not present.
+ * @returns A rendering of the ResultTable, or nothing, if not present.
  * @example
  * This example creates a Queries object outside the application, which is used
  * in the ResultSortedTableView component by reference. A change to the data in
@@ -9874,15 +9874,15 @@
  */
 /// ResultSortedTableView
 /**
- * The ResultTableView component renders the contents of a single query's result
- * Table in a Queries object, and registers a listener so that any changes to
- * that result will cause a re-render.
+ * The ResultTableView component renders the contents of a single query's
+ * ResultTable in a Queries object, and registers a listener so that any changes
+ * to that result will cause a re-render.
  *
- * The component's props identify which Table to render based on query Id, and
- * Queries object (which is either the default context Queries object, a named
- * context Queries object, or by explicit reference).
+ * The component's props identify which ResultTable to render based on query Id,
+ * and Queries object (which is either the default context Queries object, a
+ * named context Queries object, or by explicit reference).
  *
- * This component renders a result Table by iterating over its Row objects. By
+ * This component renders a ResultTable by iterating over its Row objects. By
  * default these are in turn rendered with the ResultRowView component, but you
  * can override this behavior by providing a `resultRowComponent` prop, a custom
  * component of your own that will render a Row based on ResultRowProps. You can
@@ -9890,9 +9890,9 @@
  * `getResultRowComponentProps` callback prop.
  *
  * This component uses the useResultRowIds hook under the covers, which means
- * that any changes to the structure of the result Table will cause a re-render.
+ * that any changes to the structure of the ResultTable will cause a re-render.
  * @param props The props for this component.
- * @returns A rendering of the result Table, or nothing, if not present.
+ * @returns A rendering of the ResultTable, or nothing, if not present.
  * @example
  * This example creates a Queries object outside the application, which is used
  * in the ResultTableView component by reference. A change to the data in the
