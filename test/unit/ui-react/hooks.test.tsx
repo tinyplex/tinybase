@@ -1796,8 +1796,8 @@ describe('Write Hooks', () => {
       value,
       then,
     }: {
-      value: number;
-      then: (store?: Store, tables?: Tables) => void;
+      readonly value: number;
+      readonly then: (store?: Store, tables?: Tables) => void;
     }) => (
       <div
         onClick={useSetTablesCallback(
@@ -1832,8 +1832,8 @@ describe('Write Hooks', () => {
       value,
       then,
     }: {
-      value: number;
-      then: (store?: Store, table?: Table) => void;
+      readonly value: number;
+      readonly then: (store?: Store, table?: Table) => void;
     }) => {
       return (
         <div
@@ -1871,8 +1871,8 @@ describe('Write Hooks', () => {
       value,
       then,
     }: {
-      value: number;
-      then: (store: Store, row: Row) => void;
+      readonly value: number;
+      readonly then: (store: Store, row: Row) => void;
     }) => (
       <div
         onClick={useSetRowCallback(
@@ -1911,8 +1911,8 @@ describe('Write Hooks', () => {
       value,
       then,
     }: {
-      value: number;
-      then: (rowId: Id | undefined, store: Store, row: Row) => void;
+      readonly value: number;
+      readonly then: (rowId: Id | undefined, store: Store, row: Row) => void;
     }) => (
       <div
         onClick={useAddRowCallback(
@@ -1993,8 +1993,8 @@ describe('Write Hooks', () => {
       value,
       then,
     }: {
-      value: number;
-      then: (store: Store, row: Row) => void;
+      readonly value: number;
+      readonly then: (store: Store, row: Row) => void;
     }) => (
       <div
         onClick={useSetPartialRowCallback(
@@ -2031,8 +2031,8 @@ describe('Write Hooks', () => {
       value,
       then,
     }: {
-      value: number;
-      then: (store: Store, cell: Cell | MapCell) => void;
+      readonly value: number;
+      readonly then: (store: Store, cell: Cell | MapCell) => void;
     }) => (
       <div
         onClick={useSetCellCallback(
@@ -2070,8 +2070,8 @@ describe('Write Hooks', () => {
       value,
       then,
     }: {
-      value: number;
-      then: (store?: Store, values?: Values) => void;
+      readonly value: number;
+      readonly then: (store?: Store, values?: Values) => void;
     }) => (
       <div
         onClick={useSetValuesCallback(
@@ -2106,8 +2106,8 @@ describe('Write Hooks', () => {
       value,
       then,
     }: {
-      value: number;
-      then: (store: Store, values: Values) => void;
+      readonly value: number;
+      readonly then: (store: Store, values: Values) => void;
     }) => (
       <div
         onClick={useSetPartialValuesCallback(
@@ -2142,8 +2142,8 @@ describe('Write Hooks', () => {
       value,
       then,
     }: {
-      value: number;
-      then: (store?: Store, value?: Value | MapValue) => void;
+      readonly value: number;
+      readonly then: (store?: Store, value?: Value | MapValue) => void;
     }) => {
       return (
         <div
@@ -2267,7 +2267,7 @@ describe('Write Hooks', () => {
       const Test = ({
         then,
       }: {
-        then?: (
+        readonly then?: (
           checkpointId: Id,
           checkpoints: Checkpoints,
           label?: string,
@@ -2308,8 +2308,8 @@ describe('Write Hooks', () => {
         suffix,
         then,
       }: {
-        suffix: string;
-        then?: (
+        readonly suffix: string;
+        readonly then?: (
           checkpointId: Id,
           checkpoints: Checkpoints,
           label?: string,
@@ -2388,7 +2388,7 @@ describe('Write Hooks', () => {
       const Test = ({
         then,
       }: {
-        then: (checkpoints: Checkpoints, checkpointId: Id) => void;
+        readonly then: (checkpoints: Checkpoints, checkpointId: Id) => void;
       }) => (
         <div
           onClick={useGoToCallback((e) => e.type, undefined, checkpoints, then)}
@@ -2428,7 +2428,7 @@ describe('Write Hooks', () => {
 describe('Listener Hooks', () => {
   test('useTablesListener', () => {
     expect.assertions(6);
-    const Test = ({value}: {value: number}) => {
+    const Test = ({value}: {readonly value: number}) => {
       useTablesListener(
         (store) => expect(store?.getCell('t1', 'r1', 'c1')).toEqual(value),
         [value],
@@ -2460,7 +2460,7 @@ describe('Listener Hooks', () => {
 
   test('useTableIdsListener', () => {
     expect.assertions(6);
-    const Test = ({value}: {value: number}) => {
+    const Test = ({value}: {readonly value: number}) => {
       useTableIdsListener(
         (store) => expect(store?.getCell('t1', 'r1', 'c1')).toEqual(value),
         [value],
@@ -2494,7 +2494,7 @@ describe('Listener Hooks', () => {
 
   test('useTableListener', () => {
     expect.assertions(6);
-    const Test = ({value}: {value: number}) => {
+    const Test = ({value}: {readonly value: number}) => {
       useTableListener(
         't1',
         (store) => expect(store?.getCell('t1', 'r1', 'c1')).toEqual(value),
@@ -2527,7 +2527,7 @@ describe('Listener Hooks', () => {
 
   test('useTableCellIdsListener', () => {
     expect.assertions(6);
-    const Test = ({value}: {value: number}) => {
+    const Test = ({value}: {readonly value: number}) => {
       useTableCellIdsListener(
         't1',
         (store) => expect(store?.getCell('t1', 'r1', 'c1')).toEqual(value),
@@ -2562,7 +2562,7 @@ describe('Listener Hooks', () => {
 
   test('useRowIdsListener', () => {
     expect.assertions(6);
-    const Test = ({value}: {value: number}) => {
+    const Test = ({value}: {readonly value: number}) => {
       useRowIdsListener(
         't1',
         (store) => expect(store?.getCell('t1', 'r1', 'c1')).toEqual(value),
@@ -2597,7 +2597,7 @@ describe('Listener Hooks', () => {
 
   test('useSortedRowIdsListener', () => {
     expect.assertions(6);
-    const Test = ({value}: {value: number}) => {
+    const Test = ({value}: {readonly value: number}) => {
       useSortedRowIdsListener(
         't1',
         'c1',
@@ -2636,7 +2636,7 @@ describe('Listener Hooks', () => {
 
   test('useRowListener', () => {
     expect.assertions(6);
-    const Test = ({value}: {value: number}) => {
+    const Test = ({value}: {readonly value: number}) => {
       useRowListener(
         't1',
         'r1',
@@ -2670,7 +2670,7 @@ describe('Listener Hooks', () => {
 
   test('useCellIdsListener', () => {
     expect.assertions(6);
-    const Test = ({value}: {value: number}) => {
+    const Test = ({value}: {readonly value: number}) => {
       useCellIdsListener(
         't1',
         'r1',
@@ -2706,7 +2706,7 @@ describe('Listener Hooks', () => {
 
   test('useCellListener', () => {
     expect.assertions(6);
-    const Test = ({value}: {value: number}) => {
+    const Test = ({value}: {readonly value: number}) => {
       useCellListener(
         't1',
         'r1',
@@ -2741,7 +2741,7 @@ describe('Listener Hooks', () => {
 
   test('useValuesListener', () => {
     expect.assertions(6);
-    const Test = ({value}: {value: number}) => {
+    const Test = ({value}: {readonly value: number}) => {
       useValuesListener(
         (store) => expect(store?.getValue('v1')).toEqual(value),
         [value],
@@ -2773,7 +2773,7 @@ describe('Listener Hooks', () => {
 
   test('useValueIdsListener', () => {
     expect.assertions(6);
-    const Test = ({value}: {value: number}) => {
+    const Test = ({value}: {readonly value: number}) => {
       useValueIdsListener(
         (store) => expect(store?.getValue('v1')).toEqual(value),
         [value],
@@ -2807,7 +2807,7 @@ describe('Listener Hooks', () => {
 
   test('useValueListener', () => {
     expect.assertions(6);
-    const Test = ({value}: {value: number}) => {
+    const Test = ({value}: {readonly value: number}) => {
       useValueListener(
         'v1',
         (store) => expect(store?.getValue('v1')).toEqual(value),
@@ -2846,7 +2846,7 @@ describe('Listener Hooks', () => {
       'max',
       'c1',
     );
-    const Test = ({value}: {value: number}) => {
+    const Test = ({value}: {readonly value: number}) => {
       useMetricListener(
         'm1',
         (metrics) => expect(metrics?.getMetric('m1')).toEqual(value),
@@ -2904,7 +2904,7 @@ describe('Listener Hooks', () => {
   test('useSliceIdsListener', () => {
     expect.assertions(2);
     const indexes = createIndexes(store).setIndexDefinition('i1', 't1', 'c1');
-    const Test = ({value}: {value: string}) => {
+    const Test = ({value}: {readonly value: string}) => {
       useSliceIdsListener(
         'i1',
         (indexes) => expect(indexes?.getSliceIds('i1')[0]).toEqual(value),
@@ -2933,7 +2933,7 @@ describe('Listener Hooks', () => {
   test('useSliceRowIdsListener', () => {
     expect.assertions(2);
     const indexes = createIndexes(store).setIndexDefinition('i1', 't1', 'c1');
-    const Test = ({value}: {value: string}) => {
+    const Test = ({value}: {readonly value: string}) => {
       useSliceRowIdsListener(
         'i1',
         'a',
@@ -2968,7 +2968,7 @@ describe('Listener Hooks', () => {
       'T1',
       'c1',
     );
-    const Test = ({value}: {value: string}) => {
+    const Test = ({value}: {readonly value: string}) => {
       useRemoteRowIdListener(
         'r1',
         'r1',
@@ -3004,7 +3004,7 @@ describe('Listener Hooks', () => {
       'T1',
       'c1',
     );
-    const Test = ({value}: {value: string}) => {
+    const Test = ({value}: {readonly value: string}) => {
       useLocalRowIdsListener(
         'r1',
         'R1',
@@ -3040,7 +3040,7 @@ describe('Listener Hooks', () => {
       't1',
       'c1',
     );
-    const Test = ({value}: {value: string}) => {
+    const Test = ({value}: {readonly value: string}) => {
       useLinkedRowIdsListener(
         'r1',
         'r1',
@@ -3081,7 +3081,7 @@ describe('Listener Hooks', () => {
       't1',
       ({select}) => select('c1'),
     );
-    const Test = ({value}: {value: number}) => {
+    const Test = ({value}: {readonly value: number}) => {
       useResultTableListener(
         'q1',
         (queries) =>
@@ -3118,7 +3118,7 @@ describe('Listener Hooks', () => {
         select('c2');
       },
     );
-    const Test = ({value}: {value: number}) => {
+    const Test = ({value}: {readonly value: number}) => {
       useResultRowIdsListener(
         'q1',
         (queries) =>
@@ -3160,7 +3160,7 @@ describe('Listener Hooks', () => {
         select('c2');
       },
     );
-    const Test = ({value}: {value: number}) => {
+    const Test = ({value}: {readonly value: number}) => {
       useResultSortedRowIdsListener(
         'q1',
         'c2',
@@ -3203,7 +3203,7 @@ describe('Listener Hooks', () => {
       't1',
       ({select}) => select('c1'),
     );
-    const Test = ({value}: {value: number}) => {
+    const Test = ({value}: {readonly value: number}) => {
       useResultRowListener(
         'q1',
         'r1',
@@ -3242,7 +3242,7 @@ describe('Listener Hooks', () => {
         select('c3');
       },
     );
-    const Test = ({value}: {value: number}) => {
+    const Test = ({value}: {readonly value: number}) => {
       useResultCellIdsListener(
         'q1',
         'r1',
@@ -3279,7 +3279,7 @@ describe('Listener Hooks', () => {
       't1',
       ({select}) => select('c1'),
     );
-    const Test = ({value}: {value: number}) => {
+    const Test = ({value}: {readonly value: number}) => {
       useResultCellListener(
         'q1',
         'r1',
@@ -3311,7 +3311,7 @@ describe('Listener Hooks', () => {
   test('useCheckpointIdsListener', () => {
     expect.assertions(2);
     const checkpoints = createCheckpoints(store);
-    const Test = ({value}: {value: string | undefined}) => {
+    const Test = ({value}: {readonly value: string | undefined}) => {
       useCheckpointIdsListener(
         (checkpoints) =>
           expect(checkpoints?.getCheckpointIds()[1]).toEqual(value),
@@ -3340,7 +3340,7 @@ describe('Listener Hooks', () => {
   test('useCheckpointListener', () => {
     expect.assertions(2);
     const checkpoints = createCheckpoints(store);
-    const Test = ({value}: {value: string | undefined}) => {
+    const Test = ({value}: {readonly value: string | undefined}) => {
       useCheckpointListener(
         '0',
         (checkpoints) => expect(checkpoints?.getCheckpoint('0')).toEqual(value),
