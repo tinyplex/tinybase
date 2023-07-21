@@ -65,6 +65,12 @@ export type ResultTableListener = (
   getCellChange: GetCellResultChange,
 ) => void;
 
+/// ResultTableCellIdsListener
+export type ResultTableCellIdsListener = (
+  queries: Queries,
+  tableId: Id,
+) => void;
+
 /// ResultRowIdsListener
 export type ResultRowIdsListener = (queries: Queries, tableId: Id) => void;
 
@@ -256,6 +262,9 @@ export interface Queries {
 
   /// Queries.getResultTable
   getResultTable(queryId: Id): ResultTable;
+
+  /// Queries.getResultTableCellIds
+  getResultTableCellIds(queryId: Id): Ids;
 
   /// Queries.getResultRowIds
   getResultRowIds(queryId: Id): Ids;
