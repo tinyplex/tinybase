@@ -312,6 +312,12 @@ export interface Queries {
   /// Queries.addResultTableListener
   addResultTableListener(queryId: IdOrNull, listener: ResultTableListener): Id;
 
+  /// Queries.addResultTableCellIdsListener
+  addResultTableCellIdsListener(
+    queryId: IdOrNull,
+    listener: ResultTableCellIdsListener,
+  ): Id;
+
   /// Queries.addResultRowIdsListener
   addResultRowIdsListener(
     queryId: IdOrNull,
