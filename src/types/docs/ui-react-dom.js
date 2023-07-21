@@ -181,6 +181,85 @@
  * @since v4.1.0
  */
 /// ValuesInHtmlTableProps
+{
+  /**
+   * The Id of the query in the Queries object for which the ResultTable will be
+   * rendered.
+   */
+  /// ResultTableInHtmlTableProps.queryId
+  /**
+   * The Queries object to be accessed: omit for the default context Queries
+   * object, provide an Id for a named context Queries object, or provide an
+   * explicit reference.
+   */
+  /// ResultTableInHtmlTableProps.queries
+  /**
+   * An optional list of Cell Ids to use for rendering a prescribed set of the
+   * ResultTable's Cells in a given order. This can also be an object with the
+   * desired Cell Ids as keys, and with a value that can either be a string
+   * label to show in the column header, or a ResultCustomCell object to further
+   * configure the column.
+   */
+  /// ResultTableInHtmlTableProps.customResultCells
+}
+/**
+ * ResultTableInHtmlTableProps props are used for components that will render a
+ * ResultTable in an HTML table, such as the ResultTableInHtmlTable component.
+ * @category Props
+ * @since v4.1.0
+ */
+/// ResultTableInHtmlTableProps
+{
+  /**
+   * The Id of the query in the Queries object for which the ResultTable will be
+   * rendered.
+   */
+  /// ResultSortedTableInHtmlTableProps.queryId
+  /**
+   * The Id of the Cell whose values are used for the sorting. If omitted, the
+   * view will sort the Row Id itself.
+   */
+  /// ResultSortedTableInHtmlTableProps.cellId
+  /**
+   * Whether the sorting should be in descending order.
+   */
+  /// ResultSortedTableInHtmlTableProps.descending
+  /**
+   * The number of Row Ids to skip for pagination purposes.
+   */
+  /// ResultSortedTableInHtmlTableProps.offset
+  /**
+   * The maximum number of Row Ids to return.
+   */
+  /// ResultSortedTableInHtmlTableProps.limit
+  /**
+   * The Queries object to be accessed: omit for the default context Queries
+   * object, provide an Id for a named context Queries object, or provide an
+   * explicit reference.
+   */
+  /// ResultSortedTableInHtmlTableProps.queries
+  /**
+   * An optional list of Cell Ids to use for rendering a prescribed set of the
+   * ResultTable's Cells in a given order. This can also be an object with the
+   * desired Cell Ids as keys, and with a value that can either be a string
+   * label to show in the column header, or a ResultCustomCell object to further
+   * configure the column.
+   */
+  /// ResultSortedTableInHtmlTableProps.customResultCells
+  /**
+   * Whether the table should be interactive such that clicking a header changes
+   * the sorting and/or direction.
+   */
+  /// ResultSortedTableInHtmlTableProps.sortOnClick
+}
+/**
+ * ResultSortedTableInHtmlTableProps props are used for components that will
+ * render a sorted Table in an HTML table, such as the SortedTableInHtmlTable
+ * component.
+ * @category Props
+ * @since v4.1.0
+ */
+/// ResultSortedTableInHtmlTableProps
 /**
  * The TableInHtmlTable component renders the contents of a single Table in a
  * Store as an HTML <table> element, and registers a listener so that any
