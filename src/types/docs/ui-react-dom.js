@@ -359,7 +359,7 @@
  *   species: {
  *     component: FormattedCellView,
  *     getComponentProps: (rowId, cellId) => ({bold: rowId == 'fido'}),
- *   }
+ *   },
  * };
  *
  * const store = createStore().setTable('pets', {
@@ -505,7 +505,7 @@
  *   species: {
  *     component: FormattedCellView,
  *     getComponentProps: (rowId, cellId) => ({bold: rowId == 'fido'}),
- *   }
+ *   },
  * };
  *
  * const store = createStore().setTables({
@@ -750,7 +750,7 @@
  *   color: {
  *     component: FormattedResultCellView,
  *     getComponentProps: (rowId, cellId) => ({bold: rowId == 'fido'}),
- *   }
+ *   },
  * };
  *
  * const queries = createQueries(
@@ -900,7 +900,7 @@
  *   color: {
  *     component: FormattedResultCellView,
  *     getComponentProps: (rowId, cellId) => ({bold: rowId == 'fido'}),
- *   }
+ *   },
  * };
  *
  * const queries = createQueries(
