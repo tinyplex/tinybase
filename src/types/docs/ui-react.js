@@ -5035,9 +5035,9 @@
  *   },
  * );
  * const App = () => (
- *   <span>{
- *     JSON.stringify(useResultTableCellIds('dogColorsAndLegs', queries))
- *   }</span>
+ *   <span>
+ *     {JSON.stringify(useResultTableCellIds('dogColorsAndLegs', queries))}
+ *   </span>
  * );
  *
  * const app = document.createElement('div');
@@ -5091,9 +5091,11 @@
  *   </Provider>
  * );
  * const Pane = () => (
- *   <span>{JSON.stringify(
- *     useResultTableCellIds('dogColorsAndLegs', 'petQueries')
- *   )}</span>
+ *   <span>
+ *     {JSON.stringify(
+ *       useResultTableCellIds('dogColorsAndLegs', 'petQueries'),
+ *     )}
+ *   </span>
  * );
  *
  * const queries = createQueries(
