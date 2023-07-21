@@ -5,12 +5,13 @@ import {
   CellProps,
   ComponentReturnType,
   ExtraProps,
+  QueriesOrQueriesId,
   ResultCellProps,
   StoreOrStoreId,
   ValueProps,
 } from './internal/ui-react';
+import {Id, Ids} from './common';
 import {ComponentType} from 'react';
-import {Id} from '../common';
 import {OptionalSchemas} from './store';
 
 // CustomCell
@@ -100,6 +101,41 @@ export type SortedTableInHtmlTableProps<
       }
     : never
   : never;
+
+// ResultTableInHtmlTableProps
+export type ResultTableInHtmlTableProps<Schemas extends OptionalSchemas> = {
+  /// ResultTableInHtmlTableProps.queryId
+  readonly queryId: Id;
+  /// ResultTableInHtmlTableProps.queries
+  readonly queries?: QueriesOrQueriesId<Schemas>;
+  /// ResultTableInHtmlTableProps.customResultCells
+  readonly customResultCells?:
+    | Ids
+    | {[cellId: Id]: string | CustomResultCell<Schemas>};
+};
+
+// ResultSortedTableInHtmlTableProps
+export type ResultSortedTableInHtmlTableProps<Schemas extends OptionalSchemas> =
+  {
+    /// ResultSortedTableInHtmlTableProps.queryId
+    readonly queryId: Id;
+    /// ResultSortedTableInHtmlTableProps.cellId
+    readonly cellId?: Id;
+    /// ResultSortedTableInHtmlTableProps.descending
+    readonly descending?: boolean;
+    /// ResultSortedTableInHtmlTableProps.offset
+    readonly offset?: number;
+    /// ResultSortedTableInHtmlTableProps.limit
+    readonly limit?: number;
+    /// ResultSortedTableInHtmlTableProps.queries
+    readonly queries?: QueriesOrQueriesId<Schemas>;
+    /// ResultSortedTableInHtmlTableProps.customResultCells
+    readonly customResultCells?:
+      | Ids
+      | {[cellId: Id]: string | CustomResultCell<Schemas>};
+    /// ResultSortedTableInHtmlTableProps.sortOnClick
+    readonly sortOnClick?: boolean;
+  };
 
 // ValuesInHtmlTableProps
 export type ValuesInHtmlTableProps<Schemas extends OptionalSchemas> = {
