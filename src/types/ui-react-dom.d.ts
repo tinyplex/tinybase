@@ -4,6 +4,7 @@ import {
   CellProps,
   ComponentReturnType,
   ExtraProps,
+  ResultCellProps,
   StoreOrStoreId,
   ValueProps,
 } from './ui-react';
@@ -17,6 +18,16 @@ export type CustomCell = {
   /// CustomCell.component
   readonly component?: ComponentType<CellProps>;
   /// CustomCell.getComponentProps
+  readonly getComponentProps?: (rowId: Id, cellId: Id) => ExtraProps;
+};
+
+// CustomResultCell
+export type CustomResultCell = {
+  /// CustomResultCell.label
+  readonly label?: string;
+  /// CustomResultCell.component
+  readonly component?: ComponentType<ResultCellProps>;
+  /// CustomResultCell.getComponentProps
   readonly getComponentProps?: (rowId: Id, cellId: Id) => ExtraProps;
 };
 
