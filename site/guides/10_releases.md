@@ -45,7 +45,14 @@ console.log(app.innerHTML);
 root.unmount(); // !act
 ```
 
-There will be more components to come.
+Equivalent components also exist for the results of queries: the
+ResultTableInHtmlTable component and the interactive
+ResultSortedTableInHtmlTable component.
+
+Also in this release, the getResultTableCellIds method and
+addResultTableCellIdsListener method have been added to the Queries object. The
+equivalent useResultTableCellIds hook and useResultTableCellIdsListener hook
+have also been added to ui-react module.
 
 ## v4.0
 
