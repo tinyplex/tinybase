@@ -106,7 +106,9 @@ beforeEach(() => {
 });
 
 describe('Read Components', () => {
-  const TestIndexView = (props: IndexProps & {cellPrefix?: string}) => (
+  const TestIndexView = (
+    props: IndexProps & {readonly cellPrefix?: string},
+  ) => (
     <>
       {props.indexId}:
       <IndexView
@@ -120,7 +122,9 @@ describe('Read Components', () => {
     </>
   );
 
-  const TestSliceView = (props: SliceProps & {cellPrefix?: string}) => (
+  const TestSliceView = (
+    props: SliceProps & {readonly cellPrefix?: string},
+  ) => (
     <>
       {props.sliceId}:
       <SliceView
@@ -134,7 +138,9 @@ describe('Read Components', () => {
     </>
   );
 
-  const TestRemoteRowView = (props: RemoteRowProps & {cellPrefix?: string}) => (
+  const TestRemoteRowView = (
+    props: RemoteRowProps & {readonly cellPrefix?: string},
+  ) => (
     <>
       {props.localRowId}:
       <RemoteRowView
@@ -148,7 +154,9 @@ describe('Read Components', () => {
     </>
   );
 
-  const TestLocalRowsView = (props: LocalRowsProps & {cellPrefix?: string}) => (
+  const TestLocalRowsView = (
+    props: LocalRowsProps & {readonly cellPrefix?: string},
+  ) => (
     <>
       {props.remoteRowId}:
       <LocalRowsView
@@ -163,7 +171,7 @@ describe('Read Components', () => {
   );
 
   const TestLinkedRowsView = (
-    props: LinkedRowsProps & {cellPrefix?: string},
+    props: LinkedRowsProps & {readonly cellPrefix?: string},
   ) => (
     <>
       {props.firstRowId}:
@@ -179,7 +187,7 @@ describe('Read Components', () => {
   );
 
   const TestResultTableView = (
-    props: ResultTableProps & {cellPrefix?: string},
+    props: ResultTableProps & {readonly cellPrefix?: string},
   ) => (
     <>
       {props.queryId}:
@@ -195,7 +203,7 @@ describe('Read Components', () => {
   );
 
   const TestResultSortedTableView = (
-    props: ResultSortedTableProps & {cellPrefix?: string},
+    props: ResultSortedTableProps & {readonly cellPrefix?: string},
   ) => (
     <>
       {props.queryId},{props.cellId}:
@@ -210,7 +218,9 @@ describe('Read Components', () => {
     </>
   );
 
-  const TestResultRowView = (props: ResultRowProps & {cellPrefix?: string}) => (
+  const TestResultRowView = (
+    props: ResultRowProps & {readonly cellPrefix?: string},
+  ) => (
     <>
       {props.rowId}:
       <ResultRowView
@@ -225,7 +235,7 @@ describe('Read Components', () => {
   );
 
   const TestResultCellView = (
-    props: ResultCellProps & {cellPrefix?: string},
+    props: ResultCellProps & {readonly cellPrefix?: string},
   ) => (
     <>
       {props.cellId}
@@ -249,7 +259,9 @@ describe('Read Components', () => {
     </>
   );
 
-  const TestTablesView = (props: TablesProps & {cellPrefix?: string}) => (
+  const TestTablesView = (
+    props: TablesProps & {readonly cellPrefix?: string},
+  ) => (
     <TablesView
       {...props}
       tableComponent={TestTableView}
@@ -260,7 +272,9 @@ describe('Read Components', () => {
     />
   );
 
-  const TestTableView = (props: TableProps & {cellPrefix?: string}) => (
+  const TestTableView = (
+    props: TableProps & {readonly cellPrefix?: string},
+  ) => (
     <>
       {props.tableId}:
       <TableView
@@ -275,7 +289,7 @@ describe('Read Components', () => {
   );
 
   const TestSortedTableView = (
-    props: SortedTableProps & {cellPrefix?: string},
+    props: SortedTableProps & {readonly cellPrefix?: string},
   ) => (
     <>
       {props.tableId},{props.cellId}:
@@ -290,7 +304,7 @@ describe('Read Components', () => {
     </>
   );
 
-  const TestRowView = (props: RowProps & {cellPrefix?: string}) => (
+  const TestRowView = (props: RowProps & {readonly cellPrefix?: string}) => (
     <>
       {props.rowId}:
       <RowView
@@ -304,7 +318,7 @@ describe('Read Components', () => {
     </>
   );
 
-  const TestCellView = (props: CellProps & {cellPrefix?: string}) => (
+  const TestCellView = (props: CellProps & {readonly cellPrefix?: string}) => (
     <>
       {props.cellId}
       {props.cellPrefix}
@@ -312,7 +326,9 @@ describe('Read Components', () => {
     </>
   );
 
-  const TestValuesView = (props: ValuesProps & {valuePrefix?: string}) => (
+  const TestValuesView = (
+    props: ValuesProps & {readonly valuePrefix?: string},
+  ) => (
     <ValuesView
       {...props}
       valueComponent={TestValueView}
@@ -323,7 +339,9 @@ describe('Read Components', () => {
     />
   );
 
-  const TestValueView = (props: ValueProps & {valuePrefix?: string}) => (
+  const TestValueView = (
+    props: ValueProps & {readonly valuePrefix?: string},
+  ) => (
     <>
       {props.valueId}
       {props.valuePrefix}
@@ -420,7 +438,7 @@ describe('Read Components', () => {
     });
 
     test('Custom', () => {
-      const Test = ({tableId}: {tableId: Id}) => (
+      const Test = ({tableId}: {readonly tableId: Id}) => (
         <TestTableView store={store} tableId={tableId} cellPrefix=":" />
       );
       act(() => {
@@ -520,7 +538,13 @@ describe('Read Components', () => {
     });
 
     test('Custom', () => {
-      const Test = ({tableId, cellId}: {tableId: Id; cellId: Id}) => (
+      const Test = ({
+        tableId,
+        cellId,
+      }: {
+        readonly tableId: Id;
+        readonly cellId: Id;
+      }) => (
         <TestSortedTableView
           store={store}
           tableId={tableId}
@@ -578,7 +602,13 @@ describe('Read Components', () => {
     });
 
     test('Custom', () => {
-      const Test = ({tableId, rowId}: {tableId: Id; rowId: Id}) => (
+      const Test = ({
+        tableId,
+        rowId,
+      }: {
+        readonly tableId: Id;
+        readonly rowId: Id;
+      }) => (
         <TestRowView
           store={store}
           tableId={tableId}
@@ -639,9 +669,9 @@ describe('Read Components', () => {
         rowId,
         cellId,
       }: {
-        tableId: Id;
-        rowId: Id;
-        cellId: Id;
+        readonly tableId: Id;
+        readonly rowId: Id;
+        readonly cellId: Id;
       }) => (
         <TestCellView
           store={store}
@@ -732,7 +762,7 @@ describe('Read Components', () => {
     });
 
     test('Custom', () => {
-      const Test = ({valueId}: {valueId: Id}) => (
+      const Test = ({valueId}: {readonly valueId: Id}) => (
         <TestValueView store={store} valueId={valueId} valuePrefix=":" />
       );
       act(() => {
@@ -783,7 +813,7 @@ describe('Read Components', () => {
     });
 
     test('Custom', () => {
-      const Test = ({metricId}: {metricId: Id}) => (
+      const Test = ({metricId}: {readonly metricId: Id}) => (
         <TestMetricView metrics={metrics} metricId={metricId} />
       );
       act(() => {
@@ -849,7 +879,7 @@ describe('Read Components', () => {
     });
 
     test('Custom', () => {
-      const Test = ({indexId}: {indexId: Id}) => (
+      const Test = ({indexId}: {readonly indexId: Id}) => (
         <TestIndexView indexes={indexes} indexId={indexId} cellPrefix=":" />
       );
       act(() => {
@@ -927,7 +957,13 @@ describe('Read Components', () => {
     });
 
     test('Custom', () => {
-      const Test = ({indexId, sliceId}: {indexId: Id; sliceId: Id}) => (
+      const Test = ({
+        indexId,
+        sliceId,
+      }: {
+        readonly indexId: Id;
+        readonly sliceId: Id;
+      }) => (
         <TestSliceView
           indexes={indexes}
           indexId={indexId}
@@ -1013,8 +1049,8 @@ describe('Read Components', () => {
         relationshipId,
         localRowId,
       }: {
-        relationshipId: Id;
-        localRowId: Id;
+        readonly relationshipId: Id;
+        readonly localRowId: Id;
       }) => (
         <TestRemoteRowView
           relationships={relationships}
@@ -1112,8 +1148,8 @@ describe('Read Components', () => {
         relationshipId,
         remoteRowId,
       }: {
-        relationshipId: Id;
-        remoteRowId: Id;
+        readonly relationshipId: Id;
+        readonly remoteRowId: Id;
       }) => (
         <TestLocalRowsView
           relationships={relationships}
@@ -1210,8 +1246,8 @@ describe('Read Components', () => {
         relationshipId,
         firstRowId,
       }: {
-        relationshipId: Id;
-        firstRowId: Id;
+        readonly relationshipId: Id;
+        readonly firstRowId: Id;
       }) => (
         <TestLinkedRowsView
           relationships={relationships}
@@ -1304,7 +1340,7 @@ describe('Read Components', () => {
     });
 
     test('Custom', () => {
-      const Test = ({queryId}: {queryId: Id}) => (
+      const Test = ({queryId}: {readonly queryId: Id}) => (
         <TestResultTableView
           queries={queries}
           queryId={queryId}
@@ -1418,7 +1454,13 @@ describe('Read Components', () => {
     });
 
     test('Custom', () => {
-      const Test = ({queryId, cellId}: {queryId: Id; cellId: Id}) => (
+      const Test = ({
+        queryId,
+        cellId,
+      }: {
+        readonly queryId: Id;
+        readonly cellId: Id;
+      }) => (
         <TestResultSortedTableView
           queries={queries}
           queryId={queryId}
@@ -1500,7 +1542,13 @@ describe('Read Components', () => {
     });
 
     test('Custom', () => {
-      const Test = ({queryId, rowId}: {queryId: Id; rowId: Id}) => (
+      const Test = ({
+        queryId,
+        rowId,
+      }: {
+        readonly queryId: Id;
+        readonly rowId: Id;
+      }) => (
         <TestResultRowView
           queries={queries}
           queryId={queryId}
@@ -1576,9 +1624,9 @@ describe('Read Components', () => {
         rowId,
         cellId,
       }: {
-        queryId: Id;
-        rowId: Id;
-        cellId: Id;
+        readonly queryId: Id;
+        readonly rowId: Id;
+        readonly cellId: Id;
       }) => (
         <TestResultCellView
           queries={queries}

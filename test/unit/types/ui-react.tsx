@@ -1014,25 +1014,53 @@ const _Persister = () => {
   useCreatePersister(createStore(), (s) => createFilePersister(s, '')); // !
 };
 
-const GoodTableView = ({tableId}: {tableId: 't0' | 't1'}) => <b>{tableId}</b>;
-const PoorTableView = ({tableId}: {tableId: 't0' | 't2'}) => <b>{tableId}</b>;
+const GoodTableView = ({tableId}: {readonly tableId: 't0' | 't1'}) => (
+  <b>{tableId}</b>
+);
+const PoorTableView = ({tableId}: {readonly tableId: 't0' | 't2'}) => (
+  <b>{tableId}</b>
+);
 
-const GoodRowView = ({tableId, rowId}: {tableId: 't0' | 't1'; rowId: Id}) => (
+const GoodRowView = ({
+  tableId,
+  rowId,
+}: {
+  readonly tableId: 't0' | 't1';
+  readonly rowId: Id;
+}) => (
   <b>
     {tableId}/{rowId}
   </b>
 );
-const PoorRowView = ({tableId, rowId}: {tableId: 't0' | 't2'; rowId: Id}) => (
+const PoorRowView = ({
+  tableId,
+  rowId,
+}: {
+  readonly tableId: 't0' | 't2';
+  readonly rowId: Id;
+}) => (
   <b>
     {tableId}/{rowId}
   </b>
 );
-const GoodT1RowView = ({tableId, rowId}: {tableId: 't1'; rowId: Id}) => (
+const GoodT1RowView = ({
+  tableId,
+  rowId,
+}: {
+  readonly tableId: 't1';
+  readonly rowId: Id;
+}) => (
   <b>
     {tableId}/{rowId}
   </b>
 );
-const PoorT1RowView = ({tableId, rowId}: {tableId: 't2'; rowId: Id}) => (
+const PoorT1RowView = ({
+  tableId,
+  rowId,
+}: {
+  readonly tableId: 't2';
+  readonly rowId: Id;
+}) => (
   <b>
     {tableId}/{rowId}
   </b>
@@ -1043,9 +1071,9 @@ const GoodCellView = ({
   rowId,
   cellId,
 }: {
-  tableId: 't0' | 't1';
-  rowId: Id;
-  cellId: 'c0' | 'c1' | 'c1d';
+  readonly tableId: 't0' | 't1';
+  readonly rowId: Id;
+  readonly cellId: 'c0' | 'c1' | 'c1d';
 }) => (
   <b>
     {tableId}/{rowId}/{cellId}
@@ -1056,9 +1084,9 @@ const GoodT1CellView = ({
   rowId,
   cellId,
 }: {
-  tableId: 't1';
-  rowId: Id;
-  cellId: 'c1' | 'c1d';
+  readonly tableId: 't1';
+  readonly rowId: Id;
+  readonly cellId: 'c1' | 'c1d';
 }) => (
   <b>
     {tableId}/{rowId}/{cellId}
@@ -1069,9 +1097,9 @@ const PoorCellView = ({
   rowId,
   cellId,
 }: {
-  tableId: 't0' | 't1';
-  rowId: Id;
-  cellId: 'c0' | 'c2';
+  readonly tableId: 't0' | 't1';
+  readonly rowId: Id;
+  readonly cellId: 'c0' | 'c2';
 }) => (
   <b>
     {tableId}/{rowId}/{cellId}
@@ -1082,17 +1110,21 @@ const PoorT1CellView = ({
   rowId,
   cellId,
 }: {
-  tableId: 't1';
-  rowId: Id;
-  cellId: 'c2';
+  readonly tableId: 't1';
+  readonly rowId: Id;
+  readonly cellId: 'c2';
 }) => (
   <b>
     {tableId}/{rowId}/{cellId}
   </b>
 );
 
-const GoodValueView = ({valueId}: {valueId: 'v1' | 'v1d'}) => <b>{valueId}</b>;
-const PoorValueView = ({valueId}: {valueId: 'v1' | 'v2'}) => <b>{valueId}</b>;
+const GoodValueView = ({valueId}: {readonly valueId: 'v1' | 'v1d'}) => (
+  <b>{valueId}</b>
+);
+const PoorValueView = ({valueId}: {readonly valueId: 'v1' | 'v2'}) => (
+  <b>{valueId}</b>
+);
 
 const _App = () => (
   <>

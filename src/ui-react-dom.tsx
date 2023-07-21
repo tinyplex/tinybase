@@ -63,10 +63,10 @@ const HtmlHeaderTh = ({
   label = cellId ?? EMPTY_STRING,
   onClick,
 }: {
-  cellId?: Id;
-  sorting?: Sorting;
-  label?: string;
-  onClick?: (cellId: Id | undefined) => void;
+  readonly cellId?: Id;
+  readonly sorting?: Sorting;
+  readonly label?: string;
+  readonly onClick?: (cellId: Id | undefined) => void;
 }) => (
   <th
     onClick={useCallbackOrUndefined(
@@ -92,18 +92,18 @@ const HtmlTable = ({
   sorting,
   onHeaderThClick,
 }: HtmlTableProps & {
-  customCells?:
+  readonly customCells?:
     | Ids
     | {[cellId: string]: string | CustomCell | CustomResultCell}
     | undefined;
-  storeTableIdOrQueriesQueryId:
+  readonly storeTableIdOrQueriesQueryId:
     | {store?: StoreOrStoreId; tableId: Id}
     | {queries?: QueriesOrQueriesId; queryId: Id};
-  defaultCellView?: typeof CellView | typeof ResultCellView;
-  rowIds: Ids;
-  defaultCellIds: Ids;
-  sorting?: Sorting;
-  onHeaderThClick?: (cellId: Id | undefined) => void;
+  readonly defaultCellView?: typeof CellView | typeof ResultCellView;
+  readonly rowIds: Ids;
+  readonly defaultCellIds: Ids;
+  readonly sorting?: Sorting;
+  readonly onHeaderThClick?: (cellId: Id | undefined) => void;
 }) => {
   const customCellConfigurations = useMemo(() => {
     const cellIds = customCells ?? defaultCellIds;
