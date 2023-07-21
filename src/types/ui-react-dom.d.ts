@@ -78,8 +78,8 @@ export type ResultTableInHtmlTableProps = {
   readonly queryId: Id;
   /// ResultTableInHtmlTableProps.queries
   readonly queries?: QueriesOrQueriesId;
-  /// ResultTableInHtmlTableProps.customResultCells
-  readonly customResultCells?: Ids | {[cellId: Id]: string | CustomResultCell};
+  /// ResultTableInHtmlTableProps.customCells
+  readonly customCells?: Ids | {[cellId: Id]: string | CustomResultCell};
 };
 
 // ResultSortedTableInHtmlTableProps
@@ -96,8 +96,8 @@ export type ResultSortedTableInHtmlTableProps = {
   readonly limit?: number;
   /// ResultSortedTableInHtmlTableProps.queries
   readonly queries?: QueriesOrQueriesId;
-  /// ResultSortedTableInHtmlTableProps.customResultCells
-  readonly customResultCells?: Ids | {[cellId: Id]: string | CustomResultCell};
+  /// ResultSortedTableInHtmlTableProps.customCells
+  readonly customCells?: Ids | {[cellId: Id]: string | CustomResultCell};
   /// ResultSortedTableInHtmlTableProps.sortOnClick
   readonly sortOnClick?: boolean;
 };
@@ -125,4 +125,14 @@ export function SortedTableInHtmlTable(
 /// ValuesInHtmlTable
 export function ValuesInHtmlTable(
   props: ValuesInHtmlTableProps & HtmlTableProps,
+): ComponentReturnType;
+
+/// ResultTableInHtmlTable
+export function ResultTableInHtmlTable(
+  props: ResultTableInHtmlTableProps & HtmlTableProps,
+): ComponentReturnType;
+
+/// ResultSortedTableInHtmlTable
+export function ResultSortedTableInHtmlTable(
+  props: ResultSortedTableInHtmlTableProps & HtmlTableProps,
 ): ComponentReturnType;

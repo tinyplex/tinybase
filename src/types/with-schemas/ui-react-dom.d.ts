@@ -108,8 +108,8 @@ export type ResultTableInHtmlTableProps<Schemas extends OptionalSchemas> = {
   readonly queryId: Id;
   /// ResultTableInHtmlTableProps.queries
   readonly queries?: QueriesOrQueriesId<Schemas>;
-  /// ResultTableInHtmlTableProps.customResultCells
-  readonly customResultCells?:
+  /// ResultTableInHtmlTableProps.customCells
+  readonly customCells?:
     | Ids
     | {[cellId: Id]: string | CustomResultCell<Schemas>};
 };
@@ -129,8 +129,8 @@ export type ResultSortedTableInHtmlTableProps<Schemas extends OptionalSchemas> =
     readonly limit?: number;
     /// ResultSortedTableInHtmlTableProps.queries
     readonly queries?: QueriesOrQueriesId<Schemas>;
-    /// ResultSortedTableInHtmlTableProps.customResultCells
-    readonly customResultCells?:
+    /// ResultSortedTableInHtmlTableProps.customCells
+    readonly customCells?:
       | Ids
       | {[cellId: Id]: string | CustomResultCell<Schemas>};
     /// ResultSortedTableInHtmlTableProps.sortOnClick
@@ -161,5 +161,15 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// ValuesInHtmlTable
   ValuesInHtmlTable: (
     props: ValuesInHtmlTableProps<Schemas> & HtmlTableProps,
+  ) => ComponentReturnType;
+
+  /// ResultTableInHtmlTable
+  ResultTableInHtmlTable: (
+    props: ResultTableInHtmlTableProps<Schemas> & HtmlTableProps,
+  ) => ComponentReturnType;
+
+  /// ResultSortedTableInHtmlTable
+  ResultSortedTableInHtmlTable: (
+    props: ResultSortedTableInHtmlTableProps<Schemas> & HtmlTableProps,
   ) => ComponentReturnType;
 };
