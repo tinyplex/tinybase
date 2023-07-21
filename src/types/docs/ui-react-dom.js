@@ -193,11 +193,11 @@
  * See the <TableInHtmlTable /> demo for this component in action.
  *
  * This component renders a Table by iterating over its Row objects. By default
- * these are in turn rendered with the RowInHtmlTr component, but you can
- * override this behavior by providing a `rowComponent` prop, a custom component
- * of your own that will render a Row based on RowProps. You can also pass
- * additional props to your custom component with the `getRowComponentProps`
- * callback prop.
+ * the Cells are in turn rendered with the CellView component, but you can
+ * override this behavior by providing a `component` for each Cell in the
+ * `customCells` prop. You can pass additional props to that custom component
+ * with the `getComponentProps` callback. See the CustomCell type for more
+ * details.
  *
  * This component uses the useRowIds hook under the covers, which means that any
  * changes to the structure of the Table will cause a re-render.
@@ -206,7 +206,6 @@
  * appear in a <th> element at the top of the table, and the start of each row.
  * @param props The props for this component.
  * @returns A rendering of the Table in a <table> element.
- * @see <TableInHtmlTable /> demo
  * @example
  * This example creates a Provider context into which a default Store is
  * provided. The TableInHtmlTable component within it then renders the Table in
@@ -252,8 +251,9 @@
  * @example
  * This example creates a Provider context into which a default Store is
  * provided. The TableInHtmlTable component within it then renders the Table
- * with a custom Row component and a custom props callback. The header row at
- * the top of the table and the Id column at the start of each row is removed.
+ * with a custom component and a custom props callback for the `species` Cell.
+ * The header row at the top of the table and the Id column at the start of each
+ * row is removed.
  *
  * ```jsx
  * const App = ({store}) => (
@@ -322,12 +322,12 @@
  *
  * See the <SortedTableInHtmlTable /> demo for this component in action.
  *
- * This component renders a Table by iterating over its Row objects, in the
- * order dictated by the sort parameters. By default these are in turn rendered
- * with the RowInHtmlTr component, but you can override this behavior by
- * providing a `rowComponent` prop, a custom component of your own that will
- * render a Row based on RowProps. You can also pass additional props to your
- * custom component with the `getRowComponentProps` callback prop.
+ * This component renders a ResultTable by iterating over its Row objects, in
+ * the order dictated by the sort parameters. By default the Cells are in turn
+ * rendered with the CellView component, but you can override this behavior by
+ * providing a `component` for each Cell in the `customCells` prop. You can pass
+ * additional props to that custom component with the `getComponentProps`
+ * callback. See the CustomCell type for more details.
  *
  * This component uses the useSortedRowIds hook under the covers, which means
  * that any changes to the structure or sorting of the Table will cause a
@@ -468,7 +468,7 @@
  * See the <ValuesInHtmlTable /> demo for this component in action.
  *
  * This component renders a Store by iterating over its Value objects. By
- * default these are in turn rendered with the ValueInHtmlTr component, but you
+ * default the Values are in turn rendered with the ValueView component, but you
  * can override this behavior by providing a `valueComponent` prop, a custom
  * component of your own that will render a Value based on ValueProps. You can
  * also pass additional props to your custom component with the
