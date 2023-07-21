@@ -661,7 +661,6 @@
  * @category Store hooks
  */
 /// useRowIds
-
 /**
  * The useSortedRowIds hook returns the sorted (and optionally, paginated) Ids
  * of every Row in a given Table, and registers a listener so that any changes
@@ -4995,6 +4994,129 @@
  */
 /// useResultTable
 /**
+ * The useResultTableCellIds hook returns the Ids of every Cell used across the
+ * whole ResultTable of the given query, and registers a listener so that any
+ * changes to those Ids will cause a re-render.
+ *
+ * A Provider component is used to wrap part of an application in a context, and
+ * it can contain a default Queries object or a set of Queries objects named by
+ * Id. The useResultTableCellIds hook lets you indicate which Queries object to
+ * get data for: omit the final optional final parameter for the default context
+ * Queries object, provide an Id for a named context Queries object, or provide
+ * a Queries object explicitly by reference.
+ *
+ * When first rendered, this hook will create a listener so that changes to the
+ * result Cell Ids will cause a re-render. When the component containing this
+ * hook is unmounted, the listener will be automatically removed.
+ * @param queryId The Id of the query.
+ * @param queriesOrQueriesId The Queries object to be accessed: omit for the
+ * default context Queries object, provide an Id for a named context Queries
+ * object, or provide an explicit reference. See the
+ * addResultTableCellIdsListener method for more details.
+ * @returns An array of the Ids of every Cell in the result of the query.
+ * @example
+ * This example creates a Queries object outside the application, which is used
+ * in the useResultTableCellIds hook by reference. A change to the data in the
+ * query re-renders the component.
+ *
+ * ```jsx
+ * const store = createStore().setTable('pets', {
+ *   fido: {species: 'dog', color: 'brown'},
+ *   felix: {species: 'cat', color: 'black'},
+ *   cujo: {species: 'dog', color: 'black'},
+ * });
+ * const queries = createQueries(store).setQueryDefinition(
+ *   'dogColorsAndLegs',
+ *   'pets',
+ *   ({select, where}) => {
+ *     select('color');
+ *     select('legs');
+ *     where('species', 'dog');
+ *   },
+ * );
+ * const App = () => (
+ *   <span>{
+ *     JSON.stringify(useResultTableCellIds('dogColorsAndLegs', queries))
+ *   }</span>
+ * );
+ *
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["color"]</span>'
+ *
+ * store.setCell('pets', 'cujo', 'legs', 4); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["color","legs"]</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a default Queries object
+ * is provided. A component within it then uses the useResultTableCellIds hook.
+ *
+ * ```jsx
+ * const App = ({queries}) => (
+ *   <Provider queries={queries}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <span>{JSON.stringify(useResultTableCellIds('dogColorsAndLegs'))}</span>
+ * );
+ *
+ * const queries = createQueries(
+ *   createStore().setTable('pets', {
+ *     fido: {species: 'dog', color: 'brown'},
+ *     felix: {species: 'cat', color: 'black'},
+ *     cujo: {species: 'dog', color: 'black', legs: 4},
+ *   }),
+ * ).setQueryDefinition('dogColorsAndLegs', 'pets', ({select, where}) => {
+ *   select('color');
+ *   select('legs');
+ *   where('species', 'dog');
+ * });
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["color","legs"]</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a Queries object is
+ * provided, named by Id. A component within it then uses the
+ * useResultTableCellIds hook.
+ *
+ * ```jsx
+ * const App = ({queries}) => (
+ *   <Provider queriesById={{petQueries: queries}}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <span>{JSON.stringify(
+ *     useResultTableCellIds('dogColorsAndLegs', 'petQueries')
+ *   )}</span>
+ * );
+ *
+ * const queries = createQueries(
+ *   createStore().setTable('pets', {
+ *     fido: {species: 'dog', color: 'brown'},
+ *     felix: {species: 'cat', color: 'black'},
+ *     cujo: {species: 'dog', color: 'black', legs: 4},
+ *   }),
+ * ).setQueryDefinition('dogColorsAndLegs', 'pets', ({select, where}) => {
+ *   select('color');
+ *   select('legs');
+ *   where('species', 'dog');
+ * });
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["color","legs"]</span>'
+ * ```
+ * @category Queries hooks
+ * @since v4.1.0
+ */
+/// useResultTableCellIds
+/**
  * The useResultRowIds hook returns the Ids of every Row in the ResultTable of
  * the given query, and registers a listener so that any changes to those Ids
  * will cause a re-render.
@@ -5690,6 +5812,81 @@
  * @since v2.0.0
  */
 /// useResultTableListener
+/**
+ * The useResultTableCellIdsListener hook registers a listener function with a
+ * Queries object that will be called whenever the Cell Ids that appear anywhere
+ * in a ResultTable change.
+ *
+ * This hook is useful for situations where a component needs to register its
+ * own specific listener to do more than simply tracking the value (which is
+ * more easily done with the useResultTableCellIds hook).
+ *
+ * You can either listen to a single ResultTable (by specifying a query Id as
+ * the method's first parameter) or changes to any ResultTable (by providing a
+ * `null` wildcard).
+ *
+ * Unlike the addResultTableCellIdsListener method, which returns a listener Id
+ * and requires you to remove it manually, the useResultTableCellIdsListener
+ * hook manages this lifecycle for you: when the listener changes (per its
+ * `listenerDeps` dependencies) or the component unmounts, the listener on the
+ * underlying Queries object will be deleted.
+ * @param queryId The Id of the query to listen to, or `null` as a wildcard.
+ * @param listener The function that will be called whenever the Cell Ids that
+ * appear anywhere in the ResultTable change.
+ * @param listenerDeps An optional array of dependencies for the `listener`
+ * function, which, if any change, result in the re-registration of the
+ * listener. This parameter defaults to an empty array.
+ * @param queriesOrQueriesId The Queries object to register the listener with:
+ * omit for the default context Queries object, provide an Id for a named
+ * context Queries object, or provide an explicit reference.
+ * @example
+ * This example uses the useResultTableCellIdsListener hook to create a listener
+ * that is scoped to a single component. When the component is unmounted, the
+ * listener is removed from the Queries object.
+ *
+ * ```jsx
+ * const App = ({queries}) => (
+ *   <Provider queries={queries}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => {
+ *   useResultTableCellIdsListener('petColorsAndLegs', () =>
+ *     console.log('Result Cell Ids changed'),
+ *   );
+ *   return <span>App</span>;
+ * };
+ *
+ * const store = createStore().setTable('pets', {
+ *   fido: {species: 'dog', color: 'brown'},
+ *   felix: {species: 'cat', color: 'black'},
+ *   cujo: {species: 'dog', color: 'black'},
+ * });
+ * const queries = createQueries(store).setQueryDefinition(
+ *   'petColorsAndLegs',
+ *   'pets',
+ *   ({select}) => {
+ *     select('color');
+ *     select('legs');
+ *   },
+ * );
+ * const app = document.createElement('div');
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App queries={queries} />); // !act
+ * console.log(queries.getListenerStats().tableCellIds);
+ * // -> 1
+ *
+ * store.setCell('pets', 'cujo', 'legs', 4); // !act
+ * // -> 'Result Cell Ids changed'
+ *
+ * root.unmount(); // !act
+ * console.log(queries.getListenerStats().tableCellIds);
+ * // -> 0
+ * ```
+ * @category Queries hooks
+ * @since v4.1.0
+ */
+/// useResultTableCellIdsListener
 /**
  * The useResultRowIdsListener hook registers a listener function with a Queries
  * object that will be called whenever the Row Ids in a ResultTable change.

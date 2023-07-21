@@ -2338,14 +2338,14 @@
   /// Queries.addResultTableListener
   /**
    * The addResultTableCellIdsListener method registers a listener function with
-   * the Queries object that will be called whenever the ResultCell Ids that
+   * the Queries object that will be called whenever the Cell Ids that
    * appear anywhere in a ResultTable change.
    *
    * The provided listener is a ResultTableCellIdsListener function, and will be
    * called with a reference to the Queries object and the Id of the ResultTable
    * that changed (which is also the query Id).
    *
-   * By default, such a listener is only called when a ResultCell Id is added
+   * By default, such a listener is only called when a Cell Id is added
    * to, or removed from, the ResultTable. To listen to all changes in the
    * ResultTable, use the addResultTableListener method.
    *
@@ -2353,12 +2353,12 @@
    * the method's first parameter) or changes to any ResultTable (by providing a
    * `null` wildcard).
    * @param queryId The Id of the query to listen to, or `null` as a wildcard.
-   * @param listener The function that will be called whenever the ResultCell
+   * @param listener The function that will be called whenever the Cell
    * Ids that appear anywhere in the ResultTable change.
    * @returns A unique Id for the listener that can later be used to remove it.
    * @example
    * This example registers a listener that responds to any change to the
-   * ResultCell Ids of a specific ResultTable.
+   * Cell Ids of a specific ResultTable.
    *
    * ```js
    * const store = createStore().setTable('pets', {
