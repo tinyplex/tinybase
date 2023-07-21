@@ -593,6 +593,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
   objMap(
     {
       [TABLE]: [1, 1],
+      [TABLE + CELL_IDS]: [0, 1],
       [ROW_IDS]: [0, 1],
       [SORTED_ROW_IDS]: [0, 5],
       [ROW]: [1, 2],

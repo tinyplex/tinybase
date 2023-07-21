@@ -226,6 +226,24 @@
  */
 /// ResultTableListener
 /**
+ * The ResultTableCellIdsListener type describes a function that is used to
+ * listen to changes to the Cell Ids that appear anywhere in a query's
+ * ResultTable.
+ *
+ * A ResultTableCellIdsListener is provided when using the
+ * addResultTableCellIdsListener method. See that method for specific examples.
+ *
+ * When called, a ResultTableCellIdsListener is given a reference to the Queries
+ * object, and the Id of the ResultTable whose Cell Ids changed (which is the
+ * same as the query Id).
+ * @param queries A reference to the Queries object that changed.
+ * @param tableId The Id of the ResultTable that changed, which is also the
+ * query Id.
+ * @category Listener
+ * @since v4.1.0
+ */
+/// ResultTableCellIdsListener
+/**
  * The ResultRowIdsListener type describes a function that is used to listen to
  * changes to the ResultRow Ids in a query's ResultTable.
  *
@@ -1724,6 +1742,50 @@
    */
   /// Queries.getResultTable
   /**
+   * The getResultTableCellIds method returns the Ids of every ResultCell used
+   * across the ResultTable of the given query.
+   *
+   * This has the same behavior as a Store's getTableCellIds method. For
+   * example, if the query Id is invalid, the method returns an empty array.
+   * Similarly, it returns a copy of, rather than a reference to the list of
+   * Ids, so changes made to the list object are not made to the query results
+   * themselves.
+   * @param queryId The Id of a query.
+   * @returns An array of the Ids of every ResultCell used across the
+   * ResultTable of the query.
+   * @example
+   * This example creates a Queries object, a single query definition, and then
+   * calls this method on it (as well as a non-existent definition) to get the
+   * ResultCell Ids.
+   *
+   * ```js
+   * const store = createStore().setTable('pets', {
+   *   fido: {species: 'dog', color: 'brown'},
+   *   felix: {species: 'cat', color: 'black'},
+   *   cujo: {species: 'dog', color: 'black', legs: 4},
+   * });
+   *
+   * const queries = createQueries(store).setQueryDefinition(
+   *   'dogColors',
+   *   'pets',
+   *   ({select, where}) => {
+   *     select('color');
+   *     select('legs');
+   *     where('species', 'dog');
+   *   },
+   * );
+   *
+   * console.log(queries.getResultTableCellIds('dogColors'));
+   * // -> ['color', 'legs']
+   *
+   * console.log(queries.getResultTableCellIds('catColors'));
+   * // -> []
+   * ```
+   * @category Result
+   * @since v4.1.0
+   */
+  /// Queries.getResultTableCellIds
+  /**
    * The getResultRowIds method returns the Ids of every ResultRow in the
    * ResultTable of the given query.
    *
@@ -2274,6 +2336,102 @@
    * @since v2.0.0
    */
   /// Queries.addResultTableListener
+  /**
+   * The addResultTableCellIdsListener method registers a listener function with
+   * the Queries object that will be called whenever the ResultCell Ids that
+   * appear anywhere in a ResultTable change.
+   *
+   * The provided listener is a ResultTableCellIdsListener function, and will be
+   * called with a reference to the Queries object and the Id of the ResultTable
+   * that changed (which is also the query Id).
+   *
+   * By default, such a listener is only called when a ResultCell Id is added
+   * to, or removed from, the ResultTable. To listen to all changes in the
+   * ResultTable, use the addResultTableListener method.
+   *
+   * You can either listen to a single ResultTable (by specifying a query Id as
+   * the method's first parameter) or changes to any ResultTable (by providing a
+   * `null` wildcard).
+   * @param queryId The Id of the query to listen to, or `null` as a wildcard.
+   * @param listener The function that will be called whenever the ResultCell
+   * Ids that appear anywhere in the ResultTable change.
+   * @returns A unique Id for the listener that can later be used to remove it.
+   * @example
+   * This example registers a listener that responds to any change to the
+   * ResultCell Ids of a specific ResultTable.
+   *
+   * ```js
+   * const store = createStore().setTable('pets', {
+   *   fido: {species: 'dog', color: 'brown'},
+   *   felix: {species: 'cat', color: 'black'},
+   *   cujo: {species: 'dog', color: 'black'},
+   * });
+   *
+   * const queries = createQueries(store).setQueryDefinition(
+   *   'dogColorsAndLegs',
+   *   'pets',
+   *   ({select, where}) => {
+   *     select('color');
+   *     select('legs');
+   *     where('species', 'dog');
+   *   },
+   * );
+   *
+   * const listenerId = queries.addResultTableCellIdsListener(
+   *   'dogColorsAndLegs',
+   *   (queries, tableId) => {
+   *     console.log(`Cell Ids for dogColorsAndLegs result table changed`);
+   *     console.log(queries.getResultTableCellIds('dogColorsAndLegs'));
+   *   },
+   * );
+   *
+   * store.setCell('pets', 'cujo', 'legs', 4);
+   * // -> 'Cell Ids for dogColorsAndLegs result table changed'
+   * // -> ['color', 'legs']
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @example
+   * This example registers a listener that responds to any change to the
+   * ResultCell Ids of any ResultTable.
+   *
+   * ```js
+   * const store = createStore().setTable('pets', {
+   *   fido: {species: 'dog', color: 'brown'},
+   *   felix: {species: 'cat', color: 'black', legs: 4},
+   *   cujo: {species: 'dog', color: 'black'},
+   * });
+   *
+   * const queries = createQueries(store)
+   *   .setQueryDefinition('dogColorsAndLegs', 'pets', ({select, where}) => {
+   *     select('color');
+   *     select('legs');
+   *     where('species', 'dog');
+   *   })
+   *   .setQueryDefinition('catColorsAndLegs', 'pets', ({select, where}) => {
+   *     select('color');
+   *     select('legs');
+   *     where('species', 'cat');
+   *   });
+   *
+   * const listenerId = queries.addResultTableCellIdsListener(
+   *   null,
+   *   (queries, tableId) => {
+   *     console.log(`Cell Ids for ${tableId} result table changed`);
+   *   },
+   * );
+   *
+   * store.setCell('pets', 'cujo', 'legs', 4);
+   * // -> 'Cell Ids for dogColorsAndLegs result table changed'
+   * store.delCell('pets', 'felix', 'legs');
+   * // -> 'Cell Ids for catColorsAndLegs result table changed'
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @category Listener
+   * @since v2.0.0
+   */
+  /// Queries.addResultTableCellIdsListener
   /**
    * The addResultRowIdsListener method registers a listener function with the
    * Queries object that will be called whenever the ResultRow Ids in a
