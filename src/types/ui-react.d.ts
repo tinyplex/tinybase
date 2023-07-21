@@ -47,6 +47,7 @@ import {
   ResultCellListener,
   ResultRowIdsListener,
   ResultRowListener,
+  ResultTableCellIdsListener,
   ResultTableListener,
 } from './queries.d';
 import {Persister} from './persisters.d';
@@ -535,6 +536,12 @@ export function useResultTable(
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): Table;
 
+/// useResultTableCellIds
+export function useResultTableCellIds(
+  queryId: Id,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): Ids;
+
 /// useResultRowIds
 export function useResultRowIds(
   queryId: Id,
@@ -577,6 +584,14 @@ export function useResultCell(
 export function useResultTableListener(
   queryId: IdOrNull,
   listener: ResultTableListener,
+  listenerDeps?: React.DependencyList,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): void;
+
+/// useResultTableCellIdsListener
+export function useResultTableCellIdsListener(
+  queryId: IdOrNull,
+  listener: ResultTableCellIdsListener,
   listenerDeps?: React.DependencyList,
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): void;
