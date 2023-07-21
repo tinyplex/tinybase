@@ -2,15 +2,24 @@
 
 import {
   CellView,
+  ResultCellView,
   ValueView,
+  useResultRowIds,
+  useResultSortedRowIds,
+  useResultTableCellIds,
   useRowIds,
   useSortedRowIds,
   useTableCellIds,
   useValueIds,
 } from './ui-react';
-import {EMPTY_STRING, VALUE} from './common/strings';
 import {
+  CustomCell,
+  CustomResultCell,
   HtmlTableProps,
+  ResultSortedTableInHtmlTable as ResultSortedTableInHtmlTableDecl,
+  ResultSortedTableInHtmlTableProps,
+  ResultTableInHtmlTable as ResultTableInHtmlTableDecl,
+  ResultTableInHtmlTableProps,
   SortedTableInHtmlTable as SortedTableInHtmlTableDecl,
   SortedTableInHtmlTableProps,
   TableInHtmlTable as TableInHtmlTableDecl,
@@ -18,7 +27,9 @@ import {
   ValuesInHtmlTable as ValuesInHtmlTableDecl,
   ValuesInHtmlTableProps,
 } from './types/ui-react-dom.d';
+import {EMPTY_STRING, VALUE} from './common/strings';
 import {Id, Ids} from './types/common';
+import {QueriesOrQueriesId, StoreOrStoreId} from './types/ui-react';
 import {isArray, isString, isUndefined} from './common/other';
 import {objMap, objNew} from './common/obj';
 import React from 'react';
@@ -70,22 +81,30 @@ const HtmlHeaderTh = ({
 );
 
 const HtmlTable = ({
-  tableId,
-  rowIds,
-  store,
   className,
   headerRow,
   idColumn,
   customCells,
+  storeTableIdOrQueriesQueryId,
+  defaultCellView = CellView,
+  rowIds,
+  defaultCellIds,
   sorting,
   onHeaderThClick,
-}: TableInHtmlTableProps &
-  HtmlTableProps & {
-    rowIds: Ids;
-    sorting?: Sorting;
-    onHeaderThClick?: (cellId: Id | undefined) => void;
-  }) => {
-  const defaultCellIds = useTableCellIds(tableId, store);
+}: HtmlTableProps & {
+  customCells?:
+    | Ids
+    | {[cellId: string]: string | CustomCell | CustomResultCell}
+    | undefined;
+  storeTableIdOrQueriesQueryId:
+    | {store?: StoreOrStoreId; tableId: Id}
+    | {queries?: QueriesOrQueriesId; queryId: Id};
+  defaultCellView?: typeof CellView | typeof ResultCellView;
+  rowIds: Ids;
+  defaultCellIds: Ids;
+  sorting?: Sorting;
+  onHeaderThClick?: (cellId: Id | undefined) => void;
+}) => {
   const customCellConfigurations = useMemo(() => {
     const cellIds = customCells ?? defaultCellIds;
     return objNew(
@@ -136,14 +155,16 @@ const HtmlTable = ({
             {idColumn === false ? null : <th>{rowId}</th>}
             {objMap(
               customCellConfigurations,
-              ({component: Cell = CellView, getComponentProps}, cellId) => (
+              (
+                {component: CellView = defaultCellView, getComponentProps},
+                cellId,
+              ) => (
                 <td key={cellId}>
-                  <Cell
+                  <CellView
                     {...getProps(getComponentProps, rowId, cellId)}
-                    tableId={tableId}
+                    {...(storeTableIdOrQueriesQueryId as any)}
                     rowId={rowId}
                     cellId={cellId}
-                    store={store}
                   />
                 </td>
               ),
@@ -162,9 +183,12 @@ export const TableInHtmlTable: typeof TableInHtmlTableDecl = ({
 }: TableInHtmlTableProps & HtmlTableProps): any => (
   <HtmlTable
     {...props}
-    tableId={tableId}
-    store={store}
+    storeTableIdOrQueriesQueryId={useMemo(
+      () => ({store, tableId}),
+      [store, tableId],
+    )}
     rowIds={useRowIds(tableId, store)}
+    defaultCellIds={useTableCellIds(tableId, store)}
   />
 );
 
@@ -191,9 +215,12 @@ export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
   return (
     <HtmlTable
       {...props}
-      tableId={tableId}
-      store={store}
+      storeTableIdOrQueriesQueryId={useMemo(
+        () => ({store, tableId}),
+        [store, tableId],
+      )}
       rowIds={useSortedRowIds(tableId, ...sorting, offset, limit, store)}
+      defaultCellIds={useTableCellIds(tableId, store)}
       sorting={sorting}
       onHeaderThClick={handleHeaderThClick}
     />
@@ -233,3 +260,63 @@ export const ValuesInHtmlTable: typeof ValuesInHtmlTableDecl = ({
     </tbody>
   </table>
 );
+
+export const ResultTableInHtmlTable: typeof ResultTableInHtmlTableDecl = ({
+  queryId,
+  queries,
+  ...props
+}: ResultTableInHtmlTableProps & HtmlTableProps): any => (
+  <HtmlTable
+    {...props}
+    storeTableIdOrQueriesQueryId={useMemo(
+      () => ({queries, queryId}),
+      [queries, queryId],
+    )}
+    defaultCellView={ResultCellView}
+    rowIds={useResultRowIds(queryId, queries)}
+    defaultCellIds={useResultTableCellIds(queryId, queries)}
+  />
+);
+
+export const ResultSortedTableInHtmlTable: typeof ResultSortedTableInHtmlTableDecl =
+  ({
+    queryId,
+    cellId,
+    descending,
+    offset,
+    limit,
+    queries,
+    sortOnClick,
+    ...props
+  }: ResultSortedTableInHtmlTableProps & HtmlTableProps): any => {
+    const [sorting, setSorting] = useState<Sorting>([
+      cellId,
+      descending ? true : false,
+    ]);
+    const handleHeaderThClick = useCallbackOrUndefined(
+      (cellId: Id | undefined) =>
+        setSorting([cellId, cellId == sorting[0] ? !sorting[1] : false]),
+      [sorting],
+      sortOnClick,
+    );
+    return (
+      <HtmlTable
+        {...props}
+        storeTableIdOrQueriesQueryId={useMemo(
+          () => ({queries, queryId}),
+          [queries, queryId],
+        )}
+        defaultCellView={ResultCellView}
+        rowIds={useResultSortedRowIds(
+          queryId,
+          ...sorting,
+          offset,
+          limit,
+          queries,
+        )}
+        defaultCellIds={useResultTableCellIds(queryId, queries)}
+        sorting={sorting}
+        onHeaderThClick={handleHeaderThClick}
+      />
+    );
+  };
