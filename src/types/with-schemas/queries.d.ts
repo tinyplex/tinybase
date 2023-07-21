@@ -407,6 +407,12 @@ export interface Queries<in out Schemas extends OptionalSchemas> {
     listener: ResultTableListener<Schemas>,
   ): Id;
 
+  /// Queries.addResultTableCellIdsListener
+  addResultTableCellIdsListener(
+    queryId: IdOrNull,
+    listener: ResultTableCellIdsListener<Schemas>,
+  ): Id;
+
   /// Queries.addResultRowIdsListener
   addResultRowIdsListener(
     queryId: IdOrNull,
