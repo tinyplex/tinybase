@@ -75,6 +75,12 @@ export type ResultTableListener<Schemas extends OptionalSchemas> = (
   getCellChange: GetCellResultChange,
 ) => void;
 
+/// ResultTableCellIdsListener
+export type ResultTableCellIdsListener<Schemas extends OptionalSchemas> = (
+  queries: Queries<Schemas>,
+  tableId: Id,
+) => void;
+
 /// ResultRowIdsListener
 export type ResultRowIdsListener<Schemas extends OptionalSchemas> = (
   queries: Queries<Schemas>,
@@ -348,6 +354,9 @@ export interface Queries<in out Schemas extends OptionalSchemas> {
 
   /// Queries.getResultTable
   getResultTable(queryId: Id): ResultTable;
+
+  /// Queries.getResultTableCellIds
+  getResultTableCellIds(queryId: Id): Ids;
 
   /// Queries.getResultRowIds
   getResultRowIds(queryId: Id): Ids;
