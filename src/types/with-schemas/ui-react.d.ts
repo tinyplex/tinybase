@@ -90,6 +90,7 @@ import {
   ResultRowIdsListener,
   ResultRowListener,
   ResultTable,
+  ResultTableCellIdsListener,
   ResultTableListener,
 } from './queries.d';
 import {Persister} from './persisters.d';
@@ -685,6 +686,12 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => ResultTable;
 
+  /// useResultTableCellIds
+  useResultTableCellIds: (
+    queryId: Id,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+  ) => Ids;
+
   /// useResultRowIds
   useResultRowIds: (
     queryId: Id,
@@ -727,6 +734,14 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useResultTableListener: (
     queryId: IdOrNull,
     listener: ResultTableListener<Schemas>,
+    listenerDeps?: React.DependencyList,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+  ) => void;
+
+  /// useResultTableCellIdsListener
+  useResultTableCellIdsListener: (
+    queryId: IdOrNull,
+    listener: ResultTableCellIdsListener<Schemas>,
     listenerDeps?: React.DependencyList,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
