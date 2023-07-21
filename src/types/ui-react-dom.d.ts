@@ -4,6 +4,7 @@ import {
   CellProps,
   ComponentReturnType,
   ExtraProps,
+  QueriesOrQueriesId,
   ResultCellProps,
   StoreOrStoreId,
   ValueProps,
@@ -68,6 +69,36 @@ export type SortedTableInHtmlTableProps = {
   /// SortedTableInHtmlTableProps.customCells
   readonly customCells?: Ids | {[cellId: Id]: string | CustomCell};
   /// SortedTableInHtmlTableProps.sortOnClick
+  readonly sortOnClick?: boolean;
+};
+
+// ResultTableInHtmlTableProps
+export type ResultTableInHtmlTableProps = {
+  /// ResultTableInHtmlTableProps.queryId
+  readonly queryId: Id;
+  /// ResultTableInHtmlTableProps.queries
+  readonly queries?: QueriesOrQueriesId;
+  /// ResultTableInHtmlTableProps.customResultCells
+  readonly customResultCells?: Ids | {[cellId: Id]: string | CustomResultCell};
+};
+
+// ResultSortedTableInHtmlTableProps
+export type ResultSortedTableInHtmlTableProps = {
+  /// ResultSortedTableInHtmlTableProps.queryId
+  readonly queryId: Id;
+  /// ResultSortedTableInHtmlTableProps.cellId
+  readonly cellId?: Id;
+  /// ResultSortedTableInHtmlTableProps.descending
+  readonly descending?: boolean;
+  /// ResultSortedTableInHtmlTableProps.offset
+  readonly offset?: number;
+  /// ResultSortedTableInHtmlTableProps.limit
+  readonly limit?: number;
+  /// ResultSortedTableInHtmlTableProps.queries
+  readonly queries?: QueriesOrQueriesId;
+  /// ResultSortedTableInHtmlTableProps.customResultCells
+  readonly customResultCells?: Ids | {[cellId: Id]: string | CustomResultCell};
+  /// ResultSortedTableInHtmlTableProps.sortOnClick
   readonly sortOnClick?: boolean;
 };
 
