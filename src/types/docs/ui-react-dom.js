@@ -930,3 +930,107 @@
  * @since v4.1.0
  */
 /// ResultSortedTableInHtmlTable
+/**
+ * The EditableCellView component renders the value of a single Cell in a way
+ * that can be edited in a web browser, and registers a listener so that any
+ * changes to that result will cause a re-render.
+ *
+ * The component's props identify which Cell to render based on Table Id, Row
+ * Id, Cell Id, and Store (which is either the default context Store, a named
+ * context Store, or an explicit reference).
+ *
+ * A Cell contains a string, number, or boolean, so the value is rendered in an
+ * appropriate <input> tag and a button lets the user change type, if possible.
+ *
+ * This component uses the useCell hook under the covers, which means that any
+ * changes to the specified Cell outside of this component will cause a
+ * re-render.
+ *
+ * You can provide a custom className prop which well be used on the root of the
+ * resulting element. If omitted the element's class will be `editableCell`. The
+ * debugIds prop has no effect on this component.
+ * @param props The props for this component.
+ * @returns An editable rendering of the Cell.
+ * @example
+ * This example creates a Provider context into which a default Store is
+ * provided. The EditableCellView component within it then renders an editable
+ * Cell.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <EditableCellView tableId="pets" rowId="fido" cellId="color" />
+ * );
+ *
+ * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * console.log(app.innerHTML);
+ * // ->
+ * `
+ * <div class="editableCell">
+ *   <button type="button" class="string">string</button>
+ *   <input value="brown">
+ * </div>
+ * `;
+ * ```
+ * @category Store components
+ * @since v4.1.0
+ */
+/// EditableCellView
+/**
+ * The EditableValueView component renders the value of a single Value in a way
+ * that can be edited in a web browser, and registers a listener so that any
+ * changes to that result will cause a re-render.
+ *
+ * The component's props identify which Value to render based on Table Id, Row
+ * Id, Value Id, and Store (which is either the default context Store, a named
+ * context Store, or an explicit reference).
+ *
+ * A Value contains a string, number, or boolean, so the value is rendered in an
+ * appropriate <input> tag and a button lets the user change type, if possible.
+ *
+ * This component uses the useValue hook under the covers, which means that any
+ * changes to the specified Value outside of this component will cause a
+ * re-render.
+ *
+ * You can provide a custom className prop which well be used on the root of the
+ * resulting element. If omitted the element's class will be `editableValue`.
+ * The debugIds prop has no effect on this component.
+ * @param props The props for this component.
+ * @returns An editable rendering of the Value.
+ * @example
+ * This example creates a Provider context into which a default Store is
+ * provided. The EditableValueView component within it then renders an editable
+ * Value.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <EditableValueView valueId="employees" />
+ * );
+ *
+ * const store = createStore().setValue('employees', 3);
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * console.log(app.innerHTML);
+ * // ->
+ * `
+ * <div class="editableValue">
+ *   <button type="button" class="number">number</button>
+ *   <input type="number" value="3">
+ * </div>
+ * `;
+ * ```
+ * @category Store components
+ * @since v4.1.0
+ */
+/// EditableValueView
