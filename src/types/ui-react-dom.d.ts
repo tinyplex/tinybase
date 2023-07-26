@@ -136,3 +136,13 @@ export function ResultTableInHtmlTable(
 export function ResultSortedTableInHtmlTable(
   props: ResultSortedTableInHtmlTableProps & HtmlTableProps,
 ): ComponentReturnType;
+
+/// EditableCellView
+export function EditableCellView(
+  props: CellProps & {readonly className?: string},
+): ComponentReturnType;
+
+/// EditableValueView
+export function EditableValueView(
+  props: ValueProps & {readonly className?: string},
+): ComponentReturnType;

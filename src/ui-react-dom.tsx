@@ -1,20 +1,44 @@
 /** @jsx createElement */
 
 import {
+  BOOLEAN,
+  CELL,
+  CURRENT_TARGET,
+  EMPTY_STRING,
+  NUMBER,
+  STRING,
+  VALUE,
+  _VALUE,
+} from './common/strings';
+import {Cell, Value} from './types/store';
+import {CellOrValueType, getCellOrValueType, getTypeCase} from './common/cell';
+import {
+  CellProps,
+  QueriesOrQueriesId,
+  StoreOrStoreId,
+  ValueProps,
+} from './types/ui-react';
+import {
   CellView,
   ResultCellView,
   ValueView,
+  useCell,
   useResultRowIds,
   useResultSortedRowIds,
   useResultTableCellIds,
   useRowIds,
+  useSetCellCallback,
+  useSetValueCallback,
   useSortedRowIds,
   useTableCellIds,
+  useValue,
   useValueIds,
 } from './ui-react';
 import {
   CustomCell,
   CustomResultCell,
+  EditableCellView as EditableCellViewDecl,
+  EditableValueView as EditableValueViewDecl,
   HtmlTableProps,
   ResultSortedTableInHtmlTable as ResultSortedTableInHtmlTableDecl,
   ResultSortedTableInHtmlTableProps,
@@ -27,9 +51,7 @@ import {
   ValuesInHtmlTable as ValuesInHtmlTableDecl,
   ValuesInHtmlTableProps,
 } from './types/ui-react-dom.d';
-import {EMPTY_STRING, VALUE} from './common/strings';
 import {Id, Ids} from './types/common';
-import {QueriesOrQueriesId, StoreOrStoreId} from './types/ui-react';
 import {isArray, isString, isUndefined} from './common/other';
 import {objMap, objNew} from './common/obj';
 import React from 'react';
@@ -39,6 +61,8 @@ import {getProps} from './ui-react/common';
 const {createElement, useCallback, useMemo, useState} = React;
 
 type Sorting = [Id | undefined, boolean];
+
+const EDITABLE = 'editable';
 
 const useCallbackOrUndefined = (
   callback: any,
@@ -173,6 +197,108 @@ const HtmlTable = ({
         ))}
       </tbody>
     </table>
+  );
+};
+
+const EditableThing = <Thing extends Cell | Value>({
+  thing,
+  onThingChange,
+  className,
+}: {
+  readonly thing: Thing | undefined;
+  readonly onThingChange: (thing: Thing | undefined) => void;
+  readonly className: string;
+}) => {
+  const [thingType, setThingType] = useState<CellOrValueType>();
+  const [currentThing, setCurrentThing] = useState<string | number | boolean>();
+  const [stringThing, setStringThing] = useState<string>();
+  const [numberThing, setNumberThing] = useState<number>();
+  const [booleanThing, setBooleanThing] = useState<boolean>();
+
+  if (currentThing != thing) {
+    setThingType(getCellOrValueType(thing));
+    setCurrentThing(thing);
+    setStringThing(String(thing));
+    setNumberThing(Number(thing) || 0);
+    setBooleanThing(Boolean(thing));
+  }
+
+  const handleThingChange = useCallback(
+    (thing: string | number | boolean, setTypedThing: (thing: any) => void) => {
+      setTypedThing(thing);
+      setCurrentThing(thing);
+      onThingChange(thing as Thing);
+    },
+    [onThingChange],
+  );
+
+  return (
+    <div className={className}>
+      <button
+        type="button"
+        className={thingType}
+        onClick={useCallback(() => {
+          const nextType = getTypeCase(
+            thingType,
+            NUMBER,
+            BOOLEAN,
+            STRING,
+          ) as CellOrValueType;
+          const thing = getTypeCase(
+            nextType,
+            stringThing,
+            numberThing,
+            booleanThing,
+          );
+          setThingType(nextType);
+          setCurrentThing(thing);
+          onThingChange(thing as Thing);
+        }, [onThingChange, stringThing, numberThing, booleanThing, thingType])}
+      >
+        {thingType}
+      </button>
+      {getTypeCase(
+        thingType,
+        <input
+          key={thingType}
+          value={stringThing}
+          onChange={useCallback(
+            (event: React.FormEvent<HTMLInputElement>) =>
+              handleThingChange(
+                String(event[CURRENT_TARGET][_VALUE]),
+                setStringThing,
+              ),
+            [handleThingChange],
+          )}
+        />,
+        <input
+          key={thingType}
+          type="number"
+          value={numberThing}
+          onChange={useCallback(
+            (event: React.FormEvent<HTMLInputElement>) =>
+              handleThingChange(
+                Number(event[CURRENT_TARGET][_VALUE] || 0),
+                setNumberThing,
+              ),
+            [handleThingChange],
+          )}
+        />,
+        <input
+          key={thingType}
+          type="checkbox"
+          checked={booleanThing}
+          onChange={useCallback(
+            (event: React.FormEvent<HTMLInputElement>) =>
+              handleThingChange(
+                Boolean(event[CURRENT_TARGET].checked),
+                setBooleanThing,
+              ),
+            [handleThingChange],
+          )}
+        />,
+      )}
+    </div>
   );
 };
 
@@ -320,3 +446,41 @@ export const ResultSortedTableInHtmlTable: typeof ResultSortedTableInHtmlTableDe
       />
     );
   };
+
+export const EditableCellView: typeof EditableCellViewDecl = ({
+  tableId,
+  rowId,
+  cellId,
+  store,
+  className,
+}: CellProps & {readonly className?: string}) => (
+  <EditableThing
+    thing={useCell(tableId, rowId, cellId, store)}
+    onThingChange={useSetCellCallback(
+      tableId,
+      rowId,
+      cellId,
+      (cell: Cell) => cell,
+      [],
+      store,
+    )}
+    className={className ?? EDITABLE + CELL}
+  />
+);
+
+export const EditableValueView: typeof EditableValueViewDecl = ({
+  valueId,
+  store,
+  className,
+}: ValueProps & {readonly className?: string}) => (
+  <EditableThing
+    thing={useValue(valueId, store)}
+    onThingChange={useSetValueCallback(
+      valueId,
+      (value: Value) => value,
+      [],
+      store,
+    )}
+    className={className ?? EDITABLE + VALUE}
+  />
+);
