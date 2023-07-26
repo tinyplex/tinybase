@@ -1,5 +1,5 @@
 import {Cell, CellOrUndefined, Store, ValueOrUndefined} from '../types/store.d';
-import {NUMBER, getTypeOf} from './strings';
+import {NUMBER, STRING, getTypeOf} from './strings';
 import {isFiniteNumber, isTypeStringOrBoolean, isUndefined} from './other';
 import {Id} from '../types/common.d';
 
@@ -32,3 +32,11 @@ export const setOrDelValue = (
   value: ValueOrUndefined,
 ) =>
   isUndefined(value) ? store.delValue(valueId) : store.setValue(valueId, value);
+
+export const getTypeCase = <IfStringReturn, IfNumberReturn, IfBooleanReturn>(
+  type: CellOrValueType | undefined,
+  stringCase: IfStringReturn,
+  numberCase: IfNumberReturn,
+  booleanCase: IfBooleanReturn,
+): IfStringReturn | IfNumberReturn | IfBooleanReturn =>
+  type == STRING ? stringCase : type == NUMBER ? numberCase : booleanCase;
