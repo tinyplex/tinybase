@@ -172,4 +172,14 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   ResultSortedTableInHtmlTable: (
     props: ResultSortedTableInHtmlTableProps<Schemas> & HtmlTableProps,
   ) => ComponentReturnType;
+
+  /// EditableCellView
+  EditableCellView: (
+    props: CellProps<Schemas> & {className?: string},
+  ) => ComponentReturnType;
+
+  /// EditableValueView
+  EditableValueView: (
+    props: ValueProps<Schemas> & {className?: string},
+  ) => ComponentReturnType;
 };
