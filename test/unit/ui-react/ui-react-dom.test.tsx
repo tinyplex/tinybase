@@ -1,15 +1,17 @@
 /* eslint-disable max-len */
 /* eslint-disable react/jsx-no-useless-fragment */
 
-import {Ids, Queries, Store, createQueries, createStore} from 'tinybase/debug';
-import {ReactTestRenderer, act, create} from 'react-test-renderer';
 import {
+  EditableCellView,
+  EditableValueView,
   ResultSortedTableInHtmlTable,
   ResultTableInHtmlTable,
   SortedTableInHtmlTable,
   TableInHtmlTable,
   ValuesInHtmlTable,
 } from 'tinybase/debug/ui-react-dom';
+import {Ids, Queries, Store, createQueries, createStore} from 'tinybase/debug';
+import {ReactTestRenderer, act, create} from 'react-test-renderer';
 import {ExtraProps} from 'tinybase/debug/ui-react';
 import React from 'react';
 
@@ -2463,6 +2465,626 @@ describe('ResultSortedTableInHtmlTable', () => {
           </tr>
         </tbody>
       </table>
+    `);
+  });
+});
+
+describe('EditableCellView', () => {
+  test('basic', () => {
+    act(() => {
+      renderer = create(
+        <EditableCellView store={store} tableId="t1" rowId="r1" cellId="c1" />,
+      );
+    });
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <div
+        className="editableCell"
+      >
+        <button
+          className="number"
+          onClick={[Function]}
+          type="button"
+        >
+          number
+        </button>
+        <input
+          onChange={[Function]}
+          type="number"
+          value={1}
+        />
+      </div>
+    `);
+  });
+
+  test('className', () => {
+    act(() => {
+      renderer = create(
+        <EditableCellView
+          store={store}
+          tableId="t1"
+          rowId="r1"
+          cellId="c1"
+          className="e"
+        />,
+      );
+    });
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <div
+        className="e"
+      >
+        <button
+          className="number"
+          onClick={[Function]}
+          type="button"
+        >
+          number
+        </button>
+        <input
+          onChange={[Function]}
+          type="number"
+          value={1}
+        />
+      </div>
+    `);
+  });
+
+  test('change type and Cell', () => {
+    act(() => {
+      renderer = create(
+        <EditableCellView store={store} tableId="t1" rowId="r1" cellId="c1" />,
+      );
+    });
+    expect(store.getContent()).toEqual([
+      {t1: {r1: {c1: 1}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
+      {v1: 1, v2: 2},
+    ]);
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <div
+        className="editableCell"
+      >
+        <button
+          className="number"
+          onClick={[Function]}
+          type="button"
+        >
+          number
+        </button>
+        <input
+          onChange={[Function]}
+          type="number"
+          value={1}
+        />
+      </div>
+    `);
+    act(() => {
+      renderer.root
+        .findAllByType('input')[0]
+        .props.onChange({currentTarget: {value: 2}});
+    });
+    expect(store.getContent()).toEqual([
+      {t1: {r1: {c1: 2}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
+      {v1: 1, v2: 2},
+    ]);
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <div
+        className="editableCell"
+      >
+        <button
+          className="number"
+          onClick={[Function]}
+          type="button"
+        >
+          number
+        </button>
+        <input
+          onChange={[Function]}
+          type="number"
+          value={2}
+        />
+      </div>
+    `);
+    act(() => {
+      renderer.root.findAllByType('button')[0].props.onClick();
+    });
+    expect(store.getContent()).toEqual([
+      {t1: {r1: {c1: true}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
+      {v1: 1, v2: 2},
+    ]);
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <div
+        className="editableCell"
+      >
+        <button
+          className="boolean"
+          onClick={[Function]}
+          type="button"
+        >
+          boolean
+        </button>
+        <input
+          checked={true}
+          onChange={[Function]}
+          type="checkbox"
+        />
+      </div>
+    `);
+    act(() => {
+      renderer.root
+        .findAllByType('input')[0]
+        .props.onChange({currentTarget: {checked: false}});
+    });
+    expect(store.getContent()).toEqual([
+      {t1: {r1: {c1: false}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
+      {v1: 1, v2: 2},
+    ]);
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <div
+        className="editableCell"
+      >
+        <button
+          className="boolean"
+          onClick={[Function]}
+          type="button"
+        >
+          boolean
+        </button>
+        <input
+          checked={false}
+          onChange={[Function]}
+          type="checkbox"
+        />
+      </div>
+    `);
+    act(() => {
+      renderer.root.findAllByType('button')[0].props.onClick();
+    });
+    expect(store.getContent()).toEqual([
+      {t1: {r1: {c1: '1'}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
+      {v1: 1, v2: 2},
+    ]);
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <div
+        className="editableCell"
+      >
+        <button
+          className="string"
+          onClick={[Function]}
+          type="button"
+        >
+          string
+        </button>
+        <input
+          onChange={[Function]}
+          value="1"
+        />
+      </div>
+    `);
+    act(() => {
+      renderer.root
+        .findAllByType('input')[0]
+        .props.onChange({currentTarget: {value: 'two'}});
+    });
+    expect(store.getContent()).toEqual([
+      {t1: {r1: {c1: 'two'}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
+      {v1: 1, v2: 2},
+    ]);
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <div
+        className="editableCell"
+      >
+        <button
+          className="string"
+          onClick={[Function]}
+          type="button"
+        >
+          string
+        </button>
+        <input
+          onChange={[Function]}
+          value="two"
+        />
+      </div>
+    `);
+    act(() => {
+      renderer.root.findAllByType('button')[0].props.onClick();
+    });
+    expect(store.getContent()).toEqual([
+      {t1: {r1: {c1: 2}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
+      {v1: 1, v2: 2},
+    ]);
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <div
+        className="editableCell"
+      >
+        <button
+          className="number"
+          onClick={[Function]}
+          type="button"
+        >
+          number
+        </button>
+        <input
+          onChange={[Function]}
+          type="number"
+          value={2}
+        />
+      </div>
+    `);
+    act(() => {
+      store.setCell('t1', 'r1', 'c1', 3);
+    });
+    expect(store.getContent()).toEqual([
+      {t1: {r1: {c1: 3}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
+      {v1: 1, v2: 2},
+    ]);
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <div
+        className="editableCell"
+      >
+        <button
+          className="number"
+          onClick={[Function]}
+          type="button"
+        >
+          number
+        </button>
+        <input
+          onChange={[Function]}
+          type="number"
+          value={3}
+        />
+      </div>
+    `);
+    act(() => {
+      store.setCell('t1', 'r1', 'c1', true);
+    });
+    expect(store.getContent()).toEqual([
+      {t1: {r1: {c1: true}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
+      {v1: 1, v2: 2},
+    ]);
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <div
+        className="editableCell"
+      >
+        <button
+          className="boolean"
+          onClick={[Function]}
+          type="button"
+        >
+          boolean
+        </button>
+        <input
+          checked={true}
+          onChange={[Function]}
+          type="checkbox"
+        />
+      </div>
+    `);
+    act(() => {
+      store.setCell('t1', 'r1', 'c1', 'three');
+    });
+    expect(store.getContent()).toEqual([
+      {t1: {r1: {c1: 'three'}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
+      {v1: 1, v2: 2},
+    ]);
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <div
+        className="editableCell"
+      >
+        <button
+          className="string"
+          onClick={[Function]}
+          type="button"
+        >
+          string
+        </button>
+        <input
+          onChange={[Function]}
+          value="three"
+        />
+      </div>
+    `);
+  });
+});
+
+describe('EditableValueView', () => {
+  test('basic', () => {
+    act(() => {
+      renderer = create(<EditableValueView store={store} valueId="v1" />);
+    });
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <div
+        className="editableValue"
+      >
+        <button
+          className="number"
+          onClick={[Function]}
+          type="button"
+        >
+          number
+        </button>
+        <input
+          onChange={[Function]}
+          type="number"
+          value={1}
+        />
+      </div>
+    `);
+  });
+
+  test('className', () => {
+    act(() => {
+      renderer = create(<EditableValueView valueId="v1" className="e" />);
+    });
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <div
+        className="e"
+      >
+        <button
+          onClick={[Function]}
+          type="button"
+        />
+        <input
+          onChange={[Function]}
+          type="checkbox"
+        />
+      </div>
+    `);
+  });
+
+  test('change type and Value', () => {
+    act(() => {
+      renderer = create(<EditableValueView store={store} valueId="v1" />);
+    });
+    expect(store.getContent()).toEqual([
+      {t1: {r1: {c1: 1}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
+      {v1: 1, v2: 2},
+    ]);
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <div
+        className="editableValue"
+      >
+        <button
+          className="number"
+          onClick={[Function]}
+          type="button"
+        >
+          number
+        </button>
+        <input
+          onChange={[Function]}
+          type="number"
+          value={1}
+        />
+      </div>
+    `);
+    act(() => {
+      renderer.root
+        .findAllByType('input')[0]
+        .props.onChange({currentTarget: {value: 2}});
+    });
+    expect(store.getContent()).toEqual([
+      {t1: {r1: {c1: 1}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
+      {v1: 2, v2: 2},
+    ]);
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <div
+        className="editableValue"
+      >
+        <button
+          className="number"
+          onClick={[Function]}
+          type="button"
+        >
+          number
+        </button>
+        <input
+          onChange={[Function]}
+          type="number"
+          value={2}
+        />
+      </div>
+    `);
+    act(() => {
+      renderer.root.findAllByType('button')[0].props.onClick();
+    });
+    expect(store.getContent()).toEqual([
+      {t1: {r1: {c1: 1}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
+      {v1: true, v2: 2},
+    ]);
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <div
+        className="editableValue"
+      >
+        <button
+          className="boolean"
+          onClick={[Function]}
+          type="button"
+        >
+          boolean
+        </button>
+        <input
+          checked={true}
+          onChange={[Function]}
+          type="checkbox"
+        />
+      </div>
+    `);
+    act(() => {
+      renderer.root
+        .findAllByType('input')[0]
+        .props.onChange({currentTarget: {checked: false}});
+    });
+    expect(store.getContent()).toEqual([
+      {t1: {r1: {c1: 1}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
+      {v1: false, v2: 2},
+    ]);
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <div
+        className="editableValue"
+      >
+        <button
+          className="boolean"
+          onClick={[Function]}
+          type="button"
+        >
+          boolean
+        </button>
+        <input
+          checked={false}
+          onChange={[Function]}
+          type="checkbox"
+        />
+      </div>
+    `);
+    act(() => {
+      renderer.root.findAllByType('button')[0].props.onClick();
+    });
+    expect(store.getContent()).toEqual([
+      {t1: {r1: {c1: 1}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
+      {v1: '1', v2: 2},
+    ]);
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <div
+        className="editableValue"
+      >
+        <button
+          className="string"
+          onClick={[Function]}
+          type="button"
+        >
+          string
+        </button>
+        <input
+          onChange={[Function]}
+          value="1"
+        />
+      </div>
+    `);
+    act(() => {
+      renderer.root
+        .findAllByType('input')[0]
+        .props.onChange({currentTarget: {value: 'two'}});
+    });
+    expect(store.getContent()).toEqual([
+      {t1: {r1: {c1: 1}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
+      {v1: 'two', v2: 2},
+    ]);
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <div
+        className="editableValue"
+      >
+        <button
+          className="string"
+          onClick={[Function]}
+          type="button"
+        >
+          string
+        </button>
+        <input
+          onChange={[Function]}
+          value="two"
+        />
+      </div>
+    `);
+    act(() => {
+      renderer.root.findAllByType('button')[0].props.onClick();
+    });
+    expect(store.getContent()).toEqual([
+      {t1: {r1: {c1: 1}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
+      {v1: 2, v2: 2},
+    ]);
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <div
+        className="editableValue"
+      >
+        <button
+          className="number"
+          onClick={[Function]}
+          type="button"
+        >
+          number
+        </button>
+        <input
+          onChange={[Function]}
+          type="number"
+          value={2}
+        />
+      </div>
+    `);
+    act(() => {
+      store.setValue('v1', 3);
+    });
+    expect(store.getContent()).toEqual([
+      {t1: {r1: {c1: 1}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
+      {v1: 3, v2: 2},
+    ]);
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <div
+        className="editableValue"
+      >
+        <button
+          className="number"
+          onClick={[Function]}
+          type="button"
+        >
+          number
+        </button>
+        <input
+          onChange={[Function]}
+          type="number"
+          value={3}
+        />
+      </div>
+    `);
+    act(() => {
+      store.setValue('v1', true);
+    });
+    expect(store.getContent()).toEqual([
+      {t1: {r1: {c1: 1}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
+      {v1: true, v2: 2},
+    ]);
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <div
+        className="editableValue"
+      >
+        <button
+          className="boolean"
+          onClick={[Function]}
+          type="button"
+        >
+          boolean
+        </button>
+        <input
+          checked={true}
+          onChange={[Function]}
+          type="checkbox"
+        />
+      </div>
+    `);
+    act(() => {
+      store.setValue('v1', 'three');
+    });
+    expect(store.getContent()).toEqual([
+      {t1: {r1: {c1: 1}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
+      {v1: 'three', v2: 2},
+    ]);
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <div
+        className="editableValue"
+      >
+        <button
+          className="string"
+          onClick={[Function]}
+          type="button"
+        >
+          string
+        </button>
+        <input
+          onChange={[Function]}
+          value="three"
+        />
+      </div>
     `);
   });
 });
