@@ -7,7 +7,6 @@ import {
   Id,
   NoValuesSchema,
   createCheckpoints,
-  createFilePersister,
   createIndexes,
   createMetrics,
   createQueries,
@@ -15,6 +14,7 @@ import {
   createStore,
 } from 'tinybase/debug/with-schemas';
 import React from 'react';
+import {createFilePersister} from 'tinybase/with-schemas/persisters/persister-file';
 
 const tablesSchema = {
   t0: {c0: {type: 'number'}},
