@@ -2,13 +2,14 @@
 
 import {TablesSchema, ValuesSchema} from './types/store.d';
 import {dirname, resolve} from 'path';
-import {isArray, jsonParse} from './common/other';
 import {readFileSync, writeFileSync} from 'fs';
 import {UTF8} from './common/strings';
 import {arrayForEach} from './common/array';
 import {createStore} from './tinybase';
 import {createTools} from './tools';
 import {fileURLToPath} from 'url';
+import {isArray} from './common/other';
+import {jsonParse} from './common/json';
 import {objMap} from './common/obj';
 
 const FILE_ERROR = 'provide a valid schemaFile, storeName, and outputDir';

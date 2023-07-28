@@ -4,7 +4,7 @@ import {
   createLocalPersister as createLocalPersisterDecl,
   createSessionPersister as createSessionPersisterDecl,
 } from '../types/persisters/persister-browser';
-import {jsonParse, jsonString} from '../common/other';
+import {jsonParse, jsonString} from '../common/json';
 import {createCustomPersister} from '../persisters';
 
 type StoreListener = (event: StorageEvent) => void;

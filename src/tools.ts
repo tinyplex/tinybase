@@ -13,7 +13,7 @@ import {objFreeze, objIsEmpty} from './common/obj';
 import {collForEach} from './common/coll';
 import {getCreateFunction} from './common/definable';
 import {getStoreApi as getStoreApiImpl} from './tools/api/api';
-import {jsonParse} from './common/other';
+import {jsonParse} from './common/json';
 
 type CellMeta = [string, IdMap<number>, [number, Cell?], number];
 

@@ -2,7 +2,7 @@ import {Cmd, getCommandFunctions} from './commands';
 import {DEFAULT_ROW_ID_COLUMN_NAME, SINGLE_ROW_ID} from './common';
 import {Persister, PersisterListener} from '../../types/persisters';
 import {Store, Tables, Values} from '../../types/store';
-import {jsonParse, jsonString} from '../../common/other';
+import {jsonParse, jsonString} from '../../common/json';
 import {DefaultedJsonConfig} from './config';
 import {createCustomPersister} from '../../persisters';
 

@@ -57,8 +57,6 @@ import {
   isFunction,
   isTypeStringOrBoolean,
   isUndefined,
-  jsonParse,
-  jsonString,
 } from './common/other';
 import {
   ExtraArgsGetter,
@@ -126,6 +124,7 @@ import {
   collSize4,
 } from './common/coll';
 import {getCellOrValueType, setOrDelCell, setOrDelValue} from './common/cell';
+import {jsonParse, jsonString} from './common/json';
 import {defaultSorter} from './common';
 
 type TablesSchemaMap = IdMap2<CellSchema>;

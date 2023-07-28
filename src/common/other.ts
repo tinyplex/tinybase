@@ -1,25 +1,8 @@
 import {BOOLEAN, FUNCTION, STRING, getTypeOf} from './strings';
-import {arrayReduce} from './array';
 
 const promise = Promise;
 
 export const DEBUG = (globalThis as any).DEBUG ?? true;
-
-export const jsonString = (obj: unknown): string =>
-  JSON.stringify(obj, (_key, value) =>
-    isInstanceOf(value, Map)
-      ? arrayReduce(
-          [...value],
-          (obj: {[key: string]: unknown}, [key, value]) => {
-            obj[key] = value;
-            return obj;
-          },
-          {},
-        )
-      : value,
-  );
-
-export const jsonParse = JSON.parse;
 
 export const mathMax = Math.max;
 

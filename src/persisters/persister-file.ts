@@ -1,7 +1,7 @@
 import {FSWatcher, watch} from 'fs';
 import {Persister, PersisterListener} from '../types/persisters';
 import {Store, Tables, Values} from '../types/store';
-import {jsonParse, jsonString} from '../common/other';
+import {jsonParse, jsonString} from '../common/json';
 import {readFile, writeFile} from 'fs/promises';
 import {UTF8} from '../common/strings';
 import {createCustomPersister} from '../persisters';

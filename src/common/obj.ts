@@ -5,7 +5,7 @@ import {Id} from '../types/common.d';
 export type IdObj<Value> = {[id: string]: Value};
 export type IdObj2<Value> = IdObj<IdObj<Value>>;
 
-const object = Object;
+export const object = Object;
 
 export const objIds = object.keys;
 export const objFrozen = object.isFrozen;
