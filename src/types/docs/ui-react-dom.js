@@ -1014,9 +1014,7 @@
  *     <Pane />
  *   </Provider>
  * );
- * const Pane = () => (
- *   <EditableValueView valueId="employees" />
- * );
+ * const Pane = () => <EditableValueView valueId="employees" />;
  *
  * const store = createStore().setValue('employees', 3);
  * const app = document.createElement('div');
