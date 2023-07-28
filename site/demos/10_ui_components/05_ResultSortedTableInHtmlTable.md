@@ -80,12 +80,15 @@ with the queryId:
  };
 ```
 
-Note that we explicitly picked and labelled which columns were in the query, so we don't need
-the `customCells` prop any more.
+Note that we explicitly picked and labelled which columns were in the query, so
+we don't need the `customCells` prop any more.
 
 ```diff-js
 -const customCells = {name: 'Name', year: 'Year', rating: 'Rating'};
 ```
 
-We are using the same `sortOnClick` props from the <SortedTableInHtmlTable /> demo so you
-should find it to be interactive just as before.
+We are using the same `sortOnClick` props from the <SortedTableInHtmlTable />
+demo so you should find it to be interactive just as before.
+
+Let's next look at components that let you edit Store data, starting with the
+<EditableValueView /> demo.
