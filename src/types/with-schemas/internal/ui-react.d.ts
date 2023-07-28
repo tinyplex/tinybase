@@ -142,20 +142,30 @@ export type CellProps<
   >,
 > = TableIds extends infer TableId
   ? TableId extends TableIdFromSchema<Schemas[0]>
-    ? {
-        /// CellProps.tableId
-        readonly tableId: TableId;
-        /// CellProps.rowId
-        readonly rowId: Id;
-        /// CellProps.cellId
-        readonly cellId: CellIdFromSchema<Schemas[0], TableId>;
-        /// CellProps.store
-        readonly store?: StoreOrStoreId<Schemas>;
-        /// CellProps.debugIds
-        readonly debugIds?: boolean;
-      }
+    ? CellPropsForTableIdAndCellId<
+        Schemas,
+        TableId,
+        CellIdFromSchema<Schemas[0], TableId>
+      >
     : never
   : never;
+
+export type CellPropsForTableIdAndCellId<
+  Schemas extends OptionalSchemas,
+  TableId extends TableIdFromSchema<Schemas[0]>,
+  CellId extends CellIdFromSchema<Schemas[0], TableId>,
+> = {
+  /// CellProps.tableId
+  readonly tableId: TableId;
+  /// CellProps.rowId
+  readonly rowId: Id;
+  /// CellProps.cellId
+  readonly cellId: CellId;
+  /// CellProps.store
+  readonly store?: StoreOrStoreId<Schemas>;
+  /// CellProps.debugIds
+  readonly debugIds?: boolean;
+};
 
 export type ValuesProps<Schemas extends OptionalSchemas> = {
   /// ValuesProps.store

@@ -3,6 +3,7 @@
 import {CellIdFromSchema, TableIdFromSchema} from './internal/store';
 import {
   CellProps,
+  CellPropsForTableIdAndCellId,
   ComponentReturnType,
   ExtraProps,
   QueriesOrQueriesId,
@@ -18,16 +19,16 @@ import {OptionalSchemas} from './store';
 export type CustomCell<
   Schemas extends OptionalSchemas,
   TableId extends TableIdFromSchema<Schemas[0]>,
+  CellId extends CellIdFromSchema<Schemas[0], TableId>,
 > = {
   /// CustomCell.label
   readonly label?: string;
   /// CustomCell.component
-  readonly component?: ComponentType<CellProps<Schemas>>;
+  readonly component?: ComponentType<
+    CellPropsForTableIdAndCellId<Schemas, TableId, CellId>
+  >;
   /// CustomCell.getComponentProps
-  readonly getComponentProps?: (
-    rowId: Id,
-    cellId: CellIdFromSchema<Schemas[0], TableId>,
-  ) => ExtraProps;
+  readonly getComponentProps?: (rowId: Id, cellId: CellId) => ExtraProps;
 };
 
 // CustomResultCell
@@ -66,7 +67,11 @@ export type TableInHtmlTableProps<
         /// TableInHtmlTableProps.customCells
         readonly customCells?:
           | CellIdFromSchema<Schemas[0], TableId>[]
-          | {[cellId: Id]: string | CustomCell<Schemas, TableId>};
+          | {
+              [CellId in CellIdFromSchema<Schemas[0], TableId>]?:
+                | string
+                | CustomCell<Schemas, TableId, CellId>;
+            };
       }
     : never
   : never;
@@ -83,7 +88,7 @@ export type SortedTableInHtmlTableProps<
         /// SortedTableInHtmlTableProps.tableId
         readonly tableId: TableId;
         /// SortedTableInHtmlTableProps.cellId
-        readonly cellId?: Id;
+        readonly cellId?: CellIdFromSchema<Schemas[0], TableId>;
         /// SortedTableInHtmlTableProps.descending
         readonly descending?: boolean;
         /// SortedTableInHtmlTableProps.offset
@@ -95,7 +100,11 @@ export type SortedTableInHtmlTableProps<
         /// SortedTableInHtmlTableProps.customCells
         readonly customCells?:
           | CellIdFromSchema<Schemas[0], TableId>[]
-          | {[cellId: Id]: string | CustomCell<Schemas, TableId>};
+          | {
+              [CellId in CellIdFromSchema<Schemas[0], TableId>]?:
+                | string
+                | CustomCell<Schemas, TableId, CellId>;
+            };
         /// SortedTableInHtmlTableProps.sortOnClick
         readonly sortOnClick?: boolean;
       }
