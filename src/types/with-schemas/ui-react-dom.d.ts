@@ -64,6 +64,8 @@ export type TableInHtmlTableProps<
         readonly tableId: TableId;
         /// TableInHtmlTableProps.store
         readonly store?: StoreOrStoreId<Schemas>;
+        /// TableInHtmlTableProps.editable
+        readonly editable?: boolean;
         /// TableInHtmlTableProps.customCells
         readonly customCells?:
           | CellIdFromSchema<Schemas[0], TableId>[]
@@ -97,6 +99,8 @@ export type SortedTableInHtmlTableProps<
         readonly limit?: number;
         /// SortedTableInHtmlTableProps.store
         readonly store?: StoreOrStoreId<Schemas>;
+        /// SortedTableInHtmlTableProps.editable
+        readonly editable?: boolean;
         /// SortedTableInHtmlTableProps.customCells
         readonly customCells?:
           | CellIdFromSchema<Schemas[0], TableId>[]
@@ -150,6 +154,8 @@ export type ResultSortedTableInHtmlTableProps<Schemas extends OptionalSchemas> =
 export type ValuesInHtmlTableProps<Schemas extends OptionalSchemas> = {
   /// ValuesInHtmlTableProps.store
   readonly store?: StoreOrStoreId<Schemas>;
+  /// ValuesInHtmlTableProps.editable
+  readonly editable?: boolean;
   /// ValuesInHtmlTableProps.valueComponent
   readonly valueComponent?: ComponentType<ValueProps<Schemas>>;
   /// ValuesInHtmlTableProps.getValueComponentProps

@@ -48,6 +48,8 @@ export type TableInHtmlTableProps = {
   readonly tableId: Id;
   /// TableInHtmlTableProps.store
   readonly store?: StoreOrStoreId;
+  /// TableInHtmlTableProps.editable
+  readonly editable?: boolean;
   /// TableInHtmlTableProps.customCells
   readonly customCells?: Ids | {[cellId: Id]: string | CustomCell};
 };
@@ -66,6 +68,8 @@ export type SortedTableInHtmlTableProps = {
   readonly limit?: number;
   /// SortedTableInHtmlTableProps.store
   readonly store?: StoreOrStoreId;
+  /// SortedTableInHtmlTableProps.editable
+  readonly editable?: boolean;
   /// SortedTableInHtmlTableProps.customCells
   readonly customCells?: Ids | {[cellId: Id]: string | CustomCell};
   /// SortedTableInHtmlTableProps.sortOnClick
@@ -106,6 +110,8 @@ export type ResultSortedTableInHtmlTableProps = {
 export type ValuesInHtmlTableProps = {
   /// ValuesInHtmlTableProps.store
   readonly store?: StoreOrStoreId;
+  /// ValuesInHtmlTableProps.editable
+  readonly editable?: boolean;
   /// ValuesInHtmlTableProps.valueComponent
   readonly valueComponent?: ComponentType<ValueProps>;
   /// ValuesInHtmlTableProps.getValueComponentProps

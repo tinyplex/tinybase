@@ -110,7 +110,7 @@ const HtmlTable = ({
   idColumn,
   customCells,
   storeTableIdOrQueriesQueryId,
-  defaultCellView = CellView,
+  defaultCellComponent,
   rowIds,
   defaultCellIds,
   sorting,
@@ -123,7 +123,7 @@ const HtmlTable = ({
   readonly storeTableIdOrQueriesQueryId:
     | {store?: StoreOrStoreId; tableId: Id}
     | {queries?: QueriesOrQueriesId; queryId: Id};
-  readonly defaultCellView?: typeof CellView | typeof ResultCellView;
+  readonly defaultCellComponent: typeof CellView | typeof ResultCellView;
   readonly rowIds: Ids;
   readonly defaultCellIds: Ids;
   readonly sorting?: Sorting;
@@ -180,7 +180,7 @@ const HtmlTable = ({
             {objMap(
               customCellConfigurations,
               (
-                {component: CellView = defaultCellView, getComponentProps},
+                {component: CellView = defaultCellComponent, getComponentProps},
                 cellId,
               ) => (
                 <td key={cellId}>
@@ -305,6 +305,7 @@ const EditableThing = <Thing extends Cell | Value>({
 export const TableInHtmlTable: typeof TableInHtmlTableDecl = ({
   tableId,
   store,
+  editable,
   ...props
 }: TableInHtmlTableProps & HtmlTableProps): any => (
   <HtmlTable
@@ -313,6 +314,7 @@ export const TableInHtmlTable: typeof TableInHtmlTableDecl = ({
       () => ({store, tableId}),
       [store, tableId],
     )}
+    defaultCellComponent={editable ? EditableCellView : CellView}
     rowIds={useRowIds(tableId, store)}
     defaultCellIds={useTableCellIds(tableId, store)}
   />
@@ -325,6 +327,7 @@ export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
   offset,
   limit,
   store,
+  editable,
   sortOnClick,
   ...props
 }: SortedTableInHtmlTableProps & HtmlTableProps): any => {
@@ -345,6 +348,7 @@ export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
         () => ({store, tableId}),
         [store, tableId],
       )}
+      defaultCellComponent={editable ? EditableCellView : CellView}
       rowIds={useSortedRowIds(tableId, ...sorting, offset, limit, store)}
       defaultCellIds={useTableCellIds(tableId, store)}
       sorting={sorting}
@@ -355,7 +359,8 @@ export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
 
 export const ValuesInHtmlTable: typeof ValuesInHtmlTableDecl = ({
   store,
-  valueComponent: Value = ValueView,
+  editable = false,
+  valueComponent: Value = editable ? EditableValueView : ValueView,
   getValueComponentProps,
   className,
   headerRow,
@@ -398,7 +403,7 @@ export const ResultTableInHtmlTable: typeof ResultTableInHtmlTableDecl = ({
       () => ({queries, queryId}),
       [queries, queryId],
     )}
-    defaultCellView={ResultCellView}
+    defaultCellComponent={ResultCellView}
     rowIds={useResultRowIds(queryId, queries)}
     defaultCellIds={useResultTableCellIds(queryId, queries)}
   />
@@ -432,7 +437,7 @@ export const ResultSortedTableInHtmlTable: typeof ResultSortedTableInHtmlTableDe
           () => ({queries, queryId}),
           [queries, queryId],
         )}
-        defaultCellView={ResultCellView}
+        defaultCellComponent={ResultCellView}
         rowIds={useResultSortedRowIds(
           queryId,
           ...sorting,

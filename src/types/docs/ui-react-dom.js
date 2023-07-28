@@ -94,6 +94,12 @@
    */
   /// TableInHtmlTableProps.store
   /**
+   * Whether the Cells should be editable. This affects the default CellView
+   * component (to use the EditableCellView component instead) but of course
+   * will not affect custom Cell components if you have set them.
+   */
+  /// TableInHtmlTableProps.editable
+  /**
    * An optional list of Cell Ids to use for rendering a prescribed set of the
    * Table's Cells in a given order. This can also be an object with the desired
    * Cell Ids as keys, and with a value that can either be a string label to
@@ -137,6 +143,12 @@
    */
   /// SortedTableInHtmlTableProps.store
   /**
+   * Whether the Cells should be editable. This affects the default CellView
+   * component (to use the EditableCellView component instead) but of course
+   * will not affect custom Cell components if you have set them.
+   */
+  /// SortedTableInHtmlTableProps.editable
+  /**
    * An optional list of Cell Ids to use for rendering a prescribed set of the
    * Table's Cells in a given order. This can also be an object with the desired
    * Cell Ids as keys, and with a value that can either be a string label to
@@ -163,6 +175,12 @@
    * for a named context Store, or provide an explicit reference.
    */
   /// ValuesInHtmlTableProps.store
+  /**
+   * Whether the Values should be editable. This affects the default ValueView
+   * component (to use the EditableValueView component instead) but of course
+   * will not affect a custom valueComponent if you have set one.
+   */
+  /// ValuesInHtmlTableProps.editable
   /**
    * A custom component for rendering each Value in the Store (to override the
    * default ValueView component).
