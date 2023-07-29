@@ -47,7 +47,6 @@ We can style its container and the button that lets you change type:
   box-shadow: 0 0 1rem #0004;
   margin: 2rem;
   min-width: 16rem;
-  outline: 1px solid #aaa;
   padding: 0.5rem 1rem 1rem;
 }
 .editableValue {

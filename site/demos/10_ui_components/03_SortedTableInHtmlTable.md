@@ -83,8 +83,11 @@ the movies by rating accordingly:
          customCells={customCells}
 +        cellId='rating'
 +        descending={true}
++        limit={7}
        />
 ```
+
+Note that we can also use the `limit` prop to paginate the data.
 
 The component automatically adds two classes to the heading of the column that
 is being used for the sorting. We can add styling to show which column it is,
@@ -108,6 +111,7 @@ column headings to change the sorting:
          customCells={customCells}
          cellId='rating'
          descending={true}
+         limit={7}
 +        sortOnClick={true}
        />
 ```
@@ -118,9 +122,43 @@ widths of the header row so that the layout is stable:
 
 ```less
 thead th {
-  min-width: 6rem;
+  width: 5rem;
+  &:nth-of-type(2) {
+    width: 28rem;
+  }
 }
 ```
 
 Nice! It's still a simple table, but we have some useful interactivity out of
 the box.
+
+We can also add pagination controls, by adding the `paginator` prop. This either
+takes `true` to enable the default Paginator component, or a paginator component
+of your own design that accepts PaginatorProps.
+
+```diff-jsx
+       <SortedTableInHtmlTable
+         tableId='movies'
+         customCells={customCells}
+         cellId='rating'
+         descending={true}
+         limit={7}
+         sortOnClick={true}
++        paginator={true}
+       />
+```
+
+This places the pagination controls in the `<caption>` element of the `<table>`,
+and you can use CSS to position and style it. We are removing the default text
+from
+
+```less
+table caption {
+  caption-side: top;
+  text-align: left;
+  margin-bottom: 1rem;
+  button {
+    margin-right: 0.5rem;
+  }
+}
+```
