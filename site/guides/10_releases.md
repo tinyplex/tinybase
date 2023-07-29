@@ -49,6 +49,9 @@ Equivalent components also exist for the results of queries: the
 ResultTableInHtmlTable component and the interactive
 ResultSortedTableInHtmlTable component.
 
+The EditableCellView component and EditableValue component are interactive input
+controls for updating Cell and Value content respectively.
+
 Also in this release, the getResultTableCellIds method and
 addResultTableCellIdsListener method have been added to the Queries object. The
 equivalent useResultTableCellIds hook and useResultTableCellIdsListener hook
