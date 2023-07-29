@@ -235,7 +235,6 @@ const EditableThing = <Thing extends Cell | Value>({
   return (
     <div className={className}>
       <button
-        type="button"
         className={thingType}
         onClick={useCallback(() => {
           const nextType = getTypeCase(
