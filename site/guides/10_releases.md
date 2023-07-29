@@ -49,7 +49,7 @@ Equivalent components also exist for the results of queries: the
 ResultTableInHtmlTable component and the interactive
 ResultSortedTableInHtmlTable component.
 
-The EditableCellView component and EditableValue component are interactive input
+The EditableCellView component and EditableValueView component are interactive input
 controls for updating Cell and Value content respectively.
 
 Also in this release, the getResultTableCellIds method and
