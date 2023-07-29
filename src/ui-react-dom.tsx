@@ -112,33 +112,45 @@ const HtmlHeaderTh = ({
   </th>
 );
 
+type HtmlTableParams = [
+  cellComponentProps:
+    | {tableId: Id; store?: StoreOrStoreId}
+    | {queryId: Id; queries?: QueriesOrQueriesId},
+  useCellIdsArgs:
+    | [tableId: Id, store?: StoreOrStoreId]
+    | [queryId: Id, queries?: QueriesOrQueriesId],
+  defaultCellComponent: typeof CellView | typeof ResultCellView,
+  useDefaultCellIds: typeof useTableCellIds | typeof useResultTableCellIds,
+  sorting?: Sorting,
+  onHeaderThClick?: (cellId: Id | undefined) => void,
+];
+
 const HtmlTable = ({
   className,
   headerRow,
   idColumn,
   customCells,
-  storeTableIdOrQueriesQueryId,
-  defaultCellComponent,
+  htmlTableParams,
   rowIds,
-  defaultCellIds,
-  sorting,
-  onHeaderThClick,
   children,
 }: HtmlTableProps & {
   readonly customCells?:
     | Ids
     | {[cellId: string]: string | CustomCell | CustomResultCell}
     | undefined;
-  readonly storeTableIdOrQueriesQueryId:
-    | {store?: StoreOrStoreId; tableId: Id}
-    | {queries?: QueriesOrQueriesId; queryId: Id};
-  readonly defaultCellComponent: typeof CellView | typeof ResultCellView;
+  readonly htmlTableParams: HtmlTableParams;
   readonly rowIds: Ids;
-  readonly defaultCellIds: Ids;
-  readonly sorting?: Sorting;
-  readonly onHeaderThClick?: (cellId: Id | undefined) => void;
   readonly children?: React.ReactNode;
 }) => {
+  const [
+    cellComponentProps,
+    useCellIdsArgs,
+    defaultCellComponent,
+    useDefaultCellIds,
+    sorting,
+    onHeaderThClick,
+  ] = htmlTableParams;
+  const defaultCellIds = (useDefaultCellIds as any)(...useCellIdsArgs) as Ids;
   const customCellConfigurations = useMemo(() => {
     const cellIds = customCells ?? defaultCellIds;
     return objNew(
@@ -197,7 +209,7 @@ const HtmlTable = ({
                 <td key={cellId}>
                   <CellView
                     {...getProps(getComponentProps, rowId, cellId)}
-                    {...(storeTableIdOrQueriesQueryId as any)}
+                    {...(cellComponentProps as any)}
                     rowId={rowId}
                     cellId={cellId}
                   />
@@ -320,13 +332,16 @@ export const TableInHtmlTable: typeof TableInHtmlTableDecl = ({
 }: TableInHtmlTableProps & HtmlTableProps): any => (
   <HtmlTable
     {...props}
-    storeTableIdOrQueriesQueryId={useMemo(
-      () => ({store, tableId}),
-      [store, tableId],
+    htmlTableParams={useMemo(
+      () => [
+        {tableId, store},
+        [tableId, store],
+        editable ? EditableCellView : CellView,
+        useTableCellIds,
+      ],
+      [store, tableId, editable],
     )}
-    defaultCellComponent={editable ? EditableCellView : CellView}
     rowIds={useRowIds(tableId, store)}
-    defaultCellIds={useTableCellIds(tableId, store)}
   />
 );
 
@@ -361,15 +376,18 @@ export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
   return (
     <HtmlTable
       {...props}
-      storeTableIdOrQueriesQueryId={useMemo(
-        () => ({store, tableId}),
-        [store, tableId],
+      htmlTableParams={useMemo(
+        () => [
+          {tableId, store},
+          [tableId, store],
+          editable ? EditableCellView : CellView,
+          useTableCellIds,
+          sorting,
+          handleHeaderThClick,
+        ],
+        [store, tableId, editable, sorting, handleHeaderThClick],
       )}
-      defaultCellComponent={editable ? EditableCellView : CellView}
       rowIds={useSortedRowIds(tableId, ...sorting, currentOffset, limit, store)}
-      defaultCellIds={useTableCellIds(tableId, store)}
-      sorting={sorting}
-      onHeaderThClick={handleHeaderThClick}
     >
       {paginator === false ? null : (
         <PaginatorComponent
@@ -473,13 +491,16 @@ export const ResultTableInHtmlTable: typeof ResultTableInHtmlTableDecl = ({
 }: ResultTableInHtmlTableProps & HtmlTableProps): any => (
   <HtmlTable
     {...props}
-    storeTableIdOrQueriesQueryId={useMemo(
-      () => ({queries, queryId}),
-      [queries, queryId],
+    htmlTableParams={useMemo(
+      () => [
+        {queryId, queries},
+        [queryId, queries],
+        ResultCellView,
+        useResultTableCellIds,
+      ],
+      [queryId, queries],
     )}
-    defaultCellComponent={ResultCellView}
     rowIds={useResultRowIds(queryId, queries)}
-    defaultCellIds={useResultTableCellIds(queryId, queries)}
   />
 );
 
@@ -514,11 +535,17 @@ export const ResultSortedTableInHtmlTable: typeof ResultSortedTableInHtmlTableDe
     return (
       <HtmlTable
         {...props}
-        storeTableIdOrQueriesQueryId={useMemo(
-          () => ({queries, queryId}),
-          [queries, queryId],
+        htmlTableParams={useMemo(
+          () => [
+            {queryId, queries},
+            [queryId, queries],
+            ResultCellView,
+            useResultTableCellIds,
+            sorting,
+            handleHeaderThClick,
+          ],
+          [queryId, queries, sorting, handleHeaderThClick],
         )}
-        defaultCellComponent={ResultCellView}
         rowIds={useResultSortedRowIds(
           queryId,
           ...sorting,
@@ -526,9 +553,6 @@ export const ResultSortedTableInHtmlTable: typeof ResultSortedTableInHtmlTableDe
           limit,
           queries,
         )}
-        defaultCellIds={useResultTableCellIds(queryId, queries)}
-        sorting={sorting}
-        onHeaderThClick={handleHeaderThClick}
       >
         {paginator === false ? null : (
           <PaginatorComponent
