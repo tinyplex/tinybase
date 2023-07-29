@@ -73,7 +73,9 @@ with the queryId:
 +        queryId='recentMovies'
 +        cellId='Rating'
          descending={true}
+         limit={7}
          sortOnClick={true}
+         paginator={true}
        />
      </>
    );

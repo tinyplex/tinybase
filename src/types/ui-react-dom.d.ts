@@ -32,6 +32,16 @@ export type CustomResultCell = {
   readonly getComponentProps?: (rowId: Id, cellId: Id) => ExtraProps;
 };
 
+export type PaginatorProps = {
+  readonly onChange: (offset: number) => void;
+  readonly offset?: number;
+  readonly limit?: number;
+  readonly total: number;
+  readonly singular?: string;
+  readonly plural?: string;
+  readonly className?: string;
+};
+
 // HtmlTableProps
 export type HtmlTableProps = {
   /// HtmlTableProps.className
@@ -74,6 +84,8 @@ export type SortedTableInHtmlTableProps = {
   readonly customCells?: Ids | {[cellId: Id]: string | CustomCell};
   /// SortedTableInHtmlTableProps.sortOnClick
   readonly sortOnClick?: boolean;
+  // / SortedTableInHtmlTableProps.paginator
+  readonly paginator?: boolean | ComponentType<PaginatorProps>;
 };
 
 // ResultTableInHtmlTableProps
@@ -104,6 +116,8 @@ export type ResultSortedTableInHtmlTableProps = {
   readonly customCells?: Ids | {[cellId: Id]: string | CustomResultCell};
   /// ResultSortedTableInHtmlTableProps.sortOnClick
   readonly sortOnClick?: boolean;
+  // / ResultSortedTableInHtmlTableProps.paginator
+  readonly paginator?: boolean | ComponentType<PaginatorProps>;
 };
 
 // ValuesInHtmlTableProps
