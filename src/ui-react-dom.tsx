@@ -63,6 +63,10 @@ const {createElement, useCallback, useMemo, useState} = React;
 type Sorting = [Id | undefined, boolean];
 
 const EDITABLE = 'editable';
+// const LEFT_ARROW = '\u2190';
+const UP_ARROW = '\u2191';
+// const RIGHT_ARROW = '\u2192';
+const DOWN_ARROW = '\u2193';
 
 const useCallbackOrUndefined = (
   callback: any,
@@ -73,13 +77,6 @@ const useCallbackOrUndefined = (
   const returnCallback = useCallback(callback, deps);
   return test ? returnCallback : undefined;
 };
-
-const sortedClassName = (sorting: Sorting | undefined, cellId?: Id) =>
-  isUndefined(sorting)
-    ? undefined
-    : sorting[0] != cellId
-    ? undefined
-    : `sorted ${sorting[1] ? 'de' : 'a'}scending`;
 
 const HtmlHeaderTh = ({
   cellId,
@@ -98,8 +95,17 @@ const HtmlHeaderTh = ({
       [onClick, cellId],
       !isUndefined(onClick),
     )}
-    className={sortedClassName(sorting, cellId)}
+    className={
+      isUndefined(sorting)
+        ? undefined
+        : sorting[0] != cellId
+        ? undefined
+        : `sorted ${sorting[1] ? 'de' : 'a'}scending`
+    }
   >
+    {isUndefined(sorting) || sorting[0] != cellId
+      ? null
+      : (sorting[1] ? DOWN_ARROW : UP_ARROW) + ' '}
     {label}
   </th>
 );
