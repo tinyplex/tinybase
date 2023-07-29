@@ -141,6 +141,9 @@ child. See the API documentation for more examples.
 ## Summary
 
 The components available in the ui-react module make it easy to enumerate over
-objects to build your user interface with customized, composed components. We
-finish off this section with a best practice to avoid passing the global Store
-down into components. Please proceed to to the Using Context guide!
+objects to build your user interface with customized, composed components. This
+will work wherever the React module does, including React Native.
+
+When you are building an app in a web browser, however, where the ReactDOM
+module is available, TinyBase includes pre-made HTML components. We will look at
+these in the next Using React DOM Components guide.
