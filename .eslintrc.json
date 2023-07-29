@@ -97,7 +97,8 @@
     "react/jsx-sort-props": 0,
     "react/require-default-props": 0,
     "react/sort-comp": 0,
-    "react/forbid-component-props": 0
+    "react/forbid-component-props": 0,
+    "react/button-has-type": 0
   },
   "overrides": [
     {
