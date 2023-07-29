@@ -1,4 +1,5 @@
 /** @jsx createElement */
+/** @jsxFrag React.Fragment */
 
 import {
   BOOLEAN,
@@ -40,6 +41,7 @@ import {
   EditableCellView as EditableCellViewDecl,
   EditableValueView as EditableValueViewDecl,
   HtmlTableProps,
+  PaginatorProps,
   ResultSortedTableInHtmlTable as ResultSortedTableInHtmlTableDecl,
   ResultSortedTableInHtmlTableProps,
   ResultTableInHtmlTable as ResultTableInHtmlTableDecl,
@@ -52,9 +54,9 @@ import {
   ValuesInHtmlTableProps,
 } from './types/ui-react-dom.d';
 import {Id, Ids} from './types/common';
+import React, {ComponentType} from 'react';
 import {isArray, isString, isUndefined} from './common/other';
 import {objMap, objNew} from './common/obj';
-import React from 'react';
 import {arrayMap} from './common/array';
 import {getProps} from './ui-react/common';
 
@@ -63,9 +65,9 @@ const {createElement, useCallback, useMemo, useState} = React;
 type Sorting = [Id | undefined, boolean];
 
 const EDITABLE = 'editable';
-// const LEFT_ARROW = '\u2190';
+const LEFT_ARROW = '\u2190';
 const UP_ARROW = '\u2191';
-// const RIGHT_ARROW = '\u2192';
+const RIGHT_ARROW = '\u2192';
 const DOWN_ARROW = '\u2193';
 
 const useCallbackOrUndefined = (
@@ -121,6 +123,7 @@ const HtmlTable = ({
   defaultCellIds,
   sorting,
   onHeaderThClick,
+  children,
 }: HtmlTableProps & {
   readonly customCells?:
     | Ids
@@ -134,6 +137,7 @@ const HtmlTable = ({
   readonly defaultCellIds: Ids;
   readonly sorting?: Sorting;
   readonly onHeaderThClick?: (cellId: Id | undefined) => void;
+  readonly children?: React.ReactNode;
 }) => {
   const customCellConfigurations = useMemo(() => {
     const cellIds = customCells ?? defaultCellIds;
@@ -157,6 +161,7 @@ const HtmlTable = ({
 
   return (
     <table className={className}>
+      {children ? <caption>{children}</caption> : null}
       {headerRow === false ? null : (
         <thead>
           <tr>
@@ -329,11 +334,12 @@ export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
   tableId,
   cellId,
   descending,
-  offset,
+  offset = 0,
   limit,
   store,
   editable,
   sortOnClick,
+  paginator = false,
   ...props
 }: SortedTableInHtmlTableProps & HtmlTableProps): any => {
   const [sorting, setSorting] = useState<Sorting>([
@@ -346,6 +352,12 @@ export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
     [sorting],
     sortOnClick,
   );
+  const [currentOffset, setCurrentOffset] = useState(offset);
+  const total = useRowIds(tableId, store).length;
+  const PaginatorComponent =
+    paginator === true
+      ? Paginator
+      : (paginator as ComponentType<PaginatorProps>);
   return (
     <HtmlTable
       {...props}
@@ -354,11 +366,68 @@ export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
         [store, tableId],
       )}
       defaultCellComponent={editable ? EditableCellView : CellView}
-      rowIds={useSortedRowIds(tableId, ...sorting, offset, limit, store)}
+      rowIds={useSortedRowIds(tableId, ...sorting, currentOffset, limit, store)}
       defaultCellIds={useTableCellIds(tableId, store)}
       sorting={sorting}
       onHeaderThClick={handleHeaderThClick}
-    />
+    >
+      {paginator === false ? null : (
+        <PaginatorComponent
+          offset={currentOffset}
+          limit={limit}
+          total={total}
+          onChange={setCurrentOffset}
+        />
+      )}
+    </HtmlTable>
+  );
+};
+
+export const Paginator = ({
+  onChange,
+  offset = 0,
+  limit = 10,
+  total,
+  singular = 'row',
+  plural = singular + 's',
+}: PaginatorProps) => {
+  if (offset > total || offset < 0) {
+    onChange(0);
+  }
+  const handlePrevClick = useCallbackOrUndefined(
+    () => onChange(offset - limit),
+    [onChange, offset, limit],
+    offset > 0,
+  );
+  const handleNextClick = useCallbackOrUndefined(
+    () => onChange(offset + limit),
+    [onChange, offset, limit],
+    offset + limit < total,
+  );
+  return (
+    <>
+      {total > limit && (
+        <>
+          <button
+            className="previous"
+            disabled={offset == 0}
+            onClick={handlePrevClick}
+          >
+            {LEFT_ARROW}
+          </button>
+          <button
+            className="next"
+            disabled={offset + limit >= total}
+            onClick={handleNextClick}
+          >
+            {RIGHT_ARROW}
+          </button>
+          {offset + 1} to {Math.min(total, offset + limit)}
+          {' of '}
+        </>
+      )}
+      {total} {total != 1 ? plural : singular}
+    </>
   );
 };
 
@@ -423,6 +492,7 @@ export const ResultSortedTableInHtmlTable: typeof ResultSortedTableInHtmlTableDe
     limit,
     queries,
     sortOnClick,
+    paginator = false,
     ...props
   }: ResultSortedTableInHtmlTableProps & HtmlTableProps): any => {
     const [sorting, setSorting] = useState<Sorting>([
@@ -435,6 +505,12 @@ export const ResultSortedTableInHtmlTable: typeof ResultSortedTableInHtmlTableDe
       [sorting],
       sortOnClick,
     );
+    const [currentOffset, setCurrentOffset] = useState(offset);
+    const total = useResultRowIds(queryId, queries).length;
+    const PaginatorComponent =
+      paginator === true
+        ? Paginator
+        : (paginator as ComponentType<PaginatorProps>);
     return (
       <HtmlTable
         {...props}
@@ -446,14 +522,23 @@ export const ResultSortedTableInHtmlTable: typeof ResultSortedTableInHtmlTableDe
         rowIds={useResultSortedRowIds(
           queryId,
           ...sorting,
-          offset,
+          currentOffset,
           limit,
           queries,
         )}
         defaultCellIds={useResultTableCellIds(queryId, queries)}
         sorting={sorting}
         onHeaderThClick={handleHeaderThClick}
-      />
+      >
+        {paginator === false ? null : (
+          <PaginatorComponent
+            offset={currentOffset}
+            limit={limit}
+            total={total}
+            onChange={setCurrentOffset}
+          />
+        )}
+      </HtmlTable>
     );
   };
 

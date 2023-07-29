@@ -113,7 +113,7 @@ of the way early, too:
 }
 
 body {
-  align-items: center;
+  align-items: flex-start;
   color: #333;
   display: flex;
   font-family: Inter, sans-serif;
@@ -157,7 +157,6 @@ table {
   box-shadow: 0 0 1rem #0004;
   font-size: inherit;
   line-height: inherit;
-  outline: 1px solid #aaa;
   margin: 2rem;
   table-layout: fixed;
   th,
