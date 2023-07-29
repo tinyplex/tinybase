@@ -93,15 +93,6 @@ and a small arrow to indicate the direction:
 ```less
 th.sorted {
   background: #ddd;
-  &::before {
-    padding-right: 0.25rem;
-  }
-  &.ascending::before {
-    content: '\2193';
-  }
-  &.descending::before {
-    content: '\2191';
-  }
 }
 ```
 
