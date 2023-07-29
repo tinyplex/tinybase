@@ -173,6 +173,10 @@ table {
     border-top-width: 0;
     border-color: #ccc;
   }
+  button,
+  input {
+    border: 1px solid #ccc;
+  }
 }
 ```
 
