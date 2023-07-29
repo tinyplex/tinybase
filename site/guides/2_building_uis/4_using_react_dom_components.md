@@ -15,7 +15,7 @@ The easiest way to understand these components is to see them all in action in
 the UI Components demos. There are table-based components for rendering Tables,
 sorted Tables, and Values:
 
-| Component                    | Purpos                                                     |                                                           |
+| Component                    | Purpose                                                    |                                                           |
 | ---------------------------- | ---------------------------------------------------------- | --------------------------------------------------------- |
 | TableInHtmlTable             | Renders a Table.                                           | [demo](/demos/ui-components/tableinhtmltable)             |
 | SortedTableInHtmlTable       | Renders a sorted Table, with optional interactivity.       | [demo](/demos/ui-components/sortedtableinhtmltable)       |
