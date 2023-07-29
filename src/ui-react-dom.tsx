@@ -215,7 +215,7 @@ const EditableThing = <Thing extends Cell | Value>({
   const [numberThing, setNumberThing] = useState<number>();
   const [booleanThing, setBooleanThing] = useState<boolean>();
 
-  if (currentThing != thing) {
+  if (currentThing !== thing) {
     setThingType(getCellOrValueType(thing));
     setCurrentThing(thing);
     setStringThing(String(thing));
