@@ -223,7 +223,7 @@ console.log(app.innerHTML);
 `
 <table>
   <thead>
-    <tr><th>Id</th><th class="sorted ascending">color</th><th>sold</th></tr>
+    <tr><th>Id</th><th class="sorted ascending">↑ color</th><th>sold</th></tr>
   </thead>
   <tbody>
     <tr><th>felix</th><td>black</td><td></td></tr>

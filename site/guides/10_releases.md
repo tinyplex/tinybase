@@ -33,7 +33,7 @@ console.log(app.innerHTML);
 `
 <table>
   <thead>
-    <tr><th>Id</th><th class="sorted ascending">species</th></tr>
+    <tr><th>Id</th><th class="sorted ascending">↑ species</th></tr>
   </thead>
   <tbody>
     <tr><th>felix</th><td>cat</td></tr>
