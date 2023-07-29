@@ -473,7 +473,7 @@
  *   <thead>
  *     <tr>
  *       <th>Id</th>
- *       <th class="sorted ascending">species</th>
+ *       <th class="sorted ascending">↑ species</th>
  *     </tr>
  *   </thead>
  *   <tbody>
@@ -868,7 +868,7 @@
  *   <thead>
  *     <tr>
  *       <th>Id</th>
- *       <th class="sorted ascending">color</th>
+ *       <th class="sorted ascending">↑ color</th>
  *     </tr>
  *   </thead>
  *   <tbody>
@@ -991,7 +991,7 @@
  * // ->
  * `
  * <div class="editableCell">
- *   <button type="button" class="string">string</button>
+ *   <button class="string">string</button>
  *   <input value="brown">
  * </div>
  * `;
@@ -1041,7 +1041,7 @@
  * // ->
  * `
  * <div class="editableValue">
- *   <button type="button" class="number">number</button>
+ *   <button class="number">number</button>
  *   <input type="number" value="3">
  * </div>
  * `;

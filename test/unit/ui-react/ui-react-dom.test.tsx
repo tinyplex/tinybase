@@ -87,6 +87,107 @@ describe('TableInHtmlTable', () => {
     `);
   });
 
+  test('editable', () => {
+    act(() => {
+      renderer = create(
+        <TableInHtmlTable store={store} tableId="t2" editable={true} />,
+      );
+    });
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <table>
+        <thead>
+          <tr>
+            <th>
+              Id
+            </th>
+            <th>
+              c1
+            </th>
+            <th>
+              c2
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>
+              r1
+            </th>
+            <td>
+              <div
+                className="editableCell"
+              >
+                <button
+                  className="number"
+                  onClick={[Function]}
+                >
+                  number
+                </button>
+                <input
+                  onChange={[Function]}
+                  type="number"
+                  value={2}
+                />
+              </div>
+            </td>
+            <td>
+              <div
+                className="editableCell"
+              >
+                <button
+                  onClick={[Function]}
+                />
+                <input
+                  onChange={[Function]}
+                  type="checkbox"
+                />
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <th>
+              r2
+            </th>
+            <td>
+              <div
+                className="editableCell"
+              >
+                <button
+                  className="number"
+                  onClick={[Function]}
+                >
+                  number
+                </button>
+                <input
+                  onChange={[Function]}
+                  type="number"
+                  value={3}
+                />
+              </div>
+            </td>
+            <td>
+              <div
+                className="editableCell"
+              >
+                <button
+                  className="number"
+                  onClick={[Function]}
+                >
+                  number
+                </button>
+                <input
+                  onChange={[Function]}
+                  type="number"
+                  value={4}
+                />
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    `);
+  });
+
   test('className', () => {
     act(() => {
       renderer = create(
@@ -396,6 +497,7 @@ describe('SortedTableInHtmlTable', () => {
             <th
               className="sorted descending"
             >
+              ↓ 
               c1
             </th>
             <th>
@@ -429,6 +531,116 @@ describe('SortedTableInHtmlTable', () => {
     `);
   });
 
+  test('editable', () => {
+    act(() => {
+      renderer = create(
+        <SortedTableInHtmlTable
+          store={store}
+          tableId="t2"
+          cellId="c1"
+          descending={true}
+          editable={true}
+        />,
+      );
+    });
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <table>
+        <thead>
+          <tr>
+            <th>
+              Id
+            </th>
+            <th
+              className="sorted descending"
+            >
+              ↓ 
+              c1
+            </th>
+            <th>
+              c2
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>
+              r2
+            </th>
+            <td>
+              <div
+                className="editableCell"
+              >
+                <button
+                  className="number"
+                  onClick={[Function]}
+                >
+                  number
+                </button>
+                <input
+                  onChange={[Function]}
+                  type="number"
+                  value={3}
+                />
+              </div>
+            </td>
+            <td>
+              <div
+                className="editableCell"
+              >
+                <button
+                  className="number"
+                  onClick={[Function]}
+                >
+                  number
+                </button>
+                <input
+                  onChange={[Function]}
+                  type="number"
+                  value={4}
+                />
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <th>
+              r1
+            </th>
+            <td>
+              <div
+                className="editableCell"
+              >
+                <button
+                  className="number"
+                  onClick={[Function]}
+                >
+                  number
+                </button>
+                <input
+                  onChange={[Function]}
+                  type="number"
+                  value={2}
+                />
+              </div>
+            </td>
+            <td>
+              <div
+                className="editableCell"
+              >
+                <button
+                  onClick={[Function]}
+                />
+                <input
+                  onChange={[Function]}
+                  type="checkbox"
+                />
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    `);
+  });
+
   test('no sorting specified', () => {
     act(() => {
       renderer = create(<SortedTableInHtmlTable store={store} tableId="t2" />);
@@ -440,6 +652,7 @@ describe('SortedTableInHtmlTable', () => {
             <th
               className="sorted ascending"
             >
+              ↑ 
               Id
             </th>
             <th>
@@ -500,6 +713,7 @@ describe('SortedTableInHtmlTable', () => {
             <th
               className="sorted descending"
             >
+              ↓ 
               c1
             </th>
             <th>
@@ -552,6 +766,7 @@ describe('SortedTableInHtmlTable', () => {
             <th
               className="sorted descending"
             >
+              ↓ 
               c1
             </th>
             <th>
@@ -749,6 +964,7 @@ describe('SortedTableInHtmlTable', () => {
             <th
               className="sorted descending"
             >
+              ↓ 
               C one
             </th>
             <th>
@@ -817,6 +1033,7 @@ describe('SortedTableInHtmlTable', () => {
               className="sorted descending"
               onClick={[Function]}
             >
+              ↓ 
               c1
             </th>
             <th
@@ -866,6 +1083,7 @@ describe('SortedTableInHtmlTable', () => {
               className="sorted ascending"
               onClick={[Function]}
             >
+              ↑ 
               c1
             </th>
             <th
@@ -920,6 +1138,7 @@ describe('SortedTableInHtmlTable', () => {
               className="sorted ascending"
               onClick={[Function]}
             >
+              ↑ 
               c2
             </th>
           </tr>
@@ -969,6 +1188,7 @@ describe('SortedTableInHtmlTable', () => {
               className="sorted descending"
               onClick={[Function]}
             >
+              ↓ 
               c2
             </th>
           </tr>
@@ -1008,6 +1228,7 @@ describe('SortedTableInHtmlTable', () => {
               className="sorted ascending"
               onClick={[Function]}
             >
+              ↑ 
               Id
             </th>
             <th
@@ -1057,6 +1278,7 @@ describe('SortedTableInHtmlTable', () => {
               className="sorted descending"
               onClick={[Function]}
             >
+              ↓ 
               Id
             </th>
             <th
@@ -1130,6 +1352,72 @@ describe('ValuesInHtmlTable', () => {
             </th>
             <td>
               2
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    `);
+  });
+
+  test('editable', () => {
+    act(() => {
+      renderer = create(<ValuesInHtmlTable store={store} editable={true} />);
+    });
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <table>
+        <thead>
+          <tr>
+            <th>
+              Id
+            </th>
+            <th>
+              Value
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>
+              v1
+            </th>
+            <td>
+              <div
+                className="editableValue"
+              >
+                <button
+                  className="number"
+                  onClick={[Function]}
+                >
+                  number
+                </button>
+                <input
+                  onChange={[Function]}
+                  type="number"
+                  value={1}
+                />
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <th>
+              v2
+            </th>
+            <td>
+              <div
+                className="editableValue"
+              >
+                <button
+                  className="number"
+                  onClick={[Function]}
+                >
+                  number
+                </button>
+                <input
+                  onChange={[Function]}
+                  type="number"
+                  value={2}
+                />
+              </div>
             </td>
           </tr>
         </tbody>
@@ -1660,6 +1948,7 @@ describe('ResultSortedTableInHtmlTable', () => {
             <th
               className="sorted descending"
             >
+              ↓ 
               c1
             </th>
             <th>
@@ -1712,6 +2001,7 @@ describe('ResultSortedTableInHtmlTable', () => {
             <th
               className="sorted ascending"
             >
+              ↑ 
               Id
             </th>
             <th>
@@ -1784,6 +2074,7 @@ describe('ResultSortedTableInHtmlTable', () => {
             <th
               className="sorted descending"
             >
+              ↓ 
               c1
             </th>
             <th>
@@ -1845,6 +2136,7 @@ describe('ResultSortedTableInHtmlTable', () => {
             <th
               className="sorted descending"
             >
+              ↓ 
               c1
             </th>
             <th>
@@ -2054,6 +2346,7 @@ describe('ResultSortedTableInHtmlTable', () => {
             <th
               className="sorted descending"
             >
+              ↓ 
               C one
             </th>
             <th>
@@ -2127,6 +2420,7 @@ describe('ResultSortedTableInHtmlTable', () => {
               className="sorted descending"
               onClick={[Function]}
             >
+              ↓ 
               c1
             </th>
             <th
@@ -2182,6 +2476,7 @@ describe('ResultSortedTableInHtmlTable', () => {
               className="sorted ascending"
               onClick={[Function]}
             >
+              ↑ 
               c0
             </th>
             <th
@@ -2247,6 +2542,7 @@ describe('ResultSortedTableInHtmlTable', () => {
               className="sorted ascending"
               onClick={[Function]}
             >
+              ↑ 
               c1
             </th>
             <th
@@ -2307,6 +2603,7 @@ describe('ResultSortedTableInHtmlTable', () => {
               className="sorted descending"
               onClick={[Function]}
             >
+              ↓ 
               c1
             </th>
             <th
@@ -2357,6 +2654,7 @@ describe('ResultSortedTableInHtmlTable', () => {
               className="sorted ascending"
               onClick={[Function]}
             >
+              ↑ 
               Id
             </th>
             <th
@@ -2417,6 +2715,7 @@ describe('ResultSortedTableInHtmlTable', () => {
               className="sorted descending"
               onClick={[Function]}
             >
+              ↓ 
               Id
             </th>
             <th
@@ -2483,7 +2782,6 @@ describe('EditableCellView', () => {
         <button
           className="number"
           onClick={[Function]}
-          type="button"
         >
           number
         </button>
@@ -2515,7 +2813,6 @@ describe('EditableCellView', () => {
         <button
           className="number"
           onClick={[Function]}
-          type="button"
         >
           number
         </button>
@@ -2545,7 +2842,6 @@ describe('EditableCellView', () => {
         <button
           className="number"
           onClick={[Function]}
-          type="button"
         >
           number
         </button>
@@ -2572,7 +2868,6 @@ describe('EditableCellView', () => {
         <button
           className="number"
           onClick={[Function]}
-          type="button"
         >
           number
         </button>
@@ -2597,7 +2892,6 @@ describe('EditableCellView', () => {
         <button
           className="boolean"
           onClick={[Function]}
-          type="button"
         >
           boolean
         </button>
@@ -2624,7 +2918,6 @@ describe('EditableCellView', () => {
         <button
           className="boolean"
           onClick={[Function]}
-          type="button"
         >
           boolean
         </button>
@@ -2649,7 +2942,6 @@ describe('EditableCellView', () => {
         <button
           className="string"
           onClick={[Function]}
-          type="button"
         >
           string
         </button>
@@ -2675,7 +2967,6 @@ describe('EditableCellView', () => {
         <button
           className="string"
           onClick={[Function]}
-          type="button"
         >
           string
         </button>
@@ -2699,7 +2990,6 @@ describe('EditableCellView', () => {
         <button
           className="number"
           onClick={[Function]}
-          type="button"
         >
           number
         </button>
@@ -2724,7 +3014,6 @@ describe('EditableCellView', () => {
         <button
           className="number"
           onClick={[Function]}
-          type="button"
         >
           number
         </button>
@@ -2749,7 +3038,6 @@ describe('EditableCellView', () => {
         <button
           className="boolean"
           onClick={[Function]}
-          type="button"
         >
           boolean
         </button>
@@ -2774,7 +3062,6 @@ describe('EditableCellView', () => {
         <button
           className="string"
           onClick={[Function]}
-          type="button"
         >
           string
         </button>
@@ -2799,7 +3086,6 @@ describe('EditableValueView', () => {
         <button
           className="number"
           onClick={[Function]}
-          type="button"
         >
           number
         </button>
@@ -2822,7 +3108,6 @@ describe('EditableValueView', () => {
       >
         <button
           onClick={[Function]}
-          type="button"
         />
         <input
           onChange={[Function]}
@@ -2847,7 +3132,6 @@ describe('EditableValueView', () => {
         <button
           className="number"
           onClick={[Function]}
-          type="button"
         >
           number
         </button>
@@ -2874,7 +3158,6 @@ describe('EditableValueView', () => {
         <button
           className="number"
           onClick={[Function]}
-          type="button"
         >
           number
         </button>
@@ -2899,7 +3182,6 @@ describe('EditableValueView', () => {
         <button
           className="boolean"
           onClick={[Function]}
-          type="button"
         >
           boolean
         </button>
@@ -2926,7 +3208,6 @@ describe('EditableValueView', () => {
         <button
           className="boolean"
           onClick={[Function]}
-          type="button"
         >
           boolean
         </button>
@@ -2951,7 +3232,6 @@ describe('EditableValueView', () => {
         <button
           className="string"
           onClick={[Function]}
-          type="button"
         >
           string
         </button>
@@ -2977,7 +3257,6 @@ describe('EditableValueView', () => {
         <button
           className="string"
           onClick={[Function]}
-          type="button"
         >
           string
         </button>
@@ -3001,7 +3280,6 @@ describe('EditableValueView', () => {
         <button
           className="number"
           onClick={[Function]}
-          type="button"
         >
           number
         </button>
@@ -3026,7 +3304,6 @@ describe('EditableValueView', () => {
         <button
           className="number"
           onClick={[Function]}
-          type="button"
         >
           number
         </button>
@@ -3051,7 +3328,6 @@ describe('EditableValueView', () => {
         <button
           className="boolean"
           onClick={[Function]}
-          type="button"
         >
           boolean
         </button>
@@ -3076,7 +3352,6 @@ describe('EditableValueView', () => {
         <button
           className="string"
           onClick={[Function]}
-          type="button"
         >
           string
         </button>
