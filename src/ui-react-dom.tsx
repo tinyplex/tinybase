@@ -55,14 +55,28 @@ import {
 } from './types/ui-react-dom.d';
 import {Id, Ids} from './types/common';
 import React, {ComponentType} from 'react';
+import {arrayLength, arrayMap} from './common/array';
 import {isArray, isString, isUndefined} from './common/other';
 import {objMap, objNew} from './common/obj';
-import {arrayMap} from './common/array';
 import {getProps} from './ui-react/common';
 
 const {createElement, useCallback, useMemo, useState} = React;
 
 type Sorting = [Id | undefined, boolean];
+
+type HtmlTableParams = [
+  cellComponentProps:
+    | {tableId: Id; store?: StoreOrStoreId}
+    | {queryId: Id; queries?: QueriesOrQueriesId},
+  useCellIdsArgs:
+    | [tableId: Id, store?: StoreOrStoreId]
+    | [queryId: Id, queries?: QueriesOrQueriesId],
+  defaultCellComponent: typeof CellView | typeof ResultCellView,
+  useDefaultCellIds: typeof useTableCellIds | typeof useResultTableCellIds,
+  sorting?: Sorting,
+  onHeaderThClick?: (cellId: Id | undefined) => void,
+  paginator?: React.ReactNode,
+];
 
 const EDITABLE = 'editable';
 const LEFT_ARROW = '\u2190';
@@ -78,6 +92,53 @@ const useCallbackOrUndefined = (
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const returnCallback = useCallback(callback, deps);
   return test ? returnCallback : undefined;
+};
+
+const useSortingAndPagination = (
+  cellId: Id | undefined,
+  descending: boolean | undefined,
+  sortOnClick: boolean | undefined,
+  offset: number | undefined,
+  limit: number | undefined,
+  total: number,
+  paginator: boolean | React.ComponentType<PaginatorProps>,
+): [
+  sorting: Sorting,
+  changeSorting: (cellId: Id | undefined) => void,
+  paginatorComponent: React.ReactNode | undefined,
+  currentOffset: number | undefined,
+] => {
+  const [sorting, changeSorting] = useState<Sorting>([
+    cellId,
+    descending ? true : false,
+  ]);
+  const [currentOffset, setCurrentOffset] = useState(offset);
+  const PaginatorComponent =
+    paginator === true
+      ? Paginator
+      : (paginator as ComponentType<PaginatorProps>);
+  return [
+    sorting,
+    useCallbackOrUndefined(
+      (cellId: Id | undefined) =>
+        changeSorting([cellId, cellId == sorting[0] ? !sorting[1] : false]),
+      [sorting],
+      sortOnClick,
+    ),
+    useMemo(
+      () =>
+        paginator === false ? null : (
+          <PaginatorComponent
+            offset={currentOffset}
+            limit={limit}
+            total={total}
+            onChange={setCurrentOffset}
+          />
+        ),
+      [paginator, PaginatorComponent, currentOffset, limit, total],
+    ),
+    currentOffset,
+  ];
 };
 
 const HtmlHeaderTh = ({
@@ -112,35 +173,20 @@ const HtmlHeaderTh = ({
   </th>
 );
 
-type HtmlTableParams = [
-  cellComponentProps:
-    | {tableId: Id; store?: StoreOrStoreId}
-    | {queryId: Id; queries?: QueriesOrQueriesId},
-  useCellIdsArgs:
-    | [tableId: Id, store?: StoreOrStoreId]
-    | [queryId: Id, queries?: QueriesOrQueriesId],
-  defaultCellComponent: typeof CellView | typeof ResultCellView,
-  useDefaultCellIds: typeof useTableCellIds | typeof useResultTableCellIds,
-  sorting?: Sorting,
-  onHeaderThClick?: (cellId: Id | undefined) => void,
-];
-
 const HtmlTable = ({
   className,
   headerRow,
   idColumn,
   customCells,
-  htmlTableParams,
+  params,
   rowIds,
-  children,
 }: HtmlTableProps & {
   readonly customCells?:
     | Ids
     | {[cellId: string]: string | CustomCell | CustomResultCell}
     | undefined;
-  readonly htmlTableParams: HtmlTableParams;
+  readonly params: HtmlTableParams;
   readonly rowIds: Ids;
-  readonly children?: React.ReactNode;
 }) => {
   const [
     cellComponentProps,
@@ -148,8 +194,9 @@ const HtmlTable = ({
     defaultCellComponent,
     useDefaultCellIds,
     sorting,
-    onHeaderThClick,
-  ] = htmlTableParams;
+    changeSorting,
+    paginatorComponent,
+  ] = params;
   const defaultCellIds = (useDefaultCellIds as any)(...useCellIdsArgs) as Ids;
   const customCellConfigurations = useMemo(() => {
     const cellIds = customCells ?? defaultCellIds;
@@ -173,7 +220,7 @@ const HtmlTable = ({
 
   return (
     <table className={className}>
-      {children ? <caption>{children}</caption> : null}
+      {paginatorComponent ? <caption>{paginatorComponent}</caption> : null}
       {headerRow === false ? null : (
         <thead>
           <tr>
@@ -181,7 +228,7 @@ const HtmlTable = ({
               <HtmlHeaderTh
                 sorting={sorting}
                 label="Id"
-                onClick={onHeaderThClick}
+                onClick={changeSorting}
               />
             )}
             {objMap(customCellConfigurations, ({label}, cellId) => (
@@ -190,7 +237,7 @@ const HtmlTable = ({
                 cellId={cellId}
                 label={label}
                 sorting={sorting}
-                onClick={onHeaderThClick}
+                onClick={changeSorting}
               />
             ))}
           </tr>
@@ -332,7 +379,7 @@ export const TableInHtmlTable: typeof TableInHtmlTableDecl = ({
 }: TableInHtmlTableProps & HtmlTableProps): any => (
   <HtmlTable
     {...props}
-    htmlTableParams={useMemo(
+    params={useMemo(
       () => [
         {tableId, store},
         [tableId, store],
@@ -349,7 +396,7 @@ export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
   tableId,
   cellId,
   descending,
-  offset = 0,
+  offset,
   limit,
   store,
   editable,
@@ -357,47 +404,33 @@ export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
   paginator = false,
   ...props
 }: SortedTableInHtmlTableProps & HtmlTableProps): any => {
-  const [sorting, setSorting] = useState<Sorting>([
-    cellId,
-    descending ? true : false,
-  ]);
-  const handleHeaderThClick = useCallbackOrUndefined(
-    (cellId: Id | undefined) =>
-      setSorting([cellId, cellId == sorting[0] ? !sorting[1] : false]),
-    [sorting],
-    sortOnClick,
-  );
-  const [currentOffset, setCurrentOffset] = useState(offset);
-  const total = useRowIds(tableId, store).length;
-  const PaginatorComponent =
-    paginator === true
-      ? Paginator
-      : (paginator as ComponentType<PaginatorProps>);
+  const [sorting, changeSorting, paginatorComponent, currentOffset] =
+    useSortingAndPagination(
+      cellId,
+      descending,
+      sortOnClick,
+      offset,
+      limit,
+      arrayLength(useRowIds(tableId, store)),
+      paginator,
+    );
   return (
     <HtmlTable
       {...props}
-      htmlTableParams={useMemo(
+      params={useMemo(
         () => [
           {tableId, store},
           [tableId, store],
           editable ? EditableCellView : CellView,
           useTableCellIds,
           sorting,
-          handleHeaderThClick,
+          changeSorting,
+          paginatorComponent,
         ],
-        [store, tableId, editable, sorting, handleHeaderThClick],
+        [store, tableId, editable, sorting, changeSorting, paginatorComponent],
       )}
       rowIds={useSortedRowIds(tableId, ...sorting, currentOffset, limit, store)}
-    >
-      {paginator === false ? null : (
-        <PaginatorComponent
-          offset={currentOffset}
-          limit={limit}
-          total={total}
-          onChange={setCurrentOffset}
-        />
-      )}
-    </HtmlTable>
+    />
   );
 };
 
@@ -491,7 +524,7 @@ export const ResultTableInHtmlTable: typeof ResultTableInHtmlTableDecl = ({
 }: ResultTableInHtmlTableProps & HtmlTableProps): any => (
   <HtmlTable
     {...props}
-    htmlTableParams={useMemo(
+    params={useMemo(
       () => [
         {queryId, queries},
         [queryId, queries],
@@ -516,35 +549,30 @@ export const ResultSortedTableInHtmlTable: typeof ResultSortedTableInHtmlTableDe
     paginator = false,
     ...props
   }: ResultSortedTableInHtmlTableProps & HtmlTableProps): any => {
-    const [sorting, setSorting] = useState<Sorting>([
-      cellId,
-      descending ? true : false,
-    ]);
-    const handleHeaderThClick = useCallbackOrUndefined(
-      (cellId: Id | undefined) =>
-        setSorting([cellId, cellId == sorting[0] ? !sorting[1] : false]),
-      [sorting],
-      sortOnClick,
-    );
-    const [currentOffset, setCurrentOffset] = useState(offset);
-    const total = useResultRowIds(queryId, queries).length;
-    const PaginatorComponent =
-      paginator === true
-        ? Paginator
-        : (paginator as ComponentType<PaginatorProps>);
+    const [sorting, changeSorting, paginatorComponent, currentOffset] =
+      useSortingAndPagination(
+        cellId,
+        descending,
+        sortOnClick,
+        offset,
+        limit,
+        arrayLength(useResultRowIds(queryId, queries)),
+        paginator,
+      );
     return (
       <HtmlTable
         {...props}
-        htmlTableParams={useMemo(
+        params={useMemo(
           () => [
             {queryId, queries},
             [queryId, queries],
             ResultCellView,
             useResultTableCellIds,
             sorting,
-            handleHeaderThClick,
+            changeSorting,
+            paginatorComponent,
           ],
-          [queryId, queries, sorting, handleHeaderThClick],
+          [queryId, queries, sorting, changeSorting, paginatorComponent],
         )}
         rowIds={useResultSortedRowIds(
           queryId,
@@ -553,16 +581,7 @@ export const ResultSortedTableInHtmlTable: typeof ResultSortedTableInHtmlTableDe
           limit,
           queries,
         )}
-      >
-        {paginator === false ? null : (
-          <PaginatorComponent
-            offset={currentOffset}
-            limit={limit}
-            total={total}
-            onChange={setCurrentOffset}
-          />
-        )}
-      </HtmlTable>
+      />
     );
   };
 
