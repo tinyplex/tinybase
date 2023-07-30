@@ -141,7 +141,7 @@ const useSortingAndPagination = (
   ];
 };
 
-const HtmlHeaderTh = ({
+const HtmlHeader = ({
   cellId,
   sorting,
   label = cellId ?? EMPTY_STRING,
@@ -225,14 +225,14 @@ const HtmlTable = ({
         <thead>
           <tr>
             {idColumn === false ? null : (
-              <HtmlHeaderTh
+              <HtmlHeader
                 sorting={sorting}
                 label="Id"
                 onClick={changeSorting}
               />
             )}
             {objMap(customCellConfigurations, ({label}, cellId) => (
-              <HtmlHeaderTh
+              <HtmlHeader
                 key={cellId}
                 cellId={cellId}
                 label={label}
