@@ -641,6 +641,246 @@ describe('SortedTableInHtmlTable', () => {
     `);
   });
 
+  test('paginator, larger', () => {
+    act(() => {
+      renderer = create(
+        <SortedTableInHtmlTable
+          store={store}
+          tableId="t2"
+          cellId="c1"
+          descending={true}
+          paginator={true}
+        />,
+      );
+    });
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <table>
+        <caption>
+          2
+           
+          rows
+        </caption>
+        <thead>
+          <tr>
+            <th>
+              Id
+            </th>
+            <th
+              className="sorted descending"
+            >
+              ↓ 
+              c1
+            </th>
+            <th>
+              c2
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>
+              r2
+            </th>
+            <td>
+              3
+            </td>
+            <td>
+              4
+            </td>
+          </tr>
+          <tr>
+            <th>
+              r1
+            </th>
+            <td>
+              2
+            </td>
+            <td />
+          </tr>
+        </tbody>
+      </table>
+    `);
+  });
+
+  test('paginator, smaller', () => {
+    act(() => {
+      renderer = create(
+        <SortedTableInHtmlTable
+          store={store}
+          tableId="t2"
+          cellId="c1"
+          descending={true}
+          limit={1}
+          paginator={true}
+        />,
+      );
+    });
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <table>
+        <caption>
+          <button
+            className="previous"
+            disabled={true}
+          >
+            ←
+          </button>
+          <button
+            className="next"
+            disabled={false}
+            onClick={[Function]}
+          >
+            →
+          </button>
+          1
+           to 
+          1
+           of 
+          2
+           
+          rows
+        </caption>
+        <thead>
+          <tr>
+            <th>
+              Id
+            </th>
+            <th
+              className="sorted descending"
+            >
+              ↓ 
+              c1
+            </th>
+            <th>
+              c2
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>
+              r2
+            </th>
+            <td>
+              3
+            </td>
+            <td>
+              4
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    `);
+    act(() => {
+      renderer.root.findAllByType('button')[1].props.onClick();
+    });
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <table>
+        <caption>
+          <button
+            className="previous"
+            disabled={false}
+            onClick={[Function]}
+          >
+            ←
+          </button>
+          <button
+            className="next"
+            disabled={true}
+          >
+            →
+          </button>
+          2
+           to 
+          2
+           of 
+          2
+           
+          rows
+        </caption>
+        <thead>
+          <tr>
+            <th>
+              Id
+            </th>
+            <th
+              className="sorted descending"
+            >
+              ↓ 
+              c1
+            </th>
+            <th>
+              c2
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>
+              r1
+            </th>
+            <td>
+              2
+            </td>
+            <td />
+          </tr>
+        </tbody>
+      </table>
+    `);
+  });
+
+  test('paginator, custom', () => {
+    act(() => {
+      renderer = create(
+        <SortedTableInHtmlTable
+          store={store}
+          tableId="t2"
+          cellId="c1"
+          descending={true}
+          limit={1}
+          paginator={Custom}
+        />,
+      );
+    });
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <table>
+        <caption>
+          <b>
+            {"limit":1,"total":2}
+          </b>
+        </caption>
+        <thead>
+          <tr>
+            <th>
+              Id
+            </th>
+            <th
+              className="sorted descending"
+            >
+              ↓ 
+              c1
+            </th>
+            <th>
+              c2
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>
+              r2
+            </th>
+            <td>
+              3
+            </td>
+            <td>
+              4
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    `);
+  });
+
   test('no sorting specified', () => {
     act(() => {
       renderer = create(<SortedTableInHtmlTable store={store} tableId="t2" />);
@@ -1982,6 +2222,273 @@ describe('ResultSortedTableInHtmlTable', () => {
               2
             </td>
             <td />
+          </tr>
+        </tbody>
+      </table>
+    `);
+  });
+
+  test('paginator, larger', () => {
+    act(() => {
+      renderer = create(
+        <ResultSortedTableInHtmlTable
+          queries={queries}
+          queryId="q1"
+          cellId="c1"
+          descending={true}
+          paginator={true}
+        />,
+      );
+    });
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <table>
+        <caption>
+          2
+           
+          rows
+        </caption>
+        <thead>
+          <tr>
+            <th>
+              Id
+            </th>
+            <th>
+              c0
+            </th>
+            <th
+              className="sorted descending"
+            >
+              ↓ 
+              c1
+            </th>
+            <th>
+              c2
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>
+              r2
+            </th>
+            <td>
+              34
+            </td>
+            <td>
+              3
+            </td>
+            <td>
+              4
+            </td>
+          </tr>
+          <tr>
+            <th>
+              r1
+            </th>
+            <td>
+              2_
+            </td>
+            <td>
+              2
+            </td>
+            <td />
+          </tr>
+        </tbody>
+      </table>
+    `);
+  });
+
+  test('paginator, smaller', () => {
+    act(() => {
+      renderer = create(
+        <ResultSortedTableInHtmlTable
+          queries={queries}
+          queryId="q1"
+          cellId="c1"
+          descending={true}
+          limit={1}
+          paginator={true}
+        />,
+      );
+    });
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <table>
+        <caption>
+          <button
+            className="previous"
+            disabled={true}
+          >
+            ←
+          </button>
+          <button
+            className="next"
+            disabled={false}
+            onClick={[Function]}
+          >
+            →
+          </button>
+          1
+           to 
+          1
+           of 
+          2
+           
+          rows
+        </caption>
+        <thead>
+          <tr>
+            <th>
+              Id
+            </th>
+            <th>
+              c0
+            </th>
+            <th
+              className="sorted descending"
+            >
+              ↓ 
+              c1
+            </th>
+            <th>
+              c2
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>
+              r2
+            </th>
+            <td>
+              34
+            </td>
+            <td>
+              3
+            </td>
+            <td>
+              4
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    `);
+    act(() => {
+      renderer.root.findAllByType('button')[1].props.onClick();
+    });
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <table>
+        <caption>
+          <button
+            className="previous"
+            disabled={false}
+            onClick={[Function]}
+          >
+            ←
+          </button>
+          <button
+            className="next"
+            disabled={true}
+          >
+            →
+          </button>
+          2
+           to 
+          2
+           of 
+          2
+           
+          rows
+        </caption>
+        <thead>
+          <tr>
+            <th>
+              Id
+            </th>
+            <th>
+              c0
+            </th>
+            <th
+              className="sorted descending"
+            >
+              ↓ 
+              c1
+            </th>
+            <th>
+              c2
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>
+              r1
+            </th>
+            <td>
+              2_
+            </td>
+            <td>
+              2
+            </td>
+            <td />
+          </tr>
+        </tbody>
+      </table>
+    `);
+  });
+
+  test('paginator, custom', () => {
+    act(() => {
+      renderer = create(
+        <ResultSortedTableInHtmlTable
+          queries={queries}
+          queryId="q1"
+          cellId="c1"
+          descending={true}
+          limit={1}
+          paginator={Custom}
+        />,
+      );
+    });
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <table>
+        <caption>
+          <b>
+            {"limit":1,"total":2}
+          </b>
+        </caption>
+        <thead>
+          <tr>
+            <th>
+              Id
+            </th>
+            <th>
+              c0
+            </th>
+            <th
+              className="sorted descending"
+            >
+              ↓ 
+              c1
+            </th>
+            <th>
+              c2
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>
+              r2
+            </th>
+            <td>
+              34
+            </td>
+            <td>
+              3
+            </td>
+            <td>
+              4
+            </td>
           </tr>
         </tbody>
       </table>
