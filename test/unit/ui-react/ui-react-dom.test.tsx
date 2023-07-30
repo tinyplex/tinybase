@@ -7,6 +7,7 @@ import {
   ResultSortedTableInHtmlTable,
   ResultTableInHtmlTable,
   SortedTableInHtmlTable,
+  SortedTablePaginator,
   TableInHtmlTable,
   ValuesInHtmlTable,
 } from 'tinybase/debug/ui-react-dom';
@@ -24,6 +25,8 @@ const Custom = ({store: _store, queries: _queries, ...props}: ExtraProps) => (
 );
 
 const getIdsAsProp = (...ids: Ids) => ({...ids});
+
+const nullEvent = () => null;
 
 beforeEach(() => {
   store = createStore()
@@ -3867,6 +3870,183 @@ describe('EditableValueView', () => {
           value="three"
         />
       </div>
+    `);
+  });
+});
+
+describe('SortedTablePaginator', () => {
+  test('basic', () => {
+    act(() => {
+      renderer = create(
+        <SortedTablePaginator onChange={nullEvent} total={100} />,
+      );
+    });
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      [
+        "100",
+        " ",
+        "rows",
+      ]
+    `);
+  });
+
+  test('limit', () => {
+    act(() => {
+      renderer = create(
+        <SortedTablePaginator onChange={nullEvent} total={100} limit={10} />,
+      );
+    });
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      [
+        <button
+          className="previous"
+          disabled={true}
+        >
+          ←
+        </button>,
+        <button
+          className="next"
+          disabled={false}
+          onClick={[Function]}
+        >
+          →
+        </button>,
+        "1",
+        " to ",
+        "10",
+        " of ",
+        "100",
+        " ",
+        "rows",
+      ]
+    `);
+  });
+
+  test('limit & offset', () => {
+    act(() => {
+      renderer = create(
+        <SortedTablePaginator
+          onChange={nullEvent}
+          total={100}
+          limit={10}
+          offset={5}
+        />,
+      );
+    });
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      [
+        <button
+          className="previous"
+          disabled={false}
+          onClick={[Function]}
+        >
+          ←
+        </button>,
+        <button
+          className="next"
+          disabled={false}
+          onClick={[Function]}
+        >
+          →
+        </button>,
+        "6",
+        " to ",
+        "15",
+        " of ",
+        "100",
+        " ",
+        "rows",
+      ]
+    `);
+  });
+
+  test('limit larger than size', () => {
+    act(() => {
+      renderer = create(
+        <SortedTablePaginator onChange={nullEvent} total={100} limit={120} />,
+      );
+    });
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      [
+        "100",
+        " ",
+        "rows",
+      ]
+    `);
+  });
+
+  test('offset larger than size', () => {
+    act(() => {
+      renderer = create(
+        <SortedTablePaginator
+          onChange={nullEvent}
+          total={100}
+          offset={120}
+          limit={10}
+        />,
+      );
+    });
+    act(() => {});
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      [
+        <button
+          className="previous"
+          disabled={true}
+        >
+          ←
+        </button>,
+        <button
+          className="next"
+          disabled={false}
+          onClick={[Function]}
+        >
+          →
+        </button>,
+        "1",
+        " to ",
+        "10",
+        " of ",
+        "100",
+        " ",
+        "rows",
+      ]
+    `);
+  });
+
+  test('offset smaller than 0', () => {
+    act(() => {
+      renderer = create(
+        <SortedTablePaginator
+          onChange={nullEvent}
+          total={100}
+          offset={-20}
+          limit={10}
+        />,
+      );
+    });
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      [
+        <button
+          className="previous"
+          disabled={true}
+        >
+          ←
+        </button>,
+        <button
+          className="next"
+          disabled={false}
+          onClick={[Function]}
+        >
+          →
+        </button>,
+        "1",
+        " to ",
+        "10",
+        " of ",
+        "100",
+        " ",
+        "rows",
+      ]
     `);
   });
 });

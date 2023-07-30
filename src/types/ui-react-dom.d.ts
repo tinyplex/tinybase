@@ -12,7 +12,7 @@ import {
 import {Id, Ids} from './common';
 import {ComponentType} from 'react';
 
-// CustomCell
+/// CustomCell
 export type CustomCell = {
   /// CustomCell.label
   readonly label?: string;
@@ -22,7 +22,7 @@ export type CustomCell = {
   readonly getComponentProps?: (rowId: Id, cellId: Id) => ExtraProps;
 };
 
-// CustomResultCell
+/// CustomResultCell
 export type CustomResultCell = {
   /// CustomResultCell.label
   readonly label?: string;
@@ -32,17 +32,7 @@ export type CustomResultCell = {
   readonly getComponentProps?: (rowId: Id, cellId: Id) => ExtraProps;
 };
 
-export type SortedTablePaginatorProps = {
-  readonly onChange: (offset: number) => void;
-  readonly offset?: number;
-  readonly limit?: number;
-  readonly total: number;
-  readonly singular?: string;
-  readonly plural?: string;
-  readonly className?: string;
-};
-
-// HtmlTableProps
+/// HtmlTableProps
 export type HtmlTableProps = {
   /// HtmlTableProps.className
   readonly className?: string;
@@ -52,7 +42,7 @@ export type HtmlTableProps = {
   readonly idColumn?: boolean;
 };
 
-// TableInHtmlTableProps
+/// TableInHtmlTableProps
 export type TableInHtmlTableProps = {
   /// TableInHtmlTableProps.tableId
   readonly tableId: Id;
@@ -64,7 +54,7 @@ export type TableInHtmlTableProps = {
   readonly customCells?: Ids | {[cellId: Id]: string | CustomCell};
 };
 
-// SortedTableInHtmlTableProps
+/// SortedTableInHtmlTableProps
 export type SortedTableInHtmlTableProps = {
   /// SortedTableInHtmlTableProps.tableId
   readonly tableId: Id;
@@ -88,7 +78,7 @@ export type SortedTableInHtmlTableProps = {
   readonly paginator?: boolean | ComponentType<SortedTablePaginatorProps>;
 };
 
-// ResultTableInHtmlTableProps
+/// ResultTableInHtmlTableProps
 export type ResultTableInHtmlTableProps = {
   /// ResultTableInHtmlTableProps.queryId
   readonly queryId: Id;
@@ -98,7 +88,7 @@ export type ResultTableInHtmlTableProps = {
   readonly customCells?: Ids | {[cellId: Id]: string | CustomResultCell};
 };
 
-// ResultSortedTableInHtmlTableProps
+/// ResultSortedTableInHtmlTableProps
 export type ResultSortedTableInHtmlTableProps = {
   /// ResultSortedTableInHtmlTableProps.queryId
   readonly queryId: Id;
@@ -120,7 +110,7 @@ export type ResultSortedTableInHtmlTableProps = {
   readonly paginator?: boolean | ComponentType<SortedTablePaginatorProps>;
 };
 
-// ValuesInHtmlTableProps
+/// ValuesInHtmlTableProps
 export type ValuesInHtmlTableProps = {
   /// ValuesInHtmlTableProps.store
   readonly store?: StoreOrStoreId;
@@ -130,6 +120,22 @@ export type ValuesInHtmlTableProps = {
   readonly valueComponent?: ComponentType<ValueProps>;
   /// ValuesInHtmlTableProps.getValueComponentProps
   readonly getValueComponentProps?: (valueId: Id) => ExtraProps;
+};
+
+/// SortedTablePaginatorProps
+export type SortedTablePaginatorProps = {
+  /// SortedTablePaginatorProps.onChange
+  readonly onChange: (offset: number) => void;
+  /// SortedTablePaginatorProps.offset
+  readonly offset?: number;
+  /// SortedTablePaginatorProps.limit
+  readonly limit?: number;
+  /// SortedTablePaginatorProps.total
+  readonly total: number;
+  /// SortedTablePaginatorProps.singular
+  readonly singular?: string;
+  /// SortedTablePaginatorProps.plural
+  readonly plural?: string;
 };
 
 /// TableInHtmlTable
@@ -165,4 +171,9 @@ export function EditableCellView(
 /// EditableValueView
 export function EditableValueView(
   props: ValueProps & {readonly className?: string},
+): ComponentReturnType;
+
+/// SortedTablePaginator
+export function SortedTablePaginator(
+  props: SortedTablePaginatorProps,
 ): ComponentReturnType;
