@@ -41,13 +41,13 @@ import {
   EditableCellView as EditableCellViewDecl,
   EditableValueView as EditableValueViewDecl,
   HtmlTableProps,
-  PaginatorProps,
   ResultSortedTableInHtmlTable as ResultSortedTableInHtmlTableDecl,
   ResultSortedTableInHtmlTableProps,
   ResultTableInHtmlTable as ResultTableInHtmlTableDecl,
   ResultTableInHtmlTableProps,
   SortedTableInHtmlTable as SortedTableInHtmlTableDecl,
   SortedTableInHtmlTableProps,
+  SortedTablePaginatorProps,
   TableInHtmlTable as TableInHtmlTableDecl,
   TableInHtmlTableProps,
   ValuesInHtmlTable as ValuesInHtmlTableDecl,
@@ -101,7 +101,7 @@ const useSortingAndPagination = (
   offset: number | undefined,
   limit: number | undefined,
   total: number,
-  paginator: boolean | React.ComponentType<PaginatorProps>,
+  paginator: boolean | React.ComponentType<SortedTablePaginatorProps>,
 ): [
   sorting: Sorting,
   changeSorting: (cellId: Id | undefined) => void,
@@ -115,8 +115,8 @@ const useSortingAndPagination = (
   const [currentOffset, setCurrentOffset] = useState(offset);
   const PaginatorComponent =
     paginator === true
-      ? Paginator
-      : (paginator as ComponentType<PaginatorProps>);
+      ? SortedTablePaginator
+      : (paginator as ComponentType<SortedTablePaginatorProps>);
   return [
     sorting,
     useCallbackOrUndefined(
@@ -434,54 +434,6 @@ export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
   );
 };
 
-export const Paginator = ({
-  onChange,
-  offset = 0,
-  limit = 10,
-  total,
-  singular = 'row',
-  plural = singular + 's',
-}: PaginatorProps) => {
-  if (offset > total || offset < 0) {
-    onChange(0);
-  }
-  const handlePrevClick = useCallbackOrUndefined(
-    () => onChange(offset - limit),
-    [onChange, offset, limit],
-    offset > 0,
-  );
-  const handleNextClick = useCallbackOrUndefined(
-    () => onChange(offset + limit),
-    [onChange, offset, limit],
-    offset + limit < total,
-  );
-  return (
-    <>
-      {total > limit && (
-        <>
-          <button
-            className="previous"
-            disabled={offset == 0}
-            onClick={handlePrevClick}
-          >
-            {LEFT_ARROW}
-          </button>
-          <button
-            className="next"
-            disabled={offset + limit >= total}
-            onClick={handleNextClick}
-          >
-            {RIGHT_ARROW}
-          </button>
-          {offset + 1} to {Math.min(total, offset + limit)}
-          {' of '}
-        </>
-      )}
-      {total} {total != 1 ? plural : singular}
-    </>
-  );
-};
-
 export const ValuesInHtmlTable: typeof ValuesInHtmlTableDecl = ({
   store,
   editable = false,
@@ -622,3 +574,51 @@ export const EditableValueView: typeof EditableValueViewDecl = ({
     className={className ?? EDITABLE + VALUE}
   />
 );
+
+export const SortedTablePaginator = ({
+  onChange,
+  offset = 0,
+  limit = 10,
+  total,
+  singular = 'row',
+  plural = singular + 's',
+}: SortedTablePaginatorProps) => {
+  if (offset > total || offset < 0) {
+    onChange(0);
+  }
+  const handlePrevClick = useCallbackOrUndefined(
+    () => onChange(offset - limit),
+    [onChange, offset, limit],
+    offset > 0,
+  );
+  const handleNextClick = useCallbackOrUndefined(
+    () => onChange(offset + limit),
+    [onChange, offset, limit],
+    offset + limit < total,
+  );
+  return (
+    <>
+      {total > limit && (
+        <>
+          <button
+            className="previous"
+            disabled={offset == 0}
+            onClick={handlePrevClick}
+          >
+            {LEFT_ARROW}
+          </button>
+          <button
+            className="next"
+            disabled={offset + limit >= total}
+            onClick={handleNextClick}
+          >
+            {RIGHT_ARROW}
+          </button>
+          {offset + 1} to {Math.min(total, offset + limit)}
+          {' of '}
+        </>
+      )}
+      {total} {total != 1 ? plural : singular}
+    </>
+  );
+};
