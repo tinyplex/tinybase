@@ -278,6 +278,42 @@
  * @since v4.1.0
  */
 /// ResultSortedTableInHtmlTableProps
+{
+  /**
+   * An event that will fire when the offset is updated, called with the new
+   * offset.
+   */
+  /// SortedTablePaginatorProps.onChange
+  /**
+   * The number of Row Ids to skip for pagination.
+   */
+  /// SortedTablePaginatorProps.offset
+  /**
+   * The maximum number of Row Ids being returned.
+   */
+  /// SortedTablePaginatorProps.limit
+  /**
+   * The total number of Row Ids in the paginated table.
+   */
+  /// SortedTablePaginatorProps.total
+  /**
+   * A noun to use in the pagination label for a single row, defaulting to
+   * 'row'.
+   */
+  /// SortedTablePaginatorProps.singular
+  /**
+   * A noun to use in the pagination label for multiple rows, defaulting to the
+   * value of the singular noun suffixed with the letter 's'.
+   */
+  /// SortedTablePaginatorProps.plural
+}
+/**
+ * SortedTablePaginatorProps props are used for components that will be used as
+ * a table paginator, such as the SortedTablePaginator component.
+ * @category Props
+ * @since v4.1.0
+ */
+/// SortedTablePaginatorProps
 /**
  * The TableInHtmlTable component renders the contents of a single Table in a
  * Store as an HTML <table> element, and registers a listener so that any
@@ -1050,3 +1086,78 @@
  * @since v4.1.0
  */
 /// EditableValueView
+/**
+ * The SortedTablePaginator component renders a paginator for a sorted table.
+ *
+ * The component displays 'previous' and 'next' buttons for paging through the
+ * Table if there are more Row Ids than fit in each page. The component will
+ * also display a label that shows which Row Ids are being displayed.
+ *
+ * The component's props identify initial pagination settings, and it will fire
+ * an event when the pagination changes.
+ * @param props The props for this component.
+ * @returns The rendering of a paginator control with a label, and next and
+ * previous buttons, where appropriate.
+ * @example
+ * This example creates a Provider context into which a default Store is
+ * provided. The SortedTableInHtmlTable component within it then renders the
+ * Table in a <table> element with a SortedTablePaginator (the default).
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <SortedTableInHtmlTable
+ *     tableId="pets"
+ *     cellId="species"
+ *     limit={2}
+ *     paginator={true}
+ *   />
+ * );
+ *
+ * const store = createStore().setTables({
+ *   pets: {
+ *     fido: {species: 'dog'},
+ *     felix: {species: 'cat'},
+ *     cujo: {species: 'wolf'},
+ *     lowly: {species: 'worm'},
+ *     polly: {species: 'parrot'},
+ *   },
+ * });
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * console.log(app.innerHTML);
+ * // ->
+ * `
+ * <table>
+ *   <caption>
+ *     <button class="previous" disabled="">←</button>
+ *     <button class="next">→</button>
+ *     1 to 2 of 5 rows
+ *   </caption>
+ *   <thead>
+ *     <tr>
+ *       <th>Id</th>
+ *       <th class="sorted ascending">↑ species</th>
+ *     </tr>
+ *   </thead>
+ *   <tbody>
+ *     <tr>
+ *       <th>felix</th>
+ *       <td>cat</td>
+ *     </tr>
+ *     <tr>
+ *       <th>fido</th>
+ *       <td>dog</td>
+ *     </tr>
+ *   </tbody>
+ * </table>
+ * `;
+ * ```
+ * @category Store components
+ * @since v4.1.0
+ */
+/// SortedTablePaginator

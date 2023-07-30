@@ -47,6 +47,7 @@ import {
   ResultTableInHtmlTableProps,
   SortedTableInHtmlTable as SortedTableInHtmlTableDecl,
   SortedTableInHtmlTableProps,
+  SortedTablePaginator as SortedTablePaginatorDecl,
   SortedTablePaginatorProps,
   TableInHtmlTable as TableInHtmlTableDecl,
   TableInHtmlTableProps,
@@ -575,15 +576,16 @@ export const EditableValueView: typeof EditableValueViewDecl = ({
   />
 );
 
-export const SortedTablePaginator = ({
+export const SortedTablePaginator: typeof SortedTablePaginatorDecl = ({
   onChange,
-  offset = 0,
-  limit = 10,
   total,
+  offset = 0,
+  limit = total,
   singular = 'row',
   plural = singular + 's',
 }: SortedTablePaginatorProps) => {
   if (offset > total || offset < 0) {
+    offset = 0;
     onChange(0);
   }
   const handlePrevClick = useCallbackOrUndefined(
