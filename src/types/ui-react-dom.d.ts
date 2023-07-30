@@ -32,7 +32,7 @@ export type CustomResultCell = {
   readonly getComponentProps?: (rowId: Id, cellId: Id) => ExtraProps;
 };
 
-export type PaginatorProps = {
+export type SortedTablePaginatorProps = {
   readonly onChange: (offset: number) => void;
   readonly offset?: number;
   readonly limit?: number;
@@ -85,7 +85,7 @@ export type SortedTableInHtmlTableProps = {
   /// SortedTableInHtmlTableProps.sortOnClick
   readonly sortOnClick?: boolean;
   // / SortedTableInHtmlTableProps.paginator
-  readonly paginator?: boolean | ComponentType<PaginatorProps>;
+  readonly paginator?: boolean | ComponentType<SortedTablePaginatorProps>;
 };
 
 // ResultTableInHtmlTableProps
@@ -117,7 +117,7 @@ export type ResultSortedTableInHtmlTableProps = {
   /// ResultSortedTableInHtmlTableProps.sortOnClick
   readonly sortOnClick?: boolean;
   // / ResultSortedTableInHtmlTableProps.paginator
-  readonly paginator?: boolean | ComponentType<PaginatorProps>;
+  readonly paginator?: boolean | ComponentType<SortedTablePaginatorProps>;
 };
 
 // ValuesInHtmlTableProps

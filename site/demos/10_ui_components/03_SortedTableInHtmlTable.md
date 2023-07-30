@@ -133,8 +133,8 @@ Nice! It's still a simple table, but we have some useful interactivity out of
 the box.
 
 We can also add pagination controls, by adding the `paginator` prop. This either
-takes `true` to enable the default Paginator component, or a paginator component
-of your own design that accepts PaginatorProps.
+takes `true` to enable the default SortedTablePaginator component, or a paginator component
+of your own design that accepts SortedTablePaginatorProps.
 
 ```diff-jsx
        <SortedTableInHtmlTable
