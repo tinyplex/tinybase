@@ -15,7 +15,7 @@ import {Id, Ids} from './common';
 import {ComponentType} from 'react';
 import {OptionalSchemas} from './store';
 
-// CustomCell
+/// CustomCell
 export type CustomCell<
   Schemas extends OptionalSchemas,
   TableId extends TableIdFromSchema<Schemas[0]>,
@@ -31,7 +31,7 @@ export type CustomCell<
   readonly getComponentProps?: (rowId: Id, cellId: CellId) => ExtraProps;
 };
 
-// CustomResultCell
+/// CustomResultCell
 export type CustomResultCell<Schemas extends OptionalSchemas> = {
   /// CustomResultCell.label
   readonly label?: string;
@@ -41,7 +41,7 @@ export type CustomResultCell<Schemas extends OptionalSchemas> = {
   readonly getComponentProps?: (rowId: Id, cellId: Id) => ExtraProps;
 };
 
-// HtmlTableProps
+/// HtmlTableProps
 export type HtmlTableProps = {
   /// HtmlTableProps.className
   readonly className?: string;
@@ -51,7 +51,7 @@ export type HtmlTableProps = {
   readonly idColumn?: boolean;
 };
 
-// TableInHtmlTableProps
+/// TableInHtmlTableProps
 export type TableInHtmlTableProps<
   Schemas extends OptionalSchemas,
   TableIds extends TableIdFromSchema<Schemas[0]> = TableIdFromSchema<
@@ -78,7 +78,7 @@ export type TableInHtmlTableProps<
     : never
   : never;
 
-// SortedTableInHtmlTableProps
+/// SortedTableInHtmlTableProps
 export type SortedTableInHtmlTableProps<
   Schemas extends OptionalSchemas,
   TableIds extends TableIdFromSchema<Schemas[0]> = TableIdFromSchema<
@@ -115,7 +115,7 @@ export type SortedTableInHtmlTableProps<
     : never
   : never;
 
-// ResultTableInHtmlTableProps
+/// ResultTableInHtmlTableProps
 export type ResultTableInHtmlTableProps<Schemas extends OptionalSchemas> = {
   /// ResultTableInHtmlTableProps.queryId
   readonly queryId: Id;
@@ -127,7 +127,7 @@ export type ResultTableInHtmlTableProps<Schemas extends OptionalSchemas> = {
     | {[cellId: Id]: string | CustomResultCell<Schemas>};
 };
 
-// ResultSortedTableInHtmlTableProps
+/// ResultSortedTableInHtmlTableProps
 export type ResultSortedTableInHtmlTableProps<Schemas extends OptionalSchemas> =
   {
     /// ResultSortedTableInHtmlTableProps.queryId
@@ -150,7 +150,7 @@ export type ResultSortedTableInHtmlTableProps<Schemas extends OptionalSchemas> =
     readonly sortOnClick?: boolean;
   };
 
-// ValuesInHtmlTableProps
+/// ValuesInHtmlTableProps
 export type ValuesInHtmlTableProps<Schemas extends OptionalSchemas> = {
   /// ValuesInHtmlTableProps.store
   readonly store?: StoreOrStoreId<Schemas>;
@@ -160,6 +160,22 @@ export type ValuesInHtmlTableProps<Schemas extends OptionalSchemas> = {
   readonly valueComponent?: ComponentType<ValueProps<Schemas>>;
   /// ValuesInHtmlTableProps.getValueComponentProps
   readonly getValueComponentProps?: (valueId: Id) => ExtraProps;
+};
+
+/// SortedTablePaginatorProps
+export type SortedTablePaginatorProps = {
+  /// SortedTablePaginatorProps.onChange
+  readonly onChange: (offset: number) => void;
+  /// SortedTablePaginatorProps.offset
+  readonly offset?: number;
+  /// SortedTablePaginatorProps.limit
+  readonly limit?: number;
+  /// SortedTablePaginatorProps.total
+  readonly total: number;
+  /// SortedTablePaginatorProps.singular
+  readonly singular?: string;
+  /// SortedTablePaginatorProps.plural
+  readonly plural?: string;
 };
 
 export type WithSchemas<Schemas extends OptionalSchemas> = {
@@ -196,5 +212,10 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// EditableValueView
   EditableValueView: (
     props: ValueProps<Schemas> & {className?: string},
+  ) => ComponentReturnType;
+
+  /// SortedTablePaginator
+  SortedTablePaginator: (
+    props: SortedTablePaginatorProps,
   ) => ComponentReturnType;
 };
