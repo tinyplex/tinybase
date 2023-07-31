@@ -82,6 +82,7 @@ export type RelationshipsListener = Listener &
 export type QueriesListener = Listener &
   Readonly<{
     listenToResultTable: (id: Id, queryId: IdOrNull) => Id;
+    listenToResultTableCellIds: (id: Id, queryId: IdOrNull) => Id;
     listenToResultRowCount: (id: Id, queryId: IdOrNull) => Id;
     listenToResultRowIds: (id: Id, queryId: IdOrNull) => Id;
     listenToResultSortedRowIds: (
