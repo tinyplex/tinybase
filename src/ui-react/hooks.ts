@@ -6,6 +6,7 @@ import {
   GET,
   LISTENER,
   ROW,
+  ROW_COUNT,
   ROW_IDS,
   SORTED_ROW_IDS,
   TABLE,
@@ -29,6 +30,7 @@ import {
   MapCell,
   MapValue,
   Row,
+  RowCountListener,
   RowIdsListener,
   RowListener,
   SortedRowIdsListener,
@@ -107,6 +109,8 @@ import {
   useResultTableCellIdsListener as useResultTableCellIdsListenerDecl,
   useResultTable as useResultTableDecl,
   useResultTableListener as useResultTableListenerDecl,
+  useRowCount as useRowCountDecl,
+  useRowCountListener as useRowCountListenerDecl,
   useRow as useRowDecl,
   useRowIds as useRowIdsDecl,
   useRowIdsListener as useRowIdsListenerDecl,
@@ -334,6 +338,12 @@ export const useTableCellIds: typeof useTableCellIdsDecl = (
     [],
     [tableId],
   );
+
+export const useRowCount: typeof useRowCountDecl = (
+  tableId: Id,
+  storeOrStoreId?: StoreOrStoreId,
+): number =>
+  useListenable(ROW_COUNT, useStoreOrStoreId(storeOrStoreId), [], [tableId]);
 
 export const useRowIds: typeof useRowIdsDecl = (
   tableId: Id,
@@ -688,6 +698,22 @@ export const useTableCellIdsListener: typeof useTableCellIdsListenerDecl = (
 ): void =>
   useListener(
     TABLE + CELL_IDS,
+    useStoreOrStoreId(storeOrStoreId),
+    listener,
+    listenerDeps,
+    [tableId],
+    mutator,
+  );
+
+export const useRowCountListener: typeof useRowCountListenerDecl = (
+  tableId: IdOrNull,
+  listener: RowCountListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  storeOrStoreId?: StoreOrStoreId,
+): void =>
+  useListener(
+    ROW_COUNT,
     useStoreOrStoreId(storeOrStoreId),
     listener,
     listenerDeps,
