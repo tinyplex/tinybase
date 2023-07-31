@@ -73,6 +73,8 @@ import {
   useResultSortedRowIds,
   useResultSortedRowIdsListener,
   useResultTable,
+  useResultTableCellIds,
+  useResultTableCellIdsListener,
   useResultTableListener,
   useRow,
   useRowCount,
@@ -1413,6 +1415,47 @@ describe('Read Hooks', () => {
       renderer.update(<div />);
     });
     expect(didRender).toHaveBeenCalledTimes(5);
+  });
+
+  test('useResultTableCellIds', () => {
+    const queries = createQueries(store)
+      .setQueryDefinition('q1', 't1', ({select}) => select('c1'))
+      .setQueryDefinition('q2', 't1', ({select, where}) => {
+        select('c1');
+        where('c1', 3);
+      });
+    const Test = ({queryId}: {queryId: Id}) =>
+      didRender(<>{JSON.stringify(useResultTableCellIds(queryId, queries))}</>);
+    act(() => {
+      renderer = create(<Test queryId="q0" />);
+    });
+    expect(renderer.toJSON()).toEqual(JSON.stringify([]));
+
+    act(() => {
+      renderer.update(<Test queryId="q1" />);
+    });
+    expect(renderer.toJSON()).toEqual(JSON.stringify(['c1']));
+
+    act(() => {
+      store
+        .setTables({t1: {r1: {c1: 2}, r2: {c1: 3}}})
+        .setTables({t1: {r1: {c1: 2}, r2: {c1: 3}}});
+    });
+    expect(renderer.toJSON()).toEqual(JSON.stringify(['c1']));
+
+    act(() => {
+      renderer.update(<Test queryId="q2" />);
+    });
+    expect(renderer.toJSON()).toEqual(JSON.stringify(['c1']));
+
+    act(() => {
+      store.delTables();
+    });
+    expect(renderer.toJSON()).toEqual(JSON.stringify([]));
+    act(() => {
+      renderer.update(<div />);
+    });
+    expect(didRender).toHaveBeenCalledTimes(4);
   });
 
   test('useResultRowCount', () => {
@@ -3223,6 +3266,48 @@ describe('Listener Hooks', () => {
     });
     act(() => {
       store.setCell('t1', 'r1', 'c1', 3);
+    });
+    act(() => {
+      renderer.update(<div />);
+    });
+  });
+
+  test('useResultTableCellIdsListener', () => {
+    expect.assertions(1);
+    const queries = createQueries(store).setQueryDefinition(
+      'q1',
+      't1',
+      ({select}) => {
+        select('c1');
+        select('c2');
+      },
+    );
+    const Test = ({value}: {readonly value: number}) => {
+      useResultTableCellIdsListener(
+        'q1',
+        (queries) =>
+          expect(queries?.getResultCell('q1', 'r1', 'c1')).toEqual(value),
+        [value],
+        queries,
+      );
+      return <div />;
+    };
+    act(() => {
+      renderer = create(<Test value={2} />);
+    });
+    act(() => {
+      store.setCell('t1', 'r1', 'c1', 2);
+      store.setCell('t1', 'r2', 'c1', 0);
+    });
+    act(() => {
+      renderer.update(<Test value={3} />);
+    });
+    act(() => {
+      store.setCell('t1', 'r1', 'c1', 3);
+      store.setCell('t1', 'r3', 'c1', 0);
+    });
+    act(() => {
+      store.setCell('t1', 'r2', 'c2', 1);
     });
     act(() => {
       renderer.update(<div />);
