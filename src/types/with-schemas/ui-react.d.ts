@@ -91,6 +91,7 @@ import {
   ResultRowCountListener,
   ResultRowIdsListener,
   ResultRowListener,
+  ResultSortedRowIdsListener,
   ResultTable,
   ResultTableCellIdsListener,
   ResultTableListener,
@@ -794,7 +795,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     descending: boolean,
     offset: number,
     limit: number | undefined,
-    listener: ResultRowIdsListener<Schemas>,
+    listener: ResultSortedRowIdsListener<Schemas>,
     listenerDeps?: React.DependencyList,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
