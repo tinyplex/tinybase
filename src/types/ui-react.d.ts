@@ -49,6 +49,7 @@ import {
   ResultRowCountListener,
   ResultRowIdsListener,
   ResultRowListener,
+  ResultSortedRowIdsListener,
   ResultTableCellIdsListener,
   ResultTableListener,
 } from './queries.d';
@@ -642,7 +643,7 @@ export function useResultSortedRowIdsListener(
   descending: boolean,
   offset: number,
   limit: number | undefined,
-  listener: ResultRowIdsListener,
+  listener: ResultSortedRowIdsListener,
   listenerDeps?: React.DependencyList,
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): void;
