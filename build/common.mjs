@@ -304,6 +304,7 @@ export const compileModule = async (
   format = 'esm',
   target = 'esnext',
   cli,
+  terse = !debug,
 ) => {
   const path = await import('path');
   const {default: esbuild} = await import('rollup-plugin-esbuild');
@@ -353,9 +354,8 @@ export const compileModule = async (
       }),
       shebang(),
     ].concat(
-      debug
-        ? [prettierPlugin(await getPrettierConfig())]
-        : [
+      terse
+        ? [
             terser({
               toplevel: true,
               compress: {
@@ -366,7 +366,8 @@ export const compileModule = async (
                   : {}),
               },
             }),
-          ].concat(cli ? [] : [gzipPlugin()]),
+          ].concat(cli ? [] : [gzipPlugin()])
+        : [prettierPlugin(await getPrettierConfig())],
     ),
     onwarn: (warning, warn) => {
       if (warning.code !== 'MISSING_NODE_BUILTINS') {
@@ -388,7 +389,7 @@ export const compileModule = async (
       [path.resolve('src/ui-react')]: getGlobalName('ui-react'),
     },
     interop: 'default',
-    name: getGlobalName(module),
+    name: getGlobalName(module) + (debug ? 'Debug' : ''),
   };
 
   await (await rollup(inputConfig)).write(outputConfig);
@@ -466,6 +467,22 @@ export const compileDocsAndAssets = async (api = true, pages = true) => {
   const {default: esbuild} = await import('esbuild');
 
   await makeDir(TMP_DIR);
+
+  // debug ui-react-dom umd for inspector demo
+  await compileModule(
+    'ui-react-dom',
+    true,
+    TMP_DIR,
+    'umd',
+    undefined,
+    undefined,
+    true,
+  );
+  await promises.rename(
+    TMP_DIR + '/ui-react-dom.js',
+    TMP_DIR + '/ui-react-dom-debug.js',
+  );
+
   await esbuild.build({
     entryPoints: ['site/build.ts'],
     external: ['tinydocs', 'react', 'yjs', 'prettier'],
@@ -476,7 +493,7 @@ export const compileDocsAndAssets = async (api = true, pages = true) => {
     platform: 'node',
   });
   const {build} = await import('../tmp/build.js');
-  await build(DOCS_DIR, api, pages);
+  build(DOCS_DIR, api, pages);
   await removeDir(TMP_DIR);
 };
 
