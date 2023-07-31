@@ -1083,7 +1083,8 @@
    */
   /// StoreListenerStats.tableCellIds
   /**
-   * The number of RowCountListener functions registered with the Store.
+   * The number of RowCountListener functions registered with the Store, since
+   * v4.1.0
    */
   /// StoreListenerStats.rowCount
   /**
@@ -3958,10 +3959,12 @@
    *
    * ```js
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
-   * const listenerId = store.addRowCountListener('pets',
-   * (store, _tableId, count) => {
-   *   console.log('Row count for pets table changed to ' + count);
-   * });
+   * const listenerId = store.addRowCountListener(
+   *   'pets',
+   *   (store, _tableId, count) => {
+   *     console.log('Row count for pets table changed to ' + count);
+   *   },
+   * );
    *
    * store.setRow('pets', 'felix', {species: 'cat'});
    * // -> 'Row count for pets table changed to 2'
@@ -3974,10 +3977,12 @@
    *
    * ```js
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
-   * const listenerId = store.addRowCountListener(null,
-   * (store, tableId, count) => {
-   *   console.log(`Row count for ${tableId} table changed to ${count}`);
-   * });
+   * const listenerId = store.addRowCountListener(
+   *   null,
+   *   (store, tableId, count) => {
+   *     console.log(`Row count for ${tableId} table changed to ${count}`);
+   *   },
+   * );
    *
    * store.setRow('pets', 'felix', {species: 'cat'});
    * // -> 'Row count for pets table changed to 2'
@@ -3995,8 +4000,8 @@
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const listenerId = store.addRowCountListener(
    *   'pets',
-   *   (store, tableId, count) => store.setCell('meta',
-   * 'update', tableId, count),
+   *   (store, tableId, count) =>
+   *     store.setCell('meta', 'update', tableId, count),
    *   true, // mutator
    * );
    *
