@@ -323,12 +323,20 @@ export const createQueriesListener = (queries: Queries): QueriesListener => {
       );
     },
 
+    listenToResultRowCount: (id, queryId) => {
+      logs[id] = [];
+      return queries.addResultRowCountListener(
+        queryId,
+        (_queries, queryId, count): number => logs[id].push({[queryId]: count}),
+      );
+    },
+
     listenToResultRowIds: (id, queryId) => {
       logs[id] = [];
       return queries.addResultRowIdsListener(
         queryId,
-        (queries, tableId): number =>
-          logs[id].push({[tableId]: queries.getResultRowIds(tableId)}),
+        (queries, queryId): number =>
+          logs[id].push({[queryId]: queries.getResultRowIds(queryId)}),
       );
     },
 
@@ -349,7 +357,7 @@ export const createQueriesListener = (queries: Queries): QueriesListener => {
         limit,
         (
           _queries,
-          _tableId,
+          _queryId,
           _cellId,
           _descending,
           _offset,
@@ -364,9 +372,9 @@ export const createQueriesListener = (queries: Queries): QueriesListener => {
       return queries.addResultRowListener(
         queryId,
         rowId,
-        (queries, tableId, rowId): number =>
+        (queries, queryId, rowId): number =>
           logs[id].push({
-            [tableId]: {[rowId]: queries.getResultRow(tableId, rowId)},
+            [queryId]: {[rowId]: queries.getResultRow(queryId, rowId)},
           }),
       );
     },
@@ -376,9 +384,9 @@ export const createQueriesListener = (queries: Queries): QueriesListener => {
       return queries.addResultCellIdsListener(
         queryId,
         rowId,
-        (queries, tableId, rowId): number =>
+        (queries, queryId, rowId): number =>
           logs[id].push({
-            [tableId]: {[rowId]: queries.getResultCellIds(tableId, rowId)},
+            [queryId]: {[rowId]: queries.getResultCellIds(queryId, rowId)},
           }),
       );
     },
@@ -389,8 +397,8 @@ export const createQueriesListener = (queries: Queries): QueriesListener => {
         queryId,
         rowId,
         cellId,
-        (_, tableId, rowId, cellId, newCell): number =>
-          logs[id].push({[tableId]: {[rowId]: {[cellId]: newCell}}}),
+        (_, queryId, rowId, cellId, newCell): number =>
+          logs[id].push({[queryId]: {[rowId]: {[cellId]: newCell}}}),
       );
     },
     logs,
