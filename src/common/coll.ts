@@ -12,7 +12,8 @@ const collSizeN =
       0,
     );
 
-export const collSize = (coll: Coll<unknown>): number => coll.size;
+export const collSize = (coll: Coll<unknown> | undefined): number =>
+  coll?.size ?? 0;
 export const collSize2 = collSizeN(collSize);
 export const collSize3 = collSizeN(collSize2);
 export const collSize4 = collSizeN(collSize3);
