@@ -539,6 +539,22 @@
  */
 /// TableCellIdsListener
 /**
+ * The RowCountListener type describes a function that is used to listen to
+ * changes to the number of Row objects in a Table.
+ *
+ * A RowCountListener is provided when using the addRowCountListener method. See
+ * that method for specific examples.
+ *
+ * When called, a RowCountListener is given a reference to the Store, the Id of
+ * the Table whose Row Ids changed, and the number of Row objects in the Table.
+ * @param store A reference to the Store that changed.
+ * @param tableId The Id of the Table that changed.
+ * @param count The number of Row objects in the Table
+ * @category Listener
+ * @since v4.1.0
+ */
+/// RowCountListener
+/**
  * The RowIdsListener type describes a function that is used to listen to
  * changes to the Row Ids in a Table.
  *

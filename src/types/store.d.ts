@@ -148,6 +148,13 @@ export type TableCellIdsListener = (
   getIdChanges: GetIdChanges | undefined,
 ) => void;
 
+/// RowCountListener
+export type RowCountListener = (
+  store: Store,
+  tableId: Id,
+  count: number,
+) => void;
+
 /// RowIdsListener
 export type RowIdsListener = (
   store: Store,
