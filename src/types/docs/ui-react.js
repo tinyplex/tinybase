@@ -584,6 +584,84 @@
  */
 /// useTableCellIds
 /**
+ * The useRowCount hook returns the count of the Row objects in a given Table,
+ * and registers a listener so that any changes to that result will cause a
+ * re-render.
+ *
+ * A Provider component is used to wrap part of an application in a context, and
+ * it can contain a default Store or a set of Store objects named by Id. The
+ * useRowCount hook lets you indicate which Store to get data for: omit the
+ * optional final parameter for the default context Store, provide an Id for a
+ * named context Store, or provide a Store explicitly by reference.
+ *
+ * When first rendered, this hook will create a listener so that changes to the
+ * count of Row objects will cause a re-render. When the component containing
+ * this hook is unmounted, the listener will be automatically removed.
+ * @param tableId The Id of the Table in the Store.
+ * @param storeOrStoreId The Store to be accessed: omit for the default context
+ * Store, provide an Id for a named context Store, or provide an explicit
+ * reference.
+ * @returns The number of Row objects in the Table.
+ * @example
+ * This example creates a Store outside the application, which is used in the
+ * useRowCount hook by reference. A change to the data in the Store re-renders
+ * the component.
+ *
+ * ```jsx
+ * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
+ * const App = () => <span>{useRowCount('pets', store)}</span>;
+ *
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>1</span>'
+ *
+ * store.setCell('pets', 'felix', 'color', 'black'); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>2</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a default Store is
+ * provided. A component within it then uses the useRowCount hook.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => <span>{useRowCount('pets')}</span>;
+ *
+ * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>1</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a Store is provided, named
+ * by Id. A component within it then uses the useRowCount hook.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider storesById={{petStore: store}}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <span>{useRowCount('pets', 'petStore')}</span>
+ * );
+ *
+ * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>1</span>'
+ * ```
+ * @category Store hooks
+ */
+/// useRowCount
+/**
  * The useRowIds hook returns the Ids of every Row in a given Table, and
  * registers a listener so that any changes to that result will cause a
  * re-render.
@@ -2582,6 +2660,66 @@
  * @category Store hooks
  */
 /// useTableCellIdsListener
+/**
+ * The useRowCountListener hook registers a listener function with a Store that
+ * will be called whenever the count of the Row objects in a Table change.
+ *
+ * This hook is useful for situations where a component needs to register its
+ * own specific listener to do more than simply tracking the value (which is
+ * more easily done with the useRowCount hook).
+ *
+ * You can either listen to a single Table (by specifying its Id as the method's
+ * first parameter) or changes to any Table (by providing `null`).
+ *
+ * Unlike the addRowCountListener method, which returns a listener Id and
+ * requires you to remove it manually, the useRowCountListener hook manages this
+ * lifecycle for you: when the listener changes (per its `listenerDeps`
+ * dependencies) or the component unmounts, the listener on the underlying Store
+ * will be deleted.
+ * @param tableId The Id of the Table to listen to, or `null` as a wildcard.
+ * @param listener The function that will be called whenever the count of the
+ * Row objects in the Table changes.
+ * @param listenerDeps An optional array of dependencies for the `listener`
+ * function, which, if any change, result in the re-registration of the
+ * listener. This parameter defaults to an empty array.
+ * @param mutator An optional boolean that indicates that the listener mutates
+ * Store data.
+ * @param storeOrStoreId The Store to register the listener with: omit for the
+ * default context Store, provide an Id for a named context Store, or provide an
+ * explicit reference.
+ * @example
+ * This example uses the useRowCountListener hook to create a listener that is
+ * scoped to a single component. When the component is unmounted, the listener
+ * is removed from the Store.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => {
+ *   useRowCountListener('pets', () => console.log('Row count changed'));
+ *   return <span>App</span>;
+ * };
+ *
+ * const store = createStore().setTables({pets: {fido: {color: 'brown'}}});
+ * const app = document.createElement('div');
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App store={store} />); // !act
+ * console.log(store.getListenerStats().rowCount);
+ * // -> 1
+ *
+ * store.setRow('pets', 'felix', {color: 'black'}); // !act
+ * // -> 'Row count changed'
+ *
+ * root.unmount(); // !act
+ * console.log(store.getListenerStats().rowCount);
+ * // -> 0
+ * ```
+ * @category Store hooks
+ */
+/// useRowCountListener
 /**
  * The useRowIdsListener hook registers a listener function with a Store that
  * will be called whenever the Row Ids in a Table change.

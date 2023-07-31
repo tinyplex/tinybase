@@ -31,6 +31,7 @@ export const TABLE = 'Table';
 export const TABLES = TABLE + 's';
 export const TABLE_IDS = TABLE + IDS;
 export const ROW = 'Row';
+export const ROW_COUNT = ROW + 'Count';
 export const ROW_IDS = ROW + IDS;
 export const SORTED_ROW_IDS = 'Sorted' + ROW + IDS;
 export const CELL = 'Cell';

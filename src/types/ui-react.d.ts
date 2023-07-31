@@ -9,6 +9,7 @@ import {
   MapCell,
   MapValue,
   Row,
+  RowCountListener,
   RowIdsListener,
   RowListener,
   SortedRowIdsListener,
@@ -96,6 +97,12 @@ export function useTableCellIds(
   tableId: Id,
   storeOrStoreId?: StoreOrStoreId,
 ): Ids;
+
+/// useRowCount
+export function useRowCount(
+  tableId: Id,
+  storeOrStoreId?: StoreOrStoreId,
+): number;
 
 /// useRowIds
 export function useRowIds(tableId: Id, storeOrStoreId?: StoreOrStoreId): Ids;
@@ -315,6 +322,15 @@ export function useTableListener(
 export function useTableCellIdsListener(
   tableId: IdOrNull,
   listener: TableCellIdsListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  storeOrStoreId?: StoreOrStoreId,
+): void;
+
+/// useRowCountListener
+export function useRowCountListener(
+  tableId: IdOrNull,
+  listener: RowCountListener,
   listenerDeps?: React.DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
