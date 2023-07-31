@@ -1083,6 +1083,10 @@
    */
   /// StoreListenerStats.tableCellIds
   /**
+   * The number of RowCountListener functions registered with the Store.
+   */
+  /// StoreListenerStats.rowCount
+  /**
    * The number of RowIdsListener functions registered with the Store.
    */
   /// StoreListenerStats.rowIds
