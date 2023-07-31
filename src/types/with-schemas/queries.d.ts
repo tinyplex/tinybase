@@ -81,6 +81,13 @@ export type ResultTableCellIdsListener<Schemas extends OptionalSchemas> = (
   tableId: Id,
 ) => void;
 
+/// ResultRowCountListener
+export type ResultRowCountListener<Schemas extends OptionalSchemas> = (
+  queries: Queries<Schemas>,
+  tableId: Id,
+  count: number,
+) => void;
+
 /// ResultRowIdsListener
 export type ResultRowIdsListener<Schemas extends OptionalSchemas> = (
   queries: Queries<Schemas>,
@@ -411,6 +418,12 @@ export interface Queries<in out Schemas extends OptionalSchemas> {
   addResultTableCellIdsListener(
     queryId: IdOrNull,
     listener: ResultTableCellIdsListener<Schemas>,
+  ): Id;
+
+  /// Queries.addResultRowCountListener
+  addResultRowCountListener(
+    queryId: IdOrNull,
+    listener: ResultRowCountListener<Schemas>,
   ): Id;
 
   /// Queries.addResultRowIdsListener
