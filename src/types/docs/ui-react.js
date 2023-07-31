@@ -5297,7 +5297,7 @@
  *     where('species', 'dog');
  *   },
  * );
- * const App = () => (<span>{useResultRowCount('dogColors', queries)}</span>);
+ * const App = () => <span>{useResultRowCount('dogColors', queries)}</span>;
  *
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App />); // !act
@@ -5318,7 +5318,7 @@
  *     <Pane />
  *   </Provider>
  * );
- * const Pane = () => (<span>{useResultRowCount('dogColors')}</span>);
+ * const Pane = () => <span>{useResultRowCount('dogColors')}</span>;
  *
  * const queries = createQueries(
  *   createStore().setTable('pets', {
