@@ -46,6 +46,7 @@ import {
   Queries,
   ResultCellIdsListener,
   ResultCellListener,
+  ResultRowCountListener,
   ResultRowIdsListener,
   ResultRowListener,
   ResultTableCellIdsListener,
@@ -558,6 +559,12 @@ export function useResultTableCellIds(
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): Ids;
 
+/// useResultRowCount
+export function useResultRowCount(
+  queryId: Id,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): number;
+
 /// useResultRowIds
 export function useResultRowIds(
   queryId: Id,
@@ -608,6 +615,14 @@ export function useResultTableListener(
 export function useResultTableCellIdsListener(
   queryId: IdOrNull,
   listener: ResultTableCellIdsListener,
+  listenerDeps?: React.DependencyList,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): void;
+
+/// useResultRowCountListener
+export function useResultRowCountListener(
+  queryId: IdOrNull,
+  listener: ResultRowCountListener,
   listenerDeps?: React.DependencyList,
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): void;

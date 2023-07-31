@@ -2661,7 +2661,7 @@
 /// useTableCellIdsListener
 /**
  * The useRowCountListener hook registers a listener function with a Store that
- * will be called whenever the count of the Row objects in a Table change.
+ * will be called whenever the count of the Row objects in a Table changes.
  *
  * This hook is useful for situations where a component needs to register its
  * own specific listener to do more than simply tracking the value (which is
@@ -5257,6 +5257,119 @@
  */
 /// useResultTableCellIds
 /**
+ * The useResultRowCount hook returns the count of the Row objects in the
+ * ResultTable of the given query, and registers a listener so that any changes
+ * to that result will cause a re-render.
+ *
+ * A Provider component is used to wrap part of an application in a context, and
+ * it can contain a default Queries object or a set of Queries objects named by
+ * Id. The useResultRowCount hook lets you indicate which Queries object to get
+ * data for: omit the final optional final parameter for the default context
+ * Queries object, provide an Id for a named context Queries object, or provide
+ * a Queries object explicitly by reference.
+ *
+ * When first rendered, this hook will create a listener so that changes to the
+ * count of ResultRow objects will cause a re-render. When the component
+ * containing this hook is unmounted, the listener will be automatically
+ * removed.
+ * @param queryId The Id of the query.
+ * @param queriesOrQueriesId The Queries object to be accessed: omit for the
+ * default context Queries object, provide an Id for a named context Queries
+ * object, or provide an explicit reference. See the addResultRowCountListener
+ * method for more details.
+ * @returns The number of ResultRow objects in the ResultTable.
+ * @example
+ * This example creates a Queries object outside the application, which is used
+ * in the useResultRowCount hook by reference. A change to the data in the query
+ * re-renders the component.
+ *
+ * ```jsx
+ * const store = createStore().setTable('pets', {
+ *   fido: {species: 'dog', color: 'brown'},
+ *   felix: {species: 'cat', color: 'black'},
+ *   cujo: {species: 'dog', color: 'black'},
+ * });
+ * const queries = createQueries(store).setQueryDefinition(
+ *   'dogColors',
+ *   'pets',
+ *   ({select, where}) => {
+ *     select('color');
+ *     where('species', 'dog');
+ *   },
+ * );
+ * const App = () => (<span>{useResultRowCount('dogColors', queries)}</span>);
+ *
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>2</span>'
+ *
+ * store.setCell('pets', 'cujo', 'species', 'wolf'); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>1</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a default Queries object
+ * is provided. A component within it then uses the useResultRowCount hook.
+ *
+ * ```jsx
+ * const App = ({queries}) => (
+ *   <Provider queries={queries}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (<span>{useResultRowCount('dogColors')}</span>);
+ *
+ * const queries = createQueries(
+ *   createStore().setTable('pets', {
+ *     fido: {species: 'dog', color: 'brown'},
+ *     felix: {species: 'cat', color: 'black'},
+ *     cujo: {species: 'dog', color: 'black'},
+ *   }),
+ * ).setQueryDefinition('dogColors', 'pets', ({select, where}) => {
+ *   select('color');
+ *   where('species', 'dog');
+ * });
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>2</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a Queries object is
+ * provided, named by Id. A component within it then uses the useResultRowCount
+ * hook.
+ *
+ * ```jsx
+ * const App = ({queries}) => (
+ *   <Provider queriesById={{petQueries: queries}}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <span>{useResultRowCount('dogColors', 'petQueries')}</span>
+ * );
+ *
+ * const queries = createQueries(
+ *   createStore().setTable('pets', {
+ *     fido: {species: 'dog', color: 'brown'},
+ *     felix: {species: 'cat', color: 'black'},
+ *     cujo: {species: 'dog', color: 'black'},
+ *   }),
+ * ).setQueryDefinition('dogColors', 'pets', ({select, where}) => {
+ *   select('color');
+ *   where('species', 'dog');
+ * });
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>2</span>'
+ * ```
+ * @category Queries hooks
+ * @since v4.1.0
+ */
+/// useResultRowCount
+/**
  * The useResultRowIds hook returns the Ids of every Row in the ResultTable of
  * the given query, and registers a listener so that any changes to those Ids
  * will cause a re-render.
@@ -6027,6 +6140,78 @@
  * @since v4.1.0
  */
 /// useResultTableCellIdsListener
+/**
+ * The useResultRowCountListener hook registers a listener function with a
+ * Queries object that will be called whenever the count of ResultRow objects in
+ * a ResultTable changes.
+ *
+ * This hook is useful for situations where a component needs to register its
+ * own specific listener to do more than simply tracking the value (which is
+ * more easily done with the useResultRowCount hook).
+ *
+ * You can either listen to a single ResultTable (by specifying a query Id as
+ * the method's first parameter) or changes to any ResultTable (by providing a
+ * `null` wildcard).
+ *
+ * Unlike the addResultRowCountListener method, which returns a listener Id and
+ * requires you to remove it manually, the useResultRowCountListener hook
+ * manages this lifecycle for you: when the listener changes (per its
+ * `listenerDeps` dependencies) or the component unmounts, the listener on the
+ * underlying Queries object will be deleted.
+ * @param queryId The Id of the query to listen to, or `null` as a wildcard.
+ * @param listener The function that will be called whenever the Row Ids in the
+ * matching ResultTable change.
+ * @param listenerDeps An optional array of dependencies for the `listener`
+ * function, which, if any change, result in the re-registration of the
+ * listener. This parameter defaults to an empty array.
+ * @param queriesOrQueriesId The Queries object to register the listener with:
+ * omit for the default context Queries object, provide an Id for a named
+ * context Queries object, or provide an explicit reference.
+ * @example
+ * This example uses the useResultRowCountListener hook to create a listener
+ * that is scoped to a single component. When the component is unmounted, the
+ * listener is removed from the Queries object.
+ *
+ * ```jsx
+ * const App = ({queries}) => (
+ *   <Provider queries={queries}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => {
+ *   useResultRowCountListener('petColors', () =>
+ *     console.log('Result Row count changed'),
+ *   );
+ *   return <span>App</span>;
+ * };
+ *
+ * const store = createStore().setTable('pets', {
+ *   fido: {species: 'dog', color: 'brown'},
+ *   felix: {species: 'cat', color: 'black'},
+ *   cujo: {species: 'dog', color: 'black'},
+ * });
+ * const queries = createQueries(store).setQueryDefinition(
+ *   'petColors',
+ *   'pets',
+ *   ({select}) => select('color'),
+ * );
+ * const app = document.createElement('div');
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App queries={queries} />); // !act
+ * console.log(queries.getListenerStats().rowCount);
+ * // -> 1
+ *
+ * store.setRow('pets', 'rex', {species: 'dog', color: 'tan'}); // !act
+ * // -> 'Result Row count changed'
+ *
+ * root.unmount(); // !act
+ * console.log(queries.getListenerStats().rowCount);
+ * // -> 0
+ * ```
+ * @category Queries hooks
+ * @since v4.1.0
+ */
+/// useResultRowCountListener
 /**
  * The useResultRowIdsListener hook registers a listener function with a Queries
  * object that will be called whenever the Row Ids in a ResultTable change.
