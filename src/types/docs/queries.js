@@ -413,6 +413,16 @@
    */
   /// QueriesListenerStats.table
   /**
+   * The number of ResultTableCellIdsListener functions registered with the
+   * Store, since v3.3.
+   */
+  /// QueriesListenerStats.tableCellIds
+  /**
+   * The number of ResultRowCountListener functions registered with the Store,
+   * since v4.1.
+   */
+  /// QueriesListenerStats.rowCount
+  /**
    * The number of ResultRowIdsListener functions registered with the Store.
    */
   /// QueriesListenerStats.rowIds

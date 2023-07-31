@@ -136,6 +136,10 @@ export type ResultCellChange = [
 export type QueriesListenerStats = {
   /// QueriesListenerStats.table
   table?: number;
+  /// QueriesListenerStats.tableCellIds
+  tableCellIds?: number;
+  /// QueriesListenerStats.rowCount
+  rowCount?: number;
   /// QueriesListenerStats.rowIds
   rowIds?: number;
   /// QueriesListenerStats.row
