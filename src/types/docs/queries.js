@@ -244,6 +244,24 @@
  */
 /// ResultTableCellIdsListener
 /**
+ * The ResultRowCountListener type describes a function that is used to listen
+ * to changes to the number of ResultRow objects in a query's ResultTable.
+ *
+ * A ResultRowCountListener is provided when using the addResultRowCountListener
+ * method. See that method for specific examples.
+ *
+ * When called, a ResultRowCountListener is given a reference to the Queries
+ * object, the Id of the ResultTable whose ResultRow Ids changed (which is the
+ * same as the query Id), and the count of ResultRow objects in the ResultTable.
+ * @param queries A reference to the Queries object that changed.
+ * @param tableId The Id of the ResultTable that changed, which is also the
+ * query Id.
+ * @param count The number of ResultRow objects in the ResultTable
+ * @category Listener
+ * @since v4.1.0
+ */
+/// ResultRowCountListener
+/**
  * The ResultRowIdsListener type describes a function that is used to listen to
  * changes to the ResultRow Ids in a query's ResultTable.
  *
@@ -1786,6 +1804,45 @@
    */
   /// Queries.getResultTableCellIds
   /**
+   * The getResultRowCount method returns the count of the ResultRow objects in
+   * the ResultTable of the given query.
+   *
+   * This has the same behavior as a Store's getRowCount method. For example, if
+   * the query Id is invalid, the method returns zero.
+   * @param queryId The Id of a query.
+   * @returns The number of ResultRow objects in the result of the query.
+   * @example
+   * This example creates a Queries object, a single query definition, and then
+   * calls this method on it (as well as a non-existent definition) to get the
+   * ResultRow count.
+   *
+   * ```js
+   * const store = createStore().setTable('pets', {
+   *   fido: {species: 'dog', color: 'brown'},
+   *   felix: {species: 'cat', color: 'black'},
+   *   cujo: {species: 'dog', color: 'black'},
+   * });
+   *
+   * const queries = createQueries(store).setQueryDefinition(
+   *   'dogColors',
+   *   'pets',
+   *   ({select, where}) => {
+   *     select('color');
+   *     where('species', 'dog');
+   *   },
+   * );
+   *
+   * console.log(queries.getResultRowCount('dogColors'));
+   * // -> 2
+   *
+   * console.log(queries.getResultRowCount('catColors'));
+   * // -> 0
+   * ```
+   * @category Result
+   * @since v4.1.0
+   */
+  /// Queries.getResultRowCount
+  /**
    * The getResultRowIds method returns the Ids of every ResultRow in the
    * ResultTable of the given query.
    *
@@ -2432,6 +2489,97 @@
    * @since v2.0.0
    */
   /// Queries.addResultTableCellIdsListener
+  /**
+   * The addResultRowCountListener method registers a listener function with the
+   * Queries object that will be called whenever the count of ResultRow objects
+   * in a ResultTable changes.
+   *
+   * The provided listener is a ResultRowCountListener function, and will be
+   * called with a reference to the Queries object, the Id of the ResultTable
+   * that changed (which is also the query Id), and the number of ResultRow
+   * objects in th ResultTable.
+   *
+   * You can either listen to a single ResultTable (by specifying a query Id as
+   * the method's first parameter) or changes to any ResultTable (by providing a
+   * `null` wildcard).
+   * @param queryId The Id of the query to listen to, or `null` as a wildcard.
+   * @param listener The function that will be called whenever the number of
+   * ResultRow objects in the ResultTable change.
+   * @returns A unique Id for the listener that can later be used to remove it.
+   * @example
+   * This example registers a listener that responds to a change in the number
+   * of ResultRow objects in a specific ResultTable.
+   *
+   * ```js
+   * const store = createStore().setTable('pets', {
+   *   fido: {species: 'dog', color: 'brown'},
+   *   felix: {species: 'cat', color: 'black'},
+   *   cujo: {species: 'dog', color: 'black'},
+   * });
+   *
+   * const queries = createQueries(store).setQueryDefinition(
+   *   'dogColors',
+   *   'pets',
+   *   ({select, where}) => {
+   *     select('color');
+   *     where('species', 'dog');
+   *   },
+   * );
+   *
+   * const listenerId = queries.addResultRowCountListener(
+   *   'dogColors',
+   *   (queries, tableId, count) => {
+   *     console.log(
+   * 'Row count for dogColors result table changed to ' + count);
+   *   },
+   * );
+   *
+   * store.setRow('pets', 'rex', {species: 'dog', color: 'tan'});
+   * // -> 'Row count for dogColors result table changed to 3'
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @example
+   * This example registers a listener that responds to a change in the number
+   * of ResultRow objects any ResultTable.
+   *
+   * ```js
+   * const store = createStore().setTable('pets', {
+   *   fido: {species: 'dog', color: 'brown'},
+   *   felix: {species: 'cat', color: 'black'},
+   *   cujo: {species: 'dog', color: 'black'},
+   * });
+   *
+   * const queries = createQueries(store)
+   *   .setQueryDefinition('dogColors', 'pets', ({select, where}) => {
+   *     select('color');
+   *     where('species', 'dog');
+   *   })
+   *   .setQueryDefinition('catColors', 'pets', ({select, where}) => {
+   *     select('color');
+   *     where('species', 'cat');
+   *   });
+   *
+   * const listenerId = queries.addResultRowCountListener(
+   *   null,
+   *   (queries, tableId, count) => {
+   *     console.log(
+   *       `Row count for ${tableId} result table changed to ${count}`,
+   *     );
+   *   },
+   * );
+   *
+   * store.setRow('pets', 'rex', {species: 'dog', color: 'tan'});
+   * // -> 'Row count for dogColors result table changed to 3'
+   * store.setRow('pets', 'tom', {species: 'cat', color: 'gray'});
+   * // -> 'Row count for catColors result table changed to 2'
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @category Listener
+   * @since v4.1.0
+   */
+  /// Queries.addResultRowCountListener
   /**
    * The addResultRowIdsListener method registers a listener function with the
    * Queries object that will be called whenever the ResultRow Ids in a

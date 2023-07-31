@@ -71,6 +71,13 @@ export type ResultTableCellIdsListener = (
   tableId: Id,
 ) => void;
 
+/// ResultRowCountListener
+export type ResultRowCountListener = (
+  queries: Queries,
+  tableId: Id,
+  count: number,
+) => void;
+
 /// ResultRowIdsListener
 export type ResultRowIdsListener = (queries: Queries, tableId: Id) => void;
 
@@ -316,6 +323,12 @@ export interface Queries {
   addResultTableCellIdsListener(
     queryId: IdOrNull,
     listener: ResultTableCellIdsListener,
+  ): Id;
+
+  /// Queries.addResultRowCountListener
+  addResultRowCountListener(
+    queryId: IdOrNull,
+    listener: ResultRowCountListener,
   ): Id;
 
   /// Queries.addResultRowIdsListener
