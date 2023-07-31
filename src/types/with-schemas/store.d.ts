@@ -341,6 +341,18 @@ export type TableCellIdsListener<
   : // | ((...params: Params1) => void)
     never;
 
+/// RowCountListener
+export type RowCountListener<
+  Schemas extends OptionalSchemas,
+  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+> = (
+  store: Store<Schemas>,
+  tableId: TableIdOrNull extends null
+    ? TableIdFromSchema<Schemas[0]>
+    : TableIdOrNull,
+  count: number,
+) => void;
+
 /// RowIdsListener
 export type RowIdsListener<
   Schemas extends OptionalSchemas,
