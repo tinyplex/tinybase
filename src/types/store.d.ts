@@ -556,6 +556,13 @@ export interface Store {
     mutator?: boolean,
   ): Id;
 
+  /// Store.addRowCountListener
+  addRowCountListener(
+    tableId: IdOrNull,
+    listener: RowCountListener,
+    mutator?: boolean,
+  ): Id;
+
   /// Store.addRowIdsListener
   addRowIdsListener(
     tableId: IdOrNull,
