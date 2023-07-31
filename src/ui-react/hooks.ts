@@ -180,7 +180,7 @@ import {
   useQueriesOrQueriesId,
   useRelationshipsOrRelationshipsId,
   useStoreOrStoreId,
-} from './common';
+} from './context';
 import {ListenerArgument} from '../common/listeners';
 import {Persister} from '../types/persisters.d';
 import React from 'react';
@@ -193,7 +193,7 @@ export {
   useQueries,
   useRelationships,
   useStore,
-} from './common';
+} from './context';
 
 const {useCallback, useEffect, useMemo, useRef, useState} = React;
 
