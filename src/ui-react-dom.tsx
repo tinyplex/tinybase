@@ -56,9 +56,9 @@ import {
   ValuesInHtmlTable as ValuesInHtmlTableDecl,
   ValuesInHtmlTableProps,
 } from './types/ui-react-dom.d';
+import {DEBUG, isArray, isString, isUndefined} from './common/other';
 import {Id, Ids} from './types/common';
 import React, {ComponentType} from 'react';
-import {isArray, isString, isUndefined} from './common/other';
 import {objMap, objNew} from './common/obj';
 import {arrayMap} from './common/array';
 import {getProps} from './ui-react/common';
@@ -625,4 +625,15 @@ export const SortedTablePaginator: typeof SortedTablePaginatorDecl = ({
       {total} {total != 1 ? plural : singular}
     </>
   );
+};
+
+type StoreInspectorProps = {
+  readonly position: 'top' | 'right' | 'bottom' | 'left';
+};
+
+export const StoreInspector = (props: StoreInspectorProps) =>
+  DEBUG ? <StoreInspectorImpl {...props} /> : null;
+
+const StoreInspectorImpl = ({position = 'bottom'}: StoreInspectorProps) => {
+  return position;
 };
