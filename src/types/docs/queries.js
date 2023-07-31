@@ -409,33 +409,43 @@
 /// QueriesListenerStats
 {
   /**
-   * The number of ResultTableListener functions registered with the Store.
+   * The number of ResultTableListener functions registered with the Queries
+   * object.
    */
   /// QueriesListenerStats.table
   /**
    * The number of ResultTableCellIdsListener functions registered with the
-   * Store, since v3.3.
+   * Queries object, since v3.3.
    */
   /// QueriesListenerStats.tableCellIds
   /**
-   * The number of ResultRowCountListener functions registered with the Store,
-   * since v4.1.
+   * The number of ResultRowCountListener functions registered with the Queries
+   * object, since v4.1.
    */
   /// QueriesListenerStats.rowCount
   /**
-   * The number of ResultRowIdsListener functions registered with the Store.
+   * The number of ResultRowIdsListener functions registered with the Queries
+   * object.
    */
   /// QueriesListenerStats.rowIds
   /**
-   * The number of ResultRowListener functions registered with the Store.
+   * The number of SortedRowIdsListener functions registered with the Queries
+   * object.
+   */
+  /// QueriesListenerStats.sortedRowIds
+  /**
+   * The number of ResultRowListener functions registered with the Queries
+   * object.
    */
   /// QueriesListenerStats.row
   /**
-   * The number of ResultCellIdsListener functions registered with the Store.
+   * The number of ResultCellIdsListener functions registered with the Queries
+   * object.
    */
   /// QueriesListenerStats.cellIds
   /**
-   * The number of ResultCellListener functions registered with the Store.
+   * The number of ResultCellListener functions registered with the Queries
+   * object.
    */
   /// QueriesListenerStats.cell
 }

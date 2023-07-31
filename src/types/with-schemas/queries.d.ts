@@ -159,6 +159,8 @@ export type QueriesListenerStats = {
   rowCount?: number;
   /// QueriesListenerStats.rowIds
   rowIds?: number;
+  /// QueriesListenerStats.sortedRowIds
+  sortedRowIds?: number;
   /// QueriesListenerStats.row
   row?: number;
   /// QueriesListenerStats.cellIds
