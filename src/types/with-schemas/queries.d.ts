@@ -12,6 +12,7 @@ import {
 import {CellIdFromSchema, TableIdFromSchema} from './internal/store';
 import {GetResultCell, JoinedCellIdOrId} from './internal/queries';
 import {Id, IdOrNull, Ids} from './common.d';
+import {GetIdChanges} from '../store.d';
 
 /// ResultTable
 export type ResultTable = {[rowId: Id]: ResultRow};
@@ -79,6 +80,7 @@ export type ResultTableListener<Schemas extends OptionalSchemas> = (
 export type ResultTableCellIdsListener<Schemas extends OptionalSchemas> = (
   queries: Queries<Schemas>,
   tableId: Id,
+  getIdChanges: GetIdChanges | undefined,
 ) => void;
 
 /// ResultRowCountListener
@@ -92,6 +94,7 @@ export type ResultRowCountListener<Schemas extends OptionalSchemas> = (
 export type ResultRowIdsListener<Schemas extends OptionalSchemas> = (
   queries: Queries<Schemas>,
   tableId: Id,
+  getIdChanges: GetIdChanges | undefined,
 ) => void;
 
 /// ResultSortedRowIdsListener
@@ -118,6 +121,7 @@ export type ResultCellIdsListener<Schemas extends OptionalSchemas> = (
   queries: Queries<Schemas>,
   tableId: Id,
   rowId: Id,
+  getIdChanges: GetIdChanges | undefined,
 ) => void;
 
 /// ResultCellListener

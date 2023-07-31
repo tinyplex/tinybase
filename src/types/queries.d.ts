@@ -1,6 +1,6 @@
 /// queries
 
-import {Cell, CellOrUndefined, GetCell, Store} from './store.d';
+import {Cell, CellOrUndefined, GetCell, GetIdChanges, Store} from './store.d';
 import {Id, IdOrNull, Ids} from './common.d';
 
 /// ResultTable
@@ -69,6 +69,7 @@ export type ResultTableListener = (
 export type ResultTableCellIdsListener = (
   queries: Queries,
   tableId: Id,
+  getIdChanges: GetIdChanges | undefined,
 ) => void;
 
 /// ResultRowCountListener
@@ -79,7 +80,11 @@ export type ResultRowCountListener = (
 ) => void;
 
 /// ResultRowIdsListener
-export type ResultRowIdsListener = (queries: Queries, tableId: Id) => void;
+export type ResultRowIdsListener = (
+  queries: Queries,
+  tableId: Id,
+  getIdChanges: GetIdChanges | undefined,
+) => void;
 
 /// ResultSortedRowIdsListener
 export type ResultSortedRowIdsListener = (
@@ -105,6 +110,7 @@ export type ResultCellIdsListener = (
   queries: Queries,
   tableId: Id,
   rowId: Id,
+  getIdChanges: GetIdChanges | undefined,
 ) => void;
 
 /// ResultCellListener
