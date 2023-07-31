@@ -648,9 +648,7 @@
  *     <Pane />
  *   </Provider>
  * );
- * const Pane = () => (
- *   <span>{useRowCount('pets', 'petStore')}</span>
- * );
+ * const Pane = () => <span>{useRowCount('pets', 'petStore')}</span>;
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
@@ -659,6 +657,7 @@
  * // -> '<span>1</span>'
  * ```
  * @category Store hooks
+ * @since v4.1.0
  */
 /// useRowCount
 /**
@@ -2718,6 +2717,7 @@
  * // -> 0
  * ```
  * @category Store hooks
+ * @since v4.1.0
  */
 /// useRowCountListener
 /**
