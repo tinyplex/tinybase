@@ -81,6 +81,11 @@ describe('Sets', () => {
         r3: {c1: 'three'},
         r4: {c1: 'four'},
       });
+      expect(queries.getResultTableCellIds('q1')).toEqual(['c1']);
+      expect(queries.getResultRowCount('q1')).toEqual(4);
+      expect(queries.getResultRowIds('q1')).toEqual(['r2', 'r3', 'r1', 'r4']);
+      expect(queries.getResultRow('q1', 'r3')).toEqual({c1: 'three'});
+      expect(queries.getResultCellIds('q1', 'r3')).toEqual(['c1']);
       expect(queries.getResultCell('q1', 'r1', 'c1')).toEqual('one');
       delCells();
       expect(queries.getResultTable('q1')).toEqual({});
