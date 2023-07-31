@@ -2550,7 +2550,8 @@
    *   'dogColors',
    *   (queries, tableId, count) => {
    *     console.log(
-   * 'Row count for dogColors result table changed to ' + count);
+   *       'Row count for dogColors result table changed to ' + count,
+   *     );
    *   },
    * );
    *
