@@ -214,7 +214,7 @@
  *
  * When called, a ResultTableListener is given a reference to the Queries
  * object, the Id of the ResultTable that changed (which is the same as the
- * query Id), and a GetCellResultChange function that can be used to query
+ * query Id), and a GetResultCellChange function that can be used to query
  * ResultCell values before and after the change.
  * @param queries A reference to the Queries object that changed.
  * @param tableId The Id of the ResultTable that changed, which is also the
@@ -314,7 +314,7 @@
  *
  * When called, a ResultRowListener is given a reference to the Queries object,
  * the Id of the ResultTable that changed (which is the same as the query Id),
- * the Id of the ResultRow that changed, and a GetCellResultChange function that
+ * the Id of the ResultRow that changed, and a GetResultCellChange function that
  * can be used to query ResultCell values before and after the change.
  * @param queries A reference to the Queries object that changed.
  * @param tableId The Id of the ResultTable that changed, which is also the
@@ -355,7 +355,7 @@
  * the Id of the ResultTable that changed (which is the same as the query Id),
  * the Id of the ResultRow that changed, and the Id of ResultCell that changed.
  * It is also given the new value of the ResultCell, the old value of the
- * ResultCell, and a GetCellResultChange function that can be used to query
+ * ResultCell, and a GetResultCellChange function that can be used to query
  * ResultCell values before and after the change.
  * @param queries A reference to the Queries object that changed.
  * @param tableId The Id of the ResultTable that changed, which is also the
@@ -371,10 +371,10 @@
  */
 /// ResultCellListener
 /**
- * The GetCellResultChange type describes a function that returns information
+ * The GetResultCellChange type describes a function that returns information
  * about any ResultCell's changes during a transaction.
  *
- * A GetCellResultChange function is provided to every listener when called due
+ * A GetResultCellChange function is provided to every listener when called due
  * the Store changing. The listener can then fetch the previous value of a
  * ResultCell before the current transaction, the new value after it, and a
  * convenience flag that indicates that the value has changed.
@@ -385,7 +385,7 @@
  * ResultCell's changes.
  * @category Listener
  */
-/// GetCellResultChange
+/// GetResultCellChange
 /**
  * The ResultCellChange type describes a ResultCell's changes during a
  * transaction.
@@ -2320,7 +2320,7 @@
    *
    * The provided listener is a ResultTableListener function, and will be called
    * with a reference to the Queries object, the Id of the ResultTable that
-   * changed (which is also the query Id), and a GetCellResultChange function in
+   * changed (which is also the query Id), and a GetResultCellChange function in
    * case you need to inspect any changes that occurred.
    *
    * You can either listen to a single ResultTable (by specifying a query Id as
@@ -2811,7 +2811,7 @@
    *
    * The provided listener is a ResultRowListener function, and will be called
    * with a reference to the Queries object, the Id of the ResultTable that
-   * changed (which is also the query Id), and a GetCellResultChange function in
+   * changed (which is also the query Id), and a GetResultCellChange function in
    * case you need to inspect any changes that occurred.
    *
    * You can either listen to a single ResultRow (by specifying a query Id and
@@ -3016,7 +3016,7 @@
    * with a reference to the Queries object, the Id of the ResultTable that
    * changed (which is also the query Id), the Id of the ResultRow that changed,
    * the Id of the ResultCell that changed, the new ResultCell value, the old
-   * ResultCell value, and a GetCellResultChange function in case you need to
+   * ResultCell value, and a GetResultCellChange function in case you need to
    * inspect any changes that occurred.
    *
    * You can either listen to a single ResultRow (by specifying a query Id,

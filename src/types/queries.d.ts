@@ -62,7 +62,7 @@ export type ResultCellCallback = (cellId: Id, cell: ResultCell) => void;
 export type ResultTableListener = (
   queries: Queries,
   tableId: Id,
-  getCellChange: GetCellResultChange,
+  getCellChange: GetResultCellChange,
 ) => void;
 
 /// ResultTableCellIdsListener
@@ -97,7 +97,7 @@ export type ResultRowListener = (
   queries: Queries,
   tableId: Id,
   rowId: Id,
-  getCellChange: GetCellResultChange,
+  getCellChange: GetResultCellChange,
 ) => void;
 
 /// ResultCellIdsListener
@@ -115,11 +115,11 @@ export type ResultCellListener = (
   cellId: Id,
   newCell: ResultCell,
   oldCell: ResultCell,
-  getCellChange: GetCellResultChange,
+  getCellChange: GetResultCellChange,
 ) => void;
 
-/// GetCellResultChange
-export type GetCellResultChange = (
+/// GetResultCellChange
+export type GetResultCellChange = (
   tableId: Id,
   rowId: Id,
   cellId: Id,
