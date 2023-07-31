@@ -863,6 +863,8 @@ describe('Listens to Queries when sets', () => {
 
   describe('Selects', () => {
     test('root table column by id (all listeners)', () => {
+      listener.listenToResultTableCellIds('/q1tc', 'q1');
+      listener.listenToResultTableCellIds('/q*tc', null);
       listener.listenToResultRowCount('/q1r#', 'q1');
       listener.listenToResultRowCount('/q*r#', null);
       listener.listenToResultRowIds('/q1r', 'q1');
@@ -898,6 +900,14 @@ describe('Listens to Queries when sets', () => {
           {q1: {}},
         ),
       );
+      ['/q1tc', '/q*tc'].forEach((listenerId) =>
+        expectChanges(
+          listener,
+          listenerId,
+          {q1: [['c1'], {c1: 1}]},
+          {q1: [[], {c1: -1}]},
+        ),
+      );
       ['/q1r#', '/q*r#'].forEach((listenerId) =>
         expectChanges(
           listener,
@@ -916,14 +926,14 @@ describe('Listens to Queries when sets', () => {
         expectChanges(
           listener,
           listenerId,
-          {q1: ['r1']},
-          {q1: ['r2', 'r3']},
-          {q1: ['r2', 'r3', 'r1']},
-          {q1: ['r2', 'r3', 'r1', 'r4']},
-          {q1: ['r2', 'r3', 'r1']},
-          {q1: ['r2', 'r1']},
-          {q1: ['r1']},
-          {q1: []},
+          {q1: [['r1'], {r1: 1}]},
+          {q1: [['r2', 'r3'], {r2: 1, r3: 1, r1: -1}]},
+          {q1: [['r2', 'r3', 'r1'], {r1: 1}]},
+          {q1: [['r2', 'r3', 'r1', 'r4'], {r4: 1}]},
+          {q1: [['r2', 'r3', 'r1'], {r4: -1}]},
+          {q1: [['r2', 'r1'], {r3: -1}]},
+          {q1: [['r1'], {r2: -1}]},
+          {q1: [[], {r1: -1}]},
         ),
       );
       expectChanges(
@@ -963,24 +973,24 @@ describe('Listens to Queries when sets', () => {
       expectChanges(
         listener,
         '/q1/r1c',
-        {q1: {r1: ['c1']}},
-        {q1: {r1: []}},
-        {q1: {r1: ['c1']}},
-        {q1: {r1: []}},
+        {q1: {r1: [['c1'], {c1: 1}]}},
+        {q1: {r1: [[], {c1: -1}]}},
+        {q1: {r1: [['c1'], {c1: 1}]}},
+        {q1: {r1: [[], {c1: -1}]}},
       );
       expectChanges(
         listener,
         '/q1/r*c',
-        {q1: {r1: ['c1']}},
-        {q1: {r2: ['c1']}},
-        {q1: {r3: ['c1']}},
-        {q1: {r1: []}},
-        {q1: {r1: ['c1']}},
-        {q1: {r4: ['c1']}},
-        {q1: {r4: []}},
-        {q1: {r3: []}},
-        {q1: {r2: []}},
-        {q1: {r1: []}},
+        {q1: {r1: [['c1'], {c1: 1}]}},
+        {q1: {r2: [['c1'], {c1: 1}]}},
+        {q1: {r3: [['c1'], {c1: 1}]}},
+        {q1: {r1: [[], {c1: -1}]}},
+        {q1: {r1: [['c1'], {c1: 1}]}},
+        {q1: {r4: [['c1'], {c1: 1}]}},
+        {q1: {r4: [[], {c1: -1}]}},
+        {q1: {r3: [[], {c1: -1}]}},
+        {q1: {r2: [[], {c1: -1}]}},
+        {q1: {r1: [[], {c1: -1}]}},
       );
       ['/q1/r1/c*', '/q1/r1/c1'].forEach((listenerId) =>
         expectChanges(
