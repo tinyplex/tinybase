@@ -7,6 +7,7 @@ import {
   LISTENER,
   RESULT,
   ROW,
+  ROW_COUNT,
   ROW_IDS,
   SORTED_ROW_IDS,
   TABLE,
@@ -594,6 +595,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     {
       [TABLE]: [1, 1],
       [TABLE + CELL_IDS]: [0, 1],
+      [ROW_COUNT]: [0, 1],
       [ROW_IDS]: [0, 1],
       [SORTED_ROW_IDS]: [0, 5],
       [ROW]: [1, 2],
