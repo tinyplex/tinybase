@@ -51,6 +51,7 @@ import {
   MapValue,
   OptionalSchemas,
   Row,
+  RowCountListener,
   RowIdsListener,
   RowListener,
   SortedRowIdsListener,
@@ -146,6 +147,12 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     tableId: TableId,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => CellIdFromSchema<Schemas[0], TableId>[];
+
+  /// useRowCount
+  useRowCount: (
+    tableId: TableIdFromSchema<Schemas[0]>,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => number;
 
   /// useRowIds
   useRowIds: (
@@ -434,6 +441,17 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   >(
     tableId: TableIdOrNull,
     listener: TableCellIdsListener<Schemas, TableIdOrNull>,
+    listenerDeps?: React.DependencyList,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// useRowCountListener
+  useRowCountListener: <
+    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+  >(
+    tableId: TableIdOrNull,
+    listener: RowCountListener<Schemas, TableIdOrNull>,
     listenerDeps?: React.DependencyList,
     mutator?: boolean,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
