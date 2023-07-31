@@ -67,5 +67,5 @@ component so that it uses this view for its own rendering:
 
 And just like that you have an internally consistent editing experience!
 
-There's a very similar component for Cells that we will now explore in the equivalent
-<EditableCellView /> demo.
+There's a very similar component for Cells that we will now explore in the
+equivalent <EditableCellView /> demo.
