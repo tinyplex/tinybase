@@ -726,6 +726,9 @@ export interface Store<in out Schemas extends OptionalSchemas> {
     tableId: TableId,
   ): CellIdFromSchema<Schemas[0], TableId>[];
 
+  /// Store.getRowCount
+  getRowCount(tableId: TableIdFromSchema<Schemas[0]>): number;
+
   /// Store.getRowIds
   getRowIds(tableId: TableIdFromSchema<Schemas[0]>): Ids;
 

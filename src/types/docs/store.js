@@ -1455,6 +1455,41 @@
    */
   /// Store.getTableCellIds
   /**
+   * The getRowCount method returns the count of the Row objects in a given
+   * Table.
+   *
+   * While this provides the same result as the length of Ids array returned
+   * from the getRowIds method, it is somewhat faster, and useful for efficient
+   * pagination.
+   * @param tableId The Id of the Table in the Store.
+   * @returns The number of Row objects in the Table.
+   * @example
+   * This example retrieves the number of Row objects in the Table.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {
+   *     fido: {species: 'dog'},
+   *     felix: {species: 'cat'},
+   *   },
+   * });
+   * console.log(store.getRowCount('pets'));
+   * // -> 2
+   * ```
+   * @example
+   * This example retrieves the Row Ids of a Table that does not exist,
+   * returning zero.
+   *
+   * ```js
+   * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+   * console.log(store.getRowCount('employees'));
+   * // -> 0
+   * ```
+   * @category Getter
+   * @since v4.1.0
+   */
+  /// Store.getRowCount
+  /**
    * The getRowIds method returns the Ids of every Row in a given Table.
    *
    * Note that this returns a copy of, rather than a reference, to the list of
