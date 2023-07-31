@@ -72,7 +72,7 @@ export type ResultCellCallback = (cellId: Id, cell: ResultCell) => void;
 export type ResultTableListener<Schemas extends OptionalSchemas> = (
   queries: Queries<Schemas>,
   tableId: Id,
-  getCellChange: GetCellResultChange,
+  getCellChange: GetResultCellChange,
 ) => void;
 
 /// ResultTableCellIdsListener
@@ -110,7 +110,7 @@ export type ResultRowListener<Schemas extends OptionalSchemas> = (
   queries: Queries<Schemas>,
   tableId: Id,
   rowId: Id,
-  getCellChange: GetCellResultChange,
+  getCellChange: GetResultCellChange,
 ) => void;
 
 /// ResultCellIdsListener
@@ -128,11 +128,11 @@ export type ResultCellListener<Schemas extends OptionalSchemas> = (
   cellId: Id,
   newCell: ResultCell,
   oldCell: ResultCell,
-  getCellChange: GetCellResultChange,
+  getCellChange: GetResultCellChange,
 ) => void;
 
-/// GetCellResultChange
-export type GetCellResultChange = (
+/// GetResultCellChange
+export type GetResultCellChange = (
   tableId: Id,
   rowId: Id,
   cellId: Id,
