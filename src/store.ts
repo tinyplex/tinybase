@@ -119,6 +119,7 @@ import {
   collForEach,
   collHas,
   collIsEmpty,
+  collSize,
   collSize2,
   collSize3,
   collSize4,
@@ -173,6 +174,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   let transactions = 0;
   const changedTableIds: ChangedIdsMap = mapNew();
   const changedTableCellIds: ChangedIdsMap2 = mapNew();
+  const changedRowCount: IdMap<number> = mapNew();
   const changedRowIds: ChangedIdsMap2 = mapNew();
   const changedCellIds: ChangedIdsMap3 = mapNew();
   const changedCells: IdMap3<ChangedCell> = mapNew();
@@ -193,6 +195,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const tableIdsListeners: Pair<IdSet2> = pairNewMap();
   const tableListeners: Pair<IdSet2> = pairNewMap();
   const tableCellIdsListeners: Pair<IdSet2> = pairNewMap();
+  const rowCountListeners: Pair<IdSet2> = pairNewMap();
   const rowIdsListeners: Pair<IdSet2> = pairNewMap();
   const sortedRowIdsListeners: Pair<IdSet3> = pairNewMap();
   const rowListeners: Pair<IdSet3> = pairNewMap();
@@ -568,11 +571,16 @@ export const createStore: typeof createStoreDecl = (): Store => {
     tableId: Id,
     rowId: Id,
     addedOrRemoved: IdAddedOrRemoved,
-  ): ChangedIdsMap =>
+  ): IdMap<number> | undefined =>
     idsChanged(
       mapEnsure(changedRowIds, tableId, mapNew) as ChangedIdsMap,
       rowId,
       addedOrRemoved,
+    ) &&
+    mapSet(
+      changedRowCount,
+      tableId,
+      mapEnsure(changedRowCount, tableId, () => 0) + addedOrRemoved,
     );
 
   const cellIdsChanged = (
@@ -742,6 +750,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     const emptyIdListeners =
       collIsEmpty(cellIdsListeners[mutator]) &&
       collIsEmpty(tableCellIdsListeners[mutator]) &&
+      collIsEmpty(rowCountListeners[mutator]) &&
       collIsEmpty(rowIdsListeners[mutator]) &&
       emptySortedRowIdListeners &&
       collIsEmpty(tableIdsListeners[mutator]);
@@ -754,6 +763,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       const changes: [
         ChangedIdsMap,
         ChangedIdsMap2,
+        IdMap<number>,
         ChangedIdsMap2,
         ChangedIdsMap3,
         IdMap3<ChangedCell>,
@@ -761,6 +771,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
         ? [
             mapClone(changedTableIds),
             mapClone2(changedTableCellIds),
+            mapClone(changedRowCount),
             mapClone2(changedRowIds),
             mapClone3(changedCellIds),
             mapClone3(changedCells),
@@ -768,6 +779,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
         : [
             changedTableIds,
             changedTableCellIds,
+            changedRowCount,
             changedRowIds,
             changedCellIds,
             changedCells,
@@ -784,8 +796,18 @@ export const createStore: typeof createStoreDecl = (): Store => {
           ),
         );
 
+        collForEach(changes[2], (changedCount, tableId) => {
+          if (changedCount != 0) {
+            callListeners(
+              rowCountListeners[mutator],
+              [tableId],
+              getRowCount(tableId),
+            );
+          }
+        });
+
         const calledSortableTableIds: IdSet = setNew();
-        collForEach(changes[2], (changedIds, tableId) => {
+        collForEach(changes[3], (changedIds, tableId) => {
           if (
             callIdsListenersIfChanged(rowIdsListeners[mutator], changedIds, [
               tableId,
@@ -798,7 +820,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
         });
 
         if (!emptySortedRowIdListeners) {
-          collForEach(changes[4], (rows, tableId) => {
+          collForEach(changes[5], (rows, tableId) => {
             if (!collHas(calledSortableTableIds, tableId)) {
               const sortableCellIds: IdSet = setNew();
               collForEach(rows, (cells) =>
@@ -818,7 +840,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
           });
         }
 
-        collForEach(changes[3], (rowCellIds, tableId) =>
+        collForEach(changes[4], (rowCellIds, tableId) =>
           collForEach(rowCellIds, (changedIds, rowId) =>
             callIdsListenersIfChanged(cellIdsListeners[mutator], changedIds, [
               tableId,
@@ -830,7 +852,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
       if (!emptyOtherListeners) {
         let tablesChanged;
-        collForEach(changes[4], (rows, tableId) => {
+        collForEach(changes[5], (rows, tableId) => {
           let tableChanged;
           collForEach(rows, (cells, rowId) => {
             let rowChanged;
@@ -961,6 +983,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const getTableCellIds = (tableId: Id): Ids =>
     mapKeys(mapGet(tableCellIds, id(tableId)));
+
+  const getRowCount = (tableId: Id): number =>
+    collSize(mapGet(tablesMap, id(tableId)));
 
   const getRowIds = (tableId: Id): Ids =>
     mapKeys(mapGet(tablesMap, id(tableId)));
@@ -1387,6 +1412,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
           [
             changedTableIds,
             changedTableCellIds,
+            changedRowCount,
             changedRowIds,
             changedCellIds,
             changedCells,
@@ -1527,6 +1553,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     getTableIds,
     getTable,
     getTableCellIds,
+    getRowCount,
     getRowIds,
     getSortedRowIds,
     getRow,
@@ -1609,6 +1636,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       [TABLE_IDS]: [0, tableIdsListeners],
       [TABLE]: [1, tableListeners, [getTableIds]],
       [TABLE + CELL_IDS]: [1, tableCellIdsListeners, [getTableIds]],
+      [ROW + 'Count']: [1, rowCountListeners, [getTableIds]],
       [ROW_IDS]: [1, rowIdsListeners, [getTableIds]],
       [ROW]: [2, rowListeners, [getTableIds, getRowIds]],
       [CELL_IDS]: [2, cellIdsListeners, [getTableIds, getRowIds]],
