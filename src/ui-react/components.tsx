@@ -50,11 +50,10 @@ import {
 } from '../types/ui-react.d';
 import {
   Context,
-  getProps,
   useCheckpointsOrCheckpointsId,
   useIndexesOrIndexesId,
   useRelationshipsOrRelationshipsId,
-} from './common';
+} from './context';
 import {Id, Ids} from '../types/common.d';
 import React, {ReactElement, useContext} from 'react';
 import {isArray, isUndefined} from '../common/other';
@@ -84,6 +83,7 @@ import {EMPTY_STRING} from '../common/strings';
 import {Relationships} from '../types/relationships.d';
 import {Store} from '../types/store.d';
 import {arrayMap} from '../common/array';
+import {getProps} from './common';
 
 const {createElement, useMemo} = React;
 
