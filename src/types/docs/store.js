@@ -3923,6 +3923,90 @@
    */
   /// Store.addTableCellIdsListener
   /**
+   * The addRowCountListener method registers a listener function with the Store
+   * that will be called whenever the count of Row objects in a Table change.
+   *
+   * The provided listener is a RowCountListener function, and will be called
+   * with a reference to the Store, the Id of the Table that changed, and the
+   * number of Row objects in the Table.
+   *
+   * You can either listen to a single Table (by specifying its Id as the
+   * method's first parameter) or changes to any Table (by providing a `null`
+   * wildcard).
+   *
+   * Use the optional mutator parameter to indicate that there is code in the
+   * listener that will mutate Store data. If set to `false` (or omitted), such
+   * mutations will be silently ignored. All relevant mutator listeners (with
+   * this flag set to `true`) are called _before_ any non-mutator listeners
+   * (since the latter may become relevant due to changes made in the former).
+   * The changes made by mutator listeners do not fire other mutating listeners,
+   * though they will fire non-mutator listeners.
+   * @param tableId The Id of the Table to listen to, or `null` as a wildcard.
+   * @param listener The function that will be called whenever the number of Row
+   * objects in the Table changes.
+   * @param mutator An optional boolean that indicates that the listener mutates
+   * Store data.
+   * @returns A unique Id for the listener that can later be used to call it
+   * explicitly, or to remove it.
+   * @example
+   * This example registers a listener that responds to a change in the number
+   * of Row objects in a specific Table.
+   *
+   * ```js
+   * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+   * const listenerId = store.addRowCountListener('pets',
+   * (store, _tableId, count) => {
+   *   console.log('Row count for pets table changed to ' + count);
+   * });
+   *
+   * store.setRow('pets', 'felix', {species: 'cat'});
+   * // -> 'Row count for pets table changed to 2'
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @example
+   * This example registers a listener that responds to any change to a change
+   * in the number of Row objects of any Table.
+   *
+   * ```js
+   * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+   * const listenerId = store.addRowCountListener(null,
+   * (store, tableId, count) => {
+   *   console.log(`Row count for ${tableId} table changed to ${count}`);
+   * });
+   *
+   * store.setRow('pets', 'felix', {species: 'cat'});
+   * // -> 'Row count for pets table changed to 2'
+   * store.setRow('species', 'dog', {price: 5});
+   * // -> 'Row count for species table changed to 1'
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @example
+   * This example registers a listener that responds to any change to a change
+   * in the number of Row objects of a specific Table, and which also mutates
+   * the Store itself.
+   *
+   * ```js
+   * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+   * const listenerId = store.addRowCountListener(
+   *   'pets',
+   *   (store, tableId, count) => store.setCell('meta',
+   * 'update', tableId, count),
+   *   true, // mutator
+   * );
+   *
+   * store.setRow('pets', 'felix', {species: 'cat'});
+   * console.log(store.getTable('meta'));
+   * // -> {update: {pets: 2}}
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @category Listener
+   * @since v4.1.0
+   */
+  /// Store.addRowCountListener
+  /**
    * The addRowIdsListener method registers a listener function with the Store
    * that will be called whenever the Row Ids in a Table change.
    *

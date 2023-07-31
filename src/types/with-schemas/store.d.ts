@@ -1028,6 +1028,15 @@ export interface Store<in out Schemas extends OptionalSchemas> {
     mutator?: boolean,
   ): Id;
 
+  /// Store.addRowCountListener
+  addRowCountListener<
+    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+  >(
+    tableId: TableIdOrNull,
+    listener: RowCountListener<Schemas, TableIdOrNull>,
+    mutator?: boolean,
+  ): Id;
+
   /// Store.addRowIdsListener
   addRowIdsListener<TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null>(
     tableId: TableIdOrNull,
