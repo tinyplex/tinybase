@@ -1530,6 +1530,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
           tableIds: pairCollSize2(tableIdsListeners),
           tableCellIds: pairCollSize2(tableCellIdsListeners),
           table: pairCollSize2(tableListeners),
+          rowCount: pairCollSize2(rowCountListeners),
           rowIds: pairCollSize2(rowIdsListeners),
           sortedRowIds: pairCollSize2(sortedRowIdsListeners),
           row: pairCollSize2(rowListeners, collSize3),
