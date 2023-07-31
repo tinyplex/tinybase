@@ -99,6 +99,8 @@ import {
   useResultCellIds as useResultCellIdsDecl,
   useResultCellIdsListener as useResultCellIdsListenerDecl,
   useResultCellListener as useResultCellListenerDecl,
+  useResultRowCount as useResultRowCountDecl,
+  useResultRowCountListener as useResultRowCountListenerDecl,
   useResultRow as useResultRowDecl,
   useResultRowIds as useResultRowIdsDecl,
   useResultRowIdsListener as useResultRowIdsListenerDecl,
@@ -162,6 +164,7 @@ import {
   Queries,
   ResultCellIdsListener,
   ResultCellListener,
+  ResultRowCountListener,
   ResultRowIdsListener,
   ResultRowListener,
   ResultSortedRowIdsListener,
@@ -1045,6 +1048,17 @@ export const useResultTable: typeof useResultTableDecl = (
     queryId,
   ]);
 
+export const useResultRowCount: typeof useResultRowCountDecl = (
+  queryId: Id,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): number =>
+  useListenable(
+    'ResultRowCount',
+    useQueriesOrQueriesId(queriesOrQueriesId),
+    [],
+    [queryId],
+  );
+
 export const useResultRowIds: typeof useResultRowIdsDecl = (
   queryId: Id,
   queriesOrQueriesId?: QueriesOrQueriesId,
@@ -1146,6 +1160,20 @@ export const useResultTableCellIdsListener: typeof useResultTableCellIdsListener
       listenerDeps,
       [queryId],
     );
+
+export const useResultRowCountListener: typeof useResultRowCountListenerDecl = (
+  queryId: IdOrNull,
+  listener: ResultRowCountListener,
+  listenerDeps?: React.DependencyList,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): void =>
+  useListener(
+    'ResultRowCount',
+    useQueriesOrQueriesId(queriesOrQueriesId),
+    listener,
+    listenerDeps,
+    [queryId],
+  );
 
 export const useResultRowIdsListener: typeof useResultRowIdsListenerDecl = (
   queryId: IdOrNull,
