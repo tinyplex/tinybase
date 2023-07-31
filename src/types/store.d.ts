@@ -355,6 +355,9 @@ export interface Store {
   /// Store.getTableCellIds
   getTableCellIds(tableId: Id): Ids;
 
+  /// Store.getRowCount
+  getRowCount(tableId: Id): number;
+
   /// Store.getRowIds
   getRowIds(tableId: Id): Ids;
 
