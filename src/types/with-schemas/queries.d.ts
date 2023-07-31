@@ -369,6 +369,9 @@ export interface Queries<in out Schemas extends OptionalSchemas> {
   /// Queries.getResultTableCellIds
   getResultTableCellIds(queryId: Id): Ids;
 
+  /// Queries.getResultRowCount
+  getResultRowCount(queryId: Id): number;
+
   /// Queries.getResultRowIds
   getResultRowIds(queryId: Id): Ids;
 
