@@ -24,9 +24,11 @@ import {
   ResultCellView,
   ValueView,
   useCell,
+  useResultRowCount,
   useResultRowIds,
   useResultSortedRowIds,
   useResultTableCellIds,
+  useRowCount,
   useRowIds,
   useSetCellCallback,
   useSetValueCallback,
@@ -56,9 +58,9 @@ import {
 } from './types/ui-react-dom.d';
 import {Id, Ids} from './types/common';
 import React, {ComponentType} from 'react';
-import {arrayLength, arrayMap} from './common/array';
 import {isArray, isString, isUndefined} from './common/other';
 import {objMap, objNew} from './common/obj';
+import {arrayMap} from './common/array';
 import {getProps} from './ui-react/common';
 
 const {createElement, useCallback, useMemo, useState} = React;
@@ -412,7 +414,7 @@ export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
       sortOnClick,
       offset,
       limit,
-      arrayLength(useRowIds(tableId, store)),
+      useRowCount(tableId, store),
       paginator,
     );
   return (
@@ -509,7 +511,7 @@ export const ResultSortedTableInHtmlTable: typeof ResultSortedTableInHtmlTableDe
         sortOnClick,
         offset,
         limit,
-        arrayLength(useResultRowIds(queryId, queries)),
+        useResultRowCount(queryId, queries),
         paginator,
       );
     return (
