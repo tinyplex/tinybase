@@ -65,6 +65,8 @@ import {
   useResultCellIdsListener,
   useResultCellListener,
   useResultRow,
+  useResultRowCount,
+  useResultRowCountListener,
   useResultRowIds,
   useResultRowIdsListener,
   useResultRowListener,
@@ -73,6 +75,8 @@ import {
   useResultTable,
   useResultTableListener,
   useRow,
+  useRowCount,
+  useRowCountListener,
   useRowIds,
   useRowIdsListener,
   useRowListener,
@@ -700,6 +704,46 @@ describe('Read Hooks', () => {
     });
     expect(store.getListenerStats().tableCellIds).toEqual(0);
     expect(didRender).toHaveBeenCalledTimes(5);
+  });
+
+  test('useRowCount', () => {
+    const Test = ({tableId}: {tableId: Id}) =>
+      didRender(<>{useRowCount(tableId, store)}</>);
+    expect(store.getListenerStats().rowCount).toEqual(0);
+    act(() => {
+      renderer = create(<Test tableId="t0" />);
+    });
+    expect(store.getListenerStats().rowCount).toEqual(1);
+    expect(renderer.toJSON()).toEqual('0');
+
+    act(() => {
+      renderer.update(<Test tableId="t1" />);
+    });
+    expect(store.getListenerStats().rowCount).toEqual(1);
+    expect(renderer.toJSON()).toEqual('1');
+
+    act(() => {
+      store
+        .setTables({t1: {r2: {c1: 2}}, t2: {r3: {c1: 3}, r4: {c1: 4}}})
+        .setTables({t1: {r2: {c1: 2}}, t2: {r3: {c1: 3}, r4: {c1: 4}}});
+    });
+    expect(renderer.toJSON()).toEqual('1');
+
+    act(() => {
+      renderer.update(<Test tableId="t2" />);
+    });
+    expect(store.getListenerStats().rowCount).toEqual(1);
+    expect(renderer.toJSON()).toEqual('2');
+
+    act(() => {
+      store.delTables();
+    });
+    expect(renderer.toJSON()).toEqual('0');
+    act(() => {
+      renderer.update(<div />);
+    });
+    expect(store.getListenerStats().rowCount).toEqual(0);
+    expect(didRender).toHaveBeenCalledTimes(4);
   });
 
   test('useRowIds', () => {
@@ -1365,6 +1409,48 @@ describe('Read Hooks', () => {
       store.delTables();
     });
     expect(renderer.toJSON()).toEqual(JSON.stringify({}));
+    act(() => {
+      renderer.update(<div />);
+    });
+    expect(didRender).toHaveBeenCalledTimes(5);
+  });
+
+  test('useResultRowCount', () => {
+    const queries = createQueries(store)
+      .setQueryDefinition('q1', 't1', ({select}) => select('c1'))
+      .setQueryDefinition('q2', 't1', ({select, where}) => {
+        select('c1');
+        select('c2');
+        where('c1', 3);
+      });
+    const Test = ({queryId}: {queryId: Id}) =>
+      didRender(<>{useResultRowCount(queryId, queries)}</>);
+    act(() => {
+      renderer = create(<Test queryId="q0" />);
+    });
+    expect(renderer.toJSON()).toEqual('0');
+
+    act(() => {
+      renderer.update(<Test queryId="q1" />);
+    });
+    expect(renderer.toJSON()).toEqual('1');
+
+    act(() => {
+      store
+        .setTables({t1: {r1: {c1: 2}, r2: {c1: 3, c2: 1}, r3: {c1: 3, c2: 2}}})
+        .setTables({t1: {r1: {c1: 2}, r2: {c1: 3, c2: 1}, r3: {c1: 3, c2: 2}}});
+    });
+    expect(renderer.toJSON()).toEqual('3');
+
+    act(() => {
+      renderer.update(<Test queryId="q2" />);
+    });
+    expect(renderer.toJSON()).toEqual('2');
+
+    act(() => {
+      store.delTables();
+    });
+    expect(renderer.toJSON()).toEqual('0');
     act(() => {
       renderer.update(<div />);
     });
@@ -2560,6 +2646,41 @@ describe('Listener Hooks', () => {
     expect(store.getListenerStats().tableCellIds).toEqual(0);
   });
 
+  test('useRowCountListener', () => {
+    expect.assertions(6);
+    const Test = ({value}: {readonly value: number}) => {
+      useRowCountListener(
+        't1',
+        (store) => expect(store?.getCell('t1', 'r1', 'c1')).toEqual(value),
+        [value],
+        false,
+        store,
+      );
+      return <div />;
+    };
+    expect(store.getListenerStats().rowCount).toEqual(0);
+    act(() => {
+      renderer = create(<Test value={2} />);
+    });
+    expect(store.getListenerStats().rowCount).toEqual(1);
+    act(() => {
+      store.setCell('t1', 'r1', 'c1', 2);
+      store.setCell('t1', 'r2', 'c1', 0);
+    });
+    act(() => {
+      renderer.update(<Test value={3} />);
+    });
+    expect(store.getListenerStats().rowCount).toEqual(1);
+    act(() => {
+      store.setCell('t1', 'r1', 'c1', 3);
+      store.setCell('t1', 'r3', 'c1', 0);
+    });
+    act(() => {
+      renderer.update(<div />);
+    });
+    expect(store.getListenerStats().rowCount).toEqual(0);
+  });
+
   test('useRowIdsListener', () => {
     expect.assertions(6);
     const Test = ({value}: {readonly value: number}) => {
@@ -3102,6 +3223,48 @@ describe('Listener Hooks', () => {
     });
     act(() => {
       store.setCell('t1', 'r1', 'c1', 3);
+    });
+    act(() => {
+      renderer.update(<div />);
+    });
+  });
+
+  test('useResultRowCountListener', () => {
+    expect.assertions(2);
+    const queries = createQueries(store).setQueryDefinition(
+      'q1',
+      't1',
+      ({select}) => {
+        select('c1');
+        select('c2');
+      },
+    );
+    const Test = ({value}: {readonly value: number}) => {
+      useResultRowCountListener(
+        'q1',
+        (queries) =>
+          expect(queries?.getResultCell('q1', 'r1', 'c1')).toEqual(value),
+        [value],
+        queries,
+      );
+      return <div />;
+    };
+    act(() => {
+      renderer = create(<Test value={2} />);
+    });
+    act(() => {
+      store.setCell('t1', 'r1', 'c1', 2);
+      store.setCell('t1', 'r2', 'c1', 0);
+    });
+    act(() => {
+      renderer.update(<Test value={3} />);
+    });
+    act(() => {
+      store.setCell('t1', 'r1', 'c1', 3);
+      store.setCell('t1', 'r3', 'c1', 0);
+    });
+    act(() => {
+      store.setCell('t1', 'r2', 'c2', 1);
     });
     act(() => {
       renderer.update(<div />);
