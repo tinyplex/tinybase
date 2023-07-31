@@ -88,6 +88,7 @@ import {
   ResultCellIdsListener,
   ResultCellListener,
   ResultRow,
+  ResultRowCountListener,
   ResultRowIdsListener,
   ResultRowListener,
   ResultTable,
@@ -710,6 +711,12 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => Ids;
 
+  /// useResultRowCount
+  useResultRowCount: (
+    queryId: Id,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+  ) => number;
+
   /// useResultRowIds
   useResultRowIds: (
     queryId: Id,
@@ -760,6 +767,14 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useResultTableCellIdsListener: (
     queryId: IdOrNull,
     listener: ResultTableCellIdsListener<Schemas>,
+    listenerDeps?: React.DependencyList,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+  ) => void;
+
+  /// useResultRowCountListener
+  useResultRowCountListener: (
+    queryId: IdOrNull,
+    listener: ResultRowCountListener<Schemas>,
     listenerDeps?: React.DependencyList,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
