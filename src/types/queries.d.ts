@@ -277,6 +277,9 @@ export interface Queries {
   /// Queries.getResultTableCellIds
   getResultTableCellIds(queryId: Id): Ids;
 
+  /// Queries.getResultRowCount
+  getResultRowCount(queryId: Id): number;
+
   /// Queries.getResultRowIds
   getResultRowIds(queryId: Id): Ids;
 
