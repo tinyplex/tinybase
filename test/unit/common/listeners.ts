@@ -331,12 +331,28 @@ export const createQueriesListener = (queries: Queries): QueriesListener => {
       );
     },
 
+    listenToResultTableCellIds: (id, queryId) => {
+      logs[id] = [];
+      return queries.addResultTableCellIdsListener(
+        queryId,
+        (queries, queryId, getIdChanges): number =>
+          logs[id].push({
+            [queryId]: [
+              queries.getResultTableCellIds(queryId),
+              getIdChanges?.(),
+            ],
+          }),
+      );
+    },
+
     listenToResultRowIds: (id, queryId) => {
       logs[id] = [];
       return queries.addResultRowIdsListener(
         queryId,
-        (queries, queryId): number =>
-          logs[id].push({[queryId]: queries.getResultRowIds(queryId)}),
+        (queries, queryId, getIdChanges): number =>
+          logs[id].push({
+            [queryId]: [queries.getResultRowIds(queryId), getIdChanges?.()],
+          }),
       );
     },
 
@@ -384,9 +400,14 @@ export const createQueriesListener = (queries: Queries): QueriesListener => {
       return queries.addResultCellIdsListener(
         queryId,
         rowId,
-        (queries, queryId, rowId): number =>
+        (queries, queryId, rowId, getIdChanges): number =>
           logs[id].push({
-            [queryId]: {[rowId]: queries.getResultCellIds(queryId, rowId)},
+            [queryId]: {
+              [rowId]: [
+                queries.getResultCellIds(queryId, rowId),
+                getIdChanges?.(),
+              ],
+            },
           }),
       );
     },
