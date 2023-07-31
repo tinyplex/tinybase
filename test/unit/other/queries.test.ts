@@ -858,6 +858,8 @@ describe('Listens to Queries when sets', () => {
 
   describe('Selects', () => {
     test('root table column by id (all listeners)', () => {
+      listener.listenToResultRowCount('/q1r#', 'q1');
+      listener.listenToResultRowCount('/q*r#', null);
       listener.listenToResultRowIds('/q1r', 'q1');
       listener.listenToResultRowIds('/q*r', null);
       listener.listenToResultSortedRowIds('/q1s', 'q1', 'c1', false, 0, 3);
@@ -889,6 +891,20 @@ describe('Listens to Queries when sets', () => {
           {q1: {r2: {c1: 'two'}, r1: {c1: 'one'}}},
           {q1: {r1: {c1: 'one'}}},
           {q1: {}},
+        ),
+      );
+      ['/q1r#', '/q*r#'].forEach((listenerId) =>
+        expectChanges(
+          listener,
+          listenerId,
+          {q1: 1},
+          {q1: 2},
+          {q1: 3},
+          {q1: 4},
+          {q1: 3},
+          {q1: 2},
+          {q1: 1},
+          {q1: 0},
         ),
       );
       ['/q1r', '/q*r'].forEach((listenerId) =>
