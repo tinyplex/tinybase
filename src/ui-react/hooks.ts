@@ -5,6 +5,7 @@ import {
   EMPTY_STRING,
   GET,
   LISTENER,
+  RESULT,
   ROW,
   ROW_COUNT,
   ROW_IDS,
@@ -912,7 +913,7 @@ export const useSliceRowIds: typeof useSliceRowIdsDecl = (
   indexesOrIndexesId?: IndexesOrIndexesId,
 ): Ids =>
   useListenable(
-    'SliceRowIds',
+    'Slice' + ROW_IDS,
     useIndexesOrIndexesId(indexesOrIndexesId),
     [],
     [indexId, sliceId],
@@ -940,7 +941,7 @@ export const useSliceRowIdsListener: typeof useSliceRowIdsListenerDecl = (
   indexesOrIndexesId?: IndexesOrIndexesId,
 ): void =>
   useListener(
-    'SliceRowIds',
+    'Slice' + ROW_IDS,
     useIndexesOrIndexesId(indexesOrIndexesId),
     listener,
     listenerDeps,
@@ -971,7 +972,7 @@ export const useLocalRowIds: typeof useLocalRowIdsDecl = (
   relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
 ): Ids =>
   useListenable(
-    'LocalRowIds',
+    'Local' + ROW_IDS,
     useRelationshipsOrRelationshipsId(relationshipsOrRelationshipsId),
     [],
     [relationshipId, remoteRowId],
@@ -983,7 +984,7 @@ export const useLinkedRowIds: typeof useLinkedRowIdsDecl = (
   relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
 ): Ids =>
   useListenable(
-    'LinkedRowIds',
+    'Linked' + ROW_IDS,
     useRelationshipsOrRelationshipsId(relationshipsOrRelationshipsId),
     [],
     [relationshipId, firstRowId],
@@ -1012,7 +1013,7 @@ export const useLocalRowIdsListener: typeof useLocalRowIdsListenerDecl = (
   relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
 ): void =>
   useListener(
-    'LocalRowIds',
+    'Local' + ROW_IDS,
     useRelationshipsOrRelationshipsId(relationshipsOrRelationshipsId),
     listener,
     listenerDeps,
@@ -1027,7 +1028,7 @@ export const useLinkedRowIdsListener: typeof useLinkedRowIdsListenerDecl = (
   relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
 ): void =>
   useListener(
-    'LinkedRowIds',
+    'Linked' + ROW_IDS,
     useRelationshipsOrRelationshipsId(relationshipsOrRelationshipsId),
     listener,
     listenerDeps,
@@ -1044,16 +1045,27 @@ export const useResultTable: typeof useResultTableDecl = (
   queryId: Id,
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): Table =>
-  useListenable('ResultTable', useQueriesOrQueriesId(queriesOrQueriesId), {}, [
+  useListenable(RESULT + TABLE, useQueriesOrQueriesId(queriesOrQueriesId), {}, [
     queryId,
   ]);
+
+export const useResultTableCellIds: typeof useResultTableCellIdsDecl = (
+  queryId: Id,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): Ids =>
+  useListenable(
+    RESULT + TABLE + CELL_IDS,
+    useQueriesOrQueriesId(queriesOrQueriesId),
+    [],
+    [queryId],
+  );
 
 export const useResultRowCount: typeof useResultRowCountDecl = (
   queryId: Id,
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): number =>
   useListenable(
-    'ResultRowCount',
+    RESULT + ROW_COUNT,
     useQueriesOrQueriesId(queriesOrQueriesId),
     [],
     [queryId],
@@ -1064,18 +1076,7 @@ export const useResultRowIds: typeof useResultRowIdsDecl = (
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): Ids =>
   useListenable(
-    'ResultRowIds',
-    useQueriesOrQueriesId(queriesOrQueriesId),
-    [],
-    [queryId],
-  );
-
-export const useResultTableCellIds: typeof useResultTableCellIdsDecl = (
-  queryId: Id,
-  queriesOrQueriesId?: QueriesOrQueriesId,
-): Ids =>
-  useListenable(
-    'ResultTableCellIds',
+    RESULT + ROW_IDS,
     useQueriesOrQueriesId(queriesOrQueriesId),
     [],
     [queryId],
@@ -1090,7 +1091,7 @@ export const useResultSortedRowIds: typeof useResultSortedRowIdsDecl = (
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): Ids =>
   useListenable(
-    'ResultSortedRowIds',
+    RESULT + SORTED_ROW_IDS,
     useQueriesOrQueriesId(queriesOrQueriesId),
     [],
     [queryId, cellId, descending, offset, limit],
@@ -1102,7 +1103,7 @@ export const useResultRow: typeof useResultRowDecl = (
   rowId: Id,
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): Row =>
-  useListenable('ResultRow', useQueriesOrQueriesId(queriesOrQueriesId), {}, [
+  useListenable(RESULT + ROW, useQueriesOrQueriesId(queriesOrQueriesId), {}, [
     queryId,
     rowId,
   ]);
@@ -1113,7 +1114,7 @@ export const useResultCellIds: typeof useResultCellIdsDecl = (
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): Ids =>
   useListenable(
-    'ResultCellIds',
+    RESULT + CELL_IDS,
     useQueriesOrQueriesId(queriesOrQueriesId),
     [],
     [queryId, rowId],
@@ -1126,7 +1127,7 @@ export const useResultCell: typeof useResultCellDecl = (
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): Cell | undefined =>
   useListenable(
-    'ResultCell',
+    RESULT + CELL,
     useQueriesOrQueriesId(queriesOrQueriesId),
     undefined,
     [queryId, rowId, cellId],
@@ -1139,7 +1140,7 @@ export const useResultTableListener: typeof useResultTableListenerDecl = (
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): void =>
   useListener(
-    'ResultTable',
+    RESULT + TABLE,
     useQueriesOrQueriesId(queriesOrQueriesId),
     listener,
     listenerDeps,
@@ -1154,7 +1155,7 @@ export const useResultTableCellIdsListener: typeof useResultTableCellIdsListener
     queriesOrQueriesId?: QueriesOrQueriesId,
   ): void =>
     useListener(
-      'ResultTableCellIds',
+      RESULT + TABLE + CELL_IDS,
       useQueriesOrQueriesId(queriesOrQueriesId),
       listener,
       listenerDeps,
@@ -1168,7 +1169,7 @@ export const useResultRowCountListener: typeof useResultRowCountListenerDecl = (
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): void =>
   useListener(
-    'ResultRowCount',
+    RESULT + ROW_COUNT,
     useQueriesOrQueriesId(queriesOrQueriesId),
     listener,
     listenerDeps,
@@ -1182,7 +1183,7 @@ export const useResultRowIdsListener: typeof useResultRowIdsListenerDecl = (
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): void =>
   useListener(
-    'ResultRowIds',
+    RESULT + ROW_IDS,
     useQueriesOrQueriesId(queriesOrQueriesId),
     listener,
     listenerDeps,
@@ -1201,7 +1202,7 @@ export const useResultSortedRowIdsListener: typeof useResultSortedRowIdsListener
     queriesOrQueriesId?: QueriesOrQueriesId,
   ): void =>
     useListener(
-      'ResultSortedRowIds',
+      RESULT + SORTED_ROW_IDS,
       useQueriesOrQueriesId(queriesOrQueriesId),
       listener,
       listenerDeps,
@@ -1216,7 +1217,7 @@ export const useResultRowListener: typeof useResultRowListenerDecl = (
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): void =>
   useListener(
-    'ResultRow',
+    RESULT + ROW,
     useQueriesOrQueriesId(queriesOrQueriesId),
     listener,
     listenerDeps,
@@ -1231,7 +1232,7 @@ export const useResultCellIdsListener: typeof useResultCellIdsListenerDecl = (
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): void =>
   useListener(
-    'ResultCellIds',
+    RESULT + CELL_IDS,
     useQueriesOrQueriesId(queriesOrQueriesId),
     listener,
     listenerDeps,
@@ -1247,7 +1248,7 @@ export const useResultCellListener: typeof useResultCellListenerDecl = (
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): void =>
   useListener(
-    'ResultCell',
+    RESULT + CELL,
     useQueriesOrQueriesId(queriesOrQueriesId),
     listener,
     listenerDeps,
