@@ -83,6 +83,7 @@ export const build = (outDir: string, api = true, pages = true): void => {
     .addJsFile('site/js/app.ts')
     .addJsFile('site/js/single.ts')
     .addFiles('lib/umd', ['js'], 'umd')
+    .addFile('tmp/ui-react-dom-debug.js', 'umd')
     .addFile('node_modules/react/umd/react.production.min.js', 'umd')
     .addFile('node_modules/react-dom/umd/react-dom.production.min.js', 'umd')
     .addLessFile('site/less/index.less')
