@@ -1,11 +1,12 @@
 /** @jsx createElement */
 
-import {POSITIONS, TITLE, createElement} from './common';
+import {POSITIONS, TITLE} from './common';
 import {useCreatePersister, useCreateStore} from '../ui-react';
 import {APP_STYLE} from './style';
 import {Nub} from './Nub';
 import {Panel} from './Panel';
 import {StoreInspectorProps} from '../types/ui-react-dom';
+import {createElement} from '../ui-react/common';
 import {createSessionPersister} from '../persisters/persister-browser';
 import {createStore} from '../store';
 

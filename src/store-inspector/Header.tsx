@@ -2,10 +2,11 @@
 
 import {CLOSE_SVG, LOGO_SVG, POSITIONS_SVG} from './svg';
 import {HEADER_STYLE, TITLE_STYLE} from './style';
-import {POSITIONS, TITLE, createElement} from './common';
+import {POSITIONS, TITLE} from './common';
 import {Button} from './Button';
 import {StoreProp} from './types';
 import {arrayMap} from '../common/array';
+import {createElement} from '../ui-react/common';
 import {getUndefined} from '../common/other';
 import {usePosition} from './hooks';
 import {useSetValueCallback} from '../ui-react';

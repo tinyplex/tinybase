@@ -1,10 +1,11 @@
 /** @jsx createElement */
 
-import {TITLE, createElement} from './common';
 import {useOpen, usePosition} from './hooks';
 import {Button} from './Button';
 import {LOGO_SVG} from './svg';
 import {StoreProp} from './types';
+import {TITLE} from './common';
+import {createElement} from '../ui-react/common';
 import {getNubStyle} from './style';
 import {useSetValueCallback} from '../ui-react';
 
