@@ -51,6 +51,7 @@ import {
   SortedTableInHtmlTableProps,
   SortedTablePaginator as SortedTablePaginatorDecl,
   SortedTablePaginatorProps,
+  StoreInspectorProps,
   TableInHtmlTable as TableInHtmlTableDecl,
   TableInHtmlTableProps,
   ValuesInHtmlTable as ValuesInHtmlTableDecl,
@@ -60,6 +61,7 @@ import {DEBUG, isArray, isString, isUndefined} from './common/other';
 import {Id, Ids} from './types/common';
 import React, {ComponentType} from 'react';
 import {objMap, objNew} from './common/obj';
+import {App as StoreInspectorApp} from './store-inspector/App';
 import {arrayMap} from './common/array';
 import {getProps} from './ui-react/common';
 
@@ -627,13 +629,5 @@ export const SortedTablePaginator: typeof SortedTablePaginatorDecl = ({
   );
 };
 
-type StoreInspectorProps = {
-  readonly position: 'top' | 'right' | 'bottom' | 'left';
-};
-
 export const StoreInspector = (props: StoreInspectorProps) =>
-  DEBUG ? <StoreInspectorImpl {...props} /> : null;
-
-const StoreInspectorImpl = ({position = 'bottom'}: StoreInspectorProps) => {
-  return position;
-};
+  DEBUG ? <StoreInspectorApp {...props} /> : null;
