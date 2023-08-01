@@ -138,6 +138,10 @@ export type SortedTablePaginatorProps = {
   readonly plural?: string;
 };
 
+type StoreInspectorProps = {
+  readonly position: 'top' | 'right' | 'bottom' | 'left';
+};
+
 /// TableInHtmlTable
 export function TableInHtmlTable(
   props: TableInHtmlTableProps & HtmlTableProps,
