@@ -170,8 +170,7 @@ table {
     text-align: left;
   }
   thead th {
-    border-top-width: 0;
-    border-color: #ccc;
+    border-bottom-color: #ccc;
   }
   button,
   input {
