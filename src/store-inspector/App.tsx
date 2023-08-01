@@ -1,6 +1,6 @@
 /** @jsx createElement */
 
-import {POSITIONS, createElement} from './common';
+import {POSITIONS, TITLE, createElement} from './common';
 import {useCreatePersister, useCreateStore} from '../ui-react';
 import {APP_STYLE} from './style';
 import {Nub} from './Nub';
@@ -13,12 +13,12 @@ export const App = ({
   position = 'right',
   open = false,
 }: StoreInspectorProps) => {
-  const store = useCreateStore(createStore);
+  const s = useCreateStore(createStore);
   const index = POSITIONS.indexOf(position);
 
   useCreatePersister(
-    store,
-    (store) => createSessionPersister(store, 'tinybaseStoreInspector'),
+    s,
+    (s) => createSessionPersister(s, TITLE),
     undefined,
     async (persister) => {
       await persister.load(undefined, {
@@ -31,8 +31,8 @@ export const App = ({
 
   return (
     <div style={APP_STYLE}>
-      <Nub store={store} />
-      <Panel store={store} />
+      <Nub s={s} />
+      <Panel s={s} />
     </div>
   );
 };
