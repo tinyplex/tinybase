@@ -2,7 +2,7 @@
 
 import {Style} from './types';
 import {createElement} from './common';
-import {getButtonStyle} from './styles';
+import {getButtonStyle} from './style';
 
 export const Button = ({
   svg,

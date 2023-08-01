@@ -5,7 +5,7 @@ import {Body} from './Body';
 import {Header} from './Header';
 import {StoreProp} from './types';
 import {createElement} from './common';
-import {getPanelStyle} from './styles';
+import {getPanelStyle} from './style';
 
 export const Panel = ({store}: StoreProp) => {
   const position = usePosition(store);
