@@ -12,9 +12,9 @@ export const Panel = ({s: store}: StoreProp) => {
   const open = useOpen(store);
 
   return open ? (
-    <div style={getPanelStyle(position)}>
+    <main style={getPanelStyle(position)}>
       <Header s={store} />
       <Body s={store} />
-    </div>
+    </main>
   ) : null;
 };

@@ -1,10 +1,12 @@
 /** @jsx createElement */
+/** @jsxFrag React.Fragment */
 
-import {POSITIONS, TITLE} from './common';
+import {POSITIONS, UNIQUE_ID} from './common';
 import {useCreatePersister, useCreateStore} from '../ui-react';
-import {APP_STYLE} from './style';
+import {APP_STYLESHEET} from './style';
 import {Nub} from './Nub';
 import {Panel} from './Panel';
+import React from 'react';
 import {StoreInspectorProps} from '../types/ui-react-dom';
 import {createElement} from '../ui-react/common';
 import {createSessionPersister} from '../persisters/persister-browser';
@@ -19,7 +21,7 @@ export const App = ({
 
   useCreatePersister(
     store,
-    (store) => createSessionPersister(store, TITLE),
+    (store) => createSessionPersister(store, UNIQUE_ID),
     undefined,
     async (persister) => {
       await persister.load(undefined, {
@@ -31,9 +33,12 @@ export const App = ({
   );
 
   return (
-    <div style={APP_STYLE}>
-      <Nub s={store} />
-      <Panel s={store} />
-    </div>
+    <>
+      <style>{APP_STYLESHEET}</style>
+      <aside id={UNIQUE_ID}>
+        <Nub s={store} />
+        <Panel s={store} />
+      </aside>
+    </>
   );
 };
