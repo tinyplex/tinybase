@@ -3,13 +3,11 @@
 import {useCreatePersister, useCreateStore} from '../ui-react';
 import {Nub} from './Nub';
 import {Panel} from './Panel';
-import React from 'react';
 import {StoreInspectorProps} from '../types/ui-react-dom';
+import {createElement} from './common';
 import {createSessionPersister} from '../persisters/persister-browser';
 import {createStore} from '../store';
 import {getAppStyle} from './styles';
-
-const {createElement} = React;
 
 export const App = ({
   position = 'right',
