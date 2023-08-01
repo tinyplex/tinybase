@@ -8,16 +8,21 @@ import {createElement} from '../ui-react/common';
 import {usePosition} from './hooks';
 import {useSetValueCallback} from '../ui-react';
 
-export const Header = ({s: store}: StoreProp) => {
-  const position = usePosition(store);
+export const Header = ({s: inspectorStore}: StoreProp) => {
+  const position = usePosition(inspectorStore);
 
-  const handleClose = useSetValueCallback('open', () => false, [], store);
+  const handleClose = useSetValueCallback(
+    'open',
+    () => false,
+    [],
+    inspectorStore,
+  );
   const handleDock = useSetValueCallback(
     'position',
     (event: React.MouseEvent<HTMLImageElement>) =>
       Number(event[CURRENT_TARGET].dataset.id),
     [],
-    store,
+    inspectorStore,
   );
 
   return (
