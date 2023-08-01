@@ -3,7 +3,7 @@
 import {BODY_STYLE} from './style';
 import {StoreProp} from './types';
 import {StoreView} from './StoreView';
-import {createElement} from './common';
+import {createElement} from '../ui-react/common';
 import {useStore} from '../ui-react';
 
 export const Body = (props: StoreProp) => {
