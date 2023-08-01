@@ -312,6 +312,7 @@ export const compileModule = async (
   const {default: gzipPlugin} = await import('rollup-plugin-gzip');
   const {default: prettierPlugin} = await import('rollup-plugin-prettier');
   const {default: shebang} = await import('rollup-plugin-preserve-shebang');
+  const {default: image} = await import('@rollup/plugin-image');
 
   let inputFile = `src/${module}.ts`;
   if (!existsSync(inputFile)) {
@@ -352,6 +353,7 @@ export const compileModule = async (
           : {}),
       }),
       shebang(),
+      image(),
     ].concat(
       terse
         ? [
