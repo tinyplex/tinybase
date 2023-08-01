@@ -8,11 +8,11 @@ import {StoreProp} from './types';
 import {getNubStyle} from './style';
 import {useSetValueCallback} from '../ui-react';
 
-export const Nub = ({s}: StoreProp) => {
-  const position = usePosition(s);
-  const open = useOpen(s);
+export const Nub = ({s: store}: StoreProp) => {
+  const position = usePosition(store);
+  const open = useOpen(store);
 
-  const handleOpen = useSetValueCallback('open', () => true, [], s);
+  const handleOpen = useSetValueCallback('open', () => true, [], store);
   return open ? null : (
     <Button
       onClick={handleOpen}
