@@ -10,15 +10,15 @@ import {getUndefined} from '../common/other';
 import {usePosition} from './hooks';
 import {useSetValueCallback} from '../ui-react';
 
-export const Header = ({s}: StoreProp) => {
-  const position = usePosition(s);
+export const Header = ({s: store}: StoreProp) => {
+  const position = usePosition(store);
 
-  const handleClose = useSetValueCallback('open', () => false, [], s);
+  const handleClose = useSetValueCallback('open', () => false, [], store);
   const handleDock = useSetValueCallback(
     'position',
     (position: number) => position,
     [],
-    s,
+    store,
   );
 
   return (

@@ -13,12 +13,12 @@ export const App = ({
   position = 'right',
   open = false,
 }: StoreInspectorProps) => {
-  const s = useCreateStore(createStore);
+  const store = useCreateStore(createStore);
   const index = POSITIONS.indexOf(position);
 
   useCreatePersister(
-    s,
-    (s) => createSessionPersister(s, TITLE),
+    store,
+    (store) => createSessionPersister(store, TITLE),
     undefined,
     async (persister) => {
       await persister.load(undefined, {
@@ -31,8 +31,8 @@ export const App = ({
 
   return (
     <div style={APP_STYLE}>
-      <Nub s={s} />
-      <Panel s={s} />
+      <Nub s={store} />
+      <Panel s={store} />
     </div>
   );
 };

@@ -7,14 +7,14 @@ import {StoreProp} from './types';
 import {createElement} from './common';
 import {getPanelStyle} from './style';
 
-export const Panel = ({s}: StoreProp) => {
-  const position = usePosition(s);
-  const open = useOpen(s);
+export const Panel = ({s: store}: StoreProp) => {
+  const position = usePosition(store);
+  const open = useOpen(store);
 
   return open ? (
     <div style={getPanelStyle(position)}>
-      <Header s={s} />
-      <Body s={s} />
+      <Header s={store} />
+      <Body s={store} />
     </div>
   ) : null;
 };
