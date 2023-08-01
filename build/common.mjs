@@ -330,6 +330,7 @@ export const compileModule = async (
       'yjs',
       './tinybase',
       './ui-react',
+      '../ui-react',
       './tools',
     ],
     input: inputFile,
