@@ -9,12 +9,15 @@ import {TablesView} from '../ui-react';
 import {createElement} from '../ui-react/common';
 
 export const TableView = (props: TableProps) => (
-  <SortedTableInHtmlTable
-    {...props}
-    limit={10}
-    paginator={true}
-    sortOnClick={true}
-  />
+  <details>
+    <summary>Table: {props.tableId}</summary>
+    <SortedTableInHtmlTable
+      {...props}
+      limit={10}
+      paginator={true}
+      sortOnClick={true}
+    />
+  </details>
 );
 
 export const StoreView = ({
@@ -24,7 +27,7 @@ export const StoreView = ({
 }: {readonly storeId: Id; readonly store: Store} & StoreProp) => {
   return (
     <details>
-      <summary>{storeId}</summary>
+      <summary>Store: {storeId}</summary>
       <TablesView store={store} tableComponent={TableView} />
     </details>
   );

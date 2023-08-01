@@ -24,7 +24,7 @@ export const APP_STYLESHEET = arrayJoin(
 
       // Panel
       main:
-        ';display:flex;flex-direction:column;background:#111d;color:#fff' +
+        'display:flex;flex-direction:column;background:#111d;color:#fff' +
         FIXED,
 
       // Header
@@ -43,7 +43,18 @@ export const APP_STYLESHEET = arrayJoin(
       // Body
       article: 'padding:0.25rem 0.25rem 0.25rem 0.5rem;overflow:auto',
       details: 'margin-left:0.75rem',
-      summary: 'margin-left:-0.75rem;line-height:1rem',
+      summary: 'margin-left:-0.75rem;line-height:1.25rem',
+
+      table: 'border-collapse:collapse;table-layout:fixed;margin-bottom:0.5rem',
+      thead: 'background:#222',
+      'th:nth-of-type(1)': 'max-width:2rem;min-width:2rem;',
+      'th.sorted': 'background:#000',
+      'table caption': 'text-align:left;white-space:nowrap',
+      button: 'width:1.5rem;border:none;background:none;color:#fff;padding:0',
+      'button[disabled]': 'color:#777',
+      'button.next': 'margin-right:0.5rem',
+      [`th,#${UNIQUE_ID} td`]:
+        'overflow:hidden;text-overflow:ellipsis;padding:0.25rem 0.5rem;max-width:12rem;white-space:nowrap;border-width:1px 0;border-style:solid;border-color:#777;text-align:left',
     },
     (style, selector) => `#${UNIQUE_ID} ${selector}{${style}}`,
   ),
