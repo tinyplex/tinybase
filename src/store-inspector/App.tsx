@@ -1,20 +1,20 @@
 /** @jsx createElement */
 
+import {POSITIONS, createElement} from './common';
 import {useCreatePersister, useCreateStore} from '../ui-react';
+import {APP_STYLE} from './style';
 import {Nub} from './Nub';
 import {Panel} from './Panel';
 import {StoreInspectorProps} from '../types/ui-react-dom';
-import {createElement} from './common';
 import {createSessionPersister} from '../persisters/persister-browser';
 import {createStore} from '../store';
-import {getAppStyle} from './styles';
 
 export const App = ({
   position = 'right',
   open = false,
 }: StoreInspectorProps) => {
   const store = useCreateStore(createStore);
-  const index = ['top', 'right', 'bottom', 'left'].indexOf(position);
+  const index = POSITIONS.indexOf(position);
 
   useCreatePersister(
     store,
@@ -30,7 +30,7 @@ export const App = ({
   );
 
   return (
-    <div style={getAppStyle()}>
+    <div style={APP_STYLE}>
       <Nub store={store} />
       <Panel store={store} />
     </div>

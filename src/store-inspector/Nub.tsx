@@ -1,11 +1,11 @@
 /** @jsx createElement */
 
+import {TITLE, createElement} from './common';
 import {useOpen, usePosition} from './hooks';
 import {Button} from './Button';
+import {LOGO_SVG} from './svg';
 import {StoreProp} from './types';
-import {createElement} from './common';
-import {getNubStyle} from './styles';
-import {logoSvg} from './svg';
+import {getNubStyle} from './style';
 import {useSetValueCallback} from '../ui-react';
 
 export const Nub = ({store}: StoreProp) => {
@@ -16,8 +16,8 @@ export const Nub = ({store}: StoreProp) => {
   return open ? null : (
     <Button
       onClick={handleOpen}
-      tooltip="TinyBase Store Inspector"
-      svg={logoSvg}
+      tooltip={TITLE}
+      svg={LOGO_SVG}
       style={getNubStyle(position)}
     />
   );
