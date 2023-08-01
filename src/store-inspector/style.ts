@@ -42,14 +42,14 @@ export const APP_STYLESHEET = arrayJoin(
 
       // Body
       article: 'padding:0.25rem 0.25rem 0.25rem 0.5rem;overflow:auto',
-      details: 'margin-left:0.75rem',
+      details: 'margin-left:0.75rem;width:fit-content;',
       summary: 'margin-left:-0.75rem;line-height:1.25rem',
 
       table: 'border-collapse:collapse;table-layout:fixed;margin-bottom:0.5rem',
       thead: 'background:#222',
       'th:nth-of-type(1)': 'max-width:2rem;min-width:2rem;',
       'th.sorted': 'background:#000',
-      'table caption': 'text-align:left;white-space:nowrap',
+      'table caption': 'text-align:left;white-space:nowrap;line-height:1.25rem',
       button: 'width:1.5rem;border:none;background:none;color:#fff;padding:0',
       'button[disabled]': 'color:#777',
       'button.next': 'margin-right:0.5rem',
