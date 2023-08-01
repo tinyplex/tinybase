@@ -13,9 +13,9 @@ import {StoreProp} from './types';
 import {createElement} from '../ui-react/common';
 import {objMerge} from '../common/obj';
 
-export const Panel = ({s: store}: StoreProp) => {
-  const position = usePosition(store);
-  const open = useOpen(store);
+export const Panel = ({s: inspectorStore}: StoreProp) => {
+  const position = usePosition(inspectorStore);
+  const open = useOpen(inspectorStore);
 
   return open ? (
     <main
@@ -24,8 +24,8 @@ export const Panel = ({s: store}: StoreProp) => {
         [HORIZONTAL_PANEL, VERTICAL_PANEL][position % 2],
       )}
     >
-      <Header s={store} />
-      <Body s={store} />
+      <Header s={inspectorStore} />
+      <Body s={inspectorStore} />
     </main>
   ) : null;
 };
