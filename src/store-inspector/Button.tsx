@@ -1,7 +1,7 @@
 /** @jsx createElement */
 
 import {Style} from './types';
-import {createElement} from './common';
+import {createElement} from '../ui-react/common';
 import {getButtonStyle} from './style';
 
 export const Button = ({

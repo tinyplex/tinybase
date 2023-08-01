@@ -4,7 +4,7 @@ import {useOpen, usePosition} from './hooks';
 import {Body} from './Body';
 import {Header} from './Header';
 import {StoreProp} from './types';
-import {createElement} from './common';
+import {createElement} from '../ui-react/common';
 import {getPanelStyle} from './style';
 
 export const Panel = ({s: store}: StoreProp) => {

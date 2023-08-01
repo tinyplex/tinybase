@@ -1,12 +1,12 @@
 /** @jsx createElement */
 
 import {Id} from '../types/common';
-import {SortedTableInHtmlTable} from '../ui-react-dom';
+import {SortedTableInHtmlTable} from '../ui-react/dom';
 import {Store} from '../types/store';
 import {StoreProp} from './types';
 import {TableProps} from '../types/ui-react';
 import {TablesView} from '../ui-react';
-import {createElement} from './common';
+import {createElement} from '../ui-react/common';
 
 export const TableView = (props: TableProps) => (
   <SortedTableInHtmlTable
