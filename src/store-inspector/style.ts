@@ -30,7 +30,7 @@ export const TITLE_STYLE: Style = objMerge({
   textOverflow: 'ellipsis',
   marginLeft: '0.25rem',
 });
-export const BODY_STYLE: Style = objMerge(PADDING);
+export const BODY_STYLE: Style = objMerge(PADDING, {overflow: 'auto'});
 
 export const getNubStyle = (position: Position): Style =>
   objMerge(
