@@ -1,13 +1,10 @@
 /** @jsx createElement */
 
-import {CLOSE_SVG, LOGO_SVG, POSITIONS_SVG} from './svg';
-import {HEADER_STYLE, TITLE_STYLE} from './style';
 import {POSITIONS, TITLE} from './common';
-import {Button} from './Button';
+import {CURRENT_TARGET} from '../common/strings';
 import {StoreProp} from './types';
 import {arrayMap} from '../common/array';
 import {createElement} from '../ui-react/common';
-import {getUndefined} from '../common/other';
 import {usePosition} from './hooks';
 import {useSetValueCallback} from '../ui-react';
 
@@ -17,27 +14,27 @@ export const Header = ({s: store}: StoreProp) => {
   const handleClose = useSetValueCallback('open', () => false, [], store);
   const handleDock = useSetValueCallback(
     'position',
-    (position: number) => position,
+    (event: React.MouseEvent<HTMLImageElement>) =>
+      Number(event[CURRENT_TARGET].dataset.id),
     [],
     store,
   );
 
   return (
-    <div style={HEADER_STYLE}>
-      <Button onClick={getUndefined} tooltip={TITLE} svg={LOGO_SVG} />
-      <span style={TITLE_STYLE}>{TITLE}</span>
+    <header>
+      <img title={TITLE} />
+      <span>{TITLE}</span>
       {arrayMap(POSITIONS, (name, p) =>
         p == position ? null : (
-          <Button
-            // eslint-disable-next-line react/jsx-no-bind
-            onClick={() => handleDock(p)}
-            svg={POSITIONS_SVG[p]}
-            tooltip={'Dock to ' + name}
+          <img
+            onClick={handleDock}
+            data-id={p}
+            title={'Dock to ' + name}
             key={p}
           />
         ),
       )}
-      <Button tooltip="Close" onClick={handleClose} svg={CLOSE_SVG} />
-    </div>
+      <img onClick={handleClose} title="Close" />
+    </header>
   );
 };

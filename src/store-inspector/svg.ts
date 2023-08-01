@@ -1,13 +1,18 @@
 /* eslint-disable max-len */
-import {arrayMap} from '../common/array';
-
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-export {default as LOGO_SVG} from '../../site/extras/favicon.svg';
+import LOGO from '../../site/extras/favicon.svg';
+import {arrayMap} from '../common/array';
+
+const PRE_CSS = 'content:url("';
+const POST_CSS = '")';
 
 const PRE =
-  'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" stroke-width="4" stroke="white">';
-const POST = '</svg>';
+  PRE_CSS +
+  `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' stroke-width='4' stroke='white'>`;
+const POST = `</svg>` + POST_CSS;
+
+export const LOGO_SVG = PRE_CSS + LOGO + POST_CSS;
 
 export const POSITIONS_SVG = arrayMap(
   [
@@ -18,8 +23,8 @@ export const POSITIONS_SVG = arrayMap(
   ],
   ([x, y, w, h]) =>
     PRE +
-    `<rect x="20" y="20" width="60" height="60" fill="grey"/><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="white"/>` +
+    `<rect x='20' y='20' width='60' height='60' fill='grey'/><rect x='${x}' y='${y}' width='${w}' height='${h}' fill='white'/>` +
     POST,
 );
 
-export const CLOSE_SVG = PRE + '<path d="M20 20l60 60M20 80l60-60" />' + POST;
+export const CLOSE_SVG = PRE + `<path d='M20 20l60 60M20 80l60-60' />` + POST;

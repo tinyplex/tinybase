@@ -1,12 +1,10 @@
 /** @jsx createElement */
 
+import {BOTTOM_LEFT, BOTTOM_RIGHT, TOP_RIGHT} from './style';
 import {useOpen, usePosition} from './hooks';
-import {Button} from './Button';
-import {LOGO_SVG} from './svg';
 import {StoreProp} from './types';
 import {TITLE} from './common';
 import {createElement} from '../ui-react/common';
-import {getNubStyle} from './style';
 import {useSetValueCallback} from '../ui-react';
 
 export const Nub = ({s: store}: StoreProp) => {
@@ -15,11 +13,10 @@ export const Nub = ({s: store}: StoreProp) => {
 
   const handleOpen = useSetValueCallback('open', () => true, [], store);
   return open ? null : (
-    <Button
+    <img
       onClick={handleOpen}
-      tooltip={TITLE}
-      svg={LOGO_SVG}
-      style={getNubStyle(position)}
+      title={TITLE}
+      style={[TOP_RIGHT, BOTTOM_RIGHT, BOTTOM_RIGHT, BOTTOM_LEFT][position]}
     />
   );
 };
