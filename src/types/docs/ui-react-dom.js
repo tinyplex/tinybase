@@ -314,6 +314,24 @@
  * @since v4.1.0
  */
 /// SortedTablePaginatorProps
+{
+  /**
+   * An optional string to indicate where you want the inspector to first
+   * appear.
+   */
+  /// StoreInspectorProps.position
+  /**
+   * An optional boolean to indicate whether the inspector should start in the
+   * opened state.
+   */
+  /// StoreInspectorProps.open
+}
+/**
+ * StoreInspectorProps props are used to configure the StoreInspector component.
+ * @category Props
+ * @since v4.1.0
+ */
+/// StoreInspectorProps
 /**
  * The TableInHtmlTable component renders the contents of a single Table in a
  * Store as an HTML <table> element, and registers a listener so that any
@@ -1161,3 +1179,39 @@
  * @since v4.1.0
  */
 /// SortedTablePaginator
+/**
+ * The StoreInspector component renders a tool which allows you to view and edit
+ * the content of a Store in a debug web environment.
+ *
+ * The component displays a nub in the corner of the screen which you may then
+ * click to interact with all the Store objects in the Provider component
+ * context.
+ *
+ * The component's props identify the nub's initial location and panel state,
+ * though subsequent user changes to that will be preserved on each reload.
+ * @param props The props for this component.
+ * @returns The rendering of the inspector tool.
+ * @example
+ * This example creates a Provider context into which a default Store is
+ * provided. The StoreInspector component within it then renders the inspector
+ * tool.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => <StoreInspector />;
+ *
+ * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * // ... // !act
+ * console.log(app.innerHTML.substring(0, 35));
+ * // -> '<aside id="tinybaseStoreInspector">'
+ * ```
+ * @category Development components
+ * @since v4.1.0
+ */
+/// StoreInspector
