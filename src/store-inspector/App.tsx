@@ -34,11 +34,11 @@ export const App = ({
 
   return (
     <>
-      <style>{APP_STYLESHEET}</style>
       <aside id={UNIQUE_ID}>
         <Nub s={s} />
         <Panel s={s} />
       </aside>
+      <style>{APP_STYLESHEET}</style>
     </>
   );
 };

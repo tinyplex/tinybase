@@ -8,13 +8,20 @@ import {
   ResultTableInHtmlTable,
   SortedTableInHtmlTable,
   SortedTablePaginator,
+  StoreInspector,
   TableInHtmlTable,
   ValuesInHtmlTable,
 } from 'tinybase/debug/ui-react-dom';
 import {Ids, Queries, Store, createQueries, createStore} from 'tinybase/debug';
-import {ReactTestRenderer, act, create} from 'react-test-renderer';
+import {
+  ReactTestRenderer,
+  ReactTestRendererJSON,
+  act,
+  create,
+} from 'react-test-renderer';
 import {ExtraProps} from 'tinybase/debug/ui-react';
 import React from 'react';
+import {pause} from '../common/other';
 
 let store: Store;
 let queries: Queries;
@@ -4047,6 +4054,48 @@ describe('SortedTablePaginator', () => {
         " ",
         "rows",
       ]
+    `);
+  });
+});
+
+describe('StoreInspector', () => {
+  test('basic', async () => {
+    sessionStorage.clear();
+    act(() => {
+      renderer = create(<StoreInspector />);
+    });
+    await act(pause);
+    expect((renderer.toJSON() as ReactTestRendererJSON[])[0])
+      .toMatchInlineSnapshot(`
+      <aside
+        id="tinybaseStoreInspector"
+      >
+        <img
+          data-position={1}
+          onClick={[Function]}
+          title="TinyBase Store Inspector"
+        />
+      </aside>
+    `);
+  });
+
+  test('position', async () => {
+    sessionStorage.clear();
+    act(() => {
+      renderer = create(<StoreInspector position="left" />);
+    });
+    await act(pause);
+    expect((renderer.toJSON() as ReactTestRendererJSON[])[0])
+      .toMatchInlineSnapshot(`
+      <aside
+        id="tinybaseStoreInspector"
+      >
+        <img
+          data-position={3}
+          onClick={[Function]}
+          title="TinyBase Store Inspector"
+        />
+      </aside>
     `);
   });
 });
