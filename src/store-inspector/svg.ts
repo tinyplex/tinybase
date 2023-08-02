@@ -20,6 +20,7 @@ export const POSITIONS_SVG = arrayMap(
     [60, 20, 20, 60],
     [20, 60, 60, 20],
     [20, 20, 20, 60],
+    [30, 30, 40, 40],
   ],
   ([x, y, w, h]) =>
     PRE +
