@@ -12,10 +12,10 @@ import {
   useRelationships as useRelationshipsDecl,
   useStore as useStoreDecl,
 } from '../types/ui-react';
-import {IdObj, objGet} from '../common/obj';
+import {Id, Ids} from '../types/common';
+import {IdObj, objGet, objIds} from '../common/obj';
 import {isString, isUndefined} from '../common/other';
 import {Checkpoints} from '../types/checkpoints';
-import {Id} from '../types/common';
 import {Indexes} from '../types/indexes';
 import {Metrics} from '../types/metrics';
 import {Queries} from '../types/queries';
@@ -81,6 +81,9 @@ const useThingOrThingId = <
     ? (thing as Thing | undefined)
     : (thingOrThingId as Thing);
 };
+
+export const useThingIds = (offset: number): Ids =>
+  objIds(useContext(Context)[offset] as IdObj<unknown>);
 
 export const useStore: typeof useStoreDecl = (id?: Id): Store | undefined =>
   useThing(id, 0);

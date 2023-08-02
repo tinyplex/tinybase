@@ -31,6 +31,7 @@ import {
   useCheckpointIdsListener,
   useCheckpointListener,
   useCheckpoints,
+  useCheckpointsIds,
   useCreateCheckpoints,
   useCreateIndexes,
   useCreateMetrics,
@@ -48,6 +49,7 @@ import {
   useGoForwardCallback,
   useGoToCallback,
   useIndexes,
+  useIndexesIds,
   useLinkedRowIds,
   useLinkedRowIdsListener,
   useLocalRowIds,
@@ -55,9 +57,12 @@ import {
   useMetric,
   useMetricListener,
   useMetrics,
+  useMetricsIds,
   useQueries,
+  useQueriesIds,
   useRedoInformation,
   useRelationships,
+  useRelationshipsIds,
   useRemoteRowId,
   useRemoteRowIdListener,
   useResultCell,
@@ -98,6 +103,7 @@ import {
   useSortedRowIds,
   useSortedRowIdsListener,
   useStore,
+  useStoreIds,
   useTable,
   useTableCellIds,
   useTableCellIdsListener,
@@ -571,6 +577,96 @@ describe('Context Hooks', () => {
       );
     });
     expect(renderer.toJSON()).toEqual(JSON.stringify([['0'], '1', []]));
+    expect(didRender).toHaveBeenCalledTimes(1);
+  });
+
+  test('useStoreIds', () => {
+    const Test = () => didRender(<>{JSON.stringify(useStoreIds())}</>);
+    const store1 = createStore();
+    const store2 = createStore();
+    act(() => {
+      renderer = create(
+        <Provider storesById={{store1, store2}}>
+          <Test />
+        </Provider>,
+      );
+    });
+    expect(renderer.toJSON()).toEqual('["store1","store2"]');
+    expect(didRender).toHaveBeenCalledTimes(1);
+  });
+
+  test('useMetricsIds', () => {
+    const Test = () => didRender(<>{JSON.stringify(useMetricsIds())}</>);
+    const metrics1 = createMetrics(createStore());
+    const metrics2 = createMetrics(createStore());
+    act(() => {
+      renderer = create(
+        <Provider metricsById={{metrics1, metrics2}}>
+          <Test />
+        </Provider>,
+      );
+    });
+    expect(renderer.toJSON()).toEqual('["metrics1","metrics2"]');
+    expect(didRender).toHaveBeenCalledTimes(1);
+  });
+
+  test('useIndexesIds', () => {
+    const Test = () => didRender(<>{JSON.stringify(useIndexesIds())}</>);
+    const indexes1 = createIndexes(createStore());
+    const indexes2 = createIndexes(createStore());
+    act(() => {
+      renderer = create(
+        <Provider indexesById={{indexes1, indexes2}}>
+          <Test />
+        </Provider>,
+      );
+    });
+    expect(renderer.toJSON()).toEqual('["indexes1","indexes2"]');
+    expect(didRender).toHaveBeenCalledTimes(1);
+  });
+
+  test('useRelationshipsIds', () => {
+    const Test = () => didRender(<>{JSON.stringify(useRelationshipsIds())}</>);
+    const relationships1 = createRelationships(createStore());
+    const relationships2 = createRelationships(createStore());
+    act(() => {
+      renderer = create(
+        <Provider relationshipsById={{relationships1, relationships2}}>
+          <Test />
+        </Provider>,
+      );
+    });
+    expect(renderer.toJSON()).toEqual('["relationships1","relationships2"]');
+    expect(didRender).toHaveBeenCalledTimes(1);
+  });
+
+  test('useQueriesIds', () => {
+    const Test = () => didRender(<>{JSON.stringify(useQueriesIds())}</>);
+    const queries1 = createQueries(createStore());
+    const queries2 = createQueries(createStore());
+    act(() => {
+      renderer = create(
+        <Provider queriesById={{queries1, queries2}}>
+          <Test />
+        </Provider>,
+      );
+    });
+    expect(renderer.toJSON()).toEqual('["queries1","queries2"]');
+    expect(didRender).toHaveBeenCalledTimes(1);
+  });
+
+  test('useCheckpointsIds', () => {
+    const Test = () => didRender(<>{JSON.stringify(useCheckpointsIds())}</>);
+    const checkpoints1 = createCheckpoints(createStore());
+    const checkpoints2 = createCheckpoints(createStore());
+    act(() => {
+      renderer = create(
+        <Provider checkpointsById={{checkpoints1, checkpoints2}}>
+          <Test />
+        </Provider>,
+      );
+    });
+    expect(renderer.toJSON()).toEqual('["checkpoints1","checkpoints2"]');
     expect(didRender).toHaveBeenCalledTimes(1);
   });
 });
