@@ -1,45 +1,64 @@
 /** @jsx createElement */
 
-import {TablesView, useCell, useSetCellCallback} from '../ui-react';
-import {CURRENT_TARGET} from '../common/strings';
+import {ExtraProps, TableProps} from '../types/ui-react';
+import {TablesView, useStore} from '../ui-react';
+import {getUniqueId, useToggle} from './common';
+import {DEFAULT} from '../common/strings';
 import {Id} from '../types/common';
-import {SortedTableInHtmlTable} from '../ui-react/dom';
-import {Store} from '../types/store';
+import React from 'react';
+import {SortedTableInHtmlTable} from '../ui-react-dom';
 import {StoreProp} from './types';
-import {TableProps} from '../types/ui-react';
 import {createElement} from '../ui-react/common';
+import {isUndefined} from '../common/other';
 
-export const TableView = (props: TableProps) => (
-  <details>
-    <summary>Table: {props.tableId}</summary>
-    <SortedTableInHtmlTable
-      {...props}
-      limit={10}
-      paginator={true}
-      sortOnClick={true}
-    />
-  </details>
-);
+const {useCallback} = React;
 
-export const StoreView = ({
+const TableView = ({
   storeId,
-  store,
   s: inspectorStore,
-}: {readonly storeId: Id; readonly store: Store} & StoreProp) => {
-  const open = !!useCell('stores', storeId, 'open', inspectorStore);
-  const handleToggle = useSetCellCallback(
-    'stores',
-    storeId,
-    'open',
-    (event: React.SyntheticEvent<HTMLDetailsElement>) =>
-      event[CURRENT_TARGET].open,
-    [],
+  ...props
+}: TableProps & ExtraProps) => {
+  const [open, handleToggle] = useToggle(
+    'table',
+    getUniqueId(storeId, props.tableId),
     inspectorStore,
   );
   return (
     <details open={open} onToggle={handleToggle}>
-      <summary>Store: {storeId}</summary>
-      <TablesView store={store} tableComponent={TableView} />
+      <summary>Table: {props.tableId}</summary>
+      <SortedTableInHtmlTable
+        {...props}
+        limit={10}
+        paginator={true}
+        sortOnClick={true}
+      />
+    </details>
+  );
+};
+
+export const StoreView = ({
+  storeId,
+  s: inspectorStore,
+}: {readonly storeId?: Id} & StoreProp) => {
+  const store = useStore(storeId);
+  const [open, handleToggle] = useToggle(
+    'store',
+    getUniqueId(storeId),
+    inspectorStore,
+  );
+  const getTableComponentProps = useCallback(
+    () => ({storeId, s: inspectorStore}),
+    [storeId, inspectorStore],
+  );
+
+  return isUndefined(store) ? null : (
+    <details open={open} onToggle={handleToggle}>
+      <summary>Store: {storeId ?? DEFAULT}</summary>
+      <TablesView
+        store={store}
+        tableComponent={TableView}
+        getTableComponentProps={getTableComponentProps}
+      />
     </details>
   );
 };
