@@ -16,12 +16,12 @@ export const App = ({
   position = 'right',
   open = false,
 }: StoreInspectorProps) => {
-  const inspectorStore = useCreateStore(createStore);
+  const s = useCreateStore(createStore); // The inspector's Store throughout.
   const index = POSITIONS.indexOf(position);
 
   useCreatePersister(
-    inspectorStore,
-    (inspectorStore) => createSessionPersister(inspectorStore, UNIQUE_ID),
+    s,
+    (s) => createSessionPersister(s, UNIQUE_ID),
     undefined,
     async (persister) => {
       await persister.load(undefined, {
@@ -36,8 +36,8 @@ export const App = ({
     <>
       <style>{APP_STYLESHEET}</style>
       <aside id={UNIQUE_ID}>
-        <Nub s={inspectorStore} />
-        <Panel s={inspectorStore} />
+        <Nub s={s} />
+        <Panel s={s} />
       </aside>
     </>
   );

@@ -13,15 +13,11 @@ import {isUndefined} from '../common/other';
 
 const {useCallback} = React;
 
-const TableView = ({
-  storeId,
-  s: inspectorStore,
-  ...props
-}: TableProps & ExtraProps) => {
+const TableView = ({storeId, s, ...props}: TableProps & ExtraProps) => {
   const [open, handleToggle] = useToggle(
     'table',
     getUniqueId(storeId, props.tableId),
-    inspectorStore,
+    s,
   );
   return (
     <details open={open} onToggle={handleToggle}>
@@ -38,17 +34,13 @@ const TableView = ({
 
 export const StoreView = ({
   storeId,
-  s: inspectorStore,
+  s,
 }: {readonly storeId?: Id} & StoreProp) => {
   const store = useStore(storeId);
-  const [open, handleToggle] = useToggle(
-    'store',
-    getUniqueId(storeId),
-    inspectorStore,
-  );
+  const [open, handleToggle] = useToggle('store', getUniqueId(storeId), s);
   const getTableComponentProps = useCallback(
-    () => ({storeId, s: inspectorStore}),
-    [storeId, inspectorStore],
+    () => ({storeId, s: s}),
+    [storeId, s],
   );
 
   return isUndefined(store) ? null : (
