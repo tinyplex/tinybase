@@ -138,8 +138,11 @@ export type SortedTablePaginatorProps = {
   readonly plural?: string;
 };
 
-type StoreInspectorProps = {
+/// StoreInspectorProps
+export type StoreInspectorProps = {
+  /// StoreInspectorProps.position
   readonly position?: 'top' | 'right' | 'bottom' | 'left' | 'full';
+  /// StoreInspectorProps.open
   readonly open?: boolean;
 };
 
@@ -182,3 +185,6 @@ export function EditableValueView(
 export function SortedTablePaginator(
   props: SortedTablePaginatorProps,
 ): ComponentReturnType;
+
+/// StoreInspector
+export function StoreInspector(props: StoreInspectorProps): ComponentReturnType;

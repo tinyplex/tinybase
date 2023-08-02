@@ -178,6 +178,14 @@ export type SortedTablePaginatorProps = {
   readonly plural?: string;
 };
 
+/// StoreInspectorProps
+export type StoreInspectorProps = {
+  /// StoreInspectorProps.position
+  readonly position?: 'top' | 'right' | 'bottom' | 'left' | 'full';
+  /// StoreInspectorProps.open
+  readonly open?: boolean;
+};
+
 export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// TableInHtmlTable
   TableInHtmlTable: (
@@ -218,4 +226,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   SortedTablePaginator: (
     props: SortedTablePaginatorProps,
   ) => ComponentReturnType;
+
+  /// StoreInspector
+  StoreInspector: (props: StoreInspectorProps) => ComponentReturnType;
 };
