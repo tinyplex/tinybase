@@ -6,7 +6,7 @@ import {getUniqueId, useToggle} from './common';
 import {DEFAULT} from '../common/strings';
 import {Id} from '../types/common';
 import React from 'react';
-import {SortedTableInHtmlTable} from '../ui-react-dom';
+import {SortedTableInHtmlTable} from '../ui-react/dom';
 import {StoreProp} from './types';
 import {createElement} from '../ui-react/common';
 import {isUndefined} from '../common/other';
@@ -27,6 +27,7 @@ const TableView = ({storeId, s, ...props}: TableProps & ExtraProps) => {
         limit={10}
         paginator={true}
         sortOnClick={true}
+        editable={true}
       />
     </details>
   );
