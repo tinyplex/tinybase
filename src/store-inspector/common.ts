@@ -10,7 +10,7 @@ export const POSITIONS = ['top', 'right', 'bottom', 'left'];
 
 export const getUniqueId = (...args: (Id | undefined)[]) => jsonString(args);
 
-export const useToggle = (
+export const useOpen = (
   thingType: Id,
   thingId: Id,
   inspectorStore: Store,
