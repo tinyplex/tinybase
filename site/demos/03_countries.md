@@ -14,7 +14,11 @@ First, we pull in React, ReactDOM, and TinyBase:
 <script src="/umd/persister-browser.js"></script>
 <script src="/umd/persister-remote.js"></script>
 <script src="/umd/ui-react.js"></script>
+<script src="/umd/ui-react-dom-debug.js"></script>
 ```
+
+We add the debug version of the ui-react-dom module so that we can add the
+StoreInspector component for the purposes of seeing how the data is structured.
 
 We import the functions and components we need:
 
@@ -39,6 +43,7 @@ const {
 } = TinyBaseUiReact;
 const {createRemotePersister} = TinyBasePersisterRemote;
 const {useCallback} = React;
+const {StoreInspector} = TinyBaseUiReactDomDebug;
 ```
 
 We also set up some string constants for showing star emojis:
@@ -162,10 +167,14 @@ objects, and the Indexes objects:
     >
       <Filters />
       <Countries />
+      <StoreInspector />
     </Provider>
   );
 };
 ```
+
+(We also sneaked in a StoreInspector component so you can inspect what is going
+on with the data. Simply click the TinyBase logo in the corner of the demo.)
 
 We also use a simple grid layout to arrange the app:
 
