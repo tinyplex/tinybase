@@ -1,58 +1,61 @@
 /** @jsx createElement */
 
-import {ExtraProps, TableProps, ValuesProps} from '../types/ui-react';
 import {SortedTableInHtmlTable, ValuesInHtmlTable} from '../ui-react/dom';
+import {TableProps, ValuesProps} from '../types/ui-react';
 import {arrayIsEmpty, arrayMap} from '../common/array';
-import {getUniqueId, useOpen} from './common';
 import {useStore, useTableIds, useValueIds} from '../ui-react';
 import {DEFAULT} from '../common/strings';
+import {Details} from './Details';
 import {Id} from '../types/common';
 import {StoreProp} from './types';
 import {createElement} from '../ui-react/common';
+import {getUniqueId} from './common';
 import {isUndefined} from '../common/other';
 
 const StoreTableView = ({
-  storeId,
-  store,
   tableId,
+  store,
+  storeId,
   s,
-}: TableProps & ExtraProps) => {
-  const [open, setOpen] = useOpen('table', getUniqueId(storeId, tableId), s);
-  return (
-    <details open={open} onToggle={setOpen}>
-      <summary>Table: {tableId}</summary>
-      <SortedTableInHtmlTable
-        tableId={tableId}
-        store={store}
-        limit={10}
-        paginator={true}
-        sortOnClick={true}
-      />
-    </details>
-  );
-};
+}: TableProps & {readonly storeId?: Id} & StoreProp) => (
+  <Details
+    uniqueId={getUniqueId('t', storeId, tableId)}
+    summary={'Table: ' + tableId}
+    s={s}
+  >
+    <SortedTableInHtmlTable
+      tableId={tableId}
+      store={store}
+      limit={10}
+      paginator={true}
+      sortOnClick={true}
+    />
+  </Details>
+);
 
-const StoreValuesView = ({storeId, store, s}: ValuesProps & ExtraProps) => {
-  const [open, setOpen] = useOpen('values', getUniqueId(storeId), s);
-  return arrayIsEmpty(useValueIds(store)) ? null : (
-    <details open={open} onToggle={setOpen}>
-      <summary>Values</summary>
+const StoreValuesView = ({
+  store,
+  storeId,
+  s,
+}: ValuesProps & {readonly storeId?: Id} & StoreProp) =>
+  arrayIsEmpty(useValueIds(store)) ? null : (
+    <Details uniqueId={getUniqueId('v', storeId)} summary="Values" s={s}>
       <ValuesInHtmlTable store={store} />
-    </details>
+    </Details>
   );
-};
 
 export const StoreView = ({
   storeId,
   s,
 }: {readonly storeId?: Id} & StoreProp) => {
   const store = useStore(storeId);
-  const [open, setOpen] = useOpen('store', getUniqueId(storeId), s);
   const tableIds = useTableIds(store);
-
   return isUndefined(store) ? null : (
-    <details open={open} onToggle={setOpen}>
-      <summary>Store: {storeId ?? DEFAULT}</summary>
+    <Details
+      uniqueId={getUniqueId('s', storeId)}
+      summary={'Store: ' + (storeId ?? DEFAULT)}
+      s={s}
+    >
       <StoreValuesView storeId={storeId} store={store} s={s} />
       {arrayMap(tableIds, (tableId) => (
         <StoreTableView
@@ -62,6 +65,6 @@ export const StoreView = ({
           s={s}
         />
       ))}
-    </details>
+    </Details>
   );
 };
