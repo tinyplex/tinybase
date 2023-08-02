@@ -7,16 +7,11 @@ import {TITLE} from './common';
 import {createElement} from '../ui-react/common';
 import {useSetValueCallback} from '../ui-react';
 
-export const Nub = ({s: inspectorStore}: StoreProp) => {
-  const position = usePosition(inspectorStore);
-  const open = useOpen(inspectorStore);
+export const Nub = ({s}: StoreProp) => {
+  const position = usePosition(s);
+  const open = useOpen(s);
 
-  const handleOpen = useSetValueCallback(
-    'open',
-    () => true,
-    [],
-    inspectorStore,
-  );
+  const handleOpen = useSetValueCallback('open', () => true, [], s);
   return open ? null : (
     <img
       onClick={handleOpen}
