@@ -4,33 +4,43 @@ import {arrayJoin, arrayMap} from '../common/array';
 import {objMap, objNew} from '../common/obj';
 import {UNIQUE_ID} from './common';
 
-const FIXED = ';position:fixed';
-
-export const TOP_RIGHT = {top: 0, right: 0};
-export const BOTTOM_RIGHT = {bottom: 0, right: 0};
-export const BOTTOM_LEFT = {bottom: 0, left: 0};
-export const HORIZONTAL_PANEL = {width: '100vw', height: '30vh'};
-export const VERTICAL_PANEL = {width: '30vw', height: '100vh'};
-
 export const APP_STYLESHEET = arrayJoin(
   objMap(
     {
-      '': 'all:initial;font-family:sans-serif;font-size:0.75rem' + FIXED,
+      '': 'all:initial;font-family:sans-serif;font-size:0.75rem;position:fixed',
       '*': 'all:revert',
       img: 'width:1rem;height:1rem;background:#111;border:0',
 
       // Nub
-      '>img': `width:1.5rem;height:1.5rem;padding:0.25rem;${LOGO_SVG}` + FIXED,
+      '>img':
+        'width:1.5rem;height:1.5rem;padding:0.25rem;bottom:0;right:0;position:fixed;' +
+        LOGO_SVG,
+      ...objNew(
+        arrayMap(['top:0;right:0', null, null, 'bottom:0;left:0'], (css, p) => [
+          `>img[data-position='${p}']`,
+          css,
+        ]),
+      ),
 
       // Panel
-      main:
-        'display:flex;flex-direction:column;background:#111d;color:#fff' +
-        FIXED,
+      main: 'display:flex;flex-direction:column;background:#111d;color:#fff;position:fixed;',
+      ...objNew(
+        arrayMap(
+          [
+            'top:0;right:0;width:100vw;height:30vh',
+            'top:0;right:0;width:35vw;height:100vh',
+            'bottom:0;left:0;width:100vw;height:30vh',
+            'bottom:0;left:0;width:35vw;height:100vh',
+            'top:0;right:0;width:100vw;height:100vh',
+          ],
+          (css, p) => [`main[data-position='${p}']`, css],
+        ),
+      ),
 
       // Header
       header: 'display:flex;padding:0.25rem;background:#000;align-items:center',
       'header>img:nth-of-type(1)': LOGO_SVG,
-      'header>img:nth-of-type(5)': CLOSE_SVG,
+      'header>img:nth-of-type(6)': CLOSE_SVG,
       ...objNew(
         arrayMap(POSITIONS_SVG, (SVG, p) => [
           `header>img[data-id='${p}']`,
@@ -56,6 +66,6 @@ export const APP_STYLESHEET = arrayJoin(
       [`th,#${UNIQUE_ID} td`]:
         'overflow:hidden;text-overflow:ellipsis;padding:0.25rem 0.5rem;max-width:12rem;white-space:nowrap;border-width:1px 0;border-style:solid;border-color:#777;text-align:left',
     },
-    (style, selector) => `#${UNIQUE_ID} ${selector}{${style}}`,
+    (style, selector) => (style ? `#${UNIQUE_ID} ${selector}{${style}}` : ''),
   ),
 );
