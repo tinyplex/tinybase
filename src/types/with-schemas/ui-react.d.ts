@@ -121,6 +121,24 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// UndoOrRedoInformation
   UndoOrRedoInformation: UndoOrRedoInformation;
 
+  /// useStoreIds
+  useStoreIds: () => Ids;
+
+  /// useMetricsIds
+  useMetricsIds: () => Ids;
+
+  /// useIndexesIds
+  useIndexesIds: () => Ids;
+
+  /// useRelationshipsIds
+  useRelationshipsIds: () => Ids;
+
+  /// useQueriesIds
+  useQueriesIds: () => Ids;
+
+  /// useCheckpointsIds
+  useCheckpointsIds: () => Ids;
+
   /// useCreateStore
   useCreateStore: (
     create: () => Store<Schemas>,

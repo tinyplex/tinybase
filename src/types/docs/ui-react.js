@@ -135,6 +135,185 @@
  */
 /// UndoOrRedoInformation
 /**
+ * The useStoreIds hook is used to retrieve the Ids of all the named Store
+ * objects present in the current Provider component context.
+ * @returns A list of the Ids in the context.
+ * @example
+ * This example adds two named Store objects to a Provider context and an inner
+ * component accesses their Ids.
+ *
+ * ```jsx
+ * const App = ({store}) => {
+ *   const store1 = useCreateStore(createStore);
+ *   const store2 = useCreateStore(createStore);
+ *   return (
+ *     <Provider storesById={{store1, store2}}>
+ *       <Pane />
+ *     </Provider>
+ *   );
+ * };
+ * const Pane = () => <span>{JSON.stringify(useStoreIds())}</span>;
+ *
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["store1","store2"]</span>'
+ * ```
+ */
+/// useStoreIds
+/**
+ * The useMetricsIds hook is used to retrieve the Ids of all the named Metrics
+ * objects present in the current Provider component context.
+ * @returns A list of the Ids in the context.
+ * @example
+ * This example adds two named Metrics objects to a Provider context and an
+ * inner component accesses their Ids.
+ *
+ * ```jsx
+ * const App = ({store}) => {
+ *   const store1 = useCreateStore(createStore);
+ *   const metrics1 = useCreateMetrics(store1, createMetrics);
+ *   const store2 = useCreateStore(createStore);
+ *   const metrics2 = useCreateMetrics(store2, createMetrics);
+ *   return (
+ *     <Provider metricsById={{metrics1, metrics2}}>
+ *       <Pane />
+ *     </Provider>
+ *   );
+ * };
+ * const Pane = () => <span>{JSON.stringify(useMetricsIds())}</span>;
+ *
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["metrics1","metrics2"]</span>'
+ * ```
+ */
+/// useMetricsIds
+/**
+ * The useIndexesIds hook is used to retrieve the Ids of all the named Indexes
+ * objects present in the current Provider component context.
+ * @returns A list of the Ids in the context.
+ * @example
+ * This example adds two named Indexes objects to a Provider context and an
+ * inner component accesses their Ids.
+ *
+ * ```jsx
+ * const App = ({store}) => {
+ *   const store1 = useCreateStore(createStore);
+ *   const indexes1 = useCreateIndexes(store1, createIndexes);
+ *   const store2 = useCreateStore(createStore);
+ *   const indexes2 = useCreateIndexes(store2, createIndexes);
+ *   return (
+ *     <Provider indexesById={{indexes1, indexes2}}>
+ *       <Pane />
+ *     </Provider>
+ *   );
+ * };
+ * const Pane = () => <span>{JSON.stringify(useIndexesIds())}</span>;
+ *
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["indexes1","indexes2"]</span>'
+ * ```
+ */
+/// useIndexesIds
+/**
+ * The useRelationshipsIds hook is used to retrieve the Ids of all the named
+ * Relationships objects present in the current Provider component context.
+ * @returns A list of the Ids in the context.
+ * @example
+ * This example adds two named Relationships objects to a Provider context and
+ * an inner component accesses their Ids.
+ *
+ * ```jsx
+ * const App = ({store}) => {
+ *   const store1 = useCreateStore(createStore);
+ *   const relationships1 = useCreateRelationships(
+ *     store1,
+ *     createRelationships,
+ *   );
+ *   const store2 = useCreateStore(createStore);
+ *   const relationships2 = useCreateRelationships(
+ *     store2,
+ *     createRelationships,
+ *   );
+ *   return (
+ *     <Provider relationshipsById={{relationships1, relationships2}}>
+ *       <Pane />
+ *     </Provider>
+ *   );
+ * };
+ * const Pane = () => <span>{JSON.stringify(useRelationshipsIds())}</span>;
+ *
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["relationships1","relationships2"]</span>'
+ * ```
+ */
+/// useRelationshipsIds
+/**
+ * The useQueriesIds hook is used to retrieve the Ids of all the named Queries
+ * objects present in the current Provider component context.
+ * @returns A list of the Ids in the context.
+ * @example
+ * This example adds two named Queries objects to a Provider context and an
+ * inner component accesses their Ids.
+ *
+ * ```jsx
+ * const App = ({store}) => {
+ *   const store1 = useCreateStore(createStore);
+ *   const queries1 = useCreateQueries(store1, createQueries);
+ *   const store2 = useCreateStore(createStore);
+ *   const queries2 = useCreateQueries(store2, createQueries);
+ *   return (
+ *     <Provider queriesById={{queries1, queries2}}>
+ *       <Pane />
+ *     </Provider>
+ *   );
+ * };
+ * const Pane = () => <span>{JSON.stringify(useQueriesIds())}</span>;
+ *
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["queries1","queries2"]</span>'
+ * ```
+ */
+/// useQueriesIds
+/**
+ * The useCheckpointsIds hook is used to retrieve the Ids of all the named
+ * Checkpoints objects present in the current Provider component context.
+ * @returns A list of the Ids in the context.
+ * @example
+ * This example adds two named Checkpoints objects to a Provider context and an
+ * inner component accesses their Ids.
+ *
+ * ```jsx
+ * const App = ({store}) => {
+ *   const store1 = useCreateStore(createStore);
+ *   const checkpoints1 = useCreateCheckpoints(store1, createCheckpoints);
+ *   const store2 = useCreateStore(createStore);
+ *   const checkpoints2 = useCreateCheckpoints(store2, createCheckpoints);
+ *   return (
+ *     <Provider checkpointsById={{checkpoints1, checkpoints2}}>
+ *       <Pane />
+ *     </Provider>
+ *   );
+ * };
+ * const Pane = () => <span>{JSON.stringify(useCheckpointsIds())}</span>;
+ *
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["checkpoints1","checkpoints2"]</span>'
+ * ```
+ */
+/// useCheckpointsIds
+
+/**
  * The useCreateStore hook is used to create a Store within a React application
  * with convenient memoization.
  *

@@ -71,6 +71,7 @@ import {
   useCheckpointIds as useCheckpointIdsDecl,
   useCheckpointIdsListener as useCheckpointIdsListenerDecl,
   useCheckpointListener as useCheckpointListenerDecl,
+  useCheckpointsIds as useCheckpointsIdsDecl,
   useCreateCheckpoints as useCreateCheckpointsDecl,
   useCreateIndexes as useCreateIndexesDecl,
   useCreateMetrics as useCreateMetricsDecl,
@@ -87,13 +88,17 @@ import {
   useGoBackwardCallback as useGoBackwardCallbackDecl,
   useGoForwardCallback as useGoForwardCallbackDecl,
   useGoToCallback as useGoToCallbackDecl,
+  useIndexesIds as useIndexesIdsDecl,
   useLinkedRowIds as useLinkedRowIdsDecl,
   useLinkedRowIdsListener as useLinkedRowIdsListenerDecl,
   useLocalRowIds as useLocalRowIdsDecl,
   useLocalRowIdsListener as useLocalRowIdsListenerDecl,
   useMetric as useMetricDecl,
   useMetricListener as useMetricListenerDecl,
+  useMetricsIds as useMetricsIdsDecl,
+  useQueriesIds as useQueriesIdsDecl,
   useRedoInformation as useRedoInformationDecl,
+  useRelationshipsIds as useRelationshipsIdsDecl,
   useRemoteRowId as useRemoteRowIdDecl,
   useRemoteRowIdListener as useRemoteRowIdListenerDecl,
   useResultCell as useResultCellDecl,
@@ -133,6 +138,7 @@ import {
   useSliceRowIdsListener as useSliceRowIdsListenerDecl,
   useSortedRowIds as useSortedRowIdsDecl,
   useSortedRowIdsListener as useSortedRowIdsListenerDecl,
+  useStoreIds as useStoreIdsDecl,
   useTableCellIds as useTableCellIdsDecl,
   useTableCellIdsListener as useTableCellIdsListenerDecl,
   useTable as useTableDecl,
@@ -180,6 +186,7 @@ import {
   useQueriesOrQueriesId,
   useRelationshipsOrRelationshipsId,
   useStoreOrStoreId,
+  useThingIds,
 } from './context';
 import {ListenerArgument} from '../common/listeners';
 import {Persister} from '../types/persisters.d';
@@ -311,6 +318,20 @@ const useCheckpointAction = (
     [checkpoints, action, arg],
   );
 };
+
+export const useStoreIds: typeof useStoreIdsDecl = () => useThingIds(1);
+
+export const useMetricsIds: typeof useMetricsIdsDecl = () => useThingIds(3);
+
+export const useIndexesIds: typeof useIndexesIdsDecl = () => useThingIds(5);
+
+export const useRelationshipsIds: typeof useRelationshipsIdsDecl = () =>
+  useThingIds(7);
+
+export const useQueriesIds: typeof useQueriesIdsDecl = () => useThingIds(9);
+
+export const useCheckpointsIds: typeof useCheckpointsIdsDecl = () =>
+  useThingIds(11);
 
 export const useCreateStore: typeof useCreateStoreDecl = (
   create: () => Store,

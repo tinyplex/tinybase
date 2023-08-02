@@ -76,6 +76,24 @@ export type CheckpointsOrCheckpointsId = Checkpoints | Id;
 /// UndoOrRedoInformation
 export type UndoOrRedoInformation = [boolean, Callback, Id | undefined, string];
 
+/// useStoreIds
+export function useStoreIds(): Ids;
+
+/// useMetricsIds
+export function useMetricsIds(): Ids;
+
+/// useIndexesIds
+export function useIndexesIds(): Ids;
+
+/// useRelationshipsIds
+export function useRelationshipsIds(): Ids;
+
+/// useQueriesIds
+export function useQueriesIds(): Ids;
+
+/// useCheckpointsIds
+export function useCheckpointsIds(): Ids;
+
 /// useCreateStore
 export function useCreateStore(
   create: () => Store,
