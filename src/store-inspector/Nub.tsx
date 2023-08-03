@@ -1,17 +1,15 @@
 /** @jsx createElement */
 
-import {OPEN_VALUE, TITLE} from './common';
-import {useOpen, usePosition} from './hooks';
+import {OPEN_VALUE, POSITION_VALUE, TITLE} from './common';
+import {useSetValueCallback, useValue} from '../ui-react';
 import {StoreProp} from './types';
 import {createElement} from '../ui-react/common';
-import {useSetValueCallback} from '../ui-react';
 
 export const Nub = ({s}: StoreProp) => {
-  const position = usePosition(s);
-  const open = useOpen(s);
-
+  const position = useValue(POSITION_VALUE, s) ?? 1;
   const handleOpen = useSetValueCallback(OPEN_VALUE, () => true, [], s);
-  return open ? null : (
+
+  return useValue(OPEN_VALUE, s) ? null : (
     <img onClick={handleOpen} title={TITLE} data-position={position} />
   );
 };

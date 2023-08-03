@@ -1,16 +1,16 @@
 /** @jsx createElement */
 
-import {useOpen, usePosition} from './hooks';
+import {OPEN_VALUE, POSITION_VALUE} from './common';
 import {Body} from './Body';
 import {Header} from './Header';
 import {StoreProp} from './types';
 import {createElement} from '../ui-react/common';
+import {useValue} from '../ui-react';
 
 export const Panel = ({s}: StoreProp) => {
-  const position = usePosition(s);
-  const open = useOpen(s);
+  const position = useValue(POSITION_VALUE, s) ?? 1;
 
-  return open ? (
+  return useValue(OPEN_VALUE, s) ? (
     <main data-position={position}>
       <Header s={s} />
       <Body s={s} />
