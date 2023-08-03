@@ -17,7 +17,7 @@ First, we pull in React, ReactDOM, and TinyBase:
 <script src="/umd/ui-react-dom-debug.js"></script>
 ```
 
-We add the debug version of the ui-react-dom module so that we can add the
+We're adding the debug version of the ui-react-dom module so that we can use the
 StoreInspector component for the purposes of seeing how the data is structured.
 
 We import the functions and components we need:
