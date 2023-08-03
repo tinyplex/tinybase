@@ -101,11 +101,15 @@ const useSortingAndPagination = (
   cellId: Id | undefined,
   descending: boolean | undefined,
   sortOnClick: boolean | undefined,
-  offset: number | undefined,
+  offset = 0,
   limit: number | undefined,
   total: number,
   paginator: boolean | React.ComponentType<SortedTablePaginatorProps>,
-  onSort?: (cellId: Id | undefined, descending: boolean) => void,
+  onChange?: (
+    cellId: Id | undefined,
+    descending: boolean,
+    offset: number,
+  ) => void,
 ): [
   sorting: Sorting,
   handleSort: (cellId: Id | undefined) => void,
@@ -117,6 +121,13 @@ const useSortingAndPagination = (
     descending ? true : false,
   ]);
   const [currentOffset, setCurrentOffset] = useState(offset);
+  const handleChange = useCallback(
+    (offset: number) => {
+      setCurrentOffset(offset);
+      onChange?.(...currentSorting, offset);
+    },
+    [currentSorting, onChange],
+  );
   const PaginatorComponent =
     paginator === true
       ? SortedTablePaginator
@@ -128,9 +139,9 @@ const useSortingAndPagination = (
         const descending =
           cellId == currentSorting[0] ? !currentSorting[1] : false;
         setCurrentSorting([cellId, descending]);
-        onSort?.(cellId, descending);
+        onChange?.(cellId, descending, currentOffset);
       },
-      [currentSorting, onSort],
+      [currentSorting, currentOffset, onChange],
       sortOnClick,
     ),
     useMemo(
@@ -140,10 +151,17 @@ const useSortingAndPagination = (
             offset={currentOffset}
             limit={limit}
             total={total}
-            onChange={setCurrentOffset}
+            onChange={handleChange}
           />
         ),
-      [paginator, PaginatorComponent, currentOffset, limit, total],
+      [
+        paginator,
+        PaginatorComponent,
+        currentOffset,
+        limit,
+        total,
+        handleChange,
+      ],
     ),
     currentOffset,
   ];
