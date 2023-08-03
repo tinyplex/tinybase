@@ -76,8 +76,8 @@ export type SortedTableInHtmlTableProps = {
   readonly sortOnClick?: boolean;
   // / SortedTableInHtmlTableProps.paginator
   readonly paginator?: boolean | ComponentType<SortedTablePaginatorProps>;
-  // / SortedTableInHtmlTableProps.onSort
-  readonly onSort?: (cellId: Id | undefined, descending: boolean) => void;
+  // / SortedTableInHtmlTableProps.onChange
+  readonly onChange?: (cellId: Id | undefined, descending: boolean) => void;
 };
 
 /// ResultTableInHtmlTableProps
@@ -110,8 +110,8 @@ export type ResultSortedTableInHtmlTableProps = {
   readonly sortOnClick?: boolean;
   // / ResultSortedTableInHtmlTableProps.paginator
   readonly paginator?: boolean | ComponentType<SortedTablePaginatorProps>;
-  // / ResultSortedTableInHtmlTableProps.onSort
-  readonly onSort?: (cellId: Id | undefined, descending: boolean) => void;
+  // / ResultSortedTableInHtmlTableProps.onChange
+  readonly onChange?: (cellId: Id | undefined, descending: boolean) => void;
 };
 
 /// ValuesInHtmlTableProps
