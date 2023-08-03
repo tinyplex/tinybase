@@ -1,3 +1,4 @@
+import {OPEN_CELL, STATE_TABLE} from './common';
 import {useCell, useSetCellCallback} from '../ui-react';
 import {CURRENT_TARGET} from '../common/strings';
 import {Id} from '../types/common';
@@ -14,11 +15,11 @@ export const Details = ({
   readonly summary: string;
   readonly children: React.ReactNode;
 } & StoreProp) => {
-  const open = !!useCell('state', uniqueId, 'open', s);
+  const open = !!useCell(STATE_TABLE, uniqueId, OPEN_CELL, s);
   const handleToggle = useSetCellCallback(
-    'state',
+    STATE_TABLE,
     uniqueId,
-    'open',
+    OPEN_CELL,
     (event: React.SyntheticEvent<HTMLDetailsElement>) =>
       event[CURRENT_TARGET].open,
     [],
