@@ -58,12 +58,12 @@ import {
 } from '../types/ui-react-dom.d';
 import {Id, Ids} from '../types/common';
 import React, {ComponentType} from 'react';
+import {createElement, getProps} from './common';
 import {isArray, isString, isUndefined} from '../common/other';
 import {objMap, objNew} from '../common/obj';
 import {arrayMap} from '../common/array';
-import {getProps} from './common';
 
-const {createElement, useCallback, useMemo, useState} = React;
+const {useCallback, useMemo, useState} = React;
 
 export type SortAndOffset = [
   cellId: Id | undefined,

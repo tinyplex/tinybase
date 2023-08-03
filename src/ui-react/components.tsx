@@ -56,6 +56,7 @@ import {
 } from './context';
 import {Id, Ids} from '../types/common.d';
 import React, {ReactElement, useContext} from 'react';
+import {createElement, getProps} from './common';
 import {isArray, isUndefined} from '../common/other';
 import {
   useCell,
@@ -83,9 +84,8 @@ import {EMPTY_STRING} from '../common/strings';
 import {Relationships} from '../types/relationships.d';
 import {Store} from '../types/store.d';
 import {arrayMap} from '../common/array';
-import {getProps} from './common';
 
-const {createElement, useMemo} = React;
+const {useMemo} = React;
 
 const tableView = (
   {
