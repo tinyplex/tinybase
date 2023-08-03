@@ -7,7 +7,7 @@ import {UNIQUE_ID} from './common';
 export const APP_STYLESHEET = arrayJoin(
   objMap(
     {
-      '': 'all:initial;font-family:sans-serif;font-size:0.75rem;position:fixed',
+      '': 'all:initial;font-family:sans-serif;font-size:0.75rem;position:fixed;z-index:999999',
       '*': 'all:revert',
       img: 'width:1rem;height:1rem;background:#111;border:0',
 
