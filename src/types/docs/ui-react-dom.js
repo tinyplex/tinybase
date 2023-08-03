@@ -161,6 +161,17 @@
    * the sorting and/or direction.
    */
   /// SortedTableInHtmlTableProps.sortOnClick
+  /**
+   * Either `true` to show the default SortedTablePaginator for the Table, or
+   * provide your own paginator component that takes SortedTablePaginatorProps.
+   */
+  /// SortedTableInHtmlTableProps.paginator
+  /**
+   * A function that is called whenever the sorting or pagination of the Table
+   * is changed by the user, invoked with the sorted Cell Id, whether descending
+   * or not, and the offset of the pagination.
+   */
+  /// SortedTableInHtmlTableProps.onChange
 }
 /**
  * SortedTableInHtmlTableProps props are used for components that will render a
@@ -270,14 +281,15 @@
    */
   /// ResultSortedTableInHtmlTableProps.sortOnClick
   /**
-   * Either `true` to show the default SortedTablePaginator for the Table, or
-   * provide your own paginator component that takes SortedTablePaginatorProps.
+   * Either `true` to show the default SortedTablePaginator for the ResultTable,
+   * or provide your own paginator component that takes
+   * SortedTablePaginatorProps.
    */
   /// ResultSortedTableInHtmlTableProps.paginator
   /**
-   * A function that is called whenever the sorting or pagination of the Table
-   * is changed by the user, invoked with the sorted Cell Id, whether descending
-   * or not, and the offset of the pagination.
+   * A function that is called whenever the sorting or pagination of the
+   * ResultTable is changed by the user, invoked with the sorted Cell Id,
+   * whether descending or not, and the offset of the pagination.
    */
   /// ResultSortedTableInHtmlTableProps.onChange
 }
