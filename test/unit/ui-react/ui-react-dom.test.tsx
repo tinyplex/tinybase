@@ -4071,7 +4071,7 @@ describe('StoreInspector', () => {
         id="tinybaseStoreInspector"
       >
         <img
-          data-position={1}
+          data-position={3}
           onClick={[Function]}
           title="TinyBase Store Inspector"
         />
@@ -4091,7 +4091,7 @@ describe('StoreInspector', () => {
         id="tinybaseStoreInspector"
       >
         <img
-          data-position={3}
+          data-position={0}
           onClick={[Function]}
           title="TinyBase Store Inspector"
         />

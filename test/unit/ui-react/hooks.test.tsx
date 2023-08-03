@@ -3538,7 +3538,7 @@ describe('Listener Hooks', () => {
   });
 
   test('useResultSortedRowIdsListener', () => {
-    expect.assertions(6);
+    expect.assertions(7);
     const queries = createQueries(store).setQueryDefinition(
       'q1',
       't1',
