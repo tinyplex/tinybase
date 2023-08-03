@@ -18,7 +18,11 @@ As per usual, we first pull in React, ReactDOM, and TinyBase:
 <script src="/umd/react-dom.production.min.js"></script>
 <script src="/umd/tinybase.js"></script>
 <script src="/umd/ui-react.js"></script>
+<script src="/umd/ui-react-dom-debug.js"></script>
 ```
+
+We're adding the debug version of the ui-react-dom module so that we can use the
+StoreInspector component for the purposes of seeing how the data is structured.
 
 We need the following parts of the TinyBase API, the ui-react module, and React
 itself:
@@ -28,6 +32,7 @@ const {createIndexes, createStore} = TinyBase;
 const {Provider, useCreateIndexes, useCreateStore, useRow, useSliceRowIds} =
   TinyBaseUiReact;
 const {useCallback, useMemo, useState} = React;
+const {StoreInspector} = TinyBaseUiReactDomDebug;
 ```
 
 ## Loading The Data
@@ -142,10 +147,15 @@ which contains the text that the user has entered into the search box.
           <Results stem={stem} />
         </>
       )}
+      <StoreInspector />
     </Provider>
   );
 }
 ```
+
+We also added the StoreInspector component at the end there so you can inspect
+what is going on with the data during this demo. Simply click the TinyBase logo
+in the corner.
 
 Let's go!
 
