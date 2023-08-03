@@ -193,7 +193,6 @@ body {
   letter-spacing: -0.04rem;
   margin: 0;
   height: 100vh;
-  padding: @spacing * 2;
   text-align: center;
 }
 ```
@@ -338,8 +337,7 @@ These filters also have some straightforward styling:
 #filters {
   overflow-y: scroll;
   border-right: @border;
-  margin-right: @spacing;
-  padding-right: @spacing;
+  padding: @spacing;
   .filter {
     cursor: pointer;
     &.current {
@@ -436,6 +434,7 @@ the country cards and flags to look good!
   grid-template-columns: repeat(4, minmax(0, 1fr));
   grid-auto-rows: max-content;
   gap: @spacing;
+  padding: @spacing * 2;
   overflow-y: scroll;
   .country {
     background: #fff;
