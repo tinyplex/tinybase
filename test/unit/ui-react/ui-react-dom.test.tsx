@@ -855,7 +855,7 @@ describe('SortedTableInHtmlTable', () => {
       <table>
         <caption>
           <b>
-            {"limit":1,"total":2}
+            {"offset":0,"limit":1,"total":2}
           </b>
         </caption>
         <thead>
@@ -2463,7 +2463,7 @@ describe('ResultSortedTableInHtmlTable', () => {
       <table>
         <caption>
           <b>
-            {"limit":1,"total":2}
+            {"offset":0,"limit":1,"total":2}
           </b>
         </caption>
         <thead>
