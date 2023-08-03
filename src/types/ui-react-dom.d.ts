@@ -77,7 +77,11 @@ export type SortedTableInHtmlTableProps = {
   // / SortedTableInHtmlTableProps.paginator
   readonly paginator?: boolean | ComponentType<SortedTablePaginatorProps>;
   // / SortedTableInHtmlTableProps.onChange
-  readonly onChange?: (cellId: Id | undefined, descending: boolean) => void;
+  readonly onChange?: (
+    cellId: Id | undefined,
+    descending: boolean,
+    offset: number,
+  ) => void;
 };
 
 /// ResultTableInHtmlTableProps
@@ -111,7 +115,11 @@ export type ResultSortedTableInHtmlTableProps = {
   // / ResultSortedTableInHtmlTableProps.paginator
   readonly paginator?: boolean | ComponentType<SortedTablePaginatorProps>;
   // / ResultSortedTableInHtmlTableProps.onChange
-  readonly onChange?: (cellId: Id | undefined, descending: boolean) => void;
+  readonly onChange?: (
+    cellId: Id | undefined,
+    descending: boolean,
+    offset: number,
+  ) => void;
 };
 
 /// ValuesInHtmlTableProps
