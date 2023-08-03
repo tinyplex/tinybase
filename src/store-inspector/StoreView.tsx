@@ -1,10 +1,8 @@
 /** @jsx createElement */
 
-import {
-  SortAndOffset,
-  SortedTableInHtmlTable,
-  ValuesInHtmlTable,
-} from '../ui-react/dom';
+import {DEFAULT, TABLE, VALUES} from '../common/strings';
+import {SORT_CELL, STATE_TABLE, getUniqueId} from './common';
+import {SortedTableInHtmlTable, ValuesInHtmlTable} from '../ui-react/dom';
 import {TableProps, ValuesProps} from '../types/ui-react';
 import {arrayIsEmpty, arrayMap} from '../common/array';
 import {jsonParse, jsonString} from '../common/json';
@@ -15,12 +13,10 @@ import {
   useTableIds,
   useValueIds,
 } from '../ui-react';
-import {DEFAULT} from '../common/strings';
 import {Details} from './Details';
 import {Id} from '../types/common';
 import {StoreProp} from './types';
 import {createElement} from '../ui-react/common';
-import {getUniqueId} from './common';
 import {isUndefined} from '../common/other';
 
 const StoreTableView = ({
@@ -31,18 +27,18 @@ const StoreTableView = ({
 }: TableProps & {readonly storeId?: Id} & StoreProp) => {
   const uniqueId = getUniqueId('t', storeId, tableId);
   const [cellId, descending, offset] = jsonParse(
-    (useCell('state', uniqueId, 'sort', s) as string) ?? '[]',
+    (useCell(STATE_TABLE, uniqueId, SORT_CELL, s) as string) ?? '[]',
   );
   const handleChange = useSetCellCallback(
-    'state',
+    STATE_TABLE,
     uniqueId,
-    'sort',
-    (sortAndOffset: SortAndOffset) => jsonString(sortAndOffset),
+    SORT_CELL,
+    jsonString,
     [],
     s,
   );
   return (
-    <Details uniqueId={uniqueId} summary={'Table: ' + tableId} s={s}>
+    <Details uniqueId={uniqueId} summary={TABLE + ': ' + tableId} s={s}>
       <SortedTableInHtmlTable
         tableId={tableId}
         store={store}
@@ -64,7 +60,7 @@ const StoreValuesView = ({
   s,
 }: ValuesProps & {readonly storeId?: Id} & StoreProp) =>
   arrayIsEmpty(useValueIds(store)) ? null : (
-    <Details uniqueId={getUniqueId('v', storeId)} summary="Values" s={s}>
+    <Details uniqueId={getUniqueId('v', storeId)} summary={VALUES} s={s}>
       <ValuesInHtmlTable store={store} />
     </Details>
   );

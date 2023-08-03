@@ -1,6 +1,6 @@
 /** @jsx createElement */
 
-import {POSITIONS, TITLE} from './common';
+import {OPEN_VALUE, POSITIONS, POSITION_VALUE, TITLE} from './common';
 import {CURRENT_TARGET} from '../common/strings';
 import {StoreProp} from './types';
 import {arrayMap} from '../common/array';
@@ -11,9 +11,9 @@ import {useSetValueCallback} from '../ui-react';
 export const Header = ({s}: StoreProp) => {
   const position = usePosition(s);
 
-  const handleClose = useSetValueCallback('open', () => false, [], s);
+  const handleClose = useSetValueCallback(OPEN_VALUE, () => false, [], s);
   const handleDock = useSetValueCallback(
-    'position',
+    POSITION_VALUE,
     (event: React.MouseEvent<HTMLImageElement>) =>
       Number(event[CURRENT_TARGET].dataset.id),
     [],
