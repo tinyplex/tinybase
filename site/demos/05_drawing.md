@@ -141,17 +141,17 @@ const TYPES = ['rectangle', 'ellipse'];
 ```
 
 We will use mutator listeners to ensure that the type and color of the shapes
-are always valid. These are the two functions to do that:
+are always valid if present. These are the two functions to do that:
 
 ```js
 const constrainType = (store, tableId, rowId, cellId, type) => {
-  if (!TYPES.includes(type)) {
+  if (type != null && !TYPES.includes(type)) {
     store.setCell(tableId, rowId, cellId, TYPES[0]);
   }
 };
 
 const constrainColor = (store, tableId, rowId, cellId, color) => {
-  if (!/^#[a-f\d]{6}$/.test(color)) {
+  if (color != null && !/^#[a-f\d]{6}$/.test(color)) {
     store.setCell(tableId, rowId, cellId, '#000000');
   }
 };
@@ -214,7 +214,7 @@ useCreatePersister(
   async (persister) => {
     await persister.startAutoLoad({
       shapes: {
-        [CANVAS_ID]: {x1: 0, y1: 0, nextId: '1'},
+        [CANVAS_ID]: {x1: 0, y1: 0, nextId: '1', text: '[canvas]'},
         1: {},
       },
     });
@@ -428,9 +428,10 @@ const useOrderShape = (toId, label) => {
 };
 ```
 
-The button to delete shape is relatively simple. It also needs to account for a
-shape being removed from the linked list, but otherwise it simple uses the
-delRow method to remove the record from the table.
+The button to delete a shape needs to account for a shape being removed from the
+linked list (and making its next shape the previous shape's next shape instead),
+but otherwise it simply uses the delRow method to remove the record from the
+table.
 
 ```jsx
 const ShapeDelete = () => {
