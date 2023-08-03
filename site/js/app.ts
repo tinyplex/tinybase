@@ -35,7 +35,7 @@ addEventListener('load', () => {
       iframe,
     ) as HTMLFormElement;
     iframeParent.insertBefore(
-      createElement('a', null, {id: 'penEdit'}, 'CodePen'),
+      createElement('a', null, {id: 'penEdit'}, 'Open this demo in CodePen'),
       iframe,
     ).onclick = () => {
       if (form.childNodes.length == 0) {
