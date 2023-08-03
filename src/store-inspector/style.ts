@@ -53,7 +53,8 @@ export const APP_STYLESHEET = arrayJoin(
       // Body
       article: 'padding:0.25rem 0.25rem 0.25rem 0.5rem;overflow:auto',
       details: 'margin-left:0.75rem;width:fit-content;',
-      summary: 'margin-left:-0.75rem;line-height:1.25rem;user-select:none',
+      summary:
+        'margin-left:-0.75rem;line-height:1.25rem;user-select:none;width:fit-content',
 
       table: 'border-collapse:collapse;table-layout:fixed;margin-bottom:0.5rem',
       thead: 'background:#222',
