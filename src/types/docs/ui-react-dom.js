@@ -109,8 +109,8 @@
   /// TableInHtmlTableProps.customCells
 }
 /**
- * TableInHtmlTableProps props are used for components that will render a
- * Table in an HTML table, such as the TableInHtmlTable component.
+ * TableInHtmlTableProps props are used for components that will render a Table
+ * in an HTML table, such as the TableInHtmlTable component.
  * @category Props
  * @since v4.1.0
  */
@@ -269,6 +269,17 @@
    * the sorting and/or direction.
    */
   /// ResultSortedTableInHtmlTableProps.sortOnClick
+  /**
+   * Either `true` to show the default SortedTablePaginator for the Table, or
+   * provide your own paginator component that takes SortedTablePaginatorProps.
+   */
+  /// ResultSortedTableInHtmlTableProps.paginator
+  /**
+   * A function that is called whenever the sorting or pagination of the Table
+   * is changed by the user, invoked with the sorted Cell Id, whether descending
+   * or not, and the offset of the pagination.
+   */
+  /// ResultSortedTableInHtmlTableProps.onChange
 }
 /**
  * ResultSortedTableInHtmlTableProps props are used for components that will
@@ -491,6 +502,13 @@
  * user can click on a column heading to sort by that column. The style classes
  * `sorted` and `ascending` (or `descending`) are added so that you can provide
  * hints to the user how the sorting is being applied.
+ *
+ * Provide a paginator component for the Table with the `paginator` prop. Set to
+ * `true` to use the default SortedTablePaginator, or provide your own component
+ * that accepts SortedTablePaginatorProps.
+ *
+ * Finally, the `onChange` prop lets you listen to a user's changes to the
+ * Table's sorting or pagination.
  * @param props The props for this component.
  * @returns A rendering of the Table in a <table> element.
  * @example
@@ -733,9 +751,9 @@
  * This component renders a ResultTable by iterating over its Row objects. By
  * default the Cells are in turn rendered with the CellView component, but you
  * can override this behavior by providing a `component` for each Cell in the
- * `customCells` prop. You can pass additional props to that custom
- * component with the `getComponentProps` callback. See the ResultCustomCell
- * type for more details.
+ * `customCells` prop. You can pass additional props to that custom component
+ * with the `getComponentProps` callback. See the ResultCustomCell type for more
+ * details.
  *
  * This component uses the useRowIds hook under the covers, which means that any
  * changes to the structure of the Table will cause a re-render.
@@ -871,9 +889,9 @@
  * This component renders a ResultTable by iterating over its Row objects, in
  * the order dictated by the sort parameters. By default the Cells are in turn
  * rendered with the CellView component, but you can override this behavior by
- * providing a `component` for each Cell in the `customCells` prop. You
- * can pass additional props to that custom component with the
- * `getComponentProps` callback. See the ResultCustomCell type for more details.
+ * providing a `component` for each Cell in the `customCells` prop. You can pass
+ * additional props to that custom component with the `getComponentProps`
+ * callback. See the ResultCustomCell type for more details.
  *
  * This component uses the useSortedRowIds hook under the covers, which means
  * that any changes to the structure or sorting of the ResultTable will cause a
@@ -886,6 +904,13 @@
  * user can click on a column heading to sort by that column. The style classes
  * `sorted` and `ascending` (or `descending`) are added so that you can provide
  * hints to the user how the sorting is being applied.
+ *
+ * Provide a paginator component for the ResultTable with the `paginator` prop.
+ * Set to `true` to use the default SortedTablePaginator, or provide your own
+ * component that accepts SortedTablePaginatorProps.
+ *
+ * Finally, the `onChange` prop lets you listen to a user's changes to the
+ * ResultTable's sorting or pagination.
  * @param props The props for this component.
  * @returns A rendering of the ResultTable in a <table> element.
  * @example

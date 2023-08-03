@@ -74,9 +74,9 @@ export type SortedTableInHtmlTableProps = {
   readonly customCells?: Ids | {[cellId: Id]: string | CustomCell};
   /// SortedTableInHtmlTableProps.sortOnClick
   readonly sortOnClick?: boolean;
-  // / SortedTableInHtmlTableProps.paginator
+  /// SortedTableInHtmlTableProps.paginator
   readonly paginator?: boolean | ComponentType<SortedTablePaginatorProps>;
-  // / SortedTableInHtmlTableProps.onChange
+  /// SortedTableInHtmlTableProps.onChange
   readonly onChange?: (
     sortAndOffset: [
       cellId: Id | undefined,
@@ -114,9 +114,9 @@ export type ResultSortedTableInHtmlTableProps = {
   readonly customCells?: Ids | {[cellId: Id]: string | CustomResultCell};
   /// ResultSortedTableInHtmlTableProps.sortOnClick
   readonly sortOnClick?: boolean;
-  // / ResultSortedTableInHtmlTableProps.paginator
+  /// ResultSortedTableInHtmlTableProps.paginator
   readonly paginator?: boolean | ComponentType<SortedTablePaginatorProps>;
-  // / ResultSortedTableInHtmlTableProps.onChange
+  /// ResultSortedTableInHtmlTableProps.onChange
   readonly onChange?: (
     sortAndOffset: [
       cellId: Id | undefined,
