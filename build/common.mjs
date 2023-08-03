@@ -303,8 +303,9 @@ export const compileModule = async (
   dir = LIB_DIR,
   format = 'esm',
   target = 'esnext',
-  cli,
+  cli = false,
   terse = !debug,
+  fileSuffix = '',
 ) => {
   const path = await import('path');
   const {default: esbuild} = await import('rollup-plugin-esbuild');
@@ -381,7 +382,7 @@ export const compileModule = async (
 
   const outputConfig = {
     dir: dirname(await ensureDir(dir + '/' + module)),
-    entryFileNames: `[name].${format == 'cjs' ? 'cjs' : 'js'}`,
+    entryFileNames: `[name]${fileSuffix}.${format == 'cjs' ? 'cjs' : 'js'}`,
     format,
     globals: {
       react: 'React',
@@ -470,22 +471,6 @@ export const compileDocsAndAssets = async (api = true, pages = true) => {
   const {default: esbuild} = await import('esbuild');
 
   await makeDir(TMP_DIR);
-
-  // debug ui-react-dom umd for inspector demo
-  await compileModule(
-    'ui-react-dom',
-    true,
-    TMP_DIR,
-    'umd',
-    undefined,
-    undefined,
-    true,
-  );
-  await promises.rename(
-    TMP_DIR + '/ui-react-dom.js',
-    TMP_DIR + '/ui-react-dom-debug.js',
-  );
-
   await esbuild.build({
     entryPoints: ['site/build.ts'],
     external: ['tinydocs', 'react', 'yjs', 'prettier'],
