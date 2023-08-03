@@ -3,7 +3,7 @@ import {jsonString} from '../common/json';
 
 export const UNIQUE_ID = 'tinybaseStoreInspector';
 export const TITLE = 'TinyBase Store Inspector';
-export const POSITIONS = ['top', 'right', 'bottom', 'left', 'full'];
+export const POSITIONS = ['left', 'top', 'bottom', 'right', 'full'];
 
 export const STATE_TABLE = 'state';
 export const SORT_CELL = 'sort';

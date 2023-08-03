@@ -16,10 +16,10 @@ export const LOGO_SVG = PRE_CSS + LOGO + POST_CSS;
 
 export const POSITIONS_SVG = arrayMap(
   [
-    [20, 20, 60, 20],
-    [60, 20, 20, 60],
-    [20, 60, 60, 20],
     [20, 20, 20, 60],
+    [20, 20, 60, 20],
+    [20, 60, 60, 20],
+    [60, 20, 20, 60],
     [30, 30, 40, 40],
   ],
   ([x, y, w, h]) =>

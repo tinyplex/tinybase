@@ -157,7 +157,7 @@ export type SortedTablePaginatorProps = {
 /// StoreInspectorProps
 export type StoreInspectorProps = {
   /// StoreInspectorProps.position
-  readonly position?: 'top' | 'right' | 'bottom' | 'left' | 'full';
+  readonly position?: 'left' | 'top' | 'bottom' | 'right' | 'full';
   /// StoreInspectorProps.open
   readonly open?: boolean;
 };
