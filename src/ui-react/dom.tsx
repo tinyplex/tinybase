@@ -65,6 +65,12 @@ import {getProps} from './common';
 
 const {createElement, useCallback, useMemo, useState} = React;
 
+export type SortAndOffset = [
+  cellId: Id | undefined,
+  descending: boolean,
+  offset: number,
+];
+
 type HtmlTableParams = [
   cellComponentProps:
     | {tableId: Id; store?: StoreOrStoreId}
@@ -74,7 +80,7 @@ type HtmlTableParams = [
     | [queryId: Id, queries?: QueriesOrQueriesId],
   defaultCellComponent: typeof CellView | typeof ResultCellView,
   useDefaultCellIds: typeof useTableCellIds | typeof useResultTableCellIds,
-  state?: SortingAndPaginationState,
+  sortAndOffset?: SortAndOffset,
   handleSort?: (cellId: Id | undefined) => void,
   paginator?: React.ReactNode,
 ];
@@ -94,11 +100,6 @@ const useCallbackOrUndefined = (
   const returnCallback = useCallback(callback, deps);
   return test ? returnCallback : undefined;
 };
-type SortingAndPaginationState = [
-  cellId: Id | undefined,
-  descending: boolean,
-  offset: number,
-];
 
 const useSortingAndPagination = (
   cellId: Id | undefined,
@@ -108,70 +109,73 @@ const useSortingAndPagination = (
   limit: number | undefined,
   total: number,
   paginator: boolean | React.ComponentType<SortedTablePaginatorProps>,
-  onChange?: (...state: SortingAndPaginationState) => void,
+  onChange?: (sortAndOffset: SortAndOffset) => void,
 ): [
-  state: SortingAndPaginationState,
+  sortAndOffset: SortAndOffset,
   handleSort: (cellId: Id | undefined) => void,
   paginatorComponent: React.ReactNode | undefined,
 ] => {
-  const [state, setState] = useState<SortingAndPaginationState>([
-    cellId,
-    descending,
-    offset,
-  ]);
-  const handleChangeSort = useCallbackOrUndefined(
-    (newCellId: Id | undefined) => {
-      const [cellId, descending, offset] = state;
-      const newState: SortingAndPaginationState = [
-        newCellId,
-        newCellId == cellId ? !descending : false,
-        offset,
-      ];
-      setState(newState);
-      onChange?.(...newState);
+  const [[currentCellId, currentDescending, currentOffset], setState] =
+    useState<SortAndOffset>([cellId, descending, offset]);
+  const setStateAndChange = useCallback(
+    (sortAndOffset: SortAndOffset) => {
+      setState(sortAndOffset);
+      onChange?.(sortAndOffset);
     },
-    [state, onChange],
+    [onChange],
+  );
+  const handleSort = useCallbackOrUndefined(
+    (cellId: Id | undefined) =>
+      setStateAndChange([
+        cellId,
+        cellId == currentCellId ? !currentDescending : false,
+        currentOffset,
+      ]),
+    [setStateAndChange, currentCellId, currentDescending, currentOffset],
     sortOnClick,
   );
   const handleChangeOffset = useCallback(
-    (offset: number) => {
-      const [cellId, descending] = state;
-      const newState: SortingAndPaginationState = [cellId, descending, offset];
-      setState(newState);
-      onChange?.(...newState);
-    },
-    [state, onChange],
+    (offset: number) =>
+      setStateAndChange([currentCellId, currentDescending, offset]),
+    [setStateAndChange, currentCellId, currentDescending],
   );
   const PaginatorComponent =
     paginator === true
       ? SortedTablePaginator
       : (paginator as ComponentType<SortedTablePaginatorProps>);
   return [
-    state,
-    handleChangeSort,
+    [currentCellId, currentDescending, currentOffset],
+    handleSort,
     useMemo(
       () =>
         paginator === false ? null : (
           <PaginatorComponent
-            offset={state[2]}
+            offset={currentOffset}
             limit={limit}
             total={total}
             onChange={handleChangeOffset}
           />
         ),
-      [paginator, PaginatorComponent, state, limit, total, handleChangeOffset],
+      [
+        paginator,
+        PaginatorComponent,
+        currentOffset,
+        limit,
+        total,
+        handleChangeOffset,
+      ],
     ),
   ];
 };
 
 const HtmlHeader = ({
   cellId,
-  state,
+  sort: [sortCellId, sortDescending],
   label = cellId ?? EMPTY_STRING,
   onClick,
 }: {
   readonly cellId?: Id;
-  readonly state?: SortingAndPaginationState;
+  readonly sort: SortAndOffset | [];
   readonly label?: string;
   readonly onClick?: (cellId: Id | undefined) => void;
 }) => (
@@ -179,19 +183,17 @@ const HtmlHeader = ({
     onClick={useCallbackOrUndefined(
       () => onClick?.(cellId),
       [onClick, cellId],
-      !isUndefined(onClick),
+      onClick,
     )}
     className={
-      isUndefined(state)
+      isUndefined(sortDescending) || sortCellId != cellId
         ? undefined
-        : state[0] != cellId
-        ? undefined
-        : `sorted ${state[1] ? 'de' : 'a'}scending`
+        : `sorted ${sortDescending ? 'de' : 'a'}scending`
     }
   >
-    {isUndefined(state) || state[0] != cellId
+    {isUndefined(sortDescending) || sortCellId != cellId
       ? null
-      : (state[1] ? DOWN_ARROW : UP_ARROW) + ' '}
+      : (sortDescending ? DOWN_ARROW : UP_ARROW) + ' '}
     {label}
   </th>
 );
@@ -216,7 +218,7 @@ const HtmlTable = ({
     useCellIdsArgs,
     defaultCellComponent,
     useDefaultCellIds,
-    state,
+    sortAndOffset,
     handleSort,
     paginatorComponent,
   ] = params;
@@ -248,14 +250,18 @@ const HtmlTable = ({
         <thead>
           <tr>
             {idColumn === false ? null : (
-              <HtmlHeader state={state} label="Id" onClick={handleSort} />
+              <HtmlHeader
+                sort={sortAndOffset ?? []}
+                label="Id"
+                onClick={handleSort}
+              />
             )}
             {objMap(customCellConfigurations, ({label}, cellId) => (
               <HtmlHeader
                 key={cellId}
                 cellId={cellId}
                 label={label}
-                state={state}
+                sort={sortAndOffset ?? []}
                 onClick={handleSort}
               />
             ))}
@@ -424,16 +430,17 @@ export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
   onChange,
   ...props
 }: SortedTableInHtmlTableProps & HtmlTableProps): any => {
-  const [state, handleSort, paginatorComponent] = useSortingAndPagination(
-    cellId,
-    descending,
-    sortOnClick,
-    offset,
-    limit,
-    useRowCount(tableId, store),
-    paginator,
-    onChange,
-  );
+  const [sortAndOffset, handleSort, paginatorComponent] =
+    useSortingAndPagination(
+      cellId,
+      descending,
+      sortOnClick,
+      offset,
+      limit,
+      useRowCount(tableId, store),
+      paginator,
+      onChange,
+    );
   return (
     <HtmlTable
       {...props}
@@ -443,13 +450,20 @@ export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
           [tableId, store],
           editable ? EditableCellView : CellView,
           useTableCellIds,
-          state,
+          sortAndOffset,
           handleSort,
           paginatorComponent,
         ],
-        [store, tableId, editable, state, handleSort, paginatorComponent],
+        [
+          store,
+          tableId,
+          editable,
+          sortAndOffset,
+          handleSort,
+          paginatorComponent,
+        ],
       )}
-      rowIds={useSortedRowIds(tableId, ...state, limit, store)}
+      rowIds={useSortedRowIds(tableId, ...sortAndOffset, limit, store)}
     />
   );
 };
@@ -522,16 +536,17 @@ export const ResultSortedTableInHtmlTable: typeof ResultSortedTableInHtmlTableDe
     onChange,
     ...props
   }: ResultSortedTableInHtmlTableProps & HtmlTableProps): any => {
-    const [state, handleSort, paginatorComponent] = useSortingAndPagination(
-      cellId,
-      descending,
-      sortOnClick,
-      offset,
-      limit,
-      useResultRowCount(queryId, queries),
-      paginator,
-      onChange,
-    );
+    const [sortAndOffset, handleSort, paginatorComponent] =
+      useSortingAndPagination(
+        cellId,
+        descending,
+        sortOnClick,
+        offset,
+        limit,
+        useResultRowCount(queryId, queries),
+        paginator,
+        onChange,
+      );
     return (
       <HtmlTable
         {...props}
@@ -541,13 +556,18 @@ export const ResultSortedTableInHtmlTable: typeof ResultSortedTableInHtmlTableDe
             [queryId, queries],
             ResultCellView,
             useResultTableCellIds,
-            state,
+            sortAndOffset,
             handleSort,
             paginatorComponent,
           ],
-          [queryId, queries, state, handleSort, paginatorComponent],
+          [queryId, queries, sortAndOffset, handleSort, paginatorComponent],
         )}
-        rowIds={useResultSortedRowIds(queryId, ...state, limit, queries)}
+        rowIds={useResultSortedRowIds(
+          queryId,
+          ...sortAndOffset,
+          limit,
+          queries,
+        )}
       />
     );
   };

@@ -78,9 +78,11 @@ export type SortedTableInHtmlTableProps = {
   readonly paginator?: boolean | ComponentType<SortedTablePaginatorProps>;
   // / SortedTableInHtmlTableProps.onChange
   readonly onChange?: (
-    cellId: Id | undefined,
-    descending: boolean,
-    offset: number,
+    sortAndOffset: [
+      cellId: Id | undefined,
+      descending: boolean,
+      offset: number,
+    ],
   ) => void;
 };
 
@@ -116,9 +118,11 @@ export type ResultSortedTableInHtmlTableProps = {
   readonly paginator?: boolean | ComponentType<SortedTablePaginatorProps>;
   // / ResultSortedTableInHtmlTableProps.onChange
   readonly onChange?: (
-    cellId: Id | undefined,
-    descending: boolean,
-    offset: number,
+    sortAndOffset: [
+      cellId: Id | undefined,
+      descending: boolean,
+      offset: number,
+    ],
   ) => void;
 };
 
