@@ -360,11 +360,11 @@
  * Store as an HTML <table> element, and registers a listener so that any
  * changes to that result will cause a re-render.
  *
+ * See the <TableInHtmlTable /> demo for this component in action.
+ *
  * The component's props identify which Table to render based on Table Id, and
  * Store (which is either the default context Store, a named context Store, or
  * by explicit reference).
- *
- * See the <TableInHtmlTable /> demo for this component in action.
  *
  * This component renders a Table by iterating over its Row objects. By default
  * the Cells are in turn rendered with the CellView component, but you can
@@ -487,14 +487,14 @@
  * Table in a Store, as an HTML <table> element, and registers a listener so
  * that any changes to that result will cause a re-render.
  *
+ * See the <SortedTableInHtmlTable /> demo for this component in action.
+ *
  * The component's props identify which Table to render based on Table Id, and
  * Store (which is either the default context Store, a named context Store, or
  * by explicit reference). It also takes a Cell Id to sort by and a boolean to
  * indicate that the sorting should be in descending order. The `offset` and
  * `limit` props are used to paginate results, but default to `0` and
  * `undefined` to return all available Row Ids if not specified.
- *
- * See the <SortedTableInHtmlTable /> demo for this component in action.
  *
  * This component renders a ResultTable by iterating over its Row objects, in
  * the order dictated by the sort parameters. By default the Cells are in turn
@@ -642,11 +642,11 @@
  * as an HTML <table> element, and registers a listener so that any changes to
  * that result will cause a re-render.
  *
+ * See the <ValuesInHtmlTable /> demo for this component in action.
+ *
  * The component's props identify which Row to render based on Table Id, Row Id,
  * and Store (which is either the default context Store, a named context Store,
  * or an explicit reference).
- *
- * See the <ValuesInHtmlTable /> demo for this component in action.
  *
  * This component renders a Store by iterating over its Value objects. By
  * default the Values are in turn rendered with the ValueView component, but you
@@ -754,11 +754,11 @@
  * ResultTable in a Queries object as an HTML <table> element, and registers a
  * listener so that any changes to that result will cause a re-render.
  *
+ * See the <ResultTableInHtmlTable /> demo for this component in action.
+ *
  * The component's props identify which ResultTable to render based on query Id,
  * and Queries object (which is either the default context Queries object, a
  * named context Queries object, or by explicit reference).
- *
- * See the <ResultTableInHtmlTable /> demo for this component in action.
  *
  * This component renders a ResultTable by iterating over its Row objects. By
  * default the Cells are in turn rendered with the CellView component, but you
@@ -888,6 +888,8 @@
  * registers a listener so that any changes to that result will cause a
  * re-render.
  *
+ * See the <ResultSortedTableInHtmlTable /> demo for this component in action.
+ *
  * The component's props identify which ResultTable to render based on query Id,
  * and Queries object (which is either the default context Queries object, a
  * named context Queries object, or by explicit reference). It also takes a Cell
@@ -895,8 +897,6 @@
  * descending order. The `offset` and `limit` props are used to paginate
  * results, but default to `0` and `undefined` to return all available Row Ids
  * if not specified.
- *
- * See the <ResultSortedTableInHtmlTable /> demo for this component in action.
  *
  * This component renders a ResultTable by iterating over its Row objects, in
  * the order dictated by the sort parameters. By default the Cells are in turn
@@ -1044,6 +1044,8 @@
  * that can be edited in a web browser, and registers a listener so that any
  * changes to that result will cause a re-render.
  *
+ * See the <EditableCellView /> demo for this component in action.
+ *
  * The component's props identify which Cell to render based on Table Id, Row
  * Id, Cell Id, and Store (which is either the default context Store, a named
  * context Store, or an explicit reference).
@@ -1096,6 +1098,8 @@
  * that can be edited in a web browser, and registers a listener so that any
  * changes to that result will cause a re-render.
  *
+ * See the <EditableValueView /> demo for this component in action.
+ *
  * The component's props identify which Value to render based on Table Id, Row
  * Id, Value Id, and Store (which is either the default context Store, a named
  * context Store, or an explicit reference).
@@ -1143,6 +1147,8 @@
 /// EditableValueView
 /**
  * The SortedTablePaginator component renders a paginator for a sorted table.
+ *
+ * See the <SortedTableInHtmlTable /> demo for this component in action.
  *
  * The component displays 'previous' and 'next' buttons for paging through the
  * Table if there are more Row Ids than fit in each page. The component will
@@ -1219,6 +1225,8 @@
 /**
  * The StoreInspector component renders a tool which allows you to view and edit
  * the content of a Store in a debug web environment.
+ *
+ * See the <StoreInspector /> demo for this component in action.
  *
  * The component displays a nub in the corner of the screen which you may then
  * click to interact with all the Store objects in the Provider component
