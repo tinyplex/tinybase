@@ -12,9 +12,7 @@ export const APP_STYLESHEET = arrayJoin(
       img: 'width:1rem;height:1rem;background:#111;border:0',
 
       // Nub
-      '>img':
-        'width:1.5rem;height:1.5rem;padding:0.25rem;bottom:0;right:0;position:fixed;' +
-        LOGO_SVG,
+      '>img': 'padding:0.25rem;bottom:0;right:0;position:fixed;' + LOGO_SVG,
       ...objNew(
         arrayMap(['top:0;right:0', null, null, 'bottom:0;left:0'], (css, p) => [
           `>img[data-position='${p}']`,
