@@ -173,8 +173,9 @@ objects, and the Indexes objects:
 };
 ```
 
-(We also sneaked in a StoreInspector component so you can inspect what is going
-on with the data. Simply click the TinyBase logo in the corner of the demo.)
+We also added the StoreInspector component at the end there so you can inspect
+what is going on with the data during this demo. Simply click the TinyBase logo
+in the corner.
 
 We also use a simple grid layout to arrange the app:
 
