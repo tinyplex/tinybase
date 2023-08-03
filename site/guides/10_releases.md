@@ -49,8 +49,15 @@ Equivalent components also exist for the results of queries: the
 ResultTableInHtmlTable component and the interactive
 ResultSortedTableInHtmlTable component.
 
-The EditableCellView component and EditableValueView component are interactive input
-controls for updating Cell and Value content respectively.
+The EditableCellView component and EditableValueView component are interactive
+input controls for updating Cell and Value content respectively.
+
+![Thumbnail of StoreInspector](/store-inspector.webp 'Thumbnail of
+StoreInspector') The new StoreInspector component allows you to view and
+understand the content of a Store in a debug web environment. Try it out in most
+of the demos on the site, including the Movie Database demo, pictured. This
+requires a debug build of the new ui-react-dom module, which is now also
+included in the UMD distribution.
 
 Also in this release, the getResultTableCellIds method and
 addResultTableCellIdsListener method have been added to the Queries object. The
