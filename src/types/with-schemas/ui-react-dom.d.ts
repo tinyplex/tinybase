@@ -111,6 +111,16 @@ export type SortedTableInHtmlTableProps<
             };
         /// SortedTableInHtmlTableProps.sortOnClick
         readonly sortOnClick?: boolean;
+        /// SortedTableInHtmlTableProps.paginator
+        readonly paginator?: boolean | ComponentType<SortedTablePaginatorProps>;
+        /// SortedTableInHtmlTableProps.onChange
+        readonly onChange?: (
+          sortAndOffset: [
+            cellId: CellIdFromSchema<Schemas[0], TableId> | undefined,
+            descending: boolean,
+            offset: number,
+          ],
+        ) => void;
       }
     : never
   : never;
@@ -148,6 +158,16 @@ export type ResultSortedTableInHtmlTableProps<Schemas extends OptionalSchemas> =
       | {[cellId: Id]: string | CustomResultCell<Schemas>};
     /// ResultSortedTableInHtmlTableProps.sortOnClick
     readonly sortOnClick?: boolean;
+    /// ResultSortedTableInHtmlTableProps.paginator
+    readonly paginator?: boolean | ComponentType<SortedTablePaginatorProps>;
+    /// ResultSortedTableInHtmlTableProps.onChange
+    readonly onChange?: (
+      sortAndOffset: [
+        cellId: Id | undefined,
+        descending: boolean,
+        offset: number,
+      ],
+    ) => void;
   };
 
 /// ValuesInHtmlTableProps
