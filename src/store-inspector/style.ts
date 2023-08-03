@@ -14,7 +14,7 @@ export const APP_STYLESHEET = arrayJoin(
       // Nub
       '>img': 'padding:0.25rem;bottom:0;right:0;position:fixed;' + LOGO_SVG,
       ...objNew(
-        arrayMap(['top:0;right:0', null, null, 'bottom:0;left:0'], (css, p) => [
+        arrayMap(['bottom:0;left:0', 'top:0;right:0'], (css, p) => [
           `>img[data-position='${p}']`,
           css,
         ]),
@@ -25,10 +25,10 @@ export const APP_STYLESHEET = arrayJoin(
       ...objNew(
         arrayMap(
           [
-            'top:0;right:0;width:100vw;height:30vh',
-            'top:0;right:0;width:35vw;height:100vh',
-            'bottom:0;left:0;width:100vw;height:30vh',
             'bottom:0;left:0;width:35vw;height:100vh',
+            'top:0;right:0;width:100vw;height:30vh',
+            'bottom:0;left:0;width:100vw;height:30vh',
+            'top:0;right:0;width:35vw;height:100vh',
             'top:0;right:0;width:100vw;height:100vh',
           ],
           (css, p) => [`main[data-position='${p}']`, css],
