@@ -1,6 +1,10 @@
 /** @jsx createElement */
 
-import {SortedTableInHtmlTable, ValuesInHtmlTable} from '../ui-react/dom';
+import {
+  SortAndOffset,
+  SortedTableInHtmlTable,
+  ValuesInHtmlTable,
+} from '../ui-react/dom';
 import {TableProps, ValuesProps} from '../types/ui-react';
 import {arrayIsEmpty, arrayMap} from '../common/array';
 import {jsonParse, jsonString} from '../common/json';
@@ -26,14 +30,14 @@ const StoreTableView = ({
   s,
 }: TableProps & {readonly storeId?: Id} & StoreProp) => {
   const uniqueId = getUniqueId('t', storeId, tableId);
-  const state = jsonParse(
-    (useCell('state', uniqueId, 'sortPage', s) as string) ?? '{}',
+  const [cellId, descending, offset] = jsonParse(
+    (useCell('state', uniqueId, 'sort', s) as string) ?? '[]',
   );
   const handleChange = useSetCellCallback(
     'state',
     uniqueId,
-    'sortPage',
-    jsonString,
+    'sort',
+    (sortAndOffset: SortAndOffset) => jsonString(sortAndOffset),
     [],
     s,
   );
@@ -42,7 +46,9 @@ const StoreTableView = ({
       <SortedTableInHtmlTable
         tableId={tableId}
         store={store}
-        {...state}
+        cellId={cellId}
+        descending={descending}
+        offset={offset}
         limit={10}
         paginator={true}
         sortOnClick={true}
