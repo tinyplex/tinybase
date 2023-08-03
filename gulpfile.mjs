@@ -58,29 +58,35 @@ export const compileForTest = async () => {
 export const compileForProd = async () => {
   await clearDir(LIB_DIR);
 
-  await allModules(async (module) => {
-    await allOf(
-      [undefined, 'umd', 'cjs'],
-      async (format) =>
-        await allOf(
-          [undefined, 'es6'],
-          async (target) =>
-            await allOf(
-              [false, ...(target || format ? [] : [true])],
-              async (debug) => {
-                const folder = `${LIB_DIR}/${[
-                  debug ? 'debug' : '',
-                  format,
-                  target,
-                ]
-                  .filter((token) => token)
-                  .join('-')}`;
-                await compileModule(module, debug, folder, format, target);
-              },
-            ),
-        ),
-    );
-  });
+  await allOf(
+    [undefined, 'umd', 'cjs'],
+    async (format) =>
+      await allOf([undefined, 'es6'], async (target) => {
+        const folder = `${LIB_DIR}/${[format, target]
+          .filter((token) => token)
+          .join('-')}`;
+        await allModules(
+          async (module) =>
+            await compileModule(module, false, folder, format, target),
+        );
+        if (format || target) {
+          await compileModule(
+            'ui-react-dom',
+            true,
+            folder,
+            format,
+            target,
+            false,
+            true,
+            '-debug',
+          );
+        }
+      }),
+  );
+
+  await allModules(
+    async (module) => await compileModule(module, true, `${LIB_DIR}/debug`),
+  );
 
   await copyDefinitions();
   await compileForCli();
