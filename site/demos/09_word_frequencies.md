@@ -61,7 +61,11 @@ const loadWords = async (store) => {
   store.transaction(() =>
     words.forEach((row, rowId) => {
       const [word, perMillion] = row.split('\t');
-      store.addRow('words', {rank: rowId + 1, word, perMillion});
+      store.addRow('words', {
+        rank: rowId + 1,
+        word,
+        perMillion: Number(perMillion),
+      });
     }),
   );
 };
