@@ -23,10 +23,12 @@ const StoreTableView = ({
   const uniqueId = getUniqueId('t', storeId, tableId);
   const cellId = useCell('state', uniqueId, 'cellId', s) as Id | undefined;
   const descending = useCell('state', uniqueId, 'descending', s) as boolean;
+  const offset = useCell('state', uniqueId, 'offset', s) as number;
   const handleChange = useCallback(
-    (cellId: Id | undefined, descending: boolean) => {
+    (cellId: Id | undefined, descending: boolean, offset: number) => {
       setOrDelCell(s, 'state', uniqueId, 'cellId', cellId);
       s.setCell('state', uniqueId, 'descending', descending);
+      s.setCell('state', uniqueId, 'offset', offset);
     },
     [s, uniqueId],
   );
@@ -38,6 +40,7 @@ const StoreTableView = ({
         cellId={cellId}
         descending={descending}
         limit={10}
+        offset={offset}
         paginator={true}
         sortOnClick={true}
         onChange={handleChange}
