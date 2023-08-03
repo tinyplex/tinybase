@@ -9,6 +9,8 @@ export const APP_STYLESHEET = arrayJoin(
     {
       '': 'all:initial;font-family:sans-serif;font-size:0.75rem;position:fixed;z-index:999999',
       '*': 'all:revert',
+      '*::before': 'all:revert',
+      '*::after': 'all:revert',
       img: 'width:1rem;height:1rem;background:#111;border:0',
 
       // Nub
