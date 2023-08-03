@@ -81,17 +81,9 @@ const Rolls = (props) => (
 }
 ```
 
-We then create a React app comprising a IndexView component which will render
+We then change our React app to comprise a IndexView component which will render
 the `Rolls` component for each slice in the index (in turn rendering the `Roll`
 component for each roll Row):
-
-```jsx
-ReactDOM.createRoot(document.body).render(
-  <Provider store={store} indexes={indexes}>
-    <IndexView indexId="rolls" sliceComponent={Rolls} />
-  </Provider>,
-);
-```
 
 ```diff-jsx
 -ReactDOM.createRoot(document.body).render(
@@ -102,11 +94,22 @@ ReactDOM.createRoot(document.body).render(
 -      Average: <MetricView metricId="average" />
 -    </p>
 -    <TableView tableId="rolls" rowComponent={Roll} />
+-    <StoreInspector />
 -  </Provider>,
 -);
 ```
 
-To roll the dice, we again add a new Row every half second with the result, but also add a random color:
+```jsx
+ReactDOM.createRoot(document.body).render(
+  <Provider store={store} indexes={indexes}>
+    <IndexView indexId="rolls" sliceComponent={Rolls} />
+    <StoreInspector />
+  </Provider>,
+);
+```
+
+To roll the dice, we again add a new Row every half second with the result, but
+also add a random color:
 
 ```diff-js
  store.addRow('rolls', {
