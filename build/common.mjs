@@ -281,7 +281,7 @@ export const tsCheck = async (dir) => {
     unusedExports(`${path.resolve(dir)}/tsconfig.json`, [
       '--excludeDeclarationFiles',
       '--excludePathsFromReport=' +
-        'build.ts;' +
+        'build.ts;ui-react/common.ts;' +
         TEST_MODULES.map((module) => `${module}.ts`).join(';'),
     ]),
   )
