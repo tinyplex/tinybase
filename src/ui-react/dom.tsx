@@ -105,6 +105,7 @@ const useSortingAndPagination = (
   limit: number | undefined,
   total: number,
   paginator: boolean | React.ComponentType<SortedTablePaginatorProps>,
+  onSort?: (cellId: Id | undefined, descending: boolean) => void,
 ): [
   sorting: Sorting,
   changeSorting: (cellId: Id | undefined) => void,
@@ -123,9 +124,12 @@ const useSortingAndPagination = (
   return [
     sorting,
     useCallbackOrUndefined(
-      (cellId: Id | undefined) =>
-        changeSorting([cellId, cellId == sorting[0] ? !sorting[1] : false]),
-      [sorting],
+      (cellId: Id | undefined) => {
+        const descending = cellId == sorting[0] ? !sorting[1] : false;
+        changeSorting([cellId, descending]);
+        onSort?.(cellId, descending);
+      },
+      [sorting, onSort],
       sortOnClick,
     ),
     useMemo(
@@ -405,6 +409,7 @@ export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
   editable,
   sortOnClick,
   paginator = false,
+  onSort,
   ...props
 }: SortedTableInHtmlTableProps & HtmlTableProps): any => {
   const [sorting, changeSorting, paginatorComponent, currentOffset] =
@@ -416,6 +421,7 @@ export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
       limit,
       useRowCount(tableId, store),
       paginator,
+      onSort,
     );
   return (
     <HtmlTable
@@ -502,6 +508,7 @@ export const ResultSortedTableInHtmlTable: typeof ResultSortedTableInHtmlTableDe
     queries,
     sortOnClick,
     paginator = false,
+    onSort,
     ...props
   }: ResultSortedTableInHtmlTableProps & HtmlTableProps): any => {
     const [sorting, changeSorting, paginatorComponent, currentOffset] =
@@ -513,6 +520,7 @@ export const ResultSortedTableInHtmlTable: typeof ResultSortedTableInHtmlTableDe
         limit,
         useResultRowCount(queryId, queries),
         paginator,
+        onSort,
       );
     return (
       <HtmlTable
