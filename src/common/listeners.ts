@@ -43,8 +43,20 @@ export type IdSetNode = Node<IdOrNull, IdSet> | IdSet;
 export type ListenerArgument = IdOrNull | boolean | number | undefined;
 export type PathGetters = ((...ids: Ids) => Ids)[];
 export type ExtraArgsGetter = (ids: Ids) => any[];
+export type AddListener = (
+  listener: Listener,
+  idSetNode: IdSetNode,
+  path?: ListenerArgument[],
+  pathGetters?: PathGetters,
+  extraArgsGetter?: ExtraArgsGetter,
+) => Id;
+export type CallListeners = (
+  idSetNode: IdSetNode,
+  ids?: Ids,
+  ...extra: any[]
+) => void;
+export type DelListener = (id: Id) => Ids;
 
-type IdOrBoolean = Id | boolean;
 type Listener =
   | TablesListener
   | TableIdsListener
@@ -66,6 +78,7 @@ type Listener =
   | LocalRowIdsListener
   | CheckpointIdsListener
   | CheckpointListener;
+type IdOrBoolean = Id | boolean;
 
 const getWildcardedLeaves = (
   deepIdSet: IdSetNode,
@@ -87,16 +100,10 @@ const getWildcardedLeaves = (
 export const getListenerFunctions = (
   getThing: () => Store | Metrics | Indexes | Relationships | Checkpoints,
 ): [
-  (
-    listener: Listener,
-    idSetNode: IdSetNode,
-    path?: ListenerArgument[],
-    pathGetters?: PathGetters,
-    extraArgsGetter?: ExtraArgsGetter,
-  ) => Id,
-  (idSetNode: IdSetNode, ids?: Ids, ...extra: any[]) => void,
-  (id: Id) => Ids,
-  (id: Id) => void,
+  addListener: AddListener,
+  callListeners: CallListeners,
+  delListener: DelListener,
+  callListener: (id: Id) => void,
 ] => {
   let thing: Store | Metrics | Indexes | Relationships | Checkpoints;
 

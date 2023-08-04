@@ -1,3 +1,4 @@
+import {AddListener, CallListeners} from './listeners';
 import {Cell, GetCell, Store} from '../types/store.d';
 import {Id, Ids, SortKey} from '../types/common.d';
 import {
@@ -42,30 +43,34 @@ export const getDefinableFunctions = <Thing, RowValue>(
   store: Store,
   getDefaultThing: () => Thing,
   validateRowValue: (value: any) => RowValue,
+  addListener: AddListener,
+  callListeners: CallListeners,
 ): [
-  () => Store,
-  () => Ids,
-  (cb: (id: Id, value: Thing) => void) => void,
-  (id: Id) => boolean,
-  (id: Id) => Id,
-  (id: Id) => Thing | undefined,
-  (id: Id, thing?: Thing) => boolean | Map<string, Thing>,
-  (id: Id, tableId: Id) => void,
-  (
+  getStore: () => Store,
+  getThingIds: () => Ids,
+  forEachThing: (cb: (id: Id, value: Thing) => void) => void,
+  hasThing: (id: Id) => boolean,
+  getTableId: (id: Id) => Id,
+  getThing: (id: Id) => Thing | undefined,
+  setThing: (id: Id, thing?: Thing) => boolean | Map<string, Thing>,
+  setDefinition: (id: Id, tableId: Id) => void,
+  setDefinitionAndListen: (
     id: Id,
     tableId: Id,
     onChanged: OnChangedDecl<RowValue>,
     getRowValue: (getCell: GetCell, rowId: Id) => RowValue,
     getSortKey?: (getCell: GetCell, rowId: Id) => SortKey,
   ) => void,
-  (id: Id) => void,
-  () => void,
-  (id: Id, call: 0 | 1, ...listenerIds: Ids) => Ids,
-  (id: Id, ...listenerIds: Ids) => void,
+  delDefinition: (id: Id) => void,
+  addThingIdsListener: (listener: () => void) => void,
+  destroy: () => void,
+  addStoreListeners: (id: Id, call: 0 | 1, ...listenerIds: Ids) => Ids,
+  delStoreListeners: (id: Id, ...listenerIds: Ids) => void,
 ] => {
   const hasRow = store.hasRow;
   const tableIds: IdMap<Id> = mapNew();
   const things: IdMap<Thing> = mapNew();
+  const thingIdListeners: IdSet2 = mapNew();
   const allRowValues: IdMap2<RowValue> = mapNew();
   const allSortKeys: IdMap2<SortKey> = mapNew();
   const storeListenerIds: IdSet2 = mapNew();
@@ -120,6 +125,7 @@ export const getDefinableFunctions = <Thing, RowValue>(
       mapSet(things, id, getDefaultThing());
       mapSet(allRowValues, id, mapNew());
       mapSet(allSortKeys, id, mapNew());
+      callListeners(thingIdListeners);
     }
   };
 
@@ -214,7 +220,11 @@ export const getDefinableFunctions = <Thing, RowValue>(
     mapSet(allRowValues, id);
     mapSet(allSortKeys, id);
     delStoreListeners(id);
+    callListeners(thingIdListeners);
   };
+
+  const addThingIdsListener = (listener: () => void) =>
+    addListener(listener, thingIdListeners);
 
   const destroy = (): void => mapForEach(storeListenerIds, delDefinition);
 
@@ -229,6 +239,7 @@ export const getDefinableFunctions = <Thing, RowValue>(
     setDefinition,
     setDefinitionAndListen,
     delDefinition,
+    addThingIdsListener,
     destroy,
     addStoreListeners,
     delStoreListeners,

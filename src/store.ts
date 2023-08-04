@@ -1629,7 +1629,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
     getListenerStats,
 
+    // only used internally by other modules
     createStore,
+    addListener,
+    callListeners,
   };
 
   objMap(
