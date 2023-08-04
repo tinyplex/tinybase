@@ -117,12 +117,13 @@ describe('Sets', () => {
 
 test('Listens to RelationshipIds', () => {
   const listener = createRelationshipsListener(relationships);
-  listener.listenToRelationshipIds('/r');
+  const listenerId = listener.listenToRelationshipIds('/r');
   relationships.setRelationshipDefinition('r1', 't1', 't2', 'c1');
-  relationships.setRelationshipDefinition('r2', 't2', 't1', 'c1');
+  relationships.setRelationshipDefinition('r2', 't2', 't2', 'c1');
   relationships.delRelationshipDefinition('r1');
   expectChanges(listener, '/r', ['r1'], ['r1', 'r2'], ['r2']);
   expectNoChanges(listener);
+  relationships.delListener(listenerId);
 });
 
 describe('Listens to RemoteRowIds when sets', () => {

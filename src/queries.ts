@@ -24,6 +24,7 @@ import {
   Join,
   Queries,
   QueriesListenerStats,
+  QueryIdsListener,
   Select,
   Where,
   createQueries as createQueriesDecl,
@@ -578,7 +579,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     return queries;
   };
 
-  const addQueryIdsListener = (listener) =>
+  const addQueryIdsListener = (listener: QueryIdsListener) =>
     addQueryIdsListenerImpl(() => listener(queries));
 
   const delListener = (listenerId: Id): Queries => {

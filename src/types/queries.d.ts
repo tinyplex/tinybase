@@ -334,6 +334,9 @@ export interface Queries {
     cellCallback: ResultCellCallback,
   ): void;
 
+  /// Queries.addQueryIdsListener
+  addQueryIdsListener(listener: QueryIdsListener): Id;
+
   /// Queries.addResultTableListener
   addResultTableListener(queryId: IdOrNull, listener: ResultTableListener): Id;
 

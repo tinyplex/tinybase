@@ -559,6 +559,43 @@
    */
   /// Metrics.getMetric
   /**
+   * The addMetricIdsListener method registers a listener function with the
+   * Metrics object that will be called whenever a Metric definition is added or
+   * removed.
+   *
+   * The provided listener is a MetricIdsListener function, and will be called
+   * with a reference to the Metrics object.
+   * @param listener The function that will be called whenever a Metric
+   * definition is added or removed.
+   * @example
+   * This example creates a Store, a Metrics object, and then registers a
+   * listener that responds to the addition and the removal of a Metric
+   * definition.
+   *
+   * ```js
+   * const store = createStore().setTable('species', {
+   *   dog: {price: 5},
+   *   cat: {price: 4},
+   *   worm: {price: 1},
+   * });
+   *
+   * const metrics = createMetrics(store);
+   * const listenerId = metrics.addMetricIdsListener((metrics) => {
+   *   console.log(metrics.getMetricIds());
+   * });
+   *
+   * metrics.setMetricDefinition('highestPrice', 'species', 'max', 'price');
+   * // -> ['highestPrice']
+   * metrics.delMetricDefinition('highestPrice');
+   * // -> []
+   *
+   * metrics.delListener(listenerId);
+   * ```
+   * @category Listener
+   * @since v4.1.0
+   */
+  /// Metrics.addMetricIdsListener
+  /**
    * The addMetricListener method registers a listener function with the Metrics
    * object that will be called whenever the value of a specified Metric
    * changes.

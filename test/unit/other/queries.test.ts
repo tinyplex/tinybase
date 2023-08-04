@@ -844,12 +844,13 @@ describe('Sets', () => {
 
 test('Listens to QueryIds', () => {
   const listener = createQueriesListener(queries);
-  listener.listenToQueryIds('/q');
+  const listenerId = listener.listenToQueryIds('/q');
   queries.setQueryDefinition('q1', 't1', () => 0);
   queries.setQueryDefinition('q2', 't2', () => 0);
   queries.delQueryDefinition('q1');
   expectChanges(listener, '/q', ['q1'], ['q1', 'q2'], ['q2']);
   expectNoChanges(listener);
+  queries.delListener(listenerId);
 });
 
 describe('Listens to Queries when sets', () => {

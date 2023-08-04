@@ -426,6 +426,9 @@ export interface Queries<in out Schemas extends OptionalSchemas> {
     cellCallback: ResultCellCallback,
   ): void;
 
+  /// Queries.addQueryIdsListener
+  addQueryIdsListener(listener: QueryIdsListener<Schemas>): Id;
+
   /// Queries.addResultTableListener
   addResultTableListener(
     queryId: IdOrNull,

@@ -86,6 +86,9 @@ export interface Metrics {
   /// Metrics.getMetric
   getMetric(metricId: Id): Metric | undefined;
 
+  /// Metrics.addMetricIdsListener
+  addMetricIdsListener(listener: MetricIdsListener): Id;
+
   /// Metrics.addMetricListener
   addMetricListener(metricId: IdOrNull, listener: MetricListener): Id;
 

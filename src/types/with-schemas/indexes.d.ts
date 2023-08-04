@@ -102,6 +102,9 @@ export interface Indexes<in out Schemas extends OptionalSchemas> {
   /// Indexes.getSliceRowIds
   getSliceRowIds(indexId: Id, sliceId: Id): Ids;
 
+  /// Indexes.addIndexIdsListener
+  addIndexIdsListener(listener: IndexIdsListener<Schemas>): Id;
+
   /// Indexes.addSliceIdsListener
   addSliceIdsListener(
     indexId: IdOrNull,
