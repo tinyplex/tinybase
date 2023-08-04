@@ -80,9 +80,9 @@ export const StoreView = ({
       <StoreValuesView storeId={storeId} store={store} s={s} />
       {arrayMap(tableIds, (tableId) => (
         <StoreTableView
+          store={store}
           storeId={storeId}
           tableId={tableId}
-          store={store}
           s={s}
         />
       ))}
