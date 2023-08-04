@@ -86,6 +86,18 @@ export type SortedTableInHtmlTableProps = {
   ) => void;
 };
 
+/// ValuesInHtmlTableProps
+export type ValuesInHtmlTableProps = {
+  /// ValuesInHtmlTableProps.store
+  readonly store?: StoreOrStoreId;
+  /// ValuesInHtmlTableProps.editable
+  readonly editable?: boolean;
+  /// ValuesInHtmlTableProps.valueComponent
+  readonly valueComponent?: ComponentType<ValueProps>;
+  /// ValuesInHtmlTableProps.getValueComponentProps
+  readonly getValueComponentProps?: (valueId: Id) => ExtraProps;
+};
+
 /// ResultTableInHtmlTableProps
 export type ResultTableInHtmlTableProps = {
   /// ResultTableInHtmlTableProps.queryId
@@ -124,18 +136,6 @@ export type ResultSortedTableInHtmlTableProps = {
       offset: number,
     ],
   ) => void;
-};
-
-/// ValuesInHtmlTableProps
-export type ValuesInHtmlTableProps = {
-  /// ValuesInHtmlTableProps.store
-  readonly store?: StoreOrStoreId;
-  /// ValuesInHtmlTableProps.editable
-  readonly editable?: boolean;
-  /// ValuesInHtmlTableProps.valueComponent
-  readonly valueComponent?: ComponentType<ValueProps>;
-  /// ValuesInHtmlTableProps.getValueComponentProps
-  readonly getValueComponentProps?: (valueId: Id) => ExtraProps;
 };
 
 /// SortedTablePaginatorProps

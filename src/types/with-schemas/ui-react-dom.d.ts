@@ -125,6 +125,18 @@ export type SortedTableInHtmlTableProps<
     : never
   : never;
 
+/// ValuesInHtmlTableProps
+export type ValuesInHtmlTableProps<Schemas extends OptionalSchemas> = {
+  /// ValuesInHtmlTableProps.store
+  readonly store?: StoreOrStoreId<Schemas>;
+  /// ValuesInHtmlTableProps.editable
+  readonly editable?: boolean;
+  /// ValuesInHtmlTableProps.valueComponent
+  readonly valueComponent?: ComponentType<ValueProps<Schemas>>;
+  /// ValuesInHtmlTableProps.getValueComponentProps
+  readonly getValueComponentProps?: (valueId: Id) => ExtraProps;
+};
+
 /// ResultTableInHtmlTableProps
 export type ResultTableInHtmlTableProps<Schemas extends OptionalSchemas> = {
   /// ResultTableInHtmlTableProps.queryId
@@ -169,18 +181,6 @@ export type ResultSortedTableInHtmlTableProps<Schemas extends OptionalSchemas> =
       ],
     ) => void;
   };
-
-/// ValuesInHtmlTableProps
-export type ValuesInHtmlTableProps<Schemas extends OptionalSchemas> = {
-  /// ValuesInHtmlTableProps.store
-  readonly store?: StoreOrStoreId<Schemas>;
-  /// ValuesInHtmlTableProps.editable
-  readonly editable?: boolean;
-  /// ValuesInHtmlTableProps.valueComponent
-  readonly valueComponent?: ComponentType<ValueProps<Schemas>>;
-  /// ValuesInHtmlTableProps.getValueComponentProps
-  readonly getValueComponentProps?: (valueId: Id) => ExtraProps;
-};
 
 /// SortedTablePaginatorProps
 export type SortedTablePaginatorProps = {
