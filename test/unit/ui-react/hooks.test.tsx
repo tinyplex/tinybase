@@ -48,6 +48,7 @@ import {
   useGoBackwardCallback,
   useGoForwardCallback,
   useGoToCallback,
+  useIndexIds,
   useIndexes,
   useIndexesIds,
   useLinkedRowIds,
@@ -55,12 +56,15 @@ import {
   useLocalRowIds,
   useLocalRowIdsListener,
   useMetric,
+  useMetricIds,
   useMetricListener,
   useMetrics,
   useMetricsIds,
   useQueries,
   useQueriesIds,
+  useQueryIds,
   useRedoInformation,
+  useRelationshipIds,
   useRelationships,
   useRelationshipsIds,
   useRemoteRowId,
@@ -1186,6 +1190,28 @@ describe('Read Hooks', () => {
     expect(didRender).toHaveBeenCalledTimes(5);
   });
 
+  test('useMetricIds', () => {
+    const metrics = createMetrics(store);
+    const Test = () => didRender(<>{useMetricIds(metrics)}</>);
+
+    act(() => {
+      renderer = create(<Test />);
+    });
+    expect(renderer.toJSON()).toBeNull();
+
+    act(() => {
+      metrics.setMetricDefinition('m1', 't1');
+      metrics.setMetricDefinition('m2', 't2');
+    });
+    expect(renderer.toJSON()).toEqual(['m1', 'm2']);
+
+    act(() => {
+      metrics.delMetricDefinition('m1');
+    });
+    expect(renderer.toJSON()).toEqual('m2');
+    expect(didRender).toHaveBeenCalledTimes(3);
+  });
+
   test('useMetric', () => {
     const metrics = createMetrics(store)
       .setMetricDefinition('m1', 't1')
@@ -1224,6 +1250,28 @@ describe('Read Hooks', () => {
     });
     expect(renderer.toJSON()).toBeNull();
     expect(didRender).toHaveBeenCalledTimes(6);
+  });
+
+  test('useIndexIds', () => {
+    const indexes = createIndexes(store);
+    const Test = () => didRender(<>{useIndexIds(indexes)}</>);
+
+    act(() => {
+      renderer = create(<Test />);
+    });
+    expect(renderer.toJSON()).toBeNull();
+
+    act(() => {
+      indexes.setIndexDefinition('i1', 't1');
+      indexes.setIndexDefinition('i2', 't2');
+    });
+    expect(renderer.toJSON()).toEqual(['i1', 'i2']);
+
+    act(() => {
+      indexes.delIndexDefinition('i1');
+    });
+    expect(renderer.toJSON()).toEqual('i2');
+    expect(didRender).toHaveBeenCalledTimes(3);
   });
 
   test('useSliceIds', () => {
@@ -1309,6 +1357,28 @@ describe('Read Hooks', () => {
     });
     expect(renderer.toJSON()).toEqual(JSON.stringify([]));
     expect(didRender).toHaveBeenCalledTimes(6);
+  });
+
+  test('useRelationshipIds', () => {
+    const relationships = createRelationships(store);
+    const Test = () => didRender(<>{useRelationshipIds(relationships)}</>);
+
+    act(() => {
+      renderer = create(<Test />);
+    });
+    expect(renderer.toJSON()).toBeNull();
+
+    act(() => {
+      relationships.setRelationshipDefinition('r1', 't1', 't2', 'c1');
+      relationships.setRelationshipDefinition('r2', 't2', 't2', 'c1');
+    });
+    expect(renderer.toJSON()).toEqual(['r1', 'r2']);
+
+    act(() => {
+      relationships.delRelationshipDefinition('r1');
+    });
+    expect(renderer.toJSON()).toEqual('r2');
+    expect(didRender).toHaveBeenCalledTimes(3);
   });
 
   test('useRemoteRowId', () => {
@@ -1468,6 +1538,28 @@ describe('Read Hooks', () => {
     });
     expect(renderer.toJSON()).toEqual(JSON.stringify(['r2']));
     expect(didRender).toHaveBeenCalledTimes(6);
+  });
+
+  test('useQueryIds', () => {
+    const queries = createQueries(store);
+    const Test = () => didRender(<>{useQueryIds(queries)}</>);
+
+    act(() => {
+      renderer = create(<Test />);
+    });
+    expect(renderer.toJSON()).toBeNull();
+
+    act(() => {
+      queries.setQueryDefinition('q1', 't1', () => 0);
+      queries.setQueryDefinition('q2', 't2', () => 0);
+    });
+    expect(renderer.toJSON()).toEqual(['q1', 'q2']);
+
+    act(() => {
+      queries.delQueryDefinition('q1');
+    });
+    expect(renderer.toJSON()).toEqual('q2');
+    expect(didRender).toHaveBeenCalledTimes(3);
   });
 
   test('useResultTable', () => {
