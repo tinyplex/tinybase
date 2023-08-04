@@ -596,6 +596,9 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// useMetrics
   useMetrics: (id?: Id) => Metrics<Schemas> | undefined;
 
+  /// useMetricIds
+  useMetricIds(metricsOrMetricsId?: MetricsOrMetricsId<Schemas>): Ids;
+
   /// useMetric
   useMetric: (
     metricId: Id,
@@ -619,6 +622,9 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// useIndexes
   useIndexes: (id?: Id) => Indexes<Schemas> | undefined;
+
+  /// useIndexIds
+  useIndexIds(indexesOrIndexesId?: IndexesOrIndexesId<Schemas>): Ids;
 
   /// useSliceIds
   useSliceIds: (
@@ -659,6 +665,11 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// useRelationships
   useRelationships: (id?: Id) => Relationships<Schemas> | undefined;
+
+  /// useRelationshipIds
+  useRelationshipIds(
+    relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
+  ): Ids;
 
   /// useRemoteRowId
   useRemoteRowId: (
@@ -717,6 +728,9 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// useQueries
   useQueries: (id?: Id) => Queries<Schemas> | undefined;
+
+  /// useQueryIds
+  useQueryIds(queriesOrQueriesId?: QueriesOrQueriesId<Schemas>): Ids;
 
   /// useResultTable
   useResultTable: (

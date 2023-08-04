@@ -444,6 +444,9 @@ export function useCreateMetrics(
 /// useMetrics
 export function useMetrics(id?: Id): Metrics | undefined;
 
+/// useMetricIds
+export function useMetricIds(metricsOrMetricsId?: MetricsOrMetricsId): Ids;
+
 /// useMetric
 export function useMetric(
   metricId: Id,
@@ -467,6 +470,9 @@ export function useCreateIndexes(
 
 /// useIndexes
 export function useIndexes(id?: Id): Indexes | undefined;
+
+/// useIndexIds
+export function useIndexIds(indexesOrIndexesId?: IndexesOrIndexesId): Ids;
 
 /// useSliceIds
 export function useSliceIds(
@@ -507,6 +513,11 @@ export function useCreateRelationships(
 
 /// useRelationships
 export function useRelationships(id?: Id): Relationships | undefined;
+
+/// useRelationshipIds
+export function useRelationshipIds(
+  relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
+): Ids;
 
 /// useRemoteRowId
 export function useRemoteRowId(
@@ -565,6 +576,9 @@ export function useCreateQueries(
 
 /// useQueries
 export function useQueries(id?: Id): Queries | undefined;
+
+/// useQueryIds
+export function useQueryIds(queriesOrQueriesId?: QueriesOrQueriesId): Ids;
 
 /// useResultTable
 export function useResultTable(

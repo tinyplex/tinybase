@@ -38,7 +38,7 @@ console.log(app.innerHTML);
 // -> '<span>["dog","cat","worm"]</span>'
 ```
 
-The useCreateIndexes hook is used to create a Indexes object within a React
+The useCreateIndexes hook is used to create an Indexes object within a React
 application with convenient memoization:
 
 ```jsx

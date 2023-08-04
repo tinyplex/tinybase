@@ -68,7 +68,7 @@
  * A IndexIdsListener is provided when using the addIndexIdsListener method.
  * See that method for specific examples.
  *
- * When called, a IndexIdsListener is given a reference to the Indexes object.
+ * When called, an IndexIdsListener is given a reference to the Indexes object.
  * @param indexes A reference to the Indexes object that changed.
  * @category Listener
  */
@@ -606,13 +606,13 @@
    * Indexes object that will be called whenever an Index definition is added or
    * removed.
    *
-   * The provided listener is a IndexIdsListener function, and will be called
+   * The provided listener is an IndexIdsListener function, and will be called
    * with a reference to the Indexes object.
-   * @param listener The function that will be called whenever a Index
+   * @param listener The function that will be called whenever an Index
    * definition is added or removed.
    * @example
-   * This example creates a Store, a Indexes object, and then registers a
-   * listener that responds to the addition and the removal of a Index
+   * This example creates a Store, an Indexes object, and then registers a
+   * listener that responds to the addition and the removal of an Index
    * definition.
    *
    * ```js

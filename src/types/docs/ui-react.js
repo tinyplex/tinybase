@@ -55,7 +55,7 @@
  */
 /// MetricsOrMetricsId
 /**
- * The IndexesOrIndexesId type is used when you need to refer to a Indexes
+ * The IndexesOrIndexesId type is used when you need to refer to an Indexes
  * object in a React hook or component.
  *
  * In some simple cases you will already have a direct reference to the Indexes
@@ -409,7 +409,7 @@
  * @param id An optional Id for accessing a Store that was named with an Id in
  * the Provider.
  * @returns A reference to the Store (or `undefined` if not within a Provider
- * context, or if the requested Store does not exist)
+ * context, or if the requested Store does not exist).
  * @example
  * This example creates a Provider context into which a default Store is
  * provided. A component within it then uses the useStore hook to get a
@@ -3526,7 +3526,7 @@
  * @param id An optional Id for accessing a Metrics object that was named with
  * an Id in the Provider.
  * @returns A reference to the Metrics object (or `undefined` if not within a
- * Provider context, or if the requested Metrics object does not exist)
+ * Provider context, or if the requested Metrics object does not exist).
  * @example
  * This example creates a Provider context into which a default Metrics object
  * is provided. A component within it then uses the useMetrics hook to get a
@@ -3572,6 +3572,55 @@
  * @category Metrics hooks
  */
 /// useMetrics
+/**
+ * The useMetricIds hook gets an array of the Metric Ids registered with a
+ * Metrics object, and registers a listener so that any changes to that result
+ * will cause a re-render.
+ *
+ * A Provider component is used to wrap part of an application in a context, and
+ * it can contain a default Metrics object or a set of Metrics objects named by
+ * Id. The useMetricIds hook lets you indicate which Metrics object to get data
+ * for: omit the optional final parameter for the default context Metrics
+ * object, provide an Id for a named context Metrics object, or provide a
+ * Metrics object explicitly by reference.
+ *
+ * When first rendered, this hook will create a listener so that changes to the
+ * Metric Ids in the Metrics object will cause a re-render. When the component
+ * containing this hook is unmounted, the listener will be automatically
+ * removed.
+ * @param metricsOrMetricsId The Metrics object to be accessed: omit for the
+ * default context Metrics object, provide an Id for a named context Metrics
+ * object, or provide an explicit reference.
+ * @returns The Metric Ids in the Metrics object, or an empty array.
+ * @example
+ * This example creates an Metrics object outside the application, which is used
+ * in the useMetricIds hook by reference. A newly-registered Metric re-renders
+ * the component.
+ *
+ * ```jsx
+ * const store = createStore().setTable('pets', {
+ *   fido: {species: 'dog'},
+ *   felix: {species: 'cat'},
+ *   cujo: {species: 'dog'},
+ * });
+ * const metrics = createMetrics(store);
+ * const App = () => <span>{JSON.stringify(useMetricIds(metrics))}</span>;
+ *
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>[]</span>'
+ *
+ * const addMetricDefinition = () =>
+ *   metrics.setMetricDefinition('highestPrice', 'species', 'max', 'price');
+ * addMetricDefinition(); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["highestPrice"]</span>'
+ * ```
+ * @category Metrics hooks
+ * @since v4.1.0
+ */
+/// useMetricIds
 /**
  * The useMetric hook gets the current value of a Metric, and registers a
  * listener so that any changes to that result will cause a re-render.
@@ -3861,7 +3910,7 @@
  * @param id An optional Id for accessing an Indexes object that was named with
  * an Id in the Provider.
  * @returns A reference to the Indexes object (or `undefined` if not within a
- * Provider context, or if the requested Indexes object does not exist)
+ * Provider context, or if the requested Indexes object does not exist).
  * @example
  * This example creates a Provider context into which a default Indexes object
  * is provided. A component within it then uses the useIndexes hook to get a
@@ -3907,6 +3956,53 @@
  * @category Indexes hooks
  */
 /// useIndexes
+/**
+ * The useIndexIds hook gets an array of the Index Ids registered with an
+ * Indexes object, and registers a listener so that any changes to that result
+ * will cause a re-render.
+ *
+ * A Provider component is used to wrap part of an application in a context, and
+ * it can contain a default Indexes object or a set of Indexes objects named by
+ * Id. The useIndexIds hook lets you indicate which Indexes object to get data
+ * for: omit the optional final parameter for the default context Indexes
+ * object, provide an Id for a named context Indexes object, or provide an
+ * Indexes object explicitly by reference.
+ *
+ * When first rendered, this hook will create a listener so that changes to the
+ * Index Ids in the Indexes object will cause a re-render. When the component
+ * containing this hook is unmounted, the listener will be automatically
+ * removed.
+ * @param indexesOrIndexesId The Indexes object to be accessed: omit for the
+ * default context Indexes object, provide an Id for a named context Indexes
+ * object, or provide an explicit reference.
+ * @returns The Index Ids in the Indexes object, or an empty array.
+ * @example
+ * This example creates an Indexes object outside the application, which is used
+ * in the useIndexIds hook by reference. A newly-registered Index re-renders the
+ * component.
+ *
+ * ```jsx
+ * const store = createStore().setTable('pets', {
+ *   fido: {species: 'dog'},
+ *   felix: {species: 'cat'},
+ *   cujo: {species: 'dog'},
+ * });
+ * const indexes = createIndexes(store);
+ * const App = () => <span>{JSON.stringify(useIndexIds(indexes))}</span>;
+ *
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>[]</span>'
+ *
+ * indexes.setIndexDefinition('bySpecies', 'pets', 'species'); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["bySpecies"]</span>'
+ * ```
+ * @category Indexes hooks
+ * @since v4.1.0
+ */
+/// useIndexIds
 /**
  * The useSliceIds hook gets the list of Slice Ids in an Index, and registers a
  * listener so that any changes to that result will cause a re-render.
@@ -4393,7 +4489,7 @@
  * with an Id in the Provider.
  * @returns A reference to the Relationships object (or `undefined` if not
  * within a Provider context, or if the requested Relationships object does not
- * exist)
+ * exist).
  * @example
  * This example creates a Provider context into which a default Relationships
  * object is provided. A component within it then uses the useRelationships hook
@@ -4445,6 +4541,63 @@
  * @category Relationships hooks
  */
 /// useRelationships
+/**
+ * The useRelationshipIds hook gets an array of the Relationship Ids registered
+ * with a Relationships object, and registers a listener so that any changes to
+ * that result will cause a re-render.
+ *
+ * A Provider component is used to wrap part of an application in a context, and
+ * it can contain a default Relationships object or a set of Relationships
+ * objects named by Id. The useRelationshipIds hook lets you indicate which
+ * Relationships object to get data for: omit the optional final parameter for
+ * the default context Relationships object, provide an Id for a named context
+ * Relationships object, or provide a Relationships object explicitly by
+ * reference.
+ *
+ * When first rendered, this hook will create a listener so that changes to the
+ * Relationship Ids in the Relationships object will cause a re-render. When the
+ * component containing this hook is unmounted, the listener will be
+ * automatically removed.
+ * @param relationshipsOrRelationshipsId The Relationships object to be
+ * accessed: omit for the default context Relationships object, provide an Id
+ * for a named context Relationships object, or provide an explicit reference.
+ * @returns The Relationship Ids in the Relationships object, or an empty array.
+ * @example
+ * This example creates an Relationships object outside the application, which
+ * is used in the useRelationshipIds hook by reference. A newly-registered
+ * Relationship re-renders the component.
+ *
+ * ```jsx
+ * const store = createStore().setTable('pets', {
+ *   fido: {species: 'dog'},
+ *   felix: {species: 'cat'},
+ *   cujo: {species: 'dog'},
+ * });
+ * const relationships = createRelationships(store);
+ * const App = () => (
+ *   <span>{JSON.stringify(useRelationshipIds(relationships))}</span>
+ * );
+ *
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>[]</span>'
+ *
+ * const addRelationshipDefinition = () =>
+ *   relationships.setRelationshipDefinition(
+ *     'petSpecies',
+ *     'pets',
+ *     'species',
+ *     'species',
+ *   );
+ * addRelationshipDefinition(); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["petSpecies"]</span>'
+ * ```
+ * @category Relationships hooks
+ * @since v4.1.0
+ */
+/// useRelationshipIds
 /**
  * The useRemoteRowId hook gets the remote Row Id for a given local Row in a
  * Relationship, and registers a listener so that any changes to that result
@@ -5148,7 +5301,7 @@
  * @param id An optional Id for accessing a Queries object that was named with
  * an Id in the Provider.
  * @returns A reference to the Queries object (or `undefined` if not within a
- * Provider context, or if the requested Queries object does not exist)
+ * Provider context, or if the requested Queries object does not exist).
  * @example
  * This example creates a Provider context into which a default Queries object
  * is provided. A component within it then uses the useQueries hook to get a
@@ -5195,6 +5348,58 @@
  * @since v2.0.0
  */
 /// useQueries
+/**
+ * The useQueryIds hook gets an array of the Query Ids registered with a Queries
+ * object, and registers a listener so that any changes to that result will
+ * cause a re-render.
+ *
+ * A Provider component is used to wrap part of an application in a context, and
+ * it can contain a default Queries object or a set of Queries objects named by
+ * Id. The useQueryIds hook lets you indicate which Queries object to get data
+ * for: omit the optional final parameter for the default context Queries
+ * object, provide an Id for a named context Queries object, or provide a
+ * Queries object explicitly by reference.
+ *
+ * When first rendered, this hook will create a listener so that changes to the
+ * Query Ids in the Queries object will cause a re-render. When the component
+ * containing this hook is unmounted, the listener will be automatically
+ * removed.
+ * @param relationshipsOrRelationshipsId The Queries object to be accessed: omit
+ * for the default context Queries object, provide an Id for a named context
+ * Queries object, or provide an explicit reference.
+ * @returns The Query Ids in the Queries object, or an empty array.
+ * @example
+ * This example creates an Queries object outside the application, which is used
+ * in the useQueryIds hook by reference. A newly-registered Relationship
+ * re-renders the component.
+ *
+ * ```jsx
+ * const store = createStore().setTable('pets', {
+ *   fido: {species: 'dog'},
+ *   felix: {species: 'cat'},
+ *   cujo: {species: 'dog'},
+ * });
+ * const queries = createQueries(store);
+ * const App = () => <span>{JSON.stringify(useQueryIds(queries))}</span>;
+ *
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>[]</span>'
+ *
+ * const addQueryDefinition = () =>
+ *   queries.setQueryDefinition('dogColors', 'pets', ({select, where}) => {
+ *     select('color');
+ *     where('species', 'dog');
+ *   });
+ * addQueryDefinition(); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["dogColors"]</span>'
+ * ```
+ * @category Queries hooks
+ * @since v4.1.0
+ */
+/// useQueryIds
 /**
  * The useResultTable hook returns an object containing the entire data of the
  * ResultTable of the given query, and registers a listener so that any changes
@@ -6883,7 +7088,7 @@
  * @param id An optional Id for accessing a Checkpoints object that was named
  * with an Id in the Provider.
  * @returns A reference to the Checkpoints object (or `undefined` if not within
- * a Provider context, or if the requested Checkpoints object does not exist)
+ * a Provider context, or if the requested Checkpoints object does not exist).
  * @example
  * This example creates a Provider context into which a default Checkpoint
  * object is provided. A component within it then uses the useCheckpoints hook

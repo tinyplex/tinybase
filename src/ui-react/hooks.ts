@@ -88,16 +88,20 @@ import {
   useGoBackwardCallback as useGoBackwardCallbackDecl,
   useGoForwardCallback as useGoForwardCallbackDecl,
   useGoToCallback as useGoToCallbackDecl,
+  useIndexIds as useIndexIdsDecl,
   useIndexesIds as useIndexesIdsDecl,
   useLinkedRowIds as useLinkedRowIdsDecl,
   useLinkedRowIdsListener as useLinkedRowIdsListenerDecl,
   useLocalRowIds as useLocalRowIdsDecl,
   useLocalRowIdsListener as useLocalRowIdsListenerDecl,
   useMetric as useMetricDecl,
+  useMetricIds as useMetricIdsDecl,
   useMetricListener as useMetricListenerDecl,
   useMetricsIds as useMetricsIdsDecl,
   useQueriesIds as useQueriesIdsDecl,
+  useQueryIds as useQueryIdsDecl,
   useRedoInformation as useRedoInformationDecl,
+  useRelationshipIds as useRelationshipIdsDecl,
   useRelationshipsIds as useRelationshipsIdsDecl,
   useRemoteRowId as useRemoteRowIdDecl,
   useRemoteRowIdListener as useRemoteRowIdListenerDecl,
@@ -886,6 +890,11 @@ export const useCreateMetrics: typeof useCreateMetricsDecl = (
   createDeps?: React.DependencyList,
 ): Metrics => useCreate(store, create, createDeps);
 
+export const useMetricIds: typeof useMetricIdsDecl = (
+  metricsOrMetricsId?: MetricsOrMetricsId,
+): Ids =>
+  useListenable('MetricIds', useMetricsOrMetricsId(metricsOrMetricsId), []);
+
 export const useMetric: typeof useMetricDecl = (
   metricId: Id,
   metricsOrMetricsId?: MetricsOrMetricsId,
@@ -927,6 +936,11 @@ export const useSliceIds: typeof useSliceIdsDecl = (
     [],
     [indexId],
   );
+
+export const useIndexIds: typeof useIndexIdsDecl = (
+  indexesOrIndexesId?: IndexesOrIndexesId,
+): Ids =>
+  useListenable('IndexIds', useIndexesOrIndexesId(indexesOrIndexesId), []);
 
 export const useSliceRowIds: typeof useSliceRowIdsDecl = (
   indexId: Id,
@@ -974,6 +988,15 @@ export const useCreateRelationships: typeof useCreateRelationshipsDecl = (
   create: (store: Store) => Relationships,
   createDeps?: React.DependencyList,
 ): Relationships => useCreate(store, create, createDeps);
+
+export const useRelationshipIds: typeof useRelationshipIdsDecl = (
+  relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
+): Ids =>
+  useListenable(
+    'RelationshipIds',
+    useRelationshipsOrRelationshipsId(relationshipsOrRelationshipsId),
+    [],
+  );
 
 export const useRemoteRowId: typeof useRemoteRowIdDecl = (
   relationshipId: Id,
@@ -1061,6 +1084,11 @@ export const useCreateQueries: typeof useCreateQueriesDecl = (
   create: (store: Store) => Queries,
   createDeps?: React.DependencyList,
 ): Queries => useCreate(store, create, createDeps);
+
+export const useQueryIds: typeof useQueryIdsDecl = (
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): Ids =>
+  useListenable('QueryIds', useQueriesOrQueriesId(queriesOrQueriesId), []);
 
 export const useResultTable: typeof useResultTableDecl = (
   queryId: Id,
