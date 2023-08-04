@@ -1,6 +1,7 @@
 /** @jsx createElement */
 
-import {useMetricsIds, useStoreIds} from '../ui-react';
+import {useIndexesIds, useMetricsIds, useStoreIds} from '../ui-react';
+import {IndexesView} from './IndexesView';
 import {MetricsView} from './MetricsView';
 import {StoreProp} from './types';
 import {StoreView} from './StoreView';
@@ -16,6 +17,10 @@ export const Body = (props: StoreProp) => (
     <MetricsView {...props} />
     {arrayMap(useMetricsIds(), (metricsId) => (
       <MetricsView metricsId={metricsId} key={metricsId} {...props} />
+    ))}
+    <IndexesView {...props} />
+    {arrayMap(useIndexesIds(), (indexesId) => (
+      <IndexesView indexesId={indexesId} key={indexesId} {...props} />
     ))}
   </article>
 );
