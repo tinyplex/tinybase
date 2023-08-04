@@ -16,6 +16,9 @@ export type RelationshipCallback = (
   forEachRow: (rowCallback: RowCallback) => void,
 ) => void;
 
+/// RelationshipIdsListener
+export type RelationshipIdsListener = (relationships: Relationships) => void;
+
 /// RemoteRowIdListener
 export type RemoteRowIdListener = (
   relationships: Relationships,

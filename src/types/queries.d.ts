@@ -58,6 +58,9 @@ export type ResultRowCallback = (
 /// ResultCellCallback
 export type ResultCellCallback = (cellId: Id, cell: ResultCell) => void;
 
+/// QueryIdsListener
+export type QueryIdsListener = (queries: Queries) => void;
+
 /// ResultTableListener
 export type ResultTableListener = (
   queries: Queries,

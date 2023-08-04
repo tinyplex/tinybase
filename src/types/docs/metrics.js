@@ -119,6 +119,18 @@
  */
 /// MetricAggregateReplace
 /**
+ * The MetricIdsListener type describes a function that is used to listen to
+ * Metric definitions being added or removed.
+ *
+ * A MetricIdsListener is provided when using the addMetricIdsListener method.
+ * See that method for specific examples.
+ *
+ * When called, a MetricIdsListener is given a reference to the Metrics object.
+ * @param metrics A reference to the Metrics object that changed.
+ * @category Listener
+ */
+/// MetricIdsListener
+/**
  * The MetricListener type describes a function that is used to listen to
  * changes to a Metric.
  *

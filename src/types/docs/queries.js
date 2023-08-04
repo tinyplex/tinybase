@@ -206,6 +206,19 @@
  */
 /// ResultCellCallback
 /**
+ * The QueryIdsListener type describes a function that is used to listen
+ * to Query definitions being added or removed.
+ *
+ * A QueryIdsListener is provided when using the
+ * addQueryIdsListener method. See that method for specific examples.
+ *
+ * When called, a QueryIdsListener is given a reference to the
+ * Queries object.
+ * @param queries A reference to the Queries object that changed.
+ * @category Listener
+ */
+/// QueryIdsListener
+/**
  * The ResultTableListener type describes a function that is used to listen to
  * changes to a query's ResultTable.
  *

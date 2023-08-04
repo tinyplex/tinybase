@@ -35,6 +35,11 @@ export type MetricAggregateReplace = (
   length: number,
 ) => Metric | undefined;
 
+/// MetricIdsListener
+export type MetricIdsListener<Schemas extends OptionalSchemas> = (
+  metrics: Metrics<Schemas>,
+) => void;
+
 /// MetricListener
 export type MetricListener<Schemas extends OptionalSchemas> = (
   metrics: Metrics<Schemas>,
