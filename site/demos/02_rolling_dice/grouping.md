@@ -81,7 +81,7 @@ const Rolls = (props) => (
 }
 ```
 
-We then change our React app to comprise a IndexView component which will render
+We then change our React app to comprise an IndexView component which will render
 the `Rolls` component for each slice in the index (in turn rendering the `Roll`
 component for each roll Row):
 
