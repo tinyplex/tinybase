@@ -69,6 +69,11 @@ export type ResultRowCallback = (
 /// ResultCellCallback
 export type ResultCellCallback = (cellId: Id, cell: ResultCell) => void;
 
+/// QueryIdsListener
+export type QueryIdsListener<Schemas extends OptionalSchemas> = (
+  queries: Queries<Schemas>,
+) => void;
+
 /// ResultTableListener
 export type ResultTableListener<Schemas extends OptionalSchemas> = (
   queries: Queries<Schemas>,

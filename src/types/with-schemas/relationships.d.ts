@@ -23,6 +23,11 @@ export type RelationshipCallback<Schema extends OptionalTablesSchema> = (
   forEachRow: (rowCallback: RowCallback<Schema>) => void,
 ) => void;
 
+/// RelationshipIdsListener
+export type RelationshipIdsListener<Schemas extends OptionalSchemas> = (
+  relationships: Relationships<Schemas>,
+) => void;
+
 /// RemoteRowIdListener
 export type RemoteRowIdListener<Schemas extends OptionalSchemas> = (
   relationships: Relationships<Schemas>,

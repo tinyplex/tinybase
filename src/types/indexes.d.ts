@@ -21,6 +21,9 @@ export type SliceCallback = (
   forEachRow: (rowCallback: RowCallback) => void,
 ) => void;
 
+/// IndexIdsListener
+export type IndexIdsListener = (indexes: Indexes) => void;
+
 /// SliceIdsListener
 export type SliceIdsListener = (indexes: Indexes, indexId: Id) => void;
 

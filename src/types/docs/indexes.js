@@ -62,6 +62,18 @@
  */
 /// SliceCallback
 /**
+ * The IndexIdsListener type describes a function that is used to listen to
+ * Index definitions being added or removed.
+ *
+ * A IndexIdsListener is provided when using the addIndexIdsListener method.
+ * See that method for specific examples.
+ *
+ * When called, a IndexIdsListener is given a reference to the Indexes object.
+ * @param indexes A reference to the Indexes object that changed.
+ * @category Listener
+ */
+/// IndexIdsListener
+/**
  * The SliceIdsListener type describes a function that is used to listen to
  * changes to the Slice Ids in an Index.
  *

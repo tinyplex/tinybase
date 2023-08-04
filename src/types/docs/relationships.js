@@ -44,6 +44,19 @@
  */
 /// RelationshipCallback
 /**
+ * The RelationshipIdsListener type describes a function that is used to listen
+ * to Relationship definitions being added or removed.
+ *
+ * A RelationshipIdsListener is provided when using the
+ * addRelationshipIdsListener method. See that method for specific examples.
+ *
+ * When called, a RelationshipIdsListener is given a reference to the
+ * Relationships object.
+ * @param relationships A reference to the Relationships object that changed.
+ * @category Listener
+ */
+/// RelationshipIdsListener
+/**
  * The RemoteRowIdListener type describes a function that is used to listen to
  * changes to the remote Row Id end of a Relationship.
  *

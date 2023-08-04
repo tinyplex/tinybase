@@ -28,6 +28,11 @@ export type SliceCallback<Schema extends OptionalTablesSchema> = (
   forEachRow: (rowCallback: RowCallback<Schema>) => void,
 ) => void;
 
+/// IndexIdsListener
+export type IndexIdsListener<Schemas extends OptionalSchemas> = (
+  indexes: Indexes<Schemas>,
+) => void;
+
 /// SliceIdsListener
 export type SliceIdsListener<Schemas extends OptionalSchemas> = (
   indexes: Indexes<Schemas>,
