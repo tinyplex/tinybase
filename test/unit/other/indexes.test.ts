@@ -218,6 +218,16 @@ describe('Sets', () => {
   });
 });
 
+test('Listens to IndexIds', () => {
+  const listener = createIndexesListener(indexes);
+  listener.listenToIndexIds('/i');
+  indexes.setIndexDefinition('i1', 't1');
+  indexes.setIndexDefinition('i2', 't2');
+  indexes.delIndexDefinition('i1');
+  expectChanges(listener, '/i', ['i1'], ['i1', 'i2'], ['i2']);
+  expectNoChanges(listener);
+});
+
 describe('Listens to SliceIds when sets', () => {
   beforeEach(() => {
     listener = createIndexesListener(indexes);

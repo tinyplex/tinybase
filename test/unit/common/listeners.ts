@@ -214,6 +214,13 @@ export const createMetricsListener = (metrics: Metrics): MetricsListener => {
   const logs: Logs = {};
 
   return Object.freeze({
+    listenToMetricIds: (id) => {
+      logs[id] = [];
+      return metrics.addMetricIdsListener((metrics) =>
+        logs[id].push(metrics.getMetricIds()),
+      );
+    },
+
     listenToMetric: (id, metricId) => {
       logs[id] = [];
       return metrics.addMetricListener(metricId, (metrics, metricId) =>
@@ -228,6 +235,13 @@ export const createIndexesListener = (indexes: Indexes): IndexesListener => {
   const logs: Logs = {};
 
   return Object.freeze({
+    listenToIndexIds: (id) => {
+      logs[id] = [];
+      return indexes.addIndexIdsListener((indexes) =>
+        logs[id].push(indexes.getIndexIds()),
+      );
+    },
+
     listenToSliceIds: (id, indexId) => {
       logs[id] = [];
       return indexes.addSliceIdsListener(indexId, (indexes, indexId) =>
@@ -256,6 +270,13 @@ export const createRelationshipsListener = (
   const logs: Logs = {};
 
   return Object.freeze({
+    listenToRelationshipIds: (id) => {
+      logs[id] = [];
+      return relationships.addRelationshipIdsListener((relationships) =>
+        logs[id].push(relationships.getRelationshipIds()),
+      );
+    },
+
     listenToRemoteRowId: (id, relationshipId, localRowId) => {
       logs[id] = [];
       return relationships.addRemoteRowIdListener(
@@ -314,6 +335,13 @@ export const createQueriesListener = (queries: Queries): QueriesListener => {
   const logs: Logs = {};
 
   return Object.freeze({
+    listenToQueryIds: (id) => {
+      logs[id] = [];
+      return queries.addQueryIdsListener((queries) =>
+        logs[id].push(queries.getQueryIds()),
+      );
+    },
+
     listenToResultTable: (id, queryId) => {
       logs[id] = [];
       return queries.addResultTableListener(
