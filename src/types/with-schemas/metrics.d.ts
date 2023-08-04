@@ -92,6 +92,9 @@ export interface Metrics<in out Schemas extends OptionalSchemas> {
   /// Metrics.getMetric
   getMetric(metricId: Id): Metric | undefined;
 
+  /// Metrics.addMetricIdsListener
+  addMetricIdsListener(listener: MetricIdsListener<Schemas>): Id;
+
   /// Metrics.addMetricListener
   addMetricListener(metricId: IdOrNull, listener: MetricListener<Schemas>): Id;
 

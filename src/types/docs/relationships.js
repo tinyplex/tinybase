@@ -652,6 +652,56 @@
    */
   /// Relationships.getLinkedRowIds
   /**
+   * The addRelationshipIdsListener method registers a listener function with
+   * the Relationships object that will be called whenever a Relationship
+   * definition is added or removed.
+   *
+   * The provided listener is a RelationshipIdsListener function, and will be
+   * called with a reference to the Relationships object.
+   * @param listener The function that will be called whenever a Relationship
+   * definition is added or removed.
+   * @example
+   * This example creates a Store, a Relationships object, and then registers a
+   * listener that responds to the addition and the removal of a Relationship
+   * definition.
+   *
+   * ```js
+   * const store = createStore()
+   *   .setTable('pets', {
+   *     fido: {species: 'dog'},
+   *     felix: {species: 'cat'},
+   *     cujo: {species: 'dog'},
+   *   })
+   *   .setTable('species', {
+   *     wolf: {price: 10},
+   *     dog: {price: 5},
+   *     cat: {price: 4},
+   *   });
+   *
+   * const relationships = createRelationships(store);
+   * const listenerId = relationships.addRelationshipIdsListener(
+   *   (relationships) => {
+   *     console.log(relationships.getRelationshipIds());
+   *   },
+   * );
+   *
+   * relationships.setRelationshipDefinition(
+   *   'petSpecies',
+   *   'pets',
+   *   'species',
+   *   'species',
+   * );
+   * // -> ['petSpecies']
+   * relationships.delRelationshipDefinition('petSpecies');
+   * // -> []
+   *
+   * relationships.delListener(listenerId);
+   * ```
+   * @category Listener
+   * @since v4.1.0
+   */
+  /// Relationships.addRelationshipIdsListener
+  /**
    * The addRemoteRowIdListener method registers a listener function with the
    * Relationships object that will be called whenever a remote Row Id in a
    * Relationship changes.

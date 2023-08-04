@@ -88,6 +88,9 @@ export interface Indexes {
   /// Indexes.addSliceIdsListener
   addSliceIdsListener(indexId: IdOrNull, listener: SliceIdsListener): Id;
 
+  /// Indexes.addIndexIdsListener
+  addIndexIdsListener(listener: IndexIdsListener): Id;
+
   /// Indexes.addSliceRowIdsListener
   addSliceRowIdsListener(
     indexId: IdOrNull,

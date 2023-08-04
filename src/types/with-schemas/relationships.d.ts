@@ -107,6 +107,9 @@ export interface Relationships<in out Schemas extends OptionalSchemas> {
   /// Relationships.getLinkedRowIds
   getLinkedRowIds(relationshipId: Id, firstRowId: Id): Ids;
 
+  /// Relationships.addRelationshipIdsListener
+  addRelationshipIdsListener(listener: RelationshipIdsListener<Schemas>): Id;
+
   /// Relationships.addRemoteRowIdListener
   addRemoteRowIdListener(
     relationshipId: IdOrNull,

@@ -91,6 +91,9 @@ export interface Relationships {
   /// Relationships.getLinkedRowIds
   getLinkedRowIds(relationshipId: Id, firstRowId: Id): Ids;
 
+  /// Relationships.addRelationshipIdsListener
+  addRelationshipIdsListener(listener: RelationshipIdsListener): Id;
+
   /// Relationships.addRemoteRowIdListener
   addRemoteRowIdListener(
     relationshipId: IdOrNull,

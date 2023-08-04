@@ -602,6 +602,43 @@
    */
   /// Indexes.getSliceRowIds
   /**
+   * The addIndexIdsListener method registers a listener function with the
+   * Indexes object that will be called whenever an Index definition is added or
+   * removed.
+   *
+   * The provided listener is a IndexIdsListener function, and will be called
+   * with a reference to the Indexes object.
+   * @param listener The function that will be called whenever a Index
+   * definition is added or removed.
+   * @example
+   * This example creates a Store, a Indexes object, and then registers a
+   * listener that responds to the addition and the removal of a Index
+   * definition.
+   *
+   * ```js
+   * const store = createStore().setTable('pets', {
+   *   fido: {species: 'dog'},
+   *   felix: {species: 'cat'},
+   *   cujo: {species: 'dog'},
+   * });
+   *
+   * const indexes = createIndexes(store);
+   * const listenerId = indexes.addIndexIdsListener((indexes) => {
+   *   console.log(indexes.getIndexIds());
+   * });
+   *
+   * indexes.setIndexDefinition('bySpecies', 'pets', 'species');
+   * // -> ['bySpecies']
+   * indexes.delIndexDefinition('bySpecies');
+   * // -> []
+   *
+   * indexes.delListener(listenerId);
+   * ```
+   * @category Listener
+   * @since v4.1.0
+   */
+  /// Indexes.addIndexIdsListener
+  /**
    * The addSliceIdsListener method registers a listener function with the
    * Indexes object that will be called whenever the Slice Ids in an Index
    * change.

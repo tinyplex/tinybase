@@ -182,12 +182,13 @@ describe('Sets', () => {
 
 test('Listens to MetricIds', () => {
   const listener = createMetricsListener(metrics);
-  listener.listenToMetricIds('/m');
+  const listenerId = listener.listenToMetricIds('/m');
   metrics.setMetricDefinition('m1', 't1');
   metrics.setMetricDefinition('m2', 't2');
   metrics.delMetricDefinition('m1');
   expectChanges(listener, '/m', ['m1'], ['m1', 'm2'], ['m2']);
   expectNoChanges(listener);
+  metrics.delListener(listenerId);
 });
 
 describe('Listens to Metrics when sets', () => {

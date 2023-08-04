@@ -2338,6 +2338,46 @@
    */
   /// Queries.forEachResultCell
   /**
+   * The addQueryIdsListener method registers a listener function with the
+   * Queries object that will be called whenever an Query definition is added or
+   * removed.
+   *
+   * The provided listener is a QueryIdsListener function, and will be called
+   * with a reference to the Queries object.
+   * @param listener The function that will be called whenever a Query
+   * definition is added or removed.
+   * @example
+   * This example creates a Store, a Queries object, and then registers a
+   * listener that responds to the addition and the removal of a Query
+   * definition.
+   *
+   * ```js
+   * const store = createStore().setTable('pets', {
+   *   fido: {species: 'dog', color: 'brown'},
+   *   felix: {species: 'cat', color: 'black'},
+   *   cujo: {species: 'dog', color: 'black'},
+   * });
+   *
+   * const queries = createQueries(store);
+   * const listenerId = queries.addQueryIdsListener((queries) => {
+   *   console.log(queries.getQueryIds());
+   * });
+   *
+   * queries.setQueryDefinition('dogColors', 'pets', ({select, where}) => {
+   *   select('color');
+   *   where('species', 'dog');
+   * });
+   * // -> ['dogColors']
+   * queries.delQueryDefinition('dogColors');
+   * // -> []
+   *
+   * queries.delListener(listenerId);
+   * ```
+   * @category Listener
+   * @since v4.1.0
+   */
+  /// Queries.addQueryIdsListener
+  /**
    * The addResultTableListener method registers a listener function with the
    * Queries object that will be called whenever data in a ResultTable changes.
    *
