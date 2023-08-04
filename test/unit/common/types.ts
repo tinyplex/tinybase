@@ -55,17 +55,20 @@ export type StoreListener = Listener &
 
 export type MetricsListener = Listener &
   Readonly<{
+    listenToMetricIds: (id: Id) => Id;
     listenToMetric: (id: Id, metricId: IdOrNull) => Id;
   }>;
 
 export type IndexesListener = Listener &
   Readonly<{
+    listenToIndexIds: (id: Id) => Id;
     listenToSliceIds: (id: Id, indexId: IdOrNull) => Id;
     listenToSliceRowIds: (id: Id, indexId: IdOrNull, sliceId: IdOrNull) => Id;
   }>;
 
 export type RelationshipsListener = Listener &
   Readonly<{
+    listenToRelationshipIds: (id: Id) => Id;
     listenToRemoteRowId: (
       id: Id,
       relationshipId: IdOrNull,
@@ -81,6 +84,7 @@ export type RelationshipsListener = Listener &
 
 export type QueriesListener = Listener &
   Readonly<{
+    listenToQueryIds: (id: Id) => Id;
     listenToResultTable: (id: Id, queryId: IdOrNull) => Id;
     listenToResultTableCellIds: (id: Id, queryId: IdOrNull) => Id;
     listenToResultRowCount: (id: Id, queryId: IdOrNull) => Id;

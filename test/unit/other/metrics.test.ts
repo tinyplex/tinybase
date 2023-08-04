@@ -180,6 +180,16 @@ describe('Sets', () => {
   });
 });
 
+test('Listens to MetricIds', () => {
+  const listener = createMetricsListener(metrics);
+  listener.listenToMetricIds('/m');
+  metrics.setMetricDefinition('m1', 't1');
+  metrics.setMetricDefinition('m2', 't2');
+  metrics.delMetricDefinition('m1');
+  expectChanges(listener, '/m', ['m1'], ['m1', 'm2'], ['m2']);
+  expectNoChanges(listener);
+});
+
 describe('Listens to Metrics when sets', () => {
   beforeEach(() => {
     listener = createMetricsListener(metrics);
