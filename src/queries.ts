@@ -12,6 +12,7 @@ import {
   SORTED_ROW_IDS,
   TABLE,
 } from './common/strings';
+import {AddListener, CallListeners} from './common/listeners';
 import {
   Aggregate,
   AggregateAdd,
@@ -75,7 +76,11 @@ import {
 } from './common/other';
 import {objFreeze, objMap} from './common/obj';
 
-type StoreWithCreateMethod = Store & {createStore: () => Store};
+type StoreWithPrivateMethods = Store & {
+  createStore: () => Store;
+  addListener: AddListener;
+  callListeners: CallListeners;
+};
 type SelectClause = (getTableCell: GetTableCell, rowId: Id) => CellOrUndefined;
 type JoinClause = [
   Id,
@@ -96,7 +101,16 @@ type Aggregators = [
 ];
 
 export const createQueries = getCreateFunction((store: Store): Queries => {
-  const createStore = (store as StoreWithCreateMethod).createStore;
+  const createStore = (store as StoreWithPrivateMethods).createStore;
+  const preStore = createStore();
+  const resultStore = createStore();
+  const preStoreListenerIds: Map<Id, Map<Store, IdSet>> = mapNew();
+
+  const {
+    addListener,
+    callListeners,
+    delListener: delListenerImpl,
+  } = resultStore as StoreWithPrivateMethods;
   const [
     getStore,
     getQueryIds,
@@ -108,13 +122,17 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     setDefinition,
     ,
     delDefinition,
+    addQueryIdsListenerImpl,
     destroy,
     addStoreListeners,
     delStoreListeners,
-  ] = getDefinableFunctions<true, undefined>(store, () => true, getUndefined);
-  const preStore = createStore();
-  const resultStore = createStore();
-  const preStoreListenerIds: Map<Id, Map<Store, IdSet>> = mapNew();
+  ] = getDefinableFunctions<true, undefined>(
+    store,
+    () => true,
+    getUndefined,
+    addListener,
+    callListeners,
+  );
 
   const addPreStoreListener = (
     preStore: Store,
@@ -560,8 +578,11 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     return queries;
   };
 
+  const addQueryIdsListener = (listener) =>
+    addQueryIdsListenerImpl(() => listener(queries));
+
   const delListener = (listenerId: Id): Queries => {
-    resultStore.delListener(listenerId);
+    delListenerImpl(listenerId);
     return queries;
   };
 
@@ -585,6 +606,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     hasQuery,
     getTableId,
 
+    addQueryIdsListener,
     delListener,
 
     destroy,

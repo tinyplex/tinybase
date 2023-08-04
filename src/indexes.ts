@@ -35,6 +35,10 @@ import {objFreeze} from './common/obj';
 export const createIndexes = getCreateFunction((store: Store): Indexes => {
   const sliceIdsListeners: IdSet2 = mapNew();
   const sliceRowIdsListeners: IdSet3 = mapNew();
+
+  const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
+    () => indexes,
+  );
   const [
     getStore,
     getIndexIds,
@@ -46,6 +50,7 @@ export const createIndexes = getCreateFunction((store: Store): Indexes => {
     ,
     setDefinitionAndListen,
     delDefinition,
+    addIndexIdsListener,
     destroy,
   ] = getDefinableFunctions<IdSet2, Id | Ids>(
     store,
@@ -56,9 +61,8 @@ export const createIndexes = getCreateFunction((store: Store): Indexes => {
         : isArray(value)
         ? arrayMap(value, id)
         : id(value),
-  );
-  const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
-    () => indexes,
+    addListener,
+    callListeners,
   );
 
   const hasSlice = (indexId: Id, sliceId: Id): boolean =>
@@ -270,6 +274,7 @@ export const createIndexes = getCreateFunction((store: Store): Indexes => {
     getSliceIds,
     getSliceRowIds,
 
+    addIndexIdsListener,
     addSliceIdsListener,
     addSliceRowIdsListener,
     delListener,

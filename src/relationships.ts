@@ -37,6 +37,10 @@ export const createRelationships = getCreateFunction(
     const remoteRowIdListeners: IdSet3 = mapNew();
     const localRowIdsListeners: IdSet3 = mapNew();
     const linkedRowIdsListeners: IdSet3 = mapNew();
+
+    const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
+      () => relationships,
+    );
     const [
       getStore,
       getRelationshipIds,
@@ -48,15 +52,15 @@ export const createRelationships = getCreateFunction(
       ,
       setDefinitionAndListen,
       delDefinition,
+      addRelationshipIdsListener,
       destroy,
     ] = getDefinableFunctions<Relationship, Id | undefined>(
       store,
       () => [mapNew(), mapNew(), mapNew(), mapNew()],
       (value: any): Id | undefined =>
         isUndefined(value) ? undefined : value + EMPTY_STRING,
-    );
-    const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
-      () => relationships,
+      addListener,
+      callListeners,
     );
 
     const getLinkedRowIdsCache = (
@@ -240,7 +244,9 @@ export const createRelationships = getCreateFunction(
     };
 
     const delListener = (listenerId: Id): Relationships => {
-      delLinkedRowIdsCache(...(delListenerImpl(listenerId) as [Id, Id]));
+      delLinkedRowIdsCache(
+        ...((delListenerImpl(listenerId) ?? []) as [Id, Id]),
+      );
       return relationships;
     };
 
@@ -267,6 +273,7 @@ export const createRelationships = getCreateFunction(
       getLocalRowIds,
       getLinkedRowIds,
 
+      addRelationshipIdsListener,
       addRemoteRowIdListener,
       addLocalRowIdsListener,
       addLinkedRowIdsListener,

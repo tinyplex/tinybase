@@ -39,6 +39,10 @@ type Aggregators = [
 
 export const createMetrics = getCreateFunction((store: Store): Metrics => {
   const metricListeners: IdSet2 = mapNew();
+
+  const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
+    () => metrics,
+  );
   const [
     getStore,
     getMetricIds,
@@ -50,6 +54,7 @@ export const createMetrics = getCreateFunction((store: Store): Metrics => {
     ,
     setDefinitionAndListen,
     delDefinition,
+    addMetricIdsListener,
     destroy,
   ] = getDefinableFunctions<number | undefined, number | undefined>(
     store,
@@ -62,9 +67,8 @@ export const createMetrics = getCreateFunction((store: Store): Metrics => {
       value === EMPTY_STRING
         ? undefined
         : (value as any) * 1,
-  );
-  const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
-    () => metrics,
+    addListener,
+    callListeners,
   );
 
   const setMetricDefinition = (
@@ -150,6 +154,7 @@ export const createMetrics = getCreateFunction((store: Store): Metrics => {
     getTableId,
     getMetric,
 
+    addMetricIdsListener,
     addMetricListener,
     delListener,
 
