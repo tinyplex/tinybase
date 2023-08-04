@@ -3,9 +3,11 @@ import {
   CellListener,
   InvalidCellListener,
   InvalidValueListener,
+  RowCountListener,
   RowIdsListener,
   RowListener,
   Store,
+  TableCellIdsListener,
   TableIdsListener,
   TableListener,
   TablesListener,
@@ -23,16 +25,28 @@ import {Id, IdOrNull, Ids} from '../types/common.d';
 import {IdMap, Node, mapGet, mapNew, mapSet, visitTree} from './map';
 import {IdSet, setAdd, setNew} from './set';
 import {
+  IndexIdsListener,
   Indexes,
   SliceIdsListener,
   SliceRowIdsListener,
 } from '../types/indexes.d';
 import {
   LocalRowIdsListener,
+  RelationshipIdsListener,
   Relationships,
   RemoteRowIdListener,
 } from '../types/relationships.d';
-import {MetricListener, Metrics} from '../types/metrics.d';
+import {MetricIdsListener, MetricListener, Metrics} from '../types/metrics.d';
+import {
+  QueryIdsListener,
+  ResultCellIdsListener,
+  ResultCellListener,
+  ResultRowCountListener,
+  ResultRowIdsListener,
+  ResultRowListener,
+  ResultTableCellIdsListener,
+  ResultTableListener,
+} from '../types/queries';
 import {arrayForEach, arrayLength, arrayPush} from './array';
 import {collDel, collForEach, collIsEmpty} from './coll';
 import {ifNotUndefined, isUndefined} from './other';
@@ -55,12 +69,14 @@ export type CallListeners = (
   ids?: Ids,
   ...extra: any[]
 ) => void;
-export type DelListener = (id: Id) => Ids;
 
+type DelListener = (id: Id) => Ids;
 type Listener =
   | TablesListener
   | TableIdsListener
   | TableListener
+  | TableCellIdsListener
+  | RowCountListener
   | RowIdsListener
   | RowListener
   | CellIdsListener
@@ -71,13 +87,24 @@ type Listener =
   | ValueListener
   | InvalidValueListener
   | TransactionListener
+  | MetricIdsListener
   | MetricListener
+  | IndexIdsListener
   | SliceIdsListener
   | SliceRowIdsListener
+  | RelationshipIdsListener
   | RemoteRowIdListener
   | LocalRowIdsListener
   | CheckpointIdsListener
-  | CheckpointListener;
+  | CheckpointListener
+  | QueryIdsListener
+  | ResultTableListener
+  | ResultTableCellIdsListener
+  | ResultRowCountListener
+  | ResultRowIdsListener
+  | ResultRowListener
+  | ResultCellIdsListener
+  | ResultCellListener;
 type IdOrBoolean = Id | boolean;
 
 const getWildcardedLeaves = (
