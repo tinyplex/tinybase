@@ -184,12 +184,12 @@ import {
 } from '../types/queries.d';
 import {getUndefined, ifNotUndefined, isUndefined} from '../common/other';
 import {
-  useCheckpointsOrCheckpointsId,
-  useIndexesOrIndexesId,
-  useMetricsOrMetricsId,
-  useQueriesOrQueriesId,
-  useRelationshipsOrRelationshipsId,
-  useStoreOrStoreId,
+  useCheckpointsOrCheckpointsById,
+  useIndexesOrIndexesById,
+  useMetricsOrMetricsById,
+  useQueriesOrQueriesById,
+  useRelationshipsOrRelationshipsById,
+  useStoreOrStoreById,
   useThingIds,
 } from './context';
 import {ListenerArgument} from '../common/listeners';
@@ -280,7 +280,7 @@ const useSetCallback = <Parameter, Thing>(
   thenDeps: React.DependencyList = [],
   ...args: Ids
 ): ParameterizedCallback<Parameter> => {
-  const store = useStoreOrStoreId(storeOrStoreId);
+  const store = useStoreOrStoreById(storeOrStoreId);
   return useCallback(
     (parameter) =>
       ifNotUndefined(store, (store: any) =>
@@ -300,7 +300,7 @@ const useDel = (
   thenDeps: React.DependencyList = [],
   ...args: (Id | boolean | undefined)[]
 ) => {
-  const store: any = useStoreOrStoreId(storeOrStoreId);
+  const store: any = useStoreOrStoreById(storeOrStoreId);
   return useCallback(
     () => then(store?.['del' + deletable](...args)),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -313,7 +313,7 @@ const useCheckpointAction = (
   action: string,
   arg?: string,
 ) => {
-  const checkpoints: any = useCheckpointsOrCheckpointsId(
+  const checkpoints: any = useCheckpointsOrCheckpointsById(
     checkpointsOrCheckpointsId,
   );
   return useCallback(
@@ -345,17 +345,17 @@ export const useCreateStore: typeof useCreateStoreDecl = (
 
 export const useTables: typeof useTablesDecl = (
   storeOrStoreId?: StoreOrStoreId,
-): Tables => useListenable(TABLES, useStoreOrStoreId(storeOrStoreId), {});
+): Tables => useListenable(TABLES, useStoreOrStoreById(storeOrStoreId), {});
 
 export const useTableIds: typeof useTableIdsDecl = (
   storeOrStoreId?: StoreOrStoreId,
-): Ids => useListenable(TABLE_IDS, useStoreOrStoreId(storeOrStoreId), [], []);
+): Ids => useListenable(TABLE_IDS, useStoreOrStoreById(storeOrStoreId), [], []);
 
 export const useTable: typeof useTableDecl = (
   tableId: Id,
   storeOrStoreId?: StoreOrStoreId,
 ): Table =>
-  useListenable(TABLE, useStoreOrStoreId(storeOrStoreId), {}, [tableId]);
+  useListenable(TABLE, useStoreOrStoreById(storeOrStoreId), {}, [tableId]);
 
 export const useTableCellIds: typeof useTableCellIdsDecl = (
   tableId: Id,
@@ -363,7 +363,7 @@ export const useTableCellIds: typeof useTableCellIdsDecl = (
 ): Ids =>
   useListenable(
     TABLE + CELL_IDS,
-    useStoreOrStoreId(storeOrStoreId),
+    useStoreOrStoreById(storeOrStoreId),
     [],
     [tableId],
   );
@@ -372,13 +372,13 @@ export const useRowCount: typeof useRowCountDecl = (
   tableId: Id,
   storeOrStoreId?: StoreOrStoreId,
 ): number =>
-  useListenable(ROW_COUNT, useStoreOrStoreId(storeOrStoreId), [], [tableId]);
+  useListenable(ROW_COUNT, useStoreOrStoreById(storeOrStoreId), [], [tableId]);
 
 export const useRowIds: typeof useRowIdsDecl = (
   tableId: Id,
   storeOrStoreId?: StoreOrStoreId,
 ): Ids =>
-  useListenable(ROW_IDS, useStoreOrStoreId(storeOrStoreId), [], [tableId]);
+  useListenable(ROW_IDS, useStoreOrStoreById(storeOrStoreId), [], [tableId]);
 
 export const useSortedRowIds: typeof useSortedRowIdsDecl = (
   tableId: Id,
@@ -390,7 +390,7 @@ export const useSortedRowIds: typeof useSortedRowIdsDecl = (
 ): Ids =>
   useListenable(
     SORTED_ROW_IDS,
-    useStoreOrStoreId(storeOrStoreId),
+    useStoreOrStoreById(storeOrStoreId),
     [],
     [tableId, cellId, descending, offset, limit],
     6,
@@ -401,7 +401,7 @@ export const useRow: typeof useRowDecl = (
   rowId: Id,
   storeOrStoreId?: StoreOrStoreId,
 ): Row =>
-  useListenable(ROW, useStoreOrStoreId(storeOrStoreId), {}, [tableId, rowId]);
+  useListenable(ROW, useStoreOrStoreById(storeOrStoreId), {}, [tableId, rowId]);
 
 export const useCellIds: typeof useCellIdsDecl = (
   tableId: Id,
@@ -410,7 +410,7 @@ export const useCellIds: typeof useCellIdsDecl = (
 ): Ids =>
   useListenable(
     CELL_IDS,
-    useStoreOrStoreId(storeOrStoreId),
+    useStoreOrStoreById(storeOrStoreId),
     [],
     [tableId, rowId],
   );
@@ -423,7 +423,7 @@ export const useCell: typeof useCellDecl = (
 ): Cell | undefined =>
   useListenable(
     CELL,
-    useStoreOrStoreId(storeOrStoreId),
+    useStoreOrStoreById(storeOrStoreId),
     undefined,
     [tableId, rowId, cellId],
     4,
@@ -431,17 +431,19 @@ export const useCell: typeof useCellDecl = (
 
 export const useValues: typeof useValuesDecl = (
   storeOrStoreId?: StoreOrStoreId,
-): Values => useListenable(VALUES, useStoreOrStoreId(storeOrStoreId), {});
+): Values => useListenable(VALUES, useStoreOrStoreById(storeOrStoreId), {});
 
 export const useValueIds: typeof useValueIdsDecl = (
   storeOrStoreId?: StoreOrStoreId,
-): Ids => useListenable(VALUE_IDS, useStoreOrStoreId(storeOrStoreId), [], []);
+): Ids => useListenable(VALUE_IDS, useStoreOrStoreById(storeOrStoreId), [], []);
 
 export const useValue: typeof useValueDecl = (
   valueId: Id,
   storeOrStoreId?: StoreOrStoreId,
 ): Value =>
-  useListenable(VALUE, useStoreOrStoreId(storeOrStoreId), undefined, [valueId]);
+  useListenable(VALUE, useStoreOrStoreById(storeOrStoreId), undefined, [
+    valueId,
+  ]);
 
 export const useSetTablesCallback: typeof useSetTablesCallbackDecl = <
   Parameter,
@@ -508,7 +510,7 @@ export const useAddRowCallback: typeof useAddRowCallbackDecl = <Parameter>(
   thenDeps: React.DependencyList = [],
   reuseRowIds = true,
 ): ParameterizedCallback<Parameter> => {
-  const store = useStoreOrStoreId(storeOrStoreId);
+  const store = useStoreOrStoreById(storeOrStoreId);
   return useCallback(
     (parameter) =>
       ifNotUndefined(store, (store) =>
@@ -680,7 +682,7 @@ export const useTablesListener: typeof useTablesListenerDecl = (
 ): void =>
   useListener(
     TABLES,
-    useStoreOrStoreId(storeOrStoreId),
+    useStoreOrStoreById(storeOrStoreId),
     listener,
     listenerDeps,
     [],
@@ -695,7 +697,7 @@ export const useTableIdsListener: typeof useTableIdsListenerDecl = (
 ): void =>
   useListener(
     TABLE_IDS,
-    useStoreOrStoreId(storeOrStoreId),
+    useStoreOrStoreById(storeOrStoreId),
     listener,
     listenerDeps,
     [],
@@ -711,7 +713,7 @@ export const useTableListener: typeof useTableListenerDecl = (
 ): void =>
   useListener(
     TABLE,
-    useStoreOrStoreId(storeOrStoreId),
+    useStoreOrStoreById(storeOrStoreId),
     listener,
     listenerDeps,
     [tableId],
@@ -727,7 +729,7 @@ export const useTableCellIdsListener: typeof useTableCellIdsListenerDecl = (
 ): void =>
   useListener(
     TABLE + CELL_IDS,
-    useStoreOrStoreId(storeOrStoreId),
+    useStoreOrStoreById(storeOrStoreId),
     listener,
     listenerDeps,
     [tableId],
@@ -743,7 +745,7 @@ export const useRowCountListener: typeof useRowCountListenerDecl = (
 ): void =>
   useListener(
     ROW_COUNT,
-    useStoreOrStoreId(storeOrStoreId),
+    useStoreOrStoreById(storeOrStoreId),
     listener,
     listenerDeps,
     [tableId],
@@ -759,7 +761,7 @@ export const useRowIdsListener: typeof useRowIdsListenerDecl = (
 ): void =>
   useListener(
     ROW_IDS,
-    useStoreOrStoreId(storeOrStoreId),
+    useStoreOrStoreById(storeOrStoreId),
     listener,
     listenerDeps,
     [tableId],
@@ -779,7 +781,7 @@ export const useSortedRowIdsListener: typeof useSortedRowIdsListenerDecl = (
 ): void =>
   useListener(
     SORTED_ROW_IDS,
-    useStoreOrStoreId(storeOrStoreId),
+    useStoreOrStoreById(storeOrStoreId),
     listener,
     listenerDeps,
     [tableId, cellId, descending, offset, limit],
@@ -796,7 +798,7 @@ export const useRowListener: typeof useRowListenerDecl = (
 ): void =>
   useListener(
     ROW,
-    useStoreOrStoreId(storeOrStoreId),
+    useStoreOrStoreById(storeOrStoreId),
     listener,
     listenerDeps,
     [tableId, rowId],
@@ -813,7 +815,7 @@ export const useCellIdsListener: typeof useCellIdsListenerDecl = (
 ): void =>
   useListener(
     CELL_IDS,
-    useStoreOrStoreId(storeOrStoreId),
+    useStoreOrStoreById(storeOrStoreId),
     listener,
     listenerDeps,
     [tableId, rowId],
@@ -831,7 +833,7 @@ export const useCellListener: typeof useCellListenerDecl = (
 ): void =>
   useListener(
     CELL,
-    useStoreOrStoreId(storeOrStoreId),
+    useStoreOrStoreById(storeOrStoreId),
     listener,
     listenerDeps,
     [tableId, rowId, cellId],
@@ -846,7 +848,7 @@ export const useValuesListener: typeof useValuesListenerDecl = (
 ): void =>
   useListener(
     VALUES,
-    useStoreOrStoreId(storeOrStoreId),
+    useStoreOrStoreById(storeOrStoreId),
     listener,
     listenerDeps,
     [],
@@ -861,7 +863,7 @@ export const useValueIdsListener: typeof useValueIdsListenerDecl = (
 ): void =>
   useListener(
     VALUE_IDS,
-    useStoreOrStoreId(storeOrStoreId),
+    useStoreOrStoreById(storeOrStoreId),
     listener,
     listenerDeps,
     [],
@@ -877,7 +879,7 @@ export const useValueListener: typeof useValueListenerDecl = (
 ): void =>
   useListener(
     VALUE,
-    useStoreOrStoreId(storeOrStoreId),
+    useStoreOrStoreById(storeOrStoreId),
     listener,
     listenerDeps,
     [valueId],
@@ -893,7 +895,7 @@ export const useCreateMetrics: typeof useCreateMetricsDecl = (
 export const useMetricIds: typeof useMetricIdsDecl = (
   metricsOrMetricsId?: MetricsOrMetricsId,
 ): Ids =>
-  useListenable('MetricIds', useMetricsOrMetricsId(metricsOrMetricsId), []);
+  useListenable('MetricIds', useMetricsOrMetricsById(metricsOrMetricsId), []);
 
 export const useMetric: typeof useMetricDecl = (
   metricId: Id,
@@ -901,7 +903,7 @@ export const useMetric: typeof useMetricDecl = (
 ): number | undefined =>
   useListenable(
     'Metric',
-    useMetricsOrMetricsId(metricsOrMetricsId),
+    useMetricsOrMetricsById(metricsOrMetricsId),
     undefined,
     [metricId],
   );
@@ -914,7 +916,7 @@ export const useMetricListener: typeof useMetricListenerDecl = (
 ): void =>
   useListener(
     'Metric',
-    useMetricsOrMetricsId(metricsOrMetricsId),
+    useMetricsOrMetricsById(metricsOrMetricsId),
     listener,
     listenerDeps,
     [metricId],
@@ -932,7 +934,7 @@ export const useSliceIds: typeof useSliceIdsDecl = (
 ): Ids =>
   useListenable(
     'SliceIds',
-    useIndexesOrIndexesId(indexesOrIndexesId),
+    useIndexesOrIndexesById(indexesOrIndexesId),
     [],
     [indexId],
   );
@@ -940,7 +942,7 @@ export const useSliceIds: typeof useSliceIdsDecl = (
 export const useIndexIds: typeof useIndexIdsDecl = (
   indexesOrIndexesId?: IndexesOrIndexesId,
 ): Ids =>
-  useListenable('IndexIds', useIndexesOrIndexesId(indexesOrIndexesId), []);
+  useListenable('IndexIds', useIndexesOrIndexesById(indexesOrIndexesId), []);
 
 export const useSliceRowIds: typeof useSliceRowIdsDecl = (
   indexId: Id,
@@ -949,7 +951,7 @@ export const useSliceRowIds: typeof useSliceRowIdsDecl = (
 ): Ids =>
   useListenable(
     'Slice' + ROW_IDS,
-    useIndexesOrIndexesId(indexesOrIndexesId),
+    useIndexesOrIndexesById(indexesOrIndexesId),
     [],
     [indexId, sliceId],
   );
@@ -962,7 +964,7 @@ export const useSliceIdsListener: typeof useSliceIdsListenerDecl = (
 ): void =>
   useListener(
     'SliceIds',
-    useIndexesOrIndexesId(indexesOrIndexesId),
+    useIndexesOrIndexesById(indexesOrIndexesId),
     listener,
     listenerDeps,
     [indexId],
@@ -977,7 +979,7 @@ export const useSliceRowIdsListener: typeof useSliceRowIdsListenerDecl = (
 ): void =>
   useListener(
     'Slice' + ROW_IDS,
-    useIndexesOrIndexesId(indexesOrIndexesId),
+    useIndexesOrIndexesById(indexesOrIndexesId),
     listener,
     listenerDeps,
     [indexId, sliceId],
@@ -994,7 +996,7 @@ export const useRelationshipIds: typeof useRelationshipIdsDecl = (
 ): Ids =>
   useListenable(
     'RelationshipIds',
-    useRelationshipsOrRelationshipsId(relationshipsOrRelationshipsId),
+    useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
     [],
   );
 
@@ -1005,7 +1007,7 @@ export const useRemoteRowId: typeof useRemoteRowIdDecl = (
 ): Id | undefined =>
   useListenable(
     'RemoteRowId',
-    useRelationshipsOrRelationshipsId(relationshipsOrRelationshipsId),
+    useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
     undefined,
     [relationshipId, localRowId],
   );
@@ -1017,7 +1019,7 @@ export const useLocalRowIds: typeof useLocalRowIdsDecl = (
 ): Ids =>
   useListenable(
     'Local' + ROW_IDS,
-    useRelationshipsOrRelationshipsId(relationshipsOrRelationshipsId),
+    useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
     [],
     [relationshipId, remoteRowId],
   );
@@ -1029,7 +1031,7 @@ export const useLinkedRowIds: typeof useLinkedRowIdsDecl = (
 ): Ids =>
   useListenable(
     'Linked' + ROW_IDS,
-    useRelationshipsOrRelationshipsId(relationshipsOrRelationshipsId),
+    useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
     [],
     [relationshipId, firstRowId],
   );
@@ -1043,7 +1045,7 @@ export const useRemoteRowIdListener: typeof useRemoteRowIdListenerDecl = (
 ): void =>
   useListener(
     'RemoteRowId',
-    useRelationshipsOrRelationshipsId(relationshipsOrRelationshipsId),
+    useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
     listener,
     listenerDeps,
     [relationshipId, localRowId],
@@ -1058,7 +1060,7 @@ export const useLocalRowIdsListener: typeof useLocalRowIdsListenerDecl = (
 ): void =>
   useListener(
     'Local' + ROW_IDS,
-    useRelationshipsOrRelationshipsId(relationshipsOrRelationshipsId),
+    useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
     listener,
     listenerDeps,
     [relationshipId, remoteRowId],
@@ -1073,7 +1075,7 @@ export const useLinkedRowIdsListener: typeof useLinkedRowIdsListenerDecl = (
 ): void =>
   useListener(
     'Linked' + ROW_IDS,
-    useRelationshipsOrRelationshipsId(relationshipsOrRelationshipsId),
+    useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
     listener,
     listenerDeps,
     [relationshipId, firstRowId],
@@ -1088,15 +1090,18 @@ export const useCreateQueries: typeof useCreateQueriesDecl = (
 export const useQueryIds: typeof useQueryIdsDecl = (
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): Ids =>
-  useListenable('QueryIds', useQueriesOrQueriesId(queriesOrQueriesId), []);
+  useListenable('QueryIds', useQueriesOrQueriesById(queriesOrQueriesId), []);
 
 export const useResultTable: typeof useResultTableDecl = (
   queryId: Id,
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): Table =>
-  useListenable(RESULT + TABLE, useQueriesOrQueriesId(queriesOrQueriesId), {}, [
-    queryId,
-  ]);
+  useListenable(
+    RESULT + TABLE,
+    useQueriesOrQueriesById(queriesOrQueriesId),
+    {},
+    [queryId],
+  );
 
 export const useResultTableCellIds: typeof useResultTableCellIdsDecl = (
   queryId: Id,
@@ -1104,7 +1109,7 @@ export const useResultTableCellIds: typeof useResultTableCellIdsDecl = (
 ): Ids =>
   useListenable(
     RESULT + TABLE + CELL_IDS,
-    useQueriesOrQueriesId(queriesOrQueriesId),
+    useQueriesOrQueriesById(queriesOrQueriesId),
     [],
     [queryId],
   );
@@ -1115,7 +1120,7 @@ export const useResultRowCount: typeof useResultRowCountDecl = (
 ): number =>
   useListenable(
     RESULT + ROW_COUNT,
-    useQueriesOrQueriesId(queriesOrQueriesId),
+    useQueriesOrQueriesById(queriesOrQueriesId),
     [],
     [queryId],
   );
@@ -1126,7 +1131,7 @@ export const useResultRowIds: typeof useResultRowIdsDecl = (
 ): Ids =>
   useListenable(
     RESULT + ROW_IDS,
-    useQueriesOrQueriesId(queriesOrQueriesId),
+    useQueriesOrQueriesById(queriesOrQueriesId),
     [],
     [queryId],
   );
@@ -1141,7 +1146,7 @@ export const useResultSortedRowIds: typeof useResultSortedRowIdsDecl = (
 ): Ids =>
   useListenable(
     RESULT + SORTED_ROW_IDS,
-    useQueriesOrQueriesId(queriesOrQueriesId),
+    useQueriesOrQueriesById(queriesOrQueriesId),
     [],
     [queryId, cellId, descending, offset, limit],
     6,
@@ -1152,7 +1157,7 @@ export const useResultRow: typeof useResultRowDecl = (
   rowId: Id,
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): Row =>
-  useListenable(RESULT + ROW, useQueriesOrQueriesId(queriesOrQueriesId), {}, [
+  useListenable(RESULT + ROW, useQueriesOrQueriesById(queriesOrQueriesId), {}, [
     queryId,
     rowId,
   ]);
@@ -1164,7 +1169,7 @@ export const useResultCellIds: typeof useResultCellIdsDecl = (
 ): Ids =>
   useListenable(
     RESULT + CELL_IDS,
-    useQueriesOrQueriesId(queriesOrQueriesId),
+    useQueriesOrQueriesById(queriesOrQueriesId),
     [],
     [queryId, rowId],
   );
@@ -1177,7 +1182,7 @@ export const useResultCell: typeof useResultCellDecl = (
 ): Cell | undefined =>
   useListenable(
     RESULT + CELL,
-    useQueriesOrQueriesId(queriesOrQueriesId),
+    useQueriesOrQueriesById(queriesOrQueriesId),
     undefined,
     [queryId, rowId, cellId],
   );
@@ -1190,7 +1195,7 @@ export const useResultTableListener: typeof useResultTableListenerDecl = (
 ): void =>
   useListener(
     RESULT + TABLE,
-    useQueriesOrQueriesId(queriesOrQueriesId),
+    useQueriesOrQueriesById(queriesOrQueriesId),
     listener,
     listenerDeps,
     [queryId],
@@ -1205,7 +1210,7 @@ export const useResultTableCellIdsListener: typeof useResultTableCellIdsListener
   ): void =>
     useListener(
       RESULT + TABLE + CELL_IDS,
-      useQueriesOrQueriesId(queriesOrQueriesId),
+      useQueriesOrQueriesById(queriesOrQueriesId),
       listener,
       listenerDeps,
       [queryId],
@@ -1219,7 +1224,7 @@ export const useResultRowCountListener: typeof useResultRowCountListenerDecl = (
 ): void =>
   useListener(
     RESULT + ROW_COUNT,
-    useQueriesOrQueriesId(queriesOrQueriesId),
+    useQueriesOrQueriesById(queriesOrQueriesId),
     listener,
     listenerDeps,
     [queryId],
@@ -1233,7 +1238,7 @@ export const useResultRowIdsListener: typeof useResultRowIdsListenerDecl = (
 ): void =>
   useListener(
     RESULT + ROW_IDS,
-    useQueriesOrQueriesId(queriesOrQueriesId),
+    useQueriesOrQueriesById(queriesOrQueriesId),
     listener,
     listenerDeps,
     [queryId],
@@ -1252,7 +1257,7 @@ export const useResultSortedRowIdsListener: typeof useResultSortedRowIdsListener
   ): void =>
     useListener(
       RESULT + SORTED_ROW_IDS,
-      useQueriesOrQueriesId(queriesOrQueriesId),
+      useQueriesOrQueriesById(queriesOrQueriesId),
       listener,
       listenerDeps,
       [queryId, cellId, descending, offset, limit],
@@ -1267,7 +1272,7 @@ export const useResultRowListener: typeof useResultRowListenerDecl = (
 ): void =>
   useListener(
     RESULT + ROW,
-    useQueriesOrQueriesId(queriesOrQueriesId),
+    useQueriesOrQueriesById(queriesOrQueriesId),
     listener,
     listenerDeps,
     [queryId, rowId],
@@ -1282,7 +1287,7 @@ export const useResultCellIdsListener: typeof useResultCellIdsListenerDecl = (
 ): void =>
   useListener(
     RESULT + CELL_IDS,
-    useQueriesOrQueriesId(queriesOrQueriesId),
+    useQueriesOrQueriesById(queriesOrQueriesId),
     listener,
     listenerDeps,
     [queryId, rowId],
@@ -1298,7 +1303,7 @@ export const useResultCellListener: typeof useResultCellListenerDecl = (
 ): void =>
   useListener(
     RESULT + CELL,
-    useQueriesOrQueriesId(queriesOrQueriesId),
+    useQueriesOrQueriesById(queriesOrQueriesId),
     listener,
     listenerDeps,
     [queryId, rowId, cellId],
@@ -1315,7 +1320,7 @@ export const useCheckpointIds: typeof useCheckpointIdsDecl = (
 ): CheckpointIds =>
   useListenable(
     'CheckpointIds',
-    useCheckpointsOrCheckpointsId(checkpointsOrCheckpointsId),
+    useCheckpointsOrCheckpointsById(checkpointsOrCheckpointsId),
     [[], undefined, []],
   );
 
@@ -1325,7 +1330,7 @@ export const useCheckpoint: typeof useCheckpointDecl = (
 ): string | undefined =>
   useListenable(
     'Checkpoint',
-    useCheckpointsOrCheckpointsId(checkpointsOrCheckpointsId),
+    useCheckpointsOrCheckpointsById(checkpointsOrCheckpointsId),
     undefined,
     [checkpointId],
   );
@@ -1343,7 +1348,9 @@ export const useSetCheckpointCallback: typeof useSetCheckpointCallbackDecl = <
   ) => void = getUndefined,
   thenDeps: React.DependencyList = [],
 ): ParameterizedCallback<Parameter> => {
-  const checkpoints = useCheckpointsOrCheckpointsId(checkpointsOrCheckpointsId);
+  const checkpoints = useCheckpointsOrCheckpointsById(
+    checkpointsOrCheckpointsId,
+  );
   return useCallback(
     (parameter) =>
       ifNotUndefined(checkpoints, (checkpoints) => {
@@ -1370,7 +1377,9 @@ export const useGoToCallback: typeof useGoToCallbackDecl = <Parameter>(
   then: (checkpoints: Checkpoints, checkpointId: Id) => void = getUndefined,
   thenDeps: React.DependencyList = [],
 ): ParameterizedCallback<Parameter> => {
-  const checkpoints = useCheckpointsOrCheckpointsId(checkpointsOrCheckpointsId);
+  const checkpoints = useCheckpointsOrCheckpointsById(
+    checkpointsOrCheckpointsId,
+  );
   return useCallback(
     (parameter) =>
       ifNotUndefined(checkpoints, (checkpoints) =>
@@ -1386,7 +1395,9 @@ export const useGoToCallback: typeof useGoToCallbackDecl = <Parameter>(
 export const useUndoInformation: typeof useUndoInformationDecl = (
   checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
 ): UndoOrRedoInformation => {
-  const checkpoints = useCheckpointsOrCheckpointsId(checkpointsOrCheckpointsId);
+  const checkpoints = useCheckpointsOrCheckpointsById(
+    checkpointsOrCheckpointsId,
+  );
   const [backwardIds, currentId] = useCheckpointIds(checkpoints);
   return [
     !arrayIsEmpty(backwardIds),
@@ -1400,7 +1411,9 @@ export const useUndoInformation: typeof useUndoInformationDecl = (
 export const useRedoInformation: typeof useRedoInformationDecl = (
   checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
 ): UndoOrRedoInformation => {
-  const checkpoints = useCheckpointsOrCheckpointsId(checkpointsOrCheckpointsId);
+  const checkpoints = useCheckpointsOrCheckpointsById(
+    checkpointsOrCheckpointsId,
+  );
   const [, , [forwardId]] = useCheckpointIds(checkpoints);
   return [
     !isUndefined(forwardId),
@@ -1418,7 +1431,7 @@ export const useCheckpointIdsListener: typeof useCheckpointIdsListenerDecl = (
 ): void =>
   useListener(
     'CheckpointIds',
-    useCheckpointsOrCheckpointsId(checkpointsOrCheckpointsId),
+    useCheckpointsOrCheckpointsById(checkpointsOrCheckpointsId),
     listener,
     listenerDeps,
   );
@@ -1431,7 +1444,7 @@ export const useCheckpointListener: typeof useCheckpointListenerDecl = (
 ): void =>
   useListener(
     'Checkpoint',
-    useCheckpointsOrCheckpointsId(checkpointsOrCheckpointsId),
+    useCheckpointsOrCheckpointsById(checkpointsOrCheckpointsId),
     listener,
     listenerDeps,
     [checkpointId],
