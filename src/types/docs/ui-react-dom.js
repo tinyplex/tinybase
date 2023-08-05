@@ -11,6 +11,13 @@
  * @since v4.1.0
  */
 /// ui-react-dom
+/**
+ * The CustomCell object is used to configure custom cell rendering in an HTML
+ * table.
+ * @category Configuration
+ * @since v4.1.0
+ */
+/// CustomCell
 {
   /**
    * An optional string that will be used as the label at the top of the table
@@ -29,12 +36,12 @@
   /// CustomCell.getComponentProps
 }
 /**
- * The CustomCell object is used to configure custom cell rendering in an HTML
- * table.
+ * The CustomResultCell object is used to configure custom cell rendering for
+ * query results in an HTML table.
  * @category Configuration
  * @since v4.1.0
  */
-/// CustomCell
+/// CustomResultCell
 {
   /**
    * An optional string that will be used as the label at the top of the table
@@ -53,12 +60,13 @@
   /// CustomResultCell.getComponentProps
 }
 /**
- * The CustomResultCell object is used to configure custom cell rendering for
- * query results in an HTML table.
- * @category Configuration
+ * HtmlTableProps props are used for components that will render in an HTML
+ * table, such as the TableInHtmlTable component or SortedTableInHtmlTable
+ * component.
+ * @category Props
  * @since v4.1.0
  */
-/// CustomResultCell
+/// HtmlTableProps
 {
   /**
    * A string className to use on the root of the resulting element.
@@ -76,13 +84,12 @@
   /// HtmlTableProps.idColumn
 }
 /**
- * HtmlTableProps props are used for components that will render in an HTML
- * table, such as the TableInHtmlTable component or SortedTableInHtmlTable
- * component.
+ * TableInHtmlTableProps props are used for components that will render a Table
+ * in an HTML table, such as the TableInHtmlTable component.
  * @category Props
  * @since v4.1.0
  */
-/// HtmlTableProps
+/// TableInHtmlTableProps
 {
   /**
    * The Id of the Table in the Store to be rendered.
@@ -109,12 +116,12 @@
   /// TableInHtmlTableProps.customCells
 }
 /**
- * TableInHtmlTableProps props are used for components that will render a Table
- * in an HTML table, such as the TableInHtmlTable component.
+ * SortedTableInHtmlTableProps props are used for components that will render a
+ * sorted Table in an HTML table, such as the SortedTableInHtmlTable component.
  * @category Props
  * @since v4.1.0
  */
-/// TableInHtmlTableProps
+/// SortedTableInHtmlTableProps
 {
   /**
    * The Id of the Table in the Store to be rendered.
@@ -174,12 +181,12 @@
   /// SortedTableInHtmlTableProps.onChange
 }
 /**
- * SortedTableInHtmlTableProps props are used for components that will render a
- * sorted Table in an HTML table, such as the SortedTableInHtmlTable component.
+ * ValuesInHtmlTableProps props are used for components that will render Values
+ * in an HTML table, such as the ValuesInHtmlTable component.
  * @category Props
  * @since v4.1.0
  */
-/// SortedTableInHtmlTableProps
+/// ValuesInHtmlTableProps
 {
   /**
    * The Store to be accessed: omit for the default context Store, provide an Id
@@ -204,12 +211,12 @@
   /// ValuesInHtmlTableProps.getValueComponentProps
 }
 /**
- * ValuesInHtmlTableProps props are used for components that will render Values
- * in an HTML table, such as the ValuesInHtmlTable component.
+ * SliceInHtmlTableProps props are used for components that will render an Index
+ * Slice in an HTML table, such as the SliceInHtmlTable component.
  * @category Props
  * @since v4.1.0
  */
-/// ValuesInHtmlTableProps
+/// SliceInHtmlTableProps
 {
   /**
    * The Id of the Index in the Indexes object.
@@ -241,12 +248,12 @@
   /// SliceInHtmlTableProps.customCells
 }
 /**
- * SliceInHtmlTableProps props are used for components that will render an Index
- * Slice in an HTML table, such as the SliceInHtmlTable component.
+ * ResultTableInHtmlTableProps props are used for components that will render a
+ * ResultTable in an HTML table, such as the ResultTableInHtmlTable component.
  * @category Props
  * @since v4.1.0
  */
-/// SliceInHtmlTableProps
+/// ResultTableInHtmlTableProps
 {
   /**
    * The Id of the query in the Queries object for which the ResultTable will be
@@ -269,12 +276,13 @@
   /// ResultTableInHtmlTableProps.customCells
 }
 /**
- * ResultTableInHtmlTableProps props are used for components that will render a
- * ResultTable in an HTML table, such as the ResultTableInHtmlTable component.
+ * ResultSortedTableInHtmlTableProps props are used for components that will
+ * render a sorted Table in an HTML table, such as the SortedTableInHtmlTable
+ * component.
  * @category Props
  * @since v4.1.0
  */
-/// ResultTableInHtmlTableProps
+/// ResultSortedTableInHtmlTableProps
 {
   /**
    * The Id of the query in the Queries object for which the ResultTable will be
@@ -331,13 +339,12 @@
   /// ResultSortedTableInHtmlTableProps.onChange
 }
 /**
- * ResultSortedTableInHtmlTableProps props are used for components that will
- * render a sorted Table in an HTML table, such as the SortedTableInHtmlTable
- * component.
+ * SortedTablePaginatorProps props are used for components that will be used as
+ * a table paginator, such as the SortedTablePaginator component.
  * @category Props
  * @since v4.1.0
  */
-/// ResultSortedTableInHtmlTableProps
+/// SortedTablePaginatorProps
 {
   /**
    * An event that will fire when the offset is updated, called with the new
@@ -368,12 +375,11 @@
   /// SortedTablePaginatorProps.plural
 }
 /**
- * SortedTablePaginatorProps props are used for components that will be used as
- * a table paginator, such as the SortedTablePaginator component.
+ * StoreInspectorProps props are used to configure the StoreInspector component.
  * @category Props
  * @since v4.1.0
  */
-/// SortedTablePaginatorProps
+/// StoreInspectorProps
 {
   /**
    * An optional string to indicate where you want the inspector to first
@@ -386,12 +392,6 @@
    */
   /// StoreInspectorProps.open
 }
-/**
- * StoreInspectorProps props are used to configure the StoreInspector component.
- * @category Props
- * @since v4.1.0
- */
-/// StoreInspectorProps
 /**
  * The TableInHtmlTable component renders the contents of a single Table in a
  * Store as an HTML <table> element, and registers a listener so that any
