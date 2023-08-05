@@ -103,6 +103,11 @@ export function useCreateStore(
 /// useStore
 export function useStore(id?: Id): Store | undefined;
 
+// / useStoreOrStoreById
+export function useStoreOrStoreById(
+  storeOrStoreId?: StoreOrStoreId,
+): Store | undefined;
+
 /// useTables
 export function useTables(storeOrStoreId?: StoreOrStoreId): Tables;
 
@@ -444,6 +449,11 @@ export function useCreateMetrics(
 /// useMetrics
 export function useMetrics(id?: Id): Metrics | undefined;
 
+// / useMetricsOrMetricsById
+export function useMetricsOrMetricsById(
+  metricsOrMetricsId?: MetricsOrMetricsId,
+): Metrics | undefined;
+
 /// useMetricIds
 export function useMetricIds(metricsOrMetricsId?: MetricsOrMetricsId): Ids;
 
@@ -470,6 +480,11 @@ export function useCreateIndexes(
 
 /// useIndexes
 export function useIndexes(id?: Id): Indexes | undefined;
+
+// / useIndexesOrIndexesById
+export function useIndexesOrIndexesById(
+  indexesOrIndexesId?: IndexesOrIndexesId,
+): Indexes | undefined;
 
 /// useIndexIds
 export function useIndexIds(indexesOrIndexesId?: IndexesOrIndexesId): Ids;
@@ -513,6 +528,11 @@ export function useCreateRelationships(
 
 /// useRelationships
 export function useRelationships(id?: Id): Relationships | undefined;
+
+// / useRelationshipsOrRelationshipsById
+export function useRelationshipsOrRelationshipsById(
+  relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
+): Relationships | undefined;
 
 /// useRelationshipIds
 export function useRelationshipIds(
@@ -576,6 +596,11 @@ export function useCreateQueries(
 
 /// useQueries
 export function useQueries(id?: Id): Queries | undefined;
+
+// / useQueriesOrQueriesId
+export function useQueriesOrQueriesById(
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): Queries | undefined;
 
 /// useQueryIds
 export function useQueryIds(queriesOrQueriesId?: QueriesOrQueriesId): Ids;
@@ -717,6 +742,11 @@ export function useCreateCheckpoints(
 
 /// useCheckpoints
 export function useCheckpoints(id?: Id): Checkpoints | undefined;
+
+// / useCheckpointsOrCheckpointsById
+export function useCheckpointsOrCheckpointsById(
+  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
+): Checkpoints | undefined;
 
 /// useCheckpointIds
 export function useCheckpointIds(
