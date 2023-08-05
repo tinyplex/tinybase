@@ -32,6 +32,7 @@ import {
   useRowIds,
   useSetCellCallback,
   useSetValueCallback,
+  useSliceRowIds,
   useSortedRowIds,
   useTableCellIds,
   useValue,
@@ -47,6 +48,8 @@ import {
   ResultSortedTableInHtmlTableProps,
   ResultTableInHtmlTable as ResultTableInHtmlTableDecl,
   ResultTableInHtmlTableProps,
+  SliceInHtmlTable as SliceInHtmlTableDecl,
+  SliceInHtmlTableProps,
   SortedTableInHtmlTable as SortedTableInHtmlTableDecl,
   SortedTableInHtmlTableProps,
   SortedTablePaginator as SortedTablePaginatorDecl,
@@ -62,6 +65,7 @@ import {createElement, getProps} from './common';
 import {isArray, isString, isUndefined} from '../common/other';
 import {objMap, objNew} from '../common/obj';
 import {arrayMap} from '../common/array';
+import {useIndexesOrIndexesId} from './context';
 
 const {useCallback, useMemo, useState} = React;
 
@@ -502,6 +506,35 @@ export const ValuesInHtmlTable: typeof ValuesInHtmlTableDecl = ({
     </tbody>
   </table>
 );
+
+export const SliceInHtmlTable: typeof SliceInHtmlTableDecl = ({
+  indexId,
+  sliceId,
+  indexes,
+  editable,
+  ...props
+}: SliceInHtmlTableProps & HtmlTableProps): any => {
+  const resolvedIndexes = useIndexesOrIndexesId(indexes);
+  const store = resolvedIndexes?.getStore();
+  const tableId = resolvedIndexes?.getTableId(indexId);
+  return (
+    <HtmlTable
+      {...props}
+      params={
+        useMemo(
+          () => [
+            {tableId, store},
+            [tableId, store],
+            editable ? EditableCellView : CellView,
+            useTableCellIds,
+          ],
+          [store, tableId, editable],
+        ) as HtmlTableParams
+      }
+      rowIds={useSliceRowIds(indexId, sliceId, resolvedIndexes)}
+    />
+  );
+};
 
 export const ResultTableInHtmlTable: typeof ResultTableInHtmlTableDecl = ({
   queryId,

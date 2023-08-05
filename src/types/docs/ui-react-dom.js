@@ -212,6 +212,43 @@
 /// ValuesInHtmlTableProps
 {
   /**
+   * The Id of the Index in the Indexes object.
+   */
+  /// SliceInHtmlTableProps.indexId
+  /**
+   * The Id of the Slice in the Index to be rendered.
+   */
+  /// SliceInHtmlTableProps.sliceId
+  /**
+   * The Indexes object to be accessed: omit for the default context Indexes
+   * object, provide an Id for a named context Indexes object, or provide an
+   * explicit reference.
+   */
+  /// SliceInHtmlTableProps.indexes
+  /**
+   * Whether the Cells should be editable. This affects the default CellView
+   * component (to use the EditableCellView component instead) but of course
+   * will not affect custom Cell components if you have set them.
+   */
+  /// SliceInHtmlTableProps.editable
+  /**
+   * An optional list of Cell Ids to use for rendering a prescribed set of the
+   * Slice's Cells in a given order. This can also be an object with the desired
+   * Cell Ids as keys, and with a value that can either be a string label to
+   * show in the column header, or a CustomCell object to further configure the
+   * column.
+   */
+  /// SliceInHtmlTableProps.customCells
+}
+/**
+ * SliceInHtmlTableProps props are used for components that will render an Index
+ * Slice in an HTML table, such as the SliceInHtmlTable component.
+ * @category Props
+ * @since v4.1.0
+ */
+/// SliceInHtmlTableProps
+{
+  /**
    * The Id of the query in the Queries object for which the ResultTable will be
    * rendered.
    */
@@ -750,6 +787,142 @@
  */
 /// ValuesInHtmlTable
 /**
+ * The SliceInHtmlTable component renders the contents of a Slice as an HTML
+ * <table> element, and registers a listener so that any changes to that result
+ * will cause a re-render.
+ *
+ * See the <SliceInHtmlTable /> demo for this component in action.
+ *
+ * The component's props identify which Slice to render based on Index Id, Slice
+ * Id, and Indexes object (which is either the default context Indexes object, a
+ * named context Indexes object, or an explicit reference).
+ *
+ * This component renders a Slice by iterating over its Row objects. By default
+ * the Cells are in turn rendered with the CellView component, but you can
+ * override this behavior by providing a `component` for each Cell in the
+ * `customCells` prop. You can pass additional props to that custom component
+ * with the `getComponentProps` callback. See the CustomCell type for more
+ * details.
+ *
+ * This component uses the useSliceRowIds hook under the covers, which means
+ * that any changes to the structure of the Slice will cause a re-render.
+ *
+ * You can use the `headerRow` and `idColumn` props to control whether labels
+ * and Ids appear in a <th> element at the top of the table, and the start of
+ * each row.
+ * @param props The props for this component.
+ * @returns A rendering of the Slice in a <table> element.
+ * @example
+ * This example creates a Provider context into which a default Indexes object
+ * is provided. The SliceInHtmlTable component within it then renders the Slice
+ * in a <table> element with a CSS class.
+ *
+ * ```jsx
+ * const App = ({indexes}) => (
+ *   <Provider indexes={indexes}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <SliceInHtmlTable indexId="bySpecies" sliceId="dog" className="slice" />
+ * );
+ *
+ * const store = createStore().setTable('pets', {
+ *   fido: {species: 'dog'},
+ *   felix: {species: 'cat'},
+ *   cujo: {species: 'dog'},
+ * });
+ * const indexes = createIndexes(store);
+ * indexes.setIndexDefinition('bySpecies', 'pets', 'species');
+ *
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App indexes={indexes} />); // !act
+ * console.log(app.innerHTML);
+ * // ->
+ * `
+ * <table class=\"slice\">
+ *   <thead>
+ *     <tr>
+ *       <th>Id</th>
+ *     </tr>
+ *   </thead>
+ *   <tbody>
+ *     <tr>
+ *       <th>fido</th>
+ *     </tr>
+ *     <tr>
+ *       <th>cujo</th>
+ *     </tr>
+ *   </tbody>
+ * </table>
+ * `;
+ * ```
+ * @example
+ * This example creates a Provider context into which a default Indexes object
+ * is provided. The SliceInHtmlTable component within it then renders the Slice
+ * with a custom component and a custom props callback for the `species` Cell.
+ * The header row at the top of the table and the Id column at the start of each
+ * row is removed.
+ *
+ * ```jsx
+ * const App = ({indexes}) => (
+ *   <Provider indexes={indexes}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <SliceInHtmlTable
+ *     indexId="bySpecies"
+ *     sliceId="dog"
+ *     customCells={customCells}
+ *     headerRow={false}
+ *     idColumn={false}
+ *   />
+ * );
+ *
+ * const FormattedCellView = ({tableId, rowId, cellId, bold}) => (
+ *   <>
+ *     {bold ? <b>{rowId}</b> : rowId}:
+ *     <CellView tableId={tableId} rowId={rowId} cellId={cellId} />
+ *   </>
+ * );
+ * const customCells = {
+ *   species: {
+ *     component: FormattedCellView,
+ *     getComponentProps: (rowId, cellId) => ({bold: rowId == 'fido'}),
+ *   },
+ * };
+ *
+ * const store = createStore().setTable('pets', {
+ *   fido: {species: 'dog', color: 'brown'},
+ *   felix: {species: 'cat'},
+ *   cujo: {species: 'dog'},
+ * });
+ * const indexes = createIndexes(store);
+ * indexes.setIndexDefinition('bySpecies', 'pets', 'species');
+ *
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App indexes={indexes} />); // !act
+ * console.log(app.innerHTML);
+ * // ->
+ * `
+ * <table>
+ *   <tbody>
+ *     <tr>
+ *       <td><b>fido</b>:</td>
+ *     </tr>
+ *     <tr>
+ *       <td>cujo:</td>
+ *     </tr>
+ *   </tbody>
+ * </table>
+ * `;
+ * ```
+ * @category Indexes components
+ * @since v4.1.0
+ */
+/// SliceInHtmlTable
+/**
  * The ResultTableInHtmlTable component renders the contents of a single query's
  * ResultTable in a Queries object as an HTML <table> element, and registers a
  * listener so that any changes to that result will cause a re-render.
@@ -878,7 +1051,7 @@
  * </table>
  * `;
  * ```
- * @category Store components
+ * @category Queries components
  * @since v4.1.0
  */
 /// ResultTableInHtmlTable
@@ -1035,7 +1208,7 @@
  * </table>
  * `;
  * ```
- * @category Store components
+ * @category Queries components
  * @since v4.1.0
  */
 /// ResultSortedTableInHtmlTable
