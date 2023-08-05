@@ -6,6 +6,7 @@ import {
   CellPropsForTableIdAndCellId,
   ComponentReturnType,
   ExtraProps,
+  IndexesOrIndexesId,
   QueriesOrQueriesId,
   ResultCellProps,
   StoreOrStoreId,
@@ -13,6 +14,7 @@ import {
 } from './internal/ui-react';
 import {Id, Ids} from './common';
 import {ComponentType} from 'react';
+import {NoSchemas} from '../store';
 import {OptionalSchemas} from './store';
 
 /// CustomCell
@@ -137,6 +139,22 @@ export type ValuesInHtmlTableProps<Schemas extends OptionalSchemas> = {
   readonly getValueComponentProps?: (valueId: Id) => ExtraProps;
 };
 
+/// SliceInHtmlTableProps
+export type SliceInHtmlTableProps<Schemas extends OptionalSchemas> = {
+  /// SliceInHtmlTableProps.indexId
+  readonly indexId: Id;
+  /// SliceInHtmlTableProps.sliceId
+  readonly sliceId: Id;
+  /// SliceInHtmlTableProps.indexes
+  readonly indexes?: IndexesOrIndexesId<Schemas>;
+  /// SliceInHtmlTableProps.editable
+  readonly editable?: boolean;
+  /// SliceInHtmlTableProps.customCells
+  readonly customCells?:
+    | Ids
+    | {[cellId: Id]: string | CustomCell<NoSchemas, Id, Id>};
+};
+
 /// ResultTableInHtmlTableProps
 export type ResultTableInHtmlTableProps<Schemas extends OptionalSchemas> = {
   /// ResultTableInHtmlTableProps.queryId
@@ -220,6 +238,11 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// ValuesInHtmlTable
   ValuesInHtmlTable: (
     props: ValuesInHtmlTableProps<Schemas> & HtmlTableProps,
+  ) => ComponentReturnType;
+
+  /// SliceInHtmlTable
+  SliceInHtmlTable: (
+    props: SliceInHtmlTableProps<Schemas> & HtmlTableProps,
   ) => ComponentReturnType;
 
   /// ResultTableInHtmlTable

@@ -4,6 +4,7 @@ import {
   CellProps,
   ComponentReturnType,
   ExtraProps,
+  IndexesOrIndexesId,
   QueriesOrQueriesId,
   ResultCellProps,
   StoreOrStoreId,
@@ -98,6 +99,20 @@ export type ValuesInHtmlTableProps = {
   readonly getValueComponentProps?: (valueId: Id) => ExtraProps;
 };
 
+/// SliceInHtmlTableProps
+export type SliceInHtmlTableProps = {
+  /// SliceInHtmlTableProps.indexId
+  readonly indexId: Id;
+  /// SliceInHtmlTableProps.sliceId
+  readonly sliceId: Id;
+  /// SliceInHtmlTableProps.indexes
+  readonly indexes?: IndexesOrIndexesId;
+  /// SliceInHtmlTableProps.editable
+  readonly editable?: boolean;
+  /// SliceInHtmlTableProps.customCells
+  readonly customCells?: Ids | {[cellId: Id]: string | CustomCell};
+};
+
 /// ResultTableInHtmlTableProps
 export type ResultTableInHtmlTableProps = {
   /// ResultTableInHtmlTableProps.queryId
@@ -175,6 +190,11 @@ export function SortedTableInHtmlTable(
 /// ValuesInHtmlTable
 export function ValuesInHtmlTable(
   props: ValuesInHtmlTableProps & HtmlTableProps,
+): ComponentReturnType;
+
+/// SliceInHtmlTable
+export function SliceInHtmlTable(
+  props: SliceInHtmlTableProps & HtmlTableProps,
 ): ComponentReturnType;
 
 /// ResultTableInHtmlTable

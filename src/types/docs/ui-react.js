@@ -9800,6 +9800,7 @@
  *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog'},
+ *   felix: {species: 'cat'},
  *   cujo: {species: 'dog'},
  * });
  * const indexes = createIndexes(store);
