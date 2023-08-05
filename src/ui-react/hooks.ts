@@ -199,11 +199,17 @@ import {arrayIsEmpty} from '../common/array';
 
 export {
   useCheckpoints,
+  useCheckpointsOrCheckpointsById,
   useIndexes,
+  useIndexesOrIndexesById,
   useMetrics,
+  useMetricsOrMetricsById,
   useQueries,
+  useQueriesOrQueriesById,
   useRelationships,
+  useRelationshipsOrRelationshipsById,
   useStore,
+  useStoreOrStoreById,
 } from './context';
 
 const {useCallback, useEffect, useMemo, useRef, useState} = React;

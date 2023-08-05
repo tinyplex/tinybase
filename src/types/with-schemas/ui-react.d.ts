@@ -148,6 +148,11 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// useStore
   useStore: (id?: Id) => Store<Schemas> | undefined;
 
+  // / useStoreOrStoreById
+  useStoreOrStoreById: (
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => Store<Schemas> | undefined;
+
   /// useTables
   useTables: (storeOrStoreId?: StoreOrStoreId<Schemas>) => Tables<Schemas[0]>;
 
@@ -596,6 +601,11 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// useMetrics
   useMetrics: (id?: Id) => Metrics<Schemas> | undefined;
 
+  // / useMetricsOrMetricsById
+  useMetricsOrMetricsById: (
+    metricsOrMetricsId?: MetricsOrMetricsId<Schemas>,
+  ) => Metrics<Schemas> | undefined;
+
   /// useMetricIds
   useMetricIds(metricsOrMetricsId?: MetricsOrMetricsId<Schemas>): Ids;
 
@@ -622,6 +632,11 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// useIndexes
   useIndexes: (id?: Id) => Indexes<Schemas> | undefined;
+
+  // / useIndexesOrIndexesById
+  useIndexesOrIndexesById: (
+    indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
+  ) => Indexes<Schemas> | undefined;
 
   /// useIndexIds
   useIndexIds(indexesOrIndexesId?: IndexesOrIndexesId<Schemas>): Ids;
@@ -665,6 +680,11 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// useRelationships
   useRelationships: (id?: Id) => Relationships<Schemas> | undefined;
+
+  // / useRelationshipsOrRelationshipsById
+  useRelationshipsOrRelationshipsById: (
+    relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
+  ) => Relationships<Schemas> | undefined;
 
   /// useRelationshipIds
   useRelationshipIds(
@@ -728,6 +748,11 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// useQueries
   useQueries: (id?: Id) => Queries<Schemas> | undefined;
+
+  // / useQueriesOrQueriesById
+  useQueriesOrQueriesById: (
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+  ) => Queries<Schemas> | undefined;
 
   /// useQueryIds
   useQueryIds(queriesOrQueriesId?: QueriesOrQueriesId<Schemas>): Ids;
@@ -869,6 +894,11 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// useCheckpoints
   useCheckpoints: (id?: Id) => Checkpoints<Schemas> | undefined;
+
+  // / useCheckpointsOrCheckpointsById
+  useCheckpointsOrCheckpointsById: (
+    checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
+  ) => Checkpoints<Schemas> | undefined;
 
   /// useCheckpointIds
   useCheckpointIds: (
