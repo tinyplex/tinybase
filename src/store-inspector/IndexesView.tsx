@@ -1,11 +1,12 @@
 /** @jsx createElement */
 
-import {arrayIsEmpty, arrayJoin, arrayMap} from '../common/array';
+import {IndexProps, SliceProps} from '../types/ui-react';
+import {arrayIsEmpty, arrayMap} from '../common/array';
 import {useIndexIds, useIndexes, useSliceIds} from '../ui-react';
 import {DEFAULT} from '../common/strings';
 import {Details} from './Details';
 import {Id} from '../types/common';
-import {IndexProps} from '../types/ui-react';
+import {SliceInHtmlTable} from '../ui-react/dom';
 import {StoreProp} from './types';
 import {createElement} from '../ui-react/common';
 import {getUniqueId} from './common';
@@ -22,7 +23,31 @@ const IndexView = ({
     summary={'Index: ' + indexId}
     s={s}
   >
-    {arrayJoin(useSliceIds(indexId, indexes), ', ')}
+    {arrayMap(useSliceIds(indexId, indexes), (sliceId) => (
+      <SliceView
+        indexes={indexes}
+        indexesId={indexesId}
+        indexId={indexId}
+        sliceId={sliceId}
+        s={s}
+      />
+    ))}
+  </Details>
+);
+
+const SliceView = ({
+  indexes,
+  indexesId,
+  indexId,
+  sliceId,
+  s,
+}: SliceProps & {readonly indexesId?: Id} & StoreProp) => (
+  <Details
+    uniqueId={getUniqueId('i', indexesId, indexId, sliceId)}
+    summary={'Slice: ' + sliceId}
+    s={s}
+  >
+    <SliceInHtmlTable sliceId={sliceId} indexId={indexId} indexes={indexes} />
   </Details>
 );
 
