@@ -76,29 +76,14 @@ export type CheckpointsOrCheckpointsId = Checkpoints | Id;
 /// UndoOrRedoInformation
 export type UndoOrRedoInformation = [boolean, Callback, Id | undefined, string];
 
-/// useStoreIds
-export function useStoreIds(): Ids;
-
-/// useMetricsIds
-export function useMetricsIds(): Ids;
-
-/// useIndexesIds
-export function useIndexesIds(): Ids;
-
-/// useRelationshipsIds
-export function useRelationshipsIds(): Ids;
-
-/// useQueriesIds
-export function useQueriesIds(): Ids;
-
-/// useCheckpointsIds
-export function useCheckpointsIds(): Ids;
-
 /// useCreateStore
 export function useCreateStore(
   create: () => Store,
   createDeps?: React.DependencyList,
 ): Store;
+
+/// useStoreIds
+export function useStoreIds(): Ids;
 
 /// useStore
 export function useStore(id?: Id): Store | undefined;
@@ -446,6 +431,9 @@ export function useCreateMetrics(
   createDeps?: React.DependencyList,
 ): Metrics;
 
+/// useMetricsIds
+export function useMetricsIds(): Ids;
+
 /// useMetrics
 export function useMetrics(id?: Id): Metrics | undefined;
 
@@ -477,6 +465,9 @@ export function useCreateIndexes(
   create: (store: Store) => Indexes,
   createDeps?: React.DependencyList,
 ): Indexes;
+
+/// useIndexesIds
+export function useIndexesIds(): Ids;
 
 /// useIndexes
 export function useIndexes(id?: Id): Indexes | undefined;
@@ -525,6 +516,9 @@ export function useCreateRelationships(
   create: (store: Store) => Relationships,
   createDeps?: React.DependencyList,
 ): Relationships;
+
+/// useRelationshipsIds
+export function useRelationshipsIds(): Ids;
 
 /// useRelationships
 export function useRelationships(id?: Id): Relationships | undefined;
@@ -593,6 +587,9 @@ export function useCreateQueries(
   create: (store: Store) => Queries,
   createDeps?: React.DependencyList,
 ): Queries;
+
+/// useQueriesIds
+export function useQueriesIds(): Ids;
 
 /// useQueries
 export function useQueries(id?: Id): Queries | undefined;
@@ -739,6 +736,9 @@ export function useCreateCheckpoints(
   create: (store: Store) => Checkpoints,
   createDeps?: React.DependencyList,
 ): Checkpoints;
+
+/// useCheckpointsIds
+export function useCheckpointsIds(): Ids;
 
 /// useCheckpoints
 export function useCheckpoints(id?: Id): Checkpoints | undefined;

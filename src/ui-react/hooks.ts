@@ -329,25 +329,13 @@ const useCheckpointAction = (
   );
 };
 
-export const useStoreIds: typeof useStoreIdsDecl = () => useThingIds(1);
-
-export const useMetricsIds: typeof useMetricsIdsDecl = () => useThingIds(3);
-
-export const useIndexesIds: typeof useIndexesIdsDecl = () => useThingIds(5);
-
-export const useRelationshipsIds: typeof useRelationshipsIdsDecl = () =>
-  useThingIds(7);
-
-export const useQueriesIds: typeof useQueriesIdsDecl = () => useThingIds(9);
-
-export const useCheckpointsIds: typeof useCheckpointsIdsDecl = () =>
-  useThingIds(11);
-
 export const useCreateStore: typeof useCreateStoreDecl = (
   create: () => Store,
   createDeps: React.DependencyList = [],
   // eslint-disable-next-line react-hooks/exhaustive-deps
 ): Store => useMemo(create, createDeps);
+
+export const useStoreIds: typeof useStoreIdsDecl = () => useThingIds(1);
 
 export const useTables: typeof useTablesDecl = (
   storeOrStoreId?: StoreOrStoreId,
@@ -898,6 +886,8 @@ export const useCreateMetrics: typeof useCreateMetricsDecl = (
   createDeps?: React.DependencyList,
 ): Metrics => useCreate(store, create, createDeps);
 
+export const useMetricsIds: typeof useMetricsIdsDecl = () => useThingIds(3);
+
 export const useMetricIds: typeof useMetricIdsDecl = (
   metricsOrMetricsId?: MetricsOrMetricsId,
 ): Ids =>
@@ -933,6 +923,8 @@ export const useCreateIndexes: typeof useCreateIndexesDecl = (
   create: (store: Store) => Indexes,
   createDeps?: React.DependencyList,
 ): Indexes => useCreate(store, create, createDeps);
+
+export const useIndexesIds: typeof useIndexesIdsDecl = () => useThingIds(5);
 
 export const useSliceIds: typeof useSliceIdsDecl = (
   indexId: Id,
@@ -996,6 +988,9 @@ export const useCreateRelationships: typeof useCreateRelationshipsDecl = (
   create: (store: Store) => Relationships,
   createDeps?: React.DependencyList,
 ): Relationships => useCreate(store, create, createDeps);
+
+export const useRelationshipsIds: typeof useRelationshipsIdsDecl = () =>
+  useThingIds(7);
 
 export const useRelationshipIds: typeof useRelationshipIdsDecl = (
   relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
@@ -1092,6 +1087,8 @@ export const useCreateQueries: typeof useCreateQueriesDecl = (
   create: (store: Store) => Queries,
   createDeps?: React.DependencyList,
 ): Queries => useCreate(store, create, createDeps);
+
+export const useQueriesIds: typeof useQueriesIdsDecl = () => useThingIds(9);
 
 export const useQueryIds: typeof useQueryIdsDecl = (
   queriesOrQueriesId?: QueriesOrQueriesId,
@@ -1320,6 +1317,9 @@ export const useCreateCheckpoints: typeof useCreateCheckpointsDecl = (
   create: (store: Store) => Checkpoints,
   createDeps?: React.DependencyList,
 ): Checkpoints => useCreate(store, create, createDeps);
+
+export const useCheckpointsIds: typeof useCheckpointsIdsDecl = () =>
+  useThingIds(11);
 
 export const useCheckpointIds: typeof useCheckpointIdsDecl = (
   checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
