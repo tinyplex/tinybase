@@ -240,6 +240,8 @@
  * console.log(app.innerHTML);
  * // -> '<span>["store1","store2"]</span>'
  * ```
+ * @category Store hooks
+ * @since v4.1.0
  */
 /// useStoreIds
 /**
@@ -3386,6 +3388,8 @@
  * console.log(app.innerHTML);
  * // -> '<span>["metrics1","metrics2"]</span>'
  * ```
+ * @category Metrics hooks
+ * @since v4.1.0
  */
 /// useMetricsIds
 /**
@@ -3799,6 +3803,8 @@
  * console.log(app.innerHTML);
  * // -> '<span>["indexes1","indexes2"]</span>'
  * ```
+ * @category Indexes hooks
+ * @since v4.1.0
  */
 /// useIndexesIds
 /**
@@ -4411,6 +4417,8 @@
  * console.log(app.innerHTML);
  * // -> '<span>["relationships1","relationships2"]</span>'
  * ```
+ * @category Relationships hooks
+ * @since v4.1.0
  */
 /// useRelationshipsIds
 /**
@@ -5254,6 +5262,8 @@
  * console.log(app.innerHTML);
  * // -> '<span>["queries1","queries2"]</span>'
  * ```
+ * @category Queries hooks
+ * @since v4.1.0
  */
 /// useQueriesIds
 /**
@@ -7070,6 +7080,8 @@
  * console.log(app.innerHTML);
  * // -> '<span>["checkpoints1","checkpoints2"]</span>'
  * ```
+ * @category Checkpoints hooks
+ * @since v4.1.0
  */
 /// useCheckpointsIds
 /**
@@ -7143,7 +7155,6 @@
  * The useCheckpointIds hook returns an array of the checkpoint Ids being
  * managed by this Checkpoints object, and registers a listener so that any
  * changes to that result will cause a re-render.
- *
  *
  * A Provider component is used to wrap part of an application in a context, and
  * it can contain a default Checkpoints object or a set of Checkpoints objects
