@@ -64,7 +64,7 @@ const useThing = <
   ) as Thing;
 };
 
-const useThingOrThingId = <
+const useThingOrThingById = <
   Thing extends
     | Store
     | Metrics
@@ -108,27 +108,28 @@ export const useCheckpoints: typeof useCheckpointsDecl = (
   id?: Id,
 ): Checkpoints | undefined => useThing(id, 10);
 
-export const useStoreOrStoreId = (
+export const useStoreOrStoreById = (
   storeOrStoreId?: StoreOrStoreId,
-): Store | undefined => useThingOrThingId(storeOrStoreId, 0);
+): Store | undefined => useThingOrThingById(storeOrStoreId, 0);
 
-export const useMetricsOrMetricsId = (
+export const useMetricsOrMetricsById = (
   metricsOrMetricsId?: MetricsOrMetricsId,
-): Metrics | undefined => useThingOrThingId(metricsOrMetricsId, 2);
+): Metrics | undefined => useThingOrThingById(metricsOrMetricsId, 2);
 
-export const useIndexesOrIndexesId = (
+export const useIndexesOrIndexesById = (
   indexesOrIndexesId?: IndexesOrIndexesId,
-): Indexes | undefined => useThingOrThingId(indexesOrIndexesId, 4);
+): Indexes | undefined => useThingOrThingById(indexesOrIndexesId, 4);
 
-export const useRelationshipsOrRelationshipsId = (
+export const useRelationshipsOrRelationshipsById = (
   relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
 ): Relationships | undefined =>
-  useThingOrThingId(relationshipsOrRelationshipsId, 6);
+  useThingOrThingById(relationshipsOrRelationshipsId, 6);
 
-export const useQueriesOrQueriesId = (
+export const useQueriesOrQueriesById = (
   queriesOrQueriesId?: QueriesOrQueriesId,
-): Queries | undefined => useThingOrThingId(queriesOrQueriesId, 8);
+): Queries | undefined => useThingOrThingById(queriesOrQueriesId, 8);
 
-export const useCheckpointsOrCheckpointsId = (
+export const useCheckpointsOrCheckpointsById = (
   checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
-): Checkpoints | undefined => useThingOrThingId(checkpointsOrCheckpointsId, 10);
+): Checkpoints | undefined =>
+  useThingOrThingById(checkpointsOrCheckpointsId, 10);

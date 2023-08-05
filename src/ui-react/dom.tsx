@@ -65,7 +65,7 @@ import {createElement, getProps} from './common';
 import {isArray, isString, isUndefined} from '../common/other';
 import {objMap, objNew} from '../common/obj';
 import {arrayMap} from '../common/array';
-import {useIndexesOrIndexesId} from './context';
+import {useIndexesOrIndexesById} from './context';
 
 const {useCallback, useMemo, useState} = React;
 
@@ -514,7 +514,7 @@ export const SliceInHtmlTable: typeof SliceInHtmlTableDecl = ({
   editable,
   ...props
 }: SliceInHtmlTableProps & HtmlTableProps): any => {
-  const resolvedIndexes = useIndexesOrIndexesId(indexes);
+  const resolvedIndexes = useIndexesOrIndexesById(indexes);
   const store = resolvedIndexes?.getStore();
   const tableId = resolvedIndexes?.getTableId(indexId);
   return (

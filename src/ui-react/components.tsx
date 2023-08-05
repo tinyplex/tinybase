@@ -50,9 +50,9 @@ import {
 } from '../types/ui-react.d';
 import {
   Context,
-  useCheckpointsOrCheckpointsId,
-  useIndexesOrIndexesId,
-  useRelationshipsOrRelationshipsId,
+  useCheckpointsOrCheckpointsById,
+  useIndexesOrIndexesById,
+  useRelationshipsOrRelationshipsById,
 } from './context';
 import {Id, Ids} from '../types/common.d';
 import React, {ReactElement, useContext} from 'react';
@@ -147,7 +147,7 @@ const useRelationshipsStoreTableId = (
   relationships: RelationshipsOrRelationshipsId,
 ): [Relationships | undefined, Store | undefined] => {
   const resolvedRelationships =
-    useRelationshipsOrRelationshipsId(relationships);
+    useRelationshipsOrRelationshipsById(relationships);
   return [resolvedRelationships, resolvedRelationships?.getStore()];
 };
 
@@ -206,7 +206,7 @@ const getUseCheckpointView =
   ) & {
     separator?: ReactElement | string;
   }): any => {
-    const resolvedCheckpoints = useCheckpointsOrCheckpointsId(checkpoints);
+    const resolvedCheckpoints = useCheckpointsOrCheckpointsById(checkpoints);
     return wrap(
       arrayMap(
         getCheckpoints(useCheckpointIds(resolvedCheckpoints)),
@@ -441,7 +441,7 @@ export const SliceView: typeof SliceViewDecl = ({
   separator,
   debugIds,
 }: SliceProps): any => {
-  const resolvedIndexes = useIndexesOrIndexesId(indexes);
+  const resolvedIndexes = useIndexesOrIndexesById(indexes);
   const store = resolvedIndexes?.getStore();
   const tableId = resolvedIndexes?.getTableId(indexId);
   const rowIds = useSliceRowIds(indexId, sliceId, resolvedIndexes);
