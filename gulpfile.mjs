@@ -98,6 +98,18 @@ export const compileForCli = async () => {
   await execute(`chmod +x ${BIN_DIR}/cli.js`);
 };
 
+export const compileUmdReactDomDebug = async () =>
+  await compileModule(
+    'ui-react-dom',
+    true,
+    `${LIB_DIR}/umd`,
+    'umd',
+    undefined,
+    false,
+    true,
+    '-debug',
+  );
+
 export const testUnit = async () => {
   await test('test/unit', {coverageMode: 1});
 };
