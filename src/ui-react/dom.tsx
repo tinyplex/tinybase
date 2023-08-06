@@ -152,23 +152,6 @@ const useQueriesCellComponentProps = (
 ): {queries: QueriesOrQueriesId | undefined; queryId: Id} =>
   useMemo(() => ({queries, queryId}), [queries, queryId]);
 
-export const TableInHtmlTable: typeof TableInHtmlTableDecl = ({
-  tableId,
-  store,
-  editable,
-  ...props
-}: TableInHtmlTableProps & HtmlTableProps): any => (
-  <HtmlTable
-    {...props}
-    params={useHtmlTableParams(
-      editable ? EditableCellView : CellView,
-      useStoreCellComponentProps(store, tableId),
-      useTableCellIds(tableId, store),
-      useRowIds(tableId, store),
-    )}
-  />
-);
-
 const useSortingAndPagination = (
   cellId: Id | undefined,
   descending = false,
@@ -482,6 +465,23 @@ const EditableThing = <Thing extends Cell | Value>({
     </div>
   );
 };
+
+export const TableInHtmlTable: typeof TableInHtmlTableDecl = ({
+  tableId,
+  store,
+  editable,
+  ...props
+}: TableInHtmlTableProps & HtmlTableProps): any => (
+  <HtmlTable
+    {...props}
+    params={useHtmlTableParams(
+      editable ? EditableCellView : CellView,
+      useStoreCellComponentProps(store, tableId),
+      useTableCellIds(tableId, store),
+      useRowIds(tableId, store),
+    )}
+  />
+);
 
 export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
   tableId,
