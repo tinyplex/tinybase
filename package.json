@@ -193,6 +193,7 @@
     "compileForTest": "gulp compileForTest",
     "compileForProd": "gulp compileForProd",
     "compileForCli": "gulp compileForCli",
+    "compileUmdReactDomDebug": "gulp compileUmdReactDomDebug",
     "testUnit": "gulp testUnit",
     "testUnitCountAsserts": "gulp testUnitCountAsserts",
     "compileAndTestUnitSaveCoverage": "gulp compileAndTestUnitSaveCoverage",
