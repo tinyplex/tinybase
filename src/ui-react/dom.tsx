@@ -79,10 +79,10 @@ export type SortAndOffset = [
 ];
 
 type HtmlTableParams = [
+  defaultCellComponent: typeof CellView | typeof ResultCellView,
   cellComponentProps:
     | {tableId: Id; store?: StoreOrStoreId}
     | {queryId: Id; queries?: QueriesOrQueriesId},
-  defaultCellComponent: typeof CellView | typeof ResultCellView,
   defaultCellIds: Ids,
   rowIds: Ids,
   sortAndOffset?: SortAndOffset,
@@ -105,6 +105,67 @@ const useCallbackOrUndefined = (
   const returnCallback = useCallback(callback, deps);
   return test ? returnCallback : undefined;
 };
+
+const useHtmlTableParams = (
+  defaultCellComponent: typeof CellView | typeof ResultCellView,
+  cellComponentProps:
+    | {tableId: Id; store?: StoreOrStoreId}
+    | {queryId: Id; queries?: QueriesOrQueriesId},
+  defaultCellIds: Ids,
+  rowIds: Ids,
+  sortAndOffset?: SortAndOffset,
+  handleSort?: (cellId: Id | undefined) => void,
+  paginator?: React.ReactNode,
+): HtmlTableParams =>
+  useMemo(
+    () => [
+      defaultCellComponent,
+      cellComponentProps,
+      defaultCellIds,
+      rowIds,
+      sortAndOffset,
+      handleSort,
+      paginator,
+    ],
+    [
+      defaultCellComponent,
+      cellComponentProps,
+      defaultCellIds,
+      rowIds,
+      sortAndOffset,
+      handleSort,
+      paginator,
+    ],
+  );
+
+const useStoreCellComponentProps = (
+  store: StoreOrStoreId | undefined,
+  tableId: Id,
+): {store: StoreOrStoreId | undefined; tableId: Id} =>
+  useMemo(() => ({store, tableId}), [store, tableId]);
+
+const useQueriesCellComponentProps = (
+  queries: QueriesOrQueriesId | undefined,
+  queryId: Id,
+): {queries: QueriesOrQueriesId | undefined; queryId: Id} =>
+  useMemo(() => ({queries, queryId}), [queries, queryId]);
+
+export const TableInHtmlTable: typeof TableInHtmlTableDecl = ({
+  tableId,
+  store,
+  editable,
+  ...props
+}: TableInHtmlTableProps & HtmlTableProps): any => (
+  <HtmlTable
+    {...props}
+    params={useHtmlTableParams(
+      editable ? EditableCellView : CellView,
+      useStoreCellComponentProps(store, tableId),
+      useTableCellIds(tableId, store),
+      useRowIds(tableId, store),
+    )}
+  />
+);
 
 const useSortingAndPagination = (
   cellId: Id | undefined,
@@ -217,8 +278,8 @@ const HtmlTable = ({
   readonly params: HtmlTableParams;
 }) => {
   const [
-    cellComponentProps,
     defaultCellComponent,
+    cellComponentProps,
     defaultCellIds,
     rowIds,
     sortAndOffset,
@@ -398,30 +459,6 @@ const EditableThing = <Thing extends Cell | Value>({
   );
 };
 
-export const TableInHtmlTable: typeof TableInHtmlTableDecl = ({
-  tableId,
-  store,
-  editable,
-  ...props
-}: TableInHtmlTableProps & HtmlTableProps): any => {
-  const defaultCellIds = useTableCellIds(tableId, store);
-  const rowIds = useRowIds(tableId, store);
-  return (
-    <HtmlTable
-      {...props}
-      params={useMemo(
-        () => [
-          {tableId, store},
-          editable ? EditableCellView : CellView,
-          defaultCellIds,
-          rowIds,
-        ],
-        [tableId, store, editable, defaultCellIds, rowIds],
-      )}
-    />
-  );
-};
-
 export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
   tableId,
   cellId,
@@ -435,7 +472,6 @@ export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
   onChange,
   ...props
 }: SortedTableInHtmlTableProps & HtmlTableProps): any => {
-  const defaultCellIds = useTableCellIds(tableId, store);
   const [sortAndOffset, handleSort, paginatorComponent] =
     useSortingAndPagination(
       cellId,
@@ -447,30 +483,17 @@ export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
       paginator,
       onChange,
     );
-  const rowIds = useSortedRowIds(tableId, ...sortAndOffset, limit, store);
   return (
     <HtmlTable
       {...props}
-      params={useMemo(
-        () => [
-          {tableId, store},
-          editable ? EditableCellView : CellView,
-          defaultCellIds,
-          rowIds,
-          sortAndOffset,
-          handleSort,
-          paginatorComponent,
-        ],
-        [
-          tableId,
-          store,
-          editable,
-          defaultCellIds,
-          rowIds,
-          sortAndOffset,
-          handleSort,
-          paginatorComponent,
-        ],
+      params={useHtmlTableParams(
+        editable ? EditableCellView : CellView,
+        useStoreCellComponentProps(store, tableId),
+        useTableCellIds(tableId, store),
+        useSortedRowIds(tableId, ...sortAndOffset, limit, store),
+        sortAndOffset,
+        handleSort,
+        paginatorComponent,
       )}
     />
   );
@@ -522,22 +545,15 @@ export const SliceInHtmlTable: typeof SliceInHtmlTableDecl = ({
     indexes as IndexesOrIndexesId,
     indexId,
   );
-  const defaultCellIds = useTableCellIds(tableId as Id, store);
-  const rowIds = useSliceRowIds(indexId, sliceId, resolvedIndexes);
   return (
     <HtmlTable
       {...props}
-      params={
-        useMemo(
-          () => [
-            {tableId, store},
-            editable ? EditableCellView : CellView,
-            defaultCellIds,
-            rowIds,
-          ],
-          [tableId, store, editable, defaultCellIds, rowIds],
-        ) as HtmlTableParams
-      }
+      params={useHtmlTableParams(
+        editable ? EditableCellView : CellView,
+        useStoreCellComponentProps(store, tableId as Id),
+        useTableCellIds(tableId as Id, store),
+        useSliceRowIds(indexId, sliceId, resolvedIndexes),
+      )}
     />
   );
 };
@@ -557,22 +573,16 @@ export const RelationshipInHtmlTable = ({
   const remoteTableId = resolvedRelationships?.getRemoteTableId(
     relationshipId,
   ) as Id;
-  const defaultCellIds = useTableCellIds(remoteTableId, store);
-  const rowIds = useRowIds(localTableId, store);
+
   return (
     <HtmlTable
       {...props}
-      params={
-        useMemo(
-          () => [
-            {tableId: remoteTableId, store},
-            editable ? EditableCellView : CellView,
-            defaultCellIds,
-            rowIds,
-          ],
-          [remoteTableId, store, editable, defaultCellIds, rowIds],
-        ) as HtmlTableParams
-      }
+      params={useHtmlTableParams(
+        editable ? EditableCellView : CellView,
+        useStoreCellComponentProps(store, remoteTableId as Id),
+        useTableCellIds(remoteTableId, store),
+        useRowIds(localTableId, store),
+      )}
     />
   );
 };
@@ -581,19 +591,17 @@ export const ResultTableInHtmlTable: typeof ResultTableInHtmlTableDecl = ({
   queryId,
   queries,
   ...props
-}: ResultTableInHtmlTableProps & HtmlTableProps): any => {
-  const defaultCellIds = useResultTableCellIds(queryId, queries);
-  const rowIds = useResultRowIds(queryId, queries);
-  return (
-    <HtmlTable
-      {...props}
-      params={useMemo(
-        () => [{queryId, queries}, ResultCellView, defaultCellIds, rowIds],
-        [queryId, queries, defaultCellIds, rowIds],
-      )}
-    />
-  );
-};
+}: ResultTableInHtmlTableProps & HtmlTableProps): any => (
+  <HtmlTable
+    {...props}
+    params={useHtmlTableParams(
+      ResultCellView,
+      useQueriesCellComponentProps(queries, queryId),
+      useResultTableCellIds(queryId, queries),
+      useResultRowIds(queryId, queries),
+    )}
+  />
+);
 
 export const ResultSortedTableInHtmlTable: typeof ResultSortedTableInHtmlTableDecl =
   ({
@@ -608,7 +616,6 @@ export const ResultSortedTableInHtmlTable: typeof ResultSortedTableInHtmlTableDe
     onChange,
     ...props
   }: ResultSortedTableInHtmlTableProps & HtmlTableProps): any => {
-    const defaultCellIds = useResultTableCellIds(queryId, queries);
     const [sortAndOffset, handleSort, paginatorComponent] =
       useSortingAndPagination(
         cellId,
@@ -620,34 +627,17 @@ export const ResultSortedTableInHtmlTable: typeof ResultSortedTableInHtmlTableDe
         paginator,
         onChange,
       );
-    const rowIds = useResultSortedRowIds(
-      queryId,
-      ...sortAndOffset,
-      limit,
-      queries,
-    );
     return (
       <HtmlTable
         {...props}
-        params={useMemo(
-          () => [
-            {queryId, queries},
-            ResultCellView,
-            defaultCellIds,
-            rowIds,
-            sortAndOffset,
-            handleSort,
-            paginatorComponent,
-          ],
-          [
-            queryId,
-            queries,
-            defaultCellIds,
-            rowIds,
-            sortAndOffset,
-            handleSort,
-            paginatorComponent,
-          ],
+        params={useHtmlTableParams(
+          ResultCellView,
+          useQueriesCellComponentProps(queries, queryId),
+          useResultTableCellIds(queryId, queries),
+          useResultSortedRowIds(queryId, ...sortAndOffset, limit, queries),
+          sortAndOffset,
+          handleSort,
+          paginatorComponent,
         )}
       />
     );
