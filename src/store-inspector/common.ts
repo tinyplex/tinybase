@@ -1,4 +1,5 @@
-import {Id} from '../types/common';
+import {Id, Ids} from '../types/common';
+import {arrayMap} from '../common/array';
 import {jsonString} from '../common/json';
 
 export const UNIQUE_ID = 'tinybaseStoreInspector';
@@ -14,3 +15,8 @@ export const SCROLL_X_VALUE = 'scrollX';
 export const SCROLL_Y_VALUE = 'scrollY';
 
 export const getUniqueId = (...args: (Id | undefined)[]) => jsonString(args);
+
+export const sortedIdsMap = <Return>(
+  ids: Ids,
+  callback: (id: Id) => Return,
+): Return[] => arrayMap(ids.sort(), callback);

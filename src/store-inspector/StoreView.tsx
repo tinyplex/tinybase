@@ -1,10 +1,9 @@
 /** @jsx createElement */
 
 import {DEFAULT, TABLE, VALUES} from '../common/strings';
-import {SORT_CELL, STATE_TABLE, getUniqueId} from './common';
+import {SORT_CELL, STATE_TABLE, getUniqueId, sortedIdsMap} from './common';
 import {SortedTableInHtmlTable, ValuesInHtmlTable} from '../ui-react/dom';
 import {TableProps, ValuesProps} from '../types/ui-react';
-import {arrayIsEmpty, arrayMap} from '../common/array';
 import {jsonParse, jsonString} from '../common/json';
 import {
   useCell,
@@ -16,6 +15,7 @@ import {
 import {Details} from './Details';
 import {Id} from '../types/common';
 import {StoreProp} from './types';
+import {arrayIsEmpty} from '../common/array';
 import {createElement} from '../ui-react/common';
 import {isUndefined} from '../common/other';
 
@@ -78,7 +78,7 @@ export const StoreView = ({
       s={s}
     >
       <StoreValuesView storeId={storeId} store={store} s={s} />
-      {arrayMap(tableIds, (tableId) => (
+      {sortedIdsMap(tableIds, (tableId) => (
         <StoreTableView
           store={store}
           storeId={storeId}
