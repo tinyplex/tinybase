@@ -6,6 +6,7 @@ import {DEFAULT} from '../common/strings';
 import {Details} from './Details';
 import {Id} from '../types/common';
 import {MetricProps} from '../types/ui-react';
+import {Metrics} from '../types/metrics';
 import {StoreProp} from './types';
 import {createElement} from '../ui-react/common';
 import {getUniqueId} from './common';
@@ -14,6 +15,7 @@ import {isUndefined} from '../common/other';
 const MetricRow = ({metrics, metricId}: MetricProps) => (
   <tr>
     <th>{metricId}</th>
+    <td>{(metrics as Metrics)?.getTableId(metricId)}</td>
     <td>{useMetric(metricId, metrics)}</td>
   </tr>
 );
@@ -35,7 +37,8 @@ export const MetricsView = ({
       ) : (
         <table>
           <thead>
-            <th>Id</th>
+            <th>Metric Id</th>
+            <th>Table Id</th>
             <th>Metric</th>
           </thead>
           <tbody>
