@@ -143,7 +143,7 @@ const resultTableView = (
     queryId,
   );
 
-const useRelationshipsStoreTableId = (
+const useRelationshipsStore = (
   relationships: RelationshipsOrRelationshipsId,
 ): [Relationships | undefined, Store | undefined] => {
   const resolvedRelationships =
@@ -169,7 +169,7 @@ const useComponentPerRow = (
   ) => Ids,
   rowId: Id,
 ) => {
-  const [resolvedRelationships, store] = useRelationshipsStoreTableId(
+  const [resolvedRelationships, store] = useRelationshipsStore(
     relationships as RelationshipsOrRelationshipsId,
   );
   const tableId = resolvedRelationships?.getLocalTableId(relationshipId);
@@ -494,7 +494,7 @@ export const RemoteRowView: typeof RemoteRowViewDecl = ({
   getRowComponentProps,
   debugIds,
 }: RemoteRowProps): any => {
-  const [resolvedRelationships, store] = useRelationshipsStoreTableId(
+  const [resolvedRelationships, store] = useRelationshipsStore(
     relationships as RelationshipsOrRelationshipsId,
   );
   const tableId = resolvedRelationships?.getRemoteTableId(relationshipId);
