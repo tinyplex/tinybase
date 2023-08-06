@@ -4,8 +4,10 @@ const promise = Promise;
 
 export const DEBUG = (globalThis as any).DEBUG ?? true;
 
-export const mathMax = Math.max;
+export const startInterval = setInterval;
+export const stopInterval = clearInterval;
 
+export const mathMax = Math.max;
 export const mathMin = Math.min;
 
 export const isFiniteNumber: (num: any) => boolean = isFinite;

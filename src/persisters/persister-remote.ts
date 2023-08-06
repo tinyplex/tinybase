@@ -1,9 +1,9 @@
 import {Persister, PersisterListener} from '../types/persisters';
 import {Store, Tables, Values} from '../types/store';
+import {isUndefined, startInterval, stopInterval} from '../common/other';
 import {jsonParse, jsonString} from '../common/json';
 import {createCustomPersister} from '../persisters';
 import {createRemotePersister as createRemotePersisterDecl} from '../types/persisters/persister-remote';
-import {isUndefined} from '../common/other';
 
 const getETag = (response: Response) => response.headers.get('ETag');
 
@@ -32,7 +32,7 @@ export const createRemotePersister = ((
     });
 
   const addPersisterListener = (listener: PersisterListener): NodeJS.Timeout =>
-    setInterval(async () => {
+    startInterval(async () => {
       const response = await fetch(loadUrl, {method: 'HEAD'});
       const currentEtag = getETag(response);
       if (
@@ -46,7 +46,7 @@ export const createRemotePersister = ((
     }, autoLoadIntervalSeconds * 1000);
 
   const delPersisterListener = (interval: NodeJS.Timeout): void =>
-    clearInterval(interval);
+    stopInterval(interval);
 
   return createCustomPersister(
     store,

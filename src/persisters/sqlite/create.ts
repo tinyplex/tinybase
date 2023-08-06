@@ -3,6 +3,7 @@ import {
   Persister,
   PersisterListener,
 } from '../../types/persisters';
+import {startInterval, stopInterval} from '../../common/other';
 import {Cmd} from './commands';
 import {Store} from '../../types/store';
 import {collValues} from '../../common/coll';
@@ -41,7 +42,7 @@ export const createSqlitePersister = <UpdateListeningHandle>(
   const addPersisterListener = (
     listener: PersisterListener,
   ): [NodeJS.Timeout, UpdateListeningHandle] => [
-    setInterval(async () => {
+    startInterval(async () => {
       try {
         const newDataVersion = (
           (await cmd(PRAGMA + DATA_VERSION)) as DataVersionPragma
@@ -68,7 +69,7 @@ export const createSqlitePersister = <UpdateListeningHandle>(
     NodeJS.Timeout,
     UpdateListeningHandle,
   ]): void => {
-    clearInterval(interval);
+    stopInterval(interval);
     dataVersion = schemaVersion = null;
     delUpdateListener(listeningHandle);
   };
