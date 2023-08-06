@@ -25,8 +25,8 @@ function and useCreateQueries hook:
 +const {ResultTableInHtmlTable} = TinyBaseUiReactDom;
 ```
 
-We need to register the query we are going to use. In the main `App` component,
-we can create the memoized Queries object, query for genres starting with the
+We need to define the query we are going to use. In the main `App` component, we
+can create the memoized Queries object, query for genres starting with the
 letter 'A' (and the length of the word)...
 
 ```diff-js

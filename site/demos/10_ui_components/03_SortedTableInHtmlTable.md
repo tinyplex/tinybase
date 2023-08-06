@@ -163,6 +163,7 @@ table caption {
 }
 ```
 
-As well as rendering raw Tables from a Store, we can do the same for each
-ResultTable of a Queries object, as you'll see in the next
-<ResultTableInHtmlTable /> demo.
+As well as rendering raw Tables from a Store, we can do the same for each Slice
+of an Indexes object (as you'll see in the <SliceInHtmlTable /> demo), and the
+ResultTable of a Queries object, as you'll see in the <ResultTableInHtmlTable />
+demo.
