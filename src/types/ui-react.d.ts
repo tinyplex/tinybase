@@ -88,7 +88,7 @@ export function useStoreIds(): Ids;
 /// useStore
 export function useStore(id?: Id): Store | undefined;
 
-// / useStoreOrStoreById
+/// useStoreOrStoreById
 export function useStoreOrStoreById(
   storeOrStoreId?: StoreOrStoreId,
 ): Store | undefined;
@@ -437,7 +437,7 @@ export function useMetricsIds(): Ids;
 /// useMetrics
 export function useMetrics(id?: Id): Metrics | undefined;
 
-// / useMetricsOrMetricsById
+/// useMetricsOrMetricsById
 export function useMetricsOrMetricsById(
   metricsOrMetricsId?: MetricsOrMetricsId,
 ): Metrics | undefined;
@@ -472,7 +472,7 @@ export function useIndexesIds(): Ids;
 /// useIndexes
 export function useIndexes(id?: Id): Indexes | undefined;
 
-// / useIndexesOrIndexesById
+/// useIndexesOrIndexesById
 export function useIndexesOrIndexesById(
   indexesOrIndexesId?: IndexesOrIndexesId,
 ): Indexes | undefined;
@@ -523,7 +523,7 @@ export function useRelationshipsIds(): Ids;
 /// useRelationships
 export function useRelationships(id?: Id): Relationships | undefined;
 
-// / useRelationshipsOrRelationshipsById
+/// useRelationshipsOrRelationshipsById
 export function useRelationshipsOrRelationshipsById(
   relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
 ): Relationships | undefined;
@@ -594,7 +594,7 @@ export function useQueriesIds(): Ids;
 /// useQueries
 export function useQueries(id?: Id): Queries | undefined;
 
-// / useQueriesOrQueriesId
+/// useQueriesOrQueriesById
 export function useQueriesOrQueriesById(
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): Queries | undefined;
@@ -743,7 +743,7 @@ export function useCheckpointsIds(): Ids;
 /// useCheckpoints
 export function useCheckpoints(id?: Id): Checkpoints | undefined;
 
-// / useCheckpointsOrCheckpointsById
+/// useCheckpointsOrCheckpointsById
 export function useCheckpointsOrCheckpointsById(
   checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
 ): Checkpoints | undefined;

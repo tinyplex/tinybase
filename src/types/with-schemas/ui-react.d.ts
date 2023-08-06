@@ -133,7 +133,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// useStore
   useStore: (id?: Id) => Store<Schemas> | undefined;
 
-  // / useStoreOrStoreById
+  /// useStoreOrStoreById
   useStoreOrStoreById: (
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => Store<Schemas> | undefined;
@@ -589,7 +589,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// useMetrics
   useMetrics: (id?: Id) => Metrics<Schemas> | undefined;
 
-  // / useMetricsOrMetricsById
+  /// useMetricsOrMetricsById
   useMetricsOrMetricsById: (
     metricsOrMetricsId?: MetricsOrMetricsId<Schemas>,
   ) => Metrics<Schemas> | undefined;
@@ -624,7 +624,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// useIndexes
   useIndexes: (id?: Id) => Indexes<Schemas> | undefined;
 
-  // / useIndexesOrIndexesById
+  /// useIndexesOrIndexesById
   useIndexesOrIndexesById: (
     indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
   ) => Indexes<Schemas> | undefined;
@@ -675,7 +675,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// useRelationships
   useRelationships: (id?: Id) => Relationships<Schemas> | undefined;
 
-  // / useRelationshipsOrRelationshipsById
+  /// useRelationshipsOrRelationshipsById
   useRelationshipsOrRelationshipsById: (
     relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
   ) => Relationships<Schemas> | undefined;
@@ -746,7 +746,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// useQueries
   useQueries: (id?: Id) => Queries<Schemas> | undefined;
 
-  // / useQueriesOrQueriesById
+  /// useQueriesOrQueriesById
   useQueriesOrQueriesById: (
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => Queries<Schemas> | undefined;
@@ -895,7 +895,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// useCheckpoints
   useCheckpoints: (id?: Id) => Checkpoints<Schemas> | undefined;
 
-  // / useCheckpointsOrCheckpointsById
+  /// useCheckpointsOrCheckpointsById
   useCheckpointsOrCheckpointsById: (
     checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
   ) => Checkpoints<Schemas> | undefined;
