@@ -10,5 +10,6 @@ export const SORT_CELL = 'sort';
 export const OPEN_CELL = 'open';
 export const POSITION_VALUE = 'position';
 export const OPEN_VALUE = OPEN_CELL;
+export const SCROLL_VALUE = 'scroll';
 
 export const getUniqueId = (...args: (Id | undefined)[]) => jsonString(args);
