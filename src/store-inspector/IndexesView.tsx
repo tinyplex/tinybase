@@ -2,6 +2,7 @@
 
 import {IndexProps, SliceProps} from '../types/ui-react';
 import {arrayIsEmpty, arrayMap} from '../common/array';
+import {getUniqueId, sortedIdsMap} from './common';
 import {useIndexIds, useIndexes, useSliceIds} from '../ui-react';
 import {DEFAULT} from '../common/strings';
 import {Details} from './Details';
@@ -9,7 +10,6 @@ import {Id} from '../types/common';
 import {SliceInHtmlTable} from '../ui-react/dom';
 import {StoreProp} from './types';
 import {createElement} from '../ui-react/common';
-import {getUniqueId} from './common';
 import {isUndefined} from '../common/other';
 
 const IndexView = ({
@@ -65,7 +65,7 @@ export const IndexesView = ({
     >
       {arrayIsEmpty(indexIds)
         ? 'No indexes defined'
-        : arrayMap(indexIds, (indexId) => (
+        : sortedIdsMap(indexIds, (indexId) => (
             <IndexView
               indexes={indexes}
               indexesId={indexesId}
