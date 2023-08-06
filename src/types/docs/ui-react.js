@@ -304,6 +304,51 @@
  */
 /// useStore
 /**
+ * The useStoreOrStoreById hook is used to get a reference to a Store object
+ * from within a Provider component context, _or_ have it passed directly to
+ * this hook.
+ *
+ * This is mostly of use when you are developing a component that needs a Store
+ * object and which might have been passed in explicitly to the component or is
+ * to be picked up from the context by Id (a common pattern for Store-based
+ * components).
+ *
+ * This is unlikely to be used often. For most situations, you will want to use
+ * the useStore hook.
+ * @param storeOrStoreId Either an Id for accessing a Store object that was
+ * named with an Id in the Provider, or the Store object itself.
+ * @returns A reference to the Store object (or `undefined` if not within a
+ * Provider context, or if the requested Store object does not exist).
+ * @example
+ * This example creates a Provider context into which a default Store object is
+ * provided. A component within it then uses the useStoreOrStoreById hook to get
+ * a reference to the Store object again, without the need to have it passed as
+ * a prop. Note however, that unlike the useStore hook example, this component
+ * would also work if you were to pass the Store object directly into it, making
+ * it more portable.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = ({store}) => (
+ *   <span>{JSON.stringify(useStoreOrStoreById(store).getTableIds())}</span>
+ * );
+ *
+ * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
+ * const app = document.createElement('div');
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App store={store} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["pets"]</span>'
+ * ```
+ * @category Store hooks
+ * @since v4.1.0
+ */
+/// useStoreOrStoreById
+/**
  * The useTables hook returns a Tables object containing the tabular data of a
  * Store, and registers a listener so that any changes to that result will cause
  * a re-render.
@@ -3454,6 +3499,60 @@
  */
 /// useMetrics
 /**
+ * The useMetricsOrMetricsById hook is used to get a reference to a Metrics
+ * object from within a Provider component context, _or_ have it passed directly
+ * to this hook.
+ *
+ * This is mostly of use when you are developing a component that needs a
+ * Metrics object and which might have been passed in explicitly to the
+ * component or is to be picked up from the context by Id (a common pattern for
+ * Metrics-based components).
+ *
+ * This hook is unlikely to be used often. For most situations, you will want to
+ * use the useMetrics hook.
+ * @param metricsOrMetricsId Either an Id for accessing a Metrics object that
+ * was named with an Id in the Provider, or the Metrics object itself.
+ * @returns A reference to the Metrics object (or `undefined` if not within a
+ * Provider context, or if the requested Metrics object does not exist).
+ * @example
+ * This example creates a Provider context into which a default Metrics object
+ * is provided. A component within it then uses the useMetricsOrMetricsById hook
+ * to get a reference to the Metrics object again, without the need to have it
+ * passed as a prop. Note however, that unlike the useMetrics hook example, this
+ * component would also work if you were to pass the Metrics object directly
+ * into it, making it more portable.
+ *
+ * ```jsx
+ * const App = ({metrics}) => (
+ *   <Provider metrics={metrics}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = ({metrics}) => (
+ *   <span>
+ *     {JSON.stringify(useMetricsOrMetricsById(metrics).getMetricIds())}
+ *   </span>
+ * );
+ *
+ * const metrics = createMetrics(
+ *   createStore().setTable('species', {
+ *     dog: {price: 5},
+ *     cat: {price: 4},
+ *     worm: {price: 1},
+ *   }),
+ * ).setMetricDefinition('highestPrice', 'species', 'max', 'price');
+ *
+ * const app = document.createElement('div');
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App metrics={metrics} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["highestPrice"]</span>'
+ * ```
+ * @category Metrics hooks
+ * @since v4.1.0
+ */
+/// useMetricsOrMetricsById
+/**
  * The useMetricIds hook gets an array of the Metric Ids registered with a
  * Metrics object, and registers a listener so that any changes to that result
  * will cause a re-render.
@@ -3868,6 +3967,60 @@
  * @category Indexes hooks
  */
 /// useIndexes
+/**
+ * The useIndexesOrIndexesById hook is used to get a reference to an Indexes
+ * object from within a Provider component context, _or_ have it passed directly
+ * to this hook.
+ *
+ * This is mostly of use when you are developing a component that needs an
+ * Indexes object and which might have been passed in explicitly to the
+ * component or is to be picked up from the context by Id (a common pattern for
+ * Indexes-based components).
+ *
+ * This hook is unlikely to be used often. For most situations, you will want to
+ * use the useIndexes hook.
+ * @param indexesOrIndexesId Either an Id for accessing a Indexes object that
+ * was named with an Id in the Provider, or the Indexes object itself.
+ * @returns A reference to the Indexes object (or `undefined` if not within a
+ * Provider context, or if the requested Indexes object does not exist).
+ * @example
+ * This example creates a Provider context into which a default Indexes object
+ * is provided. A component within it then uses the useIndexesOrIndexesById hook
+ * to get a reference to the Indexes object again, without the need to have it
+ * passed as a prop. Note however, that unlike the useIndexes hook example, this
+ * component would also work if you were to pass the Indexes object directly
+ * into it, making it more portable.
+ *
+ * ```jsx
+ * const App = ({indexes}) => (
+ *   <Provider indexes={indexes}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = ({indexes}) => (
+ *   <span>
+ *     {JSON.stringify(useIndexesOrIndexesById(indexes).getIndexIds())}
+ *   </span>
+ * );
+ *
+ * const indexes = createIndexes(
+ *   createStore().setTable('pets', {
+ *     fido: {species: 'dog'},
+ *     felix: {species: 'cat'},
+ *     cujo: {species: 'dog'},
+ *   }),
+ * ).setIndexDefinition('bySpecies', 'pets', 'species');
+ *
+ * const app = document.createElement('div');
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App indexes={indexes} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["bySpecies"]</span>'
+ * ```
+ * @category Indexes hooks
+ * @since v4.1.0
+ */
+/// useIndexesOrIndexesById
 /**
  * The useIndexIds hook gets an array of the Index Ids registered with an
  * Indexes object, and registers a listener so that any changes to that result
@@ -4490,6 +4643,65 @@
  * @category Relationships hooks
  */
 /// useRelationships
+/**
+ * The useRelationshipsOrRelationshipsById hook is used to get a reference to a
+ * Relationships object from within a Provider component context, _or_ have it
+ * passed directly to this hook.
+ *
+ * This is mostly of use when you are developing a component that needs a
+ * Relationships object and which might have been passed in explicitly to the
+ * component or is to be picked up from the context by Id (a common pattern for
+ * Relationships-based components).
+ *
+ * This is unlikely to be used often. For most situations, you will want to use
+ * the useRelationships hook.
+ * @param relationshipsOrRelationshipsId Either an Id for accessing a
+ * Relationships object that was named with an Id in the Provider, or the
+ * Relationships object itself.
+ * @returns A reference to the Relationships object (or `undefined` if not
+ * within a Provider context, or if the requested Relationships object does not
+ * exist).
+ * @example
+ * This example creates a Provider context into which a default Relationships
+ * object is provided. A component within it then uses the
+ * useRelationshipsOrRelationshipsById hook to get a reference to the
+ * Relationships object again, without the need to have it passed as a prop.
+ * Note however, that unlike the useRelationships hook example, this component
+ * would also work if you were to pass the Relationships object directly into
+ * it, making it more portable.
+ *
+ * ```jsx
+ * const App = ({relationships}) => (
+ *   <Provider relationships={relationships}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = ({relationships}) => (
+ *   <span>
+ *     {JSON.stringify(
+ *       useRelationshipsOrRelationshipsById(
+ *         relationships,
+ *       ).getRelationshipIds(),
+ *     )}
+ *   </span>
+ * );
+ *
+ * const relationships = createRelationships(
+ *   createStore()
+ *     .setTable('pets', {fido: {species: 'dog'}, cujo: {species: 'dog'}})
+ *     .setTable('species', {wolf: {price: 10}, dog: {price: 5}}),
+ * ).setRelationshipDefinition('petSpecies', 'pets', 'species', 'species');
+ *
+ * const app = document.createElement('div');
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App relationships={relationships} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["petSpecies"]</span>'
+ * ```
+ * @category Relationships hooks
+ * @since v4.1.0
+ */
+/// useRelationshipsOrRelationshipsById
 /**
  * The useRelationshipIds hook gets an array of the Relationship Ids registered
  * with a Relationships object, and registers a listener so that any changes to
@@ -5329,6 +5541,63 @@
  */
 /// useQueries
 /**
+ * The useQueriesOrQueriesById hook is used to get a reference to a Queries
+ * object from within a Provider component context, _or_ have it passed directly
+ * to this hook.
+ *
+ * This is mostly of use when you are developing a component that needs a
+ * Queries object and which might have been passed in explicitly to the
+ * component or is to be picked up from the context by Id (a common pattern for
+ * Queries-based components).
+ *
+ * This is unlikely to be used often. For most situations, you will want to use
+ * the useQueries hook.
+ * @param queriesOrOrQueriesId Either an Id for accessing a Queries object that
+ * was named with an Id in the Provider, or the Queries object itself.
+ * @returns A reference to the Queries object (or `undefined` if not within a
+ * Provider context, or if the requested Queries object does not exist).
+ * @example
+ * This example creates a Provider context into which a default Queries object
+ * is provided. A component within it then uses the useQueriesOrQueriesById hook
+ * to get a reference to the Queries object again, without the need to have it
+ * passed as a prop. Note however, that unlike the useQueries hook example, this
+ * component would also work if you were to pass the Queries object directly
+ * into it, making it more portable.
+ *
+ * ```jsx
+ * const App = ({queries}) => (
+ *   <Provider queries={queries}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = ({queries}) => (
+ *   <span>
+ *     {JSON.stringify(useQueriesOrQueriesById(queries).getQueryIds())}
+ *   </span>
+ * );
+ *
+ * const queries = createQueries(
+ *   createStore().setTable('pets', {
+ *     fido: {species: 'dog', color: 'brown'},
+ *     felix: {species: 'cat', color: 'black'},
+ *     cujo: {species: 'dog', color: 'black'},
+ *   }),
+ * ).setQueryDefinition('dogColors', 'pets', ({select, where}) => {
+ *   select('color');
+ *   where('species', 'dog');
+ * });
+ *
+ * const app = document.createElement('div');
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App queries={queries} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["dogColors"]</span>'
+ * ```
+ * @category Queries hooks
+ * @since v4.1.0
+ */
+/// useQueriesOrQueriesById
+/**
  * The useQueryIds hook gets an array of the Query Ids registered with a Queries
  * object, and registers a listener so that any changes to that result will
  * cause a re-render.
@@ -5456,6 +5725,7 @@
  *   select('color');
  *   where('species', 'dog');
  * });
+ *
  * const app = document.createElement('div');
  * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
@@ -7151,6 +7421,57 @@
  * @category Checkpoints hooks
  */
 /// useCheckpoints
+/**
+ * The useCheckpointsOrCheckpointsById hook is used to get a reference to a
+ * Checkpoints object from within a Provider component context, _or_ have it
+ * passed directly to this hook.
+ *
+ * This is mostly of use when you are developing a component that needs a
+ * Checkpoints object and which might have been passed in explicitly to the
+ * component or is to be picked up from the context by Id (a common pattern for
+ * Checkpoints-based components).
+ *
+ * This is unlikely to be used often. For most situations, you will want to use
+ * the useCheckpoints hook.
+ * @param checkpointsOrCheckpointsId Either an Id for accessing a Checkpoints
+ * object that was named with an Id in the Provider, or the Checkpoints object
+ * itself.
+ * @returns A reference to the Checkpoints object (or `undefined` if not within
+ * a Provider context, or if the requested Checkpoints object does not exist).
+ * @example
+ * This example creates a Provider context into which a default Checkpoints
+ * object is provided. A component within it then uses the
+ * useCheckpointsOrCheckpointsById hook to get a reference to the Checkpoints
+ * object again, without the need to have it passed as a prop. Note however,
+ * that unlike the useCheckpoints hook example, this component would also work
+ * if you were to pass the Checkpoints object directly into it, making it more
+ * portable.
+ *
+ * ```jsx
+ * const App = ({checkpoints}) => (
+ *   <Provider checkpoints={checkpoints}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = ({checkpoints}) => (
+ *   <span>
+ *     {JSON.stringify(
+ *       useCheckpointsOrCheckpointsById(checkpoints).getCheckpointIds(),
+ *     )}
+ *   </span>
+ * );
+ *
+ * const checkpoints = createCheckpoints(createStore());
+ * const app = document.createElement('div');
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App checkpoints={checkpoints} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>[[],"0",[]]</span>'
+ * ```
+ * @category Checkpoints hooks
+ * @since v4.1.0
+ */
+/// useCheckpointsOrCheckpointsById
 /**
  * The useCheckpointIds hook returns an array of the checkpoint Ids being
  * managed by this Checkpoints object, and registers a listener so that any
