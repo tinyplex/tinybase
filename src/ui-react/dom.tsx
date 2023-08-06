@@ -24,6 +24,7 @@ import {
   ResultCellView,
   ValueView,
   useCell,
+  useIndexesOrIndexesById,
   useResultRowCount,
   useResultRowIds,
   useResultSortedRowIds,
@@ -65,7 +66,6 @@ import {createElement, getProps} from './common';
 import {isArray, isString, isUndefined} from '../common/other';
 import {objMap, objNew} from '../common/obj';
 import {arrayMap} from '../common/array';
-import {useIndexesOrIndexesById} from './context';
 
 const {useCallback, useMemo, useState} = React;
 
