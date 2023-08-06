@@ -13,6 +13,7 @@ import {
   ForwardCheckpointsView as ForwardCheckpointsViewDecl,
   IndexProps,
   IndexView as IndexViewDecl,
+  IndexesOrIndexesId,
   LinkedRowsProps,
   LinkedRowsView as LinkedRowsViewDecl,
   LocalRowsProps,
@@ -51,8 +52,8 @@ import {
 import {
   Context,
   useCheckpointsOrCheckpointsById,
-  useIndexesOrIndexesById,
-  useRelationshipsOrRelationshipsById,
+  useIndexStoreTableId,
+  useRelationshipsStore,
 } from './context';
 import {Id, Ids} from '../types/common.d';
 import React, {ReactElement, useContext} from 'react';
@@ -81,8 +82,6 @@ import {
 } from './hooks';
 import {CheckpointIds} from '../types/checkpoints';
 import {EMPTY_STRING} from '../common/strings';
-import {Relationships} from '../types/relationships.d';
-import {Store} from '../types/store.d';
 import {arrayMap} from '../common/array';
 
 const {useMemo} = React;
@@ -142,14 +141,6 @@ const resultTableView = (
     debugIds,
     queryId,
   );
-
-const useRelationshipsStore = (
-  relationships: RelationshipsOrRelationshipsId,
-): [Relationships | undefined, Store | undefined] => {
-  const resolvedRelationships =
-    useRelationshipsOrRelationshipsById(relationships);
-  return [resolvedRelationships, resolvedRelationships?.getStore()];
-};
 
 const useComponentPerRow = (
   {
@@ -441,9 +432,10 @@ export const SliceView: typeof SliceViewDecl = ({
   separator,
   debugIds,
 }: SliceProps): any => {
-  const resolvedIndexes = useIndexesOrIndexesById(indexes);
-  const store = resolvedIndexes?.getStore();
-  const tableId = resolvedIndexes?.getTableId(indexId);
+  const [resolvedIndexes, store, tableId] = useIndexStoreTableId(
+    indexes as IndexesOrIndexesId,
+    indexId,
+  );
   const rowIds = useSliceRowIds(indexId, sliceId, resolvedIndexes);
   return wrap(
     arrayMap(rowIds, (rowId) => (
