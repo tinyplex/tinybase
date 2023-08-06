@@ -241,7 +241,7 @@ const HtmlTable = ({
     handleSort,
     paginatorComponent,
   ] = params;
-  const customCellConfigurations = useMemo(() => {
+  const cells = useMemo(() => {
     const cellIds = customCells ?? defaultCellIds;
     return objNew(
       objMap(
@@ -274,7 +274,7 @@ const HtmlTable = ({
                 onClick={handleSort}
               />
             )}
-            {objMap(customCellConfigurations, ({label}, cellId) => (
+            {objMap(cells, ({label}, cellId) => (
               <HtmlHeader
                 key={cellId}
                 cellId={cellId}
@@ -292,7 +292,7 @@ const HtmlTable = ({
             key={rowId}
             rowId={rowId}
             idColumn={idColumn}
-            customCellConfigurations={customCellConfigurations}
+            cells={cells}
             cellComponentProps={cellComponentProps}
           />
         ))}
@@ -334,12 +334,12 @@ const HtmlHeader = ({
 const HtmlRow = ({
   rowId,
   idColumn,
-  customCellConfigurations,
+  cells,
   cellComponentProps,
 }: {
   readonly rowId: Id;
   readonly idColumn?: boolean;
-  readonly customCellConfigurations: {
+  readonly cells: {
     [cellId: Id]: {
       component: CellComponent;
       getComponentProps?: (rowId: Id, cellId: Id) => ExtraProps;
@@ -349,19 +349,16 @@ const HtmlRow = ({
 }) => (
   <tr>
     {idColumn === false ? null : <th>{rowId}</th>}
-    {objMap(
-      customCellConfigurations,
-      ({component: CellView, getComponentProps}, cellId) => (
-        <td key={cellId}>
-          <CellView
-            {...getProps(getComponentProps, rowId, cellId)}
-            {...(cellComponentProps as any)}
-            rowId={rowId}
-            cellId={cellId}
-          />
-        </td>
-      ),
-    )}
+    {objMap(cells, ({component: CellView, getComponentProps}, cellId) => (
+      <td key={cellId}>
+        <CellView
+          {...getProps(getComponentProps, rowId, cellId)}
+          {...(cellComponentProps as any)}
+          rowId={rowId}
+          cellId={cellId}
+        />
+      </td>
+    ))}
   </tr>
 );
 
