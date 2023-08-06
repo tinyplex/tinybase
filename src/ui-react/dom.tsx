@@ -15,9 +15,11 @@ import {Cell, Value} from '../types/store';
 import {CellOrValueType, getCellOrValueType, getTypeCase} from '../common/cell';
 import {
   CellProps,
+  ExtraProps,
   IndexesOrIndexesId,
   QueriesOrQueriesId,
   RelationshipsOrRelationshipsId,
+  ResultCellProps,
   StoreOrStoreId,
   ValueProps,
 } from '../types/ui-react';
@@ -72,21 +74,23 @@ import {arrayMap} from '../common/array';
 
 const {useCallback, useMemo, useState} = React;
 
-export type SortAndOffset = [
+type CellComponent = ComponentType<CellProps> | ComponentType<ResultCellProps>;
+type CellComponentProps =
+  | {store?: StoreOrStoreId; tableId: Id}
+  | {queries?: QueriesOrQueriesId; queryId: Id};
+type SortAndOffset = [
   cellId: Id | undefined,
   descending: boolean,
   offset: number,
 ];
-
+type HandleSort = (cellId: Id | undefined) => void;
 type HtmlTableParams = [
-  defaultCellComponent: typeof CellView | typeof ResultCellView,
-  cellComponentProps:
-    | {tableId: Id; store?: StoreOrStoreId}
-    | {queryId: Id; queries?: QueriesOrQueriesId},
+  defaultCellComponent: CellComponent,
+  cellComponentProps: CellComponentProps,
   defaultCellIds: Ids,
   rowIds: Ids,
   sortAndOffset?: SortAndOffset,
-  handleSort?: (cellId: Id | undefined) => void,
+  handleSort?: HandleSort,
   paginator?: React.ReactNode,
 ];
 
@@ -107,14 +111,12 @@ const useCallbackOrUndefined = (
 };
 
 const useHtmlTableParams = (
-  defaultCellComponent: typeof CellView | typeof ResultCellView,
-  cellComponentProps:
-    | {tableId: Id; store?: StoreOrStoreId}
-    | {queryId: Id; queries?: QueriesOrQueriesId},
+  defaultCellComponent: CellComponent,
+  cellComponentProps: CellComponentProps,
   defaultCellIds: Ids,
   rowIds: Ids,
   sortAndOffset?: SortAndOffset,
-  handleSort?: (cellId: Id | undefined) => void,
+  handleSort?: HandleSort,
   paginator?: React.ReactNode,
 ): HtmlTableParams =>
   useMemo(
@@ -178,7 +180,7 @@ const useSortingAndPagination = (
   onChange?: (sortAndOffset: SortAndOffset) => void,
 ): [
   sortAndOffset: SortAndOffset,
-  handleSort: (cellId: Id | undefined) => void,
+  handleSort: HandleSort,
   paginatorComponent: React.ReactNode | undefined,
 ] => {
   const [[currentCellId, currentDescending, currentOffset], setState] =
@@ -234,36 +236,6 @@ const useSortingAndPagination = (
   ];
 };
 
-const HtmlHeader = ({
-  cellId,
-  sort: [sortCellId, sortDescending],
-  label = cellId ?? EMPTY_STRING,
-  onClick,
-}: {
-  readonly cellId?: Id;
-  readonly sort: SortAndOffset | [];
-  readonly label?: string;
-  readonly onClick?: (cellId: Id | undefined) => void;
-}) => (
-  <th
-    onClick={useCallbackOrUndefined(
-      () => onClick?.(cellId),
-      [onClick, cellId],
-      onClick,
-    )}
-    className={
-      isUndefined(sortDescending) || sortCellId != cellId
-        ? undefined
-        : `sorted ${sortDescending ? 'de' : 'a'}scending`
-    }
-  >
-    {isUndefined(sortDescending) || sortCellId != cellId
-      ? null
-      : (sortDescending ? DOWN_ARROW : UP_ARROW) + ' '}
-    {label}
-  </th>
-);
-
 const HtmlTable = ({
   className,
   headerRow,
@@ -296,7 +268,7 @@ const HtmlTable = ({
         (labelOrCustomCell, cellId) => [
           cellId,
           {
-            ...{label: cellId},
+            ...{label: cellId, component: defaultCellComponent},
             ...(isString(labelOrCustomCell)
               ? {label: labelOrCustomCell}
               : labelOrCustomCell),
@@ -304,7 +276,7 @@ const HtmlTable = ({
         ],
       ),
     );
-  }, [customCells, defaultCellIds]);
+  }, [customCells, defaultCellComponent, defaultCellIds]);
 
   return (
     <table className={className}>
@@ -333,30 +305,82 @@ const HtmlTable = ({
       )}
       <tbody>
         {arrayMap(rowIds, (rowId) => (
-          <tr key={rowId}>
-            {idColumn === false ? null : <th>{rowId}</th>}
-            {objMap(
-              customCellConfigurations,
-              (
-                {component: CellView = defaultCellComponent, getComponentProps},
-                cellId,
-              ) => (
-                <td key={cellId}>
-                  <CellView
-                    {...getProps(getComponentProps, rowId, cellId)}
-                    {...(cellComponentProps as any)}
-                    rowId={rowId}
-                    cellId={cellId}
-                  />
-                </td>
-              ),
-            )}
-          </tr>
+          <HtmlRow
+            key={rowId}
+            rowId={rowId}
+            idColumn={idColumn}
+            customCellConfigurations={customCellConfigurations}
+            cellComponentProps={cellComponentProps}
+          />
         ))}
       </tbody>
     </table>
   );
 };
+
+const HtmlHeader = ({
+  cellId,
+  sort: [sortCellId, sortDescending],
+  label = cellId ?? EMPTY_STRING,
+  onClick,
+}: {
+  readonly cellId?: Id;
+  readonly sort: SortAndOffset | [];
+  readonly label?: string;
+  readonly onClick?: HandleSort;
+}) => (
+  <th
+    onClick={useCallbackOrUndefined(
+      () => onClick?.(cellId),
+      [onClick, cellId],
+      onClick,
+    )}
+    className={
+      isUndefined(sortDescending) || sortCellId != cellId
+        ? undefined
+        : `sorted ${sortDescending ? 'de' : 'a'}scending`
+    }
+  >
+    {isUndefined(sortDescending) || sortCellId != cellId
+      ? null
+      : (sortDescending ? DOWN_ARROW : UP_ARROW) + ' '}
+    {label}
+  </th>
+);
+
+const HtmlRow = ({
+  rowId,
+  idColumn,
+  customCellConfigurations,
+  cellComponentProps,
+}: {
+  readonly rowId: Id;
+  readonly idColumn?: boolean;
+  readonly customCellConfigurations: {
+    [cellId: Id]: {
+      component: CellComponent;
+      getComponentProps?: (rowId: Id, cellId: Id) => ExtraProps;
+    };
+  };
+  readonly cellComponentProps: CellComponentProps;
+}) => (
+  <tr>
+    {idColumn === false ? null : <th>{rowId}</th>}
+    {objMap(
+      customCellConfigurations,
+      ({component: CellView, getComponentProps}, cellId) => (
+        <td key={cellId}>
+          <CellView
+            {...getProps(getComponentProps, rowId, cellId)}
+            {...(cellComponentProps as any)}
+            rowId={rowId}
+            cellId={cellId}
+          />
+        </td>
+      ),
+    )}
+  </tr>
+);
 
 const EditableThing = <Thing extends Cell | Value>({
   thing,
