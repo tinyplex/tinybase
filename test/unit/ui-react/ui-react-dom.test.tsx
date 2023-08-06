@@ -2193,11 +2193,14 @@ describe('RelationshipInHtmlTable', () => {
           <tr>
             <th>
               r1
+               → r2
             </th>
             <td>
-              2
+              3
             </td>
-            <td />
+            <td>
+              4
+            </td>
           </tr>
         </tbody>
       </table>
@@ -2233,6 +2236,7 @@ describe('RelationshipInHtmlTable', () => {
           <tr>
             <th>
               r1
+               → r2
             </th>
             <td>
               <div
@@ -2247,7 +2251,7 @@ describe('RelationshipInHtmlTable', () => {
                 <input
                   onChange={[Function]}
                   type="number"
-                  value={2}
+                  value={3}
                 />
               </div>
             </td>
@@ -2256,11 +2260,15 @@ describe('RelationshipInHtmlTable', () => {
                 className="editableCell"
               >
                 <button
+                  className="number"
                   onClick={[Function]}
-                />
+                >
+                  number
+                </button>
                 <input
                   onChange={[Function]}
-                  type="checkbox"
+                  type="number"
+                  value={4}
                 />
               </div>
             </td>
@@ -2301,11 +2309,14 @@ describe('RelationshipInHtmlTable', () => {
           <tr>
             <th>
               r1
+               → r2
             </th>
             <td>
-              2
+              3
             </td>
-            <td />
+            <td>
+              4
+            </td>
           </tr>
         </tbody>
       </table>
@@ -2337,9 +2348,11 @@ describe('RelationshipInHtmlTable', () => {
         <tbody>
           <tr>
             <td>
-              2
+              3
             </td>
-            <td />
+            <td>
+              4
+            </td>
           </tr>
         </tbody>
       </table>
@@ -2362,11 +2375,14 @@ describe('RelationshipInHtmlTable', () => {
           <tr>
             <th>
               r1
+               → r2
             </th>
             <td>
-              2
+              3
             </td>
-            <td />
+            <td>
+              4
+            </td>
           </tr>
         </tbody>
       </table>
@@ -2402,10 +2418,11 @@ describe('RelationshipInHtmlTable', () => {
           <tr>
             <th>
               r1
+               → r2
             </th>
             <td />
             <td>
-              2
+              3
             </td>
           </tr>
         </tbody>
@@ -2442,10 +2459,11 @@ describe('RelationshipInHtmlTable', () => {
           <tr>
             <th>
               r1
+               → r2
             </th>
             <td />
             <td>
-              2
+              3
             </td>
           </tr>
         </tbody>
@@ -2492,15 +2510,16 @@ describe('RelationshipInHtmlTable', () => {
           <tr>
             <th>
               r1
+               → r2
             </th>
             <td>
               <b>
-                {"0":"r1","1":"c1","tableId":"t2","rowId":"r1","cellId":"c1"}
+                {"0":"r1","1":"c1","tableId":"t2","rowId":"r2","cellId":"c1"}
               </b>
             </td>
             <td>
               <b>
-                {"0":"r1","1":"c2","tableId":"t2","rowId":"r1","cellId":"c2"}
+                {"0":"r1","1":"c2","tableId":"t2","rowId":"r2","cellId":"c2"}
               </b>
             </td>
           </tr>
