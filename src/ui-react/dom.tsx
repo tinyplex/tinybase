@@ -93,6 +93,16 @@ type HtmlTableParams = [
   handleSort?: HandleSort,
   paginator?: React.ReactNode,
 ];
+type HtmlRowParams = [
+  idColumn: boolean | undefined,
+  cells: {
+    [cellId: Id]: {
+      component: CellComponent;
+      getComponentProps?: (rowId: Id, cellId: Id) => ExtraProps;
+    };
+  },
+  cellComponentProps: CellComponentProps,
+];
 
 const EDITABLE = 'editable';
 const LEFT_ARROW = '\u2190';
@@ -224,15 +234,7 @@ const HtmlTable = ({
   headerRow,
   idColumn,
   customCells,
-  params,
-}: HtmlTableProps & {
-  readonly customCells?:
-    | Ids
-    | {[cellId: string]: string | CustomCell | CustomResultCell}
-    | undefined;
-  readonly params: HtmlTableParams;
-}) => {
-  const [
+  params: [
     defaultCellComponent,
     cellComponentProps,
     defaultCellIds,
@@ -240,7 +242,14 @@ const HtmlTable = ({
     sortAndOffset,
     handleSort,
     paginatorComponent,
-  ] = params;
+  ],
+}: HtmlTableProps & {
+  readonly customCells?:
+    | Ids
+    | {[cellId: string]: string | CustomCell | CustomResultCell}
+    | undefined;
+  readonly params: HtmlTableParams;
+}) => {
   const cells = useMemo(() => {
     const cellIds = customCells ?? defaultCellIds;
     return objNew(
@@ -260,6 +269,11 @@ const HtmlTable = ({
       ),
     );
   }, [customCells, defaultCellComponent, defaultCellIds]);
+
+  const rowParams = useMemo(
+    () => [idColumn, cells, cellComponentProps] as HtmlRowParams,
+    [idColumn, cells, cellComponentProps],
+  );
 
   return (
     <table className={className}>
@@ -288,13 +302,7 @@ const HtmlTable = ({
       )}
       <tbody>
         {arrayMap(rowIds, (rowId) => (
-          <HtmlRow
-            key={rowId}
-            rowId={rowId}
-            idColumn={idColumn}
-            cells={cells}
-            cellComponentProps={cellComponentProps}
-          />
+          <HtmlRow key={rowId} rowId={rowId} params={rowParams} />
         ))}
       </tbody>
     </table>
@@ -333,19 +341,10 @@ const HtmlHeader = ({
 
 const HtmlRow = ({
   rowId,
-  idColumn,
-  cells,
-  cellComponentProps,
+  params: [idColumn, cells, cellComponentProps],
 }: {
   readonly rowId: Id;
-  readonly idColumn?: boolean;
-  readonly cells: {
-    [cellId: Id]: {
-      component: CellComponent;
-      getComponentProps?: (rowId: Id, cellId: Id) => ExtraProps;
-    };
-  };
-  readonly cellComponentProps: CellComponentProps;
+  readonly params: HtmlRowParams;
 }) => (
   <tr>
     {idColumn === false ? null : <th>{rowId}</th>}
