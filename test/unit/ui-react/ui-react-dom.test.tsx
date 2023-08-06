@@ -4,6 +4,7 @@
 import {
   EditableCellView,
   EditableValueView,
+  RelationshipInHtmlTable,
   ResultSortedTableInHtmlTable,
   ResultTableInHtmlTable,
   SliceInHtmlTable,
@@ -17,9 +18,11 @@ import {
   Ids,
   Indexes,
   Queries,
+  Relationships,
   Store,
   createIndexes,
   createQueries,
+  createRelationships,
   createStore,
 } from 'tinybase/debug';
 import {
@@ -34,6 +37,7 @@ import {pause} from '../common/other';
 
 let store: Store;
 let indexes: Indexes;
+let relationships: Relationships;
 let queries: Queries;
 let renderer: ReactTestRenderer;
 
@@ -53,6 +57,12 @@ beforeEach(() => {
     })
     .setValues({v1: 1, v2: 2});
   indexes = createIndexes(store).setIndexDefinition('i1', 't2', 'c1');
+  relationships = createRelationships(store).setRelationshipDefinition(
+    'r1',
+    't1',
+    't2',
+    (getCell) => 'r' + ((getCell('c1') as number) + 1),
+  );
   queries = createQueries(store).setQueryDefinition('q1', 't2', ({select}) => {
     select(
       (getTableCell) => '' + getTableCell('c1') + (getTableCell('c2') ?? '_'),
@@ -2103,6 +2113,352 @@ describe('SliceInHtmlTable', () => {
           indexes={indexes}
           indexId="i1"
           sliceId="2"
+          customCells={{
+            c1: {
+              label: 'C one',
+              component: Custom,
+              getComponentProps: getIdsAsProp,
+            },
+            c2: {
+              component: Custom,
+              getComponentProps: getIdsAsProp,
+            },
+          }}
+        />,
+      );
+    });
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <table>
+        <thead>
+          <tr>
+            <th>
+              Id
+            </th>
+            <th>
+              C one
+            </th>
+            <th>
+              c2
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>
+              r1
+            </th>
+            <td>
+              <b>
+                {"0":"r1","1":"c1","tableId":"t2","rowId":"r1","cellId":"c1"}
+              </b>
+            </td>
+            <td>
+              <b>
+                {"0":"r1","1":"c2","tableId":"t2","rowId":"r1","cellId":"c2"}
+              </b>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    `);
+  });
+});
+
+describe('RelationshipInHtmlTable', () => {
+  test('basic', () => {
+    act(() => {
+      renderer = create(
+        <RelationshipInHtmlTable
+          relationships={relationships}
+          relationshipId="r1"
+        />,
+      );
+    });
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <table>
+        <thead>
+          <tr>
+            <th>
+              Id
+            </th>
+            <th>
+              c1
+            </th>
+            <th>
+              c2
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>
+              r1
+            </th>
+            <td>
+              2
+            </td>
+            <td />
+          </tr>
+        </tbody>
+      </table>
+    `);
+  });
+
+  test('editable', () => {
+    act(() => {
+      renderer = create(
+        <RelationshipInHtmlTable
+          relationships={relationships}
+          relationshipId="r1"
+          editable={true}
+        />,
+      );
+    });
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <table>
+        <thead>
+          <tr>
+            <th>
+              Id
+            </th>
+            <th>
+              c1
+            </th>
+            <th>
+              c2
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>
+              r1
+            </th>
+            <td>
+              <div
+                className="editableCell"
+              >
+                <button
+                  className="number"
+                  onClick={[Function]}
+                >
+                  number
+                </button>
+                <input
+                  onChange={[Function]}
+                  type="number"
+                  value={2}
+                />
+              </div>
+            </td>
+            <td>
+              <div
+                className="editableCell"
+              >
+                <button
+                  onClick={[Function]}
+                />
+                <input
+                  onChange={[Function]}
+                  type="checkbox"
+                />
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    `);
+  });
+
+  test('className', () => {
+    act(() => {
+      renderer = create(
+        <RelationshipInHtmlTable
+          relationships={relationships}
+          relationshipId="r1"
+          className="slice"
+        />,
+      );
+    });
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <table
+        className="slice"
+      >
+        <thead>
+          <tr>
+            <th>
+              Id
+            </th>
+            <th>
+              c1
+            </th>
+            <th>
+              c2
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>
+              r1
+            </th>
+            <td>
+              2
+            </td>
+            <td />
+          </tr>
+        </tbody>
+      </table>
+    `);
+  });
+
+  test('idColumn', () => {
+    act(() => {
+      renderer = create(
+        <RelationshipInHtmlTable
+          relationships={relationships}
+          relationshipId="r1"
+          idColumn={false}
+        />,
+      );
+    });
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <table>
+        <thead>
+          <tr>
+            <th>
+              c1
+            </th>
+            <th>
+              c2
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              2
+            </td>
+            <td />
+          </tr>
+        </tbody>
+      </table>
+    `);
+  });
+
+  test('headerRow', () => {
+    act(() => {
+      renderer = create(
+        <RelationshipInHtmlTable
+          relationships={relationships}
+          relationshipId="r1"
+          headerRow={false}
+        />,
+      );
+    });
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <table>
+        <tbody>
+          <tr>
+            <th>
+              r1
+            </th>
+            <td>
+              2
+            </td>
+            <td />
+          </tr>
+        </tbody>
+      </table>
+    `);
+  });
+
+  test('customCells array', () => {
+    act(() => {
+      renderer = create(
+        <RelationshipInHtmlTable
+          relationships={relationships}
+          relationshipId="r1"
+          customCells={['c3', 'c1']}
+        />,
+      );
+    });
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <table>
+        <thead>
+          <tr>
+            <th>
+              Id
+            </th>
+            <th>
+              c3
+            </th>
+            <th>
+              c1
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>
+              r1
+            </th>
+            <td />
+            <td>
+              2
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    `);
+  });
+
+  test('customCells labels', () => {
+    act(() => {
+      renderer = create(
+        <RelationshipInHtmlTable
+          relationships={relationships}
+          relationshipId="r1"
+          customCells={{c3: 'C three', c1: 'C one'}}
+        />,
+      );
+    });
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <table>
+        <thead>
+          <tr>
+            <th>
+              Id
+            </th>
+            <th>
+              C three
+            </th>
+            <th>
+              C one
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>
+              r1
+            </th>
+            <td />
+            <td>
+              2
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    `);
+  });
+
+  test('customCells objects', () => {
+    act(() => {
+      renderer = create(
+        <RelationshipInHtmlTable
+          relationships={relationships}
+          relationshipId="r1"
           customCells={{
             c1: {
               label: 'C one',
