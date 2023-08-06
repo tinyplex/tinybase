@@ -13,7 +13,6 @@ import {
   ForwardCheckpointsView as ForwardCheckpointsViewDecl,
   IndexProps,
   IndexView as IndexViewDecl,
-  IndexesOrIndexesId,
   LinkedRowsProps,
   LinkedRowsView as LinkedRowsViewDecl,
   LocalRowsProps,
@@ -52,12 +51,17 @@ import {
 import {
   Context,
   useCheckpointsOrCheckpointsById,
-  useIndexStoreTableId,
-  useRelationshipsStore,
+  useIndexesOrIndexesById,
+  useRelationshipsOrRelationshipsById,
 } from './context';
 import {Id, Ids} from '../types/common.d';
 import React, {ReactElement, useContext} from 'react';
-import {createElement, getProps} from './common';
+import {
+  createElement,
+  getIndexStoreTableId,
+  getProps,
+  getRelationshipsStoreTableIds,
+} from './common';
 import {isArray, isUndefined} from '../common/other';
 import {
   useCell,
@@ -160,17 +164,18 @@ const useComponentPerRow = (
   ) => Ids,
   rowId: Id,
 ) => {
-  const [resolvedRelationships, store] = useRelationshipsStore(
-    relationships as RelationshipsOrRelationshipsId,
-  );
-  const tableId = resolvedRelationships?.getLocalTableId(relationshipId);
+  const [resolvedRelationships, store, localTableId] =
+    getRelationshipsStoreTableIds(
+      useRelationshipsOrRelationshipsById(relationships),
+      relationshipId,
+    );
   const rowIds = getRowIdsHook(relationshipId, rowId, resolvedRelationships);
   return wrap(
     arrayMap(rowIds, (rowId) => (
       <Row
         {...getProps(getRowComponentProps, rowId)}
         key={rowId}
-        tableId={tableId as Id}
+        tableId={localTableId as Id}
         rowId={rowId}
         store={store}
         debugIds={debugIds}
@@ -432,8 +437,8 @@ export const SliceView: typeof SliceViewDecl = ({
   separator,
   debugIds,
 }: SliceProps): any => {
-  const [resolvedIndexes, store, tableId] = useIndexStoreTableId(
-    indexes as IndexesOrIndexesId,
+  const [resolvedIndexes, store, tableId] = getIndexStoreTableId(
+    useIndexesOrIndexesById(indexes),
     indexId,
   );
   const rowIds = useSliceRowIds(indexId, sliceId, resolvedIndexes);
@@ -486,21 +491,22 @@ export const RemoteRowView: typeof RemoteRowViewDecl = ({
   getRowComponentProps,
   debugIds,
 }: RemoteRowProps): any => {
-  const [resolvedRelationships, store] = useRelationshipsStore(
-    relationships as RelationshipsOrRelationshipsId,
-  );
-  const tableId = resolvedRelationships?.getRemoteTableId(relationshipId);
+  const [resolvedRelationships, store, , remoteTableId] =
+    getRelationshipsStoreTableIds(
+      useRelationshipsOrRelationshipsById(relationships),
+      relationshipId,
+    );
   const rowId = useRemoteRowId(
     relationshipId,
     localRowId,
     resolvedRelationships,
   );
   return wrap(
-    isUndefined(tableId) || isUndefined(rowId) ? null : (
+    isUndefined(remoteTableId) || isUndefined(rowId) ? null : (
       <Row
         {...getProps(getRowComponentProps, rowId as Id)}
         key={rowId}
-        tableId={tableId}
+        tableId={remoteTableId}
         rowId={rowId}
         store={store}
         debugIds={debugIds}

@@ -108,18 +108,6 @@ export const useIndexesOrIndexesById = (
   indexesOrIndexesId?: IndexesOrIndexesId,
 ): Indexes | undefined => useThingOrThingById(indexesOrIndexesId, 4);
 
-export const useIndexStoreTableId = (
-  indexes: IndexesOrIndexesId,
-  indexId: Id,
-): [Indexes | undefined, Store | undefined, Id | undefined] => {
-  const resolvedIndexes = useIndexesOrIndexesById(indexes);
-  return [
-    resolvedIndexes,
-    resolvedIndexes?.getStore(),
-    resolvedIndexes?.getTableId(indexId),
-  ];
-};
-
 export const useRelationships: typeof useRelationshipsDecl = (
   id?: Id,
 ): Relationships | undefined => useThing(id, 6);
@@ -128,14 +116,6 @@ export const useRelationshipsOrRelationshipsById = (
   relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
 ): Relationships | undefined =>
   useThingOrThingById(relationshipsOrRelationshipsId, 6);
-
-export const useRelationshipsStore = (
-  relationships: RelationshipsOrRelationshipsId,
-): [Relationships | undefined, Store | undefined] => {
-  const resolvedRelationships =
-    useRelationshipsOrRelationshipsById(relationships);
-  return [resolvedRelationships, resolvedRelationships?.getStore()];
-};
 
 export const useQueries: typeof useQueriesDecl = (
   id?: Id,

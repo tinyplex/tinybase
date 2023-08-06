@@ -16,9 +16,7 @@ import {CellOrValueType, getCellOrValueType, getTypeCase} from '../common/cell';
 import {
   CellProps,
   ExtraProps,
-  IndexesOrIndexesId,
   QueriesOrQueriesId,
-  RelationshipsOrRelationshipsId,
   ResultCellProps,
   StoreOrStoreId,
   ValueProps,
@@ -28,6 +26,9 @@ import {
   ResultCellView,
   ValueView,
   useCell,
+  useIndexesOrIndexesById,
+  useRelationshipsOrRelationshipsById,
+  useRemoteRowId,
   useResultRowCount,
   useResultRowIds,
   useResultSortedRowIds,
@@ -66,10 +67,14 @@ import {
 } from '../types/ui-react-dom.d';
 import {Id, Ids} from '../types/common';
 import React, {ComponentType} from 'react';
-import {createElement, getProps} from './common';
+import {
+  createElement,
+  getIndexStoreTableId,
+  getProps,
+  getRelationshipsStoreTableIds,
+} from './common';
 import {isArray, isString, isUndefined} from '../common/other';
 import {objMap, objNew} from '../common/obj';
-import {useIndexStoreTableId, useRelationshipsStore} from './context';
 import {arrayMap} from '../common/array';
 
 const {useCallback, useMemo, useState} = React;
@@ -84,6 +89,7 @@ type SortAndOffset = [
   offset: number,
 ];
 type HandleSort = (cellId: Id | undefined) => void;
+type UseMappedRowId = (rowId: Id) => Id | undefined;
 type HtmlTableParams = [
   defaultCellComponent: CellComponent,
   cellComponentProps: CellComponentProps,
@@ -92,6 +98,7 @@ type HtmlTableParams = [
   sortAndOffset?: SortAndOffset,
   handleSort?: HandleSort,
   paginator?: React.ReactNode,
+  useMappedRowId?: UseMappedRowId,
 ];
 type HtmlRowParams = [
   idColumn: boolean | undefined,
@@ -102,6 +109,7 @@ type HtmlRowParams = [
     };
   },
   cellComponentProps: CellComponentProps,
+  useMappedRowId: UseMappedRowId,
 ];
 
 const EDITABLE = 'editable';
@@ -109,6 +117,8 @@ const LEFT_ARROW = '\u2190';
 const UP_ARROW = '\u2191';
 const RIGHT_ARROW = '\u2192';
 const DOWN_ARROW = '\u2193';
+
+const useUnmappedRowId = (id: Id) => id;
 
 const useCallbackOrUndefined = (
   callback: any,
@@ -128,6 +138,7 @@ const useHtmlTableParams = (
   sortAndOffset?: SortAndOffset,
   handleSort?: HandleSort,
   paginator?: React.ReactNode,
+  useMappedRowId?: UseMappedRowId,
 ): HtmlTableParams =>
   useMemo(
     () => [
@@ -138,6 +149,7 @@ const useHtmlTableParams = (
       sortAndOffset,
       handleSort,
       paginator,
+      useMappedRowId,
     ],
     [
       defaultCellComponent,
@@ -147,6 +159,7 @@ const useHtmlTableParams = (
       sortAndOffset,
       handleSort,
       paginator,
+      useMappedRowId,
     ],
   );
 
@@ -242,6 +255,7 @@ const HtmlTable = ({
     sortAndOffset,
     handleSort,
     paginatorComponent,
+    useMappedRowId = useUnmappedRowId,
   ],
 }: HtmlTableProps & {
   readonly customCells?:
@@ -271,8 +285,9 @@ const HtmlTable = ({
   }, [customCells, defaultCellComponent, defaultCellIds]);
 
   const rowParams = useMemo(
-    () => [idColumn, cells, cellComponentProps] as HtmlRowParams,
-    [idColumn, cells, cellComponentProps],
+    () =>
+      [idColumn, cells, cellComponentProps, useMappedRowId] as HtmlRowParams,
+    [idColumn, cells, cellComponentProps, useMappedRowId],
   );
 
   return (
@@ -341,25 +356,38 @@ const HtmlHeader = ({
 
 const HtmlRow = ({
   rowId,
-  params: [idColumn, cells, cellComponentProps],
+  params: [
+    idColumn,
+    cells,
+    cellComponentProps,
+    useMappedRowId = useUnmappedRowId,
+  ],
 }: {
   readonly rowId: Id;
   readonly params: HtmlRowParams;
-}) => (
-  <tr>
-    {idColumn === false ? null : <th>{rowId}</th>}
-    {objMap(cells, ({component: CellView, getComponentProps}, cellId) => (
-      <td key={cellId}>
-        <CellView
-          {...getProps(getComponentProps, rowId, cellId)}
-          {...(cellComponentProps as any)}
-          rowId={rowId}
-          cellId={cellId}
-        />
-      </td>
-    ))}
-  </tr>
-);
+}) => {
+  const mappedRowId = useMappedRowId(rowId);
+  return isUndefined(mappedRowId) ? null : (
+    <tr>
+      {idColumn === false ? null : (
+        <th>
+          {rowId}
+          {mappedRowId !== rowId ? ' ' + RIGHT_ARROW + ' ' + mappedRowId : null}
+        </th>
+      )}
+      {objMap(cells, ({component: CellView, getComponentProps}, cellId) => (
+        <td key={cellId}>
+          <CellView
+            {...getProps(getComponentProps, rowId, cellId)}
+            {...(cellComponentProps as any)}
+            rowId={mappedRowId}
+            cellId={cellId}
+          />
+        </td>
+      ))}
+    </tr>
+  );
+};
 
 const EditableThing = <Thing extends Cell | Value>({
   thing,
@@ -561,8 +589,8 @@ export const SliceInHtmlTable: typeof SliceInHtmlTableDecl = ({
   editable,
   ...props
 }: SliceInHtmlTableProps & HtmlTableProps): any => {
-  const [resolvedIndexes, store, tableId] = useIndexStoreTableId(
-    indexes as IndexesOrIndexesId,
+  const [resolvedIndexes, store, tableId] = getIndexStoreTableId(
+    useIndexesOrIndexesById(indexes),
     indexId,
   );
   return (
@@ -584,24 +612,27 @@ export const RelationshipInHtmlTable = ({
   editable,
   ...props
 }: RelationshipInHtmlTableProps & HtmlTableProps): any => {
-  const [resolvedRelationships, store] = useRelationshipsStore(
-    relationships as RelationshipsOrRelationshipsId,
-  );
-  const localTableId = resolvedRelationships?.getLocalTableId(
-    relationshipId,
-  ) as Id;
-  const remoteTableId = resolvedRelationships?.getRemoteTableId(
-    relationshipId,
-  ) as Id;
-
+  const [resolvedRelationships, store, localTableId, remoteTableId] =
+    getRelationshipsStoreTableIds(
+      useRelationshipsOrRelationshipsById(relationships),
+      relationshipId,
+    );
+  const useMappedRowId = (localRowId: Id) =>
+    useRemoteRowId(relationshipId, localRowId, resolvedRelationships) as
+      | Id
+      | undefined;
   return (
     <HtmlTable
       {...props}
       params={useHtmlTableParams(
         editable ? EditableCellView : CellView,
         useStoreCellComponentProps(store, remoteTableId as Id),
-        useTableCellIds(remoteTableId, store),
-        useRowIds(localTableId, store),
+        useTableCellIds(remoteTableId as Id, store),
+        useRowIds(localTableId as Id, store),
+        undefined,
+        undefined,
+        undefined,
+        useMappedRowId,
       )}
     />
   );
