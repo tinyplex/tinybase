@@ -6,6 +6,7 @@ import {
   ExtraProps,
   IndexesOrIndexesId,
   QueriesOrQueriesId,
+  RelationshipsOrRelationshipsId,
   ResultCellProps,
   StoreOrStoreId,
   ValueProps,
@@ -113,6 +114,18 @@ export type SliceInHtmlTableProps = {
   readonly customCells?: Ids | {[cellId: Id]: string | CustomCell};
 };
 
+// / RelationshipInHtmlTableProps
+export type RelationshipInHtmlTableProps = {
+  // / RelationshipInHtmlTable.relationshipId
+  readonly relationshipId: Id;
+  // / RelationshipInHtmlTable.relationships
+  readonly relationships?: RelationshipsOrRelationshipsId;
+  // / RelationshipInHtmlTable.editable
+  readonly editable?: boolean;
+  // / RelationshipInHtmlTable.customCells
+  readonly customCells?: Ids | {[cellId: Id]: string | CustomCell};
+};
+
 /// ResultTableInHtmlTableProps
 export type ResultTableInHtmlTableProps = {
   /// ResultTableInHtmlTableProps.queryId
@@ -195,6 +208,11 @@ export function ValuesInHtmlTable(
 /// SliceInHtmlTable
 export function SliceInHtmlTable(
   props: SliceInHtmlTableProps & HtmlTableProps,
+): ComponentReturnType;
+
+// / RelationshipInHtmlTable
+export function RelationshipInHtmlTable(
+  props: RelationshipInHtmlTableProps & HtmlTableProps,
 ): ComponentReturnType;
 
 /// ResultTableInHtmlTable

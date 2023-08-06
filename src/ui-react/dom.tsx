@@ -17,6 +17,7 @@ import {
   CellProps,
   IndexesOrIndexesId,
   QueriesOrQueriesId,
+  RelationshipsOrRelationshipsId,
   StoreOrStoreId,
   ValueProps,
 } from '../types/ui-react';
@@ -45,6 +46,7 @@ import {
   EditableCellView as EditableCellViewDecl,
   EditableValueView as EditableValueViewDecl,
   HtmlTableProps,
+  RelationshipInHtmlTableProps,
   ResultSortedTableInHtmlTable as ResultSortedTableInHtmlTableDecl,
   ResultSortedTableInHtmlTableProps,
   ResultTableInHtmlTable as ResultTableInHtmlTableDecl,
@@ -65,8 +67,8 @@ import React, {ComponentType} from 'react';
 import {createElement, getProps} from './common';
 import {isArray, isString, isUndefined} from '../common/other';
 import {objMap, objNew} from '../common/obj';
+import {useIndexStoreTableId, useRelationshipsStore} from './context';
 import {arrayMap} from '../common/array';
-import {useIndexStoreTableId} from './context';
 
 const {useCallback, useMemo, useState} = React;
 
@@ -534,6 +536,40 @@ export const SliceInHtmlTable: typeof SliceInHtmlTableDecl = ({
         ) as HtmlTableParams
       }
       rowIds={useSliceRowIds(indexId, sliceId, resolvedIndexes)}
+    />
+  );
+};
+
+export const RelationshipInHtmlTable = ({
+  relationshipId,
+  relationships,
+  editable,
+  ...props
+}: RelationshipInHtmlTableProps & HtmlTableProps): any => {
+  const [resolvedRelationships, store] = useRelationshipsStore(
+    relationships as RelationshipsOrRelationshipsId,
+  );
+  const localTableId = resolvedRelationships?.getLocalTableId(
+    relationshipId,
+  ) as Id;
+  const remoteTableId = resolvedRelationships?.getRemoteTableId(
+    relationshipId,
+  ) as Id;
+  return (
+    <HtmlTable
+      {...props}
+      params={
+        useMemo(
+          () => [
+            {tableId: remoteTableId, store},
+            [remoteTableId, store],
+            editable ? EditableCellView : CellView,
+            useTableCellIds,
+          ],
+          [store, remoteTableId, editable],
+        ) as HtmlTableParams
+      }
+      rowIds={useRowIds(localTableId, store)}
     />
   );
 };
