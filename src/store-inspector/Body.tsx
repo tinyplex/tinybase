@@ -1,34 +1,48 @@
 /** @jsx createElement */
 
-import {useIndexesIds, useMetricsIds, useStoreIds} from '../ui-react';
+import {SCROLL_X_VALUE, SCROLL_Y_VALUE} from './common';
+import {useIndexesIds, useMetricsIds, useStoreIds, useValue} from '../ui-react';
+import {CURRENT_TARGET} from '../common/strings';
 import {IndexesView} from './IndexesView';
 import {MetricsView} from './MetricsView';
 import React from 'react';
-import {SCROLL_VALUE} from './common';
 import {StoreProp} from './types';
 import {StoreView} from './StoreView';
 import {arrayMap} from '../common/array';
 import {createElement} from '../ui-react/common';
-import {isUndefined} from '../common/other';
 
-const {useLayoutEffect, useRef} = React;
+const {useCallback, useRef, useState} = React;
 
 export const Body = ({s}: StoreProp) => {
   const ref = useRef<HTMLElement>(null);
-  useLayoutEffect(() => {
-    const article = ref.current;
-    const scroll = s.getValue(SCROLL_VALUE) as number;
-    if (article && !isUndefined(scroll)) {
-      article.scrollTop = scroll;
-    }
-    const interval = setInterval(
-      () => s.setValue(SCROLL_VALUE, article?.scrollTop ?? 0),
-      1000,
-    );
-    return () => clearInterval(interval);
-  }, [ref, s]);
+  const article = ref.current;
+  const [scrolled, setScrolled] = useState(false);
+  const scrollX = (useValue(SCROLL_X_VALUE, s) as number) ?? 0;
+  const scrollY = (useValue(SCROLL_Y_VALUE, s) as number) ?? 0;
+
+  if (article && !scrolled) {
+    new MutationObserver((_, observer) => {
+      article.scrollTo(scrollX, scrollY);
+      setScrolled(true);
+      observer.disconnect();
+    }).observe(article, {childList: true, subtree: true});
+  }
+
+  const handleScroll = useCallback(
+    (event: React.SyntheticEvent<HTMLElement>) => {
+      const target = event[CURRENT_TARGET];
+      requestIdleCallback(() =>
+        s.setPartialValues({
+          [SCROLL_X_VALUE]: target.scrollLeft,
+          [SCROLL_Y_VALUE]: target.scrollTop,
+        }),
+      );
+    },
+    [s],
+  );
+
   return (
-    <article ref={ref}>
+    <article ref={ref} onScroll={handleScroll}>
       <StoreView s={s} />
       {arrayMap(useStoreIds(), (storeId) => (
         <StoreView storeId={storeId} key={storeId} s={s} />
