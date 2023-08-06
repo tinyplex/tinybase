@@ -15,6 +15,7 @@ import {Cell, Value} from '../types/store';
 import {CellOrValueType, getCellOrValueType, getTypeCase} from '../common/cell';
 import {
   CellProps,
+  IndexesOrIndexesId,
   QueriesOrQueriesId,
   StoreOrStoreId,
   ValueProps,
@@ -24,7 +25,6 @@ import {
   ResultCellView,
   ValueView,
   useCell,
-  useIndexesOrIndexesById,
   useResultRowCount,
   useResultRowIds,
   useResultSortedRowIds,
@@ -66,6 +66,7 @@ import {createElement, getProps} from './common';
 import {isArray, isString, isUndefined} from '../common/other';
 import {objMap, objNew} from '../common/obj';
 import {arrayMap} from '../common/array';
+import {useIndexStoreTableId} from './context';
 
 const {useCallback, useMemo, useState} = React;
 
@@ -514,9 +515,10 @@ export const SliceInHtmlTable: typeof SliceInHtmlTableDecl = ({
   editable,
   ...props
 }: SliceInHtmlTableProps & HtmlTableProps): any => {
-  const resolvedIndexes = useIndexesOrIndexesById(indexes);
-  const store = resolvedIndexes?.getStore();
-  const tableId = resolvedIndexes?.getTableId(indexId);
+  const [resolvedIndexes, store, tableId] = useIndexStoreTableId(
+    indexes as IndexesOrIndexesId,
+    indexId,
+  );
   return (
     <HtmlTable
       {...props}

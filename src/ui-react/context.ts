@@ -88,46 +88,66 @@ export const useThingIds = (offset: number): Ids =>
 export const useStore: typeof useStoreDecl = (id?: Id): Store | undefined =>
   useThing(id, 0);
 
-export const useMetrics: typeof useMetricsDecl = (
-  id?: Id,
-): Metrics | undefined => useThing(id, 2);
-
-export const useIndexes: typeof useIndexesDecl = (
-  id?: Id,
-): Indexes | undefined => useThing(id, 4);
-
-export const useRelationships: typeof useRelationshipsDecl = (
-  id?: Id,
-): Relationships | undefined => useThing(id, 6);
-
-export const useQueries: typeof useQueriesDecl = (
-  id?: Id,
-): Queries | undefined => useThing(id, 8);
-
-export const useCheckpoints: typeof useCheckpointsDecl = (
-  id?: Id,
-): Checkpoints | undefined => useThing(id, 10);
-
 export const useStoreOrStoreById = (
   storeOrStoreId?: StoreOrStoreId,
 ): Store | undefined => useThingOrThingById(storeOrStoreId, 0);
+
+export const useMetrics: typeof useMetricsDecl = (
+  id?: Id,
+): Metrics | undefined => useThing(id, 2);
 
 export const useMetricsOrMetricsById = (
   metricsOrMetricsId?: MetricsOrMetricsId,
 ): Metrics | undefined => useThingOrThingById(metricsOrMetricsId, 2);
 
+export const useIndexes: typeof useIndexesDecl = (
+  id?: Id,
+): Indexes | undefined => useThing(id, 4);
+
 export const useIndexesOrIndexesById = (
   indexesOrIndexesId?: IndexesOrIndexesId,
 ): Indexes | undefined => useThingOrThingById(indexesOrIndexesId, 4);
+
+export const useIndexStoreTableId = (
+  indexes: IndexesOrIndexesId,
+  indexId: Id,
+): [Indexes | undefined, Store | undefined, Id | undefined] => {
+  const resolvedIndexes = useIndexesOrIndexesById(indexes);
+  return [
+    resolvedIndexes,
+    resolvedIndexes?.getStore(),
+    resolvedIndexes?.getTableId(indexId),
+  ];
+};
+
+export const useRelationships: typeof useRelationshipsDecl = (
+  id?: Id,
+): Relationships | undefined => useThing(id, 6);
 
 export const useRelationshipsOrRelationshipsById = (
   relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
 ): Relationships | undefined =>
   useThingOrThingById(relationshipsOrRelationshipsId, 6);
 
+export const useRelationshipsStore = (
+  relationships: RelationshipsOrRelationshipsId,
+): [Relationships | undefined, Store | undefined] => {
+  const resolvedRelationships =
+    useRelationshipsOrRelationshipsById(relationships);
+  return [resolvedRelationships, resolvedRelationships?.getStore()];
+};
+
+export const useQueries: typeof useQueriesDecl = (
+  id?: Id,
+): Queries | undefined => useThing(id, 8);
+
 export const useQueriesOrQueriesById = (
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): Queries | undefined => useThingOrThingById(queriesOrQueriesId, 8);
+
+export const useCheckpoints: typeof useCheckpointsDecl = (
+  id?: Id,
+): Checkpoints | undefined => useThing(id, 10);
 
 export const useCheckpointsOrCheckpointsById = (
   checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
