@@ -2179,7 +2179,10 @@ describe('RelationshipInHtmlTable', () => {
         <thead>
           <tr>
             <th>
-              Id
+              t1.Id
+            </th>
+            <th>
+              → t2.Id
             </th>
             <th>
               c1
@@ -2193,7 +2196,9 @@ describe('RelationshipInHtmlTable', () => {
           <tr>
             <th>
               r1
-               → r2
+            </th>
+            <th>
+              r2
             </th>
             <td>
               3
@@ -2222,7 +2227,10 @@ describe('RelationshipInHtmlTable', () => {
         <thead>
           <tr>
             <th>
-              Id
+              t1.Id
+            </th>
+            <th>
+              → t2.Id
             </th>
             <th>
               c1
@@ -2236,7 +2244,9 @@ describe('RelationshipInHtmlTable', () => {
           <tr>
             <th>
               r1
-               → r2
+            </th>
+            <th>
+              r2
             </th>
             <td>
               <div
@@ -2295,7 +2305,10 @@ describe('RelationshipInHtmlTable', () => {
         <thead>
           <tr>
             <th>
-              Id
+              t1.Id
+            </th>
+            <th>
+              → t2.Id
             </th>
             <th>
               c1
@@ -2309,7 +2322,9 @@ describe('RelationshipInHtmlTable', () => {
           <tr>
             <th>
               r1
-               → r2
+            </th>
+            <th>
+              r2
             </th>
             <td>
               3
@@ -2375,7 +2390,9 @@ describe('RelationshipInHtmlTable', () => {
           <tr>
             <th>
               r1
-               → r2
+            </th>
+            <th>
+              r2
             </th>
             <td>
               3
@@ -2404,7 +2421,10 @@ describe('RelationshipInHtmlTable', () => {
         <thead>
           <tr>
             <th>
-              Id
+              t1.Id
+            </th>
+            <th>
+              → t2.Id
             </th>
             <th>
               c3
@@ -2418,7 +2438,9 @@ describe('RelationshipInHtmlTable', () => {
           <tr>
             <th>
               r1
-               → r2
+            </th>
+            <th>
+              r2
             </th>
             <td />
             <td>
@@ -2445,7 +2467,10 @@ describe('RelationshipInHtmlTable', () => {
         <thead>
           <tr>
             <th>
-              Id
+              t1.Id
+            </th>
+            <th>
+              → t2.Id
             </th>
             <th>
               C three
@@ -2459,7 +2484,9 @@ describe('RelationshipInHtmlTable', () => {
           <tr>
             <th>
               r1
-               → r2
+            </th>
+            <th>
+              r2
             </th>
             <td />
             <td>
@@ -2496,7 +2523,10 @@ describe('RelationshipInHtmlTable', () => {
         <thead>
           <tr>
             <th>
-              Id
+              t1.Id
+            </th>
+            <th>
+              → t2.Id
             </th>
             <th>
               C one
@@ -2510,7 +2540,9 @@ describe('RelationshipInHtmlTable', () => {
           <tr>
             <th>
               r1
-               → r2
+            </th>
+            <th>
+              r2
             </th>
             <td>
               <b>
