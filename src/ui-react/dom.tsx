@@ -99,6 +99,8 @@ type HtmlTableParams = [
   handleSort?: HandleSort,
   paginator?: React.ReactNode,
   useMappedRowId?: UseMappedRowId,
+  rowIdPrefix?: string,
+  mappedRowIdLabel?: string,
 ];
 type HtmlRowParams = [
   idColumn: boolean | undefined,
@@ -109,7 +111,7 @@ type HtmlRowParams = [
     };
   },
   cellComponentProps: CellComponentProps,
-  useMappedRowId: UseMappedRowId,
+  useMappedRowId?: UseMappedRowId,
 ];
 
 const EDITABLE = 'editable';
@@ -139,6 +141,8 @@ const useHtmlTableParams = (
   handleSort?: HandleSort,
   paginator?: React.ReactNode,
   useMappedRowId?: UseMappedRowId,
+  rowIdPrefix?: string,
+  mappedRowIdLabel?: string,
 ): HtmlTableParams =>
   useMemo(
     () => [
@@ -150,6 +154,8 @@ const useHtmlTableParams = (
       handleSort,
       paginator,
       useMappedRowId,
+      rowIdPrefix,
+      mappedRowIdLabel,
     ],
     [
       defaultCellComponent,
@@ -160,6 +166,8 @@ const useHtmlTableParams = (
       handleSort,
       paginator,
       useMappedRowId,
+      rowIdPrefix,
+      mappedRowIdLabel,
     ],
   );
 
@@ -255,7 +263,9 @@ const HtmlTable = ({
     sortAndOffset,
     handleSort,
     paginatorComponent,
-    useMappedRowId = useUnmappedRowId,
+    useMappedRowId,
+    rowIdPrefix = EMPTY_STRING,
+    mappedRowIdLabel,
   ],
 }: HtmlTableProps & {
   readonly customCells?:
@@ -297,14 +307,17 @@ const HtmlTable = ({
         <thead>
           <tr>
             {idColumn === false ? null : (
-              <HtmlHeader
-                sort={sortAndOffset ?? []}
-                label="Id"
-                onClick={handleSort}
-              />
+              <>
+                <HtmlHeaderCell
+                  sort={sortAndOffset ?? []}
+                  label={rowIdPrefix + 'Id'}
+                  onClick={handleSort}
+                />
+                {useMappedRowId ? <th>{mappedRowIdLabel}</th> : null}
+              </>
             )}
             {objMap(cells, ({label}, cellId) => (
-              <HtmlHeader
+              <HtmlHeaderCell
                 key={cellId}
                 cellId={cellId}
                 label={label}
@@ -324,7 +337,7 @@ const HtmlTable = ({
   );
 };
 
-const HtmlHeader = ({
+const HtmlHeaderCell = ({
   cellId,
   sort: [sortCellId, sortDescending],
   label = cellId ?? EMPTY_STRING,
@@ -356,24 +369,19 @@ const HtmlHeader = ({
 
 const HtmlRow = ({
   rowId,
-  params: [
-    idColumn,
-    cells,
-    cellComponentProps,
-    useMappedRowId = useUnmappedRowId,
-  ],
+  params: [idColumn, cells, cellComponentProps, useMappedRowId],
 }: {
   readonly rowId: Id;
   readonly params: HtmlRowParams;
 }) => {
-  const mappedRowId = useMappedRowId(rowId);
+  const mappedRowId = (useMappedRowId ?? useUnmappedRowId)(rowId);
   return isUndefined(mappedRowId) ? null : (
     <tr>
       {idColumn === false ? null : (
-        <th>
-          {rowId}
-          {mappedRowId !== rowId ? ' ' + RIGHT_ARROW + ' ' + mappedRowId : null}
-        </th>
+        <>
+          <th>{rowId}</th>
+          {useMappedRowId ? <th>{mappedRowId}</th> : null}
+        </>
       )}
       {objMap(cells, ({component: CellView, getComponentProps}, cellId) => (
         <td key={cellId}>
@@ -633,6 +641,8 @@ export const RelationshipInHtmlTable = ({
         undefined,
         undefined,
         useMappedRowId,
+        localTableId + '.',
+        RIGHT_ARROW + ` ${remoteTableId}.Id`,
       )}
     />
   );
