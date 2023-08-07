@@ -74,6 +74,10 @@ For fun we could add the 'editable' prop to this table, but of course as soon as
 you add to or delete from the name of the genre, it will get reindexed into a
 different Slice and disappear! So maybe not.
 
+Take a look at the SliceInHtmlTableProps type and HtmlTableProps type to see all
+the ways in which you can configure this component, and again, click the
+'CodePen' link under the demo above to try them out.
+
 As well as displaying a Slice from an Indexes object, you can also render the
-ResultTable of a Queries object, as you'll see next up in the
-<ResultTableInHtmlTable /> demo.
+links between Tables with a Relationships object, as you'll see next up in the
+<RelationshipInHtmlTable /> demo.
