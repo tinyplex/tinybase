@@ -3,6 +3,7 @@
 import {
   useIndexesIds,
   useMetricsIds,
+  useRelationshipsIds,
   useStoreIds,
   useValues,
 } from '../ui-react';
@@ -10,6 +11,7 @@ import {CURRENT_TARGET} from '../common/strings';
 import {IndexesView} from './IndexesView';
 import {MetricsView} from './MetricsView';
 import React from 'react';
+import {RelationshipsView} from './RelationshipsView';
 import {StoreProp} from './types';
 import {StoreView} from './StoreView';
 import {arrayMap} from '../common/array';
@@ -52,6 +54,14 @@ export const Body = ({s}: StoreProp) => {
       <IndexesView s={s} />
       {arrayMap(useIndexesIds(), (indexesId) => (
         <IndexesView indexesId={indexesId} key={indexesId} s={s} />
+      ))}
+      <RelationshipsView s={s} />
+      {arrayMap(useRelationshipsIds(), (relationshipsId) => (
+        <RelationshipsView
+          relationshipsId={relationshipsId}
+          key={relationshipsId}
+          s={s}
+        />
       ))}
     </article>
   );
