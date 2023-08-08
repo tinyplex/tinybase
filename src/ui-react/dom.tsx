@@ -99,9 +99,7 @@ type HandleSort = (cellId: Id | undefined) => void;
 type UseMappedRowId = (rowId: Id) => Id | undefined;
 type HtmlTableParams = [
   cells: Cells,
-  defaultCellComponent: CellComponent,
   cellComponentProps: CellComponentProps,
-  defaultCellIds: Ids,
   rowIds: Ids,
   sortAndOffset?: SortAndOffset,
   handleSort?: HandleSort,
@@ -146,10 +144,7 @@ const useCallbackOrUndefined = (
 
 const useHtmlTableParams = (
   cells: Cells,
-
-  defaultCellComponent: CellComponent,
   cellComponentProps: CellComponentProps,
-  defaultCellIds: Ids,
   rowIds: Ids,
   sortAndOffset?: SortAndOffset,
   handleSort?: HandleSort,
@@ -158,24 +153,13 @@ const useHtmlTableParams = (
   useMemo(
     () => [
       cells,
-      defaultCellComponent,
       cellComponentProps,
-      defaultCellIds,
       rowIds,
       sortAndOffset,
       handleSort,
       paginator,
     ],
-    [
-      cells,
-      defaultCellComponent,
-      cellComponentProps,
-      defaultCellIds,
-      rowIds,
-      sortAndOffset,
-      handleSort,
-      paginator,
-    ],
+    [cells, cellComponentProps, rowIds, sortAndOffset, handleSort, paginator],
   );
 
 const useHtmlTableParams2 = (
@@ -299,12 +283,9 @@ const HtmlTable = ({
   className,
   headerRow,
   idColumn,
-  customCells,
   params: [
     cells,
-    defaultCellComponent,
     cellComponentProps,
-    defaultCellIds,
     rowIds,
     sortAndOffset,
     handleSort,
@@ -312,9 +293,6 @@ const HtmlTable = ({
   ],
   params2: [useGetRemoteRowId, localTableId, remoteTableId] = EMPTY_PARAMS_2,
 }: HtmlTableProps & {
-  readonly customCells?:
-    | Ids
-    | {[cellId: string]: string | CustomCell | CustomResultCell};
   readonly params: HtmlTableParams;
   readonly params2?: HtmlTableParams2;
 }) => {
@@ -539,9 +517,7 @@ export const TableInHtmlTable: typeof TableInHtmlTableDecl = ({
         customCells,
         editable ? EditableCellView : CellView,
       ),
-      editable ? EditableCellView : CellView,
       useStoreCellComponentProps(store, tableId),
-      useTableCellIds(tableId, store),
       useRowIds(tableId, store),
     )}
   />
@@ -581,9 +557,7 @@ export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
           customCells,
           editable ? EditableCellView : CellView,
         ),
-        editable ? EditableCellView : CellView,
         useStoreCellComponentProps(store, tableId),
-        useTableCellIds(tableId, store),
         useSortedRowIds(tableId, ...sortAndOffset, limit, store),
         sortAndOffset,
         handleSort,
@@ -649,9 +623,7 @@ export const SliceInHtmlTable: typeof SliceInHtmlTableDecl = ({
           customCells,
           editable ? EditableCellView : CellView,
         ),
-        editable ? EditableCellView : CellView,
         useStoreCellComponentProps(store, tableId as Id),
-        useTableCellIds(tableId as Id, store),
         useSliceRowIds(indexId, sliceId, resolvedIndexes),
       )}
     />
@@ -686,13 +658,7 @@ export const RelationshipInHtmlTable = ({
           customCells,
           editable ? EditableCellView : CellView,
         ),
-
-        editable ? EditableCellView : CellView,
         useStoreCellComponentProps(store, remoteTableId as Id),
-        [
-          //...useDottedCellIds(localTableId, store),
-          ...useDottedCellIds(remoteTableId, store),
-        ],
         useRowIds(localTableId as Id, store),
       )}
       params2={useHtmlTableParams2(
@@ -724,9 +690,7 @@ export const ResultTableInHtmlTable: typeof ResultTableInHtmlTableDecl = ({
         customCells,
         ResultCellView,
       ),
-      ResultCellView,
       useQueriesCellComponentProps(queries, queryId),
-      useResultTableCellIds(queryId, queries),
       useResultRowIds(queryId, queries),
     )}
   />
@@ -766,9 +730,7 @@ export const ResultSortedTableInHtmlTable: typeof ResultSortedTableInHtmlTableDe
             customCells,
             ResultCellView,
           ),
-          ResultCellView,
           useQueriesCellComponentProps(queries, queryId),
-          useResultTableCellIds(queryId, queries),
           useResultSortedRowIds(queryId, ...sortAndOffset, limit, queries),
           sortAndOffset,
           handleSort,
