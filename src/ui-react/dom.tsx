@@ -79,6 +79,13 @@ import {arrayMap} from '../common/array';
 
 const {useCallback, useMemo, useState} = React;
 
+type Cells = {
+  [cellId: Id]: {
+    label: string;
+    component: ComponentType<CellProps> | ComponentType<ResultCellProps>;
+    getComponentProps?: (rowId: Id, cellId: Id) => ExtraProps;
+  };
+};
 type CellComponent = ComponentType<CellProps> | ComponentType<ResultCellProps>;
 type CellComponentProps =
   | {store?: StoreOrStoreId; tableId: Id}
@@ -91,6 +98,7 @@ type SortAndOffset = [
 type HandleSort = (cellId: Id | undefined) => void;
 type UseMappedRowId = (rowId: Id) => Id | undefined;
 type HtmlTableParams = [
+  cells: Cells,
   defaultCellComponent: CellComponent,
   cellComponentProps: CellComponentProps,
   defaultCellIds: Ids,
@@ -137,6 +145,8 @@ const useCallbackOrUndefined = (
 };
 
 const useHtmlTableParams = (
+  cells: Cells,
+
   defaultCellComponent: CellComponent,
   cellComponentProps: CellComponentProps,
   defaultCellIds: Ids,
@@ -147,6 +157,7 @@ const useHtmlTableParams = (
 ): HtmlTableParams =>
   useMemo(
     () => [
+      cells,
       defaultCellComponent,
       cellComponentProps,
       defaultCellIds,
@@ -156,6 +167,7 @@ const useHtmlTableParams = (
       paginator,
     ],
     [
+      cells,
       defaultCellComponent,
       cellComponentProps,
       defaultCellIds,
@@ -255,30 +267,15 @@ const useSortingAndPagination = (
   ];
 };
 
-const HtmlTable = ({
-  className,
-  headerRow,
-  idColumn,
-  customCells,
-  params: [
-    defaultCellComponent,
-    cellComponentProps,
-    defaultCellIds,
-    rowIds,
-    sortAndOffset,
-    handleSort,
-    paginatorComponent,
-  ],
-  params2: [useGetRemoteRowId, localTableId, remoteTableId] = EMPTY_PARAMS_2,
-}: HtmlTableProps & {
-  readonly customCells?:
+const useCells = (
+  defaultCellIds: Ids,
+  customCells:
     | Ids
-    | {[cellId: string]: string | CustomCell | CustomResultCell}
-    | undefined;
-  readonly params: HtmlTableParams;
-  readonly params2?: HtmlTableParams2;
-}) => {
-  const cells = useMemo(() => {
+    | {[cellId: Id]: string | CustomCell | CustomResultCell}
+    | undefined,
+  defaultCellComponent: CellComponent,
+): Cells =>
+  useMemo(() => {
     const cellIds = customCells ?? defaultCellIds;
     return objNew(
       objMap(
@@ -298,6 +295,29 @@ const HtmlTable = ({
     );
   }, [customCells, defaultCellComponent, defaultCellIds]);
 
+const HtmlTable = ({
+  className,
+  headerRow,
+  idColumn,
+  customCells,
+  params: [
+    cells,
+    defaultCellComponent,
+    cellComponentProps,
+    defaultCellIds,
+    rowIds,
+    sortAndOffset,
+    handleSort,
+    paginatorComponent,
+  ],
+  params2: [useGetRemoteRowId, localTableId, remoteTableId] = EMPTY_PARAMS_2,
+}: HtmlTableProps & {
+  readonly customCells?:
+    | Ids
+    | {[cellId: string]: string | CustomCell | CustomResultCell};
+  readonly params: HtmlTableParams;
+  readonly params2?: HtmlTableParams2;
+}) => {
   const rowParams = useMemo(
     () =>
       [idColumn, cells, cellComponentProps, useGetRemoteRowId] as HtmlRowParams,
@@ -508,11 +528,17 @@ export const TableInHtmlTable: typeof TableInHtmlTableDecl = ({
   tableId,
   store,
   editable,
+  customCells,
   ...props
 }: TableInHtmlTableProps & HtmlTableProps): any => (
   <HtmlTable
     {...props}
     params={useHtmlTableParams(
+      useCells(
+        useTableCellIds(tableId, store),
+        customCells,
+        editable ? EditableCellView : CellView,
+      ),
       editable ? EditableCellView : CellView,
       useStoreCellComponentProps(store, tableId),
       useTableCellIds(tableId, store),
@@ -532,6 +558,7 @@ export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
   sortOnClick,
   paginator = false,
   onChange,
+  customCells,
   ...props
 }: SortedTableInHtmlTableProps & HtmlTableProps): any => {
   const [sortAndOffset, handleSort, paginatorComponent] =
@@ -549,6 +576,11 @@ export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
     <HtmlTable
       {...props}
       params={useHtmlTableParams(
+        useCells(
+          useTableCellIds(tableId, store),
+          customCells,
+          editable ? EditableCellView : CellView,
+        ),
         editable ? EditableCellView : CellView,
         useStoreCellComponentProps(store, tableId),
         useTableCellIds(tableId, store),
@@ -601,6 +633,7 @@ export const SliceInHtmlTable: typeof SliceInHtmlTableDecl = ({
   sliceId,
   indexes,
   editable,
+  customCells,
   ...props
 }: SliceInHtmlTableProps & HtmlTableProps): any => {
   const [resolvedIndexes, store, tableId] = getIndexStoreTableId(
@@ -611,6 +644,11 @@ export const SliceInHtmlTable: typeof SliceInHtmlTableDecl = ({
     <HtmlTable
       {...props}
       params={useHtmlTableParams(
+        useCells(
+          useTableCellIds(tableId as Id, store),
+          customCells,
+          editable ? EditableCellView : CellView,
+        ),
         editable ? EditableCellView : CellView,
         useStoreCellComponentProps(store, tableId as Id),
         useTableCellIds(tableId as Id, store),
@@ -624,6 +662,7 @@ export const RelationshipInHtmlTable = ({
   relationshipId,
   relationships,
   editable,
+  customCells,
   ...props
 }: RelationshipInHtmlTableProps & HtmlTableProps): any => {
   const [resolvedRelationships, store, localTableId, remoteTableId] =
@@ -639,6 +678,15 @@ export const RelationshipInHtmlTable = ({
     <HtmlTable
       {...props}
       params={useHtmlTableParams(
+        useCells(
+          [
+            //...useDottedCellIds(localTableId, store),
+            ...useDottedCellIds(remoteTableId, store),
+          ],
+          customCells,
+          editable ? EditableCellView : CellView,
+        ),
+
         editable ? EditableCellView : CellView,
         useStoreCellComponentProps(store, remoteTableId as Id),
         [
@@ -665,11 +713,17 @@ const useDottedCellIds = (tableId: Id | undefined, store: Store | undefined) =>
 export const ResultTableInHtmlTable: typeof ResultTableInHtmlTableDecl = ({
   queryId,
   queries,
+  customCells,
   ...props
 }: ResultTableInHtmlTableProps & HtmlTableProps): any => (
   <HtmlTable
     {...props}
     params={useHtmlTableParams(
+      useCells(
+        useResultTableCellIds(queryId, queries),
+        customCells,
+        ResultCellView,
+      ),
       ResultCellView,
       useQueriesCellComponentProps(queries, queryId),
       useResultTableCellIds(queryId, queries),
@@ -688,6 +742,7 @@ export const ResultSortedTableInHtmlTable: typeof ResultSortedTableInHtmlTableDe
     queries,
     sortOnClick,
     paginator = false,
+    customCells,
     onChange,
     ...props
   }: ResultSortedTableInHtmlTableProps & HtmlTableProps): any => {
@@ -706,6 +761,11 @@ export const ResultSortedTableInHtmlTable: typeof ResultSortedTableInHtmlTableDe
       <HtmlTable
         {...props}
         params={useHtmlTableParams(
+          useCells(
+            useResultTableCellIds(queryId, queries),
+            customCells,
+            ResultCellView,
+          ),
           ResultCellView,
           useQueriesCellComponentProps(queries, queryId),
           useResultTableCellIds(queryId, queries),
