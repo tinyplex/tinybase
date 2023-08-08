@@ -844,14 +844,17 @@
  *   <thead>
  *     <tr>
  *       <th>Id</th>
+ *       <th>species</th>
  *     </tr>
  *   </thead>
  *   <tbody>
  *     <tr>
  *       <th>fido</th>
+ *       <td>dog</td>
  *     </tr>
  *     <tr>
  *       <th>cujo</th>
+ *       <td>dog</td>
  *     </tr>
  *   </tbody>
  * </table>
