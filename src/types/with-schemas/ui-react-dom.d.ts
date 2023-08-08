@@ -24,23 +24,23 @@ export type CustomCell<
   CellId extends CellIdFromSchema<Schemas[0], TableId>,
 > = {
   /// CustomCell.label
-  readonly label?: string;
+  label?: string;
   /// CustomCell.component
-  readonly component?: ComponentType<
+  component?: ComponentType<
     CellPropsForTableIdAndCellId<Schemas, TableId, CellId>
   >;
   /// CustomCell.getComponentProps
-  readonly getComponentProps?: (rowId: Id, cellId: CellId) => ExtraProps;
+  getComponentProps?: (rowId: Id, cellId: CellId) => ExtraProps;
 };
 
 /// CustomResultCell
 export type CustomResultCell<Schemas extends OptionalSchemas> = {
   /// CustomResultCell.label
-  readonly label?: string;
+  label?: string;
   /// CustomResultCell.component
-  readonly component?: ComponentType<ResultCellProps<Schemas>>;
+  component?: ComponentType<ResultCellProps<Schemas>>;
   /// CustomResultCell.getComponentProps
-  readonly getComponentProps?: (rowId: Id, cellId: Id) => ExtraProps;
+  getComponentProps?: (rowId: Id, cellId: Id) => ExtraProps;
 };
 
 /// HtmlTableProps

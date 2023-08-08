@@ -17,21 +17,21 @@ import {ComponentType} from 'react';
 /// CustomCell
 export type CustomCell = {
   /// CustomCell.label
-  readonly label?: string;
+  label?: string;
   /// CustomCell.component
-  readonly component?: ComponentType<CellProps>;
+  component?: ComponentType<CellProps>;
   /// CustomCell.getComponentProps
-  readonly getComponentProps?: (rowId: Id, cellId: Id) => ExtraProps;
+  getComponentProps?: (rowId: Id, cellId: Id) => ExtraProps;
 };
 
 /// CustomResultCell
 export type CustomResultCell = {
   /// CustomResultCell.label
-  readonly label?: string;
+  label?: string;
   /// CustomResultCell.component
-  readonly component?: ComponentType<ResultCellProps>;
+  component?: ComponentType<ResultCellProps>;
   /// CustomResultCell.getComponentProps
-  readonly getComponentProps?: (rowId: Id, cellId: Id) => ExtraProps;
+  getComponentProps?: (rowId: Id, cellId: Id) => ExtraProps;
 };
 
 /// HtmlTableProps
