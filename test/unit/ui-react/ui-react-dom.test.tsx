@@ -2179,27 +2179,35 @@ describe('RelationshipInHtmlTable', () => {
         <thead>
           <tr>
             <th>
-              t1.Id
+              t1
+              .Id
             </th>
             <th>
-              → t2.Id
+              t2
+              .Id
             </th>
             <th>
-              c1
+              t1.c1
             </th>
             <th>
-              c2
+              t2.c1
+            </th>
+            <th>
+              t2.c2
             </th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <th>
-              r1
+              t1
             </th>
             <th>
-              r2
+              r1
             </th>
+            <td>
+              1
+            </td>
             <td>
               3
             </td>
@@ -2227,27 +2235,49 @@ describe('RelationshipInHtmlTable', () => {
         <thead>
           <tr>
             <th>
-              t1.Id
+              t1
+              .Id
             </th>
             <th>
-              → t2.Id
+              t2
+              .Id
             </th>
             <th>
-              c1
+              t1.c1
             </th>
             <th>
-              c2
+              t2.c1
+            </th>
+            <th>
+              t2.c2
             </th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <th>
-              r1
+              t1
             </th>
             <th>
-              r2
+              r1
             </th>
+            <td>
+              <div
+                className="editableCell"
+              >
+                <button
+                  className="number"
+                  onClick={[Function]}
+                >
+                  number
+                </button>
+                <input
+                  onChange={[Function]}
+                  type="number"
+                  value={1}
+                />
+              </div>
+            </td>
             <td>
               <div
                 className="editableCell"
@@ -2305,27 +2335,35 @@ describe('RelationshipInHtmlTable', () => {
         <thead>
           <tr>
             <th>
-              t1.Id
+              t1
+              .Id
             </th>
             <th>
-              → t2.Id
+              t2
+              .Id
             </th>
             <th>
-              c1
+              t1.c1
             </th>
             <th>
-              c2
+              t2.c1
+            </th>
+            <th>
+              t2.c2
             </th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <th>
-              r1
+              t1
             </th>
             <th>
-              r2
+              r1
             </th>
+            <td>
+              1
+            </td>
             <td>
               3
             </td>
@@ -2353,15 +2391,21 @@ describe('RelationshipInHtmlTable', () => {
         <thead>
           <tr>
             <th>
-              c1
+              t1.c1
             </th>
             <th>
-              c2
+              t2.c1
+            </th>
+            <th>
+              t2.c2
             </th>
           </tr>
         </thead>
         <tbody>
           <tr>
+            <td>
+              1
+            </td>
             <td>
               3
             </td>
@@ -2389,11 +2433,14 @@ describe('RelationshipInHtmlTable', () => {
         <tbody>
           <tr>
             <th>
-              r1
+              t1
             </th>
             <th>
-              r2
+              r1
             </th>
+            <td>
+              1
+            </td>
             <td>
               3
             </td>
@@ -2412,7 +2459,7 @@ describe('RelationshipInHtmlTable', () => {
         <RelationshipInHtmlTable
           relationships={relationships}
           relationshipId="r1"
-          customCells={['c3', 'c1']}
+          customCells={['t1.c1', 't1.c3', 't2.c2', 't2.c1']}
         />,
       );
     });
@@ -2421,28 +2468,42 @@ describe('RelationshipInHtmlTable', () => {
         <thead>
           <tr>
             <th>
-              t1.Id
+              t1
+              .Id
             </th>
             <th>
-              → t2.Id
+              t2
+              .Id
             </th>
             <th>
-              c3
+              t1.c1
             </th>
             <th>
-              c1
+              t1.c3
+            </th>
+            <th>
+              t2.c2
+            </th>
+            <th>
+              t2.c1
             </th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <th>
-              r1
+              t1
             </th>
             <th>
-              r2
+              r1
             </th>
+            <td>
+              1
+            </td>
             <td />
+            <td>
+              4
+            </td>
             <td>
               3
             </td>
@@ -2458,7 +2519,12 @@ describe('RelationshipInHtmlTable', () => {
         <RelationshipInHtmlTable
           relationships={relationships}
           relationshipId="r1"
-          customCells={{c3: 'C three', c1: 'C one'}}
+          customCells={{
+            't1.c1': 'T1C1',
+            't1.c3': 'T1C3',
+            't2.c2': 'T2C2',
+            't2.c1': 'T2C1',
+          }}
         />,
       );
     });
@@ -2467,28 +2533,42 @@ describe('RelationshipInHtmlTable', () => {
         <thead>
           <tr>
             <th>
-              t1.Id
+              t1
+              .Id
             </th>
             <th>
-              → t2.Id
+              t2
+              .Id
             </th>
             <th>
-              C three
+              T1C1
             </th>
             <th>
-              C one
+              T1C3
+            </th>
+            <th>
+              T2C2
+            </th>
+            <th>
+              T2C1
             </th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <th>
-              r1
+              t1
             </th>
             <th>
-              r2
+              r1
             </th>
+            <td>
+              1
+            </td>
             <td />
+            <td>
+              4
+            </td>
             <td>
               3
             </td>
@@ -2505,12 +2585,12 @@ describe('RelationshipInHtmlTable', () => {
           relationships={relationships}
           relationshipId="r1"
           customCells={{
-            c1: {
-              label: 'C one',
+            't1.c1': {
+              label: 'T1C1',
               component: Custom,
               getComponentProps: getIdsAsProp,
             },
-            c2: {
+            't2.c2': {
               component: Custom,
               getComponentProps: getIdsAsProp,
             },
@@ -2523,35 +2603,37 @@ describe('RelationshipInHtmlTable', () => {
         <thead>
           <tr>
             <th>
-              t1.Id
+              t1
+              .Id
             </th>
             <th>
-              → t2.Id
+              t2
+              .Id
             </th>
             <th>
-              C one
+              T1C1
             </th>
             <th>
-              c2
+              t2.c2
             </th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <th>
-              r1
+              t1
             </th>
             <th>
-              r2
+              r1
             </th>
             <td>
               <b>
-                {"0":"r1","1":"c1","tableId":"t2","rowId":"r2","cellId":"c1"}
+                {"0":"r1","1":"c1","tableId":"t1","rowId":"r1","cellId":"c1"}
               </b>
             </td>
             <td>
               <b>
-                {"0":"r1","1":"c2","tableId":"t2","rowId":"r2","cellId":"c2"}
+                {"0":"r2","1":"c2","tableId":"t2","rowId":"r2","cellId":"c2"}
               </b>
             </td>
           </tr>
