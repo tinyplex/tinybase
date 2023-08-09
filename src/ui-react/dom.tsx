@@ -98,7 +98,6 @@ type SortAndOffset = [
   offset: number,
 ];
 type HandleSort = (cellId: Id | undefined) => void;
-type UseMappedRowId = (rowId: Id) => Id | undefined;
 type HtmlTableParams = [
   cells: Cells,
   cellComponentProps: CellComponentProps,
@@ -107,25 +106,19 @@ type HtmlTableParams = [
   handleSort?: HandleSort,
   paginator?: React.ReactNode,
 ];
-type HtmlRowParams = [
-  idColumn: boolean | undefined,
-  cells: {
-    [cellId: Id]: {
-      component: CellComponent;
-      getComponentProps?: (rowId: Id, cellId: Id) => ExtraProps;
-    };
-  },
-  cellComponentProps: CellComponentProps,
-  useGetRemoteRowId?: UseMappedRowId,
-];
 
+const DOT = '.';
 const EDITABLE = 'editable';
 const LEFT_ARROW = '\u2190';
 const UP_ARROW = '\u2191';
 const RIGHT_ARROW = '\u2192';
 const DOWN_ARROW = '\u2193';
 
-const useUnmappedRowId = (id: Id) => id;
+const useDottedCellIds = (tableId: Id | undefined, store: Store | undefined) =>
+  arrayMap(
+    useTableCellIds(tableId as Id, store),
+    (cellId) => tableId + DOT + cellId,
+  );
 
 const useCallbackOrUndefined = (
   callback: any,
@@ -278,45 +271,50 @@ const HtmlTable = ({
   ],
 }: HtmlTableProps & {
   readonly params: HtmlTableParams;
-}) => {
-  const rowParams = useMemo(
-    () => [idColumn, cells, cellComponentProps] as HtmlRowParams,
-    [idColumn, cells, cellComponentProps],
-  );
-
-  return (
-    <table className={className}>
-      {paginatorComponent ? <caption>{paginatorComponent}</caption> : null}
-      {headerRow === false ? null : (
-        <thead>
-          <tr>
-            {idColumn === false ? null : (
-              <HtmlHeaderCell
-                sort={sortAndOffset ?? []}
-                label="Id"
-                onClick={handleSort}
-              />
-            )}
-            {objMap(cells, ({label}, cellId) => (
-              <HtmlHeaderCell
-                key={cellId}
+}) => (
+  <table className={className}>
+    {paginatorComponent ? <caption>{paginatorComponent}</caption> : null}
+    {headerRow === false ? null : (
+      <thead>
+        <tr>
+          {idColumn === false ? null : (
+            <HtmlHeaderCell
+              sort={sortAndOffset ?? []}
+              label="Id"
+              onClick={handleSort}
+            />
+          )}
+          {objMap(cells, ({label}, cellId) => (
+            <HtmlHeaderCell
+              key={cellId}
+              cellId={cellId}
+              label={label}
+              sort={sortAndOffset ?? []}
+              onClick={handleSort}
+            />
+          ))}
+        </tr>
+      </thead>
+    )}
+    <tbody>
+      {arrayMap(rowIds, (rowId) => (
+        <tr key={rowId}>
+          {idColumn === false ? null : <th>{rowId}</th>}
+          {objMap(cells, ({component: CellView, getComponentProps}, cellId) => (
+            <td key={cellId}>
+              <CellView
+                {...getProps(getComponentProps, rowId, cellId)}
+                {...(cellComponentProps as any)}
+                rowId={rowId}
                 cellId={cellId}
-                label={label}
-                sort={sortAndOffset ?? []}
-                onClick={handleSort}
               />
-            ))}
-          </tr>
-        </thead>
-      )}
-      <tbody>
-        {arrayMap(rowIds, (rowId) => (
-          <HtmlRow key={rowId} rowId={rowId} params={rowParams} />
-        ))}
-      </tbody>
-    </table>
-  );
-};
+            </td>
+          ))}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+);
 
 const HtmlHeaderCell = ({
   cellId,
@@ -348,32 +346,53 @@ const HtmlHeaderCell = ({
   </th>
 );
 
-const HtmlRow = ({
-  rowId,
-  params: [idColumn, cells, cellComponentProps, useGetRemoteRowId],
+const RelationshipInHtmlRow = ({
+  idColumn,
+  cells,
+  localTableId,
+  localRowId,
+  remoteTableId,
+  relationshipId,
+  relationships,
+  store,
 }: {
-  readonly rowId: Id;
-  readonly params: HtmlRowParams;
+  readonly idColumn?: boolean;
+  readonly cells: Cells;
+  readonly localTableId: Id;
+  readonly localRowId: Id;
+  readonly remoteTableId: Id;
+  readonly relationshipId: Id;
+  readonly relationships: Relationships;
+  readonly store: Store;
 }) => {
-  const mappedRowId = (useGetRemoteRowId ?? useUnmappedRowId)(rowId);
-  return isUndefined(mappedRowId) ? null : (
+  const remoteRowId = useRemoteRowId(relationshipId, localRowId, relationships);
+  return (
     <tr>
       {idColumn === false ? null : (
         <>
-          <th>{rowId}</th>
-          {useGetRemoteRowId ? <th>{mappedRowId}</th> : null}
+          <th>{localTableId}</th>
+          <th>{remoteTableId}</th>
         </>
       )}
-      {objMap(cells, ({component: CellView, getComponentProps}, cellId) => (
-        <td key={cellId}>
-          <CellView
-            {...getProps(getComponentProps, rowId, cellId)}
-            {...(cellComponentProps as any)}
-            rowId={mappedRowId}
-            cellId={cellId}
-          />
-        </td>
-      ))}
+      {objMap(
+        cells,
+        ({component: CellView, getComponentProps}, compoundCellId) => {
+          const [tableId, cellId] = compoundCellId.split(DOT, 2);
+          const rowId =
+            tableId === localTableId ? localRowId : (remoteRowId as Id);
+          return (
+            <td key={compoundCellId}>
+              <CellView
+                {...getProps(getComponentProps, rowId, cellId)}
+                store={store}
+                tableId={tableId}
+                rowId={rowId}
+                cellId={cellId}
+              />
+            </td>
+          );
+        },
+      )}
     </tr>
   );
 };
@@ -664,65 +683,6 @@ export const RelationshipInHtmlTable = ({
     </table>
   );
 };
-
-const RelationshipInHtmlRow = ({
-  idColumn,
-  cells,
-  localTableId,
-  localRowId,
-  remoteTableId,
-  relationshipId,
-  relationships,
-  store,
-}: {
-  readonly idColumn?: boolean;
-  readonly cells: Cells;
-  readonly localTableId: Id;
-  readonly localRowId: Id;
-  readonly remoteTableId: Id;
-  readonly relationshipId: Id;
-  readonly relationships: Relationships;
-  readonly store: Store;
-}) => {
-  const remoteRowId = useRemoteRowId(relationshipId, localRowId, relationships);
-  return (
-    <tr>
-      {idColumn === false ? null : (
-        <>
-          <th>{localTableId}</th>
-          <th>{remoteTableId}</th>
-        </>
-      )}
-      {objMap(
-        cells,
-        ({component: CellView, getComponentProps}, compoundCellId) => {
-          const [tableId, cellId] = compoundCellId.split(DOT, 2);
-          const rowId =
-            tableId === localTableId ? localRowId : (remoteRowId as Id);
-          return (
-            <td key={compoundCellId}>
-              <CellView
-                {...getProps(getComponentProps, rowId, cellId)}
-                store={store}
-                tableId={tableId}
-                rowId={rowId}
-                cellId={cellId}
-              />
-            </td>
-          );
-        },
-      )}
-    </tr>
-  );
-};
-
-const DOT = '.';
-
-const useDottedCellIds = (tableId: Id | undefined, store: Store | undefined) =>
-  arrayMap(
-    useTableCellIds(tableId as Id, store),
-    (cellId) => tableId + DOT + cellId,
-  );
 
 export const ResultTableInHtmlTable: typeof ResultTableInHtmlTableDecl = ({
   queryId,
