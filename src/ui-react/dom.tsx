@@ -106,6 +106,15 @@ type HtmlTableParams = [
   handleSort?: HandleSort,
   paginator?: React.ReactNode,
 ];
+type RelationshipInHtmlRowParams = [
+  idColumn: boolean,
+  cells: Cells,
+  localTableId: Id | undefined,
+  remoteTableId: Id | undefined,
+  relationshipId: Id,
+  relationships: Relationships | undefined,
+  store: Store | undefined,
+];
 
 const DOT = '.';
 const EDITABLE = 'editable';
@@ -148,6 +157,36 @@ const useHtmlTableParams = (
       paginator,
     ],
     [cells, cellComponentProps, rowIds, sortAndOffset, handleSort, paginator],
+  );
+
+const useRelationshipInHtmlRowParams = (
+  idColumn: boolean,
+  cells: Cells,
+  localTableId: Id | undefined,
+  remoteTableId: Id | undefined,
+  relationshipId: Id,
+  relationships: Relationships | undefined,
+  store: Store | undefined,
+): RelationshipInHtmlRowParams =>
+  useMemo(
+    () => [
+      idColumn,
+      cells,
+      localTableId,
+      remoteTableId,
+      relationshipId,
+      relationships,
+      store,
+    ],
+    [
+      idColumn,
+      cells,
+      localTableId,
+      remoteTableId,
+      relationshipId,
+      relationships,
+      store,
+    ],
   );
 
 const useStoreCellComponentProps = (
@@ -347,31 +386,31 @@ const HtmlHeaderCell = ({
 );
 
 const RelationshipInHtmlRow = ({
-  idColumn,
-  cells,
-  localTableId,
   localRowId,
-  remoteTableId,
-  relationshipId,
-  relationships,
-  store,
+  params: [
+    idColumn,
+    cells,
+    localTableId,
+    remoteTableId,
+    relationshipId,
+    relationships,
+    store,
+  ],
 }: {
-  readonly idColumn?: boolean;
-  readonly cells: Cells;
-  readonly localTableId: Id;
   readonly localRowId: Id;
-  readonly remoteTableId: Id;
-  readonly relationshipId: Id;
-  readonly relationships: Relationships;
-  readonly store: Store;
+  readonly params: RelationshipInHtmlRowParams;
 }) => {
-  const remoteRowId = useRemoteRowId(relationshipId, localRowId, relationships);
+  const remoteRowId = useRemoteRowId(
+    relationshipId,
+    localRowId,
+    relationships,
+  ) as Id;
   return (
     <tr>
       {idColumn === false ? null : (
         <>
-          <th>{localTableId}</th>
-          <th>{remoteTableId}</th>
+          <th>{localRowId}</th>
+          <th>{remoteRowId}</th>
         </>
       )}
       {objMap(
@@ -379,8 +418,12 @@ const RelationshipInHtmlRow = ({
         ({component: CellView, getComponentProps}, compoundCellId) => {
           const [tableId, cellId] = compoundCellId.split(DOT, 2);
           const rowId =
-            tableId === localTableId ? localRowId : (remoteRowId as Id);
-          return (
+            tableId === localTableId
+              ? localRowId
+              : tableId === remoteTableId
+              ? remoteRowId
+              : null;
+          return isUndefined(rowId) ? null : (
             <td key={compoundCellId}>
               <CellView
                 {...getProps(getComponentProps, rowId, cellId)}
@@ -633,7 +676,7 @@ export const RelationshipInHtmlTable = ({
   customCells,
   className,
   headerRow,
-  idColumn,
+  idColumn = true,
 }: RelationshipInHtmlTableProps & HtmlTableProps): any => {
   const [resolvedRelationships, store, localTableId, remoteTableId] =
     getRelationshipsStoreTableIds(
@@ -647,6 +690,15 @@ export const RelationshipInHtmlTable = ({
     ],
     customCells,
     editable ? EditableCellView : CellView,
+  );
+  const params = useRelationshipInHtmlRowParams(
+    idColumn,
+    cells,
+    localTableId,
+    remoteTableId,
+    relationshipId,
+    resolvedRelationships,
+    store,
   );
   return (
     <table className={className}>
@@ -669,14 +721,8 @@ export const RelationshipInHtmlTable = ({
         {arrayMap(useRowIds(localTableId as Id, store), (localRowId) => (
           <RelationshipInHtmlRow
             key={localRowId}
-            cells={cells}
-            localTableId={localTableId as Id}
             localRowId={localRowId}
-            remoteTableId={localRowId}
-            idColumn={idColumn}
-            relationshipId={relationshipId}
-            relationships={resolvedRelationships as Relationships}
-            store={store as Store}
+            params={params}
           />
         ))}
       </tbody>
