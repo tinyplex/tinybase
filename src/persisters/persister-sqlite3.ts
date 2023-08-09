@@ -14,6 +14,7 @@ export const createSqlite3Persister = ((
   store: Store,
   db: Database,
   configOrStoreTableName?: DatabasePersisterConfig | string,
+  logSql?: (sql: string, args?: any[]) => void,
 ): Persister =>
   createSqlitePersister(
     store,
@@ -33,4 +34,5 @@ export const createSqlite3Persister = ((
       return observer;
     },
     (observer: Observer): any => db.off(CHANGE, observer),
+    logSql,
   )) as typeof createSqlite3PersisterDecl;

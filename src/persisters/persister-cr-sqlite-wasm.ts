@@ -9,6 +9,7 @@ export const createCrSqliteWasmPersister = ((
   store: Store,
   db: DB,
   configOrStoreTableName?: DatabasePersisterConfig | string,
+  logSql?: (sql: string, args?: any[]) => void,
 ): Persister =>
   createSqlitePersister(
     store,
@@ -18,4 +19,5 @@ export const createCrSqliteWasmPersister = ((
     (listener: UpdateListener): (() => void) =>
       db.onUpdate((_, _2, tableName) => listener(tableName)),
     (removeListener: () => void): void => removeListener(),
+    logSql,
   )) as typeof createCrSqliteWasmPersisterDecl;

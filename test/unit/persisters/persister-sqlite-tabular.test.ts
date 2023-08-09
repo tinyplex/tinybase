@@ -809,6 +809,69 @@ describe.each(Object.entries(VARIANTS))(
       });
     });
 
+    describe('SQL for granular saves', () => {
+      let persister: Persister;
+      const sqlLogs: [string, any[]?][] = [];
+      beforeEach(async () => {
+        persister = getPersister(
+          store,
+          db,
+          {
+            mode: 'tabular',
+            tables: {load: {t1: 't1'}, save: {t1: 't1'}},
+            values: {load: true, save: true},
+          },
+          (sql: string, args?: any[]) => sqlLogs.push([sql, args]),
+        );
+        store
+          .setTables({
+            t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1, c2: 2}},
+          })
+          .setValues({v1: 1, v2: 2});
+        await persister.startAutoSave();
+      });
+
+      test('initial conditions', async () => {
+        expect(await getDatabase(db)).toEqual({
+          t1: [
+            'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1","c2")',
+            [
+              {_id: 'r1', c1: 1, c2: 2},
+              {_id: 'r2', c1: 1, c2: 2},
+            ],
+          ],
+          tinybase_values: [
+            'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
+            [{_id: '_', v1: 1, v2: 2}],
+          ],
+        });
+        expect(sqlLogs).toEqual([
+          [
+            `SELECT name FROM pragma_table_list WHERE schema='main'AND type='table'AND name IN(?,?)`,
+            ['tinybase_values', 't1'],
+          ],
+          [
+            'CREATE TABLE"t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1","c2");',
+            undefined,
+          ],
+          [
+            'INSERT INTO"t1"("_id","c1","c2")VALUES(?,?,?),(?,?,?)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1","c2"=excluded."c2"',
+            ['r1', 1, 2, 'r2', 1, 2],
+          ],
+          ['DELETE FROM"t1"WHERE"_id"NOT IN(?,?)', ['r1', 'r2']],
+          [
+            'CREATE TABLE"tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2");',
+            undefined,
+          ],
+          [
+            'INSERT INTO"tinybase_values"("_id","v1","v2")VALUES(?,?,?)ON CONFLICT("_id")DO UPDATE SET"v1"=excluded."v1","v2"=excluded."v2"',
+            ['_', 1, 2],
+          ],
+          ['DELETE FROM"tinybase_values"WHERE"_id"NOT IN(?)', ['_']],
+        ]);
+      });
+    });
+
     describe('Two stores, one connection, one database', () => {
       let store1: Store;
       let persister1: Persister;
