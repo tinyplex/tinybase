@@ -393,7 +393,7 @@ describe('TableInHtmlTable', () => {
         <TableInHtmlTable
           store={store}
           tableId="t2"
-          customCells={{c3: 'C three', c2: 'C two'}}
+          customCells={{c3: 'C3', c2: 'C2'}}
         />,
       );
     });
@@ -405,10 +405,10 @@ describe('TableInHtmlTable', () => {
               Id
             </th>
             <th>
-              C three
+              C3
             </th>
             <th>
-              C two
+              C2
             </th>
           </tr>
         </thead>
@@ -442,7 +442,7 @@ describe('TableInHtmlTable', () => {
           tableId="t2"
           customCells={{
             c1: {
-              label: 'C one',
+              label: 'C1',
               component: Custom,
               getComponentProps: getIdsAsProp,
             },
@@ -462,7 +462,7 @@ describe('TableInHtmlTable', () => {
               Id
             </th>
             <th>
-              C one
+              C1
             </th>
             <th>
               c2
@@ -1162,7 +1162,7 @@ describe('SortedTableInHtmlTable', () => {
           tableId="t2"
           cellId="c1"
           descending={true}
-          customCells={{c3: 'C three', c2: 'C two'}}
+          customCells={{c3: 'C3', c2: 'C2'}}
         />,
       );
     });
@@ -1174,10 +1174,10 @@ describe('SortedTableInHtmlTable', () => {
               Id
             </th>
             <th>
-              C three
+              C3
             </th>
             <th>
-              C two
+              C2
             </th>
           </tr>
         </thead>
@@ -1213,7 +1213,7 @@ describe('SortedTableInHtmlTable', () => {
           descending={true}
           customCells={{
             c1: {
-              label: 'C one',
+              label: 'C1',
               component: Custom,
               getComponentProps: getIdsAsProp,
             },
@@ -1236,7 +1236,7 @@ describe('SortedTableInHtmlTable', () => {
               className="sorted descending"
             >
               ↓ 
-              C one
+              C1
             </th>
             <th>
               c2
@@ -2072,7 +2072,7 @@ describe('SliceInHtmlTable', () => {
           indexes={indexes}
           indexId="i1"
           sliceId="2"
-          customCells={{c3: 'C three', c1: 'C one'}}
+          customCells={{c3: 'C3', c1: 'C1'}}
         />,
       );
     });
@@ -2084,10 +2084,10 @@ describe('SliceInHtmlTable', () => {
               Id
             </th>
             <th>
-              C three
+              C3
             </th>
             <th>
-              C one
+              C1
             </th>
           </tr>
         </thead>
@@ -2115,7 +2115,7 @@ describe('SliceInHtmlTable', () => {
           sliceId="2"
           customCells={{
             c1: {
-              label: 'C one',
+              label: 'C1',
               component: Custom,
               getComponentProps: getIdsAsProp,
             },
@@ -2135,7 +2135,7 @@ describe('SliceInHtmlTable', () => {
               Id
             </th>
             <th>
-              C one
+              C1
             </th>
             <th>
               c2
@@ -2200,10 +2200,10 @@ describe('RelationshipInHtmlTable', () => {
         <tbody>
           <tr>
             <th>
-              t1
+              r1
             </th>
             <th>
-              r1
+              r2
             </th>
             <td>
               1
@@ -2256,10 +2256,10 @@ describe('RelationshipInHtmlTable', () => {
         <tbody>
           <tr>
             <th>
-              t1
+              r1
             </th>
             <th>
-              r1
+              r2
             </th>
             <td>
               <div
@@ -2356,10 +2356,10 @@ describe('RelationshipInHtmlTable', () => {
         <tbody>
           <tr>
             <th>
-              t1
+              r1
             </th>
             <th>
-              r1
+              r2
             </th>
             <td>
               1
@@ -2433,10 +2433,10 @@ describe('RelationshipInHtmlTable', () => {
         <tbody>
           <tr>
             <th>
-              t1
+              r1
             </th>
             <th>
-              r1
+              r2
             </th>
             <td>
               1
@@ -2492,10 +2492,10 @@ describe('RelationshipInHtmlTable', () => {
         <tbody>
           <tr>
             <th>
-              t1
+              r1
             </th>
             <th>
-              r1
+              r2
             </th>
             <td>
               1
@@ -2557,10 +2557,10 @@ describe('RelationshipInHtmlTable', () => {
         <tbody>
           <tr>
             <th>
-              t1
+              r1
             </th>
             <th>
-              r1
+              r2
             </th>
             <td>
               1
@@ -2621,10 +2621,10 @@ describe('RelationshipInHtmlTable', () => {
         <tbody>
           <tr>
             <th>
-              t1
+              r1
             </th>
             <th>
-              r1
+              r2
             </th>
             <td>
               <b>
@@ -2910,7 +2910,7 @@ describe('ResultTableInHtmlTable', () => {
         <ResultTableInHtmlTable
           queries={queries}
           queryId="q1"
-          customCells={{c3: 'C three', c2: 'C two'}}
+          customCells={{c3: 'C3', c2: 'C2'}}
         />,
       );
     });
@@ -2922,10 +2922,10 @@ describe('ResultTableInHtmlTable', () => {
               Id
             </th>
             <th>
-              C three
+              C3
             </th>
             <th>
-              C two
+              C2
             </th>
           </tr>
         </thead>
@@ -2959,7 +2959,7 @@ describe('ResultTableInHtmlTable', () => {
           queryId="q1"
           customCells={{
             c1: {
-              label: 'C one',
+              label: 'C1',
               component: Custom,
               getComponentProps: getIdsAsProp,
             },
@@ -2979,7 +2979,7 @@ describe('ResultTableInHtmlTable', () => {
               Id
             </th>
             <th>
-              C one
+              C1
             </th>
             <th>
               c2
@@ -3640,7 +3640,7 @@ describe('ResultSortedTableInHtmlTable', () => {
           queryId="q1"
           cellId="c1"
           descending={true}
-          customCells={{c3: 'C three', c2: 'C two'}}
+          customCells={{c3: 'C3', c2: 'C2'}}
         />,
       );
     });
@@ -3652,10 +3652,10 @@ describe('ResultSortedTableInHtmlTable', () => {
               Id
             </th>
             <th>
-              C three
+              C3
             </th>
             <th>
-              C two
+              C2
             </th>
           </tr>
         </thead>
@@ -3691,7 +3691,7 @@ describe('ResultSortedTableInHtmlTable', () => {
           descending={true}
           customCells={{
             c1: {
-              label: 'C one',
+              label: 'C1',
               component: Custom,
               getComponentProps: getIdsAsProp,
             },
@@ -3714,7 +3714,7 @@ describe('ResultSortedTableInHtmlTable', () => {
               className="sorted descending"
             >
               ↓ 
-              C one
+              C1
             </th>
             <th>
               c2
