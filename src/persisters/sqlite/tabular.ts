@@ -26,6 +26,7 @@ export const createTabularSqlitePersister = <ListeningHandle>(
     loadSingleRowTable,
     saveSingleRowTable,
     loadTable,
+    ,
     saveTable,
   ] = getCommandFunctions(cmd, managedTableNames);
 
@@ -40,9 +41,9 @@ export const createTabularSqlitePersister = <ListeningHandle>(
           await saveTable(
             tableName,
             rowIdColumnName,
+            tables[tableId],
             deleteEmptyColumns,
             deleteEmptyTable,
-            tables[tableId],
           ),
       ),
     );
