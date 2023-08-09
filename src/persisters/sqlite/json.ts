@@ -16,17 +16,14 @@ export const createJsonSqlitePersister = <ListeningHandle>(
   [storeTableName]: DefaultedJsonConfig,
   managedTableNames: string[],
 ): Persister => {
-  const [refreshSchema, loadSingleRow, saveSingleRow] = getCommandFunctions(
-    cmd,
-    managedTableNames,
-  );
+  const [refreshSchema, loadSingleRowTable, saveSingleRowTable] =
+    getCommandFunctions(cmd, managedTableNames);
 
   const getPersisted = async (): Promise<[Tables, Values]> => {
     await refreshSchema();
     return jsonParse(
-      ((await loadSingleRow(storeTableName, DEFAULT_ROW_ID_COLUMN_NAME)) ?? {})[
-        STORE_COLUMN
-      ],
+      ((await loadSingleRowTable(storeTableName, DEFAULT_ROW_ID_COLUMN_NAME)) ??
+        {})[STORE_COLUMN],
     );
   };
 
@@ -34,7 +31,7 @@ export const createJsonSqlitePersister = <ListeningHandle>(
     getContent: () => [Tables, Values],
   ): Promise<void> =>
     persister.schedule(refreshSchema, async () => {
-      await saveSingleRow(
+      await saveSingleRowTable(
         storeTableName,
         DEFAULT_ROW_ID_COLUMN_NAME,
         SINGLE_ROW_ID,

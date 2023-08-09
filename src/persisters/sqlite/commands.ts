@@ -44,11 +44,11 @@ export const getCommandFunctions = (
   managedTableNames: string[],
 ): [
   refreshSchema: () => Promise<Schema>,
-  loadSingleRow: (
+  loadSingleRowTable: (
     tableName: string,
     rowIdColumnName: string,
   ) => Promise<IdObj<any> | null>,
-  saveSingleRow: (
+  saveSingleRowTable: (
     table: string,
     rowIdColumnName: string,
     rowId: Id,
@@ -116,7 +116,7 @@ export const getCommandFunctions = (
       (_, name) => mapSet(schemaMap, name),
     );
 
-  const loadSingleRow = async (
+  const loadSingleRowTable = async (
     tableName: string,
     rowIdColumnName: string,
   ): Promise<IdObj<any> | null> => {
@@ -133,7 +133,7 @@ export const getCommandFunctions = (
     return arrayIsEmpty(rows) ? null : objDel(rows[0], rowIdColumnName);
   };
 
-  const saveSingleRow = async (
+  const saveSingleRowTable = async (
     tableName: string,
     rowIdColumnName: string,
     rowId: Id,
@@ -173,6 +173,7 @@ export const getCommandFunctions = (
     );
     const columnNames = collValues(cellIds);
 
+    // Delete the table
     if (
       arrayIsEmpty(columnNames) &&
       collHas(schemaMap, tableName) &&
@@ -183,6 +184,7 @@ export const getCommandFunctions = (
       return;
     }
 
+    // Create the table or alter or drop columns
     if (!arrayIsEmpty(columnNames) && !collHas(schemaMap, tableName)) {
       await cmd(
         `CREATE TABLE${escapeId(tableName)}(${escapeId(rowIdColumnName)} ` +
@@ -231,6 +233,7 @@ export const getCommandFunctions = (
       ]);
     }
 
+    // Insert or update or delete data
     if (!arrayIsEmpty(columnNames)) {
       const insertSlots: string[] = [];
       const insertBinds: any[] = [];
@@ -292,7 +295,13 @@ export const getCommandFunctions = (
     }
   };
 
-  return [refreshSchema, loadSingleRow, saveSingleRow, loadTable, saveTable];
+  return [
+    refreshSchema,
+    loadSingleRowTable,
+    saveSingleRowTable,
+    loadTable,
+    saveTable,
+  ];
 };
 
 const getPlaceholders = (array: any[]) =>

@@ -1,7 +1,7 @@
 import {Cmd, getCommandFunctions} from './commands';
 import {DEFAULT_ROW_ID_COLUMN_NAME, SINGLE_ROW_ID} from './common';
+import {GetTransactionChanges, Store, Tables, Values} from '../../types/store';
 import {Persister, PersisterListener} from '../../types/persisters';
-import {Store, Tables, Values} from '../../types/store';
 import {isUndefined, promiseAll} from '../../common/other';
 import {objIsEmpty, objNew} from '../../common/obj';
 import {DefaultedTabularConfig} from './config';
@@ -21,8 +21,13 @@ export const createTabularSqlitePersister = <ListeningHandle>(
   ]: DefaultedTabularConfig,
   managedTableNames: string[],
 ): Persister => {
-  const [refreshSchema, loadSingleRow, saveSingleRow, loadTable, saveTable] =
-    getCommandFunctions(cmd, managedTableNames);
+  const [
+    refreshSchema,
+    loadSingleRowTable,
+    saveSingleRowTable,
+    loadTable,
+    saveTable,
+  ] = getCommandFunctions(cmd, managedTableNames);
 
   const saveTables = async (tables: Tables) =>
     await promiseAll(
@@ -44,7 +49,7 @@ export const createTabularSqlitePersister = <ListeningHandle>(
 
   const saveValues = async (values: Values) =>
     valuesSave
-      ? await saveSingleRow(
+      ? await saveSingleRowTable(
           valuesTableName,
           DEFAULT_ROW_ID_COLUMN_NAME,
           SINGLE_ROW_ID,
@@ -70,7 +75,7 @@ export const createTabularSqlitePersister = <ListeningHandle>(
 
   const loadValues = async (): Promise<Values | null> =>
     valuesLoad
-      ? await loadSingleRow(valuesTableName, DEFAULT_ROW_ID_COLUMN_NAME)
+      ? await loadSingleRowTable(valuesTableName, DEFAULT_ROW_ID_COLUMN_NAME)
       : {};
 
   const getPersisted = async (): Promise<[Tables, Values] | undefined> => {
@@ -84,9 +89,10 @@ export const createTabularSqlitePersister = <ListeningHandle>(
 
   const setPersisted = async (
     getContent: () => [Tables, Values],
+    _getTransactionChanges?: GetTransactionChanges,
   ): Promise<void> => {
-    const [tables, values] = getContent();
     await refreshSchema();
+    const [tables, values] = getContent();
     await saveTables(tables);
     await saveValues(values);
   };
