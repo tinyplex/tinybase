@@ -235,8 +235,7 @@ export const getCommandFunctions = (
 
     // Insert or update or delete data
     if (!arrayIsEmpty(columnNames)) {
-      const insertSlots: string[] = [];
-      const insertBinds: any[] = [];
+      const args: any[] = [];
       const deleteRowIds: string[] = [];
       const allColumnNames = arrayFilter(
         mapKeys(mapGet(schemaMap, tableName)),
@@ -244,42 +243,13 @@ export const getCommandFunctions = (
       );
       objMap(table, (row, rowId) => {
         arrayPush(
-          insertSlots,
-          `(?${strRepeat(',?', arrayLength(allColumnNames))})`,
-        );
-        arrayPush(
-          insertBinds,
+          args,
           rowId,
           ...arrayMap(allColumnNames, (cellId) => row[cellId]),
         );
         arrayPush(deleteRowIds, rowId);
       });
-      await cmd(
-        'INSERT INTO' +
-          escapeId(tableName) +
-          '(' +
-          escapeId(rowIdColumnName) +
-          arrayJoin(
-            arrayMap(
-              allColumnNames,
-              (columnName) => COMMA + escapeId(columnName),
-            ),
-          ) +
-          ')VALUES' +
-          arrayJoin(insertSlots, COMMA) +
-          'ON CONFLICT(' +
-          escapeId(rowIdColumnName) +
-          ')DO UPDATE SET' +
-          arrayJoin(
-            arrayMap(
-              allColumnNames,
-              (columnName) =>
-                escapeId(columnName) + '=excluded.' + escapeId(columnName),
-            ),
-            COMMA,
-          ),
-        insertBinds,
-      );
+      await upsert(cmd, tableName, rowIdColumnName, allColumnNames, args);
       await cmd(
         'DELETE FROM' +
           escapeId(tableName) +
@@ -303,6 +273,40 @@ export const getCommandFunctions = (
     saveTable,
   ];
 };
+
+const upsert = async (
+  cmd: Cmd,
+  tableName: string,
+  rowIdColumnName: string,
+  allColumnNames: string[],
+  args: any[],
+) =>
+  await cmd(
+    'INSERT INTO' +
+      escapeId(tableName) +
+      '(' +
+      escapeId(rowIdColumnName) +
+      arrayJoin(
+        arrayMap(allColumnNames, (columnName) => COMMA + escapeId(columnName)),
+      ) +
+      ')VALUES' +
+      strRepeat(
+        `,(?${strRepeat(',?', arrayLength(allColumnNames))})`,
+        arrayLength(args) / (arrayLength(allColumnNames) + 1),
+      ).substring(1) +
+      'ON CONFLICT(' +
+      escapeId(rowIdColumnName) +
+      ')DO UPDATE SET' +
+      arrayJoin(
+        arrayMap(
+          allColumnNames,
+          (columnName) =>
+            escapeId(columnName) + '=excluded.' + escapeId(columnName),
+        ),
+        COMMA,
+      ),
+    args,
+  );
 
 const getPlaceholders = (array: any[]) =>
   arrayJoin(
