@@ -139,54 +139,15 @@ const useCallbackOrUndefined = (
   return test ? returnCallback : undefined;
 };
 
-const useHtmlTableParams = (
-  cells: Cells,
-  cellComponentProps: CellComponentProps,
-  rowIds: Ids,
-  sortAndOffset?: SortAndOffset,
-  handleSort?: HandleSort,
-  paginator?: React.ReactNode,
-): HtmlTableParams =>
+const useParams = <
+  Params extends HtmlTableParams | RelationshipInHtmlRowParams,
+>(
+  ...args: Params
+): Params =>
   useMemo(
-    () => [
-      cells,
-      cellComponentProps,
-      rowIds,
-      sortAndOffset,
-      handleSort,
-      paginator,
-    ],
-    [cells, cellComponentProps, rowIds, sortAndOffset, handleSort, paginator],
-  );
-
-const useRelationshipInHtmlRowParams = (
-  idColumn: boolean,
-  cells: Cells,
-  localTableId: Id | undefined,
-  remoteTableId: Id | undefined,
-  relationshipId: Id,
-  relationships: Relationships | undefined,
-  store: Store | undefined,
-): RelationshipInHtmlRowParams =>
-  useMemo(
-    () => [
-      idColumn,
-      cells,
-      localTableId,
-      remoteTableId,
-      relationshipId,
-      relationships,
-      store,
-    ],
-    [
-      idColumn,
-      cells,
-      localTableId,
-      remoteTableId,
-      relationshipId,
-      relationships,
-      store,
-    ],
+    () => args,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    args,
   );
 
 const useStoreCellComponentProps = (
@@ -550,7 +511,7 @@ export const TableInHtmlTable: typeof TableInHtmlTableDecl = ({
 }: TableInHtmlTableProps & HtmlTableProps): any => (
   <HtmlTable
     {...props}
-    params={useHtmlTableParams(
+    params={useParams(
       useCells(
         useTableCellIds(tableId, store),
         customCells,
@@ -590,7 +551,7 @@ export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
   return (
     <HtmlTable
       {...props}
-      params={useHtmlTableParams(
+      params={useParams(
         useCells(
           useTableCellIds(tableId, store),
           customCells,
@@ -656,7 +617,7 @@ export const SliceInHtmlTable: typeof SliceInHtmlTableDecl = ({
   return (
     <HtmlTable
       {...props}
-      params={useHtmlTableParams(
+      params={useParams(
         useCells(
           useTableCellIds(tableId as Id, store),
           customCells,
@@ -691,7 +652,7 @@ export const RelationshipInHtmlTable = ({
     customCells,
     editable ? EditableCellView : CellView,
   );
-  const params = useRelationshipInHtmlRowParams(
+  const params = useParams(
     idColumn,
     cells,
     localTableId,
@@ -738,7 +699,7 @@ export const ResultTableInHtmlTable: typeof ResultTableInHtmlTableDecl = ({
 }: ResultTableInHtmlTableProps & HtmlTableProps): any => (
   <HtmlTable
     {...props}
-    params={useHtmlTableParams(
+    params={useParams(
       useCells(
         useResultTableCellIds(queryId, queries),
         customCells,
@@ -778,7 +739,7 @@ export const ResultSortedTableInHtmlTable: typeof ResultSortedTableInHtmlTableDe
     return (
       <HtmlTable
         {...props}
-        params={useHtmlTableParams(
+        params={useParams(
           useCells(
             useResultTableCellIds(queryId, queries),
             customCells,
