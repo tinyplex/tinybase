@@ -186,9 +186,9 @@ export const getCommandFunctions = (
 
     // Delete the table
     if (
+      deleteEmptyTable &&
       arrayIsEmpty(changingColumnNames) &&
-      collHas(schemaMap, tableName) &&
-      deleteEmptyTable
+      collHas(schemaMap, tableName)
     ) {
       await cmd('DROP TABLE' + escapeId(tableName));
       mapSet(schemaMap, tableName);
