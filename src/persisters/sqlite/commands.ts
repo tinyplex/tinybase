@@ -16,8 +16,8 @@ import {
   objIsEmpty,
   objMap,
   objNew,
+  objValues,
 } from '../../common/obj';
-import {Row, Table, Values} from '../../types/store';
 import {SINGLE_ROW_ID, escapeId} from './common';
 import {
   arrayFilter,
@@ -31,6 +31,7 @@ import {collDel, collHas, collValues} from '../../common/coll';
 import {isUndefined, promiseAll} from '../../common/other';
 import {setAdd, setNew} from '../../common/set';
 import {Id} from '../../types/common';
+import {Table} from '../../types/store';
 
 export type Cmd = (sql: string, args?: any[]) => Promise<IdObj<any>[]>;
 type Schema = IdMap2<string>;
@@ -48,18 +49,7 @@ export const getCommandFunctions = (
     tableName: string,
     rowIdColumnName: string,
   ) => Promise<IdObj<any> | null>,
-  saveSingleRowTable: (
-    table: string,
-    rowIdColumnName: string,
-    rowId: Id,
-    row: Row | Values,
-  ) => Promise<void>,
   loadTable: (tableName: string, rowIdColumnName: string) => Promise<Table>,
-  savePartialTable: (
-    tableName: string,
-    rowIdColumnName: string,
-    table: Table,
-  ) => Promise<void>,
   saveTable: (
     tableName: string,
     rowIdColumnName: string,
@@ -139,14 +129,6 @@ export const getCommandFunctions = (
     return arrayIsEmpty(rows) ? null : objDel(rows[0], rowIdColumnName);
   };
 
-  const saveSingleRowTable = async (
-    tableName: string,
-    rowIdColumnName: string,
-    rowId: Id,
-    row: Row | Values,
-  ): Promise<void> =>
-    await saveTable(tableName, rowIdColumnName, {[rowId]: row}, true, true);
-
   const loadTable = async (
     tableName: string,
     rowIdColumnName: string,
@@ -165,13 +147,6 @@ export const getCommandFunctions = (
           ),
         )
       : {};
-
-  const savePartialTable = async (
-    tableName: string,
-    rowIdColumnName: string,
-    table: Table,
-  ): Promise<void> =>
-    await saveTable(tableName, rowIdColumnName, table, false, false, true);
 
   const saveTable = async (
     tableName: string,
@@ -249,24 +224,39 @@ export const getCommandFunctions = (
 
     // Insert or update or delete data
     if (!arrayIsEmpty(tableColumnNames)) {
-      const args: any[] = [];
-      const deleteRowIds: string[] = [];
-      const changingColumnNames = partial
-        ? tableColumnNames
-        : arrayFilter(
-            mapKeys(mapGet(schemaMap, tableName)),
-            (columnName) => columnName != rowIdColumnName,
-          );
-      objMap(table, (row, rowId) => {
-        arrayPush(
-          args,
-          rowId,
-          ...arrayMap(changingColumnNames, (cellId) => row[cellId]),
+      if (partial) {
+        await promiseAll(
+          objMap(
+            table,
+            async (row, rowId) =>
+              await upsert(cmd, tableName, rowIdColumnName, objIds(row), [
+                rowId,
+                ...objValues(row),
+              ]),
+          ),
         );
-        arrayPush(deleteRowIds, rowId);
-      });
-      await upsert(cmd, tableName, rowIdColumnName, changingColumnNames, args);
-      if (!partial) {
+      } else {
+        const changingColumnNames = arrayFilter(
+          mapKeys(mapGet(schemaMap, tableName)),
+          (columnName) => columnName != rowIdColumnName,
+        );
+        const args: any[] = [];
+        const deleteRowIds: string[] = [];
+        objMap(table, (row, rowId) => {
+          arrayPush(
+            args,
+            rowId,
+            ...arrayMap(changingColumnNames, (cellId) => row[cellId]),
+          );
+          arrayPush(deleteRowIds, rowId);
+        });
+        await upsert(
+          cmd,
+          tableName,
+          rowIdColumnName,
+          changingColumnNames,
+          args,
+        );
         await cmd(
           'DELETE FROM' +
             escapeId(tableName) +
@@ -283,14 +273,7 @@ export const getCommandFunctions = (
     }
   };
 
-  return [
-    refreshSchema,
-    loadSingleRowTable,
-    saveSingleRowTable,
-    loadTable,
-    savePartialTable,
-    saveTable,
-  ];
+  return [refreshSchema, loadSingleRowTable, loadTable, saveTable];
 };
 
 const upsert = async (
