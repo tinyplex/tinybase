@@ -18,7 +18,6 @@ import {
   objNew,
   objValues,
 } from '../../common/obj';
-import {SINGLE_ROW_ID, escapeId} from './common';
 import {
   arrayFilter,
   arrayIsEmpty,
@@ -32,6 +31,7 @@ import {isUndefined, promiseAll} from '../../common/other';
 import {setAdd, setNew} from '../../common/set';
 import {Id} from '../../types/common';
 import {Table} from '../../types/store';
+import {escapeId} from './common';
 
 export type Cmd = (sql: string, args?: any[]) => Promise<IdObj<any>[]>;
 type Schema = IdMap2<string>;
@@ -45,10 +45,6 @@ export const getCommandFunctions = (
   managedTableNames: string[],
 ): [
   refreshSchema: () => Promise<Schema>,
-  loadSingleRowTable: (
-    tableName: string,
-    rowIdColumnName: string,
-  ) => Promise<IdObj<any> | null>,
   loadTable: (tableName: string, rowIdColumnName: string) => Promise<Table>,
   saveTable: (
     tableName: string,
@@ -111,23 +107,6 @@ export const getCommandFunctions = (
         ),
       (_, name) => mapSet(schemaMap, name),
     );
-
-  const loadSingleRowTable = async (
-    tableName: string,
-    rowIdColumnName: string,
-  ): Promise<IdObj<any> | null> => {
-    const rows = canSelect(tableName, rowIdColumnName)
-      ? await cmd(
-          SELECT_STAR_FROM +
-            escapeId(tableName) +
-            WHERE +
-            escapeId(rowIdColumnName) +
-            '=?',
-          [SINGLE_ROW_ID],
-        )
-      : [];
-    return arrayIsEmpty(rows) ? null : objDel(rows[0], rowIdColumnName);
-  };
 
   const loadTable = async (
     tableName: string,
@@ -273,7 +252,7 @@ export const getCommandFunctions = (
     }
   };
 
-  return [refreshSchema, loadSingleRowTable, loadTable, saveTable];
+  return [refreshSchema, loadTable, saveTable];
 };
 
 const upsert = async (

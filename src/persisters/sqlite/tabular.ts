@@ -21,8 +21,10 @@ export const createTabularSqlitePersister = <ListeningHandle>(
   ]: DefaultedTabularConfig,
   managedTableNames: string[],
 ): Persister => {
-  const [refreshSchema, loadSingleRowTable, loadTable, saveTable] =
-    getCommandFunctions(cmd, managedTableNames);
+  const [refreshSchema, loadTable, saveTable] = getCommandFunctions(
+    cmd,
+    managedTableNames,
+  );
 
   const saveTables = async (tables: Tables) =>
     await promiseAll(
@@ -71,7 +73,9 @@ export const createTabularSqlitePersister = <ListeningHandle>(
 
   const loadValues = async (): Promise<Values | null> =>
     valuesLoad
-      ? await loadSingleRowTable(valuesTableName, DEFAULT_ROW_ID_COLUMN_NAME)
+      ? (await loadTable(valuesTableName, DEFAULT_ROW_ID_COLUMN_NAME))[
+          SINGLE_ROW_ID
+        ]
       : {};
 
   const getPersisted = async (): Promise<[Tables, Values] | undefined> => {
