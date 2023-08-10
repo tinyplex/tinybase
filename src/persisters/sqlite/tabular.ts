@@ -1,10 +1,18 @@
+import {
+  Cell,
+  GetTransactionChanges,
+  Store,
+  Tables,
+  Value,
+  Values,
+} from '../../types/store';
 import {Cmd, getCommandFunctions} from './commands';
 import {DEFAULT_ROW_ID_COLUMN_NAME, SINGLE_ROW_ID} from './common';
-import {GetTransactionChanges, Store, Tables, Values} from '../../types/store';
 import {Persister, PersisterListener} from '../../types/persisters';
 import {isUndefined, promiseAll} from '../../common/other';
 import {objIsEmpty, objNew} from '../../common/obj';
 import {DefaultedTabularConfig} from './config';
+import {Id} from '../../types/common';
 import {arrayFilter} from '../../common/array';
 import {createCustomPersister} from '../../persisters';
 import {mapMap} from '../../common/map';
@@ -26,25 +34,46 @@ export const createTabularSqlitePersister = <ListeningHandle>(
     managedTableNames,
   );
 
-  const saveTables = async (tables: Tables) =>
+  const saveTables = async (
+    tables:
+      | Tables
+      | {
+          [tableId: Id]: {
+            [rowId: Id]: {[cellId: Id]: Cell | null} | null;
+          } | null;
+        },
+    partial?: boolean,
+  ) =>
     await promiseAll(
       mapMap(
         tablesSaveConfig,
         async (
           [tableName, rowIdColumnName, deleteEmptyColumns, deleteEmptyTable],
           tableId,
-        ) =>
-          await saveTable(
-            tableName,
-            rowIdColumnName,
-            tables[tableId],
-            deleteEmptyColumns,
-            deleteEmptyTable,
-          ),
+        ) => {
+          const table = tables[tableId];
+          if (!partial || table !== undefined) {
+            await saveTable(
+              tableName,
+              rowIdColumnName,
+              table,
+              deleteEmptyColumns,
+              deleteEmptyTable,
+              partial,
+            );
+          }
+        },
       ),
     );
 
-  const saveValues = async (values: Values) =>
+  const saveValues = async (
+    values:
+      | Values
+      | {
+          [valueId: Id]: Value | null;
+        },
+    partial?: boolean,
+  ) =>
     valuesSave
       ? await saveTable(
           valuesTableName,
@@ -52,6 +81,7 @@ export const createTabularSqlitePersister = <ListeningHandle>(
           {[SINGLE_ROW_ID]: values},
           true,
           true,
+          partial,
         )
       : null;
 
@@ -93,11 +123,14 @@ export const createTabularSqlitePersister = <ListeningHandle>(
   ): Promise<void> => {
     await refreshSchema();
     if (!isUndefined(getTransactionChanges)) {
-      //   const [cellChanges, valueChanges] = getTransactionChanges();
+      const [tableChanges, valueChanges] = getTransactionChanges();
+      await saveTables(tableChanges, true);
+      await saveValues(valueChanges, true);
+    } else {
+      const [tables, values] = getContent();
+      await saveTables(tables);
+      await saveValues(values);
     }
-    const [tables, values] = getContent();
-    await saveTables(tables);
-    await saveValues(values);
   };
 
   const persister: any = createCustomPersister(

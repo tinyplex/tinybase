@@ -1,4 +1,5 @@
 import {COMMA, EMPTY_STRING, strRepeat} from '../../common/strings';
+import {Cell, Table} from '../../types/store';
 import {
   IdMap2,
   mapEnsure,
@@ -30,7 +31,6 @@ import {collDel, collHas, collValues} from '../../common/coll';
 import {isUndefined, promiseAll} from '../../common/other';
 import {setAdd, setNew} from '../../common/set';
 import {Id} from '../../types/common';
-import {Table} from '../../types/store';
 import {escapeId} from './common';
 
 export type Cmd = (sql: string, args?: any[]) => Promise<IdObj<any>[]>;
@@ -49,7 +49,7 @@ export const getCommandFunctions = (
   saveTable: (
     tableName: string,
     rowIdColumnName: string,
-    table: Table,
+    table: Table | {[rowId: Id]: {[cellId: Id]: Cell | null} | null} | null,
     deleteEmptyColumns: boolean,
     deleteEmptyTable: boolean,
     partial?: boolean,
@@ -130,19 +130,20 @@ export const getCommandFunctions = (
   const saveTable = async (
     tableName: string,
     rowIdColumnName: string,
-    table: Table,
+    table: Table | {[rowId: Id]: {[cellId: Id]: Cell | null} | null} | null,
     deleteEmptyColumns: boolean,
     deleteEmptyTable: boolean,
     partial = false,
   ): Promise<void> => {
-    const cellIds = setNew<string>();
+    const tableCellIds = setNew<string>();
     objMap(table ?? {}, (row) =>
-      arrayMap(objIds(row), (cellId) => setAdd(cellIds, cellId)),
+      arrayMap(objIds(row ?? {}), (cellId) => setAdd(tableCellIds, cellId)),
     );
-    const tableColumnNames = collValues(cellIds);
+    const tableColumnNames = collValues(tableCellIds);
 
     // Delete the table
     if (
+      !partial &&
       deleteEmptyTable &&
       arrayIsEmpty(tableColumnNames) &&
       collHas(schemaMap, tableName)
@@ -183,7 +184,7 @@ export const getCommandFunctions = (
             mapSet(tableSchemaMap, columnName, EMPTY_STRING);
           }
         }),
-        ...(deleteEmptyColumns
+        ...(!partial && deleteEmptyColumns
           ? arrayMap(
               collValues(columnNamesAccountedFor),
               async (columnName) => {
@@ -202,30 +203,43 @@ export const getCommandFunctions = (
     }
 
     // Insert or update or delete data
-    if (!arrayIsEmpty(tableColumnNames)) {
-      if (partial) {
+    if (partial) {
+      if (isUndefined(table)) {
+        await cmd('DELETE FROM' + escapeId(tableName) + 'WHERE 1');
+      } else {
         await promiseAll(
-          objMap(
-            table,
-            async (row, rowId) =>
+          objMap(table, async (row, rowId) => {
+            if (isUndefined(row)) {
+              await cmd(
+                'DELETE FROM' +
+                  escapeId(tableName) +
+                  WHERE +
+                  escapeId(rowIdColumnName) +
+                  '=?',
+                [rowId],
+              );
+            } else if (!arrayIsEmpty(tableColumnNames)) {
               await upsert(cmd, tableName, rowIdColumnName, objIds(row), [
                 rowId,
                 ...objValues(row),
-              ]),
-          ),
+              ]);
+            }
+          }),
         );
-      } else {
+      }
+    } else {
+      if (!arrayIsEmpty(tableColumnNames)) {
         const changingColumnNames = arrayFilter(
           mapKeys(mapGet(schemaMap, tableName)),
           (columnName) => columnName != rowIdColumnName,
         );
         const args: any[] = [];
         const deleteRowIds: string[] = [];
-        objMap(table, (row, rowId) => {
+        objMap(table ?? {}, (row, rowId) => {
           arrayPush(
             args,
             rowId,
-            ...arrayMap(changingColumnNames, (cellId) => row[cellId]),
+            ...arrayMap(changingColumnNames, (cellId) => row?.[cellId]),
           );
           arrayPush(deleteRowIds, rowId);
         });
@@ -246,9 +260,9 @@ export const getCommandFunctions = (
             ')',
           deleteRowIds,
         );
+      } else if (collHas(schemaMap, tableName)) {
+        await cmd('DELETE FROM' + escapeId(tableName) + 'WHERE 1');
       }
-    } else if (!partial && collHas(schemaMap, tableName)) {
-      await cmd('DELETE FROM' + escapeId(tableName));
     }
   };
 

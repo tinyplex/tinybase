@@ -385,6 +385,13 @@
  * enable the `deleteEmptyColumns` or `deleteEmptyTable` settings, you can
  * simply provide the name of the database table instead of the whole object.
  *
+ * `deleteEmptyColumns` and `deleteEmptyTable` only have a guaranteed effect
+ * when an explicit call is made to the Persister's save method. Columns and
+ * tables will not necessarily be removed when the Persister is incrementally
+ * 'autoSaving', due to performance reasons. If you want to be sure that your
+ * database table matches a TinyBase Table without any extraneous columns,
+ * simply call the save method at an idle moment.
+ *
  * The 'Dpc' prefix indicates that this type is used within the
  * DatabasePersisterConfig type.
  * @example

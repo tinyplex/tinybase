@@ -818,7 +818,10 @@ describe.each(Object.entries(VARIANTS))(
           db,
           {
             mode: 'tabular',
-            tables: {load: {t1: 't1'}, save: {t1: 't1'}},
+            tables: {
+              load: {t1: 't1', t2: 't2', t3: 't3'},
+              save: {t1: 't1', t2: 't2', t3: 't3'},
+            },
             values: {load: true, save: true},
           },
           (sql: string, args?: any[]) => sqlLogs.push([sql, args]),
@@ -826,6 +829,7 @@ describe.each(Object.entries(VARIANTS))(
         store
           .setTables({
             t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1, c2: 2}},
+            t2: {r1: {c1: 1}},
           })
           .setValues({v1: 1, v2: 2});
         await persister.startAutoSave();
@@ -840,6 +844,10 @@ describe.each(Object.entries(VARIANTS))(
               {_id: 'r2', c1: 1, c2: 2},
             ],
           ],
+          t2: [
+            'CREATE TABLE "t2"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
+            [{_id: 'r1', c1: 1}],
+          ],
           tinybase_values: [
             'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
             [{_id: '_', v1: 1, v2: 2}],
@@ -847,18 +855,27 @@ describe.each(Object.entries(VARIANTS))(
         });
         expect(sqlLogs).toEqual([
           [
-            `SELECT name FROM pragma_table_list WHERE schema='main'AND type='table'AND name IN(?,?)`,
-            ['tinybase_values', 't1'],
+            `SELECT name FROM pragma_table_list WHERE schema='main'AND type='table'AND name IN(?,?,?,?)`,
+            ['tinybase_values', 't1', 't2', 't3'],
           ],
           [
             'CREATE TABLE"t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1","c2");',
             undefined,
           ],
           [
+            'CREATE TABLE"t2"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1");',
+            undefined,
+          ],
+          [
             'INSERT INTO"t1"("_id","c1","c2")VALUES(?,?,?),(?,?,?)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1","c2"=excluded."c2"',
             ['r1', 1, 2, 'r2', 1, 2],
           ],
+          [
+            'INSERT INTO"t2"("_id","c1")VALUES(?,?)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1"',
+            ['r1', 1],
+          ],
           ['DELETE FROM"t1"WHERE"_id"NOT IN(?,?)', ['r1', 'r2']],
+          ['DELETE FROM"t2"WHERE"_id"NOT IN(?)', ['r1']],
           [
             'CREATE TABLE"tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2");',
             undefined,
@@ -869,6 +886,512 @@ describe.each(Object.entries(VARIANTS))(
           ],
           ['DELETE FROM"tinybase_values"WHERE"_id"NOT IN(?)', ['_']],
         ]);
+      });
+
+      describe('values', () => {
+        beforeEach(() => sqlLogs.splice(0));
+
+        test('add', async () => {
+          store.setValue('v3', 3);
+          await pause();
+          expect(await getDatabase(db)).toEqual({
+            t1: [
+              'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1","c2")',
+              [
+                {_id: 'r1', c1: 1, c2: 2},
+                {_id: 'r2', c1: 1, c2: 2},
+              ],
+            ],
+            t2: [
+              'CREATE TABLE "t2"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
+              [{_id: 'r1', c1: 1}],
+            ],
+            tinybase_values: [
+              'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2", "v3")',
+              [{_id: '_', v1: 1, v2: 2, v3: 3}],
+            ],
+          });
+          expect(sqlLogs).toEqual([
+            [
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type='table'AND name IN(?,?,?,?)`,
+              ['tinybase_values', 't1', 't2', 't3'],
+            ],
+            ['SELECT name,type FROM pragma_table_info(?)', ['tinybase_values']],
+            ['SELECT name,type FROM pragma_table_info(?)', ['t2']],
+            ['SELECT name,type FROM pragma_table_info(?)', ['t1']],
+            [`ALTER TABLE"tinybase_values"ADD"v3"`, undefined],
+            [
+              'INSERT INTO"tinybase_values"("_id","v3")VALUES(?,?)ON CONFLICT("_id")DO UPDATE SET"v3"=excluded."v3"',
+              ['_', 3],
+            ],
+          ]);
+        });
+
+        test('change', async () => {
+          store.setValue('v1', 2);
+          await pause();
+          expect(await getDatabase(db)).toEqual({
+            t1: [
+              'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1","c2")',
+              [
+                {_id: 'r1', c1: 1, c2: 2},
+                {_id: 'r2', c1: 1, c2: 2},
+              ],
+            ],
+            t2: [
+              'CREATE TABLE "t2"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
+              [{_id: 'r1', c1: 1}],
+            ],
+            tinybase_values: [
+              'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
+              [{_id: '_', v1: 2, v2: 2}],
+            ],
+          });
+          expect(sqlLogs).toEqual([
+            [
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type='table'AND name IN(?,?,?,?)`,
+              ['tinybase_values', 't1', 't2', 't3'],
+            ],
+            ['SELECT name,type FROM pragma_table_info(?)', ['tinybase_values']],
+            ['SELECT name,type FROM pragma_table_info(?)', ['t2']],
+            ['SELECT name,type FROM pragma_table_info(?)', ['t1']],
+            [
+              'INSERT INTO"tinybase_values"("_id","v1")VALUES(?,?)ON CONFLICT("_id")DO UPDATE SET"v1"=excluded."v1"',
+              ['_', 2],
+            ],
+          ]);
+        });
+
+        test('delete', async () => {
+          store.delValue('v1');
+          await pause();
+          expect(await getDatabase(db)).toEqual({
+            t1: [
+              'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1","c2")',
+              [
+                {_id: 'r1', c1: 1, c2: 2},
+                {_id: 'r2', c1: 1, c2: 2},
+              ],
+            ],
+            t2: [
+              'CREATE TABLE "t2"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
+              [{_id: 'r1', c1: 1}],
+            ],
+            tinybase_values: [
+              'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
+              [{_id: '_', v1: null, v2: 2}],
+            ],
+          });
+          expect(sqlLogs).toEqual([
+            [
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type='table'AND name IN(?,?,?,?)`,
+              ['tinybase_values', 't1', 't2', 't3'],
+            ],
+            ['SELECT name,type FROM pragma_table_info(?)', ['tinybase_values']],
+            ['SELECT name,type FROM pragma_table_info(?)', ['t2']],
+            ['SELECT name,type FROM pragma_table_info(?)', ['t1']],
+            [
+              'INSERT INTO"tinybase_values"("_id","v1")VALUES(?,?)ON CONFLICT("_id")DO UPDATE SET"v1"=excluded."v1"',
+              ['_', null],
+            ],
+          ]);
+        });
+
+        test('delete all', async () => {
+          store.delValues();
+          await pause();
+          expect(await getDatabase(db)).toEqual({
+            t1: [
+              'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1","c2")',
+              [
+                {_id: 'r1', c1: 1, c2: 2},
+                {_id: 'r2', c1: 1, c2: 2},
+              ],
+            ],
+            t2: [
+              'CREATE TABLE "t2"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
+              [{_id: 'r1', c1: 1}],
+            ],
+            tinybase_values: [
+              'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
+              [{_id: '_', v1: null, v2: null}],
+            ],
+          });
+          expect(sqlLogs).toEqual([
+            [
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type='table'AND name IN(?,?,?,?)`,
+              ['tinybase_values', 't1', 't2', 't3'],
+            ],
+            ['SELECT name,type FROM pragma_table_info(?)', ['tinybase_values']],
+            ['SELECT name,type FROM pragma_table_info(?)', ['t2']],
+            ['SELECT name,type FROM pragma_table_info(?)', ['t1']],
+            [
+              'INSERT INTO"tinybase_values"("_id","v1","v2")VALUES(?,?,?)ON CONFLICT("_id")DO UPDATE SET"v1"=excluded."v1","v2"=excluded."v2"',
+              ['_', null, null],
+            ],
+          ]);
+        });
+      });
+
+      describe('cells', () => {
+        beforeEach(() => sqlLogs.splice(0));
+
+        test('add', async () => {
+          store.setCell('t1', 'r1', 'c3', 3);
+          await pause();
+          expect(await getDatabase(db)).toEqual({
+            t1: [
+              'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1","c2", "c3")',
+              [
+                {_id: 'r1', c1: 1, c2: 2, c3: 3},
+                {_id: 'r2', c1: 1, c2: 2, c3: null},
+              ],
+            ],
+            t2: [
+              'CREATE TABLE "t2"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
+              [{_id: 'r1', c1: 1}],
+            ],
+            tinybase_values: [
+              'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
+              [{_id: '_', v1: 1, v2: 2}],
+            ],
+          });
+          expect(sqlLogs).toEqual([
+            [
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type='table'AND name IN(?,?,?,?)`,
+              ['tinybase_values', 't1', 't2', 't3'],
+            ],
+            ['SELECT name,type FROM pragma_table_info(?)', ['tinybase_values']],
+            ['SELECT name,type FROM pragma_table_info(?)', ['t2']],
+            ['SELECT name,type FROM pragma_table_info(?)', ['t1']],
+            [`ALTER TABLE"t1"ADD"c3"`, undefined],
+            [
+              'INSERT INTO"t1"("_id","c3")VALUES(?,?)ON CONFLICT("_id")DO UPDATE SET"c3"=excluded."c3"',
+              ['r1', 3],
+            ],
+          ]);
+        });
+
+        test('change', async () => {
+          store.setCell('t1', 'r1', 'c1', 2);
+          await pause();
+          expect(await getDatabase(db)).toEqual({
+            t1: [
+              'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1","c2")',
+              [
+                {_id: 'r1', c1: 2, c2: 2},
+                {_id: 'r2', c1: 1, c2: 2},
+              ],
+            ],
+            t2: [
+              'CREATE TABLE "t2"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
+              [{_id: 'r1', c1: 1}],
+            ],
+            tinybase_values: [
+              'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
+              [{_id: '_', v1: 1, v2: 2}],
+            ],
+          });
+          expect(sqlLogs).toEqual([
+            [
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type='table'AND name IN(?,?,?,?)`,
+              ['tinybase_values', 't1', 't2', 't3'],
+            ],
+            ['SELECT name,type FROM pragma_table_info(?)', ['tinybase_values']],
+            ['SELECT name,type FROM pragma_table_info(?)', ['t2']],
+            ['SELECT name,type FROM pragma_table_info(?)', ['t1']],
+            [
+              'INSERT INTO"t1"("_id","c1")VALUES(?,?)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1"',
+              ['r1', 2],
+            ],
+          ]);
+        });
+
+        test('delete', async () => {
+          store.delCell('t1', 'r1', 'c1');
+          await pause();
+          expect(await getDatabase(db)).toEqual({
+            t1: [
+              'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1","c2")',
+              [
+                {_id: 'r1', c1: null, c2: 2},
+                {_id: 'r2', c1: 1, c2: 2},
+              ],
+            ],
+            t2: [
+              'CREATE TABLE "t2"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
+              [{_id: 'r1', c1: 1}],
+            ],
+            tinybase_values: [
+              'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
+              [{_id: '_', v1: 1, v2: 2}],
+            ],
+          });
+          expect(sqlLogs).toEqual([
+            [
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type='table'AND name IN(?,?,?,?)`,
+              ['tinybase_values', 't1', 't2', 't3'],
+            ],
+            ['SELECT name,type FROM pragma_table_info(?)', ['tinybase_values']],
+            ['SELECT name,type FROM pragma_table_info(?)', ['t2']],
+            ['SELECT name,type FROM pragma_table_info(?)', ['t1']],
+            [
+              'INSERT INTO"t1"("_id","c1")VALUES(?,?)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1"',
+              ['r1', null],
+            ],
+          ]);
+        });
+      });
+
+      describe('rows', () => {
+        beforeEach(() => sqlLogs.splice(0));
+
+        test('add', async () => {
+          store.setRow('t1', 'r3', {c1: 1, c3: 3});
+          await pause();
+          expect(await getDatabase(db)).toEqual({
+            t1: [
+              'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1","c2", "c3")',
+              [
+                {_id: 'r1', c1: 1, c2: 2, c3: null},
+                {_id: 'r2', c1: 1, c2: 2, c3: null},
+                {_id: 'r3', c1: 1, c2: null, c3: 3},
+              ],
+            ],
+            t2: [
+              'CREATE TABLE "t2"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
+              [{_id: 'r1', c1: 1}],
+            ],
+            tinybase_values: [
+              'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
+              [{_id: '_', v1: 1, v2: 2}],
+            ],
+          });
+          expect(sqlLogs).toEqual([
+            [
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type='table'AND name IN(?,?,?,?)`,
+              ['tinybase_values', 't1', 't2', 't3'],
+            ],
+            ['SELECT name,type FROM pragma_table_info(?)', ['tinybase_values']],
+            ['SELECT name,type FROM pragma_table_info(?)', ['t2']],
+            ['SELECT name,type FROM pragma_table_info(?)', ['t1']],
+            [`ALTER TABLE"t1"ADD"c3"`, undefined],
+            [
+              'INSERT INTO"t1"("_id","c1","c3")VALUES(?,?,?)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1","c3"=excluded."c3"',
+              ['r3', 1, 3],
+            ],
+          ]);
+        });
+
+        test('change', async () => {
+          store.setRow('t1', 'r1', {c1: 2, c2: 2});
+          await pause();
+          expect(await getDatabase(db)).toEqual({
+            t1: [
+              'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1","c2")',
+              [
+                {_id: 'r1', c1: 2, c2: 2},
+                {_id: 'r2', c1: 1, c2: 2},
+              ],
+            ],
+            t2: [
+              'CREATE TABLE "t2"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
+              [{_id: 'r1', c1: 1}],
+            ],
+            tinybase_values: [
+              'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
+              [{_id: '_', v1: 1, v2: 2}],
+            ],
+          });
+          expect(sqlLogs).toEqual([
+            [
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type='table'AND name IN(?,?,?,?)`,
+              ['tinybase_values', 't1', 't2', 't3'],
+            ],
+            ['SELECT name,type FROM pragma_table_info(?)', ['tinybase_values']],
+            ['SELECT name,type FROM pragma_table_info(?)', ['t2']],
+            ['SELECT name,type FROM pragma_table_info(?)', ['t1']],
+            [
+              'INSERT INTO"t1"("_id","c1")VALUES(?,?)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1"',
+              ['r1', 2],
+            ],
+          ]);
+        });
+
+        test('delete', async () => {
+          store.delRow('t1', 'r1');
+          await pause();
+          expect(await getDatabase(db)).toEqual({
+            t1: [
+              'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1","c2")',
+              [{_id: 'r2', c1: 1, c2: 2}],
+            ],
+            t2: [
+              'CREATE TABLE "t2"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
+              [{_id: 'r1', c1: 1}],
+            ],
+            tinybase_values: [
+              'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
+              [{_id: '_', v1: 1, v2: 2}],
+            ],
+          });
+          expect(sqlLogs).toEqual([
+            [
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type='table'AND name IN(?,?,?,?)`,
+              ['tinybase_values', 't1', 't2', 't3'],
+            ],
+            ['SELECT name,type FROM pragma_table_info(?)', ['tinybase_values']],
+            ['SELECT name,type FROM pragma_table_info(?)', ['t2']],
+            ['SELECT name,type FROM pragma_table_info(?)', ['t1']],
+            ['DELETE FROM"t1"WHERE"_id"=?', ['r1']],
+          ]);
+        });
+      });
+
+      describe('tables', () => {
+        beforeEach(() => sqlLogs.splice(0));
+
+        test('add', async () => {
+          store.setTable('t3', {r1: {c1: 1}});
+          await pause();
+          expect(await getDatabase(db)).toEqual({
+            t1: [
+              'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1","c2")',
+              [
+                {_id: 'r1', c1: 1, c2: 2},
+                {_id: 'r2', c1: 1, c2: 2},
+              ],
+            ],
+            t2: [
+              'CREATE TABLE "t2"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
+              [{_id: 'r1', c1: 1}],
+            ],
+            t3: [
+              'CREATE TABLE "t3"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
+              [{_id: 'r1', c1: 1}],
+            ],
+            tinybase_values: [
+              'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
+              [{_id: '_', v1: 1, v2: 2}],
+            ],
+          });
+          expect(sqlLogs).toEqual([
+            [
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type='table'AND name IN(?,?,?,?)`,
+              ['tinybase_values', 't1', 't2', 't3'],
+            ],
+            ['SELECT name,type FROM pragma_table_info(?)', ['tinybase_values']],
+            //            ['SELECT name,type FROM pragma_table_info(?)', ['t3']],
+            ['SELECT name,type FROM pragma_table_info(?)', ['t2']],
+            ['SELECT name,type FROM pragma_table_info(?)', ['t1']],
+            [
+              'CREATE TABLE"t3"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1");',
+              undefined,
+            ],
+            [
+              'INSERT INTO"t3"("_id","c1")VALUES(?,?)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1"',
+              ['r1', 1],
+            ],
+          ]);
+        });
+
+        test('change', async () => {
+          store.setTable('t2', {r1: {c1: 2, c2: 2}});
+          await pause();
+          expect(await getDatabase(db)).toEqual({
+            t1: [
+              'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1","c2")',
+              [
+                {_id: 'r1', c1: 1, c2: 2},
+                {_id: 'r2', c1: 1, c2: 2},
+              ],
+            ],
+            t2: [
+              'CREATE TABLE "t2"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1", "c2")',
+              [{_id: 'r1', c1: 2, c2: 2}],
+            ],
+            tinybase_values: [
+              'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
+              [{_id: '_', v1: 1, v2: 2}],
+            ],
+          });
+          expect(sqlLogs).toEqual([
+            [
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type='table'AND name IN(?,?,?,?)`,
+              ['tinybase_values', 't1', 't2', 't3'],
+            ],
+            ['SELECT name,type FROM pragma_table_info(?)', ['tinybase_values']],
+            ['SELECT name,type FROM pragma_table_info(?)', ['t2']],
+            ['SELECT name,type FROM pragma_table_info(?)', ['t1']],
+            ['ALTER TABLE"t2"ADD"c2"', undefined],
+            [
+              'INSERT INTO"t2"("_id","c1","c2")VALUES(?,?,?)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1","c2"=excluded."c2"',
+              ['r1', 2, 2],
+            ],
+          ]);
+        });
+
+        test('delete', async () => {
+          store.delTable('t2');
+          await pause();
+          expect(await getDatabase(db)).toEqual({
+            t1: [
+              'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1","c2")',
+              [
+                {_id: 'r1', c1: 1, c2: 2},
+                {_id: 'r2', c1: 1, c2: 2},
+              ],
+            ],
+            t2: [
+              'CREATE TABLE "t2"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
+              [],
+            ],
+            tinybase_values: [
+              'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
+              [{_id: '_', v1: 1, v2: 2}],
+            ],
+          });
+          expect(sqlLogs).toEqual([
+            [
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type='table'AND name IN(?,?,?,?)`,
+              ['tinybase_values', 't1', 't2', 't3'],
+            ],
+            ['SELECT name,type FROM pragma_table_info(?)', ['tinybase_values']],
+            ['SELECT name,type FROM pragma_table_info(?)', ['t2']],
+            ['SELECT name,type FROM pragma_table_info(?)', ['t1']],
+            ['DELETE FROM"t2"WHERE 1', undefined],
+          ]);
+        });
+
+        test('delete all', async () => {
+          store.delTables();
+          await pause();
+          expect(await getDatabase(db)).toEqual({
+            t1: [
+              'CREATE TABLE "t1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1","c2")',
+              [],
+            ],
+            t2: [
+              'CREATE TABLE "t2"("_id" PRIMARY KEY ON CONFLICT REPLACE,"c1")',
+              [],
+            ],
+            tinybase_values: [
+              'CREATE TABLE "tinybase_values"("_id" PRIMARY KEY ON CONFLICT REPLACE,"v1","v2")',
+              [{_id: '_', v1: 1, v2: 2}],
+            ],
+          });
+          expect(sqlLogs).toEqual([
+            [
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type='table'AND name IN(?,?,?,?)`,
+              ['tinybase_values', 't1', 't2', 't3'],
+            ],
+            ['SELECT name,type FROM pragma_table_info(?)', ['tinybase_values']],
+            ['SELECT name,type FROM pragma_table_info(?)', ['t2']],
+            ['SELECT name,type FROM pragma_table_info(?)', ['t1']],
+            ['DELETE FROM"t1"WHERE 1', undefined],
+            ['DELETE FROM"t2"WHERE 1', undefined],
+          ]);
+        });
       });
     });
 
