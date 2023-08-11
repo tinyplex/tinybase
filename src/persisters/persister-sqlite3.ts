@@ -19,8 +19,8 @@ export const createSqlite3Persister = ((
   createSqlitePersister(
     store,
     configOrStoreTableName,
-    (sql: string, args: any[] = []): Promise<IdObj<any>[]> =>
-      promiseNew((resolve, reject) =>
+    async (sql: string, args: any[] = []): Promise<IdObj<any>[]> =>
+      await promiseNew((resolve, reject) =>
         db.all(sql, args, (error, rows: IdObj<any>[]) =>
           error
             ? reject(error)
