@@ -3,13 +3,14 @@
 Since v4.0, there are various options for persisting Store data to and from
 SQLite databases, via a range of third-party modules.
 
-There are currently three SQLite-based persistence options:
+There are currently four SQLite-based persistence options:
 
-| Module                   | Function                    | Storage                                                                        |
-| ------------------------ | --------------------------- | ------------------------------------------------------------------------------ |
-| persister-sqlite3        | createSqlite3Persister      | SQLite in Node, via [sqlite3](https://github.com/TryGhost/node-sqlite3)        |
-| persister-sqlite-wasm    | createSqliteWasmPersister   | SQLite in a browser, via [sqlite-wasm](https://github.com/tomayac/sqlite-wasm) |
-| persister-cr-sqlite-wasm | createCrSqliteWasmPersister | SQLite CRDTs, via [cr-sqlite-wasm](https://github.com/vlcn-io/cr-sqlite)       |
+| Module                   | Function                    | Storage                                                                                                |
+| ------------------------ | --------------------------- | ------------------------------------------------------------------------------------------------------ |
+| persister-sqlite3        | createSqlite3Persister      | SQLite in Node, via [sqlite3](https://github.com/TryGhost/node-sqlite3)                                |
+| persister-sqlite-wasm    | createSqliteWasmPersister   | SQLite in a browser, via [sqlite-wasm](https://github.com/tomayac/sqlite-wasm)                         |
+| persister-cr-sqlite-wasm | createCrSqliteWasmPersister | SQLite CRDTs, via [cr-sqlite-wasm](https://github.com/vlcn-io/cr-sqlite)                               |
+| persister-expo-sqlite    | createExpoSqlitePersister   | SQLite in React Native, via [expo-sqlite](https://github.com/expo/expo/tree/main/packages/expo-sqlite) |
 
 (Take a look at the
 [vite-tinybase-ts-react-crsqlite](https://github.com/tinyplex/vite-tinybase-ts-react-crsqlite)

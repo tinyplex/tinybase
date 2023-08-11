@@ -18,6 +18,7 @@
  * |persister-sqlite3|createSqlite3Persister|SQLite in Node, via [sqlite3](https://github.com/TryGhost/node-sqlite3)|
  * |persister-sqlite-wasm|createSqliteWasmPersister|SQLite in a browser, via [sqlite-wasm](https://github.com/tomayac/sqlite-wasm)|
  * |persister-cr-sqlite-wasm|createCrSqliteWasmPersister|SQLite CRDTs, via [cr-sqlite-wasm](https://github.com/vlcn-io/cr-sqlite)|
+ * |persister-expo-sqlite|createExpoSqlitePersister|SQLite in React Native, via [expo-sqlite](https://github.com/expo/expo/tree/main/packages/expo-sqlite)|
  * |persister-yjs|createYjsPersister|Yjs CRDTs, via [yjs](https://github.com/yjs/yjs)|
  * |persister-automerge|createSqliteWasmPersister|Automerge CRDTs, via [automerge-repo](https://github.com/automerge/automerge-repo)|
  *
