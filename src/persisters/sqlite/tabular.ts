@@ -22,6 +22,7 @@ export const createTabularSqlitePersister = <ListeningHandle>(
   cmd: Cmd,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
+  onIgnoredError: ((error: any) => void) | undefined,
   [
     tablesLoadConfig,
     tablesSaveConfig,
@@ -139,6 +140,7 @@ export const createTabularSqlitePersister = <ListeningHandle>(
     setPersisted,
     addPersisterListener,
     delPersisterListener,
+    onIgnoredError,
   );
 
   return persister;

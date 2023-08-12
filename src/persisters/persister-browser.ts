@@ -15,6 +15,7 @@ const getStoragePersister = (
   store: Store,
   storageName: string,
   storage: Storage,
+  onIgnoredError?: (error: any) => void,
 ): Persister => {
   const getPersisted = async (): Promise<[Tables, Values]> =>
     jsonParse(storage.getItem(storageName) as string);
@@ -42,6 +43,7 @@ const getStoragePersister = (
     setPersisted,
     addPersisterListener,
     delPersisterListener,
+    onIgnoredError,
   );
 };
 

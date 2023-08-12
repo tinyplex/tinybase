@@ -129,6 +129,7 @@ export const createAutomergePersister = (
   store: Store,
   docHandle: DocHandle<any>,
   docObjName = TINYBASE,
+  onIgnoredError?: (error: any) => void,
 ): Persister => {
   docHandle.change((doc) => (doc[docObjName] = {}));
 
@@ -167,5 +168,6 @@ export const createAutomergePersister = (
     setPersisted,
     addPersisterListener,
     delPersisterListener,
+    onIgnoredError,
   );
 };

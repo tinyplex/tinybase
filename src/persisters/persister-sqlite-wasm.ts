@@ -10,6 +10,7 @@ export const createSqliteWasmPersister = ((
   db: any,
   configOrStoreTableName?: DatabasePersisterConfig | string,
   logSql?: (sql: string, args?: any[]) => void,
+  onIgnoredError?: (error: any) => void,
 ): Persister =>
   createSqlitePersister(
     store,
@@ -26,4 +27,5 @@ export const createSqliteWasmPersister = ((
       ),
     (): void => sqlite3.capi.sqlite3_update_hook(db, () => 0, 0),
     logSql,
+    onIgnoredError,
   )) as typeof createSqliteWasmPersisterDecl;

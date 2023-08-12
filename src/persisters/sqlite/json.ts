@@ -13,6 +13,7 @@ export const createJsonSqlitePersister = <ListeningHandle>(
   cmd: Cmd,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
+  onIgnoredError: ((error: any) => void) | undefined,
   [storeTableName]: DefaultedJsonConfig,
   managedTableNames: string[],
 ): Persister => {
@@ -51,6 +52,7 @@ export const createJsonSqlitePersister = <ListeningHandle>(
     setPersisted,
     addPersisterListener,
     delPersisterListener,
+    onIgnoredError,
   );
 
   return persister;

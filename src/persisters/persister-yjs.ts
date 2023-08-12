@@ -192,6 +192,7 @@ export const createYjsPersister = (
   store: Store,
   yDoc: YDoc,
   yMapName = TINYBASE,
+  onIgnoredError?: (error: any) => void,
 ): Persister => {
   const yContent: YMap<any> = yDoc.getMap(yMapName);
 
@@ -230,5 +231,6 @@ export const createYjsPersister = (
     setPersisted,
     addPersisterListener,
     delPersisterListener,
+    onIgnoredError,
   );
 };

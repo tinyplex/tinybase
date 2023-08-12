@@ -18,6 +18,7 @@ type SqliteVariant<Database> = [
     db: Database,
     storeTableOrConfig?: string | DatabasePersisterConfig,
     logSql?: (sql: string, args?: any[]) => void,
+    onIgnoredError?: (error: any) => void,
   ) => Persister,
   cmd: (
     db: Database,
@@ -37,7 +38,15 @@ export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
       db: Database,
       storeTableOrConfig?: string | DatabasePersisterConfig,
       logSql?: (sql: string, args?: any[]) => void,
-    ) => (createSqlite3Persister as any)(store, db, storeTableOrConfig, logSql),
+      onIgnoredError?: (error: any) => void,
+    ) =>
+      (createSqlite3Persister as any)(
+        store,
+        db,
+        storeTableOrConfig,
+        logSql,
+        onIgnoredError,
+      ),
     (
       db: Database,
       sql: string,
@@ -64,6 +73,7 @@ export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
       [sqlite3, db]: SqliteWasmDb,
       storeTableOrConfig?: string | DatabasePersisterConfig,
       logSql?: (sql: string, args?: any[]) => void,
+      onIgnoredError?: (error: any) => void,
     ) =>
       (createSqliteWasmPersister as any)(
         store,
@@ -71,6 +81,7 @@ export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
         db,
         storeTableOrConfig,
         logSql,
+        onIgnoredError,
       ),
     async ([_, db]: SqliteWasmDb, sql: string, args: any[] = []) =>
       db
@@ -86,12 +97,14 @@ export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
       db: DB,
       storeTableOrConfig?: string | DatabasePersisterConfig,
       logSql?: (sql: string, args?: any[]) => void,
+      onIgnoredError?: (error: any) => void,
     ) =>
       (createCrSqliteWasmPersister as any)(
         store,
         db,
         storeTableOrConfig,
         logSql,
+        onIgnoredError,
       ),
     async (db: DB, sql: string, args: any[] = []) => await db.execO(sql, args),
     async (db: DB) => await db.close(),

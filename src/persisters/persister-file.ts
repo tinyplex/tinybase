@@ -10,6 +10,7 @@ import {createFilePersister as createFilePersisterDecl} from '../types/persister
 export const createFilePersister = ((
   store: Store,
   filePath: string,
+  onIgnoredError?: (error: any) => void,
 ): Persister => {
   const getPersisted = async (): Promise<[Tables, Values]> =>
     jsonParse(await readFile(filePath, UTF8));
@@ -29,5 +30,6 @@ export const createFilePersister = ((
     setPersisted,
     addPersisterListener,
     delPersisterListener,
+    onIgnoredError,
   );
 }) as typeof createFilePersisterDecl;

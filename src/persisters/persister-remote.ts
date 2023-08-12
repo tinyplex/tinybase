@@ -12,6 +12,7 @@ export const createRemotePersister = ((
   loadUrl: string,
   saveUrl: string,
   autoLoadIntervalSeconds: number,
+  onIgnoredError?: (error: any) => void,
 ): Persister => {
   let lastEtag: string | null;
 
@@ -53,5 +54,6 @@ export const createRemotePersister = ((
     setPersisted,
     addPersisterListener,
     delPersisterListener,
+    onIgnoredError,
   );
 }) as typeof createRemotePersisterDecl;

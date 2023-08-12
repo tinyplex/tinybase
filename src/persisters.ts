@@ -20,6 +20,7 @@ export const createCustomPersister = <ListeningHandle>(
   ) => Promise<void>,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
+  onIgnoredError?: (error: any) => void,
 ): Persister => {
   let listenerId: Id | undefined;
   let loadSave = 0;
@@ -39,7 +40,9 @@ export const createCustomPersister = <ListeningHandle>(
       while (!isUndefined((action = arrayShift(scheduledActions)))) {
         try {
           await action();
-        } catch {}
+        } catch (error) {
+          onIgnoredError?.(error);
+        }
       }
       running = 0;
     }
@@ -91,7 +94,9 @@ export const createCustomPersister = <ListeningHandle>(
                   getContent?.() ??
                     ((await getPersisted()) as [Tables, Values]),
                 );
-              } catch {}
+              } catch (error) {
+                onIgnoredError?.(error);
+              }
             }
           }),
       );
@@ -119,7 +124,9 @@ export const createCustomPersister = <ListeningHandle>(
         await persister.schedule(async () => {
           try {
             await setPersisted(store.getContent, getTransactionChanges);
-          } catch {}
+          } catch (error) {
+            onIgnoredError?.(error);
+          }
           loadSave = 0;
         });
       }
