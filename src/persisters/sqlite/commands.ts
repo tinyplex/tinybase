@@ -43,6 +43,7 @@ const WHERE = 'WHERE';
 export const getCommandFunctions = (
   cmd: Cmd,
   managedTableNames: string[],
+  onIgnoredError: ((error: any) => void) | undefined,
 ): [
   refreshSchema: () => Promise<Schema>,
   loadTable: (tableName: string, rowIdColumnName: string) => Promise<Table>,
@@ -54,6 +55,7 @@ export const getCommandFunctions = (
     deleteEmptyTable: boolean,
     partial?: boolean,
   ) => Promise<void>,
+  transaction: <Return>(actions: () => Promise<Return>) => Promise<Return>,
 ] => {
   const schemaMap: Schema = mapNew();
 
@@ -266,7 +268,21 @@ export const getCommandFunctions = (
     }
   };
 
-  return [refreshSchema, loadTable, saveTable];
+  const transaction = async <Return>(
+    actions: () => Promise<Return>,
+  ): Promise<Return> => {
+    let result;
+    await cmd('BEGIN');
+    try {
+      result = await actions();
+    } catch (error) {
+      onIgnoredError?.(error);
+    }
+    await cmd('END');
+    return result as Return;
+  };
+
+  return [refreshSchema, loadTable, saveTable, transaction];
 };
 
 const upsert = async (

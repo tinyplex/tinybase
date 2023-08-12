@@ -24,8 +24,9 @@ export const createSqlitePersister = <UpdateListeningHandle>(
   cmd: Cmd,
   addUpdateListener: (listener: UpdateListener) => UpdateListeningHandle,
   delUpdateListener: (listeningHandle: UpdateListeningHandle) => void,
-  logSql?: (sql: string, args?: any[]) => void,
-  onIgnoredError?: (error: any) => void,
+  logSql: ((sql: string, args?: any[]) => void) | undefined,
+  onIgnoredError: ((error: any) => void) | undefined,
+  scheduleId: any,
 ): Persister => {
   let dataVersion: number | null;
   let schemaVersion: number | null;
@@ -85,5 +86,6 @@ export const createSqlitePersister = <UpdateListeningHandle>(
     onIgnoredError,
     defaultedConfig as any,
     collValues(managedTableNamesSet),
+    scheduleId,
   );
 };

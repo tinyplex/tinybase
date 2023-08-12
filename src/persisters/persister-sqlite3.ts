@@ -37,4 +37,5 @@ export const createSqlite3Persister = ((
     (observer: Observer): any => db.off(CHANGE, observer),
     logSql,
     onIgnoredError,
+    db,
   )) as typeof createSqlite3PersisterDecl;

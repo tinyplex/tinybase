@@ -29,11 +29,10 @@ export const createTabularSqlitePersister = <ListeningHandle>(
     [valuesLoad, valuesSave, valuesTableName],
   ]: DefaultedTabularConfig,
   managedTableNames: string[],
+  scheduleId: any,
 ): Persister => {
-  const [refreshSchema, loadTable, saveTable] = getCommandFunctions(
-    cmd,
-    managedTableNames,
-  );
+  const [refreshSchema, loadTable, saveTable, transaction] =
+    getCommandFunctions(cmd, managedTableNames, onIgnoredError);
 
   const saveTables = async (
     tables:
@@ -109,38 +108,41 @@ export const createTabularSqlitePersister = <ListeningHandle>(
         ]
       : {};
 
-  const getPersisted = async (): Promise<[Tables, Values] | undefined> => {
-    await refreshSchema();
-    const tables = await loadTables();
-    const values = await loadValues();
-    return !objIsEmpty(tables) || !isUndefined(values)
-      ? [tables as Tables, values as Values]
-      : undefined;
-  };
+  const getPersisted = async (): Promise<[Tables, Values] | undefined> =>
+    await transaction(async () => {
+      await refreshSchema();
+      const tables = await loadTables();
+      const values = await loadValues();
+      return !objIsEmpty(tables) || !isUndefined(values)
+        ? [tables as Tables, values as Values]
+        : undefined;
+    });
 
   const setPersisted = async (
     getContent: () => [Tables, Values],
     getTransactionChanges?: GetTransactionChanges,
-  ): Promise<void> => {
-    await refreshSchema();
-    if (!isUndefined(getTransactionChanges)) {
-      const [tableChanges, valueChanges] = getTransactionChanges();
-      await saveTables(tableChanges, true);
-      await saveValues(valueChanges, true);
-    } else {
-      const [tables, values] = getContent();
-      await saveTables(tables);
-      await saveValues(values);
-    }
-  };
+  ): Promise<void> =>
+    await transaction(async () => {
+      await refreshSchema();
+      if (!isUndefined(getTransactionChanges)) {
+        const [tableChanges, valueChanges] = getTransactionChanges();
+        await saveTables(tableChanges, true);
+        await saveValues(valueChanges, true);
+      } else {
+        const [tables, values] = getContent();
+        await saveTables(tables);
+        await saveValues(values);
+      }
+    });
 
-  const persister: any = createCustomPersister(
+  const persister: any = (createCustomPersister as any)(
     store,
     getPersisted,
     setPersisted,
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
+    scheduleId,
   );
 
   return persister;

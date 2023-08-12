@@ -28,4 +28,5 @@ export const createSqliteWasmPersister = ((
     (): void => sqlite3.capi.sqlite3_update_hook(db, () => 0, 0),
     logSql,
     onIgnoredError,
+    db,
   )) as typeof createSqliteWasmPersisterDecl;

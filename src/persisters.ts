@@ -6,10 +6,14 @@ import {
   PersisterStats,
 } from './types/persisters.d';
 import {arrayPush, arrayShift} from './common/array';
+import {mapEnsure, mapGet, mapNew, mapSet} from './common/map';
 import {objFreeze, objIsEmpty} from './common/obj';
 import {Id} from './types/common.d';
 
 type Action = () => Promise<any>;
+
+const scheduleRunning: Map<any, 0 | 1> = mapNew();
+const scheduleActions: Map<any, Action[]> = mapNew();
 
 export const createCustomPersister = <ListeningHandle>(
   store: Store,
@@ -21,6 +25,7 @@ export const createCustomPersister = <ListeningHandle>(
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   onIgnoredError?: (error: any) => void,
+  scheduleId = [],
 ): Persister => {
   let listenerId: Id | undefined;
   let loadSave = 0;
@@ -29,21 +34,29 @@ export const createCustomPersister = <ListeningHandle>(
   let listening = 0;
   let action;
   let listeningHandle: ListeningHandle | undefined;
-  let running = 0;
-  const scheduledActions: Action[] = [];
+
+  mapEnsure(scheduleRunning, scheduleId, () => 0);
+  mapEnsure(scheduleActions, scheduleId, () => []);
 
   const run = async (): Promise<void> => {
     /*! istanbul ignore else */
-    if (!running) {
-      running = 1;
-      while (!isUndefined((action = arrayShift(scheduledActions)))) {
+    if (!mapGet(scheduleRunning, scheduleId)) {
+      mapSet(scheduleRunning, scheduleId, 1);
+      while (
+        !isUndefined(
+          (action = arrayShift(
+            mapGet(scheduleActions, scheduleId) as Action[],
+          )),
+        )
+      ) {
         try {
           await action();
         } catch (error) {
+          /*! istanbul ignore next */
           onIgnoredError?.(error);
         }
       }
-      running = 0;
+      mapSet(scheduleRunning, scheduleId, 0);
     }
   };
 
@@ -128,6 +141,7 @@ export const createCustomPersister = <ListeningHandle>(
           try {
             await setPersisted(store.getContent, getTransactionChanges);
           } catch (error) {
+            /*! istanbul ignore next */
             onIgnoredError?.(error);
           }
           loadSave = 0;
@@ -155,7 +169,7 @@ export const createCustomPersister = <ListeningHandle>(
     },
 
     schedule: async (...actions: Action[]): Promise<Persister> => {
-      arrayPush(scheduledActions, ...actions);
+      arrayPush(mapGet(scheduleActions, scheduleId) as Action[], ...actions);
       await run();
       return persister;
     },
