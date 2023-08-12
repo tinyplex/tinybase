@@ -26,11 +26,10 @@ export const createCustomPersister = <ListeningHandle>(
   let loadSave = 0;
   let loads = 0;
   let saves = 0;
-  let running = 0;
   let listening = 0;
   let action;
   let listeningHandle: ListeningHandle | undefined;
-
+  let running = 0;
   const scheduledActions: Action[] = [];
 
   const run = async (): Promise<void> => {
@@ -84,11 +83,14 @@ export const createCustomPersister = <ListeningHandle>(
       await persister.load(initialTables, initialValues);
       listening = 1;
       listeningHandle = addPersisterListener(
-        async (getContent, getTransactionChanges) =>
-          await loadLock(async () => {
-            if (getTransactionChanges) {
-              store.setTransactionChanges(getTransactionChanges());
-            } else {
+        async (getContent, getTransactionChanges) => {
+          if (getTransactionChanges) {
+            const transactionChanges = getTransactionChanges();
+            await loadLock(async () =>
+              store.setTransactionChanges(transactionChanges),
+            );
+          } else {
+            await loadLock(async () => {
               try {
                 store.setContent(
                   getContent?.() ??
@@ -97,8 +99,9 @@ export const createCustomPersister = <ListeningHandle>(
               } catch (error) {
                 onIgnoredError?.(error);
               }
-            }
-          }),
+            });
+          }
+        },
       );
       return persister;
     },
