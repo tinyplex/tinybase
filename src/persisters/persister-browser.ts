@@ -50,19 +50,23 @@ const getStoragePersister = (
 export const createLocalPersister = ((
   store: Store,
   storageName: string,
+  onIgnoredError?: (error: any) => void,
 ): Persister =>
   getStoragePersister(
     store,
     storageName,
     localStorage,
+    onIgnoredError,
   )) as typeof createLocalPersisterDecl;
 
 export const createSessionPersister = ((
   store: Store,
   storageName: string,
+  onIgnoredError?: (error: any) => void,
 ): Persister =>
   getStoragePersister(
     store,
     storageName,
     sessionStorage,
+    onIgnoredError,
   )) as typeof createSessionPersisterDecl;
