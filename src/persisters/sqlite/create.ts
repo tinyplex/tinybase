@@ -24,7 +24,7 @@ export const createSqlitePersister = <UpdateListeningHandle>(
   cmd: Cmd,
   addUpdateListener: (listener: UpdateListener) => UpdateListeningHandle,
   delUpdateListener: (listeningHandle: UpdateListeningHandle) => void,
-  logSql: ((sql: string, args?: any[]) => void) | undefined,
+  onSqlCommand: ((sql: string, args?: any[]) => void) | undefined,
   onIgnoredError: ((error: any) => void) | undefined,
   scheduleId: any,
 ): Persister => {
@@ -75,9 +75,9 @@ export const createSqlitePersister = <UpdateListeningHandle>(
 
   return (isJson ? createJsonSqlitePersister : createTabularSqlitePersister)(
     store,
-    logSql
+    onSqlCommand
       ? async (sql, args) => {
-          logSql(sql, args);
+          onSqlCommand(sql, args);
           return await cmd(sql, args);
         }
       : cmd,

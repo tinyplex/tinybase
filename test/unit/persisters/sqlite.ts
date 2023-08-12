@@ -17,7 +17,7 @@ type SqliteVariant<Database> = [
     store: Store,
     db: Database,
     storeTableOrConfig?: string | DatabasePersisterConfig,
-    logSql?: (sql: string, args?: any[]) => void,
+    onSqlCommand?: (sql: string, args?: any[]) => void,
     onIgnoredError?: (error: any) => void,
   ) => Persister,
   cmd: (
@@ -37,14 +37,14 @@ export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
       store: Store,
       db: Database,
       storeTableOrConfig?: string | DatabasePersisterConfig,
-      logSql?: (sql: string, args?: any[]) => void,
+      onSqlCommand?: (sql: string, args?: any[]) => void,
       onIgnoredError?: (error: any) => void,
     ) =>
       (createSqlite3Persister as any)(
         store,
         db,
         storeTableOrConfig,
-        logSql,
+        onSqlCommand,
         onIgnoredError,
       ),
     (
@@ -72,7 +72,7 @@ export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
       store: Store,
       [sqlite3, db]: SqliteWasmDb,
       storeTableOrConfig?: string | DatabasePersisterConfig,
-      logSql?: (sql: string, args?: any[]) => void,
+      onSqlCommand?: (sql: string, args?: any[]) => void,
       onIgnoredError?: (error: any) => void,
     ) =>
       (createSqliteWasmPersister as any)(
@@ -80,7 +80,7 @@ export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
         sqlite3,
         db,
         storeTableOrConfig,
-        logSql,
+        onSqlCommand,
         onIgnoredError,
       ),
     async ([_, db]: SqliteWasmDb, sql: string, args: any[] = []) =>
@@ -96,14 +96,14 @@ export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
       store: Store,
       db: DB,
       storeTableOrConfig?: string | DatabasePersisterConfig,
-      logSql?: (sql: string, args?: any[]) => void,
+      onSqlCommand?: (sql: string, args?: any[]) => void,
       onIgnoredError?: (error: any) => void,
     ) =>
       (createCrSqliteWasmPersister as any)(
         store,
         db,
         storeTableOrConfig,
-        logSql,
+        onSqlCommand,
         onIgnoredError,
       ),
     async (db: DB, sql: string, args: any[] = []) => await db.execO(sql, args),

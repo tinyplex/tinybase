@@ -11,7 +11,7 @@ export const createExpoSqlitePersister = ((
   store: Store,
   db: SQLiteDatabase,
   configOrStoreTableName?: DatabasePersisterConfig | string,
-  logSql?: (sql: string, args?: any[]) => void,
+  onSqlCommand?: (sql: string, args?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): Persister =>
   createSqlitePersister(
@@ -22,7 +22,7 @@ export const createExpoSqlitePersister = ((
     (listener: UpdateListener): Subscription =>
       db.onDatabaseChange(({tableName}) => listener(tableName)),
     (subscription: Subscription) => subscription.remove(),
-    logSql,
+    onSqlCommand,
     onIgnoredError,
     db,
   )) as typeof createExpoSqlitePersisterDecl;
