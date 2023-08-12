@@ -9,4 +9,6 @@ export function createSqliteWasmPersister(
   sqlite3: any,
   db: any,
   configOrStoreTableName?: DatabasePersisterConfig | string,
+  onSqlCommand?: (sql: string, args?: any[]) => void,
+  onIgnoredError?: (error: any) => void,
 ): Persister;

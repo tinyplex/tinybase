@@ -21,6 +21,9 @@
  * @param docHandle The Automerge document handler to persist the Store with.
  * @param docMapName The name of the map used inside the Automerge document to
  * sync the Store to (which otherwise will default to 'tinybase').
+ * @param onIgnoredError An optional handler for the errors that the Persister
+ * would otherwise ignore when trying to save or load data. This is suitable for
+ * debugging persistence issues in a development environment, since v4.0.4.
  * @returns A reference to the new Persister object.
  * @example
  * This example creates a Persister object and persists the Store to an

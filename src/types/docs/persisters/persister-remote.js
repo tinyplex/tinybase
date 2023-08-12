@@ -23,6 +23,9 @@
  * @param saveUrl The endpoint that supports a `POST` method to save JSON.
  * @param autoLoadIntervalSeconds How often to poll the `loadUrl` when
  * automatically loading changes from the server.
+ * @param onIgnoredError An optional handler for the errors that the Persister
+ * would otherwise ignore when trying to save or load data. This is suitable for
+ * debugging persistence issues in a development environment, since v4.0.4.
  * @returns A reference to the new Persister object.
  * @example
  * This example creates a Persister object and persists the Store to a remote

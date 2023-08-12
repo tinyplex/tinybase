@@ -23,6 +23,9 @@
  * that the browser uses to identify the storage location.
  * @param store The Store to persist.
  * @param storageName The unique key to identify the storage location.
+ * @param onIgnoredError An optional handler for the errors that the Persister
+ * would otherwise ignore when trying to save or load data. This is suitable for
+ * debugging persistence issues in a development environment, since v4.0.4.
  * @returns A reference to the new Persister object.
  * @example
  * This example creates a Persister object and persists the Store to the
@@ -51,6 +54,9 @@
  * that the browser uses to identify the storage location.
  * @param store The Store to persist.
  * @param storageName The unique key to identify the storage location.
+ * @param onIgnoredError An optional handler for the errors that the Persister
+ * would otherwise ignore when trying to save or load data. This is suitable for
+ * debugging persistence issues in a development environment, since v4.0.4.
  * @returns A reference to the new Persister object.
  * @example
  * This example creates a Persister object and persists the Store to the

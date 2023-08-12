@@ -7,4 +7,5 @@ import {Persister} from '../persisters';
 export function createFilePersister<Schemas extends OptionalSchemas>(
   store: Store<Schemas>,
   filePath: string,
+  onIgnoredError?: (error: any) => void,
 ): Persister<Schemas>;

@@ -9,4 +9,5 @@ export function createAutomergePersister<Schemas extends OptionalSchemas>(
   store: Store<Schemas>,
   docHandle: DocHandle<any>,
   docMapName?: string,
+  onIgnoredError?: (error: any) => void,
 ): Persister<Schemas>;

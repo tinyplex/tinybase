@@ -9,4 +9,5 @@ export function createYjsPersister(
   store: Store,
   yDoc: YDoc,
   yMapName?: string,
+  onIgnoredError?: (error: any) => void,
 ): Persister;

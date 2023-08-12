@@ -150,4 +150,5 @@ export function createCustomPersister<
     listener: PersisterListener<Schemas>,
   ) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
+  onIgnoredError?: (error: any) => void,
 ): Persister<Schemas>;

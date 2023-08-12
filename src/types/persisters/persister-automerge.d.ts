@@ -9,4 +9,5 @@ export function createAutomergePersister(
   store: Store,
   docHandle: DocHandle<any>,
   docMapName?: string,
+  onIgnoredError?: (error: any) => void,
 ): Persister;

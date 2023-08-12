@@ -9,4 +9,5 @@ export function createYjsPersister<Schemas extends OptionalSchemas>(
   store: Store<Schemas>,
   yDoc: YDoc,
   yMapName?: string,
+  onIgnoredError?: (error: any) => void,
 ): Persister<Schemas>;

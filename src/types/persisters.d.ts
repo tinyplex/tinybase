@@ -133,4 +133,5 @@ export function createCustomPersister<ListeningHandle>(
   ) => Promise<void>,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
+  onIgnoredError?: (error: any) => void,
 ): Persister;

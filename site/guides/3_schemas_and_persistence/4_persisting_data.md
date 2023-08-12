@@ -115,12 +115,20 @@ You may often want to have both automatic saving and loading of a Store so that
 changes are constantly synchronized (allowing basic state preservation between
 browser tabs, for example). The framework has some basic provisions to prevent
 race conditions - for example it will not attempt to save data if it is
-currently loading it and vice-versa.
+currently loading it and vice-versa - and will sequentially schedule methods
+that could cause race conditions.
 
-Be aware, however, that the default implementations do not provide complex
-synchronization heuristics and you should comprehensively test your persistence
+That said, be aware that you should always comprehensively test your persistence
 strategy to understand the opportunity for data loss (in the case of trying to
 save data to a server under poor network conditions, for example).
+
+To help debug such issues, since v4.0.4, the create methods for all Persister
+objects take an optional `onIgnoredError` argument. This is a handler for the
+errors that the Persister would otherwise ignore when trying to save or load
+data (such as when handling corrupted stored data). It's recommended you use
+this for debugging persistence issues, but only in a development environment.
+Database-based Persister objects also take an optional `onSqlCommand` argument
+for logging commands and queries made to the underlying database.
 
 ## Summary
 

@@ -9,4 +9,6 @@ export function createExpoSqlitePersister<Schemas extends OptionalSchemas>(
   store: Store<Schemas>,
   db: SQLiteDatabase,
   configOrStoreTableName?: DatabasePersisterConfig<Schemas> | string,
+  onSqlCommand?: (sql: string, args?: any[]) => void,
+  onIgnoredError?: (error: any) => void,
 ): Persister<Schemas>;

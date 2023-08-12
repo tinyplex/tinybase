@@ -9,4 +9,6 @@ export function createSqliteWasmPersister<Schemas extends OptionalSchemas>(
   sqlite3: any,
   db: any,
   configOrStoreTableName?: DatabasePersisterConfig<Schemas> | string,
+  onSqlCommand?: (sql: string, args?: any[]) => void,
+  onIgnoredError?: (error: any) => void,
 ): Persister<Schemas>;

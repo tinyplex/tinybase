@@ -9,4 +9,6 @@ export function createCrSqliteWasmPersister<Schemas extends OptionalSchemas>(
   store: Store<Schemas>,
   db: DB,
   configOrStoreTableName?: DatabasePersisterConfig<Schemas> | string,
+  onSqlCommand?: (sql: string, args?: any[]) => void,
+  onIgnoredError?: (error: any) => void,
 ): Persister<Schemas>;

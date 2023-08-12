@@ -14,6 +14,9 @@
  * `filePath` parameter which identifies the file to persist it to.
  * @param store The Store to persist.
  * @param filePath The location of the local file to persist the Store to.
+ * @param onIgnoredError An optional handler for the errors that the Persister
+ * would otherwise ignore when trying to save or load data. This is suitable for
+ * debugging persistence issues in a development environment, since v4.0.4.
  * @returns A reference to the new Persister object.
  * @example
  * This example creates a Persister object and persists the Store to a local

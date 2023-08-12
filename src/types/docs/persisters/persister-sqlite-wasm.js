@@ -33,6 +33,12 @@
  * @param configOrStoreTableName A DatabasePersisterConfig to configure the
  * persistence mode (or a string to set the `storeTableName` property of the
  * JSON serialization).
+ * @param onSqlCommand An optional handler called every time the Persister
+ * executes a SQL command or query. This is suitable for logging persistence
+ * behavior in a development environment, since v4.0.4.
+ * @param onIgnoredError An optional handler for the errors that the Persister
+ * would otherwise ignore when trying to save or load data. This is suitable for
+ * debugging persistence issues in a development environment, since v4.0.4.
  * @returns A reference to the new Persister object.
  * @example
  * This example creates a Persister object and persists the Store to a local
