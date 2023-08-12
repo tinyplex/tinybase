@@ -25,7 +25,7 @@ export const createCustomPersister = <ListeningHandle>(
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   onIgnoredError?: (error: any) => void,
-  scheduleId = [],
+  scheduleId = [], // undocumented
 ): Persister => {
   let listenerId: Id | undefined;
   let loadSave = 0;
