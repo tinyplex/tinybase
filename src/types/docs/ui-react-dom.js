@@ -248,6 +248,47 @@
   /// SliceInHtmlTableProps.customCells
 }
 /**
+ * RelationshipInHtmlTableProps props are used for components that will render
+ * the contents of the two Tables linked by a Relationship as an HTML table,
+ * such as the RelationshipInHtmlTable component.
+ *
+ * Note the use of dotted 'tableId.cellId' string pairs when specifying custom
+ * rendering for the cells in this table, since Cells from both the
+ * relationship's 'local' and 'remote' Table objects can be rendered and need to
+ * be distinguished
+ * @category Props
+ * @since v4.1.0
+ */
+/// RelationshipInHtmlTableProps
+{
+  /**
+   * The Id of the relationship in the Relationships object for which the
+   * relationship Table Rows will be rendered.
+   */
+  /// RelationshipInHtmlTable.relationshipId
+  /**
+   * The Relationships object to be accessed: omit for the default context
+   * Relationships object, provide an Id for a named context Relationships
+   * object, or provide an explicit reference.
+   */
+  /// RelationshipInHtmlTable.relationships
+  /**
+   * Whether the Cells should be editable. This affects the default CellView
+   * component (to use the EditableCellView component instead) but of course
+   * will not affect custom Cell components if you have set them.
+   */
+  /// RelationshipInHtmlTable.editable
+  /**
+   * An optional list of dotted 'tableId.cellId' string pairs to use for
+   * rendering a prescribed set of the relationship Tables' Cells in a given
+   * order. This can also be an object with the desired 'tableId.cellId' string
+   * pairs as keys, and with a value that can either be a string label to show
+   * in the column header, or a CustomCell object to further configure the
+   * column.
+   */
+  /// RelationshipInHtmlTable.customCells
+}
+/**
  * ResultTableInHtmlTableProps props are used for components that will render a
  * ResultTable in an HTML table, such as the ResultTableInHtmlTable component.
  * @category Props
@@ -925,6 +966,165 @@
  * @since v4.1.0
  */
 /// SliceInHtmlTable
+/**
+ * The RelationshipInHtmlTable component renders the contents of the two Tables
+ * linked by a Relationship as an HTML <table> element, and registers a listener
+ * so that any changes to that result will cause a re-render.
+ *
+ * See the <RelationshipInHtmlTable /> demo for this component in action.
+ *
+ * The component's props identify which Relationship to render based on
+ * Relationship Id and Relationships object (which is either the default context
+ * Relationships object, a named context Relationships object, or an explicit
+ * reference).
+ *
+ * This component renders the two Table objects by iterating over their related
+ * Row objects. By default the Cells are in turn rendered with the CellView
+ * component, but you can override this behavior by providing a `component` for
+ * each Cell in the `customCells` prop. You can pass additional props to that
+ * custom component with the `getComponentProps` callback. See the CustomCell
+ * type for more details.
+ *
+ * Note the use of dotted 'tableId.cellId' string pairs when specifying custom
+ * rendering for the cells in this table, since Cells from both the
+ * relationship's 'local' and 'remote' Table objects can be rendered and need to
+ * be distinguished
+ *
+ * This component uses the useRowIds and useRemoteRowId hooks under the covers,
+ * which means that any changes to the structure of either Table resulting in a
+ * change to the relationship will cause a re-render.
+ *
+ * You can use the `headerRow` and `idColumn` props to control whether labels
+ * and Ids appear in a <th> element at the top of the table, and the start of
+ * each row.
+ * @param props The props for this component.
+ * @returns A rendering of the two Tables linked by a Relationship in a
+ * <table> element.
+ * @example
+ * This example creates a Provider context into which a default Relationships
+ * object is provided. The RelationshipInHtmlTable component within it then
+ * renders the two Tables linked by a relationship in a <table> element with a
+ * CSS class. Note the dotted pairs that are used as column headings.
+ *
+ * ```jsx
+ * const App = ({relationships}) => (
+ *   <Provider relationships={relationships}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <RelationshipInHtmlTable
+ *     relationshipId="petSpecies"
+ *     className="relationship"
+ *   />
+ * );
+ *
+ * const relationships = createRelationships(
+ *   createStore()
+ *     .setTable('pets', {fido: {species: 'dog'}, cujo: {species: 'dog'}})
+ *     .setTable('species', {wolf: {price: 10}, dog: {price: 5}}),
+ * ).setRelationshipDefinition('petSpecies', 'pets', 'species', 'species');
+ *
+ * const app = document.createElement('div');
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App relationships={relationships} />); // !act
+ * console.log(app.innerHTML);
+ * // ->
+ * `
+ * <table class=\"relationship\">
+ *   <thead>
+ *     <tr>
+ *       <th>pets.Id</th>
+ *       <th>species.Id</th>
+ *       <th>pets.species</th>
+ *       <th>species.price</th>
+ *     </tr>
+ *   </thead>
+ *   <tbody>
+ *     <tr>
+ *       <th>fido</th>
+ *       <th>dog</th>
+ *       <td>dog</td>
+ *       <td>5</td>
+ *     </tr>
+ *     <tr>
+ *       <th>cujo</th>
+ *       <th>dog</th>
+ *       <td>dog</td>
+ *       <td>5</td>
+ *     </tr>
+ *   </tbody>
+ * </table>
+ * `;
+ * ```
+ * @example
+ * This example creates a Provider context into which a default Relationships
+ * object is provided. The RelationshipInHtmlTable component within it then
+ * renders the two Tables linked by a relationship with a custom component and a
+ * custom props callback for the `species` Cell. The header row at the top of
+ * the table and the Id column at the start of each row is removed.
+ *
+ * ```jsx
+ * const App = ({relationships}) => (
+ *   <Provider relationships={relationships}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <RelationshipInHtmlTable
+ *     relationshipId="petSpecies"
+ *     customCells={customCells}
+ *     idColumn={false}
+ *     headerRow={false}
+ *   />
+ * );
+ *
+ * const FormattedCellView = ({tableId, rowId, cellId, store, bold}) => (
+ *   <>
+ *     {bold ? <b>{rowId}</b> : rowId}:
+ *     <CellView
+ *       tableId={tableId}
+ *       rowId={rowId}
+ *       cellId={cellId}
+ *       store={store}
+ *     />
+ *   </>
+ * );
+ * const customCells = {
+ *   'species.price': {
+ *     component: FormattedCellView,
+ *     getComponentProps: (rowId, cellId) => ({bold: rowId == 'dog'}),
+ *   },
+ * };
+ *
+ * const relationships = createRelationships(
+ *   createStore()
+ *     .setTable('pets', {fido: {species: 'dog'}, cujo: {species: 'wolf'}})
+ *     .setTable('species', {wolf: {price: 10}, dog: {price: 5}}),
+ * ).setRelationshipDefinition('petSpecies', 'pets', 'species', 'species');
+ *
+ * const app = document.createElement('div');
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App relationships={relationships} />); // !act
+ * console.log(app.innerHTML);
+ * // ->
+ * `
+ * <table>
+ *   <tbody>
+ *     <tr>
+ *       <td><b>dog</b>:5</td>
+ *     </tr>
+ *     <tr>
+ *       <td>wolf:10</td>
+ *     </tr>
+ *   </tbody>
+ * </table>
+ * `;
+ * ```
+ * @category Relationships components
+ * @since v4.1.0
+ */
+/// RelationshipInHtmlTable
 /**
  * The ResultTableInHtmlTable component renders the contents of a single query's
  * ResultTable in a Queries object as an HTML <table> element, and registers a
