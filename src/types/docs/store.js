@@ -362,7 +362,8 @@
  *
  * It is a simple number: a 1 indicates that a given Id was added to the Store
  * during a transaction, and a -1 indicates that it was removed.
- *
+ * @category Transaction
+ * @since v4.0.0
  */
 /// IdAddedOrRemoved
 /**
@@ -378,6 +379,8 @@
  * Note that there will be no entry if the content of the Table itself changed.
  * For that you should consult the ChangedRowIds, ChangedCellIds, or
  * ChangedCells types.
+ * @category Transaction
+ * @since v4.0.0
  */
 /// ChangedTableIds
 /**
@@ -394,6 +397,8 @@
  *
  * Note that there will be no entry if the content of the Row itself changed.
  * For that you should consult the ChangedCellIds or ChangedCells types.
+ * @category Transaction
+ * @since v4.0.0
  */
 /// ChangedRowIds
 /**
@@ -410,6 +415,8 @@
  *
  * Note that there will be no entry if the content of the Cell itself changed.
  * For that you should consult the ChangedCells type.
+ * @category Transaction
+ * @since v4.0.0
  */
 /// ChangedCellIds
 /**
@@ -424,6 +431,8 @@
  *
  * Note that there will be no entry if the content of the Value itself changed.
  * For that you should consult the ChangedValues type.
+ * @category Transaction
+ * @since v4.0.0
  */ /// ChangedValueIds
 /**
  * The DoRollback type describes a function that you can use to rollback the
