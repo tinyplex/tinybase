@@ -114,15 +114,15 @@ export type SliceInHtmlTableProps = {
   readonly customCells?: Ids | {[cellId: Id]: string | CustomCell};
 };
 
-// / RelationshipInHtmlTableProps
+/// RelationshipInHtmlTableProps
 export type RelationshipInHtmlTableProps = {
-  // / RelationshipInHtmlTable.relationshipId
+  /// RelationshipInHtmlTable.relationshipId
   readonly relationshipId: Id;
-  // / RelationshipInHtmlTable.relationships
+  /// RelationshipInHtmlTable.relationships
   readonly relationships?: RelationshipsOrRelationshipsId;
-  // / RelationshipInHtmlTable.editable
+  /// RelationshipInHtmlTable.editable
   readonly editable?: boolean;
-  // / RelationshipInHtmlTable.customCells
+  /// RelationshipInHtmlTable.customCells
   readonly customCells?: Ids | {[cellId: Id]: string | CustomCell};
 };
 
@@ -210,7 +210,7 @@ export function SliceInHtmlTable(
   props: SliceInHtmlTableProps & HtmlTableProps,
 ): ComponentReturnType;
 
-// / RelationshipInHtmlTable
+/// RelationshipInHtmlTable
 export function RelationshipInHtmlTable(
   props: RelationshipInHtmlTableProps & HtmlTableProps,
 ): ComponentReturnType;

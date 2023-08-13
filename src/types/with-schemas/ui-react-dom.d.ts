@@ -8,6 +8,7 @@ import {
   ExtraProps,
   IndexesOrIndexesId,
   QueriesOrQueriesId,
+  RelationshipsOrRelationshipsId,
   ResultCellProps,
   StoreOrStoreId,
   ValueProps,
@@ -155,6 +156,20 @@ export type SliceInHtmlTableProps<Schemas extends OptionalSchemas> = {
     | {[cellId: Id]: string | CustomCell<NoSchemas, Id, Id>};
 };
 
+/// RelationshipInHtmlTableProps
+export type RelationshipInHtmlTableProps<Schemas extends OptionalSchemas> = {
+  /// RelationshipInHtmlTable.relationshipId
+  readonly relationshipId: Id;
+  /// RelationshipInHtmlTable.relationships
+  readonly relationships?: RelationshipsOrRelationshipsId<Schemas>;
+  /// RelationshipInHtmlTable.editable
+  readonly editable?: boolean;
+  /// RelationshipInHtmlTable.customCells
+  readonly customCells?:
+    | Ids
+    | {[cellId: Id]: string | CustomCell<NoSchemas, Id, Id>};
+};
+
 /// ResultTableInHtmlTableProps
 export type ResultTableInHtmlTableProps<Schemas extends OptionalSchemas> = {
   /// ResultTableInHtmlTableProps.queryId
@@ -243,6 +258,11 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// SliceInHtmlTable
   SliceInHtmlTable: (
     props: SliceInHtmlTableProps<Schemas> & HtmlTableProps,
+  ) => ComponentReturnType;
+
+  /// RelationshipInHtmlTable
+  RelationshipInHtmlTable: (
+    props: RelationshipInHtmlTableProps<Schemas> & HtmlTableProps,
   ) => ComponentReturnType;
 
   /// ResultTableInHtmlTable
