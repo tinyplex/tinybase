@@ -4,6 +4,8 @@ import {arrayJoin, arrayMap} from '../common/array';
 import {objMap, objNew} from '../common/obj';
 import {UNIQUE_ID} from './common';
 
+const SCROLLBAR = '*::-webkit-scrollbar';
+
 export const APP_STYLESHEET = arrayJoin(
   objMap(
     {
@@ -11,6 +13,11 @@ export const APP_STYLESHEET = arrayJoin(
       '*': 'all:revert',
       '*::before': 'all:revert',
       '*::after': 'all:revert',
+      [SCROLLBAR]: 'width:0.5rem;height:0.5rem;',
+      [SCROLLBAR + '-track']: 'background:#111',
+      [SCROLLBAR + '-thumb']: 'background:#999;border:1px solid #111',
+      [SCROLLBAR + '-thumb:hover']: 'background:#fff',
+      [SCROLLBAR + '-corner']: 'background:#111',
       img: 'width:1rem;height:1rem;background:#111;border:0;vertical-align:text-bottom',
 
       // Nub
@@ -51,7 +58,7 @@ export const APP_STYLESHEET = arrayJoin(
         'flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;margin-left:0.25rem',
 
       // Body
-      article: 'padding:0.25rem 0.25rem 0.25rem 0.5rem;overflow:auto',
+      article: 'padding:0.25rem 0.25rem 0.25rem 0.5rem;overflow:auto;flex:1',
       details: 'margin-left:0.75rem;width:fit-content;',
       'details img': 'display:none',
       'details[open]>summary img':
