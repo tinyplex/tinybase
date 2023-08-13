@@ -6,7 +6,7 @@
   </h2>
   <p>
     Modern apps deserve better. Why trade reactive user experiences to be able 
-    to use relational data? Why sacrifice features for bundle size? And 
+    to use relational data? Or sacrifice features for bundle size? And 
     why does the cloud do all the work 
     <a href='https://localfirstweb.dev/' target='_blank'>anyway</a>?
   </p>
@@ -20,7 +20,7 @@
       it.
     </li>
     <li>
-      <a href='#register-listeners-at-any-granularity'>Flexibly reactive</a> to
+      <a href='#register-granular-listeners'>Flexibly reactive</a> to
       reconciled updates, so you only spend cycles on things that change.
     </li>
     <li>
@@ -30,21 +30,26 @@
     <li>
       <a href='#create-indexes-for-fast-lookups'>Indexing</a>,
       <a href='#define-metrics-and-aggregations'>metrics</a>,
-      <a href='#model-relationships-between-tables'>relationships</a> - and
+      <a href='#model-table-relationships'>relationships</a> - and
       even an <a href='#use-checkpoints-for-an-easy-undo-stack'>undo stack</a>
       for your app state.
     </li>
     <li>
       <a href='#type-definitions-orm-like-apis'>Type definitions &amp; ORM-like 
-      APIs</a>, based on a schema or inference.
+      APIs</a>, from schema or inference. <a href='#an-inspector-for-your-data'>
+      Inspect your data</a> (<em>new!</em>).
     </li>
     <li>
-      Easily <a href='#persist-to-storage-sqlite-or-crdts'>sync your data</a> to 
-      storage, (<em>new!</em>) SQLite, or (<em>new!</em>) CRDTs.
+      Easily <a href='#persist-to-storage-sqlite-crdts'>sync your data</a> to 
+      storage, (<em>new!</em>) 
+      <a href='/guides/schemas-and-persistence/database-persistence/'>SQLite</a>, 
+      or (<em>new!</em>) 
+      <a href='/guides/schemas-and-persistence/synchronizing-data/'>CRDTs</a>.
     </li>
     <li>
       Optional <a href='#call-hooks-to-bind-to-data'>bindings to React</a> and 
-      (<em>new!</em>) <a href='#pre-built-reactive-components'>pre-built components</a> for a fully reactive UI.
+      (<em>new!</em>) <a href='#pre-built-reactive-components'>pre-built 
+      components</a> for a fully reactive UI.
     </li>
   </ul>
   <p>
@@ -69,13 +74,13 @@
 
 ---
 
-> ### Proud to be sponsored by:
+> ## Proud to be sponsored by:
 >
 > @@EVAL("getGitHubAvatar('expo')")
 > @@EVAL("getGitHubAvatar('WonderPanda')")
 > @@EVAL("getGitHubAvatar('arpitBhalla')")
 
-> ### Excited to be used by:
+> ## Excited to be used by:
 >
 > @@EVAL("getGitHubAvatar('Apocalypsor')")
 > @@EVAL("getGitHubAvatar('brentvatne')")
@@ -137,7 +142,7 @@ console.log(store.getRow('pets', 'fido'));
 // -> {species: 'dog', color: 'brown'}
 ```
 
-> ## Register listeners at any granularity.
+> ## Register granular listeners.
 >
 > The magic starts to happen when you register listeners on a Value, Table, Row,
 > or Cell. They get called when any part of that object changes. You can also
@@ -194,46 +199,24 @@ console.log(app.innerHTML);
 > fully reactive user interface based on a Store.
 >
 > For web applications in particular, the new ui-react-dom module provides
-> pre-built components for tabular display of your data. This example
-> demonstrates the fully-reactive SortedTableInHtmlTable component, which lets
-> you customize the sorting and column settings - as well as much more!
+> pre-built components for tabular display of your data, with lots of
+> customization and interactivity options.
 >
-> The pre-built components in the new ui-react-dom module are showcased in the
-> UI Components demos, and you can read more about the underlying ui-react
-> module in the Building UIs guides.
+> Try them out in the UI Components demos, and read more about the underlying
+> ui-react module in the Building UIs guides.
 
-```jsx
-const App2 = () => (
-  <SortedTableInHtmlTable
-    store={store}
-    tableId="pets"
-    cellId="color"
-    customCells={['color', 'sold']}
-  />
-);
+<img src='/ui-react-dom.webp' />
 
-store.setRow('pets', 'felix', {
-  species: 'cat',
-  color: 'black',
-});
+> ## An inspector for your data.
+>
+> If you are building a web application, the new StoreInspector component lets
+> you overlay a view of the data in your Store, Indexes, Relationships, and so
+> on. You can even edit the data in place and see it update in your app
+> immediately.
+>
+> Read more about this powerful new tool in the Inspecting Data guide.
 
-root.render(<App2 />); // !act
-console.log(app.innerHTML);
-// ->
-`
-<table>
-  <thead>
-    <tr><th>Id</th><th class="sorted ascending">↑ color</th><th>sold</th></tr>
-  </thead>
-  <tbody>
-    <tr><th>felix</th><td>black</td><td></td></tr>
-    <tr><th>fido</th><td>walnut</td><td>false</td></tr>
-  </tbody>
-</table>
-`;
-
-root.unmount(); // !act
-```
+<img src='/store-inspector.webp' />
 
 > ## Apply schemas to tables & values.
 >
@@ -263,7 +246,7 @@ console.log(store.getRow('pets', 'polly'));
 store.delTablesSchema();
 ```
 
-> ## Persist to storage, SQLite, or CRDTs.
+> ## Persist to storage, SQLite, CRDTs.
 >
 > You can easily persist a Store between browser page reloads or sessions. You
 > can also synchronize it with a web endpoint, or (if you're using TinyBase in
@@ -433,7 +416,7 @@ store.setRow('pets', 'lowly', {species: 'worm'});
 indexes.destroy();
 ```
 
-> ## Model relationships between tables.
+> ## Model table relationships.
 >
 > A Relationships object lets you associate a Row in a local Table with the Id
 > of a Row in a remote Table. You can also reference a table to itself to create
