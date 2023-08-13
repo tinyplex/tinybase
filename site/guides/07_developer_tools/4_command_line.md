@@ -112,4 +112,4 @@ These four files, of course, can now be used to build and implement your own
 app.
 
 We conclude this section on developer tools with a look at how you can inspect
-the content of your data in the StoreInspector guide.
+the content of your data. Please continue to the Inspecting Data guide.
