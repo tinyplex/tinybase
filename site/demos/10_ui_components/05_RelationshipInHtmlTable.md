@@ -1,7 +1,7 @@
 # <RelationshipInHtmlTable />
 
 In this demo, we showcase the RelationshipInHtmlTable component, a way to
-display the remote Rows according to a Relationship.
+display the two Tables linked together by a Relationship.
 
 Rather than building the whole demo and boilerplate from scratch, we're going
 back and making changes to the <TableInHtmlTable /> demo again to demonstrate
