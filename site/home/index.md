@@ -269,7 +269,6 @@ console.log(sessionStorage.getItem('demo'));
   {
     "pets":{
       "fido":{"species":"dog","color":"walnut","sold":false},
-      "felix":{"species":"cat","color":"black","sold":false},
       "polly":{"species":"parrot","sold":false}
     }
   },
