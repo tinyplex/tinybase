@@ -8,10 +8,25 @@ highlighted features.
 This release introduces the new ui-react-dom module. This provides pre-built
 components for tabular display of your data in a web application.
 
-These pre-built components are showcased in the UI Components demos.
+![A TinyBase DOM Component](/ui-react-dom.webp 'A TinyBase DOM Component')
 
-They include the ValuesInHtmlTable component, the TableInHtmlTable component,
-and the powerful, interactive SortedTableInHtmlTable component:
+### New DOM Components
+
+| Component                    | Purpose                                                    |                                                           |
+| ---------------------------- | ---------------------------------------------------------- | --------------------------------------------------------- |
+| ValuesInHtmlTable            | Renders Values.                                            | [demo](/demos/ui-components/valuesinhtmltable)            |
+| TableInHtmlTable             | Renders a Table.                                           | [demo](/demos/ui-components/tableinhtmltable)             |
+| SliceInHtmlTable             | Renders a Slice from an Index.                             | [demo](/demos/ui-components/sliceinhtmltable)             |
+| RelationshipInHtmlTable      | Renders the local and remote Tables of a relationship      | [demo](/demos/ui-components/relationshipinhtmltable)      |
+| SortedTableInHtmlTable       | Renders a sorted Table, with optional interactivity.       | [demo](/demos/ui-components/sortedtableinhtmltable)       |
+| ValuesInHtmlTable            | Renders Values.                                            | [demo](/demos/ui-components/valuesinhtmltable)            |
+| ResultTableInHtmlTable       | Renders a ResultTable.                                     | [demo](/demos/ui-components/resulttableinhtmltable)       |
+| ResultSortedTableInHtmlTable | Renders a sorted ResultTable, with optional interactivity. | [demo](/demos/ui-components/resultsortedtableinhtmltable) |
+| EditableCellView             | Renders a Cell and lets you change its type and value.     | [demo](/demos/ui-components/editablecellview)             |
+| EditableValueView            | Renders a Value and lets you change its type and value.    | [demo](/demos/ui-components/editablevalueview)            |
+
+These pre-built components are showcased in the UI Components demos. Using them
+should be very familiar if you have used the more abstract ui-react module:
 
 ```jsx
 const App = ({store}) => (
@@ -45,24 +60,26 @@ console.log(app.innerHTML);
 root.unmount(); // !act
 ```
 
-Equivalent components also exist for the results of queries: the
-ResultTableInHtmlTable component and the interactive
-ResultSortedTableInHtmlTable component.
-
 The EditableCellView component and EditableValueView component are interactive
-input controls for updating Cell and Value content respectively.
+input controls for updating Cell and Value content respectively. You can
+generally use them across your table views by adding the `editable` prop to your
+table component.
 
-![Thumbnail of StoreInspector](/store-inspector.webp 'Thumbnail of
-StoreInspector') The new StoreInspector component allows you to view and
-understand the content of a Store in a debug web environment. Try it out in most
-of the demos on the site, including the Movie Database demo, pictured. This
-requires a debug build of the new ui-react-dom module, which is now also
-included in the UMD distribution.
+### The new StoreInspector
+
+![StoreInspector](/store-inspector.webp 'StoreInspector')
+
+The new StoreInspector component allows you to view, understand, and edit the
+content of a Store in a debug web environment. Try it out in most of the demos
+on the site, including the Movie Database demo, pictured. This requires a debug
+build of the new ui-react-dom module, which is now also included in the UMD
+distribution.
 
 Also in this release, the getResultTableCellIds method and
 addResultTableCellIdsListener method have been added to the Queries object. The
 equivalent useResultTableCellIds hook and useResultTableCellIdsListener hook
-have also been added to ui-react module.
+have also been added to ui-react module. A number of other minor React hooks
+have been added to support the components above.
 
 ## v4.0
 
