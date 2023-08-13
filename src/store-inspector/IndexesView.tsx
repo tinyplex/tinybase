@@ -2,7 +2,7 @@
 
 import {IndexProps, SliceProps} from '../types/ui-react';
 import {arrayIsEmpty, arrayMap} from '../common/array';
-import {getUniqueId, sortedIdsMap} from './common';
+import {getUniqueId, sortedIdsMap, useEditable} from './common';
 import {useIndexIds, useIndexes, useSliceIds} from '../ui-react';
 import {DEFAULT} from '../common/strings';
 import {Details} from './Details';
@@ -41,15 +41,26 @@ const SliceView = ({
   indexId,
   sliceId,
   s,
-}: SliceProps & {readonly indexesId?: Id} & StoreProp) => (
-  <Details
-    uniqueId={getUniqueId('i', indexesId, indexId, sliceId)}
-    summary={'Slice: ' + sliceId}
-    s={s}
-  >
-    <SliceInHtmlTable sliceId={sliceId} indexId={indexId} indexes={indexes} />
-  </Details>
-);
+}: SliceProps & {readonly indexesId?: Id} & StoreProp) => {
+  const uniqueId = getUniqueId('i', indexesId, indexId, sliceId);
+  const [editable, handleEditable] = useEditable(uniqueId, s);
+  return (
+    <Details
+      uniqueId={uniqueId}
+      summary={'Slice: ' + sliceId}
+      editable={editable}
+      handleEditable={handleEditable}
+      s={s}
+    >
+      <SliceInHtmlTable
+        sliceId={sliceId}
+        indexId={indexId}
+        indexes={indexes}
+        editable={editable}
+      />
+    </Details>
+  );
+};
 
 export const IndexesView = ({
   indexesId,

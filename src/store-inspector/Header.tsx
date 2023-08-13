@@ -3,6 +3,7 @@
 import {OPEN_VALUE, POSITIONS, POSITION_VALUE, TITLE} from './common';
 import {useSetValueCallback, useValue} from '../ui-react';
 import {CURRENT_TARGET} from '../common/strings';
+import {MouseEvent} from 'react';
 import {StoreProp} from './types';
 import {arrayMap} from '../common/array';
 import {createElement} from '../ui-react/common';
@@ -12,7 +13,7 @@ export const Header = ({s}: StoreProp) => {
   const handleClose = useSetValueCallback(OPEN_VALUE, () => false, [], s);
   const handleDock = useSetValueCallback(
     POSITION_VALUE,
-    (event: React.MouseEvent<HTMLImageElement>) =>
+    (event: MouseEvent<HTMLImageElement>) =>
       Number(event[CURRENT_TARGET].dataset.id),
     [],
     s,

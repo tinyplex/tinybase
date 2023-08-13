@@ -1,6 +1,6 @@
 /** @jsx createElement */
 
-import {getUniqueId, sortedIdsMap} from './common';
+import {getUniqueId, sortedIdsMap, useEditable} from './common';
 import {useRelationshipIds, useRelationships} from '../ui-react';
 import {DEFAULT} from '../common/strings';
 import {Details} from './Details';
@@ -22,15 +22,20 @@ const RelationshipView = ({
   readonly relationshipsId?: Id;
   readonly relationshipId: Id;
 } & StoreProp) => {
+  const uniqueId = getUniqueId('r', relationshipsId, relationshipId);
+  const [editable, handleEditable] = useEditable(uniqueId, s);
   return (
     <Details
-      uniqueId={getUniqueId('r', relationshipsId, relationshipId)}
+      uniqueId={uniqueId}
       summary={'Relationship: ' + relationshipId}
+      editable={editable}
+      handleEditable={handleEditable}
       s={s}
     >
       <RelationshipInHtmlTable
         relationshipId={relationshipId}
         relationships={relationships}
+        editable={editable}
       />
     </Details>
   );
