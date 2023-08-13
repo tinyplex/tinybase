@@ -3,6 +3,7 @@
 import {
   useIndexesIds,
   useMetricsIds,
+  useQueriesIds,
   useRelationshipsIds,
   useStoreIds,
   useValues,
@@ -10,6 +11,7 @@ import {
 import {CURRENT_TARGET} from '../common/strings';
 import {IndexesView} from './IndexesView';
 import {MetricsView} from './MetricsView';
+import {QueriesView} from './QueriesView';
 import React from 'react';
 import {RelationshipsView} from './RelationshipsView';
 import {StoreProp} from './types';
@@ -62,6 +64,10 @@ export const Body = ({s}: StoreProp) => {
           key={relationshipsId}
           s={s}
         />
+      ))}
+      <QueriesView s={s} />
+      {arrayMap(useQueriesIds(), (queriesId) => (
+        <QueriesView queriesId={queriesId} key={queriesId} s={s} />
       ))}
     </article>
   );

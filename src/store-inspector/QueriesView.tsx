@@ -1,7 +1,13 @@
 /** @jsx createElement */
 
-import {getUniqueId, sortedIdsMap} from './common';
-import {useQueries, useQueryIds} from '../ui-react';
+import {SORT_CELL, STATE_TABLE, getUniqueId, sortedIdsMap} from './common';
+import {jsonParse, jsonString} from '../common/json';
+import {
+  useCell,
+  useQueries,
+  useQueryIds,
+  useSetCellCallback,
+} from '../ui-react';
 import {DEFAULT} from '../common/strings';
 import {Details} from './Details';
 import {Id} from '../types/common';
@@ -22,13 +28,31 @@ const QueryView = ({
   readonly queriesId?: Id;
   readonly queryId: Id;
 } & StoreProp) => {
+  const uniqueId = getUniqueId('q', queriesId, queryId);
+  const [cellId, descending, offset] = jsonParse(
+    (useCell(STATE_TABLE, uniqueId, SORT_CELL, s) as string) ?? '[]',
+  );
+  const handleChange = useSetCellCallback(
+    STATE_TABLE,
+    uniqueId,
+    SORT_CELL,
+    jsonString,
+    [],
+    s,
+  );
   return (
-    <Details
-      uniqueId={getUniqueId('q', queriesId, queryId)}
-      summary={'Query: ' + queryId}
-      s={s}
-    >
-      <ResultSortedTableInHtmlTable queryId={queryId} queries={queries} />
+    <Details uniqueId={uniqueId} summary={'Query: ' + queryId} s={s}>
+      <ResultSortedTableInHtmlTable
+        queryId={queryId}
+        queries={queries}
+        cellId={cellId}
+        descending={descending}
+        offset={offset}
+        limit={10}
+        paginator={true}
+        sortOnClick={true}
+        onChange={handleChange}
+      />
     </Details>
   );
 };
