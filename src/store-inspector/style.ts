@@ -53,12 +53,19 @@ export const APP_STYLESHEET = arrayJoin(
       // Body
       article: 'padding:0.25rem 0.25rem 0.25rem 0.5rem;overflow:auto',
       details: 'margin-left:0.75rem;width:fit-content;',
+      'details img': 'display:none',
+      'details[open]>summary img':
+        'display:unset;background:none;margin-left:0.25rem',
+      'details[open]>summary img.edit': EDIT_SVG,
+      'details[open]>summary img.done': DONE_SVG,
       summary:
         'margin-left:-0.75rem;line-height:1.25rem;user-select:none;width:fit-content',
 
+      // tables
       table: 'border-collapse:collapse;table-layout:fixed;margin-bottom:0.5rem',
       'table input':
         'background:#111;color:unset;padding:0 0.25rem;border:0;font-size:unset;vertical-align:top;margin:0',
+      'table input[type="number"]': 'width:4rem',
       'table tbody button':
         'font-size:0;background:#fff;border-radius:50%;margin:0 0.125rem 0 0;width:0.85rem;color:#111',
       'table button:first-letter': 'font-size:0.75rem',
@@ -71,11 +78,6 @@ export const APP_STYLESHEET = arrayJoin(
       'button.next': 'margin-right:0.5rem',
       [`th,#${UNIQUE_ID} td`]:
         'overflow:hidden;text-overflow:ellipsis;padding:0.25rem 0.5rem;max-width:12rem;white-space:nowrap;border-width:1px 0;border-style:solid;border-color:#777;text-align:left',
-      'details img': 'display:none',
-      'details[open]>summary img':
-        'display:unset;background:none;margin-left:0.25rem',
-      'details[open]>summary img.edit': EDIT_SVG,
-      'details[open]>summary img.done': DONE_SVG,
     },
     (style, selector) => (style ? `#${UNIQUE_ID} ${selector}{${style}}` : ''),
   ),
