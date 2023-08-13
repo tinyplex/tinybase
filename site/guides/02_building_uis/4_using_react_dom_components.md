@@ -8,8 +8,7 @@ previous guide, but are specifically designed to render HTML content in a
 browser.
 
 Styling and class names are very basic, since you are expected to style them
-with CSS to
-fit your app's overall styling.
+with CSS to fit your app's overall styling.
 
 The easiest way to understand these components is to see them all in action in
 the UI Components demos. There are table-based components for rendering Tables,
@@ -17,7 +16,10 @@ sorted Tables, and Values:
 
 | Component                    | Purpose                                                    |                                                           |
 | ---------------------------- | ---------------------------------------------------------- | --------------------------------------------------------- |
+| ValuesInHtmlTable            | Renders Values.                                            | [demo](/demos/ui-components/valuesinhtmltable)            |
 | TableInHtmlTable             | Renders a Table.                                           | [demo](/demos/ui-components/tableinhtmltable)             |
+| SliceInHtmlTable             | Renders a Slice from an Index.                             | [demo](/demos/ui-components/sliceinhtmltable)             |
+| RelationshipInHtmlTable      | Renders the local and remote Tables of a relationship      | [demo](/demos/ui-components/relationshipinhtmltable)      |
 | SortedTableInHtmlTable       | Renders a sorted Table, with optional interactivity.       | [demo](/demos/ui-components/sortedtableinhtmltable)       |
 | ValuesInHtmlTable            | Renders Values.                                            | [demo](/demos/ui-components/valuesinhtmltable)            |
 | ResultTableInHtmlTable       | Renders a ResultTable.                                     | [demo](/demos/ui-components/resulttableinhtmltable)       |
