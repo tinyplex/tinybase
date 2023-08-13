@@ -22,6 +22,7 @@ createRelationships function and useCreateRelationships hook:
 +const {createRelationships, createStore} = TinyBase;
 -const {Provider, useCell, useCreateStore} = TinyBaseUiReact;
 +const {
++  CellView,
 +  Provider,
 +  useCell,
 +  useCreateRelationships,
@@ -33,7 +34,8 @@ createRelationships function and useCreateRelationships hook:
 
 We need to define the Relationship we are going to use. For the sake of this
 demo we are going to hand-create a second table which the genres table links to
-to get extra metadata. Note how metadata is missing for genre 13.
+to get extra metadata. Note how metadata is missing for genre 13, 'Music', and
+so that is empty in the table.
 
 ```diff-js
    useMemo(async () => {
@@ -107,13 +109,49 @@ relationshipId:
  };
 ```
 
-Note how both the local ('genre') and remote ('metadata') Ids are shown in the
-table, as well as the Row content from the remote Table. Also note how the Row
-with Id of 13 has empty content since there is no remote Row for the
-Relationship to join to.
+Note how both the local ('genre') and remote ('metadata') Ids and columns are
+shown in the table with 'dotted pair' column names. Also note how the Row with
+Id of 13 has empty content since there is no remote Row for the Relationship to
+join to.
+
+In reality you are quite likely to want to customize the columns of a
+RelationshipInHtmlTable. We can use the `customCells` prop for this, using the
+dotted pair syntax (of Table Id and Row Id) to indicate their order, labels, and
+rendering:
+
+```diff-jsx
+-    <RelationshipInHtmlTable relationshipId='genresMetadata' />
++    <RelationshipInHtmlTable
++      relationshipId='genresMetadata'
++      customCells={customRelationshipCells}
++      idColumn={false}
++    />
+   );
+ };
+```
+
+The customized column ordering and rendering can be a constant, including our
+custom Cell component called Popularity that simply emboldens that number:
+
+```jsx
+const Popularity = (props) => (
+  <b>
+    <CellView {...props} />
+  </b>
+);
+
+const customRelationshipCells = {
+  'genres.name': 'Genre',
+  'metadata.popularity': {
+    label: 'Popularity',
+    component: Popularity,
+  },
+  'metadata.text': 'Description',
+};
+```
 
 As per usual, take a look at the RelationshipInHtmlTableProps type and
-HtmlTableProps type to see all the ways in which you can configure this
+HtmlTableProps type to see all the other ways in which you can configure this
 component, and again, click the 'CodePen' link under the demo above to try them
 out.
 
