@@ -1,8 +1,11 @@
-# StoreInspector
+# Inspecting Data
 
 TinyBase v4.1 includes the ui-react-dom module, with a collection of user
 interface components for rendering Store data in your app. It also contains a
-web-based inspector that allows you to reason about the data during development.
+web-based inspector, the StoreInspector component, that allows you to reason
+about the data during development.
+
+![StoreInspector](/store-inspector.webp 'StoreInspector')
 
 ## Usage
 
@@ -52,8 +55,6 @@ addEventListener('load', () =>
 The inspector appears at first as a nub in the corner of the screen containing
 the TinyBase logo. Once clicked, it will open up to show a dark panel. You can
 reposition this to dock to any side of the window, or expand to the full screen.
-
-![StoreInspector](/store-inspector.webp 'StoreInspector')
 
 The inspector contains the following sections for whatever is available in the
 Provider component context:
