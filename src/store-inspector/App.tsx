@@ -1,14 +1,13 @@
 /** @jsx createElement */
-/** @jsxFrag React.Fragment */
+/** @jsxFrag Fragment */
 
+import {Fragment, createElement} from '../ui-react/common';
 import {POSITIONS, UNIQUE_ID} from './common';
 import {useCreatePersister, useCreateStore} from '../ui-react';
 import {APP_STYLESHEET} from './style';
 import {Nub} from './Nub';
 import {Panel} from './Panel';
-import React from 'react';
 import {StoreInspectorProps} from '../types/ui-react-dom';
-import {createElement} from '../ui-react/common';
 import {createSessionPersister} from '../persisters/persister-browser';
 import {createStore} from '../store';
 

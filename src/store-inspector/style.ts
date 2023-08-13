@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import {CLOSE_SVG, LOGO_SVG, POSITIONS_SVG} from './svg';
+import {CLOSE_SVG, DONE_SVG, EDIT_SVG, LOGO_SVG, POSITIONS_SVG} from './svg';
 import {arrayJoin, arrayMap} from '../common/array';
 import {objMap, objNew} from '../common/obj';
 import {UNIQUE_ID} from './common';
@@ -11,7 +11,7 @@ export const APP_STYLESHEET = arrayJoin(
       '*': 'all:revert',
       '*::before': 'all:revert',
       '*::after': 'all:revert',
-      img: 'width:1rem;height:1rem;background:#111;border:0',
+      img: 'width:1rem;height:1rem;background:#111;border:0;vertical-align:text-bottom',
 
       // Nub
       '>img': 'padding:0.25rem;bottom:0;right:0;position:fixed;' + LOGO_SVG,
@@ -57,6 +57,11 @@ export const APP_STYLESHEET = arrayJoin(
         'margin-left:-0.75rem;line-height:1.25rem;user-select:none;width:fit-content',
 
       table: 'border-collapse:collapse;table-layout:fixed;margin-bottom:0.5rem',
+      'table input':
+        'background:#111;color:unset;padding:0 0.25rem;border:0;font-size:unset;vertical-align:top;margin:0',
+      'table tbody button':
+        'font-size:0;background:#fff;border-radius:50%;margin:0 0.125rem 0 0;width:0.85rem;color:#111',
+      'table button:first-letter': 'font-size:0.75rem',
       thead: 'background:#222',
       'th:nth-of-type(1)': 'min-width:2rem;',
       'th.sorted': 'background:#000',
@@ -66,6 +71,11 @@ export const APP_STYLESHEET = arrayJoin(
       'button.next': 'margin-right:0.5rem',
       [`th,#${UNIQUE_ID} td`]:
         'overflow:hidden;text-overflow:ellipsis;padding:0.25rem 0.5rem;max-width:12rem;white-space:nowrap;border-width:1px 0;border-style:solid;border-color:#777;text-align:left',
+      'details img': 'display:none',
+      'details[open]>summary img':
+        'display:unset;background:none;margin-left:0.25rem',
+      'details[open]>summary img.edit': EDIT_SVG,
+      'details[open]>summary img.done': DONE_SVG,
     },
     (style, selector) => (style ? `#${UNIQUE_ID} ${selector}{${style}}` : ''),
   ),

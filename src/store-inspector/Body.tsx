@@ -1,5 +1,6 @@
 /** @jsx createElement */
 
+import {createElement, useCallback, useRef, useState} from '../ui-react/common';
 import {
   useIndexesIds,
   useMetricsIds,
@@ -12,14 +13,11 @@ import {CURRENT_TARGET} from '../common/strings';
 import {IndexesView} from './IndexesView';
 import {MetricsView} from './MetricsView';
 import {QueriesView} from './QueriesView';
-import React from 'react';
 import {RelationshipsView} from './RelationshipsView';
 import {StoreProp} from './types';
 import {StoreView} from './StoreView';
+import {SyntheticEvent} from 'react';
 import {arrayMap} from '../common/array';
-import {createElement} from '../ui-react/common';
-
-const {useCallback, useRef, useState} = React;
 
 export const Body = ({s}: StoreProp) => {
   const ref = useRef<HTMLElement>(null);
@@ -36,7 +34,7 @@ export const Body = ({s}: StoreProp) => {
   }
 
   const handleScroll = useCallback(
-    (event: React.SyntheticEvent<HTMLElement>) => {
+    (event: SyntheticEvent<HTMLElement>) => {
       const {scrollLeft, scrollTop} = event[CURRENT_TARGET];
       requestIdleCallback(() => s.setPartialValues({scrollLeft, scrollTop}));
     },

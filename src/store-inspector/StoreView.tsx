@@ -1,7 +1,13 @@
 /** @jsx createElement */
 
 import {DEFAULT, TABLE, VALUES} from '../common/strings';
-import {SORT_CELL, STATE_TABLE, getUniqueId, sortedIdsMap} from './common';
+import {
+  SORT_CELL,
+  STATE_TABLE,
+  getUniqueId,
+  sortedIdsMap,
+  useEditable,
+} from './common';
 import {SortedTableInHtmlTable, ValuesInHtmlTable} from '../ui-react/dom';
 import {TableProps, ValuesProps} from '../types/ui-react';
 import {jsonParse, jsonString} from '../common/json';
@@ -37,8 +43,15 @@ const TableView = ({
     [],
     s,
   );
+  const [editable, handleEditable] = useEditable(uniqueId, s);
   return (
-    <Details uniqueId={uniqueId} summary={TABLE + ': ' + tableId} s={s}>
+    <Details
+      uniqueId={uniqueId}
+      summary={TABLE + ': ' + tableId}
+      editable={editable}
+      handleEditable={handleEditable}
+      s={s}
+    >
       <SortedTableInHtmlTable
         tableId={tableId}
         store={store}
@@ -49,6 +62,7 @@ const TableView = ({
         paginator={true}
         sortOnClick={true}
         onChange={handleChange}
+        editable={editable}
       />
     </Details>
   );
@@ -58,12 +72,21 @@ const ValuesView = ({
   store,
   storeId,
   s,
-}: ValuesProps & {readonly storeId?: Id} & StoreProp) =>
-  arrayIsEmpty(useValueIds(store)) ? null : (
-    <Details uniqueId={getUniqueId('v', storeId)} summary={VALUES} s={s}>
-      <ValuesInHtmlTable store={store} />
+}: ValuesProps & {readonly storeId?: Id} & StoreProp) => {
+  const uniqueId = getUniqueId('v', storeId);
+  const [editable, handleEditable] = useEditable(uniqueId, s);
+  return arrayIsEmpty(useValueIds(store)) ? null : (
+    <Details
+      uniqueId={uniqueId}
+      summary={VALUES}
+      editable={editable}
+      handleEditable={handleEditable}
+      s={s}
+    >
+      <ValuesInHtmlTable store={store} editable={editable} />
     </Details>
   );
+};
 
 export const StoreView = ({
   storeId,
