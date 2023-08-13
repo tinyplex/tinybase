@@ -64,7 +64,10 @@ Provider component context:
 - Each named Indexes: each Row in each Slice of each Index
 - Default Relationships: the pair of Tables in each Relationship
 - Each named Relationships: the pair of Tables in each Relationship
+- Default Queries: the pair of Tables in each Query
+- Each named Queries: the pair of Tables in each Query
 
 It is hoped that each section is quite self-explanatory. If not, please try it
 out in the <StoreInspector /> demo, or indeed in most of the TinyBase demos
-themselves!
+themselves! The Movie Database demo and Countries demo are quite good examples
+of the inspector in use.

@@ -12,7 +12,7 @@ with CSS to fit your app's overall styling.
 
 The easiest way to understand these components is to see them all in action in
 the UI Components demos. There are table-based components for rendering Tables,
-sorted Tables, and Values:
+sorted Tables, Values, and so on:
 
 | Component                    | Purpose                                                    |                                                           |
 | ---------------------------- | ---------------------------------------------------------- | --------------------------------------------------------- |
