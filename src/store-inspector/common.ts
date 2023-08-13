@@ -14,7 +14,8 @@ export const SORT_CELL = 'sort';
 export const OPEN_CELL = 'open';
 export const POSITION_VALUE = 'position';
 export const OPEN_VALUE = OPEN_CELL;
-export const EDITABLE_CELL = 'editable';
+
+const EDITABLE_CELL = 'editable';
 
 export const getUniqueId = (...args: (Id | undefined)[]) => jsonString(args);
 
