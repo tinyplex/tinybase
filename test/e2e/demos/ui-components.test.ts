@@ -69,6 +69,53 @@ describe('ui-components', () => {
     );
   });
 
+  test('SliceInHtmlTable', async () => {
+    await expectPage(`/demos/ui-components/sliceinhtmltable`);
+    await expectedElement('h1', '<SliceInHtmlTable />');
+    await expectedFramedElement('table thead th:nth-of-type(1)', 'Id');
+    await expectedFramedElement('table thead th:nth-of-type(2)', 'name');
+    await expectedFramedElement('table tbody tr:nth-of-type(1) th', '2');
+    await expectedFramedElement('table tbody tr:nth-of-type(1) td', 'Comedy');
+    await expectedFramedElement('table tbody tr:nth-of-type(2) th', '3');
+    await expectedFramedElement('table tbody tr:nth-of-type(2) td', 'Family');
+    await expectedFramedElement('table tbody tr:nth-of-type(3) th', '10');
+    await expectedFramedElement('table tbody tr:nth-of-type(3) td', 'Action');
+    await expectedFramedElement('table tbody tr:nth-of-type(4) th', '1');
+    await expectedFramedElement('table tbody tr:nth-of-type(4) td', 'Horror');
+  });
+
+  test('RelationshipInHtmlTable', async () => {
+    await expectPage(`/demos/ui-components/relationshipinhtmltable`);
+    await expectedElement('h1', '<RelationshipInHtmlTable />');
+    await expectedFramedElement('table thead th:nth-of-type(1)', 'Genre');
+    await expectedFramedElement('table thead th:nth-of-type(2)', 'Popularity');
+    await expectedFramedElement('table thead th:nth-of-type(3)', 'Description');
+    await expectedFramedElement(
+      'table tbody tr:nth-of-type(1) td:nth-of-type(1)',
+      'Drama',
+    );
+    await expectedFramedElement(
+      'table tbody tr:nth-of-type(1) td:nth-of-type(2) b',
+      '6',
+    );
+    await expectedFramedElement(
+      'table tbody tr:nth-of-type(1) td:nth-of-type(3)',
+      'Dramatic movies to make you think',
+    );
+    await expectedFramedElement(
+      'table tbody tr:nth-of-type(2) td:nth-of-type(1)',
+      'Comedy',
+    );
+    await expectedFramedElement(
+      'table tbody tr:nth-of-type(2) td:nth-of-type(2) b',
+      '7',
+    );
+    await expectedFramedElement(
+      'table tbody tr:nth-of-type(2) td:nth-of-type(3)',
+      'These ones make you laugh',
+    );
+  });
+
   test('SortedTableInHtmlTable', async () => {
     await expectPage(`/demos/ui-components/sortedtableinhtmltable`);
     await expectedElement('h1', '<SortedTableInHtmlTable />');
