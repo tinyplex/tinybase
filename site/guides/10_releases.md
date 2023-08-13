@@ -12,6 +12,8 @@ components for tabular display of your data in a web application.
 
 ### New DOM Components
 
+The following is the list of all the components released in v4.1:
+
 | Component                    | Purpose                                                    |                                                           |
 | ---------------------------- | ---------------------------------------------------------- | --------------------------------------------------------- |
 | ValuesInHtmlTable            | Renders Values.                                            | [demo](/demos/ui-components/valuesinhtmltable)            |
