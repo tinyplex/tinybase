@@ -19,7 +19,7 @@ import {arrayIsEmpty} from '../common/array';
 import {createElement} from '../ui-react/common';
 import {isUndefined} from '../common/other';
 
-const StoreTableView = ({
+const TableView = ({
   tableId,
   store,
   storeId,
@@ -54,7 +54,7 @@ const StoreTableView = ({
   );
 };
 
-const StoreValuesView = ({
+const ValuesView = ({
   store,
   storeId,
   s,
@@ -77,14 +77,9 @@ export const StoreView = ({
       summary={'Store: ' + (storeId ?? DEFAULT)}
       s={s}
     >
-      <StoreValuesView storeId={storeId} store={store} s={s} />
+      <ValuesView storeId={storeId} store={store} s={s} />
       {sortedIdsMap(tableIds, (tableId) => (
-        <StoreTableView
-          store={store}
-          storeId={storeId}
-          tableId={tableId}
-          s={s}
-        />
+        <TableView store={store} storeId={storeId} tableId={tableId} s={s} />
       ))}
     </Details>
   );
