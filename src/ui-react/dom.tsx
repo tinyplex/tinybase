@@ -39,6 +39,7 @@ import {
   useSetValueCallback,
   useSliceRowIds,
   useSortedRowIds,
+  useStoreOrStoreById,
   useTableCellIds,
   useValue,
   useValueIds,
@@ -405,10 +406,12 @@ const EditableThing = <Thing extends Cell | Value>({
   thing,
   onThingChange,
   className,
+  hasSchema,
 }: {
   readonly thing: Thing | undefined;
   readonly onThingChange: (thing: Thing | undefined) => void;
   readonly className: string;
+  readonly hasSchema: (() => boolean) | undefined;
 }) => {
   const [thingType, setThingType] = useState<CellOrValueType>();
   const [currentThing, setCurrentThing] = useState<string | number | boolean>();
@@ -438,22 +441,31 @@ const EditableThing = <Thing extends Cell | Value>({
       <button
         className={thingType}
         onClick={useCallback(() => {
-          const nextType = getTypeCase(
-            thingType,
-            NUMBER,
-            BOOLEAN,
-            STRING,
-          ) as CellOrValueType;
-          const thing = getTypeCase(
-            nextType,
-            stringThing,
-            numberThing,
-            booleanThing,
-          );
-          setThingType(nextType);
-          setCurrentThing(thing);
-          onThingChange(thing as Thing);
-        }, [onThingChange, stringThing, numberThing, booleanThing, thingType])}
+          if (!hasSchema?.()) {
+            const nextType = getTypeCase(
+              thingType,
+              NUMBER,
+              BOOLEAN,
+              STRING,
+            ) as CellOrValueType;
+            const thing = getTypeCase(
+              nextType,
+              stringThing,
+              numberThing,
+              booleanThing,
+            );
+            setThingType(nextType);
+            setCurrentThing(thing);
+            onThingChange(thing as Thing);
+          }
+        }, [
+          hasSchema,
+          onThingChange,
+          stringThing,
+          numberThing,
+          booleanThing,
+          thingType,
+        ])}
       >
         {thingType}
       </button>
@@ -773,6 +785,7 @@ export const EditableCellView: typeof EditableCellViewDecl = ({
       store,
     )}
     className={className ?? EDITABLE + CELL}
+    hasSchema={useStoreOrStoreById(store)?.hasTablesSchema}
   />
 );
 
@@ -790,6 +803,7 @@ export const EditableValueView: typeof EditableValueViewDecl = ({
       store,
     )}
     className={className ?? EDITABLE + VALUE}
+    hasSchema={useStoreOrStoreById(store)?.hasValuesSchema}
   />
 );
 
