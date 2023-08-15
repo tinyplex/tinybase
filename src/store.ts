@@ -1579,6 +1579,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
     getTablesSchemaJson,
     getValuesSchemaJson,
     getSchemaJson,
+    hasTablesSchema: () => hasTablesSchema,
+    hasValuesSchema: () => hasValuesSchema,
 
     setContent,
     setTables,

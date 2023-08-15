@@ -436,6 +436,12 @@ export interface Store {
   /// Store.getSchemaJson
   getSchemaJson(): Json;
 
+  /// Store.hasTablesSchema
+  hasTablesSchema(): boolean;
+
+  /// Store.hasValuesSchema
+  hasValuesSchema(): boolean;
+
   /// Store.setContent
   setContent([tables, values]: [Tables, Values]): Store;
 

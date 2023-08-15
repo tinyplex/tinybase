@@ -2143,6 +2143,51 @@
    */
   /// Store.getSchemaJson
   /**
+   * The hasTablesSchema method returns a boolean indicating whether the Store
+   * currently has a TablesSchema applied to it.
+   * @returns Whether the Store has a TablesSchema applied to it.
+   * @example
+   * This example sets a TablesSchema and checks that it is present.
+   *
+   * ```js
+   * const store = createStore()
+   *   .setTablesSchema({
+   *     pets: {
+   *       price: {type: 'number'},
+   *     },
+   *   });
+   * console.log(store.hasTablesSchema());
+   * // -> true
+   *
+   * store.delTablesSchema();
+   * console.log(store.hasTablesSchema());
+   * // -> false
+   * ```
+   * @category Getter
+   * @since v4.1.1
+   */
+  /// Store.hasTablesSchema
+  /**
+   * The hasValuesSchema method returns a boolean indicating whether the Store
+   * currently has a ValuesSchema applied to it.
+   * @returns Whether the Store has a ValuesSchema applied to it.
+   * @example
+   * This example sets a ValuesSchema and checks that it is present.
+   *
+   * ```js
+   * const store = createStore().setValuesSchema({open: {type: 'boolean'}});
+   * console.log(store.hasValuesSchema());
+   * // -> true
+   *
+   * store.delValuesSchema();
+   * console.log(store.hasValuesSchema());
+   * // -> false
+   * ```
+   * @category Getter
+   * @since v4.1.1
+   */
+  /// Store.hasValuesSchema
+  /**
    * The setContent method takes an array of two objects and sets the entire
    * data of the Store.
    *
