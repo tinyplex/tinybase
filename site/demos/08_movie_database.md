@@ -135,7 +135,9 @@ const App = () => {
   const store = useCreateStore(createStore);
 
   const viewStore = useCreateStore(() =>
-    createStore().setValue('currentSection', 'movies'),
+    createStore().setValuesSchema({
+      currentSection: {type: 'string', default: 'movies'},
+    }),
   );
 
   const queries = useCreateQueries(store, createAndInitQueries, []);
@@ -314,12 +316,15 @@ into the main part of the application:
 ```jsx
 const Body = () => {
   const {currentSection, currentDetailId} = useRoute();
-  const [, Section] = SECTIONS[currentSection];
-  return (
-    <main>
-      <Section detailId={currentDetailId} />
-    </main>
-  );
+  if (SECTIONS[currentSection] != null) {
+    const [, Section] = SECTIONS[currentSection];
+    return (
+      <main>
+        <Section detailId={currentDetailId} />
+      </main>
+    );
+  }
+  return null;
 };
 ```
 
