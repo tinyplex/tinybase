@@ -89,10 +89,10 @@ addEventListener('load', () => {
   });
 
   window.onpopstate = function (event: PopStateEvent) {
-    if (!location.href.includes('#')) {
-      go(location.href);
-      event.preventDefault();
-    }
+    // if (!location.href.includes('#')) {
+    go(location.href);
+    event.preventDefault();
+    // }
   };
 
   const openClose = (li: HTMLElement) =>
@@ -104,6 +104,9 @@ addEventListener('load', () => {
     });
 
   const go = (href: string): void => {
+    if (href.includes('#')) {
+      href = href.substring(0, href.indexOf('#'));
+    }
     fetch(`${href}nav.json`)
       .then((response) => response.json())
       .then((navJson) => {
