@@ -57,7 +57,7 @@ const UNSTAR = '\u2606';
 
 We have a top-level `App` component, in which we initialize our data, and
 render the parts of the app. Firstly, we create and memoize a set of three Store
-objects:
+objects with their schemas:
 
 - `countryStore` contains a list of the world's countries, loaded once from a
   JSON file using a remote Persister object.
@@ -111,17 +111,19 @@ const App = () => {
     },
   );
 
-  const viewStore = useCreateStore(createStore);
+  const viewStore = useCreateStore(() =>
+    createStore().setValuesSchema({
+      indexes: {type: 'string', default: 'countryIndexes'},
+      indexId: {type: 'string', default: 'firstLetter'},
+      sliceId: {type: 'string', default: 'A'},
+    }),
+  );
   useCreatePersister(
     viewStore,
     (store) => createSessionPersister(store, 'countries/viewStore'),
     [],
     async (persister) => {
-      await persister.startAutoLoad({}, {
-        indexes: 'countryIndexes',
-        indexId: 'firstLetter',
-        sliceId: 'A',
-      });
+      await persister.startAutoLoad();
       await persister.startAutoSave();
     },
   );
