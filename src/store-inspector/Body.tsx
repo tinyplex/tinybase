@@ -27,12 +27,13 @@ import {arrayMap} from '../common/array';
 import {mathFloor} from '../common/other';
 
 export const Body = ({s}: StoreProp) => {
-  const ref = useRef<HTMLElement>(null);
+  const articleRef = useRef<HTMLElement>(null);
+  const idleCallbackRef = useRef<number>(0);
   const [scrolled, setScrolled] = useState(false);
   const {scrollLeft, scrollTop} = useValues(s);
 
   useLayoutEffect(() => {
-    const article = ref.current;
+    const article = articleRef.current;
     if (article && !scrolled) {
       const observer = new MutationObserver(() => {
         if (
@@ -52,7 +53,8 @@ export const Body = ({s}: StoreProp) => {
   const handleScroll = useCallback(
     (event: SyntheticEvent<HTMLElement>) => {
       const {scrollLeft, scrollTop} = event[CURRENT_TARGET];
-      requestIdleCallback(() => {
+      cancelIdleCallback(idleCallbackRef.current);
+      idleCallbackRef.current = requestIdleCallback(() => {
         setScrolled(true);
         s.setPartialValues({scrollLeft, scrollTop});
       });
@@ -61,7 +63,7 @@ export const Body = ({s}: StoreProp) => {
   );
 
   return (
-    <article ref={ref} onScroll={handleScroll}>
+    <article ref={articleRef} onScroll={handleScroll}>
       <StoreView s={s} />
       {arrayMap(useStoreIds(), (storeId) => (
         <StoreView storeId={storeId} key={storeId} s={s} />
