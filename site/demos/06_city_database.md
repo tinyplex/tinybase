@@ -28,9 +28,8 @@ itself:
 
 ```js
 const {createQueries, createStore} = TinyBase;
-const {CellView, Provider, SortedTableView, useCreateStore, useRowIds} =
-  TinyBaseUiReact;
-const {createElement, useCallback, useMemo, useState} = React;
+const {Provider, useCreateStore} = TinyBaseUiReact;
+const {createElement, useMemo, useState} = React;
 const {SortedTableInHtmlTable, StoreInspector} = TinyBaseUiReactDomDebug;
 ```
 
