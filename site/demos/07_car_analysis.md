@@ -50,18 +50,16 @@ itself:
 const {createQueries, createStore} = TinyBase;
 const {
   Provider,
-  ResultSortedTableView,
   useCreateQueries,
   useCreateStore,
   useQueries,
   useResultCell,
-  useResultRowIds,
   useResultSortedRowIds,
   useResultTable,
 } = TinyBaseUiReact;
 const {createElement, useCallback, useEffect, useMemo, useRef, useState} =
   React;
-const {StoreInspector} = TinyBaseUiReactDomDebug;
+const {ResultSortedTableInHtmlTable, StoreInspector} = TinyBaseUiReactDomDebug;
 ```
 
 For simplicity, we set up a few convenience arrays that distinguish the columns
@@ -236,7 +234,7 @@ left hand side that allows the user to select dimensions, measures, and the
 aggregation to be used.
 
 The `Body` component wraps the sidebar and the field selection state, and then
-the `ResultGraph` and `ResultSortableGrid` components render the two modes.
+the `ResultGraph` and `ResultTable` components render the two modes.
 
 The state of the application is based on selected dimensions and measures, which
 aggregate is used, and whether the data is rendered as a table. This is
@@ -315,7 +313,7 @@ query Id and the columns to display:
 ```jsx
       {/* ... */}
       {showTable ? (
-        <ResultSortableGrid
+        <ResultTable
           queryId={queryId}
           columns={[...dimensions, ...measures]}
         />
@@ -391,146 +389,46 @@ hr {
 }
 ```
 
-## The `ResultSortableGrid` Component
+## The `ResultTable` Component
 
 We start with the tabular view since it's a little simpler than the graph.
 There's a slightly more generalized version of this component described in the
 TinyMovies demo. This one is quite simple.
 
-The component takes the name of the query to render, and an array of the columns
-to render. The component also stores state for which column is being used to
-sort the results, in which direction, and whether the records to display are
-offset from the start of the results (in other words, due to pagination):
+Previously there was a whole table implementation in this demo, but as of
+TinyBase v4.1, we just use the ResultSortedTableInHtmlTable component from the
+new ui-react-dom module straight out of the box. The only extra step is
+transforming the array of selected columns into the customCells prop to render.
 
 ```jsx
-const ResultSortableGrid = ({queryId, columns}) => {
-  const LIMIT = 10;
-  const [sortCellId, setSortCellId] = useState('id');
-  const [descending, setDescending] = useState(false);
-  const [offset, setOffset] = useState(0);
-  const count = useResultRowIds(queryId).length;
-  // ...
-```
-
-Since users can dramatically shorten the number of results of the grid by
-changing the fields to aggregate, we need to defend against previous pagination
-'overshooting' the number of rows now available:
-
-```jsx
-// ...
-if (offset > count) {
-  setOffset(0);
-}
-// ...
-```
-
-The `Pagination` component shows the number of records, and offers buttons to
-paginate through them if more than 10:
-
-```jsx
-// ...
-const Pagination = useCallback(
-  () => (
-    <>
-      {count} record{count != 1 ? 's' : ''}
-      {count > LIMIT && (
-        <>
-          {offset > 0 ? (
-            <button
-              className="prev"
-              onClick={() => setOffset(offset - LIMIT)}
-            />
-          ) : (
-            <button className="prev disabled" />
-          )}
-          {offset + LIMIT < count ? (
-            <button
-              className="next"
-              onClick={() => setOffset(offset + LIMIT)}
-            />
-          ) : (
-            <button className="next disabled" />
-          )}
-          {offset + 1} to {Math.min(count, offset + LIMIT)}
-        </>
-      )}
-    </>
-  ),
-  [count, offset, LIMIT],
-);
-// ...
-```
-
-The `HeadingComponent` lists the Cell Ids and supports the user clicking on a
-new one to sort by that Cell (or clicking on the existing one to reverse the
-current sort):
-
-```jsx
-// ...
-const HeadingComponent = useCallback(
-  () => (
-    <tr>
-      {columns.map((cellId) =>
-        cellId == sortCellId ? (
-          <th onClick={() => setDescending(!descending)} className={cellId}>
-            {descending ? '\u2193' : '\u2191'} {cellId}
-          </th>
-        ) : (
-          <th onClick={() => setSortCellId(cellId)} className={cellId}>
-            {cellId}
-          </th>
+const ResultTable = ({queryId, columns}) => (
+  <ResultSortedTableInHtmlTable
+    queryId={queryId}
+    sortOnClick={true}
+    paginator={true}
+    limit={10}
+    idColumn={false}
+    customCells={useMemo(
+      () =>
+        Object.fromEntries(
+          columns.map((column) => [column, {component: CustomCell}]),
         ),
-      )}
-    </tr>
-  ),
-  [sortCellId, descending, ...columns],
+      [...columns],
+    )}
+  />
 );
-// ...
 ```
 
-(We cheekily add the Cell Id as a CSS class so that we can color the measure
-headings' borders.)
-
-And finally we create a `RowComponent` for each row of the grid. If a Cell is
-numeric, we crudely round it to two decimal places.
+We're using a slightly custom component for the table cells. If a Cell has a
+numeric value, we crudely round it to two decimal places. Also we give it the
+cellId as className so we can color the left-hand border.
 
 ```jsx
 // ...
-const RowComponent = useCallback(
-  ({queryId, rowId}) => (
-    <tr>
-      {columns.map((cellId) => {
-        const cell = useResultCell(queryId, rowId, cellId);
-        return <td>{Number.isFinite(cell) ? round(cell) : cell}</td>;
-      })}
-    </tr>
-  ),
-  columns,
-);
-// ...
-```
-
-The final `ResultSortableGrid` component is rendered by placing the pagination
-next to the table, and using the `ResultSortedTableView` provided by the
-TinyBase ui-react module to render the rows according to the sorting.
-
-```jsx
-  // ...
+const CustomCell = ({queryId, rowId, cellId}) => {
+  const cell = useResultCell(queryId, rowId, cellId);
   return (
-    <main>
-      <Pagination />
-      <table>
-        <HeadingComponent />
-        <ResultSortedTableView
-          queryId={queryId}
-          cellId={sortCellId}
-          descending={descending}
-          offset={offset}
-          limit={LIMIT}
-          resultRowComponent={RowComponent}
-        />
-      </table>
-    </main>
+    <span className={cellId}>{Number.isFinite(cell) ? round(cell) : cell}</span>
   );
 };
 ```
@@ -544,49 +442,33 @@ table {
   font-size: inherit;
   line-height: inherit;
   border-collapse: collapse;
+  align-self: flex-start;
+  margin: 0.5rem;
+  caption {
+    text-align: left;
+    height: 1.75rem;
+    button {
+      border: 0;
+      margin-right: 0.25rem;
+    }
+  }
   th,
   td {
-    padding: 0.25rem 0.5rem 0.25rem 0;
     overflow: hidden;
     white-space: nowrap;
+    text-overflow: ellipsis;
   }
   th {
+    padding: 0.25rem;
     cursor: pointer;
     border: solid #ddd;
-    border-width: 0 0 2px;
+    border-width: 1px 0;
     text-align: left;
   }
-  td {
-    border-bottom: 1px solid #eee;
-  }
-}
-```
-
-The pagination buttons are formatted with some SVG of their own:
-
-```less
-button {
-  border: 0;
-  cursor: pointer;
-  height: 1rem;
-  padding: 0;
-  vertical-align: text-top;
-  width: 1rem;
-  &.prev {
-    margin-left: 0.5rem;
-    &::before {
-      content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" height="1rem" viewBox="0 0 100 100" fill="black"><path d="M65 20v60l-30-30z" /></svg>');
-    }
-  }
-  &.next {
-    margin-right: 0.5rem;
-    &::before {
-      content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" height="1rem" viewBox="0 0 100 100" fill="black"><path d="M35 20v60l30-30z" /></svg>');
-    }
-  }
-  &.disabled {
-    cursor: default;
-    opacity: 0.3;
+  td span {
+    border-left: 2px solid transparent;
+    padding: 0.25rem;
+    line-height: 1.75rem;
   }
 }
 ```
