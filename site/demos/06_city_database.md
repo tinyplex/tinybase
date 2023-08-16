@@ -31,7 +31,7 @@ const {createQueries, createStore} = TinyBase;
 const {CellView, Provider, SortedTableView, useCreateStore, useRowIds} =
   TinyBaseUiReact;
 const {createElement, useCallback, useMemo, useState} = React;
-const {StoreInspector} = TinyBaseUiReactDomDebug;
+const {SortedTableInHtmlTable, StoreInspector} = TinyBaseUiReactDomDebug;
 ```
 
 ## Initializing The Application
@@ -194,146 +194,32 @@ Now let's render this data!
 
 ## The `CityTable` Component
 
-This is the component that renders city data in a table. It's fully
-self-contained in terms of managing its own state, and wraps the underlying
-`SortedTableView` provided by the TinyBase ui-react module.
-
-First we create three items of state for the table: the column being sorted by,
-whether it is descending or not, and the offset for the pagination. We also get
-the total size of the Table.
+This is the component that renders city data in a table. Previously there was a
+whole table implementation in this demo, but as of TinyBase v4.1, we just use
+the SortedTableInHtmlTable component from the new ui-react-dom module straight
+out of the box!
 
 ```jsx
-const CityTable = () => {
-  const [sortCellId, setSortCellId] = useState('Population');
-  const [descending, setDescending] = useState(true);
-  const [offset, setOffset] = useState(0);
-  const count = useRowIds('cities').length;
-  // ...
-```
-
-Next we create the pagination strip that lists the total number, and shows
-buttons for paginating up and down through sets of 10 records from the Table.
-
-```jsx
-// ...
-const LIMIT = 10;
-
-const Pagination = useCallback(
-  () => (
-    <>
-      {count} cities
-      {offset > 0 ? (
-        <button className="prev" onClick={() => setOffset(offset - LIMIT)} />
-      ) : (
-        <button className="prev disabled" />
-      )}
-      {offset + LIMIT < count ? (
-        <button className="next" onClick={() => setOffset(offset + LIMIT)} />
-      ) : (
-        <button className="next disabled" />
-      )}
-      {offset + 1} to {Math.min(count, offset + LIMIT)}
-    </>
-  ),
-  [count, offset],
-);
-// ...
-```
-
-Next, the table itself. There is a heading component of the columns, where each
-heading cell can be clicked to sort (or reverse sort) that column:
-
-```jsx
-// ...
-const HeadingComponent = useCallback(
-  () => (
-    <tr>
-      {COLUMNS.map((cellId, c) =>
-        cellId == sortCellId ? (
-          <th onClick={() => setDescending(!descending)} className={`col${c}`}>
-            {descending ? '\u2193' : '\u2191'} {cellId}
-          </th>
-        ) : (
-          <th onClick={() => setSortCellId(cellId)} className={`col${c}`}>
-            {cellId}
-          </th>
-        ),
-      )}
-    </tr>
-  ),
-  [sortCellId, descending],
-);
-// ...
-```
-
-We put these together to create the paginated table:
-
-```jsx
-// ...
-  return (
-    <>
-      <Pagination />
-      <table>
-        <HeadingComponent />
-        <SortedTableView
-          tableId="cities"
-          cellId={sortCellId}
-          descending={descending}
-          offset={offset}
-          limit={LIMIT}
-          rowComponent={CityRow}
-        />
-      </table>
-    </>
-  );
-};
-```
-
-The `CityRow` component used above is very simple. Each row of the table simply
-renders the Cells from the underlying data Table:
-
-```jsx
-// ...
-const CityRow = (props) => (
-  <tr>
-    {COLUMNS.map((cellId) => (
-      <td>
-        <CellView {...props} cellId={cellId} />
-      </td>
-    ))}
-  </tr>
+const CityTable = () => (
+  <SortedTableInHtmlTable
+    tableId="cities"
+    cellId="Population"
+    descending={true}
+    sortOnClick={true}
+    paginator={true}
+    limit={10}
+  />
 );
 ```
+
+In other words, it starts off sorting cities by population in descending order,
+has interactive column headings to change the sorting, and has a paginator for
+going through cities in pages of ten.
 
 The table benefits from some light styling for the pagination buttons and the
 table itself:
 
 ```less
-button {
-  border: 0;
-  cursor: pointer;
-  height: 1rem;
-  padding: 0;
-  vertical-align: text-top;
-  width: 1rem;
-  &.prev {
-    margin-left: 0.5rem;
-    &::before {
-      content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" height="1rem" viewBox="0 0 100 100" fill="black"><path d="M65 20v60l-30-30z" /></svg>');
-    }
-  }
-  &.next {
-    margin-right: 0.5rem;
-    &::before {
-      content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" height="1rem" viewBox="0 0 100 100" fill="black"><path d="M35 20v60l30-30z" /></svg>');
-    }
-  }
-  &.disabled {
-    cursor: default;
-    opacity: 0.3;
-  }
-}
-
 table {
   border-collapse: collapse;
   font-size: inherit;
@@ -341,6 +227,13 @@ table {
   margin-top: 0.5rem;
   table-layout: fixed;
   width: 100%;
+  caption {
+    text-align: left;
+    button {
+      border: 0;
+      margin-right: 0.25rem;
+    }
+  }
   th,
   td {
     overflow: hidden;
