@@ -7,10 +7,6 @@ actors.
 ![TMDB](https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg 'Inline logo for TMDB') - we use The Movie Database as the source of the movie
 information in this app. Thank you for a great data set to demonstrate TinyBase!
 
-This demo includes a powerful general component called
-[`ResultSortableGrid`](#the-resultsortablegrid-component) that you should feel
-free to use in your own apps.
-
 ## An Overview Of The Data
 
 Before looking at code, let's familiarize ourselves with the data used in this
@@ -58,15 +54,15 @@ application:
 | `directors` | `movies`, `people`           | `directorId`, `directorName`, `directorImage`, `gender`, `popularity`, `movieCount`                                                                                                                                                                         |
 | `cast`      | `cast`, `people`             | `castId`, `castName`, `castImage`, `gender`, `popularity`, `movieCount`                                                                                                                                                                                     |
 
-Others, like the `moviesForYear` query, are set up when a specific page is being
+Others, like the `moviesInYear` query, are set up when a specific page is being
 viewed (in that case, the detail page for a particular year):
 
-| Query               | From&nbsp;Tables           | Cell Ids                                                                       |
-| ------------------- | -------------------------- | ------------------------------------------------------------------------------ |
-| `moviesForYear`     | `movies`, `genres`         | `movieId`, `movieName`, `movieImage`, `year`, `rating`, `genreId`, `genreName` |
-| `moviesForGenre`    | `movies`, `genres`         | `movieId`, `movieName`, `movieImage`, `year`, `rating`, `genreId`, `genreName` |
-| `moviesForDirector` | `movies`, `genres`         | `movieId`, `movieName`, `movieImage`, `year`, `rating`, `genreId`, `genreName` |
-| `moviesForCast`     | `cast`, `movies`, `genres` | `movieId`, `movieName`, `movieImage`, `year`, `rating`, `genreId`, `genreName` |
+| Query                | From&nbsp;Tables           | Cell Ids                                                                       |
+| -------------------- | -------------------------- | ------------------------------------------------------------------------------ |
+| `moviesInYear`       | `movies`, `genres`         | `movieId`, `movieName`, `movieImage`, `year`, `rating`, `genreId`, `genreName` |
+| `moviesInGenre`      | `movies`, `genres`         | `movieId`, `movieName`, `movieImage`, `year`, `rating`, `genreId`, `genreName` |
+| `moviesWithDirector` | `movies`, `genres`         | `movieId`, `movieName`, `movieImage`, `year`, `rating`, `genreId`, `genreName` |
+| `moviesWithCast`     | `cast`, `movies`, `genres` | `movieId`, `movieName`, `movieImage`, `year`, `rating`, `genreId`, `genreName` |
 
 You might notice that many of these queries share the same Cell Ids. You'll
 discover that TinyBase lets you compose queries programmatically, so we'll be
@@ -102,7 +98,6 @@ const {
   CellView,
   Provider,
   ResultCellView,
-  ResultSortedTableView,
   useCell,
   useCreateQueries,
   useCreateStore,
@@ -112,8 +107,8 @@ const {
   useSetValuesCallback,
   useValues,
 } = TinyBaseUiReact;
-const {createElement, useCallback, useMemo, useState} = React;
-const {StoreInspector} = TinyBaseUiReactDomDebug;
+const {createElement, useMemo, useState} = React;
+const {ResultSortedTableInHtmlTable, StoreInspector} = TinyBaseUiReactDomDebug;
 ```
 
 ## Initializing The Application
@@ -135,9 +130,7 @@ const App = () => {
   const store = useCreateStore(createStore);
 
   const viewStore = useCreateStore(() =>
-    createStore().setValuesSchema({
-      currentSection: {type: 'string', default: 'movies'},
-    }),
+    createStore().setValues({currentSection: 'movies'}),
   );
 
   const queries = useCreateQueries(store, createAndInitQueries, []);
@@ -244,10 +237,10 @@ const SECTIONS = {
 };
 ```
 
-The `viewStore` contains the section name and optionally a detail ID (such as
-the movie's Id), both as Values. The `useRoute` hook gets this pair, and the
-`useSetRouteCallback` hook will be used to set it in response to the user
-clicking links in the app.
+The `viewStore` contains the section name and optionally a string detail ID
+(such as the movie's Id), both as Values. The `useRoute` hook gets this pair,
+and the `useSetRouteCallback` hook will be used to set it in response to the
+user clicking links in the app.
 
 ```js
 const useRoute = () => useValues('viewStore');
@@ -566,167 +559,21 @@ That's it for the main persistent queries that power most of the major views of
 the app. We'll refer to these by their query Id when we actually bind them to
 components.
 
-## The `ResultSortableGrid` Component
+## The ResultSortedTableInHtmlTable Component
 
 Most of the movies app is built from tabular data views, and it's nice to have a
 re-usable `<table>` rendering, complete with sorting, pagination, and
 formatting.
 
-Here we introduce a common component that takes a query Id, a configuration
-array for the columns to render, and options for sorting and pagination. It's
-fully self-contained in terms of managing its own state, and wraps the
-underlying `ResultSortedTableView` provided by the TinyBase ui-react module.
-
-The `columns` prop is an array of `[cellId, label, component?]` entries, that
-describe the Cell of the query to get the value from, the label to put in the
-top header, and optionally, a custom way to render the values. We'll use this to
-render movie posters next to their links, for example.
-
-Note that we have `defaultDescending` default to `true`, since in this movies
-app, nearly every useful initial sorting (rating, popularity, year) is downward.
-
-Otherwise, there is nothing movie-specific about this component! So you may find
-it useful to take this verbatim for yourself, whenever you need to render
-tabular query data.
-
-```jsx
-const ResultSortableGrid = ({
-  queryId,
-  columns,
-  defaultSortCellId,
-  defaultDescending = true,
-  limit = 20,
-  noun = 'record',
-}) => {
-  const columnsKey = JSON.stringify(columns);
-
-  const [sortCellId, setSortCellId] = useState(defaultSortCellId);
-  const [descending, setDescending] = useState(defaultDescending);
-  const [offset, setOffset] = useState(0);
-  const count = useResultRowIds(queryId).length;
-
-  if (offset > count) {
-    setOffset(0);
-  }
-
-  const Pagination = useCallback(
-    () => (
-      <>
-        {count} {noun}
-        {count != 1 ? 's' : ''}
-        {count > limit && (
-          <>
-            {offset > 0 ? (
-              <button
-                className="prev"
-                onClick={() => setOffset(offset - limit)}
-              />
-            ) : (
-              <button className="prev disabled" />
-            )}
-            {offset + limit < count ? (
-              <button
-                className="next"
-                onClick={() => setOffset(offset + limit)}
-              />
-            ) : (
-              <button className="next disabled" />
-            )}
-            {offset + 1} to {Math.min(count, offset + limit)}
-          </>
-        )}
-      </>
-    ),
-    [count, offset, limit],
-  );
-
-  const HeadingComponent = useCallback(
-    () => (
-      <tr>
-        {columns.map(([cellId, label], c) =>
-          cellId == sortCellId ? (
-            <th
-              onClick={() => setDescending(!descending)}
-              className={`col${c}`}
-            >
-              {descending ? '\u2193' : '\u2191'} {label}
-            </th>
-          ) : (
-            <th onClick={() => setSortCellId(cellId)} className={`col${c}`}>
-              {label}
-            </th>
-          ),
-        )}
-      </tr>
-    ),
-    [sortCellId, descending, columnsKey],
-  );
-
-  const RowComponent = useCallback(
-    (props) => (
-      <tr>
-        {columns.map(([cellId, , CellComponent]) => (
-          <td>
-            {CellComponent == null ? (
-              <ResultCellView {...props} cellId={cellId} />
-            ) : (
-              <CellComponent {...props} />
-            )}
-          </td>
-        ))}
-      </tr>
-    ),
-    [columnsKey],
-  );
-
-  return (
-    <>
-      <Pagination />
-      <table>
-        <HeadingComponent />
-        <ResultSortedTableView
-          queryId={queryId}
-          cellId={sortCellId}
-          descending={descending}
-          offset={offset}
-          limit={limit}
-          resultRowComponent={RowComponent}
-        />
-      </table>
-    </>
-  );
-};
-```
+Previously there was a whole table implementation in this demo, but as of
+TinyBase v4.1, we just use the ResultSortedTableInHtmlTable component from the
+new ui-react-dom module straight out of the box! You'll see we use it throughout
+the app.
 
 This component also benefits from some light styling for the pagination buttons
 and the table itself:
 
 ```less
-button {
-  border: 0;
-  cursor: pointer;
-  height: 1rem;
-  padding: 0;
-  vertical-align: text-top;
-  width: 1rem;
-  &.prev {
-    margin-left: 0.5rem;
-    &::before {
-      content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" height="1rem" viewBox="0 0 100 100" fill="black"><path d="M65 20v60l-30-30z" /></svg>');
-    }
-  }
-  &.next {
-    margin-right: 0.5rem;
-    &::before {
-      content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" height="1rem" viewBox="0 0 100 100" fill="black"><path d="M35 20v60l30-30z" /></svg>');
-    }
-  }
-  &.disabled {
-    cursor: default;
-    opacity: 0.3;
-  }
-}
-
 table {
   border-collapse: collapse;
   font-size: inherit;
@@ -734,11 +581,19 @@ table {
   margin-top: 0.5rem;
   table-layout: fixed;
   width: 100%;
+  caption {
+    text-align: left;
+    button {
+      border: 0;
+      margin-right: 0.25rem;
+    }
+  }
   th,
   td {
-    overflow: hidden;
     padding: 0.25rem 0.5rem 0.25rem 0;
+    overflow: hidden;
     white-space: nowrap;
+    text-overflow: ellipsis;
   }
   th {
     border: solid #ddd;
@@ -760,360 +615,22 @@ table {
 }
 ```
 
-## Overview Components
-
-We now use that component to create the major views of the application.
-
-First, the overview of all the rated movies in the database (which displays on
-the 'Movies' tab when the app first loads), comprising a `ResultSortableGrid`
-that renders the `movies` query with four columns, sorted by rating.
-
-```jsx
-const MoviesOverview = () => (
-  <Page title="Rated movies">
-    <ResultSortableGrid
-      queryId="movies"
-      columns={[
-        ['movieName', 'Movie', MovieLink],
-        ['year', 'Year', YearLink],
-        ['rating', 'Rating'],
-        ['genreName', 'Genre', GenreLink],
-      ]}
-      defaultSortCellId="rating"
-      noun="movie"
-    />
-  </Page>
-);
-```
-
-Note how three of the columns are given a custom component to render the value
-not as raw text but as a link. We'll describe [those simple
-components](#linking-between-views) later.
-
-The 'Years' tab renders the `years` query with two columns: the year and the
-number of movies in that year:
-
-```jsx
-const YearsOverview = () => (
-  <Page title="Years">
-    <ResultSortableGrid
-      queryId="years"
-      columns={[
-        ['year', 'Year', YearLink],
-        ['movieCount', 'Rated movies'],
-      ]}
-      defaultSortCellId="year"
-      noun="year"
-    />
-  </Page>
-);
-```
-
-Similarly, the 'Genres' tab renders the `genres` query with two columns: the
-genre and the number of movies in that genre:
-
-```jsx
-const GenresOverview = () => (
-  <Page title="Genres">
-    <ResultSortableGrid
-      queryId="genres"
-      columns={[
-        ['genreName', 'Genre', GenreLink],
-        ['movieCount', 'Rated movies'],
-      ]}
-      defaultSortCellId="movieCount"
-      noun="genre"
-    />
-  </Page>
-);
-```
-
-Finally, the 'People' tab renders two tables: the `directors` query and the
-`cast` query with four columns each, both sorted by popularity:
-
-```jsx
-const PeopleOverview = () => (
-  <Page title="People">
-    <h2>Directors</h2>
-    <ResultSortableGrid
-      queryId="directors"
-      columns={[
-        ['directorName', 'Director', DirectorLink],
-        ['gender', 'Gender', GenderFromQuery],
-        ['popularity', 'Popularity'],
-        ['movieCount', 'Rated movies'],
-      ]}
-      defaultSortCellId="popularity"
-      noun="director"
-    />
-    <h2>Cast</h2>
-    <ResultSortableGrid
-      queryId="cast"
-      columns={[
-        ['castName', 'Cast', CastLink],
-        ['gender', 'Gender', GenderFromQuery],
-        ['popularity', 'Popularity'],
-        ['movieCount', 'Rated movies'],
-      ]}
-      defaultSortCellId="popularity"
-      noun="actor"
-    />
-  </Page>
-);
-```
-
-Click through each of the section headings in the app so you can see how each of
-these is working.
-
-## Detail Components
-
-We also have a detail view for each section, which drills into a specific movie,
-year, genre, or person. Firstly, for a single movie, we isolate a row in the
-de-normalized `movies` query and render its Cell values in a page format:
-
-```jsx
-const MovieDetail = ({movieId}) => {
-  const props = {queryId: 'movies', rowId: movieId};
-  return (
-    <Page title={useResultCell('movies', movieId, 'movieName')}>
-      <ImageFromQuery {...props} cellId="movieImage" isLarge={true} />
-      <ul>
-        <li>
-          Year: <YearLink {...props} />
-        </li>
-        <li>
-          Genre: <GenreLink {...props} />
-        </li>
-        <li>
-          Rating: <ResultCellView {...props} cellId="rating" />
-        </li>
-      </ul>
-      <p>
-        <ResultCellView {...props} cellId="overview" />
-      </p>
-      <h2>Credits</h2>
-      <ul>
-        <li>
-          <DirectorLink {...props} />, director
-        </li>
-        <li>
-          <CastLink {...props} billing={1} />
-        </li>
-        <li>
-          <CastLink {...props} billing={2} />
-        </li>
-        <li>
-          <CastLink {...props} billing={3} />
-        </li>
-      </ul>
-    </Page>
-  );
-};
-```
-
-Again, note how we are often using custom components that take the Cell values
-from this result Row to make links to other parts of the app. We'll describe
-those shortly.
-
-Moving on, the detail for a specific year is just a sorted table of the movies
-from that year.
-
-But here is a case where we need to run the query within the component (rather
-than globally across the app). The `moviesForYear` query is constructed whenever
-the `year` prop changes, and uses the `where` function to show the basic movie
-data for just those movies matching that year. We get to benefit from the
-`queryMovieBasics` function again since we just need movie Id, name, rating and
-genre.
-
-```jsx
-const YearDetail = ({year}) => {
-  const queries = useQueries();
-  useMemo(
-    () =>
-      queries.setQueryDefinition(
-        'moviesForYear',
-        'movies',
-        ({select, join, where}) => {
-          queryMovieBasics({select, join});
-          where('year', year);
-        },
-      ),
-    [year],
-  );
-  return (
-    <Page title={`Movies from ${year}`}>
-      <ResultSortableGrid
-        queryId="moviesForYear"
-        columns={[
-          ['movieName', 'Movie', MovieLink],
-          ['rating', 'Rating'],
-          ['genre', 'Genre', GenreLink],
-        ]}
-        defaultSortCellId="rating"
-        noun="movie"
-      />
-    </Page>
-  );
-};
-```
-
-The genre detail page is very similar, with a `where` clause to match the
-genre's Id:
-
-```jsx
-const GenreDetail = ({genreId}) => {
-  const queries = useQueries();
-  useMemo(
-    () =>
-      queries.setQueryDefinition(
-        'moviesForGenre',
-        'movies',
-        ({select, join, where}) => {
-          queryMovieBasics({select, join});
-          where('genreId', genreId);
-        },
-      ),
-    [genreId],
-  );
-  return (
-    <Page title={`${useCell('genres', genreId, 'name')} movies`}>
-      <ResultSortableGrid
-        queryId="moviesForGenre"
-        columns={[
-          ['movieName', 'Movie', MovieLink],
-          ['year', 'Year', YearLink],
-          ['rating', 'Rating'],
-        ]}
-        defaultSortCellId="rating"
-        noun="movie"
-      />
-    </Page>
-  );
-};
-```
-
-Finally, we build the detail page for a person. We create two queries on the fly
-here, one for those movies for which the person is the director, and one for
-those in which they are cast.
-
-The latter is slightly more complex since it needs to use the many-to-many
-`cast` Table as its root, from where it joins to the `movies` Table and `genres`
-Table in turn. Nevertheless, the result Cell Ids are named to be consistent with
-the other queries, so that we can use the same custom components to render each
-part of the HTML table.
-
-This component is also slightly more complex that the others because it is also
-rendering some parts of its content directly from the `people` Table (rather
-than via a query) - hence the use of the basic `useCell` hook and `CellView`
-component, for example.
-
-```jsx
-const PersonDetail = ({personId}) => {
-  const queries = useQueries();
-  useMemo(
-    () =>
-      queries
-        .setQueryDefinition(
-          'moviesForDirector',
-          'movies',
-          ({select, join, where}) => {
-            queryMovieBasics({select, join});
-            where('directorId', personId);
-          },
-        )
-        .setQueryDefinition(
-          'moviesForCast',
-          'cast',
-          ({select, join, where}) => {
-            select('movieId');
-            select('movies', 'name').as('movieName');
-            select('movies', 'image').as('movieImage');
-            select('movies', 'year');
-            select('movies', 'rating');
-            select('movies', 'genreId');
-            select('genres', 'name').as('genreName');
-            join('movies', 'movieId');
-            join('genres', 'movies', 'genreId');
-            where('castId', personId);
-          },
-        ),
-    [personId],
-  );
-
-  const props = {tableId: 'people', rowId: personId};
-  return (
-    <Page title={useCell('people', personId, 'name')}>
-      <ImageFromTable {...props} cellId="image" isLarge={true} />
-      <ul>
-        <li>
-          Gender: <GenderFromTable {...props} />
-        </li>
-        <li>
-          Born: <CellView {...props} cellId="born" />
-          {useCell('people', personId, 'died') && (
-            <>
-              ; died: <CellView {...props} cellId="died" />
-            </>
-          )}
-        </li>
-        <li>
-          Popularity: <CellView {...props} cellId="popularity" />
-        </li>
-      </ul>
-      <p>
-        <CellView {...props} cellId="biography" />
-      </p>
-
-      {useResultRowIds('moviesForDirector').length == 0 ? null : (
-        <>
-          <h2>As director:</h2>
-          <ResultSortableGrid
-            queryId="moviesForDirector"
-            columns={[
-              ['movieName', 'Movie', MovieLink],
-              ['year', 'Year', YearLink],
-              ['rating', 'Rating'],
-            ]}
-            defaultSortCellId="rating"
-            noun="rated movie"
-          />
-        </>
-      )}
-
-      {useResultRowIds('moviesForCast').length == 0 ? null : (
-        <>
-          <h2>As cast:</h2>
-          <ResultSortableGrid
-            queryId="moviesForCast"
-            columns={[
-              ['movieName', 'Movie', MovieLink],
-              ['year', 'Year', YearLink],
-              ['rating', 'Rating'],
-            ]}
-            defaultSortCellId="rating"
-            noun="rated movie"
-          />
-        </>
-      )}
-    </Page>
-  );
-};
-```
-
 ## Linking Between Views
 
-When you click on a movie name (wherever you see it), we'll want to take you to
-the movie detail. Clicking a year should take you to the list of movies for the
-year, a genre to the list of movies in a genre - and so on.
-
-Here we create a collection of tiny custom components which, when passed a
-`queryId` and `rowId` can render a decorated link which, when clicked, update
-the application's route. We've been using these in the `ResultSortableGrid`
-instances above.
+Throughout the app, if you click on a movie name (wherever you see it), we'll
+want to take you to the movie detail. Clicking a year should take you to the
+list of movies for the year, a genre to the list of movies in a genre - and so
+on.
 
 For example, the `MovieLink` component creates a link that sets the route to be
 the `movies` section, with the value of the `movieId` Cell from the result Row
 being rendered. The `ImageFromQuery` component we'll discuss later.
+
+Here we create a collection of tiny custom components which, when passed a
+`queryId` and `rowId` can render a decorated link which, when clicked, update
+the application's route. We will be using these in the customCell props of the
+`ResultSortedTableInHtmlTable` instances to configure them as custom cell
+renderers.
 
 This component obviously assumes that the `movieId`, `movieImage`, and
 `movieName` Cell Ids are present in the query, so we only use this for queries
@@ -1188,10 +705,10 @@ const CastLink = ({queryId, rowId, billing = ''}) => {
 };
 ```
 
-## Final Helper Components
+## Helper Components
 
-We conclude with a few simple components that we've been using across the
-application.
+Throughout the app, we'll use a few simple helper components. Let's get them
+defined up front.
 
 These take the numeric TMDB gender Id (from the Row of a Table or the result Row
 of query) and render it as a string:
@@ -1271,7 +788,407 @@ const Page = ({title, children}) => (
 );
 ```
 
-That's it for the JavaScript!
+With these helper components out of the way, let's move on to the main parts of
+the app.
+
+## Overview Components
+
+We now use the ResultSortedTableInHtmlTable component and these linker
+components to create the major views of the application.
+
+First, the overview of all the rated movies in the database (which displays on
+the 'Movies' tab when the app first loads), comprising a
+`ResultSortedTableInHtmlTable` that renders the `movies` query with four
+columns, sorted by rating.
+
+```jsx
+const MoviesOverview = () => (
+  <Page title="Rated movies">
+    <ResultSortedTableInHtmlTable
+      queryId="movies"
+      customCells={customCellsForMoviesOverview}
+      cellId="rating"
+      descending={true}
+      limit={20}
+      sortOnClick={true}
+      paginator={true}
+      idColumn={false}
+    />
+  </Page>
+);
+
+const customCellsForMoviesOverview = {
+  movieName: {label: 'Movie', component: MovieLink},
+  year: {label: 'Year', component: YearLink},
+  rating: {label: 'Rating'},
+  genreName: {label: 'Genre', component: GenreLink},
+};
+```
+
+Note how three of the columns are given a custom component to render the value
+not as raw text but as a link. We'll describe [those simple
+components](#linking-between-views) later.
+
+The 'Years' tab renders the `years` query with two columns: the year and the
+number of movies in that year:
+
+```jsx
+const YearsOverview = () => (
+  <Page title="Years">
+    <ResultSortedTableInHtmlTable
+      queryId="years"
+      customCells={customCellsForYearsOverview}
+      cellId="year"
+      limit={20}
+      descending={true}
+      sortOnClick={true}
+      paginator={true}
+      idColumn={false}
+    />
+  </Page>
+);
+
+const customCellsForYearsOverview = {
+  year: {label: 'Year', component: YearLink},
+  movieCount: {label: 'Rated movies'},
+};
+```
+
+Similarly, the 'Genres' tab renders the `genres` query with two columns: the
+genre and the number of movies in that genre:
+
+```jsx
+const GenresOverview = () => (
+  <Page title="Genres">
+    <ResultSortedTableInHtmlTable
+      queryId="genres"
+      customCells={customCellsForGenresOverview}
+      cellId="movieCount"
+      descending={true}
+      limit={20}
+      sortOnClick={true}
+      paginator={true}
+      idColumn={false}
+    />
+  </Page>
+);
+
+const customCellsForGenresOverview = {
+  genreName: {label: 'Genre', component: GenreLink},
+  movieCount: {label: 'Rated movies'},
+};
+```
+
+Finally, the 'People' tab renders two tables: the `directors` query and the
+`cast` query with four columns each, both sorted by popularity:
+
+```jsx
+const PeopleOverview = () => (
+  <Page title="People">
+    <h2>Directors</h2>
+    <ResultSortedTableInHtmlTable
+      queryId="directors"
+      customCells={customCellsForDirectorsOverview}
+      cellId="popularity"
+      descending={true}
+      limit={20}
+      sortOnClick={true}
+      paginator={true}
+      idColumn={false}
+    />
+    <h2>Cast</h2>
+    <ResultSortedTableInHtmlTable
+      queryId="cast"
+      customCells={customCellsForCastOverview}
+      cellId="popularity"
+      descending={true}
+      limit={20}
+      sortOnClick={true}
+      paginator={true}
+      idColumn={false}
+    />
+  </Page>
+);
+
+const customCellsForDirectorsOverview = {
+  directorName: {label: 'Director', component: DirectorLink},
+  gender: {label: 'Gender', component: GenderFromQuery},
+  popularity: {label: 'Popularity'},
+  movieCount: {label: 'Rated movies'},
+};
+
+const customCellsForCastOverview = {
+  castName: {label: 'Cast', component: CastLink},
+  gender: {label: 'Gender', component: GenderFromQuery},
+  popularity: {label: 'Popularity'},
+  movieCount: {label: 'Rated movies'},
+};
+```
+
+Click through each of the section headings in the app so you can see how each of
+these is working.
+
+## Detail Components
+
+We also have a detail view for each section, which drills into a specific movie,
+year, genre, or person. Firstly, for a single movie (assuming it exists!), we
+isolate a row in the de-normalized `movies` query and render its Cell values in
+a page format:
+
+```jsx
+const MovieDetail = ({movieId}) => {
+  const props = {queryId: 'movies', rowId: movieId};
+  const name = useResultCell('movies', movieId, 'movieName');
+  return name == null ? null : (
+    <Page title={name}>
+      <ImageFromQuery {...props} cellId="movieImage" isLarge={true} />
+      <ul>
+        <li>
+          Year: <YearLink {...props} />
+        </li>
+        <li>
+          Genre: <GenreLink {...props} />
+        </li>
+        <li>
+          Rating: <ResultCellView {...props} cellId="rating" />
+        </li>
+      </ul>
+      <p>
+        <ResultCellView {...props} cellId="overview" />
+      </p>
+      <h2>Credits</h2>
+      <ul>
+        <li>
+          <DirectorLink {...props} />, director
+        </li>
+        <li>
+          <CastLink {...props} billing={1} />
+        </li>
+        <li>
+          <CastLink {...props} billing={2} />
+        </li>
+        <li>
+          <CastLink {...props} billing={3} />
+        </li>
+      </ul>
+    </Page>
+  );
+};
+```
+
+Again, note how we are often using custom components that take the Cell values
+from this result Row to make links to other parts of the app. We'll describe
+those shortly.
+
+Moving on, the detail for a specific year is just a sorted table of the movies
+from that year.
+
+But here is a case where we need to run the query within the component (rather
+than globally across the app). The `moviesInYear` query is constructed whenever
+the `year` prop changes, and uses the `where` function to show the basic movie
+data for just those movies matching that year. We get to benefit from the
+`queryMovieBasics` function again since we just need movie Id, name, rating and
+genre.
+
+```jsx
+const YearDetail = ({year}) => {
+  const queries = useQueries();
+  useMemo(
+    () =>
+      queries.setQueryDefinition(
+        'moviesInYear',
+        'movies',
+        ({select, join, where}) => {
+          queryMovieBasics({select, join});
+          where('year', year);
+        },
+      ),
+    [year],
+  );
+  return (
+    <Page title={`Movies from ${year}`}>
+      <ResultSortedTableInHtmlTable
+        queryId="moviesInYear"
+        customCells={customCellsForMoviesInYear}
+        cellId="rating"
+        descending={true}
+        limit={20}
+        sortOnClick={true}
+        paginator={true}
+        idColumn={false}
+      />
+    </Page>
+  );
+};
+
+const customCellsForMoviesInYear = {
+  movieName: {label: 'Movie', component: MovieLink},
+  rating: {label: 'Rating'},
+  genreName: {label: 'Genre', component: GenreLink},
+};
+```
+
+The genre detail page is very similar, with a `where` clause to match the
+genre's Id:
+
+```jsx
+const GenreDetail = ({genreId}) => {
+  const queries = useQueries();
+  useMemo(
+    () =>
+      queries.setQueryDefinition(
+        'moviesInGenre',
+        'movies',
+        ({select, join, where}) => {
+          queryMovieBasics({select, join});
+          where('genreId', genreId);
+        },
+      ),
+    [genreId],
+  );
+  const name = useCell('genres', genreId, 'name');
+  return name == null ? null : (
+    <Page title={`${name} movies`}>
+      <ResultSortedTableInHtmlTable
+        queryId="moviesInGenre"
+        customCells={customCellsForMoviesInGenre}
+        cellId="rating"
+        descending={true}
+        limit={20}
+        sortOnClick={true}
+        paginator={true}
+        idColumn={false}
+      />
+    </Page>
+  );
+};
+
+const customCellsForMoviesInGenre = {
+  movieName: {label: 'Movie', component: MovieLink},
+  year: {label: 'Year', component: YearLink},
+  rating: {label: 'Rating'},
+};
+```
+
+Finally, we build the detail page for a person. We create two queries on the fly
+here, one for those movies for which the person is the director, and one for
+those in which they are cast.
+
+The latter is slightly more complex since it needs to use the many-to-many
+`cast` Table as its root, from where it joins to the `movies` Table and `genres`
+Table in turn. Nevertheless, the result Cell Ids are named to be consistent with
+the other queries, so that we can use the same custom components to render each
+part of the HTML table.
+
+This component is also slightly more complex that the others because it is also
+rendering some parts of its content directly from the `people` Table (rather
+than via a query) - hence the use of the basic `useCell` hook and `CellView`
+component, for example.
+
+```jsx
+const PersonDetail = ({personId}) => {
+  const queries = useQueries();
+  useMemo(
+    () =>
+      queries
+        .setQueryDefinition(
+          'moviesWithDirector',
+          'movies',
+          ({select, join, where}) => {
+            queryMovieBasics({select, join});
+            where('directorId', personId);
+          },
+        )
+        .setQueryDefinition(
+          'moviesWithCast',
+          'cast',
+          ({select, join, where}) => {
+            select('movieId');
+            select('movies', 'name').as('movieName');
+            select('movies', 'image').as('movieImage');
+            select('movies', 'year');
+            select('movies', 'rating');
+            select('movies', 'genreId');
+            select('genres', 'name').as('genreName');
+            join('movies', 'movieId');
+            join('genres', 'movies', 'genreId');
+            where('castId', personId);
+          },
+        ),
+    [personId],
+  );
+
+  const props = {tableId: 'people', rowId: personId};
+  const name = useCell('people', personId, 'name');
+  const died = useCell('people', personId, 'died');
+  const moviesWithDirector = useResultRowIds('moviesWithDirector');
+  const moviesWithCast = useResultRowIds('moviesWithCast');
+
+  return name == null ? null : (
+    <Page title={name}>
+      <ImageFromTable {...props} cellId="image" isLarge={true} />
+      <ul>
+        <li>
+          Gender: <GenderFromTable {...props} />
+        </li>
+        <li>
+          Born: <CellView {...props} cellId="born" />
+          {died && (
+            <>
+              ; died: <CellView {...props} cellId="died" />
+            </>
+          )}
+        </li>
+        <li>
+          Popularity: <CellView {...props} cellId="popularity" />
+        </li>
+      </ul>
+      <p>
+        <CellView {...props} cellId="biography" />
+      </p>
+
+      {moviesWithDirector.length == 0 ? null : (
+        <>
+          <h2>As director:</h2>
+          <ResultSortedTableInHtmlTable
+            queryId="moviesWithDirector"
+            customCells={customCellsForMoviesWithPeople}
+            cellId="rating"
+            descending={true}
+            limit={20}
+            sortOnClick={true}
+            paginator={true}
+            idColumn={false}
+          />
+        </>
+      )}
+
+      {moviesWithCast.length == 0 ? null : (
+        <>
+          <h2>As cast:</h2>
+          <ResultSortedTableInHtmlTable
+            queryId="moviesWithCast"
+            customCells={customCellsForMoviesWithPeople}
+            cellId="rating"
+            descending={true}
+            limit={20}
+            sortOnClick={true}
+            paginator={true}
+            idColumn={false}
+          />
+        </>
+      )}
+    </Page>
+  );
+};
+
+const customCellsForMoviesWithPeople = {
+  movieName: {label: 'Movie', component: MovieLink},
+  year: {label: 'Year', component: YearLink},
+  rating: {label: 'Rating'},
+  genreName: {label: 'Genre', component: GenreLink},
+};
+```
 
 ## Default Styling
 
