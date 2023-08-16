@@ -6,7 +6,14 @@ import {Relationships} from '../types/relationships';
 import {Store} from '../types/store';
 import {isUndefined} from '../common/other';
 
-export const {createElement, Fragment, useCallback, useRef, useState} = React;
+export const {
+  createElement,
+  Fragment,
+  useCallback,
+  useLayoutEffect,
+  useRef,
+  useState,
+} = React;
 
 export const getProps = <Props extends IdObj<any>>(
   getProps: ((...ids: Ids) => Props) | undefined,

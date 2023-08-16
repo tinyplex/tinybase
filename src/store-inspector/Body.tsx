@@ -1,6 +1,12 @@
 /** @jsx createElement */
 
-import {createElement, useCallback, useRef, useState} from '../ui-react/common';
+import {
+  createElement,
+  useCallback,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from '../ui-react/common';
 import {
   useIndexesIds,
   useMetricsIds,
@@ -18,25 +24,38 @@ import {StoreProp} from './types';
 import {StoreView} from './StoreView';
 import {SyntheticEvent} from 'react';
 import {arrayMap} from '../common/array';
+import {mathFloor} from '../common/other';
 
 export const Body = ({s}: StoreProp) => {
   const ref = useRef<HTMLElement>(null);
-  const article = ref.current;
   const [scrolled, setScrolled] = useState(false);
   const {scrollLeft, scrollTop} = useValues(s);
 
-  if (article && !scrolled) {
-    new MutationObserver((_, observer) => {
-      article.scrollTo((scrollLeft as number) ?? 0, (scrollTop as number) ?? 0);
-      setScrolled(true);
-      observer.disconnect();
-    }).observe(article, {childList: true, subtree: true});
-  }
+  useLayoutEffect(() => {
+    const article = ref.current;
+    if (article && !scrolled) {
+      const observer = new MutationObserver(() => {
+        if (
+          article.scrollWidth >=
+            mathFloor(scrollLeft as number) + article.clientWidth &&
+          article.scrollHeight >=
+            mathFloor(scrollTop as number) + article.clientHeight
+        ) {
+          article.scrollTo(scrollLeft as number, scrollTop as number);
+        }
+      });
+      observer.observe(article, {childList: true, subtree: true});
+      return () => observer.disconnect();
+    }
+  }, [scrolled, scrollLeft, scrollTop]);
 
   const handleScroll = useCallback(
     (event: SyntheticEvent<HTMLElement>) => {
       const {scrollLeft, scrollTop} = event[CURRENT_TARGET];
-      requestIdleCallback(() => s.setPartialValues({scrollLeft, scrollTop}));
+      requestIdleCallback(() => {
+        setScrolled(true);
+        s.setPartialValues({scrollLeft, scrollTop});
+      });
     },
     [s],
   );

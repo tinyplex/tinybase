@@ -9,6 +9,7 @@ export const stopInterval = clearInterval;
 
 export const mathMax = Math.max;
 export const mathMin = Math.min;
+export const mathFloor = Math.floor;
 
 export const isFiniteNumber: (num: any) => boolean = isFinite;
 
