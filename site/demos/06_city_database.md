@@ -262,7 +262,7 @@ table {
 }
 ```
 
-That's it for the JavaScript!
+That's it for the components.
 
 ## Default Styling
 
