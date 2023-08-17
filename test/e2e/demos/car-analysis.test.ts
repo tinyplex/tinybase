@@ -35,41 +35,41 @@ test('car-analysis', async () => {
 
   await (await expectedFramedElement('label', 'Show table')).click();
   await (await expectedFramedElement('option.Weight', 'Weight')).click();
-  await expectedFramedElement('main', '12 records');
-  await expectedFramedElement('tr:nth-child(2) td:nth-child(1)', '1973');
-  await expectedFramedElement('tr:nth-child(2) td:nth-child(2)', '1867');
+  await expectedFramedElement('caption', '1 to 10 of 12 rows');
+  await expectedFramedElement('tbody tr:nth-child(1) td:nth-child(1)', '1973');
+  await expectedFramedElement('tbody tr:nth-child(1) td:nth-child(2)', '1867');
 
-  await (await expectedFramedElement('th.Year', 'Year')).click();
-  await expectedFramedElement('tr:nth-child(2) td:nth-child(1)', '1970');
-  await expectedFramedElement('tr:nth-child(2) td:nth-child(2)', '1835');
+  await (await expectedFramedElement('th:nth-child(1)', 'Year')).click();
+  await expectedFramedElement('tbody tr:nth-child(1) td:nth-child(1)', '1970');
+  await expectedFramedElement('tbody tr:nth-child(1) td:nth-child(2)', '1835');
 
-  await (await expectedFramedElement('th.Year', '↑ Year')).click();
-  await expectedFramedElement('tr:nth-child(2) td:nth-child(1)', '1982');
-  await expectedFramedElement('tr:nth-child(2) td:nth-child(2)', '1755');
+  await (await expectedFramedElement('th:nth-child(1)', '↑ Year')).click();
+  await expectedFramedElement('tbody tr:nth-child(1) td:nth-child(1)', '1982');
+  await expectedFramedElement('tbody tr:nth-child(1) td:nth-child(2)', '1755');
 
-  await expectedFramedElement('main', '1 to 10');
+  await expectedFramedElement('caption', '1 to 10');
   await expectProperty(
-    await expectedFramedElement('button.prev'),
-    'className',
-    'prev disabled',
+    await expectedFramedElement('button.previous'),
+    'disabled',
+    true,
   );
   await expectProperty(
     await expectedFramedElement('button.next'),
-    'className',
-    'next',
+    'disabled',
+    false,
   );
   await (await expectedFramedElement('button.next')).click();
-  await expectedFramedElement('main', '11 to 12');
+  await expectedFramedElement('caption', '11 to 12');
   await expectProperty(
-    await expectedFramedElement('button.prev'),
-    'className',
-    'prev',
+    await expectedFramedElement('button.previous'),
+    'disabled',
+    false,
   );
   await expectProperty(
     await expectedFramedElement('button.next'),
-    'className',
-    'next disabled',
+    'disabled',
+    true,
   );
-  await expectedFramedElement('tr:nth-child(2) td:nth-child(1)', '1971');
-  await expectedFramedElement('tr:nth-child(2) td:nth-child(2)', '1613');
+  await expectedFramedElement('tbody tr:nth-child(1) td:nth-child(1)', '1971');
+  await expectedFramedElement('tbody tr:nth-child(1) td:nth-child(2)', '1613');
 });
