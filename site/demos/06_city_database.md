@@ -204,9 +204,10 @@ const CityTable = () => (
     tableId="cities"
     cellId="Population"
     descending={true}
+    limit={10}
     sortOnClick={true}
     paginator={true}
-    limit={10}
+    idColumn={false}
   />
 );
 ```
@@ -244,15 +245,9 @@ table {
     border-width: 1px 0;
     cursor: pointer;
     text-align: left;
-    &.col0 {
+    width: 15%;
+    &:nth-child(1) {
       width: 25%;
-    }
-    &.col1,
-    &.col2,
-    &.col3,
-    &.col4,
-    &.col5 {
-      width: 15%;
     }
   }
   td {
