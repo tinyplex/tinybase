@@ -2150,12 +2150,11 @@
    * This example sets a TablesSchema and checks that it is present.
    *
    * ```js
-   * const store = createStore()
-   *   .setTablesSchema({
-   *     pets: {
-   *       price: {type: 'number'},
-   *     },
-   *   });
+   * const store = createStore().setTablesSchema({
+   *   pets: {
+   *     price: {type: 'number'},
+   *   },
+   * });
    * console.log(store.hasTablesSchema());
    * // -> true
    *
