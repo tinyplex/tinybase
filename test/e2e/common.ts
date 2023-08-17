@@ -62,7 +62,7 @@ export const expectedElement = async (
 export const expectProperty = async (
   element: ElementHandle,
   property: string,
-  value: string,
+  value: string | boolean,
 ): Promise<void> =>
   expect(await (await element.getProperty(property))?.jsonValue()).toEqual(
     value,
