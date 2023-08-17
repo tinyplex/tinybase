@@ -179,7 +179,7 @@ Finally, since the structure of the Table is well known, we create a constant
 list of column names for use when rendering:
 
 ```js
-const COLUMNS = [
+const CUSTOM_CELLS = [
   'Name',
   'Country',
   'Population',
@@ -207,6 +207,7 @@ const CityTable = () => (
     limit={10}
     sortOnClick={true}
     paginator={true}
+    customCells={CUSTOM_CELLS}
     idColumn={false}
   />
 );
