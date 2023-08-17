@@ -94,8 +94,8 @@ graph elements, and to detect numeric values in the imported files so that they
 can added to the Store as numbers:
 
 ```js
-const GRAPH_FONT = 12;
-const GRAPH_PADDING = 6;
+const GRAPH_FONT = 11;
+const GRAPH_PADDING = 5;
 const NUMERIC = /^[\d\.]+$/;
 ```
 
@@ -465,10 +465,13 @@ table {
     border-width: 1px 0;
     text-align: left;
   }
-  td span {
-    border-left: 2px solid transparent;
-    padding: 0.25rem;
-    line-height: 1.75rem;
+  td {
+    border-bottom: 1px solid #eee;
+    span {
+      border-left: 2px solid transparent;
+      padding: 0.25rem;
+      line-height: 1.75rem;
+    }
   }
 }
 ```
