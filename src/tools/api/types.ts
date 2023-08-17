@@ -245,6 +245,12 @@ export const getTypeFunctions = (
       getListenerTypeDoc(14, 3),
     );
 
+    const rowCountListenerType = addType(
+      ROW + 'Count' + LISTENER,
+      `(${storeParam}, tableId: ${tableIdType})` + RETURNS_VOID,
+      getListenerTypeDoc(15, 3),
+    );
+
     const rowIdsListenerType = addType(
       ROW_IDS + LISTENER,
       `(${storeParam}, tableId: ${tableIdType})` + RETURNS_VOID,
@@ -352,6 +358,7 @@ export const getTypeFunctions = (
       tableIdsListenerType,
       tableListenerType,
       tableCellIdsListenerType,
+      rowCountListenerType,
       rowIdsListenerType,
       sortedRowIdsListenerType,
       rowListenerType,

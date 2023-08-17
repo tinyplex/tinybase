@@ -114,6 +114,7 @@ export type SharedTableTypes = [
   tableIdsListenerType: string,
   tableListenerType: string,
   tableCellIdsListenerType: string,
+  rowCountListenerType: string,
   rowIdsListenerType: string,
   sortedRowIdsListenerType: string,
   rowListenerType: string,
@@ -304,6 +305,7 @@ export const getStoreCoreApi = (
       tableIdsListenerType,
       tableListenerType,
       tableCellIdsListenerType,
+      rowCountListenerType,
       rowIdsListenerType,
       sortedRowIdsListenerType,
       rowListenerType,
@@ -396,6 +398,7 @@ export const getStoreCoreApi = (
       tableIdsListenerType,
       tableListenerType,
       tableCellIdsListenerType,
+      rowCountListenerType,
       rowIdsListenerType,
       sortedRowIdsListenerType,
       rowListenerType,
@@ -413,6 +416,7 @@ export const getStoreCoreApi = (
       tableIdsListenerType,
       tableListenerType,
       tableCellIdsListenerType,
+      rowCountListenerType,
       rowIdsListenerType,
       sortedRowIdsListenerType,
       rowListenerType,
@@ -513,6 +517,17 @@ export const getStoreCoreApi = (
         getForEachDoc(TABLE + CELL, 'the whole of ' + getTableDoc(tableId)),
         'tableCellCallback: ' + tableCellCallbackType,
         TABLE_ID + ', tableCellCallback as any',
+      );
+
+      // getRowCount
+      addProxyMethod(
+        0,
+        tableName,
+        ROW + 'Count',
+        'number',
+        'Gets the number of Rows in the ' + getTableDoc(tableId),
+        EMPTY_STRING,
+        TABLE_ID,
       );
 
       // getRowIds
@@ -697,6 +712,15 @@ export const getStoreCoreApi = (
       TABLE + CELL_IDS,
       tableCellIdsListenerType,
       getListenerDoc(14, 3, 1),
+      `tableId: ${tableIdType} | null`,
+      'tableId',
+    );
+
+    // addRowCountListener
+    addProxyListener(
+      ROW + 'Count',
+      rowCountListenerType,
+      getListenerDoc(15, 3),
       `tableId: ${tableIdType} | null`,
       'tableId',
     );
