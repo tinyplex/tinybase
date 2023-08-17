@@ -600,13 +600,9 @@ table {
     border-width: 1px 0;
     cursor: pointer;
     text-align: left;
-    &.col0 {
+    width: 20%;
+    &:nth-child(1) {
       width: 40%;
-    }
-    &.col1,
-    &.col2,
-    &.col3 {
-      width: 20%;
     }
   }
   td {
