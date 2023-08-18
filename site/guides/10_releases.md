@@ -82,6 +82,9 @@ equivalent useResultTableCellIds hook and useResultTableCellIdsListener hook
 have also been added to ui-react module. A number of other minor React hooks
 have been added to support the components above.
 
+Demos have been updated to demonstrate the ui-react-dom module and the
+StoreInspector component where appropriate.
+
 ## v4.0
 
 This major release provides Persister modules that connect TinyBase to SQLite
