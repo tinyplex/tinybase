@@ -673,6 +673,24 @@ describe('Context Hooks', () => {
     expect(renderer.toJSON()).toEqual('["checkpoints1","checkpoints2"]');
     expect(didRender).toHaveBeenCalledTimes(1);
   });
+
+  test('No context', () => {
+    const Test = () =>
+      didRender(
+        <>
+          {JSON.stringify(useStoreIds())}
+          {JSON.stringify(useMetricsIds())}
+          {JSON.stringify(useIndexesIds())}
+          {JSON.stringify(useRelationshipsIds())}
+          {JSON.stringify(useQueriesIds())}
+        </>,
+      );
+    act(() => {
+      renderer = create(<Test />);
+    });
+    expect(renderer.toJSON()).toEqual(['[]', '[]', '[]', '[]', '[]']);
+    expect(didRender).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe('Read Hooks', () => {
