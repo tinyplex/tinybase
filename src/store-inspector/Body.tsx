@@ -1,5 +1,6 @@
 /** @jsx createElement */
 
+import {arrayIsEmpty, arrayMap} from '../common/array';
 import {
   createElement,
   useCallback,
@@ -7,11 +8,17 @@ import {
   useRef,
   useState,
 } from '../ui-react/common';
+import {isUndefined, mathFloor} from '../common/other';
 import {
+  useIndexes,
   useIndexesIds,
+  useMetrics,
   useMetricsIds,
+  useQueries,
   useQueriesIds,
+  useRelationships,
   useRelationshipsIds,
+  useStore,
   useStoreIds,
   useValues,
 } from '../ui-react';
@@ -23,8 +30,6 @@ import {RelationshipsView} from './RelationshipsView';
 import {StoreProp} from './types';
 import {StoreView} from './StoreView';
 import {SyntheticEvent} from 'react';
-import {arrayMap} from '../common/array';
-import {mathFloor} from '../common/other';
 
 export const Body = ({s}: StoreProp) => {
   const articleRef = useRef<HTMLElement>(null);
@@ -62,22 +67,47 @@ export const Body = ({s}: StoreProp) => {
     [s],
   );
 
-  return (
+  const store = useStore();
+  const storeIds = useStoreIds();
+  const metrics = useMetrics();
+  const metricsIds = useMetricsIds();
+  const indexes = useIndexes();
+  const indexesIds = useIndexesIds();
+  const relationships = useRelationships();
+  const relationshipsIds = useRelationshipsIds();
+  const queries = useQueries();
+  const queriesIds = useQueriesIds();
+
+  return isUndefined(store) &&
+    arrayIsEmpty(storeIds) &&
+    isUndefined(metrics) &&
+    arrayIsEmpty(metricsIds) &&
+    isUndefined(indexes) &&
+    arrayIsEmpty(indexesIds) &&
+    isUndefined(relationships) &&
+    arrayIsEmpty(relationshipsIds) &&
+    isUndefined(queries) &&
+    arrayIsEmpty(queriesIds) ? (
+    <span className="warn">
+      There are no Stores or other objects to inspect. Make sure you placed the
+      StoreInspector inside a Provider component.
+    </span>
+  ) : (
     <article ref={articleRef} onScroll={handleScroll}>
       <StoreView s={s} />
-      {arrayMap(useStoreIds(), (storeId) => (
+      {arrayMap(storeIds, (storeId) => (
         <StoreView storeId={storeId} key={storeId} s={s} />
       ))}
       <MetricsView s={s} />
-      {arrayMap(useMetricsIds(), (metricsId) => (
+      {arrayMap(metricsIds, (metricsId) => (
         <MetricsView metricsId={metricsId} key={metricsId} s={s} />
       ))}
       <IndexesView s={s} />
-      {arrayMap(useIndexesIds(), (indexesId) => (
+      {arrayMap(indexesIds, (indexesId) => (
         <IndexesView indexesId={indexesId} key={indexesId} s={s} />
       ))}
       <RelationshipsView s={s} />
-      {arrayMap(useRelationshipsIds(), (relationshipsId) => (
+      {arrayMap(relationshipsIds, (relationshipsId) => (
         <RelationshipsView
           relationshipsId={relationshipsId}
           key={relationshipsId}
@@ -85,7 +115,7 @@ export const Body = ({s}: StoreProp) => {
         />
       ))}
       <QueriesView s={s} />
-      {arrayMap(useQueriesIds(), (queriesId) => (
+      {arrayMap(queriesIds, (queriesId) => (
         <QueriesView queriesId={queriesId} key={queriesId} s={s} />
       ))}
     </article>
