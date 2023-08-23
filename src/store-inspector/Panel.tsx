@@ -2,6 +2,7 @@
 
 import {OPEN_VALUE, POSITION_VALUE} from './common';
 import {Body} from './Body';
+import {ErrorBoundary} from './ErrorBoundary';
 import {Header} from './Header';
 import {StoreProp} from './types';
 import {createElement} from '../ui-react/common';
@@ -13,7 +14,9 @@ export const Panel = ({s}: StoreProp) => {
   return useValue(OPEN_VALUE, s) ? (
     <main data-position={position}>
       <Header s={s} />
-      <Body s={s} />
+      <ErrorBoundary>
+        <Body s={s} />
+      </ErrorBoundary>
     </main>
   ) : null;
 };

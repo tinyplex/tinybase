@@ -7,8 +7,9 @@ import {Store} from '../types/store';
 import {isUndefined} from '../common/other';
 
 export const {
-  createElement,
+  PureComponent,
   Fragment,
+  createElement,
   useCallback,
   useLayoutEffect,
   useRef,

@@ -85,6 +85,8 @@ export const APP_STYLESHEET = arrayJoin(
       'button.next': 'margin-right:0.5rem',
       [`th,#${UNIQUE_ID} td`]:
         'overflow:hidden;text-overflow:ellipsis;padding:0.25rem 0.5rem;max-width:12rem;white-space:nowrap;border-width:1px 0;border-style:solid;border-color:#777;text-align:left',
+
+      'span.warn': 'margin:0.25rem;color:#d81b60',
     },
     (style, selector) => (style ? `#${UNIQUE_ID} ${selector}{${style}}` : ''),
   ),
