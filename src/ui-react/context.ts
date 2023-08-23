@@ -59,7 +59,7 @@ const useThing = <
     isUndefined(id)
       ? contextValue[offset]
       : isString(id)
-      ? objGet(contextValue[offset + 1] as IdObj<Thing>, id)
+      ? objGet((contextValue[offset + 1] ?? {}) as IdObj<Thing>, id)
       : id
   ) as Thing;
 };
@@ -83,7 +83,7 @@ const useThingOrThingById = <
 };
 
 export const useThingIds = (offset: number): Ids =>
-  objIds(useContext(Context)[offset] as IdObj<unknown>);
+  objIds((useContext(Context)[offset] ?? {}) as IdObj<unknown>);
 
 export const useStore: typeof useStoreDecl = (id?: Id): Store | undefined =>
   useThing(id, 0);
