@@ -1,7 +1,7 @@
 /** @jsx createElement */
 
 import {OPEN_CELL, STATE_TABLE} from './common';
-import React, {ReactNode, SyntheticEvent} from 'react';
+import {ReactNode, SyntheticEvent} from 'react';
 import {useCell, useSetCellCallback} from '../ui-react';
 import {CURRENT_TARGET} from '../common/strings';
 import {Id} from '../types/common';
