@@ -141,6 +141,33 @@ const App = () => (
 );
 ```
 
+Note that in React Native, the resolution of modules and types isn't yet quite
+compatible with Node and TypeScript. You may need to try something like the
+following to explicitly load code and types from different folders:
+
+```tsx yolo
+import * as UiReact from 'tinybase/ui-react'; // code
+import React from 'react';
+import type {WithSchemas} from 'tinybase/ui-react/with-schemas'; // types
+import {createStore, TablesSchema, ValuesSchema} from 'tinybase/with-schemas';
+
+const tablesSchema = {
+  pets: {species: {type: 'string'}},
+} as const;
+const valuesSchema = {
+  employees: {type: 'number'},
+  open: {type: 'boolean', default: false},
+} as const;
+
+const UiReactWithSchemas = UiReact as unknown as WithSchemas<
+  [typeof tablesSchema, typeof valuesSchema]
+>;
+
+//...
+```
+
+## Multiple Stores
+
 In the case that you have multiple Store objects with different schemas, you
 will need to use `WithSchemas` several times, and deconstruct each, something
 like this:

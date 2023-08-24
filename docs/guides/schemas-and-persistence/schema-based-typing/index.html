@@ -82,7 +82,25 @@ store<span class="punctuation">.</span><span class="function"><a href="/api/stor
     </span><span class="punctuation">{</span><span class="comment">/* ... */</span><span class="punctuation">}</span><span class="plain-text">
   </span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>div</span><span class="punctuation">></span></span>
 <span class="punctuation">)</span><span class="punctuation">;</span>
-</code></pre><p>In the case that you have multiple <a href="/api/store/interfaces/store/store/"><code>Store</code></a> objects with different schemas, you will need to use <code>WithSchemas</code> several times, and deconstruct each, something like this:</p><pre><code><span class="keyword">const</span> UiReactWithPetShopSchemas <span class="operator">=</span> UiReact <span class="keyword">as</span> UiReact<span class="punctuation">.</span>WithSchemas<span class="operator">&lt;</span>
+</code></pre><p>Note that in React Native, the resolution of modules and types isn&#x27;t yet quite compatible with Node and TypeScript. You may need to try something like the following to explicitly load code and types from different folders:</p><pre><code><span class="keyword">import</span> <span class="operator">*</span> <span class="keyword">as</span> UiReact <span class="keyword">from</span> <span class="string">'tinybase/ui-react'</span><span class="punctuation">;</span> <span class="comment">// code</span>
+<span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span><span class="punctuation">;</span>
+<span class="keyword">import</span> <span class="keyword">type</span> <span class="punctuation">{</span>WithSchemas<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/ui-react/with-schemas'</span><span class="punctuation">;</span> <span class="comment">// types</span>
+<span class="keyword">import</span> <span class="punctuation">{</span>createStore<span class="punctuation">,</span> <span class="type"><a href="/api/store/type-aliases/schema/tablesschema/">TablesSchema</a></span><span class="punctuation">,</span> <span class="type"><a href="/api/store/type-aliases/schema/valuesschema/">ValuesSchema</a></span><span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/with-schemas'</span><span class="punctuation">;</span>
+
+<span class="keyword">const</span> tablesSchema <span class="operator">=</span> <span class="punctuation">{</span>
+  pets<span class="operator">:</span> <span class="punctuation">{</span>species<span class="operator">:</span> <span class="punctuation">{</span>type<span class="operator">:</span> <span class="string">'string'</span><span class="punctuation">}</span><span class="punctuation">}</span><span class="punctuation">,</span>
+<span class="punctuation">}</span> <span class="keyword">as</span> <span class="keyword">const</span><span class="punctuation">;</span>
+<span class="keyword">const</span> valuesSchema <span class="operator">=</span> <span class="punctuation">{</span>
+  employees<span class="operator">:</span> <span class="punctuation">{</span>type<span class="operator">:</span> <span class="string">'number'</span><span class="punctuation">}</span><span class="punctuation">,</span>
+  open<span class="operator">:</span> <span class="punctuation">{</span>type<span class="operator">:</span> <span class="string">'boolean'</span><span class="punctuation">,</span> <span class="keyword">default</span><span class="operator">:</span> <span class="boolean">false</span><span class="punctuation">}</span><span class="punctuation">,</span>
+<span class="punctuation">}</span> <span class="keyword">as</span> <span class="keyword">const</span><span class="punctuation">;</span>
+
+<span class="keyword">const</span> UiReactWithSchemas <span class="operator">=</span> UiReact <span class="keyword">as</span> <span class="builtin">unknown</span> <span class="keyword">as</span> WithSchemas<span class="operator">&lt;</span>
+  <span class="punctuation">[</span><span class="keyword">typeof</span> tablesSchema<span class="punctuation">,</span> <span class="keyword">typeof</span> valuesSchema<span class="punctuation">]</span>
+<span class="operator">></span><span class="punctuation">;</span>
+
+<span class="comment">//...</span>
+</code></pre><h3 id="multiple-stores">Multiple Stores</h3><p>In the case that you have multiple <a href="/api/store/interfaces/store/store/"><code>Store</code></a> objects with different schemas, you will need to use <code>WithSchemas</code> several times, and deconstruct each, something like this:</p><pre><code><span class="keyword">const</span> UiReactWithPetShopSchemas <span class="operator">=</span> UiReact <span class="keyword">as</span> UiReact<span class="punctuation">.</span>WithSchemas<span class="operator">&lt;</span>
   <span class="punctuation">[</span><span class="keyword">typeof</span> petShopTablesSchema<span class="punctuation">,</span> <span class="keyword">typeof</span> petShopValuesSchema<span class="punctuation">]</span>
 <span class="operator">></span><span class="punctuation">;</span>
 <span class="keyword">const</span> <span class="punctuation">{</span>
