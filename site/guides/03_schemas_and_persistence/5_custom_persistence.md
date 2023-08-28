@@ -23,8 +23,9 @@ To build a custom Persister, you should provide four functions:
   was returned from your `addPersisterListener` implementation.
   @returns A reference to the new Persister object.
 
-Note that the first two functions are asynchronous and _must_ return promises. The
-latter two are synchronous and should return `void` (i.e. should not return a value at all).
+Note that the first two functions are asynchronous and _must_ return promises.
+The latter two are synchronous and should return `void` (i.e. should not return
+a value at all).
 
 This API changed in v4.0. Any custom persisters created on previous versions
 should be upgraded. Most notably, the `setPersisted` function parameter is
