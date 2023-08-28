@@ -77,6 +77,7 @@
 > ## Proud to be sponsored by:
 >
 > @@EVAL("getGitHubAvatar('expo')")
+> @@EVAL("getGitHubAvatar('cancelself')")
 > @@EVAL("getGitHubAvatar('WonderPanda')")
 > @@EVAL("getGitHubAvatar('arpitBhalla')")
 
