@@ -1,5 +1,8 @@
 {
-  "ignorePaths": ["*.tsv", "*.webp"],
+  "ignorePaths": [
+    "*.tsv",
+    "*.webp"
+  ],
   "words": [
     "Abad",
     "Adrien",
@@ -15,6 +18,7 @@
     "Bolin",
     "brentvatne",
     "Burnham",
+    "cancelself",
     "capi",
     "carnaby",
     "cbor",
