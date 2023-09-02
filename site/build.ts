@@ -132,6 +132,7 @@ const addApi = (docs: Docs): Docs =>
     .addApiFile('lib/types/queries.d.ts')
     .addApiFile('lib/types/persisters.d.ts')
     .addApiFile('lib/types/persisters/persister-browser.d.ts')
+    .addApiFile('lib/types/persisters/persister-indexed-db.d.ts')
     .addApiFile('lib/types/persisters/persister-file.d.ts')
     .addApiFile('lib/types/persisters/persister-remote.d.ts')
     .addApiFile('lib/types/persisters/persister-yjs.d.ts')
