@@ -11,7 +11,7 @@ type StoreListener = (event: StorageEvent) => void;
 const STORAGE = 'storage';
 const WINDOW = globalThis.window;
 
-const getStoragePersister = (
+const createStoragePersister = (
   store: Store,
   storageName: string,
   storage: Storage,
@@ -52,7 +52,7 @@ export const createLocalPersister = ((
   storageName: string,
   onIgnoredError?: (error: any) => void,
 ): Persister =>
-  getStoragePersister(
+  createStoragePersister(
     store,
     storageName,
     localStorage,
@@ -64,7 +64,7 @@ export const createSessionPersister = ((
   storageName: string,
   onIgnoredError?: (error: any) => void,
 ): Persister =>
-  getStoragePersister(
+  createStoragePersister(
     store,
     storageName,
     sessionStorage,
