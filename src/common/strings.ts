@@ -43,6 +43,9 @@ export const VALUE_IDS = VALUE + IDS;
 export const CURRENT_TARGET = 'currentTarget';
 export const _VALUE = 'value';
 
+export const T = 't';
+export const V = 'v';
+
 export const id = (key: unknown): Id => EMPTY_STRING + key;
 
 export const strRepeat = (str: string, count: number) => str.repeat(count);

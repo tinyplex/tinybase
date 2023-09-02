@@ -8,6 +8,7 @@ import {
 } from '../types/store.d';
 import {IdObj, objEnsure, objHas, objMap, objNew} from '../common/obj';
 import {Persister, PersisterListener} from '../types/persisters.d';
+import {T, TINYBASE, V} from '../common/strings';
 import {Doc as YDoc, YEvent, Map as YMap} from 'yjs';
 import {
   arrayForEach,
@@ -17,40 +18,34 @@ import {
 } from '../common/array';
 import {ifNotUndefined, isUndefined} from '../common/other';
 import {Id} from '../types/common.d';
-import {TINYBASE} from '../common/strings';
 import {createCustomPersister} from '../persisters';
 import {mapForEach} from '../common/map';
 
 type Observer = (events: YEvent<any>[]) => void;
 
-const tablesKey = 't';
-const valuesKey = 'v';
 const DELETE = 'delete';
 
 const ensureYContent = (yContent: YMap<any>) => {
   if (!yContent.size) {
-    yContent.set(tablesKey, new YMap());
-    yContent.set(valuesKey, new YMap());
+    yContent.set(T, new YMap());
+    yContent.set(V, new YMap());
   }
 };
 
-const getYContent = (yContent: YMap<any>) => [
-  yContent.get(tablesKey),
-  yContent.get(valuesKey),
-];
+const getYContent = (yContent: YMap<any>) => [yContent.get(T), yContent.get(V)];
 
 const getTransactionChangesFromYDoc = (
   yContent: YMap<any>,
   events: YEvent<any>[],
 ): TransactionChanges => {
   if (arrayLength(events) == 1 && arrayIsEmpty(events[0].path)) {
-    return [yContent.get('t').toJSON(), yContent.get('v').toJSON()];
+    return [yContent.get(T).toJSON(), yContent.get(V).toJSON()];
   }
   const [yTables, yValues] = getYContent(yContent);
   const tables = {} as any;
   const values = {} as any;
   arrayForEach(events, ({path, changes: {keys}}) =>
-    arrayShift(path) == tablesKey
+    arrayShift(path) == T
       ? ifNotUndefined(
           arrayShift(path) as string,
           (yTableId) => {
@@ -198,10 +193,10 @@ export const createYjsPersister = (
 
   const getPersisted = async (): Promise<[Tables, Values] | undefined> =>
     yContent.size
-      ? ([
-          yContent.get(tablesKey).toJSON(),
-          yContent.get(valuesKey).toJSON(),
-        ] as [Tables, Values])
+      ? ([yContent.get(T).toJSON(), yContent.get(V).toJSON()] as [
+          Tables,
+          Values,
+        ])
       : undefined;
 
   const setPersisted = async (
