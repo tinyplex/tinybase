@@ -7,7 +7,7 @@ import {
 import {jsonParse, jsonString} from '../common/json';
 import {createCustomPersister} from '../persisters';
 
-type StoreListener = (event: StorageEvent) => void;
+type StorageListener = (event: StorageEvent) => void;
 const STORAGE = 'storage';
 const WINDOW = globalThis.window;
 
@@ -24,18 +24,20 @@ const createStoragePersister = (
     getContent: () => [Tables, Values],
   ): Promise<void> => storage.setItem(storageName, jsonString(getContent()));
 
-  const addPersisterListener = (listener: PersisterListener): StoreListener => {
-    const storeListener = (event: StorageEvent): void => {
+  const addPersisterListener = (
+    listener: PersisterListener,
+  ): StorageListener => {
+    const storageListener = (event: StorageEvent): void => {
       if (event.storageArea === storage && event.key === storageName) {
         listener(() => jsonParse(event.newValue as string));
       }
     };
-    WINDOW.addEventListener(STORAGE, storeListener);
-    return storeListener;
+    WINDOW.addEventListener(STORAGE, storageListener);
+    return storageListener;
   };
 
-  const delPersisterListener = (storeListener: StoreListener): void =>
-    WINDOW.removeEventListener(STORAGE, storeListener);
+  const delPersisterListener = (storageListener: StorageListener): void =>
+    WINDOW.removeEventListener(STORAGE, storageListener);
 
   return createCustomPersister(
     store,
