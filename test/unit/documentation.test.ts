@@ -8,6 +8,7 @@ import * as TinyBasePersisterAutomerge from 'tinybase/debug/persisters/persister
 import * as TinyBasePersisterBrowser from 'tinybase/debug/persisters/persister-browser';
 import * as TinyBasePersisterCrSqliteWasm from 'tinybase/debug/persisters/persister-cr-sqlite-wasm';
 import * as TinyBasePersisterFile from 'tinybase/debug/persisters/persister-file';
+import * as TinyBasePersisterIndexedDb from 'tinybase/debug/persisters/persister-indexed-db';
 import * as TinyBasePersisterRemote from 'tinybase/debug/persisters/persister-remote';
 import * as TinyBasePersisterSqlite3 from 'tinybase/debug/persisters/persister-sqlite3';
 import * as TinyBasePersisterSqliteWasm from 'tinybase/debug/persisters/persister-sqlite-wasm';
@@ -28,6 +29,7 @@ import {transformSync} from 'esbuild';
 [
   TinyBase,
   TinyBasePersisterBrowser,
+  TinyBasePersisterIndexedDb,
   TinyBasePersisterFile,
   TinyBasePersisterRemote,
   TinyBasePersisterYjs,
