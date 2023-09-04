@@ -18,11 +18,13 @@ import {
   createLocalPersister,
   createSessionPersister,
 } from 'tinybase/debug/persisters/persister-browser';
+import {deleteDB, openDB} from 'idb';
 import {mockFetchWasm, pause} from '../common/other';
 import {DB} from '@vlcn.io/crsqlite-wasm';
 import {Database} from 'sqlite3';
 import {createAutomergePersister} from 'tinybase/debug/persisters/persister-automerge';
 import {createFilePersister} from 'tinybase/debug/persisters/persister-file';
+import {createIndexedDbPersister} from 'tinybase/debug/persisters/persister-indexed-db';
 import {createRemotePersister} from 'tinybase/debug/persisters/persister-remote';
 import {createYjsPersister} from 'tinybase/debug/persisters/persister-yjs';
 import crypto from 'crypto';
@@ -298,6 +300,60 @@ const mockSessionStorage = getMockedStorage(
   createSessionPersister,
 );
 
+const mockIndexedDb = {
+  autoLoadPause: 110,
+  getLocation: async (): Promise<string> => 'test' + Math.random(),
+  getPersister: (store: Store, dbName: string) =>
+    createIndexedDbPersister(store, dbName, 0.1),
+  get: async (dbName: string): Promise<[Tables, Values] | void> => {
+    try {
+      const db = await openDB(dbName, 1, {
+        upgrade: (db) => {
+          db.createObjectStore('t', {keyPath: 'k'});
+          db.createObjectStore('v', {keyPath: 'k'});
+        },
+      });
+      const result = [
+        Object.fromEntries((await db.getAll('t')).map(({k, v}) => [k, v])),
+        Object.fromEntries((await db.getAll('v')).map(({k, v}) => [k, v])),
+      ];
+      db.close();
+      return result as any;
+    } catch {}
+  },
+  set: async (dbName: string, value: any): Promise<void> =>
+    await mockIndexedDb.write(dbName, value),
+  write: async (dbName: string, value: any): Promise<void> => {
+    if (typeof value != 'string') {
+      const db = await openDB(dbName, 1, {
+        upgrade: (db) => {
+          db.createObjectStore('t', {keyPath: 'k'});
+          db.createObjectStore('v', {keyPath: 'k'});
+        },
+      });
+      await db.clear('t');
+      await db.clear('v');
+      const [tables, values] = value;
+      for (const [k, v] of Object.entries(tables)) {
+        await db.put('t', {v, k});
+      }
+      if (values) {
+        for (const [k, v] of Object.entries(values)) {
+          await db.put('v', {v, k});
+        }
+      }
+      db.close();
+    } else {
+      const db = await openDB(dbName, 1, {
+        upgrade: (db) => db.createObjectStore('broken'),
+      });
+      db.close();
+    }
+  },
+  del: async (dbName: string): Promise<void> => await deleteDB(dbName),
+  testMissing: true,
+};
+
 const getMockedSqlite = <Location>(
   getLocation: () => Promise<Location>,
   getPersister: (store: Store, location: Location) => Persister,
@@ -469,6 +525,7 @@ describe.each([
   ['remote', mockRemote],
   ['localStorage', mockLocalStorage],
   ['sessionStorage', mockSessionStorage],
+  ['indexedDb', mockIndexedDb],
   ['sqlite3', mockSqlite3],
   ['sqliteWasm', mockSqliteWasm],
   ['crSqliteWasm', mockCrSqliteWasm],
@@ -653,7 +710,7 @@ describe.each([
     await persistable.set(location, [{t1: {r1: {c1: 1}}}]);
     await persister.startAutoLoad({});
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
-    persistable.del(location);
+    await persistable.del(location);
     await pause(persistable.autoLoadPause);
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
   });
