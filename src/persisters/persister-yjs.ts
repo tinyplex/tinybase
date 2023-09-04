@@ -25,13 +25,6 @@ type Observer = (events: YEvent<any>[]) => void;
 
 const DELETE = 'delete';
 
-const ensureYContent = (yContent: YMap<any>) => {
-  if (!yContent.size) {
-    yContent.set(T, new YMap());
-    yContent.set(V, new YMap());
-  }
-};
-
 const getYContent = (yContent: YMap<any>) => [yContent.get(T), yContent.get(V)];
 
 const getTransactionChangesFromYDoc = (
@@ -93,7 +86,10 @@ const setTransactionChangesToYDoc = (
   getContent: () => [Tables, Values],
   getTransactionChanges?: GetTransactionChanges,
 ) => {
-  ensureYContent(yContent);
+  if (!yContent.size) {
+    yContent.set(T, new YMap());
+    yContent.set(V, new YMap());
+  }
   const [yTables, yValues] = getYContent(yContent);
   const transactionChangesDidFail = () => {
     transactionChangesFailed = 1;
