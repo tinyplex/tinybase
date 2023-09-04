@@ -31,7 +31,7 @@
       <a href='#create-indexes-for-fast-lookups'>Indexing</a>,
       <a href='#define-metrics-and-aggregations'>metrics</a>,
       <a href='#model-table-relationships'>relationships</a> - and
-      even an <a href='#use-checkpoints-for-an-easy-undo-stack'>undo stack</a>
+      even an <a href='#set-checkpoints-for-an-undo-stack'>undo stack</a>
       for your app state.
     </li>
     <li>
