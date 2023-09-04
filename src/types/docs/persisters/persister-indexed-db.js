@@ -18,8 +18,16 @@
  * called 't', and one called 'v'. These will contain the Store's tabular and
  * key-value data respectively, using 'k' and 'v' to store the key and value of
  * each entry, as shown in the example.
+ *
+ * Note that it is not possible to reactively detect changes to a browser
+ * IndexedDB. If you do choose to enable automatic loading for the Persister
+ * (with the startAutoLoad method), it needs to poll the database for changes.
+ * The `autoLoadIntervalSeconds` method is used to indicate how often to do
+ * this.
  * @param store The Store to persist.
  * @param dbName The unique key to identify the IndexedDB to use.
+ * @param autoLoadIntervalSeconds How often to poll the database when in
+ * 'autoLoad' mode.
  * @param onIgnoredError An optional handler for the errors that the Persister
  * would otherwise ignore when trying to save or load data. This is suitable for
  * debugging persistence issues in a development environment, since v4.0.4.
