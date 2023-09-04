@@ -39,24 +39,36 @@ const execObjectStore = async (
     };
   });
 
+const tried = (actions: () => void, reject: (reason: string) => void) => () => {
+  try {
+    actions();
+  } catch (e) {
+    reject(e as string);
+  }
+};
+
 export const createIndexedDbPersister = ((
   store: Store,
   dbName: string,
   onIgnoredError?: (error: any) => void,
 ): Persister => {
-  const getObjectStores = async (): Promise<[IDBObjectStore, IDBObjectStore]> =>
-    promiseNew((then) => {
-      const request = WINDOW.indexedDB.open(dbName);
-      request.onupgradeneeded = () =>
-        request.result.createObjectStore(T, KEY_PATH) &&
-        request.result.createObjectStore(V, KEY_PATH);
-      request.onsuccess = () => {
+  const getObjectStores = async (
+    create: 0 | 1 = 0,
+  ): Promise<[IDBObjectStore, IDBObjectStore]> =>
+    promiseNew((then, reject) => {
+      const request = WINDOW.indexedDB.open(dbName, 1);
+      request.onupgradeneeded = tried(
+        () =>
+          create &&
+          request.result.createObjectStore(T, KEY_PATH) &&
+          request.result.createObjectStore(V, KEY_PATH),
+        reject,
+      );
+      request.onsuccess = tried(() => {
         const transaction = request.result.transaction([T, V], 'readwrite');
         then([transaction.objectStore(T), transaction.objectStore(V)]);
-      };
-      request.onerror = () => {
-        throw 'Error opening indexedDB';
-      };
+      }, reject);
+      request.onerror = () => reject('Error opening indexedDB');
     });
 
   const getPersisted = async (): Promise<[Tables, Values]> => {
@@ -81,7 +93,7 @@ export const createIndexedDbPersister = ((
     getContent: () => [Tables, Values],
   ): Promise<void> => {
     const [tables, values] = getContent();
-    const [tablesObjectStore, valuesObjectStore] = await getObjectStores();
+    const [tablesObjectStore, valuesObjectStore] = await getObjectStores(1);
     await objectStoreMatch(tablesObjectStore, tables);
     await objectStoreMatch(valuesObjectStore, values);
   };
