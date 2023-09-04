@@ -50,6 +50,7 @@ const tried = (actions: () => void, reject: (reason: string) => void) => () => {
 export const createIndexedDbPersister = ((
   store: Store,
   dbName: string,
+  autoLoadIntervalSeconds: number,
   onIgnoredError?: (error: any) => void,
 ): Persister => {
   const getObjectStores = async (

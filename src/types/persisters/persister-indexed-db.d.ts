@@ -7,5 +7,6 @@ import {Store} from '../store';
 export function createIndexedDbPersister(
   store: Store,
   dbName: string,
+  autoLoadIntervalSeconds: number,
   onIgnoredError?: (error: any) => void,
 ): Persister;
