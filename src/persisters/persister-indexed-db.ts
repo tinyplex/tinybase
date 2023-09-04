@@ -1,14 +1,20 @@
 import {IdObj, objHas, objMap, objNew} from '../common/obj';
 import {Persister, PersisterListener} from '../types/persisters';
-import {Store, Table, Tables, Value, Values} from '../types/store';
+import {Store, Table, Tables, Values} from '../types/store';
 import {T, V} from '../common/strings';
 import {arrayMap, arrayPush} from '../common/array';
-import {promiseAll, promiseNew} from '../common/other';
+import {
+  promiseAll,
+  promiseNew,
+  startInterval,
+  stopInterval,
+} from '../common/other';
 import {Id} from '../types/common';
 import {createCustomPersister} from '../persisters';
 import {createIndexedDbPersister as createIndexedDbPersisterDecl} from '../types/persisters/persister-indexed-db';
 
 const WINDOW = globalThis.window;
+const OBJECT_STORE_NAMES = [T, V];
 const KEY_PATH = {keyPath: 'k'};
 
 export const objectStoreMatch = async (
@@ -29,23 +35,13 @@ export const objectStoreMatch = async (
 const execObjectStore = async (
   objectStore: IDBObjectStore,
   func: 'getAll' | 'getAllKeys' | 'delete' | 'put',
-  argument?: any,
+  arg?: any,
 ): Promise<any> =>
-  promiseNew((then) => {
-    const request = objectStore[func](argument);
-    request.onsuccess = () => then(request.result);
-    request.onerror = () => {
-      throw 'Error executing against objectStore';
-    };
+  promiseNew((resolve, reject) => {
+    const request = objectStore[func](arg);
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(`objectStore.${func} error`);
   });
-
-const tried = (actions: () => void, reject: (reason: string) => void) => () => {
-  try {
-    actions();
-  } catch (e) {
-    reject(e as string);
-  }
-};
 
 export const createIndexedDbPersister = ((
   store: Store,
@@ -53,60 +49,68 @@ export const createIndexedDbPersister = ((
   autoLoadIntervalSeconds: number,
   onIgnoredError?: (error: any) => void,
 ): Persister => {
-  const getObjectStores = async (
+  const forObjectStores = async (
+    forObjectStore: (objectStore: IDBObjectStore, arg: any) => Promise<any>,
+    args: any[] = [],
     create: 0 | 1 = 0,
-  ): Promise<[IDBObjectStore, IDBObjectStore]> =>
-    promiseNew((then, reject) => {
+  ): Promise<[any, any]> =>
+    promiseNew((resolve, reject) => {
       const request = WINDOW.indexedDB.open(dbName, 1);
-      request.onupgradeneeded = tried(
-        () =>
-          create &&
-          request.result.createObjectStore(T, KEY_PATH) &&
-          request.result.createObjectStore(V, KEY_PATH),
-        reject,
-      );
-      request.onsuccess = tried(() => {
-        const transaction = request.result.transaction([T, V], 'readwrite');
-        then([transaction.objectStore(T), transaction.objectStore(V)]);
-      }, reject);
-      request.onerror = () => reject('Error opening indexedDB');
+      request.onupgradeneeded = () =>
+        create &&
+        arrayMap(OBJECT_STORE_NAMES, (objectStoreName) =>
+          request.result.createObjectStore(objectStoreName, KEY_PATH),
+        );
+      request.onsuccess = async () => {
+        try {
+          const transaction = request.result.transaction(
+            OBJECT_STORE_NAMES,
+            'readwrite',
+          );
+          const result = await promiseAll(
+            arrayMap(
+              OBJECT_STORE_NAMES,
+              async (objectStoreName, index) =>
+                await forObjectStore(
+                  transaction.objectStore(objectStoreName),
+                  args[index],
+                ),
+            ),
+          );
+          request.result.close();
+          resolve(result as [any, any]);
+        } catch (e) {
+          reject(e);
+        }
+      };
+      request.onerror = () => reject('indexedDB.open error');
     });
 
-  const getPersisted = async (): Promise<[Tables, Values]> => {
-    const [tablesObjectStore, valuesObjectStore] = await getObjectStores();
-    return [
+  const getPersisted = async (): Promise<[Tables, Values]> =>
+    await forObjectStores(async (objectStore) =>
       objNew(
         arrayMap(
-          await execObjectStore(tablesObjectStore, 'getAll'),
+          await execObjectStore(objectStore, 'getAll'),
           ({k, v}: {k: Id; v: Table}) => [k, v],
         ),
       ),
-      objNew(
-        arrayMap(
-          await execObjectStore(valuesObjectStore, 'getAll'),
-          ({k, v}: {k: Id; v: Value}) => [k, v],
-        ),
-      ),
-    ];
-  };
+    );
 
   const setPersisted = async (
     getContent: () => [Tables, Values],
-  ): Promise<void> => {
-    const [tables, values] = getContent();
-    const [tablesObjectStore, valuesObjectStore] = await getObjectStores(1);
-    await objectStoreMatch(tablesObjectStore, tables);
-    await objectStoreMatch(valuesObjectStore, values);
-  };
+  ): Promise<void> =>
+    (await forObjectStores(
+      async (objectStore, content) =>
+        await objectStoreMatch(objectStore, content),
+      getContent(),
+      1,
+    )) as any;
 
-  const addPersisterListener = (listener: PersisterListener): string => {
-    listener;
-    return '';
-  };
+  const addPersisterListener = (listener: PersisterListener): NodeJS.Timeout =>
+    startInterval(listener, autoLoadIntervalSeconds * 1000);
 
-  const delPersisterListener = (listener: string): void => {
-    listener;
-  };
+  const delPersisterListener = (interval: NodeJS.Timeout): void =>
+    stopInterval(interval);
 
   return createCustomPersister(
     store,
