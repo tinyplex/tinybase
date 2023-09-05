@@ -46,7 +46,7 @@ const execObjectStore = async (
 export const createIndexedDbPersister = ((
   store: Store,
   dbName: string,
-  autoLoadIntervalSeconds: number,
+  autoLoadIntervalSeconds = 1,
   onIgnoredError?: (error: any) => void,
 ): Persister => {
   const forObjectStores = async (

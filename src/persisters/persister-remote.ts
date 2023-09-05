@@ -11,7 +11,7 @@ export const createRemotePersister = ((
   store: Store,
   loadUrl: string,
   saveUrl: string,
-  autoLoadIntervalSeconds: number,
+  autoLoadIntervalSeconds = 5,
   onIgnoredError?: (error: any) => void,
 ): Persister => {
   let lastEtag: string | null;

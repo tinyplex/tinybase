@@ -8,6 +8,6 @@ export function createRemotePersister(
   store: Store,
   loadUrl: string,
   saveUrl: string,
-  autoLoadIntervalSeconds: number,
+  autoLoadIntervalSeconds?: number,
   onIgnoredError?: (error: any) => void,
 ): Persister;

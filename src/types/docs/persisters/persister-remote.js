@@ -22,7 +22,7 @@
  * @param loadUrl The endpoint that supports a `GET` method to load JSON.
  * @param saveUrl The endpoint that supports a `POST` method to save JSON.
  * @param autoLoadIntervalSeconds How often to poll the `loadUrl` when
- * automatically loading changes from the server.
+ * automatically loading changes from the server, defaulting to 5.
  * @param onIgnoredError An optional handler for the errors that the Persister
  * would otherwise ignore when trying to save or load data. This is suitable for
  * debugging persistence issues in a development environment, since v4.0.4.
