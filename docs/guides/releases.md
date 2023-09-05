@@ -1,11 +1,38 @@
-<p>This is a reverse chronological list of the major <a href="https://beta.tinybase.org/">TinyBase</a> releases, with highlighted features.</p><h2 id="v4-1">v4.1</h2><p>This release introduces the new <a href="https://beta.tinybase.org/api/ui-react-dom/"><code>ui-react-dom</code></a> module. This provides pre-built components for tabular display of your data in a web application.</p><p><img src="https://beta.tinybase.org/ui-react-dom.webp" alt="A TinyBase DOM Component" title="A [TinyBase](/) DOM Component"></p><h3 id="new-dom-components">New DOM Components</h3><p>The following is the list of all the components released in v4.1:</p><div class="table"><table><thead><tr><th>Component</th><th>Purpose</th><th></th></tr></thead><tbody><tr><td><a href="https://beta.tinybase.org/api/ui-react-dom/functions/store-components/valuesinhtmltable/"><code>ValuesInHtmlTable</code></a></td><td>Renders <a href="https://beta.tinybase.org/api/store/type-aliases/store/values/"><code>Values</code></a>.</td><td><a href="https://beta.tinybase.org/demos/ui-components/valuesinhtmltable">demo</a></td></tr><tr><td><a href="https://beta.tinybase.org/api/ui-react-dom/functions/store-components/tableinhtmltable/"><code>TableInHtmlTable</code></a></td><td>Renders a <a href="https://beta.tinybase.org/api/store/type-aliases/store/table/"><code>Table</code></a>.</td><td><a href="https://beta.tinybase.org/demos/ui-components/tableinhtmltable">demo</a></td></tr><tr><td><a href="https://beta.tinybase.org/api/ui-react-dom/functions/store-components/sortedtableinhtmltable/"><code>SortedTableInHtmlTable</code></a></td><td>Renders a sorted <a href="https://beta.tinybase.org/api/store/type-aliases/store/table/"><code>Table</code></a>, with optional interactivity.</td><td><a href="https://beta.tinybase.org/demos/ui-components/sortedtableinhtmltable">demo</a></td></tr><tr><td><a href="https://beta.tinybase.org/api/ui-react-dom/functions/indexes-components/sliceinhtmltable/"><code>SliceInHtmlTable</code></a></td><td>Renders a <a href="https://beta.tinybase.org/api/indexes/type-aliases/concept/slice/"><code>Slice</code></a> from an <a href="https://beta.tinybase.org/api/indexes/type-aliases/concept/index/"><code>Index</code></a>.</td><td><a href="https://beta.tinybase.org/demos/ui-components/sliceinhtmltable">demo</a></td></tr><tr><td><a href="https://beta.tinybase.org/api/ui-react-dom/functions/relationships-components/relationshipinhtmltable/"><code>RelationshipInHtmlTable</code></a></td><td>Renders the local and remote <a href="https://beta.tinybase.org/api/store/type-aliases/store/tables/"><code>Tables</code></a> of a relationship</td><td><a href="https://beta.tinybase.org/demos/ui-components/relationshipinhtmltable">demo</a></td></tr><tr><td><a href="https://beta.tinybase.org/api/ui-react-dom/functions/queries-components/resulttableinhtmltable/"><code>ResultTableInHtmlTable</code></a></td><td>Renders a <a href="https://beta.tinybase.org/api/queries/type-aliases/result/resulttable/"><code>ResultTable</code></a>.</td><td><a href="https://beta.tinybase.org/demos/ui-components/resulttableinhtmltable">demo</a></td></tr><tr><td><a href="https://beta.tinybase.org/api/ui-react-dom/functions/queries-components/resultsortedtableinhtmltable/"><code>ResultSortedTableInHtmlTable</code></a></td><td>Renders a sorted <a href="https://beta.tinybase.org/api/queries/type-aliases/result/resulttable/"><code>ResultTable</code></a>, with optional interactivity.</td><td><a href="https://beta.tinybase.org/demos/ui-components/resultsortedtableinhtmltable">demo</a></td></tr><tr><td><a href="https://beta.tinybase.org/api/ui-react-dom/functions/store-components/editablecellview/"><code>EditableCellView</code></a></td><td>Renders a <a href="https://beta.tinybase.org/api/store/type-aliases/store/cell/"><code>Cell</code></a> and lets you change its type and value.</td><td><a href="https://beta.tinybase.org/demos/ui-components/editablecellview">demo</a></td></tr><tr><td><a href="https://beta.tinybase.org/api/ui-react-dom/functions/store-components/editablevalueview/"><code>EditableValueView</code></a></td><td>Renders a <a href="https://beta.tinybase.org/api/store/type-aliases/store/value/"><code>Value</code></a> and lets you change its type and value.</td><td><a href="https://beta.tinybase.org/demos/ui-components/editablevalueview">demo</a></td></tr></tbody></table></div><p>These pre-built components are showcased in the <a href="https://beta.tinybase.org/demos/ui-components/">UI Components</a> demos. Using them should be very familiar if you have used the more abstract <a href="https://beta.tinybase.org/api/ui-react/"><code>ui-react</code></a> module:</p>
+<p>This is a reverse chronological list of the major <a href="https://beta.tinybase.org/">TinyBase</a> releases, with highlighted features.</p><h2 id="v4-2">v4.2</h2><p>This release adds support for persisting <a href="https://beta.tinybase.org/">TinyBase</a> to a browser&#x27;s IndexedDB storage. The API is the same as for all the other <a href="https://beta.tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a> APIs:</p>
+
+```js
+const store = createStore()
+  .setTable('pets', {fido: {species: 'dog'}})
+  .setTable('species', {dog: {price: 5}})
+  .setValues({open: true});
+const indexedDbPersister = createIndexedDbPersister(store, 'petStore');
+
+await indexedDbPersister.save();
+// IndexedDB ->
+//   database petStore:
+//     objectStore t:
+//       object 0:
+//         k: "pets"
+//         v: {fido: {species: dog}}
+//       object 1:
+//         k: "species"
+//         v: {dog: {price: 5}}
+//     objectStore v:
+//       object 0:
+//         k: "open"
+//         v: true
+
+indexedDbPersister.destroy();
+```
+
+<p>Note that it is not possible to reactively detect changes to a browser&#x27;s IndexedDB storage. A polling technique is used to load underlying changes if you choose to &#x27;autoLoad&#x27; your data into <a href="https://beta.tinybase.org/">TinyBase</a>.</p><h2 id="v4-1">v4.1</h2><p>This release introduces the new <a href="https://beta.tinybase.org/api/ui-react-dom/"><code>ui-react-dom</code></a> module. This provides pre-built components for tabular display of your data in a web application.</p><p><img src="https://beta.tinybase.org/ui-react-dom.webp" alt="A TinyBase DOM Component" title="A [TinyBase](/) DOM Component"></p><h3 id="new-dom-components">New DOM Components</h3><p>The following is the list of all the components released in v4.1:</p><div class="table"><table><thead><tr><th>Component</th><th>Purpose</th><th></th></tr></thead><tbody><tr><td><a href="https://beta.tinybase.org/api/ui-react-dom/functions/store-components/valuesinhtmltable/"><code>ValuesInHtmlTable</code></a></td><td>Renders <a href="https://beta.tinybase.org/api/store/type-aliases/store/values/"><code>Values</code></a>.</td><td><a href="https://beta.tinybase.org/demos/ui-components/valuesinhtmltable">demo</a></td></tr><tr><td><a href="https://beta.tinybase.org/api/ui-react-dom/functions/store-components/tableinhtmltable/"><code>TableInHtmlTable</code></a></td><td>Renders a <a href="https://beta.tinybase.org/api/store/type-aliases/store/table/"><code>Table</code></a>.</td><td><a href="https://beta.tinybase.org/demos/ui-components/tableinhtmltable">demo</a></td></tr><tr><td><a href="https://beta.tinybase.org/api/ui-react-dom/functions/store-components/sortedtableinhtmltable/"><code>SortedTableInHtmlTable</code></a></td><td>Renders a sorted <a href="https://beta.tinybase.org/api/store/type-aliases/store/table/"><code>Table</code></a>, with optional interactivity.</td><td><a href="https://beta.tinybase.org/demos/ui-components/sortedtableinhtmltable">demo</a></td></tr><tr><td><a href="https://beta.tinybase.org/api/ui-react-dom/functions/indexes-components/sliceinhtmltable/"><code>SliceInHtmlTable</code></a></td><td>Renders a <a href="https://beta.tinybase.org/api/indexes/type-aliases/concept/slice/"><code>Slice</code></a> from an <a href="https://beta.tinybase.org/api/indexes/type-aliases/concept/index/"><code>Index</code></a>.</td><td><a href="https://beta.tinybase.org/demos/ui-components/sliceinhtmltable">demo</a></td></tr><tr><td><a href="https://beta.tinybase.org/api/ui-react-dom/functions/relationships-components/relationshipinhtmltable/"><code>RelationshipInHtmlTable</code></a></td><td>Renders the local and remote <a href="https://beta.tinybase.org/api/store/type-aliases/store/tables/"><code>Tables</code></a> of a relationship</td><td><a href="https://beta.tinybase.org/demos/ui-components/relationshipinhtmltable">demo</a></td></tr><tr><td><a href="https://beta.tinybase.org/api/ui-react-dom/functions/queries-components/resulttableinhtmltable/"><code>ResultTableInHtmlTable</code></a></td><td>Renders a <a href="https://beta.tinybase.org/api/queries/type-aliases/result/resulttable/"><code>ResultTable</code></a>.</td><td><a href="https://beta.tinybase.org/demos/ui-components/resulttableinhtmltable">demo</a></td></tr><tr><td><a href="https://beta.tinybase.org/api/ui-react-dom/functions/queries-components/resultsortedtableinhtmltable/"><code>ResultSortedTableInHtmlTable</code></a></td><td>Renders a sorted <a href="https://beta.tinybase.org/api/queries/type-aliases/result/resulttable/"><code>ResultTable</code></a>, with optional interactivity.</td><td><a href="https://beta.tinybase.org/demos/ui-components/resultsortedtableinhtmltable">demo</a></td></tr><tr><td><a href="https://beta.tinybase.org/api/ui-react-dom/functions/store-components/editablecellview/"><code>EditableCellView</code></a></td><td>Renders a <a href="https://beta.tinybase.org/api/store/type-aliases/store/cell/"><code>Cell</code></a> and lets you change its type and value.</td><td><a href="https://beta.tinybase.org/demos/ui-components/editablecellview">demo</a></td></tr><tr><td><a href="https://beta.tinybase.org/api/ui-react-dom/functions/store-components/editablevalueview/"><code>EditableValueView</code></a></td><td>Renders a <a href="https://beta.tinybase.org/api/store/type-aliases/store/value/"><code>Value</code></a> and lets you change its type and value.</td><td><a href="https://beta.tinybase.org/demos/ui-components/editablevalueview">demo</a></td></tr></tbody></table></div><p>These pre-built components are showcased in the <a href="https://beta.tinybase.org/demos/ui-components/">UI Components</a> demos. Using them should be very familiar if you have used the more abstract <a href="https://beta.tinybase.org/api/ui-react/"><code>ui-react</code></a> module:</p>
 
 ```jsx
 const App = ({store}) => (
   <SortedTableInHtmlTable tableId="pets" cellId="species" store={store} />
 );
 
-const store = createStore().setTables({
+store.setTables({
   pets: {
     fido: {species: 'dog'},
     felix: {species: 'cat'},
@@ -19,13 +46,13 @@ console.log(app.innerHTML);
 // ->
 `
 <table>
-  <thead>
-    <tr><th>Id</th><th class="sorted ascending">↑ species</th></tr>
-  </thead>
-  <tbody>
-    <tr><th>felix</th><td>cat</td></tr>
-    <tr><th>fido</th><td>dog</td></tr>
-  </tbody>
+ <thead>
+   <tr><th>Id</th><th class="sorted ascending">↑ species</th></tr>
+ </thead>
+ <tbody>
+   <tr><th>felix</th><td>cat</td></tr>
+   <tr><th>fido</th><td>dog</td></tr>
+ </tbody>
 </table>
 `;
 
@@ -38,21 +65,21 @@ root.unmount();
 const sqlite3 = await sqlite3InitModule();
 const db = new sqlite3.oo1.DB(':memory:', 'c');
 store.setTables({pets: {fido: {species: 'dog'}}});
-const persister = createSqliteWasmPersister(store, sqlite3, db, {
+const sqlitePersister = createSqliteWasmPersister(store, sqlite3, db, {
   mode: 'tabular',
   tables: {load: {pets: 'pets'}, save: {pets: 'pets'}},
 });
 
-await persister.save();
+await sqlitePersister.save();
 console.log(db.exec('SELECT * FROM pets;', {rowMode: 'object'}));
 // -> [{_id: 'fido', species: 'dog'}]
 
 db.exec(`INSERT INTO pets (_id, species) VALUES ('felix', 'cat')`);
-await persister.load();
+await sqlitePersister.load();
 console.log(store.getTables());
 // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
 
-persister.destroy();
+sqlitePersister.destroy();
 ```
 
 <h3 id="crdt-frameworks">CRDT Frameworks</h3><p>CRDTs allow complex reconciliation and synchronization between clients. Yjs and Automerge are two popular examples. The API should be familiar! The following will persist a <a href="https://beta.tinybase.org/">TinyBase</a> <a href="https://beta.tinybase.org/api/store/interfaces/store/store/"><code>Store</code></a> to a Yjs document:</p>
