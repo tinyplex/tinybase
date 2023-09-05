@@ -19,7 +19,7 @@
  * key-value data respectively, using 'k' and 'v' to store the key and value of
  * each entry, as shown in the example.
  *
- * Note that it is not possible to reactively detect changes to a browser
+ * Note that it is not possible to reactively detect changes to a browser's
  * IndexedDB. If you do choose to enable automatic loading for the Persister
  * (with the startAutoLoad method), it needs to poll the database for changes.
  * The `autoLoadIntervalSeconds` method is used to indicate how often to do
@@ -30,7 +30,7 @@
  * 'autoLoad' mode.
  * @param onIgnoredError An optional handler for the errors that the Persister
  * would otherwise ignore when trying to save or load data. This is suitable for
- * debugging persistence issues in a development environment, since v4.0.4.
+ * debugging persistence issues in a development environment.
  * @returns A reference to the new Persister object.
  * @example
  * This example creates a Persister object and persists the Store to the
@@ -39,24 +39,29 @@
  * ```js
  * const store =
  *   createStore()
- *     .setTables({pets: {fido: {species: 'dog'}}})
+ *     .setTable('pets', {fido: {species: 'dog'}})
+ *     .setTable('species', {dog: {price: 5}})
  *     .setValues({open: true});
  * const persister = createIndexedDbPersister(store, 'petStore');
  *
  * await persister.save();
- * // IndexedDB:
+ * // IndexedDB ->
  * //   database petStore:
  * //     objectStore t:
  * //       object 0:
- * //         k: pets
- * //         v: {"fido":{"species":"dog"}}}
+ * //         k: "pets"
+ * //         v: {fido: {species: dog}}
+ * //       object 1:
+ * //         k: "species"
+ * //         v: {dog: {price: 5}}
  * //     objectStore v:
  * //       object 0:
- * //         k: open
+ * //         k: "open"
  * //         v: true
  *
  * persister.destroy();
  * ```
  * @category Creation
+ * @since v4.2.0
  */
 /// createIndexedDbPersister

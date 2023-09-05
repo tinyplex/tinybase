@@ -13,6 +13,7 @@
  * |-|-|-|
  * |persister-browser|createSessionPersister|Browser session storage|
  * |persister-browser|createLocalPersister|Browser local storage|
+ * |persister-indexed-db|createIndexedDbPersister|Browser IndexedDB|
  * |persister-remote|createRemotePersister|Remote server|
  * |persister-file|createFilePersister|Local file (where possible)|
  * |persister-sqlite3|createSqlite3Persister|SQLite in Node, via [sqlite3](https://github.com/TryGhost/node-sqlite3)|
