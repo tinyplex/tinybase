@@ -3,6 +3,40 @@
 This is a reverse chronological list of the major TinyBase releases, with
 highlighted features.
 
+## v4.2
+
+This release adds support for persisting TinyBase to a browser's IndexedDB
+storage. The API is the same as for all the other Persister APIs:
+
+```js
+const store = createStore()
+  .setTable('pets', {fido: {species: 'dog'}})
+  .setTable('species', {dog: {price: 5}})
+  .setValues({open: true});
+const indexedDbPersister = createIndexedDbPersister(store, 'petStore');
+
+await indexedDbPersister.save();
+// IndexedDB ->
+//   database petStore:
+//     objectStore t:
+//       object 0:
+//         k: "pets"
+//         v: {fido: {species: dog}}
+//       object 1:
+//         k: "species"
+//         v: {dog: {price: 5}}
+//     objectStore v:
+//       object 0:
+//         k: "open"
+//         v: true
+
+indexedDbPersister.destroy();
+```
+
+Note that it is not possible to reactively detect changes to a browser's
+IndexedDB storage. A polling technique is used to load underlying changes if you
+choose to 'autoLoad' your data into TinyBase.
+
 ## v4.1
 
 This release introduces the new ui-react-dom module. This provides pre-built
@@ -34,7 +68,7 @@ const App = ({store}) => (
   <SortedTableInHtmlTable tableId="pets" cellId="species" store={store} />
 );
 
-const store = createStore().setTables({
+store.setTables({
   pets: {
     fido: {species: 'dog'},
     felix: {species: 'cat'},
@@ -48,13 +82,13 @@ console.log(app.innerHTML);
 // ->
 `
 <table>
-  <thead>
-    <tr><th>Id</th><th class="sorted ascending">↑ species</th></tr>
-  </thead>
-  <tbody>
-    <tr><th>felix</th><td>cat</td></tr>
-    <tr><th>fido</th><td>dog</td></tr>
-  </tbody>
+ <thead>
+   <tr><th>Id</th><th class="sorted ascending">↑ species</th></tr>
+ </thead>
+ <tbody>
+   <tr><th>felix</th><td>cat</td></tr>
+   <tr><th>fido</th><td>dog</td></tr>
+ </tbody>
 </table>
 `;
 
@@ -122,21 +156,21 @@ for the 'pets' table:
 const sqlite3 = await sqlite3InitModule();
 const db = new sqlite3.oo1.DB(':memory:', 'c');
 store.setTables({pets: {fido: {species: 'dog'}}});
-const persister = createSqliteWasmPersister(store, sqlite3, db, {
+const sqlitePersister = createSqliteWasmPersister(store, sqlite3, db, {
   mode: 'tabular',
   tables: {load: {pets: 'pets'}, save: {pets: 'pets'}},
 });
 
-await persister.save();
+await sqlitePersister.save();
 console.log(db.exec('SELECT * FROM pets;', {rowMode: 'object'}));
 // -> [{_id: 'fido', species: 'dog'}]
 
 db.exec(`INSERT INTO pets (_id, species) VALUES ('felix', 'cat')`);
-await persister.load();
+await sqlitePersister.load();
 console.log(store.getTables());
 // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
 
-persister.destroy();
+sqlitePersister.destroy();
 ```
 
 ### CRDT Frameworks
