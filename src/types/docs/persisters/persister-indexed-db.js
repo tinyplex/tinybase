@@ -27,7 +27,7 @@
  * @param store The Store to persist.
  * @param dbName The unique key to identify the IndexedDB to use.
  * @param autoLoadIntervalSeconds How often to poll the database when in
- * 'autoLoad' mode.
+ * 'autoLoad' mode, defaulting to 1.
  * @param onIgnoredError An optional handler for the errors that the Persister
  * would otherwise ignore when trying to save or load data. This is suitable for
  * debugging persistence issues in a development environment.

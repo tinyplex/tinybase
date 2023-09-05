@@ -8,6 +8,6 @@ export function createRemotePersister<Schemas extends OptionalSchemas>(
   store: Store<Schemas>,
   loadUrl: string,
   saveUrl: string,
-  autoLoadIntervalSeconds: number,
+  autoLoadIntervalSeconds?: number,
   onIgnoredError?: (error: any) => void,
 ): Persister<Schemas>;

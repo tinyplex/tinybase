@@ -7,6 +7,6 @@ import {Persister} from '../persisters';
 export function createIndexedDbPersister<Schemas extends OptionalSchemas>(
   store: Store<Schemas>,
   dbName: string,
-  autoLoadIntervalSeconds: number,
+  autoLoadIntervalSeconds?: number,
   onIgnoredError?: (error: any) => void,
 ): Persister<Schemas>;
