@@ -329,7 +329,9 @@ export const compileModule = async (
       'fs',
       'fs/promises',
       'path',
-      'prettier',
+      'prettier/standalone',
+      'prettier/plugins/estree',
+      'prettier/plugins/typescript',
       'react',
       'react-dom',
       'url',
@@ -475,7 +477,7 @@ export const compileDocsAndAssets = async (api = true, pages = true) => {
   await makeDir(TMP_DIR);
   await esbuild.build({
     entryPoints: ['site/build.ts'],
-    external: ['tinydocs', 'react', 'yjs', 'prettier'],
+    external: ['tinydocs', 'react', 'yjs', '@prettier/sync'],
     target: 'esnext',
     bundle: true,
     outfile: './tmp/build.js',

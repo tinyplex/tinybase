@@ -1,6 +1,6 @@
 import {NoPropComponent, useBaseUrl, usePageNode} from 'tinydocs';
 import React from 'react';
-import prettier from 'prettier';
+import prettier from '@prettier/sync';
 
 const SCRIPTS_REGEX = /<script.*?<\/script>/gms;
 const SRC_REGEX = /(?<=src=['"]).*?(?=['"])/gms;

@@ -7,15 +7,19 @@ import {
   Tools,
   createTools as createToolsDecl,
 } from './types/tools.d';
-import {arrayEvery, arrayLength, arrayMap} from './common/array';
+import {arrayEvery, arrayLength, arrayMap, arrayPush} from './common/array';
 import {formatJsDoc, length} from './tools/common/code';
 import {objFreeze, objIsEmpty} from './common/obj';
 import {collForEach} from './common/coll';
 import {getCreateFunction} from './common/definable';
 import {getStoreApi as getStoreApiImpl} from './tools/api/api';
 import {jsonParse} from './common/json';
+import {promiseAll} from './common/other';
 
 type CellMeta = [string, IdMap<number>, [number, Cell?], number];
+
+const PRETTIER = 'prettier/';
+const PRETTIER_PLUGINS = PRETTIER + 'plugins/';
 
 const prettierConfig = {
   parser: 'typescript',
@@ -130,17 +134,29 @@ export const createTools = getCreateFunction((store: Store): Tools => {
     module: string,
   ): Promise<[string, string, string, string]> => {
     const extensions = ['d.ts', 'ts', 'd.ts', 'tsx'];
-    let format: (str: string, _config: any) => string;
+    const plugins: any[] = [];
+    let format: (str: string, _config: any) => Promise<string>;
     try {
-      format = (await import('prettier')).format;
+      format = (await import(PRETTIER + 'standalone')).format;
+      arrayPush(
+        plugins,
+        await import(PRETTIER_PLUGINS + 'estree'),
+        await import(PRETTIER_PLUGINS + 'typescript'),
+      );
     } catch (e) {
-      format = (str) => str;
+      format = async (str) => str;
     }
-    return arrayMap(getStoreApi(module), (file, f) =>
-      formatJsDoc(
-        format(file, {...prettierConfig, filepath: `_.${extensions[f]}`}),
+    return (await promiseAll(
+      arrayMap(getStoreApi(module), async (file, f) =>
+        formatJsDoc(
+          await format(file, {
+            ...prettierConfig,
+            plugins,
+            filepath: `_.${extensions[f]}`,
+          }),
+        ),
       ),
-    ) as [string, string, string, string];
+    )) as [string, string, string, string];
   };
 
   const getStore = (): Store => store;
