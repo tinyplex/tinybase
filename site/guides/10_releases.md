@@ -40,6 +40,9 @@ Note that it is not possible to reactively detect changes to a browser's
 IndexedDB storage. A polling technique is used to load underlying changes if you
 choose to 'autoLoad' your data into TinyBase.
 
+This release also upgrades Prettier to v3.0 which has a peer-dependency impact
+on the tools module. Please report any issues!
+
 ## v4.1
 
 This release introduces the new ui-react-dom module. This provides pre-built
