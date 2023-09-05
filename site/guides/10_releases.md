@@ -6,7 +6,10 @@ highlighted features.
 ## v4.2
 
 This release adds support for persisting TinyBase to a browser's IndexedDB
-storage. The API is the same as for all the other Persister APIs:
+storage. You'll need to import the new persister-indexed-db module, and call the
+createIndexedDbPersister function to create the IndexedDB Persister.
+
+The API is the same as for all the other Persister APIs:
 
 ```js
 const store = createStore()
