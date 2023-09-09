@@ -242,6 +242,7 @@
     "babel-eslint": "^10.1.0",
     "babel-jest": "^29.6.4",
     "babel-plugin-transform-import-meta": "^2.2.1",
+    "babel-plugin-transform-vite-meta-env": "^1.0.3",
     "babel-preset-minify": "^0.5.2",
     "buffer-replace": "^1.0.0",
     "country-flag-emoji-json": "^2.0.0",
