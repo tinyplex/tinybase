@@ -129,7 +129,7 @@ export const getDatabaseFunctions = <Database>(
             db,
             'SELECT sql, name FROM sqlite_schema ' +
               `WHERE type = 'table' AND name NOT LIKE ?`,
-            ['%crsql%'],
+            ['%sql%'],
           )
         ).map(async ({sql, name}: any) => [
           name,
