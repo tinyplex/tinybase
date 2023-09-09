@@ -64,6 +64,80 @@ const getInvalidValueMutator =
 
 // Note that these tests run in order to mutate the store in a sequence.
 describe('Listeners', () => {
+  describe('json', () => {
+    beforeAll(() => {
+      store = createStore();
+      listener = createStoreListener(store);
+      listener.listenToTables('/t');
+      listener.listenToValues('/v');
+      listener.listenToDidFinishTransaction('/');
+    });
+
+    test('setTablesJson', () => {
+      store.setTablesJson('{"t1":{"r1":{"c1":1}}}');
+      expectChanges(listener, '/t', {t1: {r1: {c1: 1}}});
+      expectChanges(listener, '/', [
+        [{t1: {r1: {c1: 1}}}, {}],
+        {
+          cellsTouched: true,
+          valuesTouched: false,
+          changedCells: {t1: {r1: {c1: [null, 1]}}},
+          invalidCells: {},
+          changedValues: {},
+          invalidValues: {},
+          changedTableIds: {t1: 1},
+          changedRowIds: {t1: {r1: 1}},
+          changedCellIds: {t1: {r1: {c1: 1}}},
+          changedValueIds: {},
+        },
+      ]);
+      expectNoChanges(listener);
+    });
+
+    test('setValuesJson', () => {
+      store.setValuesJson('{"v1":1}');
+      expectChanges(listener, '/v', {v1: 1});
+      expectChanges(listener, '/', [
+        [{}, {v1: 1}],
+        {
+          cellsTouched: false,
+          valuesTouched: true,
+          changedCells: {},
+          invalidCells: {},
+          changedValues: {v1: [null, 1]},
+          invalidValues: {},
+          changedTableIds: {},
+          changedRowIds: {},
+          changedCellIds: {},
+          changedValueIds: {v1: 1},
+        },
+      ]);
+      expectNoChanges(listener);
+    });
+
+    test('setJson', () => {
+      store.setJson('[{"t1":{"r1":{"c1":2}}},{"v1":2}]');
+      expectChanges(listener, '/t', {t1: {r1: {c1: 2}}});
+      expectChanges(listener, '/v', {v1: 2});
+      expectChanges(listener, '/', [
+        [{t1: {r1: {c1: 2}}}, {v1: 2}],
+        {
+          cellsTouched: true,
+          valuesTouched: true,
+          changedCells: {t1: {r1: {c1: [1, 2]}}},
+          invalidCells: {},
+          changedValues: {v1: [1, 2]},
+          invalidValues: {},
+          changedTableIds: {},
+          changedRowIds: {},
+          changedCellIds: {},
+          changedValueIds: {},
+        },
+      ]);
+      expectNoChanges(listener);
+    });
+  });
+
   describe('tables', () => {
     beforeAll(() => {
       store = createStore();

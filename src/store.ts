@@ -1216,16 +1216,16 @@ export const createStore: typeof createStoreDecl = (): Store => {
     return store;
   };
 
-  const setJson = (tablesAndValuesJson: Json): Store => {
-    try {
-      const [tables, values] = jsonParse(tablesAndValuesJson);
-      setOrDelTables(tables);
-      setOrDelValues(values);
-    } catch {
-      setTablesJson(tablesAndValuesJson);
-    }
-    return store;
-  };
+  const setJson = (tablesAndValuesJson: Json): Store =>
+    fluentTransaction(() => {
+      try {
+        const [tables, values] = jsonParse(tablesAndValuesJson);
+        setOrDelTables(tables);
+        setOrDelValues(values);
+      } catch {
+        setTablesJson(tablesAndValuesJson);
+      }
+    });
 
   const setTablesSchema = (tablesSchema: TablesSchema): Store =>
     fluentTransaction(() => {
