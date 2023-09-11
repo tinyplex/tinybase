@@ -62,6 +62,7 @@ import {
   TableListener,
   Tables,
   TablesListener,
+  TransactionListener,
   Value,
   ValueIdsListener,
   ValueListener,
@@ -573,6 +574,27 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     listener: ValueListener<Schemas, ValueIdOrNull>,
     listenerDeps?: React.DependencyList,
     mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// useStartTransactionListener
+  useStartTransactionListener: (
+    listener: TransactionListener<Schemas>,
+    listenerDeps?: React.DependencyList,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// useWillFinishTransactionListener
+  useWillFinishTransactionListener: (
+    listener: TransactionListener<Schemas>,
+    listenerDeps?: React.DependencyList,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// useDidFinishTransactionListener
+  useDidFinishTransactionListener: (
+    listener: TransactionListener<Schemas>,
+    listenerDeps?: React.DependencyList,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 

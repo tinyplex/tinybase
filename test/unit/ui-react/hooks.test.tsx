@@ -45,6 +45,7 @@ import {
   useDelTablesCallback,
   useDelValueCallback,
   useDelValuesCallback,
+  useDidFinishTransactionListener,
   useGoBackwardCallback,
   useGoForwardCallback,
   useGoToCallback,
@@ -106,6 +107,7 @@ import {
   useSliceRowIdsListener,
   useSortedRowIds,
   useSortedRowIdsListener,
+  useStartTransactionListener,
   useStore,
   useStoreIds,
   useTable,
@@ -123,6 +125,7 @@ import {
   useValueListener,
   useValues,
   useValuesListener,
+  useWillFinishTransactionListener,
 } from 'tinybase/debug/ui-react';
 import React, {ReactElement} from 'react';
 import {ReactTestRenderer, act, create} from 'react-test-renderer';
@@ -3206,6 +3209,99 @@ describe('Listener Hooks', () => {
       renderer.update(<div />);
     });
     expect(store.getListenerStats().value).toEqual(0);
+  });
+
+  test('useStartTransactionListener', () => {
+    expect.assertions(6);
+    const Test = ({value}: {readonly value: number}) => {
+      useStartTransactionListener(
+        (store) => expect(store?.getValue('v1')).toEqual(value),
+        [value],
+        store,
+      );
+      return <div />;
+    };
+    expect(store.getListenerStats().transaction).toEqual(0);
+    act(() => {
+      renderer = create(<Test value={1} />);
+    });
+    expect(store.getListenerStats().transaction).toEqual(1);
+    act(() => {
+      store.setValue('v1', 2);
+    });
+    act(() => {
+      renderer.update(<Test value={2} />);
+    });
+    expect(store.getListenerStats().transaction).toEqual(1);
+    act(() => {
+      store.setValue('v1', 3);
+    });
+    act(() => {
+      renderer.update(<div />);
+    });
+    expect(store.getListenerStats().transaction).toEqual(0);
+  });
+
+  test('useWillFinishTransactionListener', () => {
+    expect.assertions(6);
+    const Test = ({value}: {readonly value: number}) => {
+      useWillFinishTransactionListener(
+        (store) => expect(store?.getValue('v1')).toEqual(value),
+        [value],
+        store,
+      );
+      return <div />;
+    };
+    expect(store.getListenerStats().transaction).toEqual(0);
+    act(() => {
+      renderer = create(<Test value={2} />);
+    });
+    expect(store.getListenerStats().transaction).toEqual(1);
+    act(() => {
+      store.setValue('v1', 2);
+    });
+    act(() => {
+      renderer.update(<Test value={3} />);
+    });
+    expect(store.getListenerStats().transaction).toEqual(1);
+    act(() => {
+      store.setValue('v1', 3);
+    });
+    act(() => {
+      renderer.update(<div />);
+    });
+    expect(store.getListenerStats().transaction).toEqual(0);
+  });
+
+  test('useDidFinishTransactionListener', () => {
+    expect.assertions(6);
+    const Test = ({value}: {readonly value: number}) => {
+      useDidFinishTransactionListener(
+        (store) => expect(store?.getValue('v1')).toEqual(value),
+        [value],
+        store,
+      );
+      return <div />;
+    };
+    expect(store.getListenerStats().transaction).toEqual(0);
+    act(() => {
+      renderer = create(<Test value={2} />);
+    });
+    expect(store.getListenerStats().transaction).toEqual(1);
+    act(() => {
+      store.setValue('v1', 2);
+    });
+    act(() => {
+      renderer.update(<Test value={3} />);
+    });
+    expect(store.getListenerStats().transaction).toEqual(1);
+    act(() => {
+      store.setValue('v1', 3);
+    });
+    act(() => {
+      renderer.update(<div />);
+    });
+    expect(store.getListenerStats().transaction).toEqual(0);
   });
 
   test('useMetricListener', () => {

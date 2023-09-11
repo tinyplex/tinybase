@@ -20,6 +20,7 @@ import {
   TableListener,
   Tables,
   TablesListener,
+  TransactionListener,
   Value,
   ValueIdsListener,
   ValueListener,
@@ -421,6 +422,27 @@ export function useValueListener(
   listener: ValueListener,
   listenerDeps?: React.DependencyList,
   mutator?: boolean,
+  storeOrStoreId?: StoreOrStoreId,
+): void;
+
+/// useStartTransactionListener
+export function useStartTransactionListener(
+  listener: TransactionListener,
+  listenerDeps?: React.DependencyList,
+  storeOrStoreId?: StoreOrStoreId,
+): void;
+
+/// useWillFinishTransactionListener
+export function useWillFinishTransactionListener(
+  listener: TransactionListener,
+  listenerDeps?: React.DependencyList,
+  storeOrStoreId?: StoreOrStoreId,
+): void;
+
+/// useDidFinishTransactionListener
+export function useDidFinishTransactionListener(
+  listener: TransactionListener,
+  listenerDeps?: React.DependencyList,
   storeOrStoreId?: StoreOrStoreId,
 ): void;
 

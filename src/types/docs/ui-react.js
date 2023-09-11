@@ -3302,6 +3302,165 @@
  */
 /// useValueListener
 /**
+ * The useStartTransactionListener hook registers a listener function with the
+ * Store that will be called at the start of a transaction.
+ *
+ * Unlike the addStartTransactionListener method, which returns a listener Id
+ * and requires you to remove it manually, the useStartTransactionListener hook
+ * manages this lifecycle for you: when the listener changes (per its
+ * `listenerDeps` dependencies) or the component unmounts, the listener on the
+ * underlying Store will be deleted.
+ * @param listener The function that will be called at the start of a
+ * transaction.
+ * @param listenerDeps An optional array of dependencies for the `listener`
+ * function, which, if any change, result in the re-registration of the
+ * listener. This parameter defaults to an empty array.
+ * @param storeOrStoreId The Store to register the listener with: omit for the
+ * default context Store, provide an Id for a named context Store, or provide an
+ * explicit reference.
+ * @example
+ * This example uses the useStartTransactionListener hook to create a listener
+ * that is scoped to a single component. When the component is unmounted, the
+ * listener is removed from the Store.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => {
+ *   useStartTransactionListener(() => console.log('Start transaction'));
+ *   return <span>App</span>;
+ * };
+ *
+ * const store = createStore();
+ * const app = document.createElement('div');
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App store={store} />); // !act
+ * console.log(store.getListenerStats().transaction);
+ * // -> 1
+ *
+ * store.setValue('open', false); // !act
+ * // -> 'Start transaction'
+ *
+ * root.unmount(); // !act
+ * console.log(store.getListenerStats().transaction);
+ * // -> 0
+ * ```
+ * @category Store hooks
+ * @since v4.2.2
+ */
+/// useStartTransactionListener
+/**
+ * The useWillFinishTransactionListener hook registers a listener function with
+ * a Store that will be called just before other non-mutating listeners are
+ * called at the end of the transaction.
+ *
+ * Unlike the addWillFinisTransactionListener method, which returns a listener
+ * Id and requires you to remove it manually, the
+ * useWillFinishTransactionListener hook manages this lifecycle for you: when
+ * the listener changes (per its `listenerDeps` dependencies) or the component
+ * unmounts, the listener on the underlying Store will be deleted.
+ * @param listener The function that will be called before the end of a
+ * transaction.
+ * @param listenerDeps An optional array of dependencies for the `listener`
+ * function, which, if any change, result in the re-registration of the
+ * listener. This parameter defaults to an empty array.
+ * @param storeOrStoreId The Store to register the listener with: omit for the
+ * default context Store, provide an Id for a named context Store, or provide an
+ * explicit reference.
+ * @example
+ * This example uses the useWillFinishTransactionListener hook to create a
+ * listener that is scoped to a single component. When the component is
+ * unmounted, the listener is removed from the Store.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => {
+ *   useWillFinishTransactionListener(
+ *     () => console.log('Will finish transaction'),
+ *   );
+ *   return <span>App</span>;
+ * };
+ *
+ * const store = createStore();
+ * const app = document.createElement('div');
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App store={store} />); // !act
+ * console.log(store.getListenerStats().transaction);
+ * // -> 1
+ *
+ * store.setValue('open', false); // !act
+ * // -> 'Will finish transaction'
+ *
+ * root.unmount(); // !act
+ * console.log(store.getListenerStats().transaction);
+ * // -> 0
+ * ```
+ * @category Store hooks
+ * @since v4.2.2
+ */
+/// useWillFinishTransactionListener
+/**
+ * The useDidFinishTransactionListener hook registers a listener function with a
+ * Store that will be called just after other non-mutating listeners are called
+ * at the end of the transaction.
+ *
+ * Unlike the addDidFinishTransactionListener method, which returns a listener
+ * Id and requires you to remove it manually, the
+ * useDidFinishTransactionListener hook manages this lifecycle for you: when the
+ * listener changes (per its `listenerDeps` dependencies) or the component
+ * unmounts, the listener on the underlying Store will be deleted.
+ * @param listener The function that will be called after the end of a
+ * transaction.
+ * @param listenerDeps An optional array of dependencies for the `listener`
+ * function, which, if any change, result in the re-registration of the
+ * listener. This parameter defaults to an empty array.
+ * @param storeOrStoreId The Store to register the listener with: omit for the
+ * default context Store, provide an Id for a named context Store, or provide an
+ * explicit reference.
+ * @example
+ * This example uses the useDidFinishTransactionListener hook to create a
+ * listener that is scoped to a single component. When the component is
+ * unmounted, the listener is removed from the Store.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => {
+ *   useDidFinishTransactionListener(
+ *     () => console.log('Did finish transaction'),
+ *   );
+ *   return <span>App</span>;
+ * };
+ *
+ * const store = createStore();
+ * const app = document.createElement('div');
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App store={store} />); // !act
+ * console.log(store.getListenerStats().transaction);
+ * // -> 1
+ *
+ * store.setValue('open', false); // !act
+ * // -> 'Did finish transaction'
+ *
+ * root.unmount(); // !act
+ * console.log(store.getListenerStats().transaction);
+ * // -> 0
+ * ```
+ * @category Store hooks
+ * @since v4.2.2
+ */
+/// useDidFinishTransactionListener
+/**
  * The useCreateMetrics hook is used to create a Metrics object within a React
  * application with convenient memoization.
  *

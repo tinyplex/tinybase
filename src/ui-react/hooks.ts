@@ -42,6 +42,7 @@ import {
   TableListener,
   Tables,
   TablesListener,
+  TransactionListener,
   Value,
   ValueIdsListener,
   ValueListener,
@@ -85,6 +86,7 @@ import {
   useDelTablesCallback as useDelTablesCallbackDecl,
   useDelValueCallback as useDelValueCallbackDecl,
   useDelValuesCallback as useDelValuesCallbackDecl,
+  useDidFinishTransactionListener as useDidFinishTransactionListenerDecl,
   useGoBackwardCallback as useGoBackwardCallbackDecl,
   useGoForwardCallback as useGoForwardCallbackDecl,
   useGoToCallback as useGoToCallbackDecl,
@@ -142,6 +144,7 @@ import {
   useSliceRowIdsListener as useSliceRowIdsListenerDecl,
   useSortedRowIds as useSortedRowIdsDecl,
   useSortedRowIdsListener as useSortedRowIdsListenerDecl,
+  useStartTransactionListener as useStartTransactionListenerDecl,
   useStoreIds as useStoreIdsDecl,
   useTableCellIds as useTableCellIdsDecl,
   useTableCellIdsListener as useTableCellIdsListenerDecl,
@@ -158,6 +161,7 @@ import {
   useValueListener as useValueListenerDecl,
   useValues as useValuesDecl,
   useValuesListener as useValuesListenerDecl,
+  useWillFinishTransactionListener as useWillFinishTransactionListenerDecl,
 } from '../types/ui-react.d';
 import {
   Indexes,
@@ -195,6 +199,7 @@ import {
 import {ListenerArgument} from '../common/listeners';
 import {Persister} from '../types/persisters.d';
 import React from 'react';
+import {TRANSACTION} from '../tools/common/strings';
 import {arrayIsEmpty} from '../common/array';
 
 export {
@@ -879,6 +884,45 @@ export const useValueListener: typeof useValueListenerDecl = (
     [valueId],
     mutator,
   );
+
+export const useStartTransactionListener: typeof useStartTransactionListenerDecl =
+  (
+    listener: TransactionListener,
+    listenerDeps?: React.DependencyList,
+    storeOrStoreId?: StoreOrStoreId,
+  ): void =>
+    useListener(
+      'Start' + TRANSACTION,
+      useStoreOrStoreById(storeOrStoreId),
+      listener,
+      listenerDeps,
+    );
+
+export const useWillFinishTransactionListener: typeof useWillFinishTransactionListenerDecl =
+  (
+    listener: TransactionListener,
+    listenerDeps?: React.DependencyList,
+    storeOrStoreId?: StoreOrStoreId,
+  ): void =>
+    useListener(
+      'WillFinish' + TRANSACTION,
+      useStoreOrStoreById(storeOrStoreId),
+      listener,
+      listenerDeps,
+    );
+
+export const useDidFinishTransactionListener: typeof useDidFinishTransactionListenerDecl =
+  (
+    listener: TransactionListener,
+    listenerDeps?: React.DependencyList,
+    storeOrStoreId?: StoreOrStoreId,
+  ): void =>
+    useListener(
+      'DidFinish' + TRANSACTION,
+      useStoreOrStoreById(storeOrStoreId),
+      listener,
+      listenerDeps,
+    );
 
 export const useCreateMetrics: typeof useCreateMetricsDecl = (
   store: Store,
