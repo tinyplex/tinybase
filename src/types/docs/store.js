@@ -5297,6 +5297,8 @@
    * Note that a TransactionListener added to the Store with this method can
    * mutate the Store, and its changes will be treated as part of the
    * transaction that is starting.
+   * @param listener The function that will be called at the start of a
+   * transaction.
    * @returns A unique Id for the listener that can later be used to remove it.
    * @example
    * This example registers a listener that is called at start end of the
@@ -5352,6 +5354,8 @@
    * mutate the Store itself, and its changes will be treated as part of the
    * transaction that is starting (and may fire non-mutating listeners after
    * this).
+   * @param listener The function that will be called before the end of a
+   * transaction.
    * @returns A unique Id for the listener that can later be used to remove it.
    * @example
    * This example registers a listener that is called at the end of the
@@ -5447,6 +5451,8 @@
    *
    * Note that a TransactionListener added to the Store with this method
    * _cannot_ mutate the Store itself, and attempts to do so will fail silently.
+   * @param listener The function that will be called after the end of a
+   * transaction.
    * @returns A unique Id for the listener that can later be used to remove it.
    * @example
    * This example registers a listener that is called at the end of the
