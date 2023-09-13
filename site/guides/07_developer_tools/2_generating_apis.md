@@ -12,7 +12,7 @@ be linked into the development and compilation of an application as a whole.
 ## Using The getStoreApi Method
 
 This is performed from the Tools object - which is returned from the createTools
-method - and via the getStoreApi method.
+function - and via the getStoreApi method.
 
 The method takes a parameter which serves as the 'name' for your wrapped, typed,
 Store:
