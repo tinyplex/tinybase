@@ -1,7 +1,7 @@
 # Schema-Based Typing
 
 You can use type definitions that infer API types from the schemas you apply,
-providing a powerful way to improve your develope experience when you know the
+providing a powerful way to improve your developer experience when you know the
 shape of the data being stored.
 
 The schema-based definitions can be accessed by adding the `with-schemas` suffix
@@ -212,7 +212,7 @@ const App = () => (
 
 Schema-based typing provides a powerful developer-time experience for checking
 your code and autocompletion in your IDE. Remember to use the `with-schema`
-suffice on the import path and use the patterns described above.
+suffix on the import path and use the patterns described above.
 
 We move on to discussing more complex programmatic enforcement of your data, and
 for that we turn to the Mutating Data With Listeners guide.
