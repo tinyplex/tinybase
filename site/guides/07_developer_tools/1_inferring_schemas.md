@@ -10,15 +10,15 @@ that shape through the use of the derived TablesSchema from then on.
 ## The Tools Object
 
 Firstly, to run any developer tools against a Store, you need to create a Tools
-object with the createTools method. This is _not_ included in the main build of
-the tinybase module and must be imported explicitly from the `tinybase/tools`
+object with the createTools function. This is _not_ included in the main build
+of the tinybase module and must be imported explicitly from the `tinybase/tools`
 submodule.
 
 Rather than this code living in your production application, it is more likely
 (and expected) to be used in a build script or similar.
 
-Usage of the createTools method should be familiar by now, taking a reference to
-a Store:
+Usage of the createTools function should be familiar by now, taking a reference
+to a Store:
 
 ```js
 const store = createStore()
