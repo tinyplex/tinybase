@@ -43,7 +43,7 @@ export const MetricsView = ({
           </thead>
           <tbody>
             {arrayMap(metricIds, (metricId) => (
-              <MetricRow metrics={metrics} metricId={metricId} />
+              <MetricRow metrics={metrics} metricId={metricId} key={metricId} />
             ))}
           </tbody>
         </table>

@@ -96,27 +96,27 @@ export const Body = ({s}: StoreProp) => {
     <article ref={articleRef} onScroll={handleScroll}>
       <StoreView s={s} />
       {arrayMap(storeIds, (storeId) => (
-        <StoreView storeId={storeId} key={storeId} s={s} />
+        <StoreView storeId={storeId} s={s} key={storeId} />
       ))}
       <MetricsView s={s} />
       {arrayMap(metricsIds, (metricsId) => (
-        <MetricsView metricsId={metricsId} key={metricsId} s={s} />
+        <MetricsView metricsId={metricsId} s={s} key={metricsId} />
       ))}
       <IndexesView s={s} />
       {arrayMap(indexesIds, (indexesId) => (
-        <IndexesView indexesId={indexesId} key={indexesId} s={s} />
+        <IndexesView indexesId={indexesId} s={s} key={indexesId} />
       ))}
       <RelationshipsView s={s} />
       {arrayMap(relationshipsIds, (relationshipsId) => (
         <RelationshipsView
           relationshipsId={relationshipsId}
-          key={relationshipsId}
           s={s}
+          key={relationshipsId}
         />
       ))}
       <QueriesView s={s} />
       {arrayMap(queriesIds, (queriesId) => (
-        <QueriesView queriesId={queriesId} key={queriesId} s={s} />
+        <QueriesView queriesId={queriesId} s={s} key={queriesId} />
       ))}
     </article>
   );

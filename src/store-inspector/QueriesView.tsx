@@ -77,6 +77,7 @@ export const QueriesView = ({
               queriesId={queriesId}
               queryId={queryId}
               s={s}
+              key={queryId}
             />
           ))}
     </Details>

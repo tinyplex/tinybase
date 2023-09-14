@@ -30,6 +30,7 @@ const IndexView = ({
         indexId={indexId}
         sliceId={sliceId}
         s={s}
+        key={sliceId}
       />
     ))}
   </Details>
@@ -82,6 +83,7 @@ export const IndexesView = ({
               indexesId={indexesId}
               indexId={indexId}
               s={s}
+              key={indexId}
             />
           ))}
     </Details>

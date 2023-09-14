@@ -102,7 +102,13 @@ export const StoreView = ({
     >
       <ValuesView storeId={storeId} store={store} s={s} />
       {sortedIdsMap(tableIds, (tableId) => (
-        <TableView store={store} storeId={storeId} tableId={tableId} s={s} />
+        <TableView
+          store={store}
+          storeId={storeId}
+          tableId={tableId}
+          s={s}
+          key={tableId}
+        />
       ))}
     </Details>
   );

@@ -61,6 +61,7 @@ export const RelationshipsView = ({
               relationshipsId={relationshipsId}
               relationshipId={relationshipId}
               s={s}
+              key={relationshipId}
             />
           ))}
     </Details>
