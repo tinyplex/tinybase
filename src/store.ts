@@ -58,6 +58,7 @@ import {
   isFunction,
   isTypeStringOrBoolean,
   isUndefined,
+  slice,
 } from './common/other';
 import {
   ExtraArgsGetter,
@@ -111,7 +112,6 @@ import {
   arrayIsEqual,
   arrayMap,
   arrayPush,
-  arraySlice,
   arraySort,
 } from './common/array';
 import {
@@ -999,7 +999,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     limit?: number,
   ): Ids =>
     arrayMap(
-      arraySlice(
+      slice(
         arraySort(
           mapMap<Id, RowMap, [Cell, Id]>(
             mapGet(tablesMap, id(tableId)),
@@ -1677,7 +1677,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
         addListener(
           args[argumentCount] as any,
           idSetNode[args[argumentCount + 1] ? 1 : 0],
-          argumentCount > 0 ? arraySlice(args, 0, argumentCount) : undefined,
+          argumentCount > 0 ? slice(args, 0, argumentCount) : undefined,
           pathGetters,
           extraArgsGetter,
         );

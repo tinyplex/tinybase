@@ -56,7 +56,6 @@ import {
   arrayIsEmpty,
   arrayLength,
   arrayPush,
-  arraySlice,
 } from './common/array';
 import {
   collClear,
@@ -74,6 +73,7 @@ import {
   ifNotUndefined,
   isFunction,
   isUndefined,
+  slice,
 } from './common/other';
 import {objFreeze, objMap} from './common/obj';
 
@@ -634,7 +634,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
       );
       queries[ADD + RESULT + gettable + LISTENER] = (...args: any[]): Id =>
         (resultStore as any)[ADD + gettable + LISTENER](
-          ...arraySlice(args, 0, argumentCount),
+          ...slice(args, 0, argumentCount),
           (_store: Store, ...listenerArgs: any[]) =>
             (args[argumentCount] as any)(queries, ...listenerArgs),
         );

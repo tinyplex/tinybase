@@ -1,12 +1,11 @@
 import {IdMap, mapNew, mapSet} from '../../common/map';
 import {IdObj, objMap, objMerge, objSize, objValues} from '../../common/obj';
-import {isString, isUndefined} from '../../common/other';
+import {isString, isUndefined, slice} from '../../common/other';
 import {setAdd, setNew} from '../../common/set';
 import {DEFAULT_ROW_ID_COLUMN_NAME} from './common';
 import {DatabasePersisterConfig} from '../../types/persisters';
 import {Id} from '../../types/common';
 import {TINYBASE} from '../../common/strings';
-import {arraySlice} from '../../common/array';
 
 export type DefaultedJsonConfig = [storeTableName: string];
 export type DefaultedTabularConfig = [
@@ -58,7 +57,7 @@ const getDefaultedTabularConfigMap = (
 ): IdMap<any[]> => {
   const configMap = mapNew<Id, any[]>();
   objMap(configsObj, (configObj, id) => {
-    const defaultedConfig = arraySlice(
+    const defaultedConfig = slice(
       objValues(
         objMerge(
           defaultObj,
@@ -100,7 +99,7 @@ export const getConfigStructures = (
 
   const {tables: {load = {}, save = {}} = {}, values = {}} = config;
 
-  const valuesConfig = arraySlice(
+  const valuesConfig = slice(
     objValues(objMerge(DEFAULT_TABULAR_VALUES_CONFIG, values)),
     0,
     objSize(DEFAULT_TABULAR_VALUES_CONFIG),
