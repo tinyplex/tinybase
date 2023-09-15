@@ -8,6 +8,7 @@
  * @see Persisting Data guide
  * @packageDocumentation
  * @module persister-expo-sqlite
+ * @since v4.0.3
  */
 /// persister-expo-sqlite
 /**
@@ -112,5 +113,6 @@
  * persister.destroy();
  * ```
  * @category Creation
+ * @since v4.0.3
  */
 /// createExpoSqlitePersister

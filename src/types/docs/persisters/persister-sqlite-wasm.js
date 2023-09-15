@@ -5,6 +5,7 @@
  * @see Persisting Data guide
  * @packageDocumentation
  * @module persister-sqlite-wasm
+ * @since v4.0.0
  */
 /// persister-sqlite-wasm
 /**
@@ -98,5 +99,6 @@
  * persister.destroy();
  * ```
  * @category Creation
+ * @since v4.0.0
  */
 /// createSqliteWasmPersister
