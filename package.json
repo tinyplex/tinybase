@@ -265,6 +265,8 @@
     "jest-fetch-mock": "^3.0.3",
     "jest-puppeteer": "^9.0.0",
     "less": "^4.2.0",
+    "partykit": "^0.0.14",
+    "partysocket": "^0.0.6",
     "prettier": "^3.0.3",
     "puppeteer": "21.1.1",
     "react": "^18.2.0",
@@ -287,6 +289,8 @@
     "@sqlite.org/sqlite-wasm": "^3.43.1-build1",
     "@vlcn.io/crsqlite-wasm": "^0.15.2",
     "automerge-repo": "^0.1.0",
+    "partykit": "^0.0.14",
+    "partysocket": "^0.0.6",
     "prettier": "^3.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -301,6 +305,12 @@
       "optional": true
     },
     "automerge-repo": {
+      "optional": true
+    },
+    "partykit": {
+      "optional": true
+    },
+    "partysocket": {
       "optional": true
     },
     "prettier": {
