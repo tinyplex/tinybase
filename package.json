@@ -284,8 +284,8 @@
     "yjs": "^13.6.7"
   },
   "peerDependencies": {
-    "@sqlite.org/sqlite-wasm": "^3.42.0-build4",
-    "@vlcn.io/crsqlite-wasm": "^0.14.0",
+    "@sqlite.org/sqlite-wasm": "^3.43.1-build1",
+    "@vlcn.io/crsqlite-wasm": "^0.15.2",
     "automerge-repo": "^0.1.0",
     "prettier": "^3.0.3",
     "react": "^18.2.0",
