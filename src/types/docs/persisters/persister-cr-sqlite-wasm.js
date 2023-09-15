@@ -5,6 +5,7 @@
  * @see Persisting Data guide
  * @packageDocumentation
  * @module persister-cr-sqlite-wasm
+ * @since v4.0.0
  */
 /// persister-cr-sqlite-wasm
 /**
@@ -91,5 +92,6 @@
  * persister.destroy();
  * ```
  * @category Creation
+ * @since v4.0.0
  */
 /// createCrSqliteWasmPersister

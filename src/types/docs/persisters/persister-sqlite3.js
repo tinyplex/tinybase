@@ -5,6 +5,7 @@
  * @see Persisting Data guide
  * @packageDocumentation
  * @module persister-sqlite3
+ * @since v4.0.0
  */
 /// persister-sqlite3
 /**
@@ -105,5 +106,6 @@
  * persister.destroy();
  * ```
  * @category Creation
+ * @since v4.0.0
  */
 /// createSqlite3Persister
