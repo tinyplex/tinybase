@@ -27,6 +27,8 @@ const TEST_MODULES = [
   'persisters/persister-remote',
   'persisters/persister-yjs',
   'persisters/persister-automerge',
+  'persisters/persister-partykit-client',
+  'persisters/persister-partykit-server',
 ];
 const MODULES_TYPED_WITH_INTERNALS = ['store', 'queries', 'ui-react'];
 const ALL_MODULES = [
@@ -52,6 +54,8 @@ const ALL_MODULES = [
   'persisters/persister-remote',
   'persisters/persister-yjs',
   'persisters/persister-automerge',
+  'persisters/persister-partykit-client',
+  'persisters/persister-partykit-server',
 ];
 
 export const BIN_DIR = 'bin';
