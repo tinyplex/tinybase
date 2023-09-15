@@ -1,12 +1,12 @@
 /// persister-partykit-client
 
+import {OptionalSchemas, Store} from '../store';
 import PartySocket from 'partysocket';
 import {Persister} from '../persisters';
-import {Store} from '../store';
 
 /// createPartyKitPersister
-export function createPartyKitPersister(
-  store: Store,
+export function createPartyKitPersister<Schemas extends OptionalSchemas>(
+  store: Store<Schemas>,
   connection: PartySocket,
   onIgnoredError?: (error: any) => void,
-): Persister;
+): Persister<Schemas>;
