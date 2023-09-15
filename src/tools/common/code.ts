@@ -20,8 +20,8 @@ import {
   arraySort,
 } from '../../common/array';
 import {collHas, collValues} from '../../common/coll';
+import {isArray, slice} from '../../common/other';
 import {Id} from '../../types/common.d';
-import {isArray} from '../../common/other';
 
 export type LINE = string;
 export type LINE_TREE = LINE_OR_LINE_TREE[];
@@ -30,9 +30,6 @@ export type LINE_OR_LINE_TREE = LINE | LINE_TREE;
 const NON_ALPHA = /[^A-Za-z]+/;
 const NON_ALPHANUMERIC = /[^A-Za-z0-9]+/;
 const JSDOC = /^( *)\/\*\* *(.*?) *\*\/$/gm;
-
-const substr = (str: string, start: number, end?: number) =>
-  str.substring(start, end);
 
 const stringHasComma = (str: string) => str.includes(COMMA);
 
@@ -69,8 +66,7 @@ export const camel = (str: string, firstCap = 0) =>
     arrayMap(
       str.split(NON_ALPHANUMERIC),
       (word, w) =>
-        (w > 0 || firstCap ? upper : lower)(substr(word, 0, 1)) +
-        substr(word, 1),
+        (w > 0 || firstCap ? upper : lower)(slice(word, 0, 1)) + slice(word, 1),
     ),
   );
 
@@ -158,7 +154,7 @@ export const getCodeFunctions = (): [
 
   const getSortableImport = (importMaybeAs: string): string => {
     const as = importMaybeAs.indexOf(' as ');
-    return as != -1 ? importMaybeAs.substring(as + 4) : importMaybeAs;
+    return as != -1 ? slice(importMaybeAs, as + 4) : importMaybeAs;
   };
 
   const getImports = (location: 0 | 1 = 0): LINE[] =>
