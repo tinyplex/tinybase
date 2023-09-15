@@ -28,7 +28,7 @@ import {
   arrayPush,
 } from '../../common/array';
 import {collDel, collHas, collValues} from '../../common/coll';
-import {isUndefined, promiseAll} from '../../common/other';
+import {isUndefined, promiseAll, slice} from '../../common/other';
 import {setAdd, setNew} from '../../common/set';
 import {Id} from '../../types/common';
 import {escapeId} from './common';
@@ -304,10 +304,13 @@ const upsert = async (
         ),
       ) +
       ')VALUES' +
-      strRepeat(
-        `,(?${strRepeat(',?', arrayLength(changingColumnNames))})`,
-        arrayLength(args) / (arrayLength(changingColumnNames) + 1),
-      ).substring(1) +
+      slice(
+        strRepeat(
+          `,(?${strRepeat(',?', arrayLength(changingColumnNames))})`,
+          arrayLength(args) / (arrayLength(changingColumnNames) + 1),
+        ),
+        1,
+      ) +
       'ON CONFLICT(' +
       escapeId(rowIdColumnName) +
       ')DO UPDATE SET' +
