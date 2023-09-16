@@ -12,6 +12,7 @@ import {
 import {
   arrayEvery,
   arrayIsEmpty,
+  arrayMap,
   arrayPush,
   arrayUnshift,
 } from '../common/array';
@@ -30,6 +31,12 @@ import {mapForEach} from '../common/map';
  */
 
 const HAS_STORE = 'hasStore';
+const CORS_HEADERS = objNew(
+  arrayMap(['Origin', 'Methods', 'Headers'], (suffix) => [
+    'Access-Control-Allow-' + suffix,
+    '*',
+  ]),
+);
 
 const hasStoreInStorage = async (storage: Storage): Promise<1 | undefined> =>
   await storage.get<1>(HAS_STORE);
@@ -112,7 +119,7 @@ const promiseToSetOrDelStorage = (
   );
 
 const getResponse = (status: number, body: string | null = null) =>
-  new Response(body, {status});
+  new Response(body, {status, headers: CORS_HEADERS});
 
 export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
   constructor(readonly party: Party) {}
