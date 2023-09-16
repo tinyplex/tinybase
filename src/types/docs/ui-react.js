@@ -8290,6 +8290,12 @@
  * an array in the fifth parameter. The Persister itself is used as a dependency
  * by default.
  *
+ * Since v4.3.0, the `create` function can return undefined, meaning that you
+ * can  enable or disable persistence conditionally within this hook. This is
+ * useful for applications which might turn on or off their cloud persistence or
+ * collaboration features. As a result, the `then` callback may also get passed
+ * undefined, which you should handle accordingly.
+ *
  * This hook ensures the Persister object is destroyed whenever a new one is
  * created or the component is unmounted.
  * @param store A reference to the Store for which to create a new Persister
