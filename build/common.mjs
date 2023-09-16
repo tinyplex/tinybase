@@ -75,7 +75,8 @@ const getGlobalName = (module) =>
     : basename(module)
         .split('-')
         .map((part) => part[0].toUpperCase() + part.slice(1).toLowerCase())
-        .join(''));
+        .join('')
+        .replace('Partykit', 'PartyKit')); // lol
 
 const getPrettierConfig = async () => ({
   ...JSON.parse(await promises.readFile('.prettierrc', UTF8)),
@@ -477,6 +478,9 @@ export const test = async (
 
 export const compileDocsAndAssets = async (api = true, pages = true) => {
   const {default: esbuild} = await import('esbuild');
+  const {default: esbuildPlugin} = await import('rollup-plugin-esbuild');
+  const {default: terser} = await import('@rollup/plugin-terser');
+  const {rollup} = await import('rollup');
 
   await makeDir(TMP_DIR);
   await esbuild.build({
@@ -488,6 +492,21 @@ export const compileDocsAndAssets = async (api = true, pages = true) => {
     format: 'esm',
     platform: 'node',
   });
+
+  await (
+    await rollup({
+      input: 'node_modules/partysocket/dist/index.mjs',
+      plugins: [esbuildPlugin(), terser({toplevel: true, compress: true})],
+    })
+  ).write({
+    dir: 'tmp',
+    entryFileNames: 'partysocket.js',
+    format: 'umd',
+    interop: 'default',
+    name: 'PartySocketModule',
+    exports: 'named',
+  });
+
   const {build} = await import('../tmp/build.js');
   build(DOCS_DIR, api, pages);
   await removeDir(TMP_DIR);
