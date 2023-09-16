@@ -15,32 +15,32 @@ import {jsonString} from '../common/json';
 type MessageListener = (event: MessageEvent) => void;
 
 const MESSAGE = 'message';
+const HTTPS = 'https:';
 
 export const createPartyKitPersister = ((
   store: Store,
   connection: PartySocket,
   onIgnoredError?: (error: any) => void,
 ): Persister => {
-  let storeUrl: URL;
-  const getStoreUrl = () => {
-    if (!storeUrl) {
-      storeUrl = new URL(connection.url);
-      storeUrl.protocol = location.protocol;
-      storeUrl.pathname =
-        storeUrl.pathname.replace('/party/', '/parties/main/') + STORE_PATH;
-      storeUrl.search = '';
-    }
-    return storeUrl;
-  };
+  const {host, room} = connection.partySocketOptions;
+  const storeUrl =
+    (location.protocol == HTTPS ? HTTPS : 'http:') +
+    '//' +
+    host +
+    '/parties/' +
+    ((connection as any).name ?? 'main') +
+    '/' +
+    room +
+    STORE_PATH;
 
-  const getOrSetStore = async (content?: [Tables, Values]) => {
-    return await (
-      await fetch(
-        getStoreUrl(),
-        content ? {method: PUT, body: jsonString(content)} : undefined,
-      )
+  const getOrSetStore = async (content?: [Tables, Values]) =>
+    await (
+      await fetch(storeUrl, {
+        ...(content ? {method: PUT, body: jsonString(content)} : {}),
+        mode: 'cors',
+        cache: 'no-store',
+      })
     ).json();
-  };
 
   const getPersisted = async (): Promise<[Tables, Values]> =>
     await getOrSetStore();
