@@ -1005,12 +1005,12 @@ const _Persister = () => {
     (store) => createFilePersister(store, ''),
     undefined,
     async (persister) => {
-      persister.getStore().getTables().t1;
-      persister.getStore().getTables().t2; // !
+      persister?.getStore().getTables().t1;
+      persister?.getStore().getTables().t2; // !
     },
   );
-  persisterWithSchema.getStore().getTables().t1;
-  persisterWithSchema.getStore().getTables().t2; // !
+  persisterWithSchema?.getStore().getTables().t1;
+  persisterWithSchema?.getStore().getTables().t2; // !
   useCreatePersister(createStore(), (s) => createFilePersister(s, '')); // !
 };
 

@@ -1370,9 +1370,9 @@ exports[`Types: ui-react.tsx:992:39 1`] = `"Property 't2' does not exist on type
 
 exports[`Types: ui-react.tsx:997:39 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:1008:39 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:1008:40 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:1012:45 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:1012:46 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
 exports[`Types: ui-react.tsx:1013:21 1`] = `"Argument of type 'Store<NoSchemas>' is not assignable to parameter of type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>'."`;
 

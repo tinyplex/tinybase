@@ -1502,11 +1502,11 @@ export const useCheckpointListener: typeof useCheckpointListenerDecl = (
 
 export const useCreatePersister: typeof useCreatePersisterDecl = (
   store: Store,
-  create: (store: Store) => Persister,
+  create: (store: Store) => Persister | undefined,
   createDeps: React.DependencyList = [],
-  then?: (persister: Persister) => Promise<void>,
+  then?: (persister?: Persister) => Promise<void>,
   thenDeps: React.DependencyList = [],
-): Persister => {
+): Persister | undefined => {
   const [, setDone] = useState<1>();
   const persister = useMemo(
     () => create(store),
@@ -1521,7 +1521,7 @@ export const useCreatePersister: typeof useCreatePersisterDecl = (
         return;
       })();
       return () => {
-        persister.destroy();
+        persister?.destroy();
       };
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
