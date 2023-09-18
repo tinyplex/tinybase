@@ -8,5 +8,6 @@ import {Persister} from '../persisters';
 export function createPartyKitPersister<Schemas extends OptionalSchemas>(
   store: Store<Schemas>,
   connection: PartySocket,
+  storeUrlProtocol?: 'http' | 'https',
   onIgnoredError?: (error: any) => void,
 ): Persister<Schemas>;
