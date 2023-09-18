@@ -3,6 +3,48 @@
 This is a reverse chronological list of the major TinyBase releases, with
 highlighted features.
 
+## v4.3
+
+This release provides an experimental integration with
+[PartyKit](https://www.partykit.io/), a cloud-based collaboration platform. It
+includes two new modules:
+
+- The persister-partykit-server module provides a server class for co-ordinating
+  clients and persisting Store data to the PartyKit cloud.
+- The persister-partykit-client module provides the Persister API to create
+  connections to the server.
+
+A TinyBase server implementation on PartyKit can be as simple as this:
+
+```js yolo
+import {TinyBasePartyKitServer} from 'tinybase/persisters/persister-partykit-server';
+export default class extends TinyBasePartyKitServer {}
+```
+
+On the client, use the familiar Persister API, passing in a reference to a
+PartyKit socket object that's been configured to connect to your server
+deployment and named room:
+
+```js yolo
+const persister = createPartyKitPersister(
+  store,
+  new PartySocket({
+    host: 'project-name.my-account.partykit.dev',
+    room: 'my-partykit-room',
+  }),
+);
+await persister.startAutoSave();
+await persister.startAutoLoad();
+```
+
+The load method and (gracefully failing) save method on this Persister use HTTPS
+to get or set full copies of the Store to the cloud. However, the auto-save and
+auto-load modes use a websocket to transmit subsequent incremental changes in
+either direction, making for performant collaboration between clients.
+
+See and try out this new collaboration functionality in the Todo App v6
+(collaboration) demo.
+
 ## v4.2
 
 This release adds support for persisting TinyBase to a browser's IndexedDB
