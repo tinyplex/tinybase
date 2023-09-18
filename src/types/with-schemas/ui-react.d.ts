@@ -991,13 +991,15 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   ) => void;
 
   /// useCreatePersister
-  useCreatePersister: (
+  useCreatePersister: <
+    PersisterOrUndefined extends Persister<Schemas> | undefined,
+  >(
     store: Store<Schemas>,
-    create: (store: Store<Schemas>) => Persister<Schemas> | undefined,
+    create: (store: Store<Schemas>) => PersisterOrUndefined,
     createDeps?: React.DependencyList,
-    then?: (persister?: Persister<Schemas>) => Promise<void>,
+    then?: (persister?: PersisterOrUndefined) => Promise<void>,
     thenDeps?: React.DependencyList,
-  ) => Persister<Schemas> | undefined;
+  ) => PersisterOrUndefined;
 
   /// ExtraProps
   ExtraProps: ExtraProps;

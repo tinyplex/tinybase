@@ -1500,13 +1500,15 @@ export const useCheckpointListener: typeof useCheckpointListenerDecl = (
     [checkpointId],
   );
 
-export const useCreatePersister: typeof useCreatePersisterDecl = (
+export const useCreatePersister: typeof useCreatePersisterDecl = <
+  PersisterOrUndefined extends Persister | undefined,
+>(
   store: Store,
-  create: (store: Store) => Persister | undefined,
+  create: (store: Store) => PersisterOrUndefined,
   createDeps: React.DependencyList = [],
-  then?: (persister?: Persister) => Promise<void>,
+  then?: (persister: PersisterOrUndefined) => Promise<void>,
   thenDeps: React.DependencyList = [],
-): Persister | undefined => {
+): PersisterOrUndefined => {
   const [, setDone] = useState<1>();
   const persister = useMemo(
     () => create(store),
