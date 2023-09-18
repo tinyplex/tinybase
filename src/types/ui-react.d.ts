@@ -835,13 +835,15 @@ export function useCheckpointListener(
 ): void;
 
 /// useCreatePersister
-export function useCreatePersister(
+export function useCreatePersister<
+  PersisterOrUndefined extends Persister | undefined,
+>(
   store: Store,
-  create: (store: Store) => Persister | undefined,
+  create: (store: Store) => PersisterOrUndefined,
   createDeps?: React.DependencyList,
-  then?: (persister?: Persister) => Promise<void>,
+  then?: (persister: PersisterOrUndefined) => Promise<void>,
   thenDeps?: React.DependencyList,
-): Persister | undefined;
+): PersisterOrUndefined;
 
 /// ExtraProps
 export type ExtraProps = {[propName: string]: any};
