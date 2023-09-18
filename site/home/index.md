@@ -4,67 +4,17 @@
   <h2>
     The <em>reactive</em> data store for <span>local-first apps</span>.
   </h2>
-  <p>
-    Modern apps deserve better. Why trade reactive user experiences to be able 
-    to use relational data? Or sacrifice features for bundle size? And 
-    why does the cloud do all the work 
-    <a href='https://localfirstweb.dev/' target='_blank'>anyway</a>?
+  <p id='copy'>
+    Build blisteringly fast web apps that work both online and offline.
+    <br />
+    Store your state locally, synchronize it to the cloud, or make it collaborative.
+    <br />
+    And, most importantly... have fun building stuff again!
   </p>
-  <p><em>TinyBase is a smart new way to structure your local app data:</em></p>
-  <ul>
-    <li>
-      Manage <a href='#start-with-a-simple-key-value-store'>key-value 
-      data</a>, <a href='#level-up-to-use-tabular-data'>tabular data</a> - or 
-      both - with optional 
-      <a href='#apply-schemas-to-tables-values'>schematization</a> to model 
-      it.
-    </li>
-    <li>
-      <a href='#register-granular-listeners'>Flexibly reactive</a> to
-      reconciled updates, so you only spend cycles on things that change.
-    </li>
-    <li>
-      <a href='#build-complex-queries-with-tinyql'>Powerful query engine</a> to
-      select, join, filter, group, sort and paginate data - reactively.
-    </li>
-    <li>
-      <a href='#create-indexes-for-fast-lookups'>Indexing</a>,
-      <a href='#define-metrics-and-aggregations'>metrics</a>,
-      <a href='#model-table-relationships'>relationships</a> - and
-      even an <a href='#set-checkpoints-for-an-undo-stack'>undo stack</a>
-      for your app state.
-    </li>
-    <li>
-      <a href='#type-definitions-orm-like-apis'>Type definitions &amp; ORM-like 
-      APIs</a>, from schema or inference. <a href='#an-inspector-for-your-data'>
-      Inspect your data</a> (<em>new!</em>).
-    </li>
-    <li>
-      Easily <a href='#persist-to-storage-sqlite-crdts'>sync your data</a> to 
-      storage, (<em>new!</em>) 
-      <a href='/guides/schemas-and-persistence/database-persistence/'>SQLite</a>, 
-      or (<em>new!</em>) 
-      <a href='/guides/schemas-and-persistence/synchronizing-data/'>CRDTs</a>.
-    </li>
-    <li>
-      Optional <a href='#call-hooks-to-bind-to-data'>bindings to React</a> and 
-      (<em>new!</em>) <a href='#pre-built-reactive-components'>pre-built 
-      components</a> for a fully reactive UI.
-    </li>
-  </ul>
   <p>
-    <em>Tiny by name, tiny by nature</em>, TinyBase only costs
-    <a href='#did-we-say-tiny'>@@EVAL("toKb(sizes.get('store.js.gz'))") -
-    @@EVAL("toKb(sizes.get('tinybase.js.gz'))")</a> when compressed, and has 
-    zero dependencies. And of course it's <a href='#well-tested-and-documented'>
-    well tested</a>, <a href='/guides/the-basics/getting-started/'>fully 
-    documented</a>, and <a href='@@EVAL("metadata.repository")'>open source</a>.
+    <em>NEW!</em> v4.3 release: "<a href='/guides/releases/#v4-3'>The One With PartyKit</a>"
   </p>
 </section>
-
-<a id='new' href='/guides/releases/#v4-2'><em>NEW!</em> v4.2 release</a>
-
----
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 
@@ -72,40 +22,73 @@
 
 <a href='/api/store/interfaces/store/store/'>Read the docs</a>
 
+<ul>
+  <li>
+    Manage <a href='#start-with-a-simple-key-value-store'>key-value 
+    data</a>, <a href='#level-up-to-use-tabular-data'>tabular data</a> - or 
+    both - with optional 
+    <a href='#apply-schemas-to-tables-values'>schematization</a> to model 
+    your app's data structures.
+  </li>
+  <li>
+    <a href='#register-granular-listeners'>Flexibly reactive</a> to
+    reconciled updates, so you only spend rendering cycles on things that change.
+  </li>
+  <li>
+    <a href='#build-complex-queries-with-tinyql'>Powerful query engine</a> to
+    select, join, filter, group, sort and paginate data - reactively - and without SQL.
+  </li>
+  <li>
+    Built-in <a href='#create-indexes-for-fast-lookups'>indexing</a>,
+    <a href='#define-metrics-and-aggregations'>metric aggregation</a>,
+    <a href='#model-table-relationships'>tabular relationships</a> - and
+    even an <a href='#set-checkpoints-for-an-undo-stack'>undo stack</a>
+    for your app state.
+  </li>
+</ul>
+<ul>
+  <li>
+    Create <a href='#type-definitions-orm-like-apis'>type definitions &amp; ORM-like 
+    APIs</a>, from schema or inference. <a href='#an-inspector-for-your-data'>
+    Inspect your data</a> (<em>new!</em>) directly in the browser.
+  </li>
+  <li>
+    Easily <a href='#persist-to-storage-sqlite-crdts'>sync your data</a> to 
+    browser <a href='/api/persister-browser'>storage</a>, <a href='/api/persister-indexed-db/'>IndexedDB</a>,
+    <a href='/guides/schemas-and-persistence/database-persistence/'>SQLite</a>, 
+    <a href='/guides/schemas-and-persistence/synchronizing-data/'>CRDTs</a>, and (<em>new!</em>)  <a href='/api/persister-partykit-client/'>PartyKit</a>.
+  </li>
+  <li>
+    Optional <a href='#call-hooks-to-bind-to-data'>bindings to React</a> and 
+    (<em>new!</em>) <a href='#pre-built-reactive-components'>pre-built 
+    components</a> let you easily build fully reactive user interfaces.
+  </li>
+  <li>
+    Tiny by name, tiny by nature:
+    <a href='#did-we-say-tiny'>@@EVAL("toKb(sizes.get('store.js.gz'))") -
+    @@EVAL("toKb(sizes.get('tinybase.js.gz'))")</a>, zero dependencies. <a href='#well-tested-and-documented'>100% tested</a>, <a href='/guides/the-basics/getting-started/'>fully documented</a>, and of course, <a href='@@EVAL("metadata.repository")'>open source</a>!
+  </li>
+</ul>
+
 ---
 
-> ## Proud to be sponsored by:
->
-> @@EVAL("getGitHubAvatar('expo')")
-> @@EVAL("getGitHubAvatar('cancelself')")
-> @@EVAL("getGitHubAvatar('WonderPanda')")
-> @@EVAL("getGitHubAvatar('arpitBhalla')")
+<section id="friends">
+<h2>Tinybase works great on its own, but also plays well with friends!</h2>
 
-> ## Excited to be used by:
->
-> @@EVAL("getGitHubAvatar('Apocalypsor')")
-> @@EVAL("getGitHubAvatar('brentvatne')")
-> @@EVAL("getGitHubAvatar('circadian-risk')")
-> @@EVAL("getGitHubAvatar('cubecull')")
-> @@EVAL("getGitHubAvatar('erwinkn')")
-> @@EVAL("getGitHubAvatar('expo')")
-> @@EVAL("getGitHubAvatar('ezra-en')")
-> @@EVAL("getGitHubAvatar('fdfontes')")
-> @@EVAL("getGitHubAvatar('flaming-codes')")
-> @@EVAL("getGitHubAvatar('generates')")
-> @@EVAL("getGitHubAvatar('Giulio987')")
-> @@EVAL("getGitHubAvatar('jaysc')")
-> @@EVAL("getGitHubAvatar('Kayoo-asso')")
-> @@EVAL("getGitHubAvatar('kotofurumiya')")
-> @@EVAL("getGitHubAvatar('learn-anything')")
-> @@EVAL("getGitHubAvatar('marksteve')")
-> @@EVAL("getGitHubAvatar('miking-the-viking')")
-> @@EVAL("getGitHubAvatar('nikitavoloboev')")
-> @@EVAL("getGitHubAvatar('shaneosullivan')")
-> @@EVAL("getGitHubAvatar('SuperSonicHub1')")
-> @@EVAL("getGitHubAvatar('threepointone')")
-> @@EVAL("getGitHubAvatar('uptonking')")
-> @@EVAL("getGitHubAvatar('WonderPanda')")
+<div><a href='/guides/building-uis/getting-started-with-ui-react'>React<img
+src="/react.svg" /></a></div>
+
+<div><a href='/api/persister-partykit-client'>PartyKit<img src="/partykit.svg" /></a></div>
+
+<div><a href='/guides/schemas-and-persistence/database-persistence'>SQLite<img src="/sqlite.svg" /></a></div>
+
+<div><a href='/api/persister-yjs/functions/creation/createyjspersister'>YJS<img src="/yjs.svg" /></a></div>
+
+<div><a href='/api/persister-cr-sqlite-wasm'>CR-SQLite<img src="/crsqlite.png" /></a></div>
+
+<div><a href='/api/persister-automerge'>Automerge<img src="/automerge.svg" /></a></div>
+
+</section>
 
 ---
 
@@ -535,6 +518,43 @@ export const createShop: typeof createShopDecl = () => {
 
 ---
 
+<section id="sponsors">
+<h2>Proud to be sponsored by:</h2>
+@@EVAL("getGitHubAvatar('expo')")
+@@EVAL("getGitHubAvatar('cancelself')")
+@@EVAL("getGitHubAvatar('WonderPanda')")
+@@EVAL("getGitHubAvatar('arpitBhalla')")
+</section>
+
+<section id="users">
+<h2>Excited to be used by:</h2>
+@@EVAL("getGitHubAvatar('Apocalypsor')")
+@@EVAL("getGitHubAvatar('brentvatne')")
+@@EVAL("getGitHubAvatar('circadian-risk')")
+@@EVAL("getGitHubAvatar('cubecull')")
+@@EVAL("getGitHubAvatar('erwinkn')")
+@@EVAL("getGitHubAvatar('expo')")
+@@EVAL("getGitHubAvatar('ezra-en')")
+@@EVAL("getGitHubAvatar('fdfontes')")
+@@EVAL("getGitHubAvatar('flaming-codes')")
+@@EVAL("getGitHubAvatar('generates')")
+@@EVAL("getGitHubAvatar('Giulio987')")
+@@EVAL("getGitHubAvatar('jaysc')")
+@@EVAL("getGitHubAvatar('Kayoo-asso')")
+@@EVAL("getGitHubAvatar('kotofurumiya')")
+@@EVAL("getGitHubAvatar('learn-anything')")
+@@EVAL("getGitHubAvatar('marksteve')")
+@@EVAL("getGitHubAvatar('miking-the-viking')")
+@@EVAL("getGitHubAvatar('nikitavoloboev')")
+@@EVAL("getGitHubAvatar('shaneosullivan')")
+@@EVAL("getGitHubAvatar('SuperSonicHub1')")
+@@EVAL("getGitHubAvatar('threepointone')")
+@@EVAL("getGitHubAvatar('uptonking')")
+@@EVAL("getGitHubAvatar('WonderPanda')")
+</section>
+
+---
+
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 
 <a href='/demos/'>Try the demos</a>
@@ -567,9 +587,14 @@ export const createShop: typeof createShopDecl = () => {
 
 > ## About
 >
+> Modern apps deserve better. Why trade reactive user experiences to be able to use relational data? Or sacrifice features for bundle size? And why does the cloud do all the work <a href='https://localfirstweb.dev/' target='_blank'>anyway</a>?
+>
 > Building TinyBase was originally an interesting exercise for <a rel="me"
-> href="https://hachyderm.io/@jamesgpearce">me</a> in API design, minification,
-> and documentation. It could not have been built without these great
+> href="https://tripleodeon.com">me</a> in API design, minification,
+> and documentation. But now it has taken on a life of its own, and has grown
+> beyond my wildest expectations
+>
+> It could not have been built without these great
 > [projects](/guides/how-tinybase-is-built/credits/#giants) and
 > [friends](/guides/how-tinybase-is-built/credits/#and-friends), and I hope you
 > enjoy using it as much as I do building it!
