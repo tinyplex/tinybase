@@ -213,8 +213,8 @@
   "devDependencies": {
     "@automerge/automerge": "^2.1.1",
     "@babel/cli": "^7.22.15",
-    "@babel/core": "^7.22.19",
-    "@babel/preset-env": "^7.22.15",
+    "@babel/core": "^7.22.20",
+    "@babel/preset-env": "^7.22.20",
     "@babel/preset-react": "^7.22.15",
     "@babel/preset-typescript": "^7.22.15",
     "@prettier/sync": "^0.3.0",
