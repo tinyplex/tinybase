@@ -15,17 +15,17 @@ import {jsonString} from '../common/json';
 type MessageListener = (event: MessageEvent) => void;
 
 const MESSAGE = 'message';
-const HTTPS = 'https:';
 
 export const createPartyKitPersister = ((
   store: Store,
   connection: PartySocket,
+  storeUrlProtocol: 'http' | 'https' = 'https',
   onIgnoredError?: (error: any) => void,
 ): Persister => {
   const {host, room} = connection.partySocketOptions;
   const storeUrl =
-    (location.protocol == HTTPS ? HTTPS : 'http:') +
-    '//' +
+    storeUrlProtocol +
+    '://' +
     host +
     '/parties/' +
     ((connection as any).name ?? 'main') +

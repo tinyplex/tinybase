@@ -47,6 +47,9 @@
  * @param store The Store to persist.
  * @param connection The PartySocket to use for participating in the PartyKit
  * room.
+ * @param storeUrlProtocol The HTTP protocol to use (in addition to the
+ * websocket channel). This defaults to 'https' but you may wish to use 'http'
+ * for local PartyKit development.
  * @param onIgnoredError An optional handler for the errors that the Persister
  * would otherwise ignore when trying to save or load data. This is suitable for
  * debugging persistence issues in a development environment.

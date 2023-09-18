@@ -8,5 +8,6 @@ import {Store} from '../store';
 export function createPartyKitPersister(
   store: Store,
   connection: PartySocket,
+  storeUrlProtocol?: 'http' | 'https',
   onIgnoredError?: (error: any) => void,
 ): Persister;
