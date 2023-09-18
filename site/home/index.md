@@ -5,10 +5,8 @@
     The <em>reactive</em> data store for <span>local-first apps</span>.
   </h2>
   <p id='copy'>
-    Build blisteringly fast web apps that work both online and offline.
-    <br />
-    Store your state locally, synchronize it to the cloud, or make it collaborative.
-    <br />
+    Build blisteringly fast web apps that work both online and offline. Store 
+    your state locally, synchronize it to the cloud, or make it collaborative.
     And, most importantly... have fun building stuff again!
   </p>
   <p>
