@@ -5,9 +5,8 @@
     The <em>reactive</em> data store for <span>local-first apps</span>.
   </h2>
   <p id='copy'>
-    Build blisteringly fast web apps that work both online and offline. Store 
-    your state locally, synchronize it to the cloud, or make it collaborative.
-    And, most importantly... have fun building stuff again!
+    Build blisteringly fast web apps that work both online and offline. Manage 
+    your state locally, synchronize it to the cloud when you need to, or even make it collaborative. But, most importantly... have fun building stuff again!
   </p>
   <p>
     <em>NEW!</em> v4.3 release: "<a href='/guides/releases/#v4-3'>The One With PartyKit</a>"
