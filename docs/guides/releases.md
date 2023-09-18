@@ -1,4 +1,25 @@
-<p>This is a reverse chronological list of the major <a href="https://beta.tinybase.org/">TinyBase</a> releases, with highlighted features.</p><h2 id="v4-2">v4.2</h2><p>This release adds support for persisting <a href="https://beta.tinybase.org/">TinyBase</a> to a browser&#x27;s IndexedDB storage. You&#x27;ll need to import the new <a href="https://beta.tinybase.org/api/persister-indexed-db/"><code>persister-indexed-db</code></a> module, and call the <a href="https://beta.tinybase.org/api/persister-indexed-db/functions/creation/createindexeddbpersister/"><code>createIndexedDbPersister</code></a> function to create the IndexedDB <a href="https://beta.tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a>.</p><p>The API is the same as for all the other <a href="https://beta.tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a> APIs:</p>
+<p>This is a reverse chronological list of the major <a href="https://beta.tinybase.org/">TinyBase</a> releases, with highlighted features.</p><h2 id="v4-3">v4.3</h2><p>This release provides an experimental integration with <a href="https://www.partykit.io/">PartyKit</a>, a cloud-based collaboration platform. It includes two new modules:</p><ul><li>The <a href="https://beta.tinybase.org/api/persister-partykit-server/"><code>persister-partykit-server</code></a> module provides a server class for coordinating clients and persisting <a href="https://beta.tinybase.org/api/store/interfaces/store/store/"><code>Store</code></a> data to the PartyKit cloud.</li><li>The <a href="https://beta.tinybase.org/api/persister-partykit-client/"><code>persister-partykit-client</code></a> module provides the <a href="https://beta.tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a> API to create connections to the server.</li></ul><p>A <a href="https://beta.tinybase.org/">TinyBase</a> server implementation on PartyKit can be as simple as this:</p>
+
+```js yolo
+import {TinyBasePartyKitServer} from 'tinybase/persisters/persister-partykit-server';
+export default class extends TinyBasePartyKitServer {}
+```
+
+<p>On the client, use the familiar <a href="https://beta.tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a> API, passing in a reference to a PartyKit socket object that&#x27;s been configured to connect to your server deployment and named room:</p>
+
+```js yolo
+const persister = createPartyKitPersister(
+  store,
+  new PartySocket({
+    host: 'project-name.my-account.partykit.dev',
+    room: 'my-partykit-room',
+  }),
+);
+await persister.startAutoSave();
+await persister.startAutoLoad();
+```
+
+<p>The <a href="https://beta.tinybase.org/api/persisters/interfaces/persister/persister/methods/load/load/"><code>load</code></a> method and (gracefully failing) <a href="https://beta.tinybase.org/api/persisters/interfaces/persister/persister/methods/save/save/"><code>save</code></a> method on this <a href="https://beta.tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a> use HTTPS to get or set full copies of the <a href="https://beta.tinybase.org/api/store/interfaces/store/store/"><code>Store</code></a> to the cloud. However, the auto-save and auto-load modes use a websocket to transmit subsequent incremental changes in either direction, making for performant collaboration between clients.</p><p>See and try out this new collaboration functionality in the <a href="https://beta.tinybase.org/demos/todo-app/todo-app-v6-collaboration/">Todo App v6 (collaboration)</a> demo.</p><h2 id="v4-2">v4.2</h2><p>This release adds support for persisting <a href="https://beta.tinybase.org/">TinyBase</a> to a browser&#x27;s IndexedDB storage. You&#x27;ll need to import the new <a href="https://beta.tinybase.org/api/persister-indexed-db/"><code>persister-indexed-db</code></a> module, and call the <a href="https://beta.tinybase.org/api/persister-indexed-db/functions/creation/createindexeddbpersister/"><code>createIndexedDbPersister</code></a> function to create the IndexedDB <a href="https://beta.tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a>.</p><p>The API is the same as for all the other <a href="https://beta.tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a> APIs:</p>
 
 ```js
 const store = createStore()

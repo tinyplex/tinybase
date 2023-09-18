@@ -9,7 +9,7 @@ This release provides an experimental integration with
 [PartyKit](https://www.partykit.io/), a cloud-based collaboration platform. It
 includes two new modules:
 
-- The persister-partykit-server module provides a server class for co-ordinating
+- The persister-partykit-server module provides a server class for coordinating
   clients and persisting Store data to the PartyKit cloud.
 - The persister-partykit-client module provides the Persister API to create
   connections to the server.
