@@ -1,7 +1,8 @@
 {
   "ignorePaths": [
     "*.tsv",
-    "*.webp"
+    "*.webp",
+    "*.svg"
   ],
   "words": [
     "Abad",
@@ -28,6 +29,7 @@
     "CONCAT",
     "CRDT",
     "CRDTs",
+    "createyjspersister",
     "crsql",
     "crsqlite",
     "cubecull",
