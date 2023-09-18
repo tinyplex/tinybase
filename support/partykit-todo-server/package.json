@@ -1,0 +1,13 @@
+{
+  "name": "partykit-todo-server",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "partykit dev",
+    "deploy": "partykit deploy"
+  },
+  "devDependencies": {
+    "partykit": "0.0.16",
+    "tinybase": "file:../../"
+  }
+}
