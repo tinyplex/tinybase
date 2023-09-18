@@ -2,7 +2,7 @@ import {T, V} from '../../common/strings';
 import {isString, slice} from '../../common/other';
 import {jsonParse, jsonString} from '../../common/json';
 
-export type MessageType = typeof SET_CHANGES;
+type MessageType = typeof SET_CHANGES;
 export type StorageKeyType = typeof T | typeof V;
 
 export const SET_CHANGES = 's';
