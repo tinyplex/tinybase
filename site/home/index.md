@@ -58,7 +58,7 @@
   <li>
     Optional <a href='#call-hooks-to-bind-to-data'>bindings to React</a> and 
     (<em>new!</em>) <a href='#pre-built-reactive-components'>pre-built 
-    components</a> let you easily build fully reactive user interfaces.
+    components</a> that let you easily build fully reactive user interfaces.
   </li>
   <li>
     Tiny by name, tiny by nature:
