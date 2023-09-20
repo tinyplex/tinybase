@@ -29,6 +29,7 @@
     "CONCAT",
     "CRDT",
     "CRDTs",
+    "createindexeddbpersister",
     "createyjspersister",
     "crsql",
     "crsqlite",
