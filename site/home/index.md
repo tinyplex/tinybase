@@ -6,10 +6,13 @@
   </h2>
   <p id='copy'>
     Build blisteringly fast web apps that work both online and offline. Manage 
-    your state locally, synchronize it to the cloud when you need to, or even make it collaborative. But, most importantly... have fun building stuff again!
+    your state locally, synchronize it to the cloud when you need to, or even 
+    make it collaborative. But, most importantly... have fun building stuff 
+    again!
   </p>
   <p>
-    <em>NEW!</em> v4.3 release: "<a href='/guides/releases/#v4-3'>The One With PartyKit</a>"
+    <em>NEW!</em> v4.3 release: "<a href='/guides/releases/#v4-3'>The One With 
+    PartyKit</a>" &#127880;
   </p>
 </section>
 
@@ -29,11 +32,13 @@
   </li>
   <li>
     <a href='#register-granular-listeners'>Flexibly reactive</a> to
-    reconciled updates, so you only spend rendering cycles on things that change.
+    reconciled updates, so you only spend rendering cycles on things that 
+    change.
   </li>
   <li>
     <a href='#build-complex-queries-with-tinyql'>Powerful query engine</a> to
-    select, join, filter, group, sort and paginate data - reactively - and without SQL.
+    select, join, filter, group, sort and paginate data - reactively - and 
+    without SQL.
   </li>
   <li>
     Built-in <a href='#create-indexes-for-fast-lookups'>indexing</a>,
@@ -45,15 +50,18 @@
 </ul>
 <ul>
   <li>
-    Create <a href='#type-definitions-orm-like-apis'>type definitions &amp; ORM-like 
-    APIs</a>, from schema or inference. <a href='#an-inspector-for-your-data'>
-    Inspect your data</a> (<em>new!</em>) directly in the browser.
+    Create <a href='#type-definitions-orm-like-apis'>type definitions &amp; 
+    ORM-like APIs</a>, from schema or inference. 
+    <a href='#an-inspector-for-your-data'>Inspect your data</a> (<em>new!</em>) 
+    directly in the browser.
   </li>
   <li>
     Easily <a href='#persist-to-storage-sqlite-crdts'>sync your data</a> to 
-    browser <a href='/api/persister-browser'>storage</a>, <a href='/api/persister-indexed-db/'>IndexedDB</a>,
+    browser <a href='/api/persister-browser'>storage</a>, 
+    <a href='/api/persister-indexed-db/'>IndexedDB</a>,
     <a href='/guides/schemas-and-persistence/database-persistence/'>SQLite</a>, 
-    <a href='/guides/schemas-and-persistence/synchronizing-data/'>CRDTs</a>, and (<em>new!</em>)  <a href='/api/persister-partykit-client/'>PartyKit</a>.
+    <a href='/guides/schemas-and-persistence/synchronizing-data/'>CRDTs</a>, and 
+    (<em>new!</em>)  <a href='/api/persister-partykit-client/'>PartyKit</a>.
   </li>
   <li>
     Optional <a href='#call-hooks-to-bind-to-data'>bindings to React</a> and 
@@ -63,7 +71,9 @@
   <li>
     Tiny by name, tiny by nature:
     <a href='#did-we-say-tiny'>@@EVAL("toKb(sizes.get('store.js.gz'))") -
-    @@EVAL("toKb(sizes.get('tinybase.js.gz'))")</a>, zero dependencies. <a href='#well-tested-and-documented'>100% tested</a>, <a href='/guides/the-basics/getting-started/'>fully documented</a>, and of course, <a href='@@EVAL("metadata.repository")'>open source</a>!
+    @@EVAL("toKb(sizes.get('tinybase.js.gz'))")</a>, zero dependencies. <a href='#well-tested-and-documented'>100% tested</a>, 
+    <a href='/guides/the-basics/getting-started/'>fully documented</a>, and of 
+    course, <a href='@@EVAL("metadata.repository")'>open source</a>!
   </li>
 </ul>
 
@@ -75,15 +85,41 @@
 <div><a href='/guides/building-uis/getting-started-with-ui-react'>React<img
 src="/react.svg" /></a></div>
 
-<div><a href='/api/persister-partykit-client'>PartyKit<img src="/partykit.svg" /></a></div>
+<div>
+  <a href='/api/persister-partykit-client'>
+    PartyKit<img src="/partykit.svg" />
+  </a>
+</div>
 
-<div><a href='/guides/schemas-and-persistence/database-persistence'>SQLite<img src="/sqlite.svg" /></a></div>
+<div>
+  <a href='/guides/schemas-and-persistence/database-persistence'>
+    SQLite<img src="/sqlite.svg" />
+  </a>
+</div>
 
-<div><a href='/api/persister-yjs/functions/creation/createyjspersister'>YJS<img src="/yjs.svg" /></a></div>
+<div>
+  <a href='/api/persister-indexed-db/functions/creation/createindexeddbpersister'>
+    IndexedDB<img src="/indexeddb.svg" />
+  </a>
+</div>
 
-<div><a href='/api/persister-cr-sqlite-wasm'>CR-SQLite<img src="/crsqlite.png" /></a></div>
+<div>
+  <a href='/api/persister-yjs/functions/creation/createyjspersister'>
+    YJS<img src="/yjs.svg" />
+  </a>
+</div>
 
-<div><a href='/api/persister-automerge'>Automerge<img src="/automerge.svg" /></a></div>
+<div>
+  <a href='/api/persister-cr-sqlite-wasm'>
+    CR-SQLite<img src="/crsqlite.png" />
+  </a>
+</div>
+
+<div>
+  <a href='/api/persister-automerge'>
+    Automerge<img src="/automerge.svg" />
+  </a>
+</div>
 
 </section>
 
@@ -270,8 +306,8 @@ sessionStorage.clear();
 > making building rich tabular interfaces easier than ever.
 >
 > In this example, we have two tables: of pets and their owners. They are joined
-> together by the pet's ownerId Cell. We select the pet's species, and the owner's
-> state, and then aggregate the prices for the combinations.
+> together by the pet's ownerId Cell. We select the pet's species, and the
+> owner's state, and then aggregate the prices for the combinations.
 >
 > We access the results by descending price, essentially answering the question:
 > "which is the highest-priced species, and in which state?"
@@ -584,11 +620,14 @@ export const createShop: typeof createShopDecl = () => {
 
 > ## About
 >
-> Modern apps deserve better. Why trade reactive user experiences to be able to use relational data? Or sacrifice features for bundle size? And why does the cloud do all the work <a href='https://localfirstweb.dev/' target='_blank'>anyway</a>?
+> Modern apps deserve better. Why trade reactive user experiences to be able to
+> use relational data? Or sacrifice features for bundle size? And why does the
+> cloud do all the work
+> <a href='https://localfirstweb.dev/' target='_blank'>anyway</a>?
 >
 > Building TinyBase was originally an interesting exercise for <a rel="me"
-> href="https://tripleodeon.com">me</a> in API design, minification,
-> and documentation. But now it has taken on a life of its own, and has grown
+> href="https://tripleodeon.com">me</a> in API design, minification, and
+> documentation. But now it has taken on a life of its own, and has grown
 > beyond my wildest expectations
 >
 > It could not have been built without these great
