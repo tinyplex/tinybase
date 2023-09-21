@@ -38,7 +38,7 @@
  * // This is your PartyKit server entry point.
  *
  * export default class extends TinyBasePartyServer {
- *   constructor(readonly party: Party) {
+ *   constructor(party) {
  *     super(party);
  *     // custom constructor code
  *   }
@@ -48,12 +48,12 @@
  *     console.log('Server started');
  *   }
  *
- *   async onMessage(message: string, client: Connection) {
+ *   async onMessage(message, client) {
  *     await super.onMessage(message, client);
  *     // custom onMessage code
  *   }
  *
- *   async onRequest(request: Request): Promise<Response> {
+ *   async onRequest(request) {
  *     // custom onRequest code, else:
  *     return await super.onRequest(request);
  *   }
@@ -76,7 +76,7 @@
    *
    * ```js
    * export default class extends TinyBasePartyServer {
-   *   async onMessage(message: string, client: Connection) {
+   *   async onMessage(message, client) {
    *     await super.onMessage(message, client);
    *     // custom onMessage code
    *   }
@@ -98,7 +98,7 @@
    *
    * ```js
    * export default class extends TinyBasePartyServer {
-   *   async onRequest(request: Request): Promise<Response> {
+   *   async onRequest(request) {
    *     // custom onRequest code, else:
    *     return await super.onRequest(request);
    *   }
