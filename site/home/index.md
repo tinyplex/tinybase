@@ -82,40 +82,43 @@
 <section id="friends">
 <h2>Tinybase works great on its own, but also plays well with friends!</h2>
 
-<div><a href='/guides/building-uis/getting-started-with-ui-react'>React<img
-src="/react.svg" /></a></div>
+<div style='display: inline-block; max-width: 6rem'>
+  <a href='/guides/building-uis/getting-started-with-ui-react'>
+    React<img src="/react.svg" />
+  </a>
+</div>
 
-<div>
+<div style='display: inline-block; max-width: 6rem'>
   <a href='/api/persister-partykit-client'>
     PartyKit<img src="/partykit.svg" />
   </a>
 </div>
 
-<div>
+<div style='display: inline-block; max-width: 6rem'>
   <a href='/guides/schemas-and-persistence/database-persistence'>
     SQLite<img src="/sqlite.svg" />
   </a>
 </div>
 
-<div>
+<div style='display: inline-block; max-width: 6rem'>
   <a href='/api/persister-indexed-db/functions/creation/createindexeddbpersister'>
     IndexedDB<img src="/indexeddb.svg" />
   </a>
 </div>
 
-<div>
+<div style='display: inline-block; max-width: 6rem'>
   <a href='/api/persister-yjs/functions/creation/createyjspersister'>
     YJS<img src="/yjs.svg" />
   </a>
 </div>
 
-<div>
+<div style='display: inline-block; max-width: 6rem'>
   <a href='/api/persister-cr-sqlite-wasm'>
     CR-SQLite<img src="/crsqlite.png" />
   </a>
 </div>
 
-<div>
+<div style='display: inline-block; max-width: 6rem'>
   <a href='/api/persister-automerge'>
     Automerge<img src="/automerge.svg" />
   </a>
