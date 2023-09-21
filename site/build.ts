@@ -117,7 +117,7 @@ export const build = (outDir: string, api = true, pages = true): void => {
       .addTextForEachNode('/demos/', ExecutablePen, 'pen.json')
       .addPageForNode('/api/', Page, 'all.html', true)
       .addMarkdownForNode('/', Readme, '../readme.md')
-      .addMarkdownForNode('/guides/releases/', Readme, '../releases.md');
+      .addMarkdownForNode('/guides/releases/', Readme, '../../../releases.md');
   }
   docs.publish();
 };
@@ -152,5 +152,4 @@ const addPages = (docs: Docs): Docs =>
   docs
     .addRootMarkdownFile('site/home/index.md')
     .addMarkdownDir('site/guides')
-    .addMarkdownDir('site/demos', true)
-    .addMarkdownDir('site/releases');
+    .addMarkdownDir('site/demos', true);

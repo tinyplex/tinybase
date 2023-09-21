@@ -77,18 +77,16 @@ body > main > article#home {
       li:nth-of-type(4):before {
         content: '\f6ef';
       }
-    }
-    &:nth-of-type(2) {
-      li:nth-of-type(1):before {
+      li:nth-of-type(5):before {
         content: '\ead3';
       }
-      li:nth-of-type(2):before {
+      li:nth-of-type(6):before {
         content: '\eb5a';
       }
-      li:nth-of-type(3):before {
+      li:nth-of-type(7):before {
         content: '\f84d';
       }
-      li:nth-of-type(4):before {
+      li:nth-of-type(8):before {
         content: '\f720';
       }
     }
@@ -157,6 +155,7 @@ body > main > article#home {
         height: 6rem;
         max-width: 6rem;
         display: block;
+        width: unset;
       }
     }
   }
@@ -176,7 +175,7 @@ body > main > article#home {
     grid-template-columns: repeat(6, 1fr);
     padding: 4rem 8rem;
     column-gap: 4rem;
-    row-gap: 3rem;
+    row-gap: 2rem;
     > em {
       grid-column-end: span 2;
       max-width: 16rem;
@@ -216,8 +215,10 @@ body > main > article#home {
     > section#users {
       grid-column-start: 4;
     }
-    ul {
-      grid-column-end: span 3;
+    > ul {
+      grid-column-end: span 6;
+      column-count: 2;
+      column-gap: 6rem;
     }
     > hr {
       grid-column-end: span 6;

@@ -22,6 +22,8 @@
 
 <a href='/api/store/interfaces/store/store/'>Read the docs</a>
 
+---
+
 <ul>
   <li>
     Manage <a href='#start-with-a-simple-key-value-store'>key-value 
@@ -47,8 +49,6 @@
     even an <a href='#set-checkpoints-for-an-undo-stack'>undo stack</a>
     for your app state.
   </li>
-</ul>
-<ul>
   <li>
     Create <a href='#type-definitions-orm-like-apis'>type definitions &amp; 
     ORM-like APIs</a>, from schema or inference. 
@@ -81,49 +81,41 @@
 
 <section id="friends">
 <h2>Tinybase works great on its own, but also plays well with friends!</h2>
-
-<div style='display: inline-block; max-width: 6rem'>
+<div>
   <a href='/guides/building-uis/getting-started-with-ui-react'>
-    React<img src="/react.svg" />
+    <img width="48" src="/react.svg" /> React
   </a>
 </div>
-
-<div style='display: inline-block; max-width: 6rem'>
+<div>
   <a href='/api/persister-partykit-client'>
-    PartyKit<img src="/partykit.svg" />
+    <img width="48" src="/partykit.svg" /> PartyKit
   </a>
 </div>
-
-<div style='display: inline-block; max-width: 6rem'>
+<div>
   <a href='/guides/schemas-and-persistence/database-persistence'>
-    SQLite<img src="/sqlite.svg" />
+    <img width="48" src="/sqlite.svg" /> SQLite
   </a>
 </div>
-
-<div style='display: inline-block; max-width: 6rem'>
+<div>
   <a href='/api/persister-indexed-db/functions/creation/createindexeddbpersister'>
-    IndexedDB<img src="/indexeddb.svg" />
+    <img width="48" src="/indexeddb.svg" /> IndexedDB
   </a>
 </div>
-
-<div style='display: inline-block; max-width: 6rem'>
+<div>
   <a href='/api/persister-yjs/functions/creation/createyjspersister'>
-    YJS<img src="/yjs.svg" />
+    <img width="48" src="/yjs.svg" /> YJS
   </a>
 </div>
-
-<div style='display: inline-block; max-width: 6rem'>
+<div>
   <a href='/api/persister-cr-sqlite-wasm'>
-    CR-SQLite<img src="/crsqlite.png" />
+    <img width="48" src="/crsqlite.png" /> CR-SQLite
   </a>
 </div>
-
-<div style='display: inline-block; max-width: 6rem'>
+<div>
   <a href='/api/persister-automerge'>
-    Automerge<img src="/automerge.svg" />
+    <img width="48" src="/automerge.svg" /> Automerge
   </a>
 </div>
-
 </section>
 
 ---
