@@ -5,14 +5,22 @@ highlighted features.
 
 ## v4.3
 
-This release provides an experimental integration with
-[PartyKit](https://www.partykit.io/), a cloud-based collaboration platform. It
-includes two new modules:
+We're excited to announce TinyBase 4.3, which provides an integration with
+[PartyKit](https://www.partykit.io/), a cloud-based collaboration provider.
+
+This allows you to enjoy the benefits of both a "local-first" architecture and a
+"sharing-first" platform. You can have structured data on the client with fast,
+reactive user experiences, but also benefit from cloud-based persistence and
+room-based collaboration.
+
+![PartyKit](/partykit.gif 'PartyKit')
+
+This release includes two new modules:
 
 - The persister-partykit-server module provides a server class for coordinating
   clients and persisting Store data to the PartyKit cloud.
-- The persister-partykit-client module provides the Persister API to create
-  connections to the server.
+- The persister-partykit-client module provides the API to create
+  connections to the server and a binding to your Store.
 
 A TinyBase server implementation on PartyKit can be as simple as this:
 
@@ -40,10 +48,26 @@ await persister.startAutoLoad();
 The load method and (gracefully failing) save method on this Persister use HTTPS
 to get or set full copies of the Store to the cloud. However, the auto-save and
 auto-load modes use a websocket to transmit subsequent incremental changes in
-either direction, making for performant collaboration between clients.
+either direction, making for performant sharing of state between clients.
 
 See and try out this new collaboration functionality in the Todo App v6
-(collaboration) demo.
+(collaboration) demo. This also emphasizes the few changes that need to be made
+to an existing app to make it instantly collaborative.
+
+Also try out the
+[tinybase-ts-react-partykit](https://github.com/tinyplex/tinybase-ts-react-partykit)
+template that gets you up and running with a PartyKit-enabled TinyBase app
+extremely quickly.
+
+PartyKit supports retries for clients that go offline, and so the disconnected
+user experience is solid, out of the box. Learn more about configuring this
+behavior [here](https://docs.partykit.io/reference/partysocket-api/#options).
+
+Note, however, that this release is not yet a full CRDT implementation: there is
+no clock synchronization and it is more 'every write wins' than 'last write
+wins'. However, since the transmitted updates are at single cell (or value)
+granularity, conflicts are minimized. More resilient replication is planned as
+this integration matures.
 
 ## v4.2
 
