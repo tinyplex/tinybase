@@ -48,8 +48,17 @@ body > main > article#home {
     p#copy {
       font-size: 1.1rem;
       line-height: 2rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 0rem;
     }
+  }
+  span#one-with {
+    color: @accentColor;
+    font-family: Shantell;
+    display: block;
+    margin: 2rem auto 0;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 1.1rem;
   }
   > ul {
     margin: 0;
@@ -178,7 +187,19 @@ body > main > article#home {
     row-gap: 2rem;
     > em {
       grid-column-end: span 2;
+      grid-row: span 2;
       max-width: 16rem;
+    }
+    span#one-with {
+      margin: 0;
+      text-align: left;
+      transform: rotate(-7deg) translate(-3rem, -1rem);
+      &:before {
+        content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" height="1rem" viewBox="0 0 200 100" stroke-width="10" stroke="rgb(216,27,96)" fill="rgb(216,27,96)"><path fill="none" d="M25 70a120 120 0 00160-50"/><path d="M30.26 54.095l-18.91 6.512 6.511 18.91z"/></svg>');
+        top: 0.9rem;
+        position: relative;
+        margin-right: 0.6rem;
+      }
     }
     > section,
     > pre,
@@ -205,6 +226,11 @@ body > main > article#home {
       p {
         text-align: left;
       }
+    }
+    > p:nth-of-type(1) {
+      grid-column-end: span 4;
+      column-count: 2;
+      column-gap: 4rem;
     }
     > section#friends {
       grid-column-end: span 6;

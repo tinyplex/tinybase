@@ -10,11 +10,10 @@
     make it collaborative. But, most importantly... have fun building stuff 
     again!
   </p>
-  <p>
-    <em>NEW!</em> v4.3 release: "<a href='/guides/releases/#v4-3'>The One With 
-    PartyKit</a>" &#127880;
-  </p>
 </section>
+
+<a href='/guides/releases/#v4-3'><em>NEW!</em> v4.3 release</a> <span
+id="one-with">"The One With PartyKit"</span>
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 
