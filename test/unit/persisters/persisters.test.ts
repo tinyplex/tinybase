@@ -307,7 +307,7 @@ const mockIndexedDb = {
     createIndexedDbPersister(store, dbName, 0.1),
   get: async (dbName: string): Promise<[Tables, Values] | void> => {
     try {
-      const db = await openDB(dbName, 1, {
+      const db = await openDB(dbName, 2, {
         upgrade: (db) => {
           db.createObjectStore('t', {keyPath: 'k'});
           db.createObjectStore('v', {keyPath: 'k'});

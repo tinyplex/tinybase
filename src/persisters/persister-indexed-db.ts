@@ -55,12 +55,14 @@ export const createIndexedDbPersister = ((
     create: 0 | 1 = 0,
   ): Promise<[any, any]> =>
     promiseNew((resolve, reject) => {
-      const request = WINDOW.indexedDB.open(dbName, 1);
+      const request = WINDOW.indexedDB.open(dbName, create ? 2 : undefined);
       request.onupgradeneeded = () =>
         create &&
-        arrayMap(OBJECT_STORE_NAMES, (objectStoreName) =>
-          request.result.createObjectStore(objectStoreName, KEY_PATH),
-        );
+        arrayMap(OBJECT_STORE_NAMES, (objectStoreName) => {
+          try {
+            request.result.createObjectStore(objectStoreName, KEY_PATH);
+          } catch {}
+        });
       request.onsuccess = async () => {
         try {
           const transaction = request.result.transaction(
