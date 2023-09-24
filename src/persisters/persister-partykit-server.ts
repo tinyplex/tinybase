@@ -118,7 +118,7 @@ const promiseToSetOrDelStorage = (
       : storage.put<string | number | boolean>(key, value),
   );
 
-const getResponse = (status: number, body: string | null = null) =>
+const newResponse = (status: number, body: string | null = null) =>
   new Response(body, {status, headers: CORS_HEADERS});
 
 export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
@@ -131,19 +131,19 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
       const text = await request.text();
       if (request.method == PUT) {
         if (hasStore) {
-          return getResponse(205);
+          return newResponse(205);
         }
         await saveStoreToStorage(this.party.storage, jsonParse(text));
-        return getResponse(201);
+        return newResponse(201);
       }
-      return getResponse(
+      return newResponse(
         200,
         hasStore
           ? jsonString(await loadStoreFromStorage(storage))
           : EMPTY_STRING,
       );
     }
-    return getResponse(404);
+    return newResponse(404);
   }
 
   async onMessage(message: string, client: Connection) {
