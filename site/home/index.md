@@ -119,6 +119,42 @@ id="one-with">"The One With PartyKit"</span>
 
 ---
 
+<section id="follow">
+
+  <a href='@@EVAL("metadata.repository")' target='_blank'>
+    <img src="https://img.shields.io/github/stars/tinyplex/tinybase?style=for-the-badge&logo=GitHub&logoColor=%23fff&label=GitHub&labelColor=%23d81b60&color=%23333">
+  </a>
+
+  <a href='https://discord.com/invite/mGz3mevwP8' target='_blank'>
+    <img src="https://img.shields.io/discord/1027918215323590676?style=for-the-badge&logo=discord&logoColor=%23fff&label=Discord&labelColor=%233131e8&color=%23333" />
+  </a>
+
+  <a href='https://twitter.com/tinybasejs' target='_blank'>
+    <img src="https://img.shields.io/twitter/follow/tinybasejs?style=for-the-badge&logo=x&logoColor=%23fff&label=Twitter&labelColor=%23333&color=%23333" />
+  </a>
+  
+  <br />
+
+  <a href='@@EVAL("metadata.repository")/discussions' target='_blank'>
+    <img src="https://img.shields.io/github/discussions/tinyplex/tinybase?style=for-the-badge&logo=GitHub&logoColor=%23fff&label=Ideas&labelColor=%23d81b60&color=%23333">
+  </a>
+
+  <a href='@@EVAL("metadata.repository")/issues' target='_blank'>
+    <img src="https://img.shields.io/github/issues/tinyplex/tinybase?style=for-the-badge&logo=GitHub&logoColor=%23fff&label=Issues&labelColor=%23d81b60&color=%23333">
+  </a>
+
+  <a href='#well-tested-and-documented'>
+    <img src="https://img.shields.io/badge/Tests-100%25-green?style=for-the-badge&logo=jest&logoColor=%23fff&color=%23333&labelColor=%2387c305" />
+  </a>
+
+  <a href='@@EVAL("metadata.package")' target='_blank'>
+    <img src="https://img.shields.io/npm/v/tinybase?style=for-the-badge&logo=npm&logoColor=%23fff&labelColor=%23bd0005&color=%23333" />
+  </a>
+
+</section>
+
+---
+
 > ## Start with a simple key-value store.
 >
 > Creating a Store requires just a simple call to the createStore function. Once
@@ -590,41 +626,27 @@ export const createShop: typeof createShopDecl = () => {
 
 ---
 
-<section>
-  <h2>Follow</h2>
-  <ul>
-    <li>
-      News and updates on <a href='https://twitter.com/tinybasejs'>Twitter</a>, 
-      <a href='https://discord.com/invite/mGz3mevwP8'>Discord</a>, and 
-      <a href='https://facebook.com/tinybasejs'>Facebook</a>.
-    </li>
-    <li>
-      <a href='@@EVAL("metadata.repository")/discussions'>Discussions</a> and 
-      <a href='@@EVAL("metadata.repository")/issues'>issues</a> on 
-      <a href='@@EVAL("metadata.repository")'>GitHub</a>.
-    </li>
-    <li>
-      <a href='/guides/releases/'>Release notes</a> for each version.
-    </li>
-    <li>
-      Packages on <a href='@@EVAL("metadata.package")'>NPM</a>.
-    </li>
-  </ul>
+<section id="about">
+  <h2>About</h2>
+  <p>Modern apps deserve better. Why trade reactive user experiences to be able
+  to use relational data? Or sacrifice features for bundle size? And why does 
+  the cloud do all the work 
+  <a href='https://localfirstweb.dev/' target='_blank'>anyway</a>?</p>
+
+  <p>Building TinyBase was originally an interesting exercise for <a rel="me"
+  href="https://tripleodeon.com">me</a> in API design, minification, and
+  documentation. But now it has taken on a life of its own, and has grown
+  beyond my wildest expectations.</p>
+
+  <p>It could not have been built without these great
+  <a href='/guides/how-tinybase-is-built/credits/#giants'>projects</a> and
+  <a href='/guides/how-tinybase-is-built/credits/#and-friends'>friends</a>, and 
+  I hope you enjoy using it as much as I do building it!</p>
 </section>
 
-> ## About
->
-> Modern apps deserve better. Why trade reactive user experiences to be able to
-> use relational data? Or sacrifice features for bundle size? And why does the
-> cloud do all the work
-> <a href='https://localfirstweb.dev/' target='_blank'>anyway</a>?
->
-> Building TinyBase was originally an interesting exercise for <a rel="me"
-> href="https://tripleodeon.com">me</a> in API design, minification, and
-> documentation. But now it has taken on a life of its own, and has grown
-> beyond my wildest expectations
->
-> It could not have been built without these great
-> [projects](/guides/how-tinybase-is-built/credits/#giants) and
-> [friends](/guides/how-tinybase-is-built/credits/#and-friends), and I hope you
-> enjoy using it as much as I do building it!
+<section id="story">
+  <h2>The story</h2>
+  <a href='https://youtu.be/hXL7OkW-Prk?t=1232' target='_blank'>
+    <img src="/youtube.webp">
+  </a>
+</section>

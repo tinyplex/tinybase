@@ -150,8 +150,15 @@ body > main > article#home {
   .table {
     box-shadow: @shadow;
   }
-  > section#friends {
+  > section#story,
+  > section#follow,
+  > section#friends,
+  > section#users,
+  > section#sponsors,
+  > section#about {
     text-align: center;
+  }
+  > section#friends {
     div {
       display: inline-block;
       margin: 1.5rem;
@@ -168,9 +175,18 @@ body > main > article#home {
       }
     }
   }
+  > section#follow {
+    a {
+      display: inline-block;
+      margin: 0.5rem;
+      img {
+        margin: 0;
+        vertical-align: middle;
+      }
+    }
+  }
   > section#sponsors,
   > section#users {
-    text-align: center;
     img {
       display: inline-block;
       border-radius: 50%;
@@ -232,8 +248,9 @@ body > main > article#home {
       column-count: 2;
       column-gap: 4rem;
     }
-    > section#friends {
-      grid-column-end: span 6;
+    > section#friends,
+    > section#follow {
+      grid-column: 1/7;
     }
     > section#sponsors {
       grid-column-start: 1;
@@ -242,12 +259,12 @@ body > main > article#home {
       grid-column-start: 4;
     }
     > ul {
-      grid-column-end: span 6;
+      grid-column: 1/7;
       column-count: 2;
       column-gap: 6rem;
     }
     > hr {
-      grid-column-end: span 6;
+      grid-column: 1/7;
     }
     > p {
       grid-column-end: span 2;
