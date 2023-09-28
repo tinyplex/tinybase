@@ -1,6 +1,6 @@
 {
   "name": "tinybase",
-  "version": "4.3.7",
+  "version": "4.3.8",
   "author": "jamesgpearce",
   "repository": "github:tinyplex/tinybase",
   "license": "MIT",
@@ -228,7 +228,7 @@
     "@types/jest": "^29.5.5",
     "@types/jest-environment-puppeteer": "^5.0.4",
     "@types/less": "^3.0.4",
-    "@types/node": "^20.7.0",
+    "@types/node": "^20.7.1",
     "@types/puppeteer": "^5.4.7",
     "@types/react": "^18.2.23",
     "@types/react-dom": "^18.2.8",
