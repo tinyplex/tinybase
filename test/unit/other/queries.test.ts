@@ -4318,6 +4318,21 @@ describe('Miscellaneous', () => {
     expect(store.getValues()).toEqual({});
   });
 
+  test('Listener can create new query, immediately available', () => {
+    const listener = jest.fn(() => {
+      queries.setQueryDefinition('q2', 't1', ({select}) => select('c2'));
+      expect(queries.getResultTable('q2')).toEqual({r1: {c2: 2}});
+    });
+    queries.setQueryDefinition('q1', 't1', ({select}) => select('c1'));
+    queries.addResultTableListener('q1', listener);
+    store.setRow('t1', 'r1', {c1: 1, c2: 2});
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 1, c2: 2}}});
+    expect(queries.getResultTable('q1')).toEqual({r1: {c1: 1}});
+    expect(queries.getResultTable('q2')).toEqual({r1: {c2: 2}});
+    expect(store.getValues()).toEqual({});
+  });
+
   test('cleans results when deleted', () => {
     setCells();
     queries.setQueryDefinition('q1', 't1', ({select}) => select('c1'));

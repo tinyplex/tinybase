@@ -637,6 +637,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
           ...slice(args, 0, argumentCount),
           (_store: Store, ...listenerArgs: any[]) =>
             (args[argumentCount] as any)(queries, ...listenerArgs),
+          true,
         );
     },
   );

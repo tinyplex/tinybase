@@ -64,7 +64,7 @@ export const getDefinableFunctions = <Thing, RowValue>(
   delDefinition: (id: Id) => void,
   addThingIdsListener: (listener: () => void) => void,
   destroy: () => void,
-  addStoreListeners: (id: Id, call: 0 | 1, ...listenerIds: Ids) => Ids,
+  addStoreListeners: (id: Id, andCall: 0 | 1, ...listenerIds: Ids) => Ids,
   delStoreListeners: (id: Id, ...listenerIds: Ids) => void,
 ] => {
   const hasRow = store.hasRow;

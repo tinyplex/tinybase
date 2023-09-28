@@ -229,6 +229,9 @@
  * object, the Id of the ResultTable that changed (which is the same as the
  * query Id), and a GetResultCellChange function that can be used to query
  * ResultCell values before and after the change.
+ *
+ * You can create new query definitions within the body of this listener, though
+ * obviously be aware of the possible cascading effects of doing so.
  * @param queries A reference to the Queries object that changed.
  * @param tableId The Id of the ResultTable that changed, which is also the
  * query Id.
@@ -249,6 +252,9 @@
  * When called, a ResultTableCellIdsListener is given a reference to the Queries
  * object, and the Id of the ResultTable whose Cell Ids changed (which is the
  * same as the query Id).
+ *
+ * You can create new query definitions within the body of this listener, though
+ * obviously be aware of the possible cascading effects of doing so.
  * @param queries A reference to the Queries object that changed.
  * @param tableId The Id of the ResultTable that changed, which is also the
  * query Id.
@@ -266,6 +272,9 @@
  * When called, a ResultRowCountListener is given a reference to the Queries
  * object, the Id of the ResultTable whose ResultRow Ids changed (which is the
  * same as the query Id), and the count of ResultRow objects in the ResultTable.
+ *
+ * You can create new query definitions within the body of this listener, though
+ * obviously be aware of the possible cascading effects of doing so.
  * @param queries A reference to the Queries object that changed.
  * @param tableId The Id of the ResultTable that changed, which is also the
  * query Id.
@@ -284,6 +293,9 @@
  * When called, a ResultRowIdsListener is given a reference to the Queries
  * object, and the Id of the ResultTable whose ResultRow Ids changed (which is
  * the same as the query Id).
+ *
+ * You can create new query definitions within the body of this listener, though
+ * obviously be aware of the possible cascading effects of doing so.
  * @param queries A reference to the Queries object that changed.
  * @param tableId The Id of the ResultTable that changed, which is also the
  * query Id.
@@ -305,6 +317,9 @@
  * for pagination purposes. It also receives the sorted array of Ids itself, so
  * that you can use them in the listener without the additional cost of an
  * explicit call to getResultSortedRowIds.
+ *
+ * You can create new query definitions within the body of this listener, though
+ * obviously be aware of the possible cascading effects of doing so.
  * @param queries A reference to the Queries object that changed.
  * @param tableId The Id of the ResultTable that changed, which is also the
  * query Id.
@@ -329,6 +344,9 @@
  * the Id of the ResultTable that changed (which is the same as the query Id),
  * the Id of the ResultRow that changed, and a GetResultCellChange function that
  * can be used to query ResultCell values before and after the change.
+ *
+ * You can create new query definitions within the body of this listener, though
+ * obviously be aware of the possible cascading effects of doing so.
  * @param queries A reference to the Queries object that changed.
  * @param tableId The Id of the ResultTable that changed, which is also the
  * query Id.
@@ -349,6 +367,9 @@
  * When called, a ResultCellIdsListener is given a reference to the Queries
  * object, the Id of the ResultTable that changed (which is the same as the
  * query Id), and the Id of the ResultRow whose ResultCell Ids changed.
+ *
+ * You can create new query definitions within the body of this listener, though
+ * obviously be aware of the possible cascading effects of doing so.
  * @param queries A reference to the Queries object that changed.
  * @param tableId The Id of the ResultTable that changed, which is also the
  * query Id.
@@ -370,6 +391,9 @@
  * It is also given the new value of the ResultCell, the old value of the
  * ResultCell, and a GetResultCellChange function that can be used to query
  * ResultCell values before and after the change.
+ *
+ * You can create new query definitions within the body of this listener, though
+ * obviously be aware of the possible cascading effects of doing so.
  * @param queries A reference to the Queries object that changed.
  * @param tableId The Id of the ResultTable that changed, which is also the
  * query Id.
