@@ -16,7 +16,7 @@ import {
   arrayPush,
   arrayUnshift,
 } from '../common/array';
-import {isUndefined, promiseAll, slice} from '../common/other';
+import {isUndefined, promiseAll, size, slice} from '../common/other';
 import {jsonParse, jsonString} from '../common/json';
 import {objEnsure, objMap, objNew} from '../common/obj';
 import {Ids} from '../types/common';
@@ -25,30 +25,37 @@ import {mapForEach} from '../common/map';
 
 /**
  * DurableStorage:
- *   hasStore: 1
- *   T"t1","r1","c1": 'c'
- *   Vv1: 'v'
+ *   prefix_hasStore: 1
+ *   prefix_t"t1","r1","c1": 'c'
+ *   prefix_vv1: 'v'
  */
 
 const HAS_STORE = 'hasStore';
 
-const hasStoreInStorage = async (storage: Storage): Promise<1 | undefined> =>
-  await storage.get<1>(HAS_STORE);
+const hasStoreInStorage = async (
+  storage: Storage,
+  prefix: string,
+): Promise<1 | undefined> => await storage.get<1>(prefix + HAS_STORE);
 
-const loadStoreFromStorage = async (storage: Storage) => {
+const loadStoreFromStorage = async (storage: Storage, prefix: string) => {
   const tables: Tables = {};
   const values: Values = {};
   mapForEach(
     await storage.list<string | number | boolean>(),
     (key, cellOrValue) => {
-      const [type, ids] = deconstructMessage(key);
-      if (type == T) {
-        const [tableId, rowId, cellId] = jsonParse('[' + ids + ']');
-        objEnsure(objEnsure(tables, tableId, objNew<Row>), rowId, objNew<Cell>)[
-          cellId
-        ] = cellOrValue;
-      } else if (type == V) {
-        values[ids] = cellOrValue;
+      if (key.startsWith(prefix)) {
+        key = slice(key, size(prefix));
+        const [type, ids] = deconstructMessage(key);
+        if (type == T) {
+          const [tableId, rowId, cellId] = jsonParse('[' + ids + ']');
+          objEnsure(
+            objEnsure(tables, tableId, objNew<Row>),
+            rowId,
+            objNew<Cell>,
+          )[cellId] = cellOrValue;
+        } else if (type == V) {
+          values[ids] = cellOrValue;
+        }
       }
     },
   );
@@ -57,31 +64,35 @@ const loadStoreFromStorage = async (storage: Storage) => {
 
 const saveStoreToStorage = async (
   storage: Storage,
+  prefix: string,
   transactionChanges: TransactionChanges,
 ) => {
-  const promises: Promise<any>[] = [storage.put<1>(HAS_STORE, 1)];
+  const promises: Promise<any>[] = [storage.put<1>(prefix + HAS_STORE, 1)];
   const keyPrefixesToDelete: string[] = [];
   objMap(transactionChanges[0], (table, tableId) =>
     isUndefined(table)
-      ? arrayUnshift(keyPrefixesToDelete, getStoreStorageKey(T, tableId))
+      ? arrayUnshift(
+          keyPrefixesToDelete,
+          prefix + getStoreStorageKey(T, tableId),
+        )
       : objMap(table, (row, rowId) =>
           isUndefined(row)
             ? arrayPush(
                 keyPrefixesToDelete,
-                getStoreStorageKey(T, tableId, rowId),
+                prefix + getStoreStorageKey(T, tableId, rowId),
               )
             : objMap(row, (cell, cellId) =>
                 promiseToSetOrDelStorage(
                   promises,
                   storage,
-                  getStoreStorageKey(T, tableId, rowId, cellId),
+                  prefix + getStoreStorageKey(T, tableId, rowId, cellId),
                   cell,
                 ),
               ),
         ),
   );
   objMap(transactionChanges[1], (value, valueId) =>
-    promiseToSetOrDelStorage(promises, storage, V + valueId, value),
+    promiseToSetOrDelStorage(promises, storage, prefix + V + valueId, value),
   );
   if (!arrayIsEmpty(keyPrefixesToDelete)) {
     mapForEach(await storage.list<string | number | boolean>(), (key) =>
@@ -126,24 +137,27 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
       ]),
     );
 
+  getStoreStoragePrefix = (): string => '';
+
   getStoreUrlPath = (): string => STORE_PATH;
 
   async onRequest(request: Request): Promise<Response> {
     const storage = this.party.storage;
-      const hasStore = await hasStoreInStorage(storage);
     if (request.url.endsWith(this.getStoreUrlPath())) {
+    const prefix = this.getStoreStoragePrefix();
+      const hasStore = await hasStoreInStorage(storage, prefix);
       const text = await request.text();
       if (request.method == PUT) {
         if (hasStore) {
           return this.createResponse(205);
         }
-        await saveStoreToStorage(this.party.storage, jsonParse(text));
+        await saveStoreToStorage(storage, prefix, jsonParse(text));
         return this.createResponse(201);
       }
       return this.createResponse(
         200,
         hasStore
-          ? jsonString(await loadStoreFromStorage(storage))
+          ? jsonString(await loadStoreFromStorage(storage, prefix))
           : EMPTY_STRING,
       );
     }
@@ -152,9 +166,10 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
 
   async onMessage(message: string, client: Connection) {
     const storage = this.party.storage;
+    const prefix = this.getStoreStoragePrefix();
     const [type, payload] = deconstructMessage(message, 1);
-    if (type == SET_CHANGES && (await hasStoreInStorage(storage))) {
-      await saveStoreToStorage(storage, payload);
+    if (type == SET_CHANGES && (await hasStoreInStorage(storage, prefix))) {
+      await saveStoreToStorage(storage, prefix, payload);
       this.party.broadcast(constructMessage(SET_CHANGES, payload), [client.id]);
     }
   }
