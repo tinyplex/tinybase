@@ -143,8 +143,8 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
 
   async onRequest(request: Request): Promise<Response> {
     const storage = this.party.storage;
-    if (request.url.endsWith(this.getStoreUrlPath())) {
     const prefix = this.getStoreStoragePrefix();
+    if (new URL(request.url).pathname.endsWith(this.getStoreUrlPath())) {
       const hasStore = await hasStoreInStorage(storage, prefix);
       const text = await request.text();
       if (request.method == PUT) {
