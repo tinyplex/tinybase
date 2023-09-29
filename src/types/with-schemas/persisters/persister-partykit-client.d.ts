@@ -4,8 +4,11 @@ import {OptionalSchemas, Store} from '../store';
 import PartySocket from 'partysocket';
 import {Persister} from '../persisters';
 
+/// PartyKitPersisterConfig
 export type PartyKitPersisterConfig = {
+  /// PartyKitPersisterConfig.storeProtocol
   storeProtocol?: 'http' | 'https';
+  /// PartyKitPersisterConfig.storePath
   storePath?: string;
 };
 

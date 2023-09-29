@@ -20,6 +20,45 @@
  */
 /// persister-partykit-client
 /**
+ * The PartyKitPersisterConfig type describes the configuration of a PartyKit
+ * Persister on the client side.
+ *
+ * The defaults (if used on both the server and client) will work fine, but if
+ * you are building more complex PartyKit apps and you need to configure path
+ * names, for example, then this is the thing to use.
+ * @example
+ * When applied to a PartyKit Persister, this PartyKitPersisterConfig will load
+ * and save a JSON serialization from and to an end point in your room called
+ * `/my_tinybase`, and use HTTP (rather than the default HTTPS) as the protocol.
+ *
+ * Note that this would require you to also add the matching storePath setting
+ * to the TinyBasePartyKitServerConfig on the server side.
+ *
+ * ```js
+ * const partyKitPersisterConfig: PartyKitPersisterConfig = {
+ *   storeProtocol: 'http',
+ *   storePath: '/my_tinybase',
+ * };
+ * ```
+ * @category Configuration
+ * @since v4.3.9
+ */
+/// PartyKitPersisterConfig
+{
+  /**
+   * The HTTP protocol to use (in addition to the websocket channel). This
+   * defaults to 'https' but you may wish to use 'http' for local PartyKit
+   * development.
+   */
+  /// PartyKitPersisterConfig.storeProtocol
+  /**
+   * The path used to set and get the whole Store over HTTP(S) on the server.
+   * This must match the storePath property of the TinyBasePartyKitServerConfig
+   * object on the server. Both default to '/store'.
+   */
+  /// PartyKitPersisterConfig.storePath
+}
+/**
  * The createPartyKitPersister function creates a Persister object that can
  * persist the Store to durable PartyKit storage, enabling synchronization of
  * the same Store across multiple clients.
@@ -48,9 +87,9 @@
  * @param store The Store to persist.
  * @param connection The PartySocket to use for participating in the PartyKit
  * room.
- * @param storeUrlProtocol The HTTP protocol to use (in addition to the
- * websocket channel). This defaults to 'https' but you may wish to use 'http'
- * for local PartyKit development.
+ * @param configOrStoreProtocol The PartyKitPersisterConfig configuration for
+ * the Persister, (or a string to specify a HTTP protocol to use, defaulting to
+ * 'https').
  * @param onIgnoredError An optional handler for the errors that the Persister
  * would otherwise ignore when trying to save or load data. This is suitable for
  * debugging persistence issues in a development environment.
