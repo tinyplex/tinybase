@@ -10,6 +10,10 @@ import {
   deconstructMessage,
 } from './partykit/common';
 import {
+  TinyBasePartyKitServerConfig,
+  TinyBasePartyKitServer as TinyBasePartyKitServerDecl,
+} from '../types/persisters/persister-partykit-server';
+import {
   arrayEvery,
   arrayIsEmpty,
   arrayMap,
@@ -20,7 +24,6 @@ import {isUndefined, promiseAll, size, slice} from '../common/other';
 import {jsonParse, jsonString} from '../common/json';
 import {objEnsure, objMap, objNew} from '../common/obj';
 import {Ids} from '../types/common';
-import {TinyBasePartyKitServer as TinyBasePartyKitServerDecl} from '../types/persisters/persister-partykit-server';
 import {mapForEach} from '../common/map';
 
 /**
@@ -31,6 +34,12 @@ import {mapForEach} from '../common/map';
  */
 
 const HAS_STORE = 'hasStore';
+const RESPONSE_HEADERS = objNew(
+  arrayMap(['Origin', 'Methods', 'Headers'], (suffix) => [
+    'Access-Control-Allow-' + suffix,
+    '*',
+  ]),
+);
 
 const hasStoreInStorage = async (
   storage: Storage,
@@ -126,25 +135,20 @@ const promiseToSetOrDelStorage = (
 export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
   constructor(readonly party: Party) {}
 
-  createResponse = (status: number, body: string | null = null) =>
-    new Response(body, {status, headers: this.getExtraResponseHeaders()});
+  readonly config: TinyBasePartyKitServerConfig = {};
 
-  getExtraResponseHeaders = (): HeadersInit =>
-    objNew(
-      arrayMap(['Origin', 'Methods', 'Headers'], (suffix) => [
-        'Access-Control-Allow-' + suffix,
-        '*',
-      ]),
-    );
-
-  getStoreStoragePrefix = (): string => '';
-
-  getStoreUrlPath = (): string => STORE_PATH;
+  private createResponse = (status: number, body: string | null = null) =>
+    new Response(body, {
+      status,
+      headers: this.config.responseHeaders ?? RESPONSE_HEADERS,
+    });
 
   async onRequest(request: Request): Promise<Response> {
     const storage = this.party.storage;
-    const prefix = this.getStoreStoragePrefix();
-    if (new URL(request.url).pathname.endsWith(this.getStoreUrlPath())) {
+    const prefix = this.config.storagePrefix ?? EMPTY_STRING;
+    const storePath = this.config.storePath ?? STORE_PATH;
+
+    if (new URL(request.url).pathname.endsWith(storePath)) {
       const hasStore = await hasStoreInStorage(storage, prefix);
       const text = await request.text();
       if (request.method == PUT) {
@@ -166,8 +170,9 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
 
   async onMessage(message: string, client: Connection) {
     const storage = this.party.storage;
-    const prefix = this.getStoreStoragePrefix();
+    const prefix = this.config.storagePrefix ?? EMPTY_STRING;
     const [type, payload] = deconstructMessage(message, 1);
+
     if (type == SET_CHANGES && (await hasStoreInStorage(storage, prefix))) {
       await saveStoreToStorage(storage, prefix, payload);
       this.party.broadcast(constructMessage(SET_CHANGES, payload), [client.id]);

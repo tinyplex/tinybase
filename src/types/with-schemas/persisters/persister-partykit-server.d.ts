@@ -2,9 +2,16 @@
 
 import {Connection, Party, Request, Server} from 'partykit/server';
 
+export type TinyBasePartyKitServerConfig = {
+  storePath?: string;
+  storagePrefix?: string;
+  responseHeaders?: HeadersInit;
+};
+
 /// TinyBasePartyKitServer
 export class TinyBasePartyKitServer implements Server {
   constructor(party: Party);
+  readonly config: TinyBasePartyKitServerConfig;
   /// TinyBasePartyKitServer.onRequest
   onRequest(request: Request): Promise<Response>;
   /// TinyBasePartyKitServer.onMessage
