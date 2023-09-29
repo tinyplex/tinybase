@@ -6,32 +6,46 @@ import {
   constructMessage,
   deconstructMessage,
 } from './partykit/common';
+import {
+  PartyKitPersisterConfig,
+  createPartyKitPersister as createPartyKitPersisterDecl,
+} from '../types/persisters/persister-partykit-client';
 import {Persister, PersisterListener} from '../types/persisters';
 import PartySocket from 'partysocket';
 import {createCustomPersister} from '../persisters';
-import {createPartyKitPersister as createPartyKitPersisterDecl} from '../types/persisters/persister-partykit-client';
+import {isString} from '../common/other';
 import {jsonString} from '../common/json';
 
 type MessageListener = (event: MessageEvent) => void;
 
 const MESSAGE = 'message';
+const DEFAULT_CONFIG = {
+  storeProtocol: 'https',
+  storePath: STORE_PATH,
+};
 
 export const createPartyKitPersister = ((
   store: Store,
   connection: PartySocket,
-  storeUrlProtocol: 'http' | 'https' = 'https',
+  configOrStoreProtocol?: PartyKitPersisterConfig | 'http' | 'https',
   onIgnoredError?: (error: any) => void,
 ): Persister => {
   const {host, room} = connection.partySocketOptions;
+  const {storeProtocol, storePath} = {
+    ...DEFAULT_CONFIG,
+    ...(isString(configOrStoreProtocol)
+      ? {storeProtocol: configOrStoreProtocol}
+      : configOrStoreProtocol),
+  };
   const storeUrl =
-    storeUrlProtocol +
+    storeProtocol +
     '://' +
     host +
     '/parties/' +
     ((connection as any).name ?? 'main') +
     '/' +
     room +
-    STORE_PATH;
+    storePath;
 
   const getOrSetStore = async (content?: [Tables, Values]) =>
     await (
