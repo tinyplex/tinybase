@@ -31,12 +31,6 @@ import {mapForEach} from '../common/map';
  */
 
 const HAS_STORE = 'hasStore';
-const CORS_HEADERS = objNew(
-  arrayMap(['Origin', 'Methods', 'Headers'], (suffix) => [
-    'Access-Control-Allow-' + suffix,
-    '*',
-  ]),
-);
 
 const hasStoreInStorage = async (storage: Storage): Promise<1 | undefined> =>
   await storage.get<1>(HAS_STORE);
@@ -118,11 +112,19 @@ const promiseToSetOrDelStorage = (
       : storage.put<string | number | boolean>(key, value),
   );
 
-const newResponse = (status: number, body: string | null = null) =>
-  new Response(body, {status, headers: CORS_HEADERS});
-
 export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
   constructor(readonly party: Party) {}
+
+  createResponse = (status: number, body: string | null = null) =>
+    new Response(body, {status, headers: this.getExtraResponseHeaders()});
+
+  getExtraResponseHeaders = (): HeadersInit =>
+    objNew(
+      arrayMap(['Origin', 'Methods', 'Headers'], (suffix) => [
+        'Access-Control-Allow-' + suffix,
+        '*',
+      ]),
+    );
 
   async onRequest(request: Request): Promise<Response> {
     const storage = this.party.storage;
@@ -131,19 +133,19 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
       const text = await request.text();
       if (request.method == PUT) {
         if (hasStore) {
-          return newResponse(205);
+          return this.createResponse(205);
         }
         await saveStoreToStorage(this.party.storage, jsonParse(text));
-        return newResponse(201);
+        return this.createResponse(201);
       }
-      return newResponse(
+      return this.createResponse(
         200,
         hasStore
           ? jsonString(await loadStoreFromStorage(storage))
           : EMPTY_STRING,
       );
     }
-    return newResponse(404);
+    return this.createResponse(404);
   }
 
   async onMessage(message: string, client: Connection) {
