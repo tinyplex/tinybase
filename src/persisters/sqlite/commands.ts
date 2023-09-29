@@ -23,12 +23,11 @@ import {
   arrayFilter,
   arrayIsEmpty,
   arrayJoin,
-  arrayLength,
   arrayMap,
   arrayPush,
 } from '../../common/array';
 import {collDel, collHas, collValues} from '../../common/coll';
-import {isUndefined, promiseAll, slice} from '../../common/other';
+import {isUndefined, promiseAll, size, slice} from '../../common/other';
 import {setAdd, setNew} from '../../common/set';
 import {Id} from '../../types/common';
 import {escapeId} from './common';
@@ -306,8 +305,8 @@ const upsert = async (
       ')VALUES' +
       slice(
         strRepeat(
-          `,(?${strRepeat(',?', arrayLength(changingColumnNames))})`,
-          arrayLength(args) / (arrayLength(changingColumnNames) + 1),
+          `,(?${strRepeat(',?', size(changingColumnNames))})`,
+          size(args) / (size(changingColumnNames) + 1),
         ),
         1,
       ) +

@@ -7,14 +7,14 @@ import {
   Tools,
   createTools as createToolsDecl,
 } from './types/tools.d';
-import {arrayEvery, arrayLength, arrayMap, arrayPush} from './common/array';
-import {formatJsDoc, length} from './tools/common/code';
+import {arrayEvery, arrayMap, arrayPush} from './common/array';
 import {objFreeze, objIsEmpty} from './common/obj';
+import {promiseAll, size} from './common/other';
 import {collForEach} from './common/coll';
+import {formatJsDoc} from './tools/common/code';
 import {getCreateFunction} from './common/definable';
 import {getStoreApi as getStoreApiImpl} from './tools/api/api';
 import {jsonParse} from './common/json';
-import {promiseAll} from './common/other';
 
 type CellMeta = [string, IdMap<number>, [number, Cell?], number];
 
@@ -65,8 +65,8 @@ export const createTools = getCreateFunction((store: Store): Tools => {
       totalTables,
       totalRows,
       totalCells,
-      totalValues: arrayLength(store.getValueIds()),
-      jsonLength: length(store.getJson()),
+      totalValues: size(store.getValueIds()),
+      jsonLength: size(store.getJson()),
       ...(detail ? {detail: {tables}} : {}),
     };
   };
@@ -103,7 +103,7 @@ export const createTools = getCreateFunction((store: Store): Tools => {
           collForEach(cellsMeta, ([type, , [, maxValue], count], cellId) => {
             tablesSchema[tableId][cellId] = {
               [TYPE]: type as any,
-              ...(count == arrayLength(rowIds) ? {[DEFAULT]: maxValue} : {}),
+              ...(count == size(rowIds) ? {[DEFAULT]: maxValue} : {}),
             };
           });
           return 1;

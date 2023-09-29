@@ -1,4 +1,5 @@
 import {EMPTY_STRING} from './strings';
+import {size} from './other';
 
 export const arrayHas = <Value>(array: Value[], value: Value): boolean =>
   array.includes(value);
@@ -9,7 +10,7 @@ export const arrayEvery = <Value>(
 ): boolean => array.every(cb);
 
 export const arrayIsEqual = (array1: unknown[], array2: unknown[]): boolean =>
-  arrayLength(array1) === arrayLength(array2) &&
+  size(array1) === size(array2) &&
   arrayEvery(array1, (value1, index) => array2[index] === value1);
 
 export const arrayIsSorted = <Value>(
@@ -42,10 +43,7 @@ export const arrayMap = <Value, Return>(
 export const arraySum = (array: number[]): number =>
   arrayReduce(array, (i, j) => i + j, 0);
 
-export const arrayLength = (array: unknown[]): number => array.length;
-
-export const arrayIsEmpty = (array: unknown[]): boolean =>
-  arrayLength(array) == 0;
+export const arrayIsEmpty = (array: unknown[]): boolean => size(array) == 0;
 
 export const arrayReduce = <Value, Result>(
   array: Value[],

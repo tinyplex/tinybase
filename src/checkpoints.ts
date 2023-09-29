@@ -14,7 +14,7 @@ import {
   CheckpointsListenerStats,
   createCheckpoints as createCheckpointsDecl,
 } from './types/checkpoints';
-import {DEBUG, ifNotUndefined, isUndefined} from './common/other';
+import {DEBUG, ifNotUndefined, isUndefined, size} from './common/other';
 import {Id, IdOrNull, Ids} from './types/common.d';
 import {
   IdMap,
@@ -31,7 +31,6 @@ import {
   arrayForEach,
   arrayHas,
   arrayIsEmpty,
-  arrayLength,
   arrayPop,
   arrayPush,
   arrayShift,
@@ -102,15 +101,12 @@ export const createCheckpoints = getCreateFunction(
 
     const clearCheckpointIds = (checkpointIds: Ids, to?: number): void =>
       arrayForEach(
-        arrayClear(checkpointIds, to ?? arrayLength(checkpointIds)),
+        arrayClear(checkpointIds, to ?? size(checkpointIds)),
         clearCheckpointId,
       );
 
     const trimBackwardsIds = (): void =>
-      clearCheckpointIds(
-        backwardIds,
-        arrayLength(backwardIds) - backwardIdsSize,
-      );
+      clearCheckpointIds(backwardIds, size(backwardIds) - backwardIdsSize);
 
     const storeChanged = () =>
       ifNotUndefined(currentId, () => {

@@ -45,6 +45,9 @@ export const slice = <ArrayOrString extends string | any[]>(
   end?: number,
 ): ArrayOrString => arrayOrString.slice(start, end) as ArrayOrString;
 
+export const size = (arrayOrString: string | any[]): number =>
+  arrayOrString.length;
+
 export const test = (regex: RegExp, subject: string): boolean =>
   regex.test(subject);
 

@@ -54,7 +54,6 @@ import {
   arrayEvery,
   arrayForEach,
   arrayIsEmpty,
-  arrayLength,
   arrayPush,
 } from './common/array';
 import {
@@ -73,6 +72,7 @@ import {
   ifNotUndefined,
   isFunction,
   isUndefined,
+  size,
   slice,
 } from './common/other';
 import {objFreeze, objMap} from './common/obj';
@@ -211,7 +211,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
       arg2?: Id,
     ) => {
       const selectEntry: [Id, SelectClause] = isFunction(arg1)
-        ? [arrayLength(selectEntries) + EMPTY_STRING, arg1]
+        ? [size(selectEntries) + EMPTY_STRING, arg1]
         : [
             isUndefined(arg2) ? arg1 : arg2,
             (getTableCell) => getTableCell(arg1, arg2 as Id),

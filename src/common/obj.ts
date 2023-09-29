@@ -1,6 +1,6 @@
-import {arrayLength, arrayMap} from './array';
-import {ifNotUndefined, isInstanceOf, isUndefined} from './other';
+import {ifNotUndefined, isInstanceOf, isUndefined, size} from './other';
 import {Id} from '../types/common.d';
+import {arrayMap} from './array';
 
 export type IdObj<Value> = {[id: string]: Value};
 export type IdObj2<Value> = IdObj<IdObj<Value>>;
@@ -42,8 +42,7 @@ export const objMap = <Value, Return>(
 export const objValues = <Value>(obj: IdObj<Value>): Value[] =>
   object.values(obj);
 
-export const objSize = (obj: IdObj<unknown>): number =>
-  arrayLength(objIds(obj));
+export const objSize = (obj: IdObj<unknown>): number => size(objIds(obj));
 
 export const objIsEmpty = <Value>(obj: IdObj<Value> | any): boolean =>
   isObject(obj) && objSize(obj) == 0;

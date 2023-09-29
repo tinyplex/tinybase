@@ -10,13 +10,8 @@ import {IdObj, objEnsure, objHas, objMap, objNew} from '../common/obj';
 import {Persister, PersisterListener} from '../types/persisters.d';
 import {T, TINYBASE, V} from '../common/strings';
 import {Doc as YDoc, YEvent, Map as YMap} from 'yjs';
-import {
-  arrayForEach,
-  arrayIsEmpty,
-  arrayLength,
-  arrayShift,
-} from '../common/array';
-import {ifNotUndefined, isUndefined} from '../common/other';
+import {arrayForEach, arrayIsEmpty, arrayShift} from '../common/array';
+import {ifNotUndefined, isUndefined, size} from '../common/other';
 import {Id} from '../types/common.d';
 import {createCustomPersister} from '../persisters';
 import {mapForEach} from '../common/map';
@@ -31,7 +26,7 @@ const getTransactionChangesFromYDoc = (
   yContent: YMap<any>,
   events: YEvent<any>[],
 ): TransactionChanges => {
-  if (arrayLength(events) == 1 && arrayIsEmpty(events[0].path)) {
+  if (size(events) == 1 && arrayIsEmpty(events[0].path)) {
     return [yContent.get(T).toJSON(), yContent.get(V).toJSON()];
   }
   const [yTables, yValues] = getYContent(yContent);

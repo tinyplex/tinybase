@@ -47,9 +47,9 @@ import {
   ResultTableCellIdsListener,
   ResultTableListener,
 } from '../types/queries';
-import {arrayForEach, arrayLength, arrayPush} from './array';
+import {arrayForEach, arrayPush} from './array';
 import {collDel, collForEach, collIsEmpty} from './coll';
-import {ifNotUndefined, isUndefined} from './other';
+import {ifNotUndefined, isUndefined, size} from './other';
 import {EMPTY_STRING} from './strings';
 import {getPoolFunctions} from './pool';
 
@@ -113,7 +113,7 @@ const getWildcardedLeaves = (
 ): IdSet[] => {
   const leaves: IdSet[] = [];
   const deep = (node: IdSetNode, p: number): number | void =>
-    p == arrayLength(path)
+    p == size(path)
       ? arrayPush(leaves, node)
       : path[p] === null
       ? collForEach(node as Node<IdOrNull, IdSet>, (node) => deep(node, p + 1))
@@ -202,8 +202,8 @@ export const getListenerFunctions = (
       mapGet(allListeners, id),
       ([listener, , path = [], pathGetters, extraArgsGetter]) => {
         const callWithIds = (...ids: Ids): any => {
-          const index = arrayLength(ids);
-          index == arrayLength(path)
+          const index = size(ids);
+          index == size(path)
             ? (listener as any)(thing, ...ids, ...extraArgsGetter(ids))
             : isUndefined(path[index])
             ? arrayForEach(pathGetters[index]?.(...ids) ?? [], (id) =>

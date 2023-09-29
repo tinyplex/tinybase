@@ -20,7 +20,7 @@ import {
   arraySort,
 } from '../../common/array';
 import {collHas, collValues} from '../../common/coll';
-import {isArray, slice} from '../../common/other';
+import {isArray, size, slice} from '../../common/other';
 import {Id} from '../../types/common.d';
 
 export type LINE = string;
@@ -50,14 +50,12 @@ export const mapUnique = <Value>(
 
 export const formatJsDoc = (file: string): string =>
   file.replace(JSDOC, (_, indent, text) => {
-    const lineLength = 77 - length(indent);
+    const lineLength = 77 - size(indent);
     return `${indent}/**\n${text.replace(
       new RegExp(`([^\\n]{1,${lineLength}})(\\s|$)`, 'g'),
       `${indent} * $1\n`,
     )}${indent} */`;
   });
-
-export const length = (str: string) => str.length;
 
 export const flat = (array: any[]) => array.flat(1e3);
 

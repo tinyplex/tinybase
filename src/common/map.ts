@@ -1,8 +1,8 @@
 import {IdObj, objHas, objIsEmpty, objMap} from './obj';
-import {arrayLength, arrayMap} from './array';
 import {collDel, collForEach, collHas, collIsEmpty} from './coll';
-import {ifNotUndefined, isUndefined} from './other';
+import {ifNotUndefined, isUndefined, size} from './other';
 import {Id} from '../types/common.d';
+import {arrayMap} from './array';
 
 export type IdMap<Value> = Map<Id, Value>;
 export type IdMap2<Value> = IdMap<IdMap<Value>>;
@@ -125,10 +125,10 @@ export const visitTree = <Path, Leaf>(
     (ensureLeaf ? mapEnsure : mapGet)(
       node,
       path[p],
-      p > arrayLength(path) - 2 ? (ensureLeaf as () => Leaf) : mapNew,
+      p > size(path) - 2 ? (ensureLeaf as () => Leaf) : mapNew,
     ),
     (nodeOrLeaf) => {
-      if (p > arrayLength(path) - 2) {
+      if (p > size(path) - 2) {
         if (pruneLeaf?.(nodeOrLeaf as Leaf)) {
           mapSet(node, path[p]);
         }
