@@ -137,11 +137,12 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
 
   readonly config: TinyBasePartyKitServerConfig = {};
 
-  private createResponse = (status: number, body: string | null = null) =>
-    new Response(body, {
+  private async createResponse(status: number, body: string | null = null) {
+    return new Response(body, {
       status,
       headers: this.config.responseHeaders ?? RESPONSE_HEADERS,
     });
+  }
 
   async onRequest(request: Request): Promise<Response> {
     const storage = this.party.storage;
