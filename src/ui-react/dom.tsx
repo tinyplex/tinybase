@@ -407,11 +407,13 @@ const EditableThing = <Thing extends Cell | Value>({
   onThingChange,
   className,
   hasSchema,
+  showType = true,
 }: {
   readonly thing: Thing | undefined;
   readonly onThingChange: (thing: Thing | undefined) => void;
   readonly className: string;
   readonly hasSchema: (() => boolean) | undefined;
+  readonly showType?: boolean;
 }) => {
   const [thingType, setThingType] = useState<CellOrValueType>();
   const [currentThing, setCurrentThing] = useState<string | number | boolean>();
@@ -436,39 +438,40 @@ const EditableThing = <Thing extends Cell | Value>({
     [onThingChange],
   );
 
+  const handleTypeChange = useCallback(() => {
+    if (!hasSchema?.()) {
+      const nextType = getTypeCase(
+        thingType,
+        NUMBER,
+        BOOLEAN,
+        STRING,
+      ) as CellOrValueType;
+      const thing = getTypeCase(
+        nextType,
+        stringThing,
+        numberThing,
+        booleanThing,
+      );
+      setThingType(nextType);
+      setCurrentThing(thing);
+      onThingChange(thing as Thing);
+    }
+  }, [
+    hasSchema,
+    onThingChange,
+    stringThing,
+    numberThing,
+    booleanThing,
+    thingType,
+  ]);
+
   return (
     <div className={className}>
-      <button
-        className={thingType}
-        onClick={useCallback(() => {
-          if (!hasSchema?.()) {
-            const nextType = getTypeCase(
-              thingType,
-              NUMBER,
-              BOOLEAN,
-              STRING,
-            ) as CellOrValueType;
-            const thing = getTypeCase(
-              nextType,
-              stringThing,
-              numberThing,
-              booleanThing,
-            );
-            setThingType(nextType);
-            setCurrentThing(thing);
-            onThingChange(thing as Thing);
-          }
-        }, [
-          hasSchema,
-          onThingChange,
-          stringThing,
-          numberThing,
-          booleanThing,
-          thingType,
-        ])}
-      >
-        {thingType}
-      </button>
+      {showType ? (
+        <button className={thingType} onClick={handleTypeChange}>
+          {thingType}
+        </button>
+      ) : null}
       {getTypeCase(
         thingType,
         <input
@@ -773,7 +776,8 @@ export const EditableCellView: typeof EditableCellViewDecl = ({
   cellId,
   store,
   className,
-}: CellProps & {readonly className?: string}) => (
+  showType,
+}: CellProps & {readonly className?: string; readonly showType?: boolean}) => (
   <EditableThing
     thing={useCell(tableId, rowId, cellId, store)}
     onThingChange={useSetCellCallback(
@@ -785,6 +789,7 @@ export const EditableCellView: typeof EditableCellViewDecl = ({
       store,
     )}
     className={className ?? EDITABLE + CELL}
+    showType={showType}
     hasSchema={useStoreOrStoreById(store)?.hasTablesSchema}
   />
 );
@@ -793,7 +798,8 @@ export const EditableValueView: typeof EditableValueViewDecl = ({
   valueId,
   store,
   className,
-}: ValueProps & {readonly className?: string}) => (
+  showType,
+}: ValueProps & {readonly className?: string; readonly showType?: boolean}) => (
   <EditableThing
     thing={useValue(valueId, store)}
     onThingChange={useSetValueCallback(
@@ -803,6 +809,7 @@ export const EditableValueView: typeof EditableValueViewDecl = ({
       store,
     )}
     className={className ?? EDITABLE + VALUE}
+    showType={showType}
     hasSchema={useStoreOrStoreById(store)?.hasValuesSchema}
   />
 );

@@ -277,12 +277,18 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// EditableCellView
   EditableCellView: (
-    props: CellProps<Schemas> & {className?: string},
+    props: CellProps<Schemas> & {
+      className?: string;
+      readonly showType?: boolean;
+    },
   ) => ComponentReturnType;
 
   /// EditableValueView
   EditableValueView: (
-    props: ValueProps<Schemas> & {className?: string},
+    props: ValueProps<Schemas> & {
+      className?: string;
+      readonly showType?: boolean;
+    },
   ) => ComponentReturnType;
 
   /// SortedTablePaginator

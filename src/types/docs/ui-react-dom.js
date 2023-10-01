@@ -1429,6 +1429,10 @@
  * A Cell contains a string, number, or boolean, so the value is rendered in an
  * appropriate <input> tag and a button lets the user change type, if possible.
  *
+ * Set the `showType` prop to false to remove the ability for the user to see or
+ * change the Cell type. They will also not be able to change the type if there
+ * is a TablesSchema applied to the Store.
+ *
  * This component uses the useCell hook under the covers, which means that any
  * changes to the specified Cell outside of this component will cause a
  * re-render.
@@ -1482,6 +1486,10 @@
  *
  * A Value contains a string, number, or boolean, so the value is rendered in an
  * appropriate <input> tag and a button lets the user change type, if possible.
+ *
+ * Set the `showType` prop to false to remove the ability for the user to see or
+ * change the Value type. They will also not be able to change the type if there
+ * is a ValuesSchema applied to the Store.
  *
  * This component uses the useValue hook under the covers, which means that any
  * changes to the specified Value outside of this component will cause a

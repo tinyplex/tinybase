@@ -227,12 +227,15 @@ export function ResultSortedTableInHtmlTable(
 
 /// EditableCellView
 export function EditableCellView(
-  props: CellProps & {readonly className?: string},
+  props: CellProps & {readonly className?: string; readonly showType?: boolean},
 ): ComponentReturnType;
 
 /// EditableValueView
 export function EditableValueView(
-  props: ValueProps & {readonly className?: string},
+  props: ValueProps & {
+    readonly className?: string;
+    readonly showType?: boolean;
+  },
 ): ComponentReturnType;
 
 /// SortedTablePaginator

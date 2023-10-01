@@ -4192,6 +4192,31 @@ describe('EditableCellView', () => {
     `);
   });
 
+  test('showType', () => {
+    act(() => {
+      renderer = create(
+        <EditableCellView
+          store={store}
+          tableId="t1"
+          rowId="r1"
+          cellId="c1"
+          showType={false}
+        />,
+      );
+    });
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <div
+        className="editableCell"
+      >
+        <input
+          onChange={[Function]}
+          type="number"
+          value={1}
+        />
+      </div>
+    `);
+  });
+
   test('change type and Cell', () => {
     act(() => {
       renderer = create(
@@ -4476,6 +4501,22 @@ describe('EditableValueView', () => {
         <button
           onClick={[Function]}
         />
+        <input
+          onChange={[Function]}
+          type="checkbox"
+        />
+      </div>
+    `);
+  });
+
+  test('showType', () => {
+    act(() => {
+      renderer = create(<EditableValueView valueId="v1" showType={false} />);
+    });
+    expect(renderer.toJSON()).toMatchInlineSnapshot(`
+      <div
+        className="editableValue"
+      >
         <input
           onChange={[Function]}
           type="checkbox"
