@@ -132,17 +132,20 @@ const promiseToSetOrDelStorage = (
       : storage.put<string | number | boolean>(key, value),
   );
 
+const createResponse = async (
+  that: TinyBasePartyKitServer,
+  status: number,
+  body: string | null = null,
+) =>
+  new Response(body, {
+    status,
+    headers: that.config.responseHeaders ?? RESPONSE_HEADERS,
+  });
+
 export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
   constructor(readonly party: Party) {}
 
   readonly config: TinyBasePartyKitServerConfig = {};
-
-  private async createResponse(status: number, body: string | null = null) {
-    return new Response(body, {
-      status,
-      headers: this.config.responseHeaders ?? RESPONSE_HEADERS,
-    });
-  }
 
   async onRequest(request: Request): Promise<Response> {
     const storage = this.party.storage;
@@ -154,19 +157,20 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
       const text = await request.text();
       if (request.method == PUT) {
         if (hasStore) {
-          return this.createResponse(205);
+          return createResponse(this, 205);
         }
         await saveStoreToStorage(storage, prefix, jsonParse(text));
-        return this.createResponse(201);
+        return createResponse(this, 201);
       }
-      return this.createResponse(
+      return createResponse(
+        this,
         200,
         hasStore
           ? jsonString(await loadStoreFromStorage(storage, prefix))
           : EMPTY_STRING,
       );
     }
-    return this.createResponse(404);
+    return createResponse(this, 404);
   }
 
   async onMessage(message: string, client: Connection) {
