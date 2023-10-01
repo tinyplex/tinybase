@@ -75,10 +75,11 @@ const loadStoreFromStorage = async (that: TinyBasePartyKitServer) => {
 };
 
 const saveStoreToStorage = async (
-  storage: Storage,
-  prefix: string,
+  that: TinyBasePartyKitServer,
   transactionChanges: TransactionChanges,
 ) => {
+  const storage = that.party.storage;
+  const prefix = that.config.storagePrefix ?? EMPTY_STRING;
   const promises: Promise<any>[] = [storage.put<1>(prefix + HAS_STORE, 1)];
   const keyPrefixesToDelete: string[] = [];
   objMap(transactionChanges[0], (table, tableId) =>
@@ -151,10 +152,7 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
   readonly config: TinyBasePartyKitServerConfig = {};
 
   async onRequest(request: Request): Promise<Response> {
-    const storage = this.party.storage;
-    const prefix = this.config.storagePrefix ?? EMPTY_STRING;
     const storePath = this.config.storePath ?? STORE_PATH;
-
     if (new URL(request.url).pathname.endsWith(storePath)) {
       const hasStore = await hasStoreInStorage(this);
       const text = await request.text();
@@ -162,7 +160,7 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
         if (hasStore) {
           return createResponse(this, 205);
         }
-        await saveStoreToStorage(storage, prefix, jsonParse(text));
+        await saveStoreToStorage(this, jsonParse(text));
         return createResponse(this, 201);
       }
       return createResponse(
@@ -175,12 +173,9 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
   }
 
   async onMessage(message: string, client: Connection) {
-    const storage = this.party.storage;
-    const prefix = this.config.storagePrefix ?? EMPTY_STRING;
     const [type, payload] = deconstructMessage(message, 1);
-
     if (type == SET_CHANGES && (await hasStoreInStorage(this))) {
-      await saveStoreToStorage(storage, prefix, payload);
+      await saveStoreToStorage(this, payload);
       this.party.broadcast(constructMessage(SET_CHANGES, payload), [client.id]);
     }
   }
