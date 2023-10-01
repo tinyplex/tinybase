@@ -42,9 +42,11 @@ const RESPONSE_HEADERS = objNew(
 );
 
 const hasStoreInStorage = async (
-  storage: Storage,
-  prefix: string,
-): Promise<1 | undefined> => await storage.get<1>(prefix + HAS_STORE);
+  that: TinyBasePartyKitServer,
+): Promise<1 | undefined> =>
+  await that.party.storage.get<1>(
+    (that.config.storagePrefix ?? EMPTY_STRING) + HAS_STORE,
+  );
 
 const loadStoreFromStorage = async (storage: Storage, prefix: string) => {
   const tables: Tables = {};
@@ -153,7 +155,7 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
     const storePath = this.config.storePath ?? STORE_PATH;
 
     if (new URL(request.url).pathname.endsWith(storePath)) {
-      const hasStore = await hasStoreInStorage(storage, prefix);
+      const hasStore = await hasStoreInStorage(this);
       const text = await request.text();
       if (request.method == PUT) {
         if (hasStore) {
@@ -178,7 +180,7 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
     const prefix = this.config.storagePrefix ?? EMPTY_STRING;
     const [type, payload] = deconstructMessage(message, 1);
 
-    if (type == SET_CHANGES && (await hasStoreInStorage(storage, prefix))) {
+    if (type == SET_CHANGES && (await hasStoreInStorage(this))) {
       await saveStoreToStorage(storage, prefix, payload);
       this.party.broadcast(constructMessage(SET_CHANGES, payload), [client.id]);
     }
