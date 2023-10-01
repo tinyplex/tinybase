@@ -48,11 +48,12 @@ const hasStoreInStorage = async (
     (that.config.storagePrefix ?? EMPTY_STRING) + HAS_STORE,
   );
 
-const loadStoreFromStorage = async (storage: Storage, prefix: string) => {
+const loadStoreFromStorage = async (that: TinyBasePartyKitServer) => {
   const tables: Tables = {};
   const values: Values = {};
+  const prefix = that.config.storagePrefix ?? EMPTY_STRING;
   mapForEach(
-    await storage.list<string | number | boolean>(),
+    await that.party.storage.list<string | number | boolean>(),
     (key, cellOrValue) => {
       if (key.startsWith(prefix)) {
         key = slice(key, size(prefix));
@@ -167,9 +168,7 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
       return createResponse(
         this,
         200,
-        hasStore
-          ? jsonString(await loadStoreFromStorage(storage, prefix))
-          : EMPTY_STRING,
+        hasStore ? jsonString(await loadStoreFromStorage(this)) : EMPTY_STRING,
       );
     }
     return createResponse(this, 404);
