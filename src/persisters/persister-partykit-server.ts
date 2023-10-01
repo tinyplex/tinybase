@@ -77,11 +77,13 @@ const loadStoreFromStorage = async (that: TinyBasePartyKitServer) => {
 const saveStoreToStorage = async (
   that: TinyBasePartyKitServer,
   transactionChanges: TransactionChanges,
+  initialSave: boolean,
 ) => {
   const storage = that.party.storage;
   const prefix = that.config.storagePrefix ?? EMPTY_STRING;
   const promises: Promise<any>[] = [storage.put<1>(prefix + HAS_STORE, 1)];
   const keyPrefixesToDelete: string[] = [];
+  that.onWillSaveTransactionChanges(transactionChanges, initialSave);
   objMap(transactionChanges[0], (table, tableId) =>
     isUndefined(table)
       ? arrayUnshift(
@@ -160,7 +162,7 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
         if (hasStore) {
           return createResponse(this, 205);
         }
-        await saveStoreToStorage(this, jsonParse(text));
+        await saveStoreToStorage(this, jsonParse(text), true);
         return createResponse(this, 201);
       }
       return createResponse(
@@ -175,8 +177,13 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
   async onMessage(message: string, client: Connection) {
     const [type, payload] = deconstructMessage(message, 1);
     if (type == SET_CHANGES && (await hasStoreInStorage(this))) {
-      await saveStoreToStorage(this, payload);
+      await saveStoreToStorage(this, payload, false);
       this.party.broadcast(constructMessage(SET_CHANGES, payload), [client.id]);
     }
   }
+
+  async onWillSaveTransactionChanges(
+    _transactionChanges: TransactionChanges,
+    _initialSave: boolean,
+  ) {}
 }
