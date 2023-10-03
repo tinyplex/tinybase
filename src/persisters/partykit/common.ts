@@ -1,5 +1,5 @@
-import {T, V} from '../../common/strings';
-import {isString, slice} from '../../common/other';
+import {T, V, strStartsWith} from '../../common/strings';
+import {isString, size, slice} from '../../common/other';
 import {jsonParse, jsonString} from '../../common/json';
 
 type MessageType = typeof SET_CHANGES;
@@ -11,14 +11,22 @@ export const STORE_PATH = '/store';
 export const PUT = 'PUT';
 
 export const constructMessage = (
+  prefix: string,
   type: MessageType | StorageKeyType,
   payload: any,
-): string => type + (isString(payload) ? payload : jsonString(payload));
+): string =>
+  prefix + type + (isString(payload) ? payload : jsonString(payload));
 
 export const deconstructMessage = (
+  prefix: string,
   message: string,
   stringified?: 1,
-): [type: MessageType | StorageKeyType, payload: string | any] => [
-  message[0] as MessageType | StorageKeyType,
-  stringified ? jsonParse(slice(message, 1)) : slice(message, 1),
-];
+): [type: MessageType | StorageKeyType, payload: string | any] | undefined => {
+  const prefixSize = size(prefix);
+  return strStartsWith(message, prefix)
+    ? [
+        message[prefixSize] as MessageType | StorageKeyType,
+        (stringified ? jsonParse : String)(slice(message, prefixSize + 1)),
+      ]
+    : undefined;
+};

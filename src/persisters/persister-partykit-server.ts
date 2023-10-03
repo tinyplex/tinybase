@@ -1,6 +1,6 @@
 import {Cell, Row, Tables, TransactionChanges, Values} from '../types/store';
 import {Connection, Party, Request, Storage} from 'partykit/server';
-import {EMPTY_STRING, T, V} from '../common/strings';
+import {EMPTY_STRING, T, V, strStartsWith} from '../common/strings';
 import {
   PUT,
   SET_CHANGES,
@@ -20,7 +20,7 @@ import {
   arrayPush,
   arrayUnshift,
 } from '../common/array';
-import {isUndefined, promiseAll, size, slice} from '../common/other';
+import {ifNotUndefined, isUndefined, promiseAll, slice} from '../common/other';
 import {jsonParse, jsonString} from '../common/json';
 import {objEnsure, objMap, objNew} from '../common/obj';
 import {Ids} from '../types/common';
@@ -49,13 +49,11 @@ const hasStore = async (that: TinyBasePartyKitServer): Promise<1 | undefined> =>
 const loadStore = async (that: TinyBasePartyKitServer) => {
   const tables: Tables = {};
   const values: Values = {};
-  const prefix = that.config.storagePrefix ?? EMPTY_STRING;
+  const storagePrefix = that.config.storagePrefix ?? EMPTY_STRING;
   mapForEach(
     await that.party.storage.list<string | number | boolean>(),
-    (key, cellOrValue) => {
-      if (key.startsWith(prefix)) {
-        key = slice(key, size(prefix));
-        const [type, ids] = deconstructMessage(key);
+    (key, cellOrValue) =>
+      ifNotUndefined(deconstructMessage(storagePrefix, key), ([type, ids]) => {
         if (type == T) {
           const [tableId, rowId, cellId] = jsonParse('[' + ids + ']');
           objEnsure(
@@ -66,8 +64,7 @@ const loadStore = async (that: TinyBasePartyKitServer) => {
         } else if (type == V) {
           values[ids] = cellOrValue;
         }
-      }
-    },
+      }),
   );
   return [tables, values];
 };
@@ -79,8 +76,10 @@ const saveStore = async (
   requestOrConnection: Request | Connection,
 ) => {
   const storage = that.party.storage;
-  const prefix = that.config.storagePrefix ?? EMPTY_STRING;
-  const promises: Promise<any>[] = [storage.put<1>(prefix + HAS_STORE, 1)];
+  const storagePrefix = that.config.storagePrefix ?? EMPTY_STRING;
+  const promises: Promise<any>[] = [
+    storage.put<1>(storagePrefix + HAS_STORE, 1),
+  ];
   const keyPrefixesToDelete: string[] = [];
   that.onWillSaveTransactionChanges(
     transactionChanges,
@@ -91,33 +90,38 @@ const saveStore = async (
     isUndefined(table)
       ? arrayUnshift(
           keyPrefixesToDelete,
-          prefix + getStoreStorageKey(T, tableId),
+          constructStorageKey(storagePrefix, T, tableId),
         )
       : objMap(table, (row, rowId) =>
           isUndefined(row)
             ? arrayPush(
                 keyPrefixesToDelete,
-                prefix + getStoreStorageKey(T, tableId, rowId),
+                constructStorageKey(storagePrefix, T, tableId, rowId),
               )
             : objMap(row, (cell, cellId) =>
                 promiseToSetOrDelStorage(
                   promises,
                   storage,
-                  prefix + getStoreStorageKey(T, tableId, rowId, cellId),
+                  constructStorageKey(storagePrefix, T, tableId, rowId, cellId),
                   cell,
                 ),
               ),
         ),
   );
   objMap(transactionChanges[1], (value, valueId) =>
-    promiseToSetOrDelStorage(promises, storage, prefix + V + valueId, value),
+    promiseToSetOrDelStorage(
+      promises,
+      storage,
+      storagePrefix + V + valueId,
+      value,
+    ),
   );
   if (!arrayIsEmpty(keyPrefixesToDelete)) {
     mapForEach(await storage.list<string | number | boolean>(), (key) =>
       arrayEvery(
         keyPrefixesToDelete,
         (keyPrefixToDelete) =>
-          !key.startsWith(keyPrefixToDelete) ||
+          !strStartsWith(key, keyPrefixToDelete) ||
           ((promiseToSetOrDelStorage(promises, storage, key) as any) && false),
       ),
     );
@@ -125,8 +129,11 @@ const saveStore = async (
   await promiseAll(promises);
 };
 
-const getStoreStorageKey = (type: StorageKeyType, ...ids: Ids) =>
-  type + slice(jsonString(ids), 1, -1);
+const constructStorageKey = (
+  storagePrefix: string,
+  type: StorageKeyType,
+  ...ids: Ids
+) => constructMessage(storagePrefix, type, slice(jsonString(ids), 1, -1));
 
 const promiseToSetOrDelStorage = (
   promises: Promise<any>[],
@@ -178,11 +185,18 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
   }
 
   async onMessage(message: string, connection: Connection) {
-    const [type, payload] = deconstructMessage(message, 1);
-    if (type == SET_CHANGES && (await hasStore(this))) {
-      await saveStore(this, payload, false, connection);
-      this.party.broadcast(constructMessage(SET_CHANGES, payload));
-    }
+    const messagePrefix = this.config.messagePrefix ?? EMPTY_STRING;
+    await ifNotUndefined(
+      deconstructMessage(messagePrefix, message, 1),
+      async ([type, payload]) => {
+        if (type == SET_CHANGES && (await hasStore(this))) {
+          await saveStore(this, payload, false, connection);
+          this.party.broadcast(
+            constructMessage(messagePrefix, SET_CHANGES, payload),
+          );
+        }
+      },
+    );
   }
 
   async onWillSaveTransactionChanges(
