@@ -6,7 +6,7 @@ export const arrayHas = <Value>(array: Value[], value: Value): boolean =>
 
 export const arrayEvery = <Value>(
   array: Value[],
-  cb: (value: Value, index: number) => boolean,
+  cb: (value: Value, index: number) => boolean | 0 | 1,
 ): boolean => array.every(cb);
 
 export const arrayIsEqual = (array1: unknown[], array2: unknown[]): boolean =>
