@@ -6,8 +6,8 @@ import {
   SET_CHANGES,
   STORE_PATH,
   StorageKeyType,
-  constructMessage,
-  deconstructMessage,
+  construct,
+  deconstruct,
 } from './partykit/common';
 import {
   TinyBasePartyKitServerConfig,
@@ -53,7 +53,7 @@ const loadStore = async (that: TinyBasePartyKitServer) => {
   mapForEach(
     await that.party.storage.list<string | number | boolean>(),
     (key, cellOrValue) =>
-      ifNotUndefined(deconstructMessage(storagePrefix, key), ([type, ids]) => {
+      ifNotUndefined(deconstruct(storagePrefix, key), ([type, ids]) => {
         if (type == T) {
           const [tableId, rowId, cellId] = jsonParse('[' + ids + ']');
           objEnsure(
@@ -133,7 +133,7 @@ const constructStorageKey = (
   storagePrefix: string,
   type: StorageKeyType,
   ...ids: Ids
-) => constructMessage(storagePrefix, type, slice(jsonString(ids), 1, -1));
+) => construct(storagePrefix, type, slice(jsonString(ids), 1, -1));
 
 const promiseToSetOrDelStorage = (
   promises: Promise<any>[],
@@ -187,13 +187,11 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
   async onMessage(message: string, connection: Connection) {
     const messagePrefix = this.config.messagePrefix ?? EMPTY_STRING;
     await ifNotUndefined(
-      deconstructMessage(messagePrefix, message, 1),
+      deconstruct(messagePrefix, message, 1),
       async ([type, payload]) => {
         if (type == SET_CHANGES && (await hasStore(this))) {
           await saveStore(this, payload, false, connection);
-          this.party.broadcast(
-            constructMessage(messagePrefix, SET_CHANGES, payload),
-          );
+          this.party.broadcast(construct(messagePrefix, SET_CHANGES, payload));
         }
       },
     );

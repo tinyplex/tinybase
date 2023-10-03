@@ -3,8 +3,8 @@ import {
   PUT,
   SET_CHANGES,
   STORE_PATH,
-  constructMessage,
-  deconstructMessage,
+  construct,
+  deconstruct,
 } from './partykit/common';
 import {
   PartyKitPersisterConfig,
@@ -65,7 +65,7 @@ export const createPartyKitPersister = ((
   ): Promise<void> => {
     if (getTransactionChanges) {
       connection.send(
-        constructMessage(messagePrefix, SET_CHANGES, getTransactionChanges()),
+        construct(messagePrefix, SET_CHANGES, getTransactionChanges()),
       );
     } else {
       await getOrSetStore(getContent());
@@ -77,7 +77,7 @@ export const createPartyKitPersister = ((
   ): MessageListener => {
     const messageListener = (event: MessageEvent) =>
       ifNotUndefined(
-        deconstructMessage(messagePrefix, event.data, 1),
+        deconstruct(messagePrefix, event.data, 1),
         ([type, payload]) => {
           if (type == SET_CHANGES) {
             listener(undefined, () => payload);

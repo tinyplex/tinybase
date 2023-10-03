@@ -10,14 +10,14 @@ export const SET_CHANGES = 's';
 export const STORE_PATH = '/store';
 export const PUT = 'PUT';
 
-export const constructMessage = (
+export const construct = (
   prefix: string,
   type: MessageType | StorageKeyType,
   payload: any,
 ): string =>
   prefix + type + (isString(payload) ? payload : jsonString(payload));
 
-export const deconstructMessage = (
+export const deconstruct = (
   prefix: string,
   message: string,
   stringified?: 1,
