@@ -1,6 +1,7 @@
 /// persister-partykit-server
 
 import {Connection, Party, Request, Server} from 'partykit/server';
+import {TransactionChanges} from '../store';
 
 /// TinyBasePartyKitServerConfig
 export type TinyBasePartyKitServerConfig = {
@@ -20,5 +21,11 @@ export class TinyBasePartyKitServer implements Server {
   /// TinyBasePartyKitServer.onRequest
   onRequest(request: Request): Promise<Response>;
   /// TinyBasePartyKitServer.onMessage
-  onMessage(message: string, client: Connection): void;
+  onMessage(message: string, client: Connection): Promise<void>;
+  /// TinyBasePartyKitServer.onWillSaveTransactionChanges
+  onWillSaveTransactionChanges(
+    transactionChanges: TransactionChanges,
+    initialSave: boolean,
+    requestOrConnection: Request | Connection,
+  ): Promise<void>;
 }

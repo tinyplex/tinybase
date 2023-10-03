@@ -177,4 +177,56 @@
    * more details.
    */
   /// TinyBasePartyKitServer.onRequest
+  /**
+   * The onWillSaveTransactionChanges method is called when a set of changes to
+   * a Store (or whole Store) have been sent from a client to be saved on the
+   * server.
+   *
+   * This is an appropriate place to sanitize the data that is being sent from a
+   * client. Perhaps you might want to make sure the client data adheres to a
+   * particular schema, or you might want to make certain Cells or Values
+   * read-only. Remember that in theory you cannot trust the client to only send
+   * data that the server considers valid or safe.
+   *
+   * This method is passed a reference to a TransactionChanges type, which is a
+   * two-part array comprising the Tables and Values that the client is trying
+   * to set. You should directly manipulate these to make them safe before they
+   * are passed on to be saved in the durable storage.
+   *
+   * The `initialSave` parameter distinguishes between the first bulk save of
+   * the Store to the PartyKit room over HTTP (when it is true), and subsequent
+   * incremental updates over a web sockets (when it is false).
+   *
+   * The final `requestOrConnection` parameter will either be the HTTP(S)
+   * request or the web socket connection, in those two cases respectively. You
+   * can, for instance, use this to distinguish between different users.
+   *
+   * For example, the following implementation will strip out any attempts by
+   * the client to set tabular data, and will allow only name and age values to
+   * be updated from the client after the initial save:
+   *
+   * ```js
+   * export default class extends TinyBasePartyServer {
+   *   async onWillSaveTransactionChanges(
+   *     [tables, values]: TransactionChanges,
+   *     initialSave: boolean,
+   *   ) {
+   *     Object.keys(tables).forEach((tableId) => delete tables[tableId]);
+   *     if (!initialSave) {
+   *       Object.keys(values).forEach((valueId) => {
+   *         switch (valueId) {
+   *           case 'name':
+   *           case 'age':
+   *             break;
+   *           case 'accessToken':
+   *           default:
+   *             delete values[valueId];
+   *         }
+   *       });
+   *     }
+   *   }
+   * }
+   * ```
+   */
+  /// TinyBasePartyKitServer.onWillSaveTransactionChanges
 }
