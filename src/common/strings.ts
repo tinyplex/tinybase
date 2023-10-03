@@ -49,3 +49,6 @@ export const V = 'v';
 export const id = (key: unknown): Id => EMPTY_STRING + key;
 
 export const strRepeat = (str: string, count: number) => str.repeat(count);
+
+export const strStartsWith = (str: string, prefix: string) =>
+  str.startsWith(prefix);
