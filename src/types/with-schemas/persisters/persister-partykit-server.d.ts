@@ -7,6 +7,8 @@ import {NoSchemas, TransactionChanges} from '../store';
 export type TinyBasePartyKitServerConfig = {
   /// TinyBasePartyKitServerConfig.storePath
   storePath?: string;
+  /// TinyBasePartyKitServerConfig.messagePrefix
+  messagePrefix?: string;
   /// TinyBasePartyKitServerConfig.storagePrefix
   storagePrefix?: string;
   /// TinyBasePartyKitServerConfig.responseHeaders

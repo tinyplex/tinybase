@@ -54,9 +54,18 @@
   /**
    * The path used to set and get the whole Store over HTTP(S) on the server.
    * This must match the storePath property of the TinyBasePartyKitServerConfig
-   * object on the server. Both default to '/store'.
+   * object used on the server. Both default to '/store'.
    */
   /// PartyKitPersisterConfig.storePath
+  /**
+   * The prefix at the beginning of the web socket messages sent between the
+   * client and the server when synchronizing the Store. Use this to make sure
+   * they do not collide with any other message syntax that your room is using.
+   * This must match the messagePrefix property of the
+   * TinyBasePartyKitServerConfig object used on the server. Both default to an
+   * empty string.
+   */
+  /// PartyKitPersisterConfig.messagePrefix
 }
 /**
  * The createPartyKitPersister function creates a Persister object that can

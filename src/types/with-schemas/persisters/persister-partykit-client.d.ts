@@ -10,6 +10,8 @@ export type PartyKitPersisterConfig = {
   storeProtocol?: 'http' | 'https';
   /// PartyKitPersisterConfig.storePath
   storePath?: string;
+  /// PartyKitPersisterConfig.messagePrefix
+  messagePrefix?: string;
 };
 
 /// createPartyKitPersister

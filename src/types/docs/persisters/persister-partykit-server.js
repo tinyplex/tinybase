@@ -56,6 +56,14 @@
    */
   /// TinyBasePartyKitServerConfig.storePath
   /**
+   * The prefix at the beginning of the web socket messages between the client
+   * and the server when synchronizing the Store. Use this to make sure they do
+   * not collide with any other message syntax that your room is using. This
+   * must match the messagePrefix property of the PartyKitPersisterConfig object
+   * used on the client. Both default to an empty string.
+   */
+  /// TinyBasePartyKitServerConfig.messagePrefix
+  /**
    * The prefix used before all the keys in the server's durable storage. Use
    * this in case you are worried about the Store data colliding with other data
    * stored in the room. Defaults to an empty string.
