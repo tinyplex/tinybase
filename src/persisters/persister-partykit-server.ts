@@ -180,8 +180,8 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
   async onMessage(message: string, connection: Connection) {
     const [type, payload] = deconstructMessage(message, 1);
     if (type == SET_CHANGES && (await hasStore(this))) {
-      this.party.broadcast(constructMessage(SET_CHANGES, payload), [client.id]);
       await saveStore(this, payload, false, connection);
+      this.party.broadcast(constructMessage(SET_CHANGES, payload));
     }
   }
 
