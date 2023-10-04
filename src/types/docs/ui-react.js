@@ -3382,8 +3382,8 @@
  *   </Provider>
  * );
  * const Pane = () => {
- *   useWillFinishTransactionListener(
- *     () => console.log('Will finish transaction'),
+ *   useWillFinishTransactionListener(() =>
+ *     console.log('Will finish transaction'),
  *   );
  *   return <span>App</span>;
  * };
@@ -3436,8 +3436,8 @@
  *   </Provider>
  * );
  * const Pane = () => {
- *   useDidFinishTransactionListener(
- *     () => console.log('Did finish transaction'),
+ *   useDidFinishTransactionListener(() =>
+ *     console.log('Did finish transaction'),
  *   );
  *   return <span>App</span>;
  * };

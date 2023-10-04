@@ -42,24 +42,27 @@ export const createSqlitePersister = <UpdateListeningHandle>(
   const addPersisterListener = (
     listener: PersisterListener,
   ): [NodeJS.Timeout, UpdateListeningHandle] => [
-    startInterval(async () => {
-      try {
-        const newDataVersion = (
-          (await cmd(PRAGMA + DATA_VERSION)) as DataVersionPragma
-        )[0][DATA_VERSION];
-        const newSchemaVersion = (
-          (await cmd(PRAGMA + SCHEMA_VERSION)) as SchemaVersionPragma
-        )[0][SCHEMA_VERSION];
-        if (
-          newDataVersion != (dataVersion ??= newDataVersion) ||
-          newSchemaVersion != (schemaVersion ??= newSchemaVersion)
-        ) {
-          listener();
-          dataVersion = newDataVersion;
-          schemaVersion = newSchemaVersion;
-        }
-      } catch {}
-    }, (autoLoadIntervalSeconds as number) * 1000),
+    startInterval(
+      async () => {
+        try {
+          const newDataVersion = (
+            (await cmd(PRAGMA + DATA_VERSION)) as DataVersionPragma
+          )[0][DATA_VERSION];
+          const newSchemaVersion = (
+            (await cmd(PRAGMA + SCHEMA_VERSION)) as SchemaVersionPragma
+          )[0][SCHEMA_VERSION];
+          if (
+            newDataVersion != (dataVersion ??= newDataVersion) ||
+            newSchemaVersion != (schemaVersion ??= newSchemaVersion)
+          ) {
+            listener();
+            dataVersion = newDataVersion;
+            schemaVersion = newSchemaVersion;
+          }
+        } catch {}
+      },
+      (autoLoadIntervalSeconds as number) * 1000,
+    ),
     addUpdateListener((tableName: string) =>
       managedTableNamesSet.has(tableName) ? listener() : 0,
     ),

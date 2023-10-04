@@ -405,9 +405,8 @@
    *   },
    * });
    * const tools = createTools(store);
-   * const [dTs, ts, uiReactDTs, uiReactTsx] = await createTools(
-   *   store,
-   * ).getPrettyStoreApi('shop');
+   * const [dTs, ts, uiReactDTs, uiReactTsx] =
+   *   await createTools(store).getPrettyStoreApi('shop');
    *
    * const dTsLines = dTs.split('\n');
    * console.log(dTsLines[17]);
@@ -426,9 +425,8 @@
    *   felix: {price: 4},
    * });
    * const tools = createTools(store);
-   * const [dTs, ts, uiReactDTs, uiReactTsx] = await createTools(
-   *   store,
-   * ).getPrettyStoreApi('shop');
+   * const [dTs, ts, uiReactDTs, uiReactTsx] =
+   *   await createTools(store).getPrettyStoreApi('shop');
    *
    * const dTsLines = dTs.split('\n');
    * console.log(dTsLines[17]);

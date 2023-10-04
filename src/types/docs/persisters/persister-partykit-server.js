@@ -42,7 +42,7 @@
  *     storePath: '/my_tinybase',
  *     storagePrefix: 'tinybase_',
  *   };
- * };
+ * }
  * ```
  * @category Configuration
  * @since v4.3.9

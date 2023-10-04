@@ -226,23 +226,29 @@ export const lintCheck = async (dir) => {
   const docConfig = {...prettierConfig, printWidth: 75};
   await allOf(results, async ({filePath}) => {
     const code = await promises.readFile(filePath, UTF8);
-    if (!prettier.check(code, prettierConfig)) {
+    if (
+      !(await prettier.check(code, {...prettierConfig, filepath: filePath}))
+    ) {
       throw `${filePath} not pretty`;
     }
     if (filePath.endsWith('.d.ts') || filePath.endsWith('.js')) {
-      [...(code.matchAll(LINT_BLOCKS) ?? [])].forEach(([_, hint, docBlock]) => {
-        if (hint?.trim() == 'override') {
-          return; // can't lint orphaned TS methods
-        }
-        const code = docBlock.replace(/\n +\* ?/g, '\n').trimStart();
-        if (!prettier.check(code, docConfig)) {
-          const pretty = prettier
-            .format(code, docConfig)
-            .trim()
-            .replace(/^|\n/g, '\n * ');
-          throw `${filePath} not pretty:\n${code}\n\nShould be:\n${pretty}\n`;
-        }
-      });
+      await allOf(
+        [...(code.matchAll(LINT_BLOCKS) ?? [])],
+        async ([_, hint, docBlock]) => {
+          if (hint?.trim() == 'override') {
+            return; // can't lint orphaned TS methods
+          }
+          const code = docBlock.replace(/\n +\* ?/g, '\n').trimStart();
+          if (!(await prettier.check(code, docConfig))) {
+            const pretty = (await prettier.format(code, docConfig))
+              .trim()
+              .replace(/^|\n/g, '\n * ');
+            throw (
+              `${filePath} not pretty:\n${code}` + `\n\nShould be:\n${pretty}\n`
+            );
+          }
+        },
+      );
     }
   });
 };

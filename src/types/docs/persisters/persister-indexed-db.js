@@ -37,11 +37,10 @@
  * browser's IndexedDB storage.
  *
  * ```js
- * const store =
- *   createStore()
- *     .setTable('pets', {fido: {species: 'dog'}})
- *     .setTable('species', {dog: {price: 5}})
- *     .setValues({open: true});
+ * const store = createStore()
+ *   .setTable('pets', {fido: {species: 'dog'}})
+ *   .setTable('species', {dog: {price: 5}})
+ *   .setValues({open: true});
  * const persister = createIndexedDbPersister(store, 'petStore');
  *
  * await persister.save();

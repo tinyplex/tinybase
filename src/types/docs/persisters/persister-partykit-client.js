@@ -108,12 +108,14 @@
  * browser's IndexedDB storage.
  *
  * ```js yolo
- * const store =
- *   createStore()
- *     .setTable('pets', {fido: {species: 'dog'}})
- *     .setTable('species', {dog: {price: 5}})
- *     .setValues({open: true});
- * const partySocket = new PartySocket({host: PARTYKIT_HOST, room: 'my_room'});
+ * const store = createStore()
+ *   .setTable('pets', {fido: {species: 'dog'}})
+ *   .setTable('species', {dog: {price: 5}})
+ *   .setValues({open: true});
+ * const partySocket = new PartySocket({
+ *   host: PARTYKIT_HOST,
+ *   room: 'my_room',
+ * });
  * const persister = createPartyKitPersister(store, partySocket);
  * await persister.startAutoLoad();
  * await persister.startAutoSave();

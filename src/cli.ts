@@ -64,9 +64,8 @@ const getStoreApi = async (
   outputDir: string,
 ) => {
   try {
-    const [dTs, ts, uiReactDTs, uiReactTsx] = await getTools(
-      schemaFile,
-    ).getPrettyStoreApi(storeName);
+    const [dTs, ts, uiReactDTs, uiReactTsx] =
+      await getTools(schemaFile).getPrettyStoreApi(storeName);
     writeFile(outputDir, storeName + '.d.ts', dTs, 'Definition');
     writeFile(outputDir, storeName + '.ts', ts, 'Implementation');
     writeFile(
