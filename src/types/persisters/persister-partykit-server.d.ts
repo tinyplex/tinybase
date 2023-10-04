@@ -1,7 +1,8 @@
 /// persister-partykit-server
 
+import {Cell, Value} from '../store';
 import {Connection, Party, Request, Server} from 'partykit/server';
-import {TransactionChanges} from '../store';
+import {Id} from '../common';
 
 /// TinyBasePartyKitServerConfig
 export type TinyBasePartyKitServerConfig = {
@@ -24,10 +25,50 @@ export class TinyBasePartyKitServer implements Server {
   onRequest(request: Request): Promise<Response>;
   /// TinyBasePartyKitServer.onMessage
   onMessage(message: string, client: Connection): Promise<void>;
-  /// TinyBasePartyKitServer.onWillSaveTransactionChanges
-  onWillSaveTransactionChanges(
-    transactionChanges: TransactionChanges,
+  /// TinyBasePartyKitServer.canSetTable
+  canSetTable(
+    tableId: Id,
     initialSave: boolean,
     requestOrConnection: Request | Connection,
-  ): Promise<void>;
+  ): boolean;
+  /// TinyBasePartyKitServer.canDelTable
+  canDelTable(tableId: Id, requestOrConnection: Request | Connection): boolean;
+  /// TinyBasePartyKitServer.canSetRow
+  canSetRow(
+    tableId: Id,
+    rowId: Id,
+    initialSave: boolean,
+    requestOrConnection: Request | Connection,
+  ): boolean;
+  /// TinyBasePartyKitServer.canDelRow
+  canDelRow(
+    tableId: Id,
+    rowId: Id,
+    requestOrConnection: Request | Connection,
+  ): boolean;
+  /// TinyBasePartyKitServer.canSetCell
+  canSetCell(
+    tableId: Id,
+    rowId: Id,
+    cellId: Id,
+    cell: Cell,
+    initialSave: boolean,
+    requestOrConnection: Request | Connection,
+  ): boolean;
+  /// TinyBasePartyKitServer.canDelCell
+  canDelCell(
+    tableId: Id,
+    rowId: Id,
+    cellId: Id,
+    requestOrConnection: Request | Connection,
+  ): boolean;
+  /// TinyBasePartyKitServer.canSetValue
+  canSetValue(
+    valueId: Id,
+    value: Value,
+    initialSave: boolean,
+    requestOrConnection: Request | Connection,
+  ): boolean;
+  /// TinyBasePartyKitServer.canDelValue
+  canDelValue(valueId: Id, requestOrConnection: Request | Connection): boolean;
 }

@@ -1,6 +1,14 @@
-import {Cell, Row, Tables, TransactionChanges, Values} from '../types/store';
-import {Connection, Party, Request, Storage} from 'partykit/server';
+import {
+  Cell,
+  Row,
+  Tables,
+  TransactionChanges,
+  Value,
+  Values,
+} from '../types/store';
+import {Connection, Party, Request} from 'partykit/server';
 import {EMPTY_STRING, T, V, strStartsWith} from '../common/strings';
+import {Id, Ids} from '../types/common';
 import {
   PUT,
   SET_CHANGES,
@@ -23,7 +31,6 @@ import {
 import {ifNotUndefined, isUndefined, promiseAll, slice} from '../common/other';
 import {jsonParse, jsonString} from '../common/json';
 import {objEnsure, objMap, objNew} from '../common/obj';
-import {Ids} from '../types/common';
 import {mapForEach} from '../common/map';
 
 /**
@@ -81,40 +88,86 @@ const saveStore = async (
     storage.put<1>(storagePrefix + HAS_STORE, 1),
   ];
   const keyPrefixesToDelete: string[] = [];
-  that.onWillSaveTransactionChanges(
-    transactionChanges,
-    initialSave,
-    requestOrConnection,
-  );
+
   objMap(transactionChanges[0], (table, tableId) =>
     isUndefined(table)
-      ? arrayUnshift(
+      ? !initialSave &&
+        that.canDelTable(tableId, requestOrConnection as Connection) &&
+        arrayUnshift(
           keyPrefixesToDelete,
           constructStorageKey(storagePrefix, T, tableId),
         )
-      : objMap(table, (row, rowId) =>
+      : that.canSetTable(tableId, initialSave, requestOrConnection) &&
+        objMap(table, (row, rowId) =>
           isUndefined(row)
-            ? arrayPush(
+            ? !initialSave &&
+              that.canDelRow(
+                tableId,
+                rowId,
+                requestOrConnection as Connection,
+              ) &&
+              arrayPush(
                 keyPrefixesToDelete,
                 constructStorageKey(storagePrefix, T, tableId, rowId),
               )
-            : objMap(row, (cell, cellId) =>
-                promiseToSetOrDelStorage(
-                  promises,
-                  storage,
-                  constructStorageKey(storagePrefix, T, tableId, rowId, cellId),
-                  cell,
-                ),
+            : that.canSetRow(
+                tableId,
+                rowId,
+                initialSave,
+                requestOrConnection,
+              ) &&
+              objMap(row, (cell, cellId) =>
+                isUndefined(cell)
+                  ? !initialSave &&
+                    that.canDelCell(
+                      tableId,
+                      rowId,
+                      cellId,
+                      requestOrConnection as Connection,
+                    ) &&
+                    arrayPush(
+                      promises,
+                      storage.delete(
+                        constructStorageKey(
+                          storagePrefix,
+                          T,
+                          tableId,
+                          rowId,
+                          cellId,
+                        ),
+                      ),
+                    )
+                  : that.canSetCell(
+                      tableId,
+                      rowId,
+                      cellId,
+                      cell,
+                      initialSave,
+                      requestOrConnection,
+                    ) &&
+                    arrayPush(
+                      promises,
+                      storage.put<string | number | boolean>(
+                        constructStorageKey(
+                          storagePrefix,
+                          T,
+                          tableId,
+                          rowId,
+                          cellId,
+                        ),
+                        cell,
+                      ),
+                    ),
               ),
         ),
   );
   objMap(transactionChanges[1], (value, valueId) =>
-    promiseToSetOrDelStorage(
-      promises,
-      storage,
-      storagePrefix + V + valueId,
-      value,
-    ),
+    isUndefined(value)
+      ? !initialSave &&
+        that.canDelValue(valueId, requestOrConnection as Connection) &&
+        arrayPush(promises, storage.delete(storagePrefix + V + valueId))
+      : that.canSetValue(valueId, value, initialSave, requestOrConnection) &&
+        arrayPush(promises, storage.put(storagePrefix + V + valueId, value)),
   );
   if (!arrayIsEmpty(keyPrefixesToDelete)) {
     mapForEach(await storage.list<string | number | boolean>(), (key) =>
@@ -122,7 +175,7 @@ const saveStore = async (
         keyPrefixesToDelete,
         (keyPrefixToDelete) =>
           !strStartsWith(key, keyPrefixToDelete) ||
-          ((promiseToSetOrDelStorage(promises, storage, key) as any) && false),
+          ((arrayPush(promises, storage.delete(key)) as any) && 0),
       ),
     );
   }
@@ -134,19 +187,6 @@ const constructStorageKey = (
   type: StorageKeyType,
   ...ids: Ids
 ) => construct(storagePrefix, type, slice(jsonString(ids), 1, -1));
-
-const promiseToSetOrDelStorage = (
-  promises: Promise<any>[],
-  storage: Storage,
-  key: string,
-  value?: string | number | boolean | null,
-) =>
-  arrayPush(
-    promises,
-    isUndefined(value)
-      ? storage.delete(key)
-      : storage.put<string | number | boolean>(key, value),
-  );
 
 const createResponse = async (
   that: TinyBasePartyKitServer,
@@ -197,9 +237,61 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
     );
   }
 
-  async onWillSaveTransactionChanges(
-    _transactionChanges: TransactionChanges,
+  canSetTable(
+    _tableId: Id,
     _initialSave: boolean,
     _requestOrConnection: Request | Connection,
-  ) {}
+  ): boolean {
+    return true;
+  }
+
+  canDelTable(_tableId: Id, _connection: Connection): boolean {
+    return true;
+  }
+
+  canSetRow(
+    _tableId: Id,
+    _rowId: Id,
+    _initialSave: boolean,
+    _requestOrConnection: Request | Connection,
+  ): boolean {
+    return true;
+  }
+
+  canDelRow(_tableId: Id, _rowId: Id, _connection: Connection): boolean {
+    return true;
+  }
+
+  canSetCell(
+    _tableId: Id,
+    _rowId: Id,
+    _cellId: Id,
+    _cell: Cell,
+    _initialSave: boolean,
+    _requestOrConnection: Request | Connection,
+  ): boolean {
+    return true;
+  }
+
+  canDelCell(
+    _tableId: Id,
+    _rowId: Id,
+    _cellId: Id,
+    _connection: Connection,
+  ): boolean {
+    return true;
+  }
+
+  canSetValue(
+    _valueId: Id,
+    _value: Value,
+    _initialSave: boolean,
+    _requestOrConnection: Request | Connection,
+  ): boolean {
+    return true;
+  }
+
+  canDelValue(_valueId: Id, _connection: Connection): boolean {
+    return true;
+  }
 }

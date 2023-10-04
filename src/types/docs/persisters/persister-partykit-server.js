@@ -186,55 +186,119 @@
    */
   /// TinyBasePartyKitServer.onRequest
   /**
-   * The onWillSaveTransactionChanges method is called when a set of changes to
-   * a Store (or whole Store) have been sent from a client to be saved on the
-   * server.
+   * The canSetTable method lets you allow or disallow any changes to a Table
+   * stored on the server, as sent from a client.
    *
-   * This is an appropriate place to sanitize the data that is being sent from a
-   * client. Perhaps you might want to make sure the client data adheres to a
-   * particular schema, or you might want to make certain Cells or Values
-   * read-only. Remember that in theory you cannot trust the client to only send
-   * data that the server considers valid or safe.
+   * This is one of the functions use to sanitize the data that is being sent
+   * from a client. Perhaps you might want to make sure the server-stored data
+   * adheres to a particular schema, or you might want to make certain data
+   * read-only. Remember that you cannot trust the client to only send data that
+   * the server considers valid or safe.
    *
-   * This method is passed a reference to a TransactionChanges type, which is a
-   * two-part array comprising the Tables and Values that the client is trying
-   * to set. You should directly manipulate these to make them safe before they
-   * are passed on to be saved in the durable storage.
-   *
-   * The `initialSave` parameter distinguishes between the first bulk save of
-   * the Store to the PartyKit room over HTTP (when it is true), and subsequent
-   * incremental updates over a web sockets (when it is false).
+   * This method is passed the Table Id that the client is trying to change. The
+   * `initialSave` parameter distinguishes between the first bulk save of the
+   * Store to the PartyKit room over HTTP (`true`), and subsequent incremental
+   * updates over a web sockets (`false`).
    *
    * The final `requestOrConnection` parameter will either be the HTTP(S)
    * request or the web socket connection, in those two cases respectively. You
    * can, for instance, use this to distinguish between different users.
    *
-   * For example, the following implementation will strip out any attempts by
-   * the client to set tabular data, and will allow only name and age values to
-   * be updated from the client after the initial save:
+   * Return `false` from this method to disallow changes to this Table on the
+   * server, or `true` to allow them (subject to subsequent canSetRow method,
+   * canDelRow method, canSetCell method, and canSetCell method checks). The
+   * default implementation returns `true` to allow all changes.
+   * @example
+   * The following implementation will strip out any attempts by the client to
+   * update any 'user' tabular data after the initial save:
    *
    * ```js
    * export default class extends TinyBasePartyServer {
-   *   async onWillSaveTransactionChanges(
-   *     [tables, values]: TransactionChanges,
-   *     initialSave: boolean,
-   *   ) {
-   *     Object.keys(tables).forEach((tableId) => delete tables[tableId]);
-   *     if (!initialSave) {
-   *       Object.keys(values).forEach((valueId) => {
-   *         switch (valueId) {
-   *           case 'name':
-   *           case 'age':
-   *             break;
-   *           case 'accessToken':
-   *           default:
-   *             delete values[valueId];
-   *         }
-   *       });
-   *     }
+   *   canSetTable(tableId, initialSave) {
+   *     return initialSave || tableId != 'user';
    *   }
    * }
    * ```
    */
-  /// TinyBasePartyKitServer.onWillSaveTransactionChanges
+  /// TinyBasePartyKitServer.canSetTable
+  /// TinyBasePartyKitServer.canDelTable
+  /**
+   * The canSetRow method lets you allow or disallow any changes to a Row stored
+   * on the server, as sent from a client.
+   *
+   * This is one of the functions use to sanitize the data that is being sent
+   * from a client. Perhaps you might want to make sure the server-stored data
+   * adheres to a particular schema, or you might want to make certain data
+   * read-only. Remember that you cannot trust the client to only send data that
+   * the server considers valid or safe.
+   *
+   * This method is passed the Table Id and Row Id that the client is trying to
+   * change. The `initialSave` parameter distinguishes between the first bulk
+   * save of the Store to the PartyKit room over HTTP (`true`), and subsequent
+   * incremental updates over a web sockets (`false`).
+   *
+   * The final `requestOrConnection` parameter will either be the HTTP(S)
+   * request or the web socket connection, in those two cases respectively. You
+   * can, for instance, use this to distinguish between different users.
+   *
+   * Return `false` from this method to disallow changes to this Row on the
+   * server, or `true` to allow them (subject to subsequent canSetCell method
+   * and canSetCell method checks). The default implementation returns `true` to
+   * allow all changes.
+   * @example
+   * The following implementation will strip out any attempts by the client to
+   * update the 'me' Row of the 'user' Table after the initial save:
+   *
+   * ```js
+   * export default class extends TinyBasePartyServer {
+   *   canSetRow(tableId, rowId, initialSave) {
+   *     return initialSave || tableId != 'user' || rowId != 'me';
+   *   }
+   * }
+   * ```
+   */
+  /// TinyBasePartyKitServer.canSetRow
+  /// TinyBasePartyKitServer.canDelRow
+  /**
+   * The canSetCell method lets you allow or disallow any changes to a Cell
+   * stored on the server, as sent from a client.
+   *
+   * This is one of the functions use to sanitize the data that is being sent
+   * from a client. Perhaps you might want to make sure the server-stored data
+   * adheres to a particular schema, or you might want to make certain data
+   * read-only. Remember that you cannot trust the client to only send data that
+   * the server considers valid or safe.
+   *
+   * This method is passed the Table Id, Row Id, and Cell Id that the client is
+   * trying to change - as well as the Cell value itself. The `initialSave`
+   * parameter distinguishes between the first bulk save of the Store to the
+   * PartyKit room over HTTP (`true`), and subsequent incremental updates over a
+   * web sockets (`false`).
+   *
+   * The final `requestOrConnection` parameter will either be the HTTP(S)
+   * request or the web socket connection, in those two cases respectively. You
+   * can, for instance, use this to distinguish between different users.
+   *
+   * Return `false` from this method to disallow changes to this Cell on the
+   * server, or `true` to allow them. The default implementation returns `true`
+   * to allow all changes.
+   * @example
+   * The following implementation will strip out any attempts by the client to
+   * update the 'id' Cell of the 'me' Row of the 'user' Table after the initial
+   * save:
+   *
+   * ```js
+   * export default class extends TinyBasePartyServer {
+   *   canSetRow(tableId, rowId, cellId, cell: Cell, initialSave) {
+   *     return (
+   *       initialSave || tableId != 'user' || rowId != 'me' || cellId != 'me'
+   *     );
+   *   }
+   * }
+   * ```
+   */
+  /// TinyBasePartyKitServer.canSetCell
+  /// TinyBasePartyKitServer.canDelCell
+  /// TinyBasePartyKitServer.canSetValue
+  /// TinyBasePartyKitServer.canDelValue
 }
