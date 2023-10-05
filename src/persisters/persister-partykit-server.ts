@@ -85,11 +85,13 @@ const saveStore = async (
   requestOrConnection: Request | Connection,
 ) => {
   const storage = that.party.storage;
-  const storagePrefix = that.config.storagePrefix ?? EMPTY_STRING;
-  const promises: Promise<any>[] = [
-    storage.put<1>(storagePrefix + HAS_STORE, 1),
-  ];
-  const keyPrefixesToDelete: string[] = [];
+  const prefix = that.config.storagePrefix ?? EMPTY_STRING;
+
+  const keysToSet: {[key: string]: Cell | Value} = {
+    [prefix + HAS_STORE]: 1,
+  };
+  const keysToDel: string[] = [];
+  const keyPrefixesToDel: string[] = [];
 
   await promiseAll(
     objMap(transactionChanges[0], async (table, tableId) =>
@@ -97,8 +99,8 @@ const saveStore = async (
         ? !initialSave &&
           that.canDelTable(tableId, requestOrConnection as Connection) &&
           arrayUnshift(
-            keyPrefixesToDelete,
-            constructStorageKey(storagePrefix, T, tableId),
+            keyPrefixesToDel,
+            constructStorageKey(prefix, T, tableId),
           )
         : that.canSetTable(tableId, initialSave, requestOrConnection) &&
           (await promiseAll(
@@ -111,8 +113,8 @@ const saveStore = async (
                     requestOrConnection as Connection,
                   ) &&
                   arrayPush(
-                    keyPrefixesToDelete,
-                    constructStorageKey(storagePrefix, T, tableId, rowId),
+                    keyPrefixesToDel,
+                    constructStorageKey(prefix, T, tableId, rowId),
                   )
                 : that.canSetRow(
                     tableId,
@@ -123,25 +125,21 @@ const saveStore = async (
                   (await promiseAll(
                     objMap(row, async (cell, cellId) => {
                       const ids: [Id, Id, Id] = [tableId, rowId, cellId];
-                      const key = constructStorageKey(storagePrefix, T, ...ids);
+                      const key = constructStorageKey(prefix, T, ...ids);
                       isUndefined(cell)
                         ? !initialSave &&
                           that.canDelCell(
                             ...ids,
                             requestOrConnection as Connection,
                           ) &&
-                          arrayPush(promises, storage.delete(key))
+                          arrayPush(keysToDel, key)
                         : that.canSetCell(
                             ...ids,
                             cell,
                             initialSave,
                             requestOrConnection,
                             await storage.get(key),
-                          ) &&
-                          arrayPush(
-                            promises,
-                            storage.put<string | number | boolean>(key, cell),
-                          );
+                          ) && (keysToSet[key] = cell);
                     }),
                   )),
             ),
@@ -151,32 +149,34 @@ const saveStore = async (
 
   await promiseAll(
     objMap(transactionChanges[1], async (value, valueId) => {
-      const key = storagePrefix + V + valueId;
+      const key = prefix + V + valueId;
       isUndefined(value)
         ? !initialSave &&
           that.canDelValue(valueId, requestOrConnection as Connection) &&
-          arrayPush(promises, storage.delete(key))
+          arrayPush(keysToDel, key)
         : that.canSetValue(
             valueId,
             value,
             initialSave,
             requestOrConnection,
             await storage.get(key),
-          ) && arrayPush(promises, storage.put(key, value));
+          ) && (keysToSet[key] = value);
     }),
   );
 
-  if (!arrayIsEmpty(keyPrefixesToDelete)) {
+  if (!arrayIsEmpty(keyPrefixesToDel)) {
     mapForEach(await storage.list<string | number | boolean>(), (key) =>
       arrayEvery(
-        keyPrefixesToDelete,
+        keyPrefixesToDel,
         (keyPrefixToDelete) =>
           !strStartsWith(key, keyPrefixToDelete) ||
-          ((arrayPush(promises, storage.delete(key)) as any) && 0),
+          ((arrayPush(keysToDel, key) as any) && 0),
       ),
     );
   }
-  await promiseAll(promises);
+
+  await storage.delete(keysToDel);
+  await storage.put(keysToSet);
 };
 
 const constructStorageKey = (
