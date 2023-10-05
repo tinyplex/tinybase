@@ -208,9 +208,13 @@
    * Store to the PartyKit room over HTTP (`true`), and subsequent incremental
    * updates over a web sockets (`false`).
    *
-   * The final `requestOrConnection` parameter will either be the HTTP(S)
-   * request or the web socket connection, in those two cases respectively. You
-   * can, for instance, use this to distinguish between different users.
+   * The `requestOrConnection` parameter will either be the HTTP(S) request or
+   * the web socket connection, in those two cases respectively. You can, for
+   * instance, use this to distinguish between different users.
+   *
+   * Since v4.3.13, the final parameter is the Cell previously stored on the
+   * server, if any. Use this to distinguish between the addition of a new Cell
+   * (in which case it will be undefined) and the updating of an existing one.
    *
    * Return `false` from this method to disallow changes to this Table on the
    * server, or `true` to allow them (subject to subsequent canSetRow method,
@@ -423,9 +427,13 @@
    * the first bulk save of the Store to the PartyKit room over HTTP (`true`),
    * and subsequent incremental updates over a web sockets (`false`).
    *
-   * The final `requestOrConnection` parameter will either be the HTTP(S)
-   * request or the web socket connection, in those two cases respectively. You
-   * can, for instance, use this to distinguish between different users.
+   * The `requestOrConnection` parameter will either be the HTTP(S) request or
+   * the web socket connection, in those two cases respectively. You can, for
+   * instance, use this to distinguish between different users.
+   *
+   * Since v4.3.13, the final parameter is the Value previously stored on the
+   * server, if any. Use this to distinguish between the addition of a new Value
+   * (in which case it will be undefined) and the updating of an existing one.
    *
    * Return `false` from this method to disallow changes to this Value on the
    * server, or `true` to allow them. The default implementation returns `true`

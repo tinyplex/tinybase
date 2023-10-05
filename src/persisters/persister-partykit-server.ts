@@ -1,9 +1,11 @@
 import {
   Cell,
+  CellOrUndefined,
   Row,
   Tables,
   TransactionChanges,
   Value,
+  ValueOrUndefined,
   Values,
 } from '../types/store';
 import {Connection, Party, Request} from 'partykit/server';
@@ -89,86 +91,81 @@ const saveStore = async (
   ];
   const keyPrefixesToDelete: string[] = [];
 
-  objMap(transactionChanges[0], (table, tableId) =>
-    isUndefined(table)
-      ? !initialSave &&
-        that.canDelTable(tableId, requestOrConnection as Connection) &&
-        arrayUnshift(
-          keyPrefixesToDelete,
-          constructStorageKey(storagePrefix, T, tableId),
-        )
-      : that.canSetTable(tableId, initialSave, requestOrConnection) &&
-        objMap(table, (row, rowId) =>
-          isUndefined(row)
-            ? !initialSave &&
-              that.canDelRow(
-                tableId,
-                rowId,
-                requestOrConnection as Connection,
-              ) &&
-              arrayPush(
-                keyPrefixesToDelete,
-                constructStorageKey(storagePrefix, T, tableId, rowId),
-              )
-            : that.canSetRow(
-                tableId,
-                rowId,
-                initialSave,
-                requestOrConnection,
-              ) &&
-              objMap(row, (cell, cellId) =>
-                isUndefined(cell)
-                  ? !initialSave &&
-                    that.canDelCell(
-                      tableId,
-                      rowId,
-                      cellId,
-                      requestOrConnection as Connection,
-                    ) &&
-                    arrayPush(
-                      promises,
-                      storage.delete(
-                        constructStorageKey(
-                          storagePrefix,
-                          T,
-                          tableId,
-                          rowId,
-                          cellId,
-                        ),
-                      ),
-                    )
-                  : that.canSetCell(
-                      tableId,
-                      rowId,
-                      cellId,
-                      cell,
-                      initialSave,
-                      requestOrConnection,
-                    ) &&
-                    arrayPush(
-                      promises,
-                      storage.put<string | number | boolean>(
-                        constructStorageKey(
-                          storagePrefix,
-                          T,
-                          tableId,
-                          rowId,
-                          cellId,
-                        ),
-                        cell,
-                      ),
-                    ),
-              ),
-        ),
+  await promiseAll(
+    objMap(transactionChanges[0], async (table, tableId) =>
+      isUndefined(table)
+        ? !initialSave &&
+          that.canDelTable(tableId, requestOrConnection as Connection) &&
+          arrayUnshift(
+            keyPrefixesToDelete,
+            constructStorageKey(storagePrefix, T, tableId),
+          )
+        : that.canSetTable(tableId, initialSave, requestOrConnection) &&
+          (await promiseAll(
+            objMap(table, async (row, rowId) =>
+              isUndefined(row)
+                ? !initialSave &&
+                  that.canDelRow(
+                    tableId,
+                    rowId,
+                    requestOrConnection as Connection,
+                  ) &&
+                  arrayPush(
+                    keyPrefixesToDelete,
+                    constructStorageKey(storagePrefix, T, tableId, rowId),
+                  )
+                : that.canSetRow(
+                    tableId,
+                    rowId,
+                    initialSave,
+                    requestOrConnection,
+                  ) &&
+                  (await promiseAll(
+                    objMap(row, async (cell, cellId) => {
+                      const ids: [Id, Id, Id] = [tableId, rowId, cellId];
+                      const key = constructStorageKey(storagePrefix, T, ...ids);
+                      isUndefined(cell)
+                        ? !initialSave &&
+                          that.canDelCell(
+                            ...ids,
+                            requestOrConnection as Connection,
+                          ) &&
+                          arrayPush(promises, storage.delete(key))
+                        : that.canSetCell(
+                            ...ids,
+                            cell,
+                            initialSave,
+                            requestOrConnection,
+                            await storage.get(key),
+                          ) &&
+                          arrayPush(
+                            promises,
+                            storage.put<string | number | boolean>(key, cell),
+                          );
+                    }),
+                  )),
+            ),
+          )),
+    ),
   );
-  objMap(transactionChanges[1], (value, valueId) =>
-    isUndefined(value)
-      ? !initialSave &&
-        that.canDelValue(valueId, requestOrConnection as Connection) &&
-        arrayPush(promises, storage.delete(storagePrefix + V + valueId))
-      : that.canSetValue(valueId, value, initialSave, requestOrConnection) &&
-        arrayPush(promises, storage.put(storagePrefix + V + valueId, value)),
+
+  await promiseAll(
+    objMap(transactionChanges[1], async (value, valueId) => {
+      const key = storagePrefix + V + valueId;
+      isUndefined(value)
+        ? !initialSave &&
+          that.canDelValue(valueId, requestOrConnection as Connection) &&
+          arrayPush(promises, storage.delete(key))
+        : that.canSetValue(
+            valueId,
+            value,
+            initialSave,
+            requestOrConnection,
+            await storage.get(key),
+          ) && arrayPush(promises, storage.put(key, value));
+    }),
   );
+
   if (!arrayIsEmpty(keyPrefixesToDelete)) {
     mapForEach(await storage.list<string | number | boolean>(), (key) =>
       arrayEvery(
@@ -269,6 +266,7 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
     _cell: Cell,
     _initialSave: boolean,
     _requestOrConnection: Request | Connection,
+    _oldCell: CellOrUndefined,
   ): boolean {
     return true;
   }
@@ -287,6 +285,7 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
     _value: Value,
     _initialSave: boolean,
     _requestOrConnection: Request | Connection,
+    _oldValue: ValueOrUndefined,
   ): boolean {
     return true;
   }

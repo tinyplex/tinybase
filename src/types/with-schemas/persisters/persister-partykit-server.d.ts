@@ -1,6 +1,13 @@
 /// persister-partykit-server
 
-import {Cell, NoTablesSchema, NoValuesSchema, Value} from '../store';
+import {
+  Cell,
+  CellOrUndefined,
+  NoTablesSchema,
+  NoValuesSchema,
+  Value,
+  ValueOrUndefined,
+} from '../store';
 import {Connection, Party, Request, Server} from 'partykit/server';
 import {Id} from '../common';
 
@@ -50,6 +57,7 @@ export class TinyBasePartyKitServer implements Server {
     cell: Cell<NoTablesSchema, Id, Id>,
     initialSave: boolean,
     requestOrConnection: Request | Connection,
+    oldCell: CellOrUndefined<NoTablesSchema, Id, Id>,
   ): boolean;
   /// TinyBasePartyKitServer.canDelCell
   canDelCell(
@@ -64,6 +72,7 @@ export class TinyBasePartyKitServer implements Server {
     value: Value<NoValuesSchema, Id>,
     initialSave: boolean,
     requestOrConnection: Request | Connection,
+    oldValue: ValueOrUndefined<NoValuesSchema, Id>,
   ): boolean;
   /// TinyBasePartyKitServer.canDelValue
   canDelValue(valueId: Id, connection: Connection): boolean;
