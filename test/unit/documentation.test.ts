@@ -9,6 +9,8 @@ import * as TinyBasePersisterBrowser from 'tinybase/debug/persisters/persister-b
 import * as TinyBasePersisterCrSqliteWasm from 'tinybase/debug/persisters/persister-cr-sqlite-wasm';
 import * as TinyBasePersisterFile from 'tinybase/debug/persisters/persister-file';
 import * as TinyBasePersisterIndexedDb from 'tinybase/debug/persisters/persister-indexed-db';
+import * as TinyBasePersisterPartyKitClient from 'tinybase/debug/persisters/persister-partykit-client';
+import * as TinyBasePersisterPartyKitServer from 'tinybase/debug/persisters/persister-partykit-server';
 import * as TinyBasePersisterRemote from 'tinybase/debug/persisters/persister-remote';
 import * as TinyBasePersisterSqlite3 from 'tinybase/debug/persisters/persister-sqlite3';
 import * as TinyBasePersisterSqliteWasm from 'tinybase/debug/persisters/persister-sqlite-wasm';
@@ -37,6 +39,8 @@ import {transformSync} from 'esbuild';
   TinyBasePersisterSqlite3,
   TinyBasePersisterSqliteWasm,
   TinyBasePersisterCrSqliteWasm,
+  TinyBasePersisterPartyKitServer,
+  TinyBasePersisterPartyKitClient,
   TinyBaseTools,
   TinyBaseUiReact,
   TinyBaseUiReactDom,

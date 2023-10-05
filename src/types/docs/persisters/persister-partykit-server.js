@@ -36,8 +36,8 @@
  * 'tinybase_' in case you are worried about colliding with other data stored
  * in the room.
  *
- * ```js yolo
- * export default class extends TinyBasePartyServer {
+ * ```js
+ * class MyServer extends TinyBasePartyKitServer {
  *   readonly config: TinyBasePartyKitServerConfig = {
  *     storePath: '/my_tinybase',
  *     storagePrefix: 'tinybase_',
@@ -105,7 +105,7 @@
  * ```js
  * // This is your PartyKit server entry point.
  *
- * export default class extends TinyBasePartyServer {
+ * class MyServer extends TinyBasePartyKitServer {
  *   constructor(party) {
  *     super(party);
  *     // custom constructor code
@@ -131,6 +131,8 @@
  * See the [PartyKit server API
  * documentation](https://docs.partykit.io/reference/partyserver-api/) for
  * more details.
+ * @category Creation
+ * @since v4.3.0
  */
 /// TinyBasePartyKitServer
 {
@@ -139,6 +141,8 @@
    * object of the TinyBasePartyKitServerConfig type.
    *
    * See the documentation for that type for more details.
+   * @category Configuration
+   * @since v4.3.9
    */
   /// TinyBasePartyKitServer.config
   /**
@@ -150,7 +154,7 @@
    * synchronization stays supported:
    *
    * ```js
-   * export default class extends TinyBasePartyServer {
+   * class MyServer extends TinyBasePartyKitServer {
    *   async onMessage(message, client) {
    *     await super.onMessage(message, client);
    *     // custom onMessage code
@@ -161,6 +165,8 @@
    * See the [PartyKit server API
    * documentation](https://docs.partykit.io/reference/partyserver-api/) for
    * more details.
+   * @category Connection
+   * @since v4.3.0
    */
   /// TinyBasePartyKitServer.onMessage
   /**
@@ -172,7 +178,7 @@
    * synchronization stays supported:
    *
    * ```js
-   * export default class extends TinyBasePartyServer {
+   * class MyServer extends TinyBasePartyKitServer {
    *   async onRequest(request) {
    *     // custom onRequest code, else:
    *     return await super.onRequest(request);
@@ -183,6 +189,8 @@
    * See the [PartyKit server API
    * documentation](https://docs.partykit.io/reference/partyserver-api/) for
    * more details.
+   * @category Connection
+   * @since v4.3.0
    */
   /// TinyBasePartyKitServer.onRequest
   /**
@@ -213,14 +221,47 @@
    * update any 'user' tabular data after the initial save:
    *
    * ```js
-   * export default class extends TinyBasePartyServer {
+   * class MyServer extends TinyBasePartyKitServer {
    *   canSetTable(tableId, initialSave) {
    *     return initialSave || tableId != 'user';
    *   }
    * }
    * ```
+   * @category Sanitization
+   * @since v4.3.12
    */
   /// TinyBasePartyKitServer.canSetTable
+  /**
+   * The canDelTable method lets you allow or disallow deletions of a Table
+   * stored on the server, as sent from a client.
+   *
+   * This is one of the functions use to sanitize the data that is being sent
+   * from a client. Perhaps you might want to make sure the server-stored data
+   * adheres to a particular schema, or you might want to make certain data
+   * read-only. Remember that you cannot trust the client to only send data that
+   * the server considers valid or safe.
+   *
+   * This method is passed the Table Id that the client is trying to delete. The
+   * `connection` parameter will be the web socket connection of that client.
+   * You can, for instance, use this to distinguish between different users.
+   *
+   * Return `false` from this method to disallow this Table from being deleted
+   * on the server, or `true` to allow it. The default implementation returns
+   * `true` to allow deletion.
+   * @example
+   * The following implementation will strip out any attempts by the client to
+   * delete the 'user' Table:
+   *
+   * ```js
+   * class MyServer extends TinyBasePartyKitServer {
+   *   canDelTable(tableId) {
+   *     return tableId != 'user';
+   *   }
+   * }
+   * ```
+   * @category Sanitization
+   * @since v4.3.12
+   */
   /// TinyBasePartyKitServer.canDelTable
   /**
    * The canSetRow method lets you allow or disallow any changes to a Row stored
@@ -250,14 +291,48 @@
    * update the 'me' Row of the 'user' Table after the initial save:
    *
    * ```js
-   * export default class extends TinyBasePartyServer {
+   * class MyServer extends TinyBasePartyKitServer {
    *   canSetRow(tableId, rowId, initialSave) {
    *     return initialSave || tableId != 'user' || rowId != 'me';
    *   }
    * }
    * ```
+   * @category Sanitization
+   * @since v4.3.12
    */
   /// TinyBasePartyKitServer.canSetRow
+  /**
+   * The canDelRow method lets you allow or disallow deletions of a Row stored
+   * on the server, as sent from a client.
+   *
+   * This is one of the functions use to sanitize the data that is being sent
+   * from a client. Perhaps you might want to make sure the server-stored data
+   * adheres to a particular schema, or you might want to make certain data
+   * read-only. Remember that you cannot trust the client to only send data that
+   * the server considers valid or safe.
+   *
+   * This method is passed the Table Id and Row Id that the client is trying to
+   * delete. The `connection` parameter will be the web socket connection of
+   * that client. You can, for instance, use this to distinguish between
+   * different users.
+   *
+   * Return `false` from this method to disallow this Row from being deleted
+   * on the server, or `true` to allow it. The default implementation returns
+   * `true` to allow deletion.
+   * @example
+   * The following implementation will strip out any attempts by the client to
+   * delete the 'me' Row of the 'user' Table:
+   *
+   * ```js
+   * class MyServer extends TinyBasePartyKitServer {
+   *   canDelRow(tableId, rowId) {
+   *     return tableId != 'user' || rowId != 'me';
+   *   }
+   * }
+   * ```
+   * @category Sanitization
+   * @since v4.3.12
+   */
   /// TinyBasePartyKitServer.canDelRow
   /**
    * The canSetCell method lets you allow or disallow any changes to a Cell
@@ -284,21 +359,122 @@
    * to allow all changes.
    * @example
    * The following implementation will strip out any attempts by the client to
-   * update the 'id' Cell of the 'me' Row of the 'user' Table after the initial
-   * save:
+   * update the 'name' Cell of the 'me' Row of the 'user' Table after the
+   * initial save:
    *
    * ```js
-   * export default class extends TinyBasePartyServer {
-   *   canSetRow(tableId, rowId, cellId, cell: Cell, initialSave) {
+   * class MyServer extends TinyBasePartyKitServer {
+   *   canSetCell(tableId, rowId, cellId, cell, initialSave) {
    *     return (
-   *       initialSave || tableId != 'user' || rowId != 'me' || cellId != 'me'
+   *       initialSave || tableId != 'user' || rowId != 'me' || cellId != 'name'
    *     );
    *   }
    * }
    * ```
+   * @category Sanitization
+   * @since v4.3.12
    */
   /// TinyBasePartyKitServer.canSetCell
+  /**
+   * The canDelCell method lets you allow or disallow deletions of a Cell stored
+   * on the server, as sent from a client.
+   *
+   * This is one of the functions use to sanitize the data that is being sent
+   * from a client. Perhaps you might want to make sure the server-stored data
+   * adheres to a particular schema, or you might want to make certain data
+   * read-only. Remember that you cannot trust the client to only send data that
+   * the server considers valid or safe.
+   *
+   * This method is passed the Table Id, Row Id, and Cell Id that the client is
+   * trying to delete. The `connection` parameter will be the web socket
+   * connection of that client. You can, for instance, use this to distinguish
+   * between different users.
+   *
+   * Return `false` from this method to disallow this Cell from being deleted on
+   * the server, or `true` to allow it. The default implementation returns
+   * `true` to allow deletion.
+   * @example
+   * The following implementation will strip out any attempts by the client to
+   * delete the 'name' Cell of the 'me' Row of the 'user' Table:
+   *
+   * ```js
+   * class MyServer extends TinyBasePartyKitServer {
+   *   canDelCell(tableId, rowId, cellId) {
+   *     return tableId != 'user' || rowId != 'me' || cellId != 'name';
+   *   }
+   * }
+   * ```
+   * @category Sanitization
+   * @since v4.3.12
+   */
   /// TinyBasePartyKitServer.canDelCell
+  /**
+   * The canSetValue method lets you allow or disallow any changes to a Value
+   * stored on the server, as sent from a client.
+   *
+   * This is one of the functions use to sanitize the data that is being sent
+   * from a client. Perhaps you might want to make sure the server-stored data
+   * adheres to a particular schema, or you might want to make certain data
+   * read-only. Remember that you cannot trust the client to only send data that
+   * the server considers valid or safe.
+   *
+   * This method is passed the Value Id that the client is trying to change - as
+   * well as the Value itself. The `initialSave` parameter distinguishes between
+   * the first bulk save of the Store to the PartyKit room over HTTP (`true`),
+   * and subsequent incremental updates over a web sockets (`false`).
+   *
+   * The final `requestOrConnection` parameter will either be the HTTP(S)
+   * request or the web socket connection, in those two cases respectively. You
+   * can, for instance, use this to distinguish between different users.
+   *
+   * Return `false` from this method to disallow changes to this Value on the
+   * server, or `true` to allow them. The default implementation returns `true`
+   * to allow all changes.
+   * @example
+   * The following implementation will strip out any attempts by the client to
+   * update the 'userId' Value after the initial save:
+   *
+   * ```js
+   * class MyServer extends TinyBasePartyKitServer {
+   *   canSetValue(valueId, value, initialSave) {
+   *     return initialSave || userId != 'userId';
+   *   }
+   * }
+   * ```
+   * @category Sanitization
+   * @since v4.3.12
+   */
   /// TinyBasePartyKitServer.canSetValue
+  /**
+   * The canDelValue method lets you allow or disallow deletions of a Value
+   * stored on the server, as sent from a client.
+   *
+   * This is one of the functions use to sanitize the data that is being sent
+   * from a client. Perhaps you might want to make sure the server-stored data
+   * adheres to a particular schema, or you might want to make certain data
+   * read-only. Remember that you cannot trust the client to only send data that
+   * the server considers valid or safe.
+   *
+   * This method is passed the Value Id that the client is trying to delete. The
+   * `connection` parameter will be the web socket connection of that client.
+   * You can, for instance, use this to distinguish between different users.
+   *
+   * Return `false` from this method to disallow this Value from being deleted
+   * on the server, or `true` to allow it. The default implementation returns
+   * `true` to allow deletion.
+   * @example
+   * The following implementation will strip out any attempts by the client to
+   * delete the 'userId' Value:
+   *
+   * ```js
+   * class MyServer extends TinyBasePartyKitServer {
+   *   canDelValue(valueId) {
+   *     return valueId != 'userId';
+   *   }
+   * }
+   * ```
+   * @category Sanitization
+   * @since v4.3.12
+   */
   /// TinyBasePartyKitServer.canDelValue
 }

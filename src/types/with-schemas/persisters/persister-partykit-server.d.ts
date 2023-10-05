@@ -32,7 +32,7 @@ export class TinyBasePartyKitServer implements Server {
     requestOrConnection: Request | Connection,
   ): boolean;
   /// TinyBasePartyKitServer.canDelTable
-  canDelTable(tableId: Id, requestOrConnection: Request | Connection): boolean;
+  canDelTable(tableId: Id, connection: Connection): boolean;
   /// TinyBasePartyKitServer.canSetRow
   canSetRow(
     tableId: Id,
@@ -41,11 +41,7 @@ export class TinyBasePartyKitServer implements Server {
     requestOrConnection: Request | Connection,
   ): boolean;
   /// TinyBasePartyKitServer.canDelRow
-  canDelRow(
-    tableId: Id,
-    rowId: Id,
-    requestOrConnection: Request | Connection,
-  ): boolean;
+  canDelRow(tableId: Id, rowId: Id, connection: Connection): boolean;
   /// TinyBasePartyKitServer.canSetCell
   canSetCell(
     tableId: Id,
@@ -60,7 +56,7 @@ export class TinyBasePartyKitServer implements Server {
     tableId: Id,
     rowId: Id,
     cellId: Id,
-    requestOrConnection: Request | Connection,
+    connection: Connection,
   ): boolean;
   /// TinyBasePartyKitServer.canSetValue
   canSetValue(
@@ -70,5 +66,5 @@ export class TinyBasePartyKitServer implements Server {
     requestOrConnection: Request | Connection,
   ): boolean;
   /// TinyBasePartyKitServer.canDelValue
-  canDelValue(valueId: Id, requestOrConnection: Request | Connection): boolean;
+  canDelValue(valueId: Id, connection: Connection): boolean;
 }
