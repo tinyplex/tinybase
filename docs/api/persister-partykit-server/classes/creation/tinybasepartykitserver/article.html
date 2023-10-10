@@ -11,8 +11,8 @@
     console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span><span class="string">'Server started'</span><span class="punctuation">)</span><span class="punctuation">;</span>
   <span class="punctuation">}</span>
 
-  <span class="keyword">async</span> <span class="function"><a href="/api/persister-partykit-server/classes/creation/tinybasepartykitserver/methods/connection/onmessage/">onMessage</a></span><span class="punctuation">(</span><span class="parameter">message<span class="punctuation">,</span> client</span><span class="punctuation">)</span> <span class="punctuation">{</span>
-    <span class="keyword">await</span> <span class="keyword">super</span><span class="punctuation">.</span><span class="function"><a href="/api/persister-partykit-server/classes/creation/tinybasepartykitserver/methods/connection/onmessage/">onMessage</a></span><span class="punctuation">(</span>message<span class="punctuation">,</span> client<span class="punctuation">)</span><span class="punctuation">;</span>
+  <span class="keyword">async</span> <span class="function"><a href="/api/persister-partykit-server/classes/creation/tinybasepartykitserver/methods/connection/onmessage/">onMessage</a></span><span class="punctuation">(</span><span class="parameter">message<span class="punctuation">,</span> connection</span><span class="punctuation">)</span> <span class="punctuation">{</span>
+    <span class="keyword">await</span> <span class="keyword">super</span><span class="punctuation">.</span><span class="function"><a href="/api/persister-partykit-server/classes/creation/tinybasepartykitserver/methods/connection/onmessage/">onMessage</a></span><span class="punctuation">(</span>message<span class="punctuation">,</span> connection<span class="punctuation">)</span><span class="punctuation">;</span>
     <span class="comment">// custom onMessage code</span>
   <span class="punctuation">}</span>
 
