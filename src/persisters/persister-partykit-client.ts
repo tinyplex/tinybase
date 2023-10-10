@@ -42,7 +42,7 @@ export const createPartyKitPersister = ((
     '://' +
     host +
     '/parties/' +
-    ((connection as any).name ?? 'main') +
+    connection.name +
     '/' +
     room +
     storePath;
