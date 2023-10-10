@@ -38,7 +38,7 @@
  *
  * ```js
  * class MyServer extends TinyBasePartyKitServer {
- *   readonly config: TinyBasePartyKitServerConfig = {
+ *   readonly config = {
  *     storePath: '/my_tinybase',
  *     storagePrefix: 'tinybase_',
  *   };
@@ -116,8 +116,8 @@
  *     console.log('Server started');
  *   }
  *
- *   async onMessage(message, client) {
- *     await super.onMessage(message, client);
+ *   async onMessage(message, connection) {
+ *     await super.onMessage(message, connection);
  *     // custom onMessage code
  *   }
  *
@@ -155,8 +155,8 @@
    *
    * ```js
    * class MyServer extends TinyBasePartyKitServer {
-   *   async onMessage(message, client) {
-   *     await super.onMessage(message, client);
+   *   async onMessage(message, connection) {
+   *     await super.onMessage(message, connection);
    *     // custom onMessage code
    *   }
    * }

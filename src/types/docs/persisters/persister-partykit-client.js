@@ -35,7 +35,7 @@
  * to the TinyBasePartyKitServerConfig on the server side.
  *
  * ```js
- * const partyKitPersisterConfig: PartyKitPersisterConfig = {
+ * const partyKitPersisterConfig = {
  *   storeProtocol: 'http',
  *   storePath: '/my_tinybase',
  * };

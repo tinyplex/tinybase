@@ -24,7 +24,7 @@ export class TinyBasePartyKitServer implements Server {
   /// TinyBasePartyKitServer.onRequest
   onRequest(request: Request): Promise<Response>;
   /// TinyBasePartyKitServer.onMessage
-  onMessage(message: string, client: Connection): Promise<void>;
+  onMessage(message: string, connection: Connection): Promise<void>;
   /// TinyBasePartyKitServer.canSetTable
   canSetTable(
     tableId: Id,
