@@ -1,9 +1,11 @@
-import {Persister, PersisterListener} from '../types/persisters';
-import {Store, Tables, Values} from '../types/store';
 import {
+  LocalPersister,
+  SessionPersister,
   createLocalPersister as createLocalPersisterDecl,
   createSessionPersister as createSessionPersisterDecl,
 } from '../types/persisters/persister-browser';
+import {Persister, PersisterListener} from '../types/persisters';
+import {Store, Tables, Values} from '../types/store';
 import {jsonParse, jsonString} from '../common/json';
 import {createCustomPersister} from '../persisters';
 
@@ -54,22 +56,22 @@ export const createLocalPersister = ((
   store: Store,
   storageName: string,
   onIgnoredError?: (error: any) => void,
-): Persister =>
+): LocalPersister =>
   createStoragePersister(
     store,
     storageName,
     localStorage,
     onIgnoredError,
-  )) as typeof createLocalPersisterDecl;
+  ) as LocalPersister) as typeof createLocalPersisterDecl;
 
 export const createSessionPersister = ((
   store: Store,
   storageName: string,
   onIgnoredError?: (error: any) => void,
-): Persister =>
+): SessionPersister =>
   createStoragePersister(
     store,
     storageName,
     sessionStorage,
     onIgnoredError,
-  )) as typeof createSessionPersisterDecl;
+  ) as SessionPersister) as typeof createSessionPersisterDecl;

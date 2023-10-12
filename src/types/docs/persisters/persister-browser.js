@@ -15,6 +15,69 @@
  */
 /// persister-browser
 /**
+ * The SessionPersister interface is a minor extension to the Persister
+ * interface.
+ *
+ * It simply provides an extra getStorageName method for accessing the unique
+ * key of the storage location the Store is being persisted to.
+ * @since v4.3.14
+ */
+/// SessionPersister
+{
+  /**
+   * The getStorageName method returns the unique key of the storage location
+   * the Store is being persisted to.
+   * @returns The unique key of the storage location.
+   * @example
+   * This example creates a Persister object against a newly-created Store and
+   * then gets the unique key of the storage location back out again.
+   *
+   * ```js
+   * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+   * const persister = createSessionPersister(store, 'pets');
+   *
+   * console.log(persister.getStorageName());
+   * // -> 'pets'
+   *
+   * persister.destroy();
+   * ```
+   * @category Getter
+   * @since v4.3.14
+   */
+  /// SessionPersister.getStorageName
+}
+/**
+ * The LocalPersister interface is a minor extension to the Persister interface.
+ *
+ * It simply provides an extra getStorageName method for accessing the unique
+ * key of the storage location the Store is being persisted to.
+ * @since v4.3.14
+ */
+/// LocalPersister
+{
+  /**
+   * The getStorageName method returns the unique key of the storage location
+   * the Store is being persisted to.
+   * @returns The unique key of the storage location.
+   * @example
+   * This example creates a Persister object against a newly-created Store and
+   * then gets the unique key of the storage location back out again.
+   *
+   * ```js
+   * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+   * const persister = createLocalPersister(store, 'pets');
+   *
+   * console.log(persister.getStorageName());
+   * // -> 'pets'
+   *
+   * persister.destroy();
+   * ```
+   * @category Getter
+   * @since v4.3.14
+   */
+  /// LocalPersister.getStorageName
+}
+/**
  * The createSessionPersister function creates a Persister object that can
  * persist the Store to the browser's session storage.
  *
@@ -26,9 +89,9 @@
  * @param onIgnoredError An optional handler for the errors that the Persister
  * would otherwise ignore when trying to save or load data. This is suitable for
  * debugging persistence issues in a development environment, since v4.0.4.
- * @returns A reference to the new Persister object.
+ * @returns A reference to the new SessionPersister object.
  * @example
- * This example creates a Persister object and persists the Store to the
+ * This example creates a SessionPersister object and persists the Store to the
  * browser's session storage.
  *
  * ```js
@@ -46,8 +109,8 @@
  */
 /// createSessionPersister
 /**
- * The createLocalPersister function creates a Persister object that can
- * persist the Store to the browser's local storage.
+ * The createLocalPersister function creates a Persister object that can persist
+ * the Store to the browser's local storage.
  *
  * As well as providing a reference to the Store to persist, you must provide a
  * `storageName` parameter which is unique to your application. This is the key
@@ -57,9 +120,9 @@
  * @param onIgnoredError An optional handler for the errors that the Persister
  * would otherwise ignore when trying to save or load data. This is suitable for
  * debugging persistence issues in a development environment, since v4.0.4.
- * @returns A reference to the new Persister object.
+ * @returns A reference to the new LocalPersister object.
  * @example
- * This example creates a Persister object and persists the Store to the
+ * This example creates a LocalPersister object and persists the Store to the
  * browser's local storage.
  *
  * ```js
