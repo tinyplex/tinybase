@@ -1,9 +1,12 @@
-import {DatabasePersisterConfig, Persister} from '../types/persisters';
+import {
+  ExpoSqlitePersister,
+  createExpoSqlitePersister as createExpoSqlitePersisterDecl,
+} from '../types/persisters/persister-expo-sqlite';
 import {ResultSet, SQLiteDatabase} from 'expo-sqlite';
 import {UpdateListener, createSqlitePersister} from './sqlite/create';
+import {DatabasePersisterConfig} from '../types/persisters';
 import {IdObj} from '../common/obj';
 import {Store} from '../types/store';
-import {createExpoSqlitePersister as createExpoSqlitePersisterDecl} from '../types/persisters/persister-expo-sqlite';
 
 type Subscription = {remove: () => void};
 
@@ -13,7 +16,7 @@ export const createExpoSqlitePersister = ((
   configOrStoreTableName?: DatabasePersisterConfig | string,
   onSqlCommand?: (sql: string, args?: any[]) => void,
   onIgnoredError?: (error: any) => void,
-): Persister =>
+): ExpoSqlitePersister =>
   createSqlitePersister(
     store,
     configOrStoreTableName,
@@ -25,4 +28,4 @@ export const createExpoSqlitePersister = ((
     onSqlCommand,
     onIgnoredError,
     db,
-  )) as typeof createExpoSqlitePersisterDecl;
+  ) as ExpoSqlitePersister) as typeof createExpoSqlitePersisterDecl;

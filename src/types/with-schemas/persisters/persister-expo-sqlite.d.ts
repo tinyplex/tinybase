@@ -4,6 +4,13 @@ import {DatabasePersisterConfig, Persister} from '../persisters';
 import {OptionalSchemas, Store} from '../store';
 import {SQLiteDatabase} from 'expo-sqlite';
 
+/// ExpoSqlitePersister
+export interface ExpoSqlitePersister<Schemas extends OptionalSchemas>
+  extends Persister<Schemas> {
+  /// ExpoSqlitePersister.getDb
+  getDb: () => SQLiteDatabase;
+}
+
 /// createExpoSqlitePersister
 export function createExpoSqlitePersister<Schemas extends OptionalSchemas>(
   store: Store<Schemas>,
@@ -11,4 +18,4 @@ export function createExpoSqlitePersister<Schemas extends OptionalSchemas>(
   configOrStoreTableName?: DatabasePersisterConfig<Schemas> | string,
   onSqlCommand?: (sql: string, args?: any[]) => void,
   onIgnoredError?: (error: any) => void,
-): Persister<Schemas>;
+): ExpoSqlitePersister<Schemas>;
