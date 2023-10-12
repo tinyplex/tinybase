@@ -7,6 +7,38 @@
  */
 /// persister-indexed-db
 /**
+ * The IndexedDbPersister interface is a minor extension to the Persister
+ * interface.
+ *
+ * It simply provides an extra getDbName method for accessing the unique key of
+ * the IndexedDB the Store is being persisted to.
+ * @since v4.3.14
+ */
+/// IndexedDbPersister
+{
+  /**
+   * The getDbName method returns the unique key of the IndexedDB the Store is
+   * being persisted to.
+   * @returns The unique key of the IndexedDB.
+   * @example
+   * This example creates a Persister object against a newly-created Store and
+   * then gets the unique key of the IndexedDB back out again.
+   *
+   * ```js
+   * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+   * const persister = createIndexedDbPersister(store, 'petStore');
+   *
+   * console.log(persister.getDbName());
+   * // -> 'petStore'
+   *
+   * persister.destroy();
+   * ```
+   * @category Getter
+   * @since v4.3.14
+   */
+  /// IndexedDbPersister.getDbName
+}
+/**
  * The createIndexedDbPersister function creates a Persister object that can
  * persist the Store to the browser's IndexedDB storage.
  *
@@ -31,10 +63,10 @@
  * @param onIgnoredError An optional handler for the errors that the Persister
  * would otherwise ignore when trying to save or load data. This is suitable for
  * debugging persistence issues in a development environment.
- * @returns A reference to the new Persister object.
+ * @returns A reference to the new IndexedDbPersister object.
  * @example
- * This example creates a Persister object and persists the Store to the
- * browser's IndexedDB storage.
+ * This example creates a IndexedDbPersister object and persists the Store to
+ * the browser's IndexedDB storage.
  *
  * ```js
  * const store = createStore()

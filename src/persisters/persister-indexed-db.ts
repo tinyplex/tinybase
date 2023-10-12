@@ -1,5 +1,8 @@
 import {IdObj, objHas, objMap, objNew} from '../common/obj';
-import {Persister, PersisterListener} from '../types/persisters';
+import {
+  IndexedDbPersister,
+  createIndexedDbPersister as createIndexedDbPersisterDecl,
+} from '../types/persisters/persister-indexed-db';
 import {Store, Table, Tables, Values} from '../types/store';
 import {T, V} from '../common/strings';
 import {arrayMap, arrayPush} from '../common/array';
@@ -10,8 +13,8 @@ import {
   stopInterval,
 } from '../common/other';
 import {Id} from '../types/common';
+import {PersisterListener} from '../types/persisters';
 import {createCustomPersister} from '../persisters';
-import {createIndexedDbPersister as createIndexedDbPersisterDecl} from '../types/persisters/persister-indexed-db';
 
 const WINDOW = globalThis.window;
 const OBJECT_STORE_NAMES = [T, V];
@@ -48,7 +51,7 @@ export const createIndexedDbPersister = ((
   dbName: string,
   autoLoadIntervalSeconds = 1,
   onIgnoredError?: (error: any) => void,
-): Persister => {
+): IndexedDbPersister => {
   const forObjectStores = async (
     forObjectStore: (objectStore: IDBObjectStore, arg: any) => Promise<any>,
     args: any[] = [],
@@ -122,5 +125,5 @@ export const createIndexedDbPersister = ((
     delPersisterListener,
     onIgnoredError,
     ['getDbName', dbName],
-  );
+  ) as IndexedDbPersister;
 }) as typeof createIndexedDbPersisterDecl;
