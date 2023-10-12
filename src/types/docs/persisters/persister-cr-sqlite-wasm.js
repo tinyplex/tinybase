@@ -9,6 +9,40 @@
  */
 /// persister-cr-sqlite-wasm
 /**
+ * The CrSqliteWasmPersister interface is a minor extension to the Persister
+ * interface.
+ *
+ * It simply provides an extra getDb method for accessing a reference to the
+ * database instance the Store is being persisted to.
+ * @since v4.3.14
+ */
+/// CrSqliteWasmPersister
+{
+  /**
+   * The getDb method returns a reference to the database instance the Store is
+   * being persisted to.
+   * @returns A reference to the database instance.
+   * @example
+   * This example creates a Persister object against a newly-created Store and
+   * then gets the database instance back out again.
+   *
+   * ```js
+   * const crSqlite3 = await initWasm();
+   * const db = await crSqlite3.open();
+   * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+   * const persister = createCrSqliteWasmPersister(store, db, 'my_tinybase');
+   *
+   * console.log(persister.getDb() == db);
+   * // -> true
+   *
+   * persister.destroy();
+   * ```
+   * @category Getter
+   * @since v4.3.14
+   */
+  /// CrSqliteWasmPersister.getDb
+}
+/**
  * The createCrSqliteWasmPersister function creates a Persister object that can
  * persist the Store to a local CR-SQLite database (in an appropriate
  * environment).
@@ -38,12 +72,12 @@
  * @param onIgnoredError An optional handler for the errors that the Persister
  * would otherwise ignore when trying to save or load data. This is suitable for
  * debugging persistence issues in a development environment, since v4.0.4.
- * @returns A reference to the new Persister object.
+ * @returns A reference to the new CrSqliteWasmPersister object.
  * @example
- * This example creates a Persister object and persists the Store to a local
- * CR-SQLite database as a JSON serialization into the `my_tinybase` table. It
- * makes a change to the database directly and then reloads it back into the
- * Store.
+ * This example creates a CrSqliteWasmPersister object and persists the Store to
+ * a local CR-SQLite database as a JSON serialization into the `my_tinybase`
+ * table. It makes a change to the database directly and then reloads it back
+ * into the Store.
  *
  * ```js
  * const crSqlite3 = await initWasm();
@@ -68,8 +102,8 @@
  * persister.destroy();
  * ```
  * @example
- * This example creates a Persister object and persists the Store to a local
- * SQLite database with tabular mapping.
+ * This example creates a CrSqliteWasmPersister object and persists the Store to
+ * a local SQLite database with tabular mapping.
  *
  * ```js
  * const crSqlite3 = await initWasm();
