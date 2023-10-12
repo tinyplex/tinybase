@@ -1,17 +1,20 @@
 import {FSWatcher, watch} from 'fs';
-import {Persister, PersisterListener} from '../types/persisters';
+import {
+  FilePersister,
+  createFilePersister as createFilePersisterDecl,
+} from '../types/persisters/persister-file';
 import {Store, Tables, Values} from '../types/store';
 import {jsonParse, jsonString} from '../common/json';
 import {readFile, writeFile} from 'fs/promises';
+import {PersisterListener} from '../types/persisters';
 import {UTF8} from '../common/strings';
 import {createCustomPersister} from '../persisters';
-import {createFilePersister as createFilePersisterDecl} from '../types/persisters/persister-file';
 
 export const createFilePersister = ((
   store: Store,
   filePath: string,
   onIgnoredError?: (error: any) => void,
-): Persister => {
+): FilePersister => {
   const getPersisted = async (): Promise<[Tables, Values]> =>
     jsonParse(await readFile(filePath, UTF8));
 
@@ -32,5 +35,5 @@ export const createFilePersister = ((
     delPersisterListener,
     onIgnoredError,
     ['getFilePath', filePath],
-  );
+  ) as FilePersister;
 }) as typeof createFilePersisterDecl;
