@@ -1,8 +1,11 @@
-import {DatabasePersisterConfig, Persister} from '../types/persisters';
+import {
+  SqliteWasmPersister,
+  createSqliteWasmPersister as createSqliteWasmPersisterDecl,
+} from '../types/persisters/persister-sqlite-wasm';
 import {UpdateListener, createSqlitePersister} from './sqlite/create';
+import {DatabasePersisterConfig} from '../types/persisters';
 import {IdObj} from '../common/obj';
 import {Store} from '../types/store';
-import {createSqliteWasmPersister as createSqliteWasmPersisterDecl} from '../types/persisters/persister-sqlite-wasm';
 
 export const createSqliteWasmPersister = ((
   store: Store,
@@ -11,7 +14,7 @@ export const createSqliteWasmPersister = ((
   configOrStoreTableName?: DatabasePersisterConfig | string,
   onSqlCommand?: (sql: string, args?: any[]) => void,
   onIgnoredError?: (error: any) => void,
-): Persister =>
+): SqliteWasmPersister =>
   createSqlitePersister(
     store,
     configOrStoreTableName,
@@ -29,4 +32,4 @@ export const createSqliteWasmPersister = ((
     onSqlCommand,
     onIgnoredError,
     db,
-  )) as typeof createSqliteWasmPersisterDecl;
+  ) as SqliteWasmPersister) as typeof createSqliteWasmPersisterDecl;
