@@ -3,6 +3,13 @@
 import {OptionalSchemas, Store} from '../store';
 import {Persister} from '../persisters';
 
+/// RemotePersister
+export interface RemotePersister<Schemas extends OptionalSchemas>
+  extends Persister<Schemas> {
+  /// RemotePersister.getUrls
+  getUrls: () => [string, string];
+}
+
 /// createRemotePersister
 export function createRemotePersister<Schemas extends OptionalSchemas>(
   store: Store<Schemas>,
@@ -10,4 +17,4 @@ export function createRemotePersister<Schemas extends OptionalSchemas>(
   saveUrl: string,
   autoLoadIntervalSeconds?: number,
   onIgnoredError?: (error: any) => void,
-): Persister<Schemas>;
+): RemotePersister<Schemas>;

@@ -7,6 +7,42 @@
  */
 /// persister-remote
 /**
+ * The RemotePersister interface is a minor extension to the Persister
+ * interface.
+ *
+ * It simply provides an extra getUrls method for accessing the URLs the Store
+ * is being persisted to.
+ * @since v4.3.14
+ */
+/// RemotePersister
+{
+  /**
+   * The getUrls method returns the URLs the Store is being persisted to.
+   * @returns The load and save URLs as a two-item array.
+   * @example
+   * This example creates a RemotePersister object against a newly-created Store
+   * and then gets the URLs back out again.
+   *
+   * ```js
+   * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+   * const persister = createRemotePersister(
+   *   store,
+   *   'https://example.com/load',
+   *   'https://example.com/save',
+   *   5,
+   * );
+   *
+   * console.log(persister.getUrls());
+   * // -> ['https://example.com/load', 'https://example.com/save']
+   *
+   * persister.destroy();
+   * ```
+   * @category Getter
+   * @since v4.3.14
+   */
+  /// RemotePersister.getUrls
+}
+/**
  * The createRemotePersister function creates a Persister object that can
  * persist the Store to a remote server.
  *
@@ -26,10 +62,10 @@
  * @param onIgnoredError An optional handler for the errors that the Persister
  * would otherwise ignore when trying to save or load data. This is suitable for
  * debugging persistence issues in a development environment, since v4.0.4.
- * @returns A reference to the new Persister object.
+ * @returns A reference to the new RemotePersister object.
  * @example
- * This example creates a Persister object and persists the Store to a remote
- * server.
+ * This example creates a RemotePersister object and persists the Store to a
+ * remote server.
  *
  * ```js yolo
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});

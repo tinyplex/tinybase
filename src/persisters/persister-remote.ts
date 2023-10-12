@@ -1,9 +1,12 @@
-import {Persister, PersisterListener} from '../types/persisters';
+import {
+  RemotePersister,
+  createRemotePersister as createRemotePersisterDecl,
+} from '../types/persisters/persister-remote';
 import {Store, Tables, Values} from '../types/store';
 import {isUndefined, startInterval, stopInterval} from '../common/other';
 import {jsonParse, jsonString} from '../common/json';
+import {PersisterListener} from '../types/persisters';
 import {createCustomPersister} from '../persisters';
-import {createRemotePersister as createRemotePersisterDecl} from '../types/persisters/persister-remote';
 
 const getETag = (response: Response) => response.headers.get('ETag');
 
@@ -13,7 +16,7 @@ export const createRemotePersister = ((
   saveUrl: string,
   autoLoadIntervalSeconds = 5,
   onIgnoredError?: (error: any) => void,
-): Persister => {
+): RemotePersister => {
   let lastEtag: string | null;
 
   const getPersisted = async (): Promise<[Tables, Values]> => {
@@ -56,5 +59,5 @@ export const createRemotePersister = ((
     delPersisterListener,
     onIgnoredError,
     ['getUrls', [loadUrl, saveUrl]],
-  );
+  ) as RemotePersister;
 }) as typeof createRemotePersisterDecl;
