@@ -1,9 +1,12 @@
-import {DatabasePersisterConfig, Persister} from '../types/persisters';
+import {
+  Sqlite3Persister,
+  createSqlite3Persister as createSqlite3PersisterDecl,
+} from '../types/persisters/persister-sqlite3';
 import {UpdateListener, createSqlitePersister} from './sqlite/create';
 import {Database} from 'sqlite3';
+import {DatabasePersisterConfig} from '../types/persisters';
 import {IdObj} from '../common/obj';
 import {Store} from '../types/store';
-import {createSqlite3Persister as createSqlite3PersisterDecl} from '../types/persisters/persister-sqlite3';
 import {promiseNew} from '../common/other';
 
 const CHANGE = 'change';
@@ -16,7 +19,7 @@ export const createSqlite3Persister = ((
   configOrStoreTableName?: DatabasePersisterConfig | string,
   onSqlCommand?: (sql: string, args?: any[]) => void,
   onIgnoredError?: (error: any) => void,
-): Persister =>
+): Sqlite3Persister =>
   createSqlitePersister(
     store,
     configOrStoreTableName,
@@ -38,4 +41,4 @@ export const createSqlite3Persister = ((
     onSqlCommand,
     onIgnoredError,
     db,
-  )) as typeof createSqlite3PersisterDecl;
+  ) as Sqlite3Persister) as typeof createSqlite3PersisterDecl;

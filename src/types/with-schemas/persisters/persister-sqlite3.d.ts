@@ -4,6 +4,13 @@ import {DatabasePersisterConfig, Persister} from '../persisters';
 import {OptionalSchemas, Store} from '../store';
 import {Database} from 'sqlite3';
 
+/// Sqlite3Persister
+export interface Sqlite3Persister<Schemas extends OptionalSchemas>
+  extends Persister<Schemas> {
+  /// Sqlite3Persister.getDb
+  getDb: () => Database;
+}
+
 /// createSqlite3Persister
 export function createSqlite3Persister<Schemas extends OptionalSchemas>(
   store: Store<Schemas>,
