@@ -22,12 +22,12 @@
   <span class="punctuation">(</span><span class="parameter">interval</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="function">clearInterval</span><span class="punctuation">(</span>interval<span class="punctuation">)</span><span class="punctuation">,</span>
 <span class="punctuation">)</span><span class="punctuation">;</span>
 
-<span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persisters/interfaces/persister/persister/methods/save/save/">save</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function">save</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>storeJson<span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// -> '[{"pets":{"fido":{"species":"dog"}}},{}]'</span>
 
 storeJson <span class="operator">=</span> <span class="string">'[{"pets":{"fido":{"species":"dog","color":"brown"}}},{}]'</span><span class="punctuation">;</span>
-<span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persisters/interfaces/persister/persister/methods/load/load/">load</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function">load</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 
 console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>store<span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/getter/gettables/">getTables</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// -> {pets: {fido: {species: 'dog', color: 'brown'}}}</span>
