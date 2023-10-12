@@ -7,12 +7,16 @@ import {
   Values,
 } from '../types/store.d';
 import {IdObj, objEnsure, objHas, objMap, objNew} from '../common/obj';
-import {Persister, PersisterListener} from '../types/persisters.d';
 import {T, TINYBASE, V} from '../common/strings';
 import {Doc as YDoc, YEvent, Map as YMap} from 'yjs';
+import {
+  YjsPersister,
+  createYjsPersister as createYjsPersisterDecl,
+} from '../types/persisters/persister-yjs';
 import {arrayForEach, arrayIsEmpty, arrayShift} from '../common/array';
 import {ifNotUndefined, isUndefined, size} from '../common/other';
 import {Id} from '../types/common.d';
+import {PersisterListener} from '../types/persisters.d';
 import {createCustomPersister} from '../persisters';
 import {mapForEach} from '../common/map';
 
@@ -174,12 +178,12 @@ const yMapMatch = (
   return changed;
 };
 
-export const createYjsPersister = (
+export const createYjsPersister = ((
   store: Store,
   yDoc: YDoc,
   yMapName = TINYBASE,
   onIgnoredError?: (error: any) => void,
-): Persister => {
+): YjsPersister => {
   const yContent: YMap<any> = yDoc.getMap(yMapName);
 
   const getPersisted = async (): Promise<[Tables, Values] | undefined> =>
@@ -219,5 +223,5 @@ export const createYjsPersister = (
     delPersisterListener,
     onIgnoredError,
     ['getYDoc', yDoc],
-  );
-};
+  ) as YjsPersister;
+}) as typeof createYjsPersisterDecl;

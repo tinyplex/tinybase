@@ -12,6 +12,38 @@
  */
 /// persister-yjs
 /**
+ * The YjsPersister interface is a minor extension to the Persister interface.
+ *
+ * It simply provides an extra getYDoc method for accessing the Yjs document the
+ * Store is being persisted to.
+ * @since v4.3.14
+ */
+/// YjsPersister
+{
+  /**
+   * The getYDoc method returns the Yjs document the Store is being persisted
+   * to.
+   * @returns The Yjs document.
+   * @example
+   * This example creates a Persister object against a newly-created Store and
+   * then gets the Yjs document back out again.
+   *
+   * ```js
+   * const doc = new Y.Doc();
+   * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+   * const persister = createYjsPersister(store, doc);
+   *
+   * console.log(persister.getYDoc() == doc);
+   * // -> true
+   *
+   * persister.destroy();
+   * ```
+   * @category Getter
+   * @since v4.3.14
+   */
+  /// YjsPersister.getYDoc
+}
+/**
  * The createYjsPersister function creates a Persister object that can persist
  * the Store to a Yjs document.
  *
@@ -24,9 +56,9 @@
  * @param onIgnoredError An optional handler for the errors that the Persister
  * would otherwise ignore when trying to save or load data. This is suitable for
  * debugging persistence issues in a development environment, since v4.0.4.
- * @returns A reference to the new Persister object.
+ * @returns A reference to the new YjsPersister object.
  * @example
- * This example creates a Persister object and persists the Store to a Yjs
+ * This example creates a YjsPersister object and persists the Store to a Yjs
  * document.
  *
  * ```js
@@ -44,8 +76,8 @@
  * ```
  * @example
  * This more complex example uses Yjs updates to keep two Store objects (each
- * with their own Persister objects and Yjs documents) in sync with each other.
- * We use the `await` keyword extensively for the purpose of ensuring
+ * with their own YjsPersister objects and Yjs documents) in sync with each
+ * other. We use the `await` keyword extensively for the purpose of ensuring
  * sequentiality in this example.
  *
  * Typically, real-world synchronization would happen between two systems via a
