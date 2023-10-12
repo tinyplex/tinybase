@@ -7,13 +7,14 @@ import {
   deconstruct,
 } from './partykit/common';
 import {
+  PartyKitPersister,
   PartyKitPersisterConfig,
   createPartyKitPersister as createPartyKitPersisterDecl,
 } from '../types/persisters/persister-partykit-client';
-import {Persister, PersisterListener} from '../types/persisters';
 import {ifNotUndefined, isString} from '../common/other';
 import {EMPTY_STRING} from '../common/strings';
 import PartySocket from 'partysocket';
+import {PersisterListener} from '../types/persisters';
 import {createCustomPersister} from '../persisters';
 import {jsonString} from '../common/json';
 
@@ -26,7 +27,7 @@ export const createPartyKitPersister = ((
   connection: PartySocket,
   configOrStoreProtocol?: PartyKitPersisterConfig | 'http' | 'https',
   onIgnoredError?: (error: any) => void,
-): Persister => {
+): PartyKitPersister => {
   const {host, room} = connection.partySocketOptions;
   const {
     storeProtocol = 'https',
@@ -100,5 +101,5 @@ export const createPartyKitPersister = ((
     delPersisterListener,
     onIgnoredError,
     ['getConnection', connection],
-  );
+  ) as PartyKitPersister;
 }) as typeof createPartyKitPersisterDecl;

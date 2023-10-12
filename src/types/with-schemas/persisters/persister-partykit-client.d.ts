@@ -4,6 +4,13 @@ import {OptionalSchemas, Store} from '../store';
 import PartySocket from 'partysocket';
 import {Persister} from '../persisters';
 
+/// PartyKitPersister
+export interface PartyKitPersister<Schemas extends OptionalSchemas>
+  extends Persister<Schemas> {
+  /// PartyKitPersister.getConnection
+  getConnection: () => PartySocket;
+}
+
 /// PartyKitPersisterConfig
 export type PartyKitPersisterConfig = {
   /// PartyKitPersisterConfig.storeProtocol
@@ -20,4 +27,4 @@ export function createPartyKitPersister<Schemas extends OptionalSchemas>(
   connection: PartySocket,
   configOrStoreProtocol?: PartyKitPersisterConfig | 'http' | 'https',
   onIgnoredError?: (error: any) => void,
-): Persister<Schemas>;
+): PartyKitPersister<Schemas>;

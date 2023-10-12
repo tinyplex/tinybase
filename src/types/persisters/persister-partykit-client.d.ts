@@ -4,6 +4,12 @@ import PartySocket from 'partysocket';
 import {Persister} from '../persisters';
 import {Store} from '../store';
 
+/// PartyKitPersister
+export interface PartyKitPersister extends Persister {
+  /// PartyKitPersister.getConnection
+  getConnection: () => PartySocket;
+}
+
 /// PartyKitPersisterConfig
 export type PartyKitPersisterConfig = {
   /// PartyKitPersisterConfig.storeProtocol
@@ -20,4 +26,4 @@ export function createPartyKitPersister(
   connection: PartySocket,
   configOrStoreProtocol?: PartyKitPersisterConfig | 'http' | 'https',
   onIgnoredError?: (error: any) => void,
-): Persister;
+): PartyKitPersister;

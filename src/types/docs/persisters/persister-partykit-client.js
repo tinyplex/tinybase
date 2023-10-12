@@ -20,6 +20,42 @@
  */
 /// persister-partykit-client
 /**
+ * The PartyKitPersister interface is a minor extension to the Persister
+ * interface.
+ *
+ * It simply provides an extra getConnection method for accessing the
+ * PartySocket the Store is being persisted to.
+ * @since v4.3.14
+ */
+/// PartyKitPersister
+{
+  /**
+   * The getConnection method returns the PartySocket the Store is being
+   * persisted to.
+   * @returns The PartySocket.
+   * @example
+   * This example creates a Persister object against a newly-created Store and
+   * then gets the PartySocket back out again.
+   *
+   * ```js yolo
+   * const partySocket = new PartySocket({
+   *   host: PARTYKIT_HOST,
+   *   room: 'my_room',
+   * });
+   * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+   * const persister = createPartyKitPersister(store, partySocket);
+   *
+   * console.log(persister.getConnection() == partySocket);
+   * // -> true
+   *
+   * persister.destroy();
+   * ```
+   * @category Getter
+   * @since v4.3.14
+   */
+  /// PartyKitPersister.getConnection
+}
+/**
  * The PartyKitPersisterConfig type describes the configuration of a PartyKit
  * Persister on the client side.
  *
@@ -102,9 +138,9 @@
  * @param onIgnoredError An optional handler for the errors that the Persister
  * would otherwise ignore when trying to save or load data. This is suitable for
  * debugging persistence issues in a development environment.
- * @returns A reference to the new Persister object.
+ * @returns A reference to the new PartyKitPersister object.
  * @example
- * This example creates a Persister object and persists the Store to the
+ * This example creates a PartyKitPersister object and persists the Store to the
  * browser's IndexedDB storage.
  *
  * ```js yolo
