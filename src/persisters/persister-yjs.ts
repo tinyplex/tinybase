@@ -218,5 +218,6 @@ export const createYjsPersister = (
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
+    ['getYDoc', yDoc],
   );
 };

@@ -169,5 +169,6 @@ export const createAutomergePersister = (
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
+    ['getDocHandle', docHandle],
   );
 };

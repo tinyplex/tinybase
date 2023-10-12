@@ -35,10 +35,15 @@ import tmp from 'tmp';
 const GET_HOST = 'http://get.com';
 const SET_HOST = 'http://set.com';
 
+type GetLocationMethod<Location = string> = [
+  string,
+  (location: Location) => unknown,
+];
 type Persistable<Location = string> = {
   beforeEach?: () => void;
   autoLoadPause?: number;
   getLocation: () => Promise<Location>;
+  getLocationMethod?: GetLocationMethod<Location>;
   getPersister: (store: Store, location: Location) => Persister;
   get: (location: Location) => Promise<[Tables, Values] | void>;
   set: (location: Location, value: any) => Promise<void>;
@@ -135,6 +140,7 @@ const getMockedCustom = (
 ): Persistable => ({
   autoLoadPause: 100,
   getLocation: async (): Promise<string> => '',
+  getLocationMethod: ['getFoo', () => 'foo'],
   getPersister: (store: Store) => {
     customPersister = '';
     return createCustomPersister(
@@ -152,6 +158,10 @@ const getMockedCustom = (
         customPersisterListener = listener;
       },
       () => (customPersisterListener = undefined),
+      undefined,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      ['getFoo', 'foo'],
     );
   },
   get: async (): Promise<[Tables, Values] | void> => customPersister,
@@ -195,6 +205,7 @@ const mockFile: Persistable = {
     tmp.setGracefulCleanup();
     return tmp.fileSync().name;
   },
+  getLocationMethod: ['getFilePath', (location) => location],
   getPersister: createFilePersister,
   get: async (location: string): Promise<[Tables, Values] | void> => {
     try {
@@ -234,6 +245,10 @@ const mockRemote: Persistable = {
     });
   },
   autoLoadPause: 500,
+  getLocationMethod: [
+    'getUrls',
+    (location) => [GET_HOST + location, SET_HOST + location],
+  ],
   getLocation: async (): Promise<string> => {
     tmp.setGracefulCleanup();
     return tmp.fileSync().name;
@@ -259,6 +274,10 @@ const getMockedStorage = (
 ): Persistable => {
   const mockStorage = {
     getLocation: async (): Promise<string> => 'test' + Math.random(),
+    getLocationMethod: [
+      'getStorageName',
+      (location) => location,
+    ] as GetLocationMethod<string>,
     getPersister,
     get: async (location: string): Promise<[Tables, Values] | void> => {
       try {
@@ -303,6 +322,10 @@ const mockSessionStorage = getMockedStorage(
 const mockIndexedDb = {
   autoLoadPause: 110,
   getLocation: async (): Promise<string> => 'test' + Math.random(),
+  getLocationMethod: [
+    'getDbName',
+    (location: string) => location,
+  ] as GetLocationMethod<string>,
   getPersister: (store: Store, dbName: string) =>
     createIndexedDbPersister(store, dbName, 0.1),
   get: async (dbName: string): Promise<[Tables, Values] | void> => {
@@ -356,6 +379,7 @@ const mockIndexedDb = {
 
 const getMockedSqlite = <Location>(
   getLocation: () => Promise<Location>,
+  getLocationMethod: GetLocationMethod<Location>,
   getPersister: (store: Store, location: Location) => Persister,
   cmd: (
     location: Location,
@@ -368,6 +392,7 @@ const getMockedSqlite = <Location>(
     beforeEach: mockFetchWasm,
     autoLoadPause: 100,
     getLocation,
+    getLocationMethod,
     getPersister,
     get: async (location: Location): Promise<[Tables, Values] | void> =>
       JSON.parse(
@@ -408,6 +433,7 @@ const mockCrSqliteWasm = getMockedSqlite<DB>(...VARIANTS.crSqliteWasm);
 const mockYjs: Persistable<YDoc> = {
   autoLoadPause: 100,
   getLocation: async () => new YDoc(),
+  getLocationMethod: ['getYDoc', (location) => location],
   getPersister: createYjsPersister,
   get: async (yDoc: YDoc): Promise<[Tables, Values] | void> => {
     const yContent = yDoc.getMap('tinybase') as YMap<any>;
@@ -470,6 +496,7 @@ const mockYjs: Persistable<YDoc> = {
 const mockAutomerge: Persistable<DocHandle<any>> = {
   autoLoadPause: 100,
   getLocation: async () => new Repo({network: []}).create(),
+  getLocationMethod: ['getDocHandle', (location) => location],
   getPersister: createAutomergePersister,
   get: async (docHandle: DocHandle<any>): Promise<[Tables, Values] | void> => {
     const docContent = docHandle.doc['tinybase'];
@@ -533,6 +560,7 @@ describe.each([
   ['automerge', mockAutomerge],
 ])('Persists to/from %s', (name: string, persistable: Persistable<any>) => {
   let location: string;
+  let getLocationMethod: GetLocationMethod<any> | undefined;
   let store: Store;
   let persister: Persister;
 
@@ -542,6 +570,7 @@ describe.each([
     }
     store = createStore();
     location = await persistable.getLocation();
+    getLocationMethod = persistable.getLocationMethod;
     persister = persistable.getPersister(store, location);
   });
 
@@ -556,6 +585,14 @@ describe.each([
 
   test('gets store', () => {
     expect(persister.getStore()).toEqual(store);
+  });
+
+  test('gets second parameter', () => {
+    if (getLocationMethod) {
+      expect((persister as any)[getLocationMethod[0]]()).toEqual(
+        getLocationMethod[1](location),
+      );
+    }
   });
 
   test('saves', async () => {

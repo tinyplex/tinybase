@@ -7,7 +7,7 @@ import {Database} from 'sqlite3';
 
 describe.each(Object.entries(VARIANTS))(
   '%s',
-  (_name, [getOpenDatabase, getPersister, cmd, close]) => {
+  (_name, [getOpenDatabase, , getPersister, cmd, close]) => {
     const [getDatabase, setDatabase] = getDatabaseFunctions(cmd);
 
     let db: Database;

@@ -31,5 +31,6 @@ export const createFilePersister = ((
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
+    ['getFilePath', filePath],
   );
 }) as typeof createFilePersisterDecl;

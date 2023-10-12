@@ -25,7 +25,9 @@ export const createCustomPersister = <ListeningHandle>(
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   onIgnoredError?: (error: any) => void,
-  scheduleId = [], // undocumented
+  // undocumented:
+  [getThing, thing]: [string?, unknown?] = [],
+  scheduleId = [],
 ): Persister => {
   let listenerId: Id | undefined;
   let loadSave = 0;
@@ -180,6 +182,10 @@ export const createCustomPersister = <ListeningHandle>(
 
     getStats: (): PersisterStats => (DEBUG ? {loads, saves} : {}),
   };
+
+  if (getThing) {
+    persister[getThing] = () => thing;
+  }
 
   return objFreeze(persister as Persister);
 };

@@ -99,5 +99,6 @@ export const createPartyKitPersister = ((
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
+    ['getConnection', connection],
   );
 }) as typeof createPartyKitPersisterDecl;

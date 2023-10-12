@@ -121,5 +121,6 @@ export const createIndexedDbPersister = ((
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
+    ['getDbName', dbName],
   );
 }) as typeof createIndexedDbPersisterDecl;

@@ -13,6 +13,7 @@ type Dump = {[name: string]: [sql: string, rows: {[column: string]: any}[]]};
 
 type SqliteVariant<Database> = [
   getOpenDatabase: () => Promise<Database>,
+  getLocationMethod: [string, (database: Database) => unknown],
   getPersister: (
     store: Store,
     db: Database,
@@ -33,6 +34,7 @@ const escapeId = (str: string) => `"${str.replace(/"/g, '""')}"`;
 export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
   sqlite3: [
     async (): Promise<Database> => new sqlite3.Database(':memory:'),
+    ['getDb', (database: Database) => database],
     (
       store: Store,
       db: Database,
@@ -68,6 +70,7 @@ export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
         const db = new sqlite3.oo1.DB(':memory:', 'c');
         return [sqlite3, db];
       }),
+    ['getDb', (sqliteWasmDb: SqliteWasmDb) => sqliteWasmDb[1]],
     (
       store: Store,
       [sqlite3, db]: SqliteWasmDb,
@@ -92,6 +95,7 @@ export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
   crSqliteWasm: [
     async (): Promise<DB> =>
       await suppressWarnings(async () => await (await initWasm()).open()),
+    ['getDb', (database: DB) => database],
     (
       store: Store,
       db: DB,

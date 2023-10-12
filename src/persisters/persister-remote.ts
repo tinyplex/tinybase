@@ -55,5 +55,6 @@ export const createRemotePersister = ((
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
+    ['getUrls', [loadUrl, saveUrl]],
   );
 }) as typeof createRemotePersisterDecl;
