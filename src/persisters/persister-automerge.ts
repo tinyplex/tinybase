@@ -1,3 +1,7 @@
+import {
+  AutomergePersister,
+  createAutomergePersister as createAutomergePersisterDecl,
+} from '../types/persisters/persister-automerge';
 import {GetTransactionChanges, Store, Tables, Values} from '../types/store';
 import {
   IdObj,
@@ -9,10 +13,10 @@ import {
   objMap,
   objSize,
 } from '../common/obj';
-import {Persister, PersisterListener} from '../types/persisters';
 import {ifNotUndefined, isUndefined} from '../common/other';
 import {DocHandle} from 'automerge-repo';
 import {Id} from '../types/common';
+import {PersisterListener} from '../types/persisters';
 import {TINYBASE} from '../common/strings';
 import {createCustomPersister} from '../persisters';
 
@@ -125,12 +129,12 @@ const docObjMatch = (
   return changed;
 };
 
-export const createAutomergePersister = (
+export const createAutomergePersister = ((
   store: Store,
   docHandle: DocHandle<any>,
   docObjName = TINYBASE,
   onIgnoredError?: (error: any) => void,
-): Persister => {
+): AutomergePersister => {
   docHandle.change((doc) => (doc[docObjName] = {}));
 
   const getPersisted = async (): Promise<[Tables, Values] | undefined> =>
@@ -170,5 +174,5 @@ export const createAutomergePersister = (
     delPersisterListener,
     onIgnoredError,
     ['getDocHandle', docHandle],
-  );
-};
+  ) as AutomergePersister;
+}) as typeof createAutomergePersisterDecl;

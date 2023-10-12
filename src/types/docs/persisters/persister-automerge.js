@@ -12,6 +12,39 @@
  */
 /// persister-automerge
 /**
+ * The AutomergePersister interface is a minor extension to the Persister
+ * interface.
+ *
+ * It simply provides an extra getDocHandle method for accessing the Automerge
+ * document handler the Store is being persisted to.
+ * @since v4.3.14
+ */
+/// AutomergePersister
+{
+  /**
+   * The getDocHandle method returns the Automerge document handler the Store is
+   * being persisted to.
+   * @returns The Automerge document handler.
+   * @example
+   * This example creates a Persister object against a newly-created Store and
+   * then gets the Automerge document handler back out again.
+   *
+   * ```js
+   * const docHandler = new AutomergeRepo.Repo({network: []}).create();
+   * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+   * const persister = createAutomergePersister(store, docHandler);
+   *
+   * console.log(persister.getDocHandle() == docHandler);
+   * // -> true
+   *
+   * persister.destroy();
+   * ```
+   * @category Getter
+   * @since v4.3.14
+   */
+  /// AutomergePersister.getDocHandle
+}
+/**
  * The createAutomergePersister function creates a Persister object that can
  * persist the Store to an Automerge document.
  *
@@ -24,9 +57,9 @@
  * @param onIgnoredError An optional handler for the errors that the Persister
  * would otherwise ignore when trying to save or load data. This is suitable for
  * debugging persistence issues in a development environment, since v4.0.4.
- * @returns A reference to the new Persister object.
+ * @returns A reference to the new AutomergePersister object.
  * @example
- * This example creates a Persister object and persists the Store to an
+ * This example creates a AutomergePersister object and persists the Store to an
  * Automerge document.
  *
  * ```js
