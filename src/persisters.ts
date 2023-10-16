@@ -167,6 +167,7 @@ export const createCustomPersister = <ListeningHandle>(
 
     stopAutoSave: (): Persister => {
       ifNotUndefined(listenerId, store.delListener);
+      listenerId = undefined;
       return persister;
     },
 
