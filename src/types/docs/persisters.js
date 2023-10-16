@@ -638,11 +638,11 @@
    * The load method gets persisted data from storage, and loads it into the
    * Store with which the Persister is associated, once.
    *
-   * The optional parameter allows you to specify what the initial Tables object
-   * for the Store will be if there is nothing currently persisted. Using this
-   * instead of the `initialTables` parameter in the regular createStore
-   * function allows you to easily instantiate a Store whether it's loading from
-   * previously persisted storage or being run for the first time.
+   * The optional parameters allow you to specify what the initial content for
+   * the Store will be if there is nothing currently persisted or if the load
+   * fails (for example when the Persister is remote and the environment is
+   * offline). This allows you to fallback or instantiate a Store whether it's
+   * loading from previously persisted storage or being run for the first time.
    *
    * This method is asynchronous because the persisted data may be on a remote
    * machine or a filesystem. Even for those storage types that are synchronous
@@ -699,11 +699,11 @@
    * into the Store with which the Persister is associated, once, and then
    * continuously.
    *
-   * The optional parameter allows you to specify what the initial Tables object
-   * for the Store will be if there is nothing at first persisted. Using this
-   * instead of the `initialTables` parameter in the regular createStore
-   * function allows you to easily instantiate a Store whether it's loading from
-   * previously persisted storage or being run for the first time.
+   * The optional parameters allow you to specify what the initial content for
+   * the Store will be if there is nothing currently persisted or if the load
+   * fails (for example when the Persister is remote and the environment is
+   * offline). This allows you to fallback or instantiate a Store whether it's
+   * loading from previously persisted storage or being run for the first time.
    *
    * This method first runs a single call to the load method to ensure the data
    * is in sync with the persisted storage. It then continues to watch for
