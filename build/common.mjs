@@ -431,6 +431,7 @@ export const test = async (
             setupFilesAfterEnv: ['expect-puppeteer'],
             preset: 'jest-puppeteer',
             detectOpenHandles: true,
+            maxWorkers: 2,
           }
         : {testEnvironment: './test/jest/environment'}),
       ...(coverageMode > 0
