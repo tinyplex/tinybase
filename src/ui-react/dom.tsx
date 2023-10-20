@@ -146,7 +146,7 @@ const useParams = <
   ...args: Params
 ): Params =>
   useMemo(
-    () => args,
+    () => args as any,
     // eslint-disable-next-line react-hooks/exhaustive-deps
     args,
   );

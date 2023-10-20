@@ -1511,7 +1511,7 @@ export const useCreatePersister: typeof useCreatePersisterDecl = <
 ): PersisterOrUndefined => {
   const [, setDone] = useState<1>();
   const persister = useMemo(
-    () => create(store),
+    () => create(store) as any,
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [store, ...createDeps],
   );
