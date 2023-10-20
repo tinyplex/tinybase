@@ -17,7 +17,9 @@ export class ErrorBoundary extends PureComponent<Props, State> {
     this.state = {e: 0};
   }
 
-  static getDerivedStateFromError = () => ({e: 1});
+  static getDerivedStateFromError() {
+    return {e: 1};
+  }
 
   // eslint-disable-next-line react/no-arrow-function-lifecycle
   componentDidCatch = (error: Error, info: ErrorInfo) =>
