@@ -8298,10 +8298,10 @@
  *
  * Since v4.3.19, a `destroy` function can be provided which will be called
  * after an old Persister is destroyed due to a change in the `createDeps`
- * dependencies that is creating a new one. Use this to clean up any underlying
- * storage objects that you set up during the `then` function, for example. If
- * this callback itself contains additional dependencies, you can provide them
- * in an array in the seventh parameter.
+ * dependencies that causes a new one to be created. Use this to clean up any
+ * underlying storage objects that you set up during the `then` function, for
+ * example. If this callback itself contains additional dependencies, you can
+ * provide them in an array in the seventh parameter.
  *
  * This hook ensures the Persister object is destroyed whenever a new one is
  * created or the component is unmounted.
@@ -8318,8 +8318,7 @@
  * which, if any change, result in its rerun. This parameter defaults to an
  * empty array.
  * @param destroy An optional callback whenever the Persister is destroyed due
- * to a change in the `createDeps` dependencies. destroyDeps?:
- * React.DependencyList,
+ * to a change in the `createDeps` dependencies.
  * @param destroyDeps An optional array of dependencies for the `destroy`
  * callback, which, if any change, result in `destroy` and `then` being rerun.
  * This parameter defaults to an empty array.
