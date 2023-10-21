@@ -1508,8 +1508,10 @@ export const useCreatePersister: typeof useCreatePersisterDecl = <
   createDeps: React.DependencyList = [],
   then?: (persister: PersisterOrUndefined) => Promise<void>,
   thenDeps: React.DependencyList = [],
+  destroy?: (persister: PersisterOrUndefined) => void,
+  destroyDeps: React.DependencyList = [],
 ): PersisterOrUndefined => {
-  const [, setDone] = useState<1>();
+  const [, rerender] = useState<[]>();
   const persister = useMemo(
     () => create(store) as any,
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1518,16 +1520,18 @@ export const useCreatePersister: typeof useCreatePersisterDecl = <
   useEffect(
     () => {
       (async () => {
-        await then?.(persister);
-        setDone(1);
-        return;
+        if (then) {
+          await then(persister);
+          rerender([]);
+        }
       })();
       return () => {
         persister?.destroy();
+        destroy?.(persister);
       };
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [persister, ...thenDeps],
+    [persister, ...thenDeps, ...destroyDeps],
   );
   return persister;
 };
