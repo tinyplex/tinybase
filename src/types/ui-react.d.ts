@@ -843,6 +843,8 @@ export function useCreatePersister<
   createDeps?: React.DependencyList,
   then?: (persister: PersisterOrUndefined) => Promise<void>,
   thenDeps?: React.DependencyList,
+  destroy?: (persister: PersisterOrUndefined) => void,
+  destroyDeps?: React.DependencyList,
 ): PersisterOrUndefined;
 
 /// ExtraProps

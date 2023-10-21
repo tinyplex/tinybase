@@ -8296,6 +8296,13 @@
  * collaboration features. As a result, the `then` callback may also get passed
  * undefined, which you should handle accordingly.
  *
+ * Since v4.3.19, a `destroy` function can be provided which will be called
+ * after an old Persister is destroyed due to a change in the `createDeps`
+ * dependencies that is creating a new one. Use this to clean up any underlying
+ * storage objects that you set up during the `then` function, for example. If
+ * this callback itself contains additional dependencies, you can provide them
+ * in an array in the seventh parameter.
+ *
  * This hook ensures the Persister object is destroyed whenever a new one is
  * created or the component is unmounted.
  * @param store A reference to the Store for which to create a new Persister
@@ -8310,6 +8317,12 @@
  * @param thenDeps An optional array of dependencies for the `then` callback,
  * which, if any change, result in its rerun. This parameter defaults to an
  * empty array.
+ * @param destroy An optional callback whenever the Persister is destroyed due
+ * to a change in the `createDeps` dependencies. destroyDeps?:
+ * React.DependencyList,
+ * @param destroyDeps An optional array of dependencies for the `destroy`
+ * callback, which, if any change, result in `destroy` and `then` being rerun.
+ * This parameter defaults to an empty array.
  * @returns A reference to the Persister.
  * @example
  * This example creates a Persister at the top level of a React application.
@@ -8357,7 +8370,8 @@
  * This example creates a Persister at the top level of a React application. The
  * App component is rendered twice, each with a different top-level prop. The
  * useCreatePersister hook takes the `sessionKey` prop as a dependency, and so
- * the Persister object is created again on the second render.
+ * the Persister object is created again on the second render. The first is
+ * destroyed and the `destroy` parameter is called for it.
  *
  * ```jsx
  * const App = ({sessionKey}) => {
@@ -8371,8 +8385,12 @@
  *     [sessionKey],
  *     async (persister) => {
  *       await persister.startAutoLoad();
- *       await persister.startAutoSave();
  *     },
+ *     [],
+ *     (persister) =>
+ *       console.log(
+ *         `Persister destroyed for session key ${persister.getStorageName()}`,
+ *       ),
  *   );
  *   return <span>{JSON.stringify(useTables(store))}</span>;
  * };
@@ -8397,12 +8415,14 @@
  *
  * root.render(<App sessionKey="cujoStore" />); // !act
  * // -> 'Persister created for session key cujoStore'
+ * // -> 'Persister destroyed for session key fidoStore'
  *
  * // ... // !act
  * console.log(app.innerHTML);
  * // -> '<span>{\"pets\":{\"cujo\":{\"species\":\"dog\"}}}</span>'
  *
  * root.unmount(); // !act
+ * // -> 'Persister destroyed for session key cujoStore'
  * ```
  *  @category Persister hooks
  */
