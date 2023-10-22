@@ -82,6 +82,10 @@
   },
   "typesVersions": {
     "*": {
+      "*": [
+        "./lib/types/*.d.ts",
+        "./lib/types/tinybase.d.ts"
+      ],
       "cjs": [
         "./lib/types/tinybase.d.ts"
       ],
@@ -173,10 +177,6 @@
       "*/with-schemas": [
         "./lib/types/with-schemas/*.d.ts",
         "./lib/types/with-schemas/tinybase.d.ts"
-      ],
-      "*": [
-        "./lib/types/*.d.ts",
-        "./lib/types/tinybase.d.ts"
       ]
     }
   },
