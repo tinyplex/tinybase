@@ -1,6 +1,6 @@
 {
   "name": "tinybase",
-  "version": "4.3.20",
+  "version": "4.3.21",
   "author": "jamesgpearce",
   "repository": "github:tinyplex/tinybase",
   "license": "MIT",
@@ -180,7 +180,8 @@
       ]
     }
   },
-  "main": "./lib/tinybase.js",
+  "main": "./lib/tinybase",
+  "types": "./lib/types/tinybase.d.ts",
   "react-native": "./lib/tinybase.js",
   "browser": {
     "fs": false
