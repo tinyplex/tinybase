@@ -246,8 +246,7 @@ const useListenable = (
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
     [thing, ...args],
   );
-  const [initialResult] = useState(getResult);
-  const result = useRef(initialResult);
+  const result = useRef();
   useMemo(() => (result.current = getResult()), [getResult]);
   useListener(
     listenable,
