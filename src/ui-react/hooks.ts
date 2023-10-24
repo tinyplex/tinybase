@@ -270,16 +270,20 @@ const useListener = (
   listenerDeps: React.DependencyList = [],
   preArgs: ListenerArgument[] = [],
   ...postArgs: ListenerArgument[]
-): void =>
-  useEffect(() => {
-    const listenerId = thing?.[ADD + listenable + LISTENER]?.(
-      ...preArgs,
-      listener,
-      ...postArgs,
-    );
-    return () => thing?.delListener(listenerId);
+): void => {
+  const deps = [thing, ...preArgs, ...listenerDeps, ...postArgs];
+  const listenerId = useMemo(
+    () =>
+      thing?.[ADD + listenable + LISTENER]?.(...preArgs, listener, ...postArgs),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [thing, ...preArgs, ...listenerDeps, ...postArgs]);
+    deps,
+  );
+  useEffect(
+    () => () => thing?.delListener(listenerId),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    deps,
+  );
+};
 
 const useSetCallback = <Parameter, Thing>(
   storeOrStoreId: StoreOrStoreId | undefined,
