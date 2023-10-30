@@ -46,6 +46,7 @@ export type StoreListener = Listener &
     ) => Id;
     listenToValues: (id: Id) => Id;
     listenToValueIds: (id: Id) => Id;
+    listenToHasValue: (id: Id, valueId: IdOrNull) => Id;
     listenToValue: (id: Id, valueId: IdOrNull) => Id;
     listenToInvalidValue: (id: Id, valueId: IdOrNull) => Id;
     listenToStartTransaction: (id: Id) => Id;
