@@ -32,6 +32,12 @@ export type StoreListener = Listener &
     ) => Id;
     listenToRow: (id: Id, tableId: IdOrNull, rowId: IdOrNull) => Id;
     listenToCellIds: (id: Id, tableId: IdOrNull, rowId: IdOrNull) => Id;
+    listenToHasCell: (
+      id: Id,
+      tableId: IdOrNull,
+      rowId: IdOrNull,
+      cellId: IdOrNull,
+    ) => Id;
     listenToCell: (
       id: Id,
       tableId: IdOrNull,

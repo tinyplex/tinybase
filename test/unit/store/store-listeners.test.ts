@@ -2709,6 +2709,565 @@ describe('Listeners', () => {
     });
   });
 
+  describe('hasCell', () => {
+    beforeAll(() => {
+      store = createStore();
+      listener = createStoreListener(store);
+      listener.listenToHasCell('/t1/r1/c1', 't1', 'r1', 'c1');
+      listener.listenToHasCell('/t1/r1/c2', 't1', 'r1', 'c2');
+      listener.listenToHasCell('/t1/r1/c*', 't1', 'r1', null);
+      listener.listenToHasCell('/t1/r*/c1', 't1', null, 'c1');
+      listener.listenToHasCell('/t1/r*/c*', 't1', null, null);
+      listener.listenToHasCell('/t*/r1/c1', null, 'r1', 'c1');
+      listener.listenToHasCell('/t*/r1/c*', null, 'r1', null);
+      listener.listenToHasCell('/t*/r*/c1', null, null, 'c1');
+      listener.listenToHasCell('/t*/r*/c*', null, null, null);
+    });
+
+    test('reset 1', () => {
+      store.delTables();
+      expectNoChanges(listener);
+    });
+
+    test('setTables', () => {
+      store.setTables({t1: {r1: {c1: 1}}});
+      expectChanges(listener, '/t1/r1/c1', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t1/r1/c*', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t1/r*/c1', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t1/r*/c*', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r1/c1', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r1/c*', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r*/c1', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r*/c*', {t1: {r1: {c1: true}}});
+      expectNoChanges(listener);
+    });
+
+    test('setTables, same table, same row, same cell', () => {
+      store.setTables({t1: {r1: {c1: 1}}});
+      expectNoChanges(listener);
+    });
+
+    test('setTables, same table, same row, change cell', () => {
+      store.setTables({t1: {r1: {c1: 2}}});
+      expectNoChanges(listener);
+    });
+
+    test('setTables, same table, same row, different cell', () => {
+      store.setTables({t1: {r1: {c2: 2}}});
+      expectChanges(listener, '/t1/r1/c1', {t1: {r1: {c1: false}}});
+      expectChanges(listener, '/t1/r1/c2', {t1: {r1: {c2: true}}});
+      expectChanges(
+        listener,
+        '/t1/r1/c*',
+        {t1: {r1: {c2: true}}},
+        {t1: {r1: {c1: false}}},
+      );
+      expectChanges(listener, '/t1/r*/c1', {t1: {r1: {c1: false}}});
+      expectChanges(
+        listener,
+        '/t1/r*/c*',
+        {t1: {r1: {c2: true}}},
+        {t1: {r1: {c1: false}}},
+      );
+      expectChanges(listener, '/t*/r1/c1', {t1: {r1: {c1: false}}});
+      expectChanges(
+        listener,
+        '/t*/r1/c*',
+        {t1: {r1: {c2: true}}},
+        {t1: {r1: {c1: false}}},
+      );
+      expectChanges(listener, '/t*/r*/c1', {t1: {r1: {c1: false}}});
+      expectChanges(
+        listener,
+        '/t*/r*/c*',
+        {t1: {r1: {c2: true}}},
+        {t1: {r1: {c1: false}}},
+      );
+      expectNoChanges(listener);
+    });
+
+    test('setTables, same table, different row', () => {
+      store.setTables({t1: {r2: {c1: 1}}});
+      expectChanges(listener, '/t1/r1/c2', {t1: {r1: {c2: false}}});
+      expectChanges(listener, '/t1/r1/c*', {t1: {r1: {c2: false}}});
+      expectChanges(listener, '/t1/r*/c1', {t1: {r2: {c1: true}}});
+      expectChanges(
+        listener,
+        '/t1/r*/c*',
+        {t1: {r2: {c1: true}}},
+        {t1: {r1: {c2: false}}},
+      );
+      expectChanges(listener, '/t*/r1/c*', {t1: {r1: {c2: false}}});
+      expectChanges(listener, '/t*/r*/c1', {t1: {r2: {c1: true}}});
+      expectChanges(
+        listener,
+        '/t*/r*/c*',
+        {t1: {r2: {c1: true}}},
+        {t1: {r1: {c2: false}}},
+      );
+      expectNoChanges(listener);
+    });
+
+    test('setTables, different table', () => {
+      store.setTables({t2: {r1: {c1: 1}}});
+      expectChanges(listener, '/t1/r*/c1', {t1: {r2: {c1: false}}});
+      expectChanges(listener, '/t1/r*/c*', {t1: {r2: {c1: false}}});
+      expectChanges(listener, '/t*/r1/c1', {t2: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r1/c*', {t2: {r1: {c1: true}}});
+      expectChanges(
+        listener,
+        '/t*/r*/c1',
+        {t2: {r1: {c1: true}}},
+        {t1: {r2: {c1: false}}},
+      );
+      expectChanges(
+        listener,
+        '/t*/r*/c*',
+        {t2: {r1: {c1: true}}},
+        {t1: {r2: {c1: false}}},
+      );
+      expectNoChanges(listener);
+    });
+
+    test('reset 2', () => {
+      store.delTables();
+      expectChanges(listener, '/t*/r1/c1', {t2: {r1: {c1: false}}});
+      expectChanges(listener, '/t*/r1/c*', {t2: {r1: {c1: false}}});
+      expectChanges(listener, '/t*/r*/c1', {t2: {r1: {c1: false}}});
+      expectChanges(listener, '/t*/r*/c*', {t2: {r1: {c1: false}}});
+      expectNoChanges(listener);
+    });
+
+    test('setTable', () => {
+      store.setTable('t1', {r1: {c1: 1}});
+      expectChanges(listener, '/t1/r1/c1', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t1/r1/c*', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t1/r*/c1', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t1/r*/c*', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r1/c1', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r1/c*', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r*/c1', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r*/c*', {t1: {r1: {c1: true}}});
+      expectNoChanges(listener);
+    });
+
+    test('setTable, same table, same row, same cell', () => {
+      store.setTable('t1', {r1: {c1: 1}});
+      expectNoChanges(listener);
+    });
+
+    test('setTable, same table, same row, change cell', () => {
+      store.setTable('t1', {r1: {c1: 2}});
+      expectNoChanges(listener);
+    });
+
+    test('setTable, same table, same row, different cell', () => {
+      store.setTable('t1', {r1: {c2: 2}});
+      expectChanges(listener, '/t1/r1/c1', {t1: {r1: {c1: false}}});
+      expectChanges(listener, '/t1/r1/c2', {t1: {r1: {c2: true}}});
+      expectChanges(
+        listener,
+        '/t1/r1/c*',
+        {t1: {r1: {c2: true}}},
+        {t1: {r1: {c1: false}}},
+      );
+      expectChanges(listener, '/t1/r*/c1', {t1: {r1: {c1: false}}});
+      expectChanges(
+        listener,
+        '/t1/r*/c*',
+        {t1: {r1: {c2: true}}},
+        {t1: {r1: {c1: false}}},
+      );
+      expectChanges(listener, '/t*/r1/c1', {t1: {r1: {c1: false}}});
+      expectChanges(
+        listener,
+        '/t*/r1/c*',
+        {t1: {r1: {c2: true}}},
+        {t1: {r1: {c1: false}}},
+      );
+      expectChanges(listener, '/t*/r*/c1', {t1: {r1: {c1: false}}});
+      expectChanges(
+        listener,
+        '/t*/r*/c*',
+        {t1: {r1: {c2: true}}},
+        {t1: {r1: {c1: false}}},
+      );
+      expectNoChanges(listener);
+    });
+
+    test('setTable, same table, different row', () => {
+      store.setTable('t1', {r2: {c1: 1}});
+      expectChanges(listener, '/t1/r1/c2', {t1: {r1: {c2: false}}});
+      expectChanges(listener, '/t1/r1/c*', {t1: {r1: {c2: false}}});
+      expectChanges(listener, '/t1/r*/c1', {t1: {r2: {c1: true}}});
+      expectChanges(
+        listener,
+        '/t1/r*/c*',
+        {t1: {r2: {c1: true}}},
+        {t1: {r1: {c2: false}}},
+      );
+      expectChanges(listener, '/t*/r1/c*', {t1: {r1: {c2: false}}});
+      expectChanges(listener, '/t*/r*/c1', {t1: {r2: {c1: true}}});
+      expectChanges(
+        listener,
+        '/t*/r*/c*',
+        {t1: {r2: {c1: true}}},
+        {t1: {r1: {c2: false}}},
+      );
+      expectNoChanges(listener);
+    });
+
+    test('setTable, different table', () => {
+      store.setTable('t2', {r1: {c1: 1}});
+      expectChanges(listener, '/t*/r1/c1', {t2: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r1/c*', {t2: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r*/c1', {t2: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r*/c*', {t2: {r1: {c1: true}}});
+      expectNoChanges(listener);
+    });
+
+    test('reset 3', () => {
+      store.delTables();
+      expectChanges(listener, '/t1/r*/c1', {t1: {r2: {c1: false}}});
+      expectChanges(listener, '/t1/r*/c*', {t1: {r2: {c1: false}}});
+      expectChanges(listener, '/t*/r1/c1', {t2: {r1: {c1: false}}});
+      expectChanges(listener, '/t*/r1/c*', {t2: {r1: {c1: false}}});
+      expectChanges(
+        listener,
+        '/t*/r*/c1',
+        {t1: {r2: {c1: false}}},
+        {t2: {r1: {c1: false}}},
+      );
+      expectChanges(
+        listener,
+        '/t*/r*/c*',
+        {t1: {r2: {c1: false}}},
+        {t2: {r1: {c1: false}}},
+      );
+      expectNoChanges(listener);
+    });
+
+    test('setRow', () => {
+      store.setRow('t1', 'r1', {c1: 1});
+      expectChanges(listener, '/t1/r1/c1', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t1/r1/c*', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t1/r*/c1', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t1/r*/c*', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r1/c1', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r1/c*', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r*/c1', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r*/c*', {t1: {r1: {c1: true}}});
+      expectNoChanges(listener);
+    });
+
+    test('setRow, same table, same row, same cell', () => {
+      store.setRow('t1', 'r1', {c1: 1});
+      expectNoChanges(listener);
+    });
+
+    test('setRow, same table, same row, change cell', () => {
+      store.setRow('t1', 'r1', {c1: 2});
+      expectNoChanges(listener);
+    });
+
+    test('setRow, same table, same row, different cell', () => {
+      store.setRow('t1', 'r1', {c2: 2});
+      expectChanges(listener, '/t1/r1/c1', {t1: {r1: {c1: false}}});
+      expectChanges(listener, '/t1/r1/c2', {t1: {r1: {c2: true}}});
+      expectChanges(
+        listener,
+        '/t1/r1/c*',
+        {t1: {r1: {c2: true}}},
+        {t1: {r1: {c1: false}}},
+      );
+      expectChanges(listener, '/t1/r*/c1', {t1: {r1: {c1: false}}});
+      expectChanges(
+        listener,
+        '/t1/r*/c*',
+        {t1: {r1: {c2: true}}},
+        {t1: {r1: {c1: false}}},
+      );
+      expectChanges(listener, '/t*/r1/c1', {t1: {r1: {c1: false}}});
+      expectChanges(
+        listener,
+        '/t*/r1/c*',
+        {t1: {r1: {c2: true}}},
+        {t1: {r1: {c1: false}}},
+      );
+      expectChanges(listener, '/t*/r*/c1', {t1: {r1: {c1: false}}});
+      expectChanges(
+        listener,
+        '/t*/r*/c*',
+        {t1: {r1: {c2: true}}},
+        {t1: {r1: {c1: false}}},
+      );
+      expectNoChanges(listener);
+    });
+
+    test('setRow, same table, different row', () => {
+      store.setRow('t1', 'r2', {c1: 1});
+      expectChanges(listener, '/t1/r*/c1', {t1: {r2: {c1: true}}});
+      expectChanges(listener, '/t1/r*/c*', {t1: {r2: {c1: true}}});
+      expectChanges(listener, '/t*/r*/c1', {t1: {r2: {c1: true}}});
+      expectChanges(listener, '/t*/r*/c*', {t1: {r2: {c1: true}}});
+      expectNoChanges(listener);
+    });
+
+    test('setRow, different table', () => {
+      store.setRow('t2', 'r1', {c1: 1});
+      expectChanges(listener, '/t*/r1/c1', {t2: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r1/c*', {t2: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r*/c1', {t2: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r*/c*', {t2: {r1: {c1: true}}});
+      expectNoChanges(listener);
+    });
+
+    test('addRow', () => {
+      store.addRow('t2', {c1: 1});
+      expectChanges(listener, '/t*/r*/c1', {t2: {0: {c1: true}}});
+      expectChanges(listener, '/t*/r*/c*', {t2: {0: {c1: true}}});
+      expectNoChanges(listener);
+    });
+
+    test('addRow, over existing row', () => {
+      store.transaction(() =>
+        store.setRow('t2', '1', {c1: 1}).addRow('t2', {c1: 1}),
+      );
+      expectChanges(
+        listener,
+        '/t*/r*/c1',
+        {t2: {1: {c1: true}}},
+        {t2: {2: {c1: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t*/r*/c*',
+        {t2: {1: {c1: true}}},
+        {t2: {2: {c1: true}}},
+      );
+      expectNoChanges(listener);
+    });
+
+    test('setPartialRow', () => {
+      // @ts-ignore
+      store.setPartialRow('t1', 'r1', {c1: 1, c2: 3, c3: undefined});
+      expectChanges(listener, '/t1/r1/c1', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t1/r1/c*', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t1/r*/c1', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t1/r*/c*', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r1/c1', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r1/c*', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r*/c1', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r*/c*', {t1: {r1: {c1: true}}});
+      expectNoChanges(listener);
+    });
+
+    test('reset 4', () => {
+      store.delTables();
+      expectChanges(listener, '/t1/r1/c1', {t1: {r1: {c1: false}}});
+      expectChanges(listener, '/t1/r1/c2', {t1: {r1: {c2: false}}});
+      expectChanges(
+        listener,
+        '/t1/r1/c*',
+        {t1: {r1: {c2: false}}},
+        {t1: {r1: {c1: false}}},
+      );
+      expectChanges(
+        listener,
+        '/t1/r*/c1',
+        {t1: {r1: {c1: false}}},
+        {t1: {r2: {c1: false}}},
+      );
+      expectChanges(
+        listener,
+        '/t1/r*/c*',
+        {t1: {r1: {c2: false}}},
+        {t1: {r1: {c1: false}}},
+        {t1: {r2: {c1: false}}},
+      );
+      expectChanges(
+        listener,
+        '/t*/r1/c1',
+        {t1: {r1: {c1: false}}},
+        {t2: {r1: {c1: false}}},
+      );
+      expectChanges(
+        listener,
+        '/t*/r1/c*',
+        {t1: {r1: {c2: false}}},
+        {t1: {r1: {c1: false}}},
+        {t2: {r1: {c1: false}}},
+      );
+      expectChanges(
+        listener,
+        '/t*/r*/c1',
+        {t1: {r1: {c1: false}}},
+        {t1: {r2: {c1: false}}},
+        {t2: {r1: {c1: false}}},
+        {t2: {0: {c1: false}}},
+        {t2: {1: {c1: false}}},
+        {t2: {2: {c1: false}}},
+      );
+      expectChanges(
+        listener,
+        '/t*/r*/c*',
+        {t1: {r1: {c2: false}}},
+        {t1: {r1: {c1: false}}},
+        {t1: {r2: {c1: false}}},
+        {t2: {r1: {c1: false}}},
+        {t2: {0: {c1: false}}},
+        {t2: {1: {c1: false}}},
+        {t2: {2: {c1: false}}},
+      );
+      expectNoChanges(listener);
+    });
+
+    test('setCell', () => {
+      store.setCell('t1', 'r1', 'c1', 1);
+      expectChanges(listener, '/t1/r1/c1', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t1/r1/c*', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t1/r*/c1', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t1/r*/c*', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r1/c1', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r1/c*', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r*/c1', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r*/c*', {t1: {r1: {c1: true}}});
+      expectNoChanges(listener);
+    });
+
+    test('setCell, same table, same row, same cell', () => {
+      store.setCell('t1', 'r1', 'c1', 1);
+      expectNoChanges(listener);
+    });
+
+    test('setCell, same table, same row, change cell', () => {
+      store.setCell('t1', 'r1', 'c1', 2);
+      expectNoChanges(listener);
+    });
+
+    test('setCell, same table, same row, different cell', () => {
+      store.setCell('t1', 'r1', 'c2', 2);
+      expectChanges(listener, '/t1/r1/c2', {t1: {r1: {c2: true}}});
+      expectChanges(listener, '/t1/r1/c*', {t1: {r1: {c2: true}}});
+      expectChanges(listener, '/t1/r*/c*', {t1: {r1: {c2: true}}});
+      expectChanges(listener, '/t*/r1/c*', {t1: {r1: {c2: true}}});
+      expectChanges(listener, '/t*/r*/c*', {t1: {r1: {c2: true}}});
+      expectNoChanges(listener);
+    });
+
+    test('setCell, same table, different row', () => {
+      store.setCell('t1', 'r2', 'c1', 1);
+      expectChanges(listener, '/t1/r*/c1', {t1: {r2: {c1: true}}});
+      expectChanges(listener, '/t1/r*/c*', {t1: {r2: {c1: true}}});
+      expectChanges(listener, '/t*/r*/c1', {t1: {r2: {c1: true}}});
+      expectChanges(listener, '/t*/r*/c*', {t1: {r2: {c1: true}}});
+      expectNoChanges(listener);
+    });
+
+    test('setCell, different table', () => {
+      store.setCell('t2', 'r1', 'c1', 1);
+      expectChanges(listener, '/t*/r1/c1', {t2: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r1/c*', {t2: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r*/c1', {t2: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r*/c*', {t2: {r1: {c1: true}}});
+      expectNoChanges(listener);
+    });
+
+    test('setCell, mapped', () => {
+      store.setCell('t2', 'r1', 'c1', (cell) => (cell as number) + 1);
+      expectNoChanges(listener);
+    });
+
+    test('Add things to delete', () => {
+      store.transaction(() =>
+        store.setTable('t3', {r1: {c1: 1}}).setTable('t4', {r1: {c1: 1}}),
+      );
+      expectChanges(
+        listener,
+        '/t*/r1/c1',
+        {t3: {r1: {c1: true}}},
+        {t4: {r1: {c1: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t*/r1/c*',
+        {t3: {r1: {c1: true}}},
+        {t4: {r1: {c1: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t*/r*/c1',
+        {t3: {r1: {c1: true}}},
+        {t4: {r1: {c1: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t*/r*/c*',
+        {t3: {r1: {c1: true}}},
+        {t4: {r1: {c1: true}}},
+      );
+      expectNoChanges(listener);
+    });
+
+    test('delCell', () => {
+      store.delCell('t1', 'r1', 'c2');
+      expectChanges(listener, '/t1/r1/c2', {t1: {r1: {c2: false}}});
+      expectChanges(listener, '/t1/r1/c*', {t1: {r1: {c2: false}}});
+      expectChanges(listener, '/t1/r*/c*', {t1: {r1: {c2: false}}});
+      expectChanges(listener, '/t*/r1/c*', {t1: {r1: {c2: false}}});
+      expectChanges(listener, '/t*/r*/c*', {t1: {r1: {c2: false}}});
+      expectNoChanges(listener);
+    });
+
+    test('delCell, cascade', () => {
+      store.delCell('t2', 'r1', 'c1');
+      expectChanges(listener, '/t*/r1/c1', {t2: {r1: {c1: false}}});
+      expectChanges(listener, '/t*/r1/c*', {t2: {r1: {c1: false}}});
+      expectChanges(listener, '/t*/r*/c1', {t2: {r1: {c1: false}}});
+      expectChanges(listener, '/t*/r*/c*', {t2: {r1: {c1: false}}});
+      expectNoChanges(listener);
+    });
+
+    test('delRow', () => {
+      store.delRow('t1', 'r2');
+      expectChanges(listener, '/t1/r*/c1', {t1: {r2: {c1: false}}});
+      expectChanges(listener, '/t1/r*/c*', {t1: {r2: {c1: false}}});
+      expectChanges(listener, '/t*/r*/c1', {t1: {r2: {c1: false}}});
+      expectChanges(listener, '/t*/r*/c*', {t1: {r2: {c1: false}}});
+      expectNoChanges(listener);
+    });
+
+    test('delRow, cascade', () => {
+      store.delRow('t1', 'r1');
+      expectChanges(listener, '/t1/r1/c1', {t1: {r1: {c1: false}}});
+      expectChanges(listener, '/t1/r1/c*', {t1: {r1: {c1: false}}});
+      expectChanges(listener, '/t1/r*/c1', {t1: {r1: {c1: false}}});
+      expectChanges(listener, '/t1/r*/c*', {t1: {r1: {c1: false}}});
+      expectChanges(listener, '/t*/r1/c1', {t1: {r1: {c1: false}}});
+      expectChanges(listener, '/t*/r1/c*', {t1: {r1: {c1: false}}});
+      expectChanges(listener, '/t*/r*/c1', {t1: {r1: {c1: false}}});
+      expectChanges(listener, '/t*/r*/c*', {t1: {r1: {c1: false}}});
+      expectNoChanges(listener);
+    });
+
+    test('delTable', () => {
+      store.delTable('t3');
+      expectChanges(listener, '/t*/r1/c1', {t3: {r1: {c1: false}}});
+      expectChanges(listener, '/t*/r1/c*', {t3: {r1: {c1: false}}});
+      expectChanges(listener, '/t*/r*/c1', {t3: {r1: {c1: false}}});
+      expectChanges(listener, '/t*/r*/c*', {t3: {r1: {c1: false}}});
+      expectNoChanges(listener);
+    });
+
+    test('delTables', () => {
+      store.delTables();
+      expectChanges(listener, '/t*/r1/c1', {t4: {r1: {c1: false}}});
+      expectChanges(listener, '/t*/r1/c*', {t4: {r1: {c1: false}}});
+      expectChanges(listener, '/t*/r*/c1', {t4: {r1: {c1: false}}});
+      expectChanges(listener, '/t*/r*/c*', {t4: {r1: {c1: false}}});
+    });
+  });
+
   describe('cell', () => {
     beforeAll(() => {
       store = createStore();
@@ -5190,6 +5749,392 @@ describe('Mutating listeners', () => {
     });
   });
 
+  describe('hasCell', () => {
+    beforeEach(() => {
+      store = createStore();
+      listener = createStoreListener(store);
+      listener.listenToHasCell('/t1/r1/c1', 't1', 'r1', 'c1');
+      listener.listenToHasCell('/t1/r1/c*', 't1', 'r1', null);
+      listener.listenToHasCell('/t1/r*/c1', 't1', null, 'c1');
+      listener.listenToHasCell('/t1/r*/c*', 't1', null, null);
+      listener.listenToHasCell('/t*/r1/c1', null, 'r1', 'c1');
+      listener.listenToHasCell('/t*/r1/c*', null, 'r1', null);
+      listener.listenToHasCell('/t*/r*/c1', null, null, 'c1');
+      listener.listenToHasCell('/t*/r*/c*', null, null, null);
+    });
+
+    const setMutatorListeners = () => {
+      store.addCellListener('t1', 'r1', 'c1', getCellMutator(2), true);
+      store.addCellListener(
+        't1',
+        'r1',
+        null,
+        getCellMutator(3, null, null, 'c_'),
+        true,
+      );
+      store.addCellListener(
+        't1',
+        null,
+        'c1',
+        getCellMutator(4, null, 'r_'),
+        true,
+      );
+      store.addCellListener(
+        't1',
+        null,
+        null,
+        getCellMutator(5, null, 'r_', 'c_'),
+        true,
+      );
+      store.addCellListener(null, 'r1', 'c1', getCellMutator(6, 't_'), true);
+      store.addCellListener(
+        null,
+        'r1',
+        null,
+        getCellMutator(7, 't_', null, 'c_'),
+        true,
+      );
+      store.addCellListener(
+        null,
+        null,
+        'c1',
+        getCellMutator(8, 't_', 'r_'),
+        true,
+      );
+      store.addCellListener(
+        null,
+        null,
+        null,
+        getCellMutator(9, 't_', 'r_', 'c_'),
+        true,
+      );
+    };
+
+    test('setTables', () => {
+      setMutatorListeners();
+      store.setTables({t1: {r1: {c1: 1}}});
+      expectChanges(listener, '/t1/r1/c1', {t1: {r1: {c1: true}}});
+      expectChanges(
+        listener,
+        '/t1/r1/c*',
+        {t1: {r1: {c1: true}}},
+        {t1: {r1: {c_: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t1/r*/c1',
+        {t1: {r1: {c1: true}}},
+        {t1: {r_: {c1: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t1/r*/c*',
+        {t1: {r1: {c1: true}}},
+        {t1: {r1: {c_: true}}},
+        {t1: {r_: {c1: true}}},
+        {t1: {r_: {c_: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t*/r1/c1',
+        {t1: {r1: {c1: true}}},
+        {t_: {r1: {c1: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t*/r1/c*',
+        {t1: {r1: {c1: true}}},
+        {t1: {r1: {c_: true}}},
+        {t_: {r1: {c1: true}}},
+        {t_: {r1: {c_: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t*/r*/c1',
+        {t1: {r1: {c1: true}}},
+        {t1: {r_: {c1: true}}},
+        {t_: {r1: {c1: true}}},
+        {t_: {r_: {c1: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t*/r*/c*',
+        {t1: {r1: {c1: true}}},
+        {t1: {r1: {c_: true}}},
+        {t1: {r_: {c1: true}}},
+        {t1: {r_: {c_: true}}},
+        {t_: {r1: {c1: true}}},
+        {t_: {r1: {c_: true}}},
+        {t_: {r_: {c1: true}}},
+        {t_: {r_: {c_: true}}},
+      );
+      expectNoChanges(listener);
+    });
+
+    test('setTable', () => {
+      setMutatorListeners();
+      store.setTable('t1', {r1: {c1: 1}});
+      expectChanges(listener, '/t1/r1/c1', {t1: {r1: {c1: true}}});
+      expectChanges(
+        listener,
+        '/t1/r1/c*',
+        {t1: {r1: {c1: true}}},
+        {t1: {r1: {c_: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t1/r*/c1',
+        {t1: {r1: {c1: true}}},
+        {t1: {r_: {c1: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t1/r*/c*',
+        {t1: {r1: {c1: true}}},
+        {t1: {r1: {c_: true}}},
+        {t1: {r_: {c1: true}}},
+        {t1: {r_: {c_: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t*/r1/c1',
+        {t1: {r1: {c1: true}}},
+        {t_: {r1: {c1: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t*/r1/c*',
+        {t1: {r1: {c1: true}}},
+        {t1: {r1: {c_: true}}},
+        {t_: {r1: {c1: true}}},
+        {t_: {r1: {c_: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t*/r*/c1',
+        {t1: {r1: {c1: true}}},
+        {t1: {r_: {c1: true}}},
+        {t_: {r1: {c1: true}}},
+        {t_: {r_: {c1: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t*/r*/c*',
+        {t1: {r1: {c1: true}}},
+        {t1: {r1: {c_: true}}},
+        {t1: {r_: {c1: true}}},
+        {t1: {r_: {c_: true}}},
+        {t_: {r1: {c1: true}}},
+        {t_: {r1: {c_: true}}},
+        {t_: {r_: {c1: true}}},
+        {t_: {r_: {c_: true}}},
+      );
+      expectNoChanges(listener);
+    });
+
+    test('setRow', () => {
+      setMutatorListeners();
+      store.setRow('t1', 'r1', {c1: 1});
+      expectChanges(listener, '/t1/r1/c1', {t1: {r1: {c1: true}}});
+      expectChanges(
+        listener,
+        '/t1/r1/c*',
+        {t1: {r1: {c1: true}}},
+        {t1: {r1: {c_: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t1/r*/c1',
+        {t1: {r1: {c1: true}}},
+        {t1: {r_: {c1: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t1/r*/c*',
+        {t1: {r1: {c1: true}}},
+        {t1: {r1: {c_: true}}},
+        {t1: {r_: {c1: true}}},
+        {t1: {r_: {c_: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t*/r1/c1',
+        {t1: {r1: {c1: true}}},
+        {t_: {r1: {c1: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t*/r1/c*',
+        {t1: {r1: {c1: true}}},
+        {t1: {r1: {c_: true}}},
+        {t_: {r1: {c1: true}}},
+        {t_: {r1: {c_: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t*/r*/c1',
+        {t1: {r1: {c1: true}}},
+        {t1: {r_: {c1: true}}},
+        {t_: {r1: {c1: true}}},
+        {t_: {r_: {c1: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t*/r*/c*',
+        {t1: {r1: {c1: true}}},
+        {t1: {r1: {c_: true}}},
+        {t1: {r_: {c1: true}}},
+        {t1: {r_: {c_: true}}},
+        {t_: {r1: {c1: true}}},
+        {t_: {r1: {c_: true}}},
+        {t_: {r_: {c1: true}}},
+        {t_: {r_: {c_: true}}},
+      );
+      expectNoChanges(listener);
+    });
+
+    test('addRow', () => {
+      setMutatorListeners();
+      store.addRow('t1', {c1: 1});
+      expectChanges(
+        listener,
+        '/t1/r*/c1',
+        {t1: {0: {c1: true}}},
+        {t1: {r_: {c1: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t1/r*/c*',
+        {t1: {0: {c1: true}}},
+        {t1: {r_: {c1: true}}},
+        {t1: {r_: {c_: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t*/r*/c1',
+        {t1: {0: {c1: true}}},
+        {t1: {r_: {c1: true}}},
+        {t_: {r_: {c1: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t*/r*/c*',
+        {t1: {0: {c1: true}}},
+        {t1: {r_: {c1: true}}},
+        {t1: {r_: {c_: true}}},
+        {t_: {r_: {c1: true}}},
+        {t_: {r_: {c_: true}}},
+      );
+      expectNoChanges(listener);
+    });
+
+    test('setPartialRow', () => {
+      store.setTables({t1: {r1: {c1: 1}}});
+      expectChanges(listener, '/t1/r1/c1', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t1/r1/c*', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t1/r*/c1', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t1/r*/c*', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r1/c1', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r1/c*', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r*/c1', {t1: {r1: {c1: true}}});
+      expectChanges(listener, '/t*/r*/c*', {t1: {r1: {c1: true}}});
+      setMutatorListeners();
+      // @ts-ignore
+      store.setPartialRow('t1', 'r1', {c1: 1, c2: 1, c3: undefined});
+      expectChanges(
+        listener,
+        '/t1/r1/c*',
+        {t1: {r1: {c2: true}}},
+        {t1: {r1: {c_: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t1/r*/c*',
+        {t1: {r1: {c2: true}}},
+        {t1: {r1: {c_: true}}},
+        {t1: {r_: {c_: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t*/r1/c*',
+        {t1: {r1: {c2: true}}},
+        {t1: {r1: {c_: true}}},
+        {t_: {r1: {c_: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t*/r*/c*',
+        {t1: {r1: {c2: true}}},
+        {t1: {r1: {c_: true}}},
+        {t1: {r_: {c_: true}}},
+        {t_: {r1: {c_: true}}},
+        {t_: {r_: {c_: true}}},
+      );
+      expectNoChanges(listener);
+    });
+
+    test('setCell', () => {
+      setMutatorListeners();
+      store.setCell('t1', 'r1', 'c1', 1);
+      expectChanges(listener, '/t1/r1/c1', {t1: {r1: {c1: true}}});
+      expectChanges(
+        listener,
+        '/t1/r1/c*',
+        {t1: {r1: {c1: true}}},
+        {t1: {r1: {c_: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t1/r*/c1',
+        {t1: {r1: {c1: true}}},
+        {t1: {r_: {c1: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t1/r*/c*',
+        {t1: {r1: {c1: true}}},
+        {t1: {r1: {c_: true}}},
+        {t1: {r_: {c1: true}}},
+        {t1: {r_: {c_: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t*/r1/c1',
+        {t1: {r1: {c1: true}}},
+        {t_: {r1: {c1: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t*/r1/c*',
+        {t1: {r1: {c1: true}}},
+        {t1: {r1: {c_: true}}},
+        {t_: {r1: {c1: true}}},
+        {t_: {r1: {c_: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t*/r*/c1',
+        {t1: {r1: {c1: true}}},
+        {t1: {r_: {c1: true}}},
+        {t_: {r1: {c1: true}}},
+        {t_: {r_: {c1: true}}},
+      );
+      expectChanges(
+        listener,
+        '/t*/r*/c*',
+        {t1: {r1: {c1: true}}},
+        {t1: {r1: {c_: true}}},
+        {t1: {r_: {c1: true}}},
+        {t1: {r_: {c_: true}}},
+        {t_: {r1: {c1: true}}},
+        {t_: {r1: {c_: true}}},
+        {t_: {r_: {c1: true}}},
+        {t_: {r_: {c_: true}}},
+      );
+      expectNoChanges(listener);
+    });
+  });
+
   describe('cell', () => {
     beforeEach(() => {
       store = createStore();
@@ -6812,6 +7757,156 @@ describe('callListener', () => {
     expect(listener).toHaveBeenNthCalledWith(2, store, 't1', 'r2');
     expect(listener).toHaveBeenNthCalledWith(3, store, 't2', 'r1');
     expect(listener).toHaveBeenNthCalledWith(4, store, 't2', 'r2');
+  });
+
+  test('has cell id/id/id (non mutator)', () => {
+    store.callListener(store.addHasCellListener('t1', 'r1', 'c1', listener));
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', 'c1', true);
+  });
+
+  test('has cell id/id/id (mutator)', () => {
+    store.callListener(
+      store.addHasCellListener('t1', 'r1', 'c1', listener, true),
+    );
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', 'c1', true);
+  });
+
+  test('has cell id/id/* (non mutator)', () => {
+    store.callListener(store.addHasCellListener('t1', 'r1', null, listener));
+    expect(listener).toHaveBeenCalledTimes(2);
+    expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', 'c1', true);
+    expect(listener).toHaveBeenNthCalledWith(2, store, 't1', 'r1', 'c2', true);
+  });
+
+  test('has cell id/id/* (mutator)', () => {
+    store.callListener(
+      store.addHasCellListener('t1', 'r1', null, listener, true),
+    );
+    expect(listener).toHaveBeenCalledTimes(2);
+    expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', 'c1', true);
+    expect(listener).toHaveBeenNthCalledWith(2, store, 't1', 'r1', 'c2', true);
+  });
+
+  test('has cell id/*/id (non mutator)', () => {
+    store.callListener(store.addHasCellListener('t1', null, 'c1', listener));
+    expect(listener).toHaveBeenCalledTimes(2);
+    expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', 'c1', true);
+    expect(listener).toHaveBeenNthCalledWith(2, store, 't1', 'r2', 'c1', true);
+  });
+
+  test('has cell id/*/id (mutator)', () => {
+    store.callListener(
+      store.addHasCellListener('t1', null, 'c1', listener, true),
+    );
+    expect(listener).toHaveBeenCalledTimes(2);
+    expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', 'c1', true);
+    expect(listener).toHaveBeenNthCalledWith(2, store, 't1', 'r2', 'c1', true);
+  });
+
+  test('has cell id/*/* (non mutator)', () => {
+    store.callListener(store.addHasCellListener('t1', null, null, listener));
+    expect(listener).toHaveBeenCalledTimes(4);
+    expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', 'c1', true);
+    expect(listener).toHaveBeenNthCalledWith(2, store, 't1', 'r1', 'c2', true);
+    expect(listener).toHaveBeenNthCalledWith(3, store, 't1', 'r2', 'c1', true);
+    expect(listener).toHaveBeenNthCalledWith(4, store, 't1', 'r2', 'c2', true);
+  });
+
+  test('has cell id/*/* (mutator)', () => {
+    store.callListener(
+      store.addHasCellListener('t1', null, null, listener, true),
+    );
+    expect(listener).toHaveBeenCalledTimes(4);
+    expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', 'c1', true);
+    expect(listener).toHaveBeenNthCalledWith(2, store, 't1', 'r1', 'c2', true);
+    expect(listener).toHaveBeenNthCalledWith(3, store, 't1', 'r2', 'c1', true);
+    expect(listener).toHaveBeenNthCalledWith(4, store, 't1', 'r2', 'c2', true);
+  });
+
+  test('has cell */id/id (non mutator)', () => {
+    store.callListener(store.addHasCellListener(null, 'r1', 'c1', listener));
+    expect(listener).toHaveBeenCalledTimes(2);
+    expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', 'c1', true);
+    expect(listener).toHaveBeenNthCalledWith(2, store, 't2', 'r1', 'c1', true);
+  });
+
+  test('has cell */id/id (mutator)', () => {
+    store.callListener(
+      store.addHasCellListener(null, 'r1', 'c1', listener, true),
+    );
+    expect(listener).toHaveBeenCalledTimes(2);
+    expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', 'c1', true);
+    expect(listener).toHaveBeenNthCalledWith(2, store, 't2', 'r1', 'c1', true);
+  });
+
+  test('has cell */id/* (non mutator)', () => {
+    store.callListener(store.addHasCellListener(null, 'r1', null, listener));
+    expect(listener).toHaveBeenCalledTimes(4);
+    expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', 'c1', true);
+    expect(listener).toHaveBeenNthCalledWith(2, store, 't1', 'r1', 'c2', true);
+    expect(listener).toHaveBeenNthCalledWith(3, store, 't2', 'r1', 'c1', true);
+    expect(listener).toHaveBeenNthCalledWith(4, store, 't2', 'r1', 'c2', true);
+  });
+
+  test('has cell */id/* (mutator)', () => {
+    store.callListener(
+      store.addHasCellListener(null, 'r1', null, listener, true),
+    );
+    expect(listener).toHaveBeenCalledTimes(4);
+    expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', 'c1', true);
+    expect(listener).toHaveBeenNthCalledWith(2, store, 't1', 'r1', 'c2', true);
+    expect(listener).toHaveBeenNthCalledWith(3, store, 't2', 'r1', 'c1', true);
+    expect(listener).toHaveBeenNthCalledWith(4, store, 't2', 'r1', 'c2', true);
+  });
+
+  test('has cell */*/id (non mutator)', () => {
+    store.callListener(store.addHasCellListener(null, null, 'c1', listener));
+    expect(listener).toHaveBeenCalledTimes(4);
+    expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', 'c1', true);
+    expect(listener).toHaveBeenNthCalledWith(2, store, 't1', 'r2', 'c1', true);
+    expect(listener).toHaveBeenNthCalledWith(3, store, 't2', 'r1', 'c1', true);
+    expect(listener).toHaveBeenNthCalledWith(4, store, 't2', 'r2', 'c1', true);
+  });
+
+  test('has cell */*/id (mutator)', () => {
+    store.callListener(
+      store.addHasCellListener(null, null, 'c1', listener, true),
+    );
+    expect(listener).toHaveBeenCalledTimes(4);
+    expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', 'c1', true);
+    expect(listener).toHaveBeenNthCalledWith(2, store, 't1', 'r2', 'c1', true);
+    expect(listener).toHaveBeenNthCalledWith(3, store, 't2', 'r1', 'c1', true);
+    expect(listener).toHaveBeenNthCalledWith(4, store, 't2', 'r2', 'c1', true);
+  });
+
+  test('has cell */*/* (non mutator)', () => {
+    store.callListener(store.addHasCellListener(null, null, null, listener));
+    expect(listener).toHaveBeenCalledTimes(8);
+    expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', 'c1', true);
+    expect(listener).toHaveBeenNthCalledWith(2, store, 't1', 'r1', 'c2', true);
+    expect(listener).toHaveBeenNthCalledWith(3, store, 't1', 'r2', 'c1', true);
+    expect(listener).toHaveBeenNthCalledWith(4, store, 't1', 'r2', 'c2', true);
+    expect(listener).toHaveBeenNthCalledWith(5, store, 't2', 'r1', 'c1', true);
+    expect(listener).toHaveBeenNthCalledWith(6, store, 't2', 'r1', 'c2', true);
+    expect(listener).toHaveBeenNthCalledWith(7, store, 't2', 'r2', 'c1', true);
+    expect(listener).toHaveBeenNthCalledWith(8, store, 't2', 'r2', 'c2', true);
+  });
+
+  test('has cell */*/* (mutator)', () => {
+    store.callListener(
+      store.addHasCellListener(null, null, null, listener, true),
+    );
+    expect(listener).toHaveBeenCalledTimes(8);
+    expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', 'c1', true);
+    expect(listener).toHaveBeenNthCalledWith(2, store, 't1', 'r1', 'c2', true);
+    expect(listener).toHaveBeenNthCalledWith(3, store, 't1', 'r2', 'c1', true);
+    expect(listener).toHaveBeenNthCalledWith(4, store, 't1', 'r2', 'c2', true);
+    expect(listener).toHaveBeenNthCalledWith(5, store, 't2', 'r1', 'c1', true);
+    expect(listener).toHaveBeenNthCalledWith(6, store, 't2', 'r1', 'c2', true);
+    expect(listener).toHaveBeenNthCalledWith(7, store, 't2', 'r2', 'c1', true);
+    expect(listener).toHaveBeenNthCalledWith(8, store, 't2', 'r2', 'c2', true);
   });
 
   test('cell id/id/id (non mutator)', () => {

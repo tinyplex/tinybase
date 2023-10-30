@@ -426,6 +426,59 @@ export type CellIdsListener<
     // | ((...params: Params1) => void)
     never;
 
+/// HasCellListener
+export type HasCellListener<
+  Schemas extends OptionalSchemas,
+  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+  RowIdOrNull extends IdOrNull,
+  CellIdOrNull extends
+    | (TableIdOrNull extends TableIdFromSchema<Schemas[0]>
+        ? CellIdFromSchema<Schemas[0], TableIdOrNull>
+        : AllCellIdFromSchema<Schemas[0]>)
+    | null,
+  Params extends any[] = (
+    TableIdOrNull extends null ? TableIdFromSchema<Schemas[0]> : TableIdOrNull
+  ) extends infer TableId
+    ? TableId extends TableIdFromSchema<Schemas[0]>
+      ? (
+          CellIdOrNull extends null
+            ? CellIdFromSchema<Schemas[0], TableId>
+            : CellIdOrNull
+        ) extends infer CellId
+        ? CellId extends CellIdFromSchema<Schemas[0], TableId>
+          ? [
+              store: Store<Schemas>,
+              tableId: TableId,
+              rowId: RowIdOrNull extends null ? Id : RowIdOrNull,
+              cellId: CellId,
+              hasCell: boolean,
+            ]
+          : never
+        : never
+      : never
+    : never,
+  Params5 extends any[] =
+    | Params
+    | [
+        store: never,
+        tableId: never,
+        rowId: never,
+        cellId: never,
+        hasCell: boolean,
+      ],
+  Params4 extends any[] = Truncate<Params5>,
+  // Params3 extends any[] = Truncate<Params4>,
+  // Params2 extends any[] = Truncate<Params3>,
+  // Params1 extends any[] = Truncate<Params2>,
+> = Params extends any
+  ? ((...params: Params5) => void) | ((...params: Params4) => void)
+  : // | ((...params: Params3) => void)
+    // | ((...params: Params2) => void)
+    // | ((...params: Params1) => void)
+    // The unions may no longer be discriminatory with fewer parameters, and
+    // TypeScript fails to resolve callback signatures in some cases.
+    never;
+
 /// CellListener
 export type CellListener<
   Schemas extends OptionalSchemas,
@@ -1113,6 +1166,28 @@ export interface Store<in out Schemas extends OptionalSchemas> {
     tableId: TableIdOrNull,
     rowId: RowIdOrNull,
     listener: CellIdsListener<Schemas, TableIdOrNull, RowIdOrNull>,
+    mutator?: boolean,
+  ): Id;
+
+  /// Store.addHasCellListener
+  addHasCellListener<
+    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+    RowIdOrNull extends IdOrNull,
+    CellIdOrNull extends
+      | (TableIdOrNull extends TableIdFromSchema<Schemas[0]>
+          ? CellIdFromSchema<Schemas[0], TableIdOrNull>
+          : AllCellIdFromSchema<Schemas[0]>)
+      | null,
+  >(
+    tableId: TableIdOrNull,
+    rowId: RowIdOrNull,
+    cellId: CellIdOrNull,
+    listener: HasCellListener<
+      Schemas,
+      TableIdOrNull,
+      RowIdOrNull,
+      CellIdOrNull
+    >,
     mutator?: boolean,
   ): Id;
 
