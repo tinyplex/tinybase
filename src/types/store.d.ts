@@ -200,6 +200,9 @@ export type CellListener = (
   getCellChange: GetCellChange | undefined,
 ) => void;
 
+/// HasValuesListener
+export type HasValuesListener = (store: Store, hasValues: boolean) => void;
+
 /// ValuesListener
 export type ValuesListener = (
   store: Store,
@@ -620,6 +623,9 @@ export interface Store {
     listener: CellListener,
     mutator?: boolean,
   ): Id;
+
+  /// Store.addHasValuesListener
+  addHasValuesListener(listener: HasValuesListener, mutator?: boolean): Id;
 
   /// Store.addValuesListener
   addValuesListener(listener: ValuesListener, mutator?: boolean): Id;
