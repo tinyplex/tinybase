@@ -733,13 +733,14 @@ export const createStore: typeof createStoreDecl = (): Store => {
         )
       : 0;
 
-  const callIdsListenersIfChanged = (
-    listeners: IdSetNode,
+  const callIdsAndHasListenersIfChanged = (
     changedIds: ChangedIdsMap,
+    idListeners: IdSetNode,
+    hasListeners?: IdSetNode,
     ids?: Ids,
   ): 1 | void => {
     if (!collIsEmpty(changedIds)) {
-      callListeners(listeners, ids, () => mapToObj(changedIds));
+      callListeners(idListeners, ids, () => mapToObj(changedIds));
       return 1;
     }
   };
@@ -787,12 +788,13 @@ export const createStore: typeof createStoreDecl = (): Store => {
           ];
 
       if (!emptyIdListeners) {
-        callIdsListenersIfChanged(tableIdsListeners[mutator], changes[0]);
+        callIdsAndHasListenersIfChanged(changes[0], tableIdsListeners[mutator]);
 
         collForEach(changes[1], (changedIds, tableId) =>
-          callIdsListenersIfChanged(
-            tableCellIdsListeners[mutator],
+          callIdsAndHasListenersIfChanged(
             changedIds,
+            tableCellIdsListeners[mutator],
+            undefined,
             [tableId],
           ),
         );
@@ -810,9 +812,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
         const calledSortableTableIds: IdSet = setNew();
         collForEach(changes[3], (changedIds, tableId) => {
           if (
-            callIdsListenersIfChanged(rowIdsListeners[mutator], changedIds, [
-              tableId,
-            ]) &&
+            callIdsAndHasListenersIfChanged(
+              changedIds,
+              rowIdsListeners[mutator],
+              undefined,
+              [tableId],
+            ) &&
             !emptySortedRowIdListeners
           ) {
             callListeners(sortedRowIdsListeners[mutator], [tableId, null]);
@@ -843,10 +848,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
         collForEach(changes[4], (rowCellIds, tableId) =>
           collForEach(rowCellIds, (changedIds, rowId) =>
-            callIdsListenersIfChanged(cellIdsListeners[mutator], changedIds, [
-              tableId,
-              rowId,
-            ]),
+            callIdsAndHasListenersIfChanged(
+              changedIds,
+              cellIdsListeners[mutator],
+              undefined,
+              [tableId, rowId],
+            ),
           ),
         );
       }
@@ -899,7 +906,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
         : [changedValueIds, changedValues];
 
       if (!emptyIdListeners) {
-        callIdsListenersIfChanged(valueIdsListeners[mutator], changes[0]);
+        callIdsAndHasListenersIfChanged(changes[0], valueIdsListeners[mutator]);
       }
 
       if (!emptyOtherListeners) {
