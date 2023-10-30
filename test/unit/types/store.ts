@@ -986,6 +986,35 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
   });
   storeWithSchemas.addValueListener('v2', () => null); // !
 
+  storeWithSchemas.addHasValueListener('v1', (store, valueId, hasValue) => {
+    store.getValues().v1;
+    valueId == 'v1';
+    hasValue as boolean;
+    store.getValues().v2; // !
+    valueId == 'v2'; // !
+    hasValue as string; // !
+  });
+  storeWithSchemas.addHasValueListener(null, (store, valueId, hasValue) => {
+    store.getValues().v1;
+    valueId == 'v1';
+    valueId == 'v1d';
+    hasValue as boolean;
+    store.getValues().v2; // !
+    valueId == 'v2'; // !
+  });
+  storeWithSchemas.addHasValueListener(null, (store, valueId) => {
+    store.getValues().v1;
+    valueId == 'v1';
+    valueId == 'v1d';
+    store.getValues().v2; // !
+    valueId == 'v2'; // !
+  });
+  storeWithSchemas.addHasValueListener(null, (store) => {
+    store.getValues().v1;
+    store.getValues().v2; // !
+  });
+  storeWithSchemas.addHasValueListener('v2', () => null); // !
+
   storeWithSchemas.addWillFinishTransactionListener(
     (store, getTransactionChanges, getTransactionLog) => {
       const [cellChanges, valueChanges] = getTransactionChanges();
