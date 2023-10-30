@@ -888,7 +888,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     }
   };
 
-  const callKeyedValuesListenersForChanges = (mutator: 0 | 1) => {
+  const callValuesListenersForChanges = (mutator: 0 | 1) => {
     const emptyIdListeners = collIsEmpty(valueIdsListeners[mutator]);
     const emptyOtherListeners =
       collIsEmpty(valueListeners[mutator]) &&
@@ -1367,7 +1367,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
         }
         callInvalidValueListeners(1);
         if (valuesTouched) {
-          callKeyedValuesListenersForChanges(1);
+          callValuesListenersForChanges(1);
         }
 
         if (doRollback?.(getTransactionChanges, getTransactionLog)) {
@@ -1398,7 +1398,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
         }
         callInvalidValueListeners(0);
         if (valuesTouched) {
-          callKeyedValuesListenersForChanges(0);
+          callValuesListenersForChanges(0);
         }
         callListeners(
           finishTransactionListeners[1],
