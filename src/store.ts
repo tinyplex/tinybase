@@ -173,6 +173,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   let hasValuesSchema: boolean;
   let cellsTouched = false;
   let valuesTouched = false;
+  let hadValues = false;
   let transactions = 0;
   const changedTableIds: ChangedIdsMap = mapNew();
   const changedTableCellIds: ChangedIdsMap2 = mapNew();
@@ -205,6 +206,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const cellListeners: Pair<IdSet4> = pairNewMap();
   const invalidCellListeners: Pair<IdSet4> = pairNewMap();
   const invalidValueListeners: Pair<IdSet2> = pairNewMap();
+  const hasValuesListeners: Pair<IdSet2> = pairNewMap();
   const valuesListeners: Pair<IdSet2> = pairNewMap();
   const valueIdsListeners: Pair<IdSet2> = pairNewMap();
   const hasValueListeners: Pair<IdSet2> = pairNewMap();
@@ -907,6 +909,11 @@ export const createStore: typeof createStoreDecl = (): Store => {
   };
 
   const callValuesListenersForChanges = (mutator: 0 | 1) => {
+    const hasValuesNow = hasValues();
+    if (hasValuesNow != hadValues) {
+      callListeners(hasValuesListeners[mutator], undefined, hasValuesNow);
+    }
+
     const emptyIdAndHasListeners =
       collIsEmpty(valueIdsListeners[mutator]) &&
       collIsEmpty(hasValueListeners[mutator]);
@@ -1433,6 +1440,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
         transactions = 0;
         cellsTouched = valuesTouched = false;
+        hadValues = hasValues();
         arrayForEach(
           [
             changedTableIds,
@@ -1678,6 +1686,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
         (ids: Ids) => pairNew(getCell(...(ids as [Id, Id, Id]))),
       ],
       InvalidCell: [3, invalidCellListeners],
+      [HAS + VALUES]: [0, hasValuesListeners, [], () => [hasValues()]],
       [VALUES]: [0, valuesListeners],
       [VALUE_IDS]: [0, valueIdsListeners],
       [HAS + VALUE]: [

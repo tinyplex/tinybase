@@ -489,6 +489,12 @@ export type CellListener<
     // | ((...params: Params1) => void)
     never;
 
+/// HasValuesListener
+export type HasValuesListener<Schemas extends OptionalSchemas> = (
+  store: Store<Schemas>,
+  hasValues: boolean,
+) => void;
+
 /// ValuesListener
 export type ValuesListener<Schemas extends OptionalSchemas> = (
   store: Store<Schemas>,
@@ -1124,6 +1130,12 @@ export interface Store<in out Schemas extends OptionalSchemas> {
     rowId: RowIdOrNull,
     cellId: CellIdOrNull,
     listener: CellListener<Schemas, TableIdOrNull, RowIdOrNull, CellIdOrNull>,
+    mutator?: boolean,
+  ): Id;
+
+  /// Store.addHasValuesListener
+  addHasValuesListener(
+    listener: HasValuesListener<Schemas>,
     mutator?: boolean,
   ): Id;
 

@@ -44,6 +44,7 @@ export type StoreListener = Listener &
       rowId: IdOrNull,
       cellId: IdOrNull,
     ) => Id;
+    listenToHasValues: (id: Id) => Id;
     listenToValues: (id: Id) => Id;
     listenToValueIds: (id: Id) => Id;
     listenToHasValue: (id: Id, valueId: IdOrNull) => Id;
