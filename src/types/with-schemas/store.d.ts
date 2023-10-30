@@ -501,6 +501,18 @@ export type ValueIdsListener<Schemas extends OptionalSchemas> = (
   getIdChanges: GetIdChanges<ValueIdFromSchema<Schemas[1]>> | undefined,
 ) => void;
 
+/// HasValueListener
+export type HasValueListener<
+  Schemas extends OptionalSchemas,
+  ValueIdOrNull extends ValueIdFromSchema<Schemas[1]> | null,
+> = (
+  store: Store<Schemas>,
+  valueId: ValueIdOrNull extends null
+    ? ValueIdFromSchema<Schemas[1]>
+    : ValueIdOrNull,
+  hasValue: boolean,
+) => void;
+
 /// ValueListener
 export type ValueListener<
   Schemas extends OptionalSchemas,
@@ -1121,6 +1133,15 @@ export interface Store<in out Schemas extends OptionalSchemas> {
   /// Store.addValueIdsListener
   addValueIdsListener(
     listener: ValueIdsListener<Schemas>,
+    mutator?: boolean,
+  ): Id;
+
+  /// Store.addHasValueListener
+  addHasValueListener<
+    ValueIdOrNull extends ValueIdFromSchema<Schemas[1]> | null,
+  >(
+    valueId: ValueIdOrNull,
+    listener: HasValueListener<Schemas, ValueIdOrNull>,
     mutator?: boolean,
   ): Id;
 

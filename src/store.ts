@@ -3,6 +3,7 @@ import {
   CELL,
   CELL_IDS,
   DEFAULT,
+  HAS,
   LISTENER,
   NUMBER,
   ROW,
@@ -206,6 +207,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const invalidValueListeners: Pair<IdSet2> = pairNewMap();
   const valuesListeners: Pair<IdSet2> = pairNewMap();
   const valueIdsListeners: Pair<IdSet2> = pairNewMap();
+  const hasValueListeners: Pair<IdSet2> = pairNewMap();
   const valueListeners: Pair<IdSet2> = pairNewMap();
   const startTransactionListeners: IdSet2 = mapNew();
   const finishTransactionListeners: Pair<IdSet2> = pairNewMap();
@@ -741,6 +743,15 @@ export const createStore: typeof createStoreDecl = (): Store => {
   ): 1 | void => {
     if (!collIsEmpty(changedIds)) {
       callListeners(idListeners, ids, () => mapToObj(changedIds));
+      if (hasListeners) {
+        mapForEach(changedIds, (changedId, changed) =>
+          callListeners(
+            hasListeners,
+            [...(ids ?? []), changedId],
+            changed == 1,
+          ),
+        );
+      }
       return 1;
     }
   };
@@ -896,17 +907,23 @@ export const createStore: typeof createStoreDecl = (): Store => {
   };
 
   const callValuesListenersForChanges = (mutator: 0 | 1) => {
-    const emptyIdListeners = collIsEmpty(valueIdsListeners[mutator]);
+    const emptyIdAndHasListeners =
+      collIsEmpty(valueIdsListeners[mutator]) &&
+      collIsEmpty(hasValueListeners[mutator]);
     const emptyOtherListeners =
       collIsEmpty(valueListeners[mutator]) &&
       collIsEmpty(valuesListeners[mutator]);
-    if (!emptyIdListeners || !emptyOtherListeners) {
+    if (!emptyIdAndHasListeners || !emptyOtherListeners) {
       const changes: [ChangedIdsMap, IdMap<ChangedCell>] = mutator
         ? [mapClone(changedValueIds), mapClone(changedValues)]
         : [changedValueIds, changedValues];
 
-      if (!emptyIdListeners) {
-        callIdsAndHasListenersIfChanged(changes[0], valueIdsListeners[mutator]);
+      if (!emptyIdAndHasListeners) {
+        callIdsAndHasListenersIfChanged(
+          changes[0],
+          valueIdsListeners[mutator],
+          hasValueListeners[mutator],
+        );
       }
 
       if (!emptyOtherListeners) {
@@ -1663,6 +1680,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
       InvalidCell: [3, invalidCellListeners],
       [VALUES]: [0, valuesListeners],
       [VALUE_IDS]: [0, valueIdsListeners],
+      [HAS + VALUE]: [
+        1,
+        hasValueListeners,
+        [getValueIds],
+        (ids: Ids) => [hasValue(ids[0])],
+      ],
       [VALUE]: [
         1,
         valueListeners,

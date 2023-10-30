@@ -212,6 +212,13 @@ export type ValueIdsListener = (
   getIdChanges: GetIdChanges | undefined,
 ) => void;
 
+/// HasValueListener
+export type HasValueListener = (
+  store: Store,
+  valueId: Id,
+  hasValue: boolean,
+) => void;
+
 /// ValueListener
 export type ValueListener = (
   store: Store,
@@ -619,6 +626,13 @@ export interface Store {
 
   /// Store.addValueIdsListener
   addValueIdsListener(listener: ValueIdsListener, mutator?: boolean): Id;
+
+  /// Store.addHasValueListener
+  addHasValueListener(
+    valueId: IdOrNull,
+    listener: HasValueListener,
+    mutator?: boolean,
+  ): Id;
 
   /// Store.addValueListener
   addValueListener(
