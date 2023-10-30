@@ -1,4 +1,4 @@
-import {ifNotUndefined, isInstanceOf, isUndefined, size} from './other';
+import {ifNotUndefined, isUndefined, size} from './other';
 import {Id} from '../types/common.d';
 import {arrayMap} from './array';
 
@@ -7,12 +7,21 @@ export type IdObj2<Value> = IdObj<IdObj<Value>>;
 
 export const object = Object;
 
+const getPrototypeOf = (obj: any) => object.getPrototypeOf(obj);
+
 export const objIds = object.keys;
 export const objFrozen = object.isFrozen;
 export const objFreeze = object.freeze;
 
 export const isObject = (obj: unknown): boolean =>
-  isInstanceOf(obj, object) && (obj as any).constructor == object;
+  !isUndefined(obj) &&
+  (ifNotUndefined(
+    getPrototypeOf(obj),
+    (objPrototype) =>
+      objPrototype == object.prototype ||
+      isUndefined(getPrototypeOf(objPrototype)),
+    () => true,
+  ) as boolean);
 
 export const objNew = <Value>(
   entries: [id: string, value: Value][] = [],

@@ -26,9 +26,7 @@ export const createSqlite3Persister = ((
     async (sql: string, args: any[] = []): Promise<IdObj<any>[]> =>
       await promiseNew((resolve, reject) =>
         db.all(sql, args, (error, rows: IdObj<any>[]) =>
-          error
-            ? reject(error)
-            : resolve(rows.map((row: IdObj<any>) => ({...row}))),
+          error ? reject(error) : resolve(rows),
         ),
       ),
     (listener: UpdateListener): Observer => {

@@ -419,6 +419,22 @@ describe('Sorted Row Ids', () => {
 });
 
 describe('Miscellaneous', () => {
+  test('Null prototype objects', () => {
+    const tables = Object.create(null);
+    const table = Object.create(null);
+    const row = Object.create(null);
+    row.c1 = 1;
+    table.r1 = row;
+    tables.t1 = table;
+    store.setTables(tables);
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+
+    const values = Object.create(null);
+    values.v1 = 1;
+    store.setValues(values);
+    expect(store.getValues()).toEqual({v1: 1});
+  });
+
   describe('forEach', () => {
     test('forEachTable', () => {
       store.setTables({t1: {r1: {c1: 1, c2: 2}}});
