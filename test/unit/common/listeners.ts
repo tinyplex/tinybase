@@ -148,6 +148,13 @@ export const createStoreListener = (
       );
     },
 
+    listenToHasValues: (id) => {
+      logs[id] = [];
+      return store.addHasValuesListener((_, hasValues) =>
+        logs[id].push(hasValues),
+      );
+    },
+
     listenToValues: (id) => {
       logs[id] = [];
       return store.addValuesListener((store) =>

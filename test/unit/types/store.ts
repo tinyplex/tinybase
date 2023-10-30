@@ -918,6 +918,18 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
   storeWithSchemas.addCellListener(null, 'r2', 'c2', () => null); // !
   storeWithSchemas.addCellListener('t2', 'r2', 'c1', () => null); // !
 
+  storeWithSchemas.addHasValuesListener((store, hasValues) => {
+    store.getValues().v1;
+    hasValues as boolean;
+    store.getValues().v2; // !
+    hasValues as string; // !
+  });
+  storeWithSchemas.addHasValuesListener((store) => {
+    store.getValues().v1;
+    store.getValues().v2; // !
+  });
+  storeWithSchemas.addHasValuesListener(() => null);
+
   storeWithSchemas.addValuesListener((store, getValueChange) => {
     store.getValues().v1;
     getValueChange?.('v1') as [true, number, number];

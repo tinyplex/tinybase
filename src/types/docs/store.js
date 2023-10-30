@@ -678,6 +678,22 @@
  */
 /// CellListener
 /**
+ * The HasValuesListener type describes a function that is used to listen to
+ * Values as a whole being added to or removed from the Store.
+ *
+ * A HasValuesListener is provided when using the addHasValuesListener method.
+ * See that method for specific examples.
+ *
+ * When called, a HasValuesListener is given a reference to the Store. It is
+ * also given a flag to indicate whether Values now exist (having not done
+ * previously), or do not (having done so previously).
+ * @param store A reference to the Store that changed.
+ * @param hasValues Whether Values now exist or not.
+ * @category Listener
+ * @since v4.4.0
+ */
+/// HasValuesListener
+/**
  * The ValuesListener type describes a function that is used to listen to
  * changes to all the Values in a Store.
  *
@@ -4706,6 +4722,68 @@
    * @category Listener
    */
   /// Store.addCellListener
+  /**
+   * The addHasValuesListener method registers a listener function with the
+   * Store that will be called when Values as a whole are added to or removed
+   * from the Store.
+   *
+   * The provided listener is a HasValuesListener function, and will be called
+   * with a reference to the Store. It is also given a flag to indicate whether
+   * Values now exist (having not done previously), or do not (having done so
+   * previously).
+   *
+   * Use the optional mutator parameter to indicate that there is code in the
+   * listener that will mutate Store data. If set to `false` (or omitted), such
+   * mutations will be silently ignored. All relevant mutator listeners (with
+   * this flag set to `true`) are called _before_ any non-mutator listeners
+   * (since the latter may become relevant due to changes made in the former).
+   * The changes made by mutator listeners do not fire other mutating listeners,
+   * though they will fire non-mutator listeners.
+   * @param listener The function that will be called whenever Values as a whole
+   * are added or removed.
+   * @param mutator An optional boolean that indicates that the listener mutates
+   * Store data.
+   * @returns A unique Id for the listener that can later be used to call it
+   * explicitly, or to remove it.
+   * @example
+   * This example registers a listener that responds to Values being added or
+   * removed.
+   *
+   * ```js
+   * const store = createStore().setValues({open: true, employees: 3});
+   * const listenerId = store.addHasValuesListener((store, hasValues) => {
+   *   console.log('Values ' + (hasValues ? 'added' : 'removed'));
+   * });
+   *
+   * store.delValues();
+   * // -> 'Values removed'
+   *
+   * store.setValue('employees', 4);
+   * // -> 'Values added'
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @example
+   * This example registers a listener that responds to Values being added or
+   * removed, and which also mutates the Store itself.
+   *
+   * ```js
+   * const store = createStore();
+   * const listenerId = store.addHasValuesListener(
+   *   (store, hasValues) => store.setValue('hasValues', hasValues),
+   *   true,
+   * );
+   *
+   * store.setValue('employees', 4);
+   * console.log(store.getValues());
+   * // -> {employees: 4, hasValues: true}
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @category Listener
+   * @since v4.4.0
+   */
+  /// Store.addHasValuesListener
   /**
    * The addValuesListener method registers a listener function with the Store
    * that will be called whenever the Values change.
