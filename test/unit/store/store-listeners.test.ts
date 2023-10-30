@@ -3151,7 +3151,7 @@ describe('Listeners', () => {
         {t2: {r1: {c1: undefined}}},
         {t2: {0: {c1: undefined}}},
         {t2: {1: {c1: undefined}}},
-        {t2: {2: {c2: undefined}}},
+        {t2: {2: {c1: undefined}}},
       );
       expectChanges(
         listener,
