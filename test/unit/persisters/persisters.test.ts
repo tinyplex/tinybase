@@ -507,7 +507,7 @@ const mockAutomerge: Persistable<DocHandle<any>> = {
   set: async (docHandle: DocHandle<any>, value: any): Promise<void> =>
     await mockAutomerge.write(docHandle, value),
   write: async (docHandle: DocHandle<any>, value: any): Promise<void> => {
-    docHandle.change((doc) => {
+    docHandle.change((doc: any) => {
       if (typeof value != 'string') {
         const docContent = doc['tinybase'];
         if (Object.keys(docContent).length == 0) {

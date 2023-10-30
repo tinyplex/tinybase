@@ -5,6 +5,7 @@ export default class extends TestEnvironment {
   async setup() {
     this.global.env = this.constructor;
     this.global.Uint8Array = Uint8Array;
+    this.global.structuredClone = structuredClone;
     await super.setup();
   }
 }
