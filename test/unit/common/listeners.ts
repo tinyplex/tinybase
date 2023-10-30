@@ -126,6 +126,17 @@ export const createStoreListener = (
       );
     },
 
+    listenToHasCell: (id, tableId, rowId, cellId) => {
+      logs[id] = [];
+      return (store as Store).addHasCellListener(
+        tableId,
+        rowId,
+        cellId,
+        (_, tableId, rowId, cellId, hasCell) =>
+          logs[id].push({[tableId]: {[rowId]: {[cellId]: hasCell}}}),
+      );
+    },
+
     listenToCell: (id, tableId, rowId, cellId) => {
       logs[id] = [];
       return (store as Store).addCellListener(
