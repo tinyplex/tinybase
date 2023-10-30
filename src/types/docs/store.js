@@ -650,6 +650,26 @@
  */
 /// CellIdsListener
 /**
+ * The HasCellListener type describes a function that is used to listen to a
+ * Cell being added to or removed from the Store.
+ *
+ * A HasCellListener is provided when using the addHasCellListener method. See
+ * that method for specific examples.
+ *
+ * When called, a HasCellListener is given a reference to the Store, the Id of
+ * the Table that changed, the Id of the Row that changed, and the Id of Cell
+ * that changed. It is also given a flag to indicate whether the Cell now exists
+ * (having not done previously), or does not (having done so previously).
+ * @param store A reference to the Store that changed.
+ * @param tableId The Id of the Table that changed.
+ * @param rowId The Id of the Row that changed.
+ * @param cellId The Id of the Cell that changed.
+ * @param hasCell Whether the Cell now exists or not.
+ * @category Listener
+ * @since v4.4.0
+ */
+/// HasCellListener
+/**
  * The CellListener type describes a function that is used to listen to changes
  * to a Cell.
  *
@@ -4610,6 +4630,123 @@
    * @category Listener
    */
   /// Store.addCellIdsListener
+  /**
+   * The addHasCellListener method registers a listener function with the Store
+   * that will be called when a Cell is added to or removed from the Store.
+   *
+   * The provided listener is a HasCellListener function, and will be called
+   * with a reference to the Store, the Id of the Table that changed, the Id of
+   * the Row that changed, and the Id of the Cell that changed. It is also given
+   * a flag to indicate whether the Cell now exists (having not done
+   * previously), or does not (having done so previously).
+   *
+   * You can either listen to a single Cell being added or removed (by
+   * specifying the Table Id, Row Id, and Cell Id as the method's first three
+   * parameters) or changes to any Cell (by providing `null` wildcards).
+   *
+   * All, some, or none of the `tableId`, `rowId`, and `cellId` parameters can
+   * be wildcarded with `null`. You can listen to a specific Cell in a specific
+   * Row in a specific Table, any Cell in any Row in any Table, for example - or
+   * every other combination of wildcards.
+   *
+   * Use the optional mutator parameter to indicate that there is code in the
+   * listener that will mutate Store data. If set to `false` (or omitted), such
+   * mutations will be silently ignored. All relevant mutator listeners (with
+   * this flag set to `true`) are called _before_ any non-mutator listeners
+   * (since the latter may become relevant due to changes made in the former).
+   * The changes made by mutator listeners do not fire other mutating listeners,
+   * though they will fire non-mutator listeners.
+   * @param tableId The Id of the Table to listen to, or `null` as a wildcard.
+   * @param rowId The Id of the Row to listen to, or `null` as a wildcard.
+   * @param cellId The Id of the Cell to listen to, or `null` as a wildcard.
+   * @param listener The function that will be called whenever the matching Cell
+   * is added or removed.
+   * @param mutator An optional boolean that indicates that the listener mutates
+   * Store data.
+   * @returns A unique Id for the listener that can later be used to call it
+   * explicitly, or to remove it.
+   * @example
+   * This example registers a listener that responds to a specific Cell being
+   * added or removed.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {fido: {species: 'dog', color: 'brown'}},
+   * });
+   * const listenerId = store.addHasCellListener(
+   *   'pets',
+   *   'fido',
+   *   'color',
+   *   (store, tableId, rowId, cellId, hasCell) => {
+   *     console.log(
+   *       'color cell in fido row in pets table ' +
+   *         (hasCell ? 'added' : 'removed'),
+   *     );
+   *   },
+   * );
+   *
+   * store.delCell('pets', 'fido', 'color');
+   * // -> 'color cell in fido row in pets table removed'
+   *
+   * store.setCell('pets', 'fido', 'color', 'walnut');
+   * // -> 'color cell in fido row in pets table added'
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @example
+   * This example registers a listener that responds to any Cell being added or
+   * removed.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {fido: {species: 'dog', color: 'brown'}},
+   * });
+   * const listenerId = store.addHasCellListener(
+   *   null,
+   *   null,
+   *   null,
+   *   (store, tableId, rowId, cellId, hasCell) => {
+   *     console.log(
+   *       `${cellId} cell in ${rowId} row in ${tableId} table ` +
+   *         (hasCell ? 'added' : 'removed'),
+   *     );
+   *   },
+   * );
+   *
+   * store.delCell('pets', 'fido', 'color');
+   * // -> 'color cell in fido row in pets table removed'
+   * store.setTable('species', {dog: {price: 5}});
+   * // -> 'price cell in dog row in species table added'
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @example
+   * This example registers a listener that responds to a specific Cell being
+   * added or removed, and which also mutates the Store itself.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {fido: {species: 'dog', color: 'brown'}},
+   * });
+   * const listenerId = store.addHasCellListener(
+   *   'pets',
+   *   'fido',
+   *   'color',
+   *   (store, tableId, rowId, cellId) =>
+   *     store.setCell('meta', 'update', `${tableId}_${rowId}_${cellId}`, true),
+   *   true,
+   * );
+   *
+   * store.delCell('pets', 'fido', 'color');
+   * console.log(store.getTable('meta'));
+   * // -> {update: {pets_fido_color: true}}
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @category Listener
+   * @since v4.4.0
+   */
+  /// Store.addHasCellListener
   /**
    * The addCellListener method registers a listener function with the Store
    * that will be called whenever data in a Cell changes.
