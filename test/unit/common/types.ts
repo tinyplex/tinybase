@@ -20,6 +20,7 @@ export type StoreListener = Listener &
     listenToTableIds: (id: Id) => Id;
     listenToTable: (id: Id, tableId: IdOrNull) => Id;
     listenToTableCellIds: (id: Id, tableId: IdOrNull) => Id;
+    listenToHasTableCell: (id: Id, tableId: IdOrNull, cellId: IdOrNull) => Id;
     listenToRowCount: (id: Id, tableId: IdOrNull) => Id;
     listenToRowIds: (id: Id, tableId: IdOrNull) => Id;
     listenToSortedRowIds: (
