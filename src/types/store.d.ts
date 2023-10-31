@@ -357,32 +357,46 @@ export type GetTransactionLog = () => TransactionLog;
 
 /// StoreListenerStats
 export type StoreListenerStats = {
+  /// StoreListenerStats.hasTables
+  hasTables?: number;
   /// StoreListenerStats.tables
   tables?: number;
   /// StoreListenerStats.tableIds
   tableIds?: number;
+  /// StoreListenerStats.hasTable
+  hasTable?: number;
   /// StoreListenerStats.table
   table?: number;
   /// StoreListenerStats.tableCellIds
   tableCellIds?: number;
+  /// StoreListenerStats.hasTableCell
+  hasTableCell?: number;
   /// StoreListenerStats.rowCount
   rowCount?: number;
   /// StoreListenerStats.rowIds
   rowIds?: number;
   /// StoreListenerStats.sortedRowIds
   sortedRowIds?: number;
+  /// StoreListenerStats.hasRow
+  hasRow?: number;
   /// StoreListenerStats.row
   row?: number;
   /// StoreListenerStats.cellIds
   cellIds?: number;
+  /// StoreListenerStats.hasCell
+  hasCell?: number;
   /// StoreListenerStats.cell
   cell?: number;
   /// StoreListenerStats.invalidCell
   invalidCell?: number;
+  /// StoreListenerStats.hasValues
+  hasValues?: number;
   /// StoreListenerStats.values
   values?: number;
   /// StoreListenerStats.valueIds
   valueIds?: number;
+  /// StoreListenerStats.hasValue
+  hasValue?: number;
   /// StoreListenerStats.value
   value?: number;
   /// StoreListenerStats.invalidValue
