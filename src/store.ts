@@ -201,6 +201,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const rowCountListeners: Pair<IdSet2> = pairNewMap();
   const rowIdsListeners: Pair<IdSet2> = pairNewMap();
   const sortedRowIdsListeners: Pair<IdSet3> = pairNewMap();
+  const hasRowListeners: Pair<IdSet3> = pairNewMap();
   const rowListeners: Pair<IdSet3> = pairNewMap();
   const cellIdsListeners: Pair<IdSet3> = pairNewMap();
   const hasCellListeners: Pair<IdSet4> = pairNewMap();
@@ -766,9 +767,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
     const emptyIdAndHasListeners =
       collIsEmpty(cellIdsListeners[mutator]) &&
       collIsEmpty(hasCellListeners[mutator]) &&
+      collIsEmpty(rowIdsListeners[mutator]) &&
+      collIsEmpty(hasRowListeners[mutator]) &&
       collIsEmpty(tableCellIdsListeners[mutator]) &&
       collIsEmpty(rowCountListeners[mutator]) &&
-      collIsEmpty(rowIdsListeners[mutator]) &&
       emptySortedRowIdListeners &&
       collIsEmpty(tableIdsListeners[mutator]);
     const emptyOtherListeners =
@@ -830,7 +832,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
             callIdsAndHasListenersIfChanged(
               changedIds,
               rowIdsListeners[mutator],
-              undefined,
+              hasRowListeners[mutator],
               [tableId],
             ) &&
             !emptySortedRowIdListeners
@@ -1679,6 +1681,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
       [TABLE + CELL_IDS]: [1, tableCellIdsListeners, [getTableIds]],
       [ROW_COUNT]: [1, rowCountListeners, [getTableIds]],
       [ROW_IDS]: [1, rowIdsListeners, [getTableIds]],
+      [HAS + ROW]: [
+        2,
+        hasRowListeners,
+        [getTableIds, getRowIds],
+        (ids: Ids) => [hasRow(...(ids as [Id, Id]))],
+      ],
       [ROW]: [2, rowListeners, [getTableIds, getRowIds]],
       [CELL_IDS]: [2, cellIdsListeners, [getTableIds, getRowIds]],
       [HAS + CELL]: [

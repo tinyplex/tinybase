@@ -383,6 +383,20 @@ export type SortedRowIdsListener<
   sortedRowIds: Ids,
 ) => void;
 
+/// HasRowListener
+export type HasRowListener<
+  Schemas extends OptionalSchemas,
+  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+  RowIdOrNull extends IdOrNull,
+> = (
+  store: Store<Schemas>,
+  tableId: TableIdOrNull extends null
+    ? TableIdFromSchema<Schemas[0]>
+    : TableIdOrNull,
+  rowId: RowIdOrNull extends null ? Id : RowIdOrNull,
+  hasRow: boolean,
+) => void;
+
 /// RowListener
 export type RowListener<
   Schemas extends OptionalSchemas,
@@ -1144,6 +1158,17 @@ export interface Store<in out Schemas extends OptionalSchemas> {
       Offset,
       Limit
     >,
+    mutator?: boolean,
+  ): Id;
+
+  /// Store.addHasRowListener
+  addHasRowListener<
+    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+    RowIdOrNull extends IdOrNull,
+  >(
+    tableId: TableIdOrNull,
+    rowId: RowIdOrNull,
+    listener: HasRowListener<Schemas, TableIdOrNull, RowIdOrNull>,
     mutator?: boolean,
   ): Id;
 
