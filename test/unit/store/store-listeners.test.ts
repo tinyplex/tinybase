@@ -8127,7 +8127,7 @@ describe('callListener', () => {
     expect(listener).toHaveBeenNthCalledWith(1, store);
   });
 
-  test('table ids (non mutator)', () => {
+  test('tableIds (non mutator)', () => {
     store.callListener(store.addTableIdsListener(listener));
     expect(listener).toHaveBeenCalledTimes(1);
     expect(listener).toHaveBeenNthCalledWith(1, store);
@@ -8159,73 +8159,73 @@ describe('callListener', () => {
     expect(listener).toHaveBeenNthCalledWith(2, store, 't2');
   });
 
-  test('table cell ids id (non mutator)', () => {
+  test('tableCellIds id (non mutator)', () => {
     store.callListener(store.addTableCellIdsListener('t1', listener));
     expect(listener).toHaveBeenCalledTimes(1);
     expect(listener).toHaveBeenNthCalledWith(1, store, 't1');
   });
 
-  test('table cell ids * (non mutator)', () => {
+  test('tableCellIds * (non mutator)', () => {
     store.callListener(store.addTableCellIdsListener(null, listener));
     expect(listener).toHaveBeenCalledTimes(2);
     expect(listener).toHaveBeenNthCalledWith(1, store, 't1');
     expect(listener).toHaveBeenNthCalledWith(2, store, 't2');
   });
 
-  test('row ids id (non mutator)', () => {
+  test('rowIds id (non mutator)', () => {
     store.callListener(store.addRowIdsListener('t1', listener));
     expect(listener).toHaveBeenCalledTimes(1);
     expect(listener).toHaveBeenNthCalledWith(1, store, 't1');
   });
 
-  test('row ids * (non mutator)', () => {
+  test('rowIds * (non mutator)', () => {
     store.callListener(store.addRowIdsListener(null, listener));
     expect(listener).toHaveBeenCalledTimes(2);
     expect(listener).toHaveBeenNthCalledWith(1, store, 't1');
     expect(listener).toHaveBeenNthCalledWith(2, store, 't2');
   });
 
-  test('has row id/id (non mutator)', () => {
+  test('hasRow id/id (non mutator)', () => {
     store.callListener(store.addHasRowListener('t1', 'r1', listener));
     expect(listener).toHaveBeenCalledTimes(1);
     expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', true);
   });
 
-  test('has row id/id (mutator)', () => {
+  test('hasRow id/id (mutator)', () => {
     store.callListener(store.addHasRowListener('t1', 'r1', listener, true));
     expect(listener).toHaveBeenCalledTimes(1);
     expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', true);
   });
 
-  test('has row id/* (non mutator)', () => {
+  test('hasRow id/* (non mutator)', () => {
     store.callListener(store.addHasRowListener('t1', null, listener));
     expect(listener).toHaveBeenCalledTimes(2);
     expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', true);
     expect(listener).toHaveBeenNthCalledWith(2, store, 't1', 'r2', true);
   });
 
-  test('has row id/* (mutator)', () => {
+  test('hasRow id/* (mutator)', () => {
     store.callListener(store.addHasRowListener('t1', null, listener, true));
     expect(listener).toHaveBeenCalledTimes(2);
     expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', true);
     expect(listener).toHaveBeenNthCalledWith(2, store, 't1', 'r2', true);
   });
 
-  test('has row */id (non mutator)', () => {
+  test('hasRow */id (non mutator)', () => {
     store.callListener(store.addHasRowListener(null, 'r1', listener));
     expect(listener).toHaveBeenCalledTimes(2);
     expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', true);
     expect(listener).toHaveBeenNthCalledWith(2, store, 't2', 'r1', true);
   });
 
-  test('has row */id (mutator)', () => {
+  test('hasRow */id (mutator)', () => {
     store.callListener(store.addHasRowListener(null, 'r1', listener, true));
     expect(listener).toHaveBeenCalledTimes(2);
     expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', true);
     expect(listener).toHaveBeenNthCalledWith(2, store, 't2', 'r1', true);
   });
 
-  test('has row */* (non mutator)', () => {
+  test('hasRow */* (non mutator)', () => {
     store.callListener(store.addHasRowListener(null, null, listener));
     expect(listener).toHaveBeenCalledTimes(4);
     expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', true);
@@ -8234,7 +8234,7 @@ describe('callListener', () => {
     expect(listener).toHaveBeenNthCalledWith(4, store, 't2', 'r2', true);
   });
 
-  test('has row */* (mutator)', () => {
+  test('hasRow */* (mutator)', () => {
     store.callListener(store.addHasRowListener(null, null, listener, true));
     expect(listener).toHaveBeenCalledTimes(4);
     expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', true);
@@ -8301,27 +8301,27 @@ describe('callListener', () => {
     expect(listener).toHaveBeenNthCalledWith(4, store, 't2', 'r2');
   });
 
-  test('cell ids id/id (non mutator)', () => {
+  test('cellIds id/id (non mutator)', () => {
     store.callListener(store.addCellIdsListener('t1', 'r1', listener));
     expect(listener).toHaveBeenCalledTimes(1);
     expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1');
   });
 
-  test('cell ids id/* (non mutator)', () => {
+  test('cellIds id/* (non mutator)', () => {
     store.callListener(store.addCellIdsListener('t1', null, listener));
     expect(listener).toHaveBeenCalledTimes(2);
     expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1');
     expect(listener).toHaveBeenNthCalledWith(2, store, 't1', 'r2');
   });
 
-  test('cell ids */id (non mutator)', () => {
+  test('cellIds */id (non mutator)', () => {
     store.callListener(store.addCellIdsListener(null, 'r1', listener));
     expect(listener).toHaveBeenCalledTimes(2);
     expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1');
     expect(listener).toHaveBeenNthCalledWith(2, store, 't2', 'r1');
   });
 
-  test('cell ids */* (non mutator)', () => {
+  test('cellIds */* (non mutator)', () => {
     store.callListener(store.addCellIdsListener(null, null, listener));
     expect(listener).toHaveBeenCalledTimes(4);
     expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1');
@@ -8330,13 +8330,13 @@ describe('callListener', () => {
     expect(listener).toHaveBeenNthCalledWith(4, store, 't2', 'r2');
   });
 
-  test('has cell id/id/id (non mutator)', () => {
+  test('hasCell id/id/id (non mutator)', () => {
     store.callListener(store.addHasCellListener('t1', 'r1', 'c1', listener));
     expect(listener).toHaveBeenCalledTimes(1);
     expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', 'c1', true);
   });
 
-  test('has cell id/id/id (mutator)', () => {
+  test('hasCell id/id/id (mutator)', () => {
     store.callListener(
       store.addHasCellListener('t1', 'r1', 'c1', listener, true),
     );
@@ -8344,14 +8344,14 @@ describe('callListener', () => {
     expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', 'c1', true);
   });
 
-  test('has cell id/id/* (non mutator)', () => {
+  test('hasCell id/id/* (non mutator)', () => {
     store.callListener(store.addHasCellListener('t1', 'r1', null, listener));
     expect(listener).toHaveBeenCalledTimes(2);
     expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', 'c1', true);
     expect(listener).toHaveBeenNthCalledWith(2, store, 't1', 'r1', 'c2', true);
   });
 
-  test('has cell id/id/* (mutator)', () => {
+  test('hasCell id/id/* (mutator)', () => {
     store.callListener(
       store.addHasCellListener('t1', 'r1', null, listener, true),
     );
@@ -8360,14 +8360,14 @@ describe('callListener', () => {
     expect(listener).toHaveBeenNthCalledWith(2, store, 't1', 'r1', 'c2', true);
   });
 
-  test('has cell id/*/id (non mutator)', () => {
+  test('hasCell id/*/id (non mutator)', () => {
     store.callListener(store.addHasCellListener('t1', null, 'c1', listener));
     expect(listener).toHaveBeenCalledTimes(2);
     expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', 'c1', true);
     expect(listener).toHaveBeenNthCalledWith(2, store, 't1', 'r2', 'c1', true);
   });
 
-  test('has cell id/*/id (mutator)', () => {
+  test('hasCell id/*/id (mutator)', () => {
     store.callListener(
       store.addHasCellListener('t1', null, 'c1', listener, true),
     );
@@ -8376,7 +8376,7 @@ describe('callListener', () => {
     expect(listener).toHaveBeenNthCalledWith(2, store, 't1', 'r2', 'c1', true);
   });
 
-  test('has cell id/*/* (non mutator)', () => {
+  test('hasCell id/*/* (non mutator)', () => {
     store.callListener(store.addHasCellListener('t1', null, null, listener));
     expect(listener).toHaveBeenCalledTimes(4);
     expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', 'c1', true);
@@ -8385,7 +8385,7 @@ describe('callListener', () => {
     expect(listener).toHaveBeenNthCalledWith(4, store, 't1', 'r2', 'c2', true);
   });
 
-  test('has cell id/*/* (mutator)', () => {
+  test('hasCell id/*/* (mutator)', () => {
     store.callListener(
       store.addHasCellListener('t1', null, null, listener, true),
     );
@@ -8396,14 +8396,14 @@ describe('callListener', () => {
     expect(listener).toHaveBeenNthCalledWith(4, store, 't1', 'r2', 'c2', true);
   });
 
-  test('has cell */id/id (non mutator)', () => {
+  test('hasCell */id/id (non mutator)', () => {
     store.callListener(store.addHasCellListener(null, 'r1', 'c1', listener));
     expect(listener).toHaveBeenCalledTimes(2);
     expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', 'c1', true);
     expect(listener).toHaveBeenNthCalledWith(2, store, 't2', 'r1', 'c1', true);
   });
 
-  test('has cell */id/id (mutator)', () => {
+  test('hasCell */id/id (mutator)', () => {
     store.callListener(
       store.addHasCellListener(null, 'r1', 'c1', listener, true),
     );
@@ -8412,7 +8412,7 @@ describe('callListener', () => {
     expect(listener).toHaveBeenNthCalledWith(2, store, 't2', 'r1', 'c1', true);
   });
 
-  test('has cell */id/* (non mutator)', () => {
+  test('hasCell */id/* (non mutator)', () => {
     store.callListener(store.addHasCellListener(null, 'r1', null, listener));
     expect(listener).toHaveBeenCalledTimes(4);
     expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', 'c1', true);
@@ -8421,7 +8421,7 @@ describe('callListener', () => {
     expect(listener).toHaveBeenNthCalledWith(4, store, 't2', 'r1', 'c2', true);
   });
 
-  test('has cell */id/* (mutator)', () => {
+  test('hasCell */id/* (mutator)', () => {
     store.callListener(
       store.addHasCellListener(null, 'r1', null, listener, true),
     );
@@ -8432,7 +8432,7 @@ describe('callListener', () => {
     expect(listener).toHaveBeenNthCalledWith(4, store, 't2', 'r1', 'c2', true);
   });
 
-  test('has cell */*/id (non mutator)', () => {
+  test('hasCell */*/id (non mutator)', () => {
     store.callListener(store.addHasCellListener(null, null, 'c1', listener));
     expect(listener).toHaveBeenCalledTimes(4);
     expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', 'c1', true);
@@ -8441,7 +8441,7 @@ describe('callListener', () => {
     expect(listener).toHaveBeenNthCalledWith(4, store, 't2', 'r2', 'c1', true);
   });
 
-  test('has cell */*/id (mutator)', () => {
+  test('hasCell */*/id (mutator)', () => {
     store.callListener(
       store.addHasCellListener(null, null, 'c1', listener, true),
     );
@@ -8452,7 +8452,7 @@ describe('callListener', () => {
     expect(listener).toHaveBeenNthCalledWith(4, store, 't2', 'r2', 'c1', true);
   });
 
-  test('has cell */*/* (non mutator)', () => {
+  test('hasCell */*/* (non mutator)', () => {
     store.callListener(store.addHasCellListener(null, null, null, listener));
     expect(listener).toHaveBeenCalledTimes(8);
     expect(listener).toHaveBeenNthCalledWith(1, store, 't1', 'r1', 'c1', true);
@@ -8465,7 +8465,7 @@ describe('callListener', () => {
     expect(listener).toHaveBeenNthCalledWith(8, store, 't2', 'r2', 'c2', true);
   });
 
-  test('has cell */*/* (mutator)', () => {
+  test('hasCell */*/* (mutator)', () => {
     store.callListener(
       store.addHasCellListener(null, null, null, listener, true),
     );
@@ -8628,13 +8628,13 @@ describe('callListener', () => {
     expect(listener).toHaveBeenCalledTimes(0);
   });
 
-  test('has values (non mutator)', () => {
+  test('hasValues (non mutator)', () => {
     store.callListener(store.addHasValuesListener(listener));
     expect(listener).toHaveBeenCalledTimes(1);
     expect(listener).toHaveBeenNthCalledWith(1, store, true);
   });
 
-  test('has values (mutator)', () => {
+  test('hasValues (mutator)', () => {
     store.callListener(store.addHasValuesListener(listener, true));
     expect(listener).toHaveBeenCalledTimes(1);
     expect(listener).toHaveBeenNthCalledWith(1, store, true);
@@ -8652,37 +8652,37 @@ describe('callListener', () => {
     expect(listener).toHaveBeenNthCalledWith(1, store);
   });
 
-  test('value ids (non mutator)', () => {
+  test('valueIds (non mutator)', () => {
     store.callListener(store.addValueIdsListener(listener));
     expect(listener).toHaveBeenCalledTimes(1);
     expect(listener).toHaveBeenNthCalledWith(1, store);
   });
 
-  test('value ids (mutator)', () => {
+  test('valueIds (mutator)', () => {
     store.callListener(store.addValueIdsListener(listener, true));
     expect(listener).toHaveBeenCalledTimes(1);
     expect(listener).toHaveBeenNthCalledWith(1, store);
   });
 
-  test('value id (non mutator)', () => {
+  test('valueId (non mutator)', () => {
     store.callListener(store.addValueListener('v1', listener));
     expect(listener).toHaveBeenCalledTimes(1);
     expect(listener).toHaveBeenNthCalledWith(1, store, 'v1', 1, 1);
   });
 
-  test('value id (mutator)', () => {
+  test('valueId (mutator)', () => {
     store.callListener(store.addValueListener('v1', listener, true));
     expect(listener).toHaveBeenCalledTimes(1);
     expect(listener).toHaveBeenNthCalledWith(1, store, 'v1', 1, 1);
   });
 
-  test('value has (non mutator)', () => {
+  test('hasValue (non mutator)', () => {
     store.callListener(store.addHasValueListener('v1', listener));
     expect(listener).toHaveBeenCalledTimes(1);
     expect(listener).toHaveBeenNthCalledWith(1, store, 'v1', true);
   });
 
-  test('value has (mutator)', () => {
+  test('hasValue (mutator)', () => {
     store.callListener(store.addHasValueListener('v1', listener, true));
     expect(listener).toHaveBeenCalledTimes(1);
     expect(listener).toHaveBeenNthCalledWith(1, store, 'v1', true);
@@ -8712,13 +8712,13 @@ describe('callListener', () => {
     expect(listener).toHaveBeenCalledTimes(0);
   });
 
-  test('will finish transaction', () => {
+  test('willFinishTransaction', () => {
     store.callListener(store.addWillFinishTransactionListener(listener));
     expect(listener).toHaveBeenCalledTimes(1);
     expect(listener).toHaveBeenNthCalledWith(1, store);
   });
 
-  test('did finish transaction (mutator)', () => {
+  test('didFinishTransaction (mutator)', () => {
     store.callListener(store.addDidFinishTransactionListener(listener));
     expect(listener).toHaveBeenCalledTimes(1);
     expect(listener).toHaveBeenNthCalledWith(1, store);
