@@ -607,6 +607,25 @@
  */
 /// SortedRowIdsListener
 /**
+ * The HasRowListener type describes a function that is used to listen to a Row
+ * being added to or removed from the Store.
+ *
+ * A HasRowListener is provided when using the addHasRowListener method. See
+ * that method for specific examples.
+ *
+ * When called, a HasRowListener is given a reference to the Store, the Id of
+ * the Table that changed, and the Id of the Row that changed. It is also given
+ * a flag to indicate whether the Row now exists (having not done previously),
+ * or does not (having done so previously).
+ * @param store A reference to the Store that changed.
+ * @param tableId The Id of the Table that changed.
+ * @param rowId The Id of the Row that changed.
+ * @param hasRow Whether the Row now exists or not.
+ * @category Listener
+ * @since v4.4.0
+ */
+/// HasRowListener
+/**
  * The RowListener type describes a function that is used to listen to changes
  * to a Row.
  *
@@ -4428,6 +4447,117 @@
    * @since v2.0.0
    */
   /// Store.addSortedRowIdsListener
+  /**
+   * The addHasRowListener method registers a listener function with the Store
+   * that will be called when a Row is added to or removed from the Store.
+   *
+   * The provided listener is a HasRowListener function, and will be called with
+   * a reference to the Store, the Id of the Table that changed, and the Id of
+   * the Row that changed. It is also given a flag to indicate whether the Row
+   * now exists (having not done previously), or does not (having done so
+   * previously).
+   *
+   * You can either listen to a single Row being added or removed (by specifying
+   * the Table Id and Row Id, as the method's first two parameters) or changes
+   * to any Row (by providing `null` wildcards).
+   *
+   * Both, either, or neither of the `tableId` and `rowId` parameters can be
+   * wildcarded with `null`. You can listen to a specific Row in a specific
+   * Table, any Row in a specific Table, a specific Row in any Table, or any Row
+   * in any Table.
+   *
+   * Use the optional mutator parameter to indicate that there is code in the
+   * listener that will mutate Store data. If set to `false` (or omitted), such
+   * mutations will be silently ignored. All relevant mutator listeners (with
+   * this flag set to `true`) are called _before_ any non-mutator listeners
+   * (since the latter may become relevant due to changes made in the former).
+   * The changes made by mutator listeners do not fire other mutating listeners,
+   * though they will fire non-mutator listeners.
+   * @param tableId The Id of the Table to listen to, or `null` as a wildcard.
+   * @param rowId The Id of the Row to listen to, or `null` as a wildcard.
+   * @param listener The function that will be called whenever the matching Row
+   * is added or removed.
+   * @param mutator An optional boolean that indicates that the listener mutates
+   * Store data.
+   * @returns A unique Id for the listener that can later be used to call it
+   * explicitly, or to remove it.
+   * @example
+   * This example registers a listener that responds to a specific Row being
+   * added or removed.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {fido: {species: 'dog', color: 'brown'}},
+   * });
+   * const listenerId = store.addHasRowListener(
+   *   'pets',
+   *   'fido',
+   *   (store, tableId, rowId, hasRow) => {
+   *     console.log(
+   *       'fido row in pets table ' + (hasRow ? 'added' : 'removed'),
+   *     );
+   *   },
+   * );
+   *
+   * store.delRow('pets', 'fido');
+   * // -> 'fido row in pets table removed'
+   *
+   * store.setRow('pets', 'fido', {species: 'dog', color: 'brown'});
+   * // -> 'fido row in pets table added'
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @example
+   * This example registers a listener that responds to any Row being added or
+   * removed.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {fido: {species: 'dog', color: 'brown'}},
+   * });
+   * const listenerId = store.addHasRowListener(
+   *   null,
+   *   null,
+   *   (store, tableId, rowId, hasRow) => {
+   *     console.log(
+   *       `${rowId} row in ${tableId} table ` + (hasRow ? 'added' : 'removed'),
+   *     );
+   *   },
+   * );
+   *
+   * store.delRow('pets', 'fido');
+   * // -> 'fido row in pets table removed'
+   * store.setTable('species', {dog: {price: 5}});
+   * // -> 'dog row in species table added'
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @example
+   * This example registers a listener that responds to a specific Cell being
+   * added or removed, and which also mutates the Store itself.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {fido: {species: 'dog', color: 'brown'}},
+   * });
+   * const listenerId = store.addHasRowListener(
+   *   'pets',
+   *   'fido',
+   *   (store, tableId, rowId) =>
+   *     store.setCell('meta', 'update', `${tableId}_${rowId}`, true),
+   *   true,
+   * );
+   *
+   * store.delRow('pets', 'fido');
+   * console.log(store.getTable('meta'));
+   * // -> {update: {pets_fido: true}}
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @category Listener
+   * @since v4.4.0
+   */
+  /// Store.addHasRowListener
   /**
    * The addRowListener method registers a listener function with the Store that
    * will be called whenever data in a Row changes.

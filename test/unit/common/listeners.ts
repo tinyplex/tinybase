@@ -105,6 +105,16 @@ export const createStoreListener = (
       );
     },
 
+    listenToHasRow: (id, tableId, rowId) => {
+      logs[id] = [];
+      return store.addHasRowListener(
+        tableId,
+        rowId,
+        (_, tableId, rowId, hasRow) =>
+          logs[id].push({[tableId]: {[rowId]: hasRow}}),
+      );
+    },
+
     listenToRow: (id, tableId, rowId) => {
       logs[id] = [];
       return store.addRowListener(tableId, rowId, (store, tableId, rowId) =>

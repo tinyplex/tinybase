@@ -30,6 +30,7 @@ export type StoreListener = Listener &
       offset: number,
       limit: number | undefined,
     ) => Id;
+    listenToHasRow: (id: Id, tableId: IdOrNull, rowId: IdOrNull) => Id;
     listenToRow: (id: Id, tableId: IdOrNull, rowId: IdOrNull) => Id;
     listenToCellIds: (id: Id, tableId: IdOrNull, rowId: IdOrNull) => Id;
     listenToHasCell: (

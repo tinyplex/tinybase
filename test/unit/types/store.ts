@@ -572,6 +572,59 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
     () => null,
   );
 
+  storeWithSchemas.addHasRowListener(
+    't1',
+    'r1',
+    (store, tableId, rowId, hasRow) => {
+      store.getTables().t1;
+      tableId == 't1';
+      rowId == 'r1';
+      hasRow as boolean;
+      hasRow as string; // !
+      store.getTables().t2; // !
+      tableId == 't0'; // !
+      tableId == 't2'; // !
+      rowId == 'r2'; // !
+    },
+  );
+  storeWithSchemas.addHasRowListener('t1', null, (store, tableId, rowId) => {
+    store.getTables().t1;
+    tableId == 't1';
+    rowId == 'r1';
+    rowId == 'r2';
+    store.getTables().t2; // !
+    tableId == 't0'; // !
+    tableId == 't2'; // !
+  });
+  storeWithSchemas.addHasRowListener(null, 'r1', (store, tableId, rowId) => {
+    store.getTables().t1;
+    tableId == 't1';
+    tableId == 't0';
+    rowId == 'r1';
+    store.getTables().t2; // !
+    tableId == 't2'; // !
+    rowId == 'r2'; // !
+  });
+  storeWithSchemas.addHasRowListener(null, null, (store, tableId, rowId) => {
+    store.getTables().t1;
+    tableId == 't1';
+    tableId == 't0';
+    rowId == 'r1';
+    rowId == 'r2';
+    store.getTables().t2; // !
+    tableId == 't2'; // !
+  });
+  storeWithSchemas.addHasRowListener('t1', 'r1', (store, tableId) => {
+    store.getTables().t1;
+    tableId == 't1';
+    store.getTables().t2; // !
+  });
+  storeWithSchemas.addHasRowListener('t1', 'r1', (store) => {
+    store.getTables().t1;
+    store.getTables().t2; // !
+  });
+  storeWithSchemas.addHasRowListener('t2', 'r2', () => null); // !
+
   storeWithSchemas.addRowListener(
     't1',
     'r1',

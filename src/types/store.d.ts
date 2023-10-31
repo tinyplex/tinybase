@@ -173,6 +173,14 @@ export type SortedRowIdsListener = (
   sortedRowIds: Ids,
 ) => void;
 
+/// HasRowListener
+export type HasRowListener = (
+  store: Store,
+  tableId: Id,
+  rowId: Id,
+  hasRow: boolean,
+) => void;
+
 /// RowListener
 export type RowListener = (
   store: Store,
@@ -605,6 +613,14 @@ export interface Store {
     offset: number,
     limit: number | undefined,
     listener: SortedRowIdsListener,
+    mutator?: boolean,
+  ): Id;
+
+  /// Store.addHasRowListener
+  addHasRowListener(
+    tableId: IdOrNull,
+    rowId: IdOrNull,
+    listener: HasRowListener,
     mutator?: boolean,
   ): Id;
 
