@@ -5518,6 +5518,97 @@ describe('Mutating listeners', () => {
     });
   });
 
+  describe('tableCellIds', () => {
+    beforeEach(() => {
+      store = createStore();
+      listener = createStoreListener(store);
+      listener.listenToTableCellIds('/t1c', 't1');
+      listener.listenToTableCellIds('/t*c', null);
+    });
+
+    const setMutatorListeners = () => {
+      store.addRowIdsListener('t1', getTableMutator(2), true);
+      store.addRowIdsListener(null, getTableMutator(3, 't_'), true);
+    };
+
+    test('setTables', () => {
+      setMutatorListeners();
+      store.setTables({t1: {r1: {c1: 1}}});
+      expectChanges(listener, '/t1c', {t1: [['c1', 'c0'], {c1: 1, c0: 1}]});
+      expectChanges(
+        listener,
+        '/t*c',
+        {t1: [['c1', 'c0'], {c1: 1, c0: 1}]},
+        {t_: [['c0'], {c0: 1}]},
+      );
+      expectNoChanges(listener);
+    });
+
+    test('setTable', () => {
+      setMutatorListeners();
+      store.setTable('t1', {r1: {c1: 1}});
+      expectChanges(listener, '/t1c', {t1: [['c1', 'c0'], {c1: 1, c0: 1}]});
+      expectChanges(
+        listener,
+        '/t*c',
+        {t1: [['c1', 'c0'], {c1: 1, c0: 1}]},
+        {t_: [['c0'], {c0: 1}]},
+      );
+      expectNoChanges(listener);
+    });
+
+    test('setRow', () => {
+      setMutatorListeners();
+      store.setRow('t1', 'r1', {c1: 1});
+      expectChanges(listener, '/t1c', {t1: [['c1', 'c0'], {c1: 1, c0: 1}]});
+      expectChanges(
+        listener,
+        '/t*c',
+        {t1: [['c1', 'c0'], {c1: 1, c0: 1}]},
+        {t_: [['c0'], {c0: 1}]},
+      );
+      expectNoChanges(listener);
+    });
+
+    test('addRow', () => {
+      setMutatorListeners();
+      store.addRow('t1', {c1: 1});
+      expectChanges(listener, '/t1c', {t1: [['c1', 'c0'], {c1: 1, c0: 1}]});
+      expectChanges(
+        listener,
+        '/t*c',
+        {t1: [['c1', 'c0'], {c1: 1, c0: 1}]},
+        {t_: [['c0'], {c0: 1}]},
+      );
+      expectNoChanges(listener);
+    });
+
+    test('setPartialRow', () => {
+      store.setTables({t1: {r1: {c1: 1}}});
+      expectChanges(listener, '/t1c', {t1: [['c1'], {c1: 1}]});
+      expectChanges(listener, '/t*c', {t1: [['c1'], {c1: 1}]});
+      setMutatorListeners();
+      // @ts-ignore
+      store.setPartialRow('t1', 'r1', {c1: 1, c2: 1, c3: undefined});
+      expectChanges(listener, '/t1c', {t1: [['c1', 'c2'], {c2: 1}]});
+      expectChanges(listener, '/t*c', {t1: [['c1', 'c2'], {c2: 1}]});
+      expectNoChanges(listener);
+    });
+
+    test('setCell', () => {
+      setMutatorListeners();
+      store.setCell('t1', 'r1', 'c1', 1);
+      expectChanges(listener, '/t1c', {t1: [['c1', 'c0'], {c1: 1, c0: 1}]});
+      expectChanges(
+        listener,
+        '/t*c',
+        {t1: [['c1', 'c0'], {c1: 1, c0: 1}]},
+        {t_: [['c0'], {c0: 1}]},
+      );
+      expectNoChanges(listener);
+    });
+  });
+
   describe('rowIds', () => {
     beforeEach(() => {
       store = createStore();
@@ -8063,6 +8154,19 @@ describe('callListener', () => {
 
   test('table * (mutator)', () => {
     store.callListener(store.addTableListener(null, listener, true));
+    expect(listener).toHaveBeenCalledTimes(2);
+    expect(listener).toHaveBeenNthCalledWith(1, store, 't1');
+    expect(listener).toHaveBeenNthCalledWith(2, store, 't2');
+  });
+
+  test('table cell ids id (non mutator)', () => {
+    store.callListener(store.addTableCellIdsListener('t1', listener));
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(listener).toHaveBeenNthCalledWith(1, store, 't1');
+  });
+
+  test('table cell ids * (non mutator)', () => {
+    store.callListener(store.addTableCellIdsListener(null, listener));
     expect(listener).toHaveBeenCalledTimes(2);
     expect(listener).toHaveBeenNthCalledWith(1, store, 't1');
     expect(listener).toHaveBeenNthCalledWith(2, store, 't2');
