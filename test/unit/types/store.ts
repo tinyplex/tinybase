@@ -488,6 +488,107 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
   storeWithSchemas.addTableCellIdsListener('t1', () => null);
   storeWithSchemas.addTableCellIdsListener('t2', () => null); // !
 
+  storeWithSchemas.addHasTableCellListener(
+    't1',
+    'c1',
+    (store, tableId, cellId, hasTableCell) => {
+      store.getTables().t1;
+      tableId == 't1';
+      cellId == 'c1';
+      hasTableCell as boolean;
+      hasTableCell as string; // !
+      store.getTables().t2; // !
+      tableId == 't0'; // !
+      tableId == 't2'; // !
+      cellId == 'c1d'; // !
+      cellId == 'c2'; // !
+    },
+  );
+  storeWithSchemas.addHasTableCellListener(
+    't1',
+    null,
+    (store, tableId, cellId, hasTableCell) => {
+      store.getTables().t1;
+      tableId == 't1';
+      cellId == 'c1';
+      cellId == 'c1d';
+      hasTableCell as boolean;
+      hasTableCell as string; // !
+      store.getTables().t2; // !
+      tableId == 't0'; // !
+      tableId == 't2'; // !
+      cellId == 'c2'; // !
+    },
+  );
+  storeWithSchemas.addHasTableCellListener(
+    null,
+    'c1',
+    (store, tableId, cellId) => {
+      store.getTables().t1;
+      tableId == 't1';
+      cellId == 'c1';
+      store.getTables().t2; // !
+      tableId == 't0'; // !
+      cellId == 'c1d'; // !
+      cellId == 'c0'; // !
+      tableId == 't2'; // !
+      cellId == 'c2'; // !
+    },
+  );
+  storeWithSchemas.addHasTableCellListener(
+    null,
+    null,
+    (store, tableId, cellId, hasTableCell) => {
+      store.getTables().t1;
+      tableId == 't1';
+      tableId == 't0';
+      cellId == 'c1';
+      cellId == 'c1d';
+      cellId == 'c0';
+      hasTableCell as boolean;
+      hasTableCell as string; // !
+      if (tableId == 't1') {
+        cellId == 'c1';
+        cellId == 'c1d';
+        cellId == 'c0'; // !
+      }
+      store.getTables().t2; // !
+      tableId == 't2'; // !
+      cellId == 'c2'; // !
+    },
+  );
+  storeWithSchemas.addHasTableCellListener(
+    't1',
+    'c1',
+    (store, tableId, rowId, ..._) => {
+      store.getTables().t1;
+      tableId == 't1';
+      store.getTables().t2; // !
+      tableId == 't0'; // !
+      tableId == 't2'; // !
+      rowId == 'r2'; // !
+    },
+  );
+  storeWithSchemas.addHasTableCellListener(
+    't1',
+    'c1',
+    (store, tableId, ..._) => {
+      store.getTables().t1;
+      tableId == 't1';
+      store.getTables().t2; // !
+      tableId == 't0'; // !
+      tableId == 't2'; // !
+    },
+  );
+  storeWithSchemas.addHasTableCellListener('t1', 'c1', (store, ..._) => {
+    store.getTables().t1;
+    store.getTables().t2; // !
+  });
+  storeWithSchemas.addHasTableCellListener('t1', 'c1', () => null);
+  storeWithSchemas.addHasTableCellListener('t1', 'c2', () => null); // !
+  storeWithSchemas.addHasTableCellListener(null, 'c2', () => null); // !
+  storeWithSchemas.addHasTableCellListener('t2', 'c1', () => null); // !
+
   storeWithSchemas.addRowCountListener('t1', (store, tableId) => {
     store.getTables().t1;
     tableId == 't1';

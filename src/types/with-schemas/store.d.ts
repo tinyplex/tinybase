@@ -341,6 +341,47 @@ export type TableCellIdsListener<
   : // | ((...params: Params1) => void)
     never;
 
+/// HasTableCellListener
+export type HasTableCellListener<
+  Schemas extends OptionalSchemas,
+  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+  CellIdOrNull extends
+    | (TableIdOrNull extends TableIdFromSchema<Schemas[0]>
+        ? CellIdFromSchema<Schemas[0], TableIdOrNull>
+        : AllCellIdFromSchema<Schemas[0]>)
+    | null,
+  Params extends any[] = (
+    TableIdOrNull extends null ? TableIdFromSchema<Schemas[0]> : TableIdOrNull
+  ) extends infer TableId
+    ? TableId extends TableIdFromSchema<Schemas[0]>
+      ? (
+          CellIdOrNull extends null
+            ? CellIdFromSchema<Schemas[0], TableId>
+            : CellIdOrNull
+        ) extends infer CellId
+        ? CellId extends CellIdFromSchema<Schemas[0], TableId>
+          ? [
+              store: Store<Schemas>,
+              tableId: TableId,
+              cellId: CellId,
+              hasTableCell: boolean,
+            ]
+          : never
+        : never
+      : never
+    : never,
+  Params4 extends any[] =
+    | Params
+    | [store: never, tableId: never, cellId: never, hasTableCell: never],
+  Params3 extends any[] = Truncate<Params4>,
+  //  Params2 extends any[] = Truncate<Params3>,
+  // Params1 extends any[] = Truncate<Params2>,
+> = Params extends any
+  ? ((...params: Params4) => void) | ((...params: Params3) => void)
+  : // | ((...params: Params2) => void)
+    // | ((...params: Params1) => void)
+    never;
+
 /// RowCountListener
 export type RowCountListener<
   Schemas extends OptionalSchemas,
@@ -1118,6 +1159,21 @@ export interface Store<in out Schemas extends OptionalSchemas> {
   >(
     tableId: TableIdOrNull,
     listener: TableCellIdsListener<Schemas, TableIdOrNull>,
+    mutator?: boolean,
+  ): Id;
+
+  /// Store.addHasTableCellListener
+  addHasTableCellListener<
+    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+    CellIdOrNull extends
+      | (TableIdOrNull extends TableIdFromSchema<Schemas[0]>
+          ? CellIdFromSchema<Schemas[0], TableIdOrNull>
+          : AllCellIdFromSchema<Schemas[0]>)
+      | null,
+  >(
+    tableId: TableIdOrNull,
+    cellId: CellIdOrNull,
+    listener: HasTableCellListener<Schemas, TableIdOrNull, CellIdOrNull>,
     mutator?: boolean,
   ): Id;
 
