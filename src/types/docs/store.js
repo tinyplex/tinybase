@@ -1175,8 +1175,7 @@
  * @category Transaction
  * @since v4.0.0
  */
-/// TransactionLog
-/// GetTransactionLog
+/// TransactionLog GetTransactionLog
 /**
  * The GetTransactionLog type describes a function that returns the changes that
  * were made to a Store during a transaction in detail.
@@ -1201,6 +1200,11 @@
 /// StoreListenerStats
 {
   /**
+   * The number of HasTablesListener functions registered with the Store, since
+   * v4.4.
+   */
+  /// StoreListenerStats.hasTables
+  /**
    * The number of TablesListener functions registered with the Store.
    */
   /// StoreListenerStats.tables
@@ -1208,6 +1212,11 @@
    * The number of TableIdsListener functions registered with the Store.
    */
   /// StoreListenerStats.tableIds
+  /**
+   * The number of HasTableListener functions registered with the Store, since
+   * v4.4.
+   */
+  /// StoreListenerStats.hasTable
   /**
    * The number of TableListener functions registered with the Store.
    */
@@ -1217,6 +1226,11 @@
    * since v3.3.
    */
   /// StoreListenerStats.tableCellIds
+  /**
+   * The number of HasTableCellListener functions registered with the Store,
+   * since v4.4.
+   */
+  /// StoreListenerStats.hasTableCell
   /**
    * The number of RowCountListener functions registered with the Store, since
    * v4.1.0
@@ -1231,6 +1245,11 @@
    */
   /// StoreListenerStats.sortedRowIds
   /**
+   * The number of HasRowListener functions registered with the Store, since
+   * v4.4.
+   */
+  /// StoreListenerStats.hasRow
+  /**
    * The number of RowListener functions registered with the Store.
    */
   /// StoreListenerStats.row
@@ -1239,6 +1258,11 @@
    */
   /// StoreListenerStats.cellIds
   /**
+   * The number of HasCellListener functions registered with the Store, since
+   * v4.4.
+   */
+  /// StoreListenerStats.hasCell
+  /**
    * The number of CellListener functions registered with the Store.
    */
   /// StoreListenerStats.cell
@@ -1246,6 +1270,11 @@
    * The number of InvalidCellListener functions registered with the Store.
    */
   /// StoreListenerStats.invalidCell
+  /**
+   * The number of HasValuesListener functions registered with the Store, since
+   * v4.4.
+   */
+  /// StoreListenerStats.hasValues
   /**
    * The number of ValuesListener functions registered with the Store, since
    * v3.0.
@@ -1256,6 +1285,11 @@
    * v3.0.
    */
   /// StoreListenerStats.valueIds
+  /**
+   * The number of HasValueListener functions registered with the Store, since
+   * v4.4.
+   */
+  /// StoreListenerStats.hasValue
   /**
    * The number of ValueListener functions registered with the Store, since
    * v3.0.
