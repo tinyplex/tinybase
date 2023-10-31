@@ -304,6 +304,18 @@ export type TableIdsListener<Schemas extends OptionalSchemas> = (
   getIdChanges: GetIdChanges<TableIdFromSchema<Schemas[0]>> | undefined,
 ) => void;
 
+/// HasTableListener
+export type HasTableListener<
+  Schemas extends OptionalSchemas,
+  TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+> = (
+  store: Store<Schemas>,
+  tableId: TableIdOrNull extends null
+    ? TableIdFromSchema<Schemas[0]>
+    : TableIdOrNull,
+  hasTable: boolean,
+) => void;
+
 /// TableListener
 export type TableListener<
   Schemas extends OptionalSchemas,
@@ -1143,6 +1155,15 @@ export interface Store<in out Schemas extends OptionalSchemas> {
   /// Store.addTableIdsListener
   addTableIdsListener(
     listener: TableIdsListener<Schemas>,
+    mutator?: boolean,
+  ): Id;
+
+  /// Store.addHasTableListener
+  addHasTableListener<
+    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+  >(
+    tableId: TableIdOrNull,
+    listener: HasTableListener<Schemas, TableIdOrNull>,
     mutator?: boolean,
   ): Id;
 

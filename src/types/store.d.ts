@@ -134,6 +134,13 @@ export type TableIdsListener = (
   getIdChanges: GetIdChanges | undefined,
 ) => void;
 
+/// HasTableListener
+export type HasTableListener = (
+  store: Store,
+  tableId: Id,
+  hasTable: boolean,
+) => void;
+
 /// TableListener
 export type TableListener = (
   store: Store,
@@ -584,6 +591,13 @@ export interface Store {
 
   /// Store.addTableIdsListener
   addTableIdsListener(listener: TableIdsListener, mutator?: boolean): Id;
+
+  /// Store.addHasTableListener
+  addHasTableListener(
+    tableId: IdOrNull,
+    listener: HasTableListener,
+    mutator?: boolean,
+  ): Id;
 
   /// Store.addTableListener
   addTableListener(
