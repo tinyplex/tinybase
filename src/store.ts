@@ -1573,19 +1573,26 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const getListenerStats = (): StoreListenerStats =>
     DEBUG
       ? {
+          hasTables: pairCollSize2(hasTablesListeners),
           tables: pairCollSize2(tablesListeners),
           tableIds: pairCollSize2(tableIdsListeners),
-          tableCellIds: pairCollSize2(tableCellIdsListeners),
+          hasTable: pairCollSize2(hasTableListeners),
           table: pairCollSize2(tableListeners),
+          tableCellIds: pairCollSize2(tableCellIdsListeners),
+          hasTableCell: pairCollSize2(hasTableCellListeners, collSize3),
           rowCount: pairCollSize2(rowCountListeners),
           rowIds: pairCollSize2(rowIdsListeners),
           sortedRowIds: pairCollSize2(sortedRowIdsListeners),
+          hasRow: pairCollSize2(hasRowListeners, collSize3),
           row: pairCollSize2(rowListeners, collSize3),
           cellIds: pairCollSize2(cellIdsListeners, collSize3),
+          hasCell: pairCollSize2(hasCellListeners, collSize4),
           cell: pairCollSize2(cellListeners, collSize4),
           invalidCell: pairCollSize2(invalidCellListeners, collSize4),
+          hasValues: pairCollSize2(hasValuesListeners),
           values: pairCollSize2(valuesListeners),
           valueIds: pairCollSize2(valueIdsListeners),
+          hasValue: pairCollSize2(hasValueListeners),
           value: pairCollSize2(valueListeners),
           invalidValue: pairCollSize2(invalidValueListeners),
           transaction:
