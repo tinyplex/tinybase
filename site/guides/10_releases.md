@@ -3,6 +3,27 @@
 This is a reverse chronological list of the major TinyBase releases, with
 highlighted features.
 
+## v4.4
+
+This relatively straightforward release adds a selection of new listeners to the
+Store object. These are for listening to changes in the 'existence' of entities
+rather than to their value. For example, the addHasTableListener method will let
+you listen for the presence (or not) of a specific table. The full set of new
+listeners and methods to add them is as follows:
+
+| Listener             | Method                  |
+| -------------------- | ----------------------- |
+| HasTablesListener    | addHasTablesListener    |
+| HasTableListener     | addHasTableListener     |
+| HasTableCellListener | addHasTableCellListener |
+| HasRowListener       | addHasRowListener       |
+| HasCellListener      | addHasCellListener      |
+| HasValuesListener    | addHasValuesListener    |
+| HasValueListener     | addHasValueListener     |
+
+These methods may become particularly important in future versions of TinyBase
+that support `null` as valid Cells and Values.
+
 ## v4.3
 
 We're excited to announce TinyBase 4.3, which provides an integration with
