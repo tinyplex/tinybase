@@ -12,8 +12,8 @@
   </p>
 </section>
 
-<a href='/guides/releases/#v4-3'><em>NEW!</em> v4.3 release</a> <span
-id="one-with">"The One With PartyKit"</span>
+<a href='/guides/releases/#v4-4'><em>NEW!</em> v4.4 release</a> <span
+id="one-with">"The One With More Listeners"</span>
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 
