@@ -18,6 +18,7 @@ export type StoreListener = Listener &
   Readonly<{
     listenToTables: (id: Id) => Id;
     listenToTableIds: (id: Id) => Id;
+    listenToHasTable: (id: Id, tableId: IdOrNull) => Id;
     listenToTable: (id: Id, tableId: IdOrNull) => Id;
     listenToTableCellIds: (id: Id, tableId: IdOrNull) => Id;
     listenToHasTableCell: (id: Id, tableId: IdOrNull, cellId: IdOrNull) => Id;

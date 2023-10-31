@@ -49,6 +49,13 @@ export const createStoreListener = (
       );
     },
 
+    listenToHasTable: (id, tableId) => {
+      logs[id] = [];
+      return store.addHasTableListener(tableId, (_, tableId, hasTable) =>
+        logs[id].push({[tableId]: hasTable}),
+      );
+    },
+
     listenToTable: (id, tableId) => {
       logs[id] = [];
       return store.addTableListener(tableId, (store, tableId) =>

@@ -439,6 +439,28 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
   });
   storeWithSchemas.addTableIdsListener(() => null);
 
+  storeWithSchemas.addHasTableListener('t1', (store, tableId, hasTable) => {
+    store.getTables().t1;
+    tableId == 't1';
+    hasTable as boolean;
+    hasTable as string; // !
+    store.getTables().t2; // !
+    tableId == 't0'; // !
+    tableId == 't2'; // !
+  });
+  storeWithSchemas.addHasTableListener(null, (store, tableId) => {
+    store.getTables().t1;
+    tableId == 't1';
+    tableId == 't0';
+    store.getTables().t2; // !
+    tableId == 't2'; // !
+  });
+  storeWithSchemas.addHasTableListener(null, (store) => {
+    store.getTables().t1;
+    store.getTables().t2; // !
+  });
+  storeWithSchemas.addHasTableListener('t2', () => null); // !
+
   storeWithSchemas.addTableListener('t1', (store, tableId, getCellChange) => {
     store.getTables().t1;
     tableId == 't1';

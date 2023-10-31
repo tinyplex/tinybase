@@ -510,6 +510,24 @@
  */
 /// TableIdsListener
 /**
+ * The HasTableListener type describes a function that is used to listen to a
+ * Table being added to or removed from the Store.
+ *
+ * A HasTableListener is provided when using the addHasTableListener method. See
+ * that method for specific examples.
+ *
+ * When called, a HasTableListener is given a reference to the Store, and the Id
+ * of the Table that changed. It is also given a flag to indicate whether the
+ * Table now exists (having not done previously), or does not (having done so
+ * previously).
+ * @param store A reference to the Store that changed.
+ * @param tableId The Id of the Table that changed.
+ * @param hasTable Whether the Table now exists or not.
+ * @category Listener
+ * @since v4.4.0
+ */
+/// HasTableListener
+/**
  * The TableListener type describes a function that is used to listen to changes
  * to a Table.
  *
@@ -3886,6 +3904,102 @@
    * @category Listener
    */
   /// Store.addTableIdsListener
+  /**
+   * The addHasTableListener method registers a listener function with the Store
+   * that will be called when a Table is added to or removed from the Store.
+   *
+   * The provided listener is a HasTableListener function, and will be called
+   * with a reference to the Store and the Id of the Table that changed. It is
+   * also given a flag to indicate whether the Table now exists (having not done
+   * previously), or does not (having done so previously).
+   *
+   * You can either listen to a single Table being added or removed (by
+   * specifying the Table Id as the method's first parameter) or changes to any
+   * Table (by providing a `null` wildcard).
+   *
+   * Use the optional mutator parameter to indicate that there is code in the
+   * listener that will mutate Store data. If set to `false` (or omitted), such
+   * mutations will be silently ignored. All relevant mutator listeners (with
+   * this flag set to `true`) are called _before_ any non-mutator listeners
+   * (since the latter may become relevant due to changes made in the former).
+   * The changes made by mutator listeners do not fire other mutating listeners,
+   * though they will fire non-mutator listeners.
+   * @param tableId The Id of the Table to listen to, or `null` as a wildcard.
+   * @param listener The function that will be called whenever the matching
+   * Table is added or removed.
+   * @param mutator An optional boolean that indicates that the listener mutates
+   * Store data.
+   * @returns A unique Id for the listener that can later be used to call it
+   * explicitly, or to remove it.
+   * @example
+   * This example registers a listener that responds to a specific Table being
+   * added or removed.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {fido: {species: 'dog', color: 'brown'}},
+   * });
+   * const listenerId = store.addHasTableListener(
+   *   'pets',
+   *   (store, tableId, hasTable) => {
+   *     console.log('pets table ' + (hasTable ? 'added' : 'removed'));
+   *   },
+   * );
+   *
+   * store.delTable('pets');
+   * // -> 'pets table removed'
+   *
+   * store.setTable('pets', {fido: {species: 'dog', color: 'brown'}});
+   * // -> 'pets table added'
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @example
+   * This example registers a listener that responds to any Table being added or
+   * removed.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {fido: {species: 'dog', color: 'brown'}},
+   * });
+   * const listenerId = store.addHasTableListener(
+   *   null,
+   *   (store, tableId, hasTable) => {
+   *     console.log(`${tableId} table ` + (hasTable ? 'added' : 'removed'));
+   *   },
+   * );
+   *
+   * store.delTable('pets');
+   * // -> 'pets table removed'
+   * store.setTable('species', {dog: {price: 5}});
+   * // -> 'species table added'
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @example
+   * This example registers a listener that responds to a specific Table being
+   * added or removed, and which also mutates the Store itself.
+   *
+   * ```js
+   * const store = createStore().setTables({
+   *   pets: {fido: {species: 'dog', color: 'brown'}},
+   * });
+   * const listenerId = store.addHasTableListener(
+   *   'pets',
+   *   (store, tableId) => store.setCell('meta', 'update', tableId, true),
+   *   true,
+   * );
+   *
+   * store.delTable('pets', 'fido');
+   * console.log(store.getTable('meta'));
+   * // -> {update: {pets: true}}
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @category Listener
+   * @since v4.4.0
+   */
+  /// Store.addHasTableListener
   /**
    * The addTableListener method registers a listener function with the Store
    * that will be called whenever data in a Table changes.
