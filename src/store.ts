@@ -173,6 +173,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   let hasValuesSchema: boolean;
   let cellsTouched = false;
   let valuesTouched = false;
+  let hadTables = false;
   let hadValues = false;
   let transactions = 0;
   const changedTableIds: ChangedIdsMap = mapNew();
@@ -194,6 +195,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const tableCellIds: IdMap<IdMap<number>> = mapNew();
   const tablesMap: TablesMap = mapNew();
   const valuesMap: ValuesMap = mapNew();
+  const hasTablesListeners: Pair<IdSet2> = pairNewMap();
   const tablesListeners: Pair<IdSet2> = pairNewMap();
   const tableIdsListeners: Pair<IdSet2> = pairNewMap();
   const hasTableListeners: Pair<IdSet2> = pairNewMap();
@@ -757,6 +759,11 @@ export const createStore: typeof createStoreDecl = (): Store => {
   };
 
   const callTabularListenersForChanges = (mutator: 0 | 1) => {
+    const hasTablesNow = hasTables();
+    if (hasTablesNow != hadTables) {
+      callListeners(hasTablesListeners[mutator], undefined, hasTablesNow);
+    }
+
     const emptySortedRowIdListeners = collIsEmpty(
       sortedRowIdsListeners[mutator],
     );
@@ -1446,6 +1453,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
         transactions = 0;
         cellsTouched = valuesTouched = false;
+        hadTables = hasTables();
         hadValues = hasValues();
         arrayForEach(
           [
@@ -1675,8 +1683,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
     callListeners,
   };
 
+  // and now for some gentle meta-programming
   objMap(
     {
+      [HAS + TABLES]: [0, hasTablesListeners, [], () => [hasTables()]],
       [TABLES]: [0, tablesListeners],
       [TABLE_IDS]: [0, tableIdsListeners],
       [HAS + TABLE]: [

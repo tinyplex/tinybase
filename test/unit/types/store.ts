@@ -416,6 +416,18 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
 
 // Listeners
 (() => {
+  storeWithSchemas.addHasTablesListener((store, hasTables) => {
+    store.getTables().t1;
+    hasTables as boolean;
+    hasTables as string; // !
+    store.getTables().t2; // !
+  });
+  storeWithSchemas.addHasTablesListener((store) => {
+    store.getTables().t1;
+    store.getTables().t2; // !
+  });
+  storeWithSchemas.addHasTablesListener(() => null);
+
   storeWithSchemas.addTablesListener((store, getCellChange) => {
     store.getTables().t1;
     getCellChange?.('t1', 'r1', 'c1') as [true, number, number];

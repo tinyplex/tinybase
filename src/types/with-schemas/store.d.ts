@@ -292,6 +292,12 @@ export type TransactionListener<Schemas extends OptionalSchemas> = (
   getTransactionLog: GetTransactionLog<Schemas>,
 ) => void;
 
+/// HasTablesListener
+export type HasTablesListener<Schemas extends OptionalSchemas> = (
+  store: Store<Schemas>,
+  hasTables: boolean,
+) => void;
+
 /// TablesListener
 export type TablesListener<Schemas extends OptionalSchemas> = (
   store: Store<Schemas>,
@@ -1148,6 +1154,12 @@ export interface Store<in out Schemas extends OptionalSchemas> {
 
   /// Store.forEachValue
   forEachValue(valueCallback: ValueCallback<Schemas[1]>): void;
+
+  /// Store.addHasTablesListener
+  addHasTablesListener(
+    listener: HasTablesListener<Schemas>,
+    mutator?: boolean,
+  ): Id;
 
   /// Store.addTablesListener
   addTablesListener(listener: TablesListener<Schemas>, mutator?: boolean): Id;
