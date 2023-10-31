@@ -196,6 +196,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const valuesMap: ValuesMap = mapNew();
   const tablesListeners: Pair<IdSet2> = pairNewMap();
   const tableIdsListeners: Pair<IdSet2> = pairNewMap();
+  const hasTableListeners: Pair<IdSet2> = pairNewMap();
   const tableListeners: Pair<IdSet2> = pairNewMap();
   const tableCellIdsListeners: Pair<IdSet2> = pairNewMap();
   const hasTableCellListeners: Pair<IdSet3> = pairNewMap();
@@ -743,20 +744,14 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const callIdsAndHasListenersIfChanged = (
     changedIds: ChangedIdsMap,
     idListeners: IdSetNode,
-    hasListeners?: IdSetNode,
+    hasListeners: IdSetNode,
     ids?: Ids,
   ): 1 | void => {
     if (!collIsEmpty(changedIds)) {
       callListeners(idListeners, ids, () => mapToObj(changedIds));
-      if (hasListeners) {
-        mapForEach(changedIds, (changedId, changed) =>
-          callListeners(
-            hasListeners,
-            [...(ids ?? []), changedId],
-            changed == 1,
-          ),
-        );
-      }
+      mapForEach(changedIds, (changedId, changed) =>
+        callListeners(hasListeners, [...(ids ?? []), changedId], changed == 1),
+      );
       return 1;
     }
   };
@@ -774,7 +769,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
       collIsEmpty(hasTableCellListeners[mutator]) &&
       collIsEmpty(rowCountListeners[mutator]) &&
       emptySortedRowIdListeners &&
-      collIsEmpty(tableIdsListeners[mutator]);
+      collIsEmpty(tableIdsListeners[mutator]) &&
+      collIsEmpty(hasTableListeners[mutator]);
     const emptyOtherListeners =
       collIsEmpty(cellListeners[mutator]) &&
       collIsEmpty(rowListeners[mutator]) &&
@@ -807,7 +803,11 @@ export const createStore: typeof createStoreDecl = (): Store => {
           ];
 
       if (!emptyIdAndHasListeners) {
-        callIdsAndHasListenersIfChanged(changes[0], tableIdsListeners[mutator]);
+        callIdsAndHasListenersIfChanged(
+          changes[0],
+          tableIdsListeners[mutator],
+          hasTableListeners[mutator],
+        );
 
         collForEach(changes[1], (changedIds, tableId) =>
           callIdsAndHasListenersIfChanged(
@@ -1679,6 +1679,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
     {
       [TABLES]: [0, tablesListeners],
       [TABLE_IDS]: [0, tableIdsListeners],
+      [HAS + TABLE]: [
+        1,
+        hasTableListeners,
+        [getTableIds],
+        (ids: Ids) => [hasTable(...(ids as [Id]))],
+      ],
       [TABLE]: [1, tableListeners, [getTableIds]],
       [TABLE + CELL_IDS]: [1, tableCellIdsListeners, [getTableIds]],
       [HAS + TABLE + CELL]: [
