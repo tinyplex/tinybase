@@ -35,6 +35,13 @@ export const createStoreListener = (
   const logs: Logs = {};
 
   return Object.freeze({
+    listenToHasTables: (id) => {
+      logs[id] = [];
+      return store.addHasTablesListener((_, hasTables) =>
+        logs[id].push(hasTables),
+      );
+    },
+
     listenToTables: (id) => {
       logs[id] = [];
       return store.addTablesListener((store) =>

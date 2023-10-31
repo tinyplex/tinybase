@@ -16,6 +16,7 @@ export type Listener = Readonly<{logs: Logs}>;
 
 export type StoreListener = Listener &
   Readonly<{
+    listenToHasTables: (id: Id) => Id;
     listenToTables: (id: Id) => Id;
     listenToTableIds: (id: Id) => Id;
     listenToHasTable: (id: Id, tableId: IdOrNull) => Id;

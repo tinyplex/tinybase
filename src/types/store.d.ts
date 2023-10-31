@@ -122,6 +122,9 @@ export type TransactionListener = (
   getTransactionLog: GetTransactionLog,
 ) => void;
 
+/// HasTablesListener
+export type HasTablesListener = (store: Store, hasTables: boolean) => void;
+
 /// TablesListener
 export type TablesListener = (
   store: Store,
@@ -585,6 +588,9 @@ export interface Store {
 
   /// Store.forEachValue
   forEachValue(valueCallback: ValueCallback): void;
+
+  /// Store.addHasTablesListener
+  addHasTablesListener(listener: HasTablesListener, mutator?: boolean): Id;
 
   /// Store.addTablesListener
   addTablesListener(listener: TablesListener, mutator?: boolean): Id;
