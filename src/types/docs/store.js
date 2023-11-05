@@ -2090,7 +2090,7 @@
    */
   /// Store.hasCell
   /**
-   * The hasTables method returns a boolean indicating whether any Values exist
+   * The hasValues method returns a boolean indicating whether any Values exist
    * in the Store.
    * @returns Whether any Values exist.
    * @example
