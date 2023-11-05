@@ -243,6 +243,9 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => NoInfer<CellOrUndefined<Schemas[0], TableId, CellId>>;
 
+  /// useHasValues
+  useHasValues: (storeOrStoreId?: StoreOrStoreId<Schemas>) => boolean;
+
   /// useValues
   useValues: (storeOrStoreId?: StoreOrStoreId<Schemas>) => Values<Schemas[1]>;
 

@@ -97,6 +97,7 @@ import {
   useHasTableCell as useHasTableCellDecl,
   useHasTable as useHasTableDecl,
   useHasTables as useHasTablesDecl,
+  useHasValues as useHasValuesDecl,
   useIndexIds as useIndexIdsDecl,
   useIndexesIds as useIndexesIdsDecl,
   useLinkedRowIds as useLinkedRowIdsDecl,
@@ -519,6 +520,19 @@ export const useCell: typeof useCellDecl = (
     undefined,
     [tableId, rowId, cellId],
     4,
+  );
+
+export const useHasValues: typeof useHasValuesDecl = (
+  storeOrStoreId?: StoreOrStoreId,
+): boolean =>
+  useListenable(
+    VALUES,
+    useStoreOrStoreById(storeOrStoreId),
+    false,
+    [],
+    1,
+    _HAS,
+    HAS,
   );
 
 export const useValues: typeof useValuesDecl = (

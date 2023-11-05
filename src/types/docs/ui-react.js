@@ -1580,6 +1580,82 @@
  */
 /// useCell
 /**
+ * The useHasValues hook returns a boolean indicating whether any Values exist
+ * in the Store, and registers a listener so that any changes to that result
+ * will cause a re-render.
+ *
+ * A Provider component is used to wrap part of an application in a context, and
+ * it can contain a default Store or a set of Store objects named by Id. The
+ * useHasValues hook lets you indicate which Store to get data for: omit the
+ * optional parameter for the default context Store, provide an Id for a named
+ * context Store, or provide a Store explicitly by reference.
+ *
+ * When first rendered, this hook will create a listener so that changes to the
+ * Values will cause a re-render. When the component containing this hook is
+ * unmounted, the listener will be automatically removed.
+ * @param storeOrStoreId The Store to be accessed: omit for the default context
+ * Store, provide an Id for a named context Store, or provide an explicit
+ * reference.
+ * @returns Whether any Values exist.
+ * @example
+ * This example creates a Store outside the application, which is used in the
+ * useHasValues hook by reference. A change to the data in the Store re-renders
+ * the component.
+ *
+ * ```jsx
+ * const store = createStore().setValue('open', true);
+ * const App = () => <span>{JSON.stringify(useHasValues(store))}</span>;
+ *
+ * const app = document.createElement('div');
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>true</span>'
+ *
+ * store.delValue('open'); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>false</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a default Store is
+ * provided. A component within it then uses the useHasValues hook.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => <span>{JSON.stringify(useHasValues())}</span>;
+ *
+ * const store = createStore().setValue('open', true);
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>true</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a Store is provided, named
+ * by Id. A component within it then uses the useHasValues hook.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider storesById={{petStore: store}}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => <span>{JSON.stringify(useHasValues('petStore'))}</span>;
+ *
+ * const store = createStore().setValue('open', true);
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>true</span>'
+ * ```
+ * @category Store hooks
+ */
+/// useHasValues
+/**
  * The useValues hook returns a Values object containing the keyed value data of
  * a Store, and registers a listener so that any changes to that result will
  * cause a re-render.
