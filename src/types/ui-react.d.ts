@@ -181,6 +181,9 @@ export function useCell(
   storeOrStoreId?: StoreOrStoreId,
 ): CellOrUndefined;
 
+/// useHasValues
+export function useHasValues(storeOrStoreId?: StoreOrStoreId): boolean;
+
 /// useValues
 export function useValues(storeOrStoreId?: StoreOrStoreId): Values;
 
