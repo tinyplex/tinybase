@@ -92,6 +92,7 @@ import {
   useGoBackwardCallback as useGoBackwardCallbackDecl,
   useGoForwardCallback as useGoForwardCallbackDecl,
   useGoToCallback as useGoToCallbackDecl,
+  useHasTableCell as useHasTableCellDecl,
   useHasTable as useHasTableDecl,
   useHasTables as useHasTablesDecl,
   useIndexIds as useIndexIdsDecl,
@@ -406,6 +407,21 @@ export const useTableCellIds: typeof useTableCellIdsDecl = (
     useStoreOrStoreById(storeOrStoreId),
     EMPTY_ARRAY,
     [tableId],
+  );
+
+export const useHasTableCell: typeof useHasTableCellDecl = (
+  tableId: Id,
+  cellId: Id,
+  storeOrStoreId?: StoreOrStoreId,
+): boolean =>
+  useListenable(
+    TABLE + CELL,
+    useStoreOrStoreById(storeOrStoreId),
+    false,
+    [tableId, cellId],
+    3,
+    _HAS,
+    HAS,
   );
 
 export const useRowCount: typeof useRowCountDecl = (
