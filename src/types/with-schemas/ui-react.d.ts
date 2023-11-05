@@ -200,6 +200,13 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => Ids;
 
+  /// useHasRow
+  useHasRow: <TableId extends TableIdFromSchema<Schemas[0]>>(
+    tableId: TableId,
+    rowId: Id,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => boolean;
+
   /// useRow
   useRow: <TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
