@@ -221,6 +221,17 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => CellIdFromSchema<Schemas[0], TableId>[];
 
+  /// useHasCell
+  useHasCell: <
+    TableId extends TableIdFromSchema<Schemas[0]>,
+    CellId extends CellIdFromSchema<Schemas[0], TableId>,
+  >(
+    tableId: TableId,
+    rowId: Id,
+    cellId: CellId,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => boolean;
+
   /// useCell
   useCell: <
     TableId extends TableIdFromSchema<Schemas[0]>,
