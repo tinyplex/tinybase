@@ -144,6 +144,13 @@ export function useSortedRowIds(
   storeOrStoreId?: StoreOrStoreId,
 ): Ids;
 
+/// useHasRow
+export function useHasRow(
+  tableId: Id,
+  rowId: Id,
+  storeOrStoreId?: StoreOrStoreId,
+): boolean;
+
 /// useRow
 export function useRow(
   tableId: Id,

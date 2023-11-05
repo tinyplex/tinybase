@@ -92,6 +92,7 @@ import {
   useGoBackwardCallback as useGoBackwardCallbackDecl,
   useGoForwardCallback as useGoForwardCallbackDecl,
   useGoToCallback as useGoToCallbackDecl,
+  useHasRow as useHasRowDecl,
   useHasTableCell as useHasTableCellDecl,
   useHasTable as useHasTableDecl,
   useHasTables as useHasTablesDecl,
@@ -452,6 +453,21 @@ export const useSortedRowIds: typeof useSortedRowIdsDecl = (
     EMPTY_ARRAY,
     [tableId, cellId, descending, offset, limit],
     6,
+  );
+
+export const useHasRow: typeof useHasRowDecl = (
+  tableId: Id,
+  rowId: Id,
+  storeOrStoreId?: StoreOrStoreId,
+): boolean =>
+  useListenable(
+    ROW,
+    useStoreOrStoreById(storeOrStoreId),
+    false,
+    [tableId, rowId],
+    3,
+    _HAS,
+    HAS,
   );
 
 export const useRow: typeof useRowDecl = (
