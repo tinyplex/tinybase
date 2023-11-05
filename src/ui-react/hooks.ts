@@ -4,6 +4,7 @@ import {
   CELL_IDS,
   EMPTY_STRING,
   GET,
+  HAS,
   LISTENER,
   RESULT,
   ROW,
@@ -16,6 +17,7 @@ import {
   VALUE,
   VALUES,
   VALUE_IDS,
+  _HAS,
 } from '../common/strings';
 import {
   Callback,
@@ -90,6 +92,7 @@ import {
   useGoBackwardCallback as useGoBackwardCallbackDecl,
   useGoForwardCallback as useGoForwardCallbackDecl,
   useGoToCallback as useGoToCallbackDecl,
+  useHasTables as useHasTablesDecl,
   useIndexIds as useIndexIdsDecl,
   useIndexesIds as useIndexesIdsDecl,
   useLinkedRowIds as useLinkedRowIdsDecl,
@@ -244,17 +247,19 @@ const useListenable = (
   defaulted: any,
   args: Readonly<ListenerArgument[]> = EMPTY_ARRAY,
   getFromListenerArg?: number,
+  getterPrefix = GET,
+  listenerPrefix = EMPTY_STRING,
 ): any => {
   const [, rerender] = useState<[]>();
   const getResult = useCallback(
-    () => thing?.[GET + listenable]?.(...args) ?? defaulted,
+    () => thing?.[getterPrefix + listenable]?.(...args) ?? defaulted,
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
     [thing, listenable, ...args, defaulted],
   );
   const result = useRef();
   useMemo(() => (result.current = getResult()), [getResult]);
   useListener(
-    listenable,
+    listenerPrefix + listenable,
     thing,
     (...listenerArgs: any[]) => {
       result.current = isUndefined(getFromListenerArg)
@@ -345,6 +350,19 @@ export const useCreateStore: typeof useCreateStoreDecl = (
 ): Store => useMemo(create, createDeps);
 
 export const useStoreIds: typeof useStoreIdsDecl = () => useThingIds(1);
+
+export const useHasTables: typeof useHasTablesDecl = (
+  storeOrStoreId?: StoreOrStoreId,
+): boolean =>
+  useListenable(
+    TABLES,
+    useStoreOrStoreById(storeOrStoreId),
+    false,
+    [],
+    1,
+    _HAS,
+    HAS,
+  );
 
 export const useTables: typeof useTablesDecl = (
   storeOrStoreId?: StoreOrStoreId,
