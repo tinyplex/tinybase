@@ -165,6 +165,14 @@ export function useCellIds(
   storeOrStoreId?: StoreOrStoreId,
 ): Ids;
 
+/// useHasCell
+export function useHasCell(
+  tableId: Id,
+  rowId: Id,
+  cellId: Id,
+  storeOrStoreId?: StoreOrStoreId,
+): boolean;
+
 /// useCell
 export function useCell(
   tableId: Id,

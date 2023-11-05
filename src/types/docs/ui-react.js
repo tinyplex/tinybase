@@ -1413,6 +1413,93 @@
  */
 /// useCellIds
 /**
+ * The useHasCell hook returns a boolean indicating whether a given Cell exists
+ * in a given Row in a given Table, and registers a listener so that any changes
+ * to that result will cause a re-render.
+ *
+ * A Provider component is used to wrap part of an application in a context, and
+ * it can contain a default Store or a set of Store objects named by Id. The
+ * useHasCell hook lets you indicate which Store to get data for: omit the
+ * optional parameter for the default context Store, provide an Id for a named
+ * context Store, or provide a Store explicitly by reference.
+ *
+ * When first rendered, this hook will create a listener so that changes to the
+ * Cell will cause a re-render. When the component containing this hook is
+ * unmounted, the listener will be automatically removed.
+ * @param tableId The Id of the Table in the Store.
+ * @param rowId The Id of the Row in the Table.
+ * @param cellId The Id of the Cell in the Row.
+ * @param storeOrStoreId The Store to be accessed: omit for the default context
+ * Store, provide an Id for a named context Store, or provide an explicit
+ * reference.
+ * @returns Whether a Cell with that Id exists in that Row in that Table.
+ * @example
+ * This example creates a Store outside the application, which is used in the
+ * useHasCell hook by reference. A change to the data in the Store re-renders
+ * the component.
+ *
+ * ```jsx
+ * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
+ * const App = () => (
+ *   <span>{JSON.stringify(useHasCell('pets', 'fido', 'legs', store))}</span>
+ * );
+ *
+ * const app = document.createElement('div');
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>false</span>'
+ *
+ * store.setCell('pets', 'fido', 'legs', 4); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>true</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a default Store is
+ * provided. A component within it then uses the useHasCell hook.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <span>{JSON.stringify(useHasCell('pets', 'fido', 'legs'))}</span>
+ * );
+ *
+ * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>false</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a Store is provided, named
+ * by Id. A component within it then uses the useHasCell hook.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider storesById={{petStore: store}}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <span>
+ *     {JSON.stringify(useHasCell('pets', 'fido', 'legs', 'petStore'))}
+ *   </span>
+ * );
+ *
+ * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>false</span>'
+ * ```
+ * @category Store hooks
+ */
+/// useHasCell
+/**
  * The useCell hook returns an object containing the value of a single Cell in a
  * given Row, in a given Table, and registers a listener so that any changes to
  * that result will cause a re-render.
