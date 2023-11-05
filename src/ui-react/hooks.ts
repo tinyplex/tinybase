@@ -97,6 +97,7 @@ import {
   useHasTableCell as useHasTableCellDecl,
   useHasTable as useHasTableDecl,
   useHasTables as useHasTablesDecl,
+  useHasValue as useHasValueDecl,
   useHasValues as useHasValuesDecl,
   useIndexIds as useIndexIdsDecl,
   useIndexesIds as useIndexesIdsDecl,
@@ -544,6 +545,20 @@ export const useValueIds: typeof useValueIdsDecl = (
   storeOrStoreId?: StoreOrStoreId,
 ): Ids =>
   useListenable(VALUE_IDS, useStoreOrStoreById(storeOrStoreId), EMPTY_ARRAY);
+
+export const useHasValue: typeof useHasValueDecl = (
+  valueId: Id,
+  storeOrStoreId?: StoreOrStoreId,
+): boolean =>
+  useListenable(
+    VALUE,
+    useStoreOrStoreById(storeOrStoreId),
+    false,
+    [valueId],
+    2,
+    _HAS,
+    HAS,
+  );
 
 export const useValue: typeof useValueDecl = (
   valueId: Id,
