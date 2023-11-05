@@ -92,6 +92,7 @@ import {
   useGoBackwardCallback as useGoBackwardCallbackDecl,
   useGoForwardCallback as useGoForwardCallbackDecl,
   useGoToCallback as useGoToCallbackDecl,
+  useHasTable as useHasTableDecl,
   useHasTables as useHasTablesDecl,
   useIndexIds as useIndexIdsDecl,
   useIndexesIds as useIndexesIdsDecl,
@@ -373,6 +374,20 @@ export const useTableIds: typeof useTableIdsDecl = (
   storeOrStoreId?: StoreOrStoreId,
 ): Ids =>
   useListenable(TABLE_IDS, useStoreOrStoreById(storeOrStoreId), EMPTY_ARRAY);
+
+export const useHasTable: typeof useHasTableDecl = (
+  tableId: Id,
+  storeOrStoreId?: StoreOrStoreId,
+): boolean =>
+  useListenable(
+    TABLE,
+    useStoreOrStoreById(storeOrStoreId),
+    false,
+    [tableId],
+    2,
+    _HAS,
+    HAS,
+  );
 
 export const useTable: typeof useTableDecl = (
   tableId: Id,

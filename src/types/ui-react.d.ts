@@ -103,6 +103,12 @@ export function useTables(storeOrStoreId?: StoreOrStoreId): Tables;
 /// useTableIds
 export function useTableIds(storeOrStoreId?: StoreOrStoreId): Ids;
 
+/// useHasTable
+export function useHasTable(
+  tableId: Id,
+  storeOrStoreId?: StoreOrStoreId,
+): boolean;
+
 /// useTable
 export function useTable(tableId: Id, storeOrStoreId?: StoreOrStoreId): Table;
 
