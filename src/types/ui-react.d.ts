@@ -118,6 +118,13 @@ export function useTableCellIds(
   storeOrStoreId?: StoreOrStoreId,
 ): Ids;
 
+/// useHasTableCell
+export function useHasTableCell(
+  tableId: Id,
+  cellId: Id,
+  storeOrStoreId?: StoreOrStoreId,
+): boolean;
+
 /// useRowCount
 export function useRowCount(
   tableId: Id,
