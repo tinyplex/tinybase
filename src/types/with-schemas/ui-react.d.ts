@@ -150,6 +150,12 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => TableIdFromSchema<Schemas[0]>[];
 
+  /// useHasTable
+  useHasTable: <TableId extends TableIdFromSchema<Schemas[0]>>(
+    tableId: TableId,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => boolean;
+
   /// useTable
   useTable: <TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
