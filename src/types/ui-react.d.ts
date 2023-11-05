@@ -190,6 +190,12 @@ export function useValues(storeOrStoreId?: StoreOrStoreId): Values;
 /// useValueIds
 export function useValueIds(storeOrStoreId?: StoreOrStoreId): Ids;
 
+/// useHasValue
+export function useHasValue(
+  valueId: Id,
+  storeOrStoreId?: StoreOrStoreId,
+): boolean;
+
 /// useValue
 export function useValue(
   valueId: Id,
