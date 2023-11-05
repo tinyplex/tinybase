@@ -94,6 +94,9 @@ export function useStoreOrStoreById(
   storeOrStoreId?: StoreOrStoreId,
 ): Store | undefined;
 
+/// useHasTables
+export function useHasTables(storeOrStoreId?: StoreOrStoreId): boolean;
+
 /// useTables
 export function useTables(storeOrStoreId?: StoreOrStoreId): Tables;
 

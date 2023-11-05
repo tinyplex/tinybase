@@ -349,6 +349,82 @@
  */
 /// useStoreOrStoreById
 /**
+ * The useHasTables hook returns a boolean indicating whether any Table objects
+ * exist in the Store, and registers a listener so that any changes to that
+ * result will cause a re-render.
+ *
+ * A Provider component is used to wrap part of an application in a context, and
+ * it can contain a default Store or a set of Store objects named by Id. The
+ * useHasTables hook lets you indicate which Store to get data for: omit the
+ * optional parameter for the default context Store, provide an Id for a named
+ * context Store, or provide a Store explicitly by reference.
+ *
+ * When first rendered, this hook will create a listener so that changes to the
+ * Tables will cause a re-render. When the component containing this hook is
+ * unmounted, the listener will be automatically removed.
+ * @param storeOrStoreId The Store to be accessed: omit for the default context
+ * Store, provide an Id for a named context Store, or provide an explicit
+ * reference.
+ * @returns Whether any Tables exist.
+ * @example
+ * This example creates a Store outside the application, which is used in the
+ * useHasTables hook by reference. A change to the data in the Store re-renders
+ * the component.
+ *
+ * ```jsx
+ * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
+ * const App = () => <span>{JSON.stringify(useHasTables(store))}</span>;
+ *
+ * const app = document.createElement('div');
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>true</span>'
+ *
+ * store.delTable('pets'); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>false</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a default Store is
+ * provided. A component within it then uses the useHasTables hook.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => <span>{JSON.stringify(useHasTables())}</span>;
+ *
+ * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>true</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a Store is provided, named
+ * by Id. A component within it then uses the useHasTables hook.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider storesById={{petStore: store}}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => <span>{JSON.stringify(useHasTables('petStore'))}</span>;
+ *
+ * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
+ * const app = document.createElement('div');
+ * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>true</span>'
+ * ```
+ * @category Store hooks
+ */
+/// useHasTables
+/**
  * The useTables hook returns a Tables object containing the tabular data of a
  * Store, and registers a listener so that any changes to that result will cause
  * a re-render.
