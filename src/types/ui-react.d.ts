@@ -6,6 +6,7 @@ import {
   CellIdsListener,
   CellListener,
   CellOrUndefined,
+  HasCellListener,
   HasRowListener,
   HasTableCellListener,
   HasTableListener,
@@ -465,6 +466,17 @@ export function useCellIdsListener(
   tableId: IdOrNull,
   rowId: IdOrNull,
   listener: CellIdsListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  storeOrStoreId?: StoreOrStoreId,
+): void;
+
+/// useHasCellListener
+export function useHasCellListener(
+  tableId: IdOrNull,
+  rowId: IdOrNull,
+  cellId: IdOrNull,
+  listener: HasCellListener,
   listenerDeps?: React.DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
