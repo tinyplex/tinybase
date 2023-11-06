@@ -11,6 +11,7 @@ import {
   HasTableCellListener,
   HasTableListener,
   HasTablesListener,
+  HasValuesListener,
   MapCell,
   MapValue,
   Row,
@@ -488,6 +489,14 @@ export function useCellListener(
   rowId: IdOrNull,
   cellId: IdOrNull,
   listener: CellListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  storeOrStoreId?: StoreOrStoreId,
+): void;
+
+/// useHasValuesListener
+export function useHasValuesListener(
+  listener: HasValuesListener,
   listenerDeps?: React.DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
