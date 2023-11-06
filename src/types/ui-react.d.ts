@@ -11,6 +11,7 @@ import {
   HasTableCellListener,
   HasTableListener,
   HasTablesListener,
+  HasValueListener,
   HasValuesListener,
   MapCell,
   MapValue,
@@ -513,6 +514,15 @@ export function useValuesListener(
 /// useValueIdsListener
 export function useValueIdsListener(
   listener: ValueIdsListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  storeOrStoreId?: StoreOrStoreId,
+): void;
+
+/// useHasValueListener
+export function useHasValueListener(
+  valueId: IdOrNull,
+  listener: HasValueListener,
   listenerDeps?: React.DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
