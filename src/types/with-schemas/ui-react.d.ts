@@ -462,6 +462,14 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     thenDeps?: React.DependencyList,
   ) => Callback;
 
+  /// useHasTablesListener
+  useHasTablesListener: (
+    listener: TablesListener<Schemas>,
+    listenerDeps?: React.DependencyList,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
   /// useTablesListener
   useTablesListener: (
     listener: TablesListener<Schemas>,

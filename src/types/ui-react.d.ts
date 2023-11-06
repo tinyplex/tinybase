@@ -6,6 +6,7 @@ import {
   CellIdsListener,
   CellListener,
   CellOrUndefined,
+  HasTablesListener,
   MapCell,
   MapValue,
   Row,
@@ -343,6 +344,14 @@ export function useDelValueCallback(
   then?: (store: Store) => void,
   thenDeps?: React.DependencyList,
 ): Callback;
+
+/// useHasTablesListener
+export function useHasTablesListener(
+  listener: HasTablesListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  storeOrStoreId?: StoreOrStoreId,
+): void;
 
 /// useTablesListener
 export function useTablesListener(
