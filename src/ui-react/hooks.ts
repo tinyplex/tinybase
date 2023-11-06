@@ -30,6 +30,7 @@ import {
   Cell,
   CellIdsListener,
   CellListener,
+  HasTableCellListener,
   HasTableListener,
   HasTablesListener,
   MapCell,
@@ -97,6 +98,7 @@ import {
   useHasCell as useHasCellDecl,
   useHasRow as useHasRowDecl,
   useHasTableCell as useHasTableCellDecl,
+  useHasTableCellListener as useHasTableCellListenerDecl,
   useHasTable as useHasTableDecl,
   useHasTableListener as useHasTableListenerDecl,
   useHasTables as useHasTablesDecl,
@@ -891,6 +893,23 @@ export const useTableCellIdsListener: typeof useTableCellIdsListenerDecl = (
     listener,
     listenerDeps,
     [tableId],
+    mutator,
+  );
+
+export const useHasTableCellListener: typeof useHasTableCellListenerDecl = (
+  tableId: IdOrNull,
+  cellId: IdOrNull,
+  listener: HasTableCellListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  storeOrStoreId?: StoreOrStoreId,
+): void =>
+  useListener(
+    HAS + TABLE + CELL,
+    useStoreOrStoreById(storeOrStoreId),
+    listener,
+    listenerDeps,
+    [tableId, cellId],
     mutator,
   );
 
