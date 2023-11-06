@@ -422,6 +422,7 @@
  * // -> '<span>true</span>'
  * ```
  * @category Store hooks
+ * @since v4.4.0
  */
 /// useHasTables
 /**
@@ -653,6 +654,7 @@
  * // -> '<span>true</span>'
  * ```
  * @category Store hooks
+ * @since v4.4.0
  */
 /// useHasTable
 /**
@@ -898,6 +900,7 @@
  * // -> '<span>false</span>'
  * ```
  * @category Store hooks
+ * @since v4.4.0
  */
 /// useHasTableCell
 /**
@@ -1246,6 +1249,7 @@
  * // -> '<span>false</span>'
  * ```
  * @category Store hooks
+ * @since v4.4.0
  */
 /// useHasRow
 /**
@@ -1497,6 +1501,7 @@
  * // -> '<span>false</span>'
  * ```
  * @category Store hooks
+ * @since v4.4.0
  */
 /// useHasCell
 /**
@@ -1653,6 +1658,7 @@
  * // -> '<span>true</span>'
  * ```
  * @category Store hooks
+ * @since v4.4.0
  */
 /// useHasValues
 /**
@@ -1885,6 +1891,7 @@
  * // -> '<span>false</span>'
  * ```
  * @category Store hooks
+ * @since v4.4.0
  */
 /// useHasValue
 /**
@@ -3128,6 +3135,7 @@
  * // -> 0
  * ```
  * @category Store hooks
+ * @since v4.4.0
  */
 /// useHasTablesListener
 /**
@@ -3301,6 +3309,7 @@
  * // -> 0
  * ```
  * @category Store hooks
+ * @since v4.4.0
  */
 /// useHasTableListener
 /**
@@ -3486,6 +3495,7 @@
  * // -> 0
  * ```
  * @category Store hooks
+ * @since v4.4.0
  */
 /// useHasTableCellListener
 /**
@@ -3745,6 +3755,7 @@
  * // -> 0
  * ```
  * @category Store hooks
+ * @since v4.4.0
  */
 /// useHasRowListener
 /**
@@ -3950,6 +3961,7 @@
  * // -> 0
  * ```
  * @category Store hooks
+ * @since v4.4.0
  */
 /// useHasCellListener
 /**
