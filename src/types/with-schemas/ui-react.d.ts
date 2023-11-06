@@ -47,6 +47,7 @@ import {
   CellIdsListener,
   CellListener,
   CellOrUndefined,
+  HasCellListener,
   HasRowListener,
   HasTableCellListener,
   HasTableListener,
@@ -622,6 +623,30 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     tableId: TableIdOrNull,
     rowId: RowIdOrNull,
     listener: CellIdsListener<Schemas, TableIdOrNull, RowIdOrNull>,
+    listenerDeps?: React.DependencyList,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// useHasCellListener
+  useHasCellListener: <
+    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+    RowIdOrNull extends IdOrNull,
+    CellIdOrNull extends
+      | (TableIdOrNull extends TableIdFromSchema<Schemas[0]>
+          ? CellIdFromSchema<Schemas[0], TableIdOrNull>
+          : AllCellIdFromSchema<Schemas[0]>)
+      | null,
+  >(
+    tableId: TableIdOrNull,
+    rowId: RowIdOrNull,
+    cellId: CellIdOrNull,
+    listener: HasCellListener<
+      Schemas,
+      TableIdOrNull,
+      RowIdOrNull,
+      CellIdOrNull
+    >,
     listenerDeps?: React.DependencyList,
     mutator?: boolean,
     storeOrStoreId?: StoreOrStoreId<Schemas>,

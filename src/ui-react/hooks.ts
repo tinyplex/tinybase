@@ -30,6 +30,7 @@ import {
   Cell,
   CellIdsListener,
   CellListener,
+  HasCellListener,
   HasRowListener,
   HasTableCellListener,
   HasTableListener,
@@ -97,6 +98,7 @@ import {
   useGoForwardCallback as useGoForwardCallbackDecl,
   useGoToCallback as useGoToCallbackDecl,
   useHasCell as useHasCellDecl,
+  useHasCellListener as useHasCellListenerDecl,
   useHasRow as useHasRowDecl,
   useHasRowListener as useHasRowListenerDecl,
   useHasTableCell as useHasTableCellDecl,
@@ -1015,6 +1017,24 @@ export const useCellIdsListener: typeof useCellIdsListenerDecl = (
     listener,
     listenerDeps,
     [tableId, rowId],
+    mutator,
+  );
+
+export const useHasCellListener: typeof useHasCellListenerDecl = (
+  tableId: IdOrNull,
+  rowId: IdOrNull,
+  cellId: IdOrNull,
+  listener: HasCellListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  storeOrStoreId?: StoreOrStoreId,
+): void =>
+  useListener(
+    HAS + CELL,
+    useStoreOrStoreById(storeOrStoreId),
+    listener,
+    listenerDeps,
+    [tableId, rowId, cellId],
     mutator,
   );
 
