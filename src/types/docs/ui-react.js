@@ -3680,6 +3680,74 @@
  */
 /// useSortedRowIdsListener
 /**
+ * The useHasRowListener hook registers a listener function with the Store that
+ * will be called when a Row is added to or removed from the Store.
+ *
+ * This hook is useful for situations where a component needs to register its
+ * own specific listener to do more than simply tracking the value (which is
+ * more easily done with the useHasRow hook).
+ *
+ * You can either listen to a single Row being added or removed (by specifying
+ * the Table Id and Row Id, as the method's first two parameters) or changes
+ * to any Row (by providing `null` wildcards).
+ *
+ * Both, either, or neither of the `tableId` and `rowId` parameters can be
+ * wildcarded with `null`. You can listen to a specific Row in a specific Table,
+ * any Row in a specific Table, a specific Row in any Table, or any Row in any
+ * Table.
+ *
+ * Unlike the addHasRowListener method, which returns a listener Id and requires
+ * you to remove it manually, the useHasRowListener hook manages this lifecycle
+ * for you: when the listener changes (per its `listenerDeps` dependencies) or
+ * the component unmounts, the listener on the underlying Store will be deleted.
+ * @param tableId The Id of the Table to listen to, or `null` as a wildcard.
+ * @param rowId The Id of the Row to listen to, or `null` as a wildcard.
+ * @param listener The function that will be called whenever the matching Row
+ * is added or removed.
+ * @param listenerDeps An optional array of dependencies for the `listener`
+ * function, which, if any change, result in the re-registration of the
+ * listener. This parameter defaults to an empty array.
+ * @param mutator An optional boolean that indicates that the listener mutates
+ * Store data.
+ * @param storeOrStoreId The Store to register the listener with: omit for the
+ * default context Store, provide an Id for a named context Store, or provide an
+ * explicit reference.
+ * @example
+ * This example uses the useHasRowListener hook to create a listener that is
+ * scoped to a single component. When the component is unmounted, the listener
+ * is removed from the Store.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => {
+ *   useHasRowListener('pets', 'fido', () =>
+ *     console.log('Row existence changed'),
+ *   );
+ *   return <span>App</span>;
+ * };
+ *
+ * const store = createStore();
+ * const app = document.createElement('div');
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App store={store} />); // !act
+ * console.log(store.getListenerStats().hasRow);
+ * // -> 1
+ *
+ * store.setCell('pets', 'fido', 'color', 'walnut'); // !act
+ * // -> 'Row existence changed'
+ *
+ * root.unmount(); // !act
+ * console.log(store.getListenerStats().hasRow);
+ * // -> 0
+ * ```
+ * @category Store hooks
+ */
+/// useHasRowListener
+/**
  * The useRowListener hook registers a listener function with a Store that will
  * be called whenever data in a Row changes.
  *
