@@ -4034,6 +4034,64 @@
  */
 /// useCellListener
 /**
+ * The useHasValuesListener hook registers a listener function with the Store
+ * that will be called when Values as a whole are added to or removed from the
+ * Store.
+ *
+ * This hook is useful for situations where a component needs to register its
+ * own specific listener to do more than simply tracking the value (which is
+ * more easily done with the useHasValues hook).
+ *
+ * Unlike the addHasValuesListener method, which returns a listener Id and
+ * requires you to remove it manually, the useHasValuesListener hook manages
+ * this lifecycle for you: when the listener changes (per its `listenerDeps`
+ * dependencies) or the component unmounts, the listener on the underlying Store
+ * will be deleted.
+ * @param listener The function that will be called whenever Values as a whole
+ * are added or removed.
+ * @param listenerDeps An optional array of dependencies for the `listener`
+ * function, which, if any change, result in the re-registration of the
+ * listener. This parameter defaults to an empty array.
+ * @param mutator An optional boolean that indicates that the listener mutates
+ * Store data.
+ * @param storeOrStoreId The Store to register the listener with: omit for the
+ * default context Store, provide an Id for a named context Store, or provide an
+ * explicit reference.
+ * @example
+ * This example uses the useHasValuesListener hook to create a listener that is
+ * scoped to a single component. When the component is unmounted, the listener
+ * is removed from the Store.
+ *
+ * ```jsx
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => {
+ *   useHasValuesListener(() => console.log('Values existence changed'));
+ *   return <span>App</span>;
+ * };
+ *
+ * const store = createStore();
+ * const app = document.createElement('div');
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App store={store} />); // !act
+ * console.log(store.getListenerStats().hasValues);
+ * // -> 1
+ *
+ * store.setValue('open', true); // !act
+ * // -> 'Values existence changed'
+ *
+ * root.unmount(); // !act
+ * console.log(store.getListenerStats().hasValues);
+ * // -> 0
+ * ```
+ * @category Store hooks
+ * @since v4.4.0
+ */
+/// useHasValuesListener
+/**
  * The useValuesListener hook registers a listener function with a Store that
  * will be called whenever keyed value data in it changes.
  *
