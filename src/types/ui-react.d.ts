@@ -6,6 +6,7 @@ import {
   CellIdsListener,
   CellListener,
   CellOrUndefined,
+  HasRowListener,
   HasTableCellListener,
   HasTableListener,
   HasTablesListener,
@@ -434,6 +435,16 @@ export function useSortedRowIdsListener(
   offset: number,
   limit: number | undefined,
   listener: SortedRowIdsListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  storeOrStoreId?: StoreOrStoreId,
+): void;
+
+/// useHasRowListener
+export function useHasRowListener(
+  tableId: IdOrNull,
+  rowId: IdOrNull,
+  listener: HasRowListener,
   listenerDeps?: React.DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
