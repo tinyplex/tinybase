@@ -30,6 +30,7 @@ import {
   Cell,
   CellIdsListener,
   CellListener,
+  HasTablesListener,
   MapCell,
   MapValue,
   Row,
@@ -97,6 +98,7 @@ import {
   useHasTableCell as useHasTableCellDecl,
   useHasTable as useHasTableDecl,
   useHasTables as useHasTablesDecl,
+  useHasTablesListener as useHasTablesListenerDecl,
   useHasValue as useHasValueDecl,
   useHasValues as useHasValuesDecl,
   useIndexIds as useIndexIdsDecl,
@@ -796,6 +798,21 @@ export const useDelValueCallback: typeof useDelValueCallbackDecl = (
   then?: (store: Store) => void,
   thenDeps?: React.DependencyList,
 ): Callback => useDel(storeOrStoreId, VALUE, then, thenDeps, valueId);
+
+export const useHasTablesListener: typeof useHasTablesListenerDecl = (
+  listener: HasTablesListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  storeOrStoreId?: StoreOrStoreId,
+): void =>
+  useListener(
+    HAS + TABLES,
+    useStoreOrStoreById(storeOrStoreId),
+    listener,
+    listenerDeps,
+    [],
+    mutator,
+  );
 
 export const useTablesListener: typeof useTablesListenerDecl = (
   listener: TablesListener,
