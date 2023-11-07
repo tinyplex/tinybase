@@ -217,7 +217,8 @@ export {
   useStoreOrStoreById,
 } from './context';
 
-const {useCallback, useEffect, useMemo, useRef, useState} = React;
+const {useCallback, useEffect, useMemo, useLayoutEffect, useRef, useState} =
+  React;
 
 const EMPTY_ARRAY: Readonly<[]> = [];
 const EMPTY_OBJECT: Readonly<{[id: string]: never}> = {};
@@ -274,20 +275,16 @@ const useListener = (
   listenerDeps: React.DependencyList = EMPTY_ARRAY,
   preArgs: Readonly<ListenerArgument[]> = EMPTY_ARRAY,
   ...postArgs: ListenerArgument[]
-): void => {
-  const deps = [thing, ...preArgs, ...listenerDeps, ...postArgs];
-  const listenerId = useMemo(
-    () =>
-      thing?.[ADD + listenable + LISTENER]?.(...preArgs, listener, ...postArgs),
+): void =>
+  useLayoutEffect(() => {
+    const listenerId = thing?.[ADD + listenable + LISTENER]?.(
+      ...preArgs,
+      listener,
+      ...postArgs,
+    );
+    return () => thing?.delListener(listenerId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    deps,
-  );
-  useEffect(
-    () => () => thing?.delListener(listenerId),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    deps,
-  );
-};
+  }, [thing, listenable, ...preArgs, ...listenerDeps, ...postArgs]);
 
 const useSetCallback = <Parameter, Thing>(
   storeOrStoreId: StoreOrStoreId | undefined,
