@@ -1126,561 +1126,737 @@ exports[`Types: tools.ts:21:39 1`] = `"Property 't2' does not exist on type '{ r
 
 exports[`Types: tools.ts:27:39 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:126:31 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:140:31 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:127:23 1`] = `"Type 'Store<NoSchemas>' is not assignable to type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>'."`;
+exports[`Types: ui-react.tsx:141:23 1`] = `"Type 'Store<NoSchemas>' is not assignable to type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>'."`;
 
-exports[`Types: ui-react.tsx:128:23 1`] = `"Type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, NoValuesSchema]>' is not assignable to type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>'."`;
+exports[`Types: ui-react.tsx:142:23 1`] = `"Type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, NoValuesSchema]>' is not assignable to type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>'."`;
 
-exports[`Types: ui-react.tsx:129:23 1`] = `"Type 'Store<[NoTablesSchema, { readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }]>' is not assignable to type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>'."`;
+exports[`Types: ui-react.tsx:143:23 1`] = `"Type 'Store<[NoTablesSchema, { readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }]>' is not assignable to type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>'."`;
 
-exports[`Types: ui-react.tsx:132:26 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:146:26 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:135:27 1`] = `"Property 't3' does not exist on type 'Tables<{ t2: { c2: { type: "number"; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:149:27 1`] = `"Property 't3' does not exist on type 'Tables<{ t2: { c2: { type: "number"; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:138:14 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'."`;
+exports[`Types: ui-react.tsx:152:2 1`] = `"Conversion of type 'boolean' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: ui-react.tsx:141:25 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
+exports[`Types: ui-react.tsx:155:14 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'."`;
 
-exports[`Types: ui-react.tsx:145:21 1`] = `"Property 'c2' does not exist on type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", false>'."`;
+exports[`Types: ui-react.tsx:158:25 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
-exports[`Types: ui-react.tsx:146:11 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
+exports[`Types: ui-react.tsx:161:14 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
-exports[`Types: ui-react.tsx:149:18 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
+exports[`Types: ui-react.tsx:165:21 1`] = `"Property 'c2' does not exist on type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", false>'."`;
 
-exports[`Types: ui-react.tsx:152:12 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
+exports[`Types: ui-react.tsx:166:11 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
-exports[`Types: ui-react.tsx:155:24 1`] = `"Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d" | undefined'."`;
+exports[`Types: ui-react.tsx:169:18 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
-exports[`Types: ui-react.tsx:156:18 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
+exports[`Types: ui-react.tsx:172:24 1`] = `"Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d"'."`;
 
-exports[`Types: ui-react.tsx:160:21 1`] = `"Property 'c2' does not exist on type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1">'."`;
+exports[`Types: ui-react.tsx:173:18 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
-exports[`Types: ui-react.tsx:161:9 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
+exports[`Types: ui-react.tsx:176:12 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
-exports[`Types: ui-react.tsx:164:34 1`] = `"Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d"'."`;
+exports[`Types: ui-react.tsx:179:24 1`] = `"Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d" | undefined'."`;
 
-exports[`Types: ui-react.tsx:165:13 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
+exports[`Types: ui-react.tsx:180:18 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
-exports[`Types: ui-react.tsx:169:2 1`] = `"Conversion of type 'CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: ui-react.tsx:184:12 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
-exports[`Types: ui-react.tsx:170:22 1`] = `"Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d"'."`;
+exports[`Types: ui-react.tsx:188:21 1`] = `"Property 'c2' does not exist on type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1">'."`;
 
-exports[`Types: ui-react.tsx:171:10 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
+exports[`Types: ui-react.tsx:189:9 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
-exports[`Types: ui-react.tsx:174:14 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }>'."`;
+exports[`Types: ui-react.tsx:192:34 1`] = `"Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d"'."`;
 
-exports[`Types: ui-react.tsx:177:25 1`] = `"Argument of type '"v2"' is not assignable to parameter of type '"v1" | "v1d"'."`;
+exports[`Types: ui-react.tsx:193:13 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
-exports[`Types: ui-react.tsx:180:2 1`] = `"Conversion of type 'DefaultedValueFromSchema<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: ui-react.tsx:196:25 1`] = `"Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d"'."`;
 
-exports[`Types: ui-react.tsx:181:11 1`] = `"Argument of type '"v2"' is not assignable to parameter of type '"v1" | "v1d"'."`;
+exports[`Types: ui-react.tsx:197:13 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
-exports[`Types: ui-react.tsx:188:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:201:2 1`] = `"Conversion of type 'CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: ui-react.tsx:195:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:202:22 1`] = `"Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d"'."`;
 
-exports[`Types: ui-react.tsx:198:41 1`] = `"Type '{ c2: number; }' is not assignable to type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'."`;
+exports[`Types: ui-react.tsx:203:10 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
-exports[`Types: ui-react.tsx:204:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:206:2 1`] = `"Conversion of type 'boolean' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: ui-react.tsx:211:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:209:14 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }>'."`;
 
-exports[`Types: ui-react.tsx:214:41 1`] = `"Type '{ c2: number; }' is not assignable to type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'."`;
+exports[`Types: ui-react.tsx:212:25 1`] = `"Argument of type '"v2"' is not assignable to parameter of type '"v1" | "v1d"'."`;
 
-exports[`Types: ui-react.tsx:215:22 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
+exports[`Types: ui-react.tsx:215:14 1`] = `"Argument of type '"v2"' is not assignable to parameter of type '"v1" | "v1d"'."`;
 
-exports[`Types: ui-react.tsx:222:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:218:2 1`] = `"Conversion of type 'DefaultedValueFromSchema<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: ui-react.tsx:229:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:219:11 1`] = `"Argument of type '"v2"' is not assignable to parameter of type '"v1" | "v1d"'."`;
 
-exports[`Types: ui-react.tsx:232:38 1`] = `"Type '{ c2: number; }' has no properties in common with type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'."`;
+exports[`Types: ui-react.tsx:226:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:233:20 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
+exports[`Types: ui-react.tsx:233:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:239:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:236:41 1`] = `"Type '{ c2: number; }' is not assignable to type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'."`;
 
-exports[`Types: ui-react.tsx:246:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:242:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:249:32 1`] = `"Type '{ c2: number; }' has no properties in common with type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'."`;
+exports[`Types: ui-react.tsx:249:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:250:20 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
+exports[`Types: ui-react.tsx:252:41 1`] = `"Type '{ c2: number; }' is not assignable to type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'."`;
 
-exports[`Types: ui-react.tsx:257:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:253:22 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
-exports[`Types: ui-react.tsx:264:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:260:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:267:45 1`] = `"Type '{ c2: number; }' has no properties in common with type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'."`;
+exports[`Types: ui-react.tsx:267:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:268:27 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
+exports[`Types: ui-react.tsx:270:38 1`] = `"Type '{ c2: number; }' has no properties in common with type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'."`;
 
-exports[`Types: ui-react.tsx:276:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:271:20 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
-exports[`Types: ui-react.tsx:283:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:277:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:288:4 1`] = `"Conversion of type 'CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: ui-react.tsx:284:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:291:45 1`] = `"Type '() => string' is not assignable to type 'number | MapCell<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">'."`;
+exports[`Types: ui-react.tsx:287:32 1`] = `"Type '{ c2: number; }' has no properties in common with type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'."`;
 
-exports[`Types: ui-react.tsx:292:45 1`] = `"Type 'string' is not assignable to type 'number | MapCell<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">'."`;
+exports[`Types: ui-react.tsx:288:20 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
-exports[`Types: ui-react.tsx:293:33 1`] = `"Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d"'."`;
+exports[`Types: ui-react.tsx:295:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:294:21 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
+exports[`Types: ui-react.tsx:302:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:299:24 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
+exports[`Types: ui-react.tsx:305:45 1`] = `"Type '{ c2: number; }' has no properties in common with type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'."`;
 
-exports[`Types: ui-react.tsx:306:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:306:27 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
-exports[`Types: ui-react.tsx:309:29 1`] = `"Type '{ v2: number; }' has no properties in common with type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, true>'."`;
-
-exports[`Types: ui-react.tsx:314:24 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
+exports[`Types: ui-react.tsx:314:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
 exports[`Types: ui-react.tsx:321:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:324:36 1`] = `"Type '{ v2: number; }' has no properties in common with type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, true>'."`;
+exports[`Types: ui-react.tsx:326:4 1`] = `"Conversion of type 'CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: ui-react.tsx:330:24 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
+exports[`Types: ui-react.tsx:329:45 1`] = `"Type '() => string' is not assignable to type 'number | MapCell<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">'."`;
 
-exports[`Types: ui-react.tsx:337:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:330:45 1`] = `"Type 'string' is not assignable to type 'number | MapCell<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">'."`;
 
-exports[`Types: ui-react.tsx:342:4 1`] = `"Conversion of type 'ValueOrUndefined<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: ui-react.tsx:331:33 1`] = `"Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d"'."`;
 
-exports[`Types: ui-react.tsx:345:34 1`] = `"Type '() => string' is not assignable to type 'number | MapValue<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">'."`;
+exports[`Types: ui-react.tsx:332:21 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
-exports[`Types: ui-react.tsx:346:34 1`] = `"Type 'string' is not assignable to type 'number | MapValue<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">'."`;
+exports[`Types: ui-react.tsx:337:24 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:347:22 1`] = `"Argument of type '"v2"' is not assignable to parameter of type '"v1" | "v1d"'."`;
+exports[`Types: ui-react.tsx:344:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:353:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:347:29 1`] = `"Type '{ v2: number; }' has no properties in common with type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, true>'."`;
 
-exports[`Types: ui-react.tsx:357:22 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
+exports[`Types: ui-react.tsx:352:24 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:360:20 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
+exports[`Types: ui-react.tsx:359:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:363:33 1`] = `"Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d"'."`;
+exports[`Types: ui-react.tsx:362:36 1`] = `"Type '{ v2: number; }' has no properties in common with type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, true>'."`;
 
-exports[`Types: ui-react.tsx:364:21 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
+exports[`Types: ui-react.tsx:368:24 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:368:22 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
+exports[`Types: ui-react.tsx:375:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:372:22 1`] = `"Argument of type '"v2"' is not assignable to parameter of type '"v1" | "v1d"'."`;
+exports[`Types: ui-react.tsx:380:4 1`] = `"Conversion of type 'ValueOrUndefined<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: ui-react.tsx:379:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:383:34 1`] = `"Type '() => string' is not assignable to type 'number | MapValue<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">'."`;
 
-exports[`Types: ui-react.tsx:380:4 1`] = `"Conversion of type 'CellChange<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1", number | undefined> | undefined' to type '[true, number, string]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: ui-react.tsx:384:34 1`] = `"Type 'string' is not assignable to type 'number | MapValue<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">'."`;
 
-exports[`Types: ui-react.tsx:381:4 1`] = `"Conversion of type 'CellChange<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1", number | undefined> | undefined' to type '[true, string, number]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
-
-exports[`Types: ui-react.tsx:385:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:385:22 1`] = `"Argument of type '"v2"' is not assignable to parameter of type '"v1" | "v1d"'."`;
 
 exports[`Types: ui-react.tsx:391:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:399:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:395:22 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
-exports[`Types: ui-react.tsx:400:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
+exports[`Types: ui-react.tsx:398:20 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
-exports[`Types: ui-react.tsx:401:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
+exports[`Types: ui-react.tsx:401:33 1`] = `"Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d"'."`;
 
-exports[`Types: ui-react.tsx:407:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:402:21 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
-exports[`Types: ui-react.tsx:408:4 1`] = `"This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap."`;
+exports[`Types: ui-react.tsx:406:22 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:412:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:410:22 1`] = `"Argument of type '"v2"' is not assignable to parameter of type '"v1" | "v1d"'."`;
 
-exports[`Types: ui-react.tsx:414:19 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1" | null'."`;
+exports[`Types: ui-react.tsx:416:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:419:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:423:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:420:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
+exports[`Types: ui-react.tsx:424:4 1`] = `"Conversion of type 'CellChange<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1", number | undefined> | undefined' to type '[true, number, string]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: ui-react.tsx:421:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
+exports[`Types: ui-react.tsx:425:4 1`] = `"Conversion of type 'CellChange<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1", number | undefined> | undefined' to type '[true, string, number]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: ui-react.tsx:427:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:429:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:428:4 1`] = `"This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap."`;
+exports[`Types: ui-react.tsx:435:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:432:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:442:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:435:26 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1" | null'."`;
+exports[`Types: ui-react.tsx:443:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:440:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:444:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:441:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
+exports[`Types: ui-react.tsx:450:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:442:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
+exports[`Types: ui-react.tsx:451:4 1`] = `"This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:448:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:455:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:449:4 1`] = `"This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap."`;
+exports[`Types: ui-react.tsx:457:22 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1" | null'."`;
 
-exports[`Types: ui-react.tsx:453:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:463:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:456:20 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1" | null'."`;
+exports[`Types: ui-react.tsx:464:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:461:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:465:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:462:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
+exports[`Types: ui-react.tsx:471:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:463:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
+exports[`Types: ui-react.tsx:472:4 1`] = `"This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:467:4 1`] = `"Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d" | undefined'."`;
+exports[`Types: ui-react.tsx:476:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:474:6 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
+exports[`Types: ui-react.tsx:478:19 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1" | null'."`;
 
-exports[`Types: ui-react.tsx:475:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:483:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:476:6 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
+exports[`Types: ui-react.tsx:484:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:481:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:485:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:485:4 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
+exports[`Types: ui-react.tsx:491:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:498:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:492:4 1`] = `"This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:499:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
+exports[`Types: ui-react.tsx:496:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:500:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
+exports[`Types: ui-react.tsx:499:26 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1" | null'."`;
 
-exports[`Types: ui-react.tsx:501:4 1`] = `"This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap."`;
+exports[`Types: ui-react.tsx:505:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:508:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:506:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:509:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
+exports[`Types: ui-react.tsx:507:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:510:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
+exports[`Types: ui-react.tsx:508:4 1`] = `"This comparison appears to be unintentional because the types '"c1"' and '"c2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:517:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:512:4 1`] = `"Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d" | null'."`;
 
-exports[`Types: ui-react.tsx:518:4 1`] = `"This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap."`;
+exports[`Types: ui-react.tsx:516:6 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:519:4 1`] = `"This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap."`;
+exports[`Types: ui-react.tsx:517:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:527:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:518:6 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:528:4 1`] = `"This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap."`;
+exports[`Types: ui-react.tsx:523:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:533:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:527:4 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1" | null'."`;
 
-exports[`Types: ui-react.tsx:537:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:538:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:539:17 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1" | null'."`;
+exports[`Types: ui-react.tsx:539:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:545:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:540:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:546:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
+exports[`Types: ui-react.tsx:546:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:547:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
+exports[`Types: ui-react.tsx:547:4 1`] = `"This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:548:4 1`] = `"This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap."`;
+exports[`Types: ui-react.tsx:551:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:555:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:554:20 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1" | null'."`;
 
-exports[`Types: ui-react.tsx:556:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
+exports[`Types: ui-react.tsx:560:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:557:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
+exports[`Types: ui-react.tsx:561:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:564:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:562:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:565:4 1`] = `"This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap."`;
+exports[`Types: ui-react.tsx:563:4 1`] = `"This comparison appears to be unintentional because the types '"c1"' and '"c2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:566:4 1`] = `"This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap."`;
+exports[`Types: ui-react.tsx:567:4 1`] = `"Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d" | undefined'."`;
 
-exports[`Types: ui-react.tsx:574:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:574:6 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:575:4 1`] = `"This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap."`;
+exports[`Types: ui-react.tsx:575:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:580:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:576:6 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:581:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
+exports[`Types: ui-react.tsx:581:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:582:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
+exports[`Types: ui-react.tsx:585:4 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
-exports[`Types: ui-react.tsx:586:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:598:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:589:21 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1" | null'."`;
+exports[`Types: ui-react.tsx:599:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:602:6 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: ui-react.tsx:600:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:603:6 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: ui-react.tsx:607:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:604:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:608:4 1`] = `"This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:605:6 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
+exports[`Types: ui-react.tsx:609:4 1`] = `"This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:606:6 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
+exports[`Types: ui-react.tsx:617:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:607:6 1`] = `"This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap."`;
+exports[`Types: ui-react.tsx:618:4 1`] = `"This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:608:6 1`] = `"This comparison appears to be unintentional because the types '"c1"' and '"c1d"' have no overlap."`;
+exports[`Types: ui-react.tsx:623:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:609:6 1`] = `"This comparison appears to be unintentional because the types '"c1"' and '"c2"' have no overlap."`;
+exports[`Types: ui-react.tsx:627:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:629:8 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: ui-react.tsx:629:20 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1" | null'."`;
 
-exports[`Types: ui-react.tsx:630:8 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: ui-react.tsx:636:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:635:8 1`] = `"Conversion of type 'string' to type 'number' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: ui-react.tsx:637:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:636:8 1`] = `"Conversion of type 'string' to type 'number' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: ui-react.tsx:638:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:638:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:639:4 1`] = `"This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:639:6 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
+exports[`Types: ui-react.tsx:646:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:640:6 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
+exports[`Types: ui-react.tsx:647:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:641:6 1`] = `"This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap."`;
+exports[`Types: ui-react.tsx:648:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:642:6 1`] = `"This comparison appears to be unintentional because the types '"c1" | "c1d"' and '"c2"' have no overlap."`;
+exports[`Types: ui-react.tsx:655:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:651:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:656:4 1`] = `"This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:652:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
+exports[`Types: ui-react.tsx:657:4 1`] = `"This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:653:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
+exports[`Types: ui-react.tsx:665:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:654:4 1`] = `"This comparison appears to be unintentional because the types '"c1"' and '"c1d"' have no overlap."`;
+exports[`Types: ui-react.tsx:666:4 1`] = `"This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:655:4 1`] = `"This comparison appears to be unintentional because the types '"c1"' and '"c2"' have no overlap."`;
+exports[`Types: ui-react.tsx:671:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:664:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:675:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:665:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
+exports[`Types: ui-react.tsx:677:17 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1" | null'."`;
 
-exports[`Types: ui-react.tsx:666:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
+exports[`Types: ui-react.tsx:683:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:667:4 1`] = `"This comparison appears to be unintentional because the types '"c1" | "c1d"' and '"c2"' have no overlap."`;
+exports[`Types: ui-react.tsx:684:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:674:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:685:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:675:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
+exports[`Types: ui-react.tsx:686:4 1`] = `"This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:676:4 1`] = `"This comparison appears to be unintentional because the types '"c1"' and '"c1d"' have no overlap."`;
+exports[`Types: ui-react.tsx:693:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:677:4 1`] = `"This comparison appears to be unintentional because the types '"c1"' and '"c0"' have no overlap."`;
+exports[`Types: ui-react.tsx:694:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:678:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
+exports[`Types: ui-react.tsx:695:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:679:4 1`] = `"This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap."`;
+exports[`Types: ui-react.tsx:702:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:680:4 1`] = `"This comparison appears to be unintentional because the types '"c1"' and '"c2"' have no overlap."`;
+exports[`Types: ui-react.tsx:703:4 1`] = `"This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:705:8 1`] = `"This comparison appears to be unintentional because the types '"c1" | "c1d"' and '"c0"' have no overlap."`;
+exports[`Types: ui-react.tsx:704:4 1`] = `"This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:710:8 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: ui-react.tsx:712:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:711:8 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: ui-react.tsx:713:4 1`] = `"This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:716:8 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: ui-react.tsx:718:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:717:8 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: ui-react.tsx:719:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:722:8 1`] = `"Conversion of type 'string' to type 'number' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: ui-react.tsx:720:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:723:8 1`] = `"Conversion of type 'string' to type 'number' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: ui-react.tsx:724:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:725:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:727:21 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1" | null'."`;
 
-exports[`Types: ui-react.tsx:726:6 1`] = `"This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap."`;
+exports[`Types: ui-react.tsx:735:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:727:6 1`] = `"This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap."`;
+exports[`Types: ui-react.tsx:736:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:728:6 1`] = `"This comparison appears to be unintentional because the types '"c0" | "c1" | "c1d"' and '"c2"' have no overlap."`;
+exports[`Types: ui-react.tsx:737:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:737:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:738:4 1`] = `"This comparison appears to be unintentional because the types '"c1"' and '"c1d"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:738:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
+exports[`Types: ui-react.tsx:739:4 1`] = `"This comparison appears to be unintentional because the types '"c1"' and '"c2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:739:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
+exports[`Types: ui-react.tsx:748:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:740:4 1`] = `"This comparison appears to be unintentional because the types '"c1"' and '"c1d"' have no overlap."`;
+exports[`Types: ui-react.tsx:749:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:741:4 1`] = `"This comparison appears to be unintentional because the types '"c1"' and '"c0"' have no overlap."`;
+exports[`Types: ui-react.tsx:750:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:742:4 1`] = `"This comparison appears to be unintentional because the types '"c1"' and '"c2"' have no overlap."`;
-
-exports[`Types: ui-react.tsx:756:6 1`] = `"This comparison appears to be unintentional because the types '"c1" | "c1d"' and '"c0"' have no overlap."`;
+exports[`Types: ui-react.tsx:751:4 1`] = `"This comparison appears to be unintentional because the types '"c1" | "c1d"' and '"c2"' have no overlap."`;
 
 exports[`Types: ui-react.tsx:758:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:759:4 1`] = `"This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap."`;
+exports[`Types: ui-react.tsx:759:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:760:4 1`] = `"This comparison appears to be unintentional because the types '"c0" | "c1" | "c1d"' and '"c2"' have no overlap."`;
+exports[`Types: ui-react.tsx:760:4 1`] = `"This comparison appears to be unintentional because the types '"c1"' and '"c1d"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:766:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:761:4 1`] = `"This comparison appears to be unintentional because the types '"c1"' and '"c0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:767:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
+exports[`Types: ui-react.tsx:762:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:768:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
+exports[`Types: ui-react.tsx:763:4 1`] = `"This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:769:4 1`] = `"This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap."`;
+exports[`Types: ui-react.tsx:764:4 1`] = `"This comparison appears to be unintentional because the types '"c1"' and '"c2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:774:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:777:6 1`] = `"This comparison appears to be unintentional because the types '"c1" | "c1d"' and '"c0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:775:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
+exports[`Types: ui-react.tsx:779:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:776:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
+exports[`Types: ui-react.tsx:780:4 1`] = `"This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:780:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:781:4 1`] = `"This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:783:30 1`] = `"Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d" | null'."`;
+exports[`Types: ui-react.tsx:782:4 1`] = `"This comparison appears to be unintentional because the types '"c0" | "c1" | "c1d"' and '"c2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:784:30 1`] = `"Argument of type '"c2"' is not assignable to parameter of type '"c0" | "c1" | "c1d" | null'."`;
+exports[`Types: ui-react.tsx:790:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:785:18 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1" | null'."`;
+exports[`Types: ui-react.tsx:791:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:790:22 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
+exports[`Types: ui-react.tsx:792:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:791:4 1`] = `"Conversion of type 'ValueChange<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1", number | undefined> | undefined' to type '[true, number, string]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: ui-react.tsx:793:4 1`] = `"This comparison appears to be unintentional because the types '"c1"' and '"c1d"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:792:4 1`] = `"Conversion of type 'ValueChange<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1", number | undefined> | undefined' to type '[true, string, number]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: ui-react.tsx:794:4 1`] = `"This comparison appears to be unintentional because the types '"c1"' and '"c0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:796:22 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
+exports[`Types: ui-react.tsx:795:4 1`] = `"This comparison appears to be unintentional because the types '"c1"' and '"c2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:802:22 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
+exports[`Types: ui-react.tsx:809:6 1`] = `"This comparison appears to be unintentional because the types '"c1" | "c1d"' and '"c0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:811:22 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
+exports[`Types: ui-react.tsx:811:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:812:4 1`] = `"This comparison appears to be unintentional because the types '"v1"' and '"v2"' have no overlap."`;
+exports[`Types: ui-react.tsx:812:4 1`] = `"This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:813:4 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: ui-react.tsx:813:4 1`] = `"This comparison appears to be unintentional because the types '"c0" | "c1" | "c1d"' and '"c2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:814:4 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: ui-react.tsx:819:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:827:6 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: ui-react.tsx:820:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:828:6 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: ui-react.tsx:821:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:833:6 1`] = `"Conversion of type 'string' to type 'number' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: ui-react.tsx:822:4 1`] = `"This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:834:6 1`] = `"Conversion of type 'string' to type 'number' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: ui-react.tsx:827:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:836:22 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
+exports[`Types: ui-react.tsx:828:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:837:4 1`] = `"This comparison appears to be unintentional because the types '"v1" | "v1d"' and '"v2"' have no overlap."`;
+exports[`Types: ui-react.tsx:829:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:841:22 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
+exports[`Types: ui-react.tsx:833:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:843:19 1`] = `"Argument of type '"v2"' is not assignable to parameter of type '"v1" | "v1d" | null'."`;
+exports[`Types: ui-react.tsx:836:33 1`] = `"Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d" | null'."`;
 
-exports[`Types: ui-react.tsx:852:43 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:837:33 1`] = `"Argument of type '"c2"' is not assignable to parameter of type '"c0" | "c1" | "c1d" | null'."`;
 
-exports[`Types: ui-react.tsx:853:19 1`] = `"Argument of type 'Store<NoSchemas>' is not assignable to parameter of type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>'."`;
+exports[`Types: ui-react.tsx:838:21 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1" | null'."`;
 
-exports[`Types: ui-react.tsx:856:39 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:851:6 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: ui-react.tsx:860:35 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:852:6 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: ui-react.tsx:870:43 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:853:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:871:19 1`] = `"Argument of type 'Store<NoSchemas>' is not assignable to parameter of type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>'."`;
+exports[`Types: ui-react.tsx:854:6 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:874:39 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:855:6 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:878:35 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:856:6 1`] = `"This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:883:35 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:857:6 1`] = `"This comparison appears to be unintentional because the types '"c1"' and '"c1d"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:893:49 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:858:6 1`] = `"This comparison appears to be unintentional because the types '"c1"' and '"c2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:894:25 1`] = `"Argument of type 'Store<NoSchemas>' is not assignable to parameter of type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>'."`;
+exports[`Types: ui-react.tsx:878:8 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: ui-react.tsx:897:45 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:879:8 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: ui-react.tsx:901:41 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:884:8 1`] = `"Conversion of type 'string' to type 'number' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: ui-react.tsx:906:41 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:885:8 1`] = `"Conversion of type 'string' to type 'number' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: ui-react.tsx:911:41 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:887:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:921:43 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:888:6 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:922:19 1`] = `"Argument of type 'Store<NoSchemas>' is not assignable to parameter of type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>'."`;
+exports[`Types: ui-react.tsx:889:6 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:925:39 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:890:6 1`] = `"This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:929:35 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:891:6 1`] = `"This comparison appears to be unintentional because the types '"c1" | "c1d"' and '"c2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:934:35 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:900:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:939:35 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:901:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:944:35 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:902:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:949:35 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:903:4 1`] = `"This comparison appears to be unintentional because the types '"c1"' and '"c1d"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:954:35 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:904:4 1`] = `"This comparison appears to be unintentional because the types '"c1"' and '"c2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:964:47 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:913:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:965:23 1`] = `"Argument of type 'Store<NoSchemas>' is not assignable to parameter of type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>'."`;
+exports[`Types: ui-react.tsx:914:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:968:43 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:915:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:976:41 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:916:4 1`] = `"This comparison appears to be unintentional because the types '"c1" | "c1d"' and '"c2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:986:41 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:923:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:992:39 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:924:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:997:39 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:925:4 1`] = `"This comparison appears to be unintentional because the types '"c1"' and '"c1d"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:1008:40 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:926:4 1`] = `"This comparison appears to be unintentional because the types '"c1"' and '"c0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:1012:46 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types: ui-react.tsx:927:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:1013:21 1`] = `"Argument of type 'Store<NoSchemas>' is not assignable to parameter of type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>'."`;
+exports[`Types: ui-react.tsx:928:4 1`] = `"This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:1132:16 1`] = `"Type '({ tableId }: { readonly tableId: 't0' | 't2'; }) => React.JSX.Element' is not assignable to type 'ComponentType<{ readonly tableId: "t0"; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]> | undefined; ... 4 more ...; readonly de...'."`;
+exports[`Types: ui-react.tsx:929:4 1`] = `"This comparison appears to be unintentional because the types '"c1"' and '"c2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:1140:44 1`] = `"Type '"c2"' is not assignable to type '"c0"'."`;
+exports[`Types: ui-react.tsx:954:8 1`] = `"This comparison appears to be unintentional because the types '"c1" | "c1d"' and '"c0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:1141:5 1`] = `"Type '{ tableId: "t1"; rowComponent: ({ tableId, rowId, }: { readonly tableId: "t0" | "t2"; readonly rowId: string; }) => Element; }' is not assignable to type 'IntrinsicAttributes & ({ readonly tableId: "t0"; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { ...; }; }; }, { ...; }]> | undefined; ... 4 more ...; readonly debugIds?: boolean | undefined; } |...'."`;
+exports[`Types: ui-react.tsx:959:8 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: ui-react.tsx:1142:28 1`] = `"Type '({ tableId, rowId, }: { readonly tableId: 't2'; readonly rowId: Id; }) => React.JSX.Element' is not assignable to type 'ComponentType<{ readonly tableId: "t0"; readonly rowId: string; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]> | undefined; ......'."`;
+exports[`Types: ui-react.tsx:960:8 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: ui-react.tsx:1143:15 1`] = `"Type '"t2"' is not assignable to type '"t0" | "t1"'."`;
+exports[`Types: ui-react.tsx:965:8 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: ui-react.tsx:1152:34 1`] = `"Type '"c2"' is not assignable to type '"c0" | "c1" | "c1d" | undefined'."`;
+exports[`Types: ui-react.tsx:966:8 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: ui-react.tsx:1153:50 1`] = `"Type '"c2"' is not assignable to type '"c0"'."`;
+exports[`Types: ui-react.tsx:971:8 1`] = `"Conversion of type 'string' to type 'number' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: ui-react.tsx:1154:5 1`] = `"Type '{ tableId: "t1"; rowComponent: ({ tableId, rowId, }: { readonly tableId: "t0" | "t2"; readonly rowId: string; }) => Element; }' is not assignable to type 'IntrinsicAttributes & ({ readonly tableId: "t0"; readonly cellId?: "c0" | undefined; readonly descending?: boolean | undefined; readonly offset?: number | undefined; ... 6 more ...; readonly debugIds?: boolean | undefined; } | { ...; })'."`;
+exports[`Types: ui-react.tsx:972:8 1`] = `"Conversion of type 'string' to type 'number' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: ui-react.tsx:1155:34 1`] = `"Type '({ tableId, rowId, }: { readonly tableId: 't2'; readonly rowId: Id; }) => React.JSX.Element' is not assignable to type 'ComponentType<{ readonly tableId: "t0"; readonly rowId: string; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]> | undefined; ......'."`;
+exports[`Types: ui-react.tsx:974:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:1156:21 1`] = `"Type '"t2"' is not assignable to type '"t0" | "t1"'."`;
+exports[`Types: ui-react.tsx:975:6 1`] = `"This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:1164:53 1`] = `"Type '"c2"' is not assignable to type '"c0"'."`;
+exports[`Types: ui-react.tsx:976:6 1`] = `"This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:1165:5 1`] = `"Type '{ tableId: "t1"; rowId: string; cellComponent: ({ tableId, rowId, cellId, }: { readonly tableId: "t0" | "t1"; readonly rowId: string; readonly cellId: "c0" | "c2"; }) => Element; }' is not assignable to type 'IntrinsicAttributes & ({ readonly tableId: "t0"; readonly rowId: string; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { ...; }; }; }, { ...; }]> | undefined; ... 4 more ...; readonly debugIds?: ...'."`;
+exports[`Types: ui-react.tsx:977:6 1`] = `"This comparison appears to be unintentional because the types '"c0" | "c1" | "c1d"' and '"c2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:1166:37 1`] = `"Type '({ tableId, rowId, cellId, }: { readonly tableId: 't1'; readonly rowId: Id; readonly cellId: 'c2'; }) => React.JSX.Element' is not assignable to type 'ComponentType<CellPropsForTableIdAndCellId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], "t0", "c0">> | ComponentType<...> | undefined'."`;
+exports[`Types: ui-react.tsx:986:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:1167:13 1`] = `"Type '"t2"' is not assignable to type '"t0" | "t1"'."`;
+exports[`Types: ui-react.tsx:987:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:1172:38 1`] = `"Type '"c2"' is not assignable to type '"c0" | "c1" | "c1d"'."`;
+exports[`Types: ui-react.tsx:988:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:1173:14 1`] = `"Type '"t2"' is not assignable to type '"t0" | "t1"'."`;
+exports[`Types: ui-react.tsx:989:4 1`] = `"This comparison appears to be unintentional because the types '"c1"' and '"c1d"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:1173:38 1`] = `"Type '"c2"' is not assignable to type '"c0" | "c1" | "c1d"'."`;
+exports[`Types: ui-react.tsx:990:4 1`] = `"This comparison appears to be unintentional because the types '"c1"' and '"c0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:1179:16 1`] = `"Type '({ valueId }: { readonly valueId: 'v1' | 'v2'; }) => React.JSX.Element' is not assignable to type 'ComponentType<ValueProps<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>> | undefined'."`;
+exports[`Types: ui-react.tsx:991:4 1`] = `"This comparison appears to be unintentional because the types '"c1"' and '"c2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:1184:15 1`] = `"Type '"v2"' is not assignable to type '"v1" | "v1d"'."`;
+exports[`Types: ui-react.tsx:1005:6 1`] = `"This comparison appears to be unintentional because the types '"c1" | "c1d"' and '"c0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:1196:6 1`] = `"Type '({ tableId, rowId, }: { readonly tableId: 't0' | 't2'; readonly rowId: Id; }) => React.JSX.Element' is not assignable to type 'ComponentType<{ readonly tableId: "t0"; readonly rowId: string; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]> | undefined; ......'."`;
+exports[`Types: ui-react.tsx:1007:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:1209:6 1`] = `"Type '({ tableId, rowId, }: { readonly tableId: 't0' | 't2'; readonly rowId: Id; }) => React.JSX.Element' is not assignable to type 'ComponentType<{ readonly tableId: "t0"; readonly rowId: string; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]> | undefined; ......'."`;
+exports[`Types: ui-react.tsx:1008:4 1`] = `"This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:1222:6 1`] = `"Type '({ tableId, rowId, }: { readonly tableId: 't0' | 't2'; readonly rowId: Id; }) => React.JSX.Element' is not assignable to type 'ComponentType<{ readonly tableId: "t0"; readonly rowId: string; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]> | undefined; ......'."`;
+exports[`Types: ui-react.tsx:1009:4 1`] = `"This comparison appears to be unintentional because the types '"c0" | "c1" | "c1d"' and '"c2"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:1231:6 1`] = `"Type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, NoValuesSchema]>' is not assignable to type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>'."`;
+exports[`Types: ui-react.tsx:1015:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:1236:6 1`] = `"Type 'Store<[NoTablesSchema, { readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }]>' is not assignable to type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>'."`;
+exports[`Types: ui-react.tsx:1016:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
 
-exports[`Types: ui-react.tsx:1241:6 1`] = `"Type 'Store<NoSchemas>' is not assignable to type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>'."`;
+exports[`Types: ui-react.tsx:1017:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
+
+exports[`Types: ui-react.tsx:1018:4 1`] = `"This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap."`;
+
+exports[`Types: ui-react.tsx:1023:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1024:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
+
+exports[`Types: ui-react.tsx:1025:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t2"' have no overlap."`;
+
+exports[`Types: ui-react.tsx:1029:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1032:30 1`] = `"Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d" | null'."`;
+
+exports[`Types: ui-react.tsx:1033:30 1`] = `"Argument of type '"c2"' is not assignable to parameter of type '"c0" | "c1" | "c1d" | null'."`;
+
+exports[`Types: ui-react.tsx:1034:18 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1" | null'."`;
+
+exports[`Types: ui-react.tsx:1038:22 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1045:22 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1046:4 1`] = `"Conversion of type 'ValueChange<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1", number | undefined> | undefined' to type '[true, number, string]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+
+exports[`Types: ui-react.tsx:1047:4 1`] = `"Conversion of type 'ValueChange<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1", number | undefined> | undefined' to type '[true, string, number]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+
+exports[`Types: ui-react.tsx:1051:22 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1057:22 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1064:22 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1065:4 1`] = `"This comparison appears to be unintentional because the types '"v1"' and '"v2"' have no overlap."`;
+
+exports[`Types: ui-react.tsx:1071:22 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1072:4 1`] = `"This comparison appears to be unintentional because the types '"v1" | "v1d"' and '"v2"' have no overlap."`;
+
+exports[`Types: ui-react.tsx:1076:22 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1078:22 1`] = `"Argument of type '"v2"' is not assignable to parameter of type '"v1" | "v1d" | null'."`;
+
+exports[`Types: ui-react.tsx:1085:22 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1086:4 1`] = `"This comparison appears to be unintentional because the types '"v1"' and '"v2"' have no overlap."`;
+
+exports[`Types: ui-react.tsx:1087:4 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+
+exports[`Types: ui-react.tsx:1088:4 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+
+exports[`Types: ui-react.tsx:1101:6 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+
+exports[`Types: ui-react.tsx:1102:6 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+
+exports[`Types: ui-react.tsx:1107:6 1`] = `"Conversion of type 'string' to type 'number' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+
+exports[`Types: ui-react.tsx:1108:6 1`] = `"Conversion of type 'string' to type 'number' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+
+exports[`Types: ui-react.tsx:1110:22 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1111:4 1`] = `"This comparison appears to be unintentional because the types '"v1" | "v1d"' and '"v2"' have no overlap."`;
+
+exports[`Types: ui-react.tsx:1115:22 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1117:19 1`] = `"Argument of type '"v2"' is not assignable to parameter of type '"v1" | "v1d" | null'."`;
+
+exports[`Types: ui-react.tsx:1126:43 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1127:19 1`] = `"Argument of type 'Store<NoSchemas>' is not assignable to parameter of type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>'."`;
+
+exports[`Types: ui-react.tsx:1130:39 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1134:35 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1144:43 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1145:19 1`] = `"Argument of type 'Store<NoSchemas>' is not assignable to parameter of type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>'."`;
+
+exports[`Types: ui-react.tsx:1148:39 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1152:35 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1157:35 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1167:49 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1168:25 1`] = `"Argument of type 'Store<NoSchemas>' is not assignable to parameter of type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>'."`;
+
+exports[`Types: ui-react.tsx:1171:45 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1175:41 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1180:41 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1185:41 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1195:43 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1196:19 1`] = `"Argument of type 'Store<NoSchemas>' is not assignable to parameter of type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>'."`;
+
+exports[`Types: ui-react.tsx:1199:39 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1203:35 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1208:35 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1213:35 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1218:35 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1223:35 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1228:35 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1238:47 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1239:23 1`] = `"Argument of type 'Store<NoSchemas>' is not assignable to parameter of type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>'."`;
+
+exports[`Types: ui-react.tsx:1242:43 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1250:41 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1260:41 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1266:39 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1271:39 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1282:40 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1286:46 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types: ui-react.tsx:1287:21 1`] = `"Argument of type 'Store<NoSchemas>' is not assignable to parameter of type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>'."`;
+
+exports[`Types: ui-react.tsx:1406:16 1`] = `"Type '({ tableId }: { readonly tableId: 't0' | 't2'; }) => React.JSX.Element' is not assignable to type 'ComponentType<{ readonly tableId: "t0"; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]> | undefined; ... 4 more ...; readonly de...'."`;
+
+exports[`Types: ui-react.tsx:1414:44 1`] = `"Type '"c2"' is not assignable to type '"c0"'."`;
+
+exports[`Types: ui-react.tsx:1415:5 1`] = `"Type '{ tableId: "t1"; rowComponent: ({ tableId, rowId, }: { readonly tableId: "t0" | "t2"; readonly rowId: string; }) => Element; }' is not assignable to type 'IntrinsicAttributes & ({ readonly tableId: "t0"; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { ...; }; }; }, { ...; }]> | undefined; ... 4 more ...; readonly debugIds?: boolean | undefined; } |...'."`;
+
+exports[`Types: ui-react.tsx:1416:28 1`] = `"Type '({ tableId, rowId, }: { readonly tableId: 't2'; readonly rowId: Id; }) => React.JSX.Element' is not assignable to type 'ComponentType<{ readonly tableId: "t0"; readonly rowId: string; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]> | undefined; ......'."`;
+
+exports[`Types: ui-react.tsx:1417:15 1`] = `"Type '"t2"' is not assignable to type '"t0" | "t1"'."`;
+
+exports[`Types: ui-react.tsx:1426:34 1`] = `"Type '"c2"' is not assignable to type '"c0" | "c1" | "c1d" | undefined'."`;
+
+exports[`Types: ui-react.tsx:1427:50 1`] = `"Type '"c2"' is not assignable to type '"c0"'."`;
+
+exports[`Types: ui-react.tsx:1428:5 1`] = `"Type '{ tableId: "t1"; rowComponent: ({ tableId, rowId, }: { readonly tableId: "t0" | "t2"; readonly rowId: string; }) => Element; }' is not assignable to type 'IntrinsicAttributes & ({ readonly tableId: "t0"; readonly cellId?: "c0" | undefined; readonly descending?: boolean | undefined; readonly offset?: number | undefined; ... 6 more ...; readonly debugIds?: boolean | undefined; } | { ...; })'."`;
+
+exports[`Types: ui-react.tsx:1429:34 1`] = `"Type '({ tableId, rowId, }: { readonly tableId: 't2'; readonly rowId: Id; }) => React.JSX.Element' is not assignable to type 'ComponentType<{ readonly tableId: "t0"; readonly rowId: string; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]> | undefined; ......'."`;
+
+exports[`Types: ui-react.tsx:1430:21 1`] = `"Type '"t2"' is not assignable to type '"t0" | "t1"'."`;
+
+exports[`Types: ui-react.tsx:1438:53 1`] = `"Type '"c2"' is not assignable to type '"c0"'."`;
+
+exports[`Types: ui-react.tsx:1439:5 1`] = `"Type '{ tableId: "t1"; rowId: string; cellComponent: ({ tableId, rowId, cellId, }: { readonly tableId: "t0" | "t1"; readonly rowId: string; readonly cellId: "c0" | "c2"; }) => Element; }' is not assignable to type 'IntrinsicAttributes & ({ readonly tableId: "t0"; readonly rowId: string; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { ...; }; }; }, { ...; }]> | undefined; ... 4 more ...; readonly debugIds?: ...'."`;
+
+exports[`Types: ui-react.tsx:1440:37 1`] = `"Type '({ tableId, rowId, cellId, }: { readonly tableId: 't1'; readonly rowId: Id; readonly cellId: 'c2'; }) => React.JSX.Element' is not assignable to type 'ComponentType<CellPropsForTableIdAndCellId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], "t0", "c0">> | ComponentType<...> | undefined'."`;
+
+exports[`Types: ui-react.tsx:1441:13 1`] = `"Type '"t2"' is not assignable to type '"t0" | "t1"'."`;
+
+exports[`Types: ui-react.tsx:1446:38 1`] = `"Type '"c2"' is not assignable to type '"c0" | "c1" | "c1d"'."`;
+
+exports[`Types: ui-react.tsx:1447:14 1`] = `"Type '"t2"' is not assignable to type '"t0" | "t1"'."`;
+
+exports[`Types: ui-react.tsx:1447:38 1`] = `"Type '"c2"' is not assignable to type '"c0" | "c1" | "c1d"'."`;
+
+exports[`Types: ui-react.tsx:1453:16 1`] = `"Type '({ valueId }: { readonly valueId: 'v1' | 'v2'; }) => React.JSX.Element' is not assignable to type 'ComponentType<ValueProps<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>> | undefined'."`;
+
+exports[`Types: ui-react.tsx:1458:15 1`] = `"Type '"v2"' is not assignable to type '"v1" | "v1d"'."`;
+
+exports[`Types: ui-react.tsx:1470:6 1`] = `"Type '({ tableId, rowId, }: { readonly tableId: 't0' | 't2'; readonly rowId: Id; }) => React.JSX.Element' is not assignable to type 'ComponentType<{ readonly tableId: "t0"; readonly rowId: string; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]> | undefined; ......'."`;
+
+exports[`Types: ui-react.tsx:1483:6 1`] = `"Type '({ tableId, rowId, }: { readonly tableId: 't0' | 't2'; readonly rowId: Id; }) => React.JSX.Element' is not assignable to type 'ComponentType<{ readonly tableId: "t0"; readonly rowId: string; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]> | undefined; ......'."`;
+
+exports[`Types: ui-react.tsx:1496:6 1`] = `"Type '({ tableId, rowId, }: { readonly tableId: 't0' | 't2'; readonly rowId: Id; }) => React.JSX.Element' is not assignable to type 'ComponentType<{ readonly tableId: "t0"; readonly rowId: string; readonly store?: StoreOrStoreId<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]> | undefined; ......'."`;
+
+exports[`Types: ui-react.tsx:1505:6 1`] = `"Type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, NoValuesSchema]>' is not assignable to type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>'."`;
+
+exports[`Types: ui-react.tsx:1510:6 1`] = `"Type 'Store<[NoTablesSchema, { readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }]>' is not assignable to type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>'."`;
+
+exports[`Types: ui-react.tsx:1515:6 1`] = `"Type 'Store<NoSchemas>' is not assignable to type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>'."`;
 
 exports[`Types: ui-react-dom.tsx:105:22 1`] = `"Type '"t2"' is not assignable to type '"t0" | "t1"'."`;
 
