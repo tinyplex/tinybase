@@ -50,12 +50,19 @@ import {
   useGoForwardCallback,
   useGoToCallback,
   useHasCell,
+  useHasCellListener,
   useHasRow,
+  useHasRowListener,
   useHasTable,
   useHasTableCell,
+  useHasTableCellListener,
+  useHasTableListener,
   useHasTables,
+  useHasTablesListener,
   useHasValue,
+  useHasValueListener,
   useHasValues,
+  useHasValuesListener,
   useIndexIds,
   useIndexes,
   useIndexesIds,
@@ -3046,6 +3053,38 @@ describe('Write Hooks', () => {
 });
 
 describe('Listener Hooks', () => {
+  test('useHasTablesListener', () => {
+    expect.assertions(4);
+    const Test = ({value}: {readonly value: number}) => {
+      useHasTablesListener(
+        (store) => expect(store?.getCell('t1', 'r1', 'c1')).toEqual(value),
+        [value],
+        false,
+        store,
+      );
+      return <div />;
+    };
+    expect(store.getListenerStats().hasTables).toEqual(0);
+    act(() => {
+      renderer = create(<Test value={2} />);
+    });
+    expect(store.getListenerStats().hasTables).toEqual(1);
+    act(() => {
+      store.setCell('t1', 'r1', 'c1', 2);
+    });
+    act(() => {
+      renderer.update(<Test value={3} />);
+    });
+    expect(store.getListenerStats().hasTables).toEqual(1);
+    act(() => {
+      store.setCell('t1', 'r1', 'c1', 3);
+    });
+    act(() => {
+      renderer.update(<div />);
+    });
+    expect(store.getListenerStats().hasTables).toEqual(0);
+  });
+
   test('useTablesListener', () => {
     expect.assertions(6);
     const Test = ({value}: {readonly value: number}) => {
@@ -3110,6 +3149,39 @@ describe('Listener Hooks', () => {
       renderer.update(<div />);
     });
     expect(store.getListenerStats().tableIds).toEqual(0);
+  });
+
+  test('useHasTableListener', () => {
+    expect.assertions(4);
+    const Test = ({value}: {readonly value: number}) => {
+      useHasTableListener(
+        't1',
+        (store) => expect(store?.getCell('t1', 'r1', 'c1')).toEqual(value),
+        [value],
+        false,
+        store,
+      );
+      return <div />;
+    };
+    expect(store.getListenerStats().hasTable).toEqual(0);
+    act(() => {
+      renderer = create(<Test value={2} />);
+    });
+    expect(store.getListenerStats().hasTable).toEqual(1);
+    act(() => {
+      store.setCell('t1', 'r1', 'c1', 2);
+    });
+    act(() => {
+      renderer.update(<Test value={3} />);
+    });
+    expect(store.getListenerStats().hasTable).toEqual(1);
+    act(() => {
+      store.setCell('t1', 'r1', 'c1', 3);
+    });
+    act(() => {
+      renderer.update(<div />);
+    });
+    expect(store.getListenerStats().hasTable).toEqual(0);
   });
 
   test('useTableListener', () => {
@@ -3178,6 +3250,40 @@ describe('Listener Hooks', () => {
       renderer.update(<div />);
     });
     expect(store.getListenerStats().tableCellIds).toEqual(0);
+  });
+
+  test('useHasTableCellListener', () => {
+    expect.assertions(4);
+    const Test = ({value}: {readonly value: number}) => {
+      useHasTableCellListener(
+        't1',
+        'c1',
+        (store) => expect(store?.getCell('t1', 'r1', 'c1')).toEqual(value),
+        [value],
+        false,
+        store,
+      );
+      return <div />;
+    };
+    expect(store.getListenerStats().hasTableCell).toEqual(0);
+    act(() => {
+      renderer = create(<Test value={2} />);
+    });
+    expect(store.getListenerStats().hasTableCell).toEqual(1);
+    act(() => {
+      store.setCell('t1', 'r1', 'c1', 2);
+    });
+    act(() => {
+      renderer.update(<Test value={3} />);
+    });
+    expect(store.getListenerStats().hasTableCell).toEqual(1);
+    act(() => {
+      store.setCell('t1', 'r1', 'c1', 3);
+    });
+    act(() => {
+      renderer.update(<div />);
+    });
+    expect(store.getListenerStats().hasTableCell).toEqual(0);
   });
 
   test('useRowCountListener', () => {
@@ -3289,6 +3395,40 @@ describe('Listener Hooks', () => {
     expect(store.getListenerStats().sortedRowIds).toEqual(0);
   });
 
+  test('useHasRowListener', () => {
+    expect.assertions(4);
+    const Test = ({value}: {readonly value: number}) => {
+      useHasRowListener(
+        't1',
+        'r1',
+        (store) => expect(store?.getCell('t1', 'r1', 'c1')).toEqual(value),
+        [value],
+        false,
+        store,
+      );
+      return <div />;
+    };
+    expect(store.getListenerStats().hasRow).toEqual(0);
+    act(() => {
+      renderer = create(<Test value={2} />);
+    });
+    expect(store.getListenerStats().hasRow).toEqual(1);
+    act(() => {
+      store.setCell('t1', 'r1', 'c1', 2);
+    });
+    act(() => {
+      renderer.update(<Test value={3} />);
+    });
+    expect(store.getListenerStats().hasRow).toEqual(1);
+    act(() => {
+      store.setCell('t1', 'r1', 'c1', 3);
+    });
+    act(() => {
+      renderer.update(<div />);
+    });
+    expect(store.getListenerStats().hasRow).toEqual(0);
+  });
+
   test('useRowListener', () => {
     expect.assertions(6);
     const Test = ({value}: {readonly value: number}) => {
@@ -3359,6 +3499,41 @@ describe('Listener Hooks', () => {
     expect(store.getListenerStats().cellIds).toEqual(0);
   });
 
+  test('useHasCellListener', () => {
+    expect.assertions(4);
+    const Test = ({value}: {readonly value: number}) => {
+      useHasCellListener(
+        't1',
+        'r1',
+        'c1',
+        (store) => expect(store?.getCell('t1', 'r1', 'c1')).toEqual(value),
+        [value],
+        false,
+        store,
+      );
+      return <div />;
+    };
+    expect(store.getListenerStats().hasCell).toEqual(0);
+    act(() => {
+      renderer = create(<Test value={2} />);
+    });
+    expect(store.getListenerStats().hasCell).toEqual(1);
+    act(() => {
+      store.setCell('t1', 'r1', 'c1', 2);
+    });
+    act(() => {
+      renderer.update(<Test value={3} />);
+    });
+    expect(store.getListenerStats().hasCell).toEqual(1);
+    act(() => {
+      store.setCell('t1', 'r1', 'c1', 3);
+    });
+    act(() => {
+      renderer.update(<div />);
+    });
+    expect(store.getListenerStats().hasCell).toEqual(0);
+  });
+
   test('useCellListener', () => {
     expect.assertions(6);
     const Test = ({value}: {readonly value: number}) => {
@@ -3392,6 +3567,38 @@ describe('Listener Hooks', () => {
       renderer.update(<div />);
     });
     expect(store.getListenerStats().cell).toEqual(0);
+  });
+
+  test('useHasValuesListener', () => {
+    expect.assertions(4);
+    const Test = ({value}: {readonly value: number}) => {
+      useHasValuesListener(
+        (store) => expect(store?.getValue('v1')).toEqual(value),
+        [value],
+        false,
+        store,
+      );
+      return <div />;
+    };
+    expect(store.getListenerStats().hasValues).toEqual(0);
+    act(() => {
+      renderer = create(<Test value={2} />);
+    });
+    expect(store.getListenerStats().hasValues).toEqual(1);
+    act(() => {
+      store.setValue('v1', 2);
+    });
+    act(() => {
+      renderer.update(<Test value={3} />);
+    });
+    expect(store.getListenerStats().hasValues).toEqual(1);
+    act(() => {
+      store.setValue('v1', 3);
+    });
+    act(() => {
+      renderer.update(<div />);
+    });
+    expect(store.getListenerStats().hasValues).toEqual(0);
   });
 
   test('useValuesListener', () => {
@@ -3458,6 +3665,39 @@ describe('Listener Hooks', () => {
       renderer.update(<div />);
     });
     expect(store.getListenerStats().valueIds).toEqual(0);
+  });
+
+  test('useHasValueListener', () => {
+    expect.assertions(4);
+    const Test = ({value}: {readonly value: number}) => {
+      useHasValueListener(
+        'v1',
+        (store) => expect(store?.getValue('v1')).toEqual(value),
+        [value],
+        false,
+        store,
+      );
+      return <div />;
+    };
+    expect(store.getListenerStats().hasValue).toEqual(0);
+    act(() => {
+      renderer = create(<Test value={2} />);
+    });
+    expect(store.getListenerStats().hasValue).toEqual(1);
+    act(() => {
+      store.setValue('v1', 2);
+    });
+    act(() => {
+      renderer.update(<Test value={3} />);
+    });
+    expect(store.getListenerStats().hasValue).toEqual(1);
+    act(() => {
+      store.setValue('v1', 3);
+    });
+    act(() => {
+      renderer.update(<div />);
+    });
+    expect(store.getListenerStats().hasValue).toEqual(0);
   });
 
   test('useValueListener', () => {
