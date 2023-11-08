@@ -6,20 +6,23 @@ highlighted features.
 ## v4.4
 
 This relatively straightforward release adds a selection of new listeners to the
-Store object. These are for listening to changes in the 'existence' of entities
-rather than to their value. For example, the addHasTableListener method will let
-you listen for the presence (or not) of a specific table. The full set of new
-listeners and methods to add them is as follows:
+Store object, and their respective hooks. These are for listening to changes in
+the 'existence' of entities rather than to their value. For example, the
+addHasTableListener method will let you listen for the presence (or not) of a
+specific table.
 
-| Listener             | Method                  |
-| -------------------- | ----------------------- |
-| HasTablesListener    | addHasTablesListener    |
-| HasTableListener     | addHasTableListener     |
-| HasTableCellListener | addHasTableCellListener |
-| HasRowListener       | addHasRowListener       |
-| HasCellListener      | addHasCellListener      |
-| HasValuesListener    | addHasValuesListener    |
-| HasValueListener     | addHasValueListener     |
+The full set of new existence-listening methods and hooks to work with this is
+as follows:
+
+| Existence of: | Add Listener            | Hook            | Add Listener Hook       |
+| ------------- | ----------------------- | --------------- | ----------------------- |
+| Tables        | addHasTablesListener    | useHasTables    | useHasTablesListener    |
+| A Table       | addHasTableListener     | useHasTable     | useHasTableListener     |
+| A Table Cell  | addHasTableCellListener | useHasTableCell | useHasTableCellListener |
+| A Row         | addHasRowListener       | useHasRow       | useHasRowListener       |
+| A Cell        | addHasCellListener      | useHasCell      | useHasCellListener      |
+| Values        | addHasValuesListener    | useHasValues    | useHasValuesListener    |
+| A Value       | addHasValueListener     | useHasValue     | useHasValueListener     |
 
 These methods may become particularly important in future versions of TinyBase
 that support `null` as valid Cells and Values.
