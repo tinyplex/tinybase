@@ -2,6 +2,7 @@ import {
   A,
   AND_REGISTERS,
   CALLBACK,
+  COUNT,
   DEL,
   DEPS,
   DEPS_SUFFIX,
@@ -37,6 +38,7 @@ import {
   GET,
   IDS,
   LISTENER,
+  NUMBER,
   ROW,
   ROW_IDS,
   SORTED_ROW_IDS,
@@ -662,6 +664,16 @@ export const getStoreUiReactApi = (
         TABLE + CELL_IDS,
         IDS,
         getIdsDoc(CELL, 'the whole of ' + getTableDoc(tableId)) + AND_REGISTERS,
+        EMPTY_STRING,
+        TABLE_ID,
+      );
+
+      // useRowCount
+      addProxyHook(
+        tableName + ROW + COUNT,
+        ROW + COUNT,
+        NUMBER,
+        'Gets the number of Rows in ' + getTableDoc(tableId) + AND_REGISTERS,
         EMPTY_STRING,
         TABLE_ID,
       );

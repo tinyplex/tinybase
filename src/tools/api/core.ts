@@ -21,6 +21,7 @@ import {
 } from '../../common/strings';
 import {
   CALLBACK,
+  COUNT,
   DO_ACTIONS_AND_ROLLBACK_PARAMS,
   DO_ROLLBACK_PARAM,
   EXPORT,
@@ -523,7 +524,7 @@ export const getStoreCoreApi = (
       addProxyMethod(
         0,
         tableName,
-        ROW + 'Count',
+        ROW + COUNT,
         'number',
         'Gets the number of Rows in the ' + getTableDoc(tableId),
         EMPTY_STRING,
@@ -718,7 +719,7 @@ export const getStoreCoreApi = (
 
     // addRowCountListener
     addProxyListener(
-      ROW + 'Count',
+      ROW + COUNT,
       rowCountListenerType,
       getListenerDoc(15, 3),
       `tableId: ${tableIdType} | null`,

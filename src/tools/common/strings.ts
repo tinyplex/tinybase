@@ -23,6 +23,7 @@ export const AND_REGISTERS =
   ', and registers a listener so that any changes to ' +
   'that result will cause a re-render';
 export const CALLBACK = 'Callback';
+export const COUNT = 'Count';
 export const DEL = 'Del';
 export const DEPS = 'Deps';
 export const DEPS_SUFFIX = DEPS + '?: React.DependencyList';
