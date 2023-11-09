@@ -1010,6 +1010,19 @@ export const getStoreUiReactApi = (
       getListenerHookParamsInCall('tableId'),
     );
 
+    // useRowCountListener
+    addProxyHook(
+      ROW + COUNT + LISTENER,
+      ROW + COUNT + LISTENER,
+      VOID,
+      getListenerDoc(15, 3),
+      getListenerHookParams(
+        rowCountListenerType,
+        `tableId: ${tableIdType} | null`,
+      ),
+      getListenerHookParamsInCall('tableId'),
+    );
+
     // useRowIdsListener
     addProxyHook(
       ROW_IDS + LISTENER,
