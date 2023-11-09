@@ -413,7 +413,7 @@
    * // -> `export type Tables = {pets?: {[rowId: Id]: {price?: number}}};`
    *
    * const tsLines = ts.split('\n');
-   * console.log(tsLines[84]);
+   * console.log(tsLines[89]);
    * // -> '    hasPetsTable: (): boolean => store.hasTable(PETS),'
    * ```
    * @example
@@ -433,7 +433,7 @@
    * // -> 'export type Tables = {pets?: {[rowId: Id]: {price: number}}};'
    *
    * const tsLines = ts.split('\n');
-   * console.log(tsLines[86]);
+   * console.log(tsLines[91]);
    * // -> '    hasPetsTable: (): boolean => store.hasTable(PETS),'
    * ```
    * @category Modelling
