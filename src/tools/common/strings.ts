@@ -69,10 +69,14 @@ const GETS_A_CALLBACK_THAT_CAN = 'Gets a callback that can ';
 const THE = 'the ';
 const THE_SCHEMA_FOR = ' the schema for';
 
+export const getHasDoc = (has = 0) => (has ? 'the existence of ' : '');
+
 export const getTheContentOfDoc = (
   content: 0 | 1 | 2 = 0,
   theStore = 0,
+  has = 0,
 ): string =>
+  getHasDoc(has) +
   `the ${CONTENT[content]}content of` +
   (theStore ? SPACE + THE_STORE : EMPTY_STRING);
 
@@ -80,9 +84,11 @@ export const getTheContentOfTheStoreDoc = (
   content: 0 | 1 | 2 = 0,
   verb: number,
   set = 0,
+  has = 0,
 ) =>
   VERBS[verb] +
   SPACE +
+  getHasDoc(has) +
   getTheContentOfDoc(content, 1) +
   (set ? ' when setting it' : EMPTY_STRING);
 
@@ -106,9 +112,14 @@ export const getPropsDoc = (childNoun: string) =>
 export const getCallbackDoc = (takes: string) =>
   'A function that takes ' + takes;
 
-export const getListenerTypeDoc = (childNoun: number, parentNoun = 0) =>
+export const getListenerTypeDoc = (
+  childNoun: number,
+  parentNoun = 0,
+  has = 0,
+) =>
   A_FUNCTION_FOR +
   ' listening to changes to ' +
+  getHasDoc(has) +
   NOUNS[childNoun] +
   ' in ' +
   NOUNS[parentNoun];
@@ -117,9 +128,11 @@ export const getListenerDoc = (
   childNoun: number,
   parentNoun: number,
   pluralChild = 0,
+  has = 0,
 ) =>
   REGISTERS_A_LISTENER +
   ' whenever ' +
+  getHasDoc(has) +
   NOUNS[childNoun] +
   ' in ' +
   NOUNS[parentNoun] +
@@ -131,17 +144,25 @@ export const getTableDoc = (tableId: Id) => `the '${tableId}' ` + TABLE;
 export const getRowDoc = (tableId: Id) =>
   'the specified Row in ' + getTableDoc(tableId);
 
-export const getTableContentDoc = (tableId: Id, verb = 0) =>
-  VERBS[verb] + ` ${getTheContentOfDoc()} ` + getTableDoc(tableId);
+export const getTableContentDoc = (tableId: Id, verb = 0, has = 0) =>
+  VERBS[verb] +
+  SPACE +
+  getTheContentOfDoc(0, 0, has) +
+  SPACE +
+  getTableDoc(tableId);
 
-export const getRowContentDoc = (tableId: Id, verb = 0) =>
-  VERBS[verb] + ` ${getTheContentOfDoc()} ` + getRowDoc(tableId);
+export const getRowContentDoc = (tableId: Id, verb = 0, has = 0) =>
+  VERBS[verb] + ` ${getTheContentOfDoc(0, 0, has)} ` + getRowDoc(tableId);
 
-export const getCellContentDoc = (tableId: Id, cellId: Id, verb = 0) =>
-  VERBS[verb] + ` the '${cellId}' Cell for ` + getRowDoc(tableId);
+export const getCellContentDoc = (tableId: Id, cellId: Id, verb = 0, has = 0) =>
+  VERBS[verb] +
+  SPACE +
+  getHasDoc(has) +
+  `the '${cellId}' Cell for ` +
+  getRowDoc(tableId);
 
-export const getValueContentDoc = (valueId: Id, verb = 0) =>
-  VERBS[verb] + ` the '${valueId}' Value`;
+export const getValueContentDoc = (valueId: Id, verb = 0, has = 0) =>
+  VERBS[verb] + SPACE + getHasDoc(has) + `the '${valueId}' Value`;
 
 export const VERBS = [
   'Gets',
@@ -191,6 +212,7 @@ const NOUNS = [
   THE + 'sorted ' + ROW + SPACE + IDS,
   THE + CELL + SPACE + IDS + ' anywhere',
   THE + 'number of Rows',
+  A + CELL + ' anywhere',
 ];
 
 const CONTENT = [EMPTY_STRING, 'tabular ', 'keyed value '];
