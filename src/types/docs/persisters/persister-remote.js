@@ -52,8 +52,13 @@
  * the `POST` method (to send the Store JSON to save) respectively.
  *
  * For when you choose to enable automatic loading for the Persister (with the
- * startAutoLoad method), it will poll the loadUrl for changes. The
+ * startAutoLoad method), it will poll the loadUrl for changes, using the
+ * `ETag` HTTP header to identify if things have changed. The
  * `autoLoadIntervalSeconds` method is used to indicate how often to do this.
+ *
+ * If you are implementing the server portion of this functionality yourself,
+ * remember to ensure that the `ETag` header changes every time the server's
+ * Store content does - otherwise changes will not be detected by the client.
  * @param store The Store to persist.
  * @param loadUrl The endpoint that supports a `GET` method to load JSON.
  * @param saveUrl The endpoint that supports a `POST` method to save JSON.
