@@ -20,6 +20,7 @@ import {
   THE_STORE,
   VOID,
   getCellContentDoc,
+  getHasDoc,
   getIdsDoc,
   getListenerDoc,
   getPropsDoc,
@@ -32,10 +33,12 @@ import {
   getValueContentDoc,
 } from '../common/strings';
 import {
+  BOOLEAN,
   CELL,
   CELL_IDS,
   EMPTY_STRING,
   GET,
+  HAS,
   IDS,
   LISTENER,
   NUMBER,
@@ -373,15 +376,20 @@ export const getStoreUiReactApi = (
       tablesWhenSetType,
       tableIdType,
       cellIdType,
+      hasTablesListenerType,
       tablesListenerType,
       tableIdsListenerType,
+      hasTableListenerType,
       tableListenerType,
       tableCellIdsListenerType,
+      hasTableCellListenerType,
       rowCountListenerType,
       rowIdsListenerType,
       sortedRowIdsListenerType,
+      hasRowListenerType,
       rowListenerType,
       cellIdsListenerType,
+      hasCellListenerType,
       cellListenerType,
       tablesTypes,
     ] = sharedTableTypes as SharedTableTypes;
@@ -392,16 +400,21 @@ export const getStoreUiReactApi = (
       tablesType,
       tablesWhenSetType,
       tableIdType,
+      hasTablesListenerType,
       tablesListenerType,
       tableIdsListenerType,
+      hasTableListenerType,
       tableListenerType,
       tableCellIdsListenerType,
+      hasTableCellListenerType,
       rowCountListenerType,
       rowIdsListenerType,
       sortedRowIdsListenerType,
+      hasRowListenerType,
       rowListenerType,
       cellIdsListenerType,
       cellListenerType,
+      hasCellListenerType,
     );
     addImport(0, moduleDefinition, cellIdType);
     addImport(1, moduleDefinition, storeType);
@@ -463,6 +476,14 @@ export const getStoreUiReactApi = (
             } : `,
         ),
       ) + NullComponent,
+    );
+
+    // useHasTables
+    addProxyHook(
+      HAS + TABLES,
+      HAS + TABLES,
+      BOOLEAN,
+      getTheContentOfTheStoreDoc(1, 0, 0, 1) + AND_REGISTERS,
     );
 
     // useTables
@@ -648,6 +669,16 @@ export const getStoreUiReactApi = (
         cellIdType,
       );
 
+      // useHasTable
+      addProxyHook(
+        HAS + tableName + TABLE,
+        HAS + TABLE,
+        BOOLEAN,
+        getTableContentDoc(tableId, 0, 1) + AND_REGISTERS,
+        EMPTY_STRING,
+        TABLE_ID,
+      );
+
       // useTable
       addProxyHook(
         tableName + TABLE,
@@ -698,6 +729,16 @@ export const getStoreUiReactApi = (
           cellIdType +
           ', descending?: boolean, offset?: number, limit?: number',
         TABLE_ID + ', cellId, descending, offset, limit',
+      );
+
+      // useHasRow
+      addProxyHook(
+        HAS + tableName + ROW,
+        HAS + ROW,
+        BOOLEAN,
+        getRowContentDoc(tableId, 0, 1) + AND_REGISTERS,
+        TYPED_ROW_ID,
+        getParameterList(TABLE_ID, ROW_ID),
       );
 
       // useRow
@@ -895,6 +936,28 @@ export const getStoreUiReactApi = (
           addImport(0, moduleDefinition, mapCellType);
           addImport(1, moduleDefinition, mapCellType);
 
+          // useHasTableCell
+          addProxyHook(
+            HAS + tableName + cellName + TABLE + CELL,
+            HAS + TABLE + CELL,
+            BOOLEAN,
+            `Gets ${getHasDoc(1)}the '${cellId}' Cell anywhere in ` +
+              getTableDoc(tableId) +
+              AND_REGISTERS,
+            EMPTY_STRING,
+            getParameterList(TABLE_ID, CELL_ID),
+          );
+
+          // useHasCell
+          addProxyHook(
+            HAS + tableName + cellName + CELL,
+            HAS + CELL,
+            BOOLEAN,
+            getCellContentDoc(tableId, cellId, 0, 1) + AND_REGISTERS,
+            TYPED_ROW_ID,
+            getParameterList(TABLE_ID, ROW_ID, CELL_ID),
+          );
+
           // useCell
           const useCell = addProxyHook(
             tableName + cellName + CELL,
@@ -964,6 +1027,16 @@ export const getStoreUiReactApi = (
       ' | ',
     );
 
+    // useHasTablesListener
+    addProxyHook(
+      HAS + TABLES + LISTENER,
+      HAS + TABLES + LISTENER,
+      VOID,
+      getTheContentOfTheStoreDoc(1, 8, 0, 1) + ' changes',
+      getListenerHookParams(hasTablesListenerType),
+      getListenerHookParamsInCall(),
+    );
+
     // useTablesListener
     addProxyHook(
       TABLES + LISTENER,
@@ -982,6 +1055,19 @@ export const getStoreUiReactApi = (
       getListenerDoc(2, 0, 1),
       getListenerHookParams(tableIdsListenerType),
       getListenerHookParamsInCall(),
+    );
+
+    // useHasTableListener
+    addProxyHook(
+      HAS + TABLE + LISTENER,
+      HAS + TABLE + LISTENER,
+      VOID,
+      getListenerDoc(3, 0, 0, 1),
+      getListenerHookParams(
+        hasTableListenerType,
+        `tableId: ${tableIdType} | null`,
+      ),
+      getListenerHookParamsInCall('tableId'),
     );
 
     // useTableListener
@@ -1008,6 +1094,20 @@ export const getStoreUiReactApi = (
         `tableId: ${tableIdType} | null`,
       ),
       getListenerHookParamsInCall('tableId'),
+    );
+
+    // useHasTableCellListener
+    addProxyHook(
+      HAS + TABLE + CELL + LISTENER,
+      HAS + TABLE + CELL + LISTENER,
+      VOID,
+      getListenerDoc(16, 3, 0, 1),
+      getListenerHookParams(
+        hasTableCellListenerType,
+        `tableId: ${tableIdType} | null`,
+        `cellId: ${cellIdsType} | null`,
+      ),
+      getListenerHookParamsInCall('tableId', 'cellId'),
     );
 
     // useRowCountListener
@@ -1059,6 +1159,20 @@ export const getStoreUiReactApi = (
       ),
     );
 
+    // useHasRowListener
+    addProxyHook(
+      HAS + ROW + LISTENER,
+      HAS + ROW + LISTENER,
+      VOID,
+      getListenerDoc(5, 3, 0, 1),
+      getListenerHookParams(
+        hasRowListenerType,
+        `tableId: ${tableIdType} | null`,
+        ROW_ID + `: IdOrNull`,
+      ),
+      getListenerHookParamsInCall('tableId', ROW_ID),
+    );
+
     // useRowListener
     addProxyHook(
       ROW + LISTENER,
@@ -1087,6 +1201,21 @@ export const getStoreUiReactApi = (
       getListenerHookParamsInCall('tableId', ROW_ID),
     );
 
+    // useHasCellListener
+    addProxyHook(
+      HAS + CELL + LISTENER,
+      HAS + CELL + LISTENER,
+      VOID,
+      getListenerDoc(7, 5, 0, 1),
+      getListenerHookParams(
+        hasCellListenerType,
+        `tableId: ${tableIdType} | null`,
+        ROW_ID + `: IdOrNull`,
+        `cellId: ${cellIdsType} | null`,
+      ),
+      getListenerHookParamsInCall('tableId', ROW_ID, 'cellId'),
+    );
+
     // useCellListener
     addProxyHook(
       CELL + LISTENER,
@@ -1108,8 +1237,10 @@ export const getStoreUiReactApi = (
       valuesType,
       valuesWhenSetType,
       valueIdType,
+      hasValuesListenerType,
       valuesListenerType,
       valueIdsListenerType,
+      hasValueListenerType,
       valueListenerType,
     ] = sharedValueTypes as SharedValueTypes;
 
@@ -1125,6 +1256,14 @@ export const getStoreUiReactApi = (
             `valueId == ${VALUE_ID} ? ` + valueName + 'ValueView : ',
         ),
       ) + NullComponent,
+    );
+
+    // useHasValues
+    addProxyHook(
+      HAS + VALUES,
+      HAS + VALUES,
+      BOOLEAN,
+      getTheContentOfTheStoreDoc(2, 0, 0, 1) + AND_REGISTERS,
     );
 
     // useValues
@@ -1255,6 +1394,16 @@ export const getStoreUiReactApi = (
       addImport(0, moduleDefinition, mapValueType);
       addImport(1, moduleDefinition, mapValueType);
 
+      // useHasValue
+      addProxyHook(
+        HAS + valueName + VALUE,
+        HAS + VALUE,
+        BOOLEAN,
+        getValueContentDoc(valueId, 0, 1) + AND_REGISTERS,
+        EMPTY_STRING,
+        VALUE_ID,
+      );
+
       // useValue
       const useValue = addProxyHook(
         valueName + VALUE,
@@ -1312,6 +1461,16 @@ export const getStoreUiReactApi = (
       );
     });
 
+    // useHasValuesListener
+    addProxyHook(
+      HAS + VALUES + LISTENER,
+      HAS + VALUES + LISTENER,
+      VOID,
+      getTheContentOfTheStoreDoc(2, 8, 0, 1) + ' changes',
+      getListenerHookParams(hasValuesListenerType),
+      getListenerHookParamsInCall(),
+    );
+
     // useValuesListener
     addProxyHook(
       VALUES + LISTENER,
@@ -1330,6 +1489,19 @@ export const getStoreUiReactApi = (
       getListenerDoc(10, 0, 1),
       getListenerHookParams(valueIdsListenerType),
       getListenerHookParamsInCall(),
+    );
+
+    // useHasValueListener
+    addProxyHook(
+      HAS + VALUE + LISTENER,
+      HAS + VALUE + LISTENER,
+      VOID,
+      getListenerDoc(11, 0, 0, 1),
+      getListenerHookParams(
+        hasValueListenerType,
+        `valueId: ${valueIdType} | null`,
+      ),
+      getListenerHookParamsInCall('valueId'),
     );
 
     // useValueListener

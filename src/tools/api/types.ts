@@ -21,6 +21,7 @@ import {
   CELL,
   CELL_IDS,
   EMPTY_STRING,
+  HAS,
   LISTENER,
   ROW,
   ROW_IDS,
@@ -217,6 +218,12 @@ export const getTypeFunctions = (
         TRANSACTION_,
     );
 
+    const hasTablesListenerType = addType(
+      HAS + TABLES + LISTENER,
+      `(${storeParam}, hasTables: boolean)` + RETURNS_VOID,
+      getListenerTypeDoc(1, 0, 1),
+    );
+
     const tablesListenerType = addType(
       TABLES + LISTENER,
       `(${storeParam}, ` +
@@ -231,6 +238,13 @@ export const getTypeFunctions = (
       getListenerTypeDoc(2),
     );
 
+    const hasTableListenerType = addType(
+      HAS + TABLE + LISTENER,
+      `(${storeParam}, tableId: ${tableIdType}, hasTable: boolean)` +
+        RETURNS_VOID,
+      getListenerTypeDoc(3, 0, 1),
+    );
+
     const tableListenerType = addType(
       TABLE + LISTENER,
       `(${storeParam}, tableId: ${tableIdType}, ` +
@@ -243,6 +257,35 @@ export const getTypeFunctions = (
       TABLE + CELL_IDS + LISTENER,
       `(${storeParam}, tableId: ${tableIdType})` + RETURNS_VOID,
       getListenerTypeDoc(14, 3),
+    );
+
+    const hasTableCellListenerArgsArrayInnerType = addType(
+      'HasTableCellListenerArgsArrayInner',
+      `CId extends ${cellIdType}<TId> ? ` +
+        `[${storeParam}, tableId: TId, cellId: CId, ` +
+        `hasTableCell: boolean] : never`,
+      'Cell args for HasTableCellListener',
+      `<TId extends ${tableIdType}, CId = ${cellIdType}<TId>>`,
+      0,
+    );
+
+    const hasTableCellListenerArgsArrayOuterType = addType(
+      'HasTableCellListenerArgsArrayOuter',
+      `TId extends ${tableIdType} ? ` +
+        hasTableCellListenerArgsArrayInnerType +
+        '<TId> : never',
+      'Table args for HasTableCellListener',
+      `<TId = ${tableIdType}>`,
+      0,
+    );
+
+    const hasTableCellListenerType = addType(
+      HAS + TABLE + CELL + LISTENER,
+      `(...[${storeInstance}, tableId, cellId, hasTableCell]: ` +
+        hasTableCellListenerArgsArrayOuterType +
+        ')' +
+        RETURNS_VOID,
+      getListenerTypeDoc(16, 3, 1),
     );
 
     const rowCountListenerType = addType(
@@ -274,6 +317,20 @@ export const getTypeFunctions = (
       getListenerTypeDoc(13, 3),
     );
 
+    const hasRowListenerType = addType(
+      HAS + ROW + LISTENER,
+      '(' +
+        getParameterList(
+          `${storeParam}`,
+          'tableId: ' + tableIdType,
+          ROW_ID_PARAM,
+          `hasRow: boolean`,
+        ) +
+        ')' +
+        RETURNS_VOID,
+      getListenerTypeDoc(5, 3, 1),
+    );
+
     const rowListenerType = addType(
       ROW + LISTENER,
       '(' +
@@ -299,6 +356,36 @@ export const getTypeFunctions = (
         ')' +
         RETURNS_VOID,
       getListenerTypeDoc(6, 5),
+    );
+
+    const hasCellListenerArgsArrayInnerType = addType(
+      'HasCellListenerArgsArrayInner',
+      `CId extends ${cellIdType}<TId> ? ` +
+        `[${storeParam}, tableId: TId, ${ROW_ID_PARAM}, ` +
+        `cellId: CId, ` +
+        `hasCell: boolean] : never`,
+      'Cell args for HasCellListener',
+      `<TId extends ${tableIdType}, CId = ${cellIdType}<TId>>`,
+      0,
+    );
+
+    const hasCellListenerArgsArrayOuterType = addType(
+      'HasCellListenerArgsArrayOuter',
+      `TId extends ${tableIdType} ? ` +
+        hasCellListenerArgsArrayInnerType +
+        '<TId> : never',
+      'Table args for HasCellListener',
+      `<TId = ${tableIdType}>`,
+      0,
+    );
+
+    const hasCellListenerType = addType(
+      HAS + CELL + LISTENER,
+      `(...[${storeInstance}, tableId, rowId, cellId, hasCell]: ` +
+        hasCellListenerArgsArrayOuterType +
+        ')' +
+        RETURNS_VOID,
+      getListenerTypeDoc(7, 5, 1),
     );
 
     const cellListenerArgsArrayInnerType = addType(
@@ -354,15 +441,20 @@ export const getTypeFunctions = (
       rowCallbackType,
       tableCellCallbackType,
       tableCallbackType,
+      hasTablesListenerType,
       tablesListenerType,
       tableIdsListenerType,
+      hasTableListenerType,
       tableListenerType,
       tableCellIdsListenerType,
+      hasTableCellListenerType,
       rowCountListenerType,
       rowIdsListenerType,
       sortedRowIdsListenerType,
+      hasRowListenerType,
       rowListenerType,
       cellIdsListenerType,
+      hasCellListenerType,
       cellListenerType,
       invalidCellListenerType,
     ];
@@ -428,6 +520,12 @@ export const getTypeFunctions = (
         TRANSACTION_,
     );
 
+    const hasValuesListenerType = addType(
+      HAS + VALUES + LISTENER,
+      `(${storeParam}, ` + `hasValues: boolean)` + RETURNS_VOID,
+      getListenerTypeDoc(9, 0, 1),
+    );
+
     const valuesListenerType = addType(
       VALUES + LISTENER,
       `(${storeParam}, ` +
@@ -440,6 +538,12 @@ export const getTypeFunctions = (
       VALUE_IDS + LISTENER,
       `(${storeParam})` + RETURNS_VOID,
       getListenerTypeDoc(10),
+    );
+
+    const hasValueListenerType = addType(
+      HAS + VALUE + LISTENER,
+      `(${storeParam}, valueId: ValueId, hasValue: boolean)` + RETURNS_VOID,
+      getListenerTypeDoc(11, 0, 1),
     );
 
     const valueListenerArgsArrayType = addType(
@@ -475,8 +579,10 @@ export const getTypeFunctions = (
       valueIdType,
       valueType,
       valueCallbackType,
+      hasValuesListenerType,
       valuesListenerType,
       valueIdsListenerType,
+      hasValueListenerType,
       valueListenerType,
       invalidValueListenerType,
     ];

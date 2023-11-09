@@ -5,6 +5,7 @@ import {
   CELL_IDS,
   DEFAULT,
   EMPTY_STRING,
+  HAS,
   IDS,
   LISTENER,
   ROW,
@@ -111,15 +112,20 @@ export type SharedTableTypes = [
   tablesWhenSetType: string,
   tableIdType: string,
   cellIdType: string,
+  hasTablesListenerType: string,
   tablesListenerType: string,
   tableIdsListenerType: string,
+  hasTableListenerType: string,
   tableListenerType: string,
   tableCellIdsListenerType: string,
+  hasTableCellListenerType: string,
   rowCountListenerType: string,
   rowIdsListenerType: string,
   sortedRowIdsListenerType: string,
+  hasRowListenerType: string,
   rowListenerType: string,
   cellIdsListenerType: string,
+  hasCellListenerType: string,
   cellListenerType: string,
   tablesTypes: IdMap<TableTypes>,
 ];
@@ -127,8 +133,10 @@ export type SharedValueTypes = [
   valuesType: string,
   valuesWhenSetType: string,
   valueIdType: string,
+  hasValuesListenerType: string,
   valuesListenerType: string,
   valueIdsListenerType: string,
+  hasValueListenerType: string,
   valueListenerType: string,
 ];
 
@@ -302,15 +310,20 @@ export const getStoreCoreApi = (
       rowCallbackType,
       tableCellCallbackType,
       tableCallbackType,
+      hasTablesListenerType,
       tablesListenerType,
       tableIdsListenerType,
+      hasTableListenerType,
       tableListenerType,
       tableCellIdsListenerType,
+      hasTableCellListenerType,
       rowCountListenerType,
       rowIdsListenerType,
       sortedRowIdsListenerType,
+      hasRowListenerType,
       rowListenerType,
       cellIdsListenerType,
+      hasCellListenerType,
       cellListenerType,
       invalidCellListenerType,
     ] = getTablesTypes(storeInstance, storeType);
@@ -395,15 +408,20 @@ export const getStoreCoreApi = (
       tableIdType,
       cellIdType,
       tableCallbackType,
+      hasTablesListenerType,
       tablesListenerType,
       tableIdsListenerType,
+      hasTableListenerType,
       tableListenerType,
       tableCellIdsListenerType,
+      hasTableCellListenerType,
       rowCountListenerType,
       rowIdsListenerType,
       sortedRowIdsListenerType,
+      hasRowListenerType,
       rowListenerType,
       cellIdsListenerType,
+      hasCellListenerType,
       cellListenerType,
       invalidCellListenerType,
     );
@@ -413,15 +431,20 @@ export const getStoreCoreApi = (
       tablesWhenSetType,
       tableIdType,
       cellIdType,
+      hasTablesListenerType,
       tablesListenerType,
       tableIdsListenerType,
+      hasTableListenerType,
       tableListenerType,
       tableCellIdsListenerType,
+      hasTableCellListenerType,
       rowCountListenerType,
       rowIdsListenerType,
       sortedRowIdsListenerType,
+      hasRowListenerType,
       rowListenerType,
       cellIdsListenerType,
+      hasCellListenerType,
       cellListenerType,
       tablesTypes,
     ];
@@ -689,6 +712,13 @@ export const getStoreCoreApi = (
       'tables' + JSON,
     );
 
+    // addHasTablesListener
+    addProxyListener(
+      HAS + TABLES,
+      hasTablesListenerType,
+      getTheContentOfTheStoreDoc(1, 8, 0, 1) + ' changes',
+    );
+
     // addTablesListener
     addProxyListener(
       TABLES,
@@ -698,6 +728,15 @@ export const getStoreCoreApi = (
 
     // addTableIdsListener
     addProxyListener(TABLE_IDS, tableIdsListenerType, getListenerDoc(2, 0, 1));
+
+    // addHasTableListener
+    addProxyListener(
+      HAS + TABLE,
+      hasTableListenerType,
+      getListenerDoc(3, 0, 0, 1),
+      `tableId: ${tableIdType} | null`,
+      'tableId',
+    );
 
     // addTableListener
     addProxyListener(
@@ -715,6 +754,20 @@ export const getStoreCoreApi = (
       getListenerDoc(14, 3, 1),
       `tableId: ${tableIdType} | null`,
       'tableId',
+    );
+
+    // addHasTableCellListener
+    addProxyListener(
+      HAS + TABLE + CELL,
+      hasTableCellListenerType,
+      getListenerDoc(16, 3, 0, 1),
+      `tableId: ${tableIdType} | null, cellId: ${arrayJoin(
+        mapTablesSchema(
+          (tableId) => mapGet(tablesTypes, tableId)?.[4] ?? EMPTY_STRING,
+        ),
+        ' | ',
+      )} | null`,
+      'tableId,  cellId',
     );
 
     // addRowCountListener
@@ -752,6 +805,15 @@ export const getStoreCoreApi = (
       '<TId extends TableId>',
     );
 
+    // addHasRowListener
+    addProxyListener(
+      HAS + ROW,
+      hasRowListenerType,
+      getListenerDoc(5, 3, 0, 1),
+      `tableId: ${tableIdType} | null, rowId: IdOrNull`,
+      'tableId, rowId',
+    );
+
     // addRowListener
     addProxyListener(
       ROW,
@@ -768,6 +830,20 @@ export const getStoreCoreApi = (
       getListenerDoc(6, 5, 1),
       `tableId: ${tableIdType} | null, rowId: IdOrNull`,
       'tableId, rowId',
+    );
+
+    // addHasCellListener
+    addProxyListener(
+      HAS + CELL,
+      hasCellListenerType,
+      getListenerDoc(7, 5, 0, 1),
+      `tableId: ${tableIdType} | null, rowId: IdOrNull, cellId: ${arrayJoin(
+        mapTablesSchema(
+          (tableId) => mapGet(tablesTypes, tableId)?.[4] ?? EMPTY_STRING,
+        ),
+        ' | ',
+      )} | null`,
+      'tableId, rowId, cellId',
     );
 
     // addCellListener
@@ -835,8 +911,10 @@ export const getStoreCoreApi = (
       valueIdType,
       _valueType,
       valueCallbackType,
+      hasValuesListenerType,
       valuesListenerType,
       valueIdsListenerType,
+      hasValueListenerType,
       valueListenerType,
       invalidValueListenerType,
     ] = getValuesTypes(storeInstance, storeType);
@@ -848,8 +926,10 @@ export const getStoreCoreApi = (
       valuesWhenSetType,
       valueIdType,
       valueCallbackType,
+      hasValuesListenerType,
       valuesListenerType,
       valueIdsListenerType,
+      hasValueListenerType,
       valueListenerType,
       invalidValueListenerType,
     );
@@ -858,8 +938,10 @@ export const getStoreCoreApi = (
       valuesType,
       valuesWhenSetType,
       valueIdType,
+      hasValuesListenerType,
       valuesListenerType,
       valueIdsListenerType,
+      hasValueListenerType,
       valueListenerType,
     ];
 
@@ -949,6 +1031,13 @@ export const getStoreCoreApi = (
       'values' + JSON,
     );
 
+    // addHasValuesListener
+    addProxyListener(
+      HAS + VALUES,
+      hasValuesListenerType,
+      getTheContentOfTheStoreDoc(2, 8, 0, 1) + ' changes',
+    );
+
     // addValuesListener
     addProxyListener(
       VALUES,
@@ -958,6 +1047,15 @@ export const getStoreCoreApi = (
 
     // addValueIdsListener
     addProxyListener(VALUE_IDS, valueIdsListenerType, getListenerDoc(10, 0, 1));
+
+    // addHasValueListener
+    addProxyListener(
+      HAS + VALUE,
+      hasValueListenerType,
+      getListenerDoc(11, 0, 0, 1),
+      `valueId: ${valueIdType} | null`,
+      'valueId',
+    );
 
     // addValueListener
     addProxyListener(
