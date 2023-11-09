@@ -1,6 +1,6 @@
 {
   "name": "tinybase",
-  "version": "4.5.12",
+  "version": "4.6.0-beta.0",
   "author": "jamesgpearce",
   "repository": "github:tinyplex/tinybase",
   "license": "MIT",
@@ -8,6 +8,7 @@
   "description": "The reactive data store for local-first apps.",
   "keywords": [
     "tiny",
+    "local-first",
     "reactive",
     "state",
     "data",
