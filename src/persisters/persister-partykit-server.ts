@@ -55,27 +55,27 @@ export const hasStoreInStorage = async (
   storagePrefix = EMPTY_STRING,
 ): Promise<boolean> => !!(await storage.get<1>(storagePrefix + HAS_STORE));
 
-const loadStore = async (that: TinyBasePartyKitServer) => {
+export const loadStoreFromStorage = async (
+  storage: Storage,
+  storagePrefix = EMPTY_STRING,
+): Promise<[Tables, Values]> => {
   const tables: Tables = {};
   const values: Values = {};
   mapForEach(
-    await that.party.storage.list<string | number | boolean>(),
+    await storage.list<string | number | boolean>(),
     (key, cellOrValue) =>
-      ifNotUndefined(
-        deconstruct(that.config.storagePrefix!, key),
-        ([type, ids]) => {
-          if (type == T) {
-            const [tableId, rowId, cellId] = jsonParse('[' + ids + ']');
-            objEnsure(
-              objEnsure(tables, tableId, objNew<Row>),
-              rowId,
-              objNew<Cell>,
-            )[cellId] = cellOrValue;
-          } else if (type == V) {
-            values[ids] = cellOrValue;
-          }
-        },
-      ),
+      ifNotUndefined(deconstruct(storagePrefix, key), ([type, ids]) => {
+        if (type == T) {
+          const [tableId, rowId, cellId] = jsonParse('[' + ids + ']');
+          objEnsure(
+            objEnsure(tables, tableId, objNew<Row>),
+            rowId,
+            objNew<Cell>,
+          )[cellId] = cellOrValue;
+        } else if (type == V) {
+          values[ids] = cellOrValue;
+        }
+      }),
   );
   return [tables, values];
 };
@@ -208,12 +208,12 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
   readonly config: TinyBasePartyKitServerConfig = {};
 
   async onRequest(request: Request): Promise<Response> {
-    const config = this.config;
-    if (new URL(request.url).pathname.endsWith(config.storePath!)) {
-      const hasExistingStore = await hasStoreInStorage(
-        this.party.storage,
-        config.storagePrefix,
-      );
+    const {
+      party: {storage},
+      config: {storePath, storagePrefix},
+    } = this;
+    if (new URL(request.url).pathname.endsWith(storePath!)) {
+      const hasExistingStore = await hasStoreInStorage(storage, storagePrefix);
       const text = await request.text();
       if (request.method == PUT) {
         if (hasExistingStore) {
@@ -225,7 +225,9 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
       return createResponse(
         this,
         200,
-        hasExistingStore ? jsonString(await loadStore(this)) : EMPTY_STRING,
+        hasExistingStore
+          ? jsonString(await loadStoreFromStorage(storage, storagePrefix))
+          : EMPTY_STRING,
       );
     }
     return createResponse(this, 404);
