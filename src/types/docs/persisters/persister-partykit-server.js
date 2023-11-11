@@ -503,6 +503,8 @@
  * TinyBasePartyKitServerConfig.
  * @returns A promised boolean indicating whether a Store is present in the
  * storage.
+ * @category Storage
+ * @since v4.4.1
  */
 /// hasStoreInStorage
 /**
@@ -521,5 +523,7 @@
  * server's durable storage, to match the equivalent property in the server's
  * TinyBasePartyKitServerConfig.
  * @returns A promised array of a Tables object and a Values object.
+ * @category Storage
+ * @since v4.4.1
  */
 /// loadStoreFromStorage
