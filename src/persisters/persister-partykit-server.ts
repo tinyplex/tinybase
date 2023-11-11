@@ -51,29 +51,29 @@ const RESPONSE_HEADERS = objNew(
 );
 
 const hasStore = async (that: TinyBasePartyKitServer): Promise<1 | undefined> =>
-  await that.party.storage.get<1>(
-    (that.config.storagePrefix ?? EMPTY_STRING) + HAS_STORE,
-  );
+  await that.party.storage.get<1>(that.config.storagePrefix! + HAS_STORE);
 
 const loadStore = async (that: TinyBasePartyKitServer) => {
   const tables: Tables = {};
   const values: Values = {};
-  const storagePrefix = that.config.storagePrefix ?? EMPTY_STRING;
   mapForEach(
     await that.party.storage.list<string | number | boolean>(),
     (key, cellOrValue) =>
-      ifNotUndefined(deconstruct(storagePrefix, key), ([type, ids]) => {
-        if (type == T) {
-          const [tableId, rowId, cellId] = jsonParse('[' + ids + ']');
-          objEnsure(
-            objEnsure(tables, tableId, objNew<Row>),
-            rowId,
-            objNew<Cell>,
-          )[cellId] = cellOrValue;
-        } else if (type == V) {
-          values[ids] = cellOrValue;
-        }
-      }),
+      ifNotUndefined(
+        deconstruct(that.config.storagePrefix!, key),
+        ([type, ids]) => {
+          if (type == T) {
+            const [tableId, rowId, cellId] = jsonParse('[' + ids + ']');
+            objEnsure(
+              objEnsure(tables, tableId, objNew<Row>),
+              rowId,
+              objNew<Cell>,
+            )[cellId] = cellOrValue;
+          } else if (type == V) {
+            values[ids] = cellOrValue;
+          }
+        },
+      ),
   );
   return [tables, values];
 };
@@ -85,10 +85,10 @@ const saveStore = async (
   requestOrConnection: Request | Connection,
 ) => {
   const storage = that.party.storage;
-  const prefix = that.config.storagePrefix ?? EMPTY_STRING;
+  const storagePrefix = that.config.storagePrefix!;
 
   const keysToSet: {[key: string]: Cell | Value} = {
-    [prefix + HAS_STORE]: 1,
+    [storagePrefix + HAS_STORE]: 1,
   };
   const keysToDel: string[] = [];
   const keyPrefixesToDel: string[] = [];
@@ -100,7 +100,7 @@ const saveStore = async (
           that.canDelTable(tableId, requestOrConnection as Connection) &&
           arrayUnshift(
             keyPrefixesToDel,
-            constructStorageKey(prefix, T, tableId),
+            constructStorageKey(storagePrefix, T, tableId),
           )
         : that.canSetTable(tableId, initialSave, requestOrConnection) &&
           (await promiseAll(
@@ -114,7 +114,7 @@ const saveStore = async (
                   ) &&
                   arrayPush(
                     keyPrefixesToDel,
-                    constructStorageKey(prefix, T, tableId, rowId),
+                    constructStorageKey(storagePrefix, T, tableId, rowId),
                   )
                 : that.canSetRow(
                     tableId,
@@ -125,7 +125,7 @@ const saveStore = async (
                   (await promiseAll(
                     objMap(row, async (cell, cellId) => {
                       const ids: [Id, Id, Id] = [tableId, rowId, cellId];
-                      const key = constructStorageKey(prefix, T, ...ids);
+                      const key = constructStorageKey(storagePrefix, T, ...ids);
                       isUndefined(cell)
                         ? !initialSave &&
                           that.canDelCell(
@@ -149,7 +149,7 @@ const saveStore = async (
 
   await promiseAll(
     objMap(transactionChanges[1], async (value, valueId) => {
-      const key = prefix + V + valueId;
+      const key = storagePrefix + V + valueId;
       isUndefined(value)
         ? !initialSave &&
           that.canDelValue(valueId, requestOrConnection as Connection) &&
@@ -192,17 +192,21 @@ const createResponse = async (
 ) =>
   new Response(body, {
     status,
-    headers: that.config.responseHeaders ?? RESPONSE_HEADERS,
+    headers: that.config.responseHeaders,
   });
 
 export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
-  constructor(readonly party: Party) {}
+  constructor(readonly party: Party) {
+    this.config.storePath ??= STORE_PATH;
+    this.config.messagePrefix ??= EMPTY_STRING;
+    this.config.storagePrefix ??= EMPTY_STRING;
+    this.config.responseHeaders ??= RESPONSE_HEADERS;
+  }
 
   readonly config: TinyBasePartyKitServerConfig = {};
 
   async onRequest(request: Request): Promise<Response> {
-    const storePath = this.config.storePath ?? STORE_PATH;
-    if (new URL(request.url).pathname.endsWith(storePath)) {
+    if (new URL(request.url).pathname.endsWith(this.config.storePath!)) {
       const hasExistingStore = await hasStore(this);
       const text = await request.text();
       if (request.method == PUT) {
@@ -222,7 +226,7 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
   }
 
   async onMessage(message: string, connection: Connection) {
-    const messagePrefix = this.config.messagePrefix ?? EMPTY_STRING;
+    const messagePrefix = this.config.messagePrefix!;
     await ifNotUndefined(
       deconstruct(messagePrefix, message, 1),
       async ([type, payload]) => {
