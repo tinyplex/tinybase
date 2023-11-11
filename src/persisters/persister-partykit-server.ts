@@ -8,7 +8,7 @@ import {
   ValueOrUndefined,
   Values,
 } from '../types/store';
-import {Connection, Party, Request} from 'partykit/server';
+import {Connection, Party, Request, Storage} from 'partykit/server';
 import {EMPTY_STRING, T, V, strStartsWith} from '../common/strings';
 import {Id, Ids} from '../types/common';
 import {
@@ -50,8 +50,10 @@ const RESPONSE_HEADERS = objNew(
   ]),
 );
 
-const hasStore = async (that: TinyBasePartyKitServer): Promise<1 | undefined> =>
-  await that.party.storage.get<1>(that.config.storagePrefix! + HAS_STORE);
+export const hasStoreInStorage = async (
+  storage: Storage,
+  storagePrefix = EMPTY_STRING,
+): Promise<boolean> => !!(await storage.get<1>(storagePrefix + HAS_STORE));
 
 const loadStore = async (that: TinyBasePartyKitServer) => {
   const tables: Tables = {};
@@ -206,8 +208,12 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
   readonly config: TinyBasePartyKitServerConfig = {};
 
   async onRequest(request: Request): Promise<Response> {
-    if (new URL(request.url).pathname.endsWith(this.config.storePath!)) {
-      const hasExistingStore = await hasStore(this);
+    const config = this.config;
+    if (new URL(request.url).pathname.endsWith(config.storePath!)) {
+      const hasExistingStore = await hasStoreInStorage(
+        this.party.storage,
+        config.storagePrefix,
+      );
       const text = await request.text();
       if (request.method == PUT) {
         if (hasExistingStore) {
@@ -226,13 +232,19 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
   }
 
   async onMessage(message: string, connection: Connection) {
-    const messagePrefix = this.config.messagePrefix!;
+    const {
+      party: {storage, broadcast},
+      config: {messagePrefix, storagePrefix},
+    } = this;
     await ifNotUndefined(
-      deconstruct(messagePrefix, message, 1),
+      deconstruct(messagePrefix!, message, 1),
       async ([type, payload]) => {
-        if (type == SET_CHANGES && (await hasStore(this))) {
+        if (
+          type == SET_CHANGES &&
+          (await hasStoreInStorage(storage, storagePrefix))
+        ) {
           await saveStore(this, payload, false, connection);
-          this.party.broadcast(construct(messagePrefix, SET_CHANGES, payload), [
+          broadcast(construct(messagePrefix!, SET_CHANGES, payload), [
             connection.id,
           ]);
         }
