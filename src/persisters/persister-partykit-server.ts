@@ -228,7 +228,9 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
       async ([type, payload]) => {
         if (type == SET_CHANGES && (await hasStore(this))) {
           await saveStore(this, payload, false, connection);
-          this.party.broadcast(construct(messagePrefix, SET_CHANGES, payload));
+          this.party.broadcast(construct(messagePrefix, SET_CHANGES, payload), [
+            connection.id,
+          ]);
         }
       },
     );
