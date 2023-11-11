@@ -493,12 +493,16 @@
  * This is intended for specialist applications that require the ability to
  * inspect or load a TinyBase Store from a server's storage outside of the
  * normal context of a TinyBasePartyKitServer.
+ *
+ * The function is asynchronous, so you should use the `await` keyword or handle
+ * the result as a promise.
  * @param storage A reference to the storage object, as would normally be
  * accessible from the `TinyBasePartyKitServer.party` object.
  * @param storagePrefix An optional prefix used before all the keys in the
  * server's durable storage, to match the equivalent property in the server's
  * TinyBasePartyKitServerConfig.
- * @returns A boolean indicating whether a Store is present in the storage.
+ * @returns A promised boolean indicating whether a Store is present in the
+ * storage.
  */
 /// hasStoreInStorage
 /**
@@ -508,11 +512,14 @@
  * This is intended for specialist applications that require the ability to
  * inspect or load a TinyBase Store from a server's storage outside of the
  * normal context of a TinyBasePartyKitServer.
+ *
+ * The function is asynchronous, so you should use the `await` keyword or handle
+ * the result as a promise.
  * @param storage A reference to the storage object, as would normally be
  * accessible from the `TinyBasePartyKitServer.party` object.
  * @param storagePrefix An optional prefix used before all the keys in the
  * server's durable storage, to match the equivalent property in the server's
  * TinyBasePartyKitServerConfig.
- * @returns An array of a Tables object and a Values object.
+ * @returns A promised array of a Tables object and a Values object.
  */
 /// loadStoreFromStorage
