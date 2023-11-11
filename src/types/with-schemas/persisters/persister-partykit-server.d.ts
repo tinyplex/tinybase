@@ -5,8 +5,11 @@ import {
   CellOrUndefined,
   NoTablesSchema,
   NoValuesSchema,
+  OptionalSchemas,
+  Tables,
   Value,
   ValueOrUndefined,
+  Values,
 } from '../store';
 import {Connection, Party, Request, Server} from 'partykit/server';
 import {Id} from '../common';
@@ -77,3 +80,15 @@ export class TinyBasePartyKitServer implements Server {
   /// TinyBasePartyKitServer.canDelValue
   canDelValue(valueId: Id, connection: Connection): boolean;
 }
+
+/// hasStoreInStorage
+export function hasStoreInStorage(
+  storage: Storage,
+  storagePrefix?: string,
+): Promise<boolean>;
+
+/// loadStoreFromStorage
+export function loadStoreFromStorage<Schemas extends OptionalSchemas>(
+  storage: Storage,
+  storagePrefix?: string,
+): Promise<[Tables<Schemas[0]>, Values<Schemas[1]>]>;

@@ -1,7 +1,14 @@
 /// persister-partykit-server
 
-import {Cell, CellOrUndefined, Value, ValueOrUndefined} from '../store';
-import {Connection, Party, Request, Server} from 'partykit/server';
+import {
+  Cell,
+  CellOrUndefined,
+  Tables,
+  Value,
+  ValueOrUndefined,
+  Values,
+} from '../store';
+import {Connection, Party, Request, Server, Storage} from 'partykit/server';
 import {Id} from '../common';
 
 /// TinyBasePartyKitServerConfig
@@ -70,3 +77,15 @@ export class TinyBasePartyKitServer implements Server {
   /// TinyBasePartyKitServer.canDelValue
   canDelValue(valueId: Id, connection: Connection): boolean;
 }
+
+/// hasStoreInStorage
+export function hasStoreInStorage(
+  storage: Storage,
+  storagePrefix?: string,
+): Promise<boolean>;
+
+/// loadStoreFromStorage
+export function loadStoreFromStorage(
+  storage: Storage,
+  storagePrefix?: string,
+): Promise<[Tables, Values]>;

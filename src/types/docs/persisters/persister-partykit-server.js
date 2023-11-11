@@ -486,3 +486,33 @@
    */
   /// TinyBasePartyKitServer.canDelValue
 }
+/**
+ * The hasStoreInStorage function returns a boolean indicating whether durable
+ * PartyKit storage contains a serialized Store.
+ *
+ * This is intended for specialist applications that require the ability to
+ * inspect or load a TinyBase Store from a server's storage outside of the
+ * normal context of a TinyBasePartyKitServer.
+ * @param storage A reference to the storage object, as would normally be
+ * accessible from the `TinyBasePartyKitServer.party` object.
+ * @param storagePrefix An optional prefix used before all the keys in the
+ * server's durable storage, to match the equivalent property in the server's
+ * TinyBasePartyKitServerConfig.
+ * @returns A boolean indicating whether a Store is present in the storage.
+ */
+/// hasStoreInStorage
+/**
+ * The loadStoreFromStorage function returns the content of a Store from durable
+ * PartyKit storage.
+ *
+ * This is intended for specialist applications that require the ability to
+ * inspect or load a TinyBase Store from a server's storage outside of the
+ * normal context of a TinyBasePartyKitServer.
+ * @param storage A reference to the storage object, as would normally be
+ * accessible from the `TinyBasePartyKitServer.party` object.
+ * @param storagePrefix An optional prefix used before all the keys in the
+ * server's durable storage, to match the equivalent property in the server's
+ * TinyBasePartyKitServerConfig.
+ * @returns An array of a Tables object and a Values object.
+ */
+/// loadStoreFromStorage
