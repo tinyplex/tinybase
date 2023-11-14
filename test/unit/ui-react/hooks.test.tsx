@@ -75,6 +75,7 @@ import {
   useMetricListener,
   useMetrics,
   useMetricsIds,
+  useProvideStore,
   useQueries,
   useQueriesIds,
   useQueryIds,
@@ -534,6 +535,75 @@ describe('Context Hooks', () => {
     });
     expect(renderer.toJSON()).toEqual(JSON.stringify({t1: {r1: {c1: 1}}}));
     expect(didRender).toHaveBeenCalledTimes(1);
+  });
+
+  test('useProvideStore', () => {
+    const Test = () =>
+      didRender(<>{JSON.stringify(useStore('s')?.getTables())}</>);
+    const ProvideStore1 = () => {
+      useProvideStore('s', store);
+      return null;
+    };
+    const ProvideStore2 = () => {
+      useProvideStore(
+        's',
+        useCreateStore(() => createStore().setCell('t2', 'r2', 'c2', 2)),
+      );
+      return null;
+    };
+    act(() => {
+      renderer = create(
+        <Provider>
+          <Test />
+        </Provider>,
+      );
+    });
+    expect(renderer.toJSON()).toBeNull();
+    expect(didRender).toHaveBeenCalledTimes(1);
+
+    act(() => {
+      renderer.update(
+        <Provider>
+          <Test />
+          <ProvideStore1 />
+        </Provider>,
+      );
+    });
+    expect(renderer.toJSON()).toEqual(JSON.stringify({t1: {r1: {c1: 1}}}));
+    expect(didRender).toHaveBeenCalledTimes(3);
+
+    act(() => {
+      renderer.update(
+        <Provider>
+          <Test />
+          <ProvideStore1 />
+          <ProvideStore1 />
+        </Provider>,
+      );
+    });
+    expect(renderer.toJSON()).toEqual(JSON.stringify({t1: {r1: {c1: 1}}}));
+    expect(didRender).toHaveBeenCalledTimes(4);
+
+    act(() => {
+      renderer.update(
+        <Provider>
+          <Test />
+          <ProvideStore2 />
+        </Provider>,
+      );
+    });
+    expect(renderer.toJSON()).toEqual(JSON.stringify({t2: {r2: {c2: 2}}}));
+    expect(didRender).toHaveBeenCalledTimes(6);
+
+    act(() => {
+      renderer.update(
+        <Provider>
+          <Test />
+        </Provider>,
+      );
+    });
+    expect(renderer.toJSON()).toBeNull();
+    expect(didRender).toHaveBeenCalledTimes(8);
   });
 
   test('useMetrics', () => {
