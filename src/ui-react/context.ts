@@ -23,21 +23,23 @@ import React from 'react';
 import {Relationships} from '../types/relationships';
 import {Store} from '../types/store';
 
-const {createContext, useContext} = React;
+const {createContext, useContext, useEffect} = React;
 
 type ContextValue = [
-  Store?,
-  {[storeId: Id]: Store}?,
-  Metrics?,
-  {[metricsId: Id]: Metrics}?,
-  Indexes?,
-  {[indexesId: Id]: Indexes}?,
-  Relationships?,
-  {[relationshipsId: Id]: Relationships}?,
-  Queries?,
-  {[queriesId: Id]: Queries}?,
-  Checkpoints?,
-  {[checkpointsId: Id]: Checkpoints}?,
+  store?: Store,
+  storesById?: {[storeId: Id]: Store},
+  metrics?: Metrics,
+  metricsById?: {[metricsId: Id]: Metrics},
+  indexes?: Indexes,
+  indexesById?: {[indexesId: Id]: Indexes},
+  relationships?: Relationships,
+  relationshipsById?: {[relationshipsId: Id]: Relationships},
+  queries?: Queries,
+  queriesById?: {[queriesId: Id]: Queries},
+  checkpoints?: Checkpoints,
+  checkpointsById?: {[checkpointsId: Id]: Checkpoints},
+  addExtraStore?: (id: string, store: Store) => void,
+  delExtraStore?: (id: string) => void,
 ];
 
 export const Context = createContext<ContextValue>([]);
@@ -91,6 +93,14 @@ export const useStore: typeof useStoreDecl = (id?: Id): Store | undefined =>
 export const useStoreOrStoreById = (
   storeOrStoreId?: StoreOrStoreId,
 ): Store | undefined => useThingOrThingById(storeOrStoreId, 0);
+
+export const useProvideStore = (storeId: Id, store: Store): void => {
+  const {12: addExtraStore, 13: delExtraStore} = useContext(Context);
+  useEffect(() => {
+    addExtraStore?.(storeId, store);
+    return () => delExtraStore?.(storeId);
+  }, [addExtraStore, storeId, store, delExtraStore]);
+};
 
 export const useMetrics: typeof useMetricsDecl = (
   id?: Id,

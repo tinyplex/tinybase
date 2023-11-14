@@ -55,7 +55,7 @@ import {
   useRelationshipsOrRelationshipsById,
 } from './context';
 import {Id, Ids} from '../types/common.d';
-import React, {ReactElement, useContext} from 'react';
+import React, {ReactElement} from 'react';
 import {
   createElement,
   getIndexStoreTableId,
@@ -63,6 +63,7 @@ import {
   getRelationshipsStoreTableIds,
 } from './common';
 import {isArray, isUndefined} from '../common/other';
+import {objDel, objGet} from '../common/obj';
 import {
   useCell,
   useCellIds,
@@ -86,9 +87,10 @@ import {
 } from './hooks';
 import {CheckpointIds} from '../types/checkpoints';
 import {EMPTY_STRING} from '../common/strings';
+import {Store} from '../types/store';
 import {arrayMap} from '../common/array';
 
-const {useMemo} = React;
+const {useCallback, useContext, useMemo, useState} = React;
 
 const tableView = (
   {
@@ -236,12 +238,31 @@ export const Provider: typeof ProviderDecl = ({
   children,
 }: ProviderProps & {readonly children: React.ReactNode}): any => {
   const parentValue = useContext(Context);
+
+  const [extraStoresById, setExtraStoresById] = useState<{[id: Id]: Store}>({});
+  const addExtraStore = useCallback(
+    (id: Id, store: Store) =>
+      setExtraStoresById((extraStoresById) =>
+        objGet(extraStoresById, id) == store
+          ? extraStoresById
+          : {...extraStoresById, [id]: store},
+      ),
+    [],
+  );
+  const delExtraStore = useCallback(
+    (id: Id) =>
+      setExtraStoresById((extraStoresById) => ({
+        ...objDel(extraStoresById, id),
+      })),
+    [],
+  );
+
   return (
     <Context.Provider
       value={useMemo(
         () => [
           store ?? parentValue[0],
-          {...parentValue[1], ...storesById},
+          {...parentValue[1], ...storesById, ...extraStoresById},
           metrics ?? parentValue[2],
           {...parentValue[3], ...metricsById},
           indexes ?? parentValue[4],
@@ -252,10 +273,13 @@ export const Provider: typeof ProviderDecl = ({
           {...parentValue[9], ...queriesById},
           checkpoints ?? parentValue[10],
           {...parentValue[11], ...checkpointsById},
+          addExtraStore,
+          delExtraStore,
         ],
         [
           store,
           storesById,
+          extraStoresById,
           metrics,
           metricsById,
           indexes,
@@ -267,6 +291,8 @@ export const Provider: typeof ProviderDecl = ({
           checkpoints,
           checkpointsById,
           parentValue,
+          addExtraStore,
+          delExtraStore,
         ],
       )}
     >

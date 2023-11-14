@@ -232,6 +232,7 @@ export {
   useIndexesOrIndexesById,
   useMetrics,
   useMetricsOrMetricsById,
+  useProvideStore,
   useQueries,
   useQueriesOrQueriesById,
   useRelationships,
