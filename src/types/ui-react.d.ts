@@ -101,6 +101,9 @@ export function useStoreOrStoreById(
   storeOrStoreId?: StoreOrStoreId,
 ): Store | undefined;
 
+/// useProvideStore
+export function useProvideStore(storeId: Id, store: Store): void;
+
 /// useHasTables
 export function useHasTables(storeOrStoreId?: StoreOrStoreId): boolean;
 

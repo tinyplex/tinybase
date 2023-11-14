@@ -146,6 +146,9 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => Store<Schemas> | undefined;
 
+  /// useProvideStore
+  useProvideStore: (storeId: Id, store: Store<Schemas>) => void;
+
   /// useHasTables
   useHasTables: (storeOrStoreId?: StoreOrStoreId<Schemas>) => boolean;
 

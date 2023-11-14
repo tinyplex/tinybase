@@ -349,6 +349,58 @@
  */
 /// useStoreOrStoreById
 /**
+ * The useProvideStore hook is used to add a Store object by Id to a Provider
+ * component, but imperatively from a component within it.
+ *
+ * Normally you will register a Store by Id in a context by using the
+ * `storesById` prop of the top-level Provider component. This hook, however,
+ * lets you dynamically add a new Store to the context, from within a descendent
+ * component. This is useful for applications where the set of Stores is not
+ * known at the time of the first render of the root Provider.
+ *
+ * A Store added to the Provider context in this way will be available to other
+ * components within the context (using the useStore hook and so on). If you use
+ * the same Id as an existing Store registration, the new one will take priority
+ * over one provided by the `storesById` prop.
+ *
+ * Note that other components that consume a Store registered like this should
+ * defend against it being undefined at first. On the first render, the other
+ * component will likely not yet have completed the registration. In the example
+ * below, we use the null-safe `useStore('petStore')?.getTableIds()` to do this.
+ * @param storeId The Id of the Store object to be registered with the Provider.
+ * @param store The Store object to be registered.
+ * @example
+ * This example creates a Provider context. A child component registers a Store
+ * into it which is then consumable by a peer child component.
+ * ```jsx
+ * const App = () => (
+ *   <Provider>
+ *     <RegisterStore />
+ *     <ConsumeStore />
+ *   </Provider>
+ * );
+ * const RegisterStore = () => {
+ *   const store = useCreateStore(() =>
+ *     createStore().setCell('pets', 'fido', 'color', 'brown'),
+ *   );
+ *   useProvideStore('petStore', store);
+ *   return null;
+ * };
+ * const ConsumeStore = () => (
+ *   <span>{JSON.stringify(useStore('petStore')?.getTableIds())}</span>
+ * );
+ *
+ * const app = document.createElement('div');
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["pets"]</span>'
+ * ```
+ * @category Store hooks
+ * @since v4.4.2
+ */
+/// useProvideStore
+/**
  * The useHasTables hook returns a boolean indicating whether any Table objects
  * exist in the Store, and registers a listener so that any changes to that
  * result will cause a re-render.
