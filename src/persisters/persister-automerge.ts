@@ -51,35 +51,35 @@ const setTransactionChangesToDoc = (
       transactionChangesFailed
         ? 0
         : isUndefined(table)
-        ? objDel(docTables, tableId)
-        : ifNotUndefined(
-            docTables[tableId],
-            (docTable) =>
-              objMap(table, (row, rowId) =>
-                transactionChangesFailed
-                  ? 0
-                  : isUndefined(row)
-                  ? objDel(docTable, rowId)
-                  : ifNotUndefined(
-                      objGet(docTable, rowId),
-                      (docRow: any) =>
-                        objMap(row, (cell, cellId) =>
-                          isUndefined(cell)
-                            ? objDel(docRow, cellId)
-                            : (docRow[cellId] = cell),
+          ? objDel(docTables, tableId)
+          : ifNotUndefined(
+              docTables[tableId],
+              (docTable) =>
+                objMap(table, (row, rowId) =>
+                  transactionChangesFailed
+                    ? 0
+                    : isUndefined(row)
+                      ? objDel(docTable, rowId)
+                      : ifNotUndefined(
+                          objGet(docTable, rowId),
+                          (docRow: any) =>
+                            objMap(row, (cell, cellId) =>
+                              isUndefined(cell)
+                                ? objDel(docRow, cellId)
+                                : (docRow[cellId] = cell),
+                            ),
+                          transactionChangesDidFail as any,
                         ),
-                      transactionChangesDidFail as any,
-                    ),
-              ),
-            transactionChangesDidFail,
-          ),
+                ),
+              transactionChangesDidFail,
+            ),
     );
     objMap(valueChanges, (value, valueId) =>
       transactionChangesFailed
         ? 0
         : isUndefined(value)
-        ? objDel(docValues, valueId)
-        : (docValues[valueId] = value),
+          ? objDel(docValues, valueId)
+          : (docValues[valueId] = value),
     );
   });
   if (transactionChangesFailed) {

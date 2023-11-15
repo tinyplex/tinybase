@@ -104,10 +104,10 @@ export type Cell<
 > = CellType extends 'string'
   ? string
   : CellType extends 'number'
-  ? number
-  : CellType extends 'boolean'
-  ? boolean
-  : string | number | boolean;
+    ? number
+    : CellType extends 'boolean'
+      ? boolean
+      : string | number | boolean;
 
 /// CellOrUndefined
 export type CellOrUndefined<
@@ -147,10 +147,10 @@ export type Value<
 > = ValueType extends 'string'
   ? string
   : ValueType extends 'number'
-  ? number
-  : ValueType extends 'boolean'
-  ? boolean
-  : string | number | boolean;
+    ? number
+    : ValueType extends 'boolean'
+      ? boolean
+      : string | number | boolean;
 
 /// ValueOrUndefined
 export type ValueOrUndefined<

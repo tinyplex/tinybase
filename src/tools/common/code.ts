@@ -177,8 +177,8 @@ export const getCodeFunctions = (): [
                 ? -1
                 : 1
               : import1 > import2
-              ? 1
-              : -1,
+                ? 1
+                : -1,
         ),
         EMPTY_STRING,
       ],

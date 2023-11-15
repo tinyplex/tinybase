@@ -100,35 +100,35 @@ const setTransactionChangesToYDoc = (
       transactionChangesFailed
         ? 0
         : isUndefined(table)
-        ? yTables.delete(tableId)
-        : ifNotUndefined(
-            yTables.get(tableId),
-            (yTable) =>
-              objMap(table, (row, rowId) =>
-                transactionChangesFailed
-                  ? 0
-                  : isUndefined(row)
-                  ? yTable.delete(rowId)
-                  : ifNotUndefined(
-                      yTable.get(rowId),
-                      (yRow) =>
-                        objMap(row, (cell, cellId) =>
-                          isUndefined(cell)
-                            ? yRow.delete(cellId)
-                            : yRow.set(cellId, cell),
+          ? yTables.delete(tableId)
+          : ifNotUndefined(
+              yTables.get(tableId),
+              (yTable) =>
+                objMap(table, (row, rowId) =>
+                  transactionChangesFailed
+                    ? 0
+                    : isUndefined(row)
+                      ? yTable.delete(rowId)
+                      : ifNotUndefined(
+                          yTable.get(rowId),
+                          (yRow) =>
+                            objMap(row, (cell, cellId) =>
+                              isUndefined(cell)
+                                ? yRow.delete(cellId)
+                                : yRow.set(cellId, cell),
+                            ),
+                          transactionChangesDidFail,
                         ),
-                      transactionChangesDidFail,
-                    ),
-              ),
-            transactionChangesDidFail,
-          ),
+                ),
+              transactionChangesDidFail,
+            ),
     );
     objMap(valueChanges, (value, valueId) =>
       transactionChangesFailed
         ? 0
         : isUndefined(value)
-        ? yValues.delete(valueId)
-        : yValues.set(valueId, value),
+          ? yValues.delete(valueId)
+          : yValues.set(valueId, value),
     );
   });
   if (transactionChangesFailed) {

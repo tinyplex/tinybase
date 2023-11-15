@@ -297,8 +297,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
           () => cellInvalid(tableId, rowId, cellId, cell),
         )
       : isUndefined(getCellOrValueType(cell))
-      ? cellInvalid(tableId, rowId, cellId, cell)
-      : cell;
+        ? cellInvalid(tableId, rowId, cellId, cell)
+        : cell;
 
   const validateValues = (values: Values, skipDefaults?: 1): boolean =>
     validate(
@@ -326,8 +326,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
           () => valueInvalid(valueId, value),
         )
       : isUndefined(getCellOrValueType(value))
-      ? valueInvalid(valueId, value)
-      : value;
+        ? valueInvalid(valueId, value)
+        : value;
 
   const addDefaultsToRow = (row: Row, tableId: Id, rowId?: Id): Row => {
     ifNotUndefined(

@@ -351,8 +351,8 @@
    *     remove == metric
    *       ? undefined
    *       : add > 2
-   *       ? Math.min(metric, add)
-   *       : metric,
+   *         ? Math.min(metric, add)
+   *         : metric,
    * );
    *
    * console.log(metrics.getMetric('lowestPriceOver2'));

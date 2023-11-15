@@ -1204,49 +1204,6 @@
  * ```js
  * const store = createStore()
  *   .setTable('pets', {
- *     fido: {species: 'dog', color: 'brown', owner: 'alice'},
- *     felix: {species: 'cat', color: 'black', owner: 'bob'},
- *     cujo: {species: 'dog', color: 'black', owner: 'bob'},
- *     lowly: {species: 'worm', color: 'brown', owner: 'alice'},
- *     carnaby: {species: 'parrot', color: 'black', owner: 'bob'},
- *     polly: {species: 'parrot', color: 'red', owner: 'alice'},
- *   })
- *   .setTable('species', {
- *     dog: {price: 5, legs: 4},
- *     cat: {price: 4, legs: 4},
- *     parrot: {price: 3, legs: 2},
- *     worm: {price: 1, legs: 0},
- *   });
- *
- * const queries = createQueries(store);
- * queries.setQueryDefinition('query', 'pets', ({select, join, group}) => {
- *   select('pets', 'color'); //    group by
- *   select('pets', 'owner'); //    group by
- *   select('species', 'price'); // grouped
- *   select('species', 'legs'); //  grouped
- *   // from pets
- *   join('species', 'species');
- *   group('price', 'avg').as('avgPrice');
- *   group('legs', 'sum').as('sumLegs');
- * });
- *
- * queries.forEachResultRow('query', (rowId) => {
- *   console.log({[rowId]: queries.getResultRow('query', rowId)});
- * });
- * // -> {0: {color: 'brown', owner: 'alice', avgPrice: 3, sumLegs: 4}}
- * // -> {1: {color: 'black', owner: 'bob', avgPrice: 4, sumLegs: 10}}
- * // -> {2: {color: 'red', owner: 'alice', avgPrice: 3, sumLegs: 2}}
- * ```
- * @example
- * This example shows a query that calculates the a custom aggregate of one
- * Cell's values, grouped by another. Note how `aggregateAdd`,
- * `aggregateRemove`, and `aggregateReplace` parameters are provided to make the
- * custom aggregation more efficient as individual values are added, removed, or
- * replaced during the lifecycle of the Table.
- *
- * ```js
- * const store = createStore()
- *   .setTable('pets', {
  *     fido: {species: 'dog', owner: 'alice'},
  *     felix: {species: 'cat', owner: 'bob'},
  *     cujo: {species: 'dog', owner: 'bob'},
@@ -1276,8 +1233,8 @@
  *       remove == current
  *         ? undefined
  *         : add > 2
- *         ? Math.min(current, add)
- *         : current,
+ *           ? Math.min(current, add)
+ *           : current,
  *   ).as('lowestPriceOver2');
  * });
  *

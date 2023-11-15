@@ -90,8 +90,8 @@ const forEachDirAndFile = (
     entry.isDirectory()
       ? dirCallback?.(path)
       : path.endsWith(extension)
-      ? fileCallback?.(path)
-      : null;
+        ? fileCallback?.(path)
+        : null;
   });
 
 const prepareTestResultsFromBlock = (block: string, prefix: string): void => {

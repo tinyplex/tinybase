@@ -95,17 +95,17 @@ export const getAggregateValue = <Value, AggregateValue>(
             oldLength++,
           )
         : isUndefined(newValue)
-        ? aggregateRemove?.(
-            aggregateValue as AggregateValue,
-            oldValue,
-            oldLength--,
-          )
-        : aggregateReplace?.(
-            aggregateValue as AggregateValue,
-            newValue,
-            oldValue,
-            oldLength,
-          );
+          ? aggregateRemove?.(
+              aggregateValue as AggregateValue,
+              oldValue,
+              oldLength--,
+            )
+          : aggregateReplace?.(
+              aggregateValue as AggregateValue,
+              newValue,
+              oldValue,
+              oldLength,
+            );
       force ||= isUndefined(aggregateValue);
     }
   });

@@ -2995,12 +2995,12 @@ const getDefaultCellComponent = (tableId: Id, cellId: Id) =>
     ? cellId == C1
       ? T1C1CellView
       : cellId == C2
-      ? T1C2CellView
-      : cellId == C3
-      ? T1C3CellView
-      : cellId == _
-      ? T1CellView
-      : NullComponent
+        ? T1C2CellView
+        : cellId == C3
+          ? T1C3CellView
+          : cellId == _
+            ? T1CellView
+            : NullComponent
     : NullComponent;
 
 const V1 = 'v1';
@@ -3013,12 +3013,12 @@ const getDefaultValueComponent = (valueId: Id) =>
   valueId == V1
     ? V1ValueView
     : valueId == V2
-    ? V2ValueView
-    : valueId == V3
-    ? V3ValueView
-    : valueId == _
-    ? ValueView
-    : NullComponent;
+      ? V2ValueView
+      : valueId == V3
+        ? V3ValueView
+        : valueId == _
+          ? ValueView
+          : NullComponent;
 
 export const useCreateS: typeof useCreateSDecl = (
   create: () => S,
@@ -5038,12 +5038,12 @@ const getDefaultValueComponent = (valueId: Id) =>
   valueId == V1
     ? V1ValueView
     : valueId == V2
-    ? V2ValueView
-    : valueId == V3
-    ? V3ValueView
-    : valueId == _
-    ? ValueView
-    : NullComponent;
+      ? V2ValueView
+      : valueId == V3
+        ? V3ValueView
+        : valueId == _
+          ? ValueView
+          : NullComponent;
 
 export const useCreateS: typeof useCreateSDecl = (
   create: () => S,
@@ -7582,12 +7582,12 @@ const getDefaultCellComponent = (tableId: Id, cellId: Id) =>
     ? cellId == C1
       ? T1C1CellView
       : cellId == C2
-      ? T1C2CellView
-      : cellId == C3
-      ? T1C3CellView
-      : cellId == _
-      ? T1CellView
-      : NullComponent
+        ? T1C2CellView
+        : cellId == C3
+          ? T1C3CellView
+          : cellId == _
+            ? T1CellView
+            : NullComponent
     : NullComponent;
 
 export const useCreateS: typeof useCreateSDecl = (

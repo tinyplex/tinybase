@@ -383,8 +383,8 @@ const RelationshipInHtmlRow = ({
             tableId === localTableId
               ? localRowId
               : tableId === remoteTableId
-              ? remoteRowId
-              : null;
+                ? remoteRowId
+                : null;
           return isUndefined(rowId) ? null : (
             <td key={compoundCellId}>
               <CellView

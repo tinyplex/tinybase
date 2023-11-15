@@ -59,8 +59,8 @@ export const createIndexes = getCreateFunction((store: Store): Indexes => {
       isUndefined(value)
         ? EMPTY_STRING
         : isArray(value)
-        ? arrayMap(value, id)
-        : id(value),
+          ? arrayMap(value, id)
+          : id(value),
     addListener,
     callListeners,
   );
