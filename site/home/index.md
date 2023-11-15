@@ -70,7 +70,7 @@ id="one-with">"The One With More Listeners"</span>
   <li>
     Tiny by name, tiny by nature:
     <a href='#did-we-say-tiny'>@@EVAL("toKb(sizes.get('store.js.gz'))") -
-    @@EVAL("toKb(sizes.get('tinybase.js.gz'))")</a>, zero dependencies. <a href='#well-tested-and-documented'>100% tested</a>, 
+    @@EVAL("toKb(sizes.get('tinybase.js.gz'))")</a>, no dependencies. <a href='#well-tested-and-documented'>100% tested</a>, 
     <a href='/guides/the-basics/getting-started/'>fully documented</a>, and of 
     course, <a href='@@EVAL("metadata.repository")'>open source</a>!
   </li>
