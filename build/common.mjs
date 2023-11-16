@@ -339,6 +339,7 @@ export const compileModule = async (
 
   const inputConfig = {
     external: [
+      'expo-sqlite/next',
       'fs',
       'fs/promises',
       'path',
@@ -402,11 +403,12 @@ export const compileModule = async (
     entryFileNames: `[name]${fileSuffix}.${format == 'cjs' ? 'cjs' : 'js'}`,
     format,
     globals: {
-      react: 'React',
-      'react-dom': 'ReactDOM',
-      yjs: 'yjs',
-      fs: 'fs',
+      'expo-sqlite/next': 'expo-sqlite/next',
       'fs/promises': 'fs/promises',
+      'react-dom': 'ReactDOM',
+      fs: 'fs',
+      react: 'React',
+      yjs: 'yjs',
       [path.resolve('src/ui-react')]: getGlobalName('ui-react'),
     },
     interop: 'default',
