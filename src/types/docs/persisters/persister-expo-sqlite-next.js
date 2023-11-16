@@ -133,9 +133,9 @@
  * // -> [{_id: 'fido', species: 'dog'}]
  *
  * await new Promise((resolve) =>
- *   db.allAsync(
- *     `INSERT INTO pets (_id, species) VALUES ('felix', 'cat')`
- *   ).then(resolve),
+ *   db
+ *     .allAsync(`INSERT INTO pets (_id, species) VALUES ('felix', 'cat')`)
+ *     .then(resolve),
  * );
  * await persister.load();
  * console.log(store.getTables());
