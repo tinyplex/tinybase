@@ -3,6 +3,14 @@
  * load Store data to and from a local Expo-SQLite database (in an appropriate
  * React Native environment).
  *
+ * This module provides a Persister for the legacy version of Expo's
+ * [SQLite](https://docs.expo.dev/versions/latest/sdk/sqlite) library. This API
+ * should be used if you are installing the `expo-sqlite` module.
+ *
+ * Note that TinyBase support for the modern version of Expo-SQLite
+ * (`expo-sqlite-next`) is currently available in the persister-expo-sqlite-next
+ * module.
+ *
  * Note that this Persister is currently experimental as Expo themselves iterate
  * on the underlying database library API.
  * @see Persisting Data guide

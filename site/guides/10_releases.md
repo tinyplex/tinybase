@@ -3,6 +3,19 @@
 This is a reverse chronological list of the major TinyBase releases, with
 highlighted features.
 
+## v4.5
+
+This release includes the new persister-expo-sqlite-next module, which provides
+a Persister for the modern version of Expo's
+[SQLite](https://docs.expo.dev/versions/latest/sdk/sqlite) library, designated
+'next' as of November 2023. This API should be used if you are installing the
+`expo-sqlite/next` module.
+
+Note that TinyBase support for the legacy version of Expo-SQLite (`expo-sqlite`)
+is still available in the persister-expo-sqlite module.
+
+Thank you to Expo for providing this functionality!
+
 ## v4.4
 
 This relatively straightforward release adds a selection of new listeners to the

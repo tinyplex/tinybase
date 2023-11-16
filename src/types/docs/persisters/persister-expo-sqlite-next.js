@@ -1,7 +1,16 @@
 /**
  * The persister-expo-sqlite-next module of the TinyBase project lets you save
- * and load Store data to and from a local Expo-SQLite database (in an
+ * and load Store data to and from a local Expo-SQLite 'next' database (in an
  * appropriate React Native environment).
+ *
+ * This module provides a Persister for the modern version of Expo's
+ * [SQLite](https://docs.expo.dev/versions/latest/sdk/sqlite)
+ * library, designated 'next' as of November 2023. This API should be used if
+ * you are installing the `expo-sqlite/next` module. In the future we expect
+ * this module to become the default.
+ *
+ * Note that TinyBase support for the legacy version of Expo-SQLite
+ * (`expo-sqlite`) is still available in the persister-expo-sqlite module.
  *
  * Note that this Persister is currently experimental as Expo themselves iterate
  * on the underlying database library API.
