@@ -12,8 +12,8 @@
   </p>
 </section>
 
-<a href='/guides/releases/#v4-4'><em>NEW!</em> v4.4 release</a> <span
-id="one-with">"The One With More Listeners"</span>
+<a href='/guides/releases/#v4-5'><em>NEW!</em> v4.5 release</a> <span
+id="one-with">"The One With Expo SQLite Next"</span>
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 
@@ -88,6 +88,11 @@ id="one-with">"The One With More Listeners"</span>
 <div>
   <a href='/api/persister-partykit-client'>
     <img width="48" src="/partykit.svg" /> PartyKit
+  </a>
+</div>
+<div>
+  <a href='/guides/schemas-and-persistence/database-persistence'>
+    <img width="48" src="/expo.svg" />Expo SQLite
   </a>
 </div>
 <div>
