@@ -8,7 +8,7 @@
  * @see Persisting Data guide
  * @packageDocumentation
  * @module persister-expo-sqlite-next
- * @since v4.4.1
+ * @since v4.5.0
  */
 /// persister-expo-sqlite-next
 /**
@@ -17,7 +17,7 @@
  *
  * It simply provides an extra getDb method for accessing a reference to the
  * database instance the Store is being persisted to.
- * @since v4.4.1
+ * @since v4.5.0
  */
 /// ExpoSqliteNextPersister
 {
@@ -40,7 +40,7 @@
    * persister.destroy();
    * ```
    * @category Getter
-   * @since v4.4.1
+   * @since v4.5.0
    */
   /// ExpoSqliteNextPersister.getDb
 }
@@ -144,6 +144,6 @@
  * persister.destroy();
  * ```
  * @category Creation
- * @since v4.0.3
+ * @since v4.5.0
  */
 /// createExpoSqliteNextPersister
