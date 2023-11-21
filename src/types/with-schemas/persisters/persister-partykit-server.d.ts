@@ -7,6 +7,7 @@ import {
   NoValuesSchema,
   OptionalSchemas,
   Tables,
+  TransactionChanges,
   Value,
   ValueOrUndefined,
   Values,
@@ -92,3 +93,10 @@ export function loadStoreFromStorage<Schemas extends OptionalSchemas>(
   storage: Storage,
   storagePrefix?: string,
 ): Promise<[Tables<Schemas[0]>, Values<Schemas[1]>]>;
+
+/// broadcastTransactionChanges
+export function broadcastTransactionChanges<Schemas extends OptionalSchemas>(
+  server: TinyBasePartyKitServer,
+  transactionChanges: TransactionChanges<Schemas>,
+  without?: string[],
+): Promise<void>;

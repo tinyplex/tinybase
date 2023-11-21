@@ -4,6 +4,7 @@ import {
   Cell,
   CellOrUndefined,
   Tables,
+  TransactionChanges,
   Value,
   ValueOrUndefined,
   Values,
@@ -89,3 +90,10 @@ export function loadStoreFromStorage(
   storage: Storage,
   storagePrefix?: string,
 ): Promise<[Tables, Values]>;
+
+/// broadcastTransactionChanges
+export function broadcastTransactionChanges(
+  server: TinyBasePartyKitServer,
+  transactionChanges: TransactionChanges,
+  without?: string[],
+): Promise<void>;

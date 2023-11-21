@@ -527,3 +527,21 @@
  * @since v4.4.1
  */
 /// loadStoreFromStorage
+/**
+ * The broadcastTransactionChanges function allows you to broadcast Store
+ * changes to all the client connections of a TinyBasePartyKitServer.
+ *
+ * This is intended for specialist applications that require the ability to
+ * update clients of a TinyBasePartyKitServer in their own custom ways.
+ *
+ * The function is asynchronous, so you should use the `await` keyword or handle
+ * its completion as a promise.
+ * @param server A reference to the TinyBasePartyKitServer object.
+ * @param transactionChanges The Store changes to broadcast to the server's
+ * clients.
+ * @param without An optional array of client connection Ids to exclude from the
+ * broadcast.
+ * @category Connection
+ * @since v4.5.1
+ */
+/// broadcastTransactionChanges

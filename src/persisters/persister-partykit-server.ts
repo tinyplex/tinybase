@@ -80,6 +80,16 @@ export const loadStoreFromStorage = async (
   return [tables, values];
 };
 
+export const broadcastTransactionChanges = async (
+  server: TinyBasePartyKitServer,
+  transactionChanges: TransactionChanges,
+  without?: string[],
+): Promise<void> =>
+  server.party.broadcast(
+    construct(server.config.messagePrefix!, SET_CHANGES, transactionChanges),
+    without,
+  );
+
 const saveStore = async (
   that: TinyBasePartyKitServer,
   transactionChanges: TransactionChanges,
@@ -235,7 +245,6 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
 
   async onMessage(message: string, connection: Connection) {
     const {
-      party: {storage, broadcast},
       config: {messagePrefix, storagePrefix},
     } = this;
     await ifNotUndefined(
@@ -243,12 +252,10 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
       async ([type, payload]) => {
         if (
           type == SET_CHANGES &&
-          (await hasStoreInStorage(storage, storagePrefix))
+          (await hasStoreInStorage(this.party.storage, storagePrefix))
         ) {
           await saveStore(this, payload, false, connection);
-          broadcast(construct(messagePrefix!, SET_CHANGES, payload), [
-            connection.id,
-          ]);
+          broadcastTransactionChanges(this, payload, [connection.id]);
         }
       },
     );
