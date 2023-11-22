@@ -100,25 +100,25 @@ exports[`Types: metrics.ts:62:33 1`] = `"Property 't2' does not exist on type 'T
 
 exports[`Types: metrics.ts:66:59 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "number"; readonly default: 0; }; readonly c1s: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: persisters.ts:24:36 1`] = `"Type '{ c2: number; }' is not assignable to type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'."`;
+exports[`Types: persisters.ts:24:36 1`] = `"Object literal may only specify known properties, and 'c2' does not exist in type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'."`;
 
 exports[`Types: persisters.ts:25:36 1`] = `"Type 'string' is not assignable to type 'number'."`;
 
-exports[`Types: persisters.ts:26:26 1`] = `"Argument of type '{ t2: { r2: { c2: number; }; }; }' is not assignable to parameter of type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, true>'."`;
+exports[`Types: persisters.ts:26:26 1`] = `"Object literal may only specify known properties, and 't2' does not exist in type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, true>'."`;
 
 exports[`Types: persisters.ts:27:47 1`] = `"Type 'string' is not assignable to type 'number'."`;
 
-exports[`Types: persisters.ts:28:47 1`] = `"Argument of type '{ v2: number; }' is not assignable to parameter of type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, true>'."`;
+exports[`Types: persisters.ts:28:47 1`] = `"Object literal may only specify known properties, and 'v2' does not exist in type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, true>'."`;
 
-exports[`Types: persisters.ts:32:45 1`] = `"Type '{ c2: number; }' is not assignable to type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'."`;
+exports[`Types: persisters.ts:32:45 1`] = `"Object literal may only specify known properties, and 'c2' does not exist in type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'."`;
 
 exports[`Types: persisters.ts:33:45 1`] = `"Type 'string' is not assignable to type 'number'."`;
 
-exports[`Types: persisters.ts:34:35 1`] = `"Argument of type '{ t2: { r2: { c2: number; }; }; }' is not assignable to parameter of type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, true>'."`;
+exports[`Types: persisters.ts:34:35 1`] = `"Object literal may only specify known properties, and 't2' does not exist in type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, true>'."`;
 
 exports[`Types: persisters.ts:35:56 1`] = `"Type 'string' is not assignable to type 'number'."`;
 
-exports[`Types: persisters.ts:36:56 1`] = `"Argument of type '{ v2: number; }' is not assignable to parameter of type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, true>'."`;
+exports[`Types: persisters.ts:36:56 1`] = `"Object literal may only specify known properties, and 'v2' does not exist in type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, true>'."`;
 
 exports[`Types: persisters.ts:39:43 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
@@ -296,13 +296,13 @@ exports[`Types: store.ts:116:2 1`] = `"Conversion of type 'string' to type 'unde
 
 exports[`Types: store.ts:117:28 1`] = `"Argument of type '"v2"' is not assignable to parameter of type '"v1" | "v1d"'."`;
 
-exports[`Types: store.ts:123:40 1`] = `"Type '{ c2: number; }' is not assignable to type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'."`;
+exports[`Types: store.ts:123:40 1`] = `"Object literal may only specify known properties, and 'c2' does not exist in type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'."`;
 
 exports[`Types: store.ts:124:40 1`] = `"Type 'string' is not assignable to type 'number'."`;
 
-exports[`Types: store.ts:125:30 1`] = `"Argument of type '{ t2: { r2: { c2: number; }; }; }' is not assignable to parameter of type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, true>'."`;
+exports[`Types: store.ts:125:30 1`] = `"Object literal may only specify known properties, and 't2' does not exist in type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, true>'."`;
 
-exports[`Types: store.ts:128:40 1`] = `"Type '{ c2: number; }' is not assignable to type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'."`;
+exports[`Types: store.ts:128:40 1`] = `"Object literal may only specify known properties, and 'c2' does not exist in type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'."`;
 
 exports[`Types: store.ts:129:40 1`] = `"Type 'string' is not assignable to type 'number'."`;
 
@@ -310,19 +310,19 @@ exports[`Types: store.ts:130:28 1`] = `"Argument of type '"t2"' is not assignabl
 
 exports[`Types: store.ts:133:28 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
-exports[`Types: store.ts:136:39 1`] = `"Argument of type '{ c2: number; }' is not assignable to parameter of type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'."`;
+exports[`Types: store.ts:136:39 1`] = `"Object literal may only specify known properties, and 'c2' does not exist in type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'."`;
 
 exports[`Types: store.ts:137:39 1`] = `"Type 'string' is not assignable to type 'number'."`;
 
 exports[`Types: store.ts:138:26 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
-exports[`Types: store.ts:141:33 1`] = `"Argument of type '{ c2: number; }' is not assignable to parameter of type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'."`;
+exports[`Types: store.ts:141:33 1`] = `"Object literal may only specify known properties, and 'c2' does not exist in type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'."`;
 
 exports[`Types: store.ts:142:33 1`] = `"Type 'string' is not assignable to type 'number'."`;
 
 exports[`Types: store.ts:143:26 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
-exports[`Types: store.ts:146:46 1`] = `"Argument of type '{ c2: number; }' is not assignable to parameter of type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'."`;
+exports[`Types: store.ts:146:46 1`] = `"Object literal may only specify known properties, and 'c2' does not exist in type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'."`;
 
 exports[`Types: store.ts:147:46 1`] = `"Type 'string' is not assignable to type 'number'."`;
 
@@ -344,11 +344,11 @@ exports[`Types: store.ts:162:27 1`] = `"Argument of type '"t2"' is not assignabl
 
 exports[`Types: store.ts:165:30 1`] = `"Type 'string' is not assignable to type 'number'."`;
 
-exports[`Types: store.ts:166:30 1`] = `"Argument of type '{ v2: number; }' is not assignable to parameter of type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, true>'."`;
+exports[`Types: store.ts:166:30 1`] = `"Object literal may only specify known properties, and 'v2' does not exist in type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, true>'."`;
 
 exports[`Types: store.ts:169:37 1`] = `"Type 'string' is not assignable to type 'number'."`;
 
-exports[`Types: store.ts:170:37 1`] = `"Argument of type '{ v2: number; }' is not assignable to parameter of type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, true>'."`;
+exports[`Types: store.ts:170:37 1`] = `"Object literal may only specify known properties, and 'v2' does not exist in type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, true>'."`;
 
 exports[`Types: store.ts:174:34 1`] = `"Argument of type 'string' is not assignable to parameter of type 'number | MapValue<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">'."`;
 
@@ -1198,13 +1198,13 @@ exports[`Types: ui-react.tsx:226:24 1`] = `"Property 't2' does not exist on type
 
 exports[`Types: ui-react.tsx:233:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:236:41 1`] = `"Type '{ c2: number; }' is not assignable to type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'."`;
+exports[`Types: ui-react.tsx:236:41 1`] = `"Object literal may only specify known properties, and 'c2' does not exist in type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'."`;
 
 exports[`Types: ui-react.tsx:242:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
 exports[`Types: ui-react.tsx:249:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types: ui-react.tsx:252:41 1`] = `"Type '{ c2: number; }' is not assignable to type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'."`;
+exports[`Types: ui-react.tsx:252:41 1`] = `"Object literal may only specify known properties, and 'c2' does not exist in type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", true>'."`;
 
 exports[`Types: ui-react.tsx:253:22 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
@@ -1862,7 +1862,7 @@ exports[`Types: ui-react-dom.tsx:105:22 1`] = `"Type '"t2"' is not assignable to
 
 exports[`Types: ui-react-dom.tsx:106:49 1`] = `"Type '"c2"' is not assignable to type '"c1" | "c1d"'."`;
 
-exports[`Types: ui-react-dom.tsx:107:49 1`] = `"Type '{ c2: string; }' is not assignable to type '"c0"[] | { c0?: string | CustomCell<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], "t0", "c0"> | undefined; } | ("c1" | "c1d")[] | { ...; } | undefined'."`;
+exports[`Types: ui-react-dom.tsx:107:49 1`] = `"Object literal may only specify known properties, and 'c2' does not exist in type '"c0"[] | { c0?: string | CustomCell<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], "t0", "c0"> | undefined; } | ("c1" | "c1d")[] | { ...; }'."`;
 
 exports[`Types: ui-react-dom.tsx:110:6 1`] = `"Type '{ c1: { component: ({ tableId, rowId, cellId, }: { readonly tableId: "t0" | "t1"; readonly rowId: string; readonly cellId: "c0" | "c2"; }) => React.JSX.Element; }; }' is not assignable to type '"c0"[] | { c0?: string | CustomCell<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], "t0", "c0"> | undefined; } | ("c1" | "c1d")[] | { ...; } | undefined'."`;
 
@@ -1870,7 +1870,7 @@ exports[`Types: ui-react-dom.tsx:114:6 1`] = `"Type '{ c1d: { component: ({ tabl
 
 exports[`Types: ui-react-dom.tsx:118:6 1`] = `"Type '{ c1: { component: ({ tableId, rowId, cellId, }: { readonly tableId: "t1"; readonly rowId: string; readonly cellId: "c2"; }) => React.JSX.Element; }; }' is not assignable to type '"c0"[] | { c0?: string | CustomCell<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], "t0", "c0"> | undefined; } | ("c1" | "c1d")[] | { ...; } | undefined'."`;
 
-exports[`Types: ui-react-dom.tsx:122:20 1`] = `"Type '{ c2: { component: ({ tableId, rowId, cellId, }: { readonly tableId: "t0" | "t1"; readonly rowId: string; readonly cellId: "c0" | "c1" | "c1d"; }) => React.JSX.Element; }; }' is not assignable to type '"c0"[] | { c0?: string | CustomCell<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], "t0", "c0"> | undefined; } | ("c1" | "c1d")[] | { ...; } | undefined'."`;
+exports[`Types: ui-react-dom.tsx:122:20 1`] = `"Object literal may only specify known properties, and 'c2' does not exist in type '"c0"[] | { c0?: string | CustomCell<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], "t0", "c0"> | undefined; } | ("c1" | "c1d")[] | { ...; }'."`;
 
 exports[`Types: ui-react-dom.tsx:139:28 1`] = `"Type '"t2"' is not assignable to type '"t0" | "t1"'."`;
 
@@ -1878,7 +1878,7 @@ exports[`Types: ui-react-dom.tsx:140:41 1`] = `"Type '"c2"' is not assignable to
 
 exports[`Types: ui-react-dom.tsx:141:55 1`] = `"Type '"c2"' is not assignable to type '"c1" | "c1d"'."`;
 
-exports[`Types: ui-react-dom.tsx:142:55 1`] = `"Type '{ c2: string; }' is not assignable to type '"c0"[] | ("c1" | "c1d")[] | { c0?: string | CustomCell<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], "t0", "c0"> | undefined; } | { ...; } | undefined'."`;
+exports[`Types: ui-react-dom.tsx:142:55 1`] = `"Object literal may only specify known properties, and 'c2' does not exist in type '"c0"[] | ("c1" | "c1d")[] | { c0?: string | CustomCell<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], "t0", "c0"> | undefined; } | { ...; }'."`;
 
 exports[`Types: ui-react-dom.tsx:145:6 1`] = `"Type '{ c1: { component: ({ tableId, rowId, cellId, }: { readonly tableId: "t0" | "t1"; readonly rowId: string; readonly cellId: "c0" | "c2"; }) => React.JSX.Element; }; }' is not assignable to type '"c0"[] | ("c1" | "c1d")[] | { c0?: string | CustomCell<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], "t0", "c0"> | undefined; } | { ...; } | undefined'."`;
 
@@ -1886,7 +1886,7 @@ exports[`Types: ui-react-dom.tsx:149:6 1`] = `"Type '{ c1d: { component: ({ tabl
 
 exports[`Types: ui-react-dom.tsx:153:6 1`] = `"Type '{ c1: { component: ({ tableId, rowId, cellId, }: { readonly tableId: "t1"; readonly rowId: string; readonly cellId: "c2"; }) => React.JSX.Element; }; }' is not assignable to type '"c0"[] | ("c1" | "c1d")[] | { c0?: string | CustomCell<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], "t0", "c0"> | undefined; } | { ...; } | undefined'."`;
 
-exports[`Types: ui-react-dom.tsx:157:20 1`] = `"Type '{ c2: { component: ({ tableId, rowId, cellId, }: { readonly tableId: "t0" | "t1"; readonly rowId: string; readonly cellId: "c0" | "c1" | "c1d"; }) => React.JSX.Element; }; }' is not assignable to type '"c0"[] | ("c1" | "c1d")[] | { c0?: string | CustomCell<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], "t0", "c0"> | undefined; } | { ...; } | undefined'."`;
+exports[`Types: ui-react-dom.tsx:157:20 1`] = `"Object literal may only specify known properties, and 'c2' does not exist in type '"c0"[] | ("c1" | "c1d")[] | { c0?: string | CustomCell<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], "t0", "c0"> | undefined; } | { ...; }'."`;
 
 exports[`Types: ui-react-dom.tsx:164:23 1`] = `"Type '({ valueId }: { readonly valueId: 'v1' | 'v2'; }) => React.JSX.Element' is not assignable to type 'ComponentType<ValueProps<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>> | undefined'."`;
 
