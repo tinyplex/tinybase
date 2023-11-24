@@ -764,10 +764,8 @@
    * This method can be useful when a Store is being loaded via a Persister
    * asynchronously after the Checkpoints object has been attached, and you
    * don't want users to be able to undo the initial load of the data. In this
-   * you could call the clear method immediately after the initial load so that
-   * that is the baseline from which all subsequent changes are tracked.
-   *
-   * If you are listening to
+   * case you could call the clear method immediately after the initial load so
+   * that that is the baseline from which all subsequent changes are tracked.
    * @returns A reference to the Checkpoints object.
    * @example
    * This example creates a Store, a Checkpoints object, adds a listener, makes
