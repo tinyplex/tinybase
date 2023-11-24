@@ -758,8 +758,8 @@
    * removing all the checkpoints it has been managing.
    *
    * Obviously this method should be used with caution as it destroys the
-   * ability to undo recent changes to the Store (though of course the Store
-   * itself is not reset by this method).
+   * ability to undo or redo recent changes to the Store (though of course the
+   * Store itself is not reset by this method).
    *
    * This method can be useful when a Store is being loaded via a Persister
    * asynchronously after the Checkpoints object has been attached, and you
@@ -807,6 +807,59 @@
    * @category Lifecycle
    */
   /// Checkpoints.clear
+  /**
+   * The clearForward method resets just the 'redo' checkpoints it has been
+   * managing.
+   *
+   * Obviously this method should be used with caution as it destroys the
+   * ability to redo recent changes to the Store (though of course the Store
+   * itself is not reset by this method).
+   *
+   * This method can be useful when you want to prohibit a user from redoing
+   * changes they have undone. The 'backward' redo stack, and current checkpoint
+   * are not affected.
+   * @returns A reference to the Checkpoints object.
+   * @example
+   * This example creates a Store, a Checkpoints object, adds a listener, makes
+   * a change and then clears the forward checkpoints.
+   *
+   * ```js
+   * const store = createStore().setTables({pets: {fido: {sold: false}}});
+   *
+   * const checkpoints = createCheckpoints(store);
+   * console.log(checkpoints.getCheckpointIds());
+   * // -> [[], '0', []]
+   *
+   * const listenerId = checkpoints.addCheckpointIdsListener(() => {
+   *   console.log('checkpoints changed');
+   * });
+   *
+   * store.setCell('pets', 'fido', 'color', 'brown');
+   * // -> 'checkpoints changed'
+   * checkpoints.addCheckpoint();
+   * // -> 'checkpoints changed'
+   * store.setCell('pets', 'fido', 'sold', true);
+   * // -> 'checkpoints changed'
+   * checkpoints.addCheckpoint();
+   * // -> 'checkpoints changed'
+   * checkpoints.goBackward();
+   * // -> 'checkpoints changed'
+   *
+   * console.log(store.getTables());
+   * // -> {pets: {fido: {color: 'brown', sold: false}}}
+   * console.log(checkpoints.getCheckpointIds());
+   * // -> [['0'], '1', ['2']]
+   *
+   * checkpoints.clearForward();
+   * // -> 'checkpoints changed'
+   *
+   * console.log(checkpoints.getCheckpointIds());
+   * // -> [['0'], '1', []]
+   * ```
+   * @category Lifecycle
+   * @since v4.5.3
+   */
+  /// Checkpoints.clearForward
   /**
    * The destroy method should be called when this Checkpoints object is no
    * longer used.

@@ -509,6 +509,33 @@ describe('Miscellaneous', () => {
     ]);
   });
 
+  test('clearForward', () => {
+    expect(checkpoints.getCheckpointIds()).toEqual([[], '0', []]);
+    const [[id0], [id1], [id2], [id3], [id4]] = setContent();
+    const listener = createCheckpointsListener(checkpoints);
+    const listenerId = listener.listenToCheckpoints('/');
+    checkpoints.goBackward().goBackward();
+    expect(checkpoints.getCheckpointIds()).toEqual([
+      [id0, id1],
+      id2,
+      [id3, id4],
+    ]);
+    expectChanges(
+      listener,
+      '/',
+      [[id0, id1, id2], id3, [id4]],
+      [[id0, id1], id2, [id3, id4]],
+    );
+    checkpoints.clearForward();
+    expect(checkpoints.getCheckpointIds()).toEqual([[id0, id1], id2, []]);
+    expectChanges(listener, '/', [[id0, id1], id2, []]);
+    expectNoChanges(listener);
+    checkpoints.clearForward();
+    expect(checkpoints.getCheckpointIds()).toEqual([[id0, id1], id2, []]);
+    expectNoChanges(listener);
+    checkpoints.delListener(listenerId);
+  });
+
   test('listen to and change labels', () => {
     expect(checkpoints.getCheckpointIds()).toEqual([[], '0', []]);
     const listener = createCheckpointsListener(checkpoints);

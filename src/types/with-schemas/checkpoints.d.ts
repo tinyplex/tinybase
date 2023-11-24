@@ -78,6 +78,9 @@ export interface Checkpoints<in out Schemas extends OptionalSchemas> {
   /// Checkpoints.clear
   clear(): Checkpoints<Schemas>;
 
+  /// Checkpoints.clearForward
+  clearForward(): Checkpoints<Schemas>;
+
   /// Checkpoints.destroy
   destroy(): void;
 

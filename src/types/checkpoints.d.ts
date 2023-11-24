@@ -77,6 +77,9 @@ export interface Checkpoints {
   /// Checkpoints.clear
   clear(): Checkpoints;
 
+  /// Checkpoints.clearForward
+  clearForward(): Checkpoints;
+
   /// Checkpoints.destroy
   destroy(): void;
 

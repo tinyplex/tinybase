@@ -301,6 +301,14 @@ export const createCheckpoints = getCreateFunction(
       return checkpoints;
     };
 
+    const clearForward = (): Checkpoints => {
+      if (!arrayIsEmpty(forwardIds)) {
+        clearCheckpointIds(forwardIds);
+        callListeners(checkpointIdsListeners);
+      }
+      return checkpoints;
+    };
+
     const destroy = (): void => {
       store.delListener(cellListenerId);
       store.delListener(valueListenerId);
@@ -334,6 +342,7 @@ export const createCheckpoints = getCreateFunction(
       delListener,
 
       clear,
+      clearForward,
       destroy,
       getListenerStats,
     };
