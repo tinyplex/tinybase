@@ -10,21 +10,27 @@ const [startServer, stopServer, expectPage] = getServerFunctions(8801);
 beforeAll(startServer);
 afterAll(stopServer);
 
+const getCanvasOffset = async () => {
+  const {x = 0, y = 0} =
+    (await (await expectedFramedElement('#canvas')).boundingBox()) ?? {};
+  return {x, y};
+};
+
 test('drawing', async () => {
+  let offset;
+
   await expectPage(`/demos/drawing`);
   await expectedElement('h1', 'Drawing');
   await expectedFramedElement('#toolbar');
-  await expectedFramedElement('#canvas');
   await expectedFramedElement('#sidebar');
 
-  let style;
-  style = await (await expectedFramedElement('.shape')).getProperty('style');
-  expect(await (await style.getProperty('left')).jsonValue()).toEqual('100px');
-  expect(await (await style.getProperty('top')).jsonValue()).toEqual('100px');
-  expect(await (await style.getProperty('width')).jsonValue()).toEqual('200px');
-  expect(await (await style.getProperty('height')).jsonValue()).toEqual(
-    '100px',
-  );
+  offset = await getCanvasOffset();
+  expect(await (await expectedFramedElement('.shape')).boundingBox()).toEqual({
+    x: offset.x + 100,
+    y: offset.y + 100,
+    width: 200,
+    height: 100,
+  });
 
   await (await expectedFramedElement('.shape', 'text')).click({clickCount: 2});
   await (await expectedFramedElement('.shape input')).type('42');
@@ -33,27 +39,33 @@ test('drawing', async () => {
 
   await expectNoFramedElement('.grip');
   await (await expectedFramedElement('.shape', 'text')).click();
-  const {x: gripX, y: gripY} = (await (
-    await expectedFramedElement('.grip')
-  ).boundingBox()) ?? {x: 0, y: 0};
+
+  const {x: gripX = 0, y: gripY = 0} =
+    (await (await expectedFramedElement('.grip')).boundingBox()) ?? {};
 
   await page.mouse.move(gripX, gripY);
   await page.mouse.down();
   await page.mouse.move(gripX + 10, gripY + 20);
   await page.mouse.up();
-  style = await (await expectedFramedElement('.shape')).getProperty('style');
-  expect(await (await style.getProperty('left')).jsonValue()).toEqual('110px');
-  expect(await (await style.getProperty('top')).jsonValue()).toEqual('120px');
-  expect(await (await style.getProperty('width')).jsonValue()).toEqual('190px');
-  expect(await (await style.getProperty('height')).jsonValue()).toEqual('80px');
+
+  offset = await getCanvasOffset();
+  expect(await (await expectedFramedElement('.shape')).boundingBox()).toEqual({
+    x: offset.x + 110,
+    y: offset.y + 120,
+    width: 190,
+    height: 80,
+  });
 
   await page.mouse.move(gripX + 20, gripY + 30);
   await page.mouse.down();
   await page.mouse.move(gripX + 10, gripY + 10);
   await page.mouse.up();
-  style = await (await expectedFramedElement('.shape')).getProperty('style');
-  expect(await (await style.getProperty('left')).jsonValue()).toEqual('100px');
-  expect(await (await style.getProperty('top')).jsonValue()).toEqual('100px');
-  expect(await (await style.getProperty('width')).jsonValue()).toEqual('190px');
-  expect(await (await style.getProperty('height')).jsonValue()).toEqual('80px');
+
+  offset = await getCanvasOffset();
+  expect(await (await expectedFramedElement('.shape')).boundingBox()).toEqual({
+    x: offset.x + 100,
+    y: offset.y + 100,
+    width: 190,
+    height: 80,
+  });
 });
