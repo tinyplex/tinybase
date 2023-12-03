@@ -219,6 +219,7 @@
     "@babel/preset-env": "^7.23.5",
     "@babel/preset-react": "^7.23.3",
     "@babel/preset-typescript": "^7.23.3",
+    "@journeyapps/powersync-sdk-common": "^1.0.0",
     "@prettier/sync": "^0.3.0",
     "@rollup/plugin-image": "^3.0.3",
     "@rollup/plugin-replace": "^5.0.5",
