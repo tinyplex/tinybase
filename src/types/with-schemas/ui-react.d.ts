@@ -17,6 +17,7 @@ import {
   CurrentCheckpointProps,
   ExtraProps,
   ForwardCheckpointsProps,
+  GetId,
   IndexProps,
   IndexesOrIndexesId,
   LinkedRowsProps,
@@ -294,7 +295,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     TableId extends TableIdFromSchema<Schemas[0]>,
     SetTable = Table<Schemas[0], TableId, true>,
   >(
-    tableId: TableId,
+    tableId: TableId | GetId<Schemas, Parameter, TableId>,
     getTable: (
       parameter: Parameter,
       store: Store<Schemas>,
@@ -311,8 +312,8 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     TableId extends TableIdFromSchema<Schemas[0]>,
     SetRow = Row<Schemas[0], TableId, true>,
   >(
-    tableId: TableId,
-    rowId: Id,
+    tableId: TableId | GetId<Schemas, Parameter, TableId>,
+    rowId: Id | GetId<Schemas, Parameter, Id>,
     getRow: (parameter: Parameter, store: Store<Schemas>) => NoInfer<SetRow>,
     getRowDeps?: React.DependencyList,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
@@ -326,7 +327,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     TableId extends TableIdFromSchema<Schemas[0]>,
     AddRow = Row<Schemas[0], TableId, true>,
   >(
-    tableId: TableId,
+    tableId: TableId | GetId<Schemas, Parameter, TableId>,
     getRow: (parameter: Parameter, store: Store<Schemas>) => NoInfer<AddRow>,
     getRowDeps?: React.DependencyList,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
@@ -341,8 +342,8 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     TableId extends TableIdFromSchema<Schemas[0]>,
     SetPartialRow = Row<Schemas[0], TableId, true>,
   >(
-    tableId: TableId,
-    rowId: Id,
+    tableId: TableId | GetId<Schemas, Parameter, TableId>,
+    rowId: Id | GetId<Schemas, Parameter, Id>,
     getPartialRow: (
       parameter: Parameter,
       store: Store<Schemas>,
@@ -362,9 +363,9 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
       | Cell<Schemas[0], TableId, CellId>
       | MapCell<Schemas[0], TableId, CellId>,
   >(
-    tableId: TableId,
-    rowId: Id,
-    cellId: CellId,
+    tableId: TableId | GetId<Schemas, Parameter, TableId>,
+    rowId: Id | GetId<Schemas, Parameter, Id>,
+    cellId: CellId | GetId<Schemas, Parameter, CellId>,
     getCell: (
       parameter: Parameter,
       store: Store<Schemas>,
@@ -408,7 +409,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     ValueId extends ValueIdFromSchema<Schemas[1]>,
     SetOrMapValue = Value<Schemas[1], ValueId> | MapValue<Schemas[1], ValueId>,
   >(
-    valueId: ValueId,
+    valueId: ValueId | GetId<Schemas, Parameter, ValueId>,
     getValue: (
       parameter: Parameter,
       store: Store<Schemas>,

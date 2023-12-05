@@ -32,6 +32,11 @@ type CheckpointsOrCheckpointsId<Schemas extends OptionalSchemas> =
 
 type UndoOrRedoInformation = [boolean, Callback, Id | undefined, string];
 
+type GetId<Schemas extends OptionalSchemas, Parameter, Id> = (
+  parameter: Parameter,
+  store: Store<Schemas>,
+) => Id;
+
 type ExtraProps = {[propName: string]: any};
 
 type TablesProps<Schemas extends OptionalSchemas> = {
