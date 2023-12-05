@@ -66,6 +66,7 @@ import {
 } from '../types/checkpoints';
 import {
   CheckpointsOrCheckpointsId,
+  GetId,
   IndexesOrIndexesId,
   MetricsOrMetricsId,
   QueriesOrQueriesId,
@@ -209,7 +210,13 @@ import {
   ResultTableCellIdsListener,
   ResultTableListener,
 } from '../types/queries.d';
-import {getUndefined, ifNotUndefined, isUndefined} from '../common/other';
+import {arrayIsEmpty, arrayMap} from '../common/array';
+import {
+  getUndefined,
+  ifNotUndefined,
+  isFunction,
+  isUndefined,
+} from '../common/other';
 import {
   useCheckpointsOrCheckpointsById,
   useIndexesOrIndexesById,
@@ -223,7 +230,6 @@ import {ListenerArgument} from '../common/listeners';
 import {Persister} from '../types/persisters.d';
 import React from 'react';
 import {TRANSACTION} from '../tools/common/strings';
-import {arrayIsEmpty} from '../common/array';
 
 export {
   useCheckpoints,
@@ -319,14 +325,22 @@ const useSetCallback = <Parameter, Thing>(
   getDeps: React.DependencyList = EMPTY_ARRAY,
   then: (store: Store, thing: Thing) => void = getUndefined,
   thenDeps: React.DependencyList = EMPTY_ARRAY,
-  ...args: Ids
+  ...args: (Id | GetId<Parameter>)[]
 ): ParameterizedCallback<Parameter> => {
   const store = useStoreOrStoreById(storeOrStoreId);
   return useCallback(
     (parameter) =>
       ifNotUndefined(store, (store: any) =>
         ifNotUndefined(get(parameter as any, store), (thing: Thing) =>
-          then(store['set' + settable](...args, thing), thing),
+          then(
+            store['set' + settable](
+              ...arrayMap(args, (arg) =>
+                isFunction(arg) ? arg(parameter as any, store) : arg,
+              ),
+              thing,
+            ),
+            thing,
+          ),
         ),
       ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -602,7 +616,7 @@ export const useSetTablesCallback: typeof useSetTablesCallbackDecl = <
   );
 
 export const useSetTableCallback: typeof useSetTableCallbackDecl = <Parameter>(
-  tableId: Id,
+  tableId: Id | GetId<Parameter>,
   getTable: (parameter: Parameter, store: Store) => Table,
   getTableDeps?: React.DependencyList,
   storeOrStoreId?: StoreOrStoreId,
@@ -620,8 +634,8 @@ export const useSetTableCallback: typeof useSetTableCallbackDecl = <Parameter>(
   );
 
 export const useSetRowCallback: typeof useSetRowCallbackDecl = <Parameter>(
-  tableId: Id,
-  rowId: Id,
+  tableId: Id | GetId<Parameter>,
+  rowId: Id | GetId<Parameter>,
   getRow: (parameter: Parameter, store: Store) => Row,
   getRowDeps?: React.DependencyList,
   storeOrStoreId?: StoreOrStoreId,
@@ -640,7 +654,7 @@ export const useSetRowCallback: typeof useSetRowCallbackDecl = <Parameter>(
   );
 
 export const useAddRowCallback: typeof useAddRowCallbackDecl = <Parameter>(
-  tableId: Id,
+  tableId: Id | GetId<Parameter>,
   getRow: (parameter: Parameter, store: Store) => Row,
   getRowDeps: React.DependencyList = EMPTY_ARRAY,
   storeOrStoreId?: StoreOrStoreId,
@@ -653,7 +667,15 @@ export const useAddRowCallback: typeof useAddRowCallbackDecl = <Parameter>(
     (parameter) =>
       ifNotUndefined(store, (store) =>
         ifNotUndefined(getRow(parameter as any, store), (row: Row) =>
-          then(store.addRow(tableId, row, reuseRowIds), store, row),
+          then(
+            store.addRow(
+              isFunction(tableId) ? tableId(parameter as any, store) : tableId,
+              row,
+              reuseRowIds,
+            ),
+            store,
+            row,
+          ),
         ),
       ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -664,8 +686,8 @@ export const useAddRowCallback: typeof useAddRowCallbackDecl = <Parameter>(
 export const useSetPartialRowCallback: typeof useSetPartialRowCallbackDecl = <
   Parameter,
 >(
-  tableId: Id,
-  rowId: Id,
+  tableId: Id | GetId<Parameter>,
+  rowId: Id | GetId<Parameter>,
   getPartialRow: (parameter: Parameter, store: Store) => Row,
   getPartialRowDeps?: React.DependencyList,
   storeOrStoreId?: StoreOrStoreId,
@@ -684,9 +706,9 @@ export const useSetPartialRowCallback: typeof useSetPartialRowCallbackDecl = <
   );
 
 export const useSetCellCallback: typeof useSetCellCallbackDecl = <Parameter>(
-  tableId: Id,
-  rowId: Id,
-  cellId: Id,
+  tableId: Id | GetId<Parameter>,
+  rowId: Id | GetId<Parameter>,
+  cellId: Id | GetId<Parameter>,
   getCell: (parameter: Parameter, store: Store) => Cell | MapCell,
   getCellDeps?: React.DependencyList,
   storeOrStoreId?: StoreOrStoreId,
@@ -741,7 +763,7 @@ export const useSetPartialValuesCallback: typeof useSetPartialValuesCallbackDecl
     );
 
 export const useSetValueCallback: typeof useSetValueCallbackDecl = <Parameter>(
-  valueId: Id,
+  valueId: Id | GetId<Parameter>,
   getValue: (parameter: Parameter, store: Store) => Value | MapValue,
   getValueDeps?: React.DependencyList,
   storeOrStoreId?: StoreOrStoreId,
