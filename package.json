@@ -22,6 +22,14 @@
     "tinybase": "./bin/cli.js"
   },
   "exports": {
+    ".": {
+      "types": "./lib/types/tinybase.d.ts",
+      "default": "./lib/tinybase.js"
+    },
+    "./*": {
+      "types": "./lib/types/*.d.ts",
+      "default": "./lib/*.js"
+    },
     "./package.json": "./package.json",
     "./cjs": "./lib/cjs/tinybase.cjs",
     "./cjs/with-schemas": "./lib/cjs/tinybase.cjs",
@@ -63,20 +71,12 @@
       "types": "./lib/types/*.d.ts",
       "default": "./lib/debug/*.js"
     },
-    ".": {
-      "types": "./lib/types/tinybase.d.ts",
-      "default": "./lib/tinybase.js"
-    },
     "./with-schemas": {
       "types": "./lib/types/with-schemas/tinybase.d.ts",
       "default": "./lib/tinybase.js"
     },
     "./*/with-schemas": {
       "types": "./lib/types/with-schemas/*.d.ts",
-      "default": "./lib/*.js"
-    },
-    "./*": {
-      "types": "./lib/types/*.d.ts",
       "default": "./lib/*.js"
     }
   },
