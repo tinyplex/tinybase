@@ -2562,6 +2562,51 @@ describe('Write Hooks', () => {
     expect(clickHandler1).not.toEqual(clickHandler2);
   });
 
+  test('useSetTableCallback, parameterized Id', () => {
+    const then = jest.fn((_store?: Store, _table?: Table) => null);
+    const Test = ({
+      value,
+      then,
+    }: {
+      readonly value: number;
+      readonly then: (store?: Store, table?: Table) => void;
+    }) => {
+      return (
+        <div
+          onClick={useSetTableCallback<React.MouseEvent<HTMLDivElement>>(
+            (e) => 't' + e.screenY,
+            (e) => ({r1: {c1: e.screenX * value}}),
+            [value],
+            store,
+            then,
+          )}
+        />
+      );
+    };
+    act(() => {
+      renderer = create(<Test value={2} then={then} />);
+    });
+
+    const clickHandler1 = renderer.root.findByType('div').props.onClick;
+    act(() => {
+      clickHandler1({screenX: 2, screenY: 1});
+    });
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 4}}});
+    expect(then).toHaveBeenCalledWith(store, {r1: {c1: 4}});
+
+    act(() => {
+      clickHandler1({screenX: 2, screenY: 2});
+    });
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 4}}, t2: {r1: {c1: 4}}});
+    expect(then).toHaveBeenCalledWith(store, {r1: {c1: 4}});
+
+    act(() => {
+      renderer.update(<Test value={3} then={then} />);
+    });
+    const clickHandler2 = renderer.root.findByType('div').props.onClick;
+    expect(clickHandler1).not.toEqual(clickHandler2);
+  });
+
   test('useSetRowCallback', () => {
     const then = jest.fn((_store: Store, _row: Row) => null);
     const Test = ({
@@ -2591,6 +2636,50 @@ describe('Write Hooks', () => {
       clickHandler1({screenX: 2});
     });
     expect(store.getTables()).toEqual({t1: {r1: {c1: 4}}});
+    expect(then).toHaveBeenCalledWith(store, {c1: 4});
+
+    act(() => {
+      renderer.update(<Test value={3} then={then} />);
+    });
+    const clickHandler2 = renderer.root.findByType('div').props.onClick;
+    expect(clickHandler1).not.toEqual(clickHandler2);
+  });
+
+  test('useSetRowCallback, parameterized Ids', () => {
+    const then = jest.fn((_store: Store, _row: Row) => null);
+    const Test = ({
+      value,
+      then,
+    }: {
+      readonly value: number;
+      readonly then: (store: Store, row: Row) => void;
+    }) => (
+      <div
+        onClick={useSetRowCallback(
+          (e) => 't' + e.screenY,
+          (e) => 'r' + e.screenY,
+          (e) => ({c1: e.screenX * value}),
+          [value],
+          store,
+          then,
+        )}
+      />
+    );
+    act(() => {
+      renderer = create(<Test value={2} then={then} />);
+    });
+
+    const clickHandler1 = renderer.root.findByType('div').props.onClick;
+    act(() => {
+      clickHandler1({screenX: 2, screenY: 1});
+    });
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 4}}});
+    expect(then).toHaveBeenCalledWith(store, {c1: 4});
+
+    act(() => {
+      clickHandler1({screenX: 2, screenY: 2});
+    });
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 4}}, t2: {r2: {c1: 4}}});
     expect(then).toHaveBeenCalledWith(store, {c1: 4});
 
     act(() => {
@@ -2684,6 +2773,54 @@ describe('Write Hooks', () => {
     expect(clickHandler1).not.toEqual(clickHandler2);
   });
 
+  test('useAddRowCallback, parameterized Id', () => {
+    const then = jest.fn(
+      (_rowId: Id | undefined, _store: Store, _row: Row) => null,
+    );
+    const Test = ({
+      value,
+      then,
+    }: {
+      readonly value: number;
+      readonly then: (rowId: Id | undefined, store: Store, row: Row) => void;
+    }) => (
+      <div
+        onClick={useAddRowCallback(
+          (e) => 't' + e.screenY,
+          (e) => ({c1: e.screenX * value}),
+          [value],
+          store,
+          then,
+        )}
+      />
+    );
+    act(() => {
+      renderer = create(<Test value={2} then={then} />);
+    });
+
+    const clickHandler1 = renderer.root.findByType('div').props.onClick;
+    act(() => {
+      clickHandler1({screenX: 2, screenY: 1});
+    });
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 1}, '0': {c1: 4}}});
+    expect(then).toHaveBeenCalledWith('0', store, {c1: 4});
+
+    act(() => {
+      clickHandler1({screenX: 2, screenY: 2});
+    });
+    expect(store.getTables()).toEqual({
+      t1: {r1: {c1: 1}, '0': {c1: 4}},
+      t2: {'0': {c1: 4}},
+    });
+    expect(then).toHaveBeenCalledWith('0', store, {c1: 4});
+
+    act(() => {
+      renderer.update(<Test value={3} then={then} />);
+    });
+    const clickHandler2 = renderer.root.findByType('div').props.onClick;
+    expect(clickHandler1).not.toEqual(clickHandler2);
+  });
+
   test('useSetPartialRowCallback', () => {
     const then = jest.fn((_store: Store, _row: Row) => null);
     const Test = ({
@@ -2713,6 +2850,53 @@ describe('Write Hooks', () => {
       clickHandler1({screenX: 2});
     });
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1, c2: 4, c3: 4}}});
+    expect(then).toHaveBeenCalledWith(store, {c2: 4, c3: 4});
+
+    act(() => {
+      renderer.update(<Test value={3} then={then} />);
+    });
+    const clickHandler2 = renderer.root.findByType('div').props.onClick;
+    expect(clickHandler1).not.toEqual(clickHandler2);
+  });
+
+  test('useSetPartialRowCallback, parameterized Ids', () => {
+    const then = jest.fn((_store: Store, _row: Row) => null);
+    const Test = ({
+      value,
+      then,
+    }: {
+      readonly value: number;
+      readonly then: (store: Store, row: Row) => void;
+    }) => (
+      <div
+        onClick={useSetPartialRowCallback(
+          (e) => 't' + e.screenY,
+          (e) => 'r' + e.screenY,
+          (e) => ({c2: e.screenX * value, c3: e.screenX * value}),
+          [value],
+          store,
+          then,
+        )}
+      />
+    );
+    act(() => {
+      renderer = create(<Test value={2} then={then} />);
+    });
+
+    const clickHandler1 = renderer.root.findByType('div').props.onClick;
+    act(() => {
+      clickHandler1({screenX: 2, screenY: 1});
+    });
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 1, c2: 4, c3: 4}}});
+    expect(then).toHaveBeenCalledWith(store, {c2: 4, c3: 4});
+
+    act(() => {
+      clickHandler1({screenX: 2, screenY: 2});
+    });
+    expect(store.getTables()).toEqual({
+      t1: {r1: {c1: 1, c2: 4, c3: 4}},
+      t2: {r2: {c2: 4, c3: 4}},
+    });
     expect(then).toHaveBeenCalledWith(store, {c2: 4, c3: 4});
 
     act(() => {
@@ -2752,6 +2936,51 @@ describe('Write Hooks', () => {
       clickHandler1({screenX: 2});
     });
     expect(store.getTables()).toEqual({t1: {r1: {c1: 4}}});
+    expect(then).toHaveBeenCalledWith(store, 4);
+
+    act(() => {
+      renderer.update(<Test value={3} then={then} />);
+    });
+    const clickHandler2 = renderer.root.findByType('div').props.onClick;
+    expect(clickHandler1).not.toEqual(clickHandler2);
+  });
+
+  test('useSetCellCallback, parameterized Ids', () => {
+    const then = jest.fn((_store: Store, _cell: Cell | MapCell) => null);
+    const Test = ({
+      value,
+      then,
+    }: {
+      readonly value: number;
+      readonly then: (store: Store, cell: Cell | MapCell) => void;
+    }) => (
+      <div
+        onClick={useSetCellCallback(
+          (e) => 't' + e.screenY,
+          (e) => 'r' + e.screenY,
+          (e) => 'c' + e.screenY,
+          (e) => e.screenX * value,
+          [value],
+          store,
+          then,
+        )}
+      />
+    );
+    act(() => {
+      renderer = create(<Test value={2} then={then} />);
+    });
+
+    const clickHandler1 = renderer.root.findByType('div').props.onClick;
+    act(() => {
+      clickHandler1({screenX: 2, screenY: 1});
+    });
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 4}}});
+    expect(then).toHaveBeenCalledWith(store, 4);
+
+    act(() => {
+      clickHandler1({screenX: 2, screenY: 2});
+    });
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 4}}, t2: {r2: {c2: 4}}});
     expect(then).toHaveBeenCalledWith(store, 4);
 
     act(() => {
@@ -2863,6 +3092,51 @@ describe('Write Hooks', () => {
       clickHandler1({screenX: 2});
     });
     expect(store.getValues()).toEqual({v1: 4});
+    expect(then).toHaveBeenCalledWith(store, 4);
+
+    act(() => {
+      renderer.update(<Test value={3} then={then} />);
+    });
+    const clickHandler2 = renderer.root.findByType('div').props.onClick;
+    expect(clickHandler1).not.toEqual(clickHandler2);
+  });
+
+  test('useSetValueCallback, parameterized Id', () => {
+    const then = jest.fn((_store?: Store, _value?: Value | MapValue) => null);
+    const Test = ({
+      value,
+      then,
+    }: {
+      readonly value: number;
+      readonly then: (store?: Store, value?: Value | MapValue) => void;
+    }) => {
+      return (
+        <div
+          onClick={useSetValueCallback<React.MouseEvent<HTMLDivElement>>(
+            (e) => 'v' + e.screenY,
+            (e) => e.screenX * value,
+            [value],
+            store,
+            then,
+          )}
+        />
+      );
+    };
+    act(() => {
+      renderer = create(<Test value={2} then={then} />);
+    });
+
+    const clickHandler1 = renderer.root.findByType('div').props.onClick;
+    act(() => {
+      clickHandler1({screenX: 2, screenY: 1});
+    });
+    expect(store.getValues()).toEqual({v1: 4});
+    expect(then).toHaveBeenCalledWith(store, 4);
+
+    act(() => {
+      clickHandler1({screenX: 2, screenY: 2});
+    });
+    expect(store.getValues()).toEqual({v1: 4, v2: 4});
     expect(then).toHaveBeenCalledWith(store, 4);
 
     act(() => {
