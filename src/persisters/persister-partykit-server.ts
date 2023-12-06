@@ -109,49 +109,52 @@ const saveStore = async (
     objMap(transactionChanges[0], async (table, tableId) =>
       isUndefined(table)
         ? !initialSave &&
-          that.canDelTable(tableId, requestOrConnection as Connection) &&
+          (await that.canDelTable(
+            tableId,
+            requestOrConnection as Connection,
+          )) &&
           arrayUnshift(
             keyPrefixesToDel,
             constructStorageKey(storagePrefix, T, tableId),
           )
-        : that.canSetTable(tableId, initialSave, requestOrConnection) &&
+        : (await that.canSetTable(tableId, initialSave, requestOrConnection)) &&
           (await promiseAll(
             objMap(table, async (row, rowId) =>
               isUndefined(row)
                 ? !initialSave &&
-                  that.canDelRow(
+                  (await that.canDelRow(
                     tableId,
                     rowId,
                     requestOrConnection as Connection,
-                  ) &&
+                  )) &&
                   arrayPush(
                     keyPrefixesToDel,
                     constructStorageKey(storagePrefix, T, tableId, rowId),
                   )
-                : that.canSetRow(
+                : (await that.canSetRow(
                     tableId,
                     rowId,
                     initialSave,
                     requestOrConnection,
-                  ) &&
+                  )) &&
                   (await promiseAll(
                     objMap(row, async (cell, cellId) => {
                       const ids: [Id, Id, Id] = [tableId, rowId, cellId];
                       const key = constructStorageKey(storagePrefix, T, ...ids);
                       isUndefined(cell)
                         ? !initialSave &&
-                          that.canDelCell(
+                          (await that.canDelCell(
                             ...ids,
                             requestOrConnection as Connection,
-                          ) &&
+                          )) &&
                           arrayPush(keysToDel, key)
-                        : that.canSetCell(
+                        : (await that.canSetCell(
                             ...ids,
                             cell,
                             initialSave,
                             requestOrConnection,
                             await storage.get(key),
-                          ) && (keysToSet[key] = cell);
+                          )) && (keysToSet[key] = cell);
                     }),
                   )),
             ),
@@ -164,15 +167,18 @@ const saveStore = async (
       const key = storagePrefix + V + valueId;
       isUndefined(value)
         ? !initialSave &&
-          that.canDelValue(valueId, requestOrConnection as Connection) &&
+          (await that.canDelValue(
+            valueId,
+            requestOrConnection as Connection,
+          )) &&
           arrayPush(keysToDel, key)
-        : that.canSetValue(
+        : (await that.canSetValue(
             valueId,
             value,
             initialSave,
             requestOrConnection,
             await storage.get(key),
-          ) && (keysToSet[key] = value);
+          )) && (keysToSet[key] = value);
     }),
   );
 
@@ -261,32 +267,36 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
     );
   }
 
-  canSetTable(
+  async canSetTable(
     _tableId: Id,
     _initialSave: boolean,
     _requestOrConnection: Request | Connection,
-  ): boolean {
+  ): Promise<boolean> {
     return true;
   }
 
-  canDelTable(_tableId: Id, _connection: Connection): boolean {
+  async canDelTable(_tableId: Id, _connection: Connection): Promise<boolean> {
     return true;
   }
 
-  canSetRow(
+  async canSetRow(
     _tableId: Id,
     _rowId: Id,
     _initialSave: boolean,
     _requestOrConnection: Request | Connection,
-  ): boolean {
+  ): Promise<boolean> {
     return true;
   }
 
-  canDelRow(_tableId: Id, _rowId: Id, _connection: Connection): boolean {
+  async canDelRow(
+    _tableId: Id,
+    _rowId: Id,
+    _connection: Connection,
+  ): Promise<boolean> {
     return true;
   }
 
-  canSetCell(
+  async canSetCell(
     _tableId: Id,
     _rowId: Id,
     _cellId: Id,
@@ -294,30 +304,30 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
     _initialSave: boolean,
     _requestOrConnection: Request | Connection,
     _oldCell: CellOrUndefined,
-  ): boolean {
+  ): Promise<boolean> {
     return true;
   }
 
-  canDelCell(
+  async canDelCell(
     _tableId: Id,
     _rowId: Id,
     _cellId: Id,
     _connection: Connection,
-  ): boolean {
+  ): Promise<boolean> {
     return true;
   }
 
-  canSetValue(
+  async canSetValue(
     _valueId: Id,
     _value: Value,
     _initialSave: boolean,
     _requestOrConnection: Request | Connection,
     _oldValue: ValueOrUndefined,
-  ): boolean {
+  ): Promise<boolean> {
     return true;
   }
 
-  canDelValue(_valueId: Id, _connection: Connection): boolean {
+  async canDelValue(_valueId: Id, _connection: Connection): Promise<boolean> {
     return true;
   }
 }
