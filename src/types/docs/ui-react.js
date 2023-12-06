@@ -135,6 +135,16 @@
  */
 /// UndoOrRedoInformation
 /**
+ * The GetId type describes a function which, when passed a parameter, will
+ * return an Id.
+ *
+ * This type is used in hooks that create callbacks - like the
+ * useSetTableCallback hook or useSetRowCallback hook - so that the Id arguments
+ * of the object to set can also be dependent on the event or parameter
+ * provided (as well as the object itself being set).
+ */
+/// GetId
+/**
  * The useCreateStore hook is used to create a Store within a React application
  * with convenient memoization.
  *
@@ -2124,13 +2134,15 @@
  * The Store to which the callback will make the mutation (indicated by the
  * hook's `storeOrStoreId` parameter) is always automatically used as a hook
  * dependency for the callback.
- * @param tableId The Id of the Table in the Store to set.
+ * @param tableId The Id of the Table in the Store to set, or a GetId function
+ * that will return it.
  * @param getTable A function which returns the Table object that will be used
  * to update the Store, based on the parameter the callback will receive (and
  * which is most likely a DOM event).
  * @param getTableDeps An optional array of dependencies for the `getTable`
  * function, which, if any change, result in the regeneration of the callback.
- * This parameter defaults to an empty array.
+ * This parameter defaults to an empty array. Also use this to indicate the
+ * dependencies of a GetId functions if used as the tableId argument.
  * @param storeOrStoreId The Store to be updated: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
@@ -2201,14 +2213,18 @@
  * The Store to which the callback will make the mutation (indicated by the
  * hook's `storeOrStoreId` parameter) is always automatically used as a hook
  * dependency for the callback.
- * @param tableId The Id of the Table in the Store.
- * @param rowId The Id of the Row in the Table to set.
+ * @param tableId The Id of the Table in the Store, or a GetId function that
+ * will return it.
+ * @param rowId The Id of the Row in the Table to set, or a GetId function that
+ * will return it.
  * @param getRow A function which returns the Row object that will be used to
  * update the Store, based on the parameter the callback will receive (and which
  * is most likely a DOM event).
  * @param getRowDeps An optional array of dependencies for the `getRow`
  * function, which, if any change, result in the regeneration of the callback.
- * This parameter defaults to an empty array.
+ * This parameter defaults to an empty array. Also use this to indicate the
+ * dependencies of any GetId functions if used as the tableId or rowId
+ * arguments.
  * @param storeOrStoreId The Store to be updated: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
@@ -2287,13 +2303,15 @@
  * specify `reuseRowIds` to be `false`, then the Id will be a monotonically
  * increasing string representation of an increasing integer, regardless of any
  * you may have previously deleted.
- * @param tableId The Id of the Table in the Store.
+ * @param tableId The Id of the Table in the Store, or a GetId function
+ * that will return it.
  * @param getRow A function which returns the Row object that will be used to
  * update the Store, based on the parameter the callback will receive (and which
  * is most likely a DOM event).
  * @param getRowDeps An optional array of dependencies for the `getRow`
  * function, which, if any change, result in the regeneration of the callback.
- * This parameter defaults to an empty array.
+ * This parameter defaults to an empty array. Also use this to indicate the
+ * dependencies of a GetId functions if used as the tableId argument.
  * @param storeOrStoreId The Store to be updated: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
@@ -2367,14 +2385,18 @@
  * The Store to which the callback will make the mutation (indicated by the
  * hook's `storeOrStoreId` parameter) is always automatically used as a hook
  * dependency for the callback.
- * @param tableId The Id of the Table in the Store.
- * @param rowId The Id of the Row in the Table to set.
+ * @param tableId The Id of the Table in the Store, or a GetId function that
+ * will return it.
+ * @param rowId The Id of the Row in the Table to set, or a GetId function that
+ * will return it.
  * @param getPartialRow A function which returns the partial Row object that
  * will be used to update the Store, based on the parameter the callback will
  * receive (and which is most likely a DOM event).
  * @param getPartialRowDeps An optional array of dependencies for the `getRow`
  * function, which, if any change, result in the regeneration of the callback.
- * This parameter defaults to an empty array.
+ * This parameter defaults to an empty array. Also use this to indicate the
+ * dependencies of any GetId functions if used as the tableId, rowId, or cellId
+ * arguments.
  * @param storeOrStoreId The Store to be updated: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
@@ -2447,15 +2469,20 @@
  * The Store to which the callback will make the mutation (indicated by the
  * hook's `storeOrStoreId` parameter) is always automatically used as a hook
  * dependency for the callback.
- * @param tableId The Id of the Table in the Store.
- * @param rowId The Id of the Row in the Table.
- * @param cellId The Id of the Cell in the Row to set.
+ * @param tableId The Id of the Table in the Store, or a GetId function that
+ * will return it.
+ * @param rowId The Id of the Row in the Table, or a GetId function that will
+ * return it.
+ * @param cellId The Id of the Cell in the Row to set, or a GetId function that
+ * will return it.
  * @param getCell A function which returns the Cell value that will be used to
  * update the Store, or a MapCell function to update it, based on the parameter
  * the callback will receive (and which is most likely a DOM event).
  * @param getCellDeps An optional array of dependencies for the `getCell`
  * function, which, if any change, result in the regeneration of the callback.
- * This parameter defaults to an empty array.
+ * This parameter defaults to an empty array. Also use this to indicate the
+ * dependencies of any GetId functions if used as the tableId, rowId, or cellId
+ * arguments.
  * @param storeOrStoreId The Store to be updated: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
@@ -2719,13 +2746,15 @@
  * The Store to which the callback will make the mutation (indicated by the
  * hook's `storeOrStoreId` parameter) is always automatically used as a hook
  * dependency for the callback.
- * @param valueId The Id of the Value in the Store to set.
+ * @param valueId The Id of the Value in the Store to set, or a GetId function
+ * that will return it.
  * @param getValue A function which returns the Value object that will be used
  * to update the Store, based on the parameter the callback will receive (and
  * which is most likely a DOM event).
  * @param getValueDeps An optional array of dependencies for the `getValue`
  * function, which, if any change, result in the regeneration of the callback.
- * This parameter defaults to an empty array.
+ * This parameter defaults to an empty array. Also use this to indicate the
+ * dependencies of a GetId function if used as the valueId argument.
  * @param storeOrStoreId The Store to be updated: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.

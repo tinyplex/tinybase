@@ -84,6 +84,9 @@ export type CheckpointsOrCheckpointsId = Checkpoints | Id;
 /// UndoOrRedoInformation
 export type UndoOrRedoInformation = [boolean, Callback, Id | undefined, string];
 
+/// GetId
+export type GetId<Parameter> = (parameter: Parameter, store: Store) => Id;
+
 /// useCreateStore
 export function useCreateStore(
   create: () => Store,
@@ -223,7 +226,7 @@ export function useSetTablesCallback<Parameter>(
 
 /// useSetTableCallback
 export function useSetTableCallback<Parameter>(
-  tableId: Id,
+  tableId: Id | GetId<Parameter>,
   getTable: (parameter: Parameter, store: Store) => Table,
   getTableDeps?: React.DependencyList,
   storeOrStoreId?: StoreOrStoreId,
@@ -233,8 +236,8 @@ export function useSetTableCallback<Parameter>(
 
 /// useSetRowCallback
 export function useSetRowCallback<Parameter>(
-  tableId: Id,
-  rowId: Id,
+  tableId: Id | GetId<Parameter>,
+  rowId: Id | GetId<Parameter>,
   getRow: (parameter: Parameter, store: Store) => Row,
   getRowDeps?: React.DependencyList,
   storeOrStoreId?: StoreOrStoreId,
@@ -244,7 +247,7 @@ export function useSetRowCallback<Parameter>(
 
 /// useAddRowCallback
 export function useAddRowCallback<Parameter>(
-  tableId: Id,
+  tableId: Id | GetId<Parameter>,
   getRow: (parameter: Parameter, store: Store) => Row,
   getRowDeps?: React.DependencyList,
   storeOrStoreId?: StoreOrStoreId,
@@ -255,8 +258,8 @@ export function useAddRowCallback<Parameter>(
 
 /// useSetPartialRowCallback
 export function useSetPartialRowCallback<Parameter>(
-  tableId: Id,
-  rowId: Id,
+  tableId: Id | GetId<Parameter>,
+  rowId: Id | GetId<Parameter>,
   getPartialRow: (parameter: Parameter, store: Store) => Row,
   getPartialRowDeps?: React.DependencyList,
   storeOrStoreId?: StoreOrStoreId,
@@ -266,9 +269,9 @@ export function useSetPartialRowCallback<Parameter>(
 
 /// useSetCellCallback
 export function useSetCellCallback<Parameter>(
-  tableId: Id,
-  rowId: Id,
-  cellId: Id,
+  tableId: Id | GetId<Parameter>,
+  rowId: Id | GetId<Parameter>,
+  cellId: Id | GetId<Parameter>,
   getCell: (parameter: Parameter, store: Store) => Cell | MapCell,
   getCellDeps?: React.DependencyList,
   storeOrStoreId?: StoreOrStoreId,
@@ -296,7 +299,7 @@ export function useSetPartialValuesCallback<Parameter>(
 
 /// useSetValueCallback
 export function useSetValueCallback<Parameter>(
-  valueId: Id,
+  valueId: Id | GetId<Parameter>,
   getValue: (parameter: Parameter, store: Store) => Value | MapValue,
   getValueDeps?: React.DependencyList,
   storeOrStoreId?: StoreOrStoreId,

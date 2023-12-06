@@ -250,8 +250,16 @@ const _Setters = () => {
       store.getTables().t2; // !
     },
   );
+  useSetTableCallback(
+    () => 't1',
+    () => ({r1: {c1: 1}}),
+  );
   useSetTableCallback('t1', () => ({r1: {c2: 1}})); // !
   useSetTableCallback('t2', () => ({r1: {c1: 1}})); // !
+  useSetTableCallback(
+    () => 't2', // !
+    () => ({r1: {c1: 2}}),
+  );
 
   useSetRowCallback(
     't1',
@@ -268,8 +276,18 @@ const _Setters = () => {
       store.getTables().t2; // !
     },
   );
+  useSetRowCallback(
+    () => 't1',
+    () => 'r1',
+    () => ({c1: 1}),
+  );
   useSetRowCallback('t1', 'r1', () => ({c2: 1})); // !
   useSetRowCallback('t2', 'r1', () => ({c1: 1})); // !
+  useSetRowCallback(
+    () => 't2', // !
+    () => 'r1',
+    () => ({c1: 1}),
+  );
 
   useAddRowCallback(
     't1',
@@ -285,8 +303,16 @@ const _Setters = () => {
       store.getTables().t2; // !
     },
   );
+  useAddRowCallback(
+    () => 't1',
+    () => ({c1: 1}),
+  );
   useAddRowCallback('t1', () => ({c2: 1})); // !
   useAddRowCallback('t2', () => ({c1: 1})); // !
+  useAddRowCallback(
+    () => 't2', // !
+    () => ({c1: 1}),
+  );
 
   useSetPartialRowCallback(
     't1',
@@ -303,8 +329,18 @@ const _Setters = () => {
       store.getTables().t2; // !
     },
   );
+  useSetPartialRowCallback(
+    () => 't1',
+    () => 'r1',
+    () => ({c1: 1}),
+  );
   useSetPartialRowCallback('t1', 'r1', () => ({c2: 1})); // !
   useSetPartialRowCallback('t2', 'r1', () => ({c1: 1})); // !
+  useSetPartialRowCallback(
+    () => 't2', // !
+    () => 'r1',
+    () => ({c1: 1}),
+  );
 
   useSetCellCallback(
     't1',
@@ -322,6 +358,12 @@ const _Setters = () => {
       store.getTables().t2; // !
     },
   );
+  useSetCellCallback(
+    () => 't1',
+    () => 'r1',
+    () => 'c1',
+    () => 1,
+  );
   useSetCellCallback('t1', 'r1', 'c1', () => (cell) => {
     cell as number;
     cell as string; // !
@@ -331,6 +373,24 @@ const _Setters = () => {
   useSetCellCallback('t1', 'r1', 'c1', () => ''); // !
   useSetCellCallback('t1', 'r1', 'c2', () => 1); // !
   useSetCellCallback('t2', 'r1', 'c1', () => 1); // !
+  useSetCellCallback(
+    () => 't2', // !
+    () => 'r1',
+    () => 'c1',
+    () => 1,
+  );
+  useSetCellCallback(
+    () => 't1',
+    () => 'r1',
+    () => 'c2', // !
+    () => 1,
+  );
+  useSetCellCallback(
+    () => 't1',
+    () => 'r1',
+    () => 'c1',
+    () => '', // !
+  );
 
   useSetValuesCallback(
     (_e, store) => {
@@ -376,6 +436,10 @@ const _Setters = () => {
       store.getTables().t2; // !
     },
   );
+  useSetValueCallback(
+    () => 'v1',
+    () => 1,
+  );
   useSetValueCallback('v1', () => (value) => {
     value as number;
     value as string; // !
@@ -384,6 +448,14 @@ const _Setters = () => {
   useSetValueCallback('v1', () => () => ''); // !
   useSetValueCallback('v1', () => ''); // !
   useSetValueCallback('v2', () => 1); // !
+  useSetValueCallback(
+    () => 'v2', // !
+    () => 1,
+  );
+  useSetValueCallback(
+    () => 'v1',
+    () => '', // !
+  );
 };
 
 const _Deleters = () => {
