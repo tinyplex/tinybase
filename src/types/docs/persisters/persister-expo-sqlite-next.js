@@ -83,10 +83,10 @@
  * JSON serialization).
  * @param onSqlCommand An optional handler called every time the Persister
  * executes a SQL command or query. This is suitable for logging persistence
- * behavior in a development environment, since v4.0.4.
+ * behavior in a development environment.
  * @param onIgnoredError An optional handler for the errors that the Persister
  * would otherwise ignore when trying to save or load data. This is suitable for
- * debugging persistence issues in a development environment, since v4.0.4.
+ * debugging persistence issues in a development environment.
  * @returns A reference to the new ExpoSqliteNextPersister object.
  * @example
  * This example creates a ExpoSqliteNextPersister object and persists the Store
