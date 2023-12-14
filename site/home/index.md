@@ -13,7 +13,7 @@
 </section>
 
 <a href='/guides/releases/#v4-6'><em>NEW!</em> v4.6 release</a> <span
-id="one-with">"The One With Electric SQL"</span>
+id="one-with">"The One With ElectricSQL"</span>
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 
@@ -59,8 +59,9 @@ id="one-with">"The One With Electric SQL"</span>
     browser <a href='/api/persister-browser'>storage</a>, 
     <a href='/api/persister-indexed-db/'>IndexedDB</a>,
     <a href='/guides/schemas-and-persistence/database-persistence/'>SQLite</a>, 
-    <a href='/guides/schemas-and-persistence/synchronizing-data/'>CRDTs</a>, and 
-    (<em>new!</em>)  <a href='/api/persister-partykit-client/'>PartyKit</a>.
+    <a href='/guides/schemas-and-persistence/synchronizing-data/'>CRDTs</a>; and 
+    (<em>new!</em>) <a href='/api/persister-partykit-client/'>PartyKit</a> and
+    <a href='https://electric-sql.com/'>ElectricSQL</a>.
   </li>
   <li>
     Optional <a href='#call-hooks-to-bind-to-data'>bindings to React</a> and 
