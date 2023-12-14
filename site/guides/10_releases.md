@@ -3,6 +3,26 @@
 This is a reverse chronological list of the major TinyBase releases, with
 highlighted features.
 
+## v4.6
+
+This release includes the new persister-electric-sql module, which provides
+a Persister for [ElectricSQL](https://electric-sql.com/) client databases.
+
+Use this Persister by passing in a reference to the Electric client; something
+like:
+
+```js yolo
+const electric = await electrify(connection, schema, config);
+
+const persister = createElectricSqlPersister(store, electric, {
+  mode: 'tabular',
+  tables: {
+    load: {items: {tableId: 'items', rowIdColumnName: 'value'}},
+    save: {items: {tableName: 'items', rowIdColumnName: 'value'}},
+  },
+});
+```
+
 ## v4.5
 
 This release includes the new persister-expo-sqlite-next module, which provides
