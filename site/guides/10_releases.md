@@ -8,8 +8,8 @@ highlighted features.
 This release includes the new persister-electric-sql module, which provides
 a Persister for [ElectricSQL](https://electric-sql.com/) client databases.
 
-Use this Persister by passing in a reference to the Electric client; something
-like:
+Use the Persister by passing in a reference to the Electric client to the
+createElectricSqlPersister function; something like:
 
 ```js yolo
 const electric = await electrify(connection, schema, config);

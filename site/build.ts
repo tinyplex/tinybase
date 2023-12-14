@@ -141,6 +141,7 @@ const addApi = (docs: Docs): Docs =>
     .addApiFile('lib/types/persisters/persister-sqlite3.d.ts')
     .addApiFile('lib/types/persisters/persister-sqlite-wasm.d.ts')
     .addApiFile('lib/types/persisters/persister-cr-sqlite-wasm.d.ts')
+    .addApiFile('lib/types/persisters/persister-electric-sql.d.ts')
     .addApiFile('lib/types/persisters/persister-expo-sqlite.d.ts')
     .addApiFile('lib/types/persisters/persister-expo-sqlite-next.d.ts')
     .addApiFile('lib/types/persisters/persister-partykit-client.d.ts')
