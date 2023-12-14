@@ -109,8 +109,9 @@
  * // -> [{_id: '_', store: '[{"pets":{"fido":{"species":"dog"}}},{}]'}]
  *
  * await electricClient.db.raw({
- *   sql: 'UPDATE my_tinybase SET store = ' +
- *       `'[{"pets":{"felix":{"species":"cat"}}},{}]' WHERE _id = '_';`
+ *   sql:
+ *     'UPDATE my_tinybase SET store = ' +
+ *     `'[{"pets":{"felix":{"species":"cat"}}},{}]' WHERE _id = '_';`,
  * });
  * await persister.load();
  * console.log(store.getTables());
