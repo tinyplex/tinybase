@@ -80,7 +80,7 @@ id="one-with">"The One With ElectricSQL"</span>
 ---
 
 <section id="friends">
-<h2>Tinybase works great on its own, but also plays well with friends!</h2>
+<h2>TinyBase works great on its own, but also plays well with friends!</h2>
 <div>
   <a href='/guides/building-uis/getting-started-with-ui-react'>
     <img width="48" src="/react.svg" /> React
