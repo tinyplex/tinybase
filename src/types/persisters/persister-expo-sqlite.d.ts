@@ -7,7 +7,7 @@ import {Store} from '../store';
 /// ExpoSqlitePersister
 export interface ExpoSqlitePersister extends Persister {
   /// ExpoSqlitePersister.getDb
-  getDb: () => SQLiteDatabase;
+  getDb(): SQLiteDatabase;
 }
 
 /// createExpoSqlitePersister

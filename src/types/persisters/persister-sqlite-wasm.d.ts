@@ -6,7 +6,7 @@ import {Store} from '../store';
 /// SqliteWasmPersister
 export interface SqliteWasmPersister extends Persister {
   /// SqliteWasmPersister.getDb
-  getDb: () => any;
+  getDb(): any;
 }
 
 /// createSqliteWasmPersister

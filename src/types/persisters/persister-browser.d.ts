@@ -6,13 +6,13 @@ import {Store} from '../store';
 /// SessionPersister
 export interface SessionPersister extends Persister {
   /// SessionPersister.getStorageName
-  getStorageName: () => string;
+  getStorageName(): string;
 }
 
 /// LocalPersister
 export interface LocalPersister extends Persister {
   /// LocalPersister.getStorageName
-  getStorageName: () => string;
+  getStorageName(): string;
 }
 
 /// createSessionPersister

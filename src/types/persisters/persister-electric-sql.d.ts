@@ -7,7 +7,7 @@ import {Store} from '../store';
 /// ElectricSqlPersister
 export interface ElectricSqlPersister extends Persister {
   /// ElectricSqlPersister.getElectricClient
-  getElectricClient: () => ElectricClient<any>;
+  getElectricClient(): ElectricClient<any>;
 }
 
 /// createElectricSqlPersister

@@ -6,7 +6,7 @@ import {Store} from '../store';
 /// IndexedDbPersister
 export interface IndexedDbPersister extends Persister {
   /// IndexedDbPersister.getDbName
-  getDbName: () => string;
+  getDbName(): string;
 }
 
 /// createIndexedDbPersister

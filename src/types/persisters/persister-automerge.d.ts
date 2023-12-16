@@ -7,7 +7,7 @@ import {Store} from '../store';
 /// AutomergePersister
 export interface AutomergePersister extends Persister {
   /// AutomergePersister.getDocHandle
-  getDocHandle: () => DocHandle<any>;
+  getDocHandle(): DocHandle<any>;
 }
 
 /// createAutomergePersister

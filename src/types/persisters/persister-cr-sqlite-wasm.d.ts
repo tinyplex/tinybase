@@ -7,7 +7,7 @@ import {Store} from '../store';
 /// CrSqliteWasmPersister
 export interface CrSqliteWasmPersister extends Persister {
   /// CrSqliteWasmPersister.getDb
-  getDb: () => DB;
+  getDb(): DB;
 }
 
 /// createCrSqliteWasmPersister

@@ -7,7 +7,7 @@ import {Store} from '../store';
 /// PartyKitPersister
 export interface PartyKitPersister extends Persister {
   /// PartyKitPersister.getConnection
-  getConnection: () => PartySocket;
+  getConnection(): PartySocket;
 }
 
 /// PartyKitPersisterConfig
