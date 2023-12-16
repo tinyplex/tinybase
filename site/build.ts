@@ -72,7 +72,11 @@ const REFLECTIONS = [
   '*',
 ];
 
-export const build = (outDir: string, api = true, pages = true): void => {
+export const build = async (
+  outDir: string,
+  api = true,
+  pages = true,
+): Promise<void> => {
   const {version} = JSON.parse(readFileSync('./package.json', 'utf-8'));
   const baseUrl = version.includes('beta')
     ? 'https://beta.tinybase.org'
@@ -105,12 +109,13 @@ export const build = (outDir: string, api = true, pages = true): void => {
     addPages(docs);
   }
   if (api || pages) {
-    docs
-      .generateNodes({
+    (
+      await docs.generateNodes({
         group: getSorter(GROUPS),
         category: getSorter(CATEGORIES),
         reflection: getSorter(REFLECTIONS),
       })
+    )
       .addPageForEachNode('/', Page)
       .addPageForEachNode('/', ArticleInner, 'article.html')
       .addTextForEachNode('/', NavJson, 'nav.json')
