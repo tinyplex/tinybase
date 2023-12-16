@@ -498,7 +498,7 @@ export const compileDocsAndAssets = async (api = true, pages = true) => {
   await makeDir(TMP_DIR);
   await esbuild.build({
     entryPoints: ['site/build.ts'],
-    external: ['tinydocs', 'react', 'yjs', '@prettier/sync'],
+    external: ['tinydocs', 'react', '@prettier/sync'],
     target: 'esnext',
     bundle: true,
     outfile: './tmp/build.js',
@@ -521,7 +521,7 @@ export const compileDocsAndAssets = async (api = true, pages = true) => {
   });
 
   const {build} = await import('../tmp/build.js');
-  build(DOCS_DIR, api, pages);
+  await build(DOCS_DIR, api, pages);
   await removeDir(TMP_DIR);
 };
 
