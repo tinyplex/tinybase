@@ -4,7 +4,7 @@
  * environment).
  * @see Persisting Data guide
  * @packageDocumentation
- * @module persister-sqlite3
+ * @module persister-electric-sql
  * @since v4.6.0
  */
 /// persister-electric-sql
