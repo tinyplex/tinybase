@@ -6,7 +6,7 @@ import {Store} from '../store';
 /// FilePersister
 export interface FilePersister extends Persister {
   /// FilePersister.getFilePath
-  getFilePath: () => string;
+  getFilePath(): string;
 }
 
 /// createFilePersister

@@ -7,7 +7,7 @@ import {Doc as YDoc} from 'yjs';
 /// YjsPersister
 export interface YjsPersister extends Persister {
   /// YjsPersister.getYDoc
-  getYDoc: () => YDoc;
+  getYDoc(): YDoc;
 }
 
 /// createYjsPersister

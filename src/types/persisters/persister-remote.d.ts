@@ -6,7 +6,7 @@ import {Store} from '../store';
 /// RemotePersister
 export interface RemotePersister extends Persister {
   /// RemotePersister.getUrls
-  getUrls: () => [string, string];
+  getUrls(): [string, string];
 }
 
 /// createRemotePersister

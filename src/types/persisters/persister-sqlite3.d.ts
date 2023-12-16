@@ -7,7 +7,7 @@ import {Store} from '../store';
 /// Sqlite3Persister
 export interface Sqlite3Persister extends Persister {
   /// Sqlite3Persister.getDb
-  getDb: () => Database;
+  getDb(): Database;
 }
 
 /// createSqlite3Persister
