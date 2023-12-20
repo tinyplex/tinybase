@@ -38,18 +38,18 @@ export class TinyBasePartyKitServer implements Server {
     tableId: Id,
     initialSave: boolean,
     requestOrConnection: Request | Connection,
-  ): boolean;
+  ): Promise<boolean>;
   /// TinyBasePartyKitServer.canDelTable
-  canDelTable(tableId: Id, connection: Connection): boolean;
+  canDelTable(tableId: Id, connection: Connection): Promise<boolean>;
   /// TinyBasePartyKitServer.canSetRow
   canSetRow(
     tableId: Id,
     rowId: Id,
     initialSave: boolean,
     requestOrConnection: Request | Connection,
-  ): boolean;
+  ): Promise<boolean>;
   /// TinyBasePartyKitServer.canDelRow
-  canDelRow(tableId: Id, rowId: Id, connection: Connection): boolean;
+  canDelRow(tableId: Id, rowId: Id, connection: Connection): Promise<boolean>;
   /// TinyBasePartyKitServer.canSetCell
   canSetCell(
     tableId: Id,
@@ -59,14 +59,14 @@ export class TinyBasePartyKitServer implements Server {
     initialSave: boolean,
     requestOrConnection: Request | Connection,
     oldCell: CellOrUndefined,
-  ): boolean;
+  ): Promise<boolean>;
   /// TinyBasePartyKitServer.canDelCell
   canDelCell(
     tableId: Id,
     rowId: Id,
     cellId: Id,
     connection: Connection,
-  ): boolean;
+  ): Promise<boolean>;
   /// TinyBasePartyKitServer.canSetValue
   canSetValue(
     valueId: Id,
@@ -74,9 +74,9 @@ export class TinyBasePartyKitServer implements Server {
     initialSave: boolean,
     requestOrConnection: Request | Connection,
     oldValue: ValueOrUndefined,
-  ): boolean;
+  ): Promise<boolean>;
   /// TinyBasePartyKitServer.canDelValue
-  canDelValue(valueId: Id, connection: Connection): boolean;
+  canDelValue(valueId: Id, connection: Connection): Promise<boolean>;
 }
 
 /// hasStoreInStorage
