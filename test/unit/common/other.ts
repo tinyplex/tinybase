@@ -12,11 +12,11 @@ export const pause = async (ms = 50): Promise<void> =>
 export const mockFetchWasm = (): void => {
   fetchMock.enableMocks();
   fetchMock.resetMocks();
-  fetchMock.doMock(async (req) => {
-    if (req.url.startsWith('file://')) {
+  fetchMock.doMock(async (request) => {
+    if (request.url.startsWith('file://')) {
       return {
         status: 200,
-        body: fs.readFileSync(req.url.substring(7)) as any,
+        body: fs.readFileSync(request.url.substring(7)) as any,
       };
     }
     return '';
