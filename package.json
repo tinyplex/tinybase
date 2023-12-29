@@ -287,6 +287,7 @@
     "tmp": "^0.2.1",
     "ts-unused-exports": "^10.0.1",
     "typescript": "5.3.3",
+    "wa-sqlite": "github:rhashimoto/wa-sqlite",
     "yjs": "^13.6.10"
   },
   "peerDependencies": {
