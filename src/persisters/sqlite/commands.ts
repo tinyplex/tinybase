@@ -73,7 +73,7 @@ export const getCommandFunctions = (
                 'list ' +
                 `WHERE schema='main'AND type='table'AND name IN(` +
                 getPlaceholders(managedTableNames) +
-                `)`,
+                `)ORDER BY name`,
               managedTableNames,
             ),
             async ({name: tableName}) => [
