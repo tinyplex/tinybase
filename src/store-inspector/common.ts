@@ -1,6 +1,6 @@
 import {Id, Ids} from '../types/common';
+import {arrayMap, arraySort} from '../common/array';
 import {Store} from '../types/store';
-import {arrayMap} from '../common/array';
 import {jsonString} from '../common/json';
 import {useCallback} from '../ui-react/common';
 import {useCell} from '../ui-react';
@@ -22,7 +22,7 @@ export const getUniqueId = (...args: (Id | undefined)[]) => jsonString(args);
 export const sortedIdsMap = <Return>(
   ids: Ids,
   callback: (id: Id) => Return,
-): Return[] => arrayMap(ids.sort(), callback);
+): Return[] => arrayMap(arraySort(ids), callback);
 
 export const useEditable = (
   uniqueId: Id,
