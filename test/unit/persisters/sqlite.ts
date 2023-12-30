@@ -35,7 +35,7 @@ type SqliteVariant<Database> = [
     args?: any[],
   ) => Promise<{[id: string]: any}[]>,
   close: (db: Database) => Promise<void>,
-  autoLoadInterval?: number,
+  autoLoadPause?: number,
 ];
 
 const escapeId = (str: string) => `"${str.replace(/"/g, '""')}"`;

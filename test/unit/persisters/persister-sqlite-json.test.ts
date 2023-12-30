@@ -7,7 +7,7 @@ import {Database} from 'sqlite3';
 
 describe.each(Object.entries(VARIANTS))(
   '%s',
-  (_name, [getOpenDatabase, , getPersister, cmd, close, autoLoadInterval]) => {
+  (_name, [getOpenDatabase, , getPersister, cmd, close, autoLoadPause]) => {
     const [getDatabase, setDatabase] = getDatabaseFunctions(cmd);
 
     let db: Database;
@@ -284,7 +284,7 @@ describe.each(Object.entries(VARIANTS))(
         await persister2.startAutoLoad();
         store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
         await persister1.save();
-        await pause(autoLoadInterval);
+        await pause(autoLoadPause);
         expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
       });
 
@@ -292,7 +292,7 @@ describe.each(Object.entries(VARIANTS))(
         await persister1.startAutoSave();
         await persister2.startAutoLoad();
         store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
-        await pause(autoLoadInterval);
+        await pause(autoLoadPause);
         expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
       });
 
@@ -305,40 +305,40 @@ describe.each(Object.entries(VARIANTS))(
             t2: {r1: {c1: 1}},
           })
           .setValues({v1: 1, v2: 2});
-        await pause(autoLoadInterval);
+        await pause(autoLoadPause);
         expect(store2.getContent()).toEqual([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
           {v1: 1, v2: 2},
         ]);
         store1.setCell('t1', 'r1', 'c1', 2);
-        await pause(autoLoadInterval);
+        await pause(autoLoadPause);
         expect(store2.getContent()).toEqual([
           {t1: {r1: {c1: 2, c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
           {v1: 1, v2: 2},
         ]);
         store1.delCell('t1', 'r1', 'c2');
-        await pause(autoLoadInterval);
+        await pause(autoLoadPause);
         expect(store2.getContent()).toEqual([
           {t1: {r1: {c1: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
           {v1: 1, v2: 2},
         ]);
         store1.delRow('t1', 'r2');
-        await pause(autoLoadInterval);
+        await pause(autoLoadPause);
         expect(store2.getContent()).toEqual([
           {t1: {r1: {c1: 2}}, t2: {r1: {c1: 1}}},
           {v1: 1, v2: 2},
         ]);
         store1.delTable('t2');
-        await pause(autoLoadInterval);
+        await pause(autoLoadPause);
         expect(store2.getContent()).toEqual([
           {t1: {r1: {c1: 2}}},
           {v1: 1, v2: 2},
         ]);
         store1.delValue('v2');
-        await pause(autoLoadInterval);
+        await pause(autoLoadPause);
         expect(store2.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 1}]);
         store1.setValue('v1', 2);
-        await pause(autoLoadInterval);
+        await pause(autoLoadPause);
         expect(store2.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
       }, 20000);
     });
