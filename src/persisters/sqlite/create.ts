@@ -5,6 +5,7 @@ import {
 } from '../../types/persisters';
 import {startInterval, stopInterval} from '../../common/other';
 import {Cmd} from './commands';
+import {SELECT} from './common';
 import {Store} from '../../types/store';
 import {collValues} from '../../common/coll';
 import {createJsonSqlitePersister} from './json';
@@ -31,6 +32,7 @@ export const createSqlitePersister = <UpdateListeningHandle>(
 ): Persister => {
   let dataVersion: number | null;
   let schemaVersion: number | null;
+  let totalChanges: number | null;
 
   const [
     isJson,
@@ -51,9 +53,13 @@ export const createSqlitePersister = <UpdateListeningHandle>(
           const newSchemaVersion = (
             (await cmd(PRAGMA + SCHEMA_VERSION)) as SchemaVersionPragma
           )[0][SCHEMA_VERSION];
+          const newTotalChanges = (await cmd(SELECT + ' TOTAL_CHANGES() c'))[0][
+            'c'
+          ];
           if (
             newDataVersion != (dataVersion ??= newDataVersion) ||
-            newSchemaVersion != (schemaVersion ??= newSchemaVersion)
+            newSchemaVersion != (schemaVersion ??= newSchemaVersion) ||
+            newTotalChanges != (totalChanges ??= newTotalChanges)
           ) {
             listener();
             dataVersion = newDataVersion;
