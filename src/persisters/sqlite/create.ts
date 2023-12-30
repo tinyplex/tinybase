@@ -67,7 +67,8 @@ export const createSqlitePersister = <UpdateListeningHandle>(
           }
         } catch {}
       },
-      (autoLoadIntervalSeconds as number) * 1000,
+      autoLoadIntervalSeconds as number,
+      1,
     ),
     addUpdateListener((tableName: string) =>
       managedTableNamesSet.has(tableName) ? listener() : 0,
