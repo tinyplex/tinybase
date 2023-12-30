@@ -19,6 +19,7 @@ import {
   objNew,
   objValues,
 } from '../../common/obj';
+import {SELECT, escapeId} from './common';
 import {
   arrayFilter,
   arrayIsEmpty,
@@ -30,12 +31,11 @@ import {collDel, collHas, collValues} from '../../common/coll';
 import {isUndefined, promiseAll, size, slice} from '../../common/other';
 import {setAdd, setNew} from '../../common/set';
 import {Id} from '../../types/common';
-import {escapeId} from './common';
 
 export type Cmd = (sql: string, args?: any[]) => Promise<IdObj<any>[]>;
 type Schema = IdMap2<string>;
 
-const SELECT_STAR_FROM = 'SELECT*FROM';
+const SELECT_STAR_FROM = SELECT + '*FROM';
 const FROM_PRAGMA_TABLE = 'FROM pragma_table_';
 const WHERE = 'WHERE';
 
@@ -81,7 +81,7 @@ export const getCommandFunctions = (
               objNew(
                 arrayMap(
                   await cmd(
-                    'SELECT name,type ' + FROM_PRAGMA_TABLE + 'info(?)',
+                    SELECT + ' name,type ' + FROM_PRAGMA_TABLE + 'info(?)',
                     [tableName],
                   ),
                   ({name: columnName, type}) => [columnName, type],
