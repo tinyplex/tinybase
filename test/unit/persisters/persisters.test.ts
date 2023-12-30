@@ -387,6 +387,7 @@ const getMockedSqlite = <Location>(
     args?: any[],
   ) => Promise<{[id: string]: any}[]>,
   close: (location: Location) => Promise<void>,
+  _autoLoadInterval?: number,
 ): Persistable<Location> => {
   const mockSqlite = {
     beforeEach: mockFetchWasm,
