@@ -46,7 +46,7 @@ export const createRemotePersister = ((
         lastEtag = currentEtag;
         listener();
       }
-    }, autoLoadIntervalSeconds * 1000);
+    }, autoLoadIntervalSeconds);
 
   const delPersisterListener = (interval: NodeJS.Timeout): void =>
     stopInterval(interval);
