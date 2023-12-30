@@ -19,6 +19,14 @@ export const mockFetchWasm = (): void => {
         body: fs.readFileSync(request.url.substring(7)) as any,
       };
     }
+    if (request.url == 'wa-sqlite-async.wasm') {
+      return {
+        status: 200,
+        body: fs.readFileSync(
+          'node_modules/wa-sqlite/dist/' + request.url,
+        ) as any,
+      };
+    }
     return '';
   });
 };
