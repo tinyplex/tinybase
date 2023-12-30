@@ -4,9 +4,13 @@ const promise = Promise;
 
 export const DEBUG = (globalThis as any).DEBUG ?? true;
 
-export const startInterval = (callback: () => void, ms: number) => {
-  callback();
-  return setInterval(callback, ms);
+export const startInterval = (
+  callback: () => void,
+  sec: number,
+  immediate?: 1,
+) => {
+  immediate && callback();
+  return setInterval(callback, sec * 1000);
 };
 export const stopInterval = clearInterval;
 
