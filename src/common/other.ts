@@ -4,7 +4,10 @@ const promise = Promise;
 
 export const DEBUG = (globalThis as any).DEBUG ?? true;
 
-export const startInterval = setInterval;
+export const startInterval = (callback: () => void, ms: number) => {
+  callback();
+  return setInterval(callback, ms);
+};
 export const stopInterval = clearInterval;
 
 export const mathMax = Math.max;
