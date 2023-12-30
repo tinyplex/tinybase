@@ -1,6 +1,7 @@
 /* eslint-disable jest/no-conditional-expect */
 
 import 'fake-indexeddb/auto';
+import {DbSchema, ElectricClient} from 'electric-sql/client/model';
 import {DocHandle, Repo} from 'automerge-repo';
 import {
   Id,
@@ -35,6 +36,9 @@ import tmp from 'tmp';
 const GET_HOST = 'http://get.com';
 const SET_HOST = 'http://set.com';
 
+const electricSchema = new DbSchema({}, []);
+type Electric = ElectricClient<typeof electricSchema>;
+
 type GetLocationMethod<Location = string> = [
   string,
   (location: Location) => unknown,
@@ -52,6 +56,7 @@ type Persistable<Location = string> = {
   afterEach?: (location: Location) => void;
   getChanges?: () => TransactionChanges;
   testMissing: boolean;
+  extraLoad?: 0 | 1;
 };
 
 const yMapMatch = (
@@ -387,11 +392,10 @@ const getMockedSqlite = <Location>(
     args?: any[],
   ) => Promise<{[id: string]: any}[]>,
   close: (location: Location) => Promise<void>,
-  _autoLoadInterval?: number,
+  autoLoadPause: number | undefined,
 ): Persistable<Location> => {
   const mockSqlite = {
     beforeEach: mockFetchWasm,
-    autoLoadPause: 100,
     getLocation,
     getLocationMethod,
     getPersister,
@@ -421,9 +425,12 @@ const getMockedSqlite = <Location>(
     },
     afterEach: (location: Location) => mockSqlite.del(location),
     testMissing: true,
+    autoLoadPause,
   };
   return mockSqlite;
 };
+
+const mockElectricSql = getMockedSqlite<Electric>(...VARIANTS.electricSql);
 
 const mockSqlite3 = getMockedSqlite<Database>(...VARIANTS.sqlite3);
 
@@ -554,6 +561,7 @@ describe.each([
   ['localStorage', mockLocalStorage],
   ['sessionStorage', mockSessionStorage],
   ['indexedDb', mockIndexedDb],
+  ['electricSql', mockElectricSql],
   ['sqlite3', mockSqlite3],
   ['sqliteWasm', mockSqliteWasm],
   ['crSqliteWasm', mockCrSqliteWasm],
