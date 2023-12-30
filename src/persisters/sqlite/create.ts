@@ -34,6 +34,8 @@ export const createSqlitePersister = <UpdateListeningHandle>(
   let schemaVersion: number | null;
   let totalChanges: number | null;
 
+  const CHANGES_COLUMN = 'c';
+
   const [
     isJson,
     autoLoadIntervalSeconds,
@@ -53,9 +55,9 @@ export const createSqlitePersister = <UpdateListeningHandle>(
           const newSchemaVersion = (
             (await cmd(PRAGMA + SCHEMA_VERSION)) as SchemaVersionPragma
           )[0][SCHEMA_VERSION];
-          const newTotalChanges = (await cmd(SELECT + ' TOTAL_CHANGES() c'))[0][
-            'c'
-          ];
+          const newTotalChanges = (
+            await cmd(SELECT + ' TOTAL_CHANGES() ' + CHANGES_COLUMN)
+          )[0][CHANGES_COLUMN];
           if (
             newDataVersion != (dataVersion ??= newDataVersion) ||
             newSchemaVersion != (schemaVersion ??= newSchemaVersion) ||
