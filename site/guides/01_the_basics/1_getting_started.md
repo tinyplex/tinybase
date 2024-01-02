@@ -14,7 +14,7 @@ the distribution.
 
 Let's go!
 
-## TinyBase from a Vite template
+## TinyBase from a template
 
 [Vite](https://vitejs.dev/) is a build tool that makes it easy to get started
 with modern web projects based on application templates. To use the TinyBase
@@ -37,18 +37,19 @@ application for you:
 
 ![Thumbnail of Vite app](https://tinybase.org/vite-tinybase.png 'Thumbnail of Vite app')
 
-In fact, there are six templates for TinyBase, depending on whether you
-want to use TypeScript or React. Instructions are available in the README of
-each:
+In fact, there are seven templates for TinyBase, depending on whether you want
+to use TypeScript or React, and the integrations you want to target.
+Instructions are available in the README of each:
 
-| Template                                                                                       | Language   | React | Plus      |
-| ---------------------------------------------------------------------------------------------- | ---------- | ----- | --------- |
-| [vite-tinybase](https://github.com/tinyplex/vite-tinybase)                                     | JavaScript | No    |           |
-| [vite-tinybase-ts](https://github.com/tinyplex/vite-tinybase-ts)                               | TypeScript | No    |           |
-| [vite-tinybase-react](https://github.com/tinyplex/vite-tinybase-react)                         | JavaScript | Yes   |           |
-| [vite-tinybase-ts-react](https://github.com/tinyplex/vite-tinybase-ts-react)                   | TypeScript | Yes   |           |
-| [vite-tinybase-ts-react-crsqlite](https://github.com/tinyplex/vite-tinybase-ts-react-crsqlite) | TypeScript | Yes   | CR-SQLite |
-| [tinybase-ts-react-partykit](https://github.com/tinyplex/tinybase-ts-react-partykit)           | TypeScript | Yes   | PartyKit  |
+| Template                                                                                       | Language   | React | Plus        |
+| ---------------------------------------------------------------------------------------------- | ---------- | ----- | ----------- |
+| [vite-tinybase](https://github.com/tinyplex/vite-tinybase)                                     | JavaScript | No    |             |
+| [vite-tinybase-ts](https://github.com/tinyplex/vite-tinybase-ts)                               | TypeScript | No    |             |
+| [vite-tinybase-react](https://github.com/tinyplex/vite-tinybase-react)                         | JavaScript | Yes   |             |
+| [vite-tinybase-ts-react](https://github.com/tinyplex/vite-tinybase-ts-react)                   | TypeScript | Yes   |             |
+| [vite-tinybase-ts-react-crsqlite](https://github.com/tinyplex/vite-tinybase-ts-react-crsqlite) | TypeScript | Yes   | CR-SQLite   |
+| [tinybase-ts-react-partykit](https://github.com/tinyplex/tinybase-ts-react-partykit)           | TypeScript | Yes   | PartyKit    |
+| [tinybase-ts-react-electricsql](https://github.com/tinyplex/tinybase-ts-react-electricsql)     | TypeScript | Yes   | ElectricSQL |
 
 ## TinyBase in a browser
 
