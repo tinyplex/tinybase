@@ -23,6 +23,10 @@ const persister = createElectricSqlPersister(store, electric, {
 });
 ```
 
+This release is accompanied by a [template
+project](https://github.com/tinyplex/tinybase-ts-react-electricsql) to get
+started quickly with this integration. Enjoy!
+
 ## v4.5
 
 This release includes the new persister-expo-sqlite-next module, which provides
