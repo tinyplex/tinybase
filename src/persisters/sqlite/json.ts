@@ -17,6 +17,7 @@ export const createJsonSqlitePersister = <ListeningHandle>(
   [storeTableName]: DefaultedJsonConfig,
   managedTableNames: string[],
   db: any,
+  getThing: string,
 ): Persister => {
   const [refreshSchema, loadTable, saveTable, transaction] =
     getCommandFunctions(cmd, managedTableNames, onIgnoredError);
@@ -54,7 +55,7 @@ export const createJsonSqlitePersister = <ListeningHandle>(
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    ['getDb', db],
+    [getThing, db],
     db,
   );
 

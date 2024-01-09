@@ -33,4 +33,5 @@ export const createElectricSqlPersister = ((
     onSqlCommand,
     onIgnoredError,
     electricClient,
+    'getElectricClient',
   ) as ElectricSqlPersister) as typeof createElectricSqlPersisterDecl;

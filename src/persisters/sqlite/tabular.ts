@@ -30,6 +30,7 @@ export const createTabularSqlitePersister = <ListeningHandle>(
   ]: DefaultedTabularConfig,
   managedTableNames: string[],
   db: any,
+  getThing: string,
 ): Persister => {
   const [refreshSchema, loadTable, saveTable, transaction] =
     getCommandFunctions(cmd, managedTableNames, onIgnoredError);
@@ -142,7 +143,7 @@ export const createTabularSqlitePersister = <ListeningHandle>(
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    ['getDb', db],
+    [getThing, db],
     db,
   );
 

@@ -29,6 +29,7 @@ export const createSqlitePersister = <UpdateListeningHandle>(
   onSqlCommand: ((sql: string, args?: any[]) => void) | undefined,
   onIgnoredError: ((error: any) => void) | undefined,
   db: any,
+  getThing = 'getDb',
 ): Persister => {
   let dataVersion: number | null;
   let schemaVersion: number | null;
@@ -100,5 +101,6 @@ export const createSqlitePersister = <UpdateListeningHandle>(
     defaultedConfig as any,
     collValues(managedTableNamesSet),
     db,
+    getThing,
   );
 };

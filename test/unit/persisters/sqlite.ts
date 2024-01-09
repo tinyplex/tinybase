@@ -48,7 +48,7 @@ export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
         const conn = await ElectricDatabase.init(':memory:', '');
         return await electrify(conn, electricSchema, config);
       }),
-    ['getDb', (electric: Electric) => electric],
+    ['getElectricClient', (electric: Electric) => electric],
     (
       store: Store,
       electric: Electric,
