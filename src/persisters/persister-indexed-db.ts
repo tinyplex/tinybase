@@ -85,6 +85,7 @@ export const createIndexedDbPersister = ((
           request.result.close();
           resolve(result as [any, any]);
         } catch (e) {
+          request.result.close();
           reject(e);
         }
       };
