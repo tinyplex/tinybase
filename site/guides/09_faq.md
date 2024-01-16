@@ -52,6 +52,5 @@ Please see the [demos](/demos/) for ideas!
 ## What If I Have Other Questions?
 
 Please open a pull request or issue on GitHub and ask! Or ping the project on
-[Twitter](https://twitter.com/tinybasejs), <a
-href='https://discord.com/invite/mGz3mevwP8'>Discord</a>, or
+[Twitter](https://twitter.com/tinybasejs), [Discord](https://discord.com/invite/mGz3mevwP8), or
 [Facebook](https://facebook.com/tinybasejs).
