@@ -281,7 +281,7 @@ const useListenable = (
   const getResult = useCallback(
     () => thing?.[getterPrefix + listenable]?.(...args) ?? defaulted,
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
-    [thing, listenable, ...args, defaulted],
+    [thing, getterPrefix, listenable, ...args, defaulted],
   );
   const result = useRef();
   useMemo(() => (result.current = getResult()), [getResult]);
