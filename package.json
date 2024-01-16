@@ -258,7 +258,7 @@
     "eslint-plugin-jsdoc": "^48.0.2",
     "eslint-plugin-react": "7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "expo-sqlite": "^12.1.0",
+    "expo-sqlite": "^13.2.1",
     "fake-indexeddb": "^5.0.2",
     "gulp": "^4.0.2",
     "gulp-gzip": "^1.4.2",

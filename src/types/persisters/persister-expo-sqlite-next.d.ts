@@ -1,19 +1,19 @@
 /// persister-expo-sqlite-next
 
 import {DatabasePersisterConfig, Persister} from '../persisters';
-import {Database} from 'expo-sqlite/next';
+import {SQLiteDatabase} from 'expo-sqlite/next';
 import {Store} from '../store';
 
 /// ExpoSqliteNextPersister
 export interface ExpoSqliteNextPersister extends Persister {
   /// ExpoSqliteNextPersister.getDb
-  getDb(): Database;
+  getDb(): SQLiteDatabase;
 }
 
 /// createExpoSqliteNextPersister
 export function createExpoSqliteNextPersister(
   store: Store,
-  db: Database,
+  db: SQLiteDatabase,
   configOrStoreTableName?: DatabasePersisterConfig | string,
   onSqlCommand?: (sql: string, args?: any[]) => void,
   onIgnoredError?: (error: any) => void,
