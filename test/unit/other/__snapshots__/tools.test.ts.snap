@@ -70,10 +70,8 @@ export type Cell<TId extends TableId, CId extends CellId<TId>> = NonNullable<
 /**
  * Cell Ids and types in a Row.
  */
-type CellIdCellArray<
-  TId extends TableId,
-  CId = CellId<TId>,
-> = CId extends CellId<TId> ? [cellId: CId, cell: Cell<TId, CId>] : never;
+type CellIdCellArray<TId extends TableId, CId = CellId<TId>> =
+  CId extends CellId<TId> ? [cellId: CId, cell: Cell<TId, CId>] : never;
 
 /**
  * A function that takes a Cell Id, and Cell.
@@ -174,9 +172,10 @@ export type TableCellIdsListener = (s: S, tableId: TableId) => void;
 type HasTableCellListenerArgsArrayInner<
   TId extends TableId,
   CId = CellId<TId>,
-> = CId extends CellId<TId>
-  ? [s: S, tableId: TId, cellId: CId, hasTableCell: boolean]
-  : never;
+> =
+  CId extends CellId<TId>
+    ? [s: S, tableId: TId, cellId: CId, hasTableCell: boolean]
+    : never;
 
 /**
  * Table args for HasTableCellListener.
@@ -244,12 +243,10 @@ export type CellIdsListener = (s: S, tableId: TableId, rowId: Id) => void;
 /**
  * Cell args for HasCellListener.
  */
-type HasCellListenerArgsArrayInner<
-  TId extends TableId,
-  CId = CellId<TId>,
-> = CId extends CellId<TId>
-  ? [s: S, tableId: TId, rowId: Id, cellId: CId, hasCell: boolean]
-  : never;
+type HasCellListenerArgsArrayInner<TId extends TableId, CId = CellId<TId>> =
+  CId extends CellId<TId>
+    ? [s: S, tableId: TId, rowId: Id, cellId: CId, hasCell: boolean]
+    : never;
 
 /**
  * Table args for HasCellListener.
@@ -268,20 +265,18 @@ export type HasCellListener = (
 /**
  * Cell args for CellListener.
  */
-type CellListenerArgsArrayInner<
-  TId extends TableId,
-  CId = CellId<TId>,
-> = CId extends CellId<TId>
-  ? [
-      s: S,
-      tableId: TId,
-      rowId: Id,
-      cellId: CId,
-      newCell: Cell<TId, CId> | undefined,
-      oldCell: Cell<TId, CId> | undefined,
-      getCellChange: GetCellChange | undefined,
-    ]
-  : never;
+type CellListenerArgsArrayInner<TId extends TableId, CId = CellId<TId>> =
+  CId extends CellId<TId>
+    ? [
+        s: S,
+        tableId: TId,
+        rowId: Id,
+        cellId: CId,
+        newCell: Cell<TId, CId> | undefined,
+        oldCell: Cell<TId, CId> | undefined,
+        getCellChange: GetCellChange | undefined,
+      ]
+    : never;
 
 /**
  * Table args for CellListener.
@@ -5407,10 +5402,8 @@ export type Cell<TId extends TableId, CId extends CellId<TId>> = NonNullable<
 /**
  * Cell Ids and types in a Row.
  */
-type CellIdCellArray<
-  TId extends TableId,
-  CId = CellId<TId>,
-> = CId extends CellId<TId> ? [cellId: CId, cell: Cell<TId, CId>] : never;
+type CellIdCellArray<TId extends TableId, CId = CellId<TId>> =
+  CId extends CellId<TId> ? [cellId: CId, cell: Cell<TId, CId>] : never;
 
 /**
  * A function that takes a Cell Id, and Cell.
@@ -5511,9 +5504,10 @@ export type TableCellIdsListener = (s: S, tableId: TableId) => void;
 type HasTableCellListenerArgsArrayInner<
   TId extends TableId,
   CId = CellId<TId>,
-> = CId extends CellId<TId>
-  ? [s: S, tableId: TId, cellId: CId, hasTableCell: boolean]
-  : never;
+> =
+  CId extends CellId<TId>
+    ? [s: S, tableId: TId, cellId: CId, hasTableCell: boolean]
+    : never;
 
 /**
  * Table args for HasTableCellListener.
@@ -5581,12 +5575,10 @@ export type CellIdsListener = (s: S, tableId: TableId, rowId: Id) => void;
 /**
  * Cell args for HasCellListener.
  */
-type HasCellListenerArgsArrayInner<
-  TId extends TableId,
-  CId = CellId<TId>,
-> = CId extends CellId<TId>
-  ? [s: S, tableId: TId, rowId: Id, cellId: CId, hasCell: boolean]
-  : never;
+type HasCellListenerArgsArrayInner<TId extends TableId, CId = CellId<TId>> =
+  CId extends CellId<TId>
+    ? [s: S, tableId: TId, rowId: Id, cellId: CId, hasCell: boolean]
+    : never;
 
 /**
  * Table args for HasCellListener.
@@ -5605,20 +5597,18 @@ export type HasCellListener = (
 /**
  * Cell args for CellListener.
  */
-type CellListenerArgsArrayInner<
-  TId extends TableId,
-  CId = CellId<TId>,
-> = CId extends CellId<TId>
-  ? [
-      s: S,
-      tableId: TId,
-      rowId: Id,
-      cellId: CId,
-      newCell: Cell<TId, CId> | undefined,
-      oldCell: Cell<TId, CId> | undefined,
-      getCellChange: GetCellChange | undefined,
-    ]
-  : never;
+type CellListenerArgsArrayInner<TId extends TableId, CId = CellId<TId>> =
+  CId extends CellId<TId>
+    ? [
+        s: S,
+        tableId: TId,
+        rowId: Id,
+        cellId: CId,
+        newCell: Cell<TId, CId> | undefined,
+        oldCell: Cell<TId, CId> | undefined,
+        getCellChange: GetCellChange | undefined,
+      ]
+    : never;
 
 /**
  * Table args for CellListener.

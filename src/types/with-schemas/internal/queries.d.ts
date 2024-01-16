@@ -8,8 +8,9 @@ export type JoinedCellIdOrId<
   JoinedTableId extends TableIdFromSchema<Schema> | Id =
     | TableIdFromSchema<Schema>
     | Id,
-> = JoinedTableId extends TableIdFromSchema<Schema>
-  ? CellIdFromSchema<Schema, JoinedTableId>
-  : Id;
+> =
+  JoinedTableId extends TableIdFromSchema<Schema>
+    ? CellIdFromSchema<Schema, JoinedTableId>
+    : Id;
 
 export type GetResultCell = (cellId: Id) => ResultCell;

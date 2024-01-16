@@ -34,9 +34,10 @@ export type DefaultCellIdFromSchema<
 export type AllCellIdFromSchema<
   Schema extends OptionalTablesSchema,
   TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
-> = TableId extends TableIdFromSchema<Schema>
-  ? CellIdFromSchema<Schema, TableId>
-  : never;
+> =
+  TableId extends TableIdFromSchema<Schema>
+    ? CellIdFromSchema<Schema, TableId>
+    : never;
 
 export type CellIsDefaultedFromSchema<
   Schema extends OptionalTablesSchema,
