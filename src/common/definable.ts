@@ -256,7 +256,7 @@ export const getRowCellFunction = <RowValue>(
       ((): RowValue => defaultCellValue ?? (EMPTY_STRING as any as RowValue));
 
 export const getCreateFunction = <
-  Things extends
+  Thing extends
     | Metrics
     | Indexes
     | Relationships
@@ -264,13 +264,13 @@ export const getCreateFunction = <
     | Queries
     | Tools,
 >(
-  getFunction: (store: Store) => Things,
-): ((store: Store) => Things) => {
-  const getFunctionsByStore: WeakMap<Store, Things> = new WeakMap();
-  return (store: Store): Things => {
-    if (!getFunctionsByStore.has(store)) {
-      getFunctionsByStore.set(store, getFunction(store));
+  getFunction: (store: Store) => Thing,
+): ((store: Store) => Thing) => {
+  const thingsByStore: WeakMap<Store, Thing> = new WeakMap();
+  return (store: Store): Thing => {
+    if (!thingsByStore.has(store)) {
+      thingsByStore.set(store, getFunction(store));
     }
-    return getFunctionsByStore.get(store) as Things;
+    return thingsByStore.get(store) as Thing;
   };
 };
