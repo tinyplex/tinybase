@@ -4574,13 +4574,11 @@
  *
  * It is possible to create a Metrics object outside of the React app with the
  * regular createMetrics function and pass it in, but you may prefer to create
- * it within the app, perhaps inside the top-level component. To defend against
- * a new Metrics object being created every time the app renders or re-renders,
- * the useCreateMetrics hook wraps the creation in a memoization.
- *
- * The useCreateMetrics hook is a very thin wrapper around the React `useMemo`
- * hook, defaulting to the provided Store as its dependency, so that by default,
- * the creation only occurs once per Store.
+ * it within the app, perhaps inside the top-level component. To prevent a new
+ * Metrics object being created every time the app renders or re-renders, since
+ * v5.0 the useCreateMetrics hook performs the creation in an effect. As a
+ * result this hook will return `undefined` on the brief first render, which you
+ * should defend against.
  *
  * If your `create` function contains other dependencies, the changing of which
  * should also cause the Metrics object to be recreated, you can provide them in
@@ -4615,7 +4613,7 @@
  *       'species',
  *     );
  *   });
- *   return <span>{metrics.getMetric('speciesCount')}</span>;
+ *   return <span>{metrics?.getMetric('speciesCount')}</span>;
  * };
  *
  * const app = document.createElement('div');
@@ -4653,7 +4651,7 @@
  *     },
  *     [tableToCount],
  *   );
- *   return <span>{metrics.getMetric('tableCount')}</span>;
+ *   return <span>{metrics?.getMetric('tableCount')}</span>;
  * };
  *
  * const app = document.createElement('div');
@@ -5035,13 +5033,11 @@
  *
  * It is possible to create an Indexes object outside of the React app with the
  * regular createIndexes function and pass it in, but you may prefer to create
- * it within the app, perhaps inside the top-level component. To defend against
- * a new Indexes object being created every time the app renders or re-renders,
- * the useCreateIndexes hook wraps the creation in a memoization.
- *
- * The useCreateIndexes hook is a very thin wrapper around the React `useMemo`
- * hook, defaulting to the provided Store as its dependency, so that by default,
- * the creation only occurs once per Store.
+ * it within the app, perhaps inside the top-level component. To prevent a new
+ * Indexes object being created every time the app renders or re-renders, since
+ * v5.0 the useCreateIndexes hook performs the creation in an effect. As a
+ * result this hook will return `undefined` on the brief first render, which you
+ * should defend against.
  *
  * If your `create` function contains other dependencies, the changing of which
  * should also cause the Indexes object to be recreated, you can provide them in
@@ -5081,7 +5077,7 @@
  *       'species',
  *     );
  *   });
- *   return <span>{JSON.stringify(indexes.getSliceIds('bySpecies'))}</span>;
+ *   return <span>{JSON.stringify(indexes?.getSliceIds('bySpecies'))}</span>;
  * };
  *
  * const app = document.createElement('div');
@@ -5122,7 +5118,7 @@
  *     },
  *     [cellToIndex],
  *   );
- *   return <span>{JSON.stringify(indexes.getSliceIds('byCell'))}</span>;
+ *   return <span>{JSON.stringify(indexes?.getSliceIds('byCell'))}</span>;
  * };
  *
  * const app = document.createElement('div');
@@ -5690,13 +5686,10 @@
  * It is possible to create a Relationships object outside of the React app with
  * the regular createRelationships function and pass it in, but you may prefer
  * to create it within the app, perhaps inside the top-level component. To
- * defend against a new Relationships object being created every time the app
- * renders or re-renders, the useCreateRelationships hook wraps the creation in
- * a memoization.
- *
- * The useCreateRelationships hook is a very thin wrapper around the React
- * `useMemo` hook, defaulting to the provided Store as its dependency, so that
- * by default, the creation only occurs once per Store.
+ * prevent a new Relationships object being created every time the app renders
+ * or re-renders, since v5.0 the useCreateRelationships hook performs the
+ * creation in an effect. As a result this hook will return `undefined` on the
+ * brief first render, which you should defend against.
  *
  * If your `create` function contains other dependencies, the changing of which
  * should also cause the Relationships object to be recreated, you can provide
@@ -5738,7 +5731,7 @@
  *       'species',
  *     );
  *   });
- *   return <span>{relationships.getRemoteRowId('petSpecies', 'fido')}</span>;
+ *   return <span>{relationships?.getRemoteRowId('petSpecies', 'fido')}</span>;
  * };
  *
  * const app = document.createElement('div');
@@ -5784,7 +5777,7 @@
  *     },
  *     [remoteTableAndCellToLink],
  *   );
- *   return <span>{relationships.getRemoteRowId('cellLinked', 'fido')}</span>;
+ *   return <span>{relationships?.getRemoteRowId('cellLinked', 'fido')}</span>;
  * };
  *
  * const app = document.createElement('div');
@@ -6604,13 +6597,11 @@
  *
  * It is possible to create a Queries object outside of the React app with the
  * regular createQueries function and pass it in, but you may prefer to create
- * it within the app, perhaps inside the top-level component. To defend against
- * a new Queries object being created every time the app renders or re-renders,
- * the useCreateQueries hook wraps the creation in a memoization.
- *
- * The useCreateQueries hook is a very thin wrapper around the React `useMemo`
- * hook, defaulting to the provided Store as its dependency, so that by default,
- * the creation only occurs once per Store.
+ * it within the app, perhaps inside the top-level component. To prevent a new
+ * Queries object being created every time the app renders or re-renders, since
+ * v5.0 the useCreateQueries hook performs the creation in an effect. As a
+ * result this hook will return `undefined` on the brief first render, which you
+ * should defend against.
  *
  * If your `create` function contains other dependencies, the changing of which
  * should also cause the Queries object to be recreated, you can provide them in
@@ -6653,7 +6644,7 @@
  *     );
  *   });
  *   return (
- *     <span>{queries.getResultCell('dogColors', 'fido', 'color')}</span>
+ *     <span>{queries?.getResultCell('dogColors', 'fido', 'color')}</span>
  *   );
  * };
  *
@@ -6695,7 +6686,7 @@
  *     );
  *   });
  *   return (
- *     <span>{queries.getResultCell('dogColors', 'fido', 'color')}</span>
+ *     <span>{queries?.getResultCell('dogColors', 'fido', 'color')}</span>
  *   );
  * };
  *
@@ -8501,14 +8492,11 @@
  *
  * It is possible to create a Checkpoints object outside of the React app with
  * the regular createCheckpoints function and pass it in, but you may prefer to
- * create it within the app, perhaps inside the top-level component. To defend
- * against a new Checkpoints object being created every time the app renders or
- * re-renders, the useCreateCheckpoints hook wraps the creation in a
- * memoization.
- *
- * The useCreateCheckpoints hook is a very thin wrapper around the React
- * `useMemo` hook, defaulting to the provided Store as its dependency, so that
- * by default, the creation only occurs once per Store.
+ * create it within the app, perhaps inside the top-level component. To prevent
+ * a new Checkpoints object being created every time the app renders or
+ * re-renders, since v5.0 the useCreateMetrics hook performs the creation in an
+ * effect. As a result this hook will return `undefined` on the brief first
+ * render, which you should defend against.
  *
  * If your `create` function contains other dependencies, the changing of which
  * should also cause the Checkpoints object to be recreated, you can provide
@@ -8538,7 +8526,7 @@
  *     console.log('Checkpoints created');
  *     return createCheckpoints(store).setSize(10);
  *   });
- *   return <span>{JSON.stringify(checkpoints.getCheckpointIds())}</span>;
+ *   return <span>{JSON.stringify(checkpoints?.getCheckpointIds())}</span>;
  * };
  *
  * const app = document.createElement('div');
@@ -8570,7 +8558,7 @@
  *     },
  *     [size],
  *   );
- *   return <span>{JSON.stringify(checkpoints.getCheckpointIds())}</span>;
+ *   return <span>{JSON.stringify(checkpoints?.getCheckpointIds())}</span>;
  * };
  *
  * const app = document.createElement('div');
