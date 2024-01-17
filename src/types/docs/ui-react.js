@@ -150,9 +150,9 @@
  *
  * It is possible to create a Store outside of the React app with the regular
  * createStore function and pass it in, but you may prefer to create it within
- * the app, perhaps inside the top-level component. To defend against a new
- * Store being created every time the app renders or re-renders, the
- * useCreateStore hook wraps the creation in a memoization.
+ * the app, perhaps inside the top-level component. To prevent a new Store being
+ * created every time the app renders or re-renders, the useCreateStore hook
+ * wraps the creation in a memoization.
  *
  * The useCreateStore hook is a very thin wrapper around the React `useMemo`
  * hook, defaulting to an empty array for its dependencies, so that by default,
