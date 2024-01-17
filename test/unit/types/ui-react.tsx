@@ -1195,8 +1195,8 @@ const _Metrics = () => {
     createStore().setSchema(tablesSchema, valuesSchema),
     createMetrics,
   );
-  metricsWithSchema.getStore().getTables().t1;
-  metricsWithSchema.getStore().getTables().t2; // !
+  metricsWithSchema?.getStore().getTables().t1;
+  metricsWithSchema?.getStore().getTables().t2; // !
   useCreateMetrics(createStore(), createMetrics); // !
 
   useMetrics()?.getStore().getTables().t1;
@@ -1213,8 +1213,8 @@ const _Indexes = () => {
     createStore().setSchema(tablesSchema, valuesSchema),
     createIndexes,
   );
-  indexesWithSchema.getStore().getTables().t1;
-  indexesWithSchema.getStore().getTables().t2; // !
+  indexesWithSchema?.getStore().getTables().t1;
+  indexesWithSchema?.getStore().getTables().t2; // !
   useCreateIndexes(createStore(), createIndexes); // !
 
   useIndexes()?.getStore().getTables().t1;
@@ -1236,8 +1236,8 @@ const _Relationships = () => {
     createStore().setSchema(tablesSchema, valuesSchema),
     createRelationships,
   );
-  relationshipsWithSchema.getStore().getTables().t1;
-  relationshipsWithSchema.getStore().getTables().t2; // !
+  relationshipsWithSchema?.getStore().getTables().t1;
+  relationshipsWithSchema?.getStore().getTables().t2; // !
   useCreateRelationships(createStore(), createRelationships); // !
 
   useRelationships()?.getStore().getTables().t1;
@@ -1264,8 +1264,8 @@ const _Queries = () => {
     createStore().setSchema(tablesSchema, valuesSchema),
     createQueries,
   );
-  queriesWithSchema.getStore().getTables().t1;
-  queriesWithSchema.getStore().getTables().t2; // !
+  queriesWithSchema?.getStore().getTables().t1;
+  queriesWithSchema?.getStore().getTables().t2; // !
   useCreateQueries(createStore(), createQueries); // !
 
   useQueries()?.getStore().getTables().t1;
@@ -1307,8 +1307,8 @@ const _Checkpoints = () => {
     createStore().setSchema(tablesSchema, valuesSchema),
     createCheckpoints,
   );
-  checkpointsWithSchema.getStore().getTables().t1;
-  checkpointsWithSchema.getStore().getTables().t2; // !
+  checkpointsWithSchema?.getStore().getTables().t1;
+  checkpointsWithSchema?.getStore().getTables().t2; // !
   useCreateCheckpoints(createStore(), createCheckpoints); // !
 
   useCheckpoints()?.getStore().getTables().t1;
