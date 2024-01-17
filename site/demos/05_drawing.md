@@ -218,7 +218,7 @@ useCreatePersister(
         1: {},
       },
     });
-    checkpoints.clear();
+    checkpoints?.clear();
     await persister.startAutoSave();
   },
   [checkpoints],
