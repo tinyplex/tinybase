@@ -265,12 +265,15 @@ export const getCreateFunction = <
     | Tools,
 >(
   getFunction: (store: Store) => Thing,
+  initFunction?: (thing: Thing) => void,
 ): ((store: Store) => Thing) => {
   const thingsByStore: WeakMap<Store, Thing> = new WeakMap();
   return (store: Store): Thing => {
     if (!thingsByStore.has(store)) {
       thingsByStore.set(store, getFunction(store));
     }
-    return thingsByStore.get(store) as Thing;
+    const thing = thingsByStore.get(store) as Thing;
+    initFunction?.(thing);
+    return thing;
   };
 };
