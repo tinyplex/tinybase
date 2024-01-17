@@ -122,58 +122,8 @@ export const createCheckpoints = getCreateFunction(
       checkpointsChanged = 1;
     };
 
-    const cellListenerId = store.addCellListener(
-      null,
-      null,
-      null,
-      (_store, tableId, rowId, cellId, newCell, oldCell) => {
-        if (listening) {
-          storeChanged();
-          const table = mapEnsure<Id, IdMap2<ChangedCell>>(
-            cellsDelta,
-            tableId,
-            mapNew,
-          );
-          const row = mapEnsure<Id, IdMap<ChangedCell>>(table, rowId, mapNew);
-          const oldNew = mapEnsure<Id, ChangedCell>(row, cellId, () => [
-            oldCell,
-            undefined,
-          ]);
-          oldNew[1] = newCell;
-          if (
-            oldNew[0] === newCell &&
-            collIsEmpty(mapSet(row, cellId)) &&
-            collIsEmpty(mapSet(table, rowId)) &&
-            collIsEmpty(mapSet(cellsDelta, tableId))
-          ) {
-            storeUnchanged();
-          }
-          callListenersIfChanged();
-        }
-      },
-    );
-
-    const valueListenerId = store.addValueListener(
-      null,
-      (_store, valueId, newValue, oldValue) => {
-        if (listening) {
-          storeChanged();
-          const oldNew = mapEnsure<Id, ChangedValue>(
-            valuesDelta,
-            valueId,
-            () => [oldValue, undefined],
-          );
-          oldNew[1] = newValue;
-          if (
-            oldNew[0] === newValue &&
-            collIsEmpty(mapSet(valuesDelta, valueId))
-          ) {
-            storeUnchanged();
-          }
-          callListenersIfChanged();
-        }
-      },
-    );
+    let cellListenerId: string;
+    let valueListenerId: string;
 
     const addCheckpointImpl = (label = EMPTY_STRING): Id => {
       if (isUndefined(currentId)) {
@@ -322,7 +272,62 @@ export const createCheckpoints = getCreateFunction(
           }
         : {};
 
-    const checkpoints: Checkpoints = {
+    const _registerListeners = () => {
+      cellListenerId = store.addCellListener(
+        null,
+        null,
+        null,
+        (_store, tableId, rowId, cellId, newCell, oldCell) => {
+          if (listening) {
+            storeChanged();
+            const table = mapEnsure<Id, IdMap2<ChangedCell>>(
+              cellsDelta,
+              tableId,
+              mapNew,
+            );
+            const row = mapEnsure<Id, IdMap<ChangedCell>>(table, rowId, mapNew);
+            const oldNew = mapEnsure<Id, ChangedCell>(row, cellId, () => [
+              oldCell,
+              undefined,
+            ]);
+            oldNew[1] = newCell;
+            if (
+              oldNew[0] === newCell &&
+              collIsEmpty(mapSet(row, cellId)) &&
+              collIsEmpty(mapSet(table, rowId)) &&
+              collIsEmpty(mapSet(cellsDelta, tableId))
+            ) {
+              storeUnchanged();
+            }
+            callListenersIfChanged();
+          }
+        },
+      );
+
+      valueListenerId = store.addValueListener(
+        null,
+        (_store, valueId, newValue, oldValue) => {
+          if (listening) {
+            storeChanged();
+            const oldNew = mapEnsure<Id, ChangedValue>(
+              valuesDelta,
+              valueId,
+              () => [oldValue, undefined],
+            );
+            oldNew[1] = newValue;
+            if (
+              oldNew[0] === newValue &&
+              collIsEmpty(mapSet(valuesDelta, valueId))
+            ) {
+              storeUnchanged();
+            }
+            callListenersIfChanged();
+          }
+        },
+      );
+    };
+
+    const checkpoints = {
       setSize,
       addCheckpoint,
       setCheckpoint,
@@ -345,8 +350,11 @@ export const createCheckpoints = getCreateFunction(
       clearForward,
       destroy,
       getListenerStats,
+
+      _registerListeners,
     };
 
     return objFreeze(checkpoints.clear());
   },
+  (checkpoints: any) => checkpoints._registerListeners(),
 ) as typeof createCheckpointsDecl;
