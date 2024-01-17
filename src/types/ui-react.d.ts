@@ -569,7 +569,7 @@ export function useCreateMetrics(
   store: Store,
   create: (store: Store) => Metrics,
   createDeps?: React.DependencyList,
-): Metrics;
+): Metrics | undefined;
 
 /// useMetricsIds
 export function useMetricsIds(): Ids;
@@ -604,7 +604,7 @@ export function useCreateIndexes(
   store: Store,
   create: (store: Store) => Indexes,
   createDeps?: React.DependencyList,
-): Indexes;
+): Indexes | undefined;
 
 /// useIndexesIds
 export function useIndexesIds(): Ids;
@@ -655,7 +655,7 @@ export function useCreateRelationships(
   store: Store,
   create: (store: Store) => Relationships,
   createDeps?: React.DependencyList,
-): Relationships;
+): Relationships | undefined;
 
 /// useRelationshipsIds
 export function useRelationshipsIds(): Ids;
@@ -726,7 +726,7 @@ export function useCreateQueries(
   store: Store,
   create: (store: Store) => Queries,
   createDeps?: React.DependencyList,
-): Queries;
+): Queries | undefined;
 
 /// useQueriesIds
 export function useQueriesIds(): Ids;
@@ -875,7 +875,7 @@ export function useCreateCheckpoints(
   store: Store,
   create: (store: Store) => Checkpoints,
   createDeps?: React.DependencyList,
-): Checkpoints;
+): Checkpoints | undefined;
 
 /// useCheckpointsIds
 export function useCheckpointsIds(): Ids;
