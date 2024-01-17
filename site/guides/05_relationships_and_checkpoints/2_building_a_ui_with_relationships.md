@@ -66,7 +66,7 @@ const App2 = () => {
       'species',
     ),
   );
-  return <span>{relationships.getRemoteRowId('petSpecies', 'fido')}</span>;
+  return <span>{relationships?.getRemoteRowId('petSpecies', 'fido')}</span>;
 };
 
 root.render(<App2 />); // !act

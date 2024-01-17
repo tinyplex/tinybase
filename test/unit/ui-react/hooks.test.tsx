@@ -183,7 +183,10 @@ describe('Create Hooks', () => {
 
   test('useCreateMetrics', () => {
     const initStore = jest.fn(() =>
-      createStore().setTables({t1: {r1: {c1: 1}}, t2: {r1: {c2: 2}}}),
+      createStore().setTables({
+        t1: {r1: {c1: 1}},
+        t2: {r1: {c2: 2}, r2: {c2: 2}},
+      }),
     );
     const initMetrics = jest.fn((store: Store, count) =>
       createMetrics(store).setMetricDefinition('m1', `t${count}`),
@@ -195,7 +198,9 @@ describe('Create Hooks', () => {
         (store) => initMetrics(store, count),
         [count],
       );
-      return didRender(<>{JSON.stringify([count, metrics.getMetric('m1')])}</>);
+      return didRender(
+        <>{JSON.stringify([count, metrics?.getMetric('m1')])}</>,
+      );
     };
     act(() => {
       renderer = create(<Test count={1} />);
@@ -204,8 +209,8 @@ describe('Create Hooks', () => {
     act(() => {
       renderer.update(<Test count={2} />);
     });
-    expect(renderer.toJSON()).toEqual(JSON.stringify([2, 1]));
-    expect(didRender).toHaveBeenCalledTimes(2);
+    expect(renderer.toJSON()).toEqual(JSON.stringify([2, 2]));
+    expect(didRender).toHaveBeenCalledTimes(4);
     expect(initStore).toHaveBeenCalledTimes(1);
     expect(initMetrics).toHaveBeenCalledTimes(2);
   });
@@ -220,7 +225,9 @@ describe('Create Hooks', () => {
     const Test = ({count}: {count: number}) => {
       const store = useCreateStore(() => initStore());
       const metrics = useCreateMetrics(store, (store) => initMetrics(store));
-      return didRender(<>{JSON.stringify([count, metrics.getMetric('m1')])}</>);
+      return didRender(
+        <>{JSON.stringify([count, metrics?.getMetric('m1')])}</>,
+      );
     };
     act(() => {
       renderer = create(<Test count={1} />);
@@ -233,18 +240,18 @@ describe('Create Hooks', () => {
       renderer.unmount();
     });
     expect(renderer.toJSON()).toBeNull();
-    expect(didRender).toHaveBeenCalledTimes(2);
+    expect(didRender).toHaveBeenCalledTimes(3);
     expect(initStore).toHaveBeenCalledTimes(1);
     expect(initMetrics).toHaveBeenCalledTimes(1);
   });
 
-  test('useCreateIndexes', () => {
+  test('useCreateIndexes', async () => {
     const initStore = jest.fn(() =>
       createStore().setTables({t1: {r1: {c1: 1}, r2: {c2: 1}}}),
     );
-    const initIndexes = jest.fn((store: Store, count) =>
-      createIndexes(store).setIndexDefinition('i1', 't1', `c${count}`),
-    );
+    const initIndexes = jest.fn((store: Store, count) => {
+      return createIndexes(store).setIndexDefinition('i1', 't1', `c${count}`);
+    });
     const Test = ({count}: {count: number}) => {
       const store = useCreateStore(() => initStore());
       const indexes = useCreateIndexes(
@@ -253,7 +260,7 @@ describe('Create Hooks', () => {
         [count],
       );
       return didRender(
-        <>{JSON.stringify([count, indexes.getSliceRowIds('i1', '1')])}</>,
+        <>{JSON.stringify([count, indexes?.getSliceRowIds('i1', '1')])}</>,
       );
     };
     act(() => {
@@ -264,7 +271,7 @@ describe('Create Hooks', () => {
       renderer.update(<Test count={2} />);
     });
     expect(renderer.toJSON()).toEqual(JSON.stringify([2, ['r2']]));
-    expect(didRender).toHaveBeenCalledTimes(2);
+    expect(didRender).toHaveBeenCalledTimes(4);
     expect(initStore).toHaveBeenCalledTimes(1);
     expect(initIndexes).toHaveBeenCalledTimes(2);
   });
@@ -294,7 +301,7 @@ describe('Create Hooks', () => {
       );
       return didRender(
         <>
-          {JSON.stringify([count, relationships.getRemoteRowId('r1', 'r1')])}
+          {JSON.stringify([count, relationships?.getRemoteRowId('r1', 'r1')])}
         </>,
       );
     };
@@ -306,7 +313,7 @@ describe('Create Hooks', () => {
       renderer.update(<Test count={2} />);
     });
     expect(renderer.toJSON()).toEqual(JSON.stringify([2, 'R2']));
-    expect(didRender).toHaveBeenCalledTimes(2);
+    expect(didRender).toHaveBeenCalledTimes(4);
     expect(initStore).toHaveBeenCalledTimes(1);
     expect(initRelationships).toHaveBeenCalledTimes(2);
   });
@@ -328,7 +335,7 @@ describe('Create Hooks', () => {
         [count],
       );
       return didRender(
-        <>{JSON.stringify([count, queries.getResultTable('q1')])}</>,
+        <>{JSON.stringify([count, queries?.getResultTable('q1')])}</>,
       );
     };
     act(() => {
@@ -339,7 +346,7 @@ describe('Create Hooks', () => {
       renderer.update(<Test count={2} />);
     });
     expect(renderer.toJSON()).toEqual(JSON.stringify([2, {r2: {c2: 2}}]));
-    expect(didRender).toHaveBeenCalledTimes(2);
+    expect(didRender).toHaveBeenCalledTimes(4);
     expect(initStore).toHaveBeenCalledTimes(1);
     expect(initQueries).toHaveBeenCalledTimes(2);
   });
@@ -365,9 +372,9 @@ describe('Create Hooks', () => {
         <>
           {JSON.stringify([
             count,
-            checkpoints.getCheckpointIds(),
-            checkpoints.getCheckpoint('1'),
-            checkpoints.getCheckpoint('2'),
+            checkpoints?.getCheckpointIds(),
+            checkpoints?.getCheckpoint('1'),
+            checkpoints?.getCheckpoint('2'),
           ])}
         </>,
       );
@@ -384,7 +391,7 @@ describe('Create Hooks', () => {
     expect(renderer.toJSON()).toEqual(
       JSON.stringify([2, [['0', '1'], '2', []], 'checkpoint1', 'checkpoint2']),
     );
-    expect(didRender).toHaveBeenCalledTimes(2);
+    expect(didRender).toHaveBeenCalledTimes(4);
     expect(initStore).toHaveBeenCalledTimes(1);
     expect(initCheckpoints).toHaveBeenCalledTimes(2);
   });
