@@ -2303,8 +2303,8 @@
  * specify `reuseRowIds` to be `false`, then the Id will be a monotonically
  * increasing string representation of an increasing integer, regardless of any
  * you may have previously deleted.
- * @param tableId The Id of the Table in the Store, or a GetId function
- * that will return it.
+ * @param tableId The Id of the Table in the Store, or a GetId function that
+ * will return it.
  * @param getRow A function which returns the Row object that will be used to
  * update the Store, based on the parameter the callback will receive (and which
  * is most likely a DOM event).
@@ -3347,8 +3347,8 @@
  * dependencies) or the component unmounts, the listener on the underlying Store
  * will be deleted.
  * @param tableId The Id of the Table to listen to, or `null` as a wildcard.
- * @param listener The function that will be called whenever the matching
- * Table is added or removed.
+ * @param listener The function that will be called whenever the matching Table
+ * is added or removed.
  * @param listenerDeps An optional array of dependencies for the `listener`
  * function, which, if any change, result in the re-registration of the
  * listener. This parameter defaults to an empty array.
@@ -3779,8 +3779,8 @@
  * more easily done with the useHasRow hook).
  *
  * You can either listen to a single Row being added or removed (by specifying
- * the Table Id and Row Id, as the method's first two parameters) or changes
- * to any Row (by providing `null` wildcards).
+ * the Table Id and Row Id, as the method's first two parameters) or changes to
+ * any Row (by providing `null` wildcards).
  *
  * Both, either, or neither of the `tableId` and `rowId` parameters can be
  * wildcarded with `null`. You can listen to a specific Row in a specific Table,
@@ -3793,8 +3793,8 @@
  * the component unmounts, the listener on the underlying Store will be deleted.
  * @param tableId The Id of the Table to listen to, or `null` as a wildcard.
  * @param rowId The Id of the Row to listen to, or `null` as a wildcard.
- * @param listener The function that will be called whenever the matching Row
- * is added or removed.
+ * @param listener The function that will be called whenever the matching Row is
+ * added or removed.
  * @param listenerDeps An optional array of dependencies for the `listener`
  * function, which, if any change, result in the re-registration of the
  * listener. This parameter defaults to an empty array.
@@ -3982,14 +3982,14 @@
  * own specific listener to do more than simply tracking the value (which is
  * more easily done with the useHasCell hook).
  *
- * You can either listen to a single Cell being added or removed (by
- * specifying the Table Id, Row Id, and Cell Id as the method's first three
- * parameters) or changes to any Cell (by providing `null` wildcards).
+ * You can either listen to a single Cell being added or removed (by specifying
+ * the Table Id, Row Id, and Cell Id as the method's first three parameters) or
+ * changes to any Cell (by providing `null` wildcards).
  *
- * All, some, or none of the `tableId`, `rowId`, and `cellId` parameters can
- * be wildcarded with `null`. You can listen to a specific Cell in a specific
- * Row in a specific Table, any Cell in any Row in any Table, for example - or
- * every other combination of wildcards.
+ * All, some, or none of the `tableId`, `rowId`, and `cellId` parameters can be
+ * wildcarded with `null`. You can listen to a specific Cell in a specific Row
+ * in a specific Table, any Cell in any Row in any Table, for example - or every
+ * other combination of wildcards.
  *
  * Unlike the addHasCellListener method, which returns a listener Id and
  * requires you to remove it manually, the useHasCellListener hook manages this
@@ -4303,8 +4303,8 @@
  * dependencies) or the component unmounts, the listener on the underlying Store
  * will be deleted.
  * @param valueId The Id of the Value to listen to, or `null` as a wildcard.
- * @param listener The function that will be called whenever the matching
- * Value is added or removed.
+ * @param listener The function that will be called whenever the matching Value
+ * is added or removed.
  * @param listenerDeps An optional array of dependencies for the `listener`
  * function, which, if any change, result in the re-registration of the
  * listener. This parameter defaults to an empty array.
