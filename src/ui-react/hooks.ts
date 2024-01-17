@@ -259,12 +259,18 @@ const useCreate = (
   create: (store: Store) => any,
   createDeps: React.DependencyList = EMPTY_ARRAY,
 ) => {
-  const thing = useMemo(
-    () => create(store),
+  const [, rerender] = useState<[]>();
+  const [thing, setThing] = useState();
+  useEffect(
+    () => {
+      const newThing = create(store);
+      setThing(newThing);
+      rerender([]);
+      return newThing.destroy;
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [store, ...createDeps],
   );
-  useEffect(() => () => thing.destroy(), [thing]);
   return thing;
 };
 
@@ -1203,7 +1209,7 @@ export const useCreateMetrics: typeof useCreateMetricsDecl = (
   store: Store,
   create: (store: Store) => Metrics,
   createDeps?: React.DependencyList,
-): Metrics => useCreate(store, create, createDeps);
+): Metrics | undefined => useCreate(store, create, createDeps);
 
 export const useMetricsIds: typeof useMetricsIdsDecl = () => useThingIds(3);
 
@@ -1245,7 +1251,7 @@ export const useCreateIndexes: typeof useCreateIndexesDecl = (
   store: Store,
   create: (store: Store) => Indexes,
   createDeps?: React.DependencyList,
-): Indexes => useCreate(store, create, createDeps);
+): Indexes | undefined => useCreate(store, create, createDeps);
 
 export const useIndexesIds: typeof useIndexesIdsDecl = () => useThingIds(5);
 
@@ -1314,7 +1320,7 @@ export const useCreateRelationships: typeof useCreateRelationshipsDecl = (
   store: Store,
   create: (store: Store) => Relationships,
   createDeps?: React.DependencyList,
-): Relationships => useCreate(store, create, createDeps);
+): Relationships | undefined => useCreate(store, create, createDeps);
 
 export const useRelationshipsIds: typeof useRelationshipsIdsDecl = () =>
   useThingIds(7);
@@ -1413,7 +1419,7 @@ export const useCreateQueries: typeof useCreateQueriesDecl = (
   store: Store,
   create: (store: Store) => Queries,
   createDeps?: React.DependencyList,
-): Queries => useCreate(store, create, createDeps);
+): Queries | undefined => useCreate(store, create, createDeps);
 
 export const useQueriesIds: typeof useQueriesIdsDecl = () => useThingIds(9);
 
@@ -1649,7 +1655,7 @@ export const useCreateCheckpoints: typeof useCreateCheckpointsDecl = (
   store: Store,
   create: (store: Store) => Checkpoints,
   createDeps?: React.DependencyList,
-): Checkpoints => useCreate(store, create, createDeps);
+): Checkpoints | undefined => useCreate(store, create, createDeps);
 
 export const useCheckpointsIds: typeof useCheckpointsIdsDecl = () =>
   useThingIds(11);

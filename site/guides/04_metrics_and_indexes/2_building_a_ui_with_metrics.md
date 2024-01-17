@@ -51,7 +51,7 @@ const App2 = () => {
       'price',
     ),
   );
-  return <span>{metrics.getMetric('highestPrice')}</span>;
+  return <span>{metrics?.getMetric('highestPrice')}</span>;
 };
 
 root.render(<App2 />); // !act

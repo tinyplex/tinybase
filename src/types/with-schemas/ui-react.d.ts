@@ -749,7 +749,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     store: Store<Schemas>,
     create: (store: Store<Schemas>) => Metrics<Schemas>,
     createDeps?: React.DependencyList,
-  ) => Metrics<Schemas>;
+  ) => Metrics<Schemas> | undefined;
 
   /// useMetricsIds
   useMetricsIds: () => Ids;
@@ -784,7 +784,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     store: Store<Schemas>,
     create: (store: Store<Schemas>) => Indexes<Schemas>,
     createDeps?: React.DependencyList,
-  ) => Indexes<Schemas>;
+  ) => Indexes<Schemas> | undefined;
 
   /// useIndexesIds
   useIndexesIds: () => Ids;
@@ -835,7 +835,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     store: Store<Schemas>,
     create: (store: Store<Schemas>) => Relationships<Schemas>,
     createDeps?: React.DependencyList,
-  ) => Relationships<Schemas>;
+  ) => Relationships<Schemas> | undefined;
 
   /// useRelationshipsIds
   useRelationshipsIds: () => Ids;
@@ -906,7 +906,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     store: Store<Schemas>,
     create: (store: Store<Schemas>) => Queries<Schemas>,
     createDeps?: React.DependencyList,
-  ) => Queries<Schemas>;
+  ) => Queries<Schemas> | undefined;
 
   /// useQueriesIds
   useQueriesIds: () => Ids;
@@ -1055,7 +1055,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     store: Store<Schemas>,
     create: (store: Store<Schemas>) => Checkpoints<Schemas>,
     createDeps?: React.DependencyList,
-  ) => Checkpoints<Schemas>;
+  ) => Checkpoints<Schemas> | undefined;
 
   /// useCheckpointsIds
   useCheckpointsIds: () => Ids;
