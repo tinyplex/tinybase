@@ -1741,32 +1741,33 @@ export const useCreatePersister: typeof useCreatePersisterDecl = <
   store: Store,
   create: (store: Store) => PersisterOrUndefined,
   createDeps: React.DependencyList = EMPTY_ARRAY,
-  then?: (persister: PersisterOrUndefined) => Promise<void>,
+  then?: (persister: Persister) => Promise<void>,
   thenDeps: React.DependencyList = EMPTY_ARRAY,
-  destroy?: (persister: PersisterOrUndefined) => void,
+  destroy?: (persister: Persister) => void,
   destroyDeps: React.DependencyList = EMPTY_ARRAY,
 ): PersisterOrUndefined => {
   const [, rerender] = useState<[]>();
-  const persister = useMemo(
-    () => create(store) as any,
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [store, ...createDeps],
-  );
+  const [persister, setPersister] = useState<any>();
+
   useEffect(
     () => {
-      (async () => {
+      const newPersister = create(store);
+      setPersister(newPersister);
+      if (newPersister) {
         if (then) {
-          await then(persister);
-          rerender([]);
+          (async () => {
+            await then(newPersister);
+            rerender([]);
+          })();
         }
-      })();
-      return () => {
-        persister?.destroy();
-        destroy?.(persister);
-      };
+        return () => {
+          newPersister.destroy();
+          destroy?.(newPersister);
+        };
+      }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [persister, ...thenDeps, ...destroyDeps],
+    [store, ...createDeps, ...thenDeps, ...destroyDeps],
   );
   return persister;
 };

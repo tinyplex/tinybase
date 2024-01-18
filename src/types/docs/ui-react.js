@@ -9366,11 +9366,9 @@
  *
  * It is possible to create a Persister outside of the React app with the
  * regular createPersister function and pass it in, but you may prefer to create
- * it within the app, perhaps inside the top-level component. To defend against
- * a new Persister being created every time the app renders or re-renders, the
- * useCreatePersister hook wraps the creation in a memoization, and provides a
- * second callback so that you can configure the Persister, once, and
- * asynchronously, when it is created.
+ * it within the app, perhaps inside the top-level component. To prevent a new
+ * Persister being created every time the app renders or re-renders, since v5.0
+ * the useCreateMetrics hook performs the creation in an effect.
  *
  * If your `create` function (the second parameter to the hook) contains
  * dependencies, the changing of which should cause the Persister to be
@@ -9378,19 +9376,18 @@
  * you would for any React hook with dependencies. The Store passed in as the
  * first parameter of this hook is used as a dependency by default.
  *
- * A second `then` callback can be provided as the fourth parameter. This is
- * called after the creation, and, importantly, can be asynchronous, so that you
- * can configure the Persister with the startAutoLoad method and startAutoSave
- * method, for example. If this callback contains dependencies, the changing of
- * which should cause the Persister to be reconfigured, you can provide them in
- * an array in the fifth parameter. The Persister itself is used as a dependency
- * by default.
+ * A second callback, called `then`, can be provided as the fourth parameter.
+ * This is called after the creation, and, importantly, can be asynchronous, so
+ * that you can configure the Persister with the startAutoLoad method and
+ * startAutoSave method, for example. If this callback contains dependencies,
+ * the changing of which should cause the Persister to be reconfigured, you can
+ * provide them in an array in the fifth parameter. The Persister itself is used
+ * as a dependency by default.
  *
  * Since v4.3.0, the `create` function can return undefined, meaning that you
  * can enable or disable persistence conditionally within this hook. This is
  * useful for applications which might turn on or off their cloud persistence or
- * collaboration features. As a result, the `then` callback may also get passed
- * undefined, which you should handle accordingly.
+ * collaboration features.
  *
  * Since v4.3.19, a `destroy` function can be provided which will be called
  * after an old Persister is destroyed due to a change in the `createDeps`
@@ -9509,8 +9506,8 @@
  * // -> '<span>{\"pets\":{\"fido\":{\"species\":\"dog\"}}}</span>'
  *
  * root.render(<App sessionKey="cujoStore" />); // !act
- * // -> 'Persister created for session key cujoStore'
  * // -> 'Persister destroyed for session key fidoStore'
+ * // -> 'Persister created for session key cujoStore'
  *
  * // ... // !act
  * console.log(app.innerHTML);

@@ -959,9 +959,9 @@ export function useCreatePersister<
   store: Store,
   create: (store: Store) => PersisterOrUndefined,
   createDeps?: React.DependencyList,
-  then?: (persister: PersisterOrUndefined) => Promise<void>,
+  then?: (persister: Persister) => Promise<void>,
   thenDeps?: React.DependencyList,
-  destroy?: (persister: PersisterOrUndefined) => void,
+  destroy?: (persister: Persister) => void,
   destroyDeps?: React.DependencyList,
 ): PersisterOrUndefined;
 
