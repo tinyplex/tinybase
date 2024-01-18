@@ -302,6 +302,11 @@ const useCreate = (
   return thing;
 };
 
+const addAndDelListener = (thing: any, listenable: string, ...args: any[]) => {
+  const listenerId = thing?.[ADD + listenable + LISTENER]?.(...args);
+  return () => thing?.delListener(listenerId);
+};
+
 const useListenable = (
   listenable: string,
   thing: any,
@@ -321,18 +326,17 @@ const useListenable = (
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
     [thing, type, listenable, ...args],
   );
-
   const subscribe = useCallback(
-    (onStoreChange: () => void) => {
-      const listenerId = thing?.[
-        ADD + (type == 4 ? HAS : EMPTY_STRING) + listenable + LISTENER
-      ]?.(...args, onStoreChange);
-      return () => thing?.delListener(listenerId);
-    },
+    (listener: () => void) =>
+      addAndDelListener(
+        thing,
+        (type == 4 ? HAS : EMPTY_STRING) + listenable,
+        ...args,
+        listener,
+      ),
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
     [thing, type, listenable, ...args],
   );
-
   return useSyncExternalStore(subscribe, getResult);
 };
 
@@ -344,15 +348,12 @@ const useListener = (
   preArgs: Readonly<ListenerArgument[]> = EMPTY_ARRAY,
   ...postArgs: ListenerArgument[]
 ): void =>
-  useLayoutEffect(() => {
-    const listenerId = thing?.[ADD + listenable + LISTENER]?.(
-      ...preArgs,
-      listener,
-      ...postArgs,
-    );
-    return () => thing?.delListener(listenerId);
+  useLayoutEffect(
+    () =>
+      addAndDelListener(thing, listenable, ...preArgs, listener, ...postArgs),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [thing, listenable, ...preArgs, ...listenerDeps, ...postArgs]);
+    [thing, listenable, ...preArgs, ...listenerDeps, ...postArgs],
+  );
 
 const useSetCallback = <Parameter, Thing>(
   storeOrStoreId: StoreOrStoreId | undefined,
