@@ -407,9 +407,11 @@ describe('Create Hooks', () => {
     });
     const Test = ({id}: {id: number}) => {
       const store = useCreateStore(initStore);
-      const persister = useCreatePersister(store, createPersister);
+      const persister = useCreatePersister(store, createPersister, [id]);
       const cell = useCell('t1', 'r1', 'c1', store);
-      return didRender(<>{JSON.stringify([id, persister.getStats(), cell])}</>);
+      return didRender(
+        <>{JSON.stringify([id, persister?.getStats(), cell])}</>,
+      );
     };
     act(() => {
       renderer = create(<Test id={1} />);
@@ -423,9 +425,18 @@ describe('Create Hooks', () => {
     expect(renderer.toJSON()).toEqual(
       JSON.stringify([1, {loads: 1, saves: 0}, 1]),
     );
+    act(() => {
+      renderer.update(<Test id={2} />);
+    });
+    await act(async () => {
+      await pause();
+    });
+    expect(renderer.toJSON()).toEqual(
+      JSON.stringify([2, {loads: 0, saves: 0}, 1]),
+    );
     expect(initStore).toHaveBeenCalledTimes(1);
-    expect(createPersister).toHaveBeenCalledTimes(1);
-    expect(didRender).toHaveBeenCalledTimes(2);
+    expect(createPersister).toHaveBeenCalledTimes(2);
+    expect(didRender).toHaveBeenCalledTimes(5);
     _persister?.stopAutoLoad()?.stopAutoSave();
   });
 });
@@ -435,9 +446,11 @@ test('useCreatePersister, then, no destroy', async () => {
   tmp.setGracefulCleanup();
   const fileName = tmp.fileSync().name;
   const initStore = jest.fn(createStore);
-  const createPersister = jest.fn((store: Store) => {
-    _persister = createFilePersister(store, fileName);
-    return _persister;
+  const createPersister = jest.fn((store: Store, id: number) => {
+    if (id != 0) {
+      _persister = createFilePersister(store, fileName);
+      return _persister;
+    }
   });
   const initPersister = jest.fn(async (persister: Persister, id: number) => {
     await persister.load({t1: {r1: {c1: id}}});
@@ -446,17 +459,20 @@ test('useCreatePersister, then, no destroy', async () => {
     const store = useCreateStore(initStore);
     const persister = useCreatePersister(
       store,
-      (store) => createPersister(store),
-      undefined,
+      (store) => createPersister(store, id),
+      [id],
       async (persister) => await initPersister(persister, id),
       [id],
     );
-    return didRender(<>{JSON.stringify([id, persister.getStats()])}</>);
+    return didRender(<>{JSON.stringify([id, persister?.getStats()])}</>);
   };
+  act(() => {
+    renderer = create(<Test id={0} />);
+  });
+  expect(renderer.toJSON()).toEqual(JSON.stringify([0, null]));
   act(() => {
     renderer = create(<Test id={1} />);
   });
-  expect(renderer.toJSON()).toEqual(JSON.stringify([1, {loads: 0, saves: 0}]));
   await act(async () => {
     await pause();
   });
@@ -464,15 +480,14 @@ test('useCreatePersister, then, no destroy', async () => {
   act(() => {
     renderer.update(<Test id={2} />);
   });
-  expect(renderer.toJSON()).toEqual(JSON.stringify([2, {loads: 1, saves: 0}]));
   await act(async () => {
     await pause();
   });
-  expect(renderer.toJSON()).toEqual(JSON.stringify([2, {loads: 2, saves: 0}]));
-  expect(initStore).toHaveBeenCalledTimes(1);
-  expect(createPersister).toHaveBeenCalledTimes(1);
+  expect(renderer.toJSON()).toEqual(JSON.stringify([2, {loads: 1, saves: 0}]));
+  expect(initStore).toHaveBeenCalledTimes(2);
+  expect(createPersister).toHaveBeenCalledTimes(3);
   expect(initPersister).toHaveBeenCalledTimes(2);
-  expect(didRender).toHaveBeenCalledTimes(4);
+  expect(didRender).toHaveBeenCalledTimes(7);
   _persister?.stopAutoLoad()?.stopAutoSave();
 });
 
@@ -502,12 +517,11 @@ test('useCreatePersister, then, destroy', async () => {
       [id],
       destroyPersister,
     );
-    return didRender(<>{JSON.stringify([id, persister.getStats()])}</>);
+    return didRender(<>{JSON.stringify([id, persister?.getStats()])}</>);
   };
   act(() => {
     renderer = create(<Test id={1} />);
   });
-  expect(renderer.toJSON()).toEqual(JSON.stringify([1, {loads: 0, saves: 0}]));
   await act(async () => {
     await pause();
   });
@@ -515,7 +529,6 @@ test('useCreatePersister, then, destroy', async () => {
   act(() => {
     renderer.update(<Test id={2} />);
   });
-  expect(renderer.toJSON()).toEqual(JSON.stringify([2, {loads: 0, saves: 0}]));
   await act(async () => {
     await pause();
   });
@@ -525,7 +538,7 @@ test('useCreatePersister, then, destroy', async () => {
   expect(initPersister).toHaveBeenCalledTimes(2);
   expect(destroyPersister).toHaveBeenCalledTimes(1);
   expect(destroyPersister).toHaveBeenCalledWith(persisters[1]);
-  expect(didRender).toHaveBeenCalledTimes(4);
+  expect(didRender).toHaveBeenCalledTimes(6);
   persisters.forEach((persister) => persister.stopAutoLoad().stopAutoSave());
 });
 
