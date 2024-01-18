@@ -5731,7 +5731,9 @@
  *       'species',
  *     );
  *   });
- *   return <span>{relationships?.getRemoteRowId('petSpecies', 'fido')}</span>;
+ *   return (
+ *     <span>{relationships?.getRemoteRowId('petSpecies', 'fido')}</span>
+ *   );
  * };
  *
  * const app = document.createElement('div');
@@ -5777,7 +5779,9 @@
  *     },
  *     [remoteTableAndCellToLink],
  *   );
- *   return <span>{relationships?.getRemoteRowId('cellLinked', 'fido')}</span>;
+ *   return (
+ *     <span>{relationships?.getRemoteRowId('cellLinked', 'fido')}</span>
+ *   );
  * };
  *
  * const app = document.createElement('div');
