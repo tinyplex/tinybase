@@ -6,11 +6,10 @@ export type IdObj<Value> = {[id: string]: Value};
 export type IdObj2<Value> = IdObj<IdObj<Value>>;
 
 export const object = Object;
-
 const getPrototypeOf = (obj: any) => object.getPrototypeOf(obj);
+const objEntries = object.entries;
 
 export const objIds = object.keys;
-export const objEntries = object.entries;
 export const objFrozen = object.isFrozen;
 export const objFreeze = object.freeze;
 
