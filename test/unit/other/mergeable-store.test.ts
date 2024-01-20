@@ -46,3 +46,8 @@ describe('Fluency of inherited methods', () => {
     expect(store.finishTransaction()).toEqual(store);
   });
 });
+
+test('Merge', () => {
+  const store = createMergeableStore();
+  expect(store.merge()).toEqual(store);
+});
