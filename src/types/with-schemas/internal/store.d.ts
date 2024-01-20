@@ -1,7 +1,9 @@
 import {
   Cell,
+  OptionalSchemas,
   OptionalTablesSchema,
   OptionalValuesSchema,
+  Store,
   Value,
 } from '../store.d';
 import {Id} from '../common.d';
@@ -100,3 +102,5 @@ export type Truncate<Params> = Params extends [...infer ShorterParams, any]
   : never;
 
 export type NoInfer<Type> = [Type][Type extends any ? 0 : never];
+
+export type StoreAlias<Schemas extends OptionalSchemas> = Store<Schemas>;
