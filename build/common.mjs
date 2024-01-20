@@ -118,14 +118,27 @@ export const clearDir = async (dir = LIB_DIR) => {
   await makeDir(dir);
 };
 
-const copyDefinition = async (module) => {
-  const labelBlocks = new Map();
-  [
-    ...(await promises.readFile(`src/types/docs/${module}.js`, UTF8)).matchAll(
-      TYPES_DOC_BLOCKS,
-    ),
-  ].forEach(([_, block, label]) => labelBlocks.set(label, block));
+const labelBlocks = new Map();
+const getLabelBlocks = async () => {
+  if (labelBlocks.size == 0) {
+    await allModules(async (module) =>
+      [
+        ...(
+          await promises.readFile(`src/types/docs/${module}.js`, UTF8)
+        ).matchAll(TYPES_DOC_BLOCKS),
+      ].forEach(([_, block, label]) => {
+        if (labelBlocks.has(label)) {
+          throw new Error('Duplicate label, ' + label);
+        }
+        labelBlocks.set(label, block);
+      }),
+    );
+  }
+  return labelBlocks;
+};
 
+const copyDefinition = async (module) => {
+  const labelBlocks = await getLabelBlocks();
   // Add easier-to-read with-schemas blocks
   const codeBlocks = new Map();
   [
