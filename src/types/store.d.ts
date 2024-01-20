@@ -1,6 +1,7 @@
 /// store
 
 import {Id, IdOrNull, Ids, Json} from './common.d';
+import {StoreAlias} from './internal/store.d';
 
 /// TablesSchema
 export type TablesSchema = {[tableId: Id]: {[cellId: Id]: CellSchema}};
@@ -116,50 +117,53 @@ export type DoRollback = (
 ) => boolean;
 
 /// TransactionListener
-export type TransactionListener = (
+export type TransactionListener<Store extends StoreAlias = StoreAlias> = (
   store: Store,
   getTransactionChanges: GetTransactionChanges,
   getTransactionLog: GetTransactionLog,
 ) => void;
 
 /// HasTablesListener
-export type HasTablesListener = (store: Store, hasTables: boolean) => void;
+export type HasTablesListener<Store extends StoreAlias = StoreAlias> = (
+  store: Store,
+  hasTables: boolean,
+) => void;
 
 /// TablesListener
-export type TablesListener = (
+export type TablesListener<Store extends StoreAlias = StoreAlias> = (
   store: Store,
   getCellChange: GetCellChange | undefined,
 ) => void;
 
 /// TableIdsListener
-export type TableIdsListener = (
+export type TableIdsListener<Store extends StoreAlias = StoreAlias> = (
   store: Store,
   getIdChanges: GetIdChanges | undefined,
 ) => void;
 
 /// HasTableListener
-export type HasTableListener = (
+export type HasTableListener<Store extends StoreAlias = StoreAlias> = (
   store: Store,
   tableId: Id,
   hasTable: boolean,
 ) => void;
 
 /// TableListener
-export type TableListener = (
+export type TableListener<Store extends StoreAlias = StoreAlias> = (
   store: Store,
   tableId: Id,
   getCellChange: GetCellChange | undefined,
 ) => void;
 
 /// TableCellIdsListener
-export type TableCellIdsListener = (
+export type TableCellIdsListener<Store extends StoreAlias = StoreAlias> = (
   store: Store,
   tableId: Id,
   getIdChanges: GetIdChanges | undefined,
 ) => void;
 
 /// HasTableCellListener
-export type HasTableCellListener = (
+export type HasTableCellListener<Store extends StoreAlias = StoreAlias> = (
   store: Store,
   tableId: Id,
   cellId: Id,
@@ -167,21 +171,21 @@ export type HasTableCellListener = (
 ) => void;
 
 /// RowCountListener
-export type RowCountListener = (
+export type RowCountListener<Store extends StoreAlias = StoreAlias> = (
   store: Store,
   tableId: Id,
   count: number,
 ) => void;
 
 /// RowIdsListener
-export type RowIdsListener = (
+export type RowIdsListener<Store extends StoreAlias = StoreAlias> = (
   store: Store,
   tableId: Id,
   getIdChanges: GetIdChanges | undefined,
 ) => void;
 
 /// SortedRowIdsListener
-export type SortedRowIdsListener = (
+export type SortedRowIdsListener<Store extends StoreAlias = StoreAlias> = (
   store: Store,
   tableId: Id,
   cellId: Id | undefined,
@@ -192,7 +196,7 @@ export type SortedRowIdsListener = (
 ) => void;
 
 /// HasRowListener
-export type HasRowListener = (
+export type HasRowListener<Store extends StoreAlias = StoreAlias> = (
   store: Store,
   tableId: Id,
   rowId: Id,
@@ -200,7 +204,7 @@ export type HasRowListener = (
 ) => void;
 
 /// RowListener
-export type RowListener = (
+export type RowListener<Store extends StoreAlias = StoreAlias> = (
   store: Store,
   tableId: Id,
   rowId: Id,
@@ -208,7 +212,7 @@ export type RowListener = (
 ) => void;
 
 /// CellIdsListener
-export type CellIdsListener = (
+export type CellIdsListener<Store extends StoreAlias = StoreAlias> = (
   store: Store,
   tableId: Id,
   rowId: Id,
@@ -216,7 +220,7 @@ export type CellIdsListener = (
 ) => void;
 
 /// HasCellListener
-export type HasCellListener = (
+export type HasCellListener<Store extends StoreAlias = StoreAlias> = (
   store: Store,
   tableId: Id,
   rowId: Id,
@@ -225,7 +229,7 @@ export type HasCellListener = (
 ) => void;
 
 /// CellListener
-export type CellListener = (
+export type CellListener<Store extends StoreAlias = StoreAlias> = (
   store: Store,
   tableId: Id,
   rowId: Id,
@@ -236,29 +240,32 @@ export type CellListener = (
 ) => void;
 
 /// HasValuesListener
-export type HasValuesListener = (store: Store, hasValues: boolean) => void;
+export type HasValuesListener<Store extends StoreAlias = StoreAlias> = (
+  store: Store,
+  hasValues: boolean,
+) => void;
 
 /// ValuesListener
-export type ValuesListener = (
+export type ValuesListener<Store extends StoreAlias = StoreAlias> = (
   store: Store,
   getValueChange: GetValueChange | undefined,
 ) => void;
 
 /// ValueIdsListener
-export type ValueIdsListener = (
+export type ValueIdsListener<Store extends StoreAlias = StoreAlias> = (
   store: Store,
   getIdChanges: GetIdChanges | undefined,
 ) => void;
 
 /// HasValueListener
-export type HasValueListener = (
+export type HasValueListener<Store extends StoreAlias = StoreAlias> = (
   store: Store,
   valueId: Id,
   hasValue: boolean,
 ) => void;
 
 /// ValueListener
-export type ValueListener = (
+export type ValueListener<Store extends StoreAlias = StoreAlias> = (
   store: Store,
   valueId: Id,
   newValue: Value,
@@ -267,7 +274,7 @@ export type ValueListener = (
 ) => void;
 
 /// InvalidCellListener
-export type InvalidCellListener = (
+export type InvalidCellListener<Store extends StoreAlias = StoreAlias> = (
   store: Store,
   tableId: Id,
   rowId: Id,
@@ -276,7 +283,7 @@ export type InvalidCellListener = (
 ) => void;
 
 /// InvalidValueListener
-export type InvalidValueListener = (
+export type InvalidValueListener<Store extends StoreAlias = StoreAlias> = (
   store: Store,
   valueId: Id,
   invalidValues: any[],
@@ -502,91 +509,91 @@ export interface Store {
   hasValuesSchema(): boolean;
 
   /// Store.setContent
-  setContent([tables, values]: [Tables, Values]): Store;
+  setContent([tables, values]: [Tables, Values]): this;
 
   /// Store.setTables
-  setTables(tables: Tables): Store;
+  setTables(tables: Tables): this;
 
   /// Store.setTable
-  setTable(tableId: Id, table: Table): Store;
+  setTable(tableId: Id, table: Table): this;
 
   /// Store.setRow
-  setRow(tableId: Id, rowId: Id, row: Row): Store;
+  setRow(tableId: Id, rowId: Id, row: Row): this;
 
   /// Store.addRow
   addRow(tableId: Id, row: Row, reuseRowIds?: boolean): Id | undefined;
 
   /// Store.setPartialRow
-  setPartialRow(tableId: Id, rowId: Id, partialRow: Row): Store;
+  setPartialRow(tableId: Id, rowId: Id, partialRow: Row): this;
 
   /// Store.setCell
-  setCell(tableId: Id, rowId: Id, cellId: Id, cell: Cell | MapCell): Store;
+  setCell(tableId: Id, rowId: Id, cellId: Id, cell: Cell | MapCell): this;
 
   /// Store.setValues
-  setValues(values: Values): Store;
+  setValues(values: Values): this;
 
   /// Store.setPartialValues
-  setPartialValues(partialValues: Values): Store;
+  setPartialValues(partialValues: Values): this;
 
   /// Store.setValue
-  setValue(valueId: Id, value: Value | MapValue): Store;
+  setValue(valueId: Id, value: Value | MapValue): this;
 
   /// Store.setTransactionChanges
-  setTransactionChanges(transactionChanges: TransactionChanges): Store;
+  setTransactionChanges(transactionChanges: TransactionChanges): this;
 
   /// Store.setTablesJson
-  setTablesJson(tablesJson: Json): Store;
+  setTablesJson(tablesJson: Json): this;
 
   /// Store.setValuesJson
-  setValuesJson(valuesJson: Json): Store;
+  setValuesJson(valuesJson: Json): this;
 
   /// Store.setJson
-  setJson(tablesAndValuesJson: Json): Store;
+  setJson(tablesAndValuesJson: Json): this;
 
   /// Store.setTablesSchema
-  setTablesSchema(tablesSchema: TablesSchema): Store;
+  setTablesSchema(tablesSchema: TablesSchema): this;
 
   /// Store.setValuesSchema
-  setValuesSchema(valuesSchema: ValuesSchema): Store;
+  setValuesSchema(valuesSchema: ValuesSchema): this;
 
   /// Store.setSchema
-  setSchema(tablesSchema: TablesSchema, valuesSchema?: ValuesSchema): Store;
+  setSchema(tablesSchema: TablesSchema, valuesSchema?: ValuesSchema): this;
 
   /// Store.delTables
-  delTables(): Store;
+  delTables(): this;
 
   /// Store.delTable
-  delTable(tableId: Id): Store;
+  delTable(tableId: Id): this;
 
   /// Store.delRow
-  delRow(tableId: Id, rowId: Id): Store;
+  delRow(tableId: Id, rowId: Id): this;
 
   /// Store.delCell
-  delCell(tableId: Id, rowId: Id, cellId: Id, forceDel?: boolean): Store;
+  delCell(tableId: Id, rowId: Id, cellId: Id, forceDel?: boolean): this;
 
   /// Store.delValues
-  delValues(): Store;
+  delValues(): this;
 
   /// Store.delValue
-  delValue(valueId: Id): Store;
+  delValue(valueId: Id): this;
 
   /// Store.delTablesSchema
-  delTablesSchema(): Store;
+  delTablesSchema(): this;
 
   /// Store.delValuesSchema
-  delValuesSchema(): Store;
+  delValuesSchema(): this;
 
   /// Store.delSchema
-  delSchema(): Store;
+  delSchema(): this;
 
   /// Store.transaction
   transaction<Return>(actions: () => Return, doRollback?: DoRollback): Return;
 
   /// Store.startTransaction
-  startTransaction(): Store;
+  startTransaction(): this;
 
   /// Store.finishTransaction
-  finishTransaction(doRollback?: DoRollback): Store;
+  finishTransaction(doRollback?: DoRollback): this;
 
   /// Store.forEachTable
   forEachTable(tableCallback: TableCallback): void;
@@ -604,32 +611,35 @@ export interface Store {
   forEachValue(valueCallback: ValueCallback): void;
 
   /// Store.addHasTablesListener
-  addHasTablesListener(listener: HasTablesListener, mutator?: boolean): Id;
+  addHasTablesListener(
+    listener: HasTablesListener<this>,
+    mutator?: boolean,
+  ): Id;
 
   /// Store.addTablesListener
-  addTablesListener(listener: TablesListener, mutator?: boolean): Id;
+  addTablesListener(listener: TablesListener<this>, mutator?: boolean): Id;
 
   /// Store.addTableIdsListener
-  addTableIdsListener(listener: TableIdsListener, mutator?: boolean): Id;
+  addTableIdsListener(listener: TableIdsListener<this>, mutator?: boolean): Id;
 
   /// Store.addHasTableListener
   addHasTableListener(
     tableId: IdOrNull,
-    listener: HasTableListener,
+    listener: HasTableListener<this>,
     mutator?: boolean,
   ): Id;
 
   /// Store.addTableListener
   addTableListener(
     tableId: IdOrNull,
-    listener: TableListener,
+    listener: TableListener<this>,
     mutator?: boolean,
   ): Id;
 
   /// Store.addTableCellIdsListener
   addTableCellIdsListener(
     tableId: IdOrNull,
-    listener: TableCellIdsListener,
+    listener: TableCellIdsListener<this>,
     mutator?: boolean,
   ): Id;
 
@@ -637,21 +647,21 @@ export interface Store {
   addHasTableCellListener(
     tableId: IdOrNull,
     cellId: IdOrNull,
-    listener: HasTableCellListener,
+    listener: HasTableCellListener<this>,
     mutator?: boolean,
   ): Id;
 
   /// Store.addRowCountListener
   addRowCountListener(
     tableId: IdOrNull,
-    listener: RowCountListener,
+    listener: RowCountListener<this>,
     mutator?: boolean,
   ): Id;
 
   /// Store.addRowIdsListener
   addRowIdsListener(
     tableId: IdOrNull,
-    listener: RowIdsListener,
+    listener: RowIdsListener<this>,
     mutator?: boolean,
   ): Id;
 
@@ -662,7 +672,7 @@ export interface Store {
     descending: boolean,
     offset: number,
     limit: number | undefined,
-    listener: SortedRowIdsListener,
+    listener: SortedRowIdsListener<this>,
     mutator?: boolean,
   ): Id;
 
@@ -670,7 +680,7 @@ export interface Store {
   addHasRowListener(
     tableId: IdOrNull,
     rowId: IdOrNull,
-    listener: HasRowListener,
+    listener: HasRowListener<this>,
     mutator?: boolean,
   ): Id;
 
@@ -678,7 +688,7 @@ export interface Store {
   addRowListener(
     tableId: IdOrNull,
     rowId: IdOrNull,
-    listener: RowListener,
+    listener: RowListener<this>,
     mutator?: boolean,
   ): Id;
 
@@ -686,7 +696,7 @@ export interface Store {
   addCellIdsListener(
     tableId: IdOrNull,
     rowId: IdOrNull,
-    listener: CellIdsListener,
+    listener: CellIdsListener<this>,
     mutator?: boolean,
   ): Id;
 
@@ -695,7 +705,7 @@ export interface Store {
     tableId: IdOrNull,
     rowId: IdOrNull,
     cellId: IdOrNull,
-    listener: HasCellListener,
+    listener: HasCellListener<this>,
     mutator?: boolean,
   ): Id;
 
@@ -704,30 +714,33 @@ export interface Store {
     tableId: IdOrNull,
     rowId: IdOrNull,
     cellId: IdOrNull,
-    listener: CellListener,
+    listener: CellListener<this>,
     mutator?: boolean,
   ): Id;
 
   /// Store.addHasValuesListener
-  addHasValuesListener(listener: HasValuesListener, mutator?: boolean): Id;
+  addHasValuesListener(
+    listener: HasValuesListener<this>,
+    mutator?: boolean,
+  ): Id;
 
   /// Store.addValuesListener
-  addValuesListener(listener: ValuesListener, mutator?: boolean): Id;
+  addValuesListener(listener: ValuesListener<this>, mutator?: boolean): Id;
 
   /// Store.addValueIdsListener
-  addValueIdsListener(listener: ValueIdsListener, mutator?: boolean): Id;
+  addValueIdsListener(listener: ValueIdsListener<this>, mutator?: boolean): Id;
 
   /// Store.addHasValueListener
   addHasValueListener(
     valueId: IdOrNull,
-    listener: HasValueListener,
+    listener: HasValueListener<this>,
     mutator?: boolean,
   ): Id;
 
   /// Store.addValueListener
   addValueListener(
     valueId: IdOrNull,
-    listener: ValueListener,
+    listener: ValueListener<this>,
     mutator?: boolean,
   ): Id;
 
@@ -736,31 +749,31 @@ export interface Store {
     tableId: IdOrNull,
     rowId: IdOrNull,
     cellId: IdOrNull,
-    listener: InvalidCellListener,
+    listener: InvalidCellListener<this>,
     mutator?: boolean,
   ): Id;
 
   /// Store.addInvalidValueListener
   addInvalidValueListener(
     valueId: IdOrNull,
-    listener: InvalidValueListener,
+    listener: InvalidValueListener<this>,
     mutator?: boolean,
   ): Id;
 
   /// Store.addStartTransactionListener
-  addStartTransactionListener(listener: TransactionListener): Id;
+  addStartTransactionListener(listener: TransactionListener<this>): Id;
 
   /// Store.addWillFinishTransactionListener
-  addWillFinishTransactionListener(listener: TransactionListener): Id;
+  addWillFinishTransactionListener(listener: TransactionListener<this>): Id;
 
   /// Store.addDidFinishTransactionListener
-  addDidFinishTransactionListener(listener: TransactionListener): Id;
+  addDidFinishTransactionListener(listener: TransactionListener<this>): Id;
 
   /// Store.callListener
-  callListener(listenerId: Id): Store;
+  callListener(listenerId: Id): this;
 
   /// Store.delListener
-  delListener(listenerId: Id): Store;
+  delListener(listenerId: Id): this;
 
   /// Store.getListenerStats
   getListenerStats(): StoreListenerStats;
