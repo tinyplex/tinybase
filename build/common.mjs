@@ -43,6 +43,7 @@ const ALL_MODULES = [
   'relationships',
   'queries',
   'checkpoints',
+  'mergeable-store',
   'persisters',
   'common',
   'ui-react',
