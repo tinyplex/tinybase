@@ -54,3 +54,6 @@ export const strRepeat = (str: string, count: number) => str.repeat(count);
 
 export const strStartsWith = (str: string, prefix: string) =>
   str.startsWith(prefix);
+
+export const strEndsWith = (str: string, suffix: string) =>
+  str.endsWith(suffix);
