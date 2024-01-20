@@ -29,7 +29,9 @@ const LISTENER_ARGS: IdObj<number> = {
 
 export const createMergeableStore = ((): MergeableStore => {
   const store = createStore();
-  const mergeableStore: IdObj<any> = {};
+  const mergeableStore: IdObj<any> = {
+    merge: () => mergeableStore,
+  };
   objMap(
     store as IdObj<any>,
     (method, name) =>
