@@ -8,6 +8,12 @@
  * The MergeableStore type
  */
 /// MergeableStore
+{
+  /**
+   * The merge method
+   */
+  /// MergeableStore.merge
+}
 /**
  * The createMergeableStore function
  */
