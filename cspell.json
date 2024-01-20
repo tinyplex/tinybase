@@ -1,9 +1,5 @@
 {
-  "ignorePaths": [
-    "*.tsv",
-    "*.webp",
-    "*.svg"
-  ],
+  "ignorePaths": ["*.tsv", "*.webp", "*.svg"],
   "words": [
     "Abad",
     "Adrien",
@@ -82,6 +78,7 @@
     "lluc",
     "Lumet",
     "marksteve",
+    "mergeable",
     "minmax",
     "mjamesderocher",
     "mkdir",
