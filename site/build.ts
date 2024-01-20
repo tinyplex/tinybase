@@ -136,6 +136,7 @@ const addApi = (docs: Docs): Docs =>
     .addApiFile('lib/types/metrics.d.ts')
     .addApiFile('lib/types/relationships.d.ts')
     .addApiFile('lib/types/queries.d.ts')
+    .addApiFile('lib/types/mergeable-store.d.ts')
     .addApiFile('lib/types/persisters.d.ts')
     .addApiFile('lib/types/persisters/persister-browser.d.ts')
     .addApiFile('lib/types/persisters/persister-indexed-db.d.ts')
