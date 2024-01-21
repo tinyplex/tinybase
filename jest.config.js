@@ -1,8 +1,8 @@
 const esmModules = [
-  'automerge-repo',
   'cbor-x',
   'electric-sql',
   'wa-sqlite',
+  '@automerge/automerge-repo',
   '@sqlite\\.org/sqlite-wasm',
   '@vlcn\\.io/crsqlite-wasm',
   '@vlcn\\.io/wa-sqlite',

@@ -2,7 +2,7 @@
 
 import 'fake-indexeddb/auto';
 import {DbSchema, ElectricClient} from 'electric-sql/client/model';
-import {DocHandle, Repo} from 'automerge-repo';
+import {DocHandle, Repo} from '@automerge/automerge-repo';
 import {
   Id,
   Persister,
@@ -507,7 +507,7 @@ const mockAutomerge: Persistable<DocHandle<any>> = {
   getLocationMethod: ['getDocHandle', (location) => location],
   getPersister: createAutomergePersister,
   get: async (docHandle: DocHandle<any>): Promise<[Tables, Values] | void> => {
-    const docContent = docHandle.doc['tinybase'];
+    const docContent = (await docHandle.doc())['tinybase'];
     if (Object.keys(docContent).length > 0) {
       return [docContent['t'], docContent['v']] as [Tables, Values];
     }

@@ -1,19 +1,14 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import {ChannelId, NetworkAdapter, PeerId} from 'automerge-repo';
+import {Message, NetworkAdapter, PeerId} from '@automerge/automerge-repo';
 
-type NetworkEvent = {
-  senderId: PeerId;
-  targetId?: PeerId;
-  type: string;
-  channelId?: ChannelId;
-  message?: any;
-  broadcast?: boolean;
-};
+type ArriveMessage = {type: 'arrive'; senderId: PeerId; targetId: never};
+type WelcomeMessage = {type: 'welcome'; senderId: PeerId; targetId: PeerId};
+type BroadcastChannelMessage = ArriveMessage | WelcomeMessage | Message;
 
 const adaptors: Set<AutomergeTestNetworkAdapter> = new Set();
 
-const sendEvent = (event: NetworkEvent) =>
-  adaptors.forEach((adaptor) => adaptor.receiveEvent(event));
+const broadcast = (message: BroadcastChannelMessage): void =>
+  adaptors.forEach((adaptor) => adaptor.receiveMessage(message));
 
 export const resetNetwork = () => adaptors.clear();
 
@@ -21,79 +16,56 @@ export class AutomergeTestNetworkAdapter extends NetworkAdapter {
   connect(peerId: PeerId) {
     this.peerId = peerId;
     adaptors.add(this);
+    broadcast({type: 'arrive', senderId: peerId} as ArriveMessage);
+    this.emit('ready', {network: this});
   }
 
-  receiveEvent({
-    senderId,
-    targetId,
-    type,
-    channelId,
-    message,
-    broadcast,
-  }: NetworkEvent) {
-    if (targetId && targetId !== this.peerId && !broadcast) {
+  receiveMessage(message: BroadcastChannelMessage) {
+    const peerId: PeerId = this.peerId!;
+    const {targetId, senderId, type} = message;
+    if (targetId && targetId !== peerId) {
       return;
     }
     switch (type) {
       case 'arrive':
-        sendEvent({
+        broadcast({
           senderId: this.peerId!,
           targetId: senderId,
           type: 'welcome',
         });
-        this.announceConnection(channelId!, senderId);
+        this.emit('peer-candidate', {peerId: senderId});
         break;
       case 'welcome':
-        this.announceConnection(channelId!, senderId);
-        break;
-      case 'message':
-        this.emit('message', {
-          senderId,
-          targetId: targetId!,
-          channelId: channelId!,
-          message: new Uint8Array(message),
-          broadcast: broadcast!,
-        });
+        this.emit('peer-candidate', {peerId: senderId});
         break;
       default:
-        throw new Error('unhandled message from network');
+        if (!('data' in message)) {
+          this.emit('message', message);
+        } else {
+          this.emit('message', {
+            ...message,
+            data: new Uint8Array(message.data),
+          });
+        }
+        break;
     }
   }
 
-  announceConnection(channelId: ChannelId, peerId: PeerId) {
-    this.emit('peer-candidate', {peerId, channelId});
+  send(message: BroadcastChannelMessage) {
+    if ('data' in message) {
+      broadcast({
+        ...message,
+        data: message.data.buffer.slice(
+          message.data.byteOffset,
+          message.data.byteOffset + message.data.byteLength,
+        ) as any,
+      });
+    } else {
+      broadcast(message);
+    }
   }
 
-  sendMessage(
-    peerId: PeerId,
-    channelId: ChannelId,
-    uint8message: Uint8Array,
-    broadcast: boolean,
-  ) {
-    const message = uint8message.buffer.slice(
-      uint8message.byteOffset,
-      uint8message.byteOffset + uint8message.byteLength,
-    );
-    sendEvent({
-      senderId: this.peerId!,
-      targetId: peerId,
-      type: 'message',
-      channelId,
-      message,
-      broadcast,
-    });
-  }
-
-  join(joinChannelId: ChannelId) {
-    sendEvent({
-      senderId: this.peerId!,
-      channelId: joinChannelId,
-      type: 'arrive',
-      broadcast: true,
-    });
-  }
-
-  leave() {
+  disconnect() {
     adaptors.delete(this);
   }
 }

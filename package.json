@@ -215,6 +215,7 @@
   },
   "devDependencies": {
     "@automerge/automerge": "^2.1.10",
+    "@automerge/automerge-repo": "^1.0.19",
     "@babel/cli": "^7.23.4",
     "@babel/core": "^7.23.7",
     "@babel/preset-env": "^7.23.8",
@@ -241,7 +242,6 @@
     "@typescript-eslint/parser": "^6.19.0",
     "@vlcn.io/crsqlite-wasm": "^0.16.0",
     "asciichart": "^1.5.25",
-    "automerge-repo": "^0.1.0",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^29.7.0",
     "babel-plugin-transform-import-meta": "^2.2.1",
@@ -291,9 +291,9 @@
     "yjs": "^13.6.10"
   },
   "peerDependencies": {
+    "@automerge/automerge-repo": "^1.0.19",
     "@sqlite.org/sqlite-wasm": "^3.44.2-build3",
     "@vlcn.io/crsqlite-wasm": "^0.16.0",
-    "automerge-repo": "^0.1.0",
     "electric-sql": "^0.8.2",
     "partykit": "^0.0.72",
     "partysocket": "^0.0.20",
@@ -304,13 +304,13 @@
     "yjs": "^13.6.10"
   },
   "peerDependenciesMeta": {
+    "@automerge/automerge-repo": {
+      "optional": true
+    },
     "@sqlite.org/sqlite-wasm": {
       "optional": true
     },
     "@vlcn.io/crsqlite-wasm": {
-      "optional": true
-    },
-    "automerge-repo": {
       "optional": true
     },
     "electric-sql": {

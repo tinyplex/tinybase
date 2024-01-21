@@ -2,7 +2,7 @@ import {
   AutomergeTestNetworkAdapter,
   resetNetwork,
 } from '../common/automerge-adaptor';
-import {DocHandle, Repo} from 'automerge-repo';
+import {DocHandle, Repo} from '@automerge/automerge-repo';
 import {Persister, Store, createStore} from 'tinybase/debug';
 import {createAutomergePersister} from 'tinybase/debug/persisters/persister-automerge';
 import {pause} from '../common/other';
@@ -24,19 +24,19 @@ test('custom name', async () => {
   const docHandler = repo1.create();
   const persister = createAutomergePersister(store1, docHandler, 'test');
   await persister.save();
-  expect(docHandler.doc).toEqual({test: {t: {}, v: {}}});
+  expect(await docHandler.doc()).toEqual({test: {t: {}, v: {}}});
 });
 
 describe('Save to empty doc', () => {
   test('nothing', async () => {
     await persister1.save();
-    expect(docHandler1.doc).toEqual({tinybase: {t: {}, v: {}}});
+    expect(await docHandler1.doc()).toEqual({tinybase: {t: {}, v: {}}});
   });
 
   test('tables', async () => {
     store1.setTables({t1: {r1: {c1: 1}}});
     await persister1.save();
-    expect(docHandler1.doc).toEqual({
+    expect(await docHandler1.doc()).toEqual({
       tinybase: {t: {t1: {r1: {c1: 1}}}, v: {}},
     });
   });
@@ -44,13 +44,13 @@ describe('Save to empty doc', () => {
   test('values', async () => {
     store1.setValues({v1: 1});
     await persister1.save();
-    expect(docHandler1.doc).toEqual({tinybase: {t: {}, v: {v1: 1}}});
+    expect(await docHandler1.doc()).toEqual({tinybase: {t: {}, v: {v1: 1}}});
   });
 
   test('both', async () => {
     store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
     await persister1.save();
-    expect(docHandler1.doc).toEqual({
+    expect(await docHandler1.doc()).toEqual({
       tinybase: {t: {t1: {r1: {c1: 1}}}, v: {v1: 1}},
     });
   });
@@ -185,8 +185,8 @@ describe('Two stores, two docs', () => {
 
   const syncDocs = async () => {
     await pause();
-    await docHandler1.value();
-    await docHandler2.value();
+    await docHandler1.doc();
+    await docHandler2.doc();
     await pause();
   };
 
@@ -203,6 +203,7 @@ describe('Two stores, two docs', () => {
   test('manual', async () => {
     store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
     await persister1.save();
+
     await syncDocs();
     await persister2.load();
     expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);

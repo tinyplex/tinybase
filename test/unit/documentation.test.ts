@@ -1,5 +1,5 @@
 import 'fake-indexeddb/auto';
-import * as AutomergeRepo from 'automerge-repo';
+import * as AutomergeRepo from '@automerge/automerge-repo';
 import * as React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
 import * as ReactDOMTestUtils from 'react-dom/test-utils';

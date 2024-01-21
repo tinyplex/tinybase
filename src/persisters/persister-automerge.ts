@@ -14,7 +14,7 @@ import {
   objSize,
 } from '../common/obj';
 import {ifNotUndefined, isUndefined} from '../common/other';
-import {DocHandle} from 'automerge-repo';
+import {DocHandle} from '@automerge/automerge-repo';
 import {Id} from '../types/common';
 import {PersisterListener} from '../types/persisters';
 import {TINYBASE} from '../common/strings';
@@ -135,18 +135,20 @@ export const createAutomergePersister = ((
   docObjName = TINYBASE,
   onIgnoredError?: (error: any) => void,
 ): AutomergePersister => {
-  docHandle.change((doc) => (doc[docObjName] = {}));
+  docHandle.change((doc: any) => (doc[docObjName] = {}));
 
-  const getPersisted = async (): Promise<[Tables, Values] | undefined> =>
-    objSize(docHandle.doc[docObjName]) == 2
-      ? getDocContent(docHandle.doc, docObjName)
+  const getPersisted = async (): Promise<[Tables, Values] | undefined> => {
+    const doc = await docHandle.doc();
+    return objSize(doc[docObjName]) == 2
+      ? getDocContent(doc, docObjName)
       : undefined;
+  };
 
   const setPersisted = async (
     getContent: () => [Tables, Values],
     getTransactionChanges?: GetTransactionChanges,
   ): Promise<void> =>
-    docHandle.change((doc) =>
+    docHandle.change((doc: any) =>
       setTransactionChangesToDoc(
         doc,
         docObjName,

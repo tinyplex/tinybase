@@ -1,7 +1,7 @@
 /// persister-automerge
 
 import {OptionalSchemas, Store} from '../store';
-import {DocHandle} from 'automerge-repo';
+import {DocHandle} from '@automerge/automerge-repo';
 import {Persister} from '../persisters';
 
 /// AutomergePersister

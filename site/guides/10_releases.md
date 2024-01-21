@@ -335,7 +335,7 @@ const automergePersister = createAutomergePersister(store, docHandler);
 
 await automergePersister.save();
 // Store will be saved to the document.
-console.log(docHandler.doc);
+console.log(await docHandler.doc());
 // -> {tinybase: {t: {pets: {fido: {species: 'dog'}}}, v: {}}}
 automergePersister.destroy();
 

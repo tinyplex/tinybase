@@ -1,6 +1,6 @@
 /// persister-automerge
 
-import {DocHandle} from 'automerge-repo';
+import {DocHandle} from '@automerge/automerge-repo';
 import {Persister} from '../persisters';
 import {Store} from '../store';
 
