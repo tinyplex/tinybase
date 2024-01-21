@@ -104,7 +104,7 @@ yJsPersister<span class="punctuation">.</span><span class="function">destroy</sp
 
 <span class="keyword">await</span> automergePersister<span class="punctuation">.</span><span class="function">save</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// Store will be saved to the document.</span>
-console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>docHandler<span class="punctuation">.</span>doc<span class="punctuation">)</span><span class="punctuation">;</span>
+console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span><span class="keyword">await</span> docHandler<span class="punctuation">.</span><span class="function">doc</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// -> {tinybase: {t: {pets: {fido: {species: 'dog'}}}, v: {}}}</span>
 automergePersister<span class="punctuation">.</span><span class="function">destroy</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 
