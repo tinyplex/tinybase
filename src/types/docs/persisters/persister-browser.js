@@ -20,6 +20,7 @@
  *
  * It simply provides an extra getStorageName method for accessing the unique
  * key of the storage location the Store is being persisted to.
+ * @category Persister
  * @since v4.3.14
  */
 /// SessionPersister
@@ -51,6 +52,7 @@
  *
  * It simply provides an extra getStorageName method for accessing the unique
  * key of the storage location the Store is being persisted to.
+ * @category Persister
  * @since v4.3.14
  */
 /// LocalPersister
