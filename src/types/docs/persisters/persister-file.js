@@ -11,6 +11,7 @@
  *
  * It simply provides an extra getFilePath method for accessing the location of
  * the local file the Store is being persisted to.
+ * @category Persister
  * @since v4.3.14
  */
 /// FilePersister
