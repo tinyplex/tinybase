@@ -42,7 +42,7 @@
         <span class="string">'https://tinybase.org/assets/countries.json'</span><span class="punctuation">,</span>
       <span class="punctuation">)</span><span class="punctuation">,</span>
     <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span>
-    <span class="keyword">async</span> <span class="punctuation">(</span><span class="parameter">persister</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function">load</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">,</span>
+    <span class="keyword">async</span> <span class="punctuation">(</span><span class="parameter">persister</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persisters/interfaces/persister/persister/methods/load/load/">load</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">,</span>
   <span class="punctuation">)</span><span class="punctuation">;</span>
 
   <span class="keyword">const</span> starStore <span class="operator">=</span> <span class="function"><a href="/api/ui-react/functions/store-hooks/usecreatestore/">useCreateStore</a></span><span class="punctuation">(</span><span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span>
@@ -53,7 +53,7 @@
     <span class="punctuation">(</span><span class="parameter">store</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="function"><a href="/api/persister-browser/functions/creation/createlocalpersister/">createLocalPersister</a></span><span class="punctuation">(</span>store<span class="punctuation">,</span> <span class="string">'countries/starStore'</span><span class="punctuation">)</span><span class="punctuation">,</span>
     <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span>
     <span class="keyword">async</span> <span class="punctuation">(</span><span class="parameter">persister</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
-      <span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function">startAutoLoad</span><span class="punctuation">(</span><span class="punctuation">{</span>
+      <span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persisters/interfaces/persister/persister/methods/load/startautoload/">startAutoLoad</a></span><span class="punctuation">(</span><span class="punctuation">{</span>
         <span class="literal-property">countries</span><span class="operator">:</span> <span class="punctuation">{</span>
           <span class="constant">GB</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">star</span><span class="operator">:</span> <span class="boolean">true</span><span class="punctuation">}</span><span class="punctuation">,</span>
           <span class="constant">NZ</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">star</span><span class="operator">:</span> <span class="boolean">true</span><span class="punctuation">}</span><span class="punctuation">,</span>
@@ -65,7 +65,7 @@
           <span class="constant">US</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">star</span><span class="operator">:</span> <span class="boolean">true</span><span class="punctuation">}</span><span class="punctuation">,</span>
         <span class="punctuation">}</span><span class="punctuation">,</span>
       <span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
-      <span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function">startAutoSave</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+      <span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persisters/interfaces/persister/persister/methods/save/startautosave/">startAutoSave</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
     <span class="punctuation">}</span><span class="punctuation">,</span>
   <span class="punctuation">)</span><span class="punctuation">;</span>
 
@@ -81,8 +81,8 @@
     <span class="punctuation">(</span><span class="parameter">store</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="function"><a href="/api/persister-browser/functions/creation/createsessionpersister/">createSessionPersister</a></span><span class="punctuation">(</span>store<span class="punctuation">,</span> <span class="string">'countries/viewStore'</span><span class="punctuation">)</span><span class="punctuation">,</span>
     <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span>
     <span class="keyword">async</span> <span class="punctuation">(</span><span class="parameter">persister</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
-      <span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function">startAutoLoad</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
-      <span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function">startAutoSave</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+      <span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persisters/interfaces/persister/persister/methods/load/startautoload/">startAutoLoad</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+      <span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persisters/interfaces/persister/persister/methods/save/startautosave/">startAutoSave</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
     <span class="punctuation">}</span><span class="punctuation">,</span>
   <span class="punctuation">)</span><span class="punctuation">;</span>
   <span class="comment">// ...</span>
