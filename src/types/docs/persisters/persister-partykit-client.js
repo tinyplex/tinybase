@@ -25,6 +25,7 @@
  *
  * It simply provides an extra getConnection method for accessing the
  * PartySocket the Store is being persisted to.
+ * @category Persister
  * @since v4.3.14
  */
 /// PartyKitPersister
