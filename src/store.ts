@@ -176,6 +176,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   let hadTables = false;
   let hadValues = false;
   let transactions = 0;
+  let postTransactionListener: TransactionListener;
   const changedTableIds: ChangedIdsMap = mapNew();
   const changedTableCellIds: ChangedIdsMap2 = mapNew();
   const changedRowCount: IdMap<number> = mapNew();
@@ -1450,6 +1451,11 @@ export const createStore: typeof createStoreDecl = (): Store => {
           getTransactionChanges,
           getTransactionLog,
         );
+        postTransactionListener?.(
+          store,
+          getTransactionChanges,
+          getTransactionLog,
+        );
 
         transactions = 0;
         cellsTouched = valuesTouched = false;
@@ -1601,6 +1607,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
         }
       : {};
 
+  const addPostTransactionListener = (listener: TransactionListener) => {
+    postTransactionListener = listener;
+  };
+
   const store: any = {
     getContent,
 
@@ -1688,6 +1698,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     createStore,
     addListener,
     callListeners,
+    addPostTransactionListener,
   };
 
   // and now for some gentle meta-programming
