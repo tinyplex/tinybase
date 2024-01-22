@@ -14,6 +14,7 @@
  *
  * It simply provides an extra getElectricClient method for accessing a
  * reference to the Electric client the Store is being persisted to.
+ * @category Persister
  * @since v4.6.0
  */
 /// ElectricSqlPersister
