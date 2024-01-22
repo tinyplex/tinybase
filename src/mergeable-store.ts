@@ -1,10 +1,10 @@
+import {GetTransactionChanges, Store} from './types/store';
 import {IdObj, objFreeze, objMap} from './common/obj';
 import {
   MergeableStore,
   createMergeableStore as createMergeableStoreDecl,
 } from './types/mergeable-store';
 import {strEndsWith, strStartsWith} from './common/strings';
-import {Store} from './types/store';
 import {createStore} from './store';
 import {slice} from './common/other';
 
@@ -29,9 +29,15 @@ const LISTENER_ARGS: IdObj<number> = {
 
 export const createMergeableStore = ((): MergeableStore => {
   const store = createStore();
+
+  (store as any).addPostTransactionListener(
+    (_: Store, _getTransactionChanges: GetTransactionChanges) => {},
+  );
+
   const mergeableStore: IdObj<any> = {
     merge: () => mergeableStore,
   };
+
   objMap(
     store as IdObj<any>,
     (method, name) =>
