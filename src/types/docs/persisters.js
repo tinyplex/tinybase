@@ -543,9 +543,9 @@
  *
  * Creating a Persister depends on the choice of underlying storage where the
  * data is to be stored. Options include the createSessionPersister function,
- * the createLocalPersister, the createRemotePersister function, and the
- * createFilePersister function. The createCustomPersister function can also be
- * used to easily create a fully customized way to save and load Store data.
+ * the createLocalPersister function, the createRemotePersister function, and
+ * the createFilePersister function. The createCustomPersister function can also
+ * be used to easily create a fully customized way to save and load Store data.
  *
  * A Persister lets you explicit save or load data, with the save method and the
  * load method respectively. These methods are both asynchronous (since the
