@@ -8,6 +8,9 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
   //
   /// MergeableStore.merge
   merge(): MergeableStore<Schemas>;
+
+  /// MergeableStore.getMergeableChanges
+  getMergeableChanges(): any[];
 }
 
 /// createMergeableStore

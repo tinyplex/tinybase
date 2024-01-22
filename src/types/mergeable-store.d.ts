@@ -7,6 +7,9 @@ export interface MergeableStore extends Store {
   //
   /// MergeableStore.merge
   merge(): MergeableStore;
+
+  /// MergeableStore.getMergeableChanges
+  getMergeableChanges(): any[];
 }
 
 /// createMergeableStore

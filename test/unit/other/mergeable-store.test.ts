@@ -47,6 +47,16 @@ describe('Fluency of inherited methods', () => {
   });
 });
 
+test('Log mergeable changes', () => {
+  const store = createMergeableStore();
+  store.setCell('t1', 'r1', 'c1', 1);
+  store.setCell('t1', 'r1', 'c2', 2);
+  expect(store.getMergeableChanges()).toEqual({
+    '0': [{t1: {r1: {c1: 1}}}, {}],
+    '1': [{t1: {r1: {c2: 2}}}, {}],
+  });
+});
+
 test('Merge', () => {
   const store = createMergeableStore();
   expect(store.merge()).toEqual(store);

@@ -15,6 +15,11 @@
    * @category Merging
    */
   /// MergeableStore.merge
+  /**
+   * The getMergeableChanges method
+   * @category Merging
+   */
+  /// MergeableStore.getMergeableChanges
 }
 /**
  * The createMergeableStore function

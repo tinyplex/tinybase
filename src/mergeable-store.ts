@@ -1,4 +1,5 @@
-import {GetTransactionChanges, Store} from './types/store';
+import {GetTransactionChanges, Store, TransactionChanges} from './types/store';
+import {IdMap, mapNew, mapSet, mapToObj} from './common/map';
 import {IdObj, objFreeze, objMap} from './common/obj';
 import {
   MergeableStore,
@@ -27,16 +28,32 @@ const LISTENER_ARGS: IdObj<number> = {
   InvalidValue: 1,
 };
 
-export const createMergeableStore = ((): MergeableStore => {
-  const store = createStore();
+type Timestamp = string;
 
-  (store as any).addPostTransactionListener(
-    (_: Store, _getTransactionChanges: GetTransactionChanges) => {},
-  );
+export const createMergeableStore = ((): MergeableStore => {
+  let counter = 0;
+  const store = createStore();
+  const mergeableChanges: IdMap<TransactionChanges> = mapNew();
+
+  const getTimestamp = (): Timestamp => '' + counter++;
+
+  const postTransactionListener = (
+    _: Store,
+    getTransactionChanges: GetTransactionChanges,
+  ) => {
+    mapSet(mergeableChanges, getTimestamp(), getTransactionChanges());
+  };
+
+  const merge = () => mergeableStore;
+
+  const getMergeableChanges = () => mapToObj(mergeableChanges);
 
   const mergeableStore: IdObj<any> = {
-    merge: () => mergeableStore,
+    getMergeableChanges,
+    merge,
   };
+
+  (store as any).addPostTransactionListener(postTransactionListener);
 
   objMap(
     store as IdObj<any>,
