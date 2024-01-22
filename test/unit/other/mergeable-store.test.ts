@@ -51,10 +51,28 @@ test('Log mergeable changes', () => {
   const store = createMergeableStore();
   store.setCell('t1', 'r1', 'c1', 1);
   store.setCell('t1', 'r1', 'c2', 2);
-  expect(store.getMergeableChanges()).toEqual({
-    '0': [{t1: {r1: {c1: 1}}}, {}],
-    '1': [{t1: {r1: {c2: 2}}}, {}],
-  });
+  store.setCell('t1', 'r2', 'c1', 3);
+  store.setCell('t2', 'r1', 'c1', 4);
+  store.setValue('v1', 5);
+  expect(store.getMergeableChanges()).toEqual([
+    '5',
+    [
+      [
+        '4',
+        {
+          t1: [
+            '3',
+            {
+              r1: ['2', {c1: ['1', 1], c2: ['2', 2]}],
+              r2: ['3', {c1: ['3', 3]}],
+            },
+          ],
+          t2: ['4', {r1: ['4', {c1: ['4', 4]}]}],
+        },
+      ],
+      ['5', {v1: ['5', 5]}],
+    ],
+  ]);
 });
 
 test('Merge', () => {
