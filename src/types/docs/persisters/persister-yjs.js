@@ -16,6 +16,7 @@
  *
  * It simply provides an extra getYDoc method for accessing the Yjs document the
  * Store is being persisted to.
+ * @category Persister
  * @since v4.3.14
  */
 /// YjsPersister
