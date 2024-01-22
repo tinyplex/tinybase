@@ -9,7 +9,7 @@
   <span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/setter/setvalues/">setValues</a></span><span class="punctuation">(</span><span class="punctuation">{</span><span class="literal-property">open</span><span class="operator">:</span> <span class="boolean">true</span><span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="keyword">const</span> persister <span class="operator">=</span> <span class="function"><a href="/api/persister-indexed-db/functions/creation/createindexeddbpersister/">createIndexedDbPersister</a></span><span class="punctuation">(</span>store<span class="punctuation">,</span> <span class="string">'petStore'</span><span class="punctuation">)</span><span class="punctuation">;</span>
 
-<span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function">save</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persister-indexed-db/interfaces/other/indexeddbpersister/methods/save/save/">save</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// IndexedDB -></span>
 <span class="comment">//   database petStore:</span>
 <span class="comment">//     objectStore t:</span>
@@ -24,5 +24,5 @@
 <span class="comment">//         k: "open"</span>
 <span class="comment">//         v: true</span>
 
-persister<span class="punctuation">.</span><span class="function">destroy</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+persister<span class="punctuation">.</span><span class="function"><a href="/api/persister-indexed-db/interfaces/other/indexeddbpersister/methods/lifecycle/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 </code></pre></section><section class="s2"><h2>Since</h2><p>v4.2.0</p></section></section>

@@ -35,7 +35,7 @@ store<span class="punctuation">.</span><span class="function"><a href="/api/stor
 <span class="comment">// -> 'petSpecies relationship (to dog) changed'</span>
 <span class="comment">// -> ['fido', 'cujo', 'toto']</span>
 
-relationships<span class="punctuation">.</span><span class="function">delListener</span><span class="punctuation">(</span>listenerId<span class="punctuation">)</span><span class="punctuation">;</span>
+relationships<span class="punctuation">.</span><span class="function"><a href="/api/relationships/interfaces/relationships/relationships/methods/listener/dellistener/">delListener</a></span><span class="punctuation">(</span>listenerId<span class="punctuation">)</span><span class="punctuation">;</span>
 </code></pre><p>This example creates a <a href="/api/store/interfaces/store/store/"><code>Store</code></a>, a <a href="/api/relationships/interfaces/relationships/relationships/"><code>Relationships</code></a> object, and then registers a listener that responds to any changes to any remote <a href="/api/store/type-aliases/store/row/"><code>Row</code></a>&#x27;s local <a href="/api/store/type-aliases/store/row/"><code>Row</code></a> objects.</p><pre><code><span class="keyword">const</span> store <span class="operator">=</span> <span class="function"><a href="/api/store/functions/creation/createstore/">createStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span>
   <span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/setter/settable/">setTable</a></span><span class="punctuation">(</span><span class="string">'pets'</span><span class="punctuation">,</span> <span class="punctuation">{</span>
     <span class="literal-property">fido</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">species</span><span class="operator">:</span> <span class="string">'dog'</span><span class="punctuation">,</span> <span class="literal-property">color</span><span class="operator">:</span> <span class="string">'brown'</span><span class="punctuation">}</span><span class="punctuation">,</span>
@@ -79,5 +79,5 @@ store<span class="punctuation">.</span><span class="function"><a href="/api/stor
 <span class="comment">// -> 'petColor relationship (to grey) changed'</span>
 <span class="comment">// -> ['toto', 'cujo']</span>
 
-relationships<span class="punctuation">.</span><span class="function">delListener</span><span class="punctuation">(</span>listenerId<span class="punctuation">)</span><span class="punctuation">;</span>
+relationships<span class="punctuation">.</span><span class="function"><a href="/api/relationships/interfaces/relationships/relationships/methods/listener/dellistener/">delListener</a></span><span class="punctuation">(</span>listenerId<span class="punctuation">)</span><span class="punctuation">;</span>
 </code></pre></section></section>

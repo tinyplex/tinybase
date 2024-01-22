@@ -12,9 +12,9 @@
   <span class="literal-property">room</span><span class="operator">:</span> <span class="string">'my_room'</span><span class="punctuation">,</span>
 <span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="keyword">const</span> persister <span class="operator">=</span> <span class="function"><a href="/api/persister-partykit-client/functions/creation/createpartykitpersister/">createPartyKitPersister</a></span><span class="punctuation">(</span>store<span class="punctuation">,</span> partySocket<span class="punctuation">)</span><span class="punctuation">;</span>
-<span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function">startAutoLoad</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
-<span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function">startAutoSave</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persister-partykit-client/interfaces/other/partykitpersister/methods/load/startautoload/">startAutoLoad</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persister-partykit-client/interfaces/other/partykitpersister/methods/save/startautosave/">startAutoSave</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// Store will now be synchronized with the room.</span>
 
-persister<span class="punctuation">.</span><span class="function">destroy</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+persister<span class="punctuation">.</span><span class="function"><a href="/api/persister-partykit-client/interfaces/other/partykitpersister/methods/lifecycle/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 </code></pre></section><section class="s2"><h2>Since</h2><p>4.3.0</p></section></section>
