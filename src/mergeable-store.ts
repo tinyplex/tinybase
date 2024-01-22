@@ -1,13 +1,16 @@
-import {GetTransactionChanges, Store, TransactionChanges} from './types/store';
-import {IdMap, mapNew, mapSet, mapToObj} from './common/map';
-import {IdObj, objFreeze, objMap} from './common/obj';
+import {Cell, GetTransactionChanges, Store, Value} from './types/store';
+import {IdMap, mapEnsure, mapNew, mapSet} from './common/map';
+import {IdObj, objFreeze, objIsEmpty, objMap} from './common/obj';
 import {
   MergeableStore,
   createMergeableStore as createMergeableStoreDecl,
 } from './types/mergeable-store';
+import {isUndefined, slice} from './common/other';
+import {jsonParse, jsonString} from './common/json';
 import {strEndsWith, strStartsWith} from './common/strings';
+import {Id} from './types/common';
+import {collClear} from './common/coll';
 import {createStore} from './store';
-import {slice} from './common/other';
 
 const LISTENER_ARGS: IdObj<number> = {
   HasTable: 1,
@@ -29,24 +32,94 @@ const LISTENER_ARGS: IdObj<number> = {
 };
 
 type Timestamp = string;
+type Timestamped<Thing> = [timestamp: Timestamp, thing: Thing];
+
+type MergeableCell = Timestamped<Cell | null>;
+type MergeableRow = Timestamped<IdMap<MergeableCell>>;
+type MergeableTable = Timestamped<IdMap<MergeableRow>>;
+type MergeableTables = Timestamped<IdMap<MergeableTable>>;
+
+type MergeableValue = Timestamped<Value | null>;
+type MergeableValues = Timestamped<IdMap<MergeableValue>>;
+
+type MergeableChanges = Timestamped<
+  [mergeableTables: MergeableTables, mergeableValues: MergeableValues]
+>;
 
 export const createMergeableStore = ((): MergeableStore => {
   let counter = 0;
-  const store = createStore();
-  const mergeableChanges: IdMap<TransactionChanges> = mapNew();
-
   const getTimestamp = (): Timestamp => '' + counter++;
+  const store = createStore();
+
+  const timestamp = getTimestamp();
+  const mergeableChanges: MergeableChanges = [
+    timestamp,
+    [
+      [timestamp, mapNew()],
+      [timestamp, mapNew()],
+    ],
+  ];
 
   const postTransactionListener = (
     _: Store,
     getTransactionChanges: GetTransactionChanges,
   ) => {
-    mapSet(mergeableChanges, getTimestamp(), getTransactionChanges());
+    const timestamp = getTimestamp();
+    const newTimestampedMap = <T>(): Timestamped<IdMap<T>> => [
+      timestamp,
+      mapNew<Id, T>(),
+    ];
+
+    const [tablesChanges, valuesChanges] = getTransactionChanges();
+
+    const [mergeableTablesChanges, mergeableValuesChanges] =
+      mergeableChanges[1];
+
+    mergeableChanges[0] = timestamp;
+    if (!objIsEmpty(tablesChanges)) {
+      mergeableTablesChanges[0] = timestamp;
+      objMap(tablesChanges, (tableChanges, tableId) => {
+        const mergeableTableChanges = mapEnsure(
+          mergeableTablesChanges[1],
+          tableId,
+          newTimestampedMap<MergeableRow>,
+        );
+        mergeableTableChanges[0] = timestamp;
+        if (isUndefined(tableChanges)) {
+          collClear(mergeableTableChanges[1]);
+        } else {
+          objMap(tableChanges, (rowChanges, rowId) => {
+            const mergeableRowChanges = mapEnsure(
+              mergeableTableChanges[1],
+              rowId,
+              newTimestampedMap<MergeableCell>,
+            );
+            mergeableRowChanges[0] = timestamp;
+            if (isUndefined(rowChanges)) {
+              collClear(mergeableRowChanges[1]);
+            } else {
+              objMap(rowChanges, (cellChanges, cellId) =>
+                mapSet(mergeableRowChanges[1], cellId, [
+                  timestamp,
+                  cellChanges,
+                ]),
+              );
+            }
+          });
+        }
+      });
+    }
+    if (!objIsEmpty(valuesChanges)) {
+      mergeableValuesChanges[0] = timestamp;
+      objMap(valuesChanges, (valueChanges, valueId) => {
+        mapSet(mergeableValuesChanges[1], valueId, [timestamp, valueChanges]);
+      });
+    }
   };
 
   const merge = () => mergeableStore;
 
-  const getMergeableChanges = () => mapToObj(mergeableChanges);
+  const getMergeableChanges = () => jsonParse(jsonString(mergeableChanges));
 
   const mergeableStore: IdObj<any> = {
     getMergeableChanges,
