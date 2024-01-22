@@ -12,6 +12,7 @@
  *
  * It simply provides an extra getUrls method for accessing the URLs the Store
  * is being persisted to.
+ * @category Persister
  * @since v4.3.14
  */
 /// RemotePersister

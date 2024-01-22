@@ -12,6 +12,7 @@
  *
  * It simply provides an extra getDbName method for accessing the unique key of
  * the IndexedDB the Store is being persisted to.
+ * @category Persister
  * @since v4.3.14
  */
 /// IndexedDbPersister

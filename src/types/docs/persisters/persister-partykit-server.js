@@ -137,6 +137,12 @@
 /// TinyBasePartyKitServer
 {
   /**
+   * The constructor is used to create the server.
+   * @category Creation
+   * @since v4.3.9
+   */
+  /// TinyBasePartyKitServer.constructor
+  /**
    * The config property is used to optionally configure the server, using an
    * object of the TinyBasePartyKitServerConfig type.
    *

@@ -17,6 +17,7 @@
  *
  * It simply provides an extra getDocHandle method for accessing the Automerge
  * document handler the Store is being persisted to.
+ * @category Persister
  * @since v4.3.14
  */
 /// AutomergePersister

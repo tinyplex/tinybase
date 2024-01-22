@@ -29,6 +29,7 @@ export type TinyBasePartyKitServerConfig = {
 
 /// TinyBasePartyKitServer
 export class TinyBasePartyKitServer implements Server {
+  /// TinyBasePartyKitServer.constructor
   constructor(party: Party);
   /// TinyBasePartyKitServer.config
   readonly config: TinyBasePartyKitServerConfig;
