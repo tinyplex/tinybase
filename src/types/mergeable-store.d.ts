@@ -1,6 +1,7 @@
 /// mergeable-store
 
 import {Cell, Store, Value} from './store.d';
+import {Id} from './common';
 import {IdObj} from '../common/obj';
 
 export type Timestamp = string;
@@ -29,4 +30,4 @@ export interface MergeableStore extends Store {
 }
 
 /// createMergeableStore
-export function createMergeableStore(): MergeableStore;
+export function createMergeableStore(id: Id): MergeableStore;

@@ -18,7 +18,7 @@ let listener: StoreListener;
 
 describe.each([
   ['store', createStore],
-  ['mergeableStore', createMergeableStore],
+  ['mergeableStore', () => createMergeableStore('s1')],
 ])('Testing %s', (_name, createStore) => {
   beforeEach(() => {
     store = createStore();
