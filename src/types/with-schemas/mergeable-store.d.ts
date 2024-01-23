@@ -8,6 +8,7 @@ import {
   Store,
   Value,
 } from './store.d';
+import {Id} from './common';
 import {IdObj} from '../../common/obj';
 
 export type Timestamp = string;
@@ -48,6 +49,6 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
 }
 
 /// createMergeableStore
-export function createMergeableStore<
-  Schemas extends OptionalSchemas,
->(): MergeableStore<Schemas>;
+export function createMergeableStore<Schemas extends OptionalSchemas>(
+  id: Id,
+): MergeableStore<Schemas>;

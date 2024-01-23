@@ -1,14 +1,56 @@
 import {MergeableStore, createMergeableStore} from 'tinybase/debug';
 
+const MASK6 = 63;
+const SHIFT36 = 2 ** 36;
+const SHIFT30 = 2 ** 30;
+const SHIFT24 = 2 ** 24;
+const SHIFT18 = 2 ** 18;
+const SHIFT12 = 2 ** 12;
+const SHIFT6 = 2 ** 6;
+
+const toB64 = (num: number): string => String.fromCharCode(48 + (num & MASK6));
+
+const encodeHlc = (
+  logicalTime42: number,
+  counter24: number,
+  clientHash30: number,
+): string =>
+  toB64(logicalTime42 / SHIFT36) +
+  toB64(logicalTime42 / SHIFT30) +
+  toB64(logicalTime42 / SHIFT24) +
+  toB64(logicalTime42 / SHIFT18) +
+  toB64(logicalTime42 / SHIFT12) +
+  toB64(logicalTime42 / SHIFT6) +
+  toB64(logicalTime42) +
+  toB64(counter24 / SHIFT18) +
+  toB64(counter24 / SHIFT12) +
+  toB64(counter24 / SHIFT6) +
+  toB64(counter24) +
+  toB64(clientHash30 / SHIFT24) +
+  toB64(clientHash30 / SHIFT18) +
+  toB64(clientHash30 / SHIFT12) +
+  toB64(clientHash30 / SHIFT6) +
+  toB64(clientHash30);
+
+const START_TIME = new Date(2024, 1, 1);
+const STORE_ID_HASHES: {[id: string]: number} = {s1: 5861543};
+
+const timestamp = (counter: number, storeId: string = 's1') =>
+  encodeHlc(START_TIME.valueOf(), counter, STORE_ID_HASHES[storeId]);
+
+beforeEach(() => jest.useFakeTimers({now: START_TIME}));
+
+afterEach(() => jest.useRealTimers());
+
 test('Create', () => {
-  const store = createMergeableStore();
+  const store = createMergeableStore('s1');
   expect(store.getJson()).toEqual(JSON.stringify([{}, {}]));
 });
 
 describe('Fluency of inherited methods', () => {
   let store: MergeableStore;
   beforeEach(() => {
-    store = createMergeableStore();
+    store = createMergeableStore('s1');
   });
   test('Setters', () => {
     expect(store.setContent([{}, {}])).toEqual(store);
@@ -38,10 +80,10 @@ describe('Fluency of inherited methods', () => {
     expect(store.delTablesSchema()).toEqual(store);
     expect(store.delValuesSchema()).toEqual(store);
     expect(store.delSchema()).toEqual(store);
-    expect(store.delListener('0')).toEqual(store);
+    expect(store.delListener(timestamp(0))).toEqual(store);
   });
   test('Other', () => {
-    expect(store.callListener('0')).toEqual(store);
+    expect(store.callListener(timestamp(0))).toEqual(store);
     expect(store.startTransaction()).toEqual(store);
     expect(store.finishTransaction()).toEqual(store);
   });
@@ -51,7 +93,17 @@ describe('getMergeableContent', () => {
   let store: MergeableStore;
 
   beforeEach(() => {
-    store = createMergeableStore();
+    store = createMergeableStore('s1');
+  });
+
+  test('Initialize', () => {
+    expect(store.getMergeableContent()).toEqual([
+      timestamp(0),
+      [
+        [timestamp(0), {}],
+        [timestamp(0), {}],
+      ],
+    ]);
   });
 
   test('Set together, and immutability', () => {
@@ -61,42 +113,49 @@ describe('getMergeableContent', () => {
     ]);
     const mergeableContent = store.getMergeableContent();
     expect(mergeableContent).toEqual([
-      '1',
+      timestamp(1),
       [
         [
-          '1',
+          timestamp(1),
           {
             t1: [
-              '1',
+              timestamp(1),
               {
-                r1: ['1', {c1: ['1', 1], c2: ['1', 2]}],
-                r2: ['1', {c1: ['1', 3]}],
+                r1: [
+                  timestamp(1),
+                  {c1: [timestamp(1), 1], c2: [timestamp(1), 2]},
+                ],
+                r2: [timestamp(1), {c1: [timestamp(1), 3]}],
               },
             ],
-            t2: ['1', {r1: ['1', {c1: ['1', 4]}]}],
+            t2: [timestamp(1), {r1: [timestamp(1), {c1: [timestamp(1), 4]}]}],
           },
         ],
-        ['1', {v1: ['1', 5]}],
+        [timestamp(1), {v1: [timestamp(1), 5]}],
       ],
     ]);
 
-    mergeableContent[0] = '0';
-    expect(store.getMergeableContent()[0]).toEqual('1');
+    mergeableContent[0] = timestamp(0);
+    expect(store.getMergeableContent()[0]).toEqual(timestamp(1));
 
-    mergeableContent[1][1][0] = '0';
-    expect(store.getMergeableContent()[1][1][0]).toEqual('1');
+    mergeableContent[1][1][0] = timestamp(0);
+    expect(store.getMergeableContent()[1][1][0]).toEqual(timestamp(1));
 
-    mergeableContent[1][0][1].t1[0] = '0';
-    expect(store.getMergeableContent()[1][0][1].t1[0]).toEqual('1');
+    mergeableContent[1][0][1].t1[0] = timestamp(0);
+    expect(store.getMergeableContent()[1][0][1].t1[0]).toEqual(timestamp(1));
 
-    mergeableContent[1][0][1].t1[1].r1[0] = '0';
-    expect(store.getMergeableContent()[1][0][1].t1[1].r1[0]).toEqual('1');
+    mergeableContent[1][0][1].t1[1].r1[0] = timestamp(0);
+    expect(store.getMergeableContent()[1][0][1].t1[1].r1[0]).toEqual(
+      timestamp(1),
+    );
 
-    mergeableContent[1][0][1].t1[1].r1[1].c1[0] = '0';
-    expect(store.getMergeableContent()[1][0][1].t1[1].r1[1].c1[0]).toEqual('1');
+    mergeableContent[1][0][1].t1[1].r1[1].c1[0] = timestamp(0);
+    expect(store.getMergeableContent()[1][0][1].t1[1].r1[1].c1[0]).toEqual(
+      timestamp(1),
+    );
 
-    mergeableContent[1][1][1].v1[0] = '0';
-    expect(store.getMergeableContent()[1][1][1].v1[0]).toEqual('1');
+    mergeableContent[1][1][1].v1[0] = timestamp(0);
+    expect(store.getMergeableContent()[1][1][1].v1[0]).toEqual(timestamp(1));
   });
 
   test('Set in sequence', () => {
@@ -107,22 +166,25 @@ describe('getMergeableContent', () => {
       .setCell('t2', 'r1', 'c1', 4)
       .setValue('v1', 5);
     expect(store.getMergeableContent()).toEqual([
-      '5',
+      timestamp(5),
       [
         [
-          '4',
+          timestamp(4),
           {
             t1: [
-              '3',
+              timestamp(3),
               {
-                r1: ['2', {c1: ['1', 1], c2: ['2', 2]}],
-                r2: ['3', {c1: ['3', 3]}],
+                r1: [
+                  timestamp(2),
+                  {c1: [timestamp(1), 1], c2: [timestamp(2), 2]},
+                ],
+                r2: [timestamp(3), {c1: [timestamp(3), 3]}],
               },
             ],
-            t2: ['4', {r1: ['4', {c1: ['4', 4]}]}],
+            t2: [timestamp(4), {r1: [timestamp(4), {c1: [timestamp(4), 4]}]}],
           },
         ],
-        ['5', {v1: ['5', 5]}],
+        [timestamp(5), {v1: [timestamp(5), 5]}],
       ],
     ]);
   });
@@ -140,28 +202,31 @@ describe('getMergeableContent', () => {
       .setValue('v1', 6)
       .delValue('v2');
     expect(store.getMergeableContent()).toEqual([
-      '7',
+      timestamp(7),
       [
         [
-          '5',
+          timestamp(5),
           {
             t1: [
-              '4',
+              timestamp(4),
               {
-                r1: ['3', {c1: ['2', 2], c2: ['3', null]}],
-                r2: ['4', null],
+                r1: [
+                  timestamp(3),
+                  {c1: [timestamp(2), 2], c2: [timestamp(3), null]},
+                ],
+                r2: [timestamp(4), null],
               },
             ],
-            t2: ['5', null],
+            t2: [timestamp(5), null],
           },
         ],
-        ['7', {v1: ['6', 6], v2: ['7', null]}],
+        [timestamp(7), {v1: [timestamp(6), 6], v2: [timestamp(7), null]}],
       ],
     ]);
   });
 });
 
 test('Merge', () => {
-  const store = createMergeableStore();
+  const store = createMergeableStore('s1');
   expect(store.merge()).toEqual(store);
 });
