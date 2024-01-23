@@ -1,15 +1,15 @@
 import {Cell, GetTransactionChanges, Store, Value} from './types/store';
+import {EMPTY_STRING, strEndsWith, strStartsWith} from './common/strings';
 import {IdMap, mapEnsure, mapNew, mapSet} from './common/map';
 import {IdObj, objFreeze, objIsEmpty, objMap} from './common/obj';
 import {
   MergeableStore,
+  Timestamp,
+  Timestamped,
   createMergeableStore as createMergeableStoreDecl,
 } from './types/mergeable-store';
 import {isUndefined, slice} from './common/other';
 import {jsonParse, jsonString} from './common/json';
-import {strEndsWith, strStartsWith} from './common/strings';
-import {Id} from './types/common';
-import {collClear} from './common/coll';
 import {createStore} from './store';
 
 const LISTENER_ARGS: IdObj<number> = {
@@ -31,20 +31,19 @@ const LISTENER_ARGS: IdObj<number> = {
   InvalidValue: 1,
 };
 
-type Timestamp = string;
-type Timestamped<Thing> = [timestamp: Timestamp, thing: Thing];
-
 type MergeableCell = Timestamped<Cell | null>;
-type MergeableRow = Timestamped<IdMap<MergeableCell>>;
-type MergeableTable = Timestamped<IdMap<MergeableRow>>;
+type MergeableRow = Timestamped<IdMap<MergeableCell> | null>;
+type MergeableTable = Timestamped<IdMap<MergeableRow> | null>;
 type MergeableTables = Timestamped<IdMap<MergeableTable>>;
 
 type MergeableValue = Timestamped<Value | null>;
 type MergeableValues = Timestamped<IdMap<MergeableValue>>;
 
-type MergeableChanges = Timestamped<
+type MergeableContent = Timestamped<
   [mergeableTables: MergeableTables, mergeableValues: MergeableValues]
 >;
+
+const newTimestampedMap = (): Timestamped<null> => [EMPTY_STRING, null];
 
 export const createMergeableStore = ((): MergeableStore => {
   let counter = 0;
@@ -52,7 +51,7 @@ export const createMergeableStore = ((): MergeableStore => {
   const store = createStore();
 
   const timestamp = getTimestamp();
-  const mergeableChanges: MergeableChanges = [
+  const mergeableContent: MergeableContent = [
     timestamp,
     [
       [timestamp, mapNew()],
@@ -65,44 +64,36 @@ export const createMergeableStore = ((): MergeableStore => {
     getTransactionChanges: GetTransactionChanges,
   ) => {
     const timestamp = getTimestamp();
-    const newTimestampedMap = <T>(): Timestamped<IdMap<T>> => [
-      timestamp,
-      mapNew<Id, T>(),
-    ];
-
     const [tablesChanges, valuesChanges] = getTransactionChanges();
+    const [mergeableTables, mergeableValues] = mergeableContent[1];
 
-    const [mergeableTablesChanges, mergeableValuesChanges] =
-      mergeableChanges[1];
-
-    mergeableChanges[0] = timestamp;
+    mergeableContent[0] = timestamp;
     if (!objIsEmpty(tablesChanges)) {
-      mergeableTablesChanges[0] = timestamp;
+      mergeableTables[0] = timestamp;
       objMap(tablesChanges, (tableChanges, tableId) => {
-        const mergeableTableChanges = mapEnsure(
-          mergeableTablesChanges[1],
+        const mergeableTable = mapEnsure(
+          mergeableTables[1],
           tableId,
-          newTimestampedMap<MergeableRow>,
+          newTimestampedMap,
         );
-        mergeableTableChanges[0] = timestamp;
+        mergeableTable[0] = timestamp;
         if (isUndefined(tableChanges)) {
-          collClear(mergeableTableChanges[1]);
+          mergeableTable[1] = null;
         } else {
+          const mergeableTableMap = (mergeableTable[1] ??= mapNew());
           objMap(tableChanges, (rowChanges, rowId) => {
-            const mergeableRowChanges = mapEnsure(
-              mergeableTableChanges[1],
+            const mergeableRow = mapEnsure(
+              mergeableTableMap,
               rowId,
-              newTimestampedMap<MergeableCell>,
+              newTimestampedMap,
             );
-            mergeableRowChanges[0] = timestamp;
+            mergeableRow[0] = timestamp;
             if (isUndefined(rowChanges)) {
-              collClear(mergeableRowChanges[1]);
+              mergeableRow[1] = null;
             } else {
+              const mergeableRowMap = (mergeableRow[1] ??= mapNew());
               objMap(rowChanges, (cellChanges, cellId) =>
-                mapSet(mergeableRowChanges[1], cellId, [
-                  timestamp,
-                  cellChanges,
-                ]),
+                mapSet(mergeableRowMap, cellId, [timestamp, cellChanges]),
               );
             }
           });
@@ -110,19 +101,19 @@ export const createMergeableStore = ((): MergeableStore => {
       });
     }
     if (!objIsEmpty(valuesChanges)) {
-      mergeableValuesChanges[0] = timestamp;
+      mergeableValues[0] = timestamp;
       objMap(valuesChanges, (valueChanges, valueId) => {
-        mapSet(mergeableValuesChanges[1], valueId, [timestamp, valueChanges]);
+        mapSet(mergeableValues[1], valueId, [timestamp, valueChanges]);
       });
     }
   };
 
   const merge = () => mergeableStore;
 
-  const getMergeableChanges = () => jsonParse(jsonString(mergeableChanges));
+  const getMergeableContent = () => jsonParse(jsonString(mergeableContent));
 
   const mergeableStore: IdObj<any> = {
-    getMergeableChanges,
+    getMergeableContent,
     merge,
   };
 
