@@ -138,7 +138,7 @@ const cellBoundsSchemaAndExpected: [
 
 describe.each([
   ['store', createStore],
-  ['mergeableStore', createMergeableStore],
+  ['mergeableStore', () => createMergeableStore('s1')],
 ])('Testing %s', (_name, createStore) => {
   describe('Get and set tablesSchemas', () => {
     let store: Store<any>;
