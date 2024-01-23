@@ -47,32 +47,99 @@ describe('Fluency of inherited methods', () => {
   });
 });
 
-test('Log mergeable changes', () => {
-  const store = createMergeableStore();
-  store.setCell('t1', 'r1', 'c1', 1);
-  store.setCell('t1', 'r1', 'c2', 2);
-  store.setCell('t1', 'r2', 'c1', 3);
-  store.setCell('t2', 'r1', 'c1', 4);
-  store.setValue('v1', 5);
-  expect(store.getMergeableChanges()).toEqual([
-    '5',
-    [
+describe('getMergeableContent', () => {
+  let store: MergeableStore;
+
+  beforeEach(() => {
+    store = createMergeableStore();
+  });
+
+  test('Set together', () => {
+    store.setContent([
+      {t1: {r1: {c1: 1, c2: 2}, r2: {c1: 3}}, t2: {r1: {c1: 4}}},
+      {v1: 5},
+    ]);
+    expect(store.getMergeableContent()).toEqual([
+      '1',
       [
-        '4',
-        {
-          t1: [
-            '3',
-            {
-              r1: ['2', {c1: ['1', 1], c2: ['2', 2]}],
-              r2: ['3', {c1: ['3', 3]}],
-            },
-          ],
-          t2: ['4', {r1: ['4', {c1: ['4', 4]}]}],
-        },
+        [
+          '1',
+          {
+            t1: [
+              '1',
+              {
+                r1: ['1', {c1: ['1', 1], c2: ['1', 2]}],
+                r2: ['1', {c1: ['1', 3]}],
+              },
+            ],
+            t2: ['1', {r1: ['1', {c1: ['1', 4]}]}],
+          },
+        ],
+        ['1', {v1: ['1', 5]}],
       ],
-      ['5', {v1: ['5', 5]}],
-    ],
-  ]);
+    ]);
+  });
+
+  test('Set in sequence', () => {
+    store
+      .setCell('t1', 'r1', 'c1', 1)
+      .setCell('t1', 'r1', 'c2', 2)
+      .setCell('t1', 'r2', 'c1', 3)
+      .setCell('t2', 'r1', 'c1', 4)
+      .setValue('v1', 5);
+    expect(store.getMergeableContent()).toEqual([
+      '5',
+      [
+        [
+          '4',
+          {
+            t1: [
+              '3',
+              {
+                r1: ['2', {c1: ['1', 1], c2: ['2', 2]}],
+                r2: ['3', {c1: ['3', 3]}],
+              },
+            ],
+            t2: ['4', {r1: ['4', {c1: ['4', 4]}]}],
+          },
+        ],
+        ['5', {v1: ['5', 5]}],
+      ],
+    ]);
+  });
+
+  test('Mutate', () => {
+    store
+      .setContent([
+        {t1: {r1: {c1: 1, c2: 2}, r2: {c1: 3}}, t2: {r1: {c1: 4}}},
+        {v1: 5, v2: 6},
+      ])
+      .setCell('t1', 'r1', 'c1', 2)
+      .delCell('t1', 'r1', 'c2')
+      .delRow('t1', 'r2')
+      .delTable('t2')
+      .setValue('v1', 6)
+      .delValue('v2');
+    expect(store.getMergeableContent()).toEqual([
+      '7',
+      [
+        [
+          '5',
+          {
+            t1: [
+              '4',
+              {
+                r1: ['3', {c1: ['2', 2], c2: ['3', null]}],
+                r2: ['4', null],
+              },
+            ],
+            t2: ['5', null],
+          },
+        ],
+        ['7', {v1: ['6', 6], v2: ['7', null]}],
+      ],
+    ]);
+  });
 });
 
 test('Merge', () => {
