@@ -38,6 +38,11 @@ const STORE_ID_HASHES: {[id: string]: number} = {s1: 5861543};
 const timestamp = (counter: number, storeId: string = 's1') =>
   encodeHlc(START_TIME.valueOf(), counter, STORE_ID_HASHES[storeId]);
 
+const timestamped = (counter: number, value: any, storeId: string = 's1') => [
+  timestamp(counter, storeId),
+  value,
+];
+
 beforeEach(() => jest.useFakeTimers({now: START_TIME}));
 
 afterEach(() => jest.useRealTimers());
@@ -97,43 +102,17 @@ describe('getMergeableContent', () => {
   });
 
   test('Initialize', () => {
-    expect(store.getMergeableContent()).toEqual([
-      timestamp(0),
-      [
-        [timestamp(0), {}],
-        [timestamp(0), {}],
-      ],
-    ]);
+    expect(store.getMergeableContent()).toEqual(
+      timestamped(0, [timestamped(0, {}), timestamped(0, {})]),
+    );
   });
 
-  test('Set together, and immutability', () => {
+  test('Immutability', () => {
     store.setContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c1: 3}}, t2: {r1: {c1: 4}}},
       {v1: 5},
     ]);
     const mergeableContent = store.getMergeableContent();
-    expect(mergeableContent).toEqual([
-      timestamp(1),
-      [
-        [
-          timestamp(1),
-          {
-            t1: [
-              timestamp(1),
-              {
-                r1: [
-                  timestamp(1),
-                  {c1: [timestamp(1), 1], c2: [timestamp(1), 2]},
-                ],
-                r2: [timestamp(1), {c1: [timestamp(1), 3]}],
-              },
-            ],
-            t2: [timestamp(1), {r1: [timestamp(1), {c1: [timestamp(1), 4]}]}],
-          },
-        ],
-        [timestamp(1), {v1: [timestamp(1), 5]}],
-      ],
-    ]);
 
     mergeableContent[0] = timestamp(0);
     expect(store.getMergeableContent()[0]).toEqual(timestamp(1));
@@ -158,6 +137,25 @@ describe('getMergeableContent', () => {
     expect(store.getMergeableContent()[1][1][1].v1[0]).toEqual(timestamp(1));
   });
 
+  test('Set together', () => {
+    store.setContent([
+      {t1: {r1: {c1: 1, c2: 2}, r2: {c1: 3}}, t2: {r1: {c1: 4}}},
+      {v1: 5},
+    ]);
+    expect(store.getMergeableContent()).toEqual(
+      timestamped(1, [
+        timestamped(1, {
+          t1: timestamped(1, {
+            r1: timestamped(1, {c1: timestamped(1, 1), c2: timestamped(1, 2)}),
+            r2: timestamped(1, {c1: timestamped(1, 3)}),
+          }),
+          t2: timestamped(1, {r1: timestamped(1, {c1: timestamped(1, 4)})}),
+        }),
+        timestamped(1, {v1: timestamped(1, 5)}),
+      ]),
+    );
+  });
+
   test('Set in sequence', () => {
     store
       .setCell('t1', 'r1', 'c1', 1)
@@ -165,28 +163,18 @@ describe('getMergeableContent', () => {
       .setCell('t1', 'r2', 'c1', 3)
       .setCell('t2', 'r1', 'c1', 4)
       .setValue('v1', 5);
-    expect(store.getMergeableContent()).toEqual([
-      timestamp(5),
-      [
-        [
-          timestamp(4),
-          {
-            t1: [
-              timestamp(3),
-              {
-                r1: [
-                  timestamp(2),
-                  {c1: [timestamp(1), 1], c2: [timestamp(2), 2]},
-                ],
-                r2: [timestamp(3), {c1: [timestamp(3), 3]}],
-              },
-            ],
-            t2: [timestamp(4), {r1: [timestamp(4), {c1: [timestamp(4), 4]}]}],
-          },
-        ],
-        [timestamp(5), {v1: [timestamp(5), 5]}],
-      ],
-    ]);
+    expect(store.getMergeableContent()).toEqual(
+      timestamped(5, [
+        timestamped(4, {
+          t1: timestamped(3, {
+            r1: timestamped(2, {c1: timestamped(1, 1), c2: timestamped(2, 2)}),
+            r2: timestamped(3, {c1: timestamped(3, 3)}),
+          }),
+          t2: timestamped(4, {r1: timestamped(4, {c1: timestamped(4, 4)})}),
+        }),
+        timestamped(5, {v1: timestamped(5, 5)}),
+      ]),
+    );
   });
 
   test('Mutate', () => {
@@ -201,28 +189,21 @@ describe('getMergeableContent', () => {
       .delTable('t2')
       .setValue('v1', 6)
       .delValue('v2');
-    expect(store.getMergeableContent()).toEqual([
-      timestamp(7),
-      [
-        [
-          timestamp(5),
-          {
-            t1: [
-              timestamp(4),
-              {
-                r1: [
-                  timestamp(3),
-                  {c1: [timestamp(2), 2], c2: [timestamp(3), null]},
-                ],
-                r2: [timestamp(4), null],
-              },
-            ],
-            t2: [timestamp(5), null],
-          },
-        ],
-        [timestamp(7), {v1: [timestamp(6), 6], v2: [timestamp(7), null]}],
-      ],
-    ]);
+    expect(store.getMergeableContent()).toEqual(
+      timestamped(7, [
+        timestamped(5, {
+          t1: timestamped(4, {
+            r1: timestamped(3, {
+              c1: timestamped(2, 2),
+              c2: timestamped(3, null),
+            }),
+            r2: timestamped(4, null),
+          }),
+          t2: timestamped(5, null),
+        }),
+        timestamped(7, {v1: timestamped(6, 6), v2: timestamped(7, null)}),
+      ]),
+    );
   });
 });
 
