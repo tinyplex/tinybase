@@ -4,12 +4,13 @@ import {IdMap, mapEnsure, mapNew, mapSet, mapToObj} from './common/map';
 import {IdObj, objFreeze, objIsEmpty, objMap} from './common/obj';
 import {
   MergeableStore,
-  Timestamp,
   Timestamped,
   createMergeableStore as createMergeableStoreDecl,
 } from './types/mergeable-store';
 import {isUndefined, slice} from './common/other';
+import {Id} from './types/common';
 import {createStore} from './store';
+import {getHlcFunctions} from './common/hlc';
 
 const LISTENER_ARGS: IdObj<number> = {
   HasTable: 1,
@@ -43,33 +44,31 @@ type MergeableContentMaps = Timestamped<
   ]
 >;
 
-const newTimestampedMap = (): Timestamped<null> => [EMPTY_STRING, null];
+const newTimestamped = (): Timestamped<null> => [EMPTY_STRING, null];
 
-const timestampedMapToObj = <MapValue, ObjValue = MapValue>(
+const mapTimestampedMapToObj = <MapValue, ObjValue = MapValue>(
   timestampedMap: Timestamped<IdMap<MapValue> | null>,
   mapper: (mapValue: MapValue) => ObjValue = (mapValue: MapValue) =>
     mapValue as any as ObjValue,
 ): Timestamped<IdObj<ObjValue> | null> =>
-  timestampMap(timestampedMap, (map) =>
+  mapTimestamped(timestampedMap, (map) =>
     isUndefined(map) ? null : mapToObj(map, mapper),
   );
 
-const timestampMap = <FromValue, ToValue>(
+const mapTimestamped = <FromValue, ToValue>(
   [timestamp, value]: Timestamped<FromValue>,
   mapper: (value: FromValue) => ToValue,
 ): Timestamped<ToValue> => [timestamp, mapper(value)];
 
-const timestampClone = <Value>([
+const cloneTimestamped = <Value>([
   timestamp,
   value,
 ]: Timestamped<Value>): Timestamped<Value> => [timestamp, value];
 
-export const createMergeableStore = ((): MergeableStore => {
-  let counter = 0;
-  const getTimestamp = (): Timestamp => '' + counter++;
+export const createMergeableStore = ((id: Id): MergeableStore => {
+  const [getHlc, _seenHlc] = getHlcFunctions(id);
   const store = createStore();
-
-  const timestamp = getTimestamp();
+  const timestamp = getHlc();
   const mergeableContent: MergeableContentMaps = [
     timestamp,
     [
@@ -82,7 +81,7 @@ export const createMergeableStore = ((): MergeableStore => {
     _: Store,
     getTransactionChanges: GetTransactionChanges,
   ) => {
-    const timestamp = getTimestamp();
+    const timestamp = getHlc();
     const [tablesChanges, valuesChanges] = getTransactionChanges();
     const [mergeableTables, mergeableValues] = mergeableContent[1];
 
@@ -93,7 +92,7 @@ export const createMergeableStore = ((): MergeableStore => {
         const mergeableTable = mapEnsure(
           mergeableTables[1],
           tableId,
-          newTimestampedMap,
+          newTimestamped,
         );
         mergeableTable[0] = timestamp;
         if (isUndefined(tableChanges)) {
@@ -104,7 +103,7 @@ export const createMergeableStore = ((): MergeableStore => {
             const mergeableRow = mapEnsure(
               mergeableTableMap,
               rowId,
-              newTimestampedMap,
+              newTimestamped,
             );
             mergeableRow[0] = timestamp;
             if (isUndefined(rowChanges)) {
@@ -130,13 +129,13 @@ export const createMergeableStore = ((): MergeableStore => {
   const merge = () => mergeableStore;
 
   const getMergeableContent = () =>
-    timestampMap(mergeableContent, ([mergeableTables, mergeableValues]) => [
-      timestampedMapToObj(mergeableTables, (mergeableTable) =>
-        timestampedMapToObj(mergeableTable, (mergeableRow) =>
-          timestampedMapToObj(mergeableRow, timestampClone),
+    mapTimestamped(mergeableContent, ([mergeableTables, mergeableValues]) => [
+      mapTimestampedMapToObj(mergeableTables, (mergeableTable) =>
+        mapTimestampedMapToObj(mergeableTable, (mergeableRow) =>
+          mapTimestampedMapToObj(mergeableRow, cloneTimestamped),
         ),
       ),
-      timestampedMapToObj(mergeableValues, timestampClone),
+      mapTimestampedMapToObj(mergeableValues, cloneTimestamped),
     ]);
 
   const mergeableStore: IdObj<any> = {
