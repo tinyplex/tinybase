@@ -69,7 +69,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const [getHlc, _seenHlc] = getHlcFunctions(id);
   const store = createStore();
   const timestamp = getHlc();
-  const mergeableContent: MergeableContentMaps = [
+  const allMergeableContent: MergeableContentMaps = [
     timestamp,
     [
       [timestamp, mapNew()],
@@ -83,9 +83,9 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   ) => {
     const timestamp = getHlc();
     const [tablesChanges, valuesChanges] = getTransactionChanges();
-    const [mergeableTables, mergeableValues] = mergeableContent[1];
+    const [mergeableTables, mergeableValues] = allMergeableContent[1];
 
-    mergeableContent[0] = timestamp;
+    allMergeableContent[0] = timestamp;
     if (!objIsEmpty(tablesChanges)) {
       mergeableTables[0] = timestamp;
       objMap(tablesChanges, (tableChanges, tableId) => {
@@ -129,14 +129,17 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const merge = () => mergeableStore;
 
   const getMergeableContent = () =>
-    mapTimestamped(mergeableContent, ([mergeableTables, mergeableValues]) => [
-      mapTimestampedMapToObj(mergeableTables, (mergeableTable) =>
-        mapTimestampedMapToObj(mergeableTable, (mergeableRow) =>
-          mapTimestampedMapToObj(mergeableRow, cloneTimestamped),
+    mapTimestamped(
+      allMergeableContent,
+      ([mergeableTables, mergeableValues]) => [
+        mapTimestampedMapToObj(mergeableTables, (mergeableTable) =>
+          mapTimestampedMapToObj(mergeableTable, (mergeableRow) =>
+            mapTimestampedMapToObj(mergeableRow, cloneTimestamped),
+          ),
         ),
-      ),
-      mapTimestampedMapToObj(mergeableValues, cloneTimestamped),
-    ]);
+        mapTimestampedMapToObj(mergeableValues, cloneTimestamped),
+      ],
+    );
 
   const mergeableStore: IdObj<any> = {
     getMergeableContent,
