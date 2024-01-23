@@ -2,6 +2,9 @@
 
 import {OptionalSchemas, Store} from './store.d';
 
+export type Timestamp = string;
+export type Timestamped<Thing> = [timestamp: Timestamp, thing: Thing];
+
 /// MergeableStore
 export interface MergeableStore<Schemas extends OptionalSchemas>
   extends Store<Schemas> {
@@ -9,8 +12,8 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
   /// MergeableStore.merge
   merge(): MergeableStore<Schemas>;
 
-  /// MergeableStore.getMergeableChanges
-  getMergeableChanges(): any[];
+  /// MergeableStore.getMergeableContent
+  getMergeableContent(): any[];
 }
 
 /// createMergeableStore
