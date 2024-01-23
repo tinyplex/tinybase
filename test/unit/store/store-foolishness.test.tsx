@@ -87,7 +87,7 @@ const INVALID_OBJECTS: [string, any][] = INVALID_CELLS_OR_VALUES.concat([
 
 describe.each([
   ['store', createStore],
-  ['mergeableStore', createMergeableStore],
+  ['mergeableStore', () => createMergeableStore('s1')],
 ])('Testing %s', (_name, createStore) => {
   describe('Setting invalid', () => {
     test.each(INVALID_OBJECTS)('Tables; %s', (_name, tables: any) => {
