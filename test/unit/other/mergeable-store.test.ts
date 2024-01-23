@@ -54,12 +54,13 @@ describe('getMergeableContent', () => {
     store = createMergeableStore();
   });
 
-  test('Set together', () => {
+  test('Set together, and immutability', () => {
     store.setContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c1: 3}}, t2: {r1: {c1: 4}}},
       {v1: 5},
     ]);
-    expect(store.getMergeableContent()).toEqual([
+    const mergeableContent = store.getMergeableContent();
+    expect(mergeableContent).toEqual([
       '1',
       [
         [
@@ -78,6 +79,24 @@ describe('getMergeableContent', () => {
         ['1', {v1: ['1', 5]}],
       ],
     ]);
+
+    mergeableContent[0] = '0';
+    expect(store.getMergeableContent()[0]).toEqual('1');
+
+    mergeableContent[1][1][0] = '0';
+    expect(store.getMergeableContent()[1][1][0]).toEqual('1');
+
+    mergeableContent[1][0][1].t1[0] = '0';
+    expect(store.getMergeableContent()[1][0][1].t1[0]).toEqual('1');
+
+    mergeableContent[1][0][1].t1[1].r1[0] = '0';
+    expect(store.getMergeableContent()[1][0][1].t1[1].r1[0]).toEqual('1');
+
+    mergeableContent[1][0][1].t1[1].r1[1].c1[0] = '0';
+    expect(store.getMergeableContent()[1][0][1].t1[1].r1[1].c1[0]).toEqual('1');
+
+    mergeableContent[1][1][1].v1[0] = '0';
+    expect(store.getMergeableContent()[1][1][1].v1[0]).toEqual('1');
   });
 
   test('Set in sequence', () => {
