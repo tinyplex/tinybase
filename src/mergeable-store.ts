@@ -1,6 +1,6 @@
 import {Cell, GetTransactionChanges, Store, Value} from './types/store';
 import {EMPTY_STRING, strEndsWith, strStartsWith} from './common/strings';
-import {IdMap, mapEnsure, mapNew, mapSet} from './common/map';
+import {IdMap, mapEnsure, mapNew, mapSet, mapToObj} from './common/map';
 import {IdObj, objFreeze, objIsEmpty, objMap} from './common/obj';
 import {
   MergeableStore,
@@ -9,7 +9,6 @@ import {
   createMergeableStore as createMergeableStoreDecl,
 } from './types/mergeable-store';
 import {isUndefined, slice} from './common/other';
-import {jsonParse, jsonString} from './common/json';
 import {createStore} from './store';
 
 const LISTENER_ARGS: IdObj<number> = {
@@ -31,19 +30,39 @@ const LISTENER_ARGS: IdObj<number> = {
   InvalidValue: 1,
 };
 
-type MergeableCell = Timestamped<Cell | null>;
-type MergeableRow = Timestamped<IdMap<MergeableCell> | null>;
-type MergeableTable = Timestamped<IdMap<MergeableRow> | null>;
-type MergeableTables = Timestamped<IdMap<MergeableTable>>;
-
-type MergeableValue = Timestamped<Value | null>;
-type MergeableValues = Timestamped<IdMap<MergeableValue>>;
-
-type MergeableContent = Timestamped<
-  [mergeableTables: MergeableTables, mergeableValues: MergeableValues]
+type MergeableContentMaps = Timestamped<
+  [
+    Timestamped<
+      IdMap<
+        Timestamped<IdMap<
+          Timestamped<IdMap<Timestamped<Cell | null>> | null>
+        > | null>
+      >
+    >,
+    Timestamped<IdMap<Timestamped<Value | null>>>,
+  ]
 >;
 
 const newTimestampedMap = (): Timestamped<null> => [EMPTY_STRING, null];
+
+const timestampedMapToObj = <MapValue, ObjValue = MapValue>(
+  timestampedMap: Timestamped<IdMap<MapValue> | null>,
+  mapper: (mapValue: MapValue) => ObjValue = (mapValue: MapValue) =>
+    mapValue as any as ObjValue,
+): Timestamped<IdObj<ObjValue> | null> =>
+  timestampMap(timestampedMap, (map) =>
+    isUndefined(map) ? null : mapToObj(map, mapper),
+  );
+
+const timestampMap = <FromValue, ToValue>(
+  [timestamp, value]: Timestamped<FromValue>,
+  mapper: (value: FromValue) => ToValue,
+): Timestamped<ToValue> => [timestamp, mapper(value)];
+
+const timestampClone = <Value>([
+  timestamp,
+  value,
+]: Timestamped<Value>): Timestamped<Value> => [timestamp, value];
 
 export const createMergeableStore = ((): MergeableStore => {
   let counter = 0;
@@ -51,7 +70,7 @@ export const createMergeableStore = ((): MergeableStore => {
   const store = createStore();
 
   const timestamp = getTimestamp();
-  const mergeableContent: MergeableContent = [
+  const mergeableContent: MergeableContentMaps = [
     timestamp,
     [
       [timestamp, mapNew()],
@@ -110,7 +129,15 @@ export const createMergeableStore = ((): MergeableStore => {
 
   const merge = () => mergeableStore;
 
-  const getMergeableContent = () => jsonParse(jsonString(mergeableContent));
+  const getMergeableContent = () =>
+    timestampMap(mergeableContent, ([mergeableTables, mergeableValues]) => [
+      timestampedMapToObj(mergeableTables, (mergeableTable) =>
+        timestampedMapToObj(mergeableTable, (mergeableRow) =>
+          timestampedMapToObj(mergeableRow, timestampClone),
+        ),
+      ),
+      timestampedMapToObj(mergeableValues, timestampClone),
+    ]);
 
   const mergeableStore: IdObj<any> = {
     getMergeableContent,
