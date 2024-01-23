@@ -7,7 +7,7 @@ let store: Store;
 
 describe.each([
   ['store', createStore],
-  ['mergeableStore', createMergeableStore],
+  ['mergeableStore', () => createMergeableStore('s1')],
 ])('Testing %s', (_name, createStore) => {
   describe('Change tabular state', () => {
     beforeAll(() => {
