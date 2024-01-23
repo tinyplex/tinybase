@@ -1,9 +1,22 @@
 /// mergeable-store
 
-import {Store} from './store.d';
+import {Cell, Store, Value} from './store.d';
+import {IdObj} from '../common/obj';
 
 export type Timestamp = string;
 export type Timestamped<Thing> = [timestamp: Timestamp, thing: Thing];
+
+type MergeableCell = Timestamped<Cell | null>;
+type MergeableRow = Timestamped<IdObj<MergeableCell> | null>;
+type MergeableTable = Timestamped<IdObj<MergeableRow> | null>;
+type MergeableTables = Timestamped<IdObj<MergeableTable>>;
+
+type MergeableValue = Timestamped<Value | null>;
+type MergeableValues = Timestamped<IdObj<MergeableValue>>;
+
+export type MergeableContent = Timestamped<
+  [mergeableTables: MergeableTables, mergeableValues: MergeableValues]
+>;
 
 /// MergeableStore
 export interface MergeableStore extends Store {
@@ -12,7 +25,7 @@ export interface MergeableStore extends Store {
   merge(): MergeableStore;
 
   /// MergeableStore.getMergeableContent
-  getMergeableContent(): any[];
+  getMergeableContent(): MergeableContent;
 }
 
 /// createMergeableStore
