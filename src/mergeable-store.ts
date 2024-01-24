@@ -1,7 +1,7 @@
 import {Cell, GetTransactionChanges, Store, Value} from './types/store';
 import {EMPTY_STRING, strEndsWith, strStartsWith} from './common/strings';
 import {IdMap, mapEnsure, mapNew, mapSet, mapToObj} from './common/map';
-import {IdObj, objFreeze, objIsEmpty, objMap} from './common/obj';
+import {IdObj, objFreeze, objIsEmpty, objToArray} from './common/obj';
 import {
   MergeableStore,
   Timestamped,
@@ -88,7 +88,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     allMergeableContent[0] = timestamp;
     if (!objIsEmpty(tablesChanges)) {
       mergeableTables[0] = timestamp;
-      objMap(tablesChanges, (tableChanges, tableId) => {
+      objToArray(tablesChanges, (tableChanges, tableId) => {
         const mergeableTable = mapEnsure(
           mergeableTables[1],
           tableId,
@@ -99,7 +99,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
           mergeableTable[1] = null;
         } else {
           const mergeableTableMap = (mergeableTable[1] ??= mapNew());
-          objMap(tableChanges, (rowChanges, rowId) => {
+          objToArray(tableChanges, (rowChanges, rowId) => {
             const mergeableRow = mapEnsure(
               mergeableTableMap,
               rowId,
@@ -110,7 +110,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
               mergeableRow[1] = null;
             } else {
               const mergeableRowMap = (mergeableRow[1] ??= mapNew());
-              objMap(rowChanges, (cellChanges, cellId) =>
+              objToArray(rowChanges, (cellChanges, cellId) =>
                 mapSet(mergeableRowMap, cellId, [timestamp, cellChanges]),
               );
             }
@@ -120,7 +120,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     }
     if (!objIsEmpty(valuesChanges)) {
       mergeableValues[0] = timestamp;
-      objMap(valuesChanges, (valueChanges, valueId) => {
+      objToArray(valuesChanges, (valueChanges, valueId) => {
         mapSet(mergeableValues[1], valueId, [timestamp, valueChanges]);
       });
     }
@@ -148,7 +148,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
 
   (store as any).addPostTransactionListener(postTransactionListener);
 
-  objMap(
+  objToArray(
     store as IdObj<any>,
     (method, name) =>
       (mergeableStore[name] =
