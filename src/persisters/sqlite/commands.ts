@@ -15,8 +15,8 @@ import {
   objDel,
   objIds,
   objIsEmpty,
-  objMap,
   objNew,
+  objToArray,
   objValues,
 } from '../../common/obj';
 import {SELECT, escapeId} from './common';
@@ -139,7 +139,7 @@ export const getCommandFunctions = (
     partial = false,
   ): Promise<void> => {
     const tableCellIds = setNew<string>();
-    objMap(table ?? {}, (row) =>
+    objToArray(table ?? {}, (row) =>
       arrayMap(objIds(row ?? {}), (cellId) => setAdd(tableCellIds, cellId)),
     );
     const tableColumnNames = collValues(tableCellIds);
@@ -211,7 +211,7 @@ export const getCommandFunctions = (
         await cmd('DELETE FROM' + escapeId(tableName) + 'WHERE 1');
       } else {
         await promiseAll(
-          objMap(table, async (row, rowId) => {
+          objToArray(table, async (row, rowId) => {
             if (isUndefined(row)) {
               await cmd(
                 'DELETE FROM' +
@@ -242,7 +242,7 @@ export const getCommandFunctions = (
         );
         const args: any[] = [];
         const deleteRowIds: string[] = [];
-        objMap(table ?? {}, (row, rowId) => {
+        objToArray(table ?? {}, (row, rowId) => {
           arrayPush(
             args,
             rowId,

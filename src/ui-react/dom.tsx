@@ -75,7 +75,7 @@ import {
   getRelationshipsStoreTableIds,
 } from './common';
 import {isArray, isString, isUndefined} from '../common/other';
-import {objMap, objNew} from '../common/obj';
+import {objNew, objToArray} from '../common/obj';
 import {Relationships} from '../types/relationships';
 import {arrayMap} from '../common/array';
 
@@ -241,7 +241,7 @@ const useCells = (
   useMemo(() => {
     const cellIds = customCells ?? defaultCellIds;
     return objNew(
-      objMap(
+      objToArray(
         isArray(cellIds)
           ? objNew(arrayMap(cellIds, (cellId) => [cellId, cellId]))
           : cellIds,
@@ -285,7 +285,7 @@ const HtmlTable = ({
               onClick={handleSort}
             />
           )}
-          {objMap(cells, ({label}, cellId) => (
+          {objToArray(cells, ({label}, cellId) => (
             <HtmlHeaderCell
               key={cellId}
               cellId={cellId}
@@ -301,16 +301,19 @@ const HtmlTable = ({
       {arrayMap(rowIds, (rowId) => (
         <tr key={rowId}>
           {idColumn === false ? null : <th>{rowId}</th>}
-          {objMap(cells, ({component: CellView, getComponentProps}, cellId) => (
-            <td key={cellId}>
-              <CellView
-                {...getProps(getComponentProps, rowId, cellId)}
-                {...(cellComponentProps as any)}
-                rowId={rowId}
-                cellId={cellId}
-              />
-            </td>
-          ))}
+          {objToArray(
+            cells,
+            ({component: CellView, getComponentProps}, cellId) => (
+              <td key={cellId}>
+                <CellView
+                  {...getProps(getComponentProps, rowId, cellId)}
+                  {...(cellComponentProps as any)}
+                  rowId={rowId}
+                  cellId={cellId}
+                />
+              </td>
+            ),
+          )}
         </tr>
       ))}
     </tbody>
@@ -375,7 +378,7 @@ const RelationshipInHtmlRow = ({
           <th>{remoteRowId}</th>
         </>
       )}
-      {objMap(
+      {objToArray(
         cells,
         ({component: CellView, getComponentProps}, compoundCellId) => {
           const [tableId, cellId] = compoundCellId.split(DOT, 2);
@@ -687,7 +690,7 @@ export const RelationshipInHtmlTable = ({
                 <th>{remoteTableId}.Id</th>
               </>
             )}
-            {objMap(cells, ({label}, cellId) => (
+            {objToArray(cells, ({label}, cellId) => (
               <th key={cellId}>{label}</th>
             ))}
           </tr>
