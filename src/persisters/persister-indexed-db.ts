@@ -1,4 +1,4 @@
-import {IdObj, objHas, objMap, objNew} from '../common/obj';
+import {IdObj, objHas, objNew, objToArray} from '../common/obj';
 import {
   IndexedDbPersister,
   createIndexedDbPersister as createIndexedDbPersisterDecl,
@@ -24,7 +24,7 @@ export const objectStoreMatch = async (
   objectStore: IDBObjectStore,
   obj: IdObj<any>,
 ): Promise<void> => {
-  const actions = objMap(obj, (v, k) =>
+  const actions = objToArray(obj, (v, k) =>
     execObjectStore(objectStore, 'put', {k, v}),
   );
   arrayMap(await execObjectStore(objectStore, 'getAllKeys'), (id: Id) =>

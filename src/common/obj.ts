@@ -44,10 +44,10 @@ export const objDel = <Value>(obj: IdObj<Value>, id: Id): IdObj<Value> => {
   return obj;
 };
 
-export const objMap = <Value, Return>(
-  obj: IdObj<Value>,
-  cb: (value: Value, id: string) => Return,
-): Return[] => arrayMap(objEntries(obj), ([id, value]) => cb(value, id));
+export const objToArray = <FromValue, ToValue>(
+  obj: IdObj<FromValue>,
+  cb: (value: FromValue, id: string) => ToValue,
+): ToValue[] => arrayMap(objEntries(obj), ([id, value]) => cb(value, id));
 
 export const objValues = <Value>(obj: IdObj<Value>): Value[] =>
   object.values(obj);
