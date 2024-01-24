@@ -88,13 +88,17 @@ const mergeTimestamped = <NewThing, CurrentThing>(
     newThing: NewThing,
     currentThing: CurrentThing,
   ) => CurrentThing,
+  ifNewer: 0 | 1 = 0,
 ) => {
-  if (newTimestamp > currentTimestampedThing[0]) {
-    currentTimestampedThing[0] = newTimestamp;
+  const isNewer = newTimestamp > currentTimestampedThing[0];
+  if (!ifNewer || isNewer) {
     currentTimestampedThing[1] = getNextCurrentThing(
       newThing,
       currentTimestampedThing[1],
     );
+  }
+  if (isNewer) {
+    currentTimestampedThing[0] = newTimestamp;
   }
   return currentTimestampedThing;
 };
@@ -219,6 +223,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
                                   (cell) =>
                                     (changes[0][tableId]![rowId]![cellId] =
                                       cell),
+                                  1,
                                 ),
                               );
                               return allCellStamps;
@@ -243,6 +248,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
                   valueStamp,
                   mapEnsure(allValueStamps, valueId, newTimestamped),
                   (value) => (changes[1][valueId] = value),
+                  1,
                 ),
               );
               return allValueStamps;
