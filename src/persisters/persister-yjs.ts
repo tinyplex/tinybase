@@ -6,7 +6,7 @@ import {
   TransactionChanges,
   Values,
 } from '../types/store.d';
-import {IdObj, objEnsure, objHas, objMap, objNew} from '../common/obj';
+import {IdObj, objEnsure, objHas, objNew, objToArray} from '../common/obj';
 import {T, TINYBASE, V} from '../common/strings';
 import {Doc as YDoc, YEvent, Map as YMap} from 'yjs';
 import {
@@ -96,7 +96,7 @@ const setTransactionChangesToYDoc = (
   let transactionChangesFailed = 1;
   ifNotUndefined(getTransactionChanges?.(), ([cellChanges, valueChanges]) => {
     transactionChangesFailed = 0;
-    objMap(cellChanges, (table, tableId) =>
+    objToArray(cellChanges, (table, tableId) =>
       transactionChangesFailed
         ? 0
         : isUndefined(table)
@@ -104,7 +104,7 @@ const setTransactionChangesToYDoc = (
           : ifNotUndefined(
               yTables.get(tableId),
               (yTable) =>
-                objMap(table, (row, rowId) =>
+                objToArray(table, (row, rowId) =>
                   transactionChangesFailed
                     ? 0
                     : isUndefined(row)
@@ -112,7 +112,7 @@ const setTransactionChangesToYDoc = (
                       : ifNotUndefined(
                           yTable.get(rowId),
                           (yRow) =>
-                            objMap(row, (cell, cellId) =>
+                            objToArray(row, (cell, cellId) =>
                               isUndefined(cell)
                                 ? yRow.delete(cellId)
                                 : yRow.set(cellId, cell),
@@ -123,7 +123,7 @@ const setTransactionChangesToYDoc = (
               transactionChangesDidFail,
             ),
     );
-    objMap(valueChanges, (value, valueId) =>
+    objToArray(valueChanges, (value, valueId) =>
       transactionChangesFailed
         ? 0
         : isUndefined(value)
@@ -161,7 +161,7 @@ const yMapMatch = (
     ? yMapOrParent
     : yMapOrParent.get(idInParent) ?? yMapOrParent.set(idInParent, new YMap());
   let changed: 1 | undefined;
-  objMap(obj, (value, id) => {
+  objToArray(obj, (value, id) => {
     if (set(yMap, id, value)) {
       changed = 1;
     }

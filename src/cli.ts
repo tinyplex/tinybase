@@ -10,7 +10,7 @@ import {createTools} from './tools';
 import {fileURLToPath} from 'url';
 import {isArray} from './common/other';
 import {jsonParse} from './common/json';
-import {objMap} from './common/obj';
+import {objToArray} from './common/obj';
 
 const FILE_ERROR = 'provide a valid schemaFile, storeName, and outputDir';
 
@@ -46,7 +46,7 @@ const getTools = (schemaFile: string) => {
 
 const help = () => {
   log('', 'tinybase <command>', '', 'Usage:', '');
-  objMap(commands, ([, args, help], command) =>
+  objToArray(commands, ([, args, help], command) =>
     log(` tinybase ${command} ${args}`, ` - ${help}`, ''),
   );
   log('See also http://tinybase.org/guides/developer-tools/command-line/', '');

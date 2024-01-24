@@ -95,7 +95,7 @@ import {
   objFrozen,
   objHas,
   objIsEmpty,
-  objMap,
+  objToArray,
 } from './common/obj';
 import {IdSet, IdSet2, IdSet3, IdSet4, setAdd, setNew} from './common/set';
 import {
@@ -149,7 +149,7 @@ const validate = (
     onInvalidObj?.();
     return false;
   }
-  objMap(obj, (child, id) => {
+  objToArray(obj, (child, id) => {
     if (!validateChild(child, id)) {
       objDel(obj, id);
     }
@@ -1156,7 +1156,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       (tableId, rowId) => {
         if (validateRow(tableId, rowId, partialRow, 1)) {
           const table = getOrCreateTable(tableId);
-          objMap(partialRow, (cell, cellId) =>
+          objToArray(partialRow, (cell, cellId) =>
             setCellIntoDefaultRow(tableId, table, rowId, cellId, cell as Cell),
           );
         }
@@ -1202,7 +1202,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const setPartialValues = (partialValues: Values): Store =>
     fluentTransaction(() =>
       validateValues(partialValues, 1)
-        ? objMap(partialValues, (value, valueId) =>
+        ? objToArray(partialValues, (value, valueId) =>
             setValidValue(valueId, value as Value),
           )
         : 0,
@@ -1225,13 +1225,13 @@ export const createStore: typeof createStoreDecl = (): Store => {
     transactionChanges: TransactionChanges,
   ): Store =>
     fluentTransaction(() => {
-      objMap(transactionChanges[0], (table, tableId) =>
+      objToArray(transactionChanges[0], (table, tableId) =>
         isUndefined(table)
           ? delTable(tableId)
-          : objMap(table, (row, rowId) =>
+          : objToArray(table, (row, rowId) =>
               isUndefined(row)
                 ? delRow(tableId, rowId)
-                : objMap(row, (cell, cellId) =>
+                : objToArray(row, (cell, cellId) =>
                     setOrDelCell(
                       store,
                       tableId,
@@ -1242,7 +1242,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
                   ),
             ),
       );
-      objMap(transactionChanges[1], (value, valueId) =>
+      objToArray(transactionChanges[1], (value, valueId) =>
         setOrDelValue(store, valueId, value as ValueOrUndefined),
       );
     });
@@ -1702,7 +1702,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   };
 
   // and now for some gentle meta-programming
-  objMap(
+  objToArray(
     {
       [HAS + TABLES]: [0, hasTablesListeners, [], () => [hasTables()]],
       [TABLES]: [0, tablesListeners],

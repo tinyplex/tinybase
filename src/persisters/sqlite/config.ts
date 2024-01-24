@@ -1,5 +1,11 @@
 import {IdMap, mapNew, mapSet} from '../../common/map';
-import {IdObj, objMap, objMerge, objSize, objValues} from '../../common/obj';
+import {
+  IdObj,
+  objMerge,
+  objSize,
+  objToArray,
+  objValues,
+} from '../../common/obj';
 import {isString, isUndefined, slice} from '../../common/other';
 import {setAdd, setNew} from '../../common/set';
 import {DEFAULT_ROW_ID_COLUMN_NAME} from './common';
@@ -56,7 +62,7 @@ const getDefaultedTabularConfigMap = (
   filter: (id: string, firstValue: string) => any,
 ): IdMap<any[]> => {
   const configMap = mapNew<Id, any[]>();
-  objMap(configsObj, (configObj, id) => {
+  objToArray(configsObj, (configObj, id) => {
     const defaultedConfig = slice(
       objValues(
         objMerge(
