@@ -75,7 +75,7 @@ import {
   size,
   slice,
 } from './common/other';
-import {objFreeze, objMap} from './common/obj';
+import {objFreeze, objToArray} from './common/obj';
 
 type StoreWithPrivateMethods = Store & {
   createStore: () => Store;
@@ -614,7 +614,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     getListenerStats,
   };
 
-  objMap(
+  objToArray(
     {
       [TABLE]: [1, 1],
       [TABLE + CELL_IDS]: [0, 1],
