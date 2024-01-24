@@ -20,6 +20,11 @@
    * @category Merging
    */
   /// MergeableStore.getMergeableContent
+  /**
+   * The applyMergeableContent method
+   * @category Merging
+   */
+  /// MergeableStore.applyMergeableContent
 }
 /**
  * The createMergeableStore function
