@@ -1,4 +1,4 @@
-import {arrayEvery, arrayMap} from './array';
+import {arrayEvery, arrayForEach, arrayMap} from './array';
 import {ifNotUndefined, isUndefined, size} from './other';
 import {Id} from '../types/common.d';
 
@@ -43,6 +43,11 @@ export const objDel = <Value>(obj: IdObj<Value>, id: Id): IdObj<Value> => {
   delete obj[id];
   return obj;
 };
+
+export const objForEach = <Value>(
+  obj: IdObj<Value>,
+  cb: (value: Value, id: string) => void,
+): void => arrayForEach(objEntries(obj), ([id, value]) => cb(value, id));
 
 export const objToArray = <FromValue, ToValue>(
   obj: IdObj<FromValue>,
