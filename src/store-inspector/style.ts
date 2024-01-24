@@ -1,13 +1,13 @@
 /* eslint-disable max-len */
 import {CLOSE_SVG, DONE_SVG, EDIT_SVG, LOGO_SVG, POSITIONS_SVG} from './svg';
 import {arrayJoin, arrayMap} from '../common/array';
-import {objMap, objNew} from '../common/obj';
+import {objNew, objToArray} from '../common/obj';
 import {UNIQUE_ID} from './common';
 
 const SCROLLBAR = '*::-webkit-scrollbar';
 
 export const APP_STYLESHEET = arrayJoin(
-  objMap(
+  objToArray(
     {
       '': 'all:initial;font-family:sans-serif;font-size:0.75rem;position:fixed;z-index:999999',
       '*': 'all:revert',

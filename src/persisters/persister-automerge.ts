@@ -10,8 +10,8 @@ import {
   objGet,
   objHas,
   objIsEmpty,
-  objMap,
   objSize,
+  objToArray,
 } from '../common/obj';
 import {ifNotUndefined, isUndefined} from '../common/other';
 import {DocHandle} from '@automerge/automerge-repo';
@@ -47,7 +47,7 @@ const setTransactionChangesToDoc = (
   let transactionChangesFailed = 1;
   ifNotUndefined(getTransactionChanges?.(), ([cellChanges, valueChanges]) => {
     transactionChangesFailed = 0;
-    objMap(cellChanges, (table, tableId) =>
+    objToArray(cellChanges, (table, tableId) =>
       transactionChangesFailed
         ? 0
         : isUndefined(table)
@@ -55,7 +55,7 @@ const setTransactionChangesToDoc = (
           : ifNotUndefined(
               docTables[tableId],
               (docTable) =>
-                objMap(table, (row, rowId) =>
+                objToArray(table, (row, rowId) =>
                   transactionChangesFailed
                     ? 0
                     : isUndefined(row)
@@ -63,7 +63,7 @@ const setTransactionChangesToDoc = (
                       : ifNotUndefined(
                           objGet(docTable, rowId),
                           (docRow: any) =>
-                            objMap(row, (cell, cellId) =>
+                            objToArray(row, (cell, cellId) =>
                               isUndefined(cell)
                                 ? objDel(docRow, cellId)
                                 : (docRow[cellId] = cell),
@@ -74,7 +74,7 @@ const setTransactionChangesToDoc = (
               transactionChangesDidFail,
             ),
     );
-    objMap(valueChanges, (value, valueId) =>
+    objToArray(valueChanges, (value, valueId) =>
       transactionChangesFailed
         ? 0
         : isUndefined(value)
@@ -112,12 +112,12 @@ const docObjMatch = (
     ? docObjOrParent
     : objEnsure(docObjOrParent, idInParent, () => ({}));
   let changed: 1 | undefined;
-  objMap(obj, (value, id) => {
+  objToArray(obj, (value, id) => {
     if (set(docObj, id, value)) {
       changed = 1;
     }
   });
-  objMap(docObj, (_: any, id: Id) => {
+  objToArray(docObj, (_: any, id: Id) => {
     if (!objHas(obj, id)) {
       objDel(docObj, id);
       changed = 1;
