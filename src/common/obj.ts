@@ -49,6 +49,12 @@ export const objToArray = <FromValue, ToValue>(
   cb: (value: FromValue, id: string) => ToValue,
 ): ToValue[] => arrayMap(objEntries(obj), ([id, value]) => cb(value, id));
 
+export const objMap = <FromValue, ToValue>(
+  obj: IdObj<FromValue>,
+  cb: (value: FromValue, id: string) => ToValue,
+): IdObj<ToValue> =>
+  objNew(objToArray(obj, (value, id) => [id, cb(value, id)]));
+
 export const objValues = <Value>(obj: IdObj<Value>): Value[] =>
   object.values(obj);
 
