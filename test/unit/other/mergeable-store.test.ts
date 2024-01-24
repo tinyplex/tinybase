@@ -40,13 +40,15 @@ const encodeHlc = (
 const START_TIME = new Date(2024, 1, 1);
 const STORE_ID_HASHES: {[id: string]: number} = {s1: 5861543, s2: 5861540};
 
-const timestamp = (counter: number, storeId: string = 's1') =>
-  encodeHlc(START_TIME.valueOf(), counter, STORE_ID_HASHES[storeId]);
+const timestamp = (counter: number, storeId: string = 's1', time = 0) =>
+  encodeHlc(START_TIME.valueOf() + time, counter, STORE_ID_HASHES[storeId]);
 
-const timestamped = (counter: number, value: any, storeId: string = 's1') => [
-  timestamp(counter, storeId),
-  value,
-];
+const timestamped = (
+  counter: number,
+  value: any,
+  storeId: string = 's1',
+  time = 0,
+) => [timestamp(counter, storeId, time), value];
 
 const nullTimestamped = <Thing>(value: Thing): Timestamped<Thing> => [
   '',
@@ -588,6 +590,104 @@ describe('Merge', () => {
             v2: timestamped(9, null),
           }),
         ]),
+      );
+    });
+  });
+
+  describe('Two way', () => {
+    // Note that these tests run in order to mutate the store in a sequence.
+    beforeAll(() => {
+      store1 = createMergeableStore('s1');
+      store2 = createMergeableStore('s2');
+    });
+
+    test('Mutually exclusive 1', () => {
+      store1.setTables({t1: {r1: {c1: 0}}});
+      const mergeableContent1 = store1.getMergeableContent();
+      expect(mergeableContent1).toEqual(
+        timestamped(
+          0,
+          [
+            timestamped(
+              0,
+              {
+                t1: timestamped(
+                  0,
+                  {r1: timestamped(0, {c1: timestamped(0, 0, 's1')}, 's1')},
+                  's1',
+                ),
+              },
+              's1',
+            ),
+            nullTimestamped({}),
+          ],
+          's1',
+        ),
+      );
+
+      jest.advanceTimersByTime(1);
+
+      store2.setValues({v1: 0});
+      const mergeableContent2 = store2.getMergeableContent();
+      expect(mergeableContent2).toEqual(
+        timestamped(
+          0,
+          [
+            nullTimestamped({}),
+            timestamped(0, {v1: timestamped(0, 0, 's2', 1)}, 's2', 1),
+          ],
+          's2',
+          1,
+        ),
+      );
+
+      store2.applyMergeableContent(mergeableContent1);
+      expect(store2.getContent()).toEqual([{t1: {r1: {c1: 0}}}, {v1: 0}]);
+
+      store1.applyMergeableContent(mergeableContent2);
+      expect(store1.getContent()).toEqual([{t1: {r1: {c1: 0}}}, {v1: 0}]);
+
+      expect(store1.getMergeableContent()).toEqual(
+        timestamped(
+          0,
+          [
+            timestamped(
+              0,
+              {
+                t1: timestamped(
+                  0,
+                  {r1: timestamped(0, {c1: timestamped(0, 0, 's1')}, 's1')},
+                  's1',
+                ),
+              },
+              's1',
+            ),
+            timestamped(0, {v1: timestamped(0, 0, 's2', 1)}, 's2', 1),
+          ],
+          's2',
+          1,
+        ),
+      );
+      expect(store2.getMergeableContent()).toEqual(
+        timestamped(
+          0,
+          [
+            timestamped(
+              0,
+              {
+                t1: timestamped(
+                  0,
+                  {r1: timestamped(0, {c1: timestamped(0, 0, 's1')}, 's1')},
+                  's1',
+                ),
+              },
+              's1',
+            ),
+            timestamped(0, {v1: timestamped(0, 0, 's2', 1)}, 's2', 1),
+          ],
+          's2',
+          1,
+        ),
       );
     });
   });
