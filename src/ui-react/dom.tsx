@@ -75,7 +75,7 @@ import {
   getRelationshipsStoreTableIds,
 } from './common';
 import {isArray, isString, isUndefined} from '../common/other';
-import {objNew, objToArray} from '../common/obj';
+import {objMap, objNew, objToArray} from '../common/obj';
 import {Relationships} from '../types/relationships';
 import {arrayMap} from '../common/array';
 
@@ -240,21 +240,16 @@ const useCells = (
 ): Cells<any> =>
   useMemo(() => {
     const cellIds = customCells ?? defaultCellIds;
-    return objNew(
-      objToArray(
-        isArray(cellIds)
-          ? objNew(arrayMap(cellIds, (cellId) => [cellId, cellId]))
-          : cellIds,
-        (labelOrCustomCell, cellId) => [
-          cellId,
-          {
-            ...{label: cellId, component: defaultCellComponent},
-            ...(isString(labelOrCustomCell)
-              ? {label: labelOrCustomCell}
-              : labelOrCustomCell),
-          },
-        ],
-      ),
+    return objMap(
+      isArray(cellIds)
+        ? objNew(arrayMap(cellIds, (cellId) => [cellId, cellId]))
+        : cellIds,
+      (labelOrCustomCell, cellId) => ({
+        ...{label: cellId, component: defaultCellComponent},
+        ...(isString(labelOrCustomCell)
+          ? {label: labelOrCustomCell}
+          : labelOrCustomCell),
+      }),
     );
   }, [customCells, defaultCellComponent, defaultCellIds]);
 
