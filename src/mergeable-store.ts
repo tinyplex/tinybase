@@ -1,9 +1,23 @@
-import {Cell, GetTransactionChanges, Store, Value} from './types/store';
+import {
+  Cell,
+  GetTransactionChanges,
+  Store,
+  TransactionChanges,
+  Value,
+} from './types/store';
 import {EMPTY_STRING, strEndsWith, strStartsWith} from './common/strings';
 import {IdMap, mapEnsure, mapNew, mapSet, mapToObj} from './common/map';
-import {IdObj, objFreeze, objIsEmpty, objToArray} from './common/obj';
 import {
+  IdObj,
+  objForEach,
+  objFreeze,
+  objIsEmpty,
+  objToArray,
+} from './common/obj';
+import {
+  MergeableContent,
   MergeableStore,
+  Timestamp,
   Timestamped,
   createMergeableStore as createMergeableStoreDecl,
 } from './types/mergeable-store';
@@ -11,6 +25,7 @@ import {isUndefined, slice} from './common/other';
 import {Id} from './types/common';
 import {createStore} from './store';
 import {getHlcFunctions} from './common/hlc';
+import {pairClone} from './common/pairs';
 
 const LISTENER_ARGS: IdObj<number> = {
   HasTable: 1,
@@ -31,7 +46,7 @@ const LISTENER_ARGS: IdObj<number> = {
   InvalidValue: 1,
 };
 
-type MergeableContentMaps = Timestamped<
+type AllMergeableContent = Timestamped<
   [
     Timestamped<
       IdMap<
@@ -46,83 +61,101 @@ type MergeableContentMaps = Timestamped<
 
 const newTimestamped = (): Timestamped<null> => [EMPTY_STRING, null];
 
+const newTimestampedMap = <Thing>(): Timestamped<IdMap<Thing>> => [
+  EMPTY_STRING,
+  mapNew<Id, Thing>(),
+];
+
 const mapTimestampedMapToObj = <MapValue, ObjValue = MapValue>(
   timestampedMap: Timestamped<IdMap<MapValue> | null>,
   mapper: (mapValue: MapValue) => ObjValue = (mapValue: MapValue) =>
     mapValue as any as ObjValue,
 ): Timestamped<IdObj<ObjValue> | null> =>
-  mapTimestamped(timestampedMap, (map) =>
+  mapTimestamped(timestampedMap, (map, timestamp) => [
+    timestamp,
     isUndefined(map) ? null : mapToObj(map, mapper),
-  );
+  ]);
 
-const mapTimestamped = <FromValue, ToValue>(
-  [timestamp, value]: Timestamped<FromValue>,
-  mapper: (value: FromValue) => ToValue,
-): Timestamped<ToValue> => [timestamp, mapper(value)];
+const mapTimestamped = <TimestampedValue, ToValue>(
+  [timestamp, value]: Timestamped<TimestampedValue>,
+  mapper: (value: TimestampedValue, timestamp: Timestamp) => ToValue,
+): ToValue => mapper(value, timestamp);
 
-const cloneTimestamped = <Value>([
-  timestamp,
-  value,
-]: Timestamped<Value>): Timestamped<Value> => [timestamp, value];
+const mergeTimestamped = <NewThing, CurrentThing>(
+  [newTimestamp, newThing]: Timestamped<NewThing>,
+  currentTimestampedThing: Timestamped<CurrentThing>,
+  getNextCurrentThing: (
+    newThing: NewThing,
+    currentThing: CurrentThing,
+  ) => CurrentThing,
+) => {
+  if (newTimestamp > currentTimestampedThing[0]) {
+    currentTimestampedThing[0] = newTimestamp;
+    currentTimestampedThing[1] = getNextCurrentThing(
+      newThing,
+      currentTimestampedThing[1],
+    );
+  }
+  return currentTimestampedThing;
+};
 
 export const createMergeableStore = ((id: Id): MergeableStore => {
+  let listening = 1;
   const [getHlc, _seenHlc] = getHlcFunctions(id);
   const store = createStore();
-  const timestamp = getHlc();
-  const allMergeableContent: MergeableContentMaps = [
-    timestamp,
-    [
-      [timestamp, mapNew()],
-      [timestamp, mapNew()],
-    ],
+  const allMergeableContent: AllMergeableContent = [
+    EMPTY_STRING,
+    [newTimestampedMap(), newTimestampedMap()],
   ];
 
   const postTransactionListener = (
     _: Store,
     getTransactionChanges: GetTransactionChanges,
   ) => {
-    const timestamp = getHlc();
-    const [tablesChanges, valuesChanges] = getTransactionChanges();
-    const [mergeableTables, mergeableValues] = allMergeableContent[1];
+    if (listening) {
+      const timestamp = getHlc();
+      const [tablesChanges, valuesChanges] = getTransactionChanges();
+      const [mergeableTables, mergeableValues] = allMergeableContent[1];
 
-    allMergeableContent[0] = timestamp;
-    if (!objIsEmpty(tablesChanges)) {
-      mergeableTables[0] = timestamp;
-      objToArray(tablesChanges, (tableChanges, tableId) => {
-        const mergeableTable = mapEnsure(
-          mergeableTables[1],
-          tableId,
-          newTimestamped,
-        );
-        mergeableTable[0] = timestamp;
-        if (isUndefined(tableChanges)) {
-          mergeableTable[1] = null;
-        } else {
-          const mergeableTableMap = (mergeableTable[1] ??= mapNew());
-          objToArray(tableChanges, (rowChanges, rowId) => {
-            const mergeableRow = mapEnsure(
-              mergeableTableMap,
-              rowId,
-              newTimestamped,
-            );
-            mergeableRow[0] = timestamp;
-            if (isUndefined(rowChanges)) {
-              mergeableRow[1] = null;
-            } else {
-              const mergeableRowMap = (mergeableRow[1] ??= mapNew());
-              objToArray(rowChanges, (cellChanges, cellId) =>
-                mapSet(mergeableRowMap, cellId, [timestamp, cellChanges]),
+      allMergeableContent[0] = timestamp;
+      if (!objIsEmpty(tablesChanges)) {
+        mergeableTables[0] = timestamp;
+        objToArray(tablesChanges, (tableChanges, tableId) => {
+          const mergeableTable = mapEnsure(
+            mergeableTables[1],
+            tableId,
+            newTimestamped,
+          );
+          mergeableTable[0] = timestamp;
+          if (isUndefined(tableChanges)) {
+            mergeableTable[1] = null;
+          } else {
+            const mergeableTableMap = (mergeableTable[1] ??= mapNew());
+            objToArray(tableChanges, (rowChanges, rowId) => {
+              const mergeableRow = mapEnsure(
+                mergeableTableMap,
+                rowId,
+                newTimestamped,
               );
-            }
-          });
-        }
-      });
-    }
-    if (!objIsEmpty(valuesChanges)) {
-      mergeableValues[0] = timestamp;
-      objToArray(valuesChanges, (valueChanges, valueId) => {
-        mapSet(mergeableValues[1], valueId, [timestamp, valueChanges]);
-      });
+              mergeableRow[0] = timestamp;
+              if (isUndefined(rowChanges)) {
+                mergeableRow[1] = null;
+              } else {
+                const mergeableRowMap = (mergeableRow[1] ??= mapNew());
+                objToArray(rowChanges, (cellChanges, cellId) =>
+                  mapSet(mergeableRowMap, cellId, [timestamp, cellChanges]),
+                );
+              }
+            });
+          }
+        });
+      }
+      if (!objIsEmpty(valuesChanges)) {
+        mergeableValues[0] = timestamp;
+        objToArray(valuesChanges, (valueChanges, valueId) => {
+          mapSet(mergeableValues[1], valueId, [timestamp, valueChanges]);
+        });
+      }
     }
   };
 
@@ -131,18 +164,101 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const getMergeableContent = () =>
     mapTimestamped(
       allMergeableContent,
-      ([mergeableTables, mergeableValues]) => [
-        mapTimestampedMapToObj(mergeableTables, (mergeableTable) =>
-          mapTimestampedMapToObj(mergeableTable, (mergeableRow) =>
-            mapTimestampedMapToObj(mergeableRow, cloneTimestamped),
+      ([mergeableTables, mergeableValues], timestamp) => [
+        timestamp,
+        [
+          mapTimestampedMapToObj(mergeableTables, (mergeableTable) =>
+            mapTimestampedMapToObj(mergeableTable, (mergeableRow) =>
+              mapTimestampedMapToObj(mergeableRow, pairClone),
+            ),
           ),
-        ),
-        mapTimestampedMapToObj(mergeableValues, cloneTimestamped),
+          mapTimestampedMapToObj(mergeableValues, pairClone),
+        ],
       ],
     );
 
+  const applyMergeableContent = (mergeableContent: MergeableContent) => {
+    const changes: TransactionChanges = [{}, {}];
+    mergeTimestamped(
+      mergeableContent,
+      allMergeableContent,
+      ([tablesStamp, valuesStamp], [allTablesStamp, allValuesStamp]) =>
+        [
+          mergeTimestamped(
+            tablesStamp,
+            allTablesStamp,
+            (tableStamps, allTableStamps) => {
+              objForEach(tableStamps, (tableStamp, tableId) =>
+                mergeTimestamped(
+                  tableStamp,
+                  mapEnsure(allTableStamps, tableId, newTimestampedMap),
+                  (rowStamps, allRowStamps) => {
+                    if (isUndefined(rowStamps)) {
+                      return (changes[0][tableId] = null);
+                    } else {
+                      allRowStamps ??= mapNew();
+                      changes[0][tableId] = {};
+                      objForEach(rowStamps, (rowStamp, rowId) =>
+                        mergeTimestamped(
+                          rowStamp,
+                          mapEnsure(allRowStamps!, rowId, newTimestampedMap),
+                          (cellStamps, allCellStamps) => {
+                            if (isUndefined(cellStamps)) {
+                              return (changes[0][tableId]![rowId] = null);
+                            } else {
+                              allCellStamps ??= mapNew();
+                              changes[0][tableId]![rowId] = {};
+                              objForEach(cellStamps, (cellStamp, cellId) =>
+                                mergeTimestamped(
+                                  cellStamp,
+                                  mapEnsure(
+                                    allCellStamps!,
+                                    cellId,
+                                    newTimestamped,
+                                  ),
+                                  (cell) =>
+                                    (changes[0][tableId]![rowId]![cellId] =
+                                      cell),
+                                ),
+                              );
+                              return allCellStamps;
+                            }
+                          },
+                        ),
+                      );
+                      return allRowStamps;
+                    }
+                  },
+                ),
+              );
+              return allTableStamps;
+            },
+          ),
+          mergeTimestamped(
+            valuesStamp,
+            allValuesStamp,
+            (valueStamps, allValueStamps) => {
+              objForEach(valueStamps, (valueStamp, valueId) =>
+                mergeTimestamped(
+                  valueStamp,
+                  mapEnsure(allValueStamps, valueId, newTimestamped),
+                  (value) => (changes[1][valueId] = value),
+                ),
+              );
+              return allValueStamps;
+            },
+          ),
+        ] as AllMergeableContent[1],
+    );
+    listening = 0;
+    store.setTransactionChanges(changes);
+    listening = 1;
+    return mergeableStore;
+  };
+
   const mergeableStore: IdObj<any> = {
     getMergeableContent,
+    applyMergeableContent,
     merge,
   };
 
