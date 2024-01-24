@@ -32,7 +32,7 @@ import {
 } from '../common/array';
 import {ifNotUndefined, isUndefined, promiseAll, slice} from '../common/other';
 import {jsonParse, jsonString} from '../common/json';
-import {objEnsure, objMap, objNew} from '../common/obj';
+import {objEnsure, objNew, objToArray} from '../common/obj';
 import {mapForEach} from '../common/map';
 
 /**
@@ -106,7 +106,7 @@ const saveStore = async (
   const keyPrefixesToDel: string[] = [];
 
   await promiseAll(
-    objMap(transactionChanges[0], async (table, tableId) =>
+    objToArray(transactionChanges[0], async (table, tableId) =>
       isUndefined(table)
         ? !initialSave &&
           (await that.canDelTable(
@@ -119,7 +119,7 @@ const saveStore = async (
           )
         : (await that.canSetTable(tableId, initialSave, requestOrConnection)) &&
           (await promiseAll(
-            objMap(table, async (row, rowId) =>
+            objToArray(table, async (row, rowId) =>
               isUndefined(row)
                 ? !initialSave &&
                   (await that.canDelRow(
@@ -138,7 +138,7 @@ const saveStore = async (
                     requestOrConnection,
                   )) &&
                   (await promiseAll(
-                    objMap(row, async (cell, cellId) => {
+                    objToArray(row, async (cell, cellId) => {
                       const ids: [Id, Id, Id] = [tableId, rowId, cellId];
                       const key = constructStorageKey(storagePrefix, T, ...ids);
                       isUndefined(cell)
@@ -163,7 +163,7 @@ const saveStore = async (
   );
 
   await promiseAll(
-    objMap(transactionChanges[1], async (value, valueId) => {
+    objToArray(transactionChanges[1], async (value, valueId) => {
       const key = storagePrefix + V + valueId;
       isUndefined(value)
         ? !initialSave &&

@@ -2,7 +2,7 @@ import {Cell, TablesSchema, Value, ValuesSchema} from '../../types/store.d';
 import {DEFAULT, TYPE} from '../../common/strings';
 import {LINE_OR_LINE_TREE, camel, snake} from './code';
 import {Id} from '../../types/common.d';
-import {objMap} from '../../common/obj';
+import {objToArray} from '../../common/obj';
 
 export type MapTablesSchema = <Return>(
   callback: (tableId: Id, tableName: string, TABLE_ID: string) => Return,
@@ -35,7 +35,7 @@ export const getSchemaFunctions = (
   const mapTablesSchema = <Return>(
     callback: (tableId: Id, tableName: string, TABLE_ID: string) => Return,
   ) =>
-    objMap(tablesSchema, (_, tableId) => {
+    objToArray(tablesSchema, (_, tableId) => {
       return callback(
         tableId,
         camel(tableId, 1),
@@ -53,7 +53,7 @@ export const getSchemaFunctions = (
       cellName: string,
     ) => Return,
   ) =>
-    objMap(tablesSchema[tableId], (cellSchema, cellId) =>
+    objToArray(tablesSchema[tableId], (cellSchema, cellId) =>
       callback(
         cellId,
         cellSchema[TYPE],
@@ -72,7 +72,7 @@ export const getSchemaFunctions = (
       valueName: string,
     ) => Return,
   ) =>
-    objMap(valuesSchema, (valueSchema, valueId) =>
+    objToArray(valuesSchema, (valueSchema, valueId) =>
       callback(
         valueId,
         valueSchema[TYPE],
