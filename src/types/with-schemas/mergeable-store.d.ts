@@ -2,6 +2,7 @@
 
 import {
   Cell,
+  NoSchemas,
   OptionalSchemas,
   OptionalTablesSchema,
   OptionalValuesSchema,
@@ -49,6 +50,4 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
 }
 
 /// createMergeableStore
-export function createMergeableStore<Schemas extends OptionalSchemas>(
-  id: Id,
-): MergeableStore<Schemas>;
+export function createMergeableStore(id: Id): MergeableStore<NoSchemas>;
