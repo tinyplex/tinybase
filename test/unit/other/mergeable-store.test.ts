@@ -43,16 +43,14 @@ const STORE_ID_HASHES: {[id: string]: number} = {s1: 5861543, s2: 5861540};
 const timestamp = (counter: number, storeId: string = 's1', time = 0) =>
   encodeHlc(START_TIME.valueOf() + time, counter, STORE_ID_HASHES[storeId]);
 
-const timestamped = (
-  counter: number,
-  value: any,
-  storeId: string = 's1',
-  time = 0,
-) => [timestamp(counter, storeId, time), value];
+const ts = (counter: number, thing: any, storeId: string = 's1', time = 0) => [
+  timestamp(counter, storeId, time),
+  thing,
+];
 
-const nullTimestamped = <Thing>(value: Thing): Timestamped<Thing> => [
+const nullTimestamped = <Thing>(thing: Thing): Timestamped<Thing> => [
   '',
-  value,
+  thing,
 ];
 
 beforeEach(() => jest.useFakeTimers({now: START_TIME}));
@@ -155,15 +153,15 @@ describe('getMergeableContent', () => {
       {v1: 4, v2: 5},
     ]);
     expect(store.getMergeableContent()).toEqual(
-      timestamped(0, [
-        timestamped(0, {
-          t1: timestamped(0, {
-            r1: timestamped(0, {c1: timestamped(0, 0), c2: timestamped(0, 1)}),
-            r2: timestamped(0, {c1: timestamped(0, 2)}),
+      ts(0, [
+        ts(0, {
+          t1: ts(0, {
+            r1: ts(0, {c1: ts(0, 0), c2: ts(0, 1)}),
+            r2: ts(0, {c1: ts(0, 2)}),
           }),
-          t2: timestamped(0, {r1: timestamped(0, {c1: timestamped(0, 3)})}),
+          t2: ts(0, {r1: ts(0, {c1: ts(0, 3)})}),
         }),
-        timestamped(0, {v1: timestamped(0, 4), v2: timestamped(0, 5)}),
+        ts(0, {v1: ts(0, 4), v2: ts(0, 5)}),
       ]),
     );
   });
@@ -177,15 +175,15 @@ describe('getMergeableContent', () => {
       .setValue('v1', 4)
       .setValue('v2', 5);
     expect(store.getMergeableContent()).toEqual(
-      timestamped(5, [
-        timestamped(3, {
-          t1: timestamped(2, {
-            r1: timestamped(1, {c1: timestamped(0, 0), c2: timestamped(1, 1)}),
-            r2: timestamped(2, {c1: timestamped(2, 2)}),
+      ts(5, [
+        ts(3, {
+          t1: ts(2, {
+            r1: ts(1, {c1: ts(0, 0), c2: ts(1, 1)}),
+            r2: ts(2, {c1: ts(2, 2)}),
           }),
-          t2: timestamped(3, {r1: timestamped(3, {c1: timestamped(3, 3)})}),
+          t2: ts(3, {r1: ts(3, {c1: ts(3, 3)})}),
         }),
-        timestamped(5, {v1: timestamped(4, 4), v2: timestamped(5, 5)}),
+        ts(5, {v1: ts(4, 4), v2: ts(5, 5)}),
       ]),
     );
   });
@@ -203,18 +201,18 @@ describe('getMergeableContent', () => {
       .setValue('v1', 5)
       .delValue('v2');
     expect(store.getMergeableContent()).toEqual(
-      timestamped(6, [
-        timestamped(4, {
-          t1: timestamped(3, {
-            r1: timestamped(2, {
-              c1: timestamped(1, 1),
-              c2: timestamped(2, null),
+      ts(6, [
+        ts(4, {
+          t1: ts(3, {
+            r1: ts(2, {
+              c1: ts(1, 1),
+              c2: ts(2, null),
             }),
-            r2: timestamped(3, null),
+            r2: ts(3, null),
           }),
-          t2: timestamped(4, null),
+          t2: ts(4, null),
         }),
-        timestamped(6, {v1: timestamped(5, 5), v2: timestamped(6, null)}),
+        ts(6, {v1: ts(5, 5), v2: ts(6, null)}),
       ]),
     );
   });
@@ -258,16 +256,16 @@ describe('Merge', () => {
         t2: {r1: {c1: 0}},
       });
       expect(store1.getMergeableContent()).toEqual(
-        timestamped(0, [
-          timestamped(0, {
-            t1: timestamped(0, {
-              r1: timestamped(0, {
-                c1: timestamped(0, 0),
-                c2: timestamped(0, 0),
+        ts(0, [
+          ts(0, {
+            t1: ts(0, {
+              r1: ts(0, {
+                c1: ts(0, 0),
+                c2: ts(0, 0),
               }),
-              r2: timestamped(0, {c1: timestamped(0, 0)}),
+              r2: ts(0, {c1: ts(0, 0)}),
             }),
-            t2: timestamped(0, {r1: timestamped(0, {c1: timestamped(0, 0)})}),
+            t2: ts(0, {r1: ts(0, {c1: ts(0, 0)})}),
           }),
           nullTimestamped({}),
         ]),
@@ -279,16 +277,16 @@ describe('Merge', () => {
         {},
       ]);
       expect(store2.getMergeableContent()).toEqual(
-        timestamped(0, [
-          timestamped(0, {
-            t1: timestamped(0, {
-              r1: timestamped(0, {
-                c1: timestamped(0, 0),
-                c2: timestamped(0, 0),
+        ts(0, [
+          ts(0, {
+            t1: ts(0, {
+              r1: ts(0, {
+                c1: ts(0, 0),
+                c2: ts(0, 0),
               }),
-              r2: timestamped(0, {c1: timestamped(0, 0)}),
+              r2: ts(0, {c1: ts(0, 0)}),
             }),
-            t2: timestamped(0, {r1: timestamped(0, {c1: timestamped(0, 0)})}),
+            t2: ts(0, {r1: ts(0, {c1: ts(0, 0)})}),
           }),
           nullTimestamped({}),
         ]),
@@ -298,16 +296,16 @@ describe('Merge', () => {
     test('setCell', () => {
       store1.setCell('t1', 'r1', 'c1', 1);
       expect(store1.getMergeableContent()).toEqual(
-        timestamped(1, [
-          timestamped(1, {
-            t1: timestamped(1, {
-              r1: timestamped(1, {
-                c1: timestamped(1, 1),
-                c2: timestamped(0, 0),
+        ts(1, [
+          ts(1, {
+            t1: ts(1, {
+              r1: ts(1, {
+                c1: ts(1, 1),
+                c2: ts(0, 0),
               }),
-              r2: timestamped(0, {c1: timestamped(0, 0)}),
+              r2: ts(0, {c1: ts(0, 0)}),
             }),
-            t2: timestamped(0, {r1: timestamped(0, {c1: timestamped(0, 0)})}),
+            t2: ts(0, {r1: ts(0, {c1: ts(0, 0)})}),
           }),
           nullTimestamped({}),
         ]),
@@ -319,16 +317,16 @@ describe('Merge', () => {
         {},
       ]);
       expect(store2.getMergeableContent()).toEqual(
-        timestamped(1, [
-          timestamped(1, {
-            t1: timestamped(1, {
-              r1: timestamped(1, {
-                c1: timestamped(1, 1),
-                c2: timestamped(0, 0),
+        ts(1, [
+          ts(1, {
+            t1: ts(1, {
+              r1: ts(1, {
+                c1: ts(1, 1),
+                c2: ts(0, 0),
               }),
-              r2: timestamped(0, {c1: timestamped(0, 0)}),
+              r2: ts(0, {c1: ts(0, 0)}),
             }),
-            t2: timestamped(0, {r1: timestamped(0, {c1: timestamped(0, 0)})}),
+            t2: ts(0, {r1: ts(0, {c1: ts(0, 0)})}),
           }),
           nullTimestamped({}),
         ]),
@@ -338,16 +336,16 @@ describe('Merge', () => {
     test('delCell', () => {
       store1.delCell('t1', 'r1', 'c2');
       expect(store1.getMergeableContent()).toEqual(
-        timestamped(2, [
-          timestamped(2, {
-            t1: timestamped(2, {
-              r1: timestamped(2, {
-                c1: timestamped(1, 1),
-                c2: timestamped(2, null),
+        ts(2, [
+          ts(2, {
+            t1: ts(2, {
+              r1: ts(2, {
+                c1: ts(1, 1),
+                c2: ts(2, null),
               }),
-              r2: timestamped(0, {c1: timestamped(0, 0)}),
+              r2: ts(0, {c1: ts(0, 0)}),
             }),
-            t2: timestamped(0, {r1: timestamped(0, {c1: timestamped(0, 0)})}),
+            t2: ts(0, {r1: ts(0, {c1: ts(0, 0)})}),
           }),
           nullTimestamped({}),
         ]),
@@ -359,16 +357,16 @@ describe('Merge', () => {
         {},
       ]);
       expect(store2.getMergeableContent()).toEqual(
-        timestamped(2, [
-          timestamped(2, {
-            t1: timestamped(2, {
-              r1: timestamped(2, {
-                c1: timestamped(1, 1),
-                c2: timestamped(2, null),
+        ts(2, [
+          ts(2, {
+            t1: ts(2, {
+              r1: ts(2, {
+                c1: ts(1, 1),
+                c2: ts(2, null),
               }),
-              r2: timestamped(0, {c1: timestamped(0, 0)}),
+              r2: ts(0, {c1: ts(0, 0)}),
             }),
-            t2: timestamped(0, {r1: timestamped(0, {c1: timestamped(0, 0)})}),
+            t2: ts(0, {r1: ts(0, {c1: ts(0, 0)})}),
           }),
           nullTimestamped({}),
         ]),
@@ -378,16 +376,16 @@ describe('Merge', () => {
     test('delRow', () => {
       store1.delRow('t1', 'r2');
       expect(store1.getMergeableContent()).toEqual(
-        timestamped(3, [
-          timestamped(3, {
-            t1: timestamped(3, {
-              r1: timestamped(2, {
-                c1: timestamped(1, 1),
-                c2: timestamped(2, null),
+        ts(3, [
+          ts(3, {
+            t1: ts(3, {
+              r1: ts(2, {
+                c1: ts(1, 1),
+                c2: ts(2, null),
               }),
-              r2: timestamped(3, null),
+              r2: ts(3, null),
             }),
-            t2: timestamped(0, {r1: timestamped(0, {c1: timestamped(0, 0)})}),
+            t2: ts(0, {r1: ts(0, {c1: ts(0, 0)})}),
           }),
           nullTimestamped({}),
         ]),
@@ -399,16 +397,16 @@ describe('Merge', () => {
         {},
       ]);
       expect(store2.getMergeableContent()).toEqual(
-        timestamped(3, [
-          timestamped(3, {
-            t1: timestamped(3, {
-              r1: timestamped(2, {
-                c1: timestamped(1, 1),
-                c2: timestamped(2, null),
+        ts(3, [
+          ts(3, {
+            t1: ts(3, {
+              r1: ts(2, {
+                c1: ts(1, 1),
+                c2: ts(2, null),
               }),
-              r2: timestamped(3, null),
+              r2: ts(3, null),
             }),
-            t2: timestamped(0, {r1: timestamped(0, {c1: timestamped(0, 0)})}),
+            t2: ts(0, {r1: ts(0, {c1: ts(0, 0)})}),
           }),
           nullTimestamped({}),
         ]),
@@ -418,16 +416,16 @@ describe('Merge', () => {
     test('delTable', () => {
       store1.delTable('t2');
       expect(store1.getMergeableContent()).toEqual(
-        timestamped(4, [
-          timestamped(4, {
-            t1: timestamped(3, {
-              r1: timestamped(2, {
-                c1: timestamped(1, 1),
-                c2: timestamped(2, null),
+        ts(4, [
+          ts(4, {
+            t1: ts(3, {
+              r1: ts(2, {
+                c1: ts(1, 1),
+                c2: ts(2, null),
               }),
-              r2: timestamped(3, null),
+              r2: ts(3, null),
             }),
-            t2: timestamped(4, null),
+            t2: ts(4, null),
           }),
           nullTimestamped({}),
         ]),
@@ -436,16 +434,16 @@ describe('Merge', () => {
       store2.applyMergeableContent(store1.getMergeableContent());
       expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {}]);
       expect(store2.getMergeableContent()).toEqual(
-        timestamped(4, [
-          timestamped(4, {
-            t1: timestamped(3, {
-              r1: timestamped(2, {
-                c1: timestamped(1, 1),
-                c2: timestamped(2, null),
+        ts(4, [
+          ts(4, {
+            t1: ts(3, {
+              r1: ts(2, {
+                c1: ts(1, 1),
+                c2: ts(2, null),
               }),
-              r2: timestamped(3, null),
+              r2: ts(3, null),
             }),
-            t2: timestamped(4, null),
+            t2: ts(4, null),
           }),
           nullTimestamped({}),
         ]),
@@ -455,16 +453,16 @@ describe('Merge', () => {
     test('setCell 2', () => {
       store1.setCell('t2', 'r2', 'c2', 2);
       expect(store1.getMergeableContent()).toEqual(
-        timestamped(5, [
-          timestamped(5, {
-            t1: timestamped(3, {
-              r1: timestamped(2, {
-                c1: timestamped(1, 1),
-                c2: timestamped(2, null),
+        ts(5, [
+          ts(5, {
+            t1: ts(3, {
+              r1: ts(2, {
+                c1: ts(1, 1),
+                c2: ts(2, null),
               }),
-              r2: timestamped(3, null),
+              r2: ts(3, null),
             }),
-            t2: timestamped(5, {r2: timestamped(5, {c2: timestamped(5, 2)})}),
+            t2: ts(5, {r2: ts(5, {c2: ts(5, 2)})}),
           }),
           nullTimestamped({}),
         ]),
@@ -476,16 +474,16 @@ describe('Merge', () => {
         {},
       ]);
       expect(store2.getMergeableContent()).toEqual(
-        timestamped(5, [
-          timestamped(5, {
-            t1: timestamped(3, {
-              r1: timestamped(2, {
-                c1: timestamped(1, 1),
-                c2: timestamped(2, null),
+        ts(5, [
+          ts(5, {
+            t1: ts(3, {
+              r1: ts(2, {
+                c1: ts(1, 1),
+                c2: ts(2, null),
               }),
-              r2: timestamped(3, null),
+              r2: ts(3, null),
             }),
-            t2: timestamped(5, {r2: timestamped(5, {c2: timestamped(5, 2)})}),
+            t2: ts(5, {r2: ts(5, {c2: ts(5, 2)})}),
           }),
           nullTimestamped({}),
         ]),
@@ -495,37 +493,31 @@ describe('Merge', () => {
     test('delTables', () => {
       store1.delTables();
       expect(store1.getMergeableContent()).toEqual(
-        timestamped(6, [
-          timestamped(6, {t1: timestamped(6, null), t2: timestamped(6, null)}),
-          nullTimestamped({}),
-        ]),
+        ts(6, [ts(6, {t1: ts(6, null), t2: ts(6, null)}), nullTimestamped({})]),
       );
 
       store2.applyMergeableContent(store1.getMergeableContent());
       expect(store2.getContent()).toEqual([{}, {}]);
       expect(store2.getMergeableContent()).toEqual(
-        timestamped(6, [
-          timestamped(6, {t1: timestamped(6, null), t2: timestamped(6, null)}),
-          nullTimestamped({}),
-        ]),
+        ts(6, [ts(6, {t1: ts(6, null), t2: ts(6, null)}), nullTimestamped({})]),
       );
     });
 
     test('setValues', () => {
       store1.setValues({v1: 0, v2: 0});
       expect(store1.getMergeableContent()).toEqual(
-        timestamped(7, [
-          timestamped(6, {t1: timestamped(6, null), t2: timestamped(6, null)}),
-          timestamped(7, {v1: timestamped(7, 0), v2: timestamped(7, 0)}),
+        ts(7, [
+          ts(6, {t1: ts(6, null), t2: ts(6, null)}),
+          ts(7, {v1: ts(7, 0), v2: ts(7, 0)}),
         ]),
       );
 
       store2.applyMergeableContent(store1.getMergeableContent());
       expect(store2.getContent()).toEqual([{}, {v1: 0, v2: 0}]);
       expect(store2.getMergeableContent()).toEqual(
-        timestamped(7, [
-          timestamped(6, {t1: timestamped(6, null), t2: timestamped(6, null)}),
-          timestamped(7, {v1: timestamped(7, 0), v2: timestamped(7, 0)}),
+        ts(7, [
+          ts(6, {t1: ts(6, null), t2: ts(6, null)}),
+          ts(7, {v1: ts(7, 0), v2: ts(7, 0)}),
         ]),
       );
     });
@@ -533,18 +525,18 @@ describe('Merge', () => {
     test('setValue', () => {
       store1.setValue('v1', 1);
       expect(store1.getMergeableContent()).toEqual(
-        timestamped(8, [
-          timestamped(6, {t1: timestamped(6, null), t2: timestamped(6, null)}),
-          timestamped(8, {v1: timestamped(8, 1), v2: timestamped(7, 0)}),
+        ts(8, [
+          ts(6, {t1: ts(6, null), t2: ts(6, null)}),
+          ts(8, {v1: ts(8, 1), v2: ts(7, 0)}),
         ]),
       );
 
       store2.applyMergeableContent(store1.getMergeableContent());
       expect(store2.getContent()).toEqual([{}, {v1: 1, v2: 0}]);
       expect(store2.getMergeableContent()).toEqual(
-        timestamped(8, [
-          timestamped(6, {t1: timestamped(6, null), t2: timestamped(6, null)}),
-          timestamped(8, {v1: timestamped(8, 1), v2: timestamped(7, 0)}),
+        ts(8, [
+          ts(6, {t1: ts(6, null), t2: ts(6, null)}),
+          ts(8, {v1: ts(8, 1), v2: ts(7, 0)}),
         ]),
       );
     });
@@ -552,18 +544,18 @@ describe('Merge', () => {
     test('delValue', () => {
       store1.delValue('v2');
       expect(store1.getMergeableContent()).toEqual(
-        timestamped(9, [
-          timestamped(6, {t1: timestamped(6, null), t2: timestamped(6, null)}),
-          timestamped(9, {v1: timestamped(8, 1), v2: timestamped(9, null)}),
+        ts(9, [
+          ts(6, {t1: ts(6, null), t2: ts(6, null)}),
+          ts(9, {v1: ts(8, 1), v2: ts(9, null)}),
         ]),
       );
 
       store2.applyMergeableContent(store1.getMergeableContent());
       expect(store2.getContent()).toEqual([{}, {v1: 1}]);
       expect(store2.getMergeableContent()).toEqual(
-        timestamped(9, [
-          timestamped(6, {t1: timestamped(6, null), t2: timestamped(6, null)}),
-          timestamped(9, {v1: timestamped(8, 1), v2: timestamped(9, null)}),
+        ts(9, [
+          ts(6, {t1: ts(6, null), t2: ts(6, null)}),
+          ts(9, {v1: ts(8, 1), v2: ts(9, null)}),
         ]),
       );
     });
@@ -571,11 +563,11 @@ describe('Merge', () => {
     test('delValues', () => {
       store1.delValues();
       expect(store1.getMergeableContent()).toEqual(
-        timestamped(10, [
-          timestamped(6, {t1: timestamped(6, null), t2: timestamped(6, null)}),
-          timestamped(10, {
-            v1: timestamped(10, null),
-            v2: timestamped(9, null),
+        ts(10, [
+          ts(6, {t1: ts(6, null), t2: ts(6, null)}),
+          ts(10, {
+            v1: ts(10, null),
+            v2: ts(9, null),
           }),
         ]),
       );
@@ -583,11 +575,11 @@ describe('Merge', () => {
       store2.applyMergeableContent(store1.getMergeableContent());
       expect(store2.getContent()).toEqual([{}, {}]);
       expect(store2.getMergeableContent()).toEqual(
-        timestamped(10, [
-          timestamped(6, {t1: timestamped(6, null), t2: timestamped(6, null)}),
-          timestamped(10, {
-            v1: timestamped(10, null),
-            v2: timestamped(9, null),
+        ts(10, [
+          ts(6, {t1: ts(6, null), t2: ts(6, null)}),
+          ts(10, {
+            v1: ts(10, null),
+            v2: ts(9, null),
           }),
         ]),
       );
@@ -605,18 +597,12 @@ describe('Merge', () => {
       store1.setTables({t1: {r1: {c1: 0}}});
       const mergeableContent1 = store1.getMergeableContent();
       expect(mergeableContent1).toEqual(
-        timestamped(
+        ts(
           0,
           [
-            timestamped(
+            ts(
               0,
-              {
-                t1: timestamped(
-                  0,
-                  {r1: timestamped(0, {c1: timestamped(0, 0, 's1')}, 's1')},
-                  's1',
-                ),
-              },
+              {t1: ts(0, {r1: ts(0, {c1: ts(0, 0, 's1')}, 's1')}, 's1')},
               's1',
             ),
             nullTimestamped({}),
@@ -630,12 +616,9 @@ describe('Merge', () => {
       store2.setValues({v1: 0});
       const mergeableContent2 = store2.getMergeableContent();
       expect(mergeableContent2).toEqual(
-        timestamped(
+        ts(
           0,
-          [
-            nullTimestamped({}),
-            timestamped(0, {v1: timestamped(0, 0, 's2', 1)}, 's2', 1),
-          ],
+          [nullTimestamped({}), ts(0, {v1: ts(0, 0, 's2', 1)}, 's2', 1)],
           's2',
           1,
         ),
@@ -648,42 +631,30 @@ describe('Merge', () => {
       expect(store1.getContent()).toEqual([{t1: {r1: {c1: 0}}}, {v1: 0}]);
 
       expect(store1.getMergeableContent()).toEqual(
-        timestamped(
+        ts(
           0,
           [
-            timestamped(
+            ts(
               0,
-              {
-                t1: timestamped(
-                  0,
-                  {r1: timestamped(0, {c1: timestamped(0, 0, 's1')}, 's1')},
-                  's1',
-                ),
-              },
+              {t1: ts(0, {r1: ts(0, {c1: ts(0, 0, 's1')}, 's1')}, 's1')},
               's1',
             ),
-            timestamped(0, {v1: timestamped(0, 0, 's2', 1)}, 's2', 1),
+            ts(0, {v1: ts(0, 0, 's2', 1)}, 's2', 1),
           ],
           's2',
           1,
         ),
       );
       expect(store2.getMergeableContent()).toEqual(
-        timestamped(
+        ts(
           0,
           [
-            timestamped(
+            ts(
               0,
-              {
-                t1: timestamped(
-                  0,
-                  {r1: timestamped(0, {c1: timestamped(0, 0, 's1')}, 's1')},
-                  's1',
-                ),
-              },
+              {t1: ts(0, {r1: ts(0, {c1: ts(0, 0, 's1')}, 's1')}, 's1')},
               's1',
             ),
-            timestamped(0, {v1: timestamped(0, 0, 's2', 1)}, 's2', 1),
+            ts(0, {v1: ts(0, 0, 's2', 1)}, 's2', 1),
           ],
           's2',
           1,
