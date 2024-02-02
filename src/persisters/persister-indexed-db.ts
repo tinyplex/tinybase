@@ -58,12 +58,10 @@ export const createIndexedDbPersister = ((
     create: 0 | 1 = 0,
   ): Promise<[any, any]> =>
     promiseNew((resolve, reject) => {
-      let request: IDBOpenDBRequest;
-      if (WINDOW) {
-        request = WINDOW.indexedDB.open(dbName, create ? 2 : undefined);
-      } else {
-        request = indexedDB.open(dbName, create ? 2 : undefined);
-      }
+      const request = (WINDOW ? WINDOW.indexedDB : indexedDB).open(
+        dbName,
+        create ? 2 : undefined,
+      );
       request.onupgradeneeded = () =>
         create &&
         arrayMap(OBJECT_STORE_NAMES, (objectStoreName) => {
