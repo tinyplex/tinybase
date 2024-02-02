@@ -215,7 +215,7 @@
   },
   "devDependencies": {
     "@automerge/automerge": "^2.1.10",
-    "@automerge/automerge-repo": "^1.0.19",
+    "@automerge/automerge-repo": "^1.1.0",
     "@babel/cli": "^7.23.9",
     "@babel/core": "^7.23.9",
     "@babel/preset-env": "^7.23.9",

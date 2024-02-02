@@ -1,8 +1,23 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import {Message, NetworkAdapter, PeerId} from '@automerge/automerge-repo';
+import {
+  Message,
+  NetworkAdapter,
+  PeerId,
+  PeerMetadata,
+} from '@automerge/automerge-repo';
 
-type ArriveMessage = {type: 'arrive'; senderId: PeerId; targetId: never};
-type WelcomeMessage = {type: 'welcome'; senderId: PeerId; targetId: PeerId};
+type ArriveMessage = {
+  type: 'arrive';
+  senderId: PeerId;
+  peerMetadata: PeerMetadata;
+  targetId: never;
+};
+type WelcomeMessage = {
+  type: 'welcome';
+  senderId: PeerId;
+  peerMetadata: PeerMetadata;
+  targetId: PeerId;
+};
 type BroadcastChannelMessage = ArriveMessage | WelcomeMessage | Message;
 
 const adaptors: Set<AutomergeTestNetworkAdapter> = new Set();
@@ -13,8 +28,9 @@ const broadcast = (message: BroadcastChannelMessage): void =>
 export const resetNetwork = () => adaptors.clear();
 
 export class AutomergeTestNetworkAdapter extends NetworkAdapter {
-  connect(peerId: PeerId) {
+  connect(peerId: PeerId, peerMetadata?: PeerMetadata) {
     this.peerId = peerId;
+    this.peerMetadata = peerMetadata;
     adaptors.add(this);
     broadcast({type: 'arrive', senderId: peerId} as ArriveMessage);
     this.emit('ready', {network: this});
@@ -22,7 +38,7 @@ export class AutomergeTestNetworkAdapter extends NetworkAdapter {
 
   receiveMessage(message: BroadcastChannelMessage) {
     const peerId: PeerId = this.peerId!;
-    const {targetId, senderId, type} = message;
+    const {targetId, senderId, type, peerMetadata} = message as any;
     if (targetId && targetId !== peerId) {
       return;
     }
@@ -33,10 +49,10 @@ export class AutomergeTestNetworkAdapter extends NetworkAdapter {
           targetId: senderId,
           type: 'welcome',
         });
-        this.emit('peer-candidate', {peerId: senderId});
+        this.emit('peer-candidate', {peerId: senderId, peerMetadata});
         break;
       case 'welcome':
-        this.emit('peer-candidate', {peerId: senderId});
+        this.emit('peer-candidate', {peerId: senderId, peerMetadata});
         break;
       default:
         if (!('data' in message)) {
@@ -44,15 +60,15 @@ export class AutomergeTestNetworkAdapter extends NetworkAdapter {
         } else {
           this.emit('message', {
             ...message,
-            data: new Uint8Array(message.data),
+            data: new Uint8Array(message.data as ArrayBufferLike),
           });
         }
         break;
     }
   }
 
-  send(message: BroadcastChannelMessage) {
-    if ('data' in message) {
+  send(message: Message) {
+    if (message.data) {
       broadcast({
         ...message,
         data: message.data.buffer.slice(
