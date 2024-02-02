@@ -1,7 +1,7 @@
-import {strCharCodeAt, strSplit} from './strings';
+import {strCharCodeAt, strSplit} from '../common/strings';
 import {Id} from '../types/common';
-import {arrayReduce} from './array';
-import {isUndefined} from './other';
+import {arrayReduce} from '../common/array';
+import {isUndefined} from '../common/other';
 
 type HlcParts = [
   logicalTime42: number,
