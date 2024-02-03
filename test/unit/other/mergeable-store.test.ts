@@ -52,6 +52,19 @@ const stamped = (
 
 const nullStamped = <Thing>(thing: Thing): Stamped<Thing> => ['', thing];
 
+const permute = (arr: any[]): any[] => {
+  if (arr.length == 1) {
+    return [arr[0]];
+  }
+  const permutations: any[] = [];
+  arr.forEach((item, i) =>
+    permute([...arr.slice(0, i), ...arr.slice(i + 1)]).forEach((other) =>
+      permutations.push([item, other].flat()),
+    ),
+  );
+  return permutations;
+};
+
 beforeEach(() => jest.useFakeTimers({now: START_TIME}));
 
 afterEach(() => jest.useRealTimers());
@@ -590,13 +603,12 @@ describe('Merge', () => {
   });
 
   describe('Two way', () => {
-    // Note that these tests run in order to mutate the store in a sequence.
-    beforeAll(() => {
+    beforeEach(() => {
       store1 = createMergeableStore('s1');
       store2 = createMergeableStore('s2');
     });
 
-    test('Mutually exclusive 1', () => {
+    test('Mutually exclusive tables vs values', () => {
       store1.setTables({t1: {r1: {c1: 0}}});
       const mergeableContent1 = store1.getMergeableContent();
       expect(mergeableContent1).toEqual(
@@ -662,6 +674,319 @@ describe('Merge', () => {
       expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
         store1.getMergeableContent(),
+      );
+    });
+
+    test('Mutually exclusive tables & values', () => {
+      store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
+      const mergeableContent1 = store1.getMergeableContent();
+      expect(mergeableContent1).toEqual(
+        stamped(
+          1,
+          [
+            stamped(
+              0,
+              {
+                t1: stamped(
+                  0,
+                  {r1: stamped(0, {c1: stamped(0, 1, 's1')}, 's1')},
+                  's1',
+                ),
+              },
+              's1',
+            ),
+            stamped(1, {v1: stamped(1, 1, 's1')}, 's1'),
+          ],
+          's1',
+        ),
+      );
+
+      jest.advanceTimersByTime(1);
+
+      store2
+        .setTables({t1: {r1: {c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}})
+        .setValues({v2: 2});
+      const mergeableContent2 = store2.getMergeableContent();
+      expect(mergeableContent2).toEqual(
+        stamped(
+          1,
+          [
+            stamped(
+              0,
+              {
+                t1: stamped(
+                  0,
+                  {
+                    r1: stamped(0, {c2: stamped(0, 2, 's2', 1)}, 's2', 1),
+                    r2: stamped(0, {c2: stamped(0, 2, 's2', 1)}, 's2', 1),
+                  },
+                  's2',
+                  1,
+                ),
+                t2: stamped(
+                  0,
+                  {r2: stamped(0, {c2: stamped(0, 2, 's2', 1)}, 's2', 1)},
+                  's2',
+                  1,
+                ),
+              },
+              's2',
+              1,
+            ),
+            stamped(1, {v2: stamped(1, 2, 's2', 1)}, 's2', 1),
+          ],
+          's2',
+          1,
+        ),
+      );
+
+      store2.applyMergeableContent(mergeableContent1);
+      store1.applyMergeableContent(mergeableContent2);
+
+      expect(store1.getContent()).toEqual([
+        {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+        {v1: 1, v2: 2},
+      ]);
+      expect(store1.getMergeableContent()).toEqual(
+        stamped(
+          1,
+          [
+            stamped(
+              0,
+              {
+                t1: stamped(
+                  0,
+                  {
+                    r1: stamped(
+                      0,
+                      {c1: stamped(0, 1, 's1'), c2: stamped(0, 2, 's2', 1)},
+                      's2',
+                      1,
+                    ),
+                    r2: stamped(0, {c2: stamped(0, 2, 's2', 1)}, 's2', 1),
+                  },
+                  's2',
+                  1,
+                ),
+                t2: stamped(
+                  0,
+                  {r2: stamped(0, {c2: stamped(0, 2, 's2', 1)}, 's2', 1)},
+                  's2',
+                  1,
+                ),
+              },
+              's2',
+              1,
+            ),
+            stamped(
+              1,
+              {v1: stamped(1, 1, 's1'), v2: stamped(1, 2, 's2', 1)},
+              's2',
+              1,
+            ),
+          ],
+          's2',
+          1,
+        ),
+      );
+
+      expect(store2.getContent()).toEqual(store1.getContent());
+      expect(store2.getMergeableContent()).toEqual(
+        store1.getMergeableContent(),
+      );
+    });
+
+    test('Conflict', () => {
+      store1.setTables({t1: {r1: {c1: 1}}}).setValues({v0: 0, v1: 1});
+      const mergeableContent1 = store1.getMergeableContent();
+      expect(mergeableContent1).toEqual(
+        stamped(
+          1,
+          [
+            stamped(
+              0,
+              {
+                t1: stamped(
+                  0,
+                  {r1: stamped(0, {c1: stamped(0, 1, 's1')}, 's1')},
+                  's1',
+                ),
+              },
+              's1',
+            ),
+            stamped(
+              1,
+              {v0: stamped(1, 0, 's1'), v1: stamped(1, 1, 's1')},
+              's1',
+            ),
+          ],
+          's1',
+        ),
+      );
+
+      jest.advanceTimersByTime(1);
+
+      store2.setTables({t1: {r1: {c1: 2}}}).setValues({v1: 2});
+      const mergeableContent2 = store2.getMergeableContent();
+      expect(mergeableContent2).toEqual(
+        stamped(
+          1,
+          [
+            stamped(
+              0,
+              {
+                t1: stamped(
+                  0,
+                  {r1: stamped(0, {c1: stamped(0, 2, 's2', 1)}, 's2', 1)},
+                  's2',
+                  1,
+                ),
+              },
+              's2',
+              1,
+            ),
+            stamped(1, {v1: stamped(1, 2, 's2', 1)}, 's2', 1),
+          ],
+          's2',
+          1,
+        ),
+      );
+
+      store2.applyMergeableContent(mergeableContent1);
+      store1.applyMergeableContent(mergeableContent2);
+
+      expect(store1.getContent()).toEqual([
+        {t1: {r1: {c1: 2}}},
+        {v0: 0, v1: 2},
+      ]);
+      expect(store1.getMergeableContent()).toEqual(
+        stamped(
+          1,
+          [
+            stamped(
+              0,
+              {
+                t1: stamped(
+                  0,
+                  {r1: stamped(0, {c1: stamped(0, 2, 's2', 1)}, 's2', 1)},
+                  's2',
+                  1,
+                ),
+              },
+              's2',
+              1,
+            ),
+            stamped(
+              1,
+              {v0: stamped(1, 0, 's1'), v1: stamped(1, 2, 's2', 1)},
+              's2',
+              1,
+            ),
+          ],
+          's2',
+          1,
+        ),
+      );
+
+      expect(store2.getContent()).toEqual(store1.getContent());
+      expect(store2.getMergeableContent()).toEqual(
+        store1.getMergeableContent(),
+      );
+    });
+
+    describe('Commutativity & idempotence', () => {
+      const OPERATIONS = {
+        set1: stamped(1, [
+          stamped(1, {t1: stamped(1, {r1: stamped(1, {c1: stamped(1, 1)})})}),
+          stamped(1, {v1: stamped(1, 1)}),
+        ]),
+
+        set2: stamped(2, [
+          stamped(2, {t2: stamped(2, {r2: stamped(2, {c2: stamped(2, 2)})})}),
+          stamped(2, {v2: stamped(2, 2)}),
+        ]),
+
+        set3: stamped(3, [
+          stamped(3, {t1: stamped(3, {r2: stamped(3, {c2: stamped(3, 1)})})}),
+          stamped(2, {}),
+        ]),
+
+        set4: stamped(4, [
+          stamped(4, {t1: stamped(4, {r1: stamped(4, {c2: stamped(4, 1)})})}),
+          stamped(2, {}),
+        ]),
+
+        upd5: stamped(5, [
+          stamped(5, {t1: stamped(5, {r1: stamped(5, {c1: stamped(5, 2)})})}),
+          stamped(5, {v1: stamped(5, 2)}),
+        ]),
+
+        upd6: stamped(6, [
+          stamped(6, {t1: stamped(6, {r2: stamped(6, {c2: stamped(6, 2)})})}),
+          stamped(5, {}),
+        ]),
+
+        upd7: stamped(7, [
+          stamped(7, {t1: stamped(7, {r1: stamped(7, {c2: stamped(7, 2)})})}),
+          stamped(5, {}),
+        ]),
+
+        del8: stamped(8, [
+          stamped(8, {
+            t1: stamped(8, {r1: stamped(8, {c2: stamped(8, null)})}),
+          }),
+          stamped(8, {v2: stamped(8, null)}),
+        ]),
+
+        del9: stamped(9, [
+          stamped(9, {t1: stamped(9, {r2: stamped(9, null)})}),
+          stamped(5, {}),
+        ]),
+
+        del10: stamped(10, [
+          stamped(10, {t2: stamped(10, null)}),
+          stamped(5, {}),
+        ]),
+      } as any as {[id: string]: MergeableContent};
+      const SAMPLE_ALL_PERMUTATIONS = 0;
+
+      test.each([
+        [Object.keys(OPERATIONS)],
+        [Object.keys(OPERATIONS).reverse()],
+        [[...Object.keys(OPERATIONS), ...Object.keys(OPERATIONS)]],
+        ...(SAMPLE_ALL_PERMUTATIONS
+          ? permute(Object.keys(OPERATIONS))
+              .map((p) => [p])
+              .filter(() => Math.random() * 10000 < 1)
+              .slice(0, SAMPLE_ALL_PERMUTATIONS)
+          : []),
+      ])('All, %s', (order) => {
+        order.forEach((id: string) =>
+          store1.applyMergeableContent(OPERATIONS[id]),
+        );
+        expect(store1.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
+      });
+
+      test.each(
+        permute(['set1', 'set2', 'upd5', 'upd6', 'del10']).map((p) => [p]),
+      )('Some, %s', (order) => {
+        order.forEach((id: string) =>
+          store1.applyMergeableContent(OPERATIONS[id]),
+        );
+        expect(store1.getContent()).toEqual([
+          {t1: {r1: {c1: 2}, r2: {c2: 2}}},
+          {v1: 2, v2: 2},
+        ]);
+      });
+
+      test.each(permute(['set3', 'set4', 'upd7', 'del8']).map((p) => [p]))(
+        'Others, %s',
+        (order) => {
+          order.forEach((id: string) =>
+            store1.applyMergeableContent(OPERATIONS[id]),
+          );
+          expect(store1.getContent()).toEqual([{t1: {r2: {c2: 1}}}, {}]);
+        },
       );
     });
   });
