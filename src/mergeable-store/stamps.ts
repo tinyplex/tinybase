@@ -37,7 +37,7 @@ export const mergeStamp = <NewThing, CurrentThing>(
   ifNewer: 0 | 1 = 0,
 ) => {
   const isNewer = newStamp > currentStampedThing[0];
-  if (!ifNewer || isNewer) {
+  if ((!ifNewer && currentStampedThing[1] !== null) || isNewer) {
     currentStampedThing[1] = getNextCurrentThing(
       newThing,
       currentStampedThing[1],
