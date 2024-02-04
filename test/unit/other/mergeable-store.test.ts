@@ -989,5 +989,74 @@ describe('Merge', () => {
         },
       );
     });
+
+    test('Causality', () => {
+      store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
+      store2.applyMergeableContent(store1.getMergeableContent());
+
+      store2
+        .setCell('t1', 'r1', 'c1', (cell) => (cell as number) + 1)
+        .setValue('v1', (value) => (value as number) + 1);
+      store1.applyMergeableContent(store2.getMergeableContent());
+
+      expect(store1.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
+      expect(store1.getMergeableContent()).toEqual(
+        stamped(
+          3,
+          [
+            stamped(
+              2,
+              {
+                t1: stamped(
+                  2,
+                  {r1: stamped(2, {c1: stamped(2, 2, 's2')}, 's2')},
+                  's2',
+                ),
+              },
+              's2',
+            ),
+            stamped(3, {v1: stamped(3, 2, 's2')}, 's2'),
+          ],
+          's2',
+        ),
+      );
+
+      expect(store2.getContent()).toEqual(store1.getContent());
+      expect(store2.getMergeableContent()).toEqual(
+        store1.getMergeableContent(),
+      );
+
+      store1
+        .setCell('t1', 'r1', 'c1', (cell) => (cell as number) + 1)
+        .setValue('v1', (value) => (value as number) + 1);
+      store2.applyMergeableContent(store1.getMergeableContent());
+
+      expect(store1.getContent()).toEqual([{t1: {r1: {c1: 3}}}, {v1: 3}]);
+      expect(store1.getMergeableContent()).toEqual(
+        stamped(
+          5,
+          [
+            stamped(
+              4,
+              {
+                t1: stamped(
+                  4,
+                  {r1: stamped(4, {c1: stamped(4, 3, 's1')}, 's1')},
+                  's1',
+                ),
+              },
+              's1',
+            ),
+            stamped(5, {v1: stamped(5, 3, 's1')}, 's1'),
+          ],
+          's1',
+        ),
+      );
+
+      expect(store2.getContent()).toEqual(store1.getContent());
+      expect(store2.getMergeableContent()).toEqual(
+        store1.getMergeableContent(),
+      );
+    });
   });
 });
