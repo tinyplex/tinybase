@@ -23,7 +23,7 @@ export type MergeableContent = Stamped<
 export interface MergeableStore extends Store {
   //
   /// MergeableStore.merge
-  merge(): MergeableStore;
+  merge(mergeableStore: MergeableStore): MergeableStore;
 
   /// MergeableStore.getMergeableContent
   getMergeableContent(): MergeableContent;

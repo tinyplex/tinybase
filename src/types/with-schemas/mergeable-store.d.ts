@@ -51,7 +51,7 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
   extends Store<Schemas> {
   //
   /// MergeableStore.merge
-  merge(): MergeableStore<Schemas>;
+  merge(mergeableStore: MergeableStore<Schemas>): MergeableStore<Schemas>;
 
   /// MergeableStore.getMergeableContent
   getMergeableContent(): MergeableContent<Schemas>;
