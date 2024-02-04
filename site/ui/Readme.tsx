@@ -17,6 +17,7 @@ const MODULES = [
   'relationships',
   'queries',
   'checkpoints',
+  'mergeable-store',
   'persisters',
   'common',
   'tinybase',
