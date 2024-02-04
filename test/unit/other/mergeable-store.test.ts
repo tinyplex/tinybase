@@ -645,8 +645,7 @@ describe('Merge', () => {
         ),
       );
 
-      store2.applyMergeableContent(mergeableContent1);
-      store1.applyMergeableContent(mergeableContent2);
+      store1.merge(store2);
 
       expect(store1.getContent()).toEqual([{t1: {r1: {c1: 0}}}, {v1: 0}]);
       expect(store1.getMergeableContent()).toEqual(
@@ -740,8 +739,7 @@ describe('Merge', () => {
         ),
       );
 
-      store2.applyMergeableContent(mergeableContent1);
-      store1.applyMergeableContent(mergeableContent2);
+      store1.merge(store2);
 
       expect(store1.getContent()).toEqual([
         {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
@@ -852,8 +850,7 @@ describe('Merge', () => {
         ),
       );
 
-      store2.applyMergeableContent(mergeableContent1);
-      store1.applyMergeableContent(mergeableContent2);
+      store1.merge(store2);
 
       expect(store1.getContent()).toEqual([
         {t1: {r1: {c1: 2}}},
@@ -997,7 +994,7 @@ describe('Merge', () => {
       store2
         .setCell('t1', 'r1', 'c1', (cell) => (cell as number) + 1)
         .setValue('v1', (value) => (value as number) + 1);
-      store1.applyMergeableContent(store2.getMergeableContent());
+      store1.merge(store2);
 
       expect(store1.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
       expect(store1.getMergeableContent()).toEqual(
@@ -1029,7 +1026,7 @@ describe('Merge', () => {
       store1
         .setCell('t1', 'r1', 'c1', (cell) => (cell as number) + 1)
         .setValue('v1', (value) => (value as number) + 1);
-      store2.applyMergeableContent(store1.getMergeableContent());
+      store2.merge(store1);
 
       expect(store1.getContent()).toEqual([{t1: {r1: {c1: 3}}}, {v1: 3}]);
       expect(store1.getMergeableContent()).toEqual(
