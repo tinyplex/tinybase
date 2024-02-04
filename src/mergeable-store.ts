@@ -58,7 +58,7 @@ type AllContentStamp = Stamped<
 
 export const createMergeableStore = ((id: Id): MergeableStore => {
   let listening = 1;
-  const [getHlc, _seenHlc] = getHlcFunctions(id);
+  const [getHlc, seenHlc] = getHlcFunctions(id);
   const store = createStore();
   const allContentStamp: AllContentStamp = [
     EMPTY_STRING,
@@ -129,6 +129,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
 
   const applyMergeableContent = (mergeableContent: MergeableContent) => {
     const changes: TransactionChanges = [{}, {}];
+    seenHlc(mergeableContent[0]);
     mergeStamp(
       mergeableContent,
       allContentStamp,
