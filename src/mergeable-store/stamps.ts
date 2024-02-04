@@ -14,8 +14,7 @@ export const newStampedMap = <Thing>(): Stamped<IdMap<Thing>> => [
 
 export const mapStampedMapToObj = <MapValue, ObjValue = MapValue>(
   stampedMap: Stamped<IdMap<MapValue> | null>,
-  mapper: (mapValue: MapValue) => ObjValue = (mapValue: MapValue) =>
-    mapValue as any as ObjValue,
+  mapper: (mapValue: MapValue) => ObjValue,
 ): Stamped<IdObj<ObjValue> | null> =>
   mapStamped(stampedMap, (map, stamp) => [
     stamp,
