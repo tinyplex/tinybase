@@ -112,7 +112,12 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     }
   };
 
-  const merge = () => mergeableStore;
+  const merge = (mergeableStore2: MergeableStore) => {
+    const mergeableContent = mergeableStore.getMergeableContent();
+    const mergeableContent2 = mergeableStore2.getMergeableContent();
+    mergeableStore2.applyMergeableContent(mergeableContent);
+    return applyMergeableContent(mergeableContent2);
+  };
 
   const getMergeableContent = () =>
     mapStamped(allContentStamp, ([allTablesStamp, allValuesStamp], stamp) => [
