@@ -1,5 +1,6 @@
 import {
   Cell,
+  Content,
   GetTransactionChanges,
   Store,
   Tables,
@@ -110,7 +111,7 @@ export const createTabularSqlitePersister = <ListeningHandle>(
         ]
       : {};
 
-  const getPersisted = async (): Promise<[Tables, Values] | undefined> =>
+  const getPersisted = async (): Promise<Content | undefined> =>
     await transaction(async () => {
       await refreshSchema();
       const tables = await loadTables();
@@ -121,7 +122,7 @@ export const createTabularSqlitePersister = <ListeningHandle>(
     });
 
   const setPersisted = async (
-    getContent: () => [Tables, Values],
+    getContent: () => Content,
     getTransactionChanges?: GetTransactionChanges,
   ): Promise<void> =>
     await transaction(async () => {
