@@ -39,6 +39,9 @@ export type OptionalSchemas = [OptionalTablesSchema, OptionalValuesSchema];
 /// NoSchemas
 export type NoSchemas = [NoTablesSchema, NoValuesSchema];
 
+// Content
+export type Content = [Tables, Values];
+
 /// Tables
 export type Tables = {[tableId: Id]: Table};
 
@@ -416,7 +419,7 @@ export type StoreListenerStats = {
 export interface Store {
   //
   /// Store.getContent
-  getContent(): [Tables, Values];
+  getContent(): Content;
 
   /// Store.getTables
   getTables(): Tables;
@@ -509,7 +512,7 @@ export interface Store {
   hasValuesSchema(): boolean;
 
   /// Store.setContent
-  setContent([tables, values]: [Tables, Values]): this;
+  setContent(content: Content): this;
 
   /// Store.setTables
   setTables(tables: Tables): this;

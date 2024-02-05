@@ -2,7 +2,7 @@ import {
   AutomergePersister,
   createAutomergePersister as createAutomergePersisterDecl,
 } from '../types/persisters/persister-automerge';
-import {GetTransactionChanges, Store, Tables, Values} from '../types/store';
+import {Content, GetTransactionChanges, Store} from '../types/store';
 import {
   IdObj,
   objDel,
@@ -28,7 +28,7 @@ const ensureDocContent = (doc: any, docObjName: string) => {
   }
 };
 
-const getDocContent = (doc: any, docObjName: string): [Tables, Values] => [
+const getDocContent = (doc: any, docObjName: string): Content => [
   doc[docObjName].t,
   doc[docObjName].v,
 ];
@@ -36,7 +36,7 @@ const getDocContent = (doc: any, docObjName: string): [Tables, Values] => [
 const setTransactionChangesToDoc = (
   doc: any,
   docObjName: string,
-  getContent: () => [Tables, Values],
+  getContent: () => Content,
   getTransactionChanges?: GetTransactionChanges,
 ) => {
   ensureDocContent(doc, docObjName);
@@ -137,7 +137,7 @@ export const createAutomergePersister = ((
 ): AutomergePersister => {
   docHandle.change((doc: any) => (doc[docObjName] = {}));
 
-  const getPersisted = async (): Promise<[Tables, Values] | undefined> => {
+  const getPersisted = async (): Promise<Content | undefined> => {
     const doc = await docHandle.doc();
     return objSize(doc[docObjName]) == 2
       ? getDocContent(doc, docObjName)
@@ -145,7 +145,7 @@ export const createAutomergePersister = ((
   };
 
   const setPersisted = async (
-    getContent: () => [Tables, Values],
+    getContent: () => Content,
     getTransactionChanges?: GetTransactionChanges,
   ): Promise<void> =>
     docHandle.change((doc: any) =>

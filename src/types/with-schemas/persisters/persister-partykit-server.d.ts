@@ -3,14 +3,13 @@
 import {
   Cell,
   CellOrUndefined,
+  Content,
   NoTablesSchema,
   NoValuesSchema,
   OptionalSchemas,
-  Tables,
   TransactionChanges,
   Value,
   ValueOrUndefined,
-  Values,
 } from '../store.d';
 import {Connection, Party, Request, Server} from 'partykit/server';
 import {Id} from '../common.d';
@@ -93,7 +92,7 @@ export function hasStoreInStorage(
 export function loadStoreFromStorage<Schemas extends OptionalSchemas>(
   storage: Storage,
   storagePrefix?: string,
-): Promise<[Tables<Schemas[0]>, Values<Schemas[1]>]>;
+): Promise<Content<Schemas>>;
 
 /// broadcastTransactionChanges
 export function broadcastTransactionChanges<Schemas extends OptionalSchemas>(

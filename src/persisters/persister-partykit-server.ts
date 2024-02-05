@@ -1,6 +1,7 @@
 import {
   Cell,
   CellOrUndefined,
+  Content,
   Row,
   Tables,
   TransactionChanges,
@@ -58,7 +59,7 @@ export const hasStoreInStorage = async (
 export const loadStoreFromStorage = async (
   storage: Storage,
   storagePrefix = EMPTY_STRING,
-): Promise<[Tables, Values]> => {
+): Promise<Content> => {
   const tables: Tables = {};
   const values: Values = {};
   mapForEach(

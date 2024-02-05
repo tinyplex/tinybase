@@ -50,6 +50,12 @@ export type OptionalSchemas = [OptionalTablesSchema, OptionalValuesSchema];
 /// NoSchemas
 export type NoSchemas = [NoTablesSchema, NoValuesSchema];
 
+// Content
+export type Content<
+  Schemas extends OptionalSchemas,
+  WhenSet extends boolean = false,
+> = [Tables<Schemas[0], WhenSet>, Values<Schemas[1], WhenSet>];
+
 /// Tables
 export type Tables<
   Schema extends OptionalTablesSchema,
@@ -912,7 +918,7 @@ export type StoreListenerStats = {
 /// Store
 export interface Store<in out Schemas extends OptionalSchemas> {
   /// Store.getContent
-  getContent(): [Tables<Schemas[0]>, Values<Schemas[1]>];
+  getContent(): Content<Schemas>;
 
   /// Store.getTables
   getTables(): Tables<Schemas[0]>;
@@ -1031,10 +1037,7 @@ export interface Store<in out Schemas extends OptionalSchemas> {
   hasValuesSchema(): boolean;
 
   /// Store.setContent
-  setContent([tables, values]: [
-    Tables<Schemas[0], true>,
-    Values<Schemas[1], true>,
-  ]): Store<Schemas>;
+  setContent(content: Content<Schemas, true>): Store<Schemas>;
 
   /// Store.setTables
   setTables(tables: Tables<Schemas[0], true>): Store<Schemas>;

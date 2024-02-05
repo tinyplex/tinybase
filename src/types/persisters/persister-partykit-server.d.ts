@@ -3,11 +3,10 @@
 import {
   Cell,
   CellOrUndefined,
-  Tables,
+  Content,
   TransactionChanges,
   Value,
   ValueOrUndefined,
-  Values,
 } from '../store.d';
 import {Connection, Party, Request, Server, Storage} from 'partykit/server';
 import {Id} from '../common.d';
@@ -90,7 +89,7 @@ export function hasStoreInStorage(
 export function loadStoreFromStorage(
   storage: Storage,
   storagePrefix?: string,
-): Promise<[Tables, Values]>;
+): Promise<Content>;
 
 /// broadcastTransactionChanges
 export function broadcastTransactionChanges(

@@ -1,6 +1,7 @@
 /// persisters
 
 import {
+  Content,
   GetTransactionChanges,
   OptionalSchemas,
   OptionalTablesSchema,
@@ -20,7 +21,7 @@ export type PersisterStats = {
 
 /// PersisterListener
 export type PersisterListener<Schemas extends OptionalSchemas> = (
-  getContent?: () => [Tables<Schemas[0], true>, Values<Schemas[1], true>],
+  getContent?: () => Content<Schemas, true>,
   getTransactionChanges?: GetTransactionChanges<Schemas>,
 ) => void;
 
@@ -139,11 +140,9 @@ export function createCustomPersister<
   ListeningHandle,
 >(
   store: Store<Schemas>,
-  getPersisted: () => Promise<
-    [Tables<Schemas[0]>, Values<Schemas[1]>] | undefined
-  >,
+  getPersisted: () => Promise<Content<Schemas> | undefined>,
   setPersisted: (
-    getContent: () => [Tables<Schemas[0]>, Values<Schemas[1]>],
+    getContent: () => Content<Schemas>,
     getTransactionChanges?: GetTransactionChanges<Schemas>,
   ) => Promise<void>,
   addPersisterListener: (
