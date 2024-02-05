@@ -1,4 +1,4 @@
-import {GetTransactionChanges, Store, Tables, Values} from '../types/store';
+import {Content, GetTransactionChanges, Store} from '../types/store';
 import {
   PUT,
   SET_CHANGES,
@@ -48,7 +48,7 @@ export const createPartyKitPersister = ((
     room +
     storePath;
 
-  const getOrSetStore = async (content?: [Tables, Values]) =>
+  const getOrSetStore = async (content?: Content) =>
     await (
       await fetch(storeUrl, {
         ...(content ? {method: PUT, body: jsonString(content)} : {}),
@@ -57,11 +57,10 @@ export const createPartyKitPersister = ((
       })
     ).json();
 
-  const getPersisted = async (): Promise<[Tables, Values]> =>
-    await getOrSetStore();
+  const getPersisted = async (): Promise<Content> => await getOrSetStore();
 
   const setPersisted = async (
-    getContent: () => [Tables, Values],
+    getContent: () => Content,
     getTransactionChanges?: GetTransactionChanges,
   ): Promise<void> => {
     if (getTransactionChanges) {

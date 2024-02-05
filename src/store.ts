@@ -26,6 +26,7 @@ import {
   CellSchema,
   ChangedCell,
   ChangedValue,
+  Content,
   DoRollback,
   GetCellChange,
   GetValueChange,
@@ -1018,7 +1019,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   // --
 
-  const getContent = (): [Tables, Values] => [getTables(), getValues()];
+  const getContent = (): Content => [getTables(), getValues()];
 
   const getTables = (): Tables => mapToObj3(tablesMap);
 
@@ -1108,7 +1109,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const getSchemaJson = (): Json =>
     jsonString([tablesSchemaMap, valuesSchemaMap]);
 
-  const setContent = ([tables, values]: [Tables, Values]): Store =>
+  const setContent = ([tables, values]: Content): Store =>
     fluentTransaction(() => {
       (objIsEmpty(tables) ? delTables : setTables)(tables);
       (objIsEmpty(values) ? delValues : setValues)(values);
