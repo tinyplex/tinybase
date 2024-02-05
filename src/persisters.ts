@@ -1,5 +1,11 @@
+import {
+  Content,
+  GetTransactionChanges,
+  Store,
+  Tables,
+  Values,
+} from './types/store.d';
 import {DEBUG, ifNotUndefined, isUndefined} from './common/other';
-import {GetTransactionChanges, Store, Tables, Values} from './types/store.d';
 import {
   Persister,
   PersisterListener,
@@ -17,9 +23,9 @@ const scheduleActions: Map<any, Action[]> = mapNew();
 
 export const createCustomPersister = <ListeningHandle>(
   store: Store,
-  getPersisted: () => Promise<[Tables, Values] | undefined>,
+  getPersisted: () => Promise<Content | undefined>,
   setPersisted: (
-    getContent: () => [Tables, Values],
+    getContent: () => Content,
     getTransactionChanges?: GetTransactionChanges,
   ) => Promise<void>,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
@@ -84,9 +90,9 @@ export const createCustomPersister = <ListeningHandle>(
     ): Promise<Persister> =>
       await loadLock(async () => {
         try {
-          store.setContent((await getPersisted()) as [Tables, Values]);
+          store.setContent((await getPersisted()) as Content);
         } catch {
-          store.setContent([initialTables, initialValues] as [Tables, Values]);
+          store.setContent([initialTables, initialValues] as Content);
         }
       }),
 
@@ -108,8 +114,7 @@ export const createCustomPersister = <ListeningHandle>(
             await loadLock(async () => {
               try {
                 store.setContent(
-                  getContent?.() ??
-                    ((await getPersisted()) as [Tables, Values]),
+                  getContent?.() ?? ((await getPersisted()) as Content),
                 );
               } catch (error) {
                 onIgnoredError?.(error);
