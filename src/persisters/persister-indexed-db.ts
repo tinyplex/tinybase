@@ -1,9 +1,9 @@
+import {Content, Store, Table} from '../types/store';
 import {IdObj, objHas, objNew, objToArray} from '../common/obj';
 import {
   IndexedDbPersister,
   createIndexedDbPersister as createIndexedDbPersisterDecl,
 } from '../types/persisters/persister-indexed-db';
-import {Store, Table, Tables, Values} from '../types/store';
 import {T, V} from '../common/strings';
 import {arrayMap, arrayPush} from '../common/array';
 import {
@@ -95,7 +95,7 @@ export const createIndexedDbPersister = ((
       request.onerror = () => reject('indexedDB.open error');
     });
 
-  const getPersisted = async (): Promise<[Tables, Values]> =>
+  const getPersisted = async (): Promise<Content> =>
     await forObjectStores(async (objectStore) =>
       objNew(
         arrayMap(
@@ -105,9 +105,7 @@ export const createIndexedDbPersister = ((
       ),
     );
 
-  const setPersisted = async (
-    getContent: () => [Tables, Values],
-  ): Promise<void> =>
+  const setPersisted = async (getContent: () => Content): Promise<void> =>
     (await forObjectStores(
       async (objectStore, content) =>
         await objectStoreMatch(objectStore, content),
