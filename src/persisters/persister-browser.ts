@@ -1,3 +1,4 @@
+import {Content, Store} from '../types/store';
 import {
   LocalPersister,
   SessionPersister,
@@ -5,7 +6,6 @@ import {
   createSessionPersister as createSessionPersisterDecl,
 } from '../types/persisters/persister-browser';
 import {Persister, PersisterListener} from '../types/persisters';
-import {Store, Tables, Values} from '../types/store';
 import {jsonParse, jsonString} from '../common/json';
 import {createCustomPersister} from '../persisters';
 
@@ -19,12 +19,11 @@ const createStoragePersister = (
   storage: Storage,
   onIgnoredError?: (error: any) => void,
 ): Persister => {
-  const getPersisted = async (): Promise<[Tables, Values]> =>
+  const getPersisted = async (): Promise<Content> =>
     jsonParse(storage.getItem(storageName) as string);
 
-  const setPersisted = async (
-    getContent: () => [Tables, Values],
-  ): Promise<void> => storage.setItem(storageName, jsonString(getContent()));
+  const setPersisted = async (getContent: () => Content): Promise<void> =>
+    storage.setItem(storageName, jsonString(getContent()));
 
   const addPersisterListener = (
     listener: PersisterListener,
