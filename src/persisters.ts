@@ -163,7 +163,7 @@ export const createCustomPersister = <ListeningHandle>(
         (_store, getTransactionChanges) => {
           const [tableChanges, valueChanges] = getTransactionChanges();
           if (!objIsEmpty(tableChanges) || !objIsEmpty(valueChanges)) {
-            (persister.save as any)(() => [tableChanges, valueChanges]);
+            persister.save(() => [tableChanges, valueChanges]);
           }
         },
       );
