@@ -1446,14 +1446,14 @@ export const createStore: typeof createStoreDecl = (): Store => {
         if (valuesTouched) {
           callValuesListenersForChanges(0);
         }
-        callListeners(
-          finishTransactionListeners[1],
-          undefined,
+        postTransactionListener?.(
+          store,
           getTransactionChanges,
           getTransactionLog,
         );
-        postTransactionListener?.(
-          store,
+        callListeners(
+          finishTransactionListeners[1],
+          undefined,
           getTransactionChanges,
           getTransactionLog,
         );
