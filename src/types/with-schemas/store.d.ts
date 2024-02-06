@@ -288,19 +288,14 @@ export type ChangedValueIds<Schema extends OptionalValuesSchema> = {
 
 /// DoRollback
 export type DoRollback<Schemas extends OptionalSchemas> = (
-  getTransactionChanges: GetTransactionChanges<Schemas>,
-  getTransactionLog: GetTransactionLog<Schemas>,
+  store: Store<Schemas>,
 ) => boolean;
 
 /// TransactionListener
 export type TransactionListener<
   Schemas extends OptionalSchemas,
   Store extends StoreAlias<Schemas> = StoreAlias<Schemas>,
-> = (
-  store: Store,
-  getTransactionChanges: GetTransactionChanges<Schemas>,
-  getTransactionLog: GetTransactionLog<Schemas>,
-) => void;
+> = (store: Store) => void;
 
 /// HasTablesListener
 export type HasTablesListener<
@@ -843,10 +838,6 @@ export type TransactionChanges<Schemas extends OptionalSchemas> = [
   },
 ];
 
-/// GetTransactionChanges
-export type GetTransactionChanges<Schemas extends OptionalSchemas> =
-  () => TransactionChanges<Schemas>;
-
 /// TransactionLog
 export type TransactionLog<Schemas extends OptionalSchemas> = {
   cellsTouched: boolean;
@@ -860,10 +851,6 @@ export type TransactionLog<Schemas extends OptionalSchemas> = {
   changedCellIds: ChangedCellIds<Schemas[0]>;
   changedValueIds: ChangedValueIds<Schemas[1]>;
 };
-
-/// GetTransactionLog
-export type GetTransactionLog<Schemas extends OptionalSchemas> =
-  () => TransactionLog<Schemas>;
 
 /// StoreListenerStats
 export type StoreListenerStats = {
@@ -1175,6 +1162,12 @@ export interface Store<in out Schemas extends OptionalSchemas> {
 
   /// Store.startTransaction
   startTransaction(): Store<Schemas>;
+
+  /// Store.getTransactionChanges
+  getTransactionChanges(): TransactionChanges<Schemas>;
+
+  /// Store.getTransactionLog
+  getTransactionLog(): TransactionLog<Schemas>;
 
   /// Store.finishTransaction
   finishTransaction(doRollback?: DoRollback<Schemas>): Store<Schemas>;

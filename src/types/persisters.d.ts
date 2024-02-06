@@ -1,6 +1,6 @@
 /// persisters
 
-import {Content, GetTransactionChanges, Store, Tables, Values} from './store.d';
+import {Content, Store, Tables, TransactionChanges, Values} from './store.d';
 import {Id} from './common.d';
 
 /// PersisterStats
@@ -14,7 +14,7 @@ export type PersisterStats = {
 /// PersisterListener
 export type PersisterListener = (
   getContent?: () => Content,
-  getTransactionChanges?: GetTransactionChanges,
+  getTransactionChanges?: () => TransactionChanges,
 ) => void;
 
 /// DatabasePersisterConfig
@@ -129,7 +129,7 @@ export function createCustomPersister<ListeningHandle>(
   getPersisted: () => Promise<Content | undefined>,
   setPersisted: (
     getContent: () => Content,
-    getTransactionChanges?: GetTransactionChanges,
+    getTransactionChanges?: () => TransactionChanges,
   ) => Promise<void>,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,

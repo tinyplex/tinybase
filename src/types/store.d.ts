@@ -114,16 +114,11 @@ export type ChangedCellIds = {
 export type ChangedValueIds = {[valueId: Id]: IdAddedOrRemoved};
 
 /// DoRollback
-export type DoRollback = (
-  getTransactionChanges: GetTransactionChanges,
-  getTransactionLog: GetTransactionLog,
-) => boolean;
+export type DoRollback = (store: Store) => boolean;
 
 /// TransactionListener
 export type TransactionListener<Store extends StoreAlias = StoreAlias> = (
   store: Store,
-  getTransactionChanges: GetTransactionChanges,
-  getTransactionLog: GetTransactionLog,
 ) => void;
 
 /// HasTablesListener
@@ -345,9 +340,6 @@ export type TransactionChanges = [
   {[valueId: Id]: Value | null},
 ];
 
-/// GetTransactionChanges
-export type GetTransactionChanges = () => TransactionChanges;
-
 /// TransactionLog
 export type TransactionLog = {
   cellsTouched: boolean;
@@ -361,9 +353,6 @@ export type TransactionLog = {
   changedCellIds: ChangedCellIds;
   changedValueIds: ChangedValueIds;
 };
-
-/// GetTransactionLog
-export type GetTransactionLog = () => TransactionLog;
 
 /// StoreListenerStats
 export type StoreListenerStats = {
@@ -594,6 +583,12 @@ export interface Store {
 
   /// Store.startTransaction
   startTransaction(): this;
+
+  /// Store.getTransactionChanges
+  getTransactionChanges(): TransactionChanges;
+
+  /// Store.getTransactionLog
+  getTransactionLog(): TransactionLog;
 
   /// Store.finishTransaction
   finishTransaction(doRollback?: DoRollback): this;
