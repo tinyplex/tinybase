@@ -977,46 +977,6 @@ export const createStore: typeof createStoreDecl = (): Store => {
     return store;
   };
 
-  const getTransactionChanges = (): TransactionChanges => [
-    mapToObj(
-      changedCells,
-      (table, tableId) =>
-        mapGet(changedTableIds, tableId) === -1
-          ? null
-          : mapToObj(
-              table,
-              (row, rowId) =>
-                mapGet(mapGet(changedRowIds, tableId), rowId) === -1
-                  ? null
-                  : mapToObj(
-                      row,
-                      ([, newCell]) => newCell ?? null,
-                      (_, changedCell) => pairIsEqual(changedCell),
-                    ),
-              objIsEmpty,
-            ),
-      objIsEmpty,
-    ),
-    mapToObj(
-      changedValues,
-      ([, newValue]) => newValue ?? null,
-      (_, changedValue) => pairIsEqual(changedValue),
-    ),
-  ];
-
-  const getTransactionLog = (): TransactionLog => ({
-    cellsTouched,
-    valuesTouched,
-    changedCells: mapToObj3(changedCells, pairClone, pairIsEqual),
-    invalidCells: mapToObj3(invalidCells),
-    changedValues: mapToObj(changedValues, pairClone, pairIsEqual),
-    invalidValues: mapToObj(invalidValues),
-    changedTableIds: mapToObj(changedTableIds),
-    changedRowIds: mapToObj2(changedRowIds),
-    changedCellIds: mapToObj3(changedCellIds),
-    changedValueIds: mapToObj(changedValueIds),
-  });
-
   // --
 
   const getContent = (): Content => [getTables(), getValues()];
@@ -1389,15 +1349,50 @@ export const createStore: typeof createStoreDecl = (): Store => {
       transactions++;
     }
     if (transactions == 1) {
-      callListeners(
-        startTransactionListeners,
-        undefined,
-        getTransactionChanges,
-        getTransactionLog,
-      );
+      callListeners(startTransactionListeners, undefined);
     }
     return store;
   };
+
+  const getTransactionChanges = (): TransactionChanges => [
+    mapToObj(
+      changedCells,
+      (table, tableId) =>
+        mapGet(changedTableIds, tableId) === -1
+          ? null
+          : mapToObj(
+              table,
+              (row, rowId) =>
+                mapGet(mapGet(changedRowIds, tableId), rowId) === -1
+                  ? null
+                  : mapToObj(
+                      row,
+                      ([, newCell]) => newCell ?? null,
+                      (_, changedCell) => pairIsEqual(changedCell),
+                    ),
+              objIsEmpty,
+            ),
+      objIsEmpty,
+    ),
+    mapToObj(
+      changedValues,
+      ([, newValue]) => newValue ?? null,
+      (_, changedValue) => pairIsEqual(changedValue),
+    ),
+  ];
+
+  const getTransactionLog = (): TransactionLog => ({
+    cellsTouched,
+    valuesTouched,
+    changedCells: mapToObj3(changedCells, pairClone, pairIsEqual),
+    invalidCells: mapToObj3(invalidCells),
+    changedValues: mapToObj(changedValues, pairClone, pairIsEqual),
+    invalidValues: mapToObj(invalidValues),
+    changedTableIds: mapToObj(changedTableIds),
+    changedRowIds: mapToObj2(changedRowIds),
+    changedCellIds: mapToObj3(changedCellIds),
+    changedValueIds: mapToObj(changedValueIds),
+  });
 
   const finishTransaction = (doRollback?: DoRollback): Store => {
     if (transactions > 0) {
@@ -1416,7 +1411,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
           callValuesListenersForChanges(1);
         }
 
-        if (doRollback?.(getTransactionChanges, getTransactionLog)) {
+        if (doRollback?.(store)) {
           collForEach(changedCells, (table, tableId) =>
             collForEach(table, (row, rowId) =>
               collForEach(row, ([oldCell], cellId) =>
@@ -1430,12 +1425,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
           cellsTouched = valuesTouched = false;
         }
 
-        callListeners(
-          finishTransactionListeners[0],
-          undefined,
-          getTransactionChanges,
-          getTransactionLog,
-        );
+        callListeners(finishTransactionListeners[0], undefined);
 
         transactions = -1;
         callInvalidCellListeners(0);
@@ -1446,17 +1436,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
         if (valuesTouched) {
           callValuesListenersForChanges(0);
         }
-        postTransactionListener?.(
-          store,
-          getTransactionChanges,
-          getTransactionLog,
-        );
-        callListeners(
-          finishTransactionListeners[1],
-          undefined,
-          getTransactionChanges,
-          getTransactionLog,
-        );
+        postTransactionListener?.(store);
+        callListeners(finishTransactionListeners[1], undefined);
 
         transactions = 0;
         cellsTouched = valuesTouched = false;
@@ -1677,6 +1658,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
     transaction,
     startTransaction,
+    getTransactionChanges,
+    getTransactionLog,
     finishTransaction,
 
     forEachTable,

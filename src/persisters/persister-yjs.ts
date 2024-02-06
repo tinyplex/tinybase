@@ -1,7 +1,6 @@
 import {
   Cell,
   Content,
-  GetTransactionChanges,
   Store,
   Tables,
   TransactionChanges,
@@ -84,7 +83,7 @@ const getTransactionChangesFromYDoc = (
 const setTransactionChangesToYDoc = (
   yContent: YMap<any>,
   getContent: () => Content,
-  getTransactionChanges?: GetTransactionChanges,
+  getTransactionChanges?: () => TransactionChanges,
 ) => {
   if (!yContent.size) {
     yContent.set(T, new YMap());
@@ -197,7 +196,7 @@ export const createYjsPersister = ((
 
   const setPersisted = async (
     getContent: () => Content,
-    getTransactionChanges?: GetTransactionChanges,
+    getTransactionChanges?: () => TransactionChanges,
   ): Promise<void> =>
     yDoc.transact(() =>
       setTransactionChangesToYDoc(yContent, getContent, getTransactionChanges),

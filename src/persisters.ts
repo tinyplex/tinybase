@@ -1,8 +1,8 @@
 import {
   Content,
-  GetTransactionChanges,
   Store,
   Tables,
+  TransactionChanges,
   Values,
 } from './types/store.d';
 import {DEBUG, ifNotUndefined, isUndefined} from './common/other';
@@ -26,7 +26,7 @@ export const createCustomPersister = <ListeningHandle>(
   getPersisted: () => Promise<Content | undefined>,
   setPersisted: (
     getContent: () => Content,
-    getTransactionChanges?: GetTransactionChanges,
+    getTransactionChanges?: () => TransactionChanges,
   ) => Promise<void>,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
@@ -136,7 +136,7 @@ export const createCustomPersister = <ListeningHandle>(
     },
 
     save: async (
-      getTransactionChanges?: GetTransactionChanges,
+      getTransactionChanges: () => TransactionChanges,
     ): Promise<Persister> => {
       /*! istanbul ignore else */
       if (loadSave != 1) {
@@ -159,14 +159,12 @@ export const createCustomPersister = <ListeningHandle>(
 
     startAutoSave: async (): Promise<Persister> => {
       await persister.stopAutoSave().save();
-      listenerId = store.addDidFinishTransactionListener(
-        (_store, getTransactionChanges) => {
-          const [tableChanges, valueChanges] = getTransactionChanges();
-          if (!objIsEmpty(tableChanges) || !objIsEmpty(valueChanges)) {
-            persister.save(() => [tableChanges, valueChanges]);
-          }
-        },
-      );
+      listenerId = store.addDidFinishTransactionListener(() => {
+        const [tableChanges, valueChanges] = store.getTransactionChanges();
+        if (!objIsEmpty(tableChanges) || !objIsEmpty(valueChanges)) {
+          persister.save(() => [tableChanges, valueChanges]);
+        }
+      });
       return persister;
     },
 
