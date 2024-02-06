@@ -1,9 +1,9 @@
 import {
   Cell,
   Content,
-  GetTransactionChanges,
   Store,
   Tables,
+  TransactionChanges,
   Value,
   Values,
 } from '../../types/store';
@@ -123,7 +123,7 @@ export const createTabularSqlitePersister = <ListeningHandle>(
 
   const setPersisted = async (
     getContent: () => Content,
-    getTransactionChanges?: GetTransactionChanges,
+    getTransactionChanges?: () => TransactionChanges,
   ): Promise<void> =>
     await transaction(async () => {
       await refreshSchema();
