@@ -2,11 +2,11 @@
 
 import {
   Content,
-  GetTransactionChanges,
   OptionalSchemas,
   OptionalTablesSchema,
   Store,
   Tables,
+  TransactionChanges,
   Values,
 } from './store.d';
 import {TableIdFromSchema} from './internal/store.d';
@@ -22,7 +22,7 @@ export type PersisterStats = {
 /// PersisterListener
 export type PersisterListener<Schemas extends OptionalSchemas> = (
   getContent?: () => Content<Schemas, true>,
-  getTransactionChanges?: GetTransactionChanges<Schemas>,
+  getTransactionChanges?: () => TransactionChanges<Schemas>,
 ) => void;
 
 /// DatabasePersisterConfig
@@ -143,7 +143,7 @@ export function createCustomPersister<
   getPersisted: () => Promise<Content<Schemas> | undefined>,
   setPersisted: (
     getContent: () => Content<Schemas>,
-    getTransactionChanges?: GetTransactionChanges<Schemas>,
+    getTransactionChanges?: () => TransactionChanges<Schemas>,
   ) => Promise<void>,
   addPersisterListener: (
     listener: PersisterListener<Schemas>,
