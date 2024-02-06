@@ -441,14 +441,10 @@
  * A DoRollback can be provided when calling the transaction method or the
  * finishTransaction method. See those methods for specific examples.
  *
- * Since v4.0, this function is provided only with two functions that you can
- * call to get information about the changes made within the transaction (in
- * order to decide whether to do the rollback). See the GetTransactionChanges
- * and GetTransactionLog function types for more details.
- * @param getTransactionChanges A function to be called to get the changes made
- * to the Store during the transaction, since v4.0.
- * @param getTransactionChanges A function to be called to get a more detailed
- * log of the changes made or attempted during the transaction, since v4.0.
+ * Since v5.0, this function is called with the Store as a single argument. You
+ * can use the getTransactionChanges method and getTransactionLog method of the
+ * Store directly to decide whether to do the rollback.
+ * @param store A reference to the Store that is completing a transaction.
  * @category Callback
  */
 /// DoRollback
@@ -460,15 +456,11 @@
  * addWillFinishTransactionListener and addDidFinishTransactionListener methods.
  * See those methods for specific examples.
  *
- * When called, a TransactionListener is simply given a reference to the Store
- * and, since v4.0, two functions that you can call to get information about the
- * changes made within the transaction. See the GetTransactionChanges and
- * GetTransactionLog function types for more details.
+ * Since v5.0, this listener is called with no arguments other than the Store.
+ * You can use the getTransactionChanges method and getTransactionLog method of
+ * the Store directly to get information about the changes made within the
+ * transaction.
  * @param store A reference to the Store that is completing a transaction.
- * @param getTransactionChanges A function to be called to get the changes made
- * to the Store during the transaction, since v4.0.
- * @param getTransactionChanges A function to be called to get a more detailed
- * log of the changes made or attempted during the transaction, since v4.0.
  * @category Listener
  */
 /// TransactionListener
@@ -1141,17 +1133,6 @@
  */
 /// TransactionChanges
 /**
- * The GetTransactionChanges type describes a function that returns the net
- * meaningful changes that were made to a Store during a transaction.
- *
- * It is provided to the DoRollback callback and to a TransactionListener
- * listener when a transaction completes. See the TransactionChanges type for
- * more information and an example of the returned data structure.
- * @category Transaction
- * @since v4.0.0
- */
-/// GetTransactionChanges
-/**
  * The TransactionLog type describes the changes that were made to a Store
  * during a transaction in detail.
  *
@@ -1176,17 +1157,6 @@
  * @since v4.0.0
  */
 /// TransactionLog GetTransactionLog
-/**
- * The GetTransactionLog type describes a function that returns the changes that
- * were made to a Store during a transaction in detail.
- *
- * It is provided to the DoRollback callback and to a TransactionListener
- * listener when a transaction completes. See the TransactionLog type for more
- * information.
- * @category Transaction
- * @since v4.0.0
- */
-/// GetTransactionLog
 /**
  * The StoreListenerStats type describes the number of listeners registered with
  * the Store, and can be used for debugging purposes.
@@ -3441,10 +3411,7 @@
    *
    * The second, optional parameter, `doRollback` is a DoRollback callback that
    * you can use to rollback the transaction if it did not complete to your
-   * satisfaction. It is called with `getTransactionChanges` and
-   * `getTransactionLog` parameters, which inform you of the net changes that
-   * have been made during the transaction, at different levels of detail. See
-   * the DoRollback documentation for more details.
+   * satisfaction. See the DoRollback documentation for more details.
    * @param actions The function to be executed as a transaction.
    * @param doRollback An optional callback that should return `true` if you
    * want to rollback the transaction at the end. Since v1.2.
@@ -3520,9 +3487,9 @@
    *       .setCell('pets', 'fido', 'info', {sold: null})
    *       .setValue('open', false)
    *       .setValue('employees', ['alice', 'bob']),
-   *   (_, getTransactionLog) => {
+   *   () => {
    *     const {changedCells, invalidCells, changedValues, invalidValues} =
-   *       getTransactionLog();
+   *       store.getTransactionLog();
    *     console.log(store.getTables());
    *     console.log(changedCells);
    *     console.log(invalidCells);
@@ -3595,6 +3562,79 @@
    */
   /// Store.startTransaction
   /**
+   * The getTransactionChanges method returns the net meaningful changes that
+   * have been made to a Store during a transaction.
+   *
+   * This is useful for deciding whether to rollback a transaction, for example.
+   * The returned object is only meaningful if the method is called when the
+   * Store is in a transaction - such as in a TransactionListener.
+   * @example
+   * This example makes changes to the Store. At the end of the transaction,
+   * detail about what changed is enumerated.
+   *
+   * ```js
+   * const store = createStore()
+   *   .setTables({pets: {fido: {species: 'dog', color: 'brown'}}})
+   *   .setValues({open: true});
+   *
+   * store
+   *   .startTransaction()
+   *   .setCell('pets', 'fido', 'color', 'black')
+   *   .setValue('open', false)
+   *   .finishTransaction(() => {
+   *     const [changedCells, changedValues] = store.getTransactionChanges();
+   *     console.log(changedCells);
+   *     console.log(changedValues);
+   *   });
+   * // -> {pets: {fido: {color: 'black'}}}
+   * // -> {open: false}
+   * ```
+   * @category Transaction
+   * @since v5.0.0
+   */
+  /// Store.getTransactionChanges
+  /**
+   * The getTransactionLog method returns the changes that were made to a Store
+   * during a transaction in more detail, including invalid changes, and what
+   * previous values were.
+   *
+   * This is useful for deciding whether to rollback a transaction, for example.
+   * The returned object is only meaningful if the method is called when the
+   * Store is in a transaction - such as in a TransactionListener.
+   * @example
+   * This example makes changes to the Store. At the end of the transaction,
+   * detail about what changed is enumerated.
+   *
+   * ```js
+   * const store = createStore()
+   *   .setTables({pets: {fido: {species: 'dog', color: 'brown'}}})
+   *   .setValues({open: true});
+   *
+   * store
+   *   .startTransaction()
+   *   .setCell('pets', 'fido', 'color', 'black')
+   *   .setCell('pets', 'fido', 'eyes', ['left', 'right'])
+   *   .setCell('pets', 'fido', 'info', {sold: null})
+   *   .setValue('open', false)
+   *   .setValue('employees', ['alice', 'bob'])
+   *   .finishTransaction(() => {
+   *     const {changedCells, invalidCells, changedValues, invalidValues} =
+   *       store.getTransactionLog();
+   *     console.log(changedCells);
+   *     console.log(invalidCells);
+   *     console.log(changedValues);
+   *     console.log(invalidValues);
+   *   });
+   * // -> {pets: {fido: {color: ['brown', 'black']}}}
+   * // -> {pets: {fido: {eyes: [['left', 'right']], info: [{sold: null}]}}}
+   * // -> {open: [true, false]}
+   * // -> {employees: [['alice', 'bob']]}
+   * ```
+   * @category Transaction
+   * @since v5.0.0
+   */
+  /// Store.getTransactionLog
+  /**
    * The finishTransaction method allows you to explicitly finish a transaction
    * that has made multiple mutations to the Store, triggering all calls to the
    * relevant listeners.
@@ -3665,9 +3705,9 @@
    *   .setCell('pets', 'fido', 'info', {sold: null})
    *   .setValue('open', false)
    *   .setValue('employees', ['alice', 'bob'])
-   *   .finishTransaction((_, getTransactionLog) => {
+   *   .finishTransaction(() => {
    *     const {changedCells, invalidCells, changedValues, invalidValues} =
-   *       getTransactionLog();
+   *       store.getTransactionLog();
    *     console.log(store.getTables());
    *     console.log(changedCells);
    *     console.log(invalidCells);
@@ -6187,8 +6227,8 @@
    *   })
    *   .setValues({open: true, employees: 3});
    * const listenerId = store.addWillFinishTransactionListener(
-   *   (store, _, getTransactionLog) => {
-   *     const {cellsTouched, valuesTouched} = getTransactionLog?.() ?? {};
+   *   (store) => {
+   *     const {cellsTouched, valuesTouched} = store.getTransactionLog() ?? {};
    *     console.log(`Cells/Values touched: ${cellsTouched}/${valuesTouched}`);
    *   },
    * );
@@ -6233,7 +6273,7 @@
    * // Transaction was rolled back.
    *
    * store.callListener(listenerId);
-   * // -> 'Cells/Values touched: undefined/undefined'
+   * // -> 'Cells/Values touched: false/false'
    * // It is meaningless to call this listener directly.
    *
    * store
@@ -6284,8 +6324,8 @@
    *   })
    *   .setValues({open: true, employees: 3});
    * const listenerId = store.addDidFinishTransactionListener(
-   *   (store, _, getTransactionLog) => {
-   *     const {cellsTouched, valuesTouched} = getTransactionLog?.() ?? {};
+   *   (store) => {
+   *     const {cellsTouched, valuesTouched} = store.getTransactionLog() ?? {};
    *     console.log(`Cells/Values touched: ${cellsTouched}/${valuesTouched}`);
    *   },
    * );
@@ -6330,7 +6370,7 @@
    * // Transaction was rolled back.
    *
    * store.callListener(listenerId);
-   * // -> 'Cells/Values touched: undefined/undefined'
+   * // -> 'Cells/Values touched: false/false'
    * // It is meaningless to call this listener directly.
    *
    * store

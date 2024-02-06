@@ -1,10 +1,4 @@
-import {
-  Cell,
-  GetTransactionChanges,
-  Store,
-  TransactionChanges,
-  Value,
-} from './types/store';
+import {Cell, Store, TransactionChanges, Value} from './types/store';
 import {EMPTY_STRING, strEndsWith, strStartsWith} from './common/strings';
 import {IdMap, mapEnsure, mapNew, mapSet} from './common/map';
 import {IdObj, objFreeze, objIsEmpty, objToArray} from './common/obj';
@@ -65,13 +59,10 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     [newStampedMap(), newStampedMap()],
   ];
 
-  const postTransactionListener = (
-    _: Store,
-    getTransactionChanges: GetTransactionChanges,
-  ) => {
+  const postTransactionListener = () => {
     if (listening) {
       const stamp = getHlc();
-      const [tablesChanges, valuesChanges] = getTransactionChanges();
+      const [tablesChanges, valuesChanges] = store.getTransactionChanges();
       const [allTablesStamp, allValuesStamp] = allContentStamp[1];
 
       allContentStamp[0] = stamp;

@@ -72,15 +72,12 @@ when the outermost one completes.
 
 The transaction method takes a second optional parameter, `doRollback`. This is
 a callback that you can use to rollback the transaction if it did not complete
-to your satisfaction. It is called with `getTransactionChanges` and
-`getTransactionLog` parameters, which inform you of the net changes that have
-been made during the transaction, and any invalid attempts to do so,
-respectively.
+to your satisfaction.
 
-This example makes multiple changes to the Store, including some attempts
-to update a Cell with invalid values. The `doRollback` callback receives
-information about the changes and invalid attempts, and then judges that
-the transaction should be rolled back to its original state.
+This example makes multiple changes to the Store, including some attempts to
+update a Cell with invalid values. The `doRollback` callback fetches information
+about the changes and invalid attempts, and then judges that the transaction
+should be rolled back to its original state.
 
 ```js
 store.transaction(
@@ -89,8 +86,8 @@ store.transaction(
     store.setCell('pets', 'fido', 'eyes', ['left', 'right']);
     store.setCell('pets', 'fido', 'buyer', {name: 'Bob'});
   },
-  (_, getTransactionLog) => {
-    const {changedCells, invalidCells} = getTransactionLog();
+  () => {
+    const {changedCells, invalidCells} = store.getTransactionLog();
     console.log(store.getTables());
     // -> {pets: {fido: {species: 'dog', color: 'black', sold: true}}}
     console.log(changedCells);
