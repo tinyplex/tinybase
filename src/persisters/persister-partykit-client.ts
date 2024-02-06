@@ -1,4 +1,4 @@
-import {Content, GetTransactionChanges, Store} from '../types/store';
+import {Content, Store, TransactionChanges} from '../types/store';
 import {
   PUT,
   SET_CHANGES,
@@ -61,7 +61,7 @@ export const createPartyKitPersister = ((
 
   const setPersisted = async (
     getContent: () => Content,
-    getTransactionChanges?: GetTransactionChanges,
+    getTransactionChanges?: () => TransactionChanges,
   ): Promise<void> => {
     if (getTransactionChanges) {
       connection.send(
