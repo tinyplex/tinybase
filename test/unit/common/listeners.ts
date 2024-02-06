@@ -243,29 +243,32 @@ export const createStoreListener = (
 
     listenToStartTransaction: (id) => {
       logs[id] = [];
-      return store.addStartTransactionListener(
-        (_, getTransactionChanges, getTransactionLog) => {
-          logs[id].push([getTransactionChanges(), getTransactionLog()]);
-        },
-      );
+      return store.addStartTransactionListener((store) => {
+        logs[id].push([
+          store.getTransactionChanges(),
+          store.getTransactionLog(),
+        ]);
+      });
     },
 
     listenToWillFinishTransaction: (id) => {
       logs[id] = [];
-      return store.addWillFinishTransactionListener(
-        (_, getTransactionChanges, getTransactionLog) => {
-          logs[id].push([getTransactionChanges(), getTransactionLog()]);
-        },
-      );
+      return store.addWillFinishTransactionListener((store) => {
+        logs[id].push([
+          store.getTransactionChanges(),
+          store.getTransactionLog(),
+        ]);
+      });
     },
 
     listenToDidFinishTransaction: (id) => {
       logs[id] = [];
-      return store.addDidFinishTransactionListener(
-        (_, getTransactionChanges, getTransactionLog) => {
-          logs[id].push([getTransactionChanges(), getTransactionLog()]);
-        },
-      );
+      return store.addDidFinishTransactionListener((store) => {
+        logs[id].push([
+          store.getTransactionChanges(),
+          store.getTransactionLog(),
+        ]);
+      });
     },
 
     logs,
