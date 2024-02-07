@@ -2834,8 +2834,7 @@
    */
   /// Store.setValue
   /**
-   * The setTransactionChanges method applies a set of TransactionChanges to the
-   * Store.
+   * The applyChanges method applies a set of TransactionChanges to the Store.
    *
    * This method will take a TransactionChanges object (which is available at
    * the end of a transaction) and apply it to a Store. The most likely need to
@@ -2849,6 +2848,8 @@
    *
    * The method returns a reference to the Store so that subsequent operations
    * can be chained in a fluent style.
+   *
+   * Prior to v5.0, this method was named `setTransactionChanges`.
    * @param transactionChanges The TransactionChanges to apply to the Store.
    * @returns A reference to the Store.
    * @example
@@ -2860,7 +2861,7 @@
    *   .setTables({pets: {fido: {species: 'dog', color: 'brown'}}})
    *   .setValues({open: true});
    *
-   * store.setTransactionChanges([
+   * store.applyChanges([
    *   {pets: {fido: {color: 'black'}}},
    *   {open: null},
    * ]);
@@ -2870,9 +2871,9 @@
    * // -> {}
    * ```
    * @category Setter
-   * @since v4.0.0
+   * @since v5.0.0
    */
-  /// Store.setTransactionChanges
+  /// Store.applyChanges
   /**
    * The setTablesJson method takes a string serialization of all of the Tables
    * in the Store and attempts to update them to that.
