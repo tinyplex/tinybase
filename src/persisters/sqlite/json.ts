@@ -46,13 +46,14 @@ export const createJsonSqlitePersister = <ListeningHandle>(
       );
     });
 
-  const persister: any = (createCustomPersister as any)(
+  const persister: any = createCustomPersister(
     store,
     getPersisted,
     setPersisted,
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
+    false,
     [getThing, db],
     db,
   );
