@@ -91,7 +91,7 @@ describe('Fluency of inherited methods', () => {
     expect(store.setValues({})).toEqual(store);
     expect(store.setPartialValues({})).toEqual(store);
     expect(store.setValue('v1', 1)).toEqual(store);
-    expect(store.setTransactionChanges([{}, {}])).toEqual(store);
+    expect(store.applyChanges([{}, {}])).toEqual(store);
     expect(store.setTablesJson('{}')).toEqual(store);
     expect(store.setValuesJson('{}')).toEqual(store);
     expect(store.setJson('[{}, {}]')).toEqual(store);
