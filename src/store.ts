@@ -1182,9 +1182,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       valueId,
     );
 
-  const setTransactionChanges = (
-    transactionChanges: TransactionChanges,
-  ): Store =>
+  const applyChanges = (transactionChanges: TransactionChanges): Store =>
     fluentTransaction(() => {
       objToArray(transactionChanges[0], (table, tableId) =>
         isUndefined(table)
@@ -1637,7 +1635,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     setValues,
     setPartialValues,
     setValue,
-    setTransactionChanges,
+    applyChanges,
 
     setTablesJson,
     setValuesJson,
