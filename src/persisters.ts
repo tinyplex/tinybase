@@ -110,7 +110,7 @@ export const createCustomPersister = <
         try {
           const content = (await getPersisted()) as any;
           (supportsMergeableStore && isString(content[0])
-            ? (store as MergeableStore).applyMergeableContent
+            ? (store as MergeableStore).applyMergeableChanges
             : store.setContent)(content);
         } catch {
           store.setContent([initialTables, initialValues] as Content);
