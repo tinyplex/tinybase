@@ -184,7 +184,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
           ),
         ] as AllContentStamp[1],
     );
-    disableListening(() => store.setTransactionChanges(changes));
+    disableListening(() => store.applyChanges(changes));
     return mergeableStore as MergeableStore;
   };
 
@@ -204,6 +204,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
         // fluent methods
         strStartsWith(name, 'set') ||
         strStartsWith(name, 'del') ||
+        strStartsWith(name, 'apply') ||
         strEndsWith(name, 'Transaction') ||
         name == 'callListener'
           ? (...args: any[]) => {
