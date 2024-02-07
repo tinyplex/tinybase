@@ -128,9 +128,7 @@ export const createCustomPersister = <
         async (getContent, getTransactionChanges) => {
           if (getTransactionChanges) {
             const transactionChanges = getTransactionChanges();
-            await loadLock(async () =>
-              store.setTransactionChanges(transactionChanges),
-            );
+            await loadLock(async () => store.applyChanges(transactionChanges));
           } else {
             await loadLock(async () => {
               try {

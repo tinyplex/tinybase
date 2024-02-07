@@ -33,7 +33,7 @@ const getDocContent = (doc: any, docObjName: string): Content => [
   doc[docObjName].v,
 ];
 
-const setTransactionChangesToDoc = (
+const applyChangesToDoc = (
   doc: any,
   docObjName: string,
   getContent: () => Content,
@@ -149,12 +149,7 @@ export const createAutomergePersister = ((
     getTransactionChanges?: () => TransactionChanges,
   ): Promise<void> =>
     docHandle.change((doc: any) =>
-      setTransactionChangesToDoc(
-        doc,
-        docObjName,
-        getContent,
-        getTransactionChanges,
-      ),
+      applyChangesToDoc(doc, docObjName, getContent, getTransactionChanges),
     );
 
   const addPersisterListener = (listener: PersisterListener): Observer => {

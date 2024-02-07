@@ -530,8 +530,8 @@ export interface Store {
   /// Store.setValue
   setValue(valueId: Id, value: Value | MapValue): this;
 
-  /// Store.setTransactionChanges
-  setTransactionChanges(transactionChanges: TransactionChanges): this;
+  /// Store.applyChanges
+  applyChanges(transactionChanges: TransactionChanges): this;
 
   /// Store.setTablesJson
   setTablesJson(tablesJson: Json): this;
