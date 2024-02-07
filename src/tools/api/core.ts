@@ -1120,11 +1120,11 @@ export const getStoreCoreApi = (
     '[tables, values]',
   );
 
-  // setTransactionChanges
+  // applyChanges
   addProxyMethod(
-    2,
+    7,
     EMPTY_STRING,
-    TRANSACTION_CHANGES,
+    'applyChanges',
     storeType,
     `Applies a set of ${TRANSACTION_CHANGES} to the Store`,
     'transactionChanges: ' + TRANSACTION_CHANGES,
