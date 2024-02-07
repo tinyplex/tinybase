@@ -51,14 +51,16 @@ type AllContentStamp = Stamped<
   ]
 >;
 
+const newAllContentStamp = (): AllContentStamp => [
+  EMPTY_STRING,
+  [newStampedMap(), newStampedMap()],
+];
+
 export const createMergeableStore = ((id: Id): MergeableStore => {
   let listening = 1;
+  let allContentStamp = newAllContentStamp();
   const [getHlc, seenHlc] = getHlcFunctions(id);
   const store = createStore();
-  const allContentStamp: AllContentStamp = [
-    EMPTY_STRING,
-    [newStampedMap(), newStampedMap()],
-  ];
 
   const postTransactionListener = () => {
     if (listening) {
@@ -135,8 +137,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     disableListening(() =>
       store.transaction(() => {
         store.delTables().delValues();
-        allContentStamp[0] = EMPTY_STRING;
-        allContentStamp[1] = [newStampedMap(), newStampedMap()];
+        allContentStamp = newAllContentStamp();
       }),
     );
     applyMergeableChanges(mergeableContent);
