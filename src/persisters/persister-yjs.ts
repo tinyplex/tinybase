@@ -80,7 +80,7 @@ const getTransactionChangesFromYDoc = (
   return [tables, values];
 };
 
-const setTransactionChangesToYDoc = (
+const applyChangesToYDoc = (
   yContent: YMap<any>,
   getContent: () => Content,
   getTransactionChanges?: () => TransactionChanges,
@@ -199,7 +199,7 @@ export const createYjsPersister = ((
     getTransactionChanges?: () => TransactionChanges,
   ): Promise<void> =>
     yDoc.transact(() =>
-      setTransactionChangesToYDoc(yContent, getContent, getTransactionChanges),
+      applyChangesToYDoc(yContent, getContent, getTransactionChanges),
     );
 
   const addPersisterListener = (listener: PersisterListener): Observer => {
