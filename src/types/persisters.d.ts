@@ -1,6 +1,7 @@
 /// persisters
 
 import {Content, Store, Tables, TransactionChanges, Values} from './store.d';
+import {MergeableContent, MergeableStore} from './mergeable-store';
 import {Id} from './common.d';
 
 /// PersisterStats
@@ -86,37 +87,44 @@ export type DpcTabularValues = {
 };
 
 /// Persister
-export interface Persister {
+export interface Persister<SupportsMergeableStore extends boolean = false> {
   //
   /// Persister.load
-  load(initialTables?: Tables, initialValues?: Values): Promise<Persister>;
+  load(
+    initialTables?: Tables,
+    initialValues?: Values,
+  ): Promise<Persister<SupportsMergeableStore>>;
 
   /// Persister.startAutoLoad
   startAutoLoad(
     initialTables?: Tables,
     initialValues?: Values,
-  ): Promise<Persister>;
+  ): Promise<Persister<SupportsMergeableStore>>;
 
   /// Persister.stopAutoLoad
-  stopAutoLoad(): Persister;
+  stopAutoLoad(): Persister<SupportsMergeableStore>;
 
   /// Persister.save
-  save(): Promise<Persister>;
+  save(): Promise<Persister<SupportsMergeableStore>>;
 
   /// Persister.startAutoSave
-  startAutoSave(): Promise<Persister>;
+  startAutoSave(): Promise<Persister<SupportsMergeableStore>>;
 
   /// Persister.stopAutoSave
-  stopAutoSave(): Persister;
+  stopAutoSave(): Persister<SupportsMergeableStore>;
 
   /// Persister.schedule
-  schedule(...actions: Promise<any>[]): Promise<Persister>;
+  schedule(
+    ...actions: Promise<any>[]
+  ): Promise<Persister<SupportsMergeableStore>>;
 
   /// Persister.getStore
-  getStore(): Store;
+  getStore(): SupportsMergeableStore extends true
+    ? Store | MergeableStore
+    : Store;
 
   /// Persister.destroy
-  destroy(): Persister;
+  destroy(): Persister<SupportsMergeableStore>;
 
   /// Persister.getStats
   getStats(): PersisterStats;
@@ -124,14 +132,24 @@ export interface Persister {
 }
 
 /// createCustomPersister
-export function createCustomPersister<ListeningHandle>(
-  store: Store,
-  getPersisted: () => Promise<Content | undefined>,
+export function createCustomPersister<
+  ListeningHandle,
+  SupportsMergeableStore extends boolean,
+>(
+  store: Store | (SupportsMergeableStore extends true ? MergeableStore : never),
+  getPersisted: () => Promise<
+    | Content
+    | (SupportsMergeableStore extends true ? MergeableContent : never)
+    | undefined
+  >,
   setPersisted: (
-    getContent: () => Content,
+    getContent: () =>
+      | Content
+      | (SupportsMergeableStore extends true ? MergeableContent : never),
     getTransactionChanges?: () => TransactionChanges,
   ) => Promise<void>,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   onIgnoredError?: (error: any) => void,
-): Persister;
+  supportsMergeableStore?: SupportsMergeableStore,
+): Persister<SupportsMergeableStore>;
