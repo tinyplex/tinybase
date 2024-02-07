@@ -46,6 +46,9 @@ export type MergeableContent<Schemas extends OptionalSchemas> = Stampeded<
   ]
 >;
 
+export type MergeableChanges<Schemas extends OptionalSchemas> =
+  MergeableContent<Schemas>;
+
 /// MergeableStore
 export interface MergeableStore<Schemas extends OptionalSchemas>
   extends Store<Schemas> {
@@ -61,9 +64,9 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
     mergeableContent: MergeableContent<Schemas>,
   ): MergeableStore<Schemas>;
 
-  /// MergeableStore.applyMergeableContent
-  applyMergeableContent(
-    mergeableContent: MergeableContent<Schemas>,
+  /// MergeableStore.applyMergeableChanges
+  applyMergeableChanges(
+    mergeableChanges: MergeableChanges<Schemas>,
   ): MergeableStore<Schemas>;
 }
 

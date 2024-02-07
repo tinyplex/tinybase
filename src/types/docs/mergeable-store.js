@@ -26,10 +26,10 @@
    */
   /// MergeableStore.setMergeableContent
   /**
-   * The applyMergeableContent method
+   * The applyMergeableChanges method
    * @category Merging
    */
-  /// MergeableStore.applyMergeableContent
+  /// MergeableStore.applyMergeableChanges
 }
 /**
  * The createMergeableStore function

@@ -238,7 +238,7 @@ describe('apply/setMergeableContent', () => {
   });
 
   test('apply into empty store', () => {
-    store.applyMergeableContent(
+    store.applyMergeableChanges(
       stamped(0, [
         stamped(0, {t1: stamped(0, {r1: stamped(0, {c1: stamped(0, 1)})})}),
         stamped(0, {v1: stamped(0, 1)}),
@@ -255,7 +255,7 @@ describe('apply/setMergeableContent', () => {
 
   test('apply over existing content', () => {
     store.setContent([{t1: {r1: {c0: 0}}}, {v0: 0}]);
-    store.applyMergeableContent(
+    store.applyMergeableChanges(
       stamped(1, [
         stamped(1, {t1: stamped(1, {r1: stamped(1, {c1: stamped(1, 1)})})}),
         stamped(1, {v1: stamped(1, 1)}),
@@ -338,13 +338,13 @@ describe('Merge', () => {
     expect(store1.getContent()).toEqual([{}, {}]);
     const mergeableContent1 = store1.getMergeableContent();
     expect(mergeableContent1).toEqual(noChanges);
-    expect(store1.applyMergeableContent(noChanges)).toEqual(store1);
+    expect(store1.applyMergeableChanges(noChanges)).toEqual(store1);
     expect(store1.getContent()).toEqual([{}, {}]);
 
     expect(store2.getContent()).toEqual([{}, {}]);
     const mergeableContent2 = store2.getMergeableContent();
     expect(mergeableContent2).toEqual(noChanges);
-    expect(store2.applyMergeableContent(noChanges)).toEqual(store2);
+    expect(store2.applyMergeableChanges(noChanges)).toEqual(store2);
     expect(store2.getContent()).toEqual([{}, {}]);
   });
 
@@ -376,7 +376,7 @@ describe('Merge', () => {
         ]),
       );
 
-      store2.applyMergeableContent(store1.getMergeableContent());
+      store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual([
         {t1: {r1: {c1: 0, c2: 0}, r2: {c1: 0}}, t2: {r1: {c1: 0}}},
         {},
@@ -416,7 +416,7 @@ describe('Merge', () => {
         ]),
       );
 
-      store2.applyMergeableContent(store1.getMergeableContent());
+      store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual([
         {t1: {r1: {c1: 1, c2: 0}, r2: {c1: 0}}, t2: {r1: {c1: 0}}},
         {},
@@ -456,7 +456,7 @@ describe('Merge', () => {
         ]),
       );
 
-      store2.applyMergeableContent(store1.getMergeableContent());
+      store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual([
         {t1: {r1: {c1: 1}, r2: {c1: 0}}, t2: {r1: {c1: 0}}},
         {},
@@ -496,7 +496,7 @@ describe('Merge', () => {
         ]),
       );
 
-      store2.applyMergeableContent(store1.getMergeableContent());
+      store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual([
         {t1: {r1: {c1: 1}}, t2: {r1: {c1: 0}}},
         {},
@@ -536,7 +536,7 @@ describe('Merge', () => {
         ]),
       );
 
-      store2.applyMergeableContent(store1.getMergeableContent());
+      store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {}]);
       expect(store2.getMergeableContent()).toEqual(
         stamped(4, [
@@ -573,7 +573,7 @@ describe('Merge', () => {
         ]),
       );
 
-      store2.applyMergeableContent(store1.getMergeableContent());
+      store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual([
         {t1: {r1: {c1: 1}}, t2: {r2: {c2: 2}}},
         {},
@@ -604,7 +604,7 @@ describe('Merge', () => {
         ]),
       );
 
-      store2.applyMergeableContent(store1.getMergeableContent());
+      store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual([{}, {}]);
       expect(store2.getMergeableContent()).toEqual(
         stamped(6, [
@@ -623,7 +623,7 @@ describe('Merge', () => {
         ]),
       );
 
-      store2.applyMergeableContent(store1.getMergeableContent());
+      store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual([{}, {v1: 0, v2: 0}]);
       expect(store2.getMergeableContent()).toEqual(
         stamped(7, [
@@ -642,7 +642,7 @@ describe('Merge', () => {
         ]),
       );
 
-      store2.applyMergeableContent(store1.getMergeableContent());
+      store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual([{}, {v1: 1, v2: 0}]);
       expect(store2.getMergeableContent()).toEqual(
         stamped(8, [
@@ -661,7 +661,7 @@ describe('Merge', () => {
         ]),
       );
 
-      store2.applyMergeableContent(store1.getMergeableContent());
+      store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual([{}, {v1: 1}]);
       expect(store2.getMergeableContent()).toEqual(
         stamped(9, [
@@ -683,7 +683,7 @@ describe('Merge', () => {
         ]),
       );
 
-      store2.applyMergeableContent(store1.getMergeableContent());
+      store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual([{}, {}]);
       expect(store2.getMergeableContent()).toEqual(
         stamped(10, [
@@ -1054,7 +1054,7 @@ describe('Merge', () => {
           : []),
       ])('All, %s', (order) => {
         order.forEach((id: string) =>
-          store1.applyMergeableContent(OPERATIONS[id]),
+          store1.applyMergeableChanges(OPERATIONS[id]),
         );
         expect(store1.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
       });
@@ -1063,7 +1063,7 @@ describe('Merge', () => {
         permute(['set1', 'set2', 'upd5', 'upd6', 'del10']).map((p) => [p]),
       )('Some, %s', (order) => {
         order.forEach((id: string) =>
-          store1.applyMergeableContent(OPERATIONS[id]),
+          store1.applyMergeableChanges(OPERATIONS[id]),
         );
         expect(store1.getContent()).toEqual([
           {t1: {r1: {c1: 2}, r2: {c2: 2}}},
@@ -1075,7 +1075,7 @@ describe('Merge', () => {
         'Others, %s',
         (order) => {
           order.forEach((id: string) =>
-            store1.applyMergeableContent(OPERATIONS[id]),
+            store1.applyMergeableChanges(OPERATIONS[id]),
           );
           expect(store1.getContent()).toEqual([{t1: {r2: {c2: 1}}}, {}]);
         },
@@ -1084,7 +1084,7 @@ describe('Merge', () => {
 
     test('Causality', () => {
       store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
-      store2.applyMergeableContent(store1.getMergeableContent());
+      store2.applyMergeableChanges(store1.getMergeableContent());
 
       store2
         .setCell('t1', 'r1', 'c1', (cell) => (cell as number) + 1)

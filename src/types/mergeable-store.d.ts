@@ -19,6 +19,8 @@ export type MergeableContent = Stamped<
   [mergeableTables: MergeableTables, mergeableValues: MergeableValues]
 >;
 
+export type MergeableChanges = MergeableContent;
+
 /// MergeableStore
 export interface MergeableStore extends Store {
   //
@@ -31,8 +33,8 @@ export interface MergeableStore extends Store {
   /// MergeableStore.setMergeableContent
   setMergeableContent(mergeableContent: MergeableContent): MergeableStore;
 
-  /// MergeableStore.applyMergeableContent
-  applyMergeableContent(mergeableContent: MergeableContent): MergeableStore;
+  /// MergeableStore.applyMergeableChanges
+  applyMergeableChanges(mergeableChanges: MergeableChanges): MergeableStore;
 }
 
 /// createMergeableStore

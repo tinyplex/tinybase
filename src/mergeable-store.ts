@@ -3,6 +3,7 @@ import {EMPTY_STRING, strEndsWith, strStartsWith} from './common/strings';
 import {IdMap, mapEnsure, mapNew, mapSet} from './common/map';
 import {IdObj, objFreeze, objIsEmpty, objToArray} from './common/obj';
 import {
+  MergeableChanges,
   MergeableContent,
   MergeableStore,
   Stamped,
@@ -106,8 +107,8 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const merge = (mergeableStore2: MergeableStore) => {
     const mergeableContent = mergeableStore.getMergeableContent();
     const mergeableContent2 = mergeableStore2.getMergeableContent();
-    mergeableStore2.applyMergeableContent(mergeableContent);
-    return applyMergeableContent(mergeableContent2);
+    mergeableStore2.applyMergeableChanges(mergeableContent);
+    return applyMergeableChanges(mergeableContent2);
   };
 
   const getMergeableContent = () =>
@@ -138,17 +139,17 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
         allContentStamp[1] = [newStampedMap(), newStampedMap()];
       }),
     );
-    applyMergeableContent(mergeableContent);
+    applyMergeableChanges(mergeableContent);
     return mergeableStore;
   };
 
-  const applyMergeableContent = (
-    mergeableContent: MergeableContent,
+  const applyMergeableChanges = (
+    mergeableChanges: MergeableChanges,
   ): MergeableStore => {
     const changes: TransactionChanges = [{}, {}];
-    seenHlc(mergeableContent[0]);
+    seenHlc(mergeableChanges[0]);
     mergeStamp(
-      mergeableContent,
+      mergeableChanges,
       allContentStamp,
       ([tablesStamp, valuesStamp], [allTablesStamp, allValuesStamp]) =>
         [
@@ -189,7 +190,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const mergeableStore: IdObj<any> = {
     getMergeableContent,
     setMergeableContent,
-    applyMergeableContent,
+    applyMergeableChanges,
     merge,
   };
 
