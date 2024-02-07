@@ -9,6 +9,7 @@ import {
   TransactionChanges,
   Values,
 } from './store.d';
+import {MergeableContent, MergeableStore} from './mergeable-store.d';
 import {TableIdFromSchema} from './internal/store.d';
 
 /// PersisterStats
@@ -96,39 +97,44 @@ export type DpcTabularValues = {
 };
 
 /// Persister
-export interface Persister<in out Schemas extends OptionalSchemas> {
+export interface Persister<
+  in out Schemas extends OptionalSchemas,
+  SupportsMergeableStore extends boolean = false,
+> {
   /// Persister.load
   load(
     initialTables?: Tables<Schemas[0], true>,
     initialValues?: Values<Schemas[1], true>,
-  ): Promise<Persister<Schemas>>;
+  ): Promise<Persister<Schemas, SupportsMergeableStore>>;
 
   /// Persister.startAutoLoad
   startAutoLoad(
     initialTables?: Tables<Schemas[0], true>,
     initialValues?: Values<Schemas[1], true>,
-  ): Promise<Persister<Schemas>>;
+  ): Promise<Persister<Schemas, SupportsMergeableStore>>;
 
   /// Persister.stopAutoLoad
-  stopAutoLoad(): Persister<Schemas>;
+  stopAutoLoad(): Persister<Schemas, SupportsMergeableStore>;
 
   /// Persister.save
-  save(): Promise<Persister<Schemas>>;
+  save(): Promise<Persister<Schemas, SupportsMergeableStore>>;
 
   /// Persister.startAutoSave
-  startAutoSave(): Promise<Persister<Schemas>>;
+  startAutoSave(): Promise<Persister<Schemas, SupportsMergeableStore>>;
 
   /// Persister.stopAutoSave
-  stopAutoSave(): Persister<Schemas>;
+  stopAutoSave(): Persister<Schemas, SupportsMergeableStore>;
 
   /// Persister.schedule
-  schedule(...actions: Promise<any>[]): Promise<Persister<Schemas>>;
+  schedule(
+    ...actions: Promise<any>[]
+  ): Promise<Persister<Schemas, SupportsMergeableStore>>;
 
   /// Persister.getStore
   getStore(): Store<Schemas>;
 
   /// Persister.destroy
-  destroy(): Persister<Schemas>;
+  destroy(): Persister<Schemas, SupportsMergeableStore>;
 
   /// Persister.getStats
   getStats(): PersisterStats;
@@ -138,11 +144,22 @@ export interface Persister<in out Schemas extends OptionalSchemas> {
 export function createCustomPersister<
   Schemas extends OptionalSchemas,
   ListeningHandle,
+  SupportsMergeableStore extends boolean,
 >(
-  store: Store<Schemas>,
-  getPersisted: () => Promise<Content<Schemas> | undefined>,
+  store:
+    | Store<Schemas>
+    | (SupportsMergeableStore extends true ? MergeableStore<Schemas> : never),
+  getPersisted: () => Promise<
+    | Content<Schemas>
+    | (SupportsMergeableStore extends true ? MergeableContent<Schemas> : never)
+    | undefined
+  >,
   setPersisted: (
-    getContent: () => Content<Schemas>,
+    getContent: () =>
+      | Content<Schemas>
+      | (SupportsMergeableStore extends true
+          ? MergeableContent<Schemas>
+          : never),
     getTransactionChanges?: () => TransactionChanges<Schemas>,
   ) => Promise<void>,
   addPersisterListener: (
@@ -150,4 +167,5 @@ export function createCustomPersister<
   ) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   onIgnoredError?: (error: any) => void,
-): Persister<Schemas>;
+  supportsMergeableStore?: SupportsMergeableStore,
+): Persister<Schemas, SupportsMergeableStore>;

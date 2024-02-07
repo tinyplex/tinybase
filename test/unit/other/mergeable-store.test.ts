@@ -2,7 +2,9 @@ import {
   MergeableContent,
   MergeableStore,
   Stamped,
+  createCustomPersister,
   createMergeableStore,
+  createStore,
 } from 'tinybase/debug';
 
 const MASK6 = 63;
@@ -1055,5 +1057,131 @@ describe('Merge', () => {
         store1.getMergeableContent(),
       );
     });
+  });
+});
+
+describe('Persistence', () => {
+  test('Not supported, MergeableStore', async () => {
+    const store = createMergeableStore('s1');
+    let persisted = '';
+    const persister = createCustomPersister(
+      store,
+      async () => [{t1: {r1: {c1: 1}}}, {v1: 1}],
+      async (getContent: () => any) => {
+        persisted = JSON.stringify(getContent());
+      },
+      () => null,
+      () => null,
+    );
+    await persister.load();
+    await persister.save();
+    persister.destroy();
+    expect(persisted).toEqual('[{"t1":{"r1":{"c1":1}}},{"v1":1}]');
+  });
+
+  test('Supported, Store', async () => {
+    const store = createStore();
+    let persisted = '';
+    const persister = createCustomPersister(
+      store,
+      async () => [{t1: {r1: {c1: 1}}}, {v1: 1}],
+      async (getContent: () => any) => {
+        persisted = JSON.stringify(getContent());
+      },
+      () => null,
+      () => null,
+      () => null,
+      true,
+    );
+    await persister.load();
+    await persister.save();
+    persister.destroy();
+    expect(persisted).toEqual('[{"t1":{"r1":{"c1":1}}},{"v1":1}]');
+  });
+
+  test('Supported, MergeableStore', async () => {
+    const store = createMergeableStore('s1');
+    let persisted = '';
+    const persister = createCustomPersister(
+      store,
+      async () => [
+        'HeS2L2000000FG2W',
+        [
+          [
+            'HeS2L2000000FG2W',
+            {
+              t1: [
+                'HeS2L2000000FG2W',
+                {r1: ['HeS2L2000000FG2W', {c1: ['HeS2L2000000FG2W', 1]}]},
+              ],
+            },
+          ],
+          ['HeS2L2000000FG2W', {v1: ['HeS2L2000000FG2W', 1]}],
+        ],
+      ],
+      async (getContent: () => any) => {
+        persisted = JSON.stringify(getContent());
+      },
+      () => null,
+      () => null,
+      () => null,
+      true,
+    );
+    await persister.load();
+    await persister.save();
+    persister.destroy();
+    expect(persisted).toEqual(
+      JSON.stringify([
+        'HeS2L2000000FG2W',
+        [
+          [
+            'HeS2L2000000FG2W',
+            {
+              t1: [
+                'HeS2L2000000FG2W',
+                {r1: ['HeS2L2000000FG2W', {c1: ['HeS2L2000000FG2W', 1]}]},
+              ],
+            },
+          ],
+          ['HeS2L2000000FG2W', {v1: ['HeS2L2000000FG2W', 1]}],
+        ],
+      ]),
+    );
+  });
+
+  test('Supported, MergeableStore, loading from legacy', async () => {
+    const store = createMergeableStore('s1');
+    let persisted = '';
+    const persister = createCustomPersister(
+      store,
+      async () => [{t1: {r1: {c1: 1}}}, {v1: 1}],
+      async (getContent: () => any) => {
+        persisted = JSON.stringify(getContent());
+      },
+      () => null,
+      () => null,
+      () => null,
+      true,
+    );
+    await persister.load();
+    await persister.save();
+    persister.destroy();
+    expect(persisted).toEqual(
+      JSON.stringify([
+        'HeS2L2000000FG2W',
+        [
+          [
+            'HeS2L2000000FG2W',
+            {
+              t1: [
+                'HeS2L2000000FG2W',
+                {r1: ['HeS2L2000000FG2W', {c1: ['HeS2L2000000FG2W', 1]}]},
+              ],
+            },
+          ],
+          ['HeS2L2000000FG2W', {v1: ['HeS2L2000000FG2W', 1]}],
+        ],
+      ]),
+    );
   });
 });
