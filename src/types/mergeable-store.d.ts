@@ -28,6 +28,9 @@ export interface MergeableStore extends Store {
   /// MergeableStore.getMergeableContent
   getMergeableContent(): MergeableContent;
 
+  /// MergeableStore.setMergeableContent
+  setMergeableContent(mergeableContent: MergeableContent): MergeableStore;
+
   /// MergeableStore.applyMergeableContent
   applyMergeableContent(mergeableContent: MergeableContent): MergeableStore;
 }
