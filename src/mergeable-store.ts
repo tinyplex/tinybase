@@ -123,7 +123,28 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
       ],
     ]);
 
-  const applyMergeableContent = (mergeableContent: MergeableContent) => {
+  const disableListening = (actions: () => void) => {
+    const wasListening = listening;
+    listening = 0;
+    actions();
+    listening = wasListening;
+  };
+
+  const setMergeableContent = (mergeableContent: MergeableContent) => {
+    disableListening(() =>
+      store.transaction(() => {
+        store.delTables().delValues();
+        allContentStamp[0] = EMPTY_STRING;
+        allContentStamp[1] = [newStampedMap(), newStampedMap()];
+      }),
+    );
+    applyMergeableContent(mergeableContent);
+    return mergeableStore;
+  };
+
+  const applyMergeableContent = (
+    mergeableContent: MergeableContent,
+  ): MergeableStore => {
     const changes: TransactionChanges = [{}, {}];
     seenHlc(mergeableContent[0]);
     mergeStamp(
@@ -161,14 +182,13 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
           ),
         ] as AllContentStamp[1],
     );
-    listening = 0;
-    store.setTransactionChanges(changes);
-    listening = 1;
-    return mergeableStore;
+    disableListening(() => store.setTransactionChanges(changes));
+    return mergeableStore as MergeableStore;
   };
 
   const mergeableStore: IdObj<any> = {
     getMergeableContent,
+    setMergeableContent,
     applyMergeableContent,
     merge,
   };

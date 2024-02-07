@@ -230,6 +230,99 @@ describe('getMergeableContent', () => {
   });
 });
 
+describe('apply/setMergeableContent', () => {
+  let store: MergeableStore;
+
+  beforeEach(() => {
+    store = createMergeableStore('s1');
+  });
+
+  test('apply into empty store', () => {
+    store.applyMergeableContent(
+      stamped(0, [
+        stamped(0, {t1: stamped(0, {r1: stamped(0, {c1: stamped(0, 1)})})}),
+        stamped(0, {v1: stamped(0, 1)}),
+      ]) as MergeableContent,
+    );
+    expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+    expect(store.getMergeableContent()).toEqual(
+      stamped(0, [
+        stamped(0, {t1: stamped(0, {r1: stamped(0, {c1: stamped(0, 1)})})}),
+        stamped(0, {v1: stamped(0, 1)}),
+      ]),
+    );
+  });
+
+  test('apply over existing content', () => {
+    store.setContent([{t1: {r1: {c0: 0}}}, {v0: 0}]);
+    store.applyMergeableContent(
+      stamped(1, [
+        stamped(1, {t1: stamped(1, {r1: stamped(1, {c1: stamped(1, 1)})})}),
+        stamped(1, {v1: stamped(1, 1)}),
+      ]) as MergeableContent,
+    );
+    expect(store.getContent()).toEqual([
+      {t1: {r1: {c0: 0, c1: 1}}},
+      {v0: 0, v1: 1},
+    ]);
+    expect(store.getMergeableContent()).toEqual(
+      stamped(1, [
+        stamped(1, {
+          t1: stamped(1, {
+            r1: stamped(1, {c0: stamped(0, 0), c1: stamped(1, 1)}),
+          }),
+        }),
+        stamped(1, {v0: stamped(0, 0), v1: stamped(1, 1)}),
+      ]),
+    );
+  });
+
+  test('set into empty store', () => {
+    store.setMergeableContent(
+      stamped(0, [
+        stamped(0, {t1: stamped(0, {r1: stamped(0, {c1: stamped(0, 1)})})}),
+        stamped(0, {v1: stamped(0, 1)}),
+      ]) as MergeableContent,
+    );
+    expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+    expect(store.getMergeableContent()).toEqual(
+      stamped(0, [
+        stamped(0, {t1: stamped(0, {r1: stamped(0, {c1: stamped(0, 1)})})}),
+        stamped(0, {v1: stamped(0, 1)}),
+      ]),
+    );
+  });
+
+  test('set over existing content', () => {
+    store.setContent([{t1: {r1: {c0: 0}}}, {v0: 0}]);
+    store.setMergeableContent(
+      stamped(1, [
+        stamped(1, {t1: stamped(1, {r1: stamped(1, {c1: stamped(1, 1)})})}),
+        stamped(1, {v1: stamped(1, 1)}),
+      ]) as MergeableContent,
+    );
+    expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+    expect(store.getMergeableContent()).toEqual(
+      stamped(1, [
+        stamped(1, {t1: stamped(1, {r1: stamped(1, {c1: stamped(1, 1)})})}),
+        stamped(1, {v1: stamped(1, 1)}),
+      ]),
+    );
+    store.setCell('t1', 'r1', 'c2', 2);
+    expect(store.getContent()).toEqual([{t1: {r1: {c1: 1, c2: 2}}}, {v1: 1}]);
+    expect(store.getMergeableContent()).toEqual(
+      stamped(2, [
+        stamped(2, {
+          t1: stamped(2, {
+            r1: stamped(2, {c1: stamped(1, 1), c2: stamped(2, 2)}),
+          }),
+        }),
+        stamped(1, {v1: stamped(1, 1)}),
+      ]),
+    );
+  });
+});
+
 describe('Merge', () => {
   let store1: MergeableStore;
   let store2: MergeableStore;
