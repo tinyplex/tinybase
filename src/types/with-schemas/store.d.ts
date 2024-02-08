@@ -1082,7 +1082,7 @@ export interface Store<in out Schemas extends OptionalSchemas> {
   ): Store<Schemas>;
 
   /// Store.applyChanges
-  applyChanges(transactionChanges: TransactionChanges<Schemas>): Store<Schemas>;
+  applyChanges(changes: TransactionChanges<Schemas>): Store<Schemas>;
 
   /// Store.setTablesJson
   setTablesJson(tablesJson: Json): Store<Schemas>;

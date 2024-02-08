@@ -90,14 +90,14 @@ const applyChangesToYDoc = (
     yContent.set(V, new YMap());
   }
   const [yTables, yValues] = getYContent(yContent);
-  const transactionChangesDidFail = () => {
-    transactionChangesFailed = 1;
+  const changesDidFail = () => {
+    changesFailed = 1;
   };
-  let transactionChangesFailed = 1;
+  let changesFailed = 1;
   ifNotUndefined(getTransactionChanges?.(), ([cellChanges, valueChanges]) => {
-    transactionChangesFailed = 0;
+    changesFailed = 0;
     objToArray(cellChanges, (table, tableId) =>
-      transactionChangesFailed
+      changesFailed
         ? 0
         : isUndefined(table)
           ? yTables.delete(tableId)
@@ -105,7 +105,7 @@ const applyChangesToYDoc = (
               yTables.get(tableId),
               (yTable) =>
                 objToArray(table, (row, rowId) =>
-                  transactionChangesFailed
+                  changesFailed
                     ? 0
                     : isUndefined(row)
                       ? yTable.delete(rowId)
@@ -117,21 +117,21 @@ const applyChangesToYDoc = (
                                 ? yRow.delete(cellId)
                                 : yRow.set(cellId, cell),
                             ),
-                          transactionChangesDidFail,
+                          changesDidFail,
                         ),
                 ),
-              transactionChangesDidFail,
+              changesDidFail,
             ),
     );
     objToArray(valueChanges, (value, valueId) =>
-      transactionChangesFailed
+      changesFailed
         ? 0
         : isUndefined(value)
           ? yValues.delete(valueId)
           : yValues.set(valueId, value),
     );
   });
-  if (transactionChangesFailed) {
+  if (changesFailed) {
     const [tables, values] = getContent();
     yMapMatch(yTables, undefined, tables, (_, tableId, table) =>
       yMapMatch(yTables, tableId, table, (yTable, rowId, row) =>
