@@ -94,8 +94,8 @@ export function loadStoreFromStorage<Schemas extends OptionalSchemas>(
   storagePrefix?: string,
 ): Promise<Content<Schemas>>;
 
-/// broadcastTransactionChanges
-export function broadcastTransactionChanges<Schemas extends OptionalSchemas>(
+/// broadcastChanges
+export function broadcastChanges<Schemas extends OptionalSchemas>(
   server: TinyBasePartyKitServer,
   changes: Changes<Schemas>,
   without?: string[],

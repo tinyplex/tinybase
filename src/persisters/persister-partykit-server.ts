@@ -81,7 +81,7 @@ export const loadStoreFromStorage = async (
   return [tables, values];
 };
 
-export const broadcastTransactionChanges = async (
+export const broadcastChanges = async (
   server: TinyBasePartyKitServer,
   changes: Changes,
   without?: string[],
@@ -262,7 +262,7 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
           (await hasStoreInStorage(this.party.storage, storagePrefix))
         ) {
           await saveStore(this, payload, false, connection);
-          broadcastTransactionChanges(this, payload, [connection.id]);
+          broadcastChanges(this, payload, [connection.id]);
         }
       },
     );
