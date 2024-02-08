@@ -1,18 +1,18 @@
 /* eslint-disable jest/no-conditional-expect */
 
 import 'fake-indexeddb/auto';
-import {DbSchema, ElectricClient} from 'electric-sql/client/model';
-import {DocHandle, Repo} from '@automerge/automerge-repo';
 import {
+  Changes,
   Id,
   Persister,
   Store,
   Tables,
-  TransactionChanges,
   Values,
   createCustomPersister,
   createStore,
 } from 'tinybase/debug';
+import {DbSchema, ElectricClient} from 'electric-sql/client/model';
+import {DocHandle, Repo} from '@automerge/automerge-repo';
 import {SqliteWasmDb, VARIANTS} from './sqlite';
 import {Doc as YDoc, Map as YMap} from 'yjs';
 import {
@@ -55,7 +55,7 @@ type Persistable<Location = string> = {
   write: (location: Location, value: string) => Promise<void>;
   del: (location: Location) => Promise<void>;
   afterEach?: (location: Location) => void;
-  getChanges?: () => TransactionChanges;
+  getChanges?: () => Changes;
   testMissing: boolean;
   extraLoad?: 0 | 1;
 };
@@ -139,7 +139,7 @@ let customPersisterListener:
       getTransactionChanges?: () => [Tables, Values],
     ) => void)
   | undefined;
-let customPersisterChanges: TransactionChanges = [{}, {}];
+let customPersisterChanges: Changes = [{}, {}];
 
 const getMockedCustom = (
   write: (location: string, value: string) => Promise<void>,

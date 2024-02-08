@@ -72,7 +72,7 @@
  * @param getContent An optional function that, if provided, returns an array of
  * Store content and can be used to immediately wholesale update the Store.
  * @param getTransactionChanges An optional function that, if provided, returns
- * a TransactionChanges object and can be used to immediately incrementally
+ * a Changes object and can be used to immediately incrementally
  * update the Store.
  * @category Creation
  * @since v4.0.0
