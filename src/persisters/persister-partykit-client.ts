@@ -61,12 +61,10 @@ export const createPartyKitPersister = ((
 
   const setPersisted = async (
     getContent: () => Content,
-    getTransactionChanges?: () => Changes,
+    getChanges?: () => Changes,
   ): Promise<void> => {
-    if (getTransactionChanges) {
-      connection.send(
-        construct(messagePrefix, SET_CHANGES, getTransactionChanges()),
-      );
+    if (getChanges) {
+      connection.send(construct(messagePrefix, SET_CHANGES, getChanges()));
     } else {
       await getOrSetStore(getContent());
     }
