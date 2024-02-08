@@ -1,4 +1,4 @@
-import {Cell, Store, TransactionChanges, Value} from './types/store';
+import {Cell, Changes, Store, Value} from './types/store';
 import {EMPTY_STRING, strEndsWith, strStartsWith} from './common/strings';
 import {IdMap, mapEnsure, mapNew, mapSet} from './common/map';
 import {IdObj, objFreeze, objIsEmpty, objToArray} from './common/obj';
@@ -147,7 +147,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const applyMergeableChanges = (
     mergeableChanges: MergeableChanges,
   ): MergeableStore => {
-    const changes: TransactionChanges = [{}, {}];
+    const changes: Changes = [{}, {}];
     seenHlc(mergeableChanges[0]);
     mergeStamp(
       mergeableChanges,
