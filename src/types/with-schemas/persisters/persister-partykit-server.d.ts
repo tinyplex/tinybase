@@ -97,6 +97,6 @@ export function loadStoreFromStorage<Schemas extends OptionalSchemas>(
 /// broadcastTransactionChanges
 export function broadcastTransactionChanges<Schemas extends OptionalSchemas>(
   server: TinyBasePartyKitServer,
-  transactionChanges: TransactionChanges<Schemas>,
+  changes: TransactionChanges<Schemas>,
   without?: string[],
 ): Promise<void>;
