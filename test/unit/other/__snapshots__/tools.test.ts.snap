@@ -1052,7 +1052,7 @@ export interface S {
   /**
    * Applies a set of TransactionChanges to the Store.
    */
-  applyChanges(transactionChanges: TransactionChanges): S;
+  applyChanges(changes: TransactionChanges): S;
 
   /**
    * Gets a string serialization of the content of the Store.
@@ -1565,8 +1565,8 @@ export const createS: typeof createSDecl = () => {
     setContent: ([tables, values]: [Tables, Values]): S =>
       fluent(() => store.setContent([tables, values])),
 
-    applyChanges: (transactionChanges: TransactionChanges): S =>
-      fluent(() => store.applyChanges(transactionChanges)),
+    applyChanges: (changes: TransactionChanges): S =>
+      fluent(() => store.applyChanges(changes)),
 
     getJson: (): Json => store.getJson() as Json,
 
@@ -4280,7 +4280,7 @@ export interface S {
   /**
    * Applies a set of TransactionChanges to the Store.
    */
-  applyChanges(transactionChanges: TransactionChanges): S;
+  applyChanges(changes: TransactionChanges): S;
 
   /**
    * Gets a string serialization of the content of the Store.
@@ -4505,8 +4505,8 @@ export const createS: typeof createSDecl = () => {
     setContent: ([tables, values]: [Tables, Values]): S =>
       fluent(() => store.setContent([tables, values])),
 
-    applyChanges: (transactionChanges: TransactionChanges): S =>
-      fluent(() => store.applyChanges(transactionChanges)),
+    applyChanges: (changes: TransactionChanges): S =>
+      fluent(() => store.applyChanges(changes)),
 
     getJson: (): Json => store.getJson() as Json,
 
@@ -6112,7 +6112,7 @@ export interface S {
   /**
    * Applies a set of TransactionChanges to the Store.
    */
-  applyChanges(transactionChanges: TransactionChanges): S;
+  applyChanges(changes: TransactionChanges): S;
 
   /**
    * Gets a string serialization of the content of the Store.
@@ -6516,8 +6516,8 @@ export const createS: typeof createSDecl = () => {
     setContent: ([tables, values]: [Tables, Values]): S =>
       fluent(() => store.setContent([tables, values])),
 
-    applyChanges: (transactionChanges: TransactionChanges): S =>
-      fluent(() => store.applyChanges(transactionChanges)),
+    applyChanges: (changes: TransactionChanges): S =>
+      fluent(() => store.applyChanges(changes)),
 
     getJson: (): Json => store.getJson() as Json,
 
@@ -8749,7 +8749,7 @@ getContent(): [Tables, Values];
 setContent([tables, values]: [Tables, Values]): S;
 
 /** Applies a set of TransactionChanges to the Store. */
-applyChanges(transactionChanges: TransactionChanges): S;
+applyChanges(changes: TransactionChanges): S;
 
 /** Gets a string serialization of the content of the Store. */
 getJson(): Json;
@@ -9034,7 +9034,7 @@ getContent: (): [Tables, Values] => store.getContent() as [Tables, Values],
 
 setContent: ([tables, values]: [Tables, Values]): S => fluent(() => store.setContent([tables, values])),
 
-applyChanges: (transactionChanges: TransactionChanges): S => fluent(() => store.applyChanges(transactionChanges)),
+applyChanges: (changes: TransactionChanges): S => fluent(() => store.applyChanges(changes)),
 
 getJson: (): Json => store.getJson() as Json,
 
@@ -9957,7 +9957,7 @@ getContent(): [Tables, Values];
 setContent([tables, values]: [Tables, Values]): S;
 
 /** Applies a set of TransactionChanges to the Store. */
-applyChanges(transactionChanges: TransactionChanges): S;
+applyChanges(changes: TransactionChanges): S;
 
 /** Gets a string serialization of the content of the Store. */
 getJson(): Json;
@@ -10102,7 +10102,7 @@ getContent: (): [Tables, Values] => store.getContent() as [Tables, Values],
 
 setContent: ([tables, values]: [Tables, Values]): S => fluent(() => store.setContent([tables, values])),
 
-applyChanges: (transactionChanges: TransactionChanges): S => fluent(() => store.applyChanges(transactionChanges)),
+applyChanges: (changes: TransactionChanges): S => fluent(() => store.applyChanges(changes)),
 
 getJson: (): Json => store.getJson() as Json,
 
@@ -10774,7 +10774,7 @@ getContent(): [Tables, Values];
 setContent([tables, values]: [Tables, Values]): S;
 
 /** Applies a set of TransactionChanges to the Store. */
-applyChanges(transactionChanges: TransactionChanges): S;
+applyChanges(changes: TransactionChanges): S;
 
 /** Gets a string serialization of the content of the Store. */
 getJson(): Json;
@@ -10985,7 +10985,7 @@ getContent: (): [Tables, Values] => store.getContent() as [Tables, Values],
 
 setContent: ([tables, values]: [Tables, Values]): S => fluent(() => store.setContent([tables, values])),
 
-applyChanges: (transactionChanges: TransactionChanges): S => fluent(() => store.applyChanges(transactionChanges)),
+applyChanges: (changes: TransactionChanges): S => fluent(() => store.applyChanges(changes)),
 
 getJson: (): Json => store.getJson() as Json,
 
