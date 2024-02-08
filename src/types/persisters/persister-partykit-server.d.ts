@@ -94,6 +94,6 @@ export function loadStoreFromStorage(
 /// broadcastTransactionChanges
 export function broadcastTransactionChanges(
   server: TinyBasePartyKitServer,
-  transactionChanges: TransactionChanges,
+  changes: TransactionChanges,
   without?: string[],
 ): Promise<void>;
