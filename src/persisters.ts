@@ -33,7 +33,7 @@ export const createCustomPersister = <
     | undefined
   >,
   setPersisted: (
-    getContent:
+    getContent: () =>
       | Content
       | (SupportsMergeableStore extends true ? MergeableContent : never),
     getTransactionChanges?: () => TransactionChanges,
