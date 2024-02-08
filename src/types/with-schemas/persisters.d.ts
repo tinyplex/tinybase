@@ -23,7 +23,7 @@ export type PersisterStats = {
 /// PersisterListener
 export type PersisterListener<Schemas extends OptionalSchemas> = (
   getContent?: () => Content<Schemas, true>,
-  getTransactionChanges?: () => Changes<Schemas>,
+  getChanges?: () => Changes<Schemas>,
 ) => void;
 
 /// DatabasePersisterConfig
@@ -160,7 +160,7 @@ export function createCustomPersister<
       | (SupportsMergeableStore extends true
           ? MergeableContent<Schemas>
           : never),
-    getTransactionChanges?: () => Changes<Schemas>,
+    getChanges?: () => Changes<Schemas>,
   ) => Promise<void>,
   addPersisterListener: (
     listener: PersisterListener<Schemas>,
