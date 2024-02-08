@@ -41,14 +41,14 @@ const applyChangesToDoc = (
 ) => {
   ensureDocContent(doc, docObjName);
   const [docTables, docValues] = getDocContent(doc, docObjName);
-  const transactionChangesDidFail = () => {
-    transactionChangesFailed = 1;
+  const changesDidFail = () => {
+    changesFailed = 1;
   };
-  let transactionChangesFailed = 1;
+  let changesFailed = 1;
   ifNotUndefined(getTransactionChanges?.(), ([cellChanges, valueChanges]) => {
-    transactionChangesFailed = 0;
+    changesFailed = 0;
     objToArray(cellChanges, (table, tableId) =>
-      transactionChangesFailed
+      changesFailed
         ? 0
         : isUndefined(table)
           ? objDel(docTables, tableId)
@@ -56,7 +56,7 @@ const applyChangesToDoc = (
               docTables[tableId],
               (docTable) =>
                 objToArray(table, (row, rowId) =>
-                  transactionChangesFailed
+                  changesFailed
                     ? 0
                     : isUndefined(row)
                       ? objDel(docTable, rowId)
@@ -68,21 +68,21 @@ const applyChangesToDoc = (
                                 ? objDel(docRow, cellId)
                                 : (docRow[cellId] = cell),
                             ),
-                          transactionChangesDidFail as any,
+                          changesDidFail as any,
                         ),
                 ),
-              transactionChangesDidFail,
+              changesDidFail,
             ),
     );
     objToArray(valueChanges, (value, valueId) =>
-      transactionChangesFailed
+      changesFailed
         ? 0
         : isUndefined(value)
           ? objDel(docValues, valueId)
           : (docValues[valueId] = value),
     );
   });
-  if (transactionChangesFailed) {
+  if (changesFailed) {
     const [tables, values] = getContent();
     docObjMatch(docTables, undefined, tables, (_, tableId, table) =>
       docObjMatch(docTables, tableId, table, (docTable, rowId, row) =>
