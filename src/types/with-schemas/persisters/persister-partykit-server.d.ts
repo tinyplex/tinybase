@@ -3,11 +3,11 @@
 import {
   Cell,
   CellOrUndefined,
+  Changes,
   Content,
   NoTablesSchema,
   NoValuesSchema,
   OptionalSchemas,
-  TransactionChanges,
   Value,
   ValueOrUndefined,
 } from '../store.d';
@@ -97,6 +97,6 @@ export function loadStoreFromStorage<Schemas extends OptionalSchemas>(
 /// broadcastTransactionChanges
 export function broadcastTransactionChanges<Schemas extends OptionalSchemas>(
   server: TinyBasePartyKitServer,
-  changes: TransactionChanges<Schemas>,
+  changes: Changes<Schemas>,
   without?: string[],
 ): Promise<void>;
