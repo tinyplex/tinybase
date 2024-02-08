@@ -2861,10 +2861,7 @@
    *   .setTables({pets: {fido: {species: 'dog', color: 'brown'}}})
    *   .setValues({open: true});
    *
-   * store.applyChanges([
-   *   {pets: {fido: {color: 'black'}}},
-   *   {open: null},
-   * ]);
+   * store.applyChanges([{pets: {fido: {color: 'black'}}}, {open: null}]);
    * console.log(store.getTables());
    * // -> {pets: {fido: {species: 'dog', color: 'black'}}}
    * console.log(store.getValues());
@@ -6227,12 +6224,10 @@
    *     pets: {fido: {species: 'dog', color: 'brown'}},
    *   })
    *   .setValues({open: true, employees: 3});
-   * const listenerId = store.addWillFinishTransactionListener(
-   *   (store) => {
-   *     const {cellsTouched, valuesTouched} = store.getTransactionLog() ?? {};
-   *     console.log(`Cells/Values touched: ${cellsTouched}/${valuesTouched}`);
-   *   },
-   * );
+   * const listenerId = store.addWillFinishTransactionListener((store) => {
+   *   const {cellsTouched, valuesTouched} = store.getTransactionLog() ?? {};
+   *   console.log(`Cells/Values touched: ${cellsTouched}/${valuesTouched}`);
+   * });
    * const listenerId2 = store.addTablesListener(() =>
    *   console.log('Tables changed'),
    * );
@@ -6324,12 +6319,10 @@
    *     pets: {fido: {species: 'dog', color: 'brown'}},
    *   })
    *   .setValues({open: true, employees: 3});
-   * const listenerId = store.addDidFinishTransactionListener(
-   *   (store) => {
-   *     const {cellsTouched, valuesTouched} = store.getTransactionLog() ?? {};
-   *     console.log(`Cells/Values touched: ${cellsTouched}/${valuesTouched}`);
-   *   },
-   * );
+   * const listenerId = store.addDidFinishTransactionListener((store) => {
+   *   const {cellsTouched, valuesTouched} = store.getTransactionLog() ?? {};
+   *   console.log(`Cells/Values touched: ${cellsTouched}/${valuesTouched}`);
+   * });
    * const listenerId2 = store.addTablesListener(() =>
    *   console.log('Tables changed'),
    * );
