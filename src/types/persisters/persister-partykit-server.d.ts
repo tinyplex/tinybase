@@ -91,8 +91,8 @@ export function loadStoreFromStorage(
   storagePrefix?: string,
 ): Promise<Content>;
 
-/// broadcastTransactionChanges
-export function broadcastTransactionChanges(
+/// broadcastChanges
+export function broadcastChanges(
   server: TinyBasePartyKitServer,
   changes: Changes,
   without?: string[],
