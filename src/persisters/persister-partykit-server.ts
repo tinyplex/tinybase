@@ -1,10 +1,10 @@
 import {
   Cell,
   CellOrUndefined,
+  Changes,
   Content,
   Row,
   Tables,
-  TransactionChanges,
   Value,
   ValueOrUndefined,
   Values,
@@ -83,7 +83,7 @@ export const loadStoreFromStorage = async (
 
 export const broadcastTransactionChanges = async (
   server: TinyBasePartyKitServer,
-  changes: TransactionChanges,
+  changes: Changes,
   without?: string[],
 ): Promise<void> =>
   server.party.broadcast(
@@ -93,7 +93,7 @@ export const broadcastTransactionChanges = async (
 
 const saveStore = async (
   that: TinyBasePartyKitServer,
-  changes: TransactionChanges,
+  changes: Changes,
   initialSave: boolean,
   requestOrConnection: Request | Connection,
 ) => {

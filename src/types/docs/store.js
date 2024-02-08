@@ -1087,8 +1087,8 @@
  */
 /// InvalidValues
 /**
- * The TransactionChanges type describes the net meaningful changes that were
- * made to a Store during a transaction.
+ * The Changes type describes the net meaningful changes that were made to a
+ * Store during a transaction.
  *
  * This contains mostly equivalent information to a TransactionLog, but in a
  * form that can be more efficiently parsed and serialized (for example in the
@@ -1112,7 +1112,7 @@
  * has had a change. If the entry is null, the Value was deleted, otherwise it
  * will contain the new Value it was changed to during the transaction.
  * @example
- * The following is a valid TransactionChanges array that conveys the following:
+ * The following is a valid Changes array that conveys the following:
  * ```json
  * [
  *   {                     // changes to tabular data in the Store
@@ -1131,12 +1131,12 @@
  * @category Transaction
  * @since v4.0.0
  */
-/// TransactionChanges
+/// Changes
 /**
  * The TransactionLog type describes the changes that were made to a Store
  * during a transaction in detail.
  *
- * This contains equivalent information to a TransactionChanges object, but also
+ * This contains equivalent information to a Changes object, but also
  * information about what the previous state of the Store was. The changedCells
  * and changedValues entries contain information about all changes to those
  * parts of the Store, with their before and after values, for example.
@@ -2834,26 +2834,26 @@
    */
   /// Store.setValue
   /**
-   * The applyChanges method applies a set of TransactionChanges to the Store.
+   * The applyChanges method applies a set of Changes to the Store.
    *
-   * This method will take a TransactionChanges object (which is available at
-   * the end of a transaction) and apply it to a Store. The most likely need to
-   * do this is to take the changes made during the transaction of one Store,
-   * and apply it to the content of _another_ Store - such as when persisting
-   * and synchronizing data.
+   * This method will take a Changes object (which is available at the end of a
+   * transaction) and apply it to a Store. The most likely need to do this is to
+   * take the changes made during the transaction of one Store, and apply it to
+   * the content of _another_ Store - such as when persisting and synchronizing
+   * data.
    *
-   * Any part of the provided TransactionChanges object are invalid (either
-   * because of its type, or because it does not match the schemas associated
-   * with the Store) will be ignored silently.
+   * Any part of the provided Changes object are invalid (either because of its
+   * type, or because it does not match the schemas associated with the Store)
+   * will be ignored silently.
    *
    * The method returns a reference to the Store so that subsequent operations
    * can be chained in a fluent style.
    *
    * Prior to v5.0, this method was named `setTransactionChanges`.
-   * @param changes The TransactionChanges to apply to the Store.
+   * @param changes The Changes to apply to the Store.
    * @returns A reference to the Store.
    * @example
-   * This example applies a TransactionChanges object that sets a Cell and
+   * This example applies a Changes object that sets a Cell and
    * removes a Value.
    *
    * ```js

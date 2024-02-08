@@ -26,6 +26,7 @@ import {
   CellSchema,
   ChangedCell,
   ChangedValue,
+  Changes,
   Content,
   DoRollback,
   GetCellChange,
@@ -42,7 +43,6 @@ import {
   TableCellCallback,
   Tables,
   TablesSchema,
-  TransactionChanges,
   TransactionListener,
   TransactionLog,
   Value,
@@ -1182,7 +1182,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       valueId,
     );
 
-  const applyChanges = (changes: TransactionChanges): Store =>
+  const applyChanges = (changes: Changes): Store =>
     fluentTransaction(() => {
       objToArray(changes[0], (table, tableId) =>
         isUndefined(table)
@@ -1352,7 +1352,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     return store;
   };
 
-  const getTransactionChanges = (): TransactionChanges => [
+  const getTransactionChanges = (): Changes => [
     mapToObj(
       changedCells,
       (table, tableId) =>

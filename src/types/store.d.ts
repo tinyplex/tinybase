@@ -334,8 +334,8 @@ export type ChangedValue = [ValueOrUndefined, ValueOrUndefined];
 /// InvalidValues
 export type InvalidValues = {[valueId: Id]: any[]};
 
-/// TransactionChanges
-export type TransactionChanges = [
+/// Changes
+export type Changes = [
   {[tableId: Id]: {[rowId: Id]: {[cellId: Id]: Cell | null} | null} | null},
   {[valueId: Id]: Value | null},
 ];
@@ -531,7 +531,7 @@ export interface Store {
   setValue(valueId: Id, value: Value | MapValue): this;
 
   /// Store.applyChanges
-  applyChanges(changes: TransactionChanges): this;
+  applyChanges(changes: Changes): this;
 
   /// Store.setTablesJson
   setTablesJson(tablesJson: Json): this;
@@ -585,7 +585,7 @@ export interface Store {
   startTransaction(): this;
 
   /// Store.getTransactionChanges
-  getTransactionChanges(): TransactionChanges;
+  getTransactionChanges(): Changes;
 
   /// Store.getTransactionLog
   getTransactionLog(): TransactionLog;
