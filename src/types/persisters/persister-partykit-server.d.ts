@@ -3,8 +3,8 @@
 import {
   Cell,
   CellOrUndefined,
+  Changes,
   Content,
-  TransactionChanges,
   Value,
   ValueOrUndefined,
 } from '../store.d';
@@ -94,6 +94,6 @@ export function loadStoreFromStorage(
 /// broadcastTransactionChanges
 export function broadcastTransactionChanges(
   server: TinyBasePartyKitServer,
-  changes: TransactionChanges,
+  changes: Changes,
   without?: string[],
 ): Promise<void>;
