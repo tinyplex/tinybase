@@ -23,6 +23,7 @@ export const AND_REGISTERS =
   ', and registers a listener so that any changes to ' +
   'that result will cause a re-render';
 export const CALLBACK = 'Callback';
+export const CHANGES = 'Changes';
 export const COUNT = 'Count';
 export const DEL = 'Del';
 export const DEPS = 'Deps';
@@ -51,7 +52,6 @@ export const SORTED_ARGS =
 export const SQUARE_BRACKETS = '[]';
 export const THE_STORE = 'the Store';
 export const TRANSACTION = 'Transaction';
-export const TRANSACTION_CHANGES = TRANSACTION + 'Changes';
 export const TRANSACTION_ = lower(TRANSACTION);
 export const TRANSACTION_DOC =
   'Execute a ' + TRANSACTION_ + ' to make multiple mutations';
