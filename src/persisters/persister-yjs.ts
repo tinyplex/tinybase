@@ -1,11 +1,4 @@
-import {
-  Cell,
-  Content,
-  Store,
-  Tables,
-  TransactionChanges,
-  Values,
-} from '../types/store.d';
+import {Cell, Changes, Content, Store, Tables, Values} from '../types/store.d';
 import {IdObj, objEnsure, objHas, objNew, objToArray} from '../common/obj';
 import {T, TINYBASE, V} from '../common/strings';
 import {Doc as YDoc, YEvent, Map as YMap} from 'yjs';
@@ -26,10 +19,10 @@ const DELETE = 'delete';
 
 const getYContent = (yContent: YMap<any>) => [yContent.get(T), yContent.get(V)];
 
-const getTransactionChangesFromYDoc = (
+const getChangesFromYDoc = (
   yContent: YMap<any>,
   events: YEvent<any>[],
-): TransactionChanges => {
+): Changes => {
   if (size(events) == 1 && arrayIsEmpty(events[0].path)) {
     return [yContent.get(T).toJSON(), yContent.get(V).toJSON()];
   }
@@ -83,7 +76,7 @@ const getTransactionChangesFromYDoc = (
 const applyChangesToYDoc = (
   yContent: YMap<any>,
   getContent: () => Content,
-  getTransactionChanges?: () => TransactionChanges,
+  getTransactionChanges?: () => Changes,
 ) => {
   if (!yContent.size) {
     yContent.set(T, new YMap());
@@ -196,7 +189,7 @@ export const createYjsPersister = ((
 
   const setPersisted = async (
     getContent: () => Content,
-    getTransactionChanges?: () => TransactionChanges,
+    getTransactionChanges?: () => Changes,
   ): Promise<void> =>
     yDoc.transact(() =>
       applyChangesToYDoc(yContent, getContent, getTransactionChanges),
@@ -204,9 +197,7 @@ export const createYjsPersister = ((
 
   const addPersisterListener = (listener: PersisterListener): Observer => {
     const observer: Observer = (events) =>
-      listener(undefined, () =>
-        getTransactionChangesFromYDoc(yContent, events),
-      );
+      listener(undefined, () => getChangesFromYDoc(yContent, events));
     yContent.observeDeep(observer);
     return observer;
   };
