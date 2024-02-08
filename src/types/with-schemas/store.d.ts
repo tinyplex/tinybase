@@ -815,8 +815,8 @@ export type ChangedValue<
 /// InvalidValues
 export type InvalidValues = {[valueId: Id]: any[]};
 
-// TransactionChanges
-export type TransactionChanges<Schemas extends OptionalSchemas> = [
+// Changes
+export type Changes<Schemas extends OptionalSchemas> = [
   {
     [TableId in TableIdFromSchema<Schemas[0]>]?: {
       [rowId: Id]:
@@ -1082,7 +1082,7 @@ export interface Store<in out Schemas extends OptionalSchemas> {
   ): Store<Schemas>;
 
   /// Store.applyChanges
-  applyChanges(changes: TransactionChanges<Schemas>): Store<Schemas>;
+  applyChanges(changes: Changes<Schemas>): Store<Schemas>;
 
   /// Store.setTablesJson
   setTablesJson(tablesJson: Json): Store<Schemas>;
@@ -1162,7 +1162,7 @@ export interface Store<in out Schemas extends OptionalSchemas> {
   startTransaction(): Store<Schemas>;
 
   /// Store.getTransactionChanges
-  getTransactionChanges(): TransactionChanges<Schemas>;
+  getTransactionChanges(): Changes<Schemas>;
 
   /// Store.getTransactionLog
   getTransactionLog(): TransactionLog<Schemas>;

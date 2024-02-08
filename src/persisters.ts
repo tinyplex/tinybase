@@ -1,10 +1,4 @@
-import {
-  Content,
-  Store,
-  Tables,
-  TransactionChanges,
-  Values,
-} from './types/store.d';
+import {Changes, Content, Store, Tables, Values} from './types/store.d';
 import {DEBUG, ifNotUndefined, isString, isUndefined} from './common/other';
 import {MergeableContent, MergeableStore} from './types/mergeable-store';
 import {
@@ -36,7 +30,7 @@ export const createCustomPersister = <
     getContent: () =>
       | Content
       | (SupportsMergeableStore extends true ? MergeableContent : never),
-    getTransactionChanges?: () => TransactionChanges,
+    getTransactionChanges?: () => Changes,
   ) => Promise<void>,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
@@ -154,9 +148,7 @@ export const createCustomPersister = <
       return persister;
     },
 
-    save: async (
-      getTransactionChanges: () => TransactionChanges,
-    ): Promise<Persister> => {
+    save: async (getTransactionChanges: () => Changes): Promise<Persister> => {
       /*! istanbul ignore else */
       if (loadSave != 1) {
         loadSave = 2;
