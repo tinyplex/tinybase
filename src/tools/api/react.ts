@@ -1523,7 +1523,7 @@ export const getStoreUiReactApi = (
     PROVIDER,
     `{${storeInstance}, ${storeInstance}ById, children}: ` +
       providerPropsType +
-      ' & {children: React.ReactNode}',
+      ' & {readonly children: React.ReactNode}',
     [
       '{',
       USE_CONTEXT,
