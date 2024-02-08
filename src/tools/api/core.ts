@@ -22,6 +22,7 @@ import {
 } from '../../common/strings';
 import {
   CALLBACK,
+  CHANGES,
   COUNT,
   DO_ACTIONS_AND_ROLLBACK_PARAMS,
   DO_ROLLBACK_PARAM,
@@ -45,7 +46,6 @@ import {
   THE_STORE,
   TRANSACTION,
   TRANSACTION_,
-  TRANSACTION_CHANGES,
   TRANSACTION_DOC,
   VERBS,
   VOID,
@@ -1126,8 +1126,8 @@ export const getStoreCoreApi = (
     EMPTY_STRING,
     'applyChanges',
     storeType,
-    `Applies a set of ${TRANSACTION_CHANGES} to the Store`,
-    'changes: ' + TRANSACTION_CHANGES,
+    `Applies a set of ${CHANGES} to the Store`,
+    'changes: ' + CHANGES,
     'changes',
   );
 
@@ -1148,9 +1148,9 @@ export const getStoreCoreApi = (
     'IdOrNull',
     JSON,
     'Store',
-    TRANSACTION_CHANGES,
+    CHANGES,
   );
-  addImport(0, TINYBASE, 'Get' + TRANSACTION_CHANGES, 'GetTransactionLog');
+  addImport(0, TINYBASE, 'GetTransaction' + CHANGES, 'GetTransactionLog');
 
   // getJson
   addProxyMethod(0, EMPTY_STRING, JSON, JSON, getTheContentOfTheStoreDoc(0, 6));
