@@ -543,7 +543,7 @@
  * The function is asynchronous, so you should use the `await` keyword or handle
  * its completion as a promise.
  * @param server A reference to the TinyBasePartyKitServer object.
- * @param transactionChanges The Store changes to broadcast to the server's
+ * @param changes The Store changes to broadcast to the server's
  * clients.
  * @param without An optional array of client connection Ids to exclude from the
  * broadcast.

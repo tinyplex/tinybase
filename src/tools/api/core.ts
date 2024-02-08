@@ -1127,8 +1127,8 @@ export const getStoreCoreApi = (
     'applyChanges',
     storeType,
     `Applies a set of ${TRANSACTION_CHANGES} to the Store`,
-    'transactionChanges: ' + TRANSACTION_CHANGES,
-    'transactionChanges',
+    'changes: ' + TRANSACTION_CHANGES,
+    'changes',
   );
 
   // MapCell
