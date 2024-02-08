@@ -534,7 +534,7 @@
  */
 /// loadStoreFromStorage
 /**
- * The broadcastTransactionChanges function allows you to broadcast Store
+ * The broadcastChanges function allows you to broadcast Store
  * changes to all the client connections of a TinyBasePartyKitServer.
  *
  * This is intended for specialist applications that require the ability to
@@ -550,4 +550,4 @@
  * @category Connection
  * @since v4.5.1
  */
-/// broadcastTransactionChanges
+/// broadcastChanges
