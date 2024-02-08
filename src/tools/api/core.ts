@@ -1150,7 +1150,6 @@ export const getStoreCoreApi = (
     'Store',
     CHANGES,
   );
-  addImport(0, TINYBASE, 'GetTransaction' + CHANGES, 'GetTransactionLog');
 
   // getJson
   addProxyMethod(0, EMPTY_STRING, JSON, JSON, getTheContentOfTheStoreDoc(0, 6));
