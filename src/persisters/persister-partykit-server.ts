@@ -83,17 +83,17 @@ export const loadStoreFromStorage = async (
 
 export const broadcastTransactionChanges = async (
   server: TinyBasePartyKitServer,
-  transactionChanges: TransactionChanges,
+  changes: TransactionChanges,
   without?: string[],
 ): Promise<void> =>
   server.party.broadcast(
-    construct(server.config.messagePrefix!, SET_CHANGES, transactionChanges),
+    construct(server.config.messagePrefix!, SET_CHANGES, changes),
     without,
   );
 
 const saveStore = async (
   that: TinyBasePartyKitServer,
-  transactionChanges: TransactionChanges,
+  changes: TransactionChanges,
   initialSave: boolean,
   requestOrConnection: Request | Connection,
 ) => {
@@ -107,7 +107,7 @@ const saveStore = async (
   const keyPrefixesToDel: string[] = [];
 
   await promiseAll(
-    objToArray(transactionChanges[0], async (table, tableId) =>
+    objToArray(changes[0], async (table, tableId) =>
       isUndefined(table)
         ? !initialSave &&
           (await that.canDelTable(
@@ -164,7 +164,7 @@ const saveStore = async (
   );
 
   await promiseAll(
-    objToArray(transactionChanges[1], async (value, valueId) => {
+    objToArray(changes[1], async (value, valueId) => {
       const key = storagePrefix + V + valueId;
       isUndefined(value)
         ? !initialSave &&

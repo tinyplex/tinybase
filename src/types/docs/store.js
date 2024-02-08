@@ -2850,7 +2850,7 @@
    * can be chained in a fluent style.
    *
    * Prior to v5.0, this method was named `setTransactionChanges`.
-   * @param transactionChanges The TransactionChanges to apply to the Store.
+   * @param changes The TransactionChanges to apply to the Store.
    * @returns A reference to the Store.
    * @example
    * This example applies a TransactionChanges object that sets a Cell and

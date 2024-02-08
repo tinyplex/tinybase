@@ -127,8 +127,8 @@ export const createCustomPersister = <
       listeningHandle = addPersisterListener(
         async (getContent, getTransactionChanges) => {
           if (getTransactionChanges) {
-            const transactionChanges = getTransactionChanges();
-            await loadLock(async () => store.applyChanges(transactionChanges));
+            const changes = getTransactionChanges();
+            await loadLock(async () => store.applyChanges(changes));
           } else {
             await loadLock(async () => {
               try {
