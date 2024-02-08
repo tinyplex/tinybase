@@ -37,7 +37,7 @@ const applyChangesToDoc = (
   doc: any,
   docObjName: string,
   getContent: () => Content,
-  getTransactionChanges?: () => Changes,
+  getChanges?: () => Changes,
 ) => {
   ensureDocContent(doc, docObjName);
   const [docTables, docValues] = getDocContent(doc, docObjName);
@@ -45,7 +45,7 @@ const applyChangesToDoc = (
     changesFailed = 1;
   };
   let changesFailed = 1;
-  ifNotUndefined(getTransactionChanges?.(), ([cellChanges, valueChanges]) => {
+  ifNotUndefined(getChanges?.(), ([cellChanges, valueChanges]) => {
     changesFailed = 0;
     objToArray(cellChanges, (table, tableId) =>
       changesFailed
@@ -146,10 +146,10 @@ export const createAutomergePersister = ((
 
   const setPersisted = async (
     getContent: () => Content,
-    getTransactionChanges?: () => Changes,
+    getChanges?: () => Changes,
   ): Promise<void> =>
     docHandle.change((doc: any) =>
-      applyChangesToDoc(doc, docObjName, getContent, getTransactionChanges),
+      applyChangesToDoc(doc, docObjName, getContent, getChanges),
     );
 
   const addPersisterListener = (listener: PersisterListener): Observer => {

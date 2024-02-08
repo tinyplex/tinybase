@@ -15,7 +15,7 @@ export type PersisterStats = {
 /// PersisterListener
 export type PersisterListener = (
   getContent?: () => Content,
-  getTransactionChanges?: () => Changes,
+  getChanges?: () => Changes,
 ) => void;
 
 /// DatabasePersisterConfig
@@ -146,7 +146,7 @@ export function createCustomPersister<
     getContent: () =>
       | Content
       | (SupportsMergeableStore extends true ? MergeableContent : never),
-    getTransactionChanges?: () => Changes,
+    getChanges?: () => Changes,
   ) => Promise<void>,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
