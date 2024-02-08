@@ -30,7 +30,7 @@ export const createCustomPersister = <
     getContent: () =>
       | Content
       | (SupportsMergeableStore extends true ? MergeableContent : never),
-    getTransactionChanges?: () => Changes,
+    getChanges?: () => Changes,
   ) => Promise<void>,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
@@ -56,7 +56,7 @@ export const createCustomPersister = <
       ? (store as MergeableStore).getMergeableContent
       : null) ?? store.getContent;
 
-  const getTransactionChanges = store.getTransactionChanges;
+  const getChanges = store.getTransactionChanges;
 
   const run = async (): Promise<void> => {
     /*! istanbul ignore else */
@@ -118,24 +118,22 @@ export const createCustomPersister = <
       persister.stopAutoLoad();
       await persister.load(initialTables, initialValues);
       listening = 1;
-      listeningHandle = addPersisterListener(
-        async (getContent, getTransactionChanges) => {
-          if (getTransactionChanges) {
-            const changes = getTransactionChanges();
-            await loadLock(async () => store.applyChanges(changes));
-          } else {
-            await loadLock(async () => {
-              try {
-                store.setContent(
-                  getContent?.() ?? ((await getPersisted()) as Content),
-                );
-              } catch (error) {
-                onIgnoredError?.(error);
-              }
-            });
-          }
-        },
-      );
+      listeningHandle = addPersisterListener(async (getContent, getChanges) => {
+        if (getChanges) {
+          const changes = getChanges();
+          await loadLock(async () => store.applyChanges(changes));
+        } else {
+          await loadLock(async () => {
+            try {
+              store.setContent(
+                getContent?.() ?? ((await getPersisted()) as Content),
+              );
+            } catch (error) {
+              onIgnoredError?.(error);
+            }
+          });
+        }
+      });
       return persister;
     },
 
@@ -148,7 +146,7 @@ export const createCustomPersister = <
       return persister;
     },
 
-    save: async (getTransactionChanges: () => Changes): Promise<Persister> => {
+    save: async (getChanges: () => Changes): Promise<Persister> => {
       /*! istanbul ignore else */
       if (loadSave != 1) {
         loadSave = 2;
@@ -157,7 +155,7 @@ export const createCustomPersister = <
         }
         await persister.schedule(async () => {
           try {
-            await setPersisted(getContent as any, getTransactionChanges);
+            await setPersisted(getContent as any, getChanges);
           } catch (error) {
             /*! istanbul ignore next */
             onIgnoredError?.(error);
@@ -171,7 +169,7 @@ export const createCustomPersister = <
     startAutoSave: async (): Promise<Persister> => {
       await persister.stopAutoSave().save();
       listenerId = store.addDidFinishTransactionListener(() => {
-        const [tableChanges, valueChanges] = getTransactionChanges();
+        const [tableChanges, valueChanges] = getChanges();
         if (!objIsEmpty(tableChanges) || !objIsEmpty(valueChanges)) {
           persister.save(() => [tableChanges, valueChanges]);
         }
