@@ -168,8 +168,11 @@ export const getDatabaseFunctions = <Database>(
           await cmd(
             db,
             'SELECT sql, name FROM sqlite_schema ' +
-              `WHERE type = 'table' AND name NOT LIKE ? AND name NOT LIKE ?`,
-            ['%sql%', '%electric%'],
+              `WHERE type = 'table'` +
+              ' AND name NOT LIKE ? ' +
+              ' AND name NOT LIKE ? ' +
+              ' AND name NOT LIKE ?',
+            ['%sql%', '%electric%', 'items'], // starter template pollution
           )
         ).map(async ({sql, name}: any) => [
           name,
