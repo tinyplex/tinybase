@@ -62,6 +62,13 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const [getHlc, seenHlc] = getHlcFunctions(id);
   const store = createStore();
 
+  const disableListening = (actions: () => void) => {
+    const wasListening = listening;
+    listening = 0;
+    actions();
+    listening = wasListening;
+  };
+
   const postTransactionListener = () => {
     if (listening) {
       const stamp = getHlc();
@@ -125,13 +132,6 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
         mapStampedMapToObj(allValuesStamp, pairClone),
       ],
     ]);
-
-  const disableListening = (actions: () => void) => {
-    const wasListening = listening;
-    listening = 0;
-    actions();
-    listening = wasListening;
-  };
 
   const setMergeableContent = (mergeableContent: MergeableContent) => {
     disableListening(() =>
