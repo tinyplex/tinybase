@@ -409,7 +409,7 @@
    *   await createTools(store).getPrettyStoreApi('shop');
    *
    * const dTsLines = dTs.split('\n');
-   * console.log(dTsLines[17]);
+   * console.log(dTsLines[15]);
    * // -> `export type Tables = {pets?: {[rowId: Id]: {price?: number}}};`
    *
    * const tsLines = ts.split('\n');
@@ -429,7 +429,7 @@
    *   await createTools(store).getPrettyStoreApi('shop');
    *
    * const dTsLines = dTs.split('\n');
-   * console.log(dTsLines[17]);
+   * console.log(dTsLines[15]);
    * // -> 'export type Tables = {pets?: {[rowId: Id]: {price: number}}};'
    *
    * const tsLines = ts.split('\n');
