@@ -6,8 +6,6 @@ exports[`API Pretty both 1`] = `
   CellChange,
   Changes,
   DoRollback,
-  GetTransactionChanges,
-  GetTransactionLog,
   Id,
   IdOrNull,
   Ids,
@@ -464,11 +462,7 @@ export type MapString = (cell: string | undefined) => string;
 /**
  * A function for listening to the completion of a transaction.
  */
-export type TransactionListener = (
-  s: S,
-  getTransactionChanges: GetTransactionChanges,
-  getTransactionLog: GetTransactionLog,
-) => void;
+export type TransactionListener = (s: S) => void;
 
 export interface S {
   /**
@@ -2678,7 +2672,7 @@ export function Provider({
   s,
   sById,
   children,
-}: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
+}: ProviderProps & {readonly children: React.ReactNode}): ComponentReturnType;
 ",
   "import {
   Callback,
@@ -3943,7 +3937,7 @@ export const Provider: typeof ProviderDecl = ({
   s,
   sById,
   children,
-}: ProviderProps & {children: React.ReactNode}): any => {
+}: ProviderProps & {readonly children: React.ReactNode}): any => {
   const contextValue = useContext(Context);
   return (
     <Context.Provider
@@ -3965,8 +3959,6 @@ exports[`API Pretty keyed value 1`] = `
   "import {
   Changes,
   DoRollback,
-  GetTransactionChanges,
-  GetTransactionLog,
   Id,
   IdOrNull,
   Json,
@@ -4087,11 +4079,7 @@ export type MapString = (cell: string | undefined) => string;
 /**
  * A function for listening to the completion of a transaction.
  */
-export type TransactionListener = (
-  s: S,
-  getTransactionChanges: GetTransactionChanges,
-  getTransactionLog: GetTransactionLog,
-) => void;
+export type TransactionListener = (s: S) => void;
 
 export interface S {
   /**
@@ -4897,7 +4885,7 @@ export function Provider({
   s,
   sById,
   children,
-}: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
+}: ProviderProps & {readonly children: React.ReactNode}): ComponentReturnType;
 ",
   "import {Callback, Id, ParameterizedCallback, Store} from 'tinybase';
 import {
@@ -5315,7 +5303,7 @@ export const Provider: typeof ProviderDecl = ({
   s,
   sById,
   children,
-}: ProviderProps & {children: React.ReactNode}): any => {
+}: ProviderProps & {readonly children: React.ReactNode}): any => {
   const contextValue = useContext(Context);
   return (
     <Context.Provider
@@ -5338,8 +5326,6 @@ exports[`API Pretty tabular 1`] = `
   CellChange,
   Changes,
   DoRollback,
-  GetTransactionChanges,
-  GetTransactionLog,
   Id,
   IdOrNull,
   Ids,
@@ -5697,11 +5683,7 @@ export type MapString = (cell: string | undefined) => string;
 /**
  * A function for listening to the completion of a transaction.
  */
-export type TransactionListener = (
-  s: S,
-  getTransactionChanges: GetTransactionChanges,
-  getTransactionLog: GetTransactionLog,
-) => void;
+export type TransactionListener = (s: S) => void;
 
 export interface S {
   /**
@@ -7317,7 +7299,7 @@ export function Provider({
   s,
   sById,
   children,
-}: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
+}: ProviderProps & {readonly children: React.ReactNode}): ComponentReturnType;
 ",
   "import {
   Callback,
@@ -8249,7 +8231,7 @@ export const Provider: typeof ProviderDecl = ({
   s,
   sById,
   children,
-}: ProviderProps & {children: React.ReactNode}): any => {
+}: ProviderProps & {readonly children: React.ReactNode}): any => {
   const contextValue = useContext(Context);
   return (
     <Context.Provider
@@ -8268,7 +8250,7 @@ export const Provider: typeof ProviderDecl = ({
 
 exports[`API Unpretty both 1`] = `
 [
-  "import {CellChange, Changes, DoRollback, GetTransactionChanges, GetTransactionLog, Id, IdOrNull, Ids, Json, Store, ValueChange} from 'tinybase';
+  "import {CellChange, Changes, DoRollback, Id, IdOrNull, Ids, Json, Store, ValueChange} from 'tinybase';
 
 /** Represents the tabular content of the Store. */
 export type Tables = {'t1'?: {[rowId: Id]: {'c1': number; 'c2': string; 'c3': string; ''?: string}}};
@@ -8460,7 +8442,7 @@ export type MapNumber = (cell: number | undefined) => number;
 export type MapString = (cell: string | undefined) => string;
 
 /** A function for listening to the completion of a transaction. */
-export type TransactionListener = (s: S, getTransactionChanges: GetTransactionChanges, getTransactionLog: GetTransactionLog) => void;
+export type TransactionListener = (s: S) => void;
 
 export interface S {
 /** Gets the tabular content of the Store. */
@@ -9386,7 +9368,7 @@ export function useHasValueListener(valueId: ValueId | null, listener: HasValueL
 export function useValueListener(valueId: ValueId | null, listener: ValueListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void;
 
 /** Wraps part of an application in a context that provides default objects to be used by hooks and components within. */
-export function Provider({s, sById, children}: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
+export function Provider({s, sById, children}: ProviderProps & {readonly children: React.ReactNode}): ComponentReturnType;
 ",
   "import {Callback, Id, IdOrNull, Ids, ParameterizedCallback, Store} from 'tinybase';
 import {CellIdsListener, CellListener, HasCellListener, HasRowListener, HasTableCellListener, HasTableListener, HasTablesListener, HasValueListener, HasValuesListener, MapNumber, MapString, RowCountListener, RowIdsListener, RowListener, S, SortedRowIdsListener, T1CellId, T1Row, T1RowWhenSet, T1Table, T1TableWhenSet, TableCellIdsListener, TableId, TableIdsListener, TableListener, Tables, TablesListener, TablesWhenSet, ValueId, ValueIdsListener, ValueListener, Values, ValuesListener, ValuesWhenSet} from './s.d';
@@ -9784,7 +9766,7 @@ useHook(sOrSId, useHasValueListenerCore, [valueId, listener, listenerDeps, mutat
 export const useValueListener: typeof useValueListenerDecl = (valueId: ValueId | null, listener: ValueListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void =>
 useHook(sOrSId, useValueListenerCore, [valueId, listener, listenerDeps, mutator]);
 
-export const Provider: typeof ProviderDecl = ({s, sById, children}: ProviderProps & {children: React.ReactNode}): any =>
+export const Provider: typeof ProviderDecl = ({s, sById, children}: ProviderProps & {readonly children: React.ReactNode}): any =>
 {
 const contextValue = useContext(Context);
 return (
@@ -9803,7 +9785,7 @@ value={useMemo(
 
 exports[`API Unpretty keyed value 1`] = `
 [
-  "import {Changes, DoRollback, GetTransactionChanges, GetTransactionLog, Id, IdOrNull, Json, Store, Tables, ValueChange} from 'tinybase';
+  "import {Changes, DoRollback, Id, IdOrNull, Json, Store, Tables, ValueChange} from 'tinybase';
 
 /** Represents the keyed value content of the Store. */
 export type Values = {'v1': number; 'v2': string; 'v3': string; ''?: string};
@@ -9854,7 +9836,7 @@ export type MapNumber = (cell: number | undefined) => number;
 export type MapString = (cell: string | undefined) => string;
 
 /** A function for listening to the completion of a transaction. */
-export type TransactionListener = (s: S, getTransactionChanges: GetTransactionChanges, getTransactionLog: GetTransactionLog) => void;
+export type TransactionListener = (s: S) => void;
 
 export interface S {
 /** Gets the keyed value content of the Store. */
@@ -10250,7 +10232,7 @@ export function useHasValueListener(valueId: ValueId | null, listener: HasValueL
 export function useValueListener(valueId: ValueId | null, listener: ValueListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void;
 
 /** Wraps part of an application in a context that provides default objects to be used by hooks and components within. */
-export function Provider({s, sById, children}: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
+export function Provider({s, sById, children}: ProviderProps & {readonly children: React.ReactNode}): ComponentReturnType;
 ",
   "import {Callback, Id, ParameterizedCallback, Store} from 'tinybase';
 import {ExtraProps, useCellIds, useDelValueCallback as useDelValueCallbackCore, useDelValuesCallback as useDelValuesCallbackCore, useHasValue as useHasValueCore, useHasValueListener as useHasValueListenerCore, useHasValues as useHasValuesCore, useHasValuesListener as useHasValuesListenerCore, useSetPartialValuesCallback as useSetPartialValuesCallbackCore, useSetValueCallback as useSetValueCallbackCore, useSetValuesCallback as useSetValuesCallbackCore, useValue as useValueCore, useValueIds as useValueIdsCore, useValueIdsListener as useValueIdsListenerCore, useValueListener as useValueListenerCore, useValues as useValuesCore, useValuesListener as useValuesListenerCore} from 'tinybase/ui-react';
@@ -10409,7 +10391,7 @@ useHook(sOrSId, useHasValueListenerCore, [valueId, listener, listenerDeps, mutat
 export const useValueListener: typeof useValueListenerDecl = (valueId: ValueId | null, listener: ValueListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void =>
 useHook(sOrSId, useValueListenerCore, [valueId, listener, listenerDeps, mutator]);
 
-export const Provider: typeof ProviderDecl = ({s, sById, children}: ProviderProps & {children: React.ReactNode}): any =>
+export const Provider: typeof ProviderDecl = ({s, sById, children}: ProviderProps & {readonly children: React.ReactNode}): any =>
 {
 const contextValue = useContext(Context);
 return (
@@ -10428,7 +10410,7 @@ value={useMemo(
 
 exports[`API Unpretty tabular 1`] = `
 [
-  "import {CellChange, Changes, DoRollback, GetTransactionChanges, GetTransactionLog, Id, IdOrNull, Ids, Json, Store, Values} from 'tinybase';
+  "import {CellChange, Changes, DoRollback, Id, IdOrNull, Ids, Json, Store, Values} from 'tinybase';
 
 /** Represents the tabular content of the Store. */
 export type Tables = {'t1'?: {[rowId: Id]: {'c1': number; 'c2': string; 'c3': string; ''?: string}}};
@@ -10578,7 +10560,7 @@ export type MapNumber = (cell: number | undefined) => number;
 export type MapString = (cell: string | undefined) => string;
 
 /** A function for listening to the completion of a transaction. */
-export type TransactionListener = (s: S, getTransactionChanges: GetTransactionChanges, getTransactionLog: GetTransactionLog) => void;
+export type TransactionListener = (s: S) => void;
 
 export interface S {
 /** Gets the tabular content of the Store. */
@@ -11235,7 +11217,7 @@ export function useHasCellListener(tableId: TableId | null, rowId: IdOrNull, cel
 export function useCellListener(tableId: TableId | null, rowId: IdOrNull, cellId: T1CellId | null, listener: CellListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void;
 
 /** Wraps part of an application in a context that provides default objects to be used by hooks and components within. */
-export function Provider({s, sById, children}: ProviderProps & {children: React.ReactNode}): ComponentReturnType;
+export function Provider({s, sById, children}: ProviderProps & {readonly children: React.ReactNode}): ComponentReturnType;
 ",
   "import {Callback, Id, IdOrNull, Ids, ParameterizedCallback, Store} from 'tinybase';
 import {CellIdsListener, CellListener, HasCellListener, HasRowListener, HasTableCellListener, HasTableListener, HasTablesListener, MapNumber, MapString, RowCountListener, RowIdsListener, RowListener, S, SortedRowIdsListener, T1CellId, T1Row, T1RowWhenSet, T1Table, T1TableWhenSet, TableCellIdsListener, TableId, TableIdsListener, TableListener, Tables, TablesListener, TablesWhenSet} from './s.d';
@@ -11521,7 +11503,7 @@ useHook(sOrSId, useHasCellListenerCore, [tableId, rowId, cellId, listener, liste
 export const useCellListener: typeof useCellListenerDecl = (tableId: TableId | null, rowId: IdOrNull, cellId: T1CellId | null, listener: CellListener, listenerDeps?: React.DependencyList, mutator?: boolean, sOrSId?: SOrSId): void =>
 useHook(sOrSId, useCellListenerCore, [tableId, rowId, cellId, listener, listenerDeps, mutator]);
 
-export const Provider: typeof ProviderDecl = ({s, sById, children}: ProviderProps & {children: React.ReactNode}): any =>
+export const Provider: typeof ProviderDecl = ({s, sById, children}: ProviderProps & {readonly children: React.ReactNode}): any =>
 {
 const contextValue = useContext(Context);
 return (
