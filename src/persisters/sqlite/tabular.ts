@@ -31,9 +31,10 @@ export const createTabularSqlitePersister = <ListeningHandle>(
   managedTableNames: string[],
   db: any,
   getThing: string,
+  useOnConflict?: boolean,
 ): Persister => {
   const [refreshSchema, loadTable, saveTable, transaction] =
-    getCommandFunctions(cmd, managedTableNames, onIgnoredError);
+    getCommandFunctions(cmd, managedTableNames, onIgnoredError, useOnConflict);
 
   const saveTables = async (
     tables:
