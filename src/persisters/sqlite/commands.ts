@@ -43,6 +43,7 @@ export const getCommandFunctions = (
   cmd: Cmd,
   managedTableNames: string[],
   onIgnoredError: ((error: any) => void) | undefined,
+  useOnConflict?: boolean,
 ): [
   refreshSchema: () => Promise<Schema>,
   loadTable: (tableName: string, rowIdColumnName: string) => Promise<Table>,
@@ -71,7 +72,8 @@ export const getCommandFunctions = (
               'SELECT name ' +
                 FROM_PRAGMA_TABLE +
                 'list ' +
-                `WHERE schema='main'AND type='table'AND name IN(` +
+                `WHERE schema='main'AND(type='table'OR type='view')` +
+                'AND name IN(' +
                 getPlaceholders(managedTableNames) +
                 `)ORDER BY name`,
               managedTableNames,
@@ -220,10 +222,14 @@ export const getCommandFunctions = (
                 [rowId],
               );
             } else if (!arrayIsEmpty(tableColumnNames)) {
-              await upsert(cmd, tableName, rowIdColumnName, objIds(row), [
-                rowId,
-                ...objValues(row),
-              ]);
+              await upsert(
+                cmd,
+                tableName,
+                rowIdColumnName,
+                objIds(row),
+                [rowId, ...objValues(row)],
+                useOnConflict,
+              );
             }
           }),
         );
@@ -290,9 +296,12 @@ const upsert = async (
   rowIdColumnName: string,
   changingColumnNames: string[],
   args: any[],
+  useOnConflict = true,
 ) =>
   await cmd(
-    'INSERT INTO' +
+    'INSERT ' +
+      (useOnConflict ? EMPTY_STRING : 'OR REPLACE ') +
+      'INTO' +
       escapeId(tableName) +
       '(' +
       escapeId(rowIdColumnName) +
@@ -310,17 +319,19 @@ const upsert = async (
         ),
         1,
       ) +
-      'ON CONFLICT(' +
-      escapeId(rowIdColumnName) +
-      ')DO UPDATE SET' +
-      arrayJoin(
-        arrayMap(
-          changingColumnNames,
-          (columnName) =>
-            escapeId(columnName) + '=excluded.' + escapeId(columnName),
-        ),
-        COMMA,
-      ),
+      (useOnConflict
+        ? 'ON CONFLICT(' +
+          escapeId(rowIdColumnName) +
+          ')DO UPDATE SET' +
+          arrayJoin(
+            arrayMap(
+              changingColumnNames,
+              (columnName) =>
+                escapeId(columnName) + '=excluded.' + escapeId(columnName),
+            ),
+            COMMA,
+          )
+        : EMPTY_STRING),
     args,
   );
 

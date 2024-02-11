@@ -30,6 +30,7 @@ export const createSqlitePersister = <UpdateListeningHandle>(
   onIgnoredError: ((error: any) => void) | undefined,
   db: any,
   getThing = 'getDb',
+  useOnConflict?: boolean,
 ): Persister => {
   let dataVersion: number | null;
   let schemaVersion: number | null;
@@ -102,5 +103,6 @@ export const createSqlitePersister = <UpdateListeningHandle>(
     collValues(managedTableNamesSet),
     db,
     getThing,
+    useOnConflict,
   );
 };
