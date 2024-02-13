@@ -238,8 +238,8 @@
     "@types/react-dom": "^18.2.19",
     "@types/react-test-renderer": "^18.0.7",
     "@types/tmp": "^0.2.6",
-    "@typescript-eslint/eslint-plugin": "^6.21.0",
-    "@typescript-eslint/parser": "^6.21.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.1",
+    "@typescript-eslint/parser": "^7.0.1",
     "@vlcn.io/crsqlite-wasm": "^0.16.0",
     "asciichart": "^1.5.25",
     "babel-eslint": "^10.1.0",
@@ -267,16 +267,16 @@
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "jest-fetch-mock": "^3.0.3",
-    "jest-puppeteer": "^9.0.2",
+    "jest-puppeteer": "^10.0.0",
     "less": "^4.2.0",
-    "partykit": "^0.0.85",
+    "partykit": "^0.0.89",
     "partysocket": "^0.0.25",
     "prettier": "^3.2.5",
     "puppeteer": "22.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-test-renderer": "^18.2.0",
-    "rollup": "^4.9.6",
+    "rollup": "^4.10.0",
     "rollup-plugin-esbuild": "^6.1.1",
     "rollup-plugin-gzip": "^3.1.1",
     "rollup-plugin-preserve-shebang": "^1.0.1",
@@ -288,7 +288,7 @@
     "ts-unused-exports": "^10.0.1",
     "typescript": "5.3.3",
     "wa-sqlite": "github:rhashimoto/wa-sqlite",
-    "yjs": "^13.6.11"
+    "yjs": "^13.6.12"
   },
   "peerDependencies": {
     "@automerge/automerge-repo": "^1.1.1",
@@ -296,13 +296,13 @@
     "@vlcn.io/crsqlite-wasm": "^0.16.0",
     "electric-sql": "^0.9.2",
     "expo-sqlite": "^13.2.1",
-    "partykit": "^0.0.85",
+    "partykit": "^0.0.89",
     "partysocket": "^0.0.25",
     "prettier": "^3.2.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "sqlite3": "^5.1.7",
-    "yjs": "^13.6.11"
+    "yjs": "^13.6.12"
   },
   "peerDependenciesMeta": {
     "@automerge/automerge-repo": {
