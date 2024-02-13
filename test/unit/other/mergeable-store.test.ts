@@ -1150,6 +1150,54 @@ describe('Merge', () => {
         store1.getMergeableContent(),
       );
     });
+
+    test('Interleaving', () => {
+      store1.setCell('t1', 'r1', 'c1', 1).setValue('v1', 1);
+      jest.advanceTimersByTime(1);
+      store2.setCell('t2', 'r2', 'c2', 2).setValue('v2', 2);
+      jest.advanceTimersByTime(1);
+      store1.delTable('t1').delValue('v1');
+
+      expect(store1.getMergeableContent()).toEqual(
+        stamped(
+          1,
+          [
+            stamped(0, {t1: stamped(0, null, 's1', 2)}, 's1', 2),
+            stamped(1, {v1: stamped(1, null, 's1', 2)}, 's1', 2),
+          ],
+          's1',
+          2,
+        ),
+      );
+      expect(store2.getMergeableContent()).toEqual(
+        stamped(
+          1,
+          [
+            stamped(
+              0,
+              {
+                t2: stamped(
+                  0,
+                  {r2: stamped(0, {c2: stamped(0, 2, 's2', 1)}, 's2', 1)},
+                  's2',
+                  1,
+                ),
+              },
+              's2',
+              1,
+            ),
+            stamped(1, {v2: stamped(1, 2, 's2', 1)}, 's2', 1),
+          ],
+          's2',
+          1,
+        ),
+      );
+
+      store1.merge(store2);
+
+      expect(store1.getContent()).toEqual([{t2: {r2: {c2: 2}}}, {v2: 2}]);
+      expect(store2.getContent()).toEqual([{t2: {r2: {c2: 2}}}, {v2: 2}]);
+    });
   });
 });
 
