@@ -87,7 +87,7 @@ store.transaction(
     store.setCell('pets', 'fido', 'buyer', {name: 'Bob'});
   },
   () => {
-    const {changedCells, invalidCells} = store.getTransactionLog();
+    const [, , changedCells, invalidCells] = store.getTransactionLog();
     console.log(store.getTables());
     // -> {pets: {fido: {species: 'dog', color: 'black', sold: true}}}
     console.log(changedCells);
