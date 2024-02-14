@@ -19,18 +19,7 @@ import {jest} from '@jest/globals';
 
 const EMPTY_CHANGES_AND_LOG = [
   [{}, {}],
-  {
-    cellsTouched: false,
-    valuesTouched: false,
-    changedCells: {},
-    invalidCells: {},
-    changedValues: {},
-    invalidValues: {},
-    changedTableIds: {},
-    changedRowIds: {},
-    changedCellIds: {},
-    changedValueIds: {},
-  },
+  [false, false, {}, {}, {}, {}, {}, {}, {}, {}],
 ];
 
 let store: Store;
@@ -90,18 +79,18 @@ describe.each([
         expectChanges(listener, '/t', {t1: {r1: {c1: 1}}});
         expectChanges(listener, '/', [
           [{t1: {r1: {c1: 1}}}, {}],
-          {
-            cellsTouched: true,
-            valuesTouched: false,
-            changedCells: {t1: {r1: {c1: [null, 1]}}},
-            invalidCells: {},
-            changedValues: {},
-            invalidValues: {},
-            changedTableIds: {t1: 1},
-            changedRowIds: {t1: {r1: 1}},
-            changedCellIds: {t1: {r1: {c1: 1}}},
-            changedValueIds: {},
-          },
+          [
+            true,
+            false,
+            {t1: {r1: {c1: [null, 1]}}},
+            {},
+            {},
+            {},
+            {t1: 1},
+            {t1: {r1: 1}},
+            {t1: {r1: {c1: 1}}},
+            {},
+          ],
         ]);
         expectNoChanges(listener);
       });
@@ -111,18 +100,7 @@ describe.each([
         expectChanges(listener, '/v', {v1: 1});
         expectChanges(listener, '/', [
           [{}, {v1: 1}],
-          {
-            cellsTouched: false,
-            valuesTouched: true,
-            changedCells: {},
-            invalidCells: {},
-            changedValues: {v1: [null, 1]},
-            invalidValues: {},
-            changedTableIds: {},
-            changedRowIds: {},
-            changedCellIds: {},
-            changedValueIds: {v1: 1},
-          },
+          [false, true, {}, {}, {v1: [null, 1]}, {}, {}, {}, {}, {v1: 1}],
         ]);
         expectNoChanges(listener);
       });
@@ -133,18 +111,18 @@ describe.each([
         expectChanges(listener, '/v', {v1: 2});
         expectChanges(listener, '/', [
           [{t1: {r1: {c1: 2}}}, {v1: 2}],
-          {
-            cellsTouched: true,
-            valuesTouched: true,
-            changedCells: {t1: {r1: {c1: [1, 2]}}},
-            invalidCells: {},
-            changedValues: {v1: [1, 2]},
-            invalidValues: {},
-            changedTableIds: {},
-            changedRowIds: {},
-            changedCellIds: {},
-            changedValueIds: {},
-          },
+          [
+            true,
+            true,
+            {t1: {r1: {c1: [1, 2]}}},
+            {},
+            {v1: [1, 2]},
+            {},
+            {},
+            {},
+            {},
+            {},
+          ],
         ]);
         expectNoChanges(listener);
       });
@@ -5704,18 +5682,18 @@ describe.each([
         ['/willFinish', '/didFinish'].forEach((label) =>
           expectChanges(listener, label, [
             [{t1: {r1: {c1: 1}}}, {}],
-            {
-              cellsTouched: true,
-              valuesTouched: false,
-              changedCells: {t1: {r1: {c1: [null, 1]}}},
-              invalidCells: {},
-              changedValues: {},
-              invalidValues: {},
-              changedTableIds: {t1: 1},
-              changedRowIds: {t1: {r1: 1}},
-              changedCellIds: {t1: {r1: {c1: 1}}},
-              changedValueIds: {},
-            },
+            [
+              true,
+              false,
+              {t1: {r1: {c1: [null, 1]}}},
+              {},
+              {},
+              {},
+              {t1: 1},
+              {t1: {r1: 1}},
+              {t1: {r1: {c1: 1}}},
+              {},
+            ],
           ]),
         );
         expectNoChanges(listener);
@@ -5724,18 +5702,18 @@ describe.each([
         ['/willFinish', '/didFinish'].forEach((label) =>
           expectChanges(listener, label, [
             [{t1: null}, {}],
-            {
-              cellsTouched: true,
-              valuesTouched: false,
-              changedCells: {t1: {r1: {c1: [1, null]}}},
-              invalidCells: {},
-              changedValues: {},
-              invalidValues: {},
-              changedTableIds: {t1: -1},
-              changedRowIds: {t1: {r1: -1}},
-              changedCellIds: {t1: {r1: {c1: -1}}},
-              changedValueIds: {},
-            },
+            [
+              true,
+              false,
+              {t1: {r1: {c1: [1, null]}}},
+              {},
+              {},
+              {},
+              {t1: -1},
+              {t1: {r1: -1}},
+              {t1: {r1: {c1: -1}}},
+              {},
+            ],
           ]),
         );
         expectNoChanges(listener);
@@ -5744,18 +5722,7 @@ describe.each([
         ['/willFinish', '/didFinish'].forEach((label) =>
           expectChanges(listener, label, [
             [{}, {}],
-            {
-              cellsTouched: false,
-              valuesTouched: false,
-              changedCells: {},
-              invalidCells: {},
-              changedValues: {},
-              invalidValues: {},
-              changedTableIds: {},
-              changedRowIds: {},
-              changedCellIds: {},
-              changedValueIds: {},
-            },
+            [false, false, {}, {}, {}, {}, {}, {}, {}, {}],
           ]),
         );
         expectNoChanges(listener);
@@ -5764,18 +5731,7 @@ describe.each([
         ['/willFinish', '/didFinish'].forEach((label) =>
           expectChanges(listener, label, [
             [{}, {v1: 1}],
-            {
-              cellsTouched: false,
-              valuesTouched: true,
-              changedCells: {},
-              invalidCells: {},
-              changedValues: {v1: [null, 1]},
-              invalidValues: {},
-              changedTableIds: {},
-              changedRowIds: {},
-              changedCellIds: {},
-              changedValueIds: {v1: 1},
-            },
+            [false, true, {}, {}, {v1: [null, 1]}, {}, {}, {}, {}, {v1: 1}],
           ]),
         );
         expectNoChanges(listener);
@@ -5784,18 +5740,7 @@ describe.each([
         ['/willFinish', '/didFinish'].forEach((label) =>
           expectChanges(listener, label, [
             [{}, {v1: null}],
-            {
-              cellsTouched: false,
-              valuesTouched: true,
-              changedCells: {},
-              invalidCells: {},
-              changedValues: {v1: [1, null]},
-              invalidValues: {},
-              changedTableIds: {},
-              changedRowIds: {},
-              changedCellIds: {},
-              changedValueIds: {v1: -1},
-            },
+            [false, true, {}, {}, {v1: [1, null]}, {}, {}, {}, {}, {v1: -1}],
           ]),
         );
         expectNoChanges(listener);
@@ -5804,18 +5749,7 @@ describe.each([
         ['/willFinish', '/didFinish'].forEach((label) =>
           expectChanges(listener, label, [
             [{}, {}],
-            {
-              cellsTouched: false,
-              valuesTouched: false,
-              changedCells: {},
-              invalidCells: {},
-              changedValues: {},
-              invalidValues: {},
-              changedTableIds: {},
-              changedRowIds: {},
-              changedCellIds: {},
-              changedValueIds: {},
-            },
+            [false, false, {}, {}, {}, {}, {}, {}, {}, {}],
           ]),
         );
         expectNoChanges(listener);
@@ -5830,18 +5764,18 @@ describe.each([
         ['/willFinish', '/didFinish'].forEach((label) =>
           expectChanges(listener, label, [
             [{t1: {r1: {c1: 1}}}, {v1: 1}],
-            {
-              cellsTouched: true,
-              valuesTouched: true,
-              changedCells: {t1: {r1: {c1: [null, 1]}}},
-              invalidCells: {},
-              changedValues: {v1: [null, 1]},
-              invalidValues: {},
-              changedTableIds: {t1: 1},
-              changedRowIds: {t1: {r1: 1}},
-              changedCellIds: {t1: {r1: {c1: 1}}},
-              changedValueIds: {v1: 1},
-            },
+            [
+              true,
+              true,
+              {t1: {r1: {c1: [null, 1]}}},
+              {},
+              {v1: [null, 1]},
+              {},
+              {t1: 1},
+              {t1: {r1: 1}},
+              {t1: {r1: {c1: 1}}},
+              {v1: 1},
+            ],
           ]),
         );
         expectNoChanges(listener);
@@ -5856,18 +5790,18 @@ describe.each([
         ['/willFinish', '/didFinish'].forEach((label) =>
           expectChanges(listener, label, [
             [{t1: {r1: {c1: 1}}}, {v1: 1}],
-            {
-              cellsTouched: true,
-              valuesTouched: true,
-              changedCells: {t1: {r1: {c1: [null, 1]}}},
-              invalidCells: {},
-              changedValues: {v1: [null, 1]},
-              invalidValues: {},
-              changedTableIds: {t1: 1},
-              changedRowIds: {t1: {r1: 1}},
-              changedCellIds: {t1: {r1: {c1: 1}}},
-              changedValueIds: {v1: 1},
-            },
+            [
+              true,
+              true,
+              {t1: {r1: {c1: [null, 1]}}},
+              {},
+              {v1: [null, 1]},
+              {},
+              {t1: 1},
+              {t1: {r1: 1}},
+              {t1: {r1: {c1: 1}}},
+              {v1: 1},
+            ],
           ]),
         );
         expectNoChanges(listener);
@@ -5881,18 +5815,7 @@ describe.each([
         ['/willFinish', '/didFinish'].forEach((label) =>
           expectChanges(listener, label, [
             [{}, {}],
-            {
-              cellsTouched: false,
-              valuesTouched: false,
-              changedCells: {},
-              invalidCells: {},
-              changedValues: {},
-              invalidValues: {},
-              changedTableIds: {},
-              changedRowIds: {},
-              changedCellIds: {},
-              changedValueIds: {},
-            },
+            [false, false, {}, {}, {}, {}, {}, {}, {}, {}],
           ]),
         );
         expectNoChanges(listener);
@@ -5907,18 +5830,7 @@ describe.each([
         ['/willFinish', '/didFinish'].forEach((label) =>
           expectChanges(listener, label, [
             [{}, {}],
-            {
-              cellsTouched: false,
-              valuesTouched: false,
-              changedCells: {},
-              invalidCells: {},
-              changedValues: {},
-              invalidValues: {},
-              changedTableIds: {},
-              changedRowIds: {},
-              changedCellIds: {},
-              changedValueIds: {},
-            },
+            [false, false, {}, {}, {}, {}, {}, {}, {}, {}],
           ]),
         );
         expectNoChanges(listener);
@@ -5941,24 +5853,24 @@ describe.each([
                 {t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
                 {v1: 1, v2: 2},
               ],
-              {
-                cellsTouched: true,
-                valuesTouched: true,
-                changedCells: {
+              [
+                true,
+                true,
+                {
                   t1: {r1: {c1: [null, 1], c2: [null, 2]}, r2: {c1: [null, 1]}},
                   t2: {r1: {c1: [null, 1]}},
                 },
-                invalidCells: {},
-                changedValues: {v1: [null, 1], v2: [null, 2]},
-                invalidValues: {},
-                changedTableIds: {t1: 1, t2: 1},
-                changedRowIds: {t1: {r1: 1, r2: 1}, t2: {r1: 1}},
-                changedCellIds: {
+                {},
+                {v1: [null, 1], v2: [null, 2]},
+                {},
+                {t1: 1, t2: 1},
+                {t1: {r1: 1, r2: 1}, t2: {r1: 1}},
+                {
                   t1: {r1: {c1: 1, c2: 1}, r2: {c1: 1}},
                   t2: {r1: {c1: 1}},
                 },
-                changedValueIds: {v1: 1, v2: 1},
-              },
+                {v1: 1, v2: 1},
+              ],
             ]),
           );
           expectNoChanges(listener);
@@ -5973,18 +5885,7 @@ describe.each([
           ['/willFinish', '/didFinish'].forEach((label) =>
             expectChanges(listener, label, [
               [{}, {}],
-              {
-                cellsTouched: true,
-                valuesTouched: true,
-                changedCells: {},
-                invalidCells: {},
-                changedValues: {},
-                invalidValues: {},
-                changedTableIds: {},
-                changedRowIds: {},
-                changedCellIds: {},
-                changedValueIds: {},
-              },
+              [true, true, {}, {}, {}, {}, {}, {}, {}, {}],
             ]),
           );
           expectNoChanges(listener);
@@ -5998,18 +5899,18 @@ describe.each([
           ['/willFinish', '/didFinish'].forEach((label) =>
             expectChanges(listener, label, [
               [{t1: {r1: {c2: null}}}, {v2: null}],
-              {
-                cellsTouched: true,
-                valuesTouched: true,
-                changedCells: {t1: {r1: {c2: [2, null]}}},
-                invalidCells: {},
-                changedValues: {v2: [2, null]},
-                invalidValues: {},
-                changedTableIds: {},
-                changedRowIds: {},
-                changedCellIds: {t1: {r1: {c2: -1}}},
-                changedValueIds: {v2: -1},
-              },
+              [
+                true,
+                true,
+                {t1: {r1: {c2: [2, null]}}},
+                {},
+                {v2: [2, null]},
+                {},
+                {},
+                {},
+                {t1: {r1: {c2: -1}}},
+                {v2: -1},
+              ],
             ]),
           );
         });
@@ -6019,18 +5920,18 @@ describe.each([
           ['/willFinish', '/didFinish'].forEach((label) =>
             expectChanges(listener, label, [
               [{t1: {r2: null}}, {}],
-              {
-                cellsTouched: true,
-                valuesTouched: false,
-                changedCells: {t1: {r2: {c1: [1, null]}}},
-                invalidCells: {},
-                changedValues: {},
-                invalidValues: {},
-                changedTableIds: {},
-                changedRowIds: {t1: {r2: -1}},
-                changedCellIds: {t1: {r2: {c1: -1}}},
-                changedValueIds: {},
-              },
+              [
+                true,
+                false,
+                {t1: {r2: {c1: [1, null]}}},
+                {},
+                {},
+                {},
+                {},
+                {t1: {r2: -1}},
+                {t1: {r2: {c1: -1}}},
+                {},
+              ],
             ]),
           );
         });
@@ -6040,20 +5941,20 @@ describe.each([
           ['/willFinish', '/didFinish'].forEach((label) =>
             expectChanges(listener, label, [
               [{t1: null}, {}],
-              {
-                cellsTouched: true,
-                valuesTouched: false,
-                changedCells: {
+              [
+                true,
+                false,
+                {
                   t1: {r1: {c1: [1, null], c2: [2, null]}, r2: {c1: [1, null]}},
                 },
-                invalidCells: {},
-                changedValues: {},
-                invalidValues: {},
-                changedTableIds: {t1: -1},
-                changedRowIds: {t1: {r1: -1, r2: -1}},
-                changedCellIds: {t1: {r1: {c1: -1, c2: -1}, r2: {c1: -1}}},
-                changedValueIds: {},
-              },
+                {},
+                {},
+                {},
+                {t1: -1},
+                {t1: {r1: -1, r2: -1}},
+                {t1: {r1: {c1: -1, c2: -1}, r2: {c1: -1}}},
+                {},
+              ],
             ]),
           );
         });
@@ -6066,24 +5967,24 @@ describe.each([
                 {t1: null, t2: null},
                 {v1: null, v2: null},
               ],
-              {
-                cellsTouched: true,
-                valuesTouched: true,
-                changedCells: {
+              [
+                true,
+                true,
+                {
                   t1: {r1: {c1: [1, null], c2: [2, null]}, r2: {c1: [1, null]}},
                   t2: {r1: {c1: [1, null]}},
                 },
-                invalidCells: {},
-                changedValues: {v1: [1, null], v2: [2, null]},
-                invalidValues: {},
-                changedTableIds: {t1: -1, t2: -1},
-                changedRowIds: {t1: {r1: -1, r2: -1}, t2: {r1: -1}},
-                changedCellIds: {
+                {},
+                {v1: [1, null], v2: [2, null]},
+                {},
+                {t1: -1, t2: -1},
+                {t1: {r1: -1, r2: -1}, t2: {r1: -1}},
+                {
                   t1: {r1: {c1: -1, c2: -1}, r2: {c1: -1}},
                   t2: {r1: {c1: -1}},
                 },
-                changedValueIds: {v1: -1, v2: -1},
-              },
+                {v1: -1, v2: -1},
+              ],
             ]),
           );
         });
@@ -6101,18 +6002,7 @@ describe.each([
         ['/willFinish', '/didFinish'].forEach((label) =>
           expectChanges(listener, label, [
             [{}, {}],
-            {
-              cellsTouched: false,
-              valuesTouched: false,
-              changedCells: {},
-              invalidCells: {},
-              changedValues: {},
-              invalidValues: {},
-              changedTableIds: {},
-              changedRowIds: {},
-              changedCellIds: {},
-              changedValueIds: {},
-            },
+            [false, false, {}, {}, {}, {}, {}, {}, {}, {}],
           ]),
         );
         expectNoChanges(listener);

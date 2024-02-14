@@ -1152,6 +1152,9 @@
  * of `cellsTouched` and `valuesTouched` in the listener will be `false` because
  * all changes have been reverted.
  *
+ * In v5.0, this type changed from an object to an array, but still contains the
+ * same values.
+ *
  * See the documentation for the types of the inner objects for other details.
  * @category Transaction
  * @since v4.0.0
@@ -3486,7 +3489,7 @@
    *       .setValue('open', false)
    *       .setValue('employees', ['alice', 'bob']),
    *   () => {
-   *     const {changedCells, invalidCells, changedValues, invalidValues} =
+   *     const [, , changedCells, invalidCells, changedValues, invalidValues] =
    *       store.getTransactionLog();
    *     console.log(store.getTables());
    *     console.log(changedCells);
@@ -3616,7 +3619,7 @@
    *   .setValue('open', false)
    *   .setValue('employees', ['alice', 'bob'])
    *   .finishTransaction(() => {
-   *     const {changedCells, invalidCells, changedValues, invalidValues} =
+   *     const [, , changedCells, invalidCells, changedValues, invalidValues] =
    *       store.getTransactionLog();
    *     console.log(changedCells);
    *     console.log(invalidCells);
@@ -3704,7 +3707,7 @@
    *   .setValue('open', false)
    *   .setValue('employees', ['alice', 'bob'])
    *   .finishTransaction(() => {
-   *     const {changedCells, invalidCells, changedValues, invalidValues} =
+   *     const [, , changedCells, invalidCells, changedValues, invalidValues] =
    *       store.getTransactionLog();
    *     console.log(store.getTables());
    *     console.log(changedCells);
@@ -6225,7 +6228,7 @@
    *   })
    *   .setValues({open: true, employees: 3});
    * const listenerId = store.addWillFinishTransactionListener((store) => {
-   *   const {cellsTouched, valuesTouched} = store.getTransactionLog() ?? {};
+   *   const [cellsTouched, valuesTouched] = store.getTransactionLog() ?? {};
    *   console.log(`Cells/Values touched: ${cellsTouched}/${valuesTouched}`);
    * });
    * const listenerId2 = store.addTablesListener(() =>
@@ -6320,7 +6323,7 @@
    *   })
    *   .setValues({open: true, employees: 3});
    * const listenerId = store.addDidFinishTransactionListener((store) => {
-   *   const {cellsTouched, valuesTouched} = store.getTransactionLog() ?? {};
+   *   const [cellsTouched, valuesTouched] = store.getTransactionLog() ?? {};
    *   console.log(`Cells/Values touched: ${cellsTouched}/${valuesTouched}`);
    * });
    * const listenerId2 = store.addTablesListener(() =>
