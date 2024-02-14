@@ -342,21 +342,22 @@ export type Changes = [
   changedTables: {
     [tableId: Id]: {[rowId: Id]: {[cellId: Id]: Cell | null} | null} | null;
   },
+  changedValues: {[valueId: Id]: Value | null},
 ];
 
 /// TransactionLog
-export type TransactionLog = {
-  cellsTouched: boolean;
-  valuesTouched: boolean;
-  changedCells: ChangedCells;
-  invalidCells: InvalidCells;
-  changedValues: ChangedValues;
-  invalidValues: InvalidValues;
-  changedTableIds: ChangedTableIds;
-  changedRowIds: ChangedRowIds;
-  changedCellIds: ChangedCellIds;
-  changedValueIds: ChangedValueIds;
-};
+export type TransactionLog = [
+  cellsTouched: boolean,
+  valuesTouched: boolean,
+  changedCells: ChangedCells,
+  invalidCells: InvalidCells,
+  changedValues: ChangedValues,
+  invalidValues: InvalidValues,
+  changedTableIds: ChangedTableIds,
+  changedRowIds: ChangedRowIds,
+  changedCellIds: ChangedCellIds,
+  changedValueIds: ChangedValueIds,
+];
 
 /// StoreListenerStats
 export type StoreListenerStats = {
