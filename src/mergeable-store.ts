@@ -13,8 +13,8 @@ import {isUndefined, slice} from './common/other';
 import {
   mapStamped,
   mapStampedMapToObj,
-  mergeEachStamp,
-  mergeStamp,
+  mergeEachStamped,
+  mergeStamped,
   newStamped,
   newStampedMap,
 } from './mergeable-store/stamps';
@@ -42,23 +42,21 @@ const LISTENER_ARGS: IdObj<number> = {
   InvalidValue: 1,
 };
 
-type AllContentStamp = Stamped<
+type ContentStampedMap = Stamped<
   [
-    Stamped<
-      IdMap<Stamped<IdMap<Stamped<IdMap<Stamped<Cell | null>> | null>> | null>>
-    >,
+    Stamped<IdMap<Stamped<IdMap<Stamped<IdMap<Stamped<Cell | null>>>>>>>,
     Stamped<IdMap<Stamped<Value | null>>>,
   ]
 >;
 
-const newAllContentStamp = (): AllContentStamp => [
+const newContentStampedMap = (): ContentStampedMap => [
   EMPTY_STRING,
   [newStampedMap(), newStampedMap()],
 ];
 
 export const createMergeableStore = ((id: Id): MergeableStore => {
   let listening = 1;
-  let allContentStamp = newAllContentStamp();
+  let contentStampMap = newContentStampedMap();
   const [getHlc, seenHlc] = getHlcFunctions(id);
   const store = createStore();
 
@@ -73,9 +71,9 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     if (listening) {
       const stamp = getHlc();
       const [tablesChanges, valuesChanges] = store.getTransactionChanges();
-      const [allTablesStamp, allValuesStamp] = allContentStamp[1];
+      const [allTablesStamp, allValuesStamp] = contentStampMap[1];
 
-      allContentStamp[0] = stamp;
+      contentStampMap[0] = stamp;
       if (!objIsEmpty(tablesChanges)) {
         allTablesStamp[0] = stamp;
         objToArray(tablesChanges, (tableChanges, tableId) => {
@@ -121,7 +119,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   };
 
   const getMergeableContent = () =>
-    mapStamped(allContentStamp, ([allTablesStamp, allValuesStamp], stamp) => [
+    mapStamped(contentStampMap, ([allTablesStamp, allValuesStamp], stamp) => [
       stamp,
       [
         mapStampedMapToObj(allTablesStamp, (allRowStamp) =>
@@ -137,7 +135,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     disableListening(() =>
       store.transaction(() => {
         store.delTables().delValues();
-        allContentStamp = newAllContentStamp();
+        contentStampMap = newContentStampedMap();
       }),
     );
     applyMergeableChanges(mergeableContent);
@@ -149,26 +147,26 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   ): MergeableStore => {
     const changes: Changes = [{}, {}];
     seenHlc(mergeableChanges[0]);
-    mergeStamp(
+    mergeStamped(
       mergeableChanges,
-      allContentStamp,
+      contentStampMap,
       ([tablesStamp, valuesStamp], [allTablesStamp, allValuesStamp]) =>
         [
-          mergeStamp(
+          mergeStamped(
             tablesStamp,
             allTablesStamp,
             (tableStamps, allTableStamps) =>
-              mergeEachStamp(
+              mergeEachStamped(
                 tableStamps,
                 allTableStamps,
                 changes[0],
                 (rowStamps, allRowStamps, tableId) =>
-                  mergeEachStamp(
+                  mergeEachStamped(
                     rowStamps!,
                     allRowStamps,
                     changes[0][tableId]!,
                     (cellStamps, allCellStamps, rowId) =>
-                      mergeEachStamp(
+                      mergeEachStamped(
                         cellStamps!,
                         allCellStamps,
                         changes[0][tableId]![rowId]!,
@@ -176,13 +174,13 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
                   ),
               ),
           ),
-          mergeStamp(
+          mergeStamped(
             valuesStamp,
             allValuesStamp,
             (valueStamps, allValueStamps) =>
-              mergeEachStamp(valueStamps, allValueStamps, changes[1]),
+              mergeEachStamped(valueStamps, allValueStamps, changes[1]),
           ),
-        ] as AllContentStamp[1],
+        ] as ContentStampedMap[1],
     );
     disableListening(() => store.applyChanges(changes));
     return mergeableStore as MergeableStore;
