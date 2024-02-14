@@ -1,7 +1,7 @@
 import {Cell, Changes, Store, Value} from './types/store';
 import {EMPTY_STRING, strEndsWith, strStartsWith} from './common/strings';
 import {IdMap, mapEnsure, mapNew, mapSet} from './common/map';
-import {IdObj, objFreeze, objIsEmpty, objToArray} from './common/obj';
+import {IdObj, objFreeze, objToArray} from './common/obj';
 import {
   MergeableChanges,
   MergeableContent,
@@ -9,7 +9,6 @@ import {
   Stamped,
   createMergeableStore as createMergeableStoreDecl,
 } from './types/mergeable-store';
-import {isUndefined, slice} from './common/other';
 import {
   mapStamped,
   mapStampedMapToObj,
@@ -22,6 +21,7 @@ import {Id} from './types/common';
 import {createStore} from './store';
 import {getHlcFunctions} from './mergeable-store/hlc';
 import {pairClone} from './common/pairs';
+import {slice} from './common/other';
 
 const LISTENER_ARGS: IdObj<number> = {
   HasTable: 1,
@@ -70,42 +70,31 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const postTransactionListener = () => {
     if (listening) {
       const stamp = getHlc();
-      const [tablesChanges, valuesChanges] = store.getTransactionChanges();
-      const [allTablesStamp, allValuesStamp] = contentStampMap[1];
+      const {cellsTouched, valuesTouched, changedCells, changedValues} =
+        store.getTransactionLog();
+      const [tablesStamped, valuesStamped] = contentStampMap[1];
 
       contentStampMap[0] = stamp;
-      if (!objIsEmpty(tablesChanges)) {
-        allTablesStamp[0] = stamp;
-        objToArray(tablesChanges, (tableChanges, tableId) => {
-          const allTableStamp = mapEnsure(
-            allTablesStamp[1],
-            tableId,
-            newStamped,
-          );
-          allTableStamp[0] = stamp;
-          if (isUndefined(tableChanges)) {
-            allTableStamp[1] = null;
-          } else {
-            const allRowsStamp = (allTableStamp[1] ??= mapNew());
-            objToArray(tableChanges, (rowChanges, rowId) => {
-              const allRowStamp = mapEnsure(allRowsStamp, rowId, newStamped);
-              allRowStamp[0] = stamp;
-              if (isUndefined(rowChanges)) {
-                allRowStamp[1] = null;
-              } else {
-                const allCellStamps = (allRowStamp[1] ??= mapNew());
-                objToArray(rowChanges, (cellChanges, cellId) =>
-                  mapSet(allCellStamps, cellId, [stamp, cellChanges]),
-                );
-              }
-            });
-          }
+      if (cellsTouched) {
+        tablesStamped[0] = stamp;
+        objToArray(changedCells, (changedTable, tableId) => {
+          const tableStamped = mapEnsure(tablesStamped[1], tableId, newStamped);
+          tableStamped[0] = stamp;
+          const rowsStamped = (tableStamped[1] ??= mapNew());
+          objToArray(changedTable, (changedRow, rowId) => {
+            const rowStamped = mapEnsure(rowsStamped, rowId, newStamped);
+            rowStamped[0] = stamp;
+            const cellsStamped = (rowStamped[1] ??= mapNew());
+            objToArray(changedRow, ([, newCell], cellId) =>
+              mapSet(cellsStamped, cellId, [stamp, newCell ?? null]),
+            );
+          });
         });
       }
-      if (!objIsEmpty(valuesChanges)) {
-        allValuesStamp[0] = stamp;
-        objToArray(valuesChanges, (valueChanges, valueId) => {
-          mapSet(allValuesStamp[1], valueId, [stamp, valueChanges]);
+      if (valuesTouched) {
+        valuesStamped[0] = stamp;
+        objToArray(changedValues, ([, newValue], valueId) => {
+          mapSet(valuesStamped[1], valueId, [stamp, newValue ?? null]);
         });
       }
     }
