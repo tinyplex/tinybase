@@ -1379,18 +1379,18 @@ export const createStore: typeof createStoreDecl = (): Store => {
     ),
   ];
 
-  const getTransactionLog = (): TransactionLog => ({
+  const getTransactionLog = (): TransactionLog => [
     cellsTouched,
     valuesTouched,
-    changedCells: mapToObj3(changedCells, pairClone, pairIsEqual),
-    invalidCells: mapToObj3(invalidCells),
-    changedValues: mapToObj(changedValues, pairClone, pairIsEqual),
-    invalidValues: mapToObj(invalidValues),
-    changedTableIds: mapToObj(changedTableIds),
-    changedRowIds: mapToObj2(changedRowIds),
-    changedCellIds: mapToObj3(changedCellIds),
-    changedValueIds: mapToObj(changedValueIds),
-  });
+    mapToObj3(changedCells, pairClone, pairIsEqual),
+    mapToObj3(invalidCells),
+    mapToObj(changedValues, pairClone, pairIsEqual),
+    mapToObj(invalidValues),
+    mapToObj(changedTableIds),
+    mapToObj2(changedRowIds),
+    mapToObj3(changedCellIds),
+    mapToObj(changedValueIds),
+  ];
 
   const finishTransaction = (doRollback?: DoRollback): Store => {
     if (transactions > 0) {

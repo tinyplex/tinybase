@@ -70,7 +70,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const postTransactionListener = () => {
     if (listening) {
       const stamp = getHlc();
-      const {cellsTouched, valuesTouched, changedCells, changedValues} =
+      const [cellsTouched, valuesTouched, changedCells, , changedValues] =
         store.getTransactionLog();
       const [tablesStamped, valuesStamped] = contentStampMap[1];
 
