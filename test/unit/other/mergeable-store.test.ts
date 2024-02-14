@@ -229,9 +229,9 @@ describe('getMergeableContent', () => {
               c1: stamped1(0, 1, 1),
               c2: stamped1(0, 2, null),
             }),
-            r2: stamped1(0, 3, null),
+            r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
           }),
-          t2: stamped1(0, 4, null),
+          t2: stamped1(0, 4, {r1: stamped1(0, 4, {c1: stamped1(0, 4, null)})}),
         }),
         stamped1(0, 6, {v1: stamped1(0, 5, 5), v2: stamped1(0, 6, null)}),
       ]),
@@ -511,7 +511,7 @@ describe('Merge', () => {
                 c1: stamped1(0, 1, 1),
                 c2: stamped1(0, 2, null),
               }),
-              r2: stamped1(0, 3, null),
+              r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
             }),
             t2: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 0)})}),
           }),
@@ -532,7 +532,7 @@ describe('Merge', () => {
                 c1: stamped1(0, 1, 1),
                 c2: stamped1(0, 2, null),
               }),
-              r2: stamped1(0, 3, null),
+              r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
             }),
             t2: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 0)})}),
           }),
@@ -551,9 +551,11 @@ describe('Merge', () => {
                 c1: stamped1(0, 1, 1),
                 c2: stamped1(0, 2, null),
               }),
-              r2: stamped1(0, 3, null),
+              r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
             }),
-            t2: stamped1(0, 4, null),
+            t2: stamped1(0, 4, {
+              r1: stamped1(0, 4, {c1: stamped1(0, 4, null)}),
+            }),
           }),
           nullStamped({}),
         ]),
@@ -569,9 +571,11 @@ describe('Merge', () => {
                 c1: stamped1(0, 1, 1),
                 c2: stamped1(0, 2, null),
               }),
-              r2: stamped1(0, 3, null),
+              r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
             }),
-            t2: stamped1(0, 4, null),
+            t2: stamped1(0, 4, {
+              r1: stamped1(0, 4, {c1: stamped1(0, 4, null)}),
+            }),
           }),
           nullStamped({}),
         ]),
@@ -588,9 +592,12 @@ describe('Merge', () => {
                 c1: stamped1(0, 1, 1),
                 c2: stamped1(0, 2, null),
               }),
-              r2: stamped1(0, 3, null),
+              r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
             }),
-            t2: stamped1(0, 5, {r2: stamped1(0, 5, {c2: stamped1(0, 5, 2)})}),
+            t2: stamped1(0, 5, {
+              r1: stamped1(0, 4, {c1: stamped1(0, 4, null)}),
+              r2: stamped1(0, 5, {c2: stamped1(0, 5, 2)}),
+            }),
           }),
           nullStamped({}),
         ]),
@@ -609,9 +616,12 @@ describe('Merge', () => {
                 c1: stamped1(0, 1, 1),
                 c2: stamped1(0, 2, null),
               }),
-              r2: stamped1(0, 3, null),
+              r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
             }),
-            t2: stamped1(0, 5, {r2: stamped1(0, 5, {c2: stamped1(0, 5, 2)})}),
+            t2: stamped1(0, 5, {
+              r1: stamped1(0, 4, {c1: stamped1(0, 4, null)}),
+              r2: stamped1(0, 5, {c2: stamped1(0, 5, 2)}),
+            }),
           }),
           nullStamped({}),
         ]),
@@ -622,7 +632,19 @@ describe('Merge', () => {
       store1.delTables();
       expect(store1.getMergeableContent()).toEqual(
         stamped1(0, 6, [
-          stamped1(0, 6, {t1: stamped1(0, 6, null), t2: stamped1(0, 6, null)}),
+          stamped1(0, 6, {
+            t1: stamped1(0, 6, {
+              r1: stamped1(0, 6, {
+                c1: stamped1(0, 6, null),
+                c2: stamped1(0, 2, null),
+              }),
+              r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
+            }),
+            t2: stamped1(0, 6, {
+              r1: stamped1(0, 4, {c1: stamped1(0, 4, null)}),
+              r2: stamped1(0, 6, {c2: stamped1(0, 6, null)}),
+            }),
+          }),
           nullStamped({}),
         ]),
       );
@@ -631,7 +653,19 @@ describe('Merge', () => {
       expect(store2.getContent()).toEqual([{}, {}]);
       expect(store2.getMergeableContent()).toEqual(
         stamped1(0, 6, [
-          stamped1(0, 6, {t1: stamped1(0, 6, null), t2: stamped1(0, 6, null)}),
+          stamped1(0, 6, {
+            t1: stamped1(0, 6, {
+              r1: stamped1(0, 6, {
+                c1: stamped1(0, 6, null),
+                c2: stamped1(0, 2, null),
+              }),
+              r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
+            }),
+            t2: stamped1(0, 6, {
+              r1: stamped1(0, 4, {c1: stamped1(0, 4, null)}),
+              r2: stamped1(0, 6, {c2: stamped1(0, 6, null)}),
+            }),
+          }),
           nullStamped({}),
         ]),
       );
@@ -641,7 +675,19 @@ describe('Merge', () => {
       store1.setValues({v1: 0, v2: 0});
       expect(store1.getMergeableContent()).toEqual(
         stamped1(0, 7, [
-          stamped1(0, 6, {t1: stamped1(0, 6, null), t2: stamped1(0, 6, null)}),
+          stamped1(0, 6, {
+            t1: stamped1(0, 6, {
+              r1: stamped1(0, 6, {
+                c1: stamped1(0, 6, null),
+                c2: stamped1(0, 2, null),
+              }),
+              r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
+            }),
+            t2: stamped1(0, 6, {
+              r1: stamped1(0, 4, {c1: stamped1(0, 4, null)}),
+              r2: stamped1(0, 6, {c2: stamped1(0, 6, null)}),
+            }),
+          }),
           stamped1(0, 7, {v1: stamped1(0, 7, 0), v2: stamped1(0, 7, 0)}),
         ]),
       );
@@ -650,7 +696,19 @@ describe('Merge', () => {
       expect(store2.getContent()).toEqual([{}, {v1: 0, v2: 0}]);
       expect(store2.getMergeableContent()).toEqual(
         stamped1(0, 7, [
-          stamped1(0, 6, {t1: stamped1(0, 6, null), t2: stamped1(0, 6, null)}),
+          stamped1(0, 6, {
+            t1: stamped1(0, 6, {
+              r1: stamped1(0, 6, {
+                c1: stamped1(0, 6, null),
+                c2: stamped1(0, 2, null),
+              }),
+              r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
+            }),
+            t2: stamped1(0, 6, {
+              r1: stamped1(0, 4, {c1: stamped1(0, 4, null)}),
+              r2: stamped1(0, 6, {c2: stamped1(0, 6, null)}),
+            }),
+          }),
           stamped1(0, 7, {v1: stamped1(0, 7, 0), v2: stamped1(0, 7, 0)}),
         ]),
       );
@@ -660,7 +718,19 @@ describe('Merge', () => {
       store1.setValue('v1', 1);
       expect(store1.getMergeableContent()).toEqual(
         stamped1(0, 8, [
-          stamped1(0, 6, {t1: stamped1(0, 6, null), t2: stamped1(0, 6, null)}),
+          stamped1(0, 6, {
+            t1: stamped1(0, 6, {
+              r1: stamped1(0, 6, {
+                c1: stamped1(0, 6, null),
+                c2: stamped1(0, 2, null),
+              }),
+              r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
+            }),
+            t2: stamped1(0, 6, {
+              r1: stamped1(0, 4, {c1: stamped1(0, 4, null)}),
+              r2: stamped1(0, 6, {c2: stamped1(0, 6, null)}),
+            }),
+          }),
           stamped1(0, 8, {v1: stamped1(0, 8, 1), v2: stamped1(0, 7, 0)}),
         ]),
       );
@@ -669,7 +739,19 @@ describe('Merge', () => {
       expect(store2.getContent()).toEqual([{}, {v1: 1, v2: 0}]);
       expect(store2.getMergeableContent()).toEqual(
         stamped1(0, 8, [
-          stamped1(0, 6, {t1: stamped1(0, 6, null), t2: stamped1(0, 6, null)}),
+          stamped1(0, 6, {
+            t1: stamped1(0, 6, {
+              r1: stamped1(0, 6, {
+                c1: stamped1(0, 6, null),
+                c2: stamped1(0, 2, null),
+              }),
+              r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
+            }),
+            t2: stamped1(0, 6, {
+              r1: stamped1(0, 4, {c1: stamped1(0, 4, null)}),
+              r2: stamped1(0, 6, {c2: stamped1(0, 6, null)}),
+            }),
+          }),
           stamped1(0, 8, {v1: stamped1(0, 8, 1), v2: stamped1(0, 7, 0)}),
         ]),
       );
@@ -679,7 +761,19 @@ describe('Merge', () => {
       store1.delValue('v2');
       expect(store1.getMergeableContent()).toEqual(
         stamped1(0, 9, [
-          stamped1(0, 6, {t1: stamped1(0, 6, null), t2: stamped1(0, 6, null)}),
+          stamped1(0, 6, {
+            t1: stamped1(0, 6, {
+              r1: stamped1(0, 6, {
+                c1: stamped1(0, 6, null),
+                c2: stamped1(0, 2, null),
+              }),
+              r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
+            }),
+            t2: stamped1(0, 6, {
+              r1: stamped1(0, 4, {c1: stamped1(0, 4, null)}),
+              r2: stamped1(0, 6, {c2: stamped1(0, 6, null)}),
+            }),
+          }),
           stamped1(0, 9, {v1: stamped1(0, 8, 1), v2: stamped1(0, 9, null)}),
         ]),
       );
@@ -688,7 +782,19 @@ describe('Merge', () => {
       expect(store2.getContent()).toEqual([{}, {v1: 1}]);
       expect(store2.getMergeableContent()).toEqual(
         stamped1(0, 9, [
-          stamped1(0, 6, {t1: stamped1(0, 6, null), t2: stamped1(0, 6, null)}),
+          stamped1(0, 6, {
+            t1: stamped1(0, 6, {
+              r1: stamped1(0, 6, {
+                c1: stamped1(0, 6, null),
+                c2: stamped1(0, 2, null),
+              }),
+              r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
+            }),
+            t2: stamped1(0, 6, {
+              r1: stamped1(0, 4, {c1: stamped1(0, 4, null)}),
+              r2: stamped1(0, 6, {c2: stamped1(0, 6, null)}),
+            }),
+          }),
           stamped1(0, 9, {v1: stamped1(0, 8, 1), v2: stamped1(0, 9, null)}),
         ]),
       );
@@ -698,7 +804,19 @@ describe('Merge', () => {
       store1.delValues();
       expect(store1.getMergeableContent()).toEqual(
         stamped1(0, 10, [
-          stamped1(0, 6, {t1: stamped1(0, 6, null), t2: stamped1(0, 6, null)}),
+          stamped1(0, 6, {
+            t1: stamped1(0, 6, {
+              r1: stamped1(0, 6, {
+                c1: stamped1(0, 6, null),
+                c2: stamped1(0, 2, null),
+              }),
+              r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
+            }),
+            t2: stamped1(0, 6, {
+              r1: stamped1(0, 4, {c1: stamped1(0, 4, null)}),
+              r2: stamped1(0, 6, {c2: stamped1(0, 6, null)}),
+            }),
+          }),
           stamped1(0, 10, {
             v1: stamped1(0, 10, null),
             v2: stamped1(0, 9, null),
@@ -710,7 +828,19 @@ describe('Merge', () => {
       expect(store2.getContent()).toEqual([{}, {}]);
       expect(store2.getMergeableContent()).toEqual(
         stamped1(0, 10, [
-          stamped1(0, 6, {t1: stamped1(0, 6, null), t2: stamped1(0, 6, null)}),
+          stamped1(0, 6, {
+            t1: stamped1(0, 6, {
+              r1: stamped1(0, 6, {
+                c1: stamped1(0, 6, null),
+                c2: stamped1(0, 2, null),
+              }),
+              r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
+            }),
+            t2: stamped1(0, 6, {
+              r1: stamped1(0, 4, {c1: stamped1(0, 4, null)}),
+              r2: stamped1(0, 6, {c2: stamped1(0, 6, null)}),
+            }),
+          }),
           stamped1(0, 10, {
             v1: stamped1(0, 10, null),
             v2: stamped1(0, 9, null),
@@ -1033,7 +1163,7 @@ describe('Merge', () => {
       );
     });
 
-    test.only('Interleaving', () => {
+    test('Interleaving', () => {
       store1.setCell('t1', 'r1', 'c1', 1);
       jest.advanceTimersByTime(1);
       store2.setCell('t1', 'r1', 'c2', 2);
@@ -1042,7 +1172,11 @@ describe('Merge', () => {
 
       expect(store1.getMergeableContent()).toEqual(
         stamped1(2, 0, [
-          stamped1(2, 0, {t1: stamped1(2, 0, null)}),
+          stamped1(2, 0, {
+            t1: stamped1(2, 0, {
+              r1: stamped1(2, 0, {c1: stamped1(2, 0, null)}),
+            }),
+          }),
           nullStamped({}),
         ]),
       );
