@@ -316,7 +316,7 @@ export type ChangedCells = {
 };
 
 /// ChangedCell
-export type ChangedCell = [CellOrUndefined, CellOrUndefined];
+export type ChangedCell = [oldCell: CellOrUndefined, newCell: CellOrUndefined];
 
 /// InvalidCells
 export type InvalidCells = {
@@ -329,15 +329,19 @@ export type ChangedValues = {
 };
 
 /// ChangedValue
-export type ChangedValue = [ValueOrUndefined, ValueOrUndefined];
+export type ChangedValue = [
+  oldValue: ValueOrUndefined,
+  newValue: ValueOrUndefined,
+];
 
 /// InvalidValues
 export type InvalidValues = {[valueId: Id]: any[]};
 
 /// Changes
 export type Changes = [
-  {[tableId: Id]: {[rowId: Id]: {[cellId: Id]: Cell | null} | null} | null},
-  {[valueId: Id]: Value | null},
+  changedTables: {
+    [tableId: Id]: {[rowId: Id]: {[cellId: Id]: Cell | null} | null} | null;
+  },
 ];
 
 /// TransactionLog
