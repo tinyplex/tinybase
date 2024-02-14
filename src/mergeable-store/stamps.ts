@@ -26,7 +26,7 @@ export const mapStamped = <StampedValue, ToValue>(
   mapper: (value: StampedValue, stamp: Stamp) => ToValue,
 ): ToValue => mapper(value, stamp);
 
-export const mergeStamp = <NewThing, CurrentThing>(
+export const mergeStamped = <NewThing, CurrentThing>(
   [newStamp, newThing]: Stamped<NewThing>,
   currentStampedThing: Stamped<CurrentThing>,
   getNextCurrentThing: (
@@ -48,7 +48,7 @@ export const mergeStamp = <NewThing, CurrentThing>(
   return currentStampedThing;
 };
 
-export const mergeEachStamp = <Thing>(
+export const mergeEachStamped = <Thing>(
   thingStamps: IdObj<Stamped<Thing | null>>,
   allThingStamps: IdMap<Stamped<any>> | null,
   changes: any,
@@ -59,7 +59,7 @@ export const mergeEachStamp = <Thing>(
   ) => Thing | null,
 ): any => {
   objForEach(thingStamps, (thingStamp, thingId) =>
-    mergeStamp(
+    mergeStamped(
       thingStamp,
       mapEnsure(allThingStamps!, thingId, newStamped),
       (newThing, currentThing) => {
