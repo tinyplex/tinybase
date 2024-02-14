@@ -5,7 +5,7 @@ import {EMPTY_STRING} from '../common/strings';
 import {Id} from '../types/common';
 import {isUndefined} from '../common/other';
 
-export const newStamped = (): Stamped<null> => [EMPTY_STRING, null];
+export const newStamped = (): Stamped<any> => [EMPTY_STRING, null];
 
 export const newStampedMap = <Thing>(): Stamped<IdMap<Thing>> => [
   EMPTY_STRING,
