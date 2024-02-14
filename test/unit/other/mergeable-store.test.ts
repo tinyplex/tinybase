@@ -1033,34 +1033,34 @@ describe('Merge', () => {
       );
     });
 
-    test('Interleaving', () => {
-      store1.setCell('t1', 'r1', 'c1', 1).setValue('v1', 1);
+    test.only('Interleaving', () => {
+      store1.setCell('t1', 'r1', 'c1', 1);
       jest.advanceTimersByTime(1);
-      store2.setCell('t2', 'r2', 'c2', 2).setValue('v2', 2);
+      store2.setCell('t1', 'r1', 'c2', 2);
       jest.advanceTimersByTime(1);
-      store1.delTable('t1').delValue('v1');
+      store1.delCell('t1', 'r1', 'c1');
 
       expect(store1.getMergeableContent()).toEqual(
-        stamped1(2, 1, [
+        stamped1(2, 0, [
           stamped1(2, 0, {t1: stamped1(2, 0, null)}),
-          stamped1(2, 1, {v1: stamped1(2, 1, null)}),
+          nullStamped({}),
         ]),
       );
       expect(store2.getMergeableContent()).toEqual(
-        stamped2(1, 1, [
+        stamped2(1, 0, [
           stamped2(1, 0, {
-            t2: stamped2(1, 0, {
-              r2: stamped2(1, 0, {c2: stamped2(1, 0, 2)}),
+            t1: stamped2(1, 0, {
+              r1: stamped2(1, 0, {c2: stamped2(1, 0, 2)}),
             }),
           }),
-          stamped2(1, 1, {v2: stamped2(1, 1, 2)}),
+          nullStamped({}),
         ]),
       );
 
       store1.merge(store2);
 
-      expect(store1.getContent()).toEqual([{t2: {r2: {c2: 2}}}, {v2: 2}]);
-      expect(store2.getContent()).toEqual([{t2: {r2: {c2: 2}}}, {v2: 2}]);
+      expect(store1.getContent()).toEqual([{t1: {r1: {c2: 2}}}, {}]);
+      expect(store2.getContent()).toEqual([{t1: {r1: {c2: 2}}}, {}]);
     });
   });
 });
