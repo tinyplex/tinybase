@@ -5701,7 +5701,7 @@ describe.each([
         expectChangesNoJson(listener, '/start', EMPTY_CHANGES_AND_LOG);
         ['/willFinish', '/didFinish'].forEach((label) =>
           expectChangesNoJson(listener, label, [
-            [{t1: null}, {}],
+            [{t1: undefined}, {}],
             [
               true,
               false,
@@ -5923,7 +5923,7 @@ describe.each([
           expectChangesNoJson(listener, '/start', EMPTY_CHANGES_AND_LOG);
           ['/willFinish', '/didFinish'].forEach((label) =>
             expectChangesNoJson(listener, label, [
-              [{t1: {r1: {c2: null}}}, {v2: undefined}],
+              [{t1: {r1: {c2: undefined}}}, {v2: undefined}],
               [
                 true,
                 true,
@@ -5944,7 +5944,7 @@ describe.each([
           expectChangesNoJson(listener, '/start', EMPTY_CHANGES_AND_LOG);
           ['/willFinish', '/didFinish'].forEach((label) =>
             expectChangesNoJson(listener, label, [
-              [{t1: {r2: null}}, {}],
+              [{t1: {r2: undefined}}, {}],
               [
                 true,
                 false,
@@ -5965,7 +5965,7 @@ describe.each([
           expectChangesNoJson(listener, '/start', EMPTY_CHANGES_AND_LOG);
           ['/willFinish', '/didFinish'].forEach((label) =>
             expectChangesNoJson(listener, label, [
-              [{t1: null}, {}],
+              [{t1: undefined}, {}],
               [
                 true,
                 false,
@@ -5992,7 +5992,7 @@ describe.each([
           ['/willFinish', '/didFinish'].forEach((label) =>
             expectChangesNoJson(listener, label, [
               [
-                {t1: null, t2: null},
+                {t1: undefined, t2: undefined},
                 {v1: undefined, v2: undefined},
               ],
               [
