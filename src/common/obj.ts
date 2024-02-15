@@ -36,8 +36,7 @@ export const objGet = <Value>(
   id: Id,
 ): Value | undefined => ifNotUndefined(obj, (obj) => (obj as IdObj<Value>)[id]);
 
-export const objHas = (obj: IdObj<unknown> | undefined, id: Id): boolean =>
-  !isUndefined(objGet(obj, id));
+export const objHas = (obj: IdObj<unknown>, id: Id): boolean => id in obj;
 
 export const objDel = <Value>(obj: IdObj<Value>, id: Id): IdObj<Value> => {
   delete obj[id];
