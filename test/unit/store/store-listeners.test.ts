@@ -5678,14 +5678,14 @@ describe.each([
 
       test('in implicit transactions', () => {
         store.setTables({t1: {r1: {c1: 1}}});
-        expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
+        expectChangesNoJson(listener, '/start', EMPTY_CHANGES_AND_LOG);
         ['/willFinish', '/didFinish'].forEach((label) =>
-          expectChanges(listener, label, [
+          expectChangesNoJson(listener, label, [
             [{t1: {r1: {c1: 1}}}, {}],
             [
               true,
               false,
-              {t1: {r1: {c1: [null, 1]}}},
+              {t1: {r1: {c1: [undefined, 1]}}},
               {},
               {},
               {},
@@ -5698,14 +5698,14 @@ describe.each([
         );
         expectNoChanges(listener);
         store.delTables();
-        expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
+        expectChangesNoJson(listener, '/start', EMPTY_CHANGES_AND_LOG);
         ['/willFinish', '/didFinish'].forEach((label) =>
-          expectChanges(listener, label, [
+          expectChangesNoJson(listener, label, [
             [{t1: null}, {}],
             [
               true,
               false,
-              {t1: {r1: {c1: [1, null]}}},
+              {t1: {r1: {c1: [1, undefined]}}},
               {},
               {},
               {},
@@ -5718,36 +5718,58 @@ describe.each([
         );
         expectNoChanges(listener);
         store.delTables();
-        expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
+        expectChangesNoJson(listener, '/start', EMPTY_CHANGES_AND_LOG);
         ['/willFinish', '/didFinish'].forEach((label) =>
-          expectChanges(listener, label, [
+          expectChangesNoJson(listener, label, [
             [{}, {}],
             [false, false, {}, {}, {}, {}, {}, {}, {}, {}],
           ]),
         );
         expectNoChanges(listener);
         store.setValues({v1: 1});
-        expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
+        expectChangesNoJson(listener, '/start', EMPTY_CHANGES_AND_LOG);
         ['/willFinish', '/didFinish'].forEach((label) =>
-          expectChanges(listener, label, [
+          expectChangesNoJson(listener, label, [
             [{}, {v1: 1}],
-            [false, true, {}, {}, {v1: [null, 1]}, {}, {}, {}, {}, {v1: 1}],
+            [
+              false,
+              true,
+              {},
+              {},
+              {v1: [undefined, 1]},
+              {},
+              {},
+              {},
+              {},
+              {v1: 1},
+            ],
           ]),
         );
         expectNoChanges(listener);
         store.delValues();
-        expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
+        expectChangesNoJson(listener, '/start', EMPTY_CHANGES_AND_LOG);
         ['/willFinish', '/didFinish'].forEach((label) =>
-          expectChanges(listener, label, [
+          expectChangesNoJson(listener, label, [
             [{}, {v1: null}],
-            [false, true, {}, {}, {v1: [1, null]}, {}, {}, {}, {}, {v1: -1}],
+            [
+              false,
+              true,
+              {},
+              {},
+              {v1: [1, undefined]},
+              {},
+              {},
+              {},
+              {},
+              {v1: -1},
+            ],
           ]),
         );
         expectNoChanges(listener);
         store.delValues();
-        expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
+        expectChangesNoJson(listener, '/start', EMPTY_CHANGES_AND_LOG);
         ['/willFinish', '/didFinish'].forEach((label) =>
-          expectChanges(listener, label, [
+          expectChangesNoJson(listener, label, [
             [{}, {}],
             [false, false, {}, {}, {}, {}, {}, {}, {}, {}],
           ]),
@@ -5757,19 +5779,19 @@ describe.each([
 
       test('in explicit transaction', () => {
         store.startTransaction();
-        expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
+        expectChangesNoJson(listener, '/start', EMPTY_CHANGES_AND_LOG);
         store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
         expectNoChanges(listener);
         store.finishTransaction();
         ['/willFinish', '/didFinish'].forEach((label) =>
-          expectChanges(listener, label, [
+          expectChangesNoJson(listener, label, [
             [{t1: {r1: {c1: 1}}}, {v1: 1}],
             [
               true,
               true,
-              {t1: {r1: {c1: [null, 1]}}},
+              {t1: {r1: {c1: [undefined, 1]}}},
               {},
-              {v1: [null, 1]},
+              {v1: [undefined, 1]},
               {},
               {t1: 1},
               {t1: {r1: 1}},
@@ -5784,18 +5806,18 @@ describe.each([
       test('in wrapped transaction with changes', () => {
         store.transaction(() => {
           store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
-          expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
+          expectChangesNoJson(listener, '/start', EMPTY_CHANGES_AND_LOG);
           expectNoChanges(listener);
         });
         ['/willFinish', '/didFinish'].forEach((label) =>
-          expectChanges(listener, label, [
+          expectChangesNoJson(listener, label, [
             [{t1: {r1: {c1: 1}}}, {v1: 1}],
             [
               true,
               true,
-              {t1: {r1: {c1: [null, 1]}}},
+              {t1: {r1: {c1: [undefined, 1]}}},
               {},
-              {v1: [null, 1]},
+              {v1: [undefined, 1]},
               {},
               {t1: 1},
               {t1: {r1: 1}},
@@ -5809,11 +5831,11 @@ describe.each([
 
       test('in wrapped transaction with no actions', () => {
         store.transaction(() => {
-          expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
+          expectChangesNoJson(listener, '/start', EMPTY_CHANGES_AND_LOG);
           expectNoChanges(listener);
         });
         ['/willFinish', '/didFinish'].forEach((label) =>
-          expectChanges(listener, label, [
+          expectChangesNoJson(listener, label, [
             [{}, {}],
             [false, false, {}, {}, {}, {}, {}, {}, {}, {}],
           ]),
@@ -5823,12 +5845,12 @@ describe.each([
 
       test('in wrapped transaction with no touches', () => {
         store.transaction(() => {
-          expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
+          expectChangesNoJson(listener, '/start', EMPTY_CHANGES_AND_LOG);
           store.delTables();
           expectNoChanges(listener);
         });
         ['/willFinish', '/didFinish'].forEach((label) =>
-          expectChanges(listener, label, [
+          expectChangesNoJson(listener, label, [
             [{}, {}],
             [false, false, {}, {}, {}, {}, {}, {}, {}, {}],
           ]),
@@ -5846,9 +5868,9 @@ describe.each([
               })
               .setValues({v1: 1, v2: 2});
           });
-          expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
+          expectChangesNoJson(listener, '/start', EMPTY_CHANGES_AND_LOG);
           ['/willFinish', '/didFinish'].forEach((label) =>
-            expectChanges(listener, label, [
+            expectChangesNoJson(listener, label, [
               [
                 {t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
                 {v1: 1, v2: 2},
@@ -5857,11 +5879,14 @@ describe.each([
                 true,
                 true,
                 {
-                  t1: {r1: {c1: [null, 1], c2: [null, 2]}, r2: {c1: [null, 1]}},
-                  t2: {r1: {c1: [null, 1]}},
+                  t1: {
+                    r1: {c1: [undefined, 1], c2: [undefined, 2]},
+                    r2: {c1: [undefined, 1]},
+                  },
+                  t2: {r1: {c1: [undefined, 1]}},
                 },
                 {},
-                {v1: [null, 1], v2: [null, 2]},
+                {v1: [undefined, 1], v2: [undefined, 2]},
                 {},
                 {t1: 1, t2: 1},
                 {t1: {r1: 1, r2: 1}, t2: {r1: 1}},
@@ -5881,9 +5906,9 @@ describe.each([
             store.setCell('t1', 'r1', 'c1', 2).setValue('v1', 2);
             store.setCell('t1', 'r1', 'c1', 1).setValue('v1', 1);
           });
-          expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
+          expectChangesNoJson(listener, '/start', EMPTY_CHANGES_AND_LOG);
           ['/willFinish', '/didFinish'].forEach((label) =>
-            expectChanges(listener, label, [
+            expectChangesNoJson(listener, label, [
               [{}, {}],
               [true, true, {}, {}, {}, {}, {}, {}, {}, {}],
             ]),
@@ -5895,16 +5920,16 @@ describe.each([
           store.transaction(() =>
             store.delCell('t1', 'r1', 'c2').delValue('v2'),
           );
-          expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
+          expectChangesNoJson(listener, '/start', EMPTY_CHANGES_AND_LOG);
           ['/willFinish', '/didFinish'].forEach((label) =>
-            expectChanges(listener, label, [
+            expectChangesNoJson(listener, label, [
               [{t1: {r1: {c2: null}}}, {v2: null}],
               [
                 true,
                 true,
-                {t1: {r1: {c2: [2, null]}}},
+                {t1: {r1: {c2: [2, undefined]}}},
                 {},
-                {v2: [2, null]},
+                {v2: [2, undefined]},
                 {},
                 {},
                 {},
@@ -5916,14 +5941,14 @@ describe.each([
         });
         test('delete row', () => {
           store.delRow('t1', 'r2');
-          expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
+          expectChangesNoJson(listener, '/start', EMPTY_CHANGES_AND_LOG);
           ['/willFinish', '/didFinish'].forEach((label) =>
-            expectChanges(listener, label, [
+            expectChangesNoJson(listener, label, [
               [{t1: {r2: null}}, {}],
               [
                 true,
                 false,
-                {t1: {r2: {c1: [1, null]}}},
+                {t1: {r2: {c1: [1, undefined]}}},
                 {},
                 {},
                 {},
@@ -5937,15 +5962,18 @@ describe.each([
         });
         test('delete table', () => {
           store.delTable('t1');
-          expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
+          expectChangesNoJson(listener, '/start', EMPTY_CHANGES_AND_LOG);
           ['/willFinish', '/didFinish'].forEach((label) =>
-            expectChanges(listener, label, [
+            expectChangesNoJson(listener, label, [
               [{t1: null}, {}],
               [
                 true,
                 false,
                 {
-                  t1: {r1: {c1: [1, null], c2: [2, null]}, r2: {c1: [1, null]}},
+                  t1: {
+                    r1: {c1: [1, undefined], c2: [2, undefined]},
+                    r2: {c1: [1, undefined]},
+                  },
                 },
                 {},
                 {},
@@ -5960,9 +5988,9 @@ describe.each([
         });
         test('delete everything', () => {
           store.transaction(() => store.delTables().delValues());
-          expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
+          expectChangesNoJson(listener, '/start', EMPTY_CHANGES_AND_LOG);
           ['/willFinish', '/didFinish'].forEach((label) =>
-            expectChanges(listener, label, [
+            expectChangesNoJson(listener, label, [
               [
                 {t1: null, t2: null},
                 {v1: null, v2: null},
@@ -5971,11 +5999,14 @@ describe.each([
                 true,
                 true,
                 {
-                  t1: {r1: {c1: [1, null], c2: [2, null]}, r2: {c1: [1, null]}},
-                  t2: {r1: {c1: [1, null]}},
+                  t1: {
+                    r1: {c1: [1, undefined], c2: [2, undefined]},
+                    r2: {c1: [1, undefined]},
+                  },
+                  t2: {r1: {c1: [1, undefined]}},
                 },
                 {},
-                {v1: [1, null], v2: [2, null]},
+                {v1: [1, undefined], v2: [2, undefined]},
                 {},
                 {t1: -1, t2: -1},
                 {t1: {r1: -1, r2: -1}, t2: {r1: -1}},
@@ -5993,14 +6024,14 @@ describe.each([
       test('in wrapped transaction with rollback', () => {
         store.transaction(
           () => {
-            expectChanges(listener, '/start', EMPTY_CHANGES_AND_LOG);
+            expectChangesNoJson(listener, '/start', EMPTY_CHANGES_AND_LOG);
             store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
             expectNoChanges(listener);
           },
           () => true,
         );
         ['/willFinish', '/didFinish'].forEach((label) =>
-          expectChanges(listener, label, [
+          expectChangesNoJson(listener, label, [
             [{}, {}],
             [false, false, {}, {}, {}, {}, {}, {}, {}, {}],
           ]),
