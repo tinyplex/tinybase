@@ -1,5 +1,5 @@
 import {COMMA, EMPTY_STRING, strRepeat} from '../../common/strings';
-import {Cell, Table, ValueOrUndefined} from '../../types/store';
+import {CellOrUndefined, Table, ValueOrUndefined} from '../../types/store';
 import {
   IdMap2,
   mapEnsure,
@@ -50,11 +50,13 @@ export const getCommandFunctions = (
   saveTable: (
     tableName: string,
     rowIdColumnName: string,
-    content: {
-      [contentId: Id]: {
-        [contentSubId: Id]: Cell | null | ValueOrUndefined;
-      } | null;
-    } | null,
+    content:
+      | {
+          [contentId: Id]:
+            | {[contentSubId: Id]: CellOrUndefined | ValueOrUndefined}
+            | undefined;
+        }
+      | undefined,
     deleteEmptyColumns: boolean,
     deleteEmptyTable: boolean,
     partial?: boolean,
@@ -137,11 +139,13 @@ export const getCommandFunctions = (
   const saveTable = async (
     tableName: string,
     rowIdColumnName: string,
-    content: {
-      [contentId: Id]: {
-        [contentSubId: Id]: Cell | null | ValueOrUndefined;
-      } | null;
-    } | null,
+    content:
+      | {
+          [contentId: Id]:
+            | {[contentSubId: Id]: CellOrUndefined | ValueOrUndefined}
+            | undefined;
+        }
+      | undefined,
     deleteEmptyColumns: boolean,
     deleteEmptyTable: boolean,
     partial = false,
