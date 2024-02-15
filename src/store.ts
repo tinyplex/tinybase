@@ -655,7 +655,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const valueChanged = (
     valueId: Id,
-    oldValue: ValueOrUndefined,
+    oldValue?: ValueOrUndefined,
     newValue?: ValueOrUndefined,
   ): ValueOrUndefined =>
     (mapEnsure<Id, ChangedValue>(changedValues, valueId, () => [
@@ -1374,7 +1374,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     ),
     mapToObj(
       changedValues,
-      ([, newValue]) => newValue ?? null,
+      ([, newValue]) => newValue,
       (_, changedValue) => pairIsEqual(changedValue),
     ),
   ];

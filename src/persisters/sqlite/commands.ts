@@ -1,5 +1,11 @@
-import {COMMA, EMPTY_STRING, strRepeat} from '../../common/strings';
-import {Cell, Table} from '../../types/store';
+import {
+  arrayFilter,
+  arrayIsEmpty,
+  arrayJoin,
+  arrayMap,
+  arrayPush,
+} from '../../common/array';
+import {collDel, collHas, collValues} from '../../common/coll';
 import {
   IdMap2,
   mapEnsure,
@@ -19,18 +25,12 @@ import {
   objToArray,
   objValues,
 } from '../../common/obj';
-import {SELECT, escapeId} from './common';
-import {
-  arrayFilter,
-  arrayIsEmpty,
-  arrayJoin,
-  arrayMap,
-  arrayPush,
-} from '../../common/array';
-import {collDel, collHas, collValues} from '../../common/coll';
 import {isUndefined, promiseAll, size, slice} from '../../common/other';
 import {setAdd, setNew} from '../../common/set';
+import {COMMA, EMPTY_STRING, strRepeat} from '../../common/strings';
 import {Id} from '../../types/common';
+import {Cell, Table, ValueOrUndefined} from '../../types/store';
+import {escapeId, SELECT} from './common';
 
 export type Cmd = (sql: string, args?: any[]) => Promise<IdObj<any>[]>;
 type Schema = IdMap2<string>;
@@ -53,7 +53,11 @@ export const getCommandFunctions = (
   saveTable: (
     tableName: string,
     rowIdColumnName: string,
-    table: Table | {[rowId: Id]: {[cellId: Id]: Cell | null} | null} | null,
+    content: {
+      [contentId: Id]: {
+        [contentSubId: Id]: Cell | null | ValueOrUndefined;
+      } | null;
+    } | null,
     deleteEmptyColumns: boolean,
     deleteEmptyTable: boolean,
     partial?: boolean,
@@ -136,16 +140,22 @@ export const getCommandFunctions = (
   const saveTable = async (
     tableName: string,
     rowIdColumnName: string,
-    table: Table | {[rowId: Id]: {[cellId: Id]: Cell | null} | null} | null,
+    content: {
+      [contentId: Id]: {
+        [contentSubId: Id]: Cell | null | ValueOrUndefined;
+      } | null;
+    } | null,
     deleteEmptyColumns: boolean,
     deleteEmptyTable: boolean,
     partial = false,
   ): Promise<void> => {
-    const tableCellIds = setNew<string>();
-    objToArray(table ?? {}, (row) =>
-      arrayMap(objIds(row ?? {}), (cellId) => setAdd(tableCellIds, cellId)),
+    const tableCellOrValueIds = setNew<string>();
+    objToArray(content ?? {}, (contentRow) =>
+      arrayMap(objIds(contentRow ?? {}), (cellOrValueId) =>
+        setAdd(tableCellOrValueIds, cellOrValueId),
+      ),
     );
-    const tableColumnNames = collValues(tableCellIds);
+    const tableColumnNames = collValues(tableCellOrValueIds);
 
     // Delete the table
     if (
@@ -215,11 +225,11 @@ export const getCommandFunctions = (
 
     // Insert or update or delete data
     if (partial) {
-      if (isUndefined(table)) {
+      if (isUndefined(content)) {
         await cmd(DELETE_FROM + escapeId(tableName) + WHERE + ' 1');
       } else {
         await promiseAll(
-          objToArray(table, async (row, rowId) => {
+          objToArray(content, async (row, rowId) => {
             if (isUndefined(row)) {
               await cmd(
                 DELETE_FROM +
@@ -250,7 +260,7 @@ export const getCommandFunctions = (
         );
         const args: any[] = [];
         const deleteRowIds: string[] = [];
-        objToArray(table ?? {}, (row, rowId) => {
+        objToArray(content ?? {}, (row, rowId) => {
           arrayPush(
             args,
             rowId,
