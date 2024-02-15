@@ -1,5 +1,5 @@
 import {COMMA, EMPTY_STRING, strRepeat} from '../../common/strings';
-import {Cell, Table} from '../../types/store';
+import {Cell, Table, ValueOrUndefined} from '../../types/store';
 import {
   IdMap2,
   mapEnsure,
@@ -50,7 +50,11 @@ export const getCommandFunctions = (
   saveTable: (
     tableName: string,
     rowIdColumnName: string,
-    table: Table | {[rowId: Id]: {[cellId: Id]: Cell | null} | null} | null,
+    content: {
+      [contentId: Id]: {
+        [contentSubId: Id]: Cell | null | ValueOrUndefined;
+      } | null;
+    } | null,
     deleteEmptyColumns: boolean,
     deleteEmptyTable: boolean,
     partial?: boolean,
@@ -133,16 +137,22 @@ export const getCommandFunctions = (
   const saveTable = async (
     tableName: string,
     rowIdColumnName: string,
-    table: Table | {[rowId: Id]: {[cellId: Id]: Cell | null} | null} | null,
+    content: {
+      [contentId: Id]: {
+        [contentSubId: Id]: Cell | null | ValueOrUndefined;
+      } | null;
+    } | null,
     deleteEmptyColumns: boolean,
     deleteEmptyTable: boolean,
     partial = false,
   ): Promise<void> => {
-    const tableCellIds = setNew<string>();
-    objToArray(table ?? {}, (row) =>
-      arrayMap(objIds(row ?? {}), (cellId) => setAdd(tableCellIds, cellId)),
+    const tableCellOrValueIds = setNew<string>();
+    objToArray(content ?? {}, (contentRow) =>
+      arrayMap(objIds(contentRow ?? {}), (cellOrValueId) =>
+        setAdd(tableCellOrValueIds, cellOrValueId),
+      ),
     );
-    const tableColumnNames = collValues(tableCellIds);
+    const tableColumnNames = collValues(tableCellOrValueIds);
 
     // Delete the table
     if (
@@ -207,11 +217,11 @@ export const getCommandFunctions = (
 
     // Insert or update or delete data
     if (partial) {
-      if (isUndefined(table)) {
+      if (isUndefined(content)) {
         await cmd('DELETE FROM' + escapeId(tableName) + 'WHERE 1');
       } else {
         await promiseAll(
-          objToArray(table, async (row, rowId) => {
+          objToArray(content, async (row, rowId) => {
             if (isUndefined(row)) {
               await cmd(
                 'DELETE FROM' +
@@ -242,7 +252,7 @@ export const getCommandFunctions = (
         );
         const args: any[] = [];
         const deleteRowIds: string[] = [];
-        objToArray(table ?? {}, (row, rowId) => {
+        objToArray(content ?? {}, (row, rowId) => {
           arrayPush(
             args,
             rowId,
@@ -332,7 +342,7 @@ const upsert = async (
             COMMA,
           )
         : EMPTY_STRING),
-    args,
+    arrayMap(args, (arg) => arg ?? null),
   );
 
 const getPlaceholders = (array: any[]) =>
