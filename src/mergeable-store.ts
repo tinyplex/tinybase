@@ -79,12 +79,12 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
         tablesStamped[0] = stamp;
         objToArray(changedCells, (changedTable, tableId) => {
           const tableStamped = mapEnsure(tablesStamped[1], tableId, newStamped);
-          tableStamped[0] = stamp;
           const rowsStamped = (tableStamped[1] ??= mapNew());
+          tableStamped[0] = stamp;
           objToArray(changedTable, (changedRow, rowId) => {
             const rowStamped = mapEnsure(rowsStamped, rowId, newStamped);
-            rowStamped[0] = stamp;
             const cellsStamped = (rowStamped[1] ??= mapNew());
+            rowStamped[0] = stamp;
             objToArray(changedRow, ([, newCell], cellId) =>
               mapSet(cellsStamped, cellId, [stamp, newCell ?? null]),
             );
