@@ -635,7 +635,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     tableId: Id,
     rowId: Id,
     cellId: Id,
-    oldCell: CellOrUndefined,
+    oldCell?: CellOrUndefined,
     newCell?: CellOrUndefined,
   ): CellOrUndefined =>
     (mapEnsure<Id, ChangedCell>(
@@ -1357,15 +1357,15 @@ export const createStore: typeof createStoreDecl = (): Store => {
       changedCells,
       (table, tableId) =>
         mapGet(changedTableIds, tableId) === -1
-          ? null
+          ? undefined
           : mapToObj(
               table,
               (row, rowId) =>
                 mapGet(mapGet(changedRowIds, tableId), rowId) === -1
-                  ? null
+                  ? undefined
                   : mapToObj(
                       row,
-                      ([, newCell]) => newCell ?? null,
+                      ([, newCell]) => newCell,
                       (_, changedCell) => pairIsEqual(changedCell),
                     ),
               objIsEmpty,
