@@ -342,7 +342,7 @@ export type Changes = [
   changedTables: {
     [tableId: Id]: {[rowId: Id]: {[cellId: Id]: Cell | null} | null} | null;
   },
-  changedValues: {[valueId: Id]: Value | null},
+  changedValues: {[valueId: Id]: ValueOrUndefined},
 ];
 
 /// TransactionLog
