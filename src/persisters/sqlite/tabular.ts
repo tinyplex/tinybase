@@ -1,5 +1,5 @@
 import {
-  Cell,
+  CellOrUndefined,
   Changes,
   Content,
   Store,
@@ -11,7 +11,7 @@ import {Cmd, getCommandFunctions} from './commands';
 import {DEFAULT_ROW_ID_COLUMN_NAME, SINGLE_ROW_ID} from './common';
 import {Persister, PersisterListener} from '../../types/persisters';
 import {isUndefined, promiseAll} from '../../common/other';
-import {objIsEmpty, objNew} from '../../common/obj';
+import {objHas, objIsEmpty, objNew} from '../../common/obj';
 import {DefaultedTabularConfig} from './config';
 import {Id} from '../../types/common';
 import {arrayFilter} from '../../common/array';
@@ -41,9 +41,9 @@ export const createTabularSqlitePersister = <ListeningHandle>(
     tables:
       | Tables
       | {
-          [tableId: Id]: {
-            [rowId: Id]: {[cellId: Id]: Cell | null} | null;
-          } | null;
+          [tableId: Id]:
+            | {[rowId: Id]: {[cellId: Id]: CellOrUndefined} | undefined}
+            | undefined;
         },
     partial?: boolean,
   ) =>
@@ -54,12 +54,11 @@ export const createTabularSqlitePersister = <ListeningHandle>(
           [tableName, rowIdColumnName, deleteEmptyColumns, deleteEmptyTable],
           tableId,
         ) => {
-          const table = tables[tableId];
-          if (!partial || table !== undefined) {
+          if (!partial || objHas(tables, tableId)) {
             await saveTable(
               tableName,
               rowIdColumnName,
-              table,
+              tables[tableId],
               deleteEmptyColumns,
               deleteEmptyTable,
               partial,
