@@ -4,7 +4,7 @@ import {
   Content,
   Store,
   Tables,
-  Value,
+  ValueOrUndefined,
   Values,
 } from '../../types/store';
 import {Cmd, getCommandFunctions} from './commands';
@@ -70,11 +70,7 @@ export const createTabularSqlitePersister = <ListeningHandle>(
     );
 
   const saveValues = async (
-    values:
-      | Values
-      | {
-          [valueId: Id]: Value | null;
-        },
+    values: Values | {[valueId: Id]: ValueOrUndefined},
     partial?: boolean,
   ) =>
     valuesSave
