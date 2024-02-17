@@ -5,7 +5,7 @@ import {EMPTY_STRING} from '../common/strings';
 import {Id} from '../types/common';
 import {isUndefined} from '../common/other';
 
-export const newStamped = (): Stamped<any> => [EMPTY_STRING, null];
+export const newStamped = (): Stamped<any> => [EMPTY_STRING, undefined];
 
 export const newStampedMap = <Thing>(): Stamped<IdMap<Thing>> => [
   EMPTY_STRING,
@@ -13,12 +13,12 @@ export const newStampedMap = <Thing>(): Stamped<IdMap<Thing>> => [
 ];
 
 export const mapStampedMapToObj = <MapValue, ObjValue = MapValue>(
-  stampedMap: Stamped<IdMap<MapValue> | null>,
+  stampedMap: Stamped<IdMap<MapValue> | undefined>,
   mapper: (mapValue: MapValue) => ObjValue,
-): Stamped<IdObj<ObjValue> | null> =>
+): Stamped<IdObj<ObjValue> | undefined> =>
   mapStamped(stampedMap, (map, stamp) => [
     stamp,
-    isUndefined(map) ? null : mapToObj(map, mapper),
+    isUndefined(map) ? undefined : mapToObj(map, mapper),
   ]);
 
 export const mapStamped = <StampedValue, ToValue>(
@@ -36,7 +36,7 @@ export const mergeStamped = <NewThing, CurrentThing>(
   ifNewer: 0 | 1 = 0,
 ) => {
   const isNewer = newStamp > currentStampedThing[0];
-  if ((!ifNewer && currentStampedThing[1] !== null) || isNewer) {
+  if ((!ifNewer && currentStampedThing[1] !== undefined) || isNewer) {
     currentStampedThing[1] = getNextCurrentThing(
       newThing,
       currentStampedThing[1],
@@ -49,14 +49,14 @@ export const mergeStamped = <NewThing, CurrentThing>(
 };
 
 export const mergeEachStamped = <Thing>(
-  thingStamps: IdObj<Stamped<Thing | null>>,
-  allThingStamps: IdMap<Stamped<any>> | null,
+  thingStamps: IdObj<Stamped<Thing | undefined>>,
+  allThingStamps: IdMap<Stamped<any>> | undefined,
   changes: any,
   forEachThing?: (
-    newThing: Thing | null,
+    newThing: Thing | undefined,
     currentThing: any,
     thingId: Id,
-  ) => Thing | null,
+  ) => Thing | undefined,
 ): any => {
   objForEach(thingStamps, (thingStamp, thingId) =>
     mergeStamped(
@@ -64,7 +64,7 @@ export const mergeEachStamped = <Thing>(
       mapEnsure(allThingStamps!, thingId, newStamped),
       (newThing, currentThing) => {
         if (!forEachThing || isUndefined(newThing)) {
-          return (changes[thingId] = newThing ?? null);
+          return (changes[thingId] = newThing ?? undefined);
         }
         currentThing ??= mapNew();
         changes[thingId] = {};
