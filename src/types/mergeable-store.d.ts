@@ -1,20 +1,18 @@
 /// mergeable-store
 
-import {Cell, Store, Value} from './store.d';
+import {CellOrUndefined, Store, ValueOrUndefined} from './store.d';
 import {Id} from './common';
 import {IdObj} from '../common/obj';
 
 export type Stamp = string;
 export type Stamped<Thing> = [stamp: Stamp, thing: Thing];
 
-type MergeableCell = Stamped<Cell | null>;
-type MergeableRow = Stamped<IdObj<MergeableCell> | null>;
-type MergeableTable = Stamped<IdObj<MergeableRow> | null>;
+type MergeableCell = Stamped<CellOrUndefined>;
+type MergeableRow = Stamped<IdObj<MergeableCell>>;
+type MergeableTable = Stamped<IdObj<MergeableRow>>;
 type MergeableTables = Stamped<IdObj<MergeableTable>>;
-
-type MergeableValue = Stamped<Value | null>;
+type MergeableValue = Stamped<ValueOrUndefined>;
 type MergeableValues = Stamped<IdObj<MergeableValue>>;
-
 export type MergeableContent = Stamped<
   [mergeableTables: MergeableTables, mergeableValues: MergeableValues]
 >;
