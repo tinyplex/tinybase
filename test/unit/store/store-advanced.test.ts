@@ -33,7 +33,7 @@ describe.each([
     );
 
     test('delete table', () => {
-      store.applyChanges([{t2: null}, {}]);
+      store.applyChanges([{t2: undefined}, {}]);
       expect(store.getTables()).toEqual({
         t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}},
       });
@@ -41,7 +41,7 @@ describe.each([
     });
 
     test('delete row', () => {
-      store.applyChanges([{t1: {r2: null}}, {}]);
+      store.applyChanges([{t1: {r2: undefined}}, {}]);
       expect(store.getTables()).toEqual({
         t1: {r1: {c1: 1, c2: 2}},
         t2: {r1: {c1: 1}},
@@ -50,7 +50,7 @@ describe.each([
     });
 
     test('delete cell', () => {
-      store.applyChanges([{t1: {r1: {c2: null}}}, {}]);
+      store.applyChanges([{t1: {r1: {c2: undefined}}}, {}]);
       expect(store.getTables()).toEqual({
         t1: {r1: {c1: 1}, r2: {c1: 1}},
         t2: {r1: {c1: 1}},
@@ -59,7 +59,7 @@ describe.each([
     });
 
     test('delete value', () => {
-      store.applyChanges([{}, {v2: null}]);
+      store.applyChanges([{}, {v2: undefined}]);
       expect(store.getTables()).toEqual({
         t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}},
         t2: {r1: {c1: 1}},
@@ -87,8 +87,8 @@ describe.each([
 
     test('multiple changes', () => {
       store.applyChanges([
-        {t1: {r1: {c1: 2, c2: null}, r2: null}, t2: null},
-        {v1: 2, v2: null},
+        {t1: {r1: {c1: 2, c2: undefined}, r2: undefined}, t2: undefined},
+        {v1: 2, v2: undefined},
       ]);
       expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
       expect(store.getValues()).toEqual({v1: 2});
