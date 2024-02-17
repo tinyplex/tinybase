@@ -227,13 +227,15 @@ describe('getMergeableContent', () => {
           t1: stamped1(0, 3, {
             r1: stamped1(0, 2, {
               c1: stamped1(0, 1, 1),
-              c2: stamped1(0, 2, null),
+              c2: stamped1(0, 2, undefined),
             }),
-            r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
+            r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
           }),
-          t2: stamped1(0, 4, {r1: stamped1(0, 4, {c1: stamped1(0, 4, null)})}),
+          t2: stamped1(0, 4, {
+            r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
+          }),
         }),
-        stamped1(0, 6, {v1: stamped1(0, 5, 5), v2: stamped1(0, 6, null)}),
+        stamped1(0, 6, {v1: stamped1(0, 5, 5), v2: stamped1(0, 6, undefined)}),
       ]),
     );
   });
@@ -469,7 +471,7 @@ describe('Merge', () => {
             t1: stamped1(0, 2, {
               r1: stamped1(0, 2, {
                 c1: stamped1(0, 1, 1),
-                c2: stamped1(0, 2, null),
+                c2: stamped1(0, 2, undefined),
               }),
               r2: stamped1(0, 0, {c1: stamped1(0, 0, 0)}),
             }),
@@ -490,7 +492,7 @@ describe('Merge', () => {
             t1: stamped1(0, 2, {
               r1: stamped1(0, 2, {
                 c1: stamped1(0, 1, 1),
-                c2: stamped1(0, 2, null),
+                c2: stamped1(0, 2, undefined),
               }),
               r2: stamped1(0, 0, {c1: stamped1(0, 0, 0)}),
             }),
@@ -509,9 +511,9 @@ describe('Merge', () => {
             t1: stamped1(0, 3, {
               r1: stamped1(0, 2, {
                 c1: stamped1(0, 1, 1),
-                c2: stamped1(0, 2, null),
+                c2: stamped1(0, 2, undefined),
               }),
-              r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
+              r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
             }),
             t2: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 0)})}),
           }),
@@ -530,9 +532,9 @@ describe('Merge', () => {
             t1: stamped1(0, 3, {
               r1: stamped1(0, 2, {
                 c1: stamped1(0, 1, 1),
-                c2: stamped1(0, 2, null),
+                c2: stamped1(0, 2, undefined),
               }),
-              r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
+              r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
             }),
             t2: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 0)})}),
           }),
@@ -549,12 +551,12 @@ describe('Merge', () => {
             t1: stamped1(0, 3, {
               r1: stamped1(0, 2, {
                 c1: stamped1(0, 1, 1),
-                c2: stamped1(0, 2, null),
+                c2: stamped1(0, 2, undefined),
               }),
-              r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
+              r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
             }),
             t2: stamped1(0, 4, {
-              r1: stamped1(0, 4, {c1: stamped1(0, 4, null)}),
+              r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
             }),
           }),
           nullStamped({}),
@@ -569,12 +571,12 @@ describe('Merge', () => {
             t1: stamped1(0, 3, {
               r1: stamped1(0, 2, {
                 c1: stamped1(0, 1, 1),
-                c2: stamped1(0, 2, null),
+                c2: stamped1(0, 2, undefined),
               }),
-              r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
+              r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
             }),
             t2: stamped1(0, 4, {
-              r1: stamped1(0, 4, {c1: stamped1(0, 4, null)}),
+              r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
             }),
           }),
           nullStamped({}),
@@ -590,12 +592,12 @@ describe('Merge', () => {
             t1: stamped1(0, 3, {
               r1: stamped1(0, 2, {
                 c1: stamped1(0, 1, 1),
-                c2: stamped1(0, 2, null),
+                c2: stamped1(0, 2, undefined),
               }),
-              r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
+              r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
             }),
             t2: stamped1(0, 5, {
-              r1: stamped1(0, 4, {c1: stamped1(0, 4, null)}),
+              r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
               r2: stamped1(0, 5, {c2: stamped1(0, 5, 2)}),
             }),
           }),
@@ -614,12 +616,12 @@ describe('Merge', () => {
             t1: stamped1(0, 3, {
               r1: stamped1(0, 2, {
                 c1: stamped1(0, 1, 1),
-                c2: stamped1(0, 2, null),
+                c2: stamped1(0, 2, undefined),
               }),
-              r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
+              r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
             }),
             t2: stamped1(0, 5, {
-              r1: stamped1(0, 4, {c1: stamped1(0, 4, null)}),
+              r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
               r2: stamped1(0, 5, {c2: stamped1(0, 5, 2)}),
             }),
           }),
@@ -635,14 +637,14 @@ describe('Merge', () => {
           stamped1(0, 6, {
             t1: stamped1(0, 6, {
               r1: stamped1(0, 6, {
-                c1: stamped1(0, 6, null),
-                c2: stamped1(0, 2, null),
+                c1: stamped1(0, 6, undefined),
+                c2: stamped1(0, 2, undefined),
               }),
-              r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
+              r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
             }),
             t2: stamped1(0, 6, {
-              r1: stamped1(0, 4, {c1: stamped1(0, 4, null)}),
-              r2: stamped1(0, 6, {c2: stamped1(0, 6, null)}),
+              r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
+              r2: stamped1(0, 6, {c2: stamped1(0, 6, undefined)}),
             }),
           }),
           nullStamped({}),
@@ -656,14 +658,14 @@ describe('Merge', () => {
           stamped1(0, 6, {
             t1: stamped1(0, 6, {
               r1: stamped1(0, 6, {
-                c1: stamped1(0, 6, null),
-                c2: stamped1(0, 2, null),
+                c1: stamped1(0, 6, undefined),
+                c2: stamped1(0, 2, undefined),
               }),
-              r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
+              r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
             }),
             t2: stamped1(0, 6, {
-              r1: stamped1(0, 4, {c1: stamped1(0, 4, null)}),
-              r2: stamped1(0, 6, {c2: stamped1(0, 6, null)}),
+              r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
+              r2: stamped1(0, 6, {c2: stamped1(0, 6, undefined)}),
             }),
           }),
           nullStamped({}),
@@ -678,14 +680,14 @@ describe('Merge', () => {
           stamped1(0, 6, {
             t1: stamped1(0, 6, {
               r1: stamped1(0, 6, {
-                c1: stamped1(0, 6, null),
-                c2: stamped1(0, 2, null),
+                c1: stamped1(0, 6, undefined),
+                c2: stamped1(0, 2, undefined),
               }),
-              r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
+              r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
             }),
             t2: stamped1(0, 6, {
-              r1: stamped1(0, 4, {c1: stamped1(0, 4, null)}),
-              r2: stamped1(0, 6, {c2: stamped1(0, 6, null)}),
+              r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
+              r2: stamped1(0, 6, {c2: stamped1(0, 6, undefined)}),
             }),
           }),
           stamped1(0, 7, {v1: stamped1(0, 7, 0), v2: stamped1(0, 7, 0)}),
@@ -699,14 +701,14 @@ describe('Merge', () => {
           stamped1(0, 6, {
             t1: stamped1(0, 6, {
               r1: stamped1(0, 6, {
-                c1: stamped1(0, 6, null),
-                c2: stamped1(0, 2, null),
+                c1: stamped1(0, 6, undefined),
+                c2: stamped1(0, 2, undefined),
               }),
-              r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
+              r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
             }),
             t2: stamped1(0, 6, {
-              r1: stamped1(0, 4, {c1: stamped1(0, 4, null)}),
-              r2: stamped1(0, 6, {c2: stamped1(0, 6, null)}),
+              r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
+              r2: stamped1(0, 6, {c2: stamped1(0, 6, undefined)}),
             }),
           }),
           stamped1(0, 7, {v1: stamped1(0, 7, 0), v2: stamped1(0, 7, 0)}),
@@ -721,14 +723,14 @@ describe('Merge', () => {
           stamped1(0, 6, {
             t1: stamped1(0, 6, {
               r1: stamped1(0, 6, {
-                c1: stamped1(0, 6, null),
-                c2: stamped1(0, 2, null),
+                c1: stamped1(0, 6, undefined),
+                c2: stamped1(0, 2, undefined),
               }),
-              r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
+              r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
             }),
             t2: stamped1(0, 6, {
-              r1: stamped1(0, 4, {c1: stamped1(0, 4, null)}),
-              r2: stamped1(0, 6, {c2: stamped1(0, 6, null)}),
+              r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
+              r2: stamped1(0, 6, {c2: stamped1(0, 6, undefined)}),
             }),
           }),
           stamped1(0, 8, {v1: stamped1(0, 8, 1), v2: stamped1(0, 7, 0)}),
@@ -742,14 +744,14 @@ describe('Merge', () => {
           stamped1(0, 6, {
             t1: stamped1(0, 6, {
               r1: stamped1(0, 6, {
-                c1: stamped1(0, 6, null),
-                c2: stamped1(0, 2, null),
+                c1: stamped1(0, 6, undefined),
+                c2: stamped1(0, 2, undefined),
               }),
-              r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
+              r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
             }),
             t2: stamped1(0, 6, {
-              r1: stamped1(0, 4, {c1: stamped1(0, 4, null)}),
-              r2: stamped1(0, 6, {c2: stamped1(0, 6, null)}),
+              r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
+              r2: stamped1(0, 6, {c2: stamped1(0, 6, undefined)}),
             }),
           }),
           stamped1(0, 8, {v1: stamped1(0, 8, 1), v2: stamped1(0, 7, 0)}),
@@ -764,17 +766,20 @@ describe('Merge', () => {
           stamped1(0, 6, {
             t1: stamped1(0, 6, {
               r1: stamped1(0, 6, {
-                c1: stamped1(0, 6, null),
-                c2: stamped1(0, 2, null),
+                c1: stamped1(0, 6, undefined),
+                c2: stamped1(0, 2, undefined),
               }),
-              r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
+              r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
             }),
             t2: stamped1(0, 6, {
-              r1: stamped1(0, 4, {c1: stamped1(0, 4, null)}),
-              r2: stamped1(0, 6, {c2: stamped1(0, 6, null)}),
+              r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
+              r2: stamped1(0, 6, {c2: stamped1(0, 6, undefined)}),
             }),
           }),
-          stamped1(0, 9, {v1: stamped1(0, 8, 1), v2: stamped1(0, 9, null)}),
+          stamped1(0, 9, {
+            v1: stamped1(0, 8, 1),
+            v2: stamped1(0, 9, undefined),
+          }),
         ]),
       );
 
@@ -785,17 +790,20 @@ describe('Merge', () => {
           stamped1(0, 6, {
             t1: stamped1(0, 6, {
               r1: stamped1(0, 6, {
-                c1: stamped1(0, 6, null),
-                c2: stamped1(0, 2, null),
+                c1: stamped1(0, 6, undefined),
+                c2: stamped1(0, 2, undefined),
               }),
-              r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
+              r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
             }),
             t2: stamped1(0, 6, {
-              r1: stamped1(0, 4, {c1: stamped1(0, 4, null)}),
-              r2: stamped1(0, 6, {c2: stamped1(0, 6, null)}),
+              r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
+              r2: stamped1(0, 6, {c2: stamped1(0, 6, undefined)}),
             }),
           }),
-          stamped1(0, 9, {v1: stamped1(0, 8, 1), v2: stamped1(0, 9, null)}),
+          stamped1(0, 9, {
+            v1: stamped1(0, 8, 1),
+            v2: stamped1(0, 9, undefined),
+          }),
         ]),
       );
     });
@@ -807,19 +815,19 @@ describe('Merge', () => {
           stamped1(0, 6, {
             t1: stamped1(0, 6, {
               r1: stamped1(0, 6, {
-                c1: stamped1(0, 6, null),
-                c2: stamped1(0, 2, null),
+                c1: stamped1(0, 6, undefined),
+                c2: stamped1(0, 2, undefined),
               }),
-              r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
+              r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
             }),
             t2: stamped1(0, 6, {
-              r1: stamped1(0, 4, {c1: stamped1(0, 4, null)}),
-              r2: stamped1(0, 6, {c2: stamped1(0, 6, null)}),
+              r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
+              r2: stamped1(0, 6, {c2: stamped1(0, 6, undefined)}),
             }),
           }),
           stamped1(0, 10, {
-            v1: stamped1(0, 10, null),
-            v2: stamped1(0, 9, null),
+            v1: stamped1(0, 10, undefined),
+            v2: stamped1(0, 9, undefined),
           }),
         ]),
       );
@@ -831,19 +839,19 @@ describe('Merge', () => {
           stamped1(0, 6, {
             t1: stamped1(0, 6, {
               r1: stamped1(0, 6, {
-                c1: stamped1(0, 6, null),
-                c2: stamped1(0, 2, null),
+                c1: stamped1(0, 6, undefined),
+                c2: stamped1(0, 2, undefined),
               }),
-              r2: stamped1(0, 3, {c1: stamped1(0, 3, null)}),
+              r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
             }),
             t2: stamped1(0, 6, {
-              r1: stamped1(0, 4, {c1: stamped1(0, 4, null)}),
-              r2: stamped1(0, 6, {c2: stamped1(0, 6, null)}),
+              r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
+              r2: stamped1(0, 6, {c2: stamped1(0, 6, undefined)}),
             }),
           }),
           stamped1(0, 10, {
-            v1: stamped1(0, 10, null),
-            v2: stamped1(0, 9, null),
+            v1: stamped1(0, 10, undefined),
+            v2: stamped1(0, 9, undefined),
           }),
         ]),
       );
@@ -1056,19 +1064,19 @@ describe('Merge', () => {
         del8: stamped1(0, 8, [
           stamped1(0, 8, {
             t1: stamped1(0, 8, {
-              r1: stamped1(0, 8, {c2: stamped1(0, 8, null)}),
+              r1: stamped1(0, 8, {c2: stamped1(0, 8, undefined)}),
             }),
           }),
-          stamped1(0, 8, {v2: stamped1(0, 8, null)}),
+          stamped1(0, 8, {v2: stamped1(0, 8, undefined)}),
         ]),
 
         del9: stamped1(0, 9, [
-          stamped1(0, 9, {t1: stamped1(0, 9, {r2: stamped1(0, 9, null)})}),
+          stamped1(0, 9, {t1: stamped1(0, 9, {r2: stamped1(0, 9, undefined)})}),
           stamped1(0, 5, {}),
         ]),
 
         del10: stamped1(0, 10, [
-          stamped1(0, 10, {t2: stamped1(0, 10, null)}),
+          stamped1(0, 10, {t2: stamped1(0, 10, undefined)}),
           stamped1(0, 5, {}),
         ]),
       } as any as {[id: string]: MergeableContent};
@@ -1174,7 +1182,7 @@ describe('Merge', () => {
         stamped1(2, 0, [
           stamped1(2, 0, {
             t1: stamped1(2, 0, {
-              r1: stamped1(2, 0, {c1: stamped1(2, 0, null)}),
+              r1: stamped1(2, 0, {c1: stamped1(2, 0, undefined)}),
             }),
           }),
           nullStamped({}),
