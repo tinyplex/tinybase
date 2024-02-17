@@ -1,11 +1,13 @@
-import {Cell, Changes, Store, Value} from './types/store';
+import {Changes, Store} from './types/store';
 import {EMPTY_STRING, strEndsWith, strStartsWith} from './common/strings';
 import {IdMap, mapEnsure, mapNew, mapSet} from './common/map';
 import {IdObj, objFreeze, objToArray} from './common/obj';
 import {
+  MergeableCell,
   MergeableChanges,
   MergeableContent,
   MergeableStore,
+  MergeableValue,
   Stamped,
   createMergeableStore as createMergeableStoreDecl,
 } from './types/mergeable-store';
@@ -42,14 +44,15 @@ const LISTENER_ARGS: IdObj<number> = {
   InvalidValue: 1,
 };
 
-type ContentStampedMap = Stamped<
-  [
-    Stamped<IdMap<Stamped<IdMap<Stamped<IdMap<Stamped<Cell | null>>>>>>>,
-    Stamped<IdMap<Stamped<Value | null>>>,
-  ]
+type MergeableRowMap = Stamped<IdMap<MergeableCell>>;
+type MergeableTableMap = Stamped<IdMap<MergeableRowMap>>;
+type MergeableTablesMap = Stamped<IdMap<MergeableTableMap>>;
+type MergeableValuesMap = Stamped<IdMap<MergeableValue>>;
+type MergeableContentMap = Stamped<
+  [mergeableTables: MergeableTablesMap, mergeableValues: MergeableValuesMap]
 >;
 
-const newContentStampedMap = (): ContentStampedMap => [
+const newContentStampedMap = (): MergeableContentMap => [
   EMPTY_STRING,
   [newStampedMap(), newStampedMap()],
 ];
@@ -86,7 +89,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
             const cellsStamped = (rowStamped[1] ??= mapNew());
             rowStamped[0] = stamp;
             objToArray(changedRow, ([, newCell], cellId) =>
-              mapSet(cellsStamped, cellId, [stamp, newCell ?? null]),
+              mapSet(cellsStamped, cellId, [stamp, newCell]),
             );
           });
         });
@@ -94,7 +97,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
       if (valuesTouched) {
         valuesStamped[0] = stamp;
         objToArray(changedValues, ([, newValue], valueId) => {
-          mapSet(valuesStamped[1], valueId, [stamp, newValue ?? null]);
+          mapSet(valuesStamped[1], valueId, [stamp, newValue]);
         });
       }
     }
@@ -169,7 +172,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
             (valueStamps, allValueStamps) =>
               mergeEachStamped(valueStamps, allValueStamps, changes[1]),
           ),
-        ] as ContentStampedMap[1],
+        ] as MergeableContentMap[1],
     );
     disableListening(() => store.applyChanges(changes));
     return mergeableStore as MergeableStore;
