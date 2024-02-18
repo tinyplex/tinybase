@@ -26,50 +26,51 @@ export const mapStampedMapToObj = <FromValue, ToValue = FromValue>(
 export const mergeStamped = <NewThing, CurrentThing>(
   [newStamp, newThing]: Stamped<NewThing>,
   currentStampedThing: Stamped<CurrentThing>,
-  getNextCurrentThing: (
-    newThing: NewThing,
-    currentThing: CurrentThing,
-  ) => CurrentThing,
+  mergeThing: (newThing: NewThing, currentThing: CurrentThing) => CurrentThing,
   ifNewer: 0 | 1 = 0,
-) => {
-  const isNewer = newStamp > currentStampedThing[0];
+): Stamped<CurrentThing> => {
+  const currentStamp = currentStampedThing[0];
+  const isNewer = newStamp > currentStamp;
   if ((!ifNewer && currentStampedThing[1] !== undefined) || isNewer) {
-    currentStampedThing[1] = getNextCurrentThing(
-      newThing,
-      currentStampedThing[1],
-    );
+    currentStampedThing[1] = mergeThing(newThing, currentStampedThing[1]);
   }
   if (isNewer) {
     currentStampedThing[0] = newStamp;
   }
-  return currentStampedThing;
+  return [currentStampedThing[0], currentStampedThing[1]];
 };
 
 export const mergeEachStamped = <Thing>(
   thingStamps: IdObj<Stamped<Thing | undefined>>,
-  allThingStamps: IdMap<Stamped<any>> | undefined,
+  thingStampsMap: IdMap<Stamped<any>> | undefined,
   changes: any,
   forEachThing?: (
-    newThing: Thing | undefined,
+    newThing: Thing,
     currentThing: any,
     thingId: Id,
   ) => Thing | undefined,
 ): any => {
   objForEach(thingStamps, (thingStamp, thingId) =>
-    mergeStamped(
-      thingStamp,
-      mapEnsure(allThingStamps!, thingId, newStamped),
-      (newThing, currentThing) => {
-        if (!forEachThing || isUndefined(newThing)) {
-          return (changes[thingId] = newThing ?? undefined);
-        }
-        currentThing ??= mapNew();
-        changes[thingId] = {};
-        forEachThing(newThing, currentThing, thingId);
-        return currentThing;
-      },
-      forEachThing ? 0 : 1,
-    ),
+    forEachThing
+      ? mergeStamped(
+          thingStamp,
+          mapEnsure(thingStampsMap!, thingId, newStamped),
+          (newThing, currentThing) => {
+            if (isUndefined(newThing)) {
+              return (changes[thingId] = newThing);
+            }
+            currentThing ??= mapNew();
+            changes[thingId] = {};
+            forEachThing(newThing, currentThing, thingId);
+            return currentThing;
+          },
+        )
+      : mergeStamped(
+          thingStamp,
+          mapEnsure(thingStampsMap!, thingId, newStamped),
+          (newThing) => (changes[thingId] = newThing),
+          1,
+        ),
   );
-  return allThingStamps;
+  return thingStampsMap;
 };
