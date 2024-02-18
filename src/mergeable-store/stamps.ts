@@ -12,19 +12,16 @@ export const newStampedMap = <Thing>(): Stamped<IdMap<Thing>> => [
   mapNew<Id, Thing>(),
 ];
 
-export const mapStampedMapToObj = <MapValue, ObjValue = MapValue>(
-  stampedMap: Stamped<IdMap<MapValue> | undefined>,
-  mapper: (mapValue: MapValue) => ObjValue,
-): Stamped<IdObj<ObjValue> | undefined> =>
-  mapStamped(stampedMap, (map, stamp) => [
-    stamp,
-    isUndefined(map) ? undefined : mapToObj(map, mapper),
-  ]);
+export const mapStamped = <FromValue, ToValue>(
+  [stamp, value]: Stamped<FromValue>,
+  mapper: (value: FromValue, stamp: Stamp) => ToValue,
+): Stamped<ToValue> => [stamp, mapper(value, stamp)];
 
-export const mapStamped = <StampedValue, ToValue>(
-  [stamp, value]: Stamped<StampedValue>,
-  mapper: (value: StampedValue, stamp: Stamp) => ToValue,
-): ToValue => mapper(value, stamp);
+export const mapStampedMapToObj = <FromValue, ToValue = FromValue>(
+  stampedMap: Stamped<IdMap<FromValue>>,
+  mapper: (mapValue: FromValue) => ToValue,
+): Stamped<IdObj<ToValue>> =>
+  mapStamped(stampedMap, (map) => mapToObj(map, mapper));
 
 export const mergeStamped = <NewThing, CurrentThing>(
   [newStamp, newThing]: Stamped<NewThing>,

@@ -111,16 +111,13 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   };
 
   const getMergeableContent = () =>
-    mapStamped(contentStampMap, ([allTablesStamp, allValuesStamp], stamp) => [
-      stamp,
-      [
-        mapStampedMapToObj(allTablesStamp, (allRowStamp) =>
-          mapStampedMapToObj(allRowStamp, (allCellsStamp) =>
-            mapStampedMapToObj(allCellsStamp, pairClone),
-          ),
+    mapStamped(contentStampMap, ([tablesStamp, valuesStamp]) => [
+      mapStampedMapToObj(tablesStamp, (rowsStamp) =>
+        mapStampedMapToObj(rowsStamp, (cellsStamp) =>
+          mapStampedMapToObj(cellsStamp, pairClone),
         ),
-        mapStampedMapToObj(allValuesStamp, pairClone),
-      ],
+      ),
+      mapStampedMapToObj(valuesStamp, pairClone),
     ]);
 
   const setMergeableContent = (mergeableContent: MergeableContent) => {
