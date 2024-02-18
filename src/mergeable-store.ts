@@ -139,37 +139,37 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     mergeStamped(
       mergeableChanges,
       contentStampMap,
-      ([tablesStamp, valuesStamp], [allTablesStamp, allValuesStamp]) =>
-        [
-          mergeStamped(
-            tablesStamp,
-            allTablesStamp,
-            (tableStamps, allTableStamps) =>
-              mergeEachStamped(
-                tableStamps,
-                allTableStamps,
-                changes[0],
-                (rowStamps, allRowStamps, tableId) =>
-                  mergeEachStamped(
-                    rowStamps!,
-                    allRowStamps,
-                    changes[0][tableId]!,
-                    (cellStamps, allCellStamps, rowId) =>
-                      mergeEachStamped(
-                        cellStamps!,
-                        allCellStamps,
-                        changes[0][tableId]![rowId]!,
-                      ),
-                  ),
-              ),
-          ),
-          mergeStamped(
-            valuesStamp,
-            allValuesStamp,
-            (valueStamps, allValueStamps) =>
-              mergeEachStamped(valueStamps, allValueStamps, changes[1]),
-          ),
-        ] as MergeableContentMap[1],
+      ([tablesStamp, valuesStamp], contentMap) => {
+        contentMap[0] = mergeStamped(
+          tablesStamp,
+          contentMap[0],
+          (tableStamps, allTableStamps) =>
+            mergeEachStamped(
+              tableStamps,
+              allTableStamps,
+              changes[0],
+              (rowStamps, allRowStamps, tableId) =>
+                mergeEachStamped(
+                  rowStamps!,
+                  allRowStamps,
+                  changes[0][tableId]!,
+                  (cellStamps, cellStampsMap, rowId) =>
+                    mergeEachStamped(
+                      cellStamps!,
+                      cellStampsMap,
+                      changes[0][tableId]![rowId]!,
+                    ),
+                ),
+            ),
+        );
+        contentMap[1] = mergeStamped(
+          valuesStamp,
+          contentMap[1],
+          (valueStamps, allValueStamps) =>
+            mergeEachStamped(valueStamps, allValueStamps, changes[1]),
+        );
+        return contentMap;
+      },
     );
     disableListening(() => store.applyChanges(changes));
     return mergeableStore as MergeableStore;
