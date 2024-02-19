@@ -23,54 +23,71 @@ export const mapStampedMapToObj = <FromValue, ToValue = FromValue>(
 ): Stamped<IdObj<ToValue>> =>
   mapStamped(stampedMap, (map) => mapToObj(map, mapper));
 
-export const mergeStamped = <NewThing, CurrentThing>(
-  [newStamp, newThing]: Stamped<NewThing>,
-  currentStampedThing: Stamped<CurrentThing>,
-  mergeThing: (newThing: NewThing, currentThing: CurrentThing) => CurrentThing,
-  ifNewer: 0 | 1 = 0,
-): Stamped<CurrentThing> => {
-  const currentStamp = currentStampedThing[0];
-  const isNewer = newStamp > currentStamp;
-  if ((!ifNewer && currentStampedThing[1] !== undefined) || isNewer) {
-    currentStampedThing[1] = mergeThing(newThing, currentStampedThing[1]);
+export const mergeStampedX = <NewX, CurrentX>(
+  [newStamp, newX]: Stamped<NewX>,
+  currentStampedX: Stamped<CurrentX>,
+  mergeX: (newX: NewX, currentX: CurrentX) => CurrentX,
+): void => {
+  const isNewer = newStamp > currentStampedX[0];
+  if (currentStampedX[1] !== undefined || isNewer) {
+    currentStampedX[1] = mergeX(newX, currentStampedX[1]);
   }
   if (isNewer) {
-    currentStampedThing[0] = newStamp;
+    currentStampedX[0] = newStamp;
   }
-  return [currentStampedThing[0], currentStampedThing[1]];
 };
 
-export const mergeEachStamped = <Thing>(
-  thingStamps: IdObj<Stamped<Thing | undefined>>,
-  thingStampsMap: IdMap<Stamped<any>> | undefined,
+export const mergeEachStampedNode = <Node>(
+  newStampedNodes: IdObj<Stamped<Node | undefined>>,
+  stampedNodesMap: IdMap<Stamped<Node | any>> | undefined,
   changes: any,
-  forEachThing?: (
-    newThing: Thing,
-    currentThing: any,
-    thingId: Id,
-  ) => Thing | undefined,
-): any => {
-  objForEach(thingStamps, (thingStamp, thingId) =>
-    forEachThing
-      ? mergeStamped(
-          thingStamp,
-          mapEnsure(thingStampsMap!, thingId, newStamped),
-          (newThing, currentThing) => {
-            if (isUndefined(newThing)) {
-              return (changes[thingId] = newThing);
-            }
-            currentThing ??= mapNew();
-            changes[thingId] = {};
-            forEachThing(newThing, currentThing, thingId);
-            return currentThing;
-          },
-        )
-      : mergeStamped(
-          thingStamp,
-          mapEnsure(thingStampsMap!, thingId, newStamped),
-          (newThing) => (changes[thingId] = newThing),
-          1,
-        ),
+  forEachChildNode: (newThing: Node, currentThing: any, thingId: Id) => void,
+): void =>
+  objForEach(newStampedNodes, (thingStamp, thingId) =>
+    mergeStampedX(
+      thingStamp,
+      mapEnsure(stampedNodesMap!, thingId, newStamped),
+      (newThing, currentThing) => {
+        if (isUndefined(newThing)) {
+          return (changes[thingId] = newThing);
+        }
+        currentThing ??= mapNew();
+        changes[thingId] = {};
+        forEachChildNode(newThing, currentThing, thingId);
+        return currentThing;
+      },
+    ),
   );
-  return thingStampsMap;
+
+export const mergeStampedNode = <Children, ChildrenMap>(
+  [newStamp, newChildren]: Stamped<Children>,
+  stampedChildrenMap: Stamped<ChildrenMap>,
+  changes: IdObj<any>,
+  mergeStampedChildren: (
+    newStampedChildren: Children,
+    stampedChildrenMap: ChildrenMap,
+    changes: any,
+  ) => void,
+): void => {
+  const isNewer = newStamp > stampedChildrenMap[0];
+  if (isNewer) {
+    stampedChildrenMap[0] = newStamp;
+  }
+  if (stampedChildrenMap[1] !== undefined || isNewer) {
+    mergeStampedChildren(newChildren, stampedChildrenMap[1], changes);
+  }
 };
+
+export const mergeStampedLeaves = <Leaf>(
+  newStampedLeaves: IdObj<Stamped<Leaf | undefined>>,
+  stampedLeavesMap: IdMap<Stamped<Leaf | undefined>>,
+  changes: IdObj<Leaf | undefined>,
+): void =>
+  objForEach(newStampedLeaves, (newStampedLeaf, leafId) => {
+    const stampedLeaf = mapEnsure(stampedLeavesMap, leafId, newStamped);
+    const [newStamp, newLeaf] = newStampedLeaf;
+    if (newStamp > stampedLeaf[0]) {
+      stampedLeaf[0] = newStamp;
+      stampedLeaf[1] = changes[leafId] = newLeaf;
+    }
+  });
