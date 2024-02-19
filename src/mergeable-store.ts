@@ -75,29 +75,29 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
       const stamp = getHlc();
       const [cellsTouched, valuesTouched, changedCells, , changedValues] =
         store.getTransactionLog();
-      const [tablesStamped, valuesStamped] = contentStamp[1];
+      const [tablesStamp, valuesStamp] = contentStamp[1];
 
       contentStamp[0] = stamp;
       if (cellsTouched) {
-        tablesStamped[0] = stamp;
+        tablesStamp[0] = stamp;
         objToArray(changedCells, (changedTable, tableId) => {
-          const tableStamped = mapEnsure(tablesStamped[1], tableId, stampNew);
-          const rowsStamped = (tableStamped[1] ??= mapNew());
-          tableStamped[0] = stamp;
+          const tableStamp = mapEnsure(tablesStamp[1], tableId, stampNew);
+          const rowsStamp = (tableStamp[1] ??= mapNew());
+          tableStamp[0] = stamp;
           objToArray(changedTable, (changedRow, rowId) => {
-            const rowStamped = mapEnsure(rowsStamped, rowId, stampNew);
-            const cellsStamped = (rowStamped[1] ??= mapNew());
-            rowStamped[0] = stamp;
+            const rowStamp = mapEnsure(rowsStamp, rowId, stampNew);
+            const cellsStamp = (rowStamp[1] ??= mapNew());
+            rowStamp[0] = stamp;
             objToArray(changedRow, ([, newCell], cellId) =>
-              mapSet(cellsStamped, cellId, [stamp, newCell]),
+              mapSet(cellsStamp, cellId, [stamp, newCell]),
             );
           });
         });
       }
       if (valuesTouched) {
-        valuesStamped[0] = stamp;
+        valuesStamp[0] = stamp;
         objToArray(changedValues, ([, newValue], valueId) => {
-          mapSet(valuesStamped[1], valueId, [stamp, newValue]);
+          mapSet(valuesStamp[1], valueId, [stamp, newValue]);
         });
       }
     }
