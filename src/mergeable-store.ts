@@ -1,24 +1,22 @@
-import {Changes, Store} from './types/store';
+import {CellOrUndefined, Changes, Store, ValueOrUndefined} from './types/store';
 import {EMPTY_STRING, strEndsWith, strStartsWith} from './common/strings';
 import {IdMap, mapEnsure, mapNew, mapSet} from './common/map';
 import {IdObj, objFreeze, objToArray} from './common/obj';
 import {
-  MergeableCell,
   MergeableChanges,
   MergeableContent,
   MergeableStore,
-  MergeableValue,
-  Stamped,
+  Stamp,
   createMergeableStore as createMergeableStoreDecl,
 } from './types/mergeable-store';
 import {
-  mapStamped,
-  mapStampedMapToObj,
-  mergeEachStampedNode,
-  mergeStampedLeaves,
-  mergeStampedNode,
-  newStamped,
-  newStampedMap,
+  mapStamp,
+  mapStampMapToObj,
+  mergeLeafStamps,
+  mergeStamp,
+  mergeStamps,
+  stampNew,
+  stampNewMap,
 } from './mergeable-store/stamps';
 import {Id} from './types/common';
 import {createStore} from './store';
@@ -45,22 +43,23 @@ const LISTENER_ARGS: IdObj<number> = {
   InvalidValue: 1,
 };
 
-type MergeableRowMap = Stamped<IdMap<MergeableCell>>;
-type MergeableTableMap = Stamped<IdMap<MergeableRowMap>>;
-type MergeableTablesMap = Stamped<IdMap<MergeableTableMap>>;
-type MergeableValuesMap = Stamped<IdMap<MergeableValue>>;
-type MergeableContentMap = Stamped<
-  [mergeableTables: MergeableTablesMap, mergeableValues: MergeableValuesMap]
+type ContentStamp = Stamp<
+  [
+    mergeableTables: Stamp<
+      IdMap<Stamp<IdMap<Stamp<IdMap<Stamp<CellOrUndefined>>>>>>
+    >,
+    mergeableValues: Stamp<IdMap<Stamp<ValueOrUndefined>>>,
+  ]
 >;
 
-const newContentStampedMap = (): MergeableContentMap => [
+const newContentStamp = (): ContentStamp => [
   EMPTY_STRING,
-  [newStampedMap(), newStampedMap()],
+  [stampNewMap(), stampNewMap()],
 ];
 
 export const createMergeableStore = ((id: Id): MergeableStore => {
   let listening = 1;
-  let stampedContentMap = newContentStampedMap();
+  let contentStamp = newContentStamp();
   const [getHlc, seenHlc] = getHlcFunctions(id);
   const store = createStore();
 
@@ -76,17 +75,17 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
       const stamp = getHlc();
       const [cellsTouched, valuesTouched, changedCells, , changedValues] =
         store.getTransactionLog();
-      const [tablesStamped, valuesStamped] = stampedContentMap[1];
+      const [tablesStamped, valuesStamped] = contentStamp[1];
 
-      stampedContentMap[0] = stamp;
+      contentStamp[0] = stamp;
       if (cellsTouched) {
         tablesStamped[0] = stamp;
         objToArray(changedCells, (changedTable, tableId) => {
-          const tableStamped = mapEnsure(tablesStamped[1], tableId, newStamped);
+          const tableStamped = mapEnsure(tablesStamped[1], tableId, stampNew);
           const rowsStamped = (tableStamped[1] ??= mapNew());
           tableStamped[0] = stamp;
           objToArray(changedTable, (changedRow, rowId) => {
-            const rowStamped = mapEnsure(rowsStamped, rowId, newStamped);
+            const rowStamped = mapEnsure(rowsStamped, rowId, stampNew);
             const cellsStamped = (rowStamped[1] ??= mapNew());
             rowStamped[0] = stamp;
             objToArray(changedRow, ([, newCell], cellId) =>
@@ -112,20 +111,20 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   };
 
   const getMergeableContent = () =>
-    mapStamped(stampedContentMap, ([tablesStamp, valuesStamp]) => [
-      mapStampedMapToObj(tablesStamp, (rowsStamp) =>
-        mapStampedMapToObj(rowsStamp, (cellsStamp) =>
-          mapStampedMapToObj(cellsStamp, pairClone),
+    mapStamp(contentStamp, ([tablesStamp, valuesStamp]) => [
+      mapStampMapToObj(tablesStamp, (rowsStamp) =>
+        mapStampMapToObj(rowsStamp, (cellsStamp) =>
+          mapStampMapToObj(cellsStamp, pairClone),
         ),
       ),
-      mapStampedMapToObj(valuesStamp, pairClone),
+      mapStampMapToObj(valuesStamp, pairClone),
     ]);
 
   const setMergeableContent = (mergeableContent: MergeableContent) => {
     disableListening(() =>
       store.transaction(() => {
         store.delTables().delValues();
-        stampedContentMap = newContentStampedMap();
+        contentStamp = newContentStamp();
       }),
     );
     applyMergeableChanges(mergeableContent);
@@ -133,51 +132,38 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   };
 
   const applyMergeableChanges = (
-    newStampedContent: MergeableChanges,
+    newContentStamp: MergeableChanges,
   ): MergeableStore => {
     const changes: Changes = [{}, {}];
-    seenHlc(newStampedContent[0]);
-    mergeStampedNode(
-      newStampedContent,
-      stampedContentMap,
+    seenHlc(newContentStamp[0]);
+    mergeStamp(
+      newContentStamp,
+      contentStamp,
       changes,
       (
-        [newStampedTables, newStampedValues],
-        [stampedTablesMap, stampedValuesMap],
+        [newTablesStamp, newValuesStamp],
+        [tablesStamp, valuesStamp],
         [tablesChanges, valuesChanges],
       ) => {
-        mergeStampedNode(
-          newStampedTables,
-          stampedTablesMap,
+        mergeStamp(
+          newTablesStamp,
+          tablesStamp,
           tablesChanges,
-          (newStampedTablez, stampedTableMap, tablesChanges) => {
-            mergeEachStampedNode(
-              newStampedTablez,
-              stampedTableMap,
-              tablesChanges,
-              (rowStamps, stampedRowMap, tableId) =>
-                mergeEachStampedNode(
-                  rowStamps!,
-                  stampedRowMap,
-                  tablesChanges[tableId]!,
-                  (cellStamps, cellStampsMap, rowId) =>
-                    mergeStampedLeaves(
-                      cellStamps!,
-                      cellStampsMap,
-                      tablesChanges[tableId]![rowId]!,
-                    ),
+          (newTableStamps, tableStamps, tableChanges) =>
+            mergeStamps(
+              newTableStamps,
+              tableStamps,
+              tableChanges,
+              (newRowStamps, rowStamps, rowChanges) =>
+                mergeStamps(
+                  newRowStamps,
+                  rowStamps,
+                  rowChanges,
+                  mergeLeafStamps,
                 ),
-            );
-            return stampedTableMap;
-          },
+            ),
         );
-        mergeStampedNode(
-          newStampedValues,
-          stampedValuesMap,
-          valuesChanges,
-          mergeStampedLeaves,
-        );
-        return stampedContentMap;
+        mergeStamp(newValuesStamp, valuesStamp, valuesChanges, mergeLeafStamps);
       },
     );
     disableListening(() => store.applyChanges(changes));
