@@ -1,7 +1,7 @@
 import {
   MergeableContent,
   MergeableStore,
-  Stamped,
+  Stamp,
   createCustomPersister,
   createMergeableStore,
   createStore,
@@ -42,20 +42,20 @@ const encodeHlc = (
 const START_TIME = new Date(2024, 1, 1);
 const STORE_ID_HASHES: {[id: string]: number} = {s1: 5861543, s2: 5861540};
 
-const stamp = (time: number, counter: number, storeId: string = 's1') =>
-  encodeHlc(START_TIME.valueOf() + time, counter, STORE_ID_HASHES[storeId]);
+const time = (offset: number, counter: number, storeId: string = 's1') =>
+  encodeHlc(START_TIME.valueOf() + offset, counter, STORE_ID_HASHES[storeId]);
 
-const stamped1 = (time: number, counter: number, thing: any) => [
-  stamp(time, counter, 's1'),
+const stamped1 = (offset: number, counter: number, thing: any) => [
+  time(offset, counter, 's1'),
   thing,
 ];
 
-const stamped2 = (time: number, counter: number, thing: any) => [
-  stamp(time, counter, 's2'),
+const stamped2 = (offset: number, counter: number, thing: any) => [
+  time(offset, counter, 's2'),
   thing,
 ];
 
-const nullStamped = <Thing>(thing: Thing): Stamped<Thing> => ['', thing];
+const nullStamp = <Thing>(thing: Thing): Stamp<Thing> => ['', thing];
 
 const permute = (arr: any[]): any[] => {
   if (arr.length == 1) {
@@ -130,7 +130,7 @@ describe('getMergeableContent', () => {
 
   test('Initialize', () => {
     expect(store.getMergeableContent()).toEqual(
-      nullStamped([nullStamped({}), nullStamped({})]),
+      nullStamp([nullStamp({}), nullStamp({})]),
     );
   });
 
@@ -141,30 +141,30 @@ describe('getMergeableContent', () => {
     ]);
     const mergeableContent = store.getMergeableContent();
 
-    mergeableContent[0] = stamp(0, 1, 's1');
-    expect(store.getMergeableContent()[0]).toEqual(stamp(0, 0, 's1'));
+    mergeableContent[0] = time(0, 1, 's1');
+    expect(store.getMergeableContent()[0]).toEqual(time(0, 0, 's1'));
 
-    mergeableContent[1][1][0] = stamp(0, 1, 's1');
-    expect(store.getMergeableContent()[1][1][0]).toEqual(stamp(0, 0, 's1'));
+    mergeableContent[1][1][0] = time(0, 1, 's1');
+    expect(store.getMergeableContent()[1][1][0]).toEqual(time(0, 0, 's1'));
 
-    mergeableContent[1][0][1].t1[0] = stamp(0, 1, 's1');
+    mergeableContent[1][0][1].t1[0] = time(0, 1, 's1');
     expect(store.getMergeableContent()[1][0][1].t1[0]).toEqual(
-      stamp(0, 0, 's1'),
+      time(0, 0, 's1'),
     );
 
-    mergeableContent[1][0][1].t1[1].r1[0] = stamp(0, 1, 's1');
+    mergeableContent[1][0][1].t1[1].r1[0] = time(0, 1, 's1');
     expect(store.getMergeableContent()[1][0][1].t1[1].r1[0]).toEqual(
-      stamp(0, 0, 's1'),
+      time(0, 0, 's1'),
     );
 
-    mergeableContent[1][0][1].t1[1].r1[1].c1[0] = stamp(0, 1, 's1');
+    mergeableContent[1][0][1].t1[1].r1[1].c1[0] = time(0, 1, 's1');
     expect(store.getMergeableContent()[1][0][1].t1[1].r1[1].c1[0]).toEqual(
-      stamp(0, 0, 's1'),
+      time(0, 0, 's1'),
     );
 
-    mergeableContent[1][1][1].v1[0] = stamp(0, 1, 's1');
+    mergeableContent[1][1][1].v1[0] = time(0, 1, 's1');
     expect(store.getMergeableContent()[1][1][1].v1[0]).toEqual(
-      stamp(0, 0, 's1'),
+      time(0, 0, 's1'),
     );
   });
 
@@ -355,9 +355,9 @@ describe('Merge', () => {
   test('Nothing', () => {
     store1 = createMergeableStore('s1');
     store2 = createMergeableStore('s2');
-    const noChanges: MergeableContent = nullStamped([
-      nullStamped({}),
-      nullStamped({}),
+    const noChanges: MergeableContent = nullStamp([
+      nullStamp({}),
+      nullStamp({}),
     ]);
 
     expect(store1.getContent()).toEqual([{}, {}]);
@@ -397,7 +397,7 @@ describe('Merge', () => {
             }),
             t2: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 0)})}),
           }),
-          nullStamped({}),
+          nullStamp({}),
         ]),
       );
 
@@ -418,7 +418,7 @@ describe('Merge', () => {
             }),
             t2: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 0)})}),
           }),
-          nullStamped({}),
+          nullStamp({}),
         ]),
       );
     });
@@ -437,7 +437,7 @@ describe('Merge', () => {
             }),
             t2: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 0)})}),
           }),
-          nullStamped({}),
+          nullStamp({}),
         ]),
       );
 
@@ -458,7 +458,7 @@ describe('Merge', () => {
             }),
             t2: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 0)})}),
           }),
-          nullStamped({}),
+          nullStamp({}),
         ]),
       );
     });
@@ -477,7 +477,7 @@ describe('Merge', () => {
             }),
             t2: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 0)})}),
           }),
-          nullStamped({}),
+          nullStamp({}),
         ]),
       );
 
@@ -498,7 +498,7 @@ describe('Merge', () => {
             }),
             t2: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 0)})}),
           }),
-          nullStamped({}),
+          nullStamp({}),
         ]),
       );
     });
@@ -517,7 +517,7 @@ describe('Merge', () => {
             }),
             t2: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 0)})}),
           }),
-          nullStamped({}),
+          nullStamp({}),
         ]),
       );
 
@@ -538,7 +538,7 @@ describe('Merge', () => {
             }),
             t2: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 0)})}),
           }),
-          nullStamped({}),
+          nullStamp({}),
         ]),
       );
     });
@@ -559,7 +559,7 @@ describe('Merge', () => {
               r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
             }),
           }),
-          nullStamped({}),
+          nullStamp({}),
         ]),
       );
 
@@ -579,7 +579,7 @@ describe('Merge', () => {
               r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
             }),
           }),
-          nullStamped({}),
+          nullStamp({}),
         ]),
       );
     });
@@ -601,7 +601,7 @@ describe('Merge', () => {
               r2: stamped1(0, 5, {c2: stamped1(0, 5, 2)}),
             }),
           }),
-          nullStamped({}),
+          nullStamp({}),
         ]),
       );
 
@@ -625,7 +625,7 @@ describe('Merge', () => {
               r2: stamped1(0, 5, {c2: stamped1(0, 5, 2)}),
             }),
           }),
-          nullStamped({}),
+          nullStamp({}),
         ]),
       );
     });
@@ -647,7 +647,7 @@ describe('Merge', () => {
               r2: stamped1(0, 6, {c2: stamped1(0, 6, undefined)}),
             }),
           }),
-          nullStamped({}),
+          nullStamp({}),
         ]),
       );
 
@@ -668,7 +668,7 @@ describe('Merge', () => {
               r2: stamped1(0, 6, {c2: stamped1(0, 6, undefined)}),
             }),
           }),
-          nullStamped({}),
+          nullStamp({}),
         ]),
       );
     });
@@ -872,7 +872,7 @@ describe('Merge', () => {
           stamped1(0, 0, {
             t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 0)})}),
           }),
-          nullStamped({}),
+          nullStamp({}),
         ]),
       );
 
@@ -882,7 +882,7 @@ describe('Merge', () => {
       const mergeableContent2 = store2.getMergeableContent();
       expect(mergeableContent2).toEqual(
         stamped2(1, 0, [
-          nullStamped({}),
+          nullStamp({}),
           stamped2(1, 0, {v1: stamped2(1, 0, 0)}),
         ]),
       );
@@ -1071,12 +1071,20 @@ describe('Merge', () => {
         ]),
 
         del9: stamped1(0, 9, [
-          stamped1(0, 9, {t1: stamped1(0, 9, {r2: stamped1(0, 9, undefined)})}),
+          stamped1(0, 9, {
+            t1: stamped1(0, 9, {
+              r2: stamped1(0, 9, {c2: stamped1(0, 9, undefined)}),
+            }),
+          }),
           stamped1(0, 5, {}),
         ]),
 
         del10: stamped1(0, 10, [
-          stamped1(0, 10, {t2: stamped1(0, 10, undefined)}),
+          stamped1(0, 10, {
+            t2: stamped1(0, 10, {
+              r2: stamped1(0, 10, {c2: stamped1(0, 10, undefined)}),
+            }),
+          }),
           stamped1(0, 5, {}),
         ]),
       } as any as {[id: string]: MergeableContent};
@@ -1185,7 +1193,7 @@ describe('Merge', () => {
               r1: stamped1(2, 0, {c1: stamped1(2, 0, undefined)}),
             }),
           }),
-          nullStamped({}),
+          nullStamp({}),
         ]),
       );
       expect(store2.getMergeableContent()).toEqual(
@@ -1195,7 +1203,7 @@ describe('Merge', () => {
               r1: stamped2(1, 0, {c2: stamped2(1, 0, 2)}),
             }),
           }),
-          nullStamped({}),
+          nullStamp({}),
         ]),
       );
 

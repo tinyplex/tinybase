@@ -4,16 +4,16 @@ import {CellOrUndefined, Store, ValueOrUndefined} from './store.d';
 import {Id} from './common';
 import {IdObj} from '../common/obj';
 
-export type Stamp = string;
-export type Stamped<Thing> = [stamp: Stamp, thing: Thing];
+export type Time = string;
+export type Stamp<Thing> = [time: Time, thing: Thing];
 
-type MergeableCell = Stamped<CellOrUndefined>;
-type MergeableRow = Stamped<IdObj<MergeableCell>>;
-type MergeableTable = Stamped<IdObj<MergeableRow>>;
-type MergeableTables = Stamped<IdObj<MergeableTable>>;
-type MergeableValue = Stamped<ValueOrUndefined>;
-type MergeableValues = Stamped<IdObj<MergeableValue>>;
-export type MergeableContent = Stamped<
+type MergeableCell = Stamp<CellOrUndefined>;
+type MergeableRow = Stamp<IdObj<MergeableCell>>;
+type MergeableTable = Stamp<IdObj<MergeableRow>>;
+type MergeableTables = Stamp<IdObj<MergeableTable>>;
+type MergeableValue = Stamp<ValueOrUndefined>;
+type MergeableValues = Stamp<IdObj<MergeableValue>>;
+export type MergeableContent = Stamp<
   [mergeableTables: MergeableTables, mergeableValues: MergeableValues]
 >;
 
