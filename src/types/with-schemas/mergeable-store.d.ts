@@ -12,34 +12,32 @@ import {
 import {Id} from './common';
 import {IdObj} from '../../common/obj';
 
-export type Stamped = string;
-export type Stampeded<Thing> = [stamp: Stamped, thing: Thing];
+export type Time = string;
+export type Stamp<Thing> = [time: Time, thing: Thing];
 
-type MergeableCell<Schema extends OptionalTablesSchema> = Stampeded<Cell<
+type MergeableCell<Schema extends OptionalTablesSchema> = Stamp<Cell<
   Schema,
   any,
   any
 > | null>;
-type MergeableRow<Schema extends OptionalTablesSchema> = Stampeded<IdObj<
+type MergeableRow<Schema extends OptionalTablesSchema> = Stamp<IdObj<
   MergeableCell<Schema>
 > | null>;
-type MergeableTable<Schema extends OptionalTablesSchema> = Stampeded<IdObj<
+type MergeableTable<Schema extends OptionalTablesSchema> = Stamp<IdObj<
   MergeableRow<Schema>
 > | null>;
-type MergeableTables<Schema extends OptionalTablesSchema> = Stampeded<
+type MergeableTables<Schema extends OptionalTablesSchema> = Stamp<
   IdObj<MergeableTable<Schema>>
 >;
-
-type MergeableValue<Schema extends OptionalValuesSchema> = Stampeded<Value<
+type MergeableValue<Schema extends OptionalValuesSchema> = Stamp<Value<
   Schema,
   any,
   any
 > | null>;
-type MergeableValues<Schema extends OptionalValuesSchema> = Stampeded<
+type MergeableValues<Schema extends OptionalValuesSchema> = Stamp<
   IdObj<MergeableValue<Schema>>
 >;
-
-export type MergeableContent<Schemas extends OptionalSchemas> = Stampeded<
+export type MergeableContent<Schemas extends OptionalSchemas> = Stamp<
   [
     mergeableTables: MergeableTables<Schemas[0]>,
     mergeableValues: MergeableValues<Schemas[1]>,
