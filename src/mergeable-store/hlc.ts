@@ -80,12 +80,12 @@ export const getHlcFunctions = (
   uniqueId: Id,
 ): [() => Hlc, (remoteHlc: Hlc) => void] => {
   let logicalTime = 0;
-  let counter = 0;
+  let lastCounter = -1;
   const uniqueIdHash = hash(uniqueId);
 
   const getHlc = (): Hlc => {
     seenHlc();
-    return encodeHlc(logicalTime, ++counter, uniqueIdHash);
+    return encodeHlc(logicalTime, ++lastCounter, uniqueIdHash);
   };
 
   const seenHlc = (hlc?: Hlc): void => {
@@ -95,11 +95,11 @@ export const getHlcFunctions = (
       : decodeHlc(hlc);
 
     logicalTime = Math.max(previousLogicalTime, remoteLogicalTime, Date.now());
-    counter =
+    lastCounter =
       logicalTime == previousLogicalTime
         ? logicalTime == remoteLogicalTime
-          ? Math.max(counter, remoteCounter)
-          : counter
+          ? Math.max(lastCounter, remoteCounter)
+          : lastCounter
         : logicalTime == remoteLogicalTime
           ? remoteCounter
           : -1;
