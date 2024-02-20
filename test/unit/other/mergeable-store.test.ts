@@ -239,6 +239,13 @@ describe('getMergeableContent', () => {
       ]),
     );
   });
+
+  test('Empty transaction', () => {
+    store.startTransaction().finishTransaction();
+    expect(store.getMergeableContent()).toEqual(
+      nullStamp([nullStamp({}), nullStamp({})]),
+    );
+  });
 });
 
 describe('apply/setMergeableContent', () => {
