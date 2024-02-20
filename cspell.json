@@ -1,9 +1,5 @@
 {
-  "ignorePaths": [
-    "*.tsv",
-    "*.webp",
-    "*.svg"
-  ],
+  "ignorePaths": ["*.tsv", "*.webp", "*.svg"],
   "words": [
     "Abad",
     "Adrien",
@@ -105,7 +101,7 @@
     "Pearce",
     "Persistable",
     "Porco",
-    "powersync",
+    "PowerSync",
     "prettierrc",
     "relationshipinhtmltable",
     "resultsortablegrid",
