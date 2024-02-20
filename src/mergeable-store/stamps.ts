@@ -12,9 +12,14 @@ export const stampNewMap = <Thing>(): Stamp<IdMap<Thing>> => [
 ];
 
 export const mapStamp = <From, To>(
-  [stamp, value]: Stamp<From>,
-  mapper: (value: From, stamp: Time) => To,
-): Stamp<To> => [stamp, mapper(value, stamp)];
+  [time, value]: Stamp<From>,
+  mapper: (value: From, time: Time) => To,
+): Stamp<To> => [time, mapper(value, time)];
+
+export const cloneStamp = <Value>([
+  time,
+  value,
+]: Stamp<Value>): Stamp<Value> => [time, value];
 
 export const mapStampMapToObj = <From, To = From>(
   stampedMap: Stamp<IdMap<From>>,

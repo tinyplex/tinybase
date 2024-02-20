@@ -10,6 +10,7 @@ import {
   createMergeableStore as createMergeableStoreDecl,
 } from './types/mergeable-store';
 import {
+  cloneStamp,
   mapStamp,
   mapStampMapToObj,
   mergeLeafStamps,
@@ -21,7 +22,6 @@ import {
 import {Id} from './types/common';
 import {createStore} from './store';
 import {getHlcFunctions} from './mergeable-store/hlc';
-import {pairClone} from './common/pairs';
 import {slice} from './common/other';
 
 const LISTENER_ARGS: IdObj<number> = {
@@ -110,14 +110,14 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     return applyMergeableChanges(mergeableContent2);
   };
 
-  const getMergeableContent = () =>
+  const getMergeableContent = (): MergeableContent =>
     mapStamp(contentStamp, ([tablesStamp, valuesStamp]) => [
       mapStampMapToObj(tablesStamp, (rowsStamp) =>
         mapStampMapToObj(rowsStamp, (cellsStamp) =>
-          mapStampMapToObj(cellsStamp, pairClone),
+          mapStampMapToObj(cellsStamp, cloneStamp),
         ),
       ),
-      mapStampMapToObj(valuesStamp, pairClone),
+      mapStampMapToObj(valuesStamp, cloneStamp),
     ]);
 
   const setMergeableContent = (mergeableContent: MergeableContent) => {
