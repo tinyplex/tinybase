@@ -1,7 +1,7 @@
+import {isUndefined, mathMax} from '../common/other';
 import {strCharCodeAt, strSplit} from '../common/strings';
 import {Id} from '../types/common';
 import {arrayReduce} from '../common/array';
-import {isUndefined} from '../common/other';
 
 type HlcParts = [
   logicalTime42: number,
@@ -94,11 +94,11 @@ export const getHlcFunctions = (
       ? [0, 0]
       : decodeHlc(hlc);
 
-    logicalTime = Math.max(previousLogicalTime, remoteLogicalTime, Date.now());
+    logicalTime = mathMax(previousLogicalTime, remoteLogicalTime, Date.now());
     lastCounter =
       logicalTime == previousLogicalTime
         ? logicalTime == remoteLogicalTime
-          ? Math.max(lastCounter, remoteCounter)
+          ? mathMax(lastCounter, remoteCounter)
           : lastCounter
         : logicalTime == remoteLogicalTime
           ? remoteCounter
