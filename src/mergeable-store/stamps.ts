@@ -12,7 +12,7 @@ export const stampNew = <Thing>(
 export const stampNewMap = <Thing>(time = EMPTY_STRING): Stamp<IdMap<Thing>> =>
   stampNew(time, mapNew<Id, Thing>());
 
-export const stampNewObj = <Thing>(time = EMPTY_STRING): Stamp<IdObj<Thing>> =>
+export const stampNewObj = <Thing>(time: Time): Stamp<IdObj<Thing>> =>
   stampNew(time, objNew<Thing>());
 
 export const mapStamp = <From, To>(
