@@ -12,26 +12,26 @@
  * The PowerSyncPersister interface is a minor extension to the Persister
  * interface.
  *
- * It simply provides an extra getDb method for accessing a reference to the
- * database instance the Store is being persisted to.
+ * It simply provides an extra getPowerSync method for accessing a
+ * reference to the PowerSync instance the Store is being persisted to.
  * @since v4.6.9
  */
 /// PowerSyncPersister
 {
   /**
-   * The getDb method returns a reference to the database instance the Store is
-   * being persisted to.
-   * @returns A reference to the database instance.
+   * The getPowerSync method returns a reference to the PowerSync instance
+   * the Store is being persisted to.
+   * @returns A reference to the PowerSync instance.
    * @example
    * This example creates a Persister object against a newly-created Store and
-   * then gets the database instance back out again.
+   * then gets the PowerSync instance back out again.
    *
    * ```js yolo
-   * const ps = usePowerSync();
+   * const ps = `usePowerSync`();
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const persister = createPowerSyncPersister(store, ps, 'my_tinybase');
    *
-   * console.log(persister.getDb() == db);
+   * console.log(persister.getPowerSync() == ps);
    * // -> true
    *
    * persister.destroy();
@@ -39,18 +39,15 @@
    * @category Getter
    * @since v4.6.9
    */
-  /// PowerSyncPersister.getDb
+  /// PowerSyncPersister.getPowerSync
 }
 /**
- * The createExpoSqlitePersister function creates a Persister object that can
- * persist the Store to a local Expo-SQLite database (in an appropriate React
- * Native environment).
- *
- * Note that this Persister is currently experimental as Expo themselves iterate
- * on the underlying database library API.
+ * The createPowerSyncPersister function creates a Persister object that can
+ * persist the Store to a local SQLite database that is automatically synced
+ * using the PowerSync service.
  *
  * As well as providing a reference to the Store to persist, you must provide a
- * `db` parameter which identifies the database instance.
+ * `powerSync` parameter which identifies the PowerSync instance.
  *
  * A database Persister uses one of two modes: either a JSON serialization of
  * the whole Store stored in a single row of a table (the default), or a tabular
@@ -64,7 +61,7 @@
  * See the documentation for the DpcJson and DpcTabular types for more
  * information on how both of those modes can be configured.
  * @param store The Store to persist.
- * @param db The database instance that was returned from
+ * @param db The PowerSync instance that was returned from
  * `SQLite.openDatabase(...)`.
  * @param configOrStoreTableName A DatabasePersisterConfig to configure the
  * persistence mode (or a string to set the `storeTableName` property of the

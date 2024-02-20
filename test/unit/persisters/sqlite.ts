@@ -1,5 +1,9 @@
 import 'fake-indexeddb/auto';
-import {Client, createClient} from '@libsql/client';
+import {
+  AbstractPowerSyncDatabase,
+  Schema,
+  WASQLitePowerSyncDatabaseOpenFactory,
+} from '@journeyapps/powersync-sdk-web';
 import {DatabasePersisterConfig, Persister, Store} from 'tinybase/debug';
 import {DbSchema, ElectricClient} from 'electric-sql/client/model';
 import {ElectricDatabase, electrify} from 'electric-sql/wa-sqlite';
@@ -7,7 +11,7 @@ import initWasm, {DB} from '@vlcn.io/crsqlite-wasm';
 import sqlite3, {Database} from 'sqlite3';
 import {createCrSqliteWasmPersister} from 'tinybase/debug/persisters/persister-cr-sqlite-wasm';
 import {createElectricSqlPersister} from 'tinybase/debug/persisters/persister-electric-sql';
-import {createLibSqlPersister} from 'tinybase/debug/persisters/persister-libsql';
+import {createPowerSyncPersister} from 'tinybase/debug/persisters/persister-powersync';
 import {createSqlite3Persister} from 'tinybase/debug/persisters/persister-sqlite3';
 import {createSqliteWasmPersister} from 'tinybase/debug/persisters/persister-sqlite-wasm';
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
@@ -17,6 +21,8 @@ export type SqliteWasmDb = [sqlite3: any, db: any];
 
 const electricSchema = new DbSchema({}, []);
 type Electric = ElectricClient<typeof electricSchema>;
+
+const powerSyncSchema = new Schema([]);
 
 type Dump = {[name: string]: [sql: string, rows: {[column: string]: any}[]]};
 
@@ -95,6 +101,36 @@ export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
     async (electricClient: Electric, sql: string, args: any[] = []) =>
       await electricClient.db.raw({sql, args}),
     async (electricClient: Electric) => await electricClient.close(),
+    1000,
+  ],
+  powerSync: [
+    async (): Promise<AbstractPowerSyncDatabase> => {
+      const factory = new WASQLitePowerSyncDatabaseOpenFactory({
+        schema: powerSyncSchema,
+        dbFilename: ':memory:',
+        // flags: {enableMultiTabs: false, disableSSRWarning: true},
+      });
+      
+      return factory.getInstance();
+    },
+    ['getPowerSyncClient', (powerSync: AbstractPowerSyncDatabase) => powerSync],
+    (
+      store: Store,
+      db: AbstractPowerSyncDatabase,
+      storeTableOrConfig?: string | DatabasePersisterConfig,
+      onSqlCommand?: (sql: string, args?: any[]) => void,
+      onIgnoredError?: (error: any) => void,
+    ) =>
+      (createPowerSyncPersister as any)(
+        store,
+        db,
+        storeTableOrConfig,
+        onSqlCommand,
+        onIgnoredError,
+      ),
+    async (ps: AbstractPowerSyncDatabase, sql: string, args: any[] = []) =>
+      (await ps.execute(sql, args)).rows?._array || [],
+    async (ps: AbstractPowerSyncDatabase) => await ps.close(),
     1000,
   ],
   sqlite3: [
