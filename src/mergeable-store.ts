@@ -70,7 +70,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     listening = wasListening;
   };
 
-  const postTransactionListener = () => {
+  const preFinishTransaction = () => {
     if (listening) {
       const time = getHlc();
       const [cellsTouched, valuesTouched, changedCells, , changedValues] =
@@ -102,6 +102,8 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
       }
     }
   };
+
+  const postFinishTransaction = () => {};
 
   const merge = (mergeableStore2: MergeableStore) => {
     const mergeableContent = mergeableStore.getMergeableContent();
@@ -181,7 +183,10 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     merge,
   };
 
-  (store as any).addPostTransactionListener(postTransactionListener);
+  (store as any).setInternalListeners(
+    preFinishTransaction,
+    postFinishTransaction,
+  );
 
   objToArray(
     store as IdObj<any>,
