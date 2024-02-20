@@ -12,8 +12,9 @@ another.
 This is a fundamental building block in adding native CRDT & synchronization
 functionality to TinyBase. There is work yet to be done on the communication
 protocol to negotiate and merge across systems, but in the meantime, stores can
-be merged locally with deterministic results. This implementation use an encoded
-hybrid logical clock to timestamp the changes made so that they can be merged.
+be merged locally with deterministic results. This implementation uses an
+encoded hybrid logical clock to timestamp the changes made so that they can be
+cleanly merged.
 
 The getMergeableContent method on a MergeableStore is used to get the state of a
 store to merge into another. The applyMergeableChanges method will let you apply
@@ -30,10 +31,10 @@ store2.setCell('pets', 'felix', 'color', 'black');
 store1.merge(store2);
 
 console.log(store1.getContent());
-// -> [{"pets": {"felix": {"color": "black"}, "fido": {"color": "brown"}}}, {}]
+// -> [{pets: {felix: {color: 'black'}, fido: {color: 'brown'}}}, {}]
 
 console.log(store2.getContent());
-// -> [{"pets": {"felix": {"color": "black"}, "fido": {"color": "brown"}}}, {}]
+// -> [{pets: {felix: {color: 'black'}, fido: {color: 'brown'}}}, {}]
 ```
 
 At this point, the APIs and the mergeable object structures may still change
@@ -64,8 +65,8 @@ In the Store interface:
 
 In the persisters module:
 
-- the createCustomPersister function now takes a final optional boolean
-  ('supportsMergeableStore') to indicate that the Persister can support
+- The createCustomPersister function now takes a final optional boolean
+  (`supportsMergeableStore`) to indicate that the Persister can support
   MergeableStore as well as Store objects.
 - The broadcastTransactionChanges method in the persister-partykit-server module
   has been renamed to the broadcastChanges method.
