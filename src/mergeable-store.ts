@@ -52,9 +52,9 @@ type ContentStamp = Stamp<
   ]
 >;
 
-const newContentStamp = (): ContentStamp => [
-  EMPTY_STRING,
-  [stampNewMap(), stampNewMap()],
+const newContentStamp = (time = EMPTY_STRING): ContentStamp => [
+  time,
+  [stampNewMap(time), stampNewMap(time)],
 ];
 
 export const createMergeableStore = ((id: Id): MergeableStore => {
@@ -72,32 +72,32 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
 
   const postTransactionListener = () => {
     if (listening) {
-      const stamp = getHlc();
+      const time = getHlc();
       const [cellsTouched, valuesTouched, changedCells, , changedValues] =
         store.getTransactionLog();
       const [tablesStamp, valuesStamp] = contentStamp[1];
 
-      contentStamp[0] = stamp;
+      contentStamp[0] = time;
       if (cellsTouched) {
-        tablesStamp[0] = stamp;
+        tablesStamp[0] = time;
         objToArray(changedCells, (changedTable, tableId) => {
           const tableStamp = mapEnsure(tablesStamp[1], tableId, stampNew);
           const rowsStamp = (tableStamp[1] ??= mapNew());
-          tableStamp[0] = stamp;
+          tableStamp[0] = time;
           objToArray(changedTable, (changedRow, rowId) => {
             const rowStamp = mapEnsure(rowsStamp, rowId, stampNew);
             const cellsStamp = (rowStamp[1] ??= mapNew());
-            rowStamp[0] = stamp;
+            rowStamp[0] = time;
             objToArray(changedRow, ([, newCell], cellId) =>
-              mapSet(cellsStamp, cellId, [stamp, newCell]),
+              mapSet(cellsStamp, cellId, [time, newCell]),
             );
           });
         });
       }
       if (valuesTouched) {
-        valuesStamp[0] = stamp;
+        valuesStamp[0] = time;
         objToArray(changedValues, ([, newValue], valueId) => {
-          mapSet(valuesStamp[1], valueId, [stamp, newValue]);
+          mapSet(valuesStamp[1], valueId, [time, newValue]);
         });
       }
     }
