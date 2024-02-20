@@ -77,7 +77,9 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
         store.getTransactionLog();
       const [tablesStamp, valuesStamp] = contentStamp[1];
 
-      contentStamp[0] = time;
+      if (cellsTouched || valuesTouched) {
+        contentStamp[0] = time;
+      }
       if (cellsTouched) {
         tablesStamp[0] = time;
         objToArray(changedCells, (changedTable, tableId) => {
