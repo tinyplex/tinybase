@@ -21,32 +21,32 @@ export const mapStampMapToObj = <From, To = From>(
   mapper: (mapValue: From) => To,
 ): Stamp<IdObj<To>> => mapStamp(stampedMap, (map) => mapToObj(map, mapper));
 
-export const mergeStamp = <NewNode, Node>(
-  [newTime, newNode]: Stamp<NewNode>,
-  nodeStamp: Stamp<Node>,
+export const mergeStamps = <NewThing, Thing>(
+  newThingStamps: IdObj<Stamp<NewThing>>,
+  thingStamps: IdMap<Stamp<Thing>>,
   changes: any,
-  merge: (newNode: NewNode, node: Node, changes: any) => void,
-): void => {
-  if (newTime > nodeStamp[0]) {
-    nodeStamp[0] = newTime;
-  }
-  merge(newNode, nodeStamp[1], changes);
-};
-
-export const mergeStamps = <NewNode, Node>(
-  newNode: IdObj<Stamp<NewNode>>,
-  node: IdMap<Stamp<Node>>,
-  changes: any,
-  merge: (newNode: NewNode, node: Node, changes: any) => void,
+  merge: (newThing: NewThing, thing: Thing, changes: any) => void,
 ): void =>
-  objForEach(newNode, (newNodeStamp, nodeId) =>
+  objForEach(newThingStamps, (newThingStamp, thingId) =>
     mergeStamp(
-      newNodeStamp,
-      mapEnsure<Id, any>(node, nodeId, stampNewMap),
-      (changes[nodeId] = objNew()),
+      newThingStamp,
+      mapEnsure<Id, any>(thingStamps, thingId, stampNewMap),
+      (changes[thingId] = objNew()),
       merge,
     ),
   );
+
+export const mergeStamp = <NewThing, Thing>(
+  [newTime, newThing]: Stamp<NewThing>,
+  thingStamp: Stamp<Thing>,
+  changes: any,
+  merge: (newThing: NewThing, thing: Thing, changes: any) => void,
+): void => {
+  if (newTime > thingStamp[0]) {
+    thingStamp[0] = newTime;
+  }
+  merge(newThing, thingStamp[1], changes);
+};
 
 export const mergeLeafStamps = <Leaf>(
   newLeafStamps: IdObj<Stamp<Leaf | undefined>>,
