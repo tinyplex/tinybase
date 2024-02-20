@@ -172,8 +172,6 @@ const idsChanged = (
 export const createStore: typeof createStoreDecl = (): Store => {
   let hasTablesSchema: boolean;
   let hasValuesSchema: boolean;
-  let cellsTouched = false;
-  let valuesTouched = false;
   let hadTables = false;
   let hadValues = false;
   let transactions = 0;
@@ -1383,8 +1381,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
   ];
 
   const getTransactionLog = (): TransactionLog => [
-    cellsTouched,
-    valuesTouched,
+    !collIsEmpty(changedCells),
+    !collIsEmpty(changedValues),
     mapToObj3(changedCells, pairClone, pairIsEqual),
     mapToObj3(invalidCells),
     mapToObj(changedValues, pairClone, pairIsEqual),
@@ -1400,15 +1398,13 @@ export const createStore: typeof createStoreDecl = (): Store => {
       transactions--;
 
       if (transactions == 0) {
-        cellsTouched = !collIsEmpty(changedCells);
-        valuesTouched = !collIsEmpty(changedValues);
         transactions = 1;
         callInvalidCellListeners(1);
-        if (cellsTouched) {
+        if (!collIsEmpty(changedCells)) {
           callTabularListenersForChanges(1);
         }
         callInvalidValueListeners(1);
-        if (valuesTouched) {
+        if (!collIsEmpty(changedValues)) {
           callValuesListenersForChanges(1);
         }
 
@@ -1420,21 +1416,22 @@ export const createStore: typeof createStoreDecl = (): Store => {
               ),
             ),
           );
+          collClear(changedCells);
           collForEach(changedValues, ([oldValue], valueId) =>
             setOrDelValue(store, valueId, oldValue),
           );
-          cellsTouched = valuesTouched = false;
+          collClear(changedValues);
         }
 
         callListeners(finishTransactionListeners[0], undefined);
 
         transactions = -1;
         callInvalidCellListeners(0);
-        if (cellsTouched) {
+        if (!collIsEmpty(changedCells)) {
           callTabularListenersForChanges(0);
         }
         callInvalidValueListeners(0);
-        if (valuesTouched) {
+        if (!collIsEmpty(changedValues)) {
           callValuesListenersForChanges(0);
         }
         internalListeners[0]?.(store);
@@ -1442,7 +1439,6 @@ export const createStore: typeof createStoreDecl = (): Store => {
         internalListeners[1]?.(store);
 
         transactions = 0;
-        cellsTouched = valuesTouched = false;
         hadTables = hasTables();
         hadValues = hasValues();
         arrayForEach(
