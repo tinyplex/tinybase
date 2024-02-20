@@ -12,7 +12,10 @@ import {
 import {Id} from './common';
 import {IdObj} from '../../common/obj';
 
+/// Time
 export type Time = string;
+
+/// Stamp
 export type Stamp<Thing> = [time: Time, thing: Thing];
 
 type MergeableCell<Schema extends OptionalTablesSchema> = Stamp<Cell<
@@ -37,6 +40,8 @@ type MergeableValue<Schema extends OptionalValuesSchema> = Stamp<Value<
 type MergeableValues<Schema extends OptionalValuesSchema> = Stamp<
   IdObj<MergeableValue<Schema>>
 >;
+
+/// MergeableContent
 export type MergeableContent<Schemas extends OptionalSchemas> = Stamp<
   [
     mergeableTables: MergeableTables<Schemas[0]>,
@@ -44,6 +49,7 @@ export type MergeableContent<Schemas extends OptionalSchemas> = Stamp<
   ]
 >;
 
+/// MergeableChanges
 export type MergeableChanges<Schemas extends OptionalSchemas> =
   MergeableContent<Schemas>;
 

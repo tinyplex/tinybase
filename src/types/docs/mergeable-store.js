@@ -5,8 +5,28 @@
  */
 /// mergeable-store
 /**
+ * The Time type
+ * @category Stamps
+ */
+/// Time
+/**
+ * The Stamp type
+ * @category Stamps
+ */
+/// Stamp
+/**
+ * The MergeableContent type
+ * @category Mergeable
+ */
+/// MergeableContent
+/**
+ * The MergeableChanges type
+ * @category Mergeable
+ */
+/// MergeableChanges
+/**
  * The MergeableStore type
- * @category MergeableStore
+ * @category Mergeable
  */
 /// MergeableStore
 {
