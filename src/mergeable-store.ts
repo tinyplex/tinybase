@@ -149,13 +149,17 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
 
   const getTransactionMergeableChanges = (): MergeableChanges => {
     if (isUndefined(finishTransactionMergeableChanges)) {
-      const time = getHlc();
+      const [cellsTouched, valuesTouched, changedCells, , changedValues] =
+        store.getTransactionLog();
+
+      //      console.log({cellsTouched, valuesTouched, changedCells, changedValues});
+
+      const time = cellsTouched || valuesTouched ? getHlc() : EMPTY_STRING;
       const mergeableChanges: MergeableChanges = stampNew(time, [
         stampNewObj(time),
         stampNewObj(time),
       ]);
       const [[, tableStamps], [, valuesStamp]] = mergeableChanges[1];
-      const [, , changedCells, , changedValues] = store.getTransactionLog();
 
       objToArray(changedCells, (changedTable, tableId) => {
         const [, rowStamps] = (tableStamps[tableId] = stampNewObj(time));

@@ -248,6 +248,47 @@ describe('getMergeableContent', () => {
   });
 });
 
+describe('getTransactionMergeableChanges', () => {
+  let store: MergeableStore;
+
+  beforeEach(() => {
+    store = createMergeableStore('s1');
+  });
+
+  test('Outside transaction', () => {
+    expect(store.getTransactionMergeableChanges()).toEqual(
+      nullStamp([nullStamp({}), nullStamp({})]),
+    );
+    expect(store.getTransactionMergeableChanges()).toEqual(
+      nullStamp([nullStamp({}), nullStamp({})]),
+    );
+  });
+
+  test('Inside noop transaction', () => {
+    store.startTransaction();
+    expect(store.getTransactionMergeableChanges()).toEqual(
+      nullStamp([nullStamp({}), nullStamp({})]),
+    );
+    expect(store.getTransactionMergeableChanges()).toEqual(
+      nullStamp([nullStamp({}), nullStamp({})]),
+    );
+    store.finishTransaction();
+  });
+
+  test.only('Inside net noop transaction', () => {
+    store.startTransaction();
+    store.setCell('t1', 'r1', 'c1', 1);
+    expect(store.getTransactionMergeableChanges()).toEqual(
+      nullStamp([nullStamp({}), nullStamp({})]),
+    );
+    store.delCell('t1', 'r1', 'c1');
+    expect(store.getTransactionMergeableChanges()).toEqual(
+      nullStamp([nullStamp({}), nullStamp({})]),
+    );
+    store.finishTransaction();
+  });
+});
+
 describe('apply/setMergeableContent', () => {
   let store: MergeableStore;
 
