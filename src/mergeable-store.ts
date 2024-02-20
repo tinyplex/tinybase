@@ -131,6 +131,9 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     return mergeableStore;
   };
 
+  const getTransactionMergeableChanges = (): MergeableChanges =>
+    getMergeableContent();
+
   const applyMergeableChanges = (
     newContentStamp: MergeableChanges,
   ): MergeableStore => {
@@ -173,6 +176,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const mergeableStore: IdObj<any> = {
     getMergeableContent,
     setMergeableContent,
+    getTransactionMergeableChanges,
     applyMergeableChanges,
     merge,
   };

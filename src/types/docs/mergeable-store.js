@@ -46,6 +46,11 @@
    */
   /// MergeableStore.setMergeableContent
   /**
+   * The getTransactionMergeableChanges method
+   * @category Merging
+   */
+  /// MergeableStore.getTransactionMergeableChanges
+  /**
    * The applyMergeableChanges method
    * @category Merging
    */
