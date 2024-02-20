@@ -3,6 +3,73 @@
 This is a reverse chronological list of the major TinyBase releases, with
 highlighted features.
 
+## v5.0
+
+This release (currently in beta) contains a new mergeable-store module, which
+contains a subtype of Store - called MergeableStore - that can be merged with
+another.
+
+This is a fundamental building block in adding native CRDT & synchronization
+functionality to TinyBase. There is work yet to be done on the communication
+protocol to negotiate and merge across systems, but in the meantime, stores can
+be merged locally with deterministic results. This implementation use an encoded
+hybrid logical clock to timestamp the changes made so that they can be merged.
+
+The getMergeableContent method on a MergeableStore is used to get the state of a
+store to merge into another. The applyMergeableChanges method will let you apply
+that to (another) store. The merge method is a convenience function to merge two
+stores together:
+
+```js
+const store1 = createMergeableStore('store1');
+const store2 = createMergeableStore('store2');
+
+store1.setCell('pets', 'fido', 'color', 'brown');
+store2.setCell('pets', 'felix', 'color', 'black');
+
+store1.merge(store2);
+
+console.log(store1.getContent());
+// -> [{"pets": {"felix": {"color": "black"}, "fido": {"color": "brown"}}}, {}]
+
+console.log(store2.getContent());
+// -> [{"pets": {"felix": {"color": "black"}, "fido": {"color": "brown"}}}, {}]
+```
+
+At this point, the APIs and the mergeable object structures may still change
+considerably before the full v5.0 release.
+
+### Breaking changes
+
+The following changes have been made to the existing TinyBase API for
+consistency. These are less common parts of the API but should straightforward
+to correct if you are using them.
+
+In the type definitions:
+
+- The GetTransactionChanges and GetTransactionLog types have been removed.
+- The TransactionChanges type has been renamed as the Changes type.
+- The Changes type now uses `undefined` instead of `null` to indicate a Cell or
+  Value that has been deleted or that was not present.
+- The TransactionLog type is now an array instead of a JavaScript object.
+
+In the Store interface:
+
+- There is a new getTransactionChanges method and a new getTransactionLog
+  method.
+- The setTransactionChanges method is renamed as the applyChanges method.
+- A DoRollback function no longer gets passed arguments. You can use the
+  getTransactionChanges method and getTransactionLog method directly instead.
+- Similarly, a TransactionListener function no longer gets passed arguments.
+
+In the persisters module:
+
+- the createCustomPersister function now takes a final optional boolean
+  ('supportsMergeableStore') to indicate that the Persister can support
+  MergeableStore as well as Store objects.
+- The broadcastTransactionChanges method in the persister-partykit-server module
+  has been renamed to the broadcastChanges method.
+
 ## v4.8
 
 This release includes the new persister-powersync module, which provides a
