@@ -1,5 +1,5 @@
 import {IdMap, mapEnsure, mapNew, mapToObj} from '../common/map';
-import {IdObj, objEnsure, objForEach, objNew} from '../common/obj';
+import {IdObj, objForEach, objNew} from '../common/obj';
 import {Stamp, Time} from '../types/mergeable-store';
 import {EMPTY_STRING} from '../common/strings';
 import {Id} from '../types/common';
@@ -36,14 +36,14 @@ export const mergeStamp = <NewNode, Node>(
 export const mergeStamps = <NewNode, Node>(
   newNode: IdObj<Stamp<NewNode>>,
   node: IdMap<Stamp<Node>>,
-  changes: IdMap<any>,
+  changes: any,
   merge: (newNode: NewNode, node: Node, changes: any) => void,
 ): void =>
   objForEach(newNode, (newNodeStamp, nodeId) =>
     mergeStamp(
       newNodeStamp,
       mapEnsure<Id, any>(node, nodeId, stampNewMap),
-      objEnsure<any>(changes, nodeId, objNew),
+      (changes[nodeId] = objNew()),
       merge,
     ),
   );
