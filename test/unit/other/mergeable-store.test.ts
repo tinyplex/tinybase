@@ -275,17 +275,107 @@ describe('getTransactionMergeableChanges', () => {
     store.finishTransaction();
   });
 
-  test.only('Inside net noop transaction', () => {
+  test('Inside net noop transaction', () => {
     store.startTransaction();
     store.setCell('t1', 'r1', 'c1', 1);
     expect(store.getTransactionMergeableChanges()).toEqual(
-      nullStamp([nullStamp({}), nullStamp({})]),
+      stamped1(0, 0, [
+        stamped1(0, 0, {
+          t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
+        }),
+        stamped1(0, 0, {}),
+      ]),
+    );
+    expect(store.getTransactionMergeableChanges()).toEqual(
+      stamped1(0, 0, [
+        stamped1(0, 0, {
+          t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
+        }),
+        stamped1(0, 0, {}),
+      ]),
     );
     store.delCell('t1', 'r1', 'c1');
     expect(store.getTransactionMergeableChanges()).toEqual(
       nullStamp([nullStamp({}), nullStamp({})]),
     );
+    expect(store.getTransactionMergeableChanges()).toEqual(
+      nullStamp([nullStamp({}), nullStamp({})]),
+    );
     store.finishTransaction();
+  });
+
+  test('After net noop transaction', () => {
+    store.addDidFinishTransactionListener(() => {
+      expect(store.getTransactionMergeableChanges()).toEqual(
+        nullStamp([nullStamp({}), nullStamp({})]),
+      );
+      expect(store.getTransactionMergeableChanges()).toEqual(
+        nullStamp([nullStamp({}), nullStamp({})]),
+      );
+    });
+    store.startTransaction();
+    store.setCell('t1', 'r1', 'c1', 1);
+    store.delCell('t1', 'r1', 'c1');
+    store.finishTransaction();
+  });
+
+  test('After transaction', () => {
+    store.addDidFinishTransactionListener(() => {
+      expect(store.getTransactionMergeableChanges()).toEqual(
+        stamped1(0, 0, [
+          stamped1(0, 0, {
+            t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
+          }),
+          stamped1(0, 0, {}),
+        ]),
+      );
+    });
+    store.startTransaction();
+    store.setCell('t1', 'r1', 'c1', 1);
+    store.finishTransaction();
+  });
+
+  test('During and after transaction', () => {
+    store.addDidFinishTransactionListener(() => {
+      expect(store.getTransactionMergeableChanges()).toEqual(
+        stamped1(0, 0, [
+          stamped1(0, 0, {
+            t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
+          }),
+          stamped1(0, 0, {}),
+        ]),
+      );
+    });
+    store.startTransaction();
+    store.setCell('t1', 'r1', 'c1', 1);
+    expect(store.getTransactionMergeableChanges()).toEqual(
+      stamped1(0, 0, [
+        stamped1(0, 0, {
+          t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
+        }),
+        stamped1(0, 0, {}),
+      ]),
+    );
+    store.finishTransaction();
+  });
+
+  test('After two transactions', () => {
+    let count = 0;
+    store.addDidFinishTransactionListener(() => {
+      expect(store.getTransactionMergeableChanges()).toEqual(
+        stamped1(0, count, [
+          stamped1(0, count, {
+            t1: stamped1(0, count, {
+              r1: stamped1(0, count, {c1: stamped1(0, count, count + 1)}),
+            }),
+          }),
+          stamped1(0, count, {}),
+        ]),
+      );
+      count++;
+    });
+    store.setCell('t1', 'r1', 'c1', 1);
+    store.setCell('t1', 'r1', 'c1', 2);
   });
 });
 

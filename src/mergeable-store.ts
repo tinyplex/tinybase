@@ -7,6 +7,7 @@ import {
   MergeableContent,
   MergeableStore,
   Stamp,
+  Time,
   createMergeableStore as createMergeableStoreDecl,
 } from './types/mergeable-store';
 import {
@@ -61,6 +62,7 @@ const newContentStamp = (time = EMPTY_STRING): ContentStamp => [
 export const createMergeableStore = ((id: Id): MergeableStore => {
   let listening = 1;
   let contentStamp = newContentStamp();
+  let transactionTime: Time | undefined;
   let finishTransactionMergeableChanges: MergeableChanges | undefined;
   const [getHlc, seenHlc] = getHlcFunctions(id);
   const store = createStore();
@@ -115,9 +117,8 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     }
   };
 
-  const postFinishTransaction = () => {
-    finishTransactionMergeableChanges = undefined;
-  };
+  const postFinishTransaction = () =>
+    (transactionTime = finishTransactionMergeableChanges = undefined);
 
   const merge = (mergeableStore2: MergeableStore) => {
     const mergeableContent = mergeableStore.getMergeableContent();
@@ -149,12 +150,11 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
 
   const getTransactionMergeableChanges = (): MergeableChanges => {
     if (isUndefined(finishTransactionMergeableChanges)) {
-      const [cellsTouched, valuesTouched, changedCells, , changedValues] =
-        store.getTransactionLog();
-
-      //      console.log({cellsTouched, valuesTouched, changedCells, changedValues});
-
-      const time = cellsTouched || valuesTouched ? getHlc() : EMPTY_STRING;
+      const [, , changedCells, , changedValues] = store.getTransactionLog();
+      const time =
+        !objIsEmpty(changedCells) || !objIsEmpty(changedValues)
+          ? transactionTime ?? (transactionTime = getHlc())
+          : EMPTY_STRING;
       const mergeableChanges: MergeableChanges = stampNew(time, [
         stampNewObj(time),
         stampNewObj(time),
