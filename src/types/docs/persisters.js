@@ -1070,7 +1070,7 @@
  * debugging persistence issues in a development environment, since v4.0.4.
  * @param supportsMergeableStore An optional boolean to indicate that this
  * Persister will be able to handle MergeableStore persistence as well as
- * regular Store persistence.
+ * regular Store persistence, since v5.0.
  * @returns A reference to the new Persister object.
  * @example
  * This example creates a custom Persister object and persists the Store to a
