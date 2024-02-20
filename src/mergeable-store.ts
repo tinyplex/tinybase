@@ -1,7 +1,7 @@
 import {CellOrUndefined, Changes, Store, ValueOrUndefined} from './types/store';
 import {EMPTY_STRING, strEndsWith, strStartsWith} from './common/strings';
-import {IdMap, mapEnsure, mapNew, mapSet} from './common/map';
-import {IdObj, objFreeze, objToArray} from './common/obj';
+import {IdMap, mapEnsure, mapSet} from './common/map';
+import {IdObj, objFreeze, objIsEmpty, objToArray} from './common/obj';
 import {
   MergeableChanges,
   MergeableContent,
@@ -18,11 +18,12 @@ import {
   mergeStamps,
   stampNew,
   stampNewMap,
+  stampNewObj,
 } from './mergeable-store/stamps';
+import {isUndefined, slice} from './common/other';
 import {Id} from './types/common';
 import {createStore} from './store';
 import {getHlcFunctions} from './mergeable-store/hlc';
-import {slice} from './common/other';
 
 const LISTENER_ARGS: IdObj<number> = {
   HasTable: 1,
@@ -43,11 +44,11 @@ const LISTENER_ARGS: IdObj<number> = {
   InvalidValue: 1,
 };
 
+type TableStamp = Stamp<IdMap<RowStamp>>;
+type RowStamp = Stamp<IdMap<Stamp<CellOrUndefined>>>;
 type ContentStamp = Stamp<
   [
-    mergeableTables: Stamp<
-      IdMap<Stamp<IdMap<Stamp<IdMap<Stamp<CellOrUndefined>>>>>>
-    >,
+    mergeableTables: Stamp<IdMap<TableStamp>>,
     mergeableValues: Stamp<IdMap<Stamp<ValueOrUndefined>>>,
   ]
 >;
@@ -60,6 +61,7 @@ const newContentStamp = (time = EMPTY_STRING): ContentStamp => [
 export const createMergeableStore = ((id: Id): MergeableStore => {
   let listening = 1;
   let contentStamp = newContentStamp();
+  let finishTransactionMergeableChanges: MergeableChanges | undefined;
   const [getHlc, seenHlc] = getHlcFunctions(id);
   const store = createStore();
 
@@ -72,40 +74,50 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
 
   const preFinishTransaction = () => {
     if (listening) {
-      const time = getHlc();
-      const [cellsTouched, valuesTouched, changedCells, , changedValues] =
-        store.getTransactionLog();
-      const [tablesStamp, valuesStamp] = contentStamp[1];
+      finishTransactionMergeableChanges = getTransactionMergeableChanges();
+      const [time, [changedTablesStamp, changedValuesStamp]] =
+        finishTransactionMergeableChanges;
+      const cellsTouched = !objIsEmpty(changedTablesStamp[1]);
+      const valuesTouched = !objIsEmpty(changedValuesStamp[1]);
 
+      const [, [tablesStamp, valuesStamp]] = contentStamp;
       if (cellsTouched || valuesTouched) {
         contentStamp[0] = time;
       }
       if (cellsTouched) {
         tablesStamp[0] = time;
-        objToArray(changedCells, (changedTable, tableId) => {
-          const tableStamp = mapEnsure(tablesStamp[1], tableId, stampNew);
-          const rowsStamp = (tableStamp[1] ??= mapNew());
+        objToArray(changedTablesStamp[1], ([, changedRowStamps], tableId) => {
+          const tableStamp = mapEnsure<Id, TableStamp>(
+            tablesStamp[1],
+            tableId,
+            stampNewMap,
+          );
           tableStamp[0] = time;
-          objToArray(changedTable, (changedRow, rowId) => {
-            const rowStamp = mapEnsure(rowsStamp, rowId, stampNew);
-            const cellsStamp = (rowStamp[1] ??= mapNew());
+          objToArray(changedRowStamps, ([, changedCellStamps], rowId) => {
+            const rowStamp = mapEnsure<Id, RowStamp>(
+              tableStamp[1],
+              rowId,
+              stampNewMap,
+            );
             rowStamp[0] = time;
-            objToArray(changedRow, ([, newCell], cellId) =>
-              mapSet(cellsStamp, cellId, [time, newCell]),
+            objToArray(changedCellStamps, ([, newCell], cellId) =>
+              mapSet(rowStamp[1], cellId, stampNew(time, newCell)),
             );
           });
         });
       }
       if (valuesTouched) {
         valuesStamp[0] = time;
-        objToArray(changedValues, ([, newValue], valueId) => {
-          mapSet(valuesStamp[1], valueId, [time, newValue]);
-        });
+        objToArray(changedValuesStamp[1], ([, newValue], valueId) =>
+          mapSet(valuesStamp[1], valueId, stampNew(time, newValue)),
+        );
       }
     }
   };
 
-  const postFinishTransaction = () => {};
+  const postFinishTransaction = () => {
+    finishTransactionMergeableChanges = undefined;
+  };
 
   const merge = (mergeableStore2: MergeableStore) => {
     const mergeableContent = mergeableStore.getMergeableContent();
@@ -135,8 +147,37 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     return mergeableStore;
   };
 
-  const getTransactionMergeableChanges = (): MergeableChanges =>
-    getMergeableContent();
+  const getTransactionMergeableChanges = (): MergeableChanges => {
+    if (isUndefined(finishTransactionMergeableChanges)) {
+      const time = getHlc();
+      const mergeableChanges: MergeableChanges = stampNew(time, [
+        stampNewObj(time),
+        stampNewObj(time),
+      ]);
+      const [[, tableStamps], [, valuesStamp]] = mergeableChanges[1];
+      const [, , changedCells, , changedValues] = store.getTransactionLog();
+
+      objToArray(changedCells, (changedTable, tableId) => {
+        const [, rowStamps] = (tableStamps[tableId] = stampNewObj(time));
+        objToArray(changedTable, (changedRow, rowId) => {
+          const [, cellStamps] = (rowStamps[rowId] = stampNewObj(time));
+          objToArray(
+            changedRow,
+            ([, newCell], cellId) =>
+              (cellStamps[cellId] = stampNew(time, newCell)),
+          );
+        });
+      });
+      objToArray(
+        changedValues,
+        ([, newValue], valueId) =>
+          (valuesStamp[valueId] = stampNew(time, newValue)),
+      );
+
+      return mergeableChanges;
+    }
+    return finishTransactionMergeableChanges;
+  };
 
   const applyMergeableChanges = (
     newContentStamp: MergeableChanges,
