@@ -12,8 +12,8 @@
   </p>
 </section>
 
-<a href='/guides/releases/#v4-6'><em>NEW!</em> v4.6 release</a> <span
-id="one-with">"The One With ElectricSQL"</span>
+<a href='/guides/releases/#v5-0'><em>NEW!</em> v5.0 release</a> <span
+id="one-with">"The One You Can Merge"</span>
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 

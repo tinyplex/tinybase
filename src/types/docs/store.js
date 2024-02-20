@@ -1159,7 +1159,7 @@
  * @category Transaction
  * @since v4.0.0
  */
-/// TransactionLog GetTransactionLog
+/// TransactionLog
 /**
  * The StoreListenerStats type describes the number of listeners registered with
  * the Store, and can be used for debugging purposes.
