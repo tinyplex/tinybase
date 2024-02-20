@@ -4,11 +4,16 @@ import {Stamp, Time} from '../types/mergeable-store';
 import {EMPTY_STRING} from '../common/strings';
 import {Id} from '../types/common';
 
-export const stampNew = (time = EMPTY_STRING): Stamp<any> => [time, undefined];
+export const stampNew = <Thing>(
+  time: Time = EMPTY_STRING,
+  thing?: Thing,
+): Stamp<Thing> => [time, thing as Thing];
 
-export const stampNewMap = <Thing>(
-  time = EMPTY_STRING,
-): Stamp<IdMap<Thing>> => [time, mapNew<Id, Thing>()];
+export const stampNewMap = <Thing>(time = EMPTY_STRING): Stamp<IdMap<Thing>> =>
+  stampNew(time, mapNew<Id, Thing>());
+
+export const stampNewObj = <Thing>(time = EMPTY_STRING): Stamp<IdObj<Thing>> =>
+  stampNew(time, objNew<Thing>());
 
 export const mapStamp = <From, To>(
   [time, value]: Stamp<From>,
