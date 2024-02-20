@@ -24,6 +24,7 @@ databases, and across synchronization boundaries with CRDT frameworks.
 | persister-remote           | createRemotePersister         | Remote server                                                                                               |
 | persister-file             | createFilePersister           | Local file (where possible)                                                                                 |
 | persister-partykit-client  | createPartyKitPersister       | PartyKit with the persister-partykit-server module                                                          |
+| persister-powersync        | createPowerSyncPersister      | PowerSync, via [@journeyapps/powersync-sdk-common](https://github.com/powersync-ja/powersync-js)            |
 | persister-sqlite3          | createSqlite3Persister        | SQLite in Node, via [sqlite3](https://github.com/TryGhost/node-sqlite3)                                     |
 | persister-sqlite-wasm      | createSqliteWasmPersister     | SQLite in a browser, via [sqlite-wasm](https://github.com/tomayac/sqlite-wasm)                              |
 | persister-cr-sqlite-wasm   | createCrSqliteWasmPersister   | SQLite CRDTs, via [cr-sqlite-wasm](https://github.com/vlcn-io/cr-sqlite)                                    |

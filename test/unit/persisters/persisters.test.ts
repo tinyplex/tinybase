@@ -21,6 +21,7 @@ import {
 } from 'tinybase/debug/persisters/persister-browser';
 import {deleteDB, openDB} from 'idb';
 import {mockFetchWasm, pause} from '../common/other';
+import {AbstractPowerSyncDatabase} from '@journeyapps/powersync-sdk-common';
 import {DB} from '@vlcn.io/crsqlite-wasm';
 import {Database} from 'sqlite3';
 import {createAutomergePersister} from 'tinybase/debug/persisters/persister-automerge';
@@ -432,6 +433,10 @@ const getMockedSqlite = <Location>(
 
 const mockElectricSql = getMockedSqlite<Electric>(...VARIANTS.electricSql);
 
+const mockPowerSync = getMockedSqlite<AbstractPowerSyncDatabase>(
+  ...VARIANTS.powerSync,
+);
+
 const mockSqlite3 = getMockedSqlite<Database>(...VARIANTS.sqlite3);
 
 const mockSqliteWasm = getMockedSqlite<SqliteWasmDb>(...VARIANTS.sqliteWasm);
@@ -562,6 +567,7 @@ describe.each([
   ['sessionStorage', mockSessionStorage],
   ['indexedDb', mockIndexedDb],
   ['electricSql', mockElectricSql],
+  ['powerSync', mockPowerSync],
   ['sqlite3', mockSqlite3],
   ['sqliteWasm', mockSqliteWasm],
   ['crSqliteWasm', mockCrSqliteWasm],

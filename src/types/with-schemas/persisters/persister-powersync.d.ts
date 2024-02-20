@@ -2,12 +2,12 @@
 
 import {DatabasePersisterConfig, Persister} from '../persisters';
 import {OptionalSchemas, Store} from '../store';
-import type {AbstractPowerSyncDatabase} from '@journeyapps/powersync-sdk-common';
+import {AbstractPowerSyncDatabase} from '@journeyapps/powersync-sdk-common';
 
 /// PowerSyncPersister
 export interface PowerSyncPersister<Schemas extends OptionalSchemas>
   extends Persister<Schemas> {
-  /// PowerSyncPersister.getDb
+  /// PowerSyncPersister.getPowerSync
   getDb: () => AbstractPowerSyncDatabase;
 }
 
