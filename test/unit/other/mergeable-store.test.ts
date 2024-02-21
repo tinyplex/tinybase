@@ -365,8 +365,10 @@ describe('getTransactionMergeableChanges', () => {
       expect(store.getTransactionMergeableChanges()).toEqual(
         stamped1(0, count, [
           stamped1(0, count, {
-            t1: stamped1(0, count, {
-              r1: stamped1(0, count, {c1: stamped1(0, count, count + 1)}),
+            ['t' + count]: stamped1(0, count, {
+              ['r' + count]: stamped1(0, count, {
+                ['c' + count]: stamped1(0, count, count),
+              }),
             }),
           }),
           stamped1(0, count, {}),
@@ -374,8 +376,8 @@ describe('getTransactionMergeableChanges', () => {
       );
       count++;
     });
+    store.setCell('t0', 'r0', 'c0', 0);
     store.setCell('t1', 'r1', 'c1', 1);
-    store.setCell('t1', 'r1', 'c1', 2);
   });
 });
 
