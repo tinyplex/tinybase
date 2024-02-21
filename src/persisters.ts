@@ -1,6 +1,10 @@
 import {Changes, Content, Store, Tables, Values} from './types/store.d';
 import {DEBUG, ifNotUndefined, isString, isUndefined} from './common/other';
-import {MergeableContent, MergeableStore} from './types/mergeable-store';
+import {
+  MergeableChanges,
+  MergeableContent,
+  MergeableStore,
+} from './types/mergeable-store';
 import {
   Persister,
   PersisterListener,
@@ -15,6 +19,34 @@ type Action = () => Promise<any>;
 
 const scheduleRunning: Map<any, 0 | 1> = mapNew();
 const scheduleActions: Map<any, Action[]> = mapNew();
+
+const getStoreFunctions = (
+  supportsMergeableStore: boolean | undefined,
+  store: MergeableStore,
+):
+  | [
+      getContent: () => Content,
+      getChanges: () => Changes,
+      hasChanges: (changes: Changes) => boolean,
+    ]
+  | [
+      getContent: () => MergeableContent,
+      getChanges: () => MergeableChanges,
+      hasChanges: (changes: MergeableChanges) => boolean,
+    ] =>
+  supportsMergeableStore && !isUndefined(store.getMergeableContent)
+    ? [
+        store.getMergeableContent,
+        store.getTransactionMergeableChanges,
+        ([, [[, changedTables], [, changedValues]]]: MergeableChanges) =>
+          !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
+      ]
+    : [
+        store.getContent,
+        store.getTransactionChanges,
+        ([changedTables, changedValues]: Changes) =>
+          !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
+      ];
 
 export const createCustomPersister = <
   ListeningHandle,
@@ -51,12 +83,10 @@ export const createCustomPersister = <
   mapEnsure(scheduleRunning, scheduleId, () => 0);
   mapEnsure(scheduleActions, scheduleId, () => []);
 
-  const getContent =
-    (supportsMergeableStore
-      ? (store as MergeableStore).getMergeableContent
-      : null) ?? store.getContent;
-
-  const getChanges = store.getTransactionChanges;
+  const [getContent, getChanges, hasChanges] = getStoreFunctions(
+    supportsMergeableStore,
+    store as MergeableStore,
+  );
 
   const run = async (): Promise<void> => {
     /*! istanbul ignore else */
@@ -169,9 +199,9 @@ export const createCustomPersister = <
     startAutoSave: async (): Promise<Persister> => {
       await persister.stopAutoSave().save();
       listenerId = store.addDidFinishTransactionListener(() => {
-        const [tableChanges, valueChanges] = getChanges();
-        if (!objIsEmpty(tableChanges) || !objIsEmpty(valueChanges)) {
-          persister.save(() => [tableChanges, valueChanges]);
+        const changes = getChanges();
+        if (hasChanges(changes as any)) {
+          persister.save(() => changes);
         }
       });
       return persister;
