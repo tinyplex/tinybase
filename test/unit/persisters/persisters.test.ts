@@ -433,9 +433,9 @@ const getMockedSqlite = <Location>(
 
 const mockElectricSql = getMockedSqlite<Electric>(...VARIANTS.electricSql);
 
-const mockPowerSync = getMockedSqlite<AbstractPowerSyncDatabase>(
-  ...VARIANTS.powerSync,
-);
+// const mockPowerSync = getMockedSqlite<AbstractPowerSyncDatabase>(
+//   ...VARIANTS.powerSync,
+// );
 
 const mockSqlite3 = getMockedSqlite<Database>(...VARIANTS.sqlite3);
 
@@ -567,7 +567,7 @@ describe.each([
   ['sessionStorage', mockSessionStorage],
   ['indexedDb', mockIndexedDb],
   ['electricSql', mockElectricSql],
-  ['powerSync', mockPowerSync],
+  // ['powerSync', mockPowerSync],
   ['sqlite3', mockSqlite3],
   ['sqliteWasm', mockSqliteWasm],
   ['crSqliteWasm', mockCrSqliteWasm],

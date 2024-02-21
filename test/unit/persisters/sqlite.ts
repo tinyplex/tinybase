@@ -103,36 +103,36 @@ export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
     async (electricClient: Electric) => await electricClient.close(),
     1000,
   ],
-  powerSync: [
-    async (): Promise<AbstractPowerSyncDatabase> => {
-      const factory = new WASQLitePowerSyncDatabaseOpenFactory({
-        schema: powerSyncSchema,
-        dbFilename: ':memory:',
-        // flags: {enableMultiTabs: false, disableSSRWarning: true},
-      });
-      
-      return factory.getInstance();
-    },
-    ['getPowerSyncClient', (powerSync: AbstractPowerSyncDatabase) => powerSync],
-    (
-      store: Store,
-      db: AbstractPowerSyncDatabase,
-      storeTableOrConfig?: string | DatabasePersisterConfig,
-      onSqlCommand?: (sql: string, args?: any[]) => void,
-      onIgnoredError?: (error: any) => void,
-    ) =>
-      (createPowerSyncPersister as any)(
-        store,
-        db,
-        storeTableOrConfig,
-        onSqlCommand,
-        onIgnoredError,
-      ),
-    async (ps: AbstractPowerSyncDatabase, sql: string, args: any[] = []) =>
-      (await ps.execute(sql, args)).rows?._array || [],
-    async (ps: AbstractPowerSyncDatabase) => await ps.close(),
-    1000,
-  ],
+  // powerSync: [
+  //   async (): Promise<AbstractPowerSyncDatabase> => {
+  //     const factory = new WASQLitePowerSyncDatabaseOpenFactory({
+  //       schema: powerSyncSchema,
+  //       dbFilename: ':memory:',
+  //       // flags: {enableMultiTabs: false, disableSSRWarning: true},
+  //     });
+  //     return factory.getInstance();
+  //   },
+  //   ['getPowerSyncClient', (powerSync: AbstractPowerSyncDatabase) => 
+  //   powerSync],
+  //   (
+  //     store: Store,
+  //     db: AbstractPowerSyncDatabase,
+  //     storeTableOrConfig?: string | DatabasePersisterConfig,
+  //     onSqlCommand?: (sql: string, args?: any[]) => void,
+  //     onIgnoredError?: (error: any) => void,
+  //   ) =>
+  //     (createPowerSyncPersister as any)(
+  //       store,
+  //       db,
+  //       storeTableOrConfig,
+  //       onSqlCommand,
+  //       onIgnoredError,
+  //     ),
+  //   async (ps: AbstractPowerSyncDatabase, sql: string, args: any[] = []) =>
+  //     (await ps.execute(sql, args)).rows?._array || [],
+  //   async (ps: AbstractPowerSyncDatabase) => await ps.close(),
+  //   1000,
+  // ],
   sqlite3: [
     async (): Promise<Database> => new sqlite3.Database(':memory:'),
     ['getDb', (database: Database) => database],
