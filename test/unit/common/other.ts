@@ -6,8 +6,16 @@ import fs from 'fs';
 
 Object.assign(globalThis, {TextDecoder, TextEncoder});
 
-export const pause = async (ms = 50): Promise<void> =>
-  new Promise((resolve) => setTimeout(resolve, ms));
+export const pause = async (
+  ms = 50,
+  mockedTimers = false,
+): Promise<unknown> => {
+  const promise = new Promise((resolve) => setTimeout(resolve, ms));
+  if (mockedTimers) {
+    jest.advanceTimersByTime(ms);
+  }
+  return promise;
+};
 
 export const mockFetchWasm = (): void => {
   fetchMock.enableMocks();
