@@ -22,6 +22,8 @@ export const createPowerSyncPersister = ((
     configOrStoreTableName,
     async (sql: string, args: any[] = []): Promise<IdObj<any>[]> =>
       await promiseNew(async (resolve, reject) => {
+        if (typeof powerSync.execute !== 'function') reject();
+
         const result = await powerSync.execute(sql, args);
 
         result?.rows ? resolve(result.rows._array) : reject();

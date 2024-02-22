@@ -223,8 +223,6 @@
     "@babel/preset-typescript": "^7.24.1",
     "@libsql/client": "^0.6.0",
     "@journeyapps/powersync-sdk-common": "^1.2.1",
-    "@journeyapps/powersync-sdk-web": "^0.2.1",
-    "@journeyapps/wa-sqlite": "^0.1.1",
     "@prettier/sync": "^0.5.1",
     "@rollup/plugin-image": "^3.0.3",
     "@rollup/plugin-replace": "^5.0.5",
