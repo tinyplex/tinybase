@@ -1,11 +1,11 @@
 /**
  * The persister-powersync module of the TinyBase project lets you save and
- * load Store data to and from a local SQLite database that is automaticaly
+ * load Store data to and from a local SQLite database that is automatically
  * synced using the PowerSync service.
  * @see Persisting Data guide
  * @packageDocumentation
  * @module persister-powersync
- * @since v4.6.9
+ * @since v4.7.0
  */
 /// persister-powersync
 /**
@@ -14,7 +14,7 @@
  *
  * It simply provides an extra getPowerSync method for accessing a
  * reference to the PowerSync instance the Store is being persisted to.
- * @since v4.6.9
+ * @since v4.7.0
  */
 /// PowerSyncPersister
 {
@@ -37,7 +37,7 @@
    * persister.destroy();
    * ```
    * @category Getter
-   * @since v4.6.9
+   * @since v4.7.0
    */
   /// PowerSyncPersister.getPowerSync
 }
@@ -61,8 +61,7 @@
  * See the documentation for the DpcJson and DpcTabular types for more
  * information on how both of those modes can be configured.
  * @param store The Store to persist.
- * @param db The PowerSync instance that was returned from
- * `SQLite.openDatabase(...)`.
+ * @param powerSync The PowerSync instance.
  * @param configOrStoreTableName A DatabasePersisterConfig to configure the
  * persistence mode (or a string to set the `storeTableName` property of the
  * JSON serialization).
@@ -72,30 +71,30 @@
  * @param onIgnoredError An optional handler for the errors that the Persister
  * would otherwise ignore when trying to save or load data. This is suitable for
  * debugging persistence issues in a development environment, since v4.0.4.
- * @returns A reference to the new ExpoSqlitePersister object.
+ * @returns A reference to the new PowerSyncPersister object.
  * @example
- * This example creates a ExpoSqlitePersister object and persists the Store to a
- * local SQLite database as a JSON serialization into the `my_tinybase` table.
+ * This example creates a PowerSyncPersister object and persists the Store to a
+ * local PowerSync instance.
  * It makes a change to the database directly and then reloads it back into the
  * Store.
  *
  * ```js yolo
- * const db = SQLite.openDatabase('my.db');
+ * const ps = usePowerSync();
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
- * const persister = createExpoSqlitePersister(store, db, 'my_tinybase');
+ * const persister = createExpoSqlitePersister(store, ps, 'my_tinybase');
  *
  * await persister.save();
  * // Store will be saved to the database.
  *
  * console.log(
  *   await new Promise((resolve) =>
- *     db.all('SELECT * FROM my_tinybase;', (_, rows) => resolve(rows)),
+ *     ps.execute('SELECT * FROM my_tinybase;', (_, rows) => resolve(rows)),
  *   ),
  * );
  * // -> [{_id: '_', store: '[{"pets":{"fido":{"species":"dog"}}},{}]'}]
  *
  * await new Promise((resolve) =>
- *   db.all(
+ *   ps.execute(
  *     'UPDATE my_tinybase SET store = ' +
  *       `'[{"pets":{"felix":{"species":"cat"}}},{}]' WHERE _id = '_';`,
  *     resolve,
@@ -108,13 +107,13 @@
  * persister.destroy();
  * ```
  * @example
- * This example creates a ExpoSqlitePersister object and persists the Store to a
- * local SQLite database with tabular mapping.
+ * This example creates a PowerSyncPersister object and persists the Store to a
+ * local PowerSync instance with tabular mapping.
  *
  * ```js yolo
- * const db = SQLite.openDatabase('my.db');
+ * const ps = usePowerSync();
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
- * const persister = createExpoSqlitePersister(store, db, {
+ * const persister = createPowerSyncPersister(store, ps, {
  *   mode: 'tabular',
  *   tables: {load: {pets: 'pets'}, save: {pets: 'pets'}},
  * });
@@ -122,13 +121,13 @@
  * await persister.save();
  * console.log(
  *   await new Promise((resolve) =>
- *     db.all('SELECT * FROM pets;', (_, rows) => resolve(rows)),
+ *     ps.execute('SELECT * FROM pets;', (_, rows) => resolve(rows)),
  *   ),
  * );
  * // -> [{_id: 'fido', species: 'dog'}]
  *
  * await new Promise((resolve) =>
- *   db.all(
+ *   ps.execute(
  *     `INSERT INTO pets (_id, species) VALUES ('felix', 'cat')`,
  *     resolve,
  *   ),
@@ -140,6 +139,6 @@
  * persister.destroy();
  * ```
  * @category Creation
- * @since v4.6.9
+ * @since v4.7.0
  */
 /// createPowerSyncPersister
