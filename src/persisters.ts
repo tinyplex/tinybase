@@ -176,7 +176,7 @@ export const createCustomPersister = <
       return persister;
     },
 
-    save: async (getChanges: () => Changes): Promise<Persister> => {
+    save: async (getChanges?: () => Changes): Promise<Persister> => {
       /*! istanbul ignore else */
       if (loadSave != 1) {
         loadSave = 2;
