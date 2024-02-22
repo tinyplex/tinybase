@@ -143,6 +143,7 @@ let customPersisterChanges: Changes = [{}, {}];
 
 const getMockedCustom = (
   write: (location: string, rawContent: any) => Promise<void>,
+  supportsMergeableStore = false,
 ): Persistable => ({
   autoLoadPause: 100,
   getLocation: async (): Promise<string> => '',
@@ -165,7 +166,7 @@ const getMockedCustom = (
       },
       () => (customPersisterListener = undefined),
       undefined,
-      false,
+      supportsMergeableStore,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       ['getFoo', 'foo'],
@@ -182,14 +183,14 @@ const getMockedCustom = (
   testMissing: true,
 });
 
-const mockCustomNoContentListener: Persistable<string> = getMockedCustom(
+const mockNoContentListener: Persistable<string> = getMockedCustom(
   async (_location: string, rawContent: any): Promise<void> => {
     customPersister = rawContent;
     customPersisterListener?.();
   },
 );
 
-const mockCustomContentListener: Persistable<string> = getMockedCustom(
+const mockContentListener: Persistable<string> = getMockedCustom(
   async (_location: string, rawContent: any): Promise<void> => {
     customPersister = rawContent;
     let content: Content;
@@ -202,7 +203,7 @@ const mockCustomContentListener: Persistable<string> = getMockedCustom(
   },
 );
 
-const mockCustomChangesListener: Persistable<string> = getMockedCustom(
+const mockChangesListener: Persistable<string> = getMockedCustom(
   async (_location: string, rawContent: any): Promise<void> => {
     customPersister = rawContent;
     let content: Content;
@@ -216,6 +217,45 @@ const mockCustomChangesListener: Persistable<string> = getMockedCustom(
       () => content, // changes
     );
   },
+);
+
+const mockMergeableNoContentListener: Persistable<string> = getMockedCustom(
+  async (_location: string, rawContent: any): Promise<void> => {
+    customPersister = rawContent;
+    customPersisterListener?.();
+  },
+  true,
+);
+
+const mockMergeableContentListener: Persistable<string> = getMockedCustom(
+  async (_location: string, rawContent: any): Promise<void> => {
+    customPersister = rawContent;
+    let content: Content;
+    try {
+      content = JSON.parse(rawContent);
+    } catch (e) {
+      content = [] as any;
+    }
+    customPersisterListener?.(() => content);
+  },
+  true,
+);
+
+const mockMergeableChangesListener: Persistable<string> = getMockedCustom(
+  async (_location: string, rawContent: any): Promise<void> => {
+    customPersister = rawContent;
+    let content: Content;
+    try {
+      content = JSON.parse(rawContent);
+    } catch (e) {
+      content = [] as any;
+    }
+    customPersisterListener?.(
+      () => content, // content
+      () => content, // changes
+    );
+  },
+  true,
 );
 
 const mockFile: Persistable = {
@@ -567,9 +607,12 @@ const mockAutomerge: Persistable<DocHandle<any>> = {
 };
 
 describe.each([
-  ['mockCustomNoContentListener', mockCustomNoContentListener],
-  ['mockCustomContentListener', mockCustomContentListener],
-  ['mockCustomChangesListener', mockCustomChangesListener],
+  ['mockChangesListener', mockChangesListener],
+  ['mockNoContentListener', mockNoContentListener],
+  ['mockContentListener', mockContentListener],
+  ['mockMergeableNoContentListener', mockMergeableNoContentListener],
+  ['mockMergeableContentListener', mockMergeableContentListener],
+  ['mockMergeableChangesListener', mockMergeableChangesListener],
   ['file', mockFile],
   ['remote', mockRemote],
   ['localStorage', mockLocalStorage],
