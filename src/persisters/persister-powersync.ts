@@ -7,7 +7,7 @@ import {AbstractPowerSyncDatabase} from '@journeyapps/powersync-sdk-common';
 import {DatabasePersisterConfig} from '../types/persisters';
 import {IdObj} from '../common/obj';
 import {Store} from '../types/store';
-import {arrayForEach} from '../common/array';
+import {arrayMap} from '../common/array';
 import {promiseNew} from '../common/other';
 
 export const createPowerSyncPersister = ((
@@ -29,14 +29,14 @@ export const createPowerSyncPersister = ((
     (listener: UpdateListener): AbortController => {
       const abortController = new AbortController();
 
+      const onChange = powerSync.onChange({
+        rawTableNames: true,
+        signal: abortController.signal,
+      });
+
       (async () => {
-        for await (const update of powerSync.onChange({
-          rawTableNames: true,
-          signal: abortController.signal,
-        })) {
-          arrayForEach(update.changedTables, (tableName) =>
-            listener(tableName),
-          );
+        for await (const update of onChange) {
+          arrayMap(update.changedTables, listener);
         }
       })();
 
