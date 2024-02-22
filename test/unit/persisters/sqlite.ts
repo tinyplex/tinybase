@@ -44,11 +44,12 @@ export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
   electricSql: [
     async (): Promise<Electric> =>
       await suppressWarnings(async () => {
-        const config = {auth: {token: insecureAuthToken({user_id: 'alice'})}};
         const conn = await ElectricDatabase.init(':memory:', '');
-        return await electrify(conn, electricSchema, config);
+        const electricClient = await electrify(conn, electricSchema);
+        await electricClient.connect(insecureAuthToken({user_id: 'alice'}));
+        return electricClient;
       }),
-    ['getElectricClient', (electric: Electric) => electric],
+    ['getElectricClient', (electricClient: Electric) => electricClient],
     (
       store: Store,
       electric: Electric,
@@ -63,9 +64,9 @@ export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
         onSqlCommand,
         onIgnoredError,
       ),
-    async (electric: Electric, sql: string, args: any[] = []) =>
-      await electric.db.raw({sql, args}),
-    async (electric: Electric) => await electric.close(),
+    async (electricClient: Electric, sql: string, args: any[] = []) =>
+      await electricClient.db.raw({sql, args}),
+    async (electricClient: Electric) => await electricClient.close(),
     1000,
   ],
   sqlite3: [
