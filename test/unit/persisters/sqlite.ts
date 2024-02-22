@@ -52,43 +52,49 @@ const escapeId = (str: string) => `"${str.replace(/"/g, '""')}"`;
 type AbstractPowerSyncDatabase = {
   execute(sql: string, args: any[]): Promise<QueryResult>;
   close(): Promise<void>;
-  onChange(options?: SQLWatchOptions): AsyncIterable<WatchOnChangeEvent>;
+  onChange(options: SQLWatchOptions): AsyncIterable<WatchOnChangeEvent>;
 };
 
 class WASQLitePowerSyncDatabaseOpenFactory {
-  public instance: AbstractPowerSyncDatabase;
+  public dbFilename: string;
 
   constructor({schema: _, dbFilename}: {schema: Schema; dbFilename: string}) {
-    const db = new sqlite3.Database(dbFilename);
+    this.dbFilename = dbFilename;
+  }
 
-    // async function* emptyAsyncIterable<T>(): AsyncIterable<T> {
-    //   // This generator doesn't yield anything, so it's effectively empty
-    // }
+  getInstance(): AbstractPowerSyncDatabase {
+    const db = new sqlite3.Database(this.dbFilename);
 
-    this.instance = {
+    const instance: AbstractPowerSyncDatabase = {
       execute: (sql, args) =>
-        new Promise((resolve, reject) =>
-          db.all(sql, args, (error, rows: {[id: string]: any}[]) =>
+        new Promise((resolve, reject) => {
+          return db.all(sql, args, (error, rows: {[id: string]: any}[]) =>
             error
               ? reject(error)
               : resolve({
                   rows: {
-                    _array: rows.map((row: {[id: string]: any}) => ({...row})),
+                    _array: rows.map((row: {[id: string]: any}) => ({
+                      ...row,
+                    })),
                     length: rows.length,
                     item: () => null,
                   },
                   rowsAffected: 0,
                 }),
-          ),
-        ),
+          );
+        }),
       close: () =>
-        new Promise((resolve) => {
-          // db.close();
+        new Promise((resolve, _) => {
+          // this.db?.close();
           resolve();
         }),
-      onChange: () => {
+      onChange: ({signal} = {}) => {
         return {
           async *[Symbol.asyncIterator]() {
+            if (signal?.aborted) {
+              return; // Immediately exit if already aborted
+            }
+
             const listener = (tableName: string): WatchOnChangeEvent => {
               return {changedTables: [tableName]};
             };
@@ -109,10 +115,8 @@ class WASQLitePowerSyncDatabaseOpenFactory {
         };
       },
     };
-  }
 
-  getInstance(): AbstractPowerSyncDatabase {
-    return this.instance;
+    return instance;
   }
 }
 

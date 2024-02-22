@@ -256,6 +256,7 @@ export const getCommandFunctions = (
           rowIdColumnName,
           changingColumnNames,
           args,
+          useOnConflict,
         );
         await cmd(
           'DELETE FROM' +
