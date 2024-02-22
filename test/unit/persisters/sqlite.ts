@@ -8,7 +8,6 @@ import {createCrSqliteWasmPersister} from 'tinybase/debug/persisters/persister-c
 import {createElectricSqlPersister} from 'tinybase/debug/persisters/persister-electric-sql';
 import {createSqlite3Persister} from 'tinybase/debug/persisters/persister-sqlite3';
 import {createSqliteWasmPersister} from 'tinybase/debug/persisters/persister-sqlite-wasm';
-import {insecureAuthToken} from 'electric-sql/auth';
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import {suppressWarnings} from '../common/other';
 
@@ -43,12 +42,13 @@ const escapeId = (str: string) => `"${str.replace(/"/g, '""')}"`;
 export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
   electricSql: [
     async (): Promise<Electric> =>
-      await suppressWarnings(async () => {
-        const conn = await ElectricDatabase.init(':memory:', '');
-        const electricClient = await electrify(conn, electricSchema);
-        await electricClient.connect(insecureAuthToken({user_id: 'alice'}));
-        return electricClient;
-      }),
+      await suppressWarnings(
+        async () =>
+          await electrify(
+            await ElectricDatabase.init(':memory:'),
+            electricSchema,
+          ),
+      ),
     ['getElectricClient', (electricClient: Electric) => electricClient],
     (
       store: Store,
