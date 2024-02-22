@@ -5,8 +5,6 @@ const esmModules = [
   'wa-sqlite',
   '@automerge/automerge-repo',
   '@journeyapps/powersync-sdk-common',
-  '@journeyapps/powersync-sdk-web',
-  '@journeyapps/wa-sqlite',
   '@sqlite\\.org/sqlite-wasm',
   '@vlcn\\.io/crsqlite-wasm',
   '@vlcn\\.io/wa-sqlite',
@@ -20,5 +18,4 @@ export default {
     '<rootDir>/node_modules/(?!(' + esmModules.join('|') + ')/.*)',
   ],
   transform: {'^.+\\.(mjs|js|jsx|ts|tsx)?$': 'babel-jest'},
-  setupFiles: ['jsdom-worker'],
 };
