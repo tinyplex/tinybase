@@ -1,7 +1,11 @@
 /// persisters
 
 import {Changes, Content, Store, Tables, Values} from './store.d';
-import {MergeableContent, MergeableStore} from './mergeable-store';
+import {
+  MergeableChanges,
+  MergeableContent,
+  MergeableStore,
+} from './mergeable-store';
 import {Id} from './common.d';
 
 /// PersisterStats
@@ -13,9 +17,13 @@ export type PersisterStats = {
 };
 
 /// PersisterListener
-export type PersisterListener = (
-  getContent?: () => Content,
-  getChanges?: () => Changes,
+export type PersisterListener<SupportsMergeableStore extends boolean> = (
+  getContent?: () =>
+    | Content
+    | (SupportsMergeableStore extends true ? MergeableContent : never),
+  getChanges?: () =>
+    | Changes
+    | (SupportsMergeableStore extends true ? MergeableChanges : never),
 ) => void;
 
 /// DatabasePersisterConfig
@@ -148,7 +156,9 @@ export function createCustomPersister<
       | (SupportsMergeableStore extends true ? MergeableContent : never),
     getChanges?: () => Changes,
   ) => Promise<void>,
-  addPersisterListener: (listener: PersisterListener) => ListeningHandle,
+  addPersisterListener: (
+    listener: PersisterListener<SupportsMergeableStore>,
+  ) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   onIgnoredError?: (error: any) => void,
   supportsMergeableStore?: SupportsMergeableStore,
