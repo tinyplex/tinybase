@@ -171,9 +171,8 @@ export const getDatabaseFunctions = <Database>(
             'SELECT sql, name FROM sqlite_schema ' +
               `WHERE type = 'table'` +
               ' AND name NOT LIKE ? ' +
-              ' AND name NOT LIKE ? ' +
               ' AND name NOT LIKE ?',
-            ['%sql%', '%electric%', 'items'], // starter template pollution
+            ['%sql%', '%electric%'],
           )
         ).map(async ({sql, name}: any) => [
           name,
