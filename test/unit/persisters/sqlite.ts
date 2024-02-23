@@ -84,27 +84,29 @@ class WASQLitePowerSyncDatabaseOpenFactory {
           );
         }),
       close: () =>
-        new Promise((resolve, _) => {
-          // this.db?.close();
+        new Promise((resolve) => {
+          db.close();
           resolve();
         }),
       onChange: ({signal} = {}) => {
         return {
           async *[Symbol.asyncIterator]() {
             if (signal?.aborted) {
-              return; // Immediately exit if already aborted
+              return;
             }
-
-            const listener = (tableName: string): WatchOnChangeEvent => {
-              return {changedTables: [tableName]};
-            };
 
             while (true) {
               const nextChange = await new Promise<WatchOnChangeEvent>(
                 (resolve) => {
                   const observer = (_: any, _2: any, tableName: string) => {
-                    resolve(listener(tableName));
+                    db.off('change', observer);
+                    resolve({changedTables: [tableName]});
                   };
+
+                  signal?.addEventListener('abort', () => {
+                    db.off('change', observer);
+                  });
+
                   db.on('change', observer);
                 },
               );
