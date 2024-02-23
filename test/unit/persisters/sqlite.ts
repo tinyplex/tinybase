@@ -201,10 +201,9 @@ export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
         onSqlCommand,
         onIgnoredError,
       ),
-    async (ps: AbstractPowerSyncDatabase, sql: string, args: any[] = []) =>
-      (await ps.execute(sql, args)).rows?._array || [],
-    async (ps: AbstractPowerSyncDatabase) => await ps.close(),
-    1000,
+    (ps: AbstractPowerSyncDatabase, sql: string, args: any[] = []) =>
+      ps.execute(sql, args).then((result) => result.rows?._array ?? []),
+    (ps: AbstractPowerSyncDatabase) => ps.close(),
   ],
   sqlite3: [
     async (): Promise<Database> => new sqlite3.Database(':memory:'),
