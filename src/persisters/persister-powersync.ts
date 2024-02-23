@@ -8,7 +8,6 @@ import {DatabasePersisterConfig} from '../types/persisters';
 import {IdObj} from '../common/obj';
 import {Store} from '../types/store';
 import {arrayMap} from '../common/array';
-import {promiseNew} from '../common/other';
 
 export const createPowerSyncPersister = ((
   store: Store,
@@ -21,14 +20,7 @@ export const createPowerSyncPersister = ((
     store,
     configOrStoreTableName,
     async (sql: string, args: any[] = []): Promise<IdObj<any>[]> =>
-      await promiseNew(async (resolve, reject) => {
-        try {
-          const result = await powerSync.execute(sql, args);
-          resolve(result.rows?._array ?? []);
-        } catch (error) {
-          reject(error);
-        }
-      }),
+      powerSync.execute(sql, args).then((result) => result.rows?._array ?? []),
     (listener: UpdateListener): AbortController => {
       const abortController = new AbortController();
 
