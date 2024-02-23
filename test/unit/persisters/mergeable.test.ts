@@ -110,7 +110,6 @@ describe('Supported, MergeableStore', () => {
     );
     await persister.startAutoSave();
     store.setCell('t1', 'r1', 'c1', 1);
-    await pause(1, true);
     store.setValue('v1', 1);
     await pause(1, true);
     persister.destroy();
@@ -131,10 +130,10 @@ describe('Supported, MergeableStore', () => {
         ],
       ]),
       JSON.stringify([
-        'HeS2L2100000FG2W',
+        'HeS2L2000010FG2W',
         [
-          ['HeS2L2100000FG2W', {}],
-          ['HeS2L2100000FG2W', {v1: ['HeS2L2100000FG2W', 1]}],
+          ['HeS2L2000010FG2W', {}],
+          ['HeS2L2000010FG2W', {v1: ['HeS2L2000010FG2W', 1]}],
         ],
       ]),
     ]);
