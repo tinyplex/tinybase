@@ -5,6 +5,7 @@ import {
   Changes,
   Content,
   Id,
+  MergeableContent,
   Persister,
   Store,
   Tables,
@@ -14,6 +15,7 @@ import {
 } from 'tinybase/debug';
 import {DbSchema, ElectricClient} from 'electric-sql/client/model';
 import {DocHandle, Repo} from '@automerge/automerge-repo';
+import {GetLocationMethod, Persistable, nextLoop} from './common';
 import {SqliteWasmDb, VARIANTS} from './sqlite';
 import {Doc as YDoc, Map as YMap} from 'yjs';
 import {
@@ -40,26 +42,6 @@ const SET_HOST = 'http://set.com';
 
 const electricSchema = new DbSchema({}, []);
 type Electric = ElectricClient<typeof electricSchema>;
-
-type GetLocationMethod<Location = string> = [
-  string,
-  (location: Location) => unknown,
-];
-type Persistable<Location = string> = {
-  beforeEach?: () => void;
-  autoLoadPause?: number;
-  getLocation: () => Promise<Location>;
-  getLocationMethod?: GetLocationMethod<Location>;
-  getPersister: (store: Store, location: Location) => Persister;
-  get: (location: Location) => Promise<Content | void>;
-  set: (location: Location, content: Content) => Promise<void>;
-  write: (location: Location, rawContent: any) => Promise<void>;
-  del: (location: Location) => Promise<void>;
-  afterEach?: (location: Location) => void;
-  getChanges?: () => Changes;
-  testMissing: boolean;
-  extraLoad?: 0 | 1;
-};
 
 const yMapMatch = (
   yMapOrParent: YMap<any>,
@@ -129,16 +111,10 @@ const docObjMatch = (
   return changed;
 };
 
-const nextLoop = async (): Promise<void> => await pause(0);
-// fs.watch misses changes made in the same loop, seemingly
-
 let customPersister: any;
 let customPersisterListener:
   | ((getContent?: () => Content) => void)
-  | ((
-      getContent?: () => Content,
-      getTransactionChanges?: () => Content,
-    ) => void)
+  | ((getContent?: () => Content, getChanges?: () => Changes) => void)
   | undefined;
 let customPersisterChanges: Changes = [{}, {}];
 
@@ -158,9 +134,9 @@ const getMockedCustom = (
           return JSON.parse(customPersister);
         } catch {}
       },
-      async (getContent, getTransactionChanges) => {
+      async (getContent, getChanges) => {
         customPersister = getContent();
-        customPersisterChanges = getTransactionChanges?.() ?? [{}, {}];
+        customPersisterChanges = getChanges?.() ?? [{}, {}];
       },
       (listener) => {
         customPersisterListener = listener;
@@ -174,8 +150,10 @@ const getMockedCustom = (
     );
   },
   get: async (): Promise<Content | void> => customPersister,
-  set: async (location: string, content: Content): Promise<void> =>
-    await write(location, JSON.stringify(content)),
+  set: async (
+    location: string,
+    content: Content | MergeableContent,
+  ): Promise<void> => await write(location, JSON.stringify(content)),
   write,
   del: async (): Promise<void> => {
     customPersister = '';
@@ -272,8 +250,10 @@ const mockFile: Persistable = {
       return JSON.parse(fs.readFileSync(location, 'utf-8'));
     } catch {}
   },
-  set: async (location: string, content: Content): Promise<void> =>
-    await mockFile.write(location, JSON.stringify(content)),
+  set: async (
+    location: string,
+    content: Content | MergeableContent,
+  ): Promise<void> => await mockFile.write(location, JSON.stringify(content)),
   write: async (location: string, rawContent: any): Promise<void> =>
     fs.writeFileSync(location, rawContent, 'utf-8'),
   del: async (location: string): Promise<void> => fs.unlinkSync(location),
@@ -320,8 +300,10 @@ const mockRemote: Persistable = {
       return JSON.parse(fs.readFileSync(location, 'utf-8'));
     } catch {}
   },
-  set: async (location: string, content: Content): Promise<void> =>
-    await mockRemote.write(location, JSON.stringify(content)),
+  set: async (
+    location: string,
+    content: Content | MergeableContent,
+  ): Promise<void> => await mockRemote.write(location, JSON.stringify(content)),
   write: async (location: string, rawContent: any): Promise<void> =>
     fs.writeFileSync(location, rawContent, 'utf-8'),
   del: async (location: string): Promise<void> => fs.unlinkSync(location),
@@ -344,7 +326,10 @@ const getMockedStorage = (
         return JSON.parse(storage.getItem(location) ?? '');
       } catch {}
     },
-    set: async (location: string, content: Content): Promise<void> =>
+    set: async (
+      location: string,
+      content: Content | MergeableContent,
+    ): Promise<void> =>
       await mockStorage.write(location, JSON.stringify(content)),
     write: async (location: string, rawContent: any): Promise<void> => {
       storage.setItem(location, rawContent);
