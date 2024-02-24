@@ -328,6 +328,23 @@ describe('getTransactionMergeableChanges', () => {
           stamped1(0, count, {}),
         ]),
       );
+      expect(store.getMergeableContent()).toEqual(
+        stamped1(0, count, [
+          stamped1(
+            0,
+            count,
+            Object.fromEntries(
+              new Array(count + 1).fill('').map((_, c) => [
+                ['t' + c],
+                stamped1(0, c, {
+                  ['r' + c]: stamped1(0, c, {['c' + c]: stamped1(0, c, c)}),
+                }),
+              ]),
+            ),
+          ),
+          nullStamp({}),
+        ]),
+      );
       count++;
     });
     store.setCell('t0', 'r0', 'c0', 0);
