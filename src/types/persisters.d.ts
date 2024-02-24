@@ -17,14 +17,15 @@ export type PersisterStats = {
 };
 
 /// PersisterListener
-export type PersisterListener<SupportsMergeableStore extends boolean> = (
-  getContent?: () =>
-    | Content
-    | (SupportsMergeableStore extends true ? MergeableContent : never),
-  getChanges?: () =>
-    | Changes
-    | (SupportsMergeableStore extends true ? MergeableChanges : never),
-) => void;
+export type PersisterListener<SupportsMergeableStore extends boolean = false> =
+  (
+    getContent?: () =>
+      | Content
+      | (SupportsMergeableStore extends true ? MergeableContent : never),
+    getChanges?: () =>
+      | Changes
+      | (SupportsMergeableStore extends true ? MergeableChanges : never),
+  ) => void;
 
 /// DatabasePersisterConfig
 export type DatabasePersisterConfig = DpcJson | DpcTabular;
@@ -142,7 +143,7 @@ export interface Persister<SupportsMergeableStore extends boolean = false> {
 /// createCustomPersister
 export function createCustomPersister<
   ListeningHandle,
-  SupportsMergeableStore extends boolean,
+  SupportsMergeableStore extends boolean = false,
 >(
   store: Store | (SupportsMergeableStore extends true ? MergeableStore : never),
   getPersisted: () => Promise<
