@@ -16,7 +16,7 @@ export const createFilePersister = ((
   filePath: string,
   onIgnoredError?: (error: any) => void,
 ): FilePersister => {
-  const getPersisted = async (): Promise<Content> =>
+  const getPersisted = async (): Promise<Content | MergeableContent> =>
     jsonParse(await readFile(filePath, UTF8));
 
   const setPersisted = async (
@@ -35,7 +35,7 @@ export const createFilePersister = ((
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    false,
+    true,
     ['getFilePath', filePath],
   ) as FilePersister;
 }) as typeof createFilePersisterDecl;
