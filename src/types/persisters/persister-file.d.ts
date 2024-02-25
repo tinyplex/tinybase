@@ -4,7 +4,7 @@ import {Persister} from '../persisters';
 import {Store} from '../store';
 
 /// FilePersister
-export interface FilePersister extends Persister {
+export interface FilePersister extends Persister<true> {
   /// FilePersister.getFilePath
   getFilePath(): string;
 }
