@@ -5,14 +5,14 @@ import {Persister} from '../persisters';
 
 /// SessionPersister
 export interface SessionPersister<Schemas extends OptionalSchemas>
-  extends Persister<Schemas> {
+  extends Persister<Schemas, true> {
   /// SessionPersister.getStorageName
   getStorageName(): string;
 }
 
 /// LocalPersister
 export interface LocalPersister<Schemas extends OptionalSchemas>
-  extends Persister<Schemas> {
+  extends Persister<Schemas, true> {
   /// LocalPersister.getStorageName
   getStorageName(): string;
 }
