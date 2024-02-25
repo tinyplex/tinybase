@@ -1,41 +1,37 @@
 /* eslint-disable jest/no-conditional-expect */
 
 import 'fake-indexeddb/auto';
+import crypto from 'crypto';
+import {DbSchema, ElectricClient} from 'electric-sql/client/model';
+import fs from 'fs';
+import {deleteDB, openDB} from 'idb';
+import fetchMock from 'jest-fetch-mock';
+import {Database} from 'sqlite3';
 import {
   Changes,
   Content,
+  createCustomPersister,
+  createStore,
   Id,
   MergeableContent,
   Persister,
   Store,
   Tables,
   Values,
-  createCustomPersister,
-  createStore,
 } from 'tinybase/debug';
-import {DbSchema, ElectricClient} from 'electric-sql/client/model';
-import {DocHandle, Repo} from '@automerge/automerge-repo';
-import {GetLocationMethod, Persistable, nextLoop} from './common';
-import {SqliteWasmDb, VARIANTS} from './sqlite';
-import {Doc as YDoc, Map as YMap} from 'yjs';
-import {
-  createLocalPersister,
-  createSessionPersister,
-} from 'tinybase/debug/persisters/persister-browser';
-import {deleteDB, openDB} from 'idb';
-import {mockFetchWasm, pause} from '../common/other';
-import {AbstractPowerSyncDatabase} from '@journeyapps/powersync-sdk-common';
-import {DB} from '@vlcn.io/crsqlite-wasm';
-import {Database} from 'sqlite3';
 import {createAutomergePersister} from 'tinybase/debug/persisters/persister-automerge';
-import {createFilePersister} from 'tinybase/debug/persisters/persister-file';
 import {createIndexedDbPersister} from 'tinybase/debug/persisters/persister-indexed-db';
 import {createRemotePersister} from 'tinybase/debug/persisters/persister-remote';
 import {createYjsPersister} from 'tinybase/debug/persisters/persister-yjs';
-import crypto from 'crypto';
-import fetchMock from 'jest-fetch-mock';
-import fs from 'fs';
 import tmp from 'tmp';
+import {Doc as YDoc, Map as YMap} from 'yjs';
+import {DocHandle, Repo} from '@automerge/automerge-repo';
+import {AbstractPowerSyncDatabase} from '@journeyapps/powersync-sdk-common';
+import {DB} from '@vlcn.io/crsqlite-wasm';
+import {mockFetchWasm, pause} from '../common/other';
+import {GetLocationMethod, nextLoop, Persistable} from './common';
+import {mockFile, mockLocalStorage, mockSessionStorage} from './mocks';
+import {SqliteWasmDb, VARIANTS} from './sqlite';
 
 const GET_HOST = 'http://get.com';
 const SET_HOST = 'http://set.com';
@@ -237,29 +233,6 @@ const mockMergeableChangesListener: Persistable<string> = getMockedCustom(
   true,
 );
 
-const mockFile: Persistable = {
-  autoLoadPause: 100,
-  getLocation: async (): Promise<string> => {
-    tmp.setGracefulCleanup();
-    return tmp.fileSync().name;
-  },
-  getLocationMethod: ['getFilePath', (location) => location],
-  getPersister: createFilePersister,
-  get: async (location: string): Promise<Content | void> => {
-    try {
-      return JSON.parse(fs.readFileSync(location, 'utf-8'));
-    } catch {}
-  },
-  set: async (
-    location: string,
-    content: Content | MergeableContent,
-  ): Promise<void> => await mockFile.write(location, JSON.stringify(content)),
-  write: async (location: string, rawContent: any): Promise<void> =>
-    fs.writeFileSync(location, rawContent, 'utf-8'),
-  del: async (location: string): Promise<void> => fs.unlinkSync(location),
-  testMissing: true,
-};
-
 const mockRemote: Persistable = {
   beforeEach: (): void => {
     fetchMock.enableMocks();
@@ -309,60 +282,6 @@ const mockRemote: Persistable = {
   del: async (location: string): Promise<void> => fs.unlinkSync(location),
   testMissing: true,
 };
-
-const getMockedStorage = (
-  storage: Storage,
-  getPersister: (store: Store, location: string) => Persister,
-): Persistable => {
-  const mockStorage = {
-    getLocation: async (): Promise<string> => 'test' + Math.random(),
-    getLocationMethod: [
-      'getStorageName',
-      (location) => location,
-    ] as GetLocationMethod<string>,
-    getPersister,
-    get: async (location: string): Promise<Content | void> => {
-      try {
-        return JSON.parse(storage.getItem(location) ?? '');
-      } catch {}
-    },
-    set: async (
-      location: string,
-      content: Content | MergeableContent,
-    ): Promise<void> =>
-      await mockStorage.write(location, JSON.stringify(content)),
-    write: async (location: string, rawContent: any): Promise<void> => {
-      storage.setItem(location, rawContent);
-      window.dispatchEvent(
-        new StorageEvent('storage', {
-          storageArea: storage,
-          key: location,
-          newValue: rawContent,
-        }),
-      );
-      window.dispatchEvent(
-        new StorageEvent('storage', {
-          storageArea: storage,
-          key: location + 'another',
-        }),
-      );
-    },
-    del: async (location: string): Promise<void> =>
-      storage.removeItem(location),
-    testMissing: true,
-  };
-  return mockStorage;
-};
-
-const mockLocalStorage = getMockedStorage(
-  window.localStorage,
-  createLocalPersister,
-);
-
-const mockSessionStorage = getMockedStorage(
-  window.sessionStorage,
-  createSessionPersister,
-);
 
 const mockIndexedDb = {
   autoLoadPause: 110,
@@ -604,9 +523,9 @@ describe.each([
   ['mockMergeableContentListener', mockMergeableContentListener],
   ['mockMergeableChangesListener', mockMergeableChangesListener],
   ['file', mockFile],
-  ['remote', mockRemote],
   ['localStorage', mockLocalStorage],
   ['sessionStorage', mockSessionStorage],
+  ['remote', mockRemote],
   ['indexedDb', mockIndexedDb],
   ['electricSql', mockElectricSql],
   ['powerSync', mockPowerSync],
