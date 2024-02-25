@@ -20,31 +20,44 @@ type Action = () => Promise<any>;
 const scheduleRunning: Map<any, 0 | 1> = mapNew();
 const scheduleActions: Map<any, Action[]> = mapNew();
 
+const isMergeable = (
+  contentOrChanges:
+    | Content
+    | MergeableContent
+    | Changes
+    | MergeableChanges
+    | undefined,
+) => isString(contentOrChanges?.[0]);
+
 const getStoreFunctions = (
   supportsMergeableStore: boolean | undefined,
   store: MergeableStore,
 ):
   | [
+      isMergeableStore: 0,
       getContent: () => Content,
       getChanges: () => Changes,
       hasChanges: (changes: Changes) => boolean,
     ]
   | [
+      isMergeableStore: 1,
       getContent: () => MergeableContent,
       getChanges: () => MergeableChanges,
       hasChanges: (changes: MergeableChanges) => boolean,
     ] =>
-  supportsMergeableStore && !isUndefined(store.getMergeableContent)
+  !supportsMergeableStore || isUndefined(store.getMergeableContent)
     ? [
-        store.getMergeableContent,
-        store.getTransactionMergeableChanges,
-        ([, [[, changedTables], [, changedValues]]]: MergeableChanges) =>
-          !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
-      ]
-    : [
+        0,
         store.getContent,
         store.getTransactionChanges,
         ([changedTables, changedValues]: Changes) =>
+          !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
+      ]
+    : [
+        1,
+        store.getMergeableContent,
+        store.getTransactionMergeableChanges,
+        ([, [[, changedTables], [, changedValues]]]: MergeableChanges) =>
           !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
       ];
 
@@ -83,10 +96,8 @@ export const createCustomPersister = <
   mapEnsure(scheduleRunning, scheduleId, () => 0);
   mapEnsure(scheduleActions, scheduleId, () => []);
 
-  const [getContent, getChanges, hasChanges] = getStoreFunctions(
-    supportsMergeableStore,
-    store as MergeableStore,
-  );
+  const [isMergeableStore, getContent, getChanges, hasChanges] =
+    getStoreFunctions(supportsMergeableStore, store as MergeableStore);
 
   const run = async (): Promise<void> => {
     /*! istanbul ignore else */
@@ -133,8 +144,8 @@ export const createCustomPersister = <
       await loadLock(async () => {
         try {
           const content = (await getPersisted()) as any;
-          (supportsMergeableStore && isString(content[0])
-            ? (store as MergeableStore).applyMergeableChanges
+          (isMergeableStore && isMergeable(content)
+            ? (store as MergeableStore).setMergeableContent
             : store.setContent)(content);
         } catch {
           store.setContent([initialTables, initialValues] as Content);
@@ -151,13 +162,18 @@ export const createCustomPersister = <
       listeningHandle = addPersisterListener(async (getContent, getChanges) => {
         if (getChanges) {
           const changes = getChanges();
-          await loadLock(async () => store.applyChanges(changes));
+          await loadLock(async () =>
+            (isMergeableStore && isMergeable(changes)
+              ? (store as MergeableStore).applyMergeableChanges
+              : store.applyChanges)(changes as Changes & MergeableChanges),
+          );
         } else {
           await loadLock(async () => {
             try {
-              store.setContent(
-                getContent?.() ?? ((await getPersisted()) as Content),
-              );
+              const content = getContent?.() ?? (await getPersisted());
+              (isMergeableStore && isMergeable(content)
+                ? (store as MergeableStore).setMergeableContent
+                : store.setContent)(content as Content & MergeableContent);
             } catch (error) {
               onIgnoredError?.(error);
             }
