@@ -237,7 +237,7 @@ describe('getTransactionMergeableChanges', () => {
         stamped1(0, 0, {
           t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
         }),
-        stamped1(0, 0, {}),
+        nullStamp({}),
       ]),
     );
     expect(store.getTransactionMergeableChanges()).toEqual(
@@ -245,7 +245,7 @@ describe('getTransactionMergeableChanges', () => {
         stamped1(0, 0, {
           t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
         }),
-        stamped1(0, 0, {}),
+        nullStamp({}),
       ]),
     );
     store.delCell('t1', 'r1', 'c1');
@@ -280,7 +280,7 @@ describe('getTransactionMergeableChanges', () => {
           stamped1(0, 0, {
             t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
           }),
-          stamped1(0, 0, {}),
+          nullStamp({}),
         ]),
       );
     });
@@ -296,7 +296,7 @@ describe('getTransactionMergeableChanges', () => {
           stamped1(0, 0, {
             t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
           }),
-          stamped1(0, 0, {}),
+          nullStamp({}),
         ]),
       );
     });
@@ -307,7 +307,7 @@ describe('getTransactionMergeableChanges', () => {
         stamped1(0, 0, {
           t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
         }),
-        stamped1(0, 0, {}),
+        nullStamp({}),
       ]),
     );
     store.finishTransaction();
@@ -325,7 +325,7 @@ describe('getTransactionMergeableChanges', () => {
               }),
             }),
           }),
-          stamped1(0, count, {}),
+          nullStamp({}),
         ]),
       );
       expect(store.getMergeableContent()).toEqual(
