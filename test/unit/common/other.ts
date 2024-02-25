@@ -9,7 +9,8 @@ Object.assign(globalThis, {TextDecoder, TextEncoder});
 export const pause = async (ms = 50, mockedTimers = false): Promise<void> => {
   const promise = new Promise<void>((resolve) => setTimeout(resolve, ms));
   if (mockedTimers) {
-    jest.advanceTimersByTime(ms);
+    jest.runAllTicks();
+    await jest.advanceTimersByTimeAsync(ms);
   }
   return promise;
 };
