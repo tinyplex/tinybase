@@ -4,13 +4,13 @@ import {Persister} from '../persisters.d';
 import {Store} from '../store.d';
 
 /// SessionPersister
-export interface SessionPersister extends Persister {
+export interface SessionPersister extends Persister<true> {
   /// SessionPersister.getStorageName
   getStorageName(): string;
 }
 
 /// LocalPersister
-export interface LocalPersister extends Persister {
+export interface LocalPersister extends Persister<true> {
   /// LocalPersister.getStorageName
   getStorageName(): string;
 }
