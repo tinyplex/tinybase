@@ -127,7 +127,7 @@ describe.each([
           stamped1(0, 2, {
             t1: stamped1(0, 2, {r1: stamped1(0, 2, {c1: stamped1(0, 2, 2)})}),
           }),
-          stamped1(0, 2, {}),
+          nullStamp({}),
         ]),
       );
     }
@@ -144,7 +144,7 @@ describe.each([
     if (persistable.getChanges) {
       expect(persistable.getChanges()).toEqual(
         stamped1(2, 0, [
-          stamped1(2, 0, {}),
+          nullStamp({}),
           stamped1(2, 0, {v1: stamped1(2, 0, 2)}),
         ]),
       );
@@ -467,13 +467,13 @@ describe('Supported, MergeableStore', () => {
               ],
             },
           ],
-          ['HeS2L2000000FG2W', {}],
+          ['', {}],
         ],
       ]),
       JSON.stringify([
         'HeS2L2000010FG2W',
         [
-          ['HeS2L2000010FG2W', {}],
+          ['', {}],
           ['HeS2L2000010FG2W', {v1: ['HeS2L2000010FG2W', 1]}],
         ],
       ]),
