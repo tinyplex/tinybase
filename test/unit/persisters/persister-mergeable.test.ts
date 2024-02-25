@@ -12,7 +12,7 @@ import {
   createStore,
 } from 'tinybase/debug';
 import {GetLocationMethod, Persistable, nextLoop} from './common';
-import {START_TIME, nullStamp, stamped1} from '../common/mergeable';
+import {START_TIME, nullStamped, stamped1} from '../common/mergeable';
 import {
   mockFile,
   mockLocalStorage,
@@ -127,7 +127,7 @@ describe.each([
           stamped1(0, 2, {
             t1: stamped1(0, 2, {r1: stamped1(0, 2, {c1: stamped1(0, 2, 2)})}),
           }),
-          nullStamp({}),
+          nullStamped({}),
         ]),
       );
     }
@@ -144,7 +144,7 @@ describe.each([
     if (persistable.getChanges) {
       expect(persistable.getChanges()).toEqual(
         stamped1(2, 0, [
-          nullStamp({}),
+          nullStamped({}),
           stamped1(2, 0, {v1: stamped1(2, 0, 2)}),
         ]),
       );
@@ -161,7 +161,7 @@ describe.each([
           stamped1(0, 0, {
             t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
           }),
-          nullStamp({}),
+          nullStamped({}),
         ]),
       );
       expect(persister.getStats()).toEqual({loads: 0, saves: 1});
@@ -173,7 +173,7 @@ describe.each([
           stamped1(0, 2, {
             t1: stamped1(0, 2, {r1: stamped1(0, 2, {c1: stamped1(0, 2, 3)})}),
           }),
-          nullStamp({}),
+          nullStamped({}),
         ]),
       );
       expect(persister.getStats()).toEqual({loads: 0, saves: 3});
@@ -226,7 +226,7 @@ describe.each([
         stamped1(0, 0, {
           t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
         }),
-        nullStamp({}),
+        nullStamped({}),
       ]) as MergeableContent,
     );
     await persister.startAutoLoad();
@@ -239,7 +239,7 @@ describe.each([
         stamped1(0, 1, {
           t1: stamped1(0, 1, {r1: stamped1(0, 1, {c1: stamped1(0, 1, 2)})}),
         }),
-        nullStamp({}),
+        nullStamped({}),
       ]) as MergeableContent,
     );
     await pause(persistable.autoLoadPause, true);
@@ -251,7 +251,7 @@ describe.each([
         stamped1(0, 2, {
           t1: stamped1(0, 2, {r1: stamped1(0, 2, {c1: stamped1(0, 2, 3)})}),
         }),
-        nullStamp({}),
+        nullStamped({}),
       ]) as MergeableContent,
     );
     await pause(persistable.autoLoadPause, true);
@@ -264,7 +264,7 @@ describe.each([
         stamped1(0, 3, {
           t1: stamped1(0, 3, {r1: stamped1(0, 3, {c1: stamped1(0, 3, 4)})}),
         }),
-        nullStamp({}),
+        nullStamped({}),
       ]) as MergeableContent,
     );
     await pause(persistable.autoLoadPause, true);
@@ -303,7 +303,7 @@ describe.each([
         stamped1(0, 0, {
           t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
         }),
-        nullStamp({}),
+        nullStamped({}),
       ]) as MergeableContent,
     );
     await persister.startAutoLoad({});
@@ -320,7 +320,7 @@ describe.each([
         stamped1(0, 0, {
           t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
         }),
-        nullStamp({}),
+        nullStamped({}),
       ]) as MergeableContent,
     );
     await persister.startAutoLoad({});

@@ -49,4 +49,4 @@ export const stamped2 = (offset: number, counter: number, thing: any) => [
   thing,
 ];
 
-export const nullStamp = <Thing>(thing: Thing): Stamp<Thing> => ['', thing];
+export const nullStamped = <Thing>(thing: Thing): Stamp<Thing> => ['', thing];
