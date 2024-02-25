@@ -13,12 +13,19 @@ import {
   createStore,
 } from 'tinybase/debug';
 import {GetLocationMethod, Persistable, nextLoop} from './common';
-import {START_TIME} from '../common/mergeable';
+import {START_TIME, nullStamp, stamped1} from '../common/mergeable';
+import {createFilePersister} from 'tinybase/debug/persisters/persister-file';
+import fs from 'fs';
 import {pause} from '../common/other';
+import tmp from 'tmp';
 
-beforeEach(() => jest.useFakeTimers({now: START_TIME}));
+beforeEach(() => {
+  jest.useFakeTimers({now: START_TIME});
+});
 
-afterEach(() => jest.useRealTimers());
+afterEach(() => {
+  jest.useRealTimers();
+});
 
 test('Not supported, MergeableStore', async () => {
   const store = createMergeableStore('s1');
@@ -273,10 +280,36 @@ describe('Full sequence', () => {
     },
   );
 
+  const mockFile: Persistable = {
+    autoLoadPause: 100,
+    getLocation: async (): Promise<string> => {
+      tmp.setGracefulCleanup();
+      return tmp.fileSync().name;
+    },
+    getLocationMethod: ['getFilePath', (location) => location],
+    getPersister: createFilePersister,
+    get: async (
+      location: string,
+    ): Promise<Content | MergeableContent | void> => {
+      try {
+        return JSON.parse(fs.readFileSync(location, 'utf-8'));
+      } catch {}
+    },
+    set: async (
+      location: string,
+      content: Content | MergeableContent,
+    ): Promise<void> => await mockFile.write(location, JSON.stringify(content)),
+    write: async (location: string, rawContent: any): Promise<void> =>
+      fs.writeFileSync(location, rawContent, 'utf-8'),
+    del: async (location: string): Promise<void> => fs.unlinkSync(location),
+    testMissing: true,
+  };
+
   describe.each([
     ['mockMergeableNoContentListener', mockMergeableNoContentListener],
     ['mockMergeableContentListener', mockMergeableContentListener],
     ['mockMergeableChangesListener', mockMergeableChangesListener],
+    ['file', mockFile],
   ])('Persists to/from %s', (name: string, persistable: Persistable<any>) => {
     let location: string;
     let getLocationMethod: GetLocationMethod<any> | undefined;
@@ -287,7 +320,7 @@ describe('Full sequence', () => {
       if (persistable.beforeEach != null) {
         persistable.beforeEach();
       }
-      store = createMergeableStore('store1');
+      store = createMergeableStore('s1');
       location = await persistable.getLocation();
       getLocationMethod = persistable.getLocationMethod;
       persister = persistable.getPersister(store, location);
@@ -317,44 +350,76 @@ describe('Full sequence', () => {
     test('saves', async () => {
       store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
       await persister.save();
-      expect(await persistable.get(location)).toEqual([
-        {t1: {r1: {c1: 1}}},
-        {v1: 1},
-      ]);
+      expect(await persistable.get(location)).toEqual(
+        stamped1(0, 1, [
+          stamped1(0, 0, {
+            t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
+          }),
+          stamped1(0, 1, {v1: stamped1(0, 1, 1)}),
+        ]),
+      );
       expect(persister.getStats()).toEqual({loads: 0, saves: 1});
     });
 
     test('autoSaves', async () => {
       store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
       await persister.startAutoSave();
-      expect(await persistable.get(location)).toEqual([
-        {t1: {r1: {c1: 1}}},
-        {v1: 1},
-      ]);
+      expect(await persistable.get(location)).toEqual(
+        stamped1(0, 1, [
+          stamped1(0, 0, {
+            t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
+          }),
+          stamped1(0, 1, {v1: stamped1(0, 1, 1)}),
+        ]),
+      );
       expect(persister.getStats()).toEqual({loads: 0, saves: 1});
       store.setTables({t1: {r1: {c1: 2}}});
-      await pause(50, true);
-      expect(await persistable.get(location)).toEqual([
-        {t1: {r1: {c1: 2}}},
-        {v1: 1},
-      ]);
+      await pause(1, true);
+      expect(await persistable.get(location)).toEqual(
+        stamped1(0, 2, [
+          stamped1(0, 2, {
+            t1: stamped1(0, 2, {r1: stamped1(0, 2, {c1: stamped1(0, 2, 2)})}),
+          }),
+          stamped1(0, 1, {v1: stamped1(0, 1, 1)}),
+        ]),
+      );
       store.setTables({t1: {r1: {c1: 2}}});
-      await pause(50, true);
-      expect(await persistable.get(location)).toEqual([
-        {t1: {r1: {c1: 2}}},
-        {v1: 1},
-      ]);
+      await pause(1, true);
+      expect(await persistable.get(location)).toEqual(
+        stamped1(0, 2, [
+          stamped1(0, 2, {
+            t1: stamped1(0, 2, {r1: stamped1(0, 2, {c1: stamped1(0, 2, 2)})}),
+          }),
+          stamped1(0, 1, {v1: stamped1(0, 1, 1)}),
+        ]),
+      );
       if (persistable.getChanges) {
-        expect(persistable.getChanges()).toEqual([{t1: {r1: {c1: 2}}}, {}]);
+        expect(persistable.getChanges()).toEqual(
+          stamped1(0, 2, [
+            stamped1(0, 2, {
+              t1: stamped1(0, 2, {r1: stamped1(0, 2, {c1: stamped1(0, 2, 2)})}),
+            }),
+            stamped1(0, 2, {}),
+          ]),
+        );
       }
       store.setValues({v1: 2});
-      await pause(50, true);
-      expect(await persistable.get(location)).toEqual([
-        {t1: {r1: {c1: 2}}},
-        {v1: 2},
-      ]);
+      await pause(1, true);
+      expect(await persistable.get(location)).toEqual(
+        stamped1(2, 0, [
+          stamped1(0, 2, {
+            t1: stamped1(0, 2, {r1: stamped1(0, 2, {c1: stamped1(0, 2, 2)})}),
+          }),
+          stamped1(2, 0, {v1: stamped1(2, 0, 2)}),
+        ]),
+      );
       if (persistable.getChanges) {
-        expect(persistable.getChanges()).toEqual([{}, {v1: 2}]);
+        expect(persistable.getChanges()).toEqual(
+          stamped1(2, 0, [
+            stamped1(2, 0, {}),
+            stamped1(2, 0, {v1: stamped1(2, 0, 2)}),
+          ]),
+        );
       }
       expect(persister.getStats()).toEqual({loads: 0, saves: 3});
     });
@@ -363,34 +428,43 @@ describe('Full sequence', () => {
       if (name == 'file') {
         store.setTables({t1: {r1: {c1: 1}}});
         await persister.startAutoSave();
-        expect(await persistable.get(location)).toEqual([
-          {t1: {r1: {c1: 1}}},
-          {},
-        ]);
+        expect(await persistable.get(location)).toEqual(
+          stamped1(0, 0, [
+            stamped1(0, 0, {
+              t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
+            }),
+            nullStamp({}),
+          ]),
+        );
         expect(persister.getStats()).toEqual({loads: 0, saves: 1});
         store.setTables({t1: {r1: {c1: 2}}});
         store.setTables({t1: {r1: {c1: 3}}});
         await pause(50, true);
-        expect(await persistable.get(location)).toEqual([
-          {t1: {r1: {c1: 3}}},
-          {},
-        ]);
+        expect(await persistable.get(location)).toEqual(
+          stamped1(0, 2, [
+            stamped1(0, 2, {
+              t1: stamped1(0, 2, {r1: stamped1(0, 2, {c1: stamped1(0, 2, 3)})}),
+            }),
+            nullStamp({}),
+          ]),
+        );
         expect(persister.getStats()).toEqual({loads: 0, saves: 3});
       }
     });
 
     test('loads', async () => {
-      await persistable.set(location, [{t1: {r1: {c1: 1}}}, {v1: 1}]);
+      await persistable.set(
+        location,
+        stamped1(0, 0, [
+          stamped1(0, 0, {
+            t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
+          }),
+          stamped1(0, 0, {v1: stamped1(0, 0, 1)}),
+        ]) as MergeableContent,
+      );
       await persister.load();
       expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
       expect(store.getValues()).toEqual({v1: 1});
-      expect(persister.getStats()).toEqual({loads: 1, saves: 0});
-    });
-
-    test('loads backwards compatible', async () => {
-      await persistable.set(location, [{t1: {r1: {c1: 1}}}] as any);
-      await persister.load();
-      expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
       expect(persister.getStats()).toEqual({loads: 1, saves: 0});
     });
 
@@ -418,21 +492,53 @@ describe('Full sequence', () => {
     });
 
     test('autoLoads', async () => {
-      await persistable.set(location, [{t1: {r1: {c1: 1}}}, {}]);
+      await persistable.set(
+        location,
+        stamped1(0, 0, [
+          stamped1(0, 0, {
+            t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
+          }),
+          nullStamp({}),
+        ]) as MergeableContent,
+      );
       await persister.startAutoLoad();
       await nextLoop(true);
       expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
       expect(persister.getStats()).toEqual({loads: 1, saves: 0});
-      await persistable.set(location, [{t1: {r1: {c1: 2}}}, {}]);
+      await persistable.set(
+        location,
+        stamped1(0, 1, [
+          stamped1(0, 1, {
+            t1: stamped1(0, 1, {r1: stamped1(0, 1, {c1: stamped1(0, 1, 2)})}),
+          }),
+          nullStamp({}),
+        ]) as MergeableContent,
+      );
       await pause(persistable.autoLoadPause, true);
       expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
       expect(persister.getStats()).toEqual({loads: 2, saves: 0});
-      await persistable.set(location, [{t1: {r1: {c1: 3}}}, {}]);
+      await persistable.set(
+        location,
+        stamped1(0, 2, [
+          stamped1(0, 2, {
+            t1: stamped1(0, 2, {r1: stamped1(0, 2, {c1: stamped1(0, 2, 3)})}),
+          }),
+          nullStamp({}),
+        ]) as MergeableContent,
+      );
       await pause(persistable.autoLoadPause, true);
       expect(store.getTables()).toEqual({t1: {r1: {c1: 3}}});
       expect(persister.getStats()).toEqual({loads: 3, saves: 0});
       persister.stopAutoLoad();
-      await persistable.set(location, [{t1: {r1: {c1: 4}}}, {}]);
+      await persistable.set(
+        location,
+        stamped1(0, 3, [
+          stamped1(0, 3, {
+            t1: stamped1(0, 3, {r1: stamped1(0, 3, {c1: stamped1(0, 3, 4)})}),
+          }),
+          nullStamp({}),
+        ]) as MergeableContent,
+      );
       await pause(persistable.autoLoadPause, true);
       expect(store.getTables()).toEqual({t1: {r1: {c1: 3}}});
       expect(persister.getStats()).toEqual({loads: 3, saves: 0});
@@ -463,7 +569,15 @@ describe('Full sequence', () => {
     });
 
     test('does not delete when autoLoaded is deleted', async () => {
-      await persistable.set(location, [{t1: {r1: {c1: 1}}}, {}]);
+      await persistable.set(
+        location,
+        stamped1(0, 0, [
+          stamped1(0, 0, {
+            t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
+          }),
+          nullStamp({}),
+        ]) as MergeableContent,
+      );
       await persister.startAutoLoad({});
       expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
       await persistable.del(location);
@@ -472,7 +586,15 @@ describe('Full sequence', () => {
     });
 
     test('does not delete when autoLoaded is corrupted', async () => {
-      await persistable.set(location, [{t1: {r1: {c1: 1}}}, {}]);
+      await persistable.set(
+        location,
+        stamped1(0, 0, [
+          stamped1(0, 0, {
+            t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
+          }),
+          nullStamp({}),
+        ]) as MergeableContent,
+      );
       await persister.startAutoLoad({});
       expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
       persistable.write(location, '{');
