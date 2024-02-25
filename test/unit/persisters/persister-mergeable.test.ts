@@ -7,14 +7,20 @@ import {
   MergeableContent,
   MergeableStore,
   Persister,
-  Store,
   createCustomPersister,
   createMergeableStore,
   createStore,
 } from 'tinybase/debug';
 import {GetLocationMethod, Persistable, nextLoop} from './common';
 import {START_TIME, nullStamp, stamped1} from '../common/mergeable';
-import {mockFile, mockLocalStorage, mockSessionStorage} from './mocks';
+import {
+  mockFile,
+  mockLocalStorage,
+  mockMergeableChangesListener,
+  mockMergeableContentListener,
+  mockMergeableNoContentListener,
+  mockSessionStorage,
+} from './mocks';
 import {pause} from '../common/other';
 
 beforeEach(() => {
@@ -189,95 +195,6 @@ describe('Supported, MergeableStore', () => {
 
 // Mirrors persisters.test
 describe('Full sequence', () => {
-  let customPersister: any;
-  let customPersisterListener:
-    | ((getContent?: () => MergeableContent) => void)
-    | ((
-        getContent?: () => MergeableContent,
-        getChanges?: () => MergeableChanges,
-      ) => void)
-    | undefined;
-  let customPersisterChanges: Changes = [{}, {}];
-
-  const getMockedCustom = (
-    write: (location: string, rawMergeableContent: any) => Promise<void>,
-  ): Persistable => ({
-    autoLoadPause: 100,
-    getLocation: async (): Promise<string> => '',
-    getLocationMethod: ['getFoo', () => 'foo'],
-    getPersister: (store: Store) => {
-      customPersister = '';
-      return createCustomPersister(
-        store,
-        async () => {
-          try {
-            return JSON.parse(customPersister);
-          } catch {}
-        },
-        async (getMergeableContent, getMergeableChanges) => {
-          customPersister = getMergeableContent();
-          customPersisterChanges = getMergeableChanges?.() ?? [{}, {}];
-        },
-        (listener) => {
-          customPersisterListener = listener;
-        },
-        () => (customPersisterListener = undefined),
-        undefined,
-        true,
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        ['getFoo', 'foo'],
-      );
-    },
-    get: async (): Promise<MergeableContent | void> => customPersister,
-    set: async (
-      location: string,
-      mergeableContent: Content | MergeableContent,
-    ): Promise<void> => await write(location, JSON.stringify(mergeableContent)),
-    write,
-    del: async (): Promise<void> => {
-      customPersister = '';
-    },
-    getChanges: () => customPersisterChanges,
-    testMissing: true,
-  });
-
-  const mockMergeableNoContentListener: Persistable<string> = getMockedCustom(
-    async (_location: string, rawContent: any): Promise<void> => {
-      customPersister = rawContent;
-      customPersisterListener?.();
-    },
-  );
-
-  const mockMergeableContentListener: Persistable<string> = getMockedCustom(
-    async (_location: string, rawContent: any): Promise<void> => {
-      customPersister = rawContent;
-      let mergeableContent: MergeableContent;
-      try {
-        mergeableContent = JSON.parse(rawContent);
-      } catch (e) {
-        mergeableContent = [] as any;
-      }
-      customPersisterListener?.(() => mergeableContent);
-    },
-  );
-
-  const mockMergeableChangesListener: Persistable<string> = getMockedCustom(
-    async (_location: string, rawContent: any): Promise<void> => {
-      customPersister = rawContent;
-      let mergeableContent: MergeableContent;
-      try {
-        mergeableContent = JSON.parse(rawContent);
-      } catch (e) {
-        mergeableContent = [] as any;
-      }
-      customPersisterListener?.(
-        () => mergeableContent, // content
-        () => mergeableContent, // changes
-      );
-    },
-  );
-
   describe.each([
     ['mockMergeableNoContentListener', mockMergeableNoContentListener],
     ['mockMergeableContentListener', mockMergeableContentListener],
