@@ -5,7 +5,7 @@ import {
 } from 'tinybase/debug';
 import {
   START_TIME,
-  nullStamp,
+  nullStamped,
   stamped1,
   stamped2,
   time,
@@ -84,7 +84,7 @@ describe('getMergeableContent', () => {
 
   test('Initialize', () => {
     expect(store.getMergeableContent()).toEqual(
-      nullStamp([nullStamp({}), nullStamp({})]),
+      nullStamped([nullStamped({}), nullStamped({})]),
     );
   });
 
@@ -197,7 +197,7 @@ describe('getMergeableContent', () => {
   test('Empty transaction', () => {
     store.startTransaction().finishTransaction();
     expect(store.getMergeableContent()).toEqual(
-      nullStamp([nullStamp({}), nullStamp({})]),
+      nullStamped([nullStamped({}), nullStamped({})]),
     );
   });
 });
@@ -211,20 +211,20 @@ describe('getTransactionMergeableChanges', () => {
 
   test('Outside transaction', () => {
     expect(store.getTransactionMergeableChanges()).toEqual(
-      nullStamp([nullStamp({}), nullStamp({})]),
+      nullStamped([nullStamped({}), nullStamped({})]),
     );
     expect(store.getTransactionMergeableChanges()).toEqual(
-      nullStamp([nullStamp({}), nullStamp({})]),
+      nullStamped([nullStamped({}), nullStamped({})]),
     );
   });
 
   test('Inside noop transaction', () => {
     store.startTransaction();
     expect(store.getTransactionMergeableChanges()).toEqual(
-      nullStamp([nullStamp({}), nullStamp({})]),
+      nullStamped([nullStamped({}), nullStamped({})]),
     );
     expect(store.getTransactionMergeableChanges()).toEqual(
-      nullStamp([nullStamp({}), nullStamp({})]),
+      nullStamped([nullStamped({}), nullStamped({})]),
     );
     store.finishTransaction();
   });
@@ -237,7 +237,7 @@ describe('getTransactionMergeableChanges', () => {
         stamped1(0, 0, {
           t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
         }),
-        nullStamp({}),
+        nullStamped({}),
       ]),
     );
     expect(store.getTransactionMergeableChanges()).toEqual(
@@ -245,15 +245,15 @@ describe('getTransactionMergeableChanges', () => {
         stamped1(0, 0, {
           t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
         }),
-        nullStamp({}),
+        nullStamped({}),
       ]),
     );
     store.delCell('t1', 'r1', 'c1');
     expect(store.getTransactionMergeableChanges()).toEqual(
-      nullStamp([nullStamp({}), nullStamp({})]),
+      nullStamped([nullStamped({}), nullStamped({})]),
     );
     expect(store.getTransactionMergeableChanges()).toEqual(
-      nullStamp([nullStamp({}), nullStamp({})]),
+      nullStamped([nullStamped({}), nullStamped({})]),
     );
     store.finishTransaction();
   });
@@ -261,10 +261,10 @@ describe('getTransactionMergeableChanges', () => {
   test('After net noop transaction', () => {
     store.addDidFinishTransactionListener(() => {
       expect(store.getTransactionMergeableChanges()).toEqual(
-        nullStamp([nullStamp({}), nullStamp({})]),
+        nullStamped([nullStamped({}), nullStamped({})]),
       );
       expect(store.getTransactionMergeableChanges()).toEqual(
-        nullStamp([nullStamp({}), nullStamp({})]),
+        nullStamped([nullStamped({}), nullStamped({})]),
       );
     });
     store.startTransaction();
@@ -280,7 +280,7 @@ describe('getTransactionMergeableChanges', () => {
           stamped1(0, 0, {
             t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
           }),
-          nullStamp({}),
+          nullStamped({}),
         ]),
       );
     });
@@ -296,7 +296,7 @@ describe('getTransactionMergeableChanges', () => {
           stamped1(0, 0, {
             t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
           }),
-          nullStamp({}),
+          nullStamped({}),
         ]),
       );
     });
@@ -307,7 +307,7 @@ describe('getTransactionMergeableChanges', () => {
         stamped1(0, 0, {
           t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
         }),
-        nullStamp({}),
+        nullStamped({}),
       ]),
     );
     store.finishTransaction();
@@ -325,7 +325,7 @@ describe('getTransactionMergeableChanges', () => {
               }),
             }),
           }),
-          nullStamp({}),
+          nullStamped({}),
         ]),
       );
       expect(store.getMergeableContent()).toEqual(
@@ -342,7 +342,7 @@ describe('getTransactionMergeableChanges', () => {
               ]),
             ),
           ),
-          nullStamp({}),
+          nullStamped({}),
         ]),
       );
       count++;
@@ -466,9 +466,9 @@ describe('Merge', () => {
   test('Nothing', () => {
     store1 = createMergeableStore('s1');
     store2 = createMergeableStore('s2');
-    const noChanges: MergeableContent = nullStamp([
-      nullStamp({}),
-      nullStamp({}),
+    const noChanges: MergeableContent = nullStamped([
+      nullStamped({}),
+      nullStamped({}),
     ]);
 
     expect(store1.getContent()).toEqual([{}, {}]);
@@ -508,7 +508,7 @@ describe('Merge', () => {
             }),
             t2: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 0)})}),
           }),
-          nullStamp({}),
+          nullStamped({}),
         ]),
       );
 
@@ -529,7 +529,7 @@ describe('Merge', () => {
             }),
             t2: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 0)})}),
           }),
-          nullStamp({}),
+          nullStamped({}),
         ]),
       );
     });
@@ -548,7 +548,7 @@ describe('Merge', () => {
             }),
             t2: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 0)})}),
           }),
-          nullStamp({}),
+          nullStamped({}),
         ]),
       );
 
@@ -569,7 +569,7 @@ describe('Merge', () => {
             }),
             t2: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 0)})}),
           }),
-          nullStamp({}),
+          nullStamped({}),
         ]),
       );
     });
@@ -588,7 +588,7 @@ describe('Merge', () => {
             }),
             t2: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 0)})}),
           }),
-          nullStamp({}),
+          nullStamped({}),
         ]),
       );
 
@@ -609,7 +609,7 @@ describe('Merge', () => {
             }),
             t2: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 0)})}),
           }),
-          nullStamp({}),
+          nullStamped({}),
         ]),
       );
     });
@@ -628,7 +628,7 @@ describe('Merge', () => {
             }),
             t2: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 0)})}),
           }),
-          nullStamp({}),
+          nullStamped({}),
         ]),
       );
 
@@ -649,7 +649,7 @@ describe('Merge', () => {
             }),
             t2: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 0)})}),
           }),
-          nullStamp({}),
+          nullStamped({}),
         ]),
       );
     });
@@ -670,7 +670,7 @@ describe('Merge', () => {
               r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
             }),
           }),
-          nullStamp({}),
+          nullStamped({}),
         ]),
       );
 
@@ -690,7 +690,7 @@ describe('Merge', () => {
               r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
             }),
           }),
-          nullStamp({}),
+          nullStamped({}),
         ]),
       );
     });
@@ -712,7 +712,7 @@ describe('Merge', () => {
               r2: stamped1(0, 5, {c2: stamped1(0, 5, 2)}),
             }),
           }),
-          nullStamp({}),
+          nullStamped({}),
         ]),
       );
 
@@ -736,7 +736,7 @@ describe('Merge', () => {
               r2: stamped1(0, 5, {c2: stamped1(0, 5, 2)}),
             }),
           }),
-          nullStamp({}),
+          nullStamped({}),
         ]),
       );
     });
@@ -758,7 +758,7 @@ describe('Merge', () => {
               r2: stamped1(0, 6, {c2: stamped1(0, 6, undefined)}),
             }),
           }),
-          nullStamp({}),
+          nullStamped({}),
         ]),
       );
 
@@ -779,7 +779,7 @@ describe('Merge', () => {
               r2: stamped1(0, 6, {c2: stamped1(0, 6, undefined)}),
             }),
           }),
-          nullStamp({}),
+          nullStamped({}),
         ]),
       );
     });
@@ -983,7 +983,7 @@ describe('Merge', () => {
           stamped1(0, 0, {
             t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 0)})}),
           }),
-          nullStamp({}),
+          nullStamped({}),
         ]),
       );
 
@@ -993,7 +993,7 @@ describe('Merge', () => {
       const mergeableContent2 = store2.getMergeableContent();
       expect(mergeableContent2).toEqual(
         stamped2(1, 0, [
-          nullStamp({}),
+          nullStamped({}),
           stamped2(1, 0, {v1: stamped2(1, 0, 0)}),
         ]),
       );
@@ -1304,7 +1304,7 @@ describe('Merge', () => {
               r1: stamped1(2, 0, {c1: stamped1(2, 0, undefined)}),
             }),
           }),
-          nullStamp({}),
+          nullStamped({}),
         ]),
       );
       expect(store2.getMergeableContent()).toEqual(
@@ -1314,7 +1314,7 @@ describe('Merge', () => {
               r1: stamped2(1, 0, {c2: stamped2(1, 0, 2)}),
             }),
           }),
-          nullStamp({}),
+          nullStamped({}),
         ]),
       );
 
