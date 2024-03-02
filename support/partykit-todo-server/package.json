@@ -7,7 +7,7 @@
     "deploy": "partykit deploy"
   },
   "devDependencies": {
-    "partykit": "0.0.39",
+    "partykit": "0.0.97",
     "tinybase": "file:../../"
   }
 }
