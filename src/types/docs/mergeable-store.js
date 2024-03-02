@@ -5,6 +5,11 @@
  */
 /// mergeable-store
 /**
+ * The Hash type
+ * @category Stamps
+ */
+/// Hash
+/**
  * The Time type
  * @category Stamps
  */
