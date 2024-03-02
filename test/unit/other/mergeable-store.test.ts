@@ -95,29 +95,29 @@ describe('getMergeableContent', () => {
     ]);
     const mergeableContent = store.getMergeableContent();
 
-    mergeableContent[0] = time(0, 1, 's1');
-    expect(store.getMergeableContent()[0]).toEqual(time(0, 0, 's1'));
+    mergeableContent[1] = time(0, 1, 's1');
+    expect(store.getMergeableContent()[1]).toEqual(time(0, 0, 's1'));
 
-    mergeableContent[1][1][0] = time(0, 1, 's1');
-    expect(store.getMergeableContent()[1][1][0]).toEqual(time(0, 0, 's1'));
+    mergeableContent[2][1][1] = time(0, 1, 's1');
+    expect(store.getMergeableContent()[2][1][1]).toEqual(time(0, 0, 's1'));
 
-    mergeableContent[1][0][1].t1[0] = time(0, 1, 's1');
-    expect(store.getMergeableContent()[1][0][1].t1[0]).toEqual(
+    mergeableContent[2][0][2].t1[1] = time(0, 1, 's1');
+    expect(store.getMergeableContent()[2][0][2].t1[1]).toEqual(
       time(0, 0, 's1'),
     );
 
-    mergeableContent[1][0][1].t1[1].r1[0] = time(0, 1, 's1');
-    expect(store.getMergeableContent()[1][0][1].t1[1].r1[0]).toEqual(
+    mergeableContent[2][0][2].t1[2].r1[1] = time(0, 1, 's1');
+    expect(store.getMergeableContent()[2][0][2].t1[2].r1[1]).toEqual(
       time(0, 0, 's1'),
     );
 
-    mergeableContent[1][0][1].t1[1].r1[1].c1[0] = time(0, 1, 's1');
-    expect(store.getMergeableContent()[1][0][1].t1[1].r1[1].c1[0]).toEqual(
+    mergeableContent[2][0][2].t1[2].r1[2].c1[1] = time(0, 1, 's1');
+    expect(store.getMergeableContent()[2][0][2].t1[2].r1[2].c1[1]).toEqual(
       time(0, 0, 's1'),
     );
 
-    mergeableContent[1][1][1].v1[0] = time(0, 1, 's1');
-    expect(store.getMergeableContent()[1][1][1].v1[0]).toEqual(
+    mergeableContent[2][1][2].v1[1] = time(0, 1, 's1');
+    expect(store.getMergeableContent()[2][1][2].v1[1]).toEqual(
       time(0, 0, 's1'),
     );
   });
