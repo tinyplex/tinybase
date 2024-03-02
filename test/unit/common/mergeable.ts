@@ -37,7 +37,7 @@ const STORE_ID_HASHES: {[id: string]: number} = {s1: 5861543, s2: 5861540};
 export const time = (offset: number, counter: number, storeId: string = 's1') =>
   encodeHlc(START_TIME.valueOf() + offset, counter, STORE_ID_HASHES[storeId]);
 
-export const START_TIME = new Date(2024, 1, 1);
+export const START_TIME = new Date('2024-01-01 00:00:00 UTC');
 
 export const stamped1 = (offset: number, counter: number, thing: any) => [
   time(offset, counter, 's1'),
