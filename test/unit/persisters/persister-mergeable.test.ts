@@ -398,20 +398,20 @@ describe('Supported, MergeableStore', () => {
     const store = createMergeableStore('s1');
     const content: MergeableContent = [
       '',
-      'Hc2DO@000000FG2W',
+      'Hc2DO@000008DKS9',
       [
         [
           '',
-          'Hc2DO@000000FG2W',
+          'Hc2DO@000008DKS9',
           {
             t1: [
               '',
-              'Hc2DO@000000FG2W',
-              {r1: ['', 'Hc2DO@000000FG2W', {c1: ['', 'Hc2DO@000000FG2W', 1]}]},
+              'Hc2DO@000008DKS9',
+              {r1: ['', 'Hc2DO@000008DKS9', {c1: ['', 'Hc2DO@000008DKS9', 1]}]},
             ],
           },
         ],
-        ['', 'Hc2DO@000000FG2W', {v1: ['', 'Hc2DO@000000FG2W', 1]}],
+        ['', 'Hc2DO@000008DKS9', {v1: ['', 'Hc2DO@000008DKS9', 1]}],
       ],
     ];
     let persisted = '';
@@ -460,20 +460,20 @@ describe('Supported, MergeableStore', () => {
     expect(persisted).toEqual([
       JSON.stringify([
         '',
-        'Hc2DO@000000FG2W',
+        'Hc2DO@000008DKS9',
         [
           [
             '',
-            'Hc2DO@000000FG2W',
+            'Hc2DO@000008DKS9',
             {
               t1: [
                 '',
-                'Hc2DO@000000FG2W',
+                'Hc2DO@000008DKS9',
                 {
                   r1: [
                     '',
-                    'Hc2DO@000000FG2W',
-                    {c1: ['', 'Hc2DO@000000FG2W', 1]},
+                    'Hc2DO@000008DKS9',
+                    {c1: ['', 'Hc2DO@000008DKS9', 1]},
                   ],
                 },
               ],
@@ -484,10 +484,10 @@ describe('Supported, MergeableStore', () => {
       ]),
       JSON.stringify([
         '',
-        'Hc2DO@000010FG2W',
+        'Hc2DO@000018DKS9',
         [
           ['', '', {}],
-          ['', 'Hc2DO@000010FG2W', {v1: ['', 'Hc2DO@000010FG2W', 1]}],
+          ['', 'Hc2DO@000018DKS9', {v1: ['', 'Hc2DO@000018DKS9', 1]}],
         ],
       ]),
     ]);
@@ -513,26 +513,26 @@ describe('Supported, MergeableStore', () => {
     expect(persisted).toEqual(
       JSON.stringify([
         '',
-        'Hc2DO@000000FG2W',
+        'Hc2DO@000008DKS9',
         [
           [
             '',
-            'Hc2DO@000000FG2W',
+            'Hc2DO@000008DKS9',
             {
               t1: [
                 '',
-                'Hc2DO@000000FG2W',
+                'Hc2DO@000008DKS9',
                 {
                   r1: [
                     '',
-                    'Hc2DO@000000FG2W',
-                    {c1: ['', 'Hc2DO@000000FG2W', 1]},
+                    'Hc2DO@000008DKS9',
+                    {c1: ['', 'Hc2DO@000008DKS9', 1]},
                   ],
                 },
               ],
             },
           ],
-          ['', 'Hc2DO@000000FG2W', {v1: ['', 'Hc2DO@000000FG2W', 1]}],
+          ['', 'Hc2DO@000008DKS9', {v1: ['', 'Hc2DO@000008DKS9', 1]}],
         ],
       ]),
     );
