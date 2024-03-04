@@ -78,41 +78,53 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const preFinishTransaction = () => {
     if (listening) {
       finishTransactionMergeableChanges = getTransactionMergeableChanges();
-      const [, time, [changedTablesStamp, changedValuesStamp]] =
-        finishTransactionMergeableChanges;
-      const cellsTouched = !objIsEmpty(changedTablesStamp[2]);
-      const valuesTouched = !objIsEmpty(changedValuesStamp[2]);
+      const [
+        ,
+        time,
+        [
+          [, tablesTime, changedTableStamps],
+          [, valuesTime, changedValueStamps],
+        ],
+      ] = finishTransactionMergeableChanges;
+      const cellsTouched = !objIsEmpty(changedTableStamps);
+      const valuesTouched = !objIsEmpty(changedValueStamps);
 
       const [, , [tablesStamp, valuesStamp]] = contentStamp;
       if (cellsTouched || valuesTouched) {
         contentStamp[1] = time;
       }
       if (cellsTouched) {
-        tablesStamp[1] = time;
-        objToArray(changedTablesStamp[2], ([, , changedRowStamps], tableId) => {
-          const tableStamp = mapEnsure<Id, TableStamp>(
-            tablesStamp[2],
-            tableId,
-            stampNewMap,
-          );
-          tableStamp[1] = time;
-          objToArray(changedRowStamps, ([, , changedCellStamps], rowId) => {
-            const rowStamp = mapEnsure<Id, RowStamp>(
-              tableStamp[2],
-              rowId,
+        tablesStamp[1] = tablesTime;
+        objToArray(
+          changedTableStamps,
+          ([, tableTime, changedRowStamps], tableId) => {
+            const tableStamp = mapEnsure<Id, TableStamp>(
+              tablesStamp[2],
+              tableId,
               stampNewMap,
             );
-            rowStamp[1] = time;
-            objToArray(changedCellStamps, ([, , newCell], cellId) =>
-              mapSet(rowStamp[2], cellId, stampNew(time, newCell)),
+            tableStamp[1] = tableTime;
+            objToArray(
+              changedRowStamps,
+              ([, rowTime, changedCellStamps], rowId) => {
+                const rowStamp = mapEnsure<Id, RowStamp>(
+                  tableStamp[2],
+                  rowId,
+                  stampNewMap,
+                );
+                rowStamp[1] = rowTime;
+                objToArray(changedCellStamps, ([, cellTime, newCell], cellId) =>
+                  mapSet(rowStamp[2], cellId, stampNew(cellTime, newCell)),
+                );
+              },
             );
-          });
-        });
+          },
+        );
       }
       if (valuesTouched) {
-        valuesStamp[1] = time;
-        objToArray(changedValuesStamp[2], ([, , newValue], valueId) =>
-          mapSet(valuesStamp[2], valueId, stampNew(time, newValue)),
+        valuesStamp[1] = valuesTime;
+        objToArray(changedValueStamps, ([, valueTime, newValue], valueId) =>
+          mapSet(valuesStamp[2], valueId, stampNew(valueTime, newValue)),
         );
       }
     }
