@@ -28,7 +28,7 @@ export const arraySort = <Value>(
 ): Value[] => array.sort(sorter);
 
 export const arrayForEach = <Value>(
-  array: Value[],
+  array: {forEach: (cb: (value: Value, index: number) => void) => void},
   cb: (value: Value, index: number) => void,
 ): void => array.forEach(cb);
 
