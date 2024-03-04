@@ -32,7 +32,7 @@ const encodeHlc = (
   toB64(clientHash30 / SHIFT6) +
   toB64(clientHash30);
 
-const STORE_ID_HASHES: {[id: string]: number} = {s1: 5861543, s2: 5861540};
+const STORE_ID_HASHES: {[id: string]: number} = {s1: 139573449, s2: 89240592};
 
 export const time = (offset: number, counter: number, storeId: string = 's1') =>
   encodeHlc(START_TIME.valueOf() + offset, counter, STORE_ID_HASHES[storeId]);
