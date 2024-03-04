@@ -61,5 +61,5 @@ export const strEndsWith = (str: string, suffix: string) =>
 export const strSplit = (str: string, separator = '', limit?: number) =>
   str.split(separator, limit);
 
-export const strCharCodeAt = (str: string, position = 0): number =>
+export const strCharCodeAt = (str: string, position: number): number =>
   str.charCodeAt(position);
