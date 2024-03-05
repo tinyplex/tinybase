@@ -1337,35 +1337,39 @@ describe('Hashing', () => {
   });
 
   test('getContentHash', () => {
-    expect(store.getContentHash()).toEqual(0);
+    expect(store.getContentHash()).toEqual(2732811633);
+    store.setCell('t1', 'r1', 'c1', 2);
+    expect(store.getContentHash()).toEqual(3470179409);
+    store.setValue('v1', 6);
+    expect(store.getContentHash()).toEqual(226450018);
   });
 
   test('getTablesHash', () => {
-    expect(store.getTablesHash()).toEqual(0);
+    expect(store.getTablesHash()).toEqual(3553738639);
     store.setCell('t1', 'r1', 'c1', 2);
-    expect(store.getTablesHash()).toEqual(0);
+    expect(store.getTablesHash()).toEqual(3219416751);
     store.setCell('t1', 'r1', 'c2', 3);
-    expect(store.getTablesHash()).toEqual(0);
+    expect(store.getTablesHash()).toEqual(658256168);
   });
 
   test('getTableHash', () => {
     expect(store.getTableHash('t0')).toEqual(0);
-    expect(store.getTableHash('t1')).toEqual(0);
-    expect(store.getTableHash('t2')).toEqual(0);
+    expect(store.getTableHash('t1')).toEqual(1369778340);
+    expect(store.getTableHash('t2')).toEqual(670634084);
     store.setCell('t1', 'r1', 'c1', 2);
-    expect(store.getTableHash('t1')).toEqual(0);
+    expect(store.getTableHash('t1')).toEqual(191087890);
     store.setCell('t1', 'r1', 'c2', 3);
-    expect(store.getTableHash('t1')).toEqual(0);
+    expect(store.getTableHash('t1')).toEqual(1610178360);
   });
 
   test('getRowHash', () => {
     expect(store.getRowHash('t0', 'r0')).toEqual(0);
     expect(store.getRowHash('t1', 'r0')).toEqual(0);
-    expect(store.getRowHash('t1', 'r1')).toEqual(0);
+    expect(store.getRowHash('t1', 'r1')).toEqual(2235463374);
     store.setCell('t1', 'r1', 'c1', 2);
-    expect(store.getRowHash('t1', 'r1')).toEqual(0);
+    expect(store.getRowHash('t1', 'r1')).toEqual(401528479);
     store.setCell('t1', 'r1', 'c2', 3);
-    expect(store.getRowHash('t1', 'r1')).toEqual(0);
+    expect(store.getRowHash('t1', 'r1')).toEqual(2687079844);
   });
 
   test('getCellHash', () => {
@@ -1385,11 +1389,11 @@ describe('Hashing', () => {
   });
 
   test('getValuesHash', () => {
-    expect(store.getValuesHash()).toEqual(0);
+    expect(store.getValuesHash()).toEqual(1899158270);
     store.setValue('v1', 6);
-    expect(store.getValuesHash()).toEqual(0);
+    expect(store.getValuesHash()).toEqual(3747361623);
     store.setValue('v2', 7);
-    expect(store.getValuesHash()).toEqual(0);
+    expect(store.getValuesHash()).toEqual(2341721292);
   });
 
   test('getValueHash', () => {
