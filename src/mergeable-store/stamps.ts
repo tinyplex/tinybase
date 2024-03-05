@@ -7,7 +7,7 @@ import {Id} from '../types/common';
 export const stampNew = <Thing>(
   time: Time = EMPTY_STRING,
   thing?: Thing,
-): Stamp<Thing> => [EMPTY_STRING, time, thing as Thing];
+): Stamp<Thing> => [0, time, thing as Thing];
 
 export const stampNewMap = <Thing>(time = EMPTY_STRING): Stamp<IdMap<Thing>> =>
   stampNew(time, mapNew<Id, Thing>());
