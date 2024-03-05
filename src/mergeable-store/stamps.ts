@@ -8,76 +8,86 @@ import {hash} from './hash';
 import {isUndefined} from '../common/other';
 import {jsonString} from '../common/json';
 
-export const stampHash = <Thing>(stamp: Stamp<Thing>): Stamp<Thing> => {
-  stamp[0] = isUndefined(getCellOrValueType(stamp[2]))
-    ? 0
-    : hash(stamp[1] + jsonString(stamp[2]));
-  return stamp;
-};
+export type HashedStamp<Thing> = [hash: number, time: Time, thing: Thing];
 
-export const stampNew = <Thing>(
-  time: Time = EMPTY_STRING,
+export const stampNew = <Thing>(time: Time, thing?: Thing): Stamp<Thing> => [
+  time,
+  thing as Thing,
+];
+
+export const hashedStampNew = <Thing>(
+  time: Time,
   thing?: Thing,
-): Stamp<Thing> => [0, time, thing as Thing];
-
-export const stampNewMap = <Thing>(time = EMPTY_STRING): Stamp<IdMap<Thing>> =>
-  stampNew(time, mapNew<Id, Thing>());
+): HashedStamp<Thing> => [
+  isUndefined(getCellOrValueType(thing)) ? 0 : hash(time + jsonString(thing)),
+  time,
+  thing as Thing,
+];
 
 export const stampNewObj = <Thing>(time: Time): Stamp<IdObj<Thing>> =>
   stampNew(time, objNew<Thing>());
 
-export const mapStamp = <From, To>(
-  [hash, time, value]: Stamp<From>,
-  mapper: (value: From, time: Time) => To,
-): Stamp<To> => [hash, time, mapper(value, time)];
+export const hashedStampNewMap = <Thing>(
+  time = EMPTY_STRING,
+): HashedStamp<IdMap<Thing>> => [0, time, mapNew<Id, Thing>()];
 
-export const cloneStamp = <Value>([
-  hash,
+export const cloneHashedStampToStamp = <Value>([
+  ,
   time,
   value,
-]: Stamp<Value>): Stamp<Value> => [hash, time, value];
+]: HashedStamp<Value>): Stamp<Value> => [time, value];
 
-export const mapStampMapToObj = <From, To = From>(
-  stampMap: Stamp<IdMap<From>>,
+export const hashedStampToStamp = <From, To = From>(
+  [, time, value]: HashedStamp<From>,
+  mapper: (value: From, time: Time) => To,
+): Stamp<To> => [time, mapper(value, time)];
+
+export const hashedStampMapToStampObj = <From, To = From>(
+  hashedStampMap: HashedStamp<IdMap<From>>,
   mapper: (mapValue: From) => To,
-): Stamp<IdObj<To>> => mapStamp(stampMap, (map) => mapToObj(map, mapper));
+): Stamp<IdObj<To>> =>
+  hashedStampToStamp(hashedStampMap, (map) => mapToObj(map, mapper));
 
-export const mergeStamps = <NewThing, Thing>(
-  newThingStamps: IdObj<Stamp<NewThing>>,
-  thingStamps: IdMap<Stamp<Thing>>,
+export const mergeStampsIntoHashedStamps = <NewThing, Thing>(
+  stamps: IdObj<Stamp<NewThing>>,
+  hashedStamps: IdMap<HashedStamp<Thing>>,
   changes: any,
   merge: (newThing: NewThing, thing: Thing, changes: any) => void,
 ): void =>
-  objForEach(newThingStamps, (newThingStamp, thingId) =>
-    mergeStamp(
-      newThingStamp,
-      mapEnsure<Id, any>(thingStamps, thingId, stampNewMap),
+  objForEach(stamps, (stamp, thingId) =>
+    mergeStampIntoHashedStamp(
+      stamp,
+      mapEnsure<Id, any>(hashedStamps, thingId, hashedStampNewMap),
       (changes[thingId] = objNew()),
       merge,
     ),
   );
 
-export const mergeStamp = <NewThing, Thing>(
-  [, newTime, newThing]: Stamp<NewThing>,
-  thingStamp: Stamp<Thing>,
+export const mergeStampIntoHashedStamp = <NewThing, Thing>(
+  [newTime, newThing]: Stamp<NewThing>,
+  hashedStamp: HashedStamp<Thing>,
   changes: any,
   merge: (newThing: NewThing, thing: Thing, changes: any) => void,
 ): void => {
-  if (newTime > thingStamp[1]) {
-    thingStamp[1] = newTime;
+  if (newTime > hashedStamp[1]) {
+    hashedStamp[1] = newTime;
   }
-  merge(newThing, thingStamp[2], changes);
+  merge(newThing, hashedStamp[2], changes);
 };
 
-export const mergeLeafStamps = <Leaf>(
-  newLeafStamps: IdObj<Stamp<Leaf | undefined>>,
-  leafStamps: IdMap<Stamp<Leaf | undefined>>,
+export const mergeLeafStampsIntoHashedStamps = <Leaf>(
+  stamps: IdObj<Stamp<Leaf | undefined>>,
+  hashedStamps: IdMap<HashedStamp<Leaf | undefined>>,
   changes: any,
 ): void =>
-  objForEach(newLeafStamps, ([, newTime, newLeaf], leafId) => {
-    const leafStamp = mapEnsure(leafStamps, leafId, stampNew);
-    if (newTime > leafStamp[1]) {
-      leafStamp[1] = newTime;
-      leafStamp[2] = changes[leafId] = newLeaf;
+  objForEach(stamps, ([newTime, newLeaf], leafId) => {
+    const hashedStamp = mapEnsure<Id, any>(
+      hashedStamps,
+      leafId,
+      hashedStampNewMap,
+    );
+    if (newTime > hashedStamp[1]) {
+      hashedStamp[1] = newTime;
+      hashedStamp[2] = changes[leafId] = newLeaf;
     }
   });
