@@ -27,9 +27,9 @@ export const cloneStamp = <Value>([
 ]: Stamp<Value>): Stamp<Value> => [hash, time, value];
 
 export const mapStampMapToObj = <From, To = From>(
-  stampedMap: Stamp<IdMap<From>>,
+  stampMap: Stamp<IdMap<From>>,
   mapper: (mapValue: From) => To,
-): Stamp<IdObj<To>> => mapStamp(stampedMap, (map) => mapToObj(map, mapper));
+): Stamp<IdObj<To>> => mapStamp(stampMap, (map) => mapToObj(map, mapper));
 
 export const mergeStamps = <NewThing, Thing>(
   newThingStamps: IdObj<Stamp<NewThing>>,
