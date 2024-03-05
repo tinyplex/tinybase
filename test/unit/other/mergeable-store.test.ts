@@ -1325,3 +1325,54 @@ describe('Merge', () => {
     });
   });
 });
+
+describe('Hashing', () => {
+  let store: MergeableStore;
+  beforeEach(() => {
+    store = createMergeableStore('s1');
+    store.setContent([
+      {t1: {r1: {c1: 1, c2: 2}, r2: {c1: 3}}, t2: {r1: {c1: 4}}},
+      {v1: 5, v2: 6},
+    ]);
+  });
+
+  test('getContentHash', () => {
+    expect(store.getContentHash()).toEqual(0);
+  });
+
+  test('getTablesHash', () => {
+    expect(store.getTablesHash()).toEqual(0);
+  });
+
+  test('getTableHash', () => {
+    expect(store.getTableHash('t0')).toEqual(0);
+    expect(store.getTableHash('t1')).toEqual(0);
+    expect(store.getTableHash('t2')).toEqual(0);
+  });
+
+  test('getRowHash', () => {
+    expect(store.getRowHash('t0', 'r0')).toEqual(0);
+    expect(store.getRowHash('t1', 'r0')).toEqual(0);
+    expect(store.getRowHash('t1', 'r1')).toEqual(0);
+  });
+
+  test('getCellHash', () => {
+    expect(store.getCellHash('t0', 'r1', 'c1')).toEqual(0);
+    expect(store.getCellHash('t1', 'r0', 'c1')).toEqual(0);
+    expect(store.getCellHash('t1', 'r1', 'c0')).toEqual(0);
+    expect(store.getCellHash('t1', 'r1', 'c1')).toEqual(3549033955);
+    expect(store.getCellHash('t1', 'r1', 'c2')).toEqual(3565811574);
+    expect(store.getCellHash('t1', 'r2', 'c1')).toEqual(3582589193);
+    expect(store.getCellHash('t2', 'r1', 'c1')).toEqual(3599366812);
+  });
+
+  test('getValuesHash', () => {
+    expect(store.getValuesHash()).toEqual(0);
+  });
+
+  test('getValueHash', () => {
+    expect(store.getValueHash('v0')).toEqual(0);
+    expect(store.getValueHash('v1')).toEqual(3616144431);
+    expect(store.getValueHash('v2')).toEqual(3632922050);
+  });
+});
