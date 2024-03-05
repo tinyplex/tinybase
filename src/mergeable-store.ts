@@ -1,26 +1,27 @@
 import {CellOrUndefined, Changes, Store, ValueOrUndefined} from './types/store';
 import {EMPTY_STRING, strEndsWith, strStartsWith} from './common/strings';
+import {
+  HashedStamp,
+  cloneHashedStampToStamp,
+  hashedStampMapToStampObj,
+  hashedStampNew,
+  hashedStampNewMap,
+  hashedStampToStamp,
+  mergeLeafStampsIntoHashedStamps,
+  mergeStampIntoHashedStamp,
+  mergeStampsIntoHashedStamps,
+  stampNew,
+  stampNewObj,
+} from './mergeable-store/stamps';
 import {IdMap, mapEnsure, mapSet} from './common/map';
 import {IdObj, objFreeze, objIsEmpty, objToArray} from './common/obj';
 import {
   MergeableChanges,
   MergeableContent,
   MergeableStore,
-  Stamp,
   Time,
   createMergeableStore as createMergeableStoreDecl,
 } from './types/mergeable-store';
-import {
-  cloneStamp,
-  mapStamp,
-  mapStampMapToObj,
-  mergeLeafStamps,
-  mergeStamp,
-  mergeStamps,
-  stampNew,
-  stampNewMap,
-  stampNewObj,
-} from './mergeable-store/stamps';
 import {isUndefined, slice} from './common/other';
 import {Id} from './types/common';
 import {createStore} from './store';
@@ -45,20 +46,17 @@ const LISTENER_ARGS: IdObj<number> = {
   InvalidValue: 1,
 };
 
-type TableStamp = Stamp<IdMap<RowStamp>>;
-type RowStamp = Stamp<IdMap<Stamp<CellOrUndefined>>>;
-type ContentStamp = Stamp<
+type TableStamp = HashedStamp<IdMap<RowStamp>>;
+type RowStamp = HashedStamp<IdMap<HashedStamp<CellOrUndefined>>>;
+type ContentStamp = HashedStamp<
   [
-    mergeableTables: Stamp<IdMap<TableStamp>>,
-    mergeableValues: Stamp<IdMap<Stamp<ValueOrUndefined>>>,
+    tablesStamp: HashedStamp<IdMap<TableStamp>>,
+    valuesStamp: HashedStamp<IdMap<HashedStamp<ValueOrUndefined>>>,
   ]
 >;
 
-const newContentStamp = (time = EMPTY_STRING): ContentStamp => [
-  0,
-  time,
-  [stampNewMap(time), stampNewMap(time)],
-];
+const newContentStamp = (time = EMPTY_STRING): ContentStamp =>
+  hashedStampNew(time, [hashedStampNewMap(time), hashedStampNewMap(time)]);
 
 export const createMergeableStore = ((id: Id): MergeableStore => {
   let listening = 1;
@@ -79,12 +77,8 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     if (listening) {
       finishTransactionMergeableChanges = getTransactionMergeableChanges();
       const [
-        ,
         time,
-        [
-          [, tablesTime, changedTableStamps],
-          [, valuesTime, changedValueStamps],
-        ],
+        [[tablesTime, changedTableStamps], [valuesTime, changedValueStamps]],
       ] = finishTransactionMergeableChanges;
       const cellsTouched = !objIsEmpty(changedTableStamps);
       const valuesTouched = !objIsEmpty(changedValueStamps);
@@ -97,24 +91,30 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
         tablesStamp[1] = tablesTime;
         objToArray(
           changedTableStamps,
-          ([, tableTime, changedRowStamps], tableId) => {
+          ([tableTime, changedRowStamps], tableId) => {
             const tableStamp = mapEnsure<Id, TableStamp>(
               tablesStamp[2],
               tableId,
-              stampNewMap,
+              hashedStampNewMap,
             );
             tableStamp[1] = tableTime;
             objToArray(
               changedRowStamps,
-              ([, rowTime, changedCellStamps], rowId) => {
+              ([rowTime, changedCellStamps], rowId) => {
                 const rowStamp = mapEnsure<Id, RowStamp>(
                   tableStamp[2],
                   rowId,
-                  stampNewMap,
+                  hashedStampNewMap,
                 );
                 rowStamp[1] = rowTime;
-                objToArray(changedCellStamps, (changedCellStamp, cellId) =>
-                  mapSet(rowStamp[2], cellId, changedCellStamp),
+                objToArray(
+                  changedCellStamps,
+                  ([cellTime, changedCell], cellId) =>
+                    mapSet(
+                      rowStamp[2],
+                      cellId,
+                      hashedStampNew(cellTime, changedCell),
+                    ),
                 );
               },
             );
@@ -123,8 +123,12 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
       }
       if (valuesTouched) {
         valuesStamp[1] = valuesTime;
-        objToArray(changedValueStamps, (changedValueStamp, valueId) =>
-          mapSet(valuesStamp[2], valueId, changedValueStamp),
+        objToArray(changedValueStamps, ([valueTime, changedValue], valueId) =>
+          mapSet(
+            valuesStamp[2],
+            valueId,
+            hashedStampNew(valueTime, changedValue),
+          ),
         );
       }
     }
@@ -141,13 +145,13 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   };
 
   const getMergeableContent = (): MergeableContent =>
-    mapStamp(contentStamp, ([tablesStamp, valuesStamp]) => [
-      mapStampMapToObj(tablesStamp, (rowsStamp) =>
-        mapStampMapToObj(rowsStamp, (cellsStamp) =>
-          mapStampMapToObj(cellsStamp, cloneStamp),
+    hashedStampToStamp(contentStamp, ([tablesStamp, valuesStamp]) => [
+      hashedStampMapToStampObj(tablesStamp, (rowsStamp) =>
+        hashedStampMapToStampObj(rowsStamp, (cellsStamp) =>
+          hashedStampMapToStampObj(cellsStamp, cloneHashedStampToStamp),
         ),
       ),
-      mapStampMapToObj(valuesStamp, cloneStamp),
+      hashedStampMapToStampObj(valuesStamp, cloneHashedStampToStamp),
     ]);
 
   const setMergeableContent = (mergeableContent: MergeableContent) => {
@@ -172,12 +176,12 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
         stampNewObj(objIsEmpty(changedCells) ? EMPTY_STRING : time),
         stampNewObj(objIsEmpty(changedValues) ? EMPTY_STRING : time),
       ]);
-      const [[, , tableStamps], [, , valuesStamp]] = mergeableChanges[2];
+      const [[, tableStamps], [, valuesStamp]] = mergeableChanges[1];
 
       objToArray(changedCells, (changedTable, tableId) => {
-        const [, , rowStamps] = (tableStamps[tableId] = stampNewObj(time));
+        const [, rowStamps] = (tableStamps[tableId] = stampNewObj(time));
         objToArray(changedTable, (changedRow, rowId) => {
-          const [, , cellStamps] = (rowStamps[rowId] = stampNewObj(time));
+          const [, cellStamps] = (rowStamps[rowId] = stampNewObj(time));
           objToArray(
             changedRow,
             ([, newCell], cellId) =>
@@ -200,8 +204,8 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     newContentStamp: MergeableChanges,
   ): MergeableStore => {
     const changes: Changes = [{}, {}];
-    seenHlc(newContentStamp[1]);
-    mergeStamp(
+    seenHlc(newContentStamp[0]);
+    mergeStampIntoHashedStamp(
       newContentStamp,
       contentStamp,
       changes,
@@ -210,25 +214,30 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
         [tablesStamp, valuesStamp],
         [tablesChanges, valuesChanges],
       ) => {
-        mergeStamp(
+        mergeStampIntoHashedStamp(
           newTablesStamp,
           tablesStamp,
           tablesChanges,
           (newTableStamps, tableStamps, tableChanges) =>
-            mergeStamps(
+            mergeStampsIntoHashedStamps(
               newTableStamps,
               tableStamps,
               tableChanges,
               (newRowStamps, rowStamps, rowChanges) =>
-                mergeStamps(
+                mergeStampsIntoHashedStamps(
                   newRowStamps,
                   rowStamps,
                   rowChanges,
-                  mergeLeafStamps,
+                  mergeLeafStampsIntoHashedStamps,
                 ),
             ),
         );
-        mergeStamp(newValuesStamp, valuesStamp, valuesChanges, mergeLeafStamps);
+        mergeStampIntoHashedStamp(
+          newValuesStamp,
+          valuesStamp,
+          valuesChanges,
+          mergeLeafStampsIntoHashedStamps,
+        );
       },
     );
     disableListening(() => store.applyChanges(changes));

@@ -397,21 +397,18 @@ describe('Supported, MergeableStore', () => {
   test('Content in setPersisted', async () => {
     const store = createMergeableStore('s1');
     const content: MergeableContent = [
-      0,
       'Hc2DO@000008DKS9',
       [
         [
-          0,
           'Hc2DO@000008DKS9',
           {
             t1: [
-              0,
               'Hc2DO@000008DKS9',
-              {r1: [0, 'Hc2DO@000008DKS9', {c1: [0, 'Hc2DO@000008DKS9', 1]}]},
+              {r1: ['Hc2DO@000008DKS9', {c1: ['Hc2DO@000008DKS9', 1]}]},
             ],
           },
         ],
-        [0, 'Hc2DO@000008DKS9', {v1: [0, 'Hc2DO@000008DKS9', 1]}],
+        ['Hc2DO@000008DKS9', {v1: ['Hc2DO@000008DKS9', 1]}],
       ],
     ];
     let persisted = '';
@@ -459,31 +456,27 @@ describe('Supported, MergeableStore', () => {
     persister.destroy();
     expect(persisted).toEqual([
       JSON.stringify([
-        0,
         'Hc2DO@000008DKS9',
         [
           [
-            0,
             'Hc2DO@000008DKS9',
             {
               t1: [
-                0,
                 'Hc2DO@000008DKS9',
                 {
-                  r1: [0, 'Hc2DO@000008DKS9', {c1: [0, 'Hc2DO@000008DKS9', 1]}],
+                  r1: ['Hc2DO@000008DKS9', {c1: ['Hc2DO@000008DKS9', 1]}],
                 },
               ],
             },
           ],
-          [0, '', {}],
+          ['', {}],
         ],
       ]),
       JSON.stringify([
-        0,
         'Hc2DO@000018DKS9',
         [
-          [0, '', {}],
-          [0, 'Hc2DO@000018DKS9', {v1: [0, 'Hc2DO@000018DKS9', 1]}],
+          ['', {}],
+          ['Hc2DO@000018DKS9', {v1: ['Hc2DO@000018DKS9', 1]}],
         ],
       ]),
     ]);
@@ -508,23 +501,20 @@ describe('Supported, MergeableStore', () => {
     persister.destroy();
     expect(persisted).toEqual(
       JSON.stringify([
-        0,
         'Hc2DO@000008DKS9',
         [
           [
-            0,
             'Hc2DO@000008DKS9',
             {
               t1: [
-                0,
                 'Hc2DO@000008DKS9',
                 {
-                  r1: [0, 'Hc2DO@000008DKS9', {c1: [0, 'Hc2DO@000008DKS9', 1]}],
+                  r1: ['Hc2DO@000008DKS9', {c1: ['Hc2DO@000008DKS9', 1]}],
                 },
               ],
             },
           ],
-          [0, 'Hc2DO@000008DKS9', {v1: [0, 'Hc2DO@000008DKS9', 1]}],
+          ['Hc2DO@000008DKS9', {v1: ['Hc2DO@000008DKS9', 1]}],
         ],
       ]),
     );
