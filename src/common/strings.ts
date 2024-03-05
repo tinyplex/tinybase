@@ -58,8 +58,5 @@ export const strStartsWith = (str: string, prefix: string) =>
 export const strEndsWith = (str: string, suffix: string) =>
   str.endsWith(suffix);
 
-export const strSplit = (str: string, separator = '', limit?: number) =>
-  str.split(separator, limit);
-
 export const strCharCodeAt = (str: string, position: number): number =>
   str.charCodeAt(position);
