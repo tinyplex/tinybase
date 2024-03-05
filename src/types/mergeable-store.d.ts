@@ -25,6 +25,9 @@ export type MergeableContent = Stamp<
 /// MergeableChanges
 export type MergeableChanges = MergeableContent;
 
+/// Hash
+export type Hash = number;
+
 /// MergeableStore
 export interface MergeableStore extends Store {
   //
@@ -42,6 +45,27 @@ export interface MergeableStore extends Store {
 
   /// MergeableStore.applyMergeableChanges
   applyMergeableChanges(mergeableChanges: MergeableChanges): MergeableStore;
+
+  /// MergeableStore.getContentHash
+  getContentHash(): Hash;
+
+  /// MergeableStore.getTablesHash
+  getTablesHash(): Hash;
+
+  /// MergeableStore.getTableHash
+  getTableHash(tableId: Id): Hash;
+
+  /// MergeableStore.getRowHash
+  getRowHash(tableId: Id, rowId: Id): Hash;
+
+  /// MergeableStore.getCellHash
+  getCellHash(tableId: Id, rowId: Id, cellId: Id): Hash;
+
+  /// MergeableStore.getValuesHash
+  getValuesHash(): Hash;
+
+  /// MergeableStore.getValueHash
+  getValueHash(valueId: Id): Hash;
 }
 
 /// createMergeableStore

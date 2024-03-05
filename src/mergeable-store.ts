@@ -1,6 +1,14 @@
 import {CellOrUndefined, Changes, Store, ValueOrUndefined} from './types/store';
 import {EMPTY_STRING, strEndsWith, strStartsWith} from './common/strings';
 import {
+  Hash,
+  MergeableChanges,
+  MergeableContent,
+  MergeableStore,
+  Time,
+  createMergeableStore as createMergeableStoreDecl,
+} from './types/mergeable-store';
+import {
   HashStamp,
   cloneHashStampToStamp,
   hashStampMapToStampObj,
@@ -13,15 +21,8 @@ import {
   stampNew,
   stampNewObj,
 } from './mergeable-store/stamps';
-import {IdMap, mapEnsure, mapSet} from './common/map';
+import {IdMap, mapEnsure, mapGet, mapSet} from './common/map';
 import {IdObj, objFreeze, objIsEmpty, objToArray} from './common/obj';
-import {
-  MergeableChanges,
-  MergeableContent,
-  MergeableStore,
-  Time,
-  createMergeableStore as createMergeableStoreDecl,
-} from './types/mergeable-store';
 import {isUndefined, slice} from './common/other';
 import {Id} from './types/common';
 import {createStore} from './store';
@@ -55,12 +56,12 @@ type ContentStamp = HashStamp<
   ]
 >;
 
-const newContentStamp = (time = EMPTY_STRING): ContentStamp =>
+const newContentHashStamp = (time = EMPTY_STRING): ContentStamp =>
   hashStampNew(time, [hashStampNewMap(time), hashStampNewMap(time)]);
 
 export const createMergeableStore = ((id: Id): MergeableStore => {
   let listening = 1;
-  let contentStamp = newContentStamp();
+  let contentStamp = newContentHashStamp();
   let transactionTime: Time | undefined;
   let finishTransactionMergeableChanges: MergeableChanges | undefined;
   const [getHlc, seenHlc] = getHlcFunctions(id);
@@ -151,7 +152,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     disableListening(() =>
       store.transaction(() => {
         store.delTables().delValues();
-        contentStamp = newContentStamp();
+        contentStamp = newContentHashStamp();
       }),
     );
     applyMergeableChanges(mergeableContent);
@@ -244,12 +245,40 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     return applyMergeableChanges(mergeableContent2);
   };
 
+  const getContentHash = (): Hash => contentStamp[0];
+
+  const getTablesHash = (): Hash => contentStamp[2][0][0];
+
+  const getTableHash = (tableId: Id): Hash =>
+    mapGet(contentStamp[2][0][2], tableId)?.[0] ?? 0;
+
+  const getRowHash = (tableId: Id, rowId: Id): Hash =>
+    mapGet(mapGet(contentStamp[2][0][2], tableId)?.[2], rowId)?.[0] ?? 0;
+
+  const getCellHash = (tableId: Id, rowId: Id, cellId: Id): Hash =>
+    mapGet(
+      mapGet(mapGet(contentStamp[2][0][2], tableId)?.[2], rowId)?.[2],
+      cellId,
+    )?.[0] ?? 0;
+
+  const getValuesHash = (): Hash => contentStamp[2][1][0];
+
+  const getValueHash = (valueId: Id): Hash =>
+    mapGet(contentStamp[2][1][2], valueId)?.[0] ?? 0;
+
   const mergeableStore: IdObj<any> = {
     getMergeableContent,
     setMergeableContent,
     getTransactionMergeableChanges,
     applyMergeableChanges,
     merge,
+    getContentHash,
+    getTablesHash,
+    getTableHash,
+    getRowHash,
+    getCellHash,
+    getValuesHash,
+    getValueHash,
   };
 
   (store as any).setInternalListeners(
