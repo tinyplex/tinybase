@@ -8,17 +8,17 @@ import {hash} from './hash';
 import {isUndefined} from '../common/other';
 import {jsonString} from '../common/json';
 
-export type HashedStamp<Thing> = [hash: number, time: Time, thing: Thing];
+export type HashStamp<Thing> = [hash: number, time: Time, thing: Thing];
 
 export const stampNew = <Thing>(time: Time, thing?: Thing): Stamp<Thing> => [
   time,
   thing as Thing,
 ];
 
-export const hashedStampNew = <Thing>(
+export const hashStampNew = <Thing>(
   time: Time,
   thing?: Thing,
-): HashedStamp<Thing> => [
+): HashStamp<Thing> => [
   isUndefined(getCellOrValueType(thing)) ? 0 : hash(time + jsonString(thing)),
   time,
   thing as Thing,
@@ -27,67 +27,63 @@ export const hashedStampNew = <Thing>(
 export const stampNewObj = <Thing>(time: Time): Stamp<IdObj<Thing>> =>
   stampNew(time, objNew<Thing>());
 
-export const hashedStampNewMap = <Thing>(
+export const hashStampNewMap = <Thing>(
   time = EMPTY_STRING,
-): HashedStamp<IdMap<Thing>> => [0, time, mapNew<Id, Thing>()];
+): HashStamp<IdMap<Thing>> => [0, time, mapNew<Id, Thing>()];
 
-export const cloneHashedStampToStamp = <Value>([
+export const cloneHashStampToStamp = <Value>([
   ,
   time,
   value,
-]: HashedStamp<Value>): Stamp<Value> => [time, value];
+]: HashStamp<Value>): Stamp<Value> => [time, value];
 
-export const hashedStampToStamp = <From, To = From>(
-  [, time, value]: HashedStamp<From>,
+export const hashStampToStamp = <From, To = From>(
+  [, time, value]: HashStamp<From>,
   mapper: (value: From, time: Time) => To,
 ): Stamp<To> => [time, mapper(value, time)];
 
-export const hashedStampMapToStampObj = <From, To = From>(
-  hashedStampMap: HashedStamp<IdMap<From>>,
+export const hashStampMapToStampObj = <From, To = From>(
+  hashStampMap: HashStamp<IdMap<From>>,
   mapper: (mapValue: From) => To,
 ): Stamp<IdObj<To>> =>
-  hashedStampToStamp(hashedStampMap, (map) => mapToObj(map, mapper));
+  hashStampToStamp(hashStampMap, (map) => mapToObj(map, mapper));
 
-export const mergeStampsIntoHashedStamps = <NewThing, Thing>(
+export const mergeStampsIntoHashStamps = <NewThing, Thing>(
   stamps: IdObj<Stamp<NewThing>>,
-  hashedStamps: IdMap<HashedStamp<Thing>>,
+  hashStamps: IdMap<HashStamp<Thing>>,
   changes: any,
   merge: (newThing: NewThing, thing: Thing, changes: any) => void,
 ): void =>
   objForEach(stamps, (stamp, thingId) =>
-    mergeStampIntoHashedStamp(
+    mergeStampIntoHashStamp(
       stamp,
-      mapEnsure<Id, any>(hashedStamps, thingId, hashedStampNewMap),
+      mapEnsure<Id, any>(hashStamps, thingId, hashStampNewMap),
       (changes[thingId] = objNew()),
       merge,
     ),
   );
 
-export const mergeStampIntoHashedStamp = <NewThing, Thing>(
+export const mergeStampIntoHashStamp = <NewThing, Thing>(
   [newTime, newThing]: Stamp<NewThing>,
-  hashedStamp: HashedStamp<Thing>,
+  hashStamp: HashStamp<Thing>,
   changes: any,
   merge: (newThing: NewThing, thing: Thing, changes: any) => void,
 ): void => {
-  if (newTime > hashedStamp[1]) {
-    hashedStamp[1] = newTime;
+  if (newTime > hashStamp[1]) {
+    hashStamp[1] = newTime;
   }
-  merge(newThing, hashedStamp[2], changes);
+  merge(newThing, hashStamp[2], changes);
 };
 
-export const mergeLeafStampsIntoHashedStamps = <Leaf>(
+export const mergeLeafStampsIntoHashStamps = <Leaf>(
   stamps: IdObj<Stamp<Leaf | undefined>>,
-  hashedStamps: IdMap<HashedStamp<Leaf | undefined>>,
+  hashStamps: IdMap<HashStamp<Leaf | undefined>>,
   changes: any,
 ): void =>
   objForEach(stamps, ([newTime, newLeaf], leafId) => {
-    const hashedStamp = mapEnsure<Id, any>(
-      hashedStamps,
-      leafId,
-      hashedStampNewMap,
-    );
-    if (newTime > hashedStamp[1]) {
-      hashedStamp[1] = newTime;
-      hashedStamp[2] = changes[leafId] = newLeaf;
+    const hashStamp = mapEnsure<Id, any>(hashStamps, leafId, hashStampNewMap);
+    if (newTime > hashStamp[1]) {
+      hashStamp[1] = newTime;
+      hashStamp[2] = changes[leafId] = newLeaf;
     }
   });
