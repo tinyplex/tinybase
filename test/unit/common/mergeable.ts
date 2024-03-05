@@ -40,19 +40,19 @@ export const time = (offset: number, counter: number, storeId: string = 's1') =>
 export const START_TIME = new Date('2024-01-01 00:00:00 UTC');
 
 export const stamped1 = (offset: number, counter: number, thing: any) => [
-  '',
+  0,
   time(offset, counter, 's1'),
   thing,
 ];
 
 export const stamped2 = (offset: number, counter: number, thing: any) => [
-  '',
+  0,
   time(offset, counter, 's2'),
   thing,
 ];
 
 export const nullStamped = <Thing>(thing: Thing): Stamp<Thing> => [
-  '',
+  0,
   '',
   thing,
 ];
