@@ -27,7 +27,7 @@ const isMergeable = (
     | Changes
     | MergeableChanges
     | undefined,
-) => isString(contentOrChanges?.[1]);
+) => isString(contentOrChanges?.[0]);
 
 const getStoreFunctions = (
   supportsMergeableStore: boolean | undefined,
@@ -57,7 +57,7 @@ const getStoreFunctions = (
         1,
         store.getMergeableContent,
         store.getTransactionMergeableChanges,
-        ([, , [[, , changedTables], [, , changedValues]]]: MergeableChanges) =>
+        ([, [[, changedTables], [, changedValues]]]: MergeableChanges) =>
           !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
       ];
 
