@@ -55,7 +55,7 @@ type ContentStamp = Stamp<
 >;
 
 const newContentStamp = (time = EMPTY_STRING): ContentStamp => [
-  EMPTY_STRING,
+  0,
   time,
   [stampNewMap(time), stampNewMap(time)],
 ];
