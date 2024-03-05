@@ -1,4 +1,4 @@
-import {Cell, CellOrUndefined, Store, ValueOrUndefined} from '../types/store.d';
+import {CellOrUndefined, Store, ValueOrUndefined} from '../types/store.d';
 import {NUMBER, STRING, getTypeOf} from './strings';
 import {isFiniteNumber, isTypeStringOrBoolean, isUndefined} from './other';
 import {Id} from '../types/common.d';
@@ -6,7 +6,7 @@ import {Id} from '../types/common.d';
 export type CellOrValueType = 'string' | 'number' | 'boolean';
 
 export const getCellOrValueType = (
-  cellOrValue: Cell | undefined,
+  cellOrValue: any,
 ): CellOrValueType | undefined => {
   const type = getTypeOf(cellOrValue);
   return isTypeStringOrBoolean(type) ||
