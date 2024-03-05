@@ -15,20 +15,23 @@ export const stampNew = <Thing>(time: Time, thing?: Thing): Stamp<Thing> => [
   thing as Thing,
 ];
 
-const stampHash = (time: Time, thing: any): Hash =>
-  isUndefined(getCellOrValueType(thing)) ? 0 : hash(time + jsonString(thing));
-
 export const hashStampNew = <Thing>(
   time: Time,
   thing?: Thing,
-): HashStamp<Thing> => [stampHash(time, thing), time, thing as Thing];
+): HashStamp<Thing> => [
+  isUndefined(getCellOrValueType(thing))
+    ? 0
+    : hash(jsonString(thing) + ':' + time),
+  time,
+  thing as Thing,
+];
 
 export const hashStampUpdateFromMap = <Thing>(
   hashStamp: HashStamp<IdMap<HashStamp<Thing>>>,
 ): void => {
   let outerHash = hash(hashStamp[1]);
   mapForEach(hashStamp[2], (id, [innerHash]) => {
-    outerHash ^= hash(jsonString([id, innerHash]));
+    outerHash ^= hash(id + ':' + innerHash);
   });
   hashStamp[0] = outerHash >>> 0;
 };
