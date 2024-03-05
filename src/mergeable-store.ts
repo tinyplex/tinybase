@@ -15,6 +15,7 @@ import {
   hashStampNew,
   hashStampNewMap,
   hashStampToStamp,
+  hashStampUpdateFromMap,
   mergeLeafStampsIntoHashStamps,
   mergeStampIntoHashStamp,
   mergeStampsIntoHashStamps,
@@ -85,9 +86,6 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
       const valuesTouched = !objIsEmpty(changedValueStamps);
 
       const [, , [tablesStamp, valuesStamp]] = contentStamp;
-      if (cellsTouched || valuesTouched) {
-        contentStamp[1] = time;
-      }
       if (cellsTouched) {
         tablesStamp[1] = tablesTime;
         objToArray(
@@ -117,10 +115,13 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
                       hashStampNew(cellTime, changedCell),
                     ),
                 );
+                hashStampUpdateFromMap(rowStamp);
               },
             );
+            hashStampUpdateFromMap(tableStamp);
           },
         );
+        hashStampUpdateFromMap(tablesStamp);
       }
       if (valuesTouched) {
         valuesStamp[1] = valuesTime;
@@ -131,6 +132,11 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
             hashStampNew(valueTime, changedValue),
           ),
         );
+        hashStampUpdateFromMap(valuesStamp);
+      }
+      if (cellsTouched || valuesTouched) {
+        contentStamp[0] = (tablesStamp[0] ^ valuesStamp[0]) >>> 0;
+        contentStamp[1] = time;
       }
     }
   };
