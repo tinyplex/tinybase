@@ -12,14 +12,11 @@ import {
 import {Id} from './common';
 import {IdObj} from '../../common/obj';
 
-/// Hash
-export type Hash = number;
-
 /// Time
 export type Time = string;
 
 /// Stamp
-export type Stamp<Thing> = [hash: Hash, time: Time, thing: Thing];
+export type Stamp<Thing> = [time: Time, thing: Thing];
 
 type MergeableCell<Schema extends OptionalTablesSchema> = Stamp<Cell<
   Schema,
