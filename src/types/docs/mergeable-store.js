@@ -5,11 +5,6 @@
  */
 /// mergeable-store
 /**
- * The Hash type
- * @category Stamps
- */
-/// Hash
-/**
  * The Time type
  * @category Stamps
  */
@@ -29,6 +24,11 @@
  * @category Mergeable
  */
 /// MergeableChanges
+/**
+ * The Hash type
+ * @category Stamps
+ */
+/// Hash
 /**
  * The MergeableStore type
  * @category Mergeable
@@ -60,6 +60,41 @@
    * @category Merging
    */
   /// MergeableStore.applyMergeableChanges
+  /**
+   * The getContentHash method
+   * @category Hashes
+   */
+  /// MergeableStore.getContentHash
+  /**
+   * The getTablesHash method
+   * @category Hashes
+   */
+  /// MergeableStore.getTablesHash
+  /**
+   * The getTableHash method
+   * @category Hashes
+   */
+  /// MergeableStore.getTableHash
+  /**
+   * The getRowHash method
+   * @category Hashes
+   */
+  /// MergeableStore.getRowHash
+  /**
+   * The getCellHash method
+   * @category Hashes
+   */
+  /// MergeableStore.getCellHash
+  /**
+   * The getValuesHash method
+   * @category Hashes
+   */
+  /// MergeableStore.getValuesHash
+  /**
+   * The getValueHash method
+   * @category Hashes
+   */
+  /// MergeableStore.getValueHash
 }
 /**
  * The createMergeableStore function
