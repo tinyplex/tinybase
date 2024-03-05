@@ -113,8 +113,8 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
                   stampNewMap,
                 );
                 rowStamp[1] = rowTime;
-                objToArray(changedCellStamps, ([, cellTime, newCell], cellId) =>
-                  mapSet(rowStamp[2], cellId, stampNew(cellTime, newCell)),
+                objToArray(changedCellStamps, (changedCellStamp, cellId) =>
+                  mapSet(rowStamp[2], cellId, changedCellStamp),
                 );
               },
             );
@@ -123,8 +123,8 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
       }
       if (valuesTouched) {
         valuesStamp[1] = valuesTime;
-        objToArray(changedValueStamps, ([, valueTime, newValue], valueId) =>
-          mapSet(valuesStamp[2], valueId, stampNew(valueTime, newValue)),
+        objToArray(changedValueStamps, (changedValueStamp, valueId) =>
+          mapSet(valuesStamp[2], valueId, changedValueStamp),
         );
       }
     }
