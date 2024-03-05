@@ -1,15 +1,15 @@
 import {CellOrUndefined, Changes, Store, ValueOrUndefined} from './types/store';
 import {EMPTY_STRING, strEndsWith, strStartsWith} from './common/strings';
 import {
-  HashedStamp,
-  cloneHashedStampToStamp,
-  hashedStampMapToStampObj,
-  hashedStampNew,
-  hashedStampNewMap,
-  hashedStampToStamp,
-  mergeLeafStampsIntoHashedStamps,
-  mergeStampIntoHashedStamp,
-  mergeStampsIntoHashedStamps,
+  HashStamp,
+  cloneHashStampToStamp,
+  hashStampMapToStampObj,
+  hashStampNew,
+  hashStampNewMap,
+  hashStampToStamp,
+  mergeLeafStampsIntoHashStamps,
+  mergeStampIntoHashStamp,
+  mergeStampsIntoHashStamps,
   stampNew,
   stampNewObj,
 } from './mergeable-store/stamps';
@@ -46,17 +46,17 @@ const LISTENER_ARGS: IdObj<number> = {
   InvalidValue: 1,
 };
 
-type TableStamp = HashedStamp<IdMap<RowStamp>>;
-type RowStamp = HashedStamp<IdMap<HashedStamp<CellOrUndefined>>>;
-type ContentStamp = HashedStamp<
+type TableStamp = HashStamp<IdMap<RowStamp>>;
+type RowStamp = HashStamp<IdMap<HashStamp<CellOrUndefined>>>;
+type ContentStamp = HashStamp<
   [
-    tablesStamp: HashedStamp<IdMap<TableStamp>>,
-    valuesStamp: HashedStamp<IdMap<HashedStamp<ValueOrUndefined>>>,
+    tablesStamp: HashStamp<IdMap<TableStamp>>,
+    valuesStamp: HashStamp<IdMap<HashStamp<ValueOrUndefined>>>,
   ]
 >;
 
 const newContentStamp = (time = EMPTY_STRING): ContentStamp =>
-  hashedStampNew(time, [hashedStampNewMap(time), hashedStampNewMap(time)]);
+  hashStampNew(time, [hashStampNewMap(time), hashStampNewMap(time)]);
 
 export const createMergeableStore = ((id: Id): MergeableStore => {
   let listening = 1;
@@ -95,7 +95,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
             const tableStamp = mapEnsure<Id, TableStamp>(
               tablesStamp[2],
               tableId,
-              hashedStampNewMap,
+              hashStampNewMap,
             );
             tableStamp[1] = tableTime;
             objToArray(
@@ -104,7 +104,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
                 const rowStamp = mapEnsure<Id, RowStamp>(
                   tableStamp[2],
                   rowId,
-                  hashedStampNewMap,
+                  hashStampNewMap,
                 );
                 rowStamp[1] = rowTime;
                 objToArray(
@@ -113,7 +113,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
                     mapSet(
                       rowStamp[2],
                       cellId,
-                      hashedStampNew(cellTime, changedCell),
+                      hashStampNew(cellTime, changedCell),
                     ),
                 );
               },
@@ -127,7 +127,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
           mapSet(
             valuesStamp[2],
             valueId,
-            hashedStampNew(valueTime, changedValue),
+            hashStampNew(valueTime, changedValue),
           ),
         );
       }
@@ -145,13 +145,13 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   };
 
   const getMergeableContent = (): MergeableContent =>
-    hashedStampToStamp(contentStamp, ([tablesStamp, valuesStamp]) => [
-      hashedStampMapToStampObj(tablesStamp, (rowsStamp) =>
-        hashedStampMapToStampObj(rowsStamp, (cellsStamp) =>
-          hashedStampMapToStampObj(cellsStamp, cloneHashedStampToStamp),
+    hashStampToStamp(contentStamp, ([tablesStamp, valuesStamp]) => [
+      hashStampMapToStampObj(tablesStamp, (rowsStamp) =>
+        hashStampMapToStampObj(rowsStamp, (cellsStamp) =>
+          hashStampMapToStampObj(cellsStamp, cloneHashStampToStamp),
         ),
       ),
-      hashedStampMapToStampObj(valuesStamp, cloneHashedStampToStamp),
+      hashStampMapToStampObj(valuesStamp, cloneHashStampToStamp),
     ]);
 
   const setMergeableContent = (mergeableContent: MergeableContent) => {
@@ -205,7 +205,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   ): MergeableStore => {
     const changes: Changes = [{}, {}];
     seenHlc(newContentStamp[0]);
-    mergeStampIntoHashedStamp(
+    mergeStampIntoHashStamp(
       newContentStamp,
       contentStamp,
       changes,
@@ -214,29 +214,29 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
         [tablesStamp, valuesStamp],
         [tablesChanges, valuesChanges],
       ) => {
-        mergeStampIntoHashedStamp(
+        mergeStampIntoHashStamp(
           newTablesStamp,
           tablesStamp,
           tablesChanges,
           (newTableStamps, tableStamps, tableChanges) =>
-            mergeStampsIntoHashedStamps(
+            mergeStampsIntoHashStamps(
               newTableStamps,
               tableStamps,
               tableChanges,
               (newRowStamps, rowStamps, rowChanges) =>
-                mergeStampsIntoHashedStamps(
+                mergeStampsIntoHashStamps(
                   newRowStamps,
                   rowStamps,
                   rowChanges,
-                  mergeLeafStampsIntoHashedStamps,
+                  mergeLeafStampsIntoHashStamps,
                 ),
             ),
         );
-        mergeStampIntoHashedStamp(
+        mergeStampIntoHashStamp(
           newValuesStamp,
           valuesStamp,
           valuesChanges,
-          mergeLeafStampsIntoHashedStamps,
+          mergeLeafStampsIntoHashStamps,
         );
       },
     );
