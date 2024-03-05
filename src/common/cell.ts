@@ -6,11 +6,11 @@ import {Id} from '../types/common.d';
 export type CellOrValueType = 'string' | 'number' | 'boolean';
 
 export const getCellOrValueType = (
-  cell: Cell | undefined,
+  cellOrValue: Cell | undefined,
 ): CellOrValueType | undefined => {
-  const type = getTypeOf(cell);
+  const type = getTypeOf(cellOrValue);
   return isTypeStringOrBoolean(type) ||
-    (type == NUMBER && isFiniteNumber(cell as any))
+    (type == NUMBER && isFiniteNumber(cellOrValue as any))
     ? (type as CellOrValueType)
     : undefined;
 };
