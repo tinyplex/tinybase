@@ -13,7 +13,7 @@ import {Id} from './common';
 import {IdObj} from '../../common/obj';
 
 /// Hash
-export type Hash = string;
+export type Hash = number;
 
 /// Time
 export type Time = string;
