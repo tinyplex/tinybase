@@ -1337,74 +1337,74 @@ describe('Hashing', () => {
   });
 
   test('getContentHash', () => {
-    expect(store.getContentHash()).toEqual(2732811633);
+    expect(store.getContentHash()).toEqual(697504984);
     store.setCell('t1', 'r1', 'c1', 2);
-    expect(store.getContentHash()).toEqual(3470179409);
+    expect(store.getContentHash()).toEqual(1058001114);
     store.setValue('v1', 6);
-    expect(store.getContentHash()).toEqual(226450018);
+    expect(store.getContentHash()).toEqual(4221178835);
   });
 
   test('getTablesHash', () => {
-    expect(store.getTablesHash()).toEqual(3553738639);
+    expect(store.getTablesHash()).toEqual(3583083509);
     store.setCell('t1', 'r1', 'c1', 2);
-    expect(store.getTablesHash()).toEqual(3219416751);
+    expect(store.getTablesHash()).toEqual(3272427511);
     store.setCell('t1', 'r1', 'c2', 3);
-    expect(store.getTablesHash()).toEqual(658256168);
+    expect(store.getTablesHash()).toEqual(4178296814);
   });
 
   test('getTableHash', () => {
     expect(store.getTableHash('t0')).toEqual(0);
-    expect(store.getTableHash('t1')).toEqual(1369778340);
-    expect(store.getTableHash('t2')).toEqual(670634084);
+    expect(store.getTableHash('t1')).toEqual(2684585349);
+    expect(store.getTableHash('t2')).toEqual(4105929749);
     store.setCell('t1', 'r1', 'c1', 2);
-    expect(store.getTableHash('t1')).toEqual(191087890);
+    expect(store.getTableHash('t1')).toEqual(2503072789);
     store.setCell('t1', 'r1', 'c2', 3);
-    expect(store.getTableHash('t1')).toEqual(1610178360);
+    expect(store.getTableHash('t1')).toEqual(2941515217);
   });
 
   test('getRowHash', () => {
     expect(store.getRowHash('t0', 'r0')).toEqual(0);
     expect(store.getRowHash('t1', 'r0')).toEqual(0);
-    expect(store.getRowHash('t1', 'r1')).toEqual(2235463374);
+    expect(store.getRowHash('t1', 'r1')).toEqual(1785598481);
     store.setCell('t1', 'r1', 'c1', 2);
-    expect(store.getRowHash('t1', 'r1')).toEqual(401528479);
+    expect(store.getRowHash('t1', 'r1')).toEqual(914161320);
     store.setCell('t1', 'r1', 'c2', 3);
-    expect(store.getRowHash('t1', 'r1')).toEqual(2687079844);
+    expect(store.getRowHash('t1', 'r1')).toEqual(2701666929);
   });
 
   test('getCellHash', () => {
     expect(store.getCellHash('t0', 'r1', 'c1')).toEqual(0);
     expect(store.getCellHash('t1', 'r0', 'c1')).toEqual(0);
     expect(store.getCellHash('t1', 'r1', 'c0')).toEqual(0);
-    expect(store.getCellHash('t1', 'r1', 'c1')).toEqual(3549033955);
-    expect(store.getCellHash('t1', 'r1', 'c2')).toEqual(3565811574);
-    expect(store.getCellHash('t1', 'r2', 'c1')).toEqual(3582589193);
-    expect(store.getCellHash('t2', 'r1', 'c1')).toEqual(3599366812);
+    expect(store.getCellHash('t1', 'r1', 'c1')).toEqual(4065945599);
+    expect(store.getCellHash('t1', 'r1', 'c2')).toEqual(903550280);
+    expect(store.getCellHash('t1', 'r2', 'c1')).toEqual(2609181593);
+    expect(store.getCellHash('t2', 'r1', 'c1')).toEqual(4060269138);
     store.setCell('t1', 'r1', 'c1', 2);
-    expect(store.getCellHash('t1', 'r1', 'c1')).toEqual(982820445);
-    expect(store.getCellHash('t1', 'r1', 'c2')).toEqual(3565811574);
+    expect(store.getCellHash('t1', 'r1', 'c1')).toEqual(2669080357);
+    expect(store.getCellHash('t1', 'r1', 'c2')).toEqual(903550280);
     store.setCell('t1', 'r1', 'c2', 3);
-    expect(store.getCellHash('t1', 'r1', 'c1')).toEqual(982820445);
-    expect(store.getCellHash('t1', 'r1', 'c2')).toEqual(1207380763);
+    expect(store.getCellHash('t1', 'r1', 'c1')).toEqual(2669080357);
+    expect(store.getCellHash('t1', 'r1', 'c2')).toEqual(3252714811);
   });
 
   test('getValuesHash', () => {
-    expect(store.getValuesHash()).toEqual(1899158270);
+    expect(store.getValuesHash()).toEqual(4228028205);
     store.setValue('v1', 6);
-    expect(store.getValuesHash()).toEqual(3747361623);
+    expect(store.getValuesHash()).toEqual(776144377);
     store.setValue('v2', 7);
-    expect(store.getValuesHash()).toEqual(2341721292);
+    expect(store.getValuesHash()).toEqual(1491964416);
   });
 
   test('getValueHash', () => {
     expect(store.getValueHash('v0')).toEqual(0);
-    expect(store.getValueHash('v1')).toEqual(3616144431);
-    expect(store.getValueHash('v2')).toEqual(3632922050);
+    expect(store.getValueHash('v1')).toEqual(2123438739);
+    expect(store.getValueHash('v2')).toEqual(4199459148);
     store.setValue('v1', 6);
-    expect(store.getValueHash('v1')).toEqual(915709969);
-    expect(store.getValueHash('v2')).toEqual(3632922050);
+    expect(store.getValueHash('v1')).toEqual(1736877145);
+    expect(store.getValueHash('v2')).toEqual(4199459148);
     store.setValue('v2', 7);
-    expect(store.getValueHash('v1')).toEqual(915709969);
-    expect(store.getValueHash('v2')).toEqual(1274491239);
+    expect(store.getValueHash('v1')).toEqual(1736877145);
+    expect(store.getValueHash('v2')).toEqual(3628841839);
   });
 });
