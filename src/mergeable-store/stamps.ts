@@ -3,6 +3,17 @@ import {IdObj, objForEach, objNew} from '../common/obj';
 import {Stamp, Time} from '../types/mergeable-store';
 import {EMPTY_STRING} from '../common/strings';
 import {Id} from '../types/common';
+import {getCellOrValueType} from '../common/cell';
+import {hash} from './hash';
+import {isUndefined} from '../common/other';
+import {jsonString} from '../common/json';
+
+export const stampHash = <Thing>(stamp: Stamp<Thing>): Stamp<Thing> => {
+  stamp[0] = isUndefined(getCellOrValueType(stamp[2]))
+    ? 0
+    : hash(stamp[1] + jsonString(stamp[2]));
+  return stamp;
+};
 
 export const stampNew = <Thing>(
   time: Time = EMPTY_STRING,
