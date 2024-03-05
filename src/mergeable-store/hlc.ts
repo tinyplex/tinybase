@@ -1,6 +1,6 @@
 import {isUndefined, mathMax} from '../common/other';
 import {Id} from '../types/common';
-import {arrayForEach} from '../common/array';
+import {hash} from './hash';
 import {strCharCodeAt} from '../common/strings';
 
 type HlcParts = [
@@ -22,23 +22,10 @@ const SHIFT18 = 2 ** 18;
 const SHIFT12 = 2 ** 12;
 const SHIFT6 = 2 ** 6;
 
-const textEncoder = new globalThis.TextEncoder();
-
 const toB64 = (num: number): string => String.fromCharCode(48 + (num & MASK6));
 
 const fromB64 = (str: string, pos: number): number =>
   strCharCodeAt(str, pos) - 48;
-
-// fnv1a
-const hash = (value: string) => {
-  let hash = 0x811c9dc5;
-  arrayForEach(textEncoder.encode(value), (char) => {
-    hash ^= char;
-    hash +=
-      (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
-  });
-  return hash >>> 0;
-};
 
 const encodeHlc = (
   logicalTime42: number,
