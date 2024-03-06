@@ -1,4 +1,5 @@
-import {Hash, MergeableValues, Stamp, Time} from '../types/mergeable-store';
+import {CellOrUndefined, ValueOrUndefined} from '../types/store';
+import {Hash, Stamp, Time} from '../types/mergeable-store';
 import {
   IdMap,
   mapEnsure,
@@ -10,7 +11,6 @@ import {
 import {IdObj, objForEach, objNew, objToArray} from '../common/obj';
 import {EMPTY_STRING} from '../common/strings';
 import {Id} from '../types/common';
-import {ValueOrUndefined} from '../types/store';
 import {getHash} from './hash';
 import {ifNotUndefined} from '../common/other';
 import {jsonString} from '../common/json';
@@ -104,33 +104,33 @@ export const mergeLeafStampsIntoHashStamps = <Leaf>(
     }
   });
 
-export const mergeValues = (
-  valuesStamp: MergeableValues,
-  valuesHashStamp: HashStamp<IdMap<HashStamp<ValueOrUndefined>>>,
-  valuesChanges: {[valueId: Id]: ValueOrUndefined} = {},
+export const mergeThings = <Thing extends CellOrUndefined | ValueOrUndefined>(
+  thingsStamp: Stamp<IdObj<Stamp<Thing>>>,
+  thingsHashStamp: HashStamp<IdMap<HashStamp<Thing>>>,
+  thingsChanges: {[valueId: Id]: Thing} = {},
 ) => {
-  const [valuesTime, valueStamps] = valuesStamp;
-  const [oldValuesHash, oldValuesTime, valueHashStamps] = valuesHashStamp;
-  let valuesHash =
-    getHash(valuesTime) ^
-    (oldValuesTime ? oldValuesHash ^ getHash(oldValuesTime) : 0);
-  objToArray(valueStamps, ([valueTime, value], valueId) => {
+  const [thingsTime, thingStamps] = thingsStamp;
+  const [oldThingsHash, oldThingsTime, thingHashStamps] = thingsHashStamp;
+  let thingsHash =
+    getHash(thingsTime) ^
+    (oldThingsTime ? oldThingsHash ^ getHash(oldThingsTime) : 0);
+  objToArray(thingStamps, ([thingTime, thing], thingId) => {
     if (
       !ifNotUndefined(
-        mapGet(valueHashStamps, valueId),
-        ([oldValueHash, oldValueTime]) => {
-          valuesHash ^= hashIdAndHash(valueId, oldValueHash);
-          return valueTime < oldValueTime;
+        mapGet(thingHashStamps, thingId),
+        ([oldThingHash, oldThingTime]) => {
+          thingsHash ^= hashIdAndHash(thingId, oldThingHash);
+          return thingTime < oldThingTime;
         },
       )
     ) {
-      const valueHashStamp = hashStampNewLeaf(valueTime, value);
-      mapSet(valueHashStamps, valueId, valueHashStamp);
-      valuesChanges[valueId] = value;
-      valuesHash ^= hashIdAndHash(valueId, valueHashStamp[0]);
+      const thingHashStamp = hashStampNewLeaf(thingTime, thing);
+      mapSet(thingHashStamps, thingId, thingHashStamp);
+      thingsChanges[thingId] = thing;
+      thingsHash ^= hashIdAndHash(thingId, thingHashStamp[0]);
     }
   });
-  if (valuesTime > oldValuesTime) {
-    updateHashStamp(valuesHashStamp, valuesHash, valuesTime);
+  if (thingsTime > oldThingsTime) {
+    updateHashStamp(thingsHashStamp, thingsHash, thingsTime);
   }
 };
