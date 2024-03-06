@@ -13,7 +13,7 @@ import {
   cloneHashStampToStamp,
   hashIdAndHash,
   hashStampMapToStampObj,
-  hashStampNew,
+  hashStampNewLeaf,
   hashStampNewMap,
   hashStampToStamp,
   mergeLeafStampsIntoHashStamps,
@@ -59,8 +59,11 @@ type ContentStamp = HashStamp<
   ]
 >;
 
-const newContentHashStamp = (time = EMPTY_STRING): ContentStamp =>
-  hashStampNew(time, [hashStampNewMap(time), hashStampNewMap(time)]);
+const newContentHashStamp = (time = EMPTY_STRING): ContentStamp => [
+  0,
+  time,
+  [hashStampNewMap(time), hashStampNewMap(time)],
+];
 
 export const createMergeableStore = ((id: Id): MergeableStore => {
   let listening = 1;
@@ -127,7 +130,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
                       ([oldCellHash]) =>
                         (rowHash ^= hashIdAndHash(cellId, oldCellHash)),
                     );
-                    const cellStamp = hashStampNew(cellTime, changedCell);
+                    const cellStamp = hashStampNewLeaf(cellTime, changedCell);
                     mapSet(rowStamp[2], cellId, cellStamp);
                     rowHash ^= hashIdAndHash(cellId, cellStamp[0]);
                   },
@@ -153,7 +156,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
             ([oldValueHash]) =>
               (valuesHash ^= hashIdAndHash(valueId, oldValueHash)),
           );
-          const valueStamp = hashStampNew(valueTime, changedValue);
+          const valueStamp = hashStampNewLeaf(valueTime, changedValue);
           mapSet(valueStamps, valueId, valueStamp);
           valuesHash ^= hashIdAndHash(valueId, valueStamp[0]);
         });
