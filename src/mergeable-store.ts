@@ -13,20 +13,19 @@ import {
   cloneHashStampToStamp,
   hashIdAndHash,
   hashStampMapToStampObj,
-  hashStampNewLeaf,
   hashStampNewMap,
   hashStampToStamp,
   mergeLeafStampsIntoHashStamps,
   mergeStampIntoHashStamp,
   mergeStampsIntoHashStamps,
-  mergeValues,
+  mergeThings,
   stampNew,
   stampNewObj,
   updateHashStamp,
 } from './mergeable-store/stamps';
-import {IdMap, mapEnsure, mapGet, mapSet} from './common/map';
+import {IdMap, mapEnsure, mapGet} from './common/map';
 import {IdObj, objFreeze, objIsEmpty, objToArray} from './common/obj';
-import {ifNotUndefined, isUndefined, slice} from './common/other';
+import {isUndefined, slice} from './common/other';
 import {Id} from './types/common';
 import {createStore} from './store';
 import {getHash} from './mergeable-store/hash';
@@ -106,28 +105,16 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
               tablesHash ^= hashIdAndHash(tableId, oldTableHash);
             },
           );
-          objToArray(rowStamps, ([rowTime, cellStamps], rowId) => {
-            let rowHash = getHash(rowTime);
+          objToArray(rowStamps, (rowStamp, rowId) => {
             const rowHashStamp = mapEnsure<Id, RowHashStamp>(
               tableHashStamp[2],
               rowId,
               hashStampNewMap,
-              ([oldRowHash, oldRowTime]) => {
-                rowHash ^= oldRowHash ^ getHash(oldRowTime);
+              ([oldRowHash]) => {
                 tableHash ^= hashIdAndHash(rowId, oldRowHash);
               },
             );
-            objToArray(cellStamps, ([cellTime, cell], cellId) => {
-              ifNotUndefined(
-                mapGet(rowHashStamp[2], cellId),
-                ([oldCellHash]) =>
-                  (rowHash ^= hashIdAndHash(cellId, oldCellHash)),
-              );
-              const cellHashStamp = hashStampNewLeaf(cellTime, cell);
-              mapSet(rowHashStamp[2], cellId, cellHashStamp);
-              rowHash ^= hashIdAndHash(cellId, cellHashStamp[0]);
-            });
-            updateHashStamp(rowHashStamp, rowHash, rowTime);
+            mergeThings(rowStamp, rowHashStamp);
             tableHash ^= hashIdAndHash(rowId, rowHashStamp[0]);
           });
           updateHashStamp(tableHashStamp, tableHash, tableTime);
@@ -136,7 +123,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
         updateHashStamp(tablesHashStamp, tablesHash, tablesTime);
       }
 
-      mergeValues(valuesStamp, valuesHashStamp);
+      mergeThings(valuesStamp, valuesHashStamp);
 
       if (contentTime > oldContentTime) {
         updateHashStamp(
@@ -240,7 +227,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
             ),
         );
 
-        mergeValues(valuesStamp, valuesHashStamp, valuesChanges);
+        mergeThings(valuesStamp, valuesHashStamp, valuesChanges);
       },
     );
     disableListening(() => store.applyChanges(changes));
