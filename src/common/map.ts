@@ -42,9 +42,12 @@ export const mapEnsure = <Key, Value>(
   map: Map<Key, Value>,
   key: Key,
   getDefaultValue: () => Value,
+  hadExistingValue?: (value: Value) => void,
 ): Value => {
   if (!collHas(map, key)) {
     mapSet(map, key, getDefaultValue());
+  } else {
+    hadExistingValue?.(mapGet(map, key) as Value);
   }
   return mapGet(map, key) as Value;
 };
