@@ -1,6 +1,6 @@
 import {isUndefined, mathMax} from '../common/other';
 import {Id} from '../types/common';
-import {hash} from './hash';
+import {getHash} from './hash';
 import {strCharCodeAt} from '../common/strings';
 
 type HlcParts = [
@@ -73,7 +73,7 @@ export const getHlcFunctions = (
 ): [() => Hlc, (remoteHlc: Hlc) => void] => {
   let logicalTime = 0;
   let lastCounter = -1;
-  const uniqueIdHash = hash(uniqueId);
+  const uniqueIdHash = getHash(uniqueId);
 
   const getHlc = (): Hlc => {
     seenHlc();
