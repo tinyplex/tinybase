@@ -18,7 +18,7 @@ export const stampNew = <Thing>(time: Time, thing?: Thing): Stamp<Thing> => [
 export const hashIdAndHash = (id: Id, hash: Hash) => getHash(id + ':' + hash);
 
 export const hashStampNew = <Thing>(
-  time: Time = EMPTY_STRING,
+  time: Time,
   thing?: Thing,
 ): HashStamp<Thing> => [
   isUndefined(getCellOrValueType(thing))
