@@ -50,16 +50,16 @@ const LISTENER_ARGS: IdObj<number> = {
   InvalidValue: 1,
 };
 
-type TableStamp = HashStamp<IdMap<RowStamp>>;
-type RowStamp = HashStamp<IdMap<HashStamp<CellOrUndefined>>>;
-type ContentStamp = HashStamp<
+type TableHashStamp = HashStamp<IdMap<RowHashStamp>>;
+type RowHashStamp = HashStamp<IdMap<HashStamp<CellOrUndefined>>>;
+type ContentHashStamp = HashStamp<
   [
-    tablesStamp: HashStamp<IdMap<TableStamp>>,
+    tablesStamp: HashStamp<IdMap<TableHashStamp>>,
     valuesStamp: HashStamp<IdMap<HashStamp<ValueOrUndefined>>>,
   ]
 >;
 
-const newContentHashStamp = (time = EMPTY_STRING): ContentStamp => [
+const newContentHashStamp = (time = EMPTY_STRING): ContentHashStamp => [
   0,
   time,
   [hashStampNewMap(time), hashStampNewMap(time)],
@@ -67,7 +67,7 @@ const newContentHashStamp = (time = EMPTY_STRING): ContentStamp => [
 
 export const createMergeableStore = ((id: Id): MergeableStore => {
   let listening = 1;
-  let contentStamp = newContentHashStamp();
+  let contentHashStamp = newContentHashStamp();
   let transactionTime: Time | undefined;
   let finishTransactionMergeableChanges: MergeableChanges | undefined;
   const [getHlc, seenHlc] = getHlcFunctions(id);
@@ -83,87 +83,80 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const preFinishTransaction = () => {
     if (listening) {
       finishTransactionMergeableChanges = getTransactionMergeableChanges();
-      const [
-        time,
-        [[tablesTime, changedTableStamps], [valuesTime, changedValueStamps]],
-      ] = finishTransactionMergeableChanges;
-      const cellsTouched = !objIsEmpty(changedTableStamps);
-      const valuesTouched = !objIsEmpty(changedValueStamps);
+      const [time, [[tablesTime, tableStamps], [valuesTime, valueStamps]]] =
+        finishTransactionMergeableChanges;
+      const cellsTouched = !objIsEmpty(tableStamps);
+      const valuesTouched = !objIsEmpty(valueStamps);
 
-      const [, , [tablesStamp, valuesStamp]] = contentStamp;
+      const [, , [tablesHashStamp, valuesHashStamp]] = contentHashStamp;
       if (cellsTouched) {
-        const [oldTablesHash, oldTablesTime, tableStamps] = tablesStamp;
+        const [oldTablesHash, oldTablesTime, tableHashStamps] = tablesHashStamp;
         let tablesHash =
           getHash(tablesTime) ^
           (oldTablesTime ? oldTablesHash ^ getHash(oldTablesTime) : 0);
-        objToArray(
-          changedTableStamps,
-          ([tableTime, changedRowStamps], tableId) => {
-            let tableHash = getHash(tableTime);
-            const tableStamp = mapEnsure<Id, TableStamp>(
-              tableStamps,
-              tableId,
+        objToArray(tableStamps, ([tableTime, rowStamps], tableId) => {
+          let tableHash = getHash(tableTime);
+          const tableHashStamp = mapEnsure<Id, TableHashStamp>(
+            tableHashStamps,
+            tableId,
+            hashStampNewMap,
+            ([oldTableHash, oldTableTime]) => {
+              tableHash ^= oldTableHash ^ getHash(oldTableTime);
+              tablesHash ^= hashIdAndHash(tableId, oldTableHash);
+            },
+          );
+          objToArray(rowStamps, ([rowTime, cellStamps], rowId) => {
+            let rowHash = getHash(rowTime);
+            const rowHashStamp = mapEnsure<Id, RowHashStamp>(
+              tableHashStamp[2],
+              rowId,
               hashStampNewMap,
-              ([oldTableHash, oldTableTime]) => {
-                tableHash ^= oldTableHash ^ getHash(oldTableTime);
-                tablesHash ^= hashIdAndHash(tableId, oldTableHash);
+              ([oldRowHash, oldRowTime]) => {
+                rowHash ^= oldRowHash ^ getHash(oldRowTime);
+                tableHash ^= hashIdAndHash(rowId, oldRowHash);
               },
             );
-            objToArray(
-              changedRowStamps,
-              ([rowTime, changedCellStamps], rowId) => {
-                let rowHash = getHash(rowTime);
-                const rowStamp = mapEnsure<Id, RowStamp>(
-                  tableStamp[2],
-                  rowId,
-                  hashStampNewMap,
-                  ([oldRowHash, oldRowTime]) => {
-                    rowHash ^= oldRowHash ^ getHash(oldRowTime);
-                    tableHash ^= hashIdAndHash(rowId, oldRowHash);
-                  },
-                );
-                objToArray(
-                  changedCellStamps,
-                  ([cellTime, changedCell], cellId) => {
-                    ifNotUndefined(
-                      mapGet(rowStamp[2], cellId),
-                      ([oldCellHash]) =>
-                        (rowHash ^= hashIdAndHash(cellId, oldCellHash)),
-                    );
-                    const cellStamp = hashStampNewLeaf(cellTime, changedCell);
-                    mapSet(rowStamp[2], cellId, cellStamp);
-                    rowHash ^= hashIdAndHash(cellId, cellStamp[0]);
-                  },
-                );
-                updateHashStamp(rowStamp, rowHash, rowTime);
-                tableHash ^= hashIdAndHash(rowId, rowStamp[0]);
-              },
-            );
-            updateHashStamp(tableStamp, tableHash, tableTime);
-            tablesHash ^= hashIdAndHash(tableId, tableStamp[0]);
-          },
-        );
-        updateHashStamp(tablesStamp, tablesHash, tablesTime);
+            objToArray(cellStamps, ([cellTime, cell], cellId) => {
+              ifNotUndefined(
+                mapGet(rowHashStamp[2], cellId),
+                ([oldCellHash]) =>
+                  (rowHash ^= hashIdAndHash(cellId, oldCellHash)),
+              );
+              const cellHashStamp = hashStampNewLeaf(cellTime, cell);
+              mapSet(rowHashStamp[2], cellId, cellHashStamp);
+              rowHash ^= hashIdAndHash(cellId, cellHashStamp[0]);
+            });
+            updateHashStamp(rowHashStamp, rowHash, rowTime);
+            tableHash ^= hashIdAndHash(rowId, rowHashStamp[0]);
+          });
+          updateHashStamp(tableHashStamp, tableHash, tableTime);
+          tablesHash ^= hashIdAndHash(tableId, tableHashStamp[0]);
+        });
+        updateHashStamp(tablesHashStamp, tablesHash, tablesTime);
       }
       if (valuesTouched) {
-        const [oldValuesHash, oldValuesTime, valueStamps] = valuesStamp;
+        const [oldValuesHash, oldValuesTime, valueHashStamps] = valuesHashStamp;
         let valuesHash =
           getHash(valuesTime) ^
           (oldValuesTime ? oldValuesHash ^ getHash(oldValuesTime) : 0);
-        objToArray(changedValueStamps, ([valueTime, changedValue], valueId) => {
+        objToArray(valueStamps, ([valueTime, value], valueId) => {
           ifNotUndefined(
-            mapGet(valueStamps, valueId),
+            mapGet(valueHashStamps, valueId),
             ([oldValueHash]) =>
               (valuesHash ^= hashIdAndHash(valueId, oldValueHash)),
           );
-          const valueStamp = hashStampNewLeaf(valueTime, changedValue);
-          mapSet(valueStamps, valueId, valueStamp);
-          valuesHash ^= hashIdAndHash(valueId, valueStamp[0]);
+          const valueHashStamp = hashStampNewLeaf(valueTime, value);
+          mapSet(valueHashStamps, valueId, valueHashStamp);
+          valuesHash ^= hashIdAndHash(valueId, valueHashStamp[0]);
         });
-        updateHashStamp(valuesStamp, valuesHash, valuesTime);
+        updateHashStamp(valuesHashStamp, valuesHash, valuesTime);
       }
       if (cellsTouched || valuesTouched) {
-        updateHashStamp(contentStamp, tablesStamp[0] ^ valuesStamp[0], time);
+        updateHashStamp(
+          contentHashStamp,
+          tablesHashStamp[0] ^ valuesHashStamp[0],
+          time,
+        );
       }
     }
   };
@@ -172,7 +165,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     (transactionTime = finishTransactionMergeableChanges = undefined);
 
   const getMergeableContent = (): MergeableContent =>
-    hashStampToStamp(contentStamp, ([tablesStamp, valuesStamp]) => [
+    hashStampToStamp(contentHashStamp, ([tablesStamp, valuesStamp]) => [
       hashStampMapToStampObj(tablesStamp, (rowsStamp) =>
         hashStampMapToStampObj(rowsStamp, (cellsStamp) =>
           hashStampMapToStampObj(cellsStamp, cloneHashStampToStamp),
@@ -185,7 +178,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     disableListening(() =>
       store.transaction(() => {
         store.delTables().delValues();
-        contentStamp = newContentHashStamp();
+        contentHashStamp = newContentHashStamp();
       }),
     );
     applyMergeableChanges(mergeableContent);
@@ -228,40 +221,40 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   };
 
   const applyMergeableChanges = (
-    newContentStamp: MergeableChanges,
+    contentStamp: MergeableChanges,
   ): MergeableStore => {
     const changes: Changes = [{}, {}];
-    seenHlc(newContentStamp[0]);
+    seenHlc(contentStamp[0]);
     mergeStampIntoHashStamp(
-      newContentStamp,
       contentStamp,
+      contentHashStamp,
       changes,
       (
-        [newTablesStamp, newValuesStamp],
         [tablesStamp, valuesStamp],
+        [tablesHashStamp, valuesHashStamp],
         [tablesChanges, valuesChanges],
       ) => {
         mergeStampIntoHashStamp(
-          newTablesStamp,
           tablesStamp,
+          tablesHashStamp,
           tablesChanges,
-          (newTableStamps, tableStamps, tableChanges) =>
+          (tableStamps, tableHashStamps, tableChanges) =>
             mergeStampsIntoHashStamps(
-              newTableStamps,
               tableStamps,
+              tableHashStamps,
               tableChanges,
-              (newRowStamps, rowStamps, rowChanges) =>
+              (rowStamps, rowHashStamps, rowChanges) =>
                 mergeStampsIntoHashStamps(
-                  newRowStamps,
                   rowStamps,
+                  rowHashStamps,
                   rowChanges,
                   mergeLeafStampsIntoHashStamps,
                 ),
             ),
         );
         mergeStampIntoHashStamp(
-          newValuesStamp,
           valuesStamp,
+          valuesHashStamp,
           valuesChanges,
           mergeLeafStampsIntoHashStamps,
         );
@@ -278,26 +271,26 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     return applyMergeableChanges(mergeableContent2);
   };
 
-  const getContentHash = (): Hash => contentStamp[0];
+  const getContentHash = (): Hash => contentHashStamp[0];
 
-  const getTablesHash = (): Hash => contentStamp[2][0][0];
+  const getTablesHash = (): Hash => contentHashStamp[2][0][0];
 
   const getTableHash = (tableId: Id): Hash =>
-    mapGet(contentStamp[2][0][2], tableId)?.[0] ?? 0;
+    mapGet(contentHashStamp[2][0][2], tableId)?.[0] ?? 0;
 
   const getRowHash = (tableId: Id, rowId: Id): Hash =>
-    mapGet(mapGet(contentStamp[2][0][2], tableId)?.[2], rowId)?.[0] ?? 0;
+    mapGet(mapGet(contentHashStamp[2][0][2], tableId)?.[2], rowId)?.[0] ?? 0;
 
   const getCellHash = (tableId: Id, rowId: Id, cellId: Id): Hash =>
     mapGet(
-      mapGet(mapGet(contentStamp[2][0][2], tableId)?.[2], rowId)?.[2],
+      mapGet(mapGet(contentHashStamp[2][0][2], tableId)?.[2], rowId)?.[2],
       cellId,
     )?.[0] ?? 0;
 
-  const getValuesHash = (): Hash => contentStamp[2][1][0];
+  const getValuesHash = (): Hash => contentHashStamp[2][1][0];
 
   const getValueHash = (valueId: Id): Hash =>
-    mapGet(contentStamp[2][1][2], valueId)?.[0] ?? 0;
+    mapGet(contentHashStamp[2][1][2], valueId)?.[0] ?? 0;
 
   const mergeableStore: IdObj<any> = {
     getMergeableContent,
