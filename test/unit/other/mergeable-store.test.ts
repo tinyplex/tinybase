@@ -24,6 +24,17 @@ const permute = (arr: any[]): any[] => {
   return permutations;
 };
 
+const storeHashSamples = (store: MergeableStore) => [
+  store.getContentHash(),
+  store.getTablesHash(),
+  store.getTableHash('t1'),
+  store.getRowHash('t1', 'r1'),
+  store.getCellHash('t1', 'r1', 'c1'),
+  store.getCellHash('t1', 'r1', 'c2'),
+  store.getValuesHash(),
+  store.getValueHash('v1'),
+];
+
 beforeEach(() => jest.useFakeTimers({now: START_TIME}));
 
 afterEach(() => jest.useRealTimers());
@@ -139,6 +150,10 @@ describe('getMergeableContent', () => {
         stamped1(0, 0, {v1: stamped1(0, 0, 4), v2: stamped1(0, 0, 5)}),
       ]),
     );
+    expect(storeHashSamples(store)).toEqual([
+      3180069014, 497979288, 2345604643, 179517432, 2614692414, 4065945599,
+      2686619406, 4060269138,
+    ]);
   });
 
   test('Set in sequence', () => {
@@ -161,6 +176,10 @@ describe('getMergeableContent', () => {
         stamped1(0, 5, {v1: stamped1(0, 4, 4), v2: stamped1(0, 5, 5)}),
       ]),
     );
+    expect(storeHashSamples(store)).toEqual([
+      1676907138, 2517830496, 2385580801, 2800176243, 2614692414, 3207404266,
+      4125137378, 4189032886,
+    ]);
   });
 
   test('Mutate', () => {
@@ -192,6 +211,10 @@ describe('getMergeableContent', () => {
         stamped1(0, 6, {v1: stamped1(0, 5, 5), v2: stamped1(0, 6, undefined)}),
       ]),
     );
+    expect(storeHashSamples(store)).toEqual([
+      4086151961, 405910139, 4266170452, 1300432451, 3207404266, 1517672885,
+      3954968930, 3265694938,
+    ]);
   });
 
   test('Empty transaction', () => {
@@ -199,6 +222,7 @@ describe('getMergeableContent', () => {
     expect(store.getMergeableContent()).toEqual(
       nullStamped([nullStamped({}), nullStamped({})]),
     );
+    expect(storeHashSamples(store)).toEqual([0, 0, 0, 0, 0, 0, 0, 0]);
   });
 });
 
@@ -476,12 +500,14 @@ describe('Merge', () => {
     expect(mergeableContent1).toEqual(noChanges);
     expect(store1.applyMergeableChanges(noChanges)).toEqual(store1);
     expect(store1.getContent()).toEqual([{}, {}]);
+    expect(storeHashSamples(store1)).toEqual([0, 0, 0, 0, 0, 0, 0, 0]);
 
     expect(store2.getContent()).toEqual([{}, {}]);
     const mergeableContent2 = store2.getMergeableContent();
     expect(mergeableContent2).toEqual(noChanges);
     expect(store2.applyMergeableChanges(noChanges)).toEqual(store2);
     expect(store2.getContent()).toEqual([{}, {}]);
+    expect(storeHashSamples(store2)).toEqual([0, 0, 0, 0, 0, 0, 0, 0]);
   });
 
   describe('One way', () => {
@@ -511,6 +537,10 @@ describe('Merge', () => {
           nullStamped({}),
         ]),
       );
+      expect(storeHashSamples(store1)).toEqual([
+        2019606997, 2019606997, 3525211849, 3659283091, 2614692414, 2614692414,
+        0, 0,
+      ]);
 
       store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual([
@@ -532,6 +562,11 @@ describe('Merge', () => {
           nullStamped({}),
         ]),
       );
+      // expect(storeHashSamples(store2)).toEqual([
+      //   2019606997, 2019606997, 3525211849, 3659283091, 2614692414,
+      // 2614692414,
+      //   0, 0,
+      // ]);
     });
 
     test('setCell', () => {
