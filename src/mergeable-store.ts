@@ -15,7 +15,6 @@ import {
   hashStampMapToStampObj,
   hashStampNewMap,
   hashStampToStamp,
-  mergeLeafStampsIntoHashStamps,
   mergeStampIntoHashStamp,
   mergeStampsIntoHashStamps,
   mergeThings,
@@ -24,7 +23,13 @@ import {
   updateHashStamp,
 } from './mergeable-store/stamps';
 import {IdMap, mapEnsure, mapGet} from './common/map';
-import {IdObj, objFreeze, objIsEmpty, objToArray} from './common/obj';
+import {
+  IdObj,
+  objForEach,
+  objFreeze,
+  objIsEmpty,
+  objToArray,
+} from './common/obj';
 import {isUndefined, slice} from './common/other';
 import {Id} from './types/common';
 import {createStore} from './store';
@@ -217,13 +222,16 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
               tableStamps,
               tableHashStamps,
               tableChanges,
-              (rowStamps, rowHashStamps, rowChanges) =>
-                mergeStampsIntoHashStamps(
-                  rowStamps,
-                  rowHashStamps,
-                  rowChanges,
-                  mergeLeafStampsIntoHashStamps,
-                ),
+              (rowStamps, rowHashStamps, rowChanges) => {
+                objForEach(rowStamps, (rowStamp, rowId) => {
+                  const rowHashStamp = mapEnsure<Id, any>(
+                    rowHashStamps,
+                    rowId,
+                    hashStampNewMap,
+                  );
+                  mergeThings(rowStamp, rowHashStamp, (rowChanges[rowId] = {}));
+                });
+              },
             ),
         );
 
