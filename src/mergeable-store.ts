@@ -15,7 +15,6 @@ import {
   hashStampNew,
   hashStampNewMap,
   hashStampToStamp,
-  hashStampUpdateFromMap,
   mergeLeafStampsIntoHashStamps,
   mergeStampIntoHashStamp,
   mergeStampsIntoHashStamps,
@@ -24,10 +23,11 @@ import {
 } from './mergeable-store/stamps';
 import {IdMap, mapEnsure, mapGet, mapSet} from './common/map';
 import {IdObj, objFreeze, objIsEmpty, objToArray} from './common/obj';
-import {isUndefined, slice} from './common/other';
+import {ifNotUndefined, isUndefined, slice} from './common/other';
 import {Id} from './types/common';
 import {createStore} from './store';
 import {getHlcFunctions} from './mergeable-store/hlc';
+import {hash} from './mergeable-store/hash';
 
 const LISTENER_ARGS: IdObj<number> = {
   HasTable: 1,
@@ -87,52 +87,79 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
 
       const [, , [tablesStamp, valuesStamp]] = contentStamp;
       if (cellsTouched) {
-        tablesStamp[1] = tablesTime;
+        const [oldTablesHash, oldTablesTime] = tablesStamp;
+        let tablesHash =
+          hash(tablesTime) ^
+          (oldTablesTime ? oldTablesHash ^ hash(oldTablesTime) : 0);
         objToArray(
           changedTableStamps,
           ([tableTime, changedRowStamps], tableId) => {
+            let tableHash = hash(tableTime);
             const tableStamp = mapEnsure<Id, TableStamp>(
               tablesStamp[2],
               tableId,
               hashStampNewMap,
+              ([oldTableHash, oldTableTime]) => {
+                tableHash ^= oldTableHash ^ hash(oldTableTime);
+                tablesHash ^= hash(tableId + ':' + oldTableHash);
+              },
             );
-            tableStamp[1] = tableTime;
             objToArray(
               changedRowStamps,
               ([rowTime, changedCellStamps], rowId) => {
+                let rowHash = hash(rowTime);
                 const rowStamp = mapEnsure<Id, RowStamp>(
                   tableStamp[2],
                   rowId,
                   hashStampNewMap,
+                  ([oldRowHash, oldRowTime]) => {
+                    rowHash ^= oldRowHash ^ hash(oldRowTime);
+                    tableHash ^= hash(rowId + ':' + oldRowHash);
+                  },
                 );
-                rowStamp[1] = rowTime;
                 objToArray(
                   changedCellStamps,
-                  ([cellTime, changedCell], cellId) =>
-                    mapSet(
-                      rowStamp[2],
-                      cellId,
-                      hashStampNew(cellTime, changedCell),
-                    ),
+                  ([cellTime, changedCell], cellId) => {
+                    ifNotUndefined(
+                      mapGet(rowStamp[2], cellId),
+                      ([oldCellHash]) =>
+                        (rowHash ^= hash(cellId + ':' + oldCellHash)),
+                    );
+                    const cellStamp = hashStampNew(cellTime, changedCell);
+                    mapSet(rowStamp[2], cellId, cellStamp);
+                    rowHash ^= hash(cellId + ':' + cellStamp[0]);
+                  },
                 );
-                hashStampUpdateFromMap(rowStamp);
+                rowStamp[0] = rowHash >>> 0;
+                rowStamp[1] = rowTime;
+                tableHash ^= hash(rowId + ':' + rowStamp[0]);
               },
             );
-            hashStampUpdateFromMap(tableStamp);
+            tableStamp[0] = tableHash >>> 0;
+            tableStamp[1] = tableTime;
+            tablesHash ^= hash(tableId + ':' + tableStamp[0]);
           },
         );
-        hashStampUpdateFromMap(tablesStamp);
+        tablesStamp[0] = tablesHash >>> 0;
+        tablesStamp[1] = tablesTime;
       }
       if (valuesTouched) {
+        const [oldValuesHash, oldValuesTime] = valuesStamp;
+        let valuesHash =
+          hash(valuesTime) ^
+          (oldValuesTime ? oldValuesHash ^ hash(oldValuesTime) : 0);
+        objToArray(changedValueStamps, ([valueTime, changedValue], valueId) => {
+          ifNotUndefined(
+            mapGet(valuesStamp[2], valueId),
+            ([oldValueHash]) =>
+              (valuesHash ^= hash(valueId + ':' + oldValueHash)),
+          );
+          const valueStamp = hashStampNew(valueTime, changedValue);
+          mapSet(valuesStamp[2], valueId, valueStamp);
+          valuesHash ^= hash(valueId + ':' + valueStamp[0]);
+        });
+        valuesStamp[0] = valuesHash >>> 0;
         valuesStamp[1] = valuesTime;
-        objToArray(changedValueStamps, ([valueTime, changedValue], valueId) =>
-          mapSet(
-            valuesStamp[2],
-            valueId,
-            hashStampNew(valueTime, changedValue),
-          ),
-        );
-        hashStampUpdateFromMap(valuesStamp);
       }
       if (cellsTouched || valuesTouched) {
         contentStamp[0] = (tablesStamp[0] ^ valuesStamp[0]) >>> 0;

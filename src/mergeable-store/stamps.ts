@@ -1,5 +1,5 @@
 import {Hash, Stamp, Time} from '../types/mergeable-store';
-import {IdMap, mapEnsure, mapForEach, mapNew, mapToObj} from '../common/map';
+import {IdMap, mapEnsure, mapNew, mapToObj} from '../common/map';
 import {IdObj, objForEach, objNew} from '../common/obj';
 import {EMPTY_STRING} from '../common/strings';
 import {Id} from '../types/common';
@@ -16,7 +16,7 @@ export const stampNew = <Thing>(time: Time, thing?: Thing): Stamp<Thing> => [
 ];
 
 export const hashStampNew = <Thing>(
-  time: Time,
+  time: Time = EMPTY_STRING,
   thing?: Thing,
 ): HashStamp<Thing> => [
   isUndefined(getCellOrValueType(thing))
@@ -25,16 +25,6 @@ export const hashStampNew = <Thing>(
   time,
   thing as Thing,
 ];
-
-export const hashStampUpdateFromMap = <Thing>(
-  hashStamp: HashStamp<IdMap<HashStamp<Thing>>>,
-): void => {
-  let outerHash = hash(hashStamp[1]);
-  mapForEach(hashStamp[2], (id, [innerHash]) => {
-    outerHash ^= hash(id + ':' + innerHash);
-  });
-  hashStamp[0] = outerHash >>> 0;
-};
 
 export const stampNewObj = <Thing>(time: Time): Stamp<IdObj<Thing>> =>
   stampNew(time, objNew<Thing>());
