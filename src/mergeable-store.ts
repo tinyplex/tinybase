@@ -19,6 +19,7 @@ import {
   mergeLeafStampsIntoHashStamps,
   mergeStampIntoHashStamp,
   mergeStampsIntoHashStamps,
+  mergeValues,
   stampNew,
   stampNewObj,
   updateHashStamp,
@@ -83,12 +84,12 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const preFinishTransaction = () => {
     if (listening) {
       finishTransactionMergeableChanges = getTransactionMergeableChanges();
-      const [time, [[tablesTime, tableStamps], [valuesTime, valueStamps]]] =
+      const [contentTime, [[tablesTime, tableStamps], valuesStamp]] =
         finishTransactionMergeableChanges;
       const cellsTouched = !objIsEmpty(tableStamps);
-      const valuesTouched = !objIsEmpty(valueStamps);
 
-      const [, , [tablesHashStamp, valuesHashStamp]] = contentHashStamp;
+      const [, oldContentTime, [tablesHashStamp, valuesHashStamp]] =
+        contentHashStamp;
       if (cellsTouched) {
         const [oldTablesHash, oldTablesTime, tableHashStamps] = tablesHashStamp;
         let tablesHash =
@@ -134,28 +135,14 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
         });
         updateHashStamp(tablesHashStamp, tablesHash, tablesTime);
       }
-      if (valuesTouched) {
-        const [oldValuesHash, oldValuesTime, valueHashStamps] = valuesHashStamp;
-        let valuesHash =
-          getHash(valuesTime) ^
-          (oldValuesTime ? oldValuesHash ^ getHash(oldValuesTime) : 0);
-        objToArray(valueStamps, ([valueTime, value], valueId) => {
-          ifNotUndefined(
-            mapGet(valueHashStamps, valueId),
-            ([oldValueHash]) =>
-              (valuesHash ^= hashIdAndHash(valueId, oldValueHash)),
-          );
-          const valueHashStamp = hashStampNewLeaf(valueTime, value);
-          mapSet(valueHashStamps, valueId, valueHashStamp);
-          valuesHash ^= hashIdAndHash(valueId, valueHashStamp[0]);
-        });
-        updateHashStamp(valuesHashStamp, valuesHash, valuesTime);
-      }
-      if (cellsTouched || valuesTouched) {
+
+      mergeValues(valuesStamp, valuesHashStamp);
+
+      if (contentTime > oldContentTime) {
         updateHashStamp(
           contentHashStamp,
           tablesHashStamp[0] ^ valuesHashStamp[0],
-          time,
+          contentTime,
         );
       }
     }
@@ -252,12 +239,8 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
                 ),
             ),
         );
-        mergeStampIntoHashStamp(
-          valuesStamp,
-          valuesHashStamp,
-          valuesChanges,
-          mergeLeafStampsIntoHashStamps,
-        );
+
+        mergeValues(valuesStamp, valuesHashStamp, valuesChanges);
       },
     );
     disableListening(() => store.applyChanges(changes));
