@@ -91,19 +91,6 @@ export const mergeStampIntoHashStamp = <NewThing, Thing>(
   merge(newThing, hashStamp[2], changes);
 };
 
-export const mergeLeafStampsIntoHashStamps = <Leaf>(
-  stamps: IdObj<Stamp<Leaf | undefined>>,
-  hashStamps: IdMap<HashStamp<Leaf | undefined>>,
-  changes: any,
-): void =>
-  objForEach(stamps, ([newTime, newLeaf], leafId) => {
-    const hashStamp = mapEnsure<Id, any>(hashStamps, leafId, hashStampNewMap);
-    if (newTime > hashStamp[1]) {
-      hashStamp[1] = newTime;
-      hashStamp[2] = changes[leafId] = newLeaf;
-    }
-  });
-
 export const mergeThings = <Thing extends CellOrUndefined | ValueOrUndefined>(
   thingsStamp: Stamp<IdObj<Stamp<Thing>>>,
   thingsHashStamp: HashStamp<IdMap<HashStamp<Thing>>>,
