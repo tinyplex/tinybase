@@ -15,7 +15,7 @@ export const stampNew = <Thing>(time: Time, thing?: Thing): Stamp<Thing> => [
   thing as Thing,
 ];
 
-export const hashIdHashPair = (id: Id, hash: Hash) => getHash(id + ':' + hash);
+export const hashIdAndHash = (id: Id, hash: Hash) => getHash(id + ':' + hash);
 
 export const hashStampNew = <Thing>(
   time: Time = EMPTY_STRING,
