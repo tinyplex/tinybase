@@ -28,6 +28,15 @@ export const hashStampNew = <Thing>(
   thing as Thing,
 ];
 
+export const updateHashStamp = (
+  stamp: HashStamp<unknown>,
+  hash: Hash,
+  time: Time,
+) => {
+  stamp[0] = hash >>> 0;
+  stamp[1] = time;
+};
+
 export const stampNewObj = <Thing>(time: Time): Stamp<IdObj<Thing>> =>
   stampNew(time, objNew<Thing>());
 
