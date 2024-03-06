@@ -11,7 +11,7 @@ import {
 import {
   HashStamp,
   cloneHashStampToStamp,
-  hashIdHashPair,
+  hashIdAndHash,
   hashStampMapToStampObj,
   hashStampNew,
   hashStampNewMap,
@@ -103,7 +103,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
               hashStampNewMap,
               ([oldTableHash, oldTableTime]) => {
                 tableHash ^= oldTableHash ^ getHash(oldTableTime);
-                tablesHash ^= hashIdHashPair(tableId, oldTableHash);
+                tablesHash ^= hashIdAndHash(tableId, oldTableHash);
               },
             );
             objToArray(
@@ -116,7 +116,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
                   hashStampNewMap,
                   ([oldRowHash, oldRowTime]) => {
                     rowHash ^= oldRowHash ^ getHash(oldRowTime);
-                    tableHash ^= hashIdHashPair(rowId, oldRowHash);
+                    tableHash ^= hashIdAndHash(rowId, oldRowHash);
                   },
                 );
                 objToArray(
@@ -125,19 +125,19 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
                     ifNotUndefined(
                       mapGet(rowStamp[2], cellId),
                       ([oldCellHash]) =>
-                        (rowHash ^= hashIdHashPair(cellId, oldCellHash)),
+                        (rowHash ^= hashIdAndHash(cellId, oldCellHash)),
                     );
                     const cellStamp = hashStampNew(cellTime, changedCell);
                     mapSet(rowStamp[2], cellId, cellStamp);
-                    rowHash ^= hashIdHashPair(cellId, cellStamp[0]);
+                    rowHash ^= hashIdAndHash(cellId, cellStamp[0]);
                   },
                 );
                 updateHashStamp(rowStamp, rowHash, rowTime);
-                tableHash ^= hashIdHashPair(rowId, rowStamp[0]);
+                tableHash ^= hashIdAndHash(rowId, rowStamp[0]);
               },
             );
             updateHashStamp(tableStamp, tableHash, tableTime);
-            tablesHash ^= hashIdHashPair(tableId, tableStamp[0]);
+            tablesHash ^= hashIdAndHash(tableId, tableStamp[0]);
           },
         );
         updateHashStamp(tablesStamp, tablesHash, tablesTime);
@@ -151,11 +151,11 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
           ifNotUndefined(
             mapGet(valueStamps, valueId),
             ([oldValueHash]) =>
-              (valuesHash ^= hashIdHashPair(valueId, oldValueHash)),
+              (valuesHash ^= hashIdAndHash(valueId, oldValueHash)),
           );
           const valueStamp = hashStampNew(valueTime, changedValue);
           mapSet(valueStamps, valueId, valueStamp);
-          valuesHash ^= hashIdHashPair(valueId, valueStamp[0]);
+          valuesHash ^= hashIdAndHash(valueId, valueStamp[0]);
         });
         updateHashStamp(valuesStamp, valuesHash, valuesTime);
       }
