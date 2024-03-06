@@ -4,7 +4,7 @@ import {IdObj, objForEach, objNew} from '../common/obj';
 import {EMPTY_STRING} from '../common/strings';
 import {Id} from '../types/common';
 import {getCellOrValueType} from '../common/cell';
-import {hash} from './hash';
+import {getHash} from './hash';
 import {isUndefined} from '../common/other';
 import {jsonString} from '../common/json';
 
@@ -15,13 +15,15 @@ export const stampNew = <Thing>(time: Time, thing?: Thing): Stamp<Thing> => [
   thing as Thing,
 ];
 
+export const hashIdHashPair = (id: Id, hash: Hash) => getHash(id + ':' + hash);
+
 export const hashStampNew = <Thing>(
   time: Time = EMPTY_STRING,
   thing?: Thing,
 ): HashStamp<Thing> => [
   isUndefined(getCellOrValueType(thing))
     ? 0
-    : hash(jsonString(thing) + ':' + time),
+    : getHash(jsonString(thing) + ':' + time),
   time,
   thing as Thing,
 ];
