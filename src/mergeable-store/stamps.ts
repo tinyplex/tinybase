@@ -3,9 +3,7 @@ import {IdMap, mapEnsure, mapNew, mapToObj} from '../common/map';
 import {IdObj, objForEach, objNew} from '../common/obj';
 import {EMPTY_STRING} from '../common/strings';
 import {Id} from '../types/common';
-import {getCellOrValueType} from '../common/cell';
 import {getHash} from './hash';
-import {isUndefined} from '../common/other';
 import {jsonString} from '../common/json';
 
 export type HashStamp<Thing> = [hash: Hash, time: Time, thing: Thing];
@@ -17,16 +15,12 @@ export const stampNew = <Thing>(time: Time, thing?: Thing): Stamp<Thing> => [
 
 export const hashIdAndHash = (id: Id, hash: Hash) => getHash(id + ':' + hash);
 
-export const hashStampNew = <Thing>(
+export const hashStampNewLeaf = <Leaf>(
   time: Time,
-  thing?: Thing,
-): HashStamp<Thing> => [
-  isUndefined(getCellOrValueType(thing))
-    ? 0
-    : getHash(jsonString(thing) + ':' + time),
-  time,
-  thing as Thing,
-];
+  thing?: Leaf,
+): HashStamp<Leaf> => {
+  return [getHash(jsonString(thing ?? null) + ':' + time), time, thing as Leaf];
+};
 
 export const updateHashStamp = (
   stamp: HashStamp<unknown>,
