@@ -11,6 +11,7 @@ import {
 import {
   HashStamp,
   cloneHashStampToStamp,
+  hashIdHashPair,
   hashStampMapToStampObj,
   hashStampNew,
   hashStampNewMap,
@@ -26,8 +27,8 @@ import {IdObj, objFreeze, objIsEmpty, objToArray} from './common/obj';
 import {ifNotUndefined, isUndefined, slice} from './common/other';
 import {Id} from './types/common';
 import {createStore} from './store';
+import {getHash} from './mergeable-store/hash';
 import {getHlcFunctions} from './mergeable-store/hlc';
-import {hash} from './mergeable-store/hash';
 
 const LISTENER_ARGS: IdObj<number> = {
   HasTable: 1,
@@ -89,32 +90,32 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
       if (cellsTouched) {
         const [oldTablesHash, oldTablesTime] = tablesStamp;
         let tablesHash =
-          hash(tablesTime) ^
-          (oldTablesTime ? oldTablesHash ^ hash(oldTablesTime) : 0);
+          getHash(tablesTime) ^
+          (oldTablesTime ? oldTablesHash ^ getHash(oldTablesTime) : 0);
         objToArray(
           changedTableStamps,
           ([tableTime, changedRowStamps], tableId) => {
-            let tableHash = hash(tableTime);
+            let tableHash = getHash(tableTime);
             const tableStamp = mapEnsure<Id, TableStamp>(
               tablesStamp[2],
               tableId,
               hashStampNewMap,
               ([oldTableHash, oldTableTime]) => {
-                tableHash ^= oldTableHash ^ hash(oldTableTime);
-                tablesHash ^= hash(tableId + ':' + oldTableHash);
+                tableHash ^= oldTableHash ^ getHash(oldTableTime);
+                tablesHash ^= hashIdHashPair(tableId, oldTableHash);
               },
             );
             objToArray(
               changedRowStamps,
               ([rowTime, changedCellStamps], rowId) => {
-                let rowHash = hash(rowTime);
+                let rowHash = getHash(rowTime);
                 const rowStamp = mapEnsure<Id, RowStamp>(
                   tableStamp[2],
                   rowId,
                   hashStampNewMap,
                   ([oldRowHash, oldRowTime]) => {
-                    rowHash ^= oldRowHash ^ hash(oldRowTime);
-                    tableHash ^= hash(rowId + ':' + oldRowHash);
+                    rowHash ^= oldRowHash ^ getHash(oldRowTime);
+                    tableHash ^= hashIdHashPair(rowId, oldRowHash);
                   },
                 );
                 objToArray(
@@ -123,21 +124,21 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
                     ifNotUndefined(
                       mapGet(rowStamp[2], cellId),
                       ([oldCellHash]) =>
-                        (rowHash ^= hash(cellId + ':' + oldCellHash)),
+                        (rowHash ^= hashIdHashPair(cellId, oldCellHash)),
                     );
                     const cellStamp = hashStampNew(cellTime, changedCell);
                     mapSet(rowStamp[2], cellId, cellStamp);
-                    rowHash ^= hash(cellId + ':' + cellStamp[0]);
+                    rowHash ^= hashIdHashPair(cellId, cellStamp[0]);
                   },
                 );
                 rowStamp[0] = rowHash >>> 0;
                 rowStamp[1] = rowTime;
-                tableHash ^= hash(rowId + ':' + rowStamp[0]);
+                tableHash ^= hashIdHashPair(rowId, rowStamp[0]);
               },
             );
             tableStamp[0] = tableHash >>> 0;
             tableStamp[1] = tableTime;
-            tablesHash ^= hash(tableId + ':' + tableStamp[0]);
+            tablesHash ^= hashIdHashPair(tableId, tableStamp[0]);
           },
         );
         tablesStamp[0] = tablesHash >>> 0;
@@ -146,17 +147,17 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
       if (valuesTouched) {
         const [oldValuesHash, oldValuesTime] = valuesStamp;
         let valuesHash =
-          hash(valuesTime) ^
-          (oldValuesTime ? oldValuesHash ^ hash(oldValuesTime) : 0);
+          getHash(valuesTime) ^
+          (oldValuesTime ? oldValuesHash ^ getHash(oldValuesTime) : 0);
         objToArray(changedValueStamps, ([valueTime, changedValue], valueId) => {
           ifNotUndefined(
             mapGet(valuesStamp[2], valueId),
             ([oldValueHash]) =>
-              (valuesHash ^= hash(valueId + ':' + oldValueHash)),
+              (valuesHash ^= hashIdHashPair(valueId, oldValueHash)),
           );
           const valueStamp = hashStampNew(valueTime, changedValue);
           mapSet(valuesStamp[2], valueId, valueStamp);
-          valuesHash ^= hash(valueId + ':' + valueStamp[0]);
+          valuesHash ^= hashIdHashPair(valueId, valueStamp[0]);
         });
         valuesStamp[0] = valuesHash >>> 0;
         valuesStamp[1] = valuesTime;
