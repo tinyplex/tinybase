@@ -1,9 +1,18 @@
-import {Hash, Stamp, Time} from '../types/mergeable-store';
-import {IdMap, mapEnsure, mapNew, mapToObj} from '../common/map';
-import {IdObj, objForEach, objNew} from '../common/obj';
+import {Hash, MergeableValues, Stamp, Time} from '../types/mergeable-store';
+import {
+  IdMap,
+  mapEnsure,
+  mapGet,
+  mapNew,
+  mapSet,
+  mapToObj,
+} from '../common/map';
+import {IdObj, objForEach, objNew, objToArray} from '../common/obj';
 import {EMPTY_STRING} from '../common/strings';
 import {Id} from '../types/common';
+import {ValueOrUndefined} from '../types/store';
 import {getHash} from './hash';
+import {ifNotUndefined} from '../common/other';
 import {jsonString} from '../common/json';
 
 export type HashStamp<Thing> = [hash: Hash, time: Time, thing: Thing];
@@ -94,3 +103,34 @@ export const mergeLeafStampsIntoHashStamps = <Leaf>(
       hashStamp[2] = changes[leafId] = newLeaf;
     }
   });
+
+export const mergeValues = (
+  valuesStamp: MergeableValues,
+  valuesHashStamp: HashStamp<IdMap<HashStamp<ValueOrUndefined>>>,
+  valuesChanges: {[valueId: Id]: ValueOrUndefined} = {},
+) => {
+  const [valuesTime, valueStamps] = valuesStamp;
+  const [oldValuesHash, oldValuesTime, valueHashStamps] = valuesHashStamp;
+  let valuesHash =
+    getHash(valuesTime) ^
+    (oldValuesTime ? oldValuesHash ^ getHash(oldValuesTime) : 0);
+  objToArray(valueStamps, ([valueTime, value], valueId) => {
+    if (
+      !ifNotUndefined(
+        mapGet(valueHashStamps, valueId),
+        ([oldValueHash, oldValueTime]) => {
+          valuesHash ^= hashIdAndHash(valueId, oldValueHash);
+          return valueTime < oldValueTime;
+        },
+      )
+    ) {
+      const valueHashStamp = hashStampNewLeaf(valueTime, value);
+      mapSet(valueHashStamps, valueId, valueHashStamp);
+      valuesChanges[valueId] = value;
+      valuesHash ^= hashIdAndHash(valueId, valueHashStamp[0]);
+    }
+  });
+  if (valuesTime > oldValuesTime) {
+    updateHashStamp(valuesHashStamp, valuesHash, valuesTime);
+  }
+};
