@@ -222,7 +222,9 @@ describe('getMergeableContent', () => {
     expect(store.getMergeableContent()).toEqual(
       nullStamped([nullStamped({}), nullStamped({})]),
     );
-    expect(storeHashSamples(store)).toEqual([0, 0, 0, 0, 0, 0, 0, 0]);
+    expect(storeHashSamples(store)).toEqual([
+      0, 2166136261, 0, 0, 0, 0, 2166136261, 0,
+    ]);
   });
 });
 
@@ -500,14 +502,18 @@ describe('Merge', () => {
     expect(mergeableContent1).toEqual(noChanges);
     expect(store1.applyMergeableChanges(noChanges)).toEqual(store1);
     expect(store1.getContent()).toEqual([{}, {}]);
-    expect(storeHashSamples(store1)).toEqual([0, 0, 0, 0, 0, 0, 0, 0]);
+    expect(storeHashSamples(store1)).toEqual([
+      0, 2166136261, 0, 0, 0, 0, 2166136261, 0,
+    ]);
 
     expect(store2.getContent()).toEqual([{}, {}]);
     const mergeableContent2 = store2.getMergeableContent();
     expect(mergeableContent2).toEqual(noChanges);
     expect(store2.applyMergeableChanges(noChanges)).toEqual(store2);
     expect(store2.getContent()).toEqual([{}, {}]);
-    expect(storeHashSamples(store2)).toEqual([0, 0, 0, 0, 0, 0, 0, 0]);
+    expect(storeHashSamples(store2)).toEqual([
+      0, 2166136261, 0, 0, 0, 0, 2166136261, 0,
+    ]);
   });
 
   describe('One way', () => {
@@ -538,8 +544,8 @@ describe('Merge', () => {
         ]),
       );
       expect(storeHashSamples(store1)).toEqual([
-        2019606997, 2019606997, 3525211849, 3659283091, 2614692414, 2614692414,
-        0, 0,
+        4185676816, 2019606997, 3525211849, 3659283091, 2614692414, 2614692414,
+        2166136261, 0,
       ]);
 
       store2.applyMergeableChanges(store1.getMergeableContent());
@@ -1374,9 +1380,9 @@ describe('Hashing', () => {
   test('getContentHash', () => {
     expect(store.getContentHash()).toEqual(697504984);
     store.setCell('t1', 'r1', 'c1', 2);
-    expect(store.getContentHash()).toEqual(1058001114);
+    expect(store.getContentHash()).toEqual(826237279);
     store.setValue('v1', 6);
-    expect(store.getContentHash()).toEqual(4221178835);
+    expect(store.getContentHash()).toEqual(3781906926);
   });
 
   test('getTablesHash', () => {
