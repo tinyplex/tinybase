@@ -5,6 +5,7 @@ import {
   MergeableChanges,
   MergeableContent,
   MergeableStore,
+  Stamp,
   Time,
   createMergeableStore as createMergeableStoreDecl,
 } from './types/mergeable-store';
@@ -15,12 +16,11 @@ import {
   hashStampMapToStampObj,
   hashStampNewMap,
   hashStampToStamp,
-  mergeCellsOrValues,
   stampNew,
   stampNewObj,
   updateHashStamp,
 } from './mergeable-store/stamps';
-import {IdMap, mapEnsure, mapGet} from './common/map';
+import {IdMap, mapEnsure, mapGet, mapSet} from './common/map';
 import {
   IdObj,
   objEnsure,
@@ -30,11 +30,12 @@ import {
   objNew,
   objToArray,
 } from './common/obj';
-import {isUndefined, slice} from './common/other';
+import {ifNotUndefined, isUndefined, slice} from './common/other';
 import {Id} from './types/common';
 import {createStore} from './store';
 import {getHash} from './mergeable-store/hash';
 import {getHlcFunctions} from './mergeable-store/hlc';
+import {jsonString} from './common/json';
 
 const LISTENER_ARGS: IdObj<number> = {
   HasTable: 1,
@@ -145,6 +146,40 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     );
 
     return [tablesChanges, valuesChanges];
+  };
+
+  const mergeCellsOrValues = <Thing extends CellOrUndefined | ValueOrUndefined>(
+    thingsStamp: Stamp<IdObj<Stamp<Thing>>>,
+    thingsHashStamp: HashStamp<IdMap<HashStamp<Thing>>>,
+    thingsChanges: {[thingId: Id]: Thing} = {},
+  ) => {
+    const [thingsTime, thingStamps] = thingsStamp;
+    const [oldThingsHash, oldThingsTime, thingHashStamps] = thingsHashStamp;
+    let thingsHash =
+      getHash(thingsTime) ^
+      (oldThingsTime ? oldThingsHash ^ getHash(oldThingsTime) : 0);
+    objToArray(thingStamps, ([thingTime, thing], thingId) => {
+      if (
+        !ifNotUndefined(
+          mapGet(thingHashStamps, thingId),
+          ([oldThingHash, oldThingTime]) => {
+            thingsHash ^= hashIdAndHash(thingId, oldThingHash);
+            return thingTime < oldThingTime;
+          },
+        )
+      ) {
+        const thingHashStamp: HashStamp<Thing> = [
+          getHash(jsonString(thing ?? null) + ':' + thingTime),
+          thingTime,
+          thing,
+        ];
+        mapSet(thingHashStamps, thingId, thingHashStamp);
+        thingsChanges[thingId] = thing;
+        thingsHash ^= hashIdAndHash(thingId, thingHashStamp[0]);
+      }
+    });
+
+    updateHashStamp(thingsHashStamp, thingsHash, thingsTime);
   };
 
   const preFinishTransaction = () => {
