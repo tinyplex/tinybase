@@ -25,12 +25,14 @@ export const hashStampNewLeaf = <Leaf>(
 };
 
 export const updateHashStamp = (
-  stamp: HashStamp<unknown>,
+  hashStamp: HashStamp<unknown>,
   hash: Hash,
   time: Time,
 ) => {
-  stamp[0] = hash >>> 0;
-  stamp[1] = time;
+  hashStamp[0] = hash >>> 0;
+  if (time > hashStamp[1]) {
+    hashStamp[1] = time;
+  }
 };
 
 export const stampNewObj = <Thing>(time: Time): Stamp<IdObj<Thing>> =>
@@ -57,10 +59,12 @@ export const hashStampMapToStampObj = <From, To = From>(
 ): Stamp<IdObj<To>> =>
   hashStampToStamp(hashStampMap, (map) => mapToObj(map, mapper));
 
-export const mergeThings = <Thing extends CellOrUndefined | ValueOrUndefined>(
+export const mergeCellsOrValues = <
+  Thing extends CellOrUndefined | ValueOrUndefined,
+>(
   thingsStamp: Stamp<IdObj<Stamp<Thing>>>,
   thingsHashStamp: HashStamp<IdMap<HashStamp<Thing>>>,
-  thingsChanges: {[valueId: Id]: Thing} = {},
+  thingsChanges: {[thingId: Id]: Thing} = {},
 ) => {
   const [thingsTime, thingStamps] = thingsStamp;
   const [oldThingsHash, oldThingsTime, thingHashStamps] = thingsHashStamp;
@@ -83,7 +87,6 @@ export const mergeThings = <Thing extends CellOrUndefined | ValueOrUndefined>(
       thingsHash ^= hashIdAndHash(thingId, thingHashStamp[0]);
     }
   });
-  if (thingsTime > oldThingsTime) {
-    updateHashStamp(thingsHashStamp, thingsHash, thingsTime);
-  }
+
+  updateHashStamp(thingsHashStamp, thingsHash, thingsTime);
 };
