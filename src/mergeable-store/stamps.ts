@@ -1,14 +1,7 @@
 import {CellOrUndefined, ValueOrUndefined} from '../types/store';
 import {Hash, Stamp, Time} from '../types/mergeable-store';
-import {
-  IdMap,
-  mapEnsure,
-  mapGet,
-  mapNew,
-  mapSet,
-  mapToObj,
-} from '../common/map';
-import {IdObj, objForEach, objNew, objToArray} from '../common/obj';
+import {IdMap, mapGet, mapNew, mapSet, mapToObj} from '../common/map';
+import {IdObj, objNew, objToArray} from '../common/obj';
 import {EMPTY_STRING} from '../common/strings';
 import {Id} from '../types/common';
 import {getHash} from './hash';
@@ -63,33 +56,6 @@ export const hashStampMapToStampObj = <From, To = From>(
   mapper: (mapValue: From) => To,
 ): Stamp<IdObj<To>> =>
   hashStampToStamp(hashStampMap, (map) => mapToObj(map, mapper));
-
-export const mergeStampsIntoHashStamps = <NewThing, Thing>(
-  stamps: IdObj<Stamp<NewThing>>,
-  hashStamps: IdMap<HashStamp<Thing>>,
-  changes: any,
-  merge: (newThing: NewThing, thing: Thing, changes: any) => void,
-): void =>
-  objForEach(stamps, (stamp, thingId) =>
-    mergeStampIntoHashStamp(
-      stamp,
-      mapEnsure<Id, any>(hashStamps, thingId, hashStampNewMap),
-      (changes[thingId] = objNew()),
-      merge,
-    ),
-  );
-
-export const mergeStampIntoHashStamp = <NewThing, Thing>(
-  [newTime, newThing]: Stamp<NewThing>,
-  hashStamp: HashStamp<Thing>,
-  changes: any,
-  merge: (newThing: NewThing, thing: Thing, changes: any) => void,
-): void => {
-  if (newTime > hashStamp[1]) {
-    hashStamp[1] = newTime;
-  }
-  merge(newThing, hashStamp[2], changes);
-};
 
 export const mergeThings = <Thing extends CellOrUndefined | ValueOrUndefined>(
   thingsStamp: Stamp<IdObj<Stamp<Thing>>>,
