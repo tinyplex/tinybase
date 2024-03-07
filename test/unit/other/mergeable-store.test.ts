@@ -543,30 +543,10 @@ describe('Merge', () => {
       ]);
 
       store2.applyMergeableChanges(store1.getMergeableContent());
-      expect(store2.getContent()).toEqual([
-        {t1: {r1: {c1: 0, c2: 0}, r2: {c1: 0}}, t2: {r1: {c1: 0}}},
-        {},
-      ]);
+      expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
-        stamped1(0, 0, [
-          stamped1(0, 0, {
-            t1: stamped1(0, 0, {
-              r1: stamped1(0, 0, {
-                c1: stamped1(0, 0, 0),
-                c2: stamped1(0, 0, 0),
-              }),
-              r2: stamped1(0, 0, {c1: stamped1(0, 0, 0)}),
-            }),
-            t2: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 0)})}),
-          }),
-          nullStamped({}),
-        ]),
+        store1.getMergeableContent(),
       );
-      // expect(storeHashSamples(store2)).toEqual([
-      //   2019606997, 2019606997, 3525211849, 3659283091, 2614692414,
-      // 2614692414,
-      //   0, 0,
-      // ]);
     });
 
     test('setCell', () => {
@@ -588,24 +568,9 @@ describe('Merge', () => {
       );
 
       store2.applyMergeableChanges(store1.getMergeableContent());
-      expect(store2.getContent()).toEqual([
-        {t1: {r1: {c1: 1, c2: 0}, r2: {c1: 0}}, t2: {r1: {c1: 0}}},
-        {},
-      ]);
+      expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
-        stamped1(0, 1, [
-          stamped1(0, 1, {
-            t1: stamped1(0, 1, {
-              r1: stamped1(0, 1, {
-                c1: stamped1(0, 1, 1),
-                c2: stamped1(0, 0, 0),
-              }),
-              r2: stamped1(0, 0, {c1: stamped1(0, 0, 0)}),
-            }),
-            t2: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 0)})}),
-          }),
-          nullStamped({}),
-        ]),
+        store1.getMergeableContent(),
       );
     });
 
@@ -628,24 +593,9 @@ describe('Merge', () => {
       );
 
       store2.applyMergeableChanges(store1.getMergeableContent());
-      expect(store2.getContent()).toEqual([
-        {t1: {r1: {c1: 1}, r2: {c1: 0}}, t2: {r1: {c1: 0}}},
-        {},
-      ]);
+      expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
-        stamped1(0, 2, [
-          stamped1(0, 2, {
-            t1: stamped1(0, 2, {
-              r1: stamped1(0, 2, {
-                c1: stamped1(0, 1, 1),
-                c2: stamped1(0, 2, undefined),
-              }),
-              r2: stamped1(0, 0, {c1: stamped1(0, 0, 0)}),
-            }),
-            t2: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 0)})}),
-          }),
-          nullStamped({}),
-        ]),
+        store1.getMergeableContent(),
       );
     });
 
@@ -668,24 +618,9 @@ describe('Merge', () => {
       );
 
       store2.applyMergeableChanges(store1.getMergeableContent());
-      expect(store2.getContent()).toEqual([
-        {t1: {r1: {c1: 1}}, t2: {r1: {c1: 0}}},
-        {},
-      ]);
+      expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
-        stamped1(0, 3, [
-          stamped1(0, 3, {
-            t1: stamped1(0, 3, {
-              r1: stamped1(0, 2, {
-                c1: stamped1(0, 1, 1),
-                c2: stamped1(0, 2, undefined),
-              }),
-              r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
-            }),
-            t2: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 0)})}),
-          }),
-          nullStamped({}),
-        ]),
+        store1.getMergeableContent(),
       );
     });
 
@@ -710,23 +645,9 @@ describe('Merge', () => {
       );
 
       store2.applyMergeableChanges(store1.getMergeableContent());
-      expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {}]);
+      expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
-        stamped1(0, 4, [
-          stamped1(0, 4, {
-            t1: stamped1(0, 3, {
-              r1: stamped1(0, 2, {
-                c1: stamped1(0, 1, 1),
-                c2: stamped1(0, 2, undefined),
-              }),
-              r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
-            }),
-            t2: stamped1(0, 4, {
-              r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
-            }),
-          }),
-          nullStamped({}),
-        ]),
+        store1.getMergeableContent(),
       );
     });
 
@@ -752,27 +673,9 @@ describe('Merge', () => {
       );
 
       store2.applyMergeableChanges(store1.getMergeableContent());
-      expect(store2.getContent()).toEqual([
-        {t1: {r1: {c1: 1}}, t2: {r2: {c2: 2}}},
-        {},
-      ]);
+      expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
-        stamped1(0, 5, [
-          stamped1(0, 5, {
-            t1: stamped1(0, 3, {
-              r1: stamped1(0, 2, {
-                c1: stamped1(0, 1, 1),
-                c2: stamped1(0, 2, undefined),
-              }),
-              r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
-            }),
-            t2: stamped1(0, 5, {
-              r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
-              r2: stamped1(0, 5, {c2: stamped1(0, 5, 2)}),
-            }),
-          }),
-          nullStamped({}),
-        ]),
+        store1.getMergeableContent(),
       );
     });
 
@@ -798,24 +701,9 @@ describe('Merge', () => {
       );
 
       store2.applyMergeableChanges(store1.getMergeableContent());
-      expect(store2.getContent()).toEqual([{}, {}]);
+      expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
-        stamped1(0, 6, [
-          stamped1(0, 6, {
-            t1: stamped1(0, 6, {
-              r1: stamped1(0, 6, {
-                c1: stamped1(0, 6, undefined),
-                c2: stamped1(0, 2, undefined),
-              }),
-              r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
-            }),
-            t2: stamped1(0, 6, {
-              r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
-              r2: stamped1(0, 6, {c2: stamped1(0, 6, undefined)}),
-            }),
-          }),
-          nullStamped({}),
-        ]),
+        store1.getMergeableContent(),
       );
     });
 
@@ -841,24 +729,9 @@ describe('Merge', () => {
       );
 
       store2.applyMergeableChanges(store1.getMergeableContent());
-      expect(store2.getContent()).toEqual([{}, {v1: 0, v2: 0}]);
+      expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
-        stamped1(0, 7, [
-          stamped1(0, 6, {
-            t1: stamped1(0, 6, {
-              r1: stamped1(0, 6, {
-                c1: stamped1(0, 6, undefined),
-                c2: stamped1(0, 2, undefined),
-              }),
-              r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
-            }),
-            t2: stamped1(0, 6, {
-              r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
-              r2: stamped1(0, 6, {c2: stamped1(0, 6, undefined)}),
-            }),
-          }),
-          stamped1(0, 7, {v1: stamped1(0, 7, 0), v2: stamped1(0, 7, 0)}),
-        ]),
+        store1.getMergeableContent(),
       );
     });
 
@@ -884,24 +757,9 @@ describe('Merge', () => {
       );
 
       store2.applyMergeableChanges(store1.getMergeableContent());
-      expect(store2.getContent()).toEqual([{}, {v1: 1, v2: 0}]);
+      expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
-        stamped1(0, 8, [
-          stamped1(0, 6, {
-            t1: stamped1(0, 6, {
-              r1: stamped1(0, 6, {
-                c1: stamped1(0, 6, undefined),
-                c2: stamped1(0, 2, undefined),
-              }),
-              r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
-            }),
-            t2: stamped1(0, 6, {
-              r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
-              r2: stamped1(0, 6, {c2: stamped1(0, 6, undefined)}),
-            }),
-          }),
-          stamped1(0, 8, {v1: stamped1(0, 8, 1), v2: stamped1(0, 7, 0)}),
-        ]),
+        store1.getMergeableContent(),
       );
     });
 
@@ -930,27 +788,9 @@ describe('Merge', () => {
       );
 
       store2.applyMergeableChanges(store1.getMergeableContent());
-      expect(store2.getContent()).toEqual([{}, {v1: 1}]);
+      expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
-        stamped1(0, 9, [
-          stamped1(0, 6, {
-            t1: stamped1(0, 6, {
-              r1: stamped1(0, 6, {
-                c1: stamped1(0, 6, undefined),
-                c2: stamped1(0, 2, undefined),
-              }),
-              r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
-            }),
-            t2: stamped1(0, 6, {
-              r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
-              r2: stamped1(0, 6, {c2: stamped1(0, 6, undefined)}),
-            }),
-          }),
-          stamped1(0, 9, {
-            v1: stamped1(0, 8, 1),
-            v2: stamped1(0, 9, undefined),
-          }),
-        ]),
+        store1.getMergeableContent(),
       );
     });
 
@@ -979,27 +819,9 @@ describe('Merge', () => {
       );
 
       store2.applyMergeableChanges(store1.getMergeableContent());
-      expect(store2.getContent()).toEqual([{}, {}]);
+      expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
-        stamped1(0, 10, [
-          stamped1(0, 6, {
-            t1: stamped1(0, 6, {
-              r1: stamped1(0, 6, {
-                c1: stamped1(0, 6, undefined),
-                c2: stamped1(0, 2, undefined),
-              }),
-              r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
-            }),
-            t2: stamped1(0, 6, {
-              r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
-              r2: stamped1(0, 6, {c2: stamped1(0, 6, undefined)}),
-            }),
-          }),
-          stamped1(0, 10, {
-            v1: stamped1(0, 10, undefined),
-            v2: stamped1(0, 9, undefined),
-          }),
-        ]),
+        store1.getMergeableContent(),
       );
     });
   });
