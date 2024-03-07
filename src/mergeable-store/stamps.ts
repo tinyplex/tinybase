@@ -1,12 +1,9 @@
-import {CellOrUndefined, ValueOrUndefined} from '../types/store';
 import {Hash, Stamp, Time} from '../types/mergeable-store';
-import {IdMap, mapGet, mapNew, mapSet, mapToObj} from '../common/map';
-import {IdObj, objNew, objToArray} from '../common/obj';
+import {IdMap, mapNew, mapToObj} from '../common/map';
+import {IdObj, objNew} from '../common/obj';
 import {EMPTY_STRING} from '../common/strings';
 import {Id} from '../types/common';
 import {getHash} from './hash';
-import {ifNotUndefined} from '../common/other';
-import {jsonString} from '../common/json';
 
 export type HashStamp<Thing> = [hash: Hash, time: Time, thing: Thing];
 
@@ -16,13 +13,6 @@ export const stampNew = <Thing>(time: Time, thing?: Thing): Stamp<Thing> => [
 ];
 
 export const hashIdAndHash = (id: Id, hash: Hash) => getHash(id + ':' + hash);
-
-export const hashStampNewLeaf = <Leaf>(
-  time: Time,
-  thing?: Leaf,
-): HashStamp<Leaf> => {
-  return [getHash(jsonString(thing ?? null) + ':' + time), time, thing as Leaf];
-};
 
 export const updateHashStamp = (
   hashStamp: HashStamp<unknown>,
@@ -58,35 +48,3 @@ export const hashStampMapToStampObj = <From, To = From>(
   mapper: (mapValue: From) => To,
 ): Stamp<IdObj<To>> =>
   hashStampToStamp(hashStampMap, (map) => mapToObj(map, mapper));
-
-export const mergeCellsOrValues = <
-  Thing extends CellOrUndefined | ValueOrUndefined,
->(
-  thingsStamp: Stamp<IdObj<Stamp<Thing>>>,
-  thingsHashStamp: HashStamp<IdMap<HashStamp<Thing>>>,
-  thingsChanges: {[thingId: Id]: Thing} = {},
-) => {
-  const [thingsTime, thingStamps] = thingsStamp;
-  const [oldThingsHash, oldThingsTime, thingHashStamps] = thingsHashStamp;
-  let thingsHash =
-    getHash(thingsTime) ^
-    (oldThingsTime ? oldThingsHash ^ getHash(oldThingsTime) : 0);
-  objToArray(thingStamps, ([thingTime, thing], thingId) => {
-    if (
-      !ifNotUndefined(
-        mapGet(thingHashStamps, thingId),
-        ([oldThingHash, oldThingTime]) => {
-          thingsHash ^= hashIdAndHash(thingId, oldThingHash);
-          return thingTime < oldThingTime;
-        },
-      )
-    ) {
-      const thingHashStamp = hashStampNewLeaf(thingTime, thing);
-      mapSet(thingHashStamps, thingId, thingHashStamp);
-      thingsChanges[thingId] = thing;
-      thingsHash ^= hashIdAndHash(thingId, thingHashStamp[0]);
-    }
-  });
-
-  updateHashStamp(thingsHashStamp, thingsHash, thingsTime);
-};
