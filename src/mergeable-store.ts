@@ -151,7 +151,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const mergeCellsOrValues = <Thing extends CellOrUndefined | ValueOrUndefined>(
     thingsStamp: Stamp<IdObj<Stamp<Thing>>>,
     thingsHashStamp: HashStamp<IdMap<HashStamp<Thing>>>,
-    thingsChanges: {[thingId: Id]: Thing} = {},
+    thingsChanges: {[thingId: Id]: Thing},
   ) => {
     const [thingsTime, thingStamps] = thingsStamp;
     const [oldThingsHash, oldThingsTime, thingHashStamps] = thingsHashStamp;
