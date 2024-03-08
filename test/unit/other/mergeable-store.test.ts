@@ -150,10 +150,7 @@ describe('getMergeableContent', () => {
         stamped1(0, 0, {v1: stamped1(0, 0, 4), v2: stamped1(0, 0, 5)}),
       ]),
     );
-    expect(storeHashSamples(store)).toEqual([
-      3180069014, 497979288, 2345604643, 179517432, 2614692414, 4065945599,
-      2686619406, 4060269138,
-    ]);
+    expect(storeHashSamples(store)).toMatchSnapshot();
   });
 
   test('Set in sequence', () => {
@@ -176,10 +173,7 @@ describe('getMergeableContent', () => {
         stamped1(0, 5, {v1: stamped1(0, 4, 4), v2: stamped1(0, 5, 5)}),
       ]),
     );
-    expect(storeHashSamples(store)).toEqual([
-      1676907138, 2517830496, 2385580801, 2800176243, 2614692414, 3207404266,
-      4125137378, 4189032886,
-    ]);
+    expect(storeHashSamples(store)).toMatchSnapshot();
   });
 
   test('Mutate', () => {
@@ -211,10 +205,7 @@ describe('getMergeableContent', () => {
         stamped1(0, 6, {v1: stamped1(0, 5, 5), v2: stamped1(0, 6, undefined)}),
       ]),
     );
-    expect(storeHashSamples(store)).toEqual([
-      4086151961, 405910139, 4266170452, 1300432451, 3207404266, 1517672885,
-      3954968930, 3265694938,
-    ]);
+    expect(storeHashSamples(store)).toMatchSnapshot();
   });
 
   test('Empty transaction', () => {
@@ -222,7 +213,7 @@ describe('getMergeableContent', () => {
     expect(store.getMergeableContent()).toEqual(
       nullStamped([nullStamped({}), nullStamped({})]),
     );
-    expect(storeHashSamples(store)).toEqual([0, 0, 0, 0, 0, 0, 0, 0]);
+    expect(storeHashSamples(store)).toMatchSnapshot();
   });
 });
 
@@ -500,14 +491,14 @@ describe('Merge', () => {
     expect(mergeableContent1).toEqual(noChanges);
     expect(store1.applyMergeableChanges(noChanges)).toEqual(store1);
     expect(store1.getContent()).toEqual([{}, {}]);
-    expect(storeHashSamples(store1)).toEqual([0, 0, 0, 0, 0, 0, 0, 0]);
+    expect(storeHashSamples(store1)).toMatchSnapshot();
 
     expect(store2.getContent()).toEqual([{}, {}]);
     const mergeableContent2 = store2.getMergeableContent();
     expect(mergeableContent2).toEqual(noChanges);
     expect(store2.applyMergeableChanges(noChanges)).toEqual(store2);
     expect(store2.getContent()).toEqual([{}, {}]);
-    expect(storeHashSamples(store2)).toEqual([0, 0, 0, 0, 0, 0, 0, 0]);
+    expect(storeHashSamples(store1)).toMatchSnapshot();
   });
 
   describe('One way', () => {
@@ -537,10 +528,7 @@ describe('Merge', () => {
           nullStamped({}),
         ]),
       );
-      expect(storeHashSamples(store1)).toEqual([
-        2019606997, 2019606997, 3525211849, 3659283091, 2614692414, 2614692414,
-        0, 0,
-      ]);
+      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual(store1.getContent());
@@ -567,10 +555,7 @@ describe('Merge', () => {
           nullStamped({}),
         ]),
       );
-      expect(storeHashSamples(store1)).toEqual([
-        3065484777, 3065484777, 3708792445, 421363767, 3207404266, 2614692414,
-        0, 0,
-      ]);
+      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual(store1.getContent());
@@ -597,10 +582,7 @@ describe('Merge', () => {
           nullStamped({}),
         ]),
       );
-      expect(storeHashSamples(store1)).toEqual([
-        956529158, 956529158, 2553868134, 1300432451, 3207404266, 1517672885, 0,
-        0,
-      ]);
+      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual(store1.getContent());
@@ -627,10 +609,7 @@ describe('Merge', () => {
           nullStamped({}),
         ]),
       );
-      expect(storeHashSamples(store1)).toEqual([
-        640785217, 640785217, 4266170452, 1300432451, 3207404266, 1517672885, 0,
-        0,
-      ]);
+      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual(store1.getContent());
@@ -659,10 +638,7 @@ describe('Merge', () => {
           nullStamped({}),
         ]),
       );
-      expect(storeHashSamples(store1)).toEqual([
-        405910139, 405910139, 4266170452, 1300432451, 3207404266, 1517672885, 0,
-        0,
-      ]);
+      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual(store1.getContent());
@@ -692,10 +668,7 @@ describe('Merge', () => {
           nullStamped({}),
         ]),
       );
-      expect(storeHashSamples(store1)).toEqual([
-        3942683781, 3942683781, 4266170452, 1300432451, 3207404266, 1517672885,
-        0, 0,
-      ]);
+      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual(store1.getContent());
@@ -725,10 +698,7 @@ describe('Merge', () => {
           nullStamped({}),
         ]),
       );
-      expect(storeHashSamples(store1)).toEqual([
-        4237412108, 4237412108, 85826648, 906063291, 1646436633, 1517672885, 0,
-        0,
-      ]);
+      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual(store1.getContent());
@@ -758,10 +728,7 @@ describe('Merge', () => {
           stamped1(0, 7, {v1: stamped1(0, 7, 0), v2: stamped1(0, 7, 0)}),
         ]),
       );
-      expect(storeHashSamples(store1)).toEqual([
-        1962931624, 4237412108, 85826648, 906063291, 1646436633, 1517672885,
-        2288923300, 1524959021,
-      ]);
+      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual(store1.getContent());
@@ -791,10 +758,7 @@ describe('Merge', () => {
           stamped1(0, 8, {v1: stamped1(0, 8, 1), v2: stamped1(0, 7, 0)}),
         ]),
       );
-      expect(storeHashSamples(store1)).toEqual([
-        3005870758, 4237412108, 85826648, 906063291, 1646436633, 1517672885,
-        1337472426, 1209068807,
-      ]);
+      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual(store1.getContent());
@@ -827,10 +791,7 @@ describe('Merge', () => {
           }),
         ]),
       );
-      expect(storeHashSamples(store1)).toEqual([
-        3019356838, 4237412108, 85826648, 906063291, 1646436633, 1517672885,
-        1332116906, 1209068807,
-      ]);
+      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual(store1.getContent());
@@ -863,10 +824,7 @@ describe('Merge', () => {
           }),
         ]),
       );
-      expect(storeHashSamples(store1)).toEqual([
-        4236047965, 4237412108, 85826648, 906063291, 1646436633, 1517672885,
-        15544657, 4067122285,
-      ]);
+      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual(store1.getContent());
@@ -894,9 +852,7 @@ describe('Merge', () => {
           nullStamped({}),
         ]),
       );
-      expect(storeHashSamples(store1)).toEqual([
-        3129341780, 3129341780, 3365962640, 3329101418, 2614692414, 0, 0, 0,
-      ]);
+      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       jest.advanceTimersByTime(1);
 
@@ -908,9 +864,7 @@ describe('Merge', () => {
           stamped2(1, 0, {v1: stamped2(1, 0, 0)}),
         ]),
       );
-      expect(storeHashSamples(store2)).toEqual([
-        199125683, 0, 0, 0, 0, 0, 199125683, 3183766124,
-      ]);
+      expect(storeHashSamples(store2)).toMatchSnapshot();
 
       store1.merge(store2);
 
@@ -923,10 +877,7 @@ describe('Merge', () => {
           stamped2(1, 0, {v1: stamped2(1, 0, 0)}),
         ]),
       );
-      expect(storeHashSamples(store1)).toEqual([
-        2975571431, 3129341780, 3365962640, 3329101418, 2614692414, 0,
-        199125683, 3183766124,
-      ]);
+      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
@@ -946,10 +897,7 @@ describe('Merge', () => {
           stamped1(0, 1, {v1: stamped1(0, 1, 1)}),
         ]),
       );
-      expect(storeHashSamples(store1)).toEqual([
-        2732669953, 758320304, 2337925683, 65941813, 4065945599, 0, 2412916913,
-        3207404266,
-      ]);
+      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       jest.advanceTimersByTime(1);
 
@@ -969,10 +917,7 @@ describe('Merge', () => {
           stamped2(1, 1, {v2: stamped2(1, 1, 2)}),
         ]),
       );
-      expect(storeHashSamples(store2)).toEqual([
-        574874863, 3874511353, 3934658031, 447420531, 0, 2804922642, 3300113686,
-        0,
-      ]);
+      expect(storeHashSamples(store2)).toMatchSnapshot();
 
       store1.merge(store2);
 
@@ -995,10 +940,7 @@ describe('Merge', () => {
           stamped2(1, 1, {v1: stamped1(0, 1, 1), v2: stamped2(1, 1, 2)}),
         ]),
       );
-      expect(storeHashSamples(store1)).toEqual([
-        3189073726, 1621722340, 1649345744, 2523464966, 4065945599, 2804922642,
-        3736921050, 3207404266,
-      ]);
+      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
@@ -1018,10 +960,7 @@ describe('Merge', () => {
           stamped1(0, 1, {v0: stamped1(0, 1, 0), v1: stamped1(0, 1, 1)}),
         ]),
       );
-      expect(storeHashSamples(store1)).toEqual([
-        1970550967, 758320304, 2337925683, 65941813, 4065945599, 0, 1481061383,
-        3207404266,
-      ]);
+      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       jest.advanceTimersByTime(1);
 
@@ -1035,10 +974,7 @@ describe('Merge', () => {
           stamped2(1, 1, {v1: stamped2(1, 1, 2)}),
         ]),
       );
-      expect(storeHashSamples(store2)).toEqual([
-        2378287344, 3526547657, 257591363, 2702592688, 2804922642, 0,
-        1609764921, 2724740231,
-      ]);
+      expect(storeHashSamples(store2)).toMatchSnapshot();
 
       store1.merge(store2);
 
@@ -1054,10 +990,7 @@ describe('Merge', () => {
           stamped2(1, 1, {v0: stamped1(0, 1, 0), v1: stamped2(1, 1, 2)}),
         ]),
       );
-      expect(storeHashSamples(store1)).toEqual([
-        1515506758, 3526547657, 257591363, 2702592688, 2804922642, 0,
-        2288391311, 2724740231,
-      ]);
+      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
@@ -1282,39 +1215,39 @@ describe('Hashing', () => {
   });
 
   test('getContentHash', () => {
-    expect(store.getContentHash()).toEqual(697504984);
+    expect(store.getContentHash()).toEqual(264108303);
     store.setCell('t1', 'r1', 'c1', 2);
-    expect(store.getContentHash()).toEqual(1058001114);
+    expect(store.getContentHash()).toEqual(2310866048);
     store.setValue('v1', 6);
-    expect(store.getContentHash()).toEqual(4221178835);
+    expect(store.getContentHash()).toEqual(1294518153);
   });
 
   test('getTablesHash', () => {
-    expect(store.getTablesHash()).toEqual(3583083509);
+    expect(store.getTablesHash()).toEqual(3461913939);
     store.setCell('t1', 'r1', 'c1', 2);
-    expect(store.getTablesHash()).toEqual(3272427511);
+    expect(store.getTablesHash()).toEqual(1213751516);
     store.setCell('t1', 'r1', 'c2', 3);
-    expect(store.getTablesHash()).toEqual(4178296814);
+    expect(store.getTablesHash()).toEqual(3363883081);
   });
 
   test('getTableHash', () => {
     expect(store.getTableHash('t0')).toEqual(0);
-    expect(store.getTableHash('t1')).toEqual(2684585349);
-    expect(store.getTableHash('t2')).toEqual(4105929749);
+    expect(store.getTableHash('t1')).toEqual(3256293025);
+    expect(store.getTableHash('t2')).toEqual(2257770474);
     store.setCell('t1', 'r1', 'c1', 2);
-    expect(store.getTableHash('t1')).toEqual(2503072789);
+    expect(store.getTableHash('t1')).toEqual(1976901808);
     store.setCell('t1', 'r1', 'c2', 3);
-    expect(store.getTableHash('t1')).toEqual(2941515217);
+    expect(store.getTableHash('t1')).toEqual(3838433038);
   });
 
   test('getRowHash', () => {
     expect(store.getRowHash('t0', 'r0')).toEqual(0);
     expect(store.getRowHash('t1', 'r0')).toEqual(0);
-    expect(store.getRowHash('t1', 'r1')).toEqual(1785598481);
+    expect(store.getRowHash('t1', 'r1')).toEqual(922886432);
     store.setCell('t1', 'r1', 'c1', 2);
-    expect(store.getRowHash('t1', 'r1')).toEqual(914161320);
+    expect(store.getRowHash('t1', 'r1')).toEqual(1796263321);
     store.setCell('t1', 'r1', 'c2', 3);
-    expect(store.getRowHash('t1', 'r1')).toEqual(2701666929);
+    expect(store.getRowHash('t1', 'r1')).toEqual(4234418496);
   });
 
   test('getCellHash', () => {
@@ -1334,11 +1267,11 @@ describe('Hashing', () => {
   });
 
   test('getValuesHash', () => {
-    expect(store.getValuesHash()).toEqual(4228028205);
+    expect(store.getValuesHash()).toEqual(3253036124);
     store.setValue('v1', 6);
-    expect(store.getValuesHash()).toEqual(776144377);
+    expect(store.getValuesHash()).toEqual(329578120);
     store.setValue('v2', 7);
-    expect(store.getValuesHash()).toEqual(1491964416);
+    expect(store.getValuesHash()).toEqual(1695179121);
   });
 
   test('getValueHash', () => {
