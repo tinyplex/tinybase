@@ -32,6 +32,12 @@ export const hashStampNewMap = <Thing>(
   time = EMPTY_STRING,
 ): HashStamp<IdMap<Thing>> => [0, time, mapNew<Id, Thing>()];
 
+export const hashStampNewThing = <Thing>(): HashStamp<Thing> => [
+  0,
+  EMPTY_STRING,
+  undefined as any,
+];
+
 export const cloneHashStampToStamp = <Value>([
   ,
   time,
