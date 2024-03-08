@@ -96,8 +96,13 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
 
     if (tablesTime) {
       let tablesHash =
-        getHash(tablesTime) ^
-        (oldTablesTime ? oldTablesHash ^ getHash(oldTablesTime) : 0);
+        oldTablesHash ^
+        (tablesTime > oldTablesTime
+          ? getHash(tablesTime)
+          : oldTablesTime
+            ? getHash(oldTablesTime)
+            : 0);
+
       objForEach(tableStamps, ([tableTime, rowStamps], tableId) => {
         let tableHash = getHash(tableTime);
         const tableHashStamp = mapEnsure<Id, TableHashStamp>(
@@ -105,7 +110,9 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
           tableId,
           hashStampNewMap,
           ([oldTableHash, oldTableTime]) => {
-            tableHash ^= oldTableHash ^ getHash(oldTableTime);
+            tableHash ^=
+              oldTableHash ^
+              getHash(tableTime > oldTableTime ? oldTableTime : tableTime);
             tablesHash ^= hashIdAndHash(tableId, oldTableHash);
           },
         );
@@ -157,10 +164,16 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   ) => {
     const [thingsTime, thingStamps] = thingsStamp;
     const [oldThingsHash, oldThingsTime, thingHashStamps] = thingsHashStamp;
+
     if (thingsTime) {
       let thingsHash =
-        getHash(thingsTime) ^
-        (oldThingsTime ? oldThingsHash ^ getHash(oldThingsTime) : 0);
+        oldThingsHash ^
+        (thingsTime > oldThingsTime
+          ? getHash(thingsTime)
+          : oldThingsTime
+            ? getHash(oldThingsTime)
+            : 0);
+
       objToArray(thingStamps, ([thingTime, thing], thingId) => {
         if (
           !ifNotUndefined(
