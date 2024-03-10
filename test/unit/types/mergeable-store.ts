@@ -1510,3 +1510,9 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
   storeWithNoSchemas.getTables().t1;
   storeWithNoSchemas.getTables().t2;
 })();
+
+// Mergeable methods
+() => {
+  storeWithSchemas.getMergeableContent()[1][0][1].t1;
+  storeWithSchemas.getMergeableContent()[1][0][1].t2; // !
+};
