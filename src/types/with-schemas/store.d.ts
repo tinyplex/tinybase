@@ -1024,23 +1024,23 @@ export interface Store<in out Schemas extends OptionalSchemas> {
   hasValuesSchema(): boolean;
 
   /// Store.setContent
-  setContent(content: Content<Schemas, true>): Store<Schemas>;
+  setContent(content: Content<Schemas, true>): this;
 
   /// Store.setTables
-  setTables(tables: Tables<Schemas[0], true>): Store<Schemas>;
+  setTables(tables: Tables<Schemas[0], true>): this;
 
   /// Store.setTable
   setTable<TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
     table: Table<Schemas[0], TableId, true>,
-  ): Store<Schemas>;
+  ): this;
 
   /// Store.setRow
   setRow<TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
     rowId: Id,
     row: Row<Schemas[0], TableId, true>,
-  ): Store<Schemas>;
+  ): this;
 
   /// Store.addRow
   addRow<TableId extends TableIdFromSchema<Schemas[0]>>(
@@ -1054,7 +1054,7 @@ export interface Store<in out Schemas extends OptionalSchemas> {
     tableId: TableId,
     rowId: Id,
     partialRow: Row<Schemas[0], TableId, true>,
-  ): Store<Schemas>;
+  ): this;
 
   /// Store.setCell
   setCell<
@@ -1067,31 +1067,31 @@ export interface Store<in out Schemas extends OptionalSchemas> {
     cell:
       | Cell<Schemas[0], TableId, CellId>
       | MapCell<Schemas[0], TableId, CellId>,
-  ): Store<Schemas>;
+  ): this;
 
   /// Store.setValues
-  setValues(values: Values<Schemas[1], true>): Store<Schemas>;
+  setValues(values: Values<Schemas[1], true>): this;
 
   /// Store.setPartialValues
-  setPartialValues(partialValues: Values<Schemas[1], true>): Store<Schemas>;
+  setPartialValues(partialValues: Values<Schemas[1], true>): this;
 
   /// Store.setValue
   setValue<ValueId extends ValueIdFromSchema<Schemas[1]>>(
     valueId: ValueId,
     value: Value<Schemas[1], ValueId> | MapValue<Schemas[1], ValueId>,
-  ): Store<Schemas>;
+  ): this;
 
   /// Store.applyChanges
-  applyChanges(changes: Changes<Schemas>): Store<Schemas>;
+  applyChanges(changes: Changes<Schemas>): this;
 
   /// Store.setTablesJson
-  setTablesJson(tablesJson: Json): Store<Schemas>;
+  setTablesJson(tablesJson: Json): this;
 
   /// Store.setValuesJson
-  setValuesJson(valuesJson: Json): Store<Schemas>;
+  setValuesJson(valuesJson: Json): this;
 
   /// Store.setJson
-  setJson(tablesAndValuesJson: Json): Store<Schemas>;
+  setJson(tablesAndValuesJson: Json): this;
 
   /// Store.setTablesSchema
   setTablesSchema<TS extends TablesSchema>(
@@ -1117,13 +1117,13 @@ export interface Store<in out Schemas extends OptionalSchemas> {
   >;
 
   /// Store.delTables
-  delTables(): Store<Schemas>;
+  delTables(): this;
 
   /// Store.delTable
-  delTable(tableId: TableIdFromSchema<Schemas[0]>): Store<Schemas>;
+  delTable(tableId: TableIdFromSchema<Schemas[0]>): this;
 
   /// Store.delRow
-  delRow(tableId: TableIdFromSchema<Schemas[0]>, rowId: Id): Store<Schemas>;
+  delRow(tableId: TableIdFromSchema<Schemas[0]>, rowId: Id): this;
 
   /// Store.delCell
   delCell<TableId extends TableIdFromSchema<Schemas[0]>>(
@@ -1131,13 +1131,13 @@ export interface Store<in out Schemas extends OptionalSchemas> {
     rowId: Id,
     cellId: CellIdFromSchema<Schemas[0], TableId>,
     forceDel?: boolean,
-  ): Store<Schemas>;
+  ): this;
 
   /// Store.delValues
-  delValues(): Store<Schemas>;
+  delValues(): this;
 
   /// Store.delValue
-  delValue(valueId: ValueIdFromSchema<Schemas[1]>): Store<Schemas>;
+  delValue(valueId: ValueIdFromSchema<Schemas[1]>): this;
 
   /// Store.delTablesSchema
   delTablesSchema<
@@ -1159,7 +1159,7 @@ export interface Store<in out Schemas extends OptionalSchemas> {
   ): Return;
 
   /// Store.startTransaction
-  startTransaction(): Store<Schemas>;
+  startTransaction(): this;
 
   /// Store.getTransactionChanges
   getTransactionChanges(): Changes<Schemas>;
@@ -1168,7 +1168,7 @@ export interface Store<in out Schemas extends OptionalSchemas> {
   getTransactionLog(): TransactionLog<Schemas>;
 
   /// Store.finishTransaction
-  finishTransaction(doRollback?: DoRollback<Schemas>): Store<Schemas>;
+  finishTransaction(doRollback?: DoRollback<Schemas>): this;
 
   /// Store.forEachTable
   forEachTable(tableCallback: TableCallback<Schemas[0]>): void;
@@ -1437,10 +1437,10 @@ export interface Store<in out Schemas extends OptionalSchemas> {
   ): Id;
 
   /// Store.callListener
-  callListener(listenerId: Id): Store<Schemas>;
+  callListener(listenerId: Id): this;
 
   /// Store.delListener
-  delListener(listenerId: Id): Store<Schemas>;
+  delListener(listenerId: Id): this;
 
   /// Store.getListenerStats
   getListenerStats(): StoreListenerStats;
