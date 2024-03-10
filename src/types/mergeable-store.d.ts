@@ -17,9 +17,13 @@ export type Stamp<Thing> = [time: Time, thing: Thing];
 export type MergeableContent = Stamp<
   [
     mergeableTables: Stamp<
-      IdObj<Stamp<IdObj<Stamp<IdObj<Stamp<CellOrUndefined>>>>>>
+      IdObj<
+        Stamp<
+          IdObj<Stamp<IdObj<Stamp<CellOrUndefined>> | undefined> | undefined>
+        >
+      >
     >,
-    mergeableValues: Stamp<IdObj<Stamp<ValueOrUndefined>>>,
+    mergeableValues: Stamp<IdObj<Stamp<ValueOrUndefined>> | undefined>,
   ]
 >;
 
@@ -27,9 +31,13 @@ export type MergeableContent = Stamp<
 export type MergeableChanges = Stamp<
   [
     mergeableTables: Stamp<
-      IdObj<Stamp<IdObj<Stamp<IdObj<Stamp<CellOrUndefined>>>>>>
+      IdObj<
+        Stamp<
+          IdObj<Stamp<IdObj<Stamp<CellOrUndefined>> | undefined> | undefined>
+        >
+      >
     >,
-    mergeableValues: Stamp<IdObj<Stamp<ValueOrUndefined>>>,
+    mergeableValues: Stamp<IdObj<Stamp<ValueOrUndefined>> | undefined>,
   ]
 >;
 
