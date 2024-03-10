@@ -10,6 +10,7 @@ import {
   stamped2,
   time,
 } from '../common/mergeable';
+import {storeHashSamples} from '../common/other';
 
 const permute = (arr: any[]): any[] => {
   if (arr.length == 1) {
@@ -23,17 +24,6 @@ const permute = (arr: any[]): any[] => {
   );
   return permutations;
 };
-
-const storeHashSamples = (store: MergeableStore) => [
-  store.getContentHash(),
-  store.getTablesHash(),
-  store.getTableHash('t1'),
-  store.getRowHash('t1', 'r1'),
-  store.getCellHash('t1', 'r1', 'c1'),
-  store.getCellHash('t1', 'r1', 'c2'),
-  store.getValuesHash(),
-  store.getValueHash('v1'),
-];
 
 beforeEach(() => jest.useFakeTimers({now: START_TIME}));
 

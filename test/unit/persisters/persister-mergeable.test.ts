@@ -21,7 +21,7 @@ import {
   mockMergeableNoContentListener,
   mockSessionStorage,
 } from './mocks';
-import {pause} from '../common/other';
+import {pause, storeHashSamples} from '../common/other';
 
 beforeEach(() => {
   jest.useFakeTimers({now: START_TIME});
@@ -76,14 +76,18 @@ describe.each([
   });
 
   test('saves', async () => {
-    store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
+    store.setContent([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+    expect(storeHashSamples(store)).toEqual([
+      2033316771, 4033596827, 1293085726, 1279994494, 4065945599, 0, 2304392760,
+      4065945599,
+    ]);
     await persister.save();
     expect(await persistable.get(location)).toEqual(
-      stamped1(0, 1, [
+      stamped1(0, 0, [
         stamped1(0, 0, {
           t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
         }),
-        stamped1(0, 1, {v1: stamped1(0, 1, 1)}),
+        stamped1(0, 0, {v1: stamped1(0, 0, 1)}),
       ]),
     );
     expect(persister.getStats()).toEqual({loads: 0, saves: 1});
@@ -193,6 +197,10 @@ describe.each([
     await persister.load();
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     expect(store.getValues()).toEqual({v1: 1});
+    expect(storeHashSamples(store)).toEqual([
+      2033316771, 4033596827, 1293085726, 1279994494, 4065945599, 0, 2304392760,
+      4065945599,
+    ]);
     expect(persister.getStats()).toEqual({loads: 1, saves: 0});
   });
 
@@ -232,6 +240,9 @@ describe.each([
     await persister.startAutoLoad();
     await nextLoop(true);
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+    expect(storeHashSamples(store)).toEqual([
+      4033596827, 4033596827, 1293085726, 1279994494, 4065945599, 0, 0, 0,
+    ]);
     expect(persister.getStats()).toEqual({loads: 1, saves: 0});
     await persistable.set(
       location,
@@ -244,6 +255,9 @@ describe.each([
     );
     await pause(persistable.autoLoadPause, true);
     expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
+    expect(storeHashSamples(store)).toEqual([
+      3386696034, 3386696034, 4089057354, 274319047, 2669080357, 0, 0, 0,
+    ]);
     expect(persister.getStats()).toEqual({loads: 2, saves: 0});
     await persistable.set(
       location,
@@ -256,6 +270,9 @@ describe.each([
     );
     await pause(persistable.autoLoadPause, true);
     expect(store.getTables()).toEqual({t1: {r1: {c1: 3}}});
+    expect(storeHashSamples(store)).toEqual([
+      4008152259, 4008152259, 3704904231, 1416411412, 3252714811, 0, 0, 0,
+    ]);
     expect(persister.getStats()).toEqual({loads: 3, saves: 0});
     persister.stopAutoLoad();
     await persistable.set(
@@ -269,6 +286,9 @@ describe.each([
     );
     await pause(persistable.autoLoadPause, true);
     expect(store.getTables()).toEqual({t1: {r1: {c1: 3}}});
+    expect(storeHashSamples(store)).toEqual([
+      4008152259, 4008152259, 3704904231, 1416411412, 3252714811, 0, 0, 0,
+    ]);
     expect(persister.getStats()).toEqual({loads: 3, saves: 0});
   });
 
