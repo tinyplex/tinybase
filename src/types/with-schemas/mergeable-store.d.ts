@@ -8,9 +8,15 @@ import {
 import {
   CellOrUndefined,
   NoSchemas,
+  NoTablesSchema,
+  NoValuesSchema,
   OptionalSchemas,
+  OptionalTablesSchema,
+  OptionalValuesSchema,
   Store,
+  TablesSchema,
   ValueOrUndefined,
+  ValuesSchema,
 } from './store.d';
 import {Id} from './common';
 import {IdObj} from '../../common/obj';
@@ -29,13 +35,16 @@ export type MergeableContent<Schemas extends OptionalSchemas> = Stamp<
   [
     mergeableTables: Stamp<{
       [TableId in TableIdFromSchema<Schemas[0]>]?: Stamp<
-        | IdObj<
-            Stamp<{
-              [CellId in CellIdFromSchema<Schemas[0], TableId>]?: Stamp<
-                CellOrUndefined<Schemas[0], TableId, CellId>
-              >;
-            }>
-          >
+        | {
+            [rowId: Id]: Stamp<
+              | {
+                  [CellId in CellIdFromSchema<Schemas[0], TableId>]?: Stamp<
+                    CellOrUndefined<Schemas[0], TableId, CellId>
+                  >;
+                }
+              | undefined
+            >;
+          }
         | undefined
       >;
     }>,
@@ -53,11 +62,14 @@ export type MergeableChanges<Schemas extends OptionalSchemas> = Stamp<
     mergeableTables: Stamp<{
       [TableId in TableIdFromSchema<Schemas[0]>]?: Stamp<
         | IdObj<
-            Stamp<{
-              [CellId in CellIdFromSchema<Schemas[0], TableId>]?: Stamp<
-                CellOrUndefined<Schemas[0], TableId, CellId>
-              >;
-            }>
+            Stamp<
+              | {
+                  [CellId in CellIdFromSchema<Schemas[0], TableId>]?: Stamp<
+                    CellOrUndefined<Schemas[0], TableId, CellId>
+                  >;
+                }
+              | undefined
+            >
           >
         | undefined
       >;
@@ -120,6 +132,42 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
 
   /// MergeableStore.getValueHash
   getValueHash(valueId: ValueIdFromSchema<Schemas[1]>): Hash;
+
+  /// Store.setTablesSchema
+  setTablesSchema<TS extends TablesSchema>(
+    tablesSchema: TS,
+  ): MergeableStore<[typeof tablesSchema, Schemas[1]]>;
+
+  /// Store.setValuesSchema
+  setValuesSchema<VS extends ValuesSchema>(
+    valuesSchema: VS,
+  ): MergeableStore<[Schemas[0], typeof valuesSchema]>;
+
+  /// Store.setSchema
+  setSchema<TS extends TablesSchema, VS extends ValuesSchema>(
+    tablesSchema: TS,
+    valuesSchema?: VS,
+  ): MergeableStore<
+    [
+      typeof tablesSchema,
+      Exclude<ValuesSchema, typeof valuesSchema> extends never
+        ? NoValuesSchema
+        : NonNullable<typeof valuesSchema>,
+    ]
+  >;
+
+  /// Store.delTablesSchema
+  delTablesSchema<
+    ValuesSchema extends OptionalValuesSchema = Schemas[1],
+  >(): MergeableStore<[NoTablesSchema, ValuesSchema]>;
+
+  /// Store.delValuesSchema
+  delValuesSchema<
+    TablesSchema extends OptionalTablesSchema = Schemas[0],
+  >(): MergeableStore<[TablesSchema, NoValuesSchema]>;
+
+  /// Store.delSchema
+  delSchema(): MergeableStore<NoSchemas>;
 }
 
 /// createMergeableStore
