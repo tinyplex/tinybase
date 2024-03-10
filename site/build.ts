@@ -23,6 +23,7 @@ const CATEGORIES = [
 ];
 const REFLECTIONS = [
   'store',
+  'mergeable-store',
   'metrics',
   'indexes',
   'relationships',
