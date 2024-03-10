@@ -1,21 +1,22 @@
 /// mergeable-store
 
 import {
-  Cell,
-  NoSchemas,
-  OptionalSchemas,
-  OptionalTablesSchema,
-  OptionalValuesSchema,
-  Store,
-  Value,
-} from './store.d';
-import {
   CellIdFromSchema,
   TableIdFromSchema,
   ValueIdFromSchema,
 } from './internal/store';
+import {
+  CellOrUndefined,
+  NoSchemas,
+  OptionalSchemas,
+  Store,
+  ValueOrUndefined,
+} from './store.d';
 import {Id} from './common';
 import {IdObj} from '../../common/obj';
+
+/// Hash
+export type Hash = number;
 
 /// Time
 export type Time = string;
@@ -23,43 +24,51 @@ export type Time = string;
 /// Stamp
 export type Stamp<Thing> = [time: Time, thing: Thing];
 
-type MergeableCell<Schema extends OptionalTablesSchema> = Stamp<Cell<
-  Schema,
-  any,
-  any
-> | null>;
-type MergeableRow<Schema extends OptionalTablesSchema> = Stamp<IdObj<
-  MergeableCell<Schema>
-> | null>;
-type MergeableTable<Schema extends OptionalTablesSchema> = Stamp<IdObj<
-  MergeableRow<Schema>
-> | null>;
-type MergeableTables<Schema extends OptionalTablesSchema> = Stamp<
-  IdObj<MergeableTable<Schema>>
->;
-type MergeableValue<Schema extends OptionalValuesSchema> = Stamp<Value<
-  Schema,
-  any,
-  any
-> | null>;
-type MergeableValues<Schema extends OptionalValuesSchema> = Stamp<
-  IdObj<MergeableValue<Schema>>
->;
-
 /// MergeableContent
 export type MergeableContent<Schemas extends OptionalSchemas> = Stamp<
   [
-    mergeableTables: MergeableTables<Schemas[0]>,
-    mergeableValues: MergeableValues<Schemas[1]>,
+    mergeableTables: Stamp<{
+      [TableId in TableIdFromSchema<Schemas[0]>]?: Stamp<
+        | IdObj<
+            Stamp<{
+              [CellId in CellIdFromSchema<Schemas[0], TableId>]?: Stamp<
+                CellOrUndefined<Schemas[0], TableId, CellId>
+              >;
+            }>
+          >
+        | undefined
+      >;
+    }>,
+    mergeableValues: Stamp<{
+      [ValueId in ValueIdFromSchema<Schemas[1]>]?: Stamp<
+        ValueOrUndefined<Schemas[1], ValueId>
+      >;
+    }>,
   ]
 >;
 
 /// MergeableChanges
-export type MergeableChanges<Schemas extends OptionalSchemas> =
-  MergeableContent<Schemas>;
-
-/// Hash
-export type Hash = number;
+export type MergeableChanges<Schemas extends OptionalSchemas> = Stamp<
+  [
+    mergeableTables: Stamp<{
+      [TableId in TableIdFromSchema<Schemas[0]>]?: Stamp<
+        | IdObj<
+            Stamp<{
+              [CellId in CellIdFromSchema<Schemas[0], TableId>]?: Stamp<
+                CellOrUndefined<Schemas[0], TableId, CellId>
+              >;
+            }>
+          >
+        | undefined
+      >;
+    }>,
+    mergeableValues: Stamp<{
+      [ValueId in ValueIdFromSchema<Schemas[1]>]?: Stamp<
+        ValueOrUndefined<Schemas[1], ValueId>
+      >;
+    }>,
+  ]
+>;
 
 /// MergeableStore
 export interface MergeableStore<Schemas extends OptionalSchemas>
