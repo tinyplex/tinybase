@@ -27,6 +27,9 @@ export type Hash = number;
 /// Time
 export type Time = string;
 
+/// HashStamp
+export type HashStamp<Thing> = [hash: Hash, time: Time, thing: Thing];
+
 /// Stamp
 export type Stamp<Thing> = [time: Time, thing: Thing];
 
@@ -34,19 +37,13 @@ export type Stamp<Thing> = [time: Time, thing: Thing];
 export type MergeableContent<Schemas extends OptionalSchemas> = Stamp<
   [
     mergeableTables: Stamp<{
-      [TableId in TableIdFromSchema<Schemas[0]>]?: Stamp<
-        | {
-            [rowId: Id]: Stamp<
-              | {
-                  [CellId in CellIdFromSchema<Schemas[0], TableId>]?: Stamp<
-                    CellOrUndefined<Schemas[0], TableId, CellId>
-                  >;
-                }
-              | undefined
-            >;
-          }
-        | undefined
-      >;
+      [TableId in TableIdFromSchema<Schemas[0]>]?: Stamp<{
+        [rowId: Id]: Stamp<{
+          [CellId in CellIdFromSchema<Schemas[0], TableId>]?: Stamp<
+            CellOrUndefined<Schemas[0], TableId, CellId>
+          >;
+        }>;
+      }>;
     }>,
     mergeableValues: Stamp<{
       [ValueId in ValueIdFromSchema<Schemas[1]>]?: Stamp<
@@ -61,17 +58,13 @@ export type MergeableChanges<Schemas extends OptionalSchemas> = Stamp<
   [
     mergeableTables: Stamp<{
       [TableId in TableIdFromSchema<Schemas[0]>]?: Stamp<
-        | IdObj<
-            Stamp<
-              | {
-                  [CellId in CellIdFromSchema<Schemas[0], TableId>]?: Stamp<
-                    CellOrUndefined<Schemas[0], TableId, CellId>
-                  >;
-                }
-              | undefined
-            >
-          >
-        | undefined
+        IdObj<
+          Stamp<{
+            [CellId in CellIdFromSchema<Schemas[0], TableId>]?: Stamp<
+              CellOrUndefined<Schemas[0], TableId, CellId>
+            >;
+          }>
+        >
       >;
     }>,
     mergeableValues: Stamp<{
