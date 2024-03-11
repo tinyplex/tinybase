@@ -10,6 +10,16 @@
  */
 /// Time
 /**
+ * The Hash type
+ * @category Stamps
+ */
+/// Hash
+/**
+ * The HashStamp type
+ * @category Stamps
+ */
+/// HashStamp
+/**
  * The Stamp type
  * @category Stamps
  */
@@ -24,11 +34,6 @@
  * @category Mergeable
  */
 /// MergeableChanges
-/**
- * The Hash type
- * @category Stamps
- */
-/// Hash
 /**
  * The MergeableStore type
  * @category Mergeable
