@@ -221,6 +221,7 @@
     "@babel/preset-env": "^7.24.0",
     "@babel/preset-react": "^7.23.3",
     "@babel/preset-typescript": "^7.23.3",
+    "@libsql/client": "^0.5.5",
     "@prettier/sync": "^0.5.1",
     "@rollup/plugin-image": "^3.0.3",
     "@rollup/plugin-replace": "^5.0.5",
@@ -292,6 +293,7 @@
   },
   "peerDependencies": {
     "@automerge/automerge-repo": "^1.1.2",
+    "@libsql/client": "^0.5.5",
     "@sqlite.org/sqlite-wasm": "^3.45.1-build1",
     "@vlcn.io/crsqlite-wasm": "^0.16.0",
     "electric-sql": "^0.9.4",
@@ -306,6 +308,9 @@
   },
   "peerDependenciesMeta": {
     "@automerge/automerge-repo": {
+      "optional": true
+    },
+    "@libsql/client": {
       "optional": true
     },
     "@sqlite.org/sqlite-wasm": {
