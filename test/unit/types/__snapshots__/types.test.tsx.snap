@@ -296,15 +296,15 @@ exports[`Types: mergeable-store.ts:331:4 1`] = `"This comparison appears to be u
 
 exports[`Types: mergeable-store.ts:335:4 1`] = `"This comparison appears to be unintentional because the types '"v1"' and '"v2"' have no overlap."`;
 
-exports[`Types: mergeable-store.ts:348:6 1`] = `"Conversion of type 'number | null | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: mergeable-store.ts:348:6 1`] = `"Conversion of type 'CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: mergeable-store.ts:349:26 1`] = `"Property 'c2' does not exist on type '{ c1?: number | null | undefined; c1d?: string | null | undefined; }'."`;
+exports[`Types: mergeable-store.ts:349:26 1`] = `"Property 'c2' does not exist on type '{ c1?: CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">; c1d?: CellOrUndefined<...>; }'."`;
 
-exports[`Types: mergeable-store.ts:350:18 1`] = `"Property 't2' does not exist on type '{ t0?: { [rowId: string]: { c0?: number | null | undefined; } | null; } | null | undefined; t1?: { [rowId: string]: { c1?: number | null | undefined; c1d?: string | null | undefined; } | null; } | null | undefined; }'."`;
+exports[`Types: mergeable-store.ts:350:18 1`] = `"Property 't2' does not exist on type '{ t0?: { [rowId: string]: { c0?: CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t0", "c0">; } | undefined; } | undefined; t1?: { ...; } | undefined; }'."`;
 
-exports[`Types: mergeable-store.ts:354:6 1`] = `"Conversion of type 'number | null | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: mergeable-store.ts:354:6 1`] = `"Conversion of type 'number | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: mergeable-store.ts:355:19 1`] = `"Property 'v2' does not exist on type '{ v1?: number | null | undefined; v1d?: string | null | undefined; }'."`;
+exports[`Types: mergeable-store.ts:355:19 1`] = `"Property 'v2' does not exist on type '{ v1?: number | undefined; v1d?: string | undefined; }'."`;
 
 exports[`Types: mergeable-store.ts:361:6 1`] = `"Conversion of type 'ChangedCell<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1"> | undefined' to type '[string, string]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
@@ -320,15 +320,15 @@ exports[`Types: mergeable-store.ts:371:6 1`] = `"Conversion of type 'ChangedValu
 
 exports[`Types: mergeable-store.ts:372:6 1`] = `"Conversion of type 'ChangedValue<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1d"> | undefined' to type '[number, number]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: mergeable-store.ts:382:4 1`] = `"Conversion of type 'number | null | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: mergeable-store.ts:382:4 1`] = `"Conversion of type 'CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: mergeable-store.ts:383:24 1`] = `"Property 'c2' does not exist on type '{ c1?: number | null | undefined; c1d?: string | null | undefined; }'."`;
+exports[`Types: mergeable-store.ts:383:24 1`] = `"Property 'c2' does not exist on type '{ c1?: CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">; c1d?: CellOrUndefined<...>; }'."`;
 
-exports[`Types: mergeable-store.ts:384:16 1`] = `"Property 't2' does not exist on type '{ t0?: { [rowId: string]: { c0?: number | null | undefined; } | null; } | null | undefined; t1?: { [rowId: string]: { c1?: number | null | undefined; c1d?: string | null | undefined; } | null; } | null | undefined; }'."`;
+exports[`Types: mergeable-store.ts:384:16 1`] = `"Property 't2' does not exist on type '{ t0?: { [rowId: string]: { c0?: CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t0", "c0">; } | undefined; } | undefined; t1?: { ...; } | undefined; }'."`;
 
-exports[`Types: mergeable-store.ts:388:4 1`] = `"Conversion of type 'number | null | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: mergeable-store.ts:388:4 1`] = `"Conversion of type 'number | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: mergeable-store.ts:389:17 1`] = `"Property 'v2' does not exist on type '{ v1?: number | null | undefined; v1d?: string | null | undefined; }'."`;
+exports[`Types: mergeable-store.ts:389:17 1`] = `"Property 'v2' does not exist on type '{ v1?: number | undefined; v1d?: string | undefined; }'."`;
 
 exports[`Types: mergeable-store.ts:398:4 1`] = `"Conversion of type 'ChangedCell<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1"> | undefined' to type '[string, string]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
@@ -926,15 +926,15 @@ exports[`Types: mergeable-store.ts:1412:22 1`] = `"Property 't2' does not exist 
 
 exports[`Types: mergeable-store.ts:1413:22 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
 
-exports[`Types: mergeable-store.ts:1417:4 1`] = `"Conversion of type 'number | null | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: mergeable-store.ts:1417:4 1`] = `"Conversion of type 'CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: mergeable-store.ts:1418:24 1`] = `"Property 'c2' does not exist on type '{ c1?: number | null | undefined; c1d?: string | null | undefined; }'."`;
+exports[`Types: mergeable-store.ts:1418:24 1`] = `"Property 'c2' does not exist on type '{ c1?: CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">; c1d?: CellOrUndefined<...>; }'."`;
 
-exports[`Types: mergeable-store.ts:1419:16 1`] = `"Property 't2' does not exist on type '{ t0?: { [rowId: string]: { c0?: number | null | undefined; } | null; } | null | undefined; t1?: { [rowId: string]: { c1?: number | null | undefined; c1d?: string | null | undefined; } | null; } | null | undefined; }'."`;
+exports[`Types: mergeable-store.ts:1419:16 1`] = `"Property 't2' does not exist on type '{ t0?: { [rowId: string]: { c0?: CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t0", "c0">; } | undefined; } | undefined; t1?: { ...; } | undefined; }'."`;
 
-exports[`Types: mergeable-store.ts:1423:4 1`] = `"Conversion of type 'number | null | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: mergeable-store.ts:1423:4 1`] = `"Conversion of type 'number | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: mergeable-store.ts:1424:17 1`] = `"Property 'v2' does not exist on type '{ v1?: number | null | undefined; v1d?: string | null | undefined; }'."`;
+exports[`Types: mergeable-store.ts:1424:17 1`] = `"Property 'v2' does not exist on type '{ v1?: number | undefined; v1d?: string | undefined; }'."`;
 
 exports[`Types: mergeable-store.ts:1428:17 1`] = `"Property 't2' does not exist on type 'ChangedCells<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'."`;
 
@@ -944,15 +944,15 @@ exports[`Types: mergeable-store.ts:1437:22 1`] = `"Property 't2' does not exist 
 
 exports[`Types: mergeable-store.ts:1438:22 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
 
-exports[`Types: mergeable-store.ts:1442:4 1`] = `"Conversion of type 'number | null | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: mergeable-store.ts:1442:4 1`] = `"Conversion of type 'CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: mergeable-store.ts:1443:24 1`] = `"Property 'c2' does not exist on type '{ c1?: number | null | undefined; c1d?: string | null | undefined; }'."`;
+exports[`Types: mergeable-store.ts:1443:24 1`] = `"Property 'c2' does not exist on type '{ c1?: CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">; c1d?: CellOrUndefined<...>; }'."`;
 
-exports[`Types: mergeable-store.ts:1444:16 1`] = `"Property 't2' does not exist on type '{ t0?: { [rowId: string]: { c0?: number | null | undefined; } | null; } | null | undefined; t1?: { [rowId: string]: { c1?: number | null | undefined; c1d?: string | null | undefined; } | null; } | null | undefined; }'."`;
+exports[`Types: mergeable-store.ts:1444:16 1`] = `"Property 't2' does not exist on type '{ t0?: { [rowId: string]: { c0?: CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t0", "c0">; } | undefined; } | undefined; t1?: { ...; } | undefined; }'."`;
 
-exports[`Types: mergeable-store.ts:1448:4 1`] = `"Conversion of type 'number | null | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: mergeable-store.ts:1448:4 1`] = `"Conversion of type 'number | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: mergeable-store.ts:1449:17 1`] = `"Property 'v2' does not exist on type '{ v1?: number | null | undefined; v1d?: string | null | undefined; }'."`;
+exports[`Types: mergeable-store.ts:1449:17 1`] = `"Property 'v2' does not exist on type '{ v1?: number | undefined; v1d?: string | undefined; }'."`;
 
 exports[`Types: mergeable-store.ts:1453:17 1`] = `"Property 't2' does not exist on type 'ChangedCells<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'."`;
 
@@ -975,6 +975,18 @@ exports[`Types: mergeable-store.ts:1497:37 1`] = `"Property 't2' does not exist 
 exports[`Types: mergeable-store.ts:1498:37 1`] = `"Property 'v1' does not exist on type 'Values<{ v2: { type: "number"; }; }, false>'."`;
 
 exports[`Types: mergeable-store.ts:1504:36 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
+
+exports[`Types: mergeable-store.ts:1517:28 1`] = `"Property 't2' does not exist on type '{ t0?: Stamp<{ [rowId: string]: Stamp<{ c0?: Stamp<CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t0", "c0">> | undefined; }>; }> | undefined; t1?: Stamp<...'."`;
+
+exports[`Types: mergeable-store.ts:1522:2 1`] = `"Conversion of type 'CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+
+exports[`Types: mergeable-store.ts:1523:2 1`] = `"Conversion of type 'CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1d">' to type 'number' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+
+exports[`Types: mergeable-store.ts:1524:46 1`] = `"Property 'c2' does not exist on type '{ c1?: Stamp<CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">> | undefined; c1d?: Stamp<...> | undefined; }'."`;
+
+exports[`Types: mergeable-store.ts:1528:2 1`] = `"Conversion of type 'ValueOrUndefined<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+
+exports[`Types: mergeable-store.ts:1529:28 1`] = `"Property 'v2' does not exist on type '{ v1?: Stamp<ValueOrUndefined<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">> | undefined; v1d?: Stamp<...> | undefined; }'."`;
 
 exports[`Types: metrics.ts:24:44 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
@@ -1342,15 +1354,15 @@ exports[`Types: store.ts:331:4 1`] = `"This comparison appears to be unintention
 
 exports[`Types: store.ts:335:4 1`] = `"This comparison appears to be unintentional because the types '"v1"' and '"v2"' have no overlap."`;
 
-exports[`Types: store.ts:348:6 1`] = `"Conversion of type 'number | null | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: store.ts:348:6 1`] = `"Conversion of type 'CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: store.ts:349:26 1`] = `"Property 'c2' does not exist on type '{ c1?: number | null | undefined; c1d?: string | null | undefined; }'."`;
+exports[`Types: store.ts:349:26 1`] = `"Property 'c2' does not exist on type '{ c1?: CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">; c1d?: CellOrUndefined<...>; }'."`;
 
-exports[`Types: store.ts:350:18 1`] = `"Property 't2' does not exist on type '{ t0?: { [rowId: string]: { c0?: number | null | undefined; } | null; } | null | undefined; t1?: { [rowId: string]: { c1?: number | null | undefined; c1d?: string | null | undefined; } | null; } | null | undefined; }'."`;
+exports[`Types: store.ts:350:18 1`] = `"Property 't2' does not exist on type '{ t0?: { [rowId: string]: { c0?: CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t0", "c0">; } | undefined; } | undefined; t1?: { ...; } | undefined; }'."`;
 
-exports[`Types: store.ts:354:6 1`] = `"Conversion of type 'number | null | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: store.ts:354:6 1`] = `"Conversion of type 'number | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: store.ts:355:19 1`] = `"Property 'v2' does not exist on type '{ v1?: number | null | undefined; v1d?: string | null | undefined; }'."`;
+exports[`Types: store.ts:355:19 1`] = `"Property 'v2' does not exist on type '{ v1?: number | undefined; v1d?: string | undefined; }'."`;
 
 exports[`Types: store.ts:361:6 1`] = `"Conversion of type 'ChangedCell<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1"> | undefined' to type '[string, string]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
@@ -1366,15 +1378,15 @@ exports[`Types: store.ts:371:6 1`] = `"Conversion of type 'ChangedValue<{ readon
 
 exports[`Types: store.ts:372:6 1`] = `"Conversion of type 'ChangedValue<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1d"> | undefined' to type '[number, number]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: store.ts:382:4 1`] = `"Conversion of type 'number | null | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: store.ts:382:4 1`] = `"Conversion of type 'CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: store.ts:383:24 1`] = `"Property 'c2' does not exist on type '{ c1?: number | null | undefined; c1d?: string | null | undefined; }'."`;
+exports[`Types: store.ts:383:24 1`] = `"Property 'c2' does not exist on type '{ c1?: CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">; c1d?: CellOrUndefined<...>; }'."`;
 
-exports[`Types: store.ts:384:16 1`] = `"Property 't2' does not exist on type '{ t0?: { [rowId: string]: { c0?: number | null | undefined; } | null; } | null | undefined; t1?: { [rowId: string]: { c1?: number | null | undefined; c1d?: string | null | undefined; } | null; } | null | undefined; }'."`;
+exports[`Types: store.ts:384:16 1`] = `"Property 't2' does not exist on type '{ t0?: { [rowId: string]: { c0?: CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t0", "c0">; } | undefined; } | undefined; t1?: { ...; } | undefined; }'."`;
 
-exports[`Types: store.ts:388:4 1`] = `"Conversion of type 'number | null | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: store.ts:388:4 1`] = `"Conversion of type 'number | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: store.ts:389:17 1`] = `"Property 'v2' does not exist on type '{ v1?: number | null | undefined; v1d?: string | null | undefined; }'."`;
+exports[`Types: store.ts:389:17 1`] = `"Property 'v2' does not exist on type '{ v1?: number | undefined; v1d?: string | undefined; }'."`;
 
 exports[`Types: store.ts:398:4 1`] = `"Conversion of type 'ChangedCell<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1"> | undefined' to type '[string, string]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
@@ -1972,15 +1984,15 @@ exports[`Types: store.ts:1412:22 1`] = `"Property 't2' does not exist on type 'T
 
 exports[`Types: store.ts:1413:22 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
 
-exports[`Types: store.ts:1417:4 1`] = `"Conversion of type 'number | null | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: store.ts:1417:4 1`] = `"Conversion of type 'CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: store.ts:1418:24 1`] = `"Property 'c2' does not exist on type '{ c1?: number | null | undefined; c1d?: string | null | undefined; }'."`;
+exports[`Types: store.ts:1418:24 1`] = `"Property 'c2' does not exist on type '{ c1?: CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">; c1d?: CellOrUndefined<...>; }'."`;
 
-exports[`Types: store.ts:1419:16 1`] = `"Property 't2' does not exist on type '{ t0?: { [rowId: string]: { c0?: number | null | undefined; } | null; } | null | undefined; t1?: { [rowId: string]: { c1?: number | null | undefined; c1d?: string | null | undefined; } | null; } | null | undefined; }'."`;
+exports[`Types: store.ts:1419:16 1`] = `"Property 't2' does not exist on type '{ t0?: { [rowId: string]: { c0?: CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t0", "c0">; } | undefined; } | undefined; t1?: { ...; } | undefined; }'."`;
 
-exports[`Types: store.ts:1423:4 1`] = `"Conversion of type 'number | null | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: store.ts:1423:4 1`] = `"Conversion of type 'number | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: store.ts:1424:17 1`] = `"Property 'v2' does not exist on type '{ v1?: number | null | undefined; v1d?: string | null | undefined; }'."`;
+exports[`Types: store.ts:1424:17 1`] = `"Property 'v2' does not exist on type '{ v1?: number | undefined; v1d?: string | undefined; }'."`;
 
 exports[`Types: store.ts:1428:17 1`] = `"Property 't2' does not exist on type 'ChangedCells<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'."`;
 
@@ -1990,15 +2002,15 @@ exports[`Types: store.ts:1437:22 1`] = `"Property 't2' does not exist on type 'T
 
 exports[`Types: store.ts:1438:22 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
 
-exports[`Types: store.ts:1442:4 1`] = `"Conversion of type 'number | null | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: store.ts:1442:4 1`] = `"Conversion of type 'CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: store.ts:1443:24 1`] = `"Property 'c2' does not exist on type '{ c1?: number | null | undefined; c1d?: string | null | undefined; }'."`;
+exports[`Types: store.ts:1443:24 1`] = `"Property 'c2' does not exist on type '{ c1?: CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">; c1d?: CellOrUndefined<...>; }'."`;
 
-exports[`Types: store.ts:1444:16 1`] = `"Property 't2' does not exist on type '{ t0?: { [rowId: string]: { c0?: number | null | undefined; } | null; } | null | undefined; t1?: { [rowId: string]: { c1?: number | null | undefined; c1d?: string | null | undefined; } | null; } | null | undefined; }'."`;
+exports[`Types: store.ts:1444:16 1`] = `"Property 't2' does not exist on type '{ t0?: { [rowId: string]: { c0?: CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t0", "c0">; } | undefined; } | undefined; t1?: { ...; } | undefined; }'."`;
 
-exports[`Types: store.ts:1448:4 1`] = `"Conversion of type 'number | null | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types: store.ts:1448:4 1`] = `"Conversion of type 'number | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: store.ts:1449:17 1`] = `"Property 'v2' does not exist on type '{ v1?: number | null | undefined; v1d?: string | null | undefined; }'."`;
+exports[`Types: store.ts:1449:17 1`] = `"Property 'v2' does not exist on type '{ v1?: number | undefined; v1d?: string | undefined; }'."`;
 
 exports[`Types: store.ts:1453:17 1`] = `"Property 't2' does not exist on type 'ChangedCells<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'."`;
 
