@@ -1,4 +1,5 @@
 import 'fake-indexeddb/auto';
+import {Client, createClient} from '@libsql/client';
 import {DatabasePersisterConfig, Persister, Store} from 'tinybase/debug';
 import {DbSchema, ElectricClient} from 'electric-sql/client/model';
 import {ElectricDatabase, electrify} from 'electric-sql/wa-sqlite';
@@ -6,6 +7,7 @@ import initWasm, {DB} from '@vlcn.io/crsqlite-wasm';
 import sqlite3, {Database} from 'sqlite3';
 import {createCrSqliteWasmPersister} from 'tinybase/debug/persisters/persister-cr-sqlite-wasm';
 import {createElectricSqlPersister} from 'tinybase/debug/persisters/persister-electric-sql';
+import {createLibSqlPersister} from 'tinybase/debug/persisters/persister-libsql';
 import {createSqlite3Persister} from 'tinybase/debug/persisters/persister-sqlite3';
 import {createSqliteWasmPersister} from 'tinybase/debug/persisters/persister-sqlite-wasm';
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
@@ -40,6 +42,31 @@ type SqliteVariant<Database> = [
 const escapeId = (str: string) => `"${str.replace(/"/g, '""')}"`;
 
 export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
+  libSql: [
+    async (): Promise<Client> => createClient({url: 'file::memory:'}),
+    ['getClient', (client: Client) => client],
+    (
+      store: Store,
+      client: Client,
+      storeTableOrConfig?: string | DatabasePersisterConfig,
+      onSqlCommand?: (sql: string, args?: any[]) => void,
+      onIgnoredError?: (error: any) => void,
+    ) =>
+      (createLibSqlPersister as any)(
+        store,
+        client,
+        storeTableOrConfig,
+        onSqlCommand,
+        onIgnoredError,
+      ),
+    async (
+      client: Client,
+      sql: string,
+      args: any[] = [],
+    ): Promise<{[id: string]: any}[]> =>
+      (await client.execute({sql, args})).rows,
+    async (db: Client) => db.close(),
+  ],
   electricSql: [
     async (): Promise<Electric> =>
       await suppressWarnings(
