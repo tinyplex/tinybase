@@ -68,6 +68,7 @@ class WASQLitePowerSyncDatabaseOpenFactory {
     const instance: AbstractPowerSyncDatabase = {
       execute: (sql, args) =>
         new Promise((resolve, reject) => {
+          console.info('*** EXECUTE', sql, args);
           return db.all(sql, args, (error, rows: {[id: string]: any}[]) =>
             error
               ? reject(error)
@@ -89,6 +90,7 @@ class WASQLitePowerSyncDatabaseOpenFactory {
           resolve();
         }),
       onChange: ({signal} = {}) => {
+        console.warn('*** ONCHANGE', signal?.aborted);
         return {
           async *[Symbol.asyncIterator]() {
             if (signal?.aborted) {
@@ -100,6 +102,7 @@ class WASQLitePowerSyncDatabaseOpenFactory {
                 (resolve) => {
                   const observer = (_: any, _2: any, tableName: string) => {
                     db.off('change', observer);
+                    console.warn('*** CHANGE', {changedTables: [tableName]});
                     resolve({changedTables: [tableName]});
                   };
 

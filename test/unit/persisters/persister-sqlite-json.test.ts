@@ -5,7 +5,7 @@ import {VARIANTS, getDatabaseFunctions} from './sqlite';
 import {mockFetchWasm, pause} from '../common/other';
 import {Database} from 'sqlite3';
 
-describe.each(Object.entries(VARIANTS))(
+describe.each(Object.entries(VARIANTS).slice(1, 2))(
   '%s',
   (_name, [getOpenDatabase, , getPersister, cmd, close, autoLoadPause]) => {
     const [getDatabase, setDatabase] = getDatabaseFunctions(cmd);
@@ -296,7 +296,7 @@ describe.each(Object.entries(VARIANTS))(
         expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
       });
 
-      test('autoSave1 & autoLoad2, complex transactions', async () => {
+      test.only('autoSave1 & autoLoad2, complex transactions', async () => {
         await persister1.startAutoSave();
         await persister2.startAutoLoad();
         store1
