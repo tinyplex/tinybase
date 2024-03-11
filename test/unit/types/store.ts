@@ -345,13 +345,13 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
       const [cellChanges, valueChanges] = store.getTransactionChanges();
       const {changedCells, changedValues} = store.getTransactionLog();
       cellChanges.t1?.r1?.c1 as number;
-      cellChanges.t1?.r1?.c1 as null;
+      cellChanges.t1?.r1?.c1 as undefined;
       cellChanges.t1?.r1?.c1 as string; // !
       cellChanges.t1?.r1?.c2; // !
       cellChanges.t2?.r1?.c1; // !
 
       valueChanges.v1 as number;
-      valueChanges.v1 as null;
+      valueChanges.v1 as undefined;
       valueChanges.v1 as string; // !
       valueChanges.v2; // !
 
@@ -379,13 +379,13 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
     const [cellChanges, valueChanges] = store.getTransactionChanges();
     const {changedCells, changedValues} = store.getTransactionLog();
     cellChanges.t1?.r1?.c1 as number;
-    cellChanges.t1?.r1?.c1 as null;
+    cellChanges.t1?.r1?.c1 as undefined;
     cellChanges.t1?.r1?.c1 as string; // !
     cellChanges.t1?.r1?.c2; // !
     cellChanges.t2?.r1?.c1; // !
 
     valueChanges.v1 as number;
-    valueChanges.v1 as null;
+    valueChanges.v1 as undefined;
     valueChanges.v1 as string; // !
     valueChanges.v2; // !
 
@@ -1414,13 +1414,13 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
     store.getValues().v2; // !
 
     cellChanges.t1?.r1?.c1 as number;
-    cellChanges.t1?.r1?.c1 as null;
+    cellChanges.t1?.r1?.c1 as undefined;
     cellChanges.t1?.r1?.c1 as string; // !
     cellChanges.t1?.r1?.c2; // !
     cellChanges.t2?.r1?.c1; // !
 
     valueChanges.v1 as number;
-    valueChanges.v1 as null;
+    valueChanges.v1 as undefined;
     valueChanges.v1 as string; // !
     valueChanges.v2; // !
 
@@ -1439,13 +1439,13 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
     store.getValues().v2; // !
 
     cellChanges.t1?.r1?.c1 as number;
-    cellChanges.t1?.r1?.c1 as null;
+    cellChanges.t1?.r1?.c1 as undefined;
     cellChanges.t1?.r1?.c1 as string; // !
     cellChanges.t1?.r1?.c2; // !
     cellChanges.t2?.r1?.c1; // !
 
     valueChanges.v1 as number;
-    valueChanges.v1 as null;
+    valueChanges.v1 as undefined;
     valueChanges.v1 as string; // !
     valueChanges.v2; // !
 
