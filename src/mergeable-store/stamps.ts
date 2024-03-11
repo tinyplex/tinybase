@@ -17,9 +17,9 @@ export const updateHashStamp = (
   hash: Hash,
   time: Time,
 ) => {
-  hashStamp[0] = hash >>> 0;
-  if (time > hashStamp[1]) {
-    hashStamp[1] = time;
+  hashStamp[2] = hash >>> 0;
+  if (time > hashStamp[0]) {
+    hashStamp[0] = time;
   }
 };
 
@@ -28,22 +28,21 @@ export const stampNewObj = <Thing>(time: Time): Stamp<IdObj<Thing>> =>
 
 export const hashStampNewMap = <Thing>(
   time = EMPTY_STRING,
-): HashStamp<IdMap<Thing>> => [0, time, mapNew<Id, Thing>()];
+): HashStamp<IdMap<Thing>> => [time, mapNew<Id, Thing>(), 0];
 
 export const hashStampNewThing = <Thing>(): HashStamp<Thing> => [
-  0,
   EMPTY_STRING,
   undefined as any,
+  0,
 ];
 
 export const cloneHashStampToStamp = <Value>([
-  ,
   time,
   value,
 ]: HashStamp<Value>): Stamp<Value> => [time, value];
 
 export const hashStampToStamp = <From, To = From>(
-  [, time, value]: HashStamp<From>,
+  [time, value]: HashStamp<From>,
   mapper: (value: From, time: Time) => To,
 ): Stamp<To> => [time, mapper(value, time)];
 
