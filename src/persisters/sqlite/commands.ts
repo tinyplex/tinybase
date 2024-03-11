@@ -332,7 +332,7 @@ const upsert = async (
             COMMA,
           )
         : EMPTY_STRING),
-    args,
+    arrayMap(args, (arg) => arg ?? null),
   );
 
 const getPlaceholders = (array: any[]) =>
