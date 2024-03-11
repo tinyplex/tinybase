@@ -10,6 +10,9 @@ export type Hash = number;
 /// Time
 export type Time = string;
 
+/// HashStamp
+export type HashStamp<Thing> = [hash: Hash, time: Time, thing: Thing];
+
 /// Stamp
 export type Stamp<Thing> = [time: Time, thing: Thing];
 
@@ -17,13 +20,9 @@ export type Stamp<Thing> = [time: Time, thing: Thing];
 export type MergeableContent = Stamp<
   [
     mergeableTables: Stamp<
-      IdObj<
-        Stamp<
-          IdObj<Stamp<IdObj<Stamp<CellOrUndefined>> | undefined> | undefined>
-        >
-      >
+      IdObj<Stamp<IdObj<Stamp<IdObj<Stamp<CellOrUndefined>>>>>>
     >,
-    mergeableValues: Stamp<IdObj<Stamp<ValueOrUndefined>> | undefined>,
+    mergeableValues: Stamp<IdObj<Stamp<ValueOrUndefined>>>,
   ]
 >;
 
@@ -31,13 +30,9 @@ export type MergeableContent = Stamp<
 export type MergeableChanges = Stamp<
   [
     mergeableTables: Stamp<
-      IdObj<
-        Stamp<
-          IdObj<Stamp<IdObj<Stamp<CellOrUndefined>> | undefined> | undefined>
-        >
-      >
+      IdObj<Stamp<IdObj<Stamp<IdObj<Stamp<CellOrUndefined>>>>>>
     >,
-    mergeableValues: Stamp<IdObj<Stamp<ValueOrUndefined>> | undefined>,
+    mergeableValues: Stamp<IdObj<Stamp<ValueOrUndefined>>>,
   ]
 >;
 
