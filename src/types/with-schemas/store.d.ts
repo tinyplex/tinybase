@@ -815,26 +815,24 @@ export type ChangedValue<
 /// InvalidValues
 export type InvalidValues = {[valueId: Id]: any[]};
 
-// Changes
+//
 export type Changes<Schemas extends OptionalSchemas> = [
   {
-    [TableId in TableIdFromSchema<Schemas[0]>]?: {
-      [rowId: Id]:
-        | {
-            [CellId in CellIdFromSchema<Schemas[0], TableId>]?: Cell<
-              Schemas[0],
-              TableId,
-              CellId
-            > | null;
-          }
-        | null;
-    } | null;
+    [TableId in TableIdFromSchema<Schemas[0]>]?:
+      | {
+          [rowId: Id]:
+            | {
+                [CellId in CellIdFromSchema<
+                  Schemas[0],
+                  TableId
+                >]?: CellOrUndefined<Schemas[0], TableId, CellId>;
+              }
+            | undefined;
+        }
+      | undefined;
   },
   {
-    [ValueId in ValueIdFromSchema<Schemas[1]>]?: Value<
-      Schemas[1],
-      ValueId
-    > | null;
+    [ValueId in ValueIdFromSchema<Schemas[1]>]?: Value<Schemas[1], ValueId>;
   },
 ];
 
