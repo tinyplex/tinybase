@@ -1,11 +1,9 @@
-import {Hash, Stamp, Time} from '../types/mergeable-store';
+import {Hash, HashStamp, Stamp, Time} from '../types/mergeable-store';
 import {IdMap, mapNew, mapToObj} from '../common/map';
 import {IdObj, objNew} from '../common/obj';
 import {EMPTY_STRING} from '../common/strings';
 import {Id} from '../types/common';
 import {getHash} from './hash';
-
-export type HashStamp<Thing> = [hash: Hash, time: Time, thing: Thing];
 
 export const stampNew = <Thing>(time: Time, thing?: Thing): Stamp<Thing> => [
   time,
