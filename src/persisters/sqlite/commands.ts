@@ -206,7 +206,7 @@ export const getCommandFunctions = (
     }
 
     // Insert or update or delete data
-    if (partial && useOnConflict) {
+    if (partial) {
       if (isUndefined(table)) {
         await cmd('DELETE FROM' + escapeId(tableName) + 'WHERE 1');
       } else {
@@ -222,10 +222,14 @@ export const getCommandFunctions = (
                 [rowId],
               );
             } else if (!arrayIsEmpty(tableColumnNames)) {
-              await upsert(cmd, tableName, rowIdColumnName, objIds(row), [
-                rowId,
-                ...objValues(row),
-              ]);
+              await upsert(
+                cmd,
+                tableName,
+                rowIdColumnName,
+                objIds(row),
+                [rowId, ...objValues(row)],
+                useOnConflict,
+              );
             }
           }),
         );
