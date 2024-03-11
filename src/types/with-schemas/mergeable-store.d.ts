@@ -28,7 +28,7 @@ export type Hash = number;
 export type Time = string;
 
 /// HashStamp
-export type HashStamp<Thing> = [hash: Hash, time: Time, thing: Thing];
+export type HashStamp<Thing> = [time: Time, thing: Thing, hash: Hash];
 
 /// Stamp
 export type Stamp<Thing> = [time: Time, thing: Thing];
