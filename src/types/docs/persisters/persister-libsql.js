@@ -5,7 +5,7 @@
  * @see Persisting Data guide
  * @packageDocumentation
  * @module persister-libsql
- * @since v4.8.0
+ * @since v4.7.0
  */
 /// persister-libsql
 /**
@@ -14,7 +14,7 @@
  *
  * It simply provides an extra getClient method for accessing a reference to the
  * database client the Store is being persisted to.
- * @since v4.8.0
+ * @since v4.7.0
  */
 /// LibSqlPersister
 {
@@ -37,7 +37,7 @@
    * persister.destroy();
    * ```
    * @category Getter
-   * @since v4.8.0
+   * @since v4.7.0
    */
   /// LibSqlPersister.getClient
 }
@@ -138,6 +138,6 @@
  * persister.destroy();
  * ```
  * @category Creation
- * @since v4.8.0
+ * @since v4.7.0
  */
 /// createLibSqlPersister
