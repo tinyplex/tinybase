@@ -27,7 +27,7 @@
    * then gets the database client back out again.
    *
    * ```js yolo
-   * const client = createClient({url: "file:my.db"});
+   * const client = createClient({url: 'file:my.db'});
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const persister = createLibSqlPersister(store, client, 'my_tinybase');
    *
@@ -78,7 +78,7 @@
  * Store.
  *
  * ```js yolo
- * const client = createClient({url: "file:my.db"});
+ * const client = createClient({url: 'file:my.db'});
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = createLibSqlPersister(store, db, 'my_tinybase');
  *
@@ -110,7 +110,7 @@
  * local SQLite database with tabular mapping.
  *
  * ```js yolo
- * const client = createClient({url: "file:my.db"});
+ * const client = createClient({url: 'file:my.db'});
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = createLibSqlPersister(store, db, {
  *   mode: 'tabular',
