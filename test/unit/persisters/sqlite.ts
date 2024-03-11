@@ -66,6 +66,7 @@ export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
     ): Promise<{[id: string]: any}[]> =>
       (await client.execute({sql, args})).rows,
     async (db: Client) => db.close(),
+    1000,
   ],
   electricSql: [
     async (): Promise<Electric> =>
