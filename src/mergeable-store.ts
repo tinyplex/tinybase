@@ -2,6 +2,7 @@ import {CellOrUndefined, Changes, Store, ValueOrUndefined} from './types/store';
 import {EMPTY_STRING, strEndsWith, strStartsWith} from './common/strings';
 import {
   Hash,
+  HashStamp,
   MergeableChanges,
   MergeableContent,
   MergeableStore,
@@ -9,18 +10,6 @@ import {
   Time,
   createMergeableStore as createMergeableStoreDecl,
 } from './types/mergeable-store';
-import {
-  HashStamp,
-  cloneHashStampToStamp,
-  hashIdAndHash,
-  hashStampMapToStampObj,
-  hashStampNewMap,
-  hashStampNewThing,
-  hashStampToStamp,
-  stampNew,
-  stampNewObj,
-  updateHashStamp,
-} from './mergeable-store/stamps';
 import {IdMap, mapEnsure, mapGet} from './common/map';
 import {
   IdObj,
@@ -31,6 +20,17 @@ import {
   objNew,
   objToArray,
 } from './common/obj';
+import {
+  cloneHashStampToStamp,
+  hashIdAndHash,
+  hashStampMapToStampObj,
+  hashStampNewMap,
+  hashStampNewThing,
+  hashStampToStamp,
+  stampNew,
+  stampNewObj,
+  updateHashStamp,
+} from './mergeable-store/stamps';
 import {isUndefined, slice} from './common/other';
 import {Id} from './types/common';
 import {createStore} from './store';
