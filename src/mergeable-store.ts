@@ -67,9 +67,9 @@ type ContentHashStamp = HashStamp<
 >;
 
 const newContentHashStamp = (time = EMPTY_STRING): ContentHashStamp => [
-  0,
   time,
   [hashStampNewMap(time), hashStampNewMap(time)],
+  0,
 ];
 
 export const createMergeableStore = ((id: Id): MergeableStore => {
@@ -92,8 +92,8 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     const valuesChanges = {};
 
     const [, [[tablesTime, tableStamps], valuesStamp]] = contentStamp;
-    const [, , [tablesHashStamp, valuesHashStamp]] = contentHashStamp;
-    const [oldTablesHash, oldTablesTime, tableHashStamps] = tablesHashStamp;
+    const [, [tablesHashStamp, valuesHashStamp]] = contentHashStamp;
+    const [oldTablesTime, tableHashStamps, oldTablesHash] = tablesHashStamp;
 
     if (tablesTime) {
       let tablesHash =
@@ -108,7 +108,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
           tableId,
           hashStampNewMap,
         );
-        const [oldTableHash, oldTableTime, rowHashStamps] = tableHashStamp;
+        const [oldTableTime, rowHashStamps, oldTableHash] = tableHashStamp;
         let tableHash =
           oldTableHash ^
           (tableTime > oldTableTime
@@ -136,7 +136,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
         updateHashStamp(tableHashStamp, tableHash, tableTime);
         tablesHash ^=
           (oldTableHash ? hashIdAndHash(tableId, oldTableHash) : 0) ^
-          hashIdAndHash(tableId, tableHashStamp[0]);
+          hashIdAndHash(tableId, tableHashStamp[2]);
       });
       updateHashStamp(tablesHashStamp, tablesHash, tablesTime);
     }
@@ -145,7 +145,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
 
     updateHashStamp(
       contentHashStamp,
-      tablesHashStamp[0] ^ valuesHashStamp[0],
+      tablesHashStamp[2] ^ valuesHashStamp[2],
       contentStamp[0],
     );
 
@@ -158,7 +158,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     thingsChanges: {[thingId: Id]: Thing},
   ): [oldThingsHash: number, newThingsHash: number] => {
     const [thingsTime, thingStamps] = thingsStamp;
-    const [oldThingsHash, oldThingsTime, thingHashStamps] = thingsHashStamp;
+    const [oldThingsTime, thingHashStamps, oldThingsHash] = thingsHashStamp;
     if (thingsTime) {
       let thingsHash =
         oldThingsHash ^
@@ -172,7 +172,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
           thingId,
           hashStampNewThing,
         );
-        const [oldThingHash, oldThingTime] = thingHashStamp;
+        const [oldThingTime, , oldThingHash] = thingHashStamp;
 
         if (thingTime > oldThingTime) {
           updateHashStamp(
@@ -180,17 +180,17 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
             getHash(jsonString(thing ?? null) + ':' + thingTime),
             thingTime,
           );
-          thingHashStamp[2] = thing;
+          thingHashStamp[1] = thing;
           thingsChanges[thingId] = thing;
           thingsHash ^=
             hashIdAndHash(thingId, oldThingHash) ^
-            hashIdAndHash(thingId, thingHashStamp[0]);
+            hashIdAndHash(thingId, thingHashStamp[2]);
         }
       });
 
       updateHashStamp(thingsHashStamp, thingsHash, thingsTime);
     }
-    return [oldThingsHash, thingsHashStamp[0]];
+    return [oldThingsHash, thingsHashStamp[2]];
   };
 
   const preFinishTransaction = () => {
@@ -274,26 +274,26 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     return applyMergeableChanges(mergeableContent2);
   };
 
-  const getContentHash = (): Hash => contentHashStamp[0];
+  const getContentHash = (): Hash => contentHashStamp[2];
 
-  const getTablesHash = (): Hash => contentHashStamp[2][0][0];
+  const getTablesHash = (): Hash => contentHashStamp[1][0][2];
 
   const getTableHash = (tableId: Id): Hash =>
-    mapGet(contentHashStamp[2][0][2], tableId)?.[0] ?? 0;
+    mapGet(contentHashStamp[1][0][1], tableId)?.[2] ?? 0;
 
   const getRowHash = (tableId: Id, rowId: Id): Hash =>
-    mapGet(mapGet(contentHashStamp[2][0][2], tableId)?.[2], rowId)?.[0] ?? 0;
+    mapGet(mapGet(contentHashStamp[1][0][1], tableId)?.[1], rowId)?.[2] ?? 0;
 
   const getCellHash = (tableId: Id, rowId: Id, cellId: Id): Hash =>
     mapGet(
-      mapGet(mapGet(contentHashStamp[2][0][2], tableId)?.[2], rowId)?.[2],
+      mapGet(mapGet(contentHashStamp[1][0][1], tableId)?.[1], rowId)?.[1],
       cellId,
-    )?.[0] ?? 0;
+    )?.[2] ?? 0;
 
-  const getValuesHash = (): Hash => contentHashStamp[2][1][0];
+  const getValuesHash = (): Hash => contentHashStamp[1][1][2];
 
   const getValueHash = (valueId: Id): Hash =>
-    mapGet(contentHashStamp[2][1][2], valueId)?.[0] ?? 0;
+    mapGet(contentHashStamp[1][1][1], valueId)?.[2] ?? 0;
 
   const mergeableStore: IdObj<any> = {
     getMergeableContent,
