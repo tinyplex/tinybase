@@ -1,4 +1,18 @@
-<p>This is a reverse chronological list of the major <a href="https://tinybase.org/">TinyBase</a> releases, with highlighted features.</p><h2 id="v4-6">v4.6</h2><p>This release includes the new <a href="https://tinybase.org/api/persister-electric-sql/"><code>persister-electric-sql</code></a> module, which provides a <a href="https://tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a> for <a href="https://electric-sql.com/">ElectricSQL</a> client databases.</p><p>Use the <a href="https://tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a> by passing in a reference to the Electric client to the <a href="https://tinybase.org/api/persister-electric-sql/functions/creation/createelectricsqlpersister/"><code>createElectricSqlPersister</code></a> function; something like:</p>
+<p>This is a reverse chronological list of the major <a href="https://tinybase.org/">TinyBase</a> releases, with highlighted features.</p><h2 id="v4-7">v4.7</h2><p>This release includes the new <a href="https://tinybase.org/api/persister-libsql/"><code>persister-libsql</code></a> module, which provides a <a href="https://tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a> for <a href="https://turso.tech/libsql">Turso&#x27;s LibSQL</a> database.</p><p>Use the <a href="https://tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a> by passing in a reference to the LibSQL client to the createLibSQLPersister function; something like:</p>
+
+```js yolo
+const client = createClient({url: 'file:my.db'});
+
+const persister = createLibSqlPersister(store, client, {
+  mode: 'tabular',
+  tables: {
+    load: {items: {tableId: 'items', rowIdColumnName: 'value'}},
+    save: {items: {tableName: 'items', rowIdColumnName: 'value'}},
+  },
+});
+```
+
+<p>This is the first version of this functionality, so please provide feedback on how it works for you!</p><h2 id="v4-6">v4.6</h2><p>This release includes the new <a href="https://tinybase.org/api/persister-electric-sql/"><code>persister-electric-sql</code></a> module, which provides a <a href="https://tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a> for <a href="https://electric-sql.com/">ElectricSQL</a> client databases.</p><p>Use the <a href="https://tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a> by passing in a reference to the Electric client to the <a href="https://tinybase.org/api/persister-electric-sql/functions/creation/createelectricsqlpersister/"><code>createElectricSqlPersister</code></a> function; something like:</p>
 
 ```js yolo
 const electric = await electrify(connection, schema, config);
