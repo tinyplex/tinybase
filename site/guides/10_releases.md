@@ -3,6 +3,29 @@
 This is a reverse chronological list of the major TinyBase releases, with
 highlighted features.
 
+## v4.7
+
+This release includes the new persister-libsql module, which provides a
+Persister for [Turso's LibSQL](https://turso.tech/libsql) database.
+
+Use the Persister by passing in a reference to the LibSQL client to the
+createLibSQLPersister function; something like:
+
+```js yolo
+const client = createClient({url: 'file:my.db'});
+
+const persister = createLibSqlPersister(store, client, {
+  mode: 'tabular',
+  tables: {
+    load: {items: {tableId: 'items', rowIdColumnName: 'value'}},
+    save: {items: {tableName: 'items', rowIdColumnName: 'value'}},
+  },
+});
+```
+
+This is the first version of this functionality, so please provide feedback on
+how it works for you!
+
 ## v4.6
 
 This release includes the new persister-electric-sql module, which provides

@@ -80,24 +80,17 @@
  * ```js yolo
  * const client = createClient({url: 'file:my.db'});
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
- * const persister = createLibSqlPersister(store, db, 'my_tinybase');
+ * const persister = createLibSqlPersister(store, client, 'my_tinybase');
  *
  * await persister.save();
  * // Store will be saved to the database.
  *
- * console.log(
- *   await new Promise((resolve) =>
- *     db.all('SELECT * FROM my_tinybase;', (_, rows) => resolve(rows)),
- *   ),
- * );
+ * console.log((await client.execute('SELECT * FROM my_tinybase;')).rows);
  * // -> [{_id: '_', store: '[{"pets":{"fido":{"species":"dog"}}},{}]'}]
  *
- * await new Promise((resolve) =>
- *   db.all(
- *     'UPDATE my_tinybase SET store = ' +
- *       `'[{"pets":{"felix":{"species":"cat"}}},{}]' WHERE _id = '_';`,
- *     resolve,
- *   ),
+ * await client.execute(
+ *   'UPDATE my_tinybase SET store = ' +
+ *     `'[{"pets":{"felix":{"species":"cat"}}},{}]' WHERE _id = '_';`,
  * );
  * await persister.load();
  * console.log(store.getTables());
@@ -112,24 +105,17 @@
  * ```js yolo
  * const client = createClient({url: 'file:my.db'});
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
- * const persister = createLibSqlPersister(store, db, {
+ * const persister = createLibSqlPersister(store, client, {
  *   mode: 'tabular',
  *   tables: {load: {pets: 'pets'}, save: {pets: 'pets'}},
  * });
  *
  * await persister.save();
- * console.log(
- *   await new Promise((resolve) =>
- *     db.all('SELECT * FROM pets;', (_, rows) => resolve(rows)),
- *   ),
- * );
+ * console.log((await client.execute('SELECT * FROM pets;')).rows);
  * // -> [{_id: 'fido', species: 'dog'}]
  *
- * await new Promise((resolve) =>
- *   db.all(
- *     `INSERT INTO pets (_id, species) VALUES ('felix', 'cat')`,
- *     resolve,
- *   ),
+ * await client.execute(
+ *   `INSERT INTO pets (_id, species) VALUES ('felix', 'cat')`,
  * );
  * await persister.load();
  * console.log(store.getTables());

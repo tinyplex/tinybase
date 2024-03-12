@@ -12,8 +12,8 @@
   </p>
 </section>
 
-<a href='/guides/releases/#v4-6'><em>NEW!</em> v4.6 release</a> <span
-id="one-with">"The One With ElectricSQL"</span>
+<a href='/guides/releases/#v4-7'><em>NEW!</em> v4.7 release</a> <span
+id="one-with">"The One With Turso"</span>
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 
@@ -104,6 +104,11 @@ id="one-with">"The One With ElectricSQL"</span>
 <div>
   <a href='/guides/schemas-and-persistence/database-persistence'>
     <img width="48" src="/sqlite.svg" /> SQLite
+  </a>
+</div>
+<div>
+  <a href='/guides/schemas-and-persistence/database-persistence'>
+    <img width="48" src="/turso.svg" />Turso
   </a>
 </div>
 <div>
