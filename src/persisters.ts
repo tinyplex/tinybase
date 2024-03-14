@@ -55,7 +55,7 @@ const getStoreFunctions = (
       ]
     : [
         1,
-        store.getMergeableContent,
+        () => store.getMergeableContent(true),
         store.getTransactionMergeableChanges,
         ([, [[, changedTables], [, changedValues]]]: MergeableChanges) =>
           !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
