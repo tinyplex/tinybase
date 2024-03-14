@@ -43,7 +43,9 @@ export interface MergeableStore extends Store {
   merge(mergeableStore: MergeableStore): MergeableStore;
 
   /// MergeableStore.getMergeableContent
-  getMergeableContent(): MergeableContent;
+  getMergeableContent<AsChanges extends boolean = false>(
+    asChanges?: AsChanges,
+  ): AsChanges extends true ? MergeableChanges : MergeableContent;
 
   /// MergeableStore.setMergeableContent
   setMergeableContent(mergeableContent: MergeableContent): MergeableStore;

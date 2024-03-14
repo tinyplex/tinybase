@@ -21,9 +21,8 @@ import {
   objToArray,
 } from './common/obj';
 import {
-  cloneHashStampToStamp,
   hashIdAndHash,
-  hashStampMapToStampObj,
+  hashStampMapToHashStampObj,
   hashStampNewMap,
   hashStampNewThing,
   hashStampToStamp,
@@ -87,7 +86,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     listening = wasListening;
   };
 
-  const mergeContent = (contentStamp: MergeableChanges): Changes => {
+  const mergeChanges = (contentStamp: MergeableChanges): Changes => {
     const tablesChanges = {};
     const valuesChanges = {};
 
@@ -196,32 +195,39 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const preFinishTransaction = () => {
     if (listening) {
       transactionContentStamp = getTransactionMergeableChanges();
-      mergeContent(transactionContentStamp);
+      mergeChanges(transactionContentStamp);
     }
   };
 
   const postFinishTransaction = () =>
     (transactionTime = transactionContentStamp = undefined);
 
-  const getMergeableContent = (): MergeableContent =>
+  const getMergeableContent = (
+    asChanges = true,
+  ): MergeableChanges | MergeableContent =>
     hashStampToStamp(contentHashStamp, ([tablesStamp, valuesStamp]) => [
-      hashStampMapToStampObj(tablesStamp, (rowsStamp) =>
-        hashStampMapToStampObj(rowsStamp, (cellsStamp) =>
-          hashStampMapToStampObj(cellsStamp, cloneHashStampToStamp),
+      hashStampMapToHashStampObj(tablesStamp, asChanges, (rowsStamp) =>
+        hashStampMapToHashStampObj(rowsStamp, asChanges, (cellsStamp) =>
+          hashStampMapToHashStampObj(cellsStamp, asChanges),
         ),
       ),
-      hashStampMapToStampObj(valuesStamp, cloneHashStampToStamp),
-    ]);
+      hashStampMapToHashStampObj(valuesStamp, asChanges),
+    ]) as any;
 
-  const setMergeableContent = (mergeableContent: MergeableContent) => {
+  const setMergeableContent = (
+    mergeableContent: MergeableContent,
+  ): MergeableStore => {
     disableListening(() =>
       store.transaction(() => {
         store.delTables().delValues();
         contentHashStamp = newContentHashStamp();
       }),
     );
-    applyMergeableChanges(mergeableContent);
-    return mergeableStore;
+    seenHlc(mergeableContent[0]);
+    disableListening(() =>
+      store.applyChanges(mergeChanges(mergeableContent as any)),
+    );
+    return mergeableStore as MergeableStore;
   };
 
   const getTransactionMergeableChanges = (): MergeableChanges => {
@@ -263,15 +269,15 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     mergeableChanges: MergeableChanges,
   ): MergeableStore => {
     seenHlc(mergeableChanges[0]);
-    disableListening(() => store.applyChanges(mergeContent(mergeableChanges)));
+    disableListening(() => store.applyChanges(mergeChanges(mergeableChanges)));
     return mergeableStore as MergeableStore;
   };
 
   const merge = (mergeableStore2: MergeableStore) => {
-    const mergeableContent = mergeableStore.getMergeableContent();
-    const mergeableContent2 = mergeableStore2.getMergeableContent();
-    mergeableStore2.applyMergeableChanges(mergeableContent);
-    return applyMergeableChanges(mergeableContent2);
+    const mergeableChanges = mergeableStore.getMergeableContent(true);
+    const mergeableChanges2 = mergeableStore2.getMergeableContent(true);
+    mergeableStore2.applyMergeableChanges(mergeableChanges);
+    return applyMergeableChanges(mergeableChanges2);
   };
 
   const getContentHash = (): Hash => contentHashStamp[2];
