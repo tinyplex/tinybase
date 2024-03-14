@@ -383,7 +383,7 @@ describe('Supported, MergeableStore', () => {
     await persister.load();
     await persister.save();
     persister.destroy();
-    expect(persisted).toEqual(JSON.stringify(content));
+    expect(persisted).toMatchSnapshot();
   });
 
   test('Changes in setPersisted', async () => {
