@@ -21,7 +21,7 @@ import {
   mockMergeableNoContentListener,
   mockSessionStorage,
 } from './mocks';
-import {pause, storeHashSamples} from '../common/other';
+import {pause} from '../common/other';
 
 beforeEach(() => {
   jest.useFakeTimers({now: START_TIME});
@@ -77,10 +77,7 @@ describe.each([
 
   test('saves', async () => {
     store.setContent([{t1: {r1: {c1: 1}}}, {v1: 1}]);
-    expect(storeHashSamples(store)).toEqual([
-      2033316771, 4033596827, 1293085726, 1279994494, 4065945599, 0, 2304392760,
-      4065945599,
-    ]);
+    expect(store.getMergeableContent()).toMatchSnapshot();
     await persister.save();
     expect(await persistable.get(location)).toEqual(
       stamped1(0, 0, [
@@ -197,10 +194,7 @@ describe.each([
     await persister.load();
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     expect(store.getValues()).toEqual({v1: 1});
-    expect(storeHashSamples(store)).toEqual([
-      2033316771, 4033596827, 1293085726, 1279994494, 4065945599, 0, 2304392760,
-      4065945599,
-    ]);
+    expect(store.getMergeableContent()).toMatchSnapshot();
     expect(persister.getStats()).toEqual({loads: 1, saves: 0});
   });
 
@@ -240,9 +234,7 @@ describe.each([
     await persister.startAutoLoad();
     await nextLoop(true);
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
-    expect(storeHashSamples(store)).toEqual([
-      4033596827, 4033596827, 1293085726, 1279994494, 4065945599, 0, 0, 0,
-    ]);
+    expect(store.getMergeableContent()).toMatchSnapshot();
     expect(persister.getStats()).toEqual({loads: 1, saves: 0});
     await persistable.set(
       location,
@@ -255,9 +247,7 @@ describe.each([
     );
     await pause(persistable.autoLoadPause, true);
     expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
-    expect(storeHashSamples(store)).toEqual([
-      3386696034, 3386696034, 4089057354, 274319047, 2669080357, 0, 0, 0,
-    ]);
+    expect(store.getMergeableContent()).toMatchSnapshot();
     expect(persister.getStats()).toEqual({loads: 2, saves: 0});
     await persistable.set(
       location,
@@ -270,9 +260,7 @@ describe.each([
     );
     await pause(persistable.autoLoadPause, true);
     expect(store.getTables()).toEqual({t1: {r1: {c1: 3}}});
-    expect(storeHashSamples(store)).toEqual([
-      4008152259, 4008152259, 3704904231, 1416411412, 3252714811, 0, 0, 0,
-    ]);
+    expect(store.getMergeableContent()).toMatchSnapshot();
     expect(persister.getStats()).toEqual({loads: 3, saves: 0});
     persister.stopAutoLoad();
     await persistable.set(
@@ -286,9 +274,7 @@ describe.each([
     );
     await pause(persistable.autoLoadPause, true);
     expect(store.getTables()).toEqual({t1: {r1: {c1: 3}}});
-    expect(storeHashSamples(store)).toEqual([
-      4008152259, 4008152259, 3704904231, 1416411412, 3252714811, 0, 0, 0,
-    ]);
+    expect(store.getMergeableContent()).toMatchSnapshot();
     expect(persister.getStats()).toEqual({loads: 3, saves: 0});
   });
 
@@ -474,32 +460,7 @@ describe('Supported, MergeableStore', () => {
     store.setValue('v1', 1);
     await pause(1, true);
     persister.destroy();
-    expect(persisted).toEqual([
-      JSON.stringify([
-        'Hc2DO@000008DKS9',
-        [
-          [
-            'Hc2DO@000008DKS9',
-            {
-              t1: [
-                'Hc2DO@000008DKS9',
-                {
-                  r1: ['Hc2DO@000008DKS9', {c1: ['Hc2DO@000008DKS9', 1]}],
-                },
-              ],
-            },
-          ],
-          ['', {}],
-        ],
-      ]),
-      JSON.stringify([
-        'Hc2DO@000018DKS9',
-        [
-          ['', {}],
-          ['Hc2DO@000018DKS9', {v1: ['Hc2DO@000018DKS9', 1]}],
-        ],
-      ]),
-    ]);
+    expect(persisted).toMatchSnapshot();
   });
 
   test('loading from legacy', async () => {
@@ -519,24 +480,6 @@ describe('Supported, MergeableStore', () => {
     await persister.load();
     await persister.save();
     persister.destroy();
-    expect(persisted).toEqual(
-      JSON.stringify([
-        'Hc2DO@000008DKS9',
-        [
-          [
-            'Hc2DO@000008DKS9',
-            {
-              t1: [
-                'Hc2DO@000008DKS9',
-                {
-                  r1: ['Hc2DO@000008DKS9', {c1: ['Hc2DO@000008DKS9', 1]}],
-                },
-              ],
-            },
-          ],
-          ['Hc2DO@000008DKS9', {v1: ['Hc2DO@000008DKS9', 1]}],
-        ],
-      ]),
-    );
+    expect(persisted).toMatchSnapshot();
   });
 });
