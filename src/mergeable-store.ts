@@ -25,7 +25,7 @@ import {
   hashStampMapToHashStampObj,
   hashStampNewMap,
   hashStampNewThing,
-  hashStampToStamp,
+  hashStampToHashStamp,
   stampNew,
   stampNewObj,
   updateHashStamp,
@@ -205,14 +205,18 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const getMergeableContent = (
     asChanges = false,
   ): MergeableChanges | MergeableContent =>
-    hashStampToStamp(contentHashStamp, ([tablesStamp, valuesStamp]) => [
-      hashStampMapToHashStampObj(tablesStamp, asChanges, (rowsStamp) =>
-        hashStampMapToHashStampObj(rowsStamp, asChanges, (cellsStamp) =>
-          hashStampMapToHashStampObj(cellsStamp, asChanges),
+    hashStampToHashStamp(
+      contentHashStamp,
+      ([tablesStamp, valuesStamp]) => [
+        hashStampMapToHashStampObj(tablesStamp, asChanges, (rowsStamp) =>
+          hashStampMapToHashStampObj(rowsStamp, asChanges, (cellsStamp) =>
+            hashStampMapToHashStampObj(cellsStamp, asChanges),
+          ),
         ),
-      ),
-      hashStampMapToHashStampObj(valuesStamp, asChanges),
-    ]) as any;
+        hashStampMapToHashStampObj(valuesStamp, asChanges),
+      ],
+      asChanges,
+    ) as any;
 
   const setMergeableContent = (
     mergeableContent: MergeableContent,
