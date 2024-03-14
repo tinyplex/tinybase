@@ -75,7 +75,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   let listening = 1;
   let contentHashStamp = newContentHashStamp();
   let transactionTime: Time | undefined;
-  let transactionContentStamp: MergeableChanges | undefined;
+  let transactionMergeableChanges: MergeableChanges | undefined;
   const [getHlc, seenHlc] = getHlcFunctions(id);
   const store = createStore();
 
@@ -86,11 +86,14 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     listening = wasListening;
   };
 
-  const mergeChanges = (contentStamp: MergeableChanges): Changes => {
+  const mergeMergeableContentOrChanges = (
+    mergeableContentOrChanges: MergeableContent | MergeableChanges,
+  ): Changes => {
     const tablesChanges = {};
     const valuesChanges = {};
 
-    const [, [[tablesTime, tableStamps], valuesStamp]] = contentStamp;
+    const [, [[tablesTime, tableStamps], valuesStamp]] =
+      mergeableContentOrChanges;
     const [, [tablesHashStamp, valuesHashStamp]] = contentHashStamp;
     const [oldTablesTime, tableHashStamps, oldTablesHash] = tablesHashStamp;
 
@@ -145,7 +148,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     updateHashStamp(
       contentHashStamp,
       tablesHashStamp[2] ^ valuesHashStamp[2],
-      contentStamp[0],
+      mergeableContentOrChanges[0],
     );
 
     return [tablesChanges, valuesChanges];
@@ -194,13 +197,13 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
 
   const preFinishTransaction = () => {
     if (listening) {
-      transactionContentStamp = getTransactionMergeableChanges();
-      mergeChanges(transactionContentStamp);
+      transactionMergeableChanges = getTransactionMergeableChanges();
+      mergeMergeableContentOrChanges(transactionMergeableChanges);
     }
   };
 
   const postFinishTransaction = () =>
-    (transactionTime = transactionContentStamp = undefined);
+    (transactionTime = transactionMergeableChanges = undefined);
 
   const getMergeableContent = (
     asChanges = false,
@@ -229,13 +232,13 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     );
     seenHlc(mergeableContent[0]);
     disableListening(() =>
-      store.applyChanges(mergeChanges(mergeableContent as any)),
+      store.applyChanges(mergeMergeableContentOrChanges(mergeableContent)),
     );
     return mergeableStore as MergeableStore;
   };
 
   const getTransactionMergeableChanges = (): MergeableChanges => {
-    if (isUndefined(transactionContentStamp)) {
+    if (isUndefined(transactionMergeableChanges)) {
       const [, , changedCells, , changedValues] = store.getTransactionLog();
       const time =
         !objIsEmpty(changedCells) || !objIsEmpty(changedValues)
@@ -266,14 +269,16 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
 
       return mergeableChanges;
     }
-    return transactionContentStamp;
+    return transactionMergeableChanges;
   };
 
   const applyMergeableChanges = (
     mergeableChanges: MergeableChanges,
   ): MergeableStore => {
     seenHlc(mergeableChanges[0]);
-    disableListening(() => store.applyChanges(mergeChanges(mergeableChanges)));
+    disableListening(() =>
+      store.applyChanges(mergeMergeableContentOrChanges(mergeableChanges)),
+    );
     return mergeableStore as MergeableStore;
   };
 
