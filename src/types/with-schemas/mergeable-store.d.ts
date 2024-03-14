@@ -83,7 +83,11 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
   merge(mergeableStore: MergeableStore<Schemas>): MergeableStore<Schemas>;
 
   /// MergeableStore.getMergeableContent
-  getMergeableContent(): MergeableContent<Schemas>;
+  getMergeableContent<AsChanges extends boolean = false>(
+    asChanges?: AsChanges,
+  ): AsChanges extends true
+    ? MergeableChanges<Schemas>
+    : MergeableContent<Schemas>;
 
   /// MergeableStore.setMergeableContent
   setMergeableContent(
