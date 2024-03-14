@@ -3,13 +3,7 @@ import {
   MergeableStore,
   createMergeableStore,
 } from 'tinybase/debug';
-import {
-  START_TIME,
-  nullStamped,
-  stamped1,
-  stamped2,
-  time,
-} from '../common/mergeable';
+import {START_TIME, nullStamped, stamped1, time} from '../common/mergeable';
 import {storeHashSamples} from '../common/other';
 
 const permute = (arr: any[]): any[] => {
@@ -84,9 +78,7 @@ describe('getMergeableContent', () => {
   });
 
   test('Initialize', () => {
-    expect(store.getMergeableContent(true)).toEqual(
-      nullStamped([nullStamped({}), nullStamped({})]),
-    );
+    expect(store.getMergeableContent(true)).toMatchSnapshot();
   });
 
   test('Immutability', () => {
@@ -94,31 +86,31 @@ describe('getMergeableContent', () => {
       {t1: {r1: {c1: 0, c2: 1}, r2: {c1: 2}}, t2: {r1: {c1: 3}}},
       {v1: 4, v2: 5},
     ]);
-    const mergeableContent = store.getMergeableContent(true);
+    const mergeableContent = store.getMergeableContent();
 
     mergeableContent[0] = time(0, 1, 's1');
-    expect(store.getMergeableContent(true)[0]).toEqual(time(0, 0, 's1'));
+    expect(store.getMergeableContent()[0]).toEqual(time(0, 0, 's1'));
 
     mergeableContent[1][0][0] = time(0, 1, 's1');
-    expect(store.getMergeableContent(true)[1][0][0]).toEqual(time(0, 0, 's1'));
+    expect(store.getMergeableContent()[1][0][0]).toEqual(time(0, 0, 's1'));
 
     mergeableContent[1][0][1].t1[0] = time(0, 1, 's1');
-    expect(store.getMergeableContent(true)[1][0][1].t1[0]).toEqual(
+    expect(store.getMergeableContent()[1][0][1].t1[0]).toEqual(
       time(0, 0, 's1'),
     );
 
     mergeableContent[1][0][1].t1[1].r1[0] = time(0, 1, 's1');
-    expect(store.getMergeableContent(true)[1][0][1].t1[1].r1[0]).toEqual(
+    expect(store.getMergeableContent()[1][0][1].t1[1].r1[0]).toEqual(
       time(0, 0, 's1'),
     );
 
     mergeableContent[1][0][1].t1[1].r1[1].c1[0] = time(0, 1, 's1');
-    expect(store.getMergeableContent(true)[1][0][1].t1[1].r1[1].c1[0]).toEqual(
+    expect(store.getMergeableContent()[1][0][1].t1[1].r1[1].c1[0]).toEqual(
       time(0, 0, 's1'),
     );
 
     mergeableContent[1][1][1].v1[0] = time(0, 1, 's1');
-    expect(store.getMergeableContent(true)[1][1][1].v1[0]).toEqual(
+    expect(store.getMergeableContent()[1][1][1].v1[0]).toEqual(
       time(0, 0, 's1'),
     );
   });
@@ -128,18 +120,7 @@ describe('getMergeableContent', () => {
       {t1: {r1: {c1: 0, c2: 1}, r2: {c1: 2}}, t2: {r1: {c1: 3}}},
       {v1: 4, v2: 5},
     ]);
-    expect(store.getMergeableContent(true)).toEqual(
-      stamped1(0, 0, [
-        stamped1(0, 0, {
-          t1: stamped1(0, 0, {
-            r1: stamped1(0, 0, {c1: stamped1(0, 0, 0), c2: stamped1(0, 0, 1)}),
-            r2: stamped1(0, 0, {c1: stamped1(0, 0, 2)}),
-          }),
-          t2: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 3)})}),
-        }),
-        stamped1(0, 0, {v1: stamped1(0, 0, 4), v2: stamped1(0, 0, 5)}),
-      ]),
-    );
+    expect(store.getMergeableContent(true)).toMatchSnapshot();
     expect(storeHashSamples(store)).toMatchSnapshot();
   });
 
@@ -151,18 +132,7 @@ describe('getMergeableContent', () => {
       .setCell('t2', 'r1', 'c1', 3)
       .setValue('v1', 4)
       .setValue('v2', 5);
-    expect(store.getMergeableContent(true)).toEqual(
-      stamped1(0, 5, [
-        stamped1(0, 3, {
-          t1: stamped1(0, 2, {
-            r1: stamped1(0, 1, {c1: stamped1(0, 0, 0), c2: stamped1(0, 1, 1)}),
-            r2: stamped1(0, 2, {c1: stamped1(0, 2, 2)}),
-          }),
-          t2: stamped1(0, 3, {r1: stamped1(0, 3, {c1: stamped1(0, 3, 3)})}),
-        }),
-        stamped1(0, 5, {v1: stamped1(0, 4, 4), v2: stamped1(0, 5, 5)}),
-      ]),
-    );
+    expect(store.getMergeableContent(true)).toMatchSnapshot();
     expect(storeHashSamples(store)).toMatchSnapshot();
   });
 
@@ -178,31 +148,13 @@ describe('getMergeableContent', () => {
       .delTable('t2')
       .setValue('v1', 5)
       .delValue('v2');
-    expect(store.getMergeableContent(true)).toEqual(
-      stamped1(0, 6, [
-        stamped1(0, 4, {
-          t1: stamped1(0, 3, {
-            r1: stamped1(0, 2, {
-              c1: stamped1(0, 1, 1),
-              c2: stamped1(0, 2, undefined),
-            }),
-            r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
-          }),
-          t2: stamped1(0, 4, {
-            r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
-          }),
-        }),
-        stamped1(0, 6, {v1: stamped1(0, 5, 5), v2: stamped1(0, 6, undefined)}),
-      ]),
-    );
+    expect(store.getMergeableContent(true)).toMatchSnapshot();
     expect(storeHashSamples(store)).toMatchSnapshot();
   });
 
   test('Empty transaction', () => {
     store.startTransaction().finishTransaction();
-    expect(store.getMergeableContent(true)).toEqual(
-      nullStamped([nullStamped({}), nullStamped({})]),
-    );
+    expect(store.getMergeableContent(true)).toMatchSnapshot();
     expect(storeHashSamples(store)).toMatchSnapshot();
   });
 });
@@ -333,23 +285,7 @@ describe('getTransactionMergeableChanges', () => {
           nullStamped({}),
         ]),
       );
-      expect(store.getMergeableContent(true)).toEqual(
-        stamped1(0, count, [
-          stamped1(
-            0,
-            count,
-            Object.fromEntries(
-              new Array(count + 1).fill('').map((_, c) => [
-                ['t' + c],
-                stamped1(0, c, {
-                  ['r' + c]: stamped1(0, c, {['c' + c]: stamped1(0, c, c)}),
-                }),
-              ]),
-            ),
-          ),
-          nullStamped({}),
-        ]),
-      );
+      expect(store.getMergeableContent(true)).toMatchSnapshot();
       count++;
     });
     store.setCell('t0', 'r0', 'c0', 0);
@@ -374,14 +310,7 @@ describe('apply/setMergeableContent', () => {
       ]) as MergeableContent,
     );
     expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
-    expect(store.getMergeableContent(true)).toEqual(
-      stamped1(0, 0, [
-        stamped1(0, 0, {
-          t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
-        }),
-        stamped1(0, 0, {v1: stamped1(0, 0, 1)}),
-      ]),
-    );
+    expect(store.getMergeableContent(true)).toMatchSnapshot();
   });
 
   test('apply over existing content', () => {
@@ -398,16 +327,7 @@ describe('apply/setMergeableContent', () => {
       {t1: {r1: {c0: 0, c1: 1}}},
       {v0: 0, v1: 1},
     ]);
-    expect(store.getMergeableContent(true)).toEqual(
-      stamped1(0, 1, [
-        stamped1(0, 1, {
-          t1: stamped1(0, 1, {
-            r1: stamped1(0, 1, {c0: stamped1(0, 0, 0), c1: stamped1(0, 1, 1)}),
-          }),
-        }),
-        stamped1(0, 1, {v0: stamped1(0, 0, 0), v1: stamped1(0, 1, 1)}),
-      ]),
-    );
+    expect(store.getMergeableContent(true)).toMatchSnapshot();
   });
 
   test('set into empty store', () => {
@@ -420,14 +340,7 @@ describe('apply/setMergeableContent', () => {
       ]) as MergeableContent,
     );
     expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
-    expect(store.getMergeableContent(true)).toEqual(
-      stamped1(0, 0, [
-        stamped1(0, 0, {
-          t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
-        }),
-        stamped1(0, 0, {v1: stamped1(0, 0, 1)}),
-      ]),
-    );
+    expect(store.getMergeableContent(true)).toMatchSnapshot();
   });
 
   test('set over existing content', () => {
@@ -441,26 +354,10 @@ describe('apply/setMergeableContent', () => {
       ]) as MergeableContent,
     );
     expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
-    expect(store.getMergeableContent(true)).toEqual(
-      stamped1(0, 1, [
-        stamped1(0, 1, {
-          t1: stamped1(0, 1, {r1: stamped1(0, 1, {c1: stamped1(0, 1, 1)})}),
-        }),
-        stamped1(0, 1, {v1: stamped1(0, 1, 1)}),
-      ]),
-    );
+    expect(store.getMergeableContent(true)).toMatchSnapshot();
     store.setCell('t1', 'r1', 'c2', 2);
     expect(store.getContent()).toEqual([{t1: {r1: {c1: 1, c2: 2}}}, {v1: 1}]);
-    expect(store.getMergeableContent(true)).toEqual(
-      stamped1(0, 2, [
-        stamped1(0, 2, {
-          t1: stamped1(0, 2, {
-            r1: stamped1(0, 2, {c1: stamped1(0, 1, 1), c2: stamped1(0, 2, 2)}),
-          }),
-        }),
-        stamped1(0, 1, {v1: stamped1(0, 1, 1)}),
-      ]),
-    );
+    expect(store.getMergeableContent(true)).toMatchSnapshot();
   });
 });
 
@@ -477,15 +374,13 @@ describe('Merge', () => {
     ]);
 
     expect(store1.getContent()).toEqual([{}, {}]);
-    const mergeableContent1 = store1.getMergeableContent(true);
-    expect(mergeableContent1).toEqual(noChanges);
+    expect(store1.getMergeableContent(true)).toMatchSnapshot();
     expect(store1.applyMergeableChanges(noChanges)).toEqual(store1);
     expect(store1.getContent()).toEqual([{}, {}]);
     expect(storeHashSamples(store1)).toMatchSnapshot();
 
     expect(store2.getContent()).toEqual([{}, {}]);
-    const mergeableContent2 = store2.getMergeableContent(true);
-    expect(mergeableContent2).toEqual(noChanges);
+    expect(store2.getMergeableContent(true)).toMatchSnapshot();
     expect(store2.applyMergeableChanges(noChanges)).toEqual(store2);
     expect(store2.getContent()).toEqual([{}, {}]);
     expect(storeHashSamples(store1)).toMatchSnapshot();
@@ -503,21 +398,7 @@ describe('Merge', () => {
         t1: {r1: {c1: 0, c2: 0}, r2: {c1: 0}},
         t2: {r1: {c1: 0}},
       });
-      expect(store1.getMergeableContent(true)).toEqual(
-        stamped1(0, 0, [
-          stamped1(0, 0, {
-            t1: stamped1(0, 0, {
-              r1: stamped1(0, 0, {
-                c1: stamped1(0, 0, 0),
-                c2: stamped1(0, 0, 0),
-              }),
-              r2: stamped1(0, 0, {c1: stamped1(0, 0, 0)}),
-            }),
-            t2: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 0)})}),
-          }),
-          nullStamped({}),
-        ]),
-      );
+      expect(store1.getMergeableContent(true)).toMatchSnapshot();
       expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent(true));
@@ -530,21 +411,7 @@ describe('Merge', () => {
 
     test('setCell', () => {
       store1.setCell('t1', 'r1', 'c1', 1);
-      expect(store1.getMergeableContent(true)).toEqual(
-        stamped1(0, 1, [
-          stamped1(0, 1, {
-            t1: stamped1(0, 1, {
-              r1: stamped1(0, 1, {
-                c1: stamped1(0, 1, 1),
-                c2: stamped1(0, 0, 0),
-              }),
-              r2: stamped1(0, 0, {c1: stamped1(0, 0, 0)}),
-            }),
-            t2: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 0)})}),
-          }),
-          nullStamped({}),
-        ]),
-      );
+      expect(store1.getMergeableContent(true)).toMatchSnapshot();
       expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent(true));
@@ -557,21 +424,7 @@ describe('Merge', () => {
 
     test('delCell', () => {
       store1.delCell('t1', 'r1', 'c2');
-      expect(store1.getMergeableContent(true)).toEqual(
-        stamped1(0, 2, [
-          stamped1(0, 2, {
-            t1: stamped1(0, 2, {
-              r1: stamped1(0, 2, {
-                c1: stamped1(0, 1, 1),
-                c2: stamped1(0, 2, undefined),
-              }),
-              r2: stamped1(0, 0, {c1: stamped1(0, 0, 0)}),
-            }),
-            t2: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 0)})}),
-          }),
-          nullStamped({}),
-        ]),
-      );
+      expect(store1.getMergeableContent(true)).toMatchSnapshot();
       expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent(true));
@@ -584,21 +437,7 @@ describe('Merge', () => {
 
     test('delRow', () => {
       store1.delRow('t1', 'r2');
-      expect(store1.getMergeableContent(true)).toEqual(
-        stamped1(0, 3, [
-          stamped1(0, 3, {
-            t1: stamped1(0, 3, {
-              r1: stamped1(0, 2, {
-                c1: stamped1(0, 1, 1),
-                c2: stamped1(0, 2, undefined),
-              }),
-              r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
-            }),
-            t2: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 0)})}),
-          }),
-          nullStamped({}),
-        ]),
-      );
+      expect(store1.getMergeableContent(true)).toMatchSnapshot();
       expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent(true));
@@ -611,23 +450,7 @@ describe('Merge', () => {
 
     test('delTable', () => {
       store1.delTable('t2');
-      expect(store1.getMergeableContent(true)).toEqual(
-        stamped1(0, 4, [
-          stamped1(0, 4, {
-            t1: stamped1(0, 3, {
-              r1: stamped1(0, 2, {
-                c1: stamped1(0, 1, 1),
-                c2: stamped1(0, 2, undefined),
-              }),
-              r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
-            }),
-            t2: stamped1(0, 4, {
-              r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
-            }),
-          }),
-          nullStamped({}),
-        ]),
-      );
+      expect(store1.getMergeableContent(true)).toMatchSnapshot();
       expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent(true));
@@ -640,24 +463,7 @@ describe('Merge', () => {
 
     test('setCell 2', () => {
       store1.setCell('t2', 'r2', 'c2', 2);
-      expect(store1.getMergeableContent(true)).toEqual(
-        stamped1(0, 5, [
-          stamped1(0, 5, {
-            t1: stamped1(0, 3, {
-              r1: stamped1(0, 2, {
-                c1: stamped1(0, 1, 1),
-                c2: stamped1(0, 2, undefined),
-              }),
-              r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
-            }),
-            t2: stamped1(0, 5, {
-              r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
-              r2: stamped1(0, 5, {c2: stamped1(0, 5, 2)}),
-            }),
-          }),
-          nullStamped({}),
-        ]),
-      );
+      expect(store1.getMergeableContent(true)).toMatchSnapshot();
       expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent(true));
@@ -670,24 +476,7 @@ describe('Merge', () => {
 
     test('delTables', () => {
       store1.delTables();
-      expect(store1.getMergeableContent(true)).toEqual(
-        stamped1(0, 6, [
-          stamped1(0, 6, {
-            t1: stamped1(0, 6, {
-              r1: stamped1(0, 6, {
-                c1: stamped1(0, 6, undefined),
-                c2: stamped1(0, 2, undefined),
-              }),
-              r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
-            }),
-            t2: stamped1(0, 6, {
-              r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
-              r2: stamped1(0, 6, {c2: stamped1(0, 6, undefined)}),
-            }),
-          }),
-          nullStamped({}),
-        ]),
-      );
+      expect(store1.getMergeableContent(true)).toMatchSnapshot();
       expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent(true));
@@ -700,24 +489,7 @@ describe('Merge', () => {
 
     test('setValues', () => {
       store1.setValues({v1: 0, v2: 0});
-      expect(store1.getMergeableContent(true)).toEqual(
-        stamped1(0, 7, [
-          stamped1(0, 6, {
-            t1: stamped1(0, 6, {
-              r1: stamped1(0, 6, {
-                c1: stamped1(0, 6, undefined),
-                c2: stamped1(0, 2, undefined),
-              }),
-              r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
-            }),
-            t2: stamped1(0, 6, {
-              r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
-              r2: stamped1(0, 6, {c2: stamped1(0, 6, undefined)}),
-            }),
-          }),
-          stamped1(0, 7, {v1: stamped1(0, 7, 0), v2: stamped1(0, 7, 0)}),
-        ]),
-      );
+      expect(store1.getMergeableContent(true)).toMatchSnapshot();
       expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent(true));
@@ -730,24 +502,7 @@ describe('Merge', () => {
 
     test('setValue', () => {
       store1.setValue('v1', 1);
-      expect(store1.getMergeableContent(true)).toEqual(
-        stamped1(0, 8, [
-          stamped1(0, 6, {
-            t1: stamped1(0, 6, {
-              r1: stamped1(0, 6, {
-                c1: stamped1(0, 6, undefined),
-                c2: stamped1(0, 2, undefined),
-              }),
-              r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
-            }),
-            t2: stamped1(0, 6, {
-              r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
-              r2: stamped1(0, 6, {c2: stamped1(0, 6, undefined)}),
-            }),
-          }),
-          stamped1(0, 8, {v1: stamped1(0, 8, 1), v2: stamped1(0, 7, 0)}),
-        ]),
-      );
+      expect(store1.getMergeableContent(true)).toMatchSnapshot();
       expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent(true));
@@ -760,27 +515,7 @@ describe('Merge', () => {
 
     test('delValue', () => {
       store1.delValue('v2');
-      expect(store1.getMergeableContent(true)).toEqual(
-        stamped1(0, 9, [
-          stamped1(0, 6, {
-            t1: stamped1(0, 6, {
-              r1: stamped1(0, 6, {
-                c1: stamped1(0, 6, undefined),
-                c2: stamped1(0, 2, undefined),
-              }),
-              r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
-            }),
-            t2: stamped1(0, 6, {
-              r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
-              r2: stamped1(0, 6, {c2: stamped1(0, 6, undefined)}),
-            }),
-          }),
-          stamped1(0, 9, {
-            v1: stamped1(0, 8, 1),
-            v2: stamped1(0, 9, undefined),
-          }),
-        ]),
-      );
+      expect(store1.getMergeableContent(true)).toMatchSnapshot();
       expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent(true));
@@ -793,27 +528,7 @@ describe('Merge', () => {
 
     test('delValues', () => {
       store1.delValues();
-      expect(store1.getMergeableContent(true)).toEqual(
-        stamped1(0, 10, [
-          stamped1(0, 6, {
-            t1: stamped1(0, 6, {
-              r1: stamped1(0, 6, {
-                c1: stamped1(0, 6, undefined),
-                c2: stamped1(0, 2, undefined),
-              }),
-              r2: stamped1(0, 3, {c1: stamped1(0, 3, undefined)}),
-            }),
-            t2: stamped1(0, 6, {
-              r1: stamped1(0, 4, {c1: stamped1(0, 4, undefined)}),
-              r2: stamped1(0, 6, {c2: stamped1(0, 6, undefined)}),
-            }),
-          }),
-          stamped1(0, 10, {
-            v1: stamped1(0, 10, undefined),
-            v2: stamped1(0, 9, undefined),
-          }),
-        ]),
-      );
+      expect(store1.getMergeableContent(true)).toMatchSnapshot();
       expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent(true));
@@ -833,40 +548,19 @@ describe('Merge', () => {
 
     test('Mutually exclusive tables vs values', () => {
       store1.setTables({t1: {r1: {c1: 0}}});
-      const mergeableContent1 = store1.getMergeableContent(true);
-      expect(mergeableContent1).toEqual(
-        stamped1(0, 0, [
-          stamped1(0, 0, {
-            t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 0)})}),
-          }),
-          nullStamped({}),
-        ]),
-      );
+      expect(store1.getMergeableContent(true)).toMatchSnapshot();
       expect(storeHashSamples(store1)).toMatchSnapshot();
 
       jest.advanceTimersByTime(1);
 
       store2.setValues({v1: 0});
-      const mergeableContent2 = store2.getMergeableContent(true);
-      expect(mergeableContent2).toEqual(
-        stamped2(1, 0, [
-          nullStamped({}),
-          stamped2(1, 0, {v1: stamped2(1, 0, 0)}),
-        ]),
-      );
+      expect(store2.getMergeableContent(true)).toMatchSnapshot();
       expect(storeHashSamples(store2)).toMatchSnapshot();
 
       store1.merge(store2);
 
       expect(store1.getContent()).toEqual([{t1: {r1: {c1: 0}}}, {v1: 0}]);
-      expect(store1.getMergeableContent(true)).toEqual(
-        stamped2(1, 0, [
-          stamped1(0, 0, {
-            t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 0)})}),
-          }),
-          stamped2(1, 0, {v1: stamped2(1, 0, 0)}),
-        ]),
-      );
+      expect(store1.getMergeableContent(true)).toMatchSnapshot();
       expect(storeHashSamples(store1)).toMatchSnapshot();
 
       expect(store2.getContent()).toEqual(store1.getContent());
@@ -878,15 +572,7 @@ describe('Merge', () => {
 
     test('Mutually exclusive tables & values', () => {
       store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
-      const mergeableContent1 = store1.getMergeableContent(true);
-      expect(mergeableContent1).toEqual(
-        stamped1(0, 1, [
-          stamped1(0, 0, {
-            t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
-          }),
-          stamped1(0, 1, {v1: stamped1(0, 1, 1)}),
-        ]),
-      );
+      expect(store1.getMergeableContent(true)).toMatchSnapshot();
       expect(storeHashSamples(store1)).toMatchSnapshot();
 
       jest.advanceTimersByTime(1);
@@ -894,19 +580,7 @@ describe('Merge', () => {
       store2
         .setTables({t1: {r1: {c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}})
         .setValues({v2: 2});
-      const mergeableContent2 = store2.getMergeableContent(true);
-      expect(mergeableContent2).toEqual(
-        stamped2(1, 1, [
-          stamped2(1, 0, {
-            t1: stamped2(1, 0, {
-              r1: stamped2(1, 0, {c2: stamped2(1, 0, 2)}),
-              r2: stamped2(1, 0, {c2: stamped2(1, 0, 2)}),
-            }),
-            t2: stamped2(1, 0, {r2: stamped2(1, 0, {c2: stamped2(1, 0, 2)})}),
-          }),
-          stamped2(1, 1, {v2: stamped2(1, 1, 2)}),
-        ]),
-      );
+      expect(store2.getMergeableContent(true)).toMatchSnapshot();
       expect(storeHashSamples(store2)).toMatchSnapshot();
 
       store1.merge(store2);
@@ -915,21 +589,7 @@ describe('Merge', () => {
         {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
         {v1: 1, v2: 2},
       ]);
-      expect(store1.getMergeableContent(true)).toEqual(
-        stamped2(1, 1, [
-          stamped2(1, 0, {
-            t1: stamped2(1, 0, {
-              r1: stamped2(1, 0, {
-                c1: stamped1(0, 0, 1),
-                c2: stamped2(1, 0, 2),
-              }),
-              r2: stamped2(1, 0, {c2: stamped2(1, 0, 2)}),
-            }),
-            t2: stamped2(1, 0, {r2: stamped2(1, 0, {c2: stamped2(1, 0, 2)})}),
-          }),
-          stamped2(1, 1, {v1: stamped1(0, 1, 1), v2: stamped2(1, 1, 2)}),
-        ]),
-      );
+      expect(store1.getMergeableContent(true)).toMatchSnapshot();
       expect(storeHashSamples(store1)).toMatchSnapshot();
 
       expect(store2.getContent()).toEqual(store1.getContent());
@@ -941,29 +601,13 @@ describe('Merge', () => {
 
     test('Conflict', () => {
       store1.setTables({t1: {r1: {c1: 1}}}).setValues({v0: 0, v1: 1});
-      const mergeableContent1 = store1.getMergeableContent(true);
-      expect(mergeableContent1).toEqual(
-        stamped1(0, 1, [
-          stamped1(0, 0, {
-            t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
-          }),
-          stamped1(0, 1, {v0: stamped1(0, 1, 0), v1: stamped1(0, 1, 1)}),
-        ]),
-      );
+      expect(store1.getMergeableContent(true)).toMatchSnapshot();
       expect(storeHashSamples(store1)).toMatchSnapshot();
 
       jest.advanceTimersByTime(1);
 
       store2.setTables({t1: {r1: {c1: 2}}}).setValues({v1: 2});
-      const mergeableContent2 = store2.getMergeableContent(true);
-      expect(mergeableContent2).toEqual(
-        stamped2(1, 1, [
-          stamped2(1, 0, {
-            t1: stamped2(1, 0, {r1: stamped2(1, 0, {c1: stamped2(1, 0, 2)})}),
-          }),
-          stamped2(1, 1, {v1: stamped2(1, 1, 2)}),
-        ]),
-      );
+      expect(store2.getMergeableContent(true)).toMatchSnapshot();
       expect(storeHashSamples(store2)).toMatchSnapshot();
 
       store1.merge(store2);
@@ -972,14 +616,7 @@ describe('Merge', () => {
         {t1: {r1: {c1: 2}}},
         {v0: 0, v1: 2},
       ]);
-      expect(store1.getMergeableContent(true)).toEqual(
-        stamped2(1, 1, [
-          stamped2(1, 0, {
-            t1: stamped2(1, 0, {r1: stamped2(1, 0, {c1: stamped2(1, 0, 2)})}),
-          }),
-          stamped2(1, 1, {v0: stamped1(0, 1, 0), v1: stamped2(1, 1, 2)}),
-        ]),
-      );
+      expect(store1.getMergeableContent(true)).toMatchSnapshot();
       expect(storeHashSamples(store1)).toMatchSnapshot();
 
       expect(store2.getContent()).toEqual(store1.getContent());
@@ -1119,16 +756,7 @@ describe('Merge', () => {
       store1.merge(store2);
 
       expect(store1.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
-      expect(store1.getMergeableContent(true)).toEqual(
-        stamped2(0, 3, [
-          stamped2(0, 2, {
-            t1: stamped2(0, 2, {
-              r1: stamped2(0, 2, {c1: stamped2(0, 2, 2)}),
-            }),
-          }),
-          stamped2(0, 3, {v1: stamped2(0, 3, 2)}),
-        ]),
-      );
+      expect(store1.getMergeableContent(true)).toMatchSnapshot();
 
       expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent(true)).toEqual(
@@ -1141,16 +769,7 @@ describe('Merge', () => {
       store2.merge(store1);
 
       expect(store1.getContent()).toEqual([{t1: {r1: {c1: 3}}}, {v1: 3}]);
-      expect(store1.getMergeableContent(true)).toEqual(
-        stamped1(0, 5, [
-          stamped1(0, 4, {
-            t1: stamped1(0, 4, {
-              r1: stamped1(0, 4, {c1: stamped1(0, 4, 3)}),
-            }),
-          }),
-          stamped1(0, 5, {v1: stamped1(0, 5, 3)}),
-        ]),
-      );
+      expect(store1.getMergeableContent(true)).toMatchSnapshot();
 
       expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent(true)).toEqual(
@@ -1165,26 +784,8 @@ describe('Merge', () => {
       jest.advanceTimersByTime(1);
       store1.delCell('t1', 'r1', 'c1');
 
-      expect(store1.getMergeableContent(true)).toEqual(
-        stamped1(2, 0, [
-          stamped1(2, 0, {
-            t1: stamped1(2, 0, {
-              r1: stamped1(2, 0, {c1: stamped1(2, 0, undefined)}),
-            }),
-          }),
-          nullStamped({}),
-        ]),
-      );
-      expect(store2.getMergeableContent(true)).toEqual(
-        stamped2(1, 0, [
-          stamped2(1, 0, {
-            t1: stamped2(1, 0, {
-              r1: stamped2(1, 0, {c2: stamped2(1, 0, 2)}),
-            }),
-          }),
-          nullStamped({}),
-        ]),
-      );
+      expect(store1.getMergeableContent(true)).toMatchSnapshot();
+      expect(store2.getMergeableContent(true)).toMatchSnapshot();
 
       store1.merge(store2);
 
