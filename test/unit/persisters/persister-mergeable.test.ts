@@ -79,49 +79,21 @@ describe.each([
     store.setContent([{t1: {r1: {c1: 1}}}, {v1: 1}]);
     expect(store.getMergeableContent()).toMatchSnapshot();
     await persister.save();
-    expect(await persistable.get(location)).toEqual(
-      stamped1(0, 0, [
-        stamped1(0, 0, {
-          t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
-        }),
-        stamped1(0, 0, {v1: stamped1(0, 0, 1)}),
-      ]),
-    );
+    expect(await persistable.get(location)).toMatchSnapshot();
     expect(persister.getStats()).toEqual({loads: 0, saves: 1});
   });
 
   test('autoSaves', async () => {
     store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
     await persister.startAutoSave();
-    expect(await persistable.get(location)).toEqual(
-      stamped1(0, 1, [
-        stamped1(0, 0, {
-          t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
-        }),
-        stamped1(0, 1, {v1: stamped1(0, 1, 1)}),
-      ]),
-    );
+    expect(await persistable.get(location)).toMatchSnapshot();
     expect(persister.getStats()).toEqual({loads: 0, saves: 1});
     store.setTables({t1: {r1: {c1: 2}}});
     await pause(1, true);
-    expect(await persistable.get(location)).toEqual(
-      stamped1(0, 2, [
-        stamped1(0, 2, {
-          t1: stamped1(0, 2, {r1: stamped1(0, 2, {c1: stamped1(0, 2, 2)})}),
-        }),
-        stamped1(0, 1, {v1: stamped1(0, 1, 1)}),
-      ]),
-    );
+    expect(await persistable.get(location)).toMatchSnapshot();
     store.setTables({t1: {r1: {c1: 2}}});
     await pause(1, true);
-    expect(await persistable.get(location)).toEqual(
-      stamped1(0, 2, [
-        stamped1(0, 2, {
-          t1: stamped1(0, 2, {r1: stamped1(0, 2, {c1: stamped1(0, 2, 2)})}),
-        }),
-        stamped1(0, 1, {v1: stamped1(0, 1, 1)}),
-      ]),
-    );
+    expect(await persistable.get(location)).toMatchSnapshot();
     if (persistable.getChanges) {
       expect(persistable.getChanges()).toEqual(
         stamped1(0, 2, [
@@ -134,14 +106,7 @@ describe.each([
     }
     store.setValues({v1: 2});
     await pause(1, true);
-    expect(await persistable.get(location)).toEqual(
-      stamped1(2, 0, [
-        stamped1(0, 2, {
-          t1: stamped1(0, 2, {r1: stamped1(0, 2, {c1: stamped1(0, 2, 2)})}),
-        }),
-        stamped1(2, 0, {v1: stamped1(2, 0, 2)}),
-      ]),
-    );
+    expect(await persistable.get(location)).toMatchSnapshot();
     if (persistable.getChanges) {
       expect(persistable.getChanges()).toEqual(
         stamped1(2, 0, [
@@ -157,26 +122,12 @@ describe.each([
     if (name == 'file') {
       store.setTables({t1: {r1: {c1: 1}}});
       await persister.startAutoSave();
-      expect(await persistable.get(location)).toEqual(
-        stamped1(0, 0, [
-          stamped1(0, 0, {
-            t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
-          }),
-          nullStamped({}),
-        ]),
-      );
+      expect(await persistable.get(location)).toMatchSnapshot();
       expect(persister.getStats()).toEqual({loads: 0, saves: 1});
       store.setTables({t1: {r1: {c1: 2}}});
       store.setTables({t1: {r1: {c1: 3}}});
       await pause(50, true);
-      expect(await persistable.get(location)).toEqual(
-        stamped1(0, 2, [
-          stamped1(0, 2, {
-            t1: stamped1(0, 2, {r1: stamped1(0, 2, {c1: stamped1(0, 2, 3)})}),
-          }),
-          nullStamped({}),
-        ]),
-      );
+      expect(await persistable.get(location)).toMatchSnapshot();
       expect(persister.getStats()).toEqual({loads: 0, saves: 3});
     }
   });
