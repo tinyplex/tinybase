@@ -203,7 +203,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     (transactionTime = transactionContentStamp = undefined);
 
   const getMergeableContent = (
-    asChanges = true,
+    asChanges = false,
   ): MergeableChanges | MergeableContent =>
     hashStampToStamp(contentHashStamp, ([tablesStamp, valuesStamp]) => [
       hashStampMapToHashStampObj(tablesStamp, asChanges, (rowsStamp) =>
