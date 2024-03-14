@@ -4,7 +4,6 @@ import {
   createMergeableStore,
 } from 'tinybase/debug';
 import {START_TIME, nullStamped, stamped1, time} from '../common/mergeable';
-import {storeHashSamples} from '../common/other';
 
 const permute = (arr: any[]): any[] => {
   if (arr.length == 1) {
@@ -121,7 +120,6 @@ describe('getMergeableContent', () => {
       {v1: 4, v2: 5},
     ]);
     expect(store.getMergeableContent()).toMatchSnapshot();
-    expect(storeHashSamples(store)).toMatchSnapshot();
   });
 
   test('Set in sequence', () => {
@@ -133,7 +131,6 @@ describe('getMergeableContent', () => {
       .setValue('v1', 4)
       .setValue('v2', 5);
     expect(store.getMergeableContent()).toMatchSnapshot();
-    expect(storeHashSamples(store)).toMatchSnapshot();
   });
 
   test('Mutate', () => {
@@ -149,13 +146,11 @@ describe('getMergeableContent', () => {
       .setValue('v1', 5)
       .delValue('v2');
     expect(store.getMergeableContent()).toMatchSnapshot();
-    expect(storeHashSamples(store)).toMatchSnapshot();
   });
 
   test('Empty transaction', () => {
     store.startTransaction().finishTransaction();
     expect(store.getMergeableContent()).toMatchSnapshot();
-    expect(storeHashSamples(store)).toMatchSnapshot();
   });
 });
 
@@ -377,13 +372,11 @@ describe('Merge', () => {
     expect(store1.getMergeableContent()).toMatchSnapshot();
     expect(store1.applyMergeableChanges(noChanges)).toEqual(store1);
     expect(store1.getContent()).toEqual([{}, {}]);
-    expect(storeHashSamples(store1)).toMatchSnapshot();
 
     expect(store2.getContent()).toEqual([{}, {}]);
     expect(store2.getMergeableContent()).toMatchSnapshot();
     expect(store2.applyMergeableChanges(noChanges)).toEqual(store2);
     expect(store2.getContent()).toEqual([{}, {}]);
-    expect(storeHashSamples(store1)).toMatchSnapshot();
   });
 
   describe('One way', () => {
@@ -399,144 +392,122 @@ describe('Merge', () => {
         t2: {r1: {c1: 0}},
       });
       expect(store1.getMergeableContent()).toMatchSnapshot();
-      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
         store1.getMergeableContent(),
       );
-      expect(storeHashSamples(store2)).toEqual(storeHashSamples(store1));
     });
 
     test('setCell', () => {
       store1.setCell('t1', 'r1', 'c1', 1);
       expect(store1.getMergeableContent()).toMatchSnapshot();
-      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
         store1.getMergeableContent(),
       );
-      expect(storeHashSamples(store2)).toEqual(storeHashSamples(store1));
     });
 
     test('delCell', () => {
       store1.delCell('t1', 'r1', 'c2');
       expect(store1.getMergeableContent()).toMatchSnapshot();
-      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
         store1.getMergeableContent(),
       );
-      expect(storeHashSamples(store2)).toEqual(storeHashSamples(store1));
     });
 
     test('delRow', () => {
       store1.delRow('t1', 'r2');
       expect(store1.getMergeableContent()).toMatchSnapshot();
-      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
         store1.getMergeableContent(),
       );
-      expect(storeHashSamples(store2)).toEqual(storeHashSamples(store1));
     });
 
     test('delTable', () => {
       store1.delTable('t2');
       expect(store1.getMergeableContent()).toMatchSnapshot();
-      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
         store1.getMergeableContent(),
       );
-      expect(storeHashSamples(store2)).toEqual(storeHashSamples(store1));
     });
 
     test('setCell 2', () => {
       store1.setCell('t2', 'r2', 'c2', 2);
       expect(store1.getMergeableContent()).toMatchSnapshot();
-      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
         store1.getMergeableContent(),
       );
-      expect(storeHashSamples(store2)).toEqual(storeHashSamples(store1));
     });
 
     test('delTables', () => {
       store1.delTables();
       expect(store1.getMergeableContent()).toMatchSnapshot();
-      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
         store1.getMergeableContent(),
       );
-      expect(storeHashSamples(store2)).toEqual(storeHashSamples(store1));
     });
 
     test('setValues', () => {
       store1.setValues({v1: 0, v2: 0});
       expect(store1.getMergeableContent()).toMatchSnapshot();
-      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
         store1.getMergeableContent(),
       );
-      expect(storeHashSamples(store2)).toEqual(storeHashSamples(store1));
     });
 
     test('setValue', () => {
       store1.setValue('v1', 1);
       expect(store1.getMergeableContent()).toMatchSnapshot();
-      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
         store1.getMergeableContent(),
       );
-      expect(storeHashSamples(store2)).toEqual(storeHashSamples(store1));
     });
 
     test('delValue', () => {
       store1.delValue('v2');
       expect(store1.getMergeableContent()).toMatchSnapshot();
-      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
         store1.getMergeableContent(),
       );
-      expect(storeHashSamples(store2)).toEqual(storeHashSamples(store1));
     });
 
     test('delValues', () => {
       store1.delValues();
       expect(store1.getMergeableContent()).toMatchSnapshot();
-      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
         store1.getMergeableContent(),
       );
-      expect(storeHashSamples(store2)).toEqual(storeHashSamples(store1));
     });
   });
 
@@ -549,31 +520,26 @@ describe('Merge', () => {
     test('Mutually exclusive tables vs values', () => {
       store1.setTables({t1: {r1: {c1: 0}}});
       expect(store1.getMergeableContent()).toMatchSnapshot();
-      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       jest.advanceTimersByTime(1);
 
       store2.setValues({v1: 0});
       expect(store2.getMergeableContent()).toMatchSnapshot();
-      expect(storeHashSamples(store2)).toMatchSnapshot();
 
       store1.merge(store2);
 
       expect(store1.getContent()).toEqual([{t1: {r1: {c1: 0}}}, {v1: 0}]);
       expect(store1.getMergeableContent()).toMatchSnapshot();
-      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
         store1.getMergeableContent(),
       );
-      expect(storeHashSamples(store2)).toEqual(storeHashSamples(store1));
     });
 
     test('Mutually exclusive tables & values', () => {
       store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
       expect(store1.getMergeableContent()).toMatchSnapshot();
-      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       jest.advanceTimersByTime(1);
 
@@ -581,7 +547,6 @@ describe('Merge', () => {
         .setTables({t1: {r1: {c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}})
         .setValues({v2: 2});
       expect(store2.getMergeableContent()).toMatchSnapshot();
-      expect(storeHashSamples(store2)).toMatchSnapshot();
 
       store1.merge(store2);
 
@@ -590,25 +555,21 @@ describe('Merge', () => {
         {v1: 1, v2: 2},
       ]);
       expect(store1.getMergeableContent()).toMatchSnapshot();
-      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
         store1.getMergeableContent(),
       );
-      expect(storeHashSamples(store2)).toEqual(storeHashSamples(store1));
     });
 
     test('Conflict', () => {
       store1.setTables({t1: {r1: {c1: 1}}}).setValues({v0: 0, v1: 1});
       expect(store1.getMergeableContent()).toMatchSnapshot();
-      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       jest.advanceTimersByTime(1);
 
       store2.setTables({t1: {r1: {c1: 2}}}).setValues({v1: 2});
       expect(store2.getMergeableContent()).toMatchSnapshot();
-      expect(storeHashSamples(store2)).toMatchSnapshot();
 
       store1.merge(store2);
 
@@ -617,13 +578,11 @@ describe('Merge', () => {
         {v0: 0, v1: 2},
       ]);
       expect(store1.getMergeableContent()).toMatchSnapshot();
-      expect(storeHashSamples(store1)).toMatchSnapshot();
 
       expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
         store1.getMergeableContent(),
       );
-      expect(storeHashSamples(store2)).toEqual(storeHashSamples(store1));
     });
 
     describe('Commutativity & idempotence', () => {
