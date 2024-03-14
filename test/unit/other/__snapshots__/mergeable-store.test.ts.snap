@@ -21,19 +21,6 @@ exports[`Merge Nothing 1`] = `
 
 exports[`Merge Nothing 2`] = `
 [
-  0,
-  0,
-  0,
-  0,
-  0,
-  0,
-  0,
-  0,
-]
-`;
-
-exports[`Merge Nothing 3`] = `
-[
   "",
   [
     [
@@ -47,19 +34,6 @@ exports[`Merge Nothing 3`] = `
       0,
     ],
   ],
-  0,
-]
-`;
-
-exports[`Merge Nothing 4`] = `
-[
-  0,
-  0,
-  0,
-  0,
-  0,
-  0,
-  0,
   0,
 ]
 `;
@@ -134,19 +108,6 @@ exports[`Merge One way delCell 1`] = `
 ]
 `;
 
-exports[`Merge One way delCell 2`] = `
-[
-  419545430,
-  419545430,
-  2038672141,
-  284112242,
-  3207404266,
-  1517672885,
-  0,
-  0,
-]
-`;
-
 exports[`Merge One way delRow 1`] = `
 [
   "Hc2DO@000038DKS9",
@@ -217,19 +178,6 @@ exports[`Merge One way delRow 1`] = `
 ]
 `;
 
-exports[`Merge One way delRow 2`] = `
-[
-  1131541991,
-  1131541991,
-  3435653238,
-  284112242,
-  3207404266,
-  1517672885,
-  0,
-  0,
-]
-`;
-
 exports[`Merge One way delTable 1`] = `
 [
   "Hc2DO@000048DKS9",
@@ -297,19 +245,6 @@ exports[`Merge One way delTable 1`] = `
     ],
   ],
   3830531581,
-]
-`;
-
-exports[`Merge One way delTable 2`] = `
-[
-  3830531581,
-  3830531581,
-  3435653238,
-  284112242,
-  3207404266,
-  1517672885,
-  0,
-  0,
 ]
 `;
 
@@ -391,19 +326,6 @@ exports[`Merge One way delTables 1`] = `
     ],
   ],
   1487413994,
-]
-`;
-
-exports[`Merge One way delTables 2`] = `
-[
-  1487413994,
-  1487413994,
-  1958915000,
-  1802329738,
-  1646436633,
-  1517672885,
-  0,
-  0,
 ]
 `;
 
@@ -499,19 +421,6 @@ exports[`Merge One way delValue 1`] = `
 ]
 `;
 
-exports[`Merge One way delValue 2`] = `
-[
-  707374129,
-  1487413994,
-  1958915000,
-  1802329738,
-  1646436633,
-  1517672885,
-  1921093339,
-  1209068807,
-]
-`;
-
 exports[`Merge One way delValues 1`] = `
 [
   "Hc2DO@0000:8DKS9",
@@ -604,19 +513,6 @@ exports[`Merge One way delValues 1`] = `
 ]
 `;
 
-exports[`Merge One way delValues 2`] = `
-[
-  1705173194,
-  1487413994,
-  1958915000,
-  1802329738,
-  1646436633,
-  1517672885,
-  1024115232,
-  4067122285,
-]
-`;
-
 exports[`Merge One way setCell 1`] = `
 [
   "Hc2DO@000018DKS9",
@@ -684,19 +580,6 @@ exports[`Merge One way setCell 1`] = `
     ],
   ],
   957968817,
-]
-`;
-
-exports[`Merge One way setCell 2`] = `
-[
-  957968817,
-  957968817,
-  2815901277,
-  1148302086,
-  3207404266,
-  2614692414,
-  0,
-  0,
 ]
 `;
 
@@ -781,19 +664,6 @@ exports[`Merge One way setCell 2 1`] = `
 ]
 `;
 
-exports[`Merge One way setCell 2 2`] = `
-[
-  1483802621,
-  1483802621,
-  3435653238,
-  284112242,
-  3207404266,
-  1517672885,
-  0,
-  0,
-]
-`;
-
 exports[`Merge One way setTables 1`] = `
 [
   "Hc2DO@000008DKS9",
@@ -861,19 +731,6 @@ exports[`Merge One way setTables 1`] = `
     ],
   ],
   3987637125,
-]
-`;
-
-exports[`Merge One way setTables 2`] = `
-[
-  3987637125,
-  3987637125,
-  374710841,
-  2272266658,
-  2614692414,
-  2614692414,
-  0,
-  0,
 ]
 `;
 
@@ -969,19 +826,6 @@ exports[`Merge One way setValue 1`] = `
 ]
 `;
 
-exports[`Merge One way setValue 2`] = `
-[
-  720888881,
-  1487413994,
-  1958915000,
-  1802329738,
-  1646436633,
-  1517672885,
-  1918879451,
-  1209068807,
-]
-`;
-
 exports[`Merge One way setValues 1`] = `
 [
   "Hc2DO@000078DKS9",
@@ -1071,19 +915,6 @@ exports[`Merge One way setValues 1`] = `
     ],
   ],
   3978421055,
-]
-`;
-
-exports[`Merge One way setValues 2`] = `
-[
-  3978421055,
-  1487413994,
-  1958915000,
-  1802329738,
-  1646436633,
-  1517672885,
-  3045704149,
-  1524959021,
 ]
 `;
 
@@ -1223,19 +1054,6 @@ exports[`Merge Two way Conflict 1`] = `
 
 exports[`Merge Two way Conflict 2`] = `
 [
-  1335458839,
-  4033596827,
-  1293085726,
-  1279994494,
-  4065945599,
-  0,
-  3220353420,
-  3207404266,
-]
-`;
-
-exports[`Merge Two way Conflict 3`] = `
-[
   "Hc2DO@100015DK@@",
   [
     [
@@ -1277,20 +1095,7 @@ exports[`Merge Two way Conflict 3`] = `
 ]
 `;
 
-exports[`Merge Two way Conflict 4`] = `
-[
-  4215415104,
-  2754557355,
-  3649130009,
-  4004729339,
-  2804922642,
-  0,
-  1600984299,
-  2724740231,
-]
-`;
-
-exports[`Merge Two way Conflict 5`] = `
+exports[`Merge Two way Conflict 3`] = `
 [
   "Hc2DO@100015DK@@",
   [
@@ -1335,19 +1140,6 @@ exports[`Merge Two way Conflict 5`] = `
     ],
   ],
   3422332079,
-]
-`;
-
-exports[`Merge Two way Conflict 6`] = `
-[
-  3422332079,
-  2754557355,
-  3649130009,
-  4004729339,
-  2804922642,
-  0,
-  1876136196,
-  2724740231,
 ]
 `;
 
@@ -1470,19 +1262,6 @@ exports[`Merge Two way Mutually exclusive tables & values 1`] = `
 
 exports[`Merge Two way Mutually exclusive tables & values 2`] = `
 [
-  2133326328,
-  4033596827,
-  1293085726,
-  1279994494,
-  4065945599,
-  0,
-  2404136035,
-  3207404266,
-]
-`;
-
-exports[`Merge Two way Mutually exclusive tables & values 3`] = `
-[
   "Hc2DO@100015DK@@",
   [
     [
@@ -1552,20 +1331,7 @@ exports[`Merge Two way Mutually exclusive tables & values 3`] = `
 ]
 `;
 
-exports[`Merge Two way Mutually exclusive tables & values 4`] = `
-[
-  1434493245,
-  2890591112,
-  2400251703,
-  140652553,
-  0,
-  2804922642,
-  4190784181,
-  0,
-]
-`;
-
-exports[`Merge Two way Mutually exclusive tables & values 5`] = `
+exports[`Merge Two way Mutually exclusive tables & values 3`] = `
 [
   "Hc2DO@100015DK@@",
   [
@@ -1646,19 +1412,6 @@ exports[`Merge Two way Mutually exclusive tables & values 5`] = `
 ]
 `;
 
-exports[`Merge Two way Mutually exclusive tables & values 6`] = `
-[
-  3654997970,
-  981583737,
-  385702800,
-  3406116407,
-  4065945599,
-  2804922642,
-  3814396075,
-  3207404266,
-]
-`;
-
 exports[`Merge Two way Mutually exclusive tables vs values 1`] = `
 [
   "Hc2DO@000008DKS9",
@@ -1698,19 +1451,6 @@ exports[`Merge Two way Mutually exclusive tables vs values 1`] = `
 
 exports[`Merge Two way Mutually exclusive tables vs values 2`] = `
 [
-  3306754367,
-  3306754367,
-  3488783888,
-  2311787809,
-  2614692414,
-  0,
-  0,
-  0,
-]
-`;
-
-exports[`Merge Two way Mutually exclusive tables vs values 3`] = `
-[
   "Hc2DO@100005DK@@",
   [
     [
@@ -1734,20 +1474,7 @@ exports[`Merge Two way Mutually exclusive tables vs values 3`] = `
 ]
 `;
 
-exports[`Merge Two way Mutually exclusive tables vs values 4`] = `
-[
-  188771937,
-  0,
-  0,
-  0,
-  0,
-  0,
-  188771937,
-  3183766124,
-]
-`;
-
-exports[`Merge Two way Mutually exclusive tables vs values 5`] = `
+exports[`Merge Two way Mutually exclusive tables vs values 3`] = `
 [
   "Hc2DO@100005DK@@",
   [
@@ -1787,19 +1514,6 @@ exports[`Merge Two way Mutually exclusive tables vs values 5`] = `
     ],
   ],
   3461971806,
-]
-`;
-
-exports[`Merge Two way Mutually exclusive tables vs values 6`] = `
-[
-  3461971806,
-  3306754367,
-  3488783888,
-  2311787809,
-  2614692414,
-  0,
-  188771937,
-  3183766124,
 ]
 `;
 
@@ -2052,19 +1766,6 @@ exports[`getMergeableContent Empty transaction 1`] = `
 ]
 `;
 
-exports[`getMergeableContent Empty transaction 2`] = `
-[
-  0,
-  0,
-  0,
-  0,
-  0,
-  0,
-  0,
-  0,
-]
-`;
-
 exports[`getMergeableContent Initialize 1`] = `
 [
   "",
@@ -2165,19 +1866,6 @@ exports[`getMergeableContent Mutate 1`] = `
 ]
 `;
 
-exports[`getMergeableContent Mutate 2`] = `
-[
-  839565294,
-  3830531581,
-  3435653238,
-  284112242,
-  3207404266,
-  1517672885,
-  3596352019,
-  3265694938,
-]
-`;
-
 exports[`getMergeableContent Set in sequence 1`] = `
 [
   "Hc2DO@000058DKS9",
@@ -2259,19 +1947,6 @@ exports[`getMergeableContent Set in sequence 1`] = `
 ]
 `;
 
-exports[`getMergeableContent Set in sequence 2`] = `
-[
-  171405368,
-  3257932459,
-  3331060598,
-  4220223298,
-  2614692414,
-  3207404266,
-  3355929235,
-  4189032886,
-]
-`;
-
 exports[`getMergeableContent Set together 1`] = `
 [
   "Hc2DO@000008DKS9",
@@ -2350,19 +2025,6 @@ exports[`getMergeableContent Set together 1`] = `
     ],
   ],
   32757013,
-]
-`;
-
-exports[`getMergeableContent Set together 2`] = `
-[
-  32757013,
-  2620828010,
-  1539544661,
-  1474233545,
-  2614692414,
-  4065945599,
-  2646965375,
-  4060269138,
 ]
 `;
 

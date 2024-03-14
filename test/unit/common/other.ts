@@ -1,11 +1,4 @@
-import {
-  Id,
-  Ids,
-  Indexes,
-  MergeableStore,
-  Metrics,
-  Relationships,
-} from 'tinybase/debug';
+import {Id, Ids, Indexes, Metrics, Relationships} from 'tinybase/debug';
 import {IdObj, IdObj2} from './types';
 import {TextDecoder, TextEncoder} from 'util';
 import fetchMock from 'jest-fetch-mock';
@@ -114,14 +107,3 @@ export const getRelationshipsObject = (
   });
   return relationshipsObject;
 };
-
-export const storeHashSamples = (store: MergeableStore) => [
-  store.getContentHash(),
-  store.getTablesHash(),
-  store.getTableHash('t1'),
-  store.getRowHash('t1', 'r1'),
-  store.getCellHash('t1', 'r1', 'c1'),
-  store.getCellHash('t1', 'r1', 'c2'),
-  store.getValuesHash(),
-  store.getValueHash('v1'),
-];
