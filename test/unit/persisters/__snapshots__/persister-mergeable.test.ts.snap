@@ -148,6 +148,212 @@ exports[`Persists to/from file autoLoads 4`] = `
 ]
 `;
 
+exports[`Persists to/from file autoSaves 1`] = `
+[
+  "Hc2DO@000018DKS9",
+  [
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "t1": [
+          "Hc2DO@000008DKS9",
+          {
+            "r1": [
+              "Hc2DO@000008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000008DKS9",
+                  1,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@000018DKS9",
+      {
+        "v1": [
+          "Hc2DO@000018DKS9",
+          1,
+        ],
+      },
+    ],
+  ],
+]
+`;
+
+exports[`Persists to/from file autoSaves 2`] = `
+[
+  "Hc2DO@000028DKS9",
+  [
+    [
+      "Hc2DO@000028DKS9",
+      {
+        "t1": [
+          "Hc2DO@000028DKS9",
+          {
+            "r1": [
+              "Hc2DO@000028DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000028DKS9",
+                  2,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@000018DKS9",
+      {
+        "v1": [
+          "Hc2DO@000018DKS9",
+          1,
+        ],
+      },
+    ],
+  ],
+]
+`;
+
+exports[`Persists to/from file autoSaves 3`] = `
+[
+  "Hc2DO@000028DKS9",
+  [
+    [
+      "Hc2DO@000028DKS9",
+      {
+        "t1": [
+          "Hc2DO@000028DKS9",
+          {
+            "r1": [
+              "Hc2DO@000028DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000028DKS9",
+                  2,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@000018DKS9",
+      {
+        "v1": [
+          "Hc2DO@000018DKS9",
+          1,
+        ],
+      },
+    ],
+  ],
+]
+`;
+
+exports[`Persists to/from file autoSaves 4`] = `
+[
+  "Hc2DO@200008DKS9",
+  [
+    [
+      "Hc2DO@000028DKS9",
+      {
+        "t1": [
+          "Hc2DO@000028DKS9",
+          {
+            "r1": [
+              "Hc2DO@000028DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000028DKS9",
+                  2,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@200008DKS9",
+      {
+        "v1": [
+          "Hc2DO@200008DKS9",
+          2,
+        ],
+      },
+    ],
+  ],
+]
+`;
+
+exports[`Persists to/from file autoSaves without race 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  [
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "t1": [
+          "Hc2DO@000008DKS9",
+          {
+            "r1": [
+              "Hc2DO@000008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000008DKS9",
+                  1,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "",
+      {},
+    ],
+  ],
+]
+`;
+
+exports[`Persists to/from file autoSaves without race 2`] = `
+[
+  "Hc2DO@000028DKS9",
+  [
+    [
+      "Hc2DO@000028DKS9",
+      {
+        "t1": [
+          "Hc2DO@000028DKS9",
+          {
+            "r1": [
+              "Hc2DO@000028DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000028DKS9",
+                  3,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "",
+      {},
+    ],
+  ],
+]
+`;
+
 exports[`Persists to/from file loads 1`] = `
 [
   "Hc2DO@000008DKS9",
@@ -231,6 +437,42 @@ exports[`Persists to/from file saves 1`] = `
     ],
   ],
   2033316771,
+]
+`;
+
+exports[`Persists to/from file saves 2`] = `
+[
+  "Hc2DO@000008DKS9",
+  [
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "t1": [
+          "Hc2DO@000008DKS9",
+          {
+            "r1": [
+              "Hc2DO@000008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000008DKS9",
+                  1,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "v1": [
+          "Hc2DO@000008DKS9",
+          1,
+        ],
+      },
+    ],
+  ],
 ]
 `;
 
@@ -382,6 +624,150 @@ exports[`Persists to/from localStorage autoLoads 4`] = `
 ]
 `;
 
+exports[`Persists to/from localStorage autoSaves 1`] = `
+[
+  "Hc2DO@000018DKS9",
+  [
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "t1": [
+          "Hc2DO@000008DKS9",
+          {
+            "r1": [
+              "Hc2DO@000008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000008DKS9",
+                  1,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@000018DKS9",
+      {
+        "v1": [
+          "Hc2DO@000018DKS9",
+          1,
+        ],
+      },
+    ],
+  ],
+]
+`;
+
+exports[`Persists to/from localStorage autoSaves 2`] = `
+[
+  "Hc2DO@000028DKS9",
+  [
+    [
+      "Hc2DO@000028DKS9",
+      {
+        "t1": [
+          "Hc2DO@000028DKS9",
+          {
+            "r1": [
+              "Hc2DO@000028DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000028DKS9",
+                  2,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@000018DKS9",
+      {
+        "v1": [
+          "Hc2DO@000018DKS9",
+          1,
+        ],
+      },
+    ],
+  ],
+]
+`;
+
+exports[`Persists to/from localStorage autoSaves 3`] = `
+[
+  "Hc2DO@000028DKS9",
+  [
+    [
+      "Hc2DO@000028DKS9",
+      {
+        "t1": [
+          "Hc2DO@000028DKS9",
+          {
+            "r1": [
+              "Hc2DO@000028DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000028DKS9",
+                  2,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@000018DKS9",
+      {
+        "v1": [
+          "Hc2DO@000018DKS9",
+          1,
+        ],
+      },
+    ],
+  ],
+]
+`;
+
+exports[`Persists to/from localStorage autoSaves 4`] = `
+[
+  "Hc2DO@200008DKS9",
+  [
+    [
+      "Hc2DO@000028DKS9",
+      {
+        "t1": [
+          "Hc2DO@000028DKS9",
+          {
+            "r1": [
+              "Hc2DO@000028DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000028DKS9",
+                  2,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@200008DKS9",
+      {
+        "v1": [
+          "Hc2DO@200008DKS9",
+          2,
+        ],
+      },
+    ],
+  ],
+]
+`;
+
 exports[`Persists to/from localStorage loads 1`] = `
 [
   "Hc2DO@000008DKS9",
@@ -465,6 +851,42 @@ exports[`Persists to/from localStorage saves 1`] = `
     ],
   ],
   2033316771,
+]
+`;
+
+exports[`Persists to/from localStorage saves 2`] = `
+[
+  "Hc2DO@000008DKS9",
+  [
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "t1": [
+          "Hc2DO@000008DKS9",
+          {
+            "r1": [
+              "Hc2DO@000008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000008DKS9",
+                  1,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "v1": [
+          "Hc2DO@000008DKS9",
+          1,
+        ],
+      },
+    ],
+  ],
 ]
 `;
 
@@ -616,6 +1038,150 @@ exports[`Persists to/from mockMergeableChangesListener autoLoads 4`] = `
 ]
 `;
 
+exports[`Persists to/from mockMergeableChangesListener autoSaves 1`] = `
+[
+  "Hc2DO@000018DKS9",
+  [
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "t1": [
+          "Hc2DO@000008DKS9",
+          {
+            "r1": [
+              "Hc2DO@000008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000008DKS9",
+                  1,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@000018DKS9",
+      {
+        "v1": [
+          "Hc2DO@000018DKS9",
+          1,
+        ],
+      },
+    ],
+  ],
+]
+`;
+
+exports[`Persists to/from mockMergeableChangesListener autoSaves 2`] = `
+[
+  "Hc2DO@000028DKS9",
+  [
+    [
+      "Hc2DO@000028DKS9",
+      {
+        "t1": [
+          "Hc2DO@000028DKS9",
+          {
+            "r1": [
+              "Hc2DO@000028DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000028DKS9",
+                  2,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@000018DKS9",
+      {
+        "v1": [
+          "Hc2DO@000018DKS9",
+          1,
+        ],
+      },
+    ],
+  ],
+]
+`;
+
+exports[`Persists to/from mockMergeableChangesListener autoSaves 3`] = `
+[
+  "Hc2DO@000028DKS9",
+  [
+    [
+      "Hc2DO@000028DKS9",
+      {
+        "t1": [
+          "Hc2DO@000028DKS9",
+          {
+            "r1": [
+              "Hc2DO@000028DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000028DKS9",
+                  2,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@000018DKS9",
+      {
+        "v1": [
+          "Hc2DO@000018DKS9",
+          1,
+        ],
+      },
+    ],
+  ],
+]
+`;
+
+exports[`Persists to/from mockMergeableChangesListener autoSaves 4`] = `
+[
+  "Hc2DO@200008DKS9",
+  [
+    [
+      "Hc2DO@000028DKS9",
+      {
+        "t1": [
+          "Hc2DO@000028DKS9",
+          {
+            "r1": [
+              "Hc2DO@000028DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000028DKS9",
+                  2,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@200008DKS9",
+      {
+        "v1": [
+          "Hc2DO@200008DKS9",
+          2,
+        ],
+      },
+    ],
+  ],
+]
+`;
+
 exports[`Persists to/from mockMergeableChangesListener loads 1`] = `
 [
   "Hc2DO@000008DKS9",
@@ -699,6 +1265,42 @@ exports[`Persists to/from mockMergeableChangesListener saves 1`] = `
     ],
   ],
   2033316771,
+]
+`;
+
+exports[`Persists to/from mockMergeableChangesListener saves 2`] = `
+[
+  "Hc2DO@000008DKS9",
+  [
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "t1": [
+          "Hc2DO@000008DKS9",
+          {
+            "r1": [
+              "Hc2DO@000008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000008DKS9",
+                  1,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "v1": [
+          "Hc2DO@000008DKS9",
+          1,
+        ],
+      },
+    ],
+  ],
 ]
 `;
 
@@ -850,6 +1452,150 @@ exports[`Persists to/from mockMergeableContentListener autoLoads 4`] = `
 ]
 `;
 
+exports[`Persists to/from mockMergeableContentListener autoSaves 1`] = `
+[
+  "Hc2DO@000018DKS9",
+  [
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "t1": [
+          "Hc2DO@000008DKS9",
+          {
+            "r1": [
+              "Hc2DO@000008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000008DKS9",
+                  1,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@000018DKS9",
+      {
+        "v1": [
+          "Hc2DO@000018DKS9",
+          1,
+        ],
+      },
+    ],
+  ],
+]
+`;
+
+exports[`Persists to/from mockMergeableContentListener autoSaves 2`] = `
+[
+  "Hc2DO@000028DKS9",
+  [
+    [
+      "Hc2DO@000028DKS9",
+      {
+        "t1": [
+          "Hc2DO@000028DKS9",
+          {
+            "r1": [
+              "Hc2DO@000028DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000028DKS9",
+                  2,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@000018DKS9",
+      {
+        "v1": [
+          "Hc2DO@000018DKS9",
+          1,
+        ],
+      },
+    ],
+  ],
+]
+`;
+
+exports[`Persists to/from mockMergeableContentListener autoSaves 3`] = `
+[
+  "Hc2DO@000028DKS9",
+  [
+    [
+      "Hc2DO@000028DKS9",
+      {
+        "t1": [
+          "Hc2DO@000028DKS9",
+          {
+            "r1": [
+              "Hc2DO@000028DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000028DKS9",
+                  2,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@000018DKS9",
+      {
+        "v1": [
+          "Hc2DO@000018DKS9",
+          1,
+        ],
+      },
+    ],
+  ],
+]
+`;
+
+exports[`Persists to/from mockMergeableContentListener autoSaves 4`] = `
+[
+  "Hc2DO@200008DKS9",
+  [
+    [
+      "Hc2DO@000028DKS9",
+      {
+        "t1": [
+          "Hc2DO@000028DKS9",
+          {
+            "r1": [
+              "Hc2DO@000028DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000028DKS9",
+                  2,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@200008DKS9",
+      {
+        "v1": [
+          "Hc2DO@200008DKS9",
+          2,
+        ],
+      },
+    ],
+  ],
+]
+`;
+
 exports[`Persists to/from mockMergeableContentListener loads 1`] = `
 [
   "Hc2DO@000008DKS9",
@@ -933,6 +1679,42 @@ exports[`Persists to/from mockMergeableContentListener saves 1`] = `
     ],
   ],
   2033316771,
+]
+`;
+
+exports[`Persists to/from mockMergeableContentListener saves 2`] = `
+[
+  "Hc2DO@000008DKS9",
+  [
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "t1": [
+          "Hc2DO@000008DKS9",
+          {
+            "r1": [
+              "Hc2DO@000008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000008DKS9",
+                  1,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "v1": [
+          "Hc2DO@000008DKS9",
+          1,
+        ],
+      },
+    ],
+  ],
 ]
 `;
 
@@ -1084,6 +1866,150 @@ exports[`Persists to/from mockMergeableNoContentListener autoLoads 4`] = `
 ]
 `;
 
+exports[`Persists to/from mockMergeableNoContentListener autoSaves 1`] = `
+[
+  "Hc2DO@000018DKS9",
+  [
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "t1": [
+          "Hc2DO@000008DKS9",
+          {
+            "r1": [
+              "Hc2DO@000008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000008DKS9",
+                  1,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@000018DKS9",
+      {
+        "v1": [
+          "Hc2DO@000018DKS9",
+          1,
+        ],
+      },
+    ],
+  ],
+]
+`;
+
+exports[`Persists to/from mockMergeableNoContentListener autoSaves 2`] = `
+[
+  "Hc2DO@000028DKS9",
+  [
+    [
+      "Hc2DO@000028DKS9",
+      {
+        "t1": [
+          "Hc2DO@000028DKS9",
+          {
+            "r1": [
+              "Hc2DO@000028DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000028DKS9",
+                  2,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@000018DKS9",
+      {
+        "v1": [
+          "Hc2DO@000018DKS9",
+          1,
+        ],
+      },
+    ],
+  ],
+]
+`;
+
+exports[`Persists to/from mockMergeableNoContentListener autoSaves 3`] = `
+[
+  "Hc2DO@000028DKS9",
+  [
+    [
+      "Hc2DO@000028DKS9",
+      {
+        "t1": [
+          "Hc2DO@000028DKS9",
+          {
+            "r1": [
+              "Hc2DO@000028DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000028DKS9",
+                  2,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@000018DKS9",
+      {
+        "v1": [
+          "Hc2DO@000018DKS9",
+          1,
+        ],
+      },
+    ],
+  ],
+]
+`;
+
+exports[`Persists to/from mockMergeableNoContentListener autoSaves 4`] = `
+[
+  "Hc2DO@200008DKS9",
+  [
+    [
+      "Hc2DO@000028DKS9",
+      {
+        "t1": [
+          "Hc2DO@000028DKS9",
+          {
+            "r1": [
+              "Hc2DO@000028DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000028DKS9",
+                  2,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@200008DKS9",
+      {
+        "v1": [
+          "Hc2DO@200008DKS9",
+          2,
+        ],
+      },
+    ],
+  ],
+]
+`;
+
 exports[`Persists to/from mockMergeableNoContentListener loads 1`] = `
 [
   "Hc2DO@000008DKS9",
@@ -1167,6 +2093,42 @@ exports[`Persists to/from mockMergeableNoContentListener saves 1`] = `
     ],
   ],
   2033316771,
+]
+`;
+
+exports[`Persists to/from mockMergeableNoContentListener saves 2`] = `
+[
+  "Hc2DO@000008DKS9",
+  [
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "t1": [
+          "Hc2DO@000008DKS9",
+          {
+            "r1": [
+              "Hc2DO@000008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000008DKS9",
+                  1,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "v1": [
+          "Hc2DO@000008DKS9",
+          1,
+        ],
+      },
+    ],
+  ],
 ]
 `;
 
@@ -1318,6 +2280,150 @@ exports[`Persists to/from sessionStorage autoLoads 4`] = `
 ]
 `;
 
+exports[`Persists to/from sessionStorage autoSaves 1`] = `
+[
+  "Hc2DO@000018DKS9",
+  [
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "t1": [
+          "Hc2DO@000008DKS9",
+          {
+            "r1": [
+              "Hc2DO@000008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000008DKS9",
+                  1,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@000018DKS9",
+      {
+        "v1": [
+          "Hc2DO@000018DKS9",
+          1,
+        ],
+      },
+    ],
+  ],
+]
+`;
+
+exports[`Persists to/from sessionStorage autoSaves 2`] = `
+[
+  "Hc2DO@000028DKS9",
+  [
+    [
+      "Hc2DO@000028DKS9",
+      {
+        "t1": [
+          "Hc2DO@000028DKS9",
+          {
+            "r1": [
+              "Hc2DO@000028DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000028DKS9",
+                  2,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@000018DKS9",
+      {
+        "v1": [
+          "Hc2DO@000018DKS9",
+          1,
+        ],
+      },
+    ],
+  ],
+]
+`;
+
+exports[`Persists to/from sessionStorage autoSaves 3`] = `
+[
+  "Hc2DO@000028DKS9",
+  [
+    [
+      "Hc2DO@000028DKS9",
+      {
+        "t1": [
+          "Hc2DO@000028DKS9",
+          {
+            "r1": [
+              "Hc2DO@000028DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000028DKS9",
+                  2,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@000018DKS9",
+      {
+        "v1": [
+          "Hc2DO@000018DKS9",
+          1,
+        ],
+      },
+    ],
+  ],
+]
+`;
+
+exports[`Persists to/from sessionStorage autoSaves 4`] = `
+[
+  "Hc2DO@200008DKS9",
+  [
+    [
+      "Hc2DO@000028DKS9",
+      {
+        "t1": [
+          "Hc2DO@000028DKS9",
+          {
+            "r1": [
+              "Hc2DO@000028DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000028DKS9",
+                  2,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@200008DKS9",
+      {
+        "v1": [
+          "Hc2DO@200008DKS9",
+          2,
+        ],
+      },
+    ],
+  ],
+]
+`;
+
 exports[`Persists to/from sessionStorage loads 1`] = `
 [
   "Hc2DO@000008DKS9",
@@ -1401,6 +2507,42 @@ exports[`Persists to/from sessionStorage saves 1`] = `
     ],
   ],
   2033316771,
+]
+`;
+
+exports[`Persists to/from sessionStorage saves 2`] = `
+[
+  "Hc2DO@000008DKS9",
+  [
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "t1": [
+          "Hc2DO@000008DKS9",
+          {
+            "r1": [
+              "Hc2DO@000008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000008DKS9",
+                  1,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "v1": [
+          "Hc2DO@000008DKS9",
+          1,
+        ],
+      },
+    ],
+  ],
 ]
 `;
 
