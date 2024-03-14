@@ -1766,6 +1766,22 @@ exports[`getMergeableContent Empty transaction 1`] = `
 ]
 `;
 
+exports[`getMergeableContent Empty transaction 2`] = `
+[
+  "",
+  [
+    [
+      "",
+      {},
+    ],
+    [
+      "",
+      {},
+    ],
+  ],
+]
+`;
+
 exports[`getMergeableContent Initialize 1`] = `
 [
   "",
@@ -1782,6 +1798,22 @@ exports[`getMergeableContent Initialize 1`] = `
     ],
   ],
   0,
+]
+`;
+
+exports[`getMergeableContent Initialize 2`] = `
+[
+  "",
+  [
+    [
+      "",
+      {},
+    ],
+    [
+      "",
+      {},
+    ],
+  ],
 ]
 `;
 
@@ -1866,6 +1898,73 @@ exports[`getMergeableContent Mutate 1`] = `
 ]
 `;
 
+exports[`getMergeableContent Mutate 2`] = `
+[
+  "Hc2DO@000068DKS9",
+  [
+    [
+      "Hc2DO@000048DKS9",
+      {
+        "t1": [
+          "Hc2DO@000038DKS9",
+          {
+            "r1": [
+              "Hc2DO@000028DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000018DKS9",
+                  1,
+                ],
+                "c2": [
+                  "Hc2DO@000028DKS9",
+                  undefined,
+                ],
+              },
+            ],
+            "r2": [
+              "Hc2DO@000038DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000038DKS9",
+                  undefined,
+                ],
+              },
+            ],
+          },
+        ],
+        "t2": [
+          "Hc2DO@000048DKS9",
+          {
+            "r1": [
+              "Hc2DO@000048DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000048DKS9",
+                  undefined,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@000068DKS9",
+      {
+        "v1": [
+          "Hc2DO@000058DKS9",
+          5,
+        ],
+        "v2": [
+          "Hc2DO@000068DKS9",
+          undefined,
+        ],
+      },
+    ],
+  ],
+]
+`;
+
 exports[`getMergeableContent Set in sequence 1`] = `
 [
   "Hc2DO@000058DKS9",
@@ -1947,6 +2046,73 @@ exports[`getMergeableContent Set in sequence 1`] = `
 ]
 `;
 
+exports[`getMergeableContent Set in sequence 2`] = `
+[
+  "Hc2DO@000058DKS9",
+  [
+    [
+      "Hc2DO@000038DKS9",
+      {
+        "t1": [
+          "Hc2DO@000028DKS9",
+          {
+            "r1": [
+              "Hc2DO@000018DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000008DKS9",
+                  0,
+                ],
+                "c2": [
+                  "Hc2DO@000018DKS9",
+                  1,
+                ],
+              },
+            ],
+            "r2": [
+              "Hc2DO@000028DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000028DKS9",
+                  2,
+                ],
+              },
+            ],
+          },
+        ],
+        "t2": [
+          "Hc2DO@000038DKS9",
+          {
+            "r1": [
+              "Hc2DO@000038DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000038DKS9",
+                  3,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@000058DKS9",
+      {
+        "v1": [
+          "Hc2DO@000048DKS9",
+          4,
+        ],
+        "v2": [
+          "Hc2DO@000058DKS9",
+          5,
+        ],
+      },
+    ],
+  ],
+]
+`;
+
 exports[`getMergeableContent Set together 1`] = `
 [
   "Hc2DO@000008DKS9",
@@ -2025,6 +2191,73 @@ exports[`getMergeableContent Set together 1`] = `
     ],
   ],
   32757013,
+]
+`;
+
+exports[`getMergeableContent Set together 2`] = `
+[
+  "Hc2DO@000008DKS9",
+  [
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "t1": [
+          "Hc2DO@000008DKS9",
+          {
+            "r1": [
+              "Hc2DO@000008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000008DKS9",
+                  0,
+                ],
+                "c2": [
+                  "Hc2DO@000008DKS9",
+                  1,
+                ],
+              },
+            ],
+            "r2": [
+              "Hc2DO@000008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000008DKS9",
+                  2,
+                ],
+              },
+            ],
+          },
+        ],
+        "t2": [
+          "Hc2DO@000008DKS9",
+          {
+            "r1": [
+              "Hc2DO@000008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000008DKS9",
+                  3,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "v1": [
+          "Hc2DO@000008DKS9",
+          4,
+        ],
+        "v2": [
+          "Hc2DO@000008DKS9",
+          5,
+        ],
+      },
+    ],
+  ],
 ]
 `;
 
