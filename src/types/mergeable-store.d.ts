@@ -17,12 +17,12 @@ export type HashStamp<Thing> = [time: Time, thing: Thing, hash: Hash];
 export type Stamp<Thing> = [time: Time, thing: Thing];
 
 /// MergeableContent
-export type MergeableContent = Stamp<
+export type MergeableContent = HashStamp<
   [
-    mergeableTables: Stamp<
-      IdObj<Stamp<IdObj<Stamp<IdObj<Stamp<CellOrUndefined>>>>>>
+    mergeableTables: HashStamp<
+      IdObj<HashStamp<IdObj<HashStamp<IdObj<HashStamp<CellOrUndefined>>>>>>
     >,
-    mergeableValues: Stamp<IdObj<Stamp<ValueOrUndefined>>>,
+    mergeableValues: HashStamp<IdObj<HashStamp<ValueOrUndefined>>>,
   ]
 >;
 
@@ -54,7 +54,9 @@ export interface MergeableStore extends Store {
   getTransactionMergeableChanges(): MergeableChanges;
 
   /// MergeableStore.applyMergeableChanges
-  applyMergeableChanges(mergeableChanges: MergeableChanges): MergeableStore;
+  applyMergeableChanges(
+    mergeableChanges: MergeableChanges | MergeableContent,
+  ): MergeableStore;
 
   /// MergeableStore.getContentHash
   getContentHash(): Hash;

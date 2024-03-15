@@ -1,4 +1,5 @@
 import {
+  MergeableChanges,
   MergeableContent,
   MergeableStore,
   createMergeableStore,
@@ -331,32 +332,95 @@ describe('apply/setMergeableContent', () => {
   });
 
   test('set into empty store', () => {
-    store.setMergeableContent(
-      stamped1(0, 0, [
-        stamped1(0, 0, {
-          t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
-        }),
-        stamped1(0, 0, {v1: stamped1(0, 0, 1)}),
-      ]) as MergeableContent,
-    );
+    store.setMergeableContent([
+      'Hc2DO@000008DKS9',
+      [
+        [
+          'Hc2DO@000008DKS9',
+          {
+            t1: [
+              'Hc2DO@000008DKS9',
+              {
+                r1: [
+                  'Hc2DO@000008DKS9',
+                  {c1: ['Hc2DO@000008DKS9', 1, 4065945599]},
+                  1279994494,
+                ],
+              },
+              1293085726,
+            ],
+          },
+          4033596827,
+        ],
+        [
+          'Hc2DO@000008DKS9',
+          {v1: ['Hc2DO@000008DKS9', 1, 4065945599]},
+          2304392760,
+        ],
+      ],
+      2033316771,
+    ] as MergeableContent);
     expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
     expect(store.getMergeableContent()).toMatchSnapshot();
   });
 
   test('set over existing content', () => {
     store.setContent([{t1: {r1: {c0: 0}}}, {v0: 0}]);
-    store.setMergeableContent(
-      stamped1(0, 1, [
-        stamped1(0, 1, {
-          t1: stamped1(0, 1, {r1: stamped1(0, 1, {c1: stamped1(0, 1, 1)})}),
-        }),
-        stamped1(0, 1, {v1: stamped1(0, 1, 1)}),
-      ]) as MergeableContent,
-    );
+    store.setMergeableContent([
+      'Hc2DO@000018DKS9',
+      [
+        [
+          'Hc2DO@000018DKS9',
+          {
+            t1: [
+              'Hc2DO@000018DKS9',
+              {
+                r1: [
+                  'Hc2DO@000018DKS9',
+                  {c1: ['Hc2DO@000018DKS9', 1, 3207404266]},
+                  1254797189,
+                ],
+              },
+              423436526,
+            ],
+          },
+          639574078,
+        ],
+        [
+          'Hc2DO@000018DKS9',
+          {v1: ['Hc2DO@000018DKS9', 1, 3207404266]},
+          2404136035,
+        ],
+      ],
+      2840794205,
+    ] as MergeableContent);
     expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
     expect(store.getMergeableContent()).toMatchSnapshot();
     store.setCell('t1', 'r1', 'c2', 2);
     expect(store.getContent()).toEqual([{t1: {r1: {c1: 1, c2: 2}}}, {v1: 1}]);
+    expect(store.getMergeableContent()).toMatchSnapshot();
+  });
+
+  test('set with wrong hashes', () => {
+    store.setMergeableContent([
+      'Hc2DO@000018DKS9',
+      [
+        [
+          'Hc2DO@000018DKS9',
+          {
+            t1: [
+              'Hc2DO@000018DKS9',
+              {r1: ['Hc2DO@000018DKS9', {c1: ['Hc2DO@000018DKS9', 1, 1]}, 2]},
+              3,
+            ],
+          },
+          4,
+        ],
+        ['Hc2DO@000018DKS9', {v1: ['Hc2DO@000018DKS9', 1, 5]}, 6],
+      ],
+      7,
+    ] as MergeableContent);
+    expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
     expect(store.getMergeableContent()).toMatchSnapshot();
   });
 });
@@ -368,7 +432,7 @@ describe('Merge', () => {
   test('Nothing', () => {
     store1 = createMergeableStore('s1');
     store2 = createMergeableStore('s2');
-    const noChanges: MergeableContent = nullStamped([
+    const noChanges: MergeableChanges = nullStamped([
       nullStamped({}),
       nullStamped({}),
     ]);
