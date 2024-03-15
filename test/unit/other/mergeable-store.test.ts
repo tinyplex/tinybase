@@ -79,7 +79,6 @@ describe('getMergeableContent', () => {
 
   test('Initialize', () => {
     expect(store.getMergeableContent()).toMatchSnapshot();
-    expect(store.getMergeableContent(true)).toMatchSnapshot();
   });
 
   test('Set together', () => {
@@ -88,7 +87,6 @@ describe('getMergeableContent', () => {
       {v1: 4, v2: 5},
     ]);
     expect(store.getMergeableContent()).toMatchSnapshot();
-    expect(store.getMergeableContent(true)).toMatchSnapshot();
   });
 
   test('Set in sequence', () => {
@@ -100,7 +98,6 @@ describe('getMergeableContent', () => {
       .setValue('v1', 4)
       .setValue('v2', 5);
     expect(store.getMergeableContent()).toMatchSnapshot();
-    expect(store.getMergeableContent(true)).toMatchSnapshot();
   });
 
   test('Mutate', () => {
@@ -116,13 +113,11 @@ describe('getMergeableContent', () => {
       .setValue('v1', 5)
       .delValue('v2');
     expect(store.getMergeableContent()).toMatchSnapshot();
-    expect(store.getMergeableContent(true)).toMatchSnapshot();
   });
 
   test('Empty transaction', () => {
     store.startTransaction().finishTransaction();
     expect(store.getMergeableContent()).toMatchSnapshot();
-    expect(store.getMergeableContent(true)).toMatchSnapshot();
   });
 
   test('Immutability', () => {
