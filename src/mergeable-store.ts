@@ -21,10 +21,10 @@ import {
 } from './common/obj';
 import {
   hashIdAndHash,
-  hashStampMapToHashStampObj,
+  hashStampMap,
+  hashStampMapToObj,
   hashStampNewMap,
   hashStampNewThing,
-  hashStampToHashStamp,
   stampNew,
   stampNewObj,
   updateHashStamp,
@@ -225,13 +225,11 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     (transactionTime = transactionMergeableChanges = undefined);
 
   const getMergeableContent = (): MergeableContent =>
-    hashStampToHashStamp(contentHsm, ([tables, values]) => [
-      hashStampMapToHashStampObj(tables, (table) =>
-        hashStampMapToHashStampObj(table, (row) =>
-          hashStampMapToHashStampObj(row),
-        ),
+    hashStampMap(contentHsm, ([tables, values]) => [
+      hashStampMapToObj(tables, (table) =>
+        hashStampMapToObj(table, (row) => hashStampMapToObj(row)),
       ),
-      hashStampMapToHashStampObj(values),
+      hashStampMapToObj(values),
     ]) as MergeableContent;
 
   const setMergeableContent = (
