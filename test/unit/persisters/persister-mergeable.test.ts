@@ -133,15 +133,34 @@ describe.each([
   });
 
   test('loads', async () => {
-    await persistable.set(
-      location,
-      stamped1(0, 0, [
-        stamped1(0, 0, {
-          t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
-        }),
-        stamped1(0, 0, {v1: stamped1(0, 0, 1)}),
-      ]) as MergeableContent,
-    );
+    await persistable.set(location, [
+      'Hc2DO@000008DKS9',
+      [
+        [
+          'Hc2DO@000008DKS9',
+          {
+            t1: [
+              'Hc2DO@000008DKS9',
+              {
+                r1: [
+                  'Hc2DO@000008DKS9',
+                  {c1: ['Hc2DO@000008DKS9', 1, 4065945599]},
+                  1279994494,
+                ],
+              },
+              1293085726,
+            ],
+          },
+          4033596827,
+        ],
+        [
+          'Hc2DO@000008DKS9',
+          {v1: ['Hc2DO@000008DKS9', 1, 4065945599]},
+          2304392760,
+        ],
+      ],
+      2033316771,
+    ]);
     await persister.load();
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     expect(store.getValues()).toEqual({v1: 1});
@@ -173,56 +192,116 @@ describe.each([
   });
 
   test('autoLoads', async () => {
-    await persistable.set(
-      location,
-      stamped1(0, 0, [
-        stamped1(0, 0, {
-          t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
-        }),
-        nullStamped({}),
-      ]) as MergeableContent,
-    );
+    await persistable.set(location, [
+      'Hc2DO@000008DKS9',
+      [
+        [
+          'Hc2DO@000008DKS9',
+          {
+            t1: [
+              'Hc2DO@000008DKS9',
+              {
+                r1: [
+                  'Hc2DO@000008DKS9',
+                  {c1: ['Hc2DO@000008DKS9', 1, 4065945599]},
+                  1279994494,
+                ],
+              },
+              1293085726,
+            ],
+          },
+          4033596827,
+        ],
+        ['', {}, 0],
+      ],
+      4033596827,
+    ]);
     await persister.startAutoLoad();
     await nextLoop(true);
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     expect(store.getMergeableContent()).toMatchSnapshot();
     expect(persister.getStats()).toEqual({loads: 1, saves: 0});
-    await persistable.set(
-      location,
-      stamped1(0, 1, [
-        stamped1(0, 1, {
-          t1: stamped1(0, 1, {r1: stamped1(0, 1, {c1: stamped1(0, 1, 2)})}),
-        }),
-        nullStamped({}),
-      ]) as MergeableContent,
-    );
+    await persistable.set(location, [
+      'Hc2DO@000018DKS9',
+      [
+        [
+          'Hc2DO@000018DKS9',
+          {
+            t1: [
+              'Hc2DO@000018DKS9',
+              {
+                r1: [
+                  'Hc2DO@000018DKS9',
+                  {c1: ['Hc2DO@000018DKS9', 2, 2669080357]},
+                  274319047,
+                ],
+              },
+              4089057354,
+            ],
+          },
+          3386696034,
+        ],
+        ['', {}, 0],
+      ],
+      3386696034,
+    ]);
     await pause(persistable.autoLoadPause, true);
     expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
     expect(store.getMergeableContent()).toMatchSnapshot();
     expect(persister.getStats()).toEqual({loads: 2, saves: 0});
-    await persistable.set(
-      location,
-      stamped1(0, 2, [
-        stamped1(0, 2, {
-          t1: stamped1(0, 2, {r1: stamped1(0, 2, {c1: stamped1(0, 2, 3)})}),
-        }),
-        nullStamped({}),
-      ]) as MergeableContent,
-    );
+    await persistable.set(location, [
+      'Hc2DO@000028DKS9',
+      [
+        [
+          'Hc2DO@000028DKS9',
+          {
+            t1: [
+              'Hc2DO@000028DKS9',
+              {
+                r1: [
+                  'Hc2DO@000028DKS9',
+                  {c1: ['Hc2DO@000028DKS9', 3, 3252714811]},
+                  1416411412,
+                ],
+              },
+              3704904231,
+            ],
+          },
+          4008152259,
+        ],
+        ['', {}, 0],
+      ],
+      4008152259,
+    ]);
     await pause(persistable.autoLoadPause, true);
     expect(store.getTables()).toEqual({t1: {r1: {c1: 3}}});
     expect(store.getMergeableContent()).toMatchSnapshot();
     expect(persister.getStats()).toEqual({loads: 3, saves: 0});
     persister.stopAutoLoad();
-    await persistable.set(
-      location,
-      stamped1(0, 3, [
-        stamped1(0, 3, {
-          t1: stamped1(0, 3, {r1: stamped1(0, 3, {c1: stamped1(0, 3, 4)})}),
-        }),
-        nullStamped({}),
-      ]) as MergeableContent,
-    );
+    await persistable.set(location, [
+      'Hc2DO@000028DKS9',
+      [
+        [
+          'Hc2DO@000028DKS9',
+          {
+            t1: [
+              'Hc2DO@000028DKS9',
+              {
+                r1: [
+                  'Hc2DO@000028DKS9',
+                  {c1: ['Hc2DO@000028DKS9', 3, 3252714811]},
+                  1416411412,
+                ],
+              },
+              3704904231,
+            ],
+          },
+          4008152259,
+        ],
+        ['', {}, 0],
+      ],
+      4008152259,
+    ]);
     await pause(persistable.autoLoadPause, true);
     expect(store.getTables()).toEqual({t1: {r1: {c1: 3}}});
     expect(store.getMergeableContent()).toMatchSnapshot();
@@ -361,15 +440,25 @@ describe('Supported, MergeableStore', () => {
           {
             t1: [
               'Hc2DO@000008DKS9',
-              {r1: ['Hc2DO@000008DKS9', {c1: ['Hc2DO@000008DKS9', 1, 1]}, 2]},
-              3,
+              {
+                r1: [
+                  'Hc2DO@000008DKS9',
+                  {c1: ['Hc2DO@000008DKS9', 1, 4065945599]},
+                  1279994494,
+                ],
+              },
+              1293085726,
             ],
           },
-          4,
+          4033596827,
         ],
-        ['Hc2DO@000008DKS9', {v1: ['Hc2DO@000008DKS9', 1, 5]}, 6],
+        [
+          'Hc2DO@000008DKS9',
+          {v1: ['Hc2DO@000008DKS9', 1, 4065945599]},
+          2304392760,
+        ],
       ],
-      7,
+      2033316771,
     ];
     let persisted = '';
     const persister = createCustomPersister(
