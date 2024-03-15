@@ -5,6 +5,12 @@ import {EMPTY_STRING} from '../common/strings';
 import {Id} from '../types/common';
 import {getHash} from './hash';
 
+const cloneHashStamp = <Value>([
+  time,
+  value,
+  hash,
+]: HashStamp<Value>): HashStamp<Value> => [time, value, hash];
+
 export const stampNew = <Thing>(time: Time, thing?: Thing): Stamp<Thing> => [
   time,
   thing as Thing,
@@ -36,29 +42,13 @@ export const hashStampNewThing = <Thing>(): HashStamp<Thing> => [
   0,
 ];
 
-export const cloneHashStampToStamp = <Value>([
-  time,
-  value,
-]: HashStamp<Value>): Stamp<Value> => [time, value];
-
-export const cloneHashStamp = <Value>([
-  time,
-  value,
-  hash,
-]: HashStamp<Value>): HashStamp<Value> => [time, value, hash];
-
-export const hashStampToHashStamp = <From, To = From>(
+export const hashStampMap = <From, To = From>(
   [time, value, hash]: HashStamp<From>,
   mapper: (value: From, time: Time) => To,
 ): HashStamp<To> => [time, mapper(value, time), hash];
 
-export const hashStampToStamp = <From, To = From>(
-  [time, value]: HashStamp<From>,
-  mapper: (value: From, time: Time) => To,
-): Stamp<To> => [time, mapper(value, time)];
-
-export const hashStampMapToHashStampObj = <From, To = From>(
-  hashStampMap: HashStamp<IdMap<From>>,
+export const hashStampMapToObj = <From, To = From>(
+  hashStamp: HashStamp<IdMap<From>>,
   mapper: (mapValue: From) => To = cloneHashStamp as any,
 ): HashStamp<IdObj<To>> =>
-  hashStampToHashStamp(hashStampMap, (map) => mapToObj(map, mapper));
+  hashStampMap(hashStamp, (map) => mapToObj(map, mapper));
