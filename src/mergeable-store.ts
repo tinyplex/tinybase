@@ -56,16 +56,17 @@ const LISTENER_ARGS: IdObj<number> = {
   InvalidValue: 1,
 };
 
-type TableHashStamp = HashStamp<IdMap<RowHashStamp>>;
-type RowHashStamp = HashStamp<IdMap<HashStamp<CellOrUndefined>>>;
+// HSM = HashStampedMap
+type TableHsm = HashStamp<IdMap<RowHsm>>;
+type RowHsm = HashStamp<IdMap<HashStamp<CellOrUndefined>>>;
 type ContentHashStamp = HashStamp<
   [
-    tablesStamp: HashStamp<IdMap<TableHashStamp>>,
-    valuesStamp: HashStamp<IdMap<HashStamp<ValueOrUndefined>>>,
+    tablesHsm: HashStamp<IdMap<TableHsm>>,
+    valuesHsm: HashStamp<IdMap<HashStamp<ValueOrUndefined>>>,
   ]
 >;
 
-const newContentHashStamp = (time = EMPTY_STRING): ContentHashStamp => [
+const newContentHsm = (time = EMPTY_STRING): ContentHashStamp => [
   time,
   [hashStampNewMap(time), hashStampNewMap(time)],
   0,
@@ -73,7 +74,7 @@ const newContentHashStamp = (time = EMPTY_STRING): ContentHashStamp => [
 
 export const createMergeableStore = ((id: Id): MergeableStore => {
   let listening = 1;
-  let contentHashStamp = newContentHashStamp();
+  let contentHsm = newContentHsm();
   let transactionTime: Time | undefined;
   let transactionMergeableChanges: MergeableChanges | undefined;
   const [getHlc, seenHlc] = getHlcFunctions(id);
@@ -87,16 +88,15 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   };
 
   const mergeMergeableContentOrChanges = (
-    mergeableContentOrChanges: MergeableContent | MergeableChanges,
+    contentOrChanges: MergeableContent | MergeableChanges,
     _asContent: 0 | 1 = 0,
   ): Changes => {
     const tablesChanges = {};
     const valuesChanges = {};
 
-    const [, [[tablesTime, tableStamps], valuesStamp]] =
-      mergeableContentOrChanges;
-    const [, [tablesHashStamp, valuesHashStamp]] = contentHashStamp;
-    const [oldTablesTime, tableHashStamps, oldTablesHash] = tablesHashStamp;
+    const [, [[tablesTime, tablesObj], values]] = contentOrChanges;
+    const [, [tablesHsm, valuesHsm]] = contentHsm;
+    const [oldTablesTime, tableHsms, oldTablesHash] = tablesHsm;
 
     if (tablesTime) {
       let tablesHash =
@@ -105,23 +105,23 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
           ? (oldTablesTime ? getHash(oldTablesTime) : 0) ^ getHash(tablesTime)
           : 0);
 
-      objForEach(tableStamps, ([tableTime, rowStamps], tableId) => {
-        const tableHashStamp = mapEnsure<Id, TableHashStamp>(
-          tableHashStamps,
+      objForEach(tablesObj, ([tableTime, rowsObj], tableId) => {
+        const tableHsm = mapEnsure<Id, TableHsm>(
+          tableHsms,
           tableId,
           hashStampNewMap,
         );
-        const [oldTableTime, rowHashStamps, oldTableHash] = tableHashStamp;
+        const [oldTableTime, rowHsms, oldTableHash] = tableHsm;
         let tableHash =
           oldTableHash ^
           (tableTime > oldTableTime
             ? (oldTableTime ? getHash(oldTableTime) : 0) ^ getHash(tableTime)
             : 0);
 
-        objForEach(rowStamps, (rowStamp, rowId) => {
+        objForEach(rowsObj, (row, rowId) => {
           const [oldRowHash, rowHash] = mergeCellsOrValues(
-            rowStamp,
-            mapEnsure<Id, RowHashStamp>(rowHashStamps, rowId, hashStampNewMap),
+            row,
+            mapEnsure<Id, RowHsm>(rowHsms, rowId, hashStampNewMap),
             objEnsure<IdObj<CellOrUndefined>>(
               objEnsure<IdObj<IdObj<CellOrUndefined>>>(
                 tablesChanges,
@@ -136,32 +136,32 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
             (oldRowHash ? hashIdAndHash(rowId, oldRowHash) : 0) ^
             hashIdAndHash(rowId, rowHash);
         });
-        updateHashStamp(tableHashStamp, tableHash, tableTime);
+        updateHashStamp(tableHsm, tableHash, tableTime);
         tablesHash ^=
           (oldTableHash ? hashIdAndHash(tableId, oldTableHash) : 0) ^
-          hashIdAndHash(tableId, tableHashStamp[2]);
+          hashIdAndHash(tableId, tableHsm[2]);
       });
-      updateHashStamp(tablesHashStamp, tablesHash, tablesTime);
+      updateHashStamp(tablesHsm, tablesHash, tablesTime);
     }
 
-    mergeCellsOrValues(valuesStamp, valuesHashStamp, valuesChanges);
+    mergeCellsOrValues(values, valuesHsm, valuesChanges);
 
     updateHashStamp(
-      contentHashStamp,
-      tablesHashStamp[2] ^ valuesHashStamp[2],
-      mergeableContentOrChanges[0],
+      contentHsm,
+      tablesHsm[2] ^ valuesHsm[2],
+      contentOrChanges[0],
     );
 
     return [tablesChanges, valuesChanges];
   };
 
   const mergeCellsOrValues = <Thing extends CellOrUndefined | ValueOrUndefined>(
-    thingsStamp: Stamp<IdObj<Stamp<Thing>>>,
-    thingsHashStamp: HashStamp<IdMap<HashStamp<Thing>>>,
+    things: Stamp<IdObj<Stamp<Thing>>>,
+    thingsHsm: HashStamp<IdMap<HashStamp<Thing>>>,
     thingsChanges: {[thingId: Id]: Thing},
   ): [oldThingsHash: number, newThingsHash: number] => {
-    const [thingsTime, thingStamps] = thingsStamp;
-    const [oldThingsTime, thingHashStamps, oldThingsHash] = thingsHashStamp;
+    const [thingsTime, thingsObj] = things;
+    const [oldThingsTime, thingHsms, oldThingsHash] = thingsHsm;
     if (thingsTime) {
       let thingsHash =
         oldThingsHash ^
@@ -169,31 +169,31 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
           ? (oldThingsTime ? getHash(oldThingsTime) : 0) ^ getHash(thingsTime)
           : 0);
 
-      objForEach(thingStamps, ([thingTime, thing], thingId) => {
-        const thingHashStamp = mapEnsure<Id, HashStamp<Thing>>(
-          thingHashStamps,
+      objForEach(thingsObj, ([thingTime, thing], thingId) => {
+        const thingHsm = mapEnsure<Id, HashStamp<Thing>>(
+          thingHsms,
           thingId,
           hashStampNewThing,
         );
-        const [oldThingTime, , oldThingHash] = thingHashStamp;
+        const [oldThingTime, , oldThingHash] = thingHsm;
 
         if (thingTime > oldThingTime) {
           updateHashStamp(
-            thingHashStamp,
+            thingHsm,
             getHash(jsonString(thing ?? null) + ':' + thingTime),
             thingTime,
           );
-          thingHashStamp[1] = thing;
+          thingHsm[1] = thing;
           thingsChanges[thingId] = thing;
           thingsHash ^=
             hashIdAndHash(thingId, oldThingHash) ^
-            hashIdAndHash(thingId, thingHashStamp[2]);
+            hashIdAndHash(thingId, thingHsm[2]);
         }
       });
 
-      updateHashStamp(thingsHashStamp, thingsHash, thingsTime);
+      updateHashStamp(thingsHsm, thingsHash, thingsTime);
     }
-    return [oldThingsHash, thingsHashStamp[2]];
+    return [oldThingsHash, thingsHsm[2]];
   };
 
   const preFinishTransaction = () => {
@@ -206,21 +206,21 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const postFinishTransaction = () =>
     (transactionTime = transactionMergeableChanges = undefined);
 
-  const getMergeableContent = (
-    asChanges = false,
-  ): MergeableChanges | MergeableContent =>
+  const getMergeableContent = <AsChanges extends boolean = false>(
+    asChanges: AsChanges = false as any,
+  ) =>
     hashStampToHashStamp(
-      contentHashStamp,
-      ([tablesStamp, valuesStamp]) => [
-        hashStampMapToHashStampObj(tablesStamp, asChanges, (rowsStamp) =>
-          hashStampMapToHashStampObj(rowsStamp, asChanges, (cellsStamp) =>
-            hashStampMapToHashStampObj(cellsStamp, asChanges),
+      contentHsm,
+      ([tables, values]) => [
+        hashStampMapToHashStampObj(tables, asChanges, (table) =>
+          hashStampMapToHashStampObj(table, asChanges, (row) =>
+            hashStampMapToHashStampObj(row, asChanges),
           ),
         ),
-        hashStampMapToHashStampObj(valuesStamp, asChanges),
+        hashStampMapToHashStampObj(values, asChanges),
       ],
       asChanges,
-    ) as any;
+    ) as AsChanges extends true ? MergeableChanges : MergeableContent;
 
   const setMergeableContent = (
     mergeableContent: MergeableContent,
@@ -228,7 +228,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     disableListening(() =>
       store.transaction(() => {
         store.delTables().delValues();
-        contentHashStamp = newContentHashStamp();
+        contentHsm = newContentHsm();
       }),
     );
     seenHlc(mergeableContent[0]);
@@ -249,23 +249,23 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
         stampNewObj(objIsEmpty(changedCells) ? EMPTY_STRING : time),
         stampNewObj(objIsEmpty(changedValues) ? EMPTY_STRING : time),
       ]);
-      const [[, tableStamps], [, valuesStamp]] = mergeableChanges[1];
+      const [[, tablesObj], [, valuesObj]] = mergeableChanges[1];
 
       objToArray(changedCells, (changedTable, tableId) => {
-        const [, rowStamps] = (tableStamps[tableId] = stampNewObj(time));
+        const [, rowsObj] = (tablesObj[tableId] = stampNewObj(time));
         objToArray(changedTable, (changedRow, rowId) => {
-          const [, cellStamps] = (rowStamps[rowId] = stampNewObj(time));
+          const [, cellsObj] = (rowsObj[rowId] = stampNewObj(time));
           objToArray(
             changedRow,
             ([, newCell], cellId) =>
-              (cellStamps[cellId] = stampNew(time, newCell)),
+              (cellsObj[cellId] = stampNew(time, newCell)),
           );
         });
       });
       objToArray(
         changedValues,
         ([, newValue], valueId) =>
-          (valuesStamp[valueId] = stampNew(time, newValue)),
+          (valuesObj[valueId] = stampNew(time, newValue)),
       );
 
       return mergeableChanges;
@@ -284,32 +284,32 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   };
 
   const merge = (mergeableStore2: MergeableStore) => {
-    const mergeableChanges = mergeableStore.getMergeableContent(true);
+    const mergeableChanges = getMergeableContent(true);
     const mergeableChanges2 = mergeableStore2.getMergeableContent(true);
     mergeableStore2.applyMergeableChanges(mergeableChanges);
     return applyMergeableChanges(mergeableChanges2);
   };
 
-  const getContentHash = (): Hash => contentHashStamp[2];
+  const getContentHash = (): Hash => contentHsm[2];
 
-  const getTablesHash = (): Hash => contentHashStamp[1][0][2];
+  const getTablesHash = (): Hash => contentHsm[1][0][2];
 
   const getTableHash = (tableId: Id): Hash =>
-    mapGet(contentHashStamp[1][0][1], tableId)?.[2] ?? 0;
+    mapGet(contentHsm[1][0][1], tableId)?.[2] ?? 0;
 
   const getRowHash = (tableId: Id, rowId: Id): Hash =>
-    mapGet(mapGet(contentHashStamp[1][0][1], tableId)?.[1], rowId)?.[2] ?? 0;
+    mapGet(mapGet(contentHsm[1][0][1], tableId)?.[1], rowId)?.[2] ?? 0;
 
   const getCellHash = (tableId: Id, rowId: Id, cellId: Id): Hash =>
     mapGet(
-      mapGet(mapGet(contentHashStamp[1][0][1], tableId)?.[1], rowId)?.[1],
+      mapGet(mapGet(contentHsm[1][0][1], tableId)?.[1], rowId)?.[1],
       cellId,
     )?.[2] ?? 0;
 
-  const getValuesHash = (): Hash => contentHashStamp[1][1][2];
+  const getValuesHash = (): Hash => contentHsm[1][1][2];
 
   const getValueHash = (valueId: Id): Hash =>
-    mapGet(contentHashStamp[1][1][1], valueId)?.[2] ?? 0;
+    mapGet(contentHsm[1][1][1], valueId)?.[2] ?? 0;
 
   const mergeableStore: IdObj<any> = {
     getMergeableContent,
