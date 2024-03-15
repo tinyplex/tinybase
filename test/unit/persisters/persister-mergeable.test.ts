@@ -361,12 +361,15 @@ describe('Supported, MergeableStore', () => {
           {
             t1: [
               'Hc2DO@000008DKS9',
-              {r1: ['Hc2DO@000008DKS9', {c1: ['Hc2DO@000008DKS9', 1]}]},
+              {r1: ['Hc2DO@000008DKS9', {c1: ['Hc2DO@000008DKS9', 1, 1]}, 2]},
+              3,
             ],
           },
+          4,
         ],
-        ['Hc2DO@000008DKS9', {v1: ['Hc2DO@000008DKS9', 1]}],
+        ['Hc2DO@000008DKS9', {v1: ['Hc2DO@000008DKS9', 1, 5]}, 6],
       ],
+      7,
     ];
     let persisted = '';
     const persister = createCustomPersister(
