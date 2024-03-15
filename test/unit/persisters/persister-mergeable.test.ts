@@ -12,7 +12,7 @@ import {
   createStore,
 } from 'tinybase/debug';
 import {GetLocationMethod, Persistable, nextLoop} from './common';
-import {START_TIME, nullStamped, stamped1} from '../common/mergeable';
+import {START_TIME, nullStamped, stamped} from '../common/mergeable';
 import {
   mockFile,
   mockLocalStorage,
@@ -96,9 +96,9 @@ describe.each([
     expect(await persistable.get(location)).toMatchSnapshot();
     if (persistable.getChanges) {
       expect(persistable.getChanges()).toEqual(
-        stamped1(0, 2, [
-          stamped1(0, 2, {
-            t1: stamped1(0, 2, {r1: stamped1(0, 2, {c1: stamped1(0, 2, 2)})}),
+        stamped(0, 2, [
+          stamped(0, 2, {
+            t1: stamped(0, 2, {r1: stamped(0, 2, {c1: stamped(0, 2, 2)})}),
           }),
           nullStamped({}),
         ]),
@@ -109,10 +109,7 @@ describe.each([
     expect(await persistable.get(location)).toMatchSnapshot();
     if (persistable.getChanges) {
       expect(persistable.getChanges()).toEqual(
-        stamped1(2, 0, [
-          nullStamped({}),
-          stamped1(2, 0, {v1: stamped1(2, 0, 2)}),
-        ]),
+        stamped(2, 0, [nullStamped({}), stamped(2, 0, {v1: stamped(2, 0, 2)})]),
       );
     }
     expect(persister.getStats()).toEqual({loads: 0, saves: 3});
@@ -335,9 +332,9 @@ describe.each([
   test('does not delete when autoLoaded is deleted', async () => {
     await persistable.set(
       location,
-      stamped1(0, 0, [
-        stamped1(0, 0, {
-          t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
+      stamped(0, 0, [
+        stamped(0, 0, {
+          t1: stamped(0, 0, {r1: stamped(0, 0, {c1: stamped(0, 0, 1)})}),
         }),
         nullStamped({}),
       ]) as MergeableContent,
@@ -352,9 +349,9 @@ describe.each([
   test('does not delete when autoLoaded is corrupted', async () => {
     await persistable.set(
       location,
-      stamped1(0, 0, [
-        stamped1(0, 0, {
-          t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
+      stamped(0, 0, [
+        stamped(0, 0, {
+          t1: stamped(0, 0, {r1: stamped(0, 0, {c1: stamped(0, 0, 1)})}),
         }),
         nullStamped({}),
       ]) as MergeableContent,
