@@ -4,7 +4,7 @@ import {
   MergeableStore,
   createMergeableStore,
 } from 'tinybase/debug';
-import {START_TIME, nullStamped, stamped1, time} from '../common/mergeable';
+import {START_TIME, nullStamped, stamped, time} from '../common/mergeable';
 
 const permute = (arr: any[]): any[] => {
   if (arr.length == 1) {
@@ -186,17 +186,17 @@ describe('getTransactionMergeableChanges', () => {
     store.startTransaction();
     store.setCell('t1', 'r1', 'c1', 1);
     expect(store.getTransactionMergeableChanges()).toEqual(
-      stamped1(0, 0, [
-        stamped1(0, 0, {
-          t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
+      stamped(0, 0, [
+        stamped(0, 0, {
+          t1: stamped(0, 0, {r1: stamped(0, 0, {c1: stamped(0, 0, 1)})}),
         }),
         nullStamped({}),
       ]),
     );
     expect(store.getTransactionMergeableChanges()).toEqual(
-      stamped1(0, 0, [
-        stamped1(0, 0, {
-          t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
+      stamped(0, 0, [
+        stamped(0, 0, {
+          t1: stamped(0, 0, {r1: stamped(0, 0, {c1: stamped(0, 0, 1)})}),
         }),
         nullStamped({}),
       ]),
@@ -229,9 +229,9 @@ describe('getTransactionMergeableChanges', () => {
   test('After transaction', () => {
     store.addDidFinishTransactionListener(() => {
       expect(store.getTransactionMergeableChanges()).toEqual(
-        stamped1(0, 0, [
-          stamped1(0, 0, {
-            t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
+        stamped(0, 0, [
+          stamped(0, 0, {
+            t1: stamped(0, 0, {r1: stamped(0, 0, {c1: stamped(0, 0, 1)})}),
           }),
           nullStamped({}),
         ]),
@@ -245,9 +245,9 @@ describe('getTransactionMergeableChanges', () => {
   test('During and after transaction', () => {
     store.addDidFinishTransactionListener(() => {
       expect(store.getTransactionMergeableChanges()).toEqual(
-        stamped1(0, 0, [
-          stamped1(0, 0, {
-            t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
+        stamped(0, 0, [
+          stamped(0, 0, {
+            t1: stamped(0, 0, {r1: stamped(0, 0, {c1: stamped(0, 0, 1)})}),
           }),
           nullStamped({}),
         ]),
@@ -256,9 +256,9 @@ describe('getTransactionMergeableChanges', () => {
     store.startTransaction();
     store.setCell('t1', 'r1', 'c1', 1);
     expect(store.getTransactionMergeableChanges()).toEqual(
-      stamped1(0, 0, [
-        stamped1(0, 0, {
-          t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
+      stamped(0, 0, [
+        stamped(0, 0, {
+          t1: stamped(0, 0, {r1: stamped(0, 0, {c1: stamped(0, 0, 1)})}),
         }),
         nullStamped({}),
       ]),
@@ -270,11 +270,11 @@ describe('getTransactionMergeableChanges', () => {
     let count = 0;
     store.addDidFinishTransactionListener(() => {
       expect(store.getTransactionMergeableChanges()).toEqual(
-        stamped1(0, count, [
-          stamped1(0, count, {
-            ['t' + count]: stamped1(0, count, {
-              ['r' + count]: stamped1(0, count, {
-                ['c' + count]: stamped1(0, count, count),
+        stamped(0, count, [
+          stamped(0, count, {
+            ['t' + count]: stamped(0, count, {
+              ['r' + count]: stamped(0, count, {
+                ['c' + count]: stamped(0, count, count),
               }),
             }),
           }),
@@ -298,11 +298,11 @@ describe('apply/setMergeableContent', () => {
 
   test('apply into empty store', () => {
     store.applyMergeableChanges(
-      stamped1(0, 0, [
-        stamped1(0, 0, {
-          t1: stamped1(0, 0, {r1: stamped1(0, 0, {c1: stamped1(0, 0, 1)})}),
+      stamped(0, 0, [
+        stamped(0, 0, {
+          t1: stamped(0, 0, {r1: stamped(0, 0, {c1: stamped(0, 0, 1)})}),
         }),
-        stamped1(0, 0, {v1: stamped1(0, 0, 1)}),
+        stamped(0, 0, {v1: stamped(0, 0, 1)}),
       ]) as MergeableContent,
     );
     expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
@@ -312,11 +312,11 @@ describe('apply/setMergeableContent', () => {
   test('apply over existing content', () => {
     store.setContent([{t1: {r1: {c0: 0}}}, {v0: 0}]);
     store.applyMergeableChanges(
-      stamped1(0, 1, [
-        stamped1(0, 1, {
-          t1: stamped1(0, 1, {r1: stamped1(0, 1, {c1: stamped1(0, 1, 1)})}),
+      stamped(0, 1, [
+        stamped(0, 1, {
+          t1: stamped(0, 1, {r1: stamped(0, 1, {c1: stamped(0, 1, 1)})}),
         }),
-        stamped1(0, 1, {v1: stamped1(0, 1, 1)}),
+        stamped(0, 1, {v1: stamped(0, 1, 1)}),
       ]) as MergeableContent,
     );
     expect(store.getContent()).toEqual([
@@ -651,80 +651,80 @@ describe('Merge', () => {
 
     describe('Commutativity & idempotence', () => {
       const OPERATIONS = {
-        set1: stamped1(0, 1, [
-          stamped1(0, 1, {
-            t1: stamped1(0, 1, {r1: stamped1(0, 1, {c1: stamped1(0, 1, 1)})}),
+        set1: stamped(0, 1, [
+          stamped(0, 1, {
+            t1: stamped(0, 1, {r1: stamped(0, 1, {c1: stamped(0, 1, 1)})}),
           }),
-          stamped1(0, 1, {v1: stamped1(0, 1, 1)}),
+          stamped(0, 1, {v1: stamped(0, 1, 1)}),
         ]),
 
-        set2: stamped1(0, 2, [
-          stamped1(0, 2, {
-            t2: stamped1(0, 2, {r2: stamped1(0, 2, {c2: stamped1(0, 2, 2)})}),
+        set2: stamped(0, 2, [
+          stamped(0, 2, {
+            t2: stamped(0, 2, {r2: stamped(0, 2, {c2: stamped(0, 2, 2)})}),
           }),
-          stamped1(0, 2, {v2: stamped1(0, 2, 2)}),
+          stamped(0, 2, {v2: stamped(0, 2, 2)}),
         ]),
 
-        set3: stamped1(0, 3, [
-          stamped1(0, 3, {
-            t1: stamped1(0, 3, {r2: stamped1(0, 3, {c2: stamped1(0, 3, 1)})}),
+        set3: stamped(0, 3, [
+          stamped(0, 3, {
+            t1: stamped(0, 3, {r2: stamped(0, 3, {c2: stamped(0, 3, 1)})}),
           }),
-          stamped1(0, 2, {}),
+          stamped(0, 2, {}),
         ]),
 
-        set4: stamped1(0, 4, [
-          stamped1(0, 4, {
-            t1: stamped1(0, 4, {r1: stamped1(0, 4, {c2: stamped1(0, 4, 1)})}),
+        set4: stamped(0, 4, [
+          stamped(0, 4, {
+            t1: stamped(0, 4, {r1: stamped(0, 4, {c2: stamped(0, 4, 1)})}),
           }),
-          stamped1(0, 2, {}),
+          stamped(0, 2, {}),
         ]),
 
-        upd5: stamped1(0, 5, [
-          stamped1(0, 5, {
-            t1: stamped1(0, 5, {r1: stamped1(0, 5, {c1: stamped1(0, 5, 2)})}),
+        upd5: stamped(0, 5, [
+          stamped(0, 5, {
+            t1: stamped(0, 5, {r1: stamped(0, 5, {c1: stamped(0, 5, 2)})}),
           }),
-          stamped1(0, 5, {v1: stamped1(0, 5, 2)}),
+          stamped(0, 5, {v1: stamped(0, 5, 2)}),
         ]),
 
-        upd6: stamped1(0, 6, [
-          stamped1(0, 6, {
-            t1: stamped1(0, 6, {r2: stamped1(0, 6, {c2: stamped1(0, 6, 2)})}),
+        upd6: stamped(0, 6, [
+          stamped(0, 6, {
+            t1: stamped(0, 6, {r2: stamped(0, 6, {c2: stamped(0, 6, 2)})}),
           }),
-          stamped1(0, 5, {}),
+          stamped(0, 5, {}),
         ]),
 
-        upd7: stamped1(0, 7, [
-          stamped1(0, 7, {
-            t1: stamped1(0, 7, {r1: stamped1(0, 7, {c2: stamped1(0, 7, 2)})}),
+        upd7: stamped(0, 7, [
+          stamped(0, 7, {
+            t1: stamped(0, 7, {r1: stamped(0, 7, {c2: stamped(0, 7, 2)})}),
           }),
-          stamped1(0, 5, {}),
+          stamped(0, 5, {}),
         ]),
 
-        del8: stamped1(0, 8, [
-          stamped1(0, 8, {
-            t1: stamped1(0, 8, {
-              r1: stamped1(0, 8, {c2: stamped1(0, 8, undefined)}),
+        del8: stamped(0, 8, [
+          stamped(0, 8, {
+            t1: stamped(0, 8, {
+              r1: stamped(0, 8, {c2: stamped(0, 8, undefined)}),
             }),
           }),
-          stamped1(0, 8, {v2: stamped1(0, 8, undefined)}),
+          stamped(0, 8, {v2: stamped(0, 8, undefined)}),
         ]),
 
-        del9: stamped1(0, 9, [
-          stamped1(0, 9, {
-            t1: stamped1(0, 9, {
-              r2: stamped1(0, 9, {c2: stamped1(0, 9, undefined)}),
+        del9: stamped(0, 9, [
+          stamped(0, 9, {
+            t1: stamped(0, 9, {
+              r2: stamped(0, 9, {c2: stamped(0, 9, undefined)}),
             }),
           }),
-          stamped1(0, 5, {}),
+          stamped(0, 5, {}),
         ]),
 
-        del10: stamped1(0, 10, [
-          stamped1(0, 10, {
-            t2: stamped1(0, 10, {
-              r2: stamped1(0, 10, {c2: stamped1(0, 10, undefined)}),
+        del10: stamped(0, 10, [
+          stamped(0, 10, {
+            t2: stamped(0, 10, {
+              r2: stamped(0, 10, {c2: stamped(0, 10, undefined)}),
             }),
           }),
-          stamped1(0, 5, {}),
+          stamped(0, 5, {}),
         ]),
       } as any as {[id: string]: MergeableContent};
       const SAMPLE_ALL_PERMUTATIONS = 0;

@@ -976,17 +976,17 @@ exports[`Types: mergeable-store.ts:1498:37 1`] = `"Property 'v1' does not exist 
 
 exports[`Types: mergeable-store.ts:1504:36 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
 
-exports[`Types: mergeable-store.ts:1517:28 1`] = `"Property 't2' does not exist on type '{ t0?: Stamp<{ [rowId: string]: Stamp<{ c0?: Stamp<CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t0", "c0">> | undefined; }>; }> | undefined; t1?: Stamp<...'."`;
+exports[`Types: mergeable-store.ts:1517:28 1`] = `"Property 't2' does not exist on type '{ t0?: HashStamp<{ [rowId: string]: HashStamp<{ c0?: HashStamp<CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t0", "c0">> | undefined; }>; }> | undefined;...'."`;
 
 exports[`Types: mergeable-store.ts:1522:2 1`] = `"Conversion of type 'CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
 exports[`Types: mergeable-store.ts:1523:2 1`] = `"Conversion of type 'CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1d">' to type 'number' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: mergeable-store.ts:1524:46 1`] = `"Property 'c2' does not exist on type '{ c1?: Stamp<CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">> | undefined; c1d?: Stamp<...> | undefined; }'."`;
+exports[`Types: mergeable-store.ts:1524:46 1`] = `"Property 'c2' does not exist on type '{ c1?: HashStamp<CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">> | undefined; c1d?: HashStamp<...> | undefined; }'."`;
 
 exports[`Types: mergeable-store.ts:1528:2 1`] = `"Conversion of type 'ValueOrUndefined<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types: mergeable-store.ts:1529:28 1`] = `"Property 'v2' does not exist on type '{ v1?: Stamp<ValueOrUndefined<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">> | undefined; v1d?: Stamp<...> | undefined; }'."`;
+exports[`Types: mergeable-store.ts:1529:28 1`] = `"Property 'v2' does not exist on type '{ v1?: HashStamp<ValueOrUndefined<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">> | undefined; v1d?: HashStamp<...> | undefined; }'."`;
 
 exports[`Types: metrics.ts:24:44 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
