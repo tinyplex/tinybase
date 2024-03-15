@@ -88,6 +88,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
 
   const mergeMergeableContentOrChanges = (
     mergeableContentOrChanges: MergeableContent | MergeableChanges,
+    _asContent: 0 | 1 = 0,
   ): Changes => {
     const tablesChanges = {};
     const valuesChanges = {};
@@ -232,7 +233,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     );
     seenHlc(mergeableContent[0]);
     disableListening(() =>
-      store.applyChanges(mergeMergeableContentOrChanges(mergeableContent)),
+      store.applyChanges(mergeMergeableContentOrChanges(mergeableContent, 1)),
     );
     return mergeableStore as MergeableStore;
   };
