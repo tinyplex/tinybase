@@ -1747,6 +1747,49 @@ exports[`apply/setMergeableContent set over existing content 2`] = `
 ]
 `;
 
+exports[`apply/setMergeableContent set with wrong hashes 1`] = `
+[
+  "Hc2DO@000018DKS9",
+  [
+    [
+      "Hc2DO@000018DKS9",
+      {
+        "t1": [
+          "Hc2DO@000018DKS9",
+          {
+            "r1": [
+              "Hc2DO@000018DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000018DKS9",
+                  1,
+                  1,
+                ],
+              },
+              2,
+            ],
+          },
+          3,
+        ],
+      },
+      4,
+    ],
+    [
+      "Hc2DO@000018DKS9",
+      {
+        "v1": [
+          "Hc2DO@000018DKS9",
+          1,
+          5,
+        ],
+      },
+      6,
+    ],
+  ],
+  7,
+]
+`;
+
 exports[`getMergeableContent Empty transaction 1`] = `
 [
   "",
