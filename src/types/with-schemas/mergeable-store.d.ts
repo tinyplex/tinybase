@@ -34,19 +34,19 @@ export type HashStamp<Thing> = [time: Time, thing: Thing, hash: Hash];
 export type Stamp<Thing> = [time: Time, thing: Thing];
 
 /// MergeableContent
-export type MergeableContent<Schemas extends OptionalSchemas> = Stamp<
+export type MergeableContent<Schemas extends OptionalSchemas> = HashStamp<
   [
-    mergeableTables: Stamp<{
-      [TableId in TableIdFromSchema<Schemas[0]>]?: Stamp<{
-        [rowId: Id]: Stamp<{
-          [CellId in CellIdFromSchema<Schemas[0], TableId>]?: Stamp<
+    mergeableTables: HashStamp<{
+      [TableId in TableIdFromSchema<Schemas[0]>]?: HashStamp<{
+        [rowId: Id]: HashStamp<{
+          [CellId in CellIdFromSchema<Schemas[0], TableId>]?: HashStamp<
             CellOrUndefined<Schemas[0], TableId, CellId>
           >;
         }>;
       }>;
     }>,
-    mergeableValues: Stamp<{
-      [ValueId in ValueIdFromSchema<Schemas[1]>]?: Stamp<
+    mergeableValues: HashStamp<{
+      [ValueId in ValueIdFromSchema<Schemas[1]>]?: HashStamp<
         ValueOrUndefined<Schemas[1], ValueId>
       >;
     }>,
@@ -99,7 +99,7 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
 
   /// MergeableStore.applyMergeableChanges
   applyMergeableChanges(
-    mergeableChanges: MergeableChanges<Schemas>,
+    mergeableChanges: MergeableChanges<Schemas> | MergeableContent<Schemas>,
   ): MergeableStore<Schemas>;
 
   /// MergeableStore.getContentHash
