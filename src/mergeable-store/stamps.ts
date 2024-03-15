@@ -47,33 +47,18 @@ export const cloneHashStamp = <Value>([
   hash,
 ]: HashStamp<Value>): HashStamp<Value> => [time, value, hash];
 
-export const hashStampToHashStamp = <
-  From,
-  To = From,
-  AsChanges extends boolean = false,
->(
+export const hashStampToHashStamp = <From, To = From>(
   [time, value, hash]: HashStamp<From>,
   mapper: (value: From, time: Time) => To,
-  asChanges?: AsChanges,
-): AsChanges extends true ? Stamp<To> : HashStamp<To> =>
-  (asChanges
-    ? [time, mapper(value, time)]
-    : [time, mapper(value, time), hash]) as any;
+): HashStamp<To> => [time, mapper(value, time), hash];
 
 export const hashStampToStamp = <From, To = From>(
   [time, value]: HashStamp<From>,
   mapper: (value: From, time: Time) => To,
 ): Stamp<To> => [time, mapper(value, time)];
 
-export const hashStampMapToHashStampObj = <
-  From,
-  To = From,
-  AsChanges extends boolean = false,
->(
+export const hashStampMapToHashStampObj = <From, To = From>(
   hashStampMap: HashStamp<IdMap<From>>,
-  asChanges: AsChanges,
-  mapper: (mapValue: From) => To = (asChanges
-    ? cloneHashStampToStamp
-    : cloneHashStamp) as any,
-): AsChanges extends true ? Stamp<IdObj<To>> : HashStamp<IdObj<To>> =>
-  hashStampToHashStamp(hashStampMap, (map) => mapToObj(map, mapper), asChanges);
+  mapper: (mapValue: From) => To = cloneHashStamp as any,
+): HashStamp<IdObj<To>> =>
+  hashStampToHashStamp(hashStampMap, (map) => mapToObj(map, mapper));

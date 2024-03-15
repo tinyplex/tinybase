@@ -224,21 +224,15 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const postFinishTransaction = () =>
     (transactionTime = transactionMergeableChanges = undefined);
 
-  const getMergeableContent = <AsChanges extends boolean = false>(
-    asChanges: AsChanges = false as any,
-  ): AsChanges extends true ? MergeableChanges : MergeableContent =>
-    hashStampToHashStamp(
-      contentHsm,
-      ([tables, values]) => [
-        hashStampMapToHashStampObj(tables, asChanges, (table) =>
-          hashStampMapToHashStampObj(table, asChanges, (row) =>
-            hashStampMapToHashStampObj(row, asChanges),
-          ),
+  const getMergeableContent = (): MergeableContent =>
+    hashStampToHashStamp(contentHsm, ([tables, values]) => [
+      hashStampMapToHashStampObj(tables, (table) =>
+        hashStampMapToHashStampObj(table, (row) =>
+          hashStampMapToHashStampObj(row),
         ),
-        hashStampMapToHashStampObj(values, asChanges),
-      ],
-      asChanges,
-    ) as any;
+      ),
+      hashStampMapToHashStampObj(values),
+    ]) as MergeableContent;
 
   const setMergeableContent = (
     mergeableContent: MergeableContent,
@@ -292,7 +286,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   };
 
   const applyMergeableChanges = (
-    mergeableChanges: MergeableChanges,
+    mergeableChanges: MergeableChanges | MergeableContent,
   ): MergeableStore => {
     seenHlc(mergeableChanges[0]);
     disableListening(() =>
@@ -302,8 +296,8 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   };
 
   const merge = (mergeableStore2: MergeableStore) => {
-    const mergeableChanges = getMergeableContent(true);
-    const mergeableChanges2 = mergeableStore2.getMergeableContent(true);
+    const mergeableChanges = getMergeableContent();
+    const mergeableChanges2 = mergeableStore2.getMergeableContent();
     mergeableStore2.applyMergeableChanges(mergeableChanges);
     return applyMergeableChanges(mergeableChanges2);
   };
