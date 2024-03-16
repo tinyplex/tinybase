@@ -37,6 +37,29 @@ console.log(store2.getContent());
 // -> [{pets: {felix: {color: 'black'}, fido: {color: 'brown'}}}, {}]
 ```
 
+The following important methods are available on the MergeableStore interface
+(in addition to the underlying Store methods):
+
+- The getMergeableContent method gets the whole content of the MergeableStore in
+  a way that can merged into another MergeableStore.
+- The setMergeableContent method sets the whole content of a MergeableStore,
+  overwriting what was there before.
+- The getTransactionMergeableChanges method gets the changes that have occurred
+  during a transaction, in a way that can be merged into another MergeableStore.
+- The applyMergeableChanges method merges changes or content (from another
+  MergeableStore's getTransactionMergeableChanges method or getMergeableContent
+  method) into a MergeableStore alongside its existing content.
+
+To complement these are the MergeableContent and MergeableChanges types. The
+former represents the whole content of a MergeableStore (complete with
+timestamps and state hashes). The latter represents a set of changes (with just
+timestamps) that can be merged into another MergeableStore.
+
+There are also methods such as the getContentHash method and the getTablesHash
+method which can be used to identify a unique state of various parts of the
+content within a MergeableStore. These are to make it efficient to transmit or
+apply changes.
+
 At this point, the APIs and the mergeable object structures may still change
 considerably before the full v5.0 release.
 
