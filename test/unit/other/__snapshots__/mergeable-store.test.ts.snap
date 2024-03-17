@@ -2071,6 +2071,114 @@ exports[`getMergeableContent Set together 1`] = `
 ]
 `;
 
+exports[`getMergeableContentDelta Both empty 1`] = `
+[
+  "",
+  [
+    [
+      "",
+      {},
+    ],
+    [
+      "",
+      {},
+    ],
+  ],
+]
+`;
+
+exports[`getMergeableContentDelta Local tables & values, remote empty 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  [
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "t1": [
+          "Hc2DO@000008DKS9",
+          Map {
+            "r1" => [
+              "Hc2DO@000008DKS9",
+              Map {
+                "c1" => [
+                  "Hc2DO@000008DKS9",
+                  1,
+                  4065945599,
+                ],
+              },
+              1279994494,
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "v1": [
+          "Hc2DO@000008DKS9",
+          1,
+        ],
+      },
+    ],
+  ],
+]
+`;
+
+exports[`getMergeableContentDelta Local tables & values, remote same tables 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  [
+    [
+      "",
+      {},
+    ],
+    [
+      "000000000008DKS9",
+      {
+        "v1": [
+          "000000000008DKS9",
+          1,
+        ],
+      },
+    ],
+  ],
+]
+`;
+
+exports[`getMergeableContentDelta Local tables & values, remote same values 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  [
+    [
+      "000000000008DKS9",
+      {
+        "t1": [
+          "000000000008DKS9",
+          Map {
+            "r1" => [
+              "000000000008DKS9",
+              Map {
+                "c1" => [
+                  "000000000008DKS9",
+                  1,
+                  3038557947,
+                ],
+              },
+              1130440425,
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "",
+      {},
+    ],
+  ],
+]
+`;
+
 exports[`getTransactionMergeableChanges After two transactions 1`] = `
 [
   "Hc2DO@000008DKS9",
