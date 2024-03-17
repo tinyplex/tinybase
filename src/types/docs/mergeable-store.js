@@ -51,6 +51,11 @@
    */
   /// MergeableStore.getMergeableContent
   /**
+   * The getMergeableContentDelta method
+   * @category Merging
+   */
+  /// MergeableStore.getMergeableContentDelta
+  /**
    * The setMergeableContent method
    * @category Merging
    */
