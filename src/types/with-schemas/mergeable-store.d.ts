@@ -85,6 +85,11 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
   /// MergeableStore.getMergeableContent
   getMergeableContent(): MergeableContent<Schemas>;
 
+  /// MergeableStore.getMergeableContentDelta
+  getMergeableContentDelta(
+    relativeTo: MergeableContent<Schemas>,
+  ): MergeableChanges<Schemas>;
+
   /// MergeableStore.setMergeableContent
   setMergeableContent(
     mergeableContent: MergeableContent<Schemas>,
