@@ -45,6 +45,9 @@ export interface MergeableStore extends Store {
   /// MergeableStore.getMergeableContent
   getMergeableContent(): MergeableContent;
 
+  /// MergeableStore.getMergeableContentDelta
+  getMergeableContentDelta(relativeTo: MergeableContent): MergeableChanges;
+
   /// MergeableStore.setMergeableContent
   setMergeableContent(mergeableContent: MergeableContent): MergeableStore;
 

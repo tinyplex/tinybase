@@ -155,6 +155,47 @@ describe('getMergeableContent', () => {
   });
 });
 
+describe('getMergeableContentDelta', () => {
+  let store1: MergeableStore;
+  let store2: MergeableStore;
+
+  beforeEach(() => {
+    store1 = createMergeableStore('s1');
+    store2 = createMergeableStore('s2');
+  });
+
+  test('Both empty', () => {
+    expect(
+      store1.getMergeableContentDelta(store2.getMergeableContent()),
+    ).toMatchSnapshot();
+  });
+
+  test('Local tables & values, remote empty', () => {
+    store1.setContent([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+    expect(
+      store1.getMergeableContentDelta(store2.getMergeableContent()),
+    ).toMatchSnapshot();
+  });
+
+  test('Local tables & values, remote same tables', () => {
+    store1.setTables({t1: {r1: {c1: 1}}});
+    store2.merge(store1);
+    store1.setValues({v1: 1});
+    expect(
+      store1.getMergeableContentDelta(store2.getMergeableContent()),
+    ).toMatchSnapshot();
+  });
+
+  test('Local tables & values, remote same values', () => {
+    store1.setValues({v1: 1});
+    store2.merge(store1);
+    store1.setTables({t1: {r1: {c1: 1}}});
+    expect(
+      store1.getMergeableContentDelta(store2.getMergeableContent()),
+    ).toMatchSnapshot();
+  });
+});
+
 describe('getTransactionMergeableChanges', () => {
   let store: MergeableStore;
 
