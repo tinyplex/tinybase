@@ -6,6 +6,7 @@ import {
   MergeableChanges,
   MergeableContent,
   MergeableStore,
+  Stamp,
   Time,
   createMergeableStore as createMergeableStoreDecl,
 } from './types/mergeable-store';
@@ -225,12 +226,52 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     (transactionTime = transactionMergeableChanges = undefined);
 
   const getMergeableContent = (): MergeableContent =>
-    hashStampMap(contentHsm, ([tables, values]) => [
-      hashStampMapToObj(tables, (table) =>
-        hashStampMapToObj(table, (row) => hashStampMapToObj(row)),
+    hashStampMap(contentHsm, 0, ([tablesHsm, valuesHsm]) => [
+      hashStampMapToObj(tablesHsm, 0, (table) =>
+        hashStampMapToObj(table, 0, (row) => hashStampMapToObj(row, 0)),
       ),
-      hashStampMapToObj(values),
+      hashStampMapToObj(valuesHsm, 0),
     ]) as MergeableContent;
+
+  const getMergeableContentDelta = (
+    relativeTo: MergeableContent,
+  ): MergeableChanges => {
+    if (contentHsm[2] == relativeTo[2]) {
+      return stampNew(EMPTY_STRING, [stampNewObj(), stampNewObj()]);
+    }
+    return hashStampMap(contentHsm, 1, ([tablesHsm, valuesHsm]) => [
+      getMergeableTablesDelta(tablesHsm, relativeTo[1][0]),
+      getMergeableValuesDelta(valuesHsm, relativeTo[1][1]),
+    ]) as MergeableChanges;
+  };
+
+  const getMergeableTablesDelta = (
+    tablesHsm: HashStamp<
+      IdMap<HashStamp<IdMap<HashStamp<IdMap<HashStamp<CellOrUndefined>>>>>>
+    >,
+    relativeTo: HashStamp<
+      IdObj<HashStamp<IdObj<HashStamp<IdObj<HashStamp<CellOrUndefined>>>>>>
+    >,
+  ): Stamp<IdObj<Stamp<IdObj<Stamp<IdObj<Stamp<CellOrUndefined>>>>>>> => {
+    if (tablesHsm[2] == relativeTo[2]) {
+      return stampNewObj();
+    }
+    return hashStampMapToObj(contentHsm[1][0], 1) as Stamp<
+      IdObj<Stamp<IdObj<Stamp<IdObj<Stamp<CellOrUndefined>>>>>>
+    >;
+  };
+
+  const getMergeableValuesDelta = (
+    valuesHsm: HashStamp<IdMap<HashStamp<ValueOrUndefined>>>,
+    relativeTo: HashStamp<IdObj<HashStamp<ValueOrUndefined>>>,
+  ): Stamp<IdObj<Stamp<ValueOrUndefined>>> => {
+    if (valuesHsm[2] == relativeTo[2]) {
+      return stampNewObj();
+    }
+    return hashStampMapToObj(contentHsm[1][1], 1) as Stamp<
+      IdObj<Stamp<ValueOrUndefined>>
+    >;
+  };
 
   const setMergeableContent = (
     mergeableContent: MergeableContent,
@@ -323,6 +364,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
 
   const mergeableStore: IdObj<any> = {
     getMergeableContent,
+    getMergeableContentDelta,
     setMergeableContent,
     getTransactionMergeableChanges,
     applyMergeableChanges,
