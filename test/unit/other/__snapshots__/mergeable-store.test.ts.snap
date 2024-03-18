@@ -2096,17 +2096,42 @@ exports[`getMergeableContentDelta Local tables & values, remote empty 1`] = `
       {
         "t1": [
           "Hc2DO@000008DKS9",
-          Map {
-            "r1" => [
+          {
+            "r1": [
               "Hc2DO@000008DKS9",
-              Map {
-                "c1" => [
+              {
+                "c1": [
                   "Hc2DO@000008DKS9",
                   1,
-                  4065945599,
+                ],
+                "c2": [
+                  "Hc2DO@000008DKS9",
+                  2,
                 ],
               },
-              1279994494,
+            ],
+            "r2": [
+              "Hc2DO@000008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@000008DKS9",
+                  2,
+                ],
+              },
+            ],
+          },
+        ],
+        "t2": [
+          "Hc2DO@000008DKS9",
+          {
+            "r2": [
+              "Hc2DO@000008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@000008DKS9",
+                  2,
+                ],
+              },
             ],
           },
         ],
@@ -2118,6 +2143,10 @@ exports[`getMergeableContentDelta Local tables & values, remote empty 1`] = `
         "v1": [
           "Hc2DO@000008DKS9",
           1,
+        ],
+        "v2": [
+          "Hc2DO@000008DKS9",
+          2,
         ],
       },
     ],
@@ -2140,6 +2169,10 @@ exports[`getMergeableContentDelta Local tables & values, remote same tables 1`] 
           "000000000008DKS9",
           1,
         ],
+        "v2": [
+          "000000000008DKS9",
+          2,
+        ],
       },
     ],
   ],
@@ -2155,17 +2188,42 @@ exports[`getMergeableContentDelta Local tables & values, remote same values 1`] 
       {
         "t1": [
           "000000000008DKS9",
-          Map {
-            "r1" => [
+          {
+            "r1": [
               "000000000008DKS9",
-              Map {
-                "c1" => [
+              {
+                "c1": [
                   "000000000008DKS9",
                   1,
-                  3038557947,
+                ],
+                "c2": [
+                  "000000000008DKS9",
+                  2,
                 ],
               },
-              1130440425,
+            ],
+            "r2": [
+              "000000000008DKS9",
+              {
+                "c2": [
+                  "000000000008DKS9",
+                  2,
+                ],
+              },
+            ],
+          },
+        ],
+        "t2": [
+          "000000000008DKS9",
+          {
+            "r2": [
+              "000000000008DKS9",
+              {
+                "c2": [
+                  "000000000008DKS9",
+                  2,
+                ],
+              },
             ],
           },
         ],

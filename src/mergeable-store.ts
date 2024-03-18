@@ -21,6 +21,7 @@ import {
   objToArray,
 } from './common/obj';
 import {
+  cloneHashStamp,
   hashIdAndHash,
   hashStampMap,
   hashStampMapToObj,
@@ -227,8 +228,10 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
 
   const getMergeableContent = (): MergeableContent =>
     hashStampMap(contentHsm, 0, ([tablesHsm, valuesHsm]) => [
-      hashStampMapToObj(tablesHsm, 0, (table) =>
-        hashStampMapToObj(table, 0, (row) => hashStampMapToObj(row, 0)),
+      hashStampMapToObj(tablesHsm, 0, (tableHsm) =>
+        hashStampMapToObj(tableHsm, 0, (rowHsm) =>
+          hashStampMapToObj(rowHsm, 0),
+        ),
       ),
       hashStampMapToObj(valuesHsm, 0),
     ]) as MergeableContent;
@@ -256,21 +259,65 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     if (tablesHsm[2] == relativeTo[2]) {
       return stampNewObj();
     }
-    return hashStampMapToObj(contentHsm[1][0], 1) as Stamp<
-      IdObj<Stamp<IdObj<Stamp<IdObj<Stamp<CellOrUndefined>>>>>>
-    >;
+    return hashStampMapToObj(tablesHsm, 1, (tableHsm, tableId) =>
+      getMergeableTableDelta(tableHsm, relativeTo[1][tableId]),
+    ) as Stamp<IdObj<Stamp<IdObj<Stamp<IdObj<Stamp<CellOrUndefined>>>>>>>;
+  };
+
+  const getMergeableTableDelta = (
+    tableHsm: HashStamp<IdMap<HashStamp<IdMap<HashStamp<CellOrUndefined>>>>>,
+    relativeTo: HashStamp<IdObj<HashStamp<IdObj<HashStamp<CellOrUndefined>>>>>,
+  ): Stamp<IdObj<Stamp<IdObj<Stamp<CellOrUndefined>>>>> => {
+    if (tableHsm[2] == relativeTo?.[2]) {
+      return stampNewObj();
+    }
+    return hashStampMapToObj(tableHsm, 1, (rowHsm, rowId) =>
+      getMergeableRowDelta(rowHsm, relativeTo?.[1][rowId]),
+    ) as Stamp<IdObj<Stamp<IdObj<Stamp<CellOrUndefined>>>>>;
+  };
+
+  const getMergeableRowDelta = (
+    rowHsm: HashStamp<IdMap<HashStamp<CellOrUndefined>>>,
+    relativeTo: HashStamp<IdObj<HashStamp<CellOrUndefined>>>,
+  ): Stamp<IdObj<Stamp<CellOrUndefined>>> => {
+    if (rowHsm[2] == relativeTo?.[2]) {
+      return stampNewObj();
+    }
+    return hashStampMapToObj(rowHsm, 1, (cellHsm, cellId) =>
+      getMergeableCellDelta(cellHsm, relativeTo?.[1][cellId]),
+    ) as Stamp<IdObj<Stamp<CellOrUndefined>>>;
+  };
+
+  const getMergeableCellDelta = (
+    cellHsm: HashStamp<CellOrUndefined>,
+    relativeTo: HashStamp<CellOrUndefined>,
+  ): Stamp<CellOrUndefined> => {
+    if (cellHsm[2] == relativeTo?.[2]) {
+      return stampNew();
+    }
+    return cloneHashStamp(cellHsm, '', 1) as Stamp<CellOrUndefined>;
   };
 
   const getMergeableValuesDelta = (
     valuesHsm: HashStamp<IdMap<HashStamp<ValueOrUndefined>>>,
     relativeTo: HashStamp<IdObj<HashStamp<ValueOrUndefined>>>,
   ): Stamp<IdObj<Stamp<ValueOrUndefined>>> => {
-    if (valuesHsm[2] == relativeTo[2]) {
+    if (valuesHsm[2] == relativeTo?.[2]) {
       return stampNewObj();
     }
-    return hashStampMapToObj(contentHsm[1][1], 1) as Stamp<
-      IdObj<Stamp<ValueOrUndefined>>
-    >;
+    return hashStampMapToObj(valuesHsm, 1, (valueHsm, valueId) =>
+      getMergeableValueDelta(valueHsm, relativeTo?.[1][valueId]),
+    ) as Stamp<IdObj<Stamp<CellOrUndefined>>>;
+  };
+
+  const getMergeableValueDelta = (
+    valueHsm: HashStamp<ValueOrUndefined>,
+    relativeTo: HashStamp<ValueOrUndefined>,
+  ): Stamp<ValueOrUndefined> => {
+    if (valueHsm[2] == relativeTo?.[2]) {
+      return stampNew();
+    }
+    return cloneHashStamp(valueHsm, '', 1) as Stamp<ValueOrUndefined>;
   };
 
   const setMergeableContent = (
