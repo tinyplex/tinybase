@@ -10,7 +10,7 @@ import {
   Time,
   createMergeableStore as createMergeableStoreDecl,
 } from './types/mergeable-store';
-import {IdMap, mapEnsure, mapGet} from './common/map';
+import {IdMap, mapEnsure, mapGet, mapToObj} from './common/map';
 import {
   IdObj,
   objEnsure,
@@ -26,6 +26,7 @@ import {
   hashStampMapToObj,
   hashStampNewMap,
   hashStampNewThing,
+  hashStampToStamp,
   stampNew,
   stampNewObj,
   updateHashStamp,
@@ -306,18 +307,18 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const getMergeableValuesDelta = (
     valuesHsm: HashStamp<IdMap<HashStamp<ValueOrUndefined>>>,
     relativeTo: HashStamp<IdObj<HashStamp<ValueOrUndefined>>>,
-  ): Stamp<IdObj<Stamp<ValueOrUndefined>>> => {
-    if (valuesHsm[2] == relativeTo?.[2]) {
-      return stampNewObj();
-    }
-    const valuesDelta = {} as IdObj<Stamp<ValueOrUndefined>>;
-    collForEach(valuesHsm[1], (valueHsm, valueId) =>
-      valueHsm[2] === relativeTo?.[1]?.[valueId]?.[2]
-        ? 0
-        : (valuesDelta[valueId] = [valueHsm[0], valueHsm[1]]),
-    );
-    return [valuesHsm[0], valuesDelta];
-  };
+  ): Stamp<IdObj<Stamp<ValueOrUndefined>>> =>
+    valuesHsm[2] == relativeTo?.[2]
+      ? stampNewObj()
+      : [
+          valuesHsm[0],
+          mapToObj(
+            valuesHsm[1],
+            hashStampToStamp,
+            (valueHsm, valueId) =>
+              valueHsm[2] === relativeTo?.[1]?.[valueId]?.[2],
+          ),
+        ];
 
   const setMergeableContent = (
     mergeableContent: MergeableContent,
