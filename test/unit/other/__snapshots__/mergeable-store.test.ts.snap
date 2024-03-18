@@ -2189,15 +2189,7 @@ exports[`getMergeableContentDelta No match remote missing cell 1`] = `
                 ],
               },
             ],
-            "r2": [
-              "",
-              {},
-            ],
           },
-        ],
-        "t2": [
-          "",
-          {},
         ],
       },
     ],
@@ -2219,10 +2211,6 @@ exports[`getMergeableContentDelta No match remote missing row 1`] = `
         "t1": [
           "Hc2DO@000008DKS9",
           {
-            "r1": [
-              "",
-              {},
-            ],
             "r2": [
               "000000000008DKS9",
               {
@@ -2233,10 +2221,6 @@ exports[`getMergeableContentDelta No match remote missing row 1`] = `
               },
             ],
           },
-        ],
-        "t2": [
-          "",
-          {},
         ],
       },
     ],
@@ -2276,10 +2260,6 @@ exports[`getMergeableContentDelta No match remote missing table 1`] = `
     [
       "Hc2DO@000008DKS9",
       {
-        "t1": [
-          "",
-          {},
-        ],
         "t2": [
           "000000000008DKS9",
           {

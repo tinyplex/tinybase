@@ -259,30 +259,41 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     if (tablesHsm[2] == relativeTo[2]) {
       return stampNewObj();
     }
-    return hashStampMapToObj(tablesHsm, 1, (tableHsm, tableId) =>
-      getMergeableTableDelta(tableHsm, relativeTo[1][tableId]),
-    ) as Stamp<IdObj<Stamp<IdObj<Stamp<IdObj<Stamp<CellOrUndefined>>>>>>>;
+
+    const tablesDelta = {} as IdObj<
+      Stamp<IdObj<Stamp<IdObj<Stamp<CellOrUndefined>>>>>
+    >;
+    collForEach(tablesHsm[1], (tableHsm, tableId) =>
+      tableHsm[2] === relativeTo?.[1]?.[tableId]?.[2]
+        ? 0
+        : (tablesDelta[tableId] = getMergeableTableDelta(
+            tableHsm,
+            relativeTo?.[1][tableId],
+          )),
+    );
+    return [tablesHsm[0], tablesDelta];
   };
 
   const getMergeableTableDelta = (
     tableHsm: HashStamp<IdMap<HashStamp<IdMap<HashStamp<CellOrUndefined>>>>>,
     relativeTo: HashStamp<IdObj<HashStamp<IdObj<HashStamp<CellOrUndefined>>>>>,
   ): Stamp<IdObj<Stamp<IdObj<Stamp<CellOrUndefined>>>>> => {
-    if (tableHsm[2] == relativeTo?.[2]) {
-      return stampNewObj();
-    }
-    return hashStampMapToObj(tableHsm, 1, (rowHsm, rowId) =>
-      getMergeableRowDelta(rowHsm, relativeTo?.[1][rowId]),
-    ) as Stamp<IdObj<Stamp<IdObj<Stamp<CellOrUndefined>>>>>;
+    const tableDelta = {} as IdObj<Stamp<IdObj<Stamp<CellOrUndefined>>>>;
+    collForEach(tableHsm[1], (rowHsm, rowId) =>
+      rowHsm[2] === relativeTo?.[1]?.[rowId]?.[2]
+        ? 0
+        : (tableDelta[rowId] = getMergeableRowDelta(
+            rowHsm,
+            relativeTo?.[1][rowId],
+          )),
+    );
+    return [tableHsm[0], tableDelta];
   };
 
   const getMergeableRowDelta = (
     rowHsm: HashStamp<IdMap<HashStamp<CellOrUndefined>>>,
     relativeTo: HashStamp<IdObj<HashStamp<CellOrUndefined>>>,
   ): Stamp<IdObj<Stamp<CellOrUndefined>>> => {
-    if (rowHsm[2] == relativeTo?.[2]) {
-      return stampNewObj();
-    }
     const rowDelta = {} as IdObj<Stamp<CellOrUndefined>>;
     collForEach(rowHsm[1], (cellHsm, cellId) =>
       cellHsm[2] === relativeTo?.[1]?.[cellId]?.[2]
