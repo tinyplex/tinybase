@@ -52,10 +52,10 @@ export const mapEnsure = <Key, Value>(
   return mapGet(map, key) as Value;
 };
 
-export const mapMatch = <MapValue, ObjectValue>(
+export const mapMatch = <MapValue, ObjValue>(
   map: IdMap<MapValue>,
-  obj: IdObj<ObjectValue>,
-  set: (map: IdMap<MapValue>, id: Id, value: ObjectValue) => void,
+  obj: IdObj<ObjValue>,
+  set: (map: IdMap<MapValue>, id: Id, value: ObjValue) => void,
   del: (map: IdMap<MapValue>, id: Id) => void = mapSet,
 ): IdMap<MapValue> => {
   objToArray(obj, (value, id) => set(map, id, value));
@@ -63,41 +63,46 @@ export const mapMatch = <MapValue, ObjectValue>(
   return map;
 };
 
-export const mapToObj = <MapValue, ObjectValue = MapValue>(
+export const mapToObj = <MapValue, ObjValue = MapValue>(
   map: IdMap<MapValue> | undefined,
-  mapValue?: (mapValue: MapValue, id: Id) => ObjectValue,
-  excludeValue?: (objectValue: ObjectValue, mapValue: MapValue) => boolean,
-): IdObj<ObjectValue> => {
-  const obj: IdObj<ObjectValue> = {};
-  collForEach(map, (value, id) => {
-    const mappedValue = mapValue
-      ? mapValue(value, id)
-      : (value as any as ObjectValue);
-    excludeValue?.(mappedValue, value) ? 0 : (obj[id] = mappedValue);
+  valueMapper?: (mapValue: MapValue, id: Id) => ObjValue,
+  excludeMapValue?: (mapValue: MapValue, id: Id) => boolean,
+  excludeObjValue?: (objValue: ObjValue) => boolean,
+): IdObj<ObjValue> => {
+  const obj: IdObj<ObjValue> = {};
+  collForEach(map, (mapValue, id) => {
+    if (!excludeMapValue?.(mapValue, id)) {
+      const objValue = valueMapper
+        ? valueMapper(mapValue, id)
+        : (mapValue as any as ObjValue);
+      excludeObjValue?.(objValue) ? 0 : (obj[id] = objValue);
+    }
   });
   return obj;
 };
 
-export const mapToObj2 = <MapValue, ObjectValue = MapValue>(
+export const mapToObj2 = <MapValue, ObjValue = MapValue>(
   map: IdMap2<MapValue> | undefined,
-  mapValue?: (mapValue: MapValue, id: Id) => ObjectValue,
-  excludeValue?: (objectValue: ObjectValue) => boolean,
+  valueMapper?: (mapValue: MapValue, id: Id) => ObjValue,
+  excludeMapValue?: (mapValue: MapValue) => boolean,
 ) =>
   mapToObj(
     map,
-    (childMap) => mapToObj(childMap, mapValue, excludeValue),
+    (childMap) => mapToObj(childMap, valueMapper, excludeMapValue),
+    collIsEmpty,
     objIsEmpty,
   );
 
-export const mapToObj3 = <MapValue, ObjectValue = MapValue>(
+export const mapToObj3 = <MapValue, ObjValue = MapValue>(
   map: IdMap3<MapValue>,
-  mapValue?: (mapValue: MapValue, id: Id) => ObjectValue,
-  excludeValue?: (objectValue: ObjectValue) => boolean,
+  valueMapper?: (mapValue: MapValue, id: Id) => ObjValue,
+  excludeMapValue?: (mapValue: MapValue) => boolean,
 ) =>
   mapToObj(
     map,
     (childMap) =>
-      mapToObj2<MapValue, ObjectValue>(childMap, mapValue, excludeValue),
+      mapToObj2<MapValue, ObjValue>(childMap, valueMapper, excludeMapValue),
+    collIsEmpty,
     objIsEmpty,
   );
 
