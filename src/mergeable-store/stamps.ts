@@ -5,10 +5,9 @@ import {EMPTY_STRING} from '../common/strings';
 import {Id} from '../types/common';
 import {getHash} from './hash';
 
-export const hashStampToStamp = <Value>([
-  time,
-  value,
-]: HashStamp<Value>): Stamp<Value> => [time, value];
+export const stampClone = <Value>([time, value]:
+  | Stamp<Value>
+  | HashStamp<Value>): Stamp<Value> => [time, value];
 
 const cloneHashStamp = <Value>(
   [time, value, hash]: HashStamp<Value>,
