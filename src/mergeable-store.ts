@@ -21,7 +21,6 @@ import {
   objToArray,
 } from './common/obj';
 import {
-  cloneHashStamp,
   hashIdAndHash,
   hashStampMap,
   hashStampMapToObj,
@@ -33,6 +32,7 @@ import {
 } from './mergeable-store/stamps';
 import {isUndefined, slice} from './common/other';
 import {Id} from './types/common';
+import {collForEach} from './common/coll';
 import {createStore} from './store';
 import {getHash} from './mergeable-store/hash';
 import {getHlcFunctions} from './mergeable-store/hlc';
@@ -283,19 +283,13 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     if (rowHsm[2] == relativeTo?.[2]) {
       return stampNewObj();
     }
-    return hashStampMapToObj(rowHsm, 1, (cellHsm, cellId) =>
-      getMergeableCellDelta(cellHsm, relativeTo?.[1][cellId]),
-    ) as Stamp<IdObj<Stamp<CellOrUndefined>>>;
-  };
-
-  const getMergeableCellDelta = (
-    cellHsm: HashStamp<CellOrUndefined>,
-    relativeTo: HashStamp<CellOrUndefined>,
-  ): Stamp<CellOrUndefined> => {
-    if (cellHsm[2] == relativeTo?.[2]) {
-      return stampNew();
-    }
-    return cloneHashStamp(cellHsm, '', 1) as Stamp<CellOrUndefined>;
+    const rowDelta = {} as IdObj<Stamp<CellOrUndefined>>;
+    collForEach(rowHsm[1], (cellHsm, cellId) =>
+      cellHsm[2] === relativeTo?.[1]?.[cellId]?.[2]
+        ? 0
+        : (rowDelta[cellId] = [cellHsm[0], cellHsm[1]]),
+    );
+    return [rowHsm[0], rowDelta];
   };
 
   const getMergeableValuesDelta = (
@@ -305,19 +299,13 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     if (valuesHsm[2] == relativeTo?.[2]) {
       return stampNewObj();
     }
-    return hashStampMapToObj(valuesHsm, 1, (valueHsm, valueId) =>
-      getMergeableValueDelta(valueHsm, relativeTo?.[1][valueId]),
-    ) as Stamp<IdObj<Stamp<CellOrUndefined>>>;
-  };
-
-  const getMergeableValueDelta = (
-    valueHsm: HashStamp<ValueOrUndefined>,
-    relativeTo: HashStamp<ValueOrUndefined>,
-  ): Stamp<ValueOrUndefined> => {
-    if (valueHsm[2] == relativeTo?.[2]) {
-      return stampNew();
-    }
-    return cloneHashStamp(valueHsm, '', 1) as Stamp<ValueOrUndefined>;
+    const valuesDelta = {} as IdObj<Stamp<ValueOrUndefined>>;
+    collForEach(valuesHsm[1], (valueHsm, valueId) =>
+      valueHsm[2] === relativeTo?.[1]?.[valueId]?.[2]
+        ? 0
+        : (valuesDelta[valueId] = [valueHsm[0], valueHsm[1]]),
+    );
+    return [valuesHsm[0], valuesDelta];
   };
 
   const setMergeableContent = (
