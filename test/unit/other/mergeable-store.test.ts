@@ -170,6 +170,17 @@ describe('getMergeableContentDelta', () => {
     ).toMatchSnapshot();
   });
 
+  test('Both match', () => {
+    store1.setContent([
+      {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+      {v1: 1, v2: 2},
+    ]);
+    store2.merge(store1);
+    expect(
+      store1.getMergeableContentDelta(store2.getMergeableContent()),
+    ).toMatchSnapshot();
+  });
+
   test('Local tables & values, remote empty', () => {
     store1.setContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
@@ -180,11 +191,35 @@ describe('getMergeableContentDelta', () => {
     ).toMatchSnapshot();
   });
 
-  test('Local tables & values, remote same tables', () => {
+  test('Local tables & values, remote missing tables', () => {
+    store1.setContent([{}, {v1: 1, v2: 2}]);
+    store2.merge(store1);
     store1.setTables({
       t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}},
       t2: {r2: {c2: 2}},
     });
+    expect(
+      store1.getMergeableContentDelta(store2.getMergeableContent()),
+    ).toMatchSnapshot();
+  });
+
+  test('Local tables & values, remote missing table', () => {
+    store1.setContent([
+      {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}},
+      {v1: 1, v2: 2},
+    ]);
+    store2.merge(store1);
+    store1.setTable('t2', {r2: {c2: 2}});
+    expect(
+      store1.getMergeableContentDelta(store2.getMergeableContent()),
+    ).toMatchSnapshot();
+  });
+
+  test('Local tables & values, remote missing values', () => {
+    store1.setContent([
+      {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+      {},
+    ]);
     store2.merge(store1);
     store1.setValues({v1: 1, v2: 2});
     expect(
@@ -192,13 +227,13 @@ describe('getMergeableContentDelta', () => {
     ).toMatchSnapshot();
   });
 
-  test('Local tables & values, remote same values', () => {
-    store1.setValues({v1: 1, v2: 2});
+  test('Local tables & values, remote missing some values', () => {
+    store1.setContent([
+      {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+      {v1: 1},
+    ]);
     store2.merge(store1);
-    store1.setTables({
-      t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}},
-      t2: {r2: {c2: 2}},
-    });
+    store1.setValue('v2', 2);
     expect(
       store1.getMergeableContentDelta(store2.getMergeableContent()),
     ).toMatchSnapshot();
