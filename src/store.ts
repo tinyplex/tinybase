@@ -1367,16 +1367,18 @@ export const createStore: typeof createStoreDecl = (): Store => {
                   : mapToObj(
                       row,
                       ([, newCell]) => newCell,
-                      (_, changedCell) => pairIsEqual(changedCell),
+                      (changedCell) => pairIsEqual(changedCell),
                     ),
+              collIsEmpty,
               objIsEmpty,
             ),
+      collIsEmpty,
       objIsEmpty,
     ),
     mapToObj(
       changedValues,
       ([, newValue]) => newValue,
-      (_, changedValue) => pairIsEqual(changedValue),
+      (changedValue) => pairIsEqual(changedValue),
     ),
   ];
 
