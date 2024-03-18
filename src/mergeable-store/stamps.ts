@@ -5,7 +5,7 @@ import {EMPTY_STRING} from '../common/strings';
 import {Id} from '../types/common';
 import {getHash} from './hash';
 
-export const cloneHashStamp = <Value>(
+const cloneHashStamp = <Value>(
   [time, value, hash]: HashStamp<Value>,
   _id: Id = EMPTY_STRING,
   removeHash: 0 | 1 = 0,
