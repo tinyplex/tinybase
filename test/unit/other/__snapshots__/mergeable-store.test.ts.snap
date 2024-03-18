@@ -2087,6 +2087,22 @@ exports[`getMergeableContentDelta Both empty 1`] = `
 ]
 `;
 
+exports[`getMergeableContentDelta Both match 1`] = `
+[
+  "",
+  [
+    [
+      "",
+      {},
+    ],
+    [
+      "",
+      {},
+    ],
+  ],
+]
+`;
+
 exports[`getMergeableContentDelta Local tables & values, remote empty 1`] = `
 [
   "Hc2DO@000008DKS9",
@@ -2154,32 +2170,7 @@ exports[`getMergeableContentDelta Local tables & values, remote empty 1`] = `
 ]
 `;
 
-exports[`getMergeableContentDelta Local tables & values, remote same tables 1`] = `
-[
-  "Hc2DO@000008DKS9",
-  [
-    [
-      "",
-      {},
-    ],
-    [
-      "000000000008DKS9",
-      {
-        "v1": [
-          "000000000008DKS9",
-          1,
-        ],
-        "v2": [
-          "000000000008DKS9",
-          2,
-        ],
-      },
-    ],
-  ],
-]
-`;
-
-exports[`getMergeableContentDelta Local tables & values, remote same values 1`] = `
+exports[`getMergeableContentDelta Local tables & values, remote missing tables 1`] = `
 [
   "Hc2DO@000008DKS9",
   [
@@ -2232,6 +2223,91 @@ exports[`getMergeableContentDelta Local tables & values, remote same values 1`] 
     [
       "",
       {},
+    ],
+  ],
+]
+`;
+
+exports[`getMergeableContentDelta Local tables & values, remote missing table 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  [
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "t1": [
+          "",
+          {},
+        ],
+        "t2": [
+          "000000000008DKS9",
+          {
+            "r2": [
+              "000000000008DKS9",
+              {
+                "c2": [
+                  "000000000008DKS9",
+                  2,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "",
+      {},
+    ],
+  ],
+]
+`;
+
+exports[`getMergeableContentDelta Local tables & values, remote missing values 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  [
+    [
+      "",
+      {},
+    ],
+    [
+      "000000000008DKS9",
+      {
+        "v1": [
+          "000000000008DKS9",
+          1,
+        ],
+        "v2": [
+          "000000000008DKS9",
+          2,
+        ],
+      },
+    ],
+  ],
+]
+`;
+
+exports[`getMergeableContentDelta Local tables & values, remote missing some values 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  [
+    [
+      "",
+      {},
+    ],
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "v1": [
+          "",
+          undefined,
+        ],
+        "v2": [
+          "000000000008DKS9",
+          2,
+        ],
+      },
     ],
   ],
 ]
