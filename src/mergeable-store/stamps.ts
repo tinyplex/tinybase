@@ -7,7 +7,7 @@ import {getHash} from './hash';
 
 export const cloneHashStamp = <Value>(
   [time, value, hash]: HashStamp<Value>,
-  _id: Id,
+  _id: Id = EMPTY_STRING,
   removeHash: 0 | 1 = 0,
 ): HashStamp<Value> | Stamp<Value> =>
   removeHash ? [time, value] : [time, value, hash];
