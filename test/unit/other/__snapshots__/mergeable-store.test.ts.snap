@@ -2183,10 +2183,6 @@ exports[`getMergeableContentDelta No match remote missing cell 1`] = `
             "r1": [
               "Hc2DO@000008DKS9",
               {
-                "c1": [
-                  "",
-                  undefined,
-                ],
                 "c2": [
                   "000000000008DKS9",
                   2,
@@ -2263,10 +2259,6 @@ exports[`getMergeableContentDelta No match remote missing some values 1`] = `
     [
       "Hc2DO@000008DKS9",
       {
-        "v1": [
-          "",
-          undefined,
-        ],
         "v2": [
           "000000000008DKS9",
           2,
