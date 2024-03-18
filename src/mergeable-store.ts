@@ -57,17 +57,39 @@ const LISTENER_ARGS: IdObj<number> = {
   InvalidValue: 1,
 };
 
-// HSM = HashStampedMap
-type TableHsm = HashStamp<IdMap<RowHsm>>;
-type RowHsm = HashStamp<IdMap<HashStamp<CellOrUndefined>>>;
-type ContentHashStamp = HashStamp<
-  [
-    tablesHsm: HashStamp<IdMap<TableHsm>>,
-    valuesHsm: HashStamp<IdMap<HashStamp<ValueOrUndefined>>>,
-  ]
->;
+// HSM = HashStampMap (internal map with hash)
+// HSO = HashStampObj (external obj with hash)
+//  SO = StampObj     (external obj without hash)
 
-const newContentHsm = (time = EMPTY_STRING): ContentHashStamp => [
+type Hsm<Thing> = HashStamp<IdMap<Thing>>;
+type Hso<Thing> = HashStamp<IdObj<Thing>>;
+type So<Thing> = Stamp<IdObj<Thing>>;
+
+type ContentHsm = HashStamp<[tablesHsm: TablesHsm, valuesHsm: ValuesHsm]>;
+
+type TablesSo = So<TableSo>;
+type TablesHso = Hso<TableHso>;
+type TablesHsm = Hsm<TableHsm>;
+
+type TableSo = So<RowSo>;
+type TableHso = Hso<RowHso>;
+type TableHsm = Hsm<RowHsm>;
+
+type RowSo = So<CellStamp>;
+type RowHso = Hso<CellHashStamp>;
+type RowHsm = Hsm<CellHashStamp>;
+
+type CellStamp = Stamp<CellOrUndefined>;
+type CellHashStamp = HashStamp<CellOrUndefined>;
+
+type ValuesSo = So<ValueStamp>;
+type ValuesHso = Hso<ValueHashStamp>;
+type ValuesHsm = Hsm<ValueHashStamp>;
+
+type ValueStamp = Stamp<ValueOrUndefined>;
+type ValueHashStamp = HashStamp<ValueOrUndefined>;
+
+const newContentHsm = (time = EMPTY_STRING): ContentHsm => [
   time,
   [hashStampNewMap(time), hashStampNewMap(time)],
   0,
@@ -168,8 +190,8 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   };
 
   const mergeCellsOrValues = <Thing extends CellOrUndefined | ValueOrUndefined>(
-    things: HashStamp<IdObj<HashStamp<Thing>>>,
-    thingsHsm: HashStamp<IdMap<HashStamp<Thing>>>,
+    things: Hso<HashStamp<Thing>>,
+    thingsHsm: Hsm<HashStamp<Thing>>,
     thingsChanges: {[thingId: Id]: Thing},
     hasHashes: 0 | 1,
   ): [oldThingsHash: number, newThingsHash: number] => {
@@ -247,13 +269,9 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
         ]) as MergeableChanges);
 
   const getMergeableTablesDelta = (
-    tablesHsm: HashStamp<
-      IdMap<HashStamp<IdMap<HashStamp<IdMap<HashStamp<CellOrUndefined>>>>>>
-    >,
-    relativeTo: HashStamp<
-      IdObj<HashStamp<IdObj<HashStamp<IdObj<HashStamp<CellOrUndefined>>>>>>
-    >,
-  ): Stamp<IdObj<Stamp<IdObj<Stamp<IdObj<Stamp<CellOrUndefined>>>>>>> =>
+    tablesHsm: TablesHsm,
+    relativeTo: TablesHso,
+  ): TablesSo =>
     tablesHsm[2] == relativeTo[2]
       ? stampNewObj()
       : [
@@ -268,9 +286,9 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
         ];
 
   const getMergeableTableDelta = (
-    tableHsm: HashStamp<IdMap<HashStamp<IdMap<HashStamp<CellOrUndefined>>>>>,
-    relativeTo: HashStamp<IdObj<HashStamp<IdObj<HashStamp<CellOrUndefined>>>>>,
-  ): Stamp<IdObj<Stamp<IdObj<Stamp<CellOrUndefined>>>>> => [
+    tableHsm: TableHsm,
+    relativeTo: TableHso,
+  ): TableSo => [
     tableHsm[0],
     mapToObj(
       tableHsm[1],
@@ -279,10 +297,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     ),
   ];
 
-  const getMergeableRowDelta = (
-    rowHsm: HashStamp<IdMap<HashStamp<CellOrUndefined>>>,
-    relativeTo: HashStamp<IdObj<HashStamp<CellOrUndefined>>>,
-  ): Stamp<IdObj<Stamp<CellOrUndefined>>> => [
+  const getMergeableRowDelta = (rowHsm: RowHsm, relativeTo: RowHso): RowSo => [
     rowHsm[0],
     mapToObj(
       rowHsm[1],
@@ -292,9 +307,9 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   ];
 
   const getMergeableValuesDelta = (
-    valuesHsm: HashStamp<IdMap<HashStamp<ValueOrUndefined>>>,
-    relativeTo: HashStamp<IdObj<HashStamp<ValueOrUndefined>>>,
-  ): Stamp<IdObj<Stamp<ValueOrUndefined>>> =>
+    valuesHsm: ValuesHsm,
+    relativeTo: ValuesHso,
+  ): ValuesSo =>
     valuesHsm[2] == relativeTo?.[2]
       ? stampNewObj()
       : [
