@@ -132,6 +132,29 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
     relativeTo: MergeableContent<Schemas>,
   ): MergeableChanges<Schemas>;
 
+  /// MergeableStore.getMergeableTablesDelta
+  getMergeableTablesDelta(
+    relativeTo: TablesStamp<Schemas[0], true>,
+  ): TablesStamp<Schemas[0]>;
+
+  /// MergeableStore.getMergeableTableDelta
+  getMergeableTableDelta<TableId extends TableIdFromSchema<Schemas[0]>>(
+    tableId: TableId,
+    relativeTo: TableStamp<Schemas[0], TableId, true>,
+  ): TableStamp<Schemas[0], TableId>;
+
+  /// MergeableStore.getMergeableRowDelta
+  getMergeableRowDelta<TableId extends TableIdFromSchema<Schemas[0]>>(
+    tableId: TableId,
+    rowId: Id,
+    relativeTo: RowStamp<Schemas[0], TableId, true>,
+  ): RowStamp<Schemas[0], TableId>;
+
+  /// MergeableStore.getMergeableValuesDelta
+  getMergeableValuesDelta(
+    relativeTo: ValuesStamp<Schemas[1], true>,
+  ): ValuesStamp<Schemas[1]>;
+
   /// MergeableStore.setMergeableContent
   setMergeableContent(
     mergeableContent: MergeableContent<Schemas>,
