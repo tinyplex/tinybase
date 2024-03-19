@@ -433,6 +433,10 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const mergeableStore: IdObj<any> = {
     getMergeableContent,
     getMergeableContentDelta,
+    getMergeableTablesDelta,
+    getMergeableTableDelta,
+    getMergeableRowDelta,
+    getMergeableValuesDelta,
     setMergeableContent,
     getTransactionMergeableChanges,
     applyMergeableChanges,
