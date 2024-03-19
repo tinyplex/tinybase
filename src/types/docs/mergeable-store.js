@@ -81,6 +81,26 @@
    */
   /// MergeableStore.getMergeableContentDelta
   /**
+   * The getMergeableTablesDelta method
+   * @category Merging
+   */
+  /// MergeableStore.getMergeableTablesDelta
+  /**
+   * The getMergeableTableDelta method
+   * @category Merging
+   */
+  /// MergeableStore.getMergeableTableDelta
+  /**
+   * The getMergeableRowDelta method
+   * @category Merging
+   */
+  /// MergeableStore.getMergeableRowDelta
+  /**
+   * The getMergeableValuesDelta method
+   * @category Merging
+   */
+  /// MergeableStore.getMergeableValuesDelta
+  /**
    * The setMergeableContent method
    * @category Merging
    */
