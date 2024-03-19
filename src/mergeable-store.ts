@@ -239,77 +239,106 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
       stampMapToObj(valuesStampMap),
     ]);
 
-  const getMergeableContentDelta = (
-    relativeTo: MergeableContent,
-  ): MergeableChanges =>
-    contentStampMap[2] == relativeTo[2]
+  const getMergeableContentDelta = ([
+    ,
+    [relativeTables, relativeValues],
+    relativeHash,
+  ]: MergeableContent): MergeableChanges =>
+    contentStampMap[2] === relativeHash
       ? [EMPTY_STRING, [stampNewObj(), stampNewObj()]]
       : [
           contentStampMap[0],
           [
-            getMergeableTablesDelta(contentStampMap[1][0], relativeTo[1][0]),
-            getMergeableValuesDelta(contentStampMap[1][1], relativeTo[1][1]),
+            getMergeableTablesDelta(relativeTables),
+            getMergeableValuesDelta(relativeValues),
           ],
         ];
 
   const getMergeableTablesDelta = (
-    tablesStampMap: TablesStampMap,
     relativeTo: TablesStamp<true>,
-  ): TablesStamp =>
-    tablesStampMap[2] == relativeTo[2]
+  ): TablesStamp => {
+    const [tablesTime, tableStampMaps, tablesHash] = contentStampMap[1][0];
+    return tablesHash === relativeTo?.[2]
       ? stampNewObj()
       : [
-          tablesStampMap[0],
+          tablesTime,
           mapToObj(
-            tablesStampMap[1],
+            tableStampMaps,
             (tableStampMap, tableId) =>
-              getMergeableTableDelta(tableStampMap, relativeTo?.[1]?.[tableId]),
+              getMergeableTableDelta(
+                tableId,
+                relativeTo?.[1]?.[tableId],
+                tableStampMap,
+              ),
             (tableStampMap, tableId) =>
               tableStampMap[2] === relativeTo?.[1]?.[tableId]?.[2],
           ),
         ];
+  };
 
   const getMergeableTableDelta = (
-    tableStampMap: TableStampMap,
+    tableId: Id,
     relativeTo: TableStamp<true>,
-  ): TableStamp => [
-    tableStampMap[0],
-    mapToObj(
-      tableStampMap[1],
-      (rowStampMap, rowId) =>
-        getMergeableRowDelta(rowStampMap, relativeTo?.[1]?.[rowId]),
-      (rowStampMap, rowId) => rowStampMap[2] === relativeTo?.[1]?.[rowId]?.[2],
+    tableStampMap: TableStampMap | undefined = mapGet(
+      contentStampMap[1][0][1],
+      tableId,
     ),
-  ];
-
-  const getMergeableRowDelta = (
-    rowStampMap: RowStampMap,
-    relativeTo: RowStamp<true>,
-  ): RowStamp => [
-    rowStampMap[0],
-    mapToObj(
-      rowStampMap[1],
-      stampClone,
-      (cellStampMap, cellId) =>
-        cellStampMap[2] === relativeTo?.[1]?.[cellId]?.[2],
-    ),
-  ];
-
-  const getMergeableValuesDelta = (
-    valuesStampMap: ValuesStampMap,
-    relativeTo: ValuesStamp<true>,
-  ): ValuesStamp =>
-    valuesStampMap[2] == relativeTo?.[2]
+  ): TableStamp =>
+    isUndefined(tableStampMap) || tableStampMap[2] === relativeTo?.[2]
       ? stampNewObj()
       : [
-          valuesStampMap[0],
+          tableStampMap[0],
           mapToObj(
-            valuesStampMap[1],
+            tableStampMap[1],
+            (rowStampMap, rowId) =>
+              getMergeableRowDelta(
+                tableId,
+                rowId,
+                relativeTo?.[1]?.[rowId],
+                rowStampMap,
+              ),
+            (rowStampMap, rowId) =>
+              rowStampMap[2] === relativeTo?.[1]?.[rowId]?.[2],
+          ),
+        ];
+
+  const getMergeableRowDelta = (
+    tableId: Id,
+    rowId: Id,
+    relativeTo: RowStamp<true>,
+    rowStampMap: RowStampMap | undefined = mapGet(
+      mapGet(contentStampMap[1][0][1], tableId)?.[1],
+      rowId,
+    ),
+  ): RowStamp =>
+    isUndefined(rowStampMap) || rowStampMap[2] === relativeTo?.[2]
+      ? stampNewObj()
+      : [
+          rowStampMap[0],
+          mapToObj(
+            rowStampMap[1],
+            stampClone,
+            (cellStampMap, cellId) =>
+              cellStampMap[2] === relativeTo?.[1]?.[cellId]?.[2],
+          ),
+        ];
+
+  const getMergeableValuesDelta = (
+    relativeTo: ValuesStamp<true>,
+  ): ValuesStamp => {
+    const [valuesTime, valueStampMaps, valuesHash] = contentStampMap[1][1];
+    return valuesHash === relativeTo?.[2]
+      ? stampNewObj()
+      : [
+          valuesTime,
+          mapToObj(
+            valueStampMaps,
             stampClone,
             (valueStampMap, valueId) =>
               valueStampMap[2] === relativeTo?.[1]?.[valueId]?.[2],
           ),
         ];
+  };
 
   const setMergeableContent = (
     mergeableContent: MergeableContent,
