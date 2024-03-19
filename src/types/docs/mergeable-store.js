@@ -15,15 +15,40 @@
  */
 /// Hash
 /**
- * The HashStamp type
- * @category Stamps
- */
-/// HashStamp
-/**
  * The Stamp type
  * @category Stamps
  */
 /// Stamp
+/**
+ * The TablesStamp type
+ * @category Stamps
+ */
+/// TablesStamp
+/**
+ * The TableStamp type
+ * @category Stamps
+ */
+/// TableStamp
+/**
+ * The RowStamp type
+ * @category Stamps
+ */
+/// RowStamp
+/**
+ * The CellStamp type
+ * @category Stamps
+ */
+/// CellStamp
+/**
+ * The ValuesStamp type
+ * @category Stamps
+ */
+/// ValuesStamp
+/**
+ * The ValueStamp type
+ * @category Stamps
+ */
+/// ValueStamp
 /**
  * The MergeableContent type
  * @category Mergeable
