@@ -121,9 +121,6 @@ export type MergeableChanges<Schemas extends OptionalSchemas> = Stamp<
 export interface MergeableStore<Schemas extends OptionalSchemas>
   extends Store<Schemas> {
   //
-  /// MergeableStore.merge
-  merge(mergeableStore: MergeableStore<Schemas>): MergeableStore<Schemas>;
-
   /// MergeableStore.getMergeableContent
   getMergeableContent(): MergeableContent<Schemas>;
 
@@ -168,33 +165,8 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
     mergeableChanges: MergeableChanges<Schemas> | MergeableContent<Schemas>,
   ): MergeableStore<Schemas>;
 
-  /// MergeableStore.getContentHash
-  getContentHash(): Hash;
-
-  /// MergeableStore.getTablesHash
-  getTablesHash(): Hash;
-
-  /// MergeableStore.getTableHash
-  getTableHash(tableId: TableIdFromSchema<Schemas[0]>): Hash;
-
-  /// MergeableStore.getRowHash
-  getRowHash<TableId extends TableIdFromSchema<Schemas[0]>>(
-    tableId: TableId,
-    rowId: Id,
-  ): Hash;
-
-  /// MergeableStore.getCellHash
-  getCellHash<TableId extends TableIdFromSchema<Schemas[0]>>(
-    tableId: TableId,
-    rowId: Id,
-    cellId: CellIdFromSchema<Schemas[0], TableId>,
-  ): Hash;
-
-  /// MergeableStore.getValuesHash
-  getValuesHash(): Hash;
-
-  /// MergeableStore.getValueHash
-  getValueHash(valueId: ValueIdFromSchema<Schemas[1]>): Hash;
+  /// MergeableStore.merge
+  merge(mergeableStore: MergeableStore<Schemas>): MergeableStore<Schemas>;
 
   /// Store.setTablesSchema
   setTablesSchema<TS extends TablesSchema>(
