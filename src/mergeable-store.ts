@@ -1,7 +1,15 @@
 import {CellOrUndefined, Changes, Store, ValueOrUndefined} from './types/store';
 import {EMPTY_STRING, strEndsWith, strStartsWith} from './common/strings';
 import {
-  Hash,
+  IdObj,
+  objEnsure,
+  objForEach,
+  objFreeze,
+  objIsEmpty,
+  objNew,
+  objToArray,
+} from './common/obj';
+import {
   MergeableChanges,
   MergeableContent,
   MergeableStore,
@@ -13,15 +21,6 @@ import {
   ValuesStamp,
   createMergeableStore as createMergeableStoreDecl,
 } from './types/mergeable-store';
-import {
-  IdObj,
-  objEnsure,
-  objForEach,
-  objFreeze,
-  objIsEmpty,
-  objNew,
-  objToArray,
-} from './common/obj';
 import {
   RowStampMap,
   StampMap,
@@ -409,27 +408,6 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     return applyMergeableChanges(mergeableChanges2);
   };
 
-  const getContentHash = (): Hash => contentStampMap[2];
-
-  const getTablesHash = (): Hash => contentStampMap[1][0][2];
-
-  const getTableHash = (tableId: Id): Hash =>
-    mapGet(contentStampMap[1][0][1], tableId)?.[2] ?? 0;
-
-  const getRowHash = (tableId: Id, rowId: Id): Hash =>
-    mapGet(mapGet(contentStampMap[1][0][1], tableId)?.[1], rowId)?.[2] ?? 0;
-
-  const getCellHash = (tableId: Id, rowId: Id, cellId: Id): Hash =>
-    mapGet(
-      mapGet(mapGet(contentStampMap[1][0][1], tableId)?.[1], rowId)?.[1],
-      cellId,
-    )?.[2] ?? 0;
-
-  const getValuesHash = (): Hash => contentStampMap[1][1][2];
-
-  const getValueHash = (valueId: Id): Hash =>
-    mapGet(contentStampMap[1][1][1], valueId)?.[2] ?? 0;
-
   const mergeableStore: IdObj<any> = {
     getMergeableContent,
     getMergeableContentDelta,
@@ -441,13 +419,6 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     getTransactionMergeableChanges,
     applyMergeableChanges,
     merge,
-    getContentHash,
-    getTablesHash,
-    getTableHash,
-    getRowHash,
-    getCellHash,
-    getValuesHash,
-    getValueHash,
   };
 
   (store as any).setInternalListeners(
