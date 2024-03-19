@@ -18,25 +18,19 @@ export type TableStampMap = StampMap<RowStampMap>;
 export type RowStampMap = StampMap<CellStamp<true>>;
 export type ValuesStampMap = StampMap<ValueStamp<true>>;
 
-export const stampClone = <Value>([time, value]: Stamp<
+export const stampClone = <Value>([time, value]: Stamp<Value, boolean>): Stamp<
   Value,
-  boolean
->): Stamp<Value> => [time, value];
+  false
+> => [time, value];
 
-const cloneHashStamp = <Value>(
-  [time, value, hash]: Stamp<Value, true>,
-  _id: Id = EMPTY_STRING,
-  removeHash: 0 | 1 = 0,
-): Stamp<Value, boolean> => (removeHash ? [time, value] : [time, value, hash]);
-
-export const stampNew = <Thing>(
-  time: Time = EMPTY_STRING,
-  thing?: Thing,
-): Stamp<Thing> => [time, thing as Thing];
+export const stampCloneWithHash = <Value>([time, value, hash]: Stamp<
+  Value,
+  true
+>): Stamp<Value, true> => [time, value, hash];
 
 export const hashIdAndHash = (id: Id, hash: Hash) => getHash(id + ':' + hash);
 
-export const updateStamp = (
+export const stampUpdate = (
   stamp: Stamp<unknown, true>,
   hash: Hash,
   time: Time,
@@ -48,35 +42,22 @@ export const updateStamp = (
 };
 
 export const stampNewObj = <Thing>(
-  time: Time = EMPTY_STRING,
-): Stamp<IdObj<Thing>> => stampNew(time, objNew<Thing>());
-
-export const hashStampNewMap = <Thing>(
   time = EMPTY_STRING,
-): StampMap<Thing> => [time, mapNew<Id, Thing>(), 0];
+): Stamp<IdObj<Thing>> => [time, objNew<Thing>()];
 
-export const hashStampNewThing = <Thing>(): Stamp<Thing, true> => [
-  EMPTY_STRING,
-  undefined as any,
+export const stampNewMap = <Thing>(time = EMPTY_STRING): StampMap<Thing> => [
+  time,
+  mapNew<Id, Thing>(),
   0,
 ];
 
-export const hashStampMap = <From, To = From>(
+export const stampMap = <From, To = From>(
   [time, value, hash]: Stamp<From, true>,
-  removeHash: 0 | 1,
   mapper: (value: From, time: Time) => To,
-): Stamp<To, boolean> =>
-  removeHash ? [time, mapper(value, time)] : [time, mapper(value, time), hash];
+): Stamp<To, true> => [time, mapper(value, time), hash];
 
-export const hashStampMapToObj = <From, To = From>(
+export const stampMapToObj = <From, To = From>(
   hashStamp: Stamp<IdMap<From>, true>,
-  removeHash: 0 | 1 = 0,
-  mapper: (
-    mapValue: From,
-    id: Id,
-    removeHash: 0 | 1,
-  ) => To = cloneHashStamp as any,
-): Stamp<IdObj<To>, boolean> =>
-  hashStampMap(hashStamp, removeHash, (map) =>
-    mapToObj(map, (from: From, id: Id) => mapper(from, id, removeHash)),
-  );
+  mapper: (mapValue: From) => To = stampCloneWithHash as any,
+): Stamp<IdObj<To>, true> =>
+  stampMap(hashStamp, (map) => mapToObj(map, mapper));
