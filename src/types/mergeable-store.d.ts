@@ -64,9 +64,6 @@ export type MergeableChanges = Stamp<
 /// MergeableStore
 export interface MergeableStore extends Store {
   //
-  /// MergeableStore.merge
-  merge(mergeableStore: MergeableStore): MergeableStore;
-
   /// MergeableStore.getMergeableContent
   getMergeableContent(): MergeableContent;
 
@@ -100,26 +97,8 @@ export interface MergeableStore extends Store {
     mergeableChanges: MergeableChanges | MergeableContent,
   ): MergeableStore;
 
-  /// MergeableStore.getContentHash
-  getContentHash(): Hash;
-
-  /// MergeableStore.getTablesHash
-  getTablesHash(): Hash;
-
-  /// MergeableStore.getTableHash
-  getTableHash(tableId: Id): Hash;
-
-  /// MergeableStore.getRowHash
-  getRowHash(tableId: Id, rowId: Id): Hash;
-
-  /// MergeableStore.getCellHash
-  getCellHash(tableId: Id, rowId: Id, cellId: Id): Hash;
-
-  /// MergeableStore.getValuesHash
-  getValuesHash(): Hash;
-
-  /// MergeableStore.getValueHash
-  getValueHash(valueId: Id): Hash;
+  /// MergeableStore.merge
+  merge(mergeableStore: MergeableStore): MergeableStore;
 }
 
 /// createMergeableStore
