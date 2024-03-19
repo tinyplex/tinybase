@@ -2,7 +2,6 @@
 
 import {CellOrUndefined, Store, ValueOrUndefined} from './store.d';
 import {Id} from './common';
-import {IdObj} from '../common/obj';
 
 /// Hash
 export type Hash = number;
@@ -10,30 +9,56 @@ export type Hash = number;
 /// Time
 export type Time = string;
 
-/// HashStamp
-export type HashStamp<Thing> = [time: Time, thing: Thing, hash: Hash];
-
 /// Stamp
-export type Stamp<Thing> = [time: Time, thing: Thing];
+export type Stamp<Thing, Hashed extends boolean = false> = Hashed extends true
+  ? [time: Time, thing: Thing, hash: Hash]
+  : [time: Time, thing: Thing];
+
+// TablesStamp
+export type TablesStamp<Hashed extends boolean = false> = Stamp<
+  {[tableId: Id]: TableStamp<Hashed>},
+  Hashed
+>;
+
+// TableStamp
+export type TableStamp<Hashed extends boolean = false> = Stamp<
+  {[rowId: Id]: RowStamp<Hashed>},
+  Hashed
+>;
+
+// RowStamp
+export type RowStamp<Hashed extends boolean = false> = Stamp<
+  {[cellId: Id]: CellStamp<Hashed>},
+  Hashed
+>;
+
+// CellStamp
+export type CellStamp<Hashed extends boolean = false> = Stamp<
+  CellOrUndefined,
+  Hashed
+>;
+
+// ValuesStamp
+export type ValuesStamp<Hashed extends boolean = false> = Stamp<
+  {[valueId: Id]: ValueStamp<Hashed>},
+  Hashed
+>;
+
+// ValueStamp
+export type ValueStamp<Hashed extends boolean = false> = Stamp<
+  ValueOrUndefined,
+  Hashed
+>;
 
 /// MergeableContent
-export type MergeableContent = HashStamp<
-  [
-    mergeableTables: HashStamp<
-      IdObj<HashStamp<IdObj<HashStamp<IdObj<HashStamp<CellOrUndefined>>>>>>
-    >,
-    mergeableValues: HashStamp<IdObj<HashStamp<ValueOrUndefined>>>,
-  ]
+export type MergeableContent = Stamp<
+  [mergeableTables: TablesStamp<true>, mergeableValues: ValuesStamp<true>],
+  true
 >;
 
 /// MergeableChanges
 export type MergeableChanges = Stamp<
-  [
-    mergeableTables: Stamp<
-      IdObj<Stamp<IdObj<Stamp<IdObj<Stamp<CellOrUndefined>>>>>>
-    >,
-    mergeableValues: Stamp<IdObj<Stamp<ValueOrUndefined>>>,
-  ]
+  [mergeableTables: TablesStamp, mergeableValues: ValuesStamp]
 >;
 
 /// MergeableStore
