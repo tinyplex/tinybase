@@ -19,7 +19,6 @@ import {
   ValuesSchema,
 } from './store.d';
 import {Id} from './common';
-import {IdObj} from '../../common/obj';
 
 /// Hash
 export type Hash = number;
@@ -27,51 +26,94 @@ export type Hash = number;
 /// Time
 export type Time = string;
 
-/// HashStamp
-export type HashStamp<Thing> = [time: Time, thing: Thing, hash: Hash];
-
 /// Stamp
-export type Stamp<Thing> = [time: Time, thing: Thing];
+export type Stamp<Thing, Hashed extends boolean = false> = Hashed extends true
+  ? [time: Time, thing: Thing, hash: Hash]
+  : [time: Time, thing: Thing];
+
+// TablesStamp
+export type TablesStamp<
+  Schema extends OptionalTablesSchema,
+  Hashed extends boolean = false,
+> = Stamp<
+  {
+    [TableId in TableIdFromSchema<Schema>]?: TableStamp<
+      Schema,
+      TableId,
+      Hashed
+    >;
+  },
+  Hashed
+>;
+
+// TableStamp
+export type TableStamp<
+  Schema extends OptionalTablesSchema,
+  TableId extends TableIdFromSchema<Schema>,
+  Hashed extends boolean = false,
+> = Stamp<{[rowId: Id]: RowStamp<Schema, TableId, Hashed>}, Hashed>;
+
+// RowStamp
+export type RowStamp<
+  Schema extends OptionalTablesSchema,
+  TableId extends TableIdFromSchema<Schema>,
+  Hashed extends boolean = false,
+> = Stamp<
+  {
+    [CellId in CellIdFromSchema<Schema, TableId>]?: CellStamp<
+      Schema,
+      TableId,
+      CellId,
+      Hashed
+    >;
+  },
+  Hashed
+>;
+
+// CellStamp
+export type CellStamp<
+  Schema extends OptionalTablesSchema,
+  TableId extends TableIdFromSchema<Schema>,
+  CellId extends CellIdFromSchema<Schema, TableId>,
+  Hashed extends boolean = false,
+> = Stamp<CellOrUndefined<Schema, TableId, CellId>, Hashed>;
+
+// ValuesStamp
+export type ValuesStamp<
+  Schema extends OptionalValuesSchema,
+  Hashed extends boolean = false,
+> = Stamp<
+  {
+    [ValueId in ValueIdFromSchema<Schema>]?: ValueStamp<
+      Schema,
+      ValueId,
+      Hashed
+    >;
+  },
+  Hashed
+>;
+
+// ValueStamp
+export type ValueStamp<
+  Schema extends OptionalValuesSchema,
+  ValueId extends ValueIdFromSchema<Schema>,
+  Hashed extends boolean = false,
+> = Stamp<ValueOrUndefined<Schema, ValueId>, Hashed>;
 
 /// MergeableContent
-export type MergeableContent<Schemas extends OptionalSchemas> = HashStamp<
+export type MergeableContent<Schemas extends OptionalSchemas> = Stamp<
   [
-    mergeableTables: HashStamp<{
-      [TableId in TableIdFromSchema<Schemas[0]>]?: HashStamp<{
-        [rowId: Id]: HashStamp<{
-          [CellId in CellIdFromSchema<Schemas[0], TableId>]?: HashStamp<
-            CellOrUndefined<Schemas[0], TableId, CellId>
-          >;
-        }>;
-      }>;
-    }>,
-    mergeableValues: HashStamp<{
-      [ValueId in ValueIdFromSchema<Schemas[1]>]?: HashStamp<
-        ValueOrUndefined<Schemas[1], ValueId>
-      >;
-    }>,
-  ]
+    mergeableTables: TablesStamp<Schemas[0], true>,
+    mergeableValues: ValuesStamp<Schemas[1], true>,
+  ],
+  true
 >;
 
 /// MergeableChanges
 export type MergeableChanges<Schemas extends OptionalSchemas> = Stamp<
   [
-    mergeableTables: Stamp<{
-      [TableId in TableIdFromSchema<Schemas[0]>]?: Stamp<
-        IdObj<
-          Stamp<{
-            [CellId in CellIdFromSchema<Schemas[0], TableId>]?: Stamp<
-              CellOrUndefined<Schemas[0], TableId, CellId>
-            >;
-          }>
-        >
-      >;
-    }>,
-    mergeableValues: Stamp<{
-      [ValueId in ValueIdFromSchema<Schemas[1]>]?: Stamp<
-        ValueOrUndefined<Schemas[1], ValueId>
-      >;
-    }>,
+    mergeableTables: TablesStamp<Schemas[0]>,
+    mergeableValues: ValuesStamp<Schemas[1]>,
   ]
 >;
 
