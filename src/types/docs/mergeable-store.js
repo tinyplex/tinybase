@@ -66,11 +66,6 @@
 /// MergeableStore
 {
   /**
-   * The merge method
-   * @category Merging
-   */
-  /// MergeableStore.merge
-  /**
    * The getMergeableContent method
    * @category Merging
    */
@@ -116,40 +111,10 @@
    */
   /// MergeableStore.applyMergeableChanges
   /**
-   * The getContentHash method
-   * @category Hashes
+   * The merge method
+   * @category Merging
    */
-  /// MergeableStore.getContentHash
-  /**
-   * The getTablesHash method
-   * @category Hashes
-   */
-  /// MergeableStore.getTablesHash
-  /**
-   * The getTableHash method
-   * @category Hashes
-   */
-  /// MergeableStore.getTableHash
-  /**
-   * The getRowHash method
-   * @category Hashes
-   */
-  /// MergeableStore.getRowHash
-  /**
-   * The getCellHash method
-   * @category Hashes
-   */
-  /// MergeableStore.getCellHash
-  /**
-   * The getValuesHash method
-   * @category Hashes
-   */
-  /// MergeableStore.getValuesHash
-  /**
-   * The getValueHash method
-   * @category Hashes
-   */
-  /// MergeableStore.getValueHash
+  /// MergeableStore.merge
 }
 /**
  * The createMergeableStore function
