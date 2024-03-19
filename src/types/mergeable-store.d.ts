@@ -73,6 +73,22 @@ export interface MergeableStore extends Store {
   /// MergeableStore.getMergeableContentDelta
   getMergeableContentDelta(relativeTo: MergeableContent): MergeableChanges;
 
+  /// MergeableStore.getMergeableTablesDelta
+  getMergeableTablesDelta(relativeTo: TablesStamp<true>): TablesStamp;
+
+  /// MergeableStore.getMergeableTableDelta
+  getMergeableTableDelta(tableId: Id, relativeTo: TableStamp<true>): TableStamp;
+
+  /// MergeableStore.getMergeableRowDelta
+  getMergeableRowDelta(
+    tableId: Id,
+    rowId: Id,
+    relativeTo: RowStamp<true>,
+  ): RowStamp;
+
+  /// MergeableStore.getMergeableValuesDelta
+  getMergeableValuesDelta(relativeTo: ValuesStamp<true>): ValuesStamp;
+
   /// MergeableStore.setMergeableContent
   setMergeableContent(mergeableContent: MergeableContent): MergeableStore;
 
