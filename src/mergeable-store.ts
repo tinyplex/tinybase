@@ -271,6 +271,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
               ),
             (tableStampMap, tableId) =>
               tableStampMap[2] === relativeTo?.[1]?.[tableId]?.[2],
+            (tableStamp) => objIsEmpty(tableStamp[1]),
           ),
         ];
   };
@@ -298,6 +299,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
               ),
             (rowStampMap, rowId) =>
               rowStampMap[2] === relativeTo?.[1]?.[rowId]?.[2],
+            (rowStamp) => objIsEmpty(rowStamp[1]),
           ),
         ];
 
