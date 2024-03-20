@@ -408,6 +408,62 @@ exports[`Deltas getMergeableContentDelta No match remote missing values 1`] = `
 ]
 `;
 
+exports[`Deltas getMergeableValuesDelta Both empty 1`] = `
+[
+  "",
+  {},
+]
+`;
+
+exports[`Deltas getMergeableValuesDelta Both match 1`] = `
+[
+  "",
+  {},
+]
+`;
+
+exports[`Deltas getMergeableValuesDelta No match local empty 1`] = `
+[
+  "",
+  {},
+]
+`;
+
+exports[`Deltas getMergeableValuesDelta No match local missing some values 1`] = `
+[
+  "Hc2DO@000005DK@@",
+  {},
+]
+`;
+
+exports[`Deltas getMergeableValuesDelta No match remote empty 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  {
+    "v1": [
+      "Hc2DO@000008DKS9",
+      1,
+    ],
+    "v2": [
+      "Hc2DO@000008DKS9",
+      2,
+    ],
+  },
+]
+`;
+
+exports[`Deltas getMergeableValuesDelta No match remote missing some values 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  {
+    "v2": [
+      "000000000008DKS9",
+      2,
+    ],
+  },
+]
+`;
+
 exports[`Merge Nothing 1`] = `
 [
   "",
