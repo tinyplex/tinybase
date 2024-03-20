@@ -348,6 +348,56 @@ describe('Deltas', () => {
       });
     });
   });
+
+  describe('getMergeableValuesDelta', () => {
+    test('Both empty', () => {
+      expect(
+        store1.getMergeableValuesDelta(store2.getMergeableContent()[1][1]),
+      ).toMatchSnapshot();
+    });
+
+    test('Both match', () => {
+      store1.setValues({v1: 1, v2: 2});
+      store2.merge(store1);
+      expect(
+        store1.getMergeableValuesDelta(store2.getMergeableContent()[1][1]),
+      ).toMatchSnapshot();
+    });
+
+    describe('No match', () => {
+      test('local empty', () => {
+        store2.setValues({v1: 1, v2: 2});
+        expect(
+          store1.getMergeableValuesDelta(store2.getMergeableContent()[1][1]),
+        ).toMatchSnapshot();
+      });
+
+      test('remote empty', () => {
+        store1.setValues({v1: 1, v2: 2});
+        expect(
+          store1.getMergeableValuesDelta(store2.getMergeableContent()[1][1]),
+        ).toMatchSnapshot();
+      });
+
+      test('local missing some values', () => {
+        store2.setValues({v1: 1});
+        store1.merge(store2);
+        store2.setValue('v2', 2);
+        expect(
+          store1.getMergeableValuesDelta(store2.getMergeableContent()[1][1]),
+        ).toMatchSnapshot();
+      });
+
+      test('remote missing some values', () => {
+        store1.setValues({v1: 1});
+        store2.merge(store1);
+        store1.setValue('v2', 2);
+        expect(
+          store1.getMergeableValuesDelta(store2.getMergeableContent()[1][1]),
+        ).toMatchSnapshot();
+      });
+    });
+  });
 });
 
 describe('getTransactionMergeableChanges', () => {
