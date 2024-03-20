@@ -1,5 +1,301 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Deltas getMergeableContentDelta Both empty 1`] = `
+[
+  "",
+  [
+    [
+      "",
+      {},
+    ],
+    [
+      "",
+      {},
+    ],
+  ],
+]
+`;
+
+exports[`Deltas getMergeableContentDelta Both match 1`] = `
+[
+  "",
+  [
+    [
+      "",
+      {},
+    ],
+    [
+      "",
+      {},
+    ],
+  ],
+]
+`;
+
+exports[`Deltas getMergeableContentDelta No match remote empty 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  [
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "t1": [
+          "Hc2DO@000008DKS9",
+          {
+            "r1": [
+              "Hc2DO@000008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000008DKS9",
+                  1,
+                ],
+                "c2": [
+                  "Hc2DO@000008DKS9",
+                  2,
+                ],
+              },
+            ],
+            "r2": [
+              "Hc2DO@000008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@000008DKS9",
+                  2,
+                ],
+              },
+            ],
+          },
+        ],
+        "t2": [
+          "Hc2DO@000008DKS9",
+          {
+            "r2": [
+              "Hc2DO@000008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@000008DKS9",
+                  2,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "v1": [
+          "Hc2DO@000008DKS9",
+          1,
+        ],
+        "v2": [
+          "Hc2DO@000008DKS9",
+          2,
+        ],
+      },
+    ],
+  ],
+]
+`;
+
+exports[`Deltas getMergeableContentDelta No match remote missing cell 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  [
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "t1": [
+          "Hc2DO@000008DKS9",
+          {
+            "r1": [
+              "Hc2DO@000008DKS9",
+              {
+                "c2": [
+                  "000000000008DKS9",
+                  2,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "",
+      {},
+    ],
+  ],
+]
+`;
+
+exports[`Deltas getMergeableContentDelta No match remote missing row 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  [
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "t1": [
+          "Hc2DO@000008DKS9",
+          {
+            "r2": [
+              "000000000008DKS9",
+              {
+                "c2": [
+                  "000000000008DKS9",
+                  2,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "",
+      {},
+    ],
+  ],
+]
+`;
+
+exports[`Deltas getMergeableContentDelta No match remote missing some values 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  [
+    [
+      "",
+      {},
+    ],
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "v2": [
+          "000000000008DKS9",
+          2,
+        ],
+      },
+    ],
+  ],
+]
+`;
+
+exports[`Deltas getMergeableContentDelta No match remote missing table 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  [
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "t2": [
+          "000000000008DKS9",
+          {
+            "r2": [
+              "000000000008DKS9",
+              {
+                "c2": [
+                  "000000000008DKS9",
+                  2,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "",
+      {},
+    ],
+  ],
+]
+`;
+
+exports[`Deltas getMergeableContentDelta No match remote missing tables 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  [
+    [
+      "000000000008DKS9",
+      {
+        "t1": [
+          "000000000008DKS9",
+          {
+            "r1": [
+              "000000000008DKS9",
+              {
+                "c1": [
+                  "000000000008DKS9",
+                  1,
+                ],
+                "c2": [
+                  "000000000008DKS9",
+                  2,
+                ],
+              },
+            ],
+            "r2": [
+              "000000000008DKS9",
+              {
+                "c2": [
+                  "000000000008DKS9",
+                  2,
+                ],
+              },
+            ],
+          },
+        ],
+        "t2": [
+          "000000000008DKS9",
+          {
+            "r2": [
+              "000000000008DKS9",
+              {
+                "c2": [
+                  "000000000008DKS9",
+                  2,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [
+      "",
+      {},
+    ],
+  ],
+]
+`;
+
+exports[`Deltas getMergeableContentDelta No match remote missing values 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  [
+    [
+      "",
+      {},
+    ],
+    [
+      "000000000008DKS9",
+      {
+        "v1": [
+          "000000000008DKS9",
+          1,
+        ],
+        "v2": [
+          "000000000008DKS9",
+          2,
+        ],
+      },
+    ],
+  ],
+]
+`;
+
 exports[`Merge Nothing 1`] = `
 [
   "",
@@ -2068,302 +2364,6 @@ exports[`getMergeableContent Set together 1`] = `
     ],
   ],
   32757013,
-]
-`;
-
-exports[`getMergeableContentDelta Both empty 1`] = `
-[
-  "",
-  [
-    [
-      "",
-      {},
-    ],
-    [
-      "",
-      {},
-    ],
-  ],
-]
-`;
-
-exports[`getMergeableContentDelta Both match 1`] = `
-[
-  "",
-  [
-    [
-      "",
-      {},
-    ],
-    [
-      "",
-      {},
-    ],
-  ],
-]
-`;
-
-exports[`getMergeableContentDelta No match remote empty 1`] = `
-[
-  "Hc2DO@000008DKS9",
-  [
-    [
-      "Hc2DO@000008DKS9",
-      {
-        "t1": [
-          "Hc2DO@000008DKS9",
-          {
-            "r1": [
-              "Hc2DO@000008DKS9",
-              {
-                "c1": [
-                  "Hc2DO@000008DKS9",
-                  1,
-                ],
-                "c2": [
-                  "Hc2DO@000008DKS9",
-                  2,
-                ],
-              },
-            ],
-            "r2": [
-              "Hc2DO@000008DKS9",
-              {
-                "c2": [
-                  "Hc2DO@000008DKS9",
-                  2,
-                ],
-              },
-            ],
-          },
-        ],
-        "t2": [
-          "Hc2DO@000008DKS9",
-          {
-            "r2": [
-              "Hc2DO@000008DKS9",
-              {
-                "c2": [
-                  "Hc2DO@000008DKS9",
-                  2,
-                ],
-              },
-            ],
-          },
-        ],
-      },
-    ],
-    [
-      "Hc2DO@000008DKS9",
-      {
-        "v1": [
-          "Hc2DO@000008DKS9",
-          1,
-        ],
-        "v2": [
-          "Hc2DO@000008DKS9",
-          2,
-        ],
-      },
-    ],
-  ],
-]
-`;
-
-exports[`getMergeableContentDelta No match remote missing cell 1`] = `
-[
-  "Hc2DO@000008DKS9",
-  [
-    [
-      "Hc2DO@000008DKS9",
-      {
-        "t1": [
-          "Hc2DO@000008DKS9",
-          {
-            "r1": [
-              "Hc2DO@000008DKS9",
-              {
-                "c2": [
-                  "000000000008DKS9",
-                  2,
-                ],
-              },
-            ],
-          },
-        ],
-      },
-    ],
-    [
-      "",
-      {},
-    ],
-  ],
-]
-`;
-
-exports[`getMergeableContentDelta No match remote missing row 1`] = `
-[
-  "Hc2DO@000008DKS9",
-  [
-    [
-      "Hc2DO@000008DKS9",
-      {
-        "t1": [
-          "Hc2DO@000008DKS9",
-          {
-            "r2": [
-              "000000000008DKS9",
-              {
-                "c2": [
-                  "000000000008DKS9",
-                  2,
-                ],
-              },
-            ],
-          },
-        ],
-      },
-    ],
-    [
-      "",
-      {},
-    ],
-  ],
-]
-`;
-
-exports[`getMergeableContentDelta No match remote missing some values 1`] = `
-[
-  "Hc2DO@000008DKS9",
-  [
-    [
-      "",
-      {},
-    ],
-    [
-      "Hc2DO@000008DKS9",
-      {
-        "v2": [
-          "000000000008DKS9",
-          2,
-        ],
-      },
-    ],
-  ],
-]
-`;
-
-exports[`getMergeableContentDelta No match remote missing table 1`] = `
-[
-  "Hc2DO@000008DKS9",
-  [
-    [
-      "Hc2DO@000008DKS9",
-      {
-        "t2": [
-          "000000000008DKS9",
-          {
-            "r2": [
-              "000000000008DKS9",
-              {
-                "c2": [
-                  "000000000008DKS9",
-                  2,
-                ],
-              },
-            ],
-          },
-        ],
-      },
-    ],
-    [
-      "",
-      {},
-    ],
-  ],
-]
-`;
-
-exports[`getMergeableContentDelta No match remote missing tables 1`] = `
-[
-  "Hc2DO@000008DKS9",
-  [
-    [
-      "000000000008DKS9",
-      {
-        "t1": [
-          "000000000008DKS9",
-          {
-            "r1": [
-              "000000000008DKS9",
-              {
-                "c1": [
-                  "000000000008DKS9",
-                  1,
-                ],
-                "c2": [
-                  "000000000008DKS9",
-                  2,
-                ],
-              },
-            ],
-            "r2": [
-              "000000000008DKS9",
-              {
-                "c2": [
-                  "000000000008DKS9",
-                  2,
-                ],
-              },
-            ],
-          },
-        ],
-        "t2": [
-          "000000000008DKS9",
-          {
-            "r2": [
-              "000000000008DKS9",
-              {
-                "c2": [
-                  "000000000008DKS9",
-                  2,
-                ],
-              },
-            ],
-          },
-        ],
-      },
-    ],
-    [
-      "",
-      {},
-    ],
-  ],
-]
-`;
-
-exports[`getMergeableContentDelta No match remote missing values 1`] = `
-[
-  "Hc2DO@000008DKS9",
-  [
-    [
-      "",
-      {},
-    ],
-    [
-      "000000000008DKS9",
-      {
-        "v1": [
-          "000000000008DKS9",
-          1,
-        ],
-        "v2": [
-          "000000000008DKS9",
-          2,
-        ],
-      },
-    ],
-  ],
 ]
 `;
 
