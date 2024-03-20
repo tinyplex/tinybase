@@ -183,11 +183,33 @@ describe('Deltas', () => {
     });
 
     describe('No match', () => {
+      test('local empty', () => {
+        store2.setContent([
+          {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+          {v1: 1, v2: 2},
+        ]);
+        expect(
+          store1.getMergeableContentDelta(store2.getMergeableContent()),
+        ).toMatchSnapshot();
+      });
+
       test('remote empty', () => {
         store1.setContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
+        expect(
+          store1.getMergeableContentDelta(store2.getMergeableContent()),
+        ).toMatchSnapshot();
+      });
+
+      test('local missing tables', () => {
+        store2.setContent([{}, {v1: 1, v2: 2}]);
+        store1.merge(store2);
+        store2.setTables({
+          t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}},
+          t2: {r2: {c2: 2}},
+        });
         expect(
           store1.getMergeableContentDelta(store2.getMergeableContent()),
         ).toMatchSnapshot();
@@ -205,6 +227,18 @@ describe('Deltas', () => {
         ).toMatchSnapshot();
       });
 
+      test('local missing table', () => {
+        store2.setContent([
+          {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}},
+          {v1: 1, v2: 2},
+        ]);
+        store1.merge(store2);
+        store2.setTable('t2', {r2: {c2: 2}});
+        expect(
+          store1.getMergeableContentDelta(store2.getMergeableContent()),
+        ).toMatchSnapshot();
+      });
+
       test('remote missing table', () => {
         store1.setContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}},
@@ -212,6 +246,18 @@ describe('Deltas', () => {
         ]);
         store2.merge(store1);
         store1.setTable('t2', {r2: {c2: 2}});
+        expect(
+          store1.getMergeableContentDelta(store2.getMergeableContent()),
+        ).toMatchSnapshot();
+      });
+
+      test('local missing row', () => {
+        store2.setContent([
+          {t1: {r1: {c1: 1, c2: 2}}, t2: {r2: {c2: 2}}},
+          {v1: 1, v2: 2},
+        ]);
+        store1.merge(store2);
+        store2.setRow('t1', 'r2', {c2: 2});
         expect(
           store1.getMergeableContentDelta(store2.getMergeableContent()),
         ).toMatchSnapshot();
@@ -229,6 +275,18 @@ describe('Deltas', () => {
         ).toMatchSnapshot();
       });
 
+      test('local missing cell', () => {
+        store2.setContent([
+          {t1: {r1: {c1: 1}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+          {v1: 1, v2: 2},
+        ]);
+        store1.merge(store2);
+        store2.setCell('t1', 'r1', 'c2', 2);
+        expect(
+          store1.getMergeableContentDelta(store2.getMergeableContent()),
+        ).toMatchSnapshot();
+      });
+
       test('remote missing cell', () => {
         store1.setContent([
           {t1: {r1: {c1: 1}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
@@ -241,6 +299,18 @@ describe('Deltas', () => {
         ).toMatchSnapshot();
       });
 
+      test('local missing values', () => {
+        store2.setContent([
+          {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+          {},
+        ]);
+        store1.merge(store2);
+        store2.setValues({v1: 1, v2: 2});
+        expect(
+          store1.getMergeableContentDelta(store2.getMergeableContent()),
+        ).toMatchSnapshot();
+      });
+
       test('remote missing values', () => {
         store1.setContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
@@ -248,6 +318,18 @@ describe('Deltas', () => {
         ]);
         store2.merge(store1);
         store1.setValues({v1: 1, v2: 2});
+        expect(
+          store1.getMergeableContentDelta(store2.getMergeableContent()),
+        ).toMatchSnapshot();
+      });
+
+      test('local missing some values', () => {
+        store2.setContent([
+          {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+          {v1: 1},
+        ]);
+        store1.merge(store2);
+        store2.setValue('v2', 2);
         expect(
           store1.getMergeableContentDelta(store2.getMergeableContent()),
         ).toMatchSnapshot();
