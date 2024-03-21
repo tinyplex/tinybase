@@ -1,5 +1,6 @@
 /// persister-browser
 
+import {MergeableStore} from '../mergeable-store';
 import {Persister} from '../persisters';
 import {Store} from '../store';
 
@@ -17,14 +18,14 @@ export interface LocalPersister extends Persister<true> {
 
 /// createSessionPersister
 export function createSessionPersister(
-  store: Store,
+  store: Store | MergeableStore,
   storageName: string,
   onIgnoredError?: (error: any) => void,
 ): SessionPersister;
 
 /// createLocalPersister
 export function createLocalPersister(
-  store: Store,
+  store: Store | MergeableStore,
   storageName: string,
   onIgnoredError?: (error: any) => void,
 ): LocalPersister;
