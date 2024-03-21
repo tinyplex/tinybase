@@ -31,12 +31,56 @@ export const stampCloneWithHash = <Value>([time, value, hash]: Stamp<
 
 export const getHashes = (
   stampMap: StampMap<Stamp<unknown, true>> | undefined,
-): [hash: Hash, IdObj<Hash>] =>
+): [Hash, IdObj<Hash>] =>
   ifNotUndefined(
     stampMap,
     (stampMap) => [stampMap[2], mapToObj(stampMap[1], (stamp) => stamp[2])],
-    () => [0, {}],
-  ) as [hash: Hash, IdObj<Hash>];
+    hashesNew,
+  ) as [Hash, IdObj<Hash>];
+
+export const getDeltaHashes = (
+  stampMap: StampMap<Stamp<unknown, true>> | undefined,
+  [relativeHash, relativeChildren]: [Hash, IdObj<Hash>],
+): [Hash, IdObj<Hash>] =>
+  ifNotUndefined(
+    stampMap,
+    (stampMap) =>
+      stampMap[2] === relativeHash
+        ? hashesNew()
+        : [
+            stampMap[2],
+            mapToObj(
+              stampMap[1],
+              (childStampMap) => childStampMap[2],
+              (childStampMap, childId) =>
+                childStampMap[2] === relativeChildren?.[childId],
+            ),
+          ],
+    hashesNew,
+  ) as [Hash, IdObj<Hash>];
+
+export const getDeltaStamps = <Thing>(
+  stampMap: StampMap<Stamp<Thing, true>> | undefined,
+  [relativeHash, relativeChildren]: [Hash, IdObj<Hash>],
+): Stamp<IdObj<Stamp<Thing>>> =>
+  ifNotUndefined(
+    stampMap,
+    (stampMap) =>
+      stampMap[2] === relativeHash
+        ? stampNewObj()
+        : [
+            stampMap[0],
+            mapToObj(
+              stampMap[1],
+              stampClone,
+              (childStampMap, childId) =>
+                childStampMap[2] === relativeChildren?.[childId],
+            ),
+          ],
+    stampNewObj,
+  ) as Stamp<IdObj<Stamp<Thing>>>;
+
+export const hashesNew = () => [0, {}];
 
 export const hashIdAndHash = (id: Id, hash: Hash) => getHash(id + ':' + hash);
 
