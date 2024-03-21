@@ -1,5 +1,6 @@
 /// persister-file
 
+import {MergeableStore} from '../mergeable-store.d';
 import {Persister} from '../persisters.d';
 import {Store} from '../store.d';
 
@@ -11,7 +12,7 @@ export interface FilePersister extends Persister<true> {
 
 /// createFilePersister
 export function createFilePersister(
-  store: Store,
+  store: Store | MergeableStore,
   filePath: string,
   onIgnoredError?: (error: any) => void,
 ): FilePersister;
