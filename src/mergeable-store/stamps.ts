@@ -10,6 +10,7 @@ import {IdObj, objNew} from '../common/obj';
 import {EMPTY_STRING} from '../common/strings';
 import {Id} from '../types/common';
 import {getHash} from './hash';
+import {ifNotUndefined} from '../common/other';
 
 export type StampMap<Thing> = Stamp<IdMap<Thing>, true>;
 
@@ -27,6 +28,15 @@ export const stampCloneWithHash = <Value>([time, value, hash]: Stamp<
   Value,
   true
 >): Stamp<Value, true> => [time, value, hash];
+
+export const getHashes = (
+  stampMap: StampMap<Stamp<unknown, true>> | undefined,
+): [hash: Hash, IdObj<Hash>] =>
+  ifNotUndefined(
+    stampMap,
+    (stampMap) => [stampMap[2], mapToObj(stampMap[1], (stamp) => stamp[2])],
+    () => [0, {}],
+  ) as [hash: Hash, IdObj<Hash>];
 
 export const hashIdAndHash = (id: Id, hash: Hash) => getHash(id + ':' + hash);
 
