@@ -7,7 +7,7 @@ import {Persister} from '../persisters';
 export interface IndexedDbPersister<Schemas extends OptionalSchemas>
   extends Persister<Schemas> {
   /// IndexedDbPersister.getDbName
-  getDbName: () => string;
+  getDbName(): string;
 }
 
 /// createIndexedDbPersister

@@ -8,7 +8,7 @@ import {Database} from 'sqlite3';
 export interface Sqlite3Persister<Schemas extends OptionalSchemas>
   extends Persister<Schemas> {
   /// Sqlite3Persister.getDb
-  getDb: () => Database;
+  getDb(): Database;
 }
 
 /// createSqlite3Persister

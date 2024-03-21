@@ -8,7 +8,7 @@ import {DB} from '@vlcn.io/crsqlite-wasm';
 export interface CrSqliteWasmPersister<Schemas extends OptionalSchemas>
   extends Persister<Schemas> {
   /// CrSqliteWasmPersister.getDb
-  getDb: () => DB;
+  getDb(): DB;
 }
 
 /// createCrSqliteWasmPersister

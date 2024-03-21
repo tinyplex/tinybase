@@ -8,7 +8,7 @@ import {Persister} from '../persisters';
 export interface FilePersister<Schemas extends OptionalSchemas>
   extends Persister<Schemas, true> {
   /// FilePersister.getFilePath
-  getFilePath: () => string;
+  getFilePath(): string;
 }
 
 /// createFilePersister

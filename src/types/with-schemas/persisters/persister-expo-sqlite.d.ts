@@ -8,7 +8,7 @@ import {SQLiteDatabase} from 'expo-sqlite';
 export interface ExpoSqlitePersister<Schemas extends OptionalSchemas>
   extends Persister<Schemas> {
   /// ExpoSqlitePersister.getDb
-  getDb: () => SQLiteDatabase;
+  getDb(): SQLiteDatabase;
 }
 
 /// createExpoSqlitePersister

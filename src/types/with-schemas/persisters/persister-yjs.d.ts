@@ -8,7 +8,7 @@ import {Doc as YDoc} from 'yjs';
 export interface YjsPersister<Schemas extends OptionalSchemas>
   extends Persister<Schemas> {
   /// YjsPersister.getYDoc
-  getYDoc: () => YDoc;
+  getYDoc(): YDoc;
 }
 
 /// createYjsPersister

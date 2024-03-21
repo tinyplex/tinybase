@@ -7,7 +7,7 @@ import {Persister} from '../persisters';
 export interface RemotePersister<Schemas extends OptionalSchemas>
   extends Persister<Schemas> {
   /// RemotePersister.getUrls
-  getUrls: () => [string, string];
+  getUrls(): [string, string];
 }
 
 /// createRemotePersister

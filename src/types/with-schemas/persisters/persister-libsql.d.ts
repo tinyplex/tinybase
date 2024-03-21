@@ -8,7 +8,7 @@ import {Client} from '@libsql/client';
 export interface LibSqlPersister<Schemas extends OptionalSchemas>
   extends Persister<Schemas> {
   /// LibSqlPersister.getClient
-  getClient: () => Client;
+  getClient(): Client;
 }
 
 /// createLibSqlPersister

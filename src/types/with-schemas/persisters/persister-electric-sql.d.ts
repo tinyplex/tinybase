@@ -8,7 +8,7 @@ import {ElectricClient} from 'electric-sql/client/model';
 export interface ElectricSqlPersister<Schemas extends OptionalSchemas>
   extends Persister<Schemas> {
   /// ElectricSqlPersister.getElectricClient
-  getElectricClient: () => ElectricClient<any>;
+  getElectricClient(): ElectricClient<any>;
 }
 
 /// createElectricSqlPersister

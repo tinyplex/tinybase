@@ -8,7 +8,7 @@ import {Persister} from '../persisters';
 export interface PartyKitPersister<Schemas extends OptionalSchemas>
   extends Persister<Schemas> {
   /// PartyKitPersister.getConnection
-  getConnection: () => PartySocket;
+  getConnection(): PartySocket;
 }
 
 /// PartyKitPersisterConfig
