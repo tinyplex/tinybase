@@ -5,9 +5,9 @@ import {
   createLocalPersister as createLocalPersisterDecl,
   createSessionPersister as createSessionPersisterDecl,
 } from '../types/persisters/persister-browser';
+import {MergeableContent, MergeableStore} from '../types/mergeable-store';
 import {Persister, PersisterListener} from '../types/persisters';
 import {jsonParse, jsonString} from '../common/json';
-import {MergeableContent} from '../types/mergeable-store';
 import {createCustomPersister} from '../persisters';
 
 type StorageListener = (event: StorageEvent) => void;
@@ -15,7 +15,7 @@ const STORAGE = 'storage';
 const WINDOW = globalThis.window;
 
 const createStoragePersister = (
-  store: Store,
+  store: Store | MergeableStore,
   storageName: string,
   storage: Storage,
   onIgnoredError?: (error: any) => void,
@@ -55,7 +55,7 @@ const createStoragePersister = (
 };
 
 export const createLocalPersister = ((
-  store: Store,
+  store: Store | MergeableStore,
   storageName: string,
   onIgnoredError?: (error: any) => void,
 ): LocalPersister =>
@@ -67,7 +67,7 @@ export const createLocalPersister = ((
   ) as LocalPersister) as typeof createLocalPersisterDecl;
 
 export const createSessionPersister = ((
-  store: Store,
+  store: Store | MergeableStore,
   storageName: string,
   onIgnoredError?: (error: any) => void,
 ): SessionPersister =>
