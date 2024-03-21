@@ -1,4 +1,19 @@
 import {CellOrUndefined, Changes, Store, ValueOrUndefined} from './types/store';
+import {
+  ContentHashes,
+  MergeableChanges,
+  MergeableContent,
+  MergeableStore,
+  RowHashes,
+  RowStamp,
+  Stamp,
+  TableHashes,
+  TablesHashes,
+  Time,
+  ValuesHashes,
+  ValuesStamp,
+  createMergeableStore as createMergeableStoreDecl,
+} from './types/mergeable-store';
 import {EMPTY_STRING, strEndsWith, strStartsWith} from './common/strings';
 import {
   IdObj,
@@ -10,23 +25,12 @@ import {
   objToArray,
 } from './common/obj';
 import {
-  MergeableChanges,
-  MergeableContent,
-  MergeableStore,
-  RowStamp,
-  Stamp,
-  TableStamp,
-  TablesStamp,
-  Time,
-  ValuesStamp,
-  createMergeableStore as createMergeableStoreDecl,
-} from './types/mergeable-store';
-import {
   RowStampMap,
   StampMap,
   TableStampMap,
   TablesStampMap,
   ValuesStampMap,
+  getHashes,
   hashIdAndHash,
   stampClone,
   stampMap,
@@ -238,81 +242,68 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
       stampMapToObj(valuesStampMap),
     ]);
 
-  const getMergeableContentDelta = ([
-    ,
-    [relativeTables, relativeValues],
-    relativeHash,
-  ]: MergeableContent): MergeableChanges =>
-    contentStampMap[2] === relativeHash
-      ? [EMPTY_STRING, [stampNewObj(), stampNewObj()]]
-      : [
-          contentStampMap[0],
-          [
-            getMergeableTablesDelta(relativeTables),
-            getMergeableValuesDelta(relativeValues),
-          ],
-        ];
+  const getMergeableContentHashes = (): ContentHashes => [
+    contentStampMap[2],
+    [contentStampMap[1][0][2], contentStampMap[1][1][2]],
+  ];
 
-  const getMergeableTablesDelta = (
-    relativeTo: TablesStamp<true>,
-  ): TablesStamp => {
-    const [tablesTime, tableStampMaps, tablesHash] = contentStampMap[1][0];
-    return tablesHash === relativeTo?.[2]
-      ? stampNewObj()
+  const getMergeableTablesHashes = (): TablesHashes =>
+    getHashes(contentStampMap[1][0]);
+
+  const getMergeableTableHashes = (tableId: Id): TableHashes =>
+    getHashes(mapGet(contentStampMap[1][0][1], tableId));
+
+  const getMergeableRowHashes = (tableId: Id, rowId: Id): RowHashes =>
+    getHashes(mapGet(mapGet(contentStampMap[1][0][1], tableId)?.[1], rowId));
+
+  const getMergeableValuesHashes = (): ValuesHashes =>
+    getHashes(contentStampMap[1][1]);
+
+  const getMergeableTablesDelta = ([
+    relativeTablesHash,
+    relativeTables,
+  ]: TablesHashes): TablesHashes =>
+    contentStampMap[1][0][2] === relativeTablesHash
+      ? [0, {}]
       : [
-          tablesTime,
+          contentStampMap[1][0][2],
           mapToObj(
-            tableStampMaps,
+            contentStampMap[1][0][1],
+            (tableStampMap) => tableStampMap[2],
             (tableStampMap, tableId) =>
-              getMergeableTableDelta(
-                tableId,
-                relativeTo?.[1]?.[tableId],
-                tableStampMap,
-              ),
-            (tableStampMap, tableId) =>
-              tableStampMap[2] === relativeTo?.[1]?.[tableId]?.[2],
-            (tableStamp) => objIsEmpty(tableStamp[1]),
+              tableStampMap[2] === relativeTables?.[tableId],
           ),
         ];
-  };
 
   const getMergeableTableDelta = (
     tableId: Id,
-    relativeTo: TableStamp<true>,
+    relativeTo: TableHashes,
     tableStampMap: TableStampMap | undefined = mapGet(
       contentStampMap[1][0][1],
       tableId,
     ),
-  ): TableStamp =>
-    isUndefined(tableStampMap) || tableStampMap[2] === relativeTo?.[2]
-      ? stampNewObj()
+  ): TableHashes =>
+    isUndefined(tableStampMap) || tableStampMap[2] === relativeTo?.[0]
+      ? [0, {}]
       : [
-          tableStampMap[0],
+          tableStampMap[2],
           mapToObj(
             tableStampMap[1],
-            (rowStampMap, rowId) =>
-              getMergeableRowDelta(
-                tableId,
-                rowId,
-                relativeTo?.[1]?.[rowId],
-                rowStampMap,
-              ),
-            (rowStampMap, rowId) =>
-              rowStampMap[2] === relativeTo?.[1]?.[rowId]?.[2],
-            (rowStamp) => objIsEmpty(rowStamp[1]),
+            (rowStampMap) => rowStampMap[2],
+            (rowStampMap, rowId) => rowStampMap[2] === relativeTo?.[1]?.[rowId],
           ),
         ];
 
   const getMergeableRowDelta = (
     tableId: Id,
     rowId: Id,
-    relativeTo: RowStamp<true>,
+    relativeTo: RowHashes,
     rowStampMap: RowStampMap | undefined = mapGet(
       mapGet(contentStampMap[1][0][1], tableId)?.[1],
       rowId,
     ),
   ): RowStamp =>
-    isUndefined(rowStampMap) || rowStampMap[2] === relativeTo?.[2]
+    isUndefined(rowStampMap) || rowStampMap[2] === relativeTo?.[0]
       ? stampNewObj()
       : [
           rowStampMap[0],
@@ -320,26 +311,25 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
             rowStampMap[1],
             stampClone,
             (cellStampMap, cellId) =>
-              cellStampMap[2] === relativeTo?.[1]?.[cellId]?.[2],
+              cellStampMap[2] === relativeTo?.[1]?.[cellId],
           ),
         ];
 
-  const getMergeableValuesDelta = (
-    relativeTo: ValuesStamp<true>,
-  ): ValuesStamp => {
-    const [valuesTime, valueStampMaps, valuesHash] = contentStampMap[1][1];
-    return valuesHash === relativeTo?.[2]
+  const getMergeableValuesDelta = ([
+    relativeValuesHash,
+    relativeValues,
+  ]: ValuesHashes): ValuesStamp =>
+    contentStampMap[1][1][2] === relativeValuesHash
       ? stampNewObj()
       : [
-          valuesTime,
+          contentStampMap[1][1][0],
           mapToObj(
-            valueStampMaps,
+            contentStampMap[1][1][1],
             stampClone,
             (valueStampMap, valueId) =>
-              valueStampMap[2] === relativeTo?.[1]?.[valueId]?.[2],
+              valueStampMap[2] === relativeValues?.[valueId],
           ),
         ];
-  };
 
   const setMergeableContent = (
     mergeableContent: MergeableContent,
@@ -412,7 +402,11 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
 
   const mergeableStore: IdObj<any> = {
     getMergeableContent,
-    getMergeableContentDelta,
+    getMergeableContentHashes,
+    getMergeableTablesHashes,
+    getMergeableTableHashes,
+    getMergeableRowHashes,
+    getMergeableValuesHashes,
     getMergeableTablesDelta,
     getMergeableTableDelta,
     getMergeableRowDelta,
