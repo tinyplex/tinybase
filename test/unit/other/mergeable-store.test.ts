@@ -155,7 +155,7 @@ describe('getMergeableContent', () => {
   });
 });
 
-describe('Deltas', () => {
+describe('Deltas & Hashes', () => {
   let store1: MergeableStore;
   let store2: MergeableStore;
 
@@ -164,237 +164,213 @@ describe('Deltas', () => {
     store2 = createMergeableStore('s2');
   });
 
-  describe('getMergeableContentDelta', () => {
+  describe('getMergeableContentHashes', () => {
+    test('Empty', () => {
+      expect(store1.getMergeableContentHashes()).toMatchSnapshot();
+    });
+
+    test('Non-empty', () => {
+      store1.setContent([
+        {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+        {v1: 1, v2: 2},
+      ]);
+      expect(store1.getMergeableContentHashes()).toMatchSnapshot();
+    });
+  });
+
+  describe('getMergeableTablesHashes', () => {
+    test('Empty', () => {
+      expect(store1.getMergeableTablesHashes()).toMatchSnapshot();
+    });
+
+    test('Non-empty', () => {
+      store1.setTables({
+        t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}},
+        t2: {r2: {c2: 2}},
+      });
+      expect(store1.getMergeableTablesHashes()).toMatchSnapshot();
+    });
+  });
+
+  describe('getMergeableTableHashes', () => {
+    test('Empty', () => {
+      expect(store1.getMergeableTableHashes('t1')).toMatchSnapshot();
+    });
+
+    test('Non-empty', () => {
+      store1.setTables({
+        t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}},
+        t2: {r2: {c2: 2}},
+      });
+      expect(store1.getMergeableTableHashes('t1')).toMatchSnapshot();
+    });
+  });
+
+  describe('getMergeableRowHashes', () => {
+    test('Empty', () => {
+      expect(store1.getMergeableRowHashes('t1', 'r1')).toMatchSnapshot();
+    });
+
+    test('Non-empty', () => {
+      store1.setTables({
+        t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}},
+        t2: {r2: {c2: 2}},
+      });
+      expect(store1.getMergeableRowHashes('t1', 'r1')).toMatchSnapshot();
+    });
+  });
+
+  describe('getMergeableValuesHashes', () => {
+    test('Empty', () => {
+      expect(store1.getMergeableValuesHashes()).toMatchSnapshot();
+    });
+
+    test('Non-empty', () => {
+      store1.setValues({v1: 1, v2: 2});
+      expect(store1.getMergeableValuesHashes()).toMatchSnapshot();
+    });
+  });
+
+  const expectDeltas = () => {
+    expect(
+      store1.getMergeableTablesDelta(store2.getMergeableTablesHashes()),
+    ).toMatchSnapshot('getMergeableTablesDelta');
+    expect(
+      store1.getMergeableTableDelta('t1', store2.getMergeableTableHashes('t1')),
+    ).toMatchSnapshot('getMergeableTableDelta t1');
+    expect(
+      store1.getMergeableTableDelta('t2', store2.getMergeableTableHashes('t2')),
+    ).toMatchSnapshot('getMergeableTableDelta t2');
+    expect(
+      store1.getMergeableRowDelta(
+        't1',
+        'r1',
+        store2.getMergeableRowHashes('t1', 'r1'),
+      ),
+    ).toMatchSnapshot('getMergeableRowDelta t1 r1');
+    expect(
+      store1.getMergeableRowDelta(
+        't1',
+        'r2',
+        store2.getMergeableRowHashes('t1', 'r2'),
+      ),
+    ).toMatchSnapshot('getMergeableRowDelta t1 r2');
+    expect(
+      store1.getMergeableValuesDelta(store2.getMergeableValuesHashes()),
+    ).toMatchSnapshot('getMergeableValuesDelta');
+  };
+
+  describe('Deltas', () => {
     test('Both empty', () => {
-      expect(
-        store1.getMergeableContentDelta(store2.getMergeableContent()),
-      ).toMatchSnapshot();
+      expectDeltas();
     });
 
     test('Both match', () => {
       store1.setContent([
         {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
-        {v1: 1, v2: 2},
+        {v1: 2, v2: 2},
       ]);
       store2.merge(store1);
-      expect(
-        store1.getMergeableContentDelta(store2.getMergeableContent()),
-      ).toMatchSnapshot();
+      expectDeltas();
     });
 
     describe('No match', () => {
-      test('local empty', () => {
+      test('store1 empty', () => {
         store2.setContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
-        expect(
-          store1.getMergeableContentDelta(store2.getMergeableContent()),
-        ).toMatchSnapshot();
+        expectDeltas();
       });
 
-      test('remote empty', () => {
+      test('store2 empty', () => {
         store1.setContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
-        expect(
-          store1.getMergeableContentDelta(store2.getMergeableContent()),
-        ).toMatchSnapshot();
+        expectDeltas();
       });
 
-      test('local missing tables', () => {
-        store2.setContent([{}, {v1: 1, v2: 2}]);
-        store1.merge(store2);
+      test('store1 missing tables', () => {
         store2.setTables({
           t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}},
           t2: {r2: {c2: 2}},
         });
-        expect(
-          store1.getMergeableContentDelta(store2.getMergeableContent()),
-        ).toMatchSnapshot();
+        expectDeltas();
       });
 
-      test('remote missing tables', () => {
-        store1.setContent([{}, {v1: 1, v2: 2}]);
-        store2.merge(store1);
+      test('store2 missing tables', () => {
         store1.setTables({
           t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}},
           t2: {r2: {c2: 2}},
         });
-        expect(
-          store1.getMergeableContentDelta(store2.getMergeableContent()),
-        ).toMatchSnapshot();
+        expectDeltas();
       });
 
-      test('local missing table', () => {
-        store2.setContent([
-          {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}},
-          {v1: 1, v2: 2},
-        ]);
+      test('store1 missing table', () => {
+        store2.setTables({t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}});
         store1.merge(store2);
         store2.setTable('t2', {r2: {c2: 2}});
-        expect(
-          store1.getMergeableContentDelta(store2.getMergeableContent()),
-        ).toMatchSnapshot();
+        expectDeltas();
       });
 
-      test('remote missing table', () => {
-        store1.setContent([
-          {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}},
-          {v1: 1, v2: 2},
-        ]);
+      test('store2 missing table', () => {
+        store1.setTables({t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}});
         store2.merge(store1);
         store1.setTable('t2', {r2: {c2: 2}});
-        expect(
-          store1.getMergeableContentDelta(store2.getMergeableContent()),
-        ).toMatchSnapshot();
+        expectDeltas();
       });
 
-      test('local missing row', () => {
-        store2.setContent([
-          {t1: {r1: {c1: 1, c2: 2}}, t2: {r2: {c2: 2}}},
-          {v1: 1, v2: 2},
-        ]);
+      test('store1 missing row', () => {
+        store2.setTables({t1: {r1: {c1: 1, c2: 2}}, t2: {r2: {c2: 2}}});
         store1.merge(store2);
         store2.setRow('t1', 'r2', {c2: 2});
-        expect(
-          store1.getMergeableContentDelta(store2.getMergeableContent()),
-        ).toMatchSnapshot();
+        expectDeltas();
       });
 
-      test('remote missing row', () => {
-        store1.setContent([
-          {t1: {r1: {c1: 1, c2: 2}}, t2: {r2: {c2: 2}}},
-          {v1: 1, v2: 2},
-        ]);
+      test('store2 missing row', () => {
+        store1.setTables({t1: {r1: {c1: 1, c2: 2}}, t2: {r2: {c2: 2}}});
         store2.merge(store1);
         store1.setRow('t1', 'r2', {c2: 2});
-        expect(
-          store1.getMergeableContentDelta(store2.getMergeableContent()),
-        ).toMatchSnapshot();
+        expectDeltas();
       });
 
-      test('local missing cell', () => {
-        store2.setContent([
-          {t1: {r1: {c1: 1}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
-          {v1: 1, v2: 2},
-        ]);
+      test('store1 missing cell', () => {
+        store2.setTables({t1: {r1: {c1: 1}, r2: {c2: 2}}, t2: {r2: {c2: 2}}});
         store1.merge(store2);
         store2.setCell('t1', 'r1', 'c2', 2);
-        expect(
-          store1.getMergeableContentDelta(store2.getMergeableContent()),
-        ).toMatchSnapshot();
+        expectDeltas();
       });
 
-      test('remote missing cell', () => {
-        store1.setContent([
-          {t1: {r1: {c1: 1}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
-          {v1: 1, v2: 2},
-        ]);
+      test('store2 missing cell', () => {
+        store1.setTables({t1: {r1: {c1: 1}, r2: {c2: 2}}, t2: {r2: {c2: 2}}});
         store2.merge(store1);
         store1.setCell('t1', 'r1', 'c2', 2);
-        expect(
-          store1.getMergeableContentDelta(store2.getMergeableContent()),
-        ).toMatchSnapshot();
+        expectDeltas();
       });
 
-      test('local missing values', () => {
-        store2.setContent([
-          {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
-          {},
-        ]);
-        store1.merge(store2);
+      test('store1 missing values', () => {
         store2.setValues({v1: 1, v2: 2});
-        expect(
-          store1.getMergeableContentDelta(store2.getMergeableContent()),
-        ).toMatchSnapshot();
+        expectDeltas();
       });
 
-      test('remote missing values', () => {
-        store1.setContent([
-          {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
-          {},
-        ]);
-        store2.merge(store1);
+      test('store2 missing values', () => {
         store1.setValues({v1: 1, v2: 2});
-        expect(
-          store1.getMergeableContentDelta(store2.getMergeableContent()),
-        ).toMatchSnapshot();
+        expectDeltas();
       });
 
-      test('local missing some values', () => {
-        store2.setContent([
-          {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
-          {v1: 1},
-        ]);
-        store1.merge(store2);
-        store2.setValue('v2', 2);
-        expect(
-          store1.getMergeableContentDelta(store2.getMergeableContent()),
-        ).toMatchSnapshot();
-      });
-
-      test('remote missing some values', () => {
-        store1.setContent([
-          {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
-          {v1: 1},
-        ]);
-        store2.merge(store1);
-        store1.setValue('v2', 2);
-        expect(
-          store1.getMergeableContentDelta(store2.getMergeableContent()),
-        ).toMatchSnapshot();
-      });
-    });
-  });
-
-  describe('getMergeableValuesDelta', () => {
-    test('Both empty', () => {
-      expect(
-        store1.getMergeableValuesDelta(store2.getMergeableContent()[1][1]),
-      ).toMatchSnapshot();
-    });
-
-    test('Both match', () => {
-      store1.setValues({v1: 1, v2: 2});
-      store2.merge(store1);
-      expect(
-        store1.getMergeableValuesDelta(store2.getMergeableContent()[1][1]),
-      ).toMatchSnapshot();
-    });
-
-    describe('No match', () => {
-      test('local empty', () => {
-        store2.setValues({v1: 1, v2: 2});
-        expect(
-          store1.getMergeableValuesDelta(store2.getMergeableContent()[1][1]),
-        ).toMatchSnapshot();
-      });
-
-      test('remote empty', () => {
-        store1.setValues({v1: 1, v2: 2});
-        expect(
-          store1.getMergeableValuesDelta(store2.getMergeableContent()[1][1]),
-        ).toMatchSnapshot();
-      });
-
-      test('local missing some values', () => {
+      test('store1 missing some values', () => {
         store2.setValues({v1: 1});
         store1.merge(store2);
         store2.setValue('v2', 2);
-        expect(
-          store1.getMergeableValuesDelta(store2.getMergeableContent()[1][1]),
-        ).toMatchSnapshot();
+        expectDeltas();
       });
 
-      test('remote missing some values', () => {
+      test('store2 missing some values', () => {
         store1.setValues({v1: 1});
         store2.merge(store1);
         store1.setValue('v2', 2);
-        expect(
-          store1.getMergeableValuesDelta(store2.getMergeableContent()[1][1]),
-        ).toMatchSnapshot();
+        expectDeltas();
       });
     });
   });
