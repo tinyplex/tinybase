@@ -7,9 +7,9 @@
     @typescript-eslint/explicit-module-boundary-types
 */
 
+import {existsSync, promises} from 'fs';
 // All other imports are lazy so that single tasks start up fast.
 import {basename, dirname} from 'path';
-import {existsSync, promises} from 'fs';
 
 const UTF8 = 'utf-8';
 const TEST_MODULES = [
@@ -17,22 +17,24 @@ const TEST_MODULES = [
   'ui-react',
   'ui-react-dom',
   'tools',
+  'persisters/persister-automerge',
   'persisters/persister-browser',
-  'persisters/persister-indexed-db',
-  'persisters/persister-file',
-  'persisters/persister-sqlite3',
-  'persisters/persister-sqlite-wasm',
   'persisters/persister-cr-sqlite-wasm',
   'persisters/persister-electric-sql',
   'persisters/persister-powersync',
   'persisters/persister-expo-sqlite',
   'persisters/persister-expo-sqlite-next',
+  'persisters/persister-expo-sqlite',
+  'persisters/persister-file',
+  'persisters/persister-indexed-db',
   'persisters/persister-libsql',
-  'persisters/persister-remote',
-  'persisters/persister-yjs',
-  'persisters/persister-automerge',
   'persisters/persister-partykit-client',
   'persisters/persister-partykit-server',
+  'persisters/persister-remote',
+  'persisters/persister-sqlite-wasm',
+  'persisters/persister-sqlite3',
+  'persisters/persister-sync',
+  'persisters/persister-yjs',
 ];
 const MODULES_TYPED_WITH_INTERNALS = ['store', 'queries', 'ui-react'];
 const ALL_MODULES = [
@@ -49,22 +51,24 @@ const ALL_MODULES = [
   'ui-react',
   'ui-react-dom',
   'tools',
+  'persisters/persister-automerge',
   'persisters/persister-browser',
-  'persisters/persister-indexed-db',
-  'persisters/persister-file',
-  'persisters/persister-sqlite3',
-  'persisters/persister-sqlite-wasm',
   'persisters/persister-cr-sqlite-wasm',
   'persisters/persister-electric-sql',
   'persisters/persister-powersync',
   'persisters/persister-expo-sqlite',
   'persisters/persister-expo-sqlite-next',
+  'persisters/persister-expo-sqlite',
+  'persisters/persister-file',
+  'persisters/persister-indexed-db',
   'persisters/persister-libsql',
-  'persisters/persister-remote',
-  'persisters/persister-yjs',
-  'persisters/persister-automerge',
   'persisters/persister-partykit-client',
   'persisters/persister-partykit-server',
+  'persisters/persister-remote',
+  'persisters/persister-sqlite-wasm',
+  'persisters/persister-sqlite3',
+  'persisters/persister-sync',
+  'persisters/persister-yjs',
 ];
 
 export const BIN_DIR = 'bin';
