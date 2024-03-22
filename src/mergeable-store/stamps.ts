@@ -119,11 +119,11 @@ export const stampMapToObj = <From, To = From>(
 
 export const stampValidate = (
   stamp: Stamp<any, true>,
-  validateValue: (value: any) => boolean,
+  validateThing: (thing: any) => boolean,
 ) =>
   isArray(stamp) &&
   size(stamp) == 3 &&
   isString(stamp[0]) &&
-  validateValue(stamp[1]) &&
+  validateThing(stamp[1]) &&
   getTypeOf(stamp[2]) == NUMBER &&
   isFiniteNumber(stamp[2]);
