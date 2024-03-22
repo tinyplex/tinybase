@@ -1,6 +1,7 @@
 import {
   Changes,
   Content,
+  MergeableChanges,
   MergeableContent,
   Persister,
   Store,
@@ -26,7 +27,7 @@ export type Persistable<Location = string> = {
   write: (location: Location, rawContent: any) => Promise<void>;
   del: (location: Location) => Promise<void>;
   afterEach?: (location: Location) => void;
-  getChanges?: () => Changes;
+  getChanges?: () => Changes | MergeableChanges;
   testMissing: boolean;
   extraLoad?: 0 | 1;
 };
