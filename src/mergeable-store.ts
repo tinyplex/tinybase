@@ -23,6 +23,7 @@ import {
   objIsEmpty,
   objNew,
   objToArray,
+  objValidate,
 } from './common/obj';
 import {
   RowStampMap,
@@ -39,13 +40,15 @@ import {
   stampNewMap,
   stampNewObj,
   stampUpdate,
+  stampValidate,
 } from './mergeable-store/stamps';
-import {isUndefined, slice} from './common/other';
+import {isArray, isUndefined, size, slice} from './common/other';
 import {mapEnsure, mapGet} from './common/map';
 import {Id} from './types/common';
 import {createStore} from './store';
 import {getHash} from './mergeable-store/hash';
 import {getHlcFunctions} from './mergeable-store/hlc';
+import {isCellOrValueOrNull} from './common/cell';
 import {jsonString} from './common/json';
 
 const LISTENER_ARGS: IdObj<number> = {
@@ -77,6 +80,34 @@ const newContentStampMap = (time = EMPTY_STRING): ContentStampMap => [
   [stampNewMap(time), stampNewMap(time)],
   0,
 ];
+
+const validateMergeableContent = (
+  mergeableContent: MergeableContent,
+): boolean =>
+  stampValidate(
+    mergeableContent,
+    (content) =>
+      isArray(content) &&
+      size(content) == 2 &&
+      stampValidate(content[0], (tableStamps) =>
+        objValidate(tableStamps, (tableStamp) =>
+          stampValidate(tableStamp, (rowStamps) =>
+            objValidate(rowStamps, (rowStamp) =>
+              stampValidate(rowStamp, (cellStamps) =>
+                objValidate(cellStamps, (cellStamp) =>
+                  stampValidate(cellStamp, isCellOrValueOrNull),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ) &&
+      stampValidate(content[1], (values) =>
+        objValidate(values, (value) =>
+          stampValidate(value, isCellOrValueOrNull),
+        ),
+      ),
+  );
 
 export const createMergeableStore = ((id: Id): MergeableStore => {
   let listening = 1;
@@ -285,16 +316,18 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const setMergeableContent = (
     mergeableContent: MergeableContent,
   ): MergeableStore => {
-    disableListening(() =>
-      store.transaction(() => {
-        store.delTables().delValues();
-        contentStampMap = newContentStampMap();
-      }),
-    );
-    seenHlc(mergeableContent[0]);
-    disableListening(() =>
-      store.applyChanges(mergeContentOrChanges(mergeableContent, 1)),
-    );
+    if (validateMergeableContent(mergeableContent)) {
+      disableListening(() =>
+        store.transaction(() => {
+          store.delTables().delValues();
+          contentStampMap = newContentStampMap();
+        }),
+      );
+      seenHlc(mergeableContent[0]);
+      disableListening(() =>
+        store.applyChanges(mergeContentOrChanges(mergeableContent, 1)),
+      );
+    }
     return mergeableStore as MergeableStore;
   };
 
