@@ -19,12 +19,9 @@ export type TableStampMap = StampMap<RowStampMap>;
 export type RowStampMap = StampMap<CellStamp<true>>;
 export type ValuesStampMap = StampMap<ValueStamp<true>>;
 
-export const stampClone = <Value>([time, value]: Stamp<Value, boolean>): Stamp<
-  Value,
-  false
-> => [time, value];
+const hashesNew = () => [0, {}];
 
-export const stampCloneWithHash = <Value>([time, value, hash]: Stamp<
+const stampCloneWithHash = <Value>([time, value, hash]: Stamp<
   Value,
   true
 >): Stamp<Value, true> => [time, value, hash];
@@ -72,15 +69,13 @@ export const getDeltaStamps = <Thing>(
             stampMap[0],
             mapToObj(
               stampMap[1],
-              stampClone,
+              ([time, value]) => [time, value],
               (childStampMap, childId) =>
                 childStampMap[2] === relativeChildren?.[childId],
             ),
           ],
     stampNewObj,
   ) as Stamp<IdObj<Stamp<Thing>>>;
-
-export const hashesNew = () => [0, {}];
 
 export const hashIdAndHash = (id: Id, hash: Hash) => getHash(id + ':' + hash);
 
