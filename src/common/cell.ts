@@ -15,6 +15,9 @@ export const getCellOrValueType = (
     : undefined;
 };
 
+export const isCellOrValueOrNull = (cellOrValue: any): boolean =>
+  cellOrValue === null || !isUndefined(getCellOrValueType(cellOrValue));
+
 export const setOrDelCell = (
   store: Store,
   tableId: Id,
