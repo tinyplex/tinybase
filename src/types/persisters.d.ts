@@ -155,7 +155,9 @@ export function createCustomPersister<
     getContent: () =>
       | Content
       | (SupportsMergeableStore extends true ? MergeableContent : never),
-    getChanges?: () => Changes,
+    getChanges?: () =>
+      | Changes
+      | (SupportsMergeableStore extends true ? MergeableChanges : never),
   ) => Promise<void>,
   addPersisterListener: (
     listener: PersisterListener<SupportsMergeableStore>,
