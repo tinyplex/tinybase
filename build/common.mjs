@@ -142,36 +142,38 @@ const copyDefinition = async (module) => {
     }
   });
   const fileRewrite = (block, addOverrideSnippet) =>
-    block.replace(TYPES_DOC_CODE_BLOCKS, (_, label, code) => {
-      if (labelBlocks.has(label)) {
-        const codeOverride = codeBlocks.get(label);
-        let block = labelBlocks.get(label);
-        if (
-          addOverrideSnippet &&
-          codeBlocks.has(label) &&
-          code.includes('<') &&
-          code.includes('Schema') &&
-          !codeOverride.endsWith('{')
-        ) {
-          const prefix = block.match(/^\s+\*$/m)?.[0];
-          if (prefix) {
-            const line = '\n' + prefix;
-            block = block.replace(
-              /^\s+\*$/m,
-              `${prefix}${line}` +
-                ' This has schema-based typing.' +
-                ' The following is a simplified representation:' +
-                `${line}${line} \`\`\`ts override` +
-                codeOverride.trimEnd() +
-                `${line} \`\`\`${line}`,
-            );
+    block
+      .replace(/\.d';/g, `.d.ts';`)
+      .replace(TYPES_DOC_CODE_BLOCKS, (_, label, code) => {
+        if (labelBlocks.has(label)) {
+          const codeOverride = codeBlocks.get(label);
+          let block = labelBlocks.get(label);
+          if (
+            addOverrideSnippet &&
+            codeBlocks.has(label) &&
+            code.includes('<') &&
+            code.includes('Schema') &&
+            !codeOverride.endsWith('{')
+          ) {
+            const prefix = block.match(/^\s+\*$/m)?.[0];
+            if (prefix) {
+              const line = '\n' + prefix;
+              block = block.replace(
+                /^\s+\*$/m,
+                `${prefix}${line}` +
+                  ' This has schema-based typing.' +
+                  ' The following is a simplified representation:' +
+                  `${line}${line} \`\`\`ts override` +
+                  codeOverride.trimEnd() +
+                  `${line} \`\`\`${line}`,
+              );
+            }
+            code = code.replace(/^\s*?\/\/\/.*?\n/gm, '');
           }
-          code = code.replace(/^\s*?\/\/\/.*?\n/gm, '');
+          return block + code;
         }
-        return block + code;
-      }
-      throw `Missing docs label ${label} in ${module}`;
-    });
+        throw `Missing docs label ${label} in ${module}`;
+      });
 
   await allOf(
     ['', 'with-schemas/'].concat(
