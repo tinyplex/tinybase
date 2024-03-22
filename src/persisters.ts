@@ -75,7 +75,9 @@ export const createCustomPersister = <
     getContent: () =>
       | Content
       | (SupportsMergeableStore extends true ? MergeableContent : never),
-    getChanges?: () => Changes,
+    getChanges?: () =>
+      | Changes
+      | (SupportsMergeableStore extends true ? MergeableChanges : never),
   ) => Promise<void>,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
@@ -192,7 +194,11 @@ export const createCustomPersister = <
       return persister;
     },
 
-    save: async (getChanges?: () => Changes): Promise<Persister> => {
+    save: async (
+      getChanges?: () =>
+        | Changes
+        | (SupportsMergeableStore extends true ? MergeableChanges : never),
+    ): Promise<Persister> => {
       /*! istanbul ignore else */
       if (loadSave != 1) {
         loadSave = 2;
