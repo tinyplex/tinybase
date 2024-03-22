@@ -9,7 +9,11 @@ import {
   Tables,
   Values,
 } from './store.d';
-import {MergeableContent, MergeableStore} from './mergeable-store.d';
+import {
+  MergeableChanges,
+  MergeableContent,
+  MergeableStore,
+} from './mergeable-store.d';
 import {TableIdFromSchema} from './internal/store.d';
 
 /// PersisterStats
@@ -21,9 +25,16 @@ export type PersisterStats = {
 };
 
 /// PersisterListener
-export type PersisterListener<Schemas extends OptionalSchemas> = (
-  getContent?: () => Content<Schemas, true>,
-  getChanges?: () => Changes<Schemas>,
+export type PersisterListener<
+  Schemas extends OptionalSchemas,
+  SupportsMergeableStore extends boolean = false,
+> = (
+  getContent?: () =>
+    | Content<Schemas, true>
+    | (SupportsMergeableStore extends true ? MergeableContent<Schemas> : never),
+  getChanges?: () =>
+    | Changes<Schemas>
+    | (SupportsMergeableStore extends true ? MergeableChanges<Schemas> : never),
 ) => void;
 
 /// DatabasePersisterConfig
@@ -160,7 +171,11 @@ export function createCustomPersister<
       | (SupportsMergeableStore extends true
           ? MergeableContent<Schemas>
           : never),
-    getChanges?: () => Changes<Schemas>,
+    getChanges?: () =>
+      | Changes<Schemas>
+      | (SupportsMergeableStore extends true
+          ? MergeableChanges<Schemas>
+          : never),
   ) => Promise<void>,
   addPersisterListener: (
     listener: PersisterListener<Schemas>,
