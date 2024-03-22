@@ -5,12 +5,18 @@ import {
   Time,
   ValueStamp,
 } from '../types/mergeable-store';
+import {EMPTY_STRING, NUMBER, getTypeOf} from '../common/strings';
 import {IdMap, mapNew, mapToObj} from '../common/map';
 import {IdObj, objNew} from '../common/obj';
-import {EMPTY_STRING} from '../common/strings';
+import {
+  ifNotUndefined,
+  isArray,
+  isFiniteNumber,
+  isString,
+  size,
+} from '../common/other';
 import {Id} from '../types/common';
 import {getHash} from './hash';
-import {ifNotUndefined} from '../common/other';
 
 export type StampMap<Thing> = Stamp<IdMap<Thing>, true>;
 
@@ -110,3 +116,14 @@ export const stampMapToObj = <From, To = From>(
   mapper: (mapValue: From) => To = stampCloneWithHash as any,
 ): Stamp<IdObj<To>, true> =>
   stampMap(hashStamp, (map) => mapToObj(map, mapper));
+
+export const stampValidate = (
+  stamp: Stamp<any, true>,
+  validateValue: (value: any) => boolean,
+) =>
+  isArray(stamp) &&
+  size(stamp) == 3 &&
+  isString(stamp[0]) &&
+  validateValue(stamp[1]) &&
+  getTypeOf(stamp[2]) == NUMBER &&
+  isFiniteNumber(stamp[2]);
