@@ -88,16 +88,6 @@ import {
   mapToObj2,
   mapToObj3,
 } from './common/map';
-import {
-  IdObj,
-  isObject,
-  objDel,
-  objFreeze,
-  objFrozen,
-  objHas,
-  objIsEmpty,
-  objToArray,
-} from './common/obj';
 import {IdSet, IdSet2, IdSet3, IdSet4, setAdd, setNew} from './common/set';
 import {
   Pair,
@@ -129,6 +119,14 @@ import {
 } from './common/coll';
 import {getCellOrValueType, setOrDelCell, setOrDelValue} from './common/cell';
 import {jsonParse, jsonString} from './common/json';
+import {
+  objDel,
+  objFreeze,
+  objHas,
+  objIsEmpty,
+  objToArray,
+  objValidate,
+} from './common/obj';
 import {defaultSorter} from './common';
 
 type TablesSchemaMap = IdMap2<CellSchema>;
@@ -140,23 +138,6 @@ type ValuesMap = IdMap<Value>;
 type ChangedIdsMap = IdMap<IdAddedOrRemoved>;
 type ChangedIdsMap2 = IdMap2<IdAddedOrRemoved>;
 type ChangedIdsMap3 = IdMap3<IdAddedOrRemoved>;
-
-const validate = (
-  obj: IdObj<any> | undefined,
-  validateChild: (child: any, id: Id) => boolean,
-  onInvalidObj?: () => void,
-): boolean => {
-  if (isUndefined(obj) || !isObject(obj) || objIsEmpty(obj) || objFrozen(obj)) {
-    onInvalidObj?.();
-    return false;
-  }
-  objToArray(obj, (child, id) => {
-    if (!validateChild(child, id)) {
-      objDel(obj, id);
-    }
-  });
-  return !objIsEmpty(obj);
-};
 
 const idsChanged = (
   changedIds: ChangedIdsMap,
@@ -229,16 +210,18 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const validateTablesSchema = (
     tableSchema: TablesSchema | undefined,
   ): boolean =>
-    validate(tableSchema, (tableSchema) =>
-      validate(tableSchema, validateCellOrValueSchema),
+    objValidate(tableSchema, (tableSchema) =>
+      objValidate(tableSchema, validateCellOrValueSchema),
     );
 
   const validateValuesSchema = (
     valuesSchema: ValuesSchema | undefined,
-  ): boolean => validate(valuesSchema, validateCellOrValueSchema);
+  ): boolean => objValidate(valuesSchema, validateCellOrValueSchema);
 
   const validateCellOrValueSchema = (schema: CellSchema | ValueSchema) => {
-    if (!validate(schema, (_child, id: Id) => arrayHas([TYPE, DEFAULT], id))) {
+    if (
+      !objValidate(schema, (_child, id: Id) => arrayHas([TYPE, DEFAULT], id))
+    ) {
       return false;
     }
     const type = schema[TYPE];
@@ -252,13 +235,13 @@ export const createStore: typeof createStoreDecl = (): Store => {
   };
 
   const validateTables = (tables: Tables): boolean =>
-    validate(tables, validateTable, cellInvalid);
+    objValidate(tables, validateTable, cellInvalid);
 
   const validateTable = (table: Table, tableId: Id): boolean =>
     (!hasTablesSchema ||
       collHas(tablesSchemaMap, tableId) ||
       (cellInvalid(tableId) as boolean)) &&
-    validate(
+    objValidate(
       table,
       (row: Row, rowId: Id): boolean => validateRow(tableId, rowId, row),
       () => cellInvalid(tableId),
@@ -270,7 +253,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     row: Row,
     skipDefaults?: 1,
   ): boolean =>
-    validate(
+    objValidate(
       skipDefaults ? row : addDefaultsToRow(row, tableId, rowId),
       (cell: Cell, cellId: Id): boolean =>
         ifNotUndefined(
@@ -304,7 +287,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
         : cell;
 
   const validateValues = (values: Values, skipDefaults?: 1): boolean =>
-    validate(
+    objValidate(
       skipDefaults ? values : addDefaultsToValues(values),
       (value: Value, valueId: Id): boolean =>
         ifNotUndefined(
