@@ -2,6 +2,7 @@ import {
   Changes,
   Content,
   Id,
+  MergeableChanges,
   MergeableContent,
   Persister,
   Store,
@@ -109,10 +110,13 @@ const docObjMatch = (
 
 let customPersister: any;
 let customPersisterListener:
-  | ((getContent?: () => Content) => void)
-  | ((getContent?: () => Content, getChanges?: () => Changes) => void)
+  | ((getContent?: () => Content | MergeableContent) => void)
+  | ((
+      getContent?: () => Content | MergeableContent,
+      getChanges?: () => Changes | MergeableChanges,
+    ) => void)
   | undefined;
-let customPersisterChanges: Changes = [{}, {}];
+let customPersisterChanges: Changes | MergeableChanges = [{}, {}];
 
 const getMockedCustom = (
   write: (location: string, rawContent: any) => Promise<void>,
