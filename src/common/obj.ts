@@ -94,3 +94,20 @@ export const objEnsure = <Value>(
   }
   return obj[id] as Value;
 };
+
+export const objValidate = (
+  obj: IdObj<any> | undefined,
+  validateChild: (child: any, id: Id) => boolean,
+  onInvalidObj?: () => void,
+): boolean => {
+  if (isUndefined(obj) || !isObject(obj) || objIsEmpty(obj) || objFrozen(obj)) {
+    onInvalidObj?.();
+    return false;
+  }
+  objToArray(obj, (child, id) => {
+    if (!validateChild(child, id)) {
+      objDel(obj, id);
+    }
+  });
+  return !objIsEmpty(obj);
+};
