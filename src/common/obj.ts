@@ -99,8 +99,14 @@ export const objValidate = (
   obj: IdObj<any> | undefined,
   validateChild: (child: any, id: Id) => boolean,
   onInvalidObj?: () => void,
+  emptyIsValid: 0 | 1 = 0,
 ): boolean => {
-  if (isUndefined(obj) || !isObject(obj) || objIsEmpty(obj) || objFrozen(obj)) {
+  if (
+    isUndefined(obj) ||
+    !isObject(obj) ||
+    (!emptyIsValid && objIsEmpty(obj)) ||
+    objFrozen(obj)
+  ) {
     onInvalidObj?.();
     return false;
   }
@@ -109,5 +115,5 @@ export const objValidate = (
       objDel(obj, id);
     }
   });
-  return !objIsEmpty(obj);
+  return emptyIsValid ? true : !objIsEmpty(obj);
 };
