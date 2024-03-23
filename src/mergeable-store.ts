@@ -132,11 +132,12 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const [getHlc, seenHlc] = getHlcFunctions(id);
   const store = createStore();
 
-  const disableListening = (actions: () => void) => {
+  const disableListening = (actions: () => void): MergeableStore => {
     const wasListening = listening;
     listening = 0;
     actions();
     listening = wasListening;
+    return mergeableStore as MergeableStore;
   };
 
   const mergeContentOrChanges = (
@@ -330,21 +331,17 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
 
   const setMergeableContent = (
     mergeableContent: MergeableContent,
-  ): MergeableStore => {
-    if (validateMergeableContent(mergeableContent)) {
-      disableListening(() =>
-        store.transaction(() => {
-          store.delTables().delValues();
-          contentStampMap = newContentStampMap();
-        }),
-      );
-      seenHlc(mergeableContent[0]);
-      disableListening(() =>
-        store.applyChanges(mergeContentOrChanges(mergeableContent, 1)),
-      );
-    }
-    return mergeableStore as MergeableStore;
-  };
+  ): MergeableStore =>
+    disableListening(() =>
+      validateMergeableContent(mergeableContent)
+        ? store.transaction(() => {
+            store.delTables().delValues();
+            contentStampMap = newContentStampMap();
+            seenHlc(mergeableContent[0]);
+            store.applyChanges(mergeContentOrChanges(mergeableContent, 1));
+          })
+        : 0,
+    );
 
   const getTransactionMergeableChanges = (): MergeableChanges => {
     if (isUndefined(transactionMergeableChanges)) {
@@ -384,13 +381,11 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
 
   const applyMergeableChanges = (
     mergeableChanges: MergeableChanges | MergeableContent,
-  ): MergeableStore => {
-    seenHlc(mergeableChanges[0]);
-    disableListening(() =>
-      store.applyChanges(mergeContentOrChanges(mergeableChanges)),
-    );
-    return mergeableStore as MergeableStore;
-  };
+  ): MergeableStore =>
+    disableListening(() => {
+      seenHlc(mergeableChanges[0]);
+      store.applyChanges(mergeContentOrChanges(mergeableChanges));
+    });
 
   const merge = (mergeableStore2: MergeableStore) => {
     const mergeableChanges = getMergeableContent();
