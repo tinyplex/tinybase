@@ -8,9 +8,11 @@ import {
   Changes,
   Content,
   createCustomPersister,
+  createMergeableStore,
   Id,
   MergeableChanges,
   MergeableContent,
+  MergeableStore,
   Persister,
   Store,
   Tables,
@@ -24,6 +26,7 @@ import {
 import {createFilePersister} from 'tinybase/debug/persisters/persister-file';
 import {createIndexedDbPersister} from 'tinybase/debug/persisters/persister-indexed-db';
 import {createRemotePersister} from 'tinybase/debug/persisters/persister-remote';
+import {createSyncPersister} from 'tinybase/debug/persisters/persister-sync';
 import {createYjsPersister} from 'tinybase/debug/persisters/persister-yjs';
 import tmp from 'tmp';
 import {Doc as YDoc, Map as YMap} from 'yjs';
@@ -251,6 +254,40 @@ export const mockFile: Persistable = {
   write: async (location: string, rawContent: any): Promise<void> =>
     fs.writeFileSync(location, rawContent, 'utf-8'),
   del: async (location: string): Promise<void> => fs.unlinkSync(location),
+  testMissing: true,
+};
+
+export const mockSync: Persistable<MergeableStore> = {
+  autoLoadPause: 100,
+  getLocation: async (): Promise<MergeableStore> => {
+    return createMergeableStore('otherStore');
+  },
+  getLocationMethod: ['getOtherStore', (location) => location],
+  getPersister: createSyncPersister as any,
+  get: async (
+    location: MergeableStore,
+  ): Promise<Content | MergeableContent | void> => {
+    try {
+      location.getMergeableContent();
+    } catch {}
+  },
+  set: async (
+    location: MergeableStore,
+    content: Content | MergeableContent,
+  ): Promise<void> => await mockSync.write(location, content),
+  write: async (location: MergeableStore, rawContent: any): Promise<void> => {
+    location.setMergeableContent(rawContent);
+  },
+  del: async (location: MergeableStore): Promise<void> => {
+    location.setMergeableContent([
+      '',
+      [
+        ['', {}, 0],
+        ['', {}, 0],
+      ],
+      0,
+    ]);
+  },
   testMissing: true,
 };
 
