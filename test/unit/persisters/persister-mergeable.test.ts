@@ -20,6 +20,7 @@ import {
   mockMergeableContentListener,
   mockMergeableNoContentListener,
   mockSessionStorage,
+  mockSync,
 } from './mocks';
 import {pause} from '../common/other';
 
@@ -38,6 +39,7 @@ describe.each([
   ['file', mockFile],
   ['localStorage', mockLocalStorage],
   ['sessionStorage', mockSessionStorage],
+  ['sync', mockSync],
 ])('Persists to/from %s', (name: string, persistable: Persistable<any>) => {
   let location: string;
   let getLocationMethod: GetLocationMethod<any> | undefined;
@@ -242,6 +244,7 @@ describe.each([
       ],
       3386696034,
     ]);
+
     await pause(persistable.autoLoadPause, true);
     expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
     expect(store.getMergeableContent()).toMatchSnapshot();
