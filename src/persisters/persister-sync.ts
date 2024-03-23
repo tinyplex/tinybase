@@ -4,6 +4,7 @@ import {
   createSyncPersister as createSyncPersisterDecl,
 } from '../types/persisters/persister-sync';
 import {Content} from '../types/store';
+import {PersisterListener} from '../types/persisters';
 import {createCustomPersister} from '../persisters';
 
 export const createSyncPersister = ((
@@ -11,8 +12,13 @@ export const createSyncPersister = ((
   otherStore: MergeableStore,
   onIgnoredError?: (error: any) => void,
 ): SyncPersister => {
-  const getPersisted = async (): Promise<Content | MergeableContent> =>
-    otherStore.getContent();
+  const getPersisted = async (): Promise<MergeableContent> => {
+    const persisted = otherStore.getMergeableContent();
+    if (persisted[0] !== '') {
+      return persisted;
+    }
+    return null as any;
+  };
 
   const setPersisted = async (
     getContent: () => Content | MergeableContent,
@@ -20,9 +26,10 @@ export const createSyncPersister = ((
     otherStore.setMergeableContent(getContent() as MergeableContent);
   };
 
-  const addPersisterListener = () => 0;
+  const addPersisterListener = (listener: PersisterListener) =>
+    otherStore.addDidFinishTransactionListener(() => listener());
 
-  const delPersisterListener = (): void => {};
+  const delPersisterListener = otherStore.delListener;
 
   return createCustomPersister(
     store,
