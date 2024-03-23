@@ -330,15 +330,30 @@ describe.each([
   });
 
   test('does not delete when autoLoaded is deleted', async () => {
-    await persistable.set(
-      location,
-      stamped(0, 0, [
-        stamped(0, 0, {
-          t1: stamped(0, 0, {r1: stamped(0, 0, {c1: stamped(0, 0, 1)})}),
-        }),
-        nullStamped({}),
-      ]) as MergeableContent,
-    );
+    await persistable.set(location, [
+      'Hc2DO@000008DKS9',
+      [
+        [
+          'Hc2DO@000008DKS9',
+          {
+            t1: [
+              'Hc2DO@000008DKS9',
+              {
+                r1: [
+                  'Hc2DO@000008DKS9',
+                  {c1: ['Hc2DO@000008DKS9', 1, 4065945599]},
+                  1279994494,
+                ],
+              },
+              1293085726,
+            ],
+          },
+          4033596827,
+        ],
+        ['', {}, 0],
+      ],
+      4033596827,
+    ]);
     await persister.startAutoLoad({});
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     await persistable.del(location);
@@ -347,15 +362,30 @@ describe.each([
   });
 
   test('does not delete when autoLoaded is corrupted', async () => {
-    await persistable.set(
-      location,
-      stamped(0, 0, [
-        stamped(0, 0, {
-          t1: stamped(0, 0, {r1: stamped(0, 0, {c1: stamped(0, 0, 1)})}),
-        }),
-        nullStamped({}),
-      ]) as MergeableContent,
-    );
+    await persistable.set(location, [
+      'Hc2DO@000008DKS9',
+      [
+        [
+          'Hc2DO@000008DKS9',
+          {
+            t1: [
+              'Hc2DO@000008DKS9',
+              {
+                r1: [
+                  'Hc2DO@000008DKS9',
+                  {c1: ['Hc2DO@000008DKS9', 1, 4065945599]},
+                  1279994494,
+                ],
+              },
+              1293085726,
+            ],
+          },
+          4033596827,
+        ],
+        ['', {}, 0],
+      ],
+      4033596827,
+    ]);
     await persister.startAutoLoad({});
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     persistable.write(location, '{');
