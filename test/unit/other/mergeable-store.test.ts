@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import {
   MergeableChanges,
   MergeableContent,
@@ -638,6 +639,34 @@ describe('apply/setMergeableContent', () => {
     ] as MergeableContent);
     expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
     expect(store.getMergeableContent()).toMatchSnapshot();
+  });
+
+  test.each([
+    '',
+    1,
+    true,
+    {},
+    [],
+    [''],
+    ['', {}],
+    [0, {}, 0],
+    ['', {}, 0],
+    ['', {}, ''],
+    ['', [0, 0], 0],
+    ['', [[], []], 0],
+    [
+      '',
+      [
+        ['', {}, 0],
+        ['', {v1: ['']}, 0],
+      ],
+      0,
+    ],
+  ])('set with invalid structure, %s', (invalid: any) => {
+    store.setContent([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+    // @ts-ignore
+    store.setMergeableContent(invalid);
+    expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
   });
 });
 
