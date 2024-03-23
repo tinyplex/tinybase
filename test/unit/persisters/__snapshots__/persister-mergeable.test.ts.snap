@@ -2768,6 +2768,250 @@ exports[`Persists to/from sessionStorage saves 2`] = `
 ]
 `;
 
+exports[`Persists to/from sync autoLoads 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  [
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "t1": [
+          "Hc2DO@000008DKS9",
+          {
+            "r1": [
+              "Hc2DO@000008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000008DKS9",
+                  1,
+                  4065945599,
+                ],
+              },
+              1279994494,
+            ],
+          },
+          1293085726,
+        ],
+      },
+      4033596827,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  4033596827,
+]
+`;
+
+exports[`Persists to/from sync autoLoads 2`] = `
+[
+  "Hc2DO@000018DKS9",
+  [
+    [
+      "Hc2DO@000018DKS9",
+      {
+        "t1": [
+          "Hc2DO@000018DKS9",
+          {
+            "r1": [
+              "Hc2DO@000018DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000018DKS9",
+                  2,
+                  2669080357,
+                ],
+              },
+              274319047,
+            ],
+          },
+          4089057354,
+        ],
+      },
+      3386696034,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  3386696034,
+]
+`;
+
+exports[`Persists to/from sync autoLoads 3`] = `
+[
+  "Hc2DO@000028DKS9",
+  [
+    [
+      "Hc2DO@000028DKS9",
+      {
+        "t1": [
+          "Hc2DO@000028DKS9",
+          {
+            "r1": [
+              "Hc2DO@000028DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000028DKS9",
+                  3,
+                  3252714811,
+                ],
+              },
+              1416411412,
+            ],
+          },
+          3704904231,
+        ],
+      },
+      4008152259,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  4008152259,
+]
+`;
+
+exports[`Persists to/from sync autoLoads 4`] = `
+[
+  "Hc2DO@000028DKS9",
+  [
+    [
+      "Hc2DO@000028DKS9",
+      {
+        "t1": [
+          "Hc2DO@000028DKS9",
+          {
+            "r1": [
+              "Hc2DO@000028DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000028DKS9",
+                  3,
+                  3252714811,
+                ],
+              },
+              1416411412,
+            ],
+          },
+          3704904231,
+        ],
+      },
+      4008152259,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  4008152259,
+]
+`;
+
+exports[`Persists to/from sync autoSaves 1`] = `undefined`;
+
+exports[`Persists to/from sync autoSaves 2`] = `undefined`;
+
+exports[`Persists to/from sync autoSaves 3`] = `undefined`;
+
+exports[`Persists to/from sync autoSaves 4`] = `undefined`;
+
+exports[`Persists to/from sync loads 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  [
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "t1": [
+          "Hc2DO@000008DKS9",
+          {
+            "r1": [
+              "Hc2DO@000008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000008DKS9",
+                  1,
+                  4065945599,
+                ],
+              },
+              1279994494,
+            ],
+          },
+          1293085726,
+        ],
+      },
+      4033596827,
+    ],
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "v1": [
+          "Hc2DO@000008DKS9",
+          1,
+          4065945599,
+        ],
+      },
+      2304392760,
+    ],
+  ],
+  2033316771,
+]
+`;
+
+exports[`Persists to/from sync saves 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  [
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "t1": [
+          "Hc2DO@000008DKS9",
+          {
+            "r1": [
+              "Hc2DO@000008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000008DKS9",
+                  1,
+                  4065945599,
+                ],
+              },
+              1279994494,
+            ],
+          },
+          1293085726,
+        ],
+      },
+      4033596827,
+    ],
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "v1": [
+          "Hc2DO@000008DKS9",
+          1,
+          4065945599,
+        ],
+      },
+      2304392760,
+    ],
+  ],
+  2033316771,
+]
+`;
+
+exports[`Persists to/from sync saves 2`] = `undefined`;
+
 exports[`Supported, MergeableStore Changes in setPersisted 1`] = `
 [
   "["Hc2DO@000008DKS9",[["Hc2DO@000008DKS9",{"t1":["Hc2DO@000008DKS9",{"r1":["Hc2DO@000008DKS9",{"c1":["Hc2DO@000008DKS9",1]}]}]}],["",{}]]]",
