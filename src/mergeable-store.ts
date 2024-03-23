@@ -90,21 +90,36 @@ const validateMergeableContent = (
       isArray(content) &&
       size(content) == 2 &&
       stampValidate(content[0], (tableStamps) =>
-        objValidate(tableStamps, (tableStamp) =>
-          stampValidate(tableStamp, (rowStamps) =>
-            objValidate(rowStamps, (rowStamp) =>
-              stampValidate(rowStamp, (cellStamps) =>
-                objValidate(cellStamps, (cellStamp) =>
-                  stampValidate(cellStamp, isCellOrValueOrNull),
-                ),
+        objValidate(
+          tableStamps,
+          (tableStamp) =>
+            stampValidate(tableStamp, (rowStamps) =>
+              objValidate(
+                rowStamps,
+                (rowStamp) =>
+                  stampValidate(rowStamp, (cellStamps) =>
+                    objValidate(
+                      cellStamps,
+                      (cellStamp) =>
+                        stampValidate(cellStamp, isCellOrValueOrNull),
+                      undefined,
+                      1,
+                    ),
+                  ),
+                undefined,
+                1,
               ),
             ),
-          ),
+          undefined,
+          1,
         ),
       ) &&
       stampValidate(content[1], (values) =>
-        objValidate(values, (value) =>
-          stampValidate(value, isCellOrValueOrNull),
+        objValidate(
+          values,
+          (value) => stampValidate(value, isCellOrValueOrNull),
+          undefined,
+          1,
         ),
       ),
   );
