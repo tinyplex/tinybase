@@ -26,6 +26,7 @@ export type RowStampMap = StampMap<CellStamp<true>>;
 export type ValuesStampMap = StampMap<ValueStamp<true>>;
 
 const hashesNew = () => [0, {}];
+const deltaNew = () => [EMPTY_STRING, {}];
 
 const stampCloneWithHash = <Value>([time, value, hash]: Stamp<
   Value,
@@ -44,14 +45,14 @@ export const getHashes = (
 export const getDeltaHashes = (
   stampMap: StampMap<Stamp<unknown, true>> | undefined,
   [relativeHash, relativeChildren]: [Hash, IdObj<Hash>],
-): [Hash, IdObj<Hash>] =>
+): Stamp<IdObj<Hash>> =>
   ifNotUndefined(
     stampMap,
     (stampMap) =>
       stampMap[2] === relativeHash
-        ? hashesNew()
+        ? deltaNew()
         : [
-            stampMap[2],
+            stampMap[0],
             mapToObj(
               stampMap[1],
               (childStampMap) => childStampMap[2],
@@ -59,8 +60,8 @@ export const getDeltaHashes = (
                 childStampMap[2] === relativeChildren?.[childId],
             ),
           ],
-    hashesNew,
-  ) as [Hash, IdObj<Hash>];
+    deltaNew,
+  ) as Stamp<IdObj<Hash>>;
 
 export const getDeltaStamps = <Thing>(
   stampMap: StampMap<Stamp<Thing, true>> | undefined,
