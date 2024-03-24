@@ -360,14 +360,14 @@ describe('Deltas & Hashes', () => {
         expectDeltas();
       });
 
-      test('store1 missing some values', () => {
+      test('store1 missing value', () => {
         store2.setValues({v1: 1});
         store1.merge(store2);
         store2.setValue('v2', 2);
         expectDeltas();
       });
 
-      test('store2 missing some values', () => {
+      test('store2 missing value', () => {
         store1.setValues({v1: 1});
         store2.merge(store1);
         store1.setValue('v2', 2);
