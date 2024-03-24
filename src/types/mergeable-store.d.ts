@@ -17,6 +17,11 @@ export type Stamp<Thing, Hashed extends boolean = false> = Hashed extends true
 // ContentHashes
 export type ContentHashes = [hash: Hash, [tablesHash: Hash, valuesHash: Hash]];
 
+// ContentDelta
+export type ContentDelta =
+  | [time: Time, [tablesHash: Hash | null, valuesHash: Hash | null]]
+  | null;
+
 // TablesStamp
 export type TablesStamp<Hashed extends boolean = false> = Stamp<
   {[tableId: Id]: TableStamp<Hashed>},
@@ -26,6 +31,9 @@ export type TablesStamp<Hashed extends boolean = false> = Stamp<
 // TablesHashes
 export type TablesHashes = [hash: Hash, {[tableId: Id]: Hash}];
 
+// TablesDelta
+export type TablesDelta = [time: Time, {[tableId: Id]: Hash}];
+
 // TableStamp
 export type TableStamp<Hashed extends boolean = false> = Stamp<
   {[rowId: Id]: RowStamp<Hashed>},
@@ -34,6 +42,9 @@ export type TableStamp<Hashed extends boolean = false> = Stamp<
 
 // TableHashes
 export type TableHashes = [hash: Hash, {[rowId: Id]: Hash}];
+
+// TableDelta
+export type TableDelta = [time: Time, {[rowId: Id]: Hash}];
 
 // RowStamp
 export type RowStamp<Hashed extends boolean = false> = Stamp<
@@ -82,29 +93,32 @@ export interface MergeableStore extends Store {
   /// MergeableStore.getMergeableContent
   getMergeableContent(): MergeableContent;
 
-  /// MergeableStore.MergeableContentHashes
+  /// MergeableStore.getMergeableContentHashes
   getMergeableContentHashes(): ContentHashes;
+
+  /// MergeableStore.getMergeableContentDelta
+  getMergeableContentDelta(relativeTo: ContentHashes): ContentDelta;
 
   /// MergeableStore.getMergeableTablesHashes
   getMergeableTablesHashes(): TablesHashes;
 
+  /// MergeableStore.getMergeableTablesDelta
+  getMergeableTablesDelta(relativeTo: TablesHashes): TablesDelta;
+
   /// MergeableStore.getMergeableTableHashes
   getMergeableTableHashes(tableId: Id): TableHashes;
+
+  /// MergeableStore.getMergeableTableDelta
+  getMergeableTableDelta(tableId: Id, relativeTo: TableHashes): TableDelta;
 
   /// MergeableStore.getMergeableRowHashes
   getMergeableRowHashes(tableId: Id, rowId: Id): RowHashes;
 
-  /// MergeableStore.getMergeableValuesHashes
-  getMergeableValuesHashes(): ValuesHashes;
-
-  /// MergeableStore.getMergeableTablesDelta
-  getMergeableTablesDelta(relativeTo: TablesHashes): TablesHashes;
-
-  /// MergeableStore.getMergeableTableDelta
-  getMergeableTableDelta(tableId: Id, relativeTo: TableHashes): TableHashes;
-
   /// MergeableStore.getMergeableRowDelta
   getMergeableRowDelta(tableId: Id, rowId: Id, relativeTo: RowHashes): RowStamp;
+
+  /// MergeableStore.getMergeableValuesHashes
+  getMergeableValuesHashes(): ValuesHashes;
 
   /// MergeableStore.getMergeableValuesDelta
   getMergeableValuesDelta(relativeTo: ValuesHashes): ValuesStamp;
