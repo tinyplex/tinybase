@@ -216,48 +216,6 @@ exports[`Deltas & Hashes Deltas No match store1 missing row: getMergeableValuesD
 ]
 `;
 
-exports[`Deltas & Hashes Deltas No match store1 missing some values: getMergeableRowDelta t1 r1 1`] = `
-[
-  "",
-  {},
-]
-`;
-
-exports[`Deltas & Hashes Deltas No match store1 missing some values: getMergeableRowDelta t1 r2 1`] = `
-[
-  "",
-  {},
-]
-`;
-
-exports[`Deltas & Hashes Deltas No match store1 missing some values: getMergeableTableDelta t1 1`] = `
-[
-  0,
-  {},
-]
-`;
-
-exports[`Deltas & Hashes Deltas No match store1 missing some values: getMergeableTableDelta t2 1`] = `
-[
-  0,
-  {},
-]
-`;
-
-exports[`Deltas & Hashes Deltas No match store1 missing some values: getMergeableTablesDelta 1`] = `
-[
-  0,
-  {},
-]
-`;
-
-exports[`Deltas & Hashes Deltas No match store1 missing some values: getMergeableValuesDelta 1`] = `
-[
-  "Hc2DO@000005DK@@",
-  {},
-]
-`;
-
 exports[`Deltas & Hashes Deltas No match store1 missing table: getMergeableRowDelta t1 r1 1`] = `
 [
   "",
@@ -338,6 +296,48 @@ exports[`Deltas & Hashes Deltas No match store1 missing tables: getMergeableTabl
 exports[`Deltas & Hashes Deltas No match store1 missing tables: getMergeableValuesDelta 1`] = `
 [
   "",
+  {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match store1 missing value: getMergeableRowDelta t1 r1 1`] = `
+[
+  "",
+  {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match store1 missing value: getMergeableRowDelta t1 r2 1`] = `
+[
+  "",
+  {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match store1 missing value: getMergeableTableDelta t1 1`] = `
+[
+  0,
+  {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match store1 missing value: getMergeableTableDelta t2 1`] = `
+[
+  0,
+  {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match store1 missing value: getMergeableTablesDelta 1`] = `
+[
+  0,
+  {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match store1 missing value: getMergeableValuesDelta 1`] = `
+[
+  "Hc2DO@000005DK@@",
   {},
 ]
 `;
@@ -559,53 +559,6 @@ exports[`Deltas & Hashes Deltas No match store2 missing row: getMergeableValuesD
 ]
 `;
 
-exports[`Deltas & Hashes Deltas No match store2 missing some values: getMergeableRowDelta t1 r1 1`] = `
-[
-  "",
-  {},
-]
-`;
-
-exports[`Deltas & Hashes Deltas No match store2 missing some values: getMergeableRowDelta t1 r2 1`] = `
-[
-  "",
-  {},
-]
-`;
-
-exports[`Deltas & Hashes Deltas No match store2 missing some values: getMergeableTableDelta t1 1`] = `
-[
-  0,
-  {},
-]
-`;
-
-exports[`Deltas & Hashes Deltas No match store2 missing some values: getMergeableTableDelta t2 1`] = `
-[
-  0,
-  {},
-]
-`;
-
-exports[`Deltas & Hashes Deltas No match store2 missing some values: getMergeableTablesDelta 1`] = `
-[
-  0,
-  {},
-]
-`;
-
-exports[`Deltas & Hashes Deltas No match store2 missing some values: getMergeableValuesDelta 1`] = `
-[
-  "Hc2DO@000008DKS9",
-  {
-    "v2": [
-      "000000000008DKS9",
-      2,
-    ],
-  },
-]
-`;
-
 exports[`Deltas & Hashes Deltas No match store2 missing table: getMergeableRowDelta t1 r1 1`] = `
 [
   "",
@@ -713,6 +666,53 @@ exports[`Deltas & Hashes Deltas No match store2 missing tables: getMergeableValu
 [
   "",
   {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match store2 missing value: getMergeableRowDelta t1 r1 1`] = `
+[
+  "",
+  {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match store2 missing value: getMergeableRowDelta t1 r2 1`] = `
+[
+  "",
+  {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match store2 missing value: getMergeableTableDelta t1 1`] = `
+[
+  0,
+  {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match store2 missing value: getMergeableTableDelta t2 1`] = `
+[
+  0,
+  {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match store2 missing value: getMergeableTablesDelta 1`] = `
+[
+  0,
+  {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match store2 missing value: getMergeableValuesDelta 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  {
+    "v2": [
+      "000000000008DKS9",
+      2,
+    ],
+  },
 ]
 `;
 
