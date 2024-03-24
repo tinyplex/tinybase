@@ -21,9 +21,14 @@
 /// Stamp
 /**
  * The ContentHashes type
- * @category Hashes
+ * @category Syncing
  */
 /// ContentHashes
+/**
+ * The ContentDelta type
+ * @category Syncing
+ */
+/// ContentDelta
 /**
  * The TablesStamp type
  * @category Stamps
@@ -31,9 +36,14 @@
 /// TablesStamp
 /**
  * The TablesHashes type
- * @category Hashes
+ * @category Syncing
  */
 /// TablesHashes
+/**
+ * The TablesDelta type
+ * @category Syncing
+ */
+/// TablesDelta
 /**
  * The TableStamp type
  * @category Stamps
@@ -41,9 +51,14 @@
 /// TableStamp
 /**
  * The TableHashes type
- * @category Hashes
+ * @category Syncing
  */
 /// TableHashes
+/**
+ * The TableDelta type
+ * @category Syncing
+ */
+/// TableDelta
 /**
  * The RowStamp type
  * @category Stamps
@@ -51,7 +66,7 @@
 /// RowStamp
 /**
  * The RowHashes type
- * @category Hashes
+ * @category Syncing
  */
 /// RowHashes
 /**
@@ -66,7 +81,7 @@
 /// ValuesStamp
 /**
  * The ValuesHashes type
- * @category Hashes
+ * @category Syncing
  */
 /// ValuesHashes
 /**
@@ -96,48 +111,53 @@
    */
   /// MergeableStore.getMergeableContent
   /**
-   * The MergeableContentHashes method
-   * @category Hashes
+   * The getMergeableContentHashes method
+   * @category Syncing
    */
-  /// MergeableStore.MergeableContentHashes
+  /// MergeableStore.getMergeableContentHashes
+  /**
+   * The getMergeableContentDelta method
+   * @category Syncing
+   */
+  /// MergeableStore.getMergeableContentDelta
   /**
    * The getMergeableTablesHashes method
-   * @category Hashes
+   * @category Syncing
    */
   /// MergeableStore.getMergeableTablesHashes
   /**
-   * The getMergeableTableHashes method
-   * @category Hashes
-   */
-  /// MergeableStore.getMergeableTableHashes
-  /**
-   * The getMergeableRowHashes method
-   * @category Hashes
-   */
-  /// MergeableStore.getMergeableRowHashes
-  /**
-   * The getMergeableValuesHashes method
-   * @category Hashes
-   */
-  /// MergeableStore.getMergeableValuesHashes
-  /**
    * The getMergeableTablesDelta method
-   * @category Deltas
+   * @category Syncing
    */
   /// MergeableStore.getMergeableTablesDelta
   /**
+   * The getMergeableTableHashes method
+   * @category Syncing
+   */
+  /// MergeableStore.getMergeableTableHashes
+  /**
    * The getMergeableTableDelta method
-   * @category Deltas
+   * @category Syncing
    */
   /// MergeableStore.getMergeableTableDelta
   /**
+   * The getMergeableRowHashes method
+   * @category Syncing
+   */
+  /// MergeableStore.getMergeableRowHashes
+  /**
    * The getMergeableRowDelta method
-   * @category Deltas
+   * @category Syncing
    */
   /// MergeableStore.getMergeableRowDelta
   /**
+   * The getMergeableValuesHashes method
+   * @category Syncing
+   */
+  /// MergeableStore.getMergeableValuesHashes
+  /**
    * The getMergeableValuesDelta method
-   * @category Deltas
+   * @category Syncing
    */
   /// MergeableStore.getMergeableValuesDelta
   /**
