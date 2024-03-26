@@ -42,5 +42,5 @@ export const createPowerSyncPersister = ((
     onIgnoredError,
     powerSync,
     'getPowerSync',
-    false,
+    true,
   ) as PowerSyncPersister) as typeof createPowerSyncPersisterDecl;

@@ -59,13 +59,15 @@ type AbstractPowerSyncDatabase = {
 
 class WASQLitePowerSyncDatabaseOpenFactory {
   public dbFilename: string;
+  public db: sqlite3.Database;
 
   constructor({schema: _, dbFilename}: {schema: Schema; dbFilename: string}) {
     this.dbFilename = dbFilename;
+    this.db = new sqlite3.Database(this.dbFilename);
   }
 
   getInstance(): AbstractPowerSyncDatabase {
-    const db = new sqlite3.Database(this.dbFilename);
+    const db = this.db;
 
     const instance: AbstractPowerSyncDatabase = {
       execute: (sql, args) =>
@@ -209,6 +211,7 @@ export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
     (ps: AbstractPowerSyncDatabase, sql: string, args: any[] = []) =>
       ps.execute(sql, args).then((result) => result.rows?._array ?? []),
     (ps: AbstractPowerSyncDatabase) => ps.close(),
+    1000,
   ],
   sqlite3: [
     async (): Promise<Database> => new sqlite3.Database(':memory:'),
