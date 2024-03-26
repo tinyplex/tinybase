@@ -72,7 +72,6 @@ class WASQLitePowerSyncDatabaseOpenFactory {
     const instance: AbstractPowerSyncDatabase = {
       execute: (sql, args) =>
         new Promise((resolve, reject) => {
-          console.info('*** EXECUTE', sql, args);
           return db.all(sql, args, (error, rows: {[id: string]: any}[]) =>
             error
               ? reject(error)
@@ -93,38 +92,26 @@ class WASQLitePowerSyncDatabaseOpenFactory {
           db.close();
           resolve();
         }),
-      onChange: ({signal} = {}) => {
-        console.warn('*** ONCHANGE', signal?.aborted);
-        return {
-          async *[Symbol.asyncIterator]() {
-            if (signal?.aborted) {
-              return;
-            }
-
-            while (true) {
-              const nextChange = await new Promise<WatchOnChangeEvent>(
-                (resolve) => {
-                  const observer = (_: any, _2: any, tableName: string) => {
-                    db.off('change', observer);
-                    console.warn('*** CHANGE', {changedTables: [tableName]});
-                    resolve({changedTables: [tableName]});
-                  };
-
-                  signal?.addEventListener('abort', () => {
-                    db.off('change', observer);
-                  });
-
-                  db.on('change', observer);
-                },
-              );
-
-              yield nextChange;
-            }
-          },
-        };
-      },
+      onChange: ({signal} = {}) => ({
+        async *[Symbol.asyncIterator]() {
+          signal?.addEventListener('abort', () =>
+            db.removeAllListeners('change'),
+          );
+          while (!signal?.aborted) {
+            const nextChange = await new Promise<WatchOnChangeEvent>(
+              (resolve) => {
+                const observer = (_: any, _2: any, tableName: string) => {
+                  db.removeAllListeners('change');
+                  resolve({changedTables: [tableName]});
+                };
+                db.addListener('change', observer);
+              },
+            );
+            yield nextChange;
+          }
+        },
+      }),
     };
-
     return instance;
   }
 }
@@ -211,7 +198,6 @@ export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
     (ps: AbstractPowerSyncDatabase, sql: string, args: any[] = []) =>
       ps.execute(sql, args).then((result) => result.rows?._array ?? []),
     (ps: AbstractPowerSyncDatabase) => ps.close(),
-    1000,
   ],
   sqlite3: [
     async (): Promise<Database> => new sqlite3.Database(':memory:'),
