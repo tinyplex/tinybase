@@ -312,6 +312,9 @@
     "@automerge/automerge-repo": {
       "optional": true
     },
+    "@libsql/client": {
+      "optional": true
+    },
     "@journeyapps/powersync-sdk-common": {
       "optional": true
     },
