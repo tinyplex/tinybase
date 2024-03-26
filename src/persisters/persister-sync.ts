@@ -10,6 +10,7 @@ import {
 import {Content} from '../types/store';
 import {PersisterListener} from '../types/persisters';
 import {createCustomPersister} from '../persisters';
+import {isUndefined} from '../common/other';
 import {objForEach} from '../common/obj';
 
 export const createSyncPersister = ((
@@ -33,32 +34,32 @@ export const createSyncPersister = ((
 
   const addPersisterListener = (listener: PersisterListener) =>
     otherStore.addDidFinishTransactionListener(() => {
-      const contentHashes = store.getMergeableContentHashes();
-      const otherContentHashes = otherStore.getMergeableContentHashes();
-
-      if (contentHashes[0] === otherContentHashes[0]) {
+      const contentDelta = otherStore.getMergeableContentDelta(
+        store.getMergeableContentHashes(),
+      );
+      if (isUndefined(contentDelta)) {
         return null as any;
       }
 
       const changes: MergeableChanges = [
-        '',
+        contentDelta[0],
         [
           ['', {}],
           ['', {}],
         ],
       ];
 
-      if (contentHashes[1][0] !== otherContentHashes[1][0]) {
+      if (!isUndefined(contentDelta[1][0])) {
         const tablesDelta = otherStore.getMergeableTablesDelta(
           store.getMergeableTablesHashes(),
         );
-        changes[1][0][0] = '!';
+        changes[1][0][0] = tablesDelta[0];
         objForEach(tablesDelta[1], (_, tableId) => {
           const tableDelta = otherStore.getMergeableTableDelta(
             tableId,
             store.getMergeableTableHashes(tableId),
           );
-          changes[1][0][1][tableId] = ['!', {}];
+          changes[1][0][1][tableId] = [tableDelta[0], {}];
           objForEach(tableDelta[1], (_, rowId) => {
             const rowDelta = otherStore.getMergeableRowDelta(
               tableId,
@@ -70,14 +71,14 @@ export const createSyncPersister = ((
         });
       }
 
-      if (contentHashes[1][1] !== otherContentHashes[1][1]) {
+      if (!isUndefined(contentDelta[1][1])) {
         const valuesDelta = otherStore.getMergeableValuesDelta(
           store.getMergeableValuesHashes(),
         );
         changes[1][1] = valuesDelta;
       }
 
-      listener(undefined, () => changes);
+      listener(undefined, () => changes as any);
     });
 
   const delPersisterListener = otherStore.delListener;
