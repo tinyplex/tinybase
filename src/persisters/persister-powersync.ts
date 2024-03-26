@@ -23,18 +23,15 @@ export const createPowerSyncPersister = ((
       powerSync.execute(sql, args).then((result) => result.rows?._array ?? []),
     (listener: UpdateListener): AbortController => {
       const abortController = new AbortController();
-
       const onChange = powerSync.onChange({
         rawTableNames: true,
         signal: abortController.signal,
       });
-
       (async () => {
         for await (const update of onChange) {
           arrayMap(update.changedTables, listener);
         }
       })();
-
       return abortController;
     },
     (abortController: AbortController) => abortController.abort(),
