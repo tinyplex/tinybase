@@ -1476,6 +1476,7 @@ describe.each(Object.entries(VARIANTS))(
         expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
       });
 
+      // FAILS
       test('autoSave1 & autoLoad2, complex transactions', async () => {
         await persister1.startAutoSave();
         await persister2.startAutoLoad();

@@ -7,6 +7,7 @@ const esmModules = [
   '@libsql/client',
   '@libsql/hrana-client',
   '@libsql/isomorphic-fetch',
+  '@journeyapps/powersync-sdk-common',
   '@sqlite\\.org/sqlite-wasm',
   '@vlcn\\.io/crsqlite-wasm',
   '@vlcn\\.io/wa-sqlite',

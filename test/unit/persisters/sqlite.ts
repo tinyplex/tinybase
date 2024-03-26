@@ -3,11 +3,18 @@ import {Client, createClient} from '@libsql/client';
 import {DatabasePersisterConfig, Persister, Store} from 'tinybase/debug';
 import {DbSchema, ElectricClient} from 'electric-sql/client/model';
 import {ElectricDatabase, electrify} from 'electric-sql/wa-sqlite';
+import {
+  QueryResult,
+  SQLWatchOptions,
+  Schema,
+  WatchOnChangeEvent,
+} from '@journeyapps/powersync-sdk-common';
 import initWasm, {DB} from '@vlcn.io/crsqlite-wasm';
 import sqlite3, {Database} from 'sqlite3';
 import {createCrSqliteWasmPersister} from 'tinybase/debug/persisters/persister-cr-sqlite-wasm';
 import {createElectricSqlPersister} from 'tinybase/debug/persisters/persister-electric-sql';
 import {createLibSqlPersister} from 'tinybase/debug/persisters/persister-libsql';
+import {createPowerSyncPersister} from 'tinybase/debug/persisters/persister-powersync';
 import {createSqlite3Persister} from 'tinybase/debug/persisters/persister-sqlite3';
 import {createSqliteWasmPersister} from 'tinybase/debug/persisters/persister-sqlite-wasm';
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
@@ -17,6 +24,8 @@ export type SqliteWasmDb = [sqlite3: any, db: any];
 
 const electricSchema = new DbSchema({}, []);
 type Electric = ElectricClient<typeof electricSchema>;
+
+const powerSyncSchema = new Schema([]);
 
 type Dump = {[name: string]: [sql: string, rows: {[column: string]: any}[]]};
 
@@ -40,6 +49,85 @@ type SqliteVariant<Database> = [
 ];
 
 const escapeId = (str: string) => `"${str.replace(/"/g, '""')}"`;
+
+// Mock
+type AbstractPowerSyncDatabase = {
+  execute(sql: string, args: any[]): Promise<QueryResult>;
+  close(): Promise<void>;
+  onChange(options: SQLWatchOptions): AsyncIterable<WatchOnChangeEvent>;
+};
+
+class WASQLitePowerSyncDatabaseOpenFactory {
+  public dbFilename: string;
+  public db: sqlite3.Database;
+
+  constructor({schema: _, dbFilename}: {schema: Schema; dbFilename: string}) {
+    this.dbFilename = dbFilename;
+    this.db = new sqlite3.Database(this.dbFilename);
+  }
+
+  getInstance(): AbstractPowerSyncDatabase {
+    const db = this.db;
+
+    const instance: AbstractPowerSyncDatabase = {
+      execute: (sql, args) =>
+        new Promise((resolve, reject) => {
+          console.info('*** EXECUTE', sql, args);
+          return db.all(sql, args, (error, rows: {[id: string]: any}[]) =>
+            error
+              ? reject(error)
+              : resolve({
+                  rows: {
+                    _array: rows.map((row: {[id: string]: any}) => ({
+                      ...row,
+                    })),
+                    length: rows.length,
+                    item: () => null,
+                  },
+                  rowsAffected: 0,
+                }),
+          );
+        }),
+      close: () =>
+        new Promise((resolve) => {
+          db.close();
+          resolve();
+        }),
+      onChange: ({signal} = {}) => {
+        console.warn('*** ONCHANGE', signal?.aborted);
+        return {
+          async *[Symbol.asyncIterator]() {
+            if (signal?.aborted) {
+              return;
+            }
+
+            while (true) {
+              const nextChange = await new Promise<WatchOnChangeEvent>(
+                (resolve) => {
+                  const observer = (_: any, _2: any, tableName: string) => {
+                    db.off('change', observer);
+                    console.warn('*** CHANGE', {changedTables: [tableName]});
+                    resolve({changedTables: [tableName]});
+                  };
+
+                  signal?.addEventListener('abort', () => {
+                    db.off('change', observer);
+                  });
+
+                  db.on('change', observer);
+                },
+              );
+
+              yield nextChange;
+            }
+          },
+        };
+      },
+    };
+
+    return instance;
+  }
+}
 
 export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
   libSql: [
@@ -96,6 +184,33 @@ export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
       await electricClient.db.raw({sql, args}),
     async (electricClient: Electric) => await electricClient.close(),
     1000,
+  ],
+  powerSync: [
+    async (): Promise<AbstractPowerSyncDatabase> => {
+      const factory = new WASQLitePowerSyncDatabaseOpenFactory({
+        schema: powerSyncSchema,
+        dbFilename: ':memory:',
+      });
+      return factory.getInstance();
+    },
+    ['getPowerSync', (powerSync: AbstractPowerSyncDatabase) => powerSync],
+    (
+      store: Store,
+      db: AbstractPowerSyncDatabase,
+      storeTableOrConfig?: string | DatabasePersisterConfig,
+      onSqlCommand?: (sql: string, args?: any[]) => void,
+      onIgnoredError?: (error: any) => void,
+    ) =>
+      (createPowerSyncPersister as any)(
+        store,
+        db,
+        storeTableOrConfig,
+        onSqlCommand,
+        onIgnoredError,
+      ),
+    (ps: AbstractPowerSyncDatabase, sql: string, args: any[] = []) =>
+      ps.execute(sql, args).then((result) => result.rows?._array ?? []),
+    (ps: AbstractPowerSyncDatabase) => ps.close(),
   ],
   sqlite3: [
     async (): Promise<Database> => new sqlite3.Database(':memory:'),
