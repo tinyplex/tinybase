@@ -5,7 +5,7 @@ import {VARIANTS, getDatabaseFunctions} from './sqlite';
 import {mockFetchWasm, pause} from '../common/other';
 import {Database} from 'sqlite3';
 
-describe.each(Object.entries(VARIANTS).slice(1, 2))(
+describe.each(Object.entries(VARIANTS))(
   '%s',
   (_name, [getOpenDatabase, , getPersister, cmd, close, autoLoadPause]) => {
     const [getDatabase, setDatabase] = getDatabaseFunctions(cmd);
