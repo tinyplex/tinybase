@@ -8,6 +8,7 @@ export default class extends TestEnvironment {
       TextDecoder,
       TextEncoder,
       Uint8Array,
+      Request,
       env: this.constructor,
       structuredClone,
     });
