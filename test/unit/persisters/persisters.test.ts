@@ -713,7 +713,6 @@ describe.each([
     expect(persister.getStats()).toEqual({loads: 1, saves: 0});
   });
 
-  // FAILS
   test('autoLoads', async () => {
     await persistable.set(location, [{t1: {r1: {c1: 1}}}]);
     await persister.startAutoLoad();
