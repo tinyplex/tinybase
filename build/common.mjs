@@ -332,7 +332,7 @@ export const tsCheck = async (dir) => {
     )
     .join('\n');
   if (unusedResults != '') {
-    throw `Unused exports in: \n${unusedResults}`;
+    throw `Unused exports for ${dir} in: \n${unusedResults}`;
   }
 };
 
