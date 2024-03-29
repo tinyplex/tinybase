@@ -8,12 +8,8 @@ export type IdObj2<Value> = IdObj<IdObj<Value>>;
 export const object = Object;
 const getPrototypeOf = (obj: any) => object.getPrototypeOf(obj);
 const objEntries = object.entries;
-
-export const objIds = object.keys;
-export const objFrozen = object.isFrozen;
-export const objFreeze = object.freeze;
-
-export const isObject = (obj: unknown): boolean =>
+const objFrozen = object.isFrozen;
+const isObject = (obj: unknown): boolean =>
   !isUndefined(obj) &&
   (ifNotUndefined(
     getPrototypeOf(obj),
@@ -23,6 +19,10 @@ export const isObject = (obj: unknown): boolean =>
     /*! istanbul ignore next */
     () => true,
   ) as boolean);
+
+export const objIds = object.keys;
+
+export const objFreeze = object.freeze;
 
 export const objNew = <Value>(
   entries: [id: string, value: Value][] = [],
