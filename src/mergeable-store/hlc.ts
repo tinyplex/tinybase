@@ -82,10 +82,8 @@ export const getHlcFunctions = (
 
   const seenHlc = (hlc?: Hlc): void => {
     const previousLogicalTime = logicalTime;
-    const [remoteLogicalTime, remoteCounter] = isUndefined(hlc)
-      ? [0, 0]
-      : decodeHlc(hlc);
-
+    const [remoteLogicalTime, remoteCounter] =
+      isUndefined(hlc) || hlc == '' ? [0, 0] : decodeHlc(hlc);
     logicalTime = mathMax(previousLogicalTime, remoteLogicalTime, Date.now());
     lastCounter =
       logicalTime == previousLogicalTime
