@@ -308,6 +308,12 @@ describe('Deltas & Hashes', () => {
         expectDeltas();
       });
 
+      test('different tables', () => {
+        store1.setTable('t1', {r1: {c1: 1, c2: 2}, r2: {c2: 2}});
+        store2.setTable('t2', {r2: {c2: 2}});
+        expectDeltas();
+      });
+
       test('store1 missing table', () => {
         store2.setTables({t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}});
         store1.merge(store2);
@@ -319,6 +325,12 @@ describe('Deltas & Hashes', () => {
         store1.setTables({t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}});
         store2.merge(store1);
         store1.setTable('t2', {r2: {c2: 2}});
+        expectDeltas();
+      });
+
+      test('different table', () => {
+        store1.setRow('t1', 'r1', {c1: 1, c2: 2});
+        store2.setRow('t1', 'r2', {c2: 2});
         expectDeltas();
       });
 
@@ -336,6 +348,12 @@ describe('Deltas & Hashes', () => {
         expectDeltas();
       });
 
+      test('different row', () => {
+        store1.setCell('t1', 'r1', 'c1', 1);
+        store2.setCell('t1', 'r1', 'c2', 2);
+        expectDeltas();
+      });
+
       test('store1 missing cell', () => {
         store1.setRow('t1', 'r1', {c1: 1});
         store1.merge(store2);
@@ -350,6 +368,12 @@ describe('Deltas & Hashes', () => {
         expectDeltas();
       });
 
+      test('different cell', () => {
+        store1.setCell('t1', 'r1', 'c1', 1);
+        store2.setCell('t1', 'r1', 'c1', 2);
+        expectDeltas();
+      });
+
       test('store1 missing values', () => {
         store2.setValues({v1: 1, v2: 2});
         expectDeltas();
@@ -357,6 +381,12 @@ describe('Deltas & Hashes', () => {
 
       test('store2 missing values', () => {
         store1.setValues({v1: 1, v2: 2});
+        expectDeltas();
+      });
+
+      test('different values', () => {
+        store1.setValue('v1', 1);
+        store2.setValue('v2', 2);
         expectDeltas();
       });
 
@@ -371,6 +401,12 @@ describe('Deltas & Hashes', () => {
         store1.setValues({v1: 1});
         store2.merge(store1);
         store1.setValue('v2', 2);
+        expectDeltas();
+      });
+
+      test('different value', () => {
+        store1.setValue('v1', 1);
+        store2.setValue('v1', 2);
         expectDeltas();
       });
     });
