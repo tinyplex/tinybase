@@ -323,28 +323,28 @@ describe('Deltas & Hashes', () => {
       });
 
       test('store1 missing row', () => {
-        store2.setTables({t1: {r1: {c1: 1, c2: 2}}, t2: {r2: {c2: 2}}});
+        store2.setTable('t1', {r1: {c1: 1, c2: 2}});
         store1.merge(store2);
         store2.setRow('t1', 'r2', {c2: 2});
         expectDeltas();
       });
 
       test('store2 missing row', () => {
-        store1.setTables({t1: {r1: {c1: 1, c2: 2}}, t2: {r2: {c2: 2}}});
+        store1.setTable('t1', {r1: {c1: 1, c2: 2}});
         store2.merge(store1);
         store1.setRow('t1', 'r2', {c2: 2});
         expectDeltas();
       });
 
       test('store1 missing cell', () => {
-        store2.setTables({t1: {r1: {c1: 1}, r2: {c2: 2}}, t2: {r2: {c2: 2}}});
+        store1.setRow('t1', 'r1', {c1: 1});
         store1.merge(store2);
         store2.setCell('t1', 'r1', 'c2', 2);
         expectDeltas();
       });
 
       test('store2 missing cell', () => {
-        store1.setTables({t1: {r1: {c1: 1}, r2: {c2: 2}}, t2: {r2: {c2: 2}}});
+        store2.setRow('t1', 'r1', {c1: 1});
         store2.merge(store1);
         store1.setCell('t1', 'r1', 'c2', 2);
         expectDeltas();
