@@ -113,6 +113,16 @@ describe('Syncs', () => {
     ]);
   });
 
+  test('different tables', async () => {
+    store1.setTable('t1', {r1: {c1: 1, c2: 2}, r2: {c2: 2}});
+    await pause(1, true);
+    store2.setTable('t2', {r2: {c2: 2}});
+    await expectBothToHaveContent([
+      {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+      {},
+    ]);
+  });
+
   test('store1 missing table', async () => {
     store1.setTable('t1', {r1: {c1: 1, c2: 2}, r2: {c2: 2}});
     await pause(1, true);
@@ -139,6 +149,16 @@ describe('Syncs', () => {
     ]);
   });
 
+  test('different table', async () => {
+    store1.setRow('t1', 'r1', {c1: 1, c2: 2});
+    await pause(1, true);
+    store2.setRow('t1', 'r2', {c2: 2});
+    await expectBothToHaveContent([
+      {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}},
+      {},
+    ]);
+  });
+
   test('store1 missing row', async () => {
     store1.setRow('t1', 'r1', {c1: 1, c2: 2});
     await pause(1, true);
@@ -159,6 +179,13 @@ describe('Syncs', () => {
     ]);
   });
 
+  test('different row', async () => {
+    store1.setCell('t1', 'r1', 'c1', 1);
+    await pause(1, true);
+    store2.setCell('t1', 'r1', 'c2', 2);
+    await expectBothToHaveContent([{t1: {r1: {c1: 1, c2: 2}}}, {}]);
+  });
+
   test('store1 missing cell', async () => {
     store1.setCell('t1', 'r1', 'c1', 1);
     await pause(1, true);
@@ -171,6 +198,13 @@ describe('Syncs', () => {
     await pause(1, true);
     store1.setRow('t1', 'r1', {c1: 1, c2: 2});
     await expectBothToHaveContent([{t1: {r1: {c1: 1, c2: 2}}}, {}]);
+  });
+
+  test('different cell', async () => {
+    store1.setCell('t1', 'r1', 'c1', 1);
+    await pause(1, true);
+    store2.setCell('t1', 'r1', 'c1', 2);
+    await expectBothToHaveContent([{t1: {r1: {c1: 2}}}, {}]);
   });
 
   test('store1 missing values', async () => {
@@ -205,6 +239,13 @@ describe('Syncs', () => {
     ]);
   });
 
+  test('different values', async () => {
+    store1.setValue('v1', 1);
+    await pause(1, true);
+    store2.setValue('v2', 2);
+    await expectBothToHaveContent([{}, {v1: 1, v2: 2}]);
+  });
+
   test('store1 missing value', async () => {
     store1.setValue('v2', 2);
     await pause(1, true);
@@ -217,5 +258,12 @@ describe('Syncs', () => {
     await pause(1, true);
     store1.setValues({v1: 1, v2: 2});
     await expectBothToHaveContent([{}, {v1: 1, v2: 2}]);
+  });
+
+  test('different value', async () => {
+    store1.setValue('v1', 1);
+    await pause(1, true);
+    store2.setValue('v1', 2);
+    await expectBothToHaveContent([{}, {v1: 2}]);
   });
 });

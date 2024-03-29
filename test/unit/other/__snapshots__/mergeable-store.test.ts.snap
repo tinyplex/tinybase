@@ -84,6 +84,318 @@ exports[`Deltas & Hashes Deltas Both match: getMergeableValuesDelta 1`] = `
 ]
 `;
 
+exports[`Deltas & Hashes Deltas No match different cell: getMergeableRowDelta t1 r1 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  {
+    "c1": [
+      "Hc2DO@000008DKS9",
+      1,
+    ],
+  },
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different cell: getMergeableRowDelta t1 r2 1`] = `
+[
+  "",
+  {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different cell: getMergeableTableDelta t1 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  {
+    "r1": 1279994494,
+  },
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different cell: getMergeableTableDelta t2 1`] = `
+[
+  "",
+  {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different cell: getMergeableTablesDelta 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  {
+    "t1": 1293085726,
+  },
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different cell: getMergeableValuesDelta 1`] = `
+[
+  "",
+  {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different row: getMergeableRowDelta t1 r1 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  {
+    "c1": [
+      "Hc2DO@000008DKS9",
+      1,
+    ],
+  },
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different row: getMergeableRowDelta t1 r2 1`] = `
+[
+  "",
+  {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different row: getMergeableTableDelta t1 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  {
+    "r1": 1279994494,
+  },
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different row: getMergeableTableDelta t2 1`] = `
+[
+  "",
+  {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different row: getMergeableTablesDelta 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  {
+    "t1": 1293085726,
+  },
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different row: getMergeableValuesDelta 1`] = `
+[
+  "",
+  {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different table: getMergeableRowDelta t1 r1 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  {
+    "c1": [
+      "Hc2DO@000008DKS9",
+      1,
+    ],
+    "c2": [
+      "Hc2DO@000008DKS9",
+      2,
+    ],
+  },
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different table: getMergeableRowDelta t1 r2 1`] = `
+[
+  "",
+  {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different table: getMergeableTableDelta t1 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  {
+    "r1": 922886432,
+  },
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different table: getMergeableTableDelta t2 1`] = `
+[
+  "",
+  {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different table: getMergeableTablesDelta 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  {
+    "t1": 443423694,
+  },
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different table: getMergeableValuesDelta 1`] = `
+[
+  "",
+  {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different tables: getMergeableRowDelta t1 r1 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  {
+    "c1": [
+      "Hc2DO@000008DKS9",
+      1,
+    ],
+    "c2": [
+      "Hc2DO@000008DKS9",
+      2,
+    ],
+  },
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different tables: getMergeableRowDelta t1 r2 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  {
+    "c2": [
+      "Hc2DO@000008DKS9",
+      2,
+    ],
+  },
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different tables: getMergeableTableDelta t1 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  {
+    "r1": 922886432,
+    "r2": 4100269854,
+  },
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different tables: getMergeableTableDelta t2 1`] = `
+[
+  "",
+  {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different tables: getMergeableTablesDelta 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  {
+    "t1": 1784087264,
+  },
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different tables: getMergeableValuesDelta 1`] = `
+[
+  "",
+  {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different value: getMergeableRowDelta t1 r1 1`] = `
+[
+  "",
+  {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different value: getMergeableRowDelta t1 r2 1`] = `
+[
+  "",
+  {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different value: getMergeableTableDelta t1 1`] = `
+[
+  "",
+  {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different value: getMergeableTableDelta t2 1`] = `
+[
+  "",
+  {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different value: getMergeableTablesDelta 1`] = `
+[
+  "",
+  {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different value: getMergeableValuesDelta 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  {
+    "v1": [
+      "Hc2DO@000008DKS9",
+      1,
+    ],
+  },
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different values: getMergeableRowDelta t1 r1 1`] = `
+[
+  "",
+  {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different values: getMergeableRowDelta t1 r2 1`] = `
+[
+  "",
+  {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different values: getMergeableTableDelta t1 1`] = `
+[
+  "",
+  {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different values: getMergeableTableDelta t2 1`] = `
+[
+  "",
+  {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different values: getMergeableTablesDelta 1`] = `
+[
+  "",
+  {},
+]
+`;
+
+exports[`Deltas & Hashes Deltas No match different values: getMergeableValuesDelta 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  {
+    "v1": [
+      "Hc2DO@000008DKS9",
+      1,
+    ],
+  },
+]
+`;
+
 exports[`Deltas & Hashes Deltas No match store1 empty: getMergeableRowDelta t1 r1 1`] = `
 [
   "",
@@ -517,10 +829,10 @@ exports[`Deltas & Hashes Deltas No match store2 missing row: getMergeableRowDelt
 
 exports[`Deltas & Hashes Deltas No match store2 missing row: getMergeableRowDelta t1 r2 1`] = `
 [
-  "000000000008DKS9",
+  "Hc2DO@000018DKS9",
   {
     "c2": [
-      "000000000008DKS9",
+      "Hc2DO@000018DKS9",
       2,
     ],
   },
@@ -529,9 +841,9 @@ exports[`Deltas & Hashes Deltas No match store2 missing row: getMergeableRowDelt
 
 exports[`Deltas & Hashes Deltas No match store2 missing row: getMergeableTableDelta t1 1`] = `
 [
-  "Hc2DO@000008DKS9",
+  "Hc2DO@000018DKS9",
   {
-    "r2": 2049186346,
+    "r2": 2514587069,
   },
 ]
 `;
@@ -545,9 +857,9 @@ exports[`Deltas & Hashes Deltas No match store2 missing row: getMergeableTableDe
 
 exports[`Deltas & Hashes Deltas No match store2 missing row: getMergeableTablesDelta 1`] = `
 [
-  "Hc2DO@000008DKS9",
+  "Hc2DO@000018DKS9",
   {
-    "t1": 798104274,
+    "t1": 741541797,
   },
 ]
 `;
@@ -582,18 +894,18 @@ exports[`Deltas & Hashes Deltas No match store2 missing table: getMergeableTable
 
 exports[`Deltas & Hashes Deltas No match store2 missing table: getMergeableTableDelta t2 1`] = `
 [
-  "000000000008DKS9",
+  "Hc2DO@000018DKS9",
   {
-    "r2": 2049186346,
+    "r2": 2514587069,
   },
 ]
 `;
 
 exports[`Deltas & Hashes Deltas No match store2 missing table: getMergeableTablesDelta 1`] = `
 [
-  "Hc2DO@000008DKS9",
+  "Hc2DO@000018DKS9",
   {
-    "t2": 376893388,
+    "t2": 3111202859,
   },
 ]
 `;
@@ -706,10 +1018,10 @@ exports[`Deltas & Hashes Deltas No match store2 missing value: getMergeableTable
 
 exports[`Deltas & Hashes Deltas No match store2 missing value: getMergeableValuesDelta 1`] = `
 [
-  "Hc2DO@000008DKS9",
+  "Hc2DO@000018DKS9",
   {
     "v2": [
-      "000000000008DKS9",
+      "Hc2DO@000018DKS9",
       2,
     ],
   },
