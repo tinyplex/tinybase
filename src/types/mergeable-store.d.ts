@@ -90,6 +90,9 @@ export type MergeableChanges = Stamp<
 /// MergeableStore
 export interface MergeableStore extends Store {
   //
+  /// MergeableStore.getId
+  getId(): Id;
+
   /// MergeableStore.getMergeableContent
   getMergeableContent(): MergeableContent;
 
