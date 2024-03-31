@@ -29,7 +29,7 @@ export const isUndefined = (thing: unknown): thing is undefined | null =>
   thing == undefined;
 
 export const ifNotUndefined = <Value, Return>(
-  value: Value | undefined,
+  value: Value | null | undefined,
   then: (value: Value) => Return,
   otherwise?: () => Return,
 ): Return | undefined => (isUndefined(value) ? otherwise?.() : then(value));
