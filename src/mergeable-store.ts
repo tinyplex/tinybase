@@ -283,6 +283,10 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const postFinishTransaction = () =>
     (transactionTime = transactionMergeableChanges = undefined);
 
+  // ---
+
+  const getId = () => id;
+
   const getMergeableContent = (): MergeableContent =>
     stampMap(contentStampMap, ([tablesStampMap, valuesStampMap]) => [
       stampMapToObj(tablesStampMap, (tableStampMap) =>
@@ -413,6 +417,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   };
 
   const mergeableStore: IdObj<any> = {
+    getId,
     getMergeableContent,
     getMergeableContentHashes,
     getMergeableTablesHashes,

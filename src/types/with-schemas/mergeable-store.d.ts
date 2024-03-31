@@ -159,6 +159,9 @@ export type MergeableChanges<Schemas extends OptionalSchemas> = Stamp<
 export interface MergeableStore<Schemas extends OptionalSchemas>
   extends Store<Schemas> {
   //
+  /// MergeableStore.getId
+  getId(): Id;
+
   /// MergeableStore.getMergeableContent
   getMergeableContent(): MergeableContent<Schemas>;
 
