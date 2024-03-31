@@ -1,67 +1,41 @@
-import {
-  ContentDelta,
-  MergeableChanges,
-  MergeableContent,
-  MergeableStore,
-} from '../types/mergeable-store';
+import {MergeableContent, MergeableStore} from '../types/mergeable-store';
 import {
   SyncPersister,
   createSyncPersister as createSyncPersisterDecl,
 } from '../types/persisters/persister-sync';
+import {mapNew, mapSet} from '../common/map';
 import {PersisterListener} from '../types/persisters';
+import {collForEach} from '../common/coll';
 import {createCustomPersister} from '../persisters';
-import {ifNotUndefined} from '../common/other';
+import {isUndefined} from '../common/other';
 import {objForEach} from '../common/obj';
 
-const getFullDelta = (
-  otherStore: MergeableStore,
-  store: MergeableStore,
-): MergeableChanges => {
-  const changes: MergeableChanges = [
-    '',
-    [
-      ['', {}],
-      ['', {}],
-    ],
-  ];
-
-  ifNotUndefined(
-    otherStore.getMergeableContentDelta(store.getMergeableContentHashes()),
-    (contentDelta: NonNullable<ContentDelta>) => {
-      changes[0] = contentDelta[0];
-
-      ifNotUndefined(contentDelta[1][0], () => {
-        const tablesDelta = otherStore.getMergeableTablesDelta(
-          store.getMergeableTablesHashes(),
-        );
-        changes[1][0][0] = tablesDelta[0];
-        objForEach(tablesDelta[1], (_, tableId) => {
-          const tableDelta = otherStore.getMergeableTableDelta(
-            tableId,
-            store.getMergeableTableHashes(tableId),
-          );
-          changes[1][0][1][tableId] = [tableDelta[0], {}];
-          objForEach(tableDelta[1], (_, rowId) => {
-            const rowDelta = otherStore.getMergeableRowDelta(
-              tableId,
-              rowId,
-              store.getMergeableRowHashes(tableId, rowId),
-            );
-            changes[1][0][1][tableId][1][rowId] = rowDelta;
-          });
-        });
-      });
-
-      ifNotUndefined(contentDelta[1][1], () => {
-        const valuesDelta = otherStore.getMergeableValuesDelta(
-          store.getMergeableValuesHashes(),
-        );
-        changes[1][1] = valuesDelta;
-      });
-    },
-  );
-
-  return changes;
+const getBusFunctions = (): [
+  (
+    store: MergeableStore,
+    recv: (store: MergeableStore, message: string, payload: any) => void,
+  ) => void,
+  (fromStore: MergeableStore, message: string, payload: any) => void,
+] => {
+  const stores: Map<
+    MergeableStore,
+    (store: MergeableStore, message: string, payload: any) => void
+  > = mapNew();
+  const addStore = (
+    store: MergeableStore,
+    recv: (store: MergeableStore, message: string, payload: any) => void,
+  ): void => {
+    mapSet(stores, store, recv);
+  };
+  const sendMessage = (
+    fromStore: MergeableStore,
+    message: string,
+    payload: any,
+  ): void =>
+    collForEach(stores, (recv, store) =>
+      store != fromStore ? recv(store, message, payload) : 0,
+    );
+  return [addStore, sendMessage];
 };
 
 export const createSyncPersister = ((
@@ -69,22 +43,126 @@ export const createSyncPersister = ((
   otherStore: MergeableStore,
   onIgnoredError?: (error: any) => void,
 ): SyncPersister => {
+  const [addStore, sendMessage] = getBusFunctions();
+
+  const storeRecv = (store: MergeableStore, message: string, payload: any) => {
+    if (message == 'contentHashes') {
+      const [_contentHash, [tablesHashes, valuesHashes]] =
+        store.getMergeableContentHashes();
+      if (payload[1][0] != tablesHashes) {
+        sendMessage(store, 'getTablesDelta', store.getMergeableTablesHashes());
+      }
+      if (payload[1][1] != valuesHashes) {
+        sendMessage(store, 'getValuesDelta', store.getMergeableValuesHashes());
+      }
+    }
+
+    if (message == 'getContentDelta') {
+      sendMessage(
+        store,
+        'contentDelta',
+        store.getMergeableContentDelta(payload),
+      );
+    }
+    if (message == 'getTablesDelta') {
+      sendMessage(store, 'tablesDelta', store.getMergeableTablesDelta(payload));
+    }
+    if (message == 'getTableDelta') {
+      sendMessage(store, 'tableDelta', [
+        payload[0],
+        store.getMergeableTableDelta(payload[0], payload[1]),
+      ]);
+    }
+    if (message == 'getRowDelta') {
+      sendMessage(store, 'rowDelta', [
+        payload[0],
+        payload[1],
+        store.getMergeableRowDelta(payload[0], payload[1], payload[2]),
+      ]);
+    }
+    if (message == 'getValuesDelta') {
+      sendMessage(store, 'valuesDelta', store.getMergeableValuesDelta(payload));
+    }
+
+    if (message == 'contentDelta') {
+      if (!isUndefined(payload)) {
+        const [_time, [tablesHash, valuesHash]] = payload;
+        if (!isUndefined(tablesHash)) {
+          sendMessage(
+            store,
+            'getTablesDelta',
+            store.getMergeableTablesHashes(),
+          );
+        }
+        if (!isUndefined(valuesHash)) {
+          sendMessage(
+            store,
+            'getValuesDelta',
+            store.getMergeableValuesHashes(),
+          );
+        }
+      }
+    }
+
+    if (message == 'tablesDelta') {
+      objForEach(payload[1], (_, tableId) => {
+        sendMessage(store, 'getTableDelta', [
+          tableId,
+          store.getMergeableTableHashes(tableId),
+        ]);
+      });
+    }
+    if (message == 'tableDelta') {
+      objForEach(payload[1][1], (_, rowId) => {
+        sendMessage(store, 'getRowDelta', [
+          payload[0],
+          rowId,
+          store.getMergeableRowHashes(payload[0], rowId),
+        ]);
+      });
+    }
+    if (message == 'rowDelta') {
+      const [tableId, rowId, [time, rowChanges]] = payload;
+      store.applyMergeableChanges([
+        time,
+        [
+          [time, {[tableId]: [time, {[rowId]: [time, rowChanges]}]}],
+          ['', {}],
+        ],
+      ]);
+    }
+    if (message == 'valuesDelta') {
+      const [time, valuesChanges] = payload;
+      store.applyMergeableChanges([
+        time,
+        [
+          ['', {}],
+          [time, valuesChanges],
+        ],
+      ]);
+    }
+  };
+
+  addStore(store, storeRecv);
+  addStore(otherStore, storeRecv);
+
   const getPersisted = async (): Promise<MergeableContent> => {
     const persisted = otherStore.getMergeableContent();
     if (persisted[0] === '') {
       return null as any;
     }
-    return persisted;
+
+    sendMessage(store, 'getContentDelta', store.getMergeableContentHashes());
+
+    //    return persisted;
   };
 
   const setPersisted = async (): Promise<void> => {
-    otherStore.applyMergeableChanges(getFullDelta(store, otherStore));
+    sendMessage(store, 'contentHashes', store.getMergeableContentHashes());
   };
 
   const addPersisterListener = (listener: PersisterListener) =>
-    otherStore.addDidFinishTransactionListener(() =>
-      listener(undefined, () => getFullDelta(otherStore, store) as any),
-    );
+    otherStore.addDidFinishTransactionListener(() => listener());
 
   const delPersisterListener = otherStore.delListener;
 
