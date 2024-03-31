@@ -158,8 +158,7 @@ export const createCustomPersister = <
       initialTables: Tables = {},
       initialValues: Values = {},
     ): Promise<Persister> => {
-      persister.stopAutoLoad();
-      await persister.load(initialTables, initialValues);
+      await persister.stopAutoLoad().load(initialTables, initialValues);
       listening = 1;
       listeningHandle = addPersisterListener(async (getContent, getChanges) => {
         if (getChanges) {
