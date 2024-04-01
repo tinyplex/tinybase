@@ -4,36 +4,46 @@ import {
   createSyncPersister as createSyncPersisterDecl,
 } from '../types/persisters/persister-sync';
 import {mapNew, mapSet} from '../common/map';
+import {Ids} from '../types/common';
 import {PersisterListener} from '../types/persisters';
 import {collForEach} from '../common/coll';
 import {createCustomPersister} from '../persisters';
 import {isUndefined} from '../common/other';
 import {objForEach} from '../common/obj';
 
+type ReceiveMessage = (
+  store: MergeableStore,
+  message: string,
+  payload: any,
+  args?: Ids,
+) => void;
+
+type SendMessage = (
+  fromStore: MergeableStore,
+  message: string,
+  payload: any,
+  args?: Ids,
+) => void;
+
 const getBusFunctions = (): [
-  (
-    store: MergeableStore,
-    recv: (store: MergeableStore, message: string, payload: any) => void,
-  ) => void,
-  (fromStore: MergeableStore, message: string, payload: any) => void,
+  addStore: (store: MergeableStore, receiveMessage: ReceiveMessage) => void,
+  sendMessage: SendMessage,
 ] => {
-  const stores: Map<
-    MergeableStore,
-    (store: MergeableStore, message: string, payload: any) => void
-  > = mapNew();
+  const stores: Map<MergeableStore, ReceiveMessage> = mapNew();
   const addStore = (
     store: MergeableStore,
-    recv: (store: MergeableStore, message: string, payload: any) => void,
+    receiveMessage: ReceiveMessage,
   ): void => {
-    mapSet(stores, store, recv);
+    mapSet(stores, store, receiveMessage);
   };
   const sendMessage = (
     fromStore: MergeableStore,
     message: string,
     payload: any,
+    args?: Ids,
   ): void =>
-    collForEach(stores, (recv, store) =>
-      store != fromStore ? recv(store, message, payload) : 0,
+    collForEach(stores, (receiveMessage, store) =>
+      store != fromStore ? receiveMessage(store, message, payload, args) : 0,
     );
   return [addStore, sendMessage];
 };
@@ -45,14 +55,24 @@ export const createSyncPersister = ((
 ): SyncPersister => {
   const [addStore, sendMessage] = getBusFunctions();
 
-  const storeRecv = (store: MergeableStore, message: string, payload: any) => {
+  const receiveMessage = (
+    store: MergeableStore,
+    message: string,
+    payload: any,
+    args: Ids = [],
+  ) => {
+    console.log(store.getId(), 'received', message, args);
+    console.log(JSON.stringify(payload));
+    console.log();
+
     if (message == 'contentHashes') {
-      const [_contentHash, [tablesHashes, valuesHashes]] =
+      const [_contentHash, [tablesHashes, valuesHashes]] = payload;
+      const [_myContentHash, [myTablesHashes, myValuesHashes]] =
         store.getMergeableContentHashes();
-      if (payload[1][0] != tablesHashes) {
+      if (tablesHashes != myTablesHashes) {
         sendMessage(store, 'getTablesDelta', store.getMergeableTablesHashes());
       }
-      if (payload[1][1] != valuesHashes) {
+      if (valuesHashes != myValuesHashes) {
         sendMessage(store, 'getValuesDelta', store.getMergeableValuesHashes());
       }
     }
@@ -68,17 +88,22 @@ export const createSyncPersister = ((
       sendMessage(store, 'tablesDelta', store.getMergeableTablesDelta(payload));
     }
     if (message == 'getTableDelta') {
-      sendMessage(store, 'tableDelta', [
-        payload[0],
-        store.getMergeableTableDelta(payload[0], payload[1]),
-      ]);
+      const [tableId] = args;
+      sendMessage(
+        store,
+        'tableDelta',
+        store.getMergeableTableDelta(tableId, payload),
+        [tableId],
+      );
     }
     if (message == 'getRowDelta') {
-      sendMessage(store, 'rowDelta', [
-        payload[0],
-        payload[1],
-        store.getMergeableRowDelta(payload[0], payload[1], payload[2]),
-      ]);
+      const [tableId, rowId] = args;
+      sendMessage(
+        store,
+        'rowDelta',
+        store.getMergeableRowDelta(tableId, rowId, payload),
+        [tableId, rowId],
+      );
     }
     if (message == 'getValuesDelta') {
       sendMessage(store, 'valuesDelta', store.getMergeableValuesDelta(payload));
@@ -103,26 +128,32 @@ export const createSyncPersister = ((
         }
       }
     }
-
     if (message == 'tablesDelta') {
-      objForEach(payload[1], (_, tableId) => {
-        sendMessage(store, 'getTableDelta', [
-          tableId,
+      const [_time, tablesChanges] = payload;
+      objForEach(tablesChanges, (_, tableId) => {
+        sendMessage(
+          store,
+          'getTableDelta',
           store.getMergeableTableHashes(tableId),
-        ]);
+          [tableId],
+        );
       });
     }
     if (message == 'tableDelta') {
-      objForEach(payload[1][1], (_, rowId) => {
-        sendMessage(store, 'getRowDelta', [
-          payload[0],
-          rowId,
-          store.getMergeableRowHashes(payload[0], rowId),
-        ]);
+      const [tableId] = args;
+      const [_time, tableChanges] = payload;
+      objForEach(tableChanges, (_, rowId) => {
+        sendMessage(
+          store,
+          'getRowDelta',
+          store.getMergeableRowHashes(tableId, rowId),
+          [tableId, rowId],
+        );
       });
     }
     if (message == 'rowDelta') {
-      const [tableId, rowId, [time, rowChanges]] = payload;
+      const [tableId, rowId] = args;
+      const [time, rowChanges] = payload;
       store.applyMergeableChanges([
         time,
         [
@@ -143,8 +174,8 @@ export const createSyncPersister = ((
     }
   };
 
-  addStore(store, storeRecv);
-  addStore(otherStore, storeRecv);
+  addStore(store, receiveMessage);
+  addStore(otherStore, receiveMessage);
 
   const getPersisted = async (): Promise<MergeableContent> => {
     const persisted = otherStore.getMergeableContent();
