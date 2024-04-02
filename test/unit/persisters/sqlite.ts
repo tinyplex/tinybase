@@ -194,6 +194,7 @@ export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
         storeTableOrConfig,
         onSqlCommand,
         onIgnoredError,
+        true,
       ),
     (ps: AbstractPowerSyncDatabase, sql: string, args: any[] = []) =>
       ps.execute(sql, args).then((result) => result.rows?._array ?? []),
