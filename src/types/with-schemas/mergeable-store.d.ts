@@ -152,6 +152,7 @@ export type MergeableChanges<Schemas extends OptionalSchemas> = Stamp<
   [
     mergeableTables: TablesStamp<Schemas[0]>,
     mergeableValues: ValuesStamp<Schemas[1]>,
+    isChanges: 1,
   ]
 >;
 

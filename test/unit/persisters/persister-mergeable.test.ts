@@ -103,6 +103,7 @@ describe.each([
             t1: stamped(0, 2, {r1: stamped(0, 2, {c1: stamped(0, 2, 2)})}),
           }),
           nullStamped({}),
+          1,
         ]),
       );
     }
@@ -111,7 +112,11 @@ describe.each([
     expect(await persistable.get(location)).toMatchSnapshot();
     if (persistable.getChanges) {
       expect(persistable.getChanges()).toEqual(
-        stamped(2, 0, [nullStamped({}), stamped(2, 0, {v1: stamped(2, 0, 2)})]),
+        stamped(2, 0, [
+          nullStamped({}),
+          stamped(2, 0, {v1: stamped(2, 0, 2)}),
+          1,
+        ]),
       );
     }
     expect(persister.getStats()).toEqual({loads: 0, saves: 3});
