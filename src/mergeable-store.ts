@@ -221,7 +221,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
         : tablesStampMap[2] ^ valuesStampMap[2],
       contentOrChangesTime,
     );
-    return [tablesChanges, valuesChanges];
+    return [tablesChanges, valuesChanges, 1];
   };
 
   const mergeCellsOrValues = <Thing extends CellOrUndefined | ValueOrUndefined>(
