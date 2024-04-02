@@ -24,7 +24,7 @@ const getChangesFromYDoc = (
   events: YEvent<any>[],
 ): Changes => {
   if (size(events) == 1 && arrayIsEmpty(events[0].path)) {
-    return [yContent.get(T).toJSON(), yContent.get(V).toJSON()];
+    return [yContent.get(T).toJSON(), yContent.get(V).toJSON(), 1];
   }
   const [yTables, yValues] = getYContent(yContent);
   const tables = {} as any;
@@ -70,7 +70,7 @@ const getChangesFromYDoc = (
             (values[valueId] = action == DELETE ? null : yValues.get(valueId)),
         ),
   );
-  return [tables, values];
+  return [tables, values, 1];
 };
 
 const applyChangesToYDoc = (

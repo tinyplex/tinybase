@@ -1363,6 +1363,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       ([, newValue]) => newValue,
       (changedValue) => pairIsEqual(changedValue),
     ),
+    1,
   ];
 
   const getTransactionLog = (): TransactionLog => [
