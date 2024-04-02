@@ -164,6 +164,7 @@ export function createCustomPersister<
     | Content<Schemas>
     | (SupportsMergeableStore extends true ? MergeableContent<Schemas> : never)
     | undefined
+    | 1
   >,
   setPersisted: (
     getContent: () =>
