@@ -70,6 +70,7 @@ export const createCustomPersister = <
     | Content
     | (SupportsMergeableStore extends true ? MergeableContent : never)
     | undefined
+    | 1
   >,
   setPersisted: (
     getContent: () =>
@@ -138,6 +139,16 @@ export const createCustomPersister = <
     return persister;
   };
 
+  const setContentOrChanges = (
+    content: Content | MergeableContent | undefined | 1,
+  ): void => {
+    if (content !== 1) {
+      (isMergeableStore && isMergeable(content)
+        ? (store as MergeableStore).setMergeableContent
+        : store.setContent)(content as Content & MergeableContent);
+    }
+  };
+
   const persister: any = {
     load: async (
       initialTables?: Tables,
@@ -145,10 +156,7 @@ export const createCustomPersister = <
     ): Promise<Persister> =>
       await loadLock(async () => {
         try {
-          const content = (await getPersisted()) as any;
-          (isMergeableStore && isMergeable(content)
-            ? (store as MergeableStore).setMergeableContent
-            : store.setContent)(content);
+          setContentOrChanges(await getPersisted());
         } catch {
           store.setContent([initialTables, initialValues] as Content);
         }
@@ -171,10 +179,7 @@ export const createCustomPersister = <
         } else {
           await loadLock(async () => {
             try {
-              const content = getContent?.() ?? (await getPersisted());
-              (isMergeableStore && isMergeable(content)
-                ? (store as MergeableStore).setMergeableContent
-                : store.setContent)(content as Content & MergeableContent);
+              setContentOrChanges(getContent?.() ?? (await getPersisted()));
             } catch (error) {
               onIgnoredError?.(error);
             }
