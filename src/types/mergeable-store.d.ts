@@ -84,7 +84,7 @@ export type MergeableContent = Stamp<
 
 /// MergeableChanges
 export type MergeableChanges = Stamp<
-  [mergeableTables: TablesStamp, mergeableValues: ValuesStamp]
+  [mergeableTables: TablesStamp, mergeableValues: ValuesStamp, isChanges: 1]
 >;
 
 /// MergeableStore
