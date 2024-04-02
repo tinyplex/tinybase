@@ -50,7 +50,7 @@ type SqliteVariant<Database> = [
 
 const escapeId = (str: string) => `"${str.replace(/"/g, '""')}"`;
 
-// Mock
+// Mock for PowerSync
 type AbstractPowerSyncDatabase = {
   execute(sql: string, args: any[]): Promise<QueryResult>;
   close(): Promise<void>;
