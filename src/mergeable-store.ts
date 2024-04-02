@@ -377,6 +377,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
         [
           stampNewObj(objIsEmpty(changedCells) ? EMPTY_STRING : time),
           stampNewObj(objIsEmpty(changedValues) ? EMPTY_STRING : time),
+          1,
         ],
       ];
       const [[, tablesObj], [, valuesObj]] = mergeableChanges[1];

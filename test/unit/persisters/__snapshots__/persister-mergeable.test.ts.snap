@@ -3014,8 +3014,8 @@ exports[`Persists to/from sync saves 2`] = `undefined`;
 
 exports[`Supported, MergeableStore Changes in setPersisted 1`] = `
 [
-  "["Hc2DO@000008DKS9",[["Hc2DO@000008DKS9",{"t1":["Hc2DO@000008DKS9",{"r1":["Hc2DO@000008DKS9",{"c1":["Hc2DO@000008DKS9",1]}]}]}],["",{}]]]",
-  "["Hc2DO@000018DKS9",[["",{}],["Hc2DO@000018DKS9",{"v1":["Hc2DO@000018DKS9",1]}]]]",
+  "["Hc2DO@000008DKS9",[["Hc2DO@000008DKS9",{"t1":["Hc2DO@000008DKS9",{"r1":["Hc2DO@000008DKS9",{"c1":["Hc2DO@000008DKS9",1]}]}]}],["",{}],1]]",
+  "["Hc2DO@000018DKS9",[["",{}],["Hc2DO@000018DKS9",{"v1":["Hc2DO@000018DKS9",1]}],1]]",
 ]
 `;
 

@@ -192,18 +192,13 @@ export const createSyncPersister = ((
         [
           [time, {[tableId]: [time, {[rowId]: [time, rowChanges]}]}],
           ['', {}],
+          1,
         ],
       ]);
     }
     if (message == 'valuesDelta') {
       const [time, valuesChanges] = payload;
-      store.applyMergeableChanges([
-        time,
-        [
-          ['', {}],
-          [time, valuesChanges],
-        ],
-      ]);
+      store.applyMergeableChanges([time, [['', {}], [time, valuesChanges], 1]]);
     }
   };
 
