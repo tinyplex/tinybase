@@ -33,7 +33,7 @@ describe.each([
     );
 
     test('delete table', () => {
-      store.applyChanges([{t2: undefined}, {}]);
+      store.applyChanges([{t2: undefined}, {}, 1]);
       expect(store.getTables()).toEqual({
         t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}},
       });
@@ -41,7 +41,7 @@ describe.each([
     });
 
     test('delete row', () => {
-      store.applyChanges([{t1: {r2: undefined}}, {}]);
+      store.applyChanges([{t1: {r2: undefined}}, {}, 1]);
       expect(store.getTables()).toEqual({
         t1: {r1: {c1: 1, c2: 2}},
         t2: {r1: {c1: 1}},
@@ -50,7 +50,7 @@ describe.each([
     });
 
     test('delete cell', () => {
-      store.applyChanges([{t1: {r1: {c2: undefined}}}, {}]);
+      store.applyChanges([{t1: {r1: {c2: undefined}}}, {}, 1]);
       expect(store.getTables()).toEqual({
         t1: {r1: {c1: 1}, r2: {c1: 1}},
         t2: {r1: {c1: 1}},
@@ -59,7 +59,7 @@ describe.each([
     });
 
     test('delete value', () => {
-      store.applyChanges([{}, {v2: undefined}]);
+      store.applyChanges([{}, {v2: undefined}, 1]);
       expect(store.getTables()).toEqual({
         t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}},
         t2: {r1: {c1: 1}},
@@ -68,7 +68,7 @@ describe.each([
     });
 
     test('set cell', () => {
-      store.applyChanges([{t1: {r1: {c1: 2}}}, {}]);
+      store.applyChanges([{t1: {r1: {c1: 2}}}, {}, 1]);
       expect(store.getTables()).toEqual({
         t1: {r1: {c1: 2, c2: 2}, r2: {c1: 1}},
         t2: {r1: {c1: 1}},
@@ -77,7 +77,7 @@ describe.each([
     });
 
     test('set value', () => {
-      store.applyChanges([{}, {v1: 2}]);
+      store.applyChanges([{}, {v1: 2}, 1]);
       expect(store.getTables()).toEqual({
         t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}},
         t2: {r1: {c1: 1}},
@@ -89,6 +89,7 @@ describe.each([
       store.applyChanges([
         {t1: {r1: {c1: 2, c2: undefined}, r2: undefined}, t2: undefined},
         {v1: 2, v2: undefined},
+        1,
       ]);
       expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
       expect(store.getValues()).toEqual({v1: 2});

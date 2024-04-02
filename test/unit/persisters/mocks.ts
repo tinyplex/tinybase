@@ -119,7 +119,7 @@ let customPersisterListener:
       getChanges?: () => Changes | MergeableChanges,
     ) => void)
   | undefined;
-let customPersisterChanges: Changes | MergeableChanges = [{}, {}];
+let customPersisterChanges: Changes | MergeableChanges = [{}, {}, 1];
 
 const getMockedCustom = (
   write: (location: string, rawContent: any) => Promise<void>,
@@ -139,7 +139,7 @@ const getMockedCustom = (
       },
       async (getContent, getChanges) => {
         customPersister = getContent();
-        customPersisterChanges = getChanges?.() ?? [{}, {}];
+        customPersisterChanges = getChanges?.() ?? [{}, {}, 1];
       },
       (listener) => {
         customPersisterListener = listener;
@@ -196,7 +196,7 @@ export const mockChangesListener: Persistable<string> = getMockedCustom(
     }
     customPersisterListener?.(
       () => content, // content
-      () => content, // changes
+      () => [...content, 1], // changes
     );
   },
 );
@@ -230,7 +230,7 @@ export const mockMergeableChangesListener: Persistable<string> =
     }
     customPersisterListener?.(
       () => content, // content
-      () => content, // changes
+      () => [...content, 1], // changes
     );
   }, true);
 

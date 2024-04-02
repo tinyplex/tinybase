@@ -138,6 +138,36 @@
  */
 /// NoSchemas
 /**
+ * The Content type describes both the Tables and Values in a Store.
+ *
+ * It is an array of two objects, representing tabular and keyed value content.
+ * @example
+ * The following is a valid Content array:
+ * ```json
+ * [
+ *   {
+ *     "pets": {
+ *       "fido": {
+ *         "sold": false,
+ *         "price": 4,
+ *       },
+ *       "felix": {
+ *         "sold": true,
+ *         "price": 5,
+ *       },
+ *     },
+ *   },
+ *   {
+ *     open: true,
+ *     employees: 3,
+ *   },
+ * ]
+ * ```
+ * @category Store
+ * @since v5.0.0
+ */
+/// Content
+/**
  * The Tables type is the data structure representing all of the data in a
  * Store.
  *
@@ -1111,6 +1141,9 @@
  * If not empty, the second object has an entry for each Value in a Store that
  * has had a change. If the entry is null, the Value was deleted, otherwise it
  * will contain the new Value it was changed to during the transaction.
+ *
+ * A third, required, item in the array is the digit `1`, so that instances of
+ * Content and Changes types can be disambiguated.
  * @example
  * The following is a valid Changes array that conveys the following:
  * ```json
@@ -1126,6 +1159,7 @@
  *     "pendingSales": null, // this Table was deleted
  *   },
  *   {},                   // no changes to keyed value data in the Store
+ *   1,                    // indicates that this is a Changes array
  * ]
  * ```
  * @category Transaction
