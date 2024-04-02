@@ -39,7 +39,7 @@ export type OptionalSchemas = [OptionalTablesSchema, OptionalValuesSchema];
 /// NoSchemas
 export type NoSchemas = [NoTablesSchema, NoValuesSchema];
 
-// Content
+/// Content
 export type Content = [Tables, Values];
 
 /// Tables
@@ -345,6 +345,7 @@ export type Changes = [
       | undefined;
   },
   changedValues: {[valueId: Id]: ValueOrUndefined},
+  isChanges: 1,
 ];
 
 /// TransactionLog

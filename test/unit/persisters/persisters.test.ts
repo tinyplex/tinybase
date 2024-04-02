@@ -112,7 +112,7 @@ describe.each([
       {v1: 1},
     ]);
     if (persistable.getChanges) {
-      expect(persistable.getChanges()).toEqual([{t1: {r1: {c1: 2}}}, {}]);
+      expect(persistable.getChanges()).toEqual([{t1: {r1: {c1: 2}}}, {}, 1]);
     }
     store.setValues({v1: 2});
     await pause();
@@ -121,7 +121,7 @@ describe.each([
       {v1: 2},
     ]);
     if (persistable.getChanges) {
-      expect(persistable.getChanges()).toEqual([{}, {v1: 2}]);
+      expect(persistable.getChanges()).toEqual([{}, {v1: 2}, 1]);
     }
     expect(persister.getStats()).toEqual({loads: 0, saves: 3});
   });

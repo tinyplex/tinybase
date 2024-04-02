@@ -50,7 +50,7 @@ export type OptionalSchemas = [OptionalTablesSchema, OptionalValuesSchema];
 /// NoSchemas
 export type NoSchemas = [NoTablesSchema, NoValuesSchema];
 
-// Content
+/// Content
 export type Content<
   Schemas extends OptionalSchemas,
   WhenSet extends boolean = false,
@@ -815,7 +815,7 @@ export type ChangedValue<
 /// InvalidValues
 export type InvalidValues = {[valueId: Id]: any[]};
 
-//
+/// Changes
 export type Changes<Schemas extends OptionalSchemas> = [
   {
     [TableId in TableIdFromSchema<Schemas[0]>]?:
@@ -834,6 +834,7 @@ export type Changes<Schemas extends OptionalSchemas> = [
   {
     [ValueId in ValueIdFromSchema<Schemas[1]>]?: Value<Schemas[1], ValueId>;
   },
+  isChanges: 1,
 ];
 
 /// TransactionLog
