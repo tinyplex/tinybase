@@ -27,10 +27,12 @@ type SendMessage = (
   args?: Ids,
 ) => void;
 
-const getBus = (): [
+type Bus = [
   join: (storeId: Id, receive: ReceiveMessage) => SendMessage,
   leave: (storeId: Id) => void,
-] => {
+];
+
+const getBus = (): Bus => {
   const stores: IdMap<ReceiveMessage> = mapNew();
   const join = (storeId: Id, receive: ReceiveMessage): SendMessage => {
     mapSet(stores, storeId, receive);
