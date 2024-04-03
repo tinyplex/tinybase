@@ -20,15 +20,6 @@ type Action = () => Promise<any>;
 const scheduleRunning: Map<any, 0 | 1> = mapNew();
 const scheduleActions: Map<any, Action[]> = mapNew();
 
-const isMergeable = (
-  contentOrChanges:
-    | Content
-    | MergeableContent
-    | Changes
-    | MergeableChanges
-    | undefined,
-) => isString(contentOrChanges?.[0]);
-
 const getStoreFunctions = (
   supportsMergeableStore: boolean | undefined,
   store: MergeableStore,
@@ -140,12 +131,22 @@ export const createCustomPersister = <
   };
 
   const setContentOrChanges = (
-    content: Content | MergeableContent | undefined | 1,
+    contentOrChanges:
+      | Content
+      | Changes
+      | MergeableContent
+      | MergeableChanges
+      | undefined
+      | 1,
   ): void => {
-    if (content !== 1) {
-      (isMergeableStore && isMergeable(content)
-        ? (store as MergeableStore).setMergeableContent
-        : store.setContent)(content as Content & MergeableContent);
+    if (contentOrChanges !== 1) {
+      (isMergeableStore && isString(contentOrChanges?.[0])
+        ? contentOrChanges?.[1][2] === 1
+          ? (store as MergeableStore).applyMergeableChanges
+          : (store as MergeableStore).setMergeableContent
+        : contentOrChanges?.[2] === 1
+          ? store.applyChanges
+          : store.setContent)(contentOrChanges as Changes & MergeableChanges);
     }
   };
 
@@ -169,22 +170,16 @@ export const createCustomPersister = <
       await persister.stopAutoLoad().load(initialTables, initialValues);
       listening = 1;
       listeningHandle = addPersisterListener(async (getContent, getChanges) => {
-        if (getChanges) {
-          const changes = getChanges();
-          await loadLock(async () =>
-            (isMergeableStore && isMergeable(changes)
-              ? (store as MergeableStore).applyMergeableChanges
-              : store.applyChanges)(changes as Changes & MergeableChanges),
-          );
-        } else {
-          await loadLock(async () => {
-            try {
-              setContentOrChanges(getContent?.() ?? (await getPersisted()));
-            } catch (error) {
-              onIgnoredError?.(error);
-            }
-          });
-        }
+        const changes = getChanges?.();
+        await loadLock(async () => {
+          try {
+            setContentOrChanges(
+              changes ?? getContent?.() ?? (await getPersisted()),
+            );
+          } catch (error) {
+            onIgnoredError?.(error);
+          }
+        });
       });
       return persister;
     },
