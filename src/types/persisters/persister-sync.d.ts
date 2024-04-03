@@ -1,17 +1,45 @@
 /// persister-file
 
+import {Id, IdOrNull, Ids} from '../common';
 import {MergeableStore} from '../mergeable-store';
 import {Persister} from '../persisters';
 
+/// Receive
+export type Receive = (
+  transactionId: Id,
+  fromStoreId: Id,
+  message: string,
+  payload: any,
+  args?: Ids,
+) => void;
+
+/// Send
+export type Send = (
+  transactionId: Id,
+  toStoreId: IdOrNull,
+  message: string,
+  payload: any,
+  args?: Ids,
+) => void;
+
+/// Bus
+export type Bus = [
+  join: (storeId: Id, receive: Receive) => Send,
+  leave: (storeId: Id) => void,
+];
+
 /// SyncPersister
 export interface SyncPersister extends Persister<true> {
-  /// SyncPersister.getOtherStore
-  getOtherStore(): MergeableStore;
+  /// SyncPersister.getBus
+  getBus(): Bus;
 }
 
 /// createSyncPersister
 export function createSyncPersister(
   store: MergeableStore,
-  otherStore: MergeableStore,
+  bus: Bus,
   onIgnoredError?: (error: any) => void,
 ): SyncPersister;
+
+/// createLocalBus
+export function createLocalBus(): Bus;
