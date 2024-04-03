@@ -1,5 +1,5 @@
-import {Id, Ids} from '../types/common';
-import {IdMap, mapNew, mapSet} from '../common/map';
+import {Id, IdOrNull, Ids} from '../types/common';
+import {IdMap, mapGet, mapNew, mapSet} from '../common/map';
 import {
   SyncPersister,
   createSyncPersister as createSyncPersisterDecl,
@@ -21,12 +21,13 @@ type ReceiveMessage = (
 
 type SendMessage = (
   transactionId: Id,
+  toStoreId: IdOrNull,
   message: string,
   payload: any,
   args?: Ids,
 ) => void;
 
-const getBusFunctions = (): [
+const getBus = (): [
   join: (storeId: Id, receive: ReceiveMessage) => SendMessage,
   leave: (storeId: Id) => void,
 ] => {
@@ -35,15 +36,24 @@ const getBusFunctions = (): [
     mapSet(stores, storeId, receive);
     return (
       transactionId: Id,
+      toStoreId: IdOrNull,
       message: string,
       payload: any,
       args?: Ids,
     ): void =>
-      collForEach(stores, (receive, otherStoreId) =>
-        otherStoreId != storeId
-          ? receive(transactionId, storeId, message, payload, args)
-          : 0,
-      );
+      isUndefined(toStoreId)
+        ? collForEach(stores, (receive, otherStoreId) =>
+            otherStoreId != storeId
+              ? receive(transactionId, storeId, message, payload, args)
+              : 0,
+          )
+        : mapGet(stores, toStoreId)?.(
+            transactionId,
+            storeId,
+            message,
+            payload,
+            args,
+          );
   };
   const leave = (id: Id): void => {
     collDel(stores, id);
@@ -56,7 +66,7 @@ export const createSyncPersister = ((
   otherStore: MergeableStore,
   onIgnoredError?: (error: any) => void,
 ): SyncPersister => {
-  const [join] = getBusFunctions();
+  const [join] = getBus();
 
   const storeSend = join(
     store.getId(),
@@ -78,6 +88,7 @@ export const createSyncPersister = ((
         if (tablesHashes != myTablesHashes) {
           storeSend(
             transactionId,
+            fromStoreId,
             'getTablesDelta',
             store.getMergeableTablesHashes(),
           );
@@ -85,6 +96,7 @@ export const createSyncPersister = ((
         if (valuesHashes != myValuesHashes) {
           storeSend(
             transactionId,
+            fromStoreId,
             'getValuesDelta',
             store.getMergeableValuesHashes(),
           );
@@ -94,6 +106,7 @@ export const createSyncPersister = ((
       if (message == 'getContentDelta') {
         storeSend(
           transactionId,
+          fromStoreId,
           'contentDelta',
           store.getMergeableContentDelta(payload),
         );
@@ -101,6 +114,7 @@ export const createSyncPersister = ((
       if (message == 'getTablesDelta') {
         storeSend(
           transactionId,
+          fromStoreId,
           'tablesDelta',
           store.getMergeableTablesDelta(payload),
         );
@@ -109,6 +123,7 @@ export const createSyncPersister = ((
         const [tableId] = args;
         storeSend(
           transactionId,
+          fromStoreId,
           'tableDelta',
           store.getMergeableTableDelta(tableId, payload),
           [tableId],
@@ -118,6 +133,7 @@ export const createSyncPersister = ((
         const [tableId, rowId] = args;
         storeSend(
           transactionId,
+          fromStoreId,
           'rowDelta',
           store.getMergeableRowDelta(tableId, rowId, payload),
           [tableId, rowId],
@@ -126,6 +142,7 @@ export const createSyncPersister = ((
       if (message == 'getValuesDelta') {
         storeSend(
           transactionId,
+          fromStoreId,
           'valuesDelta',
           store.getMergeableValuesDelta(payload),
         );
@@ -137,6 +154,7 @@ export const createSyncPersister = ((
           if (!isUndefined(tablesHash)) {
             storeSend(
               transactionId,
+              fromStoreId,
               'getTablesDelta',
               store.getMergeableTablesHashes(),
             );
@@ -144,6 +162,7 @@ export const createSyncPersister = ((
           if (!isUndefined(valuesHash)) {
             storeSend(
               transactionId,
+              fromStoreId,
               'getValuesDelta',
               store.getMergeableValuesHashes(),
             );
@@ -155,6 +174,7 @@ export const createSyncPersister = ((
         objForEach(tablesChanges, (_, tableId) => {
           storeSend(
             transactionId,
+            fromStoreId,
             'getTableDelta',
             store.getMergeableTableHashes(tableId),
             [tableId],
@@ -167,6 +187,7 @@ export const createSyncPersister = ((
         objForEach(tableChanges, (_, rowId) => {
           storeSend(
             transactionId,
+            fromStoreId,
             'getRowDelta',
             store.getMergeableRowHashes(tableId, rowId),
             [tableId, rowId],
@@ -215,6 +236,7 @@ export const createSyncPersister = ((
         if (tablesHashes != myTablesHashes) {
           otherStoreSend(
             transactionId,
+            fromStoreId,
             'getTablesDelta',
             otherStore.getMergeableTablesHashes(),
           );
@@ -222,6 +244,7 @@ export const createSyncPersister = ((
         if (valuesHashes != myValuesHashes) {
           otherStoreSend(
             transactionId,
+            fromStoreId,
             'getValuesDelta',
             otherStore.getMergeableValuesHashes(),
           );
@@ -231,6 +254,7 @@ export const createSyncPersister = ((
       if (message == 'getContentDelta') {
         otherStoreSend(
           transactionId,
+          fromStoreId,
           'contentDelta',
           otherStore.getMergeableContentDelta(payload),
         );
@@ -238,6 +262,7 @@ export const createSyncPersister = ((
       if (message == 'getTablesDelta') {
         otherStoreSend(
           transactionId,
+          fromStoreId,
           'tablesDelta',
           otherStore.getMergeableTablesDelta(payload),
         );
@@ -246,6 +271,7 @@ export const createSyncPersister = ((
         const [tableId] = args;
         otherStoreSend(
           transactionId,
+          fromStoreId,
           'tableDelta',
           otherStore.getMergeableTableDelta(tableId, payload),
           [tableId],
@@ -255,6 +281,7 @@ export const createSyncPersister = ((
         const [tableId, rowId] = args;
         otherStoreSend(
           transactionId,
+          fromStoreId,
           'rowDelta',
           otherStore.getMergeableRowDelta(tableId, rowId, payload),
           [tableId, rowId],
@@ -263,6 +290,7 @@ export const createSyncPersister = ((
       if (message == 'getValuesDelta') {
         otherStoreSend(
           transactionId,
+          fromStoreId,
           'valuesDelta',
           otherStore.getMergeableValuesDelta(payload),
         );
@@ -274,6 +302,7 @@ export const createSyncPersister = ((
           if (!isUndefined(tablesHash)) {
             otherStoreSend(
               transactionId,
+              fromStoreId,
               'getTablesDelta',
               otherStore.getMergeableTablesHashes(),
             );
@@ -281,6 +310,7 @@ export const createSyncPersister = ((
           if (!isUndefined(valuesHash)) {
             otherStoreSend(
               transactionId,
+              fromStoreId,
               'getValuesDelta',
               otherStore.getMergeableValuesHashes(),
             );
@@ -292,6 +322,7 @@ export const createSyncPersister = ((
         objForEach(tablesChanges, (_, tableId) => {
           otherStoreSend(
             transactionId,
+            fromStoreId,
             'getTableDelta',
             otherStore.getMergeableTableHashes(tableId),
             [tableId],
@@ -304,6 +335,7 @@ export const createSyncPersister = ((
         objForEach(tableChanges, (_, rowId) => {
           otherStoreSend(
             transactionId,
+            fromStoreId,
             'getRowDelta',
             otherStore.getMergeableRowHashes(tableId, rowId),
             [tableId, rowId],
@@ -337,13 +369,13 @@ export const createSyncPersister = ((
       return undefined;
     }
 
-    storeSend('GP', 'getContentDelta', store.getMergeableContentHashes());
+    storeSend('GP', null, 'getContentDelta', store.getMergeableContentHashes());
 
     return 1;
   };
 
   const setPersisted = async (): Promise<void> => {
-    storeSend('SP', 'contentHashes', store.getMergeableContentHashes());
+    storeSend('SP', null, 'contentHashes', store.getMergeableContentHashes());
   };
 
   const addPersisterListener = (listener: PersisterListener) =>
