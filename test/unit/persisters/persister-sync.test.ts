@@ -6,8 +6,11 @@ import {
   Persister,
   createMergeableStore,
 } from 'tinybase/debug';
+import {
+  createLocalBus,
+  createSyncPersister,
+} from 'tinybase/debug/persisters/persister-sync';
 import {START_TIME} from '../common/mergeable';
-import {createSyncPersister} from 'tinybase/debug/persisters/persister-sync';
 import {pause} from '../common/other';
 
 beforeEach(() => {
@@ -21,18 +24,26 @@ afterEach(() => {
 describe('Syncs', () => {
   let store1: MergeableStore;
   let store2: MergeableStore;
-  let persister: Persister<true>;
+  let persister1: Persister<true>;
+  let persister2: Persister<true>;
 
   beforeEach(async () => {
+    const bus = createLocalBus();
+
     store1 = createMergeableStore('s1');
+    persister1 = createSyncPersister(store1, bus);
+    await persister1.startAutoLoad();
+    await persister1.startAutoSave();
+
     store2 = createMergeableStore('s2');
-    persister = createSyncPersister(store1, store2);
-    await persister.startAutoLoad();
-    await persister.startAutoSave();
+    persister2 = createSyncPersister(store2, bus);
+    await persister2.startAutoLoad();
+    await persister2.startAutoSave();
   });
 
   afterEach(() => {
-    persister.destroy();
+    persister1.destroy();
+    persister2.destroy();
   });
 
   const expectBothToHaveContent = async (content: Content) => {
