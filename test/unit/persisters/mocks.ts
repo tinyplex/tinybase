@@ -5,6 +5,11 @@ import {deleteDB, openDB} from 'idb';
 import fetchMock from 'jest-fetch-mock';
 import {Database} from 'sqlite3';
 import {
+  Bus,
+  createLocalBus,
+  createSyncPersister,
+} from 'tinybase/debug/persisters/persister-sync';
+import {
   Changes,
   Content,
   createCustomPersister,
@@ -26,7 +31,6 @@ import {
 import {createFilePersister} from 'tinybase/debug/persisters/persister-file';
 import {createIndexedDbPersister} from 'tinybase/debug/persisters/persister-indexed-db';
 import {createRemotePersister} from 'tinybase/debug/persisters/persister-remote';
-import {createSyncPersister} from 'tinybase/debug/persisters/persister-sync';
 import {createYjsPersister} from 'tinybase/debug/persisters/persister-yjs';
 import tmp from 'tmp';
 import {Doc as YDoc, Map as YMap} from 'yjs';
@@ -260,29 +264,36 @@ export const mockFile: Persistable = {
   testMissing: true,
 };
 
-export const mockSync: Persistable<MergeableStore> = {
+export const mockSync: Persistable<[Bus, MergeableStore]> = {
   autoLoadPause: 100,
-  getLocation: async (): Promise<MergeableStore> => {
-    return createMergeableStore('otherStore');
+  getLocation: async (): Promise<[Bus, MergeableStore]> => {
+    const bus = createLocalBus();
+    const otherStore = createMergeableStore('s2');
+    await createSyncPersister(otherStore, bus).startAutoSave();
+    return [bus, otherStore];
   },
-  getLocationMethod: ['getOtherStore', (location) => location],
-  getPersister: createSyncPersister as any,
+  getLocationMethod: ['getBus', (location) => location[0]],
+  getPersister: (store: Store, location) =>
+    createSyncPersister(store as MergeableStore, location[0]),
   get: async (
-    location: MergeableStore,
+    location: [Bus, MergeableStore],
   ): Promise<Content | MergeableContent | void> => {
     try {
-      location.getMergeableContent();
+      location[1].getMergeableContent();
     } catch {}
   },
   set: async (
-    location: MergeableStore,
+    location: [Bus, MergeableStore],
     content: Content | MergeableContent,
   ): Promise<void> => await mockSync.write(location, content),
-  write: async (location: MergeableStore, rawContent: any): Promise<void> => {
-    location.setMergeableContent(rawContent);
+  write: async (
+    location: [Bus, MergeableStore],
+    rawContent: any,
+  ): Promise<void> => {
+    location[1].setMergeableContent(rawContent);
   },
-  del: async (location: MergeableStore): Promise<void> => {
-    location.setMergeableContent([
+  del: async (location: [Bus, MergeableStore]): Promise<void> => {
+    location[1].setMergeableContent([
       '',
       [
         ['', {}, 0],
@@ -291,7 +302,7 @@ export const mockSync: Persistable<MergeableStore> = {
       0,
     ]);
   },
-  testMissing: true,
+  testMissing: false,
 };
 
 const getMockedStorage = (
