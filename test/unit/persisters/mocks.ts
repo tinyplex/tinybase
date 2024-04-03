@@ -195,7 +195,7 @@ export const mockChangesListener: Persistable<string> = getMockedCustom(
       content = [] as any;
     }
     customPersisterListener?.(
-      () => content, // content
+      undefined,
       () => [...content, 1], // changes
     );
   },
@@ -210,7 +210,7 @@ export const mockMergeableNoContentListener: Persistable<string> =
 export const mockMergeableContentListener: Persistable<string> =
   getMockedCustom(async (_location: string, rawContent: any): Promise<void> => {
     customPersister = rawContent;
-    let content: Content;
+    let content: MergeableContent;
     try {
       content = JSON.parse(rawContent);
     } catch (e) {
@@ -222,15 +222,18 @@ export const mockMergeableContentListener: Persistable<string> =
 export const mockMergeableChangesListener: Persistable<string> =
   getMockedCustom(async (_location: string, rawContent: any): Promise<void> => {
     customPersister = rawContent;
-    let content: Content;
+    let content: MergeableContent;
     try {
       content = JSON.parse(rawContent);
     } catch (e) {
       content = [] as any;
     }
     customPersisterListener?.(
-      () => content, // content
-      () => [...content, 1], // changes
+      undefined,
+      () =>
+        (typeof content[0] == 'string'
+          ? [content[0], [...(content[1] ?? []), 1]]
+          : [...content, 1]) as any, // changes
     );
   }, true);
 
