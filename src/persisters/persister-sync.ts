@@ -22,7 +22,7 @@ export const createSyncPersister = ((
 ): SyncPersister => {
   const [join] = bus;
 
-  const send = join(
+  const [send] = join(
     store.getId(),
     (
       transactionId: Id,
@@ -209,9 +209,9 @@ export const createSyncPersister = ((
 
 export const createLocalBus = (() => {
   const stores: IdMap<Receive> = mapNew();
-  const join = (storeId: Id, receive: Receive): Send => {
+  const join = (storeId: Id, receive: Receive): [Send, () => void] => {
     mapSet(stores, storeId, receive);
-    return (
+    const send = (
       transactionId: Id,
       toStoreId: IdOrNull,
       message: string,
@@ -231,9 +231,10 @@ export const createLocalBus = (() => {
             payload,
             args,
           );
+    const leave = (): void => {
+      collDel(stores, storeId);
+    };
+    return [send, leave];
   };
-  const leave = (id: Id): void => {
-    collDel(stores, id);
-  };
-  return [join, leave];
+  return [join];
 }) as typeof createLocalBusDecl;
