@@ -1,26 +1,26 @@
 /**
- * The persister-powersync module of the TinyBase project lets you save and
- * load Store data to and from a local SQLite database that is automatically
- * synced using the PowerSync service.
+ * The persister-powersync module of the TinyBase project lets you save and load
+ * Store data to and from a local SQLite database that is automatically synced
+ * using the PowerSync service.
  * @see Persisting Data guide
  * @packageDocumentation
  * @module persister-powersync
- * @since v4.7.0
+ * @since v4.8.0
  */
 /// persister-powersync
 /**
  * The PowerSyncPersister interface is a minor extension to the Persister
  * interface.
  *
- * It simply provides an extra getPowerSync method for accessing a
- * reference to the PowerSync instance the Store is being persisted to.
- * @since v4.7.0
+ * It simply provides an extra getPowerSync method for accessing a reference to
+ * the PowerSync instance the Store is being persisted to.
+ * @since v4.8.0
  */
 /// PowerSyncPersister
 {
   /**
-   * The getPowerSync method returns a reference to the PowerSync instance
-   * the Store is being persisted to.
+   * The getPowerSync method returns a reference to the PowerSync instance the
+   * Store is being persisted to.
    * @returns A reference to the PowerSync instance.
    * @example
    * This example creates a Persister object against a newly-created Store and
@@ -37,7 +37,7 @@
    * persister.destroy();
    * ```
    * @category Getter
-   * @since v4.7.0
+   * @since v4.8.0
    */
   /// PowerSyncPersister.getPowerSync
 }
@@ -139,6 +139,6 @@
  * persister.destroy();
  * ```
  * @category Creation
- * @since v4.7.0
+ * @since v4.8.0
  */
 /// createPowerSyncPersister
