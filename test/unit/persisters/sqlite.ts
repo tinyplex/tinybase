@@ -6,7 +6,6 @@ import {ElectricDatabase, electrify} from 'electric-sql/wa-sqlite';
 import {
   QueryResult,
   SQLWatchOptions,
-  Schema,
   WatchOnChangeEvent,
 } from '@journeyapps/powersync-sdk-common';
 import initWasm, {DB} from '@vlcn.io/crsqlite-wasm';
@@ -25,7 +24,11 @@ export type SqliteWasmDb = [sqlite3: any, db: any];
 const electricSchema = new DbSchema({}, []);
 type Electric = ElectricClient<typeof electricSchema>;
 
-const powerSyncSchema = new Schema([]);
+type AbstractPowerSyncDatabase = {
+  execute(sql: string, args: any[]): Promise<QueryResult>;
+  close(): Promise<void>;
+  onChange(options: SQLWatchOptions): AsyncIterable<WatchOnChangeEvent>;
+};
 
 type Dump = {[name: string]: [sql: string, rows: {[column: string]: any}[]]};
 
@@ -50,71 +53,54 @@ type SqliteVariant<Database> = [
 
 const escapeId = (str: string) => `"${str.replace(/"/g, '""')}"`;
 
-// Mock for PowerSync
-type AbstractPowerSyncDatabase = {
-  execute(sql: string, args: any[]): Promise<QueryResult>;
-  close(): Promise<void>;
-  onChange(options: SQLWatchOptions): AsyncIterable<WatchOnChangeEvent>;
-};
-
-class WaSqlitePowerSyncDatabaseOpenFactory {
-  public dbFilename: string;
-  public db: sqlite3.Database;
-
-  constructor({schema: _, dbFilename}: {schema: Schema; dbFilename: string}) {
-    this.dbFilename = dbFilename;
-    this.db = new sqlite3.Database(this.dbFilename);
-  }
-
-  getInstance(): AbstractPowerSyncDatabase {
-    const db = this.db;
-
-    const instance: AbstractPowerSyncDatabase = {
-      execute: (sql, args) =>
-        new Promise((resolve, reject) => {
-          return db.all(sql, args, (error, rows: {[id: string]: any}[]) =>
-            error
-              ? reject(error)
-              : resolve({
-                  rows: {
-                    _array: rows.map((row: {[id: string]: any}) => ({
-                      ...row,
-                    })),
-                    length: rows.length,
-                    item: () => null,
-                  },
-                  rowsAffected: 0,
-                }),
-          );
-        }),
-      close: () =>
-        new Promise((resolve) => {
-          db.close();
-          resolve();
-        }),
-      onChange: ({signal} = {}) => ({
-        async *[Symbol.asyncIterator]() {
-          signal?.addEventListener('abort', () =>
-            db.removeAllListeners('change'),
-          );
-          while (!signal?.aborted) {
-            const nextChange = await new Promise<WatchOnChangeEvent>(
-              (resolve) => {
-                const observer = (_: any, _2: any, tableName: string) => {
-                  db.removeAllListeners('change');
-                  resolve({changedTables: [tableName]});
-                };
-                db.addListener('change', observer);
-              },
-            );
-            yield nextChange;
-          }
-        },
+const getPowerSyncDatabase = (
+  dbFilename: string,
+): AbstractPowerSyncDatabase => {
+  const db = new sqlite3.Database(dbFilename);
+  return {
+    execute: (sql, args) =>
+      new Promise((resolve, reject) => {
+        return db.all(sql, args, (error, rows: {[id: string]: any}[]) =>
+          error
+            ? reject(error)
+            : resolve({
+                rows: {
+                  _array: rows.map((row: {[id: string]: any}) => ({
+                    ...row,
+                  })),
+                  length: rows.length,
+                  item: () => null,
+                },
+                rowsAffected: 0,
+              }),
+        );
       }),
-    };
-    return instance;
-  }
-}
+    close: () =>
+      new Promise((resolve) => {
+        db.close();
+        resolve();
+      }),
+    onChange: ({signal} = {}) => ({
+      async *[Symbol.asyncIterator]() {
+        signal?.addEventListener('abort', () =>
+          db.removeAllListeners('change'),
+        );
+        while (!signal?.aborted) {
+          const nextChange = await new Promise<WatchOnChangeEvent>(
+            (resolve) => {
+              const observer = (_: any, _2: any, tableName: string) => {
+                db.removeAllListeners('change');
+                resolve({changedTables: [tableName]});
+              };
+              db.addListener('change', observer);
+            },
+          );
+          yield nextChange;
+        }
+      },
+    }),
+  };
+};
 
 export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
   libSql: [
@@ -173,13 +159,8 @@ export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
     1000,
   ],
   powerSync: [
-    async (): Promise<AbstractPowerSyncDatabase> => {
-      const factory = new WaSqlitePowerSyncDatabaseOpenFactory({
-        schema: powerSyncSchema,
-        dbFilename: ':memory:',
-      });
-      return factory.getInstance();
-    },
+    async (): Promise<AbstractPowerSyncDatabase> =>
+      getPowerSyncDatabase(':memory:'),
     ['getPowerSync', (powerSync: AbstractPowerSyncDatabase) => powerSync],
     (
       store: Store,
