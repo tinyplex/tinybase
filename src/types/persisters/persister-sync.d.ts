@@ -6,7 +6,7 @@ import {Persister} from '../persisters';
 
 /// Receive
 export type Receive = (
-  transactionId: Id,
+  requestId: IdOrNull,
   fromStoreId: Id,
   message: string,
   payload: any,
@@ -15,7 +15,7 @@ export type Receive = (
 
 /// Send
 export type Send = (
-  transactionId: Id,
+  requestId: IdOrNull,
   toStoreId: IdOrNull,
   message: string,
   payload: any,
