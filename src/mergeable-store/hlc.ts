@@ -70,7 +70,7 @@ const decodeHlc = (hlc16: Hlc): HlcParts => [
 
 export const getHlcFunctions = (
   uniqueId: Id,
-): [() => Hlc, (remoteHlc: Hlc) => void] => {
+): [getHlc: () => Hlc, seenHlc: (remoteHlc: Hlc) => void] => {
   let logicalTime = 0;
   let lastCounter = -1;
   const uniqueIdHash = getHash(uniqueId);
