@@ -25,8 +25,7 @@ export type Send = (
 
 /// Bus
 export type Bus = [
-  join: (storeId: Id, receive: Receive) => Send,
-  leave: (storeId: Id) => void,
+  join: (storeId: Id, receive: Receive) => [send: Send, leave: () => void],
 ];
 
 /// SyncPersister
