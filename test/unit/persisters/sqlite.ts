@@ -57,7 +57,7 @@ type AbstractPowerSyncDatabase = {
   onChange(options: SQLWatchOptions): AsyncIterable<WatchOnChangeEvent>;
 };
 
-class WASQLitePowerSyncDatabaseOpenFactory {
+class WaSqlitePowerSyncDatabaseOpenFactory {
   public dbFilename: string;
   public db: sqlite3.Database;
 
@@ -174,7 +174,7 @@ export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
   ],
   powerSync: [
     async (): Promise<AbstractPowerSyncDatabase> => {
-      const factory = new WASQLitePowerSyncDatabaseOpenFactory({
+      const factory = new WaSqlitePowerSyncDatabaseOpenFactory({
         schema: powerSyncSchema,
         dbFilename: ':memory:',
       });
