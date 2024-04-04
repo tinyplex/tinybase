@@ -3,6 +3,30 @@
 This is a reverse chronological list of the major TinyBase releases, with
 highlighted features.
 
+## v4.8
+
+This release includes the new persister-powersync module, which provides a
+Persister for [PowerSync's SQLite](https://www.powersync.com/) database.
+
+Much like the other SQLite persisters, use it by passing in a PowerSync instance
+to the createPowerSyncPersister function; something like:
+
+```js yolo
+const powerSync = usePowerSync();
+
+const persister = createPowerSyncPersister(store, powerSync, {
+  mode: 'tabular',
+  tables: {
+    load: {items: {tableId: 'items', rowIdColumnName: 'value'}},
+    save: {items: {tableName: 'items', rowIdColumnName: 'value'}},
+  },
+});
+```
+
+A huge thank you to [Benedikt Mueller](https://bndkt.com/)
+([@bndkt](https://github.com/bndkt)) for building out this functionality! And
+please provide feedback on how this new Persister works for you.
+
 ## v4.7
 
 This release includes the new persister-libsql module, which provides a

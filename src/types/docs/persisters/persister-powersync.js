@@ -81,7 +81,7 @@
  * ```js yolo
  * const ps = usePowerSync();
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
- * const persister = createExpoSqlitePersister(store, ps, 'my_tinybase');
+ * const persister = createPowerSyncPersister(store, ps, 'my_tinybase');
  *
  * await persister.save();
  * // Store will be saved to the database.

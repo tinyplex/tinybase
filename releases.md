@@ -1,4 +1,18 @@
-<p>This is a reverse chronological list of the major <a href="https://tinybase.org/">TinyBase</a> releases, with highlighted features.</p><h2 id="v4-7">v4.7</h2><p>This release includes the new <a href="https://tinybase.org/api/persister-libsql/"><code>persister-libsql</code></a> module, which provides a <a href="https://tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a> for <a href="https://turso.tech/libsql">Turso&#x27;s LibSQL</a> database.</p><p>Use the <a href="https://tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a> by passing in a reference to the LibSQL client to the createLibSQLPersister function; something like:</p>
+<p>This is a reverse chronological list of the major <a href="https://tinybase.org/">TinyBase</a> releases, with highlighted features.</p><h2 id="v4-8">v4.8</h2><p>This release includes the new <a href="https://tinybase.org/api/persister-powersync/"><code>persister-powersync</code></a> module, which provides a <a href="https://tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a> for <a href="https://www.powersync.com/">PowerSync&#x27;s SQLite</a> database.</p><p>Much like the other SQLite persisters, use it by passing in a PowerSync instance to the <a href="https://tinybase.org/api/persister-powersync/functions/creation/createpowersyncpersister/"><code>createPowerSyncPersister</code></a> function; something like:</p>
+
+```js yolo
+const powerSync = usePowerSync();
+
+const persister = createPowerSyncPersister(store, powerSync, {
+  mode: 'tabular',
+  tables: {
+    load: {items: {tableId: 'items', rowIdColumnName: 'value'}},
+    save: {items: {tableName: 'items', rowIdColumnName: 'value'}},
+  },
+});
+```
+
+<p>A huge thank you to <a href="https://bndkt.com/">Benedikt Mueller</a> (<a href="https://github.com/bndkt">@bndkt</a>) for building out this functionality! And please provide feedback on how this new <a href="https://tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a> works for you.</p><h2 id="v4-7">v4.7</h2><p>This release includes the new <a href="https://tinybase.org/api/persister-libsql/"><code>persister-libsql</code></a> module, which provides a <a href="https://tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a> for <a href="https://turso.tech/libsql">Turso&#x27;s LibSQL</a> database.</p><p>Use the <a href="https://tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a> by passing in a reference to the LibSQL client to the createLibSQLPersister function; something like:</p>
 
 ```js yolo
 const client = createClient({url: 'file:my.db'});
