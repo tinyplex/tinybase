@@ -8,7 +8,7 @@ import {Persister} from '../persisters';
 export interface AutomergePersister<Schemas extends OptionalSchemas>
   extends Persister<Schemas> {
   /// AutomergePersister.getDocHandle
-  getDocHandle: () => DocHandle<any>;
+  getDocHandle(): DocHandle<any>;
 }
 
 /// createAutomergePersister

@@ -7,7 +7,7 @@ import {OptionalSchemas, Store} from '../store';
 export interface SqliteWasmPersister<Schemas extends OptionalSchemas>
   extends Persister<Schemas> {
   /// SqliteWasmPersister.getDb
-  getDb: () => any;
+  getDb(): any;
 }
 
 /// createSqliteWasmPersister

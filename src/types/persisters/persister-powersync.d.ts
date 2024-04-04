@@ -7,7 +7,7 @@ import {Store} from '../store';
 /// PowerSyncPersister
 export interface PowerSyncPersister extends Persister {
   /// PowerSyncPersister.getPowerSync
-  getPowerSync: () => AbstractPowerSyncDatabase;
+  getPowerSync(): AbstractPowerSyncDatabase;
 }
 
 /// createPowerSyncPersister

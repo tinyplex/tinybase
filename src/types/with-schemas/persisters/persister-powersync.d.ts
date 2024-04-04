@@ -8,7 +8,7 @@ import {AbstractPowerSyncDatabase} from '@journeyapps/powersync-sdk-common';
 export interface PowerSyncPersister<Schemas extends OptionalSchemas>
   extends Persister<Schemas> {
   /// PowerSyncPersister.getPowerSync
-  getDb: () => AbstractPowerSyncDatabase;
+  getPowerSync(): AbstractPowerSyncDatabase;
 }
 
 /// createPowerSyncPersister
