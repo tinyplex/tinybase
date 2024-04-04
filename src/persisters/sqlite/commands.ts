@@ -35,6 +35,9 @@ import {Id} from '../../types/common';
 export type Cmd = (sql: string, args?: any[]) => Promise<IdObj<any>[]>;
 type Schema = IdMap2<string>;
 
+const TABLE = 'TABLE';
+const ALTER_TABLE = 'ALTER ' + TABLE;
+const DELETE_FROM = 'DELETE FROM';
 const SELECT_STAR_FROM = SELECT + '*FROM';
 const FROM_PRAGMA_TABLE = 'FROM pragma_table_';
 const WHERE = 'WHERE';
@@ -151,7 +154,7 @@ export const getCommandFunctions = (
       arrayIsEmpty(tableColumnNames) &&
       collHas(schemaMap, tableName)
     ) {
-      await cmd('DROP TABLE' + escapeId(tableName));
+      await cmd('DROP ' + TABLE + escapeId(tableName));
       mapSet(schemaMap, tableName);
       return;
     }
@@ -159,8 +162,12 @@ export const getCommandFunctions = (
     // Create the table or alter or drop columns
     if (!arrayIsEmpty(tableColumnNames) && !collHas(schemaMap, tableName)) {
       await cmd(
-        `CREATE TABLE${escapeId(tableName)}(${escapeId(rowIdColumnName)} ` +
-          `PRIMARY KEY ON CONFLICT REPLACE${arrayJoin(
+        `CREATE ` +
+          TABLE +
+          escapeId(tableName) +
+          '(' +
+          escapeId(rowIdColumnName) +
+          ` PRIMARY KEY ON CONFLICT REPLACE${arrayJoin(
             arrayMap(tableColumnNames, (cellId) => COMMA + escapeId(cellId)),
           )});`,
       );
@@ -182,7 +189,7 @@ export const getCommandFunctions = (
         ...arrayMap(tableColumnNames, async (columnName) => {
           if (!collDel(columnNamesAccountedFor, columnName)) {
             await cmd(
-              `ALTER TABLE${escapeId(tableName)}ADD${escapeId(columnName)}`,
+              ALTER_TABLE + escapeId(tableName) + 'ADD' + escapeId(columnName),
             );
             mapSet(tableSchemaMap, columnName, EMPTY_STRING);
           }
@@ -193,9 +200,10 @@ export const getCommandFunctions = (
               async (columnName) => {
                 if (columnName != rowIdColumnName) {
                   await cmd(
-                    `ALTER TABLE${escapeId(tableName)}DROP${escapeId(
-                      columnName,
-                    )}`,
+                    ALTER_TABLE +
+                      escapeId(tableName) +
+                      'DROP' +
+                      escapeId(columnName),
                   );
                   mapSet(tableSchemaMap, columnName);
                 }
@@ -208,13 +216,13 @@ export const getCommandFunctions = (
     // Insert or update or delete data
     if (partial) {
       if (isUndefined(table)) {
-        await cmd('DELETE FROM' + escapeId(tableName) + 'WHERE 1');
+        await cmd(DELETE_FROM + escapeId(tableName) + WHERE + ' 1');
       } else {
         await promiseAll(
           objMap(table, async (row, rowId) => {
             if (isUndefined(row)) {
               await cmd(
-                'DELETE FROM' +
+                DELETE_FROM +
                   escapeId(tableName) +
                   WHERE +
                   escapeId(rowIdColumnName) +
@@ -259,7 +267,7 @@ export const getCommandFunctions = (
           useOnConflict,
         );
         await cmd(
-          'DELETE FROM' +
+          DELETE_FROM +
             escapeId(tableName) +
             WHERE +
             escapeId(rowIdColumnName) +
@@ -269,7 +277,7 @@ export const getCommandFunctions = (
           deleteRowIds,
         );
       } else if (collHas(schemaMap, tableName)) {
-        await cmd('DELETE FROM' + escapeId(tableName) + 'WHERE 1');
+        await cmd(DELETE_FROM + escapeId(tableName) + WHERE + ' 1');
       }
     }
   };
