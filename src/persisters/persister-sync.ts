@@ -23,6 +23,7 @@ export const createSyncPersister = ((
   bus: Bus,
   onIgnoredError?: (error: any) => void,
 ): SyncPersister => {
+  let listening = 0;
   const [join] = bus;
   const [getHlc] = getHlcFunctions(store.getId());
   const pendingRequests: IdMap<
@@ -44,9 +45,10 @@ export const createSyncPersister = ((
     //   'received',
     //   message,
     //   args,
+    //   JSON.stringify(payload),
+    //   listening,
+    //   '\n',
     // );
-    // console.log(JSON.stringify(payload));
-    // console.log();
 
     ifNotUndefined(
       mapGet(pendingRequests, requestId),
@@ -55,11 +57,7 @@ export const createSyncPersister = ((
           ? handlePayload(payload)
           : 0,
       () => {
-        if (message == 'boo') {
-          send(requestId, fromStoreId, 'hey', []);
-        }
-
-        if (message == 'contentHashes') {
+        if (message == 'contentHashes' && listening) {
           const [_contentHash, [tablesHashes, valuesHashes]] = payload;
           const [_myContentHash, [myTablesHashes, myValuesHashes]] =
             store.getMergeableContentHashes();
@@ -89,6 +87,7 @@ export const createSyncPersister = ((
             store.getMergeableContentDelta(payload),
           );
         }
+
         if (message == 'getTablesDelta') {
           send(
             requestId,
@@ -229,13 +228,10 @@ export const createSyncPersister = ((
     send(null, null, 'contentHashes', store.getMergeableContentHashes());
   };
 
-  const addPersisterListener = (_listener: PersisterListener) => {
-    //
-  };
+  const addPersisterListener = (_listener: PersisterListener) =>
+    (listening = 1);
 
-  const delPersisterListener = () => {
-    //
-  };
+  const delPersisterListener = () => (listening = 0);
 
   return createCustomPersister(
     store,
