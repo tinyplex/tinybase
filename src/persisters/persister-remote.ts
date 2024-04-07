@@ -57,6 +57,6 @@ export const createRemotePersister = ((
     delPersisterListener,
     onIgnoredError,
     false,
-    ['getUrls', [loadUrl, saveUrl]],
+    {getUrls: () => [loadUrl, saveUrl]},
   ) as RemotePersister;
 }) as typeof createRemotePersisterDecl;
