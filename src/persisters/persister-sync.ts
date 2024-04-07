@@ -241,7 +241,7 @@ export const createSyncPersister = ((
     delPersisterListener,
     onIgnoredError,
     true,
-    ['getBus', bus],
+    {getBus: () => bus},
   ) as SyncPersister;
 }) as typeof createSyncPersisterDecl;
 

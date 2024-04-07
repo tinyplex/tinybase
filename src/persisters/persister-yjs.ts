@@ -212,6 +212,6 @@ export const createYjsPersister = ((
     delPersisterListener,
     onIgnoredError,
     false,
-    ['getYDoc', yDoc],
+    {getYDoc: () => yDoc},
   ) as YjsPersister;
 }) as typeof createYjsPersisterDecl;

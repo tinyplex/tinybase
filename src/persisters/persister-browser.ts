@@ -50,7 +50,7 @@ const createStoragePersister = (
     delPersisterListener,
     onIgnoredError,
     true,
-    ['getStorageName', storageName],
+    {getStorageName: () => storageName},
   );
 };
 
