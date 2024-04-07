@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Syncs Both empty 1`] = `
+exports[`Bidirectional Both empty 1`] = `
 [
   "",
   [
@@ -19,7 +19,7 @@ exports[`Syncs Both empty 1`] = `
 ]
 `;
 
-exports[`Syncs Both match 1`] = `
+exports[`Bidirectional Both match 1`] = `
 [
   "Hc2DO@000008DKS9",
   [
@@ -100,7 +100,7 @@ exports[`Syncs Both match 1`] = `
 ]
 `;
 
-exports[`Syncs different cell 1`] = `
+exports[`Bidirectional different cell 1`] = `
 [
   "Hc2DO@100005DK@@",
   [
@@ -137,7 +137,7 @@ exports[`Syncs different cell 1`] = `
 ]
 `;
 
-exports[`Syncs different row 1`] = `
+exports[`Bidirectional different row 1`] = `
 [
   "Hc2DO@100005DK@@",
   [
@@ -179,7 +179,7 @@ exports[`Syncs different row 1`] = `
 ]
 `;
 
-exports[`Syncs different table 1`] = `
+exports[`Bidirectional different table 1`] = `
 [
   "Hc2DO@100005DK@@",
   [
@@ -232,7 +232,7 @@ exports[`Syncs different table 1`] = `
 ]
 `;
 
-exports[`Syncs different tables 1`] = `
+exports[`Bidirectional different tables 1`] = `
 [
   "Hc2DO@100005DK@@",
   [
@@ -302,7 +302,7 @@ exports[`Syncs different tables 1`] = `
 ]
 `;
 
-exports[`Syncs different value 1`] = `
+exports[`Bidirectional different value 1`] = `
 [
   "Hc2DO@100005DK@@",
   [
@@ -327,7 +327,7 @@ exports[`Syncs different value 1`] = `
 ]
 `;
 
-exports[`Syncs different values 1`] = `
+exports[`Bidirectional different values 1`] = `
 [
   "Hc2DO@100005DK@@",
   [
@@ -357,7 +357,7 @@ exports[`Syncs different values 1`] = `
 ]
 `;
 
-exports[`Syncs store1 empty 1`] = `
+exports[`Bidirectional store1 empty 1`] = `
 [
   "Hc2DO@000005DK@@",
   [
@@ -438,7 +438,7 @@ exports[`Syncs store1 empty 1`] = `
 ]
 `;
 
-exports[`Syncs store1 missing cell 1`] = `
+exports[`Bidirectional store1 missing cell 1`] = `
 [
   "Hc2DO@100005DK@@",
   [
@@ -480,7 +480,7 @@ exports[`Syncs store1 missing cell 1`] = `
 ]
 `;
 
-exports[`Syncs store1 missing row 1`] = `
+exports[`Bidirectional store1 missing row 1`] = `
 [
   "Hc2DO@100005DK@@",
   [
@@ -533,7 +533,7 @@ exports[`Syncs store1 missing row 1`] = `
 ]
 `;
 
-exports[`Syncs store1 missing table 1`] = `
+exports[`Bidirectional store1 missing table 1`] = `
 [
   "Hc2DO@100005DK@@",
   [
@@ -603,7 +603,7 @@ exports[`Syncs store1 missing table 1`] = `
 ]
 `;
 
-exports[`Syncs store1 missing tables 1`] = `
+exports[`Bidirectional store1 missing tables 1`] = `
 [
   "Hc2DO@100005DK@@",
   [
@@ -684,7 +684,7 @@ exports[`Syncs store1 missing tables 1`] = `
 ]
 `;
 
-exports[`Syncs store1 missing value 1`] = `
+exports[`Bidirectional store1 missing value 1`] = `
 [
   "Hc2DO@100005DK@@",
   [
@@ -714,7 +714,7 @@ exports[`Syncs store1 missing value 1`] = `
 ]
 `;
 
-exports[`Syncs store1 missing values 1`] = `
+exports[`Bidirectional store1 missing values 1`] = `
 [
   "Hc2DO@100005DK@@",
   [
@@ -795,7 +795,7 @@ exports[`Syncs store1 missing values 1`] = `
 ]
 `;
 
-exports[`Syncs store2 empty 1`] = `
+exports[`Bidirectional store2 empty 1`] = `
 [
   "Hc2DO@000008DKS9",
   [
@@ -876,7 +876,7 @@ exports[`Syncs store2 empty 1`] = `
 ]
 `;
 
-exports[`Syncs store2 missing cell 1`] = `
+exports[`Bidirectional store2 missing cell 1`] = `
 [
   "Hc2DO@100008DKS9",
   [
@@ -918,7 +918,7 @@ exports[`Syncs store2 missing cell 1`] = `
 ]
 `;
 
-exports[`Syncs store2 missing row 1`] = `
+exports[`Bidirectional store2 missing row 1`] = `
 [
   "Hc2DO@100008DKS9",
   [
@@ -971,7 +971,7 @@ exports[`Syncs store2 missing row 1`] = `
 ]
 `;
 
-exports[`Syncs store2 missing table 1`] = `
+exports[`Bidirectional store2 missing table 1`] = `
 [
   "Hc2DO@100008DKS9",
   [
@@ -1041,7 +1041,7 @@ exports[`Syncs store2 missing table 1`] = `
 ]
 `;
 
-exports[`Syncs store2 missing tables 1`] = `
+exports[`Bidirectional store2 missing tables 1`] = `
 [
   "Hc2DO@100008DKS9",
   [
@@ -1122,7 +1122,7 @@ exports[`Syncs store2 missing tables 1`] = `
 ]
 `;
 
-exports[`Syncs store2 missing value 1`] = `
+exports[`Bidirectional store2 missing value 1`] = `
 [
   "Hc2DO@100008DKS9",
   [
@@ -1152,7 +1152,7 @@ exports[`Syncs store2 missing value 1`] = `
 ]
 `;
 
-exports[`Syncs store2 missing values 1`] = `
+exports[`Bidirectional store2 missing values 1`] = `
 [
   "Hc2DO@100008DKS9",
   [
