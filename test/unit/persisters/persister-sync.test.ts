@@ -23,29 +23,68 @@ afterEach(() => {
 
 let store1: MergeableStore;
 let store2: MergeableStore;
+let persister1: Persister<true>;
+let persister2: Persister<true>;
 
-const expectBothToHaveContent = async (content: Content) => {
+const expectEachToHaveContent = async (
+  content1: Content,
+  content2?: Content,
+) => {
   await pause(1, true);
-  expect(store1.getContent()).toEqual(content);
-  expect(store2.getContent()).toEqual(content);
+  expect(store1.getContent()).toEqual(content1);
+  expect(store2.getContent()).toEqual(content2 ?? content1);
   expect(store1.getMergeableContent()).toMatchSnapshot();
-  expect(store2.getMergeableContent()).toEqual(store1.getMergeableContent());
+  if (content2) {
+    expect(store2.getMergeableContent()).toMatchSnapshot();
+  } else {
+    expect(store2.getMergeableContent()).toEqual(store1.getMergeableContent());
+  }
 };
 
+beforeEach(() => {
+  const bus = createLocalBus();
+  store1 = createMergeableStore('s1');
+  store2 = createMergeableStore('s2');
+  persister1 = createSyncPersister(store1, bus);
+  persister2 = createSyncPersister(store2, bus);
+});
+
+describe('Unidirectional', () => {
+  test('save1 but not autoLoad2', async () => {
+    store1.setContent([
+      {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+      {v1: 1, v2: 2},
+    ]);
+    await persister1.save();
+    await expectEachToHaveContent(
+      [
+        {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+        {v1: 1, v2: 2},
+      ],
+      [{}, {}],
+    );
+  });
+
+  test('autoSave1 but not autoLoad2', async () => {
+    await persister1.startAutoSave();
+    store1.setContent([
+      {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+      {v1: 1, v2: 2},
+    ]);
+    await expectEachToHaveContent(
+      [
+        {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+        {v1: 1, v2: 2},
+      ],
+      [{}, {}],
+    );
+  });
+});
+
 describe('Bidirectional', () => {
-  let persister1: Persister<true>;
-  let persister2: Persister<true>;
-
   beforeEach(async () => {
-    const bus = createLocalBus();
-
-    store1 = createMergeableStore('s1');
-    persister1 = createSyncPersister(store1, bus);
     await persister1.startAutoLoad();
     await persister1.startAutoSave();
-
-    store2 = createMergeableStore('s2');
-    persister2 = createSyncPersister(store2, bus);
     await persister2.startAutoLoad();
     await persister2.startAutoSave();
   });
@@ -58,7 +97,7 @@ describe('Bidirectional', () => {
   // ---
 
   test('Both empty', async () => {
-    await expectBothToHaveContent([{}, {}]);
+    await expectEachToHaveContent([{}, {}]);
   });
 
   test('Both match', async () => {
@@ -71,7 +110,7 @@ describe('Bidirectional', () => {
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
     ]);
-    await expectBothToHaveContent([
+    await expectEachToHaveContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
     ]);
@@ -82,7 +121,7 @@ describe('Bidirectional', () => {
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
     ]);
-    await expectBothToHaveContent([
+    await expectEachToHaveContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
     ]);
@@ -93,7 +132,7 @@ describe('Bidirectional', () => {
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
     ]);
-    await expectBothToHaveContent([
+    await expectEachToHaveContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
     ]);
@@ -106,7 +145,7 @@ describe('Bidirectional', () => {
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
     ]);
-    await expectBothToHaveContent([
+    await expectEachToHaveContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
     ]);
@@ -119,7 +158,7 @@ describe('Bidirectional', () => {
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
     ]);
-    await expectBothToHaveContent([
+    await expectEachToHaveContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
     ]);
@@ -129,7 +168,7 @@ describe('Bidirectional', () => {
     store1.setTable('t1', {r1: {c1: 1, c2: 2}, r2: {c2: 2}});
     await pause(1, true);
     store2.setTable('t2', {r2: {c2: 2}});
-    await expectBothToHaveContent([
+    await expectEachToHaveContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {},
     ]);
@@ -142,7 +181,7 @@ describe('Bidirectional', () => {
       t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}},
       t2: {r2: {c2: 2}},
     });
-    await expectBothToHaveContent([
+    await expectEachToHaveContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {},
     ]);
@@ -155,7 +194,7 @@ describe('Bidirectional', () => {
       t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}},
       t2: {r2: {c2: 2}},
     });
-    await expectBothToHaveContent([
+    await expectEachToHaveContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {},
     ]);
@@ -165,7 +204,7 @@ describe('Bidirectional', () => {
     store1.setRow('t1', 'r1', {c1: 1, c2: 2});
     await pause(1, true);
     store2.setRow('t1', 'r2', {c2: 2});
-    await expectBothToHaveContent([
+    await expectEachToHaveContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}},
       {},
     ]);
@@ -175,7 +214,7 @@ describe('Bidirectional', () => {
     store1.setRow('t1', 'r1', {c1: 1, c2: 2});
     await pause(1, true);
     store2.setTable('t1', {r1: {c1: 1, c2: 2}, r2: {c2: 2}});
-    await expectBothToHaveContent([
+    await expectEachToHaveContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}},
       {},
     ]);
@@ -185,7 +224,7 @@ describe('Bidirectional', () => {
     store2.setRow('t1', 'r1', {c1: 1, c2: 2});
     await pause(1, true);
     store1.setTable('t1', {r1: {c1: 1, c2: 2}, r2: {c2: 2}});
-    await expectBothToHaveContent([
+    await expectEachToHaveContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}},
       {},
     ]);
@@ -195,28 +234,28 @@ describe('Bidirectional', () => {
     store1.setCell('t1', 'r1', 'c1', 1);
     await pause(1, true);
     store2.setCell('t1', 'r1', 'c2', 2);
-    await expectBothToHaveContent([{t1: {r1: {c1: 1, c2: 2}}}, {}]);
+    await expectEachToHaveContent([{t1: {r1: {c1: 1, c2: 2}}}, {}]);
   });
 
   test('store1 missing cell', async () => {
     store1.setCell('t1', 'r1', 'c1', 1);
     await pause(1, true);
     store2.setRow('t1', 'r1', {c1: 1, c2: 2});
-    await expectBothToHaveContent([{t1: {r1: {c1: 1, c2: 2}}}, {}]);
+    await expectEachToHaveContent([{t1: {r1: {c1: 1, c2: 2}}}, {}]);
   });
 
   test('store2 missing cell', async () => {
     store2.setCell('t1', 'r1', 'c1', 1);
     await pause(1, true);
     store1.setRow('t1', 'r1', {c1: 1, c2: 2});
-    await expectBothToHaveContent([{t1: {r1: {c1: 1, c2: 2}}}, {}]);
+    await expectEachToHaveContent([{t1: {r1: {c1: 1, c2: 2}}}, {}]);
   });
 
   test('different cell', async () => {
     store1.setCell('t1', 'r1', 'c1', 1);
     await pause(1, true);
     store2.setCell('t1', 'r1', 'c1', 2);
-    await expectBothToHaveContent([{t1: {r1: {c1: 2}}}, {}]);
+    await expectEachToHaveContent([{t1: {r1: {c1: 2}}}, {}]);
   });
 
   test('store1 missing values', async () => {
@@ -229,7 +268,7 @@ describe('Bidirectional', () => {
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
     ]);
-    await expectBothToHaveContent([
+    await expectEachToHaveContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
     ]);
@@ -245,7 +284,7 @@ describe('Bidirectional', () => {
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
     ]);
-    await expectBothToHaveContent([
+    await expectEachToHaveContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
     ]);
@@ -255,27 +294,27 @@ describe('Bidirectional', () => {
     store1.setValue('v1', 1);
     await pause(1, true);
     store2.setValue('v2', 2);
-    await expectBothToHaveContent([{}, {v1: 1, v2: 2}]);
+    await expectEachToHaveContent([{}, {v1: 1, v2: 2}]);
   });
 
   test('store1 missing value', async () => {
     store1.setValue('v2', 2);
     await pause(1, true);
     store2.setValues({v1: 1, v2: 2});
-    await expectBothToHaveContent([{}, {v1: 1, v2: 2}]);
+    await expectEachToHaveContent([{}, {v1: 1, v2: 2}]);
   });
 
   test('store2 missing value', async () => {
     store2.setValue('v2', 2);
     await pause(1, true);
     store1.setValues({v1: 1, v2: 2});
-    await expectBothToHaveContent([{}, {v1: 1, v2: 2}]);
+    await expectEachToHaveContent([{}, {v1: 1, v2: 2}]);
   });
 
   test('different value', async () => {
     store1.setValue('v1', 1);
     await pause(1, true);
     store2.setValue('v1', 2);
-    await expectBothToHaveContent([{}, {v1: 2}]);
+    await expectEachToHaveContent([{}, {v1: 2}]);
   });
 });
