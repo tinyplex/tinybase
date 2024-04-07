@@ -33,6 +33,10 @@ export interface SyncPersister<Schemas extends OptionalSchemas>
   extends Persister<Schemas, true> {
   /// SyncPersister.getBus
   getBus(): Bus;
+  /// SyncPersister.startSync
+  startSync(): Promise<Persister<Schemas, true>>;
+  /// SyncPersister.stopSync
+  stopSync(): Persister<Schemas, true>;
 }
 
 /// createSyncPersister
