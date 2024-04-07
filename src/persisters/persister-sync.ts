@@ -16,11 +16,10 @@ import {createCustomPersister} from '../persisters';
 import {getHlcFunctions} from '../mergeable-store/hlc';
 import {objForEach} from '../common/obj';
 
-const REQUEST_TIMEOUT_SECONDS = 1;
-
 export const createSyncPersister = ((
   store: MergeableStore,
   bus: Bus,
+  requestTimeoutSeconds = 1,
   onIgnoredError?: (error: any) => void,
 ): SyncPersister => {
   let listening = 0;
@@ -206,8 +205,8 @@ export const createSyncPersister = ((
       const requestId = getHlc();
       const timeout = setTimeout(() => {
         collDel(pendingRequests, requestId);
-        reject();
-      }, REQUEST_TIMEOUT_SECONDS * 1000);
+        reject(`No response from ${toStoreId ?? 'anyone'} to '${message}'`);
+      }, requestTimeoutSeconds * 1000);
       mapSet(pendingRequests, requestId, [
         toStoreId,
         (payload: any) => {

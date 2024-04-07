@@ -43,6 +43,7 @@ export interface SyncPersister<Schemas extends OptionalSchemas>
 export function createSyncPersister<Schemas extends OptionalSchemas>(
   store: MergeableStore<Schemas>,
   bus: Bus,
+  requestTimeoutSeconds?: number,
   onIgnoredError?: (error: any) => void,
 ): SyncPersister<Schemas>;
 
