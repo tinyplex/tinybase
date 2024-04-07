@@ -1,12 +1,8 @@
 /* eslint-disable jest/no-conditional-expect */
 
+import {Content, MergeableStore, createMergeableStore} from 'tinybase/debug';
 import {
-  Content,
-  MergeableStore,
-  Persister,
-  createMergeableStore,
-} from 'tinybase/debug';
-import {
+  SyncPersister,
   createLocalBus,
   createSyncPersister,
 } from 'tinybase/debug/persisters/persister-sync';
@@ -23,8 +19,8 @@ afterEach(() => {
 
 let store1: MergeableStore;
 let store2: MergeableStore;
-let persister1: Persister<true>;
-let persister2: Persister<true>;
+let persister1: SyncPersister;
+let persister2: SyncPersister;
 
 const expectEachToHaveContent = async (
   content1: Content,
@@ -83,15 +79,13 @@ describe('Unidirectional', () => {
 
 describe('Bidirectional', () => {
   beforeEach(async () => {
-    await persister1.startAutoLoad();
-    await persister1.startAutoSave();
-    await persister2.startAutoLoad();
-    await persister2.startAutoSave();
+    await persister1.startSync();
+    await persister2.startSync();
   });
 
   afterEach(() => {
-    persister1.destroy();
-    persister2.destroy();
+    persister1.stopSync();
+    persister2.stopSync();
   });
 
   // ---

@@ -31,6 +31,10 @@ export type Bus = [
 export interface SyncPersister extends Persister<true> {
   /// SyncPersister.getBus
   getBus(): Bus;
+  /// SyncPersister.startSync
+  startSync(): Promise<Persister<true>>;
+  /// SyncPersister.stopSync
+  stopSync(): Persister<true>;
 }
 
 /// createSyncPersister

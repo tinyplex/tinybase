@@ -57,6 +57,14 @@
    * @since v5.0.0
    */
   /// SyncPersister.getBus
+  /**
+   * The startSync method
+   */
+  /// SyncPersister.startSync
+  /**
+   * The stopSync method
+   */
+  /// SyncPersister.stopSync
 }
 /**
  * The createSyncPersister function creates a Persister object that can persist
