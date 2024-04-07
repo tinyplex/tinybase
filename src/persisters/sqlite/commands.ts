@@ -1,11 +1,5 @@
-import {
-  arrayFilter,
-  arrayIsEmpty,
-  arrayJoin,
-  arrayMap,
-  arrayPush,
-} from '../../common/array';
-import {collDel, collHas, collValues} from '../../common/coll';
+import {COMMA, EMPTY_STRING, strRepeat} from '../../common/strings';
+import {CellOrUndefined, Table, ValueOrUndefined} from '../../types/store';
 import {
   IdMap2,
   mapEnsure,
@@ -25,12 +19,18 @@ import {
   objToArray,
   objValues,
 } from '../../common/obj';
+import {SELECT, escapeId} from './common';
+import {
+  arrayFilter,
+  arrayIsEmpty,
+  arrayJoin,
+  arrayMap,
+  arrayPush,
+} from '../../common/array';
+import {collDel, collHas, collValues} from '../../common/coll';
 import {isUndefined, promiseAll, size, slice} from '../../common/other';
 import {setAdd, setNew} from '../../common/set';
-import {COMMA, EMPTY_STRING, strRepeat} from '../../common/strings';
 import {Id} from '../../types/common';
-import {CellOrUndefined, Table, ValueOrUndefined} from '../../types/store';
-import {escapeId, SELECT} from './common';
 
 export type Cmd = (sql: string, args?: any[]) => Promise<IdObj<any>[]>;
 type Schema = IdMap2<string>;
