@@ -1,9 +1,3 @@
-import crypto from 'crypto';
-import {DbSchema, ElectricClient} from 'electric-sql/client/model';
-import fs from 'fs';
-import {deleteDB, openDB} from 'idb';
-import fetchMock from 'jest-fetch-mock';
-import {Database} from 'sqlite3';
 import {
   Bus,
   createLocalBus,
@@ -12,8 +6,6 @@ import {
 import {
   Changes,
   Content,
-  createCustomPersister,
-  createMergeableStore,
   Id,
   MergeableChanges,
   MergeableContent,
@@ -22,24 +14,32 @@ import {
   Store,
   Tables,
   Values,
+  createCustomPersister,
+  createMergeableStore,
 } from 'tinybase/debug';
-import {createAutomergePersister} from 'tinybase/debug/persisters/persister-automerge';
+import {DbSchema, ElectricClient} from 'electric-sql/client/model';
+import {DocHandle, Repo} from '@automerge/automerge-repo';
+import {GetLocationMethod, Persistable} from './common';
+import {SqliteWasmDb, VARIANTS} from './sqlite';
+import {Doc as YDoc, Map as YMap} from 'yjs';
 import {
   createLocalPersister,
   createSessionPersister,
 } from 'tinybase/debug/persisters/persister-browser';
+import {deleteDB, openDB} from 'idb';
+import {AbstractPowerSyncDatabase} from '@journeyapps/powersync-sdk-common';
+import {DB} from '@vlcn.io/crsqlite-wasm';
+import {Database} from 'sqlite3';
+import {createAutomergePersister} from 'tinybase/debug/persisters/persister-automerge';
 import {createFilePersister} from 'tinybase/debug/persisters/persister-file';
 import {createIndexedDbPersister} from 'tinybase/debug/persisters/persister-indexed-db';
 import {createRemotePersister} from 'tinybase/debug/persisters/persister-remote';
 import {createYjsPersister} from 'tinybase/debug/persisters/persister-yjs';
-import tmp from 'tmp';
-import {Doc as YDoc, Map as YMap} from 'yjs';
-import {DocHandle, Repo} from '@automerge/automerge-repo';
-import {AbstractPowerSyncDatabase} from '@journeyapps/powersync-sdk-common';
-import {DB} from '@vlcn.io/crsqlite-wasm';
+import crypto from 'crypto';
+import fetchMock from 'jest-fetch-mock';
+import fs from 'fs';
 import {mockFetchWasm} from '../common/other';
-import {GetLocationMethod, Persistable} from './common';
-import {SqliteWasmDb, VARIANTS} from './sqlite';
+import tmp from 'tmp';
 
 const GET_HOST = 'http://get.com';
 const SET_HOST = 'http://set.com';
