@@ -79,13 +79,12 @@ export const createCustomPersister = <
   extra: {[methodName: string]: (...args: any[]) => any} = {},
   scheduleId = [],
 ): Persister<SupportsMergeableStore> => {
-  let listenerId: Id | undefined;
   let loadSave = 0;
   let loads = 0;
   let saves = 0;
-  let listening = 0;
   let action;
-  let listeningHandle: ListeningHandle | undefined;
+  let autoLoadHandle: ListeningHandle | 1 | undefined;
+  let autoSaveListenerId: Id | undefined;
 
   mapEnsure(scheduleRunning, scheduleId, () => 0);
   mapEnsure(scheduleActions, scheduleId, () => []);
@@ -168,27 +167,30 @@ export const createCustomPersister = <
       initialValues: Values = {},
     ): Promise<Persister> => {
       await persister.stopAutoLoad().load(initialTables, initialValues);
-      listening = 1;
-      listeningHandle = addPersisterListener(async (getContent, getChanges) => {
-        const changes = getChanges?.();
-        await loadLock(async () => {
-          try {
-            setContentOrChanges(
-              changes ?? getContent?.() ?? (await getPersisted()),
-            );
-          } catch (error) {
-            onIgnoredError?.(error);
-          }
-        });
-      });
+      autoLoadHandle =
+        addPersisterListener(async (getContent, getChanges) => {
+          const changes = getChanges?.();
+          await loadLock(async () => {
+            try {
+              setContentOrChanges(
+                changes ?? getContent?.() ?? (await getPersisted()),
+              );
+            } catch (error) {
+              onIgnoredError?.(error);
+            }
+          });
+        }) ?? 1;
       return persister;
     },
 
     stopAutoLoad: (): Persister => {
-      if (listening) {
-        delPersisterListener(listeningHandle as ListeningHandle);
-        listeningHandle = undefined;
-        listening = 0;
+      if (autoLoadHandle) {
+        delPersisterListener(
+          autoLoadHandle !== 1
+            ? autoLoadHandle
+            : (undefined as ListeningHandle),
+        );
+        autoLoadHandle = undefined;
       }
       return persister;
     },
@@ -219,7 +221,7 @@ export const createCustomPersister = <
 
     startAutoSave: async (): Promise<Persister> => {
       await persister.stopAutoSave().save();
-      listenerId = store.addDidFinishTransactionListener(() => {
+      autoSaveListenerId = store.addDidFinishTransactionListener(() => {
         const changes = getChanges();
         if (hasChanges(changes as any)) {
           persister.save(() => changes);
@@ -229,8 +231,8 @@ export const createCustomPersister = <
     },
 
     stopAutoSave: (): Persister => {
-      ifNotUndefined(listenerId, store.delListener);
-      listenerId = undefined;
+      ifNotUndefined(autoSaveListenerId, store.delListener);
+      autoSaveListenerId = undefined;
       return persister;
     },
 
