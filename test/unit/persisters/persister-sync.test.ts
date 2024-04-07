@@ -21,9 +21,18 @@ afterEach(() => {
   jest.useRealTimers();
 });
 
-describe('Syncs', () => {
-  let store1: MergeableStore;
-  let store2: MergeableStore;
+let store1: MergeableStore;
+let store2: MergeableStore;
+
+const expectBothToHaveContent = async (content: Content) => {
+  await pause(1, true);
+  expect(store1.getContent()).toEqual(content);
+  expect(store2.getContent()).toEqual(content);
+  expect(store1.getMergeableContent()).toMatchSnapshot();
+  expect(store2.getMergeableContent()).toEqual(store1.getMergeableContent());
+};
+
+describe('Bidirectional', () => {
   let persister1: Persister<true>;
   let persister2: Persister<true>;
 
@@ -45,14 +54,6 @@ describe('Syncs', () => {
     persister1.destroy();
     persister2.destroy();
   });
-
-  const expectBothToHaveContent = async (content: Content) => {
-    await pause(1, true);
-    expect(store1.getContent()).toEqual(content);
-    expect(store2.getContent()).toEqual(content);
-    expect(store1.getMergeableContent()).toMatchSnapshot();
-    expect(store2.getMergeableContent()).toEqual(store1.getMergeableContent());
-  };
 
   // ---
 
