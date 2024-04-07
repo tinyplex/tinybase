@@ -75,6 +75,8 @@
  * changes to and from this MergeableStore and its peers. persist it to.
  * @param store The MergeableStore to persist.
  * @param bus The reference of the Bus.
+ * @param requestTimeoutSeconds An optional number of seconds before a request
+ * to the Bus times out, defaulting to 5.
  * @param onIgnoredError An optional handler for the errors that the Persister
  * would otherwise ignore when trying to save or load data. This is suitable for
  * debugging persistence issues in a development environment.
