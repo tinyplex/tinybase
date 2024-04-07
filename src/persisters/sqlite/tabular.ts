@@ -141,7 +141,7 @@ export const createTabularSqlitePersister = <ListeningHandle>(
     delPersisterListener,
     onIgnoredError,
     false,
-    [getThing, db],
+    {[getThing]: () => db},
     db,
   );
 

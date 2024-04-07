@@ -171,6 +171,6 @@ export const createAutomergePersister = ((
     delPersisterListener,
     onIgnoredError,
     false,
-    ['getDocHandle', docHandle],
+    {getDocHandle: () => docHandle},
   ) as AutomergePersister;
 }) as typeof createAutomergePersisterDecl;

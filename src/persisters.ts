@@ -76,7 +76,7 @@ export const createCustomPersister = <
   onIgnoredError?: (error: any) => void,
   supportsMergeableStore?: SupportsMergeableStore,
   // undocumented:
-  [getThing, thing]: [string?, unknown?] = [],
+  extra: {[methodName: string]: (...args: any[]) => any} = {},
   scheduleId = [],
 ): Persister<SupportsMergeableStore> => {
   let listenerId: Id | undefined;
@@ -245,11 +245,9 @@ export const createCustomPersister = <
     destroy: (): Persister => persister.stopAutoLoad().stopAutoSave(),
 
     getStats: (): PersisterStats => (DEBUG ? {loads, saves} : {}),
-  };
 
-  if (getThing) {
-    persister[getThing] = () => thing;
-  }
+    ...extra,
+  };
 
   return objFreeze(persister as Persister<SupportsMergeableStore>);
 };

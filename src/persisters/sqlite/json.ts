@@ -55,7 +55,7 @@ export const createJsonSqlitePersister = <ListeningHandle>(
     delPersisterListener,
     onIgnoredError,
     false,
-    [getThing, db],
+    {[getThing]: () => db},
     db,
   );
 
