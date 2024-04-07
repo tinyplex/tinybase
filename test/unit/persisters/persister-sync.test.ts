@@ -10,7 +10,7 @@ import {START_TIME} from '../common/mergeable';
 import {pause} from '../common/other';
 
 beforeEach(() => {
-  jest.useFakeTimers({now: START_TIME});
+  jest.useFakeTimers({now: START_TIME, advanceTimers: true});
 });
 
 afterEach(() => {
@@ -26,7 +26,7 @@ const expectEachToHaveContent = async (
   content1: Content,
   content2?: Content,
 ) => {
-  await pause(1, true);
+  //  await pause(1, true);
   expect(store1.getContent()).toEqual(content1);
   expect(store2.getContent()).toEqual(content2 ?? content1);
   expect(store1.getMergeableContent()).toMatchSnapshot();
@@ -41,8 +41,8 @@ beforeEach(() => {
   const bus = createLocalBus();
   store1 = createMergeableStore('s1');
   store2 = createMergeableStore('s2');
-  persister1 = createSyncPersister(store1, bus);
-  persister2 = createSyncPersister(store2, bus);
+  persister1 = createSyncPersister(store1, bus, 0.001);
+  persister2 = createSyncPersister(store2, bus, 0.001);
 });
 
 describe('Unidirectional', () => {
@@ -73,6 +73,36 @@ describe('Unidirectional', () => {
         {v1: 1, v2: 2},
       ],
       [{}, {}],
+    );
+  });
+
+  test('load1 but not autoSave2, defaults', async () => {
+    store2.setContent([
+      {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+      {v1: 1, v2: 2},
+    ]);
+    await persister1.load({t0: {r0: {c0: 0}}}, {v0: 0});
+    await expectEachToHaveContent(
+      [{t0: {r0: {c0: 0}}}, {v0: 0}],
+      [
+        {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+        {v1: 1, v2: 2},
+      ],
+    );
+  });
+
+  test('autoLoad1 but not autoSave2, defaults', async () => {
+    await persister1.startAutoLoad({t0: {r0: {c0: 0}}}, {v0: 0});
+    store2.setContent([
+      {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+      {v1: 1, v2: 2},
+    ]);
+    await expectEachToHaveContent(
+      [{t0: {r0: {c0: 0}}}, {v0: 0}],
+      [
+        {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+        {v1: 1, v2: 2},
+      ],
     );
   });
 });
