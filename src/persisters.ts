@@ -157,7 +157,8 @@ export const createCustomPersister = <
       await loadLock(async () => {
         try {
           setContentOrChanges(await getPersisted());
-        } catch {
+        } catch (error) {
+          onIgnoredError?.(error);
           store.setContent([initialTables, initialValues] as Content);
         }
       }),
