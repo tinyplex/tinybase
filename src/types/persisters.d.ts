@@ -113,6 +113,9 @@ export interface Persister<SupportsMergeableStore extends boolean = false> {
   /// Persister.stopAutoLoad
   stopAutoLoad(): Persister<SupportsMergeableStore>;
 
+  /// Persister.isAutoLoading
+  isAutoLoading(): boolean;
+
   /// Persister.save
   save(): Promise<Persister<SupportsMergeableStore>>;
 
@@ -121,6 +124,9 @@ export interface Persister<SupportsMergeableStore extends boolean = false> {
 
   /// Persister.stopAutoSave
   stopAutoSave(): Persister<SupportsMergeableStore>;
+
+  /// Persister.isAutoSaving
+  isAutoSaving(): boolean;
 
   /// Persister.schedule
   schedule(
