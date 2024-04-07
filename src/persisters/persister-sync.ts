@@ -11,7 +11,6 @@ import {IdMap, mapGet, mapNew, mapSet} from '../common/map';
 import {collDel, collForEach} from '../common/coll';
 import {ifNotUndefined, isUndefined, promiseNew} from '../common/other';
 import {MergeableStore} from '../types/mergeable-store';
-import {PersisterListener} from '../types/persisters';
 import {createCustomPersister} from '../persisters';
 import {getHlcFunctions} from '../mergeable-store/hlc';
 import {objForEach} from '../common/obj';
@@ -22,11 +21,13 @@ export const createSyncPersister = ((
   requestTimeoutSeconds = 1,
   onIgnoredError?: (error: any) => void,
 ): SyncPersister => {
-  let listening = 0;
   const [join] = bus;
   const [getHlc] = getHlcFunctions(store.getId());
   const pendingRequests: IdMap<
-    [toStoreId: Id, handlePayload: (payload: any) => void]
+    [
+      toStoreId: IdOrNull,
+      handlePayload: (payload: any, fromStoreId: Id) => void,
+    ]
   > = mapNew();
 
   const receive = (
@@ -45,7 +46,8 @@ export const createSyncPersister = ((
     //   message,
     //   args,
     //   JSON.stringify(payload),
-    //   listening,
+    //   persister.isAutoLoading(),
+    //   persister.isAutoSaving(),
     //   '\n',
     // );
 
@@ -53,10 +55,10 @@ export const createSyncPersister = ((
       mapGet(pendingRequests, requestId),
       ([toStoreId, handlePayload]) =>
         isUndefined(toStoreId) || toStoreId == fromStoreId
-          ? handlePayload(payload)
+          ? handlePayload(payload, fromStoreId)
           : 0,
       () => {
-        if (message == 'contentHashes' && listening) {
+        if (message == 'contentHashes' && persister.isAutoLoading()) {
           const [_contentHash, [tablesHashes, valuesHashes]] = payload;
           const [_myContentHash, [myTablesHashes, myValuesHashes]] =
             store.getMergeableContentHashes();
@@ -78,7 +80,7 @@ export const createSyncPersister = ((
           }
         }
 
-        if (message == 'getContentDelta') {
+        if (message == 'getContentDelta' && persister.isAutoSaving()) {
           send(
             requestId,
             fromStoreId,
@@ -195,12 +197,12 @@ export const createSyncPersister = ((
 
   const [send] = join(store.getId(), receive);
 
-  const _request = async (
+  const request = async (
     toStoreId: IdOrNull,
     message: string,
     payload: any,
     args?: Ids,
-  ): Promise<any> =>
+  ): Promise<[payload: any, fromStoreId: Id]> =>
     promiseNew((resolve, reject) => {
       const requestId = getHlc();
       const timeout = setTimeout(() => {
@@ -209,17 +211,21 @@ export const createSyncPersister = ((
       }, requestTimeoutSeconds * 1000);
       mapSet(pendingRequests, requestId, [
         toStoreId,
-        (payload: any) => {
+        (payload: any, fromStoreId: Id) => {
           clearTimeout(timeout);
           collDel(pendingRequests, requestId);
-          resolve(payload);
+          resolve([payload, fromStoreId]);
         },
       ]);
       send(requestId, toStoreId, message, payload, args);
     });
 
   const getPersisted = async (): Promise<undefined | 1> => {
-    send(null, null, 'getContentDelta', store.getMergeableContentHashes());
+    const [contentDelta, otherStoreId] = await request(
+      null,
+      'getContentDelta',
+      store.getMergeableContentHashes(),
+    );
     return 1;
   };
 
@@ -227,10 +233,9 @@ export const createSyncPersister = ((
     send(null, null, 'contentHashes', store.getMergeableContentHashes());
   };
 
-  const addPersisterListener = (_listener: PersisterListener) =>
-    (listening = 1);
+  const addPersisterListener = () => 0;
 
-  const delPersisterListener = () => (listening = 0);
+  const delPersisterListener = () => 0;
 
   const persister = createCustomPersister(
     store,
