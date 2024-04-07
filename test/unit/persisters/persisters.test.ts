@@ -93,7 +93,9 @@ describe.each([
 
   test('autoSaves', async () => {
     store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
+    expect(persister.isAutoSaving()).toEqual(false);
     await persister.startAutoSave();
+    expect(persister.isAutoSaving()).toEqual(true);
     expect(await persistable.get(location)).toEqual([
       {t1: {r1: {c1: 1}}},
       {v1: 1},
@@ -186,7 +188,9 @@ describe.each([
 
   test('autoLoads', async () => {
     await persistable.set(location, [{t1: {r1: {c1: 1}}}, {}]);
+    expect(persister.isAutoLoading()).toEqual(false);
     await persister.startAutoLoad();
+    expect(persister.isAutoLoading()).toEqual(true);
     await nextLoop();
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     expect(persister.getStats()).toEqual({loads: 1, saves: 0});
