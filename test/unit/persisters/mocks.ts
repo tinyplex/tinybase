@@ -153,7 +153,7 @@ const getMockedCustom = (
       supportsMergeableStore,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      ['getFoo', 'foo'],
+      {getFoo: () => 'foo'},
     );
   },
   get: async (): Promise<Content | void> => customPersister,
