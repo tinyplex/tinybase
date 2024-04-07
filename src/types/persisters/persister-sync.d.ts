@@ -41,6 +41,7 @@ export interface SyncPersister extends Persister<true> {
 export function createSyncPersister(
   store: MergeableStore,
   bus: Bus,
+  requestTimeoutSeconds?: number,
   onIgnoredError?: (error: any) => void,
 ): SyncPersister;
 
