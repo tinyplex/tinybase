@@ -233,7 +233,7 @@ export const createSyncPersister = ((
 
   const delPersisterListener = () => (listening = 0);
 
-  return createCustomPersister(
+  const persister = createCustomPersister(
     store,
     getPersisted,
     setPersisted,
@@ -241,8 +241,14 @@ export const createSyncPersister = ((
     delPersisterListener,
     onIgnoredError,
     true,
-    {getBus: () => bus},
+    {
+      getBus: () => bus,
+      startSync: async () =>
+        await (await persister.startAutoSave()).startAutoLoad(),
+      stopSync: () => persister.destroy,
+    },
   ) as SyncPersister;
+  return persister;
 }) as typeof createSyncPersisterDecl;
 
 export const createLocalBus = (() => {
