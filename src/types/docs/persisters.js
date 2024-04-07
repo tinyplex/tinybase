@@ -796,6 +796,32 @@
    */
   /// Persister.stopAutoLoad
   /**
+   * The isAutoLoading method lets you find out if the Persister is currently
+   * automatically loading its content.
+   * @returns A boolean indicating whether the Persister is currently
+   * autoLoading.
+   * @example
+   * This example creates a Persister and queries whether it is autoLoading.
+   *
+   * ```js
+   * const persister = createSessionPersister(createStore(), 'pets');
+   *
+   * console.log(persister.isAutoLoading());
+   * // -> false
+   *
+   * await persister.startAutoLoad();
+   * console.log(persister.isAutoLoading());
+   * // -> true
+   *
+   * await persister.stopAutoLoad();
+   * console.log(persister.isAutoLoading());
+   * // -> false
+   * ```
+   * @category Load
+   * @since v5.0.0
+   */
+  /// Persister.isAutoLoading
+  /**
    * The save method takes data from the Store with which the Persister is
    * associated and persists it into storage, once.
    *
@@ -894,6 +920,32 @@
    * @category Save
    */
   /// Persister.stopAutoSave
+  /**
+   * The isAutoSaving method lets you find out if the Persister is currently
+   * automatically saving its content.
+   * @returns A boolean indicating whether the Persister is currently
+   * autoSaving.
+   * @example
+   * This example creates a Persister and queries whether it is autoSaving.
+   *
+   * ```js
+   * const persister = createSessionPersister(createStore(), 'pets');
+   *
+   * console.log(persister.isAutoSaving());
+   * // -> false
+   *
+   * await persister.startAutoSave();
+   * console.log(persister.isAutoSaving());
+   * // -> true
+   *
+   * await persister.stopAutoSave();
+   * console.log(persister.isAutoSaving());
+   * // -> false
+   * ```
+   * @category Save
+   * @since v5.0.0
+   */
+  /// Persister.isAutoSaving
   /**
    * The schedule method allows you to queue up a series of asynchronous actions
    * that must run in sequence during persistence.

@@ -195,6 +195,8 @@ export const createCustomPersister = <
       return persister;
     },
 
+    isAutoLoading: () => !isUndefined(autoLoadHandle),
+
     save: async (
       getChanges?: () =>
         | Changes
@@ -235,6 +237,8 @@ export const createCustomPersister = <
       autoSaveListenerId = undefined;
       return persister;
     },
+
+    isAutoSaving: () => !isUndefined(autoSaveListenerId),
 
     schedule: async (...actions: Action[]): Promise<Persister> => {
       arrayPush(mapGet(scheduleActions, scheduleId) as Action[], ...actions);
