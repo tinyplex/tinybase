@@ -5,7 +5,8 @@ import {
   MergeableStore,
   createMergeableStore,
 } from 'tinybase/debug';
-import {START_TIME, nullStamped, stamped, time} from '../common/mergeable';
+import {nullStamped, resetHlc, stamped, time} from '../common/mergeable';
+import {pause} from '../common/other';
 
 const permute = (arr: any[]): any[] => {
   if (arr.length == 1) {
@@ -20,9 +21,9 @@ const permute = (arr: any[]): any[] => {
   return permutations;
 };
 
-beforeEach(() => jest.useFakeTimers({now: START_TIME}));
-
-afterEach(() => jest.useRealTimers());
+beforeEach(() => {
+  resetHlc();
+});
 
 test('Create', () => {
   const store = createMergeableStore('s1');
@@ -878,8 +879,7 @@ describe('Merge', () => {
       store1.setTables({t1: {r1: {c1: 0}}});
       expect(store1.getMergeableContent()).toMatchSnapshot();
 
-      jest.advanceTimersByTime(1);
-
+      pause(1, true);
       store2.setValues({v1: 0});
       expect(store2.getMergeableContent()).toMatchSnapshot();
 
@@ -898,8 +898,7 @@ describe('Merge', () => {
       store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
       expect(store1.getMergeableContent()).toMatchSnapshot();
 
-      jest.advanceTimersByTime(1);
-
+      pause(1, true);
       store2
         .setTables({t1: {r1: {c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}})
         .setValues({v2: 2});
@@ -923,8 +922,7 @@ describe('Merge', () => {
       store1.setTables({t1: {r1: {c1: 1}}}).setValues({v0: 0, v1: 1});
       expect(store1.getMergeableContent()).toMatchSnapshot();
 
-      jest.advanceTimersByTime(1);
-
+      pause(1, true);
       store2.setTables({t1: {r1: {c1: 2}}}).setValues({v1: 2});
       expect(store2.getMergeableContent()).toMatchSnapshot();
 
@@ -1095,9 +1093,9 @@ describe('Merge', () => {
 
     test('Interleaving', () => {
       store1.setCell('t1', 'r1', 'c1', 1);
-      jest.advanceTimersByTime(1);
+      pause(1, true);
       store2.setCell('t1', 'r1', 'c2', 2);
-      jest.advanceTimersByTime(1);
+      pause(1, true);
       store1.delCell('t1', 'r1', 'c1');
 
       expect(store1.getMergeableContent()).toMatchSnapshot();
