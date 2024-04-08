@@ -1,4 +1,4 @@
-import {isUndefined, mathMax} from '../common/other';
+import {DEBUG, isUndefined, mathMax} from '../common/other';
 import {Id} from '../types/common';
 import {getHash} from './hash';
 import {strCharCodeAt} from '../common/strings';
@@ -84,7 +84,11 @@ export const getHlcFunctions = (
     const previousLogicalTime = logicalTime;
     const [remoteLogicalTime, remoteCounter] =
       isUndefined(hlc) || hlc == '' ? [0, 0] : decodeHlc(hlc);
-    logicalTime = mathMax(previousLogicalTime, remoteLogicalTime, Date.now());
+    logicalTime = mathMax(
+      previousLogicalTime,
+      remoteLogicalTime,
+      (DEBUG ? (globalThis as any).HLC_TIME : null) ?? Date.now(),
+    );
     lastCounter =
       logicalTime == previousLogicalTime
         ? logicalTime == remoteLogicalTime

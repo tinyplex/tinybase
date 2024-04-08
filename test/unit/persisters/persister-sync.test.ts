@@ -6,15 +6,11 @@ import {
   createLocalBus,
   createSyncPersister,
 } from 'tinybase/debug/persisters/persister-sync';
-import {START_TIME} from '../common/mergeable';
 import {pause} from '../common/other';
+import {resetHlc} from '../common/mergeable';
 
 beforeEach(() => {
-  jest.useFakeTimers({now: START_TIME, advanceTimers: true});
-});
-
-afterEach(() => {
-  jest.useRealTimers();
+  resetHlc();
 });
 
 let store1: MergeableStore;
@@ -26,7 +22,6 @@ const expectEachToHaveContent = async (
   content1: Content,
   content2?: Content,
 ) => {
-  //  await pause(1, true);
   expect(store1.getContent()).toEqual(content1);
   expect(store2.getContent()).toEqual(content2 ?? content1);
   expect(store1.getMergeableContent()).toMatchSnapshot();
@@ -41,8 +36,8 @@ beforeEach(() => {
   const bus = createLocalBus();
   store1 = createMergeableStore('s1');
   store2 = createMergeableStore('s2');
-  persister1 = createSyncPersister(store1, bus, 0.01);
-  persister2 = createSyncPersister(store2, bus, 0.01);
+  persister1 = createSyncPersister(store1, bus, 0.001);
+  persister2 = createSyncPersister(store2, bus, 0.001);
 });
 
 describe('Unidirectional', () => {
@@ -52,6 +47,7 @@ describe('Unidirectional', () => {
       {v1: 1, v2: 2},
     ]);
     await persister1.save();
+    await pause(2, true);
     await expectEachToHaveContent(
       [
         {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
@@ -67,6 +63,7 @@ describe('Unidirectional', () => {
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
     ]);
+    await pause(2, true);
     await expectEachToHaveContent(
       [
         {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
@@ -82,6 +79,7 @@ describe('Unidirectional', () => {
       {v1: 1, v2: 2},
     ]);
     await persister1.load({t0: {r0: {c0: 0}}}, {v0: 0});
+    await pause(2, true);
     await expectEachToHaveContent(
       [{t0: {r0: {c0: 0}}}, {v0: 0}],
       [
@@ -97,6 +95,7 @@ describe('Unidirectional', () => {
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
     ]);
+    await pause(2, true);
     await expectEachToHaveContent(
       [{t0: {r0: {c0: 0}}}, {v0: 0}],
       [
@@ -129,11 +128,12 @@ describe('Bidirectional', () => {
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
     ]);
-    await pause(1, true);
+    await pause(2, true);
     store2.setContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
     ]);
+    await pause(2, true);
     await expectEachToHaveContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
@@ -145,6 +145,7 @@ describe('Bidirectional', () => {
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
     ]);
+    await pause(2, true);
     await expectEachToHaveContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
@@ -156,6 +157,7 @@ describe('Bidirectional', () => {
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
     ]);
+    await pause(2, true);
     await expectEachToHaveContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
@@ -164,11 +166,12 @@ describe('Bidirectional', () => {
 
   test('store1 missing tables', async () => {
     store1.setValues({v1: 1, v2: 2});
-    await pause(1, true);
+    await pause(2, true);
     store2.setContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
     ]);
+    await pause(2, true);
     await expectEachToHaveContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
@@ -177,11 +180,12 @@ describe('Bidirectional', () => {
 
   test('store2 missing tables', async () => {
     store2.setValues({v1: 1, v2: 2});
-    await pause(1, true);
+    await pause(2, true);
     store1.setContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
     ]);
+    await pause(2, true);
     await expectEachToHaveContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
@@ -190,8 +194,9 @@ describe('Bidirectional', () => {
 
   test('different tables', async () => {
     store1.setTable('t1', {r1: {c1: 1, c2: 2}, r2: {c2: 2}});
-    await pause(1, true);
+    await pause(2, true);
     store2.setTable('t2', {r2: {c2: 2}});
+    await pause(2, true);
     await expectEachToHaveContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {},
@@ -200,11 +205,12 @@ describe('Bidirectional', () => {
 
   test('store1 missing table', async () => {
     store1.setTable('t1', {r1: {c1: 1, c2: 2}, r2: {c2: 2}});
-    await pause(1, true);
+    await pause(2, true);
     store2.setTables({
       t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}},
       t2: {r2: {c2: 2}},
     });
+    await pause(2, true);
     await expectEachToHaveContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {},
@@ -213,11 +219,12 @@ describe('Bidirectional', () => {
 
   test('store2 missing table', async () => {
     store2.setTable('t1', {r1: {c1: 1, c2: 2}, r2: {c2: 2}});
-    await pause(1, true);
+    await pause(2, true);
     store1.setTables({
       t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}},
       t2: {r2: {c2: 2}},
     });
+    await pause(2, true);
     await expectEachToHaveContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {},
@@ -226,8 +233,9 @@ describe('Bidirectional', () => {
 
   test('different table', async () => {
     store1.setRow('t1', 'r1', {c1: 1, c2: 2});
-    await pause(1, true);
+    await pause(2, true);
     store2.setRow('t1', 'r2', {c2: 2});
+    await pause(2, true);
     await expectEachToHaveContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}},
       {},
@@ -236,8 +244,9 @@ describe('Bidirectional', () => {
 
   test('store1 missing row', async () => {
     store1.setRow('t1', 'r1', {c1: 1, c2: 2});
-    await pause(1, true);
+    await pause(2, true);
     store2.setTable('t1', {r1: {c1: 1, c2: 2}, r2: {c2: 2}});
+    await pause(2, true);
     await expectEachToHaveContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}},
       {},
@@ -246,8 +255,9 @@ describe('Bidirectional', () => {
 
   test('store2 missing row', async () => {
     store2.setRow('t1', 'r1', {c1: 1, c2: 2});
-    await pause(1, true);
+    await pause(2, true);
     store1.setTable('t1', {r1: {c1: 1, c2: 2}, r2: {c2: 2}});
+    await pause(2, true);
     await expectEachToHaveContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}},
       {},
@@ -256,29 +266,33 @@ describe('Bidirectional', () => {
 
   test('different row', async () => {
     store1.setCell('t1', 'r1', 'c1', 1);
-    await pause(1, true);
+    await pause(2, true);
     store2.setCell('t1', 'r1', 'c2', 2);
+    await pause(2, true);
     await expectEachToHaveContent([{t1: {r1: {c1: 1, c2: 2}}}, {}]);
   });
 
   test('store1 missing cell', async () => {
     store1.setCell('t1', 'r1', 'c1', 1);
-    await pause(1, true);
+    await pause(2, true);
     store2.setRow('t1', 'r1', {c1: 1, c2: 2});
+    await pause(2, true);
     await expectEachToHaveContent([{t1: {r1: {c1: 1, c2: 2}}}, {}]);
   });
 
   test('store2 missing cell', async () => {
     store2.setCell('t1', 'r1', 'c1', 1);
-    await pause(1, true);
+    await pause(2, true);
     store1.setRow('t1', 'r1', {c1: 1, c2: 2});
+    await pause(2, true);
     await expectEachToHaveContent([{t1: {r1: {c1: 1, c2: 2}}}, {}]);
   });
 
   test('different cell', async () => {
     store1.setCell('t1', 'r1', 'c1', 1);
-    await pause(1, true);
+    await pause(2, true);
     store2.setCell('t1', 'r1', 'c1', 2);
+    await pause(2, true);
     await expectEachToHaveContent([{t1: {r1: {c1: 2}}}, {}]);
   });
 
@@ -287,11 +301,12 @@ describe('Bidirectional', () => {
       t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}},
       t2: {r2: {c2: 2}},
     });
-    await pause(1, true);
+    await pause(2, true);
     store2.setContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
     ]);
+    await pause(2, true);
     await expectEachToHaveContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
@@ -303,11 +318,12 @@ describe('Bidirectional', () => {
       t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}},
       t2: {r2: {c2: 2}},
     });
-    await pause(1, true);
+    await pause(2, true);
     store1.setContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
     ]);
+    await pause(2, true);
     await expectEachToHaveContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
@@ -316,29 +332,33 @@ describe('Bidirectional', () => {
 
   test('different values', async () => {
     store1.setValue('v1', 1);
-    await pause(1, true);
+    await pause(2, true);
     store2.setValue('v2', 2);
+    await pause(2, true);
     await expectEachToHaveContent([{}, {v1: 1, v2: 2}]);
   });
 
   test('store1 missing value', async () => {
     store1.setValue('v2', 2);
-    await pause(1, true);
+    await pause(2, true);
     store2.setValues({v1: 1, v2: 2});
+    await pause(2, true);
     await expectEachToHaveContent([{}, {v1: 1, v2: 2}]);
   });
 
   test('store2 missing value', async () => {
     store2.setValue('v2', 2);
-    await pause(1, true);
+    await pause(2, true);
     store1.setValues({v1: 1, v2: 2});
+    await pause(2, true);
     await expectEachToHaveContent([{}, {v1: 1, v2: 2}]);
   });
 
   test('different value', async () => {
     store1.setValue('v1', 1);
-    await pause(1, true);
+    await pause(2, true);
     store2.setValue('v1', 2);
+    await pause(2, true);
     await expectEachToHaveContent([{}, {v1: 2}]);
   });
 });
