@@ -6,14 +6,28 @@ import {
   createLocalBus as createLocalBusDecl,
   createSyncPersister as createSyncPersisterDecl,
 } from '../types/persisters/persister-sync';
+import {
+  ContentDelta,
+  MergeableChanges,
+  MergeableStore,
+  RowStamp,
+  TableDelta,
+  TablesDelta,
+  ValuesStamp,
+} from '../types/mergeable-store';
 import {Id, IdOrNull, Ids} from '../types/common';
 import {IdMap, mapGet, mapNew, mapSet} from '../common/map';
 import {collDel, collForEach} from '../common/coll';
-import {ifNotUndefined, isUndefined, promiseNew} from '../common/other';
-import {MergeableStore} from '../types/mergeable-store';
+import {
+  ifNotUndefined,
+  isUndefined,
+  promiseAll,
+  promiseNew,
+} from '../common/other';
+import {objForEach, objToArray} from '../common/obj';
+import {EMPTY_STRING} from '../common/strings';
 import {createCustomPersister} from '../persisters';
 import {getHlcFunctions} from '../mergeable-store/hlc';
-import {objForEach} from '../common/obj';
 
 export const createSyncPersister = ((
   store: MergeableStore,
@@ -179,7 +193,7 @@ export const createSyncPersister = ((
             time,
             [
               [time, {[tableId]: [time, {[rowId]: [time, rowChanges]}]}],
-              ['', {}],
+              [EMPTY_STRING, {}],
               1,
             ],
           ]);
@@ -188,7 +202,7 @@ export const createSyncPersister = ((
           const [time, valuesChanges] = payload;
           store.applyMergeableChanges([
             time,
-            [['', {}], [time, valuesChanges], 1],
+            [[EMPTY_STRING, {}], [time, valuesChanges], 1],
           ]);
         }
       },
@@ -197,12 +211,12 @@ export const createSyncPersister = ((
 
   const [send] = join(store.getId(), receive);
 
-  const request = async (
+  const request = async <Payload>(
     toStoreId: IdOrNull,
     message: string,
     payload: any,
     args?: Ids,
-  ): Promise<[payload: any, fromStoreId: Id]> =>
+  ): Promise<[payload: Payload, fromStoreId: Id]> =>
     promiseNew((resolve, reject) => {
       const requestId = getHlc();
       const timeout = setTimeout(() => {
@@ -220,13 +234,60 @@ export const createSyncPersister = ((
       send(requestId, toStoreId, message, payload, args);
     });
 
-  const getPersisted = async (): Promise<undefined | 1> => {
-    const [contentDelta, otherStoreId] = await request(
+  const getPersisted = async (): Promise<any> => {
+    const changes: MergeableChanges = [
+      EMPTY_STRING,
+      [[EMPTY_STRING, {}], [EMPTY_STRING, {}], 1],
+    ];
+    const [contentDelta, otherStoreId] = await request<ContentDelta>(
       null,
       'getContentDelta',
       store.getMergeableContentHashes(),
     );
-    return 1;
+    if (!isUndefined(contentDelta)) {
+      const [time, [tablesHash, valuesHash]] = contentDelta;
+      changes[0] = time;
+      if (!isUndefined(tablesHash)) {
+        const [[time, tablesChanges]] = await request<TablesDelta>(
+          otherStoreId,
+          'getTablesDelta',
+          store.getMergeableTablesHashes(),
+        );
+        changes[1][0][0] = time;
+        await promiseAll(
+          objToArray(tablesChanges, async (_, tableId) => {
+            const [[time, tableChanges]] = await request<TableDelta>(
+              otherStoreId,
+              'getTableDelta',
+              store.getMergeableTableHashes(tableId),
+              [tableId],
+            );
+            changes[1][0][1][tableId] = [time, {}];
+            await promiseAll(
+              objToArray(tableChanges, async (_, rowId) => {
+                const [rowStamp] = await request<RowStamp>(
+                  otherStoreId,
+                  'getRowDelta',
+                  store.getMergeableRowHashes(tableId, rowId),
+                  [tableId, rowId],
+                );
+                changes[1][0][1][tableId][1][rowId] = rowStamp;
+              }),
+            );
+          }),
+        );
+      }
+      if (!isUndefined(valuesHash)) {
+        const [valuesStamp] = await request<ValuesStamp>(
+          otherStoreId,
+          'getValuesDelta',
+          store.getMergeableValuesHashes(),
+        );
+        changes[1][1] = valuesStamp;
+      }
+    }
+
+    return changes[0] != EMPTY_STRING ? changes : undefined;
   };
 
   const setPersisted = async (): Promise<void> => {
