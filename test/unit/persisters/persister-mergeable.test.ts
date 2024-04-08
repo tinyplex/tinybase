@@ -162,6 +162,7 @@ describe.each([
       2033316771,
     ]);
     await persister.load();
+    pause(2, true);
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     expect(store.getValues()).toEqual({v1: 1});
     expect(store.getMergeableContent()).toMatchSnapshot();
