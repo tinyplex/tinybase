@@ -269,12 +269,12 @@ export const mockSync: Persistable<[Bus, MergeableStore]> = {
   getLocation: async (): Promise<[Bus, MergeableStore]> => {
     const bus = createLocalBus();
     const otherStore = createMergeableStore('s2');
-    await createSyncPersister(otherStore, bus).startAutoSave();
+    await createSyncPersister(otherStore, bus, 0.01).startSync();
     return [bus, otherStore];
   },
   getLocationMethod: ['getBus', (location) => location[0]],
   getPersister: (store: Store, location) =>
-    createSyncPersister(store as MergeableStore, location[0]),
+    createSyncPersister(store as MergeableStore, location[0], 0.01),
   get: async (
     location: [Bus, MergeableStore],
   ): Promise<Content | MergeableContent | void> => {

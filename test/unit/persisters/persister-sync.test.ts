@@ -41,8 +41,8 @@ beforeEach(() => {
   const bus = createLocalBus();
   store1 = createMergeableStore('s1');
   store2 = createMergeableStore('s2');
-  persister1 = createSyncPersister(store1, bus, 0.001);
-  persister2 = createSyncPersister(store2, bus, 0.001);
+  persister1 = createSyncPersister(store1, bus, 0.01);
+  persister2 = createSyncPersister(store2, bus, 0.01);
 });
 
 describe('Unidirectional', () => {
