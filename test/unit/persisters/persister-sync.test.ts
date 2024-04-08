@@ -110,6 +110,7 @@ describe('Bidirectional', () => {
   beforeEach(async () => {
     await persister1.startSync();
     await persister2.startSync();
+    await pause(2, true);
   });
 
   afterEach(() => {
@@ -128,7 +129,6 @@ describe('Bidirectional', () => {
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
     ]);
-    await pause(2, true);
     store2.setContent([
       {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
       {v1: 1, v2: 2},
