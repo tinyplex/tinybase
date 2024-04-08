@@ -1,5 +1,6 @@
 import {
   Bus,
+  BusStats,
   Receive,
   Send,
   SyncPersister,
@@ -15,15 +16,16 @@ import {
   TablesDelta,
   ValuesStamp,
 } from '../types/mergeable-store';
-import {Id, IdOrNull, Ids} from '../types/common';
-import {IdMap, mapGet, mapNew, mapSet} from '../common/map';
-import {collDel, collForEach} from '../common/coll';
 import {
+  DEBUG,
   ifNotUndefined,
   isUndefined,
   promiseAll,
   promiseNew,
 } from '../common/other';
+import {Id, IdOrNull, Ids} from '../types/common';
+import {IdMap, mapGet, mapNew, mapSet} from '../common/map';
+import {collDel, collForEach, collSize} from '../common/coll';
 import {EMPTY_STRING} from '../common/strings';
 import {PersisterListener} from '../types/persisters';
 import {createCustomPersister} from '../persisters';
@@ -231,33 +233,42 @@ export const createSyncPersister = ((
 }) as typeof createSyncPersisterDecl;
 
 export const createLocalBus = (() => {
+  let sends = 0;
+  let receives = 0;
   const stores: IdMap<Receive> = mapNew();
-  const join = (storeId: Id, receive: Receive): [Send, () => void] => {
-    mapSet(stores, storeId, receive);
-    const send = (
-      requestId: IdOrNull,
-      toStoreId: IdOrNull,
-      message: string,
-      payload: any,
-      args?: Ids,
-    ): void =>
-      isUndefined(toStoreId)
-        ? collForEach(stores, (receive, otherStoreId) =>
-            otherStoreId != storeId
-              ? receive(requestId, storeId, message, payload, args)
-              : 0,
-          )
-        : mapGet(stores, toStoreId)?.(
-            requestId,
-            storeId,
-            message,
-            payload,
-            args,
-          );
-    const leave = (): void => {
-      collDel(stores, storeId);
-    };
-    return [send, leave];
-  };
-  return [join];
+  return [
+    (storeId: Id, receive: Receive): [Send, () => void] => {
+      mapSet(stores, storeId, receive);
+      const send = (
+        requestId: IdOrNull,
+        toStoreId: IdOrNull,
+        message: string,
+        payload: any,
+        args?: Ids,
+      ): void => {
+        if (DEBUG) {
+          sends++;
+          receives += isUndefined(toStoreId) ? collSize(stores) - 1 : 1;
+        }
+        isUndefined(toStoreId)
+          ? collForEach(stores, (receive, otherStoreId) =>
+              otherStoreId != storeId
+                ? receive(requestId, storeId, message, payload, args)
+                : 0,
+            )
+          : mapGet(stores, toStoreId)?.(
+              requestId,
+              storeId,
+              message,
+              payload,
+              args,
+            );
+      };
+      const leave = (): void => {
+        collDel(stores, storeId);
+      };
+      return [send, leave];
+    },
+    (): BusStats => (DEBUG ? {sends, receives} : {}),
+  ];
 }) as typeof createLocalBusDecl;
