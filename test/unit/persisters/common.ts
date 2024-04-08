@@ -36,6 +36,6 @@ export type Persistable<Location = string> = {
   extraLoad?: 0 | 1;
 };
 
-export const nextLoop = async (mockedTimers = false): Promise<void> =>
-  await pause(0, mockedTimers);
+export const nextLoop = async (alsoNudgeHlc = false): Promise<void> =>
+  await pause(0, alsoNudgeHlc);
 // fs.watch misses changes made in the same loop, seemingly

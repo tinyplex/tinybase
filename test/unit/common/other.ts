@@ -3,14 +3,14 @@ import {IdObj, IdObj2} from './types';
 import {TextDecoder, TextEncoder} from 'util';
 import fetchMock from 'jest-fetch-mock';
 import fs from 'fs';
+import {nudgeHlc} from './mergeable';
 
 Object.assign(globalThis, {TextDecoder, TextEncoder});
 
-export const pause = async (ms = 50, mockedTimers = false): Promise<void> => {
+export const pause = async (ms = 50, alsoNudgeHlc = false): Promise<void> => {
   const promise = new Promise<void>((resolve) => setTimeout(resolve, ms));
-  if (mockedTimers) {
-    jest.runAllTicks();
-    await jest.advanceTimersByTimeAsync(ms);
+  if (alsoNudgeHlc) {
+    nudgeHlc(ms);
   }
   return promise;
 };

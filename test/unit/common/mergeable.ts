@@ -33,11 +33,14 @@ const encodeHlc = (
   toB64(clientHash30);
 
 const STORE_ID_HASHES: {[id: string]: number} = {s1: 139573449, s2: 89240592};
+const START_TIME = new Date('2024-01-01 00:00:00 UTC').valueOf();
+
+export const resetHlc = () => ((globalThis as any).HLC_TIME = START_TIME);
+
+export const nudgeHlc = (ms: number) => ((globalThis as any).HLC_TIME += ms);
 
 export const time = (offset: number, counter: number, storeId: string = 's1') =>
-  encodeHlc(START_TIME.valueOf() + offset, counter, STORE_ID_HASHES[storeId]);
-
-export const START_TIME = new Date('2024-01-01 00:00:00 UTC');
+  encodeHlc(START_TIME + offset, counter, STORE_ID_HASHES[storeId]);
 
 export const stamped = (offset: number, counter: number, thing: any) => [
   time(offset, counter, 's1'),

@@ -12,7 +12,6 @@ import {
   createStore,
 } from 'tinybase/debug';
 import {GetLocationMethod, Persistable, nextLoop} from './common';
-import {START_TIME, nullStamped, stamped} from '../common/mergeable';
 import {
   mockFile,
   mockLocalStorage,
@@ -22,14 +21,11 @@ import {
   mockSessionStorage,
   mockSync,
 } from './mocks';
+import {nullStamped, resetHlc, stamped} from '../common/mergeable';
 import {pause} from '../common/other';
 
 beforeEach(() => {
-  jest.useFakeTimers({now: START_TIME, advanceTimers: true});
-});
-
-afterEach(() => {
-  jest.useRealTimers();
+  resetHlc();
 });
 
 describe.each([
@@ -136,7 +132,7 @@ describe.each([
     }
   });
 
-  test.only('loads', async () => {
+  test('loads', async () => {
     await persistable.set(location, [
       'Hc2DO@000008DKS9',
       [
