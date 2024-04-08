@@ -265,7 +265,7 @@ export const mockFile: Persistable = {
 };
 
 export const mockSync: Persistable<[Bus, MergeableStore]> = {
-  autoLoadPause: 100,
+  autoLoadPause: 1,
   getLocation: async (): Promise<[Bus, MergeableStore]> => {
     const bus = createLocalBus();
     const otherStore = createMergeableStore('s2');
