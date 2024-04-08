@@ -1106,9 +1106,7 @@
  * `stopListeningToPersisted` has been renamed `delPersisterListener`.
  * @param store The Store to persist.
  * @param getPersisted An asynchronous function which will fetch content from
- * the persistence layer (or `undefined` if not present). Since v5.0.0 this
- * function can return `1` to indicate that the Persister updated the Store
- * in-place.
+ * the persistence layer (or `undefined` if not present).
  * @param setPersisted An asynchronous function which will send content to the
  * persistence layer. Since v4.0, it receives functions for getting the Store
  * content and information about the changes made during a transaction.
