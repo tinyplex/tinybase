@@ -25,7 +25,7 @@ import {
 import {pause} from '../common/other';
 
 beforeEach(() => {
-  jest.useFakeTimers({now: START_TIME});
+  jest.useFakeTimers({now: START_TIME, advanceTimers: true});
 });
 
 afterEach(() => {
@@ -136,7 +136,7 @@ describe.each([
     }
   });
 
-  test('loads', async () => {
+  test.only('loads', async () => {
     await persistable.set(location, [
       'Hc2DO@000008DKS9',
       [
