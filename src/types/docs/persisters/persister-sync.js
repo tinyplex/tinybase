@@ -95,10 +95,10 @@
  *
  * const store2 = createMergeableStore('store2');
  * const persister2 = createSyncPersister(store2, bus);
- * await persister2.startAutoLoad();
- * await persister2.startAutoSave();
+ * await persister2.startSync();
  *
  * await persister1.save();
+ * // ...
  * // Store2 will be synced with Store1.
  *
  * console.log(store2.getTables());
