@@ -22,6 +22,11 @@
  */
 /// Bus
 /**
+ * The BusStats type
+ *
+ */
+/// BusStats
+/**
  * The SyncPersister interface is a minor extension to the Persister interface.
  *
  * It simply provides an extra getBus method for accessing the reference the Bus
