@@ -1,11 +1,12 @@
 /* eslint-disable jest/no-conditional-expect */
 
-import {Content, MergeableStore, createMergeableStore} from 'tinybase/debug';
 import {
+  Bus,
   SyncPersister,
   createLocalBus,
   createSyncPersister,
 } from 'tinybase/debug/persisters/persister-sync';
+import {Content, MergeableStore, createMergeableStore} from 'tinybase/debug';
 import {pause} from '../common/other';
 import {resetHlc} from '../common/mergeable';
 
@@ -13,6 +14,7 @@ beforeEach(() => {
   resetHlc();
 });
 
+let bus: Bus;
 let store1: MergeableStore;
 let store2: MergeableStore;
 let persister1: SyncPersister;
@@ -33,7 +35,7 @@ const expectEachToHaveContent = async (
 };
 
 beforeEach(() => {
-  const bus = createLocalBus();
+  bus = createLocalBus();
   store1 = createMergeableStore('s1');
   store2 = createMergeableStore('s2');
   persister1 = createSyncPersister(store1, bus, 0.001);
@@ -360,5 +362,75 @@ describe('Bidirectional', () => {
     store2.setValue('v1', 2);
     await pause(2, true);
     await expectEachToHaveContent([{}, {v1: 2}]);
+  });
+});
+
+describe('bus getStats', () => {
+  test('2 stores', async () => {
+    await persister1.startSync();
+    await persister2.startSync();
+    await pause(2, true);
+
+    store1.setTable('t1', {r1: {c1: 1}});
+    await pause(2, true);
+    store2.setTable('t2', {r2: {c2: 2}});
+    await pause(2, true);
+
+    const [, getBusStats] = bus;
+    expect(getBusStats()).toEqual({sends: 25, receives: 25});
+
+    expect(store1.getContent()).toEqual(store2.getContent());
+  });
+
+  test('3 stores', async () => {
+    const store3 = createMergeableStore('s3');
+    const persister3 = createSyncPersister(store3, bus, 0.001);
+
+    await persister1.startSync();
+    await persister2.startSync();
+    await persister3.startSync();
+    await pause(2, true);
+
+    store1.setTable('t1', {r1: {c1: 1}});
+    await pause(2, true);
+    store2.setTable('t2', {r2: {c2: 2}});
+    await pause(2, true);
+    store3.setTable('t3', {r3: {c3: 3}});
+    await pause(2, true);
+
+    const [, getBusStats] = bus;
+    expect(getBusStats()).toEqual({sends: 66, receives: 75});
+
+    expect(store1.getContent()).toEqual(store2.getContent());
+    expect(store2.getContent()).toEqual(store3.getContent());
+  });
+
+  test('4 stores', async () => {
+    const store3 = createMergeableStore('s3');
+    const persister3 = createSyncPersister(store3, bus, 0.001);
+    const store4 = createMergeableStore('s4');
+    const persister4 = createSyncPersister(store4, bus, 0.001);
+
+    await persister1.startSync();
+    await persister2.startSync();
+    await persister3.startSync();
+    await persister4.startSync();
+    await pause(2, true);
+
+    store1.setTable('t1', {r1: {c1: 1}});
+    await pause(2, true);
+    store2.setTable('t2', {r2: {c2: 2}});
+    await pause(2, true);
+    store3.setTable('t3', {r3: {c3: 3}});
+    await pause(2, true);
+    store4.setTable('t4', {r4: {c4: 4}});
+    await pause(2, true);
+
+    const [, getBusStats] = bus;
+    expect(getBusStats()).toEqual({sends: 126, receives: 150});
+
+    expect(store1.getContent()).toEqual(store2.getContent());
+    expect(store2.getContent()).toEqual(store3.getContent());
+    expect(store3.getContent()).toEqual(store4.getContent());
   });
 });
