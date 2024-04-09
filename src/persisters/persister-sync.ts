@@ -26,11 +26,11 @@ import {
 import {Id, IdOrNull, Ids} from '../types/common';
 import {IdMap, mapGet, mapNew, mapSet} from '../common/map';
 import {collDel, collForEach, collSize} from '../common/coll';
+import {objMap, objToArray} from '../common/obj';
 import {EMPTY_STRING} from '../common/strings';
 import {PersisterListener} from '../types/persisters';
 import {createCustomPersister} from '../persisters';
 import {getHlcFunctions} from '../mergeable-store/hlc';
-import {objToArray} from '../common/obj';
 
 export const createSyncPersister = ((
   store: MergeableStore,
@@ -73,8 +73,12 @@ export const createSyncPersister = ((
           (message == 'getContentDelta' && persister.isAutoSaving()) ||
           message == 'getContentDelta!'
         ) {
-          const cd = store.getMergeableContentDelta(payload);
-          send(requestId, fromStoreId, 'contentDelta', cd);
+          send(
+            requestId,
+            fromStoreId,
+            'contentDelta',
+            store.getMergeableContentDelta(payload),
+          );
         }
 
         if (message == 'getTablesDelta') {
@@ -95,16 +99,20 @@ export const createSyncPersister = ((
             [tableId],
           );
         }
-        if (message == 'getRowDelta') {
-          const [tableId, rowId] = args;
+
+        if (message == 'getRowDeltas') {
+          const [tableId] = args;
           send(
             requestId,
             fromStoreId,
-            'rowDelta',
-            store.getMergeableRowDelta(tableId, rowId, payload),
-            [tableId, rowId],
+            'rowDeltas',
+            objMap(payload, (rowHashes: any, rowId) =>
+              store.getMergeableRowDelta(tableId, rowId, rowHashes),
+            ),
+            [tableId],
           );
         }
+
         if (message == 'getValuesDelta') {
           send(
             requestId,
@@ -167,34 +175,39 @@ export const createSyncPersister = ((
         changes[1][0][0] = time;
         await promiseAll(
           objToArray(tablesChanges, async (_, tableId) => {
-            const [[time, tableChanges]] = await request<TableDelta>(
+            const [[time, rows]] = await request<TableDelta>(
               otherStoreId,
               'getTableDelta',
               store.getMergeableTableHashes(tableId),
               [tableId],
             );
-            changes[1][0][1][tableId] = [time, {}];
-            await promiseAll(
-              objToArray(tableChanges, async (_, rowId) => {
-                const [rowStamp] = await request<RowStamp>(
-                  otherStoreId,
-                  'getRowDelta',
-                  store.getMergeableRowHashes(tableId, rowId),
-                  [tableId, rowId],
-                );
-                changes[1][0][1][tableId][1][rowId] = rowStamp;
-              }),
-            );
+            changes[1][0][1][tableId] = [
+              time,
+              objMap(
+                (
+                  await request<{[rowId: Id]: RowStamp}>(
+                    otherStoreId,
+                    'getRowDeltas',
+                    objMap(rows, (_, rowId) =>
+                      store.getMergeableRowHashes(tableId, rowId),
+                    ),
+                    [tableId],
+                  )
+                )[0],
+                (rowStamp) => rowStamp,
+              ),
+            ];
           }),
         );
       }
       if (!isUndefined(valuesHash)) {
-        const [valuesStamp] = await request<ValuesStamp>(
-          otherStoreId,
-          'getValuesDelta',
-          store.getMergeableValuesHashes(),
-        );
-        changes[1][1] = valuesStamp;
+        changes[1][1] = (
+          await request<ValuesStamp>(
+            otherStoreId,
+            'getValuesDelta',
+            store.getMergeableValuesHashes(),
+          )
+        )[0];
       }
     }
     return changes;
