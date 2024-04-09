@@ -147,6 +147,7 @@ const getMockedCustom = (
       },
       (listener) => {
         customPersisterListener = listener;
+        return 1;
       },
       () => (customPersisterListener = undefined),
       undefined,

@@ -82,7 +82,7 @@ export const createCustomPersister = <
   let loads = 0;
   let saves = 0;
   let action;
-  let autoLoadHandle: ListeningHandle | 1 | undefined;
+  let autoLoadHandle: ListeningHandle | undefined;
   let autoSaveListenerId: Id | undefined;
 
   mapEnsure(scheduleRunning, scheduleId, () => 0);
@@ -134,18 +134,15 @@ export const createCustomPersister = <
       | Changes
       | MergeableContent
       | MergeableChanges
-      | undefined
-      | 1,
+      | undefined,
   ): void => {
-    if (contentOrChanges !== 1) {
-      (isMergeableStore && isString(contentOrChanges?.[0])
-        ? contentOrChanges?.[1][2] === 1
-          ? (store as MergeableStore).applyMergeableChanges
-          : (store as MergeableStore).setMergeableContent
-        : contentOrChanges?.[2] === 1
-          ? store.applyChanges
-          : store.setContent)(contentOrChanges as Changes & MergeableChanges);
-    }
+    (isMergeableStore && isString(contentOrChanges?.[0])
+      ? contentOrChanges?.[1][2] === 1
+        ? (store as MergeableStore).applyMergeableChanges
+        : (store as MergeableStore).setMergeableContent
+      : contentOrChanges?.[2] === 1
+        ? store.applyChanges
+        : store.setContent)(contentOrChanges as Changes & MergeableChanges);
   };
 
   const persister: any = {
@@ -167,29 +164,24 @@ export const createCustomPersister = <
       initialValues: Values = {},
     ): Promise<Persister> => {
       await persister.stopAutoLoad().load(initialTables, initialValues);
-      autoLoadHandle =
-        addPersisterListener(async (getContent, getChanges) => {
-          const changes = getChanges?.();
-          await loadLock(async () => {
-            try {
-              setContentOrChanges(
-                changes ?? getContent?.() ?? (await getPersisted()),
-              );
-            } catch (error) {
-              onIgnoredError?.(error);
-            }
-          });
-        }) ?? 1;
+      autoLoadHandle = addPersisterListener(async (getContent, getChanges) => {
+        const changes = getChanges?.();
+        await loadLock(async () => {
+          try {
+            setContentOrChanges(
+              changes ?? getContent?.() ?? (await getPersisted()),
+            );
+          } catch (error) {
+            onIgnoredError?.(error);
+          }
+        });
+      });
       return persister;
     },
 
     stopAutoLoad: (): Persister => {
       if (autoLoadHandle) {
-        delPersisterListener(
-          autoLoadHandle !== 1
-            ? autoLoadHandle
-            : (undefined as ListeningHandle),
-        );
+        delPersisterListener(autoLoadHandle);
         autoLoadHandle = undefined;
       }
       return persister;
