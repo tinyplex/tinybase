@@ -1,7 +1,7 @@
 /// mergeable-store
 
 import {CellOrUndefined, Store, ValueOrUndefined} from './store.d';
-import {Id} from './common';
+import {Id, Ids} from './common';
 
 /// Hash
 export type Hash = number;
@@ -32,7 +32,7 @@ export type TablesStamp<Hashed extends boolean = false> = Stamp<
 export type TablesHashes = [hash: Hash, {[tableId: Id]: Hash}];
 
 // TablesDelta
-export type TablesDelta = [time: Time, {[tableId: Id]: Hash}];
+export type TablesDelta = [time: Time, deltaTableIds: Ids];
 
 // TableStamp
 export type TableStamp<Hashed extends boolean = false> = Stamp<
@@ -44,7 +44,7 @@ export type TableStamp<Hashed extends boolean = false> = Stamp<
 export type TableHashes = [hash: Hash, {[rowId: Id]: Hash}];
 
 // TableDelta
-export type TableDelta = [time: Time, {[rowId: Id]: Hash}];
+export type TableDelta = [time: Time, deltaRowIds: Ids];
 
 // RowStamp
 export type RowStamp<Hashed extends boolean = false> = Stamp<
