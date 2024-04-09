@@ -26,9 +26,10 @@ import {
 import {Id, IdOrNull, Ids} from '../types/common';
 import {IdMap, mapGet, mapNew, mapSet} from '../common/map';
 import {collDel, collForEach, collSize} from '../common/coll';
-import {objMap, objToArray} from '../common/obj';
+import {objMap, objNew} from '../common/obj';
 import {EMPTY_STRING} from '../common/strings';
 import {PersisterListener} from '../types/persisters';
+import {arrayMap} from '../common/array';
 import {createCustomPersister} from '../persisters';
 import {getHlcFunctions} from '../mergeable-store/hlc';
 
@@ -167,15 +168,15 @@ export const createSyncPersister = ((
       const [time, [tablesHash, valuesHash]] = contentDelta;
       changes[0] = time;
       if (!isUndefined(tablesHash)) {
-        const [[time, tablesChanges]] = await request<TablesDelta>(
+        const [[time, deltaTableIds]] = await request<TablesDelta>(
           otherStoreId,
           'getTablesDelta',
           store.getMergeableTablesHashes(),
         );
         changes[1][0][0] = time;
         await promiseAll(
-          objToArray(tablesChanges, async (_, tableId) => {
-            const [[time, rows]] = await request<TableDelta>(
+          arrayMap(deltaTableIds, async (tableId) => {
+            const [[time, deltaRowIds]] = await request<TableDelta>(
               otherStoreId,
               'getTableDelta',
               store.getMergeableTableHashes(tableId),
@@ -188,8 +189,11 @@ export const createSyncPersister = ((
                   await request<{[rowId: Id]: RowStamp}>(
                     otherStoreId,
                     'getRowDeltas',
-                    objMap(rows, (_, rowId) =>
-                      store.getMergeableRowHashes(tableId, rowId),
+                    objNew(
+                      arrayMap(deltaRowIds, (rowId) => [
+                        rowId,
+                        store.getMergeableRowHashes(tableId, rowId),
+                      ]),
                     ),
                     [tableId],
                   )
