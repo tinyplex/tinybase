@@ -32,6 +32,7 @@ const expectEachToHaveContent = async (
   } else {
     expect(store2.getMergeableContent()).toEqual(store1.getMergeableContent());
   }
+  expect(bus[1]()).toMatchSnapshot();
 };
 
 beforeEach(() => {
@@ -365,72 +366,199 @@ describe('Bidirectional', () => {
   });
 });
 
-describe('bus getStats', () => {
-  test('2 stores', async () => {
-    await persister1.startSync();
-    await persister2.startSync();
-    await pause(2, true);
+describe('Multidirectional', () => {
+  let bus: Bus;
+  const stores = new Array(10);
+  const persisters = new Array(10);
 
-    store1.setTable('t1', {r1: {c1: 1}});
-    await pause(2, true);
-    store2.setTable('t2', {r2: {c2: 2}});
-    await pause(2, true);
+  const expectAllToHaveContent = async (content: Content) => {
+    const mergeableContent = stores[0].getMergeableContent();
+    expect(mergeableContent).toMatchSnapshot();
+    stores.forEach((store, s) => {
+      expect(store.getContent()).toEqual(content);
+      if (s > 0) {
+        expect(store.getMergeableContent()).toEqual(mergeableContent);
+      }
+    });
+    expect(bus[1]()).toMatchSnapshot();
+  };
 
-    const [, getBusStats] = bus;
-    expect(getBusStats()).toEqual({sends: 25, receives: 25});
-
-    expect(store1.getContent()).toEqual(store2.getContent());
+  beforeEach(async () => {
+    bus = createLocalBus();
+    stores.fill(null).map(async (_, s) => {
+      stores[s] = createMergeableStore('s' + (s + 1));
+      persisters[s] = createSyncPersister(stores[s], bus, 0.001);
+    });
+    await Promise.all(
+      persisters.map(async (persister) => await persister.startSync()),
+    );
+    await pause(2, true);
   });
 
-  test('3 stores', async () => {
-    const store3 = createMergeableStore('s3');
-    const persister3 = createSyncPersister(store3, bus, 0.001);
+  // ---
 
-    await persister1.startSync();
-    await persister2.startSync();
-    await persister3.startSync();
-    await pause(2, true);
-
-    store1.setTable('t1', {r1: {c1: 1}});
-    await pause(2, true);
-    store2.setTable('t2', {r2: {c2: 2}});
-    await pause(2, true);
-    store3.setTable('t3', {r3: {c3: 3}});
-    await pause(2, true);
-
-    const [, getBusStats] = bus;
-    expect(getBusStats()).toEqual({sends: 66, receives: 75});
-
-    expect(store1.getContent()).toEqual(store2.getContent());
-    expect(store2.getContent()).toEqual(store3.getContent());
+  test('All empty', async () => {
+    await expectAllToHaveContent([{}, {}]);
   });
 
-  test('4 stores', async () => {
-    const store3 = createMergeableStore('s3');
-    const persister3 = createSyncPersister(store3, bus, 0.001);
-    const store4 = createMergeableStore('s4');
-    const persister4 = createSyncPersister(store4, bus, 0.001);
+  test('All match', async () => {
+    stores.forEach((store) =>
+      store.setContent([
+        {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+        {v1: 1, v2: 2},
+      ]),
+    );
+    await pause(2, true);
+    await expectAllToHaveContent([
+      {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+      {v1: 1, v2: 2},
+    ]);
+  });
 
-    await persister1.startSync();
-    await persister2.startSync();
-    await persister3.startSync();
-    await persister4.startSync();
+  test('All but first empty', async () => {
+    stores[0].setContent([
+      {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+      {v1: 1, v2: 2},
+    ]);
     await pause(2, true);
+    await expectAllToHaveContent([
+      {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+      {v1: 1, v2: 2},
+    ]);
+  });
 
-    store1.setTable('t1', {r1: {c1: 1}});
+  test('All but last empty', async () => {
+    stores[9].setContent([
+      {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+      {v1: 1, v2: 2},
+    ]);
     await pause(2, true);
-    store2.setTable('t2', {r2: {c2: 2}});
-    await pause(2, true);
-    store3.setTable('t3', {r3: {c3: 3}});
-    await pause(2, true);
-    store4.setTable('t4', {r4: {c4: 4}});
-    await pause(2, true);
+    await expectAllToHaveContent([
+      {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+      {v1: 1, v2: 2},
+    ]);
+  });
 
-    const [, getBusStats] = bus;
-    expect(getBusStats()).toEqual({sends: 126, receives: 150});
+  test('half tables, half values', async () => {
+    stores.forEach((store, s) => {
+      if (s > 4) {
+        store.setTables({
+          t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}},
+          t2: {r2: {c2: 2}},
+        });
+      } else {
+        store.setValues({v1: 1, v2: 2});
+      }
+    });
+    await pause(2, true);
+    await expectAllToHaveContent([
+      {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+      {v1: 1, v2: 2},
+    ]);
+  });
 
-    expect(store1.getContent()).toEqual(store2.getContent());
-    expect(store2.getContent()).toEqual(store3.getContent());
-    expect(store3.getContent()).toEqual(store4.getContent());
+  test('all different tables', async () => {
+    stores.forEach((store, s) => {
+      store.setTable('t' + (s + 1), {r1: {c1: 1}});
+    });
+    await pause(2, true);
+    await expectAllToHaveContent([
+      {
+        t1: {r1: {c1: 1}},
+        t2: {r1: {c1: 1}},
+        t3: {r1: {c1: 1}},
+        t4: {r1: {c1: 1}},
+        t5: {r1: {c1: 1}},
+        t6: {r1: {c1: 1}},
+        t7: {r1: {c1: 1}},
+        t8: {r1: {c1: 1}},
+        t9: {r1: {c1: 1}},
+        t10: {r1: {c1: 1}},
+      },
+      {},
+    ]);
+  });
+
+  test('all different rows', async () => {
+    stores.forEach((store, s) => {
+      store.setRow('t1', 'r' + (s + 1), {c1: 1});
+    });
+    await pause(2, true);
+    await expectAllToHaveContent([
+      {
+        t1: {
+          r1: {c1: 1},
+          r2: {c1: 1},
+          r3: {c1: 1},
+          r4: {c1: 1},
+          r5: {c1: 1},
+          r6: {c1: 1},
+          r7: {c1: 1},
+          r8: {c1: 1},
+          r9: {c1: 1},
+          r10: {c1: 1},
+        },
+      },
+      {},
+    ]);
+  });
+
+  test('all different cells', async () => {
+    stores.forEach((store, s) => {
+      store.setCell('t1', 'r1', 'c' + (s + 1), 1);
+    });
+    await pause(2, true);
+    await expectAllToHaveContent([
+      {
+        t1: {
+          r1: {
+            c1: 1,
+            c2: 1,
+            c3: 1,
+            c4: 1,
+            c5: 1,
+            c6: 1,
+            c7: 1,
+            c8: 1,
+            c9: 1,
+            c10: 1,
+          },
+        },
+      },
+      {},
+    ]);
+  });
+
+  test('all conflicting cells', async () => {
+    stores.forEach((store, s) => {
+      store.setCell('t1', 'r1', 'c1', s + 1);
+    });
+    await pause(2, true);
+    await expectAllToHaveContent([{t1: {r1: {c1: 10}}}, {}]);
+    stores[5].setCell('t1', 'r1', 'c1', 42);
+    await pause(2, true);
+    await expectAllToHaveContent([{t1: {r1: {c1: 42}}}, {}]);
+  });
+
+  test('all different values', async () => {
+    stores.forEach((store, s) => {
+      store.setValue('v' + (s + 1), 1);
+    });
+    await pause(2, true);
+    await expectAllToHaveContent([
+      {},
+      {v1: 1, v2: 1, v3: 1, v4: 1, v5: 1, v6: 1, v7: 1, v8: 1, v9: 1, v10: 1},
+    ]);
+  });
+
+  test('all conflicting values', async () => {
+    stores.forEach((store, s) => {
+      store.setValue('v1', s + 1);
+    });
+    await pause(2, true);
+    await expectAllToHaveContent([{}, {v1: 10}]);
+    stores[5].setValue('v1', 42);
+    await pause(2, true);
+    await expectAllToHaveContent([{}, {v1: 42}]);
   });
 });
