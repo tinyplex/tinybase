@@ -19,6 +19,13 @@ exports[`Bidirectional Both empty 1`] = `
 ]
 `;
 
+exports[`Bidirectional Both empty 2`] = `
+{
+  "receives": 7,
+  "sends": 7,
+}
+`;
+
 exports[`Bidirectional Both match 1`] = `
 [
   "Hc2DO@200008DKS9",
@@ -100,6 +107,13 @@ exports[`Bidirectional Both match 1`] = `
 ]
 `;
 
+exports[`Bidirectional Both match 2`] = `
+{
+  "receives": 41,
+  "sends": 41,
+}
+`;
+
 exports[`Bidirectional different cell 1`] = `
 [
   "Hc2DO@400015DK@@",
@@ -135,6 +149,13 @@ exports[`Bidirectional different cell 1`] = `
   ],
   2040235603,
 ]
+`;
+
+exports[`Bidirectional different cell 2`] = `
+{
+  "receives": 25,
+  "sends": 25,
+}
 `;
 
 exports[`Bidirectional different row 1`] = `
@@ -177,6 +198,13 @@ exports[`Bidirectional different row 1`] = `
   ],
   3846307195,
 ]
+`;
+
+exports[`Bidirectional different row 2`] = `
+{
+  "receives": 25,
+  "sends": 25,
+}
 `;
 
 exports[`Bidirectional different table 1`] = `
@@ -230,6 +258,13 @@ exports[`Bidirectional different table 1`] = `
   ],
   232363784,
 ]
+`;
+
+exports[`Bidirectional different table 2`] = `
+{
+  "receives": 25,
+  "sends": 25,
+}
 `;
 
 exports[`Bidirectional different tables 1`] = `
@@ -302,6 +337,13 @@ exports[`Bidirectional different tables 1`] = `
 ]
 `;
 
+exports[`Bidirectional different tables 2`] = `
+{
+  "receives": 27,
+  "sends": 27,
+}
+`;
+
 exports[`Bidirectional different value 1`] = `
 [
   "Hc2DO@400015DK@@",
@@ -325,6 +367,13 @@ exports[`Bidirectional different value 1`] = `
   ],
   3198907265,
 ]
+`;
+
+exports[`Bidirectional different value 2`] = `
+{
+  "receives": 17,
+  "sends": 17,
+}
 `;
 
 exports[`Bidirectional different values 1`] = `
@@ -355,6 +404,13 @@ exports[`Bidirectional different values 1`] = `
   ],
   2168283134,
 ]
+`;
+
+exports[`Bidirectional different values 2`] = `
+{
+  "receives": 17,
+  "sends": 17,
+}
 `;
 
 exports[`Bidirectional store1 empty 1`] = `
@@ -438,6 +494,13 @@ exports[`Bidirectional store1 empty 1`] = `
 ]
 `;
 
+exports[`Bidirectional store1 empty 2`] = `
+{
+  "receives": 24,
+  "sends": 24,
+}
+`;
+
 exports[`Bidirectional store1 missing cell 1`] = `
 [
   "Hc2DO@400015DK@@",
@@ -478,6 +541,13 @@ exports[`Bidirectional store1 missing cell 1`] = `
   ],
   3846307195,
 ]
+`;
+
+exports[`Bidirectional store1 missing cell 2`] = `
+{
+  "receives": 25,
+  "sends": 25,
+}
 `;
 
 exports[`Bidirectional store1 missing row 1`] = `
@@ -531,6 +601,13 @@ exports[`Bidirectional store1 missing row 1`] = `
   ],
   232363784,
 ]
+`;
+
+exports[`Bidirectional store1 missing row 2`] = `
+{
+  "receives": 25,
+  "sends": 25,
+}
 `;
 
 exports[`Bidirectional store1 missing table 1`] = `
@@ -601,6 +678,13 @@ exports[`Bidirectional store1 missing table 1`] = `
   ],
   3632778525,
 ]
+`;
+
+exports[`Bidirectional store1 missing table 2`] = `
+{
+  "receives": 27,
+  "sends": 27,
+}
 `;
 
 exports[`Bidirectional store1 missing tables 1`] = `
@@ -684,6 +768,13 @@ exports[`Bidirectional store1 missing tables 1`] = `
 ]
 `;
 
+exports[`Bidirectional store1 missing tables 2`] = `
+{
+  "receives": 27,
+  "sends": 27,
+}
+`;
+
 exports[`Bidirectional store1 missing value 1`] = `
 [
   "Hc2DO@400015DK@@",
@@ -712,6 +803,13 @@ exports[`Bidirectional store1 missing value 1`] = `
   ],
   3558906081,
 ]
+`;
+
+exports[`Bidirectional store1 missing value 2`] = `
+{
+  "receives": 17,
+  "sends": 17,
+}
 `;
 
 exports[`Bidirectional store1 missing values 1`] = `
@@ -795,6 +893,13 @@ exports[`Bidirectional store1 missing values 1`] = `
 ]
 `;
 
+exports[`Bidirectional store1 missing values 2`] = `
+{
+  "receives": 27,
+  "sends": 27,
+}
+`;
+
 exports[`Bidirectional store2 empty 1`] = `
 [
   "Hc2DO@200008DKS9",
@@ -876,6 +981,13 @@ exports[`Bidirectional store2 empty 1`] = `
 ]
 `;
 
+exports[`Bidirectional store2 empty 2`] = `
+{
+  "receives": 24,
+  "sends": 24,
+}
+`;
+
 exports[`Bidirectional store2 missing cell 1`] = `
 [
   "Hc2DO@400018DKS9",
@@ -916,6 +1028,13 @@ exports[`Bidirectional store2 missing cell 1`] = `
   ],
   64304582,
 ]
+`;
+
+exports[`Bidirectional store2 missing cell 2`] = `
+{
+  "receives": 25,
+  "sends": 25,
+}
 `;
 
 exports[`Bidirectional store2 missing row 1`] = `
@@ -969,6 +1088,13 @@ exports[`Bidirectional store2 missing row 1`] = `
   ],
   4027746679,
 ]
+`;
+
+exports[`Bidirectional store2 missing row 2`] = `
+{
+  "receives": 25,
+  "sends": 25,
+}
 `;
 
 exports[`Bidirectional store2 missing table 1`] = `
@@ -1039,6 +1165,13 @@ exports[`Bidirectional store2 missing table 1`] = `
   ],
   1536860168,
 ]
+`;
+
+exports[`Bidirectional store2 missing table 2`] = `
+{
+  "receives": 27,
+  "sends": 27,
+}
 `;
 
 exports[`Bidirectional store2 missing tables 1`] = `
@@ -1122,6 +1255,13 @@ exports[`Bidirectional store2 missing tables 1`] = `
 ]
 `;
 
+exports[`Bidirectional store2 missing tables 2`] = `
+{
+  "receives": 27,
+  "sends": 27,
+}
+`;
+
 exports[`Bidirectional store2 missing value 1`] = `
 [
   "Hc2DO@400018DKS9",
@@ -1150,6 +1290,13 @@ exports[`Bidirectional store2 missing value 1`] = `
   ],
   318127781,
 ]
+`;
+
+exports[`Bidirectional store2 missing value 2`] = `
+{
+  "receives": 17,
+  "sends": 17,
+}
 `;
 
 exports[`Bidirectional store2 missing values 1`] = `
@@ -1231,6 +1378,1049 @@ exports[`Bidirectional store2 missing values 1`] = `
   ],
   3662663865,
 ]
+`;
+
+exports[`Bidirectional store2 missing values 2`] = `
+{
+  "receives": 27,
+  "sends": 27,
+}
+`;
+
+exports[`Multidirectional All but first empty 1`] = `
+[
+  "Hc2DO@200008DKS9",
+  [
+    [
+      "Hc2DO@200008DKS9",
+      {
+        "t1": [
+          "Hc2DO@200008DKS9",
+          {
+            "r1": [
+              "Hc2DO@200008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@200008DKS9",
+                  1,
+                  2771101213,
+                ],
+                "c2": [
+                  "Hc2DO@200008DKS9",
+                  2,
+                  1735757618,
+                ],
+              },
+              3105465029,
+            ],
+            "r2": [
+              "Hc2DO@200008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@200008DKS9",
+                  2,
+                  1735757618,
+                ],
+              },
+              996380338,
+            ],
+          },
+          1179618779,
+        ],
+        "t2": [
+          "Hc2DO@200008DKS9",
+          {
+            "r2": [
+              "Hc2DO@200008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@200008DKS9",
+                  2,
+                  1735757618,
+                ],
+              },
+              996380338,
+            ],
+          },
+          3211305032,
+        ],
+      },
+      3644316511,
+    ],
+    [
+      "Hc2DO@200008DKS9",
+      {
+        "v1": [
+          "Hc2DO@200008DKS9",
+          1,
+          2771101213,
+        ],
+        "v2": [
+          "Hc2DO@200008DKS9",
+          2,
+          1735757618,
+        ],
+      },
+      1480624617,
+    ],
+  ],
+  2172080822,
+]
+`;
+
+exports[`Multidirectional All but first empty 2`] = `
+{
+  "receives": 423,
+  "sends": 255,
+}
+`;
+
+exports[`Multidirectional All but last empty 1`] = `
+[
+  "Hc2DO@20000AYRok",
+  [
+    [
+      "Hc2DO@20000AYRok",
+      {
+        "t1": [
+          "Hc2DO@20000AYRok",
+          {
+            "r1": [
+              "Hc2DO@20000AYRok",
+              {
+                "c1": [
+                  "Hc2DO@20000AYRok",
+                  1,
+                  3062106594,
+                ],
+                "c2": [
+                  "Hc2DO@20000AYRok",
+                  2,
+                  2433866825,
+                ],
+              },
+              4014982900,
+            ],
+            "r2": [
+              "Hc2DO@20000AYRok",
+              {
+                "c2": [
+                  "Hc2DO@20000AYRok",
+                  2,
+                  2433866825,
+                ],
+              },
+              3453142772,
+            ],
+          },
+          3433644199,
+        ],
+        "t2": [
+          "Hc2DO@20000AYRok",
+          {
+            "r2": [
+              "Hc2DO@20000AYRok",
+              {
+                "c2": [
+                  "Hc2DO@20000AYRok",
+                  2,
+                  2433866825,
+                ],
+              },
+              3453142772,
+            ],
+          },
+          3838679204,
+        ],
+      },
+      2646972572,
+    ],
+    [
+      "Hc2DO@20000AYRok",
+      {
+        "v1": [
+          "Hc2DO@20000AYRok",
+          1,
+          3062106594,
+        ],
+        "v2": [
+          "Hc2DO@20000AYRok",
+          2,
+          2433866825,
+        ],
+      },
+      2887948640,
+    ],
+  ],
+  837222908,
+]
+`;
+
+exports[`Multidirectional All but last empty 2`] = `
+{
+  "receives": 423,
+  "sends": 255,
+}
+`;
+
+exports[`Multidirectional All empty 1`] = `
+[
+  "",
+  [
+    [
+      "",
+      {},
+      0,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  0,
+]
+`;
+
+exports[`Multidirectional All empty 2`] = `
+{
+  "receives": 270,
+  "sends": 110,
+}
+`;
+
+exports[`Multidirectional All match 1`] = `
+[
+  "Hc2DO@20000AYRok",
+  [
+    [
+      "Hc2DO@20000AYRok",
+      {
+        "t1": [
+          "Hc2DO@20000AYRok",
+          {
+            "r1": [
+              "Hc2DO@20000AYRok",
+              {
+                "c1": [
+                  "Hc2DO@20000AYRok",
+                  1,
+                  3062106594,
+                ],
+                "c2": [
+                  "Hc2DO@20000AYRok",
+                  2,
+                  2433866825,
+                ],
+              },
+              4014982900,
+            ],
+            "r2": [
+              "Hc2DO@20000AYRok",
+              {
+                "c2": [
+                  "Hc2DO@20000AYRok",
+                  2,
+                  2433866825,
+                ],
+              },
+              3453142772,
+            ],
+          },
+          3433644199,
+        ],
+        "t2": [
+          "Hc2DO@20000AYRok",
+          {
+            "r2": [
+              "Hc2DO@20000AYRok",
+              {
+                "c2": [
+                  "Hc2DO@20000AYRok",
+                  2,
+                  2433866825,
+                ],
+              },
+              3453142772,
+            ],
+          },
+          3838679204,
+        ],
+      },
+      2646972572,
+    ],
+    [
+      "Hc2DO@20000AYRok",
+      {
+        "v1": [
+          "Hc2DO@20000AYRok",
+          1,
+          3062106594,
+        ],
+        "v2": [
+          "Hc2DO@20000AYRok",
+          2,
+          2433866825,
+        ],
+      },
+      2887948640,
+    ],
+  ],
+  837222908,
+]
+`;
+
+exports[`Multidirectional All match 2`] = `
+{
+  "receives": 1800,
+  "sends": 1560,
+}
+`;
+
+exports[`Multidirectional all conflicting cells 1`] = `
+[
+  "Hc2DO@20000AYRok",
+  [
+    [
+      "Hc2DO@20000AYRok",
+      {
+        "t1": [
+          "Hc2DO@20000AYRok",
+          {
+            "r1": [
+              "Hc2DO@20000AYRok",
+              {
+                "c1": [
+                  "Hc2DO@20000AYRok",
+                  10,
+                  3646015130,
+                ],
+              },
+              1159840070,
+            ],
+          },
+          3027642024,
+        ],
+      },
+      432322983,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  432322983,
+]
+`;
+
+exports[`Multidirectional all conflicting cells 2`] = `
+{
+  "receives": 2025,
+  "sends": 1505,
+}
+`;
+
+exports[`Multidirectional all conflicting cells 3`] = `
+[
+  "Hc2DO@400059DKYL",
+  [
+    [
+      "Hc2DO@400059DKYL",
+      {
+        "t1": [
+          "Hc2DO@400059DKYL",
+          {
+            "r1": [
+              "Hc2DO@400059DKYL",
+              {
+                "c1": [
+                  "Hc2DO@400059DKYL",
+                  42,
+                  1137977625,
+                ],
+              },
+              1417701269,
+            ],
+          },
+          2475317497,
+        ],
+      },
+      4151192046,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  4151192046,
+]
+`;
+
+exports[`Multidirectional all conflicting cells 4`] = `
+{
+  "receives": 2106,
+  "sends": 1578,
+}
+`;
+
+exports[`Multidirectional all conflicting values 1`] = `
+[
+  "Hc2DO@20000AYRok",
+  [
+    [
+      "",
+      {},
+      0,
+    ],
+    [
+      "Hc2DO@20000AYRok",
+      {
+        "v1": [
+          "Hc2DO@20000AYRok",
+          10,
+          3646015130,
+        ],
+      },
+      1789688672,
+    ],
+  ],
+  1789688672,
+]
+`;
+
+exports[`Multidirectional all conflicting values 2`] = `
+{
+  "receives": 1665,
+  "sends": 1145,
+}
+`;
+
+exports[`Multidirectional all conflicting values 3`] = `
+[
+  "Hc2DO@400059DKYL",
+  [
+    [
+      "",
+      {},
+      0,
+    ],
+    [
+      "Hc2DO@400059DKYL",
+      {
+        "v1": [
+          "Hc2DO@400059DKYL",
+          42,
+          1137977625,
+        ],
+      },
+      3887274327,
+    ],
+  ],
+  3887274327,
+]
+`;
+
+exports[`Multidirectional all conflicting values 4`] = `
+{
+  "receives": 1710,
+  "sends": 1182,
+}
+`;
+
+exports[`Multidirectional all different cells 1`] = `
+[
+  "Hc2DO@20000AYRok",
+  [
+    [
+      "Hc2DO@20000AYRok",
+      {
+        "t1": [
+          "Hc2DO@20000AYRok",
+          {
+            "r1": [
+              "Hc2DO@20000AYRok",
+              {
+                "c1": [
+                  "Hc2DO@200008DKS9",
+                  1,
+                  2771101213,
+                ],
+                "c10": [
+                  "Hc2DO@20000AYRok",
+                  1,
+                  3062106594,
+                ],
+                "c2": [
+                  "Hc2DO@200005DK@@",
+                  1,
+                  3718299866,
+                ],
+                "c3": [
+                  "Hc2DO@200006DKFS",
+                  1,
+                  3152886816,
+                ],
+                "c4": [
+                  "Hc2DO@20000;DKf2",
+                  1,
+                  39503232,
+                ],
+                "c5": [
+                  "Hc2DO@20000<DKlE",
+                  1,
+                  3510217074,
+                ],
+                "c6": [
+                  "Hc2DO@200009DKYL",
+                  1,
+                  1247766531,
+                ],
+                "c7": [
+                  "Hc2DO@20000:DK__",
+                  1,
+                  1474990993,
+                ],
+                "c8": [
+                  "Hc2DO@20000?DL?>",
+                  1,
+                  4123752468,
+                ],
+                "c9": [
+                  "Hc2DO@20000@DLEQ",
+                  1,
+                  2623666366,
+                ],
+              },
+              948171351,
+            ],
+          },
+          2238958318,
+        ],
+      },
+      1701419960,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  1701419960,
+]
+`;
+
+exports[`Multidirectional all different cells 2`] = `
+{
+  "receives": 3240,
+  "sends": 2360,
+}
+`;
+
+exports[`Multidirectional all different rows 1`] = `
+[
+  "Hc2DO@20000AYRok",
+  [
+    [
+      "Hc2DO@20000AYRok",
+      {
+        "t1": [
+          "Hc2DO@20000AYRok",
+          {
+            "r1": [
+              "Hc2DO@200008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@200008DKS9",
+                  1,
+                  2771101213,
+                ],
+              },
+              2850600541,
+            ],
+            "r10": [
+              "Hc2DO@20000AYRok",
+              {
+                "c1": [
+                  "Hc2DO@20000AYRok",
+                  1,
+                  3062106594,
+                ],
+              },
+              1253116257,
+            ],
+            "r2": [
+              "Hc2DO@200005DK@@",
+              {
+                "c1": [
+                  "Hc2DO@200005DK@@",
+                  1,
+                  3718299866,
+                ],
+              },
+              622829880,
+            ],
+            "r3": [
+              "Hc2DO@200006DKFS",
+              {
+                "c1": [
+                  "Hc2DO@200006DKFS",
+                  1,
+                  3152886816,
+                ],
+              },
+              3053877267,
+            ],
+            "r4": [
+              "Hc2DO@20000;DKf2",
+              {
+                "c1": [
+                  "Hc2DO@20000;DKf2",
+                  1,
+                  39503232,
+                ],
+              },
+              1631707064,
+            ],
+            "r5": [
+              "Hc2DO@20000<DKlE",
+              {
+                "c1": [
+                  "Hc2DO@20000<DKlE",
+                  1,
+                  3510217074,
+                ],
+              },
+              2191309775,
+            ],
+            "r6": [
+              "Hc2DO@200009DKYL",
+              {
+                "c1": [
+                  "Hc2DO@200009DKYL",
+                  1,
+                  1247766531,
+                ],
+              },
+              2640872464,
+            ],
+            "r7": [
+              "Hc2DO@20000:DK__",
+              {
+                "c1": [
+                  "Hc2DO@20000:DK__",
+                  1,
+                  1474990993,
+                ],
+              },
+              717383071,
+            ],
+            "r8": [
+              "Hc2DO@20000?DL?>",
+              {
+                "c1": [
+                  "Hc2DO@20000?DL?>",
+                  1,
+                  4123752468,
+                ],
+              },
+              1816976081,
+            ],
+            "r9": [
+              "Hc2DO@20000@DLEQ",
+              {
+                "c1": [
+                  "Hc2DO@20000@DLEQ",
+                  1,
+                  2623666366,
+                ],
+              },
+              1078607663,
+            ],
+          },
+          3307843790,
+        ],
+      },
+      2450825361,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  2450825361,
+]
+`;
+
+exports[`Multidirectional all different rows 2`] = `
+{
+  "receives": 3240,
+  "sends": 2360,
+}
+`;
+
+exports[`Multidirectional all different tables 1`] = `
+[
+  "Hc2DO@20000AYRok",
+  [
+    [
+      "Hc2DO@20000AYRok",
+      {
+        "t1": [
+          "Hc2DO@200008DKS9",
+          {
+            "r1": [
+              "Hc2DO@200008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@200008DKS9",
+                  1,
+                  2771101213,
+                ],
+              },
+              2850600541,
+            ],
+          },
+          68388017,
+        ],
+        "t10": [
+          "Hc2DO@20000AYRok",
+          {
+            "r1": [
+              "Hc2DO@20000AYRok",
+              {
+                "c1": [
+                  "Hc2DO@20000AYRok",
+                  1,
+                  3062106594,
+                ],
+              },
+              1253116257,
+            ],
+          },
+          1589571478,
+        ],
+        "t2": [
+          "Hc2DO@200005DK@@",
+          {
+            "r1": [
+              "Hc2DO@200005DK@@",
+              {
+                "c1": [
+                  "Hc2DO@200005DK@@",
+                  1,
+                  3718299866,
+                ],
+              },
+              622829880,
+            ],
+          },
+          1597780490,
+        ],
+        "t3": [
+          "Hc2DO@200006DKFS",
+          {
+            "r1": [
+              "Hc2DO@200006DKFS",
+              {
+                "c1": [
+                  "Hc2DO@200006DKFS",
+                  1,
+                  3152886816,
+                ],
+              },
+              3053877267,
+            ],
+          },
+          3796489309,
+        ],
+        "t4": [
+          "Hc2DO@20000;DKf2",
+          {
+            "r1": [
+              "Hc2DO@20000;DKf2",
+              {
+                "c1": [
+                  "Hc2DO@20000;DKf2",
+                  1,
+                  39503232,
+                ],
+              },
+              1631707064,
+            ],
+          },
+          4116879620,
+        ],
+        "t5": [
+          "Hc2DO@20000<DKlE",
+          {
+            "r1": [
+              "Hc2DO@20000<DKlE",
+              {
+                "c1": [
+                  "Hc2DO@20000<DKlE",
+                  1,
+                  3510217074,
+                ],
+              },
+              2191309775,
+            ],
+          },
+          2827785127,
+        ],
+        "t6": [
+          "Hc2DO@200009DKYL",
+          {
+            "r1": [
+              "Hc2DO@200009DKYL",
+              {
+                "c1": [
+                  "Hc2DO@200009DKYL",
+                  1,
+                  1247766531,
+                ],
+              },
+              2640872464,
+            ],
+          },
+          1923944631,
+        ],
+        "t7": [
+          "Hc2DO@20000:DK__",
+          {
+            "r1": [
+              "Hc2DO@20000:DK__",
+              {
+                "c1": [
+                  "Hc2DO@20000:DK__",
+                  1,
+                  1474990993,
+                ],
+              },
+              717383071,
+            ],
+          },
+          3765729053,
+        ],
+        "t8": [
+          "Hc2DO@20000?DL?>",
+          {
+            "r1": [
+              "Hc2DO@20000?DL?>",
+              {
+                "c1": [
+                  "Hc2DO@20000?DL?>",
+                  1,
+                  4123752468,
+                ],
+              },
+              1816976081,
+            ],
+          },
+          3809946730,
+        ],
+        "t9": [
+          "Hc2DO@20000@DLEQ",
+          {
+            "r1": [
+              "Hc2DO@20000@DLEQ",
+              {
+                "c1": [
+                  "Hc2DO@20000@DLEQ",
+                  1,
+                  2623666366,
+                ],
+              },
+              1078607663,
+            ],
+          },
+          874411793,
+        ],
+      },
+      2339878718,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  2339878718,
+]
+`;
+
+exports[`Multidirectional all different tables 2`] = `
+{
+  "receives": 3240,
+  "sends": 2360,
+}
+`;
+
+exports[`Multidirectional all different values 1`] = `
+[
+  "Hc2DO@20000AYRok",
+  [
+    [
+      "",
+      {},
+      0,
+    ],
+    [
+      "Hc2DO@20000AYRok",
+      {
+        "v1": [
+          "Hc2DO@200008DKS9",
+          1,
+          2771101213,
+        ],
+        "v10": [
+          "Hc2DO@20000AYRok",
+          1,
+          3062106594,
+        ],
+        "v2": [
+          "Hc2DO@200005DK@@",
+          1,
+          3718299866,
+        ],
+        "v3": [
+          "Hc2DO@200006DKFS",
+          1,
+          3152886816,
+        ],
+        "v4": [
+          "Hc2DO@20000;DKf2",
+          1,
+          39503232,
+        ],
+        "v5": [
+          "Hc2DO@20000<DKlE",
+          1,
+          3510217074,
+        ],
+        "v6": [
+          "Hc2DO@200009DKYL",
+          1,
+          1247766531,
+        ],
+        "v7": [
+          "Hc2DO@20000:DK__",
+          1,
+          1474990993,
+        ],
+        "v8": [
+          "Hc2DO@20000?DL?>",
+          1,
+          4123752468,
+        ],
+        "v9": [
+          "Hc2DO@20000@DLEQ",
+          1,
+          2623666366,
+        ],
+      },
+      2022844843,
+    ],
+  ],
+  2022844843,
+]
+`;
+
+exports[`Multidirectional all different values 2`] = `
+{
+  "receives": 2880,
+  "sends": 2000,
+}
+`;
+
+exports[`Multidirectional half tables, half values 1`] = `
+[
+  "Hc2DO@20000AYRok",
+  [
+    [
+      "Hc2DO@20000AYRok",
+      {
+        "t1": [
+          "Hc2DO@20000AYRok",
+          {
+            "r1": [
+              "Hc2DO@20000AYRok",
+              {
+                "c1": [
+                  "Hc2DO@20000AYRok",
+                  1,
+                  3062106594,
+                ],
+                "c2": [
+                  "Hc2DO@20000AYRok",
+                  2,
+                  2433866825,
+                ],
+              },
+              4014982900,
+            ],
+            "r2": [
+              "Hc2DO@20000AYRok",
+              {
+                "c2": [
+                  "Hc2DO@20000AYRok",
+                  2,
+                  2433866825,
+                ],
+              },
+              3453142772,
+            ],
+          },
+          3433644199,
+        ],
+        "t2": [
+          "Hc2DO@20000AYRok",
+          {
+            "r2": [
+              "Hc2DO@20000AYRok",
+              {
+                "c2": [
+                  "Hc2DO@20000AYRok",
+                  2,
+                  2433866825,
+                ],
+              },
+              3453142772,
+            ],
+          },
+          3838679204,
+        ],
+      },
+      2646972572,
+    ],
+    [
+      "Hc2DO@20000<DKlE",
+      {
+        "v1": [
+          "Hc2DO@20000<DKlE",
+          1,
+          3510217074,
+        ],
+        "v2": [
+          "Hc2DO@20000<DKlE",
+          2,
+          1502946701,
+        ],
+      },
+      4280407966,
+    ],
+  ],
+  1659129602,
+]
+`;
+
+exports[`Multidirectional half tables, half values 2`] = `
+{
+  "receives": 1220,
+  "sends": 980,
+}
 `;
 
 exports[`Unidirectional autoLoad1 but not autoSave2, defaults 1`] = `
@@ -1357,6 +2547,13 @@ exports[`Unidirectional autoLoad1 but not autoSave2, defaults 2`] = `
 ]
 `;
 
+exports[`Unidirectional autoLoad1 but not autoSave2, defaults 3`] = `
+{
+  "receives": 1,
+  "sends": 1,
+}
+`;
+
 exports[`Unidirectional autoSave1 but not autoLoad2 1`] = `
 [
   "Hc2DO@000008DKS9",
@@ -1455,6 +2652,13 @@ exports[`Unidirectional autoSave1 but not autoLoad2 2`] = `
   ],
   0,
 ]
+`;
+
+exports[`Unidirectional autoSave1 but not autoLoad2 3`] = `
+{
+  "receives": 2,
+  "sends": 2,
+}
 `;
 
 exports[`Unidirectional load1 but not autoSave2, defaults 1`] = `
@@ -1581,6 +2785,13 @@ exports[`Unidirectional load1 but not autoSave2, defaults 2`] = `
 ]
 `;
 
+exports[`Unidirectional load1 but not autoSave2, defaults 3`] = `
+{
+  "receives": 1,
+  "sends": 1,
+}
+`;
+
 exports[`Unidirectional save1 but not autoLoad2 1`] = `
 [
   "Hc2DO@000008DKS9",
@@ -1679,4 +2890,11 @@ exports[`Unidirectional save1 but not autoLoad2 2`] = `
   ],
   0,
 ]
+`;
+
+exports[`Unidirectional save1 but not autoLoad2 3`] = `
+{
+  "receives": 1,
+  "sends": 1,
+}
 `;
