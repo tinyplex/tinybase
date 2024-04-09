@@ -6,8 +6,9 @@ import {
   ValueStamp,
 } from '../types/mergeable-store';
 import {EMPTY_STRING, NUMBER, getTypeOf} from '../common/strings';
+import {Id, Ids} from '../types/common';
 import {IdMap, mapNew, mapToObj} from '../common/map';
-import {IdObj, objNew} from '../common/obj';
+import {IdObj, objIds, objNew} from '../common/obj';
 import {
   ifNotUndefined,
   isArray,
@@ -15,7 +16,6 @@ import {
   isString,
   size,
 } from '../common/other';
-import {Id} from '../types/common';
 import {getHash} from './hash';
 
 export type StampMap<Thing> = Stamp<IdMap<Thing>, true>;
@@ -26,7 +26,7 @@ export type RowStampMap = StampMap<CellStamp<true>>;
 export type ValuesStampMap = StampMap<ValueStamp<true>>;
 
 const hashesNew = () => [0, {}];
-const deltaNew = () => [EMPTY_STRING, {}];
+const deltaNew = () => [EMPTY_STRING, []];
 
 const stampCloneWithHash = <Value>([time, value, hash]: Stamp<
   Value,
@@ -45,7 +45,7 @@ export const getHashes = (
 export const getDeltaHashes = (
   stampMap: StampMap<Stamp<unknown, true>> | undefined,
   [relativeHash, relativeChildren]: [Hash, IdObj<Hash>],
-): Stamp<IdObj<Hash>> =>
+): Stamp<Ids> =>
   ifNotUndefined(
     stampMap,
     (stampMap) =>
@@ -53,15 +53,17 @@ export const getDeltaHashes = (
         ? deltaNew()
         : [
             stampMap[0],
-            mapToObj(
-              stampMap[1],
-              (childStampMap) => childStampMap[2],
-              (childStampMap, childId) =>
-                childStampMap[2] === relativeChildren?.[childId],
+            objIds(
+              mapToObj(
+                stampMap[1],
+                (childStampMap) => childStampMap[2],
+                (childStampMap, childId) =>
+                  childStampMap[2] === relativeChildren?.[childId],
+              ),
             ),
           ],
     deltaNew,
-  ) as Stamp<IdObj<Hash>>;
+  ) as Stamp<Ids>;
 
 export const getDeltaStamps = <Thing>(
   stampMap: StampMap<Stamp<Thing, true>> | undefined,
