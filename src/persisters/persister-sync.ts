@@ -23,7 +23,7 @@ import {
   promiseAll,
   promiseNew,
 } from '../common/other';
-import {Id, IdOrNull, Ids} from '../types/common';
+import {Id, IdOrNull} from '../types/common';
 import {IdMap, mapGet, mapNew, mapSet} from '../common/map';
 import {collDel, collForEach, collSize} from '../common/coll';
 import {objMap, objNew} from '../common/obj';
@@ -54,8 +54,7 @@ export const createSyncPersister = ((
     requestId: IdOrNull,
     fromStoreId: Id,
     message: string,
-    payload: any,
-    args: Ids = [],
+    ...parts: any[]
   ) => {
     if (message == EMPTY_STRING) {
       ifNotUndefined(
@@ -63,7 +62,7 @@ export const createSyncPersister = ((
         ([toStoreId, handlePayload]) =>
           message == EMPTY_STRING &&
           (isUndefined(toStoreId) || toStoreId == fromStoreId)
-            ? handlePayload(payload, fromStoreId)
+            ? handlePayload(parts[0], fromStoreId)
             : 0,
       );
     } else if (message == 'contentHashes') {
@@ -76,17 +75,17 @@ export const createSyncPersister = ((
       const responsePayload =
         (message == 'getContentDelta' && persister.isAutoSaving()) ||
         message == 'getContentDelta!'
-          ? store.getMergeableContentDelta(payload)
+          ? store.getMergeableContentDelta(parts[0])
           : message == 'getTablesDelta'
-            ? store.getMergeableTablesDelta(payload)
+            ? store.getMergeableTablesDelta(parts[0])
             : message == 'getTableDelta'
-              ? store.getMergeableTableDelta(args[0], payload)
+              ? store.getMergeableTableDelta(parts[0], parts[1])
               : message == 'getRowDeltas'
-                ? objMap(payload, (rowHashes: any, rowId) =>
-                    store.getMergeableRowDelta(args[0], rowId, rowHashes),
+                ? objMap(parts[1], (rowHashes: any, rowId) =>
+                    store.getMergeableRowDelta(parts[0], rowId, rowHashes),
                   )
                 : message == 'getValuesDelta'
-                  ? store.getMergeableValuesDelta(payload)
+                  ? store.getMergeableValuesDelta(parts[0])
                   : 0;
       responsePayload === 0
         ? 0
@@ -99,8 +98,7 @@ export const createSyncPersister = ((
   const request = async <Payload>(
     toStoreId: IdOrNull,
     message: string,
-    payload: any,
-    args?: Ids,
+    ...parts: any[]
   ): Promise<[payload: Payload, fromStoreId: Id]> =>
     promiseNew((resolve, reject) => {
       const requestId = getHlc();
@@ -116,7 +114,7 @@ export const createSyncPersister = ((
           resolve([payload, fromStoreId]);
         },
       ]);
-      send(requestId, toStoreId, message, payload, args);
+      send(requestId, toStoreId, message, ...parts);
     });
 
   const getChangesFromOtherStore = async (
@@ -149,8 +147,8 @@ export const createSyncPersister = ((
                 const [[time, deltaRowIds]] = await request<TableDelta>(
                   otherStoreId,
                   'getTableDelta',
+                  tableId,
                   store.getMergeableTableHashes(tableId),
-                  [tableId],
                 );
                 return [
                   tableId,
@@ -161,13 +159,13 @@ export const createSyncPersister = ((
                         await request<{[rowId: Id]: RowStamp}>(
                           otherStoreId,
                           'getRowDeltas',
+                          tableId,
                           objNew(
                             arrayMap(deltaRowIds, (rowId) => [
                               rowId,
                               store.getMergeableRowHashes(tableId, rowId),
                             ]),
                           ),
-                          [tableId],
                         )
                       )[0],
                       (rowStamp) => rowStamp,
@@ -235,8 +233,7 @@ export const createLocalBus = (() => {
         requestId: IdOrNull,
         toStoreId: IdOrNull,
         message: string,
-        payload: any,
-        args?: Ids,
+        ...parts: any[]
       ): void => {
         if (DEBUG) {
           sends++;
@@ -245,16 +242,10 @@ export const createLocalBus = (() => {
         isUndefined(toStoreId)
           ? collForEach(stores, (receive, otherStoreId) =>
               otherStoreId != storeId
-                ? receive(requestId, storeId, message, payload, args)
+                ? receive(requestId, storeId, message, ...parts)
                 : 0,
             )
-          : mapGet(stores, toStoreId)?.(
-              requestId,
-              storeId,
-              message,
-              payload,
-              args,
-            );
+          : mapGet(stores, toStoreId)?.(requestId, storeId, message, ...parts);
       };
       const leave = (): void => {
         collDel(stores, storeId);
