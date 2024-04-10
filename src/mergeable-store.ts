@@ -39,6 +39,7 @@ import {
   getHashes,
   hashIdAndHash,
   stampMapToObj,
+  stampMapToObjWithHash,
   stampNewMap,
   stampNewObj,
   stampUpdate,
@@ -289,14 +290,27 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const getMergeableContent = (): MergeableContent => [
     contentStampMap[0],
     [
+      stampMapToObjWithHash(contentStampMap[1][0], (tableStampMap) =>
+        stampMapToObjWithHash(tableStampMap, (rowStampMap) =>
+          stampMapToObjWithHash(rowStampMap),
+        ),
+      ),
+      stampMapToObjWithHash(contentStampMap[1][1]),
+    ],
+    contentStampMap[2],
+  ];
+
+  const getMergeableContentAsChanges = (): MergeableChanges => [
+    contentStampMap[0],
+    [
       stampMapToObj(contentStampMap[1][0], (tableStampMap) =>
         stampMapToObj(tableStampMap, (rowStampMap) =>
           stampMapToObj(rowStampMap),
         ),
       ),
       stampMapToObj(contentStampMap[1][1]),
+      1,
     ],
-    contentStampMap[2],
   ];
 
   const getMergeableContentHashes = (): ContentHashes => [
@@ -422,6 +436,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const mergeableStore: IdObj<any> = {
     getId,
     getMergeableContent,
+    getMergeableContentAsChanges,
     getMergeableContentHashes,
     getMergeableTablesHashes,
     getMergeableTableHashes,

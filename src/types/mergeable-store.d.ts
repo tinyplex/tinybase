@@ -96,6 +96,9 @@ export interface MergeableStore extends Store {
   /// MergeableStore.getMergeableContent
   getMergeableContent(): MergeableContent;
 
+  /// MergeableStore.getMergeableContentAsChanges
+  getMergeableContentAsChanges(): MergeableChanges;
+
   /// MergeableStore.getMergeableContentHashes
   getMergeableContentHashes(): ContentHashes;
 

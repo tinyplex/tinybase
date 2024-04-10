@@ -116,6 +116,11 @@
    */
   /// MergeableStore.getMergeableContent
   /**
+   * The getMergeableContentAsChanges method
+   * @category Getter
+   */
+  /// MergeableStore.getMergeableContentAsChanges
+  /**
    * The getMergeableContentHashes method
    * @category Syncing
    */
