@@ -1005,21 +1005,13 @@ exports[`Deltas & Hashes getMergeableTableHashes Non-empty 1`] = `
 }
 `;
 
-exports[`Deltas & Hashes getMergeableTablesHashes Empty 1`] = `
-[
-  0,
-  {},
-]
-`;
+exports[`Deltas & Hashes getMergeableTablesHashes Empty 1`] = `{}`;
 
 exports[`Deltas & Hashes getMergeableTablesHashes Non-empty 1`] = `
-[
-  3499952990,
-  {
-    "t1": 1784087264,
-    "t2": 4279580014,
-  },
-]
+{
+  "t1": 1784087264,
+  "t2": 4279580014,
+}
 `;
 
 exports[`Deltas & Hashes getMergeableValuesHashes Empty 1`] = `
