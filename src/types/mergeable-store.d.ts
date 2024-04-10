@@ -29,7 +29,7 @@ export type TablesStamp<Hashed extends boolean = false> = Stamp<
 >;
 
 // TablesHashes
-export type TablesHashes = [hash: Hash, {[tableId: Id]: Hash}];
+export type TablesHashes = {[tableId: Id]: Hash};
 
 // TablesDelta
 export type TablesDelta = Ids;

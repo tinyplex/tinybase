@@ -11,6 +11,8 @@ import {
   ContentDelta,
   MergeableChanges,
   MergeableStore,
+  TableDelta,
+  TablesDelta,
 } from '../types/mergeable-store';
 import {DEBUG, ifNotUndefined, isUndefined, promiseNew} from '../common/other';
 import {Id, IdOrNull, Ids} from '../types/common';
@@ -127,13 +129,13 @@ export const createSyncPersister = ((
       const [_, [tablesHash, valuesHash]] = contentDelta;
 
       if (!isUndefined(tablesHash)) {
-        const [deltaTableIds] = await request<Ids>(
+        const [deltaTableIds] = await request<TablesDelta>(
           otherStoreId,
           'getTablesDelta',
           store.getMergeableTablesHashes(),
         );
 
-        const [deltaRowIds] = await request<{[tableId: Id]: Ids}>(
+        const [deltaRowIds] = await request<TableDelta>(
           otherStoreId,
           'getTableDelta',
           store.getMergeableTableHashes(deltaTableIds),
