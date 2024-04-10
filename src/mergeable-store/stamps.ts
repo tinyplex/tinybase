@@ -8,7 +8,7 @@ import {
 import {EMPTY_STRING, NUMBER, getTypeOf} from '../common/strings';
 import {Id, Ids} from '../types/common';
 import {IdMap, mapGet, mapNew, mapToObj} from '../common/map';
-import {IdObj, objIds, objNew} from '../common/obj';
+import {IdObj, objNew} from '../common/obj';
 import {
   ifNotUndefined,
   isArray,
@@ -27,7 +27,6 @@ export type RowStampMap = StampMap<CellStamp<true>>;
 export type ValuesStampMap = StampMap<ValueStamp<true>>;
 
 const hashesNew = () => [0, {}];
-const deltaNew = () => [EMPTY_STRING, []];
 
 const stampClone = <Value>([time, value]: Stamp<
   Value,
@@ -47,29 +46,6 @@ export const getHashes = (
     (stampMap) => [stampMap[2], mapToObj(stampMap[1], (stamp) => stamp[2])],
     hashesNew,
   ) as [Hash, IdObj<Hash>];
-
-export const getDeltaHashes = (
-  stampMap: StampMap<Stamp<unknown, true>> | undefined,
-  [relativeHash, relativeChildren]: [Hash, IdObj<Hash>],
-): Stamp<Ids> =>
-  ifNotUndefined(
-    stampMap,
-    (stampMap) =>
-      stampMap[2] === relativeHash
-        ? deltaNew()
-        : [
-            stampMap[0],
-            objIds(
-              mapToObj(
-                stampMap[1],
-                (childStampMap) => childStampMap[2],
-                (childStampMap, childId) =>
-                  childStampMap[2] === relativeChildren?.[childId],
-              ),
-            ),
-          ],
-    deltaNew,
-  ) as Stamp<Ids>;
 
 export const getDeltaStamps = <Thing>(
   stampMap: StampMap<Stamp<Thing, true>> | undefined,
