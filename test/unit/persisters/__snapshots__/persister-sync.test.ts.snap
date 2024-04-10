@@ -21,8 +21,8 @@ exports[`Bidirectional Both empty 1`] = `
 
 exports[`Bidirectional Both empty 2`] = `
 {
-  "receives": 7,
-  "sends": 7,
+  "receives": 11,
+  "sends": 11,
 }
 `;
 
@@ -109,8 +109,8 @@ exports[`Bidirectional Both match 1`] = `
 
 exports[`Bidirectional Both match 2`] = `
 {
-  "receives": 29,
-  "sends": 29,
+  "receives": 37,
+  "sends": 37,
 }
 `;
 
@@ -153,8 +153,8 @@ exports[`Bidirectional different cell 1`] = `
 
 exports[`Bidirectional different cell 2`] = `
 {
-  "receives": 25,
-  "sends": 25,
+  "receives": 33,
+  "sends": 33,
 }
 `;
 
@@ -202,8 +202,8 @@ exports[`Bidirectional different row 1`] = `
 
 exports[`Bidirectional different row 2`] = `
 {
-  "receives": 25,
-  "sends": 25,
+  "receives": 33,
+  "sends": 33,
 }
 `;
 
@@ -262,8 +262,8 @@ exports[`Bidirectional different table 1`] = `
 
 exports[`Bidirectional different table 2`] = `
 {
-  "receives": 25,
-  "sends": 25,
+  "receives": 33,
+  "sends": 33,
 }
 `;
 
@@ -339,8 +339,8 @@ exports[`Bidirectional different tables 1`] = `
 
 exports[`Bidirectional different tables 2`] = `
 {
-  "receives": 25,
-  "sends": 25,
+  "receives": 33,
+  "sends": 33,
 }
 `;
 
@@ -371,8 +371,8 @@ exports[`Bidirectional different value 1`] = `
 
 exports[`Bidirectional different value 2`] = `
 {
-  "receives": 17,
-  "sends": 17,
+  "receives": 25,
+  "sends": 25,
 }
 `;
 
@@ -408,8 +408,8 @@ exports[`Bidirectional different values 1`] = `
 
 exports[`Bidirectional different values 2`] = `
 {
-  "receives": 17,
-  "sends": 17,
+  "receives": 25,
+  "sends": 25,
 }
 `;
 
@@ -496,8 +496,8 @@ exports[`Bidirectional store1 empty 1`] = `
 
 exports[`Bidirectional store1 empty 2`] = `
 {
-  "receives": 18,
-  "sends": 18,
+  "receives": 24,
+  "sends": 24,
 }
 `;
 
@@ -545,8 +545,8 @@ exports[`Bidirectional store1 missing cell 1`] = `
 
 exports[`Bidirectional store1 missing cell 2`] = `
 {
-  "receives": 25,
-  "sends": 25,
+  "receives": 33,
+  "sends": 33,
 }
 `;
 
@@ -605,8 +605,8 @@ exports[`Bidirectional store1 missing row 1`] = `
 
 exports[`Bidirectional store1 missing row 2`] = `
 {
-  "receives": 25,
-  "sends": 25,
+  "receives": 33,
+  "sends": 33,
 }
 `;
 
@@ -682,8 +682,8 @@ exports[`Bidirectional store1 missing table 1`] = `
 
 exports[`Bidirectional store1 missing table 2`] = `
 {
-  "receives": 25,
-  "sends": 25,
+  "receives": 33,
+  "sends": 33,
 }
 `;
 
@@ -770,8 +770,8 @@ exports[`Bidirectional store1 missing tables 1`] = `
 
 exports[`Bidirectional store1 missing tables 2`] = `
 {
-  "receives": 21,
-  "sends": 21,
+  "receives": 29,
+  "sends": 29,
 }
 `;
 
@@ -807,8 +807,8 @@ exports[`Bidirectional store1 missing value 1`] = `
 
 exports[`Bidirectional store1 missing value 2`] = `
 {
-  "receives": 17,
-  "sends": 17,
+  "receives": 25,
+  "sends": 25,
 }
 `;
 
@@ -895,8 +895,8 @@ exports[`Bidirectional store1 missing values 1`] = `
 
 exports[`Bidirectional store1 missing values 2`] = `
 {
-  "receives": 21,
-  "sends": 21,
+  "receives": 29,
+  "sends": 29,
 }
 `;
 
@@ -983,8 +983,8 @@ exports[`Bidirectional store2 empty 1`] = `
 
 exports[`Bidirectional store2 empty 2`] = `
 {
-  "receives": 18,
-  "sends": 18,
+  "receives": 24,
+  "sends": 24,
 }
 `;
 
@@ -1032,8 +1032,8 @@ exports[`Bidirectional store2 missing cell 1`] = `
 
 exports[`Bidirectional store2 missing cell 2`] = `
 {
-  "receives": 25,
-  "sends": 25,
+  "receives": 33,
+  "sends": 33,
 }
 `;
 
@@ -1092,8 +1092,8 @@ exports[`Bidirectional store2 missing row 1`] = `
 
 exports[`Bidirectional store2 missing row 2`] = `
 {
-  "receives": 25,
-  "sends": 25,
+  "receives": 33,
+  "sends": 33,
 }
 `;
 
@@ -1169,8 +1169,8 @@ exports[`Bidirectional store2 missing table 1`] = `
 
 exports[`Bidirectional store2 missing table 2`] = `
 {
-  "receives": 25,
-  "sends": 25,
+  "receives": 33,
+  "sends": 33,
 }
 `;
 
@@ -1257,8 +1257,8 @@ exports[`Bidirectional store2 missing tables 1`] = `
 
 exports[`Bidirectional store2 missing tables 2`] = `
 {
-  "receives": 21,
-  "sends": 21,
+  "receives": 29,
+  "sends": 29,
 }
 `;
 
@@ -1294,8 +1294,8 @@ exports[`Bidirectional store2 missing value 1`] = `
 
 exports[`Bidirectional store2 missing value 2`] = `
 {
-  "receives": 17,
-  "sends": 17,
+  "receives": 25,
+  "sends": 25,
 }
 `;
 
@@ -1382,8 +1382,8 @@ exports[`Bidirectional store2 missing values 1`] = `
 
 exports[`Bidirectional store2 missing values 2`] = `
 {
-  "receives": 21,
-  "sends": 21,
+  "receives": 29,
+  "sends": 29,
 }
 `;
 
@@ -1470,8 +1470,8 @@ exports[`Multidirectional All but first empty 1`] = `
 
 exports[`Multidirectional All but first empty 2`] = `
 {
-  "receives": 369,
-  "sends": 201,
+  "receives": 477,
+  "sends": 309,
 }
 `;
 
@@ -1558,8 +1558,8 @@ exports[`Multidirectional All but last empty 1`] = `
 
 exports[`Multidirectional All but last empty 2`] = `
 {
-  "receives": 369,
-  "sends": 201,
+  "receives": 477,
+  "sends": 309,
 }
 `;
 
@@ -1584,8 +1584,8 @@ exports[`Multidirectional All empty 1`] = `
 
 exports[`Multidirectional All empty 2`] = `
 {
-  "receives": 270,
-  "sends": 110,
+  "receives": 360,
+  "sends": 200,
 }
 `;
 
@@ -1672,8 +1672,8 @@ exports[`Multidirectional All match 1`] = `
 
 exports[`Multidirectional All match 2`] = `
 {
-  "receives": 1260,
-  "sends": 1020,
+  "receives": 1530,
+  "sends": 1290,
 }
 `;
 
@@ -1716,8 +1716,8 @@ exports[`Multidirectional all conflicting cells 1`] = `
 
 exports[`Multidirectional all conflicting cells 2`] = `
 {
-  "receives": 2025,
-  "sends": 1505,
+  "receives": 2925,
+  "sends": 2405,
 }
 `;
 
@@ -1760,8 +1760,8 @@ exports[`Multidirectional all conflicting cells 3`] = `
 
 exports[`Multidirectional all conflicting cells 4`] = `
 {
-  "receives": 2106,
-  "sends": 1578,
+  "receives": 3024,
+  "sends": 2496,
 }
 `;
 
@@ -1792,8 +1792,8 @@ exports[`Multidirectional all conflicting values 1`] = `
 
 exports[`Multidirectional all conflicting values 2`] = `
 {
-  "receives": 1665,
-  "sends": 1145,
+  "receives": 2565,
+  "sends": 2045,
 }
 `;
 
@@ -1824,8 +1824,8 @@ exports[`Multidirectional all conflicting values 3`] = `
 
 exports[`Multidirectional all conflicting values 4`] = `
 {
-  "receives": 1710,
-  "sends": 1182,
+  "receives": 2628,
+  "sends": 2100,
 }
 `;
 
@@ -1913,8 +1913,8 @@ exports[`Multidirectional all different cells 1`] = `
 
 exports[`Multidirectional all different cells 2`] = `
 {
-  "receives": 3240,
-  "sends": 2360,
+  "receives": 4950,
+  "sends": 4070,
 }
 `;
 
@@ -2056,8 +2056,8 @@ exports[`Multidirectional all different rows 1`] = `
 
 exports[`Multidirectional all different rows 2`] = `
 {
-  "receives": 3240,
-  "sends": 2360,
+  "receives": 4950,
+  "sends": 4070,
 }
 `;
 
@@ -2253,8 +2253,8 @@ exports[`Multidirectional all different tables 1`] = `
 
 exports[`Multidirectional all different tables 2`] = `
 {
-  "receives": 3240,
-  "sends": 2360,
+  "receives": 4950,
+  "sends": 4070,
 }
 `;
 
@@ -2330,8 +2330,8 @@ exports[`Multidirectional all different values 1`] = `
 
 exports[`Multidirectional all different values 2`] = `
 {
-  "receives": 2880,
-  "sends": 2000,
+  "receives": 4590,
+  "sends": 3710,
 }
 `;
 
@@ -2418,8 +2418,8 @@ exports[`Multidirectional half tables, half values 1`] = `
 
 exports[`Multidirectional half tables, half values 2`] = `
 {
-  "receives": 950,
-  "sends": 710,
+  "receives": 1220,
+  "sends": 980,
 }
 `;
 
