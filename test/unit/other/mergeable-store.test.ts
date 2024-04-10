@@ -168,43 +168,38 @@ describe('getMergeableContentAsChanges', () => {
     expect(store.getMergeableContentAsChanges()).toMatchSnapshot();
   });
 
-  test('Set together', () => {
-    store.setContent([
-      {t1: {r1: {c1: 0, c2: 1}, r2: {c1: 2}}, t2: {r1: {c1: 3}}},
-      {v1: 4, v2: 5},
-    ]);
-    expect(store.getMergeableContentAsChanges()).toMatchSnapshot();
-  });
+  describe('With data', () => {
+    beforeEach(() => {
+      store
+        .setCell('t1', 'r1', 'c1', 0)
+        .setCell('t1', 'r1', 'c2', 1)
+        .setCell('t1', 'r2', 'c1', 2)
+        .setCell('t2', 'r1', 'c1', 3)
+        .setValue('v1', 4)
+        .setValue('v2', 5);
+    });
 
-  test('Set in sequence', () => {
-    store
-      .setCell('t1', 'r1', 'c1', 0)
-      .setCell('t1', 'r1', 'c2', 1)
-      .setCell('t1', 'r2', 'c1', 2)
-      .setCell('t2', 'r1', 'c1', 3)
-      .setValue('v1', 4)
-      .setValue('v2', 5);
-    expect(store.getMergeableContentAsChanges()).toMatchSnapshot();
-  });
+    test('No selector', () => {
+      expect(store.getMergeableContentAsChanges()).toMatchSnapshot();
+    });
 
-  test('Mutate', () => {
-    store
-      .setContent([
-        {t1: {r1: {c1: 0, c2: 1}, r2: {c1: 2}}, t2: {r1: {c1: 3}}},
-        {v1: 4, v2: 5},
-      ])
-      .setCell('t1', 'r1', 'c1', 1)
-      .delCell('t1', 'r1', 'c2')
-      .delRow('t1', 'r2')
-      .delTable('t2')
-      .setValue('v1', 5)
-      .delValue('v2');
-    expect(store.getMergeableContentAsChanges()).toMatchSnapshot();
-  });
+    test('Cell selector', () => {
+      expect(
+        store.getMergeableContentAsChanges([{t1: {r1: ['c1']}}, []]),
+      ).toMatchSnapshot();
+    });
 
-  test('Empty transaction', () => {
-    store.startTransaction().finishTransaction();
-    expect(store.getMergeableContentAsChanges()).toMatchSnapshot();
+    test('Value selector', () => {
+      expect(
+        store.getMergeableContentAsChanges([{}, ['v1']]),
+      ).toMatchSnapshot();
+    });
+
+    test('Mixed selector', () => {
+      expect(
+        store.getMergeableContentAsChanges([{t1: {r1: ['c1']}}, ['v1']]),
+      ).toMatchSnapshot();
+    });
   });
 });
 

@@ -156,6 +156,16 @@ export type MergeableChanges<Schemas extends OptionalSchemas> = Stamp<
   ]
 >;
 
+/// MergeableChangesSelector
+export type MergeableChangesSelector<Schemas extends OptionalSchemas> = [
+  tablesSelector: {
+    [TableId in TableIdFromSchema<Schemas[0]>]?: {
+      [rowId: Id]: CellIdFromSchema<Schemas[0], TableId>[];
+    };
+  },
+  valuesSelector: ValueIdFromSchema<Schemas[1]>[],
+];
+
 /// MergeableStore
 export interface MergeableStore<Schemas extends OptionalSchemas>
   extends Store<Schemas> {
@@ -167,7 +177,9 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
   getMergeableContent(): MergeableContent<Schemas>;
 
   /// MergeableStore.getMergeableContentAsChanges
-  getMergeableContentAsChanges(): MergeableChanges<Schemas>;
+  getMergeableContentAsChanges(
+    selector?: MergeableChangesSelector<Schemas>,
+  ): MergeableChanges<Schemas>;
 
   /// MergeableStore.getMergeableContentHashes
   getMergeableContentHashes(): ContentHashes;
