@@ -81,8 +81,10 @@ export const createSyncPersister = ((
             : message == 'getTableDelta'
               ? store.getMergeableTableDelta(parts[0], parts[1])
               : message == 'getRowDeltas'
-                ? objMap(parts[1], (rowHashes: any, rowId) =>
-                    store.getMergeableRowDelta(parts[0], rowId, rowHashes),
+                ? objMap(parts[0], (tableHashes: any, tableId: Id) =>
+                    objMap(tableHashes, (rowHashes: any, rowId) =>
+                      store.getMergeableRowDelta(tableId, rowId, rowHashes),
+                    ),
                   )
                 : message == 'getValuesDelta'
                   ? store.getMergeableValuesDelta(parts[0])
@@ -156,18 +158,19 @@ export const createSyncPersister = ((
                     time,
                     objMap(
                       (
-                        await request<{[rowId: Id]: RowStamp}>(
+                        await request<{[tableId: Id]: {[rowId: Id]: RowStamp}}>(
                           otherStoreId,
                           'getRowDeltas',
-                          tableId,
-                          objNew(
-                            arrayMap(deltaRowIds, (rowId) => [
-                              rowId,
-                              store.getMergeableRowHashes(tableId, rowId),
-                            ]),
-                          ),
+                          {
+                            [tableId]: objNew(
+                              arrayMap(deltaRowIds, (rowId) => [
+                                rowId,
+                                store.getMergeableRowHashes(tableId, rowId),
+                              ]),
+                            ),
+                          },
                         )
-                      )[0],
+                      )[0][tableId],
                       (rowStamp) => rowStamp,
                     ),
                   ],
