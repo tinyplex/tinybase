@@ -41,7 +41,7 @@ export type TableStamp<Hashed extends boolean = false> = Stamp<
 >;
 
 // TableHashes
-export type TableHashes = {[tableId: Id]: [hash: Hash, {[rowId: Id]: Hash}]};
+export type TableHashes = {[tableId: Id]: {[rowId: Id]: Hash}};
 
 // TableDelta
 export type TableDelta = {[tableId: Id]: Ids};

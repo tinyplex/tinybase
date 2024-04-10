@@ -38,7 +38,6 @@ import {
   TableStampMap,
   TablesStampMap,
   ValuesStampMap,
-  getDeltaHashes,
   getDeltaStamps,
   getHashes,
   hashIdAndHash,
@@ -337,7 +336,10 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     objNew(
       arrayMap(tableIds, (tableId) => [
         tableId,
-        getHashes(mapGet(contentStampMap[1][0][1], tableId)),
+        mapToObj(
+          mapGet(contentStampMap[1][0][1], tableId)?.[1],
+          (stamp) => stamp[2],
+        ),
       ]),
     );
 
@@ -373,14 +375,18 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   };
 
   const getMergeableTableDelta = (relativeTo: TableHashes): TableDelta =>
-    objMap(
-      relativeTo,
-      (tableHashes, tableId) =>
-        getDeltaHashes(
-          mapGet(contentStampMap[1][0][1], tableId),
-          tableHashes,
-        )[1],
-    );
+    objMap(relativeTo, (relativeTo2, tableId) => {
+      const rowIds: Ids = [];
+      mapForEach(
+        mapGet(contentStampMap[1][0][1], tableId)?.[1],
+        (rowId, [, , hash]) => {
+          if (hash !== relativeTo2?.[rowId]) {
+            arrayPush(rowIds, rowId);
+          }
+        },
+      );
+      return rowIds;
+    });
 
   const getMergeableRowDelta = (
     tableId: Id,

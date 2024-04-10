@@ -986,22 +986,16 @@ exports[`Deltas & Hashes getMergeableRowHashes Non-empty 1`] = `
 
 exports[`Deltas & Hashes getMergeableTableHashes Empty 1`] = `
 {
-  "t1": [
-    0,
-    {},
-  ],
+  "t1": {},
 }
 `;
 
 exports[`Deltas & Hashes getMergeableTableHashes Non-empty 1`] = `
 {
-  "t1": [
-    1784087264,
-    {
-      "r1": 922886432,
-      "r2": 4100269854,
-    },
-  ],
+  "t1": {
+    "r1": 922886432,
+    "r2": 4100269854,
+  },
 }
 `;
 
