@@ -100,6 +100,11 @@
  */
 /// MergeableChanges
 /**
+ * The MergeableChangesSelector type
+ * @category Mergeable
+ */
+/// MergeableChangesSelector
+/**
  * The MergeableStore type
  * @category Mergeable
  */
