@@ -55,10 +55,9 @@ export type TablesStamp<
 >;
 
 // TablesHashes
-export type TablesHashes<Schema extends OptionalTablesSchema> = [
-  hash: Hash,
-  {[TableId in TableIdFromSchema<Schema>]?: Hash},
-];
+export type TablesHashes<Schema extends OptionalTablesSchema> = {
+  [TableId in TableIdFromSchema<Schema>]?: Hash;
+};
 
 // TablesDelta
 export type TablesDelta<Schema extends OptionalTablesSchema> =
