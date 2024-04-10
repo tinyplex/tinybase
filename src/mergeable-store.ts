@@ -38,7 +38,6 @@ import {
   getDeltaStamps,
   getHashes,
   hashIdAndHash,
-  stampMap,
   stampMapToObj,
   stampNewMap,
   stampNewObj,
@@ -287,15 +286,18 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
 
   const getId = () => id;
 
-  const getMergeableContent = (): MergeableContent =>
-    stampMap(contentStampMap, ([tablesStampMap, valuesStampMap]) => [
-      stampMapToObj(tablesStampMap, (tableStampMap) =>
+  const getMergeableContent = (): MergeableContent => [
+    contentStampMap[0],
+    [
+      stampMapToObj(contentStampMap[1][0], (tableStampMap) =>
         stampMapToObj(tableStampMap, (rowStampMap) =>
           stampMapToObj(rowStampMap),
         ),
       ),
-      stampMapToObj(valuesStampMap),
-    ]);
+      stampMapToObj(contentStampMap[1][1]),
+    ],
+    contentStampMap[2],
+  ];
 
   const getMergeableContentHashes = (): ContentHashes => [
     contentStampMap[2],
