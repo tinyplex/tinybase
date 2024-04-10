@@ -1,6 +1,6 @@
 /// persister-file
 
-import {Id, IdOrNull, Ids} from '../common';
+import {Id, IdOrNull} from '../common';
 import {MergeableStore} from '../mergeable-store';
 import {OptionalSchemas} from '../store';
 import {Persister} from '../persisters';
@@ -10,8 +10,7 @@ export type Receive = (
   requestId: Id,
   fromStoreId: Id,
   message: string,
-  payload: any,
-  args?: Ids,
+  ...parts: any[]
 ) => void;
 
 /// Send
@@ -19,8 +18,7 @@ export type Send = (
   requestId: Id,
   toStoreId: IdOrNull,
   message: string,
-  payload: any,
-  args?: Ids,
+  ...parts: any[]
 ) => void;
 
 /// BusStats
