@@ -72,7 +72,7 @@ export type TableStamp<
 
 // TableHashes
 export type TableHashes<Schema extends OptionalTablesSchema> = {
-  [tableId in TableIdFromSchema<Schema>]?: [hash: Hash, {[rowId: Id]: Hash}];
+  [tableId in TableIdFromSchema<Schema>]?: {[rowId: Id]: Hash};
 };
 
 // TableDelta
