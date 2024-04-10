@@ -28,6 +28,11 @@ export type ValuesStampMap = StampMap<ValueStamp<true>>;
 const hashesNew = () => [0, {}];
 const deltaNew = () => [EMPTY_STRING, []];
 
+const stampClone = <Value>([time, value]: Stamp<
+  Value,
+  false
+>): Stamp<Value> => [time, value];
+
 const stampCloneWithHash = <Value>([time, value, hash]: Stamp<
   Value,
   true
@@ -110,6 +115,11 @@ export const stampNewMap = <Thing>(time = EMPTY_STRING): StampMap<Thing> => [
 ];
 
 export const stampMapToObj = <From, To = From>(
+  [time, map]: Stamp<IdMap<From>, boolean>,
+  mapper: (mapValue: From) => To = stampClone as any,
+): Stamp<IdObj<To>> => [time, mapToObj(map, mapper)];
+
+export const stampMapToObjWithHash = <From, To = From>(
   [time, map, hash]: Stamp<IdMap<From>, true>,
   mapper: (mapValue: From) => To = stampCloneWithHash as any,
 ): Stamp<IdObj<To>, true> => [time, mapToObj(map, mapper), hash];
