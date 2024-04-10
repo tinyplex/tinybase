@@ -19,6 +19,7 @@ import {
   createMergeableStore as createMergeableStoreDecl,
 } from './types/mergeable-store';
 import {EMPTY_STRING, strEndsWith, strStartsWith} from './common/strings';
+import {Id, Ids} from './types/common';
 import {
   IdObj,
   objEnsure,
@@ -49,7 +50,6 @@ import {
 } from './mergeable-store/stamps';
 import {isArray, isUndefined, size, slice} from './common/other';
 import {mapEnsure, mapGet} from './common/map';
-import {Id} from './types/common';
 import {createStore} from './store';
 import {getHash} from './mergeable-store/hash';
 import {getHlcFunctions} from './mergeable-store/hlc';
@@ -358,11 +358,20 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const getMergeableTablesDelta = (relativeTo: TablesHashes): TablesDelta =>
     getDeltaHashes(contentStampMap[1][0], relativeTo);
 
+  const getMergeableTablesDeltaIds = (relativeTo: TablesHashes): Ids =>
+    getDeltaHashes(contentStampMap[1][0], relativeTo)[1];
+
   const getMergeableTableDelta = (
     tableId: Id,
     relativeTo: TableHashes,
   ): TableDelta =>
     getDeltaHashes(mapGet(contentStampMap[1][0][1], tableId), relativeTo);
+
+  const getMergeableTableDeltaIds = (
+    tableId: Id,
+    relativeTo: TableHashes,
+  ): Ids =>
+    getDeltaHashes(mapGet(contentStampMap[1][0][1], tableId), relativeTo)[1];
 
   const getMergeableRowDelta = (
     tableId: Id,
@@ -374,8 +383,23 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
       relativeTo,
     );
 
+  const getMergeableRowDeltaIds = (
+    tableId: Id,
+    rowId: Id,
+    relativeTo: RowHashes,
+  ): Ids =>
+    objIds(
+      getDeltaStamps(
+        mapGet(mapGet(contentStampMap[1][0][1], tableId)?.[1], rowId),
+        relativeTo,
+      )[1],
+    );
+
   const getMergeableValuesDelta = (relativeTo: ValuesHashes): ValuesStamp =>
     getDeltaStamps(contentStampMap[1][1], relativeTo);
+
+  const getMergeableValuesDeltaIds = (relativeTo: ValuesHashes): Ids =>
+    objIds(getDeltaStamps(contentStampMap[1][1], relativeTo)[1]);
 
   const setMergeableContent = (
     mergeableContent: MergeableContent,
@@ -454,9 +478,13 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     getMergeableValuesHashes,
     getMergeableContentDelta,
     getMergeableTablesDelta,
+    getMergeableTablesDeltaIds,
     getMergeableTableDelta,
+    getMergeableTableDeltaIds,
     getMergeableRowDelta,
+    getMergeableRowDeltaIds,
     getMergeableValuesDelta,
+    getMergeableValuesDeltaIds,
     setMergeableContent,
     getTransactionMergeableChanges,
     applyMergeableChanges,
