@@ -109,16 +109,10 @@ export const stampNewMap = <Thing>(time = EMPTY_STRING): StampMap<Thing> => [
   0,
 ];
 
-export const stampMap = <From, To = From>(
-  [time, value, hash]: Stamp<From, true>,
-  mapper: (value: From, time: Time) => To,
-): Stamp<To, true> => [time, mapper(value, time), hash];
-
 export const stampMapToObj = <From, To = From>(
-  hashStamp: Stamp<IdMap<From>, true>,
+  [time, map, hash]: Stamp<IdMap<From>, true>,
   mapper: (mapValue: From) => To = stampCloneWithHash as any,
-): Stamp<IdObj<To>, true> =>
-  stampMap(hashStamp, (map) => mapToObj(map, mapper));
+): Stamp<IdObj<To>, true> => [time, mapToObj(map, mapper), hash];
 
 export const stampValidate = (
   stamp: Stamp<any, true>,
