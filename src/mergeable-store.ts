@@ -49,9 +49,9 @@ import {
   stampUpdate,
   stampValidate,
 } from './mergeable-store/stamps';
+import {arrayMap, arrayPush} from './common/array';
 import {isArray, isUndefined, size, slice} from './common/other';
-import {mapEnsure, mapGet} from './common/map';
-import {arrayMap} from './common/array';
+import {mapEnsure, mapForEach, mapGet, mapToObj} from './common/map';
 import {createStore} from './store';
 import {getHash} from './mergeable-store/hash';
 import {getHlcFunctions} from './mergeable-store/hlc';
@@ -331,7 +331,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   ];
 
   const getMergeableTablesHashes = (): TablesHashes =>
-    getHashes(contentStampMap[1][0]);
+    mapToObj(contentStampMap[1][0][1], (stamp) => stamp[2]);
 
   const getMergeableTableHashes = (tableIds: Ids): TableHashes =>
     objNew(
@@ -362,8 +362,15 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
           ],
         ];
 
-  const getMergeableTablesDelta = (relativeTo: TablesHashes): TablesDelta =>
-    getDeltaHashes(contentStampMap[1][0], relativeTo)[1];
+  const getMergeableTablesDelta = (relativeTo: TablesHashes): TablesDelta => {
+    const tableIds: Ids = [];
+    mapForEach(contentStampMap[1][0][1], (tableId, [, , hash]) => {
+      if (hash !== relativeTo?.[tableId]) {
+        arrayPush(tableIds, tableId);
+      }
+    });
+    return tableIds;
+  };
 
   const getMergeableTableDelta = (relativeTo: TableHashes): TableDelta =>
     objMap(
