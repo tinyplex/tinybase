@@ -7,7 +7,7 @@ import {
 } from '../types/mergeable-store';
 import {EMPTY_STRING, NUMBER, getTypeOf} from '../common/strings';
 import {Id, Ids} from '../types/common';
-import {IdMap, mapNew, mapToObj} from '../common/map';
+import {IdMap, mapGet, mapNew, mapToObj} from '../common/map';
 import {IdObj, objIds, objNew} from '../common/obj';
 import {
   ifNotUndefined,
@@ -16,6 +16,7 @@ import {
   isString,
   size,
 } from '../common/other';
+import {arrayForEach} from '../common/array';
 import {getHash} from './hash';
 
 export type StampMap<Thing> = Stamp<IdMap<Thing>, true>;
@@ -116,8 +117,16 @@ export const stampNewMap = <Thing>(time = EMPTY_STRING): StampMap<Thing> => [
 
 export const stampMapToObj = <From, To = From>(
   [time, map]: Stamp<IdMap<From>, boolean>,
-  mapper: (mapValue: From) => To = stampClone as any,
-): Stamp<IdObj<To>> => [time, mapToObj(map, mapper)];
+  selectorIds: Ids,
+  mapper: (mapValue: From, id: Id) => To = stampClone as any,
+): Stamp<IdObj<To>> => {
+  const obj: IdObj<To> = {};
+  arrayForEach(
+    selectorIds,
+    (id) => (obj[id] = mapper(mapGet(map, id) as From, id)),
+  );
+  return [time, obj];
+};
 
 export const stampMapToObjWithHash = <From, To = From>(
   [time, map, hash]: Stamp<IdMap<From>, true>,
