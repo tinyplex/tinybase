@@ -11,7 +11,6 @@ import {
   ContentDelta,
   MergeableChanges,
   MergeableStore,
-  ValuesStamp,
 } from '../types/mergeable-store';
 import {DEBUG, ifNotUndefined, isUndefined, promiseNew} from '../common/other';
 import {Id, IdOrNull, Ids} from '../types/common';
@@ -67,47 +66,21 @@ export const createSyncPersister = ((
         (message == 'getContentDelta' && persister.isAutoSaving()) ||
         message == 'getContentDelta!'
           ? store.getMergeableContentDelta(parts[0])
-          : message == 'getTablesDeltaIds'
-            ? store.getMergeableTablesDeltaIds(parts[0])
-            : message == 'getTablesDelta'
-              ? store.getMergeableTablesDelta(parts[0])
-              : message == 'getTableDeltas'
-                ? objMap(parts[0], (tableHashes: any, tableId) =>
-                    store.getMergeableTableDelta(tableId, tableHashes),
+          : message == 'getTablesDelta'
+            ? store.getMergeableTablesDelta(parts[0])
+            : message == 'getTableDelta'
+              ? store.getMergeableTableDelta(parts[0])
+              : message == 'getRowDeltaIds'
+                ? objMap(parts[0], (tableHashes: any, tableId: Id) =>
+                    objMap(tableHashes, (rowHashes: any, rowId) =>
+                      store.getMergeableRowDeltaIds(tableId, rowId, rowHashes),
+                    ),
                   )
-                : message == 'getTableDeltaIds'
-                  ? objMap(parts[0], (tableHashes: any, tableId) =>
-                      store.getMergeableTableDeltaIds(tableId, tableHashes),
-                    )
-                  : message == 'getTableDelta'
-                    ? store.getMergeableTableDelta(parts[0], parts[1])
-                    : message == 'getRowDeltas'
-                      ? objMap(parts[0], (tableHashes: any, tableId: Id) =>
-                          objMap(tableHashes, (rowHashes: any, rowId) =>
-                            store.getMergeableRowDelta(
-                              tableId,
-                              rowId,
-                              rowHashes,
-                            ),
-                          ),
-                        )
-                      : message == 'getRowDeltaIds'
-                        ? objMap(parts[0], (tableHashes: any, tableId: Id) =>
-                            objMap(tableHashes, (rowHashes: any, rowId) =>
-                              store.getMergeableRowDeltaIds(
-                                tableId,
-                                rowId,
-                                rowHashes,
-                              ),
-                            ),
-                          )
-                        : message == 'getValuesDelta'
-                          ? store.getMergeableValuesDelta(parts[0])
-                          : message == 'getValuesDeltaIds'
-                            ? store.getMergeableValuesDeltaIds(parts[0])
-                            : message == 'getMergeableContentAsChanges'
-                              ? store.getMergeableContentAsChanges(parts[0])
-                              : 0;
+                : message == 'getValuesDeltaIds'
+                  ? store.getMergeableValuesDeltaIds(parts[0])
+                  : message == 'getMergeableContentAsChanges'
+                    ? store.getMergeableContentAsChanges(parts[0])
+                    : 0;
       responsePayload === 0
         ? 0
         : send(requestId, fromStoreId, EMPTY_STRING, responsePayload);
@@ -142,10 +115,6 @@ export const createSyncPersister = ((
     knownOtherStoreId: IdOrNull = null,
     forceOtherToSave = false,
   ): Promise<MergeableChanges> => {
-    const changes: MergeableChanges = [
-      EMPTY_STRING,
-      [[EMPTY_STRING, {}], [EMPTY_STRING, {}], 1],
-    ];
     const [contentDelta, otherStoreId] = await request<ContentDelta>(
       knownOtherStoreId,
       'getContentDelta' + (forceOtherToSave ? '!' : ''),
@@ -155,25 +124,19 @@ export const createSyncPersister = ((
     const contentSelectors = [{}, []];
 
     if (!isUndefined(contentDelta)) {
-      const [time, [tablesHash, valuesHash]] = contentDelta;
-      changes[0] = time;
+      const [_, [tablesHash, valuesHash]] = contentDelta;
 
       if (!isUndefined(tablesHash)) {
         const [deltaTableIds] = await request<Ids>(
           otherStoreId,
-          'getTablesDeltaIds',
+          'getTablesDelta',
           store.getMergeableTablesHashes(),
         );
 
         const [deltaRowIds] = await request<{[tableId: Id]: Ids}>(
           otherStoreId,
-          'getTableDeltaIds',
-          objNew(
-            arrayMap(deltaTableIds, (tableId) => [
-              tableId,
-              store.getMergeableTableHashes(tableId),
-            ]),
-          ),
+          'getTableDelta',
+          store.getMergeableTableHashes(deltaTableIds),
         );
 
         const [deltaCellIds] = await request<{
@@ -204,13 +167,13 @@ export const createSyncPersister = ((
       }
     }
 
-    const [c] = await request<ValuesStamp>(
+    const [changes] = await request<MergeableChanges>(
       otherStoreId,
       'getMergeableContentAsChanges',
       contentSelectors,
     );
 
-    return c;
+    return changes;
   };
 
   const getPersisted = async (): Promise<any> => {

@@ -18,7 +18,7 @@ import {
   ValueOrUndefined,
   ValuesSchema,
 } from './store.d';
-import {Id} from './common';
+import {Id, Ids} from './common';
 
 /// Hash
 export type Hash = number;
@@ -61,10 +61,8 @@ export type TablesHashes<Schema extends OptionalTablesSchema> = [
 ];
 
 // TablesDelta
-export type TablesDelta<Schema extends OptionalTablesSchema> = [
-  time: Time,
-  {[TableId in TableIdFromSchema<Schema>]?: Hash},
-];
+export type TablesDelta<Schema extends OptionalTablesSchema> =
+  TableIdFromSchema<Schema>[];
 
 // TableStamp
 export type TableStamp<
@@ -74,10 +72,14 @@ export type TableStamp<
 > = Stamp<{[rowId: Id]: RowStamp<Schema, TableId, Hashed>}, Hashed>;
 
 // TableHashes
-export type TableHashes = [hash: Hash, {[rowId: Id]: Hash}];
+export type TableHashes<Schema extends OptionalTablesSchema> = {
+  [tableId in TableIdFromSchema<Schema>]?: [hash: Hash, {[rowId: Id]: Hash}];
+};
 
 // TableDelta
-export type TableDelta = [time: Time, {[rowId: Id]: Hash}];
+export type TableDelta<Schema extends OptionalTablesSchema> = {
+  [tableId in TableIdFromSchema<Schema>]?: Ids;
+};
 
 // RowStamp
 export type RowStamp<
@@ -196,13 +198,14 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
   ): TablesDelta<Schemas[0]>;
 
   /// MergeableStore.getMergeableTableHashes
-  getMergeableTableHashes(tableId: TableIdFromSchema<Schemas[0]>): TableHashes;
+  getMergeableTableHashes(
+    tableIds: TableIdFromSchema<Schemas[0]>[],
+  ): TableHashes<Schemas[0]>;
 
   /// MergeableStore.getMergeableTableDelta
-  getMergeableTableDelta<TableId extends TableIdFromSchema<Schemas[0]>>(
-    tableId: TableId,
-    relativeTo: TableHashes,
-  ): TableDelta;
+  getMergeableTableDelta(
+    relativeTo: TableHashes<Schemas[0]>,
+  ): TableDelta<Schemas[0]>;
 
   /// MergeableStore.getMergeableRowHashes
   getMergeableRowHashes<TableId extends TableIdFromSchema<Schemas[0]>>(
