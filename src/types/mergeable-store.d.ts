@@ -87,6 +87,12 @@ export type MergeableChanges = Stamp<
   [mergeableTables: TablesStamp, mergeableValues: ValuesStamp, isChanges: 1]
 >;
 
+/// MergeableChangesSelector
+export type MergeableChangesSelector = [
+  tablesSelector: {[tableId: Id]: {[rowId: Id]: Ids}},
+  valuesSelector: Ids,
+];
+
 /// MergeableStore
 export interface MergeableStore extends Store {
   //
@@ -97,7 +103,9 @@ export interface MergeableStore extends Store {
   getMergeableContent(): MergeableContent;
 
   /// MergeableStore.getMergeableContentAsChanges
-  getMergeableContentAsChanges(): MergeableChanges;
+  getMergeableContentAsChanges(
+    selector?: MergeableChangesSelector,
+  ): MergeableChanges;
 
   /// MergeableStore.getMergeableContentHashes
   getMergeableContentHashes(): ContentHashes;
