@@ -166,6 +166,9 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
   /// MergeableStore.getMergeableContent
   getMergeableContent(): MergeableContent<Schemas>;
 
+  /// MergeableStore.getMergeableContentAsChanges
+  getMergeableContentAsChanges(): MergeableChanges<Schemas>;
+
   /// MergeableStore.getMergeableContentHashes
   getMergeableContentHashes(): ContentHashes;
 
