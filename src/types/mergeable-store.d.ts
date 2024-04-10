@@ -32,7 +32,7 @@ export type TablesStamp<Hashed extends boolean = false> = Stamp<
 export type TablesHashes = [hash: Hash, {[tableId: Id]: Hash}];
 
 // TablesDelta
-export type TablesDelta = [time: Time, deltaTableIds: Ids];
+export type TablesDelta = Ids;
 
 // TableStamp
 export type TableStamp<Hashed extends boolean = false> = Stamp<
@@ -41,10 +41,10 @@ export type TableStamp<Hashed extends boolean = false> = Stamp<
 >;
 
 // TableHashes
-export type TableHashes = [hash: Hash, {[rowId: Id]: Hash}];
+export type TableHashes = {[tableId: Id]: [hash: Hash, {[rowId: Id]: Hash}]};
 
 // TableDelta
-export type TableDelta = [time: Time, deltaRowIds: Ids];
+export type TableDelta = {[tableId: Id]: Ids};
 
 // RowStamp
 export type RowStamp<Hashed extends boolean = false> = Stamp<
@@ -120,10 +120,10 @@ export interface MergeableStore extends Store {
   getMergeableTablesDelta(relativeTo: TablesHashes): TablesDelta;
 
   /// MergeableStore.getMergeableTableHashes
-  getMergeableTableHashes(tableId: Id): TableHashes;
+  getMergeableTableHashes(tableIds: Ids): TableHashes;
 
   /// MergeableStore.getMergeableTableDelta
-  getMergeableTableDelta(tableId: Id, relativeTo: TableHashes): TableDelta;
+  getMergeableTableDelta(relativeTo: TableHashes): TableDelta;
 
   /// MergeableStore.getMergeableRowHashes
   getMergeableRowHashes(tableId: Id, rowId: Id): RowHashes;

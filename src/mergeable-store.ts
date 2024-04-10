@@ -27,6 +27,7 @@ import {
   objFreeze,
   objIds,
   objIsEmpty,
+  objMap,
   objNew,
   objToArray,
   objValidate,
@@ -50,6 +51,7 @@ import {
 } from './mergeable-store/stamps';
 import {isArray, isUndefined, size, slice} from './common/other';
 import {mapEnsure, mapGet} from './common/map';
+import {arrayMap} from './common/array';
 import {createStore} from './store';
 import {getHash} from './mergeable-store/hash';
 import {getHlcFunctions} from './mergeable-store/hlc';
@@ -331,8 +333,13 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const getMergeableTablesHashes = (): TablesHashes =>
     getHashes(contentStampMap[1][0]);
 
-  const getMergeableTableHashes = (tableId: Id): TableHashes =>
-    getHashes(mapGet(contentStampMap[1][0][1], tableId));
+  const getMergeableTableHashes = (tableIds: Ids): TableHashes =>
+    objNew(
+      arrayMap(tableIds, (tableId) => [
+        tableId,
+        getHashes(mapGet(contentStampMap[1][0][1], tableId)),
+      ]),
+    );
 
   const getMergeableRowHashes = (tableId: Id, rowId: Id): RowHashes =>
     getHashes(mapGet(mapGet(contentStampMap[1][0][1], tableId)?.[1], rowId));
@@ -356,22 +363,17 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
         ];
 
   const getMergeableTablesDelta = (relativeTo: TablesHashes): TablesDelta =>
-    getDeltaHashes(contentStampMap[1][0], relativeTo);
-
-  const getMergeableTablesDeltaIds = (relativeTo: TablesHashes): Ids =>
     getDeltaHashes(contentStampMap[1][0], relativeTo)[1];
 
-  const getMergeableTableDelta = (
-    tableId: Id,
-    relativeTo: TableHashes,
-  ): TableDelta =>
-    getDeltaHashes(mapGet(contentStampMap[1][0][1], tableId), relativeTo);
-
-  const getMergeableTableDeltaIds = (
-    tableId: Id,
-    relativeTo: TableHashes,
-  ): Ids =>
-    getDeltaHashes(mapGet(contentStampMap[1][0][1], tableId), relativeTo)[1];
+  const getMergeableTableDelta = (relativeTo: TableHashes): TableDelta =>
+    objMap(
+      relativeTo,
+      (tableHashes, tableId) =>
+        getDeltaHashes(
+          mapGet(contentStampMap[1][0][1], tableId),
+          tableHashes,
+        )[1],
+    );
 
   const getMergeableRowDelta = (
     tableId: Id,
@@ -478,9 +480,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     getMergeableValuesHashes,
     getMergeableContentDelta,
     getMergeableTablesDelta,
-    getMergeableTablesDeltaIds,
     getMergeableTableDelta,
-    getMergeableTableDeltaIds,
     getMergeableRowDelta,
     getMergeableRowDeltaIds,
     getMergeableValuesDelta,
