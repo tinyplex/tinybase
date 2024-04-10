@@ -3,6 +3,7 @@ import {
   ContentDelta,
   ContentHashes,
   MergeableChanges,
+  MergeableChangesSelector,
   MergeableContent,
   MergeableStore,
   RowHashes,
@@ -23,6 +24,7 @@ import {
   objEnsure,
   objForEach,
   objFreeze,
+  objIds,
   objIsEmpty,
   objNew,
   objToArray,
@@ -300,15 +302,23 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     contentStampMap[2],
   ];
 
-  const getMergeableContentAsChanges = (): MergeableChanges => [
+  const getMergeableContentAsChanges = (
+    [tablesSelector, valuesSelector]: MergeableChangesSelector = [{}, []],
+  ): MergeableChanges => [
     contentStampMap[0],
     [
-      stampMapToObj(contentStampMap[1][0], (tableStampMap) =>
-        stampMapToObj(tableStampMap, (rowStampMap) =>
-          stampMapToObj(rowStampMap),
-        ),
+      stampMapToObj(
+        contentStampMap[1][0],
+        objIds(tablesSelector),
+        (tableStampMap, tableId) =>
+          stampMapToObj(
+            tableStampMap,
+            objIds(tablesSelector[tableId] ?? {}),
+            (rowStampMap, rowId) =>
+              stampMapToObj(rowStampMap, tablesSelector[tableId]?.[rowId]),
+          ),
       ),
-      stampMapToObj(contentStampMap[1][1]),
+      stampMapToObj(contentStampMap[1][1], valuesSelector),
       1,
     ],
   ];
