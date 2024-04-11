@@ -7,6 +7,11 @@
  */
 /// persister-sync
 /**
+ * The MessageType type
+ *
+ */
+/// MessageType
+/**
  * The Receive type
  *
  */

@@ -5,11 +5,14 @@ import {MergeableStore} from '../mergeable-store';
 import {OptionalSchemas} from '../store';
 import {Persister} from '../persisters';
 
+/// MessageType
+export type MessageType = number;
+
 /// Receive
 export type Receive = (
   requestId: Id,
   fromStoreId: Id,
-  message: string,
+  messageType: MessageType,
   ...parts: any[]
 ) => void;
 
@@ -17,7 +20,7 @@ export type Receive = (
 export type Send = (
   requestId: Id,
   toStoreId: IdOrNull,
-  message: string,
+  messageType: MessageType,
   ...parts: any[]
 ) => void;
 
