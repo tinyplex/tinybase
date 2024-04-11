@@ -123,10 +123,9 @@ export type ValuesStamp<
 >;
 
 // ValuesHashes
-export type ValuesHashes<Schema extends OptionalValuesSchema> = [
-  hash: Hash,
-  {[ValueId in ValueIdFromSchema<Schema>]?: Hash},
-];
+export type ValuesHashes<Schema extends OptionalValuesSchema> = {
+  [ValueId in ValueIdFromSchema<Schema>]?: Hash;
+};
 
 // ValueStamp
 export type ValueStamp<
