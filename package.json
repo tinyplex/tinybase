@@ -241,6 +241,7 @@
     "@types/tmp": "^0.2.6",
     "@typescript-eslint/eslint-plugin": "^7.15.0",
     "@typescript-eslint/parser": "^7.15.0",
+    "@types/ws": "^8.5.10",
     "@vlcn.io/crsqlite-wasm": "^0.16.0",
     "asciichart": "^1.5.25",
     "babel-eslint": "^10.1.0",
@@ -289,6 +290,7 @@
     "ts-unused-exports": "^10.1.0",
     "typescript": "5.5.3",
     "wa-sqlite": "github:rhashimoto/wa-sqlite",
+    "ws": "^8.16.0",
     "yjs": "^13.6.18"
   },
   "peerDependencies": {
@@ -305,6 +307,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "sqlite3": "^5.1.7",
+    "ws": "^8.16.0",
     "yjs": "^13.6.18"
   },
   "peerDependenciesMeta": {
@@ -345,6 +348,9 @@
       "optional": true
     },
     "sqlite3": {
+      "optional": true
+    },
+    "ws": {
       "optional": true
     },
     "yjs": {
