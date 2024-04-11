@@ -47,7 +47,7 @@ export const createSyncPersister = ((
   const pendingRequests: IdMap<
     [
       toStoreId: IdOrNull,
-      handlePayload: (payload: any, fromStoreId: Id) => void,
+      handleResponse: (response: any, fromStoreId: Id) => void,
     ]
   > = mapNew();
 
@@ -55,46 +55,44 @@ export const createSyncPersister = ((
     requestId: IdOrNull,
     fromStoreId: Id,
     messageType: MessageType,
-    ...parts: any[]
+    messageBody: any,
   ) => {
     if (messageType == RESPONSE) {
       ifNotUndefined(
         mapGet(pendingRequests, requestId),
-        ([toStoreId, handlePayload]) =>
+        ([toStoreId, handleResponse]) =>
           isUndefined(toStoreId) || toStoreId == fromStoreId
-            ? handlePayload(parts[0], fromStoreId)
+            ? handleResponse(messageBody, fromStoreId)
             : 0,
       );
     } else if (messageType == CONTENT_HASHES && persister.isAutoLoading()) {
-      getChangesFromOtherStore(fromStoreId, parts[0]).then((changes: any) =>
+      getChangesFromOtherStore(fromStoreId, messageBody).then((changes: any) =>
         persisterListener?.(undefined, () => changes),
       );
     } else {
-      const responsePayload =
+      const response =
         messageType == GET_CONTENT_HASHES && persister.isAutoSaving()
           ? store.getMergeableContentHashes()
           : messageType == GET_TABLE_IDS_DIFF
-            ? store.getMergeableTableIdsDiff(parts[0])
+            ? store.getMergeableTableIdsDiff(messageBody)
             : messageType == GET_ROW_IDS_DIFF
-              ? store.getMergeableRowIdsDiff(parts[0])
+              ? store.getMergeableRowIdsDiff(messageBody)
               : messageType == GET_TABLES_CHANGES
-                ? store.getMergeableTablesChanges(parts[0])
+                ? store.getMergeableTablesChanges(messageBody)
                 : messageType == GET_VALUES_CHANGES
-                  ? store.getMergeableValuesChanges(parts[0])
+                  ? store.getMergeableValuesChanges(messageBody)
                   : 0;
-      responsePayload === 0
-        ? 0
-        : send(requestId, fromStoreId, RESPONSE, responsePayload);
+      response === 0 ? 0 : send(requestId, fromStoreId, RESPONSE, response);
     }
   };
 
   const [send] = join(store.getId(), receive);
 
-  const request = async <Payload>(
+  const request = async <Response>(
     toStoreId: IdOrNull,
     messageType: MessageType,
-    ...parts: any[]
-  ): Promise<[payload: Payload, fromStoreId: Id]> =>
+    messageBody: any = EMPTY_STRING,
+  ): Promise<[response: Response, fromStoreId: Id]> =>
     promiseNew((resolve, reject) => {
       const requestId = getHlc();
       const timeout = setTimeout(() => {
@@ -103,13 +101,13 @@ export const createSyncPersister = ((
       }, requestTimeoutSeconds * 1000);
       mapSet(pendingRequests, requestId, [
         toStoreId,
-        (payload: any, fromStoreId: Id) => {
+        (response: Response, fromStoreId: Id) => {
           clearTimeout(timeout);
           collDel(pendingRequests, requestId);
-          resolve([payload, fromStoreId]);
+          resolve([response, fromStoreId]);
         },
       ]);
-      send(requestId, toStoreId, messageType, ...parts);
+      send(requestId, toStoreId, messageType, messageBody);
     });
 
   const getChangesFromOtherStore = async (
@@ -212,7 +210,7 @@ export const createLocalBus = (() => {
         requestId: IdOrNull,
         toStoreId: IdOrNull,
         messageType: MessageType,
-        ...parts: any[]
+        messageBody: any,
       ): void => {
         if (DEBUG) {
           sends++;
@@ -221,14 +219,14 @@ export const createLocalBus = (() => {
         isUndefined(toStoreId)
           ? collForEach(stores, (receive, otherStoreId) =>
               otherStoreId != storeId
-                ? receive(requestId, storeId, messageType, ...parts)
+                ? receive(requestId, storeId, messageType, messageBody)
                 : 0,
             )
           : mapGet(stores, toStoreId)?.(
               requestId,
               storeId,
               messageType,
-              ...parts,
+              messageBody,
             );
       };
       const leave = (): void => {
