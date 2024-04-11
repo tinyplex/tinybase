@@ -6,17 +6,10 @@ import {
   ValueStamp,
 } from '../types/mergeable-store';
 import {EMPTY_STRING, NUMBER, getTypeOf} from '../common/strings';
-import {Id, Ids} from '../types/common';
-import {IdMap, mapGet, mapNew, mapToObj} from '../common/map';
+import {IdMap, mapNew, mapToObj} from '../common/map';
 import {IdObj, objNew} from '../common/obj';
-import {
-  ifNotUndefined,
-  isArray,
-  isFiniteNumber,
-  isString,
-  size,
-} from '../common/other';
-import {arrayForEach} from '../common/array';
+import {isArray, isFiniteNumber, isString, size} from '../common/other';
+import {Id} from '../types/common';
 import {getHash} from './hash';
 
 export type StampMap<Thing> = Stamp<IdMap<Thing>, true>;
@@ -25,8 +18,6 @@ export type TablesStampMap = StampMap<TableStampMap>;
 export type TableStampMap = StampMap<RowStampMap>;
 export type RowStampMap = StampMap<CellStamp<true>>;
 export type ValuesStampMap = StampMap<ValueStamp<true>>;
-
-const hashesNew = () => [0, {}];
 
 const stampCloneWithHash = <Value>([time, value, hash]: Stamp<
   Value,
@@ -39,15 +30,6 @@ export const stampClone = <Value>([time, value]: Stamp<
 >): Stamp<Value> => [time, value];
 
 export const getStampHash = (stamp: Stamp<unknown, true>): Hash => stamp[2];
-
-export const getHashes = (
-  stampMap: StampMap<Stamp<unknown, true>> | undefined,
-): [Hash, IdObj<Hash>] =>
-  ifNotUndefined(
-    stampMap,
-    (stampMap) => [stampMap[2], mapToObj(stampMap[1], getStampHash)],
-    hashesNew,
-  ) as [Hash, IdObj<Hash>];
 
 export const hashIdAndHash = (id: Id, hash: Hash) => getHash(id + ':' + hash);
 
@@ -71,19 +53,6 @@ export const stampNewMap = <Thing>(time = EMPTY_STRING): StampMap<Thing> => [
   mapNew<Id, Thing>(),
   0,
 ];
-
-export const stampMapToObj = <From, To = From>(
-  [time, map]: Stamp<IdMap<From>, boolean>,
-  selectorIds: Ids,
-  mapper: (mapValue: From, id: Id) => To = stampClone as any,
-): Stamp<IdObj<To>> => {
-  const obj: IdObj<To> = {};
-  arrayForEach(
-    selectorIds,
-    (id) => (obj[id] = mapper(mapGet(map, id) as From, id)),
-  );
-  return [time, obj];
-};
 
 export const stampMapToObjWithHash = <From, To = From>(
   [time, map, hash]: Stamp<IdMap<From>, true>,
