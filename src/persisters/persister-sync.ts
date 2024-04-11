@@ -8,7 +8,7 @@ import {
   createSyncPersister as createSyncPersisterDecl,
 } from '../types/persisters/persister-sync';
 import {
-  ContentDelta,
+  ContentHashes,
   MergeableChanges,
   MergeableStore,
   TableDelta,
@@ -59,15 +59,14 @@ export const createSyncPersister = ((
       );
     } else if (message == 'contentHashes') {
       persister.isAutoLoading()
-        ? getChangesFromOtherStore(fromStoreId, true).then((changes: any) =>
+        ? getChangesFromOtherStore(fromStoreId, parts[0]).then((changes: any) =>
             persisterListener?.(undefined, () => changes),
           )
         : 0;
     } else {
       const responsePayload =
-        (message == 'getContentDelta' && persister.isAutoSaving()) ||
-        message == 'getContentDelta!'
-          ? store.getMergeableContentDelta(parts[0])
+        message == 'getContentHashes' && persister.isAutoSaving()
+          ? store.getMergeableContentHashes()
           : message == 'getTablesDelta'
             ? store.getMergeableTablesDelta(parts[0])
             : message == 'getTableDelta'
@@ -108,56 +107,57 @@ export const createSyncPersister = ((
     });
 
   const getChangesFromOtherStore = async (
-    knownOtherStoreId: IdOrNull = null,
-    forceOtherToSave = false,
+    otherStoreId: IdOrNull = null,
+    otherContentHashes?: ContentHashes,
   ): Promise<MergeableChanges> => {
-    const [contentDelta, otherStoreId] = await request<ContentDelta>(
-      knownOtherStoreId,
-      'getContentDelta' + (forceOtherToSave ? '!' : ''),
-      store.getMergeableContentHashes(),
-    );
+    if (isUndefined(otherContentHashes)) {
+      [otherContentHashes, otherStoreId] = await request<ContentHashes>(
+        otherStoreId,
+        'getContentHashes',
+      );
+    }
+    const [otherContentTime, [otherTablesHash, otherValuesHash]] =
+      otherContentHashes;
+    const [, [tablesHash, valuesHash]] = store.getMergeableContentHashes();
 
     const changes: MergeableChanges = ['', [['', {}], ['', {}], 1]];
 
-    if (!isUndefined(contentDelta)) {
-      const [time, [tablesHash, valuesHash]] = contentDelta;
-      changes[0] = time;
+    if (tablesHash != otherTablesHash) {
+      changes[0] = otherContentTime;
+      changes[1][0] = (
+        await request<TablesStamp>(
+          otherStoreId,
+          'getRowDelta',
+          store.getMergeableRowHashes(
+            (
+              await request<TableDelta>(
+                otherStoreId,
+                'getTableDelta',
+                store.getMergeableTableHashes(
+                  (
+                    await request<TablesDelta>(
+                      otherStoreId,
+                      'getTablesDelta',
+                      store.getMergeableTablesHashes(),
+                    )
+                  )[0],
+                ),
+              )
+            )[0],
+          ),
+        )
+      )[0];
+    }
 
-      if (!isUndefined(tablesHash)) {
-        changes[1][0] = (
-          await request<TablesStamp>(
-            otherStoreId,
-            'getRowDelta',
-            store.getMergeableRowHashes(
-              (
-                await request<TableDelta>(
-                  otherStoreId,
-                  'getTableDelta',
-                  store.getMergeableTableHashes(
-                    (
-                      await request<TablesDelta>(
-                        otherStoreId,
-                        'getTablesDelta',
-                        store.getMergeableTablesHashes(),
-                      )
-                    )[0],
-                  ),
-                )
-              )[0],
-            ),
-          )
-        )[0];
-      }
-
-      if (!isUndefined(valuesHash)) {
-        changes[1][1] = (
-          await request<ValuesStamp>(
-            otherStoreId,
-            'getValuesDelta',
-            store.getMergeableValuesHashes(),
-          )
-        )[0];
-      }
+    if (valuesHash != otherValuesHash) {
+      changes[0] = otherContentTime;
+      changes[1][1] = (
+        await request<ValuesStamp>(
+          otherStoreId,
+          'getValuesDelta',
+          store.getMergeableValuesHashes(),
+        )
+      )[0];
     }
 
     return changes;

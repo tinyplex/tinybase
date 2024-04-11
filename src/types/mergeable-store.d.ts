@@ -15,12 +15,7 @@ export type Stamp<Thing, Hashed extends boolean = false> = Hashed extends true
   : [time: Time, thing: Thing];
 
 // ContentHashes
-export type ContentHashes = [hash: Hash, [tablesHash: Hash, valuesHash: Hash]];
-
-// ContentDelta
-export type ContentDelta =
-  | [time: Time, [tablesHash: Hash | null, valuesHash: Hash | null]]
-  | null;
+export type ContentHashes = [time: Time, [tablesHash: Hash, valuesHash: Hash]];
 
 // TablesStamp
 export type TablesStamp<Hashed extends boolean = false> = Stamp<
@@ -98,9 +93,6 @@ export interface MergeableStore extends Store {
 
   /// MergeableStore.getMergeableContentHashes
   getMergeableContentHashes(): ContentHashes;
-
-  /// MergeableStore.getMergeableContentDelta
-  getMergeableContentDelta(relativeTo: ContentHashes): ContentDelta;
 
   /// MergeableStore.getMergeableTablesHashes
   getMergeableTablesHashes(): TablesHashes;
