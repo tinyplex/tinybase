@@ -1059,7 +1059,7 @@ exports[`Deltas & Hashes Deltas No match store2 missing values: getMergeableValu
 
 exports[`Deltas & Hashes getMergeableContentHashes Empty 1`] = `
 [
-  0,
+  "",
   [
     0,
     0,
@@ -1069,7 +1069,7 @@ exports[`Deltas & Hashes getMergeableContentHashes Empty 1`] = `
 
 exports[`Deltas & Hashes getMergeableContentHashes Non-empty 1`] = `
 [
-  2600056876,
+  "Hc2DO@000008DKS9",
   [
     3499952990,
     1248113522,
