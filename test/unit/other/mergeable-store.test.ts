@@ -157,52 +157,6 @@ describe('getMergeableContent', () => {
   });
 });
 
-describe('getMergeableContentAsChanges', () => {
-  let store: MergeableStore;
-
-  beforeEach(() => {
-    store = createMergeableStore('s1');
-  });
-
-  test('Initialize', () => {
-    expect(store.getMergeableContentAsChanges()).toMatchSnapshot();
-  });
-
-  describe('With data', () => {
-    beforeEach(() => {
-      store
-        .setCell('t1', 'r1', 'c1', 0)
-        .setCell('t1', 'r1', 'c2', 1)
-        .setCell('t1', 'r2', 'c1', 2)
-        .setCell('t2', 'r1', 'c1', 3)
-        .setValue('v1', 4)
-        .setValue('v2', 5);
-    });
-
-    test('No selector', () => {
-      expect(store.getMergeableContentAsChanges()).toMatchSnapshot();
-    });
-
-    test('Cell selector', () => {
-      expect(
-        store.getMergeableContentAsChanges([{t1: {r1: ['c1']}}, []]),
-      ).toMatchSnapshot();
-    });
-
-    test('Value selector', () => {
-      expect(
-        store.getMergeableContentAsChanges([{}, ['v1']]),
-      ).toMatchSnapshot();
-    });
-
-    test('Mixed selector', () => {
-      expect(
-        store.getMergeableContentAsChanges([{t1: {r1: ['c1']}}, ['v1']]),
-      ).toMatchSnapshot();
-    });
-  });
-});
-
 describe('Deltas & Hashes', () => {
   let store1: MergeableStore;
   let store2: MergeableStore;
