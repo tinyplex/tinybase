@@ -2,6 +2,7 @@
  * The mergeable-store module
  * @packageDocumentation
  * @module mergeable-store
+ * @since v5.0.0
  */
 /// mergeable-store
 /**

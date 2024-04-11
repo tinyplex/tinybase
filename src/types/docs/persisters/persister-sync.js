@@ -4,6 +4,7 @@
  * @see Persisting Data guide
  * @packageDocumentation
  * @module persister-sync
+ * @since v5.0.0
  */
 /// persister-sync
 /**
