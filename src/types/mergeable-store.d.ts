@@ -53,7 +53,7 @@ export type RowStamp<Hashed extends boolean = false> = Stamp<
 >;
 
 // RowHashes
-export type RowHashes = [hash: Hash, {[cellId: Id]: Hash}];
+export type RowHashes = {[tableId: Id]: {[rowId: Id]: {[cellId: Id]: Hash}}};
 
 // CellStamp
 export type CellStamp<Hashed extends boolean = false> = Stamp<
@@ -68,7 +68,7 @@ export type ValuesStamp<Hashed extends boolean = false> = Stamp<
 >;
 
 // ValuesHashes
-export type ValuesHashes = [hash: Hash, {[valueId: Id]: Hash}];
+export type ValuesHashes = {[valueId: Id]: Hash};
 
 // ValueStamp
 export type ValueStamp<Hashed extends boolean = false> = Stamp<
@@ -120,16 +120,16 @@ export interface MergeableStore extends Store {
   getMergeableTablesDelta(relativeTo: TablesHashes): TablesDelta;
 
   /// MergeableStore.getMergeableTableHashes
-  getMergeableTableHashes(tableIds: Ids): TableHashes;
+  getMergeableTableHashes(tablesDelta: TablesDelta): TableHashes;
 
   /// MergeableStore.getMergeableTableDelta
   getMergeableTableDelta(relativeTo: TableHashes): TableDelta;
 
   /// MergeableStore.getMergeableRowHashes
-  getMergeableRowHashes(tableId: Id, rowId: Id): RowHashes;
+  getMergeableRowHashes(tableDelta: TableDelta): RowHashes;
 
   /// MergeableStore.getMergeableRowDelta
-  getMergeableRowDelta(tableId: Id, rowId: Id, relativeTo: RowHashes): RowStamp;
+  getMergeableRowDelta(relativeTo: RowHashes): TablesStamp;
 
   /// MergeableStore.getMergeableValuesHashes
   getMergeableValuesHashes(): ValuesHashes;

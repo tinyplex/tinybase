@@ -256,7 +256,7 @@ describe('Deltas & Hashes', () => {
 
   describe('getMergeableRowHashes', () => {
     test('Empty', () => {
-      expect(store1.getMergeableRowHashes('t1', 'r1')).toMatchSnapshot();
+      expect(store1.getMergeableRowHashes({t1: ['r1']})).toMatchSnapshot();
     });
 
     test('Non-empty', () => {
@@ -264,7 +264,7 @@ describe('Deltas & Hashes', () => {
         t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}},
         t2: {r2: {c2: 2}},
       });
-      expect(store1.getMergeableRowHashes('t1', 'r1')).toMatchSnapshot();
+      expect(store1.getMergeableRowHashes({t1: ['r1']})).toMatchSnapshot();
     });
   });
 
@@ -290,18 +290,10 @@ describe('Deltas & Hashes', () => {
       store1.getMergeableTableDelta(store2.getMergeableTableHashes(['t2'])),
     ).toMatchSnapshot('getMergeableTableDelta t2');
     expect(
-      store1.getMergeableRowDelta(
-        't1',
-        'r1',
-        store2.getMergeableRowHashes('t1', 'r1'),
-      ),
+      store1.getMergeableRowDelta(store2.getMergeableRowHashes({t1: ['r1']})),
     ).toMatchSnapshot('getMergeableRowDelta t1 r1');
     expect(
-      store1.getMergeableRowDelta(
-        't1',
-        'r2',
-        store2.getMergeableRowHashes('t1', 'r2'),
-      ),
+      store1.getMergeableRowDelta(store2.getMergeableRowHashes({t1: ['r2']})),
     ).toMatchSnapshot('getMergeableRowDelta t1 r2');
     expect(
       store1.getMergeableValuesDelta(store2.getMergeableValuesHashes()),

@@ -47,27 +47,6 @@ export const getHashes = (
     hashesNew,
   ) as [Hash, IdObj<Hash>];
 
-export const getDeltaStamps = <Thing>(
-  stampMap: StampMap<Stamp<Thing, true>> | undefined,
-  [relativeHash, relativeChildren]: [Hash, IdObj<Hash>],
-): Stamp<IdObj<Stamp<Thing>>> =>
-  ifNotUndefined(
-    stampMap,
-    (stampMap) =>
-      stampMap[2] === relativeHash
-        ? stampNewObj()
-        : [
-            stampMap[0],
-            mapToObj(
-              stampMap[1],
-              ([time, value]) => [time, value],
-              (childStampMap, childId) =>
-                childStampMap[2] === relativeChildren?.[childId],
-            ),
-          ],
-    stampNewObj,
-  ) as Stamp<IdObj<Stamp<Thing>>>;
-
 export const hashIdAndHash = (id: Id, hash: Hash) => getHash(id + ':' + hash);
 
 export const stampUpdate = (
