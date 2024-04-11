@@ -32,7 +32,7 @@ const expectEachToHaveContent = async (
   } else {
     expect(store2.getMergeableContent()).toEqual(store1.getMergeableContent());
   }
-  expect(bus[1]()).toMatchSnapshot();
+  expect(bus.getStats()).toMatchSnapshot();
 };
 
 beforeEach(() => {
@@ -380,7 +380,7 @@ describe('Multidirectional', () => {
         expect(store.getMergeableContent()).toEqual(mergeableContent);
       }
     });
-    expect(bus[1]()).toMatchSnapshot();
+    expect(bus.getStats()).toMatchSnapshot();
   };
 
   beforeEach(async () => {
