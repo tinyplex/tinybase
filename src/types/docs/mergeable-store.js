@@ -30,40 +30,40 @@
  */
 /// TablesStamp
 /**
- * The TablesHashes type
+ * The TableHashes type
  * @category Syncing
  */
-/// TablesHashes
+/// TableHashes
 /**
- * The TablesDelta type
+ * The TableIdsDiff type
  * @category Syncing
  */
-/// TablesDelta
+/// TableIdsDiff
 /**
  * The TableStamp type
  * @category Stamps
  */
 /// TableStamp
 /**
- * The TableHashes type
+ * The RowHashes type
  * @category Syncing
  */
-/// TableHashes
+/// RowHashes
 /**
- * The TableDelta type
+ * The RowIdsDiff type
  * @category Syncing
  */
-/// TableDelta
+/// RowIdsDiff
 /**
  * The RowStamp type
  * @category Stamps
  */
 /// RowStamp
 /**
- * The RowHashes type
+ * The CellHashes type
  * @category Syncing
  */
-/// RowHashes
+/// CellHashes
 /**
  * The CellStamp type
  * @category Stamps
@@ -126,45 +126,45 @@
    */
   /// MergeableStore.getMergeableContentHashes
   /**
-   * The getMergeableTablesHashes method
-   * @category Syncing
-   */
-  /// MergeableStore.getMergeableTablesHashes
-  /**
-   * The getMergeableTablesDelta method
-   * @category Syncing
-   */
-  /// MergeableStore.getMergeableTablesDelta
-  /**
    * The getMergeableTableHashes method
    * @category Syncing
    */
   /// MergeableStore.getMergeableTableHashes
   /**
-   * The getMergeableTableDelta method
+   * The getMergeableTableIdsDiff method
    * @category Syncing
    */
-  /// MergeableStore.getMergeableTableDelta
+  /// MergeableStore.getMergeableTableIdsDiff
   /**
    * The getMergeableRowHashes method
    * @category Syncing
    */
   /// MergeableStore.getMergeableRowHashes
   /**
-   * The getMergeableRowDelta method
+   * The getMergeableRowIdsDiff method
    * @category Syncing
    */
-  /// MergeableStore.getMergeableRowDelta
+  /// MergeableStore.getMergeableRowIdsDiff
+  /**
+   * The getMergeableCellHashes method
+   * @category Syncing
+   */
+  /// MergeableStore.getMergeableCellHashes
+  /**
+   * The getMergeableTablesChanges method
+   * @category Syncing
+   */
+  /// MergeableStore.getMergeableTablesChanges
   /**
    * The getMergeableValuesHashes method
    * @category Syncing
    */
   /// MergeableStore.getMergeableValuesHashes
   /**
-   * The getMergeableValuesDelta method
+   * The getMergeableValuesChanges method
    * @category Syncing
    */
-  /// MergeableStore.getMergeableValuesDelta
+  /// MergeableStore.getMergeableValuesChanges
   /**
    * The setMergeableContent method
    * @category Setter
