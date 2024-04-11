@@ -38,12 +38,14 @@ export const stampClone = <Value>([time, value]: Stamp<
   boolean
 >): Stamp<Value> => [time, value];
 
+export const getStampHash = (stamp: Stamp<unknown, true>): Hash => stamp[2];
+
 export const getHashes = (
   stampMap: StampMap<Stamp<unknown, true>> | undefined,
 ): [Hash, IdObj<Hash>] =>
   ifNotUndefined(
     stampMap,
-    (stampMap) => [stampMap[2], mapToObj(stampMap[1], (stamp) => stamp[2])],
+    (stampMap) => [stampMap[2], mapToObj(stampMap[1], getStampHash)],
     hashesNew,
   ) as [Hash, IdObj<Hash>];
 
