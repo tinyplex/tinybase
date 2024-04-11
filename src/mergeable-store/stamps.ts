@@ -28,15 +28,15 @@ export type ValuesStampMap = StampMap<ValueStamp<true>>;
 
 const hashesNew = () => [0, {}];
 
-const stampClone = <Value>([time, value]: Stamp<
-  Value,
-  false
->): Stamp<Value> => [time, value];
-
 const stampCloneWithHash = <Value>([time, value, hash]: Stamp<
   Value,
   true
 >): Stamp<Value, true> => [time, value, hash];
+
+export const stampClone = <Value>([time, value]: Stamp<
+  Value,
+  boolean
+>): Stamp<Value> => [time, value];
 
 export const getHashes = (
   stampMap: StampMap<Stamp<unknown, true>> | undefined,
