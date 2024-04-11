@@ -83,7 +83,7 @@ export const createSyncPersister = ((
     }
   };
 
-  const [send] = bus.join(store.getId(), receive);
+  const [send, leave] = bus.join(store.getId(), receive);
 
   const request = async <Response>(
     toStoreId: IdOrNull,
@@ -193,7 +193,11 @@ export const createSyncPersister = ((
       getBus: () => bus,
       startSync: async () =>
         await (await persister.startAutoLoad()).startAutoSave(),
-      stopSync: () => persister.destroy,
+      stopSync: () => persister.stopAutoLoad().stopAutoSave(),
+      destroy: () => {
+        leave();
+        return persister.stopSync();
+      },
     },
   ) as SyncPersister;
   return persister;
