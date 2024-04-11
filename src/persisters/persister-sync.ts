@@ -1,6 +1,7 @@
 import {
   Bus,
   BusStats,
+  MessageType,
   Receive,
   Send,
   SyncPersister,
@@ -25,12 +26,13 @@ import {PersisterListener} from '../types/persisters';
 import {createCustomPersister} from '../persisters';
 import {getHlcFunctions} from '../mergeable-store/hlc';
 
-const CONTENT_HASHES = 'contentHashes';
-const GET_CONTENT_HASHES = 'getContentHashes';
-const GET_TABLE_IDS_DIFF = 'getTableIdsDiff';
-const GET_ROW_IDS_DIFF = 'getRowIdsDiff';
-const GET_TABLES_CHANGES = 'getTablesChanges';
-const GET_VALUES_CHANGES = 'getValuesChanges';
+const RESPONSE = 0;
+const CONTENT_HASHES = 1;
+const GET_CONTENT_HASHES = 2;
+const GET_TABLE_IDS_DIFF = 3;
+const GET_ROW_IDS_DIFF = 4;
+const GET_TABLES_CHANGES = 5;
+const GET_VALUES_CHANGES = 6;
 
 export const createSyncPersister = ((
   store: MergeableStore,
@@ -52,40 +54,37 @@ export const createSyncPersister = ((
   const receive = (
     requestId: IdOrNull,
     fromStoreId: Id,
-    message: string,
+    messageType: MessageType,
     ...parts: any[]
   ) => {
-    if (message == EMPTY_STRING) {
+    if (messageType == RESPONSE) {
       ifNotUndefined(
         mapGet(pendingRequests, requestId),
         ([toStoreId, handlePayload]) =>
-          message == EMPTY_STRING &&
-          (isUndefined(toStoreId) || toStoreId == fromStoreId)
+          isUndefined(toStoreId) || toStoreId == fromStoreId
             ? handlePayload(parts[0], fromStoreId)
             : 0,
       );
-    } else if (message == CONTENT_HASHES) {
-      persister.isAutoLoading()
-        ? getChangesFromOtherStore(fromStoreId, parts[0]).then((changes: any) =>
-            persisterListener?.(undefined, () => changes),
-          )
-        : 0;
+    } else if (messageType == CONTENT_HASHES && persister.isAutoLoading()) {
+      getChangesFromOtherStore(fromStoreId, parts[0]).then((changes: any) =>
+        persisterListener?.(undefined, () => changes),
+      );
     } else {
       const responsePayload =
-        message == GET_CONTENT_HASHES && persister.isAutoSaving()
+        messageType == GET_CONTENT_HASHES && persister.isAutoSaving()
           ? store.getMergeableContentHashes()
-          : message == GET_TABLE_IDS_DIFF
+          : messageType == GET_TABLE_IDS_DIFF
             ? store.getMergeableTableIdsDiff(parts[0])
-            : message == GET_ROW_IDS_DIFF
+            : messageType == GET_ROW_IDS_DIFF
               ? store.getMergeableRowIdsDiff(parts[0])
-              : message == GET_TABLES_CHANGES
+              : messageType == GET_TABLES_CHANGES
                 ? store.getMergeableTablesChanges(parts[0])
-                : message == GET_VALUES_CHANGES
+                : messageType == GET_VALUES_CHANGES
                   ? store.getMergeableValuesChanges(parts[0])
                   : 0;
       responsePayload === 0
         ? 0
-        : send(requestId, fromStoreId, EMPTY_STRING, responsePayload);
+        : send(requestId, fromStoreId, RESPONSE, responsePayload);
     }
   };
 
@@ -93,14 +92,14 @@ export const createSyncPersister = ((
 
   const request = async <Payload>(
     toStoreId: IdOrNull,
-    message: string,
+    messageType: MessageType,
     ...parts: any[]
   ): Promise<[payload: Payload, fromStoreId: Id]> =>
     promiseNew((resolve, reject) => {
       const requestId = getHlc();
       const timeout = setTimeout(() => {
         collDel(pendingRequests, requestId);
-        reject(`No response from ${toStoreId ?? 'anyone'} to '${message}'`);
+        reject(`No response from ${toStoreId ?? 'anyone'} to '${messageType}'`);
       }, requestTimeoutSeconds * 1000);
       mapSet(pendingRequests, requestId, [
         toStoreId,
@@ -110,7 +109,7 @@ export const createSyncPersister = ((
           resolve([payload, fromStoreId]);
         },
       ]);
-      send(requestId, toStoreId, message, ...parts);
+      send(requestId, toStoreId, messageType, ...parts);
     });
 
   const getChangesFromOtherStore = async (
@@ -212,7 +211,7 @@ export const createLocalBus = (() => {
       const send = (
         requestId: IdOrNull,
         toStoreId: IdOrNull,
-        message: string,
+        messageType: MessageType,
         ...parts: any[]
       ): void => {
         if (DEBUG) {
@@ -222,10 +221,15 @@ export const createLocalBus = (() => {
         isUndefined(toStoreId)
           ? collForEach(stores, (receive, otherStoreId) =>
               otherStoreId != storeId
-                ? receive(requestId, storeId, message, ...parts)
+                ? receive(requestId, storeId, messageType, ...parts)
                 : 0,
             )
-          : mapGet(stores, toStoreId)?.(requestId, storeId, message, ...parts);
+          : mapGet(stores, toStoreId)?.(
+              requestId,
+              storeId,
+              messageType,
+              ...parts,
+            );
       };
       const leave = (): void => {
         collDel(stores, storeId);
