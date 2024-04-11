@@ -17,11 +17,13 @@ beforeEach(() => {
 type BusConfig = {
   getBus: () => Bus;
   requestTimeoutSeconds: number;
+  pauseMilliseconds: number;
 };
 
 const localBusConfig: BusConfig = {
   getBus: createLocalBus,
   requestTimeoutSeconds: 0.001,
+  pauseMilliseconds: 2,
 };
 
 describe.each([['localBus', localBusConfig]])(
@@ -73,7 +75,7 @@ describe.each([['localBus', localBusConfig]])(
           {v1: 1, v2: 2},
         ]);
         await persister1.save();
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectEachToHaveContent(
           [
             {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
@@ -89,7 +91,7 @@ describe.each([['localBus', localBusConfig]])(
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectEachToHaveContent(
           [
             {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
@@ -105,7 +107,7 @@ describe.each([['localBus', localBusConfig]])(
           {v1: 1, v2: 2},
         ]);
         await persister1.load({t0: {r0: {c0: 0}}}, {v0: 0});
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectEachToHaveContent(
           [{t0: {r0: {c0: 0}}}, {v0: 0}],
           [
@@ -121,7 +123,7 @@ describe.each([['localBus', localBusConfig]])(
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectEachToHaveContent(
           [{t0: {r0: {c0: 0}}}, {v0: 0}],
           [
@@ -136,7 +138,7 @@ describe.each([['localBus', localBusConfig]])(
       beforeEach(async () => {
         await persister1.startSync();
         await persister2.startSync();
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
       });
 
       afterEach(() => {
@@ -159,7 +161,7 @@ describe.each([['localBus', localBusConfig]])(
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
@@ -171,7 +173,7 @@ describe.each([['localBus', localBusConfig]])(
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
@@ -183,7 +185,7 @@ describe.each([['localBus', localBusConfig]])(
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
@@ -192,12 +194,12 @@ describe.each([['localBus', localBusConfig]])(
 
       test('store1 missing tables', async () => {
         store1.setValues({v1: 1, v2: 2});
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         store2.setContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
@@ -206,12 +208,12 @@ describe.each([['localBus', localBusConfig]])(
 
       test('store2 missing tables', async () => {
         store2.setValues({v1: 1, v2: 2});
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         store1.setContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
@@ -220,9 +222,9 @@ describe.each([['localBus', localBusConfig]])(
 
       test('different tables', async () => {
         store1.setTable('t1', {r1: {c1: 1, c2: 2}, r2: {c2: 2}});
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         store2.setTable('t2', {r2: {c2: 2}});
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {},
@@ -231,12 +233,12 @@ describe.each([['localBus', localBusConfig]])(
 
       test('store1 missing table', async () => {
         store1.setTable('t1', {r1: {c1: 1, c2: 2}, r2: {c2: 2}});
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         store2.setTables({
           t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}},
           t2: {r2: {c2: 2}},
         });
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {},
@@ -245,12 +247,12 @@ describe.each([['localBus', localBusConfig]])(
 
       test('store2 missing table', async () => {
         store2.setTable('t1', {r1: {c1: 1, c2: 2}, r2: {c2: 2}});
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         store1.setTables({
           t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}},
           t2: {r2: {c2: 2}},
         });
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {},
@@ -259,9 +261,9 @@ describe.each([['localBus', localBusConfig]])(
 
       test('different table', async () => {
         store1.setRow('t1', 'r1', {c1: 1, c2: 2});
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         store2.setRow('t1', 'r2', {c2: 2});
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}},
           {},
@@ -270,9 +272,9 @@ describe.each([['localBus', localBusConfig]])(
 
       test('store1 missing row', async () => {
         store1.setRow('t1', 'r1', {c1: 1, c2: 2});
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         store2.setTable('t1', {r1: {c1: 1, c2: 2}, r2: {c2: 2}});
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}},
           {},
@@ -281,9 +283,9 @@ describe.each([['localBus', localBusConfig]])(
 
       test('store2 missing row', async () => {
         store2.setRow('t1', 'r1', {c1: 1, c2: 2});
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         store1.setTable('t1', {r1: {c1: 1, c2: 2}, r2: {c2: 2}});
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}},
           {},
@@ -292,33 +294,33 @@ describe.each([['localBus', localBusConfig]])(
 
       test('different row', async () => {
         store1.setCell('t1', 'r1', 'c1', 1);
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         store2.setCell('t1', 'r1', 'c2', 2);
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectEachToHaveContent([{t1: {r1: {c1: 1, c2: 2}}}, {}]);
       });
 
       test('store1 missing cell', async () => {
         store1.setCell('t1', 'r1', 'c1', 1);
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         store2.setRow('t1', 'r1', {c1: 1, c2: 2});
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectEachToHaveContent([{t1: {r1: {c1: 1, c2: 2}}}, {}]);
       });
 
       test('store2 missing cell', async () => {
         store2.setCell('t1', 'r1', 'c1', 1);
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         store1.setRow('t1', 'r1', {c1: 1, c2: 2});
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectEachToHaveContent([{t1: {r1: {c1: 1, c2: 2}}}, {}]);
       });
 
       test('different cell', async () => {
         store1.setCell('t1', 'r1', 'c1', 1);
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         store2.setCell('t1', 'r1', 'c1', 2);
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectEachToHaveContent([{t1: {r1: {c1: 2}}}, {}]);
       });
 
@@ -327,12 +329,12 @@ describe.each([['localBus', localBusConfig]])(
           t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}},
           t2: {r2: {c2: 2}},
         });
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         store2.setContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
@@ -344,12 +346,12 @@ describe.each([['localBus', localBusConfig]])(
           t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}},
           t2: {r2: {c2: 2}},
         });
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         store1.setContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
@@ -358,33 +360,33 @@ describe.each([['localBus', localBusConfig]])(
 
       test('different values', async () => {
         store1.setValue('v1', 1);
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         store2.setValue('v2', 2);
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectEachToHaveContent([{}, {v1: 1, v2: 2}]);
       });
 
       test('store1 missing value', async () => {
         store1.setValue('v2', 2);
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         store2.setValues({v1: 1, v2: 2});
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectEachToHaveContent([{}, {v1: 1, v2: 2}]);
       });
 
       test('store2 missing value', async () => {
         store2.setValue('v2', 2);
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         store1.setValues({v1: 1, v2: 2});
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectEachToHaveContent([{}, {v1: 1, v2: 2}]);
       });
 
       test('different value', async () => {
         store1.setValue('v1', 1);
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         store2.setValue('v1', 2);
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectEachToHaveContent([{}, {v1: 2}]);
       });
     });
@@ -419,7 +421,7 @@ describe.each([['localBus', localBusConfig]])(
         await Promise.all(
           persisters.map(async (persister) => await persister.startSync()),
         );
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
       });
 
       // ---
@@ -435,7 +437,7 @@ describe.each([['localBus', localBusConfig]])(
             {v1: 1, v2: 2},
           ]),
         );
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectAllToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
@@ -447,7 +449,7 @@ describe.each([['localBus', localBusConfig]])(
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectAllToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
@@ -459,7 +461,7 @@ describe.each([['localBus', localBusConfig]])(
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectAllToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
@@ -477,7 +479,7 @@ describe.each([['localBus', localBusConfig]])(
             store.setValues({v1: 1, v2: 2});
           }
         });
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectAllToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
@@ -488,7 +490,7 @@ describe.each([['localBus', localBusConfig]])(
         stores.forEach((store, s) => {
           store.setTable('t' + (s + 1), {r1: {c1: 1}});
         });
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectAllToHaveContent([
           {
             t1: {r1: {c1: 1}},
@@ -510,7 +512,7 @@ describe.each([['localBus', localBusConfig]])(
         stores.forEach((store, s) => {
           store.setRow('t1', 'r' + (s + 1), {c1: 1});
         });
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectAllToHaveContent([
           {
             t1: {
@@ -534,7 +536,7 @@ describe.each([['localBus', localBusConfig]])(
         stores.forEach((store, s) => {
           store.setCell('t1', 'r1', 'c' + (s + 1), 1);
         });
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectAllToHaveContent([
           {
             t1: {
@@ -560,10 +562,10 @@ describe.each([['localBus', localBusConfig]])(
         stores.forEach((store, s) => {
           store.setCell('t1', 'r1', 'c1', s + 1);
         });
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectAllToHaveContent([{t1: {r1: {c1: 10}}}, {}]);
         stores[5].setCell('t1', 'r1', 'c1', 42);
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectAllToHaveContent([{t1: {r1: {c1: 42}}}, {}]);
       });
 
@@ -571,7 +573,7 @@ describe.each([['localBus', localBusConfig]])(
         stores.forEach((store, s) => {
           store.setValue('v' + (s + 1), 1);
         });
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectAllToHaveContent([
           {},
           {
@@ -593,10 +595,10 @@ describe.each([['localBus', localBusConfig]])(
         stores.forEach((store, s) => {
           store.setValue('v1', s + 1);
         });
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectAllToHaveContent([{}, {v1: 10}]);
         stores[5].setValue('v1', 42);
-        await pause(2, true);
+        await pause(busConfig.pauseMilliseconds, true);
         await expectAllToHaveContent([{}, {v1: 42}]);
       });
     });
