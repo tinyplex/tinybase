@@ -12,7 +12,7 @@ module.exports = (path, options) =>
 
       if (packageJson.name === '@libsql/client') {
         packageJson.main = 'lib-esm/node.js';
-        delete packageJson['exports'];
+        delete packageJson.exports;
       }
 
       if (packageJson.name === '@libsql/hrana-client') {
@@ -22,6 +22,10 @@ module.exports = (path, options) =>
 
       if (packageJson.name === '@libsql/isomorphic-fetch') {
         packageJson.main = 'node.js';
+        delete packageJson.exports;
+      }
+
+      if (packageJson.name === 'ws') {
         delete packageJson.exports;
       }
 
