@@ -25,11 +25,6 @@
  */
 /// ContentHashes
 /**
- * The ContentDelta type
- * @category Syncing
- */
-/// ContentDelta
-/**
  * The TablesStamp type
  * @category Stamps
  */
@@ -130,11 +125,6 @@
    * @category Syncing
    */
   /// MergeableStore.getMergeableContentHashes
-  /**
-   * The getMergeableContentDelta method
-   * @category Syncing
-   */
-  /// MergeableStore.getMergeableContentDelta
   /**
    * The getMergeableTablesHashes method
    * @category Syncing
