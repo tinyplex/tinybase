@@ -28,10 +28,10 @@ export type Send = (
 export type BusStats = {sends?: number; receives?: number};
 
 /// Bus
-export type Bus = [
-  join: (storeId: Id, receive: Receive) => [send: Send, leave: () => void],
-  getStats: () => BusStats,
-];
+export type Bus = {
+  join: (storeId: Id, receive: Receive) => [send: Send, leave: () => void];
+  getStats: () => BusStats;
+};
 
 /// SyncPersister
 export interface SyncPersister<Schemas extends OptionalSchemas>
