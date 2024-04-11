@@ -11,8 +11,8 @@ import {
   ContentHashes,
   MergeableChanges,
   MergeableStore,
-  TableDelta,
-  TablesDelta,
+  RowIdsDiff,
+  TableIdsDiff,
   TablesStamp,
   ValuesStamp,
 } from '../types/mergeable-store';
@@ -24,6 +24,13 @@ import {EMPTY_STRING} from '../common/strings';
 import {PersisterListener} from '../types/persisters';
 import {createCustomPersister} from '../persisters';
 import {getHlcFunctions} from '../mergeable-store/hlc';
+
+const CONTENT_HASHES = 'contentHashes';
+const GET_CONTENT_HASHES = 'getContentHashes';
+const GET_TABLE_IDS_DIFF = 'getTableIdsDiff';
+const GET_ROW_IDS_DIFF = 'getRowIdsDiff';
+const GET_TABLES_CHANGES = 'getTablesChanges';
+const GET_VALUES_CHANGES = 'getValuesChanges';
 
 export const createSyncPersister = ((
   store: MergeableStore,
@@ -57,7 +64,7 @@ export const createSyncPersister = ((
             ? handlePayload(parts[0], fromStoreId)
             : 0,
       );
-    } else if (message == 'contentHashes') {
+    } else if (message == CONTENT_HASHES) {
       persister.isAutoLoading()
         ? getChangesFromOtherStore(fromStoreId, parts[0]).then((changes: any) =>
             persisterListener?.(undefined, () => changes),
@@ -65,16 +72,16 @@ export const createSyncPersister = ((
         : 0;
     } else {
       const responsePayload =
-        message == 'getContentHashes' && persister.isAutoSaving()
+        message == GET_CONTENT_HASHES && persister.isAutoSaving()
           ? store.getMergeableContentHashes()
-          : message == 'getTablesDelta'
-            ? store.getMergeableTablesDelta(parts[0])
-            : message == 'getTableDelta'
-              ? store.getMergeableTableDelta(parts[0])
-              : message == 'getRowDelta'
-                ? store.getMergeableRowDelta(parts[0])
-                : message == 'getValuesDelta'
-                  ? store.getMergeableValuesDelta(parts[0])
+          : message == GET_TABLE_IDS_DIFF
+            ? store.getMergeableTableIdsDiff(parts[0])
+            : message == GET_ROW_IDS_DIFF
+              ? store.getMergeableRowIdsDiff(parts[0])
+              : message == GET_TABLES_CHANGES
+                ? store.getMergeableTablesChanges(parts[0])
+                : message == GET_VALUES_CHANGES
+                  ? store.getMergeableValuesChanges(parts[0])
                   : 0;
       responsePayload === 0
         ? 0
@@ -113,7 +120,7 @@ export const createSyncPersister = ((
     if (isUndefined(otherContentHashes)) {
       [otherContentHashes, otherStoreId] = await request<ContentHashes>(
         otherStoreId,
-        'getContentHashes',
+        GET_CONTENT_HASHES,
       );
     }
     const [otherContentTime, [otherTablesHash, otherValuesHash]] =
@@ -127,18 +134,18 @@ export const createSyncPersister = ((
       changes[1][0] = (
         await request<TablesStamp>(
           otherStoreId,
-          'getRowDelta',
-          store.getMergeableRowHashes(
+          GET_TABLES_CHANGES,
+          store.getMergeableCellHashes(
             (
-              await request<TableDelta>(
+              await request<RowIdsDiff>(
                 otherStoreId,
-                'getTableDelta',
-                store.getMergeableTableHashes(
+                GET_ROW_IDS_DIFF,
+                store.getMergeableRowHashes(
                   (
-                    await request<TablesDelta>(
+                    await request<TableIdsDiff>(
                       otherStoreId,
-                      'getTablesDelta',
-                      store.getMergeableTablesHashes(),
+                      GET_TABLE_IDS_DIFF,
+                      store.getMergeableTableHashes(),
                     )
                   )[0],
                 ),
@@ -154,7 +161,7 @@ export const createSyncPersister = ((
       changes[1][1] = (
         await request<ValuesStamp>(
           otherStoreId,
-          'getValuesDelta',
+          GET_VALUES_CHANGES,
           store.getMergeableValuesHashes(),
         )
       )[0];
@@ -169,7 +176,7 @@ export const createSyncPersister = ((
   };
 
   const setPersisted = async (): Promise<void> => {
-    send(null, null, 'contentHashes', store.getMergeableContentHashes());
+    send(null, null, CONTENT_HASHES, store.getMergeableContentHashes());
   };
 
   const addPersisterListener = (listener: PersisterListener) =>
