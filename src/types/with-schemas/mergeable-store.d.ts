@@ -72,12 +72,12 @@ export type TableStamp<
 
 // TableHashes
 export type TableHashes<Schema extends OptionalTablesSchema> = {
-  [tableId in TableIdFromSchema<Schema>]?: {[rowId: Id]: Hash};
+  [TableId in TableIdFromSchema<Schema>]?: {[rowId: Id]: Hash};
 };
 
 // TableDelta
 export type TableDelta<Schema extends OptionalTablesSchema> = {
-  [tableId in TableIdFromSchema<Schema>]?: Ids;
+  [TableId in TableIdFromSchema<Schema>]?: Ids;
 };
 
 // RowStamp
@@ -98,10 +98,11 @@ export type RowStamp<
 >;
 
 // RowHashes
-export type RowHashes<
-  Schema extends OptionalTablesSchema,
-  TableId extends TableIdFromSchema<Schema>,
-> = [hash: Hash, {[CellId in CellIdFromSchema<Schema, TableId>]?: Hash}];
+export type RowHashes<Schema extends OptionalTablesSchema> = {
+  [TableId in TableIdFromSchema<Schema>]?: {
+    [rowId: Id]: {[CellId in CellIdFromSchema<Schema, TableId>]?: Hash};
+  };
+};
 
 // CellStamp
 export type CellStamp<
@@ -198,7 +199,7 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
 
   /// MergeableStore.getMergeableTableHashes
   getMergeableTableHashes(
-    tableIds: TableIdFromSchema<Schemas[0]>[],
+    tablesDelta: TablesDelta<Schemas[0]>,
   ): TableHashes<Schemas[0]>;
 
   /// MergeableStore.getMergeableTableDelta
@@ -207,17 +208,14 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
   ): TableDelta<Schemas[0]>;
 
   /// MergeableStore.getMergeableRowHashes
-  getMergeableRowHashes<TableId extends TableIdFromSchema<Schemas[0]>>(
-    tableId: TableId,
-    rowId: Id,
-  ): RowHashes<Schemas[0], TableId>;
+  getMergeableRowHashes(
+    tableDelta: TableDelta<Schemas[0]>,
+  ): RowHashes<Schemas[0]>;
 
   /// MergeableStore.getMergeableRowDelta
-  getMergeableRowDelta<TableId extends TableIdFromSchema<Schemas[0]>>(
-    tableId: TableId,
-    rowId: Id,
-    relativeTo: RowHashes<Schemas[0], TableId>,
-  ): RowStamp<Schemas[0], TableId>;
+  getMergeableRowDelta(
+    relativeTo: RowHashes<Schemas[0]>,
+  ): TablesStamp<Schemas[0]>;
 
   /// MergeableStore.getMergeableValuesHashes
   getMergeableValuesHashes(): ValuesHashes<Schemas[1]>;

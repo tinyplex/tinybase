@@ -15,13 +15,11 @@ import {
   TablesDelta,
 } from '../types/mergeable-store';
 import {DEBUG, ifNotUndefined, isUndefined, promiseNew} from '../common/other';
-import {Id, IdOrNull, Ids} from '../types/common';
+import {Id, IdOrNull} from '../types/common';
 import {IdMap, mapGet, mapNew, mapSet} from '../common/map';
 import {collDel, collForEach, collSize} from '../common/coll';
-import {objMap, objNew} from '../common/obj';
 import {EMPTY_STRING} from '../common/strings';
 import {PersisterListener} from '../types/persisters';
-import {arrayMap} from '../common/array';
 import {createCustomPersister} from '../persisters';
 import {getHlcFunctions} from '../mergeable-store/hlc';
 
@@ -72,14 +70,10 @@ export const createSyncPersister = ((
             ? store.getMergeableTablesDelta(parts[0])
             : message == 'getTableDelta'
               ? store.getMergeableTableDelta(parts[0])
-              : message == 'getRowDeltaIds'
-                ? objMap(parts[0], (tableHashes: any, tableId: Id) =>
-                    objMap(tableHashes, (rowHashes: any, rowId) =>
-                      store.getMergeableRowDeltaIds(tableId, rowId, rowHashes),
-                    ),
-                  )
-                : message == 'getValuesDeltaIds'
-                  ? store.getMergeableValuesDeltaIds(parts[0])
+              : message == 'getRowDelta'
+                ? store.getMergeableRowDelta(parts[0])
+                : message == 'getValuesDelta'
+                  ? store.getMergeableValuesDelta(parts[0])
                   : message == 'getMergeableContentAsChanges'
                     ? store.getMergeableContentAsChanges(parts[0])
                     : 0;
@@ -123,11 +117,11 @@ export const createSyncPersister = ((
       store.getMergeableContentHashes(),
     );
 
-    const contentSelectors = [{}, []];
+    const changes: MergeableChanges = ['', [['', {}], ['', {}], 1]];
 
     if (!isUndefined(contentDelta)) {
-      const [_, [tablesHash, valuesHash]] = contentDelta;
-
+      const [time, [tablesHash, valuesHash]] = contentDelta;
+      changes[0] = time;
       if (!isUndefined(tablesHash)) {
         const [deltaTableIds] = await request<TablesDelta>(
           otherStoreId,
@@ -135,45 +129,31 @@ export const createSyncPersister = ((
           store.getMergeableTablesHashes(),
         );
 
-        const [deltaRowIds] = await request<TableDelta>(
+        const [tableDelta] = await request<TableDelta>(
           otherStoreId,
           'getTableDelta',
           store.getMergeableTableHashes(deltaTableIds),
         );
 
-        const [deltaCellIds] = await request<{
-          [tableId: Id]: {[rowId: Id]: Ids};
-        }>(
+        const [rowDelta] = await request<MergeableChanges[1][0]>(
           otherStoreId,
-          'getRowDeltaIds',
-          objMap(deltaRowIds, (rowIds, tableId) =>
-            objNew(
-              arrayMap(rowIds, (rowId) => [
-                rowId,
-                store.getMergeableRowHashes(tableId, rowId),
-              ]),
-            ),
-          ),
+          'getRowDelta',
+          store.getMergeableRowHashes(tableDelta),
         );
-        contentSelectors[0] = deltaCellIds;
+
+        changes[1][0] = rowDelta;
       }
 
       if (!isUndefined(valuesHash)) {
-        contentSelectors[1] = (
-          await request<Ids>(
+        changes[1][1] = (
+          await request<MergeableChanges[1][1]>(
             otherStoreId,
-            'getValuesDeltaIds',
+            'getValuesDelta',
             store.getMergeableValuesHashes(),
           )
         )[0];
       }
     }
-
-    const [changes] = await request<MergeableChanges>(
-      otherStoreId,
-      'getMergeableContentAsChanges',
-      contentSelectors,
-    );
 
     return changes;
   };
