@@ -1,6 +1,5 @@
 import {CellOrUndefined, Changes, Store, ValueOrUndefined} from './types/store';
 import {
-  ContentDelta,
   ContentHashes,
   MergeableChanges,
   MergeableContent,
@@ -308,7 +307,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   ];
 
   const getMergeableContentHashes = (): ContentHashes => [
-    contentStampMap[2],
+    contentStampMap[0],
     [contentStampMap[1][0][2], contentStampMap[1][1][2]],
   ];
 
@@ -341,21 +340,6 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
 
   const getMergeableValuesHashes = (): ValuesHashes =>
     mapToObj(contentStampMap[1][1][1], (stamp) => stamp[2]);
-
-  const getMergeableContentDelta = (relativeTo: ContentHashes): ContentDelta =>
-    contentStampMap[2] === relativeTo[0]
-      ? null
-      : [
-          contentStampMap[0],
-          [
-            contentStampMap[1][0][2] === relativeTo[1][0]
-              ? null
-              : contentStampMap[1][0][2],
-            contentStampMap[1][1][2] === relativeTo[1][1]
-              ? null
-              : contentStampMap[1][1][2],
-          ],
-        ];
 
   const getMergeableTablesDelta = (relativeTo: TablesHashes): TablesDelta => {
     const tableIds: Ids = [];
@@ -497,7 +481,6 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     getMergeableTableHashes,
     getMergeableRowHashes,
     getMergeableValuesHashes,
-    getMergeableContentDelta,
     getMergeableTablesDelta,
     getMergeableTableDelta,
     getMergeableRowDelta,
