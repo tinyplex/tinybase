@@ -124,7 +124,10 @@ export const createSyncPersister = ((
       otherContentHashes;
     const [, [tablesHash, valuesHash]] = store.getMergeableContentHashes();
 
-    const changes: MergeableChanges = ['', [['', {}], ['', {}], 1]];
+    const changes: MergeableChanges = [
+      EMPTY_STRING,
+      [[EMPTY_STRING, {}], [EMPTY_STRING, {}], 1],
+    ];
 
     if (tablesHash != otherTablesHash) {
       changes[0] = otherContentTime;
