@@ -13,6 +13,8 @@ import {
   MergeableStore,
   TableDelta,
   TablesDelta,
+  TablesStamp,
+  ValuesStamp,
 } from '../types/mergeable-store';
 import {DEBUG, ifNotUndefined, isUndefined, promiseNew} from '../common/other';
 import {Id, IdOrNull} from '../types/common';
@@ -74,9 +76,7 @@ export const createSyncPersister = ((
                 ? store.getMergeableRowDelta(parts[0])
                 : message == 'getValuesDelta'
                   ? store.getMergeableValuesDelta(parts[0])
-                  : message == 'getMergeableContentAsChanges'
-                    ? store.getMergeableContentAsChanges(parts[0])
-                    : 0;
+                  : 0;
       responsePayload === 0
         ? 0
         : send(requestId, fromStoreId, EMPTY_STRING, responsePayload);
@@ -122,31 +122,36 @@ export const createSyncPersister = ((
     if (!isUndefined(contentDelta)) {
       const [time, [tablesHash, valuesHash]] = contentDelta;
       changes[0] = time;
+
       if (!isUndefined(tablesHash)) {
-        const [deltaTableIds] = await request<TablesDelta>(
-          otherStoreId,
-          'getTablesDelta',
-          store.getMergeableTablesHashes(),
-        );
-
-        const [tableDelta] = await request<TableDelta>(
-          otherStoreId,
-          'getTableDelta',
-          store.getMergeableTableHashes(deltaTableIds),
-        );
-
-        const [rowDelta] = await request<MergeableChanges[1][0]>(
-          otherStoreId,
-          'getRowDelta',
-          store.getMergeableRowHashes(tableDelta),
-        );
-
-        changes[1][0] = rowDelta;
+        changes[1][0] = (
+          await request<TablesStamp>(
+            otherStoreId,
+            'getRowDelta',
+            store.getMergeableRowHashes(
+              (
+                await request<TableDelta>(
+                  otherStoreId,
+                  'getTableDelta',
+                  store.getMergeableTableHashes(
+                    (
+                      await request<TablesDelta>(
+                        otherStoreId,
+                        'getTablesDelta',
+                        store.getMergeableTablesHashes(),
+                      )
+                    )[0],
+                  ),
+                )
+              )[0],
+            ),
+          )
+        )[0];
       }
 
       if (!isUndefined(valuesHash)) {
         changes[1][1] = (
-          await request<MergeableChanges[1][1]>(
+          await request<ValuesStamp>(
             otherStoreId,
             'getValuesDelta',
             store.getMergeableValuesHashes(),
