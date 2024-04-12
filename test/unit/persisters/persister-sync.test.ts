@@ -5,8 +5,11 @@ import {
   SyncPersister,
   createLocalClient,
   createSyncPersister,
+  createWsClient,
+  createWsServer,
 } from 'tinybase/debug/persisters/persister-sync';
 import {Content, MergeableStore, createMergeableStore} from 'tinybase/debug';
+import {WebSocket, WebSocketServer} from 'ws';
 import {pause} from '../common/other';
 import {resetHlc} from '../common/mergeable';
 
@@ -14,23 +17,43 @@ beforeEach(() => {
   resetHlc();
 });
 
-type ClientConfig = {
-  createEnvironment?: () => any;
-  destroyEnvironment?: (environment: any) => Promise<void>;
-  getClient: (environment: any) => Client;
+type ClientConfig<Environment> = {
+  createEnvironment?: () => Environment;
+  destroyEnvironment?: (environment: Environment) => void;
+  getClient: () => Promise<Client>;
   requestTimeoutSeconds: number;
   pauseMilliseconds: number;
 };
 
-const localClient: ClientConfig = {
-  getClient: createLocalClient,
+const localClient: ClientConfig<undefined> = {
+  getClient: async () => createLocalClient(),
   requestTimeoutSeconds: 0.001,
   pauseMilliseconds: 2,
 };
 
-describe.each([['localClient', localClient]])(
+const wsClient: ClientConfig<WebSocketServer> = {
+  createEnvironment: () => {
+    const webSocketServer = new WebSocketServer({port: 8042});
+    createWsServer(webSocketServer);
+    return webSocketServer;
+  },
+  destroyEnvironment: (webSocketServer: WebSocketServer) => {
+    webSocketServer.close();
+  },
+  getClient: async () => {
+    const webSocket = new WebSocket('ws://localhost:8042');
+    return await createWsClient(webSocket);
+  },
+  requestTimeoutSeconds: 0.01,
+  pauseMilliseconds: 20,
+};
+
+describe.each([
+  ['localClient', localClient],
+  ['wsClient', wsClient],
+] as any[])(
   'Syncs to/from %s',
-  (_name: string, clientConfig: ClientConfig) => {
+  <Environment>(_name: string, clientConfig: ClientConfig<Environment>) => {
     let environment: any;
     let client1: Client;
     let client2: Client;
@@ -56,11 +79,11 @@ describe.each([['localClient', localClient]])(
       expect([client1.getStats(), client2.getStats()]).toMatchSnapshot('stats');
     };
 
-    beforeEach(() => {
+    beforeEach(async () => {
       environment = clientConfig.createEnvironment?.();
 
-      client1 = clientConfig.getClient(environment);
-      client2 = clientConfig.getClient(environment);
+      client1 = await clientConfig.getClient();
+      client2 = await clientConfig.getClient();
       store1 = createMergeableStore('s1');
       store2 = createMergeableStore('s2');
       persister1 = createSyncPersister(
@@ -78,7 +101,7 @@ describe.each([['localClient', localClient]])(
     afterEach(async () => {
       persister1.destroy();
       persister2.destroy();
-      await clientConfig.destroyEnvironment?.(environment);
+      clientConfig.destroyEnvironment?.(environment);
     });
 
     describe('Unidirectional', () => {

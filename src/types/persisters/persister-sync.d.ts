@@ -1,6 +1,7 @@
 /// persister-file
 
 import {Id, IdOrNull} from '../common';
+import {WebSocket, WebSocketServer} from 'ws';
 import {MergeableStore} from '../mergeable-store';
 import {Persister} from '../persisters';
 
@@ -54,3 +55,9 @@ export function createSyncPersister(
 
 /// createLocalClient
 export function createLocalClient(): Client;
+
+/// createWsClient
+export function createWsClient(webSocket: WebSocket): Promise<Client>;
+
+/// createWsServer
+export function createWsServer(WebSocketServer: WebSocketServer): void;
