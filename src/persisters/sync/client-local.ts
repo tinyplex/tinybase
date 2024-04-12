@@ -24,7 +24,16 @@ export const createLocalClient = (() => {
   const clientId: Id = '' + Math.random();
 
   const onReceive = (receive: Receive): void => {
-    mapSet(clients, clientId, receive);
+    mapSet(
+      clients,
+      clientId,
+      DEBUG
+        ? (...args) => {
+            incrementReceives(clientId);
+            receive(...args);
+          }
+        : receive,
+    );
   };
 
   const send = (
@@ -35,11 +44,6 @@ export const createLocalClient = (() => {
   ): void => {
     if (DEBUG) {
       incrementSends(clientId);
-      isUndefined(toClientId)
-        ? collForEach(clients, (_, toClientId) =>
-            toClientId != clientId ? incrementReceives(toClientId) : 0,
-          )
-        : incrementReceives(toClientId);
     }
     isUndefined(toClientId)
       ? collForEach(clients, (receive, toClientId) =>
