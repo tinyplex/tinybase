@@ -9,16 +9,16 @@ export type MessageType = number;
 
 /// Receive
 export type Receive = (
-  requestId: IdOrNull,
   fromClientId: Id,
+  requestId: IdOrNull,
   messageType: MessageType,
   messageBody: any,
 ) => void;
 
 /// Send
 export type Send = (
-  requestId: IdOrNull,
   toClientId: IdOrNull,
+  requestId: IdOrNull,
   messageType: MessageType,
   messageBody: any,
 ) => void;

@@ -51,8 +51,8 @@ export const createSyncPersister = ((
 
   onReceive(
     (
-      requestId: IdOrNull,
       fromClientId: Id,
+      requestId: IdOrNull,
       messageType: MessageType,
       messageBody: any,
     ) => {
@@ -81,7 +81,7 @@ export const createSyncPersister = ((
                   : messageType == GET_VALUES_CHANGES
                     ? store.getMergeableValuesChanges(messageBody)
                     : 0;
-        response === 0 ? 0 : send(requestId, fromClientId, RESPONSE, response);
+        response === 0 ? 0 : send(fromClientId, requestId, RESPONSE, response);
       }
     },
   );
@@ -107,7 +107,7 @@ export const createSyncPersister = ((
           resolve([response, fromClientId]);
         },
       ]);
-      send(requestId, toClientId, messageType, messageBody);
+      send(toClientId, requestId, messageType, messageBody);
     });
 
   const getChangesFromOtherStore = async (
