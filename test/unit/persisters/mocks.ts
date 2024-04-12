@@ -1,9 +1,4 @@
 import {
-  Bus,
-  createLocalBus,
-  createSyncPersister,
-} from 'tinybase/debug/persisters/persister-sync';
-import {
   Changes,
   Content,
   Id,
@@ -17,6 +12,11 @@ import {
   createCustomPersister,
   createMergeableStore,
 } from 'tinybase/debug';
+import {
+  Client,
+  createLocalClient,
+  createSyncPersister,
+} from 'tinybase/debug/persisters/persister-sync';
 import {DbSchema, ElectricClient} from 'electric-sql/client/model';
 import {DocHandle, Repo} from '@automerge/automerge-repo';
 import {GetLocationMethod, Persistable} from './common';
@@ -265,35 +265,35 @@ export const mockFile: Persistable = {
   testMissing: true,
 };
 
-export const mockSync: Persistable<[Bus, MergeableStore]> = {
+export const mockSync: Persistable<[Client, MergeableStore]> = {
   autoLoadPause: 1,
-  getLocation: async (): Promise<[Bus, MergeableStore]> => {
-    const bus = createLocalBus();
+  getLocation: async (): Promise<[Client, MergeableStore]> => {
+    const client = createLocalClient();
     const otherStore = createMergeableStore('s2');
-    await createSyncPersister(otherStore, bus, 0.001).startSync();
-    return [bus, otherStore];
+    await createSyncPersister(otherStore, client, 0.001).startSync();
+    return [client, otherStore];
   },
-  getLocationMethod: ['getBus', (location) => location[0]],
+  getLocationMethod: ['getClient', (location) => location[0]],
   getPersister: (store: Store, location) =>
     createSyncPersister(store as MergeableStore, location[0], 0.001),
   get: async (
-    location: [Bus, MergeableStore],
+    location: [Client, MergeableStore],
   ): Promise<Content | MergeableContent | void> => {
     try {
       location[1].getMergeableContent();
     } catch {}
   },
   set: async (
-    location: [Bus, MergeableStore],
+    location: [Client, MergeableStore],
     content: Content | MergeableContent,
   ): Promise<void> => await mockSync.write(location, content),
   write: async (
-    location: [Bus, MergeableStore],
+    location: [Client, MergeableStore],
     rawContent: any,
   ): Promise<void> => {
     location[1].setMergeableContent(rawContent);
   },
-  del: async (location: [Bus, MergeableStore]): Promise<void> => {
+  del: async (location: [Client, MergeableStore]): Promise<void> => {
     location[1].setMergeableContent([
       '',
       [

@@ -1,5 +1,5 @@
 import {
-  Bus,
+  Client,
   MessageType,
   SyncPersister,
   createSyncPersister as createSyncPersisterDecl,
@@ -22,7 +22,7 @@ import {collDel} from '../common/coll';
 import {createCustomPersister} from '../persisters';
 import {getHlcFunctions} from '../mergeable-store/hlc';
 
-export {createLocalBus} from './sync/bus-local';
+export {createLocalClient} from './sync/client-local';
 
 const RESPONSE = 0;
 const CONTENT_HASHES = 1;
@@ -34,7 +34,7 @@ const GET_VALUES_CHANGES = 6;
 
 export const createSyncPersister = ((
   store: MergeableStore,
-  bus: Bus,
+  client: Client,
   requestTimeoutSeconds = 1,
   onIgnoredError?: (error: any) => void,
 ): SyncPersister => {
@@ -83,7 +83,7 @@ export const createSyncPersister = ((
     }
   };
 
-  const [send, leave] = bus.join(store.getId(), receive);
+  const [send, disconnect] = client.connect(store.getId(), receive);
 
   const request = async <Response>(
     toStoreId: IdOrNull,
@@ -190,12 +190,12 @@ export const createSyncPersister = ((
     onIgnoredError,
     true,
     {
-      getBus: () => bus,
+      getClient: () => client,
       startSync: async () =>
         await (await persister.startAutoLoad()).startAutoSave(),
       stopSync: () => persister.stopAutoLoad().stopAutoSave(),
       destroy: () => {
-        leave();
+        disconnect();
         return persister.stopSync();
       },
     },
