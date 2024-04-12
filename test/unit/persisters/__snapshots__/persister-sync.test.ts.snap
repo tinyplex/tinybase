@@ -19,11 +19,17 @@ exports[`Syncs to/from localClient Bidirectional Both empty 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional Both empty 2`] = `
-{
-  "receives": 5,
-  "sends": 5,
-}
+exports[`Syncs to/from localClient Bidirectional Both empty: stats 1`] = `
+[
+  {
+    "receives": 2,
+    "sends": 3,
+  },
+  {
+    "receives": 3,
+    "sends": 2,
+  },
+]
 `;
 
 exports[`Syncs to/from localClient Bidirectional Both match 1`] = `
@@ -107,11 +113,17 @@ exports[`Syncs to/from localClient Bidirectional Both match 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional Both match 2`] = `
-{
-  "receives": 23,
-  "sends": 23,
-}
+exports[`Syncs to/from localClient Bidirectional Both match: stats 1`] = `
+[
+  {
+    "receives": 11,
+    "sends": 12,
+  },
+  {
+    "receives": 12,
+    "sends": 11,
+  },
+]
 `;
 
 exports[`Syncs to/from localClient Bidirectional different cell 1`] = `
@@ -151,11 +163,17 @@ exports[`Syncs to/from localClient Bidirectional different cell 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional different cell 2`] = `
-{
-  "receives": 19,
-  "sends": 19,
-}
+exports[`Syncs to/from localClient Bidirectional different cell: stats 1`] = `
+[
+  {
+    "receives": 9,
+    "sends": 10,
+  },
+  {
+    "receives": 10,
+    "sends": 9,
+  },
+]
 `;
 
 exports[`Syncs to/from localClient Bidirectional different row 1`] = `
@@ -200,11 +218,17 @@ exports[`Syncs to/from localClient Bidirectional different row 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional different row 2`] = `
-{
-  "receives": 19,
-  "sends": 19,
-}
+exports[`Syncs to/from localClient Bidirectional different row: stats 1`] = `
+[
+  {
+    "receives": 9,
+    "sends": 10,
+  },
+  {
+    "receives": 10,
+    "sends": 9,
+  },
+]
 `;
 
 exports[`Syncs to/from localClient Bidirectional different table 1`] = `
@@ -260,11 +284,17 @@ exports[`Syncs to/from localClient Bidirectional different table 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional different table 2`] = `
-{
-  "receives": 19,
-  "sends": 19,
-}
+exports[`Syncs to/from localClient Bidirectional different table: stats 1`] = `
+[
+  {
+    "receives": 9,
+    "sends": 10,
+  },
+  {
+    "receives": 10,
+    "sends": 9,
+  },
+]
 `;
 
 exports[`Syncs to/from localClient Bidirectional different tables 1`] = `
@@ -337,11 +367,17 @@ exports[`Syncs to/from localClient Bidirectional different tables 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional different tables 2`] = `
-{
-  "receives": 19,
-  "sends": 19,
-}
+exports[`Syncs to/from localClient Bidirectional different tables: stats 1`] = `
+[
+  {
+    "receives": 9,
+    "sends": 10,
+  },
+  {
+    "receives": 10,
+    "sends": 9,
+  },
+]
 `;
 
 exports[`Syncs to/from localClient Bidirectional different value 1`] = `
@@ -369,11 +405,17 @@ exports[`Syncs to/from localClient Bidirectional different value 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional different value 2`] = `
-{
-  "receives": 11,
-  "sends": 11,
-}
+exports[`Syncs to/from localClient Bidirectional different value: stats 1`] = `
+[
+  {
+    "receives": 5,
+    "sends": 6,
+  },
+  {
+    "receives": 6,
+    "sends": 5,
+  },
+]
 `;
 
 exports[`Syncs to/from localClient Bidirectional different values 1`] = `
@@ -406,11 +448,17 @@ exports[`Syncs to/from localClient Bidirectional different values 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional different values 2`] = `
-{
-  "receives": 11,
-  "sends": 11,
-}
+exports[`Syncs to/from localClient Bidirectional different values: stats 1`] = `
+[
+  {
+    "receives": 5,
+    "sends": 6,
+  },
+  {
+    "receives": 6,
+    "sends": 5,
+  },
+]
 `;
 
 exports[`Syncs to/from localClient Bidirectional store1 empty 1`] = `
@@ -494,11 +542,17 @@ exports[`Syncs to/from localClient Bidirectional store1 empty 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store1 empty 2`] = `
-{
-  "receives": 14,
-  "sends": 14,
-}
+exports[`Syncs to/from localClient Bidirectional store1 empty: stats 1`] = `
+[
+  {
+    "receives": 7,
+    "sends": 7,
+  },
+  {
+    "receives": 7,
+    "sends": 7,
+  },
+]
 `;
 
 exports[`Syncs to/from localClient Bidirectional store1 missing cell 1`] = `
@@ -543,11 +597,17 @@ exports[`Syncs to/from localClient Bidirectional store1 missing cell 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store1 missing cell 2`] = `
-{
-  "receives": 19,
-  "sends": 19,
-}
+exports[`Syncs to/from localClient Bidirectional store1 missing cell: stats 1`] = `
+[
+  {
+    "receives": 9,
+    "sends": 10,
+  },
+  {
+    "receives": 10,
+    "sends": 9,
+  },
+]
 `;
 
 exports[`Syncs to/from localClient Bidirectional store1 missing row 1`] = `
@@ -603,11 +663,17 @@ exports[`Syncs to/from localClient Bidirectional store1 missing row 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store1 missing row 2`] = `
-{
-  "receives": 19,
-  "sends": 19,
-}
+exports[`Syncs to/from localClient Bidirectional store1 missing row: stats 1`] = `
+[
+  {
+    "receives": 9,
+    "sends": 10,
+  },
+  {
+    "receives": 10,
+    "sends": 9,
+  },
+]
 `;
 
 exports[`Syncs to/from localClient Bidirectional store1 missing table 1`] = `
@@ -680,11 +746,17 @@ exports[`Syncs to/from localClient Bidirectional store1 missing table 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store1 missing table 2`] = `
-{
-  "receives": 19,
-  "sends": 19,
-}
+exports[`Syncs to/from localClient Bidirectional store1 missing table: stats 1`] = `
+[
+  {
+    "receives": 9,
+    "sends": 10,
+  },
+  {
+    "receives": 10,
+    "sends": 9,
+  },
+]
 `;
 
 exports[`Syncs to/from localClient Bidirectional store1 missing tables 1`] = `
@@ -768,11 +840,17 @@ exports[`Syncs to/from localClient Bidirectional store1 missing tables 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store1 missing tables 2`] = `
-{
-  "receives": 15,
-  "sends": 15,
-}
+exports[`Syncs to/from localClient Bidirectional store1 missing tables: stats 1`] = `
+[
+  {
+    "receives": 7,
+    "sends": 8,
+  },
+  {
+    "receives": 8,
+    "sends": 7,
+  },
+]
 `;
 
 exports[`Syncs to/from localClient Bidirectional store1 missing value 1`] = `
@@ -805,11 +883,17 @@ exports[`Syncs to/from localClient Bidirectional store1 missing value 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store1 missing value 2`] = `
-{
-  "receives": 11,
-  "sends": 11,
-}
+exports[`Syncs to/from localClient Bidirectional store1 missing value: stats 1`] = `
+[
+  {
+    "receives": 5,
+    "sends": 6,
+  },
+  {
+    "receives": 6,
+    "sends": 5,
+  },
+]
 `;
 
 exports[`Syncs to/from localClient Bidirectional store1 missing values 1`] = `
@@ -893,11 +977,17 @@ exports[`Syncs to/from localClient Bidirectional store1 missing values 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store1 missing values 2`] = `
-{
-  "receives": 15,
-  "sends": 15,
-}
+exports[`Syncs to/from localClient Bidirectional store1 missing values: stats 1`] = `
+[
+  {
+    "receives": 7,
+    "sends": 8,
+  },
+  {
+    "receives": 8,
+    "sends": 7,
+  },
+]
 `;
 
 exports[`Syncs to/from localClient Bidirectional store2 empty 1`] = `
@@ -981,11 +1071,17 @@ exports[`Syncs to/from localClient Bidirectional store2 empty 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store2 empty 2`] = `
-{
-  "receives": 14,
-  "sends": 14,
-}
+exports[`Syncs to/from localClient Bidirectional store2 empty: stats 1`] = `
+[
+  {
+    "receives": 6,
+    "sends": 8,
+  },
+  {
+    "receives": 8,
+    "sends": 6,
+  },
+]
 `;
 
 exports[`Syncs to/from localClient Bidirectional store2 missing cell 1`] = `
@@ -1030,11 +1126,17 @@ exports[`Syncs to/from localClient Bidirectional store2 missing cell 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store2 missing cell 2`] = `
-{
-  "receives": 19,
-  "sends": 19,
-}
+exports[`Syncs to/from localClient Bidirectional store2 missing cell: stats 1`] = `
+[
+  {
+    "receives": 9,
+    "sends": 10,
+  },
+  {
+    "receives": 10,
+    "sends": 9,
+  },
+]
 `;
 
 exports[`Syncs to/from localClient Bidirectional store2 missing row 1`] = `
@@ -1090,11 +1192,17 @@ exports[`Syncs to/from localClient Bidirectional store2 missing row 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store2 missing row 2`] = `
-{
-  "receives": 19,
-  "sends": 19,
-}
+exports[`Syncs to/from localClient Bidirectional store2 missing row: stats 1`] = `
+[
+  {
+    "receives": 9,
+    "sends": 10,
+  },
+  {
+    "receives": 10,
+    "sends": 9,
+  },
+]
 `;
 
 exports[`Syncs to/from localClient Bidirectional store2 missing table 1`] = `
@@ -1167,11 +1275,17 @@ exports[`Syncs to/from localClient Bidirectional store2 missing table 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store2 missing table 2`] = `
-{
-  "receives": 19,
-  "sends": 19,
-}
+exports[`Syncs to/from localClient Bidirectional store2 missing table: stats 1`] = `
+[
+  {
+    "receives": 9,
+    "sends": 10,
+  },
+  {
+    "receives": 10,
+    "sends": 9,
+  },
+]
 `;
 
 exports[`Syncs to/from localClient Bidirectional store2 missing tables 1`] = `
@@ -1255,11 +1369,17 @@ exports[`Syncs to/from localClient Bidirectional store2 missing tables 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store2 missing tables 2`] = `
-{
-  "receives": 15,
-  "sends": 15,
-}
+exports[`Syncs to/from localClient Bidirectional store2 missing tables: stats 1`] = `
+[
+  {
+    "receives": 7,
+    "sends": 8,
+  },
+  {
+    "receives": 8,
+    "sends": 7,
+  },
+]
 `;
 
 exports[`Syncs to/from localClient Bidirectional store2 missing value 1`] = `
@@ -1292,11 +1412,17 @@ exports[`Syncs to/from localClient Bidirectional store2 missing value 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store2 missing value 2`] = `
-{
-  "receives": 11,
-  "sends": 11,
-}
+exports[`Syncs to/from localClient Bidirectional store2 missing value: stats 1`] = `
+[
+  {
+    "receives": 5,
+    "sends": 6,
+  },
+  {
+    "receives": 6,
+    "sends": 5,
+  },
+]
 `;
 
 exports[`Syncs to/from localClient Bidirectional store2 missing values 1`] = `
@@ -1380,11 +1506,17 @@ exports[`Syncs to/from localClient Bidirectional store2 missing values 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store2 missing values 2`] = `
-{
-  "receives": 15,
-  "sends": 15,
-}
+exports[`Syncs to/from localClient Bidirectional store2 missing values: stats 1`] = `
+[
+  {
+    "receives": 7,
+    "sends": 8,
+  },
+  {
+    "receives": 8,
+    "sends": 7,
+  },
+]
 `;
 
 exports[`Syncs to/from localClient Multidirectional All but first empty 1`] = `
@@ -1468,7 +1600,7 @@ exports[`Syncs to/from localClient Multidirectional All but first empty 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Multidirectional All but first empty 2`] = `
+exports[`Syncs to/from localClient Multidirectional All but first empty: stats 1`] = `
 {
   "receives": 261,
   "sends": 93,
@@ -1556,7 +1688,7 @@ exports[`Syncs to/from localClient Multidirectional All but last empty 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Multidirectional All but last empty 2`] = `
+exports[`Syncs to/from localClient Multidirectional All but last empty: stats 1`] = `
 {
   "receives": 261,
   "sends": 93,
@@ -1582,7 +1714,7 @@ exports[`Syncs to/from localClient Multidirectional All empty 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Multidirectional All empty 2`] = `
+exports[`Syncs to/from localClient Multidirectional All empty: stats 1`] = `
 {
   "receives": 180,
   "sends": 20,
@@ -1670,7 +1802,7 @@ exports[`Syncs to/from localClient Multidirectional All match 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Multidirectional All match 2`] = `
+exports[`Syncs to/from localClient Multidirectional All match: stats 1`] = `
 {
   "receives": 990,
   "sends": 750,
@@ -1715,13 +1847,6 @@ exports[`Syncs to/from localClient Multidirectional all conflicting cells 1`] = 
 `;
 
 exports[`Syncs to/from localClient Multidirectional all conflicting cells 2`] = `
-{
-  "receives": 1125,
-  "sends": 605,
-}
-`;
-
-exports[`Syncs to/from localClient Multidirectional all conflicting cells 3`] = `
 [
   "Hc2DO@400059DKYL",
   [
@@ -1758,7 +1883,14 @@ exports[`Syncs to/from localClient Multidirectional all conflicting cells 3`] = 
 ]
 `;
 
-exports[`Syncs to/from localClient Multidirectional all conflicting cells 4`] = `
+exports[`Syncs to/from localClient Multidirectional all conflicting cells: stats 1`] = `
+{
+  "receives": 1125,
+  "sends": 605,
+}
+`;
+
+exports[`Syncs to/from localClient Multidirectional all conflicting cells: stats 2`] = `
 {
   "receives": 1188,
   "sends": 660,
@@ -1791,13 +1923,6 @@ exports[`Syncs to/from localClient Multidirectional all conflicting values 1`] =
 `;
 
 exports[`Syncs to/from localClient Multidirectional all conflicting values 2`] = `
-{
-  "receives": 765,
-  "sends": 245,
-}
-`;
-
-exports[`Syncs to/from localClient Multidirectional all conflicting values 3`] = `
 [
   "Hc2DO@400059DKYL",
   [
@@ -1822,7 +1947,14 @@ exports[`Syncs to/from localClient Multidirectional all conflicting values 3`] =
 ]
 `;
 
-exports[`Syncs to/from localClient Multidirectional all conflicting values 4`] = `
+exports[`Syncs to/from localClient Multidirectional all conflicting values: stats 1`] = `
+{
+  "receives": 765,
+  "sends": 245,
+}
+`;
+
+exports[`Syncs to/from localClient Multidirectional all conflicting values: stats 2`] = `
 {
   "receives": 792,
   "sends": 264,
@@ -1911,7 +2043,7 @@ exports[`Syncs to/from localClient Multidirectional all different cells 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Multidirectional all different cells 2`] = `
+exports[`Syncs to/from localClient Multidirectional all different cells: stats 1`] = `
 {
   "receives": 1530,
   "sends": 650,
@@ -2054,7 +2186,7 @@ exports[`Syncs to/from localClient Multidirectional all different rows 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Multidirectional all different rows 2`] = `
+exports[`Syncs to/from localClient Multidirectional all different rows: stats 1`] = `
 {
   "receives": 1530,
   "sends": 650,
@@ -2251,7 +2383,7 @@ exports[`Syncs to/from localClient Multidirectional all different tables 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Multidirectional all different tables 2`] = `
+exports[`Syncs to/from localClient Multidirectional all different tables: stats 1`] = `
 {
   "receives": 1530,
   "sends": 650,
@@ -2328,7 +2460,7 @@ exports[`Syncs to/from localClient Multidirectional all different values 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Multidirectional all different values 2`] = `
+exports[`Syncs to/from localClient Multidirectional all different values: stats 1`] = `
 {
   "receives": 1170,
   "sends": 290,
@@ -2416,7 +2548,7 @@ exports[`Syncs to/from localClient Multidirectional half tables, half values 1`]
 ]
 `;
 
-exports[`Syncs to/from localClient Multidirectional half tables, half values 2`] = `
+exports[`Syncs to/from localClient Multidirectional half tables, half values: stats 1`] = `
 {
   "receives": 680,
   "sends": 440,
@@ -2547,11 +2679,17 @@ exports[`Syncs to/from localClient Unidirectional autoLoad1 but not autoSave2, d
 ]
 `;
 
-exports[`Syncs to/from localClient Unidirectional autoLoad1 but not autoSave2, defaults 3`] = `
-{
-  "receives": 1,
-  "sends": 1,
-}
+exports[`Syncs to/from localClient Unidirectional autoLoad1 but not autoSave2, defaults: stats 1`] = `
+[
+  {
+    "receives": 0,
+    "sends": 1,
+  },
+  {
+    "receives": 1,
+    "sends": 0,
+  },
+]
 `;
 
 exports[`Syncs to/from localClient Unidirectional autoSave1 but not autoLoad2 1`] = `
@@ -2654,11 +2792,17 @@ exports[`Syncs to/from localClient Unidirectional autoSave1 but not autoLoad2 2`
 ]
 `;
 
-exports[`Syncs to/from localClient Unidirectional autoSave1 but not autoLoad2 3`] = `
-{
-  "receives": 2,
-  "sends": 2,
-}
+exports[`Syncs to/from localClient Unidirectional autoSave1 but not autoLoad2: stats 1`] = `
+[
+  {
+    "receives": 0,
+    "sends": 2,
+  },
+  {
+    "receives": 2,
+    "sends": 0,
+  },
+]
 `;
 
 exports[`Syncs to/from localClient Unidirectional load1 but not autoSave2, defaults 1`] = `
@@ -2785,11 +2929,17 @@ exports[`Syncs to/from localClient Unidirectional load1 but not autoSave2, defau
 ]
 `;
 
-exports[`Syncs to/from localClient Unidirectional load1 but not autoSave2, defaults 3`] = `
-{
-  "receives": 1,
-  "sends": 1,
-}
+exports[`Syncs to/from localClient Unidirectional load1 but not autoSave2, defaults: stats 1`] = `
+[
+  {
+    "receives": 0,
+    "sends": 1,
+  },
+  {
+    "receives": 1,
+    "sends": 0,
+  },
+]
 `;
 
 exports[`Syncs to/from localClient Unidirectional save1 but not autoLoad2 1`] = `
@@ -2892,9 +3042,15 @@ exports[`Syncs to/from localClient Unidirectional save1 but not autoLoad2 2`] = 
 ]
 `;
 
-exports[`Syncs to/from localClient Unidirectional save1 but not autoLoad2 3`] = `
-{
-  "receives": 1,
-  "sends": 1,
-}
+exports[`Syncs to/from localClient Unidirectional save1 but not autoLoad2: stats 1`] = `
+[
+  {
+    "receives": 0,
+    "sends": 1,
+  },
+  {
+    "receives": 1,
+    "sends": 0,
+  },
+]
 `;

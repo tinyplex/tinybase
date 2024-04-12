@@ -2,7 +2,6 @@
 
 import {
   Client,
-  ClientStats,
   SyncPersister,
   createLocalClient,
   createSyncPersister,
@@ -19,15 +18,12 @@ type ClientConfig = {
   createEnvironment?: () => any;
   destroyEnvironment?: (environment: any) => Promise<void>;
   getClient: (environment: any) => Client;
-  getStats: (environment: any) => ClientStats;
   requestTimeoutSeconds: number;
   pauseMilliseconds: number;
 };
 
 const localClient: ClientConfig = {
-  createEnvironment: createLocalClient,
-  getClient: (client: Client) => client,
-  getStats: (client: Client) => client.getStats(),
+  getClient: createLocalClient,
   requestTimeoutSeconds: 0.001,
   pauseMilliseconds: 2,
 };
@@ -36,7 +32,8 @@ describe.each([['localClient', localClient]])(
   'Syncs to/from %s',
   (_name: string, clientConfig: ClientConfig) => {
     let environment: any;
-    let client: Client;
+    let client1: Client;
+    let client2: Client;
     let store1: MergeableStore;
     let store2: MergeableStore;
     let persister1: SyncPersister;
@@ -56,23 +53,24 @@ describe.each([['localClient', localClient]])(
           store1.getMergeableContent(),
         );
       }
-      expect(clientConfig.getStats(environment)).toMatchSnapshot();
+      expect([client1.getStats(), client2.getStats()]).toMatchSnapshot('stats');
     };
 
     beforeEach(() => {
       environment = clientConfig.createEnvironment?.();
 
-      client = clientConfig.getClient(environment);
+      client1 = clientConfig.getClient(environment);
+      client2 = clientConfig.getClient(environment);
       store1 = createMergeableStore('s1');
       store2 = createMergeableStore('s2');
       persister1 = createSyncPersister(
         store1,
-        client,
+        client1,
         clientConfig.requestTimeoutSeconds,
       );
       persister2 = createSyncPersister(
         store2,
-        client,
+        client2,
         clientConfig.requestTimeoutSeconds,
       );
     });
@@ -407,8 +405,8 @@ describe.each([['localClient', localClient]])(
     });
 
     describe('Multidirectional', () => {
-      let client: Client;
       const stores = new Array(10);
+      const clients = new Array(10);
       const persisters = new Array(10);
 
       const expectAllToHaveContent = async (content: Content) => {
@@ -420,16 +418,26 @@ describe.each([['localClient', localClient]])(
             expect(store.getMergeableContent()).toEqual(mergeableContent);
           }
         });
-        expect(client.getStats()).toMatchSnapshot();
+        expect(
+          clients.reduce(
+            (total, client) => {
+              const stats = client.getStats();
+              total.sends += stats.sends;
+              total.receives += stats.receives;
+              return total;
+            },
+            {sends: 0, receives: 0},
+          ),
+        ).toMatchSnapshot('stats');
       };
 
       beforeEach(async () => {
-        client = createLocalClient();
         stores.fill(null).map(async (_, s) => {
           stores[s] = createMergeableStore('s' + (s + 1));
+          clients[s] = createLocalClient();
           persisters[s] = createSyncPersister(
             stores[s],
-            client,
+            clients[s],
             clientConfig.requestTimeoutSeconds,
           );
         });
