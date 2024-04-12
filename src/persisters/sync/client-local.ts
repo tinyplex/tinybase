@@ -3,51 +3,66 @@ import {
   ClientStats,
   MessageType,
   Receive,
-  Send,
   createLocalClient as createLocalClientDecl,
 } from '../../types/persisters/persister-sync';
 import {DEBUG, isUndefined} from '../../common/other';
 import {Id, IdOrNull} from '../../types/common';
 import {IdMap, mapGet, mapNew, mapSet} from '../../common/map';
-import {collDel, collForEach, collSize} from '../../common/coll';
+import {IdObj, objNew} from '../../common/obj';
+import {collDel, collForEach} from '../../common/coll';
+
+const clients: IdMap<Receive> = mapNew();
+
+const sends: IdObj<number> = objNew();
+const receives: IdObj<number> = objNew();
+const incrementSends = (fromClientId: Id) =>
+  (sends[fromClientId] = (sends[fromClientId] ?? 0) + 1);
+const incrementReceives = (toClientId: Id) =>
+  (receives[toClientId] = (receives[toClientId] ?? 0) + 1);
 
 export const createLocalClient = (() => {
-  let sends = 0;
-  let receives = 0;
-  const stores: IdMap<Receive> = mapNew();
+  const clientId: Id = '' + Math.random();
 
-  const connect = (storeId: Id, receive: Receive): [Send, () => void] => {
-    mapSet(stores, storeId, receive);
-    const send = (
-      requestId: IdOrNull,
-      toStoreId: IdOrNull,
-      messageType: MessageType,
-      messageBody: any,
-    ): void => {
-      if (DEBUG) {
-        sends++;
-        receives += isUndefined(toStoreId) ? collSize(stores) - 1 : 1;
-      }
-      isUndefined(toStoreId)
-        ? collForEach(stores, (receive, otherStoreId) =>
-            otherStoreId != storeId
-              ? receive(requestId, storeId, messageType, messageBody)
-              : 0,
-          )
-        : mapGet(stores, toStoreId)?.(
-            requestId,
-            storeId,
-            messageType,
-            messageBody,
-          );
-    };
-    const disconnect = (): void => {
-      collDel(stores, storeId);
-    };
-    return [send, disconnect];
+  const onReceive = (receive: Receive): void => {
+    mapSet(clients, clientId, receive);
   };
 
-  const getStats = (): ClientStats => (DEBUG ? {sends, receives} : {});
+  const send = (
+    requestId: IdOrNull,
+    toClientId: IdOrNull,
+    messageType: MessageType,
+    messageBody: any,
+  ): void => {
+    if (DEBUG) {
+      incrementSends(clientId);
+      isUndefined(toClientId)
+        ? collForEach(clients, (_, toClientId) =>
+            toClientId != clientId ? incrementReceives(toClientId) : 0,
+          )
+        : incrementReceives(toClientId);
+    }
+    isUndefined(toClientId)
+      ? collForEach(clients, (receive, toClientId) =>
+          toClientId != clientId
+            ? receive(requestId, clientId, messageType, messageBody)
+            : 0,
+        )
+      : mapGet(clients, toClientId)?.(
+          requestId,
+          clientId,
+          messageType,
+          messageBody,
+        );
+  };
 
-  return {connect, getStats} as Client;
+  const destroy = (): void => {
+    collDel(clients, clientId);
+  };
+
+  const getStats = (): ClientStats =>
+    DEBUG
+      ? {sends: sends[clientId] ?? 0, receives: receives[clientId] ?? 0}
+      : {};
+
+  return {send, onReceive, destroy, getStats} as Client;
 }) as typeof createLocalClientDecl;
