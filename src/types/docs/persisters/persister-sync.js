@@ -127,3 +127,11 @@
  * The createLocalClient function
  */
 /// createLocalClient
+/**
+ * The createWsClient function
+ */
+/// createWsClient
+/**
+ * The createWsServer function
+ */
+/// createWsServer

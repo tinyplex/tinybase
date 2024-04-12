@@ -57,3 +57,9 @@ export function createSyncPersister<Schemas extends OptionalSchemas>(
 
 /// createLocalClient
 export function createLocalClient(): Client;
+
+/// createWsClient
+export function createWsClient(webSocket: WebSocket): Promise<Client>;
+
+/// createWsServer
+export function createWsServer(WebSocketServer: WebSocketServer): void;
