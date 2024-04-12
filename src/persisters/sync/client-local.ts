@@ -8,7 +8,7 @@ import {
 import {DEBUG, isUndefined} from '../../common/other';
 import {Id, IdOrNull} from '../../types/common';
 import {IdMap, mapGet, mapNew, mapSet} from '../../common/map';
-import {IdObj, objNew} from '../../common/obj';
+import {IdObj, objDel, objNew} from '../../common/obj';
 import {collDel, collForEach} from '../../common/coll';
 
 const clients: IdMap<Receive> = mapNew();
@@ -61,6 +61,10 @@ export const createLocalClient = (() => {
 
   const destroy = (): void => {
     collDel(clients, clientId);
+    if (DEBUG) {
+      objDel(sends, clientId);
+      objDel(receives, clientId);
+    }
   };
 
   const getStats = (): ClientStats =>
