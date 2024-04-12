@@ -10,17 +10,17 @@ export type MessageType = number;
 /// Receive
 export type Receive = (
   requestId: IdOrNull,
-  fromStoreId: Id,
+  fromClientId: Id,
   messageType: MessageType,
-  ...parts: any[]
+  messageBody: any,
 ) => void;
 
 /// Send
 export type Send = (
   requestId: IdOrNull,
-  toStoreId: IdOrNull,
+  toClientId: IdOrNull,
   messageType: MessageType,
-  ...parts: any[]
+  messageBody: any,
 ) => void;
 
 /// ClientStats
@@ -28,10 +28,9 @@ export type ClientStats = {sends?: number; receives?: number};
 
 /// Client
 export type Client = {
-  connect: (
-    storeId: Id,
-    receive: Receive,
-  ) => [send: Send, disconnect: () => void];
+  send: Send;
+  onReceive: (receive: Receive) => void;
+  destroy: () => void;
   getStats: () => ClientStats;
 };
 
