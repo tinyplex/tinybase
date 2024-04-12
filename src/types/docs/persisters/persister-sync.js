@@ -98,15 +98,13 @@
  * to another.
  *
  * ```js
- * const client = createLocalClient();
- *
  * const store1 = createMergeableStore('store1').setTables({
  *   pets: {fido: {species: 'dog'}},
  * });
- * const persister1 = createSyncPersister(store1, client);
+ * const persister1 = createSyncPersister(store1, createLocalClient());
  *
  * const store2 = createMergeableStore('store2');
- * const persister2 = createSyncPersister(store2, client);
+ * const persister2 = createSyncPersister(store2, createLocalClient());
  * await persister2.startSync();
  *
  * await persister1.save();
