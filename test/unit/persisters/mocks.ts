@@ -265,35 +265,36 @@ export const mockFile: Persistable = {
   testMissing: true,
 };
 
-export const mockSync: Persistable<[Client, MergeableStore]> = {
+export const mockSync: Persistable<[Client, MergeableStore, Client]> = {
   autoLoadPause: 1,
-  getLocation: async (): Promise<[Client, MergeableStore]> => {
-    const client = createLocalClient();
-    const otherStore = createMergeableStore('s2');
-    await createSyncPersister(otherStore, client, 0.001).startSync();
-    return [client, otherStore];
+  getLocation: async (): Promise<[Client, MergeableStore, Client]> => {
+    const client1 = createLocalClient();
+    const client2 = createLocalClient();
+    const store2 = createMergeableStore('s2');
+    await createSyncPersister(store2, client2, 0.001).startSync();
+    return [client1, store2, client2];
   },
   getLocationMethod: ['getClient', (location) => location[0]],
   getPersister: (store: Store, location) =>
     createSyncPersister(store as MergeableStore, location[0], 0.001),
   get: async (
-    location: [Client, MergeableStore],
+    location: [Client, MergeableStore, Client],
   ): Promise<Content | MergeableContent | void> => {
     try {
       location[1].getMergeableContent();
     } catch {}
   },
   set: async (
-    location: [Client, MergeableStore],
+    location: [Client, MergeableStore, Client],
     content: Content | MergeableContent,
   ): Promise<void> => await mockSync.write(location, content),
   write: async (
-    location: [Client, MergeableStore],
+    location: [Client, MergeableStore, Client],
     rawContent: any,
   ): Promise<void> => {
     location[1].setMergeableContent(rawContent);
   },
-  del: async (location: [Client, MergeableStore]): Promise<void> => {
+  del: async (location: [Client, MergeableStore, Client]): Promise<void> => {
     location[1].setMergeableContent([
       '',
       [
@@ -304,6 +305,10 @@ export const mockSync: Persistable<[Client, MergeableStore]> = {
     ]);
   },
   testMissing: false,
+  afterEach: (location: [Client, MergeableStore, Client]) => {
+    location[0].destroy();
+    location[2].destroy();
+  },
 };
 
 const getMockedStorage = (
