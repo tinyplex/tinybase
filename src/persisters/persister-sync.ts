@@ -44,8 +44,8 @@ export const createSyncPersister = ((
   const [getHlc] = getHlcFunctions(store.getId());
   const pendingRequests: IdMap<
     [
-      toStoreId: IdOrNull,
-      handleResponse: (response: any, fromStoreId: Id) => void,
+      toClientId: IdOrNull,
+      handleResponse: (response: any, fromClientId: Id) => void,
     ]
   > = mapNew();
 
@@ -59,8 +59,8 @@ export const createSyncPersister = ((
       if (messageType == RESPONSE) {
         ifNotUndefined(
           mapGet(pendingRequests, requestId),
-          ([toStoreId, handleResponse]) =>
-            isUndefined(toStoreId) || toStoreId == fromClientId
+          ([toClientId, handleResponse]) =>
+            isUndefined(toClientId) || toClientId == fromClientId
               ? handleResponse(messageBody, fromClientId)
               : 0,
         );
@@ -101,22 +101,22 @@ export const createSyncPersister = ((
       }, requestTimeoutSeconds * 1000);
       mapSet(pendingRequests, requestId, [
         toClientId,
-        (response: Response, fromStoreId: Id) => {
+        (response: Response, fromClientId: Id) => {
           clearTimeout(timeout);
           collDel(pendingRequests, requestId);
-          resolve([response, fromStoreId]);
+          resolve([response, fromClientId]);
         },
       ]);
       send(requestId, toClientId, messageType, messageBody);
     });
 
   const getChangesFromOtherStore = async (
-    otherStoreId: IdOrNull = null,
+    otherClientId: IdOrNull = null,
     otherContentHashes?: ContentHashes,
   ): Promise<MergeableChanges> => {
     if (isUndefined(otherContentHashes)) {
-      [otherContentHashes, otherStoreId] = await request<ContentHashes>(
-        otherStoreId,
+      [otherContentHashes, otherClientId] = await request<ContentHashes>(
+        otherClientId,
         GET_CONTENT_HASHES,
       );
     }
@@ -133,17 +133,17 @@ export const createSyncPersister = ((
       changes[0] = otherContentTime;
       changes[1][0] = (
         await request<TablesStamp>(
-          otherStoreId,
+          otherClientId,
           GET_TABLES_CHANGES,
           store.getMergeableCellHashes(
             (
               await request<RowIdsDiff>(
-                otherStoreId,
+                otherClientId,
                 GET_ROW_IDS_DIFF,
                 store.getMergeableRowHashes(
                   (
                     await request<TableIdsDiff>(
-                      otherStoreId,
+                      otherClientId,
                       GET_TABLE_IDS_DIFF,
                       store.getMergeableTableHashes(),
                     )
@@ -160,7 +160,7 @@ export const createSyncPersister = ((
       changes[0] = otherContentTime;
       changes[1][1] = (
         await request<ValuesStamp>(
-          otherStoreId,
+          otherClientId,
           GET_VALUES_CHANGES,
           store.getMergeableValuesHashes(),
         )

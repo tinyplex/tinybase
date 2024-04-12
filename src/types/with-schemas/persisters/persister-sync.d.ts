@@ -1,6 +1,7 @@
 /// persister-file
 
 import {Id, IdOrNull} from '../common';
+import {WebSocket, WebSocketServer} from 'ws';
 import {MergeableStore} from '../mergeable-store';
 import {OptionalSchemas} from '../store';
 import {Persister} from '../persisters';
@@ -11,7 +12,7 @@ export type MessageType = number;
 /// Receive
 export type Receive = (
   requestId: Id,
-  fromStoreId: Id,
+  fromClientId: Id,
   messageType: MessageType,
   messageBody: any,
 ) => void;
@@ -19,7 +20,7 @@ export type Receive = (
 /// Send
 export type Send = (
   requestId: Id,
-  toStoreId: IdOrNull,
+  toClientId: IdOrNull,
   messageType: MessageType,
   messageBody: any,
 ) => void;
