@@ -3054,3 +3054,3058 @@ exports[`Syncs to/from localClient Unidirectional save1 but not autoLoad2: stats
   },
 ]
 `;
+
+exports[`Syncs to/from wsClient Bidirectional Both empty 1`] = `
+[
+  "",
+  [
+    [
+      "",
+      {},
+      0,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  0,
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional Both empty: stats 1`] = `
+[
+  {
+    "receives": 2,
+    "sends": 3,
+  },
+  {
+    "receives": 3,
+    "sends": 2,
+  },
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional Both match 1`] = `
+[
+  "Hc2DO@D00008DKS9",
+  [
+    [
+      "Hc2DO@D00008DKS9",
+      {
+        "t1": [
+          "Hc2DO@D00008DKS9",
+          {
+            "r1": [
+              "Hc2DO@D00008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@D00008DKS9",
+                  1,
+                  141369203,
+                ],
+                "c2": [
+                  "Hc2DO@D00008DKS9",
+                  2,
+                  3926301196,
+                ],
+              },
+              1895817569,
+            ],
+            "r2": [
+              "Hc2DO@D00008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@D00008DKS9",
+                  2,
+                  3926301196,
+                ],
+              },
+              749346710,
+            ],
+          },
+          3122361667,
+        ],
+        "t2": [
+          "Hc2DO@D00008DKS9",
+          {
+            "r2": [
+              "Hc2DO@D00008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@D00008DKS9",
+                  2,
+                  3926301196,
+                ],
+              },
+              749346710,
+            ],
+          },
+          3344600388,
+        ],
+      },
+      2910562851,
+    ],
+    [
+      "Hc2DO@D00008DKS9",
+      {
+        "v1": [
+          "Hc2DO@D00008DKS9",
+          1,
+          141369203,
+        ],
+        "v2": [
+          "Hc2DO@D00008DKS9",
+          2,
+          3926301196,
+        ],
+      },
+      677216639,
+    ],
+  ],
+  2233871196,
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional Both match: stats 1`] = `
+[
+  {
+    "receives": 11,
+    "sends": 12,
+  },
+  {
+    "receives": 12,
+    "sends": 11,
+  },
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional different cell 1`] = `
+[
+  "Hc2DO@X00015DK@@",
+  [
+    [
+      "Hc2DO@X00015DK@@",
+      {
+        "t1": [
+          "Hc2DO@X00015DK@@",
+          {
+            "r1": [
+              "Hc2DO@X00015DK@@",
+              {
+                "c1": [
+                  "Hc2DO@X00015DK@@",
+                  2,
+                  1283969274,
+                ],
+              },
+              1333407937,
+            ],
+          },
+          2922155308,
+        ],
+      },
+      1978651109,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  1978651109,
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional different cell: stats 1`] = `
+[
+  {
+    "receives": 9,
+    "sends": 10,
+  },
+  {
+    "receives": 10,
+    "sends": 9,
+  },
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional different row 1`] = `
+[
+  "Hc2DO@X00015DK@@",
+  [
+    [
+      "Hc2DO@X00015DK@@",
+      {
+        "t1": [
+          "Hc2DO@X00015DK@@",
+          {
+            "r1": [
+              "Hc2DO@X00015DK@@",
+              {
+                "c1": [
+                  "Hc2DO@D00008DKS9",
+                  1,
+                  141369203,
+                ],
+                "c2": [
+                  "Hc2DO@X00015DK@@",
+                  2,
+                  1283969274,
+                ],
+              },
+              223582376,
+            ],
+          },
+          3892234166,
+        ],
+      },
+      1634182662,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  1634182662,
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional different row: stats 1`] = `
+[
+  {
+    "receives": 9,
+    "sends": 10,
+  },
+  {
+    "receives": 10,
+    "sends": 9,
+  },
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional different table 1`] = `
+[
+  "Hc2DO@X00015DK@@",
+  [
+    [
+      "Hc2DO@X00015DK@@",
+      {
+        "t1": [
+          "Hc2DO@X00015DK@@",
+          {
+            "r1": [
+              "Hc2DO@D00008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@D00008DKS9",
+                  1,
+                  141369203,
+                ],
+                "c2": [
+                  "Hc2DO@D00008DKS9",
+                  2,
+                  3926301196,
+                ],
+              },
+              1895817569,
+            ],
+            "r2": [
+              "Hc2DO@X00015DK@@",
+              {
+                "c2": [
+                  "Hc2DO@X00015DK@@",
+                  2,
+                  1283969274,
+                ],
+              },
+              1359373919,
+            ],
+          },
+          1478229238,
+        ],
+      },
+      190110768,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  190110768,
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional different table: stats 1`] = `
+[
+  {
+    "receives": 9,
+    "sends": 10,
+  },
+  {
+    "receives": 10,
+    "sends": 9,
+  },
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional different tables 1`] = `
+[
+  "Hc2DO@X00015DK@@",
+  [
+    [
+      "Hc2DO@X00015DK@@",
+      {
+        "t1": [
+          "Hc2DO@D00008DKS9",
+          {
+            "r1": [
+              "Hc2DO@D00008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@D00008DKS9",
+                  1,
+                  141369203,
+                ],
+                "c2": [
+                  "Hc2DO@D00008DKS9",
+                  2,
+                  3926301196,
+                ],
+              },
+              1895817569,
+            ],
+            "r2": [
+              "Hc2DO@D00008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@D00008DKS9",
+                  2,
+                  3926301196,
+                ],
+              },
+              749346710,
+            ],
+          },
+          3122361667,
+        ],
+        "t2": [
+          "Hc2DO@X00015DK@@",
+          {
+            "r2": [
+              "Hc2DO@X00015DK@@",
+              {
+                "c2": [
+                  "Hc2DO@X00015DK@@",
+                  2,
+                  1283969274,
+                ],
+              },
+              1359373919,
+            ],
+          },
+          626656497,
+        ],
+      },
+      628192679,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  628192679,
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional different tables: stats 1`] = `
+[
+  {
+    "receives": 9,
+    "sends": 10,
+  },
+  {
+    "receives": 10,
+    "sends": 9,
+  },
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional different value 1`] = `
+[
+  "Hc2DO@X00015DK@@",
+  [
+    [
+      "",
+      {},
+      0,
+    ],
+    [
+      "Hc2DO@X00015DK@@",
+      {
+        "v1": [
+          "Hc2DO@X00015DK@@",
+          2,
+          1283969274,
+        ],
+      },
+      981479215,
+    ],
+  ],
+  981479215,
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional different value: stats 1`] = `
+[
+  {
+    "receives": 5,
+    "sends": 6,
+  },
+  {
+    "receives": 6,
+    "sends": 5,
+  },
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional different values 1`] = `
+[
+  "Hc2DO@X00015DK@@",
+  [
+    [
+      "",
+      {},
+      0,
+    ],
+    [
+      "Hc2DO@X00015DK@@",
+      {
+        "v1": [
+          "Hc2DO@D00008DKS9",
+          1,
+          141369203,
+        ],
+        "v2": [
+          "Hc2DO@X00015DK@@",
+          2,
+          1283969274,
+        ],
+      },
+      2452678006,
+    ],
+  ],
+  2452678006,
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional different values: stats 1`] = `
+[
+  {
+    "receives": 5,
+    "sends": 6,
+  },
+  {
+    "receives": 6,
+    "sends": 5,
+  },
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional store1 empty 1`] = `
+[
+  "Hc2DO@D00005DK@@",
+  [
+    [
+      "Hc2DO@D00005DK@@",
+      {
+        "t1": [
+          "Hc2DO@D00005DK@@",
+          {
+            "r1": [
+              "Hc2DO@D00005DK@@",
+              {
+                "c1": [
+                  "Hc2DO@D00005DK@@",
+                  1,
+                  2259127772,
+                ],
+                "c2": [
+                  "Hc2DO@D00005DK@@",
+                  2,
+                  1545323603,
+                ],
+              },
+              928719679,
+            ],
+            "r2": [
+              "Hc2DO@D00005DK@@",
+              {
+                "c2": [
+                  "Hc2DO@D00005DK@@",
+                  2,
+                  1545323603,
+                ],
+              },
+              699425543,
+            ],
+          },
+          2423176365,
+        ],
+        "t2": [
+          "Hc2DO@D00005DK@@",
+          {
+            "r2": [
+              "Hc2DO@D00005DK@@",
+              {
+                "c2": [
+                  "Hc2DO@D00005DK@@",
+                  2,
+                  1545323603,
+                ],
+              },
+              699425543,
+            ],
+          },
+          2066870701,
+        ],
+      },
+      1390965018,
+    ],
+    [
+      "Hc2DO@D00005DK@@",
+      {
+        "v1": [
+          "Hc2DO@D00005DK@@",
+          1,
+          2259127772,
+        ],
+        "v2": [
+          "Hc2DO@D00005DK@@",
+          2,
+          1545323603,
+        ],
+      },
+      4235794163,
+    ],
+  ],
+  2928764905,
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional store1 empty: stats 1`] = `
+[
+  {
+    "receives": 7,
+    "sends": 7,
+  },
+  {
+    "receives": 7,
+    "sends": 7,
+  },
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional store1 missing cell 1`] = `
+[
+  "Hc2DO@X00015DK@@",
+  [
+    [
+      "Hc2DO@X00015DK@@",
+      {
+        "t1": [
+          "Hc2DO@X00015DK@@",
+          {
+            "r1": [
+              "Hc2DO@X00015DK@@",
+              {
+                "c1": [
+                  "Hc2DO@D00008DKS9",
+                  1,
+                  141369203,
+                ],
+                "c2": [
+                  "Hc2DO@X00015DK@@",
+                  2,
+                  1283969274,
+                ],
+              },
+              223582376,
+            ],
+          },
+          3892234166,
+        ],
+      },
+      1634182662,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  1634182662,
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional store1 missing cell: stats 1`] = `
+[
+  {
+    "receives": 9,
+    "sends": 10,
+  },
+  {
+    "receives": 10,
+    "sends": 9,
+  },
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional store1 missing row 1`] = `
+[
+  "Hc2DO@X00015DK@@",
+  [
+    [
+      "Hc2DO@X00015DK@@",
+      {
+        "t1": [
+          "Hc2DO@X00015DK@@",
+          {
+            "r1": [
+              "Hc2DO@D00008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@D00008DKS9",
+                  1,
+                  141369203,
+                ],
+                "c2": [
+                  "Hc2DO@D00008DKS9",
+                  2,
+                  3926301196,
+                ],
+              },
+              1895817569,
+            ],
+            "r2": [
+              "Hc2DO@X00015DK@@",
+              {
+                "c2": [
+                  "Hc2DO@X00015DK@@",
+                  2,
+                  1283969274,
+                ],
+              },
+              1359373919,
+            ],
+          },
+          1478229238,
+        ],
+      },
+      190110768,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  190110768,
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional store1 missing row: stats 1`] = `
+[
+  {
+    "receives": 9,
+    "sends": 10,
+  },
+  {
+    "receives": 10,
+    "sends": 9,
+  },
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional store1 missing table 1`] = `
+[
+  "Hc2DO@X00015DK@@",
+  [
+    [
+      "Hc2DO@X00015DK@@",
+      {
+        "t1": [
+          "Hc2DO@D00008DKS9",
+          {
+            "r1": [
+              "Hc2DO@D00008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@D00008DKS9",
+                  1,
+                  141369203,
+                ],
+                "c2": [
+                  "Hc2DO@D00008DKS9",
+                  2,
+                  3926301196,
+                ],
+              },
+              1895817569,
+            ],
+            "r2": [
+              "Hc2DO@D00008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@D00008DKS9",
+                  2,
+                  3926301196,
+                ],
+              },
+              749346710,
+            ],
+          },
+          3122361667,
+        ],
+        "t2": [
+          "Hc2DO@X00015DK@@",
+          {
+            "r2": [
+              "Hc2DO@X00015DK@@",
+              {
+                "c2": [
+                  "Hc2DO@X00015DK@@",
+                  2,
+                  1283969274,
+                ],
+              },
+              1359373919,
+            ],
+          },
+          626656497,
+        ],
+      },
+      628192679,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  628192679,
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional store1 missing table: stats 1`] = `
+[
+  {
+    "receives": 9,
+    "sends": 10,
+  },
+  {
+    "receives": 10,
+    "sends": 9,
+  },
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional store1 missing tables 1`] = `
+[
+  "Hc2DO@X00015DK@@",
+  [
+    [
+      "Hc2DO@X00015DK@@",
+      {
+        "t1": [
+          "Hc2DO@X00015DK@@",
+          {
+            "r1": [
+              "Hc2DO@X00015DK@@",
+              {
+                "c1": [
+                  "Hc2DO@X00015DK@@",
+                  1,
+                  2995507869,
+                ],
+                "c2": [
+                  "Hc2DO@X00015DK@@",
+                  2,
+                  1283969274,
+                ],
+              },
+              217181349,
+            ],
+            "r2": [
+              "Hc2DO@X00015DK@@",
+              {
+                "c2": [
+                  "Hc2DO@X00015DK@@",
+                  2,
+                  1283969274,
+                ],
+              },
+              1359373919,
+            ],
+          },
+          1156609823,
+        ],
+        "t2": [
+          "Hc2DO@X00015DK@@",
+          {
+            "r2": [
+              "Hc2DO@X00015DK@@",
+              {
+                "c2": [
+                  "Hc2DO@X00015DK@@",
+                  2,
+                  1283969274,
+                ],
+              },
+              1359373919,
+            ],
+          },
+          626656497,
+        ],
+      },
+      2688556063,
+    ],
+    [
+      "Hc2DO@D00008DKS9",
+      {
+        "v1": [
+          "Hc2DO@D00008DKS9",
+          1,
+          141369203,
+        ],
+        "v2": [
+          "Hc2DO@D00008DKS9",
+          2,
+          3926301196,
+        ],
+      },
+      677216639,
+    ],
+  ],
+  2283642208,
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional store1 missing tables: stats 1`] = `
+[
+  {
+    "receives": 7,
+    "sends": 8,
+  },
+  {
+    "receives": 8,
+    "sends": 7,
+  },
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional store1 missing value 1`] = `
+[
+  "Hc2DO@X00015DK@@",
+  [
+    [
+      "",
+      {},
+      0,
+    ],
+    [
+      "Hc2DO@X00015DK@@",
+      {
+        "v1": [
+          "Hc2DO@X00015DK@@",
+          1,
+          2995507869,
+        ],
+        "v2": [
+          "Hc2DO@D00008DKS9",
+          2,
+          3926301196,
+        ],
+      },
+      1358084754,
+    ],
+  ],
+  1358084754,
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional store1 missing value: stats 1`] = `
+[
+  {
+    "receives": 5,
+    "sends": 6,
+  },
+  {
+    "receives": 6,
+    "sends": 5,
+  },
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional store1 missing values 1`] = `
+[
+  "Hc2DO@X00015DK@@",
+  [
+    [
+      "Hc2DO@D00008DKS9",
+      {
+        "t1": [
+          "Hc2DO@D00008DKS9",
+          {
+            "r1": [
+              "Hc2DO@D00008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@D00008DKS9",
+                  1,
+                  141369203,
+                ],
+                "c2": [
+                  "Hc2DO@D00008DKS9",
+                  2,
+                  3926301196,
+                ],
+              },
+              1895817569,
+            ],
+            "r2": [
+              "Hc2DO@D00008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@D00008DKS9",
+                  2,
+                  3926301196,
+                ],
+              },
+              749346710,
+            ],
+          },
+          3122361667,
+        ],
+        "t2": [
+          "Hc2DO@D00008DKS9",
+          {
+            "r2": [
+              "Hc2DO@D00008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@D00008DKS9",
+                  2,
+                  3926301196,
+                ],
+              },
+              749346710,
+            ],
+          },
+          3344600388,
+        ],
+      },
+      2910562851,
+    ],
+    [
+      "Hc2DO@X00015DK@@",
+      {
+        "v1": [
+          "Hc2DO@X00015DK@@",
+          1,
+          2995507869,
+        ],
+        "v2": [
+          "Hc2DO@X00015DK@@",
+          2,
+          1283969274,
+        ],
+      },
+      2145789597,
+    ],
+  ],
+  3533540542,
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional store1 missing values: stats 1`] = `
+[
+  {
+    "receives": 7,
+    "sends": 8,
+  },
+  {
+    "receives": 8,
+    "sends": 7,
+  },
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional store2 empty 1`] = `
+[
+  "Hc2DO@D00008DKS9",
+  [
+    [
+      "Hc2DO@D00008DKS9",
+      {
+        "t1": [
+          "Hc2DO@D00008DKS9",
+          {
+            "r1": [
+              "Hc2DO@D00008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@D00008DKS9",
+                  1,
+                  141369203,
+                ],
+                "c2": [
+                  "Hc2DO@D00008DKS9",
+                  2,
+                  3926301196,
+                ],
+              },
+              1895817569,
+            ],
+            "r2": [
+              "Hc2DO@D00008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@D00008DKS9",
+                  2,
+                  3926301196,
+                ],
+              },
+              749346710,
+            ],
+          },
+          3122361667,
+        ],
+        "t2": [
+          "Hc2DO@D00008DKS9",
+          {
+            "r2": [
+              "Hc2DO@D00008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@D00008DKS9",
+                  2,
+                  3926301196,
+                ],
+              },
+              749346710,
+            ],
+          },
+          3344600388,
+        ],
+      },
+      2910562851,
+    ],
+    [
+      "Hc2DO@D00008DKS9",
+      {
+        "v1": [
+          "Hc2DO@D00008DKS9",
+          1,
+          141369203,
+        ],
+        "v2": [
+          "Hc2DO@D00008DKS9",
+          2,
+          3926301196,
+        ],
+      },
+      677216639,
+    ],
+  ],
+  2233871196,
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional store2 empty: stats 1`] = `
+[
+  {
+    "receives": 6,
+    "sends": 8,
+  },
+  {
+    "receives": 8,
+    "sends": 6,
+  },
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional store2 missing cell 1`] = `
+[
+  "Hc2DO@X00018DKS9",
+  [
+    [
+      "Hc2DO@X00018DKS9",
+      {
+        "t1": [
+          "Hc2DO@X00018DKS9",
+          {
+            "r1": [
+              "Hc2DO@X00018DKS9",
+              {
+                "c1": [
+                  "Hc2DO@D00005DK@@",
+                  1,
+                  2259127772,
+                ],
+                "c2": [
+                  "Hc2DO@X00018DKS9",
+                  2,
+                  3366581501,
+                ],
+              },
+              908892303,
+            ],
+          },
+          245552137,
+        ],
+      },
+      3444637849,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  3444637849,
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional store2 missing cell: stats 1`] = `
+[
+  {
+    "receives": 9,
+    "sends": 10,
+  },
+  {
+    "receives": 10,
+    "sends": 9,
+  },
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional store2 missing row 1`] = `
+[
+  "Hc2DO@X00018DKS9",
+  [
+    [
+      "Hc2DO@X00018DKS9",
+      {
+        "t1": [
+          "Hc2DO@X00018DKS9",
+          {
+            "r1": [
+              "Hc2DO@D00005DK@@",
+              {
+                "c1": [
+                  "Hc2DO@D00005DK@@",
+                  1,
+                  2259127772,
+                ],
+                "c2": [
+                  "Hc2DO@D00005DK@@",
+                  2,
+                  1545323603,
+                ],
+              },
+              928719679,
+            ],
+            "r2": [
+              "Hc2DO@X00018DKS9",
+              {
+                "c2": [
+                  "Hc2DO@X00018DKS9",
+                  2,
+                  3366581501,
+                ],
+              },
+              684185783,
+            ],
+          },
+          587835928,
+        ],
+      },
+      2279174522,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  2279174522,
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional store2 missing row: stats 1`] = `
+[
+  {
+    "receives": 9,
+    "sends": 10,
+  },
+  {
+    "receives": 10,
+    "sends": 9,
+  },
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional store2 missing table 1`] = `
+[
+  "Hc2DO@X00018DKS9",
+  [
+    [
+      "Hc2DO@X00018DKS9",
+      {
+        "t1": [
+          "Hc2DO@D00005DK@@",
+          {
+            "r1": [
+              "Hc2DO@D00005DK@@",
+              {
+                "c1": [
+                  "Hc2DO@D00005DK@@",
+                  1,
+                  2259127772,
+                ],
+                "c2": [
+                  "Hc2DO@D00005DK@@",
+                  2,
+                  1545323603,
+                ],
+              },
+              928719679,
+            ],
+            "r2": [
+              "Hc2DO@D00005DK@@",
+              {
+                "c2": [
+                  "Hc2DO@D00005DK@@",
+                  2,
+                  1545323603,
+                ],
+              },
+              699425543,
+            ],
+          },
+          2423176365,
+        ],
+        "t2": [
+          "Hc2DO@X00018DKS9",
+          {
+            "r2": [
+              "Hc2DO@X00018DKS9",
+              {
+                "c2": [
+                  "Hc2DO@X00018DKS9",
+                  2,
+                  3366581501,
+                ],
+              },
+              684185783,
+            ],
+          },
+          3361138456,
+        ],
+      },
+      798956937,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  798956937,
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional store2 missing table: stats 1`] = `
+[
+  {
+    "receives": 9,
+    "sends": 10,
+  },
+  {
+    "receives": 10,
+    "sends": 9,
+  },
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional store2 missing tables 1`] = `
+[
+  "Hc2DO@X00018DKS9",
+  [
+    [
+      "Hc2DO@X00018DKS9",
+      {
+        "t1": [
+          "Hc2DO@X00018DKS9",
+          {
+            "r1": [
+              "Hc2DO@X00018DKS9",
+              {
+                "c1": [
+                  "Hc2DO@X00018DKS9",
+                  1,
+                  1020097394,
+                ],
+                "c2": [
+                  "Hc2DO@X00018DKS9",
+                  2,
+                  3366581501,
+                ],
+              },
+              2806090366,
+            ],
+            "r2": [
+              "Hc2DO@X00018DKS9",
+              {
+                "c2": [
+                  "Hc2DO@X00018DKS9",
+                  2,
+                  3366581501,
+                ],
+              },
+              684185783,
+            ],
+          },
+          2113703928,
+        ],
+        "t2": [
+          "Hc2DO@X00018DKS9",
+          {
+            "r2": [
+              "Hc2DO@X00018DKS9",
+              {
+                "c2": [
+                  "Hc2DO@X00018DKS9",
+                  2,
+                  3366581501,
+                ],
+              },
+              684185783,
+            ],
+          },
+          3361138456,
+        ],
+      },
+      2757826270,
+    ],
+    [
+      "Hc2DO@D00005DK@@",
+      {
+        "v1": [
+          "Hc2DO@D00005DK@@",
+          1,
+          2259127772,
+        ],
+        "v2": [
+          "Hc2DO@D00005DK@@",
+          2,
+          1545323603,
+        ],
+      },
+      4235794163,
+    ],
+  ],
+  1477967917,
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional store2 missing tables: stats 1`] = `
+[
+  {
+    "receives": 7,
+    "sends": 8,
+  },
+  {
+    "receives": 8,
+    "sends": 7,
+  },
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional store2 missing value 1`] = `
+[
+  "Hc2DO@X00018DKS9",
+  [
+    [
+      "",
+      {},
+      0,
+    ],
+    [
+      "Hc2DO@X00018DKS9",
+      {
+        "v1": [
+          "Hc2DO@X00018DKS9",
+          1,
+          1020097394,
+        ],
+        "v2": [
+          "Hc2DO@D00005DK@@",
+          2,
+          1545323603,
+        ],
+      },
+      1075465984,
+    ],
+  ],
+  1075465984,
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional store2 missing value: stats 1`] = `
+[
+  {
+    "receives": 5,
+    "sends": 6,
+  },
+  {
+    "receives": 6,
+    "sends": 5,
+  },
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional store2 missing values 1`] = `
+[
+  "Hc2DO@X00018DKS9",
+  [
+    [
+      "Hc2DO@D00005DK@@",
+      {
+        "t1": [
+          "Hc2DO@D00005DK@@",
+          {
+            "r1": [
+              "Hc2DO@D00005DK@@",
+              {
+                "c1": [
+                  "Hc2DO@D00005DK@@",
+                  1,
+                  2259127772,
+                ],
+                "c2": [
+                  "Hc2DO@D00005DK@@",
+                  2,
+                  1545323603,
+                ],
+              },
+              928719679,
+            ],
+            "r2": [
+              "Hc2DO@D00005DK@@",
+              {
+                "c2": [
+                  "Hc2DO@D00005DK@@",
+                  2,
+                  1545323603,
+                ],
+              },
+              699425543,
+            ],
+          },
+          2423176365,
+        ],
+        "t2": [
+          "Hc2DO@D00005DK@@",
+          {
+            "r2": [
+              "Hc2DO@D00005DK@@",
+              {
+                "c2": [
+                  "Hc2DO@D00005DK@@",
+                  2,
+                  1545323603,
+                ],
+              },
+              699425543,
+            ],
+          },
+          2066870701,
+        ],
+      },
+      1390965018,
+    ],
+    [
+      "Hc2DO@X00018DKS9",
+      {
+        "v1": [
+          "Hc2DO@X00018DKS9",
+          1,
+          1020097394,
+        ],
+        "v2": [
+          "Hc2DO@X00018DKS9",
+          2,
+          3366581501,
+        ],
+      },
+      3698302226,
+    ],
+  ],
+  2391272456,
+]
+`;
+
+exports[`Syncs to/from wsClient Bidirectional store2 missing values: stats 1`] = `
+[
+  {
+    "receives": 7,
+    "sends": 8,
+  },
+  {
+    "receives": 8,
+    "sends": 7,
+  },
+]
+`;
+
+exports[`Syncs to/from wsClient Multidirectional All but first empty 1`] = `
+[
+  "Hc2DO@D00008DKS9",
+  [
+    [
+      "Hc2DO@D00008DKS9",
+      {
+        "t1": [
+          "Hc2DO@D00008DKS9",
+          {
+            "r1": [
+              "Hc2DO@D00008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@D00008DKS9",
+                  1,
+                  141369203,
+                ],
+                "c2": [
+                  "Hc2DO@D00008DKS9",
+                  2,
+                  3926301196,
+                ],
+              },
+              1895817569,
+            ],
+            "r2": [
+              "Hc2DO@D00008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@D00008DKS9",
+                  2,
+                  3926301196,
+                ],
+              },
+              749346710,
+            ],
+          },
+          3122361667,
+        ],
+        "t2": [
+          "Hc2DO@D00008DKS9",
+          {
+            "r2": [
+              "Hc2DO@D00008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@D00008DKS9",
+                  2,
+                  3926301196,
+                ],
+              },
+              749346710,
+            ],
+          },
+          3344600388,
+        ],
+      },
+      2910562851,
+    ],
+    [
+      "Hc2DO@D00008DKS9",
+      {
+        "v1": [
+          "Hc2DO@D00008DKS9",
+          1,
+          141369203,
+        ],
+        "v2": [
+          "Hc2DO@D00008DKS9",
+          2,
+          3926301196,
+        ],
+      },
+      677216639,
+    ],
+  ],
+  2233871196,
+]
+`;
+
+exports[`Syncs to/from wsClient Multidirectional All but first empty: stats 1`] = `
+{
+  "receives": 261,
+  "sends": 93,
+}
+`;
+
+exports[`Syncs to/from wsClient Multidirectional All but last empty 1`] = `
+[
+  "Hc2DO@D0000AYRok",
+  [
+    [
+      "Hc2DO@D0000AYRok",
+      {
+        "t1": [
+          "Hc2DO@D0000AYRok",
+          {
+            "r1": [
+              "Hc2DO@D0000AYRok",
+              {
+                "c1": [
+                  "Hc2DO@D0000AYRok",
+                  1,
+                  3080891852,
+                ],
+                "c2": [
+                  "Hc2DO@D0000AYRok",
+                  2,
+                  2576740951,
+                ],
+              },
+              3076570177,
+            ],
+            "r2": [
+              "Hc2DO@D0000AYRok",
+              {
+                "c2": [
+                  "Hc2DO@D0000AYRok",
+                  2,
+                  2576740951,
+                ],
+              },
+              3125791713,
+            ],
+          },
+          2199299166,
+        ],
+        "t2": [
+          "Hc2DO@D0000AYRok",
+          {
+            "r2": [
+              "Hc2DO@D0000AYRok",
+              {
+                "c2": [
+                  "Hc2DO@D0000AYRok",
+                  2,
+                  2576740951,
+                ],
+              },
+              3125791713,
+            ],
+          },
+          3602141651,
+        ],
+      },
+      935050963,
+    ],
+    [
+      "Hc2DO@D0000AYRok",
+      {
+        "v1": [
+          "Hc2DO@D0000AYRok",
+          1,
+          3080891852,
+        ],
+        "v2": [
+          "Hc2DO@D0000AYRok",
+          2,
+          2576740951,
+        ],
+      },
+      1901817729,
+    ],
+  ],
+  1189138770,
+]
+`;
+
+exports[`Syncs to/from wsClient Multidirectional All but last empty: stats 1`] = `
+{
+  "receives": 261,
+  "sends": 93,
+}
+`;
+
+exports[`Syncs to/from wsClient Multidirectional All empty 1`] = `
+[
+  "",
+  [
+    [
+      "",
+      {},
+      0,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  0,
+]
+`;
+
+exports[`Syncs to/from wsClient Multidirectional All empty: stats 1`] = `
+{
+  "receives": 180,
+  "sends": 20,
+}
+`;
+
+exports[`Syncs to/from wsClient Multidirectional All match 1`] = `
+[
+  "Hc2DO@D0000AYRok",
+  [
+    [
+      "Hc2DO@D0000AYRok",
+      {
+        "t1": [
+          "Hc2DO@D0000AYRok",
+          {
+            "r1": [
+              "Hc2DO@D0000AYRok",
+              {
+                "c1": [
+                  "Hc2DO@D0000AYRok",
+                  1,
+                  3080891852,
+                ],
+                "c2": [
+                  "Hc2DO@D0000AYRok",
+                  2,
+                  2576740951,
+                ],
+              },
+              3076570177,
+            ],
+            "r2": [
+              "Hc2DO@D0000AYRok",
+              {
+                "c2": [
+                  "Hc2DO@D0000AYRok",
+                  2,
+                  2576740951,
+                ],
+              },
+              3125791713,
+            ],
+          },
+          2199299166,
+        ],
+        "t2": [
+          "Hc2DO@D0000AYRok",
+          {
+            "r2": [
+              "Hc2DO@D0000AYRok",
+              {
+                "c2": [
+                  "Hc2DO@D0000AYRok",
+                  2,
+                  2576740951,
+                ],
+              },
+              3125791713,
+            ],
+          },
+          3602141651,
+        ],
+      },
+      935050963,
+    ],
+    [
+      "Hc2DO@D0000AYRok",
+      {
+        "v1": [
+          "Hc2DO@D0000AYRok",
+          1,
+          3080891852,
+        ],
+        "v2": [
+          "Hc2DO@D0000AYRok",
+          2,
+          2576740951,
+        ],
+      },
+      1901817729,
+    ],
+  ],
+  1189138770,
+]
+`;
+
+exports[`Syncs to/from wsClient Multidirectional All match: stats 1`] = `
+{
+  "receives": 990,
+  "sends": 750,
+}
+`;
+
+exports[`Syncs to/from wsClient Multidirectional all conflicting cells 1`] = `
+[
+  "Hc2DO@D0000AYRok",
+  [
+    [
+      "Hc2DO@D0000AYRok",
+      {
+        "t1": [
+          "Hc2DO@D0000AYRok",
+          {
+            "r1": [
+              "Hc2DO@D0000AYRok",
+              {
+                "c1": [
+                  "Hc2DO@D0000AYRok",
+                  10,
+                  577529380,
+                ],
+              },
+              1039158697,
+            ],
+          },
+          3244515136,
+        ],
+      },
+      3888205959,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  3888205959,
+]
+`;
+
+exports[`Syncs to/from wsClient Multidirectional all conflicting cells 2`] = `
+[
+  "Hc2DO@X00059DKYL",
+  [
+    [
+      "Hc2DO@X00059DKYL",
+      {
+        "t1": [
+          "Hc2DO@X00059DKYL",
+          {
+            "r1": [
+              "Hc2DO@X00059DKYL",
+              {
+                "c1": [
+                  "Hc2DO@X00059DKYL",
+                  42,
+                  1693667773,
+                ],
+              },
+              1832299582,
+            ],
+          },
+          260134536,
+        ],
+      },
+      1450205057,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  1450205057,
+]
+`;
+
+exports[`Syncs to/from wsClient Multidirectional all conflicting cells: stats 1`] = `
+{
+  "receives": 1125,
+  "sends": 605,
+}
+`;
+
+exports[`Syncs to/from wsClient Multidirectional all conflicting cells: stats 2`] = `
+{
+  "receives": 1188,
+  "sends": 660,
+}
+`;
+
+exports[`Syncs to/from wsClient Multidirectional all conflicting values 1`] = `
+[
+  "Hc2DO@D0000AYRok",
+  [
+    [
+      "",
+      {},
+      0,
+    ],
+    [
+      "Hc2DO@D0000AYRok",
+      {
+        "v1": [
+          "Hc2DO@D0000AYRok",
+          10,
+          577529380,
+        ],
+      },
+      1526771073,
+    ],
+  ],
+  1526771073,
+]
+`;
+
+exports[`Syncs to/from wsClient Multidirectional all conflicting values 2`] = `
+[
+  "Hc2DO@X00059DKYL",
+  [
+    [
+      "",
+      {},
+      0,
+    ],
+    [
+      "Hc2DO@X00059DKYL",
+      {
+        "v1": [
+          "Hc2DO@X00059DKYL",
+          42,
+          1693667773,
+        ],
+      },
+      1178141476,
+    ],
+  ],
+  1178141476,
+]
+`;
+
+exports[`Syncs to/from wsClient Multidirectional all conflicting values: stats 1`] = `
+{
+  "receives": 765,
+  "sends": 245,
+}
+`;
+
+exports[`Syncs to/from wsClient Multidirectional all conflicting values: stats 2`] = `
+{
+  "receives": 792,
+  "sends": 264,
+}
+`;
+
+exports[`Syncs to/from wsClient Multidirectional all different cells 1`] = `
+[
+  "Hc2DO@D0000AYRok",
+  [
+    [
+      "Hc2DO@D0000AYRok",
+      {
+        "t1": [
+          "Hc2DO@D0000AYRok",
+          {
+            "r1": [
+              "Hc2DO@D0000AYRok",
+              {
+                "c1": [
+                  "Hc2DO@D00008DKS9",
+                  1,
+                  141369203,
+                ],
+                "c10": [
+                  "Hc2DO@D0000AYRok",
+                  1,
+                  3080891852,
+                ],
+                "c2": [
+                  "Hc2DO@D00005DK@@",
+                  1,
+                  2259127772,
+                ],
+                "c3": [
+                  "Hc2DO@D00006DKFS",
+                  1,
+                  3929501942,
+                ],
+                "c4": [
+                  "Hc2DO@D0000;DKf2",
+                  1,
+                  4110564894,
+                ],
+                "c5": [
+                  "Hc2DO@D0000<DKlE",
+                  1,
+                  1506834940,
+                ],
+                "c6": [
+                  "Hc2DO@D00009DKYL",
+                  1,
+                  1869767149,
+                ],
+                "c7": [
+                  "Hc2DO@D0000:DK__",
+                  1,
+                  1346976663,
+                ],
+                "c8": [
+                  "Hc2DO@D0000?DL?>",
+                  1,
+                  2787667558,
+                ],
+                "c9": [
+                  "Hc2DO@D0000@DLEQ",
+                  1,
+                  10218092,
+                ],
+              },
+              4071113807,
+            ],
+          },
+          3543270401,
+        ],
+      },
+      2249220498,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  2249220498,
+]
+`;
+
+exports[`Syncs to/from wsClient Multidirectional all different cells: stats 1`] = `
+{
+  "receives": 1530,
+  "sends": 650,
+}
+`;
+
+exports[`Syncs to/from wsClient Multidirectional all different rows 1`] = `
+[
+  "Hc2DO@D0000AYRok",
+  [
+    [
+      "Hc2DO@D0000AYRok",
+      {
+        "t1": [
+          "Hc2DO@D0000AYRok",
+          {
+            "r1": [
+              "Hc2DO@D00008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@D00008DKS9",
+                  1,
+                  141369203,
+                ],
+              },
+              503736403,
+            ],
+            "r10": [
+              "Hc2DO@D0000AYRok",
+              {
+                "c1": [
+                  "Hc2DO@D0000AYRok",
+                  1,
+                  3080891852,
+                ],
+              },
+              543246991,
+            ],
+            "r2": [
+              "Hc2DO@D00005DK@@",
+              {
+                "c1": [
+                  "Hc2DO@D00005DK@@",
+                  1,
+                  2259127772,
+                ],
+              },
+              2570958291,
+            ],
+            "r3": [
+              "Hc2DO@D00006DKFS",
+              {
+                "c1": [
+                  "Hc2DO@D00006DKFS",
+                  1,
+                  3929501942,
+                ],
+              },
+              178858503,
+            ],
+            "r4": [
+              "Hc2DO@D0000;DKf2",
+              {
+                "c1": [
+                  "Hc2DO@D0000;DKf2",
+                  1,
+                  4110564894,
+                ],
+              },
+              2429184703,
+            ],
+            "r5": [
+              "Hc2DO@D0000<DKlE",
+              {
+                "c1": [
+                  "Hc2DO@D0000<DKlE",
+                  1,
+                  1506834940,
+                ],
+              },
+              2307221059,
+            ],
+            "r6": [
+              "Hc2DO@D00009DKYL",
+              {
+                "c1": [
+                  "Hc2DO@D00009DKYL",
+                  1,
+                  1869767149,
+                ],
+              },
+              3641636134,
+            ],
+            "r7": [
+              "Hc2DO@D0000:DK__",
+              {
+                "c1": [
+                  "Hc2DO@D0000:DK__",
+                  1,
+                  1346976663,
+                ],
+              },
+              2186236791,
+            ],
+            "r8": [
+              "Hc2DO@D0000?DL?>",
+              {
+                "c1": [
+                  "Hc2DO@D0000?DL?>",
+                  1,
+                  2787667558,
+                ],
+              },
+              3138709736,
+            ],
+            "r9": [
+              "Hc2DO@D0000@DLEQ",
+              {
+                "c1": [
+                  "Hc2DO@D0000@DLEQ",
+                  1,
+                  10218092,
+                ],
+              },
+              818391198,
+            ],
+          },
+          3270849580,
+        ],
+      },
+      1240725207,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  1240725207,
+]
+`;
+
+exports[`Syncs to/from wsClient Multidirectional all different rows: stats 1`] = `
+{
+  "receives": 1530,
+  "sends": 650,
+}
+`;
+
+exports[`Syncs to/from wsClient Multidirectional all different tables 1`] = `
+[
+  "Hc2DO@D0000AYRok",
+  [
+    [
+      "Hc2DO@D0000AYRok",
+      {
+        "t1": [
+          "Hc2DO@D00008DKS9",
+          {
+            "r1": [
+              "Hc2DO@D00008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@D00008DKS9",
+                  1,
+                  141369203,
+                ],
+              },
+              503736403,
+            ],
+          },
+          282063209,
+        ],
+        "t10": [
+          "Hc2DO@D0000AYRok",
+          {
+            "r1": [
+              "Hc2DO@D0000AYRok",
+              {
+                "c1": [
+                  "Hc2DO@D0000AYRok",
+                  1,
+                  3080891852,
+                ],
+              },
+              543246991,
+            ],
+          },
+          3366982826,
+        ],
+        "t2": [
+          "Hc2DO@D00005DK@@",
+          {
+            "r1": [
+              "Hc2DO@D00005DK@@",
+              {
+                "c1": [
+                  "Hc2DO@D00005DK@@",
+                  1,
+                  2259127772,
+                ],
+              },
+              2570958291,
+            ],
+          },
+          519671433,
+        ],
+        "t3": [
+          "Hc2DO@D00006DKFS",
+          {
+            "r1": [
+              "Hc2DO@D00006DKFS",
+              {
+                "c1": [
+                  "Hc2DO@D00006DKFS",
+                  1,
+                  3929501942,
+                ],
+              },
+              178858503,
+            ],
+          },
+          4073559890,
+        ],
+        "t4": [
+          "Hc2DO@D0000;DKf2",
+          {
+            "r1": [
+              "Hc2DO@D0000;DKf2",
+              {
+                "c1": [
+                  "Hc2DO@D0000;DKf2",
+                  1,
+                  4110564894,
+                ],
+              },
+              2429184703,
+            ],
+          },
+          1929979121,
+        ],
+        "t5": [
+          "Hc2DO@D0000<DKlE",
+          {
+            "r1": [
+              "Hc2DO@D0000<DKlE",
+              {
+                "c1": [
+                  "Hc2DO@D0000<DKlE",
+                  1,
+                  1506834940,
+                ],
+              },
+              2307221059,
+            ],
+          },
+          1247737372,
+        ],
+        "t6": [
+          "Hc2DO@D00009DKYL",
+          {
+            "r1": [
+              "Hc2DO@D00009DKYL",
+              {
+                "c1": [
+                  "Hc2DO@D00009DKYL",
+                  1,
+                  1869767149,
+                ],
+              },
+              3641636134,
+            ],
+          },
+          3021790543,
+        ],
+        "t7": [
+          "Hc2DO@D0000:DK__",
+          {
+            "r1": [
+              "Hc2DO@D0000:DK__",
+              {
+                "c1": [
+                  "Hc2DO@D0000:DK__",
+                  1,
+                  1346976663,
+                ],
+              },
+              2186236791,
+            ],
+          },
+          3831766651,
+        ],
+        "t8": [
+          "Hc2DO@D0000?DL?>",
+          {
+            "r1": [
+              "Hc2DO@D0000?DL?>",
+              {
+                "c1": [
+                  "Hc2DO@D0000?DL?>",
+                  1,
+                  2787667558,
+                ],
+              },
+              3138709736,
+            ],
+          },
+          1780034842,
+        ],
+        "t9": [
+          "Hc2DO@D0000@DLEQ",
+          {
+            "r1": [
+              "Hc2DO@D0000@DLEQ",
+              {
+                "c1": [
+                  "Hc2DO@D0000@DLEQ",
+                  1,
+                  10218092,
+                ],
+              },
+              818391198,
+            ],
+          },
+          2489538311,
+        ],
+      },
+      2984234887,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  2984234887,
+]
+`;
+
+exports[`Syncs to/from wsClient Multidirectional all different tables: stats 1`] = `
+{
+  "receives": 1530,
+  "sends": 650,
+}
+`;
+
+exports[`Syncs to/from wsClient Multidirectional all different values 1`] = `
+[
+  "Hc2DO@D0000AYRok",
+  [
+    [
+      "",
+      {},
+      0,
+    ],
+    [
+      "Hc2DO@D0000AYRok",
+      {
+        "v1": [
+          "Hc2DO@D00008DKS9",
+          1,
+          141369203,
+        ],
+        "v10": [
+          "Hc2DO@D0000AYRok",
+          1,
+          3080891852,
+        ],
+        "v2": [
+          "Hc2DO@D00005DK@@",
+          1,
+          2259127772,
+        ],
+        "v3": [
+          "Hc2DO@D00006DKFS",
+          1,
+          3929501942,
+        ],
+        "v4": [
+          "Hc2DO@D0000;DKf2",
+          1,
+          4110564894,
+        ],
+        "v5": [
+          "Hc2DO@D0000<DKlE",
+          1,
+          1506834940,
+        ],
+        "v6": [
+          "Hc2DO@D00009DKYL",
+          1,
+          1869767149,
+        ],
+        "v7": [
+          "Hc2DO@D0000:DK__",
+          1,
+          1346976663,
+        ],
+        "v8": [
+          "Hc2DO@D0000?DL?>",
+          1,
+          2787667558,
+        ],
+        "v9": [
+          "Hc2DO@D0000@DLEQ",
+          1,
+          10218092,
+        ],
+      },
+      2132405161,
+    ],
+  ],
+  2132405161,
+]
+`;
+
+exports[`Syncs to/from wsClient Multidirectional all different values: stats 1`] = `
+{
+  "receives": 1170,
+  "sends": 290,
+}
+`;
+
+exports[`Syncs to/from wsClient Multidirectional half tables, half values 1`] = `
+[
+  "Hc2DO@D0000AYRok",
+  [
+    [
+      "Hc2DO@D0000AYRok",
+      {
+        "t1": [
+          "Hc2DO@D0000AYRok",
+          {
+            "r1": [
+              "Hc2DO@D0000AYRok",
+              {
+                "c1": [
+                  "Hc2DO@D0000AYRok",
+                  1,
+                  3080891852,
+                ],
+                "c2": [
+                  "Hc2DO@D0000AYRok",
+                  2,
+                  2576740951,
+                ],
+              },
+              3076570177,
+            ],
+            "r2": [
+              "Hc2DO@D0000AYRok",
+              {
+                "c2": [
+                  "Hc2DO@D0000AYRok",
+                  2,
+                  2576740951,
+                ],
+              },
+              3125791713,
+            ],
+          },
+          2199299166,
+        ],
+        "t2": [
+          "Hc2DO@D0000AYRok",
+          {
+            "r2": [
+              "Hc2DO@D0000AYRok",
+              {
+                "c2": [
+                  "Hc2DO@D0000AYRok",
+                  2,
+                  2576740951,
+                ],
+              },
+              3125791713,
+            ],
+          },
+          3602141651,
+        ],
+      },
+      935050963,
+    ],
+    [
+      "Hc2DO@D0000<DKlE",
+      {
+        "v1": [
+          "Hc2DO@D0000<DKlE",
+          1,
+          1506834940,
+        ],
+        "v2": [
+          "Hc2DO@D0000<DKlE",
+          2,
+          2236604531,
+        ],
+      },
+      3388356067,
+    ],
+  ],
+  4266494768,
+]
+`;
+
+exports[`Syncs to/from wsClient Multidirectional half tables, half values: stats 1`] = `
+{
+  "receives": 680,
+  "sends": 440,
+}
+`;
+
+exports[`Syncs to/from wsClient Unidirectional autoLoad1 but not autoSave2, defaults 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  [
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "t0": [
+          "Hc2DO@000008DKS9",
+          {
+            "r0": [
+              "Hc2DO@000008DKS9",
+              {
+                "c0": [
+                  "Hc2DO@000008DKS9",
+                  0,
+                  2614692414,
+                ],
+              },
+              3462856275,
+            ],
+          },
+          1034923531,
+        ],
+      },
+      1374923724,
+    ],
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "v0": [
+          "Hc2DO@000008DKS9",
+          0,
+          2614692414,
+        ],
+      },
+      507814229,
+    ],
+  ],
+  1337395865,
+]
+`;
+
+exports[`Syncs to/from wsClient Unidirectional autoLoad1 but not autoSave2, defaults 2`] = `
+[
+  "Hc2DO@000005DK@@",
+  [
+    [
+      "Hc2DO@000005DK@@",
+      {
+        "t1": [
+          "Hc2DO@000005DK@@",
+          {
+            "r1": [
+              "Hc2DO@000005DK@@",
+              {
+                "c1": [
+                  "Hc2DO@000005DK@@",
+                  1,
+                  1915036128,
+                ],
+                "c2": [
+                  "Hc2DO@000005DK@@",
+                  2,
+                  2554361111,
+                ],
+              },
+              33786990,
+            ],
+            "r2": [
+              "Hc2DO@000005DK@@",
+              {
+                "c2": [
+                  "Hc2DO@000005DK@@",
+                  2,
+                  2554361111,
+                ],
+              },
+              3049305030,
+            ],
+          },
+          3344002712,
+        ],
+        "t2": [
+          "Hc2DO@000005DK@@",
+          {
+            "r2": [
+              "Hc2DO@000005DK@@",
+              {
+                "c2": [
+                  "Hc2DO@000005DK@@",
+                  2,
+                  2554361111,
+                ],
+              },
+              3049305030,
+            ],
+          },
+          1360887207,
+        ],
+      },
+      2945952928,
+    ],
+    [
+      "Hc2DO@000005DK@@",
+      {
+        "v1": [
+          "Hc2DO@000005DK@@",
+          1,
+          1915036128,
+        ],
+        "v2": [
+          "Hc2DO@000005DK@@",
+          2,
+          2554361111,
+        ],
+      },
+      1072194670,
+    ],
+  ],
+  2424293582,
+]
+`;
+
+exports[`Syncs to/from wsClient Unidirectional autoLoad1 but not autoSave2, defaults: stats 1`] = `
+[
+  {
+    "receives": 0,
+    "sends": 1,
+  },
+  {
+    "receives": 1,
+    "sends": 0,
+  },
+]
+`;
+
+exports[`Syncs to/from wsClient Unidirectional autoSave1 but not autoLoad2 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  [
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "t1": [
+          "Hc2DO@000008DKS9",
+          {
+            "r1": [
+              "Hc2DO@000008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000008DKS9",
+                  1,
+                  4065945599,
+                ],
+                "c2": [
+                  "Hc2DO@000008DKS9",
+                  2,
+                  903550280,
+                ],
+              },
+              922886432,
+            ],
+            "r2": [
+              "Hc2DO@000008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@000008DKS9",
+                  2,
+                  903550280,
+                ],
+              },
+              4100269854,
+            ],
+          },
+          1784087264,
+        ],
+        "t2": [
+          "Hc2DO@000008DKS9",
+          {
+            "r2": [
+              "Hc2DO@000008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@000008DKS9",
+                  2,
+                  903550280,
+                ],
+              },
+              4100269854,
+            ],
+          },
+          4279580014,
+        ],
+      },
+      3499952990,
+    ],
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "v1": [
+          "Hc2DO@000008DKS9",
+          1,
+          4065945599,
+        ],
+        "v2": [
+          "Hc2DO@000008DKS9",
+          2,
+          903550280,
+        ],
+      },
+      1248113522,
+    ],
+  ],
+  2600056876,
+]
+`;
+
+exports[`Syncs to/from wsClient Unidirectional autoSave1 but not autoLoad2 2`] = `
+[
+  "",
+  [
+    [
+      "",
+      {},
+      0,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  0,
+]
+`;
+
+exports[`Syncs to/from wsClient Unidirectional autoSave1 but not autoLoad2: stats 1`] = `
+[
+  {
+    "receives": 0,
+    "sends": 2,
+  },
+  {
+    "receives": 2,
+    "sends": 0,
+  },
+]
+`;
+
+exports[`Syncs to/from wsClient Unidirectional load1 but not autoSave2, defaults 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  [
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "t0": [
+          "Hc2DO@000008DKS9",
+          {
+            "r0": [
+              "Hc2DO@000008DKS9",
+              {
+                "c0": [
+                  "Hc2DO@000008DKS9",
+                  0,
+                  2614692414,
+                ],
+              },
+              3462856275,
+            ],
+          },
+          1034923531,
+        ],
+      },
+      1374923724,
+    ],
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "v0": [
+          "Hc2DO@000008DKS9",
+          0,
+          2614692414,
+        ],
+      },
+      507814229,
+    ],
+  ],
+  1337395865,
+]
+`;
+
+exports[`Syncs to/from wsClient Unidirectional load1 but not autoSave2, defaults 2`] = `
+[
+  "Hc2DO@000005DK@@",
+  [
+    [
+      "Hc2DO@000005DK@@",
+      {
+        "t1": [
+          "Hc2DO@000005DK@@",
+          {
+            "r1": [
+              "Hc2DO@000005DK@@",
+              {
+                "c1": [
+                  "Hc2DO@000005DK@@",
+                  1,
+                  1915036128,
+                ],
+                "c2": [
+                  "Hc2DO@000005DK@@",
+                  2,
+                  2554361111,
+                ],
+              },
+              33786990,
+            ],
+            "r2": [
+              "Hc2DO@000005DK@@",
+              {
+                "c2": [
+                  "Hc2DO@000005DK@@",
+                  2,
+                  2554361111,
+                ],
+              },
+              3049305030,
+            ],
+          },
+          3344002712,
+        ],
+        "t2": [
+          "Hc2DO@000005DK@@",
+          {
+            "r2": [
+              "Hc2DO@000005DK@@",
+              {
+                "c2": [
+                  "Hc2DO@000005DK@@",
+                  2,
+                  2554361111,
+                ],
+              },
+              3049305030,
+            ],
+          },
+          1360887207,
+        ],
+      },
+      2945952928,
+    ],
+    [
+      "Hc2DO@000005DK@@",
+      {
+        "v1": [
+          "Hc2DO@000005DK@@",
+          1,
+          1915036128,
+        ],
+        "v2": [
+          "Hc2DO@000005DK@@",
+          2,
+          2554361111,
+        ],
+      },
+      1072194670,
+    ],
+  ],
+  2424293582,
+]
+`;
+
+exports[`Syncs to/from wsClient Unidirectional load1 but not autoSave2, defaults: stats 1`] = `
+[
+  {
+    "receives": 0,
+    "sends": 1,
+  },
+  {
+    "receives": 1,
+    "sends": 0,
+  },
+]
+`;
+
+exports[`Syncs to/from wsClient Unidirectional save1 but not autoLoad2 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  [
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "t1": [
+          "Hc2DO@000008DKS9",
+          {
+            "r1": [
+              "Hc2DO@000008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000008DKS9",
+                  1,
+                  4065945599,
+                ],
+                "c2": [
+                  "Hc2DO@000008DKS9",
+                  2,
+                  903550280,
+                ],
+              },
+              922886432,
+            ],
+            "r2": [
+              "Hc2DO@000008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@000008DKS9",
+                  2,
+                  903550280,
+                ],
+              },
+              4100269854,
+            ],
+          },
+          1784087264,
+        ],
+        "t2": [
+          "Hc2DO@000008DKS9",
+          {
+            "r2": [
+              "Hc2DO@000008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@000008DKS9",
+                  2,
+                  903550280,
+                ],
+              },
+              4100269854,
+            ],
+          },
+          4279580014,
+        ],
+      },
+      3499952990,
+    ],
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "v1": [
+          "Hc2DO@000008DKS9",
+          1,
+          4065945599,
+        ],
+        "v2": [
+          "Hc2DO@000008DKS9",
+          2,
+          903550280,
+        ],
+      },
+      1248113522,
+    ],
+  ],
+  2600056876,
+]
+`;
+
+exports[`Syncs to/from wsClient Unidirectional save1 but not autoLoad2 2`] = `
+[
+  "",
+  [
+    [
+      "",
+      {},
+      0,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  0,
+]
+`;
+
+exports[`Syncs to/from wsClient Unidirectional save1 but not autoLoad2: stats 1`] = `
+[
+  {
+    "receives": 0,
+    "sends": 1,
+  },
+  {
+    "receives": 1,
+    "sends": 0,
+  },
+]
+`;
