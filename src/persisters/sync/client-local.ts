@@ -7,18 +7,14 @@ import {
 } from '../../types/persisters/persister-sync';
 import {DEBUG, isUndefined} from '../../common/other';
 import {Id, IdOrNull} from '../../types/common';
-import {IdMap, mapGet, mapNew, mapSet} from '../../common/map';
+import {IdMap, mapForEach, mapGet, mapNew, mapSet} from '../../common/map';
 import {IdObj, objDel, objNew} from '../../common/obj';
-import {collDel, collForEach} from '../../common/coll';
+import {collDel} from '../../common/coll';
 
 const clients: IdMap<Receive> = mapNew();
 
 const sends: IdObj<number> = objNew();
 const receives: IdObj<number> = objNew();
-const incrementSends = (fromClientId: Id) =>
-  (sends[fromClientId] = (sends[fromClientId] ?? 0) + 1);
-const incrementReceives = (toClientId: Id) =>
-  (receives[toClientId] = (receives[toClientId] ?? 0) + 1);
 
 export const createLocalClient = (() => {
   const clientId: Id = '' + Math.random();
@@ -29,7 +25,7 @@ export const createLocalClient = (() => {
       clientId,
       DEBUG
         ? (...args) => {
-            incrementReceives(clientId);
+            receives[clientId] = (receives[clientId] ?? 0) + 1;
             receive(...args);
           }
         : receive,
@@ -43,11 +39,11 @@ export const createLocalClient = (() => {
     messageBody: any,
   ): void => {
     if (DEBUG) {
-      incrementSends(clientId);
+      sends[clientId] = (sends[clientId] ?? 0) + 1;
     }
     isUndefined(toClientId)
-      ? collForEach(clients, (receive, toClientId) =>
-          toClientId != clientId
+      ? mapForEach(clients, (otherClientId, receive) =>
+          otherClientId != clientId
             ? receive(clientId, requestId, messageType, messageBody)
             : 0,
         )
