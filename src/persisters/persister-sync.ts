@@ -40,6 +40,7 @@ export const createSyncPersister = ((
 ): SyncPersister => {
   let persisterListener: PersisterListener | undefined;
 
+  const {send, onReceive, destroy} = client;
   const [getHlc] = getHlcFunctions(store.getId());
   const pendingRequests: IdMap<
     [
@@ -48,63 +49,65 @@ export const createSyncPersister = ((
     ]
   > = mapNew();
 
-  const receive = (
-    requestId: IdOrNull,
-    fromStoreId: Id,
-    messageType: MessageType,
-    messageBody: any,
-  ) => {
-    if (messageType == RESPONSE) {
-      ifNotUndefined(
-        mapGet(pendingRequests, requestId),
-        ([toStoreId, handleResponse]) =>
-          isUndefined(toStoreId) || toStoreId == fromStoreId
-            ? handleResponse(messageBody, fromStoreId)
-            : 0,
-      );
-    } else if (messageType == CONTENT_HASHES && persister.isAutoLoading()) {
-      getChangesFromOtherStore(fromStoreId, messageBody).then((changes: any) =>
-        persisterListener?.(undefined, () => changes),
-      );
-    } else {
-      const response =
-        messageType == GET_CONTENT_HASHES && persister.isAutoSaving()
-          ? store.getMergeableContentHashes()
-          : messageType == GET_TABLE_IDS_DIFF
-            ? store.getMergeableTableIdsDiff(messageBody)
-            : messageType == GET_ROW_IDS_DIFF
-              ? store.getMergeableRowIdsDiff(messageBody)
-              : messageType == GET_TABLES_CHANGES
-                ? store.getMergeableTablesChanges(messageBody)
-                : messageType == GET_VALUES_CHANGES
-                  ? store.getMergeableValuesChanges(messageBody)
-                  : 0;
-      response === 0 ? 0 : send(requestId, fromStoreId, RESPONSE, response);
-    }
-  };
-
-  const [send, disconnect] = client.connect(store.getId(), receive);
+  onReceive(
+    (
+      requestId: IdOrNull,
+      fromClientId: Id,
+      messageType: MessageType,
+      messageBody: any,
+    ) => {
+      if (messageType == RESPONSE) {
+        ifNotUndefined(
+          mapGet(pendingRequests, requestId),
+          ([toStoreId, handleResponse]) =>
+            isUndefined(toStoreId) || toStoreId == fromClientId
+              ? handleResponse(messageBody, fromClientId)
+              : 0,
+        );
+      } else if (messageType == CONTENT_HASHES && persister.isAutoLoading()) {
+        getChangesFromOtherStore(fromClientId, messageBody).then(
+          (changes: any) => persisterListener?.(undefined, () => changes),
+        );
+      } else {
+        const response =
+          messageType == GET_CONTENT_HASHES && persister.isAutoSaving()
+            ? store.getMergeableContentHashes()
+            : messageType == GET_TABLE_IDS_DIFF
+              ? store.getMergeableTableIdsDiff(messageBody)
+              : messageType == GET_ROW_IDS_DIFF
+                ? store.getMergeableRowIdsDiff(messageBody)
+                : messageType == GET_TABLES_CHANGES
+                  ? store.getMergeableTablesChanges(messageBody)
+                  : messageType == GET_VALUES_CHANGES
+                    ? store.getMergeableValuesChanges(messageBody)
+                    : 0;
+        response === 0 ? 0 : send(requestId, fromClientId, RESPONSE, response);
+      }
+    },
+  );
 
   const request = async <Response>(
-    toStoreId: IdOrNull,
+    toClientId: IdOrNull,
     messageType: MessageType,
     messageBody: any = EMPTY_STRING,
-  ): Promise<[response: Response, fromStoreId: Id]> =>
+  ): Promise<[response: Response, fromClientId: Id]> =>
     promiseNew((resolve, reject) => {
       const requestId = getHlc();
       const timeout = setTimeout(() => {
         collDel(pendingRequests, requestId);
-        reject(`No response from ${toStoreId ?? 'anyone'} to '${messageType}'`);
+        reject(
+          `No response from ${toClientId ?? 'anyone'} to '${messageType}'`,
+        );
       }, requestTimeoutSeconds * 1000);
       mapSet(pendingRequests, requestId, [
-        toStoreId,
+        toClientId,
         (response: Response, fromStoreId: Id) => {
           clearTimeout(timeout);
           collDel(pendingRequests, requestId);
           resolve([response, fromStoreId]);
         },
       ]);
-      send(requestId, toStoreId, messageType, messageBody);
+      send(requestId, toClientId, messageType, messageBody);
     });
 
   const getChangesFromOtherStore = async (
@@ -195,7 +198,7 @@ export const createSyncPersister = ((
         await (await persister.startAutoLoad()).startAutoSave(),
       stopSync: () => persister.stopAutoLoad().stopAutoSave(),
       destroy: () => {
-        disconnect();
+        destroy();
         return persister.stopSync();
       },
     },
