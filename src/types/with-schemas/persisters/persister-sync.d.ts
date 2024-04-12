@@ -13,7 +13,7 @@ export type Receive = (
   requestId: Id,
   fromStoreId: Id,
   messageType: MessageType,
-  ...parts: any[]
+  messageBody: any,
 ) => void;
 
 /// Send
@@ -21,7 +21,7 @@ export type Send = (
   requestId: Id,
   toStoreId: IdOrNull,
   messageType: MessageType,
-  ...parts: any[]
+  messageBody: any,
 ) => void;
 
 /// ClientStats
@@ -29,10 +29,9 @@ export type ClientStats = {sends?: number; receives?: number};
 
 /// Client
 export type Client = {
-  connect: (
-    storeId: Id,
-    receive: Receive,
-  ) => [send: Send, disconnect: () => void];
+  send: Send;
+  onReceive: (receive: Receive) => void;
+  destroy: () => void;
   getStats: () => ClientStats;
 };
 
