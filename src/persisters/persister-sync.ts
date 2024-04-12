@@ -23,6 +23,8 @@ import {createCustomPersister} from '../persisters';
 import {getHlcFunctions} from '../mergeable-store/hlc';
 
 export {createLocalClient} from './sync/client-local';
+export {createWsClient} from './sync/client-ws';
+export {createWsServer} from './sync/server-ws';
 
 const RESPONSE = 0;
 const CONTENT_HASHES = 1;
