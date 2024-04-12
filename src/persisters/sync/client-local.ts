@@ -37,8 +37,8 @@ export const createLocalClient = (() => {
   };
 
   const send = (
-    requestId: IdOrNull,
     toClientId: IdOrNull,
+    requestId: IdOrNull,
     messageType: MessageType,
     messageBody: any,
   ): void => {
@@ -48,12 +48,12 @@ export const createLocalClient = (() => {
     isUndefined(toClientId)
       ? collForEach(clients, (receive, toClientId) =>
           toClientId != clientId
-            ? receive(requestId, clientId, messageType, messageBody)
+            ? receive(clientId, requestId, messageType, messageBody)
             : 0,
         )
       : mapGet(clients, toClientId)?.(
-          requestId,
           clientId,
+          requestId,
           messageType,
           messageBody,
         );
