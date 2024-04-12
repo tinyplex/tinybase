@@ -23,43 +23,43 @@
  */
 /// Send
 /**
- * The Bus type
+ * The Client type
  *
  */
-/// Bus
+/// Client
 /**
- * The BusStats type
+ * The ClientStats type
  *
  */
-/// BusStats
+/// ClientStats
 /**
  * The SyncPersister interface is a minor extension to the Persister interface.
  *
- * It simply provides an extra getBus method for accessing the reference the Bus
- * that the MergeableStore is being persisted via.
+ * It simply provides an extra getClient method for accessing the reference the
+ * Client that the MergeableStore is being persisted via.
  * @category Persister
  * @since v5.0.0
  */
 /// SyncPersister
 {
   /**
-   * The getBus method returns the reference of the Bus that the MergeableStore
-   * is being persisted via.
+   * The getClient method returns the reference of the Client that the
+   * MergeableStore is being persisted via.
    * @returns The reference of the other MergeableStore.
    * @example
    * This example creates a Persister object against a newly-created
-   * MergeableStore and then gets the reference to the Bus back out
+   * MergeableStore and then gets the reference to the Client back out
    * again.
    *
    * ```js
-   * const bus = createLocalBus();
+   * const client = createLocalClient();
    *
    * const store1 = createMergeableStore('store1').setTables({
    *   pets: {fido: {species: 'dog'}},
    * });
-   * const persister = createSyncPersister(store1, bus);
+   * const persister = createSyncPersister(store1, client);
    *
-   * console.log(persister.getBus() == bus);
+   * console.log(persister.getClient() == client);
    * // -> true
    *
    * persister.destroy();
@@ -67,7 +67,7 @@
    * @category Getter
    * @since v5.0.0
    */
-  /// SyncPersister.getBus
+  /// SyncPersister.getClient
   /**
    * The startSync method
    */
@@ -82,12 +82,13 @@
  * one MergeableStore to another.
  *
  * As well as providing a reference to the MergeableStore to persist, you must
- * provide a `bus` parameter which identifies the Bus that is used to transmit
- * changes to and from this MergeableStore and its peers. persist it to.
+ * provide a `client` parameter which identifies the Client that is used to
+ * transmit changes to and from this MergeableStore and its peers. persist it
+ * to.
  * @param store The MergeableStore to persist.
- * @param bus The reference of the Bus.
+ * @param client The reference of the Client.
  * @param requestTimeoutSeconds An optional number of seconds before a request
- * to the Bus times out, defaulting to 5.
+ * to the Client times out, defaulting to 5.
  * @param onIgnoredError An optional handler for the errors that the Persister
  * would otherwise ignore when trying to save or load data. This is suitable for
  * debugging persistence issues in a development environment.
@@ -97,15 +98,15 @@
  * to another.
  *
  * ```js
- * const bus = createLocalBus();
+ * const client = createLocalClient();
  *
  * const store1 = createMergeableStore('store1').setTables({
  *   pets: {fido: {species: 'dog'}},
  * });
- * const persister1 = createSyncPersister(store1, bus);
+ * const persister1 = createSyncPersister(store1, client);
  *
  * const store2 = createMergeableStore('store2');
- * const persister2 = createSyncPersister(store2, bus);
+ * const persister2 = createSyncPersister(store2, client);
  * await persister2.startSync();
  *
  * await persister1.save();
@@ -125,6 +126,6 @@
  */
 /// createSyncPersister
 /**
- * The createLocalBus function
+ * The createLocalClient function
  */
-/// createLocalBus
+/// createLocalClient

@@ -23,19 +23,22 @@ export type Send = (
   ...parts: any[]
 ) => void;
 
-/// BusStats
-export type BusStats = {sends?: number; receives?: number};
+/// ClientStats
+export type ClientStats = {sends?: number; receives?: number};
 
-/// Bus
-export type Bus = {
-  join: (storeId: Id, receive: Receive) => [send: Send, leave: () => void];
-  getStats: () => BusStats;
+/// Client
+export type Client = {
+  connect: (
+    storeId: Id,
+    receive: Receive,
+  ) => [send: Send, disconnect: () => void];
+  getStats: () => ClientStats;
 };
 
 /// SyncPersister
 export interface SyncPersister extends Persister<true> {
-  /// SyncPersister.getBus
-  getBus(): Bus;
+  /// SyncPersister.getClient
+  getClient(): Client;
   /// SyncPersister.startSync
   startSync(): Promise<Persister<true>>;
   /// SyncPersister.stopSync
@@ -45,10 +48,10 @@ export interface SyncPersister extends Persister<true> {
 /// createSyncPersister
 export function createSyncPersister(
   store: MergeableStore,
-  bus: Bus,
+  client: Client,
   requestTimeoutSeconds?: number,
   onIgnoredError?: (error: any) => void,
 ): SyncPersister;
 
-/// createLocalBus
-export function createLocalBus(): Bus;
+/// createLocalClient
+export function createLocalClient(): Client;

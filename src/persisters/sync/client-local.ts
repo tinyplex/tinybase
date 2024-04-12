@@ -1,22 +1,22 @@
 import {
-  Bus,
-  BusStats,
+  Client,
+  ClientStats,
   MessageType,
   Receive,
   Send,
-  createLocalBus as createLocalBusDecl,
+  createLocalClient as createLocalClientDecl,
 } from '../../types/persisters/persister-sync';
 import {DEBUG, isUndefined} from '../../common/other';
 import {Id, IdOrNull} from '../../types/common';
 import {IdMap, mapGet, mapNew, mapSet} from '../../common/map';
 import {collDel, collForEach, collSize} from '../../common/coll';
 
-export const createLocalBus = (() => {
+export const createLocalClient = (() => {
   let sends = 0;
   let receives = 0;
   const stores: IdMap<Receive> = mapNew();
 
-  const join = (storeId: Id, receive: Receive): [Send, () => void] => {
+  const connect = (storeId: Id, receive: Receive): [Send, () => void] => {
     mapSet(stores, storeId, receive);
     const send = (
       requestId: IdOrNull,
@@ -41,13 +41,13 @@ export const createLocalBus = (() => {
             messageBody,
           );
     };
-    const leave = (): void => {
+    const disconnect = (): void => {
       collDel(stores, storeId);
     };
-    return [send, leave];
+    return [send, disconnect];
   };
 
-  const getStats = (): BusStats => (DEBUG ? {sends, receives} : {});
+  const getStats = (): ClientStats => (DEBUG ? {sends, receives} : {});
 
-  return {join, getStats} as Bus;
-}) as typeof createLocalBusDecl;
+  return {connect, getStats} as Client;
+}) as typeof createLocalClientDecl;

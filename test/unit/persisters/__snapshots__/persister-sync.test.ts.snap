@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Syncs to/from localBus Bidirectional Both empty 1`] = `
+exports[`Syncs to/from localClient Bidirectional Both empty 1`] = `
 [
   "",
   [
@@ -19,14 +19,14 @@ exports[`Syncs to/from localBus Bidirectional Both empty 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Bidirectional Both empty 2`] = `
+exports[`Syncs to/from localClient Bidirectional Both empty 2`] = `
 {
   "receives": 5,
   "sends": 5,
 }
 `;
 
-exports[`Syncs to/from localBus Bidirectional Both match 1`] = `
+exports[`Syncs to/from localClient Bidirectional Both match 1`] = `
 [
   "Hc2DO@200008DKS9",
   [
@@ -107,14 +107,14 @@ exports[`Syncs to/from localBus Bidirectional Both match 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Bidirectional Both match 2`] = `
+exports[`Syncs to/from localClient Bidirectional Both match 2`] = `
 {
   "receives": 23,
   "sends": 23,
 }
 `;
 
-exports[`Syncs to/from localBus Bidirectional different cell 1`] = `
+exports[`Syncs to/from localClient Bidirectional different cell 1`] = `
 [
   "Hc2DO@400015DK@@",
   [
@@ -151,14 +151,14 @@ exports[`Syncs to/from localBus Bidirectional different cell 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Bidirectional different cell 2`] = `
+exports[`Syncs to/from localClient Bidirectional different cell 2`] = `
 {
   "receives": 19,
   "sends": 19,
 }
 `;
 
-exports[`Syncs to/from localBus Bidirectional different row 1`] = `
+exports[`Syncs to/from localClient Bidirectional different row 1`] = `
 [
   "Hc2DO@400015DK@@",
   [
@@ -200,14 +200,14 @@ exports[`Syncs to/from localBus Bidirectional different row 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Bidirectional different row 2`] = `
+exports[`Syncs to/from localClient Bidirectional different row 2`] = `
 {
   "receives": 19,
   "sends": 19,
 }
 `;
 
-exports[`Syncs to/from localBus Bidirectional different table 1`] = `
+exports[`Syncs to/from localClient Bidirectional different table 1`] = `
 [
   "Hc2DO@400015DK@@",
   [
@@ -260,14 +260,14 @@ exports[`Syncs to/from localBus Bidirectional different table 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Bidirectional different table 2`] = `
+exports[`Syncs to/from localClient Bidirectional different table 2`] = `
 {
   "receives": 19,
   "sends": 19,
 }
 `;
 
-exports[`Syncs to/from localBus Bidirectional different tables 1`] = `
+exports[`Syncs to/from localClient Bidirectional different tables 1`] = `
 [
   "Hc2DO@400015DK@@",
   [
@@ -337,14 +337,14 @@ exports[`Syncs to/from localBus Bidirectional different tables 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Bidirectional different tables 2`] = `
+exports[`Syncs to/from localClient Bidirectional different tables 2`] = `
 {
   "receives": 19,
   "sends": 19,
 }
 `;
 
-exports[`Syncs to/from localBus Bidirectional different value 1`] = `
+exports[`Syncs to/from localClient Bidirectional different value 1`] = `
 [
   "Hc2DO@400015DK@@",
   [
@@ -369,14 +369,14 @@ exports[`Syncs to/from localBus Bidirectional different value 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Bidirectional different value 2`] = `
+exports[`Syncs to/from localClient Bidirectional different value 2`] = `
 {
   "receives": 11,
   "sends": 11,
 }
 `;
 
-exports[`Syncs to/from localBus Bidirectional different values 1`] = `
+exports[`Syncs to/from localClient Bidirectional different values 1`] = `
 [
   "Hc2DO@400015DK@@",
   [
@@ -406,14 +406,14 @@ exports[`Syncs to/from localBus Bidirectional different values 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Bidirectional different values 2`] = `
+exports[`Syncs to/from localClient Bidirectional different values 2`] = `
 {
   "receives": 11,
   "sends": 11,
 }
 `;
 
-exports[`Syncs to/from localBus Bidirectional store1 empty 1`] = `
+exports[`Syncs to/from localClient Bidirectional store1 empty 1`] = `
 [
   "Hc2DO@200005DK@@",
   [
@@ -494,14 +494,14 @@ exports[`Syncs to/from localBus Bidirectional store1 empty 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Bidirectional store1 empty 2`] = `
+exports[`Syncs to/from localClient Bidirectional store1 empty 2`] = `
 {
   "receives": 14,
   "sends": 14,
 }
 `;
 
-exports[`Syncs to/from localBus Bidirectional store1 missing cell 1`] = `
+exports[`Syncs to/from localClient Bidirectional store1 missing cell 1`] = `
 [
   "Hc2DO@400015DK@@",
   [
@@ -543,14 +543,14 @@ exports[`Syncs to/from localBus Bidirectional store1 missing cell 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Bidirectional store1 missing cell 2`] = `
+exports[`Syncs to/from localClient Bidirectional store1 missing cell 2`] = `
 {
   "receives": 19,
   "sends": 19,
 }
 `;
 
-exports[`Syncs to/from localBus Bidirectional store1 missing row 1`] = `
+exports[`Syncs to/from localClient Bidirectional store1 missing row 1`] = `
 [
   "Hc2DO@400015DK@@",
   [
@@ -603,14 +603,14 @@ exports[`Syncs to/from localBus Bidirectional store1 missing row 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Bidirectional store1 missing row 2`] = `
+exports[`Syncs to/from localClient Bidirectional store1 missing row 2`] = `
 {
   "receives": 19,
   "sends": 19,
 }
 `;
 
-exports[`Syncs to/from localBus Bidirectional store1 missing table 1`] = `
+exports[`Syncs to/from localClient Bidirectional store1 missing table 1`] = `
 [
   "Hc2DO@400015DK@@",
   [
@@ -680,14 +680,14 @@ exports[`Syncs to/from localBus Bidirectional store1 missing table 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Bidirectional store1 missing table 2`] = `
+exports[`Syncs to/from localClient Bidirectional store1 missing table 2`] = `
 {
   "receives": 19,
   "sends": 19,
 }
 `;
 
-exports[`Syncs to/from localBus Bidirectional store1 missing tables 1`] = `
+exports[`Syncs to/from localClient Bidirectional store1 missing tables 1`] = `
 [
   "Hc2DO@400015DK@@",
   [
@@ -768,14 +768,14 @@ exports[`Syncs to/from localBus Bidirectional store1 missing tables 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Bidirectional store1 missing tables 2`] = `
+exports[`Syncs to/from localClient Bidirectional store1 missing tables 2`] = `
 {
   "receives": 15,
   "sends": 15,
 }
 `;
 
-exports[`Syncs to/from localBus Bidirectional store1 missing value 1`] = `
+exports[`Syncs to/from localClient Bidirectional store1 missing value 1`] = `
 [
   "Hc2DO@400015DK@@",
   [
@@ -805,14 +805,14 @@ exports[`Syncs to/from localBus Bidirectional store1 missing value 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Bidirectional store1 missing value 2`] = `
+exports[`Syncs to/from localClient Bidirectional store1 missing value 2`] = `
 {
   "receives": 11,
   "sends": 11,
 }
 `;
 
-exports[`Syncs to/from localBus Bidirectional store1 missing values 1`] = `
+exports[`Syncs to/from localClient Bidirectional store1 missing values 1`] = `
 [
   "Hc2DO@400015DK@@",
   [
@@ -893,14 +893,14 @@ exports[`Syncs to/from localBus Bidirectional store1 missing values 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Bidirectional store1 missing values 2`] = `
+exports[`Syncs to/from localClient Bidirectional store1 missing values 2`] = `
 {
   "receives": 15,
   "sends": 15,
 }
 `;
 
-exports[`Syncs to/from localBus Bidirectional store2 empty 1`] = `
+exports[`Syncs to/from localClient Bidirectional store2 empty 1`] = `
 [
   "Hc2DO@200008DKS9",
   [
@@ -981,14 +981,14 @@ exports[`Syncs to/from localBus Bidirectional store2 empty 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Bidirectional store2 empty 2`] = `
+exports[`Syncs to/from localClient Bidirectional store2 empty 2`] = `
 {
   "receives": 14,
   "sends": 14,
 }
 `;
 
-exports[`Syncs to/from localBus Bidirectional store2 missing cell 1`] = `
+exports[`Syncs to/from localClient Bidirectional store2 missing cell 1`] = `
 [
   "Hc2DO@400018DKS9",
   [
@@ -1030,14 +1030,14 @@ exports[`Syncs to/from localBus Bidirectional store2 missing cell 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Bidirectional store2 missing cell 2`] = `
+exports[`Syncs to/from localClient Bidirectional store2 missing cell 2`] = `
 {
   "receives": 19,
   "sends": 19,
 }
 `;
 
-exports[`Syncs to/from localBus Bidirectional store2 missing row 1`] = `
+exports[`Syncs to/from localClient Bidirectional store2 missing row 1`] = `
 [
   "Hc2DO@400018DKS9",
   [
@@ -1090,14 +1090,14 @@ exports[`Syncs to/from localBus Bidirectional store2 missing row 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Bidirectional store2 missing row 2`] = `
+exports[`Syncs to/from localClient Bidirectional store2 missing row 2`] = `
 {
   "receives": 19,
   "sends": 19,
 }
 `;
 
-exports[`Syncs to/from localBus Bidirectional store2 missing table 1`] = `
+exports[`Syncs to/from localClient Bidirectional store2 missing table 1`] = `
 [
   "Hc2DO@400018DKS9",
   [
@@ -1167,14 +1167,14 @@ exports[`Syncs to/from localBus Bidirectional store2 missing table 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Bidirectional store2 missing table 2`] = `
+exports[`Syncs to/from localClient Bidirectional store2 missing table 2`] = `
 {
   "receives": 19,
   "sends": 19,
 }
 `;
 
-exports[`Syncs to/from localBus Bidirectional store2 missing tables 1`] = `
+exports[`Syncs to/from localClient Bidirectional store2 missing tables 1`] = `
 [
   "Hc2DO@400018DKS9",
   [
@@ -1255,14 +1255,14 @@ exports[`Syncs to/from localBus Bidirectional store2 missing tables 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Bidirectional store2 missing tables 2`] = `
+exports[`Syncs to/from localClient Bidirectional store2 missing tables 2`] = `
 {
   "receives": 15,
   "sends": 15,
 }
 `;
 
-exports[`Syncs to/from localBus Bidirectional store2 missing value 1`] = `
+exports[`Syncs to/from localClient Bidirectional store2 missing value 1`] = `
 [
   "Hc2DO@400018DKS9",
   [
@@ -1292,14 +1292,14 @@ exports[`Syncs to/from localBus Bidirectional store2 missing value 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Bidirectional store2 missing value 2`] = `
+exports[`Syncs to/from localClient Bidirectional store2 missing value 2`] = `
 {
   "receives": 11,
   "sends": 11,
 }
 `;
 
-exports[`Syncs to/from localBus Bidirectional store2 missing values 1`] = `
+exports[`Syncs to/from localClient Bidirectional store2 missing values 1`] = `
 [
   "Hc2DO@400018DKS9",
   [
@@ -1380,14 +1380,14 @@ exports[`Syncs to/from localBus Bidirectional store2 missing values 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Bidirectional store2 missing values 2`] = `
+exports[`Syncs to/from localClient Bidirectional store2 missing values 2`] = `
 {
   "receives": 15,
   "sends": 15,
 }
 `;
 
-exports[`Syncs to/from localBus Multidirectional All but first empty 1`] = `
+exports[`Syncs to/from localClient Multidirectional All but first empty 1`] = `
 [
   "Hc2DO@200008DKS9",
   [
@@ -1468,14 +1468,14 @@ exports[`Syncs to/from localBus Multidirectional All but first empty 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Multidirectional All but first empty 2`] = `
+exports[`Syncs to/from localClient Multidirectional All but first empty 2`] = `
 {
   "receives": 261,
   "sends": 93,
 }
 `;
 
-exports[`Syncs to/from localBus Multidirectional All but last empty 1`] = `
+exports[`Syncs to/from localClient Multidirectional All but last empty 1`] = `
 [
   "Hc2DO@20000AYRok",
   [
@@ -1556,14 +1556,14 @@ exports[`Syncs to/from localBus Multidirectional All but last empty 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Multidirectional All but last empty 2`] = `
+exports[`Syncs to/from localClient Multidirectional All but last empty 2`] = `
 {
   "receives": 261,
   "sends": 93,
 }
 `;
 
-exports[`Syncs to/from localBus Multidirectional All empty 1`] = `
+exports[`Syncs to/from localClient Multidirectional All empty 1`] = `
 [
   "",
   [
@@ -1582,14 +1582,14 @@ exports[`Syncs to/from localBus Multidirectional All empty 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Multidirectional All empty 2`] = `
+exports[`Syncs to/from localClient Multidirectional All empty 2`] = `
 {
   "receives": 180,
   "sends": 20,
 }
 `;
 
-exports[`Syncs to/from localBus Multidirectional All match 1`] = `
+exports[`Syncs to/from localClient Multidirectional All match 1`] = `
 [
   "Hc2DO@20000AYRok",
   [
@@ -1670,14 +1670,14 @@ exports[`Syncs to/from localBus Multidirectional All match 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Multidirectional All match 2`] = `
+exports[`Syncs to/from localClient Multidirectional All match 2`] = `
 {
   "receives": 990,
   "sends": 750,
 }
 `;
 
-exports[`Syncs to/from localBus Multidirectional all conflicting cells 1`] = `
+exports[`Syncs to/from localClient Multidirectional all conflicting cells 1`] = `
 [
   "Hc2DO@20000AYRok",
   [
@@ -1714,14 +1714,14 @@ exports[`Syncs to/from localBus Multidirectional all conflicting cells 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Multidirectional all conflicting cells 2`] = `
+exports[`Syncs to/from localClient Multidirectional all conflicting cells 2`] = `
 {
   "receives": 1125,
   "sends": 605,
 }
 `;
 
-exports[`Syncs to/from localBus Multidirectional all conflicting cells 3`] = `
+exports[`Syncs to/from localClient Multidirectional all conflicting cells 3`] = `
 [
   "Hc2DO@400059DKYL",
   [
@@ -1758,14 +1758,14 @@ exports[`Syncs to/from localBus Multidirectional all conflicting cells 3`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Multidirectional all conflicting cells 4`] = `
+exports[`Syncs to/from localClient Multidirectional all conflicting cells 4`] = `
 {
   "receives": 1188,
   "sends": 660,
 }
 `;
 
-exports[`Syncs to/from localBus Multidirectional all conflicting values 1`] = `
+exports[`Syncs to/from localClient Multidirectional all conflicting values 1`] = `
 [
   "Hc2DO@20000AYRok",
   [
@@ -1790,14 +1790,14 @@ exports[`Syncs to/from localBus Multidirectional all conflicting values 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Multidirectional all conflicting values 2`] = `
+exports[`Syncs to/from localClient Multidirectional all conflicting values 2`] = `
 {
   "receives": 765,
   "sends": 245,
 }
 `;
 
-exports[`Syncs to/from localBus Multidirectional all conflicting values 3`] = `
+exports[`Syncs to/from localClient Multidirectional all conflicting values 3`] = `
 [
   "Hc2DO@400059DKYL",
   [
@@ -1822,14 +1822,14 @@ exports[`Syncs to/from localBus Multidirectional all conflicting values 3`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Multidirectional all conflicting values 4`] = `
+exports[`Syncs to/from localClient Multidirectional all conflicting values 4`] = `
 {
   "receives": 792,
   "sends": 264,
 }
 `;
 
-exports[`Syncs to/from localBus Multidirectional all different cells 1`] = `
+exports[`Syncs to/from localClient Multidirectional all different cells 1`] = `
 [
   "Hc2DO@20000AYRok",
   [
@@ -1911,14 +1911,14 @@ exports[`Syncs to/from localBus Multidirectional all different cells 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Multidirectional all different cells 2`] = `
+exports[`Syncs to/from localClient Multidirectional all different cells 2`] = `
 {
   "receives": 1530,
   "sends": 650,
 }
 `;
 
-exports[`Syncs to/from localBus Multidirectional all different rows 1`] = `
+exports[`Syncs to/from localClient Multidirectional all different rows 1`] = `
 [
   "Hc2DO@20000AYRok",
   [
@@ -2054,14 +2054,14 @@ exports[`Syncs to/from localBus Multidirectional all different rows 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Multidirectional all different rows 2`] = `
+exports[`Syncs to/from localClient Multidirectional all different rows 2`] = `
 {
   "receives": 1530,
   "sends": 650,
 }
 `;
 
-exports[`Syncs to/from localBus Multidirectional all different tables 1`] = `
+exports[`Syncs to/from localClient Multidirectional all different tables 1`] = `
 [
   "Hc2DO@20000AYRok",
   [
@@ -2251,14 +2251,14 @@ exports[`Syncs to/from localBus Multidirectional all different tables 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Multidirectional all different tables 2`] = `
+exports[`Syncs to/from localClient Multidirectional all different tables 2`] = `
 {
   "receives": 1530,
   "sends": 650,
 }
 `;
 
-exports[`Syncs to/from localBus Multidirectional all different values 1`] = `
+exports[`Syncs to/from localClient Multidirectional all different values 1`] = `
 [
   "Hc2DO@20000AYRok",
   [
@@ -2328,14 +2328,14 @@ exports[`Syncs to/from localBus Multidirectional all different values 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Multidirectional all different values 2`] = `
+exports[`Syncs to/from localClient Multidirectional all different values 2`] = `
 {
   "receives": 1170,
   "sends": 290,
 }
 `;
 
-exports[`Syncs to/from localBus Multidirectional half tables, half values 1`] = `
+exports[`Syncs to/from localClient Multidirectional half tables, half values 1`] = `
 [
   "Hc2DO@20000AYRok",
   [
@@ -2416,14 +2416,14 @@ exports[`Syncs to/from localBus Multidirectional half tables, half values 1`] = 
 ]
 `;
 
-exports[`Syncs to/from localBus Multidirectional half tables, half values 2`] = `
+exports[`Syncs to/from localClient Multidirectional half tables, half values 2`] = `
 {
   "receives": 680,
   "sends": 440,
 }
 `;
 
-exports[`Syncs to/from localBus Unidirectional autoLoad1 but not autoSave2, defaults 1`] = `
+exports[`Syncs to/from localClient Unidirectional autoLoad1 but not autoSave2, defaults 1`] = `
 [
   "Hc2DO@000008DKS9",
   [
@@ -2466,7 +2466,7 @@ exports[`Syncs to/from localBus Unidirectional autoLoad1 but not autoSave2, defa
 ]
 `;
 
-exports[`Syncs to/from localBus Unidirectional autoLoad1 but not autoSave2, defaults 2`] = `
+exports[`Syncs to/from localClient Unidirectional autoLoad1 but not autoSave2, defaults 2`] = `
 [
   "Hc2DO@000005DK@@",
   [
@@ -2547,14 +2547,14 @@ exports[`Syncs to/from localBus Unidirectional autoLoad1 but not autoSave2, defa
 ]
 `;
 
-exports[`Syncs to/from localBus Unidirectional autoLoad1 but not autoSave2, defaults 3`] = `
+exports[`Syncs to/from localClient Unidirectional autoLoad1 but not autoSave2, defaults 3`] = `
 {
   "receives": 1,
   "sends": 1,
 }
 `;
 
-exports[`Syncs to/from localBus Unidirectional autoSave1 but not autoLoad2 1`] = `
+exports[`Syncs to/from localClient Unidirectional autoSave1 but not autoLoad2 1`] = `
 [
   "Hc2DO@000008DKS9",
   [
@@ -2635,7 +2635,7 @@ exports[`Syncs to/from localBus Unidirectional autoSave1 but not autoLoad2 1`] =
 ]
 `;
 
-exports[`Syncs to/from localBus Unidirectional autoSave1 but not autoLoad2 2`] = `
+exports[`Syncs to/from localClient Unidirectional autoSave1 but not autoLoad2 2`] = `
 [
   "",
   [
@@ -2654,14 +2654,14 @@ exports[`Syncs to/from localBus Unidirectional autoSave1 but not autoLoad2 2`] =
 ]
 `;
 
-exports[`Syncs to/from localBus Unidirectional autoSave1 but not autoLoad2 3`] = `
+exports[`Syncs to/from localClient Unidirectional autoSave1 but not autoLoad2 3`] = `
 {
   "receives": 2,
   "sends": 2,
 }
 `;
 
-exports[`Syncs to/from localBus Unidirectional load1 but not autoSave2, defaults 1`] = `
+exports[`Syncs to/from localClient Unidirectional load1 but not autoSave2, defaults 1`] = `
 [
   "Hc2DO@000008DKS9",
   [
@@ -2704,7 +2704,7 @@ exports[`Syncs to/from localBus Unidirectional load1 but not autoSave2, defaults
 ]
 `;
 
-exports[`Syncs to/from localBus Unidirectional load1 but not autoSave2, defaults 2`] = `
+exports[`Syncs to/from localClient Unidirectional load1 but not autoSave2, defaults 2`] = `
 [
   "Hc2DO@000005DK@@",
   [
@@ -2785,14 +2785,14 @@ exports[`Syncs to/from localBus Unidirectional load1 but not autoSave2, defaults
 ]
 `;
 
-exports[`Syncs to/from localBus Unidirectional load1 but not autoSave2, defaults 3`] = `
+exports[`Syncs to/from localClient Unidirectional load1 but not autoSave2, defaults 3`] = `
 {
   "receives": 1,
   "sends": 1,
 }
 `;
 
-exports[`Syncs to/from localBus Unidirectional save1 but not autoLoad2 1`] = `
+exports[`Syncs to/from localClient Unidirectional save1 but not autoLoad2 1`] = `
 [
   "Hc2DO@000008DKS9",
   [
@@ -2873,7 +2873,7 @@ exports[`Syncs to/from localBus Unidirectional save1 but not autoLoad2 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Unidirectional save1 but not autoLoad2 2`] = `
+exports[`Syncs to/from localClient Unidirectional save1 but not autoLoad2 2`] = `
 [
   "",
   [
@@ -2892,7 +2892,7 @@ exports[`Syncs to/from localBus Unidirectional save1 but not autoLoad2 2`] = `
 ]
 `;
 
-exports[`Syncs to/from localBus Unidirectional save1 but not autoLoad2 3`] = `
+exports[`Syncs to/from localClient Unidirectional save1 but not autoLoad2 3`] = `
 {
   "receives": 1,
   "sends": 1,
