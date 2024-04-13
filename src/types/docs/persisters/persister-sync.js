@@ -33,6 +33,16 @@
  */
 /// Client
 /**
+ * The LocalClient interface
+ *
+ */
+/// LocalClient
+/**
+ * The WsClient interface
+ *
+ */
+/// WsClient
+/**
  * The WsServer interface
  */
 /// WsServer

@@ -35,6 +35,12 @@ export interface Client {
   getStats: () => ClientStats;
 }
 
+/// LocalClient
+export interface LocalClient extends Client {}
+
+/// WsClient
+export interface WsClient extends Client {}
+
 /// WsServer
 export interface WsServer {
   getWebSocketServer: () => WebSocketServer;
@@ -60,10 +66,10 @@ export function createSyncPersister(
 ): SyncPersister;
 
 /// createLocalClient
-export function createLocalClient(): Client;
+export function createLocalClient(): LocalClient;
 
 /// createWsClient
-export function createWsClient(webSocket: WebSocket): Promise<Client>;
+export function createWsClient(webSocket: WebSocket): Promise<WsClient>;
 
 /// createWsSimpleServer
 export function createWsSimpleServer(
