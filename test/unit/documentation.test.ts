@@ -21,6 +21,7 @@ import * as TinyBaseUiReact from 'tinybase/debug/ui-react';
 import * as TinyBaseUiReactDom from 'tinybase/debug/ui-react-dom';
 import * as Y from 'yjs';
 import * as sqlite3 from 'sqlite3';
+import * as ws from 'ws';
 import {join, resolve} from 'path';
 import {mockFetchWasm, pause, suppressWarnings} from './common/other';
 import {readFileSync, readdirSync} from 'fs';
@@ -30,6 +31,14 @@ import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import {transformSync} from 'esbuild';
 
 [
+  {AutomergeRepo},
+  {BroadcastChannelNetworkAdapter},
+  {initWasm},
+  {React, ReactDOMClient},
+  {sqlite3},
+  {sqlite3InitModule},
+  {ws},
+  {Y},
   ReactDOMTestUtils,
   TinyBase,
   TinyBasePersisterAutomerge,
@@ -47,13 +56,6 @@ import {transformSync} from 'esbuild';
   TinyBaseTools,
   TinyBaseUiReact,
   TinyBaseUiReactDom,
-  {React, ReactDOMClient},
-  {Y},
-  {AutomergeRepo},
-  {BroadcastChannelNetworkAdapter},
-  {sqlite3},
-  {sqlite3InitModule},
-  {initWasm},
 ].forEach((module) =>
   Object.entries(module).forEach(([key, value]) => {
     (globalThis as any)[key] = value;
