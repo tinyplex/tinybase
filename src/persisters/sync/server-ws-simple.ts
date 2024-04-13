@@ -4,10 +4,10 @@ import {WebSocket, WebSocketServer} from 'ws';
 import {collClear, collDel} from '../../common/coll';
 import {Id} from '../../types/common';
 import {MESSAGE_SEPARATOR} from './common';
-import {createWsServer as createWsServerDecl} from '../../types/persisters/persister-sync';
+import {createWsSimpleServer as createWsSimpleServerDecl} from '../../types/persisters/persister-sync';
 import {slice} from '../../common/other';
 
-export const createWsServer = ((webSocketServer: WebSocketServer) => {
+export const createWsSimpleServer = ((webSocketServer: WebSocketServer) => {
   const clients: IdMap<WebSocket> = mapNew();
   webSocketServer.on('connection', (webSocket, request) => {
     const clientId: Id = request.headers['sec-websocket-key']!;
@@ -46,4 +46,4 @@ export const createWsServer = ((webSocketServer: WebSocketServer) => {
     getWebSocketServer,
     destroy,
   };
-}) as typeof createWsServerDecl;
+}) as typeof createWsSimpleServerDecl;
