@@ -14,6 +14,9 @@
  *
  * It simply provides an extra getElectricClient method for accessing a
  * reference to the Electric client the Store is being persisted to.
+ *
+ * You should use the createElectricSqlPersister function to create an
+ * ElectricSqlPersister object.
  * @category Persister
  * @since v4.6.0
  */
