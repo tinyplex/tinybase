@@ -41,7 +41,7 @@ const wsClient: ClientConfig<WsServer> = {
     const webSocket = new WebSocket('ws://localhost:8042');
     return await createWsClient(webSocket);
   },
-  requestTimeoutSeconds: 0.01,
+  requestTimeoutSeconds: 0.015,
   pauseMilliseconds: 20,
 };
 
