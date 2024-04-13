@@ -23,15 +23,19 @@
  */
 /// Send
 /**
- * The Client type
- *
- */
-/// Client
-/**
  * The ClientStats type
  *
  */
 /// ClientStats
+/**
+ * The Client interface
+ *
+ */
+/// Client
+/**
+ * The WsServer interface
+ */
+/// WsServer
 /**
  * The SyncPersister interface is a minor extension to the Persister interface.
  *
