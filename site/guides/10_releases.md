@@ -106,8 +106,8 @@ server.destroy();
 ```
 
 Notice that the WsClient assumes that there exists a server that can forward
-requests to other WsClient systems. This can be created using the createWsServer
-function that takes a WebSocketServer as shown above.
+requests to other WsClient systems. This can be created using the
+createWsSimpleServer function that takes a WebSocketServer as shown above.
 
 ### Important note
 
