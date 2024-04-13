@@ -12,6 +12,9 @@
  *
  * It simply provides an extra getUrls method for accessing the URLs the Store
  * is being persisted to.
+ *
+ * You should use the createRemotePersister function to create a RemotePersister
+ * object.
  * @category Persister
  * @since v4.3.14
  */

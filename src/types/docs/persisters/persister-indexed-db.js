@@ -12,6 +12,9 @@
  *
  * It simply provides an extra getDbName method for accessing the unique key of
  * the IndexedDB the Store is being persisted to.
+ *
+ * You should use the createIndexedDbPersister function to create an
+ * IndexedDbPersister object.
  * @category Persister
  * @since v4.3.14
  */

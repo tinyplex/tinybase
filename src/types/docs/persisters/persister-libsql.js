@@ -14,6 +14,9 @@
  *
  * It simply provides an extra getClient method for accessing a reference to the
  * database client the Store is being persisted to.
+ *
+ * You should use the createLibSqlPersister function to create a LibSqlPersister
+ * object.
  * @since v4.7.0
  */
 /// LibSqlPersister

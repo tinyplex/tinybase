@@ -14,6 +14,9 @@
  *
  * It simply provides an extra getPowerSync method for accessing a reference to
  * the PowerSync instance the Store is being persisted to.
+ *
+ * You should use the createPowerSyncPersister function to create a
+ * PowerSyncPersister object.
  * @since v4.8.0
  */
 /// PowerSyncPersister
