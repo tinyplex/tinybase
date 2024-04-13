@@ -1,9 +1,9 @@
 import {EMPTY_STRING, UTF8} from '../../common/strings';
 import {IdMap, mapForEach, mapGet, mapNew, mapSet} from '../../common/map';
 import {WebSocket, WebSocketServer} from 'ws';
+import {collClear, collDel} from '../../common/coll';
 import {Id} from '../../types/common';
 import {MESSAGE_SEPARATOR} from './common';
-import {collDel} from '../../common/coll';
 import {createWsServer as createWsServerDecl} from '../../types/persisters/persister-sync';
 import {slice} from '../../common/other';
 
@@ -34,4 +34,16 @@ export const createWsServer = ((webSocketServer: WebSocketServer) => {
 
     webSocket.on('close', () => collDel(clients, clientId));
   });
+
+  const getWebSocketServer = () => webSocketServer;
+
+  const destroy = () => {
+    webSocketServer.close();
+    collClear(clients);
+  };
+
+  return {
+    getWebSocketServer,
+    destroy,
+  };
 }) as typeof createWsServerDecl;

@@ -28,12 +28,18 @@ export type Send = (
 export type ClientStats = {sends?: number; receives?: number};
 
 /// Client
-export type Client = {
+export interface Client {
   send: Send;
   onReceive: (receive: Receive) => void;
   destroy: () => void;
   getStats: () => ClientStats;
-};
+}
+
+/// WsServer
+export interface WsServer {
+  getWebSocketServer: () => WebSocketServer;
+  destroy: () => void;
+}
 
 /// SyncPersister
 export interface SyncPersister extends Persister<true> {
@@ -60,4 +66,4 @@ export function createLocalClient(): Client;
 export function createWsClient(webSocket: WebSocket): Promise<Client>;
 
 /// createWsServer
-export function createWsServer(WebSocketServer: WebSocketServer): void;
+export function createWsServer(WebSocketServer: WebSocketServer): WsServer;

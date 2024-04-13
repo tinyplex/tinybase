@@ -3,6 +3,7 @@
 import {
   Client,
   SyncPersister,
+  WsServer,
   createLocalClient,
   createSyncPersister,
   createWsClient,
@@ -31,14 +32,10 @@ const localClient: ClientConfig<undefined> = {
   pauseMilliseconds: 2,
 };
 
-const wsClient: ClientConfig<WebSocketServer> = {
-  createEnvironment: () => {
-    const webSocketServer = new WebSocketServer({port: 8042});
-    createWsServer(webSocketServer);
-    return webSocketServer;
-  },
-  destroyEnvironment: (webSocketServer: WebSocketServer) => {
-    webSocketServer.close();
+const wsClient: ClientConfig<WsServer> = {
+  createEnvironment: () => createWsServer(new WebSocketServer({port: 8042})),
+  destroyEnvironment: (wsServer: WsServer) => {
+    wsServer.destroy();
   },
   getClient: async () => {
     const webSocket = new WebSocket('ws://localhost:8042');
