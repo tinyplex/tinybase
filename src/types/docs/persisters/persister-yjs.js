@@ -16,6 +16,9 @@
  *
  * It simply provides an extra getYDoc method for accessing the Yjs document the
  * Store is being persisted to.
+ *
+ * You should use the createYjsPersister function to create a YjsPersister
+ * object.
  * @category Persister
  * @since v4.3.14
  */
