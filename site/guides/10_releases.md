@@ -75,7 +75,7 @@ different systems):
 
 ```js
 // On a server machine
-const server = createWsServer(new ws.WebSocketServer({port: 8043}));
+const server = createWsSimpleServer(new ws.WebSocketServer({port: 8043}));
 
 // On the first client machine:
 const store1 = createMergeableStore('store1');
