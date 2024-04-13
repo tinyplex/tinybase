@@ -22,18 +22,18 @@ that to (another) store. The merge method is a convenience function to merge two
 stores together:
 
 ```js
-const store1 = createMergeableStore('store1');
-const store2 = createMergeableStore('store2');
+const localStore1 = createMergeableStore('store1');
+const localStore2 = createMergeableStore('store2');
 
-store1.setCell('pets', 'fido', 'color', 'brown');
-store2.setCell('pets', 'felix', 'color', 'black');
+localStore1.setCell('pets', 'fido', 'color', 'brown');
+localStore2.setCell('pets', 'felix', 'color', 'black');
 
-store1.merge(store2);
+localStore1.merge(localStore2);
 
-console.log(store1.getContent());
+console.log(localStore1.getContent());
 // -> [{pets: {felix: {color: 'black'}, fido: {color: 'brown'}}}, {}]
 
-console.log(store2.getContent());
+console.log(localStore2.getContent());
 // -> [{pets: {felix: {color: 'black'}, fido: {color: 'brown'}}}, {}]
 ```
 
@@ -55,10 +55,61 @@ former represents the whole content of a MergeableStore (complete with
 timestamps and state hashes). The latter represents a set of changes (with just
 timestamps) that can be merged into another MergeableStore.
 
-There are also methods such as the getContentHash method and the getTablesHash
-method which can be used to identify a unique state of various parts of the
-content within a MergeableStore. These are to make it efficient to transmit or
-apply changes.
+### Persisting and syncing between systems
+
+A MergeableStore can be persisted locally, just like a regular Store, but only
+by certain Persister types: file, local storage, and sessionStorage. This allows
+you to persist the state of a MergeableStore locally before it has had the
+chance to be synchronized online, for example.
+
+The v5.0 release also introduces a very important new Persister called the
+SyncPersister (created with the createSyncPersister function). This implements a
+negotiation protocol that allows multiple MergeableStore objects to synchronize
+across a network, for example.
+
+When created, a SyncPersister is passed a Client object that handles the sending
+and receipt of the messages required by the protocol. This release includes two
+types of Client: the LocalClient (for syncing on a single local system), and
+more importantly the WsClient (that uses WebSockets to communicate between
+different systems):
+
+```js
+// On a server machine
+const server = createWsServer(new ws.WebSocketServer({port: 8043}));
+
+// On the first client machine:
+const store1 = createMergeableStore('store1');
+const client1 = await createWsClient(new ws.WebSocket('ws://localhost:8043'));
+const persister1 = createSyncPersister(store1, client1);
+await persister1.startSync();
+store1.setCell('pets', 'fido', 'legs', 4);
+
+// On the second client machine:
+const store2 = createMergeableStore('store2');
+const client2 = await createWsClient(new ws.WebSocket('ws://localhost:8043'));
+const persister2 = createSyncPersister(store2, client2);
+await persister2.startSync();
+store2.setCell('pets', 'felix', 'price', 5);
+
+// ...
+
+console.log(store1.getTables());
+// -> {pets: {felix: {price: 5}, fido: {legs: 4}}}
+console.log(store2.getTables());
+// -> {pets: {felix: {price: 5}, fido: {legs: 4}}}
+
+// \(⊙.⊙)/
+
+client1.destroy();
+client2.destroy();
+server.destroy();
+```
+
+Notice that the WsClient assumes that there exists a server that can forward
+requests to other WsClient systems. This can be created using the createWsServer
+function that takes a WebSocketServer as shown above.
+
+### Important note
 
 At this point, the APIs and the mergeable object structures may still change
 considerably before the full v5.0 release.
