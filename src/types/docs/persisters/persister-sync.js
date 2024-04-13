@@ -139,6 +139,6 @@
  */
 /// createWsClient
 /**
- * The createWsServer function
+ * The createWsSimpleServer function
  */
-/// createWsServer
+/// createWsSimpleServer
