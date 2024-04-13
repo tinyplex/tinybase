@@ -14,6 +14,9 @@
  *
  * It simply provides an extra getDb method for accessing a reference to the
  * database instance the Store is being persisted to.
+ *
+ * You should use the createCrSqliteWasmPersister function to create a
+ * CrSqliteWasmPersister object.
  * @category Persister
  * @since v4.3.14
  */

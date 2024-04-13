@@ -11,6 +11,9 @@
  *
  * It simply provides an extra getFilePath method for accessing the location of
  * the local file the Store is being persisted to.
+ *
+ * You should use the createFilePersister function to create a FilePersister
+ * object.
  * @category Persister
  * @since v4.3.14
  */
