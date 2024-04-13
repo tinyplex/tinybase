@@ -7,7 +7,7 @@ import {
   createLocalClient,
   createSyncPersister,
   createWsClient,
-  createWsServer,
+  createWsSimpleServer,
 } from 'tinybase/debug/persisters/persister-sync';
 import {Content, MergeableStore, createMergeableStore} from 'tinybase/debug';
 import {WebSocket, WebSocketServer} from 'ws';
@@ -33,7 +33,8 @@ const localClient: ClientConfig<undefined> = {
 };
 
 const wsClient: ClientConfig<WsServer> = {
-  createEnvironment: () => createWsServer(new WebSocketServer({port: 8042})),
+  createEnvironment: () =>
+    createWsSimpleServer(new WebSocketServer({port: 8042})),
   destroyEnvironment: (wsServer: WsServer) => {
     wsServer.destroy();
   },
