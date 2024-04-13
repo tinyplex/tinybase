@@ -37,6 +37,9 @@
  *
  * It simply provides an extra getClient method for accessing the reference the
  * Client that the MergeableStore is being persisted via.
+ *
+ * You should use the createSyncPersister function to create a SyncPersister
+ * object.
  * @category Persister
  * @since v5.0.0
  */

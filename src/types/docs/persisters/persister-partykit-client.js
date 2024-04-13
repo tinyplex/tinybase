@@ -25,6 +25,9 @@
  *
  * It simply provides an extra getConnection method for accessing the
  * PartySocket the Store is being persisted to.
+ *
+ * You should use the createPartyKitPersister function to create a
+ * PartyKitPersister object.
  * @category Persister
  * @since v4.3.14
  */
