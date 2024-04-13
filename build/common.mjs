@@ -7,9 +7,9 @@
     @typescript-eslint/explicit-module-boundary-types
 */
 
-import {existsSync, promises} from 'fs';
 // All other imports are lazy so that single tasks start up fast.
 import {basename, dirname} from 'path';
+import {existsSync, promises} from 'fs';
 
 const UTF8 = 'utf-8';
 const TEST_MODULES = [

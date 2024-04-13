@@ -17,6 +17,9 @@
  *
  * It simply provides an extra getDocHandle method for accessing the Automerge
  * document handler the Store is being persisted to.
+ *
+ * You should use the createAutomergePersister function to create an
+ * AutomergePersister object.
  * @category Persister
  * @since v4.3.14
  */
