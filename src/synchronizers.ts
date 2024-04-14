@@ -1,9 +1,9 @@
 import {
   Client,
   MessageType,
-  SyncPersister,
-  createSyncPersister as createSyncPersisterDecl,
-} from '../types/synchronizers/persister-sync';
+  Synchronizer,
+  createCustomSynchronizer as createCustomSynchronizerDecl,
+} from './types/synchronizers';
 import {
   ContentHashes,
   MergeableChanges,
@@ -12,19 +12,19 @@ import {
   TableIdsDiff,
   TablesStamp,
   ValuesStamp,
-} from '../types/mergeable-store';
-import {Id, IdOrNull} from '../types/common';
-import {IdMap, mapGet, mapNew, mapSet} from '../common/map';
-import {ifNotUndefined, isUndefined, promiseNew} from '../common/other';
-import {EMPTY_STRING} from '../common/strings';
-import {PersisterListener} from '../types/persisters';
-import {collDel} from '../common/coll';
-import {createCustomPersister} from '../persisters';
-import {getHlcFunctions} from '../mergeable-store/hlc';
+} from './types/mergeable-store';
+import {Id, IdOrNull} from './types/common';
+import {IdMap, mapGet, mapNew, mapSet} from './common/map';
+import {ifNotUndefined, isUndefined, promiseNew} from './common/other';
+import {EMPTY_STRING} from './common/strings';
+import {PersisterListener} from './types/persisters';
+import {collDel} from './common/coll';
+import {createCustomPersister} from './persisters';
+import {getHlcFunctions} from './mergeable-store/hlc';
 
-export {createLocalClient} from './sync/client-local';
-export {createWsClient} from './sync/client-ws';
-export {createWsSimpleServer} from './sync/server-ws-simple';
+export {createLocalClient} from './synchronizers/sync/client-local';
+export {createWsClient} from './synchronizers/sync/client-ws';
+export {createWsSimpleServer} from './synchronizers/sync/server-ws-simple';
 
 const RESPONSE = 0;
 const CONTENT_HASHES = 1;
@@ -34,12 +34,12 @@ const GET_ROW_IDS_DIFF = 4;
 const GET_TABLES_CHANGES = 5;
 const GET_VALUES_CHANGES = 6;
 
-export const createSyncPersister = ((
+export const createCustomSynchronizer = ((
   store: MergeableStore,
   client: Client,
   requestTimeoutSeconds = 1,
   onIgnoredError?: (error: any) => void,
-): SyncPersister => {
+): Synchronizer => {
   let persisterListener: PersisterListener | undefined;
 
   const {send, onReceive, destroy} = client;
@@ -204,6 +204,6 @@ export const createSyncPersister = ((
         return persister.stopSync();
       },
     },
-  ) as SyncPersister;
+  ) as Synchronizer;
   return persister;
-}) as typeof createSyncPersisterDecl;
+}) as typeof createCustomSynchronizerDecl;

@@ -1,5 +1,6 @@
 import {
   Changes,
+  Client,
   Content,
   Id,
   MergeableChanges,
@@ -10,13 +11,10 @@ import {
   Tables,
   Values,
   createCustomPersister,
+  createCustomSynchronizer,
+  createLocalClient,
   createMergeableStore,
 } from 'tinybase/debug';
-import {
-  Client,
-  createLocalClient,
-  createSyncPersister,
-} from 'tinybase/debug/synchronizers/persister-sync';
 import {DbSchema, ElectricClient} from 'electric-sql/client/model';
 import {DocHandle, Repo} from '@automerge/automerge-repo';
 import {GetLocationMethod, Persistable} from './common';
@@ -271,12 +269,12 @@ export const mockSync: Persistable<[Client, MergeableStore, Client]> = {
     const client1 = createLocalClient();
     const client2 = createLocalClient();
     const store2 = createMergeableStore('s2');
-    await createSyncPersister(store2, client2, 0.001).startSync();
+    await createCustomSynchronizer(store2, client2, 0.001).startSync();
     return [client1, store2, client2];
   },
   getLocationMethod: ['getClient', (location) => location[0]],
   getPersister: (store: Store, location) =>
-    createSyncPersister(store as MergeableStore, location[0], 0.001),
+    createCustomSynchronizer(store as MergeableStore, location[0], 0.001),
   get: async (
     location: [Client, MergeableStore, Client],
   ): Promise<Content | MergeableContent | void> => {
