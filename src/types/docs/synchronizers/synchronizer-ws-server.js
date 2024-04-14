@@ -13,5 +13,6 @@
 /// WsServer
 /**
  * The createWsServer function
+ * @category Creation
  */
 /// createWsServer
