@@ -2,14 +2,16 @@
 
 import {
   Client,
-  SyncPersister,
+  Content,
+  MergeableStore,
+  Synchronizer,
   WsServer,
+  createCustomSynchronizer,
   createLocalClient,
-  createSyncPersister,
+  createMergeableStore,
   createWsClient,
   createWsSimpleServer,
-} from 'tinybase/debug/synchronizers/persister-sync';
-import {Content, MergeableStore, createMergeableStore} from 'tinybase/debug';
+} from 'tinybase/debug';
 import {WebSocket, WebSocketServer} from 'ws';
 import {pause} from '../common/other';
 import {resetHlc} from '../common/mergeable';
@@ -57,8 +59,8 @@ describe.each([
     let client2: Client;
     let store1: MergeableStore;
     let store2: MergeableStore;
-    let persister1: SyncPersister;
-    let persister2: SyncPersister;
+    let persister1: Synchronizer;
+    let persister2: Synchronizer;
 
     const expectEachToHaveContent = async (
       content1: Content,
@@ -84,12 +86,12 @@ describe.each([
       client2 = await clientConfig.getClient();
       store1 = createMergeableStore('s1');
       store2 = createMergeableStore('s2');
-      persister1 = createSyncPersister(
+      persister1 = createCustomSynchronizer(
         store1,
         client1,
         clientConfig.requestTimeoutSeconds,
       );
-      persister2 = createSyncPersister(
+      persister2 = createCustomSynchronizer(
         store2,
         client2,
         clientConfig.requestTimeoutSeconds,
@@ -456,7 +458,7 @@ describe.each([
         stores.fill(null).map(async (_, s) => {
           stores[s] = createMergeableStore('s' + (s + 1));
           clients[s] = createLocalClient();
-          persisters[s] = createSyncPersister(
+          persisters[s] = createCustomSynchronizer(
             stores[s],
             clients[s],
             clientConfig.requestTimeoutSeconds,

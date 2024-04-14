@@ -1,7 +1,7 @@
 /**
  * The persister-sync module of the TinyBase project lets you synchronize
  * MergeableStore data to and from other MergeableStore instances.
- * @see Persisting Data guide
+ * @see Synchronizing Data guide
  * @packageDocumentation
  * @module persister-sync
  * @since v5.0.0
@@ -47,17 +47,17 @@
  */
 /// WsServer
 /**
- * The SyncPersister interface is a minor extension to the Persister interface.
+ * The Synchronizer interface is a minor extension to the Persister interface.
  *
- * It simply provides an extra getClient method for accessing the reference the
- * Client that the MergeableStore is being persisted via.
+ * It provides extra convenience methods for starting and stopping the
+ * synchronization.
  *
- * You should use the createSyncPersister function to create a SyncPersister
+ * You should use the createCustomSynchronizer function to create a Synchronizer
  * object.
  * @category Persister
  * @since v5.0.0
  */
-/// SyncPersister
+/// Synchronizer
 {
   /**
    * The getClient method returns the reference of the Client that the
@@ -74,7 +74,7 @@
    * const store1 = createMergeableStore('store1').setTables({
    *   pets: {fido: {species: 'dog'}},
    * });
-   * const persister = createSyncPersister(store1, client);
+   * const persister = createCustomSynchronizer(store1, client);
    *
    * console.log(persister.getClient() == client);
    * // -> true
@@ -84,44 +84,43 @@
    * @category Getter
    * @since v5.0.0
    */
-  /// SyncPersister.getClient
+  /// Synchronizer.getClient
   /**
    * The startSync method
    */
-  /// SyncPersister.startSync
+  /// Synchronizer.startSync
   /**
    * The stopSync method
    */
-  /// SyncPersister.stopSync
+  /// Synchronizer.stopSync
 }
 /**
- * The createSyncPersister function creates a Persister object that can persist
- * one MergeableStore to another.
+ * The createCustomSynchronizer function creates a Synchronizer object that can
+ * persist one MergeableStore to another.
  *
- * As well as providing a reference to the MergeableStore to persist, you must
- * provide a `client` parameter which identifies the Client that is used to
- * transmit changes to and from this MergeableStore and its peers. persist it
- * to.
- * @param store The MergeableStore to persist.
+ * As well as providing a reference to the MergeableStore to synchronize, you
+ * must provide a `client` parameter which identifies the Client that is used to
+ * transmit changes to and from this MergeableStore and its peers.
+ * @param store The MergeableStore to synchronize.
  * @param client The reference of the Client.
  * @param requestTimeoutSeconds An optional number of seconds before a request
  * to the Client times out, defaulting to 5.
  * @param onIgnoredError An optional handler for the errors that the Persister
  * would otherwise ignore when trying to save or load data. This is suitable for
  * debugging persistence issues in a development environment.
- * @returns A reference to the new SyncPersister object.
+ * @returns A reference to the new Synchronizer object.
  * @example
- * This example creates a SyncPersister object and persists one MergeableStore
- * to another.
+ * This example creates a Synchronizer object and synchronizes one
+ * MergeableStore to another.
  *
  * ```js
  * const store1 = createMergeableStore('store1').setTables({
  *   pets: {fido: {species: 'dog'}},
  * });
- * const persister1 = createSyncPersister(store1, createLocalClient());
+ * const persister1 = createCustomSynchronizer(store1, createLocalClient());
  *
  * const store2 = createMergeableStore('store2');
- * const persister2 = createSyncPersister(store2, createLocalClient());
+ * const persister2 = createCustomSynchronizer(store2, createLocalClient());
  * await persister2.startSync();
  *
  * await persister1.save();
@@ -139,7 +138,7 @@
  * ```
  * @category Creation
  */
-/// createSyncPersister
+/// createCustomSynchronizer
 /**
  * The createLocalClient function
  */
