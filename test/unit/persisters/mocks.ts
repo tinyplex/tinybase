@@ -16,7 +16,7 @@ import {
   Client,
   createLocalClient,
   createSyncPersister,
-} from 'tinybase/debug/persisters/persister-sync';
+} from 'tinybase/debug/synchronizers/persister-sync';
 import {DbSchema, ElectricClient} from 'electric-sql/client/model';
 import {DocHandle, Repo} from '@automerge/automerge-repo';
 import {GetLocationMethod, Persistable} from './common';
