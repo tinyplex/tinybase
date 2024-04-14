@@ -15,6 +15,9 @@ import * as TinyBasePersisterRemote from 'tinybase/debug/persisters/persister-re
 import * as TinyBasePersisterSqlite3 from 'tinybase/debug/persisters/persister-sqlite3';
 import * as TinyBasePersisterSqliteWasm from 'tinybase/debug/persisters/persister-sqlite-wasm';
 import * as TinyBasePersisterYjs from 'tinybase/debug/persisters/persister-yjs';
+import * as TinyBaseSynchronizerLocal from 'tinybase/debug/synchronizers/synchronizer-local';
+import * as TinyBaseSynchronizerWsClient from 'tinybase/debug/synchronizers/synchronizer-ws-client';
+import * as TinyBaseSynchronizerWsServer from 'tinybase/debug/synchronizers/synchronizer-ws-server';
 import * as TinyBaseTools from 'tinybase/debug/tools';
 import * as TinyBaseUiReact from 'tinybase/debug/ui-react';
 import * as TinyBaseUiReactDom from 'tinybase/debug/ui-react-dom';
@@ -51,6 +54,9 @@ import {transformSync} from 'esbuild';
   TinyBasePersisterSqlite3,
   TinyBasePersisterSqliteWasm,
   TinyBasePersisterYjs,
+  TinyBaseSynchronizerLocal,
+  TinyBaseSynchronizerWsClient,
+  TinyBaseSynchronizerWsServer,
   TinyBaseTools,
   TinyBaseUiReact,
   TinyBaseUiReactDom,
