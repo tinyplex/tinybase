@@ -10,9 +10,11 @@
 /// synchronizer-local
 /**
  * The LocalSynchronizer interface
+ * @category Synchronizer
  */
 /// LocalSynchronizer
 /**
  * The createLocalSynchronizer function
+ * @category Creation
  */
 /// createLocalSynchronizer
