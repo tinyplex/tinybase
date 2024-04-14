@@ -30,13 +30,6 @@ export type SynchronizerStats = {
   receives?: number;
 };
 
-export interface Client {
-  send: Send;
-  onReceive: (receive: Receive) => void;
-  destroy: () => void;
-  getStats: () => SynchronizerStats;
-}
-
 /// Synchronizer
 export interface Synchronizer<Schemas extends OptionalSchemas>
   extends Persister<Schemas, true> {
@@ -51,7 +44,9 @@ export interface Synchronizer<Schemas extends OptionalSchemas>
 /// createCustomSynchronizer
 export function createCustomSynchronizer<Schemas extends OptionalSchemas>(
   store: MergeableStore<Schemas>,
-  client: Client,
+  send: Send,
+  onReceive: (receive: Receive) => void,
+  destroy: () => void,
   requestTimeoutSeconds?: number,
   onIgnoredError?: (error: any) => void,
 ): Synchronizer<Schemas>;

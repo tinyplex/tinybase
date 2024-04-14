@@ -1,10 +1,4 @@
 import {
-  Client,
-  MessageType,
-  Synchronizer,
-  createCustomSynchronizer as createCustomSynchronizerDecl,
-} from './types/synchronizers';
-import {
   ContentHashes,
   MergeableChanges,
   MergeableStore,
@@ -13,9 +7,16 @@ import {
   TablesStamp,
   ValuesStamp,
 } from './types/mergeable-store';
+import {DEBUG, ifNotUndefined, isUndefined, promiseNew} from './common/other';
 import {Id, IdOrNull} from './types/common';
 import {IdMap, mapGet, mapNew, mapSet} from './common/map';
-import {ifNotUndefined, isUndefined, promiseNew} from './common/other';
+import {
+  MessageType,
+  Receive,
+  Send,
+  Synchronizer,
+  createCustomSynchronizer as createCustomSynchronizerDecl,
+} from './types/synchronizers';
 import {EMPTY_STRING} from './common/strings';
 import {PersisterListener} from './types/persisters';
 import {collDel} from './common/coll';
@@ -32,13 +33,16 @@ const GET_VALUES_CHANGES = 6;
 
 export const createCustomSynchronizer = ((
   store: MergeableStore,
-  client: Client,
+  send: Send,
+  onReceive: (receive: Receive) => void,
+  destroy: () => void,
   requestTimeoutSeconds = 1,
   onIgnoredError?: (error: any) => void,
 ): Synchronizer => {
   let persisterListener: PersisterListener | undefined;
+  let sends = 0;
+  let receives = 0;
 
-  const {send, onReceive, destroy} = client;
   const [getHlc] = getHlcFunctions(store.getId());
   const pendingRequests: IdMap<
     [
@@ -54,6 +58,10 @@ export const createCustomSynchronizer = ((
       messageType: MessageType,
       messageBody: any,
     ) => {
+      if (DEBUG) {
+        receives++;
+      }
+
       if (messageType == RESPONSE) {
         ifNotUndefined(
           mapGet(pendingRequests, requestId),
@@ -67,7 +75,7 @@ export const createCustomSynchronizer = ((
           (changes: any) => persisterListener?.(undefined, () => changes),
         );
       } else {
-        const response =
+        ifNotUndefined(
           messageType == GET_CONTENT_HASHES && persister.isAutoSaving()
             ? store.getMergeableContentHashes()
             : messageType == GET_TABLE_IDS_DIFF
@@ -78,8 +86,14 @@ export const createCustomSynchronizer = ((
                   ? store.getMergeableTablesChanges(messageBody)
                   : messageType == GET_VALUES_CHANGES
                     ? store.getMergeableValuesChanges(messageBody)
-                    : 0;
-        response === 0 ? 0 : send(fromClientId, requestId, RESPONSE, response);
+                    : undefined,
+          (response) => {
+            if (DEBUG) {
+              sends++;
+            }
+            send(fromClientId, requestId, RESPONSE, response);
+          },
+        );
       }
     },
   );
@@ -105,6 +119,9 @@ export const createCustomSynchronizer = ((
           resolve([response, fromClientId]);
         },
       ]);
+      if (DEBUG) {
+        sends++;
+      }
       send(toClientId, requestId, messageType, messageBody);
     });
 
@@ -174,6 +191,9 @@ export const createCustomSynchronizer = ((
   };
 
   const setPersisted = async (): Promise<void> => {
+    if (DEBUG) {
+      sends++;
+    }
     send(null, null, CONTENT_HASHES, store.getMergeableContentHashes());
   };
 
@@ -198,7 +218,7 @@ export const createCustomSynchronizer = ((
         destroy();
         return persister.stopSync();
       },
-      getSynchronizerStats: client.getStats,
+      getSynchronizerStats: () => (DEBUG ? {sends, receives} : {}),
     },
   ) as Synchronizer;
   return persister;
