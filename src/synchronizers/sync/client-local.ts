@@ -4,7 +4,7 @@ import {
   MessageType,
   Receive,
   createLocalClient as createLocalClientDecl,
-} from '../../types/persisters/persister-sync';
+} from '../../types/synchronizers/persister-sync';
 import {DEBUG, isUndefined} from '../../common/other';
 import {Id, IdOrNull} from '../../types/common';
 import {IdMap, mapForEach, mapGet, mapNew, mapSet} from '../../common/map';

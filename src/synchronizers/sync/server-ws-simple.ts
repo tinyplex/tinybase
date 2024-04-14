@@ -4,7 +4,7 @@ import {WebSocket, WebSocketServer} from 'ws';
 import {collClear, collDel} from '../../common/coll';
 import {Id} from '../../types/common';
 import {MESSAGE_SEPARATOR} from './common';
-import {createWsSimpleServer as createWsSimpleServerDecl} from '../../types/persisters/persister-sync';
+import {createWsSimpleServer as createWsSimpleServerDecl} from '../../types/synchronizers/persister-sync';
 import {slice} from '../../common/other';
 
 export const createWsSimpleServer = ((webSocketServer: WebSocketServer) => {
