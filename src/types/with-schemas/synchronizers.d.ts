@@ -1,8 +1,8 @@
 /// synchronizers
 
 import {Id, IdOrNull} from './common';
+import {OptionalSchemas, Tables, Values} from './store';
 import {MergeableStore} from './mergeable-store';
-import {OptionalSchemas} from './store';
 import {Persister} from './persisters';
 
 /// MessageType
@@ -34,7 +34,10 @@ export type SynchronizerStats = {
 export interface Synchronizer<Schemas extends OptionalSchemas>
   extends Persister<Schemas, true> {
   /// Synchronizer.startSync
-  startSync(): Promise<this>;
+  startSync(
+    initialTables?: Tables<Schemas[0], true>,
+    initialValues?: Values<Schemas[1], true>,
+  ): Promise<this>;
   /// Synchronizer.stopSync
   stopSync(): this;
   /// Synchronizer.getSynchronizerStats
