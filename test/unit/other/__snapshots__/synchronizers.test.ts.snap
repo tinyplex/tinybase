@@ -1,5 +1,3086 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Syncs to/from customSynchronizer Bidirectional Both empty 1`] = `
+[
+  "",
+  [
+    [
+      "",
+      {},
+      0,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  0,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional Both empty: stats 1`] = `
+[
+  {
+    "receives": 2,
+    "sends": 3,
+  },
+  {
+    "receives": 3,
+    "sends": 2,
+  },
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional Both match 1`] = `
+[
+  "Hc2DO@200008DKS9",
+  [
+    [
+      "Hc2DO@200008DKS9",
+      {
+        "t1": [
+          "Hc2DO@200008DKS9",
+          {
+            "r1": [
+              "Hc2DO@200008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@200008DKS9",
+                  1,
+                  2771101213,
+                ],
+                "c2": [
+                  "Hc2DO@200008DKS9",
+                  2,
+                  1735757618,
+                ],
+              },
+              3105465029,
+            ],
+            "r2": [
+              "Hc2DO@200008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@200008DKS9",
+                  2,
+                  1735757618,
+                ],
+              },
+              996380338,
+            ],
+          },
+          1179618779,
+        ],
+        "t2": [
+          "Hc2DO@200008DKS9",
+          {
+            "r2": [
+              "Hc2DO@200008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@200008DKS9",
+                  2,
+                  1735757618,
+                ],
+              },
+              996380338,
+            ],
+          },
+          3211305032,
+        ],
+      },
+      3644316511,
+    ],
+    [
+      "Hc2DO@200008DKS9",
+      {
+        "v1": [
+          "Hc2DO@200008DKS9",
+          1,
+          2771101213,
+        ],
+        "v2": [
+          "Hc2DO@200008DKS9",
+          2,
+          1735757618,
+        ],
+      },
+      1480624617,
+    ],
+  ],
+  2172080822,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional Both match: stats 1`] = `
+[
+  {
+    "receives": 11,
+    "sends": 12,
+  },
+  {
+    "receives": 12,
+    "sends": 11,
+  },
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional different cell 1`] = `
+[
+  "Hc2DO@400015DK@@",
+  [
+    [
+      "Hc2DO@400015DK@@",
+      {
+        "t1": [
+          "Hc2DO@400015DK@@",
+          {
+            "r1": [
+              "Hc2DO@400015DK@@",
+              {
+                "c1": [
+                  "Hc2DO@400015DK@@",
+                  2,
+                  1834230558,
+                ],
+              },
+              3680338027,
+            ],
+          },
+          2662597840,
+        ],
+      },
+      2040235603,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  2040235603,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional different cell: stats 1`] = `
+[
+  {
+    "receives": 9,
+    "sends": 10,
+  },
+  {
+    "receives": 10,
+    "sends": 9,
+  },
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional different row 1`] = `
+[
+  "Hc2DO@400015DK@@",
+  [
+    [
+      "Hc2DO@400015DK@@",
+      {
+        "t1": [
+          "Hc2DO@400015DK@@",
+          {
+            "r1": [
+              "Hc2DO@400015DK@@",
+              {
+                "c1": [
+                  "Hc2DO@200008DKS9",
+                  1,
+                  2771101213,
+                ],
+                "c2": [
+                  "Hc2DO@400015DK@@",
+                  2,
+                  1834230558,
+                ],
+              },
+              3518075942,
+            ],
+          },
+          4196389944,
+        ],
+      },
+      3846307195,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  3846307195,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional different row: stats 1`] = `
+[
+  {
+    "receives": 9,
+    "sends": 10,
+  },
+  {
+    "receives": 10,
+    "sends": 9,
+  },
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional different table 1`] = `
+[
+  "Hc2DO@400015DK@@",
+  [
+    [
+      "Hc2DO@400015DK@@",
+      {
+        "t1": [
+          "Hc2DO@400015DK@@",
+          {
+            "r1": [
+              "Hc2DO@200008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@200008DKS9",
+                  1,
+                  2771101213,
+                ],
+                "c2": [
+                  "Hc2DO@200008DKS9",
+                  2,
+                  1735757618,
+                ],
+              },
+              3105465029,
+            ],
+            "r2": [
+              "Hc2DO@400015DK@@",
+              {
+                "c2": [
+                  "Hc2DO@400015DK@@",
+                  2,
+                  1834230558,
+                ],
+              },
+              1405859921,
+            ],
+          },
+          2464586850,
+        ],
+      },
+      232363784,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  232363784,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional different table: stats 1`] = `
+[
+  {
+    "receives": 9,
+    "sends": 10,
+  },
+  {
+    "receives": 10,
+    "sends": 9,
+  },
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional different tables 1`] = `
+[
+  "Hc2DO@400015DK@@",
+  [
+    [
+      "Hc2DO@400015DK@@",
+      {
+        "t1": [
+          "Hc2DO@200008DKS9",
+          {
+            "r1": [
+              "Hc2DO@200008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@200008DKS9",
+                  1,
+                  2771101213,
+                ],
+                "c2": [
+                  "Hc2DO@200008DKS9",
+                  2,
+                  1735757618,
+                ],
+              },
+              3105465029,
+            ],
+            "r2": [
+              "Hc2DO@200008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@200008DKS9",
+                  2,
+                  1735757618,
+                ],
+              },
+              996380338,
+            ],
+          },
+          1179618779,
+        ],
+        "t2": [
+          "Hc2DO@400015DK@@",
+          {
+            "r2": [
+              "Hc2DO@400015DK@@",
+              {
+                "c2": [
+                  "Hc2DO@400015DK@@",
+                  2,
+                  1834230558,
+                ],
+              },
+              1405859921,
+            ],
+          },
+          1807856113,
+        ],
+      },
+      3632778525,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  3632778525,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional different tables: stats 1`] = `
+[
+  {
+    "receives": 9,
+    "sends": 10,
+  },
+  {
+    "receives": 10,
+    "sends": 9,
+  },
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional different value 1`] = `
+[
+  "Hc2DO@400015DK@@",
+  [
+    [
+      "",
+      {},
+      0,
+    ],
+    [
+      "Hc2DO@400015DK@@",
+      {
+        "v1": [
+          "Hc2DO@400015DK@@",
+          2,
+          1834230558,
+        ],
+      },
+      3198907265,
+    ],
+  ],
+  3198907265,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional different value: stats 1`] = `
+[
+  {
+    "receives": 5,
+    "sends": 6,
+  },
+  {
+    "receives": 6,
+    "sends": 5,
+  },
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional different values 1`] = `
+[
+  "Hc2DO@400015DK@@",
+  [
+    [
+      "",
+      {},
+      0,
+    ],
+    [
+      "Hc2DO@400015DK@@",
+      {
+        "v1": [
+          "Hc2DO@200008DKS9",
+          1,
+          2771101213,
+        ],
+        "v2": [
+          "Hc2DO@400015DK@@",
+          2,
+          1834230558,
+        ],
+      },
+      2168283134,
+    ],
+  ],
+  2168283134,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional different values: stats 1`] = `
+[
+  {
+    "receives": 5,
+    "sends": 6,
+  },
+  {
+    "receives": 6,
+    "sends": 5,
+  },
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional store1 empty 1`] = `
+[
+  "Hc2DO@200005DK@@",
+  [
+    [
+      "Hc2DO@200005DK@@",
+      {
+        "t1": [
+          "Hc2DO@200005DK@@",
+          {
+            "r1": [
+              "Hc2DO@200005DK@@",
+              {
+                "c1": [
+                  "Hc2DO@200005DK@@",
+                  1,
+                  3718299866,
+                ],
+                "c2": [
+                  "Hc2DO@200005DK@@",
+                  2,
+                  1097701853,
+                ],
+              },
+              1232861615,
+            ],
+            "r2": [
+              "Hc2DO@200005DK@@",
+              {
+                "c2": [
+                  "Hc2DO@200005DK@@",
+                  2,
+                  1097701853,
+                ],
+              },
+              3166900994,
+            ],
+          },
+          1678519644,
+        ],
+        "t2": [
+          "Hc2DO@200005DK@@",
+          {
+            "r2": [
+              "Hc2DO@200005DK@@",
+              {
+                "c2": [
+                  "Hc2DO@200005DK@@",
+                  2,
+                  1097701853,
+                ],
+              },
+              3166900994,
+            ],
+          },
+          4120628563,
+        ],
+      },
+      1706545122,
+    ],
+    [
+      "Hc2DO@200005DK@@",
+      {
+        "v1": [
+          "Hc2DO@200005DK@@",
+          1,
+          3718299866,
+        ],
+        "v2": [
+          "Hc2DO@200005DK@@",
+          2,
+          1097701853,
+        ],
+      },
+      2798260479,
+    ],
+  ],
+  3279806237,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional store1 empty: stats 1`] = `
+[
+  {
+    "receives": 7,
+    "sends": 7,
+  },
+  {
+    "receives": 7,
+    "sends": 7,
+  },
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional store1 missing cell 1`] = `
+[
+  "Hc2DO@400015DK@@",
+  [
+    [
+      "Hc2DO@400015DK@@",
+      {
+        "t1": [
+          "Hc2DO@400015DK@@",
+          {
+            "r1": [
+              "Hc2DO@400015DK@@",
+              {
+                "c1": [
+                  "Hc2DO@200008DKS9",
+                  1,
+                  2771101213,
+                ],
+                "c2": [
+                  "Hc2DO@400015DK@@",
+                  2,
+                  1834230558,
+                ],
+              },
+              3518075942,
+            ],
+          },
+          4196389944,
+        ],
+      },
+      3846307195,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  3846307195,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional store1 missing cell: stats 1`] = `
+[
+  {
+    "receives": 9,
+    "sends": 10,
+  },
+  {
+    "receives": 10,
+    "sends": 9,
+  },
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional store1 missing row 1`] = `
+[
+  "Hc2DO@400015DK@@",
+  [
+    [
+      "Hc2DO@400015DK@@",
+      {
+        "t1": [
+          "Hc2DO@400015DK@@",
+          {
+            "r1": [
+              "Hc2DO@200008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@200008DKS9",
+                  1,
+                  2771101213,
+                ],
+                "c2": [
+                  "Hc2DO@200008DKS9",
+                  2,
+                  1735757618,
+                ],
+              },
+              3105465029,
+            ],
+            "r2": [
+              "Hc2DO@400015DK@@",
+              {
+                "c2": [
+                  "Hc2DO@400015DK@@",
+                  2,
+                  1834230558,
+                ],
+              },
+              1405859921,
+            ],
+          },
+          2464586850,
+        ],
+      },
+      232363784,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  232363784,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional store1 missing row: stats 1`] = `
+[
+  {
+    "receives": 9,
+    "sends": 10,
+  },
+  {
+    "receives": 10,
+    "sends": 9,
+  },
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional store1 missing table 1`] = `
+[
+  "Hc2DO@400015DK@@",
+  [
+    [
+      "Hc2DO@400015DK@@",
+      {
+        "t1": [
+          "Hc2DO@200008DKS9",
+          {
+            "r1": [
+              "Hc2DO@200008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@200008DKS9",
+                  1,
+                  2771101213,
+                ],
+                "c2": [
+                  "Hc2DO@200008DKS9",
+                  2,
+                  1735757618,
+                ],
+              },
+              3105465029,
+            ],
+            "r2": [
+              "Hc2DO@200008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@200008DKS9",
+                  2,
+                  1735757618,
+                ],
+              },
+              996380338,
+            ],
+          },
+          1179618779,
+        ],
+        "t2": [
+          "Hc2DO@400015DK@@",
+          {
+            "r2": [
+              "Hc2DO@400015DK@@",
+              {
+                "c2": [
+                  "Hc2DO@400015DK@@",
+                  2,
+                  1834230558,
+                ],
+              },
+              1405859921,
+            ],
+          },
+          1807856113,
+        ],
+      },
+      3632778525,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  3632778525,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional store1 missing table: stats 1`] = `
+[
+  {
+    "receives": 9,
+    "sends": 10,
+  },
+  {
+    "receives": 10,
+    "sends": 9,
+  },
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional store1 missing tables 1`] = `
+[
+  "Hc2DO@400015DK@@",
+  [
+    [
+      "Hc2DO@400015DK@@",
+      {
+        "t1": [
+          "Hc2DO@400015DK@@",
+          {
+            "r1": [
+              "Hc2DO@400015DK@@",
+              {
+                "c1": [
+                  "Hc2DO@400015DK@@",
+                  1,
+                  2439471441,
+                ],
+                "c2": [
+                  "Hc2DO@400015DK@@",
+                  2,
+                  1834230558,
+                ],
+              },
+              569699930,
+            ],
+            "r2": [
+              "Hc2DO@400015DK@@",
+              {
+                "c2": [
+                  "Hc2DO@400015DK@@",
+                  2,
+                  1834230558,
+                ],
+              },
+              1405859921,
+            ],
+          },
+          1886415985,
+        ],
+        "t2": [
+          "Hc2DO@400015DK@@",
+          {
+            "r2": [
+              "Hc2DO@400015DK@@",
+              {
+                "c2": [
+                  "Hc2DO@400015DK@@",
+                  2,
+                  1834230558,
+                ],
+              },
+              1405859921,
+            ],
+          },
+          1807856113,
+        ],
+      },
+      3378572590,
+    ],
+    [
+      "Hc2DO@200008DKS9",
+      {
+        "v1": [
+          "Hc2DO@200008DKS9",
+          1,
+          2771101213,
+        ],
+        "v2": [
+          "Hc2DO@200008DKS9",
+          2,
+          1735757618,
+        ],
+      },
+      1480624617,
+    ],
+  ],
+  2434819271,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional store1 missing tables: stats 1`] = `
+[
+  {
+    "receives": 7,
+    "sends": 8,
+  },
+  {
+    "receives": 8,
+    "sends": 7,
+  },
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional store1 missing value 1`] = `
+[
+  "Hc2DO@400015DK@@",
+  [
+    [
+      "",
+      {},
+      0,
+    ],
+    [
+      "Hc2DO@400015DK@@",
+      {
+        "v1": [
+          "Hc2DO@400015DK@@",
+          1,
+          2439471441,
+        ],
+        "v2": [
+          "Hc2DO@200008DKS9",
+          2,
+          1735757618,
+        ],
+      },
+      3558906081,
+    ],
+  ],
+  3558906081,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional store1 missing value: stats 1`] = `
+[
+  {
+    "receives": 5,
+    "sends": 6,
+  },
+  {
+    "receives": 6,
+    "sends": 5,
+  },
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional store1 missing values 1`] = `
+[
+  "Hc2DO@400015DK@@",
+  [
+    [
+      "Hc2DO@200008DKS9",
+      {
+        "t1": [
+          "Hc2DO@200008DKS9",
+          {
+            "r1": [
+              "Hc2DO@200008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@200008DKS9",
+                  1,
+                  2771101213,
+                ],
+                "c2": [
+                  "Hc2DO@200008DKS9",
+                  2,
+                  1735757618,
+                ],
+              },
+              3105465029,
+            ],
+            "r2": [
+              "Hc2DO@200008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@200008DKS9",
+                  2,
+                  1735757618,
+                ],
+              },
+              996380338,
+            ],
+          },
+          1179618779,
+        ],
+        "t2": [
+          "Hc2DO@200008DKS9",
+          {
+            "r2": [
+              "Hc2DO@200008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@200008DKS9",
+                  2,
+                  1735757618,
+                ],
+              },
+              996380338,
+            ],
+          },
+          3211305032,
+        ],
+      },
+      3644316511,
+    ],
+    [
+      "Hc2DO@400015DK@@",
+      {
+        "v1": [
+          "Hc2DO@400015DK@@",
+          1,
+          2439471441,
+        ],
+        "v2": [
+          "Hc2DO@400015DK@@",
+          2,
+          1834230558,
+        ],
+      },
+      1045993258,
+    ],
+  ],
+  3882830965,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional store1 missing values: stats 1`] = `
+[
+  {
+    "receives": 7,
+    "sends": 8,
+  },
+  {
+    "receives": 8,
+    "sends": 7,
+  },
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional store2 empty 1`] = `
+[
+  "Hc2DO@200008DKS9",
+  [
+    [
+      "Hc2DO@200008DKS9",
+      {
+        "t1": [
+          "Hc2DO@200008DKS9",
+          {
+            "r1": [
+              "Hc2DO@200008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@200008DKS9",
+                  1,
+                  2771101213,
+                ],
+                "c2": [
+                  "Hc2DO@200008DKS9",
+                  2,
+                  1735757618,
+                ],
+              },
+              3105465029,
+            ],
+            "r2": [
+              "Hc2DO@200008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@200008DKS9",
+                  2,
+                  1735757618,
+                ],
+              },
+              996380338,
+            ],
+          },
+          1179618779,
+        ],
+        "t2": [
+          "Hc2DO@200008DKS9",
+          {
+            "r2": [
+              "Hc2DO@200008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@200008DKS9",
+                  2,
+                  1735757618,
+                ],
+              },
+              996380338,
+            ],
+          },
+          3211305032,
+        ],
+      },
+      3644316511,
+    ],
+    [
+      "Hc2DO@200008DKS9",
+      {
+        "v1": [
+          "Hc2DO@200008DKS9",
+          1,
+          2771101213,
+        ],
+        "v2": [
+          "Hc2DO@200008DKS9",
+          2,
+          1735757618,
+        ],
+      },
+      1480624617,
+    ],
+  ],
+  2172080822,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional store2 empty: stats 1`] = `
+[
+  {
+    "receives": 6,
+    "sends": 8,
+  },
+  {
+    "receives": 8,
+    "sends": 6,
+  },
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional store2 missing cell 1`] = `
+[
+  "Hc2DO@400018DKS9",
+  [
+    [
+      "Hc2DO@400018DKS9",
+      {
+        "t1": [
+          "Hc2DO@400018DKS9",
+          {
+            "r1": [
+              "Hc2DO@400018DKS9",
+              {
+                "c1": [
+                  "Hc2DO@200005DK@@",
+                  1,
+                  3718299866,
+                ],
+                "c2": [
+                  "Hc2DO@400018DKS9",
+                  2,
+                  3121270889,
+                ],
+              },
+              2438945377,
+            ],
+          },
+          633466809,
+        ],
+      },
+      64304582,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  64304582,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional store2 missing cell: stats 1`] = `
+[
+  {
+    "receives": 9,
+    "sends": 10,
+  },
+  {
+    "receives": 10,
+    "sends": 9,
+  },
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional store2 missing row 1`] = `
+[
+  "Hc2DO@400018DKS9",
+  [
+    [
+      "Hc2DO@400018DKS9",
+      {
+        "t1": [
+          "Hc2DO@400018DKS9",
+          {
+            "r1": [
+              "Hc2DO@200005DK@@",
+              {
+                "c1": [
+                  "Hc2DO@200005DK@@",
+                  1,
+                  3718299866,
+                ],
+                "c2": [
+                  "Hc2DO@200005DK@@",
+                  2,
+                  1097701853,
+                ],
+              },
+              1232861615,
+            ],
+            "r2": [
+              "Hc2DO@400018DKS9",
+              {
+                "c2": [
+                  "Hc2DO@400018DKS9",
+                  2,
+                  3121270889,
+                ],
+              },
+              1692905676,
+            ],
+          },
+          443582196,
+        ],
+      },
+      4027746679,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  4027746679,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional store2 missing row: stats 1`] = `
+[
+  {
+    "receives": 9,
+    "sends": 10,
+  },
+  {
+    "receives": 10,
+    "sends": 9,
+  },
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional store2 missing table 1`] = `
+[
+  "Hc2DO@400018DKS9",
+  [
+    [
+      "Hc2DO@400018DKS9",
+      {
+        "t1": [
+          "Hc2DO@200005DK@@",
+          {
+            "r1": [
+              "Hc2DO@200005DK@@",
+              {
+                "c1": [
+                  "Hc2DO@200005DK@@",
+                  1,
+                  3718299866,
+                ],
+                "c2": [
+                  "Hc2DO@200005DK@@",
+                  2,
+                  1097701853,
+                ],
+              },
+              1232861615,
+            ],
+            "r2": [
+              "Hc2DO@200005DK@@",
+              {
+                "c2": [
+                  "Hc2DO@200005DK@@",
+                  2,
+                  1097701853,
+                ],
+              },
+              3166900994,
+            ],
+          },
+          1678519644,
+        ],
+        "t2": [
+          "Hc2DO@400018DKS9",
+          {
+            "r2": [
+              "Hc2DO@400018DKS9",
+              {
+                "c2": [
+                  "Hc2DO@400018DKS9",
+                  2,
+                  3121270889,
+                ],
+              },
+              1692905676,
+            ],
+          },
+          2347198203,
+        ],
+      },
+      1536860168,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  1536860168,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional store2 missing table: stats 1`] = `
+[
+  {
+    "receives": 9,
+    "sends": 10,
+  },
+  {
+    "receives": 10,
+    "sends": 9,
+  },
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional store2 missing tables 1`] = `
+[
+  "Hc2DO@400018DKS9",
+  [
+    [
+      "Hc2DO@400018DKS9",
+      {
+        "t1": [
+          "Hc2DO@400018DKS9",
+          {
+            "r1": [
+              "Hc2DO@400018DKS9",
+              {
+                "c1": [
+                  "Hc2DO@400018DKS9",
+                  1,
+                  3158873486,
+                ],
+                "c2": [
+                  "Hc2DO@400018DKS9",
+                  2,
+                  3121270889,
+                ],
+              },
+              248400647,
+            ],
+            "r2": [
+              "Hc2DO@400018DKS9",
+              {
+                "c2": [
+                  "Hc2DO@400018DKS9",
+                  2,
+                  3121270889,
+                ],
+              },
+              1692905676,
+            ],
+          },
+          2553492524,
+        ],
+        "t2": [
+          "Hc2DO@400018DKS9",
+          {
+            "r2": [
+              "Hc2DO@400018DKS9",
+              {
+                "c2": [
+                  "Hc2DO@400018DKS9",
+                  2,
+                  3121270889,
+                ],
+              },
+              1692905676,
+            ],
+          },
+          2347198203,
+        ],
+      },
+      3067725528,
+    ],
+    [
+      "Hc2DO@200005DK@@",
+      {
+        "v1": [
+          "Hc2DO@200005DK@@",
+          1,
+          3718299866,
+        ],
+        "v2": [
+          "Hc2DO@200005DK@@",
+          2,
+          1097701853,
+        ],
+      },
+      2798260479,
+    ],
+  ],
+  269735463,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional store2 missing tables: stats 1`] = `
+[
+  {
+    "receives": 7,
+    "sends": 8,
+  },
+  {
+    "receives": 8,
+    "sends": 7,
+  },
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional store2 missing value 1`] = `
+[
+  "Hc2DO@400018DKS9",
+  [
+    [
+      "",
+      {},
+      0,
+    ],
+    [
+      "Hc2DO@400018DKS9",
+      {
+        "v1": [
+          "Hc2DO@400018DKS9",
+          1,
+          3158873486,
+        ],
+        "v2": [
+          "Hc2DO@200005DK@@",
+          2,
+          1097701853,
+        ],
+      },
+      318127781,
+    ],
+  ],
+  318127781,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional store2 missing value: stats 1`] = `
+[
+  {
+    "receives": 5,
+    "sends": 6,
+  },
+  {
+    "receives": 6,
+    "sends": 5,
+  },
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional store2 missing values 1`] = `
+[
+  "Hc2DO@400018DKS9",
+  [
+    [
+      "Hc2DO@200005DK@@",
+      {
+        "t1": [
+          "Hc2DO@200005DK@@",
+          {
+            "r1": [
+              "Hc2DO@200005DK@@",
+              {
+                "c1": [
+                  "Hc2DO@200005DK@@",
+                  1,
+                  3718299866,
+                ],
+                "c2": [
+                  "Hc2DO@200005DK@@",
+                  2,
+                  1097701853,
+                ],
+              },
+              1232861615,
+            ],
+            "r2": [
+              "Hc2DO@200005DK@@",
+              {
+                "c2": [
+                  "Hc2DO@200005DK@@",
+                  2,
+                  1097701853,
+                ],
+              },
+              3166900994,
+            ],
+          },
+          1678519644,
+        ],
+        "t2": [
+          "Hc2DO@200005DK@@",
+          {
+            "r2": [
+              "Hc2DO@200005DK@@",
+              {
+                "c2": [
+                  "Hc2DO@200005DK@@",
+                  2,
+                  1097701853,
+                ],
+              },
+              3166900994,
+            ],
+          },
+          4120628563,
+        ],
+      },
+      1706545122,
+    ],
+    [
+      "Hc2DO@400018DKS9",
+      {
+        "v1": [
+          "Hc2DO@400018DKS9",
+          1,
+          3158873486,
+        ],
+        "v2": [
+          "Hc2DO@400018DKS9",
+          2,
+          3121270889,
+        ],
+      },
+      3220709211,
+    ],
+  ],
+  3662663865,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional store2 missing values: stats 1`] = `
+[
+  {
+    "receives": 7,
+    "sends": 8,
+  },
+  {
+    "receives": 8,
+    "sends": 7,
+  },
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Multidirectional All but first empty 1`] = `
+[
+  "Hc2DO@200008DKS9",
+  [
+    [
+      "Hc2DO@200008DKS9",
+      {
+        "t1": [
+          "Hc2DO@200008DKS9",
+          {
+            "r1": [
+              "Hc2DO@200008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@200008DKS9",
+                  1,
+                  2771101213,
+                ],
+                "c2": [
+                  "Hc2DO@200008DKS9",
+                  2,
+                  1735757618,
+                ],
+              },
+              3105465029,
+            ],
+            "r2": [
+              "Hc2DO@200008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@200008DKS9",
+                  2,
+                  1735757618,
+                ],
+              },
+              996380338,
+            ],
+          },
+          1179618779,
+        ],
+        "t2": [
+          "Hc2DO@200008DKS9",
+          {
+            "r2": [
+              "Hc2DO@200008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@200008DKS9",
+                  2,
+                  1735757618,
+                ],
+              },
+              996380338,
+            ],
+          },
+          3211305032,
+        ],
+      },
+      3644316511,
+    ],
+    [
+      "Hc2DO@200008DKS9",
+      {
+        "v1": [
+          "Hc2DO@200008DKS9",
+          1,
+          2771101213,
+        ],
+        "v2": [
+          "Hc2DO@200008DKS9",
+          2,
+          1735757618,
+        ],
+      },
+      1480624617,
+    ],
+  ],
+  2172080822,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Multidirectional All but first empty: stats 1`] = `
+{
+  "receives": 261,
+  "sends": 93,
+}
+`;
+
+exports[`Syncs to/from customSynchronizer Multidirectional All but last empty 1`] = `
+[
+  "Hc2DO@20000AYRok",
+  [
+    [
+      "Hc2DO@20000AYRok",
+      {
+        "t1": [
+          "Hc2DO@20000AYRok",
+          {
+            "r1": [
+              "Hc2DO@20000AYRok",
+              {
+                "c1": [
+                  "Hc2DO@20000AYRok",
+                  1,
+                  3062106594,
+                ],
+                "c2": [
+                  "Hc2DO@20000AYRok",
+                  2,
+                  2433866825,
+                ],
+              },
+              4014982900,
+            ],
+            "r2": [
+              "Hc2DO@20000AYRok",
+              {
+                "c2": [
+                  "Hc2DO@20000AYRok",
+                  2,
+                  2433866825,
+                ],
+              },
+              3453142772,
+            ],
+          },
+          3433644199,
+        ],
+        "t2": [
+          "Hc2DO@20000AYRok",
+          {
+            "r2": [
+              "Hc2DO@20000AYRok",
+              {
+                "c2": [
+                  "Hc2DO@20000AYRok",
+                  2,
+                  2433866825,
+                ],
+              },
+              3453142772,
+            ],
+          },
+          3838679204,
+        ],
+      },
+      2646972572,
+    ],
+    [
+      "Hc2DO@20000AYRok",
+      {
+        "v1": [
+          "Hc2DO@20000AYRok",
+          1,
+          3062106594,
+        ],
+        "v2": [
+          "Hc2DO@20000AYRok",
+          2,
+          2433866825,
+        ],
+      },
+      2887948640,
+    ],
+  ],
+  837222908,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Multidirectional All but last empty: stats 1`] = `
+{
+  "receives": 261,
+  "sends": 93,
+}
+`;
+
+exports[`Syncs to/from customSynchronizer Multidirectional All empty 1`] = `
+[
+  "",
+  [
+    [
+      "",
+      {},
+      0,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  0,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Multidirectional All empty: stats 1`] = `
+{
+  "receives": 180,
+  "sends": 20,
+}
+`;
+
+exports[`Syncs to/from customSynchronizer Multidirectional All match 1`] = `
+[
+  "Hc2DO@20000AYRok",
+  [
+    [
+      "Hc2DO@20000AYRok",
+      {
+        "t1": [
+          "Hc2DO@20000AYRok",
+          {
+            "r1": [
+              "Hc2DO@20000AYRok",
+              {
+                "c1": [
+                  "Hc2DO@20000AYRok",
+                  1,
+                  3062106594,
+                ],
+                "c2": [
+                  "Hc2DO@20000AYRok",
+                  2,
+                  2433866825,
+                ],
+              },
+              4014982900,
+            ],
+            "r2": [
+              "Hc2DO@20000AYRok",
+              {
+                "c2": [
+                  "Hc2DO@20000AYRok",
+                  2,
+                  2433866825,
+                ],
+              },
+              3453142772,
+            ],
+          },
+          3433644199,
+        ],
+        "t2": [
+          "Hc2DO@20000AYRok",
+          {
+            "r2": [
+              "Hc2DO@20000AYRok",
+              {
+                "c2": [
+                  "Hc2DO@20000AYRok",
+                  2,
+                  2433866825,
+                ],
+              },
+              3453142772,
+            ],
+          },
+          3838679204,
+        ],
+      },
+      2646972572,
+    ],
+    [
+      "Hc2DO@20000AYRok",
+      {
+        "v1": [
+          "Hc2DO@20000AYRok",
+          1,
+          3062106594,
+        ],
+        "v2": [
+          "Hc2DO@20000AYRok",
+          2,
+          2433866825,
+        ],
+      },
+      2887948640,
+    ],
+  ],
+  837222908,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Multidirectional All match: stats 1`] = `
+{
+  "receives": 990,
+  "sends": 750,
+}
+`;
+
+exports[`Syncs to/from customSynchronizer Multidirectional all conflicting cells 1`] = `
+[
+  "",
+  [
+    [
+      "",
+      {},
+      0,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  0,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Multidirectional all conflicting cells 2`] = `
+[
+  "Hc2DO@20000AYRok",
+  [
+    [
+      "Hc2DO@20000AYRok",
+      {
+        "t1": [
+          "Hc2DO@20000AYRok",
+          {
+            "r1": [
+              "Hc2DO@20000AYRok",
+              {
+                "c1": [
+                  "Hc2DO@20000AYRok",
+                  10,
+                  3646015130,
+                ],
+              },
+              1159840070,
+            ],
+          },
+          3027642024,
+        ],
+      },
+      432322983,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  432322983,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Multidirectional all conflicting cells 3`] = `
+[
+  "Hc2DO@40004;DKf2",
+  [
+    [
+      "Hc2DO@40004;DKf2",
+      {
+        "t1": [
+          "Hc2DO@40004;DKf2",
+          {
+            "r1": [
+              "Hc2DO@40004;DKf2",
+              {
+                "c1": [
+                  "Hc2DO@40004;DKf2",
+                  42,
+                  1173554935,
+                ],
+              },
+              925648642,
+            ],
+          },
+          4239536531,
+        ],
+      },
+      967022414,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  967022414,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Multidirectional all conflicting cells: stats 1`] = `
+{
+  "receives": 180,
+  "sends": 20,
+}
+`;
+
+exports[`Syncs to/from customSynchronizer Multidirectional all conflicting cells: stats 2`] = `
+{
+  "receives": 1125,
+  "sends": 605,
+}
+`;
+
+exports[`Syncs to/from customSynchronizer Multidirectional all conflicting cells: stats 3`] = `
+{
+  "receives": 1188,
+  "sends": 660,
+}
+`;
+
+exports[`Syncs to/from customSynchronizer Multidirectional all conflicting values 1`] = `
+[
+  "Hc2DO@20000AYRok",
+  [
+    [
+      "",
+      {},
+      0,
+    ],
+    [
+      "Hc2DO@20000AYRok",
+      {
+        "v1": [
+          "Hc2DO@20000AYRok",
+          10,
+          3646015130,
+        ],
+      },
+      1789688672,
+    ],
+  ],
+  1789688672,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Multidirectional all conflicting values 2`] = `
+[
+  "Hc2DO@400059DKYL",
+  [
+    [
+      "",
+      {},
+      0,
+    ],
+    [
+      "Hc2DO@400059DKYL",
+      {
+        "v1": [
+          "Hc2DO@400059DKYL",
+          42,
+          1137977625,
+        ],
+      },
+      3887274327,
+    ],
+  ],
+  3887274327,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Multidirectional all conflicting values: stats 1`] = `
+{
+  "receives": 765,
+  "sends": 245,
+}
+`;
+
+exports[`Syncs to/from customSynchronizer Multidirectional all conflicting values: stats 2`] = `
+{
+  "receives": 792,
+  "sends": 264,
+}
+`;
+
+exports[`Syncs to/from customSynchronizer Multidirectional all different cells 1`] = `
+[
+  "Hc2DO@20000AYRok",
+  [
+    [
+      "Hc2DO@20000AYRok",
+      {
+        "t1": [
+          "Hc2DO@20000AYRok",
+          {
+            "r1": [
+              "Hc2DO@20000AYRok",
+              {
+                "c1": [
+                  "Hc2DO@200008DKS9",
+                  1,
+                  2771101213,
+                ],
+                "c10": [
+                  "Hc2DO@20000AYRok",
+                  1,
+                  3062106594,
+                ],
+                "c2": [
+                  "Hc2DO@200005DK@@",
+                  1,
+                  3718299866,
+                ],
+                "c3": [
+                  "Hc2DO@200006DKFS",
+                  1,
+                  3152886816,
+                ],
+                "c4": [
+                  "Hc2DO@20000;DKf2",
+                  1,
+                  39503232,
+                ],
+                "c5": [
+                  "Hc2DO@20000<DKlE",
+                  1,
+                  3510217074,
+                ],
+                "c6": [
+                  "Hc2DO@200009DKYL",
+                  1,
+                  1247766531,
+                ],
+                "c7": [
+                  "Hc2DO@20000:DK__",
+                  1,
+                  1474990993,
+                ],
+                "c8": [
+                  "Hc2DO@20000?DL?>",
+                  1,
+                  4123752468,
+                ],
+                "c9": [
+                  "Hc2DO@20000@DLEQ",
+                  1,
+                  2623666366,
+                ],
+              },
+              948171351,
+            ],
+          },
+          2238958318,
+        ],
+      },
+      1701419960,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  1701419960,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Multidirectional all different cells: stats 1`] = `
+{
+  "receives": 1530,
+  "sends": 650,
+}
+`;
+
+exports[`Syncs to/from customSynchronizer Multidirectional all different rows 1`] = `
+[
+  "Hc2DO@20000AYRok",
+  [
+    [
+      "Hc2DO@20000AYRok",
+      {
+        "t1": [
+          "Hc2DO@20000AYRok",
+          {
+            "r1": [
+              "Hc2DO@200008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@200008DKS9",
+                  1,
+                  2771101213,
+                ],
+              },
+              2850600541,
+            ],
+            "r10": [
+              "Hc2DO@20000AYRok",
+              {
+                "c1": [
+                  "Hc2DO@20000AYRok",
+                  1,
+                  3062106594,
+                ],
+              },
+              1253116257,
+            ],
+            "r2": [
+              "Hc2DO@200005DK@@",
+              {
+                "c1": [
+                  "Hc2DO@200005DK@@",
+                  1,
+                  3718299866,
+                ],
+              },
+              622829880,
+            ],
+            "r3": [
+              "Hc2DO@200006DKFS",
+              {
+                "c1": [
+                  "Hc2DO@200006DKFS",
+                  1,
+                  3152886816,
+                ],
+              },
+              3053877267,
+            ],
+            "r4": [
+              "Hc2DO@20000;DKf2",
+              {
+                "c1": [
+                  "Hc2DO@20000;DKf2",
+                  1,
+                  39503232,
+                ],
+              },
+              1631707064,
+            ],
+            "r5": [
+              "Hc2DO@20000<DKlE",
+              {
+                "c1": [
+                  "Hc2DO@20000<DKlE",
+                  1,
+                  3510217074,
+                ],
+              },
+              2191309775,
+            ],
+            "r6": [
+              "Hc2DO@200009DKYL",
+              {
+                "c1": [
+                  "Hc2DO@200009DKYL",
+                  1,
+                  1247766531,
+                ],
+              },
+              2640872464,
+            ],
+            "r7": [
+              "Hc2DO@20000:DK__",
+              {
+                "c1": [
+                  "Hc2DO@20000:DK__",
+                  1,
+                  1474990993,
+                ],
+              },
+              717383071,
+            ],
+            "r8": [
+              "Hc2DO@20000?DL?>",
+              {
+                "c1": [
+                  "Hc2DO@20000?DL?>",
+                  1,
+                  4123752468,
+                ],
+              },
+              1816976081,
+            ],
+            "r9": [
+              "Hc2DO@20000@DLEQ",
+              {
+                "c1": [
+                  "Hc2DO@20000@DLEQ",
+                  1,
+                  2623666366,
+                ],
+              },
+              1078607663,
+            ],
+          },
+          3307843790,
+        ],
+      },
+      2450825361,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  2450825361,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Multidirectional all different rows: stats 1`] = `
+{
+  "receives": 1530,
+  "sends": 650,
+}
+`;
+
+exports[`Syncs to/from customSynchronizer Multidirectional all different tables 1`] = `
+[
+  "Hc2DO@20000AYRok",
+  [
+    [
+      "Hc2DO@20000AYRok",
+      {
+        "t1": [
+          "Hc2DO@200008DKS9",
+          {
+            "r1": [
+              "Hc2DO@200008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@200008DKS9",
+                  1,
+                  2771101213,
+                ],
+              },
+              2850600541,
+            ],
+          },
+          68388017,
+        ],
+        "t10": [
+          "Hc2DO@20000AYRok",
+          {
+            "r1": [
+              "Hc2DO@20000AYRok",
+              {
+                "c1": [
+                  "Hc2DO@20000AYRok",
+                  1,
+                  3062106594,
+                ],
+              },
+              1253116257,
+            ],
+          },
+          1589571478,
+        ],
+        "t2": [
+          "Hc2DO@200005DK@@",
+          {
+            "r1": [
+              "Hc2DO@200005DK@@",
+              {
+                "c1": [
+                  "Hc2DO@200005DK@@",
+                  1,
+                  3718299866,
+                ],
+              },
+              622829880,
+            ],
+          },
+          1597780490,
+        ],
+        "t3": [
+          "Hc2DO@200006DKFS",
+          {
+            "r1": [
+              "Hc2DO@200006DKFS",
+              {
+                "c1": [
+                  "Hc2DO@200006DKFS",
+                  1,
+                  3152886816,
+                ],
+              },
+              3053877267,
+            ],
+          },
+          3796489309,
+        ],
+        "t4": [
+          "Hc2DO@20000;DKf2",
+          {
+            "r1": [
+              "Hc2DO@20000;DKf2",
+              {
+                "c1": [
+                  "Hc2DO@20000;DKf2",
+                  1,
+                  39503232,
+                ],
+              },
+              1631707064,
+            ],
+          },
+          4116879620,
+        ],
+        "t5": [
+          "Hc2DO@20000<DKlE",
+          {
+            "r1": [
+              "Hc2DO@20000<DKlE",
+              {
+                "c1": [
+                  "Hc2DO@20000<DKlE",
+                  1,
+                  3510217074,
+                ],
+              },
+              2191309775,
+            ],
+          },
+          2827785127,
+        ],
+        "t6": [
+          "Hc2DO@200009DKYL",
+          {
+            "r1": [
+              "Hc2DO@200009DKYL",
+              {
+                "c1": [
+                  "Hc2DO@200009DKYL",
+                  1,
+                  1247766531,
+                ],
+              },
+              2640872464,
+            ],
+          },
+          1923944631,
+        ],
+        "t7": [
+          "Hc2DO@20000:DK__",
+          {
+            "r1": [
+              "Hc2DO@20000:DK__",
+              {
+                "c1": [
+                  "Hc2DO@20000:DK__",
+                  1,
+                  1474990993,
+                ],
+              },
+              717383071,
+            ],
+          },
+          3765729053,
+        ],
+        "t8": [
+          "Hc2DO@20000?DL?>",
+          {
+            "r1": [
+              "Hc2DO@20000?DL?>",
+              {
+                "c1": [
+                  "Hc2DO@20000?DL?>",
+                  1,
+                  4123752468,
+                ],
+              },
+              1816976081,
+            ],
+          },
+          3809946730,
+        ],
+        "t9": [
+          "Hc2DO@20000@DLEQ",
+          {
+            "r1": [
+              "Hc2DO@20000@DLEQ",
+              {
+                "c1": [
+                  "Hc2DO@20000@DLEQ",
+                  1,
+                  2623666366,
+                ],
+              },
+              1078607663,
+            ],
+          },
+          874411793,
+        ],
+      },
+      2339878718,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  2339878718,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Multidirectional all different tables: stats 1`] = `
+{
+  "receives": 1530,
+  "sends": 650,
+}
+`;
+
+exports[`Syncs to/from customSynchronizer Multidirectional all different values 1`] = `
+[
+  "Hc2DO@20000AYRok",
+  [
+    [
+      "",
+      {},
+      0,
+    ],
+    [
+      "Hc2DO@20000AYRok",
+      {
+        "v1": [
+          "Hc2DO@200008DKS9",
+          1,
+          2771101213,
+        ],
+        "v10": [
+          "Hc2DO@20000AYRok",
+          1,
+          3062106594,
+        ],
+        "v2": [
+          "Hc2DO@200005DK@@",
+          1,
+          3718299866,
+        ],
+        "v3": [
+          "Hc2DO@200006DKFS",
+          1,
+          3152886816,
+        ],
+        "v4": [
+          "Hc2DO@20000;DKf2",
+          1,
+          39503232,
+        ],
+        "v5": [
+          "Hc2DO@20000<DKlE",
+          1,
+          3510217074,
+        ],
+        "v6": [
+          "Hc2DO@200009DKYL",
+          1,
+          1247766531,
+        ],
+        "v7": [
+          "Hc2DO@20000:DK__",
+          1,
+          1474990993,
+        ],
+        "v8": [
+          "Hc2DO@20000?DL?>",
+          1,
+          4123752468,
+        ],
+        "v9": [
+          "Hc2DO@20000@DLEQ",
+          1,
+          2623666366,
+        ],
+      },
+      2022844843,
+    ],
+  ],
+  2022844843,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Multidirectional all different values: stats 1`] = `
+{
+  "receives": 1170,
+  "sends": 290,
+}
+`;
+
+exports[`Syncs to/from customSynchronizer Multidirectional half tables, half values 1`] = `
+[
+  "Hc2DO@20000AYRok",
+  [
+    [
+      "Hc2DO@20000AYRok",
+      {
+        "t1": [
+          "Hc2DO@20000AYRok",
+          {
+            "r1": [
+              "Hc2DO@20000AYRok",
+              {
+                "c1": [
+                  "Hc2DO@20000AYRok",
+                  1,
+                  3062106594,
+                ],
+                "c2": [
+                  "Hc2DO@20000AYRok",
+                  2,
+                  2433866825,
+                ],
+              },
+              4014982900,
+            ],
+            "r2": [
+              "Hc2DO@20000AYRok",
+              {
+                "c2": [
+                  "Hc2DO@20000AYRok",
+                  2,
+                  2433866825,
+                ],
+              },
+              3453142772,
+            ],
+          },
+          3433644199,
+        ],
+        "t2": [
+          "Hc2DO@20000AYRok",
+          {
+            "r2": [
+              "Hc2DO@20000AYRok",
+              {
+                "c2": [
+                  "Hc2DO@20000AYRok",
+                  2,
+                  2433866825,
+                ],
+              },
+              3453142772,
+            ],
+          },
+          3838679204,
+        ],
+      },
+      2646972572,
+    ],
+    [
+      "Hc2DO@20000<DKlE",
+      {
+        "v1": [
+          "Hc2DO@20000<DKlE",
+          1,
+          3510217074,
+        ],
+        "v2": [
+          "Hc2DO@20000<DKlE",
+          2,
+          1502946701,
+        ],
+      },
+      4280407966,
+    ],
+  ],
+  1659129602,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Multidirectional half tables, half values: stats 1`] = `
+{
+  "receives": 680,
+  "sends": 440,
+}
+`;
+
+exports[`Syncs to/from customSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  [
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "t0": [
+          "Hc2DO@000008DKS9",
+          {
+            "r0": [
+              "Hc2DO@000008DKS9",
+              {
+                "c0": [
+                  "Hc2DO@000008DKS9",
+                  0,
+                  2614692414,
+                ],
+              },
+              3462856275,
+            ],
+          },
+          1034923531,
+        ],
+      },
+      1374923724,
+    ],
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "v0": [
+          "Hc2DO@000008DKS9",
+          0,
+          2614692414,
+        ],
+      },
+      507814229,
+    ],
+  ],
+  1337395865,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults 2`] = `
+[
+  "Hc2DO@000005DK@@",
+  [
+    [
+      "Hc2DO@000005DK@@",
+      {
+        "t1": [
+          "Hc2DO@000005DK@@",
+          {
+            "r1": [
+              "Hc2DO@000005DK@@",
+              {
+                "c1": [
+                  "Hc2DO@000005DK@@",
+                  1,
+                  1915036128,
+                ],
+                "c2": [
+                  "Hc2DO@000005DK@@",
+                  2,
+                  2554361111,
+                ],
+              },
+              33786990,
+            ],
+            "r2": [
+              "Hc2DO@000005DK@@",
+              {
+                "c2": [
+                  "Hc2DO@000005DK@@",
+                  2,
+                  2554361111,
+                ],
+              },
+              3049305030,
+            ],
+          },
+          3344002712,
+        ],
+        "t2": [
+          "Hc2DO@000005DK@@",
+          {
+            "r2": [
+              "Hc2DO@000005DK@@",
+              {
+                "c2": [
+                  "Hc2DO@000005DK@@",
+                  2,
+                  2554361111,
+                ],
+              },
+              3049305030,
+            ],
+          },
+          1360887207,
+        ],
+      },
+      2945952928,
+    ],
+    [
+      "Hc2DO@000005DK@@",
+      {
+        "v1": [
+          "Hc2DO@000005DK@@",
+          1,
+          1915036128,
+        ],
+        "v2": [
+          "Hc2DO@000005DK@@",
+          2,
+          2554361111,
+        ],
+      },
+      1072194670,
+    ],
+  ],
+  2424293582,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults: stats 1`] = `
+[
+  {
+    "receives": 0,
+    "sends": 1,
+  },
+  {
+    "receives": 1,
+    "sends": 0,
+  },
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Unidirectional autoSave1 but not autoLoad2 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  [
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "t1": [
+          "Hc2DO@000008DKS9",
+          {
+            "r1": [
+              "Hc2DO@000008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000008DKS9",
+                  1,
+                  4065945599,
+                ],
+                "c2": [
+                  "Hc2DO@000008DKS9",
+                  2,
+                  903550280,
+                ],
+              },
+              922886432,
+            ],
+            "r2": [
+              "Hc2DO@000008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@000008DKS9",
+                  2,
+                  903550280,
+                ],
+              },
+              4100269854,
+            ],
+          },
+          1784087264,
+        ],
+        "t2": [
+          "Hc2DO@000008DKS9",
+          {
+            "r2": [
+              "Hc2DO@000008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@000008DKS9",
+                  2,
+                  903550280,
+                ],
+              },
+              4100269854,
+            ],
+          },
+          4279580014,
+        ],
+      },
+      3499952990,
+    ],
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "v1": [
+          "Hc2DO@000008DKS9",
+          1,
+          4065945599,
+        ],
+        "v2": [
+          "Hc2DO@000008DKS9",
+          2,
+          903550280,
+        ],
+      },
+      1248113522,
+    ],
+  ],
+  2600056876,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Unidirectional autoSave1 but not autoLoad2 2`] = `
+[
+  "",
+  [
+    [
+      "",
+      {},
+      0,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  0,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Unidirectional autoSave1 but not autoLoad2: stats 1`] = `
+[
+  {
+    "receives": 0,
+    "sends": 2,
+  },
+  {
+    "receives": 2,
+    "sends": 0,
+  },
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Unidirectional load1 but not autoSave2, defaults 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  [
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "t0": [
+          "Hc2DO@000008DKS9",
+          {
+            "r0": [
+              "Hc2DO@000008DKS9",
+              {
+                "c0": [
+                  "Hc2DO@000008DKS9",
+                  0,
+                  2614692414,
+                ],
+              },
+              3462856275,
+            ],
+          },
+          1034923531,
+        ],
+      },
+      1374923724,
+    ],
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "v0": [
+          "Hc2DO@000008DKS9",
+          0,
+          2614692414,
+        ],
+      },
+      507814229,
+    ],
+  ],
+  1337395865,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Unidirectional load1 but not autoSave2, defaults 2`] = `
+[
+  "Hc2DO@000005DK@@",
+  [
+    [
+      "Hc2DO@000005DK@@",
+      {
+        "t1": [
+          "Hc2DO@000005DK@@",
+          {
+            "r1": [
+              "Hc2DO@000005DK@@",
+              {
+                "c1": [
+                  "Hc2DO@000005DK@@",
+                  1,
+                  1915036128,
+                ],
+                "c2": [
+                  "Hc2DO@000005DK@@",
+                  2,
+                  2554361111,
+                ],
+              },
+              33786990,
+            ],
+            "r2": [
+              "Hc2DO@000005DK@@",
+              {
+                "c2": [
+                  "Hc2DO@000005DK@@",
+                  2,
+                  2554361111,
+                ],
+              },
+              3049305030,
+            ],
+          },
+          3344002712,
+        ],
+        "t2": [
+          "Hc2DO@000005DK@@",
+          {
+            "r2": [
+              "Hc2DO@000005DK@@",
+              {
+                "c2": [
+                  "Hc2DO@000005DK@@",
+                  2,
+                  2554361111,
+                ],
+              },
+              3049305030,
+            ],
+          },
+          1360887207,
+        ],
+      },
+      2945952928,
+    ],
+    [
+      "Hc2DO@000005DK@@",
+      {
+        "v1": [
+          "Hc2DO@000005DK@@",
+          1,
+          1915036128,
+        ],
+        "v2": [
+          "Hc2DO@000005DK@@",
+          2,
+          2554361111,
+        ],
+      },
+      1072194670,
+    ],
+  ],
+  2424293582,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Unidirectional load1 but not autoSave2, defaults: stats 1`] = `
+[
+  {
+    "receives": 0,
+    "sends": 1,
+  },
+  {
+    "receives": 1,
+    "sends": 0,
+  },
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Unidirectional save1 but not autoLoad2 1`] = `
+[
+  "Hc2DO@000008DKS9",
+  [
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "t1": [
+          "Hc2DO@000008DKS9",
+          {
+            "r1": [
+              "Hc2DO@000008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@000008DKS9",
+                  1,
+                  4065945599,
+                ],
+                "c2": [
+                  "Hc2DO@000008DKS9",
+                  2,
+                  903550280,
+                ],
+              },
+              922886432,
+            ],
+            "r2": [
+              "Hc2DO@000008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@000008DKS9",
+                  2,
+                  903550280,
+                ],
+              },
+              4100269854,
+            ],
+          },
+          1784087264,
+        ],
+        "t2": [
+          "Hc2DO@000008DKS9",
+          {
+            "r2": [
+              "Hc2DO@000008DKS9",
+              {
+                "c2": [
+                  "Hc2DO@000008DKS9",
+                  2,
+                  903550280,
+                ],
+              },
+              4100269854,
+            ],
+          },
+          4279580014,
+        ],
+      },
+      3499952990,
+    ],
+    [
+      "Hc2DO@000008DKS9",
+      {
+        "v1": [
+          "Hc2DO@000008DKS9",
+          1,
+          4065945599,
+        ],
+        "v2": [
+          "Hc2DO@000008DKS9",
+          2,
+          903550280,
+        ],
+      },
+      1248113522,
+    ],
+  ],
+  2600056876,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Unidirectional save1 but not autoLoad2 2`] = `
+[
+  "",
+  [
+    [
+      "",
+      {},
+      0,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  0,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Unidirectional save1 but not autoLoad2: stats 1`] = `
+[
+  {
+    "receives": 0,
+    "sends": 1,
+  },
+  {
+    "receives": 1,
+    "sends": 0,
+  },
+]
+`;
+
 exports[`Syncs to/from localSynchronizer Bidirectional Both empty 1`] = `
 [
   "",
