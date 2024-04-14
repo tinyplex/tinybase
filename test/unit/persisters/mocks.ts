@@ -1,6 +1,5 @@
 import {
   Changes,
-  Client,
   Content,
   Id,
   MergeableChanges,
@@ -11,13 +10,15 @@ import {
   Tables,
   Values,
   createCustomPersister,
-  createCustomSynchronizer,
-  createLocalClient,
   createMergeableStore,
 } from 'tinybase/debug';
 import {DbSchema, ElectricClient} from 'electric-sql/client/model';
 import {DocHandle, Repo} from '@automerge/automerge-repo';
 import {GetLocationMethod, Persistable} from './common';
+import {
+  LocalSynchronizer,
+  createLocalSynchronizer,
+} from 'tinybase/debug/synchronizers/synchronizer-local';
 import {SqliteWasmDb, VARIANTS} from './sqlite';
 import {Doc as YDoc, Map as YMap} from 'yjs';
 import {
@@ -263,36 +264,36 @@ export const mockFile: Persistable = {
   testMissing: true,
 };
 
-export const mockSync: Persistable<[Client, MergeableStore, Client]> = {
+export const mockSynchronizer: Persistable<
+  [LocalSynchronizer, MergeableStore]
+> = {
   autoLoadPause: 1,
-  getLocation: async (): Promise<[Client, MergeableStore, Client]> => {
-    const client1 = createLocalClient();
-    const client2 = createLocalClient();
+  getLocation: async (): Promise<[LocalSynchronizer, MergeableStore]> => {
     const store2 = createMergeableStore('s2');
-    await createCustomSynchronizer(store2, client2, 0.001).startSync();
-    return [client1, store2, client2];
+    const synchronizer2 = createLocalSynchronizer(store2);
+    await synchronizer2.startSync();
+    return [synchronizer2, store2];
   },
-  getLocationMethod: ['getClient', (location) => location[0]],
-  getPersister: (store: Store, location) =>
-    createCustomSynchronizer(store as MergeableStore, location[0], 0.001),
+  getPersister: (store: Store) =>
+    createLocalSynchronizer(store as MergeableStore),
   get: async (
-    location: [Client, MergeableStore, Client],
+    location: [LocalSynchronizer, MergeableStore],
   ): Promise<Content | MergeableContent | void> => {
     try {
       location[1].getMergeableContent();
     } catch {}
   },
   set: async (
-    location: [Client, MergeableStore, Client],
+    location: [LocalSynchronizer, MergeableStore],
     content: Content | MergeableContent,
-  ): Promise<void> => await mockSync.write(location, content),
+  ): Promise<void> => await mockSynchronizer.write(location, content),
   write: async (
-    location: [Client, MergeableStore, Client],
+    location: [LocalSynchronizer, MergeableStore],
     rawContent: any,
   ): Promise<void> => {
     location[1].setMergeableContent(rawContent);
   },
-  del: async (location: [Client, MergeableStore, Client]): Promise<void> => {
+  del: async (location: [LocalSynchronizer, MergeableStore]): Promise<void> => {
     location[1].setMergeableContent([
       '',
       [
@@ -303,9 +304,8 @@ export const mockSync: Persistable<[Client, MergeableStore, Client]> = {
     ]);
   },
   testMissing: false,
-  afterEach: (location: [Client, MergeableStore, Client]) => {
+  afterEach: (location: [LocalSynchronizer, MergeableStore]) => {
     location[0].destroy();
-    location[2].destroy();
   },
 };
 

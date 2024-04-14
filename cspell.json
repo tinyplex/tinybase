@@ -1,5 +1,10 @@
 {
-  "ignorePaths": ["*.tsv", "*.webp", "*.svg", "*.snap"],
+  "ignorePaths": [
+    "*.tsv",
+    "*.webp",
+    "*.svg",
+    "*.snap"
+  ],
   "words": [
     "Abad",
     "Adrien",
@@ -122,6 +127,7 @@
     "sortedtableinhtmltable",
     "srcdoc",
     "storeinspector",
+    "Synchronizable",
     "tableinhtmltable",
     "tablename",
     "Taika",

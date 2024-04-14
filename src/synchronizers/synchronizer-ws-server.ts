@@ -1,13 +1,13 @@
-import {EMPTY_STRING, UTF8} from '../../common/strings';
-import {IdMap, mapForEach, mapGet, mapNew, mapSet} from '../../common/map';
+import {EMPTY_STRING, UTF8} from '../common/strings';
+import {IdMap, mapForEach, mapGet, mapNew, mapSet} from '../common/map';
 import {WebSocket, WebSocketServer} from 'ws';
-import {collClear, collDel} from '../../common/coll';
-import {Id} from '../../types/common';
+import {collClear, collDel} from '../common/coll';
+import {Id} from '../types/common';
 import {MESSAGE_SEPARATOR} from './common';
-import {createWsSimpleServer as createWsSimpleServerDecl} from '../../types/synchronizers';
-import {slice} from '../../common/other';
+import {createWsServer as createWsServerDecl} from '../types/synchronizers/synchronizer-ws-server';
+import {slice} from '../common/other';
 
-export const createWsSimpleServer = ((webSocketServer: WebSocketServer) => {
+export const createWsServer = ((webSocketServer: WebSocketServer) => {
   const clients: IdMap<WebSocket> = mapNew();
   webSocketServer.on('connection', (webSocket, request) => {
     const clientId: Id = request.headers['sec-websocket-key']!;
@@ -32,7 +32,9 @@ export const createWsSimpleServer = ((webSocketServer: WebSocketServer) => {
       }
     });
 
-    webSocket.on('close', () => collDel(clients, clientId));
+    webSocket.on('close', () => {
+      collDel(clients, clientId);
+    });
   });
 
   const getWebSocketServer = () => webSocketServer;
@@ -46,4 +48,4 @@ export const createWsSimpleServer = ((webSocketServer: WebSocketServer) => {
     getWebSocketServer,
     destroy,
   };
-}) as typeof createWsSimpleServerDecl;
+}) as typeof createWsServerDecl;

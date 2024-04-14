@@ -1,17 +1,20 @@
-import {
-  ClientStats,
-  MessageType,
-  Receive,
-  createWsClient as createWsClientDecl,
-} from '../../types/synchronizers';
-import {DEBUG, isUndefined, promiseNew, slice} from '../../common/other';
-import {EMPTY_STRING, UTF8} from '../../common/strings';
-import {jsonParse, jsonString} from '../../common/json';
-import {IdOrNull} from '../../types/common';
+import {DEBUG, isUndefined, promiseNew, slice} from '../common/other';
+import {EMPTY_STRING, UTF8} from '../common/strings';
+import {MessageType, Receive, SynchronizerStats} from '../types/synchronizers';
+import {jsonParse, jsonString} from '../common/json';
+import {IdOrNull} from '../types/common';
 import {MESSAGE_SEPARATOR} from './common';
+import {MergeableStore} from '../types/mergeable-store';
 import {WebSocket} from 'ws';
+import {createCustomSynchronizer} from '../synchronizers';
+import {createWsSynchronizer as createWsSynchronizerDecl} from '../types/synchronizers/synchronizer-ws-client';
 
-export const createWsClient = (async (webSocket: WebSocket) => {
+export const createWsSynchronizer = (async (
+  store: MergeableStore,
+  webSocket: WebSocket,
+  requestTimeoutSeconds?: number,
+  onIgnoredError?: (error: any) => void,
+) => {
   let sends = 0;
   let receives = 0;
   let currentReceive: Receive;
@@ -56,16 +59,23 @@ export const createWsClient = (async (webSocket: WebSocket) => {
     webSocket.close();
   };
 
-  const getStats = (): ClientStats => (DEBUG ? {sends, receives} : {});
+  const getStats = (): SynchronizerStats => (DEBUG ? {sends, receives} : {});
 
   const client = {send, onReceive, destroy, getStats};
+
+  const synchronizer = createCustomSynchronizer(
+    store,
+    client,
+    requestTimeoutSeconds,
+    onIgnoredError,
+  );
 
   return promiseNew((resolve, reject) => {
     if (webSocket.readyState != webSocket.OPEN) {
       webSocket.on('error', reject);
-      webSocket.on('open', () => resolve(client));
+      webSocket.on('open', () => resolve(synchronizer));
     } else {
-      resolve(client);
+      resolve(synchronizer);
     }
   });
-}) as typeof createWsClientDecl;
+}) as typeof createWsSynchronizerDecl;

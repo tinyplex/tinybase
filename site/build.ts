@@ -139,7 +139,6 @@ const addApi = (docs: Docs): Docs =>
     .addApiFile('lib/types/queries.d.ts')
     .addApiFile('lib/types/mergeable-store.d.ts')
     .addApiFile('lib/types/persisters.d.ts')
-    .addApiFile('lib/types/synchronizers.d.ts')
     .addApiFile('lib/types/persisters/persister-browser.d.ts')
     .addApiFile('lib/types/persisters/persister-indexed-db.d.ts')
     .addApiFile('lib/types/persisters/persister-file.d.ts')
@@ -156,6 +155,10 @@ const addApi = (docs: Docs): Docs =>
     .addApiFile('lib/types/persisters/persister-libsql.d.ts')
     .addApiFile('lib/types/persisters/persister-partykit-client.d.ts')
     .addApiFile('lib/types/persisters/persister-partykit-server.d.ts')
+    .addApiFile('lib/types/synchronizers.d.ts')
+    .addApiFile('lib/types/synchronizers/synchronizer-local.d.ts')
+    .addApiFile('lib/types/synchronizers/synchronizer-ws-client.d.ts')
+    .addApiFile('lib/types/synchronizers/synchronizer-ws-server.d.ts')
     .addApiFile('lib/types/tools.d.ts')
     .addApiFile('lib/types/ui-react.d.ts')
     .addApiFile('lib/types/ui-react-dom.d.ts');

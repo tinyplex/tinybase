@@ -1,22 +1,27 @@
 import {
   Client,
-  ClientStats,
   MessageType,
   Receive,
-  createLocalClient as createLocalClientDecl,
-} from '../../types/synchronizers';
-import {DEBUG, isUndefined} from '../../common/other';
-import {Id, IdOrNull} from '../../types/common';
-import {IdMap, mapForEach, mapGet, mapNew, mapSet} from '../../common/map';
-import {IdObj, objDel, objNew} from '../../common/obj';
-import {collDel} from '../../common/coll';
+  SynchronizerStats,
+} from '../types/synchronizers';
+import {DEBUG, isUndefined} from '../common/other';
+import {Id, IdOrNull} from '../types/common';
+import {IdMap, mapForEach, mapGet, mapNew, mapSet} from '../common/map';
+import {IdObj, objDel, objNew} from '../common/obj';
+import {MergeableStore} from '../types/mergeable-store';
+import {collDel} from '../common/coll';
+import {createCustomSynchronizer} from '../synchronizers';
+import {createLocalSynchronizer as createLocalSynchronizerDecl} from '../types/synchronizers/synchronizer-local';
 
 const clients: IdMap<Receive> = mapNew();
 
 const sends: IdObj<number> = objNew();
 const receives: IdObj<number> = objNew();
 
-export const createLocalClient = (() => {
+export const createLocalSynchronizer = ((
+  store: MergeableStore,
+  onIgnoredError?: (error: any) => void,
+) => {
   const clientId: Id = '' + Math.random();
 
   const onReceive = (receive: Receive): void => {
@@ -63,10 +68,12 @@ export const createLocalClient = (() => {
     }
   };
 
-  const getStats = (): ClientStats =>
+  const getStats = (): SynchronizerStats =>
     DEBUG
       ? {sends: sends[clientId] ?? 0, receives: receives[clientId] ?? 0}
       : {};
 
-  return {send, onReceive, destroy, getStats} as Client;
-}) as typeof createLocalClientDecl;
+  const client = {send, onReceive, destroy, getStats} as Client;
+
+  return createCustomSynchronizer(store, client, 0.001, onIgnoredError);
+}) as typeof createLocalSynchronizerDecl;

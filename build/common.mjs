@@ -33,6 +33,9 @@ const TEST_MODULES = [
   'persisters/persister-sqlite-wasm',
   'persisters/persister-sqlite3',
   'persisters/persister-yjs',
+  'synchronizers/synchronizer-local',
+  'synchronizers/synchronizer-ws-client',
+  'synchronizers/synchronizer-ws-server',
 ];
 const MODULES_TYPED_WITH_INTERNALS = ['store', 'queries', 'ui-react'];
 const ALL_MODULES = [
@@ -66,6 +69,9 @@ const ALL_MODULES = [
   'persisters/persister-sqlite-wasm',
   'persisters/persister-sqlite3',
   'persisters/persister-yjs',
+  'synchronizers/synchronizer-local',
+  'synchronizers/synchronizer-ws-client',
+  'synchronizers/synchronizer-ws-server',
 ];
 
 export const BIN_DIR = 'bin';

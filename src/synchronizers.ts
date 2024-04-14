@@ -22,10 +22,6 @@ import {collDel} from './common/coll';
 import {createCustomPersister} from './persisters';
 import {getHlcFunctions} from './mergeable-store/hlc';
 
-export {createLocalClient} from './synchronizers/sync/client-local';
-export {createWsClient} from './synchronizers/sync/client-ws';
-export {createWsSimpleServer} from './synchronizers/sync/server-ws-simple';
-
 const RESPONSE = 0;
 const CONTENT_HASHES = 1;
 const GET_CONTENT_HASHES = 2;
@@ -195,7 +191,6 @@ export const createCustomSynchronizer = ((
     onIgnoredError,
     true,
     {
-      getClient: () => client,
       startSync: async () =>
         await (await persister.startAutoLoad()).startAutoSave(),
       stopSync: () => persister.stopAutoLoad().stopAutoSave(),
@@ -203,6 +198,7 @@ export const createCustomSynchronizer = ((
         destroy();
         return persister.stopSync();
       },
+      getSynchronizerStats: client.getStats,
     },
   ) as Synchronizer;
   return persister;
