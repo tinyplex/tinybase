@@ -14,7 +14,7 @@ import * as TinyBasePersisterPartyKitServer from 'tinybase/debug/persisters/pers
 import * as TinyBasePersisterRemote from 'tinybase/debug/persisters/persister-remote';
 import * as TinyBasePersisterSqlite3 from 'tinybase/debug/persisters/persister-sqlite3';
 import * as TinyBasePersisterSqliteWasm from 'tinybase/debug/persisters/persister-sqlite-wasm';
-import * as TinyBasePersisterSync from 'tinybase/debug/persisters/persister-sync';
+import * as TinyBasePersisterSync from 'tinybase/debug/synchronizers/persister-sync';
 import * as TinyBasePersisterYjs from 'tinybase/debug/persisters/persister-yjs';
 import * as TinyBaseTools from 'tinybase/debug/tools';
 import * as TinyBaseUiReact from 'tinybase/debug/ui-react';
