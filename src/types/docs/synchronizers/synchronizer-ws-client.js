@@ -1,0 +1,18 @@
+/**
+ * The synchronizer-ws module of the TinyBase project lets you synchronize
+ * MergeableStore data to and from other MergeableStore instances via WebSockets
+ * facilitated by a server.
+ * @see Synchronizing Data guide
+ * @packageDocumentation
+ * @module synchronizer-ws-client
+ * @since v5.0.0
+ */
+/// synchronizer-ws-client
+/**
+ * The WsSynchronizer interface
+ */
+/// WsSynchronizer
+/**
+ * The createWsSynchronizer function
+ */
+/// createWsSynchronizer
