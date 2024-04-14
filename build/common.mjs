@@ -33,7 +33,6 @@ const TEST_MODULES = [
   'persisters/persister-sqlite-wasm',
   'persisters/persister-sqlite3',
   'persisters/persister-yjs',
-  'synchronizers/persister-sync',
 ];
 const MODULES_TYPED_WITH_INTERNALS = ['store', 'queries', 'ui-react'];
 const ALL_MODULES = [
@@ -46,6 +45,7 @@ const ALL_MODULES = [
   'checkpoints',
   'mergeable-store',
   'persisters',
+  'synchronizers',
   'common',
   'ui-react',
   'ui-react-dom',
@@ -66,7 +66,6 @@ const ALL_MODULES = [
   'persisters/persister-sqlite-wasm',
   'persisters/persister-sqlite3',
   'persisters/persister-yjs',
-  'synchronizers/persister-sync',
 ];
 
 export const BIN_DIR = 'bin';
