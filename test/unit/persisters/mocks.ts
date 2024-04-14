@@ -6,10 +6,13 @@ import {
   MergeableContent,
   MergeableStore,
   Persister,
+  Receive,
   Store,
+  Synchronizer,
   Tables,
   Values,
   createCustomPersister,
+  createCustomSynchronizer,
   createMergeableStore,
 } from 'tinybase/debug';
 import {DbSchema, ElectricClient} from 'electric-sql/client/model';
@@ -264,7 +267,7 @@ export const mockFile: Persistable = {
   testMissing: true,
 };
 
-export const mockSynchronizer: Persistable<
+export const mockLocalSynchronizer: Persistable<
   [LocalSynchronizer, MergeableStore]
 > = {
   autoLoadPause: 1,
@@ -286,7 +289,7 @@ export const mockSynchronizer: Persistable<
   set: async (
     location: [LocalSynchronizer, MergeableStore],
     content: Content | MergeableContent,
-  ): Promise<void> => await mockSynchronizer.write(location, content),
+  ): Promise<void> => await mockLocalSynchronizer.write(location, content),
   write: async (
     location: [LocalSynchronizer, MergeableStore],
     rawContent: any,
@@ -306,6 +309,92 @@ export const mockSynchronizer: Persistable<
   testMissing: false,
   afterEach: (location: [LocalSynchronizer, MergeableStore]) => {
     location[0].destroy();
+  },
+};
+
+const createCustomLocalSynchronizer = (
+  store: MergeableStore,
+  clients: Map<string, Receive>,
+): Synchronizer => {
+  const clientId = 'client' + clients.size;
+  return createCustomSynchronizer(
+    store,
+    (toClientId, requestId, messageType, messageBody): void => {
+      if (toClientId == null) {
+        clients.forEach((receive, otherClientId) =>
+          otherClientId != clientId
+            ? receive(clientId, requestId, messageType, messageBody)
+            : 0,
+        );
+      } else {
+        clients.get(toClientId)?.(
+          clientId,
+          requestId,
+          messageType,
+          messageBody,
+        );
+      }
+    },
+    (receive: Receive): void => {
+      clients.set(clientId, receive);
+    },
+    (): void => {
+      clients.delete(clientId);
+    },
+  );
+};
+
+export const mockCustomSynchronizer: Persistable<
+  [Map<string, Receive>, Synchronizer, MergeableStore]
+> = {
+  autoLoadPause: 1,
+  getLocation: async (): Promise<
+    [Map<string, Receive>, Synchronizer, MergeableStore]
+  > => {
+    const clients = new Map();
+    const store2 = createMergeableStore('s2');
+    const synchronizer2 = createCustomLocalSynchronizer(store2, clients);
+    await synchronizer2.startSync();
+    return [clients, synchronizer2, store2];
+  },
+  getPersister: (
+    store: Store,
+    location: [Map<string, Receive>, Synchronizer, MergeableStore],
+  ) => createCustomLocalSynchronizer(store as MergeableStore, location[0]),
+  get: async (
+    location: [Map<string, Receive>, Synchronizer, MergeableStore],
+  ): Promise<Content | MergeableContent | void> => {
+    try {
+      location[2].getMergeableContent();
+    } catch {}
+  },
+  set: async (
+    location: [Map<string, Receive>, Synchronizer, MergeableStore],
+    content: Content | MergeableContent,
+  ): Promise<void> => await mockCustomSynchronizer.write(location, content),
+  write: async (
+    location: [Map<string, Receive>, Synchronizer, MergeableStore],
+    rawContent: any,
+  ): Promise<void> => {
+    location[2].setMergeableContent(rawContent);
+  },
+  del: async (
+    location: [Map<string, Receive>, Synchronizer, MergeableStore],
+  ): Promise<void> => {
+    location[2].setMergeableContent([
+      '',
+      [
+        ['', {}, 0],
+        ['', {}, 0],
+      ],
+      0,
+    ]);
+  },
+  testMissing: false,
+  afterEach: (
+    location: [Map<string, Receive>, Synchronizer, MergeableStore],
+  ) => {
+    location[1].destroy();
   },
 };
 
