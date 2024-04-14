@@ -1,10 +1,9 @@
 /// persister-file
 
-import {Id, IdOrNull} from '../common';
+import {Id, IdOrNull} from './common';
 import {WebSocket, WebSocketServer} from 'ws';
-import {MergeableStore} from '../mergeable-store';
-import {OptionalSchemas} from '../store';
-import {Persister} from '../persisters';
+import {MergeableStore} from './mergeable-store';
+import {Persister} from './persisters';
 
 /// MessageType
 export type MessageType = number;
@@ -12,7 +11,7 @@ export type MessageType = number;
 /// Receive
 export type Receive = (
   fromClientId: Id,
-  requestId: Id,
+  requestId: IdOrNull,
   messageType: MessageType,
   messageBody: any,
 ) => void;
@@ -20,7 +19,7 @@ export type Receive = (
 /// Send
 export type Send = (
   toClientId: IdOrNull,
-  requestId: Id,
+  requestId: IdOrNull,
   messageType: MessageType,
   messageBody: any,
 ) => void;
@@ -48,24 +47,23 @@ export interface WsServer {
   destroy: () => void;
 }
 
-/// SyncPersister
-export interface SyncPersister<Schemas extends OptionalSchemas>
-  extends Persister<Schemas, true> {
-  /// SyncPersister.getClient
+/// Synchronizer
+export interface Synchronizer extends Persister<true> {
+  /// Synchronizer.getClient
   getClient(): Client;
-  /// SyncPersister.startSync
-  startSync(): Promise<Persister<Schemas, true>>;
-  /// SyncPersister.stopSync
-  stopSync(): Persister<Schemas, true>;
+  /// Synchronizer.startSync
+  startSync(): Promise<Synchronizer>;
+  /// Synchronizer.stopSync
+  stopSync(): Synchronizer;
 }
 
-/// createSyncPersister
-export function createSyncPersister<Schemas extends OptionalSchemas>(
-  store: MergeableStore<Schemas>,
+/// createCustomSynchronizer
+export function createCustomSynchronizer(
+  store: MergeableStore,
   client: Client,
   requestTimeoutSeconds?: number,
   onIgnoredError?: (error: any) => void,
-): SyncPersister<Schemas>;
+): Synchronizer;
 
 /// createLocalClient
 export function createLocalClient(): LocalClient;
