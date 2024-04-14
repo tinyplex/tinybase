@@ -2,7 +2,7 @@
 
 import {MergeableStore} from '../mergeable-store';
 import {Synchronizer} from '../synchronizers';
-import {WebSocket} from 'ws';
+import {WebSocket as WsWebSocket} from 'ws';
 
 /// WsSynchronizer
 export interface WsSynchronizer extends Synchronizer {}
@@ -10,7 +10,7 @@ export interface WsSynchronizer extends Synchronizer {}
 /// createWsSynchronizer
 export function createWsSynchronizer(
   store: MergeableStore,
-  webSocket: WebSocket,
+  webSocket: WebSocket | WsWebSocket,
   requestTimeoutSeconds?: number,
   onIgnoredError?: (error: any) => void,
 ): Promise<WsSynchronizer>;
