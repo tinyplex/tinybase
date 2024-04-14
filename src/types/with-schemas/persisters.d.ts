@@ -116,42 +116,42 @@ export interface Persister<
   load(
     initialTables?: Tables<Schemas[0], true>,
     initialValues?: Values<Schemas[1], true>,
-  ): Promise<Persister<Schemas, SupportsMergeableStore>>;
+  ): Promise<this>;
 
   /// Persister.startAutoLoad
   startAutoLoad(
     initialTables?: Tables<Schemas[0], true>,
     initialValues?: Values<Schemas[1], true>,
-  ): Promise<Persister<Schemas, SupportsMergeableStore>>;
+  ): Promise<this>;
 
   /// Persister.stopAutoLoad
-  stopAutoLoad(): Persister<Schemas, SupportsMergeableStore>;
+  stopAutoLoad(): this;
 
   /// Persister.isAutoLoading
   isAutoLoading(): boolean;
 
   /// Persister.save
-  save(): Promise<Persister<Schemas, SupportsMergeableStore>>;
+  save(): Promise<this>;
 
   /// Persister.startAutoSave
-  startAutoSave(): Promise<Persister<Schemas, SupportsMergeableStore>>;
+  startAutoSave(): Promise<this>;
 
   /// Persister.stopAutoSave
-  stopAutoSave(): Persister<Schemas, SupportsMergeableStore>;
+  stopAutoSave(): this;
 
   /// Persister.isAutoSaving
   isAutoSaving(): boolean;
 
   /// Persister.schedule
-  schedule(
-    ...actions: Promise<any>[]
-  ): Promise<Persister<Schemas, SupportsMergeableStore>>;
+  schedule(...actions: Promise<any>[]): Promise<this>;
 
   /// Persister.getStore
-  getStore(): Store<Schemas>;
+  getStore(): SupportsMergeableStore extends true
+    ? Store<Schemas> | MergeableStore<Schemas>
+    : Store<Schemas>;
 
   /// Persister.destroy
-  destroy(): Persister<Schemas, SupportsMergeableStore>;
+  destroy(): this;
 
   /// Persister.getStats
   getStats(): PersisterStats;

@@ -9,29 +9,24 @@
 /// synchronizers
 /**
  * The MessageType type
- *
+ * @category Synchronization
  */
 /// MessageType
 /**
  * The Receive type
- *
+ * @category Synchronization
  */
 /// Receive
 /**
  * The Send type
- *
+ * @category Synchronization
  */
 /// Send
 /**
  * The SynchronizerStats type
- *
+ * @category Development
  */
 /// SynchronizerStats
-/**
- * The Client interface
- *
- */
-/// Client
 /**
  * The Synchronizer interface is a minor extension to the Persister interface.
  *
@@ -40,21 +35,24 @@
  *
  * You should use the createCustomSynchronizer function to create a Synchronizer
  * object.
- * @category Persister
+ * @category Synchronizer
  * @since v5.0.0
  */
 /// Synchronizer
 {
   /**
    * The startSync method
+   * @category Synchronization
    */
   /// Synchronizer.startSync
   /**
    * The stopSync method
+   * @category Synchronization
    */
   /// Synchronizer.stopSync
   /**
    * The getSynchronizerStats method
+   * @category Synchronization
    */
   /// Synchronizer.getSynchronizerStats
 }
@@ -69,9 +67,9 @@
  * @param client The reference of the Client.
  * @param requestTimeoutSeconds An optional number of seconds before a request
  * to the Client times out, defaulting to 5.
- * @param onIgnoredError An optional handler for the errors that the Persister
- * would otherwise ignore when trying to save or load data. This is suitable for
- * debugging persistence issues in a development environment.
+ * @param onIgnoredError An optional handler for the errors that the
+ * Synchronizer would otherwise ignore when trying to save or load data. This is
+ * suitable for debugging synchronization issues in a development environment.
  * @returns A reference to the new Synchronizer object.
  * @example
  * This example creates a Synchronizer object and synchronizes one
