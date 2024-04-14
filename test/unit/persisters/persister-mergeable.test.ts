@@ -13,13 +13,14 @@ import {
 } from 'tinybase/debug';
 import {GetLocationMethod, Persistable, nextLoop} from './common';
 import {
+  mockCustomSynchronizer,
   mockFile,
   mockLocalStorage,
+  mockLocalSynchronizer,
   mockMergeableChangesListener,
   mockMergeableContentListener,
   mockMergeableNoContentListener,
   mockSessionStorage,
-  mockSynchronizer,
 } from './mocks';
 import {nullStamped, resetHlc, stamped} from '../common/mergeable';
 import {pause} from '../common/other';
@@ -35,7 +36,8 @@ describe.each([
   ['file', mockFile],
   ['localStorage', mockLocalStorage],
   ['sessionStorage', mockSessionStorage],
-  ['sync', mockSynchronizer],
+  ['localSynchronizer', mockLocalSynchronizer],
+  ['customSynchronizer', mockCustomSynchronizer],
 ])('Persists to/from %s', (name: string, persistable: Persistable<any>) => {
   let location: string;
   let getLocationMethod: GetLocationMethod<any> | undefined;
