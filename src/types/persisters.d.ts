@@ -99,39 +99,31 @@ export type DpcTabularValues = {
 export interface Persister<SupportsMergeableStore extends boolean = false> {
   //
   /// Persister.load
-  load(
-    initialTables?: Tables,
-    initialValues?: Values,
-  ): Promise<Persister<SupportsMergeableStore>>;
+  load(initialTables?: Tables, initialValues?: Values): Promise<this>;
 
   /// Persister.startAutoLoad
-  startAutoLoad(
-    initialTables?: Tables,
-    initialValues?: Values,
-  ): Promise<Persister<SupportsMergeableStore>>;
+  startAutoLoad(initialTables?: Tables, initialValues?: Values): Promise<this>;
 
   /// Persister.stopAutoLoad
-  stopAutoLoad(): Persister<SupportsMergeableStore>;
+  stopAutoLoad(): this;
 
   /// Persister.isAutoLoading
   isAutoLoading(): boolean;
 
   /// Persister.save
-  save(): Promise<Persister<SupportsMergeableStore>>;
+  save(): Promise<this>;
 
   /// Persister.startAutoSave
-  startAutoSave(): Promise<Persister<SupportsMergeableStore>>;
+  startAutoSave(): Promise<this>;
 
   /// Persister.stopAutoSave
-  stopAutoSave(): Persister<SupportsMergeableStore>;
+  stopAutoSave(): this;
 
   /// Persister.isAutoSaving
   isAutoSaving(): boolean;
 
   /// Persister.schedule
-  schedule(
-    ...actions: Promise<any>[]
-  ): Promise<Persister<SupportsMergeableStore>>;
+  schedule(...actions: Promise<any>[]): Promise<this>;
 
   /// Persister.getStore
   getStore(): SupportsMergeableStore extends true
@@ -139,7 +131,7 @@ export interface Persister<SupportsMergeableStore extends boolean = false> {
     : Store;
 
   /// Persister.destroy
-  destroy(): Persister<SupportsMergeableStore>;
+  destroy(): this;
 
   /// Persister.getStats
   getStats(): PersisterStats;
