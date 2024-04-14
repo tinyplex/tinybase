@@ -19,7 +19,7 @@ import {
   mockMergeableContentListener,
   mockMergeableNoContentListener,
   mockSessionStorage,
-  mockSync,
+  mockSynchronizer,
 } from './mocks';
 import {nullStamped, resetHlc, stamped} from '../common/mergeable';
 import {pause} from '../common/other';
@@ -35,7 +35,7 @@ describe.each([
   ['file', mockFile],
   ['localStorage', mockLocalStorage],
   ['sessionStorage', mockSessionStorage],
-  ['sync', mockSync],
+  ['sync', mockSynchronizer],
 ])('Persists to/from %s', (name: string, persistable: Persistable<any>) => {
   let location: string;
   let getLocationMethod: GetLocationMethod<any> | undefined;

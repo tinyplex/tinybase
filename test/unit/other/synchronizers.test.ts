@@ -1,18 +1,18 @@
 /* eslint-disable jest/no-conditional-expect */
 
 import {
-  Client,
   Content,
   MergeableStore,
   Synchronizer,
-  WsServer,
-  createCustomSynchronizer,
-  createLocalClient,
   createMergeableStore,
-  createWsClient,
-  createWsSimpleServer,
 } from 'tinybase/debug';
 import {WebSocket, WebSocketServer} from 'ws';
+import {
+  WsServer,
+  createWsServer,
+} from 'tinybase/debug/synchronizers/synchronizer-ws-server';
+import {createLocalSynchronizer} from 'tinybase/debug/synchronizers/synchronizer-local';
+import {createWsSynchronizer} from 'tinybase/debug/synchronizers/synchronizer-ws-client';
 import {pause} from '../common/other';
 import {resetHlc} from '../common/mergeable';
 
@@ -20,47 +20,42 @@ beforeEach(() => {
   resetHlc();
 });
 
-type ClientConfig<Environment> = {
+type Synchronizable<Environment> = {
   createEnvironment?: () => Environment;
   destroyEnvironment?: (environment: Environment) => void;
-  getClient: () => Promise<Client>;
-  requestTimeoutSeconds: number;
+  getSynchronizer: (store: MergeableStore) => Promise<Synchronizer>;
   pauseMilliseconds: number;
 };
 
-const localClient: ClientConfig<undefined> = {
-  getClient: async () => createLocalClient(),
-  requestTimeoutSeconds: 0.001,
+const mockLocalSynchronizer: Synchronizable<undefined> = {
+  getSynchronizer: async (store: MergeableStore) =>
+    createLocalSynchronizer(store),
   pauseMilliseconds: 2,
 };
 
-const wsClient: ClientConfig<WsServer> = {
-  createEnvironment: () =>
-    createWsSimpleServer(new WebSocketServer({port: 8042})),
+const mockWsSynchronizer: Synchronizable<WsServer> = {
+  createEnvironment: () => createWsServer(new WebSocketServer({port: 8042})),
   destroyEnvironment: (wsServer: WsServer) => {
     wsServer.destroy();
   },
-  getClient: async () => {
+  getSynchronizer: async (store: MergeableStore) => {
     const webSocket = new WebSocket('ws://localhost:8042');
-    return await createWsClient(webSocket);
+    return await createWsSynchronizer(store, webSocket, 0.04);
   },
-  requestTimeoutSeconds: 0.015,
-  pauseMilliseconds: 20,
+  pauseMilliseconds: 50,
 };
 
 describe.each([
-  ['localClient', localClient],
-  ['wsClient', wsClient],
+  ['localSynchronizer', mockLocalSynchronizer],
+  ['wsSynchronizer', mockWsSynchronizer],
 ] as any[])(
   'Syncs to/from %s',
-  <Environment>(_name: string, clientConfig: ClientConfig<Environment>) => {
+  <Environment>(_name: string, synchronizable: Synchronizable<Environment>) => {
     let environment: any;
-    let client1: Client;
-    let client2: Client;
     let store1: MergeableStore;
     let store2: MergeableStore;
-    let persister1: Synchronizer;
-    let persister2: Synchronizer;
+    let synchronizer1: Synchronizer;
+    let synchronizer2: Synchronizer;
 
     const expectEachToHaveContent = async (
       content1: Content,
@@ -76,42 +71,40 @@ describe.each([
           store1.getMergeableContent(),
         );
       }
-      expect([client1.getStats(), client2.getStats()]).toMatchSnapshot('stats');
+      expect([
+        synchronizer1.getSynchronizerStats(),
+        synchronizer2.getSynchronizerStats(),
+      ]).toMatchSnapshot('stats');
     };
 
-    beforeEach(async () => {
-      environment = clientConfig.createEnvironment?.();
-
-      client1 = await clientConfig.getClient();
-      client2 = await clientConfig.getClient();
-      store1 = createMergeableStore('s1');
-      store2 = createMergeableStore('s2');
-      persister1 = createCustomSynchronizer(
-        store1,
-        client1,
-        clientConfig.requestTimeoutSeconds,
-      );
-      persister2 = createCustomSynchronizer(
-        store2,
-        client2,
-        clientConfig.requestTimeoutSeconds,
-      );
+    beforeEach(() => {
+      environment = synchronizable.createEnvironment?.();
     });
 
-    afterEach(async () => {
-      persister1.destroy();
-      persister2.destroy();
-      clientConfig.destroyEnvironment?.(environment);
+    afterEach(() => {
+      synchronizable.destroyEnvironment?.(environment);
     });
 
     describe('Unidirectional', () => {
+      beforeEach(async () => {
+        store1 = createMergeableStore('s1');
+        store2 = createMergeableStore('s2');
+        synchronizer1 = await synchronizable.getSynchronizer(store1);
+        synchronizer2 = await synchronizable.getSynchronizer(store2);
+      });
+
+      afterEach(() => {
+        synchronizer1.destroy();
+        synchronizer2.destroy();
+      });
+
       test('save1 but not autoLoad2', async () => {
         store1.setContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
-        await persister1.save();
-        await pause(clientConfig.pauseMilliseconds, true);
+        await synchronizer1.save();
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectEachToHaveContent(
           [
             {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
@@ -122,12 +115,12 @@ describe.each([
       });
 
       test('autoSave1 but not autoLoad2', async () => {
-        await persister1.startAutoSave();
+        await synchronizer1.startAutoSave();
         store1.setContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectEachToHaveContent(
           [
             {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
@@ -142,8 +135,8 @@ describe.each([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
-        await persister1.load({t0: {r0: {c0: 0}}}, {v0: 0});
-        await pause(clientConfig.pauseMilliseconds, true);
+        await synchronizer1.load({t0: {r0: {c0: 0}}}, {v0: 0});
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectEachToHaveContent(
           [{t0: {r0: {c0: 0}}}, {v0: 0}],
           [
@@ -154,12 +147,12 @@ describe.each([
       });
 
       test('autoLoad1 but not autoSave2, defaults', async () => {
-        await persister1.startAutoLoad({t0: {r0: {c0: 0}}}, {v0: 0});
+        await synchronizer1.startAutoLoad({t0: {r0: {c0: 0}}}, {v0: 0});
         store2.setContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectEachToHaveContent(
           [{t0: {r0: {c0: 0}}}, {v0: 0}],
           [
@@ -172,14 +165,18 @@ describe.each([
 
     describe('Bidirectional', () => {
       beforeEach(async () => {
-        await persister1.startSync();
-        await persister2.startSync();
-        await pause(clientConfig.pauseMilliseconds, true);
+        store1 = createMergeableStore('s1');
+        store2 = createMergeableStore('s2');
+        synchronizer1 = await synchronizable.getSynchronizer(store1);
+        synchronizer2 = await synchronizable.getSynchronizer(store2);
+        await synchronizer1.startSync();
+        await synchronizer2.startSync();
+        await pause(synchronizable.pauseMilliseconds, true);
       });
 
       afterEach(() => {
-        persister1.stopSync();
-        persister2.stopSync();
+        synchronizer1.destroy();
+        synchronizer2.destroy();
       });
 
       // ---
@@ -197,7 +194,7 @@ describe.each([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
@@ -209,7 +206,7 @@ describe.each([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
@@ -221,7 +218,7 @@ describe.each([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
@@ -230,12 +227,12 @@ describe.each([
 
       test('store1 missing tables', async () => {
         store1.setValues({v1: 1, v2: 2});
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         store2.setContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
@@ -244,12 +241,12 @@ describe.each([
 
       test('store2 missing tables', async () => {
         store2.setValues({v1: 1, v2: 2});
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         store1.setContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
@@ -258,9 +255,9 @@ describe.each([
 
       test('different tables', async () => {
         store1.setTable('t1', {r1: {c1: 1, c2: 2}, r2: {c2: 2}});
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         store2.setTable('t2', {r2: {c2: 2}});
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {},
@@ -269,12 +266,12 @@ describe.each([
 
       test('store1 missing table', async () => {
         store1.setTable('t1', {r1: {c1: 1, c2: 2}, r2: {c2: 2}});
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         store2.setTables({
           t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}},
           t2: {r2: {c2: 2}},
         });
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {},
@@ -283,12 +280,12 @@ describe.each([
 
       test('store2 missing table', async () => {
         store2.setTable('t1', {r1: {c1: 1, c2: 2}, r2: {c2: 2}});
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         store1.setTables({
           t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}},
           t2: {r2: {c2: 2}},
         });
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {},
@@ -297,9 +294,9 @@ describe.each([
 
       test('different table', async () => {
         store1.setRow('t1', 'r1', {c1: 1, c2: 2});
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         store2.setRow('t1', 'r2', {c2: 2});
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}},
           {},
@@ -308,9 +305,9 @@ describe.each([
 
       test('store1 missing row', async () => {
         store1.setRow('t1', 'r1', {c1: 1, c2: 2});
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         store2.setTable('t1', {r1: {c1: 1, c2: 2}, r2: {c2: 2}});
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}},
           {},
@@ -319,9 +316,9 @@ describe.each([
 
       test('store2 missing row', async () => {
         store2.setRow('t1', 'r1', {c1: 1, c2: 2});
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         store1.setTable('t1', {r1: {c1: 1, c2: 2}, r2: {c2: 2}});
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}},
           {},
@@ -330,33 +327,33 @@ describe.each([
 
       test('different row', async () => {
         store1.setCell('t1', 'r1', 'c1', 1);
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         store2.setCell('t1', 'r1', 'c2', 2);
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectEachToHaveContent([{t1: {r1: {c1: 1, c2: 2}}}, {}]);
       });
 
       test('store1 missing cell', async () => {
         store1.setCell('t1', 'r1', 'c1', 1);
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         store2.setRow('t1', 'r1', {c1: 1, c2: 2});
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectEachToHaveContent([{t1: {r1: {c1: 1, c2: 2}}}, {}]);
       });
 
       test('store2 missing cell', async () => {
         store2.setCell('t1', 'r1', 'c1', 1);
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         store1.setRow('t1', 'r1', {c1: 1, c2: 2});
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectEachToHaveContent([{t1: {r1: {c1: 1, c2: 2}}}, {}]);
       });
 
       test('different cell', async () => {
         store1.setCell('t1', 'r1', 'c1', 1);
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         store2.setCell('t1', 'r1', 'c1', 2);
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectEachToHaveContent([{t1: {r1: {c1: 2}}}, {}]);
       });
 
@@ -365,12 +362,12 @@ describe.each([
           t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}},
           t2: {r2: {c2: 2}},
         });
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         store2.setContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
@@ -382,12 +379,12 @@ describe.each([
           t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}},
           t2: {r2: {c2: 2}},
         });
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         store1.setContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
@@ -396,41 +393,40 @@ describe.each([
 
       test('different values', async () => {
         store1.setValue('v1', 1);
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         store2.setValue('v2', 2);
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectEachToHaveContent([{}, {v1: 1, v2: 2}]);
       });
 
       test('store1 missing value', async () => {
         store1.setValue('v2', 2);
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         store2.setValues({v1: 1, v2: 2});
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectEachToHaveContent([{}, {v1: 1, v2: 2}]);
       });
 
       test('store2 missing value', async () => {
         store2.setValue('v2', 2);
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         store1.setValues({v1: 1, v2: 2});
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectEachToHaveContent([{}, {v1: 1, v2: 2}]);
       });
 
       test('different value', async () => {
         store1.setValue('v1', 1);
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         store2.setValue('v1', 2);
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectEachToHaveContent([{}, {v1: 2}]);
       });
     });
 
     describe('Multidirectional', () => {
-      const stores = new Array(10);
-      const clients = new Array(10);
-      const persisters = new Array(10);
+      const stores: MergeableStore[] = new Array(10);
+      const synchronizers: Synchronizer[] = new Array(10);
 
       const expectAllToHaveContent = async (content: Content) => {
         const mergeableContent = stores[0].getMergeableContent();
@@ -442,11 +438,11 @@ describe.each([
           }
         });
         expect(
-          clients.reduce(
-            (total, client) => {
-              const stats = client.getStats();
-              total.sends += stats.sends;
-              total.receives += stats.receives;
+          synchronizers.reduce(
+            (total, synchronizer) => {
+              const stats = synchronizer.getSynchronizerStats();
+              total.sends += stats.sends ?? 0;
+              total.receives += stats.receives ?? 0;
               return total;
             },
             {sends: 0, receives: 0},
@@ -455,23 +451,22 @@ describe.each([
       };
 
       beforeEach(async () => {
-        stores.fill(null).map(async (_, s) => {
-          stores[s] = createMergeableStore('s' + (s + 1));
-          clients[s] = createLocalClient();
-          persisters[s] = createCustomSynchronizer(
-            stores[s],
-            clients[s],
-            clientConfig.requestTimeoutSeconds,
-          );
-        });
         await Promise.all(
-          persisters.map(async (persister) => await persister.startSync()),
+          stores.fill(null as any).map(async (_, s) => {
+            stores[s] = createMergeableStore('s' + (s + 1));
+            synchronizers[s] = await synchronizable.getSynchronizer(stores[s]);
+          }),
         );
-        await pause(clientConfig.pauseMilliseconds, true);
+        await Promise.all(
+          synchronizers.map(
+            async (synchronizer) => await synchronizer.startSync(),
+          ),
+        );
+        await pause(synchronizable.pauseMilliseconds, true);
       });
 
       afterEach(() => {
-        persisters.forEach((persister) => persister.destroy());
+        synchronizers.forEach((synchronizer) => synchronizer.destroy());
       });
 
       // ---
@@ -487,7 +482,7 @@ describe.each([
             {v1: 1, v2: 2},
           ]),
         );
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectAllToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
@@ -499,7 +494,7 @@ describe.each([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectAllToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
@@ -511,7 +506,7 @@ describe.each([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectAllToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
@@ -529,7 +524,7 @@ describe.each([
             store.setValues({v1: 1, v2: 2});
           }
         });
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectAllToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
@@ -540,7 +535,7 @@ describe.each([
         stores.forEach((store, s) => {
           store.setTable('t' + (s + 1), {r1: {c1: 1}});
         });
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectAllToHaveContent([
           {
             t1: {r1: {c1: 1}},
@@ -562,7 +557,7 @@ describe.each([
         stores.forEach((store, s) => {
           store.setRow('t1', 'r' + (s + 1), {c1: 1});
         });
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectAllToHaveContent([
           {
             t1: {
@@ -586,7 +581,7 @@ describe.each([
         stores.forEach((store, s) => {
           store.setCell('t1', 'r1', 'c' + (s + 1), 1);
         });
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectAllToHaveContent([
           {
             t1: {
@@ -609,13 +604,14 @@ describe.each([
       });
 
       test('all conflicting cells', async () => {
+        await expectAllToHaveContent([{}, {}]);
         stores.forEach((store, s) => {
           store.setCell('t1', 'r1', 'c1', s + 1);
         });
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectAllToHaveContent([{t1: {r1: {c1: 10}}}, {}]);
-        stores[5].setCell('t1', 'r1', 'c1', 42);
-        await pause(clientConfig.pauseMilliseconds, true);
+        stores[3].setCell('t1', 'r1', 'c1', 42);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectAllToHaveContent([{t1: {r1: {c1: 42}}}, {}]);
       });
 
@@ -623,7 +619,7 @@ describe.each([
         stores.forEach((store, s) => {
           store.setValue('v' + (s + 1), 1);
         });
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectAllToHaveContent([
           {},
           {
@@ -645,10 +641,10 @@ describe.each([
         stores.forEach((store, s) => {
           store.setValue('v1', s + 1);
         });
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectAllToHaveContent([{}, {v1: 10}]);
         stores[5].setValue('v1', 42);
-        await pause(clientConfig.pauseMilliseconds, true);
+        await pause(synchronizable.pauseMilliseconds, true);
         await expectAllToHaveContent([{}, {v1: 42}]);
       });
     });
