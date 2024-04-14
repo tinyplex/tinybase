@@ -30,7 +30,6 @@ export type SynchronizerStats = {
   receives?: number;
 };
 
-/// Client
 export interface Client {
   send: Send;
   onReceive: (receive: Receive) => void;
@@ -42,9 +41,9 @@ export interface Client {
 export interface Synchronizer<Schemas extends OptionalSchemas>
   extends Persister<Schemas, true> {
   /// Synchronizer.startSync
-  startSync(): Promise<Synchronizer<Schemas>>;
+  startSync(): Promise<this>;
   /// Synchronizer.stopSync
-  stopSync(): Synchronizer<Schemas>;
+  stopSync(): this;
   /// Synchronizer.getSynchronizerStats
   getSynchronizerStats(): SynchronizerStats;
 }
