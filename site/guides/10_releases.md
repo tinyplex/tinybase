@@ -80,14 +80,14 @@ const server = createWsSimpleServer(new ws.WebSocketServer({port: 8043}));
 // On the first client machine:
 const store1 = createMergeableStore('store1');
 const client1 = await createWsClient(new ws.WebSocket('ws://localhost:8043'));
-const persister1 = createSyncPersister(store1, client1);
+const persister1 = createCustomSynchronizer(store1, client1);
 await persister1.startSync();
 store1.setCell('pets', 'fido', 'legs', 4);
 
 // On the second client machine:
 const store2 = createMergeableStore('store2');
 const client2 = await createWsClient(new ws.WebSocket('ws://localhost:8043'));
-const persister2 = createSyncPersister(store2, client2);
+const persister2 = createCustomSynchronizer(store2, client2);
 await persister2.startSync();
 store2.setCell('pets', 'felix', 'price', 5);
 
