@@ -17,6 +17,7 @@ import {
   Synchronizer,
   createCustomSynchronizer as createCustomSynchronizerDecl,
 } from './types/synchronizers';
+import {Tables, Values} from './types/store';
 import {EMPTY_STRING} from './common/strings';
 import {PersisterListener} from './types/persisters';
 import {collDel} from './common/coll';
@@ -35,7 +36,7 @@ export const createCustomSynchronizer = ((
   store: MergeableStore,
   send: Send,
   onReceive: (receive: Receive) => void,
-  destroy: () => void,
+  destroyImpl: () => void,
   requestTimeoutSeconds = 1,
   onIgnoredError?: (error: any) => void,
 ): Synchronizer => {
@@ -203,6 +204,20 @@ export const createCustomSynchronizer = ((
 
   const delPersisterListener = () => (persisterListener = undefined);
 
+  const startSync = async (initialTables?: Tables, initialValues?: Values) =>
+    await (
+      await persister.startAutoLoad(initialTables, initialValues)
+    ).startAutoSave();
+
+  const stopSync = () => persister.stopAutoLoad().stopAutoSave();
+
+  const destroy = () => {
+    destroyImpl();
+    return persister.stopSync();
+  };
+
+  const getSynchronizerStats = () => (DEBUG ? {sends, receives} : {});
+
   const persister = createCustomPersister(
     store,
     getPersisted,
@@ -211,16 +226,7 @@ export const createCustomSynchronizer = ((
     delPersisterListener,
     onIgnoredError,
     true,
-    {
-      startSync: async () =>
-        await (await persister.startAutoLoad()).startAutoSave(),
-      stopSync: () => persister.stopAutoLoad().stopAutoSave(),
-      destroy: () => {
-        destroy();
-        return persister.stopSync();
-      },
-      getSynchronizerStats: () => (DEBUG ? {sends, receives} : {}),
-    },
+    {startSync, stopSync, destroy, getSynchronizerStats},
   ) as Synchronizer;
   return persister;
 }) as typeof createCustomSynchronizerDecl;
